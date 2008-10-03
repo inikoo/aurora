@@ -4,7 +4,7 @@ $path = 'common';
 set_include_path(get_include_path() . PATH_SEPARATOR . $path);
 
 
-require_once 'myconf/dns.php';         // DB connecton configuration file
+require_once 'app_files/db/dns.php';         // DB connecton configuration file
 require_once 'MDB2.php';            // PEAR Database Abstraction Layer
 require_once 'common_functions.php';
 require_once "class.dbsession.php";

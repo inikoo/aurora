@@ -12,7 +12,7 @@ $LU_conf = array(
 					     'secure' => false,
 					     'lifetime' => 1,
 					     'secret' => 'jfeq49rm49',
-					     'savedir' => './ck/',
+					     'savedir' => './server_files/ck/',
 					     ),
 		'authContainers'    => array(
 					     'DB' => array(
@@ -125,9 +125,9 @@ $myconf=array(
 	      
 	      'theme'=>'yui-skin-sam',
 	      'template_dir'=>'templates',
-	      'compile_dir'=> 'smarty/templates_c',
-	      'cache_dir' => 'smarty/cache',
-	      'config_dir' => 'smarty/configs',
+	      'compile_dir'=> 'server_files/smarty/templates_c',
+	      'cache_dir' => 'server_files/smarty/cache',
+	      'config_dir' => 'server_files/smarty/configs',
 	      'yui_version'=>'2.5.2',
 	      'supplier_id_prefix'=>'S',
 	      'po_id_prefix'=>'PO',
@@ -139,7 +139,7 @@ $myconf=array(
 
 
 
-$yui_path="yui/".$myconf['yui_version']."/build/";
+$yui_path="external_libs/yui/".$myconf['yui_version']."/build/";
 
 
 $customers_ids[0]=_('Id');

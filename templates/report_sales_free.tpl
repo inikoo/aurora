@@ -15,7 +15,7 @@
 
 <div class="cal_menu" >
 <span>{$tipo_title}</span> <span id="period">{$period}</span>
-{if $tipo=='m'}
+{if $tipo=='y'}
 <table  class="calendar_year">
 <tr>
 <td><a href="report_sales.php?tipo=m&y={$period}&m=1">{$m[0]}</a></td>
