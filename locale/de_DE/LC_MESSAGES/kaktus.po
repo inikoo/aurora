@@ -1,0 +1,4231 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Kaktus 1.0\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2008-04-19 20:08+0100\n"
+"Last-Translator: Raul Perusquia <raul@ancientwisdom.biz>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: German\n"
+"X-Poedit-Country: GERMANY\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-Basepath: /home/raul/www/kaktus\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPath-1: js\n"
+
+#: ar_suppliers.php:7
+#: create_dn.php:7
+#: ar_contacts.php:7
+#: ar_users.php:6
+#: ar_assets.php:9
+#: ar_orders.php:7
+#: mail.php:4
+#: bkup/ar_suppliers.php:7
+#: bkup/create_dn.php:7
+#: bkup/ar_contacts.php:7
+#: bkup/ar_users.php:6
+#: bkup/ar_assets.php:8
+#: bkup/ar_asserts.bk.php:7
+#: bkup/ar_orders.php:7
+#: bkup/mail.php:4
+msgid "Forbidden"
+msgstr "Unzulässig"
+
+#: ar_suppliers.php:15
+#: ar_contacts.php:15
+#: ar_users.php:18
+#: ar_assets.php:17
+#: ar_orders.php:15
+#: bkup/ar_suppliers.php:15
+#: bkup/ar_contacts.php:15
+#: bkup/ar_users.php:18
+#: bkup/ar_assets.php:16
+#: bkup/ar_asserts.bk.php:15
+#: bkup/ar_orders.php:15
+msgid "Non acceptable request"
+msgstr "Nicht zulässige Anfrage"
+
+#: ar_suppliers.php:127
+#: ar_assets.php:396
+#: ar_assets.php:1406
+#: ar_orders.php:127
+#: ar_orders.php:256
+#: ar_orders.php:574
+#: ar_orders.php:794
+#: bkup/ar_suppliers.php:127
+#: bkup/ar_suppliers.php:427
+#: bkup/ar_assets.php:154
+#: bkup/ar_assets.php:1101
+#: bkup/ar_asserts.bk.php:100
+#: bkup/ar_orders.php:124
+#: bkup/ar_orders.php:252
+#: bkup/ar_orders.php:569
+#: bkup/ar_orders.php:667
+#: bkup/ar_orders.php:765
+#, fuzzy
+msgid "record returned"
+msgid_plural "records returned"
+msgstr[0] "%1 gab einen Fehler zurück: %2"
+msgstr[1] ""
+
+#: ar_suppliers.php:202
+#: ar_suppliers.php:319
+#: bkup/ar_suppliers.php:202
+#: bkup/ar_suppliers.php:319
+#, fuzzy
+msgid "Subtotals"
+msgstr "Zwischensumme"
+
+#: ar_suppliers.php:427
+msgid "No suppliers have been registered yet"
+msgstr "Bis jetzt wurden keine Lieferanten registriert"
+
+#: ar_suppliers.php:429
+#, fuzzy
+msgid "supplier returned"
+msgid_plural "suppliers returned"
+msgstr[0] "%1 gab einen Fehler zurück: %2"
+msgstr[1] ""
+
+#: ar_suppliers.php:540
+#: ar_suppliers.php:583
+#: bkup/ar_suppliers.php:538
+#, fuzzy
+msgid "Suboperation not found"
+msgstr "Skript nicht gefunden"
+
+#: ar_suppliers.php:592
+#: ar_contacts.php:641
+#: ar_users.php:481
+#: ar_assets.php:1782
+#: ar_orders.php:816
+#: bkup/ar_suppliers.php:545
+#: bkup/ar_contacts.php:490
+#: bkup/ar_users.php:477
+#: bkup/ar_assets.php:1123
+#: bkup/ar_asserts.bk.php:428
+#: bkup/ar_orders.php:787
+msgid "Operation not found"
+msgstr "Skript nicht gefunden"
+
+#: suppliers.php:43
+#: common.php:221
+#: header.php:35
+#: common.bk.php:212
+#: bkup/suppliers.php:43
+#: bkup/common.php:213
+#: bkup/header.php:35
+#: bkup/common.bk.php:212
+msgid "Suppliers"
+msgstr "Lieferanten"
+
+#: conf_ci.php:115
+#: conf.php:115
+#: customers.php:136
+#: assets_product.bk.php:17
+#: bkup/assets_product.bk.php:17
+#: bkup/js/customers.js.php:54
+#: bkup/js/users.js.php:379
+#: bkup/js/suppliers.js.php:41
+#: bkup/js/assets_tree.js.php:104
+#: bkup/js/hresources.js.php:32
+#: js/customers.js.php:54
+#: js/users.js.php:379
+#: js/suppliers.js.php:41
+#: js/suppliers.js.php:42
+#: js/assets_tree.js.php:111
+#: js/hresources.js.php:41
+#: js/hresources.js.php:42
+msgid "Id"
+msgstr "Id"
+
+#: conf_ci.php:116
+#: conf.php:116
+#: js/customers.js.php:55
+#, fuzzy
+msgid "Act Id"
+msgstr "Tabellen-Id:"
+
+#: conf_ci.php:117
+#, fuzzy
+msgid "Tax Id"
+msgstr "Tabellen-Id:"
+
+#: user.php:17
+#: login.php:59
+#: bkup/user.php:17
+#: bkup/login.php:32
+msgid "User"
+msgstr "Benutzer"
+
+#: new_delivernote.php:207
+#: bkup/new_delivernote.php:207
+#, fuzzy
+msgid "New Deliver note for"
+msgstr "Die Verarbeitungsroutine für »note://«-URLs"
+
+#: new_delivernote.php:212
+#: porder.php:94
+#: supplier.php:84
+#: bkup/new_delivernote.php:212
+#: bkup/porder.php:94
+#: bkup/supplier.php:84
+#, fuzzy
+msgid "Suppliers List"
+msgstr "Liste der Typumwandlungen"
+
+#: users.php:39
+#: common.php:219
+#: header.php:34
+#: common.bk.php:211
+#: bkup/users.php:39
+#: bkup/common.php:211
+#: bkup/header.php:34
+#: bkup/common.bk.php:211
+#: bkup/js/users.js.php:381
+#: js/users.js.php:381
+msgid "Users"
+msgstr "Benutzer"
+
+#: porder.php:89
+#: bkup/porder.php:89
+#, fuzzy
+msgid "Deliver note for"
+msgstr "Die Verarbeitungsroutine für »note://«-URLs"
+
+#: conf.php:117
+msgid "Postcode"
+msgstr "Postleitzahl"
+
+#: new_contact.php:41
+#, fuzzy
+msgid "New Contact"
+msgstr "Neuer Kontakt"
+
+#: new_contact.php:42
+#, fuzzy
+msgid "Contact (Person)"
+msgstr ""
+"Person\n"
+"Personen\n"
+"Leute"
+
+#: common.php:54
+#: common.bk.php:47
+#: common.bk.php:113
+#: bkup/common.php:54
+#: bkup/common.bk.php:47
+#: bkup/common.bk.php:113
+msgid "An unknown error occurred"
+msgstr "Ein unbekannter Fehler ist aufgetreten"
+
+#: common.php:210
+#: ar_users.php:84
+#: header.php:28
+#: common.bk.php:201
+#: bkup/common.php:202
+#: bkup/ar_users.php:82
+#: bkup/header.php:28
+#: bkup/common.bk.php:201
+#, fuzzy
+msgid "Superuser"
+msgstr "Superuser"
+
+#: common.php:220
+#: bkup/common.php:212
+#, fuzzy
+msgid "Resources"
+msgstr "Ressourcen"
+
+#: common.php:222
+#: reports.php:30
+#: bkup/common.php:214
+#: bkup/reports.php:30
+#, fuzzy
+msgid "Reports"
+msgstr "Berichte"
+
+#: common.php:223
+#: orders.php:109
+#: orders.php:113
+#: header.php:36
+#: common.bk.php:213
+#: bkup/common.php:215
+#: bkup/orders.php:109
+#: bkup/orders.php:113
+#: bkup/header.php:36
+#: bkup/common.bk.php:213
+#: bkup/js/customers.js.php:58
+#: js/assets_product.js.php:209
+#: js/assets_product.js.php:682
+#: js/customers.js.php:62
+msgid "Orders"
+msgstr "Bestellungen"
+
+#: common.php:224
+#: customers.php:112
+#: customers.php:116
+#: header.php:37
+#: hresources.php:43
+#: common.bk.php:214
+#: bkup/common.php:216
+#: bkup/customers.php:42
+#: bkup/customers.php:46
+#: bkup/header.php:37
+#: bkup/hresources.php:42
+#: bkup/hresources.php:46
+#: bkup/common.bk.php:214
+#: bkup/js/orders.js.php:46
+#: bkup/js/orders.js.php:47
+#: bkup/js/report_sales.js.php:46
+#: bkup/js/report_sales.js.php:47
+#: bkup/js/customers.js.php:61
+#: bkup/js/customers.js.php:62
+#: bkup/js/index.js.php:51
+#: bkup/js/index.js.php:52
+#: bkup/js/order.js.php:46
+#: bkup/js/order.js.php:47
+#: bkup/js/invoice.js.php:59
+#: bkup/js/invoice.js.php:60
+#: bkup/js/hresources.js.php:35
+#: bkup/js/hresources.js.php:36
+#: js/orders.js.php:46
+#: js/orders.js.php:47
+#: js/assets_product.js.php:682
+#: js/report_sales.js.php:46
+#: js/report_sales.js.php:47
+#: js/customers.js.php:65
+#: js/customers.js.php:66
+#: js/index.js.php:52
+#: js/index.js.php:53
+#: js/order.js.php:46
+#: js/order.js.php:47
+#: js/invoice.js.php:59
+#: js/invoice.js.php:60
+msgid "Customers"
+msgstr "Kunden"
+
+#: common.php:225
+#: header.php:38
+#: common.bk.php:215
+#: bkup/common.php:217
+#: bkup/header.php:38
+#: bkup/common.bk.php:215
+msgid "Assets"
+msgstr ""
+
+#: common.php:226
+#: ar_contacts.php:504
+#: header.php:39
+#: index.php:44
+#: common.bk.php:216
+#: bkup/common.php:218
+#: bkup/ar_contacts.php:353
+#: bkup/header.php:39
+#: bkup/index.php:39
+#: bkup/common.bk.php:216
+msgid "Home"
+msgstr "Home"
+
+#: assets_family.bk.php:12
+#: assets_family.bk.php:40
+#: bkup/assets_family.bk.php:12
+#: bkup/assets_family.bk.php:40
+#: bkup/js/upload_assets.js.php:104
+#: bkup/js/assets_index.js.php:89
+#: bkup/js/supplier.js.php:43
+#: js/upload_assets.js.php:104
+#: js/assets_index.js.php:92
+#: js/supplier.js.php:43
+msgid "Family"
+msgstr "Familie"
+
+#: assets_family.bk.php:17
+#: assets_department.bk.php:22
+#: assets_index.bk.php:19
+#: assets_product.bk.php:34
+#: bkup/assets_family.bk.php:17
+#: bkup/assets_department.bk.php:22
+#: bkup/assets_index.bk.php:19
+#: bkup/assets_product.bk.php:34
+msgid "Display Options"
+msgstr "Anzeigeoptionen"
+
+#: assets_family.bk.php:19
+#: assets_department.bk.php:30
+#: assets_index.bk.php:21
+#: assets_product.bk.php:36
+#: bkup/assets_family.bk.php:19
+#: bkup/assets_department.bk.php:30
+#: bkup/assets_index.bk.php:21
+#: bkup/assets_product.bk.php:36
+msgid "Edit Menu"
+msgstr "Menü bearbeiten"
+
+#: assets_tree.php:73
+#: bkup/assets_tree.php:66
+#, fuzzy
+msgid "Product Departments"
+msgstr "G_PRODUCT(Wert;Wert;...)"
+
+#: assets_department.bk.php:16
+#: bkup/assets_department.bk.php:16
+msgid "Deparment"
+msgstr ""
+
+#: assets_department.bk.php:61
+#: bkup/assets_department.bk.php:61
+#: bkup/js/upload_assets.js.php:84
+#: bkup/js/assets_index.js.php:90
+#: js/upload_assets.js.php:84
+#: js/assets_index.js.php:93
+msgid "Department"
+msgstr "Abteilung"
+
+#: ar_contacts.php:71
+#, fuzzy
+msgid "No contacts registered yet"
+msgstr "Noch kein zurückgegebener y-Wert"
+
+#: ar_contacts.php:73
+#, fuzzy
+msgid "contact"
+msgid_plural "contacts"
+msgstr[0] "Kontakt"
+msgstr[1] "Monaco"
+
+#: ar_contacts.php:200
+msgid "No staff member register yet"
+msgstr ""
+
+#: ar_contacts.php:202
+#, fuzzy
+msgid "staff member"
+msgid_plural "staff members"
+msgstr[0] "Mitglied löschen"
+msgstr[1] ""
+
+#: ar_contacts.php:317
+#, fuzzy
+msgid "There isn't any customer"
+msgstr "Schlüssel-Kunde"
+
+#: ar_contacts.php:319
+#: ar_orders.php:696
+#: bkup/ar_contacts.php:73
+#: bkup/ar_contacts.php:169
+#, fuzzy
+msgid "customer"
+msgid_plural "customers"
+msgstr[0] "Kunde"
+msgstr[1] "Schlüssel-Kunde"
+
+#: ar_contacts.php:486
+#: bkup/ar_contacts.php:335
+#, fuzzy
+msgid "Ext."
+msgstr "T&ext"
+
+#: ar_contacts.php:501
+#: bkup/ar_contacts.php:350
+#, fuzzy
+msgid "Work"
+msgstr "Arbeit"
+
+#: customers.php:130
+#: js/customers.js.php:125
+#, fuzzy
+msgid "Max Orders"
+msgstr "MAX(Wert;Wert;...)"
+
+#: customers.php:133
+#: js/customers.js.php:126
+#, fuzzy
+msgid "Min Orders"
+msgstr "MIN(Wert;Wert;...)"
+
+#: customers.php:139
+#: orders.php:136
+#: index.php:69
+#: report_sales.php:222
+#: bkup/orders.php:136
+#: bkup/index.php:64
+#: bkup/report_sales.php:222
+#: bkup/js/orders.js.php:100
+#: bkup/js/index.js.php:107
+#: js/orders.js.php:102
+#: js/customers.js.php:121
+#: js/index.js.php:109
+msgid "Customer Name"
+msgstr "Name des Kunden  "
+
+#: customers.php:151
+#: js/customers.js.php:127
+#, fuzzy
+msgid "Max Total"
+msgstr "Gesamttotal"
+
+#: customers.php:154
+#: js/customers.js.php:128
+#, fuzzy
+msgid "Min Total"
+msgstr "Gesamttotal"
+
+#: customers.php:157
+#: bkup/js/orders.js.php:101
+#: bkup/js/index.js.php:104
+#: js/orders.js.php:103
+#: js/customers.js.php:129
+#: js/index.js.php:106
+#, fuzzy
+msgid "Max Days"
+msgstr "Wochentage:"
+
+#: customers.php:160
+#: bkup/js/orders.js.php:102
+#: bkup/js/index.js.php:105
+#: js/orders.js.php:104
+#: js/customers.js.php:130
+#: js/index.js.php:107
+#, fuzzy
+msgid "Min Days"
+msgstr "Wochentage:"
+
+#: assets_index.php:80
+#: bkup/assets_index.php:80
+#, fuzzy
+msgid "Product Index"
+msgstr "entfernt einen Index"
+
+#: assets_index.php:87
+#: assets_family.php:116
+#: bkup/assets_index.php:87
+#: bkup/assets_family.php:69
+#, fuzzy
+msgid "Product code"
+msgstr "Quelltext"
+
+#: assets_index.php:103
+#: bkup/assets_index.php:103
+#: bkup/js/assets_product.js.php:61
+#: bkup/js/assets_product.js.php:114
+#: bkup/js/assets_index.js.php:132
+#: bkup/js/users.js.php:215
+#: bkup/js/users.js.php:407
+#: bkup/js/assets_family.js.php:145
+#: js/assets_product.js.php:183
+#: js/assets_product.js.php:241
+#: js/assets_index.js.php:143
+#: js/users.js.php:215
+#: js/users.js.php:407
+#: js/assets_family.js.php:138
+#, fuzzy
+msgid "Product Code"
+msgstr "Quelltext"
+
+#: assets_index.php:106
+#: bkup/assets_index.php:106
+#: bkup/js/assets_product.js.php:61
+#: bkup/js/assets_product.js.php:114
+#: bkup/js/customer.js.php:60
+#: bkup/js/assets_index.js.php:133
+#: bkup/js/assets_department.js.php:114
+#: bkup/js/users.js.php:215
+#: bkup/js/users.js.php:407
+#: bkup/js/supplier.js.php:175
+#: bkup/js/supplier.js.php:270
+#: bkup/js/assets_tree.js.php:137
+#: js/assets_product.js.php:183
+#: js/assets_product.js.php:241
+#: js/customer.js.php:60
+#: js/assets_index.js.php:144
+#: js/assets_department.js.php:111
+#: js/users.js.php:215
+#: js/users.js.php:407
+#: js/supplier.js.php:175
+#: js/supplier.js.php:270
+#: js/assets_tree.js.php:146
+#, fuzzy
+msgid "Family Code"
+msgstr "Quelltext"
+
+#: assets_index.php:109
+#: bkup/assets_index.php:109
+#: bkup/js/assets_index.js.php:134
+#: js/assets_index.js.php:145
+#, fuzzy
+msgid "Department Name"
+msgstr "Name der Abteilung"
+
+#: assets_index.php:112
+#: bkup/assets_index.php:112
+#: bkup/js/upload_assets.js.php:86
+#: bkup/js/upload_assets.js.php:106
+#: bkup/js/assets_product.js.php:62
+#: bkup/js/assets_product.js.php:115
+#: bkup/js/new_deliverynote.js.php:35
+#: bkup/js/new_deliverynote.js.php:42
+#: bkup/js/customer.js.php:61
+#: bkup/js/assets_index.js.php:92
+#: bkup/js/assets_index.js.php:135
+#: bkup/js/assets_department.js.php:88
+#: bkup/js/assets_department.js.php:115
+#: bkup/js/users.js.php:216
+#: bkup/js/users.js.php:408
+#: bkup/js/porder.js.php:34
+#: bkup/js/porder.js.php:41
+#: bkup/js/supplier.js.php:46
+#: bkup/js/supplier.js.php:176
+#: bkup/js/supplier.js.php:271
+#: bkup/js/assets_family.js.php:100
+#: bkup/js/assets_family.js.php:146
+#: bkup/js/assets_family.js.php:171
+#: bkup/js/deliverynote.js.php:34
+#: bkup/js/deliverynote.js.php:41
+#: bkup/js/assets_tree.js.php:138
+#: js/upload_assets.js.php:86
+#: js/upload_assets.js.php:106
+#: js/assets_product.js.php:184
+#: js/assets_product.js.php:242
+#: js/new_deliverynote.js.php:35
+#: js/new_deliverynote.js.php:42
+#: js/customer.js.php:61
+#: js/assets_index.js.php:95
+#: js/assets_index.js.php:146
+#: js/assets_department.js.php:81
+#: js/users.js.php:216
+#: js/users.js.php:408
+#: js/porder.js.php:34
+#: js/porder.js.php:41
+#: js/supplier.js.php:46
+#: js/supplier.js.php:176
+#: js/supplier.js.php:271
+#: js/assets_family.js.php:94
+#: js/assets_family.js.php:139
+#: js/assets_family.js.php:200
+#: js/deliverynote.js.php:34
+#: js/deliverynote.js.php:41
+#: js/assets_tree.js.php:147
+msgid "Description"
+msgstr "Beschreibung"
+
+#: ar_users.php:63
+#, fuzzy
+msgid "No users are set up!"
+msgstr "Für den Kanal %s sind keine Kanal-Modi gesetzt"
+
+#: ar_users.php:65
+#: bkup/ar_users.php:63
+#, fuzzy
+msgid "user"
+msgid_plural "users"
+msgstr[0] "Benutzer"
+msgstr[1] "Benutzer"
+
+#: ar_users.php:165
+#: bkup/ar_users.php:163
+#, fuzzy
+msgid "work group"
+msgid_plural "work groups"
+msgstr[0] "Klassengruppe"
+msgstr[1] "Verfügbare Gruppen:"
+
+#: ar_users.php:204
+#: bkup/ar_users.php:202
+#, fuzzy
+msgid "Wrong user name"
+msgstr "Zuordnung der Be&nutzernamen:"
+
+#: ar_users.php:213
+#: bkup/ar_users.php:211
+#, fuzzy
+msgid "The user"
+msgstr "Benutzer:"
+
+#: ar_users.php:213
+#: bkup/ar_users.php:211
+#, fuzzy
+msgid "is already in the database!"
+msgstr "%s: Sprache »%s« ist bereits in Datenbank »%s« installiert\n"
+
+#: ar_users.php:218
+#: ar_users.php:243
+#: ar_assets.php:797
+#: ar_assets.php:822
+#: ar_assets.php:846
+#: ar_assets.php:876
+#: ar_assets.php:914
+#: ar_assets.php:952
+#: ar_assets.php:1120
+#: ar_assets.php:1262
+#: upload_assets.php:99
+#: bkup/ar_users.php:216
+#: bkup/ar_users.php:241
+#: bkup/ar_assets.php:504
+#: bkup/ar_assets.php:529
+#: bkup/ar_assets.php:553
+#: bkup/ar_assets.php:583
+#: bkup/ar_assets.php:621
+#: bkup/ar_assets.php:659
+#: bkup/ar_assets.php:827
+#: bkup/ar_assets.php:957
+#: bkup/upload_assets.php:99
+#, fuzzy
+msgid "Unknown Error"
+msgstr "Unbekannter Fehler"
+
+#: ar_users.php:475
+#: bkup/ar_users.php:471
+#, fuzzy
+msgid "Sub-operation not found"
+msgstr "Das Programm \"mkisofs\" ist nicht auffindbar."
+
+#: templates.php:23
+#: templates_p.php:23
+#: bkup/templates.php:23
+#: bkup/templates_p.php:23
+msgid "Error, department id should be a number"
+msgstr "Fehler, die Abteilungs-Id muss eine Zahl sein"
+
+#: templates.php:30
+#: templates.php:49
+#: templates_p.php:30
+#: templates_p.php:49
+#: bkup/templates.php:30
+#: bkup/templates.php:49
+#: bkup/templates_p.php:30
+#: bkup/templates_p.php:49
+#, fuzzy
+msgid "Error, family id not found"
+msgstr "Itdb_Track ID '%d' nicht gefunden.\n"
+
+#: templates.php:42
+#: templates_p.php:42
+#: bkup/templates.php:42
+#: bkup/templates_p.php:42
+msgid "Error, family id should be a number"
+msgstr "Fehler, die Abteilungs-Id muss eine Zahl sein"
+
+#: ar_assets.php:31
+#, fuzzy
+msgid "Nothing to add"
+msgstr "Wort hinzufügen zu"
+
+#: ar_assets.php:86
+#: ar_assets.php:226
+#: ar_assets.php:232
+#: ar_assets.php:807
+#: ar_assets.php:832
+#: ar_assets.php:856
+#: ar_assets.php:898
+#: ar_assets.php:936
+#: ar_assets.php:973
+#: ar_assets.php:1011
+#: ar_assets.php:1067
+#: order.php:7
+#: report_sales.php:134
+#: report_sales.php:140
+#: report_sales.php:151
+#: report_sales.php:155
+#: report_sales.php:160
+#: bkup/ar_assets.php:514
+#: bkup/ar_assets.php:539
+#: bkup/ar_assets.php:563
+#: bkup/ar_assets.php:605
+#: bkup/ar_assets.php:643
+#: bkup/ar_assets.php:680
+#: bkup/ar_assets.php:718
+#: bkup/ar_assets.php:774
+#: bkup/order.php:7
+#: bkup/report_sales.php:134
+#: bkup/report_sales.php:140
+#: bkup/report_sales.php:151
+#: bkup/report_sales.php:155
+#: bkup/report_sales.php:160
+#: bkup/js/upload_assets.js.php:22
+#: bkup/js/upload_assets.js.php:29
+#: bkup/js/upload_assets.js.php:36
+#: bkup/js/upload_assets.js.php:43
+#: bkup/js/upload_assets.js.php:50
+#: js/upload_assets.js.php:22
+#: js/upload_assets.js.php:29
+#: js/upload_assets.js.php:36
+#: js/upload_assets.js.php:43
+#: js/upload_assets.js.php:50
+#, fuzzy
+msgid "Error"
+msgstr "Fehler"
+
+#: ar_assets.php:119
+#, fuzzy
+msgid "Image already uploaded"
+msgstr "%s an Bilddaten wurden hochgeladen"
+
+#: ar_assets.php:478
+#: bkup/ar_assets.php:231
+#, fuzzy
+msgid "department"
+msgid_plural "departments"
+msgstr[0] "Abteilung"
+msgstr[1] "Abteilung"
+
+#: ar_assets.php:589
+#: bkup/ar_assets.php:331
+#, fuzzy
+msgid "family"
+msgid_plural "families"
+msgstr[0] "Familie"
+msgstr[1] "Familie"
+
+#: ar_assets.php:738
+#: bkup/ar_assets.php:446
+#, fuzzy
+msgid "product"
+msgid_plural "products"
+msgstr[0] "Produkt"
+msgstr[1] "Produkt"
+
+#: ar_assets.php:795
+#: bkup/ar_assets.php:502
+msgid "Error: Another department has the same name"
+msgstr "Fehler: Eine andere Abteilung hat denselben Namen"
+
+#: ar_assets.php:820
+#: bkup/ar_assets.php:527
+msgid "Error: Another family has the same name"
+msgstr "Fehler: Eine andere Produktgruppe hat denselben Namen"
+
+#: ar_assets.php:844
+#: bkup/ar_assets.php:551
+msgid "Error: Another family has the same name and description"
+msgstr ""
+
+#: ar_assets.php:874
+#: bkup/ar_assets.php:581
+msgid "Error: Another department has the same code/name"
+msgstr ""
+
+#: ar_assets.php:912
+#: bkup/ar_assets.php:619
+msgid "Error: Another supplier has the same code/name"
+msgstr ""
+
+#: ar_assets.php:950
+#: bkup/ar_assets.php:657
+msgid "Error: Another department has the same name-description"
+msgstr ""
+
+#: ar_assets.php:1029
+#: bkup/ar_assets.php:736
+msgid "Error: in date format, should be (DD-MM-YYYY)"
+msgstr ""
+
+#: ar_assets.php:1038
+#: bkup/ar_assets.php:745
+msgid "Error: in time format, should be (HH:MM)"
+msgstr ""
+
+#: ar_assets.php:1118
+#: ar_assets.php:1260
+#: upload_assets.php:97
+#: bkup/ar_assets.php:825
+#: bkup/ar_assets.php:955
+#: bkup/upload_assets.php:97
+msgid "Error: Another product has the same code"
+msgstr ""
+
+#: ar_assets.php:1127
+#, fuzzy
+msgid "New product"
+msgstr "Name=Völlig neues Produkt"
+
+#: ar_assets.php:1203
+#: ar_assets.php:1310
+#: bkup/ar_assets.php:898
+#: bkup/ar_assets.php:1005
+msgid "Error, please check that all the fields are filled"
+msgstr ""
+
+#: ar_assets.php:1235
+#: bkup/ar_assets.php:930
+#, fuzzy
+msgid "Error, product don't found"
+msgstr "Fehler: Benutzer nicht gefunden"
+
+#: ar_assets.php:1446
+#: ar_assets.php:1536
+#: ar_assets.php:1577
+#, fuzzy
+msgid "Week starting "
+msgstr "Löschvorgang wird gestartet ..."
+
+#: ar_assets.php:1721
+#, fuzzy
+msgid "No stock movements"
+msgstr "Keine Datei geladen"
+
+#: ar_assets.php:1723
+#, fuzzy
+msgid "stock movement"
+msgid_plural "stock movements"
+msgstr[0] "&Minimale Bewegung:"
+msgstr[1] "Sperrenverwaltung"
+
+#: assets_index.bk.php:13
+#: bkup/assets_index.bk.php:13
+#, fuzzy
+msgid "Products to sell"
+msgstr "Umschalten auf Dock-Modus"
+
+#: assets_index.bk.php:23
+#: bkup/assets_index.bk.php:23
+#, fuzzy
+msgid "Edit Departments"
+msgstr "Menüs bearbeiten"
+
+#: assets_index.bk.php:50
+#: bkup/assets_index.bk.php:50
+#, fuzzy
+msgid "Asserts"
+msgstr "Benutzer"
+
+#: login.php:57
+#: bkup/login.php:30
+#, fuzzy
+msgid "Authentication"
+msgstr "Authentifizierung"
+
+#: login.php:58
+#: bkup/login.php:31
+msgid "Welcome"
+msgstr "Willkommen"
+
+#: login.php:60
+#: bkup/login.php:33
+#: bkup/js/users.js.php:60
+#: bkup/js/users.js.php:75
+#: bkup/js/users.js.php:490
+#: js/users.js.php:60
+#: js/users.js.php:75
+#: js/users.js.php:490
+msgid "Password"
+msgstr "Passwort"
+
+#: login.php:61
+#: bkup/login.php:34
+msgid "Log in"
+msgstr "Login"
+
+#: orders.php:133
+#: index.php:66
+#: bkup/orders.php:133
+#: bkup/index.php:61
+#: bkup/js/orders.js.php:99
+#: bkup/js/index.js.php:106
+#: js/orders.js.php:101
+#: js/index.js.php:108
+msgid "Order Number"
+msgstr "Nummer der Bestellung"
+
+#: orders.php:139
+#: bkup/orders.php:139
+#, fuzzy
+msgid "Maximum Days"
+msgstr "Wochentage:"
+
+#: orders.php:142
+#: bkup/orders.php:142
+#, fuzzy
+msgid "Mininum Days"
+msgstr "Wochentage:"
+
+#: orders.php:145
+#: bkup/orders.php:145
+#: bkup/js/orders.js.php:103
+#: js/orders.js.php:105
+#, fuzzy
+msgid "Maximum Value"
+msgstr "Höchstwert"
+
+#: orders.php:148
+#: bkup/orders.php:148
+msgid "Mininum Value"
+msgstr "Mindestwert"
+
+#: assets_product.php:13
+#: js/assets_product.js.php:860
+msgid "Product sales value per week"
+msgstr ""
+
+#: assets_product.php:16
+#: js/assets_product.js.php:863
+msgid "Orders with this product per week"
+msgstr ""
+
+#: assets_product.php:19
+#: js/assets_product.js.php:866
+msgid "Sales value per order per week"
+msgstr ""
+
+#: assets_product.php:22
+#: js/assets_product.js.php:869
+msgid "Product sales value per month"
+msgstr ""
+
+#: assets_product.php:25
+#: js/assets_product.js.php:872
+msgid "Orders with this product per month"
+msgstr ""
+
+#: assets_product.php:28
+#: js/assets_product.js.php:875
+msgid "Sales value per order per month"
+msgstr ""
+
+#: assets_product.php:266
+#: bkup/assets_product.php:166
+#, fuzzy
+msgid "Other"
+msgstr "Sonstige"
+
+#: assets_product.php:287
+msgid "Inventories"
+msgstr ""
+
+#: assets_product.php:287
+msgid "Purchases"
+msgstr "Einkäufe"
+
+#: assets_product.php:287
+msgid "Adjusts"
+msgstr ""
+
+#: assets_product.php:287
+#: bkup/js/assets_product.js.php:248
+#: bkup/js/assets_department.js.php:380
+#: bkup/js/suppliers.js.php:233
+#: bkup/js/assets_family.js.php:373
+#: bkup/js/assets_tree.js.php:448
+#: js/assets_product.js.php:576
+#: js/suppliers.js.php:239
+#: js/assets_tree.js.php:495
+#: js/hresources.js.php:231
+#, fuzzy
+msgid "Sales"
+msgstr "Verkauf"
+
+#: contacts.php:69
+#: contacts.php:73
+#: bkup/contacts.php:69
+#: bkup/contacts.php:73
+#: bkup/js/contacts.js.php:51
+#: bkup/js/contacts.js.php:52
+#: js/contacts.js.php:51
+#: js/contacts.js.php:52
+msgid "Contacts"
+msgstr "Kontakte"
+
+#: customer.php:46
+#: customer.php:97
+#: bkup/customer.php:36
+#: bkup/customer.php:87
+#, fuzzy
+msgid "Ext"
+msgstr "T&ext"
+
+#: customer.php:163
+#: bkup/customer.php:153
+msgid "Customers List"
+msgstr "Kundenliste"
+
+#: common_functions.php:93
+#: common_functions.php:96
+#: bkup/common_functions.php:48
+#: bkup/common_functions.php:51
+msgid "NA"
+msgstr "-"
+
+#: common_functions.php:97
+#: common_functions.php:101
+#: bkup/common_functions.php:52
+#: bkup/common_functions.php:56
+msgid "ND"
+msgstr ".ND"
+
+#: ar_orders.php:125
+msgid "No orders are outstanding"
+msgstr "Keine ausstehenden Bestellungen"
+
+#: ar_orders.php:254
+msgid "No order has been placed yet"
+msgstr ""
+
+#: ar_orders.php:378
+#: bkup/ar_orders.php:374
+msgid "off"
+msgstr "aus"
+
+#: ar_orders.php:423
+#: ar_orders.php:454
+#: bkup/ar_orders.php:419
+#: bkup/ar_orders.php:450
+#, fuzzy
+msgid "Free Bonus"
+msgstr "%1 Bonuspunkte\n"
+
+#: ar_orders.php:467
+#: bkup/ar_orders.php:463
+#, fuzzy
+msgid "Subtotal"
+msgstr "Zwischensumme"
+
+#: ar_orders.php:694
+msgid "Nobody has ordered this product"
+msgstr ""
+
+#: header.php:28
+#: bkup/header.php:28
+msgid "Hello"
+msgstr "Hallo!"
+
+#: header.php:29
+#: bkup/header.php:29
+msgid "Logout"
+msgstr "Abmelden"
+
+#: index.php:60
+#: bkup/index.php:55
+#, fuzzy
+msgid "Maximun Day Interval"
+msgstr "Doppelklick-Abstand:"
+
+#: index.php:63
+#: bkup/index.php:58
+#, fuzzy
+msgid "Minimun Day Interval"
+msgstr "Doppelklick-Abstand:"
+
+#: index.php:76
+msgid "Week"
+msgstr "Woche"
+
+#: locale.php:30
+#: bkup/locale.php:30
+#, fuzzy
+msgid "Administrator"
+msgstr "Administrator"
+
+#: locale.php:31
+#: bkup/locale.php:31
+#, fuzzy
+msgid "Customer Services"
+msgstr "Systemdienste-Menü"
+
+#: locale.php:32
+#: bkup/locale.php:32
+#, fuzzy
+msgid "Stock Controller"
+msgstr "ZODB-Verwaltung"
+
+#: locale.php:33
+#: bkup/locale.php:33
+#, fuzzy
+msgid "Afghanistan"
+msgstr "Afghanistan"
+
+#: locale.php:34
+#: bkup/locale.php:34
+#, fuzzy
+msgid "Netherlands"
+msgstr "Niederlande"
+
+#: locale.php:35
+#: bkup/locale.php:35
+#, fuzzy
+msgid "Netherlands Antilles"
+msgstr "Niederländische Antillen"
+
+#: locale.php:36
+#: bkup/locale.php:36
+#, fuzzy
+msgid "Albania"
+msgstr "Albanien"
+
+#: locale.php:37
+#: bkup/locale.php:37
+#, fuzzy
+msgid "Algeria"
+msgstr "Algerien"
+
+#: locale.php:38
+#: bkup/locale.php:38
+#, fuzzy
+msgid "American Samoa"
+msgstr "Amerikanisch-Samoa"
+
+#: locale.php:39
+#: bkup/locale.php:39
+#, fuzzy
+msgid "Andorra"
+msgstr "Andorra"
+
+#: locale.php:40
+#: bkup/locale.php:40
+#, fuzzy
+msgid "Angola"
+msgstr "Angola"
+
+#: locale.php:41
+#: bkup/locale.php:41
+#, fuzzy
+msgid "Anguilla"
+msgstr "Anguilla"
+
+#: locale.php:42
+#: bkup/locale.php:42
+#, fuzzy
+msgid "Antigua and Barbuda"
+msgstr "Antigua und Barbuda"
+
+#: locale.php:43
+#: bkup/locale.php:43
+#, fuzzy
+msgid "United Arab Emirates"
+msgstr "Vereinigte Arabische Emirate"
+
+#: locale.php:44
+#: bkup/locale.php:44
+#, fuzzy
+msgid "Argentina"
+msgstr "Argentinien"
+
+#: locale.php:45
+#: bkup/locale.php:45
+#, fuzzy
+msgid "Armenia"
+msgstr "Armenien"
+
+#: locale.php:46
+#: bkup/locale.php:46
+#, fuzzy
+msgid "Aruba"
+msgstr "Aruba"
+
+#: locale.php:47
+#: bkup/locale.php:47
+#, fuzzy
+msgid "Australia"
+msgstr "Australien"
+
+#: locale.php:48
+#: bkup/locale.php:48
+#, fuzzy
+msgid "Azerbaijan"
+msgstr "Aserbaidschan"
+
+#: locale.php:49
+#: bkup/locale.php:49
+#, fuzzy
+msgid "Bahamas"
+msgstr "Bahamas"
+
+#: locale.php:50
+#: bkup/locale.php:50
+#, fuzzy
+msgid "Bahrain"
+msgstr "Bahrain"
+
+#: locale.php:51
+#: bkup/locale.php:51
+#, fuzzy
+msgid "Bangladesh"
+msgstr "Bangladesh"
+
+#: locale.php:52
+#: bkup/locale.php:52
+#, fuzzy
+msgid "Barbados"
+msgstr "Barbados"
+
+#: locale.php:53
+#: bkup/locale.php:53
+#, fuzzy
+msgid "Belgium"
+msgstr "Belgien"
+
+#: locale.php:54
+#: bkup/locale.php:54
+#, fuzzy
+msgid "Belize"
+msgstr "Belize"
+
+#: locale.php:55
+#: bkup/locale.php:55
+#, fuzzy
+msgid "Benin"
+msgstr "Benin"
+
+#: locale.php:56
+#: bkup/locale.php:56
+#, fuzzy
+msgid "Bermuda"
+msgstr "Bermudas"
+
+#: locale.php:57
+#: bkup/locale.php:57
+#, fuzzy
+msgid "Bhutan"
+msgstr "Bhutan"
+
+#: locale.php:58
+#: bkup/locale.php:58
+#, fuzzy
+msgid "Bolivia"
+msgstr "Bolivien"
+
+#: locale.php:59
+#: bkup/locale.php:59
+#, fuzzy
+msgid "Bosnia and Herzegovina"
+msgstr "Bosnien und Herzegowina"
+
+#: locale.php:60
+#: bkup/locale.php:60
+#, fuzzy
+msgid "Botswana"
+msgstr "Botsuana"
+
+#: locale.php:61
+#: bkup/locale.php:61
+#, fuzzy
+msgid "Brazil"
+msgstr "Brasilien"
+
+#: locale.php:62
+#: bkup/locale.php:62
+#, fuzzy
+msgid "United Kingdom"
+msgstr "England"
+
+#: locale.php:63
+#: bkup/locale.php:63
+#, fuzzy
+msgid "Virgin Islands, British"
+msgstr "Britische Jungferninseln"
+
+#: locale.php:64
+#: bkup/locale.php:64
+#, fuzzy
+msgid "Brunei"
+msgstr "Brunei"
+
+#: locale.php:65
+#: bkup/locale.php:65
+#, fuzzy
+msgid "Bulgaria"
+msgstr "Bulgarien"
+
+#: locale.php:66
+#: bkup/locale.php:66
+#, fuzzy
+msgid "Burkina Faso"
+msgstr "Burkina Faso"
+
+#: locale.php:67
+#: bkup/locale.php:67
+#, fuzzy
+msgid "Burundi"
+msgstr "Burundi"
+
+#: locale.php:68
+#: bkup/locale.php:68
+#, fuzzy
+msgid "Cayman Islands"
+msgstr "Kaimaninseln"
+
+#: locale.php:69
+#: bkup/locale.php:69
+#, fuzzy
+msgid "Chile"
+msgstr "Chile"
+
+#: locale.php:70
+#: bkup/locale.php:70
+#, fuzzy
+msgid "Cook Islands"
+msgstr "Cookinseln"
+
+#: locale.php:71
+#: bkup/locale.php:71
+#, fuzzy
+msgid "Costa Rica"
+msgstr "Costa Rica"
+
+#: locale.php:72
+#: bkup/locale.php:72
+#, fuzzy
+msgid "Djibouti"
+msgstr "Dschibuti"
+
+#: locale.php:73
+#: bkup/locale.php:73
+#, fuzzy
+msgid "Dominica"
+msgstr "Dominica"
+
+#: locale.php:74
+#: bkup/locale.php:74
+#, fuzzy
+msgid "Dominican Republic"
+msgstr "Dominikanische Republik"
+
+#: locale.php:75
+#: bkup/locale.php:75
+#, fuzzy
+msgid "Ecuador"
+msgstr "Ecuador"
+
+#: locale.php:76
+#: bkup/locale.php:76
+#, fuzzy
+msgid "Egypt"
+msgstr "Ägypten"
+
+#: locale.php:77
+#: bkup/locale.php:77
+#, fuzzy
+msgid "El Salvador"
+msgstr "El Salvador"
+
+#: locale.php:78
+#: bkup/locale.php:78
+#, fuzzy
+msgid "Eritrea"
+msgstr "Eritrea"
+
+#: locale.php:79
+#: bkup/locale.php:79
+#, fuzzy
+msgid "Spain"
+msgstr "Spanien"
+
+#: locale.php:80
+#: bkup/locale.php:80
+#, fuzzy
+msgid "South Africa"
+msgstr "Südafrika"
+
+#: locale.php:81
+#: bkup/locale.php:81
+#, fuzzy
+msgid "Ethiopia"
+msgstr "Äthiopien"
+
+#: locale.php:82
+#: bkup/locale.php:82
+#, fuzzy
+msgid "Falkland Islands"
+msgstr "Falkland Inseln"
+
+#: locale.php:83
+#: bkup/locale.php:83
+#, fuzzy
+msgid "Fiji Islands"
+msgstr "Fidschi Inseln"
+
+#: locale.php:84
+#: bkup/locale.php:84
+#, fuzzy
+msgid "Philippines"
+msgstr "Philippinen"
+
+#: locale.php:85
+#: bkup/locale.php:85
+#, fuzzy
+msgid "Faroe Islands"
+msgstr "Faröer Inseln"
+
+#: locale.php:86
+#: bkup/locale.php:86
+#, fuzzy
+msgid "Gabon"
+msgstr "Gabun"
+
+#: locale.php:87
+#: bkup/locale.php:87
+#, fuzzy
+msgid "Gambia"
+msgstr "Gambia"
+
+#: locale.php:88
+#: bkup/locale.php:88
+#, fuzzy
+msgid "Georgia"
+msgstr "Georgien"
+
+#: locale.php:89
+#: bkup/locale.php:89
+#, fuzzy
+msgid "Ghana"
+msgstr "Ghana"
+
+#: locale.php:90
+#: bkup/locale.php:90
+#, fuzzy
+msgid "Gibraltar"
+msgstr "Gibraltar"
+
+#: locale.php:91
+#: bkup/locale.php:91
+#, fuzzy
+msgid "Grenada"
+msgstr "Granada"
+
+#: locale.php:92
+#: bkup/locale.php:92
+#, fuzzy
+msgid "Greenland"
+msgstr "Grönland"
+
+#: locale.php:93
+#: bkup/locale.php:93
+#, fuzzy
+msgid "Guadeloupe"
+msgstr "Guadeloupe"
+
+#: locale.php:94
+#: bkup/locale.php:94
+#, fuzzy
+msgid "Guam"
+msgstr "Guam"
+
+#: locale.php:95
+#: bkup/locale.php:95
+#, fuzzy
+msgid "Guatemala"
+msgstr "Guatemala"
+
+#: locale.php:96
+#: bkup/locale.php:96
+#, fuzzy
+msgid "Guinea"
+msgstr "Guinea"
+
+#: locale.php:97
+#: bkup/locale.php:97
+#, fuzzy
+msgid "Guinea-Bissau"
+msgstr "Guinea-Bissau"
+
+#: locale.php:98
+#: bkup/locale.php:98
+#, fuzzy
+msgid "Guyana"
+msgstr "Guyana"
+
+#: locale.php:99
+#: bkup/locale.php:99
+#, fuzzy
+msgid "Haiti"
+msgstr "Haiti"
+
+#: locale.php:100
+#: bkup/locale.php:100
+#, fuzzy
+msgid "Honduras"
+msgstr "Honduras"
+
+#: locale.php:101
+#: bkup/locale.php:101
+#, fuzzy
+msgid "Hong Kong"
+msgstr "Hong Kong"
+
+#: locale.php:102
+#: bkup/locale.php:102
+#, fuzzy
+msgid "Svalbard and Jan Mayen"
+msgstr "Svalbard und Jan Mayen"
+
+#: locale.php:103
+#: bkup/locale.php:103
+#, fuzzy
+msgid "Indonesia"
+msgstr "Indonesien"
+
+#: locale.php:104
+#: bkup/locale.php:104
+#, fuzzy
+msgid "India"
+msgstr "Indien"
+
+#: locale.php:105
+#: bkup/locale.php:105
+#, fuzzy
+msgid "Iraq"
+msgstr "Irak"
+
+#: locale.php:106
+#: bkup/locale.php:106
+#, fuzzy
+msgid "Iran"
+msgstr "Iran"
+
+#: locale.php:107
+#: bkup/locale.php:107
+#, fuzzy
+msgid "Ireland"
+msgstr "Irland"
+
+#: locale.php:108
+#: bkup/locale.php:108
+#, fuzzy
+msgid "Iceland"
+msgstr "Island"
+
+#: locale.php:109
+#: bkup/locale.php:109
+#, fuzzy
+msgid "Israel"
+msgstr "Israel"
+
+#: locale.php:110
+#: bkup/locale.php:110
+#, fuzzy
+msgid "Italy"
+msgstr "Italien"
+
+#: locale.php:111
+#: bkup/locale.php:111
+#, fuzzy
+msgid "East Timor"
+msgstr "Timor-Leste"
+
+#: locale.php:112
+#: bkup/locale.php:112
+#, fuzzy
+msgid "Austria"
+msgstr "Österreich"
+
+#: locale.php:113
+#: bkup/locale.php:113
+#, fuzzy
+msgid "Jamaica"
+msgstr "Jamaika"
+
+#: locale.php:114
+#: bkup/locale.php:114
+#, fuzzy
+msgid "Japan"
+msgstr "Japan"
+
+#: locale.php:115
+#: bkup/locale.php:115
+#, fuzzy
+msgid "Yemen"
+msgstr "Jemen"
+
+#: locale.php:116
+#: bkup/locale.php:116
+#, fuzzy
+msgid "Jordan"
+msgstr "Jordanien"
+
+#: locale.php:117
+#: bkup/locale.php:117
+#, fuzzy
+msgid "Christmas Island"
+msgstr "Weihnachtsinsel"
+
+#: locale.php:118
+#: bkup/locale.php:118
+#, fuzzy
+msgid "Yugoslavia"
+msgstr "Jugoslawien"
+
+#: locale.php:119
+#: bkup/locale.php:119
+#, fuzzy
+msgid "Cambodia"
+msgstr "Kambodscha"
+
+#: locale.php:120
+#: bkup/locale.php:120
+#, fuzzy
+msgid "Cameroon"
+msgstr "Kamerun"
+
+#: locale.php:121
+#: bkup/locale.php:121
+#, fuzzy
+msgid "Canada"
+msgstr "Kanada"
+
+#: locale.php:122
+#: bkup/locale.php:122
+#, fuzzy
+msgid "Cape Verde"
+msgstr "Kap Verde"
+
+#: locale.php:123
+#: bkup/locale.php:123
+#, fuzzy
+msgid "Kazakstan"
+msgstr "Kasachischer Tenge"
+
+#: locale.php:124
+#: bkup/locale.php:124
+#, fuzzy
+msgid "Kenya"
+msgstr "Kenia"
+
+#: locale.php:125
+#: bkup/locale.php:125
+#, fuzzy
+msgid "Central African Republic"
+msgstr "Zentralafrikanische Republik"
+
+#: locale.php:126
+#: bkup/locale.php:126
+#, fuzzy
+msgid "China"
+msgstr "China"
+
+#: locale.php:127
+#: bkup/locale.php:127
+#, fuzzy
+msgid "Kyrgyzstan"
+msgstr "Kirgisien"
+
+#: locale.php:128
+#: bkup/locale.php:128
+#, fuzzy
+msgid "Kiribati"
+msgstr "Kiribati"
+
+#: locale.php:129
+#: bkup/locale.php:129
+#, fuzzy
+msgid "Colombia"
+msgstr "Kolumbien"
+
+#: locale.php:130
+#: bkup/locale.php:130
+#, fuzzy
+msgid "Comoros"
+msgstr "Komoren"
+
+#: locale.php:131
+#: bkup/locale.php:131
+#, fuzzy
+msgid "Congo"
+msgstr "Kongo"
+
+#: locale.php:132
+#: bkup/locale.php:132
+#, fuzzy
+msgid "Congo, Dem. Rep. of"
+msgstr "Kongo, Demokr. Rep."
+
+#: locale.php:133
+#: bkup/locale.php:133
+#, fuzzy
+msgid "Cocos (Keeling) Islands"
+msgstr "Kokosinseln"
+
+#: locale.php:134
+#: bkup/locale.php:134
+#, fuzzy
+msgid "North Korea"
+msgstr "Nordkorea"
+
+#: locale.php:135
+#: bkup/locale.php:135
+#, fuzzy
+msgid "South Korea"
+msgstr "Südkorea"
+
+#: locale.php:136
+#: bkup/locale.php:136
+#, fuzzy
+msgid "Greece"
+msgstr "Griechenland"
+
+#: locale.php:137
+#: bkup/locale.php:137
+#, fuzzy
+msgid "Croatia"
+msgstr "Kroatien"
+
+#: locale.php:138
+#: bkup/locale.php:138
+#, fuzzy
+msgid "Cuba"
+msgstr "Kuba"
+
+#: locale.php:139
+#: bkup/locale.php:139
+#, fuzzy
+msgid "Kuwait"
+msgstr "Kuwait"
+
+#: locale.php:140
+#: bkup/locale.php:140
+#, fuzzy
+msgid "Cyprus"
+msgstr "Zypern"
+
+#: locale.php:141
+#: bkup/locale.php:141
+#, fuzzy
+msgid "Laos"
+msgstr "Laos"
+
+#: locale.php:142
+#: bkup/locale.php:142
+#, fuzzy
+msgid "Latvia"
+msgstr "Lettland"
+
+#: locale.php:143
+#: bkup/locale.php:143
+#, fuzzy
+msgid "Lesotho"
+msgstr "Lesotho"
+
+#: locale.php:144
+#: bkup/locale.php:144
+#, fuzzy
+msgid "Lebanon"
+msgstr "Libanon"
+
+#: locale.php:145
+#: bkup/locale.php:145
+#, fuzzy
+msgid "Liberia"
+msgstr "Liberia"
+
+#: locale.php:146
+#: bkup/locale.php:146
+#, fuzzy
+msgid "Libyan Arab Jamahiriya"
+msgstr "Große Sozialistische Libysch-Arabische Volks-Dschamahirija"
+
+#: locale.php:147
+#: bkup/locale.php:147
+#, fuzzy
+msgid "Liechtenstein"
+msgstr "Liechtenstein"
+
+#: locale.php:148
+#: bkup/locale.php:148
+#, fuzzy
+msgid "Lithuania"
+msgstr "Litauen"
+
+#: locale.php:149
+#: bkup/locale.php:149
+#, fuzzy
+msgid "Luxembourg"
+msgstr "Luxemburg"
+
+#: locale.php:150
+#: bkup/locale.php:150
+#, fuzzy
+msgid "Western Sahara"
+msgstr "Westsahara"
+
+#: locale.php:151
+#: bkup/locale.php:151
+#, fuzzy
+msgid "Macao"
+msgstr "Macau"
+
+#: locale.php:152
+#: bkup/locale.php:152
+#, fuzzy
+msgid "Madagascar"
+msgstr "Madagaskar"
+
+#: locale.php:153
+#: bkup/locale.php:153
+#, fuzzy
+msgid "Macedonia"
+msgstr "Mazedonien"
+
+#: locale.php:154
+#: bkup/locale.php:154
+#, fuzzy
+msgid "Malawi"
+msgstr "Malawi"
+
+#: locale.php:155
+#: bkup/locale.php:155
+#, fuzzy
+msgid "Maldives"
+msgstr "Malediven"
+
+#: locale.php:156
+#: bkup/locale.php:156
+#, fuzzy
+msgid "Malaysia"
+msgstr "Malaysia"
+
+#: locale.php:157
+#: bkup/locale.php:157
+#, fuzzy
+msgid "Mali"
+msgstr "Mali"
+
+#: locale.php:158
+#: bkup/locale.php:158
+#, fuzzy
+msgid "Malta"
+msgstr "Malta"
+
+#: locale.php:159
+#: bkup/locale.php:159
+#, fuzzy
+msgid "Morocco"
+msgstr "Marokko"
+
+#: locale.php:160
+#: bkup/locale.php:160
+#, fuzzy
+msgid "Marshall Islands"
+msgstr "Marshallinseln"
+
+#: locale.php:161
+#: bkup/locale.php:161
+#, fuzzy
+msgid "Martinique"
+msgstr "Martinique"
+
+#: locale.php:162
+#: bkup/locale.php:162
+#, fuzzy
+msgid "Mauritania"
+msgstr "Mauretanien"
+
+#: locale.php:163
+#: bkup/locale.php:163
+#, fuzzy
+msgid "Mauritius"
+msgstr "Mauritius"
+
+#: locale.php:164
+#: bkup/locale.php:164
+#, fuzzy
+msgid "Mayotte"
+msgstr "Mayotte"
+
+#: locale.php:165
+#: bkup/locale.php:165
+msgid "Mexico"
+msgstr "Mexiko"
+
+#: locale.php:166
+#: bkup/locale.php:166
+#, fuzzy
+msgid "Micronesia"
+msgstr "Mikronesien"
+
+#: locale.php:167
+#: bkup/locale.php:167
+#, fuzzy
+msgid "Moldova"
+msgstr "Moldavien"
+
+#: locale.php:168
+#: bkup/locale.php:168
+#, fuzzy
+msgid "Monaco"
+msgstr "Monaco"
+
+#: locale.php:169
+#: bkup/locale.php:169
+#, fuzzy
+msgid "Mongolia"
+msgstr "Mongolei"
+
+#: locale.php:170
+#: bkup/locale.php:170
+#, fuzzy
+msgid "Montserrat"
+msgstr "Montserrat"
+
+#: locale.php:171
+#: bkup/locale.php:171
+#, fuzzy
+msgid "Mozambique"
+msgstr "Mosambik"
+
+#: locale.php:172
+#: bkup/locale.php:172
+#, fuzzy
+msgid "Myanmar"
+msgstr "Myanmar"
+
+#: locale.php:173
+#: bkup/locale.php:173
+#, fuzzy
+msgid "Namibia"
+msgstr "Namibia"
+
+#: locale.php:174
+#: bkup/locale.php:174
+#, fuzzy
+msgid "Nauru"
+msgstr "Nauru"
+
+#: locale.php:175
+#: bkup/locale.php:175
+#, fuzzy
+msgid "Nepal"
+msgstr "Nepal"
+
+#: locale.php:176
+#: bkup/locale.php:176
+#, fuzzy
+msgid "Nicaragua"
+msgstr "Nicaragua"
+
+#: locale.php:177
+#: bkup/locale.php:177
+#, fuzzy
+msgid "Niger"
+msgstr "Niger"
+
+#: locale.php:178
+#: bkup/locale.php:178
+#, fuzzy
+msgid "Nigeria"
+msgstr "Nigeria"
+
+#: locale.php:179
+#: bkup/locale.php:179
+#, fuzzy
+msgid "Niue"
+msgstr "Niue"
+
+#: locale.php:180
+#: bkup/locale.php:180
+#, fuzzy
+msgid "Norfolk Island"
+msgstr "Norfolkinsel"
+
+#: locale.php:181
+#: bkup/locale.php:181
+#, fuzzy
+msgid "Norway"
+msgstr "Norwegen"
+
+#: locale.php:182
+#: bkup/locale.php:182
+#, fuzzy
+msgid "Ivory Coast"
+msgstr "Elfenbeinküste"
+
+#: locale.php:183
+#: bkup/locale.php:183
+#, fuzzy
+msgid "Oman"
+msgstr "Oman"
+
+#: locale.php:184
+#: bkup/locale.php:184
+#, fuzzy
+msgid "Pakistan"
+msgstr "Pakistan"
+
+#: locale.php:185
+#: bkup/locale.php:185
+#, fuzzy
+msgid "Palau"
+msgstr "Palau"
+
+#: locale.php:186
+#: bkup/locale.php:186
+#, fuzzy
+msgid "Panama"
+msgstr "Panama"
+
+#: locale.php:187
+#: bkup/locale.php:187
+#, fuzzy
+msgid "Papua New Guinea"
+msgstr "Papua Neu Guinea"
+
+#: locale.php:188
+#: bkup/locale.php:188
+#, fuzzy
+msgid "Paraguay"
+msgstr "Paraguay"
+
+#: locale.php:189
+#: bkup/locale.php:189
+#, fuzzy
+msgid "Peru"
+msgstr "Peru"
+
+#: locale.php:190
+#: bkup/locale.php:190
+#, fuzzy
+msgid "Pitcairn"
+msgstr "Pitcairninseln"
+
+#: locale.php:191
+#: bkup/locale.php:191
+#, fuzzy
+msgid "Northern Mariana Islands"
+msgstr "Nordmarianainseln"
+
+#: locale.php:192
+#: bkup/locale.php:192
+#, fuzzy
+msgid "Portugal"
+msgstr "Portugal"
+
+#: locale.php:193
+#: bkup/locale.php:193
+#, fuzzy
+msgid "Puerto Rico"
+msgstr "Puerto Rico"
+
+#: locale.php:194
+#: bkup/locale.php:194
+#, fuzzy
+msgid "Poland"
+msgstr "Polen"
+
+#: locale.php:195
+#: bkup/locale.php:195
+#, fuzzy
+msgid "Equatorial Guinea"
+msgstr "Äquatorialguinea"
+
+#: locale.php:196
+#: bkup/locale.php:196
+#, fuzzy
+msgid "Qatar"
+msgstr "Katar"
+
+#: locale.php:197
+#: bkup/locale.php:197
+#, fuzzy
+msgid "France"
+msgstr "Frankreich"
+
+#: locale.php:198
+#: bkup/locale.php:198
+#, fuzzy
+msgid "French Guiana"
+msgstr "Französisch-Guayana"
+
+#: locale.php:199
+#: bkup/locale.php:199
+#, fuzzy
+msgid "French Polynesia"
+msgstr "Französisch-Polynesien"
+
+#: locale.php:200
+#: bkup/locale.php:200
+#, fuzzy
+msgid "Reunion"
+msgstr "Réunion"
+
+#: locale.php:201
+#: bkup/locale.php:201
+#, fuzzy
+msgid "Romania"
+msgstr "Rumänien"
+
+#: locale.php:202
+#: bkup/locale.php:202
+#, fuzzy
+msgid "Rwanda"
+msgstr "Ruanda"
+
+#: locale.php:203
+#: bkup/locale.php:203
+#, fuzzy
+msgid "Sweden"
+msgstr "Schweden"
+
+#: locale.php:204
+#: bkup/locale.php:204
+#, fuzzy
+msgid "Saint Helena"
+msgstr "St. Helena"
+
+#: locale.php:205
+#: bkup/locale.php:205
+#, fuzzy
+msgid "Saint Kitts and Nevis"
+msgstr "St. Kitts und Nevis"
+
+#: locale.php:206
+#: bkup/locale.php:206
+#, fuzzy
+msgid "Saint Lucia"
+msgstr "St. Lucia"
+
+#: locale.php:207
+#: bkup/locale.php:207
+#, fuzzy
+msgid "St Vincent & the Grenadines"
+msgstr "St. Vincent und die Grenadinen"
+
+#: locale.php:208
+#: bkup/locale.php:208
+#, fuzzy
+msgid "Saint Pierre and Miquelon"
+msgstr "St. Pierre und Miquelon"
+
+#: locale.php:209
+#: bkup/locale.php:209
+#, fuzzy
+msgid "Germany"
+msgstr "Deutschland"
+
+#: locale.php:210
+#: bkup/locale.php:210
+#, fuzzy
+msgid "Solomon Islands"
+msgstr "Salomonen"
+
+#: locale.php:211
+#: bkup/locale.php:211
+#, fuzzy
+msgid "Zambia"
+msgstr "Sambia"
+
+#: locale.php:212
+#: bkup/locale.php:212
+#, fuzzy
+msgid "Samoa"
+msgstr "Samoa"
+
+#: locale.php:213
+#: bkup/locale.php:213
+#, fuzzy
+msgid "San Marino"
+msgstr "San Marino"
+
+#: locale.php:214
+#: bkup/locale.php:214
+#, fuzzy
+msgid "Sao Tome and Principe"
+msgstr "São Tomé und Príncipe"
+
+#: locale.php:215
+#: bkup/locale.php:215
+#, fuzzy
+msgid "Saudi Arabia"
+msgstr "Saudi-Arabien"
+
+#: locale.php:216
+#: bkup/locale.php:216
+#, fuzzy
+msgid "Senegal"
+msgstr "Senegal"
+
+#: locale.php:217
+#: bkup/locale.php:217
+#, fuzzy
+msgid "Seychelles"
+msgstr "Seychellen"
+
+#: locale.php:218
+#: bkup/locale.php:218
+#, fuzzy
+msgid "Sierra Leone"
+msgstr "Sierra Leone"
+
+#: locale.php:219
+#: bkup/locale.php:219
+#, fuzzy
+msgid "Singapore"
+msgstr "Singapur"
+
+#: locale.php:220
+#: bkup/locale.php:220
+#, fuzzy
+msgid "Slovakia"
+msgstr "Slowakei"
+
+#: locale.php:221
+#: bkup/locale.php:221
+#, fuzzy
+msgid "Slovenia"
+msgstr "Slowenien"
+
+#: locale.php:222
+#: bkup/locale.php:222
+#, fuzzy
+msgid "Somalia"
+msgstr "Somalia"
+
+#: locale.php:223
+#: bkup/locale.php:223
+#, fuzzy
+msgid "Sri Lanka"
+msgstr "Sri Lanka"
+
+#: locale.php:224
+#: bkup/locale.php:224
+#, fuzzy
+msgid "Sudan"
+msgstr "Sudan"
+
+#: locale.php:225
+#: bkup/locale.php:225
+#, fuzzy
+msgid "Finland"
+msgstr "Finnland"
+
+#: locale.php:226
+#: bkup/locale.php:226
+#, fuzzy
+msgid "Suriname"
+msgstr "Suriname"
+
+#: locale.php:227
+#: bkup/locale.php:227
+#, fuzzy
+msgid "Swaziland"
+msgstr "Swasiland"
+
+#: locale.php:228
+#: bkup/locale.php:228
+#, fuzzy
+msgid "Switzerland"
+msgstr "Schweiz"
+
+#: locale.php:229
+#: bkup/locale.php:229
+#, fuzzy
+msgid "Syria"
+msgstr "Syrien"
+
+#: locale.php:230
+#: bkup/locale.php:230
+#, fuzzy
+msgid "Tajikistan"
+msgstr "Tadschikistan"
+
+#: locale.php:231
+#: bkup/locale.php:231
+#, fuzzy
+msgid "Taiwan"
+msgstr "Taiwan"
+
+#: locale.php:232
+#: bkup/locale.php:232
+#, fuzzy
+msgid "Tanzania"
+msgstr "Tansania"
+
+#: locale.php:233
+#: bkup/locale.php:233
+#, fuzzy
+msgid "Denmark"
+msgstr "Dänemark"
+
+#: locale.php:234
+#: bkup/locale.php:234
+#, fuzzy
+msgid "Thailand"
+msgstr "Thailand"
+
+#: locale.php:235
+#: bkup/locale.php:235
+#, fuzzy
+msgid "Togo"
+msgstr "Togo"
+
+#: locale.php:236
+#: bkup/locale.php:236
+#, fuzzy
+msgid "Tokelau"
+msgstr "Tokelau"
+
+#: locale.php:237
+#: bkup/locale.php:237
+#, fuzzy
+msgid "Tonga"
+msgstr "Tonga"
+
+#: locale.php:238
+#: bkup/locale.php:238
+#, fuzzy
+msgid "Trinidad and Tobago"
+msgstr "Trinidad und Tobago"
+
+#: locale.php:239
+#: bkup/locale.php:239
+#, fuzzy
+msgid "Chad"
+msgstr "Chad"
+
+#: locale.php:240
+#: bkup/locale.php:240
+#, fuzzy
+msgid "Czech Republic"
+msgstr "Tschechische Republik"
+
+#: locale.php:241
+#: bkup/locale.php:241
+#, fuzzy
+msgid "Tunisia"
+msgstr "Tunesien"
+
+#: locale.php:242
+#: bkup/locale.php:242
+#, fuzzy
+msgid "Turkey"
+msgstr "Türkei"
+
+#: locale.php:243
+#: bkup/locale.php:243
+#, fuzzy
+msgid "Turkmenistan"
+msgstr "Turkmenistan"
+
+#: locale.php:244
+#: bkup/locale.php:244
+#, fuzzy
+msgid "Turks and Caicos Islands"
+msgstr "Turks- und Caicosinseln"
+
+#: locale.php:245
+#: bkup/locale.php:245
+#, fuzzy
+msgid "Tuvalu"
+msgstr "Tuvalu"
+
+#: locale.php:246
+#: bkup/locale.php:246
+#, fuzzy
+msgid "Uganda"
+msgstr "Uganda"
+
+#: locale.php:247
+#: bkup/locale.php:247
+#, fuzzy
+msgid "Ukraine"
+msgstr "Ukraine"
+
+#: locale.php:248
+#: bkup/locale.php:248
+#, fuzzy
+msgid "Hungary"
+msgstr "Ungarn"
+
+#: locale.php:249
+#: bkup/locale.php:249
+#, fuzzy
+msgid "Uruguay"
+msgstr "Uruguay"
+
+#: locale.php:250
+#: bkup/locale.php:250
+#, fuzzy
+msgid "New Caledonia"
+msgstr "Neukaledonien"
+
+#: locale.php:251
+#: bkup/locale.php:251
+#, fuzzy
+msgid "New Zealand"
+msgstr "Neuseeland"
+
+#: locale.php:252
+#: bkup/locale.php:252
+#, fuzzy
+msgid "Uzbekistan"
+msgstr "Usbekistan"
+
+#: locale.php:253
+#: bkup/locale.php:253
+#, fuzzy
+msgid "Belarus"
+msgstr "Belarus"
+
+#: locale.php:254
+#: bkup/locale.php:254
+#, fuzzy
+msgid "Wallis and Futuna"
+msgstr "Wallis und Futuna"
+
+#: locale.php:255
+#: bkup/locale.php:255
+#, fuzzy
+msgid "Vanuatu"
+msgstr "Vanuatu"
+
+#: locale.php:256
+#: bkup/locale.php:256
+#, fuzzy
+msgid "Vatican"
+msgstr "Vatikan"
+
+#: locale.php:257
+#: bkup/locale.php:257
+#, fuzzy
+msgid "Venezuela"
+msgstr "Venezuela"
+
+#: locale.php:258
+#: bkup/locale.php:258
+#, fuzzy
+msgid "Russian Federation"
+msgstr "Russische Föderation"
+
+#: locale.php:259
+#: bkup/locale.php:259
+#, fuzzy
+msgid "Vietnam"
+msgstr "Vietnam"
+
+#: locale.php:260
+#: bkup/locale.php:260
+#, fuzzy
+msgid "Estonia"
+msgstr "Estland"
+
+#: locale.php:261
+#: bkup/locale.php:261
+msgid "United States"
+msgstr "Vereinigte Staaten"
+
+#: locale.php:262
+#: bkup/locale.php:262
+#, fuzzy
+msgid "Virgin Islands, U.S."
+msgstr "US-Jungferninseln"
+
+#: locale.php:263
+#: bkup/locale.php:263
+#, fuzzy
+msgid "Zimbabwe"
+msgstr "Zimbabwe"
+
+#: locale.php:264
+#: bkup/locale.php:264
+#, fuzzy
+msgid "Palestine"
+msgstr "Palästina"
+
+#: locale.php:265
+#: bkup/locale.php:265
+#, fuzzy
+msgid "Antarctica"
+msgstr "Antarktis"
+
+#: locale.php:266
+#: bkup/locale.php:266
+#, fuzzy
+msgid "Bouvet Island"
+msgstr "Bouvetinsel"
+
+#: locale.php:267
+#: bkup/locale.php:267
+msgid "BIOT"
+msgstr ""
+
+#: locale.php:268
+#: bkup/locale.php:268
+#, fuzzy
+msgid "S Georgia & S Sandwich"
+msgstr "S. Georgia- und S. Sandwich-Inseln"
+
+#: locale.php:269
+#: bkup/locale.php:269
+#, fuzzy
+msgid "Heard & McDonald Islands"
+msgstr "Heard- und McDonald-Inseln"
+
+#: locale.php:270
+#: bkup/locale.php:270
+#, fuzzy
+msgid "French Southern territories"
+msgstr "Französisch Südliche Territorien"
+
+#: locale.php:271
+#: bkup/locale.php:271
+#, fuzzy
+msgid "US Minor Outlying Islands"
+msgstr "Kleinere, auswärtige US-Inseln"
+
+#: locale.php:272
+#: bkup/locale.php:272
+#, fuzzy
+msgid "Guernsey"
+msgstr "Guernsey"
+
+#: locale.php:273
+#: bkup/locale.php:273
+#, fuzzy
+msgid "Jersey"
+msgstr "Jersey"
+
+#: locale.php:274
+#: bkup/locale.php:274
+#, fuzzy
+msgid "Isle of Man"
+msgstr "Isle of Man"
+
+#: locale.php:275
+#: bkup/locale.php:275
+#, fuzzy
+msgid "Serbia and Montenegro"
+msgstr "Serbien und Montenegro"
+
+#: locale.php:276
+#: locale.php:325
+#: locale.php:326
+#: locale.php:327
+#: locale.php:328
+#: locale.php:329
+#: locale.php:330
+#: bkup/locale.php:276
+#: bkup/locale.php:323
+#: bkup/locale.php:324
+#: bkup/locale.php:325
+#: bkup/locale.php:326
+#: bkup/locale.php:327
+#: bkup/locale.php:328
+#: bkup/locale.php:329
+#: bkup/locale.php:330
+#: bkup/js/customers.js.php:29
+#: js/customers.js.php:29
+#, fuzzy
+msgid "Unknown"
+msgstr "Unbekannt"
+
+#: locale.php:277
+#: bkup/locale.php:277
+msgid "English"
+msgstr "Englisch"
+
+#: locale.php:278
+#: bkup/locale.php:278
+msgid "Spanish"
+msgstr "Spanisch"
+
+#: locale.php:279
+#: bkup/locale.php:279
+msgid "German"
+msgstr "Deutsch"
+
+#: locale.php:280
+#: bkup/locale.php:280
+msgid "French"
+msgstr "Französisch"
+
+#: locale.php:281
+#: bkup/locale.php:281
+#, fuzzy
+msgid "Czech"
+msgstr "Tschechisch"
+
+#: locale.php:282
+#: bkup/locale.php:282
+#, fuzzy
+msgid "Slovak"
+msgstr "Slowakisch"
+
+#: locale.php:283
+#: bkup/locale.php:283
+msgid "Chinese"
+msgstr "Chinesisch"
+
+#: locale.php:284
+#: bkup/locale.php:284
+#, fuzzy
+msgid "None"
+msgstr "Keines"
+
+#: locale.php:285
+#: bkup/locale.php:285
+#, fuzzy
+msgid "Mr"
+msgstr "Herr"
+
+#: locale.php:286
+#: bkup/locale.php:286
+#, fuzzy
+msgid "Mrs"
+msgstr "Frau"
+
+#: locale.php:287
+#: bkup/locale.php:287
+#, fuzzy
+msgid "Miss"
+msgstr "Fräulein"
+
+#: locale.php:288
+#: bkup/locale.php:288
+#: bkup/js/contacts.js.php:48
+#: js/contacts.js.php:48
+#, fuzzy
+msgid "Telephone"
+msgstr "Telefon"
+
+#: locale.php:289
+#: bkup/locale.php:289
+#, fuzzy
+msgid "Work Telephone"
+msgstr "Telefon (geschäftlich)"
+
+#: locale.php:290
+#: bkup/locale.php:290
+#, fuzzy
+msgid "Mobile"
+msgstr "Mobil"
+
+#: locale.php:291
+#: bkup/locale.php:291
+#, fuzzy
+msgid "Home Phone"
+msgstr "Privat. Telefon"
+
+#: locale.php:292
+#: bkup/locale.php:292
+#, fuzzy
+msgid "Fax"
+msgstr "Fax"
+
+#: locale.php:293
+#: locale.php:296
+#: bkup/locale.php:293
+#: bkup/locale.php:296
+#: bkup/js/contacts.js.php:46
+#: js/contacts.js.php:46
+#, fuzzy
+msgid "Company"
+msgstr "Firma"
+
+#: locale.php:294
+#: bkup/locale.php:294
+#, fuzzy
+msgid "Sir"
+msgstr "Sir Tommy"
+
+#: locale.php:295
+#: bkup/locale.php:295
+#, fuzzy
+msgid "Madam"
+msgstr "Macau"
+
+#: locale.php:297
+#: locale.php:298
+#: bkup/locale.php:297
+#: bkup/locale.php:298
+#, fuzzy
+msgid "Personal Customer"
+msgstr "Schlüssel-Kunde"
+
+#: locale.php:299
+#: bkup/locale.php:299
+#, fuzzy
+msgid "Home Address"
+msgstr "Privatadresse"
+
+#: locale.php:300
+#: bkup/locale.php:300
+#, fuzzy
+msgid "Work Address"
+msgstr "Adresse (Arbeit)"
+
+#: locale.php:301
+#: bkup/locale.php:301
+msgid "Deliver Address"
+msgstr "Lieferadresse"
+
+#: locale.php:302
+#: bkup/locale.php:302
+msgid "Work Email"
+msgstr "E-Mail-Adresse (geschäftlich)"
+
+#: locale.php:303
+#: bkup/locale.php:303
+msgid "Personal Email"
+msgstr " E-Mail-Adresse (privat)"
+
+#: locale.php:304
+#: bkup/locale.php:304
+msgid "Company Email"
+msgstr "E-Mail-Adresse des Unternehmens"
+
+#: locale.php:305
+#: bkup/locale.php:305
+msgid "item"
+msgstr "Artikel"
+
+#: locale.php:306
+#: bkup/locale.php:306
+#, fuzzy
+msgid "dozen"
+msgstr "Bakers Dozen"
+
+#: locale.php:307
+#: bkup/locale.php:307
+#, fuzzy
+msgid "gram"
+msgstr "<b>Histo_gramm</b>"
+
+#: locale.php:308
+#: bkup/locale.php:308
+msgid "miliLiter"
+msgstr ""
+
+#: locale.php:309
+#: bkup/locale.php:309
+msgid "Kilogram"
+msgstr ""
+
+#: locale.php:310
+#: bkup/locale.php:310
+#, fuzzy
+msgid "Liter"
+msgstr "Liberia"
+
+#: locale.php:312
+#: bkup/locale.php:312
+#, fuzzy
+msgid "dn."
+msgstr "Runter"
+
+#: locale.php:313
+#: bkup/locale.php:313
+#, fuzzy
+msgid "g"
+msgstr "g"
+
+#: locale.php:314
+#: bkup/locale.php:314
+#, fuzzy
+msgid "mL"
+msgstr "_HTML"
+
+#: locale.php:315
+#: assets_product.bk.php:23
+#: bkup/locale.php:315
+#: bkup/assets_product.bk.php:23
+msgid "Kg"
+msgstr "Kg"
+
+#: locale.php:316
+#: bkup/locale.php:316
+#, fuzzy
+msgid "L"
+msgstr "L"
+
+#: locale.php:317
+#: bkup/locale.php:317
+#, fuzzy
+msgid "Proforma Invoice"
+msgstr "Name=Rechnung"
+
+#: locale.php:318
+#: bkup/locale.php:318
+#, fuzzy
+msgid "Invoice"
+msgstr "Name=Rechnung"
+
+#: locale.php:319
+#: bkup/locale.php:319
+msgid "Refund"
+msgstr ""
+
+#: locale.php:320
+#: bkup/locale.php:320
+#, fuzzy
+msgid "Order Canceled "
+msgstr "Brennvorgang abgebrochen"
+
+#: locale.php:321
+#: bkup/locale.php:321
+#, fuzzy
+msgid "Replacement"
+msgstr "Ersetzung"
+
+#: locale.php:322
+#: bkup/locale.php:322
+msgid "Shortage"
+msgstr ""
+
+#: locale.php:323
+#, fuzzy
+msgid "Samples"
+msgstr "Beispiele"
+
+#: locale.php:324
+#, fuzzy
+msgid "Returns"
+msgstr "liefert"
+
+#: locale.php:331
+#: bkup/locale.php:331
+#, fuzzy
+msgid "Purchase Order"
+msgstr "Abspielreihenfolge"
+
+#: locale.php:332
+#: bkup/locale.php:332
+#, fuzzy
+msgid "Deliver Note"
+msgstr "Notizdokumentation"
+
+#: locale.php:333
+#: bkup/locale.php:333
+#, fuzzy
+msgid "Cancelled"
+msgstr "Abgebrochen"
+
+#: locale.php:334
+#, fuzzy
+msgid "Active"
+msgstr "Aktiv"
+
+#: locale.php:335
+msgid "Discontinued"
+msgstr ""
+
+#: locale.php:336
+#, fuzzy
+msgid "Unique"
+msgstr "Eindeutig"
+
+#: locale.php:337
+msgid "Inventory"
+msgstr ""
+
+#: locale.php:338
+#, fuzzy
+msgid "Purchase"
+msgstr "_Kaufen"
+
+#: locale.php:339
+#, fuzzy
+msgid "Adjust"
+msgstr "Anpassen"
+
+#: locale.php:340
+#, fuzzy
+msgid "Sale"
+msgstr "Verkauf"
+
+#: locale.php:341
+msgid "Posible Sale"
+msgstr ""
+
+#: assets_department.php:98
+#: bkup/assets_department.php:48
+#, fuzzy
+msgid "Product Families"
+msgstr "G_PRODUCT(Wert;Wert;...)"
+
+#: assets_department.php:113
+#: bkup/assets_department.php:60
+#, fuzzy
+msgid "Family code"
+msgstr "Quelltext"
+
+#: upload_inventory.php:385
+#: bkup/upload_inventory.php:385
+#, fuzzy
+msgid "Uploading new products file"
+msgstr "Neue Konfigurationsdatei `%s' erstellt\n"
+
+#: order.php:12
+#: bkup/order.php:12
+#, fuzzy
+msgid "Error, order not found"
+msgstr "Fehler: Benutzer nicht gefunden"
+
+#: order.php:108
+#: bkup/order.php:106
+#, fuzzy
+msgid "Order"
+msgstr "Ordnung"
+
+#: hresources.php:47
+msgid "Staff List"
+msgstr "Personalliste"
+
+#: assets_product.bk.php:13
+#: assets_product.bk.php:56
+#: bkup/assets_product.bk.php:13
+#: bkup/assets_product.bk.php:56
+msgid "Product"
+msgstr "Produkt"
+
+#: assets_product.bk.php:20
+#: bkup/assets_product.bk.php:20
+msgid "Units"
+msgstr "Einheiten"
+
+#: assets_product.bk.php:20
+#: bkup/assets_product.bk.php:20
+msgid "unitstipo"
+msgid_plural "unitstipo"
+msgstr[0] ""
+msgstr[1] ""
+
+#: assets_product.bk.php:20
+#: bkup/assets_product.bk.php:20
+msgid "per outer"
+msgstr "pro Artikel"
+
+#: assets_product.bk.php:23
+#: bkup/assets_product.bk.php:23
+msgid "Weight"
+msgstr "Gewicht"
+
+#: report_sales.php:21
+#: bkup/report_sales.php:21
+#, fuzzy
+msgid "Monthly Sales Report"
+msgstr "Bericht-Element(e) löschen"
+
+#: report_sales.php:39
+#: bkup/report_sales.php:39
+#, fuzzy
+msgid "Weekly Sales Report"
+msgstr "Bericht-Element(e) löschen"
+
+#: report_sales.php:53
+#: bkup/report_sales.php:53
+#, fuzzy
+msgid "Yearly Sales Report"
+msgstr "Bericht-Element(e) löschen"
+
+#: report_sales.php:95
+#: bkup/report_sales.php:95
+#, fuzzy
+msgid "Sales Report"
+msgstr "Bericht wird gedruckt ..."
+
+#: report_sales.php:102
+#: bkup/report_sales.php:102
+#, fuzzy
+msgid "All orders"
+msgstr "_Alle ersetzen"
+
+#: report_sales.php:106
+#: bkup/report_sales.php:106
+#, fuzzy
+msgid "to"
+msgstr "bis"
+
+#: report_sales.php:109
+#: bkup/report_sales.php:109
+#: bkup/js/index.js.php:46
+#: js/index.js.php:48
+#, fuzzy
+msgid "Since"
+msgstr " seit %1"
+
+#: report_sales.php:113
+#: bkup/report_sales.php:113
+#, fuzzy
+msgid "Up to"
+msgstr "Rauf nach "
+
+#: bkup/ar_asserts.bk.php:282
+#: bkup/ar_asserts.bk.php:355
+msgid "Wrong id"
+msgstr "falsche ID"
+
+#: bkup/js/upload_assets.js.php:20
+#: bkup/js/upload_assets.js.php:27
+#: bkup/js/upload_assets.js.php:34
+#: bkup/js/upload_assets.js.php:41
+#: bkup/js/upload_assets.js.php:48
+#: js/upload_assets.js.php:20
+#: js/upload_assets.js.php:27
+#: js/upload_assets.js.php:34
+#: js/upload_assets.js.php:41
+#: js/upload_assets.js.php:48
+#, fuzzy
+msgid "Attention"
+msgstr "Achtung"
+
+#: bkup/js/upload_assets.js.php:65
+#: bkup/js/upload_assets.js.php:85
+#: bkup/js/upload_assets.js.php:105
+#: bkup/js/upload_assets.js.php:129
+#: bkup/js/upload_assets.js.php:153
+#: bkup/js/new_deliverynote.js.php:33
+#: bkup/js/assets_index.js.php:88
+#: bkup/js/assets_department.js.php:87
+#: bkup/js/assets_department.js.php:183
+#: bkup/js/assets_department.js.php:210
+#: bkup/js/porder.js.php:32
+#: bkup/js/suppliers.js.php:42
+#: bkup/js/supplier.js.php:40
+#: bkup/js/supplier.js.php:213
+#: bkup/js/invoice.js.php:48
+#: bkup/js/deliverynote.js.php:32
+#: js/upload_assets.js.php:65
+#: js/upload_assets.js.php:85
+#: js/upload_assets.js.php:105
+#: js/upload_assets.js.php:129
+#: js/upload_assets.js.php:153
+#: js/new_deliverynote.js.php:33
+#: js/assets_index.js.php:91
+#: js/assets_department.js.php:80
+#: js/assets_department.js.php:172
+#: js/assets_department.js.php:205
+#: js/porder.js.php:32
+#: js/suppliers.js.php:43
+#: js/supplier.js.php:40
+#: js/supplier.js.php:213
+#: js/invoice.js.php:48
+#: js/deliverynote.js.php:32
+#, fuzzy
+msgid "Code"
+msgstr "Code"
+
+#: bkup/js/upload_assets.js.php:66
+#: bkup/js/report_sales.js.php:99
+#: bkup/js/customers.js.php:55
+#: bkup/js/customers.js.php:115
+#: bkup/js/order.js.php:99
+#: bkup/js/users.js.php:162
+#: bkup/js/users.js.php:431
+#: bkup/js/suppliers.js.php:40
+#: bkup/js/contacts.js.php:45
+#: bkup/js/contacts.js.php:96
+#: bkup/js/assets_family.js.php:99
+#: bkup/js/assets_family.js.php:170
+#: bkup/js/assets_family.js.php:198
+#: bkup/js/assets_tree.js.php:103
+#: bkup/js/assets_tree.js.php:105
+#: bkup/js/assets_tree.js.php:254
+#: bkup/js/assets_tree.js.php:284
+#: bkup/js/hresources.js.php:33
+#: bkup/js/hresources.js.php:81
+#: js/upload_assets.js.php:66
+#: js/report_sales.js.php:99
+#: js/customers.js.php:59
+#: js/order.js.php:99
+#: js/users.js.php:162
+#: js/users.js.php:431
+#: js/suppliers.js.php:40
+#: js/suppliers.js.php:44
+#: js/contacts.js.php:45
+#: js/contacts.js.php:96
+#: js/assets_family.js.php:93
+#: js/assets_family.js.php:199
+#: js/assets_family.js.php:229
+#: js/assets_tree.js.php:110
+#: js/assets_tree.js.php:112
+#: js/assets_tree.js.php:263
+#: js/assets_tree.js.php:295
+#: js/hresources.js.php:40
+msgid "Name"
+msgstr "Name"
+
+#: bkup/js/upload_assets.js.php:107
+#: js/upload_assets.js.php:107
+#, fuzzy
+msgid "U/outer"
+msgstr "Äußere Zähne"
+
+#: bkup/js/upload_assets.js.php:108
+#: js/upload_assets.js.php:108
+msgid "U/c"
+msgstr ""
+
+#: bkup/js/upload_assets.js.php:109
+#: js/upload_assets.js.php:109
+#, fuzzy
+msgid "Unit Type"
+msgstr "Zusammengesetzter Typ »%s.%s«"
+
+#: bkup/js/upload_assets.js.php:110
+#: js/upload_assets.js.php:110
+#, fuzzy
+msgid "Price/o"
+msgstr "Preis: %1"
+
+#: bkup/js/upload_assets.js.php:111
+#: js/upload_assets.js.php:111
+msgid "RRP"
+msgstr ""
+
+#: bkup/js/upload_assets.js.php:112
+#: js/upload_assets.js.php:112
+#, fuzzy
+msgid "Exp Code"
+msgstr "Quelltext"
+
+#: bkup/js/upload_assets.js.php:130
+#: js/upload_assets.js.php:130
+msgid "Wu"
+msgstr ""
+
+#: bkup/js/upload_assets.js.php:131
+#: js/upload_assets.js.php:131
+#, fuzzy
+msgid "Du"
+msgstr "_Duplizieren"
+
+#: bkup/js/upload_assets.js.php:132
+#: js/upload_assets.js.php:132
+#, fuzzy
+msgid "Wo"
+msgstr "_Beidseitig"
+
+#: bkup/js/upload_assets.js.php:133
+#: js/upload_assets.js.php:133
+#, fuzzy
+msgid "Do"
+msgstr "Los!"
+
+#: bkup/js/upload_assets.js.php:134
+#: js/upload_assets.js.php:134
+msgid "Wc"
+msgstr ""
+
+#: bkup/js/upload_assets.js.php:135
+#: js/upload_assets.js.php:135
+#, fuzzy
+msgid "Dc"
+msgstr "%dS"
+
+#: bkup/js/upload_assets.js.php:154
+#: js/upload_assets.js.php:154
+msgid "Supplier"
+msgstr ""
+
+#: bkup/js/upload_assets.js.php:155
+#: bkup/js/customer.js.php:60
+#: bkup/js/supplier.js.php:175
+#: bkup/js/supplier.js.php:270
+#: js/upload_assets.js.php:155
+#: js/customer.js.php:60
+#: js/supplier.js.php:175
+#: js/supplier.js.php:270
+#, fuzzy
+msgid "Supplier Code"
+msgstr "Quelltext"
+
+#: bkup/js/upload_assets.js.php:156
+#: js/upload_assets.js.php:156
+#, fuzzy
+msgid "Buying Price"
+msgstr "Preis des Hauses: %1"
+
+#: bkup/js/upload_assets.js.php:198
+#: bkup/js/assets_product.js.php:220
+#: bkup/js/assets_department.js.php:363
+#: bkup/js/assets_family.js.php:356
+#: bkup/js/assets_tree.js.php:402
+#: js/upload_assets.js.php:198
+#: js/assets_product.js.php:498
+#: js/assets_product.js.php:527
+#: js/assets_department.js.php:389
+#: js/assets_family.js.php:425
+#: js/assets_tree.js.php:416
+#, fuzzy
+msgid "Upload"
+msgstr "Hochladen"
+
+#: bkup/js/upload_assets.js.php:199
+#: bkup/js/assets_product.js.php:207
+#: bkup/js/assets_product.js.php:221
+#: bkup/js/assets_product.js.php:236
+#: bkup/js/new_deliverynote.js.php:120
+#: bkup/js/assets_department.js.php:349
+#: bkup/js/assets_department.js.php:364
+#: bkup/js/porder.js.php:119
+#: bkup/js/suppliers.js.php:191
+#: bkup/js/supplier.js.php:349
+#: bkup/js/assets_family.js.php:342
+#: bkup/js/assets_family.js.php:357
+#: bkup/js/deliverynote.js.php:119
+#: bkup/js/assets_tree.js.php:388
+#: bkup/js/assets_tree.js.php:403
+#: js/upload_assets.js.php:199
+#: js/assets_product.js.php:485
+#: js/assets_product.js.php:499
+#: js/assets_product.js.php:514
+#: js/assets_product.js.php:527
+#: js/assets_product.js.php:541
+#: js/new_deliverynote.js.php:120
+#: js/assets_department.js.php:375
+#: js/assets_department.js.php:390
+#: js/porder.js.php:119
+#: js/suppliers.js.php:194
+#: js/supplier.js.php:349
+#: js/assets_family.js.php:411
+#: js/assets_family.js.php:426
+#: js/deliverynote.js.php:119
+#: js/assets_tree.js.php:402
+#: js/assets_tree.js.php:417
+#: js/hresources.js.php:186
+#, fuzzy
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: bkup/js/orders.js.php:24
+#: bkup/js/report_sales.js.php:24
+#: bkup/js/index.js.php:25
+#: bkup/js/order.js.php:24
+#: js/orders.js.php:24
+#: js/report_sales.js.php:24
+#: js/index.js.php:27
+#: js/order.js.php:24
+#, fuzzy
+msgid "Error, no customer name"
+msgstr "%s:%u enthält keinen Methodennamen."
+
+#: bkup/js/orders.js.php:39
+#: bkup/js/assets_product.js.php:29
+#: bkup/js/assets_product.js.php:82
+#: bkup/js/report_sales.js.php:39
+#: bkup/js/customer.js.php:25
+#: bkup/js/index.js.php:43
+#: bkup/js/order.js.php:39
+#: js/orders.js.php:39
+#: js/assets_product.js.php:151
+#: js/assets_product.js.php:204
+#: js/report_sales.js.php:39
+#: js/customer.js.php:25
+#: js/index.js.php:45
+#: js/order.js.php:39
+#, fuzzy
+msgid "Number"
+msgstr "Zahl"
+
+#: bkup/js/orders.js.php:40
+#: bkup/js/assets_product.js.php:30
+#: bkup/js/assets_product.js.php:83
+#: bkup/js/report_sales.js.php:40
+#: bkup/js/customer.js.php:26
+#: bkup/js/order.js.php:40
+#: js/orders.js.php:40
+#: js/assets_product.js.php:152
+#: js/assets_product.js.php:205
+#: js/report_sales.js.php:40
+#: js/customer.js.php:26
+#: js/order.js.php:40
+#, fuzzy
+msgid "Type"
+msgstr "Typ"
+
+#: bkup/js/orders.js.php:41
+#: bkup/js/assets_product.js.php:31
+#: bkup/js/assets_product.js.php:84
+#: bkup/js/report_sales.js.php:41
+#: bkup/js/index.js.php:44
+#: bkup/js/order.js.php:41
+#: js/orders.js.php:41
+#: js/assets_product.js.php:153
+#: js/assets_product.js.php:206
+#: js/report_sales.js.php:41
+#: js/index.js.php:46
+#: js/order.js.php:41
+#, fuzzy
+msgid "Customer"
+msgstr "Kunde"
+
+#: bkup/js/orders.js.php:42
+#: bkup/js/report_sales.js.php:42
+#: bkup/js/order.js.php:42
+#: bkup/js/invoice.js.php:55
+#: js/orders.js.php:42
+#: js/report_sales.js.php:42
+#: js/order.js.php:42
+#: js/invoice.js.php:55
+#, fuzzy
+msgid "Fecha"
+msgstr "Französisch"
+
+#: bkup/js/orders.js.php:44
+#: bkup/js/report_sales.js.php:44
+#: bkup/js/customer.js.php:28
+#: bkup/js/customers.js.php:59
+#: bkup/js/index.js.php:48
+#: bkup/js/order.js.php:44
+#: bkup/js/supplier.js.php:220
+#: bkup/js/invoice.js.php:57
+#: js/orders.js.php:44
+#: js/report_sales.js.php:44
+#: js/customer.js.php:28
+#: js/customers.js.php:63
+#: js/index.js.php:49
+#: js/order.js.php:44
+#: js/supplier.js.php:220
+#: js/invoice.js.php:57
+#, fuzzy
+msgid "Total"
+msgstr "Gesamt"
+
+#: bkup/js/orders.js.php:101
+#: js/orders.js.php:103
+#, fuzzy
+msgid "Maximum Days Since"
+msgstr "Zeit seit jetzt (Tage)"
+
+#: bkup/js/orders.js.php:102
+#: js/orders.js.php:104
+#, fuzzy
+msgid "Minumum Days Since"
+msgstr "Zeit seit jetzt (Tage)"
+
+#: bkup/js/orders.js.php:103
+#: js/orders.js.php:105
+#, fuzzy
+msgid "Max Value"
+msgstr "Maximaler Wert"
+
+#: bkup/js/orders.js.php:104
+#: js/orders.js.php:106
+#, fuzzy
+msgid "Minumum Value"
+msgstr "Standardwert"
+
+#: bkup/js/orders.js.php:104
+#: js/orders.js.php:106
+#, fuzzy
+msgid "Min Value"
+msgstr "MIN(Wert;Wert;...)"
+
+#: bkup/js/assets_product.js.php:32
+#: bkup/js/assets_product.js.php:85
+#: bkup/js/customer.js.php:27
+#: bkup/js/index.js.php:45
+#: js/assets_product.js.php:154
+#: js/assets_product.js.php:207
+#: js/assets_product.js.php:269
+#: js/customer.js.php:27
+#: js/index.js.php:47
+msgid "Date"
+msgstr "Datum"
+
+#: bkup/js/assets_product.js.php:33
+#: bkup/js/assets_product.js.php:86
+#: bkup/js/invoice.js.php:50
+#: js/assets_product.js.php:155
+#: js/assets_product.js.php:210
+#: js/invoice.js.php:50
+msgid "Dispached"
+msgstr ""
+
+#: bkup/js/assets_product.js.php:34
+#: bkup/js/assets_product.js.php:87
+#: js/assets_product.js.php:156
+#: js/assets_product.js.php:214
+msgid "Undispached"
+msgstr ""
+
+#: bkup/js/assets_product.js.php:206
+#: bkup/js/assets_product.js.php:235
+#: bkup/js/assets_department.js.php:348
+#: bkup/js/suppliers.js.php:190
+#: bkup/js/assets_family.js.php:341
+#: bkup/js/assets_tree.js.php:387
+#: js/assets_product.js.php:484
+#: js/assets_product.js.php:513
+#: js/assets_department.js.php:374
+#: js/suppliers.js.php:193
+#: js/assets_family.js.php:410
+#: js/assets_tree.js.php:401
+#: js/hresources.js.php:185
+#, fuzzy
+msgid "Submit"
+msgstr "Absenden"
+
+#: bkup/js/assets_product.js.php:248
+#: bkup/js/assets_department.js.php:380
+#: bkup/js/suppliers.js.php:233
+#: bkup/js/assets_family.js.php:373
+#: bkup/js/assets_tree.js.php:448
+#: js/suppliers.js.php:239
+#: js/assets_tree.js.php:495
+#: js/hresources.js.php:231
+#, fuzzy
+msgid "Basic"
+msgstr "Elementar"
+
+#: bkup/js/assets_product.js.php:248
+#: bkup/js/new_deliverynote.js.php:43
+#: bkup/js/customer.js.php:29
+#: bkup/js/assets_index.js.php:87
+#: bkup/js/assets_department.js.php:380
+#: bkup/js/porder.js.php:42
+#: bkup/js/suppliers.js.php:233
+#: bkup/js/supplier.js.php:47
+#: bkup/js/assets_family.js.php:102
+#: bkup/js/assets_family.js.php:173
+#: bkup/js/assets_family.js.php:174
+#: bkup/js/assets_family.js.php:373
+#: bkup/js/deliverynote.js.php:42
+#: bkup/js/assets_tree.js.php:255
+#: bkup/js/assets_tree.js.php:448
+#: js/assets_product.js.php:266
+#: js/assets_product.js.php:267
+#: js/new_deliverynote.js.php:43
+#: js/customer.js.php:29
+#: js/assets_index.js.php:90
+#: js/porder.js.php:42
+#: js/suppliers.js.php:239
+#: js/supplier.js.php:47
+#: js/assets_family.js.php:96
+#: js/assets_family.js.php:202
+#: js/assets_family.js.php:203
+#: js/deliverynote.js.php:42
+#: js/assets_tree.js.php:264
+#: js/assets_tree.js.php:495
+#: js/hresources.js.php:231
+msgid "Stock"
+msgstr "Bestand"
+
+#: bkup/js/assets_product.js.php:265
+#: bkup/js/assets_department.js.php:401
+#: bkup/js/suppliers.js.php:251
+#: bkup/js/assets_family.js.php:394
+#: bkup/js/assets_tree.js.php:475
+#: js/suppliers.js.php:257
+#: js/assets_tree.js.php:527
+#: js/hresources.js.php:249
+#, fuzzy
+msgid "Edit Mode"
+msgstr "Bearbeitungsmodus"
+
+#: bkup/js/assets_product.js.php:266
+#: bkup/js/assets_department.js.php:402
+#: bkup/js/assets_family.js.php:395
+#: bkup/js/assets_tree.js.php:476
+#: js/assets_tree.js.php:528
+#, fuzzy
+msgid "Add Department (Manually)"
+msgstr "Manuell erfaßte Nummer"
+
+#: bkup/js/assets_product.js.php:267
+#: bkup/js/assets_department.js.php:403
+#: bkup/js/assets_family.js.php:396
+#: bkup/js/assets_tree.js.php:477
+#: js/assets_tree.js.php:529
+#, fuzzy
+msgid "Add Department (From file)"
+msgstr "  \\i DATEI       führe Anweisungen aus Datei aus\n"
+
+#: bkup/js/new_deliverynote.js.php:32
+#: bkup/js/porder.js.php:31
+#: bkup/js/deliverynote.js.php:31
+#: js/new_deliverynote.js.php:32
+#: js/porder.js.php:31
+#: js/deliverynote.js.php:31
+#, fuzzy
+msgid "Our Code"
+msgstr "Quelltext"
+
+#: bkup/js/new_deliverynote.js.php:36
+#: bkup/js/new_deliverynote.js.php:44
+#: bkup/js/porder.js.php:35
+#: bkup/js/porder.js.php:43
+#: bkup/js/supplier.js.php:48
+#: bkup/js/deliverynote.js.php:35
+#: bkup/js/deliverynote.js.php:43
+#: js/new_deliverynote.js.php:36
+#: js/new_deliverynote.js.php:44
+#: js/porder.js.php:35
+#: js/porder.js.php:43
+#: js/supplier.js.php:48
+#: js/deliverynote.js.php:35
+#: js/deliverynote.js.php:43
+#, fuzzy
+msgid "Cost Price Unit"
+msgstr "Standard-&Längeneinheit:"
+
+#: bkup/js/new_deliverynote.js.php:37
+#: bkup/js/porder.js.php:36
+#: bkup/js/deliverynote.js.php:36
+#: js/new_deliverynote.js.php:37
+#: js/porder.js.php:36
+#: js/deliverynote.js.php:36
+#, fuzzy
+msgid "Unit Ordered"
+msgstr "Geordnete Liste"
+
+#: bkup/js/new_deliverynote.js.php:38
+#: bkup/js/porder.js.php:37
+#: bkup/js/deliverynote.js.php:37
+#: js/new_deliverynote.js.php:38
+#: js/porder.js.php:37
+#: js/deliverynote.js.php:37
+#, fuzzy
+msgid "Unit Received"
+msgstr "%u Pakete empfangen"
+
+#: bkup/js/new_deliverynote.js.php:39
+#: bkup/js/porder.js.php:38
+#: bkup/js/invoice.js.php:51
+#: bkup/js/deliverynote.js.php:38
+#: js/new_deliverynote.js.php:39
+#: js/porder.js.php:38
+#: js/invoice.js.php:51
+#: js/deliverynote.js.php:38
+#, fuzzy
+msgid "Cost"
+msgstr "Kosten"
+
+#: bkup/js/new_deliverynote.js.php:119
+#: bkup/js/porder.js.php:118
+#: bkup/js/deliverynote.js.php:118
+#: js/new_deliverynote.js.php:119
+#: js/porder.js.php:118
+#: js/deliverynote.js.php:118
+#, fuzzy
+msgid "Update"
+msgstr "Aktualisieren"
+
+#: bkup/js/report_sales.js.php:99
+#: bkup/js/order.js.php:99
+#: js/report_sales.js.php:99
+#: js/order.js.php:99
+#, fuzzy
+msgid "Order name"
+msgstr "Name=DN-Attribut-Ordnung"
+
+#: bkup/js/report_sales.js.php:100
+#: bkup/js/customers.js.php:116
+#: bkup/js/order.js.php:100
+#: bkup/js/contacts.js.php:97
+#: bkup/js/hresources.js.php:82
+#: js/report_sales.js.php:100
+#: js/order.js.php:100
+#: js/contacts.js.php:97
+#, fuzzy
+msgid "Post Code"
+msgstr "Quelltext"
+
+#: bkup/js/customers.js.php:56
+#: js/customers.js.php:60
+#, fuzzy
+msgid "Location"
+msgstr "Pfad"
+
+#: bkup/js/customers.js.php:57
+#: js/customers.js.php:61
+#, fuzzy
+msgid "Last Order"
+msgstr "Abspielreihenfolge"
+
+#: bkup/js/customers.js.php:115
+#: bkup/js/contacts.js.php:96
+#: bkup/js/hresources.js.php:81
+#: js/customers.js.php:121
+#: js/contacts.js.php:96
+#, fuzzy
+msgid "Customer name"
+msgstr "CLOSE name"
+
+#: bkup/js/index.js.php:32
+#: js/index.js.php:34
+#, fuzzy
+msgid "days"
+msgstr "Tage"
+
+#: bkup/js/index.js.php:104
+#: js/index.js.php:106
+#, fuzzy
+msgid "Maximum Days Interval"
+msgstr "Sicherungsintervall (Tage):"
+
+#: bkup/js/index.js.php:105
+#: js/index.js.php:107
+#, fuzzy
+msgid "Minumum Days Interval"
+msgstr "Sicherungsintervall (Tage):"
+
+#: bkup/js/assets_department.js.php:184
+#: bkup/js/assets_family.js.php:104
+#: js/assets_department.js.php:173
+#: js/assets_family.js.php:98
+#, fuzzy
+msgid "Stock Value"
+msgstr "Standardwert"
+
+#: bkup/js/assets_department.js.php:185
+#: bkup/js/assets_department.js.php:211
+#: bkup/js/suppliers.js.php:43
+#: bkup/js/suppliers.js.php:48
+#: bkup/js/assets_tree.js.php:107
+#: bkup/js/assets_tree.js.php:256
+#: bkup/js/assets_tree.js.php:286
+#: js/assets_department.js.php:174
+#: js/assets_department.js.php:206
+#: js/suppliers.js.php:45
+#: js/suppliers.js.php:50
+#: js/assets_tree.js.php:114
+#: js/assets_tree.js.php:265
+#: js/hresources.js.php:47
+#, fuzzy
+msgid "Products"
+msgstr "Haushaltsprodukte"
+
+#: bkup/js/assets_department.js.php:186
+#: bkup/js/suppliers.js.php:45
+#: bkup/js/assets_tree.js.php:257
+#: js/assets_department.js.php:175
+#: js/suppliers.js.php:47
+#, fuzzy
+msgid "Out of Stock"
+msgstr "Kartenstapel"
+
+#: bkup/js/assets_department.js.php:187
+#: bkup/js/assets_tree.js.php:258
+#: js/assets_department.js.php:176
+#, fuzzy
+msgid "Error in Stock"
+msgstr "Fehler beim Lesen von »%s«: %s\n"
+
+#: bkup/js/assets_department.js.php:212
+#: bkup/js/assets_family.js.php:105
+#: bkup/js/assets_family.js.php:199
+#: bkup/js/assets_tree.js.php:287
+#: js/assets_department.js.php:207
+#: js/assets_family.js.php:99
+#: js/assets_family.js.php:230
+#, fuzzy
+msgid "Total Sales"
+msgstr "Gesamttotal"
+
+#: bkup/js/assets_department.js.php:213
+#: bkup/js/assets_family.js.php:200
+#: bkup/js/assets_tree.js.php:288
+#: js/assets_department.js.php:208
+#: js/assets_family.js.php:231
+#, fuzzy
+msgid "Sales (1y)"
+msgstr "GETPIVOTDATA(Datenbank; \"Verkäufe\")"
+
+#: bkup/js/assets_department.js.php:214
+#: bkup/js/assets_family.js.php:201
+#: bkup/js/assets_tree.js.php:289
+#: js/assets_department.js.php:209
+#: js/assets_family.js.php:232
+#, fuzzy
+msgid "Sales (1q)"
+msgstr "GETPIVOTDATA(Datenbank; \"Verkäufe\")"
+
+#: bkup/js/assets_department.js.php:215
+#: bkup/js/assets_family.js.php:107
+#: bkup/js/assets_family.js.php:202
+#: bkup/js/assets_tree.js.php:290
+#: js/assets_department.js.php:210
+#: js/assets_family.js.php:101
+#: js/assets_family.js.php:233
+#, fuzzy
+msgid "Sales (1m)"
+msgstr "Abschnitt 1m"
+
+#: bkup/js/assets_department.js.php:216
+#: bkup/js/assets_family.js.php:203
+#: js/assets_department.js.php:211
+#: js/assets_family.js.php:234
+#, fuzzy
+msgid "Avg Sales (w)"
+msgstr "GETPIVOTDATA(Datenbank; \"Verkäufe\")"
+
+#: bkup/js/users.js.php:60
+#: bkup/js/users.js.php:75
+#: js/users.js.php:60
+#: js/users.js.php:75
+#, fuzzy
+msgid "Confirm Password"
+msgstr "Passwort bestätigen:"
+
+#: bkup/js/users.js.php:75
+#: js/users.js.php:75
+#, fuzzy
+msgid "Write the new password"
+msgstr "Neues Passwort eingeben: "
+
+#: bkup/js/users.js.php:75
+#: js/users.js.php:75
+#, fuzzy
+msgid "Password Meter"
+msgstr "Passwortstärkeanzeiger:"
+
+#: bkup/js/users.js.php:99
+#: js/users.js.php:99
+#, fuzzy
+msgid "very weak"
+msgstr "Unsicherer Schlüssel"
+
+#: bkup/js/users.js.php:104
+#: js/users.js.php:104
+#, fuzzy
+msgid "weak"
+msgstr "Schwach"
+
+#: bkup/js/users.js.php:109
+#: js/users.js.php:109
+#, fuzzy
+msgid "still weak"
+msgstr "Unsicherer Schlüssel"
+
+#: bkup/js/users.js.php:114
+#: js/users.js.php:114
+#, fuzzy
+msgid "strong"
+msgstr "<strong>%1</strong>"
+
+#: bkup/js/users.js.php:119
+#: js/users.js.php:119
+msgid "stronger"
+msgstr ""
+
+#: bkup/js/users.js.php:149
+#: js/users.js.php:149
+msgid "Are you sure you want to delete this user?<br/> If so press OK"
+msgstr ""
+
+#: bkup/js/users.js.php:159
+#: bkup/js/users.js.php:281
+#: js/users.js.php:159
+#: js/users.js.php:281
+#, fuzzy
+msgid "Activate"
+msgstr "Aktivieren"
+
+#: bkup/js/users.js.php:159
+#: js/users.js.php:159
+msgid "Desactivate"
+msgstr ""
+
+#: bkup/js/users.js.php:161
+#: bkup/js/users.js.php:490
+#: js/users.js.php:161
+#: js/users.js.php:490
+msgid "Handle"
+msgstr "Benutzer"
+
+#: bkup/js/users.js.php:163
+#: bkup/js/contacts.js.php:47
+#: js/users.js.php:163
+#: js/contacts.js.php:47
+msgid "Email"
+msgstr "E-Mail"
+
+#: bkup/js/users.js.php:164
+#: js/users.js.php:164
+msgid "Language"
+msgstr "Sprache"
+
+#: bkup/js/users.js.php:165
+#: js/users.js.php:165
+msgid "Groups"
+msgstr "Gruppen"
+
+#: bkup/js/users.js.php:267
+#: js/users.js.php:267
+msgid "Passwort too week, try again"
+msgstr ""
+
+#: bkup/js/users.js.php:271
+#: js/users.js.php:271
+#, fuzzy
+msgid "Passwords do not match, reconfirm"
+msgstr "Leider stimmen die Passwörter nicht überein"
+
+#: bkup/js/users.js.php:380
+#: js/users.js.php:380
+#, fuzzy
+msgid "Group"
+msgstr "Gruppe"
+
+#: bkup/js/users.js.php:432
+#: js/users.js.php:432
+msgid "Rights"
+msgstr "Rechte"
+
+#: bkup/js/users.js.php:490
+#: js/users.js.php:490
+msgid "A new user has been added to the database"
+msgstr ""
+
+#: bkup/js/users.js.php:505
+#: js/users.js.php:505
+#, fuzzy
+msgid "New user password"
+msgstr "Passwort für Benutzer %s: "
+
+#: bkup/js/users.js.php:571
+#: js/users.js.php:571
+#, fuzzy
+msgid "Please enter the name of the user"
+msgstr "Geben Sie einen FTP-Benutzernamen ein."
+
+#: bkup/js/users.js.php:574
+#: js/users.js.php:574
+#, fuzzy
+msgid "Please enter a valid email"
+msgstr "Bitte geben Sie die E-Mail-Adresse ein."
+
+#: bkup/js/table_common.js.php:1
+#: js/table_common.js.php:11
+#, fuzzy
+msgid "No records found"
+msgstr "Es konnte kein gültiger Eintrag gefunden werden."
+
+#: bkup/js/table_common.js.php:2
+#: js/table_common.js.php:12
+#, fuzzy
+msgid "Data error"
+msgstr "Fehler beim Laden der Daten (%1)"
+
+#: bkup/js/table_common.js.php:3
+#: js/table_common.js.php:13
+#, fuzzy
+msgid "Loading data"
+msgstr "Fehler beim Laden der Daten (%1)"
+
+#: bkup/js/table_common.js.php:157
+#: js/table_common.js.php:199
+#, fuzzy
+msgid "Hide items"
+msgstr "Einträge ausblenden"
+
+#: bkup/js/table_common.js.php:163
+#: js/table_common.js.php:205
+#, fuzzy
+msgid "Show items"
+msgstr "Alle Elemente anzeigen"
+
+#: bkup/js/suppliers.js.php:44
+#: js/suppliers.js.php:46
+#, fuzzy
+msgid "Low Stock"
+msgstr "Kartenstapel"
+
+#: bkup/js/suppliers.js.php:47
+#: bkup/js/assets_tree.js.php:106
+#: js/suppliers.js.php:49
+#: js/assets_tree.js.php:113
+#: js/hresources.js.php:46
+#, fuzzy
+msgid "Families"
+msgstr "Ausgewählte Schriftartenfamilien:"
+
+#: bkup/js/suppliers.js.php:252
+#: js/suppliers.js.php:258
+#: js/hresources.js.php:250
+#, fuzzy
+msgid "Add Supplier (Manually)"
+msgstr "Manuell erfaßte Nummer"
+
+#: bkup/js/suppliers.js.php:253
+#: js/suppliers.js.php:259
+#: js/hresources.js.php:251
+#, fuzzy
+msgid "Add Supplier (From file)"
+msgstr "  \\i DATEI       führe Anweisungen aus Datei aus\n"
+
+#: bkup/js/contacts.js.php:28
+#: bkup/js/contacts.js.php:30
+#: js/contacts.js.php:28
+#: js/contacts.js.php:30
+#, fuzzy
+msgid "Person"
+msgstr "Person: %1"
+
+#: bkup/js/contacts.js.php:32
+#: js/contacts.js.php:32
+msgid "Bussiness"
+msgstr ""
+
+#: bkup/js/contacts.js.php:271
+#: js/contacts.js.php:271
+msgid "Please write the web page address"
+msgstr ""
+
+#: bkup/js/contacts.js.php:276
+#: js/contacts.js.php:276
+#, fuzzy
+msgid "Invalid web page address"
+msgstr "Adresse der Startseite des Benutzers."
+
+#: bkup/js/contacts.js.php:315
+#: js/contacts.js.php:315
+#, fuzzy
+msgid "Please write the email address"
+msgstr "Bitte geben Sie die E-Mail-Adresse ein."
+
+#: bkup/js/contacts.js.php:320
+#: js/contacts.js.php:320
+#, fuzzy
+msgid "Invalid email"
+msgstr "%1: ungültige E-Mail-Adresse"
+
+#: bkup/js/contacts.js.php:361
+#: js/contacts.js.php:361
+#, fuzzy
+msgid "Please write the telephone number"
+msgstr "Bitte geben Sie eine Fehlernummer ein:"
+
+#: bkup/js/contacts.js.php:366
+#: js/contacts.js.php:366
+#, fuzzy
+msgid "Invalid number"
+msgstr "Ungültige Zahl"
+
+#: bkup/js/contacts.js.php:413
+#: js/contacts.js.php:413
+msgid "Please write down the building or street"
+msgstr ""
+
+#: bkup/js/contacts.js.php:421
+#: js/contacts.js.php:421
+#, fuzzy
+msgid "Please write down the city or region"
+msgstr "Bitte Buddy-Informationen angeben."
+
+#: bkup/js/contacts.js.php:477
+#: js/contacts.js.php:477
+#, fuzzy
+msgid "Please write down first name"
+msgstr "Bitte tragen Sie Ihren Vor- und Nachnamen ein:"
+
+#: bkup/js/contacts.js.php:587
+#: js/contacts.js.php:587
+msgid "Please write down the company name"
+msgstr ""
+
+#: bkup/js/contacts.js.php:613
+#: js/contacts.js.php:613
+#, fuzzy
+msgid "Company Telephone"
+msgstr "Per Telefon"
+
+#: bkup/js/contacts.js.php:614
+#: js/contacts.js.php:614
+#, fuzzy
+msgid "Contact Direct Phone"
+msgstr "Handy"
+
+#: bkup/js/contacts.js.php:615
+#: js/contacts.js.php:615
+#, fuzzy
+msgid "Contact Mobil Phone"
+msgstr "Handy"
+
+#: bkup/js/contacts.js.php:617
+#: js/contacts.js.php:617
+#, fuzzy
+msgid "Company Fax"
+msgstr "Faxmodus:"
+
+#: bkup/js/contacts.js.php:969
+#: js/contacts.js.php:969
+#, fuzzy
+msgid "Edit Name"
+msgstr "Namen bearbeiten"
+
+#: bkup/js/contacts.js.php:969
+#: js/contacts.js.php:969
+#, fuzzy
+msgid "Delete"
+msgstr "Entf"
+
+#: bkup/js/supplier.js.php:29
+#: js/supplier.js.php:29
+#, fuzzy
+msgid "Are you sure you want to desassociate this product?"
+msgstr "Sind Sie sicher, dass Sie diese Funktion entfernen möchten?"
+
+#: bkup/js/supplier.js.php:41
+#: js/supplier.js.php:41
+#, fuzzy
+msgid "S Code"
+msgstr "&Quelltext"
+
+#: bkup/js/supplier.js.php:214
+#: js/supplier.js.php:214
+#, fuzzy
+msgid "Date Invoice"
+msgstr "Name=Rechnung"
+
+#: bkup/js/supplier.js.php:216
+#: js/supplier.js.php:216
+#, fuzzy
+msgid "Date Received"
+msgstr "Empfangen am"
+
+#: bkup/js/supplier.js.php:348
+#: js/supplier.js.php:348
+#, fuzzy
+msgid "Create"
+msgstr "Erstellen"
+
+#: bkup/js/assets_family.js.php:101
+#: js/assets_family.js.php:95
+#, fuzzy
+msgid "Price"
+msgstr "Preis"
+
+#: bkup/js/assets_family.js.php:103
+#: js/assets_family.js.php:97
+#, fuzzy
+msgid "Available"
+msgstr "Verfügbar"
+
+#: bkup/js/assets_family.js.php:106
+#: js/assets_family.js.php:100
+#, fuzzy
+msgid "Sales (1Y)"
+msgstr "GETPIVOTDATA(Datenbank; \"Verkäufe\")"
+
+#: bkup/js/invoice.js.php:49
+#: js/invoice.js.php:49
+#, fuzzy
+msgid "Descripcion"
+msgstr "Beschreibung"
+
+#: bkup/js/invoice.js.php:52
+#: js/invoice.js.php:52
+#, fuzzy
+msgid "Discounts"
+msgstr "Konten"
+
+#: bkup/js/invoice.js.php:53
+#: js/assets_product.js.php:215
+#: js/invoice.js.php:53
+#, fuzzy
+msgid "Charged"
+msgstr "%1% geladen"
+
+#: bkup/js/assets_tree.js.php:291
+#: js/assets_tree.js.php:300
+#, fuzzy
+msgid "Avg S(w)"
+msgstr "mittel"
+
+#: js/orders.js.php:186
+msgid "Cannot select a date before 1/1/2006 or after 12/31/2008"
+msgstr ""
+
+#: js/orders.js.php:193
+#: js/orders.js.php:204
+#, fuzzy
+msgid "Choose a date"
+msgstr "Neues Datum wählen"
+
+#: js/assets_product.js.php:32
+#, fuzzy
+msgid "Image not found"
+msgstr "Die Bilddatei »%s« konnte nicht gefunden werden.\n"
+
+#: js/assets_product.js.php:211
+#, fuzzy
+msgid "To Dispach"
+msgstr "Vorlauf zu: %1/%2 (%3%)"
+
+#: js/assets_product.js.php:268
+#, fuzzy
+msgid "Operation"
+msgstr "Operation"
+
+#: js/assets_product.js.php:541
+msgid "Save"
+msgstr "Speichern"
+
+#: js/assets_product.js.php:732
+#, fuzzy
+msgid "Editing"
+msgstr "Bearbeiten"
+
+#: js/assets_product.js.php:770
+#, fuzzy
+msgid "Edit"
+msgstr "Bearbeiten"
+
+#: js/assets_index.js.php:96
+#, fuzzy
+msgid "Week Sales"
+msgstr "&Wochentag"
+
+#: js/customers.js.php:56
+#, fuzzy
+msgid "Tax Num"
+msgstr "Auftragsnummer"
+
+#: js/customers.js.php:125
+#, fuzzy
+msgid "Maximum Orders"
+msgstr "Grösstes Datum:"
+
+#: js/customers.js.php:126
+msgid "Minumum Orders"
+msgstr ""
+
+#: js/customers.js.php:127
+#, fuzzy
+msgid "Maximum Total"
+msgstr "Gesamttotal"
+
+#: js/customers.js.php:128
+#, fuzzy
+msgid "Minumum Total"
+msgstr "Gesamttotal"
+
+#: js/customers.js.php:129
+msgid "Maximum Days Since Last Order"
+msgstr ""
+
+#: js/customers.js.php:130
+msgid "Minumum Days Since Last Order"
+msgstr ""
+
+#: js/table_common.js.php:367
+#, fuzzy
+msgid "Showing"
+msgstr "Anzeigen des Desktops: %s\n"
+
+#: js/table_common.js.php:367
+#, fuzzy
+msgid "of"
+msgstr "von"
+
+#: js/assets_tree.js.php:266
+msgid "O of S"
+msgstr ""
+
+#: js/assets_tree.js.php:267
+#, fuzzy
+msgid "Error in S"
+msgstr "Fehler in »%s«: %s\n"
+
+#: js/assets_tree.js.php:296
+#, fuzzy
+msgid "T Sales"
+msgstr "Verkauf"
+
+#: js/assets_tree.js.php:297
+msgid "S (1y)"
+msgstr ""
+
+#: js/assets_tree.js.php:298
+msgid "S (1q)"
+msgstr ""
+
+#: js/assets_tree.js.php:299
+#, fuzzy
+msgid "S (1m)"
+msgstr "0.1m"
+
+#: js/hresources.js.php:43
+msgid "Nickname"
+msgstr "Spitzname"
+

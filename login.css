@@ -1,0 +1,23 @@
+html{background-color:#fff}
+body{font-family: Trebuchet MS, Arial, Helvetica, sans-serif ;}
+
+#zcustom-doc {
+position:absolute;top:00px;right:00px;
+margin:0;
+	text-align:center; /* leave unchanged */
+	width:38.4615em;/* non-IE */
+	*width:38.46em;/* IE */
+	min-width:500px;/* optional but recommended */
+}
+
+custom-doc {width:700px}
+
+
+h1{color:#fff;font-size:200%; text-align:center;padding-top:60px}
+#loginbd{margin:10px;height:400px;text-align:center;width:550px }
+
+#loginbd{
+background-image:url('art/login.png') !important;
+background-image:url('art/login_ie.jpg'  );
+background-repeat: no-repeat;
+background-position: top center;}

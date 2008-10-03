@@ -1,0 +1,4059 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Kaktus 1.0\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2008-04-19 21:10+0100\n"
+"Last-Translator: Raul Perusquia <raul@ancientwisdom.biz>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Spanish\n"
+"X-Poedit-Country: SPAIN\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-Basepath: /home/raul/www/ci/\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPath-1: js\n"
+
+#: ar_suppliers.php:7
+#: create_dn.php:7
+#: ar_contacts.php:7
+#: ar_users.php:6
+#: ar_assets.php:9
+#: ar_orders.php:7
+#: mail.php:4
+msgid "Forbidden"
+msgstr "Prohibido"
+
+#: ar_suppliers.php:15
+#: ar_contacts.php:15
+#: ar_users.php:18
+#: ar_assets.php:17
+#: ar_orders.php:15
+msgid "Non acceptable request"
+msgstr "Error en el pedido"
+
+#: ar_suppliers.php:127
+#: ar_assets.php:396
+#: ar_assets.php:1406
+#: ar_orders.php:127
+#: ar_orders.php:256
+#: ar_orders.php:574
+#: ar_orders.php:794
+#, fuzzy
+msgid "record returned"
+msgid_plural "records returned"
+msgstr[0] "%1 devolvió error: %2"
+msgstr[1] ""
+
+#: ar_suppliers.php:202
+#: ar_suppliers.php:319
+msgid "Subtotals"
+msgstr "Subtotales"
+
+#: ar_suppliers.php:427
+msgid "No suppliers have been registered yet"
+msgstr "No se a registrado ningún provedor"
+
+#: ar_suppliers.php:429
+#, fuzzy
+msgid "supplier returned"
+msgid_plural "suppliers returned"
+msgstr[0] "%1 devolvió error: %2"
+msgstr[1] ""
+
+#: ar_suppliers.php:540
+#: ar_suppliers.php:583
+#, fuzzy
+msgid "Suboperation not found"
+msgstr "No se encontró el archivo."
+
+#: ar_suppliers.php:592
+#: ar_contacts.php:641
+#: ar_users.php:481
+#: ar_assets.php:1782
+#: ar_orders.php:816
+msgid "Operation not found"
+msgstr "Operación desconocida"
+
+#: suppliers.php:43
+#: common.php:221
+#: header.php:35
+#: locale2.php:821
+#: common.bk.php:212
+msgid "Suppliers"
+msgstr "Proveedores"
+
+#: conf_ci.php:115
+#: conf.php:115
+#: customers.php:136
+#: assets_product.bk.php:17
+#: locale2.php:44
+#: locale2.php:494
+#: locale2.php:692
+#: myconf/conf.php:115
+#: js/customers.js.php:54
+#: js/users.js.php:379
+#: js/suppliers.js.php:41
+#: js/suppliers.js.php:42
+#: js/assets_tree.js.php:111
+#: js/hresources.js.php:41
+#: js/hresources.js.php:42
+msgid "Id"
+msgstr "Id"
+
+#: conf_ci.php:116
+#: conf.php:116
+#: myconf/conf.php:116
+#: js/customers.js.php:55
+#, fuzzy
+msgid "Act Id"
+msgstr "ID del enlace"
+
+#: conf_ci.php:117
+#: myconf/conf.php:117
+#, fuzzy
+msgid "Tax Id"
+msgstr "ID del enlace"
+
+#: user.php:17
+#: login.php:59
+#: locale2.php:14
+msgid "User"
+msgstr "Usuario"
+
+#: new_delivernote.php:207
+#, fuzzy
+msgid "New Deliver note for"
+msgstr "El manipulador para las URL «note://»"
+
+#: new_delivernote.php:212
+#: porder.php:94
+#: supplier.php:84
+msgid "Suppliers List"
+msgstr "Listado de Provedores"
+
+#: users.php:39
+#: common.php:219
+#: header.php:34
+#: common.bk.php:211
+#: js/users.js.php:381
+msgid "Users"
+msgstr "Usuarios"
+
+#: porder.php:89
+msgid "Deliver note for"
+msgstr "Nota de envío para"
+
+#: conf.php:117
+#: locale2.php:182
+#: locale2.php:1049
+#: locale2.php:1169
+msgid "Postcode"
+msgstr "Código Postal"
+
+#: new_contact.php:41
+#: locale2.php:935
+msgid "New Contact"
+msgstr "Nuevo contacto"
+
+#: new_contact.php:42
+msgid "Contact (Person)"
+msgstr "Contacto (Personal)"
+
+#: common.php:54
+#: common.bk.php:47
+#: common.bk.php:113
+msgid "An unknown error occurred"
+msgstr "Ha ocurrido un error desconocido."
+
+#: common.php:210
+#: ar_users.php:84
+#: header.php:28
+#: common.bk.php:201
+msgid "Superuser"
+msgstr "Superusuario"
+
+#: common.php:220
+msgid "Resources"
+msgstr "Recursos"
+
+#: common.php:222
+#: reports.php:30
+msgid "Reports"
+msgstr "Informes"
+
+#: common.php:223
+#: orders.php:109
+#: orders.php:113
+#: header.php:36
+#: locale2.php:32
+#: locale2.php:368
+#: locale2.php:458
+#: locale2.php:638
+#: locale2.php:737
+#: common.bk.php:213
+#: js/assets_product.js.php:209
+#: js/assets_product.js.php:682
+#: js/customers.js.php:62
+msgid "Orders"
+msgstr "Pedidos"
+
+#: common.php:224
+#: customers.php:112
+#: customers.php:116
+#: header.php:37
+#: hresources.php:43
+#: locale2.php:287
+#: locale2.php:461
+#: common.bk.php:214
+#: js/orders.js.php:46
+#: js/orders.js.php:47
+#: js/assets_product.js.php:682
+#: js/report_sales.js.php:46
+#: js/report_sales.js.php:47
+#: js/customers.js.php:65
+#: js/customers.js.php:66
+#: js/index.js.php:52
+#: js/index.js.php:53
+#: js/order.js.php:46
+#: js/order.js.php:47
+#: js/invoice.js.php:59
+#: js/invoice.js.php:60
+msgid "Customers"
+msgstr "Clientes"
+
+#: common.php:225
+#: header.php:38
+#: common.bk.php:215
+msgid "Assets"
+msgstr "Activos"
+
+#: common.php:226
+#: ar_contacts.php:504
+#: header.php:39
+#: index.php:44
+#: common.bk.php:216
+msgid "Home"
+msgstr "Inicio"
+
+#: assets_family.bk.php:12
+#: assets_family.bk.php:40
+#: js/upload_assets.js.php:104
+#: js/assets_index.js.php:92
+#: js/supplier.js.php:43
+msgid "Family"
+msgstr "Familia"
+
+#: assets_family.bk.php:17
+#: assets_department.bk.php:22
+#: assets_index.bk.php:19
+#: assets_product.bk.php:34
+msgid "Display Options"
+msgstr "Opciones de visualización"
+
+#: assets_family.bk.php:19
+#: assets_department.bk.php:30
+#: assets_index.bk.php:21
+#: assets_product.bk.php:36
+#: locale2.php:824
+msgid "Edit Menu"
+msgstr "Menú de Edición"
+
+#: assets_tree.php:73
+msgid "Product Departments"
+msgstr "Departemantos"
+
+#: assets_department.bk.php:16
+msgid "Deparment"
+msgstr "Departamento"
+
+#: assets_department.bk.php:61
+#: js/upload_assets.js.php:84
+#: js/assets_index.js.php:93
+msgid "Department"
+msgstr "Departamento"
+
+#: ar_contacts.php:71
+#, fuzzy
+msgid "No contacts registered yet"
+msgstr "Todavía no se ha retornado un valor y"
+
+#: ar_contacts.php:73
+msgid "contact"
+msgid_plural "contacts"
+msgstr[0] "contacto"
+msgstr[1] "Mónaco"
+
+#: ar_contacts.php:200
+msgid "No staff member register yet"
+msgstr "No se ha registrado ningún empleado"
+
+#: ar_contacts.php:202
+msgid "staff member"
+msgid_plural "staff members"
+msgstr[0] "Empleado"
+msgstr[1] ""
+
+#: ar_contacts.php:317
+#, fuzzy
+msgid "There isn't any customer"
+msgstr "Crear cliente"
+
+#: ar_contacts.php:319
+#: ar_orders.php:696
+msgid "customer"
+msgid_plural "customers"
+msgstr[0] "Cliente"
+msgstr[1] "Clientes"
+
+#: ar_contacts.php:486
+msgid "Ext."
+msgstr "Ext"
+
+#: ar_contacts.php:501
+msgid "Work"
+msgstr "Trabajo"
+
+#: customers.php:130
+#: js/customers.js.php:125
+#, fuzzy
+msgid "Max Orders"
+msgstr "MAX(valor;valor;...)"
+
+#: customers.php:133
+#: js/customers.js.php:126
+#, fuzzy
+msgid "Min Orders"
+msgstr "MIN(valor;valor;...)"
+
+#: customers.php:139
+#: orders.php:136
+#: index.php:69
+#: report_sales.php:222
+#: js/orders.js.php:102
+#: js/customers.js.php:121
+#: js/index.js.php:109
+msgid "Customer Name"
+msgstr "Nombre del cliente"
+
+#: customers.php:151
+#: js/customers.js.php:127
+#, fuzzy
+msgid "Max Total"
+msgstr "Gran total"
+
+#: customers.php:154
+#: js/customers.js.php:128
+#, fuzzy
+msgid "Min Total"
+msgstr "Gran total"
+
+#: customers.php:157
+#: js/orders.js.php:103
+#: js/customers.js.php:129
+#: js/index.js.php:106
+msgid "Max Days"
+msgstr "Máx. Días"
+
+#: customers.php:160
+#: js/orders.js.php:104
+#: js/customers.js.php:130
+#: js/index.js.php:107
+msgid "Min Days"
+msgstr "Mín. días"
+
+#: assets_index.php:80
+#: locale2.php:104
+msgid "Product Index"
+msgstr "Índice del producto"
+
+#: assets_index.php:87
+#: assets_family.php:116
+msgid "Product code"
+msgstr "Código del producto"
+
+#: assets_index.php:103
+#: js/assets_product.js.php:183
+#: js/assets_product.js.php:241
+#: js/assets_index.js.php:143
+#: js/users.js.php:215
+#: js/users.js.php:407
+#: js/assets_family.js.php:138
+msgid "Product Code"
+msgstr "Código del Producto"
+
+#: assets_index.php:106
+#: js/assets_product.js.php:183
+#: js/assets_product.js.php:241
+#: js/customer.js.php:60
+#: js/assets_index.js.php:144
+#: js/assets_department.js.php:111
+#: js/users.js.php:215
+#: js/users.js.php:407
+#: js/supplier.js.php:175
+#: js/supplier.js.php:270
+#: js/assets_tree.js.php:146
+#, fuzzy
+msgid "Family Code"
+msgstr "Explorando  <code>%s</code>"
+
+#: assets_index.php:109
+#: js/assets_index.js.php:145
+#, fuzzy
+msgid "Department Name"
+msgstr "Nombre del departamento"
+
+#: assets_index.php:112
+#: locale2.php:143
+#: locale2.php:326
+#: locale2.php:581
+#: js/upload_assets.js.php:86
+#: js/upload_assets.js.php:106
+#: js/assets_product.js.php:184
+#: js/assets_product.js.php:242
+#: js/new_deliverynote.js.php:35
+#: js/new_deliverynote.js.php:42
+#: js/customer.js.php:61
+#: js/assets_index.js.php:95
+#: js/assets_index.js.php:146
+#: js/assets_department.js.php:81
+#: js/users.js.php:216
+#: js/users.js.php:408
+#: js/porder.js.php:34
+#: js/porder.js.php:41
+#: js/supplier.js.php:46
+#: js/supplier.js.php:176
+#: js/supplier.js.php:271
+#: js/assets_family.js.php:94
+#: js/assets_family.js.php:139
+#: js/assets_family.js.php:200
+#: js/deliverynote.js.php:34
+#: js/deliverynote.js.php:41
+#: js/assets_tree.js.php:147
+msgid "Description"
+msgstr "Descripción"
+
+#: ar_users.php:63
+#, fuzzy
+msgid "No users are set up!"
+msgstr "no se han definido modos de canal para %s"
+
+#: ar_users.php:65
+#, fuzzy
+msgid "user"
+msgid_plural "users"
+msgstr[0] "usuario"
+msgstr[1] "Usuario"
+
+#: ar_users.php:165
+#, fuzzy
+msgid "work group"
+msgid_plural "work groups"
+msgstr[0] "Grupo de clases"
+msgstr[1] "Grupos de trabajo"
+
+#: ar_users.php:204
+msgid "Wrong user name"
+msgstr "Nombre de usuario erroneo"
+
+#: ar_users.php:213
+#, fuzzy
+msgid "The user"
+msgstr "usuario %s"
+
+#: ar_users.php:213
+#, fuzzy
+msgid "is already in the database!"
+msgstr "%s: el lenguaje \"%s\" ya está instalado en la base de datos \"%s\"\n"
+
+#: ar_users.php:218
+#: ar_users.php:243
+#: ar_assets.php:797
+#: ar_assets.php:822
+#: ar_assets.php:846
+#: ar_assets.php:876
+#: ar_assets.php:914
+#: ar_assets.php:952
+#: ar_assets.php:1120
+#: ar_assets.php:1262
+#: upload_assets.php:99
+msgid "Unknown Error"
+msgstr "Error desconocido"
+
+#: ar_users.php:475
+#, fuzzy
+msgid "Sub-operation not found"
+msgstr "No se encontró el ejecutable de mkisofs."
+
+#: templates.php:23
+#: templates_p.php:23
+msgid "Error, department id should be a number"
+msgstr "Error, el identificador del departamento debe de ser numérico"
+
+#: templates.php:30
+#: templates.php:49
+#: templates_p.php:30
+#: templates_p.php:49
+#, fuzzy
+msgid "Error, family id not found"
+msgstr "Itdb_Track ID '%d' no encontrada.\n"
+
+#: templates.php:42
+#: templates_p.php:42
+msgid "Error, family id should be a number"
+msgstr ""
+
+#: ar_assets.php:31
+#, fuzzy
+msgid "Nothing to add"
+msgstr "Añadir palabra a"
+
+#: ar_assets.php:86
+#: ar_assets.php:226
+#: ar_assets.php:232
+#: ar_assets.php:807
+#: ar_assets.php:832
+#: ar_assets.php:856
+#: ar_assets.php:898
+#: ar_assets.php:936
+#: ar_assets.php:973
+#: ar_assets.php:1011
+#: ar_assets.php:1067
+#: order.php:7
+#: report_sales.php:134
+#: report_sales.php:140
+#: report_sales.php:151
+#: report_sales.php:155
+#: report_sales.php:160
+#: js/upload_assets.js.php:22
+#: js/upload_assets.js.php:29
+#: js/upload_assets.js.php:36
+#: js/upload_assets.js.php:43
+#: js/upload_assets.js.php:50
+msgid "Error"
+msgstr "Error"
+
+#: ar_assets.php:119
+#, fuzzy
+msgid "Image already uploaded"
+msgstr "Subidos «%s» de datos de imagen"
+
+#: ar_assets.php:478
+msgid "department"
+msgid_plural "departments"
+msgstr[0] "departamento"
+msgstr[1] "departamentos"
+
+#: ar_assets.php:589
+msgid "family"
+msgid_plural "families"
+msgstr[0] "familia"
+msgstr[1] "familias"
+
+#: ar_assets.php:738
+msgid "product"
+msgid_plural "products"
+msgstr[0] "producto"
+msgstr[1] "productos"
+
+#: ar_assets.php:795
+msgid "Error: Another department has the same name"
+msgstr ""
+
+#: ar_assets.php:820
+msgid "Error: Another family has the same name"
+msgstr ""
+
+#: ar_assets.php:844
+msgid "Error: Another family has the same name and description"
+msgstr ""
+
+#: ar_assets.php:874
+msgid "Error: Another department has the same code/name"
+msgstr ""
+
+#: ar_assets.php:912
+msgid "Error: Another supplier has the same code/name"
+msgstr ""
+
+#: ar_assets.php:950
+msgid "Error: Another department has the same name-description"
+msgstr ""
+
+#: ar_assets.php:1029
+msgid "Error: in date format, should be (DD-MM-YYYY)"
+msgstr ""
+
+#: ar_assets.php:1038
+msgid "Error: in time format, should be (HH:MM)"
+msgstr ""
+
+#: ar_assets.php:1118
+#: ar_assets.php:1260
+#: upload_assets.php:97
+msgid "Error: Another product has the same code"
+msgstr ""
+
+#: ar_assets.php:1127
+msgid "New product"
+msgstr "Producto Nuevo"
+
+#: ar_assets.php:1203
+#: ar_assets.php:1310
+msgid "Error, please check that all the fields are filled"
+msgstr ""
+
+#: ar_assets.php:1235
+#, fuzzy
+msgid "Error, product don't found"
+msgstr "Error: Usuario no encontrado"
+
+#: ar_assets.php:1446
+#: ar_assets.php:1536
+#: ar_assets.php:1577
+msgid "Week starting "
+msgstr "Semana comencando"
+
+#: ar_assets.php:1721
+#, fuzzy
+msgid "No stock movements"
+msgstr "No hay barras laterales definidas"
+
+#: ar_assets.php:1723
+#, fuzzy
+msgid "stock movement"
+msgid_plural "stock movements"
+msgstr[0] "&Movimiento mínimo:"
+msgstr[1] "Gestión de inventario"
+
+#: assets_index.bk.php:13
+#: locale2.php:752
+msgid "Products to sell"
+msgstr "Productos en venta"
+
+#: assets_index.bk.php:23
+msgid "Edit Departments"
+msgstr "Editar Departamentos"
+
+#: assets_index.bk.php:50
+msgid "Asserts"
+msgstr "Activos"
+
+#: login.php:57
+msgid "Authentication"
+msgstr "Autentificación"
+
+#: login.php:58
+#: locale2.php:11
+msgid "Welcome"
+msgstr "Bienvenido"
+
+#: login.php:60
+#: locale2.php:17
+#: js/users.js.php:60
+#: js/users.js.php:75
+#: js/users.js.php:490
+msgid "Password"
+msgstr "Contraseña"
+
+#: login.php:61
+#: locale2.php:20
+msgid "Log in"
+msgstr "Entrar"
+
+#: orders.php:133
+#: index.php:66
+#: js/orders.js.php:101
+#: js/index.js.php:108
+msgid "Order Number"
+msgstr "Número de pedido"
+
+#: orders.php:139
+#, fuzzy
+msgid "Maximum Days"
+msgstr "Seleccionar días:"
+
+#: orders.php:142
+#, fuzzy
+msgid "Mininum Days"
+msgstr "Seleccionar días:"
+
+#: orders.php:145
+#: js/orders.js.php:105
+#, fuzzy
+msgid "Maximum Value"
+msgstr "Valor máximo"
+
+#: orders.php:148
+#, fuzzy
+msgid "Mininum Value"
+msgstr "Valor predeterminado"
+
+#: assets_product.php:13
+#: js/assets_product.js.php:860
+msgid "Product sales value per week"
+msgstr "Valor de ventas por semana"
+
+#: assets_product.php:16
+#: js/assets_product.js.php:863
+msgid "Orders with this product per week"
+msgstr ""
+
+#: assets_product.php:19
+#: js/assets_product.js.php:866
+msgid "Sales value per order per week"
+msgstr ""
+
+#: assets_product.php:22
+#: js/assets_product.js.php:869
+msgid "Product sales value per month"
+msgstr ""
+
+#: assets_product.php:25
+#: js/assets_product.js.php:872
+msgid "Orders with this product per month"
+msgstr ""
+
+#: assets_product.php:28
+#: js/assets_product.js.php:875
+msgid "Sales value per order per month"
+msgstr ""
+
+#: assets_product.php:266
+#: locale2.php:872
+#: locale2.php:887
+msgid "Other"
+msgstr "Otras"
+
+#: assets_product.php:287
+msgid "Inventories"
+msgstr ""
+
+#: assets_product.php:287
+msgid "Purchases"
+msgstr "Compras"
+
+#: assets_product.php:287
+#, fuzzy
+msgid "Adjusts"
+msgstr "Activos"
+
+#: assets_product.php:287
+#: locale2.php:125
+#: locale2.php:311
+#: locale2.php:779
+#: js/assets_product.js.php:576
+#: js/suppliers.js.php:239
+#: js/assets_tree.js.php:495
+#: js/hresources.js.php:231
+msgid "Sales"
+msgstr "Ventas"
+
+#: contacts.php:69
+#: contacts.php:73
+#: locale2.php:719
+#: js/contacts.js.php:51
+#: js/contacts.js.php:52
+#, fuzzy
+msgid "Contacts"
+msgstr "Contactos"
+
+#: customer.php:46
+#: customer.php:97
+#: locale2.php:203
+msgid "Ext"
+msgstr "Ext"
+
+#: customer.php:163
+msgid "Customers List"
+msgstr "Listado de Clientes"
+
+#: common_functions.php:93
+#: common_functions.php:96
+msgid "NA"
+msgstr "NA"
+
+#: common_functions.php:97
+#: common_functions.php:101
+msgid "ND"
+msgstr "SD"
+
+#: ar_orders.php:125
+msgid "No orders are outstanding"
+msgstr "No hay pedidos por hacer"
+
+#: ar_orders.php:254
+msgid "No order has been placed yet"
+msgstr "No se a recibido ningún pedido"
+
+#: ar_orders.php:378
+#, fuzzy
+msgid "off"
+msgstr "desactivado"
+
+#: ar_orders.php:423
+#: ar_orders.php:454
+#, fuzzy
+msgid "Free Bonus"
+msgstr "%1 puntos: bonos\n"
+
+#: ar_orders.php:467
+msgid "Subtotal"
+msgstr "Subtotal"
+
+#: ar_orders.php:694
+msgid "Nobody has ordered this product"
+msgstr "Nadie ha ordenado este producto"
+
+#: header.php:28
+#: locale2.php:359
+msgid "Hello"
+msgstr "Hola"
+
+#: header.php:29
+#: locale2.php:362
+msgid "Logout"
+msgstr "Salir"
+
+#: index.php:60
+#, fuzzy
+msgid "Maximun Day Interval"
+msgstr "Intervalo de doble pulsación:"
+
+#: index.php:63
+#, fuzzy
+msgid "Minimun Day Interval"
+msgstr "Intervalo de doble pulsación:"
+
+#: index.php:76
+#: locale2.php:401
+msgid "Week"
+msgstr "Semana"
+
+#: index.php:78
+msgid "To do orders"
+msgstr "Pedidos  pendientes"
+
+#: locale.php:2
+msgid "Afghanistan"
+msgstr "Afganistán"
+
+#: locale.php:3
+msgid "Netherlands"
+msgstr "Países Bajos"
+
+#: locale.php:4
+msgid "Netherlands Antilles"
+msgstr "Antillas holandesas"
+
+#: locale.php:5
+msgid "Albania"
+msgstr "Albania"
+
+#: locale.php:6
+msgid "Algeria"
+msgstr "Argelia"
+
+#: locale.php:7
+msgid "American Samoa"
+msgstr "Samoa americana"
+
+#: locale.php:8
+msgid "Andorra"
+msgstr "Andorra"
+
+#: locale.php:9
+msgid "Angola"
+msgstr "Angola"
+
+#: locale.php:10
+msgid "Anguilla"
+msgstr "Anguilla"
+
+#: locale.php:11
+msgid "Antigua and Barbuda"
+msgstr "Antigua y Barbuda"
+
+#: locale.php:12
+msgid "United Arab Emirates"
+msgstr "Emiratos Árabes Unidos"
+
+#: locale.php:13
+msgid "Argentina"
+msgstr "Argentina"
+
+#: locale.php:14
+msgid "Armenia"
+msgstr "Armenia"
+
+#: locale.php:15
+msgid "Aruba"
+msgstr "Aruba"
+
+#: locale.php:16
+msgid "Australia"
+msgstr "Australia"
+
+#: locale.php:17
+msgid "Azerbaijan"
+msgstr "Azerbaiyán"
+
+#: locale.php:18
+msgid "Bahamas"
+msgstr "Bahamas"
+
+#: locale.php:19
+msgid "Bahrain"
+msgstr "Bahrein"
+
+#: locale.php:20
+msgid "Bangladesh"
+msgstr "Bangladesh"
+
+#: locale.php:21
+msgid "Barbados"
+msgstr "Barbados"
+
+#: locale.php:22
+msgid "Belgium"
+msgstr "Bélgica"
+
+#: locale.php:23
+msgid "Belize"
+msgstr "Belice"
+
+#: locale.php:24
+msgid "Benin"
+msgstr "Benín"
+
+#: locale.php:25
+msgid "Bermuda"
+msgstr "Bermudas"
+
+#: locale.php:26
+msgid "Bhutan"
+msgstr "Bután"
+
+#: locale.php:27
+msgid "Bolivia"
+msgstr "Bolivia"
+
+#: locale.php:28
+msgid "Bosnia and Herzegovina"
+msgstr "Bosnia y Herzegovina"
+
+#: locale.php:29
+msgid "Botswana"
+msgstr "Bostuana"
+
+#: locale.php:30
+msgid "Brazil"
+msgstr "Brasil"
+
+#: locale.php:31
+msgid "United Kingdom"
+msgstr "Reino Unido"
+
+#: locale.php:32
+msgid "Virgin Islands, British"
+msgstr "Islas Vírgenes, Británicas"
+
+#: locale.php:33
+msgid "Brunei"
+msgstr "Brunei"
+
+#: locale.php:34
+msgid "Bulgaria"
+msgstr "Bulgaria"
+
+#: locale.php:35
+msgid "Burkina Faso"
+msgstr "Burkina Faso"
+
+#: locale.php:36
+msgid "Burundi"
+msgstr "Burundi"
+
+#: locale.php:37
+msgid "Cayman Islands"
+msgstr "Islas Caimán"
+
+#: locale.php:38
+msgid "Chile"
+msgstr "Chile"
+
+#: locale.php:39
+msgid "Cook Islands"
+msgstr "Islas Cook"
+
+#: locale.php:40
+msgid "Costa Rica"
+msgstr "Costa Rica"
+
+#: locale.php:41
+msgid "Djibouti"
+msgstr "Yibuti"
+
+#: locale.php:42
+msgid "Dominica"
+msgstr "Dominica"
+
+#: locale.php:43
+msgid "Dominican Republic"
+msgstr "República Dominicana"
+
+#: locale.php:44
+msgid "Ecuador"
+msgstr "Ecuador"
+
+#: locale.php:45
+msgid "Egypt"
+msgstr "Egipto"
+
+#: locale.php:46
+msgid "El Salvador"
+msgstr "El Salvador"
+
+#: locale.php:47
+msgid "Eritrea"
+msgstr "Eritrea"
+
+#: locale.php:48
+msgid "Spain"
+msgstr "España"
+
+#: locale.php:49
+msgid "South Africa"
+msgstr "Sudáfrica"
+
+#: locale.php:50
+msgid "Ethiopia"
+msgstr "Etiopía"
+
+#: locale.php:51
+msgid "Falkland Islands"
+msgstr "Islas Malvinas"
+
+#: locale.php:52
+msgid "Fiji Islands"
+msgstr "Islas Fiji"
+
+#: locale.php:53
+msgid "Philippines"
+msgstr "Filipinas"
+
+#: locale.php:54
+msgid "Faroe Islands"
+msgstr "Islas Feroe"
+
+#: locale.php:55
+msgid "Gabon"
+msgstr "Gabón"
+
+#: locale.php:56
+msgid "Gambia"
+msgstr "Gambia"
+
+#: locale.php:57
+msgid "Georgia"
+msgstr "Georgia"
+
+#: locale.php:58
+msgid "Ghana"
+msgstr "Ghana"
+
+#: locale.php:59
+msgid "Gibraltar"
+msgstr "Gibraltar"
+
+#: locale.php:60
+msgid "Grenada"
+msgstr "Granada"
+
+#: locale.php:61
+msgid "Greenland"
+msgstr "Groenlandia"
+
+#: locale.php:62
+msgid "Guadeloupe"
+msgstr "Guadalupe"
+
+#: locale.php:63
+msgid "Guam"
+msgstr "Guam"
+
+#: locale.php:64
+msgid "Guatemala"
+msgstr "Guatemala"
+
+#: locale.php:65
+msgid "Guinea"
+msgstr "Guinea"
+
+#: locale.php:66
+msgid "Guinea-Bissau"
+msgstr "Guinea-Bissau"
+
+#: locale.php:67
+msgid "Guyana"
+msgstr "Guyana"
+
+#: locale.php:68
+msgid "Haiti"
+msgstr "Haití"
+
+#: locale.php:69
+msgid "Honduras"
+msgstr "Honduras"
+
+#: locale.php:70
+msgid "Hong Kong"
+msgstr "Hong Kong"
+
+#: locale.php:71
+msgid "Svalbard and Jan Mayen"
+msgstr "Svalbard y Jan Mayen"
+
+#: locale.php:72
+msgid "Indonesia"
+msgstr "Indonesia"
+
+#: locale.php:73
+msgid "India"
+msgstr "India"
+
+#: locale.php:74
+msgid "Iraq"
+msgstr "Iraq"
+
+#: locale.php:75
+msgid "Iran"
+msgstr "Irán"
+
+#: locale.php:76
+msgid "Ireland"
+msgstr "Irlanda"
+
+#: locale.php:77
+msgid "Iceland"
+msgstr "Islandia"
+
+#: locale.php:78
+msgid "Israel"
+msgstr "Israel"
+
+#: locale.php:79
+msgid "Italy"
+msgstr "Italia"
+
+#: locale.php:80
+msgid "East Timor"
+msgstr "Timor Oriental"
+
+#: locale.php:81
+msgid "Austria"
+msgstr "Austria"
+
+#: locale.php:82
+msgid "Jamaica"
+msgstr "Jamaica"
+
+#: locale.php:83
+msgid "Japan"
+msgstr "Japón"
+
+#: locale.php:84
+msgid "Yemen"
+msgstr "Yemen"
+
+#: locale.php:85
+msgid "Jordan"
+msgstr "Jordán"
+
+#: locale.php:86
+msgid "Christmas Island"
+msgstr "Isla de Pascua"
+
+#: locale.php:87
+msgid "Yugoslavia"
+msgstr "Yugoslavia"
+
+#: locale.php:88
+msgid "Cambodia"
+msgstr "Camboya"
+
+#: locale.php:89
+msgid "Cameroon"
+msgstr "Camerún"
+
+#: locale.php:90
+msgid "Canada"
+msgstr "Canadá"
+
+#: locale.php:91
+msgid "Cape Verde"
+msgstr "Cabo Verde"
+
+#: locale.php:92
+msgid "Kazakstan"
+msgstr "Kazajistán"
+
+#: locale.php:93
+msgid "Kenya"
+msgstr "Kenia"
+
+#: locale.php:94
+msgid "Central African Republic"
+msgstr "República Centroafricana"
+
+#: locale.php:95
+msgid "China"
+msgstr "China"
+
+#: locale.php:96
+msgid "Kyrgyzstan"
+msgstr "Kirguistán"
+
+#: locale.php:97
+msgid "Kiribati"
+msgstr "Kiribati"
+
+#: locale.php:98
+msgid "Colombia"
+msgstr "Colombia"
+
+#: locale.php:99
+msgid "Comoros"
+msgstr "Comoras"
+
+#: locale.php:100
+msgid "Congo"
+msgstr "Congo"
+
+#: locale.php:101
+msgid "Congo, Dem. Rep. of"
+msgstr "Rep. Dem. del Congo"
+
+#: locale.php:102
+msgid "Cocos (Keeling) Islands"
+msgstr "Islas Cocos (Keeling)"
+
+#: locale.php:103
+msgid "North Korea"
+msgstr "Corea del Norte"
+
+#: locale.php:104
+msgid "South Korea"
+msgstr "Corea del Sur"
+
+#: locale.php:105
+msgid "Greece"
+msgstr "Grecia"
+
+#: locale.php:106
+msgid "Croatia"
+msgstr "Croacia"
+
+#: locale.php:107
+msgid "Cuba"
+msgstr "Cuba"
+
+#: locale.php:108
+msgid "Kuwait"
+msgstr "Kuwait"
+
+#: locale.php:109
+msgid "Cyprus"
+msgstr "Chipre"
+
+#: locale.php:110
+msgid "Laos"
+msgstr "Laos"
+
+#: locale.php:111
+msgid "Latvia"
+msgstr "Letonia"
+
+#: locale.php:112
+msgid "Lesotho"
+msgstr "Lesotho"
+
+#: locale.php:113
+msgid "Lebanon"
+msgstr "Líbano"
+
+#: locale.php:114
+msgid "Liberia"
+msgstr "Liberia"
+
+#: locale.php:115
+msgid "Libyan Arab Jamahiriya"
+msgstr "Libia"
+
+#: locale.php:116
+msgid "Liechtenstein"
+msgstr "Liechtenstein"
+
+#: locale.php:117
+msgid "Lithuania"
+msgstr "Lituania"
+
+#: locale.php:118
+msgid "Luxembourg"
+msgstr "Luxemburgo"
+
+#: locale.php:119
+msgid "Western Sahara"
+msgstr "Sahara Occidental"
+
+#: locale.php:120
+msgid "Macao"
+msgstr "Macao"
+
+#: locale.php:121
+msgid "Madagascar"
+msgstr "Madagascar"
+
+#: locale.php:122
+msgid "Macedonia"
+msgstr "Macedonia"
+
+#: locale.php:123
+msgid "Malawi"
+msgstr "Malawi"
+
+#: locale.php:124
+msgid "Maldives"
+msgstr "Maldivas"
+
+#: locale.php:125
+msgid "Malaysia"
+msgstr "Malasia"
+
+#: locale.php:126
+msgid "Mali"
+msgstr "Mali"
+
+#: locale.php:127
+msgid "Malta"
+msgstr "Malta"
+
+#: locale.php:128
+msgid "Morocco"
+msgstr "Marruecos"
+
+#: locale.php:129
+msgid "Marshall Islands"
+msgstr "Islas Marshall"
+
+#: locale.php:130
+msgid "Martinique"
+msgstr "Martinica"
+
+#: locale.php:131
+msgid "Mauritania"
+msgstr "Mauritania"
+
+#: locale.php:132
+msgid "Mauritius"
+msgstr "Mauricio"
+
+#: locale.php:133
+msgid "Mayotte"
+msgstr "Mayotte"
+
+#: locale.php:134
+msgid "Mexico"
+msgstr "México"
+
+#: locale.php:135
+msgid "Micronesia"
+msgstr "Micronesia"
+
+#: locale.php:136
+msgid "Moldova"
+msgstr "Moldavia"
+
+#: locale.php:137
+msgid "Monaco"
+msgstr "Mónaco"
+
+#: locale.php:138
+msgid "Mongolia"
+msgstr "Mongolia"
+
+#: locale.php:139
+msgid "Montserrat"
+msgstr "Montserrat"
+
+#: locale.php:140
+msgid "Mozambique"
+msgstr "Mozambique"
+
+#: locale.php:141
+msgid "Myanmar"
+msgstr "Myanmar"
+
+#: locale.php:142
+msgid "Namibia"
+msgstr "Namibia"
+
+#: locale.php:143
+msgid "Nauru"
+msgstr "Nauru"
+
+#: locale.php:144
+msgid "Nepal"
+msgstr "Nepal"
+
+#: locale.php:145
+msgid "Nicaragua"
+msgstr "Nicaragua"
+
+#: locale.php:146
+msgid "Niger"
+msgstr "Níger"
+
+#: locale.php:147
+msgid "Nigeria"
+msgstr "Nigeria"
+
+#: locale.php:148
+msgid "Niue"
+msgstr "Niue"
+
+#: locale.php:149
+msgid "Norfolk Island"
+msgstr "Islas Norfolk"
+
+#: locale.php:150
+msgid "Norway"
+msgstr "Noruega"
+
+#: locale.php:151
+msgid "Ivory Coast"
+msgstr "Costa de Marfil"
+
+#: locale.php:152
+msgid "Oman"
+msgstr "Omán"
+
+#: locale.php:153
+msgid "Pakistan"
+msgstr "Pakistán"
+
+#: locale.php:154
+msgid "Palau"
+msgstr "Paláu"
+
+#: locale.php:155
+msgid "Panama"
+msgstr "Panamá"
+
+#: locale.php:156
+msgid "Papua New Guinea"
+msgstr "Papúa Nueva Guinea"
+
+#: locale.php:157
+msgid "Paraguay"
+msgstr "Paraguay"
+
+#: locale.php:158
+msgid "Peru"
+msgstr "Perú"
+
+#: locale.php:159
+msgid "Pitcairn"
+msgstr "Pitcairn"
+
+#: locale.php:160
+msgid "Northern Mariana Islands"
+msgstr "Islas Marianas del norte"
+
+#: locale.php:161
+msgid "Portugal"
+msgstr "Portugal"
+
+#: locale.php:162
+msgid "Puerto Rico"
+msgstr "Puerto Rico"
+
+#: locale.php:163
+msgid "Poland"
+msgstr "Polonia"
+
+#: locale.php:164
+msgid "Equatorial Guinea"
+msgstr "Guinea Ecuatorial"
+
+#: locale.php:165
+msgid "Qatar"
+msgstr "Qatar"
+
+#: locale.php:166
+msgid "France"
+msgstr "Francia"
+
+#: locale.php:167
+msgid "French Guiana"
+msgstr "Guinea Francesa"
+
+#: locale.php:168
+msgid "French Polynesia"
+msgstr "Polinesia Francesa"
+
+#: locale.php:169
+msgid "Reunion"
+msgstr "Reunión"
+
+#: locale.php:170
+msgid "Romania"
+msgstr "Rumanía"
+
+#: locale.php:171
+msgid "Rwanda"
+msgstr "Ruanda"
+
+#: locale.php:172
+msgid "Sweden"
+msgstr "Suecia"
+
+#: locale.php:173
+msgid "Saint Helena"
+msgstr "Santa Helena"
+
+#: locale.php:174
+msgid "Saint Kitts and Nevis"
+msgstr "Saint Kitts-Nevis"
+
+#: locale.php:175
+msgid "Saint Lucia"
+msgstr "Santa Lucía"
+
+#: locale.php:176
+msgid "St Vincent & the Grenadines"
+msgstr "San Vicente y las Granadinas"
+
+#: locale.php:177
+msgid "Saint Pierre and Miquelon"
+msgstr "Saint Pierre y Miquelon"
+
+#: locale.php:178
+msgid "Germany"
+msgstr "Alemania"
+
+#: locale.php:179
+msgid "Solomon Islands"
+msgstr "Islas Salomón"
+
+#: locale.php:180
+msgid "Zambia"
+msgstr "Zambia"
+
+#: locale.php:181
+msgid "Samoa"
+msgstr "Samoa"
+
+#: locale.php:182
+msgid "San Marino"
+msgstr "San Marino"
+
+#: locale.php:183
+msgid "Sao Tome and Principe"
+msgstr "Santo Tomás y Príncipe"
+
+#: locale.php:184
+msgid "Saudi Arabia"
+msgstr "Arabia Saudí"
+
+#: locale.php:185
+msgid "Senegal"
+msgstr "Senegal"
+
+#: locale.php:186
+msgid "Seychelles"
+msgstr "Seychelles"
+
+#: locale.php:187
+msgid "Sierra Leone"
+msgstr "Sierra Leona"
+
+#: locale.php:188
+msgid "Singapore"
+msgstr "Singapur"
+
+#: locale.php:189
+msgid "Slovakia"
+msgstr "Eslovaquia"
+
+#: locale.php:190
+msgid "Slovenia"
+msgstr "Eslovenia"
+
+#: locale.php:191
+msgid "Somalia"
+msgstr "Somalia"
+
+#: locale.php:192
+msgid "Sri Lanka"
+msgstr "Sri Lanka"
+
+#: locale.php:193
+msgid "Sudan"
+msgstr "Sudán"
+
+#: locale.php:194
+msgid "Finland"
+msgstr "Finlandia"
+
+#: locale.php:195
+msgid "Suriname"
+msgstr "Surinam"
+
+#: locale.php:196
+msgid "Swaziland"
+msgstr "Suazilandia"
+
+#: locale.php:197
+msgid "Switzerland"
+msgstr "Suiza"
+
+#: locale.php:198
+msgid "Syria"
+msgstr "Siria"
+
+#: locale.php:199
+msgid "Tajikistan"
+msgstr "Tayikistán"
+
+#: locale.php:200
+msgid "Taiwan"
+msgstr "Taiwán"
+
+#: locale.php:201
+msgid "Tanzania"
+msgstr "Tanzania"
+
+#: locale.php:202
+msgid "Denmark"
+msgstr "Dinamarca"
+
+#: locale.php:203
+msgid "Thailand"
+msgstr "Tailandia"
+
+#: locale.php:204
+msgid "Togo"
+msgstr "Togo"
+
+#: locale.php:205
+msgid "Tokelau"
+msgstr "Tokelau"
+
+#: locale.php:206
+msgid "Tonga"
+msgstr "Tonga"
+
+#: locale.php:207
+msgid "Trinidad and Tobago"
+msgstr "Trinidad y Tobago"
+
+#: locale.php:208
+msgid "Chad"
+msgstr "Chad"
+
+#: locale.php:209
+msgid "Czech Republic"
+msgstr "República Checa"
+
+#: locale.php:210
+msgid "Tunisia"
+msgstr "Túnez"
+
+#: locale.php:211
+msgid "Turkey"
+msgstr "Turquía"
+
+#: locale.php:212
+msgid "Turkmenistan"
+msgstr "Turkmenistán"
+
+#: locale.php:213
+msgid "Turks and Caicos Islands"
+msgstr "Islas Turcas y Caicos"
+
+#: locale.php:214
+msgid "Tuvalu"
+msgstr "Tuvalu"
+
+#: locale.php:215
+msgid "Uganda"
+msgstr "Uganda"
+
+#: locale.php:216
+msgid "Ukraine"
+msgstr "Ucrania"
+
+#: locale.php:217
+msgid "Hungary"
+msgstr "Hungría"
+
+#: locale.php:218
+msgid "Uruguay"
+msgstr "Uruguay"
+
+#: locale.php:219
+msgid "New Caledonia"
+msgstr "Nueva Caledonia"
+
+#: locale.php:220
+msgid "New Zealand"
+msgstr "Nueva Zelanda"
+
+#: locale.php:221
+msgid "Uzbekistan"
+msgstr "Uzbekistán"
+
+#: locale.php:222
+msgid "Belarus"
+msgstr "Bielorrusia"
+
+#: locale.php:223
+msgid "Wallis and Futuna"
+msgstr "Wallis y Futuna"
+
+#: locale.php:224
+msgid "Vanuatu"
+msgstr "Vanuatu"
+
+#: locale.php:225
+msgid "Vatican"
+msgstr "El Vaticano"
+
+#: locale.php:226
+msgid "Venezuela"
+msgstr "Venezuela"
+
+#: locale.php:227
+msgid "Russian Federation"
+msgstr "Federación Rusa"
+
+#: locale.php:228
+msgid "Vietnam"
+msgstr "Vietnam"
+
+#: locale.php:229
+msgid "Estonia"
+msgstr "Estonia"
+
+#: locale.php:230
+msgid "United States"
+msgstr "Estados Unidos"
+
+#: locale.php:231
+msgid "Virgin Islands, U.S."
+msgstr "Islas Vírgenes, EE. UU."
+
+#: locale.php:232
+msgid "Zimbabwe"
+msgstr "Zimbabue"
+
+#: locale.php:233
+msgid "Palestine"
+msgstr "Palestina"
+
+#: locale.php:234
+msgid "Antarctica"
+msgstr "Antártida"
+
+#: locale.php:235
+msgid "Bouvet Island"
+msgstr "Isla Bouvet"
+
+#: locale.php:236
+msgid "BIOT"
+msgstr ""
+
+#: locale.php:237
+msgid "S Georgia & S Sandwich"
+msgstr "Islas Georgia y Sandwich del Sur"
+
+#: locale.php:238
+msgid "Heard & McDonald Islands"
+msgstr "Islas Heard y McDonald"
+
+#: locale.php:239
+msgid "French Southern territories"
+msgstr "Territorios franceses del sur"
+
+#: locale.php:240
+msgid "US Minor Outlying Islands"
+msgstr "Islas Americanas Menores del Exterior"
+
+#: locale.php:241
+msgid "Guernsey"
+msgstr "Guernsey"
+
+#: locale.php:242
+msgid "Jersey"
+msgstr "Jersey"
+
+#: locale.php:243
+msgid "Isle of Man"
+msgstr "Isla de Man"
+
+#: locale.php:244
+msgid "Serbia and Montenegro"
+msgstr "Serbia y Montenegro"
+
+#: locale.php:245
+#: js/customers.js.php:29
+msgid "Unknown"
+msgstr "Desconocido"
+
+#: locale.php:246
+msgid "English"
+msgstr "Inglés"
+
+#: locale.php:247
+msgid "Spanish"
+msgstr "Español"
+
+#: locale.php:248
+msgid "German"
+msgstr "Alemán"
+
+#: locale.php:249
+msgid "French"
+msgstr "Francés"
+
+#: locale.php:250
+msgid "Czech"
+msgstr "Checo"
+
+#: locale.php:251
+msgid "Slovak"
+msgstr "Eslovaco"
+
+#: locale.php:252
+msgid "Chinese"
+msgstr "Chino"
+
+#: locale.php:253
+msgid "None"
+msgstr "Ninguno"
+
+#: locale.php:254
+msgid "Mr"
+msgstr "Sr"
+
+#: locale.php:255
+msgid "Mrs"
+msgstr "Sra"
+
+#: locale.php:256
+msgid "Miss"
+msgstr "Señorita"
+
+#: locale.php:257
+#: locale2.php:197
+#: locale2.php:1010
+#: locale2.php:1124
+#: js/contacts.js.php:48
+msgid "Telephone"
+msgstr "Teléfono"
+
+#: locale.php:258
+msgid "Work Telephone"
+msgstr "Teléfono (del trabajo)"
+
+#: locale.php:259
+#: locale2.php:731
+msgid "Mobile"
+msgstr "Móvil"
+
+#: locale.php:260
+msgid "Home Phone"
+msgstr "Teléfono de casa"
+
+#: locale.php:261
+#: locale2.php:56
+#: locale2.php:707
+#: locale2.php:710
+#: locale2.php:728
+msgid "Fax"
+msgstr "Fax"
+
+#: locale.php:262
+#: locale.php:265
+#: js/contacts.js.php:46
+msgid "Company"
+msgstr "Compañía"
+
+#: locale.php:263
+msgid "Sir"
+msgstr "Señor"
+
+#: locale.php:264
+msgid "Madam"
+msgstr "Señora"
+
+#: locale.php:266
+#: locale.php:267
+#, fuzzy
+msgid "Personal Customer"
+msgstr "Cliente clave"
+
+#: locale.php:268
+#, fuzzy
+msgid "Home Address"
+msgstr "Domicilio"
+
+#: locale.php:269
+#, fuzzy
+msgid "Work Address"
+msgstr "Dirección del trabajo"
+
+#: locale.php:270
+#, fuzzy
+msgid "Deliver Address"
+msgstr "Dirección de e-mail:"
+
+#: locale.php:271
+#, fuzzy
+msgid "Work Email"
+msgstr "Correo-e de trabajo"
+
+#: locale.php:272
+msgid "Personal Email"
+msgstr "Correo electrónico (Personal)"
+
+#: locale.php:273
+#, fuzzy
+msgid "Company Email"
+msgstr "Vía correo electrónico"
+
+#: locale.php:274
+msgid "item"
+msgstr "artículo"
+
+#: locale.php:275
+msgid "dozen"
+msgstr "Docena"
+
+#: locale.php:276
+msgid "gram"
+msgstr "gramo"
+
+#: locale.php:277
+msgid "miliLiter"
+msgstr ""
+
+#: locale.php:278
+msgid "Kilogram"
+msgstr "Kilogramo"
+
+#: locale.php:279
+msgid "Liter"
+msgstr "Litro"
+
+#: locale.php:281
+msgid "dn."
+msgstr "dc."
+
+#: locale.php:282
+msgid "g"
+msgstr "g"
+
+#: locale.php:283
+msgid "mL"
+msgstr "mL"
+
+#: locale.php:284
+#: assets_product.bk.php:23
+msgid "Kg"
+msgstr "Kg"
+
+#: locale.php:285
+msgid "L"
+msgstr "L"
+
+#: locale.php:286
+msgid "Proforma Invoice"
+msgstr "Pro-factura"
+
+#: locale.php:287
+msgid "Invoice"
+msgstr "Factura"
+
+#: locale.php:288
+#: locale2.php:434
+msgid "Samples"
+msgstr "Muestras"
+
+#: locale.php:289
+#, fuzzy
+msgid "Order Canceled "
+msgstr "Grabación cancelada."
+
+#: locale.php:290
+msgid "Purchase Order"
+msgstr "Orden de compra"
+
+#: locale.php:291
+#: locale2.php:851
+msgid "Deliver Note"
+msgstr "Nota de envio"
+
+#: locale.php:292
+#: locale2.php:431
+msgid "Cancelled"
+msgstr "Cancelado"
+
+#: locale.php:293
+msgid "Active"
+msgstr "Activo"
+
+#: locale.php:294
+msgid "Discontinued"
+msgstr "Descontinuado"
+
+#: locale.php:295
+#, fuzzy
+msgid "Unique"
+msgstr "Único"
+
+#: locale.php:296
+msgid "Inventory"
+msgstr "Inventario"
+
+#: locale.php:297
+msgid "Purchase"
+msgstr "Compra"
+
+#: locale.php:298
+msgid "Adjust"
+msgstr "Ajuste"
+
+#: locale.php:299
+msgid "Sale"
+msgstr "Venta"
+
+#: locale.php:300
+msgid "Posible Sale"
+msgstr ""
+
+#: assets_department.php:98
+#, fuzzy
+msgid "Product Families"
+msgstr "G_PRODUCT(valor;valor;...)"
+
+#: assets_department.php:113
+msgid "Family code"
+msgstr "Código de la familia"
+
+#: upload_inventory.php:385
+#, fuzzy
+msgid "Uploading new products file"
+msgstr "creado un nuevo fichero de configuración `%s'\n"
+
+#: order.php:12
+#, fuzzy
+msgid "Error, order not found"
+msgstr "%A link_order no encontrado\n"
+
+#: order.php:108
+#, fuzzy
+msgid "Order"
+msgstr "Orden"
+
+#: hresources.php:47
+#, fuzzy
+msgid "Staff List"
+msgstr "Listado de conversiones de tipo (casts)"
+
+#: assets_product.bk.php:13
+#: assets_product.bk.php:56
+msgid "Product"
+msgstr "Producto"
+
+#: assets_product.bk.php:20
+msgid "Units"
+msgstr "Unidades"
+
+#: assets_product.bk.php:20
+#, fuzzy
+msgid "unitstipo"
+msgid_plural "unitstipo"
+msgstr[0] "Túnez"
+msgstr[1] "Túnez"
+
+#: assets_product.bk.php:20
+msgid "per outer"
+msgstr "por outer"
+
+#: assets_product.bk.php:23
+msgid "Weight"
+msgstr "Peso"
+
+#: locale2.php:2
+#, fuzzy
+msgid "Id Search"
+msgstr "Resultados de la búsqueda"
+
+#: locale2.php:5
+#: locale2.php:8
+#, fuzzy
+msgid "Search"
+msgstr "Buscar"
+
+#: locale2.php:23
+#, fuzzy
+msgid "Staff"
+msgstr "Propiedades del pentagrama"
+
+#: locale2.php:26
+#, fuzzy
+msgid "Asserts Index"
+msgstr "elimina un índice"
+
+#: locale2.php:29
+#, fuzzy
+msgid "change to tree view"
+msgstr "Alternar a la vista de árbol"
+
+#: locale2.php:35
+#: locale2.php:227
+#: locale2.php:1103
+#, fuzzy
+msgid "Order Search"
+msgstr "Orden de las columnas del resultado de la búsqueda"
+
+#: locale2.php:38
+#: locale2.php:644
+#: locale2.php:1265
+#: report_sales.php:106
+#, fuzzy
+msgid "to"
+msgstr "hasta"
+
+#: locale2.php:41
+#: locale2.php:86
+#, fuzzy
+msgid "New Deliver Note"
+msgstr "Crear nota nueva"
+
+#: locale2.php:47
+#: locale2.php:323
+#: locale2.php:578
+#: locale2.php:803
+#: locale2.php:836
+#: js/upload_assets.js.php:65
+#: js/upload_assets.js.php:85
+#: js/upload_assets.js.php:105
+#: js/upload_assets.js.php:129
+#: js/upload_assets.js.php:153
+#: js/new_deliverynote.js.php:33
+#: js/assets_index.js.php:91
+#: js/assets_department.js.php:80
+#: js/assets_department.js.php:172
+#: js/assets_department.js.php:205
+#: js/porder.js.php:32
+#: js/suppliers.js.php:43
+#: js/supplier.js.php:40
+#: js/supplier.js.php:213
+#: js/invoice.js.php:48
+#: js/deliverynote.js.php:32
+msgid "Code"
+msgstr "Código"
+
+#: locale2.php:50
+#: locale2.php:1028
+#: locale2.php:1118
+#: locale2.php:1220
+#: locale2.php:1229
+#, fuzzy
+msgid "Contact"
+msgstr "Contacto"
+
+#: locale2.php:53
+#: locale2.php:701
+#: locale2.php:704
+#: locale2.php:725
+#, fuzzy
+msgid "Tel"
+msgstr "tel."
+
+#: locale2.php:59
+#: locale2.php:188
+#: locale2.php:674
+#: locale2.php:713
+#: locale2.php:734
+#: locale2.php:1031
+#: locale2.php:1127
+#: locale2.php:1223
+#: locale2.php:1232
+#: js/users.js.php:163
+#: js/contacts.js.php:47
+msgid "Email"
+msgstr "Correo electrónico"
+
+#: locale2.php:62
+#: locale2.php:509
+msgid "Outer Dimensions"
+msgstr "Dimensiones del Outer"
+
+#: locale2.php:65
+#: locale2.php:716
+#: locale2.php:1079
+#: locale2.php:1121
+#: locale2.php:1241
+#: locale2.php:1250
+msgid "Address"
+msgstr "Dirección"
+
+#: locale2.php:68
+#: locale2.php:344
+#: locale2.php:530
+#: locale2.php:602
+#: js/upload_assets.js.php:154
+msgid "Supplier"
+msgstr "Proveedor"
+
+#: locale2.php:71
+#: locale2.php:536
+msgid "Cost Price"
+msgstr "Precio de compra"
+
+#: locale2.php:74
+#: locale2.php:122
+#: locale2.php:308
+#: locale2.php:470
+#: locale2.php:512
+#: locale2.php:776
+#: js/assets_product.js.php:266
+#: js/assets_product.js.php:267
+#: js/new_deliverynote.js.php:43
+#: js/customer.js.php:29
+#: js/assets_index.js.php:90
+#: js/porder.js.php:42
+#: js/suppliers.js.php:239
+#: js/supplier.js.php:47
+#: js/assets_family.js.php:96
+#: js/assets_family.js.php:202
+#: js/assets_family.js.php:203
+#: js/deliverynote.js.php:42
+#: js/assets_tree.js.php:264
+#: js/assets_tree.js.php:495
+#: js/hresources.js.php:231
+msgid "Stock"
+msgstr "Inventario"
+
+#: locale2.php:77
+#: locale2.php:515
+#: js/assets_family.js.php:97
+msgid "Available"
+msgstr "Disponible"
+
+#: locale2.php:80
+#: locale2.php:518
+msgid "Next shipment"
+msgstr "Próxima Abastecimiento"
+
+#: locale2.php:83
+#: locale2.php:437
+#: locale2.php:746
+#, fuzzy
+msgid "Supplier Image"
+msgstr "Dirección de la imagen:"
+
+#: locale2.php:89
+#: locale2.php:863
+#: js/supplier.js.php:216
+msgid "Date Received"
+msgstr "Fecha de recepción"
+
+#: locale2.php:92
+#: locale2.php:857
+#, fuzzy
+msgid "Invoice Number"
+msgstr "&Número de bandas:"
+
+#: locale2.php:95
+#: locale2.php:860
+#, fuzzy
+msgid "Invoice Date"
+msgstr "Formato de fecha"
+
+#: locale2.php:98
+#, fuzzy
+msgid "Invoice Total"
+msgstr "Gran total"
+
+#: locale2.php:101
+msgid "Name Search"
+msgstr "búsqueda por nombre"
+
+#: locale2.php:107
+#: locale2.php:290
+#: locale2.php:440
+msgid "Next"
+msgstr "Siguiente"
+
+#: locale2.php:110
+#: locale2.php:293
+#: locale2.php:443
+msgid "Previous"
+msgstr "Anterior"
+
+#: locale2.php:113
+#: locale2.php:296
+#: locale2.php:446
+msgid "Up"
+msgstr "Arriba"
+
+#: locale2.php:116
+#: locale2.php:272
+#: locale2.php:299
+#: locale2.php:449
+#: locale2.php:749
+msgid "Product index"
+msgstr "índice de productos"
+
+#: locale2.php:119
+#: locale2.php:305
+#: locale2.php:773
+#: js/suppliers.js.php:239
+#: js/assets_tree.js.php:495
+#: js/hresources.js.php:231
+msgid "Basic"
+msgstr "Básico"
+
+#: locale2.php:128
+#: locale2.php:314
+#: locale2.php:467
+#: locale2.php:782
+#: js/assets_product.js.php:770
+msgid "Edit"
+msgstr "Editar"
+
+#: locale2.php:131
+msgid "Add Family"
+msgstr "Añadir Familia"
+
+#: locale2.php:134
+#: locale2.php:788
+#: locale2.php:794
+#, fuzzy
+msgid "Upload Products"
+msgstr "Productos domesticos"
+
+#: locale2.php:137
+#, fuzzy
+msgid "New Family"
+msgstr "Familia tipográfica"
+
+#: locale2.php:140
+#: locale2.php:152
+#: locale2.php:668
+#: locale2.php:698
+#: locale2.php:722
+#: js/upload_assets.js.php:66
+#: js/report_sales.js.php:99
+#: js/customers.js.php:59
+#: js/order.js.php:99
+#: js/users.js.php:162
+#: js/users.js.php:431
+#: js/suppliers.js.php:40
+#: js/suppliers.js.php:44
+#: js/contacts.js.php:45
+#: js/contacts.js.php:96
+#: js/assets_family.js.php:93
+#: js/assets_family.js.php:199
+#: js/assets_family.js.php:229
+#: js/assets_tree.js.php:110
+#: js/assets_tree.js.php:112
+#: js/assets_tree.js.php:263
+#: js/assets_tree.js.php:295
+#: js/hresources.js.php:40
+msgid "Name"
+msgstr "Nombre"
+
+#: locale2.php:146
+#: locale2.php:353
+#: locale2.php:809
+#: locale2.php:914
+#, fuzzy
+msgid "New Products from file"
+msgstr "no se puede leer [new] desde el archivo"
+
+#: locale2.php:149
+#: locale2.php:278
+#: locale2.php:356
+#: locale2.php:812
+#: locale2.php:818
+#: locale2.php:917
+#, fuzzy
+msgid "CVS File"
+msgstr "Añadir archivo a CVS"
+
+#: locale2.php:155
+#, fuzzy
+msgid "Full name:"
+msgstr "Nombre completo:"
+
+#: locale2.php:158
+#, fuzzy
+msgid "Nickname:"
+msgstr "Alias:"
+
+#: locale2.php:161
+#, fuzzy
+msgid "File Under:"
+msgstr "_Archivar como:"
+
+#: locale2.php:164
+#, fuzzy
+msgid "Mailing Address"
+msgstr "Dirección de correo"
+
+#: locale2.php:167
+#: locale2.php:1052
+#: locale2.php:1172
+#, fuzzy
+msgid "Internal"
+msgstr "Interno"
+
+#: locale2.php:170
+#: locale2.php:1055
+#: locale2.php:1175
+msgid "Bulding"
+msgstr ""
+
+#: locale2.php:173
+#: locale2.php:1058
+#: locale2.php:1178
+#, fuzzy
+msgid "Street"
+msgstr "Calle"
+
+#: locale2.php:176
+#: locale2.php:1061
+#: locale2.php:1181
+#, fuzzy
+msgid "Town/City"
+msgstr "Elegir ciudad"
+
+#: locale2.php:179
+#: locale2.php:1064
+#: locale2.php:1184
+#, fuzzy
+msgid "County"
+msgstr "Compañía"
+
+#: locale2.php:185
+#: locale2.php:1046
+#: locale2.php:1166
+#, fuzzy
+msgid "Country"
+msgstr "País"
+
+#: locale2.php:191
+#, fuzzy
+msgid "Work:"
+msgstr "Trabajo:"
+
+#: locale2.php:194
+#, fuzzy
+msgid "Personal:"
+msgstr "Personal"
+
+#: locale2.php:200
+#, fuzzy
+msgid "Work Phone:"
+msgstr "Teléf. trabajo:"
+
+#: locale2.php:206
+#, fuzzy
+msgid "Mobile:"
+msgstr "Móvil:"
+
+#: locale2.php:209
+#, fuzzy
+msgid "Home Phone:"
+msgstr "Teléf. casa:"
+
+#: locale2.php:212
+#, fuzzy
+msgid "Instant Messanging"
+msgstr "Actualización instantánea"
+
+#: locale2.php:215
+msgid "Skype:"
+msgstr "Skype:"
+
+#: locale2.php:218
+msgid "MNS:"
+msgstr "MNS:"
+
+#: locale2.php:221
+#, fuzzy
+msgid "Web Addresses"
+msgstr "<b>Página web</b>"
+
+#: locale2.php:224
+msgid "Home Page:"
+msgstr "Página internet"
+
+#: locale2.php:230
+#: locale2.php:257
+#: locale2.php:896
+#, fuzzy
+msgid "Order Cost"
+msgstr "Elemento de coste"
+
+#: locale2.php:233
+#: locale2.php:254
+#: locale2.php:899
+msgid "Credits"
+msgstr "Créditos"
+
+#: locale2.php:236
+#: locale2.php:260
+#: locale2.php:902
+msgid "Charges"
+msgstr "Cargos"
+
+#: locale2.php:239
+#: locale2.php:263
+#: locale2.php:881
+#: locale2.php:905
+msgid "Shipping"
+msgstr "Envio"
+
+#: locale2.php:242
+#: locale2.php:266
+#: locale2.php:908
+msgid "VAT"
+msgstr ""
+
+#: locale2.php:245
+#: locale2.php:269
+#: locale2.php:419
+#: locale2.php:893
+#: locale2.php:911
+#: js/orders.js.php:44
+#: js/report_sales.js.php:44
+#: js/customer.js.php:28
+#: js/customers.js.php:63
+#: js/index.js.php:49
+#: js/order.js.php:44
+#: js/supplier.js.php:220
+#: js/invoice.js.php:57
+msgid "Total"
+msgstr "Total"
+
+#: locale2.php:248
+msgid "Billing Address"
+msgstr "Dirección de facturación"
+
+#: locale2.php:251
+msgid "Delivery Address"
+msgstr "Dirección de envio"
+
+#: locale2.php:275
+msgid "Upload the file again (if need it)"
+msgstr ""
+
+#: locale2.php:281
+#: locale2.php:1151
+#: locale2.php:1157
+#: locale2.php:1187
+#: locale2.php:1205
+#: locale2.php:1226
+#: locale2.php:1244
+#: js/assets_product.js.php:484
+#: js/assets_product.js.php:513
+#: js/assets_department.js.php:374
+#: js/suppliers.js.php:193
+#: js/assets_family.js.php:410
+#: js/assets_tree.js.php:401
+#: js/hresources.js.php:185
+msgid "Submit"
+msgstr "Enviar"
+
+#: locale2.php:284
+msgid "List of contacts"
+msgstr "Lista de contactos"
+
+#: locale2.php:302
+msgid "Views"
+msgstr "Vistas"
+
+#: locale2.php:317
+msgid "Add Product"
+msgstr "Añadir producto"
+
+#: locale2.php:320
+msgid "New Product"
+msgstr "Nuevo Producto"
+
+#: locale2.php:329
+#: locale2.php:584
+#, fuzzy
+msgid "Units per Outer"
+msgstr "Unidades focales por mm"
+
+#: locale2.php:332
+#: locale2.php:587
+#, fuzzy
+msgid "Units per Carton"
+msgstr "Unidades focales por mm"
+
+#: locale2.php:335
+#: locale2.php:590
+#, fuzzy
+msgid "Type of Unit"
+msgstr "De unidad"
+
+#: locale2.php:338
+#: locale2.php:593
+msgid "Price Outer"
+msgstr "Precio Outer"
+
+#: locale2.php:341
+#, fuzzy
+msgid "Retail Price"
+msgstr "Precio casa: %1"
+
+#: locale2.php:347
+#: locale2.php:605
+#, fuzzy
+msgid "Supplier Product Code"
+msgstr "Código ISRC encontrado"
+
+#: locale2.php:350
+#: locale2.php:608
+#, fuzzy
+msgid "Supplier Price Unit"
+msgstr "&Unidad de página predefinida:"
+
+#: locale2.php:365
+#, fuzzy
+msgid "Orders Resume"
+msgstr "_Continuar actualización"
+
+#: locale2.php:371
+#, fuzzy
+msgid "Last Year Orders"
+msgstr "%<%%%c%> sólo produce los dos últimos dígitos del año"
+
+#: locale2.php:374
+#: locale2.php:740
+#, fuzzy
+msgid "Orders Value"
+msgstr "Valor predeterminado"
+
+#: locale2.php:377
+#, fuzzy
+msgid "Last Year Orders Value"
+msgstr "Valor de año no permitido: utilice 1-9999"
+
+#: locale2.php:380
+#, fuzzy
+msgid "%1"
+msgstr "%1"
+
+#: locale2.php:383
+#: locale2.php:1253
+#: js/table_common.js.php:199
+msgid "Hide items"
+msgstr "Ocultar elementos"
+
+#: locale2.php:386
+#: locale2.php:1256
+msgid "filter"
+msgstr "filtro"
+
+#: locale2.php:389
+#: locale2.php:1259
+#, fuzzy
+msgid "Loadding..."
+msgstr "Error cargando datos (%1)"
+
+#: locale2.php:392
+#: report_sales.php:95
+#, fuzzy
+msgid "Sales Report"
+msgstr "Creando informe..."
+
+#: locale2.php:395
+msgid "Month"
+msgstr "Mes"
+
+#: locale2.php:398
+#: locale2.php:404
+#: locale2.php:407
+msgid "Year"
+msgstr "Año"
+
+#: locale2.php:410
+#: locale2.php:641
+#: locale2.php:1262
+msgid "From"
+msgstr "De"
+
+#: locale2.php:413
+msgid "To"
+msgstr "A"
+
+#: locale2.php:416
+#, fuzzy
+msgid "Invoices"
+msgstr "Factura"
+
+#: locale2.php:422
+#: locale2.php:884
+msgid "Vat"
+msgstr "IVA"
+
+#: locale2.php:425
+msgid "Vat2"
+msgstr ""
+
+#: locale2.php:428
+#, fuzzy
+msgid "Proforma Invoices"
+msgstr "Pro-factura"
+
+#: locale2.php:452
+#, fuzzy
+msgid "Product Information"
+msgstr "Datos necesarios"
+
+#: locale2.php:455
+msgid "Details"
+msgstr "Detalles"
+
+#: locale2.php:464
+#: locale2.php:554
+msgid "Plots"
+msgstr "Gráficos"
+
+#: locale2.php:473
+#, fuzzy
+msgid "Edit General"
+msgstr "Editar propiedades generales"
+
+#: locale2.php:476
+#, fuzzy
+msgid "Edit Dimensions"
+msgstr "Dimensiones del pixel"
+
+#: locale2.php:479
+#, fuzzy
+msgid "Edit Details"
+msgstr "Editar detalles de la miniatura..."
+
+#: locale2.php:482
+msgid "Add Picture"
+msgstr "Añadir Imagen"
+
+#: locale2.php:485
+#: locale2.php:830
+#, fuzzy
+msgid "Add Supplier"
+msgstr "Crear categoría"
+
+#: locale2.php:488
+#: locale2.php:611
+msgid "Set Stock"
+msgstr "Actualizar Inventario"
+
+#: locale2.php:491
+msgid "Image"
+msgstr "Imagen"
+
+#: locale2.php:497
+#, fuzzy
+msgid "Units per outer"
+msgstr "Unidades focales por mm"
+
+#: locale2.php:500
+#, fuzzy
+msgid "Unit Weight"
+msgstr "Peso de la tipografía"
+
+#: locale2.php:503
+#, fuzzy
+msgid "Unit Dimensions"
+msgstr "Dimensiones del pixel"
+
+#: locale2.php:506
+#, fuzzy
+msgid "Outer Weight"
+msgstr "Peso de la tipografía"
+
+#: locale2.php:521
+msgid "Sell Price"
+msgstr "Precio de Vanta"
+
+#: locale2.php:524
+msgid "Sold Since"
+msgstr "En venta desde"
+
+#: locale2.php:527
+#, fuzzy
+msgid "w"
+msgstr "s"
+
+#: locale2.php:533
+#, fuzzy
+msgid "Supplier code"
+msgstr "Explorando  <code>%s</code>"
+
+#: locale2.php:539
+#, fuzzy
+msgid "No supplier set"
+msgstr "Ningún dispositivo seleccionado"
+
+#: locale2.php:542
+#: locale2.php:770
+#: js/assets_department.js.php:207
+#: js/assets_family.js.php:99
+#: js/assets_family.js.php:230
+msgid "Total Sales"
+msgstr "Ventas"
+
+#: locale2.php:545
+#, fuzzy
+msgid "Avg W Sales "
+msgstr "GETPIVOTDATA(BaseDeDatos; \"Ventas\")"
+
+#: locale2.php:548
+#, fuzzy
+msgid "Last Q Avg W Sales"
+msgstr "GETPIVOTDATA(BaseDeDatos; \"Ventas\")"
+
+#: locale2.php:551
+#, fuzzy
+msgid "Last Week Sales"
+msgstr "GETPIVOTDATA(BaseDeDatos; \"Ventas\")"
+
+#: locale2.php:557
+#, fuzzy
+msgid "W Avg Sales"
+msgstr "GETPIVOTDATA(BaseDeDatos; \"Ventas\")"
+
+#: locale2.php:560
+#, fuzzy
+msgid "W Avg Orders"
+msgstr "Transferencia de bits media: %5.1f"
+
+#: locale2.php:563
+#, fuzzy
+msgid "W Avg SpO"
+msgstr "Transferencia de bits media: %5.1f"
+
+#: locale2.php:566
+#, fuzzy
+msgid "M Avg Sales"
+msgstr "GETPIVOTDATA(BaseDeDatos; \"Ventas\")"
+
+#: locale2.php:569
+#, fuzzy
+msgid "M Avg Orders"
+msgstr "Transferencia de bits media: %5.1f"
+
+#: locale2.php:572
+#, fuzzy
+msgid "M Avg SpO"
+msgstr "Transferencia de bits media: %5.1f"
+
+#: locale2.php:575
+#, fuzzy
+msgid "Edit Product"
+msgstr "G_PRODUCT(valor;valor;...)"
+
+#: locale2.php:596
+#, fuzzy
+msgid "Unit Retail Price"
+msgstr "Name=Cita de precios"
+
+#: locale2.php:599
+#, fuzzy
+msgid "Add to supplier"
+msgstr "Añadir palabra a"
+
+#: locale2.php:614
+#: js/assets_product.js.php:154
+#: js/assets_product.js.php:207
+#: js/assets_product.js.php:269
+#: js/customer.js.php:27
+#: js/index.js.php:47
+msgid "Date"
+msgstr "Fecha"
+
+#: locale2.php:617
+#, fuzzy
+msgid "Time"
+msgstr "Duración"
+
+#: locale2.php:620
+#, fuzzy
+msgid "Checked by"
+msgstr "Entradas de %s"
+
+#: locale2.php:623
+#, fuzzy
+msgid "Number of Outers"
+msgstr "&Número de bandas:"
+
+#: locale2.php:626
+#, fuzzy
+msgid "Upload a picture"
+msgstr "Película"
+
+#: locale2.php:629
+msgid "Caption"
+msgstr "Título"
+
+#: locale2.php:632
+msgid "File"
+msgstr "Archivo"
+
+#: locale2.php:635
+msgid "Product Details"
+msgstr "Detalles del producto"
+
+#: locale2.php:647
+msgid "Go"
+msgstr "Ir"
+
+#: locale2.php:650
+#, fuzzy
+msgid "Users Administration"
+msgstr "Comment=Administración de usuarios y grupos"
+
+#: locale2.php:653
+#, fuzzy
+msgid "Edit Options"
+msgstr "Editar opciones"
+
+#: locale2.php:656
+msgid "Add User"
+msgstr "Añadir usuario"
+
+#: locale2.php:659
+msgid "Edit Users"
+msgstr "Editar usuarios"
+
+#: locale2.php:662
+#, fuzzy
+msgid "New user"
+msgstr "Crear usuario nuevo"
+
+#: locale2.php:665
+#: js/users.js.php:161
+#: js/users.js.php:490
+msgid "Handle"
+msgstr "Identificador"
+
+#: locale2.php:671
+msgid "Surname"
+msgstr "Apellidos"
+
+#: locale2.php:677
+#: js/users.js.php:164
+msgid "Language"
+msgstr "Idioma"
+
+#: locale2.php:680
+msgid "Activate Account"
+msgstr "Cuenta Activa:"
+
+#: locale2.php:683
+msgid "Yes"
+msgstr "Sí"
+
+#: locale2.php:686
+msgid "No"
+msgstr "No"
+
+#: locale2.php:689
+#: js/users.js.php:165
+msgid "Groups"
+msgstr "Grupos"
+
+#: locale2.php:695
+#, fuzzy
+msgid "Trade Name"
+msgstr "Nombre del blog"
+
+#: locale2.php:743
+#, fuzzy
+msgid "Orders Interval"
+msgstr "Intervalo de pin_g:"
+
+#: locale2.php:755
+msgid "Products Overview"
+msgstr "Generalidades del Producto"
+
+#: locale2.php:758
+msgid "Number of Products"
+msgstr "Numero de Productos"
+
+#: locale2.php:761
+msgid "Number of Families"
+msgstr "Numero de Familias"
+
+#: locale2.php:764
+msgid "Number of Departments"
+msgstr "Numero de departamentos"
+
+#: locale2.php:767
+#: js/assets_department.js.php:173
+#: js/assets_family.js.php:98
+msgid "Stock Value"
+msgstr "Valor del inventario"
+
+#: locale2.php:785
+msgid "Add Department"
+msgstr "Añadir Departamento"
+
+#: locale2.php:791
+msgid "You can also insert departments, families and products  from a csv file. Download the <a href=\"templates.php?in=root\">template</a>, edit it,  upload it and voila!"
+msgstr ""
+
+#: locale2.php:797
+#, fuzzy
+msgid "Upload Inventory"
+msgstr "Subir &raquo;"
+
+#: locale2.php:800
+#, fuzzy
+msgid "New Department"
+msgstr "Subdepartamento"
+
+#: locale2.php:806
+#: locale2.php:839
+msgid "Full Name"
+msgstr "Nombre completo"
+
+#: locale2.php:815
+#, fuzzy
+msgid "Inventory file"
+msgstr "Borrar archivo"
+
+#: locale2.php:827
+#, fuzzy
+msgid "Edit Suppliers"
+msgstr "Editar categoría"
+
+#: locale2.php:833
+#, fuzzy
+msgid "New Supplier"
+msgstr "Nueva página"
+
+#: locale2.php:842
+msgid "To add items download this <a href=\"templates_dn.php\">template</a>, and upload it."
+msgstr ""
+
+#: locale2.php:845
+#, fuzzy
+msgid "Upload Items"
+msgstr "Publicar elementos del proyecto..."
+
+#: locale2.php:848
+#, fuzzy
+msgid "Submit Deliver Note"
+msgstr "Leer nota %1 de %2"
+
+#: locale2.php:854
+#: js/upload_assets.js.php:155
+#: js/customer.js.php:60
+#: js/supplier.js.php:175
+#: js/supplier.js.php:270
+msgid "Supplier Code"
+msgstr "Código del Proveedor"
+
+#: locale2.php:866
+#, fuzzy
+msgid "Products to sell (old)"
+msgstr "nº de respaldos antiguos que conservar:"
+
+#: locale2.php:869
+#, fuzzy
+msgid "Products to sell (new)"
+msgstr "Saltar al nuevo elemento"
+
+#: locale2.php:875
+msgid "Total Products"
+msgstr "Numero de Productos"
+
+#: locale2.php:878
+msgid "Goods"
+msgstr ""
+
+#: locale2.php:890
+#, fuzzy
+msgid "Diff"
+msgstr "Diff"
+
+#: locale2.php:920
+msgid "Code Search"
+msgstr "Buscar por código"
+
+#: locale2.php:923
+msgid "Powered by Kaktus"
+msgstr "Generado por Kaktus"
+
+#: locale2.php:926
+#: locale2.php:1106
+#, fuzzy
+msgid "List of customers"
+msgstr "Listado de conversiones de tipo (casts)"
+
+#: locale2.php:929
+#: locale2.php:1109
+#, fuzzy
+msgid "Contacts List"
+msgstr "No se puede guardar la lista de contactos"
+
+#: locale2.php:932
+#: locale2.php:1112
+#, fuzzy
+msgid "Add Contact"
+msgstr "Añadir contacto"
+
+#: locale2.php:938
+#, fuzzy
+msgid "New contact"
+msgstr "Nuevo contacto..."
+
+#: locale2.php:941
+msgid "Addresses"
+msgstr "Direcciones"
+
+#: locale2.php:944
+msgid "Telephones"
+msgstr "Teléfonos"
+
+#: locale2.php:947
+msgid "Emails"
+msgstr "Correos electrónicos"
+
+#: locale2.php:950
+#, fuzzy
+msgid "Web sites"
+msgstr "Name=Sitios web"
+
+#: locale2.php:953
+#, fuzzy
+msgid "Chose type of contact"
+msgstr "Tipo de dirección de correo-e 1 del contacto"
+
+#: locale2.php:956
+#: js/contacts.js.php:28
+#: js/contacts.js.php:30
+#, fuzzy
+msgid "Person"
+msgstr "Persona: %1"
+
+#: locale2.php:959
+#, fuzzy
+msgid "Business"
+msgstr "Negocios"
+
+#: locale2.php:962
+#: locale2.php:971
+#: locale2.php:1160
+#, fuzzy
+msgid "Add Address"
+msgstr "Añadir dirección"
+
+#: locale2.php:965
+#: locale2.php:1190
+#, fuzzy
+msgid "Add Telephone"
+msgstr "Vía telefónica"
+
+#: locale2.php:968
+#: locale2.php:1214
+#, fuzzy
+msgid "Add Email"
+msgstr "Añadir correo-e"
+
+#: locale2.php:974
+#: locale2.php:1235
+#, fuzzy
+msgid "Add Web Site"
+msgstr "Usar un sitio web"
+
+#: locale2.php:977
+#, fuzzy
+msgid "Add a contact to this company"
+msgstr "[Añadir este contacto a la libreta de direcciones]"
+
+#: locale2.php:980
+#: locale2.php:1139
+#, fuzzy
+msgid "Prefix"
+msgstr "Prefijo"
+
+#: locale2.php:983
+#: locale2.php:1142
+#, fuzzy
+msgid "First Name"
+msgstr "Nombre"
+
+#: locale2.php:986
+#: locale2.php:1145
+#, fuzzy
+msgid "Last Name"
+msgstr "Apellidos"
+
+#: locale2.php:989
+#: locale2.php:1148
+#, fuzzy
+msgid "Suffix"
+msgstr "Sufijo:"
+
+#: locale2.php:992
+msgid "Not now"
+msgstr "No ahora"
+
+#: locale2.php:995
+#: locale2.php:1022
+#: locale2.php:1040
+#: locale2.php:1073
+#: locale2.php:1085
+#: locale2.php:1094
+msgid "Ok"
+msgstr "Aceptar"
+
+#: locale2.php:998
+#, fuzzy
+msgid "Adding a telephone to the contact"
+msgstr "Añadiendo contacto al servidor LDAP…"
+
+#: locale2.php:1001
+#: locale2.php:1193
+#: locale2.php:1208
+#: locale2.php:1217
+#, fuzzy
+msgid "Type of Number"
+msgstr "número,tipo"
+
+#: locale2.php:1004
+#, fuzzy
+msgid "Company Area"
+msgstr "Área &JavaScript"
+
+#: locale2.php:1007
+#: locale2.php:1196
+msgid "Country Code"
+msgstr "Código de país"
+
+#: locale2.php:1013
+#: locale2.php:1202
+#, fuzzy
+msgid "Extention"
+msgstr "Atención"
+
+#: locale2.php:1016
+#: locale2.php:1034
+#: locale2.php:1067
+msgid "Skip"
+msgstr "Evitar"
+
+#: locale2.php:1019
+#: locale2.php:1037
+#: locale2.php:1070
+#: locale2.php:1082
+#: locale2.php:1097
+#: js/upload_assets.js.php:199
+#: js/assets_product.js.php:485
+#: js/assets_product.js.php:499
+#: js/assets_product.js.php:514
+#: js/assets_product.js.php:527
+#: js/assets_product.js.php:541
+#: js/new_deliverynote.js.php:120
+#: js/assets_department.js.php:375
+#: js/assets_department.js.php:390
+#: js/porder.js.php:119
+#: js/suppliers.js.php:194
+#: js/supplier.js.php:349
+#: js/assets_family.js.php:411
+#: js/assets_family.js.php:426
+#: js/deliverynote.js.php:119
+#: js/assets_tree.js.php:402
+#: js/assets_tree.js.php:417
+#: js/hresources.js.php:186
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: locale2.php:1025
+#, fuzzy
+msgid "Type of Email"
+msgstr "Tipo de dirección de correo-e 1 del contacto"
+
+#: locale2.php:1043
+#: locale2.php:1163
+#, fuzzy
+msgid "Type of Address"
+msgstr "Teclee la dirección"
+
+#: locale2.php:1076
+#: locale2.php:1238
+#, fuzzy
+msgid "Website Name"
+msgstr "Name=Validadores de sitios web"
+
+#: locale2.php:1088
+#, fuzzy
+msgid "Write the name of the company"
+msgstr "Name=Demonio de escritura de KDE"
+
+#: locale2.php:1091
+#: locale2.php:1154
+#, fuzzy
+msgid "Company Name"
+msgstr "Nombre de la compañía"
+
+#: locale2.php:1100
+#: js/assets_product.js.php:541
+msgid "Save"
+msgstr "Guardar"
+
+#: locale2.php:1115
+#, fuzzy
+msgid "New personal contact"
+msgstr "Crea un contacto nuevo"
+
+#: locale2.php:1130
+#, fuzzy
+msgid "www"
+msgstr "Servidor WWW"
+
+#: locale2.php:1133
+msgid "Notes"
+msgstr "Notas"
+
+#: locale2.php:1136
+msgid "Picture"
+msgstr "Imagen"
+
+#: locale2.php:1199
+#, fuzzy
+msgid "Telephone Number"
+msgstr "Número de teléfono"
+
+#: locale2.php:1211
+#: js/orders.js.php:39
+#: js/assets_product.js.php:151
+#: js/assets_product.js.php:204
+#: js/report_sales.js.php:39
+#: js/customer.js.php:25
+#: js/index.js.php:45
+#: js/order.js.php:39
+#, fuzzy
+msgid "Number"
+msgstr "Número"
+
+#: locale2.php:1247
+#, fuzzy
+msgid "Type of Web Site"
+msgstr "Usar un sitio web"
+
+#: locale2.php:1268
+#, fuzzy
+msgid "All"
+msgstr "Todo"
+
+#: report_sales.php:21
+#, fuzzy
+msgid "Monthly Sales Report"
+msgstr "Eliminar elementos del informe"
+
+#: report_sales.php:39
+#, fuzzy
+msgid "Weekly Sales Report"
+msgstr "Eliminar elementos del informe"
+
+#: report_sales.php:53
+#, fuzzy
+msgid "Yearly Sales Report"
+msgstr "Eliminar elementos del informe"
+
+#: report_sales.php:102
+msgid "All orders"
+msgstr "Todos los pedidos"
+
+#: report_sales.php:109
+#: js/index.js.php:48
+#, fuzzy
+msgid "Since"
+msgstr " desde %1"
+
+#: report_sales.php:113
+#, fuzzy
+msgid "Up to"
+msgstr "Actualizado"
+
+#: js/upload_assets.js.php:20
+#: js/upload_assets.js.php:27
+#: js/upload_assets.js.php:34
+#: js/upload_assets.js.php:41
+#: js/upload_assets.js.php:48
+#, fuzzy
+msgid "Attention"
+msgstr "Atención"
+
+#: js/upload_assets.js.php:107
+#, fuzzy
+msgid "U/outer"
+msgstr "Diente exterior"
+
+#: js/upload_assets.js.php:108
+msgid "U/c"
+msgstr ""
+
+#: js/upload_assets.js.php:109
+#, fuzzy
+msgid "Unit Type"
+msgstr "Tipo compuesto «%s.%s»"
+
+#: js/upload_assets.js.php:110
+#, fuzzy
+msgid "Price/o"
+msgstr "Precio: %1"
+
+#: js/upload_assets.js.php:111
+msgid "RRP"
+msgstr "PVP"
+
+#: js/upload_assets.js.php:112
+#, fuzzy
+msgid "Exp Code"
+msgstr "Explorando  <code>%s</code>"
+
+#: js/upload_assets.js.php:130
+msgid "Wu"
+msgstr ""
+
+#: js/upload_assets.js.php:131
+#, fuzzy
+msgid "Du"
+msgstr "Du_plicar"
+
+#: js/upload_assets.js.php:132
+#, fuzzy
+msgid "Wo"
+msgstr "Por las _dos caras:"
+
+#: js/upload_assets.js.php:133
+#, fuzzy
+msgid "Do"
+msgstr "Hacer"
+
+#: js/upload_assets.js.php:134
+msgid "Wc"
+msgstr ""
+
+#: js/upload_assets.js.php:135
+#, fuzzy
+msgid "Dc"
+msgstr "%dC"
+
+#: js/upload_assets.js.php:156
+#, fuzzy
+msgid "Buying Price"
+msgstr "Precio casa: %1"
+
+#: js/upload_assets.js.php:198
+#: js/assets_product.js.php:498
+#: js/assets_product.js.php:527
+#: js/assets_department.js.php:389
+#: js/assets_family.js.php:425
+#: js/assets_tree.js.php:416
+msgid "Upload"
+msgstr "Subir"
+
+#: js/orders.js.php:24
+#: js/report_sales.js.php:24
+#: js/index.js.php:27
+#: js/order.js.php:24
+msgid "Error, no customer name"
+msgstr "Error, el cliente no tiene nombre"
+
+#: js/orders.js.php:40
+#: js/assets_product.js.php:152
+#: js/assets_product.js.php:205
+#: js/report_sales.js.php:40
+#: js/customer.js.php:26
+#: js/order.js.php:40
+msgid "Type"
+msgstr "Tipo"
+
+#: js/orders.js.php:41
+#: js/assets_product.js.php:153
+#: js/assets_product.js.php:206
+#: js/report_sales.js.php:41
+#: js/index.js.php:46
+#: js/order.js.php:41
+msgid "Customer"
+msgstr "Cliente"
+
+#: js/orders.js.php:42
+#: js/report_sales.js.php:42
+#: js/order.js.php:42
+#: js/invoice.js.php:55
+#, fuzzy
+msgid "Fecha"
+msgstr "Francés"
+
+#: js/orders.js.php:103
+msgid "Maximum Days Since"
+msgstr "Intervalo máximo desde (días)"
+
+#: js/orders.js.php:104
+msgid "Minumum Days Since"
+msgstr "Intervalo Mínimo (días)"
+
+#: js/orders.js.php:105
+msgid "Max Value"
+msgstr "Valor máximo"
+
+#: js/orders.js.php:106
+msgid "Minumum Value"
+msgstr "Valor mínimo"
+
+#: js/orders.js.php:106
+msgid "Min Value"
+msgstr "Valor Mín"
+
+#: js/orders.js.php:186
+msgid "Cannot select a date before 1/1/2006 or after 12/31/2008"
+msgstr ""
+
+#: js/orders.js.php:193
+#: js/orders.js.php:204
+#, fuzzy
+msgid "Choose a date"
+msgstr "Elegir una nueva fecha"
+
+#: js/assets_product.js.php:32
+#, fuzzy
+msgid "Image not found"
+msgstr "No se encontró el archivo de imagen «%s».\n"
+
+#: js/assets_product.js.php:155
+#: js/assets_product.js.php:210
+#: js/invoice.js.php:50
+msgid "Dispached"
+msgstr "Despachado"
+
+#: js/assets_product.js.php:156
+#: js/assets_product.js.php:214
+msgid "Undispached"
+msgstr "No despachado"
+
+#: js/assets_product.js.php:211
+#, fuzzy
+msgid "To Dispach"
+msgstr "Volver a %s"
+
+#: js/assets_product.js.php:215
+#: js/invoice.js.php:53
+#, fuzzy
+msgid "Charged"
+msgstr "%1% cargado"
+
+#: js/assets_product.js.php:268
+#, fuzzy
+msgid "Operation"
+msgstr "Operación"
+
+#: js/assets_product.js.php:732
+#, fuzzy
+msgid "Editing"
+msgstr "Edición"
+
+#: js/new_deliverynote.js.php:32
+#: js/porder.js.php:31
+#: js/deliverynote.js.php:31
+msgid "Our Code"
+msgstr "Nuestro Cógido"
+
+#: js/new_deliverynote.js.php:36
+#: js/new_deliverynote.js.php:44
+#: js/porder.js.php:35
+#: js/porder.js.php:43
+#: js/supplier.js.php:48
+#: js/deliverynote.js.php:35
+#: js/deliverynote.js.php:43
+msgid "Cost Price Unit"
+msgstr "Precio unitario"
+
+#: js/new_deliverynote.js.php:37
+#: js/porder.js.php:36
+#: js/deliverynote.js.php:36
+msgid "Unit Ordered"
+msgstr "Unidades ordenadas"
+
+#: js/new_deliverynote.js.php:38
+#: js/porder.js.php:37
+#: js/deliverynote.js.php:37
+#, fuzzy
+msgid "Unit Received"
+msgstr "%u DSACK recibidos"
+
+#: js/new_deliverynote.js.php:39
+#: js/porder.js.php:38
+#: js/invoice.js.php:51
+#: js/deliverynote.js.php:38
+msgid "Cost"
+msgstr "Coste"
+
+#: js/new_deliverynote.js.php:119
+#: js/porder.js.php:118
+#: js/deliverynote.js.php:118
+msgid "Update"
+msgstr "Actualizar"
+
+#: js/report_sales.js.php:99
+#: js/order.js.php:99
+#, fuzzy
+msgid "Order name"
+msgstr "Orden de resolución de nombres"
+
+#: js/report_sales.js.php:100
+#: js/order.js.php:100
+#: js/contacts.js.php:97
+msgid "Post Code"
+msgstr "Código Postal"
+
+#: js/assets_index.js.php:96
+#, fuzzy
+msgid "Week Sales"
+msgstr "&Día de la semana"
+
+#: js/customers.js.php:56
+#, fuzzy
+msgid "Tax Num"
+msgstr "Trabajo número"
+
+#: js/customers.js.php:60
+msgid "Location"
+msgstr "Ubicación"
+
+#: js/customers.js.php:61
+msgid "Last Order"
+msgstr "Último pedido"
+
+#: js/customers.js.php:121
+#: js/contacts.js.php:96
+#, fuzzy
+msgid "Customer name"
+msgstr "Nombre del blog"
+
+#: js/customers.js.php:125
+#, fuzzy
+msgid "Maximum Orders"
+msgstr "Tamaño máximo: %s"
+
+#: js/customers.js.php:126
+#, fuzzy
+msgid "Minumum Orders"
+msgstr "Pedidos"
+
+#: js/customers.js.php:127
+#, fuzzy
+msgid "Maximum Total"
+msgstr "Gran total"
+
+#: js/customers.js.php:128
+#, fuzzy
+msgid "Minumum Total"
+msgstr "Gran total"
+
+#: js/customers.js.php:129
+msgid "Maximum Days Since Last Order"
+msgstr ""
+
+#: js/customers.js.php:130
+msgid "Minumum Days Since Last Order"
+msgstr ""
+
+#: js/index.js.php:34
+msgid "days"
+msgstr "días"
+
+#: js/index.js.php:106
+#, fuzzy
+msgid "Maximum Days Interval"
+msgstr "Intervalo de la copia de seguridad (días):"
+
+#: js/index.js.php:107
+#, fuzzy
+msgid "Minumum Days Interval"
+msgstr "Intervalo de la copia de seguridad (días):"
+
+#: js/assets_department.js.php:174
+#: js/assets_department.js.php:206
+#: js/suppliers.js.php:45
+#: js/suppliers.js.php:50
+#: js/assets_tree.js.php:114
+#: js/assets_tree.js.php:265
+#: js/hresources.js.php:47
+msgid "Products"
+msgstr "Productos"
+
+#: js/assets_department.js.php:175
+#: js/suppliers.js.php:47
+msgid "Out of Stock"
+msgstr "Agotado"
+
+#: js/assets_department.js.php:176
+msgid "Error in Stock"
+msgstr "Error inventario"
+
+#: js/assets_department.js.php:208
+#: js/assets_family.js.php:231
+#, fuzzy
+msgid "Sales (1y)"
+msgstr "GETPIVOTDATA(BaseDeDatos; \"Ventas\")"
+
+#: js/assets_department.js.php:209
+#: js/assets_family.js.php:232
+#, fuzzy
+msgid "Sales (1q)"
+msgstr "GETPIVOTDATA(BaseDeDatos; \"Ventas\")"
+
+#: js/assets_department.js.php:210
+#: js/assets_family.js.php:101
+#: js/assets_family.js.php:233
+#, fuzzy
+msgid "Sales (1m)"
+msgstr "Sección 1m"
+
+#: js/assets_department.js.php:211
+#: js/assets_family.js.php:234
+#, fuzzy
+msgid "Avg Sales (w)"
+msgstr "GETPIVOTDATA(BaseDeDatos; \"Ventas\")"
+
+#: js/users.js.php:60
+#: js/users.js.php:75
+#, fuzzy
+msgid "Confirm Password"
+msgstr "Confirmar contraseña:"
+
+#: js/users.js.php:75
+#, fuzzy
+msgid "Write the new password"
+msgstr "[%s] Tu nueva contraseña"
+
+#: js/users.js.php:75
+#, fuzzy
+msgid "Password Meter"
+msgstr "Medidor de la seguridad de las contraseñas:"
+
+#: js/users.js.php:99
+#, fuzzy
+msgid "very weak"
+msgstr "Clave débil"
+
+#: js/users.js.php:104
+#, fuzzy
+msgid "weak"
+msgstr "Débil"
+
+#: js/users.js.php:109
+#, fuzzy
+msgid "still weak"
+msgstr "Clave débil"
+
+#: js/users.js.php:114
+#, fuzzy
+msgid "strong"
+msgstr "fuerte"
+
+#: js/users.js.php:119
+msgid "stronger"
+msgstr ""
+
+#: js/users.js.php:149
+msgid "Are you sure you want to delete this user?<br/> If so press OK"
+msgstr "Estas seguro de borrar este usuario?"
+
+#: js/users.js.php:159
+#: js/users.js.php:281
+#, fuzzy
+msgid "Activate"
+msgstr "Activar"
+
+#: js/users.js.php:159
+msgid "Desactivate"
+msgstr "Desactivado"
+
+#: js/users.js.php:267
+msgid "Passwort too week, try again"
+msgstr "La contraseña es muy débil, intenta de nuevo"
+
+#: js/users.js.php:271
+#, fuzzy
+msgid "Passwords do not match, reconfirm"
+msgstr "Lo siento, las contraseñas no coinciden"
+
+#: js/users.js.php:380
+msgid "Group"
+msgstr "Grupo"
+
+#: js/users.js.php:432
+msgid "Rights"
+msgstr "Derechos"
+
+#: js/users.js.php:490
+msgid "A new user has been added to the database"
+msgstr "Un nuevo usuario a sido agregado a la base de datos"
+
+#: js/users.js.php:505
+#, fuzzy
+msgid "New user password"
+msgstr "Actualizar contraseña del usuario"
+
+#: js/users.js.php:571
+#, fuzzy
+msgid "Please enter the name of the user"
+msgstr "Introduzca un nombre de usuario FTP."
+
+#: js/users.js.php:574
+#, fuzzy
+msgid "Please enter a valid email"
+msgstr "Error: por favor, escribe un e-mail válido."
+
+#: js/table_common.js.php:11
+#, fuzzy
+msgid "No records found"
+msgstr "No se encontraron registros válidos."
+
+#: js/table_common.js.php:12
+#, fuzzy
+msgid "Data error"
+msgstr "Error cargando datos (%1)"
+
+#: js/table_common.js.php:13
+#, fuzzy
+msgid "Loading data"
+msgstr "Error cargando datos (%1)"
+
+#: js/table_common.js.php:205
+#, fuzzy
+msgid "Show items"
+msgstr "Mostrar todos los elementos"
+
+#: js/table_common.js.php:367
+#, fuzzy
+msgid "Showing"
+msgstr "Mostrando el escritorio: %s\n"
+
+#: js/table_common.js.php:367
+msgid "of"
+msgstr "de"
+
+#: js/suppliers.js.php:46
+#, fuzzy
+msgid "Low Stock"
+msgstr "Papel cartulina"
+
+#: js/suppliers.js.php:49
+#: js/assets_tree.js.php:113
+#: js/hresources.js.php:46
+msgid "Families"
+msgstr "Familias"
+
+#: js/suppliers.js.php:257
+#: js/assets_tree.js.php:527
+#: js/hresources.js.php:249
+msgid "Edit Mode"
+msgstr "Modo Edición"
+
+#: js/suppliers.js.php:258
+#: js/hresources.js.php:250
+#, fuzzy
+msgid "Add Supplier (Manually)"
+msgstr "Número ingresado manualmente"
+
+#: js/suppliers.js.php:259
+#: js/hresources.js.php:251
+#, fuzzy
+msgid "Add Supplier (From file)"
+msgstr "  \\i ARCHIVO      ejecutar comandos desde archivo\n"
+
+#: js/contacts.js.php:32
+msgid "Bussiness"
+msgstr "Empresa"
+
+#: js/contacts.js.php:271
+msgid "Please write the web page address"
+msgstr "Por favor, escriba la dirección de la pagina electrónica "
+
+#: js/contacts.js.php:276
+#, fuzzy
+msgid "Invalid web page address"
+msgstr "Dirección de la página de inicio del usuario."
+
+#: js/contacts.js.php:315
+#, fuzzy
+msgid "Please write the email address"
+msgstr "Introduzca la dirección de correo-e, por favor."
+
+#: js/contacts.js.php:320
+#, fuzzy
+msgid "Invalid email"
+msgstr "%1: dirección de correo electrónico no válida"
+
+#: js/contacts.js.php:361
+#, fuzzy
+msgid "Please write the telephone number"
+msgstr "Por favor introduzca un número de fallo"
+
+#: js/contacts.js.php:366
+#, fuzzy
+msgid "Invalid number"
+msgstr "Número no válido"
+
+#: js/contacts.js.php:413
+msgid "Please write down the building or street"
+msgstr ""
+
+#: js/contacts.js.php:421
+#, fuzzy
+msgid "Please write down the city or region"
+msgstr "Introduzca la información."
+
+#: js/contacts.js.php:477
+#, fuzzy
+msgid "Please write down first name"
+msgstr "Introduzca su nombre y apellidos:"
+
+#: js/contacts.js.php:587
+msgid "Please write down the company name"
+msgstr ""
+
+#: js/contacts.js.php:613
+#, fuzzy
+msgid "Company Telephone"
+msgstr "Vía telefónica"
+
+#: js/contacts.js.php:614
+#, fuzzy
+msgid "Contact Direct Phone"
+msgstr "Teléfono móvil"
+
+#: js/contacts.js.php:615
+#, fuzzy
+msgid "Contact Mobil Phone"
+msgstr "Teléfono móvil"
+
+#: js/contacts.js.php:617
+#, fuzzy
+msgid "Company Fax"
+msgstr "Modo de fax:"
+
+#: js/contacts.js.php:969
+msgid "Edit Name"
+msgstr "Editar el nombre"
+
+#: js/contacts.js.php:969
+#, fuzzy
+msgid "Delete"
+msgstr "Borrar"
+
+#: js/supplier.js.php:29
+#, fuzzy
+msgid "Are you sure you want to desassociate this product?"
+msgstr "¿Seguro que quieres añadir esta categoría?"
+
+#: js/supplier.js.php:41
+#, fuzzy
+msgid "S Code"
+msgstr "Código"
+
+#: js/supplier.js.php:214
+#, fuzzy
+msgid "Date Invoice"
+msgstr "Name=Factura"
+
+#: js/supplier.js.php:348
+msgid "Create"
+msgstr "Crear"
+
+#: js/assets_family.js.php:95
+#, fuzzy
+msgid "Price"
+msgstr "Precio"
+
+#: js/assets_family.js.php:100
+#, fuzzy
+msgid "Sales (1Y)"
+msgstr "GETPIVOTDATA(BaseDeDatos; \"Ventas\")"
+
+#: js/invoice.js.php:49
+#, fuzzy
+msgid "Descripcion"
+msgstr "Descripción"
+
+#: js/invoice.js.php:52
+#, fuzzy
+msgid "Discounts"
+msgstr "Gestion"
+
+#: js/assets_tree.js.php:266
+msgid "O of S"
+msgstr ""
+
+#: js/assets_tree.js.php:267
+msgid "Error in S"
+msgstr "Error en Prov"
+
+#: js/assets_tree.js.php:296
+#, fuzzy
+msgid "T Sales"
+msgstr "Ventas"
+
+#: js/assets_tree.js.php:297
+msgid "S (1y)"
+msgstr ""
+
+#: js/assets_tree.js.php:298
+msgid "S (1q)"
+msgstr ""
+
+#: js/assets_tree.js.php:299
+#, fuzzy
+msgid "S (1m)"
+msgstr "0,1m"
+
+#: js/assets_tree.js.php:300
+#, fuzzy
+msgid "Avg S(w)"
+msgstr "promedio"
+
+#: js/assets_tree.js.php:528
+#, fuzzy
+msgid "Add Department (Manually)"
+msgstr "Número ingresado manualmente"
+
+#: js/assets_tree.js.php:529
+msgid "Add Department (From file)"
+msgstr "Agregar Departamento  desde archivo"
+
+#: js/hresources.js.php:43
+msgid "Nickname"
+msgstr "Apodo"
+

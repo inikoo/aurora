@@ -1,0 +1,1496 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: kaktus 1.0\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2008-02-21 17:14+0100\n"
+"Last-Translator: Raul Perusquia <raul@ancientwisdom.biz>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Chinese\n"
+"X-Poedit-Country: CHINA\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-Basepath: /home/raul/www/kaktus\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: ar_suppliers.php:6
+#: ar_asserts.php:6
+#: ar_users.php:6
+#: mail.php:4
+msgid "Forbidden"
+msgstr ""
+
+#: ar_suppliers.php:14
+#: ar_asserts.php:14
+#: ar_users.php:18
+msgid "Non acceptable request"
+msgstr ""
+
+#: ar_suppliers.php:86
+#: ar_asserts.php:196
+#: ar_users.php:241
+msgid "Operation not found"
+msgstr ""
+
+#: suppliers.php:10
+#: suppliers.php:46
+#: header.php:43
+msgid "Suppliers"
+msgstr "提供者"
+
+#: suppliers.php:16
+#: asserts_product.php:34
+#: supplier.php:18
+#: asserts_family.php:17
+#: asserts_index.php:19
+#: asserts_department.php:22
+msgid "Display Options"
+msgstr ""
+
+#: suppliers.php:18
+#: asserts_product.php:36
+#: supplier.php:20
+#: asserts_family.php:19
+#: asserts_index.php:21
+#: asserts_department.php:30
+msgid "Edit Menu"
+msgstr ""
+
+#: user.php:17
+#: ar_users.php:142
+#: login.php:50
+msgid "User"
+msgstr "用户"
+
+#: ar_asserts.php:134
+#: ar_asserts.php:165
+msgid "Wrong id"
+msgstr ""
+
+#: asserts_product.php:13
+#: asserts_product.php:58
+msgid "Product"
+msgstr ""
+
+#: asserts_product.php:17
+#: js/users.js.php:161
+msgid "Id"
+msgstr ""
+
+#: asserts_product.php:20
+msgid "Units"
+msgstr ""
+
+#: asserts_product.php:20
+msgid "unitstipo"
+msgid_plural "unitstipo"
+msgstr[0] ""
+msgstr[1] ""
+
+#: asserts_product.php:20
+msgid "per outer"
+msgstr ""
+
+#: asserts_product.php:23
+msgid "Weight"
+msgstr ""
+
+#: asserts_product.php:23
+msgid "Kg"
+msgstr ""
+
+#: users.php:16
+#: users.php:33
+msgid "Please enter your information"
+msgstr ""
+
+#: users.php:20
+#: users.php:41
+#: js/users.js.php:56
+#: js/users.js.php:316
+msgid "Handle"
+msgstr "用户名"
+
+#: users.php:21
+#: users.php:42
+#: js/users.js.php:57
+#: js/users.js.php:261
+msgid "Name"
+msgstr ""
+
+#: users.php:22
+#: users.php:43
+msgid "Surname"
+msgstr ""
+
+#: users.php:23
+#: users.php:44
+#: js/users.js.php:58
+msgid "Email"
+msgstr "电邮"
+
+#: users.php:24
+msgid "Send email"
+msgstr ""
+
+#: users.php:48
+#: js/users.js.php:59
+msgid "Language"
+msgstr "文"
+
+#: users.php:64
+msgid "Activate Account"
+msgstr ""
+
+#: users.php:65
+msgid "Yes"
+msgstr "是"
+
+#: users.php:67
+msgid "No"
+msgstr "不"
+
+#: users.php:72
+#: js/users.js.php:60
+msgid "Groups"
+msgstr "班"
+
+#: users.php:95
+msgid "Add User"
+msgstr ""
+
+#: users.php:102
+#: js/users.js.php:151
+msgid "Work Groups"
+msgstr "工作组"
+
+#: users.php:103
+msgid "Work Grups Documentatiuion to be done"
+msgstr ""
+
+#: users.php:114
+#: header.php:42
+#: js/users.js.php:46
+#: js/users.js.php:163
+msgid "Users"
+msgstr "用户"
+
+#: supplier.php:12
+msgid "Supplier:"
+msgstr ""
+
+#: supplier.php:48
+#: locale.php:44
+msgid "Supplier"
+msgstr "提供者"
+
+#: common.php:118
+msgid "An unknown error occurred"
+msgstr ""
+
+#: common.php:157
+msgid "Powered by Kaktus"
+msgstr ""
+
+#: common.php:196
+#: common.php:199
+msgid "NA"
+msgstr ""
+
+#: common.php:200
+#: common.php:204
+msgid "ND"
+msgstr ""
+
+#: ar_users.php:55
+msgid "Superuser"
+msgstr ""
+
+#: ar_users.php:133
+msgid "Wrong user name"
+msgstr ""
+
+#: ar_users.php:142
+msgid "already in the database"
+msgstr ""
+
+#: ar_users.php:147
+#: ar_users.php:172
+msgid "Unknown Error"
+msgstr ""
+
+#: login.php:18
+msgid "Authentication"
+msgstr ""
+
+#: login.php:46
+msgid "Welcome"
+msgstr "欢迎"
+
+#: login.php:54
+#: js/users.js.php:316
+msgid "Password"
+msgstr "密码"
+
+#: login.php:58
+msgid "Remember me"
+msgstr "记"
+
+#: login.php:66
+msgid "Log in"
+msgstr "登入"
+
+#: asserts_family.php:12
+#: asserts_family.php:41
+msgid "Family"
+msgstr ""
+
+#: header.php:36
+msgid "Hello"
+msgstr "\t你好"
+
+#: header.php:37
+msgid "Logout"
+msgstr "登出"
+
+#: header.php:44
+msgid "Orders"
+msgstr "单据"
+
+#: header.php:45
+msgid "Customers"
+msgstr "顾客"
+
+#: header.php:46
+#: asserts_index.php:49
+msgid "Asserts"
+msgstr "制品"
+
+#: header.php:47
+#: index.php:24
+msgid "Home"
+msgstr "故乡"
+
+#: locale.php:2
+msgid "View my products"
+msgstr ""
+
+#: locale.php:3
+msgid "Create products"
+msgstr ""
+
+#: locale.php:4
+msgid "Edit products"
+msgstr ""
+
+#: locale.php:5
+msgid "Delete products"
+msgstr ""
+
+#: locale.php:6
+msgid "View products"
+msgstr ""
+
+#: locale.php:7
+msgid "Create customer"
+msgstr ""
+
+#: locale.php:8
+msgid "Delete customer"
+msgstr ""
+
+#: locale.php:9
+msgid "Edit customer"
+msgstr ""
+
+#: locale.php:10
+msgid "View customers"
+msgstr ""
+
+#: locale.php:11
+msgid "View my suppliers"
+msgstr ""
+
+#: locale.php:12
+msgid "Create suppliers"
+msgstr ""
+
+#: locale.php:13
+msgid "Edit suppliers"
+msgstr ""
+
+#: locale.php:14
+msgid "Delete suppliers"
+msgstr ""
+
+#: locale.php:15
+msgid "View suppliers"
+msgstr ""
+
+#: locale.php:16
+msgid "View orders"
+msgstr ""
+
+#: locale.php:17
+msgid "Create order"
+msgstr ""
+
+#: locale.php:18
+msgid "View user"
+msgstr ""
+
+#: locale.php:19
+msgid "Create user"
+msgstr ""
+
+#: locale.php:20
+msgid "Edit user"
+msgstr ""
+
+#: locale.php:21
+msgid "Delete user"
+msgstr ""
+
+#: locale.php:22
+msgid "Edit myself"
+msgstr ""
+
+#: locale.php:23
+msgid "View sales reports"
+msgstr ""
+
+#: locale.php:24
+msgid "Product Management"
+msgstr ""
+
+#: locale.php:25
+msgid "View tax reports"
+msgstr ""
+
+#: locale.php:26
+msgid "View stock reports"
+msgstr ""
+
+#: locale.php:27
+msgid "View human resources reports"
+msgstr ""
+
+#: locale.php:28
+msgid "Edit stock"
+msgstr ""
+
+#: locale.php:29
+msgid "Delete stock operations"
+msgstr ""
+
+#: locale.php:30
+msgid "Stock Management"
+msgstr ""
+
+#: locale.php:31
+msgid "Suppliers Management"
+msgstr ""
+
+#: locale.php:32
+msgid "Orders management"
+msgstr ""
+
+#: locale.php:33
+msgid "Users management"
+msgstr ""
+
+#: locale.php:34
+msgid "View all reports"
+msgstr ""
+
+#: locale.php:35
+msgid "Customer management"
+msgstr ""
+
+#: locale.php:36
+msgid "Administrators"
+msgstr "管理员"
+
+#: locale.php:37
+msgid "Customer Services"
+msgstr ""
+
+#: locale.php:38
+msgid "Web Developers"
+msgstr ""
+
+#: locale.php:39
+msgid "Stock Controllers"
+msgstr ""
+
+#: locale.php:40
+msgid "Sales Intelligence"
+msgstr ""
+
+#: locale.php:41
+msgid "Sales Force"
+msgstr ""
+
+#: locale.php:42
+msgid "Human Resources"
+msgstr ""
+
+#: locale.php:43
+msgid "Accounts"
+msgstr ""
+
+#: locale.php:45
+msgid "Warehouse Operative"
+msgstr ""
+
+#: locale.php:46
+msgid "Afghanistan"
+msgstr ""
+
+#: locale.php:47
+msgid "Netherlands"
+msgstr ""
+
+#: locale.php:48
+msgid "Netherlands Antilles"
+msgstr ""
+
+#: locale.php:49
+msgid "Albania"
+msgstr ""
+
+#: locale.php:50
+msgid "Algeria"
+msgstr ""
+
+#: locale.php:51
+msgid "American Samoa"
+msgstr ""
+
+#: locale.php:52
+msgid "Andorra"
+msgstr ""
+
+#: locale.php:53
+msgid "Angola"
+msgstr ""
+
+#: locale.php:54
+msgid "Anguilla"
+msgstr ""
+
+#: locale.php:55
+msgid "Antigua and Barbuda"
+msgstr ""
+
+#: locale.php:56
+msgid "United Arab Emirates"
+msgstr ""
+
+#: locale.php:57
+#, fuzzy
+msgid "Argentina"
+msgstr ""
+
+#: locale.php:58
+msgid "Armenia"
+msgstr ""
+
+#: locale.php:59
+msgid "Aruba"
+msgstr ""
+
+#: locale.php:60
+msgid "Australia"
+msgstr ""
+
+#: locale.php:61
+msgid "Azerbaijan"
+msgstr ""
+
+#: locale.php:62
+msgid "Bahamas"
+msgstr ""
+
+#: locale.php:63
+msgid "Bahrain"
+msgstr ""
+
+#: locale.php:64
+msgid "Bangladesh"
+msgstr ""
+
+#: locale.php:65
+msgid "Barbados"
+msgstr ""
+
+#: locale.php:66
+msgid "Belgium"
+msgstr ""
+
+#: locale.php:67
+msgid "Belize"
+msgstr ""
+
+#: locale.php:68
+msgid "Benin"
+msgstr ""
+
+#: locale.php:69
+msgid "Bermuda"
+msgstr ""
+
+#: locale.php:70
+msgid "Bhutan"
+msgstr ""
+
+#: locale.php:71
+msgid "Bolivia"
+msgstr ""
+
+#: locale.php:72
+msgid "Bosnia and Herzegovina"
+msgstr ""
+
+#: locale.php:73
+msgid "Botswana"
+msgstr ""
+
+#: locale.php:74
+msgid "Brazil"
+msgstr "巴西"
+
+#: locale.php:75
+msgid "United Kingdom"
+msgstr "英國"
+
+#: locale.php:76
+msgid "Virgin Islands, British"
+msgstr ""
+
+#: locale.php:77
+msgid "Brunei"
+msgstr ""
+
+#: locale.php:78
+msgid "Bulgaria"
+msgstr ""
+
+#: locale.php:79
+msgid "Burkina Faso"
+msgstr ""
+
+#: locale.php:80
+msgid "Burundi"
+msgstr ""
+
+#: locale.php:81
+msgid "Cayman Islands"
+msgstr ""
+
+#: locale.php:82
+msgid "Chile"
+msgstr ""
+
+#: locale.php:83
+msgid "Cook Islands"
+msgstr ""
+
+#: locale.php:84
+msgid "Costa Rica"
+msgstr ""
+
+#: locale.php:85
+msgid "Djibouti"
+msgstr ""
+
+#: locale.php:86
+msgid "Dominica"
+msgstr ""
+
+#: locale.php:87
+msgid "Dominican Republic"
+msgstr ""
+
+#: locale.php:88
+msgid "Ecuador"
+msgstr ""
+
+#: locale.php:89
+msgid "Egypt"
+msgstr ""
+
+#: locale.php:90
+msgid "El Salvador"
+msgstr ""
+
+#: locale.php:91
+msgid "Eritrea"
+msgstr ""
+
+#: locale.php:92
+msgid "Spain"
+msgstr ""
+
+#: locale.php:93
+msgid "South Africa"
+msgstr ""
+
+#: locale.php:94
+msgid "Ethiopia"
+msgstr ""
+
+#: locale.php:95
+msgid "Falkland Islands"
+msgstr ""
+
+#: locale.php:96
+msgid "Fiji Islands"
+msgstr ""
+
+#: locale.php:97
+msgid "Philippines"
+msgstr ""
+
+#: locale.php:98
+msgid "Faroe Islands"
+msgstr ""
+
+#: locale.php:99
+msgid "Gabon"
+msgstr ""
+
+#: locale.php:100
+msgid "Gambia"
+msgstr ""
+
+#: locale.php:101
+msgid "Georgia"
+msgstr ""
+
+#: locale.php:102
+msgid "Ghana"
+msgstr ""
+
+#: locale.php:103
+msgid "Gibraltar"
+msgstr ""
+
+#: locale.php:104
+msgid "Grenada"
+msgstr ""
+
+#: locale.php:105
+msgid "Greenland"
+msgstr ""
+
+#: locale.php:106
+msgid "Guadeloupe"
+msgstr ""
+
+#: locale.php:107
+msgid "Guam"
+msgstr ""
+
+#: locale.php:108
+msgid "Guatemala"
+msgstr ""
+
+#: locale.php:109
+msgid "Guinea"
+msgstr ""
+
+#: locale.php:110
+msgid "Guinea-Bissau"
+msgstr ""
+
+#: locale.php:111
+msgid "Guyana"
+msgstr ""
+
+#: locale.php:112
+msgid "Haiti"
+msgstr ""
+
+#: locale.php:113
+msgid "Honduras"
+msgstr ""
+
+#: locale.php:114
+msgid "Hong Kong"
+msgstr ""
+
+#: locale.php:115
+msgid "Svalbard and Jan Mayen"
+msgstr ""
+
+#: locale.php:116
+msgid "Indonesia"
+msgstr ""
+
+#: locale.php:117
+msgid "India"
+msgstr "印度"
+
+#: locale.php:118
+msgid "Iraq"
+msgstr ""
+
+#: locale.php:119
+msgid "Iran"
+msgstr ""
+
+#: locale.php:120
+msgid "Ireland"
+msgstr ""
+
+#: locale.php:121
+msgid "Iceland"
+msgstr ""
+
+#: locale.php:122
+msgid "Israel"
+msgstr ""
+
+#: locale.php:123
+msgid "Italy"
+msgstr ""
+
+#: locale.php:124
+msgid "East Timor"
+msgstr ""
+
+#: locale.php:125
+msgid "Austria"
+msgstr ""
+
+#: locale.php:126
+msgid "Jamaica"
+msgstr ""
+
+#: locale.php:127
+msgid "Japan"
+msgstr ""
+
+#: locale.php:128
+msgid "Yemen"
+msgstr ""
+
+#: locale.php:129
+msgid "Jordan"
+msgstr ""
+
+#: locale.php:130
+msgid "Christmas Island"
+msgstr ""
+
+#: locale.php:131
+msgid "Yugoslavia"
+msgstr ""
+
+#: locale.php:132
+msgid "Cambodia"
+msgstr ""
+
+#: locale.php:133
+msgid "Cameroon"
+msgstr ""
+
+#: locale.php:134
+msgid "Canada"
+msgstr ""
+
+#: locale.php:135
+msgid "Cape Verde"
+msgstr ""
+
+#: locale.php:136
+msgid "Kazakstan"
+msgstr ""
+
+#: locale.php:137
+msgid "Kenya"
+msgstr ""
+
+#: locale.php:138
+msgid "Central African Republic"
+msgstr ""
+
+#: locale.php:139
+msgid "China"
+msgstr ""
+
+#: locale.php:140
+msgid "Kyrgyzstan"
+msgstr ""
+
+#: locale.php:141
+msgid "Kiribati"
+msgstr ""
+
+#: locale.php:142
+msgid "Colombia"
+msgstr ""
+
+#: locale.php:143
+msgid "Comoros"
+msgstr ""
+
+#: locale.php:144
+msgid "Congo"
+msgstr ""
+
+#: locale.php:145
+msgid "Congo, Dem. Rep. of"
+msgstr ""
+
+#: locale.php:146
+msgid "Cocos (Keeling) Islands"
+msgstr ""
+
+#: locale.php:147
+msgid "North Korea"
+msgstr ""
+
+#: locale.php:148
+msgid "South Korea"
+msgstr ""
+
+#: locale.php:149
+msgid "Greece"
+msgstr ""
+
+#: locale.php:150
+msgid "Croatia"
+msgstr ""
+
+#: locale.php:151
+msgid "Cuba"
+msgstr ""
+
+#: locale.php:152
+msgid "Kuwait"
+msgstr ""
+
+#: locale.php:153
+msgid "Cyprus"
+msgstr ""
+
+#: locale.php:154
+msgid "Laos"
+msgstr ""
+
+#: locale.php:155
+msgid "Latvia"
+msgstr ""
+
+#: locale.php:156
+msgid "Lesotho"
+msgstr ""
+
+#: locale.php:157
+msgid "Lebanon"
+msgstr ""
+
+#: locale.php:158
+msgid "Liberia"
+msgstr ""
+
+#: locale.php:159
+msgid "Libyan Arab Jamahiriya"
+msgstr ""
+
+#: locale.php:160
+msgid "Liechtenstein"
+msgstr ""
+
+#: locale.php:161
+msgid "Lithuania"
+msgstr ""
+
+#: locale.php:162
+msgid "Luxembourg"
+msgstr ""
+
+#: locale.php:163
+msgid "Western Sahara"
+msgstr ""
+
+#: locale.php:164
+msgid "Macao"
+msgstr ""
+
+#: locale.php:165
+msgid "Madagascar"
+msgstr ""
+
+#: locale.php:166
+msgid "Macedonia"
+msgstr ""
+
+#: locale.php:167
+msgid "Malawi"
+msgstr ""
+
+#: locale.php:168
+msgid "Maldives"
+msgstr ""
+
+#: locale.php:169
+msgid "Malaysia"
+msgstr ""
+
+#: locale.php:170
+msgid "Mali"
+msgstr ""
+
+#: locale.php:171
+msgid "Malta"
+msgstr ""
+
+#: locale.php:172
+msgid "Morocco"
+msgstr ""
+
+#: locale.php:173
+msgid "Marshall Islands"
+msgstr ""
+
+#: locale.php:174
+msgid "Martinique"
+msgstr ""
+
+#: locale.php:175
+msgid "Mauritania"
+msgstr ""
+
+#: locale.php:176
+msgid "Mauritius"
+msgstr ""
+
+#: locale.php:177
+msgid "Mayotte"
+msgstr ""
+
+#: locale.php:178
+msgid "Mexico"
+msgstr ""
+
+#: locale.php:179
+msgid "Micronesia, Federated States of"
+msgstr ""
+
+#: locale.php:180
+msgid "Moldova"
+msgstr ""
+
+#: locale.php:181
+msgid "Monaco"
+msgstr ""
+
+#: locale.php:182
+msgid "Mongolia"
+msgstr ""
+
+#: locale.php:183
+msgid "Montserrat"
+msgstr ""
+
+#: locale.php:184
+msgid "Mozambique"
+msgstr ""
+
+#: locale.php:185
+msgid "Myanmar"
+msgstr ""
+
+#: locale.php:186
+msgid "Namibia"
+msgstr ""
+
+#: locale.php:187
+msgid "Nauru"
+msgstr ""
+
+#: locale.php:188
+msgid "Nepal"
+msgstr ""
+
+#: locale.php:189
+msgid "Nicaragua"
+msgstr ""
+
+#: locale.php:190
+msgid "Niger"
+msgstr ""
+
+#: locale.php:191
+msgid "Nigeria"
+msgstr ""
+
+#: locale.php:192
+msgid "Niue"
+msgstr ""
+
+#: locale.php:193
+msgid "Norfolk Island"
+msgstr ""
+
+#: locale.php:194
+msgid "Norway"
+msgstr ""
+
+#: locale.php:195
+msgid "Ivory Coast"
+msgstr ""
+
+#: locale.php:196
+msgid "Oman"
+msgstr ""
+
+#: locale.php:197
+msgid "Pakistan"
+msgstr ""
+
+#: locale.php:198
+msgid "Palau"
+msgstr ""
+
+#: locale.php:199
+msgid "Panama"
+msgstr ""
+
+#: locale.php:200
+msgid "Papua New Guinea"
+msgstr ""
+
+#: locale.php:201
+msgid "Paraguay"
+msgstr ""
+
+#: locale.php:202
+msgid "Peru"
+msgstr ""
+
+#: locale.php:203
+msgid "Pitcairn"
+msgstr ""
+
+#: locale.php:204
+msgid "Northern Mariana Islands"
+msgstr ""
+
+#: locale.php:205
+msgid "Portugal"
+msgstr ""
+
+#: locale.php:206
+msgid "Puerto Rico"
+msgstr ""
+
+#: locale.php:207
+msgid "Poland"
+msgstr ""
+
+#: locale.php:208
+msgid "Equatorial Guinea"
+msgstr ""
+
+#: locale.php:209
+msgid "Qatar"
+msgstr ""
+
+#: locale.php:210
+msgid "France"
+msgstr ""
+
+#: locale.php:211
+msgid "French Guiana"
+msgstr ""
+
+#: locale.php:212
+msgid "French Polynesia"
+msgstr ""
+
+#: locale.php:213
+msgid "Réunion"
+msgstr ""
+
+#: locale.php:214
+msgid "Romania"
+msgstr ""
+
+#: locale.php:215
+msgid "Rwanda"
+msgstr ""
+
+#: locale.php:216
+msgid "Sweden"
+msgstr ""
+
+#: locale.php:217
+msgid "Saint Helena"
+msgstr ""
+
+#: locale.php:218
+msgid "Saint Kitts and Nevis"
+msgstr ""
+
+#: locale.php:219
+msgid "Saint Lucia"
+msgstr ""
+
+#: locale.php:220
+msgid "Saint Vincent and the Grenadines"
+msgstr ""
+
+#: locale.php:221
+msgid "Saint Pierre and Miquelon"
+msgstr ""
+
+#: locale.php:222
+msgid "Germany"
+msgstr ""
+
+#: locale.php:223
+msgid "Solomon Islands"
+msgstr ""
+
+#: locale.php:224
+msgid "Zambia"
+msgstr ""
+
+#: locale.php:225
+msgid "Samoa"
+msgstr ""
+
+#: locale.php:226
+msgid "San Marino"
+msgstr ""
+
+#: locale.php:227
+msgid "Sao Tome and Principe"
+msgstr ""
+
+#: locale.php:228
+msgid "Saudi Arabia"
+msgstr ""
+
+#: locale.php:229
+msgid "Senegal"
+msgstr ""
+
+#: locale.php:230
+msgid "Seychelles"
+msgstr ""
+
+#: locale.php:231
+msgid "Sierra Leone"
+msgstr ""
+
+#: locale.php:232
+msgid "Singapore"
+msgstr ""
+
+#: locale.php:233
+msgid "Slovakia"
+msgstr ""
+
+#: locale.php:234
+msgid "Slovenia"
+msgstr ""
+
+#: locale.php:235
+msgid "Somalia"
+msgstr ""
+
+#: locale.php:236
+msgid "Sri Lanka"
+msgstr ""
+
+#: locale.php:237
+msgid "Sudan"
+msgstr ""
+
+#: locale.php:238
+msgid "Finland"
+msgstr ""
+
+#: locale.php:239
+msgid "Suriname"
+msgstr ""
+
+#: locale.php:240
+msgid "Swaziland"
+msgstr ""
+
+#: locale.php:241
+msgid "Switzerland"
+msgstr ""
+
+#: locale.php:242
+msgid "Syria"
+msgstr ""
+
+#: locale.php:243
+msgid "Tajikistan"
+msgstr ""
+
+#: locale.php:244
+msgid "Taiwan"
+msgstr ""
+
+#: locale.php:245
+msgid "Tanzania"
+msgstr ""
+
+#: locale.php:246
+msgid "Denmark"
+msgstr ""
+
+#: locale.php:247
+msgid "Thailand"
+msgstr ""
+
+#: locale.php:248
+msgid "Togo"
+msgstr ""
+
+#: locale.php:249
+msgid "Tokelau"
+msgstr ""
+
+#: locale.php:250
+msgid "Tonga"
+msgstr ""
+
+#: locale.php:251
+msgid "Trinidad and Tobago"
+msgstr ""
+
+#: locale.php:252
+msgid "Chad"
+msgstr ""
+
+#: locale.php:253
+msgid "Czech Republic"
+msgstr ""
+
+#: locale.php:254
+msgid "Tunisia"
+msgstr ""
+
+#: locale.php:255
+msgid "Turkey"
+msgstr ""
+
+#: locale.php:256
+msgid "Turkmenistan"
+msgstr ""
+
+#: locale.php:257
+msgid "Turks and Caicos Islands"
+msgstr ""
+
+#: locale.php:258
+msgid "Tuvalu"
+msgstr ""
+
+#: locale.php:259
+msgid "Uganda"
+msgstr ""
+
+#: locale.php:260
+msgid "Ukraine"
+msgstr ""
+
+#: locale.php:261
+msgid "Hungary"
+msgstr ""
+
+#: locale.php:262
+msgid "Uruguay"
+msgstr ""
+
+#: locale.php:263
+msgid "New Caledonia"
+msgstr ""
+
+#: locale.php:264
+msgid "New Zealand"
+msgstr ""
+
+#: locale.php:265
+msgid "Uzbekistan"
+msgstr ""
+
+#: locale.php:266
+msgid "Belarus"
+msgstr ""
+
+#: locale.php:267
+msgid "Wallis and Futuna"
+msgstr ""
+
+#: locale.php:268
+msgid "Vanuatu"
+msgstr ""
+
+#: locale.php:269
+msgid "Vatican"
+msgstr ""
+
+#: locale.php:270
+msgid "Venezuela"
+msgstr ""
+
+#: locale.php:271
+msgid "Russian Federation"
+msgstr ""
+
+#: locale.php:272
+msgid "Vietnam"
+msgstr ""
+
+#: locale.php:273
+msgid "Estonia"
+msgstr ""
+
+#: locale.php:274
+msgid "United States"
+msgstr ""
+
+#: locale.php:275
+msgid "Virgin Islands, U.S."
+msgstr ""
+
+#: locale.php:276
+msgid "Zimbabwe"
+msgstr ""
+
+#: locale.php:277
+msgid "Palestine"
+msgstr ""
+
+#: locale.php:278
+msgid "Antarctica"
+msgstr ""
+
+#: locale.php:279
+msgid "Bouvet Island"
+msgstr ""
+
+#: locale.php:280
+msgid "British Indian Ocean Territory"
+msgstr ""
+
+#: locale.php:281
+msgid "Sth Georgia. & Sth. Sandwich"
+msgstr ""
+
+#: locale.php:282
+msgid "Heard Island and McDonald Islands"
+msgstr ""
+
+#: locale.php:283
+msgid "French Southern territories"
+msgstr ""
+
+#: locale.php:284
+msgid "United States Minor Outlying Islands"
+msgstr ""
+
+#: locale.php:285
+msgid "Guernsey"
+msgstr ""
+
+#: locale.php:286
+msgid "Jersey"
+msgstr ""
+
+#: locale.php:287
+msgid "Isle of Man"
+msgstr ""
+
+#: locale.php:288
+msgid "Serbia and Montenegro"
+msgstr ""
+
+#: locale.php:289
+msgid "Unknown"
+msgstr ""
+
+#: locale.php:290
+msgid "English"
+msgstr "英语"
+
+#: locale.php:291
+msgid "Spanish"
+msgstr "西班牙语"
+
+#: locale.php:292
+msgid "German"
+msgstr "德文"
+
+#: locale.php:293
+msgid "French"
+msgstr "法文"
+
+#: locale.php:294
+msgid "Chinese"
+msgstr "中文"
+
+#: locale.php:297
+msgid "item"
+msgstr ""
+
+#: locale.php:298
+msgid "items"
+msgstr ""
+
+#: asserts_index.php:13
+msgid "Products to sell"
+msgstr ""
+
+#: asserts_department.php:16
+msgid "Deparment"
+msgstr "部门"
+
+#: asserts_department.php:62
+msgid "Department"
+msgstr "部门"
+
+#: js/users.js.php:93
+#: js/users.js.php:197
+msgid "of"
+msgstr ""
+
+#: js/users.js.php:94
+#: js/users.js.php:100
+#: js/users.js.php:198
+#: js/users.js.php:204
+msgid "Hide items"
+msgstr ""
+
+#: js/users.js.php:138
+#: js/users.js.php:242
+msgid "All"
+msgstr ""
+
+#: js/users.js.php:162
+msgid "Group"
+msgstr ""
+
+#: js/users.js.php:198
+msgid "Help"
+msgstr ""
+
+#: js/users.js.php:262
+msgid "Rights"
+msgstr ""
+
+#: js/users.js.php:316
+msgid "A new user has been added to the database"
+msgstr ""
+
