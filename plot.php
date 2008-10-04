@@ -115,20 +115,20 @@ switch($tipo){
 $alt=_('Unable to load Flash content. The YUI Charts Control requires Flash Player 9.0.45 or higher. You can download the latest version of Flash Player from the ').'<a href="http://www.adobe.com/go/getflashplayer">Adobe Flash Player Download Center</a>.';
 $out='<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN""http://www.w3c.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
   <head>
- <script type="text/javascript" src="yui/2.5.2/build/yahoo-dom-event/yahoo-dom-event.js"></script>
-        <script type="text/javascript" src="yui/2.5.2/build/calendar/calendar-min.js"></script>
+ <script type="text/javascript" src="'.$yui_path.'yahoo-dom-event/yahoo-dom-event.js"></script>
+        <script type="text/javascript" src="'.$yui_path.'calendar/calendar-min.js"></script>
 
-        <script type="text/javascript" src="yui/2.5.2/build/element/element-beta-min.js"></script>
-        <script type="text/javascript" src="yui/2.5.2/build/utilities/utilities.js"></script>
-        <script type="text/javascript" src="yui/2.5.2/build/container/container.js"></script>
-        <script type="text/javascript" src="yui/2.5.2/build/menu/menu-min.js"></script>
-        <script type="text/javascript" src="yui/2.5.2/build/button/button.js"></script>
-        <script type="text/javascript" src="yui/2.5.2/build/autocomplete/autocomplete.js"></script>
-        <script type="text/javascript" src="yui/2.5.2/build/datasource/datasource-beta.js"></script>
-        <script type="text/javascript" src="yui/2.5.2/build/charts/charts-experimental-min.js"></script>
-        <script type="text/javascript" src="yui/2.5.2/build/datatable/datatable-beta.js"></script>
-        <script type="text/javascript" src="yui/2.5.2/build/editor/editor-beta-min.js"></script>
-        <script type="text/javascript" src="yui/2.5.2/build/json/json-min.js"></script>
+        <script type="text/javascript" src="'.$yui_path.'element/element-beta-min.js"></script>
+        <script type="text/javascript" src="'.$yui_path.'utilities/utilities.js"></script>
+        <script type="text/javascript" src="'.$yui_path.'container/container.js"></script>
+        <script type="text/javascript" src="'.$yui_path.'menu/menu-min.js"></script>
+        <script type="text/javascript" src="'.$yui_path.'button/button.js"></script>
+        <script type="text/javascript" src="'.$yui_path.'autocomplete/autocomplete.js"></script>
+        <script type="text/javascript" src="'.$yui_path.'datasource/datasource-beta.js"></script>
+        <script type="text/javascript" src="'.$yui_path.'charts/charts-experimental-min.js"></script>
+        <script type="text/javascript" src="'.$yui_path.'datatable/datatable-beta.js"></script>
+        <script type="text/javascript" src="'.$yui_path.'editor/editor-beta-min.js"></script>
+        <script type="text/javascript" src="'.$yui_path.'json/json-min.js"></script>
 
 </head> <body><div style="font-size:8pt;height:300px" id=plot>'.$alt.'</div></body>
  <script type="text/javascript">
