@@ -77,7 +77,7 @@ switch($tipo){
    $style='size:5,lineSize:1';
  $tipo_chart='CartesianChart';
     break;
- case('net_sales_xmonth'):
+ case('net_sales_month'):
    $ar_address='ar_orders.php?tipo=plot_monthsales';
    $fields='"sales","tip","date"';
    $yfields=array(array('label'=>_('Net Sales'),'name'=>'sales','axis'=>'formatCurrencyAxisLabel'));;
@@ -85,7 +85,7 @@ switch($tipo){
    $style='size:6,lineSize:2';
    $tipo_chart='LineChart';
    break;
- case('net_sales_month'):
+ case('net_sales_gmonth'):
    $ar_address='ar_orders.php?tipo=plot_gmonthsales';
    $fields='"sales2004","sales2005","sales2006","sales2007","sales2008","tip","date"';
    $yfields=array(
@@ -103,7 +103,7 @@ switch($tipo){
    $tipo_chart='ColumnChart';
    break;
  default:
-   print _('Warning: No plot reference'.'.');
+   print _("Warning: Unknown $tipo plot reference".'.');
    exit;
    
 
@@ -163,7 +163,7 @@ $out.='];'."\n".'var yAxis = new YAHOO.widget.NumericAxis();
 yAxis.labelFunction = "'.$yfield['axis'].'";
  var mychart = new YAHOO.widget.'.$tipo_chart.'( '.($tipo_chart=='CartesianChart'?"'line',":'').'  "plot", jsonData,
  	{
-         // wmode: "opaque",
+          wmode: "opaque",
           series: seriesDef,
  	 xField: "'.$xfield['name'].'",
  	 yAxis: yAxis,

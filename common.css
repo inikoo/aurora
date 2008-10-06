@@ -304,3 +304,7 @@ table.options{margin:5px 0 ;float:right;border-collapse: separate;;border-spacin
 .calendar_year  td{xbackground-image:url('art/icons/calendar_view_month.png');xbackground-repeat:no-repeat; text-align:center;font-size:10px;font-weight:800;width:16px;border:1px solid #82aadf;cursor:pointer;border-top:3px solid #ff9958;color:#777}
 .calendar_year td a{color:#777}
 .cal_menu{clear:both;float:right;border:1px solid #ccc;padding:10px;width:180px;margin-top:10px }
+
+
+.plot_options{width:135px;float:right;text-align:right  }
+.plot_options h3{text-align:left;font-weight:bold;margin-top:10px  }

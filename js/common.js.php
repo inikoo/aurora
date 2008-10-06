@@ -206,3 +206,46 @@ function deleteRow(tblId, txtIndex, txtError)
 		document.getElementById(txtError).value = ex;
 	}
 }
+
+
+ function updateCal() {
+	
+
+	var txtDate1 = document.getElementById("v_calpop"+this.id);
+
+	if (txtDate1.value != "") {
+	    temp = txtDate1.value.split('-');
+	    var date=temp[1]+'/'+temp[0]+'/'+temp[2];
+
+	    this.select(date);
+	    
+	    var selectedDates = this.getSelectedDates();
+
+	    if (selectedDates.length > 0) {
+		var firstDate = selectedDates[0];
+		this.cfg.setProperty("pagedate", (firstDate.getMonth()+1) + "/" + firstDate.getFullYear());
+		this.render();
+	    } else {
+		alert("<?=_("Cannot select a date before 1/1/2006 or after 12/31/2008")?>");
+	    }
+	    
+	}
+    }
+
+ function handleSelect(type,args,obj) {
+		var dates = args[0];
+		var date = dates[0];
+		var year = date[0], month = date[1], day = date[2];
+
+
+		if(month<10)
+		    month='0'+month;
+		if(day<10)
+		    day='0'+day;
+
+		var txtDate1 = document.getElementById("v_calpop"+this.id);
+		txtDate1.value = day + "-" + month + "-" + year;
+		this.hide();
+    }
+
+    
