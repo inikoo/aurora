@@ -80,16 +80,6 @@ $LU_conf = array(
 
 
 
-$myconf=array(
-	      'name'=>'Ancient Wisdom',
-	      'sname'=>'AW',
-	      'country'=>'GB',
-	      'lang'=>'en',
-	      'encoding'=>'UTF-8',
-	      
-	      'theme'=>'yui-skin-sam'
-	      
-	      );
 
 $myconf=array(
 	      'name'=>'Ancient Wisdom',
@@ -128,6 +118,7 @@ $myconf=array(
 	      'compile_dir'=> 'server_files/smarty/templates_c',
 	      'cache_dir' => 'server_files/smarty/cache',
 	      'config_dir' => 'server_files/smarty/configs',
+	      'images_dir' => 'server_files/images/',
 	      'yui_version'=>'2.5.2',
 	      'supplier_id_prefix'=>'S',
 	      'po_id_prefix'=>'PO',

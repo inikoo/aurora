@@ -9,7 +9,7 @@ $res = $db->query($sql);
 if($row=$res->fetchRow()) {
   $format=$row['format'];
   $filename=$row['filename'];
-  $filename='images/original/'.$filename.'_orig.'.$format;
+  $filename=$myconf['images_dir'].'original/'.$filename.'_orig.'.$format;
   
   if($format=='jpg'){
     $format='jpeg';

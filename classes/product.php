@@ -1,4 +1,6 @@
 <?
+
+
 include_once('common/string.php');
 class product{
   
@@ -123,10 +125,10 @@ class product{
 	$principal=false;
 	while($row=$result->fetchRow()){
 	  if($row['principal']==1 and !$principal){
-	    $src='images/med/'.$row['filename'].'_med.'.$row['format'];
+	    $src='med/'.$row['filename'].'_med.'.$row['format'];
 	    $set_principal=true;
 	  }else{
-	    $src='images/tb/'.$row['filename'].'_tb.'.$row['format'];
+	    $src='tb/'.$row['filename'].'_tb.'.$row['format'];
 	  }
 	  $this->images[]=array('id'=>$row['id'],'src'=>$src,'caption'=>$row['caption']);
 	}

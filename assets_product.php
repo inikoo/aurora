@@ -206,6 +206,8 @@ $smarty->assign('department_id',$product->get('department_id'));
 $smarty->assign('family',$product->get('group'));
 $smarty->assign('family_id',$product->get('group_id'));
 $smarty->assign('images',$product->get('images'));
+$smarty->assign('image_dir',$myconf['images_dir']);
+
 $smarty->assign('num_images',count($product->get('images')));
 //print_r($product->get('images'));
 

@@ -5,10 +5,10 @@
 <div id="bd" >
 
 <div id="sub_header">
-{if $next.id>0}<span class="nav2 onright"><a href="report_sales.php?id={$next.id}">{t}Next{/t}</a></span>{/if}
+{if $next.id>0}<span class="nav2 onright"><a href="assets_product.php?id={$next.id}">{t}Next{/t}</a></span>{/if}
 {if $prev.id>0}<span class="nav2 onright" ><a href="assets_product.php?id={$prev.id}">{t}Previous{/t}</a></span>{/if}
 <span class="nav2 onright" style="margin-left:20px"><a href="assets_family.php?id={$family_id}">{t}Up{/t}</a></span>
-<span class="nav2 onright"><a href="assets_index.php">{t}Product inddex{/t}</a></span>
+<span class="nav2 onright"><a href="assets_index.php">{t}Product index{/t}</a></span>
 <span class="nav2"><a href="assets_tree.php">{$home}</a></span>
 <span class="nav2"><a href="assets_department.php?id={$department_id}">{$department}</a></span>
 <span class="nav2"><a href="assets_family.php?id={$family_id}">{$family}</a></span>
@@ -24,14 +24,14 @@
     <div style="border:1px solid #ddd;padding-top:0;width:220px;xheight:230px;text-align:center;margin:0 10px 0 0px">
      <span style="font-size:150%;font-weight:800">{$code}</span>
 	  <div id="imagediv"  pic_id="{$images[0].id}"  style="border:1px solid #ddd;width:200px;height:140px;padding:0px 0;xborder:none;cursor:pointer;xbackground:red;margin: 0 0 10px 9px">
-	    <img src="{ if $images[0]}{$images[0].src}{else}art/nopic.png{/if}"     id="image"   alt="{t}Image{/t}"/>
+	    <img src="{ if $images[0]}{$image_dir}{$images[0].src}{else}art/nopic.png{/if}"     id="image"   alt="{t}Image{/t}"/>
 	  </div>
           
 	  <div class="image_caption" id="caption" {if $images!=1}style="display:none"{/if}>{$images[0].caption}</div>
 	       <table class="other_images " id="otherimages"   xstyle="display:none"   >
 	       {foreach from=$images item=image  name=foo}
 	      {if $smarty.foreach.foo.first}<tr>{else}
-	        <td  id="oim_{$smarty.foreach.foo.iteration}" pic_id="{$image.id}"  ><img  src="{$image.src}"  /></td>
+	        <td  id="oim_{$smarty.foreach.foo.iteration}" pic_id="{$image.id}"  ><img  src="{$image_dir}{$image.src}"  /></td>
 	        {/if}
 	        {if $smarty.foreach.foo.last}</tr>{/if}
 	         {/foreach}
