@@ -8,7 +8,7 @@ switch($tipo){
  case('sales_week'):
    $ar_address='ar_assets.php?tipo=plot_weeksales';
    $fields='"tip","asales","date"';
-   $yfield=array('label'=>_('Sales'),'name'=>'asales','axis'=>'formatCurrencyAxisLabel');
+   $yfields=array(array('label'=>_('Sales'),'name'=>'asales','axis'=>'formatCurrencyAxisLabel'));
    $xfield=array('label'=>_('Date'),'name'=>'date');
    $style='size:10,lineSize:1';
    $tipo_chart='ColumnChart';
@@ -16,7 +16,7 @@ switch($tipo){
  case('sales_quarter'):
    $ar_address='ar_assets.php?tipo=plot_quartersales';
    $fields='"tip","asales","date"';
-   $yfield=array('label'=>_('Sales'),'name'=>'asales','axis'=>'formatCurrencyAxisLabel');
+   $yfields=array(array('label'=>_('Sales'),'name'=>'asales','axis'=>'formatCurrencyAxisLabel'));
    $xfield=array('label'=>_('Date'),'name'=>'date');
    $style='size:20,lineSize:1';
  $tipo_chart='ColumnChart';
@@ -24,7 +24,7 @@ switch($tipo){
  case('sales_month'):
    $ar_address='ar_assets.php?tipo=plot_monthsales';
    $fields='"asales","date","tip"';
-   $yfield=array('label'=>_('Sales'),'name'=>'asales','axis'=>'formatCurrencyAxisLabel');
+   $yfields=array(array('label'=>_('Sales'),'name'=>'asales','axis'=>'formatCurrencyAxisLabel'));
    $xfield=array('label'=>_('Date'),'name'=>'date');
    $style='size:10,lineSize:1';
  $tipo_chart='ColumnChart';
@@ -32,7 +32,7 @@ switch($tipo){
  case('sales_year'):
    $ar_address='ar_assets.php?tipo=plot_yearsales';
    $fields='"asales","date","tip"';
-   $yfield=array('label'=>_('Sales'),'name'=>'asales','axis'=>'formatCurrencyAxisLabel');
+   $yfields=array(array('label'=>_('Sales'),'name'=>'asales','axis'=>'formatCurrencyAxisLabel'));
    $xfield=array('label'=>_('Date'),'name'=>'date');
    $style='size:10,lineSize:1';
  $tipo_chart='LineChart';
@@ -40,7 +40,7 @@ switch($tipo){
  case('out_week'):
    $ar_address='ar_assets.php?tipo=plot_weekout';
    $fields='"tip","out","date"';
-   $yfield=array('label'=>_('Outers'),'name'=>'out','axis'=>'formatNumberAxisLabel');
+   $yfields=array(array('label'=>_('Outers'),'name'=>'out','axis'=>'formatNumberAxisLabel'));
    $xfield=array('label'=>_('Date'),'name'=>'date');
    $style='size:4,lineSize:1';
    $tipo_chart='LineChart';
@@ -48,7 +48,7 @@ switch($tipo){
  case('out_quarter'):
    $ar_address='ar_assets.php?tipo=plot_quarterout';
    $fields='"tip","out","date"';
-   $yfield=array('label'=>_('Outers'),'name'=>'out','axis'=>'formatNumberAxisLabel');
+		 $yfields=array(array('label'=>_('Outers'),'name'=>'out','axis'=>'formatNumberAxisLabel'));
    $xfield=array('label'=>_('Date'),'name'=>'date');
    $style='size:20,lineSize:1';
  $tipo_chart='ColumnChart';
@@ -56,7 +56,7 @@ switch($tipo){
  case('out_month'):
    $ar_address='ar_assets.php?tipo=plot_monthout';
    $fields='"out","date","tip"';
-   $yfield=array('label'=>_('Outers'),'name'=>'out','axis'=>'formatNumberAxisLabel');
+		  $yfields=array(array('label'=>_('Outers'),'name'=>'out','axis'=>'formatNumberAxisLabel'));
    $xfield=array('label'=>_('Date'),'name'=>'date');
    $style='size:10,lineSize:1';
  $tipo_chart='ColumnChart';
@@ -64,7 +64,7 @@ switch($tipo){
  case('out_year'):
    $ar_address='ar_assets.php?tipo=plot_yearout';
    $fields='"out","date","tip"';
-   $yfield=array('label'=>_('Outers'),'name'=>'out','axis'=>'formatNumberAxisLabel');
+   $yfields=array(array('label'=>_('Outers'),'name'=>'out','axis'=>'formatNumberAxisLabel'));
    $xfield=array('label'=>_('Date'),'name'=>'date');
    $style='size:10,lineSize:1';
  $tipo_chart='LineChart';
@@ -72,7 +72,7 @@ switch($tipo){
  case('stock_day'):
    $ar_address='ar_assets.php?tipo=plot_daystock';
    $fields='"stock","day","tip"';
-   $yfield=array('label'=>_('Outers'),'name'=>'stock','axis'=>'formatNumberAxisLabel');
+		  $yfields=array(array('label'=>_('Outers'),'name'=>'stock','axis'=>'formatNumberAxisLabel'));
    $xfield=array('label'=>_('Date'),'name'=>'day');
    $style='size:5,lineSize:1';
  $tipo_chart='CartesianChart';
@@ -103,8 +103,8 @@ switch($tipo){
    $tipo_chart='ColumnChart';
    break;
  default:
-   print "Error";
-   
+   print _('Warning: No plot reference'.'.');
+   exit;
    
 
  }
@@ -113,7 +113,7 @@ switch($tipo){
 
 
 $alt=_('Unable to load Flash content. The YUI Charts Control requires Flash Player 9.0.45 or higher. You can download the latest version of Flash Player from the ').'<a href="http://www.adobe.com/go/getflashplayer">Adobe Flash Player Download Center</a>.';
-$out='<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN""http://www.w3c.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+$out='<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN""http://www.w3c.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" content="text/html; charset=UTF-8"   >
   <head>
  <script type="text/javascript" src="'.$yui_path.'yahoo-dom-event/yahoo-dom-event.js"></script>
         <script type="text/javascript" src="'.$yui_path.'calendar/calendar-min.js"></script>
