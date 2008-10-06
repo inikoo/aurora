@@ -215,8 +215,11 @@ if(!isset($_SESSION['views'])){
 			   'supplier_blocks'=>array(1,1),
 			   'po_item'=>array(0,0,1),
 			   'pos_table_options'=>array(1,1,1,1),
-			   'stockh_table_options'=>array(1,1,1,1,1)
-
+			   'stockh_table_options'=>array(1,1,1,1,1),
+			   'reports_front'=>'sales',
+			   'reports_front_plot'=>array(
+						       'sales'=>'net_sales_month'
+						       ),
 			   );
  }
 

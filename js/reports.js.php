@@ -3,6 +3,8 @@ include_once('../common.php');
 ?>
 var Event = YAHOO.util.Event;
 var Dom   = YAHOO.util.Dom;
+var current_view='<?=$_SESSION['views']['reports_front']?>';
+
 function init(){
 
 
@@ -19,13 +21,14 @@ function init(){
 	    if(this.name=='net_sales_gmonth'){
 		if(this.checked){
 		    document.getElementById('the_plot').src = 'plot.php?tipo=net_sales_gmonth';
+		    alert('ar_reports.php?tipo=change_front_plot&value=' + escape('net_sales_gmonth'));
+		    YAHOO.util.Connect.asyncRequest('POST','ar_reports.php?tipo=change_front_plot&value=' + escape('net_sales_gmonth') ); 
 		}else{
 		    document.getElementById('the_plot').src = 'plot.php?tipo=net_sales_month';
-
+		   
+		    YAHOO.util.Connect.asyncRequest('POST','ar_reports.php?tipo=change_front_plot&value=' + escape('net_sales_month') ); 
 		}
-		
-		//document.getElementById('the_plot').src = 'plot.php?tipo='+plot_name;
-		//		YAHOO.util.Connect.asyncRequest('POST','ar_assets.php?tipo=changereportplot&value=' + escape(plot_name) ); 
+
 	    }
 	}
 	
@@ -33,14 +36,30 @@ function init(){
  	Event.addListener(ids, "change", change_plot);
 
 	var go_free = function(e){
-	    
 	    var from=Dom.get('v_calpop1').value;
 	    var to=Dom.get('v_calpop2').value;
-	    
 	    location.href='report_sales.php?tipo=f&from='+from+'&to='+to; 
 	}
 	var ids = ["go_free_report"]; 
 	Event.addListener(ids, "change", go_free);
+	
+	var change_front_page = function(e){
+	    tipo=this.id;
+
+	    if(tipo!=current_view){
+		Dom.get('header_'+current_view).style.display='none';
+		Dom.get('header_'+tipo).style.display='';
+		Dom.get(tipo).className='selected';
+		Dom.get(current_view).className='';
+
+
+		YAHOO.util.Connect.asyncRequest('POST','ar_reports.php?tipo=change_front&value=' + escape(tipo) ); 
+		current_view=tipo;
+	    }
+	}
+
+	var ids = ["sales","geosales","customers","times","prod","stock"]; 
+	Event.addListener(ids, "click", change_front_page);
 
 }
 

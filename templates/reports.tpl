@@ -2,19 +2,18 @@
 <div id="bd" >
   <div class="report_chosser" >
     <ul>
-      <li id="report_sales"><a href="report_sales.php"> <img src="art/icons/money.png"> Sales</a></li>
-      <li id="geo_sales" ><img src="art/icons/world.png"> Geo-Sales</li>
-      <li><img src="art/icons/user.png"> Customers</li>
-      <li><img src="art/icons/clock.png"> Dispaching Times</li>
-      <li><img src="art/icons/cog.png"> Productivity</li>
-      <li><img src="art/icons/brick.png"> Stock</li>
+      <li {if $tipo=='sales'}class="selected"{/if} id="sales"><img src="art/icons/money.png"> Sales</li>
+      <li {if $tipo=='geosales'}class="selected"{/if} id="geosales" ><img src="art/icons/world.png"> Geo-Sales</li>
+      <li {if $tipo=='customers'}class="selected"{/if} id="customers"><img src="art/icons/user.png"> Customers</li>
+      <li {if $tipo=='times'}class="selected"{/if} id="times"><img src="art/icons/clock.png"> Dispaching Times</li>
+      <li {if $tipo=='prod'}class="selected"{/if} id="prod"><img src="art/icons/cog.png"> Productivity</li>
+      <li {if $tipo=='stock'}class="selected"{/if} id="stock"><img src="art/icons/brick.png"> Stock</li>
     </ul>
     
   </div> 
   
-  <div  id="plot_options"  style="clear:both;margin-top:20px">
-    <div class="report_chosser2" >
-      <h2>{t}Sales Reports{/t}</h2>
+  <div {if $tipo!='sales'}style="display:none"{/if}  id="header_sales"  class="report_header" >
+      <h2 >{t}Sales Reports{/t}</h2>
       <ul>
 	<li ><a href="report_sales.php?tipo=y&y={$year}"> <img src="art/icons/calendar_view_year.png"> Anual ({$year})</a>
 	</li>
@@ -25,19 +24,26 @@
 	    </span>
 	  <div id="cal1Container" style="position:absolute;display:none; z-index:2"></div>
 	  <div style="position:relative;right:-120px"><div id="cal2Container" style="display:none; z-index:2;position:absolute"></div></div>
-	    
-	  
 	</li>
       </ul>
-      
     </div>
-  </div> 
+  
+ <div  {if $tipo!='geosales'}style="display:none"{/if}  id="header_geosales"  class="report_header" >
+      <h2 >{t}Sales Reports by Location{/t}</h2>
+      
+      
+ </div>
+ <div {if $tipo!='customers'}style="display:none"{/if}  id="header_customers"  class="report_header" ></div>
+ <div {if $tipo!='times'}style="display:none"{/if}  id="header_times"  class="report_header" ></div>
+ <div {if $tipo!='prod'}style="display:none"{/if}  id="header_prod"  class="report_header" ></div>
+ <div {if $tipo!='stock'}style="display:none"{/if}  id="header_stock"  class="report_header" ></div>
+
 
   <div id="front_plot" style="clear:both;">
     <div class="plot_options">
       <h3>Historic Monthly Net Sales</h3>
       <table style="font-size:87%">
-	<tr><td>Group by month <input style="position:relative;top:2px" type="checkbox" id="net_sales_gmonth" name="net_sales_gmonth" value="net_sales_gmonth"><td></tr>
+	<tr><td>Group by month <input style="position:relative;top:2px" {if $plot_tipo=='net_sales_gmonth'}checked="checked"{/if}type="checkbox" id="net_sales_gmonth" name="net_sales_gmonth" value="net_sales_gmonth"><td></tr>
       </table>
     </div>
     <div id="plot_div" class="product_plot"  style="width:810px;height:300px;">

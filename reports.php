@@ -1,5 +1,10 @@
 <?
 include_once('common.php');
+$tipo=$_SESSION['views']['reports_front'];
+$tipo_plot='';
+if(isset($_SESSION['views']['reports_front_plot'][$tipo]))
+  $tipo_plot=$_SESSION['views']['reports_front_plot'][$tipo];
+
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
@@ -29,7 +34,8 @@ $js_files=array(
 		);
 
 
-$smarty->assign('plot_tipo','net_sales_month');
+$smarty->assign('plot_tipo',$tipo_plot);
+$smarty->assign('tipo',$tipo);
 
 $smarty->assign('parent','reports.php');
 $smarty->assign('title', _('Reports'));

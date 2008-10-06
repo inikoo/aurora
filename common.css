@@ -174,12 +174,17 @@ input.normal_right{color:#000;text-align:right}
 
 table.edit{width:100%}
 
-.report_chosser {padding:15px 20px 0 20px;xborder:1px solid red}
-.report_chosser li {float:left;padding: 5px;margin: 0 5px 0px 0;border: 1px solid #ccc;cursor:pointer}
+.report_chosser {padding:15px 20px 0 20px;}
+.report_chosser li {float:left;padding:2px 5px;margin: 0 5px 0px 0;border: 1px solid #ccc;cursor:pointer;;opacity: .5;filter: alpha(opacity=50);}
+.report_chosser li:hover {opacity: .8;filter: alpha(opacity=80);}
 
-.report_chosser2 {padding:15px 20px 0 20px;xborder:1px solid red}
-.report_chosser2 li {float:left;padding: 5px;margin: 0 5px 0px 0;cursor:pointer}
-.report_chosser2 a { text-decoration:none }
+.report_chosser img {position:relative;top:2px;}
+
+.report_chosser li.selected {cursor:default;border-color:#aaa;;opacity: 1;filter: alpha(opacity=100);font-weight:800}
+
+.report_header {padding:15px 20px 0 20px;clear:both;margin-top:20px;}
+.report_header li {float:left;padding: 5px;margin: 0 5px 0px 0;cursor:pointer}
+.report_header a { text-decoration:none }
 
 #editor_chosser {padding:15px 20px 0 20px;xborder:1px solid red}
 #editor_chosser li {float:left;padding: 5px;margin: 0 5px 0px 0;border: 1px solid #ccc;cursor:pointer}
