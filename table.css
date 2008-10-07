@@ -20,26 +20,26 @@ th.yui-dt-resizeable .yui-dt-liner{position:relative;}
 
 .kaktus .yui-dt table{margin:0;padding:0;font-size:inherit;border-collapse:collapse;border-spacing:0;}
 
-.kaktus .yui-dt thead{border-spacing:0;background:lavander;}
+.kaktus .yui-dt thead{border-spacing:0}
 .kaktus .yui-dt caption{padding-bottom:1em;text-align:left;}
 .kaktus .yui-dt-hd table{border-left:1px solid #7F7F7F;border-top:1px solid #7F7F7F;border-right:1px solid #7F7F7F;}
-.kaktus .yui-dt-bd table{xborder:1px solid #7F7F7F;}.kaktus .yui-dt-scrollable .yui-dt-hd table{border:0px;}
+.kaktus .yui-dt-bd table{}.kaktus .yui-dt-scrollable .yui-dt-hd table{border:0px;}
 .kaktus .yui-dt-scrollable .yui-dt-bd table{border:0px;}
 .kaktus .yui-dt-scrollable .yui-dt-hd{border-left:1px solid #7F7F7F;border-top:1px solid #7F7F7F;border-right:1px solid #7F7F7F;}
 .kaktus .yui-dt-scrollable .yui-dt-bd{border-left:1px solid #7F7F7F;border-bottom:1px solid #7F7F7F;border-right:1px solid #7F7F7F;}
 
-.kaktus .yui-dt th{background:lavander;border-bottom:1px solid SteelBlue}
+.kaktus .yui-dt th{border-bottom:1px solid SteelBlue}
 
-.kaktus .yui-dt th,.kaktus .yui-dt th a{background:lavander;font-weight:normal;text-decoration:none;color:#000;vertical-align:bottom}
+.kaktus .yui-dt th,.kaktus .yui-dt th a{font-weight:normal;text-decoration:none;color:#000;vertical-align:bottom}
 
-.kaktus .yui-dt th{margin:0;padding:0;background:lavander;}
+.kaktus .yui-dt th{margin:0;padding:0;}
 .kaktus .yui-dt-liner{margin:0;padding:0;padding:2px 10px 2px 10px;}.kaktus .yui-dt-coltarget{width:5px;background-color:blue;}.kaktus .yui-dt td{margin:0;padding:0;border:none;text-align:left;}
 
 .kaktus .yui-dt-list td{border-right:none;}.kaktus .yui-dt-resizer{width:6px;}.kaktus .yui-dt-loading{background-color:#FFF;}.kaktus .yui-dt-empty{background-color:#FFF;}
 
 .kaktus .yui-dt-error{background-color:#FFF;}
 .kaktus thead .yui-dt-sortable{cursor:pointer;}
-.kaktus th.yui-dt-asc,.kaktus th.yui-dt-desc{backgrond:red}
+.kaktus th.yui-dt-asc,.kaktus th.yui-dt-desc{}
 .kaktus th.yui-dt-sortable .yui-dt-label{margin-right:10px;}
 .kaktus th.yui-dt-asc a{background:url(art/caret-d.gif) no-repeat right;;padding-right:12px}
 .kaktus th.yui-dt-desc a{background:url(art/caret-u.gif) no-repeat right;padding-right:12px}
@@ -85,7 +85,7 @@ th.yui-dt-resizeable .yui-dt-liner{position:relative;}
 .btable .tablecaption_edit{background:#dc4f58;}
 
 .tablecaption{padding:0}
-.tablecaption div{margin-top:.255em;margin-right:3px;float:right;font-weight:normal;visibility:"hidden"}
+.tablecaption div{margin-top:.255em;margin-right:3px;float:right;font-weight:normal;visibility:hidden}
 .tablecaption input {border:none}
 .tablecaption .title {float:left;font-size:160%;margin-left:2.5px;display:block}
 .tablecaption img  {cursor:pointer}

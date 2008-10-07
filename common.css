@@ -79,7 +79,7 @@ height:490px;}
 
 
 
-.xxxresp{border:1px solid #3b5998;width:50%;margin:10px auto;padding:10px;xdisplay:none}
+.xxxresp{border:1px solid #3b5998;width:50%;margin:10px auto;padding:10px;}
 .xxxadduser{padding-left:45px!important;background:  url("art/icons/user_add.png") no-repeat;background-position:7.5px 10px  }
 
 
@@ -89,14 +89,14 @@ td.price{font-size:110%;font-weight:bold}
 
 
 
-//table.show_info_product tr {border-top:1px solid LightCyan;border-bottom:1px solid LightCyan;width:100%}
+
 table.show_info_product {border-top:1px solid SteelBlue;border-bottom:1px solid SteelBlue;width:100%}
 xtable.show_info_product td {border-top:1px solid #ddd;border-bottom:1px solid #ddd}
 .prodinfo{font-size:120%}
 
 
 .xprodinfo{border:1px solid #3b5998;padding:10px}
-.xprodinfo table, .prodinfo div {xborder:1px solid #ddd;float:left;xmargin-right:10px}
+.xprodinfo table, .prodinfo div {xborder:1px solid #ddd;float:left;}
 .xprodinfo table td {border-top:1px solid #ddd;padding:0 5px;vertical-align:top}
 .xprodinfo table td.noborder {border-top:none}
 .xprodinfo div {padding:10px}
@@ -106,7 +106,7 @@ xtable.show_info_product td {border-top:1px solid #ddd;border-bottom:1px solid #
 .xprodinfo table td.stock{font-size:153.9%;font-weight:bold}
 .xprodinfo table td.price{font-size:110%;font-weight:bold}
 
-.prod_info table.notes{clear:both;border:none;background:red}
+.prod_info table.notes{clear:both;border:none;}
 
 .xprodinfo legend{background:#3b5998;color:#fff;margin-left:5px;padding:0px 10px 2px 10px;font-size:85%}
 
@@ -186,17 +186,17 @@ table.edit{width:100%}
 .report_header li {float:left;padding: 5px;margin: 0 5px 0px 0;cursor:pointer}
 .report_header a { text-decoration:none }
 
-#editor_chosser {padding:15px 20px 0 20px;xborder:1px solid red}
+#editor_chosser {padding:15px 20px 0 20px;}
 #editor_chosser li {float:left;padding: 5px;margin: 0 5px 0px 0;border: 1px solid #ccc;cursor:pointer}
 #editor_chosser img{position:relative;top:2px}
 
 
 
 .xdata_table  {margin-top:20px}
-.xdata_table div.options {float:right;border-top:1px solid SteelBlue;xborder-bottom:1px solid black;height:18px;padding:2px 10px;margin-top:10px;margin-right:0px;background:Lavender}
+.xdata_table div.options {float:right;border-top:1px solid SteelBlue;height:18px;padding:2px 10px;margin-top:10px;margin-right:0px;background:Lavender}
 .xdata_table div.options_right{background-image:url('art/corner_top_table_right.png');;background-repeat:no-repeat;float:right;height:23px;width:10px;margin-top:10px;margin-right:10px}
-.xdata_table div.options_left{background-image:url('art/corner_top_table_left.png');;background-repeat:no-repeat;float:right;height:23px;width:10px;margin-top:10px;xbackground:red}
-.xdata_table span.title{xposition:relative;xtop:-10px;padding:0;font-size:160%;float:left;border:1px solid black}
+.xdata_table div.options_left{background-image:url('art/corner_top_table_left.png');;background-repeat:no-repeat;float:right;height:23px;width:10px;margin-top:10px;}
+.xdata_table span.title{padding:0;font-size:160%;float:left;border:1px solid black}
 .xdata_table div.the_data {clear:both;border-top:2px solid black;border-bottom:2px solid black;width:100%}
 .xdata_table div.options div{margin-top:.255em;margin-right:3px;float:right;font-weight:normal;visibility:"hidden"}
 .xdata_table div.options div.hide{margin:0;position:relative;left:10px;cursor:pointer}
@@ -215,7 +215,7 @@ table.edit{width:100%}
 .table_manager div.centre_block div {position:relative;bottom:10px}
 .table_manager div.centre_block img {position:relative;bottom:2px}
 
-.data_table_container {width:100%;clear:both;border-top:1px solid SteelBlue;border-bottom:1px solid SteelBlue;margin-bottom:2px;padding-bottom:1px;xbackground:SteelBlue}
+.data_table_container {width:100%;clear:both;border-top:1px solid SteelBlue;border-bottom:1px solid SteelBlue;margin-bottom:2px;padding-bottom:1px;}
 
 
 .view_options td {cursor:pointer}
@@ -225,8 +225,8 @@ table.edit{width:100%}
 .report_sales1 tr {border-top:1px solid #ddd}
 
 .report_sales1 tr.org {background:b2bef8;border-top:1px solid RoyalBlue;border-bottom:1px solid RoyalBlue}
-.report_sales1 tr.outside {xbackground:BlanchedAlmond}
-.report_sales1 tr.geo,.report_sales1 tr.first  {xbackground:Cornsilk}
+.report_sales1 tr.outside {}
+.report_sales1 tr.geo,.report_sales1 tr.first  {}
 
 .report_sales1 tr.first {border-top:1px solid #999;}
 .report_sales1 tr.partners {border-top:1px solid #999}
@@ -270,7 +270,7 @@ input {border: 1px solid #777}
 .changed{background:#cfe7d0;color:#0b253d}
 .error{background:#fdafaf;color:#000}
 
-table.sbut {margin:5px;border-spacing:10px  10px;border-collapse: separate;width:100%;border 1px solid red}
+table.sbut {margin:5px;border-spacing:10px  10px;border-collapse: separate;width:100%}
 table.but{margin:5px 0 ;width:140px;border:none;clear:right;float:right;border-collapse: separate;;border-spacing:3px  3px;}
 table.but_edit{clear:both;float:right}
 
@@ -306,7 +306,7 @@ table.options{margin:5px 0 ;float:right;border-collapse: separate;;border-spacin
 
 .edit_block{clear:both;margin:55px 0 0 0;width:800px}
 .calendar_year { margin: 10px 0 0 0  }
-.calendar_year  td{xbackground-image:url('art/icons/calendar_view_month.png');xbackground-repeat:no-repeat; text-align:center;font-size:10px;font-weight:800;width:16px;border:1px solid #82aadf;cursor:pointer;border-top:3px solid #ff9958;color:#777}
+.calendar_year  td{text-align:center;font-size:10px;font-weight:800;width:16px;border:1px solid #82aadf;cursor:pointer;border-top:3px solid #ff9958;color:#777}
 .calendar_year td a{color:#777}
 .cal_menu{clear:both;float:right;border:1px solid #ccc;padding:10px;width:180px;margin-top:10px }
 

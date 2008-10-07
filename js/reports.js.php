@@ -11,9 +11,11 @@ var Event = YAHOO.util.Event;
 var Dom   = YAHOO.util.Dom;
 var current_view='<?=$_SESSION['views']['reports_front']?>';
 
-
-
 function init(){
+    
+	var attributes = {opacity: { to: 1 }};
+	var myAnim = new YAHOO.util.Anim('plot_div', attributes);
+	myAnim.duration = 3; 
 
 
     	cal2 = new YAHOO.widget.Calendar("cal2","cal2Container", { title:"<?=_('Choose a date')?>:", close:true } );
@@ -28,7 +30,7 @@ function init(){
 		
 	    if(this.name=='net_sales_gmonth'){
 		if(this.checked){
-		    Dom.getElementById('the_plot').src = 'plot.php?tipo=net_sales_gmonth';
+		    Dom.get('the_plot').src = 'plot.php?tipo=net_sales_gmonth';
 		    YAHOO.util.Connect.asyncRequest('POST','ar_reports.php?tipo=change_front_plot&value=' + escape('net_sales_gmonth') ); 
 		    plot_sales='net_sales_gmonth';
 		}else{
@@ -55,12 +57,16 @@ function init(){
 	    tipo=this.id;
 
 	    if(tipo!=current_view){
+		Dom.get('plot_div').style.opacity=0;
+
+
+		Dom.get('the_plot').src = 'plot.php?tipo='+plot[tipo];
 		Dom.get('header_'+current_view).style.display='none';
 		Dom.get('header_'+tipo).style.display='';
 		Dom.get('plot_options_'+current_view).style.display='none';
 
 		Dom.get('plot_options_'+tipo).style.display='';
-		Dom.get('the_plot').src = 'plot.php?tipo='+plot[tipo];
+
 		YAHOO.util.Connect.asyncRequest('POST','ar_reports.php?tipo=change_front_plot&value=' + escape(plot[tipo]) ); 
 		Dom.get(tipo).className='selected';
 		Dom.get(current_view).className='';
@@ -68,6 +74,13 @@ function init(){
 
 		YAHOO.util.Connect.asyncRequest('POST','ar_reports.php?tipo=change_front&value=' + escape(tipo) ); 
 		current_view=tipo;
+		
+		myAnim.animate();
+		//setTimeout("myAnim.animate()",2000);
+		//		setTimeout(myAnim.animate(), 1000000);
+
+
+
 	    }
 	}
 

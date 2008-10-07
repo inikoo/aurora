@@ -99,7 +99,7 @@ switch($tipo){
 		  );
 
    $xfield=array('label'=>_('Date'),'name'=>'date');
-   $style='size:6,lineSize:2';
+   $style='size:6,lineSize:2,legend:{display: "right"}';
    $tipo_chart='ColumnChart';
    break;
  case('plot_month_outofstock'):
@@ -114,7 +114,7 @@ switch($tipo){
 		  );
 
    $xfield=array('label'=>_('Date'),'name'=>'date');
-   $style='size:6,lineSize:2';
+   $style='size:6,lineSize:2,legend:{display: "top"}';
    $tipo_chart='LineChart';
    break;
 
