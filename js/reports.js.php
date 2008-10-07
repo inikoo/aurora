@@ -1,9 +1,17 @@
 <?
 include_once('../common.php');
+print "var plot = new Object;";
+foreach($_SESSION['views']['reports_front_plot'] as $key => $value){
+    print "plot.$key='$value';";
+}
+
 ?>
+
 var Event = YAHOO.util.Event;
 var Dom   = YAHOO.util.Dom;
 var current_view='<?=$_SESSION['views']['reports_front']?>';
+
+
 
 function init(){
 
@@ -20,13 +28,13 @@ function init(){
 		
 	    if(this.name=='net_sales_gmonth'){
 		if(this.checked){
-		    document.getElementById('the_plot').src = 'plot.php?tipo=net_sales_gmonth';
-		    alert('ar_reports.php?tipo=change_front_plot&value=' + escape('net_sales_gmonth'));
+		    Dom.getElementById('the_plot').src = 'plot.php?tipo=net_sales_gmonth';
 		    YAHOO.util.Connect.asyncRequest('POST','ar_reports.php?tipo=change_front_plot&value=' + escape('net_sales_gmonth') ); 
+		    plot_sales='net_sales_gmonth';
 		}else{
-		    document.getElementById('the_plot').src = 'plot.php?tipo=net_sales_month';
-		   
+		    Dom.get('the_plot').src = 'plot.php?tipo=net_sales_month';
 		    YAHOO.util.Connect.asyncRequest('POST','ar_reports.php?tipo=change_front_plot&value=' + escape('net_sales_month') ); 
+		    plot_sales='net_sales_month';
 		}
 
 	    }
@@ -49,6 +57,11 @@ function init(){
 	    if(tipo!=current_view){
 		Dom.get('header_'+current_view).style.display='none';
 		Dom.get('header_'+tipo).style.display='';
+		Dom.get('plot_options_'+current_view).style.display='none';
+
+		Dom.get('plot_options_'+tipo).style.display='';
+		Dom.get('the_plot').src = 'plot.php?tipo='+plot[tipo];
+		YAHOO.util.Connect.asyncRequest('POST','ar_reports.php?tipo=change_front_plot&value=' + escape(plot[tipo]) ); 
 		Dom.get(tipo).className='selected';
 		Dom.get(current_view).className='';
 

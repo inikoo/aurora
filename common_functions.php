@@ -15,51 +15,144 @@
 //   return array($mysql_date,0);
 // }
 
-function prepare_mysql_datetime($datetime){
+function prepare_mysql_datetime($datetime,$tipo='datetime'){
 
   if($datetime=='')
     return array('',0);
 
-
-
-  if(!preg_match('/^[0123]\d[\-\/][01]\d[\-\/]\d{4}\s[012]\d:[0123456]\d:[0123456]\d$/',$datetime)){
-    return array('',1);
-
+  $time='';
+  if($tipo=='datetime'){
+    if(!preg_match('/^[0123]\d[\-\/][01]\d[\-\/]\d{4}\s[012]\d:[0123456]\d:[0123456]\d$/',$datetime))
+      return array('',1);
+    list($date,$time)=split(' ',$datetime);
+  }else{
+    if(!preg_match('/^[0123]\d[\-\/][01]\d[\-\/]\d{4}/',$datetime))
+      return array('',1);
+    
+    $date=$datetime;
   }
 
+  
 
-  list($date,$time)=split(' ',$datetime);
   
   $date=str_replace('/','-',$date);
   $date=split('-',$date);
-  $mysql_datetime= join ('-',array_reverse($date)).' '.$time;
+  if($tipo=='date'){
+
+    $mysql_datetime= join ('-',array_reverse($date));
 
 
+  }else
+    $mysql_datetime= trim(join ('-',array_reverse($date)).' '.$time);
+  
+ 
   return array($mysql_datetime,0);
 }
  
- 
 
-function prepare_mysql_dates($date1='',$date2='',$date_field='date'){
+function getLastDayOfMonth($month, $year)
+{
+return idate('d', mktime(0, 0, 0, ($month + 1), 0, $year));
+}
 
-  list($mysql_date1,$error1)=prepare_mysql_datetime($date1);
-  list($mysql_date2,$error2)=prepare_mysql_datetime($date2);
+
+function date_base($from,$to,$step='m',$tipo='complete_both'){
+
+
+  list($mysql_date1,$error1)=prepare_mysql_datetime($from,'date');
+  list($mysql_date2,$error2)=prepare_mysql_datetime($to,'date');
+  if($error1 or $error2)
+    return array();
+  list($date1['y'],$date1['m'],$date1['d'])=split('-',$mysql_date1);
+  list($date2['y'],$date2['m'],$date2['d'])=split('-',$mysql_date2);
+  $base=array();
+
+
+  switch($step){
+  case('m'):
+
+    if(preg_match('/(^|\s|,)complete($|\s|,)|complete_both|complete_first|complete_from|only_complete|complete months/i',$tipo)){
+
+      if($date1['d']>1){
+	list($date1['y'],$date1['m'],$date1['d'])=split('-',date("Y-m-d", mktime(0, 0, 0, $date1['m']+1, 1, $date1['y'])));
+      }
+    }
+    if(preg_match('/(^|\s|,)complete($|\s|,)|complete_both|complete_second|complete_to|only_complete|complete months/i',$tipo)){
+      $last_day= getLastDayOfMonth($date2['m'], $date2['y']);
+
+      if($date2['d']!= $last_day  ){
+	list($date2['y'],$date2['m'],$date2['d'])=split('-',date("Y-m-d", mktime(0, 0, 0, $date2['m']-1,$last_day-1 , $date2['y'])));
+      }
+    }
+    
+
+
+    foreach(range($date1['y'],$date2['y']) as $y){
+      foreach(range(1,12) as $m){
+	if($y==$date1['y'] and $m<$date1['m'])
+	  continue;
+	if($y==$date2['y'] and $m>$date2['m'])
+	  break;
+	$base[sprintf('%d-%02d',$y,$m)]='';
+	
+      }
+    }
+
+
+
+    
+  }
+  
+  return $base;
+}
+
+function prepare_mysql_dates($date1='',$date2='',$date_field='date',$options=''){
+
+  if(preg_match('/dates?_only|dates? only|only dates?/i',$options)){
+    $d_option='date';
+    $date_only=true;
+  }else{
+    $d_option='';
+    $date_only=false;
+  }
+  list($mysql_date1,$error1)=prepare_mysql_datetime($date1,$d_option);
+  list($mysql_date2,$error2)=prepare_mysql_datetime($date2,$d_option);
 
   if($error1 or $error2)
     $error=1;
   else
     $error=0;
 
+  
+  if(preg_match('/complete months/i',$options)){
+    list($_date1['y'],$_date1['m'],$_date1['d'])=split('-',$mysql_date1);
+    list($_date2['y'],$_date2['m'],$_date2['d'])=split('-',$mysql_date2);
+    if($_date1['d']>1)
+      list($_date1['y'],$_date1['m'],$_date1['d'])=split('-',date("Y-m-d", mktime(0, 0, 0, $_date1['m']+1, 1, $_date1['y'])));
+    $last_day= getLastDayOfMonth($_date2['m'], $_date2['y']);
+    if($_date2['d']!= $last_day  )
+      list($_date2['y'],$_date2['m'],$_date2['d'])=split('-',date("Y-m-d", mktime(0, 0, 0, $_date2['m']-1,$last_day-1 , $_date2['y'])));
+    
+    $mysql_date1=$_date1['y'].'-'.$_date1['m'].'-'.$_date1['d'];
+    $mysql_date2=$_date2['y'].'-'.$_date2['m'].'-'.$_date2['d'];
+
+  }
+
+
+
+
+
   $date_field=addslashes($date_field);
   
   if($mysql_date2=='' and $mysql_date1=='' )
     $mysql_interval="";
-  else if($mysql_date2!='' and $mysql_date1!='')
+  else if($mysql_date2!='' and $mysql_date1!=''){
     $mysql_interval="and $date_field>='$mysql_date1' and $date_field<='$mysql_date2'";
-  else if($mysql_date2!='')
-    $mysql_interval="and $date_field<='$mysql_date2 23:59:59'";
+    
+  }else if($mysql_date2!='')
+    $mysql_interval="and $date_field<='$mysql_date2'";
   else
-    $mysql_interval="and $date_field>='$mysql_date1 00:00:00' ";
+    $mysql_interval="and $date_field>='$mysql_date1' ";
   
   return array($mysql_interval,$date1,$date2,$error);
 

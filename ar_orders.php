@@ -19,8 +19,78 @@ if(!isset($_REQUEST['tipo']))
 
 $tipo=$_REQUEST['tipo'];
 switch($tipo){
+ case('plot_month_outofstock_money'):
+ case('plot_month_outofstock'):
 
+   if(isset($_REQUEST['from']))
+     $from=$_REQUEST['from'];
+   else
+     $from=date("d-m-Y",strtotime('-1 year') );
+   if(isset($_REQUEST['to']))
+     $to=$_REQUEST['to'];
+   else
+     $to=date("d-m-Y",strtotime('now') );
+   $_from=$from;
+   $_to=$to;
 
+   $int=prepare_mysql_dates($_from,$_to,'date_index','date only,complete months');
+   // make the structure of the months
+   $data=date_base($_from,$_to,'m','complete months');
+   if($tipo=='plot_month_outofstock'){
+
+    $sql=sprintf("select count(DISTINCT  product_id) as products_total ,sum(dispached) as dispached, substring(date_index, 1,7) AS dd from transaction left join orden on (order_id=orden.id) where partner=0  %s group by dd;",$int[0]);
+
+    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+    while($row=$res->fetchRow()) {
+      $data_all[$row['dd']]=array('d_products'=>$row['products_total'],'picks'=>$row['dispached']);
+      
+    }
+   }
+    $sql=sprintf("select count(DISTINCT  product_id) as products,sum(qty) as qty, substring(date_index, 1,7) AS dd,sum(qty*price) as e_cost from outofstock left join orden on (order_id=orden.id) left join product on (product_id=product.id) where  partner=0  %s  group by dd   ",$int[0]);
+    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+    while($row=$res->fetchRow()) {
+      $data_outstock[$row['dd']]=array('d_products'=>$row['products'],'picks'=>$row['qty'],'e_cost'=>$row['e_cost']);
+    }
+    
+    foreach($data as $key=>$value){
+      $total_products=0;
+      $outstock_products=0;
+      $total_picks=0;
+      $outstock_picks=0;
+      $e_cost=0;
+      if(isset($data_all[$key])){
+	 $total_products=$data_all[$key]['d_products'];
+	 $total_picks=$data_all[$key]['picks'];
+      }
+      if(isset($data_outstock[$key])){
+	$outstock_products=$data_outstock[$key]['d_products'];
+	$outstock_picks=$data_outstock[$key]['picks'];
+	$e_cost=$data_outstock[$key]['e_cost'];
+      }
+
+      $per_prods=percentage($outstock_products,$total_products,2,'0','' );
+      $per_picks=percentage($outstock_picks,$total_picks,2,'0','' );
+
+      $_data[]=array(
+			'per_product_outstock'=>$per_prods,
+			'per_picks_outstock'=>$per_picks,
+			'e_cost'=>money($e_cost),
+			'date'=>$key,
+			'tip_per_product_outstock'=>_('Out of Stock Products')."\n".$per_prods.'% ('.number($outstock_products).' '._('of').' '.number($total_products).')',
+			'tip_per_picks_outstock'=>_('Out of Stock Picks')."\n".$per_picks."%\n(".number($outstock_picks).' '._('of').' '.number($total_picks).")\n"._('Estimated Value')."\n@"._('Current Sale Price')."\n".money($e_cost)
+
+		     );
+    }
+$response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$_data,
+			 )
+		   );
+
+   echo json_encode($response);
+   
+   
+   break;
 case('plot_monthsales'):
 
   $from='2004-07-00';

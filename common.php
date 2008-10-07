@@ -218,6 +218,7 @@ if(!isset($_SESSION['views'])){
 			   'stockh_table_options'=>array(1,1,1,1,1),
 			   'reports_front'=>'sales',
 			   'reports_front_plot'=>array(
+						       'stock'=>'plot_month_outofstock',
 						       'sales'=>'net_sales_month'
 						       ),
 			   );

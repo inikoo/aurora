@@ -102,6 +102,22 @@ switch($tipo){
    $style='size:6,lineSize:2';
    $tipo_chart='ColumnChart';
    break;
+ case('plot_month_outofstock'):
+   $ar_address='ar_orders.php?tipo=plot_month_outofstock';
+   $fields='"per_product_outstock","per_picks_outstock","tip_per_product_outstock","tip_per_picks_outstock","date"';
+   $yfields=array(
+		  
+		  array('label'=>_('Products Out of Stock'),'name'=>'per_product_outstock','axis'=>'formatPercentageAxisLabel'),
+		  array('label'=>_('Picks Out of Stock'),'name'=>'per_picks_outstock','axis'=>'formatPercentageAxisLabel'),
+
+
+		  );
+
+   $xfield=array('label'=>_('Date'),'name'=>'date');
+   $style='size:6,lineSize:2';
+   $tipo_chart='LineChart';
+   break;
+
  default:
    print _("Warning: Unknown $tipo plot reference".'.');
    exit;
@@ -142,8 +158,11 @@ return YAHOO.util.Number.format( value,{prefix: "'.$myconf['currency_symbol'].'"
 
 }
  function formatNumberAxisLabel( value ){return YAHOO.util.Number.format( value,{prefix: "",thousandsSeparator: ",",decimalPlaces: 0});}
+ function formatPercentageAxisLabel( value ){return YAHOO.util.Number.format( value,{prefix: "",thousandsSeparator: ",",decimalPlaces: 0})+"%";}
 
- function DataTipText( item, index, series ){return item.tip}
+ function DataTipText( item, index, series ){
+
+return item["tip_"+series["yField"]]    }
  YAHOO.widget.Chart.SWFURL = "http://yui.yahooapis.com/2.5.2/build//charts/assets/charts.swf";
  	var jsonData = new YAHOO.util.DataSource( "'.$ar_address.'" );
  	jsonData.connMethodPost = true;
@@ -167,7 +186,7 @@ yAxis.labelFunction = "'.$yfield['axis'].'";
           series: seriesDef,
  	 xField: "'.$xfield['name'].'",
  	 yAxis: yAxis,
- //	 dataTipFunction: "DataTipText",
+ 	 dataTipFunction: "DataTipText",
  	 expressInstall: "assets/expressinstall.swf"
  	});
  </script>

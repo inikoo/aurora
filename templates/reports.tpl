@@ -40,12 +40,27 @@
 
 
   <div id="front_plot" style="clear:both;">
-    <div class="plot_options">
+    <div {if $tipo!='sales'}style="display:none"{/if} id="plot_options_sales" class="plot_options">
       <h3>Historic Monthly Net Sales</h3>
       <table style="font-size:87%">
 	<tr><td>Group by month <input style="position:relative;top:2px" {if $plot_tipo=='net_sales_gmonth'}checked="checked"{/if}type="checkbox" id="net_sales_gmonth" name="net_sales_gmonth" value="net_sales_gmonth"><td></tr>
       </table>
     </div>
+  <div {if $tipo!='stock'}style="display:none"{/if} id="plot_options_stock" class="plot_options">
+      <h3>OutStock Products & Picks</h3>
+      <table style="font-size:87%">
+      </table>
+    </div>
+
+  <div {if $tipo!='geosales'}style="display:none"{/if} id="plot_options_geosales" class="plot_options">
+  </div>
+  <div {if $tipo!='customers'}style="display:none"{/if} id="plot_options_customer" class="plot_options">
+  </div>
+   <div {if $tipo!='times'}style="display:none"{/if} id="plot_options_times" class="plot_options">
+  </div>
+  <div {if $tipo!='prod'}style="display:none"{/if} id="plot_options_prod" class="plot_options">
+  </div>
+
     <div id="plot_div" class="product_plot"  style="width:810px;height:300px;">
       <iframe id="the_plot" src ="plot.php?tipo={$plot_tipo}" frameborder=0 height="100%" scrolling="no" width="100%"></iframe>
       <div style="clear:both"></div>
