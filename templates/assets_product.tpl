@@ -291,7 +291,7 @@
 	 
 	 <h2 style="margin:0 0 0 50px ;padding:0" class="plot_title"  id="plot_title">{$plot_title}</h2>
 
-	 <div id="plot_options" style="width:130px;float:right;text-align:right">
+	 <div id="plot_options"  >
 <h3>{t}Plot Menu{/t}</h3>
 <table border=0 class="plot_menu">
 <tr class="top">

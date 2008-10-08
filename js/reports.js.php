@@ -12,12 +12,12 @@ var Dom   = YAHOO.util.Dom;
 var current_view='<?=$_SESSION['views']['reports_front']?>';
 
 function init(){
-    
+
 	var attributes = {opacity: { to: 1 }};
 	var myAnim = new YAHOO.util.Anim('plot_div', attributes);
 	myAnim.duration = 3; 
 
-
+	
     	cal2 = new YAHOO.widget.Calendar("cal2","cal2Container", { title:"<?=_('Choose a date')?>:", close:true } );
 	cal2.update=updateCal;cal2.id=2;cal2.render();cal2.update();cal2.selectEvent.subscribe(handleSelect, cal2, true); 
 	cal1 = new YAHOO.widget.Calendar("cal1","cal1Container", { title:"<?=_('Choose a date')?>:", close:true } );
@@ -52,7 +52,7 @@ function init(){
 	}
 	var ids = ["go_free_report"]; 
 	Event.addListener(ids, "change", go_free);
-	
+
 	var change_front_page = function(e){
 	    tipo=this.id;
 

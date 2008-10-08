@@ -72,8 +72,8 @@ switch($tipo){
       $per_picks=percentage($outstock_picks,$total_picks,2,'0','' );
 
       $_data[]=array(
-			'per_product_outstock'=>$per_prods,
-			'per_picks_outstock'=>$per_picks,
+		     'per_product_outstock'=>(float) $per_prods,
+			'per_picks_outstock'=>(float) $per_picks,
 			'e_cost'=>money($e_cost),
 			'date'=>$key,
 			'tip_per_product_outstock'=>_('Out of Stock Products')."\n".$per_prods.'% ('.number($outstock_products).' '._('of').' '.number($total_products).')',
@@ -126,11 +126,11 @@ case('plot_monthsales'):
       $tip_losses=_('Lost Sales')." ".strftime("%B %Y", strtotime('@'.$row['date']))."\n".money($losses)." ($percentage_losses)".($credits>0?"\n".money($credits)." "._('due to refund/credits'):"").($outstoke_value>0?"\n".money($outstoke_value)." "._('due to out of stock'):"");
 
    $data[]=array(
-		   'tip'=>$tip,
+		   'tip_sales'=>$tip,
 		   'tip_losses'=>$tip_losses,
-		   'sales'=>$row['sales'],
+		   'sales'=>(float) $row['sales'],
 		   'losses'=>$losses,
-		   'date'=>strftime("%m-%Y", strtotime('@'.$row['date']))
+		   'date'=>strftime("%m/%y", strtotime('@'.$row['date']))
 		   );
      $prev_month=$row['sales'];
      $prev_year[$row['month']]=$row['sales'];
@@ -143,8 +143,12 @@ case('plot_monthsales'):
 			 )
 		   );
 
-   echo json_encode($response);
-   break;
+
+
+    echo json_encode($response);
+// echo '{"resultset":{"state":200,"data":{"tip":"Sales October 2008\n\u00a329,085.85\n-87.4% change (last month)\n-89.5% change (last year)\n(240 Orders)","tip_losses":"Lost Sales October 2008\n\u00a30.00 (0.0%)","sales":"34429","losses":0,"date":"10-2008"}}}';
+
+ break;
 
 case('plot_gmonthsales'):
   $number_years=4;
@@ -185,8 +189,8 @@ $sql="SELECT year(date_index)as year, count(*) as invoices,month(date_index) as 
       $tip=_('Sales')." ".strftime("%B %Y", strtotime('@'.$row['date']))."\n".money($row['sales'])."\n".$diff_prev_month.$diff_prev_year."(".$row['invoices']." "._('Orders').")";
       $tip_losses=_('Lost Sales')." ".strftime("%B %Y", strtotime('@'.$row['date']))."\n".money($losses)." ($percentage_losses)".($credits>0?"\n".money($credits)." "._('due to refund/credits'):"").($outstoke_value>0?"\n".money($outstoke_value)." "._('due to out of stock'):"");
       
-      $data[$row['month']]['sales'.$row['year']]=$row['sales'];
-      $data[$row['month']]['tip'.$row['year']]=$tip;
+      $data[$row['month']]['sales'.$row['year']]=(float)$row['sales'];
+      $data[$row['month']]['tip_sales'.$row['year']]=$tip;
       $data[$row['month']]['date']=strftime("%b", strtotime('@'.$row['date']));
       
 

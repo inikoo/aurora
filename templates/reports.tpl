@@ -40,9 +40,10 @@
 
 
   <div id="front_plot" style="clear:both;">
+
     <div {if $tipo!='sales'}style="display:none"{/if} id="plot_options_sales" class="plot_options">
-      <h3>Historic Monthly Net Sales</h3>
-      <table style="font-size:87%">
+
+      <table style="margin-top:30px;font-size:87%">
 	<tr><td>Group by month <input style="position:relative;top:2px" {if $plot_tipo=='net_sales_gmonth'}checked="checked"{/if}type="checkbox" id="net_sales_gmonth" name="net_sales_gmonth" value="net_sales_gmonth"><td></tr>
       </table>
     </div>

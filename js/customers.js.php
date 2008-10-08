@@ -99,18 +99,20 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								   this.CustomersDataSource
 								 , {
 								     // sortedBy: {key:"<?=$_SESSION['tables']['customers_list'][0]?>", dir:"<?=$_SESSION['tables']['customers_list'][1]?>"},
-								     renderLoopSize: 50,generateRequest : myRequestBuilder,
-								      paginator : new YAHOO.widget.Paginator({
+								     renderLoopSize: 50,generateRequest : myRequestBuilder
+								       ,paginator : new YAHOO.widget.Paginator({
 									      rowsPerPage    : 25,containers : 'paginator0', 
-									      previousPageLinkLabel : "<",
-									      nextPageLinkLabel : ">",
-									      firstPageLinkLabel :"<<",
-									      lastPageLinkLabel :">>",rowsPerPageOptions : [25,50,100,250,500], 
-									      template : "{FirstPageLink}{PreviousPageLink} <strong>{CurrentPageReport}</strong> {NextPageLink}{LastPageLink} RPP{RowsPerPageDropdown}Filter <input style='border:1px solid #777;position:relative;bottom:0px;border-bottom:none' style='table_filter' type='text'/>" 
-									  }),
+ 									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
+									      ,template : "{FirstPageLink}{PreviousPageLink} <strong>{CurrentPageReport}</strong> {NextPageLink}{LastPageLink}  <select onChange=\"alert(\'ccc  cc\')\"  style=\"opacity:.0;width:120px;height:16px;vertical-align:bottom\"><option   value=\"one\">Post Code</option><option value=\"two\">Customer Name</option></select><span style=\"margin-left:-120px\">Customer Name</span> <input/>"
+
+
+									  })
 								     
-								     sortedBy : {
-									 key:"<?=$_SESSION['tables']['customers_list'][0]?>",
+								     ,sortedBy : {
+									 key: "<?=$_SESSION['tables']['customers_list'][0]?>",
 									 dir: "<?=$_SESSION['tables']['customers_list'][1]?>"
 								     },
 								     dynamicData : true

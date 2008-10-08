@@ -16,20 +16,26 @@ $css_files=array(
 		 );
 $js_files=array(
 
-		$yui_path.'yahoo-dom-event/yahoo-dom-event.js',
-		$yui_path.'calendar/calendar-min.js',
-		
-		$yui_path.'element/element-beta-min.js',
-		$yui_path.'utilities/utilities.js',
-		$yui_path.'container/container.js',
-		$yui_path.'menu/menu-min.js',
-		$yui_path.'button/button.js',
-		$yui_path.'datasource/datasource-beta.js',
-		$yui_path.'datatable/datatable-beta.js',
-		$yui_path.'charts/charts-experimental-min.js',
-		$yui_path.'json/json-min.js',
+
+
+
+
+$yui_path.'yahoo/yahoo-min.js',
+$yui_path.'yahoo-dom-event/yahoo-dom-event.js',
+$yui_path.'calendar/calendar-min.js',
+$yui_path.'json/json-min.js',
+$yui_path.'element/element-beta-min.js',
+$yui_path.'connection/connection-min.js',
+$yui_path.'datasource/datasource-beta.js',
+$yui_path.'charts/charts-experimental-min.js',
+$yui_path.'calendar/calendar-min.js',
+$yui_path.'container/container-min.js',
+$yui_path.'menu/menu-min.js',
+$yui_path.'animation/animation-min.js',
+
+
+
 		'js/common.js.php',
-		'js/table_common.js.php',
 		'js/reports.js.php'
 		);
 

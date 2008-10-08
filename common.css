@@ -315,3 +315,29 @@ table.options{margin:5px 0 ;float:right;border-collapse: separate;;border-spacin
 
 .plot_options{width:135px;float:right;text-align:right  }
 .plot_options h3{text-align:left;font-weight:bold;margin-top:10px  }
+
+.caca{ background:green;margin:0;margin:0 0  0 20px }
+
+div.skinnedSelect {
+background:red;
+width:150px;
+display:inline
+
+}
+div.skinnedSelect select {
+opacity: .5;
+filter: alpha(opacity = 0);
+moz-opacity: 0;
+width: 70px;
+margin-left: -70px;
+}
+div.skinnedSelect .text {
+
+}
+
+div.skinnedSelect .text,
+div.skinnedSelect select option
+{
+font-size: 11px;
+color: #316D89;
+}
