@@ -67,13 +67,17 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				      
 
 					 ];
-
-	    this.CustomersDataSource = new YAHOO.util.DataSource("ar_contacts.php?tipo=customers&tid=0");
+	    //?tipo=customers&tid=0"
+	    this.CustomersDataSource = new YAHOO.util.DataSource("ar_contacts.php?tipo=customers");
 	    this.CustomersDataSource.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.CustomersDataSource.connXhrMode = "queueRequests";
 	    this.CustomersDataSource.responseSchema = {
 		resultsList: "resultset.data", 
-		totalRecords: 'resultset.total_records',
+		metaFields: {
+		    totalRecords: "resultset.total_records" // Access to value in the server response
+		},
+		
+		
 		fields: [
 			 "id"
 			 ,"name"
@@ -93,13 +97,32 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 	    this.CustomersDataTable = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
 								   this.CustomersDataSource
-								 //, {
+								 , {
 								     // sortedBy: {key:"<?=$_SESSION['tables']['customers_list'][0]?>", dir:"<?=$_SESSION['tables']['customers_list'][1]?>"},
-								     // renderLoopSize: 50
-								 // }
+								     renderLoopSize: 50,generateRequest : myRequestBuilder,
+								      paginator : new YAHOO.widget.Paginator({
+									      rowsPerPage    : 25,containers : 'paginator0', 
+									      previousPageLinkLabel : "<",
+									      nextPageLinkLabel : ">",
+									      firstPageLinkLabel :"<<",
+									      lastPageLinkLabel :">>",rowsPerPageOptions : [25,50,100,250,500], 
+									      template : "{FirstPageLink}{PreviousPageLink} <strong>{CurrentPageReport}</strong> {NextPageLink}{LastPageLink} RPP{RowsPerPageDropdown}Filter <input style='border:1px solid #777;position:relative;bottom:0px;border-bottom:none' style='table_filter' type='text'/>" 
+									  }),
+								     
+								     sortedBy : {
+									 key:"<?=$_SESSION['tables']['customers_list'][0]?>",
+									 dir: "<?=$_SESSION['tables']['customers_list'][1]?>"
+								     },
+								     dynamicData : true
+
+								  }
 								   
-								   );
-	 
+								 );
+	    this.CustomersDataTable.handleDataReturnPayload = function(oRequest, oResponse, oPayload) {
+		oPayload.totalRecords = parseInt(oResponse.meta.totalRecords);
+		return oPayload;
+	    }
+
 // 	    this.CustomersDataTable.paginatorMenu = new YAHOO.widget.Menu('paginatornewmenu'+tableid,  {context:['paginatormenuselector'+tableid,"tr", "br"]  });
 // 	    this.CustomersDataTable.paginatorMenu.addItems([{ text: "25", onclick:{fn:changeRecordsperPage,obj:25,scope:this.CustomersDataTable}  } ]);
 // 	    this.CustomersDataTable.paginatorMenu.addItems([{ text: "50", onclick:{fn:changeRecordsperPage,obj:50,scope:this.CustomersDataTable}  } ]);
@@ -152,19 +175,19 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 
-function init(){
+// function init(){
 
 
-    function mygetTerms(query) {
-	var Dom = YAHOO.util.Dom
-	var table=YAHOO.customers.XHR_JSON.CustomersDataTable;
-	table.myreload();
+//     function mygetTerms(query) {
+// 	var Dom = YAHOO.util.Dom
+// 	var table=YAHOO.customers.XHR_JSON.CustomersDataTable;
+// 	table.myreload();
 
-    };
-    var oACDS = new YAHOO.widget.DS_JSFunction(mygetTerms);
-    oACDS.queryMatchContains = true;
-    var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","filtercontainer0", oACDS);
-    oAutoComp.minQueryLength = 0; 
+//     };
+//     var oACDS = new YAHOO.widget.DS_JSFunction(mygetTerms);
+//     oACDS.queryMatchContains = true;
+//     var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","filtercontainer0", oACDS);
+//     oAutoComp.minQueryLength = 0; 
     
 
 
@@ -173,6 +196,6 @@ function init(){
 
 
 
-}
+// }
 
-YAHOO.util.Event.onDOMReady(init);
+// YAHOO.util.Event.onDOMReady(init);

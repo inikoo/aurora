@@ -10,6 +10,7 @@
 <p style="width:475px">{$overview_text}</p>
 <p style="width:475px">{$top_text}</p>
 <p style="width:475px">{$export_text}</p>
+
 <div class="data_table" style="margin-top:25px">
       {include file='table.tpl' table_id=0 table_title=$table_title filter=$filter filter_name=$filter_name}
       	<div  id="table0"   class="data_table_container dtable btable "> </div>

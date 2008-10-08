@@ -196,16 +196,16 @@ table.edit{width:100%}
 .xdata_table div.options {float:right;border-top:1px solid SteelBlue;height:18px;padding:2px 10px;margin-top:10px;margin-right:0px;background:Lavender}
 .xdata_table div.options_right{background-image:url('art/corner_top_table_right.png');;background-repeat:no-repeat;float:right;height:23px;width:10px;margin-top:10px;margin-right:10px}
 .xdata_table div.options_left{background-image:url('art/corner_top_table_left.png');;background-repeat:no-repeat;float:right;height:23px;width:10px;margin-top:10px;}
-.xdata_table span.title{padding:0;font-size:160%;float:left;border:1px solid black}
+.xdata_table span.title{padding:0;font-size:160%;float:left;border:1px solid black}border
 .xdata_table div.the_data {clear:both;border-top:2px solid black;border-bottom:2px solid black;width:100%}
 .xdata_table div.options div{margin-top:.255em;margin-right:3px;float:right;font-weight:normal;visibility:"hidden"}
 .xdata_table div.options div.hide{margin:0;position:relative;left:10px;cursor:pointer}
 .xdata_table div.options input{border:1px solid #777;position:relative;bottom:3px}
 
 .table_manager {float:right;font-size:85%;margin-right:10px;}
-.table_manager div {float:right;height:18px;margin-top:14px;}
-.table_manager div.centre_block {height:18px;border-top:1px solid  SteelBlue;background:Lavender;}
-.table_manager div.left_block,div.right_block{width:10px;height:19px;} 
+.table_manager div {float:right;height:112px;margin-top:14px;}
+.table_manager div.centre_block {height:10px;border-top:1px solid  SteelBlue;background:Lavender;}
+.table_manager div.left_block,div.right_block{width:10px;height:15px;} 
 .table_manager div.left_block{background-image:url('art/corner_top_table_left.png')} 
 .table_manager div.right_block{background-image:url('art/corner_top_table_right.png')} 
 .table_manager div.centre_block input{border:1px solid #777;margin-top:1px}
@@ -214,6 +214,8 @@ table.edit{width:100%}
 .table_manager div.centre_block img.resetfield{position:relative;bottom:5px;left:-24px}
 .table_manager div.centre_block div {position:relative;bottom:10px}
 .table_manager div.centre_block img {position:relative;bottom:2px}
+.yui-pg-rpp-options{border:1px solid black}
+
 
 .data_table_container {width:100%;clear:both;border-top:1px solid SteelBlue;border-bottom:1px solid SteelBlue;margin-bottom:2px;padding-bottom:1px;}
 

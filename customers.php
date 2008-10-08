@@ -99,15 +99,18 @@ $css_files=array(
 $js_files=array(
 		$yui_path.'yahoo-dom-event/yahoo-dom-event.js',
 		$yui_path.'connection/connection-min.js',
-		$yui_path.'datasource/datasource-min.js',
-		$yui_path.'autocomplete/autocomplete-min.js',
+
+
 		$yui_path.'element/element-beta-min.js',
+		$yui_path.'paginator/paginator-min.js',
+		$yui_path.'datasource/datasource-min.js',
 		$yui_path.'datatable/datatable-min.js',
+	$yui_path.'autocomplete/autocomplete-min.js',
 		$yui_path.'json/json-min.js',
 		$yui_path.'container/container_core-min.js',
 		$yui_path.'menu/menu-min.js',
 		'js/common.js.php',
-		//	'js/table_common.js.php',
+		'js/table_common.js.php',
 		'js/customers.js.php'
 		);
 
