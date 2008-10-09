@@ -147,7 +147,7 @@ switch($_SESSION['tables']['customers_list'][5]){
    $filter_text=_('Id');
    break;
  case('cu.name'):
-   $filter_text=_('Customer Name');
+   $filter_text=_('Name Filter');
    break;
  case('id'):
    $filter_text=$customers_ids[0];

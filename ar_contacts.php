@@ -588,7 +588,7 @@ else if($f_field=='id'  )
 
 
 
-  // $_SESSION['tables']['customers_list']=array($order,$order_direction,$number_results,$start_from,$_SESSION['tables']['customers_list'][4],$f_field,$f_value);
+  $_SESSION['tables']['customers_list']=array($order,$order_direction,$number_results,$start_from,$where,$f_field,$f_value);
 
 
    $sql="select count(*) as total from customer as cu left join contact on (contact_id=contact.id)  $where $wheref";
@@ -598,7 +598,8 @@ else if($f_field=='id'  )
      $total=$row['total'];
    }if($wheref!=''){
      $sql="select count(*) as total_without_filters from customer  as cu left join contact on (contact_id=contact.id) $where ";
-     $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+
+   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
      if($row=$res->fetchRow()) {
        $filtered=$row['total_without_filters']-$total;
      }
@@ -624,8 +625,8 @@ else if($f_field=='id'  )
    }else
       $filter_msg='';
    
-
-
+   $_order=$order;
+   $_dir=$order_direction;
    if($order=='location'){
      if($order_direction=='desc')
        $order='country_code desc ,town desc';
@@ -706,6 +707,8 @@ else if($f_field=='id'  )
   $response=array('resultset'=>
 		   array('state'=>200,
 			 'data'=>$adata,
+			 'sort_key'=>$_order,
+			 'sort_dir'=>$_dir,
 			 'total_records'=>$total,
 			 'records_offset'=>$start_from,
 			 'records_returned'=>$start_from+$res->numRows(),
