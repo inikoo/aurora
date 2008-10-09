@@ -341,3 +341,9 @@ div.skinnedSelect select option
 font-size: 11px;
 color: #316D89;
 }
+
+
+.clean_table_title{margin-bottom:0px;font-size:135%;float:left}
+.clean_table_info{display:table-cell; vertical-align:bottom;;border:0px solid black}
+.clean_table_controls{float:right;font-size:85%;margin-right:10px;}
+.clean_table_controls div {display:table-cell; vertical-align:bottom;border:0px solid black}

@@ -1,10 +1,11 @@
 
+<span class="clean_table_title">{t}{$table_title}{/t}</span>
+<div style="clear:both;">
+  <div style="float:left;font-size:85%;">
+    <div class="clean_table_info">xx sad a asd as da sd as d as da sd a</div>
+  </div>
+  <div class="clean_table_controls">
+    <div><span  style="margin:0 10px" id="paginator{$table_id}">xx</span></div>
+  </div>
 
-
-<span class="title" style="margin-bottom:6px;font-size:160%;float:left">{t name=$table_title}%1{/t}</span>
-<div style="float:right;font-size:85%;margin-right:10px;">
-<div style="display:table-cell; vertical-align:bottom;height:35px;border:0px solid black">
-<span  style="margin:0 10px" id="paginator{$table_id}">xx</span>
 </div>
-</div>
-

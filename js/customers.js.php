@@ -106,7 +106,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
  									      nextPageLinkLabel : ">",
  									      firstPageLinkLabel :"<<",
  									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
-									      ,template : "{FirstPageLink}{PreviousPageLink} <strong>{CurrentPageReport}</strong> {NextPageLink}{LastPageLink}  <select onChange=\"alert(\'ccc  cc\')\"  style=\"opacity:.0;width:120px;height:16px;vertical-align:bottom\"><option   value=\"one\">Post Code</option><option value=\"two\">Customer Name</option></select><span style=\"margin-left:-120px\">Customer Name</span> <input/>"
+									      ,template : "{FirstPageLink}{PreviousPageLink} <strong>{CurrentPageReport}</strong> {NextPageLink}{LastPageLink}  <select onChange=\"alert(\'ccc  cc\')\"  style=\"opacity:.0;width:120px;height:16px;vertical-align:bottom\"><option value=\"one\">Post Code</option><option value=\"two\">Customer Name</option></select><span style=\"margin-left:-100px\">Customer Name</span> <input size=12/>"
 
 
 									  })
@@ -168,8 +168,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
 // 	    YAHOO.util.Event.addListener('paginator_prev0', "click", prevpage, this.CustomersDataTable); 
 // 	    YAHOO.util.Event.addListener('hidder0', "click", showtable, this.CustomersDataTable); 
 // 	    YAHOO.util.Event.addListener('resetfilter0', "click", resetfilter, this.CustomersDataTable); 
-
-
+		var caca = function(){
+		    alert('cc');
+		}
+		YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",caca)
 	    
 	};
     });

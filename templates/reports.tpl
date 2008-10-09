@@ -48,7 +48,7 @@
       </table>
     </div>
   <div {if $tipo!='stock'}style="display:none"{/if} id="plot_options_stock" class="plot_options">
-      <h3>OutStock Products & Picks</h3>
+
       <table style="font-size:87%">
       </table>
     </div>
