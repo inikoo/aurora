@@ -22,7 +22,6 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    };
 	    
 	    
-	    //START OF THE TABLE=========================================================================================================================
 	    
 	    var tableid=0; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
@@ -72,29 +71,27 @@ YAHOO.util.Event.addListener(window, "load", function() {
 						     this.dataSource0, {
 							   renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage    : "<?=$_SESSION['tables']['order_list'][2]?>",containers : 'paginator', 
+									       rowsPerPage    : <?=$_SESSION['tables']['order_list'][2]?>,containers : 'paginator', 
  									      pageReportTemplate : '(<?=_('Page')?> {currentPage} <?=_('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
  									      firstPageLinkLabel :"<<",
  									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
 									      ,template : "{FirstPageLink}{PreviousPageLink}<strong>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
-
-
-
 									  })
 								     
 								     ,sortedBy : {
 									 key: "<?=$_SESSION['tables']['order_list'][0]?>",
 									 dir: "<?=$_SESSION['tables']['order_list'][1]?>"
-								     },
-								     dynamicData : true
+								     }
+							   ,dynamicData : true
 
 						     }
 						     );
 	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	    this.table0.filter={key:'<?=$_SESSION['tables']['order_list'][5]?>',value:'<?=$_SESSION['tables']['order_list'][6]?>'};
 
 
 

@@ -67,8 +67,10 @@ $smarty->assign('to',$f_to);
 
 $sql="select count(*) as numberof from orden";
 $result =& $db->query($sql);
-if(!$orders=$result->fetchRow())
-  exit;
+if($row=$result->fetchRow())
+  $orders=$row['numberof'];
+ else 
+   exit;
 
 
 $smarty->assign('box_layout','yui-t0');
@@ -113,7 +115,7 @@ $smarty->assign('title', _('Orders'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
-$smarty->assign('table_title',_('Orders'));
+$smarty->assign('table_title',_('Order List'));
 
 
 
@@ -155,6 +157,7 @@ switch($tipo_filter){
  }
 $smarty->assign('filter_name',$filter_text);
 
+$smarty->assign('table_info',$orders.'  '.ngettext('Order','Orders',$orders));
 
 
 $smarty->display('orders.tpl');

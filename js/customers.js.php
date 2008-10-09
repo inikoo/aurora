@@ -68,10 +68,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 					 ];
 	    //?tipo=customers&tid=0"
-	    this.dataSorce0 = new YAHOO.util.DataSource("ar_contacts.php?tipo=customers");
-	    this.dataSorce0.responseType = YAHOO.util.DataSource.TYPE_JSON;
-	    this.dataSorce0.connXhrMode = "queueRequests";
-	    this.dataSorce0.responseSchema = {
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_contacts.php?tipo=customers");
+	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource0.connXhrMode = "queueRequests";
+	    this.dataSource0.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
 		    rowsPerPage:"resultset.records_perpage",
@@ -96,12 +96,12 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 ]};
 	    //__You shouls not change anything from here
 
-	    //this.dataSorce.doBeforeCallback = mydoBeforeCallback;
+	    //this.dataSource.doBeforeCallback = mydoBeforeCallback;
 
 
 
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
-								   this.dataSorce0
+								   this.dataSource0
 								 , {
 								     // sortedBy: {key:"<?=$_SESSION['tables']['customers_list'][0]?>", dir:"<?=$_SESSION['tables']['customers_list'][1]?>"},
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
@@ -161,9 +161,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 // 	    this.table0.filterMenu.addItems([{ text: "<?=_('Minumum Days Since Last Order')?>", onclick:{fn:changeFilter,obj:{col:'mindesde',text:"<?=_('Min Days')?>"},scope:this.table0}  } ]);
 
 
-	    this.table0.filter={key:'<?=$_SESSION['tables']['customers_list'][5]?>',value:'<?=$_SESSION['tables']['customers_list'][6]?>',lastRequest:new Date().getTime()};
+	    this.table0.filter={key:'<?=$_SESSION['tables']['customers_list'][5]?>',value:'<?=$_SESSION['tables']['customers_list'][6]?>'};
 
-	    //   YAHOO.util.Event.addListener('f_input', "keyup",myFilterChangeValue,{table:this.table0,datasource:this.dataSorce})
+	    //   YAHOO.util.Event.addListener('f_input', "keyup",myFilterChangeValue,{table:this.table0,datasource:this.dataSource})
 			 
 	    
 	    //	    var Dom   = YAHOO.util.Dom;

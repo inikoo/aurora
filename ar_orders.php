@@ -438,7 +438,7 @@ case('changesalesplot'):
   
   
  $filter_msg='';
-   if($total==0 and $filtered>0){
+
      switch($f_field){
      case('public_id'):
        if($total==0 and $filtered>0)
@@ -447,7 +447,7 @@ case('changesalesplot'):
 	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('only orders starting with')." <b>$f_value</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Remove Filter')."</span>";
        break;
      }
-   }
+
 
 
    
@@ -457,7 +457,7 @@ case('changesalesplot'):
 
 
   $sql="select date_index,public_id,customer_name,id,customer_id,total,titulo,tipo from orden  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
-  // print $sql;
+  //print $sql;
    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
    $data=array();
    while($row=$res->fetchRow()) {

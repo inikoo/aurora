@@ -5,7 +5,7 @@ var remove_filter= function (tableid){
     Dom.get('f_input'+tableid).value='';
     var table=tables['table'+tableid]
 
-    var datasource=tables['dataSorce'+tableid];
+    var datasource=tables['dataSource'+tableid];
     table.filter.value=Dom.get('f_input0').value;
     var request='&f_field=' +table.filter.key + '&f_value=' + table.filter.value;
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
@@ -29,7 +29,7 @@ var myhandleDataReturnPayload= function(oRequest, oResponse, oPayload) {
     oPayload.filter_msg=oResponse.meta.filter_msg;
 
 
-	
+
     YAHOO.util.Dom.get('filter_msg'+oResponse.meta.tableid).innerHTML=oPayload.filter_msg
     //    oPayload.sortedBy.key=oResponse.meta.sort_key;
     //oPayload.sortedBy.dir=oResponse.meta.sort_dir;
@@ -63,9 +63,9 @@ var myRequestBuilder = function(oState, oSelf) {
 var mygetTerms =function (query) {
     var Dom   = YAHOO.util.Dom;
     var table=tables.table0;
-    var datasource=tables.dataSorce0;
+    var datasource=tables.dataSource0;
     table.filter.value=Dom.get('f_input0').value;
-    var request='&f_field=' +table.filter.key + '&f_value=' + table.filter.value;
+    var request='&sf=0&f_field=' +table.filter.key + '&f_value=' + table.filter.value;
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
 };
 
