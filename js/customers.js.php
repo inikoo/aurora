@@ -7,11 +7,11 @@ include_once('../common.php');
 ?>
 
 
-YAHOO.namespace ("customers"); 
+
 
 
 YAHOO.util.Event.addListener(window, "load", function() {
-    YAHOO.customers.XHR_JSON = new function() {
+    tables = new function() {
 
 
 	    this.customerLink=  function(el, oRecord, oColumn, oData) {
@@ -68,10 +68,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 					 ];
 	    //?tipo=customers&tid=0"
-	    this.CustomersDataSource = new YAHOO.util.DataSource("ar_contacts.php?tipo=customers");
-	    this.CustomersDataSource.responseType = YAHOO.util.DataSource.TYPE_JSON;
-	    this.CustomersDataSource.connXhrMode = "queueRequests";
-	    this.CustomersDataSource.responseSchema = {
+	    this.dataSorce0 = new YAHOO.util.DataSource("ar_contacts.php?tipo=customers&id");
+	    this.dataSorce0.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSorce0.connXhrMode = "queueRequests";
+	    this.dataSorce0.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
 		    tableid:"resultset.tableid",
@@ -93,12 +93,12 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 ]};
 	    //__You shouls not change anything from here
 
-	    //this.CustomersDataSource.doBeforeCallback = mydoBeforeCallback;
+	    //this.dataSorce.doBeforeCallback = mydoBeforeCallback;
 
 
 
-	    this.CustomersDataTable = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
-								   this.CustomersDataSource
+	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
+								   this.dataSorce0
 								 , {
 								     // sortedBy: {key:"<?=$_SESSION['tables']['customers_list'][0]?>", dir:"<?=$_SESSION['tables']['customers_list'][1]?>"},
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
@@ -125,42 +125,42 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								   
 								 );
 	    
-	    this.CustomersDataTable.handleDataReturnPayload =myhandleDataReturnPayload;
-	    this.CustomersDataTable.doBeforeSortColumn = mydoBeforeSortColumn;
-	    this.CustomersDataTable.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
 
 		    
 		    
-//  	    this.CustomersDataTable.paginatorMenu = new YAHOO.widget.Menu('paginatornewmenu'+tableid,  {context:['paginatormenuselector'+tableid,"tr", "br"]  });
-//  	    this.CustomersDataTable.paginatorMenu.addItems([{ text: "25", onclick:{fn:changeRecordsperPage,obj:25,scope:this.CustomersDataTable}  } ]);
-//  	    this.CustomersDataTable.paginatorMenu.addItems([{ text: "50", onclick:{fn:changeRecordsperPage,obj:50,scope:this.CustomersDataTable}  } ]);
-//  	    this.CustomersDataTable.paginatorMenu.addItems([{ text: "100", onclick:{fn:changeRecordsperPage,obj:100,scope:this.CustomersDataTable}  } ]);
-//  	    this.CustomersDataTable.paginatorMenu.addItems([{ text: "250", onclick:{fn:changeRecordsperPage,obj:250,scope:this.CustomersDataTable}  } ]);
-//  	    this.CustomersDataTable.paginatorMenu.addItems([{ text: "500", onclick:{fn:changeRecordsperPage,obj:500,scope:this.CustomersDataTable}  } ]);
-//  	    this.CustomersDataTable.paginatorMenu.addItems([{ text: "all", onclick:{fn:changeRecordsperPage,obj:'all',scope:this.CustomersDataTable}  } ]);
-//  	    YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click", this.CustomersDataTable.paginatorMenu.show, null, this.CustomersDataTable.paginatorMenu);
-//  	    this.CustomersDataTable.paginatorMenu.render(document.body);
+//  	    this.table0.paginatorMenu = new YAHOO.widget.Menu('paginatornewmenu'+tableid,  {context:['paginatormenuselector'+tableid,"tr", "br"]  });
+//  	    this.table0.paginatorMenu.addItems([{ text: "25", onclick:{fn:changeRecordsperPage,obj:25,scope:this.table0}  } ]);
+//  	    this.table0.paginatorMenu.addItems([{ text: "50", onclick:{fn:changeRecordsperPage,obj:50,scope:this.table0}  } ]);
+//  	    this.table0.paginatorMenu.addItems([{ text: "100", onclick:{fn:changeRecordsperPage,obj:100,scope:this.table0}  } ]);
+//  	    this.table0.paginatorMenu.addItems([{ text: "250", onclick:{fn:changeRecordsperPage,obj:250,scope:this.table0}  } ]);
+//  	    this.table0.paginatorMenu.addItems([{ text: "500", onclick:{fn:changeRecordsperPage,obj:500,scope:this.table0}  } ]);
+//  	    this.table0.paginatorMenu.addItems([{ text: "all", onclick:{fn:changeRecordsperPage,obj:'all',scope:this.table0}  } ]);
+//  	    YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click", this.table0.paginatorMenu.show, null, this.table0.paginatorMenu);
+//  	    this.table0.paginatorMenu.render(document.body);
 
 	    
 
 
 
-// 	    this.CustomersDataTable.filterMenu = new YAHOO.widget.Menu('filternewmenu0',  {context:['filterselector0',"tr", "br"]  });
-// 	    this.CustomersDataTable.filterMenu.addItems([{ text: "<?=_('Customer Name')?>", onclick:{fn:changeFilter,obj:{col:'name',text:"<?=_('Customer name')?>"},scope:this.CustomersDataTable}  } ]);
-// 	    this.CustomersDataTable.filterMenu.addItems([{ text: "<?=$customers_ids[0]?>", onclick:{fn:changeFilter,obj:{col:'id',text:"<?=$customers_ids[0]?>"},scope:this.CustomersDataTable}  } ]);
-// 	    this.CustomersDataTable.filterMenu.addItems([{ text: "<?=$customers_ids[1]?>", onclick:{fn:changeFilter,obj:{col:'id2',text:"<?=$customers_ids[1]?>"},scope:this.CustomersDataTable}  } ]);
-// 	    this.CustomersDataTable.filterMenu.addItems([{ text: "<?=$customers_ids[2]?>", onclick:{fn:changeFilter,obj:{col:'id3',text:"<?=$customers_ids[2]?>"},scope:this.CustomersDataTable}  } ]);
-// 	    this.CustomersDataTable.filterMenu.addItems([{ text: "<?=_('Maximum Orders')?>", onclick:{fn:changeFilter,obj:{col:'max',text:"<?=_('Max Orders')?>"},scope:this.CustomersDataTable}  } ]);
-// 	    this.CustomersDataTable.filterMenu.addItems([{ text: "<?=_('Minumum Orders')?>", onclick:{fn:changeFilter,obj:{col:'min',text:"<?=_('Min Orders')?>"},scope:this.CustomersDataTable}  } ]);
-// 	    this.CustomersDataTable.filterMenu.addItems([{ text: "<?=_('Maximum Total')?>", onclick:{fn:changeFilter,obj:{col:'maxvalue',text:"<?=_('Max Total')?>"},scope:this.CustomersDataTable}  } ]);
-// 	    this.CustomersDataTable.filterMenu.addItems([{ text: "<?=_('Minumum Total')?>", onclick:{fn:changeFilter,obj:{col:'minvalue',text:"<?=_('Min Total')?>"},scope:this.CustomersDataTable}  } ]);
-// 	    this.CustomersDataTable.filterMenu.addItems([{ text: "<?=_('Maximum Days Since Last Order')?>", onclick:{fn:changeFilter,obj:{col:'maxdesde',text:"<?=_('Max Days')?>"},scope:this.CustomersDataTable}  } ]);
-// 	    this.CustomersDataTable.filterMenu.addItems([{ text: "<?=_('Minumum Days Since Last Order')?>", onclick:{fn:changeFilter,obj:{col:'mindesde',text:"<?=_('Min Days')?>"},scope:this.CustomersDataTable}  } ]);
+// 	    this.table0.filterMenu = new YAHOO.widget.Menu('filternewmenu0',  {context:['filterselector0',"tr", "br"]  });
+// 	    this.table0.filterMenu.addItems([{ text: "<?=_('Customer Name')?>", onclick:{fn:changeFilter,obj:{col:'name',text:"<?=_('Customer name')?>"},scope:this.table0}  } ]);
+// 	    this.table0.filterMenu.addItems([{ text: "<?=$customers_ids[0]?>", onclick:{fn:changeFilter,obj:{col:'id',text:"<?=$customers_ids[0]?>"},scope:this.table0}  } ]);
+// 	    this.table0.filterMenu.addItems([{ text: "<?=$customers_ids[1]?>", onclick:{fn:changeFilter,obj:{col:'id2',text:"<?=$customers_ids[1]?>"},scope:this.table0}  } ]);
+// 	    this.table0.filterMenu.addItems([{ text: "<?=$customers_ids[2]?>", onclick:{fn:changeFilter,obj:{col:'id3',text:"<?=$customers_ids[2]?>"},scope:this.table0}  } ]);
+// 	    this.table0.filterMenu.addItems([{ text: "<?=_('Maximum Orders')?>", onclick:{fn:changeFilter,obj:{col:'max',text:"<?=_('Max Orders')?>"},scope:this.table0}  } ]);
+// 	    this.table0.filterMenu.addItems([{ text: "<?=_('Minumum Orders')?>", onclick:{fn:changeFilter,obj:{col:'min',text:"<?=_('Min Orders')?>"},scope:this.table0}  } ]);
+// 	    this.table0.filterMenu.addItems([{ text: "<?=_('Maximum Total')?>", onclick:{fn:changeFilter,obj:{col:'maxvalue',text:"<?=_('Max Total')?>"},scope:this.table0}  } ]);
+// 	    this.table0.filterMenu.addItems([{ text: "<?=_('Minumum Total')?>", onclick:{fn:changeFilter,obj:{col:'minvalue',text:"<?=_('Min Total')?>"},scope:this.table0}  } ]);
+// 	    this.table0.filterMenu.addItems([{ text: "<?=_('Maximum Days Since Last Order')?>", onclick:{fn:changeFilter,obj:{col:'maxdesde',text:"<?=_('Max Days')?>"},scope:this.table0}  } ]);
+// 	    this.table0.filterMenu.addItems([{ text: "<?=_('Minumum Days Since Last Order')?>", onclick:{fn:changeFilter,obj:{col:'mindesde',text:"<?=_('Min Days')?>"},scope:this.table0}  } ]);
 
 
-	    this.CustomersDataTable.filter={key:'<?=$_SESSION['tables']['customers_list'][5]?>',value:'<?=$_SESSION['tables']['customers_list'][6]?>',lastRequest:new Date().getTime()};
+	    this.table0.filter={key:'<?=$_SESSION['tables']['customers_list'][5]?>',value:'<?=$_SESSION['tables']['customers_list'][6]?>',lastRequest:new Date().getTime()};
 
-	    //   YAHOO.util.Event.addListener('f_input', "keyup",myFilterChangeValue,{table:this.CustomersDataTable,datasource:this.CustomersDataSource})
+	    //   YAHOO.util.Event.addListener('f_input', "keyup",myFilterChangeValue,{table:this.table0,datasource:this.dataSorce})
 			 
 	    
 	    //	    var Dom   = YAHOO.util.Dom;
@@ -179,8 +179,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
     function mygetTerms(query) {
-	var table=YAHOO.customers.XHR_JSON.CustomersDataTable;
-	var datasource=YAHOO.customers.XHR_JSON.CustomersDataSource;
+	var table=tables.table0;
+	var datasource=tables.dataSorce0;
 	table.filter.value=Dom.get('f_input0').value;
 	var request='&f_field=' +table.filter.key + '&f_value=' + table.filter.value;
 

@@ -16,7 +16,7 @@
 <span class="clean_table_title">{t}{$table_title}{/t}</span>
 <div style="clear:both;">
   <div style="float:left;font-size:85%;">
-    <div class="clean_table_info">{$table_info} <span style="color:red" id="filter_msg0"></span></div>
+    <div class="clean_table_info">{$table_info} <span style="color:#e96d59" id="filter_msg0"></span></div>
   </div>
   <div style="float:right;font-size:85%;margin-right:10px">
     <div class="clean_table_info">Filter <input style="border-bottom:none" id='f_input0' size=12/><div id='f_container'></div></div>

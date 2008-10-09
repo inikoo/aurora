@@ -611,14 +611,14 @@ else if($f_field=='id'  )
    if($total==0 and $filtered>0){
      switch($f_field){
      case('cu.name'):
-       $filter_msg='['._("There isn't any customer starting with")." <b>$f_value</b> ]";
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any customer starting with")." <b>$f_value</b> ";
        break;
      }
    }
    elseif($filtered>0){
      switch($f_field){
      case('cu.name'):
-       $filter_msg='['._('Showing')." $total "._('only customers starting with')." <b>$f_value</b>]";
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('only customers starting with')." <b>$f_value</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Remove Filter')."</span>";
        break;
      }
    }else

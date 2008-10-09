@@ -350,3 +350,4 @@ color: #316D89;
 .clean_table_controls div {display:table-cell; vertical-align:bottom;border:0px solid black}
 
 
+.remove_filter{ color:#999;cursor:pointer }
