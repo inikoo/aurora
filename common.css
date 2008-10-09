@@ -59,6 +59,7 @@ color:#ff0 !important;
 color:red;
 }	
 
+.yuimenu{background:white;border:1px solid #999;padding:5px 10px}
 #yui-main{clear:both}
 
 #hd span{margin:0 0px}
@@ -88,7 +89,7 @@ height:490px;}
 td.price{font-size:110%;font-weight:bold}
 
 
-
+#langmenu{text-align:left;position:absolute;left:0px;top:0 }
 
 table.show_info_product {border-top:1px solid SteelBlue;border-bottom:1px solid SteelBlue;width:100%}
 xtable.show_info_product td {border-top:1px solid #ddd;border-bottom:1px solid #ddd}
@@ -347,3 +348,5 @@ color: #316D89;
 .clean_table_info{display:table-cell; vertical-align:bottom;;border:0px solid black}
 .clean_table_controls{float:right;font-size:85%;margin-right:10px;}
 .clean_table_controls div {display:table-cell; vertical-align:bottom;border:0px solid black}
+
+

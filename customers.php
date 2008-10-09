@@ -99,14 +99,16 @@ $css_files=array(
 $js_files=array(
 		$yui_path.'yahoo-dom-event/yahoo-dom-event.js',
 		$yui_path.'connection/connection-min.js',
-
+		$yui_path.'json/json-min.js',
 
 		$yui_path.'element/element-beta-min.js',
 		$yui_path.'paginator/paginator-min.js',
+
 		$yui_path.'datasource/datasource-min.js',
+		$yui_path.'autocomplete/autocomplete-min.js',
 		$yui_path.'datatable/datatable-min.js',
-	$yui_path.'autocomplete/autocomplete-min.js',
-		$yui_path.'json/json-min.js',
+
+
 		$yui_path.'container/container_core-min.js',
 		$yui_path.'menu/menu-min.js',
 		'js/common.js.php',
@@ -176,20 +178,20 @@ $smarty->assign('filter_name',$filter_text);
 $smarty->assign('customer_id2',$customers_ids[1]);
 $smarty->assign('customer_id3',$customers_ids[2]);
 
-$sql="select count(*) as customers from customer";
+$sql="select count(*) as customers from customer where contact_id>0 and (num_invoices+num_invoices_nd)>0  ";
 $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
 if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
   $total_customers=$row['customers'];
  }
 $now="NOW()";
-$sql="select count(*) as active_customers from customer where order_interval>=0 and  (order_interval*3)>DATEDIFF($now,last_order)";
+$sql="select count(*) as active_customers from customer where contact_id>0 and order_interval>=0 and  (order_interval*3)>DATEDIFF($now,last_order)";
 $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
 $active_customers=0;
 if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
   $active_customers=$row['active_customers'];
  }
 
-$sql="select count(*) as new_customers from customer  where (91.25)>DATEDIFF($now,first_order)";
+$sql="select count(*) as new_customers from customer  where   contact_id>0 and (num_invoices+num_invoices_nd)>0 and  (91.25)>DATEDIFF($now,first_order)";
 $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
 $new_customers=0;
 if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -197,14 +199,14 @@ if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
  }
 
 
-$overview_text=translate("He have served  %1\$s  customers so far, %2\$s of them still active (%3\$s%\). Over the last 3 months we acquired  %4\$s new customers which make up %5\$s of the total customer base.",$total_customers,$active_customers,percentage($active_customers,$total_customers),$new_customers,percentage($new_customers,$total_customers));
+$overview_text=translate("He have indentified  %1\$s  customers so far, %2\$s of them still active (%3\$s%\). Over the last 3 months we acquired  %4\$s new customers representing  %5\$s of the total customer base.",$total_customers,$active_customers,percentage($active_customers,$total_customers),$new_customers,percentage($new_customers,$total_customers));
 $smarty->assign('overview_text',$overview_text);
 
 $home_country='United Kingdom';
 $home_informal_name=_('the UK');
 
 
-$sql="select sum(total_net+total_net_nd) as total_net from customer";
+$sql="select sum(total_net+total_net_nd) as total_net from customer    ";
 $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
 if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
   $total_net=$row['total_net'];
@@ -240,7 +242,7 @@ $smarty->assign('top_text',$overview_text);
 
 
 $export_customers=0;
-$sql="select count(*) as export_customers from customer left join contact on (contact_id=contact.id) left join address on (main_address=address.id) where country!='$home_country'";
+$sql="select count(*) as export_customers from customer left join contact on (contact_id=contact.id) left join address on (main_address=address.id) where   contact_id>0 and (num_invoices+num_invoices_nd)>0 and country!='$home_country'";
 $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
 $new_customers=0;
 if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -264,6 +266,8 @@ $export_text=translate("%1\$s are based in $home_informal_name, the other %2\$s 
 
 
 $smarty->assign('export_text',$export_text);
+
+$smarty->assign('table_info',$total_customers.'  '.ngettext('identified customer','identified customers',$total_customers));
 
 $smarty->display('customers.tpl');
 ?>

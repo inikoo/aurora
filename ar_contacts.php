@@ -12,8 +12,7 @@ if (!$LU or !$LU->isLoggedIn()) {
  }
 
 
-if(!isset($_REQUEST['tipo']))
-  {
+if(!isset($_REQUEST['tipo']))  {
     $response=array('state'=>405,'resp'=>_('Non acceptable request').' (t)');
     echo json_encode($response);
     exit;
@@ -541,8 +540,8 @@ case('customers'):
   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 
 
-   if(isset( $_REQUEST['where']))
-     $where=addslashes($_REQUEST['where']);
+  if(isset( $_REQUEST['where']))
+    $where=addslashes($_REQUEST['where']);
    else
      $where=$_SESSION['tables']['customers_list'][4];
 
@@ -558,8 +557,10 @@ case('customers'):
      $f_value=$_SESSION['tables']['customers_list'][6];
 
 
-
-
+  if(isset( $_REQUEST['tableid']))
+    $tableid=$_REQUEST['tableid'];
+  else
+    $tableid=0;
   //  print_r($_SESSION['tables']['customers_list']);
 
   $wheref='';
@@ -587,31 +588,43 @@ else if($f_field=='id'  )
 
 
 
-   $_SESSION['tables']['customers_list']=array($order,$order_direction,$number_results,$start_from,$where,$f_field,$f_value);
+  // $_SESSION['tables']['customers_list']=array($order,$order_direction,$number_results,$start_from,$_SESSION['tables']['customers_list'][4],$f_field,$f_value);
 
 
    $sql="select count(*) as total from customer as cu left join contact on (contact_id=contact.id)  $where $wheref";
-   //      print "$sql";
+
    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
    if($row=$res->fetchRow()) {
      $total=$row['total'];
    }if($wheref!=''){
-     $sql="select count(*) as total from customer  as cu left join contact on (contact_id=contact.id) $where ";
+     $sql="select count(*) as total_without_filters from customer  as cu left join contact on (contact_id=contact.id) $where ";
      $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
      if($row=$res->fetchRow()) {
-       $filtered=$row['total']-$total;
+       $filtered=$row['total_without_filters']-$total;
      }
 
-   }else
+   }else{
      $filtered=0;
+     $filter_total=0;
+   }
 
+   if($total==0 and $filtered>0){
+     switch($f_field){
+     case('cu.name'):
+       $filter_msg='['._("There isn't any customer starting with")." <b>$f_value</b> ]";
+       break;
+     }
+   }
+   elseif($filtered>0){
+     switch($f_field){
+     case('cu.name'):
+       $filter_msg='['._('Showing')." $total "._('only customers starting with')." <b>$f_value</b>]";
+       break;
+     }
+   }else
+      $filter_msg='';
+   
 
-   if($total==0){
-     $rtext=_('There isn\'t any customer').'.';
-   }elseif($total<$number_results)
-    $rtext=$total.' '.ngettext('customer','customers',$total);
-  else
-     $rtext='';
 
    if($order=='location'){
      if($order_direction=='desc')
@@ -628,9 +641,9 @@ else if($f_field=='id'  )
    $order=preg_replace('/name/','file_as',$order);
 
 //   $sql="select id2,id3,ifnull(country_id,244) as country_id ,cu.id as id ,cu.name as name ,co.code2 as country_code2,co.code as country_code ,location , orders,UNIX_TIMESTAMP(last_order) date,cu.total as total  from customer as cu left join list_country as co on (co.id=country_id)     $where $wheref order by $order $order_direction limit $start_from,$number_results";
-   $sql="select  (select count(*) from customer2group where group_id=9 and customer_id=cu.id) as is_staff, num_invoices,list_country.name as country_name, cu.file_as,(total_nd+total) as super_total,total_nd,total_nd/(total_nd+total) as  factor_num_orders_nd ,(cu.total/num_invoices) as total_avg,  postcode,cu.id as id ,cu.name as name , (num_invoices+num_invoices_nd) as orders,num_orders_nd,UNIX_TIMESTAMP(last_order) date,cu.total as total,town,code2 as country_code2, code as country_code from customer as cu left join contact on (contact_id=contact.id) left join address on (main_address=address.id) left join list_country on (country=list_country.name)   $where $wheref and contact_id>0 and (num_invoices+num_invoices_nd)>0 order by $order $order_direction limit $start_from,$number_results";
+   $sql="select  (select count(*) from customer2group where group_id=9 and customer_id=cu.id) as is_staff, num_invoices,list_country.name as country_name, cu.file_as,(total_nd+total) as super_total,total_nd,total_nd/(total_nd+total) as  factor_num_orders_nd ,(cu.total/num_invoices) as total_avg,  postcode,cu.id as id ,cu.name as name , (num_invoices+num_invoices_nd) as orders,num_orders_nd,UNIX_TIMESTAMP(last_order) date,cu.total as total,town,code2 as country_code2, code as country_code from customer as cu left join contact on (contact_id=contact.id) left join address on (main_address=address.id) left join list_country on (country=list_country.name)   $where $wheref  order by $order $order_direction limit $start_from,$number_results";
 
-   // print "$sql";
+
   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
 
   $adata=array();
@@ -686,6 +699,10 @@ else if($f_field=='id'  )
       
 		   );
   }
+
+
+
+
   $response=array('resultset'=>
 		   array('state'=>200,
 			 'data'=>$adata,
@@ -693,9 +710,10 @@ else if($f_field=='id'  )
 			 'records_offset'=>$start_from,
 			 'records_returned'=>$start_from+$res->numRows(),
 			 'records_perpage'=>$number_results,
-			 'records_text'=>$rtext,
 			 'records_order'=>$order,
 			 'records_order_dir'=>$order_dir,
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
 			 'filtered'=>$filtered
 			 )
 		   );

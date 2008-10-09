@@ -74,6 +74,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.CustomersDataSource.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
 		    totalRecords: "resultset.total_records" // Access to value in the server response
 		},
 		
@@ -101,12 +103,14 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								     // sortedBy: {key:"<?=$_SESSION['tables']['customers_list'][0]?>", dir:"<?=$_SESSION['tables']['customers_list'][1]?>"},
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage    : 25,containers : 'paginator0', 
- 									      previousPageLinkLabel : "<",
+									      rowsPerPage    : <?=$_SESSION['tables']['customers_list'][2]?>,containers : 'paginator', 
+ 									      pageReportTemplate : '(<?=_('Page')?> {currentPage} <?=_('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
  									      firstPageLinkLabel :"<<",
  									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
-									      ,template : "{FirstPageLink}{PreviousPageLink} <strong>{CurrentPageReport}</strong> {NextPageLink}{LastPageLink}  <select onChange=\"alert(\'ccc  cc\')\"  style=\"opacity:.0;width:120px;height:16px;vertical-align:bottom\"><option value=\"one\">Post Code</option><option value=\"two\">Customer Name</option></select><span style=\"margin-left:-100px\">Customer Name</span> <input size=12/>"
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+
 
 
 									  })
@@ -120,20 +124,22 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								  }
 								   
 								 );
-	    this.CustomersDataTable.handleDataReturnPayload = function(oRequest, oResponse, oPayload) {
-		oPayload.totalRecords = parseInt(oResponse.meta.totalRecords);
-		return oPayload;
-	    }
+	    
+	    this.CustomersDataTable.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.CustomersDataTable.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.CustomersDataTable.doBeforePaginatorChange = mydoBeforePaginatorChange;
 
-// 	    this.CustomersDataTable.paginatorMenu = new YAHOO.widget.Menu('paginatornewmenu'+tableid,  {context:['paginatormenuselector'+tableid,"tr", "br"]  });
-// 	    this.CustomersDataTable.paginatorMenu.addItems([{ text: "25", onclick:{fn:changeRecordsperPage,obj:25,scope:this.CustomersDataTable}  } ]);
-// 	    this.CustomersDataTable.paginatorMenu.addItems([{ text: "50", onclick:{fn:changeRecordsperPage,obj:50,scope:this.CustomersDataTable}  } ]);
-// 	    this.CustomersDataTable.paginatorMenu.addItems([{ text: "100", onclick:{fn:changeRecordsperPage,obj:100,scope:this.CustomersDataTable}  } ]);
-// 	    this.CustomersDataTable.paginatorMenu.addItems([{ text: "250", onclick:{fn:changeRecordsperPage,obj:250,scope:this.CustomersDataTable}  } ]);
-// 	    this.CustomersDataTable.paginatorMenu.addItems([{ text: "500", onclick:{fn:changeRecordsperPage,obj:500,scope:this.CustomersDataTable}  } ]);
-// 	    this.CustomersDataTable.paginatorMenu.addItems([{ text: "all", onclick:{fn:changeRecordsperPage,obj:'all',scope:this.CustomersDataTable}  } ]);
-// 	    YAHOO.util.Event.addListener('paginatormenuselector'+tableid, "click", this.CustomersDataTable.paginatorMenu.show, null, this.CustomersDataTable.paginatorMenu);
-// 	    this.CustomersDataTable.paginatorMenu.render(document.body);
+		    
+		    
+//  	    this.CustomersDataTable.paginatorMenu = new YAHOO.widget.Menu('paginatornewmenu'+tableid,  {context:['paginatormenuselector'+tableid,"tr", "br"]  });
+//  	    this.CustomersDataTable.paginatorMenu.addItems([{ text: "25", onclick:{fn:changeRecordsperPage,obj:25,scope:this.CustomersDataTable}  } ]);
+//  	    this.CustomersDataTable.paginatorMenu.addItems([{ text: "50", onclick:{fn:changeRecordsperPage,obj:50,scope:this.CustomersDataTable}  } ]);
+//  	    this.CustomersDataTable.paginatorMenu.addItems([{ text: "100", onclick:{fn:changeRecordsperPage,obj:100,scope:this.CustomersDataTable}  } ]);
+//  	    this.CustomersDataTable.paginatorMenu.addItems([{ text: "250", onclick:{fn:changeRecordsperPage,obj:250,scope:this.CustomersDataTable}  } ]);
+//  	    this.CustomersDataTable.paginatorMenu.addItems([{ text: "500", onclick:{fn:changeRecordsperPage,obj:500,scope:this.CustomersDataTable}  } ]);
+//  	    this.CustomersDataTable.paginatorMenu.addItems([{ text: "all", onclick:{fn:changeRecordsperPage,obj:'all',scope:this.CustomersDataTable}  } ]);
+//  	    YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click", this.CustomersDataTable.paginatorMenu.show, null, this.CustomersDataTable.paginatorMenu);
+//  	    this.CustomersDataTable.paginatorMenu.render(document.body);
 
 	    
 
@@ -152,54 +158,43 @@ YAHOO.util.Event.addListener(window, "load", function() {
 // 	    this.CustomersDataTable.filterMenu.addItems([{ text: "<?=_('Minumum Days Since Last Order')?>", onclick:{fn:changeFilter,obj:{col:'mindesde',text:"<?=_('Min Days')?>"},scope:this.CustomersDataTable}  } ]);
 
 
+	    this.CustomersDataTable.filter={key:'<?=$_SESSION['tables']['customers_list'][5]?>',value:'<?=$_SESSION['tables']['customers_list'][6]?>',lastRequest:new Date().getTime()};
 
+	    //   YAHOO.util.Event.addListener('f_input', "keyup",myFilterChangeValue,{table:this.CustomersDataTable,datasource:this.CustomersDataSource})
+			 
+	    
+	    //	    var Dom   = YAHOO.util.Dom;
+	    //alert(Dom.get('f_input'));
 
-// 	    YAHOO.util.Event.addListener('filterselector0', "click", this.CustomersDataTable.filterMenu.show, null, this.CustomersDataTable.filterMenu);
-// 	    this.CustomersDataTable.filterMenu.render(document.body);
-	    
-// 	    this.CustomersDataTable.myreload=reload;
-// 	    this.CustomersDataTable.sortColumn = mysort;
-	    
-// 	    this.CustomersDataTable.id=tableid;
-// 	    this.CustomersDataTable.editmode=false;
-
-// 	    this.CustomersDataTable.subscribe("initEvent", dataReturn); 
-// 	    YAHOO.util.Event.addListener('paginator_next0', "click", nextpage, this.CustomersDataTable); 
-// 	    YAHOO.util.Event.addListener('paginator_prev0', "click", prevpage, this.CustomersDataTable); 
-// 	    YAHOO.util.Event.addListener('hidder0', "click", showtable, this.CustomersDataTable); 
-// 	    YAHOO.util.Event.addListener('resetfilter0', "click", resetfilter, this.CustomersDataTable); 
-		var caca = function(){
-		    alert('cc');
-		}
-		YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",caca)
-	    
+	    YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown)
+	
 	};
     });
 
 
 
 
-// function init(){
+ function init(){
+ var Dom   = YAHOO.util.Dom;
 
 
-//     function mygetTerms(query) {
-// 	var Dom = YAHOO.util.Dom
-// 	var table=YAHOO.customers.XHR_JSON.CustomersDataTable;
-// 	table.myreload();
+    function mygetTerms(query) {
+	var table=YAHOO.customers.XHR_JSON.CustomersDataTable;
+	var datasource=YAHOO.customers.XHR_JSON.CustomersDataSource;
+	table.filter.value=Dom.get('f_input0').value;
+	var request='&f_field=' +table.filter.key + '&f_value=' + table.filter.value;
 
-//     };
-//     var oACDS = new YAHOO.widget.DS_JSFunction(mygetTerms);
-//     oACDS.queryMatchContains = true;
-//     var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","filtercontainer0", oACDS);
-//     oAutoComp.minQueryLength = 0; 
-    
+	datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+	
+    };
+    var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
+        oACDS.queryMatchContains = true;
+        var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container", oACDS);
+	oAutoComp.minQueryLength = 0; 
+
+// 	alert(Dom.get("f_input"));
 
 
-    
+ }
 
-
-
-
-// }
-
-// YAHOO.util.Event.onDOMReady(init);
+YAHOO.util.Event.onDOMReady(init);

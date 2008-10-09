@@ -170,9 +170,9 @@ require('locale.php');
 $_SESSION['locale_info'] = localeconv();
 
 
-if(!isset($_SESSION['tables'])){
+if(!isset($_SESSION['tables']) ){
   $_SESSION['tables']=array(	
-			    'customers_list'=>array('name','yui-dt-asc','25','0','where true' ,'cu.name',''),
+			    'customers_list'=>array('name','yui-dt-asc','25','0','where contact_id>0 and (num_invoices+num_invoices_nd)>0' ,'cu.name',''),
 			    'contacts_list'=>array('name','yui-dt-asc','25','0'),
 			    'pindex_list'=>array('code','yui-dt-asc','25','0','where true ','p.code',''),
 			    'departments_list'=>array('name','yui-dt-desc','25','0','where true','name',''),
