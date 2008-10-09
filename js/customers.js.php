@@ -68,7 +68,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 					 ];
 	    //?tipo=customers&tid=0"
-	    this.dataSorce0 = new YAHOO.util.DataSource("ar_contacts.php?tipo=customers&id");
+	    this.dataSorce0 = new YAHOO.util.DataSource("ar_contacts.php?tipo=customers");
 	    this.dataSorce0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSorce0.connXhrMode = "queueRequests";
 	    this.dataSorce0.responseSchema = {
@@ -181,21 +181,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
  var Dom   = YAHOO.util.Dom;
 
 
-    function mygetTerms(query) {
-	var table=tables.table0;
-	var datasource=tables.dataSorce0;
-	table.filter.value=Dom.get('f_input0').value;
-	var request='&f_field=' +table.filter.key + '&f_value=' + table.filter.value;
-
-	datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
-	
-    };
-    var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
-        oACDS.queryMatchContains = true;
-        var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container", oACDS);
-	oAutoComp.minQueryLength = 0; 
-
-// 	alert(Dom.get("f_input"));
+ var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
+ oACDS.queryMatchContains = true;
+ var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container", oACDS);
+ oAutoComp.minQueryLength = 0; 
 
 
  }

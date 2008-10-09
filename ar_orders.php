@@ -362,7 +362,11 @@ case('changesalesplot'):
      $order_dir=$_SESSION['tables']['order_list'][1];
    
    
-   
+    if(isset( $_REQUEST['tableid']))
+    $tableid=$_REQUEST['tableid'];
+  else
+    $tableid=0;
+
 
 
    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
@@ -433,6 +437,24 @@ case('changesalesplot'):
   }
   
   
+ $filter_msg='';
+   if($total==0 and $filtered>0){
+     switch($f_field){
+     case('public_id'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any order starting with")." <b>$f_value</b> ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('only orders starting with')." <b>$f_value</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Remove Filter')."</span>";
+       break;
+     }
+   }
+
+
+   
+   $_order=$order;
+   $_dir=$order_direction;
+
+
 
   $sql="select date_index,public_id,customer_name,id,customer_id,total,titulo,tipo from orden  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
   // print $sql;
@@ -459,6 +481,10 @@ case('changesalesplot'):
    $response=array('resultset'=>
 		   array('state'=>200,
 			 'data'=>$data,
+			 'sort_key'=>$_order,
+			 'sort_dir'=>$_dir,
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
 			 'total_records'=>$total,
 			 'records_offset'=>$start_from,
 			 'records_returned'=>$start_from+$res->numRows(),
@@ -848,6 +874,10 @@ case('changesalesplot'):
    $response=array('resultset'=>
 		   array('state'=>200,
 			 'data'=>$data,
+			 'sort_key'=>$_order,
+			 'sort_dir'=>$_dir,
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
 			 'total_records'=>$total,
 			 'records_offset'=>$start_from,
 			 'records_returned'=>$start_from+$res->numRows(),
@@ -907,7 +937,10 @@ case('changesalesplot'):
      $f_value=$_SESSION['tables']['order_withcustprod'][7];
 
 
-
+ if(isset( $_REQUEST['tableid']))
+    $tableid=$_REQUEST['tableid'];
+  else
+    $tableid=0;
 
 
 
@@ -943,7 +976,28 @@ case('changesalesplot'):
      }
      
    }
+   $filter_msg='';
+   if($total==0 and $filtered>0){
+     switch($f_field){
+     case('public_id'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any order starting with")." <b>$f_value</b> ";
+       break;
+     }
+   }
+   elseif($filtered>0){
+     switch($f_field){
+     case('publuc_id'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('only orders starting with')." <b>$f_value</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Remove Filter')."</span>";
+       break;
+     }
+   }
+
    
+   $_order=$order;
+   $_dir=$order_direction;
+
+
+
 
    $sql=sprintf("select count(distinct o.id) as orders ,o.customer_name,o.tipo,customer_id, sum(if(o.tipo=2,charge,0)) as charged, sum(if(o.tipo=2,dispached,0)) as dispached, sum(if(o.tipo=2,(ordered-dispached),0)) as nodispached , sum(if(o.tipo=1,(ordered-dispached),0))  as todispach from orden as o  left join transaction on (order_id=o.id)  $where $wheref  group by customer_id    order by $order $order_direction  limit $start_from,$number_results "
 		);
@@ -973,6 +1027,10 @@ case('changesalesplot'):
    $response=array('resultset'=>
 		   array('state'=>200,
 			 'data'=>$data,
+			 'sort_key'=>$_order,
+			 'sort_dir'=>$_dir,
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
 			 'total_records'=>$total,
 			 'records_offset'=>$start_from,
 			 'records_returned'=>$start_from+$res->numRows(),

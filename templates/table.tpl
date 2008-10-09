@@ -7,5 +7,4 @@
   <div class="clean_table_controls">
     <div><span  style="margin:0 10px" id="paginator{$table_id}">xx</span></div>
   </div>
-
 </div>

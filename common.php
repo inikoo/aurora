@@ -173,6 +173,7 @@ $_SESSION['locale_info'] = localeconv();
 if(!isset($_SESSION['tables']) ){
   $_SESSION['tables']=array(	
 			    'customers_list'=>array('name','yui-dt-asc','25','0','where contact_id>0 and (num_invoices+num_invoices_nd)>0' ,'cu.name',''),
+			    'order_list'=>array('date_index','yui-dt-asc','25','0','where true','public_id',''),
 			    'contacts_list'=>array('name','yui-dt-asc','25','0'),
 			    'pindex_list'=>array('code','yui-dt-asc','25','0','where true ','p.code',''),
 			    'departments_list'=>array('name','yui-dt-desc','25','0','where true','name',''),
@@ -192,7 +193,7 @@ if(!isset($_SESSION['tables']) ){
 			    
 			    'users_list'=>array('handle','yui-dt-asc','25','0'),
 			    'groups_list'=>array('id','yui-dt-asc','25','0'),
-			    'order_list'=>array('date_index','yui-dt-asc','25','0','where true','public_id',''),
+
 			    'proinvoice_list'=>array('date_index','yui-dt-asc','25','0','where tipo=1 ','max',''),
 			    'dn_list'=>array('date_index','yui-dt-asc','25','0',0,'where tipo=2 ','public_id',''),
 			    'po_list'=>array('date_index','yui-dt-asc','25','0',0,'where true ','id',''),

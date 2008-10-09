@@ -55,9 +55,9 @@ if(isset($_REQUEST['q_id2'])  ){
 
  }
 
-if(isset($_REQUEST['q_id3'])   ){
+if(isset($_REQUEST['pc'])   ){
   // SEARCH!!!!!!!!!!!!
-  $q=$_REQUEST['q_id3'];
+  $q=$_REQUEST['pc'];
   $q_id=3;
   $sql=sprintf("select id from customer where id3='%s' ",addslashes($q));
   $result =& $db->query($sql);
@@ -100,15 +100,11 @@ $js_files=array(
 		$yui_path.'yahoo-dom-event/yahoo-dom-event.js',
 		$yui_path.'connection/connection-min.js',
 		$yui_path.'json/json-min.js',
-
 		$yui_path.'element/element-beta-min.js',
 		$yui_path.'paginator/paginator-min.js',
-
 		$yui_path.'datasource/datasource-min.js',
 		$yui_path.'autocomplete/autocomplete-min.js',
 		$yui_path.'datatable/datatable-min.js',
-
-
 		$yui_path.'container/container_core-min.js',
 		$yui_path.'menu/menu-min.js',
 		'js/common.js.php',
@@ -135,6 +131,11 @@ $smarty->assign('table_title',_('Customers List'));
 
 $smarty->assign('filter',$_SESSION['tables']['customers_list'][5]);
 $smarty->assign('filter_value',$_SESSION['tables']['customers_list'][6]);
+
+$filters=array(
+	       'ci.name'=>array('name'=>_('Name Filter')),
+	       'ci.name'=>array('name'=>_('Name Filter')),
+	       );
 
 switch($_SESSION['tables']['customers_list'][5]){
  case('max'):
