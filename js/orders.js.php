@@ -68,7 +68,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 ]};
 
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
-						     this.dataSource0, {
+						     this.dataSource0, {draggableColumns:true,
 							   renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
 									       rowsPerPage    : <?=$_SESSION['tables']['order_list'][2]?>,containers : 'paginator', 
@@ -92,6 +92,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
 	    this.table0.filter={key:'<?=$_SESSION['tables']['order_list'][5]?>',value:'<?=$_SESSION['tables']['order_list'][6]?>'};
+
+
 
 
 
