@@ -77,7 +77,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
  									      nextPageLinkLabel : ">",
  									      firstPageLinkLabel :"<<",
  									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
-									      ,template : "{FirstPageLink}{PreviousPageLink}<strong>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
 									  })
 								     
 								     ,sortedBy : {
@@ -128,9 +128,17 @@ YAHOO.util.Event.addListener(window, "load", function() {
 // 	    YAHOO.util.Event.addListener('paginator_next0', "click", nextpage, this.table0); 
 // 	    YAHOO.util.Event.addListener('paginator_prev0', "click", prevpage, this.table0); 
 // 	    YAHOO.util.Event.addListener('hidder0', "click", showtable, this.table0); 
-// 	    YAHOO.util.Event.addListener('resetfilter0', "click", resetfilter, this.table0); 
+// // 	    YAHOO.util.Event.addListener('resetfilter0', "click", resetfilter, this.table0); 
+// 	    var oMenu1 = new YAHOO.widget.Menu("filtermenu", { context:["filter_name0","tr", "br"]  });
+// 	    oMenu1.render();
+// 	    oMenu1.subscribe("show", oMenu1.focus);
+// 	    YAHOO.util.Event.addListener("filter_name0", "click", oMenu1.show, null, oMenu);
+// // 	    var oMenu2 = new YAHOO.widget.Menu("rppmenu", { context:["yui-pg0-0-page-report","tr", "br"]  });
+// //
+	    //	    oMenu2.render();
+// 	    oMenu2.subscribe("show", oMenu2.focus);
 
-
+	    // YAHOO.util.Event.addListener("pages0", "click", xxx);
 	    
 	};
     });
@@ -175,13 +183,24 @@ var Dom   = YAHOO.util.Dom;
 		
 
 
-
 }
 
 YAHOO.util.Event.onDOMReady(init);
 
+YAHOO.util.Event.onContentReady("filtermenu", function () {
+	 var oMenu = new YAHOO.widget.Menu("filtermenu", { context:["filter_name0","tr", "br"]  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+	 YAHOO.util.Event.addListener("filter_name0", "click", oMenu.show, null, oMenu);
+    });
 
 
+YAHOO.util.Event.onContentReady("rppmenu", function () {
+	 var oMenu = new YAHOO.widget.Menu("rppmenu", { context:["filter_name0","tr", "bl"]  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+	 YAHOO.util.Event.addListener("paginator_info0", "click", oMenu.show, null, oMenu);
+    });
 
 
 

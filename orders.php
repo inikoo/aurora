@@ -132,34 +132,19 @@ $smarty->assign('filter',$tipo_filter);
 $smarty->assign('filter_value',($q==''?$_SESSION['tables']['order_list'][6]:addslashes($q)));
 
 
+$filter_menu=array(
+		   'public_id'=>array('db_key'=>'public_id','menu_label'=>'Order Number starting with  <i>x</i>','label'=>'Order Number'),
+		   'customer_name'=>array('db_key'=>'customer_name','menu_label'=>'Customer Name starting with <i>x</i>','label'=>'Customer'),
+		   'minvalue'=>array('db_key'=>'minvalue','menu_label'=>'Orders with a minimum value of <i>'.$myconf['currency_symbol'].'n</i>','label'=>'Min Value ('.$myconf['currency_symbol'].')'),
+		   'maxvalue'=>array('db_key'=>'maxvalue','menu_label'=>'Orders with a maximum value of <i>'.$myconf['currency_symbol'].'n</i>','label'=>'Max Value ('.$myconf['currency_symbol'].')'),
+		   'max'=>array('db_key'=>'max','menu_label'=>'Orders from the last <i>n</i> days','label'=>'Last (days)')
+		   );
+$smarty->assign('filter_menu',$filter_menu);
 
-
-switch($tipo_filter){
- case('public_id'):
-   $filter_text=_('Order Number');
-   break;
- case('customer_name'):
-   $filter_text=_('Customer Name');
-   break;
- case('max'):
-   $filter_text=_('Maximum Days');
-   break;
- case('min'):
-   $filter_text=_('Mininum Days');
-   break;
- case('maxvalue'):
-   $filter_text=_('Maximum Value');
-   break;
- case('minvalue'):
-   $filter_text=_('Mininum Value');
-   break;
- default:
-   $filter_text='?';
- }
-$smarty->assign('filter_name',$filter_text);
+$smarty->assign('filter_name',$filter_menu[$tipo_filter]['label']);
 
 $smarty->assign('table_info',$orders.'  '.ngettext('Order','Orders',$orders));
-
-
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu',$paginator_menu);
 $smarty->display('orders.tpl');
 ?>

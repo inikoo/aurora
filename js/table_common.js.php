@@ -6,7 +6,7 @@ var remove_filter= function (tableid){
     var table=tables['table'+tableid]
 
     var datasource=tables['dataSource'+tableid];
-    table.filter.value=Dom.get('f_input0').value;
+    table.filter.value=Dom.get('f_input'+tableid).value;
     var request='&f_field=' +table.filter.key + '&f_value=' + table.filter.value;
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
 }
@@ -18,7 +18,7 @@ var myhandleDataReturnPayload= function(oRequest, oResponse, oPayload) {
     oPayload = oPayload ||  {
 	totalRecords:0,
 	pagination:{
-	    rowsPerPage:oResponse.meta.rowsPerPage
+	    rowsPerPage:parseInt(oResponse.meta.rowsPerPage)
 	},
 	sortedBy:
 	{key:oResponse.meta.sort_key,
@@ -28,7 +28,7 @@ var myhandleDataReturnPayload= function(oRequest, oResponse, oPayload) {
 
     oPayload.filter_msg=oResponse.meta.filter_msg;
 
-
+    //  alert(oResponse.meta.rowsPerPage)
 
     YAHOO.util.Dom.get('filter_msg'+oResponse.meta.tableid).innerHTML=oPayload.filter_msg
     //    oPayload.sortedBy.key=oResponse.meta.sort_key;
@@ -56,6 +56,7 @@ var myRequestBuilder = function(oState, oSelf) {
     "&sf=" + startIndex +
     "&nr=" + results;
 
+
     return request;
 };
 
@@ -68,6 +69,32 @@ var mygetTerms =function (query) {
     var request='&sf=0&f_field=' +table.filter.key + '&f_value=' + table.filter.value;
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
 };
+
+var change_filter=function (key,label,tableid){
+    var Dom   = YAHOO.util.Dom;
+    var table=tables['table'+tableid];
+    if(table.filter.value!=''){
+	var datasource=tables['dataSource'+tableid];
+	table.filter.value=Dom.get('f_input'+tableid).value;
+	var request='&f_field=' +table.filter.key+'&f_value=';
+	datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+    }
+    table.filter.value='';
+    table.filter.key=key;
+    Dom.get('f_input'+tableid).value='';
+    Dom.get('filter_name'+tableid).innerHTML=label;
+}
+
+var change_rpp=function (rpp,tableid){
+    var Dom   = YAHOO.util.Dom;
+    var table=tables['table'+tableid];
+    
+    table.get('paginator').setRowsPerPage(rpp)
+
+}
+
+
+
 
 // var myFilterChangeValue = function(e,o){
     
