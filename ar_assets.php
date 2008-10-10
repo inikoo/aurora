@@ -466,8 +466,14 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
     $order_dir=$_SESSION['tables']['departments_list'][1];
   
   
+   if(isset( $_REQUEST['tableid']))
+    $tableid=$_REQUEST['tableid'];
+  else
+    $tableid=0;
 
 
+
+   $filter_msg='';
 
 
 
@@ -479,15 +485,25 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
   $where='';
   $filtered=0;
   
-   
+    $_order=$order;
+   $_dir=$order_direction;
+   if($order=='per_tsall')
+     $order='tsall';
+    if($order=='per_tsm')
+     $order='tsm';
 
+   $total_sales=0;
+   $total_m=0;
   $sql="select awtsq,tsall,tsy,tsq,tsm,id,code,name,families,products,active,outofstock,stockerror,stock_value from product_department $where   order by $order $order_direction limit $start_from,$number_results    ";
 
   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
   $adata=array();
   while($row=$res->fetchRow()) {
+    $total_sales+=$row['tsall'];
+    $total_m+=$row['tsm'];
     $adata[]=array(
 		   'id'=>$row['id'],
+
 		   'code'=>$row['code'],
 		   'name'=>$row['name'],
 		   'families'=>number($row['families']),
@@ -500,12 +516,17 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
 		   'tsq'=>money($row['tsq']),
 		   'tsm'=>money($row['tsm']),
 		   'tsall'=>money($row['tsall']),
+		   'per_tsm'=>$row['tsm'],
+		   'per_tsall'=>$row['tsall'],
 		   'awtsq'=>money($row['awtsq'])
-		   
-		   
-
 		   );
   }
+  foreach($adata as $key=>$value){
+    $adata[$key]['per_tsall']=percentage($adata[$key]['per_tsall'],$total_sales,2);
+    $adata[$key]['per_tsm']=percentage($adata[$key]['per_tsm'],$total_sales,2);
+
+  }
+
 
 
   $total=$res->numRows();
@@ -517,6 +538,10 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
   $response=array('resultset'=>
 		  array('state'=>200,
 			'data'=>$adata,
+			'sort_key'=>$_order,
+			 'sort_dir'=>$_dir,
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
 			'total_records'=>$total,
 			'records_offset'=>$start_from,
 			'records_returned'=>$start_from+$res->numRows(),

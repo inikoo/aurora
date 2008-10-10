@@ -24,8 +24,8 @@ if(isset($_REQUEST['vt']) and is_numeric($_REQUEST['vt']) and $_REQUEST['vt']>=0
 //print $_SESSION['views']['assets_tables'];
 
 //print ($_SESSION['views']['assets_tables']==0?0:1);
-$smarty->assign('view_table',$_SESSION['views']['assets_tables']);
-$smarty->assign('hide_first',($_SESSION['views']['assets_tables']==0?0:1));
+$smarty->assign('view_table',$_SESSION['views']['assets_view']);
+
 
 
 //update_department_all();
@@ -69,15 +69,17 @@ $css_files=array(
 		 );
 $js_files=array(
 		$yui_path.'yahoo-dom-event/yahoo-dom-event.js',
-		$yui_path.'element/element-beta-min.js',
-		$yui_path.'utilities/utilities.js',
-		$yui_path.'container/container.js',
-		$yui_path.'menu/menu-min.js',
-		$yui_path.'button/button.js',
-		$yui_path.'autocomplete/autocomplete.js',
-		$yui_path.'datasource/datasource-beta.js',
-		$yui_path.'datatable/datatable-beta.js',
+		$yui_path.'connection/connection-min.js',
 		$yui_path.'json/json-min.js',
+		$yui_path.'element/element-beta-min.js',
+		$yui_path.'paginator/paginator-min.js',
+		$yui_path.'dragdrop/dragdrop-min.js',
+		$yui_path.'datasource/datasource-min.js',
+		$yui_path.'autocomplete/autocomplete-min.js',
+		$yui_path.'datatable/datatable-min.js',
+		$yui_path.'container/container_core-min.js',
+		$yui_path.'menu/menu-min.js',
+
 		'js/common.js.php',
 		'js/table_common.js.php',
 		'js/assets_tree.js.php?departments='.$departments['numberof']

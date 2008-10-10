@@ -1,25 +1,41 @@
 {include file='header.tpl'}
 <div id="bd" >
 <span class="nav2 onright"><a href="assets_index.php">{t}Product index{/t}</a></span>
-  <div id="yui-main">
-    <div class="yui-b">
-      <h2>{t}Products to sell{/t}</h2>
-      
-       <fieldset class="prodinfo" style="width:670px;height:90px">
-	   <legend>{t}Products Overview{/t}</legend>
-	   <table id="otable0" {if $view_table!=0} style="display:none"{/if}   >
+  <div id="top" style="width:100%;margin:15px 0 0 0 ">
+    <div style="width:100%;background:red">
+
+      <table style="float:left;margin:0 0 0 20px ;padding:0"  class="options" {if $products==0 }style="display:none"{/if}>
+	  <tr><td  {if $view_table=='general'}class="selected"{/if} id="general_view" >{t}General{/t}</td>
+	  {if $view_stock}<td {if $view_table=='stock'}class="selected"{/if}  id="stock_view"  >{t}Stock{/t}</td>{/if}
+	  {if $view_sales}<td  {if $view_table=='sales'}class="selected"{/if}  id="sales_view"  >{t}Sales{/t}</td>{/if}</tr>
+	</table>
+<div style="float:right">
+<form  id="prod_search_form" action="assets_index.php" method="GET" >
+{t}Product Code{/t}
+<input size="8" class="text search" id="prod_search" value="" name="search"/><img onclick="document.getElementById('prod_search_form').submit()"align="absbottom" id="submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search">
+ </form>
+</div>
+
+    </div>
+
+    <div style="clear:both;padding:10px 20px ;border:1px solid #ddd;margin:0 20px;">
+      <div style="float:left;">
+	<h2 style="padding:0;margin:0">{t}Products by department{/t}</h2>
+	
+
+	<table id="otable0" style="font-size:90%;margin-top:10px" {if $view_table!=0} style="display:none"{/if}   >
 	  <tr>
 	    <td>{t}Number of Products{/t}:</td><td class="aright">{$products}</td>
 	  </tr>
 	   <tr>
-	    <td>{t}Number of Families{/t}:</td><td class="aright">{$families}</td>
-	  </tr>
+	     <td>{t}Number of Families{/t}:</td><td class="aright">{$families}</td>
+	   </tr>
 	  <tr>
 	    <td>{t}Number of Departments{/t}:</td><td class="aright">{$departments}</td>
 	  </tr>
-
+	  
 	</table>
-	   {if $view_stock}
+	{if $view_stock}
 	   <table id="otable1" {if $view_table!=1} style="display:none"{/if}    >
 	     <tr>
 	       <td>{t}Stock Value{/t}:</td><td class="aright">{$stock_value}</td>
@@ -32,62 +48,41 @@
 	     <tr>
 	       <td>{t}Total Sales{/t}:</td><td class="aright">{$total_sales}</td>
 	     </tr>
-
+	     
 	   </table>
-      {/if}
-      </fieldset>
+	   {/if}
+      </div>
+      <div style="text-align:right;float:right">
+	{include file='product_search.tpl'}
+      </div>
+      <div style="text-align:right;float:right">
+	{if $view_sales or $view_stock}
+	<table class="options" {if $products==0 }style="display:none"{/if}>
+	  <tr><td  {if $view_table=='general'}class="selected"{/if} id="general_view" >{t}General{/t}</td></tr>
+	  {if $view_stock}<tr><td {if $view_table=='stock'}class="selected"{/if}  id="stock_view"  >{t}Stock{/t}</td>{/if}</tr>
+	  {if $view_sales}<tr><td  {if $view_table=='sales'}class="selected"{/if}  id="sales_view"  >{t}Sales{/t}</td>{/if}</tr>
+	</table>
 
-       <div class="data_table" style="margin-top:25px">
-       {include file='table.tpl' hide_table=$hide_first  table_id=0 table_title=$t_title filter=$filter filter_name=$filter_name}
-       <div {if $hide_first==1} style="display:none"{/if} id="table0"   class="data_table_container dtable btable {$showtable}"> </div>
+	{/if}
+</div>
+	       <div style="text-align:right;float:right">
 
-       {if $view_stock}
-       <div {if $view_table!=1} style="display:none"{/if} id="table1" class="data_table_container dtable btable"></div>
-       {/if}
-       {if $view_sales}<div  {if $view_table!=2} style="display:none"{/if} id="table2" class="data_table_container dtable btable"></div>{/if}
-       </div>
-
+	
+      </div>
+      <div style="clear:both"></div>
     </div>
   </div>
-  <div class="yui-b" style="text-align:right">
-    {include file='product_search.tpl'}
-
-    {if $view_sales or $view_stock}
-    <table class="options" >
-      <tr {if $products==0 }style="display:none"{/if}>
-	<td  {if $view_table==0}class="selected"{/if} id="but_view0" >{t}Basic{/t}</td>
-	{if $view_stock}<td {if $view_table==1}class="selected"{/if}  id="but_view1"  >{t}Stock{/t}</td>{/if}
-	{if $view_sales}<td  {if $view_table==2}class="selected"{/if}  id="but_view2"  >{t}Sales{/t}</td>{/if}
-    </table>
-    {/if}
-    {if $modify}
-    <table class="options" >
-      <tr><td   id="but_view3" >{t}Edit{/t}</td>  </tr>
-    </table>
-
-
-    <div id="edit_menu" style="display:none">
-      <table class="but edit" style="float:right">
-	<tr><td id="add_department">{t}Add Department{/t}</td></tr>
-	<tr><td id="upload">{t}Upload Products{/t}</td></tr>
-      </table>
-    {*}
-    <p>
-    {t escape=no}You can also insert departments, families and products  from a csv file. Download the <a href="templates.php?in=root">template</a>, edit it,  upload it and voila!{/t}
-    </p>
-    <button id="upload">{t}Upload Products{/t}</button>
-    
-    <h2>Inventories</h2>
-    <p>You can check a cvs file for the last inventory  <a   href="inventory.php?tipo=last" >here</a>.</p>
-    <p>Use this  <a   href="inventory.php?tipo=new">template</a> create a new inventory.</p>
-    <button id="upload_inventory">{t}Upload Inventory{/t}</button>
   
-    {/*}
+  <div class="data_table" style="margin:25px 20px">
+	<span id="table_title" class="clean_table_title">{t}{$table_title}{/t}</span>
+	<div  class="clean_table_caption"  style="clear:both;">
+	  <div style="float:left;"><div id="table_info0" class="clean_table_info">{$table_info} <span class="filter_msg"  id="filter_msg0"></span></div></div>
 
+	  <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator"></span></div></div>
+	</div>
+	<div  id="table0"   class="data_table_container dtable btable "> </div>
+      </div>
 
-    </div>
-    {/if}
- </div>
 </div> 
 
 

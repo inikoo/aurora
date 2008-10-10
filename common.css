@@ -14,10 +14,12 @@ a,table,button{outline: none;}
 a {text-decoration:none;color:#222}
 a:hover {text-decoration:underline;color:#000} 
 
-
-.aright  {text-align:right}
+.yui-dt-hidden{ display:none }
+.yui-dt-hidden div { display:none }
+.aright  {text-align:right;}
+.aright .yui-dt-liner{ text-align:right; }
 .aleft {text-align:left}
-
+.aleft .yui-dt-liner{text-align:left}
 span.nav2 {float:left;background:#6d84b4;padding:0 10px;position:relative;bottom:6px;color:#fff;font-size:85%;margin:0 2px}
 span.nav2 a {color:#fff}
 span.onright {float:right}
@@ -288,13 +290,17 @@ table.but_edit{clear:both;float:right}
 
 
 
-table.options{margin:5px 0 ;float:right;border-collapse: separate;;border-spacing:3px  3px;font-size:100%;font-weight:600;}
+table.options{margin:0 ;float:right;border-collapse: separate;;border-spacing:3px  3px;font-size:100%;font-weight:600;}
 
 
 .options td{border:1px solid #aaa;color:#aaa;text-align:center;padding:1px 3px 3px 3px;cursor:pointer}
 .options td:hover{border:1px solid #777;color:#777}
 .options td.selected{background:#7296e1;border:1px solid #466ab5;color:#f6f6f6}
 .options td.disabled{background:#fff;border:1px solid #eee;color:#ddd;cursor:default}
+.options tr.title{}
+.options tr.title td{background:#fff;border:none;cursor:default;color:#555}
+.options tr.title td:hover{color:#555}
+
 
 .edit_button td,td.editx{background:#dc4f58;border:1px solid #b52b34;color:#f4cdd0;}
 .edit_button td:hover,td.editx:hover{background:#dc4f58;border:1px solid #b52b34;color:#f4cdd0;}

@@ -205,11 +205,11 @@ if(!isset($_SESSION['tables']) ){
 
 			    );
  }
-if(!isset($_SESSION['views'])){
+if(isset($_SESSION['views'])){
   $_SESSION['views']=array(
 			   'edit_products_block'=>'description',
-			   'assets'=>'tree',
-			   'assets_tables'=>0,
+			   'assets'=>'dept',
+			   'assets_view'=>'general',
 			   'product_plot'=>'sales_week',
 			   'sales_plot'=>'net_sales_month',
 			   'product_blocks'=>array(0,1,1,0,1,0),
