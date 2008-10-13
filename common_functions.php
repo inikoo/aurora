@@ -147,14 +147,14 @@ function prepare_mysql_dates($date1='',$date2='',$date_field='date',$options='')
   if($mysql_date2=='' and $mysql_date1=='' )
     $mysql_interval="";
   else if($mysql_date2!='' and $mysql_date1!=''){
-    $mysql_interval="and $date_field>='$mysql_date1' and $date_field<='$mysql_date2'";
+    $mysql_interval=" and $date_field>='$mysql_date1' and $date_field<='$mysql_date2'";
     
   }else if($mysql_date2!='')
-    $mysql_interval="and $date_field<='$mysql_date2'";
+    $mysql_interval=" and $date_field<='$mysql_date2'";
   else
-    $mysql_interval="and $date_field>='$mysql_date1' ";
+    $mysql_interval=" and $date_field>='$mysql_date1' ";
   
-  return array($mysql_interval,$date1,$date2,$error);
+  return array('0'=>$mysql_interval,'1'=>$date1,'2'=>$date2,'3'=>$error,'error'=>$error,'mysql'=>$mysql_interval,'from'=>$date1,'to'=>$date2);
 
 
 }

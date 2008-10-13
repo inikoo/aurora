@@ -106,21 +106,21 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								     // sortedBy: {key:"<?=$_SESSION['tables']['customers_list'][0]?>", dir:"<?=$_SESSION['tables']['customers_list'][1]?>"},
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage    : <?=$_SESSION['tables']['customers_list'][2]?>,containers : 'paginator', 
+									      rowsPerPage    : <?=$_SESSION['state']['customers']['table']['nr']?>,containers : 'paginator', 
  									      pageReportTemplate : '(<?=_('Page')?> {currentPage} <?=_('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
  									      firstPageLinkLabel :"<<",
  									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
-									      ,template : "{FirstPageLink}{PreviousPageLink}<strong>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
 
 
 
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?=$_SESSION['tables']['customers_list'][0]?>",
-									 dir: "<?=$_SESSION['tables']['customers_list'][1]?>"
+									 key: "<?=$_SESSION['state']['customers']['table']['order']?>",
+									 dir: "<?=$_SESSION['state']['customers']['table']['order_dir']?>"
 								     },
 								     dynamicData : true
 
@@ -134,34 +134,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 		    
 		    
-//  	    this.table0.paginatorMenu = new YAHOO.widget.Menu('paginatornewmenu'+tableid,  {context:['paginatormenuselector'+tableid,"tr", "br"]  });
-//  	    this.table0.paginatorMenu.addItems([{ text: "25", onclick:{fn:changeRecordsperPage,obj:25,scope:this.table0}  } ]);
-//  	    this.table0.paginatorMenu.addItems([{ text: "50", onclick:{fn:changeRecordsperPage,obj:50,scope:this.table0}  } ]);
-//  	    this.table0.paginatorMenu.addItems([{ text: "100", onclick:{fn:changeRecordsperPage,obj:100,scope:this.table0}  } ]);
-//  	    this.table0.paginatorMenu.addItems([{ text: "250", onclick:{fn:changeRecordsperPage,obj:250,scope:this.table0}  } ]);
-//  	    this.table0.paginatorMenu.addItems([{ text: "500", onclick:{fn:changeRecordsperPage,obj:500,scope:this.table0}  } ]);
-//  	    this.table0.paginatorMenu.addItems([{ text: "all", onclick:{fn:changeRecordsperPage,obj:'all',scope:this.table0}  } ]);
-//  	    YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click", this.table0.paginatorMenu.show, null, this.table0.paginatorMenu);
-//  	    this.table0.paginatorMenu.render(document.body);
-
-	    
 
 
-
-// 	    this.table0.filterMenu = new YAHOO.widget.Menu('filternewmenu0',  {context:['filterselector0',"tr", "br"]  });
-// 	    this.table0.filterMenu.addItems([{ text: "<?=_('Customer Name')?>", onclick:{fn:changeFilter,obj:{col:'name',text:"<?=_('Customer name')?>"},scope:this.table0}  } ]);
-// 	    this.table0.filterMenu.addItems([{ text: "<?=$customers_ids[0]?>", onclick:{fn:changeFilter,obj:{col:'id',text:"<?=$customers_ids[0]?>"},scope:this.table0}  } ]);
-// 	    this.table0.filterMenu.addItems([{ text: "<?=$customers_ids[1]?>", onclick:{fn:changeFilter,obj:{col:'id2',text:"<?=$customers_ids[1]?>"},scope:this.table0}  } ]);
-// 	    this.table0.filterMenu.addItems([{ text: "<?=$customers_ids[2]?>", onclick:{fn:changeFilter,obj:{col:'id3',text:"<?=$customers_ids[2]?>"},scope:this.table0}  } ]);
-// 	    this.table0.filterMenu.addItems([{ text: "<?=_('Maximum Orders')?>", onclick:{fn:changeFilter,obj:{col:'max',text:"<?=_('Max Orders')?>"},scope:this.table0}  } ]);
-// 	    this.table0.filterMenu.addItems([{ text: "<?=_('Minumum Orders')?>", onclick:{fn:changeFilter,obj:{col:'min',text:"<?=_('Min Orders')?>"},scope:this.table0}  } ]);
-// 	    this.table0.filterMenu.addItems([{ text: "<?=_('Maximum Total')?>", onclick:{fn:changeFilter,obj:{col:'maxvalue',text:"<?=_('Max Total')?>"},scope:this.table0}  } ]);
-// 	    this.table0.filterMenu.addItems([{ text: "<?=_('Minumum Total')?>", onclick:{fn:changeFilter,obj:{col:'minvalue',text:"<?=_('Min Total')?>"},scope:this.table0}  } ]);
-// 	    this.table0.filterMenu.addItems([{ text: "<?=_('Maximum Days Since Last Order')?>", onclick:{fn:changeFilter,obj:{col:'maxdesde',text:"<?=_('Max Days')?>"},scope:this.table0}  } ]);
-// 	    this.table0.filterMenu.addItems([{ text: "<?=_('Minumum Days Since Last Order')?>", onclick:{fn:changeFilter,obj:{col:'mindesde',text:"<?=_('Min Days')?>"},scope:this.table0}  } ]);
-
-
-	    this.table0.filter={key:'<?=$_SESSION['tables']['customers_list'][5]?>',value:'<?=$_SESSION['tables']['customers_list'][6]?>'};
+	    this.table0.filter={key:'<?=$_SESSION['state']['customers']['table']['f_field']?>',value:'<?=$_SESSION['state']['customers']['table']['f_value']?>'};
 
 	    //   YAHOO.util.Event.addListener('f_input', "keyup",myFilterChangeValue,{table:this.table0,datasource:this.dataSource})
 			 
@@ -185,6 +160,25 @@ YAHOO.util.Event.addListener(window, "load", function() {
  oACDS.queryMatchContains = true;
  var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container", oACDS);
  oAutoComp.minQueryLength = 0; 
+
+
+
+YAHOO.util.Event.onContentReady("filtermenu", function () {
+	 var oMenu = new YAHOO.widget.Menu("filtermenu", { context:["filter_name0","tr", "br"]  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+	 YAHOO.util.Event.addListener("filter_name0", "click", oMenu.show, null, oMenu);
+    });
+
+
+YAHOO.util.Event.onContentReady("rppmenu", function () {
+	 var oMenu = new YAHOO.widget.Menu("rppmenu", { context:["filter_name0","tr", "bl"]  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+	 YAHOO.util.Event.addListener("paginator_info0", "click", oMenu.show, null, oMenu);
+    });
+
+
 
 
  }

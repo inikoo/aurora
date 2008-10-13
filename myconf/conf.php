@@ -128,6 +128,45 @@ $myconf=array(
 	      );
 
 $default_state=array(
+		     
+		       'report_outofstock'=>array(
+						  'from'=>'',
+						  'to'=>'',	  
+						  'table'=>array(
+								 'order'=>'code',
+								 'order_dir'=>'',
+								 'sf'=>0,
+								 'nr'=>25,
+								 'where'=>'where true',
+								 'f_field'=>'code',
+								 'f_value'=>'',
+								 'elements'=>array()
+						   )
+				    ),
+
+		     'customers'=>array(
+				    'table'=>array(
+						   'order'=>'name',
+						   'order_dir'=>'',
+						   'sf'=>0,
+						   'nr'=>25,
+						   'where'=>'where true',
+						   'f_field'=>'name',
+						   'f_value'=>''
+						   )
+				    ),
+		     'staff'=>array(
+				    'table'=>array(
+						   'order'=>'alias',
+						   'order_dir'=>'',
+						   'sf'=>0,
+						   'nr'=>50,
+						   'where'=>'where true',
+						   'f_field'=>'alias',
+						   'f_value'=>''
+						   )
+				    ),
+
 		     'departments'=>array(
 					  'details'=>false,
 					  'view'=>'general',

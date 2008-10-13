@@ -57,14 +57,23 @@ function init(){
 	    tipo=this.id;
 
 	    if(tipo!=current_view){
+		if(tipo=='prod')
+		    Dom.get('front_plot').style.display='none';
+		else{
+		    Dom.get('front_plot').style.display='';
+		    
+		}
+
+		
 		Dom.get('plot_div').style.opacity=0;
-
-
 		Dom.get('the_plot').src = 'plot.php?tipo='+plot[tipo];
+		Dom.get('plot_options_'+current_view).style.display='none';
+		Dom.get('plot_options_'+tipo).style.display='';
+
+
 		Dom.get('header_'+current_view).style.display='none';
 		Dom.get('header_'+tipo).style.display='';
 		Dom.get('plot_options_'+current_view).style.display='none';
-
 		Dom.get('plot_options_'+tipo).style.display='';
 
 		YAHOO.util.Connect.asyncRequest('POST','ar_reports.php?tipo=change_front_plot&value=' + escape(plot[tipo]) ); 

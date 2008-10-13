@@ -30,7 +30,7 @@ if(isset($_REQUEST['q_id1']) and $_REQUEST['q_id1']!=''  ){
 
 
  }else{
-  $_SESSION['tables']['customers_list'][4]='where true ';
+  $_SESSION['state']['customer']['where']='where true ';
  }
 
 if(isset($_REQUEST['q_id2'])  ){
@@ -90,6 +90,7 @@ $smarty->assign('box_layout','yui-t0');
 
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+		 $yui_path.'menu/assets/skins/sam/menu.css',
 		 //		 $yui_path.'datatable/assets/skins/sam/datatable.css',
 		 $yui_path.'build/assets/skins/sam/skin.css',
 		 'common.css',
@@ -104,7 +105,7 @@ $js_files=array(
 		$yui_path.'paginator/paginator-min.js',
 		$yui_path.'datasource/datasource-min.js',
 		$yui_path.'autocomplete/autocomplete-min.js',
-		$yui_path.'datatable/datatable-min.js',
+		$yui_path.'datatable/datatable.js',
 		$yui_path.'container/container_core-min.js',
 		$yui_path.'menu/menu-min.js',
 		'js/common.js.php',
@@ -123,61 +124,21 @@ $smarty->assign('js_files',$js_files);
 $smarty->assign('table_title',_('Customers List'));
 
 
-//$smarty->assign('total_products',$products['numberof']);
-//$smarty->assign('rpp',$_SESSION['tables']['pindex_list'][2]);
-//$smarty->assign('products_perpage',$_SESSION['tables']['pindex_list'][2]);
 
 
+$tipo_filter=$_SESSION['state']['customers']['table']['f_field'];
+$smarty->assign('filter',$tipo_filter);
+$smarty->assign('filter_value',$_SESSION['state']['customers']['table']['f_value']);
 
-$smarty->assign('filter',$_SESSION['tables']['customers_list'][5]);
-$smarty->assign('filter_value',$_SESSION['tables']['customers_list'][6]);
+$filter_menu=array(
+		   'name'=>array('db_key'=>_('cu.name'),'menu_label'=>'Customer Name','label'=>'Name'),
+		   );
+$smarty->assign('filter_menu',$filter_menu);
+$smarty->assign('filter_name',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu',$paginator_menu);
 
-$filters=array(
-	       'ci.name'=>array('name'=>_('Name Filter')),
-	       'ci.name'=>array('name'=>_('Name Filter')),
-	       );
 
-switch($_SESSION['tables']['customers_list'][5]){
- case('max'):
-   $filter_text=_('Max Orders');
-   break;
- case('min'):
-   $filter_text=_('Min Orders');
-   break;
- case('id'):
-   $filter_text=_('Id');
-   break;
- case('cu.name'):
-   $filter_text=_('Name Filter');
-   break;
- case('id'):
-   $filter_text=$customers_ids[0];
-   break;
-case('id2'):
-   $filter_text=$customers_ids[1];
-   break;
-case('id3'):
-   $filter_text=$customers_ids[2];
-   break;
- case('maxvalue'):
-   $filter_text=_('Max Total');
-   break;
- case('minvalue'):
-   $filter_text=_('Min Total');
-   break;
-case('maxdesde'):
-   $filter_text=_('Max Days');
-   break;
- case('mindesde'):
-   $filter_text=_('Min Days');
-   break;
- default:
-   $filter_text='?';
- }
-
-$smarty->assign('filter_name',$filter_text);
-$smarty->assign('customer_id2',$customers_ids[1]);
-$smarty->assign('customer_id3',$customers_ids[2]);
 
 $sql="select count(*) as customers from customer where contact_id>0 and (num_invoices+num_invoices_nd)>0  ";
 $result = mysql_query($sql) or die('Query failed: ' . mysql_error());

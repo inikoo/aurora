@@ -126,7 +126,6 @@ switch($tipo){
    break;
 
  default:
-   print _("Warning: Unknown $tipo plot reference".'.');
    exit;
    
 

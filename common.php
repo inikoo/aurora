@@ -246,7 +246,7 @@ if($LU->checkRight(USER_VIEW))
 //else
 //  $nav_menu[] = array(_('Profile'), 'user.php');
 if($LU->checkRight(STAFF_VIEW))
-  $nav_menu[] = array(_('Staff'), 'hresources.php');
+  $nav_menu[] = array(_('Staff'), 'hr.php');
 if($LU->checkRight(SUP_VIEW))
   $nav_menu[] = array(_('Suppliers'), 'suppliers.php');
 if($is_supplier)

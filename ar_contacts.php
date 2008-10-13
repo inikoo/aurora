@@ -521,52 +521,47 @@ case('customers'):
   if(!$LU->checkRight(CUST_VIEW))
     exit;
 
+  $conf=$_SESSION['state']['customers']['table'];
   if(isset( $_REQUEST['sf']))
-    $start_from=$_REQUEST['sf'];
-  else
-    $start_from=$_SESSION['tables']['customers_list'][3];
-  if(isset( $_REQUEST['nr']))
-    $number_results=$_REQUEST['nr'];
-  else
-    $number_results=$_SESSION['tables']['customers_list'][2];
+     $start_from=$_REQUEST['sf'];
+   else
+     $start_from=$conf['sf'];
+   if(isset( $_REQUEST['nr']))
+     $number_results=$_REQUEST['nr'];
+   else
+     $number_results=$conf['nr'];
   if(isset( $_REQUEST['o']))
     $order=$_REQUEST['o'];
   else
-    $order=$_SESSION['tables']['customers_list'][0];
+    $order=$conf['order'];
   if(isset( $_REQUEST['od']))
     $order_dir=$_REQUEST['od'];
   else
-    $order_dir=$_SESSION['tables']['customers_list'][1];
-  $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-
-
-  if(isset( $_REQUEST['where']))
-    $where=addslashes($_REQUEST['where']);
-   else
-     $where=$_SESSION['tables']['customers_list'][4];
-
-    
-   if(isset( $_REQUEST['f_field']))
+    $order_dir=$conf['order_dir'];
+    if(isset( $_REQUEST['f_field']))
      $f_field=$_REQUEST['f_field'];
    else
-     $f_field=$_SESSION['tables']['customers_list'][5];
+     $f_field=$conf['f_field'];
 
   if(isset( $_REQUEST['f_value']))
      $f_value=$_REQUEST['f_value'];
    else
-     $f_value=$_SESSION['tables']['customers_list'][6];
-
-
-  if(isset( $_REQUEST['tableid']))
+     $f_value=$conf['f_value'];
+if(isset( $_REQUEST['where']))
+     $where=$_REQUEST['where'];
+   else
+     $where=$conf['where'];
+  
+   if(isset( $_REQUEST['tableid']))
     $tableid=$_REQUEST['tableid'];
   else
     $tableid=0;
-  //  print_r($_SESSION['tables']['customers_list']);
-
+ $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+  $_SESSION['state']['customers']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
   $wheref='';
 
-  if(($f_field=='cu.name'     )  and $f_value!=''){
-      $wheref="  and  ".$f_field." like '".addslashes($f_value)."%'";
+  if(($f_field=='name'     )  and $f_value!=''){
+      $wheref="  and  cu.name like '".addslashes($f_value)."%'";
   }else if($f_field=='id3'  )
     $wheref.=" and  extra_id2 like '".addslashes(preg_replace('/\s*|\,|\./','',$f_value))."%' ";
   else if($f_field=='id2'  )
@@ -588,8 +583,8 @@ else if($f_field=='id'  )
 
 
 
-  $_SESSION['tables']['customers_list']=array($order,$order_direction,$number_results,$start_from,$where,$f_field,$f_value);
 
+  $filter_msg='';
 
    $sql="select count(*) as total from customer as cu left join contact on (contact_id=contact.id)  $where $wheref";
 
@@ -611,14 +606,14 @@ else if($f_field=='id'  )
 
    if($total==0 and $filtered>0){
      switch($f_field){
-     case('cu.name'):
+     case('name'):
        $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any customer starting with")." <b>$f_value</b> ";
        break;
      }
    }
    elseif($filtered>0){
      switch($f_field){
-     case('cu.name'):
+     case('name'):
        $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('only customers starting with')." <b>$f_value</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Remove Filter')."</span>";
        break;
      }
@@ -641,7 +636,6 @@ else if($f_field=='id'  )
 
    $order=preg_replace('/name/','file_as',$order);
 
-//   $sql="select id2,id3,ifnull(country_id,244) as country_id ,cu.id as id ,cu.name as name ,co.code2 as country_code2,co.code as country_code ,location , orders,UNIX_TIMESTAMP(last_order) date,cu.total as total  from customer as cu left join list_country as co on (co.id=country_id)     $where $wheref order by $order $order_direction limit $start_from,$number_results";
    $sql="select  (select count(*) from customer2group where group_id=9 and customer_id=cu.id) as is_staff, num_invoices,list_country.name as country_name, cu.file_as,(total_nd+total) as super_total,total_nd,total_nd/(total_nd+total) as  factor_num_orders_nd ,(cu.total/num_invoices) as total_avg,  postcode,cu.id as id ,cu.name as name , (num_invoices+num_invoices_nd) as orders,num_orders_nd,UNIX_TIMESTAMP(last_order) date,cu.total as total,town,code2 as country_code2, code as country_code from customer as cu left join contact on (contact_id=contact.id) left join address on (main_address=address.id) left join list_country on (country=list_country.name)   $where $wheref  order by $order $order_direction limit $start_from,$number_results";
 
 

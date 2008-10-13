@@ -5,27 +5,36 @@ include_once('report_functions.php');
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
+		 $yui_path.'calendar/assets/skins/sam/calendar.css',
 		 $yui_path.'button/assets/skins/sam/button.css',
+		 //		 $yui_path.'datatable/assets/skins/sam/datatable.css',
 		 'common.css',
+		 'button.css',
 		 'container.css',
 		 'table.css'
 		 );
 $js_files=array(
 
 		$yui_path.'yahoo-dom-event/yahoo-dom-event.js',
-		$yui_path.'element/element-beta-min.js',
-		$yui_path.'utilities/utilities.js',
-		$yui_path.'container/container.js',
-		$yui_path.'menu/menu-min.js',
-		$yui_path.'button/button.js',
-		$yui_path.'datasource/datasource-beta.js',
-		$yui_path.'datatable/datatable-beta.js',
-		$yui_path.'charts/charts-experimental-min.js',
+		$yui_path.'connection/connection-min.js',
 		$yui_path.'json/json-min.js',
+		$yui_path.'element/element-beta-min.js',
+		$yui_path.'paginator/paginator-min.js',
+		$yui_path.'dragdrop/dragdrop-min.js',
+		$yui_path.'datasource/datasource-min.js',
+		$yui_path.'autocomplete/autocomplete-min.js',
+		$yui_path.'datatable/datatable-min.js',
+		$yui_path.'container/container_core-min.js',
+		$yui_path.'menu/menu-min.js',
+		$yui_path.'calendar/calendar-min.js',
 		'js/common.js.php',
 		'js/table_common.js.php',
-		'js/report_sales.js.php'
+		'js/calendar_common.js.php',
+
+		'js/repost_sales.js.php'
 		);
+
+
 
 $smarty->assign('parent','reports.php');
 $smarty->assign('css_files',$css_files);
@@ -215,7 +224,7 @@ $smarty->assign('week',date('W'));
 $smarty->assign('from',date('d-m-Y'));
 $smarty->assign('to',date('d-m-Y'));
 
-$smarty->display('report_sales_free.tpl');
+$smarty->display('report_sales.tpl');
 
 //  }else{
 

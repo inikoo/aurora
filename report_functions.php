@@ -4,9 +4,9 @@
 function sales_in_interval($from,$to){
    $db =& MDB2::singleton();
    global $myconf;
-
-
-  $int=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','date_done');
+  
+   
+   $int=prepare_mysql_dates($from,$to,'date_done','only_dates');
 
   // Get refunds first
   
@@ -144,7 +144,7 @@ function sales_in_interval($from,$to){
   $tax_p_home=0;
   $invoices_p_home=0;
 
-  $int=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','date_index');
+  $int=prepare_mysql_dates($from,$to,'date_index','only_dates');
   $sql=sprintf("select sum(net) as net,sum(tax) as tax , count(*) as invoices from orden where  tipo=2 and partner=1 %s ",$int[0]);
 
   $res = $db->query($sql);
@@ -196,6 +196,8 @@ function sales_in_interval($from,$to){
   }
   
   $sql=sprintf("select sum(net) as net,sum(tax) as tax , count(*) as invoices from orden   where  orden.tipo=2 and partner=0 and del_country_id=%d %s ",$myconf['country_id'],$int[0]);
+
+
   $res = $db->query($sql);
   if($row=$res->fetchRow()) {
     $net_home=$row['net']+$refund_net_home;

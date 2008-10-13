@@ -688,7 +688,333 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
 		   );
    echo json_encode($response);
    break;
-  case('family'):
+  case('outofstock'):
+     $conf=$_SESSION['state']['report_outofstock']['table'];
+
+     if(isset( $_REQUEST['view']))
+       $view=$_REQUEST['view'];
+     else
+       $view=$_SESSION['state']['family']['view'];
+     
+      if(isset( $_REQUEST['sf']))
+     $start_from=$_REQUEST['sf'];
+   else
+    $start_from=$conf['sf'];
+   if(!is_numeric($start_from))
+     $start_from=0;
+
+  if(isset( $_REQUEST['nr']))
+    $number_results=$_REQUEST['nr'];
+  else
+    $number_results=$conf['nr'];
+   if(!is_numeric($number_results))
+     $number_results=25;
+
+  if(isset( $_REQUEST['o']))
+    $order=$_REQUEST['o'];
+  else
+    $order=$conf['order'];
+  
+  if(isset( $_REQUEST['od']))
+    $order_dir=$_REQUEST['od'];
+  else
+    $order_dir=$conf['order_dir'];
+  $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+
+ if(isset( $_REQUEST['from']))
+   $from=$_REQUEST['from'];
+   else
+     $from=$_SESSION['state']['report_outofstock']['from'];
+  if(isset( $_REQUEST['to']))
+     $to=$_REQUEST['to'];
+   else
+     $to=$_SESSION['state']['report_outofstock']['to'];
+  
+  
+     if(isset( $_REQUEST['where']))
+     $where=addslashes($_REQUEST['where']);
+   else
+     $where=$conf['where'];
+
+    
+   if(isset( $_REQUEST['f_field']))
+     $f_field=$_REQUEST['f_field'];
+   else
+     $f_field=$conf['f_field'];
+
+  if(isset( $_REQUEST['f_value']))
+     $f_value=$_REQUEST['f_value'];
+   else
+     $f_value=$conf['f_value'];
+ if(isset( $_REQUEST['tableid']))
+    $tableid=$_REQUEST['tableid'];
+  else
+    $tableid=0;
+ // print "xx $from $to";
+ $date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
+ // print_r($date_interval);
+   if($date_interval['error']){
+      $date_interval=prepare_mysql_dates($_SESSION['state']['report_outofstock']['from'],$_SESSION['state']['report_outofstock']['to']);
+   }else{
+     $_SESSION['state']['report_outofstock']['from']=$date_interval['from'];
+     $_SESSION['state']['report_outofstock']['to']=$date_interval['to'];
+   }
+
+    $_SESSION['state']['report_outofstock']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+
+  $where.=$date_interval['mysql'];
+     $filter_msg='';
+     
+     $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+     
+     if(!is_numeric($start_from))
+       $start_from=0;
+     if(!is_numeric($number_results))
+       $number_results=25;
+
+
+ $_order=$order;
+ $_dir=$order_direction;
+  $filter_msg='';
+  $wheref='';
+  if($f_field=='code' and $f_value!='')
+    $wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
+
+
+  
+   
+
+
+
+   $sql="select product_id from outofstock left join orden on (orden.id=order_id)  $where $wheref  and orden.tipo=2  group by product_id";
+   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   if($row=$res->fetchRow())
+     $total=$res->numRows();
+   else
+     $total=0;
+   if($wheref=='')
+       $filtered=0;
+   else{
+     $sql="select product_id  as total   from outofstock left join orden on (orden.id=order_id)  $where ";
+     $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+     if($row=$res->fetchRow())
+       $_total=$res->numRows();
+     else
+       $_total=0;
+     $filtered=$_total-$total;
+   }
+
+
+
+
+   
+
+  $norder=($order=='code'?'ncode':$order);
+  
+  $sql="select  count(distinct picker_id) as pickers, group_concat(distinct staff.alias) as pickers_name,count(distinct orden.id) as orders,product.id,product.code,product.description,product.stock from outofstock left join orden on (orden.id=order_id) left join product on (product.id=product_id) left join pick on (pick.order_id=orden.id) left join staff on (picker_id=staff.id)   $where $wheref and orden.tipo=2 group by product_id  order by $norder $order_direction limit $start_from,$number_results     ";
+  //    print "$sql";
+  $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+  
+  $adata=array();
+  
+  while($data=$res->fetchRow()) {
+    $adata[]=array(
+		   'id'=>$data['id']
+		   ,'pickers'=>$data['pickers'].'('.$data['pickers_name'].')'
+		   ,'orders'=>$data['orders']
+		   ,'code'=>$data['code']
+		   ,'description'=>$data['description']
+		   ,'stock'=>number($data['stock'])
+
+		   );
+  }
+  $response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$adata,
+			 'sort_key'=>$_order,
+			 'sort_dir'=>$_dir,
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
+			 'total_records'=>$total,
+			 'records_offset'=>$start_from,
+			 'records_returned'=>$start_from+$res->numRows(),
+			 'records_perpage'=>$number_results,
+			 'records_order'=>$order,
+			 'records_order_dir'=>$order_dir,
+			 'filtered'=>$filtered
+			 )
+		   );
+   echo json_encode($response);
+   break;
+
+
+
+ case('outofstock_all'):
+     $conf=$_SESSION['state']['report_outofstock']['table'];
+
+     if(isset( $_REQUEST['view']))
+       $view=$_REQUEST['view'];
+     else
+       $view=$_SESSION['state']['family']['view'];
+     
+      if(isset( $_REQUEST['sf']))
+     $start_from=$_REQUEST['sf'];
+   else
+    $start_from=$conf['sf'];
+   if(!is_numeric($start_from))
+     $start_from=0;
+
+  if(isset( $_REQUEST['nr']))
+    $number_results=$_REQUEST['nr'];
+  else
+    $number_results=$conf['nr'];
+   if(!is_numeric($number_results))
+     $number_results=25;
+
+  if(isset( $_REQUEST['o']))
+    $order=$_REQUEST['o'];
+  else
+    $order=$conf['order'];
+  
+  if(isset( $_REQUEST['od']))
+    $order_dir=$_REQUEST['od'];
+  else
+    $order_dir=$conf['order_dir'];
+  $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+
+ if(isset( $_REQUEST['from']))
+   $from=$_REQUEST['from'];
+   else
+     $from=$_SESSION['state']['report_outofstock']['from'];
+  if(isset( $_REQUEST['to']))
+     $to=$_REQUEST['to'];
+   else
+     $to=$_SESSION['state']['report_outofstock']['to'];
+  
+  
+     if(isset( $_REQUEST['where']))
+     $where=addslashes($_REQUEST['where']);
+   else
+     $where=$conf['where'];
+
+    
+   if(isset( $_REQUEST['f_field']))
+     $f_field=$_REQUEST['f_field'];
+   else
+     $f_field=$conf['f_field'];
+
+  if(isset( $_REQUEST['f_value']))
+     $f_value=$_REQUEST['f_value'];
+   else
+     $f_value=$conf['f_value'];
+ if(isset( $_REQUEST['tableid']))
+    $tableid=$_REQUEST['tableid'];
+  else
+    $tableid=0;
+ // print "xx $from $to";
+ $date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
+ // print_r($date_interval);
+   if($date_interval['error']){
+      $date_interval=prepare_mysql_dates($_SESSION['state']['report_outofstock']['from'],$_SESSION['state']['report_outofstock']['to']);
+   }else{
+     $_SESSION['state']['report_outofstock']['from']=$date_interval['from'];
+     $_SESSION['state']['report_outofstock']['to']=$date_interval['to'];
+   }
+
+    $_SESSION['state']['report_outofstock']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+
+  $where.=$date_interval['mysql'];
+     $filter_msg='';
+     
+     $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+     
+     if(!is_numeric($start_from))
+       $start_from=0;
+     if(!is_numeric($number_results))
+       $number_results=25;
+
+
+ $_order=$order;
+ $_dir=$order_direction;
+  $filter_msg='';
+  $wheref='';
+  if($f_field=='code' and $f_value!='')
+    $wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
+
+
+  
+   
+
+
+
+   $sql="select product_id from outofstock left join orden on (orden.id=order_id)  $where $wheref  and orden.tipo=2  ";
+   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   if($row=$res->fetchRow())
+     $total=$res->numRows();
+   else
+     $total=0;
+   if($wheref=='')
+       $filtered=0;
+   else{
+     $sql="select product_id  as total   from outofstock left join orden on (orden.id=order_id)  $where ";
+     $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+     if($row=$res->fetchRow())
+       $_total=$res->numRows();
+     else
+       $_total=0;
+     $filtered=$_total-$total;
+   }
+
+
+
+
+   
+
+  $norder=($order=='code'?'ncode':$order);
+  $norder=($order=='orders'?'public_id':$order);
+  $norder='code, '.$norder;
+  $sql="select product_id,outofstock.id,orden.public_id,staff.alias as picker,product.code as code,product.stock,date_index from outofstock left join orden on (orden.id=order_id) left join product on (product.id=product_id) left join pick on (pick.order_id=orden.id) left join staff on (picker_id=staff.id)   $where $wheref and orden.tipo=2   order by $norder $order_direction limit $start_from,$number_results     ";
+   print "$sql";
+  $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+  
+  $adata=array();
+  
+  while($data=$res->fetchRow()) {
+    $adata[]=array(
+		   'id'=>$data['id']
+		   ,'pickers'=>$data['picker']
+		   ,'orders'=>$data['public_id']
+		   ,'code'=>$data['code']
+		   ,'stock'=> number(stock_date($data['product_id'],$data['date_index'])).'  <b>'.number($data['stock']).'</b>'
+		   ,'date'=>$data['date_index']
+		   
+		   );
+  }
+  $response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$adata,
+			 'sort_key'=>$_order,
+			 'sort_dir'=>$_dir,
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
+			 'total_records'=>$total,
+			 'records_offset'=>$start_from,
+			 'records_returned'=>$start_from+$res->numRows(),
+			 'records_perpage'=>$number_results,
+			 'records_order'=>$order,
+			 'records_order_dir'=>$order_dir,
+			 'filtered'=>$filtered
+			 )
+		   );
+   echo json_encode($response);
+   break;
+
+
+
+
+ case('family'):
      $conf=$_SESSION['state']['family']['table'];
      
      if(isset( $_REQUEST['id']) and is_numeric($_REQUEST['id'])){
@@ -844,7 +1170,6 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
 		   );
    echo json_encode($response);
    break;
-
 
  case('update_department_name'):
    
@@ -1920,7 +2245,6 @@ if(isset( $_REQUEST['tableid']))
  
  
  list($date_interval,$error)=prepare_mysql_dates($from,$to);
-  
   if($error){
     list($date_interval,$error)=prepare_mysql_dates($conf['from'],$conf['to']);
   }else{

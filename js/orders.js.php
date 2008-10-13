@@ -71,18 +71,18 @@ YAHOO.util.Event.addListener(window, "load", function() {
 						     this.dataSource0, {draggableColumns:true,
 							   renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									       rowsPerPage    : <?=$_SESSION['tables']['order_list'][2]?>,containers : 'paginator', 
+									       rowsPerPage    : <?=$_SESSION['state']['orders']['table']['nr']?>,containers : 'paginator', 
  									      pageReportTemplate : '(<?=_('Page')?> {currentPage} <?=_('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
  									      firstPageLinkLabel :"<<",
- 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
+ 									      lastPageLinkLabel :">>"
 									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?=$_SESSION['tables']['order_list'][0]?>",
-									 dir: "<?=$_SESSION['tables']['order_list'][1]?>"
+									 key: "<?=$_SESSION['state']['orders']['table']['order']?>",
+									 dir: "<?=$_SESSION['state']['orders']['table']['order_id']?>"
 								     }
 							   ,dynamicData : true
 
@@ -91,7 +91,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	    this.table0.filter={key:'<?=$_SESSION['tables']['order_list'][5]?>',value:'<?=$_SESSION['tables']['order_list'][6]?>'};
+	    this.table0.filter={key:'<?=$_SESSION['state']['orders']['table']['f_field']?>',value:'<?=$_SESSION['state']['orders']['table']['f_value']?>'};
 
 	    
 	};
