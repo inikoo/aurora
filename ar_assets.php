@@ -448,22 +448,23 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
    break;
  case('index'):
 
+   $conf=$_SESSION['state']['departments']['table'];
    if(isset( $_REQUEST['sf']))
      $start_from=$_REQUEST['sf'];
    else
-     $start_from=$_SESSION['tables']['departments_list'][3];
+     $start_from=$conf['sf'];
    if(isset( $_REQUEST['nr']))
      $number_results=$_REQUEST['nr'];
    else
-     $number_results=$_SESSION['tables']['departments_list'][2];
+     $number_results=$conf['nr'];
   if(isset( $_REQUEST['o']))
     $order=$_REQUEST['o'];
   else
-    $order=$_SESSION['tables']['departments_list'][0];
+    $order=$conf['order'];
   if(isset( $_REQUEST['od']))
     $order_dir=$_REQUEST['od'];
   else
-    $order_dir=$_SESSION['tables']['departments_list'][1];
+    $order_dir=$conf['order_dir'];
   
   
    if(isset( $_REQUEST['tableid']))
@@ -480,22 +481,22 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
   
   
-  $_SESSION['tables']['departments_list']=array($order,$order_direction,$number_results,$start_from);
+  $_SESSION['state']['departments']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from);
   
   $where='';
   $filtered=0;
   
-    $_order=$order;
-   $_dir=$order_direction;
-   if($order=='per_tsall')
-     $order='tsall';
-    if($order=='per_tsm')
-     $order='tsm';
-
-   $total_sales=0;
+  $_order=$order;
+  $_dir=$order_direction;
+  if($order=='per_tsall')
+    $order='tsall';
+  if($order=='per_tsm')
+    $order='tsm';
+  
+  $total_sales=0;
    $total_m=0;
-  $sql="select awtsq,tsall,tsy,tsq,tsm,id,code,name,families,products,active,outofstock,stockerror,stock_value from product_department $where   order by $order $order_direction limit $start_from,$number_results    ";
-
+   $sql="select awtsq,tsall,tsy,tsq,tsm,id,code,name,families,products,active,outofstock,stockerror,stock_value from product_department $where   order by $order $order_direction limit $start_from,$number_results    ";
+   //   print "$sql";   
   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
   $adata=array();
   while($row=$res->fetchRow()) {
@@ -505,7 +506,7 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
 		   'id'=>$row['id'],
 
 		   'code'=>$row['code'],
-		   'name'=>$row['name'],
+		   'name'=>$row['code'],
 		   'families'=>number($row['families']),
 		   'products'=>number($row['products']),
 		   'active'=>number($row['active']),
@@ -546,7 +547,6 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
 			'records_offset'=>$start_from,
 			'records_returned'=>$start_from+$res->numRows(),
 			'records_perpage'=>$number_results,
-			'records_text'=>$rtext,
 			'records_order'=>$order,
 			'records_order_dir'=>$order_dir,
 			'filtered'=>$filtered
@@ -557,77 +557,65 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
   
   
  case('department'):
- //  if(!(isset($_REQUEST['id']) and is_numeric($_REQUEST['id'])  )){
-//     $response=array('state'=>404,'resp'=>_('Wrong id'));
-//     echo json_encode($response);
-//     break;
-//   }else
    
- if(isset( $_REQUEST['id']))
+   $conf=$_SESSION['state']['department']['table'];
+   if(isset( $_REQUEST['id']) and is_numeric($_REQUEST['id'])){
      $id=$_REQUEST['id'];
-   else
-    $id=$_SESSION['tables']['families_list'][4];
-   
-
-   
+     $_SESSION['state']['department']['id']=$id;
+   }   else
+     $id=$_SESSION['state']['department']['id'];
    if(isset( $_REQUEST['sf']))
      $start_from=$_REQUEST['sf'];
    else
-    $start_from=$_SESSION['tables']['families_list'][3];
-   if(!is_numeric($start_from))
-     $start_from=0;
-
-  if(isset( $_REQUEST['nr']))
-    $number_results=$_REQUEST['nr'];
-  else
-    $number_results=$_SESSION['tables']['families_list'][2];
-   if(!is_numeric($number_results))
-     $number_results=25;
-
-  if(isset( $_REQUEST['o']))
-    $order=$_REQUEST['o'];
-  else
-    $order=$_SESSION['tables']['families_list'][0];
-  
-  if(isset( $_REQUEST['od']))
-    $order_dir=$_REQUEST['od'];
-  else
-    $order_dir=$_SESSION['tables']['families_list'][1];
-  $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-
-  
-  
-     if(isset( $_REQUEST['where']))
+     $start_from=$conf['sf'];
+   if(isset( $_REQUEST['nr']))
+     $number_results=$_REQUEST['nr'];
+   else
+     $number_results=$conf['nr'];
+   if(isset( $_REQUEST['o']))
+     $order=$_REQUEST['o'];
+   else
+    $order=$conf['order'];
+   if(isset( $_REQUEST['od']))
+     $order_dir=$_REQUEST['od'];
+   else
+     $order_dir=$conf['order_dir'];
+   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+   if(isset( $_REQUEST['where']))
      $where=addslashes($_REQUEST['where']);
    else
-     $where=$_SESSION['tables']['families_list'][5];
+     $where=$conf['where'];
 
     
    if(isset( $_REQUEST['f_field']))
      $f_field=$_REQUEST['f_field'];
    else
-     $f_field=$_SESSION['tables']['families_list'][6];
-
-  if(isset( $_REQUEST['f_value']))
+     $f_field=$conf['f_field'];
+   
+   if(isset( $_REQUEST['f_value']))
      $f_value=$_REQUEST['f_value'];
    else
-     $f_value=$_SESSION['tables']['families_list'][7];
+     $f_value=$conf['f_value'];
 
-
-
-
+   
+   if(isset( $_REQUEST['tableid']))
+     $tableid=$_REQUEST['tableid'];
+   else
+    $tableid=0;
+   
 
   // print_r($_SESSION['tables']['families_list']);
 
   //  print_r($_SESSION['tables']['families_list']);
 
-
+ $filter_msg='';
   $wheref='';
   if($f_field=='name' and $f_value!='')
     $wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
 
+
   
-   $_SESSION['tables']['families_list']=array($order,$order_direction,$number_results,$start_from,$id,$where,$f_field,$f_value);
+    $_SESSION['state']['department']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
    $where =$where.sprintf(' and department_id=%d',$id);
 
    $sql="select count(*) as total from product_group  $where $wheref";
@@ -651,11 +639,10 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
 
 
 
-  if($total<$number_results)
-    $rtext=$total.' '.ngettext('family','families',$total);
-  else
-     $rtext='';
+   
 
+  $_order=$order;
+  $_dir=$order_direction;
 
 
   $sql="select id,name,description,stock_value,stockerror,outofstock,tsall,tsy,tsq,tsm,awtsq,active from product_group    $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
@@ -684,11 +671,16 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
   $response=array('resultset'=>
 		   array('state'=>200,
 			 'data'=>$adata,
+			 	'sort_key'=>$_order,
+			 'sort_dir'=>$_dir,
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
+
 			 'total_records'=>$total,
 			 'records_offset'=>$start_from,
 			'records_returned'=>$start_from+$res->numRows(),
 			'records_perpage'=>$number_results,
-			'records_text'=>$rtext,
+
 			'records_order'=>$order,
 			'records_order_dir'=>$order_dir,
 			'filtered'=>$filtered
@@ -697,90 +689,91 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
    echo json_encode($response);
    break;
   case('family'):
-     if(isset( $_REQUEST['id']))
-     $id=$_REQUEST['id'];
-   else
-    $id=$_SESSION['tables']['products_list'][4];
-   
-   if(isset( $_REQUEST['view']))
-     $view=$_REQUEST['view'];
-   else
-    $view=$_SESSION['tables']['products_list'][4];
-   
-   if(isset( $_REQUEST['sf']))
+     $conf=$_SESSION['state']['family']['table'];
+     
+     if(isset( $_REQUEST['id']) and is_numeric($_REQUEST['id'])){
+       $id=$_REQUEST['id'];
+       $_SESSION['state']['family']['id']=$id;
+     }   else
+       $id=$_SESSION['state']['family']['id'];
+     
+     if(isset( $_REQUEST['view']))
+       $view=$_REQUEST['view'];
+     else
+       $view=$_SESSION['state']['family']['view'];
+     
+      if(isset( $_REQUEST['sf']))
      $start_from=$_REQUEST['sf'];
    else
-    $start_from=$_SESSION['tables']['products_list'][3];
-
+    $start_from=$conf['sf'];
+   if(!is_numeric($start_from))
+     $start_from=0;
 
   if(isset( $_REQUEST['nr']))
     $number_results=$_REQUEST['nr'];
   else
-    $number_results=$_SESSION['tables']['products_list'][2];
+    $number_results=$conf['nr'];
+   if(!is_numeric($number_results))
+     $number_results=25;
+
   if(isset( $_REQUEST['o']))
     $order=$_REQUEST['o'];
   else
-    $order=$_SESSION['tables']['products_list'][0];
+    $order=$conf['order'];
   
   if(isset( $_REQUEST['od']))
     $order_dir=$_REQUEST['od'];
   else
-    $order_dir=$_SESSION['tables']['products_list'][1];
+    $order_dir=$conf['order_dir'];
   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 
- if(!is_numeric($start_from))
-     $start_from=0;
- if(!is_numeric($number_results))
-     $number_results=25;
-
-
-    if(isset( $_REQUEST['where']))
+  
+  
+     if(isset( $_REQUEST['where']))
      $where=addslashes($_REQUEST['where']);
    else
-     $where=$_SESSION['tables']['products_list'][5];
+     $where=$conf['where'];
 
     
    if(isset( $_REQUEST['f_field']))
      $f_field=$_REQUEST['f_field'];
    else
-     $f_field=$_SESSION['tables']['products_list'][6];
+     $f_field=$conf['f_field'];
 
   if(isset( $_REQUEST['f_value']))
      $f_value=$_REQUEST['f_value'];
    else
-     $f_value=$_SESSION['tables']['products_list'][7];
+     $f_value=$conf['f_value'];
 
 
+ if(isset( $_REQUEST['tableid']))
+    $tableid=$_REQUEST['tableid'];
+  else
+    $tableid=0;
+         $_SESSION['state']['family']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+
+     
+     $filter_msg='';
+     
+     $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+     
+     if(!is_numeric($start_from))
+       $start_from=0;
+     if(!is_numeric($number_results))
+       $number_results=25;
 
 
-
-  // print_r($_SESSION['tables']['products_list']);
-
-  //  print_r($_SESSION['tables']['products_list']);
-
-
+ $_order=$order;
+ $_dir=$order_direction;
+  $filter_msg='';
   $wheref='';
   if($f_field=='code' and $f_value!='')
     $wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
 
-  
-   $_SESSION['tables']['products_list']=array($order,$order_direction,$number_results,$start_from,$id,$where,$f_field,$f_value);
+
+
    
    $where =$where.sprintf(' and group_id=%d',$id);
-   
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
    $sql="select count(*) as total from product  $where $wheref";
@@ -804,10 +797,7 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
 
 
 
-  if($total<$number_results)
-    $rtext=$total.' '.ngettext('product','products',$total);
-  else
-     $rtext='';
+   
 
   $norder=($order=='code'?'ncode':$order);
   
@@ -839,14 +829,17 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
   $response=array('resultset'=>
 		   array('state'=>200,
 			 'data'=>$adata,
+			 'sort_key'=>$_order,
+			 'sort_dir'=>$_dir,
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
 			 'total_records'=>$total,
 			 'records_offset'=>$start_from,
-			'records_returned'=>$start_from+$res->numRows(),
-			'records_perpage'=>$number_results,
-			'records_text'=>$rtext,
-			'records_order'=>$order,
-			'records_order_dir'=>$order_dir,
-			'filtered'=>$filtered
+			 'records_returned'=>$start_from+$res->numRows(),
+			 'records_perpage'=>$number_results,
+			 'records_order'=>$order,
+			 'records_order_dir'=>$order_dir,
+			 'filtered'=>$filtered
 			 )
 		   );
    echo json_encode($response);
@@ -1546,7 +1539,7 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
    break;
  case('plot_monthout'):
  case('plot_monthsales'):
-   $product_id=$_SESSION['tables']['order_withprod'][4];
+   $product_id=$_SESSION['state']['product']['id'];
    $today=sprintf("%d%02d",date("Y"),date("m"));
    $sql=sprintf("select month(first_date) as m ,  year(first_date) as y ,period_diff( $today, concat(year(first_date),if(month(first_date)<10,concat('0',month(first_date)) ,month(first_date))   )  )   as since from product where id=%d",$product_id);
    //print "$sql";
@@ -1569,7 +1562,7 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
 		   'out'=>0,
 		   //		   'month'=>$m,
 		   //'year'=>$y,
-		   'date'=>strftime("%b %y", strtotime("today -$i month")),
+		   'date'=>strftime("%m/%y", strtotime("today -$i month")),
 		   'tip'=>'No sales in '.strftime("%b %y", strtotime("today -$i month")),
 		   'since'=>$i
 		   );
@@ -1584,12 +1577,12 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
 
    while($row=$res->fetchRow()) {
-     $data[$row['since']]['out']=$row['_out'];
-     $data[$row['since']]['asales']=$row['asales'];
+     $data[$row['since']]['out']=(int)$row['_out'];
+     $data[$row['since']]['asales']=(float)$row['asales'];
      if($tipo=='plot_monthout')
-       $data[$row['since']]['tip']=_('Outers Dispached')."\n".strftime("%B %Y", strtotime("today -$i month"))."\n".number($row['_out']).' '._('Outers');
+       $data[$row['since']]['tip_out']=_('Outers Dispached')."\n".strftime("%B %Y", strtotime("today -$i month"))."\n".number($row['_out']).' '._('Outers');
      else
-       $data[$row['since']]['tip']=_('Sales')."\n".strftime("%B %Y", strtotime("today -$i month"))."\n".money($row['asales']);
+       $data[$row['since']]['tip_asales']=_('Sales')."\n".strftime("%B %Y", strtotime("today -$i month"))."\n".money($row['asales']);
  
        }
  $response=array('resultset'=>
@@ -1874,86 +1867,89 @@ case('plot_daystock'):
    break;
 
  case('stock_history'):
- //  if(!(isset($_REQUEST['id']) and is_numeric($_REQUEST['id'])  )){
-//     $response=array('state'=>404,'resp'=>_('Wrong id'));
-//     echo json_encode($response);
-//     break;
-//   }else
-   
- if(isset( $_REQUEST['id']))
-     $id=$_REQUEST['id'];
+ $conf=$_SESSION['state']['product']['stock_history'];
+ $product_id=$_SESSION['state']['product']['id'];
+ if(isset( $_REQUEST['elements']))
+     $elements=$_REQUEST['elements'];
    else
-    $id=$_SESSION['tables']['stock_history'][4];
-   
+     $elements=$conf['elements'];
 
-   
+ if(isset( $_REQUEST['from']))
+     $from=$_REQUEST['from'];
+   else
+     $from=$conf['from'];
+  if(isset( $_REQUEST['to']))
+     $to=$_REQUEST['to'];
+   else
+     $to=$conf['to'];
    if(isset( $_REQUEST['sf']))
      $start_from=$_REQUEST['sf'];
    else
-    $start_from=$_SESSION['tables']['stock_history'][3];
-  if(isset( $_REQUEST['nr']))
-    $number_results=$_REQUEST['nr'];
-  else
-    $number_results=$_SESSION['tables']['stock_history'][2];
-  if(isset( $_REQUEST['o']))
-    $order=$_REQUEST['o'];
-  else
-    $order=$_SESSION['tables']['stock_history'][0];
-  
-  if(isset( $_REQUEST['od']))
-    $order_dir=$_REQUEST['od'];
-  else
-    $order_dir=$_SESSION['tables']['stock_history'][1];
-  $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-
-  
-  
-  if(isset( $_REQUEST['where']))
-    $where=addslashes($_REQUEST['where']);
-  else
-    $where=$_SESSION['tables']['stock_history'][5];
-
-  
+     $start_from=$conf['sf'];
+   if(isset( $_REQUEST['nr']))
+     $number_results=$_REQUEST['nr'];
+   else
+     $number_results=$conf['nr'];
+   if(isset( $_REQUEST['o']))
+     $order=$_REQUEST['o'];
+   else
+    $order=$conf['order'];
+   if(isset( $_REQUEST['od']))
+     $order_dir=$_REQUEST['od'];
+   else
+     $order_dir=$conf['order_dir'];
+   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+   if(isset( $_REQUEST['where']))
+     $where=addslashes($_REQUEST['where']);
+   else
+     $where=$conf['where'];
+   
    if(isset( $_REQUEST['f_field']))
      $f_field=$_REQUEST['f_field'];
    else
-     $f_field=$_SESSION['tables']['stock_history'][6];
+     $f_field=$conf['f_field'];
 
   if(isset( $_REQUEST['f_value']))
      $f_value=$_REQUEST['f_value'];
    else
-     $f_value=$_SESSION['tables']['stock_history'][7];
-
-  
-  if(isset( $_REQUEST['from']))
-    $from=$_REQUEST['from'];
+     $f_value=$conf['f_value'];
+if(isset( $_REQUEST['tableid']))
+    $tableid=$_REQUEST['tableid'];
   else
-    $from=$_SESSION['tables']['stock_history'][9];
-  if(isset( $_REQUEST['to']))
-    $to=$_REQUEST['to'];
-  else
-    $to=$_SESSION['tables']['stock_history'][10];
-
-  list($date_interval,$error)=prepare_mysql_dates($from,$to);
+    $tableid=0;
+ 
+ 
+ list($date_interval,$error)=prepare_mysql_dates($from,$to);
   
-  if(!$error){
-    $_SESSION['tables']['stock_history'][9]=$from;
-    $_SESSION['tables']['stock_history'][10]=$to;
-  }{
-    list($date_interval,$error)=prepare_mysql_dates($_SESSION['tables']['stock_history'][9],$_SESSION['tables']['stock_history'][10]);
-    if($error){
-      $_SESSION['tables']['stock_history'][9]='';
-      $_SESSION['tables']['stock_history'][10]='';
-    }
+  if($error){
+    list($date_interval,$error)=prepare_mysql_dates($conf['from'],$conf['to']);
+  }else{
+      $_SESSION['state']['product']['stock_history']['from']=$from;
+      $_SESSION['state']['product']['stock_history']['to']=$to;
   }
 
-   if(isset($_REQUEST['tview'])){
-    $tview=$_REQUEST['tview'];
-    $_SESSION['views']['stockh_table_options'][$tview]=($_SESSION['views']['stockh_table_options'][$tview]?0:1);
-  }
+  $_SESSION['state']['product']['stock_history']=
+    array(
+	  'order'=>$order,
+	  'order_dir'=>$order_direction,
+	  'nr'=>$number_results,
+	  'sf'=>$start_from,
+	  'where'=>$where,
+	  'f_field'=>$f_field,
+	  'f_value'=>$f_value,
+	  'from'=>$from,
+	  'to'=>$to,
+	  'elements'=>$elements
+	  );
+    $_order=$order;
+   $_dir=$order_direction;
+   $filter_msg='';
+
   
+
+
  $view='';
- foreach($_SESSION['views']['stockh_table_options'] as $key=>$val){
+ foreach($elements as $key=>$val){
    if(!$val)
      $view.=' and op_tipo!='.$key;
  }
@@ -1965,20 +1961,11 @@ case('plot_daystock'):
 
   
 
-   $_SESSION['tables']['stock_history'][0]=$order;
-   $_SESSION['tables']['stock_history'][1]=$order_direction;
-   $_SESSION['tables']['stock_history'][2]=$number_results;
-   $_SESSION['tables']['stock_history'][3]=$start_from;
-   $_SESSION['tables']['stock_history'][4]=$id;
-   $_SESSION['tables']['stock_history'][5]=$where;
-   $_SESSION['tables']['stock_history'][6]=$f_field;
-   $_SESSION['tables']['stock_history'][7]=$f_value;
-     //   $_SESSION['tables']['stock_history'][8]=$order;
 
 
 
    
-   $where =$where.$view.sprintf(' and product_id=%d  %s',$id,$date_interval);
+   $where =$where.$view.sprintf(' and product_id=%d  %s',$product_id,$date_interval);
    
    $sql="select count(*) as total from stock_history  $where $wheref";
    //   print "$sql";
@@ -2009,7 +1996,7 @@ case('plot_daystock'):
 
 
   $sql=sprintf("select  id,stock,available,op_qty as qty ,product_id,UNIX_TIMESTAMP(op_date) as op_date,op_date as date ,op_id,op_tipo,value from stock_history  $where $wheref order by $order $order_direction limit $start_from,$number_results ");
-  //  print $sql;
+  //print $sql;
   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
   $adata=array();
   while($data=$res->fetchRow()) {
@@ -2055,6 +2042,10 @@ case('plot_daystock'):
   $response=array('resultset'=>
 		   array('state'=>200,
 			 'data'=>$adata,
+			 'sort_key'=>$_order,
+			 'sort_dir'=>$_dir,
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
 			 'total_records'=>$total,
 			 'records_offset'=>$start_from,
 			 'records_returned'=>$start_from+$res->numRows(),

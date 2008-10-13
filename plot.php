@@ -3,7 +3,7 @@ require_once 'common.php';
 $tipo='';
 if(isset($_REQUEST['tipo']))
   $tipo=$_REQUEST['tipo'];
-
+$title='';
 switch($tipo){
  case('sales_week'):
    $ar_address='ar_assets.php?tipo=plot_weeksales';
@@ -22,11 +22,12 @@ switch($tipo){
  $tipo_chart='ColumnChart';
    break;
  case('sales_month'):
+   $title=_("Sales per Month");
    $ar_address='ar_assets.php?tipo=plot_monthsales';
-   $fields='"asales","date","tip"';
-   $yfields=array(array('label'=>_('Sales'),'name'=>'asales','axis'=>'formatCurrencyAxisLabel','style'=>''));
+   $fields='"asales","date","tip_asales"';
+   $yfields=array(array('label'=>_('Sales'),'name'=>'asales','axis'=>'formatCurrencyAxisLabel','style'=>'size:10'));
    $xfield=array('label'=>_('Date'),'name'=>'date');
-   $style='size:10,lineSize:1';
+   $style='size:5,lineSize:1';
  $tipo_chart='ColumnChart';
     break;
  case('sales_year'):
@@ -38,6 +39,7 @@ switch($tipo){
  $tipo_chart='LineChart';
     break;
  case('out_week'):
+    $title=_("Outers sold per Week");
    $ar_address='ar_assets.php?tipo=plot_weekout';
    $fields='"tip","out","date"';
    $yfields=array(array('label'=>_('Outers'),'name'=>'out','axis'=>'formatNumberAxisLabel','style'=>''));
@@ -46,6 +48,7 @@ switch($tipo){
    $tipo_chart='LineChart';
    break;
  case('out_quarter'):
+    $title=_("Outers sold per Quarter");
    $ar_address='ar_assets.php?tipo=plot_quarterout';
    $fields='"tip","out","date"';
 		 $yfields=array(array('label'=>_('Outers'),'name'=>'out','axis'=>'formatNumberAxisLabel','style'=>''));
@@ -54,6 +57,7 @@ switch($tipo){
  $tipo_chart='ColumnChart';
    break;
  case('out_month'):
+   $title=_("Outers sold per Month");
    $ar_address='ar_assets.php?tipo=plot_monthout';
    $fields='"out","date","tip"';
 		  $yfields=array(array('label'=>_('Outers'),'name'=>'out','axis'=>'formatNumberAxisLabel'));
@@ -78,7 +82,7 @@ switch($tipo){
  $tipo_chart='CartesianChart';
     break;
  case('net_sales_month'):
-   $title="Total Net Sales per Month";
+   $title=_("Total Net Sales per Month");
    $ar_address='ar_orders.php?tipo=plot_monthsales';
    $fields='"sales","tip_sales","date"';
    $yfields=array(array('label'=>_('Month Net Sales'),'name'=>'sales','axis'=>'formatCurrencyAxisLabel','style'=>''));;
@@ -87,7 +91,7 @@ switch($tipo){
    $tipo_chart='LineChart';
    break;
  case('net_sales_gmonth'):
-   $title="Total Net Sales per Month (Group by month)";
+   $title=_("Total Net Sales per Month (Group by month)");
    $ar_address='ar_orders.php?tipo=plot_gmonthsales';
    $fields='"sales2004","sales2005","sales2006","sales2007","sales2008","tip_sales2004","tip_sales2005","tip_sales2006","tip_sales2007","tip_sales2008","date"';
    $yfields=array(

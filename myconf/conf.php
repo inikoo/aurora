@@ -127,6 +127,88 @@ $myconf=array(
 	      'data_since'=>'2004-06-14'
 	      );
 
+$default_state=array(
+		     'departments'=>array(
+					  'details'=>false,
+					  'view'=>'general',
+					  'table'=>array(
+							 'order'=>'name',
+							 'order_dir'=>'',
+							 'sf'=>0,
+							 'nr'=>200,
+							 )
+					  ),
+
+		     
+		     'department'=>array(
+				       'details'=>false,
+				       'view'=>'general',
+				       'id'=>1,
+				       'table'=>array(
+						      'order'=>'name',
+						      'order_dir'=>'',
+						      'sf'=>0,
+						      'nr'=>200,
+						      'where'=>'where true',
+						      'f_field'=>'id',
+						      'f_value'=>''
+
+						      )
+					 ),
+		     'family'=>array(
+				       'details'=>false,
+				       'view'=>'general',
+				       'id'=>1,
+				       'table'=>array(
+						      'order'=>'code',
+						      'order_dir'=>'',
+						      'sf'=>0,
+						      'nr'=>200,
+						      'where'=>'where true',
+						      'f_field'=>'id',
+						      'f_value'=>''
+
+						      )
+				     ),
+		      'product'=>array(
+				       'details'=>false,
+				       'plot'=>'sales_month',
+				       'id'=>1,
+				       'orders'=>array(
+						       'order'=>'date_index',
+						       'order_dir'=>'',
+						       'sf'=>0,
+						       'nr'=>15,
+						       'where'=>'where true',
+						       'f_field'=>'id',
+						       'f_value'=>''
+						       ),
+				       'customers'=>array(
+							  'order'=>'customer_name',
+							  'order_dir'=>'',
+							  'sf'=>0,
+							  'nr'=>15,
+							  'where'=>'where true',
+							  'f_field'=>'id',
+							  'f_value'=>''
+							  ),
+				       'stock_history'=>array(
+							      'order'=>'op_date',
+							      'order_dir'=>'',
+							      'sf'=>0,
+							      'nr'=>15,
+							      'where'=>'where true',
+							      'f_field'=>'id',
+							      'f_value'=>'',
+							      'from'=>'',
+							      'to'=>'',
+							      'elements'=>array()
+							      )
+				       
+
+
+					  )
+		     );
 
 
 

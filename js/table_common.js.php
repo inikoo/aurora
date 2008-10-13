@@ -13,7 +13,7 @@ var remove_filter= function (tableid){
 
 var myRowsPerPageDropdown = function(){return true};
 var mydoBeforeSortColumn = function(){return true};
-var mydoBeforePaginatorChange = function(){return true};
+var mydoBeforePaginatorChange = function(e){return true};
 var myhandleDataReturnPayload= function(oRequest, oResponse, oPayload) {
     oPayload = oPayload ||  {
 	totalRecords:0,
@@ -34,6 +34,8 @@ var myhandleDataReturnPayload= function(oRequest, oResponse, oPayload) {
     //    oPayload.sortedBy.key=oResponse.meta.sort_key;
     //oPayload.sortedBy.dir=oResponse.meta.sort_dir;
     oPayload.totalRecords = parseInt(oResponse.meta.totalRecords);
+
+
     return oPayload;
 };
 

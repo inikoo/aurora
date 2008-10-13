@@ -1,0 +1,200 @@
+<?
+include_once('../common.php');
+?>
+var Dom   = YAHOO.util.Dom;
+ var show_details=function(e,show){
+     if(show){
+	 Dom.get('details').style.display='';
+	 Dom.get('short_menu').style.display='none';
+	 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=departments-details&value=1');
+     }else{
+	 Dom.get('details').style.display='none';
+	 Dom.get('short_menu').style.display='';
+	 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=departments-details&value=0');
+     }
+
+ }
+
+
+    var change_view=function(e,tipo){
+
+	var table=tables['table0'];
+
+	//	alert(table.view+' '+tipo)
+	if(table.view!=tipo){
+	    if(tipo=='sales'){
+		table.showColumn('per_tsall');
+		table.showColumn('per_tsm');
+		
+		if(table.view=='general'){
+		    table.hideColumn('active');
+		    table.hideColumn('families');
+
+		}
+		if(table.view=='stock'){
+		    table.hideColumn('stock_value');
+		    table.hideColumn('stock_error');
+		    table.hideColumn('outofstock');
+		    table.showColumn('tsall');
+		    table.showColumn('tsm');
+		}
+		
+
+	    }
+	    if(tipo=='general'){
+		  table.showColumn('active');
+		    table.showColumn('families');
+		if(table.view=='sales'){
+		    table.hideColumn('per_tsall');
+		    table.hideColumn('per_tsm');
+		}
+		if(table.view=='stock'){
+		    table.hideColumn('stock_value');
+		    table.hideColumn('stock_error');
+		    table.hideColumn('outofstock');
+		    table.showColumn('tsall');
+		    table.showColumn('tsm');
+		    table.showColumn('active');
+		    table.showColumn('families');
+		}
+
+	    }
+	    if(tipo=='stock'){
+		if(table.view=='general'){
+		    table.hideColumn('tsall');
+		    table.hideColumn('tsm');
+		    table.hideColumn('active');
+		    table.hideColumn('families');
+		    table.showColumn('stock_value');
+		    table.showColumn('stock_error');
+		    table.showColumn('outofstock');
+		}
+		if(table.view=='sales'){
+		    table.hideColumn('tsall');
+		    table.hideColumn('tsm');
+		    table.hideColumn('per_tsall');
+		    table.hideColumn('per_tsm');
+		    table.showColumn('stock_value');
+		    table.showColumn('stock_error');
+		    table.showColumn('outofstock');
+		}
+
+	    }
+
+	}
+	Dom.get(table.view+'_view1').className="";
+	Dom.get(tipo+'_view1').className="selected";
+	Dom.get(table.view+'_view2').className="";
+	Dom.get(tipo+'_view2').className="selected";
+	table.view=tipo
+	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=departments-view&value=' + escape(tipo) );
+    }
+
+
+
+YAHOO.util.Event.addListener(window, "load", function() {
+    tables = new function() {
+
+	    this.departmentLink=  function(el, oRecord, oColumn, oData) {
+		var url="department.php?id="+oRecord.getData("id");
+		el.innerHTML = oData.link(url);
+	    }
+	    var tableid=0; // Change if you have more the 1 table
+	    var tableDivEL="table"+tableid;
+	    var OrdersColumnDefs = [ 
+				    {key:"name", label:"<?=_('Name')?>", width:200,sortable:true,formatter:this.departmentLink,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"families", label:"<?=_('Families')?>", width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"active", label:"<?=_('Products')?>",  width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"tsall", label:"<?=_('T S')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"per_tsall", label:"<?=_('T %S')?>", width:70,sortable:true,className:"aright",hidden:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"tsm", label:"<?=_('30d S')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"per_tsm", label:"<?=_('30d %S')?>", width:70,sortable:true,className:"aright",hidden:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"stock_value", label:"<?=_('Stk Value')?>", width:70,sortable:true,className:"aright",hidden:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"outofstock", label:"<?=_('Out of Stk ')?>", width:70,sortable:true,className:"aright",hidden:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"stock_error", label:"<?=_('Stk Error')?>", width:70,sortable:true,className:"aright",hidden:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+
+
+				     ];
+
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_assets.php?tipo=index");
+	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource0.connXhrMode = "queueRequests";
+	    this.dataSource0.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
+		},
+		
+		fields: [
+			 'id',
+			 "name",
+			 'families',
+			 'active',"tsall","tsq","tsy","tsm","per_tsall","per_tsm","stock_error","stock_value","outofstock"
+			 ]};
+	    
+	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
+						     this.dataSource0, {
+							 //draggableColumns:true,
+							   renderLoopSize: 50,generateRequest : myRequestBuilder
+								       ,paginator : new YAHOO.widget.Paginator({
+									      rowsPerPage:<?=$_SESSION['tables']['departments_list'][2]?>,containers : 'paginator', 
+ 									      pageReportTemplate : '(<?=_('Page')?> {currentPage} <?=_('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+									  })
+								     
+								     ,sortedBy : {
+									 key: "<?=$_SESSION['tables']['departments_list'][0]?>",
+									 dir: "<?=$_SESSION['tables']['departments_list'][1]?>"
+								     }
+							   ,dynamicData : true
+
+						     }
+						     );
+	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
+
+
+	    
+	    this.table0.view='<?=$_SESSION['state']['departments']['view']?>';
+
+		
+
+
+
+
+
+	};
+    });
+
+
+ function init(){
+ var Dom   = YAHOO.util.Dom;
+
+
+
+ YAHOO.util.Event.addListener('sales_view1', "click",change_view,'sales')
+ YAHOO.util.Event.addListener('general_view1', "click",change_view,'general')
+ YAHOO.util.Event.addListener('stock_view1', "click",change_view,'stock')
+ YAHOO.util.Event.addListener('sales_view2', "click",change_view,'sales')
+ YAHOO.util.Event.addListener('general_view2', "click",change_view,'general')
+ YAHOO.util.Event.addListener('stock_view2', "click",change_view,'stock')
+
+ YAHOO.util.Event.addListener('show_details', "click",show_details,true)
+ YAHOO.util.Event.addListener('hide_details', "click",show_details,false)
+
+
+
+ }
+
+YAHOO.util.Event.onDOMReady(init);
+

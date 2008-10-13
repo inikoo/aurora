@@ -205,11 +205,11 @@ if(!isset($_SESSION['tables']) ){
 
 			    );
  }
-if(isset($_SESSION['views'])){
+if(!isset($_SESSION['views'])){
   $_SESSION['views']=array(
+			   'departments'=>array('detail'=>false,'view'=>'general'),
 			   'edit_products_block'=>'description',
 			   'assets'=>'dept',
-			   'assets_view'=>'general',
 			   'product_plot'=>'sales_week',
 			   'sales_plot'=>'net_sales_month',
 			   'product_blocks'=>array(0,1,1,0,1,0),
@@ -227,8 +227,8 @@ if(isset($_SESSION['views'])){
 
 
 
-
-
+if(!isset($_SESSION['state']))
+  $_SESSION['state']=$default_state;
 
 
 
@@ -258,7 +258,7 @@ if($LU->checkRight(ORDER_VIEW))
 $nav_menu[] = array(_('Orders'), 'orders.php');
 if($LU->checkRight(CUST_VIEW))
   $nav_menu[] = array(_('Customers'), 'customers.php');
-$nav_menu[] = array(_('Products'), 'assets_tree.php');
+$nav_menu[] = array(_('Products'), 'departments.php');
 $nav_menu[] = array(_('Home'), 'index.php');
 
 $smarty->assign('nav_menu',$nav_menu);

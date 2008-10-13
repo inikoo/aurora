@@ -1,8 +1,5 @@
 <?include_once('../common.php');?>
 
-YAHOO.namespace ("families"); 
-YAHOO.families.editmode=false;
-YAHOO.families.view=<?=$_SESSION['views']['assets_tables']?>;
 
 
 

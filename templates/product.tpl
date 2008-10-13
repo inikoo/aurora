@@ -5,13 +5,13 @@
 <div id="bd" >
 
 <div id="sub_header">
-{if $next.id>0}<span class="nav2 onright"><a href="assets_product.php?id={$next.id}">{t}Next{/t}</a></span>{/if}
-{if $prev.id>0}<span class="nav2 onright" ><a href="assets_product.php?id={$prev.id}">{t}Previous{/t}</a></span>{/if}
-<span class="nav2 onright" style="margin-left:20px"><a href="assets_family.php?id={$family_id}">{t}Up{/t}</a></span>
-<span class="nav2 onright"><a href="assets_index.php">{t}Product index{/t}</a></span>
-<span class="nav2"><a href="assets_tree.php">{$home}</a></span>
-<span class="nav2"><a href="assets_department.php?id={$department_id}">{$department}</a></span>
-<span class="nav2"><a href="assets_family.php?id={$family_id}">{$family}</a></span>
+{if $next.id>0}<span class="nav2 onright"><a href="product.php?id={$next.id}">{t}Next{/t}</a></span>{/if}
+{if $prev.id>0}<span class="nav2 onright" ><a href="product.php?id={$prev.id}">{t}Previous{/t}</a></span>{/if}
+<span class="nav2 onright" style="margin-left:20px"><a href="family.php?id={$family_id}">{t}Up{/t}</a></span>
+<span class="nav2 onright"><a href="products.php">{t}Product index{/t}</a></span>
+<span class="nav2"><a href="departments.php">{$home}</a></span>
+<span class="nav2"><a href="department.php?id={$department_id}">{$department}</a></span>
+<span class="nav2"><a href="family.php?id={$family_id}">{$family}</a></span>
 </div>
 <div id="doc3" style="clear:both;" class="yui-g yui-t4" >
 <div id="yui-main"> 
@@ -341,30 +341,34 @@
 
 
 {if $view_orders} 
-<div   id="block1" {if $hide[1]==1} style="display:none"{/if}    > 
-<div class="data_table" style="margin-top:25px">
-{include file='table.tpl'     table_id=0 table_title=$t_title0 filter=$filter filter_name=$filter_name}
-<div  id="table0"   class="data_table_container dtable btable "> </div>
-</div>
-</div>
-{/if}
-
-{if $view_cust} 
-<div id="block2" {if $hide[2]==1} style="display:none"{/if}    >
-<div class="data_table" style="margin-top:25px">
-{include file='table.tpl'    table_id=1 table_title=$t_title1  filter=$filter2 filter_name=$filter_name2}
-<div  id="table1"   class="data_table_container dtable btable "> </div>
-</div>
+<div  id="block1" class="data_table" style="{if $hide.orders==1}display:none;{/if}clear:both;margin:25px 20px">
+  <span id="table_title" class="clean_table_title">{t}{$table_title_orders}{/t}</span>
+  <div  class="clean_table_caption"  style="clear:both;">
+    <div style="float:left;"><div id="table_info0" class="clean_table_info">{$table_info} <span class="filter_msg"  id="filter_msg0"></span></div></div>
+    <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator">{t}Showing all orders{/t}</span></div></div>
+  </div>
+  <div  id="table0"   class="data_table_container dtable btable "> </div>
 </div>
 {/if}
 
-
-
-{if $view_stock} 
-<div id="block4" {if $hide[4]==1} style="display:none"{/if}     >  
-{include file='table.tpl'  dates=1 table_id=2 table_title=$t_title2  options=$stock_table_options options_status=$stock_table_options_tipo  }
-<div  id="table2"   class="data_table_container dtable btable "> </div>
+{if $view_customers} 
+<div  id="block2" class="data_table" style="{if $hide.customers==1}display:none;{/if}clear:both;margin:25px 20px">
+  <span id="table_title" class="clean_table_title">{t}{$table_title_customers}{/t}</span>
+  <div  class="clean_table_caption"  style="clear:both;">
+    <div style="float:left;"><div id="table_info1" class="clean_table_info">{$table_info} <span class="filter_msg"  id="filter_msg1"></span></div></div>
+    <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator">{t}Showing all customers{/t}</span></div></div>
+  </div>
+  <div  id="table1"   class="data_table_container dtable btable "> </div>
 </div>
+{/if}
+{if $view_stock}
+<div  id="block3" class="data_table" style="{if $hide.stock==1}display:none;{/if}clear:both;margin:25px 20px">
+  <span id="table_title" class="clean_table_title">{t}{$table_title_stock}{/t}</span>
+  <div  class="clean_table_caption"  style="clear:both;">
+    <div style="float:left;"><div id="table_info2" class="clean_table_info">{$table_info} <span class="filter_msg"  id="filter_msg2"></span></div></div>
+    <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator">{t}Showing all records{/t}</span></div></div>
+  </div>
+  <div  id="table2"   class="data_table_container dtable btable "> </div>
 </div>
 {/if}
 

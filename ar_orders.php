@@ -787,30 +787,56 @@ case('changesalesplot'):
    break;
 
  case('withproduct'):
+
+   $conf=$_SESSION['state']['product']['orders'];
+   $product_id=$_SESSION['state']['product']['id'];
+
  if(isset( $_REQUEST['sf']))
      $start_from=$_REQUEST['sf'];
    else
-     $start_from=$_SESSION['tables']['order_withprod'][3];
+     $start_from=$conf['sf'];
    if(isset( $_REQUEST['nr']))
      $number_results=$_REQUEST['nr'];
    else
-     $number_results=$_SESSION['tables']['order_withprod'][2];
+     $number_results=$conf['nr'];
    if(isset( $_REQUEST['o']))
      $order=$_REQUEST['o'];
    else
-     $order=$_SESSION['tables']['order_withprod'][0];
+    $order=$conf['order'];
    if(isset( $_REQUEST['od']))
      $order_dir=$_REQUEST['od'];
    else
-     $order_dir=$_SESSION['tables']['order_withprod'][1];
+     $order_dir=$conf['order_dir'];
+   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+   if(isset( $_REQUEST['where']))
+     $where=addslashes($_REQUEST['where']);
+   else
+     $where=$conf['where'];
    
-   $product_id=$_SESSION['tables']['order_withprod'][4];
+   if(isset( $_REQUEST['f_field']))
+     $f_field=$_REQUEST['f_field'];
+   else
+     $f_field=$conf['f_field'];
+
+  if(isset( $_REQUEST['f_value']))
+     $f_value=$_REQUEST['f_value'];
+   else
+     $f_value=$conf['f_value'];
+if(isset( $_REQUEST['tableid']))
+    $tableid=$_REQUEST['tableid'];
+  else
+    $tableid=0;
+
 
 
    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
    
 
-   $_SESSION['tables']['order_withprod']=array($order,$order_direction,$number_results,$start_from,$product_id);
+   $_SESSION['state']['product']['orders']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+   $_order=$order;
+   $_dir=$order_direction;
+   $filter_msg='';
+
 
    $where=sprintf(" where product_id=%d ",$product_id);
    $wheref="";
@@ -892,64 +918,65 @@ case('changesalesplot'):
    break;
 
  case('withcustomerproduct'):
-
    if(!$LU->checkRight(CUST_VIEW))
      exit;
- if(isset( $_REQUEST['sf']))
-     $start_from=$_REQUEST['sf'];
-   else
-     $start_from=$_SESSION['tables']['order_withcustprod'][3];
-   if(isset( $_REQUEST['nr']))
-     $number_results=$_REQUEST['nr'];
-   else
-     $number_results=$_SESSION['tables']['order_withcustprod'][2];
-   if(isset( $_REQUEST['o']))
-     $order=$_REQUEST['o'];
-   else
-     $order=$_SESSION['tables']['order_withcustprod'][0];
-   if(isset( $_REQUEST['od']))
-     $order_dir=$_REQUEST['od'];
-   else
-     $order_dir=$_SESSION['tables']['order_withcustprod'][1];
-   
 
+   $conf=$_SESSION['state']['product']['customers'];
+   $product_id=$_SESSION['state']['product']['id'];
+   
    if(isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id']))
      $product_id=$_REQUEST['id'];
    else
-     $product_id=$_SESSION['tables']['order_withcustprod'][4];
+     $product_id=$_SESSION['state']['product']['id'];
 
-
-
-      if(isset( $_REQUEST['where']))
+   if(isset( $_REQUEST['sf']))
+     $start_from=$_REQUEST['sf'];
+   else
+     $start_from=$conf['sf'];
+   if(isset( $_REQUEST['nr']))
+     $number_results=$_REQUEST['nr'];
+   else
+     $number_results=$conf['nr'];
+   if(isset( $_REQUEST['o']))
+     $order=$_REQUEST['o'];
+   else
+    $order=$conf['order'];
+   if(isset( $_REQUEST['od']))
+     $order_dir=$_REQUEST['od'];
+   else
+     $order_dir=$conf['order_dir'];
+   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+   if(isset( $_REQUEST['where']))
      $where=addslashes($_REQUEST['where']);
    else
-     $where=$_SESSION['tables']['order_withcustprod'][5];
-
-    
+     $where=$conf['where'];
+   
    if(isset( $_REQUEST['f_field']))
      $f_field=$_REQUEST['f_field'];
    else
-     $f_field=$_SESSION['tables']['order_withcustprod'][6];
+     $f_field=$conf['f_field'];
 
   if(isset( $_REQUEST['f_value']))
      $f_value=$_REQUEST['f_value'];
    else
-     $f_value=$_SESSION['tables']['order_withcustprod'][7];
-
-
- if(isset( $_REQUEST['tableid']))
+     $f_value=$conf['f_value'];
+if(isset( $_REQUEST['tableid']))
     $tableid=$_REQUEST['tableid'];
   else
     $tableid=0;
 
 
 
+
    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
    
 
-   $_SESSION['tables']['order_withcustprod']=array($order,$order_direction,$number_results,$start_from,$product_id,$where,$f_field,$f_value);
+  $_SESSION['state']['product']['custumers']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+   $_order=$order;
+   $_dir=$order_direction;
+   $filter_msg='';
 
-   $where=sprintf(" where product_id=%d ",$product_id).$where;
+   $where=$where.sprintf(" and product_id=%d ",$product_id);
    $wheref="";
    
   if($f_field=='max' and is_numeric($f_value) )
@@ -961,7 +988,7 @@ case('changesalesplot'):
 
 
    $sql="select count(distinct customer_id) as total from  orden left join transaction on (order_id=orden.id)  $where $wheref";
-   //   print "$sql";
+   //      print "$sql";
    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
    if($row=$res->fetchRow()) {
      $total=$row['total'];
@@ -999,10 +1026,10 @@ case('changesalesplot'):
 
 
 
-   $sql=sprintf("select count(distinct o.id) as orders ,o.customer_name,o.tipo,customer_id, sum(if(o.tipo=2,charge,0)) as charged, sum(if(o.tipo=2,dispached,0)) as dispached, sum(if(o.tipo=2,(ordered-dispached),0)) as nodispached , sum(if(o.tipo=1,(ordered-dispached),0))  as todispach from orden as o  left join transaction on (order_id=o.id)  $where $wheref  group by customer_id    order by $order $order_direction  limit $start_from,$number_results "
+   $sql=sprintf("select count(distinct o.id) as orders ,customer.name as customer_name,o.tipo,customer_id, sum(if(o.tipo=2,charge,0)) as charged, sum(if(o.tipo=2,dispached,0)) as dispached, sum(if(o.tipo=2,(ordered-dispached),0)) as nodispached , sum(if(o.tipo=1,(ordered-dispached),0))  as todispach from orden as o  left join transaction on (order_id=o.id) left join customer on (customer.id=customer_id) $where $wheref  group by customer_id    order by $order $order_direction  limit $start_from,$number_results "
 		);
 
-   //    print "$sql\n";
+   //     print "$sql\n";
       $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
    $data=array();
    while($row=$res->fetchRow()) {

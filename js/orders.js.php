@@ -93,7 +93,6 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
 	    this.table0.filter={key:'<?=$_SESSION['tables']['order_list'][5]?>',value:'<?=$_SESSION['tables']['order_list'][6]?>'};
 
-
 	    
 	};
     });
