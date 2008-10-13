@@ -128,7 +128,20 @@ $myconf=array(
 	      );
 
 $default_state=array(
-		     
+		      'orders'=>array(
+						  'from'=>'',
+						  'to'=>'',	  
+						  'table'=>array(
+								 'order'=>'date_index',
+								 'order_dir'=>'',
+								 'sf'=>0,
+								 'nr'=>25,
+								 'where'=>'where true',
+								 'f_field'=>'customer_name',
+								 'f_value'=>'',
+								 'elements'=>array()
+						   )
+				    ),
 		       'report_outofstock'=>array(
 						  'from'=>'',
 						  'to'=>'',	  
