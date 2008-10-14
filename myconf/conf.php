@@ -168,13 +168,13 @@ $default_state=array(
 						   'f_value'=>''
 						   )
 				    ),
-		     'staff'=>array(
-				    'table'=>array(
+		     'hr'=>array(
+				    'staff'=>array(
 						   'order'=>'alias',
 						   'order_dir'=>'',
 						   'sf'=>0,
 						   'nr'=>50,
-						   'where'=>'where true',
+						   'where'=>'where active=1',
 						   'f_field'=>'alias',
 						   'f_value'=>''
 						   )

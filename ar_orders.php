@@ -150,6 +150,80 @@ case('plot_monthsales'):
 
  break;
 
+case('plot_weeksales'):
+
+  $from='2004-07-01';
+  $sql="select  yearweek,first_day from list_week where  first_day>'$from' and first_day<NOW()";
+  $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   while($row=$res->fetchRow()) {
+     $_data[$row['yearweek']]=array('sales'=>0,'tip_sales'=>'','date'=>$row['yearweek']);
+   }
+
+  $sql="SELECT yearweek(date_index) AS dd, COUNT(id) as orders ,sum(net) as sales FROM orden where tipo=2 and date_index>'$from'  GROUP BY dd";
+  //  print $sql;  
+ $data=array();
+ $prev_week='';
+ $prev_year=array();
+  $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   while($row=$res->fetchRow()) {
+     if(is_numeric($prev_week)){
+       $diff=$row['sales']-$prev_week;
+       $diff_prev_week=percentage($diff,$prev_week,1,'NA','%',true)." "._('change (previous week)')."\n";
+       //       print $row['sales']."---------  $prev_month ----------    $diff_prev_month   <br >";
+     }else
+       $diff_prev_week='';
+     $diff_prev_year='';
+ //      if(isset($prev_year[$row['month']])){
+// 	$diff=$row['sales']-$prev_year[$row['month']];
+// 	$diff_prev_year=percentage($diff,$prev_year[$row['month']],1,'NA','%',true)." "._('change (last year)')."\n";
+// 	//	 print $row['sales']."------ ---  ".$prev_year[$row['month']]." ----- $diff  -----    $diff_prev_year   <br >";
+//       }else{
+// 	//	print $row['sales']."  <br >";
+// 	$diff_prev_year='';
+//       }
+
+   //    $credits=0;//$row['credits'];
+//       $outstoke_value=0;//=$row['outstock'];
+//       $losses=$credits+$outstoke_value;
+//       $percentage_losses=percentage($losses,$row['sales']);
+
+     //    $tip=_('Sales')." ".strftime("%B %Y", strtotime('@'.$row['date']))."\n".money($row['sales'])."\n".$diff_prev_month.$diff_prev_year."(".$row['invoices']." "._('Orders').")";
+//       $tip_losses=_('Lost Sales')." ".strftime("%B %Y", strtotime('@'.$row['date']))."\n".money($losses)." ($percentage_losses)".($credits>0?"\n".money($credits)." "._('due to refund/credits'):"").($outstoke_value>0?"\n".money($outstoke_value)." "._('due to out of stock'):"");
+     $tip=$row['dd'];
+     $_data[$row['dd']]=array(
+			     'tip_sales'=>$tip,
+			     //'tip_losses'=>$tip_losses,
+			     'sales'=>(float) $row['sales'],
+			     //'losses'=>$losses,
+			     'date'=>$row['dd']//strftime("%m/%y", strtotime('@'.$row['date']))
+			     );
+   // $prev_month=$row['sales'];
+   //  $prev_year[$row['month']]=$row['sales'];
+   }
+   $data=array();
+   $i=0;
+   foreach($_data as $__data){
+     $data[]=$__data;
+     print $i++." ".$__data['sales']."\n";
+   }
+
+
+
+ $response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$data,
+			 )
+		   );
+
+
+
+ // echo json_encode($response);
+// echo '{"resultset":{"state":200,"data":{"tip":"Sales October 2008\n\u00a329,085.85\n-87.4% change (last month)\n-89.5% change (last year)\n(240 Orders)","tip_losses":"Lost Sales October 2008\n\u00a30.00 (0.0%)","sales":"34429","losses":0,"date":"10-2008"}}}';
+
+ break;
+
+
+
 case('plot_gmonthsales'):
   $number_years=4;
   $from='2004-07-00';

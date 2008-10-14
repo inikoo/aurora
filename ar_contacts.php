@@ -401,67 +401,57 @@ from contact     $where $wheref order by $order $order_direction limit $start_fr
    // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
  case('staff'):
 
+   
+  $conf=$_SESSION['state']['hr']['staff'];
   if(isset( $_REQUEST['sf']))
-    $start_from=$_REQUEST['sf'];
-  else
-    $start_from=$_SESSION['tables']['staff_list'][3];
-  if(isset( $_REQUEST['nr']))
-    $number_results=$_REQUEST['nr'];
-  else
-    $number_results=$_SESSION['tables']['staff_list'][2];
+     $start_from=$_REQUEST['sf'];
+   else
+     $start_from=$conf['sf'];
+   if(isset( $_REQUEST['nr']))
+     $number_results=$_REQUEST['nr'];
+   else
+     $number_results=$conf['nr'];
   if(isset( $_REQUEST['o']))
     $order=$_REQUEST['o'];
   else
-    $order=$_SESSION['tables']['staff_list'][0];
+    $order=$conf['order'];
   if(isset( $_REQUEST['od']))
     $order_dir=$_REQUEST['od'];
   else
-    $order_dir=$_SESSION['tables']['staff_list'][1];
-  $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-
-
-   if(isset( $_REQUEST['where']))
-     $where=addslashes($_REQUEST['where']);
-   else
-     $where=$_SESSION['tables']['staff_list'][4];
-
-    
-   if(isset( $_REQUEST['f_field']))
+    $order_dir=$conf['order_dir'];
+    if(isset( $_REQUEST['f_field']))
      $f_field=$_REQUEST['f_field'];
    else
-     $f_field=$_SESSION['tables']['staff_list'][5];
+     $f_field=$conf['f_field'];
 
   if(isset( $_REQUEST['f_value']))
      $f_value=$_REQUEST['f_value'];
    else
-     $f_value=$_SESSION['tables']['staff_list'][6];
+     $f_value=$conf['f_value'];
+  if(isset( $_REQUEST['where']))
+     $where=$_REQUEST['where'];
+   else
+     $where=$conf['where'];
+  
+   if(isset( $_REQUEST['tableid']))
+    $tableid=$_REQUEST['tableid'];
+  else
+    $tableid=0;
+
+ $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+   $_order=$order;
+   $_dir=$order_direction;
 
 
 
-
-  //  print_r($_SESSION['tables']['staff_list']);
+  $_SESSION['state']['hr']['staff']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+   
 
   $wheref='';
-
-  if(($f_field=='cu.name'  or  $f_field=='id' or  $f_field=='id2'  or  $f_field=='id3'  )  and $f_value!=''){
-      $wheref="  and  ".$f_field." like '".addslashes($f_value)."%'";
-  }
-  else if($f_field=='maxdesde' and is_numeric($f_value) )
-    $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(last_order))<=".$f_value."    ";
-  else if($f_field=='mindesde' and is_numeric($f_value) )
-    $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(last_order))>=".$f_value."    ";
-  else if($f_field=='max' and is_numeric($f_value) )
-    $wheref.=" and  orders<=".$f_value."    ";
-  else if($f_field=='min' and is_numeric($f_value) )
-    $wheref.=" and  orders>=".$f_value."    ";
-  else if($f_field=='maxvalue' and is_numeric($f_value) )
-    $wheref.=" and  total<=".$f_value."    ";
-  else if($f_field=='minvalue' and is_numeric($f_value) )
-    $wheref.=" and  total>=".$f_value."    ";
+  //  if($f_field=='minvalue' and is_numeric($f_value) )
+  //  $wheref.=" and  total>=".$f_value."    ";
 
 
-
-   $_SESSION['tables']['staff_list']=array($order,$order_direction,$number_results,$start_from,$where,$f_field,$f_value);
 
 
    $sql="select count(*) as total from staff  $where $wheref";
@@ -470,7 +460,7 @@ from contact     $where $wheref order by $order $order_direction limit $start_fr
    if($row=$res->fetchRow()) {
      $total=$row['total'];
    }if($wheref!=''){
-     $sql="select count(*) as total from staff  as cu $where ";
+     $sql="select count(*) as total from staff   $where ";
      $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
      if($row=$res->fetchRow()) {
        $filtered=$row['total']-$total;
@@ -480,35 +470,34 @@ from contact     $where $wheref order by $order $order_direction limit $start_fr
      $filtered=0;
 
 
-   if($total==0)
-     $rtext=_('No staff member register yet').'.';
-   else if($total<$number_results)
-    $rtext=$total.' '.ngettext('staff member','staff members',$total);
-  else
-     $rtext='';
+   $filter_msg='';
 
-   $sql="select staff.id , staff.alias from staff   $where $wheref order by $order $order_direction limit $start_from,$number_results";
-   //   print "$sql";
-  $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   $sql="select staff.id , staff.alias,name,area_id,department_id from staff left join contact on (contact_id=contact.id)  $where $wheref order by $order $order_direction limit $start_from,$number_results";
+   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   $adata=array();
+   while($data=$res->fetchRow()) {
+     $adata[]=array(
+		    'id'=>$data['id'],
+		    'alias'=>$data['alias'],
+		    'name'=>$data['name'],
+		    'department'=>$_company_department_tipo[$data['department_id']],
+		    'area'=>$_company_area_tipo[$data['area_id']]
 
-  $adata=array();
-  
-  while($data=$res->fetchRow()) {
-    $adata[]=array(
-		   'id'=>$data['id'],
-		   'alias'=>$data['alias']
-
-      
-		   );
+		    
+		    );
   }
-  $response=array('resultset'=>
+   $response=array('resultset'=>
 		   array('state'=>200,
 			 'data'=>$adata,
+			 'sort_key'=>$_order,
+			 'sort_dir'=>$_dir,
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
 			 'total_records'=>$total,
 			 'records_offset'=>$start_from,
 			 'records_returned'=>$start_from+$res->numRows(),
 			 'records_perpage'=>$number_results,
-			 'records_text'=>$rtext,
+
 			 'records_order'=>$order,
 			 'records_order_dir'=>$order_dir,
 			 'filtered'=>$filtered

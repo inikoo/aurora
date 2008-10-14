@@ -1,5 +1,5 @@
 <?
-$link = mysql_connect('localhost', 'root', 'ajolote11')
+$link = mysql_connect('localhost', 'root', 'ajolote1')
   or die('Could not connect: ' . mysql_error());
 mysql_select_db('aw') or die('Could not select database');
 
@@ -130,6 +130,19 @@ $res.="\$_porder_tipo['3']=_('Cancelled');\n";
 $res.="\$_product_tipo['0']=_('Active');\n";
 $res.="\$_product_tipo['1']=_('Discontinued');\n";
 $res.="\$_product_tipo['2']=_('Unique');\n";
+
+$res.="\$_company_area_tipo['0']=_('Office');\n";
+$res.="\$_company_area_tipo['1']=_('Warehouse');\n";
+$res.="\$_company_area_tipo['2']=_('Production');\n";
+
+$res.="\$_company_department_tipo['0']=_('Customer Services');\n";
+$res.="\$_company_department_tipo['1']=_('Stock Control');\n";
+$res.="\$_company_department_tipo['2']=_('Production');\n";
+$res.="\$_company_department_tipo['3']=_('Information Technologies');\n";
+$res.="\$_company_department_tipo['4']=_('Picking & Packing');\n";
+$res.="\$_company_department_tipo['5']=_('Marketing');\n";
+$res.="\$_company_department_tipo['6']=_('Direction');\n";
+
 
 
 $res.="\$_stockop_tipo['0']=_('Inventory');\n";

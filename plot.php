@@ -90,6 +90,16 @@ switch($tipo){
    $style='';
    $tipo_chart='LineChart';
    break;
+ case('net_sales_week'):
+   $title=_("Total Net Sales per Week");
+   $ar_address='ar_orders.php?tipo=plot_weeksales';
+   $fields='"sales","tip_sales","date"';
+   $yfields=array(array('label'=>_('Week Net Sales'),'name'=>'sales','axis'=>'formatCurrencyAxisLabel','style'=>'size:3'));;
+   $xfield=array('label'=>_('Date'),'name'=>'date');
+   $style='';
+   $tipo_chart='LineChart';
+   break;
+
  case('net_sales_gmonth'):
    $title=_("Total Net Sales per Month (Group by month)");
    $ar_address='ar_orders.php?tipo=plot_gmonthsales';
