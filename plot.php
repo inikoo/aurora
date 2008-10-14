@@ -5,7 +5,7 @@ if(isset($_REQUEST['tipo']))
   $tipo=$_REQUEST['tipo'];
 $title='';
 switch($tipo){
- case('sales_week'):
+ case('product_week_sales'):
    $ar_address='ar_assets.php?tipo=plot_weeksales';
    $fields='"tip","asales","date"';
    $yfields=array(array('label'=>_('Sales'),'name'=>'asales','axis'=>'formatCurrencyAxisLabel','style'=>''));
@@ -13,7 +13,7 @@ switch($tipo){
    $style='size:10,lineSize:1';
    $tipo_chart='ColumnChart';
    break;
- case('sales_quarter'):
+ case('product_quarter_sales'):
    $ar_address='ar_assets.php?tipo=plot_quartersales';
    $fields='"tip","asales","date"';
    $yfields=array(array('label'=>_('Sales'),'name'=>'asales','axis'=>'formatCurrencyAxisLabel','style'=>''));
@@ -21,7 +21,7 @@ switch($tipo){
    $style='size:20,lineSize:1';
  $tipo_chart='ColumnChart';
    break;
- case('sales_month'):
+ case('product_month_sales'):
    $title=_("Sales per Month");
    $ar_address='ar_assets.php?tipo=plot_monthsales';
    $fields='"asales","date","tip_asales"';
@@ -30,7 +30,7 @@ switch($tipo){
    $style='size:5,lineSize:1';
  $tipo_chart='ColumnChart';
     break;
- case('sales_year'):
+ case('product_year_sales'):
    $ar_address='ar_assets.php?tipo=plot_yearsales';
    $fields='"asales","date","tip"';
    $yfields=array(array('label'=>_('Sales'),'name'=>'asales','axis'=>'formatCurrencyAxisLabel','style'=>''));
@@ -38,7 +38,7 @@ switch($tipo){
    $style='size:10,lineSize:1';
  $tipo_chart='LineChart';
     break;
- case('out_week'):
+ case('product_week_outers'):
     $title=_("Outers sold per Week");
    $ar_address='ar_assets.php?tipo=plot_weekout';
    $fields='"tip","out","date"';
@@ -47,7 +47,7 @@ switch($tipo){
    $style='size:4,lineSize:1';
    $tipo_chart='LineChart';
    break;
- case('out_quarter'):
+ case('product_quarter_outers'):
     $title=_("Outers sold per Quarter");
    $ar_address='ar_assets.php?tipo=plot_quarterout';
    $fields='"tip","out","date"';
@@ -56,7 +56,7 @@ switch($tipo){
    $style='size:20,lineSize:1';
  $tipo_chart='ColumnChart';
    break;
- case('out_month'):
+ case('product_month_outers'):
    $title=_("Outers sold per Month");
    $ar_address='ar_assets.php?tipo=plot_monthout';
    $fields='"out","date","tip"';
@@ -65,7 +65,7 @@ switch($tipo){
    $style='size:10,lineSize:1';
  $tipo_chart='ColumnChart';
     break;
- case('out_year'):
+ case('product_month_year'):
    $ar_address='ar_assets.php?tipo=plot_yearout';
    $fields='"out","date","tip"';
    $yfields=array(array('label'=>_('Outers'),'name'=>'out','axis'=>'formatNumberAxisLabel','style'=>''));
@@ -73,7 +73,7 @@ switch($tipo){
    $style='size:10,lineSize:1';
  $tipo_chart='LineChart';
     break;
- case('stock_day'):
+ case('product_stock_day'):
    $ar_address='ar_assets.php?tipo=plot_daystock';
    $fields='"stock","day","tip"';
 		  $yfields=array(array('label'=>_('Outers'),'name'=>'stock','axis'=>'formatNumberAxisLabel','style'=>''));
@@ -81,7 +81,7 @@ switch($tipo){
    $style='size:5,lineSize:1';
  $tipo_chart='CartesianChart';
     break;
- case('net_sales_month'):
+ case('total_sales_month'):
    $title=_("Total Net Sales per Month");
    $ar_address='ar_orders.php?tipo=plot_monthsales';
    $fields='"sales","tip_sales","date"';
@@ -90,7 +90,7 @@ switch($tipo){
    $style='';
    $tipo_chart='LineChart';
    break;
- case('net_sales_week'):
+ case('total_sales_week'):
    $title=_("Total Net Sales per Week");
    $ar_address='ar_orders.php?tipo=plot_weeksales';
    $fields='"sales","tip_sales","date"';
@@ -100,7 +100,7 @@ switch($tipo){
    $tipo_chart='LineChart';
    break;
 
- case('net_sales_gmonth'):
+ case('total_sales_gmonth'):
    $title=_("Total Net Sales per Month (Group by month)");
    $ar_address='ar_orders.php?tipo=plot_gmonthsales';
    $fields='"sales2004","sales2005","sales2006","sales2007","sales2008","tip_sales2004","tip_sales2005","tip_sales2006","tip_sales2007","tip_sales2008","date"';
@@ -118,7 +118,7 @@ switch($tipo){
    $style='legend:{display: "bottom"}';
    $tipo_chart='ColumnChart';
    break;
- case('plot_month_outofstock'):
+ case('total_outofstock_month'):
    $title="Percentage of products (& Picks) marked as out of stock per month";
    $ar_address='ar_orders.php?tipo=plot_month_outofstock';
    $fields='"per_product_outstock","per_picks_outstock","tip_per_product_outstock","tip_per_picks_outstock","date"';

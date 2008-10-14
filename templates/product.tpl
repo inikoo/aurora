@@ -185,30 +185,30 @@
       <table border=0 class="plot_menu" style="margin-top:30px">
 	<tr class="top">
 	  <td class="left"></td>
-	  <td  ><img src="art/icons/calendar_view_week.png" title="{t}Weekly{/t}"/></td>
+	  <td ><img src="art/icons/calendar_view_week.png" title="{t}Weekly{/t}"/></td>
 	  <td><img src="art/icons/calendar_view_month.png" title="{t}Monthy{/t}"/></td>
 	  <td><img src="art/icons/calendar_view_quarter.png" title="{t}Quarterly{/t}"/></td>
 	  <td><img src="art/icons/calendar_view_year.png" title="{t}Yearly{/t}"/></td>
 	    <tr>
 	      <td class="left"><img src="art/icons/money.png" title="{t}Net Sales{/t}"/></td>
-	      <td><img id="plot_sales_week" class="opaque"  src="art/icons/chart_line.png" title="{t}Sales per week{/t}"/></td>
-	      <td><img id="plot_sales_month" class="opaque" src="art/icons/chart_bar.png" title="{t}Sales per month{/t}"/></td>
-	      <td><img id="plot_sales_quarter" class="opaque" src="art/icons/chart_bar.png" title="{t}Sales per quarter{/t}"/></td>
-	      <td><img id="plot_sales_year"class="opaque" src="art/icons/chart_line.png" title="{t}Sales per year{/t}"/></td>
+	      <td><img id="product_week_sales"   class="{if $plot_tipo=='product_week_sales'}selected{else}opaque{/if}" src="art/icons/chart_line.png" title="{t}Sales per week{/t}"/></td>
+	      <td><img id="product_month_sales" class="{if $plot_tipo=='product_month_sales'}selected{else}opaque{/if}" src="art/icons/chart_bar.png" title="{t}Sales per month{/t}"/></td>
+	      <td><img id="product_quarter_sales"   class="{if $plot_tipo=='product_quarter_sales'}selected{else}opaque{/if}" src="art/icons/chart_bar.png" title="{t}Sales per quarter{/t}"/></td>
+	      <td><img id="product_year_sales"   class="{if $plot_tipo=='product_year_sales'}selected{else}opaque{/if}" src="art/icons/chart_line.png" title="{t}Sales per year{/t}"/></td>
 	      
 	      <td></td>
 	    </tr>
 	<tr>
 	  <td class="left"><img src="art/icons/basket.png" title="{t}Outers Sold{/t}"/></td>
-	      <td><img id="plot_out_week" class="opaque" src="art/icons/chart_line.png" title="{t}Outers sold per month{/t}"/></td>
-	  <td><img id="plot_out_month" class="opaque" src="art/icons/chart_bar.png" title="{t}Outers sold per month{/t}"/></td>
-	  <td><img id="plot_out_quarter" class="opaque" src="art/icons/chart_bar.png" title="{t}Outers sold  per quarter{/t}"/></td>
-	  <td><img id="plot_out_year" class="opaque" src="art/icons/chart_line.png" title="{t}Outers sold  per year{/t}"/></td>
+	  <td><img  id="product_week_outers"  class="{if $plot_tipo=='product_week_outers'}selected{else}opaque{/if}"  src="art/icons/chart_line.png" title="{t}Outers sold per month{/t}"/></td>
+	  <td><img  id="product_week_outers"  class="{if $plot_tipo=='product_month_outers'}selected{else}opaque{/if}"  src="art/icons/chart_bar.png" title="{t}Outers sold per month{/t}"/></td>
+	  <td><img  id="product_week_outers"  class="{if $plot_tipo=='product_quarter_outers'}selected{else}opaque{/if}"  src="art/icons/chart_bar.png" title="{t}Outers sold  per quarter{/t}"/></td>
+	  <td><img   id="product_week_outers" class="{if $plot_tipo=='product_year_outers'}selected{else}opaque{/if}"  src="art/icons/chart_line.png" title="{t}Outers sold  per year{/t}"/></td>
 	  <td></td>
 	</tr>
 	    <tr>
 	      <td class="left"><img src="art/icons/package.png" title="{t}Stock{/t}"/></td>
-	      <td><img id="plot_stock_day"  class="opaque" src="art/icons/chart_line.png" title="{t}Stock History{/t}"/></td>
+	      <td><img id="product_stock_history"  class="{if $plot_tipo=='product_stock_history'}selected{else}opaque{/if}"      src="art/icons/chart_line.png" title="{t}Stock History{/t}"/></td>
 	      <td></td>
 	      <td></td>
 	      <td></td>
@@ -251,7 +251,7 @@
 </div>
 {/if}
 {if $view_stock}
-<div  id="block_stock_history" class="data_table" style="{if $display.stock==0}display:none;{/if}clear:both;margin:25px 20px">
+<div  id="block_stock_history" class="data_table" style="{if $display.stock_history==0}display:none;{/if}clear:both;margin:25px 20px">
   <span id="table_title" class="clean_table_title">{t}{$table_title_stock}{/t}</span>
   <div  class="clean_table_caption"  style="clear:both;">
     <div style="float:left;"><div id="table_info2" class="clean_table_info">{$table_info} <span class="filter_msg"  id="filter_msg2"></span></div></div>

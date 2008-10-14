@@ -20,6 +20,7 @@ $smarty->assign('create',$create);
 $smarty->assign('modify',$modify);
 $smarty->assign('view_orders',$view_orders);
 $smarty->assign('view_customers',$view_cust);
+
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
@@ -43,13 +44,11 @@ $js_files=array(
 		$yui_path.'menu/menu-min.js',
 		'js/common.js.php',
 		'js/table_common.js.php',
-		'js/product.js.php'
 		);
-$smarty->assign('css_files',$css_files);
-$smarty->assign('js_files',$js_files);
 
 
-$smarty->assign('plot_tipo',$_SESSION['state']['product']['plot']);
+
+
 
 // $_SESSION['views']['product_blocks'][5]=0;
 // foreach($_SESSION['views']['product_blocks'] as $key=>$value){
@@ -151,7 +150,26 @@ $smarty->assign('ashape_example',$_shape_example);
 $smarty->assign('cur_symbol',$myconf['currency_symbol']);
 
 $smarty->assign('first_date',$product->get('first_date'));
-$smarty->assign('weeks_since',number($product->get('weeks_since')));
+$weeks=$product->get('weeks_since');
+$smarty->assign('weeks_since',number($weeks));
+
+// assign plot tipo depending of the age of the product
+
+$tipo_plot='sales';
+if(preg_match('/outers/',$_SESSION['state']['product']['plot']))
+  $tipo_plot='outers';
+
+if($weeks>500){
+  $time_plot='month';
+ }elseif($weeks>52){
+   $time_plot='month';
+ }elseif($weeks>26){
+   $time_plot='week';
+ }
+
+$plot_tipo='product_'.$time_plot.'_'.$tipo_plot;
+$smarty->assign('plot_tipo',$plot_tipo);
+
 
 
 $smarty->assign('outall',number($product->get('outall')));
@@ -208,6 +226,11 @@ $smarty->assign('key_filter_number',$regex['key_filter_number']);
 $smarty->assign('key_filter_dimension',$regex['key_filter_dimension']);
 
 
+
+$js_files[]='js/product.js.php?current_plot='.$plot_tipo;
+
+$smarty->assign('css_files',$css_files);
+$smarty->assign('js_files',$js_files);
 
 
 $smarty->display('product.tpl');

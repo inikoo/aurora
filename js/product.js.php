@@ -1,4 +1,6 @@
 <?include_once('../common.php');?>
+    var plot='<?=$_REQUEST['current_plot']?>';
+
 YAHOO.util.Event.addListener(window, "load", function() {
 	tables = new function() {
 		
@@ -229,9 +231,20 @@ function init(){
 
      }
 
+
+  var change_plot = function (e){
+
+      //      alert(plot)
+      Dom.get("the_plot").src='plot.php?tipo='+this.id;
+      this.className='selected';
+      Dom.get(plot).className='opaque';
+      plot=this.id;
+     }
+
      var ids = ["change_view_details","change_view_plot","change_view_orders","change_view_customers","change_view_stock_history"]; 
      Event.addListener(ids,"click",change_view);
-
+     var ids = ["product_week_sales","product_month_sales","product_quarter_sales","product_year_sales","product_week_outers","product_week_outers" ,"product_week_outers","product_week_outers","product_stock_history"]; 
+     Event.addListener(ids,"click",change_plot);
 
 }
  YAHOO.util.Event.onDOMReady(init);
