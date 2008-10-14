@@ -197,14 +197,29 @@ foreach($yfields as $yfield){
 }
 $out.='];'."\n".'var yAxis = new YAHOO.widget.NumericAxis();
 yAxis.labelFunction = "'.$yfield['axis'].'";
- var mychart = new YAHOO.widget.'.$tipo_chart.'( '.($tipo_chart=='CartesianChart'?"'line',":'').'  "plot", jsonData,
+
+function justyears(value){
+var isjune= /^06/;
+if(isjune.test(value))
+value=value.match(/\d{2}$/g)[0]
+else
+value=""
+return value;
+}
+var xAxis = new YAHOO.widget.CategoryAxis();
+xAxis.labelFunction = "justyears";
+
+
+var mychart = new YAHOO.widget.'.$tipo_chart.'( '.($tipo_chart=='CartesianChart'?"'line',":'').'  "plot", jsonData,
+
  	{
 style:{'.$style.'}          ,
  wmode: "opaque",
           series: seriesDef,
  	 xField: "'.$xfield['name'].'",
  	 yAxis: yAxis,
- 	 dataTipFunction: "DataTipText",
+	 xAxis: xAxis,
+dataTipFunction: "DataTipText",
  	 expressInstall: "assets/expressinstall.swf"
  	});
 

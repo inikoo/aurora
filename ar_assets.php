@@ -970,6 +970,7 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
 
 
 
+
    
 
   $norder=($order=='code'?'ncode':$order);
@@ -1905,9 +1906,9 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
      $data[$row['since']]['out']=(int)$row['_out'];
      $data[$row['since']]['asales']=(float)$row['asales'];
      if($tipo=='plot_monthout')
-       $data[$row['since']]['tip_out']=_('Outers Dispached')."\n".strftime("%B %Y", strtotime("today -$i month"))."\n".number($row['_out']).' '._('Outers');
+       $data[$row['since']]['tip_out']=_('Outers Dispached')."\n".strftime("%B %Y", strtotime("today -".$row['since']." month"))."\n".number($row['_out']).' '._('Outers');
      else
-       $data[$row['since']]['tip_asales']=_('Sales')."\n".strftime("%B %Y", strtotime("today -$i month"))."\n".money($row['asales']);
+       $data[$row['since']]['tip_asales']=_('Sales')."\n".strftime("%B %Y", strtotime("today -".$row['since']." month"))."\n".money($row['asales'])."\n".number($row['_out']).' '._('Outers');
  
        }
  $response=array('resultset'=>

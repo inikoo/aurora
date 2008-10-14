@@ -27,6 +27,10 @@ switch($tipo){
      $value=$_REQUEST['value'];
      $_SESSION['state'][$keys[0]][$keys[1]]=$value;
      break;
+   case 3:
+     $value=$_REQUEST['value'];
+     $_SESSION['state'][$keys[0]][$keys[1]][$keys[2]]=$value;
+     break;
    }
    break;
 

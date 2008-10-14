@@ -226,6 +226,7 @@ $default_state=array(
 				       'details'=>false,
 				       'plot'=>'sales_month',
 				       'id'=>1,
+				       'display'=>array('details'=>0,'plot'=>1,'orders'=>0,'customers'=>0,'stock_history'=>0),
 				       'orders'=>array(
 						       'order'=>'date_index',
 						       'order_dir'=>'',

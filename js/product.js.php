@@ -201,3 +201,37 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    };
     });
 
+function init(){
+     var Event = YAHOO.util.Event;
+     var Dom   = YAHOO.util.Dom;
+
+     var change_view = function (e){
+	 block=this.getAttribute('block');
+	 state=this.getAttribute('state');
+	 new_title=this.getAttribute('atitle');
+	 old_title=this.getAttribute('title');
+
+	 this.setAttribute('title',new_title);
+	 this.setAttribute('atitle',old_title);
+	 
+	 if(state==1){
+	     Dom.get('block_'+block).style.display='none';
+	     this.setAttribute('state',0);
+	     YAHOO.util.Dom.setStyle('but_logo_'+block, 'opacity', .2);
+	     YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=product-display-'+block+'&value=0');
+	 }else{
+	     Dom.get('block_'+block).style.display='';
+	     this.setAttribute('state',1);
+	     YAHOO.util.Dom.setStyle('but_logo_'+block, 'opacity', 1);
+	     YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=product-display-'+block+'&value=1ar');
+	     
+	 }
+
+     }
+
+     var ids = ["change_view_details","change_view_plot","change_view_orders","change_view_customers","change_view_stock_history"]; 
+     Event.addListener(ids,"click",change_view);
+
+
+}
+ YAHOO.util.Event.onDOMReady(init);

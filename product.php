@@ -56,7 +56,8 @@ $smarty->assign('plot_tipo',$_SESSION['state']['product']['plot']);
 //   $hide[$key]=($value==1?0:1);
 // }
 // //print_r($hide);
-// $smarty->assign('hide',$hide);
+
+$smarty->assign('display',$_SESSION['state']['product']['display']);
 
 // $smarty->assign('view_plot',$_SESSION['views']['product_plot']);
 
@@ -130,7 +131,7 @@ $smarty->assign('ncode',$product->get('ncode'));
 $smarty->assign('id',$product->get('product_id'));
 $smarty->assign('description',$product->get('description'));
 $smarty->assign('units',number($product->get('units')));
-
+$smarty->assign('unit_price',money($product->get('price')/$product->get('units')));
 $smarty->assign('units_tipo',$_units_tipo[$product->get('units_tipo')]);
 $smarty->assign('stock',number($product->get('stock')));
 $smarty->assign('available',number($product->get('available')));
