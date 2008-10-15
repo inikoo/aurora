@@ -691,10 +691,7 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
   case('outofstock'):
      $conf=$_SESSION['state']['report_outofstock']['table'];
 
-     if(isset( $_REQUEST['view']))
-       $view=$_REQUEST['view'];
-     else
-       $view=$_SESSION['state']['family']['view'];
+
      
       if(isset( $_REQUEST['sf']))
      $start_from=$_REQUEST['sf'];
@@ -709,6 +706,8 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
     $number_results=$conf['nr'];
    if(!is_numeric($number_results))
      $number_results=25;
+
+
 
   if(isset( $_REQUEST['o']))
     $order=$_REQUEST['o'];
@@ -1867,6 +1866,10 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
  case('plot_monthsales'):
    $product_id=$_SESSION['state']['product']['id'];
    $today=sprintf("%d%02d",date("Y"),date("m"));
+   $from=$
+
+
+
    $sql=sprintf("select month(first_date) as m ,  year(first_date) as y ,period_diff( $today, concat(year(first_date),if(month(first_date)<10,concat('0',month(first_date)) ,month(first_date))   )  )   as since from product where id=%d",$product_id);
    //print "$sql";
    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}

@@ -258,6 +258,8 @@ if($LU->checkRight(ORDER_VIEW))
 $nav_menu[] = array(_('Orders'), 'orders.php');
 if($LU->checkRight(CUST_VIEW))
   $nav_menu[] = array(_('Customers'), 'customers.php');
+$nav_menu[] = array(_('Warehouse'), 'warehouse.php');
+
 $nav_menu[] = array(_('Products'), 'departments.php');
 $nav_menu[] = array(_('Home'), 'index.php');
 

@@ -129,17 +129,21 @@ $myconf=array(
 
 $default_state=array(
 		      'orders'=>array(
-						  'from'=>'',
-						  'to'=>'',	  
-						  'table'=>array(
-								 'order'=>'date_index',
-								 'order_dir'=>'',
-								 'sf'=>0,
-								 'nr'=>25,
-								 'where'=>'where true',
-								 'f_field'=>'customer_name',
-								 'f_value'=>'',
-								 'elements'=>array()
+				      'details'=>false,
+				      'view'=>'all',
+				      'from'=>'',
+				      'to'=>'',	  
+				      'table'=>array(
+						     'order'=>'date_index',
+						     'order_dir'=>'',
+						     'sf'=>0,
+						     'nr'=>25,
+						     'where'=>'where true',
+						     'f_field'=>'customer_name',
+						     'f_value'=>'',
+						     'from'=>'',
+						     'to'=>'',
+						     'elements'=>array()
 						   )
 				    ),
 		       'report_outofstock'=>array(
@@ -236,7 +240,9 @@ $default_state=array(
 						       'nr'=>15,
 						       'where'=>'where true',
 						       'f_field'=>'id',
-						       'f_value'=>''
+						       'f_value'=>'',
+						       'from'=>'',
+						       'to'=>''
 						       ),
 				       'customers'=>array(
 							  'order'=>'customer_name',

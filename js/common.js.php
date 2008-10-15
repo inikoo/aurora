@@ -211,12 +211,12 @@ function deleteRow(tblId, txtIndex, txtError)
  function updateCal() {
 	
 
-	var txtDate1 = document.getElementById("v_calpop"+this.id);
-
-	if (txtDate1.value != "") {
-	    temp = txtDate1.value.split('-');
-	    var date=temp[1]+'/'+temp[0]+'/'+temp[2];
-
+     var txtDate1 = document.getElementById("v_calpop"+this.id);
+     
+     if (txtDate1.value != "") {
+	 temp = txtDate1.value.split('-');
+	 var date=temp[1]+'/'+temp[0]+'/'+temp[2];
+	 
 	    this.select(date);
 	    
 	    var selectedDates = this.getSelectedDates();

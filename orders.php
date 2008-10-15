@@ -21,50 +21,6 @@ if(isset($_REQUEST['search']) and $_REQUEST['search']!=''  ){
 
 
 
-
-if(isset($_REQUEST['from']) or isset($_REQUEST['to'])){
-  // ok limitite time period
-  
-  $from='';
-  if($_REQUEST['from']!=''){
-    $from=split('-',$_REQUEST['from']);
-    if(count($from==3) and is_numeric($from[0]) and is_numeric($from[0]) and is_numeric($from[0]) ){
-      $f_from=sprintf("%02d-%02d-%d",$from[0],$from[1],$from[2]);
-      $from=join ('-',array_reverse($from));
-    }
-  }
- $to='';
-  if($_REQUEST['to']!=''){
-    $to=split('-',$_REQUEST['to']);
-    if(count($to==3) and is_numeric($to[0]) and is_numeric($to[0]) and is_numeric($to[0]) ){
-      $f_to=sprintf("%02d-%02d-%d",$to[0],$to[1],$to[2]);
-      $to=join ('-',array_reverse($to));
-
-    }
-  }
-
-  if($to=='' and $from=='' )
-    $_SESSION['tables']['order_list'][4]="where true";
-  if($to!='' and $from!='')
-    $_SESSION['tables']['order_list'][4]="where date_index>='$from' and date_index<='$to'";
-  else if($to!='')
-    $_SESSION['tables']['order_list'][4]="where date_index<='$to'";
-  else
-    $_SESSION['tables']['order_list'][4]="where date_index>='$from' and date_index<='$to'";
-
-  
-$smarty->assign('from',$f_from);
-$smarty->assign('to',$f_to);
-
-
- }
- else
-   $_SESSION['tables']['order_list'][4]="where true";
-
-
-
-//print_r($_SESSION['tables']['order_list']);
-
 $sql="select count(*) as numberof from orden";
 $result =& $db->query($sql);
 if($row=$result->fetchRow())
@@ -72,6 +28,10 @@ if($row=$result->fetchRow())
  else 
    exit;
 
+
+$smarty->assign('view',$_SESSION['state']['orders']['view']);
+$smarty->assign('from',$_SESSION['state']['orders']['from']);
+$smarty->assign('to',$_SESSION['state']['orders']['to']);
 
 $smarty->assign('box_layout','yui-t0');
 
@@ -103,7 +63,7 @@ $js_files=array(
 		$yui_path.'calendar/calendar-min.js',
 		'js/common.js.php',
 		'js/table_common.js.php',
-		'js/calendar_common.js.php',
+		//	'js/calendar_common.js.php',
 
 		'js/orders.js.php'
 		);
@@ -127,9 +87,9 @@ $smarty->assign('table_title',_('Order List'));
 
 
 
-$tipo_filter=($q==''?$_SESSION['tables']['order_list'][5]:'public_id');
+$tipo_filter=($q==''?$_SESSION['state']['orders']['table']['f_field']:'public_id');
 $smarty->assign('filter',$tipo_filter);
-$smarty->assign('filter_value',($q==''?$_SESSION['tables']['order_list'][6]:addslashes($q)));
+$smarty->assign('filter_value',($q==''?$_SESSION['state']['orders']['table']['f_value']:addslashes($q)));
 
 
 $filter_menu=array(

@@ -2,7 +2,7 @@
 include_once('../common.php');
 
 ?>
-
+var view='<?=$_SESSION['state']['orders']['view']?>'
 
 YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
@@ -106,35 +106,82 @@ function init(){
 var Dom   = YAHOO.util.Dom;
 
 
- var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS.queryMatchContains = true;
- var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container", oACDS);
- oAutoComp.minQueryLength = 0; 
+//  var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
+//  oACDS.queryMatchContains = true;
+//  var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container", oACDS);
+//  oAutoComp.minQueryLength = 0; 
 
 
     
 
-//     	YAHOO.orders.cal2 = new YAHOO.widget.Calendar("cal2","cal2Container", { title:"<?=_('Choose a date')?>:", close:true } );
-// 	YAHOO.orders.cal2.update=updateCal;
+    	cal2 = new YAHOO.widget.Calendar("cal2","cal2Container", { title:"<?=_('Choose a date')?>:", close:true } );
+	cal2.update=updateCal;
+
+
+	cal2.id=2;
+	
+	cal2.render();
+
+	cal2.update();
+
+	cal2.selectEvent.subscribe(handleSelect, cal2, true); 
 	
 
-// 	YAHOO.orders.cal2.id=2;
-// 	YAHOO.orders.cal2.render();
-// 	YAHOO.orders.cal2.update();
-// 	YAHOO.orders.cal2.selectEvent.subscribe(handleSelect, YAHOO.orders.cal2, true); 
-	
+
+	cal1 = new YAHOO.widget.Calendar("cal1","cal1Container", { title:"<?=_('Choose a date')?>:", close:true } );
+	cal1.update=updateCal;
+	cal1.id=1;
+	cal1.render();
+	cal1.update();
+	cal1.selectEvent.subscribe(handleSelect, cal1, true); 
+
+	YAHOO.util.Event.addListener("calpop1", "click", cal1.show, cal1, true);
+	YAHOO.util.Event.addListener("calpop2", "click", cal2.show, cal2, true);
 
 
-// 	YAHOO.orders.cal1 = new YAHOO.widget.Calendar("cal1","cal1Container", { title:"<?=_('Choose a date')?>:", close:true } );
-// 	YAHOO.orders.cal1.update=updateCal;
-// 	YAHOO.orders.cal1.id=1;
-// 	YAHOO.orders.cal1.render();
-// 	YAHOO.orders.cal1.update();
-// 	YAHOO.orders.cal1.selectEvent.subscribe(handleSelect, YAHOO.orders.cal1, true); 
 
-// 	YAHOO.util.Event.addListener("calpop1", "click", YAHOO.orders.cal1.show, YAHOO.orders.cal1, true);
-// 	YAHOO.util.Event.addListener("calpop2", "click", YAHOO.orders.cal2.show, YAHOO.orders.cal2, true);
+	var change_interval = function(e){
+	    from=Dom.get("v_calpop1").value;
+	    to=Dom.get("v_calpop2").value;
+	    var table=tables.table0;
+	    var datasource=tables.dataSource0;
+	    var request='&sf=0&from=' +from+'&to='+to;
+	    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+
+	}
+
+	YAHOO.util.Event.addListener("submit_interval", "click", change_interval);
+
+
+	var change_view = function (e){
+
+	    new_view=this.id
+
+	    if(new_view!=view){
+		YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=orders-view&value='+escape(new_view));
+		this.className='selected';
+		Dom.get(view).className='';
+
+		Dom.get('details_'+view).style.display='none';
+		Dom.get('details_'+new_view).style.display='';
 		
+		
+		view=new_view;
+
+
+		var table=tables.table0;
+		var datasource=tables.dataSource0;
+		var request='&sf=0&view='+view;
+		datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+	    }
+	    
+
+	}
+
+
+
+	var ids=['all','invoices','in_process',"cancelled"]
+	YAHOO.util.Event.addListener(ids, "click", change_view);
 
 
 }

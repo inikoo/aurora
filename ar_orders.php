@@ -418,61 +418,92 @@ case('changesalesplot'):
    echo json_encode($response);
    break;
  case('orders'):
-   if(isset( $_REQUEST['sf']))
+    if(!$LU->checkRight(ORDER_VIEW))
+    exit;
+
+    $conf=$_SESSION['state']['orders']['table'];
+  if(isset( $_REQUEST['sf']))
      $start_from=$_REQUEST['sf'];
    else
-     $start_from=$_SESSION['tables']['order_list'][3];
+     $start_from=$conf['sf'];
    if(isset( $_REQUEST['nr']))
      $number_results=$_REQUEST['nr'];
    else
-     $number_results=$_SESSION['tables']['order_list'][2];
-   if(isset( $_REQUEST['o']))
-     $order=$_REQUEST['o'];
+     $number_results=$conf['nr'];
+  if(isset( $_REQUEST['o']))
+    $order=$_REQUEST['o'];
+  else
+    $order=$conf['order'];
+  if(isset( $_REQUEST['od']))
+    $order_dir=$_REQUEST['od'];
+  else
+    $order_dir=$conf['order_dir'];
+    if(isset( $_REQUEST['f_field']))
+     $f_field=$_REQUEST['f_field'];
    else
-     $order=$_SESSION['tables']['order_list'][0];
-   if(isset( $_REQUEST['od']))
-     $order_dir=$_REQUEST['od'];
+     $f_field=$conf['f_field'];
+
+  if(isset( $_REQUEST['f_value']))
+     $f_value=$_REQUEST['f_value'];
    else
-     $order_dir=$_SESSION['tables']['order_list'][1];
-   
-   
-    if(isset( $_REQUEST['tableid']))
+     $f_value=$conf['f_value'];
+if(isset( $_REQUEST['where']))
+     $where=$_REQUEST['where'];
+   else
+     $where=$conf['where'];
+  
+ if(isset( $_REQUEST['from']))
+    $from=$_REQUEST['from'];
+  else
+    $from=$_SESSION['state']['orders']['from'];
+  if(isset( $_REQUEST['to']))
+    $to=$_REQUEST['to'];
+  else
+    $to=$_SESSION['state']['orders']['to'];
+
+
+   if(isset( $_REQUEST['view']))
+    $view=$_REQUEST['view'];
+  else
+    $view=$_SESSION['state']['orders']['view'];
+
+
+   if(isset( $_REQUEST['tableid']))
     $tableid=$_REQUEST['tableid'];
   else
     $tableid=0;
 
 
-
    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+   $_SESSION['state']['orders']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+   $_SESSION['state']['orders']['view']=$view;
+   $date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
+   if($date_interval['error']){
+      $date_interval=prepare_mysql_dates($_SESSION['state']['report_outofstock']['from'],$_SESSION['state']['report_outofstock']['to']);
+   }else{
+     $_SESSION['state']['orders']['from']=$date_interval['from'];
+     $_SESSION['state']['orders']['to']=$date_interval['to'];
+   }
+
+   switch($view){
+   case('all'):
+     break;
+   case('invoices'):
+     $where.=' and orden.tipo=2 ';
+     break;
+   case('in_process'):
+     $where.=' and orden.tipo=1 ';
+     break;
+   case('cancelled'):
+     $where.=' and orden.tipo=3 ';
+     break;
+   default:
+     
+     
+   }
+   $where.=$date_interval['mysql'];
    
-
-
-   
-
-   if(isset( $_REQUEST['where']))
-     $where=addslashes($_REQUEST['where']);
-   else
-     $where=$_SESSION['tables']['order_list'][4];
-
-
-  if(isset( $_REQUEST['f_field']))
-     $f_field=$_REQUEST['f_field'];
-   else
-     $f_field=$_SESSION['tables']['order_list'][5];
-
-  if(isset( $_REQUEST['f_value']))
-     $f_value=$_REQUEST['f_value'];
-  else
-    $f_value=$_SESSION['tables']['order_list'][6];
-  
-
-
-
-   $_SESSION['tables']['order_list']=array($order,$order_direction,$number_results,$start_from,$where,$f_field,$f_value);
-   //print_r($_SESSION['tables']['order_list']);
-   
-
-  $wheref='';
+   $wheref='';
 
     // if( ($f_field=='public_id'   or  $f_field=='customer_name')  and $f_value=!'' )
   //   $wheref.=" and   $f_field like '".addslashes($f_value)."%'   ";
@@ -493,7 +524,7 @@ case('changesalesplot'):
 
    
    $sql="select count(*) as total from orden   $where $wheref ";
-   //print "$sql";
+
    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
   if($row=$res->fetchRow()) {
     $total=$row['total'];
