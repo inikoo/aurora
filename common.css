@@ -293,7 +293,7 @@ table.but_edit{clear:both;float:right}
 table.options{margin:0 ;float:right;border-collapse: separate;;border-spacing:3px  3px;font-size:100%;font-weight:600;}
 
 
-.options td{border:1px solid #aaa;color:#aaa;text-align:center;padding:1px 3px 3px 3px;cursor:pointer}
+.options td{border:1px solid #aaa;color:#aaa;text-align:center;padding:2px 3px 2px 3px;cursor:pointer}
 .options td:hover{border:1px solid #777;color:#777}
 .options td.selected{background:#7296e1;border:1px solid #466ab5;color:#f6f6f6}
 .options td.disabled{background:#fff;border:1px solid #eee;color:#ddd;cursor:default}
@@ -359,10 +359,15 @@ color: #316D89;
 .remove_filter{ color:#999;cursor:pointer }
 .filter_msg{color:#e96d59  }
 /*Products pages*/
-/*Color of the link that tongle datails in product_pages */
-.state_details{color:#777;cursor:pointer} .state_details:hover{color:#777;text-decoration:underline}
+
 
 .top_bar{width:100%;margin:15px 0 60px 0 }
 .top_bar h1{padding:0 0px 10px 20px;font-size:150%}
 .top_bar .nodetails{width:100%;margin-bottom:0px}
 .top_bar .details{clear:both;padding:10px 20px ;border:1px solid #ddd;margin:0 20px;}
+
+/*Common search div*/
+.search_box{clear:both;float:right;border: 0px solid #ddd;text-align:right;padding:10px   }
+.search_box form{ margin-bottom:5px }
+.search_box .search_title{ position:relative;left:16px }
+.state_details{color:#777;cursor:pointer;font-size:85%;} .state_details:hover{color:#777;text-decoration:underline}

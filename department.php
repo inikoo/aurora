@@ -98,7 +98,7 @@ $smarty->assign('products',$families['products']);
 $smarty->assign('filter',$_SESSION['state']['department']['table']['f_field']);
 $smarty->assign('filter_value',$_SESSION['state']['department']['table']['f_value']);
 $smarty->assign('filter_name',_('Family code'));
-$smarty->assign('view_table',$_SESSION['state']['department']['view']);
+$smarty->assign('view',$_SESSION['state']['department']['view']);
 $smarty->assign('show_details',$_SESSION['state']['department']['details']);
 $table_title=_('Family List');
 $smarty->assign('table_title',$table_title);

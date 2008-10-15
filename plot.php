@@ -73,7 +73,7 @@ switch($tipo){
    $style='size:10,lineSize:1';
  $tipo_chart='LineChart';
     break;
- case('product_stock_day'):
+ case('product_stock_history'):
    $ar_address='ar_assets.php?tipo=plot_daystock';
    $fields='"stock","day","tip"';
 		  $yfields=array(array('label'=>_('Outers'),'name'=>'stock','axis'=>'formatNumberAxisLabel','style'=>''));

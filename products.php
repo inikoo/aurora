@@ -1,9 +1,13 @@
 <?
-
-//header('Location: http://www.example.com/');
-
-
 include_once('common.php');
+$view_sales=$LU->checkRight(PROD_SALES_VIEW);
+$view_stock=$LU->checkRight(PROD_STK_VIEW);
+$create=$LU->checkRight(PROD_CREATE);
+$modify=$LU->checkRight(PROD_MODIFY);
+$smarty->assign('view_sales',$view_sales);
+$smarty->assign('view_stock',$view_stock);
+$smarty->assign('create',$create);
+$smarty->assign('modify',$modify);
 
 $q='';
 if(isset($_REQUEST['search']) and $_REQUEST['search']!=''  ){
@@ -13,7 +17,7 @@ if(isset($_REQUEST['search']) and $_REQUEST['search']!=''  ){
   $sql=sprintf("select id from product where code='%s' ",addslashes($q));
   $result =& $db->query($sql);
   if($found=$result->fetchRow()){
-    header('Location: assets_product.php?id='. $found['id']);
+    header('Location: product.php?id='. $found['id']);
     exit;
   }
   
@@ -23,20 +27,10 @@ if(isset($_REQUEST['search']) and $_REQUEST['search']!=''  ){
 //     header('Location: assets_family.php?id='. $found['id']);
 //     exit;
 //   }
-  $_SESSION['tables']['pindex_list'][5]='p.code';
-  $_SESSION['tables']['pindex_list'][6]=$q;
-
+//   $_SESSION['tables']['pindex_list'][5]='p.code';
+//   $_SESSION['tables']['pindex_list'][6]=$q;
+  
  }
-
-
-
-$_SESSION['views']['assets']='index';
-
-
-
-
-print_r($_SESSION['tables']['pindex_list']);
-
 
 
 
@@ -48,77 +42,68 @@ if(!$products=$result->fetchRow())
 
 
 $smarty->assign('box_layout','yui-t0');
-
-
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
+		 $yui_path.'calendar/assets/skins/sam/calendar.css',
 		 $yui_path.'button/assets/skins/sam/button.css',
 		 'common.css',
+		 'button.css',
 		 'container.css',
 		 'table.css'
 		 );
 $js_files=array(
+
 		$yui_path.'yahoo-dom-event/yahoo-dom-event.js',
-		$yui_path.'element/element-beta-min.js',
-		$yui_path.'utilities/utilities.js',
-		$yui_path.'container/container.js',
-		$yui_path.'menu/menu-min.js',
-		$yui_path.'button/button.js',
-		$yui_path.'autocomplete/autocomplete.js',
-		$yui_path.'datasource/datasource-beta.js',
-		$yui_path.'datatable/datatable-beta.js',
+		$yui_path.'connection/connection-min.js',
 		$yui_path.'json/json-min.js',
+		$yui_path.'element/element-beta-min.js',
+		$yui_path.'paginator/paginator-min.js',
+		$yui_path.'dragdrop/dragdrop-min.js',
+		$yui_path.'datasource/datasource-min.js',
+		$yui_path.'autocomplete/autocomplete-min.js',
+		$yui_path.'datatable/datatable-min.js',
+		$yui_path.'container/container_core-min.js',
+		$yui_path.'menu/menu-min.js',
+		$yui_path.'calendar/calendar-min.js',
 		'js/common.js.php',
 		'js/table_common.js.php',
-		'js/assets_index.js.php?products='.$products['numberof']
+		'js/products.js.php'
 		);
 
 
 
 
-$smarty->assign('parent','assets_tree.php');
+
+
+$smarty->assign('parent','departments.php');
 $smarty->assign('title', _('Product Index'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
 $product_home="Products Home";
 $smarty->assign('home',$product_home);
-$smarty->assign('filter','p.code');
-$smarty->assign('filter_name',_('Product code'));
 
 
-$smarty->assign('total_products',$products['numberof']);
-//$smarty->assign('rpp',$_SESSION['tables']['pindex_list'][2]);
-
-//$smarty->assign('products_perpage',$_SESSION['tables']['pindex_list'][2]);
-
-
-
-$tipo_filter=($_SESSION['tables']['pindex_list'][5]);
+$number_products=$products['numberof'];
+$smarty->assign('total_products',$number_products);
+$tipo_filter=($q==''?$_SESSION['state']['products']['table']['f_field']:'public_id');
 $smarty->assign('filter',$tipo_filter);
-$smarty->assign('filter_value',$_SESSION['tables']['pindex_list'][6]);
-
-switch($tipo_filter){
- case('p.code'):
-   $filter_text=_('Product Code');
-   break;
- case('g.name'):
-   $filter_text=_('Family Code');
-   break;
- case('d.code'):
-   $filter_text=_('Department Name');
-   break;
- case('p.description'):
-   $filter_text=_('Description');
-   break;
- default:
-   $filter_text='?';
- }
+$smarty->assign('filter_value',($q==''?$_SESSION['state']['products']['table']['f_value']:addslashes($q)));
+$filter_menu=array(
+		   'code'=>array('db_key'=>'code','menu_label'=>'Product starting with  <i>x</i>','label'=>'Order Number'),
+		   'description'=>array('db_key'=>'description','menu_label'=>'Product Description with <i>x</i>','label'=>'Customer'),
+		   );
+$smarty->assign('filter_menu',$filter_menu);
+$smarty->assign('filter_name',$filter_menu[$tipo_filter]['label']);
+$smarty->assign('table_info',$number_products.'  '.ngettext('Product','Products',$number_products));
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu',$paginator_menu);
+$smarty->assign('view',$_SESSION['state']['products']['view']);
+$smarty->assign('table_title',_('Product List'));
 
 
 
 
-
-$smarty->display('assets_index.tpl');
+$smarty->display('products.tpl');
 ?>

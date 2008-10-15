@@ -7,5 +7,5 @@
 </form>
 {/*}
 <form  id="id3_search_form" action="customers.php" method="GET"  style="display:inline">
-  <label style="position:relative;left:16px">{$customer_id3} {t}Search{/t}:</label><input size="12" class="text search" id="prod_search" value="{$search3}" name="q_id3"/><img onclick="document.getElementById('id3_search_form').submit()"align="absbottom" id="submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search">
+  <label style="position:relative;left:16px">{$search_f} {t}Search{/t}:</label> <input size="12" class="text search" id="prod_search" value="{$search3}" name="q_id3"/><img onclick="document.getElementById('id3_search_form').submit()"align="absbottom" id="submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search">
 </form>

@@ -146,6 +146,24 @@ $default_state=array(
 						     'elements'=>array()
 						   )
 				    ),
+		      'products'=>array(
+				      'details'=>false,
+				      'view'=>'general',
+				      'from'=>'',
+				      'to'=>'',	  
+				      'table'=>array(
+						     'order'=>'code',
+						     'order_dir'=>'',
+						     'sf'=>0,
+						     'nr'=>25,
+						     'where'=>'where true',
+						     'f_field'=>'code',
+						     'f_value'=>'',
+						     'from'=>'',
+						     'to'=>'',
+						     'elements'=>array()
+						   )
+				    ),
 		       'report_outofstock'=>array(
 						  'from'=>'',
 						  'to'=>'',	  

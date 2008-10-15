@@ -48,7 +48,7 @@ if(isset($_REQUEST['view'])){
     $_SESSION['state']['departments']['view']=$_REQUEST['view'];
 
  }
-$smarty->assign('view_table',$_SESSION['state']['departments']['view']);
+$smarty->assign('view',$_SESSION['state']['departments']['view']);
 $smarty->assign('show_details',$_SESSION['state']['departments']['details']);
 
 
