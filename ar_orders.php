@@ -479,7 +479,7 @@ if(isset( $_REQUEST['where']))
    $_SESSION['state']['orders']['view']=$view;
    $date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
    if($date_interval['error']){
-      $date_interval=prepare_mysql_dates($_SESSION['state']['report_outofstock']['from'],$_SESSION['state']['report_outofstock']['to']);
+      $date_interval=prepare_mysql_dates($_SESSION['state']['orders']['from'],$_SESSION['state']['orders']['to']);
    }else{
      $_SESSION['state']['orders']['from']=$date_interval['from'];
      $_SESSION['state']['orders']['to']=$date_interval['to'];

@@ -95,7 +95,7 @@ $smarty->assign('next',$next);
 
 
 
-$smarty->assign('parent','assets_tree.php');
+$smarty->assign('parent','departments.php');
 $smarty->assign('title',$family['family'].' - '.$family['description']);
 
 
@@ -119,7 +119,7 @@ $smarty->assign('filter_value',$_SESSION['tables']['products_list'][7]);
 
 
 
-$smarty->assign('view_table',$_SESSION['state']['family']['view']);
+$smarty->assign('view',$_SESSION['state']['family']['view']);
 $smarty->assign('show_details',$_SESSION['state']['family']['details']);
 $table_title=_('Product List');
 $smarty->assign('table_title',$table_title);

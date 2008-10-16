@@ -762,52 +762,49 @@ $supplier_id=$_SESSION['deliver_note']['supplier_id'];
 
  case('index'):
    
+ if(!$LU->checkRight(SUP_VIEW))
+    exit;
 
- if(isset( $_REQUEST['sf']))
+    $conf=$_SESSION['state']['suppliers']['table'];
+  if(isset( $_REQUEST['sf']))
      $start_from=$_REQUEST['sf'];
    else
-     $start_from=$_SESSION['tables']['suppliers_list'][3];
+     $start_from=$conf['sf'];
    if(isset( $_REQUEST['nr']))
      $number_results=$_REQUEST['nr'];
    else
-     $number_results=$_SESSION['tables']['suppliers_list'][2];
-   if(isset( $_REQUEST['o']))
-     $order=$_REQUEST['o'];
-   else
-     $order=$_SESSION['tables']['suppliers_list'][0];
-   if(isset( $_REQUEST['od']))
-     $order_dir=$_REQUEST['od'];
-   else
-     $order_dir=$_SESSION['tables']['suppliers_list'][1];
-   
-
-
-   
- if(isset( $_REQUEST['where']))
-     $where=addslashes($_REQUEST['where']);
-   else
-     $where=$_SESSION['tables']['suppliers_list'][4];
-
-
-  if(isset( $_REQUEST['f_field']))
+     $number_results=$conf['nr'];
+  if(isset( $_REQUEST['o']))
+    $order=$_REQUEST['o'];
+  else
+    $order=$conf['order'];
+  if(isset( $_REQUEST['od']))
+    $order_dir=$_REQUEST['od'];
+  else
+    $order_dir=$conf['order_dir'];
+    if(isset( $_REQUEST['f_field']))
      $f_field=$_REQUEST['f_field'];
    else
-     $f_field=$_SESSION['tables']['suppliers_list'][5];
+     $f_field=$conf['f_field'];
 
   if(isset( $_REQUEST['f_value']))
      $f_value=$_REQUEST['f_value'];
-  else
-    $f_value=$_SESSION['tables']['suppliers_list'][6];
+   else
+     $f_value=$conf['f_value'];
+if(isset( $_REQUEST['where']))
+     $where=$_REQUEST['where'];
+   else
+     $where=$conf['where'];
   
-
-
-
-
+   if(isset( $_REQUEST['tableid']))
+    $tableid=$_REQUEST['tableid'];
+  else
+    $tableid=0;
    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-   
-
-   $_SESSION['tables']['suppliers_list']=array($order,$order_direction,$number_results,$start_from,$where,$f_field,$f_value);
-
+  $_SESSION['state']['suppliers']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+  $_order=$order;
+  $_dir=$order_direction;
+  $filter_msg='';
 
 
    $wheref='';
@@ -866,6 +863,10 @@ $supplier_id=$_SESSION['deliver_note']['supplier_id'];
    $response=array('resultset'=>
 		   array('state'=>200,
 			 'data'=>$data,
+			 'sort_key'=>$_order,
+			 'sort_dir'=>$_dir,
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
 			 'total_records'=>$total,
 			 'records_offset'=>$start_from,
 			 'records_returned'=>$start_from+$res->numRows(),

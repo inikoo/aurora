@@ -1,23 +1,9 @@
 <?
 include_once('../common.php');
 ?>
-var Dom   = YAHOO.util.Dom;
- var show_details=function(e,show){
-     if(show){
-	 Dom.get('details').style.display='';
-	 Dom.get('short_menu').style.display='none';
-	 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=department-details&value=1');
-     }else{
-	 Dom.get('details').style.display='none';
-	 Dom.get('short_menu').style.display='';
-	 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=department-details&value=0');
-     }
 
- }
-
-
-    var change_view=function(e,tipo){
-
+    var change_view=function(e){
+		var table=tables['table0'];
 	var table=tables['table0'];
 
 	//	alert(table.view+' '+tipo)
@@ -79,12 +65,10 @@ var Dom   = YAHOO.util.Dom;
 	    }
 
 	}
-	Dom.get(table.view+'_view1').className="";
-	Dom.get(tipo+'_view1').className="selected";
-	Dom.get(table.view+'_view2').className="";
-	Dom.get(tipo+'_view2').className="selected";
-	table.view=tipo
-	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=family-view&value=' + escape(tipo) );
+		Dom.get(table.view).className="";
+		Dom.get(tipo).className="selected";	
+		table.view=tipo;
+		YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=family-view&value='+escape(tipo));
     }
 
 
@@ -175,15 +159,11 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 
- YAHOO.util.Event.addListener('sales_view1', "click",change_view,'sales')
- YAHOO.util.Event.addListener('general_view1', "click",change_view,'general')
- YAHOO.util.Event.addListener('stock_view1', "click",change_view,'stock')
- YAHOO.util.Event.addListener('sales_view2', "click",change_view,'sales')
- YAHOO.util.Event.addListener('general_view2', "click",change_view,'general')
- YAHOO.util.Event.addListener('stock_view2', "click",change_view,'stock')
+ids=['general','sales','stock'];
+ YAHOO.util.Event.addListener(ids, "click",change_view)
 
- YAHOO.util.Event.addListener('show_details', "click",show_details,true)
- YAHOO.util.Event.addListener('hide_details', "click",show_details,false)
+     YAHOO.util.Event.addListener('show_details', "click",show_details,'family')
+
 
 
 

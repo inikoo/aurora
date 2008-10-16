@@ -368,8 +368,77 @@ $sql="select  sum(total) as total,sum(net) as total_net   from orden where  (tip
 
 
   }
-
-
 }
+ function redo_customer_history_all($customer_id){
+    $db =& MDB2::singleton();
+   $sql=sprintf("select id from customer");
+   $res = $db->query($sql); 
+   while($row=$res->fetchRow()) {
+     redo_customer_history($row['id']);
+   }
+   
+ }
+
+    function redo_customer_history($customer_id){
+       $db =& MDB2::singleton();
+      // delete provous history
+      $sql=sprintf("delete from customer_history where customer_id=%d",$customer_id);
+       mysql_query($sql);
+       
+       
+       $sql=sprintf("select history.id as history_id,date as date_index  from customer left join history  on (sujeto_id=contact_id) left join history_item on (history_id=history.id)   where sujeto='Contact'   and (tipo='NEW' or tipo='UPD') and  customer.id=%d ",$customer_id);
+
+       $res = $db->query($sql); 
+       while($row=$res->fetchRow()) {
+	 $data[]=array(
+		       'date_index'=>$row['date_index'],
+		       'op'=>'h_cont',
+		       'op_id'=>$row['history_id']
+		       );
+       }
+       
+       $sql=sprintf("select history.id as history_id,date,tipo,objeto,date as date_index  from history  where sujeto='Customer' and sujeto_id=%d and tipo='NEW'  ",$customer_id);
+
+       $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+       while($row=$res->fetchRow()) {
+	 $data[]=array(
+		       'date_index'=>$row['date_index'],
+		   'op'=>'h_cust',
+		       'op_id'=>$row['history_id']
+		       );
+       }
+       $sql=sprintf("select orden.id as order_id,net,parent_id,tipo,id,public_id ,date_index as date_index from orden  where customer_id=%d",$customer_id);
+
+       $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+       
+       while($row=$res->fetchRow()) {
+	 $data[]=array(
+		       'date_index'=>$row['date_index'],
+		       'op'=>'orden',
+		       'op_id'=>$row['order_id']
+		       );
+       }
+       
+       $sql=sprintf("select id,texto ,date_index as date_index from note where op='customer' and op_id=%d",$customer_id);
+
+       $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+       
+       while($row=$res->fetchRow()) {
+	 $data[]=array(
+		       'date_index'=>$row['date_index'],
+		       'op'=>'note',
+		       'op_id'=>$row['id']
+		       );
+       }
+       
+       foreach($data as $_data){
+	 $sql=sprintf("insert into  customer_history (customer_id,date_index,op,op_id) values(%d,'%s','%s',%d)",$customer_id,$_data['date_index'],$_data['op'],$_data['op_id']);
+	 mysql_query($sql);
+       
+
+       }
+       
+    }
+
 
 ?>

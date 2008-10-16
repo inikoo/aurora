@@ -1,9 +1,9 @@
 {include file='header.tpl'}
 <div id="bd" >
 
-  {if $next.id>0}<span class="nav2 onright"><a href="department.php?id={$next.id}">{t}Next{/t}</a></span>{/if}
-  {if $prev.id>0}<span class="nav2 onright" ><a href="department.php?id={$prev.id}">{t}Previous{/t}</a></span>{/if}
-  <span class="nav2 onright" style="margin-left:20px"><a href="departments.php">{t}Up{/t}</a></span>
+{if $next.id>0}<span class="nav2 onright"><a href="family.php?id={$next.id}">{$next.code} &rarr; </a></span>{/if}
+{if $prev.id>0}<span class="nav2 onright" ><a href="family.php?id={$prev.id}">&larr; {$prev.code}</a></span>{/if}
+  <span class="nav2 onright" style="margin-left:20px"><a href="departments.php">&uarr; {t}All Departments{/t}</a></span>
   <span class="nav2 on left"><a href="departments.php">{t}Departments{/t}</a></span>
   <span class="nav2 onleft"><a href="categories.php">{t}Categories{/t}</a></span>
   <span class="nav2 onleft"><a href="products.php">{t}Product index{/t}</a></span>
@@ -12,13 +12,13 @@
     <form  id="prod_search_form" action="products.php" method="GET" >
       <span class="search_title">{t}Product Code{/t}:</span> <input size="8" class="text search" id="prod_search" value="" name="search"/><img align="absbottom" id="submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search">
     </form>
-    <span  class="state_details"  id="show_details">{t}show details{/t}</span>
+   <span  class="state_details" state="{$show_details}"  id="show_details"  atitle="{if $show_details}{t}show details{/t}{else}{t}hide details{/t}{/if}"  >{if $show_details}{t}hide details{/t}{else}{t}show details{/t}{/if}</span>
   </div>
   
   
   <div id="top" class="top_bar">
     <h1>{$department}</h1>
-    <div id="short_menu" class="nodetails" style="{if $show_details}display:none;{/if}width:100%;margin-bottom:0px">
+    <div id="short_menu" class="nodetails" style="width:100%;margin-bottom:0px">
       <table style="float:left;margin:0 0 0 20px ;padding:0"  class="options" {if $products==0 }style="display:none"{/if}>
 	<tr><td  {if $view=='general'}class="selected"{/if} id="general" >{t}General{/t}</td>
 	  {if $view_stock}<td {if $view=='stock'}class="selected"{/if}  id="stock"  >{t}Stock{/t}</td>{/if}

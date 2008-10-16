@@ -1,4 +1,5 @@
 
+var Dom   = YAHOO.util.Dom;
 if(!Array.indexOf){
 	    Array.prototype.indexOf = function(obj){
 	        for(var i=0; i<this.length; i++){
@@ -249,3 +250,20 @@ function deleteRow(tblId, txtIndex, txtError)
     }
 
     
+var show_details=function(e,location){
+     var state=this.getAttribute('state');
+     if(state==1){
+	 Dom.get('details').style.display='none';
+	 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys='+location+'-details&value=0');
+	 this.setAttribute('state',0);
+     }else{
+	 Dom.get('details').style.display='';
+	 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys='+location+'-details&value=1');
+	 this.setAttribute('state',1);
+     }
+
+     var tmp=this.innerHTML;
+     this.innerHTML=this.getAttribute('atitle');
+     this.setAttribute('atitle',tmp);
+     
+ }

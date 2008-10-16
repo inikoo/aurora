@@ -190,6 +190,34 @@ $default_state=array(
 						   'f_value'=>''
 						   )
 				    ),
+		      'customer'=>array(
+					'id'=>1,
+					'table'=>array(
+						       'order'=>'date_index',
+						       'order_dir'=>'desc',
+						       'sf'=>0,
+						       'nr'=>10,
+						       'where'=>'where true',
+						       'f_field'=>'description',
+						       'f_value'=>'',
+						       'from'=>'',
+						       'to'=>'',
+						       'elements'=>array('orden'=>1,'h_cust'=>1,'h_cont'=>1,'note'=>1)
+						   )
+				    ),
+
+
+		      'suppliers'=>array(
+				    'table'=>array(
+						   'order'=>'name',
+						   'order_dir'=>'',
+						   'sf'=>0,
+						   'nr'=>25,
+						   'where'=>'where true',
+						   'f_field'=>'name',
+						   'f_value'=>''
+						   )
+				    ),
 		     'hr'=>array(
 				    'staff'=>array(
 						   'order'=>'alias',

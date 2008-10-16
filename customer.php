@@ -1,7 +1,40 @@
 <?
 include_once('common.php');
+
 if(!$LU->checkRight(CUST_VIEW))
   exit;
+
+
+$css_files=array(
+		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+		 $yui_path.'menu/assets/skins/sam/menu.css',
+		 $yui_path.'calendar/assets/skins/sam/calendar.css',
+		 $yui_path.'button/assets/skins/sam/button.css',
+		 'common.css',
+		 'button.css',
+		 'container.css',
+		 'table.css'
+		 );
+$js_files=array(
+
+		$yui_path.'yahoo-dom-event/yahoo-dom-event.js',
+		$yui_path.'connection/connection-min.js',
+		$yui_path.'json/json-min.js',
+		$yui_path.'element/element-beta-min.js',
+		$yui_path.'paginator/paginator-min.js',
+		$yui_path.'dragdrop/dragdrop-min.js',
+		$yui_path.'datasource/datasource-min.js',
+		$yui_path.'autocomplete/autocomplete-min.js',
+		$yui_path.'datatable/datatable-min.js',
+		$yui_path.'container/container_core-min.js',
+		$yui_path.'menu/menu-min.js',
+		$yui_path.'calendar/calendar-min.js',
+		'js/common.js.php',
+		'js/table_common.js.php',
+		'js/customer.js.php'
+		);
+$smarty->assign('css_files',$css_files);
+$smarty->assign('js_files',$js_files);
 
 if(!isset($_REQUEST['id']) and is_numeric($_REQUEST['id']))
   $customer_id=1;
@@ -9,7 +42,7 @@ else
   $customer_id=$_REQUEST['id'];
 
 
-$_SESSION['tables']['order_withcust'][4]=$customer_id;
+$_SESSION['state']['customer']['id']=$customer_id;
 
 //$sql=sprintf("select cu.total,cu.num_orders as orders,cu.order_interval,co.tipo as tipo_customer, cu.id as id,cu.contact_id,cu.name as name from customer as cu  left join contact as co on (cu.contact_id=co.id ) where cu.id=%d ",$customer_id);
 //print $sql;
@@ -31,6 +64,7 @@ include('telecom.php');
 include('email.php');
 include('address.php');
 include('_customer.php');
+
 
 $customer_data= get_customer_data($customer_id);
 
@@ -157,38 +191,11 @@ $contact_mobile=array();
 $smarty->assign('box_layout','yui-t0');
 
 
-$css_files=array(
-		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-		 $yui_path.'menu/assets/skins/sam/menu.css',
-		 $yui_path.'button/assets/skins/sam/button.css',
-		 'common.css',
-		 'button.css',
-		 'container.css',
-		 'table.css'
-		 );
-$js_files=array(
-		$yui_path.'yahoo-dom-event/yahoo-dom-event.js',
-		$yui_path.'element/element-beta-min.js',
-		$yui_path.'utilities/utilities.js',
-		$yui_path.'container/container.js',
-		$yui_path.'menu/menu-min.js',
-		$yui_path.'button/button.js',
-		$yui_path.'autocomplete/autocomplete.js',
-		$yui_path.'datasource/datasource-beta.js',
-		$yui_path.'datatable/datatable-beta.js',
-		$yui_path.'json/json-min.js',
-		'js/common.js.php',
-		'js/table_common.js.php',
-		'js/customer.js.php'
-		);
-
-
 
 
 $smarty->assign('parent','customers.php');
 $smarty->assign('title','Customer: '.$customer_data['name']);
-$smarty->assign('css_files',$css_files);
-$smarty->assign('js_files',$js_files);
+
 
 
 $customer_home=_("Customers List");
@@ -238,7 +245,7 @@ if($order_interval>10){
  else
    $order_interval=round($order_interval).' '._('days');
 $smarty->assign('orders_interval',$order_interval);
-
+$smarty->assign('table_title',_('History'));
 
 $smarty->assign('telecoms',$telecoms);
 

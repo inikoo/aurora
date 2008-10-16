@@ -5,14 +5,15 @@
 <div id="bd" >
   
 <div id="sub_header">
-  {if $next.id>0}<span class="nav2 onright"><a href="product.php?id={$next.id}">{t}Next{/t}</a></span>{/if}
-  {if $prev.id>0}<span class="nav2 onright" ><a href="product.php?id={$prev.id}">{t}Previous{/t}</a></span>{/if}
-  <span class="nav2 onright" style="margin-left:20px"><a href="family.php?id={$family_id}">{t}Up{/t}</a></span>
-  <span class="nav2 onright"><a href="products.php">{t}Product index{/t}</a></span>
-  <span class="nav2"><a href="departments.php">{$home}</a></span>
-  <span class="nav2"><a href="department.php?id={$department_id}">{$department}</a></span>
-  <span class="nav2"><a href="family.php?id={$family_id}">{$family}</a></span>
+{if $next.id>0}<span class="nav2 onright"><a href="product.php?id={$next.id}">{$next.code} &rarr; </a></span>{/if}
+{if $prev.id>0}<span class="nav2 onright" ><a href="product.php?id={$prev.id}">&larr; {$prev.code}</a></span>{/if}
+<span class="nav2 onright"><a href="family.php?id={$family_id}">&uarr; {$family}</a></span>
+<span class="nav2 onright"><a href="department.php?id={$department_id}">&uarr;&uarr; {$department}</a></span>
+<span class="nav2 on left"><a href="departments.php">{t}Departments{/t}</a></span>
+<span class="nav2 onleft"><a href="categories.php">{t}Categories{/t}</a></span>
+<span class="nav2 onleft"><a href="products.php">{t}Product index{/t}</a></span>
 </div>
+
 <div id="doc3" style="clear:both;" class="yui-g yui-t4" >
   <div id="yui-main"> 
     <div class="yui-b">

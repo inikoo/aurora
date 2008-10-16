@@ -2,18 +2,7 @@
 include_once('../common.php');
 ?>
 var Dom   = YAHOO.util.Dom;
- var show_details=function(e,show){
-     if(show){
-	 Dom.get('details').style.display='';
-	 Dom.get('short_menu').style.display='none';
-	 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=departments-details&value=1');
-     }else{
-	 Dom.get('details').style.display='none';
-	 Dom.get('short_menu').style.display='';
-	 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=departments-details&value=0');
-     }
 
- }
 
 
     var change_view=function(e){
@@ -182,9 +171,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
  ids=['general','sales','stock'];
  YAHOO.util.Event.addListener(ids, "click",change_view)
 
- YAHOO.util.Event.addListener('show_details', "click",show_details,true)
- YAHOO.util.Event.addListener('hide_details', "click",show_details,false)
 
+ YAHOO.util.Event.addListener('show_details', "click",show_details,'departments');
 
 
  }

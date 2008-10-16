@@ -1,109 +1,76 @@
-<?
-include_once('../common.php');
-?>
-
+<?include_once('../common.php');?>
     
-    YAHOO.namespace ("supplier"); 
-
-
-YAHOO.util.Event.addListener(window, "load", function() {
-	YAHOO.supplier.XHR_JSON = new function() {
-		
-		
-		this.orderLink=  function(el, oRecord, oColumn, oData) {
-		    var url="order.php?id="+oRecord.getData("id");
-		    el.innerHTML = oData.link(url);
-		};
-		this.date=  function(el, oRecord, oColumn, oData) {
-		    el.innerHTML = oRecord.getData("date")
-		};
-
-		var tableid=2; // Change if you have more the 1 table
-		var tableDivEL="table"+tableid;
-		
-		var SuppliersColumnDefs = [
-					   
-	  {key:"date", label:"<?=_('Date')?>",className:"aright",width:80}
-	  ,{key:"time", label:"<?=_('Time')?>",className:"aleft",width:30}
-
-	  ,{key:"tipo", label:"<?=_('Type')?>", className:"aleft",width:70}
-	  ,{key:"description", label:"<?=_('Description')?>",className:"aleft",width:600}
+    YAHOO.util.Event.addListener(window, "load", function() {
+	    tables = new function() {
+		    
+		    var tableid=0; // Change if you have more the 1 table
+		    var tableDivEL="table"+tableid;  
+		    
+		    var ColumnDefs = [
+				      {key:"date_index", label:"<?=_('Date')?>",className:"aright",width:150,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					   ,{key:"time", label:"<?=_('Time')?>",className:"aleft",width:50}
+					   ,{key:"op", label:"<?=_('Type')?>", className:"aleft",width:70,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					   ,{key:"description", label:"<?=_('Description')?>",className:"aleft",width:500}
 					   ];
 		
-		this.SuppliersDataSource = new YAHOO.util.DataSource("ar_contacts.php?tipo=customer_history&tid="+tableid);
-		this.SuppliersDataSource.responseType = YAHOO.util.DataSource.TYPE_JSON;
-		this.SuppliersDataSource.connXhrMode = "queueRequests";
-		this.SuppliersDataSource.responseSchema = {
-		    resultsList: "resultset.data", 
-		totalRecords: 'resultset.total_records',
-		fields: [
-			 "description","date","tipo","time"
-			 ]};
-		
-		this.SuppliersDataSource.doBeforeCallback = mydoBeforeCallback;
-		
-		
-		
-		
-	 
-		this.SuppliersDataTable = new YAHOO.widget.DataTable(tableDivEL, SuppliersColumnDefs,this.SuppliersDataSource, {renderLoopSize: 50});
-		
-		this.SuppliersDataTable.paginatorMenu = new YAHOO.widget.Menu('paginatornewmenu'+tableid,  {context:['paginatormenuselector'+tableid,"tr", "br"]  });
-		this.SuppliersDataTable.paginatorMenu.addItems([{ text: "25", onclick:{fn:changeRecordsperPage,obj:25,scope:this.SuppliersDataTable}  } ]);
-		this.SuppliersDataTable.paginatorMenu.addItems([{ text: "50", onclick:{fn:changeRecordsperPage,obj:50,scope:this.SuppliersDataTable}  } ]);
-		this.SuppliersDataTable.paginatorMenu.addItems([{ text: "100", onclick:{fn:changeRecordsperPage,obj:100,scope:this.SuppliersDataTable}  } ]);
-		this.SuppliersDataTable.paginatorMenu.addItems([{ text: "250", onclick:{fn:changeRecordsperPage,obj:250,scope:this.SuppliersDataTable}  } ]);
-		this.SuppliersDataTable.paginatorMenu.addItems([{ text: "500", onclick:{fn:changeRecordsperPage,obj:500,scope:this.SuppliersDataTable}  } ]);
-		this.SuppliersDataTable.paginatorMenu.addItems([{ text: "all", onclick:{fn:changeRecordsperPage,obj:'all',scope:this.SuppliersDataTable}  } ]);
-		YAHOO.util.Event.addListener('paginatormenuselector'+tableid, "click", this.SuppliersDataTable.paginatorMenu.show, null, this.SuppliersDataTable.paginatorMenu);
-		this.SuppliersDataTable.paginatorMenu.render(document.body);
-		this.SuppliersDataTable.filterMenu = new YAHOO.widget.Menu('filternewmenu'+tableid,  {context:['filterselector'+tableid,"tr", "br"]  });
-		this.SuppliersDataTable.filterMenu.addItems([{ text: "<?=_('Supplier Code')?>", onclick:{fn:changeFilter,obj:{col:'code',text:"<?=_('Family Code')?>"},scope:this.SuppliersDataTable}  } ]);
-		this.SuppliersDataTable.filterMenu.addItems([{ text: "<?=_('Description')?>", onclick:{fn:changeFilter,obj:{col:'description',text:"<?=_('Description')?>"},scope:this.SuppliersDataTable}  } ]);
-		YAHOO.util.Event.addListener('filterselector'+tableid, "click", this.SuppliersDataTable.filterMenu.show, null, this.SuppliersDataTable.filterMenu);
-		this.SuppliersDataTable.filterMenu.render(document.body);
-		
-		this.SuppliersDataTable.myreload=reload;
-		this.SuppliersDataTable.sortColumn = mysort;
-		this.SuppliersDataTable.id=tableid;
-		this.SuppliersDataTable.editmode=false;
-		this.SuppliersDataTable.subscribe("initEvent", dataReturn); 
-		YAHOO.util.Event.addListener('paginator_next'+tableid, "click", nextpage, this.SuppliersDataTable); 
-		YAHOO.util.Event.addListener('paginator_prev'+tableid, "click", prevpage, this.SuppliersDataTable); 
-		YAHOO.util.Event.addListener('hidder'+tableid, "click", showtable, this.SuppliersDataTable); 
-		YAHOO.util.Event.addListener('resetfilter'+tableid, "click", resetfilter, this.SuppliersDataTable); 
-		
+		    this.dataSource0  = new YAHOO.util.DataSource("ar_contacts.php?tipo=customer_history&tid="+tableid);
+		    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource0.connXhrMode = "queueRequests";
+	    this.dataSource0.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records" // Access to value in the server response
+		},
+		fields: ["description","date_index","op","time" ]};
+		    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
+								   this.dataSource0
+								 , {
+								     renderLoopSize: 50,generateRequest : myRequestBuilder
+								       ,paginator : new YAHOO.widget.Paginator({
+									      rowsPerPage    : <?=$_SESSION['state']['customer']['table']['nr']?>,containers : 'paginator', 
+ 									      pageReportTemplate : '(<?=_('Page')?> {currentPage} <?=_('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
 
+
+
+									  })
+								     
+								     ,sortedBy : {
+									 key: "<?=$_SESSION['state']['customer']['table']['order']?>",
+									 dir: "<?=$_SESSION['state']['customer']['table']['order_dir']?>"
+								     },
+								     dynamicData : true
+
+								  }
+								   
+								 );
+	    	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
+		    this.table0.filter={key:'<?=$_SESSION['state']['customer']['table']['f_field']?>',value:'<?=$_SESSION['state']['customer']['table']['f_value']?>'};
+
+	    //   YAHOO.util.Event.addListener('f_input', "keyup",myFilterChangeValue,{table:this.table0,datasource:this.dataSource})
+			 
 	    
+	    //	    var Dom   = YAHOO.util.Dom;
+	    //alert(Dom.get('f_input'));
+
+	    YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown)
+	
 	};
     });
 
 
-
-
 function init(){
-
-
-    function mygetTerms(query) {
-	var Dom = YAHOO.util.Dom
-	var table=YAHOO.supplier.XHR_JSON.SuppliersDataTable;
-	var data=table.getDataSource();
-	var newrequest="&sf=0&f_field="+Dom.get('f_field0').value+"&f_value="+Dom.get('f_input0').value;
-
-	//	alert(newrequest);
-	data.sendRequest(newrequest,{success:table.onDataReturnInitializeTable, scope:table});
-    };
-    var oACDS = new YAHOO.widget.DS_JSFunction(mygetTerms);
-    oACDS.queryMatchContains = true;
-    var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","filtercontainer0", oACDS);
-    oAutoComp.minQueryLength = 0; 
-    
-
-
-    
-
-
-
 
 }
 

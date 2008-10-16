@@ -5,6 +5,8 @@
 
 .dtable table {width:100%}
 
+
+
 .yui-dt{border-bottom:1px solid transparent;}.yui-dt-noop{border-bottom:none;}.yui-dt-hd{display:none;}.yui-dt-scrollable .yui-dt-hd{display:block;}
 
 .yui-dt-scrollable .yui-dt-bd thead tr,.yui-dt-scrollable .yui-dt-bd thead th{position:absolute;left:-1500px;}
@@ -32,7 +34,7 @@ th.yui-dt-resizeable .yui-dt-liner{position:relative;}
 
 .kaktus .yui-dt th,.kaktus .yui-dt th a{font-weight:normal;text-decoration:none;color:#000;vertical-align:bottom}
 
-.kaktus .yui-dt th{margin:0;padding:0;}
+.kaktus .yui-dt th{margin:0;padding:0}
 .kaktus .yui-dt-liner{margin:0;padding:0;padding:2px 10px 2px 10px;}.kaktus .yui-dt-coltarget{width:5px;background-color:blue;}.kaktus .yui-dt td{margin:0;padding:0;border:none;text-align:left;}
 
 .kaktus .yui-dt-list td{border-right:none;}.kaktus .yui-dt-resizer{width:6px;}.kaktus .yui-dt-loading{background-color:#FFF;}.kaktus .yui-dt-empty{background-color:#FFF;}
@@ -109,3 +111,5 @@ div.hide{margin-right:2.5px;margin-left:0px}
 div.dates{position:relative;left:16px;padding:2px 0 0 0;margin:0;height:100%}
 
 div.wider{height:1.8em}
+
+.kaktus td{ vertical-align:top }

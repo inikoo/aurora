@@ -36,7 +36,7 @@ $js_files=array(
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
-$_SESSION['state']['assets']['page']='department';
+
 if(isset($_REQUEST['view'])){
   $valid_views=array('sales','general','stoke');
   if (in_array($_REQUEST['view'], $valid_views)) 
@@ -72,11 +72,11 @@ $families=$result->fetchRow();
 
 
 $families_order=$_SESSION['state']['departments']['table']['order'];
-$sql=sprintf("select id from product_department where  %s<'%s' order by %s desc  ",$families_order,$families[$families_order],$families_order);
+$sql=sprintf("select id,name as code from product_department  where  %s<'%s' order by %s desc  ",$families_order,$families[$families_order],$families_order);
 $result =& $db->query($sql);
 if(!$prev=$result->fetchRow())
   $prev=array('id'=>0,'code'=>'');
-$sql=sprintf("select id  from product_department where  %s>'%s' order by %s   ",$families_order,$families[$families_order],$families_order);
+$sql=sprintf("select id,name as code  from product_department  where  %s>'%s' order by %s   ",$families_order,$families[$families_order],$families_order);
 
 $result =& $db->query($sql);
 if(!$next=$result->fetchRow())
@@ -87,7 +87,7 @@ $smarty->assign('next',$next);
 
 
 
-$smarty->assign('parent','assets_tree.php');
+$smarty->assign('parent','departments.php');
 $smarty->assign('title', _('Product Families'));
 $product_home="Products Home";
 $smarty->assign('home',$product_home);
