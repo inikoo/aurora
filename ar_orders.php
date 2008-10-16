@@ -561,7 +561,7 @@ if(isset( $_REQUEST['where']))
 
 
 
-  $sql="select date_index,public_id,customer_name,id,customer_id,total,titulo,tipo from orden  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+  $sql="select UNIX_TIMESTAMP(date_index) as date_index,public_id,customer_name,id,customer_id,total,titulo,tipo from orden  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
   //print $sql;
    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
    $data=array();
@@ -571,7 +571,7 @@ if(isset( $_REQUEST['where']))
 		   'public_id'=>$row['public_id'],
 		   'customer_name'=>$row['customer_name'],
 		   'customer_id'=>$row['customer_id'],
-		   'date_index'=>$row['date_index'],
+		   'date_index'=>strftime("%e %b %Y %H:%M", strtotime('@'.$row['date_index'])),
 		   'total'=>money($row['total']),
 		   'titulo'=>$_order_tipo[$row['tipo']],
 		   'tipo'=>$row['tipo']
