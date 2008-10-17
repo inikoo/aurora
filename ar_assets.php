@@ -1664,56 +1664,60 @@ break;
    break;
    
  case('withsupplier'):
-   if(isset( $_REQUEST['sf']))
+   if(!$LU->checkRight(SUP_VIEW))
+    exit;
+
+    $conf=$_SESSION['state']['supplier']['products'];
+  if(isset( $_REQUEST['sf']))
      $start_from=$_REQUEST['sf'];
    else
-    $start_from=$_SESSION['tables']['product_withsupplier'][3];
-  if(isset( $_REQUEST['nr']))
-    $number_results=$_REQUEST['nr'];
-  else
-    $number_results=$_SESSION['tables']['product_withsupplier'][2];
+     $start_from=$conf['sf'];
+   if(isset( $_REQUEST['nr']))
+     $number_results=$_REQUEST['nr'];
+   else
+     $number_results=$conf['nr'];
   if(isset( $_REQUEST['o']))
     $order=$_REQUEST['o'];
   else
-    $order=$_SESSION['tables']['product_withsupplier'][0];
+    $order=$conf['order'];
   if(isset( $_REQUEST['od']))
     $order_dir=$_REQUEST['od'];
   else
-    $order_dir=$_SESSION['tables']['product_withsupplier'][1];
-  
-
-  $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-  
-  
-
-   if(isset( $_REQUEST['supplier_id'])  and  is_numeric($_REQUEST['supplier_id'])  )
-     $supplier_id= $_REQUEST['supplier_id'];
-   else
-     $supplier_id=$_SESSION['tables']['product_withsupplier'][4];
-  
-
-
-
-   if(isset( $_REQUEST['where']))
-     $where=addslashes($_REQUEST['where']);
-   else
-     $where=$_SESSION['tables']['product_withsupplier'][5];
-
-
-  if(isset( $_REQUEST['f_field']))
+    $order_dir=$conf['order_dir'];
+    if(isset( $_REQUEST['f_field']))
      $f_field=$_REQUEST['f_field'];
    else
-     $f_field=$_SESSION['tables']['product_withsupplier'][6];
+     $f_field=$conf['f_field'];
 
   if(isset( $_REQUEST['f_value']))
      $f_value=$_REQUEST['f_value'];
+   else
+     $f_value=$conf['f_value'];
+if(isset( $_REQUEST['where']))
+     $where=$_REQUEST['where'];
+   else
+     $where=$conf['where'];
+ 
+
+   if(isset( $_REQUEST['id']))
+    $supplier_id=$_REQUEST['id'];
   else
-    $f_value=$_SESSION['tables']['product_withsupplier'][7];
-  
+    $supplier_id=$_SESSION['state']['supplier']['id'];
 
 
+   if(isset( $_REQUEST['tableid']))
+    $tableid=$_REQUEST['tableid'];
+  else
+    $tableid=0;
 
-  $_SESSION['tables']['product_withsupplier']=array($order,$order_direction,$number_results,$start_from,$supplier_id,$where,$f_field,$f_value);
+ $filter_msg='';
+   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+ $_order=$order;
+ $_dir=$order_direction;
+ 
+
+   $_SESSION['state']['supplier']['products']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+   $_SESSION['state']['supplier']['id']=$supplier_id;
 
   $where=$where.' and ps.supplier_id='.$supplier_id;
 
@@ -1751,11 +1755,11 @@ break;
 
    $sql="select sup_code,ps.id as p2s_id,(p.units*ps.price) as price_outer,ps.price as price_unit,stock,p.condicion as condicion, p.code as code, p.id as id,p.description as description , group_id,department_id,g.name as fam, d.code as department 
 from product as p left join product_group as g on (g.id=group_id) left join product_department as d on (d.id=department_id) left join product2supplier as ps on (product_id=p.id)  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
-   //  print $sql;
+
    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
    $data=array();
    while($row=$res->fetchRow()) {
-     $code='<a href="assets_product.php?id='.$row['id'].'">'.$row['code'].'</a>';
+     $code='<a href="product.php?id='.$row['id'].'">'.$row['code'].'</a>';
      $data[]=array(
 		   'id'=>$row['id'],
 		   'p2s_id'=>$row['p2s_id'],
@@ -1784,6 +1788,10 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
    $response=array('resultset'=>
 		   array('state'=>200,
 			 'data'=>$data,
+ 'sort_key'=>$_order,
+			 'sort_dir'=>$_dir,
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
 			 'total_records'=>$total,
 			 'records_offset'=>$start_from,
 			 'records_returned'=>$start_from+$res->numRows(),
@@ -1802,7 +1810,7 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
  case('plot_weekout'): 
  case('plot_weeksales'):
    
-   $product_id=$_SESSION['tables']['order_withprod'][4];
+   $product_id=$_SESSION['state']['product']['id'];
 
 //    $sql=sprintf("select (TO_DAYS(NOW())-TO_DAYS(first_date))/7 as weeks_since  from product where id=%d",$product_id);
 //    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
@@ -1842,8 +1850,8 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
 
       if(isset($index[$row['yearweek']])){
 	$_index=$index[$row['yearweek']];
-	$data[$_index]['asales']=$row['asales'];
-	$data[$_index]['out']=$row['_out'];
+	$data[$_index]['asales']=(float)$row['asales'];
+	$data[$_index]['out']=(int)$row['_out'];
 	$fday=strftime("%d %b", strtotime('@'.$data[$_index]['utime']));
 	if($tipo=='plot_weekout')
 	  $data[$_index]['tip']=_('Outer Dispached')."\n"._('Week').' '.$data[$_index]['week']."\n"._('Starting')." ".$fday."\n".number($row['_out']).' '._('Outers');

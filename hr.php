@@ -27,7 +27,7 @@ $smarty->assign('js_files',$js_files);
 $smarty->assign('parent','staff.php');
 $smarty->assign('title', _('Staff'));
 
-print_r($_SESSION['state']['hr']);
+
 
 $smarty->display('hr.tpl');
 ?>

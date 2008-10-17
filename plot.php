@@ -8,10 +8,10 @@ switch($tipo){
  case('product_week_sales'):
    $ar_address='ar_assets.php?tipo=plot_weeksales';
    $fields='"tip","asales","date"';
-   $yfields=array(array('label'=>_('Sales'),'name'=>'asales','axis'=>'formatCurrencyAxisLabel','style'=>''));
+   $yfields=array(array('label'=>_('Sales'),'name'=>'asales','axis'=>'formatCurrencyAxisLabel','style'=>'size:5,lineSize:2'));
    $xfield=array('label'=>_('Date'),'name'=>'date');
-   $style='size:10,lineSize:1';
-   $tipo_chart='ColumnChart';
+   $style='size:1';
+   $tipo_chart='LineChart';
    break;
  case('product_quarter_sales'):
    $ar_address='ar_assets.php?tipo=plot_quartersales';

@@ -473,6 +473,7 @@ from contact     $where $wheref order by $order $order_direction limit $start_fr
    $filter_msg='';
 
    $sql="select staff.id , staff.alias,name,area_id,department_id from staff left join contact on (contact_id=contact.id)  $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
    $adata=array();
    while($data=$res->fetchRow()) {

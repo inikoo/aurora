@@ -311,10 +311,49 @@ $default_state=array(
 							      'to'=>'',
 							      'elements'=>array()
 							      )
-				       
+				       ),
+		      'supplier'=>array(
+				       'details'=>false,
+				       'plot'=>'sales_month',
+				       'id'=>1,
+				       'display'=>array('details'=>0,'plot'=>1,'products'=>0,'po'=>0,'dn'=>0),
+				       'plot_options'=>array('weeks'=>'','from'=>'','to'=>'','months'=>''),
+				       'products'=>array(
+						       'order'=>'code',
+						       'order_dir'=>'',
+						       'sf'=>0,
+						       'nr'=>15,
+						       'where'=>'where true',
+						       'f_field'=>'id',
+						       'f_value'=>'',
+						       'from'=>'',
+						       'to'=>'',
+						       ),
+				       'po'=>array(
+						   'order'=>'date_index',
+						   'order_dir'=>'desc',
+						   'sf'=>0,
+						   'nr'=>15,
+						   'where'=>'where true',
+						   'f_field'=>'id',
+							  'f_value'=>'',
+						   
+						   ),
+				       'dn'=>array(
+						   'order'=>'date_index',
+						   'order_dir'=>'desc',
+						   'sf'=>0,
+						   'nr'=>15,
+						   'where'=>'where true',
+						   'f_field'=>'id',
+						   'f_value'=>'',
+							      'from'=>'',
+						   'to'=>'',
+						   'elements'=>array()
+						   )
+					)
 
-
-					  )
+		      
 		     );
 
 

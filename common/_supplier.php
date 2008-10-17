@@ -11,4 +11,22 @@ function get_supplier_code($supplier_id){
     return false;
 }
 
+
+function get_supplier_data($supplier_id){
+  $db =& MDB2::singleton();
+
+  $sql=sprintf("select * from supplier where id=%d",$supplier_id);
+
+  $res = $db->query($sql);  
+  $data=array();
+  if ($row=$res->fetchRow()){
+    $data= $row;
+  }
+
+  return $data;
+}
+
+
+
+
 ?>

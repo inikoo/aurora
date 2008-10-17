@@ -159,11 +159,12 @@ $tipo_plot='sales';
 if(preg_match('/outers/',$_SESSION['state']['product']['plot']))
   $tipo_plot='outers';
 
+
 if($weeks>500){
   $time_plot='month';
  }elseif($weeks>52){
    $time_plot='month';
- }elseif($weeks>26){
+ }else{
    $time_plot='week';
  }
 
