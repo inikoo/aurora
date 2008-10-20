@@ -45,8 +45,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       {key:"id", label:"<?=$customers_ids[0]?>", formatter:this.customerLink,width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"name", label:"<?=_('Name')?>", width:250,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       //,{key:"location", label:"<?=_('Location')?>", width:230,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       //,{key:"last_order", label:"<?=_('Last Order')?>",width:100,formatter:this.date,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       //,{key:"orders", label:"<?=_('Orders')?>",sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"last_order", label:"<?=_('Last Order')?>",width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"orders", label:"<?=_('Orders')?>",sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				       //,{key:"super_total", label:"<?=_('Total')?>",sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				       
 				       //					 {key:"families", label:"<?=_('Customers')?>", sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
@@ -74,8 +74,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 "id"
 			 ,"name"
 			 //,'location'
-			 //,'orders'
-			 //,'last_order'
+			 ,'orders'
+			 ,'last_order'
 			 //,'flast_order'
 			 //,'super_total'
 			 //,{key:"families",parser:YAHOO.util.DataSource.parseNumber},
@@ -91,7 +91,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								   this.dataSource0
 								 , {
 								     // sortedBy: {key:"<?=$_SESSION['tables']['customers_list'][0]?>", dir:"<?=$_SESSION['tables']['customers_list'][1]?>"},
-							 renderLoopSize: 50,generateRequest : myRequestBuilder,initialLoad:false
+							 renderLoopSize: 50,generateRequest : myRequestBuilder
+							 //,initialLoad:false
 								       ,paginator : new YAHOO.widget.Paginator({
 									      rowsPerPage    : <?=$_SESSION['state']['customers']['table']['nr']?>,containers : 'paginator', 
  									      pageReportTemplate : '(<?=_('Page')?> {currentPage} <?=_('of')?> {totalPages})',
@@ -190,20 +191,15 @@ var submit_advanced_search = function(e){
     var table=tables.table0;
     var datasource=tables.dataSource0;
 
-    var request='&sf=0&awhere=' +jsonStr + '&order=name';
-    
+    var request='&sf=0&where=' +jsonStr + '&order=file_as';
+    //  var request='&where=caca';
     alert(request);
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);     
 
     
 }
 
-
-
 YAHOO.util.Event.addListener('submit_advanced_search', "click",submit_advanced_search);
-
-
-
  }
 
 YAHOO.util.Event.onDOMReady(init);

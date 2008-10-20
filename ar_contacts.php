@@ -535,10 +535,10 @@ case('customers_advanced_search'):
 //      $f_value=$_REQUEST['f_value'];
 //    else
 //      $f_value=$conf['f_value'];
-  if(isset( $_REQUEST['awhere']))
-     $awhere=$_REQUEST['awhere'];
+  if(isset( $_REQUEST['where']))
+     $awhere=$_REQUEST['where'];
    else
-     $awhere=$conf['awhere'];
+     $awhere=$conf['where'];
   
   
    if(isset( $_REQUEST['tableid']))
@@ -551,14 +551,19 @@ case('customers_advanced_search'):
    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
    $_order=$order;
    $_dir=$order_direction;
+
+   //print_r($_SESSION['state']['customers']['advanced_search']);
    $_SESSION['state']['customers']['advanced_search']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from
-							    //,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value
+							    ,'where'=>$awhere
+							    //,'f_field'=>$f_field,'f_value'=>$f_value
 							   );
    $filter_msg='';
-   $awhere='{"from1":"","from2":"","product_not_ordered1":"","product_not_ordered2":"","product_not_received1":"","product_not_received2":"","product_ordered1":"g(ob)","product_ordered2":"","to1":"","to2":""}';
-  $awhere=json_decode($awhere,TRUE);
-  
-  $where='where ';
+   // $awhere='{"from1":"","from2":"","product_not_ordered1":"","product_not_ordered2":"","product_not_received1":"","product_not_received2":"","product_ordered1":"g(ob)","product_ordered2":"","to1":"","to2":""}';
+   $awhere=preg_replace('/\\\"/','"',$awhere);
+  //    print "$awhere";
+   $awhere=json_decode($awhere,TRUE);
+  // print_r($awhere);
+   $where='where ';
 
   if($awhere['product_ordered1']!=''){
     if($awhere['product_ordered1']!='ANY'){
@@ -626,7 +631,7 @@ case('customers_advanced_search'):
 
   
   $sql="select count(distinct customer_id) as total  from customer left join orden on (customer_id=customer.id) left join transaction on (order_id=orden.id) left join product on (product_id=product.id) left join product_group on (group_id=product_group.id) $where  ";
- print $sql;
+ // print $sql;
 
    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
    if($row=$res->fetchRow()) {
@@ -635,14 +640,17 @@ case('customers_advanced_search'):
      $total=0;
 
 
-  $sql="select customer.id,customer.name from customer left join orden on (customer_id=customer.id) left join transaction on (order_id=orden.id) left join product on (product_id=product.id)  left join product_group on (group_id=product_group.id) $where  group by customer_id order by $order $order_direction limit $start_from,$number_results";
- print $sql;
+  $sql="select UNIX_TIMESTAMP(max(date_index)) as last_order ,count(distinct orden.id) as orders, customer.id,customer.name from customer left join orden on (customer_id=customer.id) left join transaction on (order_id=orden.id) left join product on (product_id=product.id)  left join product_group on (group_id=product_group.id) $where  group by customer_id order by $order $order_direction limit $start_from,$number_results";
+  //print $sql;
  $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
   $adata=array();
   while($data=$res->fetchRow()) {
+     $id="<a href='customer.php?id=".$data['id']."'>".$myconf['customer_id_prefix'].sprintf("%05d",$data['id']).'</a>';
       $adata[]=array(
-		   'id'=>$data['id'],
-		   'name'=>$data['name']
+		   'id'=>$id,
+		   'name'=>$data['name'],
+		   'orders'=>$data['orders'],
+		   'last_order'=>strftime("%e %b %Y", strtotime('@'.$data['last_order'])),
 		     );		   
       
   }
@@ -839,8 +847,8 @@ else if($f_field=='id'  )
 		   //	   'location'=>$data['location'],
 		   'location'=>$location,
 		   'orders'=>$orders,
-		   'last_order'=>$last_order,
-		   'flast_order'=>strftime("%e %b %Y", strtotime('@'.$last_order)),
+		   // 'last_order'=>$last_order,
+		   'last_order'=>strftime("%e %b %Y", strtotime('@'.$last_order)),
 		   'super_total'=>$super_total
       
 		   );

@@ -64,7 +64,7 @@ if(!isset($_REQUEST['id']) and is_numeric($_REQUEST['id']))
   $product_id=1;
 else
   $product_id=$_REQUEST['id'];
-
+$_SESSION['state']['product']['id']=$product_id;
 
 
 $product= new product();
