@@ -172,6 +172,45 @@ YAHOO.util.Event.onContentReady("rppmenu", function () {
 
 
 
+var open_advanced_search = function(e){
+	 Dom.get('details').style.display='none';
+	 Dom.get('the_table').style.display='none';
+	 Dom.get('but_show_details').style.display='none';
+	 Dom.get('the_search_box').style.display='none';
+	 Dom.get('advanced_search').style.display='';
+}
+
+var submit_advanced_search = function(e){
+
+    var data={ 
+	product_ordered1:Dom.get('product_ordered1').value,
+	product_ordered2: Dom.get('product_ordered2').value,
+	product_not_ordered1: Dom.get('product_not_ordered1').value,
+	product_not_ordered2: Dom.get('product_not_ordered2').value,
+	product_not_received1: Dom.get('product_not_received1').value,
+	product_not_received2: Dom.get('product_not_received2').value,
+	from1:Dom.get('v_calpop1').value,
+	from2:Dom.get('v_calpop3').value,
+	to1:Dom.get('v_calpop2').value,
+	to2:Dom.get('v_calpop4').value
+    }
+    var jsonStr = YAHOO.lang.JSON.stringify(data);
+    var Dom   = YAHOO.util.Dom;
+    var table=tables.table0;
+    var datasource=tables.dataSource0;
+    var request='&sf=0&awhere=' +jsonStr + '&order=name';
+    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);     
+
+    
+}
+
+
+YAHOO.util.Event.addListener('but_show_details', "click",show_details,'customers');
+YAHOO.util.Event.addListener('but_advanced_search', "click",open_advanced_search);
+YAHOO.util.Event.addListener('submit_advanced_search', "click",submit_advanced_search);
+
+
+
  }
 
 YAHOO.util.Event.onDOMReady(init);

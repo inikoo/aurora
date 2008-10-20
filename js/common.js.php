@@ -251,6 +251,7 @@ function deleteRow(tblId, txtIndex, txtError)
 
     
 var show_details=function(e,location){
+
      var state=this.getAttribute('state');
      if(state==1){
 	 Dom.get('details').style.display='none';

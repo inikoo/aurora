@@ -180,7 +180,9 @@ $default_state=array(
 				    ),
 
 		     'customers'=>array(
-				    'table'=>array(
+					'details'=>0,
+					'advanced_search'=>0,
+					'table'=>array(
 						   'order'=>'name',
 						   'order_dir'=>'',
 						   'sf'=>0,
@@ -188,7 +190,18 @@ $default_state=array(
 						   'where'=>'where true',
 						   'f_field'=>'name',
 						   'f_value'=>''
+						       ),
+					'advanced_search'=>array(
+						   'order'=>'file_as',
+						   'order_dir'=>'',
+						   'sf'=>0,
+						   'nr'=>25,
+						   'where'=>'',
+						   'f_field'=>'',
+						   'f_value'=>''
 						   )
+
+
 				    ),
 		      'customer'=>array(
 					'id'=>1,
@@ -228,6 +241,27 @@ $default_state=array(
 						   'f_field'=>'alias',
 						   'f_value'=>''
 						   )
+				    ),
+		      'users'=>array(
+				    'user_list'=>array(
+						       'order'=>'handle',
+						       'order_dir'=>'',
+						       'sf'=>0,
+						       'nr'=>50,
+						       'where'=>'where true',
+						       'f_field'=>'name',
+						       'f_value'=>''
+						       ),
+				     'groups'=>array(
+						       'order'=>'name',
+						       'order_dir'=>'',
+						       'sf'=>0,
+						       'nr'=>50,
+						       'where'=>'where true',
+						       'f_field'=>'name',
+						       'f_value'=>''
+						       ),
+
 				    ),
 
 		     'departments'=>array(

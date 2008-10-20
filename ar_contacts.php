@@ -506,6 +506,165 @@ from contact     $where $wheref order by $order $order_direction limit $start_fr
 		   );
    echo json_encode($response);
    break;
+case('customers_advanced_search'):
+ if(!$LU->checkRight(CUST_VIEW))
+    exit;
+ $conf=$_SESSION['state']['customers']['advanced_search'];
+  if(isset( $_REQUEST['sf']))
+     $start_from=$_REQUEST['sf'];
+   else
+     $start_from=$conf['sf'];
+   if(isset( $_REQUEST['nr']))
+     $number_results=$_REQUEST['nr'];
+   else
+     $number_results=$conf['nr'];
+  if(isset( $_REQUEST['o']))
+    $order=$_REQUEST['o'];
+  else
+    $order=$conf['order'];
+  if(isset( $_REQUEST['od']))
+    $order_dir=$_REQUEST['od'];
+  else
+    $order_dir=$conf['order_dir'];
+//     if(isset( $_REQUEST['f_field']))
+//      $f_field=$_REQUEST['f_field'];
+//    else
+//      $f_field=$conf['f_field'];
+
+//   if(isset( $_REQUEST['f_value']))
+//      $f_value=$_REQUEST['f_value'];
+//    else
+//      $f_value=$conf['f_value'];
+  if(isset( $_REQUEST['awhere']))
+     $awhere=$_REQUEST['awhere'];
+   else
+     $awhere=$conf['awhere'];
+  
+  
+   if(isset( $_REQUEST['tableid']))
+    $tableid=$_REQUEST['tableid'];
+  else
+    $tableid=0;
+
+   
+   $filtered=0;
+   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+   $_order=$order;
+   $_dir=$order_direction;
+   $_SESSION['state']['customers']['advanced_search']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from
+							    //,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value
+							   );
+   $filter_msg='';
+   $awhere='{"from1":"","from2":"","product_not_ordered1":"","product_not_ordered2":"","product_not_received1":"","product_not_received2":"","product_ordered1":"g(ob)","product_ordered2":"","to1":"","to2":""}';
+  $awhere=json_decode($awhere,TRUE);
+  
+  $where='where ';
+
+  if($awhere['product_ordered1']!=''){
+    if($awhere['product_ordered1']!='ANY'){
+      $where_product_ordered1=extract_product_groups($awhere['product_ordered1']);
+    }else
+      $where_product_ordered1='true';
+  }else
+    $where_product_ordered1='false';
+  
+  if($awhere['product_not_ordered1']!=''){
+    if($awhere['product_not_ordered1']!='ALL'){
+      $where_product_not_ordered1=extract_product_groups($awhere['product_ordered1'],'product.code not like','transaction.product_id not like','product_group.name not like','product_group.id like');
+    }else
+      $where_product_not_ordered1='false';
+  }else
+    $where_product_not_ordered1='true';
+
+ if($awhere['product_not_received1']!=''){
+    if($awhere['product_not_received1']!='ANY'){
+      $where_product_not_received1=extract_product_groups($awhere['product_ordered1'],'(ordered-dispached)>0 and    product.code  like','(ordered-dispached)>0 and  transaction.product_id not like','(ordered-dispached)>0 and  product_group.name not like','(ordered-dispached)>0 and  product_group.id like');
+    }else
+      $where_product_not_received1=' ((ordered-dispached)>0)  ';
+  }else
+    $where_product_not_received1='true';
+
+
+ if(($awhere['product_ordered2']=='' and $awhere['product_not_ordered2']=='' and $awhere['product_not_received2']=='') or ($awhere['from2']==0 and $awhere['to2'])){
+   $second_fields='';
+ }else{
+
+ if($awhere['product_ordered2']!=''){
+    if($awhere['product_ordered2']!='ANY'){
+      $where_product_ordered2=extract_product_groups($awhere['product_ordered2']);
+    }else
+      $where_product_ordered2='true';
+  }else
+    $where_product_ordered2='false';
+  
+  if($awhere['product_not_ordered2']!=''){
+    if($awhere['product_not_ordered2']!='ALL'){
+      $where_product_not_ordered2=extract_product_groups($awhere['product_ordered2'],'product.code not like','transaction.product_id not like','product_group.name not like','product_group.id like');
+    }else
+      $where_product_not_ordered2=false;
+  }else
+    $here_product_not_ordered2=true;
+
+ if($awhere['product_not_received2']!=''){
+    if($awhere['product_not_received2']!='ANY'){
+      $where_product_not_received2=extract_product_groups($awhere['product_ordered2'],'(ordered-dispached)>0 and    product.code  like','(ordered-dispached)>0 and  transaction.product_id not like','(ordered-dispached)>0 and  product_group.name not like','(ordered-dispached)>0 and  product_group.id like');
+    }else
+      $where_product_not_received2=' ((ordered-dispached)>0)  ';
+  }else
+    $where_product_not_received2='true';
+ 
+ $second_fields="and (".$where_product_ordered2.' and '.$where_product_not_ordered2.' and '.$where_product_not_received2.$date_interval2['mysql'].")";
+ }
+
+  $date_interval1=prepare_mysql_dates($awhere['from1'],$awhere['to1'],'date_index','only_dates');
+  $date_interval2=prepare_mysql_dates($awhere['from2'],$awhere['to2'],'date_index','only_dates');
+  $where='where ('.$where_product_ordered1.' and '.$where_product_not_ordered1.' and '.$where_product_not_received1.$date_interval1['mysql'].") $second_fields";
+  
+  
+  
+
+
+  
+  $sql="select count(distinct customer_id) as total  from customer left join orden on (customer_id=customer.id) left join transaction on (order_id=orden.id) left join product on (product_id=product.id) left join product_group on (group_id=product_group.id) $where  ";
+ print $sql;
+
+   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   if($row=$res->fetchRow()) {
+     $total=$row['total'];
+   }else
+     $total=0;
+
+
+  $sql="select customer.id,customer.name from customer left join orden on (customer_id=customer.id) left join transaction on (order_id=orden.id) left join product on (product_id=product.id)  left join product_group on (group_id=product_group.id) $where  group by customer_id order by $order $order_direction limit $start_from,$number_results";
+ print $sql;
+ $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+  $adata=array();
+  while($data=$res->fetchRow()) {
+      $adata[]=array(
+		   'id'=>$data['id'],
+		   'name'=>$data['name']
+		     );		   
+      
+  }
+  
+  $response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$adata,
+			 'sort_key'=>$_order,
+			 'sort_dir'=>$_dir,
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
+			 'total_records'=>$total,
+			 'records_offset'=>$start_from,
+			 'records_returned'=>$start_from+$res->numRows(),
+			 'records_perpage'=>$number_results,
+			 'records_order'=>$order,
+			 'records_order_dir'=>$order_dir,
+			 'filtered'=>$filtered
+			 )
+		   );	
+  echo json_encode($response);
+  break;
 case('customers'):
   
   if(!$LU->checkRight(CUST_VIEW))
@@ -541,6 +700,7 @@ if(isset( $_REQUEST['where']))
      $where=$_REQUEST['where'];
    else
      $where=$conf['where'];
+
   
    if(isset( $_REQUEST['tableid']))
     $tableid=$_REQUEST['tableid'];
@@ -1504,6 +1664,58 @@ case('plot_order_interval'):
    echo json_encode($response);
    
  }
+
+function extract_product_groups($str,
+				$q_prod_name='product.code like',
+				$q_prod_id='transaction.product_id like',
+				$q_group_name='product_group.name like',
+				$q_group_id='product_group.id like'
+				){
+  if($str=='')
+    return '';
+  $where='';
+  $where_g='';
+  if(preg_match_all('/g\([a-z0-9\-\,]*\)/i',$str,$matches)){
+    
+
+    foreach($matches[0] as $match){
+      
+      $_groups=preg_replace('/\)$/i','',preg_replace('/^g\(/i','',$match));
+      $_groups=preg_split('/\s*,\s*/i',$_groups);
+
+      foreach($_groups as $group){
+	$group_ordered=addslashes($group);
+	if(is_numeric($group_ordered))
+	  $where_g.=" or $q_group_id  '$group_ordered'";
+	else
+	  $where_g.=" or $q_group_name '$group_ordered'";
+      }
+    }
+    $str=preg_replace('/g\([a-z0-9\-\,]*\)/i','',$str);
+  }
+  
+
+  $products=preg_split('/\s*,\s*/i',$str);
+  
+  $where_p='';
+  foreach($products as $product){
+    if($product!=''){
+      $product=addslashes($product);
+      if(is_numeric($product))
+	$where_p.= " or $q_prod_id  '$product'";
+      else
+	$where_p.= " or $q_prod_name  '$product'";
+    }
+  }
+  
+  
+
+  $where=preg_replace('/^\s*or\s*/i','',$where_g.$where_p);
+  return '('.$where.')';
+  
+}
+
+
 
 
 ?>

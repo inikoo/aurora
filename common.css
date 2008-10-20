@@ -371,7 +371,10 @@ color: #316D89;
 .top_bar .details{clear:both;padding:10px 20px ;border:1px solid #ddd;margin:0 20px;}
 
 /*Common search div*/
-.search_box{clear:both;float:right;border: 0px solid #ddd;text-align:right;padding:10px   }
+.search_box{clear:both;float:right;border: 0px solid #ddd;text-align:right;padding:0 10 10px 10px   }
 .search_box form{ margin-bottom:5px }
 .search_box .search_title{ position:relative;left:16px }
 .state_details{color:#777;cursor:pointer;font-size:85%;} .state_details:hover{color:#777;text-decoration:underline}
+
+/*EDIT SECTION*/
+.but {cursor:pointer }

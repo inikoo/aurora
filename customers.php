@@ -114,6 +114,8 @@ $js_files=array(
 		);
 
 
+$smarty->assign('details',$_SESSION['state']['customers']['details']);
+$smarty->assign('advanced_search',$_SESSION['state']['customers']['advanced_search']);
 
 
 $smarty->assign('parent','customers.php');

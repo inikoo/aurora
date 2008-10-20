@@ -24,34 +24,53 @@ $tipo=$_REQUEST['tipo'];
 switch($tipo){
  case('users'):
 
-
-   if(isset( $_REQUEST['sf']))
+ $conf=$_SESSION['state']['users']['user_list'];
+  if(isset( $_REQUEST['sf']))
      $start_from=$_REQUEST['sf'];
    else
-     $start_from=$_SESSION['tables']['users_list'][3];
+     $start_from=$conf['sf'];
    if(isset( $_REQUEST['nr']))
      $number_results=$_REQUEST['nr'];
    else
-     $number_results=$_SESSION['tables']['users_list'][2];
-   if(isset( $_REQUEST['o']))
-     $order=$_REQUEST['o'];
+     $number_results=$conf['nr'];
+  if(isset( $_REQUEST['o']))
+    $order=$_REQUEST['o'];
+  else
+    $order=$conf['order'];
+  if(isset( $_REQUEST['od']))
+    $order_dir=$_REQUEST['od'];
+  else
+    $order_dir=$conf['order_dir'];
+    if(isset( $_REQUEST['f_field']))
+     $f_field=$_REQUEST['f_field'];
    else
-     $order=$_SESSION['tables']['users_list'][0];
-  
-   if(isset( $_REQUEST['od']))
-     $order_dir=$_REQUEST['od'];
-   else
-     $order_dir=$_SESSION['tables']['users_list'][1];
-   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+     $f_field=$conf['f_field'];
 
+  if(isset( $_REQUEST['f_value']))
+     $f_value=$_REQUEST['f_value'];
+   else
+     $f_value=$conf['f_value'];
+  if(isset( $_REQUEST['where']))
+     $where=$_REQUEST['where'];
+   else
+     $where=$conf['where'];
   
-   $_SESSION['tables']['users_list']=array($order,$order_direction,$number_results,$start_from);
+   if(isset( $_REQUEST['tableid']))
+    $tableid=$_REQUEST['tableid'];
+  else
+    $tableid=0;
+
+ $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+   $_order=$order;
+   $_dir=$order_direction;
+   $filter_msg='';
+
+
+  $_SESSION['state']['users']['user_list']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+
 
    $filtered=0;
-
-
    $adata=array();
-
    $sql="
 select u.authuserid as id ,gu.group_id,group_concat(distinct g.group_id separator ',') as groups,u.isactive as isactive,u.name as name ,u.surname as surname,u.email as email,u.handle as handle,lower(c.code2) as countrycode,l.id as lang_id,c.Name as country from liveuser_users as u left join liveuser_perm_users as pu on (u.authuserid=pu.auth_user_id) left join liveuser_groupusers as gu on (gu.perm_user_id=pu.perm_user_id) left join liveuser_groups as g on (g.group_id=gu.group_id)  left join lang as l on (l.id=lang_id) left join country as c on (l.country_id=c.id)  where u.authuserid>1  group by u.authuserid   order by $order $order_direction limit $start_from,$number_results    ;
 ";
@@ -114,6 +133,10 @@ select u.authuserid as id ,gu.group_id,group_concat(distinct g.group_id separato
    $response=array('resultset'=>
 		   array('state'=>200,
 			 'data'=>$adata,
+	 'sort_key'=>$_order,
+			 'sort_dir'=>$_dir,
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
 			 'total_records'=>$total,
 			 'records_offset'=>$start_from,
 			 'records_returned'=>$start_from+$res->numRows(),
@@ -130,28 +153,50 @@ select u.authuserid as id ,gu.group_id,group_concat(distinct g.group_id separato
    break;
  case('groups'):
 
-
-if(isset( $_REQUEST['sf']))
+ $conf=$_SESSION['state']['users']['groups'];
+  if(isset( $_REQUEST['sf']))
      $start_from=$_REQUEST['sf'];
    else
-     $start_from=$_SESSION['tables']['groups_list'][3];
+     $start_from=$conf['sf'];
    if(isset( $_REQUEST['nr']))
      $number_results=$_REQUEST['nr'];
    else
-     $number_results=$_SESSION['tables']['groups_list'][2];
-   if(isset( $_REQUEST['o']))
-     $order=$_REQUEST['o'];
+     $number_results=$conf['nr'];
+  if(isset( $_REQUEST['o']))
+    $order=$_REQUEST['o'];
+  else
+    $order=$conf['order'];
+  if(isset( $_REQUEST['od']))
+    $order_dir=$_REQUEST['od'];
+  else
+    $order_dir=$conf['order_dir'];
+    if(isset( $_REQUEST['f_field']))
+     $f_field=$_REQUEST['f_field'];
    else
-     $order=$_SESSION['tables']['groups_list'][0];
-  
-   if(isset( $_REQUEST['od']))
-     $order_dir=$_REQUEST['od'];
-   else
-     $order_dir=$_SESSION['tables']['groups_list'][1];
-   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+     $f_field=$conf['f_field'];
 
+  if(isset( $_REQUEST['f_value']))
+     $f_value=$_REQUEST['f_value'];
+   else
+     $f_value=$conf['f_value'];
+  if(isset( $_REQUEST['where']))
+     $where=$_REQUEST['where'];
+   else
+     $where=$conf['where'];
   
-   $_SESSION['tables']['groups_list']=array($order,$order_direction,$number_results,$start_from);
+   if(isset( $_REQUEST['tableid']))
+    $tableid=$_REQUEST['tableid'];
+  else
+    $tableid=0;
+
+ $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+   $_order=$order;
+   $_dir=$order_direction;
+   $filter_msg='';
+
+
+  $_SESSION['state']['users']['groups']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+
 
    $filtered=0;
 
@@ -176,6 +221,10 @@ if(isset( $_REQUEST['sf']))
    $response=array('resultset'=>
 		   array('state'=>200,
 			 'data'=>$data,
+			 	 'sort_key'=>$_order,
+			 'sort_dir'=>$_dir,
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
 			  'total_records'=>$total,
 			 'records_offset'=>$start_from,
 			 'records_returned'=>$start_from+$res->numRows(),

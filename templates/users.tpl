@@ -1,19 +1,29 @@
 {include file='header.tpl'}
 <div id="bd" >
   <div id="yui-main">
-    <div class="yui-b">
-      <h2>{t}Users Administration{/t}</h2>
-      {include file='table.tpl' table_id=0 table_title='Users' filter=$filter filter_name=$filter_name}
-      {include file='table.tpl' table_id=1 table_title='Groups' filter=$filter filter_name=$filter_name}
-      
+    <div style="width:300px;float:right;padding:10px;text-align:right">
+      <span class="but new edit" id="add_user">Add User</span>
     </div>
+<div is="add_user" class="data_table" style="margin-top:25px">
+  <span class="clean_table_title">{t}Users{/t}</span>
+  <div  class="clean_table_caption"  style="clear:both;">
+    <div style="float:left;"><div class="clean_table_info">{$table_info} <span class="filter_msg"  id="filter_msg0"></span></div></div>
+    <div class="clean_table_filter"><div class="clean_table_info">{$filter_name}: <input style="border-bottom:none" id='f_input0' value="{$filter_value}" size=10/><div id='f_container0'></div></div></div>
+    <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
   </div>
-    <div class="yui-b">
-      <h2>{t}Edit Options{/t}</h2>
-      <button id="add_user">{t}Add User{/t}</button><br/><br/>
-      <button id="edit_users">{t}Edit Users{/t}</button>
-    </div>
+  <div  id="table0"   class="data_table_container dtable btable "> </div>
+</div>
+<div class="data_table" style="margin-top:25px">
+  <span class="clean_table_title">{t}Groups{/t}</span>
+  <div  class="clean_table_caption"  style="clear:both;">
+    <div style="float:left;"><div class="clean_table_info">{$table_info} <span class="filter_msg"  id="filter_msg1"></span></div></div>
+    <div class="clean_table_filter"><div class="clean_table_info">{$filter_name}: <input style="border-bottom:none" id='f_input1' value="{$filter_value}" size=10/><div id='f_container1'></div></div></div>
+    <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator1"></span></div></div>
+  </div>
+  <div  id="table1"   class="data_table_container dtable btable "> </div>
+</div>
 
+  </div>
 </div> 
 <div id="add_user_dialog">
   <div class="hd">{t}New user{/t}</div>
@@ -51,5 +61,24 @@
     </form>
   </div>
 </div>
+
+
+<div id="choose_user_kind_dialog">
+  <div class="hd">{t}Choose kind of user{/t}</div>
+  <div class="bd">
+    <table>
+      <tr><td>Staff</td></tr>
+      <tr><td>Supplier</td></tr>
+      <tr><td>Customer</td></tr>
+      <tr><td>Other</td></tr>
+    </table>
+  </div>
+</div>
+
+
+
+
+
+
 {include file='footer.tpl'}
 

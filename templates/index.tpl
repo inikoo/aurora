@@ -1,9 +1,4 @@
-
-<html>
-<head>
-<title>Smarty</title>
-</head>
-<body>
-Hello, {$name}!
-</body>
-</html>
+{include file='header.tpl'}
+<div id="bd" >
+</div>
+{include file='footer.tpl'}
