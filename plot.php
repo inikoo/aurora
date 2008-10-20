@@ -9,7 +9,7 @@ switch($tipo){
    $ar_address='ar_assets.php?tipo=plot_weeksales';
    $fields='"tip","asales","date"';
    $yfields=array(array('label'=>_('Sales'),'name'=>'asales','axis'=>'formatCurrencyAxisLabel','style'=>'size:5,lineSize:2'));
-   $xfield=array('label'=>_('Date'),'name'=>'date');
+   $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category');
    $style='size:1';
    $tipo_chart='LineChart';
    break;
@@ -26,7 +26,7 @@ switch($tipo){
    $ar_address='ar_assets.php?tipo=plot_monthsales';
    $fields='"asales","date","tip_asales"';
    $yfields=array(array('label'=>_('Sales'),'name'=>'asales','axis'=>'formatCurrencyAxisLabel','style'=>'size:10'));
-   $xfield=array('label'=>_('Date'),'name'=>'date');
+   $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category','axis'=>'justyears');
    $style='size:5,lineSize:1';
  $tipo_chart='ColumnChart';
     break;
@@ -206,8 +206,10 @@ else
 value=""
 return value;
 }
-var xAxis = new YAHOO.widget.CategoryAxis();
-xAxis.labelFunction = "justyears";
+
+var xAxis = new YAHOO.widget.'.$xfield['tipo_axis'].'Axis();
+
+'.(isset($xfield['axis'])?'xAxis.labelFunction = "'.$xfield['axis'].'";':'').'
 
 
 var mychart = new YAHOO.widget.'.$tipo_chart.'( '.($tipo_chart=='CartesianChart'?"'line',":'').'  "plot", jsonData,

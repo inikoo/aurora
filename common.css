@@ -320,9 +320,13 @@ table.options{margin:0 ;float:right;border-collapse: separate;;border-spacing:3p
 .cal_menu{clear:both;float:right;border:1px solid #ccc;padding:10px;width:180px;margin-top:10px }
 
 
-.plot_options{width:135px;float:right;text-align:right  }
+.plot_options{width:130px;float:right;text-align:right  }
 .plot_options h3{text-align:left;font-weight:bold;margin-top:10px  }
-
+.plot_options .other_options {clear:both;text-align:right;font-size:80%}
+.plot_options .other_options table {float:right}
+.plot_options .other_options table tr.title{border-bottom:1px solid #ccc;height:25px;vertical-align:bottom}
+.plot_options .other_options table td{text-align:right;vertical-align:bottom}
+.plot_options input {vertical-align:bottom}
 .caca{ background:green;margin:0;margin:0 0  0 20px }
 
 div.skinnedSelect {

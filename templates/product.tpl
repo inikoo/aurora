@@ -182,7 +182,7 @@
 
 
   <div id="block_plot" style="clear:both;{if $display.plot==0}display:none{/if}">
-    <div id="plot_options">
+    <div id="plot_options" class="plot_options" xstyle="float:right;width:130px">
       <table border=0 class="plot_menu" style="margin-top:30px">
 	<tr class="top">
 	  <td class="left"></td>
@@ -215,10 +215,17 @@
 	      <td></td>
 	    </tr>
       </table>
-      
-      
-      
+      <div class="other_options">
+	<table >
+	  <tr class="title"><td>Dates</td><tr> 
+	  <tr><td >Show last</td><tr> 
+	  <tr><td>  <input type="text" size="2" style="vertical-align:bottom"/> <span style="">months</span></td><tr> 
+	  <tr class="title"><td>Y-Axis Range</td><tr> 
+	  <tr><td>All <input type="radio" name="y_range" checked="cheked" value="all"></td><tr> 
+	  <tr><td>&sigma; <input type="radio" name="y_range" value="sigma"></td><tr> 
 
+	</table>
+      </div>
       
     </div>
     <div id="xplot0" class="product_plot"  style="height:300px;{if $view_plot!=0};display:none{/if}" >
