@@ -76,6 +76,9 @@ switch($_SESSION['tables']['proinvoice_list'][5]){
  default:
    $filter_text='?';
  }
+include_once('common/string.php');
+include_once('common/_customer.php');
+
 
 $smarty->assign('filter_name',$filter_text);
 $smarty->assign('f_date',_('Week').strftime(" %W %Y" ));

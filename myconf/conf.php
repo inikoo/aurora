@@ -180,8 +180,8 @@ $default_state=array(
 				    ),
 
 		     'customers'=>array(
+					'view'=>'general',
 					'details'=>0,
-					'advanced_search'=>0,
 					'table'=>array(
 						   'order'=>'name',
 						   'order_dir'=>'',
@@ -192,7 +192,7 @@ $default_state=array(
 						   'f_value'=>''
 						       ),
 					'advanced_search'=>array(
-						   'order'=>'file_as',
+						   'order'=>'name',
 						   'order_dir'=>'',
 						   'sf'=>0,
 						   'nr'=>25,
@@ -205,6 +205,7 @@ $default_state=array(
 				    ),
 		      'customer'=>array(
 					'id'=>1,
+				       
 					'table'=>array(
 						       'order'=>'date_index',
 						       'order_dir'=>'desc',

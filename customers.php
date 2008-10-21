@@ -227,6 +227,7 @@ $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
 $continents=mysql_num_rows($result);
 
 $export_text=translate("%1\$s are based in $home_informal_name, the other %2\$s customers (%3\$s%\ of sales)  are distributed over %4\$s countries and %5\$s continents.",$percentage_domestic,$export_customers,percentage($export_total_net,$total_net),$countries,$continents);
+$smarty->assign('view',$_SESSION['state']['customers']['view']);
 
 
 $smarty->assign('export_text',$export_text);

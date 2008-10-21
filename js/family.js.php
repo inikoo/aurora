@@ -3,7 +3,7 @@ include_once('../common.php');
 ?>
 
     var change_view=function(e){
-		var table=tables['table0'];
+	
 	var table=tables['table0'];
 
 	//	alert(table.view+' '+tipo)

@@ -43,6 +43,7 @@ else
 
 
 $_SESSION['state']['customer']['id']=$customer_id;
+$_SESSION['state']['customer']['table']['sf']=0;
 
 //$sql=sprintf("select cu.total,cu.num_orders as orders,cu.order_interval,co.tipo as tipo_customer, cu.id as id,cu.contact_id,cu.name as name from customer as cu  left join contact as co on (cu.contact_id=co.id ) where cu.id=%d ",$customer_id);
 //print $sql;

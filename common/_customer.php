@@ -170,6 +170,17 @@ $obj='name';$obj=mb_ucwords($obj);
 }
 
 
+function update_all_customers($since='0000-00-00'){
+   $db =& MDB2::singleton();
+  $sql="select id from customer where main_email is null order by id desc;";
+  $res = $db->query($sql);
+  while ($row = $res->fetchRow() ) {
+    update_customer($row['id'],$since);
+  }
+  
+}
+
+
 function update_customer($customer_id,$since='0000-00-00'){
 
   if(!$customer_id){
@@ -180,7 +191,29 @@ function update_customer($customer_id,$since='0000-00-00'){
   
 
 
+   //update main telephone and main email
 
+   
+   $sql=sprintf("select contact.main_tel,contact.main_email,contact.main_address from contact left join customer  on (contact.id=contact_id) where  customer.id=%d ",$customer_id);
+
+  $res = $db->query($sql);
+    if ($row = $res->fetchRow() ) {
+      if(is_numeric($row['main_tel']) and $row['main_tel']>0  ){
+	$sql=sprintf("update customer set main_tel=%d where id=%d",$row['main_tel'],$customer_id);
+	mysql_query($sql);
+      }
+      if(is_numeric($row['main_email']) and $row['main_email']>0  ){
+	$sql=sprintf("update customer set main_email=%d where id=%d",$row['main_email'],$customer_id);
+	mysql_query($sql);
+      }
+       if(is_numeric($row['main_address']) and $row['main_address']>0  ){
+	$sql=sprintf("update customer set main_bill_address=%d where id=%d",$row['main_address'],$customer_id);
+	mysql_query($sql);
+      }
+
+	
+
+    }
 
 
 

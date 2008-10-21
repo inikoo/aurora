@@ -43,16 +43,13 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 	    var CustomersColumnDefs = [
 				       {key:"id", label:"<?=$customers_ids[0]?>", formatter:this.customerLink,width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       //				       ,{key:"id2", label:"<?=$customers_ids[1]?>",width:55,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       // ,{key:"id3", label:"<?=$customers_ids[2]?>",width:90,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-
-				       
 				       ,{key:"name", label:"<?=_('Name')?>", width:250,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				           ,{key:"location", label:"<?=_('Location')?>", width:230,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"last_order", label:"<?=_('Last Order')?>",width:100,formatter:this.date,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       ,{key:"orders", label:"<?=_('Orders')?>",sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       ,{key:"super_total", label:"<?=_('Total')?>",sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       
+				       ,{key:"location", label:"<?=_('Location')?>",<?=($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?> width:230,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"last_order", label:"<?=_('Last Order')?>",<?=($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?>width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"orders", label:"<?=_('Orders')?>",<?=($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"super_total", label:"<?=_('Total')?>",<?=($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"email", label:"<?=_('Email')?>",<?=($_SESSION['state']['customers']['view']=='contact'?'':'hidden:true,')?>sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"tel", label:"<?=_('Telephone')?>",<?=($_SESSION['state']['customers']['view']=='contact'?'':'hidden:true,')?>sortable:false,className:"aright"}
 				       //					 {key:"families", label:"<?=_('Customers')?>", sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
 				      //{key:"active", label:"<?=_('Customers')?>", sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				      
@@ -80,8 +77,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 ,'location'
 			 ,'orders'
 			 ,'last_order'
-			 ,'flast_order'
-			 ,'super_total'
+			 ,'super_total','email','tel'
 			 //,{key:"families",parser:YAHOO.util.DataSource.parseNumber},
 			 //	    {key:"active",parser:YAHOO.util.DataSource.parseNumber}
 			 ]};
@@ -125,7 +121,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 		    
 		    
-
+	    this.table0.view='<?=$_SESSION['state']['customers']['view']?>';
 
 	    this.table0.filter={key:'<?=$_SESSION['state']['customers']['table']['f_field']?>',value:'<?=$_SESSION['state']['customers']['table']['f_value']?>'};
 
@@ -172,42 +168,42 @@ YAHOO.util.Event.onContentReady("rppmenu", function () {
 
 
 
-var open_advanced_search = function(e){
-	 Dom.get('details').style.display='none';
-	 Dom.get('the_table').style.display='none';
-	 Dom.get('but_show_details').style.display='none';
-	 Dom.get('the_search_box').style.display='none';
-	 Dom.get('advanced_search').style.display='';
-}
 
-var submit_advanced_search = function(e){
+  var change_view=function(e){
+      var tipo=this.id;
+      var table=tables['table0'];
+      old_view=table.view;
+      
+      if(tipo=='general'){
+	  table.hideColumn('email');
+	  table.hideColumn('tel');
+	  table.showColumn('location');
+	  table.showColumn('last_order');
+	  table.showColumn('orders');
+	  table.showColumn('super_total');
+	  Dom.get('contact').className='';
+	  Dom.get('general').className='selected';
+      }else{
+	  table.showColumn('email');
+	  table.showColumn('tel');
+	  table.hideColumn('location');
+	  table.hideColumn('last_order');
+	  table.hideColumn('orders');
+	  table.hideColumn('super_total');
 
-    var data={ 
-	product_ordered1:Dom.get('product_ordered1').value,
-	product_ordered2: Dom.get('product_ordered2').value,
-	product_not_ordered1: Dom.get('product_not_ordered1').value,
-	product_not_ordered2: Dom.get('product_not_ordered2').value,
-	product_not_received1: Dom.get('product_not_received1').value,
-	product_not_received2: Dom.get('product_not_received2').value,
-	from1:Dom.get('v_calpop1').value,
-	from2:Dom.get('v_calpop3').value,
-	to1:Dom.get('v_calpop2').value,
-	to2:Dom.get('v_calpop4').value
-    }
-    var jsonStr = YAHOO.lang.JSON.stringify(data);
-    var Dom   = YAHOO.util.Dom;
-    var table=tables.table0;
-    var datasource=tables.dataSource0;
-    var request='&sf=0&awhere=' +jsonStr + '&order=name';
-    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);     
 
-    
-}
+      }
+
+
+      YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=customers-view&value='+escape(tipo));
+  }
+
 
 
 YAHOO.util.Event.addListener('but_show_details', "click",show_details,'customers');
-YAHOO.util.Event.addListener('but_advanced_search', "click",open_advanced_search);
-YAHOO.util.Event.addListener('submit_advanced_search', "click",submit_advanced_search);
+var ids=['general','contact'];
+YAHOO.util.Event.addListener(ids, "click",change_view);
+//YAHOO.util.Event.addListener('submit_advanced_search', "click",submit_advanced_search);
 
 
 

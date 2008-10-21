@@ -14,6 +14,17 @@
  
    </div>
     
+ <div id="top" class="top_bar">
+    <div id="short_menu" class="nodetails" style="width:100%;margin-bottom:0px">
+      <table style="float:left;margin:0 0 0 20px ;padding:0"  class="options" {if $products==0 }style="display:none"{/if}>
+	<tr>
+	  <td  {if $view=='general'}class="selected"{/if} id="general" >{t}General{/t}</td>
+	  <td {if $view=='contact'}class="selected"{/if}  id="contact"  >{t}Contact{/t}</td>
+	  
+	</tr>
+      </table>
+    </div>
+
 
     <div id="details"  style="margin-top:10px;padding:0 20px;width:770px;{if $details==0}display:none{/if}">
       <h2>{t}Our Dear Customers{/t}</h2>

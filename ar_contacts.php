@@ -623,14 +623,29 @@ case('customers_advanced_search'):
 
   $date_interval1=prepare_mysql_dates($awhere['from1'],$awhere['to1'],'date_index','only_dates');
   $date_interval2=prepare_mysql_dates($awhere['from2'],$awhere['to2'],'date_index','only_dates');
-  $where='where ('.$where_product_ordered1.' and '.$where_product_not_ordered1.' and '.$where_product_not_received1.$date_interval1['mysql'].") $second_fields";
+
+  $geo_base='';
+  if($awhere['geo_base']=='home')
+    $geo_base='and list_country.id='.$myconf['country_id'];
+  elseif($awhere['geo_base']=='nohome')
+    $geo_base='and list_country.id!='.$myconf['country_id'];
+  $with_mail='';
+  if($awhere['mail'])
+    $with_mail=' and main_email is not null ';
+  $with_tel='';
+  if($awhere['tel'])
+    $with_tel=' and main_tel is not null ';
+
+
+
+  $where='where ('.$where_product_ordered1.' and '.$where_product_not_ordered1.' and '.$where_product_not_received1.$date_interval1['mysql'].") $second_fields $geo_base $with_mail $with_tel";
   
   
   
 
 
   
-  $sql="select count(distinct customer_id) as total  from customer left join orden on (customer_id=customer.id) left join transaction on (order_id=orden.id) left join product on (product_id=product.id) left join product_group on (group_id=product_group.id) $where  ";
+  $sql="select count(distinct customer_id) as total  from customer left join orden on (customer_id=customer.id) left join transaction on (order_id=orden.id) left join product on (product_id=product.id) left join product_group on (group_id=product_group.id)  left join address on (main_bill_address=address.id) left join list_country on (country=list_country.name)   $where  ";
  // print $sql;
 
    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
@@ -640,17 +655,29 @@ case('customers_advanced_search'):
      $total=0;
 
 
-  $sql="select UNIX_TIMESTAMP(max(date_index)) as last_order ,count(distinct orden.id) as orders, customer.id,customer.name from customer left join orden on (customer_id=customer.id) left join transaction on (order_id=orden.id) left join product on (product_id=product.id)  left join product_group on (group_id=product_group.id) $where  group by customer_id order by $order $order_direction limit $start_from,$number_results";
-  //print $sql;
+  $sql=" select telecom.number,telecom.icode,telecom.ncode,telecom.ext, postcode,town,list_country.code as country_code,code2 as country_code2,list_country.name as country_name, email ,email.contact as email_contact, UNIX_TIMESTAMP(max(date_index)) as last_order ,count(distinct orden.id) as orders, customer.id,customer.name from customer left join orden on (customer_id=customer.id) left join transaction on (order_id=orden.id) left join product on (product_id=product.id)  left join product_group on (group_id=product_group.id) left join email on (main_email=email.id) left join telecom on (main_tel=telecom.id) left join address on (main_bill_address=address.id) left join list_country on (country=list_country.name) $where  group by customer_id order by $order $order_direction limit $start_from,$number_results";
+ // print $sql;
  $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
   $adata=array();
   while($data=$res->fetchRow()) {
      $id="<a href='customer.php?id=".$data['id']."'>".$myconf['customer_id_prefix'].sprintf("%05d",$data['id']).'</a>';
-      $adata[]=array(
+     $location='<img title="'.$data['country_name'].'"  src="art/flags/'.strtolower($data['country_code2']).'.gif" alt="'.$data['country_code'].'"> '.$data['town'].' '.preg_replace('/\s/','',$data['postcode']);
+     $email='';
+     if($data['email']!='')
+       $email='<a href="emailto:'.$data['email'].'"  >'.$data['email'].'</a>';
+        $tel='';
+     if($data['number']!='')
+       $tel=($data['icode']!=''?'+'.$data['icode'].' ':'').$data['number'];
+
+
+     $adata[]=array(
 		   'id'=>$id,
 		   'name'=>$data['name'],
 		   'orders'=>$data['orders'],
 		   'last_order'=>strftime("%e %b %Y", strtotime('@'.$data['last_order'])),
+		   'location'=>$location,
+		   'email'=>$email,
+		   'tel'=>$tel,
 		     );		   
       
   }
@@ -795,7 +822,7 @@ else if($f_field=='id'  )
 
    $order=preg_replace('/name/','file_as',$order);
 
-   $sql="select  (select count(*) from customer2group where group_id=9 and customer_id=cu.id) as is_staff, num_invoices,list_country.name as country_name, cu.file_as,(total_nd+total) as super_total,total_nd,total_nd/(total_nd+total) as  factor_num_orders_nd ,(cu.total/num_invoices) as total_avg,  postcode,cu.id as id ,cu.name as name , (num_invoices+num_invoices_nd) as orders,num_orders_nd,UNIX_TIMESTAMP(last_order) date,cu.total as total,town,code2 as country_code2, code as country_code from customer as cu left join contact on (contact_id=contact.id) left join address on (main_address=address.id) left join list_country on (country=list_country.name)   $where $wheref  order by $order $order_direction limit $start_from,$number_results";
+   $sql="select   email ,email.contact as email_contact, telecom.number,telecom.icode,telecom.ncode,telecom.ext,  (select count(*) from customer2group where group_id=9 and customer_id=cu.id) as is_staff, num_invoices,list_country.name as country_name, cu.file_as,(total_nd+total) as super_total,total_nd,total_nd/(total_nd+total) as  factor_num_orders_nd ,(cu.total/num_invoices) as total_avg,  postcode,cu.id as id ,cu.name as name , (num_invoices+num_invoices_nd) as orders,num_orders_nd,UNIX_TIMESTAMP(last_order) date,cu.total as total,town,code2 as country_code2, code as country_code from customer as cu      left join email on (main_email=email.id) left join telecom on (main_tel=telecom.id)      left join address on (main_bill_address=address.id) left join list_country on (country=list_country.name)   $where $wheref  order by $order $order_direction limit $start_from,$number_results";
 
 
   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
@@ -837,6 +864,12 @@ else if($f_field=='id'  )
     else
       $location='<img title="'.$data['country_name'].'"  src="art/flags/'.strtolower($data['country_code2']).'.gif" alt="'.$data['country_code'].'"> '.$data['town'].' '.preg_replace('/\s/','',$data['postcode']);
 
+     $email='';
+     if($data['email']!='')
+       $email='<a href="emailto:'.$data['email'].'"  >'.$data['email'].'</a>';
+     $tel='';
+     if($data['number']!='')
+       $tel=($data['icode']!=''?'+'.$data['icode'].' ':'').$data['number'];
     $adata[]=array(
 		   'id'=>$id,
 		   'name'=>$data['name'],
@@ -847,6 +880,8 @@ else if($f_field=='id'  )
 		   //	   'location'=>$data['location'],
 		   'location'=>$location,
 		   'orders'=>$orders,
+		   'email'=>$email,
+		   'tel'=>$tel,
 		   // 'last_order'=>$last_order,
 		   'last_order'=>strftime("%e %b %Y", strtotime('@'.$last_order)),
 		   'super_total'=>$super_total
@@ -1308,8 +1343,8 @@ if(isset( $_REQUEST['where']))
    }
 
 
-   $sql="select id,op,op_id,date_index,UNIX_TIMESTAMP(date_index) as udate, if(op='orden', (select concat_ws('|',id,tipo,public_id,net) from orden where id=op_id) , if(op='note',(select concat_ws('|',id,texto,author_id) from note where id=op_id), (select concat_ws('|',tipo,sujeto,sujeto_id,objeto,objeto_id,staff_id,old_value,new_value) from history left join history_item on (history_id=history.id)  where history.id=op_id limit 1)   )   ) as description from customer_history  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
-   //   print "$sql";
+   $sql="select id,op,op_id,date_index,UNIX_TIMESTAMP(date_index) as udate, if(op='orden', (select concat_ws('|',id,tipo,public_id,net) from orden where id=op_id) , if(op='note',(select concat_ws('|',id,texto,author_id) from note where     note.id=customer_history.op_id    ), (select concat_ws('|',tipo,sujeto,sujeto_id,objeto,objeto_id,staff_id,old_value,new_value) from history left join history_item on (history_id=history.id)  where history.id=op_id limit 1)   )   ) as description from customer_history  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+    //   print "$sql";
    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
    $data=array();
 
@@ -1319,6 +1354,9 @@ if(isset( $_REQUEST['where']))
      $description='';
      $_desc=preg_split('/\|/',$row['description']);
      switch($row['op']){
+     case('note'):
+       $description=$_desc[1];
+       break;
      case('orden'):
        $description=$_order_tipo[$_desc[1]].' <b><a href="order.php?id='.$_desc[0].'">'.$_desc[2]."</a></b>";
        break;
@@ -1350,6 +1388,9 @@ if(isset( $_REQUEST['where']))
 	  }
        }
      }
+
+    
+
      
      $data[]=array(
 		   'id'=>$row['id'],

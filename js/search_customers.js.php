@@ -5,33 +5,6 @@ YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
 
 
-	    this.customerLink=  function(el, oRecord, oColumn, oData) {
-		    var url="customer.php?id="+oRecord.getData("id");
-		    el.innerHTML = oData.link(url);
-
-	    };
-
-	    this.customer_name=  function(el, oRecord, oColumn, oData) {
-		if(oData!= null){
-		    el.style.color='#000';
-		    el.innerHTML = oData;
-		}else{
-		    el.style.color='#ccc';
-		    el.innerHTML = "<?=_('Unknown')?>";
-		}
-
-		};
-
-
-	    this.date=  function(el, oRecord, oColumn, oData) {
-		el.innerHTML =oRecord.getData("flast_order") ;
-	    };
-	    this.total=  function(el, oRecord, oColumn, oData) {
-		el.innerHTML =oRecord.getData("ftotal") ;
-	    };	
-	    this.location=  function(el, oRecord, oColumn, oData) {
-		el.innerHTML =oRecord.getData("flocation") ;
-	    };	
 
 
 	     //START OF THE TABLE=========================================================================================================================
@@ -42,16 +15,13 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 	    var CustomersColumnDefs = [
-				       {key:"id", label:"<?=$customers_ids[0]?>", formatter:this.customerLink,width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"name", label:"<?=_('Name')?>", width:250,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       //,{key:"location", label:"<?=_('Location')?>", width:230,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"last_order", label:"<?=_('Last Order')?>",width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       ,{key:"orders", label:"<?=_('Orders')?>",sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       //,{key:"super_total", label:"<?=_('Total')?>",sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       
-				       //					 {key:"families", label:"<?=_('Customers')?>", sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
-				      //{key:"active", label:"<?=_('Customers')?>", sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				      
+				       {key:"id", label:"<?=$customers_ids[0]?>",width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"name", label:"<?=_('Name')?>", width:250,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"location", label:"<?=_('Location')?>",<?=($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?> width:230,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"last_order", label:"<?=_('Last Order')?>",<?=($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?>width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"orders", label:"<?=_('Orders')?>",<?=($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"email", label:"<?=_('Email')?>",<?=($_SESSION['state']['customers']['view']=='contact'?'':'hidden:true,')?>sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"tel", label:"<?=_('Telephone')?>",<?=($_SESSION['state']['customers']['view']=='contact'?'':'hidden:true,')?>sortable:false,className:"aright"}
 
 					 ];
 	    //?tipo=customers&tid=0"
@@ -73,9 +43,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		fields: [
 			 "id"
 			 ,"name"
-			 //,'location'
+			,'location'
 			 ,'orders'
 			 ,'last_order'
+			 ,'super_total','email','tel'
 			 //,'flast_order'
 			 //,'super_total'
 			 //,{key:"families",parser:YAHOO.util.DataSource.parseNumber},
@@ -173,6 +144,17 @@ YAHOO.util.Event.onContentReady("rppmenu", function () {
 
 var submit_advanced_search = function(e){
 
+
+    //chack woth radio button is cheked
+
+
+
+    var geo_base='all';
+    if(Dom.get('geo_group_home').checked)
+	geo_base='home';
+    else if (Dom.get('geo_group_nohome').checked)
+	geo_base='nohome';
+
     var data={ 
 	product_ordered1:Dom.get('product_ordered1').value,
 	product_ordered2: Dom.get('product_ordered2').value,
@@ -183,7 +165,10 @@ var submit_advanced_search = function(e){
 	from1:Dom.get('v_calpop1').value,
 	from2:Dom.get('v_calpop3').value,
 	to1:Dom.get('v_calpop2').value,
-	to2:Dom.get('v_calpop4').value
+	to2:Dom.get('v_calpop4').value,
+	geo_base:geo_base,
+	mail:Dom.get('with_email').checked,
+	tel:Dom.get('with_tel').checked
     }
 
     var jsonStr = YAHOO.lang.JSON.stringify(data);
@@ -191,15 +176,46 @@ var submit_advanced_search = function(e){
     var table=tables.table0;
     var datasource=tables.dataSource0;
 
-    var request='&sf=0&where=' +jsonStr + '&order=file_as';
-    //  var request='&where=caca';
-    alert(request);
-    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);     
-
+    var request='&sf=0&where=' +jsonStr;
     
+    alert(request);
+    Dom.get('the_table').style.display='';
+    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);     
 }
 
 YAHOO.util.Event.addListener('submit_advanced_search', "click",submit_advanced_search);
+
+ var change_view=function(e){
+      var tipo=this.id;
+      var table=tables['table0'];
+      old_view=table.view;
+      
+      if(tipo=='general'){
+	  table.hideColumn('email');
+	  table.hideColumn('tel');
+	  table.showColumn('location');
+	  table.showColumn('last_order');
+	  table.showColumn('orders');
+
+	  Dom.get('contact').className='';
+	  Dom.get('general').className='selected';
+      }else{
+	  table.showColumn('email');
+	  table.showColumn('tel');
+	  table.hideColumn('location');
+	  table.hideColumn('last_order');
+	  table.hideColumn('orders');
+	  Dom.get('contact').className='selected';
+	  Dom.get('general').className='';
+      }
+
+ }
+
+
+var ids=['general','contact'];
+YAHOO.util.Event.addListener(ids, "click",change_view);
+
+
  }
 
 YAHOO.util.Event.onDOMReady(init);
