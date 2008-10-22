@@ -90,11 +90,14 @@
 		      <td>{t}Stock{/t}:<br>{$stock_units}</td><td class="stock" id="stock" class="aright">{$stock}</td>
 		    </tr>
 		    {if $locations}
-		    <tr>
-		      <td>{t}Location{/t}:</td>
-		      <td>{$locations}</td>{if $edit}<td><span>{t}location1(type),location2(type),...{/t} <span>[{t}Warehouse Map{/t}]</span>  <span>[{t}Example{/t}]</span><br/></span><input style="width:100%" type="text" value="{$color}"> 
-		      </td>{/if}
-		    </tr>{/if}
+		    <tr><td>{t}Location{/t}:</td><td>
+			<table class="locations" >
+			{foreach from=$locations item=location name=foo }
+			<tr><td>{$location.icon} </td><td> {$location.name}</td><td style="padding-left:10px"> ({$location.stock})</td></tr>
+			{/foreach}
+			</table>
+		      <td>
+		    {/if}
 		    <tr>
 		      <td>{t}Available{/t}:</td><td>{$available}</td>
 		    </tr>

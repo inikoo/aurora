@@ -1,16 +1,21 @@
 <?
 
 
+
 include_once('common/string.php');
+
+
+
 class product{
   
-
+ 
   var $product=array();
   var $categories=array();
 
   var $parents=array();
   var $childs=array();
   var $suppliers=array();
+  var $locations=array();
   var $notes=array();
   var $images=array();
 
@@ -87,6 +92,60 @@ class product{
 	  $this->department=$row['department'];
 	}
 	break;
+      case('locations'):
+	global $_location_name;
+	$this->locations=array('has_unknown'=>false,'has_white_hole'=>false,'has_picking_area'=>false,'has_locations'=>false,'data'=>array());
+	$sql=sprintf("select name,product2location.id as id,location_id,stock,picking_rank,tipo,stock  from product2location left join location on (location_id=location.id) where product_id=%d",$id);
+	$result =& $this->db->query($sql);
+	while($row=$result->fetchRow()){
+	  
+
+	  $icon='';
+	  if($row['tipo']=='unknown'){
+	    $this->location['has_unknown']=true;
+	    $name=$_location_name[$row['name']];
+	    $icon='<img src="art/icons/exclamation.png" alt="'._('Unknown').'" title="'._('Unknown location').'" />';
+	  }else if($row['tipo']=='white_hole'){
+	    $this->location['has_white_hole']=true;
+	    $name=$_location_name[$row['name']];
+	  }else{
+	    $this->location['has_locations']=true;
+	    $name=$row['name'];
+	    
+	    if(is_numeric($row['picking_rank']) and $row['picking_rank']>0){
+	      $this->location['has_picking_area']=true;
+	      if($row['tipo']=='picking')
+		$icon='<img src="art/icons/basket.png" alt="'._('Picking Area').'" title="'._('Picking Area').'" />';
+	      else if($row['tipo']=='storing')
+		$icon='<img src="art/icons/package.png" />';
+	    }else{
+	      if($row['tipo']=='picking')
+		$icon='<img src="art/icons/basket_delete.png" />';
+	      else if($row['tipo']=='storing')
+		$icon='<img src="art/icons/package_delete.png" />';
+	      
+	    }
+	    
+	    
+
+	    
+	  }
+	  
+	  
+
+	  $this->locations['data'][]=array(
+					   'id'=>$row['id'],
+					   'name'=>$name,
+					   'location_id'=>$row['location_id'],
+					   'stock'=>$row['stock'],
+					   'tipo'=>$row['tipo'],
+					   'picking_rank'=>$row['picking_rank'],
+					   'icon'=>$icon
+					   );
+
+	}
+
+	
       case('suppliers'):
 	$this->suppliers=array();
 	$sql=sprintf("select p2s.supplier_id, p2s.price,p2s.sup_code as code,s.name as name from product2supplier as p2s left join supplier as s on (p2s.supplier_id=s.id) where p2s.product_id=%d",$id);
@@ -181,9 +240,9 @@ class product{
       return  $this->suppliers['number'];
     case('supplier_name'):
       return  $this->suppliers['name'];
- case('supplier_code'):
+    case('supplier_code'):
       return  $this->suppliers['code'];
- case('supplier_price'):
+    case('supplier_price'):
       return  $this->suppliers['price'];
     default:
 

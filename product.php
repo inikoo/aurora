@@ -73,6 +73,7 @@ $product->read(array(
 		     ,'suppliers'=>$product_id
 		     ,'product_tree'=>$product_id
 		     ,'images'=>$product_id
+		     ,'locations'=>$product_id
 		     )
 	       );
 
@@ -90,6 +91,9 @@ $smarty->assign('prev',$prev);
 $smarty->assign('next',$next);
 
 
+$locations=($product->get('locations'));
+
+$smarty->assign('locations',$locations['data']);
 $smarty->assign('suppliers',$product->get('number_of_suppliers'));
 $smarty->assign('suppliers_name',$product->get('supplier_name'));
 $smarty->assign('suppliers_code',$product->get('supplier_code'));
@@ -225,7 +229,6 @@ $smarty->assign('table_title_stock',_('Stock History'));
 
 $smarty->assign('key_filter_number',$regex['key_filter_number']);
 $smarty->assign('key_filter_dimension',$regex['key_filter_dimension']);
-
 
 
 $js_files[]='js/product.js.php?current_plot='.$plot_tipo;

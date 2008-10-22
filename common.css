@@ -378,3 +378,9 @@ color: #316D89;
 
 /*EDIT SECTION*/
 .but {cursor:pointer }
+
+
+/*Locations on product.tpl*/
+table.locations {  margin:0;padding:0 }
+table.locations td {margin:0;padding:0 2px;text-align:right ;vertical-align:top;border:0px solid black}
+table.locations img {height:12px;}
