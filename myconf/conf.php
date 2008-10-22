@@ -128,6 +128,18 @@ $myconf=array(
 	      );
 
 $default_state=array(
+		     'reports'=>array(
+				      'view'=>'sales',
+				      'sales'=>array(
+						     'plot'=>'total_sales_month'
+						     ),
+				      'stock'=>array(
+						     'plot'=>'total_outofstock_month'
+						     )
+
+
+				      ),
+		     
 		      'orders'=>array(
 				      'details'=>false,
 				      'view'=>'all',

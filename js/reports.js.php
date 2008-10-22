@@ -1,15 +1,15 @@
 <?
 include_once('../common.php');
 print "var plot = new Object;";
-foreach($_SESSION['views']['reports_front_plot'] as $key => $value){
-    print "plot.$key='$value';";
+foreach($_SESSION['state']['reports'] as $key => $value){
+    if(is_array($value) and array_key_exists('plot', $value))
+	print "plot.$key='".$value['plot']."';";
 }
-
 ?>
 
 var Event = YAHOO.util.Event;
 var Dom   = YAHOO.util.Dom;
-var current_view='<?=$_SESSION['views']['reports_front']?>';
+var current_view='<?=$_SESSION['state']['reports']['view']?>';
 
 function init(){
 
@@ -30,12 +30,12 @@ function init(){
 		
 	    if(this.name=='net_sales_gmonth'){
 		if(this.checked){
-		    Dom.get('the_plot').src = 'plot.php?tipo=net_sales_gmonth';
-		    YAHOO.util.Connect.asyncRequest('POST','ar_reports.php?tipo=change_front_plot&value=' + escape('net_sales_gmonth') ); 
+		    Dom.get('the_plot').src = 'plot.php?tipo=total_sales_groupby_month';
+		    YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=reports-sales-plot&value=total_sales_groupby_month' );
 		    plot_sales='net_sales_gmonth';
 		}else{
-		    Dom.get('the_plot').src = 'plot.php?tipo=net_sales_month';
-		    YAHOO.util.Connect.asyncRequest('POST','ar_reports.php?tipo=change_front_plot&value=' + escape('net_sales_month') ); 
+		    Dom.get('the_plot').src = 'plot.php?tipo=total_sales_month';
+		    YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=reports-sales-plot&value=total_sales_month' );
 		    plot_sales='net_sales_month';
 		}
 
@@ -75,13 +75,14 @@ function init(){
 		Dom.get('header_'+tipo).style.display='';
 		Dom.get('plot_options_'+current_view).style.display='none';
 		Dom.get('plot_options_'+tipo).style.display='';
+		YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=reports-'+tipo+'-plot&value=' + escape(plot[tipo]) );
 
-		YAHOO.util.Connect.asyncRequest('POST','ar_reports.php?tipo=change_front_plot&value=' + escape(plot[tipo]) ); 
 		Dom.get(tipo).className='selected';
 		Dom.get(current_view).className='';
 
+		YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=reports-view&value=' + escape(tipo) );
 
-		YAHOO.util.Connect.asyncRequest('POST','ar_reports.php?tipo=change_front&value=' + escape(tipo) ); 
+
 		current_view=tipo;
 		
 		myAnim.animate();

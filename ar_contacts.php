@@ -1714,56 +1714,6 @@ case('plot_order_interval'):
    
  }
 
-function extract_product_groups($str,
-				$q_prod_name='product.code like',
-				$q_prod_id='transaction.product_id like',
-				$q_group_name='product_group.name like',
-				$q_group_id='product_group.id like'
-				){
-  if($str=='')
-    return '';
-  $where='';
-  $where_g='';
-  if(preg_match_all('/g\([a-z0-9\-\,]*\)/i',$str,$matches)){
-    
-
-    foreach($matches[0] as $match){
-      
-      $_groups=preg_replace('/\)$/i','',preg_replace('/^g\(/i','',$match));
-      $_groups=preg_split('/\s*,\s*/i',$_groups);
-
-      foreach($_groups as $group){
-	$group_ordered=addslashes($group);
-	if(is_numeric($group_ordered))
-	  $where_g.=" or $q_group_id  '$group_ordered'";
-	else
-	  $where_g.=" or $q_group_name '$group_ordered'";
-      }
-    }
-    $str=preg_replace('/g\([a-z0-9\-\,]*\)/i','',$str);
-  }
-  
-
-  $products=preg_split('/\s*,\s*/i',$str);
-  
-  $where_p='';
-  foreach($products as $product){
-    if($product!=''){
-      $product=addslashes($product);
-      if(is_numeric($product))
-	$where_p.= " or $q_prod_id  '$product'";
-      else
-	$where_p.= " or $q_prod_name  '$product'";
-    }
-  }
-  
-  
-
-  $where=preg_replace('/^\s*or\s*/i','',$where_g.$where_p);
-  return '('.$where.')';
-  
-}
-
 
 
 

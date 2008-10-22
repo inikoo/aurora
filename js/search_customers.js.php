@@ -178,7 +178,7 @@ var submit_advanced_search = function(e){
 
     var request='&sf=0&where=' +jsonStr;
     
-    alert(request);
+
     Dom.get('the_table').style.display='';
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);     
 }

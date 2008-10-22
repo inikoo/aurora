@@ -53,7 +53,7 @@
       <table style="float:right;margin:0 0 0 0px ;padding:0" >
 	<tr>
 	  <td>{t}Export the result list as{/t}:</td>
-	  <td><img src="art/icons/page_excel.png" style="vertical-align:bottom"/><span  class="state_details" style="color:black;position:relative;bottom:1px">{t}CVS file{/t}</span></td>
+	  <td><img src="art/icons/page_excel.png" style="vertical-align:bottom"/><a  href="csv.php?tipo=cas" class="state_details" style="color:black;position:relative;bottom:1px">{t}CSV file{/t}</a></td>
 	</tr>
       </table>
     </div>

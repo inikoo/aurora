@@ -1,4 +1,12 @@
 <?
+$colors=array(
+	      '0x62a74b',
+	      '0xc665a7',
+	      '0x4dbc9b',
+	      '0xe2654f',
+	      '0x4c77d1'
+	      );
+
 require_once 'common.php';
 $tipo='';
 if(isset($_REQUEST['tipo']))
@@ -86,7 +94,7 @@ switch($tipo){
    $ar_address='ar_orders.php?tipo=plot_monthsales';
    $fields='"sales","tip_sales","date"';
    $yfields=array(array('label'=>_('Month Net Sales'),'name'=>'sales','axis'=>'formatCurrencyAxisLabel','style'=>''));;
-   $xfield=array('label'=>_('Date'),'name'=>'date');
+   $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category','axis'=>'justyears');
    $style='';
    $tipo_chart='LineChart';
    break;
@@ -95,26 +103,46 @@ switch($tipo){
    $ar_address='ar_orders.php?tipo=plot_weeksales';
    $fields='"sales","tip_sales","date"';
    $yfields=array(array('label'=>_('Week Net Sales'),'name'=>'sales','axis'=>'formatCurrencyAxisLabel','style'=>'size:3'));;
-   $xfield=array('label'=>_('Date'),'name'=>'date');
+   $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category');
    $style='';
    $tipo_chart='LineChart';
    break;
 
- case('total_sales_gmonth'):
+ case('total_sales_groupby_month'):
+   
+
    $title=_("Total Net Sales per Month (Group by month)");
    $ar_address='ar_orders.php?tipo=plot_gmonthsales';
    $fields='"sales2004","sales2005","sales2006","sales2007","sales2008","tip_sales2004","tip_sales2005","tip_sales2006","tip_sales2007","tip_sales2008","date"';
-   $yfields=array(
+   
+   $_year=date('Y');
+   $_years=5;
+   if($_years>5)
+     $_years=5;
+   
+   
+
+   while($_years>0) {
+     $_years--;
+     $year=$_year-$_years;
+     $yfields[]=array('label'=>$year
+		      ,'name'=>'sales'.$year
+		      ,'axis'=>'formatCurrencyAxisLabel','style'=>"size:10,color:".$colors[$_years].",alpha:.9");
+
+   }
+
+
+  //  $yfields=array(
 		  
-		  array('label'=>_('2004'),'name'=>'sales2004','axis'=>'formatCurrencyAxisLabel','style'=>"size:10,color: 0x62a74b,alpha:.9"),
-		  array('label'=>_('2005'),'name'=>'sales2005','axis'=>'formatCurrencyAxisLabel','style'=>"size:10, color: 0xc665a7,alpha:.9"),
-		  array('label'=>_('2006'),'name'=>'sales2006','axis'=>'formatCurrencyAxisLabel','style'=>"size:10, color: 0x4dbc9b,alpha:.9"),
-		  array('label'=>_('2007'),'name'=>'sales2007','axis'=>'formatCurrencyAxisLabel','style'=>"size:10,color: 0xe2654f,alpha:.9"),
-		  array('label'=>_('2008'),'name'=>'sales2008','axis'=>'formatCurrencyAxisLabel','style'=>"size:10,color: 0x4c77d1,alpha:.9")
+// 		  array('label'=>_('2004'),'name'=>'sales2004','axis'=>'formatCurrencyAxisLabel','style'=>"size:10,color: 0x62a74b,alpha:.9"),
+// 		  array('label'=>_('2005'),'name'=>'sales2005','axis'=>'formatCurrencyAxisLabel','style'=>"size:10, color: 0xc665a7,alpha:.9"),
+// 		  array('label'=>_('2006'),'name'=>'sales2006','axis'=>'formatCurrencyAxisLabel','style'=>"size:10, color: 0x4dbc9b,alpha:.9"),
+// 		  array('label'=>_('2007'),'name'=>'sales2007','axis'=>'formatCurrencyAxisLabel','style'=>"size:10,color: 0xe2654f,alpha:.9"),
+// 		  array('label'=>_('2008'),'name'=>'sales2008','axis'=>'formatCurrencyAxisLabel','style'=>"size:10,color: 0x4c77d1,alpha:.9")
 
-		  );
+// 		  );
 
-   $xfield=array('label'=>_('Date'),'name'=>'date');
+   $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category');
    $style='legend:{display: "bottom"}';
    $tipo_chart='ColumnChart';
    break;
@@ -130,7 +158,7 @@ switch($tipo){
 
 		  );
 
-   $xfield=array('label'=>_('Date'),'name'=>'date');
+   $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category','xaxis'=>'justyears');
    $style='minorGridLines:{size:5,color: 0x4c77d1},  legend:{display: "bottom"}';
    $tipo_chart='LineChart';
    break;
@@ -145,9 +173,10 @@ switch($tipo){
 
 
 $alt=_('Unable to load Flash content. The YUI Charts Control requires Flash Player 9.0.45 or higher. You can download the latest version of Flash Player from the ').'<a href="http://www.adobe.com/go/getflashplayer">Adobe Flash Player Download Center</a>.';
-$out='<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN""http://www.w3c.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" content="text/html; charset=UTF-8"   >
+$out='<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN""http://www.w3c.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" content="text/html; charset=UTF-8"   >
   <head>
-
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
 
 

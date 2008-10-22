@@ -1,9 +1,9 @@
 <?
 include_once('common.php');
-$tipo=$_SESSION['views']['reports_front'];
-$tipo_plot='';
-if(isset($_SESSION['views']['reports_front_plot'][$tipo]))
-  $tipo_plot=$_SESSION['views']['reports_front_plot'][$tipo];
+
+
+$tipo=$_SESSION['state']['reports']['view'];
+$tipo_plot=$_SESSION['state']['reports'][$tipo]['plot'];
 
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
