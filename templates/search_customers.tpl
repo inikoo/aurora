@@ -22,19 +22,14 @@
       <h2 style="margin:10px 20px 0 20px">{t}Advanced Search{/t}</h2>
       <div id="advanced_search" tipo=1 style="margin:0px 20px ;padding:0 20px;width:700px;border:1px solid #ccc;">
 
-      <table>
+      <table >
 	<form>
 	<tr><td colspan="2"><b>Customers who..</b></td></tr>
       <tr><td>ordered this product(s)</td><td><input id="product_ordered1" value="" size="40" /></td><tr>
       <tr><td>but didn't order this product(s)</td><td><input id="product_not_ordered1" value="" size="40" /></td><tr>
       <tr><td>and did't receive this product(s)</td><td><input id="product_not_received1" value="" size="40" /></td><tr>
-      <tr><td>during this period</td><td><input id="v_calpop1" type="text" class="text" size="11" maxlength="10" name="from" value="{$from}"/><img   id="calpop1" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /> <span class="calpop">&rarr;</span> <input   class="calpop" id="v_calpop2" size="11" maxlength="10"   type="text" class="text" size="8" name="to" value="{$to}"/><img   id="calpop2" class="calpop_to" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /> </td><tr>
-	<tr><td colspan="2"><b>..and</b></td></tr>
-      <tr><td>ordered this product(s)</td><td><input id="product_ordered2" value="" size="40" /></td><tr>
-      <tr><td>but didn't order this product(s)</td><td><input id="product_not_ordered2" value="" size="40" /></td><tr>
-      <tr><td>and did't receive this product(s)</td><td><input id="product_not_received2" value="" size="40" /></td><tr>
-      <tr><td>during this period</td><td><input id="v_calpop3" type="text" class="text" size="11" maxlength="10" name="from" value="{$from}"/><img   id="calpop3" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /> <span class="calpop">&rarr;</span> <input   class="calpop" id="v_calpop4" size="11" maxlength="10"   type="text" class="text" size="8" name="to" value="{$to}"/><img   id="calpop4" class="calpop_to" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /> </td><tr>
-	  <tr><td colspan="2" style="text-align:right"><span  class="state_details"  id="submit_advanced_search">Start Search</span></td></tr>
+      <tr><td>during this period</td><td><input id="v_calpop1" type="text" class="text" size="11" maxlength="10" name="from" value="{$from}"/><img   id="calpop1" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /> <span class="calpop">&rarr;</span> <input   class="calpop" id="v_calpop2" size="11" maxlength="10"   type="text" class="text" size="8" name="to" value="{$to}"/><img   id="calpop2" class="calpop_to" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /> </td><td  style="text-align:right;vertical-align:middle"><span  style="margin-left:20px;border:1px solid #ccc;padding:4px 5px;cursor:pointer" id="submit_advanced_search">Start Search <img style="vertical-align:bottom" src="art/icons/zoom.png"/></span>
+</td></tr>
       </table>
       </form>
     </div>

@@ -1,6 +1,7 @@
 <?
 require_once 'common.php';
-
+require_once 'string.php';
+require_once 'name.php';
 if (!$LU or !$LU->isLoggedIn()) {
   $response=array('state'=>402,'resp'=>_('Forbidden'));
   exit;
@@ -50,39 +51,10 @@ switch($_REQUEST['tipo']){
     $where_product_not_received1='true';
 
 
- if(($awhere['product_ordered2']=='' and $awhere['product_not_ordered2']=='' and $awhere['product_not_received2']=='') or ($awhere['from2']==0 and $awhere['to2'])){
-   $second_fields='';
- }else{
 
- if($awhere['product_ordered2']!=''){
-    if($awhere['product_ordered2']!='ANY'){
-      $where_product_ordered2=extract_product_groups($awhere['product_ordered2']);
-    }else
-      $where_product_ordered2='true';
-  }else
-    $where_product_ordered2='false';
-  
-  if($awhere['product_not_ordered2']!=''){
-    if($awhere['product_not_ordered2']!='ALL'){
-      $where_product_not_ordered2=extract_product_groups($awhere['product_ordered2'],'product.code not like','transaction.product_id not like','product_group.name not like','product_group.id like');
-    }else
-      $where_product_not_ordered2=false;
-  }else
-    $here_product_not_ordered2=true;
-
- if($awhere['product_not_received2']!=''){
-    if($awhere['product_not_received2']!='ANY'){
-      $where_product_not_received2=extract_product_groups($awhere['product_ordered2'],'(ordered-dispached)>0 and    product.code  like','(ordered-dispached)>0 and  transaction.product_id not like','(ordered-dispached)>0 and  product_group.name not like','(ordered-dispached)>0 and  product_group.id like');
-    }else
-      $where_product_not_received2=' ((ordered-dispached)>0)  ';
-  }else
-    $where_product_not_received2='true';
- 
- $second_fields="and (".$where_product_ordered2.' and '.$where_product_not_ordered2.' and '.$where_product_not_received2.$date_interval2['mysql'].")";
- }
 
   $date_interval1=prepare_mysql_dates($awhere['from1'],$awhere['to1'],'date_index','only_dates');
-  $date_interval2=prepare_mysql_dates($awhere['from2'],$awhere['to2'],'date_index','only_dates');
+
 
   $geo_base='';
   if($awhere['geo_base']=='home')
@@ -98,7 +70,7 @@ switch($_REQUEST['tipo']){
 
 
 
-  $where='where ('.$where_product_ordered1.' and '.$where_product_not_ordered1.' and '.$where_product_not_received1.$date_interval1['mysql'].") $second_fields $geo_base $with_mail $with_tel";
+  $where='where ('.$where_product_ordered1.' and '.$where_product_not_ordered1.' and '.$where_product_not_received1.$date_interval1['mysql'].")  $geo_base $with_mail $with_tel";
   
   
   
@@ -108,7 +80,7 @@ switch($_REQUEST['tipo']){
     //  print $sql;
  $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
  $adata=array();
- $adata[]=array(_('Id'),_('Name'),_('Location'),_('Email'),_('Email contact'),_('Telephone'),_('Orders'),_('Last order'));
+ $adata[]=array(_('Id'),_('Name'),_('Location'),_('Email'),_('Email contact'),'',_('Telephone'),_('Orders'),_('Last order'));
   while($data=$res->fetchRow()) {
      $id=$myconf['customer_id_prefix'].sprintf("%05d",$data['id']);
      $location=$data['country_name'].($data['town']!=''?', '.$data['town']:'').($data['postcode']!=''?', '.$data['postcode']:'');
@@ -118,12 +90,20 @@ switch($_REQUEST['tipo']){
        $tel=($data['icode']!=''?'+'.$data['icode'].' ':'').$data['number'];
 
 
+     $name=guess_name($data['email_contact']);
+     $fname=$name['first'];
+     
+     if(preg_match('/^(\s*|.|.\s.)$/i',$fname) )
+       $fname=$data['email_contact'];
+
+       
      $adata[]=array(
 		   $id,
 		   $data['name'],
 		   $location,
 		   $data['email'],
 		   $data['email_contact'],
+		   $fname,
 		   $tel,
 		   $data['orders'],
 		   strftime("%e %b %Y", strtotime('@'.$data['last_order']))
@@ -139,7 +119,7 @@ switch($_REQUEST['tipo']){
 //print_r($adata);
 
 header('Content-type: text/csv');
-$filename='hola';
+
 header('Content-Disposition: attachment; filename="'.$filename.'.csv"');
 $out = fopen('php://output', 'w');
 foreach($adata as $data)

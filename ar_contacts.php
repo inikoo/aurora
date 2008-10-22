@@ -590,39 +590,10 @@ case('customers_advanced_search'):
     $where_product_not_received1='true';
 
 
- if(($awhere['product_ordered2']=='' and $awhere['product_not_ordered2']=='' and $awhere['product_not_received2']=='') or ($awhere['from2']==0 and $awhere['to2'])){
-   $second_fields='';
- }else{
 
- if($awhere['product_ordered2']!=''){
-    if($awhere['product_ordered2']!='ANY'){
-      $where_product_ordered2=extract_product_groups($awhere['product_ordered2']);
-    }else
-      $where_product_ordered2='true';
-  }else
-    $where_product_ordered2='false';
-  
-  if($awhere['product_not_ordered2']!=''){
-    if($awhere['product_not_ordered2']!='ALL'){
-      $where_product_not_ordered2=extract_product_groups($awhere['product_ordered2'],'product.code not like','transaction.product_id not like','product_group.name not like','product_group.id like');
-    }else
-      $where_product_not_ordered2=false;
-  }else
-    $here_product_not_ordered2=true;
-
- if($awhere['product_not_received2']!=''){
-    if($awhere['product_not_received2']!='ANY'){
-      $where_product_not_received2=extract_product_groups($awhere['product_ordered2'],'(ordered-dispached)>0 and    product.code  like','(ordered-dispached)>0 and  transaction.product_id not like','(ordered-dispached)>0 and  product_group.name not like','(ordered-dispached)>0 and  product_group.id like');
-    }else
-      $where_product_not_received2=' ((ordered-dispached)>0)  ';
-  }else
-    $where_product_not_received2='true';
- 
- $second_fields="and (".$where_product_ordered2.' and '.$where_product_not_ordered2.' and '.$where_product_not_received2.$date_interval2['mysql'].")";
- }
 
   $date_interval1=prepare_mysql_dates($awhere['from1'],$awhere['to1'],'date_index','only_dates');
-  $date_interval2=prepare_mysql_dates($awhere['from2'],$awhere['to2'],'date_index','only_dates');
+
 
   $geo_base='';
   if($awhere['geo_base']=='home')
@@ -638,10 +609,14 @@ case('customers_advanced_search'):
 
 
 
-  $where='where ('.$where_product_ordered1.' and '.$where_product_not_ordered1.' and '.$where_product_not_received1.$date_interval1['mysql'].") $second_fields $geo_base $with_mail $with_tel";
+  $where='where ('.$where_product_ordered1.' and '.$where_product_not_ordered1.' and '.$where_product_not_received1.$date_interval1['mysql'].")  $geo_base $with_mail $with_tel";
   
   
+
+
   
+
+
 
 
   
@@ -698,7 +673,7 @@ case('customers_advanced_search'):
 			 'filtered'=>$filtered
 			 )
 		   );	
-  echo json_encode($response);
+echo json_encode($response);
   break;
 case('customers'):
   
