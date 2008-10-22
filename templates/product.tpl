@@ -87,20 +87,20 @@
 
 		  <table   class="show_info_product" {if $edit}class="edit"{/if}>
 		    <tr>
-		      <td>{t}Stock{/t}:<br>{$stock_units}</td><td class="stock" id="stock" class="aright">{$stock}</td>
+		      <td>{t}Stock{/t}:<br>{$stock_units}</td><td class="stock aright" id="stock">{$stock}</td>
+		    </tr>
+		     <tr>
+		      <td>{t}Available{/t}:</td><td class="aright">{$available}</td>
 		    </tr>
 		    {if $locations}
-		    <tr><td>{t}Location{/t}:</td><td>
-			<table class="locations" >
+		    <tr><td>{t}Location{/t}:</td><td class="aright">
+			<table class="locations " style="float:right"  >
 			{foreach from=$locations item=location name=foo }
 			<tr><td>{$location.icon} </td><td> {$location.name}</td><td style="padding-left:10px"> ({$location.stock})</td></tr>
 			{/foreach}
 			</table>
 		      <td>
 		    {/if}
-		    <tr>
-		      <td>{t}Available{/t}:</td><td>{$available}</td>
-		    </tr>
 		    {if $nextbuy>0   }<tr><td rowspan="2">{t}Next shipment{/t}:</td><td>{$next_buy}</td></tr><tr><td class="noborder">{$nextbuy_when}</td>{/if}
 		    </tr>
 		  </table>

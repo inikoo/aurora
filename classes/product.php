@@ -117,7 +117,7 @@ class product{
 	      if($row['tipo']=='picking')
 		$icon='<img src="art/icons/basket.png" alt="'._('Picking Area').'" title="'._('Picking Area').'" />';
 	      else if($row['tipo']=='storing')
-		$icon='<img src="art/icons/package.png" />';
+		$icon='<img src="art/icons/package.png"  alt="'._('Storing Area').'" title="'._('Storing Area').'"  />';
 	    }else{
 	      if($row['tipo']=='picking')
 		$icon='<img src="art/icons/basket_delete.png" />';
