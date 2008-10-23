@@ -46,14 +46,16 @@
 
 
 	<div class="yui-u">
+	  <input id="new_location_input" type="text"><div id="new_location_container">xx</div>
+
 	  <div  id="manage_stock" class="manage_stock" >
 	    <table class="options" style="float:left">
 	      <tr class="title"><td colspan="3">{t}Operations{/t}</td></tr>
-	      <tr><td id="move_stock">Move Stock</td><td>Stock Damaged</td><td>New Location</td></tr>
+	      <tr><td {if $physical_locations<2}style="display:none"{/if}id="move_stock">Move Stock</td><td id="damaged_stock"   >Stock Damaged</td><td id="new_location">Assign Location</td></tr>
 	    </table>
 	    <table class="options" style="float:left;margin-bottom:20px">
 	      <tr class="title"> <td colspan="2">{t}Fix Errors{/t}</td></tr>
-	      <tr ><td>Change Stock Qty</td><td>Change Location</td></tr>
+	      <tr ><td id="change_stock">Change Stock Qty</td><td>Change Location</td></tr>
 	</table>
 	<div id="manage_stock_desktop" style="display:none" >
 	  <div id="manage_stock_messages"></div>
@@ -63,9 +65,9 @@
 	<table class="edit_location" style="clear:both">
 	  <tr><td>{t}Generally used for{/t}</td><td>{t}Picking Priority{/t}</td><td>{t}Location{/t}</td><td >{t}Stock{/t}</td><td ></td> </tr>
 	  {foreach  from=$locations item=location name=foo }
-	  <tr ><td>{$location.tipo} </td><td   ><span   rank=$location.picking_rank  onOclick="rank_up()"   style="cursor:pointer;{if $location.picking_rank==1}display:none;{/if}">&uarr;</span><span  onClick="rank_down()"   style="cursor:pointer;{if $physical_locations==$location.picking_rank}display:none;{/if}" >&darr;</span>  {$location.picking_rank} <img style="height:14px;vertical-align:top" src="art/icons/basket.png"/></td><td id="loc_name{$location.location_id}"> {$location.name}</td><td ><input   id="loc_stock{$location.location_id}" class="aright" size="5" type="text" value='{$location.stock}'/></td><td><img src="art/icons/cross.png" /></td></tr>
+	  <tr ><td>{$location.tipo} </td><td   ><span   rank=$location.picking_rank  onOclick="rank_up()"   style="cursor:pointer;{if $location.picking_rank==1}display:none;{/if}">&uarr;</span><span  onClick="rank_down()"   style="cursor:pointer;{if $physical_locations==$location.picking_rank}display:none;{/if}" >&darr;</span>  {$location.picking_rank} <img style="height:14px;vertical-align:top" src="art/icons/basket.png"/></td><td id="loc_name{$location.location_id}"> {$location.name}</td><td ><span   id="loc_stock{$location.location_id}" class="aright" >{$location.stock}</span></td><td><img  {if $location.stock!=0}style="display:none"{/if}  src="art/icons/cross.png" /></td></tr>
 	  {/foreach}
-	   <tr class="totals"><td  class="aright" >{t}Total Stock{/t}:</td><td></td><td></td><td >{$stock}</td><td></td> </tr>
+	   <tr class="totals"><td  class="aright" >{t}Total Stock{/t}:</td><td></td><td></td><td id="total_stock" >{$stock}</td><td></td> </tr>
 	</table>
       </div>
 	</div>

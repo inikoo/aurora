@@ -21,6 +21,18 @@ if(!isset($_REQUEST['tipo']))
 
 $tipo=$_REQUEST['tipo'];
 switch($tipo){
+ case('locations'):
+
+
+   $data=array('name'=>'aa','name'=>'asdsd3','name'=>'sdasdas','name'=>'bbb','name'=>'biuios');
+   $response= array(
+		    'state'=>200,
+		    'data'=>$data
+		    );
+   echo json_encode($response);
+
+
+   break;
 
  case('update_product'):
    if(!isset($_REQUEST['product_id'])){
