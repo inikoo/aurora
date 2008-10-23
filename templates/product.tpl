@@ -14,14 +14,15 @@
 <span class="nav2 onleft"><a href="products.php">{t}Product index{/t}</a></span>
 </div>
 
-<div id="doc3" style="clear:both;" class="yui-g yui-t4" >
+<div  id="doc3" style="clear:both;" class="yui-g yui-t4" >
   <div id="yui-main"> 
     <div class="yui-b">
       
+
       
       <div  class="yui-gd" style="clear:both;padding:0;width:100%">
 	<div class="yui-u first" >
-	  <div id="photo_container">
+	  <div id="photo_container" style="margin-top:10px">
 	    <div style="border:1px solid #ddd;padding-top:0;width:220px;xheight:230px;text-align:center;margin:0 10px 0 0px">
 	      <span style="font-size:150%;font-weight:800">{$code}</span>
 	      <div id="imagediv"  pic_id="{$images[0].id}"  style="border:1px solid #ddd;width:200px;height:140px;padding:0px 0;xborder:none;cursor:pointer;xbackground:red;margin: 0 0 10px 9px">
@@ -45,7 +46,7 @@
 	  
 	</div>
 
-
+	
 	<div class="yui-u">
 	  <h1>{$units}x {$description} [{$product_id}]</h1>
 	  <div class="yui-b"  style="width:100%;">
@@ -134,7 +135,7 @@
       </div>
       
       
-
+      
 
 
 
@@ -174,7 +175,7 @@
 	
       </tr>
       <tr><td  colspan="5" style="text-align:center"><a href="edit_product.php?id={$product_id}">Edit Product</a></td></tr>
-      <tr><td  colspan="5" style="text-align:center"><a href="edit_product.php?id={$product_id}">Set Stock</a></td></tr>
+      <tr><td  colspan="5" style="text-align:center"><a href="product_manage_stock.php?id={$product_id}">Manage Stock</a></td></tr>
       
     </table>
     

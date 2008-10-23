@@ -1,6 +1,5 @@
 <?
 include_once('common.php');
-//include_once('stock_functions.php');
 include_once('classes/product.php');
 
 $view_sales=$LU->checkRight(PROD_SALES_VIEW);
@@ -48,18 +47,6 @@ $js_files=array(
 
 
 
-
-
-// $_SESSION['views']['product_blocks'][5]=0;
-// foreach($_SESSION['views']['product_blocks'] as $key=>$value){
-//   $hide[$key]=($value==1?0:1);
-// }
-// //print_r($hide);
-
-$smarty->assign('display',$_SESSION['state']['product']['display']);
-
-// $smarty->assign('view_plot',$_SESSION['views']['product_plot']);
-
 if(!isset($_REQUEST['id']) and is_numeric($_REQUEST['id']))
   $product_id=1;
 else
@@ -70,7 +57,6 @@ $_SESSION['state']['product']['id']=$product_id;
 $product= new product();
 $product->read(array(
 		     'product_info'=>$product_id
-		     ,'suppliers'=>$product_id
 		     ,'product_tree'=>$product_id
 		     ,'images'=>$product_id
 		     ,'locations'=>$product_id
@@ -94,10 +80,8 @@ $smarty->assign('next',$next);
 $locations=($product->get('locations'));
 
 $smarty->assign('locations',$locations['data']);
-$smarty->assign('suppliers',$product->get('number_of_suppliers'));
-$smarty->assign('suppliers_name',$product->get('supplier_name'));
-$smarty->assign('suppliers_code',$product->get('supplier_code'));
-$smarty->assign('suppliers_price',$product->get('supplier_price'));
+
+
 
 
 
@@ -157,30 +141,6 @@ $smarty->assign('first_date',$product->get('first_date'));
 $weeks=$product->get('weeks_since');
 $smarty->assign('weeks_since',number($weeks));
 
-// assign plot tipo depending of the age of the product
-
-$tipo_plot='sales';
-if(preg_match('/outers/',$_SESSION['state']['product']['plot']))
-  $tipo_plot='outers';
-
-
-if($weeks>500){
-  $time_plot='month';
- }elseif($weeks>52){
-   $time_plot='month';
- }else{
-   $time_plot='week';
- }
-
-$plot_tipo='product_'.$time_plot.'_'.$tipo_plot;
-$smarty->assign('plot_tipo',$plot_tipo);
-
-
-
-$smarty->assign('outall',number($product->get('outall')));
-$smarty->assign('awoutall',number($product->get('awoutall')));
-$smarty->assign('awoutq',number($product->get('awoutq')));
-
 
 
 
@@ -189,46 +149,13 @@ $smarty->assign('w',$product->get('w'));
 $smarty->assign('short_description',$product->get('description_med'));
 
 
-$sql="select id,alias from staff where active=1 order by alias";
-$result =& $db->query($sql);
 
-$associates=array('0'=>_('Other'));
-while($row=$result->fetchRow()){
-  $associates[$row['id']]=$row['alias'];
-  
- }
 
-$smarty->assign('acheckedby',$associates);
 
-$sql="select id,code from supplier  order by code";
-$result =& $db->query($sql);
-
-$asuppliers=array('0'=>_('Choose a supplier'));
-while($row=$result->fetchRow()){
-  $asuppliers[$row['id']]=$row['code'];
-  
- }
-
-$smarty->assign('asuppliers',$asuppliers);
 $smarty->assign('date',date('d-m-Y'));
 $smarty->assign('time',date('H:i'));
 
-$smarty->assign('stock_table_options',array(_('Inv'),_('Pur'),_('Adj'),_('Sal'),_('P Sal')) );
-$smarty->assign('stock_table_options_tipo', $_SESSION['views']['stockh_table_options'] );
-$smarty->assign('table_title_orders',_('Orders'));
-$smarty->assign('table_title_customers',_('Customers'));
-$smarty->assign('table_title_stock',_('Stock History'));
 
-
-
-
-//$smarty->assign('total_records',$product->get('numberof'));
-//$smarty->assign('rpp',$_SESSION['tables']['product_list'][2]);
-
-//$smarty->assign('records_perpage',$_SESSION['tables']['product_list'][2]);
-
-$smarty->assign('key_filter_number',$regex['key_filter_number']);
-$smarty->assign('key_filter_dimension',$regex['key_filter_dimension']);
 
 $manage_stock_data=array();
 $physical_locations=0;
@@ -238,15 +165,16 @@ foreach($locations['data'] as $location){
     $physical_locations++;
 }
 $manage_stock_data['physical_locations']=$physical_locations;
+$smarty->assign('physical_locations',$physical_locations);
 
 $_SESSION['state']['product']['manage_stock_data']=json_encode($manage_stock_data);
 
-$js_files[]='js/product.js.php?current_plot='.$plot_tipo;
+
 $js_files[]='js/product_manage_stock.js.php';
 
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
 
-$smarty->display('product.tpl');
+$smarty->display('product_manage_stock.tpl');
 ?>
