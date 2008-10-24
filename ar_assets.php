@@ -21,10 +21,16 @@ if(!isset($_REQUEST['tipo']))
 
 $tipo=$_REQUEST['tipo'];
 switch($tipo){
- case('locations'):
+ case('locations_name'):
 
+   
+   $sql=sprintf("select name from location where name like '%s%%' ",$_REQUEST['query']);
+   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   while($row=$res->fetchRow()) {
+     $data[]=array('name'=>$row['name']);
+   }
+   
 
-   $data=array('name'=>'aa','name'=>'asdsd3','name'=>'sdasdas','name'=>'bbb','name'=>'biuios');
    $response= array(
 		    'state'=>200,
 		    'data'=>$data
@@ -700,6 +706,133 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
 		   );
    echo json_encode($response);
    break;
+
+ case('locations'):
+   
+   $conf=$_SESSION['state']['warehouse']['locations'];
+   
+   if(isset( $_REQUEST['sf']))
+     $start_from=$_REQUEST['sf'];
+   else
+     $start_from=$conf['sf'];
+   if(isset( $_REQUEST['nr']))
+     $number_results=$_REQUEST['nr'];
+   else
+     $number_results=$conf['nr'];
+   if(isset( $_REQUEST['o']))
+     $order=$_REQUEST['o'];
+   else
+    $order=$conf['order'];
+   if(isset( $_REQUEST['od']))
+     $order_dir=$_REQUEST['od'];
+   else
+     $order_dir=$conf['order_dir'];
+   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+   if(isset( $_REQUEST['where']))
+     $where=addslashes($_REQUEST['where']);
+   else
+     $where=$conf['where'];
+
+    
+   if(isset( $_REQUEST['f_field']))
+     $f_field=$_REQUEST['f_field'];
+   else
+     $f_field=$conf['f_field'];
+   
+   if(isset( $_REQUEST['f_value']))
+     $f_value=$_REQUEST['f_value'];
+   else
+     $f_value=$conf['f_value'];
+
+   
+   if(isset( $_REQUEST['tableid']))
+     $tableid=$_REQUEST['tableid'];
+   else
+    $tableid=0;
+   
+
+   
+   
+   $filter_msg='';
+   $wheref='';
+   if($f_field=='name' and $f_value!='')
+     $wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
+   
+
+  
+   $_SESSION['state']['wherehouse']['locations']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+   
+
+   $sql="select count(*) as total from location  left join location_tipo on (tipo_id=location_tipo.id) left join wharehouse_area on (area_id=wharehouse_area.id)  $where $wheref";
+
+   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   if($row=$res->fetchRow()) {
+     $total=$row['total'];
+   }
+   if($wheref=='')
+       $filtered=0;
+   else{
+     $sql="select count(*) as total from location  left join location_tipo on (tipo_id=location_tipo.id) left join wharehouse_area on (area_id=wharehouse_area.id)  $where ";
+
+     $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+     if($row=$res->fetchRow()) {
+       $filtered=$row['total']-$total;
+     }
+
+   }
+
+
+
+
+   
+
+  $_order=$order;
+  $_dir=$order_direction;
+
+
+  $sql="select (select count(*) from product2location where location_id=location.id ) as products ,deep,length,height,max_weight,location.id,location.tipo,location.name,wharehouse_area.name as area  from location  left join location_tipo on (tipo_id=location_tipo.id) left join wharehouse_area on (area_id=wharehouse_area.id)  $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
+  //   print "$sql";
+  $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+  
+  $adata=array();
+
+  while($data=$res->fetchRow()) {
+  if(is_numeric($data['deep']) and is_numeric($data['length']) and is_numeric($data['height']))
+    $max_vol=$data['deep']*$data['length']*$data['height'];
+  else
+    $max_vol='';
+    $adata[]=array(
+		   'id'=>$data['id']
+		   ,'tipo'=>$data['tipo']
+		   ,'name'=>$data['name']
+		   ,'area'=>$data['area']
+		   ,'products'=>$data['products']
+		   ,'max_weight'=>$data['max_weight']
+		   ,'max_volumen'=>$max_vol
+);
+  }
+  $response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$adata,
+			 	'sort_key'=>$_order,
+			 'sort_dir'=>$_dir,
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
+
+			 'total_records'=>$total,
+			 'records_offset'=>$start_from,
+			'records_returned'=>$start_from+$res->numRows(),
+			'records_perpage'=>$number_results,
+
+			'records_order'=>$order,
+			'records_order_dir'=>$order_dir,
+			'filtered'=>$filtered
+			 )
+		   );
+   echo json_encode($response);
+   break;
+
+
   case('outofstock'):
      $conf=$_SESSION['state']['report_outofstock']['table'];
 

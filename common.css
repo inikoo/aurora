@@ -399,4 +399,5 @@ table.edit_location tr.totals {border-bottom:none }
 .location_state { width:100% }
 
 #manage_stock_desktop { margin:20px 0 0 0;padding:10px 20px;border:1px solid #ccc ;clear:both;}
-#manage_stock_messages {margin: 0 0 10px 0 }
+#manage_stock_messages {margin: 0 0 0px 0 }
+#manage_stock_engine {10px 0 0 0 }

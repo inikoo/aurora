@@ -131,8 +131,8 @@ var clear_actions = function(action){
 	    current_engine='new_location';
 	    this.className='selected';
 	    Dom.get('manage_stock_desktop').style.display='';
-	    Dom.get('manage_stock_engine').innerHTML=''
-	    Dom.get('manage_stock_messages').innerHTML='<span style="float:right;cursor:pointer" onclick="clear_actions(\'new_location\');"><?=_('Close')?></span> <?=_('Location');?>: <input id="xnew_location_input" type="text"><div id="xnew_location_container"></div>';
+	    Dom.get('manage_stock_engine').innerHTML='<table><tr><td><?=_('Can products be picked from here?')?></td><td>  Yes <input type="radio" name="can_pick" value="yes" style="vertical-align:bottom"> </td><td> No<input style="vertical-align:bottom" type="radio" name="can_pick" checked="checked" value="no"></td></tr><tr><td>Is this the primary picking location? </td><td>Yes <input type="radio" name="primary" value="yes" style="vertical-align:bottom"></td><td>  No<input style="vertical-align:bottom" type="radio" name="promary" checked="checked" value="no"> </td></tr><tr><td colspan="3" class="aright">Save new location <img src="art/icons/disk.png"/></td></tr></table> '
+	    Dom.get('manage_stock_messages').innerHTML='<span style="float:right;cursor:pointer" onclick="clear_actions(\'new_location\');"><?=_('Close')?></span> <?=_('New location code');?>:';
 	    
 	}
 
@@ -417,10 +417,10 @@ var clear_actions = function(action){
 
 
 
-	//YAHOO.util.Event.onContentReady("new_location_input", function () {
+	YAHOO.util.Event.onContentReady("manage_stock_locations", function () {
+	//function init(){
 
-RemoteCustomRequest = function() {
-	    
+
 	// Use an XHRDataSource
 	var oDS = new YAHOO.util.XHRDataSource("ar_assets.php");
 
@@ -435,13 +435,25 @@ RemoteCustomRequest = function() {
 
 // 	// The webservice needs additional parameters
  	oAC.generateRequest = function(sQuery) {
- 	    return "?tipo=locations&query=" + sQuery ;
+ 	    return "?tipo=locations_name&query=" + sQuery ;
  	};
-
- 	return {oDS: oDS,oAC: oAC};
-}
 	
-	//    });
+	
+	var itemSelectHandler = function(sType, aArgs) {
+
+	    alert('caca');
+	};
+
+	
+	oAC.itemSelectEvent.subscribe(itemSelectHandler); 
+	
+
+
+     //};	
+	    });
+
+
+//YAHOO.util.Event.onDOMReady(init);
 
 
 YAHOO.util.Event.onContentReady("manage_stock", function () {
@@ -453,3 +465,5 @@ YAHOO.util.Event.onContentReady("manage_stock", function () {
 	 Event.addListener("new_location", "click", new_location);
 
     });
+
+

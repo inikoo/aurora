@@ -46,8 +46,6 @@
 
 
 	<div class="yui-u">
-	  <input id="new_location_input" type="text"><div id="new_location_container">xx</div>
-
 	  <div  id="manage_stock" class="manage_stock" >
 	    <table class="options" style="float:left">
 	      <tr class="title"><td colspan="3">{t}Operations{/t}</td></tr>
@@ -59,8 +57,10 @@
 	</table>
 	<div id="manage_stock_desktop" style="display:none" >
 	  <div id="manage_stock_messages"></div>
+	  <div id="manage_stock_locations" style="margin:0 0 20px 0;width:100px;background:red"><input id="new_location_input" type="text"><div id="new_location_container"></div></div>
 	  <div id="manage_stock_engine"></div>
-	  <div style="clear:both"></div>
+	  <div style="clear:both">
+	  </div>
 	</div>
 	<table class="edit_location" style="clear:both">
 	  <tr><td>{t}Generally used for{/t}</td><td>{t}Picking Priority{/t}</td><td>{t}Location{/t}</td><td >{t}Stock{/t}</td><td ></td> </tr>

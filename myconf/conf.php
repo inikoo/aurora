@@ -190,7 +190,19 @@ $default_state=array(
 								 'elements'=>array()
 						   )
 				    ),
-
+		     'warehouse'=>array(
+					
+						  'locations'=>array(
+								 'order'=>'name',
+								 'order_dir'=>'',
+								 'sf'=>0,
+								 'nr'=>25,
+								 'where'=>'where true',
+								 'f_field'=>'name',
+								 'f_value'=>'',
+								 'elements'=>array()
+						   )
+				    ),
 		     'customers'=>array(
 					'view'=>'general',
 					'details'=>0,
