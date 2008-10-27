@@ -392,7 +392,7 @@ table.edit_location{ margin-top:20px }
 .manage_stock .actions{  border-collapse: separate;;border-spacing:5px  0px;}
 .manage_stock tr.buts td{ border:1px solid #ccc;padding:2px 2px;margin:0px 5px;border-spacing:0px 10px  }
 table.edit_location tr{border-bottom:1px solid #ccc;}
-table.edit_location td{padding:1px 15px 1px 15px;text-align:right }
+table.edit_location td{padding:1px 15px 1px 15px;text-align:left }
 table.edit_location td.selected{ background:#edf3ff;cursor:pointer }
 table.edit_location tr.totals td {border-top:1px solid #000;border-bottom:none }
 table.edit_location tr.totals {border-bottom:none }

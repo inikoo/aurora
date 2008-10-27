@@ -49,25 +49,31 @@
 	  <div  id="manage_stock" class="manage_stock" >
 	    <table class="options" style="float:left">
 	      <tr class="title"><td colspan="3">{t}Operations{/t}</td></tr>
-	      <tr><td {if $physical_locations<2}style="display:none"{/if}id="move_stock">Move Stock</td><td id="damaged_stock"   >Stock Damaged</td><td id="new_location">Assign Location</td></tr>
+	      <tr><td {if $locations.num_physical<2    }style="xdisplay:none"{/if}id="move_stock">Move Stock</td><td id="damaged_stock"   >Stock Damaged</td><td id="new_location">Assign Location</td></tr>
 	    </table>
 	    <table class="options" style="float:left;margin-bottom:20px">
 	      <tr class="title"> <td colspan="2">{t}Fix Errors{/t}</td></tr>
-	      <tr ><td id="change_stock">Change Stock Qty</td><td>Change Location</td></tr>
+	      <tr ><td id="change_stock">Change Stock Qty</td><td id="modify_location">Modify Location</td></tr>
 	</table>
-	<div id="manage_stock_desktop" style="display:none" >
-	  <div id="manage_stock_messages"></div>
-	  <div id="manage_stock_locations" style="margin:0 0 20px 0;width:100px;background:red"><input id="new_location_input" type="text"><div id="new_location_container"></div></div>
-	  <div id="manage_stock_engine"></div>
-	  <div style="clear:both">
-	  </div>
-	</div>
+	    <div id="manage_stock_desktop" style="display:none" >
+	      <div id="manage_stock_close"><img src="art/close.png" style="opacity:.5;position:relative;bottom:5px;left:10px;float:right;cursor:pointer" title="{t}{/t}" onclick="clear_actions();"/></div>
+	      <div id="manage_stock_messages"></div>
+	      <div id="manage_stock_locations" style="margin:0 0 20px 0;width:100px;display:none"><input id="new_location_input" type="text"><div id="new_location_container"></div></div>
+	      <div id="manage_stock_engine"></div>
+	      <div style="clear:both">
+	      </div>
+	    </div>
 	<table class="edit_location" style="clear:both">
-	  <tr><td>{t}Generally used for{/t}</td><td>{t}Picking Priority{/t}</td><td>{t}Location{/t}</td><td >{t}Stock{/t}</td><td ></td> </tr>
-	  {foreach  from=$locations item=location name=foo }
-	  <tr ><td>{$location.tipo} </td><td   ><span   rank=$location.picking_rank  onOclick="rank_up()"   style="cursor:pointer;{if $location.picking_rank==1}display:none;{/if}">&uarr;</span><span  onClick="rank_down()"   style="cursor:pointer;{if $physical_locations==$location.picking_rank}display:none;{/if}" >&darr;</span>  {$location.picking_rank} <img style="height:14px;vertical-align:top" src="art/icons/basket.png"/></td><td id="loc_name{$location.location_id}"> {$location.name}</td><td ><span   id="loc_stock{$location.location_id}" class="aright" >{$location.stock}</span></td><td><img  {if $location.stock!=0}style="display:none"{/if}  src="art/icons/cross.png" /></td></tr>
+	  <tr><td>{t}Location{/t}</td><td >{t}Type{/t}</td><td></td><td  style="text-align:right">{t}Stock{/t}</td><td ></td> </tr>
+	  {foreach  from=$locations.data item=location name=foo }
+	  <tr  >
+	    <td id="loc_name{$location.location_id}" class="aleft"  > {$location.name}</td>
+	     <td >{$location.tipo} {t}area{/t} </td>
+	    <td style="text-align:right" ><span   rank=$location.picking_rank  onOclick="rank_up()"   style="cursor:pointer;{if $location.picking_rank==1}display:none;{/if}">&uarr;</span> {$location.picking_tipo}  <img src="art/icons/basket.png" style="position:relative;bottom:1px;vertical-align:bottom;{if !$location.can_pick}display:none{/if}"/> </td>
+	    <td  style="text-align:right"><span   id="loc_stock{$location.location_id}"    >{$location.stock}</span></td>
+	    <td><img   id="loc_del{$location.location_id}"  {if $location.has_stock}style="display:none"{/if}  src="art/icons/cross.png" /></td></tr>
 	  {/foreach}
-	   <tr class="totals"><td  class="aright" >{t}Total Stock{/t}:</td><td></td><td></td><td id="total_stock" >{$stock}</td><td></td> </tr>
+	   <tr class="totals"><td  >{t}Total Stock{/t}:</td><td COLSPAN="3" id="total_stock" style="text-align:right" >{$stock}</td><td></td> </tr>
 	</table>
       </div>
 	</div>
@@ -93,70 +99,11 @@
     
   </div> 
   
-  
-
-
-  <div id="block_plot" style="clear:both;{if $display.plot==0}display:none{/if}">
-    <div id="plot_options" class="plot_options" xstyle="float:right;width:130px">
-      <table border=0 class="plot_menu" style="margin-top:30px">
-	<tr class="top">
-	  <td class="left"></td>
-	  <td ><img src="art/icons/calendar_view_week.png" title="{t}Weekly{/t}"/></td>
-	  <td><img src="art/icons/calendar_view_month.png" title="{t}Monthy{/t}"/></td>
-	  <td><img src="art/icons/calendar_view_quarter.png" title="{t}Quarterly{/t}"/></td>
-	  <td><img src="art/icons/calendar_view_year.png" title="{t}Yearly{/t}"/></td>
-	    <tr>
-	      <td class="left"><img src="art/icons/money.png" title="{t}Net Sales{/t}"/></td>
-	      <td><img id="product_week_sales"   class="{if $plot_tipo=='product_week_sales'}selected{else}opaque{/if}" src="art/icons/chart_line.png" title="{t}Sales per week{/t}"/></td>
-	      <td><img id="product_month_sales" class="{if $plot_tipo=='product_month_sales'}selected{else}opaque{/if}" src="art/icons/chart_bar.png" title="{t}Sales per month{/t}"/></td>
-	      <td><img id="product_quarter_sales"   class="{if $plot_tipo=='product_quarter_sales'}selected{else}opaque{/if}" src="art/icons/chart_bar.png" title="{t}Sales per quarter{/t}"/></td>
-	      <td><img id="product_year_sales"   class="{if $plot_tipo=='product_year_sales'}selected{else}opaque{/if}" src="art/icons/chart_line.png" title="{t}Sales per year{/t}"/></td>
-	      
-	      <td></td>
-	    </tr>
-	<tr>
-	  <td class="left"><img src="art/icons/basket.png" title="{t}Outers Sold{/t}"/></td>
-	  <td><img  id="product_week_outers"  class="{if $plot_tipo=='product_week_outers'}selected{else}opaque{/if}"  src="art/icons/chart_line.png" title="{t}Outers sold per month{/t}"/></td>
-	  <td><img  id="product_week_outers"  class="{if $plot_tipo=='product_month_outers'}selected{else}opaque{/if}"  src="art/icons/chart_bar.png" title="{t}Outers sold per month{/t}"/></td>
-	  <td><img  id="product_week_outers"  class="{if $plot_tipo=='product_quarter_outers'}selected{else}opaque{/if}"  src="art/icons/chart_bar.png" title="{t}Outers sold  per quarter{/t}"/></td>
-	  <td><img   id="product_week_outers" class="{if $plot_tipo=='product_year_outers'}selected{else}opaque{/if}"  src="art/icons/chart_line.png" title="{t}Outers sold  per year{/t}"/></td>
-	  <td></td>
-	</tr>
-	    <tr>
-	      <td class="left"><img src="art/icons/package.png" title="{t}Stock{/t}"/></td>
-	      <td><img id="product_stock_history"  class="{if $plot_tipo=='product_stock_history'}selected{else}opaque{/if}"      src="art/icons/chart_line.png" title="{t}Stock History{/t}"/></td>
-	      <td></td>
-	      <td></td>
-	      <td></td>
-	    </tr>
-      </table>
-      <div class="other_options">
-	<table >
-	  <tr class="title"><td>Dates</td><tr> 
-	  <tr><td >Show last</td><tr> 
-	  <tr><td>  <input type="text" size="2" style="vertical-align:bottom"/> <span style="">months</span></td><tr> 
-	  <tr class="title"><td>Y-Axis Range</td><tr> 
-	  <tr><td>All <input type="radio" name="y_range" checked="cheked" value="all"></td><tr> 
-	  <tr><td>&sigma; <input type="radio" name="y_range" value="sigma"></td><tr> 
-
-	</table>
-      </div>
-      
-    </div>
-    <div id="xplot0" class="product_plot"  style="height:300px;{if $view_plot!=0};display:none{/if}" >
-	   <iframe id="the_plot" src ="plot.php?tipo={$plot_tipo}" frameborder=0 height="100%" scrolling="no" width="100%"></iframe>
-	 </div>
-	 
-
-
-      </div>
-      
-
-
-
-
-</div>
+  </div>
 </div>
 
-</div>{include file='footer.tpl'}
+
+
+
+{include file='footer.tpl'}
 

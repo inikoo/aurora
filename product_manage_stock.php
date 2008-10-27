@@ -80,7 +80,7 @@ $smarty->assign('next',$next);
 
 $locations=($product->get('locations'));
 
-$smarty->assign('locations',$locations['data']);
+$smarty->assign('locations',$locations);
 
 
 
@@ -158,17 +158,25 @@ $smarty->assign('time',date('H:i'));
 
 
 
-$manage_stock_data=array();
-$physical_locations=0;
-foreach($locations['data'] as $location){
-  $manage_stock_data['locations'][]=array('name'=>$location['name'],'id'=>$location['location_id'],'stock'=>$location['stock']);
-  if($location['tipo']=='picking' or $location['tipo']=='storing')
-    $physical_locations++;
-}
-$manage_stock_data['physical_locations']=$physical_locations;
-$smarty->assign('physical_locations',$physical_locations);
+// $manage_stock_data=array();
+// $physical_locations=0;
+// foreach($locations['data'] as $location){
+//   $manage_stock_data['locations'][]=array(
+// 					  'name'=>$location['name'],
+// 					  'id'=>$location['location_id'],
+// 					  'stock'=>$location['stock'],
+// 					  'picking'=>$location['rank'],
+// 					  'is_physical'=>$location['is_physical'],
+// 					  'has_stock'=>$location['has_stock']
+// 					  );
+//   if($location['tipo']=='picking' or $location['tipo']=='storing')
+//     $physical_locations++;
+// }
+// $manage_stock_data['physical_locations']=$physical_locations;
+// $smarty->assign('physical_locations',$physical_locations);
 
-$_SESSION['state']['product']['manage_stock_data']=json_encode($manage_stock_data);
+
+$_SESSION['state']['product']['manage_stock_data']=json_encode($locations);
 
 
 $js_files[]='js/product_manage_stock.js.php';

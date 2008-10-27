@@ -21,12 +21,18 @@ if(isset($_REQUEST['search']) and $_REQUEST['search']!=''  ){
     exit;
   }
   
-//   $sql=sprintf("select id from product_group where code='%s' ",addslashes($q));
-//   $result =& $db->query($sql);
-//   if($found=$result->fetchRow()){
-//     header('Location: assets_family.php?id='. $found['id']);
-//     exit;
-//   }
+  $sql=sprintf("select id from product_group where name='%s' ",addslashes($q));
+  $result =& $db->query($sql);
+  if($found=$result->fetchRow()){
+    header('Location: family.php?id='. $found['id']);
+    exit;
+  }
+
+
+  //do you mean
+  $from_url=$_REQUEST['from_url'];
+  
+    
 //   $_SESSION['tables']['pindex_list'][5]='p.code';
 //   $_SESSION['tables']['pindex_list'][6]=$q;
   

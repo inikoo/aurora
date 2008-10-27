@@ -15,6 +15,15 @@
 //   return array($mysql_date,0);
 // }
 
+function getOrdinal($number){
+ // get first digit
+ $digit = abs($number) % 10;
+ $ext = 'th';
+ $ext = ((abs($number) %100 < 21 && abs($number) %100 > 4) ? 'th' : (($digit < 4) ? ($digit < 3) ? ($digit < 2) ? ($digit < 1) ? 'th' : 'st' : 'nd' : 'rd' : 'th'));
+ return $number.$ext;
+}
+
+
 function prepare_mysql_datetime($datetime,$tipo='datetime'){
 
   if($datetime=='')

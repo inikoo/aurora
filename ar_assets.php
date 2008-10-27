@@ -1,6 +1,8 @@
 <?
 require_once 'common.php';
 require_once 'stock_functions.php';
+require_once 'classes/product.php';
+
 //require_once 'common_functions.php';
 //require_once 'ar_common.php';
 
@@ -21,6 +23,86 @@ if(!isset($_REQUEST['tipo']))
 
 $tipo=$_REQUEST['tipo'];
 switch($tipo){
+case('pml_new_location'):
+ $data=array(
+	     'product_id'=>$_SESSION['state']['product']['id'],
+	     'location_name'=>$_REQUEST['location_name'],
+	     'is_primary'=>$_REQUEST['is_primary'],
+	     'user_id'=>$LU->getProperty('auth_user_id'),
+	     'can_pick'=>$_REQUEST['can_pick'],
+	     'tipo'=>'associate_location'
+	       );
+   $product=new product();
+   $res=$product->update_location($data);
+   
+   if($res[0])
+     $response= array(
+		      'state'=>200,
+		      'data'=>$res[1]
+		      );
+   else
+     $response= array(
+		      'state'=>400,
+		      'msg'=>$res[1]
+		      );
+     echo json_encode($response);  
+   break;
+   
+ case('pml_move_stock'):
+ case('pml_damaged_stock'):
+ $data=array(
+	     'product_id'=>$_SESSION['state']['product']['id'],
+	     'from'=>$_REQUEST['from'],
+	     'qty'=>$_REQUEST['qty'],
+	     'user_id'=>$LU->getProperty('auth_user_id'),
+	     'message'=>$_REQUEST['message'],
+	     'tipo'=>'damaged_stock'
+	       );
+   $product=new product();
+   $res=$product->update_location($data);
+   
+   if($res[0])
+     $response= array(
+		      'state'=>200,
+		      'data'=>$res[1]
+		      );
+   else
+     $response= array(
+		      'state'=>400,
+		      'msg'=>$res[1]
+		      );
+     echo json_encode($response);  
+   break;
+   
+ case('pml_move_stock'):
+   $data=array(
+	       'product_id'=>$_SESSION['state']['product']['id'],
+	       'from'=>$_REQUEST['from'],
+	       'to'=>$_REQUEST['to'],
+	       'qty'=>$_REQUEST['qty'],
+	       'user_id'=>$LU->getProperty('auth_user_id'),
+	       'tipo'=>'move_stock'
+	       );
+   $product=new product();
+   $res=$product->update_location($data);
+   
+   if($res[0])
+     $response= array(
+		      'state'=>200,
+		      'data'=>$res[1]
+		      );
+   else
+     $response= array(
+		      'state'=>400,
+		      'msg'=>$res[1]
+		      );
+
+
+   
+     echo json_encode($response);  
+  
+
+   break;
  case('locations_name'):
 
    
