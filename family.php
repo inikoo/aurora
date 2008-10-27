@@ -32,6 +32,7 @@ $js_files=array(
 		$yui_path.'menu/menu-min.js',
 		'js/common.js.php',
 		'js/table_common.js.php',
+		'js/search_product.js',
 		'js/family.js.php'
 		);
 $smarty->assign('css_files',$css_files);

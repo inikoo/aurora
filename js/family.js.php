@@ -164,6 +164,8 @@ ids=['general','sales','stock'];
 
      YAHOO.util.Event.addListener('show_details', "click",show_details,'family')
 
+ YAHOO.util.Event.addListener('submit_search', "click",submit_search);
+ YAHOO.util.Event.addListener('prod_search', "keydown", submit_search_on_enter);
 
 
 

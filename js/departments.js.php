@@ -175,6 +175,12 @@ YAHOO.util.Event.addListener(window, "load", function() {
  YAHOO.util.Event.addListener('show_details', "click",show_details,'departments');
 
 
+ YAHOO.util.Event.addListener('submit_search', "click",submit_search);
+ YAHOO.util.Event.addListener('prod_search', "keydown", submit_search_on_enter);
+
+
+
+
  }
 
 YAHOO.util.Event.onDOMReady(init);

@@ -240,7 +240,7 @@ foreach($locations['data'] as $location){
 $manage_stock_data['physical_locations']=$physical_locations;
 
 $_SESSION['state']['product']['manage_stock_data']=json_encode($manage_stock_data);
-
+$js_files[]= 'js/search_product.js';
 $js_files[]='js/product.js.php?current_plot='.$plot_tipo;
 $js_files[]='js/product_manage_stock.js.php';
 

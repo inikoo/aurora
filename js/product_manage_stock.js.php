@@ -100,16 +100,12 @@ var new_location_save = function(){
 	    success:function(o) {
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if (r.state == 200) {
-		    //update all stock figures (if were changed else were)
-		    location_data=r.data;
-		    clear_actions('damaged_stock')
-			refresh();
-		    
+		    location.href=r.url;
 		}else
-		    Dom.get('manage_stock_messages').innerHTML='<span class="error">'+r.msg+'</span>';
+		    Dom.get('search_msg').innerHTML=r.msg;
 	    }
 	});
-	};
+};
 
 
 var new_location_q1_action=function(value){

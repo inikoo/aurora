@@ -141,16 +141,17 @@
 
     </div> 
   </div>
+
+
+  
   <div class="yui-b">
-    <div  style="float:right;margin-top:10px;text-align:right">
-      {t}Product Code{/t}
-      <form  id="prod_search_form" action="products.php" method="GET" >
-	<input name="from_url" value="product" />
-	<input size="8" class="text search" id="prod_search" value="" name="search"/><img onclick="document.getElementById('prod_search_form').submit()"align="absbottom" id="submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search">
-      </form>
-      
-    </div>	 
-    
+
+     <div class="search_box" >
+       <span class="search_title" style="padding-right:15px">{t}Product Code{/t}:</span> <br><input size="8" class="text search" id="prod_search" value="" name="search"/><img align="absbottom" id="submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>
+       <span  class="search_msg"   id="search_msg"    ></span> <span  class="search_sugestion"   id="search_sugestion"    ></span>
+       <br/>
+     </div>
+
     <table border=0 cellpadding="2" style="float:right;margin-top:20px;" class="view_options">
       <tr style="border-bottom:1px solid #ddd">
 	
