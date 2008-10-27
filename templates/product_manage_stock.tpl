@@ -63,15 +63,19 @@
 	      <div style="clear:both">
 	      </div>
 	    </div>
-	<table class="edit_location" style="clear:both">
+	<table class="edit_location" id="location_table"  style="clear:both">
 	  <tr><td>{t}Location{/t}</td><td >{t}Type{/t}</td><td></td><td  style="text-align:right">{t}Stock{/t}</td><td ></td> </tr>
 	  {foreach  from=$locations.data item=location name=foo }
-	  <tr  >
+	  <tr  id="row_{$location.location_id}"   pl_id="{$location.id}"  >
 	    <td id="loc_name{$location.location_id}" class="aleft"  > {$location.name}</td>
-	     <td >{$location.tipo} {t}area{/t} </td>
-	    <td style="text-align:right" ><span   rank=$location.picking_rank  onOclick="rank_up()"   style="cursor:pointer;{if $location.picking_rank==1}display:none;{/if}">&uarr;</span> {$location.picking_tipo}  <img src="art/icons/basket.png" style="position:relative;bottom:1px;vertical-align:bottom;{if !$location.can_pick}display:none{/if}"/> </td>
+	     <td id="loc_tipo{$location.location_id}" >{$location.tipo}</td>
+	    <td style="text-align:right"  id="loc_pick_info{$location.location_id}" >
+	      <span id="loc_picking_up{$location.location_id}"  rank={$location.picking_rank}  onOclick="rank_up()"   style="cursor:pointer;{if  $location.picking_rank<2 or !$location.picking_rank}display:none;{/if}">&uarr;</span> 
+	      <span id="loc_picking_tipo{$location.location_id}" >{$location.picking_tipo}</span>  
+	      <img  id="loc_picking_img{$location.location_id}"  src="{if $location.can_pick }art/icons/basket.png{else}art/icons/basket_delete.png{/if}" style="position:relative;bottom:1px;vertical-align:bottom;"/> 
+	    </td>
 	    <td  style="text-align:right"><span   id="loc_stock{$location.location_id}"    >{$location.stock}</span></td>
-	    <td><img   id="loc_del{$location.location_id}"  {if $location.has_stock}style="display:none"{/if}  src="art/icons/cross.png" /></td></tr>
+	    <td><img  onclick="desassociate_loc({$location.location_id})"   id="loc_del{$location.location_id}"  can_del="{if $location.has_stock}1{else}0{/if}"   title="{t}Free the location{/t}" style="cursor:pointer;{if $location.has_stock}display:none{/if}"  src="art/icons/cross.png" /></td></tr>
 	  {/foreach}
 	   <tr class="totals"><td  >{t}Total Stock{/t}:</td><td COLSPAN="3" id="total_stock" style="text-align:right" >{$stock}</td><td></td> </tr>
 	</table>

@@ -93,9 +93,34 @@ class product{
 	}
 	break;
       case('locations'):
-	global $_location_name;
+	global $_location_tipo;
+	$_data=array();
 	$this->locations=array('has_display'=>false,'has_unknown'=>false,'has_loading'=>false,'has_white_hole'=>false,'has_picking_area'=>false,'has_locations'=>false,'data'=>array(),'num_physical'=>0,'num_physical_with_stock'=>0,'num_picking_areas'=>0);
-	$sql=sprintf("select name,product2location.id as id,location_id,stock,picking_rank,tipo,stock  from product2location left join location on (location_id=location.id) where product_id=%d",$id);
+	$sql=sprintf("select name,product2location.id as id,location_id,stock,picking_rank,tipo,stock  from product2location left join location on (location_id=location.id) where product_id=%d and picking_rank is not null order by picking_rank  ",$id);
+	$result =& $this->db->query($sql);
+	while($row=$result->fetchRow()){
+	  $_data[$row['id']]=array(
+				   'id'=>$row['id'],
+				   'name'=>$row['name'],
+				   'location_id'=>$row['location_id'],
+				   'stock'=>$row['stock'],
+				   'tipo'=>$_location_tipo[$row['tipo']],
+				   'picking_tipo'=>getOrdinal($row['picking_rank']),
+				   'picking_rank'=>$row['picking_rank'],
+				   'is_physical'=>true,
+				   'can_pick'=>true,
+				   'has_stock'=>($row['stock']>0?true:false)
+				   );
+	  $this->locations['num_physical']++;
+	   if($row['stock']>0)
+	      $this->locations['num_physical_with_stock']++;
+	   $this->locations['num_picking_areas']++;
+	  
+	}
+	
+
+
+	$sql=sprintf("select name,product2location.id as id,location_id,stock,picking_rank,tipo,stock  from product2location left join location on (location_id=location.id) where product_id=%d and picking_rank is  null order by tipo desc  ",$id);
 	$result =& $this->db->query($sql);
 	while($row=$result->fetchRow()){
 	  
@@ -105,13 +130,13 @@ class product{
 	  $icon='';
 	  if($row['tipo']=='unknown'){
 	    $this->locations['has_unknown']=true;
-	    $name=$_location_name[$row['name']];
+	    $name=$_location_tipo[$row['tipo']];
 	  }else if($row['tipo']=='white_hole'){
 	    $this->locations['has_white_hole']=true;
-	    $name=$_location_name[$row['name']];
+	    $name=$_location_tipo[$row['tipo']];
 	  }else if($row['tipo']=='loading'){
 	    $this->locations['has_loading']=true;
-	    $name=$_location_name[$row['name']];
+	    $name=$row['name'];
 	  
 	  }else{
 	    $name=$row['name'];
@@ -119,35 +144,28 @@ class product{
 	    $this->locations['num_physical']++;
 	    if($row['stock']>0)
 	      $this->locations['num_physical_with_stock']++;
-	    if(is_numeric($row['picking_rank'])){
-	      $this->locations['num_picking_areas']++;
-	      $can_pick=true;
-	      $this->locations['has_picking_area']=true;
-	      $picking_tipo=getOrdinal($row['picking_rank']);
-	    }
 	    $is_physical=true;
-
-
 	  }
 	    
 	  
 
-	  $this->locations['data'][$row['id']]=array(
+	  $_data[$row['id']]=array(
 					   'id'=>$row['id'],
 					   'name'=>$name,
 					   'location_id'=>$row['location_id'],
 					   'stock'=>$row['stock'],
-					   'tipo'=>$row['tipo'],
+					   'tipo'=>$_location_tipo[$row['tipo']],
 					   'picking_tipo'=>$picking_tipo,
-					   'picking_rank'=>$row['picking_rank'],
+					   'picking_rank'=>'',
 					   'is_physical'=>$is_physical,
 					   'can_pick'=>$can_pick,
 					   'has_stock'=>($row['stock']>0?true:false)
 					   );
 
 	}
-
 	
+	$this->locations['data']=$_data;
+	break;
       case('suppliers'):
 	$this->suppliers=array();
 	$sql=sprintf("select p2s.supplier_id, p2s.price,p2s.sup_code as code,s.name as name from product2supplier as p2s left join supplier as s on (p2s.supplier_id=s.id) where p2s.product_id=%d",$id);
@@ -267,7 +285,8 @@ class product{
 
     switch($data['tipo']){
     case('set_picking_rank'):
-
+      
+      // print_r($data);
       $id=$data['product2location_id'];
       $rank=$data['rank'];
       $user_id=$data['user_id'];
@@ -291,16 +310,17 @@ class product{
       $location_data=$this->get('locations');
       $old_rank=$location_data['data'][$id]['picking_rank'];
       
-      if($rank>$location_data['num_picking_areas'] or $rank<1)
+      if($rank>$location_data['num_picking_areas'] or $rank<0)
 	$new_rank=$location_data['num_picking_areas']+1;
       else
 	$new_rank=$rank;
       
       
       if($rank==0)
-	$sql=sprintf("insert update product2location  picking_rank=NULL where id=%d",$id);// products con not be picked from this location
+	$sql=sprintf("update product2location  set picking_rank=NULL where id=%d",$id);// products con not be picked from this location
       else
-	$sql=sprintf("insert update product2location  picking_rank=%d where id=%d",$new_rank,$id); 
+	$sql=sprintf("update product2location  set picking_rank=%d where id=%d",$new_rank,$id); 
+      //  print $sql;
       mysql_query($sql);
       
       $sql=sprintf("select id from product2location where product_id=%d and id!=%d order by picking_rank",$product_id,$id);
@@ -310,7 +330,7 @@ class product{
       while($row=$result->fetchRow()){
 	if($_rank==$new_rank)
 	  $_rank++;
-	$sql=sprintf("insert update product2location  picking_rank=%d where id=%d",$_rank,$row['id']); 
+	$sql=sprintf("update product2location  set picking_rank=%d where id=%d",$_rank,$row['id']); 
 	mysql_query($sql);
 	  $_rank++;
       }
@@ -340,7 +360,37 @@ class product{
 
       break;
       
+    case('desassociate_location'):
+      $id=$data['p2l_id'];
+      $user_id=$data['user_id'];
+      $product_id=$data['product_id'];
+      $sql=sprintf("select stock,product_id,location_id from product2location  where id=%d",$id); 
 
+      $result =& $this->db->query($sql);
+      if($row=$result->fetchRow()){
+	if($row['product_id']!=$product_id)
+	  return array(false,_('This location is no associated with the product'));
+	if($row['stock']>0)
+	  return array(false,_('There is still products in the location'));
+	$location_id=$row['location_id'];
+      }else
+	return array(false,_('This location is no associated with the product'));
+      // del
+      $this->update_location(array('tipo'=>'set_picking_rank','product2location_id'=>$id,'rank'=>0,'user_id'=>$user_id,'no_history'=>true));
+      
+      // procced to delete
+      $sql=sprintf("delete from product2location  where id=%d",$id); 
+
+      mysql_query($sql);
+      
+      $sql=sprintf("insert into history (sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,note) values ('product',%d,'location',%d,'PLD',%d)",$product_id,$id,$user_id); 
+      mysql_query($sql);
+
+	
+      $this->read(array('locations'=>$product_id));
+      $locations_data=$this->get('locations');
+      return array(true,$locations_data);
+      break;
 
   case('associate_location'):
       $location_name=$data['location_name'];
@@ -348,10 +398,12 @@ class product{
       $is_primary=$data['is_primary'];
       $product_id=$data['product_id'];
       $user_id=$data['user_id'];
-      $sql=sprintf("select id from location  where name like %s",prepare_mysql($location_name)); 
+      $sql=sprintf("select id,tipo,name from location  where name like %s",prepare_mysql($location_name)); 
       $result =& $this->db->query($sql);
       if($row=$result->fetchRow()){
 	$location_id=$row['id'];
+	$location_name=$row['name'];
+	$location_tipo=$row['tipo'];
       }else
 	return array(false,_('No such location'));
       
@@ -365,15 +417,17 @@ class product{
 
 
 
-      
+      //    print_r($data);
+      //print "y $can_pick x $is_primary   ";
       $sql=sprintf("insert into product2location  (product_id,location_id) values (%d,%d)",$product_id,$location_id); 
       mysql_query($sql);
       $id=mysql_insert_id();
+      $rank=0;
       if($can_pick){
 	if($is_primary)
 	  $rank=1;
 	else
-	  $rank=0;
+	  $rank=-1;
 
 	$this->update_location(array('tipo'=>'set_picking_rank','product2location_id'=>$id,'rank'=>$rank,'user_id'=>$user_id,'no_history'=>true));
       }
@@ -384,7 +438,7 @@ class product{
 	
       $this->read(array('locations'=>$product_id));
       $locations_data=$this->get('locations');
-      return array(true,$locations_data);
+      return array(true,$locations_data,$location_id,$location_name,$location_tipo,$rank,($rank==1?getOrdinal(1):getOrdinal($locations_data['num_physical'])));
   
       break;
       

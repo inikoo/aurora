@@ -23,24 +23,70 @@ if(!isset($_REQUEST['tipo']))
 
 $tipo=$_REQUEST['tipo'];
 switch($tipo){
-case('pml_new_location'):
- $data=array(
-	     'product_id'=>$_SESSION['state']['product']['id'],
-	     'location_name'=>$_REQUEST['location_name'],
-	     'is_primary'=>$_REQUEST['is_primary'],
-	     'user_id'=>$LU->getProperty('auth_user_id'),
-	     'can_pick'=>$_REQUEST['can_pick'],
-	     'tipo'=>'associate_location'
+
+ case('pml_desassociate_location'):
+     $data=array(
+		 'product_id'=>$_SESSION['state']['product']['id'],
+		 'p2l_id'=>$_REQUEST['id'],
+		 'user_id'=>$LU->getProperty('auth_user_id'),
+		 'tipo'=>'desassociate_location'
+		 );
+     $product=new product();
+     $res=$product->update_location($data);
+     if($res[0])
+       $response= array(
+			'state'=>200,
+			'data'=>$res[1]
+			);
+     else
+       $response= array(
+			'state'=>400,
+			'msg'=>$res[1]
+		      );
+     echo json_encode($response);  
+     break;
+     
+
+   
+ case('pml_new_location'):
+   $data=array(
+	       'product_id'=>$_SESSION['state']['product']['id'],
+	       'location_name'=>$_REQUEST['location_name'],
+	       'is_primary'=>($_REQUEST['is_primary']=='true'?true:false),
+	       'user_id'=>$LU->getProperty('auth_user_id'),
+	       'can_pick'=>($_REQUEST['can_pick']=='true'?true:false),
+	       'tipo'=>'associate_location'
 	       );
    $product=new product();
    $res=$product->update_location($data);
    
-   if($res[0])
+   if($data['can_pick']){
+     $tipo_img='art/icons/basket.png';
+
+      
+      if($data['is_primary'])
+	$row=1;
+      else
+	$row=$res[1]['num_physical']+1;
+
+       
+   }else{
+     $row=$res[1]['num_physical'];
+     $tipo_img='art/icons/basket_delete.png';
+   }
+   if($res[0]){
+
      $response= array(
+		      'where'=>$row,
 		      'state'=>200,
-		      'data'=>$res[1]
+		      'data'=>$res[1],
+		      'name'=>$res[3],
+		      'tipo'=>$_location_tipo[$res[4]],
+		      'tipo_rank'=>$res[6],
+		      'rank_img'=>$tipo_img,
+		      'id'=>$res[2]
 		      );
-   else
+ }else
      $response= array(
 		      'state'=>400,
 		      'msg'=>$res[1]
@@ -48,7 +94,7 @@ case('pml_new_location'):
      echo json_encode($response);  
    break;
    
- case('pml_move_stock'):
+
  case('pml_damaged_stock'):
  $data=array(
 	     'product_id'=>$_SESSION['state']['product']['id'],

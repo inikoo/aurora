@@ -127,8 +127,7 @@ $res.="\$_porder_tipo['1']=_('Submited');\n";
 $res.="\$_porder_tipo['2']=_('Received');\n";
 $res.="\$_porder_tipo['3']=_('Cancelled');\n";
 
-$res.="\$_location_name['_UNK']=_('Unknown');\n";
-$res.="\$_location_name['_WHL']=_('White Hole');\n";
+
 
 $res.="\$_product_tipo['0']=_('Active');\n";
 $res.="\$_product_tipo['1']=_('Discontinued');\n";
@@ -153,6 +152,14 @@ $res.="\$_stockop_tipo['1']=_('Purchase');\n";
 $res.="\$_stockop_tipo['2']=_('Adjust');\n";
 $res.="\$_stockop_tipo['3']=_('Sale');\n";
 $res.="\$_stockop_tipo['4']=_('Potencial Sale');\n";
+
+
+$res.="\$_location_tipo['picking']=_('Picking Area');\n";
+$res.="\$_location_tipo['storing']=_('Storing Area');\n";
+$res.="\$_location_tipo['loading']=_('Goods In');\n";
+$res.="\$_location_tipo['unknown']=_('Unknown');\n";
+$res.="\$_location_tipo['white_hole']=_('Error');\n";
+$res.="\$_location_tipo['display']=_('On display');\n";
 
 
 $res="<?

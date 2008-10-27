@@ -10,7 +10,7 @@ try {
 catch (e) {
     alert("ERROR:P_PMS_JSONDATA");
 };
-
+var deleting=0;
 
 function exchange(i, j, tableID)
 {
@@ -41,10 +41,21 @@ var refresh= function(){
 	  var location= location_data.data[key];
 	  id= location.location_id;
 	  
+	  if(location.picking_rank<2)
+	      Dom.get("loc_picking_up"+id).style.display='none';
+	  else
+	      Dom.get("loc_picking_up"+id).style.display='';
+		  
 
 	  Dom.get("loc_name"+id).innerHTML=location.name;
+	  Dom.get("loc_tipo"+id).innerHTML=location.tipo;
 	  Dom.get("loc_stock"+id).innerHTML=location.stock;
-
+	  Dom.get("loc_picking_tipo"+id).innerHTML=location.picking_tipo;
+	  if(location.can_pick==1)
+	      Dom.get("loc_picking_img"+id).src='art/icons/basket.png';
+	  else
+	      Dom.get("loc_picking_img"+id).src='art/icons/basket_delete.png';
+	  
 	  if(location.stock==0)
 	      Dom.get("loc_del"+id).style.display='';
 	  else
@@ -64,6 +75,12 @@ var location_selected= function(){
 }
 
 var clear_actions = function(){
+
+
+    if(deleting>0){
+	Dom.get('row_'+deleting).style.background='#fff';
+	Dom.get('loc_del'+deleting).style.visibility='visible';
+    }
 
     Dom.get('manage_stock_messages').innerHTML='';
     Dom.get('manage_stock_engine').innerHTML='';
@@ -95,17 +112,71 @@ var new_location_save = function(){
     var is_primary=Dom.get('new_location_is_primary').checked;
 
     var request='ar_assets.php?tipo=pml_new_location&location_name='+ escape(location_name)+'&can_pick='+escape(can_pick)+'&is_primary='+escape(is_primary);
-    //    alert(request);
+
+    
+
+
+   //  alert(request);
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if (r.state == 200) {
-		    location.href=r.url;
+		    
+		     var row = Dom.get('location_table').insertRow(r.where);
+		     var cellLeft = row.insertCell(0);
+		     cellLeft.setAttribute("id", 'loc_name'+r.id );
+		      var cellLeft = row.insertCell(1);
+		      cellLeft.setAttribute("id", 'loc_tipo'+r.id );
+		     var cellLeft = row.insertCell(2);
+		     var span = document.createElement("span");
+		     span.innerHTML='&uarr;';
+		     span.setAttribute("onclick", "rank_up()" );
+		     span.setAttribute("style", "cursor:ponter" );
+		     span.setAttribute("id", 'loc_picking_up'+r.id );
+		     cellLeft.appendChild(span);
+		     var span = document.createElement("span");
+		     
+		     span.setAttribute("id", 'loc_picking_tipo'+r.id );
+		     cellLeft.appendChild(span);
+		     
+		     cellLeft.style.textAlign='right';
+
+		     cellLeft.setAttribute("id", 'loc_pick_info'+r.id );
+
+
+		     var img = document.createElement("img");
+		     img.setAttribute("src", "art/icons/basket.png" );
+		     img.setAttribute("style", "cursor:pointer" );
+		     img.setAttribute("title", "" );
+		     img.setAttribute("id", 'loc_picking_img'+r.id );
+		     //img.setAttribute("onclick", "desassociate_loc()" );
+		     cellLeft.appendChild(img);
+
+
+		     var cellLeft = row.insertCell(3);
+		     cellLeft.setAttribute("id", 'loc_stock'+r.id );
+		     cellLeft.style.textAlign='right';
+		     var cellLeft = row.insertCell(4);
+		     var img = document.createElement("img");
+		     img.setAttribute("src", "art/icons/cross.png" );
+		     img.setAttribute("style", "cursor:pointer" );
+		     img.setAttribute("title", "<?=_('Free the location')?>" );
+		     img.setAttribute("id", 'loc_del'+r.id );
+		     img.setAttribute("onclick", "desassociate_loc()" );
+
+		     cellLeft.appendChild(img);
+		     location_data=r.data;
+		     clear_actions();
+		    
+		    refresh();
+		    
 		}else
-		    Dom.get('search_msg').innerHTML=r.msg;
+		    Dom.get('manage_stock_messages').innerHTML='<span class="error">'+r.msg+'</span>';
 	    }
 	});
-};
+
+
+	};
 
 
 var new_location_q1_action=function(value){
@@ -188,7 +259,7 @@ var new_location_q1_action=function(value){
 		    change=Dom.get("loc_stock"+location_data.locations[index].id).innerHTML-qty;
 		    Dom.get("loc_stock"+location_data.locations[index].id).innerHTML=qty;
 		    Dom.get("total_stock").innerHTML=1*Dom.get("total_stock").innerHTML-xchange;
-		    clear_actions('change_stock');
+		    clear_actions();
 		    
 		}
 	    }else
@@ -320,17 +391,55 @@ var damaged_stock_all=function(index){
     damaged_stock_ready();
 };
 
+// Desassociate location
+
+var desassociate_loc_save=function(location_id){
+    var index=Dom.get('row_'+location_id).rowIndex;
+    var pl_id=Dom.get('row_'+location_id).getAttribute('pl_id');
+    var request='ar_assets.php?tipo=pml_desassociate_location&id='+ escape(pl_id);
+
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    success:function(o) {
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if (r.state == 200) {
+		    
+		    Dom.get('location_table').deleteRow(index);
+		    location_data=r.data;
+		    clear_actions();
+		    refresh();
+		    
+		}else
+		    Dom.get('manage_stock_messages').innerHTML='<span class="error">'+r.msg+'</span>';
+	    }
+	});
+    
+}
+
+var desassociate_loc=function(location_id){
+
+    clear_actions();
+    deleting=location_id;
+    
+    Dom.get('manage_stock_desktop').style.display='';
+    Dom.get('manage_stock_engine').innerHTML='';
+    Dom.get('manage_stock_messages').innerHTML='<?=_('Do you want to dessassocite the location');?>:<span style="padding-left:20px;cursor:pointer" onclick="desassociate_loc_save('+location_id+')">yes</span> <span style="padding-left:20px;cursor:pointer" onclick="clear_actions();">no</span>';
+    Dom.get('row_'+location_id).style.background='#ffd7d7';
+    Dom.get('loc_del'+location_id).style.visibility='hidden';
+}
+
+
 // MOVE STOCK -----------------------------------------------------------------------------------------
 var move_stock =function(){
     clear_actions();
     current_engine='move_stock';
     this.className='selected';
     Dom.get('manage_stock_desktop').style.display='';
-    Dom.get('manage_stock_engine').innerHTML=''
-       Dom.get('manage_stock_messages').innerHTML='<?=_('Click the location from were the stock was moved');?>';
+    Dom.get('manage_stock_engine').innerHTML='';
+    Dom.get('manage_stock_messages').innerHTML='<?=_('Click the location from were the stock was moved');?>';
     
     var can_from=location_data.num_physical-location_data.num_physical_with_stock;
     var can_to=location_data.num_physical-can_from;
+
     if(can_from==1 && can_to==1){
 	for (key in location_data.data)
 	    {
@@ -360,8 +469,10 @@ var move_stock_save = function(){
     var qty=Dom.get("move_stock_qty").value;
     var from_id=Dom.get('move_stock_from').getAttribute('location_id')
     var to_id=Dom.get('move_stock_to').getAttribute('location_id')
-    var request='ar_assets.php?tipo=pml_move_stock&from='+ escape(from_id)+'&to='+escape(to_id)+'&qty='+escape(qty);
     
+    var request='ar_assets.php?tipo=pml_move_stock&from='+ escape(from_id)+'&to='+escape(to_id)+'&qty='+escape(qty);
+    // alert(request);
+    // return
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
 		var r =  YAHOO.lang.JSON.parse(o.responseText);

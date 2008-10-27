@@ -137,4 +137,10 @@ $_stockop_tipo['1']=_('Purchase');
 $_stockop_tipo['2']=_('Adjust');
 $_stockop_tipo['3']=_('Sale');
 $_stockop_tipo['4']=_('Potencial Sale');
+$_location_tipo['picking']=_('Picking Area');
+$_location_tipo['storing']=_('Storing Area');
+$_location_tipo['loading']=_('Goods In');
+$_location_tipo['unknown']=_('Unknown');
+$_location_tipo['white_hole']=_('Error');
+$_location_tipo['display']=_('On display');
 ?>
