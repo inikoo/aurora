@@ -152,18 +152,15 @@ switch($tipo){
    
    if($data['can_pick']){
      $tipo_img='art/icons/basket.png';
-
-      
-      if($data['is_primary'])
-	$row=1;
-      else
-	$row=$res[1]['num_physical'];
-
-       
+     if($data['is_primary'])
+       $row=1;
+     else
+       $row=$res[1]['num_physical'];
    }else{
      $row=$res[1]['num_physical'];
      $tipo_img='art/icons/basket_delete.png';
    }
+   
    if($res[0]){
 
      $response= array(

@@ -102,7 +102,7 @@ var clear_actions = function(){
 	    Dom.get("loc_name"+location_data.data[key].location_id).className='';
 	}
     
-
+    Dom.get('change_stock').className='';
     Dom.get('move_stock').className='';
     Dom.get('damaged_stock').className='';
     Dom.get('new_location').className='';
@@ -219,7 +219,7 @@ var change_stock_from=function(e,index){
 	}
     
     Dom.get('manage_stock_messages').innerHTML='<?=_('How many outers are currently on the location?')?>'
-    Dom.get('manage_stock_engine').innerHTML='<table><tr id="change_stock_qty" ><td><?=_('Number of outers')?></td><td><input id="new_qty" location_id="'+location_data.data[index].id+'"  style="text-align:right;padding:0 3px" type="text"  size="3"  onkeyup="change_stock_ready()"   /> <span style="cursor:pointer" onclick="new_stock_none();">(<?=_('None')?>)</span> <span id="change_stock_continue" style="display:none;padding-left:20px;cursor:pointer;text-decoration:underline" onclick="change_stock_manage('+index+')"><?=_('Continue')?></span></td></tr><tr style="display:none" id="more_outers"><td colspan="3"><span id="more_change"></span> <span><?=_("Outers")?></span>  <span id="more_change_save"  onclick="change_stock_save('+index+')" style="display:none;margin-left:30px;cursor:pinter"  > <?=_('Save')?> <img src="art/icons/disk.png" style="vertical-align:bottom"/></span>   <br> <?=_('Please try to explain why there is more outers than there should be')?>. <b><?=_('If stock has been received plesase add it on')?> <a href="suppliers.php" style="cursor:pointer;text-decoration:underline" ><?=_("Suppliers Area")?></a><b>.</span></td></tr><tr style="display:none" id="less_outers"><td colspan="3"><span id="less_change"></span><span><?=_('Outers')?></span>  <span id="less_change_save"  onclick="change_stock_save('+index+')" style="display:none:margin-left:30px;cursor:pointer"  > <?=_('Save')?> <img src="art/icons/disk.png" style="vertical-align:bottom"/></span>  <br><?=_('Please give possible reasons of the lost stock ')?>. <b><?=_('If stock has been damaged')?> <span onclick="damaged_stock()" style="cursor:pointer;text-decoration:underline" ><?=_('click here')?></span><b>.</span></td></tr><tr id="change_stock_comments" style="display:none"  ><td><?=_('Explanation')?>:</td><td colspan="2"><textarea id="change_stock_why" onkeyup="change_stock_ready2()" ></textarea></td></tr></table>'};	  
+    Dom.get('manage_stock_engine').innerHTML='<table><tr id="change_stock_qty" ><td><?=_('Number of outers')?></td><td><input id="new_qty" location_id="'+location_data.data[index].id+'"  style="text-align:right;padding:0 3px" type="text"  size="3"  onkeyup="change_stock_ready()"   /> <span style="cursor:pointer" onclick="new_stock_none();">(<?=_('None')?>)</span> <span id="change_stock_continue" style="display:none;padding-left:20px;cursor:pointer;text-decoration:underline" onclick="change_stock_manage('+index+')"><?=_('Continue')?></span></td></tr><tr style="display:none" id="more_outers"><td colspan="3"><span id="more_change"></span> <span><?=_("Outers")?></span>  <span id="more_change_save"  onclick="change_stock_save('+index+')" style="display:none;margin-left:30px;cursor:pointer"  > <?=_('Save')?> <img src="art/icons/disk.png" style="vertical-align:bottom"/></span>   <br> <?=_('Please try to explain why there is more outers than there should be')?>. <b><?=_('If stock has been received plesase add it on')?> <a href="suppliers.php" style="cursor:pointer;text-decoration:underline" ><?=_("Suppliers Area")?></a><b>.</span></td></tr><tr style="display:none" id="less_outers"><td colspan="3"><span id="less_change"></span> <span><?=_('Outers')?></span>  <span id="less_change_save"  onclick="change_stock_save('+index+')" style="display:none;margin-left:30px;cursor:pointer"  > <?=_('Save')?> <img src="art/icons/disk.png" style="vertical-align:bottom"/></span>  <br><?=_('Please give possible reasons of the lost stock ')?>. <b><?=_('If stock has been damaged')?> <span onclick="damaged_stock()" style="cursor:pointer;text-decoration:underline" ><?=_('click here')?></span><b>.</span></td></tr><tr id="change_stock_comments" style="display:none"  ><td><?=_('Explanation')?>:</td><td colspan="2"><textarea id="change_stock_why" onkeyup="change_stock_ready2()" ></textarea></td></tr></table>'};	  
 
 
 var change_stock_ready=function(e){
@@ -308,7 +308,7 @@ var change_stock_save=function(location_id){
     var msg=Dom.get('change_stock_why').value;
     var qty=Dom.get("new_qty").value;
     var request='ar_assets.php?tipo=change_qty&qty='+ escape(qty)+'&id='+ escape(location_id)+'&msg='+ escape(msg);
-        alert(request);
+    // alert(request);
     // return;
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
@@ -342,7 +342,8 @@ var damaged_stock_save = function(index){
     var request='ar_assets.php?tipo=pml_damaged_stock&from='+ escape(location_id)+'&qty='+escape(qty)+'&message='+escape(message);
  YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-		var r =  YAHOO.lang.JSON.parse(o.responseText);
+       // alert(o.responseText)
+       var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if (r.state == 200) {
 		    //update all stock figures (if were changed else were)
 		    location_data=r.data;
