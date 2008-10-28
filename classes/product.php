@@ -23,8 +23,15 @@ class product{
 
   
 
-  function __construct() {
+  function __construct($id=false) {
     $this->db =MDB2::singleton();
+
+
+    if(is_numeric($id))
+      $this->product['id']=$id;
+
+    // print $this->product['id'];
+
     //  $product=array(
 // 		     'id'=>'',
 // 		     'group_id'=>0,
@@ -165,7 +172,11 @@ class product{
 					   );
 
 	}
-	
+	$sql=sprintf("select stock from product where id=%d",$id);
+	$result =& $this->db->query($sql);
+	if($row=$result->fetchRow()){
+	  $this->locations['stock']=number($row['stock']);
+	}
 	$this->locations['data']=$_data;
 	break;
       case('suppliers'):
@@ -283,8 +294,8 @@ class product{
 
 
   function update_location($data){
-
-
+    if(!isset($this->product['id']))
+      $this->product['id']=$data['product_id'];
     switch($data['tipo']){
     case('set_picking_rank'):
       
@@ -292,26 +303,54 @@ class product{
       $id=$data['product2location_id'];
       $rank=$data['rank'];
       $user_id=$data['user_id'];
-      
+      $date='NOW()';
       $history=(isset($data['no_history']) and  $data['no_history']?false:true);
 
-      if(!is_numeric($rank))
-	return array(false,_('The picking prefrerence should be a positive interger'));
-      
-      // product_id
-      $sql=sprintf("select product_id from product2location  where id=%d",$id); 
+      $sql=sprintf("select picking_rank,product_id from product2location  where id=%d",$id); 
       $result =& $this->db->query($sql);
       if($row=$result->fetchRow()){
 	$product_id=$row['product_id'];
+	$old_rank=$row['picking_rank'];
       }else
 	return array(false,_('No such location'));
+      $this->read(array('locations'=>$product_id));
+      $location_data=$this->get('locations');
+
+      if(preg_match('/^\+/',$rank)){
+	$change=preg_replace('/^\+/','',$rank);
+	if(!is_numeric($change))
+	  return array(false,_('Wrong new rank'));
+	if($old_rank=='')
+	  $rank=$location_data['num_picking_areas']+$change;
+	else
+	  $rank=$old_rank+$change;
+
+      }else if(preg_match('/^\-/',$rank)){
+	$change=preg_replace('/^\-/','',$rank);
+	if(!is_numeric($change))
+	  return array(false,_('Wrong new rank'));
+	if($old_rank=='')
+	  $rank=$location_data['num_picking_areas']-$change-1;
+	else
+	  $rank=$old_rank-$change;
+	
+	if($rank<1)
+	  $rank=1;
+      }
+
+
+      if(!is_numeric($rank))
+	return array(false,_('The picking prefrerence should be a positive interger')); 
+
+
 
       // get data about the ranks
       
-      $this->read(array('locations'=>$product_id));
-      $location_data=$this->get('locations');
-      $old_rank=$location_data['data'][$id]['picking_rank'];
+
+
       
+      
+
       if($rank>$location_data['num_picking_areas'] or $rank<0)
 	$new_rank=$location_data['num_picking_areas']+1;
       else
@@ -342,29 +381,112 @@ class product{
       }
 
       if($history){
-	if($rank==0){
-	  $sql=sprintf("insert into history (sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id) values ('product',%d,'plocation',%d,'PLN')",$product_id,$id,$user_id); 
-	  mysql_query($sql);
-	  $history_id=mysql_insert_id();
-	  $sql=sprintf("insert into history_item (history_id,old_value,new_value) values (%d,%s,NULL)",$history_id,(is_numeric($rank_old)?$rank_old:NULL)); 
-	  mysql_query($sql);
-
-
-	}else{
-	  $sql=sprintf("insert into history (sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id) values ('product',%d,'plocation',%d,'PLR')",$product_id,$id,$user_id); 
-	  mysql_query($sql);
-	  $history_id=mysql_insert_id();
-	  $sql=sprintf("insert into history_item (history_id,old_value,new_value) values (%d,%d,%d)",$history_id,(is_numeric($rank_old)?$rank_old:NULL),$rank); 
-	  mysql_query($sql);
-	}
+	$sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,tipo,staff_id,old_value,new_value) values (%s,'PROD',%d,'P2L',%d,'CPI',%s,'%d','%d')",$date,$product_id$id,$user_id,(is_numeric($rank_old)?$rank_old:0),$rank); 
+	mysql_query($sql);
+      }
       
-	$this->read(array('locations'=>$product_id));
-	$locations_data=$this->get('locations');
-	return array(true,$locations_data);	
+      $this->read(array('locations'=>$product_id));
+      $locations_data=$this->get('locations');
+      return array(true,$locations_data);	
 	
       }
 
       break;
+ case('change_qty'):
+
+   
+
+      $id=$data['p2l_id'];
+      $user_id=$data['user_id'];
+      $product_id=$data['product_id'];
+      $qty=$data['qty'];
+      $msg=$data['msg'];
+      $date='NOW()';
+      if(!is_numeric($qty) or $qty<0)
+	return array(false,_('Wrong stock value'));
+
+
+      $sql=sprintf("select stock,picking_rank,product_id,location_id from product2location  where id=%d",$id); 
+      $result =& $this->db->query($sql);
+      if($row=$result->fetchRow()){
+	if($row['product_id']!=$product_id)
+	  return array(false,_('This location is no associated with the product'));
+	if($qty==$row['stock'])
+	  return array(false,_('Nothing to change'));
+	$old_location_id=$row['location_id'];
+	$old_qty=$row['stock'];
+	$change=$qty-$old_qty;
+      }else
+	return array(false,_('This location is no associated with the product'));
+
+
+      
+      
+      $sql=sprintf("update product2location set stock=%.4f where id=%d",$qty,$id); 
+      mysql_query($sql);
+      
+      $this->set_stock();
+      
+
+      $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,note,old_value,new_value) values (%s,'PROD',%d,'P2L',%d,'STOCKA',%d,%s,)",$date,$product_id,$id,$user_id,prepare_mysql($msg)); 
+
+      mysql_query($sql);
+      $history_id=mysql_insert_id();
+      $sql=sprintf("insert into history_item (history_id,old_value,new_value) values (%d,'%s','%s')",$history_id,$old_qty, $qty); 
+      mysql_query($sql);
+      
+      
+      $this->read(array('locations'=>$product_id));
+      $locations_data=$this->get('locations');
+      return array(true,$locations_data,$this->product['stock']);
+      break;
+
+  case('change_location'):
+      $id=$data['p2l_id'];
+      $user_id=$data['user_id'];
+      $product_id=$data['product_id'];
+      $new_location_id=$data['new_location_id'];
+      $sql=sprintf("select picking_rank,product_id,location_id from product2location  where id=%d",$id); 
+      $result =& $this->db->query($sql);
+      if($row=$result->fetchRow()){
+	if($row['product_id']!=$product_id)
+	  return array(false,_('This location is no associated with the product'));
+	if($row['location_id']!=$new_location_id)
+	  return array(false,_('Nothing to change'));
+	$old_location_id=$row['location_id'];
+      }else
+	return array(false,_('This location is no associated with the product'));
+
+      //check if new_location_exist
+      $sql=sprintf("select name from location  where id=%d",$new_location_id); 
+      $result =& $this->db->query($sql);
+      if($row=$result->fetchRow()){
+	//
+      }else
+	return array(false,_('This location do not exist'));
+      
+      
+      $sql=sprintf("update product2location set location_id=%d where id=%d",$new_location_id,$id); 
+      mysql_query($sql);
+      $this->update_location(array('tipo'=>'set_picking_rank','product2location_id'=>$id,'rank'=>-1,'user_id'=>$user_id,'no_history'=>true));
+      
+
+      if($old_location_id==1)
+	$sql=sprintf("insert into history (sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,note) values ('product',%d,'location',%d,'PLI',%d)",$product_id,$id,$user_id); 
+      else
+	$sql=sprintf("insert into history (sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,note) values ('product',%d,'location',%d,'PLX',%d)",$product_id,$id,$user_id); 
+      mysql_query($sql);
+      $history_id=mysql_insert_id();
+      $sql=sprintf("insert into history_item (history_id,old_value,new_value) values (%d,'%s','%s')",$history_id,$old_location_id, $new_location_id ); 
+      mysql_query($sql);
+      
+      
+      $this->read(array('locations'=>$product_id));
+      $locations_data=$this->get('locations');
+      return array(true,$locations_data);
+      break;
+
+
     case('swap_picking'):
       $id=$data['p2l_id'];
       $user_id=$data['user_id'];
@@ -505,7 +627,8 @@ class product{
       mysql_query($sql);
       $history_id=mysql_insert_id();
       $sql=sprintf("insert into history_item (history_id,old_value,new_value) values (%d,'%s','%s')",$history_id,number($from_qty),number($from_qty-$qty)); 
-        mysql_query($sql);
+      mysql_query($sql);
+      $this->set_stock();
       $this->read(array('locations'=>$product_id));
       $locations_data=$this->get('locations');
       return array(true,$locations_data);
@@ -725,31 +848,34 @@ class product{
 		   ,$this->product['stock_value']
 		   ,$this->product['id']
 		   );
+
       $this->db->exec($sql);
     }
     
   }
 
 function get_stock($date=''){
+
+  $white_star=0;
+  $stock=0;
+  $available=0;
   
-  $product_id=$this->product['id'];
-  if($date=='')
-    $date='NOW()';
-  else
-    $date="'".addslashes($date)."'";
+  $sql=sprintf("select stock,picking_rank,location_id  from product2location where product_id=%d ",$this->product['id']);
+
+  $result =& $this->db->query($sql);
+  $white_star=0;
+  while($row=$result->fetchRow()){
+    if($row['location_id']==2)
+      $white_star=$row['stock'];
+    else{
+      $stock+=$row['stock'];
+      if($row['picking_rank']>0)
+	$available+=$row['picking_rank'];
+    }
+  }
   
   
-  $sql=sprintf("select stock,available,value from stock_history where  product_id=%d and op_date<%s order by op_date desc limit 1",$product_id,$date);
- //print $sql;
-  $res = $this->db->query($sql); 
-  
-  $s='';$a='';$v='';
- if ($row = $res->fetchRow() ) {
-   $s=$row['stock'];
-   $a=$row['available'];
-   $v=$row['value'];
- }
- return array($s,$a,$v);
+ return array($stock,$available,0);
 }
 
 

@@ -65,6 +65,7 @@ var refresh= function(){
 	       Dom.get("loc_del"+id).style.display='none';
       }
 
+  Dom.get('total_stock').innerHTML=location_data.stock;
 }
 
 
@@ -204,93 +205,134 @@ var new_location_q1_action=function(value){
 	    Dom.get('manage_stock_engine').innerHTML='<table><tr id="new_location_q1" style="display:none;height:30px"><td><?=_('Can products be picked from here?')?></td><td>  <?=_('Yes')?> <input type="radio" onClick="new_location_q1_action(1)" name="can_pick" id="new_location_can_pick" value="yes" style="vertical-align:bottom"> </td><td> <?=_('No')?><input style="vertical-align:bottom" onClick="new_location_q1_action(0)" type="radio" name="can_pick"  value="no"></td></tr><tr  id="new_location_q2" style="display:none;height:30px" ><td><?=_('Is this the primary picking location?')?> </td><td><?=_('Yes')?> <input id="new_location_is_primary" type="radio" name="primary" value="yes" style="vertical-align:bottom"></td><td>  No<input style="vertical-align:bottom" type="radio" name="primary" checked="checked" value="no"> </td></tr><tr  id="new_location_save" style="display:none;height:30px"  ><td colspan="3" style="cursor:pointer" onclick="new_location_save()" class="aright"><?=_('Save changes')?> <img src="art/icons/disk.png"/></td></tr></table> '
 	    Dom.get('manage_stock_messages').innerHTML='<?=_('New location code');?>:';
 	    
-	}
+	};
 
 // Change stock
-	var change_stock_engine=function(e,index){
 
-
-	    for (i=0;i<location_data.physical_locations;i++)
-		{
-		    if(location_data.locations[i].stock>0){
-			Dom.get("loc_name"+location_data.locations[i].id).className='';
-			Event.removeListener("loc_name"+location_data.locations[i].id);
-		    }
-		}
-	    
-	    Dom.get('manage_stock_messages').innerHTML='<?=_('Indicate the new number of outers on')?> '+location_data.locations[index].name;
-	    var myTable = document.createElement("table");
-	    myTable.className='location_state';
-	    var myTbody = document.createElement("tbody");
-	    var myRow = document.createElement("tr");
-	    myTable.appendChild(myTbody);
-	    myTbody.appendChild(myRow);
-	    var myCell = document.createElement("td");
-	    myCell.innerHTML = '<?=_('Outers')?>:';
-	    myRow.appendChild(myCell);
-	    var myCell = document.createElement("td");
-	    myCell.innerHTML = '<input type="text" size="3" id="change_stock_qty" value="" /> ('+location_data.locations[index].stock+' max)';
-	    myRow.appendChild(myCell);
-	    var myCell = document.createElement("td");
-	    myCell.innerHTML = '<span>Now</span>';
-	    myRow.appendChild(myCell);
-	    var myCell = document.createElement("td");
-	    myCell.innerHTML = '<img src="art/icons/disk.png"  onclick="save_change_stock('+index+')"  alt="<?=_('save')?>" title="<?=_('Save')?>" />';
-	    myRow.appendChild(myCell);
-	    var myCell = document.createElement("td");
-	    myCell.innerHTML = '<img src="art/icons/bin.png" onclick="change_stock()" alt="<?=_('cancel')?>" title="<?=_('Cancel')?>" />';
-	    myRow.appendChild(myCell);
-	    var myRow = document.createElement("tr");
-	    myTbody.appendChild(myRow);
-	    var myCell = document.createElement("td");
-	    myCell.innerHTML = '<?=_('Coment')?>'+':';
-	    myRow.appendChild(myCell);
-	    var myCell = document.createElement("td");
-	    myCell.innerHTML = '<textarea id="change_stock_commet"></textarea>';
-	    myRow.appendChild(myCell);
-
-
- 	    Dom.get('manage_stock_engine').appendChild(myTable);
-
-	    
-	    
+var change_stock_from=function(e,index){
+    
+    for (key in location_data.data)
+	{
+	    var location= location_data.data[key];
+	    Event.removeListener("loc_name"+location_data.data[key].location_id, "click");
+	    Dom.get("loc_name"+location_data.data[key].location_id).className='';
 	}
-	var save_change_stock = function(index){
-	    var qty=1*Dom.get("change_stock_qty").value;
-	    var max=location_data.locations[index].stock;
-	    if(YAHOO.lang.isNumber(qty)){
-		if(qty<=0)
-		    Dom.get('manage_stock_messages').innerHTML='<?=_('Outers quantity should be bigger than zero')?>';
-		else{
-		    change=Dom.get("loc_stock"+location_data.locations[index].id).innerHTML-qty;
-		    Dom.get("loc_stock"+location_data.locations[index].id).innerHTML=qty;
-		    Dom.get("total_stock").innerHTML=1*Dom.get("total_stock").innerHTML-xchange;
-		    clear_actions();
-		    
+    
+    Dom.get('manage_stock_messages').innerHTML='<?=_('How many outers are currently on the location?')?>'
+    Dom.get('manage_stock_engine').innerHTML='<table><tr id="change_stock_qty" ><td><?=_('Number of outers')?></td><td><input id="new_qty" location_id="'+location_data.data[index].id+'"  style="text-align:right;padding:0 3px" type="text"  size="3"  onkeyup="change_stock_ready()"   /> <span style="cursor:pointer" onclick="new_stock_none();">(<?=_('None')?>)</span> <span id="change_stock_continue" style="display:none;padding-left:20px;cursor:pointer;text-decoration:underline" onclick="change_stock_manage('+index+')"><?=_('Continue')?></span></td></tr><tr style="display:none" id="more_outers"><td colspan="3"><span id="more_change"></span> <span><?=_("Outers")?></span>  <span id="more_change_save"  onclick="change_stock_save('+index+')" style="display:none;margin-left:30px;cursor:pinter"  > <?=_('Save')?> <img src="art/icons/disk.png" style="vertical-align:bottom"/></span>   <br> <?=_('Please try to explain why there is more outers than there should be')?>. <b><?=_('If stock has been received plesase add it on')?> <a href="suppliers.php" style="cursor:pointer;text-decoration:underline" ><?=_("Suppliers Area")?></a><b>.</span></td></tr><tr style="display:none" id="less_outers"><td colspan="3"><span id="less_change"></span><span><?=_('Outers')?></span>  <span id="less_change_save"  onclick="change_stock_save('+index+')" style="display:none:margin-left:30px;cursor:pointer"  > <?=_('Save')?> <img src="art/icons/disk.png" style="vertical-align:bottom"/></span>  <br><?=_('Please give possible reasons of the lost stock ')?>. <b><?=_('If stock has been damaged')?> <span onclick="damaged_stock()" style="cursor:pointer;text-decoration:underline" ><?=_('click here')?></span><b>.</span></td></tr><tr id="change_stock_comments" style="display:none"  ><td><?=_('Explanation')?>:</td><td colspan="2"><textarea id="change_stock_why" onkeyup="change_stock_ready2()" ></textarea></td></tr></table>'};	  
+
+
+var change_stock_ready=function(e){
+    
+    if(isNaN(Dom.get("new_qty").value) || Dom.get("new_qty").value<0 )
+	Dom.get('change_stock_continue').style.display='none';
+    else
+	Dom.get('change_stock_continue').style.display='';
+    
+}
+
+var change_stock_ready2=function(e){
+    
+    if(Dom.get('change_stock_why').value!=''){
+	Dom.get('less_change_save').style.display='';
+	Dom.get('more_change_save').style.display='';
+    }else{
+	Dom.get('less_change_save').style.display='none';
+	Dom.get('more_change_save').style.display='none';
+
+    }
+	
+    
+}
+
+
+
+var change_stock_manage=function(index){
+
+    var new_stock=Dom.get("new_qty").value;
+    var change=new_stock-location_data.data[index].stock;
+    if(change==0){
+	Dom.get("new_qty").value='';
+	Dom.get('change_stock_continue').style.display='none';
+	Dom.get('manage_stock_messages').innerHTML='<?=_('So nothing have change, how many outers are currently on the location? ')?>';
+	
+    }else if(change<0){
+	Dom.get('change_stock_qty').style.display='none';
+	Dom.get('change_stock_continue').style.display='none';
+	Dom.get('less_outers').style.display='';
+	Dom.get('less_change').innerHTML=change;
+	Dom.get('change_stock_comments').style.display='';
+    }else{
+	Dom.get('change_stock_qty').style.display='none';
+	Dom.get('change_stock_continue').style.display='none';
+	Dom.get('more_outers').style.display='';
+	Dom.get('change_stock_comments').style.display='';
+	Dom.get('more_change').innerHTML='+'+change;
+
+    }
+
+}
+
+var new_stock_none=function(){
+    Dom.get("new_qty").value=0;Dom.get('change_stock_continue').style.display='';
+}
+
+var change_stock=function(){
+    clear_actions(current_engine);
+    current_engine='change_stock';
+    this.className='selected';
+    Dom.get('manage_stock_desktop').style.display='';
+    Dom.get('manage_stock_engine').innerHTML=''
+    Dom.get('manage_stock_messages').innerHTML='<?=_('Click the location where you want to change the stock ');?>';
+    
+    
+	    
+    
+    for (key in location_data.data){
+	var location= location_data.data[key];
+		if(location.is_physical){
+		    Event.addListener("loc_name"+location_data.data[key].location_id, "click", change_stock_from,key);
+		    Dom.get("loc_name"+location_data.data[key].location_id).className='selected';
 		}
-	    }else
-		Dom.get('manage_stock_messages').innerHTML='<?=_('Outers quantity should be numeric')?>';	
-		    
+	    }
+	    
+	    
 
-
-
-	}
-	var change_stock=function(){
-	    clear_actions(current_engine);
-	    current_engine='change_stock';
-	    this.className='selected';
-	    Dom.get('manage_stock_desktop').style.display='';
-	    Dom.get('manage_stock_engine').innerHTML=''
-	    Dom.get('manage_stock_messages').innerHTML='<?=_('Click the location where you want to change the stock ');?>';
-	    var i=0;
-	    for (i=0;i<location_data.physical_locations;i++)
-		{
-		    if(location_data.locations[i].stock>0){
-			Dom.get("loc_name"+location_data.locations[i].id).className='selected';
-			Event.addListener("loc_name"+location_data.locations[i].id, "click", change_stock_engine,i);
-		    }
-		}
 	};
+
+
+var change_stock_save=function(location_id){
+    //    alert(location_id);
+    //var index=Dom.get('row_'+location_id).rowIndex;
+    //var pl_id=Dom.get('row_'+location_id).getAttribute('pl_id');
+    var msg=Dom.get('change_stock_why').value;
+    var qty=Dom.get("new_qty").value;
+    var request='ar_assets.php?tipo=change_qty&qty='+ escape(qty)+'&id='+ escape(location_id)+'&msg='+ escape(msg);
+        alert(request);
+    // return;
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    success:function(o) {
+		//	alert(o.responseText);
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if (r.state == 200) {
+		    
+
+		    location_data=r.data;
+		    clear_actions();
+		    refresh();
+
+		}else
+		    Dom.get('manage_stock_messages').innerHTML='<span class="error">'+r.msg+'</span>';
+	    }
+	});
+    
+}
+
+
+
+
+
+
 // Damaged Stock
 	
 var damaged_stock_save = function(index){
@@ -406,6 +448,7 @@ var desassociate_loc_save=function(location_id){
 
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
+		//	alert(o.responseText);
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if (r.state == 200) {
 		    

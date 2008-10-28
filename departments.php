@@ -53,6 +53,15 @@ $smarty->assign('view',$_SESSION['state']['departments']['view']);
 $smarty->assign('show_details',$_SESSION['state']['departments']['details']);
 
 
+$sql="select id from product";
+$result =& $db->query($sql);
+
+// include_once('classes/product.php');
+// while($row=$result->fetchRow()){
+//   $product= new product($row['id']);
+//   $product->set_stock();
+// }
+
 $table_title=_('Department List');
 $sql="select count(*) as numberof,sum(stock_value) as stock_value,sum(tsall) as total_sales  from product_department";
 $result =& $db->query($sql);
@@ -65,6 +74,10 @@ $families=$result->fetchRow();
 $sql="select count(*) as numberof from product";
 $result =& $db->query($sql);
 $products=$result->fetchRow();
+
+
+
+
 
 $smarty->assign('stock_value',money($departments['stock_value']));
 $smarty->assign('total_sales',money($departments['total_sales']));

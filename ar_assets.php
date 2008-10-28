@@ -23,6 +23,75 @@ if(!isset($_REQUEST['tipo']))
 
 $tipo=$_REQUEST['tipo'];
 switch($tipo){
+ case('change_location'):
+     $data=array(
+		 'product_id'=>$_SESSION['state']['product']['id'],
+		 'p2l_id'=>$_REQUEST['id'],
+		 'new_location_id'=>$_REQUEST['new_location_id'],
+		 'user_id'=>$LU->getProperty('auth_user_id'),
+		 'tipo'=>'change_location'
+		 );
+     $product=new product();
+     $res=$product->update_location($data);
+     if($res[0])
+       $response= array(
+			'state'=>200,
+			'data'=>$res[1],
+			'stock'=>$res[2],
+			);
+     else
+       $response= array(
+			'state'=>400,
+			'msg'=>$res[1]
+		      );
+     echo json_encode($response);  
+     break;
+ case('change_qty'):
+     $data=array(
+		 'product_id'=>$_SESSION['state']['product']['id'],
+		 'p2l_id'=>$_REQUEST['id'],
+		 'qty'=>$_REQUEST['qty'],
+		 'msg'=>$_REQUEST['msg'],
+		 'user_id'=>$LU->getProperty('auth_user_id'),
+		 'tipo'=>'change_qty'
+		 );
+     $product=new product();
+     $res=$product->update_location($data);
+     if($res[0])
+       $response= array(
+			'state'=>200,
+			'data'=>$res[1],
+			'stock'=>$res[2],
+			);
+     else
+       $response= array(
+			'state'=>400,
+			'msg'=>$res[1]
+		      );
+     echo json_encode($response);  
+     break;
+ case('pml_increse_picking_rank'):
+     $data=array(
+		 'product_id'=>$_SESSION['state']['product']['id'],
+		 'p2l_id'=>$_REQUEST['id'],
+		 'rank'=>'-1',
+		 'user_id'=>$LU->getProperty('auth_user_id'),
+		 'tipo'=>'set_picking_rank'
+		 );
+     $product=new product();
+     $res=$product->update_location($data);
+     if($res[0])
+       $response= array(
+			'state'=>200,
+			'data'=>$res[1]
+			);
+     else
+       $response= array(
+			'state'=>400,
+			'msg'=>$res[1]
+		      );
+     echo json_encode($response);  
+     break;
  case('pml_swap_picking'):
      $data=array(
 		 'product_id'=>$_SESSION['state']['product']['id'],
