@@ -11,6 +11,7 @@ catch (e) {
     alert("ERROR:P_PMS_JSONDATA");
 };
 var deleting=0;
+var swaping=0;
 
 function exchange(i, j, tableID)
 {
@@ -50,12 +51,14 @@ var refresh= function(){
 	  Dom.get("loc_name"+id).innerHTML=location.name;
 	  Dom.get("loc_tipo"+id).innerHTML=location.tipo;
 	  Dom.get("loc_stock"+id).innerHTML=location.stock;
-	  Dom.get("loc_picking_tipo"+id).innerHTML=location.picking_tipo;
-	  if(location.can_pick==1)
+	  Dom.get("loc_picking_tipo"+id).innerHTML=' '+location.picking_tipo+' ';
+	  if(location.can_pick==1){
+	      Dom.get("loc_picking_img"+id).setAttribute('can_pick',1);
 	      Dom.get("loc_picking_img"+id).src='art/icons/basket.png';
-	  else
+	  }else{
 	      Dom.get("loc_picking_img"+id).src='art/icons/basket_delete.png';
-	  
+	       Dom.get("loc_picking_img"+id).setAttribute('can_pick',0);
+	  }
 	  if(location.stock==0)
 	      Dom.get("loc_del"+id).style.display='';
 	  else
@@ -81,6 +84,11 @@ var clear_actions = function(){
 	Dom.get('row_'+deleting).style.background='#fff';
 	Dom.get('loc_del'+deleting).style.visibility='visible';
     }
+    if(swaping>0){
+	Dom.get('loc_picking_img'+swaping).style.opacity=1;
+
+    }
+
 
     Dom.get('manage_stock_messages').innerHTML='';
     Dom.get('manage_stock_engine').innerHTML='';
@@ -96,6 +104,7 @@ var clear_actions = function(){
 
     Dom.get('move_stock').className='';
     Dom.get('damaged_stock').className='';
+    Dom.get('new_location').className='';
 
 
     
@@ -121,35 +130,32 @@ var new_location_save = function(){
 	    success:function(o) {
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if (r.state == 200) {
-		    
-		     var row = Dom.get('location_table').insertRow(r.where);
-		     var cellLeft = row.insertCell(0);
-		     cellLeft.setAttribute("id", 'loc_name'+r.id );
-		      var cellLeft = row.insertCell(1);
-		      cellLeft.setAttribute("id", 'loc_tipo'+r.id );
-		     var cellLeft = row.insertCell(2);
-		     var span = document.createElement("span");
-		     span.innerHTML='&uarr;';
-		     span.setAttribute("onclick", "rank_up()" );
-		     span.setAttribute("style", "cursor:ponter" );
-		     span.setAttribute("id", 'loc_picking_up'+r.id );
-		     cellLeft.appendChild(span);
-		     var span = document.createElement("span");
-		     
-		     span.setAttribute("id", 'loc_picking_tipo'+r.id );
-		     cellLeft.appendChild(span);
-		     
-		     cellLeft.style.textAlign='right';
-
-		     cellLeft.setAttribute("id", 'loc_pick_info'+r.id );
-
-
-		     var img = document.createElement("img");
-		     img.setAttribute("src", "art/icons/basket.png" );
-		     img.setAttribute("style", "cursor:pointer" );
-		     img.setAttribute("title", "" );
-		     img.setAttribute("id", 'loc_picking_img'+r.id );
-		     //img.setAttribute("onclick", "desassociate_loc()" );
+		    Dom.get('new_location_input').value='';
+		    var row = Dom.get('location_table').insertRow(r.where);
+		    row.setAttribute("id", 'row_'+r.id );
+		    row.setAttribute("pl_id", r.pl_id );
+		    var cellLeft = row.insertCell(0);
+		    cellLeft.setAttribute("id", 'loc_name'+r.id );
+		    var cellLeft = row.insertCell(1);
+		    cellLeft.setAttribute("id", 'loc_tipo'+r.id );
+		    var cellLeft = row.insertCell(2);
+		    var span = document.createElement("span");
+		    span.innerHTML=' &uarr; ';
+		    span.setAttribute("onclick", "rank_up()" );
+		    span.setAttribute("style", "cursor:ponter" );
+		    span.setAttribute("id", 'loc_picking_up'+r.id );
+		    cellLeft.appendChild(span);
+		    var span = document.createElement("span");
+		    span.setAttribute("id", 'loc_picking_tipo'+r.id );
+		    cellLeft.appendChild(span);
+		    cellLeft.style.textAlign='right';
+		    cellLeft.setAttribute("id", 'loc_pick_info'+r.id );
+		    var img = document.createElement("img");
+		    img.setAttribute("src", "art/icons/basket.png" );
+		    img.setAttribute("style", "cursor:pointer" );
+		    img.setAttribute("title", "" );
+		    img.setAttribute("id", 'loc_picking_img'+r.id );
+		    //img.setAttribute("onclick", "desassociate_loc()" );
 		     cellLeft.appendChild(img);
 
 
@@ -162,8 +168,8 @@ var new_location_save = function(){
 		     img.setAttribute("style", "cursor:pointer" );
 		     img.setAttribute("title", "<?=_('Free the location')?>" );
 		     img.setAttribute("id", 'loc_del'+r.id );
-		     img.setAttribute("onclick", "desassociate_loc()" );
-
+		     img.setAttribute("onclick", "desassociate_loc("+r.id+")" );
+		     
 		     cellLeft.appendChild(img);
 		     location_data=r.data;
 		     clear_actions();
@@ -404,6 +410,7 @@ var desassociate_loc_save=function(location_id){
 		if (r.state == 200) {
 		    
 		    Dom.get('location_table').deleteRow(index);
+		    deleting=0;
 		    location_data=r.data;
 		    clear_actions();
 		    refresh();
@@ -426,7 +433,59 @@ var desassociate_loc=function(location_id){
     Dom.get('row_'+location_id).style.background='#ffd7d7';
     Dom.get('loc_del'+location_id).style.visibility='hidden';
 }
+// Swap can pick
 
+    var swap_picking_save=function(action,location_id){
+    var index=Dom.get('row_'+location_id).rowIndex;
+    var pl_id=Dom.get('row_'+location_id).getAttribute('pl_id');
+    var request='ar_assets.php?tipo=pml_swap_picking&action='+escape(action)+'&id='+ escape(pl_id);
+
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    success:function(o) {
+		//alert(o.responseText)
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if (r.state == 200) {
+		    
+		    var index=Dom.get('row_'+location_id).rowIndex;
+		    //		    alert(index);
+		    location_data=r.data;
+		    //	    alert(index+' '+location_data.num_picking_areas);
+		    if(action==1)
+			Dom.get('location_table').moveRow(index,location_data.num_picking_areas);
+		    else
+		    	Dom.get('location_table').moveRow(index,1*location_data.num_picking_areas+1);	
+			    
+		    clear_actions();
+		    swaping=0;
+		    refresh();
+		    
+		}else
+		    Dom.get('manage_stock_messages').innerHTML='<span class="error">'+r.msg+'</span>';
+	    }
+	});
+    
+}
+
+var swap_picking=function(location_id){
+
+    clear_actions();
+    swaping=location_id;
+
+    if(Dom.get('loc_picking_img'+location_id).getAttribute('can_pick')==1)
+	var can_pick=false;
+    else
+	var can_pick=true;
+	    
+    Dom.get('manage_stock_desktop').style.display='';
+    Dom.get('manage_stock_engine').innerHTML='';
+    if(can_pick)
+	Dom.get('manage_stock_messages').innerHTML='<?=_('Allow picking from this location');?>:<span style="padding-left:20px;cursor:pointer" onclick="swap_picking_save(1,'+location_id+')">yes</span> <span style="padding-left:20px;cursor:pointer" onclick="clear_actions();">no</span>';
+    else
+	Dom.get('manage_stock_messages').innerHTML='<?=_('Forbid picking from this location');?>:<span style="padding-left:20px;cursor:pointer" onclick="swap_picking_save(0,'+location_id+')">yes</span> <span style="padding-left:20px;cursor:pointer" onclick="clear_actions();">no</span>';
+
+
+    Dom.get('loc_picking_img'+location_id).style.opacity=0.5;
+}
 
 // MOVE STOCK -----------------------------------------------------------------------------------------
 var move_stock =function(){
@@ -586,7 +645,7 @@ YAHOO.util.Event.onContentReady("manage_stock_locations", function () {
 
 // 	// The webservice needs additional parameters
  	oAC.generateRequest = function(sQuery) {
- 	    return "?tipo=locations_name&query=" + sQuery ;
+ 	    return "?tipo=locations_name&all=0&query=" + sQuery ;
  	};
 	oAC.forceSelection = true; 
 	

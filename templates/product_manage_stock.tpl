@@ -48,12 +48,18 @@
 	<div class="yui-u">
 	  <div  id="manage_stock" class="manage_stock" >
 	    <table class="options" style="float:left">
-	      <tr class="title"><td colspan="3">{t}Operations{/t}</td></tr>
-	      <tr><td {if $locations.num_physical<2    }style="xdisplay:none"{/if}id="move_stock">Move Stock</td><td id="damaged_stock"   >Stock Damaged</td><td id="new_location">Assign Location</td></tr>
+	      <tr class="title">
+		<td colspan="3"  {if !$locations.has_physical}style="display:none"{/if}  >{t}Operations{/t}</td></tr>
+	      <tr><td {if $locations.num_physical<2    }style="display:none"{/if}id="move_stock">Move Stock</td><td  {if $locations.num_physical_with_stock==0}style="display:none"{/if}   id="damaged_stock"   >Stock Damaged</td><td id="new_location"  {if !$locations.has_physical}style="display:none"{/if}  >Assign Location</td></tr>
 	    </table>
-	    <table class="options" style="float:left;margin-bottom:20px">
-	      <tr class="title"> <td colspan="2">{t}Fix Errors{/t}</td></tr>
-	      <tr ><td id="change_stock">Change Stock Qty</td><td id="modify_location">Modify Location</td></tr>
+	    <table class="options" style="clear:both;float:left;margin-bottom:20px">
+	      <tr class="title"> 
+		<td colspan="2">{t}Fix Errors{/t}</td></tr>
+	      <tr >
+		<td id="change_stock"  {if !$locations.has_physical}style="display:none"{/if}>Change Stock Qty</td>
+		<td id="modify_location" {if !$locations.has_physical}style="display:none"{/if}>Modify Location</td>
+		<td id="identify_unknown" {if !$locations.has_unknown}style="display:none"{/if}>Identify Location</td>
+	      </tr>
 	</table>
 	    <div id="manage_stock_desktop" style="display:none" >
 	      <div id="manage_stock_close"><img src="art/close.png" style="opacity:.5;position:relative;bottom:5px;left:10px;float:right;cursor:pointer" title="{t}{/t}" onclick="clear_actions();"/></div>
@@ -72,7 +78,7 @@
 	    <td style="text-align:right"  id="loc_pick_info{$location.location_id}" >
 	      <span id="loc_picking_up{$location.location_id}"  rank={$location.picking_rank}  onOclick="rank_up()"   style="cursor:pointer;{if  $location.picking_rank<2 or !$location.picking_rank}display:none;{/if}">&uarr;</span> 
 	      <span id="loc_picking_tipo{$location.location_id}" >{$location.picking_tipo}</span>  
-	      <img  id="loc_picking_img{$location.location_id}"  src="{if $location.can_pick }art/icons/basket.png{else}art/icons/basket_delete.png{/if}" style="position:relative;bottom:1px;vertical-align:bottom;"/> 
+	      <img  id="loc_picking_img{$location.location_id}"  can_pick="{if $location.can_pick }1{else}0{/if}"   onclick="swap_picking({$location.location_id})" src="{if $location.can_pick }art/icons/basket.png{else}art/icons/basket_delete.png{/if}" style="position:relative;bottom:1px;vertical-align:bottom;cursor:pointer;{if !$location.is_physical}display:none{/if}"/> 
 	    </td>
 	    <td  style="text-align:right"><span   id="loc_stock{$location.location_id}"    >{$location.stock}</span></td>
 	    <td><img  onclick="desassociate_loc({$location.location_id})"   id="loc_del{$location.location_id}"  can_del="{if $location.has_stock}1{else}0{/if}"   title="{t}Free the location{/t}" style="cursor:pointer;{if $location.has_stock}display:none{/if}"  src="art/icons/cross.png" /></td></tr>

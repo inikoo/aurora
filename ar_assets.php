@@ -23,7 +23,28 @@ if(!isset($_REQUEST['tipo']))
 
 $tipo=$_REQUEST['tipo'];
 switch($tipo){
-
+ case('pml_swap_picking'):
+     $data=array(
+		 'product_id'=>$_SESSION['state']['product']['id'],
+		 'p2l_id'=>$_REQUEST['id'],
+		 'action'=>$_REQUEST['action'],
+		 'user_id'=>$LU->getProperty('auth_user_id'),
+		 'tipo'=>'swap_picking'
+		 );
+     $product=new product();
+     $res=$product->update_location($data);
+     if($res[0])
+       $response= array(
+			'state'=>200,
+			'data'=>$res[1]
+			);
+     else
+       $response= array(
+			'state'=>400,
+			'msg'=>$res[1]
+		      );
+     echo json_encode($response);  
+     break;
  case('pml_desassociate_location'):
      $data=array(
 		 'product_id'=>$_SESSION['state']['product']['id'],
@@ -67,7 +88,7 @@ switch($tipo){
       if($data['is_primary'])
 	$row=1;
       else
-	$row=$res[1]['num_physical']+1;
+	$row=$res[1]['num_physical'];
 
        
    }else{
@@ -84,7 +105,8 @@ switch($tipo){
 		      'tipo'=>$_location_tipo[$res[4]],
 		      'tipo_rank'=>$res[6],
 		      'rank_img'=>$tipo_img,
-		      'id'=>$res[2]
+		      'id'=>$res[2],
+		      'pl_id'=>$res[7]
 		      );
  }else
      $response= array(
@@ -151,8 +173,22 @@ switch($tipo){
    break;
  case('locations_name'):
 
+   if(!isset($_REQUEST['query']) or $_REQUEST['query']==''){
+     $response= array(
+		      'state'=>400,
+		      'data'=>array()
+		      );
+     echo json_encode($response);
+     return;
+   }
+     
    
-   $sql=sprintf("select name from location where name like '%s%%' ",$_REQUEST['query']);
+   if(isset($_REQUEST['all']) and $_REQUEST['all']==1)
+     $sql=sprintf("select name from location where name like '%s%%' ",$_REQUEST['query']);
+   else{
+     
+     $sql=sprintf("select * from location where name like '%s%%' and (select count(*) from product2location where location_id=location.id and product_id=%d)=0   ",$_REQUEST['query'],$_SESSION['state']['product']['id']);
+   }
    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
    while($row=$res->fetchRow()) {
      $data[]=array('name'=>$row['name']);

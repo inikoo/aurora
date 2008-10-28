@@ -268,3 +268,32 @@ var show_details=function(e,location){
      this.setAttribute('atitle',tmp);
      
  }
+
+
+
+
+    Node.prototype.moveRow = function(){
+        if(this && this.nodeName.match(/^(table|t(body|head|foot))$/i)){
+            try {
+                one = (!arguments[0] && arguments[0] != 0?-1:arguments[0]);
+                two = (!arguments[1] && arguments[1] != 0?-1:arguments[1]);
+
+                // Makes sure the row exists and then makes sure the insertable row isn't greater then the length
+                if(!this.rows[one] || two > this.rows.length){
+                    var err = new Error();
+                    throw err;
+                }
+
+                // This is just so that it gets put in the right place.
+                if(two > one)
+                    two = two+1;
+                else if(one > two)
+                    one = one+1;
+
+                newRow = this.insertRow(two);
+                newRow.innerHTML = this.rows[one].innerHTML;
+                this.deleteRow(one);
+            } catch(e) {
+            }
+        }
+    }
