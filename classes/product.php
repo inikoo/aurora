@@ -419,7 +419,7 @@ class product{
       $this->set_stock();
       
       
-      $note=($qty>0?'+':'').$change.' '.ngettext('outer','outers',$change).' '._('found on').' '.$location_name. '; '.$msg;
+      $note=($qty>0?'+':'').number($change).' '.ngettext('outer','outers',$change).' '._('found on').' '.$location_name. '; '.$msg;
 
 
 	
@@ -525,6 +525,7 @@ class product{
       $id=$data['p2l_id'];
       $user_id=$data['user_id'];
       $product_id=$data['product_id'];
+      $msg=$data['msg'];
       $date='NOW()';
       $sql=sprintf("select location.name,code,product2location.stock,product_id,location_id from product2location  left join product on (product.id=product_id) left join location on (location_id=location.id) where product2location.id=%d",$id); 
       //print $sql;
@@ -532,14 +533,19 @@ class product{
       if($row=$result->fetchRow()){
 	if($row['product_id']!=$product_id)
 	  return array(false,_('This location is no associated with the product'));
-	if($row['stock']>0)
+	if($row['stock']>0 and $row['location_id']!=1)
 	  return array(false,_('There is still products in the location'));
+	$stock=$row['stock'];
 	$location_id=$row['location_id'];
 	$product_code=$row['code'];
 	$location_name=$row['name'];
       }else
 	return array(false,_('This location is no associated with the product'));
       // del
+
+
+
+
       $this->update_location(array('tipo'=>'set_picking_rank','product2location_id'=>$id,'rank'=>0,'user_id'=>$user_id,'no_history'=>true));
       
       // procced to delete
@@ -547,10 +553,19 @@ class product{
 
       mysql_query($sql);
       
-      $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,note) values (%s,'PROD',%d,'P2L',%d,'DEL',%d,'%s')",$date,$product_id,$id,$user_id,$product_code." "._('no longer located on')." $location_name" ); 
+      if($location_id==1){
+	if($stock>0){
+	  $note=number($stock)." "._('outers lost, its location was never identificated;').' '.stripslashes($msg);
+	  $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,note,old_value,new_value) values (%s,'PROD',%d,'P2L',%d,'STK',%d,%s,'%s','%s')",$date,$product_id,$id,$user_id,prepare_mysql($note),$stock,0); 
+	  mysql_query($sql);
+	}
+      }
+      else{
+	$note=$product_code." "._('no longer located on')." $location_name";
+	$sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,note) values (%s,'PROD',%d,'P2L',%d,'DEL',%d,%s)",$date,$product_id,$id,$user_id,prepare_mysql($note)); 
       mysql_query($sql);
-
-	
+      }
+      $this->set_stock();
       $this->read(array('locations'=>$product_id));
       $locations_data=$this->get('locations');
       return array(true,$locations_data);

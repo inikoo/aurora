@@ -119,7 +119,8 @@ switch($tipo){
 		 'product_id'=>$_SESSION['state']['product']['id'],
 		 'p2l_id'=>$_REQUEST['id'],
 		 'user_id'=>$LU->getProperty('auth_user_id'),
-		 'tipo'=>'desassociate_location'
+		 'tipo'=>'desassociate_location',
+		 'msg'=>$_REQUEST['msg']
 		 );
      $product=new product();
      $res=$product->update_location($data);

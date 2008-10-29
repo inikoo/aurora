@@ -305,8 +305,9 @@ var change_stock_ready=function(e){
 }
 
 var change_stock_ready2=function(e){
-    
-    if(Dom.get('change_stock_why').value!=''){
+   
+
+  if(Dom.get('change_stock_why').value!=''){
 	Dom.get('less_change_save').style.display='';
 	Dom.get('more_change_save').style.display='';
     }else{
@@ -314,7 +315,6 @@ var change_stock_ready2=function(e){
 	Dom.get('more_change_save').style.display='none';
 
     }
-	
     
 }
 
@@ -518,11 +518,14 @@ var damaged_stock_all=function(index){
 var desassociate_loc_save=function(location_id){
     var index=Dom.get('row_'+location_id).rowIndex;
     var pl_id=Dom.get('row_'+location_id).getAttribute('pl_id');
-    var request='ar_assets.php?tipo=pml_desassociate_location&id='+ escape(pl_id);
+    var msg='';
+    if(location_id==1)
+	msg=Dom.get('desassociate_loc_why').value;
+    var request='ar_assets.php?tipo=pml_desassociate_location&id='+ escape(pl_id)+'&msg='+escape(msg);
 
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-		//	alert(o.responseText);
+		//alert(o.responseText);
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if (r.state == 200) {
 		    
@@ -546,10 +549,30 @@ var desassociate_loc=function(location_id){
     
     Dom.get('manage_stock_desktop').style.display='';
     Dom.get('manage_stock_engine').innerHTML='';
-    Dom.get('manage_stock_messages').innerHTML='<?=_('Do you want to dessassocite the location');?>:<span style="padding-left:20px;cursor:pointer" onclick="desassociate_loc_save('+location_id+')">yes</span> <span style="padding-left:20px;cursor:pointer" onclick="clear_actions();">no</span>';
+    if(location_id==1){
+	var lost=Dom.get('loc_stock1').innerHTML;
+	Dom.get('manage_stock_messages').innerHTML='<b>'+lost+'</b> <?=_('outers will be declared as lost');?><br><?=_('Try to explaian what happened to them')?>';
+	Dom.get('manage_stock_engine').innerHTML='<table><tr><td><?=_('Explanation')?>:</td><td colspan="2"><textarea id="desassociate_loc_why" onkeyup="desassociate_loc_ready2()" ></textarea></td></tr><tr><td></td><td style="text-align:right"></td></tr><tr><td></td><td id="delete_unknown" style="text-align:right">  <span id="desassociate_loc_save" onclick="desassociate_loc_save(1)" style="margin-left:30px;cursor:pointer;display:none;vertical-align:bottom"><?=_('Save')?> <img src="art/icons/disk.png" style="vertical-align:bottom"/></span>  </td></tr></table>';
+    }else{
+    Dom.get('manage_stock_messages').innerHTML='<?=_('Do you want to desassocite the location');?>:<span style="padding-left:20px;cursor:pointer" onclick="desassociate_loc_save('+location_id+')">yes</span> <span style="padding-left:20px;cursor:pointer" onclick="clear_actions();">no</span>';
+
+    }
     Dom.get('row_'+location_id).style.background='#ffd7d7';
     Dom.get('loc_del'+location_id).style.visibility='hidden';
 };
+var desassociate_loc_ready2=function(e){
+     if(Dom.get('desassociate_loc_why').value!=''){
+	Dom.get('desassociate_loc_save').style.display='';
+
+    }else{
+	Dom.get('desassociate_loc_save').style.display='none';
+	
+
+    }
+    
+}
+
+
 // Swap can pick  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 var swap_picking_save=function(action,location_id){

@@ -79,7 +79,7 @@ $smarty->assign('next',$next);
 
 
 $locations=($product->get('locations'));
-//print_r($locations);
+print_r($locations);
 $smarty->assign('locations',$locations);
 
 

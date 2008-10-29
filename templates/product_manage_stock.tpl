@@ -49,16 +49,16 @@
 	  <div  id="manage_stock" class="manage_stock" >
 	    <table class="options" style="float:left">
 	      <tr class="title">
-		<td colspan="3"  {if !$locations.has_physical}style="display:none"{/if}  >{t}Operations{/t}</td>
+		<td colspan="3"  {if $locations.has_unknown}style="display:none"{/if}  >{t}Operations{/t}</td>
 	      </tr>
 	      <tr>
 		<td  {if $locations.num_physical lt 2 }style="display:none"{/if} id="move_stock">Move Stock</td>
 		<td  {if $locations.num_physical_with_stock==0}style="display:none"{/if}   id="damaged_stock">Stock Damaged</td>
-		<td id="new_location"  {if !$locations.has_physical}style="display:none"{/if}  >Assign Location</td></tr>
+		<td id="new_location"  {if $locations.has_unknown}style="display:none"{/if}  >Assign Location</td></tr>
 	    </table>
 	    <table class="options" style="clear:both;float:left;margin-bottom:20px">
 	      <tr class="title"> 
-		<td colspan="2">{t}Fix Errors{/t}</td></tr>
+		<td colspan="2"  {if !$locations.has_unknown and  !$locations.has_physical}style="display:none"{/if}    >{t}Fix Errors{/t}</td></tr>
 	      <tr >
 		<td id="change_stock"  {if !$locations.has_physical}style="display:none"{/if}>Change Stock Qty</td>
 		<td id="modify_location" {if !$locations.has_physical}style="display:none"{/if}>Modify Location</td>
@@ -85,7 +85,7 @@
 	      <img  id="loc_picking_img{$location.location_id}"  can_pick="{if $location.can_pick }1{else}0{/if}"   onclick="swap_picking({$location.location_id})" src="{if $location.can_pick }art/icons/basket.png{else}art/icons/basket_delete.png{/if}" style="position:relative;bottom:1px;vertical-align:bottom;cursor:pointer;{if !$location.is_physical}display:none{/if}"/> 
 	    </td>
 	    <td  style="text-align:right"><span   id="loc_stock{$location.location_id}"    >{$location.stock}</span></td>
-	    <td><img  onclick="desassociate_loc({$location.location_id})"   id="loc_del{$location.location_id}"  can_del="{if $location.has_stock}1{else}0{/if}"   title="{t}Free the location{/t}" style="cursor:pointer;{if $location.has_stock}display:none{/if}"  src="art/icons/cross.png" /></td></tr>
+	    <td><img  onclick="desassociate_loc({$location.location_id})"   id="loc_del{$location.location_id}"  can_del="{if $location.has_stock}1{else}0{/if}"   title="{t}Free the location{/t}" style="cursor:pointer;{if $location.has_stock and $location.location_id!=1}display:none{/if}"  src="art/icons/cross.png" /></td></tr>
 	  {/foreach}
 	   <tr class="totals"><td  >{t}Total Stock{/t}:</td><td COLSPAN="3" id="total_stock" style="text-align:right" >{$stock}</td><td></td> </tr>
 	</table>
