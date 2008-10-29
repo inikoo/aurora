@@ -61,7 +61,7 @@
 		<td colspan="2"  {if !$locations.has_unknown and  !$locations.has_physical}style="display:none"{/if}    >{t}Fix Errors{/t}</td></tr>
 	      <tr >
 		<td id="change_stock"  {if !$locations.has_physical}style="display:none"{/if}>Change Stock Qty</td>
-		<td id="modify_location" {if !$locations.has_physical}style="display:none"{/if}>Modify Location</td>
+		<td id="change_location" {if !$locations.has_physical}style="display:none"{/if}>Correct Name</td>
 		<td id="identify_location" {if !$locations.has_unknown}style="display:none"{/if}>Identify Location</td>
 	      </tr>
 	</table>

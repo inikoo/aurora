@@ -439,6 +439,7 @@ class product{
       $user_id=$data['user_id'];
       $product_id=$data['product_id'];
       $new_location_name=stripslashes($data['new_location_name']);
+      $msg=$data['msg'];
       $date='NOW()';
       
 
@@ -473,7 +474,7 @@ class product{
       if($old_location_id==1)
 	$note=_('Unknown location has been identified as').' '.$new_location_name;
       else
-	$note=$new_location_name.' '._('was wrongly  identified as').' '.$old_location_name.' ('._('Corrected').')';
+	$note=$new_location_name.' '._('was wrongly identified as').' '.$old_location_name.' ('._('Corrected').')'.($msg!=''?'; '.stripslashes($msg):'');
       
       $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,old_value,new_value,note) values (%s,'PROD',%d,'L2P',%d,'ERL',%d,'%d','%d',%s)"
 		   ,$date,$product_id,$id,$user_id,$old_location_id, $new_location_id,prepare_mysql($note)); 

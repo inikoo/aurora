@@ -110,8 +110,9 @@ var refresh= function(){
 
   if(location_data.has_physical){
       Dom.get("change_stock").style.display='';
-      Dom.get("modify_location").style.display='';
+      Dom.get("change_location").style.display='';
       Dom.get("new_location").style.display='';
+      
       if(location_data.num_physical>1)
 	  Dom.get("move_stock").style.display='';
       else
@@ -124,10 +125,10 @@ var refresh= function(){
 
   }else{
       Dom.get("change_stock").style.display='none';
-      Dom.get("modify_location").style.display='none';
       Dom.get("new_location").style.display='none';
       Dom.get("move_stock").style.display='none';
       Dom.get("damaged_stock").style.display='none';
+      Dom.get("change_location").style.display='none';
 
   }
 
@@ -141,12 +142,14 @@ var refresh= function(){
 var location_selected= function(){
 
     if(current_engine=='new_location'){
-
 	Dom.get("new_location_q1").style.display='';
     }
-     if(current_engine=='identify_location'){
-
+    else if(current_engine=='identify_location'){
 	Dom.get("identify_location_save").style.display='';
+    }else if(current_engine=='change_location'){
+
+	Dom.get("change_location_correct").innerHTML=Dom.get("new_location_input").value;
+	Dom.get("manage_stock_engine").style.display='';
     }
     
 }
@@ -176,6 +179,8 @@ var clear_actions = function(){
 	}
     
     Dom.get('change_stock').className='';
+        Dom.get('change_location').className='';
+
     Dom.get('move_stock').className='';
     Dom.get('damaged_stock').className='';
     Dom.get('new_location').className='';
@@ -380,12 +385,12 @@ var change_stock_save=function(location_id){
     //var pl_id=Dom.get('row_'+location_id).getAttribute('pl_id');
     var msg=Dom.get('change_stock_why').value;
     var qty=Dom.get("new_qty").value;
-    var request='ar_assets.php?tipo=change_qty&qty='+ escape(qty)+'&id='+ escape(location_id)+'&msg='+ escape(msg);
+    var request='ar_assets.php?tipo=pml_change_qty&qty='+ escape(qty)+'&id='+ escape(location_id)+'&msg='+ escape(msg);
     // alert(request);
     // return;
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-		//	alert(o.responseText);
+		//alert(o.responseText);
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if (r.state == 200) {
 		    
@@ -654,6 +659,85 @@ var rank_up=function(location_id){
 	});
     
 }
+//Change Location +++++++++++++++++++++++++++++++++++++++++++++++++++
+ var change_location =function(){
+	clear_actions();
+	this.className='selected';
+	current_engine='change_location';
+	
+	Dom.get('manage_stock_desktop').style.display='';
+	Dom.get('manage_stock_messages').innerHTML='<b><?=_('In this section is inteded to correct the location name')?>.</b><br><?=_('Choose which location you want to fix')?>';
+
+
+	for (key in location_data.data){
+	    var location= location_data.data[key];
+	    if(location.is_physical){
+		var location_id=location_data.data[key].location_id;
+		Event.addListener("loc_name"+location_id, "click", change_location_from,location_id);
+		Dom.get("loc_name"+location_data.data[key].location_id).className='selected';
+	    }
+	}
+ };
+
+var change_location_from  =function(e,location_id){
+
+     Dom.get('manage_stock_messages').innerHTML='<b><?=_('This form  should be used only to correct the location name')?>.</b><br><?=_('Choose the correct location')?>';
+     Dom.get('manage_stock_locations').style.display='';
+     Dom.get('manage_stock_engine').style.display='none';
+     Dom.get("manage_stock_engine").innerHTML='<table><tr><td><?=_('Correct Location')?>:</td><td id="change_location_correct"></td></tr><tr><td><?=_('Comments')?>:</td><td><textarea id="change_location_why" ></textarea></td></tr><tr><td colspan="2" style="text-align:right"><span  onclick="change_location_save('+location_id+')" style="cursor:pointer;vertical-align:bottom"><?=_('Save')?> <img src="art/icons/disk.png" style="vertical-align:bottom"/></span> </td></tr></table>';
+ }
+
+ var change_location_save=function(location_id){
+     
+     var pl_id=Dom.get('row_'+location_id).getAttribute('pl_id');
+     var location_name=Dom.get("new_location_input").value;
+      if(location_name=='')
+	Dom.get('manage_stock_messages').innerHTML='<?=_('Select a location from the list')?> <span id="identify_location_save" onclick="identify_location_save()" style="margin-left:30px;cursor:pointer;display:none;vertical-align:bottom"><?=_('Save')?> <img src="art/icons/disk.png" style="vertical-align:bottom"/></span>';
+
+      var msg=Dom.get("change_location_why").value;
+
+      var request='ar_assets.php?tipo=pml_change_location&new_location_name='+ escape(location_name)+'&id='+ escape(pl_id)+'&msg='+escape(msg);
+      //   alert(request);
+      YAHOO.util.Connect.asyncRequest('POST',request ,{
+	      success:function(o) {
+		  //	  alert(o.responseText);
+		  var r =  YAHOO.lang.JSON.parse(o.responseText);
+		  if (r.state == 200) {
+		      //cahnge location identifiers
+		      var old_location_id=location_id;
+		      
+		      var new_location_id=r.new_location_id;
+		      Dom.get('loc_picking_up'+old_location_id).setAttribute('onClick','rank_up('+new_location_id+')');
+		      Dom.get('loc_picking_img'+old_location_id).setAttribute('onClick','swap_picking('+new_location_id+')');
+		      Dom.get('loc_del'+old_location_id).setAttribute('onClick','desassociate_loc('+new_location_id+')');
+
+		      Dom.get('row_'+old_location_id).setAttribute('id','row_'+new_location_id);
+		      Dom.get('loc_name'+old_location_id).setAttribute('id','loc_name'+new_location_id);
+		      Dom.get('loc_tipo'+old_location_id).setAttribute('id','loc_tipo'+new_location_id);
+		      Dom.get('loc_pick_info'+old_location_id).setAttribute('id','loc_pick_info'+new_location_id);
+		      Dom.get('loc_picking_up'+old_location_id).setAttribute('id','loc_picking_up'+new_location_id);
+		      Dom.get('loc_picking_tipo'+old_location_id).setAttribute('id','loc_picking_tipo'+new_location_id);
+		      Dom.get('loc_picking_img'+old_location_id).setAttribute('id','loc_picking_img'+new_location_id);
+		      Dom.get('loc_stock'+old_location_id).setAttribute('id','loc_stock'+new_location_id);
+		      Dom.get('loc_del'+old_location_id).setAttribute('id','loc_del'+new_location_id);
+		      
+
+		      
+
+		      location_data=r.data;
+		      clear_actions();
+		    refresh();
+		  }else
+		    Dom.get('manage_stock_messages').innerHTML='<span class="error">'+r.msg+'</span>';
+	    }
+	});
+
+
+  }
+
+
+
+
 
 // Identify location
     var identify_location =function(){
@@ -673,7 +757,7 @@ var rank_up=function(location_id){
       if(location_name=='')
 	Dom.get('manage_stock_messages').innerHTML='<?=_('Select a location from the list')?> <span id="identify_location_save" onclick="identify_location_save()" style="margin-left:30px;cursor:pointer;display:none;vertical-align:bottom"><?=_('Save')?> <img src="art/icons/disk.png" style="vertical-align:bottom"/></span>';
 
-      var request='ar_assets.php?tipo=pml_change_location&new_location_name='+ escape(location_name)+'&id='+ escape(pl_id);
+      var request='ar_assets.php?tipo=pml_change_location&msg=new_location_name='+ escape(location_name)+'&id='+ escape(pl_id);
       //   alert(request);
       YAHOO.util.Connect.asyncRequest('POST',request ,{
 	      success:function(o) {
@@ -895,8 +979,11 @@ YAHOO.util.Event.onContentReady("manage_stock", function () {
 	 Event.addListener("damaged_stock", "click", damaged_stock);
 	 Event.addListener("move_stock", "click", move_stock);
 	 Event.addListener("change_stock", "click", change_stock);
+	 Event.addListener("change_location", "click", change_location);
+
 	 Event.addListener("new_location", "click", new_location);
 	 Event.addListener("identify_location", "click", identify_location);
+	 
     });
 
 

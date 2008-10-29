@@ -28,6 +28,8 @@ switch($tipo){
 		 'product_id'=>$_SESSION['state']['product']['id'],
 		 'p2l_id'=>$_REQUEST['id'],
 		 'new_location_name'=>$_REQUEST['new_location_name'],
+		 'msg'=>$_REQUEST['msg'],
+
 		 'user_id'=>$LU->getProperty('auth_user_id'),
 		 'tipo'=>'change_location'
 		 );
