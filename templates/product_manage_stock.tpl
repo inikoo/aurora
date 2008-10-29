@@ -76,7 +76,7 @@
 	    <td id="loc_name{$location.location_id}" class="aleft"  > {$location.name}</td>
 	     <td id="loc_tipo{$location.location_id}" >{$location.tipo}</td>
 	    <td style="text-align:right"  id="loc_pick_info{$location.location_id}" >
-	      <span id="loc_picking_up{$location.location_id}"  rank={$location.picking_rank}  onOclick="rank_up()"   style="cursor:pointer;{if  $location.picking_rank<2 or !$location.picking_rank}display:none;{/if}">&uarr;</span> 
+	      <span id="loc_picking_up{$location.location_id}"  rank={$location.picking_rank}  onClick="rank_up({$location.location_id})"   style="cursor:pointer;{if  $location.picking_rank<2 or !$location.picking_rank}display:none;{/if}">&uarr;</span> 
 	      <span id="loc_picking_tipo{$location.location_id}" >{$location.picking_tipo}</span>  
 	      <img  id="loc_picking_img{$location.location_id}"  can_pick="{if $location.can_pick }1{else}0{/if}"   onclick="swap_picking({$location.location_id})" src="{if $location.can_pick }art/icons/basket.png{else}art/icons/basket_delete.png{/if}" style="position:relative;bottom:1px;vertical-align:bottom;cursor:pointer;{if !$location.is_physical}display:none{/if}"/> 
 	    </td>

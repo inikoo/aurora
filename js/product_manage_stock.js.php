@@ -38,9 +38,8 @@ function moverow(row_index, position, tableID)
 
 	    
 	var trs = table.tBodies[0].getElementsByTagName("tr");
-	position=position+1
-	if(row_index==position)
-	    return;
+
+
 	table.tBodies[0].insertBefore(trs[row_index], trs[position]);
 	//	alert(row_index+' '+position);
 	
@@ -171,8 +170,8 @@ var new_location_save = function(){
 		    var cellLeft = row.insertCell(2);
 		    var span = document.createElement("span");
 		    span.innerHTML=' &uarr; ';
-		    span.setAttribute("onclick", "rank_up()" );
-		    span.setAttribute("style", "cursor:ponter" );
+		    span.setAttribute("onclick", "rank_up("+r.id+")" );
+		    span.setAttribute("style", "cursor:pointer" );
 		    span.setAttribute("id", 'loc_picking_up'+r.id );
 		    cellLeft.appendChild(span);
 		    var span = document.createElement("span");
@@ -525,19 +524,9 @@ var swap_picking_save=function(action,location_id){
 		    //		    alert(index);
 		    location_data=r.data;
 		    if(action==1)
-			moverow(index,location_data.num_picking_areas,'location_table');
-		    else
 			moverow(index,location_data.num_picking_areas+1,'location_table');
-
-
-		    //alert(action);
-		    //	    if(action==1){
-			//			alert(index+' '+location_data.num_picking_areas);
-			//	Dom.get('location_table').moveRow(index,1);
-			
-		    //	    }else
-			//	Dom.get('location_table').moveRow(index,1*location_data.num_picking_areas+1);	
-			    
+		    else
+			moverow(index,location_data.num_picking_areas+2,'location_table');
 		    clear_actions();
 		    swaping=0;
 		    refresh();
@@ -568,7 +557,40 @@ var swap_picking=function(location_id){
 
 
     Dom.get('loc_picking_img'+location_id).style.opacity=0.5;
+};
+// ----------------------------------------
+var rank_up=function(location_id){
+
+
+    var index=Dom.get('row_'+location_id).rowIndex;
+    var pl_id=Dom.get('row_'+location_id).getAttribute('pl_id');
+    var request='ar_assets.php?tipo=pml_increse_picking_rank&id='+ escape(pl_id);
+    //alert(request);
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    success:function(o) {
+		//alert(o.responseText)
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if (r.state == 200) {
+		    
+		    var index=Dom.get('row_'+location_id).rowIndex;
+		    location_data=r.data;
+		    moverow(index,index-1,'location_table');
+		    
+		    clear_actions();
+		    swaping=0;
+		    refresh();
+		    
+		}else
+		    Dom.get('manage_stock_messages').innerHTML='<span class="error">'+r.msg+'</span>';
+	    }
+	});
+    
 }
+
+
+
+
+
 
 // MOVE STOCK -----------------------------------------------------------------------------------------
 var move_stock =function(){

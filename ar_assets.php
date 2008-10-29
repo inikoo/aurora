@@ -73,7 +73,7 @@ switch($tipo){
  case('pml_increse_picking_rank'):
      $data=array(
 		 'product_id'=>$_SESSION['state']['product']['id'],
-		 'p2l_id'=>$_REQUEST['id'],
+		 'product2location_id'=>$_REQUEST['id'],
 		 'rank'=>'-1',
 		 'user_id'=>$LU->getProperty('auth_user_id'),
 		 'tipo'=>'set_picking_rank'
