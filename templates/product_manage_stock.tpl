@@ -49,8 +49,12 @@
 	  <div  id="manage_stock" class="manage_stock" >
 	    <table class="options" style="float:left">
 	      <tr class="title">
-		<td colspan="3"  {if !$locations.has_physical}style="display:none"{/if}  >{t}Operations{/t}</td></tr>
-	      <tr><td {if $locations.num_physical<2    }style="display:none"{/if}id="move_stock">Move Stock</td><td  {if $locations.num_physical_with_stock==0}style="display:none"{/if}   id="damaged_stock"   >Stock Damaged</td><td id="new_location"  {if !$locations.has_physical}style="display:none"{/if}  >Assign Location</td></tr>
+		<td colspan="3"  {if !$locations.has_physical}style="display:none"{/if}  >{t}Operations{/t}</td>
+	      </tr>
+	      <tr>
+		<td  {if $locations.num_physical lt 2 }style="display:none"{/if} id="move_stock">Move Stock</td>
+		<td  {if $locations.num_physical_with_stock==0}style="display:none"{/if}   id="damaged_stock">Stock Damaged</td>
+		<td id="new_location"  {if !$locations.has_physical}style="display:none"{/if}  >Assign Location</td></tr>
 	    </table>
 	    <table class="options" style="clear:both;float:left;margin-bottom:20px">
 	      <tr class="title"> 
@@ -58,7 +62,7 @@
 	      <tr >
 		<td id="change_stock"  {if !$locations.has_physical}style="display:none"{/if}>Change Stock Qty</td>
 		<td id="modify_location" {if !$locations.has_physical}style="display:none"{/if}>Modify Location</td>
-		<td id="identify_unknown" {if !$locations.has_unknown}style="display:none"{/if}>Identify Location</td>
+		<td id="identify_location" {if !$locations.has_unknown}style="display:none"{/if}>Identify Location</td>
 	      </tr>
 	</table>
 	    <div id="manage_stock_desktop" style="display:none" >

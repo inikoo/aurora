@@ -80,6 +80,14 @@ var refresh= function(){
 	  Dom.get("loc_tipo"+id).innerHTML=location.tipo;
 	  Dom.get("loc_stock"+id).innerHTML=location.stock;
 	  Dom.get("loc_picking_tipo"+id).innerHTML=' '+location.picking_tipo+' ';
+
+	  if(location.is_physical==1){
+	      Dom.get("loc_picking_img"+id).style.display='';
+	  }else{
+	      Dom.get("loc_picking_img"+id).style.display='none';
+	  }
+	      
+
 	  if(location.can_pick==1){
 	      Dom.get("loc_picking_img"+id).setAttribute('can_pick',1);
 	      Dom.get("loc_picking_img"+id).src='art/icons/basket.png';
@@ -94,6 +102,39 @@ var refresh= function(){
       }
 
   Dom.get('total_stock').innerHTML=location_data.stock;
+
+  if(location_data.has_unknown)
+      Dom.get("identify_location").style.display='';
+  else
+      Dom.get("identify_location").style.display='none';
+
+  if(location_data.has_physical){
+      Dom.get("change_stock").style.display='';
+      Dom.get("modify_location").style.display='';
+      Dom.get("new_location").style.display='';
+      if(location_data.num_physical>1)
+	  Dom.get("move_stock").style.display='';
+      else
+	  Dom.get("move_stock").style.display='none';
+      if(location_data.physical_with_stock>0)
+	  Dom.get("move_stock").style.display='';
+      else
+	  Dom.get("move_stock").style.display='none';
+      
+
+  }else{
+      Dom.get("change_stock").style.display='none';
+      Dom.get("modify_location").style.display='none';
+      Dom.get("new_location").style.display='none';
+      Dom.get("move_stock").style.display='none';
+      Dom.get("damaged_stock").style.display='none';
+
+  }
+
+
+
+
+
 }
 
 
@@ -102,6 +143,10 @@ var location_selected= function(){
     if(current_engine=='new_location'){
 
 	Dom.get("new_location_q1").style.display='';
+    }
+     if(current_engine=='identify_location'){
+
+	Dom.get("identify_location_save").style.display='';
     }
     
 }
@@ -134,7 +179,7 @@ var clear_actions = function(){
     Dom.get('move_stock').className='';
     Dom.get('damaged_stock').className='';
     Dom.get('new_location').className='';
-
+    Dom.get('identify_location').className='';
 
     
 };
@@ -224,7 +269,7 @@ var new_location_q1_action=function(value){
 	    }
 	    
 	var new_location=function(){
-	    clear_actions(current_engine);
+	    clear_actions();
 	    
 	    current_engine='new_location';
 	    this.className='selected';
@@ -587,9 +632,62 @@ var rank_up=function(location_id){
     
 }
 
+// Identify location
+    var identify_location =function(){
+	clear_actions();
+	this.className='selected';current_engine='identify_location';
+	
+	Dom.get('manage_stock_desktop').style.display='';
+	Dom.get('manage_stock_messages').innerHTML='<?=_('Location code');?>: <span id="identify_location_save" onclick="identify_location_save()" style="margin-left:30px;cursor:pointer;display:none;vertical-align:bottom"><?=_('Save')?> <img src="art/icons/disk.png" style="vertical-align:bottom"/></span> ';
+	Dom.get('manage_stock_locations').style.display='';
+	
 
 
+    }
+  var identify_location_save=function(){
+      var pl_id=Dom.get('row_1').getAttribute('pl_id');
+      var location_name=Dom.get("new_location_input").value;
+      if(location_name=='')
+	Dom.get('manage_stock_messages').innerHTML='<?=_('Select a location from the list')?> <span id="identify_location_save" onclick="identify_location_save()" style="margin-left:30px;cursor:pointer;display:none;vertical-align:bottom"><?=_('Save')?> <img src="art/icons/disk.png" style="vertical-align:bottom"/></span>';
 
+      var request='ar_assets.php?tipo=pml_change_location&new_location_name='+ escape(location_name)+'&id='+ escape(pl_id);
+      //   alert(request);
+      YAHOO.util.Connect.asyncRequest('POST',request ,{
+	      success:function(o) {
+		  //	  alert(o.responseText);
+		  var r =  YAHOO.lang.JSON.parse(o.responseText);
+		  if (r.state == 200) {
+		      //cahnge location identifiers
+		      var old_location_id=1;
+		      
+		      var new_location_id=r.new_location_id;
+		      Dom.get('loc_picking_up'+old_location_id).setAttribute('onClick','rank_up('+new_location_id+')');
+		      Dom.get('loc_picking_img'+old_location_id).setAttribute('onClick','swap_picking('+new_location_id+')');
+		      Dom.get('loc_del'+old_location_id).setAttribute('onClick','desassociate_loc('+new_location_id+')');
+
+		      Dom.get('row_'+old_location_id).setAttribute('id','row_'+new_location_id);
+		      Dom.get('loc_name'+old_location_id).setAttribute('id','loc_name'+new_location_id);
+		      Dom.get('loc_tipo'+old_location_id).setAttribute('id','loc_tipo'+new_location_id);
+		      Dom.get('loc_pick_info'+old_location_id).setAttribute('id','loc_pick_info'+new_location_id);
+		      Dom.get('loc_picking_up'+old_location_id).setAttribute('id','loc_picking_up'+new_location_id);
+		      Dom.get('loc_picking_tipo'+old_location_id).setAttribute('id','loc_picking_tipo'+new_location_id);
+		      Dom.get('loc_picking_img'+old_location_id).setAttribute('id','loc_picking_img'+new_location_id);
+		      Dom.get('loc_stock'+old_location_id).setAttribute('id','loc_stock'+new_location_id);
+		      Dom.get('loc_del'+old_location_id).setAttribute('id','loc_del'+new_location_id);
+		      
+
+		      
+
+		      location_data=r.data;
+		      clear_actions();
+		    refresh();
+		  }else
+		    Dom.get('manage_stock_messages').innerHTML='<span class="error">'+r.msg+'</span>';
+	    }
+	});
+
+
+  }
 
 
 // MOVE STOCK -----------------------------------------------------------------------------------------
@@ -775,7 +873,7 @@ YAHOO.util.Event.onContentReady("manage_stock", function () {
 	 Event.addListener("move_stock", "click", move_stock);
 	 Event.addListener("change_stock", "click", change_stock);
 	 Event.addListener("new_location", "click", new_location);
-
+	 Event.addListener("identify_location", "click", identify_location);
     });
 
 

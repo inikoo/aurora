@@ -23,11 +23,11 @@ if(!isset($_REQUEST['tipo']))
 
 $tipo=$_REQUEST['tipo'];
 switch($tipo){
- case('change_location'):
+ case('pml_change_location'):
      $data=array(
 		 'product_id'=>$_SESSION['state']['product']['id'],
 		 'p2l_id'=>$_REQUEST['id'],
-		 'new_location_id'=>$_REQUEST['new_location_id'],
+		 'new_location_name'=>$_REQUEST['new_location_name'],
 		 'user_id'=>$LU->getProperty('auth_user_id'),
 		 'tipo'=>'change_location'
 		 );
@@ -37,7 +37,7 @@ switch($tipo){
        $response= array(
 			'state'=>200,
 			'data'=>$res[1],
-			'stock'=>$res[2],
+			'new_location_id'=>$res[2]
 			);
      else
        $response= array(
@@ -46,7 +46,7 @@ switch($tipo){
 		      );
      echo json_encode($response);  
      break;
- case('change_qty'):
+ case('pml_change_qty'):
      $data=array(
 		 'product_id'=>$_SESSION['state']['product']['id'],
 		 'p2l_id'=>$_REQUEST['id'],

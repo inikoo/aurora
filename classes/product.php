@@ -438,39 +438,51 @@ class product{
       $id=$data['p2l_id'];
       $user_id=$data['user_id'];
       $product_id=$data['product_id'];
-      $new_location_id=$data['new_location_id'];
+      $new_location_name=stripslashes($data['new_location_name']);
       $date='NOW()';
-      $sql=sprintf("select picking_rank,product_id,location_id from product2location  where id=%d",$id); 
+      
+
+      $sql=sprintf("select id from location  where name=%s",prepare_mysql($new_location_name)); 
+      $result =& $this->db->query($sql);
+      if($row=$result->fetchRow()){
+	$new_location_id=$row['id'];
+	
+      }else
+	return array(false,_('This location do not exist'));
+      
+		   
+      $sql=sprintf("select picking_rank,product_id,location_id,name as location_name from product2location  left join location on location.id=location_id  where product2location.id=%d",$id); 
       $result =& $this->db->query($sql);
       if($row=$result->fetchRow()){
 	if($row['product_id']!=$product_id)
 	  return array(false,_('This location is no associated with the product'));
-	if($row['location_id']!=$new_location_id)
+	if($row['location_id']==$new_location_id)
 	  return array(false,_('Nothing to change'));
 	$old_location_id=$row['location_id'];
-      }else
+	$old_location_name=$row['location_name'];
+      }else{
 	return array(false,_('This location is no associated with the product'));
-
-      //check if new_location_exist
-      $sql=sprintf("select name from location  where id=%d",$new_location_id); 
-      $result =& $this->db->query($sql);
-      if($row=$result->fetchRow()){
-	//
-      }else
-	return array(false,_('This location do not exist'));
+      }  
       
       
+		   
       $sql=sprintf("update product2location set location_id=%d where id=%d",$new_location_id,$id); 
       mysql_query($sql);
-      $this->update_location(array('tipo'=>'set_picking_rank','product2location_id'=>$id,'rank'=>-1,'user_id'=>$user_id,'no_history'=>true));
+      $this->update_location(array('tipo'=>'set_picking_rank','product2location_id'=>$id,'rank'=>999999999,'user_id'=>$user_id,'no_history'=>true));
       
-
-      $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,note,old_value,new_value) values (%s,'PROD',%d,'L2P',%d,'ERRL',%d,'%d','%d')",$date,$product_id,$id,$user_id,$old_location_id, $new_location_id); 
+      if($old_location_id==1)
+	$note=_('Unknown location has been identified as').' '.$new_location_name;
+      else
+	$note=$new_location_name.' '._('was wrongly  identified as').' '.$old_location_name.' ('._('Corrected').')';
+      
+      $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,old_value,new_value,note) values (%s,'PROD',%d,'L2P',%d,'ERL',%d,'%d','%d',%s)"
+		   ,$date,$product_id,$id,$user_id,$old_location_id, $new_location_id,prepare_mysql($note)); 
+      //      return array(false,$sql);
       mysql_query($sql);
       
       $this->read(array('locations'=>$product_id));
       $locations_data=$this->get('locations');
-      return array(true,$locations_data);
+      return array(true,$locations_data,$new_location_id);
       break;
 
 
