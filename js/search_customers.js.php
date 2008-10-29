@@ -157,15 +157,15 @@ var submit_advanced_search = function(e){
 
     var data={ 
 	product_ordered1:Dom.get('product_ordered1').value,
-	product_ordered2: Dom.get('product_ordered2').value,
+	//	product_ordered2: Dom.get('product_ordered2').value,
 	product_not_ordered1: Dom.get('product_not_ordered1').value,
-	product_not_ordered2: Dom.get('product_not_ordered2').value,
+	//	product_not_ordered2: Dom.get('product_not_ordered2').value,
 	product_not_received1: Dom.get('product_not_received1').value,
-	product_not_received2: Dom.get('product_not_received2').value,
+	//	product_not_received2: Dom.get('product_not_received2').value,
 	from1:Dom.get('v_calpop1').value,
-	from2:Dom.get('v_calpop3').value,
+	//	from2:Dom.get('v_calpop3').value,
 	to1:Dom.get('v_calpop2').value,
-	to2:Dom.get('v_calpop4').value,
+	//	to2:Dom.get('v_calpop4').value,
 	geo_base:geo_base,
 	mail:Dom.get('with_email').checked,
 	tel:Dom.get('with_tel').checked
@@ -180,6 +180,7 @@ var submit_advanced_search = function(e){
     
 
     Dom.get('the_table').style.display='';
+    alert(request)
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);     
 }
 

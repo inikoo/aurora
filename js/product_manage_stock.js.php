@@ -32,6 +32,35 @@ function exchange(i, j, tableID)
 	}
 }
 
+function moverow(row_index, position, tableID)
+{
+	var table = Dom.get(tableID);
+
+	    
+	var trs = table.tBodies[0].getElementsByTagName("tr");
+	position=position+1
+	if(row_index==position)
+	    return;
+	table.tBodies[0].insertBefore(trs[row_index], trs[position]);
+	//	alert(row_index+' '+position);
+	
+
+// 	if(i == j+1) {
+// 		oTable.tBodies[0].insertBefore(trs[i], trs[j]);
+// 	} else if(j == i+1) {
+// 		oTable.tBodies[0].insertBefore(trs[j], trs[i]);
+// 	} else {
+// 		var tmpNode = oTable.tBodies[0].replaceChild(trs[i], trs[j]);
+// 		if(typeof(trs[i]) != "undefined") {
+// 			oTable.tBodies[0].insertBefore(tmpNode, trs[i]);
+// 		} else {
+// 			oTable.appendChild(tmpNode);
+// 		}
+// 	}
+}
+
+
+
 
 
 var refresh= function(){
@@ -476,10 +505,12 @@ var desassociate_loc=function(location_id){
     Dom.get('manage_stock_messages').innerHTML='<?=_('Do you want to dessassocite the location');?>:<span style="padding-left:20px;cursor:pointer" onclick="desassociate_loc_save('+location_id+')">yes</span> <span style="padding-left:20px;cursor:pointer" onclick="clear_actions();">no</span>';
     Dom.get('row_'+location_id).style.background='#ffd7d7';
     Dom.get('loc_del'+location_id).style.visibility='hidden';
-}
-// Swap can pick
+};
+// Swap can pick  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-    var swap_picking_save=function(action,location_id){
+var swap_picking_save=function(action,location_id){
+    
+
     var index=Dom.get('row_'+location_id).rowIndex;
     var pl_id=Dom.get('row_'+location_id).getAttribute('pl_id');
     var request='ar_assets.php?tipo=pml_swap_picking&action='+escape(action)+'&id='+ escape(pl_id);
@@ -493,11 +524,19 @@ var desassociate_loc=function(location_id){
 		    var index=Dom.get('row_'+location_id).rowIndex;
 		    //		    alert(index);
 		    location_data=r.data;
-		    //	    alert(index+' '+location_data.num_picking_areas);
 		    if(action==1)
-			Dom.get('location_table').moveRow(index,location_data.num_picking_areas);
+			moverow(index,location_data.num_picking_areas,'location_table');
 		    else
-		    	Dom.get('location_table').moveRow(index,1*location_data.num_picking_areas+1);	
+			moverow(index,location_data.num_picking_areas+1,'location_table');
+
+
+		    //alert(action);
+		    //	    if(action==1){
+			//			alert(index+' '+location_data.num_picking_areas);
+			//	Dom.get('location_table').moveRow(index,1);
+			
+		    //	    }else
+			//	Dom.get('location_table').moveRow(index,1*location_data.num_picking_areas+1);	
 			    
 		    clear_actions();
 		    swaping=0;

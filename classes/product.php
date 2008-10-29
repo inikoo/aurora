@@ -494,7 +494,7 @@ class product{
       }else
 	return array(false,_('This location is no associated with the product'));
       // del
-      $this->update_location(array('tipo'=>'set_picking_rank','product2location_id'=>$id,'rank'=>($action?-1:0),'user_id'=>$user_id,'no_history'=>true));
+      $this->update_location(array('tipo'=>'set_picking_rank','product2location_id'=>$id,'rank'=>($action?999999999:0),'user_id'=>$user_id,'no_history'=>true));
       
       if($action==1)
 	$note=_('Products now can be picked from').' '.$location_name;
