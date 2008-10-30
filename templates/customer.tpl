@@ -33,21 +33,18 @@
 
 
 <div >
-<h2 style="font-size:150%">Orders Overview</h2>
-<table style="padding:0;margin:0;border-top:1px solid black;;border-bottom:1px solid black;width:500px">
-	  <tr><td>
-{if $invoices==1}
-{$name} {t}has place one order of{/t} {$total_net}.  
-{elseif $invoices>1 } 
-{$name} {t}has placed{/t} <b>{$invoices}</b> {t}orders so far{/t}, {t}which amounts to a total of{/t} <b>{$total_net}</b> {t}plus tax{/t} ({t}an average of{/t} {$total_net_average} {t}per order{/t}).
-{if $orders_interval}<br/>{t}This customer usually places an order every{/t} {$orders_interval}.{/if}
-{/if}
-
-</td></tr>
-
-
-	</table>
-
+  <h2 style="font-size:150%">{t}Orders Overview{/t}</h2>
+  <table style="padding:0;margin:0;border-top:1px solid black;;border-bottom:1px solid black;width:500px">
+    <tr><td>
+	{if $invoices==1}
+	{$name} {t}has place one order of{/t} {$total_net}.  
+	{elseif $invoices>1 } 
+	{$name} {t}has placed{/t} <b>{$invoices}</b> {t}orders so far{/t}, {t}which amounts to a total of{/t} <b>{$total_net}</b> {t}plus tax{/t} ({t}an average of{/t} {$total_net_average} {t}per order{/t}).
+	{if $orders_interval}<br/>{t}This customer usually places an order every{/t} {$orders_interval}.{/if}
+	{/if}
+	
+    </td></tr>
+  </table>
 </div>
 
       

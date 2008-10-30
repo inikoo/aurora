@@ -415,6 +415,7 @@ from porden_item left join product2supplier as ps on (p2s_id=ps.id)  left join  
    
 
    case('pos'):
+     
      if(isset( $_REQUEST['id']) and is_numeric($_REQUEST['id']))     $supplier_id=$_REQUEST['id'];
    else
      $supplier_id=$_SESSION['tables']['po_list'][4];

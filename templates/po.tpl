@@ -22,26 +22,32 @@
       <br/> <br/>
       <button id="submit_dn"  >{t}Submit Deliver Note{/t}</button>
       {/if}
-       <table class="options" >
-	 <tr><td {if $view_all==1 }class="selected"{/if}    id="but_view0" >{t}All products{/t}</td></tr>
-       </table>
 
-	   <table class="but"  id="buts">
+      <table style="float:right;text-align:right" >
+	<tr><td>{$po_date_creation}</td><td>{t}Created{/t}</td></tr>
+	<tr><td>{$po_date_submited}</td><td>{if $po_date_submited!=''}{t}Submited{/t}{else}<span id="submit_po" style="cursor:pointer">{t}Submit{/t}</span>{/if}</td></tr>
+	<tr><td colspan=2>
+	    <table >
+	    <tr><td>{t}Submited Date{/t}:</td><td><input id="v_calpop1"   class="text" name="submites_date" type="text"  size="10" maxlength="10"  value="{$now}"    /><img   id="calpop1" style="cursor:pointer" src="art/icons/calendar_view_month.png" align="top" alt=""   /> 	</td></tr>
+	    <tr><td class="aright">{t}Time{/t}:</td><td class="aright"><input id="v_calpop1"   class="text" name="expected_date" type="text"  size="5" maxlength="5"     /><img   id="calpop1" style="cursor:pointer" src="art/icons/time.png" align="top" alt=""   /> 	</td></tr>
+	    <tr><td>{t}Expected Date{/t}:</td><td><input id="v_calpop2"   class="text" name="expected_date" type="text"  size="10" maxlength="10"     /><img   id="calpop1" style="cursor:pointer" src="art/icons/calendar_view_month.png" align="top" alt=""   /> 	</td></tr>
+	    <tr><td colspan=2 class="aright"><span style="cursor:pointer;margin-right:16px">Save <img   src="art/icons/disk.png" align="top" alt=""   /></span></td></tr>
+	    </table>
+	</td></tr>
+	<tr {if $po_date_submited==''}style="display:none"{/if}><td>{$po_date_expected}</td><td>{t}Expected{/t}</td></tr>
+	<tr ><td></dt><td>{if $po_date_received!=''}{t}Received{/t}{else}<span id="receive_po" style="cursor:pointer">{t}Receive{/t}</span>{/if}</td></tr>
+<tr><td></dt><td>{if $po_date_cancelled!=''}{t}Cancelled{/t}{else}<span id="cancelled_po" style="cursor:pointer">{t}Cancel{/t}</span>{/if}</td></tr>
 	     
-	      {if $tipo==0}<tr><td id="submiting">{t}Submit{/t}</td><td id="deleting" class="edit" >{t}Delete{/t}</td>  </tr>{/if}
-	      {if $tipo==1}<tr><td id="receiving">{t}Receive{/t}</td><td id="canceling" class="edit" >{t}Cancel{/t}</td>  </tr>{/if}
-	      {if $tipo==2}<tr><td id="returning" class="edit" >{t}Cancel Deliver{/t}</td>  </tr>{/if}
-	      {if $tipo==3}<tr><td id="deleting" class="edit" >{t}Delete{/t}</td>  </tr>{/if}
 
 	   </table>
     </div>
 
     <div class="yui-b" >
-      <fieldset class="prodinfo" style="width:700px;margin-top:25px">
-	<legend>{$title}</legend>
+      <div class="prodinfo" style="margin-left:20px;width:700px;margin-top:25px;border:1px solid black;font-size:85%">
+	<h1>{$title}</h1>
 
 
-	<table >
+	<table border=1 style="float:left">
 	  <tr><td>{t}Purchase Order Id{/t}:</td><td class="aright">{$po_number}</td></tr>
 	  <tr><td>{t}Created{/t}:</td><td class="aright">{$po_date_creation}</td></tr>
 
@@ -49,13 +55,12 @@
 	  {if $tipo>0}
 	  <tr><td>{t}Submitted{/t}:</td><td class="aright">{$po_date_submited}</td></tr>
 	  {/if}
-
 	  {if $tipo==1}<tr><td>{t}Expected{/t}:</td><td id="date_expected" class="aright">{$po_date_expected}</td></tr>{/if}
 	  
 	  
 	  
 	  <tr {if $dn_number==''}style="display:none"{/if} id="row_public_id" ><td>{t}Invoice Number{/t}:</td><td id="public_id" class="aright">{$dn_number}</td><td class="aright" id="edit_public_id" style="display:none" ><input style="text-align:right" class="text" size="7"  id="v_invoice_number"  name="invoice_number" value="{$dn_number}"  /></td></tr>
-	  <tr {if $po_date_invoice==''}style="display:none"{/if}  id="row_invoice_date"><td>{t}Invoice Date{/t}:</td><td id="invoice_date" >{$po_date_invoice}</td>
+	  <tr {if $tipo<1}style="display:none"{/if}  id="row_invoice_date"><td>{t}Invoice Date{/t}:</td><td id="invoice_date" >{$po_date_invoice}</td>
 	    <td class="aright" id="edit_invoice_date" style="display:none" >
 	      <input style="text-align:right" class="date_input" size="8" type="text"  id="v_invoice_date"  value="{$v_po_date_invoice}" name="invoice_date" />
 	  </td></tr>
@@ -90,14 +95,14 @@
 	    </td>
 	  </tr>
 	  
-
+<tr><td>{t}Items{/t}:</td><td class="aright" id="distinct_products">{$items}</td></tr>
 	  </table>
 
 
 	
 	
 
-	<table >
+	<table  border=1 style="float:right">
 
 	  <tr><td>{t}Goods{/t}:</td><td id="goods" class="aright">{$value_goods}</td></tr>
 	  <tr><td>{t}Shipping{/t}:</td><td class="aright" id="shipping"  >{$value_shipping}</td>
@@ -123,27 +128,29 @@
 	    <input style="text-align:right" class="text" size="7"  id="v_total" value="{$nm_value_total}" />{$decimal_point}
 	      <input   maxlength="2" style="text-align:right" id="v_total_c" class="text" size="1"   value="{$nc_value_total}" /></td>
 	  </tr>
-	  <tr><td>{t}Distinct Products{/t}:</td><td class="aright" id="distinct_products">{$items}</td></tr>
+
 	</table>
 
-
-
-
-
-      	<table style="clear:both;border:none;display:none" class="notes">
+      	<table style="clear:both;border:none;" class="notes">
 	  <tr><td style="border:none">{t}Notes{/t}:</td><td style="border:none"><textarea id="v_note" rows="2" cols="60" ></textarea></td></tr>
 	</table>
 	
 
-      </fieldset>
-
-
-
-     
-      <div id="block1" >
-	{include file='table.tpl' table_id=1 table_title=$t_title1 filter=$filter1 filter_name=$filter_name1         filter_value=$filter_value1  } 
       </div>
-     
+
+
+
+      <div id="the_table" class="data_table" style="margin:20px 20px;clear:both">
+	<span class="clean_table_title">{t}Products{/t}</span>
+	<div  class="clean_table_caption"  style="clear:both;">
+	  <div style="float:left;"><div id="table_info0" class="clean_table_info">{$table_info} <span class="filter_msg"  id="filter_msg0"></span></div></div>
+	  <div class="clean_table_filter"><div class="clean_table_info"><span class="clean_table_add_items {if $items==0}selected{/if}"  >{if $items>0}{t}Add Products{/t}{else}{t}Adding Products Mode{/t}{/if}</span> <span id="filter_name0">{t}Product Code{/t}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value}" size=10/><div id='f_container'></div></div></div>
+	  <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator"></span></div></div>
+	</div>
+	<div  id="table0"   class="data_table_container dtable btable "> </div>
+      </div>
+
+
 
 
 
@@ -176,108 +183,9 @@
 
 
   </div>
-  {*}
-    <div class="yui-b">
-	<form action="http://search.yahoo.com/search" onsubmit="return YAHOO.deliverynote.ACJson.validateForm();">
-	  <div id="ysearch"  style="clear:both;border:none">
-	    <label>Add Product to List: </label>
-	    <input id="ysearchinput" type="text" name="p" style="position:static;width:20em">
-	    <input id="ysearchsubmit" type="submit" value="OK">
-	    <div id="ysearchcontainer" style="text-align:left;width:20em;"></div>
-	  </div>
-	</form>
-
-    </div>
-{/*}
 </div> 
-{*}
-<div id="upload_dn">
-  <div class="hd">{t}New Products from file{/t}</div> 
-  <div class="bd"> 
-    <form  enctype="multipart/form-data" method="POST" action="new_delivernote.php"   id="uploadForm"   > 
-      <br>
-      <table >
-	<tr><td>{t}CVS File{/t}:</td><td><input  class="file" name="uploadedfile" type="file" /></td></tr>
-      </table>
-    </form>
-  </div>
-</div>
-{/*}
 
 
-<div id="submiting_form">
-  <div class="hd">{t}Submiting the purchase order{/t}</div> 
-  <div class="bd"> 
- <form action="ar_suppliers.php" >
-    <input type="hidden" name="po_id" value="{$po_id}" >
-    <input type="hidden" name="tipo" value="po_go" >
-
-      <table >
-	<tr><td>{t}Expected Date{/t}:</td><td><input id="v_calpop1"   class="text" name="expected_date" type="text"  size="10" maxlength="10"     /><img   id="calpop1" style="cursor:pointer" src="art/icons/calendar_view_month.png" align="top" alt=""   /> </td></tr>
-      </table>
-    </form>
-	<div id="cal1Container" style="display:none; z-index:2"></div>
-
-  </div>
-</div>
-
-<div id="deleting_form">
-  <div class="hd">{t}Deleting Purchase Order{/t}</div> 
-  <div class="bd"> 
-    <form action="ar_suppliers.php" >
-    <input type="hidden" name="po_id" value="{$po_id}" >
-    <input type="hidden" name="tipo" value="po_goback" >
-    <p>{t}Are you sure that you want to delete this purchase order?{/t}</p>
-      <table class="but" style="margin:auto;border-spacing:10px  10px" >
-	<tr><td class="edit" id="delete_po">{t}Yes{/t}</td></tr>
-      </table>
-    </form>
-  </div>
-</div>
-
-<div id="receiving_form">
-  <div class="hd">{t}Receiving Purchase Order Products{/t}</div> 
-  <div class="bd"> 
-    <form action="ar_suppliers.php" >
-    <input type="hidden" name="po_id" value="{$po_id}" >
-    <input type="hidden" name="tipo" value="po_go" >
-    <p>{t}Do you receive this order?{/t}</p>
-      <table class="but" style="margin:auto;border-spacing:10px  10px" >
-	<tr><td class="edit" id="receive_po">{t}Yes{/t}</td></tr>
-      </table>
-    </form>
-  </div>
-</div>
-
-
-
-<div id="returning_form">
-  <div class="hd">{t}Return Purchase Order{/t}</div> 
-  <div class="bd"> 
-
-    <input type="hidden" name="po_id" value="{$po_id}" >
-    <input type="hidden" name="tipo" value="po_goback" >
-      <table >
-	<tr><td>{t}Return{/t}</td><td>{t}Cancel{/t}</td></tr>
-      </table>
-    </form>
-  </div>
-</div>
-
-<div id="canceling_form">
-  <div class="hd">{t}Cancel Purchase Order{/t}</div> 
-  <div class="bd"> 
-    <form action="ar_suppliers.php" >
-    <p>{t}Are you sure that you want to cancel this purchase order?{/t}</p>
-    <input type="hidden" name="po_id" value="{$po_id}" >
-    <input type="hidden" name="tipo" value="po_goback" >
-      <table style="margin:auto;cursor:pointer">
-	<tr><td class="edit" id="cancel_po">{t}Yes{/t}</td></tr>
-
-      </table>
-    </form>
-  </div>
-</div>
 
 {include file='footer.tpl'}
 

@@ -52,6 +52,9 @@ else
 
 
 $_SESSION['state']['supplier']['id']=$supplier_id;
+$smarty->assign('supplier_id',$supplier_id);
+
+
 
 $supplier_data= get_supplier_data($supplier_id);
 $contact_data= get_contact_data($supplier_data['contact_id']);
@@ -99,8 +102,7 @@ elseif($num_children==2){
 //$_SESSION['tables']['purchase_orders'][4]=$supplier_id;
 
 
-
-
+$smarty->assign('display',$_SESSION['state']['supplier']['display']);
 $smarty->assign('box_layout','yui-t0');
 $smarty->assign('parent','suppliers.php');
 $smarty->assign('title','Supplier: '.$supplier_data['code']);

@@ -1,178 +1,117 @@
-<?
-include_once('../common.php');
-?>
-
+<?include_once('../common.php');?>
     
-    YAHOO.namespace ("deliverynote"); 
+    
+    var value_changed=function(o){
+
+	if(isNaN(o.value)){
+	    o.style.background='#fff889';
+	}else{
+	    var request='ar_assets.php?tipo=po_add_item&p2s_id='+escape(o.getAttribute('pid'))+'&qty='+escape(o.value);
+	    alert(request)
+	    YAHOO.util.Connect.asyncRequest('POST',request ,{
+		    success:function(o) {
+			var r =  YAHOO.lang.JSON.parse(o.responseText);
+			if (r.state == 200) {
+			    
+			}
+		    }
+		});    
+
+
+	}	
+
+    }
+
 
 
 YAHOO.util.Event.addListener(window, "load", function() {
-	YAHOO.deliverynote.XHR_JSON = new function() {
-		
-		
+	tables = new function() {
 		this.productLink=  function(el, oRecord, oColumn, oData) {
-		    
-		    if(oRecord.getData("product_id")==0)
-			el.innerHTML = oData;
-		    else{
-		    var url="asset_product.php?id="+oRecord.getData("product_id");
+		    var url="product.php?id="+oRecord.getData("id");
 		    el.innerHTML = oData.link(url);
-		    }
-		    };
-		this.description=  function(el, oRecord, oColumn, oData) {
-		    var url="asset_family.php?id="+oRecord.getData("family_id");
-		    el.innerHTML = oRecord.getData("units")+'('+oRecord.getData("units_tipof")+')'+'x '+oData;
+		};
+		this.familyLink=  function(el, oRecord, oColumn, oData) {
+		    var url="family.php?id="+oRecord.getData("group_id");
+		    el.innerHTML = oData.link(url);
 		};
 
-		var tableid=0; // Change if you have more the 1 table
-		var tableDivEL="table"+tableid;
-		
-		var DeliverynotesColumnDefs = [
-					   {key:"code", label:"<?=_('Our Code')?>", width:80,sortable:false,formatter:this.productLink,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					   ,{key:"sup_code", label:"<?=_('Code')?>", width:80,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
-					   ,{key:"description", label:"<?=_('Description')?>" ,width:280, sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					   ,{key:"price", label:"<?=_('Cost Price Unit')?>" ,width:100,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-					   ,{key:"qty", label:"<?=_('Ordered')?>" ,width:60,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-					   ,{key:"qty2", label:"<?=_('Received')?>" ,width:60,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-					   ,{key:"cost", label:"<?=_('Cost')?>" ,width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+		 var tableid=0;
+		    var tableDivEL="table"+tableid;
+		var ColumnDefs = [
+				    {key:"code", label:"<?=_('Code')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"fam", label:"<?=_('Family')?>",width:100,formatter:this.familyLink, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"description", label:"<?=_('Description')?>",width:300, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"stock", label:"<?=_('Stock')?>",width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"sup_code", label:"<?=_('S Code')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"price_unit", label:"<?=_('UPC')?>",width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"qty", label:"<?=_('Qty')?>",width:50,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				  ];
 
+		this.dataSource0 = new YAHOO.util.DataSource("ar_assets.php?tipo=withsupplier_po&tableid="+tableid);
 
-					   //					   ,{key:"description", label:"<?=_('Description')?>", sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					   // ,{key:"stock", label:"<?=_('Stock')?>",sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-					   //,{key:"price_unit", label:"<?=_('Cost Price Unit')?>",sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-
-					   
-
-					   ];
-		
-		this.DeliverynotesDataSource = new YAHOO.util.DataSource("ar_suppliers.php?tipo=dn_items&tid="+tableid);
-		this.DeliverynotesDataSource.responseType = YAHOO.util.DataSource.TYPE_JSON;
-		this.DeliverynotesDataSource.connXhrMode = "queueRequests";
-		this.DeliverynotesDataSource.responseSchema = {
-		    resultsList: "resultset.data", 
-		totalRecords: 'resultset.total_records',
-		fields: [
-			 "id","family_id","fam","code","description","sup_code","units","units_tipof","qty","price","dif","qty2","cost"
-			 ]};
-		
-		this.DeliverynotesDataTable = new YAHOO.widget.DataTable(tableDivEL, DeliverynotesColumnDefs,
-									this.DeliverynotesDataSource, {
-									    renderLoopSize: 50
-									}
-									
-									);
-		
-
+   this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
+		    this.dataSource0.connXhrMode = "queueRequests";
+		    this.dataSource0.responseSchema = {
+			resultsList: "resultset.data", 
+			metaFields: {
+			    rowsPerPage:"resultset.records_perpage",
+			    sort_key:"resultset.sort_key",
+			    sort_dir:"resultset.sort_dir",
+			    tableid:"resultset.tableid",
+			    filter_msg:"resultset.filter_msg",
+			    totalRecords: "resultset.total_records"
+			},
+			
+			fields: [
+				 "id","family_id","fam","code","description","stock","price_unit","price_outer","delete","p2s_id","sup_code","group_id","qty"
+				 ]};
 	    
-	};
-    });
+		    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
+							     this.dataSource0, {
+								 //draggableColumns:true,
+								 renderLoopSize: 50,generateRequest : myRequestBuilder
+								 ,paginator : new YAHOO.widget.Paginator({
+									 rowsPerPage:<?=$_SESSION['state']['supplier']['products']['nr']?>,containers : 'paginator', 
+									 pageReportTemplate : '(<?=_('Page')?> {currentPage} <?=_('of')?> {totalPages})',
+									 previousPageLinkLabel : "<",
+									 nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+									 lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
+									 ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+								     })
+								 
+								 ,sortedBy : {
+								     key: "<?=$_SESSION['state']['supplier']['products']['order']?>",
+								     dir: "<?=$_SESSION['state']['supplier']['products']['order_dir']?>"
+								 }
+								 ,dynamicData : true
+								 
+							     }
+							     );
+		    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
+		    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
+		this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
+		this.table0.filter={key:'<?=$_SESSION['state']['supplier']['products']['f_field']?>',value:'<?=$_SESSION['state']['supplier']['products']['f_value']?>'};
+	    }
+	    }
+    );
 
 
 
 
-function init(){
+ function init(){
+ var Dom   = YAHOO.util.Dom;
 
 
-    function mygetTerms(query) {
-	var Dom = YAHOO.util.Dom
-	var table=YAHOO.deliverynote.XHR_JSON.DeliverynotesDataTable;
-	var data=table.getDataSource();
-	var newrequest="&sf=0&f_field="+Dom.get('f_field0').value+"&f_value="+Dom.get('f_input0').value;
-
-	//	alert(newrequest);
-	data.sendRequest(newrequest,{success:table.onDataReturnInitializeTable, scope:table});
-    };
-    var oACDS = new YAHOO.widget.DS_JSFunction(mygetTerms);
-    oACDS.queryMatchContains = true;
-    var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","filtercontainer0", oACDS);
-    oAutoComp.minQueryLength = 0; 
-    
-
-    
+ var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
+ oACDS.queryMatchContains = true;
+ var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container", oACDS);
+ oAutoComp.minQueryLength = 0; 
 
 
 
 
-    var handleSubmit = function() {
-		this.submit();
-	};
-	var handleCancel = function() {
-		this.cancel();
-	};
-	var handleSuccess = function(o) {
-	    
-	};
-	var handleFailure = function(o) {
-		alert("Submission failed: " + o.status);
-	};
-
-
-	YAHOO.deliverynote.dialog1  = new YAHOO.widget.Dialog("upload_dn",
-							     { width : "30em",
-							       fixedcenter : true,
-							       visible : false, 
-							       constraintoviewport : true,
-							       postmethod:"form",
-							       
-							  buttons : [ { text:"<?=_('Update')?>", handler:handleSubmit, isDefault:true },
-								      { text:"<?=_('Cancel')?>", handler:handleCancel } ]
-							});
-
-	YAHOO.deliverynote.dialog1.callback = { success: handleSuccess,failure: handleFailure };
-	YAHOO.deliverynote.dialog1.render();
-
-    
-
-    
-    var newDNButton= new YAHOO.widget.Button("upload",{ type:"push" });
-    YAHOO.util.Event.addListener("upload", "click", YAHOO.deliverynote.dialog1.show, YAHOO.deliverynote.dialog1, true);
-
-    var submitButton= new YAHOO.widget.Button("submit_dn",{ type:"push" });
-
-
-    YAHOO.deliverynote.ACJson = new function(){
-
-
-    // Instantiate an XHR DataSource and define schema as an array:
-    //     ["Multi-depth.object.notation.to.find.a.single.result.item",
-    //     "Query Key",
-    //     "Additional Param Name 1",
-    //     ...
-    //     "Additional Param Name n"]
-	this.oACDS = new YAHOO.widget.DS_XHR("ar_assets.php", ["resultset.data","data"]);
-    this.oACDS.queryMatchContains = true;
-    this.oACDS.scriptQueryAppend = "tipo=codefromsup"; // Needed for YWS
-
-    // Instantiate AutoComplete
-    this.oAutoComp = new YAHOO.widget.AutoComplete("ysearchinput","ysearchcontainer", this.oACDS);
-    this.oAutoComp.useShadow = true;
-    this.oAutoComp.formatResult = function(oResultItem, sQuery) {
-        return oResultItem[1].code ;
-    };
-    this.oAutoComp.doBeforeExpandContainer = function(oTextbox, oContainer, sQuery, aResults) {
-        var pos = YAHOO.util.Dom.getXY(oTextbox);
-        pos[1] += YAHOO.util.Dom.get(oTextbox).offsetHeight + 2;
-        YAHOO.util.Dom.setXY(oContainer,pos);
-        return true;
-    };
-
-    // Stub for form validation
-    this.validateForm = function() {
-        // Validation code goes here
-        return true;
-    };
-};
-
-
-
-
-
-
-
-
-}
+ }
 
 YAHOO.util.Event.onDOMReady(init);
-
-

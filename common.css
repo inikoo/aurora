@@ -404,3 +404,11 @@ table.edit_location tr.totals {border-bottom:none }
 #manage_stock_desktop { margin:20px 0 0 0;padding:10px 20px;border:1px solid #ccc ;clear:both;}
 #manage_stock_messages {margin: 0 0 0px 0 }
 #manage_stock_engine {10px 0 0 0 }
+
+
+/*Purchase order creation,edituiong*/
+.clean_table_add_items {border:1px solid #777;padding:2px 4px;position:relative;bottom:1px;cursor:pointer;margin-right:25px  }
+
+.clean_table_add_items {border:1px solid #777;padding:2px 4px;position:relative;bottom:1px;cursor:pointer;margin-right:25px  }
+.clean_table_add_items:hover { background:#edf3ff; }
+.clean_table_info span.selected { background:#7296e1;color:white }

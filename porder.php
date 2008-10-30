@@ -3,8 +3,11 @@ include_once('common.php');
 
 
 
-if(isset($_REQUEST['new']) and is_numeric($_REQUEST['new'])){
-  $supplier_id=$_REQUEST['new'];
+if($_REQUEST['id']=='new'  ){
+  if(!isset($_REQUEST['supplier_id']))
+    exit(_('Unknown supplier'));
+  $supplier_id=$_REQUEST['supplier_id'];
+  $_SESSION['state']['supplier']['id']=$supplier_id;
   $sql="insert into porden (date_creation,date_index,supplier_id) values (NOW(),NOW(),$supplier_id)";
   $db->exec($sql);
   $po_id = $db->lastInsertID();
@@ -13,14 +16,17 @@ if(isset($_REQUEST['new']) and is_numeric($_REQUEST['new'])){
  else
    exit(_('Error the Purchese Order do not exist'));
 
+$_SESSION['state']['po']['id']=$po_id;
+$sql=sprintf("select ifnull(received_by,-1) as received_by,ifnull(checked_by,-1) as checked_by,public_id,supplier_id,UNIX_TIMESTAMP(date_expected) as date_expected,UNIX_TIMESTAMP(date_submited) as date_submited,UNIX_TIMESTAMP(date_creation) as date_creation,UNIX_TIMESTAMP(date_invoice) as date_invoice,UNIX_TIMESTAMP(date_received) as date_received,tipo,goods,shipping,vat,total,charges,diff,(select count(*) from porden_item where  porden_id=porden.id )as items  from porden where id=%d ",$po_id);
 
-$sql=sprintf("select ifnull(received_by,-1) as received_by,ifnull(checked_by,-1) as checked_by,public_id,supplier_id,UNIX_TIMESTAMP(date_expected) as date_expected,UNIX_TIMESTAMP(date_submited) as date_submited,UNIX_TIMESTAMP(date_submited) as date_submited,UNIX_TIMESTAMP(date_creation) as date_creation,UNIX_TIMESTAMP(date_invoice) as date_invoice,UNIX_TIMESTAMP(date_received) as date_received,tipo,goods,shipping,vat,total,charges,diff,(select count(*) from porden_item where  porden_id=porden.id )as items  from porden where id=%d ",$po_id);
 $result =& $db->query($sql);
 if($porder=$result->fetchRow()){
   $tipo=$porder['tipo'];
   $supplier_id=$porder['supplier_id'];
  }else
   exit(_('Error the Purchese Order do not exist'));
+
+
 
 $sql=sprintf("select s.id as id,code as code, s.name as name from supplier as s left join contact as c on (contact_id=c.id) where s.id=%d ",$supplier_id);
 //print "$sql";
@@ -37,7 +43,7 @@ if($tipo==0){
   $smarty->assign('filter_value1',$_SESSION['tables']['po_item'][7]);
   $smarty->assign('expected_total_value',money(0));
   $smarty->assign('expected_products',0);
-   $smarty->assign('po_date_creation',strftime("%e %B %Y", strtotime('now')));
+   $smarty->assign('po_date_creation',strftime("%e %b %Y", strtotime('now')));
    switch($_SESSION['tables']['po_item'][6]){
    case('p.code'):
      $filter_text=_('Our Code');
@@ -111,7 +117,7 @@ $smarty->assign('n_value_other',$porder['charges']);
 
 
 $smarty->assign('po_date_creation',strftime("%e %B %Y", $porder['date_creation']));
-$smarty->assign('po_date_submited',strftime("%e %B %Y", $porder['date_submited']));
+$smarty->assign('po_date_submited',($porder['date_submited']==''?'':strftime("%e %B %Y", $porder['date_submited'])));
 $smarty->assign('po_date_expected',($porder['date_expected']>0?strftime("%e %B %Y", $porder['date_expected']):'') );
 
   $smarty->assign('dn_datetimereceived',$porder['date_received']);
@@ -144,27 +150,20 @@ $css_files=array(
 		 );
 $js_files=array(
 		$yui_path.'yahoo-dom-event/yahoo-dom-event.js',
-		$yui_path.'calendar/calendar-min.js',
-		
-		$yui_path.'animation/animation-min.js',
 		$yui_path.'connection/connection-min.js',
 		$yui_path.'json/json-min.js',
 		$yui_path.'element/element-beta-min.js',
-		$yui_path.'utilities/utilities.js',
-		$yui_path.'container/container.js',
+		$yui_path.'paginator/paginator-min.js',
+		$yui_path.'dragdrop/dragdrop-min.js',
+		$yui_path.'datasource/datasource-min.js',
+		$yui_path.'autocomplete/autocomplete-min.js',
+		$yui_path.'datatable/datatable-min.js',
+		$yui_path.'container/container_core-min.js',
 		$yui_path.'menu/menu-min.js',
-		$yui_path.'button/button.js',
-		$yui_path.'autocomplete/autocomplete.js',
-		$yui_path.'datasource/datasource-beta.js',
-		$yui_path.'datatable/datatable-beta.js',
-		$yui_path.'json/json-min.js',
+		$yui_path.'calendar/calendar-min.js',
 		'js/common.js.php',
 		'js/table_common.js.php',
-		'js/calendar_common.js.php',
-		'js/mootools.v1.11.js',
-		'js/nogray_time_picker.js',
-
-		$js
+	       	'js/porder.js.php'
 		);
 
 

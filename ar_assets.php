@@ -2232,6 +2232,153 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
    echo json_encode($response);
    break;
 
+ case('withsupplier_po'):
+   if(!$LU->checkRight(SUP_VIEW))
+    exit;
+
+    $conf=$_SESSION['state']['supplier']['products'];
+  if(isset( $_REQUEST['sf']))
+     $start_from=$_REQUEST['sf'];
+   else
+     $start_from=$conf['sf'];
+   if(isset( $_REQUEST['nr']))
+     $number_results=$_REQUEST['nr'];
+   else
+     $number_results=$conf['nr'];
+  if(isset( $_REQUEST['o']))
+    $order=$_REQUEST['o'];
+  else
+    $order=$conf['order'];
+  if(isset( $_REQUEST['od']))
+    $order_dir=$_REQUEST['od'];
+  else
+    $order_dir=$conf['order_dir'];
+    if(isset( $_REQUEST['f_field']))
+     $f_field=$_REQUEST['f_field'];
+   else
+     $f_field=$conf['f_field'];
+
+  if(isset( $_REQUEST['f_value']))
+     $f_value=$_REQUEST['f_value'];
+   else
+     $f_value=$conf['f_value'];
+if(isset( $_REQUEST['where']))
+     $where=$_REQUEST['where'];
+   else
+     $where=$conf['where'];
+ 
+
+   if(isset( $_REQUEST['id']))
+    $supplier_id=$_REQUEST['id'];
+  else
+    $supplier_id=$_SESSION['state']['supplier']['id'];
+   
+ if(isset( $_REQUEST['po_id']))
+    $po_id=$_REQUEST['po_id'];
+  else
+    $po_id=$_SESSION['state']['po']['id'];
+
+
+   if(isset( $_REQUEST['tableid']))
+    $tableid=$_REQUEST['tableid'];
+  else
+    $tableid=0;
+
+ $filter_msg='';
+   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+ $_order=$order;
+ $_dir=$order_direction;
+ 
+
+   $_SESSION['state']['supplier']['products']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+   $_SESSION['state']['supplier']['id']=$supplier_id;
+
+  $where=$where.' and ps.supplier_id='.$supplier_id;
+
+
+  $wheref='';
+  if(($f_field=='code' or $f_field=='sup_code') and $f_value!='')
+    $wheref.=" and  p.code  like '".addslashes($f_value)."%'";
+  if(($f_field=='sup_code') and $f_value!='')
+    $wheref.=" and  sup_code like '".addslashes($f_value)."%'";
+  
+
+
+
+
+
+  $sql="select count(*) as total from product  as p left join product_group as g on (g.id=group_id) left join product_department as d on (d.id=department_id) left join product2supplier as ps on (product_id=p.id) $where $wheref ";
+
+
+  $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+  if($row=$res->fetchRow()) {
+    $total=$row['total'];
+  }
+    if($wheref==''){
+      $filtered=0;
+    }else{
+      
+      $sql="select count(*) as total from product  as p left join product_group as g on (g.id=group_id) left join product_department as d on (d.id=department_id) left join product2supplier as ps on (product_id=p.id)  $where  ";
+      $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+      if($row=$res->fetchRow()) {
+	$filtered=$row['total']-$total;
+      }
+      
+    }
+    
+
+
+   $sql="select (select expected_qty from porden_item where porden_id=$po_id and porden_item.p2s_id=ps.id) as qty,   sup_code,ps.id as p2s_id,(p.units*ps.price) as price_outer,ps.price as price_unit,stock,p.condicion as condicion, p.code as code, p.id as id,p.description as description , group_id,department_id,g.name as fam, d.code as department 
+from product as p left join product_group as g on (g.id=group_id) left join product_department as d on (d.id=department_id) left join product2supplier as ps on (product_id=p.id)  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+   //   print "$sql";
+   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   $data=array();
+   while($row=$res->fetchRow()) {
+     $code='<a href="product.php?id='.$row['id'].'">'.$row['code'].'</a>';
+     $data[]=array(
+		   'id'=>$row['id'],
+		   'p2s_id'=>$row['p2s_id'],
+
+		   'condicion'=>$row['condicion'],
+		   'price_unit'=>money($row['price_unit']),
+		   'price_outer'=>money($row['price_outer']),
+		   'stock'=>($row['stock']==''?'':number($row['stock'])),
+		   'code'=>$code,
+		   'sup_code'=>$row['sup_code'],
+		   'qty'=>'<input type="text" value="" onchange="value_changed(this)" size="5"  id="p'.$row['id'].'"  pid="'.$row['id'].'" class="aright" />',
+		   'description'=>$row['description'],
+		   'group_id'=>$row['group_id'],
+		   'department_id'=>$row['department_id'],
+		   'fam'=>$row['fam'],
+		   'department'=>$row['department'],
+		   'delete'=>'<img src="art/icons/link_delete.png"/>'
+
+		   );
+   }
+
+   if($total<$number_results)
+     $rtext=$total.' '.ngettext('record returned','records returned',$total);
+   else
+     $rtext='';
+   $response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$data,
+ 'sort_key'=>$_order,
+			 'sort_dir'=>$_dir,
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
+			 'total_records'=>$total,
+			 'records_offset'=>$start_from,
+			 'records_returned'=>$start_from+$res->numRows(),
+			 'records_perpage'=>$number_results,
+			 'records_text'=>$rtext,
+			 'records_order'=>$order,
+			 'records_order_dir'=>$order_dir,
+			 'filtered'=>$filtered
+			 )
+		   );
+   echo json_encode($response);
+   break;
 
 
  case('plot_weekout'): 
