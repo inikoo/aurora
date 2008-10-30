@@ -2858,26 +2858,26 @@ if(isset( $_REQUEST['tableid']))
   
 
 
- $view='';
- foreach($elements as $key=>$val){
-   if(!$val)
-     $view.=' and op_tipo!='.$key;
- }
+//  $view='';
+//  foreach($elements as $key=>$val){
+//    if(!$val)
+//      $view.=' and op_tipo!='.$key;
+//  }
 
 
   $wheref='';
-  if($f_field=='name' and $f_value!='')
-    $wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
+//   if($f_field=='name' and $f_value!='')
+//     $wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
 
   
 
 
-
+  $where=$where.sprintf(" and sujeto='PROD' and sujeto_id=%d and objeto='P2L'",$product_id);
 
    
-   $where =$where.$view.sprintf(' and product_id=%d  %s',$product_id,$date_interval);
+  //   $where =$where.$view.sprintf(' and product_id=%d  %s',$product_id,$date_interval);
    
-   $sql="select count(*) as total from stock_history  $where $wheref";
+   $sql="select count(*) as total from history    $where $wheref";
    //   print "$sql";
    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
    if($row=$res->fetchRow()) {
@@ -2886,67 +2886,36 @@ if(isset( $_REQUEST['tableid']))
    if($wheref=='')
        $filtered=0;
    else{
-     $sql="select count(*) as total from stock_history  $where ";
-
+     $sql="select count(*) as total from history  $where ";
+     
      $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
      if($row=$res->fetchRow()) {
        $filtered=$row['total']-$total;
      }
 
    }
-
-
+   
+   
    if($total==0)
      $rtext=_('No stock movements');
-  elseif($total<$number_results)
-    $rtext=$total.' '.ngettext('stock movement','stock movements',$total);
-  else
-     $rtext='';
+   else
+     $rtext=$total.' '.ngettext('stock operetion','stock operations',$total);
+   
 
 
 
-  $sql=sprintf("select  id,stock,available,op_qty as qty ,product_id,UNIX_TIMESTAMP(op_date) as op_date,op_date as date ,op_id,op_tipo,value from stock_history  $where $wheref order by $order $order_direction limit $start_from,$number_results ");
-  //print $sql;
+  $sql=sprintf("select  UNIX_TIMESTAMP(date) as date,handle as author ,history.note,history.staff_id  from history left join liveuser_users  on (authuserid=history.staff_id) $where $wheref order by $order $order_direction limit $start_from,$number_results ");
+  //  print $sql;
   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
   $adata=array();
   while($data=$res->fetchRow()) {
 
 
-   if($data['qty']>0)
-	$sign='+';
-      else
-	$sign='';
-
-    switch($data['op_tipo']){
-
-
-    case(0):
-      $op=$sign.number($data['qty'],1).' <a href="inventory.php?id='.$data['op_id'].'">'.$_stockop_tipo[0].'</a>';
-      break;
-    case(1):
-      $op=$sign.number($data['qty'],1).' <a href="delivery_note.php?id='.$data['op_id'].'">'.$_stockop_tipo[1].'</a>';
-      break;
-    case(2):
-      $op=$sign.number($data['qty'],1).' <a href="inventory.php?id='.$data['op_id'].'">'.$_stockop_tipo[2].'</a>';
-      break;
-    case(3):
-      $op=$sign.number($data['qty'],1).' <a href="order.php?id='.$data['op_id'].'">'.$_stockop_tipo[3].'</a>';
-      break;
-    case(4):
-      $op=$sign.number($data['qty'],1).' <a href="order.php?id='.$data['op_id'].'">'.$_stockop_tipo[4].'</a>';
-      break;
-    case(100):
-      $op=_('Product Launch');
-
-    }
-
     $adata[]=array(
-		   //   'id'=>$data['id']
-		   'stock'=>number($data['stock'])
-		   ,'available'=>number($data['available'])
-		   ,'value'=>money($data['value'])
-		   ,'operation'=>$op
-		   ,'op_date'=>strftime("%A %e %B %Y %T", strtotime('@'.$data['op_date'])),
+
+		   'author'=>$data['author']
+		   ,'note'=>$data['note']
+		   ,'date'=>strftime("%a %e %b %Y %T", strtotime('@'.$data['date'])),
 		   );
   }
   $response=array('resultset'=>
@@ -2954,6 +2923,7 @@ if(isset( $_REQUEST['tableid']))
 			 'data'=>$adata,
 			 'sort_key'=>$_order,
 			 'sort_dir'=>$_dir,
+			 'rtext'=>$rtext,
 			 'tableid'=>$tableid,
 			 'filter_msg'=>$filter_msg,
 			 'total_records'=>$total,

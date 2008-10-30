@@ -29,12 +29,23 @@ var myhandleDataReturnPayload= function(oRequest, oResponse, oPayload) {
     oPayload.filter_msg=oResponse.meta.filter_msg;
 
     //  alert(oResponse.meta.rowsPerPage)
-
+    if(oResponse.meta.rtext != undefined)
+	YAHOO.util.Dom.get('rtext'+oResponse.meta.tableid).innerHTML=oResponse.meta.rtext;
+    //alert('filter_msg'+oResponse.meta.tableid)
     YAHOO.util.Dom.get('filter_msg'+oResponse.meta.tableid).innerHTML=oPayload.filter_msg
     //    oPayload.sortedBy.key=oResponse.meta.sort_key;
     //oPayload.sortedBy.dir=oResponse.meta.sort_dir;
     oPayload.totalRecords = parseInt(oResponse.meta.totalRecords);
+    
+    if(oPayload.totalRecords==0){
 
+	
+	var table=YAHOO.util.Dom.get('table'+oResponse.meta.tableid).getElementsByTagName("table")[0];
+	table.tHead.style.display='none';
+	table.tBodies[0].getElementsByTagName("tr")[0].getElementsByTagName("td")[0].innerHTML='';
+	
+	YAHOO.util.Dom.get('clean_table_filter'+oResponse.meta.tableid).style.display='none';
+    }
 
     return oPayload;
 };

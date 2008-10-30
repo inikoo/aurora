@@ -134,8 +134,10 @@ var refresh= function(){
 
 
 
-
-
+  var table=tables.table0;
+  var datasource=tables.dataSource0;
+  var request='&sf=0';
+  datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
 }
 
 
@@ -984,6 +986,78 @@ YAHOO.util.Event.onContentReady("manage_stock", function () {
 	 Event.addListener("new_location", "click", new_location);
 	 Event.addListener("identify_location", "click", identify_location);
 	 
+    });
+
+
+YAHOO.util.Event.addListener(window, "load", function() {
+    tables = new function() {
+	    //START OF THE TABLE=========================================================================================================================
+	    
+	    var tableid=0; // Change if you have more the 1 table
+	    var tableDivEL="table"+tableid;
+	    var CustomersColumnDefs = [
+				       {key:"date", label:"<?=_('Date')?>", width:200,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"author", label:"<?=_('Author')?>", width:70,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"note", label:"<?=_('Description')?>", width:370,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ];
+	    //?tipo=customers&tid=0"
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_assets.php?tipo=stock_history");
+	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource0.connXhrMode = "queueRequests";
+	    this.dataSource0.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    rtext:"resultset.rtext",
+		    totalRecords: "resultset.total_records" // Access to value in the server response
+		},
+		
+		
+		fields: [
+			 "id"
+			 ,"note"
+			 ,'author','date'
+			 ]};
+	    
+	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
+						     this.dataSource0
+						     , {
+							 // sortedBy: {key:"<?=$_SESSION['tables']['customers_list'][0]?>", dir:"<?=$_SESSION['tables']['customers_list'][1]?>"},
+							 renderLoopSize: 50,generateRequest : myRequestBuilder
+							 ,paginator : new YAHOO.widget.Paginator({
+								 rowsPerPage    : <?=$_SESSION['state']['product']['stock_history']['nr']?>,containers : 'paginator', alwaysVisible:false,
+								 pageReportTemplate : '(<?=_('Page')?> {currentPage} <?=_('of')?> {totalPages})',
+								 previousPageLinkLabel : "<",
+								 nextPageLinkLabel : ">",
+								 firstPageLinkLabel :"<<",
+								 lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
+								 ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+							     })
+							 
+							 ,sortedBy : {
+							     key: "<?=$_SESSION['state']['product']['stock_history']['order']?>",
+							     dir: "<?=$_SESSION['state']['product']['stock_history']['order_dir']?>"
+							 },
+							 dynamicData : true
+							 
+						     }
+						     
+						     );
+	    
+	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
+
+		    
+		    
+	    this.table0.filter={key:'<?=$_SESSION['state']['product']['stock_history']['f_field']?>',value:'<?=$_SESSION['state']['product']['stock_history']['f_value']?>'};
+	    YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown)
+	
+	};
     });
 
 
