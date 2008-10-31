@@ -2,14 +2,18 @@ html{background-color:#fff;background-image:url('art/body_back_flowers.jpg');bac
 body{color:#333;margin:0px;padding:0px;font-family:"Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;
 }
 td {text-align:left}
-h1, h2, h3, h4, h6 {xfont-family: Trebuchet MS, Arial}
+
 h1 {font-size:160%}
 th,td {padding:.2em;}
 th {font-weight:bold;text-align:center;}
 p,fieldset,table,pre {margin-bottom:1em;}
 input.time_input,input.date_input,input.text,input.password,input.file ,textarea{border:1px solid #777}
+
 h1,h2,h3,h4{padding:5px 0px}
-h2{font-size:131%}
+h1 {font-size:160%}
+h2,.clean_table_title{font-size:135%;margin-bottom:0px}
+.clean_table_title{float:left}
+
 a,table,button{outline: none;}
 a {text-decoration:none;color:#222}
 a:hover {text-decoration:underline;color:#000} 
@@ -354,7 +358,7 @@ color: #316D89;
 }
 
 
-.clean_table_title{margin-bottom:0px;font-size:135%;float:left}
+
 .clean_table_info{display:table-cell; vertical-align:bottom;;border:0px solid black;}
 .clean_table_controls{float:right;margin-right:10px;}
 .clean_table_controls div {display:table-cell; vertical-align:bottom;border:0px solid black}

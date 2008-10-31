@@ -27,64 +27,22 @@ class product{
     $this->db =MDB2::singleton();
 
 
-    if(is_numeric($id))
-      $this->product['id']=$id;
+    if(is_numeric($id)){
+      $this->id=$id;
+      $this->read(array('product_info'));
+    }
 
-    // print $this->product['id'];
-
-    //  $product=array(
-// 		     'id'=>'',
-// 		     'group_id'=>0,
-// 		     'code'=>'',
-// 		     'n_code'=>'',
-// 		     'description'=>'';
-// 		     'description_med'=>'';
-// 		     'details'=>'',
-// 		     'units'=>0.0,
-// 		     'units_tipo'=>1,
-// 		     'has_child'=>0,
-// 		     'has_parent'=>0,
-// 		     'stock'=>'';
-// 		     'stock_value'=>0.0,
-// 		     'available'=>'',
-// 		     'stock_units'=>1,
-// 		     'first_date'=>'',
-// 		     'awoutall'=>0,
-// 		     'awouty'=>0,
-// 		     'awoutq'=>0,
-// 		     'awoutm'=>0,
-// 		     'awtsall'=>0,
-// 		     'awtsq'=>0,
-// 		     'outall'=>0,
-// 		     'outy'=>0,
-// 		     'outq'=>0,
-// 		     'outm'=>0,
-// 		     'outw'=>0,
-// 		     'tsall'=>0,
-// 		     'tsy'=>0,
-// 		     'tsq'=>0,
-// 		     'tsm'=>0,
-// 		     'tsw'=>0,
-// 		     'weight'=>'',
-// 		     'dim'=>'',
-// 		     'dim_type'=>1,
-// 		     'oweight'=>'',
-// 		     'odim'=>'',
-// 		     'odim_type'=>1,
-// 		     'export_code'=>'',
-// 		     'condicion'=>0
-// 			);
   }
   
   
   function read($data_to_be_read){
 
-    foreach($data_to_be_read as $table=>$id){
+    foreach($data_to_be_read as $table){
 
       switch($table){
 
       case('product_info'):
-	$sql=sprintf("select * from product where id=%d",$id);
+	$sql=sprintf("select * from product where id=%d",$this->id);
 	$result =& $this->db->query($sql);
 	$this->product=$result->fetchRow();   
 	break;
@@ -103,7 +61,7 @@ class product{
 	global $_location_tipo;
 	$_data=array();
 	$this->locations=array('has_display'=>false,'has_unknown'=>false,'has_loading'=>false,'has_white_hole'=>false,'has_picking_area'=>false,'has_physical'=>false,'data'=>array(),'num_physical'=>0,'num_physical_with_stock'=>0,'num_picking_areas'=>0);
-	$sql=sprintf("select name,product2location.id as id,location_id,stock,picking_rank,tipo,stock  from product2location left join location on (location_id=location.id) where product_id=%d and picking_rank is not null order by picking_rank  ",$id);
+	$sql=sprintf("select name,product2location.id as id,location_id,stock,picking_rank,tipo,stock  from product2location left join location on (location_id=location.id) where product_id=%d and picking_rank is not null order by picking_rank  ",$this->id);
 	$result =& $this->db->query($sql);
 	while($row=$result->fetchRow()){
 	  $_data[$row['id']]=array(
@@ -127,7 +85,7 @@ class product{
 	
 
 
-	$sql=sprintf("select name,product2location.id as id,location_id,stock,picking_rank,tipo,stock  from product2location left join location on (location_id=location.id) where product_id=%d and picking_rank is  null order by tipo desc  ",$id);
+	$sql=sprintf("select name,product2location.id as id,location_id,stock,picking_rank,tipo,stock  from product2location left join location on (location_id=location.id) where product_id=%d and picking_rank is  null order by tipo desc  ",$this->id);
 	$result =& $this->db->query($sql);
 	while($row=$result->fetchRow()){
 	  
@@ -172,7 +130,7 @@ class product{
 					   );
 
 	}
-	$sql=sprintf("select stock from product where id=%d",$id);
+	$sql=sprintf("select stock from product where id=%d",$this->id);
 	$result =& $this->db->query($sql);
 	if($row=$result->fetchRow()){
 	  $this->locations['stock']=number($row['stock']);
@@ -181,7 +139,7 @@ class product{
 	break;
       case('suppliers'):
 	$this->suppliers=array();
-	$sql=sprintf("select p2s.supplier_id, p2s.price,p2s.sup_code as code,s.name as name from product2supplier as p2s left join supplier as s on (p2s.supplier_id=s.id) where p2s.product_id=%d",$id);
+	$sql=sprintf("select p2s.supplier_id, p2s.price,p2s.sup_code as code,s.name as name from product2supplier as p2s left join supplier as s on (p2s.supplier_id=s.id) where p2s.product_id=%d",$this->id);
 	
 	$result =& $this->db->query($sql);
 	//$supplier=array();
@@ -199,7 +157,7 @@ class product{
 	// print_r($this->suppliers);
       case('categories'):
 	$this->categories['list']=array();
-	$sql=sprintf("select cat_id,name from product2cat left join cat on (cat_id=cat.id) where product_id=%d ",$id);
+	$sql=sprintf("select cat_id,name from product2cat left join cat on (cat_id=cat.id) where product_id=%d ",$this->id);
 	$this->suppliers['list']=array();
 	$result =& $this->db->query($sql);
 	while($row=$result->fetchRow()){
@@ -211,7 +169,7 @@ class product{
 	break;
       case('images'):
 	$this->images=array();
-	$sql=sprintf("select filename,format,principal,caption,id from image where  product_id=%d order by principal desc",$id);
+	$sql=sprintf("select filename,format,principal,caption,id from image where  product_id=%d order by principal desc",$this->id);
 	
 	$result =& $this->db->query($sql);
 	$principal=false;
@@ -313,7 +271,7 @@ class product{
 	$old_rank=$row['picking_rank'];
       }else
 	return array(false,_('No such location'));
-      $this->read(array('locations'=>$product_id));
+      $this->read(array('locations'));
       $location_data=$this->get('locations');
 
       if(preg_match('/^\+/',$rank)){
@@ -717,6 +675,59 @@ class product{
       $locations_data=$this->get('locations');
 
       return array(true,$locations_data);
+      break;
+      
+    case('move_stock_to'):
+      $from_id=$data['from_id'];
+      $to_name=stripslashes($data['to_name']);
+      $qty=$data['qty'];
+      $user_id=$data['user_id'];
+      $date='NOW()';
+      
+      if($qty<=0)
+	return array(false,_('Check the number of outers'));
+
+      
+      $sql=sprintf("select product_id,location.name,stock from product2location left join location on (location.id=location_id) where product2location.id=%d",$from_id); 
+
+      $result =& $this->db->query($sql);
+      if($row=$result->fetchRow()){
+	if($row['product_id']!=$this->id)
+	  return array(false,_('There this product is not in this location'));
+	$from_name=$row['name'];
+	$from_qty=$row['stock'];
+      }
+      if($qty>$from_qty)
+	return array(false,_('Can not move so many outers'));
+      
+
+      $sql=sprintf("select location.name,stock,product2location.id from product2location left join location on (location.id=location_id) where location.name=%s",prepare_mysql($to_name)); 
+      //print "$sql";
+      $result =& $this->db->query($sql);
+      if($row=$result->fetchRow()){
+	$to_name=$row['name'];
+	$to_qty=$row['stock'];
+	$to_id=$row['id'];
+	
+      }
+
+      $sql=sprintf("update product2location set stock=%s where id=%d",$from_qty-$qty,$from_id); 
+      // print "$sql";
+      mysql_query($sql);
+      $sql=sprintf("update product2location set stock=%s where id=%d",$to_qty+$qty,$to_id); 
+      // print "$sql";
+      mysql_query($sql);
+      $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,note,old_value,new_value) values (%s,'PROD',%d,'P2L',%d,'MOV',%d,'%s',%d,%d)",$date,$this->id,$from_id,$user_id,$qty.' '._('outers has been moved from').' '.$from_name.' '._('to').' '.$to_name,$from_id,$to_id); 
+      mysql_query($sql);
+      //   return array(false,$sql);
+      
+      $this->read(array('locations'));
+      $locations_data=$this->get('locations');
+
+      return array(true,$locations_data);
+      break;
+
+
 
     }
 

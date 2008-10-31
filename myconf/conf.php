@@ -375,7 +375,20 @@ $default_state=array(
 		     'po'=>array(
 				 'id'=>1
 				 ),
-		      'supplier'=>array(
+		     'location'=>array(
+				       'location'=>false,
+				       'products'=>array(
+							 'order'=>'code',
+							 'order_dir'=>'',
+							 'sf'=>0,
+							 'nr'=>25,
+							 'where'=>'where true',
+							 'f_field'=>'name',
+							 'f_value'=>'',
+							 'elements'=>array()
+							 )
+				       ),
+		     'supplier'=>array(
 				       'details'=>false,
 				       'plot'=>'sales_month',
 				       'id'=>1,

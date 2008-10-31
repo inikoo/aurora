@@ -117,14 +117,19 @@ switch($tipo){
      echo json_encode($response);  
      break;
  case('pml_desassociate_location'):
-     $data=array(
-		 'product_id'=>$_SESSION['state']['product']['id'],
-		 'p2l_id'=>$_REQUEST['id'],
-		 'user_id'=>$LU->getProperty('auth_user_id'),
-		 'tipo'=>'desassociate_location',
-		 'msg'=>$_REQUEST['msg']
-		 );
-     $product=new product();
+
+   if(!isset($_REQUEST['product_id']))
+     $product_id=$_SESSION['state']['product']['id'];
+   else
+     $product_id=$_REQUEST['product_id'];
+   $data=array(
+	       'product_id'=>$product_id,
+	       'p2l_id'=>$_REQUEST['id'],
+	       'user_id'=>$LU->getProperty('auth_user_id'),
+	       'tipo'=>'desassociate_location',
+	       'msg'=>$_REQUEST['msg']
+	       );
+     $product=new product($product_id);
      $res=$product->update_location($data);
      if($res[0])
        $response= array(
@@ -240,6 +245,49 @@ switch($tipo){
   
 
    break;
+ case('pml_move_multiple_stocks'):
+   $_data=preg_replace('/\\\"/','"',$_REQUEST['data']);
+   $_data=json_decode($_data,true);
+   $to_name=$_REQUEST['toname'];
+   $ok=true;
+
+
+   foreach($_data as $id=>$value){
+
+   $data=array(
+	       'qty'=>$value['qty'],
+	       'from_id'=>$id,
+	       'to_name'=>$to_name,
+	       'user_id'=>$LU->getProperty('auth_user_id'),
+	       'tipo'=>'move_stock_to'
+	       );
+
+
+
+   $product=new product($value['product_id']);
+   $res=$product->update_location($data);
+   if(!$res[0])
+     $ok=false;
+   
+   }
+
+   if($ok)
+     $response= array(
+		      'state'=>200,
+		      'data'=>''
+		      );
+   else
+     $response= array(
+		      'state'=>400,
+		      'msg'=>_('Some errors ocured')
+		      );
+
+
+   
+     echo json_encode($response);  
+  
+
+   break;
  case('locations_name'):
 
    if(!isset($_REQUEST['query']) or $_REQUEST['query']==''){
@@ -254,10 +302,17 @@ switch($tipo){
    
    if(isset($_REQUEST['all']) and $_REQUEST['all']==1)
      $sql=sprintf("select name from location where name like '%s%%' ",$_REQUEST['query']);
-   else{
+   elseif(isset($_REQUEST['except_location'])){
+     $sql=sprintf("select * from location where name like '%s%%' and id!=%d  ",$_REQUEST['query'],$_REQUEST['except_location']);
+   }else{
      
-     $sql=sprintf("select * from location where name like '%s%%' and (select count(*) from product2location where location_id=location.id and product_id=%d)=0   ",$_REQUEST['query'],$_SESSION['state']['product']['id']);
+     if(!isset($_REQUEST['product_id']))
+       $product_id=$_SESSION['state']['product']['id'];
+     else
+       $product_id=$_REQUEST['product_id'];
+     $sql=sprintf("select * from location where name like '%s%%' and (select count(*) from product2location where location_id=location.id and product_id=%d)=0   ",$_REQUEST['query'],$product_id);
    }
+   //   print $sql;
    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
    while($row=$res->fetchRow()) {
      $data[]=array('name'=>$row['name']);
@@ -1072,7 +1127,7 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
   $_dir=$order_direction;
 
 
-  $sql="select (select count(*) from product2location where location_id=location.id ) as products ,deep,length,height,max_weight,location.id,location.tipo,location.name,wharehouse_area.name as area  from location  left join location_tipo on (tipo_id=location_tipo.id) left join wharehouse_area on (area_id=wharehouse_area.id)  $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
+  $sql="select (select count(*) from product2location where location_id=location.id ) as products ,deep,length,height,location_tipo.max_weight as max_weight,location.id,location.tipo,location.name,wharehouse_area.name as area  from location  left join location_tipo on (tipo_id=location_tipo.id) left join wharehouse_area on (area_id=wharehouse_area.id)  $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
   //   print "$sql";
   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
   
@@ -1083,10 +1138,12 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
     $max_vol=$data['deep']*$data['length']*$data['height'];
   else
     $max_vol='';
+
+  $name=sprintf('<a href="location.php?id=%d" >%s</a>',$data['id'],$data['name']);
     $adata[]=array(
 		   'id'=>$data['id']
 		   ,'tipo'=>$data['tipo']
-		   ,'name'=>$data['name']
+		   ,'name'=>$name
 		   ,'area'=>$data['area']
 		   ,'products'=>$data['products']
 		   ,'max_weight'=>$data['max_weight']
@@ -2938,6 +2995,149 @@ if(isset( $_REQUEST['tableid']))
 		   );
    echo json_encode($response);
    break;
+ case('products_in_location'):
+
+   $conf=$_SESSION['state']['location']['products'];
+   $location_id=$_SESSION['state']['location']['id'];
+   
+   if(isset( $_REQUEST['o']))
+     $order=$_REQUEST['o'];
+     else
+       $order=$conf['order'];
+   if(isset( $_REQUEST['od']))
+     $order_dir=$_REQUEST['od'];
+   else
+     $order_dir=$conf['order_dir'];
+   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+  
+ if(isset( $_REQUEST['where']))
+     $where=addslashes($_REQUEST['where']);
+   else
+     $where=$conf['where'];
+   
+   if(isset( $_REQUEST['f_field']))
+     $f_field=$_REQUEST['f_field'];
+   else
+     $f_field=$conf['f_field'];
+
+  if(isset( $_REQUEST['f_value']))
+     $f_value=$_REQUEST['f_value'];
+   else
+     $f_value=$conf['f_value'];
+if(isset( $_REQUEST['tableid']))
+    $tableid=$_REQUEST['tableid'];
+  else
+    $tableid=0;
+ 
+ 
+
+
+  $_SESSION['state']['location']['products']=
+    array(
+	  'order'=>$order,
+	  'order_dir'=>$order_direction,
+	  //'nr'=>$number_results,
+	  // 'sf'=>$start_from,
+	  'where'=>$where,
+	  'f_field'=>$f_field,
+	  'f_value'=>$f_value,
+	  //  'from'=>$from,
+	  //  'to'=>$to,
+	  //  'elements'=>$elements
+	  );
+    $_order=$order;
+   $_dir=$order_direction;
+   $filter_msg='';
+
+  
+
+
+//  $view='';
+//  foreach($elements as $key=>$val){
+//    if(!$val)
+//      $view.=' and op_tipo!='.$key;
+//  }
+
+
+  $wheref='';
+//   if($f_field=='name' and $f_value!='')
+//     $wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
+
+  
+  $start_from=0;
+  $number_results=99999999;
+
+  $where=$where.sprintf(" and location_id=%d",$location_id);
+
+   
+  //   $where =$where.$view.sprintf(' and product_id=%d  %s',$product_id,$date_interval);
+   
+   $sql="select count(distinct product_id) as total from product2location    $where $wheref";
+   //   print "$sql";
+   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   if($row=$res->fetchRow()) {
+     $total=$row['total'];
+   }
+   if($wheref=='')
+       $filtered=0;
+   else{
+     $sql="select  count(distinct product_id) as total from product2location  $where ";
+     
+     $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+     if($row=$res->fetchRow()) {
+       $filtered=$row['total']-$total;
+     }
+
+   }
+   
+   
+   if($total==0)
+     $rtext=_('No products on this location');
+   else
+     $rtext=$total.' '.ngettext('product','products',$total);
+   
+
+
+
+   $sql=sprintf("select  product2location.id,product_id,product.code as code, product.description ,product2location.stock as qty from product2location left join product on (product.id=product_id) $where $wheref order by $order $order_direction  ");
+
+  $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+  $adata=array();
+  while($data=$res->fetchRow()) {
+
+
+    $adata[]=array(
+
+		   'code'=>sprintf('<a href="product.php?id=%d">%s</a>',$data['product_id'],$data['code'])
+		   ,'description'=>$data['description']
+		   ,'qty'=>sprintf('<span  used="0"  value="%s" id="s'.$data['id'].'"  onclick="fill_value(%s,%d,%d)">%s</span>',$data['qty'],$data['qty'],$data['id'],$data['product_id'],number($data['qty']))
+		   ,'_qty'=>'<input id="q'.$data['id'].'" onchange="qty_changed('.$data['id'].','.$data['product_id'].')" type="text" value="" size=3>'
+		   ,'note'=>'<input type="text" value="" style="width:100px">'
+		   ,'delete'=>($data['qty']==0?'<img onclick="remove_prod('.$data['id'].','.$data['product_id'].')" style="cursor:pointer" title="'._('Remove').' '.$data['code'].'" alt="'._('Desassociate Product').'" src="art/icons/cross.png".>':'')
+		   );
+  }
+  $response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$adata,
+			 'sort_key'=>$_order,
+			 'sort_dir'=>$_dir,
+			 'rtext'=>$rtext,
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
+			 'total_records'=>$total,
+			 'records_offset'=>$start_from,
+			 'records_returned'=>$start_from+$res->numRows(),
+			 'records_perpage'=>$number_results,
+			 'records_text'=>$rtext,
+			 'records_order'=>$order,
+			 'records_order_dir'=>$order_dir,
+			 'filtered'=>$filtered
+			 )
+		   );
+   echo json_encode($response);
+   break;
+
+
  default:
 
    $response=array('state'=>404,'resp'=>_('Operation not found'));
