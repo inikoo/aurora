@@ -1,6 +1,6 @@
 <?
 include_once('common.php');
-include_once('classes/order.php');
+include_once('classes/Order.php');
 
 
 
@@ -19,7 +19,7 @@ if($_REQUEST['id']=='new'  ){
 
 $_SESSION['state']['po']['id']=$po_id;
 $po=new order('po',$po_id);
-print_r($po->data);
+
 $sql=sprintf("select ifnull(received_by,-1) as received_by,ifnull(checked_by,-1) as checked_by,public_id,supplier_id,UNIX_TIMESTAMP(date_expected) as date_expected,UNIX_TIMESTAMP(date_submited) as date_submited,UNIX_TIMESTAMP(date_creation) as date_creation,UNIX_TIMESTAMP(date_invoice) as date_invoice,UNIX_TIMESTAMP(date_received) as date_received,tipo,goods,shipping,vat,total,charges,diff,(select count(*) from porden_item where  porden_id=porden.id )as items  from porden where id=%d ",$po_id);
 
 $result =& $db->query($sql);

@@ -39,13 +39,13 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		 var tableid=0;
 		    var tableDivEL="table"+tableid;
 		var ColumnDefs = [
-				    {key:"code", label:"<?=_('Code')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"fam", label:"<?=_('Family')?>",width:100,formatter:this.familyLink, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"description", label:"<?=_('Description')?>",width:300, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    {key:"code", label:"<?=_('Code')?>", width:90,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"fam", label:"<?=_('Family')?>",width:80,formatter:this.familyLink, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"description", label:"<?=_('Description')?>",width:250, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    ,{key:"stock", label:"<?=_('Stock')?>",width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"sup_code", label:"<?=_('S Code')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"sup_code", label:"<?=_('S Code')?>", width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    ,{key:"price_unit", label:"<?=_('UPC')?>",width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"qty", label:"<?=_('Qty')?>",width:50,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"qty", label:"<?=_('Qty')?>",width:40,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				  ];
 
 		this.dataSource0 = new YAHOO.util.DataSource("ar_assets.php?tipo=withsupplier_po&tableid="+tableid);

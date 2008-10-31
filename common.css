@@ -407,8 +407,8 @@ table.edit_location tr.totals {border-bottom:none }
 
 
 /*Purchase order creation,edituiong*/
-.clean_table_add_items {border:1px solid #777;padding:2px 4px;position:relative;bottom:1px;cursor:pointer;margin-right:25px  }
 
-.clean_table_add_items {border:1px solid #777;padding:2px 4px;position:relative;bottom:1px;cursor:pointer;margin-right:25px  }
+
+.clean_table_add_items {border:1px solid #777;padding:2px 4px;position:relative;bottom:2px;cursor:pointer;margin-right:25px;border-bottom:none  }
 .clean_table_add_items:hover { background:#edf3ff; }
 .clean_table_info span.selected { background:#7296e1;color:white }

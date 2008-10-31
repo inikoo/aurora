@@ -1,7 +1,7 @@
 <?
 require_once 'common.php';
 require_once 'stock_functions.php';
-require_once 'classes/product.php';
+require_once 'classes/Product.php';
 
 //require_once 'common_functions.php';
 //require_once 'ar_common.php';
@@ -2345,7 +2345,7 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
 		   'stock'=>($row['stock']==''?'':number($row['stock'])),
 		   'code'=>$code,
 		   'sup_code'=>$row['sup_code'],
-		   'qty'=>'<input type="text" value="" onchange="value_changed(this)" size="5"  id="p'.$row['id'].'"  pid="'.$row['id'].'" class="aright" />',
+		   'qty'=>'<input type="text" value="" onchange="value_changed(this)" size="3"  id="p'.$row['id'].'"  pid="'.$row['id'].'" class="aright" />',
 		   'description'=>$row['description'],
 		   'group_id'=>$row['group_id'],
 		   'department_id'=>$row['department_id'],
@@ -2905,7 +2905,7 @@ if(isset( $_REQUEST['tableid']))
 
 
   $sql=sprintf("select  UNIX_TIMESTAMP(date) as date,handle as author ,history.note,history.staff_id  from history left join liveuser_users  on (authuserid=history.staff_id) $where $wheref order by $order $order_direction limit $start_from,$number_results ");
-  //  print $sql;
+  // print $sql;
   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
   $adata=array();
   while($data=$res->fetchRow()) {

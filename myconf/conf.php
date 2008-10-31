@@ -360,7 +360,7 @@ $default_state=array(
 							  'f_value'=>''
 							  ),
 				       'stock_history'=>array(
-							      'order'=>'op_date',
+							      'order'=>'date',
 							      'order_dir'=>'',
 							      'sf'=>0,
 							      'nr'=>15,
