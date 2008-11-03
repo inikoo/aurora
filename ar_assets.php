@@ -147,15 +147,32 @@ switch($tipo){
 
    
  case('pml_new_location'):
+
+   if(isset($_REQUEST['product_id']))
+     $product_id=$_REQUEST['product_id'];
+   else
+     $product_id=$_SESSION['state']['product']['id'];
+
+
+   if(isset($_REQUEST['location_id'])){
+     $sql=sprintf("select name from location where id=%d",$_REQUEST['location_id']);
+     $result =& $db->query($sql);
+     if($row=$result->fetchRow()){
+       $location_name=$row['name'];
+     }
+
+   }else
+     $location_name=$_REQUEST['location_name'];
+
    $data=array(
-	       'product_id'=>$_SESSION['state']['product']['id'],
-	       'location_name'=>$_REQUEST['location_name'],
+	       //    'product_id'=>$product_id,
+	       'location_name'=>$location_name,
 	       'is_primary'=>($_REQUEST['is_primary']=='true'?true:false),
 	       'user_id'=>$LU->getProperty('auth_user_id'),
 	       'can_pick'=>($_REQUEST['can_pick']=='true'?true:false),
 	       'tipo'=>'associate_location'
 	       );
-   $product=new product();
+   $product=new product($product_id);
    $res=$product->update_location($data);
    
    if($data['can_pick']){
@@ -250,7 +267,7 @@ switch($tipo){
    $_data=json_decode($_data,true);
    $to_name=$_REQUEST['toname'];
    $ok=true;
-
+   $error_msg='';
 
    foreach($_data as $id=>$value){
 
@@ -266,8 +283,60 @@ switch($tipo){
 
    $product=new product($value['product_id']);
    $res=$product->update_location($data);
-   if(!$res[0])
+
+   if(!$res[0]){
+
      $ok=false;
+     $error_msg.='; '.$res[1];
+   }
+   }
+
+   if($ok)
+     $response= array(
+		      'state'=>200,
+		      'data'=>''
+		      );
+   else
+     $response= array(
+		      'state'=>400,
+		      'msg'=>_('Some errors ocurred').$error_msg
+		      );
+
+
+   
+     echo json_encode($response);  
+  
+
+   break;
+
+ case('pml_audit_stocks'):
+   $_data=preg_replace('/\\\"/','"',$_REQUEST['data']);
+   $_data=json_decode($_data,true);
+
+   $ok=true;
+
+
+   foreach($_data as $id=>$value){
+     
+     $msg=($_REQUEST['msg1']!=''?$_REQUEST['msg1'].';':'').($_REQUEST['msg1']!=''?' '.$_REQUEST['msg2'].';':'').$value['msg'];
+     $msg=preg_replace('/^\s*/','',$msg);
+     $data=array(
+	       'qty'=>$value['qty'],
+	       'msg'=>$msg,
+	       'p2l_id'=>$id,
+	       'user_id'=>$LU->getProperty('auth_user_id'),
+	       'tipo'=>'change_qty'
+	       );
+
+
+
+   $product=new product($value['product_id']);
+   $res=$product->update_location($data);
+   $error_msg='';
+   if(!$res[0]){
+     $ok=false;
+     $error_msg=';'.$res[1];
+   }
    
    }
 
@@ -279,7 +348,7 @@ switch($tipo){
    else
      $response= array(
 		      'state'=>400,
-		      'msg'=>_('Some errors ocured')
+		      'msg'=>_('Some errors ocurred')
 		      );
 
 
@@ -288,6 +357,126 @@ switch($tipo){
   
 
    break;
+ case('pml_multiple_damaged'):
+   $_data=preg_replace('/\\\"/','"',$_REQUEST['data']);
+   $_data=json_decode($_data,true);
+
+   $ok=true;
+
+
+   foreach($_data as $id=>$value){
+     
+     $msg=($_REQUEST['msg1']!=''?$_REQUEST['msg1'].';':'').$value['msg'];
+     $msg=preg_replace('/^\s*/','',$msg);
+     $data=array(
+	       'qty'=>$value['qty'],
+	       'message'=>$msg,
+	       'from'=>$id,
+	       'user_id'=>$LU->getProperty('auth_user_id'),
+	       'tipo'=>'damaged_stock'
+	       );
+
+
+
+   $product=new product($value['product_id']);
+   $res=$product->update_location($data);
+   $error_msg='';
+   if(!$res[0]){
+     $ok=false;
+     $error_msg=';'.$res[1];
+   }
+   
+   }
+
+   if($ok)
+     $response= array(
+		      'state'=>200,
+		      'data'=>''
+		      );
+   else
+     $response= array(
+		      'state'=>400,
+		      'msg'=>_('Some errors ocurred')
+		      );
+
+
+   
+     echo json_encode($response);  
+  
+
+   break;
+
+ case('products_name'):
+
+   if(!isset($_REQUEST['query']) or $_REQUEST['query']==''){
+     $response= array(
+		      'state'=>400,
+		      'data'=>array()
+		      );
+     echo json_encode($response);
+     return;
+   }
+     
+
+   if(isset($_REQUEST['except']) and  isset($_REQUEST['except_id'])  and   is_numeric($_REQUEST['except_id'])){
+     
+     if($_REQUEST['except']=='location'){
+
+       $sql=sprintf("select product_id,description,product.code,product2location.id as id,0 as qty from product left join product2location on (product.id=product_id) where product.code like   '%s%%'   and (select count(*) from product2location as p2l  where location_id=%s and p2l.product_id=product.id)=0   order by ncode ",addslashes($_REQUEST['query']),$_REQUEST['except_id']);
+       $_data=array();
+       $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+       while($data=$res->fetchRow()) {
+	 $_data[]= array(
+			 'scode'=>$data['code']
+			 ,'code'=>sprintf('<a href="product.php?id=%d">%s</a>',$data['product_id'],$data['code'])
+			,'description'=>$data['description']
+			 ,'current_qty'=>sprintf('<span  used="0"  value="%s" id="s'.$data['id'].'"  onclick="fill_value(%s,%d,%d)">%s</span>',$data['qty'],$data['qty'],$data['id'],$data['product_id'],number($data['qty']))
+			 ,'changed_qty'=>sprintf('<span   used="0" id="cs'.$data['id'].'"  onclick="change_reset(%d,%d)"   ">0</span>',$data['id'],$data['product_id'])
+			 ,'new_qty'=>sprintf('<span  used="0"  value="%s" id="ns'.$data['id'].'"  onclick="fill_value(%s,%d,%d)">%s</span>',$data['qty'],$data['qty'],$data['id'],$data['product_id'],number($data['qty']))
+			 ,'_qty_move'=>'<input id="qm'.$data['id'].'" onchange="qty_changed('.$data['id'].','.$data['product_id'].')" type="text" value="" size=3>'
+			 ,'_qty_change'=>'<input id="qc'.$data['id'].'" onchange="qty_changed('.$data['id'].','.$data['product_id'].')" type="text" value="" size=3>'
+			 ,'_qty_damaged'=>'<input id="qd'.$data['id'].'" onchange="qty_changed('.$data['id'].','.$data['product_id'].')" type="text" value="" size=3>'
+			 ,'note'=>'<input  id="n'.$data['id'].'" type="text" value="" style="width:100px">'
+			,'delete'=>($data['qty']==0?'<img onclick="remove_prod('.$data['id'].','.$data['product_id'].')" style="cursor:pointer" title="'._('Remove').' '.$data['code'].'" alt="'._('Desassociate Product').'" src="art/icons/cross.png".>':'')
+			 ,'product_id'=>$data['product_id']
+			);
+       }
+       $response= array(
+			'state'=>200,
+			'data'=>$_data
+			);
+       echo json_encode($response);
+       
+       
+       break;
+	
+
+
+     }
+     
+   }
+// else{
+     
+     
+//      $sql=sprintf("select code from product where code like   '%s%%'  order by ncode ",$_REQUEST['query']);
+//    }
+//    //   print $sql;
+//    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+//    while($row=$res->fetchRow()) {
+//      $data[]=array('code'=>$row['code']);
+//    }
+   
+
+//    $response= array(
+// 		    'state'=>200,
+// 		    'data'=>$data
+// 		    );
+//    echo json_encode($response);
+
+
+   break;
+
+
  case('locations_name'):
 
    if(!isset($_REQUEST['query']) or $_REQUEST['query']==''){
@@ -2995,6 +3184,155 @@ if(isset( $_REQUEST['tableid']))
 		   );
    echo json_encode($response);
    break;
+case('location_stock_history'):
+ $conf=$_SESSION['state']['location']['stock_history'];
+ $location_id=$_SESSION['state']['location']['id'];
+ if(isset( $_REQUEST['elements']))
+     $elements=$_REQUEST['elements'];
+   else
+     $elements=$conf['elements'];
+
+ if(isset( $_REQUEST['from']))
+     $from=$_REQUEST['from'];
+   else
+     $from=$conf['from'];
+  if(isset( $_REQUEST['to']))
+     $to=$_REQUEST['to'];
+   else
+     $to=$conf['to'];
+   if(isset( $_REQUEST['sf']))
+     $start_from=$_REQUEST['sf'];
+   else
+     $start_from=$conf['sf'];
+   if(isset( $_REQUEST['nr']))
+     $number_results=$_REQUEST['nr'];
+   else
+     $number_results=$conf['nr'];
+   if(isset( $_REQUEST['o']))
+     $order=$_REQUEST['o'];
+   else
+    $order=$conf['order'];
+   if(isset( $_REQUEST['od']))
+     $order_dir=$_REQUEST['od'];
+   else
+     $order_dir=$conf['order_dir'];
+   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+   if(isset( $_REQUEST['where']))
+     $where=addslashes($_REQUEST['where']);
+   else
+     $where=$conf['where'];
+   
+   if(isset( $_REQUEST['f_field']))
+     $f_field=$_REQUEST['f_field'];
+   else
+     $f_field=$conf['f_field'];
+
+  if(isset( $_REQUEST['f_value']))
+     $f_value=$_REQUEST['f_value'];
+   else
+     $f_value=$conf['f_value'];
+if(isset( $_REQUEST['tableid']))
+    $tableid=$_REQUEST['tableid'];
+  else
+    $tableid=0;
+ 
+ 
+ list($date_interval,$error)=prepare_mysql_dates($from,$to);
+  if($error){
+    list($date_interval,$error)=prepare_mysql_dates($conf['from'],$conf['to']);
+  }else{
+      $_SESSION['state']['product']['stock_history']['from']=$from;
+      $_SESSION['state']['product']['stock_history']['to']=$to;
+  }
+
+  $_SESSION['state']['product']['stock_history']=
+    array(
+	  'order'=>$order,
+	  'order_dir'=>$order_direction,
+	  'nr'=>$number_results,
+	  'sf'=>$start_from,
+	  'where'=>$where,
+	  'f_field'=>$f_field,
+	  'f_value'=>$f_value,
+	  'from'=>$from,
+	  'to'=>$to,
+	  'elements'=>$elements
+	  );
+    $_order=$order;
+   $_dir=$order_direction;
+   $filter_msg='';
+
+  
+
+
+  $wheref='';
+
+  $where=$where.sprintf(" and sujeto='PROD' and objeto='P2L' and location_id=%d  ",$location_id);
+
+   
+  //   $where =$where.$view.sprintf(' and product_id=%d  %s',$product_id,$date_interval);
+   
+   $sql="select count(*) as total from history left join product2location on (product2location.id=objeto_id)   $where $wheref";
+   //   print "$sql";
+   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   if($row=$res->fetchRow()) {
+     $total=$row['total'];
+   }
+   if($wheref=='')
+       $filtered=0;
+   else{
+     $sql="select count(*) as total from history left join product2location on (product2location.id=objeto_id)   $where ";
+     
+     $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+     if($row=$res->fetchRow()) {
+       $filtered=$row['total']-$total;
+     }
+
+   }
+   
+   
+   if($total==0)
+     $rtext=_('No stock movements');
+   else
+     $rtext=$total.' '.ngettext('stock operetion','stock operations',$total);
+   
+
+
+
+  $sql=sprintf("select  UNIX_TIMESTAMP(date) as date,handle as author ,history.note,history.staff_id  from history left join liveuser_users  on (authuserid=history.staff_id)  left join product2location on (product2location.id=objeto_id)  $where $wheref order by $order $order_direction limit $start_from,$number_results ");
+  // print $sql;
+  $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+  $adata=array();
+  while($data=$res->fetchRow()) {
+
+
+    $adata[]=array(
+
+		   'author'=>$data['author']
+		   ,'note'=>$data['note']
+		   ,'date'=>strftime("%a %e %b %Y %T", strtotime('@'.$data['date'])),
+		   );
+  }
+  $response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$adata,
+			 'sort_key'=>$_order,
+			 'sort_dir'=>$_dir,
+			 'rtext'=>$rtext,
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
+			 'total_records'=>$total,
+			 'records_offset'=>$start_from,
+			 'records_returned'=>$start_from+$res->numRows(),
+			 'records_perpage'=>$number_results,
+			 'records_text'=>$rtext,
+			 'records_order'=>$order,
+			 'records_order_dir'=>$order_dir,
+			 'filtered'=>$filtered
+			 )
+		   );
+   echo json_encode($response);
+   break;
  case('products_in_location'):
 
    $conf=$_SESSION['state']['location']['products'];
@@ -3110,9 +3448,13 @@ if(isset( $_REQUEST['tableid']))
 
 		   'code'=>sprintf('<a href="product.php?id=%d">%s</a>',$data['product_id'],$data['code'])
 		   ,'description'=>$data['description']
-		   ,'qty'=>sprintf('<span  used="0"  value="%s" id="s'.$data['id'].'"  onclick="fill_value(%s,%d,%d)">%s</span>',$data['qty'],$data['qty'],$data['id'],$data['product_id'],number($data['qty']))
-		   ,'_qty'=>'<input id="q'.$data['id'].'" onchange="qty_changed('.$data['id'].','.$data['product_id'].')" type="text" value="" size=3>'
-		   ,'note'=>'<input type="text" value="" style="width:100px">'
+		   ,'current_qty'=>sprintf('<span  used="0"  value="%s" id="s'.$data['id'].'"  onclick="fill_value(%s,%d,%d)">%s</span>',$data['qty'],$data['qty'],$data['id'],$data['product_id'],number($data['qty']))
+		   ,'changed_qty'=>sprintf('<span   used="0" id="cs'.$data['id'].'"  onclick="change_reset(%d,%d)"   ">0</span>',$data['id'],$data['product_id'])
+		   ,'new_qty'=>sprintf('<span  used="0"  value="%s" id="ns'.$data['id'].'"  onclick="fill_value(%s,%d,%d)">%s</span>',$data['qty'],$data['qty'],$data['id'],$data['product_id'],number($data['qty']))
+		   ,'_qty_move'=>'<input id="qm'.$data['id'].'" onchange="qty_changed('.$data['id'].','.$data['product_id'].')" type="text" value="" size=3>'
+		   ,'_qty_change'=>'<input id="qc'.$data['id'].'" onchange="qty_changed('.$data['id'].','.$data['product_id'].')" type="text" value="" size=3>'
+		   ,'_qty_damaged'=>'<input id="qd'.$data['id'].'" onchange="qty_changed('.$data['id'].','.$data['product_id'].')" type="text" value="" size=3>'
+		   ,'note'=>'<input  id="n'.$data['id'].'" type="text" value="" style="width:100px">'
 		   ,'delete'=>($data['qty']==0?'<img onclick="remove_prod('.$data['id'].','.$data['product_id'].')" style="cursor:pointer" title="'._('Remove').' '.$data['code'].'" alt="'._('Desassociate Product').'" src="art/icons/cross.png".>':'')
 		   );
   }

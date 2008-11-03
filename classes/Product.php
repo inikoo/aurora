@@ -252,8 +252,6 @@ class product{
 
 
   function update_location($data){
-    if(!isset($this->product['id']))
-      $this->product['id']=$data['product_id'];
     switch($data['tipo']){
     case('set_picking_rank'):
       
@@ -264,10 +262,10 @@ class product{
       $date='NOW()';
       $history=(isset($data['no_history']) and  $data['no_history']?false:true);
 
-      $sql=sprintf("select picking_rank,product_id from product2location  where id=%d",$id); 
+      $sql=sprintf("select picking_rank,product_id,location_id from product2location  where id=%d",$id); 
       $result =& $this->db->query($sql);
       if($row=$result->fetchRow()){
-	$product_id=$row['product_id'];
+	$location_id=$row['location_id'];
 	$old_rank=$row['picking_rank'];
       }else
 	return array(false,_('No such location'));
@@ -312,7 +310,7 @@ class product{
       //  print $sql;
       mysql_query($sql);
       
-      $sql=sprintf("select id ,picking_rank from product2location where product_id=%d and id!=%d order by picking_rank",$product_id,$id);
+      $sql=sprintf("select id ,picking_rank from product2location where product_id=%d and id!=%d order by picking_rank",$this->id,$id);
       
       $result =& $this->db->query($sql);
       $_rank=1;
@@ -329,11 +327,11 @@ class product{
       }
       
       if($history){
-	$sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,tipo,staff_id,old_value,new_value) values (%s,'PROD',%d,'P2L',%d,'CPI',%s,'%d','%d')",$date,$product_id,$id,$user_id,(is_numeric($rank_old)?$rank_old:0),$rank); 
+	$sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,tipo,staff_id,old_value,new_value) values (%s,'PROD',%d,'LOC',%d,'CPI',%s,'%d','%d')",$date,$this->id,$location_id,$user_id,(is_numeric($rank_old)?$rank_old:0),$rank); 
 	mysql_query($sql);
       }
       
-      $this->read(array('locations'=>$product_id));
+      $this->read(array('locations'));
       $locations_data=$this->get('locations');
       return array(true,$locations_data);	
       
@@ -346,7 +344,7 @@ class product{
 
       $id=$data['p2l_id'];
       $user_id=$data['user_id'];
-      $product_id=$data['product_id'];
+
       $qty=$data['qty'];
       $msg=$data['msg'];
       $date='NOW()';
@@ -357,11 +355,11 @@ class product{
       $sql=sprintf("select stock,picking_rank,product_id,location_id,name from product2location  left join location on (location.id=location_id) where product2location.id=%d",$id); 
       $result =& $this->db->query($sql);
       if($row=$result->fetchRow()){
-	if($row['product_id']!=$product_id)
+	if($row['product_id']!=$this->id)
 	  return array(false,_('This location is no associated with the product'));
 	if($qty==$row['stock'])
 	  return array(false,_('Nothing to change'));
-	$old_location_id=$row['location_id'];
+	$location_id=$row['location_id'];
 	$old_qty=$row['stock'];
 	$location_name=$row['name'];
 	$change=$qty-$old_qty;
@@ -381,13 +379,13 @@ class product{
 
 
 	
-      $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,note,old_value,new_value) values (%s,'PROD',%d,'P2L',%d,'STK',%d,%s,'%s','%s')",$date,$product_id,$id,$user_id,prepare_mysql($note),$old_qty, $qty); 
+      $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,note,old_value,new_value) values (%s,'PROD',%d,'LOC',%d,'STK',%d,%s,'%s','%s')",$date,$this->id,$location_id,$user_id,prepare_mysql($note),$old_qty, $qty); 
 
       mysql_query($sql);
 
       
       
-      $this->read(array('locations'=>$product_id));
+      $this->read(array('locations'));
       $locations_data=$this->get('locations');
       return array(true,$locations_data,$this->product['stock']);
       break;
@@ -471,7 +469,7 @@ class product{
 	$note=_('Products now can be picked from').' '.$location_name;
       else
 	$note=_('Products can no longer be picked from').' '.$location_name;
-      $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,note,old_value,new_value) values (%s,'PROD',%d,'P2L',%d,'PCK',%d,%s,'%s','%s')",$date,$product_id,$id,$user_id,prepare_mysql($note),($row['picking_rank']==''?0:1),$action); 
+      $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,note,old_value,new_value) values (%s,'PROD',%d,'LOC',%d,'PCK',%d,%s,'%s','%s')",$date,$product_id,$location_id,$user_id,prepare_mysql($note),($row['picking_rank']==''?0:1),$action); 
 
       mysql_query($sql);
 	
@@ -521,7 +519,7 @@ class product{
       }
       else{
 	$note=$product_code." "._('no longer located on')." $location_name";
-	$sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,note) values (%s,'PROD',%d,'P2L',%d,'DEL',%d,%s)",$date,$product_id,$id,$user_id,prepare_mysql($note)); 
+	$sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,note) values (%s,'PROD',%d,'LOC',%d,'DEL',%d,%s)",$date,$product_id,$location_id,$user_id,prepare_mysql($note)); 
       mysql_query($sql);
       }
       $this->set_stock();
@@ -534,7 +532,6 @@ class product{
       $location_name=$data['location_name'];
       $can_pick=$data['can_pick'];
       $is_primary=$data['is_primary'];
-      $product_id=$data['product_id'];
       $user_id=$data['user_id'];
       $date='NOW()';
       $sql=sprintf("select id,tipo,name from location  where name like %s",prepare_mysql($location_name)); 
@@ -546,12 +543,12 @@ class product{
       }else
 	return array(false,_('No such location'));
       
-      $sql=sprintf("select id from product2location  where location_id=%d and product_id=%d",$location_id,$product_id); 
+      $sql=sprintf("select id from product2location  where location_id=%d and product_id=%d",$location_id,$this->id); 
       $result =& $this->db->query($sql);
       if($row=$result->fetchRow()){
 	return array(false,_('This product is already on this location'));
       }
-      $sql=sprintf("select code from product where id=%d",$product_id); 
+      $sql=sprintf("select code from product where id=%d",$this->id); 
       $result =& $this->db->query($sql);
       if($row=$result->fetchRow()){
 	$product_code=$row['code'];
@@ -561,7 +558,7 @@ class product{
 
       //    print_r($data);
       //print "y $can_pick x $is_primary   ";
-      $sql=sprintf("insert into product2location  (product_id,location_id) values (%d,%d)",$product_id,$location_id); 
+      $sql=sprintf("insert into product2location  (product_id,location_id) values (%d,%d)",$this->id,$location_id); 
       mysql_query($sql);
       $id=mysql_insert_id();
       $rank=0;
@@ -574,7 +571,7 @@ class product{
 	$this->update_location(array('tipo'=>'set_picking_rank','product2location_id'=>$id,'rank'=>$rank,'user_id'=>$user_id,'no_history'=>true));
       }
       
-      $this->read(array('locations'=>$product_id));
+      $this->read(array('locations'));
       $locations_data=$this->get('locations');
       
       
@@ -585,11 +582,11 @@ class product{
 
 
 
-      $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,note) values (%s,'PROD',%d,'P2L',%d,'NEW',%d,'%s')",$date,$product_id,$id,$user_id,$note); 
+      $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,note) values (%s,'PROD',%d,'LOC',%d,'NEW',%d,'%s')",$date,$this->id,$location_id,$user_id,$note); 
       mysql_query($sql);
       
 	
-      $this->read(array('locations'=>$product_id));
+      $this->read(array('locations'));
       $locations_data=$this->get('locations');
       return array(true,$locations_data,$location_id,$location_name,$location_tipo,$rank,($rank==1?getOrdinal(1):getOrdinal($locations_data['num_physical'])) ,$id);
   
@@ -600,17 +597,18 @@ class product{
       $from_id=$data['from'];
       $qty=$data['qty'];
       $user_id=$data['user_id'];
-      $product_id=$data['product_id'];
+
       $message=$data['message'];
       $date='NOW()';
       if($qty<=0)
 	return array(false,_('Check the number of outers'));
       // check of posible
-      $sql=sprintf("select location.name,stock from product2location left join location on (location.id=location_id) where product2location.id=%d",$from_id); 
+      $sql=sprintf("select location_id,location.name,stock from product2location left join location on (location.id=location_id) where product2location.id=%d",$from_id); 
       $result =& $this->db->query($sql);
       if($row=$result->fetchRow()){
 	$from_name=$row['name'];
 	$from_qty=$row['stock'];
+	$location_id=$row['location_id'];
       }
       if($qty>$from_qty)
 	return array(false,_('Can not move so many outers'));
@@ -619,14 +617,14 @@ class product{
 
       mysql_query($sql);
       
-      $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,note) values (%s,'PROD',%d,'P2L',%d,'DAM',%d,%s)",$date,$product_id,$from_id,$user_id,
+      $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,note) values (%s,'PROD',%d,'LOC',%d,'DAM',%d,%s)",$date,$this->id,$location_id,$user_id,
 		   prepare_mysql($qty.' '.ngettext('outer','outers',$qty).' '._('damaged').'; '.stripslashes($message))
 		   ); 
       mysql_query($sql);
 
 
       $this->set_stock();
-      $this->read(array('locations'=>$product_id));
+      $this->read(array('locations'));
       $locations_data=$this->get('locations');
       return array(true,$locations_data);
 
@@ -637,28 +635,30 @@ class product{
       $to_id=$data['to'];
       $qty=$data['qty'];
       $user_id=$data['user_id'];
-      $product_id=$data['product_id'];
+
       $date='NOW()';
       if($qty<=0)
 	return array(false,_('Check the number of outers'));
 
       // check of posible
-      $sql=sprintf("select location.name,stock from product2location left join location on (location.id=location_id) where product2location.id=%d",$from_id); 
+      $sql=sprintf("select location_id,location.name,stock from product2location left join location on (location.id=location_id) where product2location.id=%d",$from_id); 
 
       $result =& $this->db->query($sql);
       if($row=$result->fetchRow()){
 	$from_name=$row['name'];
-	$from_qty=$row['stock'];
+	$from_qty=$row['stock'];	
+	$from_location_id=$row['location_id'];
       }
       if($qty>$from_qty)
 	return array(false,_('Can not move so many outers'));
       
 
-      $sql=sprintf("select location.name,stock from product2location left join location on (location.id=location_id) where product2location.id=%d",$to_id); 
+      $sql=sprintf("select location_id,location.name,stock from product2location left join location on (location.id=location_id) where product2location.id=%d",$to_id); 
       $result =& $this->db->query($sql);
       if($row=$result->fetchRow()){
 	$to_name=$row['name'];
 	$to_qty=$row['stock'];
+	$to_location_id=$row['location_id'];
       }
 
       $sql=sprintf("update product2location set stock=%s where id=%d",$from_qty-$qty,$from_id); 
@@ -667,11 +667,16 @@ class product{
       $sql=sprintf("update product2location set stock=%s where id=%d",$to_qty+$qty,$to_id); 
       // print "$sql";
       mysql_query($sql);
-      $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,note,old_value,new_value) values (%s,'PROD',%d,'P2L',%d,'MOV',%d,'%s',%d,%d)",$date,$product_id,$from_id,$user_id,$qty.' '._('outers has been moved from').' '.$from_name.' '._('to').' '.$to_name,$from_id,$to_id); 
+      $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,note,old_value,new_value) values (%s,'PROD',%d,'LOC',%d,'MOF',%d,'%s',%d,%d)",$date,$this->id,$from_location__id,$user_id,$qty.' '._('outers has been moved from').' '.$from_name.' '._('to').' '.$to_name,$from_qty-$qty); 
       mysql_query($sql);
+      
+      $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,note,old_value,new_value) values (%s,'PROD',%d,'LOC',%d,'MOT',%d,'%s',%d,%d)",$date,$this->id,$to_location_id,$user_id,$qty.' '._('outers has been moved from').' '.$from_name.' '._('to').' '.$to_name,$to_qty+$qty); 
+      mysql_query($sql);
+      
+      
       //   return array(false,$sql);
       
-      $this->read(array('locations'=>$product_id));
+      $this->read(array('locations'));
       $locations_data=$this->get('locations');
 
       return array(true,$locations_data);
@@ -688,28 +693,60 @@ class product{
 	return array(false,_('Check the number of outers'));
 
       
-      $sql=sprintf("select product_id,location.name,stock from product2location left join location on (location.id=location_id) where product2location.id=%d",$from_id); 
-
+      $sql=sprintf("select location_id,product_id,location.name,stock from product2location left join location on (location.id=location_id) where product2location.id=%d",$from_id); 
       $result =& $this->db->query($sql);
       if($row=$result->fetchRow()){
 	if($row['product_id']!=$this->id)
 	  return array(false,_('There this product is not in this location'));
 	$from_name=$row['name'];
-	$from_qty=$row['stock'];
+	$from_qty=$row['stock'];	
+	$from_location_id=$row['location_id'];
       }
       if($qty>$from_qty)
 	return array(false,_('Can not move so many outers'));
       
+      
+      $sql=sprintf("select  stock,product2location.id from product2location left join location on (location.id=location_id) where product_id=%d and location.name=%s",$this->id,prepare_mysql($to_name)); 
+      $result =& $this->db->query($sql);
+      if($row=$result->fetchRow()){
+	$to_id=$row['id'];
+	$from_qty=$row['stock'];	
+      }else{
+	// associate to new location
+	$new_loc_data=array(
+			    'location_name'=>$to_name,
+			    'can_pick'=>true,
+			    'is_primary'=>false,
+			    'user_id'=>$user_id,
+			    'tipo'=>'associate_location'
+			    );
+	$this->update_location($new_loc_data);
+	return array(false,print_r());
+	$sql=sprintf("select  stock,product2location.id from product2location left join location on (location.id=location_id) where product_id=%d and location.name=%s",$this->id,prepare_mysql($to_name)); 
+	 $result2 =& $this->db->query($sql);
+	 if($row2=$result2->fetchRow()){
+	   $to_id=$row['id'];
+	   $from_qty=$row['stock'];	
+	 }else
+	   return array(false,_('Could not associate new location'));
 
-      $sql=sprintf("select location.name,stock,product2location.id from product2location left join location on (location.id=location_id) where location.name=%s",prepare_mysql($to_name)); 
-      //print "$sql";
+
+      }
+
+
+
+      $sql=sprintf("select stock,location_id,location.name,product2location.id from product2location left join location on (location.id=location_id) where product2location.id=%d",$to_id); 
+
       $result =& $this->db->query($sql);
       if($row=$result->fetchRow()){
 	$to_name=$row['name'];
-	$to_qty=$row['stock'];
 	$to_id=$row['id'];
-	
-      }
+	$to_qty=$row['stock'];
+	$to_location_id=$row['location_id'];
+      }else
+	return array(false,_('Error on  new location'));
+
+
 
       $sql=sprintf("update product2location set stock=%s where id=%d",$from_qty-$qty,$from_id); 
       // print "$sql";
@@ -717,9 +754,13 @@ class product{
       $sql=sprintf("update product2location set stock=%s where id=%d",$to_qty+$qty,$to_id); 
       // print "$sql";
       mysql_query($sql);
-      $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,note,old_value,new_value) values (%s,'PROD',%d,'P2L',%d,'MOV',%d,'%s',%d,%d)",$date,$this->id,$from_id,$user_id,$qty.' '._('outers has been moved from').' '.$from_name.' '._('to').' '.$to_name,$from_id,$to_id); 
+      $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,note,old_value,new_value) values (%s,'PROD',%d,'LOC',%d,'MOF',%d,'%s',%d,%d)",$date,$this->id,$from_location_id,$user_id,$qty.' '._('outers has been moved from').' '.$from_name.' '._('to').' '.$to_name,$from_qty,$from_qty-$qty); 
       mysql_query($sql);
-      //   return array(false,$sql);
+      $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,note,old_value,new_value) values (%s,'PROD',%d,'LOC',%d,'MOT',%d,'%s',%d,%d)",$date,$this->id,$to_location_id,$user_id,$qty.' '._('outers has been moved from').' '.$from_name.' '._('to').' '.$to_name,$to_qty,$to_qty+$qty); 
+      mysql_query($sql);
+      
+
+
       
       $this->read(array('locations'));
       $locations_data=$this->get('locations');

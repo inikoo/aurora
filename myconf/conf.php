@@ -386,6 +386,18 @@ $default_state=array(
 							 'f_field'=>'name',
 							 'f_value'=>'',
 							 'elements'=>array()
+							 ),
+				         'stock_history'=>array(
+							 'order'=>'date',
+							 'order_dir'=>'desc',
+							 'sf'=>0,
+							 'nr'=>25,
+							 'from'=>'',
+							 'to'=>'',
+							 'where'=>'where true',
+							 'f_field'=>'name',
+							 'f_value'=>'',
+							 'elements'=>array()
 							 )
 				       ),
 		     'supplier'=>array(
