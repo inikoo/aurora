@@ -13,7 +13,7 @@ class supplier{
   function __construct($id=false) {
      $this->db =MDB2::singleton();
      
-     $this->tipo=$tipo;
+
      if(is_numeric($id)){
        $this->id=$id;
        $this->get_data();
@@ -25,13 +25,14 @@ class supplier{
 
 
   function get_data(){
-    $sql=sprintf("select name,code,contact_id from supplier id=%d",$this->id);
+    $sql=sprintf("select id,name,code,contact_id from supplier where id=%d",$this->id);
+
     $result =& $this->db->query($sql);
     if($row=$result->fetchRow()){
       $this->data['name']=$row['name'];
       $this->data['code']=$row['code'];
       $this->data['contact_id']=$row['contact_id'];
-      
+      $this->data['id']=$row['id'];
     }
   }
 

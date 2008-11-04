@@ -2573,9 +2573,9 @@ if(isset( $_REQUEST['where']))
     
 
 
-   $sql="select (select expected_qty from porden_item where porden_id=$po_id and porden_item.p2s_id=ps.id) as qty,   sup_code,ps.id as p2s_id,(p.units*ps.price) as price_outer,ps.price as price_unit,stock,p.condicion as condicion, p.code as code, p.id as id,p.description as description , group_id,department_id,g.name as fam, d.code as department 
+   $sql="select p.units as punits,(select expected_qty from porden_item where porden_id=$po_id and porden_item.p2s_id=ps.id) as qty,   sup_code,ps.id as p2s_id,(p.units*ps.price) as price_outer,ps.price as price_unit,stock,p.condicion as condicion, p.code as code, p.id as id,p.description as description , group_id,department_id,g.name as fam, d.code as department 
 from product as p left join product_group as g on (g.id=group_id) left join product_department as d on (d.id=department_id) left join product2supplier as ps on (product_id=p.id)  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
-   //   print "$sql";
+
    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
    $data=array();
    while($row=$res->fetchRow()) {
@@ -2587,7 +2587,7 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
 		   'condicion'=>$row['condicion'],
 		   'price_unit'=>money($row['price_unit']),
 		   'price_outer'=>money($row['price_outer']),
-		   'stock'=>($row['stock']==''?'':number($row['stock'])),
+		   'stock'=>($row['stock']==''?'':number($row['stock']).' ('.number($row['stock']*$row['punits']).')'  ),
 		   'code'=>$code,
 		   'sup_code'=>$row['sup_code'],
 		   'qty'=>'<input type="text" value="" onchange="value_changed(this)" size="3"  id="p'.$row['id'].'"  pid="'.$row['id'].'" class="aright" />',

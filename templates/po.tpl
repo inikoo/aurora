@@ -6,15 +6,15 @@
 <div style="display:none; position:absolute; left:10px; top:200px; z-index:2" id="cal2Container"></div>
 <div style="display:none; position:absolute; left:10px; top:200px; z-index:2" id="cal3Container"></div>
 
-<span class="nav2"><a href="suppliers.php">{$home}</a></span>
-<span class="nav2"><a href="supplier.php?id={$supplier_id}">{$name}</a></span>
+<span class="nav2"><a href="suppliers.php">{t}Suppliers List{/t}</a></span>
+<span class="nav2"><a href="supplier.php?id={$supplier.id}">{$supplier.name}</a></span>
 
 
 <div >
 
 <div style="padding:0px;float:right;width:250px;margin:0px 20px;text-align:right;border: 1px solid black">
-  <table style="float:right;text-align:right" >
-    <tr><td>{$po_date_creation}</td><td>{t}Created{/t}</td></tr>
+  <table style="float:right;text-align:right"  border=1>
+    <tr><td>{$po_date.created}</td><td>{t}Created{/t}</td></tr>
     <tr><td>{$po_date_submited}</td><td>{if $po_date_submited!=''}{t}Submited{/t}{else}<span id="submit_po" style="cursor:pointer">{t}Submit{/t}</span>{/if}</td></tr>
     <tr><td colspan=2>
 	<table >
@@ -64,12 +64,7 @@
 
   <h1 style="padding:0px 0 10px 0;width:300px;border:1px solid red">{$title}</h1>
   <table border=1 style="float:left">
-    <tr><td>{t}Purchase Order Id{/t}:</td><td class="aright">{$po_number}</td></tr>
-    <tr><td>{t}Created{/t}:</td><td class="aright">{$po_date_creation}</td></tr>
-    {if $tipo>0}
-    <tr><td>{t}Submitted{/t}:</td><td class="aright">{$po_date_submited}</td></tr>
-    {/if}
-    {if $tipo==1}<tr><td>{t}Expected{/t}:</td><td id="date_expected" class="aright">{$po_date_expected}</td></tr>{/if}
+    <tr><td>{t}Purchase Order Id{/t}:</td><td class="aright">{$po.id}</td></tr>
     <tr {if $dn_number==''}style="display:none"{/if} id="row_public_id" ><td>{t}Invoice Number{/t}:</td><td id="public_id" class="aright">{$dn_number}</td><td class="aright" id="edit_public_id" style="display:none" ><input style="text-align:right" class="text" size="7"  id="v_invoice_number"  name="invoice_number" value="{$dn_number}"  /></td></tr>
     <tr {if $tipo lt 1}style="display:none"{/if}  id="row_invoice_date"><td>{t}Invoice Date{/t}:</td><td id="invoice_date" >{$po_date_invoice}</td>
       <td class="aright" id="edit_invoice_date" style="display:none" >
@@ -106,7 +101,7 @@
       </td>
     </tr>
     
-    <tr><td>{t}Items{/t}:</td><td class="aright" id="distinct_products">{$items}</td></tr>
+    <tr><td>{t}Items{/t}:</td><td class="aright" id="distinct_products">{$po.items}</td></tr>
   </table>
   
   

@@ -373,7 +373,9 @@ $default_state=array(
 							      )
 				       ),
 		     'po'=>array(
-				 'id'=>1
+				 'id'=>'',
+				 'new'=>'',
+				 'new_timestamp'=>''
 				 ),
 		     'location'=>array(
 				       'location'=>false,
