@@ -3117,7 +3117,7 @@ if(isset( $_REQUEST['tableid']))
   
 
 
-  $where=$where.sprintf(" and sujeto='PROD' and sujeto_id=%d and objeto='P2L'",$product_id);
+  $where=$where.sprintf(" and sujeto='PROD' and sujeto_id=%d and objeto='LOC'",$product_id);
 
    
   //   $where =$where.$view.sprintf(' and product_id=%d  %s',$product_id,$date_interval);
@@ -3266,12 +3266,12 @@ if(isset( $_REQUEST['tableid']))
 
   $wheref='';
 
-  $where=$where.sprintf(" and sujeto='PROD' and objeto='P2L' and location_id=%d  ",$location_id);
+  $where=$where.sprintf(" and objeto='LOC' and objeto_id=%d  ",$location_id);
 
    
   //   $where =$where.$view.sprintf(' and product_id=%d  %s',$product_id,$date_interval);
    
-   $sql="select count(*) as total from history left join product2location on (product2location.id=objeto_id)   $where $wheref";
+   $sql="select count(*) as total from history   $where $wheref";
    //   print "$sql";
    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
    if($row=$res->fetchRow()) {
@@ -3280,7 +3280,7 @@ if(isset( $_REQUEST['tableid']))
    if($wheref=='')
        $filtered=0;
    else{
-     $sql="select count(*) as total from history left join product2location on (product2location.id=objeto_id)   $where ";
+     $sql="select count(*) as total from history   $where ";
      
      $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
      if($row=$res->fetchRow()) {
