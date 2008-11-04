@@ -368,7 +368,7 @@ var damaged_stock_save= function(){
     var jsonStr = YAHOO.lang.JSON.stringify(list);
 
 
-    var msg1=Dom.get("damaged_note");
+    var msg1=Dom.get("damaged_note").value;
     var request='ar_assets.php?tipo=pml_multiple_damaged&data='+jsonStr+'&msg1='+escape(msg1);
 
     YAHOO.util.Connect.asyncRequest('POST',request ,{
@@ -393,8 +393,8 @@ var damaged_stock_save= function(){
 var change_stock_save= function(){
     
     var jsonStr = YAHOO.lang.JSON.stringify(list);
-    var msg1=Dom.get("audit_name");
-    var msg2=Dom.get("audit_note");
+    var msg1=Dom.get("audit_name").value;
+    var msg2=Dom.get("audit_note").value;
     var request='ar_assets.php?tipo=pml_audit_stocks&data='+jsonStr+'&msg1='+escape(msg1)+'&msg2='+escape(msg2);
 
     YAHOO.util.Connect.asyncRequest('POST',request ,{

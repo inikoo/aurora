@@ -357,8 +357,6 @@ class product{
       if($row=$result->fetchRow()){
 	if($row['product_id']!=$this->id)
 	  return array(false,_('This location is no associated with the product'));
-	if($qty==$row['stock'])
-	  return array(false,_('Nothing to change'));
 	$location_id=$row['location_id'];
 	$old_qty=$row['stock'];
 	$location_name=$row['name'];
@@ -367,25 +365,19 @@ class product{
 	return array(false,_('This location is no associated with the product'));
 
 
-      
-      
-      $sql=sprintf("update product2location set stock=%.4f where id=%d",$qty,$id); 
-      mysql_query($sql);
-      
-      $this->set_stock();
-      
-      
-      $note=($qty>0?'+':'').number($change).' '.ngettext('outer','outers',$change).' '._('found on').' '.$location_name. '; '.$msg;
-
-
-	
-      $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,note,old_value,new_value) values (%s,'PROD',%d,'LOC',%d,'STK',%d,%s,'%s','%s')",$date,$this->id,$location_id,$user_id,prepare_mysql($note),$old_qty, $qty); 
-
-      mysql_query($sql);
-
-      
-      
-      $this->read(array('locations'));
+      if($change==0){
+	$note=_('Audit').', '.number($qty).' '.ngettext('outer','outers',$change).' '._('in').' '.$location_name.$msg;
+	$sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,note,old_value,new_value) values (%s,'PROD',%d,'LOC',%d,'AUD',%d,%s,'%s','%s')",$date,$this->id,$location_id,$user_id,prepare_mysql($note),$old_qty, $qty); 
+	mysql_query($sql);
+      }else{
+	$sql=sprintf("update product2location set stock=%.4f where id=%d",$qty,$id); 
+	mysql_query($sql);
+	$this->set_stock();
+	$note=_('Audit').', '.number($qty).' '.ngettext('outer','outers',$change).' '._('in').' '.$location_name.' ('.($change>0?'+':'').number($change).')'.$msg;
+	$sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,note,old_value,new_value) values (%s,'PROD',%d,'LOC',%d,'AUD',%d,%s,'%s','%s')",$date,$this->id,$location_id,$user_id,prepare_mysql($note),$old_qty, $qty); 
+	mysql_query($sql);
+      }
+	$this->read(array('locations'));
       $locations_data=$this->get('locations');
       return array(true,$locations_data,$this->product['stock']);
       break;
@@ -584,7 +576,7 @@ class product{
 
       $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,note) values (%s,'PROD',%d,'LOC',%d,'NEW',%d,'%s')",$date,$this->id,$location_id,$user_id,$note); 
       mysql_query($sql);
-      
+
 	
       $this->read(array('locations'));
       $locations_data=$this->get('locations');
@@ -710,7 +702,7 @@ class product{
       $result =& $this->db->query($sql);
       if($row=$result->fetchRow()){
 	$to_id=$row['id'];
-	$from_qty=$row['stock'];	
+
       }else{
 	// associate to new location
 	$new_loc_data=array(
@@ -720,13 +712,14 @@ class product{
 			    'user_id'=>$user_id,
 			    'tipo'=>'associate_location'
 			    );
-	$this->update_location($new_loc_data);
-	return array(false,print_r());
+	$res=$this->update_location($new_loc_data);
+	if(!$res[0])
+	  return array(false,$res[1]);
 	$sql=sprintf("select  stock,product2location.id from product2location left join location on (location.id=location_id) where product_id=%d and location.name=%s",$this->id,prepare_mysql($to_name)); 
-	 $result2 =& $this->db->query($sql);
-	 if($row2=$result2->fetchRow()){
-	   $to_id=$row['id'];
-	   $from_qty=$row['stock'];	
+
+	$result2 =& $this->db->query($sql);
+	if($row2=$result2->fetchRow()){
+	   $to_id=$row2['id'];
 	 }else
 	   return array(false,_('Could not associate new location'));
 

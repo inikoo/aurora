@@ -318,8 +318,7 @@ switch($tipo){
 
    foreach($_data as $id=>$value){
      
-     $msg=($_REQUEST['msg1']!=''?$_REQUEST['msg1'].';':'').($_REQUEST['msg1']!=''?' '.$_REQUEST['msg2'].';':'').$value['msg'];
-     $msg=preg_replace('/^\s*/','',$msg);
+     $msg=($_REQUEST['msg1']!=''?'; '.$_REQUEST['msg1']:'').($_REQUEST['msg2']!=''?'; '.$_REQUEST['msg2']:'').($value['msg']!=''?'; '.$value['msg']:'');
      $data=array(
 	       'qty'=>$value['qty'],
 	       'msg'=>$msg,
@@ -1317,7 +1316,7 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
 
 
   $sql="select (select count(*) from product2location where location_id=location.id ) as products ,deep,length,height,location_tipo.max_weight as max_weight,location.id,location.tipo,location.name,wharehouse_area.name as area  from location  left join location_tipo on (tipo_id=location_tipo.id) left join wharehouse_area on (area_id=wharehouse_area.id)  $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
-  //   print "$sql";
+  //  print "$sql";
   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
   
   $adata=array();
