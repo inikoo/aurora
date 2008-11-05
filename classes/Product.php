@@ -47,7 +47,7 @@ class product{
 	$this->product=$result->fetchRow();   
 	break;
       case('product_tree'):
-	$sql=sprintf('select d.name as department,d.id as department_id,g.name as group_name,group_id from product left join product_group as g on (g.id=group_id)  left join product_department as d on (d.id=department_id) where product.id=%s ',$id);
+	$sql=sprintf('select d.name as department,d.id as department_id,g.name as group_name,group_id from product left join product_group as g on (g.id=group_id)  left join product_department as d on (d.id=department_id) where product.id=%s ',$this->id);
 
 	$res = $this->db->query($sql); 
 	if ($row=$res->fetchRow()) {

@@ -67,13 +67,12 @@ else
 $_SESSION['state']['product']['id']=$product_id;
 
 
-$product= new product();
+$product= new product($product_id);
 $product->read(array(
-		     'product_info'=>$product_id
-		     ,'suppliers'=>$product_id
-		     ,'product_tree'=>$product_id
-		     ,'images'=>$product_id
-		     ,'locations'=>$product_id
+		     'suppliers'
+		     ,'product_tree'
+		     ,'images'
+		     ,'locations'
 		     )
 	       );
 

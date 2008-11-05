@@ -2627,23 +2627,44 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
    
  case('list_total_net_sales_week'):
    $first_day=addslashes($myconf['data_since']);
-   $sql=sprintf("select yearweek  from list_week where first_day>%s and first_day < NOW(); ",prepare_mysql($first_day));
-    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   $sql=sprintf("select yearweek  from list_week where yearweek not like '%%53' and first_day>%s and first_day < DATE_SUB(date(NOW()), INTERVAL 1 week); ",prepare_mysql($first_day));
+
+   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
    $data=array();
    while($row=$res->fetchRow()) {
      $data[$row['yearweek']]=0;
    }
 
-   $sql=sprintf("select sum(net) as net,yearweek(date_index) as year_week from orden  where date_index>%s and tipo=2 group by yearweek(date_index) ",prepare_mysql($first_day));
+   $sql=sprintf("select sum(net) as net,yearweek(date_index,1) as year_week from orden  where date_index>%s and tipo=2 group by yearweek(date_index) ",prepare_mysql($first_day));
+   
    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   $fix_w53='';
    while($row=$res->fetchRow()) {
-     $data[$row['year_week']]=$row['net'];
+
+     if($fix_w53!=''){
+       $b=$fix_w53;
+       $a= $row['net'];
+
+       $data[$row['year_week']]=(2*$a+$b)/3;
+       $fix_w53='';
+     }elseif(preg_match('/53$/',$row['year_week'])){
+       
+       $b=$row['net'];
+       //change previous weeks
+       $a= $data[$row['year_week']-1];
+       $data[$row['year_week']-1]=(2*$a+$b)/3;
+       $fix_w53=$b;
+     }else{
+       if(array_key_exists($row['year_week'],$data))
+	 $data[$row['year_week']]=$row['net'];
+     }
+
    }
    $i=0;
 
-   foreach($data as $value){
+   foreach($data as $key=>$value){
      $i++;
-     print "$value\n";
+     print "$key $value\n";
    }
    break;
  case('plot_weekout'): 

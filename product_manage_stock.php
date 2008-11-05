@@ -55,12 +55,11 @@ else
 $_SESSION['state']['product']['id']=$product_id;
 
 
-$product= new product();
+$product= new product($product_id);
 $product->read(array(
-		     'product_info'=>$product_id
-		     ,'product_tree'=>$product_id
-		     ,'images'=>$product_id
-		     ,'locations'=>$product_id
+		     'product_tree'
+		     ,'images'
+		     ,'locations'
 		     )
 	       );
 
@@ -115,42 +114,6 @@ $smarty->assign('num_images',count($product->get('images')));
 
 $smarty->assign('product_id',$product_id);
 $smarty->assign('code',$product->get('code'));
-$smarty->assign('ncode',$product->get('ncode'));
-$smarty->assign('id',$product->get('product_id'));
-$smarty->assign('description',$product->get('description'));
-$smarty->assign('units',number($product->get('units')));
-$smarty->assign('unit_price',money($product->get('price')/$product->get('units')));
-$smarty->assign('units_tipo',$_units_tipo[$product->get('units_tipo')]);
-$smarty->assign('stock',number($product->get('stock')));
-$smarty->assign('available',number($product->get('available')));
-
-$smarty->assign('n_price',$product->get('price'));
-$smarty->assign('n_rrp',$product->get('rrp'));
-
-$smarty->assign('price',money($product->get('price')));
-$smarty->assign('rrp',money($product->get('rrp')));
-$smarty->assign('units_carton',$product->get('units_carton'));
-
-
-$smarty->assign('aunits_tipo',$_units_tipo);
-$smarty->assign('ashape',$_shape);
-$smarty->assign('ashape_example',$_shape_example);
-
-$smarty->assign('cur_symbol',$myconf['currency_symbol']);
-
-$smarty->assign('first_date',$product->get('first_date'));
-$weeks=$product->get('weeks_since');
-$smarty->assign('weeks_since',number($weeks));
-
-
-
-
-$smarty->assign('w',$product->get('w'));
-
-$smarty->assign('short_description',$product->get('description_med'));
-
-
-
 
 
 $smarty->assign('date',date('d-m-Y'));
