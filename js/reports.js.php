@@ -68,13 +68,15 @@ function init(){
 		Dom.get('plot_div').style.opacity=0;
 		Dom.get('the_plot').src = 'plot.php?tipo='+plot[tipo];
 		Dom.get('plot_options_'+current_view).style.display='none';
-		Dom.get('plot_options_'+tipo).style.display='';
+		
+		if(Dom.get('plot_options_'+tipo))
+		    Dom.get('plot_options_'+tipo).style.display='';
 
 
 		Dom.get('header_'+current_view).style.display='none';
 		Dom.get('header_'+tipo).style.display='';
 		Dom.get('plot_options_'+current_view).style.display='none';
-		Dom.get('plot_options_'+tipo).style.display='';
+
 		YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=reports-'+tipo+'-plot&value=' + escape(plot[tipo]) );
 
 		Dom.get(tipo).className='selected';
@@ -94,7 +96,7 @@ function init(){
 	    }
 	}
 
-	var ids = ["sales","geosales","customers","times","prod","stock"]; 
+	var ids = ["sales","geosales","customers","times","prod","stock","products"]; 
 	Event.addListener(ids, "click", change_front_page);
 
 }

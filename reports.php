@@ -3,8 +3,11 @@ include_once('common.php');
 
 
 $tipo=$_SESSION['state']['reports']['view'];
-$tipo_plot=$_SESSION['state']['reports'][$tipo]['plot'];
-
+if(isset($_SESSION['state']['reports'][$tipo]['plot']))
+  $tipo_plot=$_SESSION['state']['reports'][$tipo]['plot'];
+else
+  $tipo_plot=false;
+  
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',

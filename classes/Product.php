@@ -149,6 +149,7 @@ class product{
 	while($row=$result->fetchRow()){
 	  $this->suppliers['name'][$row['supplier_id']]=$row['name'];
 	  $this->suppliers['price'][$row['supplier_id']]=money($row['price']);
+	  $this->suppliers['num_price'][$row['supplier_id']]=$row['price'];
 	  $this->suppliers['code'][$row['supplier_id']]=$row['code'];
 	}
 
@@ -170,7 +171,6 @@ class product{
       case('images'):
 	$this->images=array();
 	$sql=sprintf("select filename,format,principal,caption,id from image where  product_id=%d order by principal desc",$this->id);
-	
 	$result =& $this->db->query($sql);
 	$principal=false;
 	while($row=$result->fetchRow()){
@@ -184,6 +184,49 @@ class product{
 	}
 
 	
+	break;
+      case('sales_metadata'):
+	// update sales meta data
+	$tsall=money(0);
+	$tsy=money(0);
+	$tsq=money(0);
+	$tsm=money(0);
+	$tsw=money(0);
+	$tsoall=0;
+	$tsoy=0;
+	$tsoq=0;
+	$tsom=0;
+	$tsow=0;
+	$tdoall=0;
+	$tdoy=0;
+	$tdoq=0;
+	$tdom=0;
+	$tdow=0;
+	
+
+	
+
+	$sql=sprintf("select  sum(charge) as sales  ,sum(dispached) as outers from  transaction as t left join orden as o on (order_id=o.id) where product_id=%d and o.tipo=2    ",$this->id);
+	$result =& $this->db->query($sql);
+	if($row=$result->fetchRow()){
+	  $tsall=money($row['sales']);
+	  $tsoall=number($row['outers']);
+	}
+	$sql=sprintf("select  sum(charge) as sales ,sum(dispached) as outers  from  transaction as t left join orden as o on (order_id=o.id) where product_id=%d and o.tipo=2 and DATE_SUB(CURDATE(),INTERVAL 1 YEAR) <= date_index   ",$product_id);
+	$result =& $this->db->query($sql);
+	if($row=$result->fetchRow()){
+	  $tsy=money($row['sales']);
+	  $tsoy=number($row['outers']);
+	}
+	$sql=sprintf("select  sum(charge) as sales ,sum(dispached) as outers  from  transaction as t left join orden as o on (order_id=o.id) where product_id=%d and o.tipo=2 and DATE_SUB(CURDATE(),INTERVAL 3 MONTH) <= date_index   ",$product_id);
+	$result =& $this->db->query($sql);
+	if($row=$result->fetchRow()){
+	  $tsy=money($row['sales']);
+	  $tsoy=number($row['outers']);
+	}
+
+
+
 	break;
       case('parents'):
 	break;
@@ -235,6 +278,8 @@ class product{
       return  $this->suppliers['code'];
     case('supplier_price'):
       return  $this->suppliers['price'];
+    case('supplier_num_price'):
+      return  $this->suppliers['num_price'];
     default:
 
       if(isset($this->product[$item]))

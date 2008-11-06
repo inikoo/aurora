@@ -332,6 +332,20 @@ $default_state=array(
 
 						      )
 				     ),
+		     'products'=>array(
+				       'details'=>false,
+				       'view'=>'general',
+				       'table'=>array(
+						      'order'=>'code',
+						      'order_dir'=>'',
+						      'sf'=>0,
+						      'nr'=>200,
+						      'where'=>'where true',
+						      'f_field'=>'code',
+						      'f_value'=>''
+
+						      )
+				     ),
 		      'product'=>array(
 				       'details'=>false,
 				       'plot'=>'sales_month',

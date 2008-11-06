@@ -5,6 +5,7 @@
       <li {if $tipo=='sales'}class="selected"{/if} id="sales"><img src="art/icons/money.png"> Sales</li>
       <li {if $tipo=='geosales'}class="selected"{/if} id="geosales" ><img src="art/icons/world.png"> Geo-Sales</li>
       <li {if $tipo=='customers'}class="selected"{/if} id="customers"><img src="art/icons/user.png"> Customers</li>
+      <li {if $tipo=='products'}class="selected"{/if} id="products"><img src="art/icons/brick.png"> Products</li>
       <li {if $tipo=='times'}class="selected"{/if} id="times"><img src="art/icons/clock.png"> Dispaching Times</li>
       <li {if $tipo=='prod'}class="selected"{/if} id="prod"><img src="art/icons/cog.png"> Productivity</li>
       <li {if $tipo=='stock'}class="selected"{/if} id="stock"><img src="art/icons/brick.png"> Stock</li>
@@ -33,6 +34,15 @@
 
       
   </div>
+ <div  {if $tipo!='products'}style="display:none"{/if}  id="header_products"  class="report_header" >
+      <h2 >{t}Product Analisis{/t}</h2>
+      <ul>
+	<li><a href="report_products_2080.php">{t}Product Activity{/t}</a></li>
+      </ul>
+      
+  </div>
+
+
   <div {if $tipo!='customers'}style="display:none"{/if}  id="header_customers"  class="report_header" ></div>
   <div {if $tipo!='times'}style="display:none"{/if}  id="header_times"  class="report_header" ></div>
   <div {if $tipo!='prod'}style="display:none"{/if}  id="header_prod"  class="report_header" >

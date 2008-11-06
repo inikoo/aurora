@@ -93,7 +93,7 @@ $smarty->assign('home',$product_home);
 
 $number_products=$products['numberof'];
 $smarty->assign('total_products',$number_products);
-$tipo_filter=($q==''?$_SESSION['state']['products']['table']['f_field']:'public_id');
+$tipo_filter=($q==''?$_SESSION['state']['products']['table']['f_field']:'code');
 $smarty->assign('filter',$tipo_filter);
 $smarty->assign('filter_value',($q==''?$_SESSION['state']['products']['table']['f_value']:addslashes($q)));
 $filter_menu=array(
@@ -101,6 +101,7 @@ $filter_menu=array(
 		   'description'=>array('db_key'=>'description','menu_label'=>'Product Description with <i>x</i>','label'=>'Customer'),
 		   );
 $smarty->assign('filter_menu',$filter_menu);
+
 $smarty->assign('filter_name',$filter_menu[$tipo_filter]['label']);
 $smarty->assign('table_info',$number_products.'  '.ngettext('Product','Products',$number_products));
 $paginator_menu=array(10,25,50,100,500);

@@ -23,40 +23,62 @@
 <li id="pictures"> <img src="art/icons/photos.png"> {t}Pictures{/t}</li>
 <li id="prices" ><img src="art/icons/money_add.png"> {t}Price, Discounts{/t}</li>
 <li id="suppliers" ><img src="art/icons/cog_add.png"> {t}Suppiers{/t}</li>
-<li id="stock"><img src="art/icons/package_add.png"> {t}Stock, Location{/t}</li>
 <li id="dimat"><img src="art/icons/shape_ungroup.png"> {t}Dimensions, Materials{/t}</li>
 </ul>
 </div> 
 
-
-<div  {if !$edit_products_block=="pictures"}style="display:none"{/if}  class="edit_block" id="d_pictures">
+<div  {if !$edit_products_block=="prices"}style="display:none"{/if}  class="edit_block" id="d_prices">
 
 </div>
-<div  {if !$edit_products_block=="description"}style="display:none"{/if} class="edit_block" id="d_description">
-  <form id="description">
+<div  {if !$edit_products_block=="dimat"}style="display:none"{/if}  class="edit_block" id="d_dimat">
+
+</div>
+<div  {if $edit_products_block!="suppliers"}style="display:none"{/if}  class="edit_block" id="d_suppliers">
+
+  <div id="adding_new_supplier" style="margin:20px">{t}Add new supplier{/t} <input id="new_supplier_input" type="text"><div id="new_supplier_container"></div></div>
+
+  <table  style="margin:20px;" class="edit" border=0 >
+    {foreach from=$suppliers_name item=supplier key=supplier_id }
+    <tr class="top title"><td class="label">{t}Supplier{/t}:</td><td><a href="supplier.php?id={$supplier_id}">{$supplier}</a> {if $supplier!=$suppliers_name[$supplier_id] }{$suppliers_name[$supplier_id]}{/if}</td><td style="width:25px"><img id="delete_supplier_{$supplier_id}" src="art/icons/cross.png"></td></tr>
+    <tr><td class="label">{t}Suppliers product code{/t}:</td><td colspan=2><input style="text-align:right;width:10em" value="{$suppliers_code[$supplier_id]}" ></td></tr>
+    <tr class="last"><td class="label">{t}Price (Unit){/t}:</td><td colspan=2>{$cur_symbol}<input style="text-align:right;width:6em" value="{$suppliers_num_price[$supplier_id]}" ></td></tr>
+    <tr><td></td></tr>
+    {/foreach}
+
+
+</table>	  
+</div>
+
+<div  {if !$edit_products_block=="pictures"}style="display:none"{/if}  class="edit_block" id="d_pictures">
+<form>  
+File 1: <input size="100" name="Attachment" type="file" onchange="alert(this.value)">
+</form> 
+</div>
+<div  {if $edit_products_block!="description"}style="display:none"{/if} class="edit_block" id="d_description">
+  <form id="f_description">
     <input type="hidden" name="tipo" value="update_product">
     <input type="hidden" name="product_id" value="{$product_id}">
     <input type="hidden" id="v_cat" name="v_cat" value="{$v_cat}">
-
+    
     
     <table style="margin:0;" border=0>
       <tr><td><img style="visibility:hidden"  id="c_categories" src="art/icons/accept.png" /></td>
 	<td style="vertical-align: top;" >{t}Categories{/t}:</td>
-<td style="vertical-align: top;" >
+	<td style="vertical-align: top;" >
 <table id="cat_list" style="border-right:1px solid #ccc;float:left;margin:0 20px 0 0 ">
-{if $num_cat==0}<tr><td>{t}No assigned catories{/t}<td></td>{/if}
-{foreach from=$cat key=cat_id item=i}
+  {if $num_cat==0}<tr><td>{t}No assigned catories{/t}<td></td>{/if}
+    {foreach from=$cat key=cat_id item=i}
   <tr><td tipo="1" id="cat_{$cat_id}" saved="1" >{$i}</td><td onclick="delete_list_item('',{$cat_id})" ><img  id="cat_t_{$cat_id}" cat_id="{$cat_id}" style="cursor:pointer" src="art/icons/cross.png" /></td></tr>
-{/foreach}
+  {/foreach}
 </table>
 
 
 {if $num_cat_list==0}{t}No categories to choose{/t}{else}
 <select name='cat' id="cat_select" prev="0">
- <option iname="">{t}Choose a category{/t}</option>
-{foreach from=$cat_list key=myId item=i}
+  <option iname="">{t}Choose a category{/t}</option>
+  {foreach from=$cat_list key=myId item=i}
   <option {if !$i.show}disabled="disabled"{/if}  id="cat_o_{$myId}" iname="{$i.iname}"  parents="{$i.parents}" sname="{$i.name}"  cat_id="{$myId}"   >{$i.name}</option>
-{/foreach}
+  {/foreach}
 </select>
 <img box="cat_select" id="add_cat" style="position:relative;top:3px;cursor:pointer" src="art/icons/application_go_left.png"/>
 {/if}

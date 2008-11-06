@@ -1842,6 +1842,158 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
 		   );
    echo json_encode($response);
    break;
+ case('products'):
+     $conf=$_SESSION['state']['products']['table'];
+     
+     
+     if(isset( $_REQUEST['view']))
+       $view=$_REQUEST['view'];
+     else
+       $view=$_SESSION['state']['family']['view'];
+     
+      if(isset( $_REQUEST['sf']))
+     $start_from=$_REQUEST['sf'];
+   else
+    $start_from=$conf['sf'];
+   if(!is_numeric($start_from))
+     $start_from=0;
+
+  if(isset( $_REQUEST['nr']))
+    $number_results=$_REQUEST['nr'];
+  else
+    $number_results=$conf['nr'];
+   if(!is_numeric($number_results))
+     $number_results=25;
+
+  if(isset( $_REQUEST['o']))
+    $order=$_REQUEST['o'];
+  else
+    $order=$conf['order'];
+  
+  if(isset( $_REQUEST['od']))
+    $order_dir=$_REQUEST['od'];
+  else
+    $order_dir=$conf['order_dir'];
+  $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+  
+  
+     if(isset( $_REQUEST['where']))
+     $where=addslashes($_REQUEST['where']);
+   else
+     $where=$conf['where'];
+
+    
+   if(isset( $_REQUEST['f_field']))
+     $f_field=$_REQUEST['f_field'];
+   else
+     $f_field=$conf['f_field'];
+
+  if(isset( $_REQUEST['f_value']))
+     $f_value=$_REQUEST['f_value'];
+   else
+     $f_value=$conf['f_value'];
+
+
+ if(isset( $_REQUEST['tableid']))
+    $tableid=$_REQUEST['tableid'];
+  else
+    $tableid=0;
+         $_SESSION['state']['products']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+
+     
+     $filter_msg='';
+     
+     $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+     
+     if(!is_numeric($start_from))
+       $start_from=0;
+     if(!is_numeric($number_results))
+       $number_results=25;
+
+
+ $_order=$order;
+ $_dir=$order_direction;
+  $filter_msg='';
+  $wheref='';
+  if($f_field=='code' and $f_value!='')
+    $wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
+
+
+
+   
+
+
+
+   $sql="select count(*) as total from product  $where $wheref";
+
+   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   if($row=$res->fetchRow()) {
+     $total=$row['total'];
+   }
+   if($wheref=='')
+       $filtered=0;
+   else{
+     $sql="select count(*) as total from product  $where ";
+
+     $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+     if($row=$res->fetchRow()) {
+       $filtered=$row['total']-$total;
+     }
+
+   }
+
+
+
+
+   
+
+  $norder=($order=='code'?'ncode':$order);
+  
+  $sql="select id,code,description,product.price as price,product.units as units,product.units_tipo as units_tipo,ncode,stock,available,stock_value,tsall,tsy,tsq,tsm,awtsq from product    $where $wheref  order by $norder $order_direction limit $start_from,$number_results    ";
+
+  $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+  
+  $adata=array();
+  
+  while($data=$res->fetchRow()) {
+    $adata[]=array(
+		   'id'=>$data['id']
+		   ,'code'=>$data['code']
+		   ,'description'=>$data['description']
+		   ,'units'=>number($data['units'])
+		   ,'price'=>money($data['price'])
+		   ,'units_tipo'=>$_units_tipo_abr[($data['units_tipo'])]
+		   ,'stock'=>number($data['stock'])
+		   ,'available'=>number($data['available'])
+		   ,'stock_value'=>money($data['stock_value'])
+		   ,'tsall'=>money($data['tsall'])
+		   ,'tsy'=>money($data['tsy'])
+		   ,'tsq'=>money($data['tsq'])
+		   ,'tsm'=>money($data['tsm'])
+		   ,'awtsq'=>money($data['awtsq'])
+
+		   );
+  }
+  $response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$adata,
+			 'sort_key'=>$_order,
+			 'sort_dir'=>$_dir,
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
+			 'total_records'=>$total,
+			 'records_offset'=>$start_from,
+			 'records_returned'=>$start_from+$res->numRows(),
+			 'records_perpage'=>$number_results,
+			 'records_order'=>$order,
+			 'records_order_dir'=>$order_dir,
+			 'filtered'=>$filtered
+			 )
+		   );
+   echo json_encode($response);
+   break;
+
 
  case('update_department_name'):
    
@@ -2624,7 +2776,38 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
 		   );
    echo json_encode($response);
    break;
-   
+   case('list_pareto_products'):
+   $first_day=addslashes($myconf['data_since']);
+   $data_name='tsy';
+   $sql=sprintf("select code,id,$data_name as value from product where $data_name>0 order by $data_name  desc ");
+
+   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   $data=array();
+   $i=0;
+   $total_value=0;
+   $data=array();
+   while($row=$res->fetchRow()) {
+     $total_value+=$row['value'];
+     $code[]=$row['code'];
+     $data[]=$row['value'];
+     $i++;
+   }
+   $total_products=$i;
+   $_value=0;
+    printf("<table border=1>");
+   if($total_value>0){
+     $i=1;
+     foreach($data as $key=>$value){
+       $_value+=$value;
+       $_cvalue=100*$_value/$total_value;
+       $_code=$code[$key];
+       $_cprod=$i/$total_products*100;
+       //       if($_value<0.8*$total_value)
+	 printf("<tr><td>$i<td><td>$_code <td></td><td>$value</td><td>$_value</td><td>%.2f</td><td>%.2f</td> <tr>",$_cvalue,$_cprod);
+       $i++;
+     }
+   }
+   break;
  case('list_total_net_sales_week'):
    $first_day=addslashes($myconf['data_since']);
    $sql=sprintf("select yearweek  from list_week where yearweek not like '%%53' and first_day>%s and first_day < DATE_SUB(date(NOW()), INTERVAL 1 week); ",prepare_mysql($first_day));

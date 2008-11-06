@@ -179,7 +179,12 @@ input.normal_right{color:#000;text-align:right}
 .ok{background:#a6edaa}
 .text_ok{color:#4aa42b}
 
-table.edit{width:100%}
+table.edit td{ text-align:right;padding-left:10px;padding-right:10px }
+table.edit input{ padding-right:4px;text-align:right; }
+table.edit td.label{ text-align:left }
+table.edit tr.top{ border-top:1px solid #1d4e85}
+table.edit tr.title{ border-bottom:1px solid #a5b6c8}
+table.edit tr.last{ border-bottom:1px solid #a5b6c8}
 
 .report_chosser {padding:15px 20px 0 20px;}
 .report_chosser li {float:left;padding:2px 5px;margin: 0 5px 0px 0;border: 1px solid #ccc;cursor:pointer;;opacity: .5;filter: alpha(opacity=50);}

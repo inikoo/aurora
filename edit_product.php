@@ -1,7 +1,7 @@
 <?
 include_once('common.php');
 include_once('stock_functions.php');
-include_once('classes/product.php');
+include_once('classes/Product.php');
 
 $view_sales=$LU->checkRight(PROD_SALES_VIEW);
 $view_stock=$LU->checkRight(PROD_STK_VIEW);
@@ -42,13 +42,13 @@ else
 
 
 
-$product= new product();
+$product= new product($product_id);
 $product->read(array(
-		     'product_info'=>$product_id
-		     ,'categories'=>$product_id
-		     ,'suppliers'=>$product_id
-		     ,'product_tree'=>$product_id
-		     ,'images'=>$product_id
+		     'product_info'
+		     ,'categories'
+		     ,'suppliers'
+		     ,'product_tree'
+		     ,'images'
 		     )
 	       );
 //print_r( $product->get('images'));
@@ -152,7 +152,7 @@ $smarty->assign('suppliers',$product->get('number_of_suppliers'));
 $smarty->assign('suppliers_name',$product->get('supplier_name'));
 $smarty->assign('suppliers_code',$product->get('supplier_code'));
 $smarty->assign('suppliers_price',$product->get('supplier_price'));
-
+$smarty->assign('suppliers_num_price',$product->get('supplier_num_price'));
 
 
 $_SESSION['tables']['order_withprod'][4]=$product_id;
@@ -179,14 +179,15 @@ $css_files=array(
 		 );
 $js_files=array(
 		$yui_path.'yahoo-dom-event/yahoo-dom-event.js',
-	$yui_path.'calendar/calendar-min.js',
+		$yui_path.'calendar/calendar-min.js',
 		$yui_path.'element/element-beta-min.js',
 		$yui_path.'utilities/utilities.js',
 		$yui_path.'container/container.js',
 		$yui_path.'menu/menu-min.js',
 		$yui_path.'button/button.js',
+
+		$yui_path.'datasource/datasource-min.js',
 		$yui_path.'autocomplete/autocomplete.js',
-		$yui_path.'datasource/datasource-beta.js',
 		$yui_path.'charts/charts-experimental-min.js',
 		$yui_path.'datatable/datatable-beta.js',
 		$yui_path.'editor/editor-beta-debug.js',
@@ -277,32 +278,10 @@ $smarty->assign('acheckedby',$associates);
 $sql="select id,code from supplier  order by code";
 $result =& $db->query($sql);
 
-$asuppliers=array('0'=>_('Choose a supplier'));
-while($row=$result->fetchRow()){
-  $asuppliers[$row['id']]=$row['code'];
-  
- }
 
-$smarty->assign('asuppliers',$asuppliers);
 $smarty->assign('date',date('d-m-Y'));
 $smarty->assign('time',date('H:i'));
 
-$smarty->assign('stock_table_options',array(_('Inv'),_('Pur'),_('Adj'),_('Sal'),_('P Sal')) );
-$smarty->assign('stock_table_options_tipo', $_SESSION['views']['stockh_table_options'] );
-$smarty->assign('t_title0',_('Orders'));
-$smarty->assign('t_title1',_('Customers'));
-$smarty->assign('t_title2',_('Stock History'));
-
-
-
-
-//$smarty->assign('total_records',$product->get('numberof'));
-//$smarty->assign('rpp',$_SESSION['tables']['product_list'][2]);
-
-//$smarty->assign('records_perpage',$_SESSION['tables']['product_list'][2]);
-
-$smarty->assign('key_filter_number',$regex['key_filter_number']);
-$smarty->assign('key_filter_dimension',$regex['key_filter_dimension']);
 
 
 
