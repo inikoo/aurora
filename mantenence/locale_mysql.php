@@ -133,17 +133,38 @@ $res.="\$_product_tipo['0']=_('Active');\n";
 $res.="\$_product_tipo['1']=_('Discontinued');\n";
 $res.="\$_product_tipo['2']=_('Unique');\n";
 
-$res.="\$_company_area_tipo['0']=_('Office');\n";
-$res.="\$_company_area_tipo['1']=_('Warehouse');\n";
-$res.="\$_company_area_tipo['2']=_('Production');\n";
+$res.="\$_company_area_tipo['0']='';\n";
+$res.="\$_company_area_tipo['1']=_('Office');\n";
+$res.="\$_company_area_tipo['2']=_('Warehouse');\n";
+$res.="\$_company_area_tipo['3']=_('Production');\n";
+$res.="\$_company_area_tipo['4']=_('Showroom');\n";
+$res.="\$_company_area_tipo['5']=_('Shop');\n";
 
-$res.="\$_company_department_tipo['0']=_('Customer Services');\n";
-$res.="\$_company_department_tipo['1']=_('Stock Control');\n";
-$res.="\$_company_department_tipo['2']=_('Production');\n";
-$res.="\$_company_department_tipo['3']=_('Information Technologies');\n";
-$res.="\$_company_department_tipo['4']=_('Picking & Packing');\n";
-$res.="\$_company_department_tipo['5']=_('Marketing');\n";
-$res.="\$_company_department_tipo['6']=_('Direction');\n";
+$res.="\$_company_department_tipo['0']='';\n";
+$res.="\$_company_department_tipo['1']=_('Direction');\n";
+$res.="\$_company_department_tipo['2']=_('Home Sales');\n";
+$res.="\$_company_department_tipo['3']=_('Exports');\n";
+$res.="\$_company_department_tipo['4']=_('P&P');\n";
+$res.="\$_company_department_tipo['5']=_('Production');\n";
+$res.="\$_company_department_tipo['6']=_('IT');\n";
+$res.="\$_company_department_tipo['7']=_('Stock Control');\n";
+$res.="\$_company_department_tipo['8']=_('Showroom');\n";
+$res.="\$_company_department_tipo['9']=_('Marketing');\n";
+
+$res.="\$_position_tipo['0']='';\n";
+$res.="\$_position_tipo['1']=_('Picker');\n";
+$res.="\$_position_tipo['2']=_('Packer');\n";
+$res.="\$_position_tipo['3']=_('Production Operative');\n";
+$res.="\$_position_tipo['13']=_('Production Admin');\n";
+$res.="\$_position_tipo['4']=_('Customer Services');\n";
+$res.="\$_position_tipo['5']=_('Web');\n";
+$res.="\$_position_tipo['6']=_('Buyer');\n";
+$res.="\$_position_tipo['7']=_('General Admin');\n";
+$res.="\$_position_tipo['8']=_('Marketing');\n";
+$res.="\$_position_tipo['9']=_('Direct Sales');\n";
+$res.="\$_position_tipo['10']=_('Warehouse Operative');\n";
+$res.="\$_position_tipo['11']=_('Warehouese Admin');\n";
+$res.="\$_position_tipo['12']=_('Admin');\n";
 
 
 

@@ -524,7 +524,28 @@ function translate($string)
     return vsprintf(gettext($string), $arg);
 }
 
+function interval($days,$units='auto'){
 
+  switch($units){
+  case('auto'):
+    
+    if(!is_numeric($days) or $days<=0)
+      $interval='';
+    else if($days<14)
+      $interval=number($days)._('d');
+    elseif($days<89)
+      $interval=number($days/7)._('w');
+    elseif($days<534)
+      $interval=number($days/30)._('m');
+    elseif($days<1826)
+      $interval=number($days/365.25)._('y');
+    else
+      $interval=">5"._('y');
+      
+  }
+  return $interval;
+}
+  
 function get_time_interval($d1,$d2,$units='days'){
   $interval=$d2-$d1;
   switch($units){

@@ -25,7 +25,7 @@ $tipo=$_REQUEST['tipo'];
 switch($tipo){
  case('pml_change_location'):
      $data=array(
-		 'product_id'=>$_SESSION['state']['product']['id'],
+
 		 'p2l_id'=>$_REQUEST['id'],
 		 'new_location_name'=>$_REQUEST['new_location_name'],
 		 'msg'=>$_REQUEST['msg'],
@@ -33,7 +33,7 @@ switch($tipo){
 		 'user_id'=>$LU->getProperty('auth_user_id'),
 		 'tipo'=>'change_location'
 		 );
-     $product=new product();
+     $product=new product($_SESSION['state']['product']['id']);
      $res=$product->update_location($data);
      if($res[0])
        $response= array(
@@ -50,14 +50,13 @@ switch($tipo){
      break;
  case('pml_change_qty'):
      $data=array(
-		 'product_id'=>$_SESSION['state']['product']['id'],
 		 'p2l_id'=>$_REQUEST['id'],
 		 'qty'=>$_REQUEST['qty'],
 		 'msg'=>$_REQUEST['msg'],
 		 'user_id'=>$LU->getProperty('auth_user_id'),
 		 'tipo'=>'change_qty'
 		 );
-     $product=new product();
+     $product=new product($_SESSION['state']['product']['id']);
      $res=$product->update_location($data);
      if($res[0])
        $response= array(
@@ -74,13 +73,13 @@ switch($tipo){
      break;
  case('pml_increse_picking_rank'):
      $data=array(
-		 'product_id'=>$_SESSION['state']['product']['id'],
+
 		 'product2location_id'=>$_REQUEST['id'],
 		 'rank'=>'-1',
 		 'user_id'=>$LU->getProperty('auth_user_id'),
 		 'tipo'=>'set_picking_rank'
 		 );
-     $product=new product();
+     $product=new product($_SESSION['state']['product']['id']);
      $res=$product->update_location($data);
      if($res[0])
        $response= array(
@@ -96,13 +95,13 @@ switch($tipo){
      break;
  case('pml_swap_picking'):
      $data=array(
-		 'product_id'=>$_SESSION['state']['product']['id'],
+
 		 'p2l_id'=>$_REQUEST['id'],
 		 'action'=>$_REQUEST['action'],
 		 'user_id'=>$LU->getProperty('auth_user_id'),
 		 'tipo'=>'swap_picking'
 		 );
-     $product=new product();
+     $product=new product($_SESSION['state']['product']['id']);
      $res=$product->update_location($data);
      if($res[0])
        $response= array(
@@ -210,14 +209,14 @@ switch($tipo){
 
  case('pml_damaged_stock'):
  $data=array(
-	     'product_id'=>$_SESSION['state']['product']['id'],
+
 	     'from'=>$_REQUEST['from'],
 	     'qty'=>$_REQUEST['qty'],
 	     'user_id'=>$LU->getProperty('auth_user_id'),
 	     'message'=>$_REQUEST['message'],
 	     'tipo'=>'damaged_stock'
 	       );
-   $product=new product();
+   $product=new product($_SESSION['state']['product']['id']);
    $res=$product->update_location($data);
    
    if($res[0])
@@ -235,14 +234,14 @@ switch($tipo){
    
  case('pml_move_stock'):
    $data=array(
-	       'product_id'=>$_SESSION['state']['product']['id'],
+
 	       'from'=>$_REQUEST['from'],
 	       'to'=>$_REQUEST['to'],
 	       'qty'=>$_REQUEST['qty'],
 	       'user_id'=>$LU->getProperty('auth_user_id'),
 	       'tipo'=>'move_stock'
 	       );
-   $product=new product();
+   $product=new product($_SESSION['state']['product']['id']);
    $res=$product->update_location($data);
    
    if($res[0])
@@ -533,8 +532,8 @@ switch($tipo){
        $values[$key]=$value;
      }
    }
-   $product=New product();
-   $product->read(array('product_info'=>$product_id));
+   $product=New product($product_id);
+   $product->read('product_info');
    
    $result=  $product->update($values);
    
@@ -1950,7 +1949,7 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
 
   $norder=($order=='code'?'ncode':$order);
   
-  $sql="select id,code,description,product.price as price,product.units as units,product.units_tipo as units_tipo,ncode,stock,available,stock_value,tsall,tsy,tsq,tsm,awtsq from product    $where $wheref  order by $norder $order_direction limit $start_from,$number_results    ";
+  $sql="select days_to_ns,id,code,description,product.price as price,product.units as units,product.units_tipo as units_tipo,ncode,stock,available,stock_value,tsall,tsy,tsq,tsm,tsw,awtsall,awtsy,awtsm,tsoall,tsoy,tsoq,tsom,tsow,awtsoall,awtsoy,awtsom from product    $where $wheref  order by $norder $order_direction limit $start_from,$number_results    ";
 
   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
   
@@ -1965,13 +1964,26 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
 		   ,'price'=>money($data['price'])
 		   ,'units_tipo'=>$_units_tipo_abr[($data['units_tipo'])]
 		   ,'stock'=>number($data['stock'])
+		   ,'days_to_ns'=>interval($data['days_to_ns'])
 		   ,'available'=>number($data['available'])
 		   ,'stock_value'=>money($data['stock_value'])
 		   ,'tsall'=>money($data['tsall'])
 		   ,'tsy'=>money($data['tsy'])
 		   ,'tsq'=>money($data['tsq'])
 		   ,'tsm'=>money($data['tsm'])
-		   ,'awtsq'=>money($data['awtsq'])
+		   ,'tsw'=>money($data['tsw'])
+		   ,'awtsall'=>money($data['awtsall'])
+		   ,'awtsy'=>money($data['awtsy'])
+		   ,'awtsm'=>money($data['awtsm'])
+		   ,'tsoall'=>number($data['tsoall'])
+		   ,'tsoy'=>number($data['tsoy'])
+		   ,'tsoq'=>number($data['tsoq'])
+		   ,'tsom'=>number($data['tsom'])
+		   ,'tsow'=>number($data['tsow'])
+		   ,'awtsoall'=>number($data['awtsoall'])
+		   ,'awtsoy'=>number($data['awtsoy'])
+		   ,'awtsom'=>number($data['awtsom'])
+		   
 
 		   );
   }

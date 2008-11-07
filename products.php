@@ -109,6 +109,7 @@ $smarty->assign('paginator_menu',$paginator_menu);
 $smarty->assign('view',$_SESSION['state']['products']['view']);
 $smarty->assign('table_title',_('Product List'));
 
+$smarty->assign('currency',$myconf['currency_symbol']);
 
 
 

@@ -15,7 +15,8 @@
       <table style="float:left;margin:0 0 0 20px ;padding:0"  class="options" {if $products==0 }style="display:none"{/if}>
 	<tr><td  {if $view=='general'}class="selected"{/if} id="general" >{t}General{/t}</td>
 	  {if $view_stock}<td {if $view=='stock'}class="selected"{/if}  id="stock"  >{t}Stock{/t}</td>{/if}
-	  {if $view_sales}<td  {if $view=='sales'}class="selected"{/if}  id="sales"  >{t}Sales{/t}</td>{/if}
+	  {if $view_sales}<td  {if $view=='sales'}class="selected"{/if}  id="sales"  >{t}Sales{/t} ({$currency})</td>{/if}
+	  {if $view_sales}<td  {if $view=='sales_outers'}class="selected"{/if}  id="sales_outers"  >{t}Sales{/t} (#)</td>{/if}
 	</tr>
       </table>
     </div>
@@ -31,13 +32,22 @@
 	<div  class="clean_table_caption"  style="clear:both;">
 	  <div style="float:left;"><div id="table_info0" class="clean_table_info"> <span class="filter_msg"  id="filter_msg0"></span></div></div>
 
-	  <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator"></span></div></div>
+	  <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
 	</div>
 	<div  id="table0"   class="data_table_container dtable btable "> </div>
       </div>
 
 </div> 
 
-
+<div id="rppmenu" class="yuimenu">
+  <div class="bd">
+    <ul class="first-of-type">
+       <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
+      {foreach from=$paginator_menu item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_rpp({$menu},0)"> {$menu}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
 
 {include file='footer.tpl'}

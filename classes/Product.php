@@ -193,9 +193,33 @@ class product{
 
 	
 	break;
+      case('stock_forecast'):
+	//simplest one
+	//get the best possible average
+	$aw=0;
+	if(is_numeric($this->data['awtdq']) and $this->data['awtdq']>0)
+	  $aw=$this->data['awtsq'];
+	elseif(is_numeric($this->data['awtdm']) and $this->data['awtdm']>0)
+	  $aw=$this->data['awtdq'];
+	elseif(is_numeric($this->data['tdw']) and $this->data['tdw']>0)
+	  $aw=$this->data['tdw'];
+	
+
+
+	if($aw>0 and is_numeric($this->data['stock']) and $this->data['stock']>=0){
+	  $this->data['days_to_ns']=$this->data['stock']/$aw/7;
+	  $sql=sprintf("update product set days_to_ns='%.1f' where id=%d",$this->data['days_to_ns'],$this->id);
+
+	  $this->db->exec($sql);
+	  
+
+	}
+	break;
       case('first_date'):
-	$sql=sprintf("select date_creation,UNIX_TIMESTAP(date_creation) as ts_date_creatio from transaction left join orden on (order_id=orden.id) where product_id=%d order by date_index limit 1",$this->id);
-	$res = $db->query($sql); 
+	$sql=sprintf("select date_creation,UNIX_TIMESTAMP(date_creation) as ts_date_creation from transaction left join orden on (order_id=orden.id) where product_id=%d order by date_index limit 1",$this->id);
+
+	$res =& $this->db->query($sql);
+
 	if ($row=$res->fetchRow()) {
 	  $date=$row['date_creation'];
 	  $ts_date=$row['ts_date_creation'];;
@@ -208,11 +232,19 @@ class product{
 	$this->data['first_date']=$date;
 	$this->dates['first_date']=$ts_date;
 	$sql=sprintf("update product set first_date='%s' where (first_date>'%s' or  first_date is null )  and id=%d",$date,$date,$this->id);
-	$db->exec($sql);
+	$this->db->exec($sql);
 
 
 	break;
       case('sales_metadata'):
+	$_diff_seconds=date('U')-$this->dates['ts_first_date'];
+	$date_diff=$_diff_seconds/24/3600;
+	$weeks=$date_diff/7;
+
+	$sql=sprintf("update product set  tsoall=0,tsall=0,tdall=0,awtsoall=NULL, awtsoy=NULL,  awtsoq=NULL, awtsom=NULL, awtsall=NULL, awtsy=NULL, awtsq=NULL,  awtsm=NULL, awtdall=NULL, awtdy=NULL, awtdq=NULL, awtdm=NULL, tsoy=NULL, tsoq=NULL,  tsom=NULL, tsoq=NULL, tsom=NULL, tsow=NULL, tsw=NULL, tsm=NULL, tsq=NULL, tsy=NULL, tdy=NULL, tdq=NULL, tdm=NULL, tdw=NULL  where id=%d",$this->id);
+	mysql_query($sql);
+
+
 	
 
 	$tsall=0;
@@ -223,8 +255,18 @@ class product{
 	if($row=$result->fetchRow()){
 	  $tsall=$row['sales'];
 	  $tsoall=$row['outers'];
+	  
+
 	  $sql=sprintf("update product set tsall=%s,tsoall=%s where id=%d",$tsall,$tsoall,$this->id);
 	  mysql_query($sql);
+	  
+	  if($weeks>=1){
+	    $awtsall=$row['sales']/$weeks;
+	    $awtsoall=$row['outers']/$weeks;
+	     $sql=sprintf("update product set awtsall=%s,awtsoall=%s where id=%d",$awtsall,$awtsoall,$this->id);
+	     mysql_query($sql);
+	  }
+
 	}
 	$sql=sprintf("select  sum(dispached) as outers from  transaction as t left join orden as o on (order_id=o.id) where product_id=%d   and (o.tipo!=3 or o.tipo!=7 or o.tipo!=9  or o.tipo!=10  )     ",$this->id);
 	$result =& $this->db->query($sql);
@@ -232,6 +274,14 @@ class product{
 	  $tdall=$row['outers'];
 	  $sql=sprintf("update product set tdall=%s where id=%d",$tdall,$this->id);
 	  mysql_query($sql);
+	  
+	  if($weeks>=1){
+	    $awtdall=$row['outers']/$weeks;
+	    $sql=sprintf("update product set awtdall=%s where id=%d",$awtdall,$this->id);
+	    mysql_query($sql);
+	    
+	  }
+
 	}
 	
 
@@ -256,7 +306,8 @@ class product{
 	  $result =& $this->db->query($sql);
 	  if($row=$result->fetchRow()){
 	    $tdy=$row['outers'];
-	    $sql=sprintf("update product set tdy=%s  where id=%d",$tdy,$this->id);
+	    $awtdy=$row['outers']/52.17857142;;
+	    $sql=sprintf("update product set tdy=%s , awtdy=%s   where id=%d",$tdy,$awtdy,$this->id);
 	    mysql_query($sql);
 	  }
 
@@ -284,7 +335,8 @@ class product{
 	  $result =& $this->db->query($sql);
 	  if($row=$result->fetchRow()){
 	    $tdq=$row['outers'];
-	    $sql=sprintf("update product set tdq=%s  where id=%d",$tdq,$this->id);
+	    $awtdq=$row['outers']/13.044642857;
+	    $sql=sprintf("update product set tdq=%s ,awtdq=%s  where id=%d",$tdq,$awtdq,$this->id);
 	    mysql_query($sql);
 	  }
 	  
@@ -314,7 +366,8 @@ class product{
 	  $result =& $this->db->query($sql);
 	  if($row=$result->fetchRow()){
 	    $tdm=$row['outers'];
-	    $sql=sprintf("update product set tdm=%s  where id=%d",$tdm,$this->id);
+	    $awtdm=$row['outers']/4.348214286;
+	    $sql=sprintf("update product set tdm=%s,  awtdm=%s  where id=%d",$tdm,$awtdm,$this->id);
 	    mysql_query($sql);
 	  }
 	
@@ -347,7 +400,7 @@ class product{
 
 	
 
-
+	$this->read('product_info');
 
 	break;
       case('parents'):
@@ -366,7 +419,7 @@ class product{
     
     foreach($item_array as $key=>$value){
 	if (array_key_exists($key, $this->product)) {
-	  $old_value=$this->product[$key];
+	  $old_value=$this->data[$key];
 	  $new_value=$value;
 	  if($old_value!=$new_value){
 	    $this->changes[$key]=array('old_value'=>$old_value,'new_value'=>$new_value);
@@ -382,14 +435,14 @@ class product{
 
     switch($item){
     case('a_dim'):
-      if($this->product['dim']!='')
-	$a_dim=array($this->product['dim']);
-      split('x',$this->product['dim']);
+      if($this->data['dim']!='')
+	$a_dim=array($this->data['dim']);
+      split('x',$this->data['dim']);
     case('first_date'):
-       return strftime("%e %B %Y", strtotime($this->product['first_date']));
+       return strftime("%e %B %Y", strtotime($this->data['first_date']));
        break;
     case('weeks_since'):
-      return (date("U")-date("U", strtotime($this->product['first_date'])))/604800;
+      return (date("U")-date("U", strtotime($this->data['first_date'])))/604800;
       
       break;
     case('number_of_suppliers'):
@@ -404,8 +457,8 @@ class product{
       return  $this->suppliers['num_price'];
     default:
 
-      if(isset($this->product[$item]))
-	return $this->product[$item];
+      if(isset($this->data[$item]))
+	return $this->data[$item];
       elseif(isset($this->$item))
 	return $this->$item;
       else 
@@ -546,7 +599,7 @@ class product{
       }
 	$this->read(array('locations'));
       $locations_data=$this->get('locations');
-      return array(true,$locations_data,$this->product['stock']);
+      return array(true,$locations_data,$this->data['stock']);
       break;
 
   case('change_location'):
@@ -934,7 +987,7 @@ class product{
 
 
   function update($values){
-    if(!isset($this->product['id']))
+    if(!isset($this->data['id']))
       return false;
     
     $res=array();
@@ -943,7 +996,7 @@ class product{
       switch($key){
       case('description'):
       case('sdescription'):
-	if($this->product[$key]!=$value){
+	if($this->data[$key]!=$value){
 	  
 	  if($value==''){
 	    $res[$key]['desc']=_('Value Required');
@@ -954,7 +1007,7 @@ class product{
 	      break;
 	  }
 
-	  $sql=sprintf("update product set %s=%s where id=%d",$key,prepare_mysql($value),$this->product['id']);
+	  $sql=sprintf("update product set %s=%s where id=%d",$key,prepare_mysql($value),$this->data['id']);
 	  	  mysql_query($sql);
 
 	  $res[$key]=array('res'=>1,'new_value'=>$value);
@@ -966,16 +1019,16 @@ class product{
 	$cats=split($value);
 	
 	// delete all cats
-	$sql=sprintf("delete from cat  where product_id=%d",$this->product['id']);
+	$sql=sprintf("delete from cat  where product_id=%d",$this->data['id']);
 	mysql_query($sql);
 	foreach($cats as $cat){
-	  $sql=sprintf("insert into cat  (cat_id,product_id) values (%d,%d)",$cat,$this->product['id']);
+	  $sql=sprintf("insert into cat  (cat_id,product_id) values (%d,%d)",$cat,$this->data['id']);
 	  mysql_query($sql);
 	}
 	$res[$key]=array('res'=>1,'new_value'=>join('-',$value));
 	break;
       case('details'):
-	$sql=sprintf("update product set %s=%s where id=%d",$key,prepare_mysql($value),$this->product['id']);
+	$sql=sprintf("update product set %s=%s where id=%d",$key,prepare_mysql($value),$this->data['id']);
 	mysql_query($sql);
 	$res[$key]=array('res'=>1,'new_value'=>$sql);
 	break;
@@ -1046,7 +1099,7 @@ class product{
   function fix_todotransaction(){
     
     
-    $sql=sprintf("select * from todo_transaction where code like '%s' ",addslashes($this->product['code']));
+    $sql=sprintf("select * from todo_transaction where code like '%s' ",addslashes($this->data['code']));
     //  print "$sql";
     $res2 = $this->db->query($sql); 
     while ($row2=$res2->fetchRow()) {
@@ -1075,21 +1128,24 @@ class product{
 
   function set_stock($update_database=true){
 
+    
     list (
-	  $this->product['stock'],
-	  $this->product['available'],
-	  $this->product['stock_value']
+	  $this->data['stock'],
+	  $this->data['available'],
+	  $this->data['stock_value']
 	  )=$this->get_stock();
     
     if($update_database){
       $sql=sprintf('update product set stock=%.2f, available=%.2f, stock_value=%.3f where id=%d'
-		   , $this->product['stock']
-		   ,$this->product['available']
-		   ,$this->product['stock_value']
-		   ,$this->product['id']
+		   , $this->data['stock']
+		   ,$this->data['available']
+		   ,$this->data['stock_value']
+		   ,$this->id
 		   );
 
       $this->db->exec($sql);
+      $this->read('stock_forecast');
+      
     }
     
   }
@@ -1100,7 +1156,7 @@ function get_stock($date=''){
   $stock=0;
   $available=0;
   
-  $sql=sprintf("select stock,picking_rank,location_id  from product2location where product_id=%d ",$this->product['id']);
+  $sql=sprintf("select stock,picking_rank,location_id  from product2location where product_id=%d ",$this->id);
 
   $result =& $this->db->query($sql);
   $white_star=0;
@@ -1162,7 +1218,7 @@ function update_department(){
 }
 
 function update_family($update_depto=false){
-  $family_id=$this->product['group_id'];
+  $family_id=$this->data['group_id'];
   $this->db =& MDB2::singleton();
   $sql=" select id ,(select sum(product.tsq)  from product where group_id=g.id     ) as tsq , (select sum(product.tsm)  from product where group_id=g.id     ) as tsm ,  (select sum(product.tsy)  from product where group_id=g.id     ) as tsy , (select sum(product.tsall)  from product where group_id=g.id     ) as tsall , (select sum(product.stock_value)  from product where group_id=g.id     ) as stock_value , (select count(*) from product where group_id=g.id    ) as products  ,(select count(*) from product where group_id=g.id and (condicion=0  or (condicion=1 and stock>0)  or (condicion=2 and stock>0)   )    )   as active  ,(select count(*) from product where group_id=g.id and (condicion=0 and stock=0  ) )   as outofstock,(select count(*) from product where group_id=g.id and ( isnull(stock) or stock<0  ) )   as stockerror       from product_group  as g where g.id=$family_id";
  // print "$sql\n";

@@ -76,6 +76,9 @@ $product->read(array(
 		     )
 	       );
 
+
+
+
 $fam_order=$_SESSION['state']['family']['table']['order'];
 $sql=sprintf("select id,code from product where  %s<'%s' and  group_id=%d order by %s desc  ",$fam_order,$product->get($fam_order),$product->get('group_id'),$fam_order);
 $result =& $db->query($sql);

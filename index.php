@@ -4,11 +4,13 @@ include_once('classes/Product.php');
 
 
 
-// $sql=sprintf("select  id from product where tdall=0");
+// $sql=sprintf("select  id from product where tdall=0 ");
 // $result =& $db->query($sql);
 // while($row=$result->fetchRow()){
 //   $product=new Product($row['id']);
+//   $product->read('first_date');
 //   $product->read('sales_metadata');
+//   $product->read('stock_forecast');
 
 //  }
 $view_orders=$LU->checkRight(ORDER_VIEW);

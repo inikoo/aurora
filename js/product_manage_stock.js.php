@@ -1,4 +1,5 @@
 <?include_once('../common.php')?>
+
     var Dom   = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;
 current_engine='';
@@ -392,7 +393,7 @@ var change_stock_save=function(location_id){
     // return;
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-		//alert(o.responseText);
+
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if (r.state == 200) {
 		    
@@ -759,7 +760,7 @@ var change_location_from  =function(e,location_id){
       if(location_name=='')
 	Dom.get('manage_stock_messages').innerHTML='<?=_('Select a location from the list')?> <span id="identify_location_save" onclick="identify_location_save()" style="margin-left:30px;cursor:pointer;display:none;vertical-align:bottom"><?=_('Save')?> <img src="art/icons/disk.png" style="vertical-align:bottom"/></span>';
 
-      var request='ar_assets.php?tipo=pml_change_location&msg=new_location_name='+ escape(location_name)+'&id='+ escape(pl_id);
+      var request='ar_assets.php?tipo=pml_change_location&msg=&new_location_name='+ escape(location_name)+'&id='+ escape(pl_id);
       //   alert(request);
       YAHOO.util.Connect.asyncRequest('POST',request ,{
 	      success:function(o) {
@@ -1060,7 +1061,3 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	};
     });
 
-
-
-
-k
