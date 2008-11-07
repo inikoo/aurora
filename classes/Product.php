@@ -37,14 +37,22 @@ class product{
   
   function read($data_to_be_read){
 
+    if(!is_array($data_to_be_read))
+      $data_to_be_read=array($data_to_be_read);
     foreach($data_to_be_read as $table){
 
       switch($table){
 
       case('product_info'):
-	$sql=sprintf("select * from product where id=%d",$this->id);
+	$sql=sprintf("select *,UNIX_TIMESTAMP(first_date) as ts_first_date from product where id=%d",$this->id);
+
 	$result =& $this->db->query($sql);
-	$this->product=$result->fetchRow();   
+	$this->data=$result->fetchRow();
+	if($this->data['ts_first_date']!='')
+	  $this->dates=array('ts_first_date'=>$this->data['ts_first_date']);
+	else
+	  $this->read('first_date');
+
 	break;
       case('product_tree'):
 	$sql=sprintf('select d.name as department,d.id as department_id,g.name as group_name,group_id from product left join product_group as g on (g.id=group_id)  left join product_department as d on (d.id=department_id) where product.id=%s ',$this->id);
@@ -185,45 +193,159 @@ class product{
 
 	
 	break;
+      case('first_date'):
+	$sql=sprintf("select date_creation,UNIX_TIMESTAP(date_creation) as ts_date_creatio from transaction left join orden on (order_id=orden.id) where product_id=%d order by date_index limit 1",$this->id);
+	$res = $db->query($sql); 
+	if ($row=$res->fetchRow()) {
+	  $date=$row['date_creation'];
+	  $ts_date=$row['ts_date_creation'];;
+
+	}else{
+	  $date=date('Y-m-d H:i:s');
+	  $ts_date=date('U');
+	}
+	
+	$this->data['first_date']=$date;
+	$this->dates['first_date']=$ts_date;
+	$sql=sprintf("update product set first_date='%s' where (first_date>'%s' or  first_date is null )  and id=%d",$date,$date,$this->id);
+	$db->exec($sql);
+
+
+	break;
       case('sales_metadata'):
-	// update sales meta data
-	$tsall=money(0);
-	$tsy=money(0);
-	$tsq=money(0);
-	$tsm=money(0);
-	$tsw=money(0);
+	
+
+	$tsall=0;
 	$tsoall=0;
-	$tsoy=0;
-	$tsoq=0;
-	$tsom=0;
-	$tsow=0;
-	$tdoall=0;
-	$tdoy=0;
-	$tdoq=0;
-	$tdom=0;
-	$tdow=0;
-	
-
-	
-
+	$tdall=0;
 	$sql=sprintf("select  sum(charge) as sales  ,sum(dispached) as outers from  transaction as t left join orden as o on (order_id=o.id) where product_id=%d and o.tipo=2    ",$this->id);
 	$result =& $this->db->query($sql);
 	if($row=$result->fetchRow()){
-	  $tsall=money($row['sales']);
-	  $tsoall=number($row['outers']);
+	  $tsall=$row['sales'];
+	  $tsoall=$row['outers'];
+	  $sql=sprintf("update product set tsall=%s,tsoall=%s where id=%d",$tsall,$tsoall,$this->id);
+	  mysql_query($sql);
 	}
-	$sql=sprintf("select  sum(charge) as sales ,sum(dispached) as outers  from  transaction as t left join orden as o on (order_id=o.id) where product_id=%d and o.tipo=2 and DATE_SUB(CURDATE(),INTERVAL 1 YEAR) <= date_index   ",$product_id);
+	$sql=sprintf("select  sum(dispached) as outers from  transaction as t left join orden as o on (order_id=o.id) where product_id=%d   and (o.tipo!=3 or o.tipo!=7 or o.tipo!=9  or o.tipo!=10  )     ",$this->id);
 	$result =& $this->db->query($sql);
 	if($row=$result->fetchRow()){
-	  $tsy=money($row['sales']);
-	  $tsoy=number($row['outers']);
+	  $tdall=$row['outers'];
+	  $sql=sprintf("update product set tdall=%s where id=%d",$tdall,$this->id);
+	  mysql_query($sql);
 	}
-	$sql=sprintf("select  sum(charge) as sales ,sum(dispached) as outers  from  transaction as t left join orden as o on (order_id=o.id) where product_id=%d and o.tipo=2 and DATE_SUB(CURDATE(),INTERVAL 3 MONTH) <= date_index   ",$product_id);
+	
+
+	$date_diff=date('U')-$this->dates['ts_first_date']/24/3600;
+	if($date_diff>=365){
+	  $tsy=0;
+	  $tsoy=0;
+	  $awtsy=0;
+	  $awtsoy=0;
+	  $tdy=0;
+	  $sql=sprintf("select  sum(charge) as sales ,sum(dispached) as outers  from  transaction as t left join orden as o on (order_id=o.id) where product_id=%d and o.tipo=2 and DATE_SUB(CURDATE(),INTERVAL 1 YEAR) <= date_index   ",$this->id);
+	  $result =& $this->db->query($sql);
+	  if($row=$result->fetchRow()){
+	    $tsy=$row['sales'];
+	    $tsoy=$row['outers'];
+	    $awtsy=$tsy/52.17857142;
+	    $awtsoy=$tsoy/52.17857142;
+	    $sql=sprintf("update product set tsy=%s,tsoy=%s,awtsy=%s,awtsoy=%s where id=%d",$tsy,$tsoy,$awtsy,$awtsoy,$this->id);
+	    mysql_query($sql);
+	  }
+	  $sql=sprintf("select  sum(dispached) as outers  from  transaction as t left join orden as o on (order_id=o.id) where product_id=%d and (o.tipo!=3 or o.tipo!=7 or o.tipo!=9  or o.tipo!=10  )   and DATE_SUB(CURDATE(),INTERVAL 1 YEAR) <= date_index   ",$this->id);
+	  $result =& $this->db->query($sql);
+	  if($row=$result->fetchRow()){
+	    $tdy=$row['outers'];
+	    $sql=sprintf("update product set tdy=%s  where id=%d",$tdy,$this->id);
+	    mysql_query($sql);
+	  }
+
+
+	}
+	if($date_diff>=89){
+	  $tsq=0;
+	  $tsoq=0;
+	  $awtsq=0;
+	  $awtsoq=0;
+	  $tdq=0;
+	  
+	  $sql=sprintf("select  sum(charge) as sales ,sum(dispached) as outers  from  transaction as t left join orden as o on (order_id=o.id) where product_id=%d and o.tipo=2 and DATE_SUB(CURDATE(),INTERVAL 3 MONTH) <= date_index   ",$this->id);
+	  $result =& $this->db->query($sql);
+	  if($row=$result->fetchRow()){
+	    
+	    $tsq=$row['sales'];
+	    $tsoq=$row['outers'];
+	    $awtsq=$tsq/13.044642857;
+	    $awtsoq=$tsoq/13.044642857;
+	    $sql=sprintf("update product set tsq=%s,tsoq=%s,awtsq=%s,awtsoq=%s where id=%d",$tsq,$tsoq,$awtsq,$awtsoq,$this->id);
+	    mysql_query($sql);
+	  }
+	  $sql=sprintf("select  sum(dispached) as outers  from  transaction as t left join orden as o on (order_id=o.id) where product_id=%d and (o.tipo!=3 or o.tipo!=7 or o.tipo!=9  or o.tipo!=10  )   and DATE_SUB(CURDATE(),INTERVAL 3 MONTH) <= date_index   ",$this->id);
+	  $result =& $this->db->query($sql);
+	  if($row=$result->fetchRow()){
+	    $tdq=$row['outers'];
+	    $sql=sprintf("update product set tdq=%s  where id=%d",$tdq,$this->id);
+	    mysql_query($sql);
+	  }
+	  
+	}
+
+	if($date_diff>=30){
+	  $tsm=0;
+	  $tsom=0;
+	  $awtsm=0;
+	  $awtsom=0;
+	  $tdm=0;
+
+	$sql=sprintf("select  sum(charge) as sales ,sum(dispached) as outers  from  transaction as t left join orden as o on (order_id=o.id) where product_id=%d and o.tipo=2 and DATE_SUB(CURDATE(),INTERVAL 1 MONTH) <= date_index   ",$this->id);
 	$result =& $this->db->query($sql);
 	if($row=$result->fetchRow()){
-	  $tsy=money($row['sales']);
-	  $tsoy=number($row['outers']);
+	  $tsm=$row['sales'];
+	  $tsom=$row['outers'];
+	  $awtsm=$tsm/4.348214286;
+	  $awtsom=$tsom/4.348214286;
+	  $sql=sprintf("update product set tsm=%s,tsom=%s,awtsm=%s,awtsom=%s where id=%d",$tsm,$tsom,$awtsm,$awtsom,$this->id);
+	  
+	  mysql_query($sql);
 	}
+
+
+	$sql=sprintf("select  sum(dispached) as outers  from  transaction as t left join orden as o on (order_id=o.id) where product_id=%d and (o.tipo!=3 or o.tipo!=7 or o.tipo!=9  or o.tipo!=10  )   and DATE_SUB(CURDATE(),INTERVAL 1  MONTH) <= date_index   ",$this->id);
+	  $result =& $this->db->query($sql);
+	  if($row=$result->fetchRow()){
+	    $tdm=$row['outers'];
+	    $sql=sprintf("update product set tdm=%s  where id=%d",$tdm,$this->id);
+	    mysql_query($sql);
+	  }
+	
+	}
+	
+	if($date_diff>5){
+	  $tsw=0;
+	  $tsow=0;
+	  $tdw=0;
+	  
+	  $sql=sprintf("select  sum(charge) as sales ,sum(dispached) as outers  from  transaction as t left join orden as o on (order_id=o.id) where product_id=%d and o.tipo=2 and DATE_SUB(CURDATE(),INTERVAL 1 WEEK) <= date_index   ",$this->id);
+	  $result =& $this->db->query($sql);
+	  if($row=$result->fetchRow()){
+	    $tsw=$row['sales'];
+	  $tsow=$row['outers'];
+	  $sql=sprintf("update product set tsw=%s,tsow=%s where id=%d",$tsw,$tsow,$this->id);
+	  mysql_query($sql);
+	  }
+
+	  $sql=sprintf("select  sum(dispached) as outers  from  transaction as t left join orden as o on (order_id=o.id) where product_id=%d and (o.tipo!=3 or o.tipo!=7 or o.tipo!=9  or o.tipo!=10  )   and DATE_SUB(CURDATE(),INTERVAL 1  WEEK) <= date_index   ",$this->id);
+	  $result =& $this->db->query($sql);
+	  if($row=$result->fetchRow()){
+	    $tdw=$row['outers'];
+	    $sql=sprintf("update product set tdw=%s  where id=%d",$tdm,$this->id);
+	    mysql_query($sql);
+	  }
+
+
+	}
+
+	
 
 
 
@@ -430,7 +552,6 @@ class product{
   case('change_location'):
       $id=$data['p2l_id'];
       $user_id=$data['user_id'];
-      $product_id=$data['product_id'];
       $new_location_name=stripslashes($data['new_location_name']);
       $msg=$data['msg'];
       $date='NOW()';
@@ -448,7 +569,7 @@ class product{
       $sql=sprintf("select picking_rank,product_id,location_id,name as location_name from product2location  left join location on location.id=location_id  where product2location.id=%d",$id); 
       $result =& $this->db->query($sql);
       if($row=$result->fetchRow()){
-	if($row['product_id']!=$product_id)
+	if($row['product_id']!=$this->id)
 	  return array(false,_('This location is no associated with the product'));
 	if($row['location_id']==$new_location_id)
 	  return array(false,_('Nothing to change'));
@@ -470,11 +591,11 @@ class product{
 	$note=$new_location_name.' '._('was wrongly identified as').' '.$old_location_name.' ('._('Corrected').')'.($msg!=''?'; '.stripslashes($msg):'');
       
       $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,old_value,new_value,note) values (%s,'PROD',%d,'L2P',%d,'ERL',%d,'%d','%d',%s)"
-		   ,$date,$product_id,$id,$user_id,$old_location_id, $new_location_id,prepare_mysql($note)); 
+		   ,$date,$this->id,$id,$user_id,$old_location_id, $new_location_id,prepare_mysql($note)); 
       //      return array(false,$sql);
       mysql_query($sql);
       
-      $this->read(array('locations'=>$product_id));
+      $this->read(array('locations'));
       $locations_data=$this->get('locations');
       return array(true,$locations_data,$new_location_id);
       break;
@@ -483,7 +604,7 @@ class product{
     case('swap_picking'):
       $id=$data['p2l_id'];
       $user_id=$data['user_id'];
-      $product_id=$data['product_id'];
+
       $action=$data['action'];
       $date='NOW()';
 
@@ -491,7 +612,7 @@ class product{
       //print $sql;
       $result =& $this->db->query($sql);
       if($row=$result->fetchRow()){
-	if($row['product_id']!=$product_id)
+	if($row['product_id']!=$this->id)
 	  return array(false,_('This location is no associated with the product'));
 	if($action==1 and is_numeric($row['picking_rank'])  or  $action==0 and !is_numeric($row['picking_rank'])  )
 	  return array(false,_('Nothing to change'));
@@ -506,11 +627,11 @@ class product{
 	$note=_('Products now can be picked from').' '.$location_name;
       else
 	$note=_('Products can no longer be picked from').' '.$location_name;
-      $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,note,old_value,new_value) values (%s,'PROD',%d,'LOC',%d,'PCK',%d,%s,'%s','%s')",$date,$product_id,$location_id,$user_id,prepare_mysql($note),($row['picking_rank']==''?0:1),$action); 
+      $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,note,old_value,new_value) values (%s,'PROD',%d,'LOC',%d,'PCK',%d,%s,'%s','%s')",$date,$this->id,$location_id,$user_id,prepare_mysql($note),($row['picking_rank']==''?0:1),$action); 
 
       mysql_query($sql);
 	
-      $this->read(array('locations'=>$product_id));
+      $this->read('locations');
       $locations_data=$this->get('locations');
       return array(true,$locations_data);
       break;
@@ -518,14 +639,13 @@ class product{
     case('desassociate_location'):
       $id=$data['p2l_id'];
       $user_id=$data['user_id'];
-      $product_id=$data['product_id'];
       $msg=$data['msg'];
       $date='NOW()';
       $sql=sprintf("select location.name,code,product2location.stock,product_id,location_id from product2location  left join product on (product.id=product_id) left join location on (location_id=location.id) where product2location.id=%d",$id); 
       //print $sql;
       $result =& $this->db->query($sql);
       if($row=$result->fetchRow()){
-	if($row['product_id']!=$product_id)
+	if($row['product_id']!=$this->id)
 	  return array(false,_('This location is no associated with the product'));
 	if($row['stock']>0 and $row['location_id']!=1)
 	  return array(false,_('There is still products in the location'));
@@ -550,17 +670,17 @@ class product{
       if($location_id==1){
 	if($stock>0){
 	  $note=number($stock)." "._('outers lost, its location was never identificated;').' '.stripslashes($msg);
-	  $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,note,old_value,new_value) values (%s,'PROD',%d,'P2L',%d,'STK',%d,%s,'%s','%s')",$date,$product_id,$id,$user_id,prepare_mysql($note),$stock,0); 
+	  $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,note,old_value,new_value) values (%s,'PROD',%d,'P2L',%d,'STK',%d,%s,'%s','%s')",$date,$this->id,$id,$user_id,prepare_mysql($note),$stock,0); 
 	  mysql_query($sql);
 	}
       }
       else{
 	$note=$product_code." "._('no longer located on')." $location_name";
-	$sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,note) values (%s,'PROD',%d,'LOC',%d,'DEL',%d,%s)",$date,$product_id,$location_id,$user_id,prepare_mysql($note)); 
+	$sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,note) values (%s,'PROD',%d,'LOC',%d,'DEL',%d,%s)",$date,$this->id,$location_id,$user_id,prepare_mysql($note)); 
       mysql_query($sql);
       }
       $this->set_stock();
-      $this->read(array('locations'=>$product_id));
+      $this->read('locations');
       $locations_data=$this->get('locations');
       return array(true,$locations_data);
       break;
@@ -892,11 +1012,11 @@ class product{
 	$this->error_msg=_('Unknown Error').'.';
       return false;
     }
-    $product_id = $this->db->lastInsertID();
+    $this->id = $this->db->lastInsertID();
     $sql=sprintf("insert into inventory(fuzzy,date_start,date_end,name) values (1,NOW,NOW,'%s',)",_('New product'));
     $this->db->exec($sql);
     $inv_id = $this->db->lastInsertID();
-    $sql=sprintf("insert into inventory_item (product_id,inventory_id,fecha) values (%d,,%d,NOW)", $product_id,$inv_id);
+    $sql=sprintf("insert into inventory_item (product_id,inventory_id,fecha) values (%d,,%d,NOW)", $this->id,$inv_id);
     $this->db->exec($sql);
     $this->fix_todotransaction();
     $this->set_stock(true);
@@ -939,7 +1059,7 @@ class product{
       $order_id=$row2['order_id'];
       
       $sql=sprintf("insert into  transaction  (order_id,product_id,ordered,dispached,discount,promotion_id,charge) values   (%d,%d,'%s','%s','%s','%s','%s')"
-		   ,$order_id,$product_id,$ordered,$dispached,$discount,$promotion_id,$charge);
+		   ,$order_id,$this->id,$ordered,$dispached,$discount,$promotion_id,$charge);
       //	print "$sql\n";
       $affected=& $this->db->exec($sql);
       if (!PEAR::isError($affected)) {
@@ -1000,105 +1120,6 @@ function get_stock($date=''){
 
 
 
- function set_sales($update_database=true,$update_fam=false){
-
-   $product_id=$this->product['id'];
-   if(is_numeric($product_id)){
-     $total_sales=0;
-    $y_sales=0;
-    $q_sales=0;
-    $m_sales=0;
-    $w_sales=0;
-
-
-
-    $sql=sprintf("select  sum(charge) as sales  ,sum(dispached) as outers from  transaction as t left join orden as o on (order_id=o.id) where product_id=%d and o.tipo=2    ",$product_id);
-    $res = $this->db->query($sql); 
-    if ($row=$res->fetchRow()) {
-      $total_sales=number_format($row['sales'],2,'.','');
-      $total_outers=number_format($row['outers'],2,'.','');
-
-    }
-    
-    $sql=sprintf("select  sum(charge) as sales ,sum(dispached) as outers  from  transaction as t left join orden as o on (order_id=o.id) where product_id=%d and o.tipo=2 and DATE_SUB(CURDATE(),INTERVAL 1 YEAR) <= date_index   ",$product_id);
-    $res = $this->db->query($sql); 
-    if ($row=$res->fetchRow()) {
-      $y_sales=number_format($row['sales'],2,'.','');
-      $y_outers=number_format($row['outers'],2,'.','');
-
-    }
-    
-    $sql=sprintf("select  sum(charge) as sales ,sum(dispached) as outers  from  transaction as t left join orden as o on (order_id=o.id) where product_id=%d and o.tipo=2 and DATE_SUB(CURDATE(),INTERVAL 3 MONTH) <= date_index   ",$product_id);
-    $res = $this->db->query($sql); 
-    if ($row=$res->fetchRow()) {
-      $q_sales=number_format($row['sales'],2,'.','');
-      $q_outers=number_format($row['outers'],2,'.','');
-
-    }
-    
-      $sql=sprintf("select  sum(charge) as sales ,sum(dispached) as outers  from  transaction as t left join orden as o on (order_id=o.id) where product_id=%d and o.tipo=2 and DATE_SUB(CURDATE(),INTERVAL 1 MONTH) <= date_index   ",$product_id);
-    $res = $this->db->query($sql); 
-    if ($row=$res->fetchRow()) {
-      $m_sales=number_format($row['sales'],2,'.','');
-      $m_outers=number_format($row['outers'],2,'.','');
-
-    }
-    
-      $sql=sprintf("select  sum(charge) as sales  ,sum(dispached) as outers from  transaction as t left join orden as o on (order_id=o.id) where product_id=%d and o.tipo=2 and DATE_SUB(CURDATE(),INTERVAL 1 WEEK) <= date_index   ",$product_id);
-    $res = $this->db->query($sql); 
-    if ($row=$res->fetchRow()) {
-      $w_sales=number_format($row['sales'],2,'.','');
-      $w_outers=number_format($row['outers'],2,'.','');
-      
-
-    }
-    
-
-    $awsall=0;
-    $awtsall=0;
-
-    $sql=sprintf("select   (TO_DAYS(NOW())-TO_DAYS(first_date))  as days from product     where product.id=%d    ",$product_id);
-    $res = $this->db->query($sql); 
-    if ($row=$res->fetchRow()) {
-      
-      $days=$row['days'];
-      
-      if($days>0){
-	$awsall=7*$total_outers/$days;
-	$awtsall=7*$total_sales/$days;
-	//	print "$awtsall $days ";
-      }
-
-
-    }
-    
-    
-    $awsq=number_format(($q_outers/13.00),2,'.','');
-    $awtsq=number_format(($q_sales/13.00),2,'.','');
-
-
-    $awsall=number_format($awsall,2,'.','');
-    $awtsall=number_format($awtsall,2,'.','');
-
-
-    $sql=sprintf("update product set awoutq=%s , awoutall=%s, outall=%s ,outq=%s ,outm=%s ,outw=%s ,outy=%s, awtsq=%s , awtsall=%s, tsall=%s ,tsq=%s ,tsm=%s ,tsw=%s ,tsy=%s where id=%d",
-		 $awsq,$awsall,$total_outers,$q_outers,$m_outers,$w_outers,$y_outers,
-		 $awtsq,$awtsall,$total_sales,$q_sales,$m_sales,$w_sales,$y_sales,$product_id);
-    //print "$sql\n";
-    $this->db->exec($sql);
- 
-    if($update_fam)
-      $this->update_family(true);
-
-   }
-
-
-
-
-
-
-
- }
 
 
 function update_department(){

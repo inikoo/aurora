@@ -2818,7 +2818,7 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
      $data[$row['yearweek']]=0;
    }
 
-   $sql=sprintf("select sum(net) as net,yearweek(date_index,1) as year_week from orden  where date_index>%s and tipo=2 group by yearweek(date_index) ",prepare_mysql($first_day));
+   $sql=sprintf("select sum(net) as net,yearweek(date_index,1) as year_week from orden  left join transaction on (order_id=orden.id) where product_id=11291 and date_index>%s and orden.tipo=2 group by yearweek(date_index) ",prepare_mysql($first_day));
    
    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
    $fix_w53='';
@@ -2847,7 +2847,7 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
 
    foreach($data as $key=>$value){
      $i++;
-     print "$key $value\n";
+     print "$value\n";
    }
    break;
  case('plot_weekout'): 

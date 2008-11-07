@@ -1,7 +1,16 @@
 <?
 include_once('common.php');
+include_once('classes/Product.php');
 
 
+
+// $sql=sprintf("select  id from product where tdall=0");
+// $result =& $db->query($sql);
+// while($row=$result->fetchRow()){
+//   $product=new Product($row['id']);
+//   $product->read('sales_metadata');
+
+//  }
 $view_orders=$LU->checkRight(ORDER_VIEW);
 $smarty->assign('view_orders',$view_orders);
 
