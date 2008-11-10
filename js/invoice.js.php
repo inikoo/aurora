@@ -1,11 +1,4 @@
-<?
-
-include_once('../common.php');
-
-
-
-?>
-
+<?include_once('../common.php');?>
 
 YAHOO.namespace ("invoice"); 
 
