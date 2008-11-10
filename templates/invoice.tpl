@@ -62,6 +62,12 @@
 <tr><td>{t}Picked by{/t}:</td><td class="aright">{$picked_by}</td></tr>
 <tr><td>{t}Packed by{/t}:</td><td class="aright">{$packed_by}</td></tr>
 </table>
+<table border=0  style="xcolor:#555;xfont-size:85%;border-top:1px solid #444;border-bottom:1px solid #777;width:100%,padding-right:20px;margin:5px 30px;float:left" >
+<tr><td>{t}Weight{/t}:</td><td class="aright">{$weight}</td></tr>
+<tr><td>{t}Pick Factor{/t}:</td><td class="aright">{$data.pick_factor}</td></tr>
+<tr><td>{t}Pack Factor{/t}:</td><td class="aright">{$data.pack_factor}</td></tr>
+</table>
+
 {t}This order was dispatched{/t}  {$dispatch_time}.
 <div style="clear:both"></div>
 

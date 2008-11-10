@@ -1,29 +1,55 @@
 <?
 include_once('common.php');
 include_once('classes/Product.php');
+include_once('classes/Order.php');
 
 
+$sql=sprintf("select id,public_id from orden where pick_factor is null or weight is null order by public_id desc limit 10000");
+  $result =& $db->query($sql);
+print "<table border=1>";
+$pack=0;
+$pick=0;
+$i=0;
+  while($row=$result->fetchRow()){
+if(!$order=new Order('order_public_id',$row['public_id']))
+  print "Errror";
+ $_pick=$order->data['pick_factor'];
+ $_pack=$order->data['pack_factor'];
+ 
+ $pick+=$_pick;
+ $pack+=$_pack;
+ // printf("<tr><td>%s</td><td>%s</td><td>%.1f</td><td>%.1f</td><td>%.1f</td></tr>",$i++, $order->data['public_id'],$order->data['weight'],$_pick,$_pack   );
+ $sql=sprintf("update orden set  weight=%.3f ,weight_estimated=1  where id=%d and weight is null ",$order->data['weight'],$row['id']);
 
- $sql=sprintf("select id,order_id from todo_users where tipo='taken' ");
- $result =& $db->query($sql);
- while($row=$result->fetchRow()){
-//   $product=new Product($row['id']);
-//   $product->read('first_date');
-//   $product->read('sales_metadata');
-//   $product->read('stock_forecast');
+ mysql_query($sql);
+ $sql=sprintf("update orden set pick_factor=%d ,pack_factor=%d  where id=%d  ",$_pick,$_pack,$row['id']);
 
-   $order_id=$row['order_id'];
-   //   $name=$row['name'];
-   //$tipo=$row['tipo'];
-   $id=$row['id'];
-   $sql="select id from orden where public_id='$order_id'";
-   $resultx =& $db->query($sql);
-   if($rowx=$resultx->fetchRow()){
-     $sql="update todo_users set order_id=".$rowx['id']." where id=$id";
-     mysql_query($sql);
-    }
-
+ mysql_query($sql);
   }
+ printf("<tr><td></td><td></td><td></td><td>%.1f</td><td>%.1f</td></tr>",$pick,$pack   );
+print "</table>";
+exit;
+
+//  $sql=sprintf("select id,order_id from todo_users where tipo='taken' ");
+//  $result =& $db->query($sql);
+//  while($row=$result->fetchRow()){
+// //   $product=new Product($row['id']);
+// //   $product->read('first_date');
+// //   $product->read('sales_metadata');
+// //   $product->read('stock_forecast');
+
+//    $order_id=$row['order_id'];
+//    //   $name=$row['name'];
+//    //$tipo=$row['tipo'];
+//    $id=$row['id'];
+//    $sql="select id from orden where public_id='$order_id'";
+//    $resultx =& $db->query($sql);
+//    if($rowx=$resultx->fetchRow()){
+//      $sql="update todo_users set order_id=".$rowx['id']." where id=$id";
+//      mysql_query($sql);
+//     }
+
+//   }
 $view_orders=$LU->checkRight(ORDER_VIEW);
 $smarty->assign('view_orders',$view_orders);
 

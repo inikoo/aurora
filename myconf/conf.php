@@ -129,6 +129,12 @@ $myconf=array(
 	      );
 
 $default_state=array(
+		     'order'=>array(
+				    'id'=>''
+				    
+				    ),
+		     
+		     
 		     'reports'=>array(
 				      'view'=>'sales',
 				      'sales'=>array(
@@ -419,7 +425,7 @@ $default_state=array(
 				       ),
 		     'report'=>array(
 				     'pickers'=>array(
-						 'order'=>'tipo',
+						 'order'=>'units',
 						 'order_dir'=>'',
 						 'sf'=>0,
 						 'nr'=>10000,

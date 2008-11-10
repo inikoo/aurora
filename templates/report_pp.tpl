@@ -1,9 +1,9 @@
 {include file='header.tpl'}
 <div id="bd" >
 <div id="sub_header">
-{if $next}<span class="nav2 onright"><a href="report_sales.php?{$next.url}">{$next.title}</a></span>{/if}
-{if $prev}<span class="nav2 onright" ><a href="report_sales.php?{$prev.url}">{$prev.title}</a></span>{/if}
-{if $up}<span class="nav2 onright" style="margin-left:20px"><a href="report_sales.php?{$up.url}">{$up.title}</a></span>{/if}
+{if $next}<span class="nav2 onright"><a href="report_pp.php?{$next.url}">{$next.title}</a></span>{/if}
+{if $prev}<span class="nav2 onright" ><a href="report_pp.php?{$prev.url}">{$prev.title}</a></span>{/if}
+{if $up}<span class="nav2 onright" style="margin-left:20px"><a href="report_pp.php?{$up.url}">{$up.title}</a></span>{/if}
 
 <span class="nav2"><a href="reports.php">{t}Productivity Reports{/t}</a></span>
 </div>
@@ -49,6 +49,16 @@
 	  <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
 	</div>
 	<div  id="table0"   class="data_table_container dtable btable "> </div>
+  </div>
+
+<div class="data_table" style="clear:both;margin:0px 20px">
+	<span id="table_title" class="clean_table_title">{t}Packers Report{/t}</span>
+	<div  class="clean_table_caption"  style="clear:both;">
+	  <div style="float:left;"><div id="table_info1" class="clean_table_info"> <span class="filter_msg"  id="filter_msg1"></span></div></div>
+
+	  <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator1"></span></div></div>
+	</div>
+	<div  id="table1"   class="data_table_container dtable btable "> </div>
   </div>
 
 </div>

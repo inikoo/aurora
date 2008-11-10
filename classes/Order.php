@@ -1,6 +1,9 @@
 <?
 include_once('common/string.php');
-class order{
+include_once('classes/Staff.php');
+include_once('classes/Supplier.php');
+
+class Order{
   var $db;
   var $data=array();
   var $items=array();
@@ -9,21 +12,24 @@ class order{
   var $tipo;
 
 
-
   function __construct($tipo='order',$id=false) {
      $this->db =MDB2::singleton();
      $this->status_names=array(0=>'new');
      
-     $this->tipo=$tipo;
+     if(preg_match('/^order/',$tipo))
+       $this->tipo='order';
+     else
+       $this->tipo=$tipo;
 
      if(is_numeric($id)){//load from id
        $this->id=$id;
-       $this->get_data();
+       if(!$this->get_data($tipo))
+	 return false;
      }else if(is_array($id)){// Create a new order
        $this->create_order($id);
      }
 
-
+     return true;
 
   }
 
@@ -40,9 +46,186 @@ class order{
   }
 
 
-  function get_data(){
+  function get_data($tipo){
     
     switch($this->tipo){
+    case('order'):
+      
+      if($tipo=='order_public_id')
+	$sql=sprintf("select * from orden where public_id=%s",prepare_mysql($this->id));
+      else
+	$sql=sprintf("select * from orden where id=%d",$this->id);
+      $result =& $this->db->query($sql);
+      if(!$this->data=$result->fetchRow()){	     
+        return false;
+      }
+      $this->id=$this->data['id'];
+
+
+      if($this->data['weight']==''){
+	$this->data['weight']=$this->get('estimated_weight');
+	$this->data['weight_estimated']=1;
+      }
+       if($this->data['pick_factor']==''){
+	 $this->data['pick_factor']=(int) $this->get('pick_factor');
+      }
+       if($this->data['pack_factor']==''){
+	 $this->data['pack_factor']=(int) $this->get('pack_factor');
+      }
+      
+
+    $shipping_vateable=0;
+    $shipping_no_vateable=0;
+    $charges_vateable=0;
+    $charges_no_vateable=0;
+    $items_vateable=0;
+    $items_no_vateable=0;
+    $credits_vateable=0;
+    $credits_no_vateable=0;
+      
+  $deliver_by='';
+    $sql=sprintf("select supplier_id  from shipping where  order_id=%d",$this->id);
+    $res2 = $this->db->query($sql);  
+    if ($row2=$res2->fetchRow()){
+      if($row2['supplier_id']>0){
+	// get the anme
+	$s_id=$row2['supplier_id'];
+	$supplier=new Supplier($s_id);
+	$deliver_by.='<a href="supplier.php?id='.$s_id.'">'.$supplier->data['name'].'</a>, ';
+      }
+    }    
+    $deliver_by=preg_replace('/\,\s$/','',$deliver_by);
+    if($deliver_by=='')
+      $deliver_by=_('Unknown');
+
+
+
+    $picked_by='';
+    $sql=sprintf("select picker_id  from pick  where  order_id=%d",$this->id);
+    $res2 = $this->db->query($sql);  
+    if ($row2=$res2->fetchRow()){
+      if($row2['picker_id']>0){
+	// get the anme
+	$s_id=$row2['picker_id'];
+	
+	if($staff=new Staff('id',$s_id))
+	  $picked_by.='<a href="staff.php?id='.$s_id.'">'.$staff->data['alias'].'</a>, ';
+      }
+    }    
+    $picked_by=preg_replace('/\,\s$/','',$picked_by);
+    if($picked_by=='')
+      $picked_by=_('Unknown');
+
+  $packed_by='';
+    $sql=sprintf("select packer_id  from pack  where  order_id=%d",$this->id);
+    $res2 = $this->db->query($sql);  
+    if ($row2=$res2->fetchRow()){
+      if($row2['packer_id']>0){
+	// get the anme
+	$s_id=$row2['packer_id'];
+	if($staff=new Staff('id',$s_id))
+	  $packed_by.='<a href="staff.php?id='.$s_id.'">'.$staff->data['alias'].'</a>, ';
+      }
+    }    
+    $packed_by=preg_replace('/\,\s$/','',$packed_by);
+    if($packed_by=='')
+      $packed_by=_('Unknown');
+
+
+
+
+
+    $sql=sprintf("select sum(value) as value from shipping where tax_code='S' and  order_id=%d",$this->id);
+
+    $res2 = $this->db->query($sql);  
+    if ($row2=$res2->fetchRow())
+      $shipping_vateable=$row2['value'];
+    $res2 = $this->db->query($sql);  
+    $sql=sprintf("select sum(value) as value from shipping where tax_code='' and order_id=%d",$this->id);
+    $res2 = $this->db->query($sql);  
+    if ($row2=$res2->fetchRow())
+      $shipping_no_vateable=$row2['value'];
+
+
+
+
+    $sql=sprintf("select sum(value) as value from charge where tax_code='S' and  order_id=%d",$this->id);
+
+    $res2 = $this->db->query($sql);  
+    if ($row2=$res2->fetchRow())
+      $charges_vateable=$row2['value'];
+    $res2 = $this->db->query($sql);  
+    $sql=sprintf("select sum(value) as value from charge where tax_code='' and order_id=%d",$this->id);
+    $res2 = $this->db->query($sql);  
+    if ($row2=$res2->fetchRow())
+      $charges_no_vateable=$row2['value'];
+
+
+
+    $sql=sprintf("select sum(charge) as value from transaction where tax_code='S' and  order_id=%d",$this->id);
+    
+    $res2 = $this->db->query($sql);  
+    if ($row2=$res2->fetchRow())
+      $items_vateable=$row2['value'];
+    $res2 = $this->db->query($sql);  
+    $sql=sprintf("select sum(charge) as value from transaction where tax_code='' and order_id=%d",$this->id);
+    $res2 = $this->db->query($sql);  
+    if ($row2=$res2->fetchRow())
+      $items_no_vateable=$row2['value'];
+     
+    $sql=sprintf("select sum(price*(1-discount)*(ordered-reorder)) as value from todo_transaction where tax_code='S' and  order_id=%d",$this->id);
+
+    $res2 = $this->db->query($sql);  
+    if ($row2=$res2->fetchRow())
+      $items_vateable=$items_vateable+$row2['value'];
+    $res2 = $this->db->query($sql);  
+    $sql=sprintf("select sum(price*(1-discount)*(ordered-reorder))  as value from todo_transaction where tax_code='' and order_id=%d",$this->id);
+    $res2 = $this->db->query($sql);  
+    if ($row2=$res2->fetchRow())
+      $items_no_vateable=$items_no_vateable+$row2['value'];
+     
+
+    $sql=sprintf("select sum(value_net) as value from debit where tax_code='S' and  order_affected_id=%d",$this->id);
+ 
+    $res2 = $this->db->query($sql);  
+    if ($row2=$res2->fetchRow())
+      $credits_vateable=$row2['value'];
+    $res2 = $this->db->query($sql);  
+    $sql=sprintf("select sum(value_net) as value from debit where tax_code='' and order_affected_id=%d",$this->id);
+    $res2 = $this->db->query($sql);  
+    if ($row2=$res2->fetchRow())
+      $credits_no_vateable=$row2['value'];
+
+    // number of items out of stock
+    $items_out_of_stock=0;
+    $sql=sprintf("select count(*) as num from outofstock where order_id=%d",$this->id);
+    $res2 = $this->db->query($sql);  
+    if ($row2=$res2->fetchRow())
+      $items_out_of_stock=$row2['num'];
+  
+    if($staff=new Staff($this->data['taken_by'])){
+      $this->data['taken_by']=$staff->data['alias'];
+    }else
+       $this->data['taken_by']=_('Unknown');
+    
+  
+    $this->data['items_out_of_stock']=$items_out_of_stock;
+    $this->data['deliver_by']=$deliver_by;
+    $this->data['picked_by']=$picked_by;
+    $this->data['packed_by']=$packed_by;
+    
+    $this->data['credits_vateable']=$credits_vateable;
+    $this->data['credits_no_vateable']=$credits_no_vateable;
+    $this->data['shipping_vateable']=$shipping_vateable;
+    $this->data['shipping_no_vateable']=$shipping_no_vateable;
+    $this->data['charges_vateable']=$charges_vateable;
+    $this->data['charges_no_vateable']=$charges_no_vateable;
+    $this->data['items_vateable']=$items_vateable;
+   $this->data['items_no_vateable']=$items_no_vateable;
+  
+
+
+      return true;
     case('po'):
       $sql=sprintf("select porden.id,ifnull(received_by,-1) as received_by,ifnull(checked_by,-1) as checked_by,public_id,supplier_id,UNIX_TIMESTAMP(date_expected) as date_expected,UNIX_TIMESTAMP(date_submited) as date_submited,UNIX_TIMESTAMP(date_creation) as date_creation,UNIX_TIMESTAMP(date_invoice) as date_invoice,UNIX_TIMESTAMP(date_received) as date_received,tipo,goods,shipping,vat,total,charges,diff,(select count(*) from porden_item where  porden_id=porden.id )as items  from porden where id=%d ",$this->id);
 
@@ -92,8 +275,62 @@ class order{
   }
 
 
+  function get($key=''){
+     switch($key){
+     case('estimated_weight'):
+       if($this->tipo=='order'){
+	 $w=0;
+	 $sql=sprintf("select sum(dispached*units*weight)as w from transaction left join product on (product.id=product_id) where order_id=%d ",$this->id);
+	 $result =& $this->db->query($sql);
+	 if($row=$result->fetchRow()){
+	   $w=$row['w'];
+	 }
+	 return $w;
+	  
+       }
+       
+       break;
+     case('pick_factor'):
+         if($this->tipo=='order'){
+	 $factor=10;
+	 $sql=sprintf("select count(distinct group_id) as families,count(distinct product_id) as products from transaction left join product on (product.id=product_id) where order_id=%d ",$this->id);
+	 $result =& $this->db->query($sql);
+	 if($row=$result->fetchRow()){
+	   $factor=10*$row['families']+2*($row['products']-$row['families']);
+	 }
+	 return $this->get('estimated_weight')/2+$factor;
+	  
+       }
+       
+       break;
+        case('pack_factor'):
+         if($this->tipo=='order'){
+	 $factor=10;
+	 $sql=sprintf("select sum(dispached) as dispached ,count(distinct product_id) as products from transaction left join product on (product.id=product_id) where order_id=%d ",$this->id);
+	 $result =& $this->db->query($sql);
+	 if($row=$result->fetchRow()){
+	   if($row['products']==0)
+	     $factor=0;
+	   else
+	     $factor=5*$row['products']+($row['dispached']/$row['products']);
+	 }
+	 return $this->get('estimated_weight')/2+$factor;
+	  
+       }
+       
+       break; 
+
+       
+     }
+
+
+  }
+
+
   function load($key=''){
     switch($key){
+    
+
     case('supplier'):
       $this->supplier=new supplier($this->supplier_id);
       break;
@@ -131,6 +368,9 @@ class order{
     }else
       return false;
   }
+
+  
+
   
   function add_item($data){
     $tipo=$data['tipo'];

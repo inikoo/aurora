@@ -667,6 +667,7 @@ if(isset( $_REQUEST['where']))
 
    
    
+   $start_from=0;
   
    $filter_msg='';
    $_order=$order;
@@ -674,21 +675,35 @@ if(isset( $_REQUEST['where']))
 
 
    
-   $sql=sprintf("select  orden left join where tipo=3 %s  order by %s %s ",$date_interval['mysql'],addslashes($order),addslashes($order_direction));
+   $sql=sprintf("select picker_id,alias, sum(if(feedback_id=1 or feedback_id=3,1,0))/count(distinct orden.id) as epo , sum(weight) as weight,position_id ,sum(share*pick_factor) as units ,count(distinct orden.id) as orders, sum(if(feedback_id=1 or feedback_id=3,1,0)) as errors     from orden left join pick on (order_id=orden.id) left join staff on (picker_id=staff.id)where tipo=2 %s  group by picker_id   order by %s %s ",$date_interval['mysql'],addslashes($order),addslashes($order_direction));
    $res = $db->query($sql); 
    $data=array();
+   $hours=40;
+   $uph=$row['units']/$hours;
+   $total=0;
    while($row=$res->fetchRow()) {
+
+     if($row['position_id']==1){
+       $uph=number($row['units']/$hours);
+     }else
+       $uph='';
+
+     $total++;
      $data[]=array(
-		   'id'=>$row['id'],
-		   'public_id'=>$row['public_id'],
-		   'customer_name'=>$row['customer_name'],
-		   'customer_id'=>$row['customer_id'],
-		   'date_index'=>strftime("%e %b %Y %H:%M", strtotime('@'.$row['date_index'])),
-		   'total'=>money($row['total']),
-		   'titulo'=>$_order_tipo[$row['tipo']],
-		   'tipo'=>$row['tipo']
+		   'tipo'=>($row['position_id']==1?_('FT'):''),
+		   'alias'=>$row['alias'],
+		   'orders'=>number($row['orders']),
+		   'units'=>number($row['units'],0) ,
+		   'weight'=>number($row['weight'],1)." "._('Kg'),
+		   'errors'=>number($row['errors']),
+		   'epo'=>number(100*$row['epo']+0.00001,1)."%",
+		   'hours'=>$hours,
+		   'uph'=>$uph
 		   );
    }
+
+   $number_results=$total;
+   $filtered=0;
    if($total==0){
      $rtext=_('No order has been placed yet').'.';
    }elseif($total<$number_results)
@@ -715,7 +730,133 @@ if(isset( $_REQUEST['where']))
    echo json_encode($response);
    break;
 
+ case('packers_report'):
+   
+   
+    $conf=$_SESSION['state']['report']['packers'];
+ //  if(isset( $_REQUEST['sf']))
+//      $start_from=$_REQUEST['sf'];
+//    else
+//      $start_from=$conf['sf'];
+//    if(isset( $_REQUEST['nr']))
+//      $number_results=$_REQUEST['nr'];
+//    else
+//      $number_results=$conf['nr'];
+  if(isset( $_REQUEST['o']))
+    $order=$_REQUEST['o'];
+  else
+    $order=$conf['order'];
+  if(isset( $_REQUEST['od']))
+    $order_dir=$_REQUEST['od'];
+  else
+    $order_dir=$conf['order_dir'];
+ //    if(isset( $_REQUEST['f_field']))
+//      $f_field=$_REQUEST['f_field'];
+//    else
+//      $f_field=$conf['f_field'];
 
+//   if(isset( $_REQUEST['f_value']))
+//      $f_value=$_REQUEST['f_value'];
+//    else
+//      $f_value=$conf['f_value'];
+// if(isset( $_REQUEST['where']))
+//      $where=$_REQUEST['where'];
+//    else
+//      $where=$conf['where'];
+  
+ if(isset( $_REQUEST['from']))
+    $from=$_REQUEST['from'];
+  else
+    $from=$conf['from'];
+  if(isset( $_REQUEST['to']))
+    $to=$_REQUEST['to'];
+  else
+    $to=$conf['to'];
+
+
+   if(isset( $_REQUEST['tableid']))
+    $tableid=$_REQUEST['tableid'];
+  else
+    $tableid=0;
+
+
+   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+   $_SESSION['state']['report']['packers']=array('order'=>$order,'order_dir'=>$order_direction);
+
+   $date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
+   if($date_interval['error']){
+      $date_interval=prepare_mysql_dates($conf['from'],$conf['to']);
+   }else{
+     $_SESSION['state']['report']['packers']['from']=$date_interval['from'];
+     $_SESSION['state']['report']['packers']['to']=$date_interval['to'];
+   }
+
+   
+   
+   $start_from=0;
+  
+   $filter_msg='';
+   $_order=$order;
+   $_dir=$order_direction;
+
+
+   
+   $sql=sprintf("select packer_id,alias, sum(if(feedback_id=2 or feedback_id=3,1,0))/count(distinct orden.id) as epo , sum(weight) as weight,position_id ,sum(share*pack_factor) as units ,count(distinct orden.id) as orders, sum(if(feedback_id=2 or feedback_id=3,1,0)) as errors     from orden left join pack on (order_id=orden.id) left join staff on (packer_id=staff.id)where tipo=2 %s  group by packer_id   order by %s %s ",$date_interval['mysql'],addslashes($order),addslashes($order_direction));
+
+   $res = $db->query($sql); 
+   $data=array();
+   $hours=40;
+   $uph=$row['units']/$hours;
+   $total=0;
+   while($row=$res->fetchRow()) {
+
+     if($row['position_id']==2){
+       $uph=number($row['units']/$hours);
+     }else
+       $uph='';
+
+     $total++;
+     $data[]=array(
+		   'tipo'=>($row['position_id']==2?_('FT'):''),
+		   'alias'=>$row['alias'],
+		   'orders'=>number($row['orders']),
+		   'units'=>number($row['units'],0) ,
+		   'weight'=>number($row['weight'],1)." "._('Kg'),
+		   'errors'=>number($row['errors']),
+		   'epo'=>number(100*$row['epo']+0.00001,1)."%",
+		   'hours'=>$hours,
+		   'uph'=>$uph
+		   );
+   }
+
+   $number_results=$total;
+   $filtered=0;
+   if($total==0){
+     $rtext=_('No order has been placed yet').'.';
+   }elseif($total<$number_results)
+     $rtext=$total.' '.ngettext('record returned','records returned',$total);
+   else
+     $rtext='';
+   $response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$data,
+			 'sort_key'=>$_order,
+			 'sort_dir'=>$_dir,
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
+			 'total_records'=>$total,
+			 'records_offset'=>$start_from,
+			 'records_returned'=>$start_from+$res->numRows(),
+			 'records_perpage'=>$number_results,
+			 'records_text'=>$rtext,
+			 'records_order'=>$order,
+			 'records_order_dir'=>$order_dir,
+			 'filtered'=>$filtered
+			 )
+		   );
+   echo json_encode($response);
+   break;
 
  case('outofstock'):
    
@@ -785,22 +926,22 @@ if(isset( $_REQUEST['where']))
    if(isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id']))
      $order_id=$_REQUEST['id'];
    else
-     $order_id=$_SESSION['order_id'];
+     $order_id=$_SESSION['state']['order']['id'];
 
-   if(isset( $_REQUEST['o']))
-     $order=$_REQUEST['o'];
-   else
-     $order=$_SESSION['tables']['transaction_list'][0];
-   if(isset( $_REQUEST['od']))
-     $order_dir=$_REQUEST['od'];
-   else
-     $order_dir=$_SESSION['tables']['transaction_list'][1];
+ //   if(isset( $_REQUEST['o']))
+//      $order=$_REQUEST['o'];
+//    else
+//      $order=$_SESSION['tables']['transaction_list'][0];
+//    if(isset( $_REQUEST['od']))
+//      $order_dir=$_REQUEST['od'];
+//    else
+//      $order_dir=$_SESSION['tables']['transaction_list'][1];
    
    
-   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+//    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
    
 
-   $_SESSION['tables']['transaction_list']=array($order,$order_direction);
+//    $_SESSION['tables']['transaction_list']=array($order,$order_direction);
    
    $where=' where order_id='.$order_id;
 
@@ -809,7 +950,7 @@ if(isset( $_REQUEST['where']))
    $total_picks=0;
 
    
-   $sql="select  p.price as price,concat(100000+p.group_id,p.ncode) as display_order,p.id as id,p.code as code ,product_id,p.description,units,ordered,dispached,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where  and dispached> 0 and (charge!=0 or discount!=1)  order by $order $order_direction  ";
+   $sql="select weight, p.price as price,concat(100000+p.group_id,p.ncode) as display_order,p.id as id,p.code as code ,product_id,p.description,units,ordered,dispached,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where  and dispached> 0 and (charge!=0 or discount!=1)    ";
    
    //  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispached,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
    //     print $sql;

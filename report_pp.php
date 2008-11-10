@@ -46,6 +46,32 @@ if($tipo=='f'){
   $from=$_REQUEST['from'];
   $to=$_REQUEST['to'];
    $title=_('Pickers & Packers Report');
+ }elseif($tipo=='w'){
+   $year=$_REQUEST['y'];
+   $week=$_REQUEST['w'];
+   
+   $sql=sprintf("select UNIX_TIMESTAMP(first_day)as first_day  from list_week where yearweek=%d%01d",$year,$week);
+
+   $result =& $db->query($sql);
+   if($row=$result->fetchRow()){
+     $_time=strtotime("@".$row['first_day']);
+     $_time_n=strtotime("@".($row['first_day']+604800));
+     $_time_p=strtotime("@".($row['first_day']-604800));
+   }else{
+     header('Location: reports.php?err_msg=nw_y'.$year.'_w'.$week);
+     exit;
+   }
+
+
+   $from=date("d-m-Y", $_time);
+   $to=date("d-m-Y",$_time_n );
+   $period=date("W",$_time)." "._('Week').date(" Y",$_time).strftime(" (%x)",$_time );
+   $title=_('Pickers & Packers Report')."<br>$period";
+
+   $smarty->assign('up',array('url'=>'tipo=y&y='.date("Y",$_time),'title'=>date("Y",$_time)));
+   $smarty->assign('next',array('url'=>'tipo=w&w='.date("W",$_time_n).'&y='.date("Y",$_time_n),'title'=>date("W Y",$_time_n)));
+   $smarty->assign('prev',array('url'=>'tipo=w&w='.date("W",$_time_p).'&y='.date("Y",$_time_p),'title'=>date("W Y",$_time_p)));
+
  }elseif($tipo=='m'){
    $year=$_REQUEST['y'];
    $month=$_REQUEST['m'];
@@ -89,6 +115,10 @@ if($tipo=='f'){
     $smarty->assign('m',$m);
   }
   
+$_SESSION['state']['report']['pickers']['from']=$from;
+$_SESSION['state']['report']['pickers']['to']=$to;
+$_SESSION['state']['report']['packers']['from']=$from;
+$_SESSION['state']['report']['packers']['to']=$to;
 
 
 
