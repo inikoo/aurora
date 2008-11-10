@@ -33,6 +33,15 @@
 
 </div>
 <div  {if !$edit=="dimat"}style="display:none"{/if}  class="edit_block" id="d_dimat">
+<table class="edit" >
+  <tr><td class="label">{t}Unit Weight{/t} ({t}Kg{/t}):</td><td></td><td><input style="text-align:right;width:10em" value="" id="weight" value="" ></td></tr>
+  <tr><td class="label">{t}Outer Weight{/t} ({t}Kg{/t}):</td><td></td><td><input style="text-align:right;width:10em" value="" id="weight" value="" ></td></tr></tr>
+  <tr><td class="label">{t}Unit Dimensions{/t}:</td><td><span>{$data.dim_tipo}</span></td><td><input style="text-align:right;width:10em" value="" id="weight" value="$data.dim" ></td></tr>
+  <tr><td class="label">{t}Outer Dimensions{/t}</td><td><span>{$data.odim_tipo}</span></td><td><input style="text-align:right;width:10em" value="" id="weight" value="$data.odim" ></td></tr>
+</tr>
+</table>
+
+
 
 </div>
 <div  {if $edit!="suppliers"}style="display:none"{/if}  class="edit_block" id="d_suppliers">
