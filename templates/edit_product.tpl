@@ -17,44 +17,55 @@
 <div id="doc3" style="clear:both;" class="yui-g yui-t4" >
 <div id="yui-main"> 
 <h1>{$code} {$units}x {$description}</h1>
-<div id="editor_chosser" >
-<ul>
-<li id="description" > <img src="art/icons/information.png"> {t}Description{/t}</li>
-<li id="pictures"> <img src="art/icons/photos.png"> {t}Pictures{/t}</li>
-<li id="prices" ><img src="art/icons/money_add.png"> {t}Price, Discounts{/t}</li>
-<li id="suppliers" ><img src="art/icons/cog_add.png"> {t}Suppiers{/t}</li>
-<li id="dimat"><img src="art/icons/shape_ungroup.png"> {t}Dimensions, Materials{/t}</li>
-</ul>
+<div class="chooser" >
+  <ul>
+    <li id="description" {if $edit=='description'}class="selected"{/if} > <img src="art/icons/information.png"> {t}Description{/t}</li>
+    <li id="pictures" {if $edit=='pictures'}class="selected"{/if} > <img src="art/icons/photos.png"> {t}Pictures{/t}</li>
+    <li id="prices" {if $edit=='prices'}class="selected"{/if} ><img src="art/icons/money_add.png"> {t}Price, Discounts{/t}</li>
+    <li id="suppliers" {if $edit=='suppliers'}class="selected"{/if} ><img src="art/icons/cog_add.png"> {t}Suppiers{/t}</li>
+    <li id="dimat" {if $edit=='dimat'}class="selected"{/if} ><img src="art/icons/shape_ungroup.png"> {t}Dimensions, Materials{/t}</li>
+  </ul>
 </div> 
 
-<div  {if !$edit_products_block=="prices"}style="display:none"{/if}  class="edit_block" id="d_prices">
+<div style="clear:both;padding:20px 20px" id="edit_messages"></div>
+
+<div  {if !$edit=="prices"}style="display:none"{/if}  class="edit_block" id="d_prices">
 
 </div>
-<div  {if !$edit_products_block=="dimat"}style="display:none"{/if}  class="edit_block" id="d_dimat">
+<div  {if !$edit=="dimat"}style="display:none"{/if}  class="edit_block" id="d_dimat">
 
 </div>
-<div  {if $edit_products_block!="suppliers"}style="display:none"{/if}  class="edit_block" id="d_suppliers">
+<div  {if $edit!="suppliers"}style="display:none"{/if}  class="edit_block" id="d_suppliers">
+  {t}Add new supplier{/t} 
+  <div id="adding_new_supplier" style="width:200px;margin-bottom:45px"><input id="new_supplier_input" type="text"><div id="new_supplier_container"></div></div>
 
-  <div id="adding_new_supplier" style="margin:20px">{t}Add new supplier{/t} <input id="new_supplier_input" type="text"><div id="new_supplier_container"></div></div>
-
-  <table  style="margin:20px;" class="edit" border=0 >
+  
+  <table  class="edit"  >
+    <tbody id="new_supplier_form" style="display:none;background:#f1fdf2"  supplier_id="" >
+    <tr class="top title"><td class="label">{t}Supplier{/t}: <img id="save_supplier_{$supplier_id}" src="art/icons/new.png"></td><td id="new_supplier_name"></td><td class="icon"><img id="save_supplier_new" onClick="save_new_supplier()"   src="art/icons/disk.png"></td><td class="icon"><img id="cancel_new" onClick="cancel_new_supplier()" src="art/icons/cross.png"></td></tr>
+    <tr><td class="label">{t}Suppliers product code{/t}:</td><td colspan=3><input style="text-align:right;width:10em" value="" id="new_supplier_code" value="" ></td></tr>
+    <tr class="last"><td class="label">{t}Price (Unit){/t}:</td><td colspan=3>{$cur_symbol}<input style="text-align:right;width:6em" value="" id="new_supplier_cost" id=""></td></tr>
+    <tr><td style="background:white" colspan="4"></td></tr>
+    </tbody>
+    <tbody id="current_suppliers_form">
     {foreach from=$suppliers_name item=supplier key=supplier_id }
-    <tr class="top title"><td class="label">{t}Supplier{/t}:</td><td><a href="supplier.php?id={$supplier_id}">{$supplier}</a> {if $supplier!=$suppliers_name[$supplier_id] }{$suppliers_name[$supplier_id]}{/if}</td><td style="width:25px"><img id="delete_supplier_{$supplier_id}" src="art/icons/cross.png"></td></tr>
-    <tr><td class="label">{t}Suppliers product code{/t}:</td><td colspan=2><input style="text-align:right;width:10em" value="{$suppliers_code[$supplier_id]}" ></td></tr>
-    <tr class="last"><td class="label">{t}Price (Unit){/t}:</td><td colspan=2>{$cur_symbol}<input style="text-align:right;width:6em" value="{$suppliers_num_price[$supplier_id]}" ></td></tr>
-    <tr><td></td></tr>
+    <tr class="top title"><td class="label">{t}Supplier{/t}:</td><td><a href="supplier.php?id={$supplier_id}">{$supplier}</a> {if $supplier!=$suppliers_name[$supplier_id] }{$suppliers_name[$supplier_id]}{/if}</td><td class="icon"><img id="save_supplier_{$supplier_id}" style="cursor:pointer;display:none" onClick="save_supplier({$supplier_id})" src="art/icons/disk.png"></td><td class="icon"><img style="cursor:pointer" id="delete_supplier_{$supplier_id}" src="art/icons/cross.png"></td></tr>
+    <tr><td class="label">{t}Suppliers product code{/t}:</td><td colspan=3><input style="text-align:right;width:10em" value="{$suppliers_code[$supplier_id]}"  supplier_id="{$supplier_id}"      tipo="text" onkeyup="change_element(this)" ovalue="{$suppliers_code[$supplier_id]}" id="v_supplier_code{$supplier_id}"></td></tr>
+    <tr class="last"><td class="label">{t}Price (Unit){/t}:</td><td colspan=3>{$cur_symbol}<input id="v_supplier_cost{$supplier_id}" style="text-align:right;width:6em"  supplier_id="{$supplier_id}"  tipo="money" onkeyup="change_element(this)" value="{$suppliers_num_price[$supplier_id]}" ovalue="{$suppliers_num_price[$supplier_id]}" ></td></tr>
+    <tr><td colspan="4"></td></tr>
     {/foreach}
-
-
+    </body>
+    
 </table>	  
 </div>
 
-<div  {if !$edit_products_block=="pictures"}style="display:none"{/if}  class="edit_block" id="d_pictures">
-<form>  
-File 1: <input size="100" name="Attachment" type="file" onchange="alert(this.value)">
-</form> 
+<div  {if !$edit=="pictures"}style="display:none"{/if}  class="edit_block" id="d_pictures">
+
+
+
+
 </div>
-<div  {if $edit_products_block!="description"}style="display:none"{/if} class="edit_block" id="d_description">
+<div  {if $edit!="description"}style="display:none"{/if} class="edit_block" id="d_description">
   <form id="f_description">
     <input type="hidden" name="tipo" value="update_product">
     <input type="hidden" name="product_id" value="{$product_id}">

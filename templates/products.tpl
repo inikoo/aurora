@@ -35,8 +35,7 @@
 	  <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
 	</div>
 	<div  id="table0"   class="data_table_container dtable btable "> </div>
-      </div>
-
+  </div>
 </div> 
 
 <div id="rppmenu" class="yuimenu">

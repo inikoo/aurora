@@ -602,6 +602,121 @@ if(isset( $_REQUEST['where']))
 		   );
    echo json_encode($response);
    break;
+
+ case('pickers_report'):
+   
+   
+    $conf=$_SESSION['state']['report']['pickers'];
+ //  if(isset( $_REQUEST['sf']))
+//      $start_from=$_REQUEST['sf'];
+//    else
+//      $start_from=$conf['sf'];
+//    if(isset( $_REQUEST['nr']))
+//      $number_results=$_REQUEST['nr'];
+//    else
+//      $number_results=$conf['nr'];
+  if(isset( $_REQUEST['o']))
+    $order=$_REQUEST['o'];
+  else
+    $order=$conf['order'];
+  if(isset( $_REQUEST['od']))
+    $order_dir=$_REQUEST['od'];
+  else
+    $order_dir=$conf['order_dir'];
+ //    if(isset( $_REQUEST['f_field']))
+//      $f_field=$_REQUEST['f_field'];
+//    else
+//      $f_field=$conf['f_field'];
+
+//   if(isset( $_REQUEST['f_value']))
+//      $f_value=$_REQUEST['f_value'];
+//    else
+//      $f_value=$conf['f_value'];
+// if(isset( $_REQUEST['where']))
+//      $where=$_REQUEST['where'];
+//    else
+//      $where=$conf['where'];
+  
+ if(isset( $_REQUEST['from']))
+    $from=$_REQUEST['from'];
+  else
+    $from=$conf['from'];
+  if(isset( $_REQUEST['to']))
+    $to=$_REQUEST['to'];
+  else
+    $to=$conf['to'];
+
+
+   if(isset( $_REQUEST['tableid']))
+    $tableid=$_REQUEST['tableid'];
+  else
+    $tableid=0;
+
+
+   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+   $_SESSION['state']['report']['pickers']=array('order'=>$order,'order_dir'=>$order_direction);
+
+   $date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
+   if($date_interval['error']){
+      $date_interval=prepare_mysql_dates($conf['from'],$conf['to']);
+   }else{
+     $_SESSION['state']['report']['pickers']['from']=$date_interval['from'];
+     $_SESSION['state']['report']['pickers']['to']=$date_interval['to'];
+   }
+
+   
+   
+  
+   $filter_msg='';
+   $_order=$order;
+   $_dir=$order_direction;
+
+
+   
+   $sql=sprintf("select  orden left join where tipo=3 %s  order by %s %s ",$date_interval['mysql'],addslashes($order),addslashes($order_direction));
+   $res = $db->query($sql); 
+   $data=array();
+   while($row=$res->fetchRow()) {
+     $data[]=array(
+		   'id'=>$row['id'],
+		   'public_id'=>$row['public_id'],
+		   'customer_name'=>$row['customer_name'],
+		   'customer_id'=>$row['customer_id'],
+		   'date_index'=>strftime("%e %b %Y %H:%M", strtotime('@'.$row['date_index'])),
+		   'total'=>money($row['total']),
+		   'titulo'=>$_order_tipo[$row['tipo']],
+		   'tipo'=>$row['tipo']
+		   );
+   }
+   if($total==0){
+     $rtext=_('No order has been placed yet').'.';
+   }elseif($total<$number_results)
+     $rtext=$total.' '.ngettext('record returned','records returned',$total);
+   else
+     $rtext='';
+   $response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$data,
+			 'sort_key'=>$_order,
+			 'sort_dir'=>$_dir,
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
+			 'total_records'=>$total,
+			 'records_offset'=>$start_from,
+			 'records_returned'=>$start_from+$res->numRows(),
+			 'records_perpage'=>$number_results,
+			 'records_text'=>$rtext,
+			 'records_order'=>$order,
+			 'records_order_dir'=>$order_dir,
+			 'filtered'=>$filtered
+			 )
+		   );
+   echo json_encode($response);
+   break;
+
+
+
  case('outofstock'):
    
    if(isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id']))

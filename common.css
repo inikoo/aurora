@@ -179,20 +179,21 @@ input.normal_right{color:#000;text-align:right}
 .ok{background:#a6edaa}
 .text_ok{color:#4aa42b}
 
+img{vertical-align:bottom}
 table.edit td{ text-align:right;padding-left:10px;padding-right:10px }
 table.edit input{ padding-right:4px;text-align:right; }
+table.edit td {vertical-align:middle  }
 table.edit td.label{ text-align:left }
+table.edit td.icon{ padding:0 5px;width:16px}
 table.edit tr.top{ border-top:1px solid #1d4e85}
 table.edit tr.title{ border-bottom:1px solid #a5b6c8}
 table.edit tr.last{ border-bottom:1px solid #a5b6c8}
 
-.report_chosser {padding:15px 20px 0 20px;}
-.report_chosser li {float:left;padding:2px 5px;margin: 0 5px 0px 0;border: 1px solid #ccc;cursor:pointer;;opacity: .5;filter: alpha(opacity=50);}
-.report_chosser li:hover {opacity: .8;filter: alpha(opacity=80);}
-
-.report_chosser img {position:relative;top:2px;}
-
-.report_chosser li.selected {cursor:default;border-color:#aaa;;opacity: 1;filter: alpha(opacity=100);font-weight:800}
+.chooser {padding:15px 20px 0 20px;}
+.chooser li {float:left;padding:3px 5px 5px 5px ;margin: 0 5px 0px 0;border: 1px solid #ccc;cursor:pointer;;opacity: .5;filter: alpha(opacity=40);}
+.chooser li:hover {opacity: .8;filter: alpha(opacity=80);}
+.chooser img {position:relative;top:2px;}
+.chooser li.selected {cursor:default;border-color:#aaa;;opacity: 1;filter: alpha(opacity=100);font-weight:800;color:#555}
 
 .report_header {padding:15px 20px 0 20px;clear:both;margin-top:20px;}
 .report_header li {float:left;padding: 5px;margin: 0 5px 0px 0;cursor:pointer}
@@ -322,7 +323,7 @@ table.options{margin:0 ;float:right;border-collapse: separate;;border-spacing:3p
 .show_options span.selected:hover {color:#ebe69f;}
 
 
-.edit_block{clear:both;margin:55px 0 0 0;width:800px}
+.edit_block{clear:both;margin:0px 0 0 0;width:800px;padding:0px 20px}
 .calendar_year { margin: 10px 0 0 0  }
 .calendar_year  td{text-align:center;font-size:10px;font-weight:800;width:16px;border:1px solid #82aadf;cursor:pointer;border-top:3px solid #ff9958;color:#777}
 .calendar_year td a{color:#777}

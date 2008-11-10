@@ -1,6 +1,6 @@
 {include file='header.tpl'}
 <div id="bd" >
-  <div class="report_chosser" >
+  <div class="chooser" >
     <ul>
       <li {if $tipo=='sales'}class="selected"{/if} id="sales"><img src="art/icons/money.png"> Sales</li>
       <li {if $tipo=='geosales'}class="selected"{/if} id="geosales" ><img src="art/icons/world.png"> Geo-Sales</li>

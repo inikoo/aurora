@@ -350,6 +350,7 @@ $default_state=array(
 				       'details'=>false,
 				       'plot'=>'sales_month',
 				       'id'=>1,
+				       'edit'=>'description',
 				       'display'=>array('details'=>0,'plot'=>1,'orders'=>0,'customers'=>0,'stock_history'=>0),
 				       'plot'=>'',
 				       'plot_options'=>array('weeks'=>'','from'=>'','to'=>'','months'=>''),
@@ -416,6 +417,36 @@ $default_state=array(
 							 'elements'=>array()
 							 )
 				       ),
+		     'report'=>array(
+				     'pickers'=>array(
+						 'order'=>'tipo',
+						 'order_dir'=>'',
+						 'sf'=>0,
+						 'nr'=>10000,
+						 'from'=>'',
+						 'to'=>'',
+						 'where'=>'where true',
+						 'f_field'=>'',
+						 'f_value'=>'',
+						 'elements'=>array()
+						 
+						      ),
+				     'packers'=>array(
+						 'order'=>'tipo',
+						 'order_dir'=>'',
+						 'sf'=>0,
+						 'nr'=>10000,
+						 'from'=>'',
+						 'to'=>'',
+						 'where'=>'where true',
+						 'f_field'=>'',
+						 'f_value'=>'',
+						 'elements'=>array()
+						 
+						 )
+
+				     ),
+
 		     'supplier'=>array(
 				       'details'=>false,
 				       'plot'=>'sales_month',

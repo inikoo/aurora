@@ -8,6 +8,75 @@ var    current_form = 'description';
 var    num_changed = 0;
 var    num_errors = 0;
 var editor;
+var editing='<?=$_SESSION['state']['product']['edit']?>';
+
+var is_diferent = function(v1,v2,tipo){
+
+    if(tipo=='money' || tipo=='number'){
+	if(parseFloat(v1)!=parseFloat(v2))
+	    return true;
+	else
+	    return false;
+    }else{
+	if(v1!=v2)
+	    return true;
+	else
+	    return false;
+    }
+	
+
+}
+
+
+var change_element= function(o){
+
+       
+	var current_class=o.className;
+	var tipo=o.getAttribute('tipo');
+
+
+	if(is_diferent(o.getAttribute("ovalue"),o.value,tipo)){
+
+	    if(current_class==''){
+		num_changed++;
+		}
+
+	    val = vadilate(o);
+
+	    if(!val){
+		if(current_class!='error'){
+		    num_errors++;
+		}
+		o.className='error';
+	    }else{
+		if(current_class=='error')
+		    num_errors--;
+		o.className='ok';
+
+	    }
+
+	}else{
+
+	    if(current_class=='ok')
+		num_changed--;
+	    if(current_class=='error'){
+		num_changed--;
+		num_errors--;
+	    }
+	    o.className='';
+
+	}
+
+	if(editing=='suppliers'){
+	    interpet_changes(o.getAttribute('supplier_id'));
+	}else
+	    interpet_changes();
+	
+
+
+    }
+
+
 
 
 function save_form(){
@@ -19,18 +88,27 @@ function save_form(){
 
 }
 
-var interpet_changes = function(){
-    if(num_changed>0 && num_errors==0){
-	Dom.get('save').className='ok';
-	Dom.get('exit').className='nook';
-	YAHOO.util.Event.addListener('save', "click", save_form);
-    }else{
-	YAHOO.util.Event.removeListener('save', "click");
-	Dom.get('save').className='disabled';
-	Dom.get('exit').className='ok';
-	
-	}
+var interpet_changes = function(id){
     
+    if(editing=='suppliers'){
+	if(num_changed>0 && num_errors==0){
+	    Dom.get('save_supplier_'+id).style.display='';
+	}else
+	    Dom.get('save_supplier_'+id).style.display='none';
+
+	
+    }else{
+	if(num_changed>0 && num_errors==0){
+	    Dom.get('save').className='ok';
+	    Dom.get('exit').className='nook';
+	    YAHOO.util.Event.addListener('save', "click", save_form);
+	}else{
+	    YAHOO.util.Event.removeListener('save', "click");
+	    Dom.get('save').className='disabled';
+	    Dom.get('exit').className='ok';
+	    
+	}
+    }
 };
 function delete_list_item (e,id){
     
@@ -98,7 +176,7 @@ function delete_list_item (e,id){
 
 
 
-function init(){
+
     var check_number = function(e){
 	re=<?=$regex['thousand_sep']?>;
 	value=this.value.replace(re,'')
@@ -152,15 +230,20 @@ function init(){
     }
 
     var vadilate = function(o){
+	if(o.getAttribute('tipo')=='money'){
+	    if(isNaN(o.value))
+		 return false;
+	    if(o.value.match(/[a-z]/))
+		return false;
 
-	if(o.id=='v_description' || o.id=='v_sdescription'){
+	}else if( o.getAttribute('tipo')=='text_nonull'  ){
 	    if(o.value==''){
 		return false;
-		o.inerhtml='caca';
-	    }else if(!o.value.match(/[a-z]/))
-		return false;
-
-	}
+	    }
+	}else if(!o.value.match(/[a-z]/))
+	    return false;
+	
+	
 	return true;
     }
     var change_textarea=function(e,name){
@@ -175,59 +258,6 @@ function init(){
 	}
 
     }
-
-
-    var change_element= function(e){
-
-       
-	current_class=this.className;
-
-
-
-	if(this.getAttribute("ovalue")!=this.value){
-
-	    if(current_class==''){
-		num_changed++;
-		}
-
-	    val = vadilate(this);
-
-	    if(!val){
-		if(current_class!='error'){
-		    num_errors++;
-		}
-		this.className='error';
-	    }else{
-		if(current_class=='error')
-		    num_errors--;
-		this.className='ok';
-
-	    }
-
-	}else{
-
-	    if(current_class=='ok')
-		num_changed--;
-	    if(current_class=='error'){
-		num_changed--;
-		num_errors--;
-	    }
-	    this.className='';
-
-	}
-
-	interpet_changes();
-	
-
-
-    }
-	//   var ids = ["v_uw"]; 
-	//   YAHOO.util.Event.addListener(ids, "keyup", check_number);
-	//   var ids = ["v_udim","v_odim"]; 
-	//   YAHOO.util.Event.addListener(ids, "keyup", check_dimension);
-  
-	//   var ids = ["v_udim_shape","v_odim_shape"]; 
-	//   YAHOO.util.Event.addListener(ids, "change", change_shape);
 
 
 
@@ -363,7 +393,6 @@ var change_block = function(e){
     
 
     Dom.get('d_suppliers').style.display='none';
-
     Dom.get('d_pictures').style.display='none';
     Dom.get('d_suppliers').style.display='none';
     Dom.get('d_prices').style.display='none';
@@ -372,11 +401,27 @@ var change_block = function(e){
     Dom.get('d_'+this.id).style.display='';
     
 
+    
+    Dom.get('suppliers').className='';
+    Dom.get('pictures').className='';
+    Dom.get('suppliers').className='';
+    Dom.get('prices').className='';
+    Dom.get('dimat').className='';
+    Dom.get('description').className='';
+    Dom.get(this.id).className='selected';
+    
+    YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=product-edit&value='+this.id );
+    
+    editing=this.id;
+
+
 }
 
+function init(){
 
-	var ids = ["v_description","v_sdescription"]; 
-	YAHOO.util.Event.addListener(ids, "keyup", change_element);
+
+    //var ids = ["v_description","v_sdescription"]; 
+    //	YAHOO.util.Event.addListener(ids, "keyup", change_element);
 
 	var ids = ["cat_select"]; 
 	YAHOO.util.Event.addListener(ids, "change", change_list_element);
@@ -411,16 +456,149 @@ var change_block = function(e){
 	editor.on('editorKeyUp',change_textarea,'details' );
 	//-------------------------------------------------------------
 	
-	var change_block = function(e){
-	    alert(e.id);
-	    
-	}
+
 	    
 
 }
 
 
     YAHOO.util.Event.onDOMReady(init);
+
+
+var supplier_selected=function(sType, aArgs){
+    var myAC = aArgs[0]; // reference back to the AC instance
+    var elLI = aArgs[1]; // reference to the selected LI element
+    var oData = aArgs[2]; // object literal of selected item's result data
+
+    Dom.get('new_supplier_form').style.display='';
+
+    Dom.setStyle('current_suppliers_form', 'opacity', .25); 
+
+    Dom.get('new_supplier_name').innerHTML=oData.names;
+    Dom.get('new_supplier_form').setAttribute('supplier_id',oData.id);
+    Dom.get('new_supplier_input').value='';
+};
+
+var save_supplier=function(supplier_id){
+    var cost=Dom.get('v_supplier_cost'+supplier_id).value;
+    var code=Dom.get('v_supplier_code'+supplier_id).value;
+    var request='ar_assets.php?tipo=ep_update_supplier&op_tipo=update&supplier_id='+ escape(supplier_id)+'&cost='+ escape(cost)+'&code='+ escape(code);
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    success:function(o) {
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if (r.state == 200) {
+		    //retutn to normal classes
+		    if(Dom.get('v_supplier_cost'+supplier_id).className=='ok'){
+			Dom.get('v_supplier_cost'+supplier_id).className='';
+			num_changed--;
+		    }
+		    if(Dom.get('v_supplier_code'+supplier_id).className=='ok'){
+			Dom.get('v_supplier_code'+supplier_id).className='';
+			num_changed--;
+		    }
+
+		    
+		}else
+		    Dom.get('edit_messages').innerHTML='<span class="error">'+r.msg+'</span>';
+	    }
+	});
+};
+
+
+
+var save_new_supplier=function(){
+    var cost=Dom.get('new_supplier_cost').value;
+    var code=Dom.get('new_supplier_code').value;
+    var supplier_id=Dom.get('new_supplier_form').getAttribute('supplier_id');
+    var request='ar_assets.php?tipo=ep_update_supplier&op_tipo=new&supplier_id='+ escape(supplier_id)+'&cost='+ escape(cost)+'&code='+ escape(code);
+
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    success:function(o) {
+
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+
+		if (r.state == 200) {
+
+
+		//     var row = Dom.get('location_table').insertRow(r.where);
+// 		    row.setAttribute("id", 'row_'+r.id );
+// 		    row.setAttribute("pl_id", r.pl_id );
+// 		    var cellLeft = row.insertCell(0);
+// 		    cellLeft.setAttribute("id", 'loc_name'+r.id );
+// 		    var cellLeft = row.insertCell(1);
+// 		    cellLeft.setAttribute("id", 'loc_tipo'+r.id );
+// 		    var cellLeft = row.insertCell(2);
+// 		    var span = document.createElement("span");
+// 		    span.innerHTML=' &uarr; ';
+// 		    span.setAttribute("onclick", "rank_up("+r.id+")" );
+// 		    span.setAttribute("style", "cursor:pointer" );
+// 		    span.setAttribute("id", 'loc_picking_up'+r.id );
+// 		    cellLeft.appendChild(span);
+// 		    var span = document.createElement("span");
+// 		    span.setAttribute("id", 'loc_picking_tipo'+r.id );
+// 		    cellLeft.appendChild(span);
+// 		    cellLeft.style.textAlign='right';
+// 		    cellLeft.setAttribute("id", 'loc_pick_info'+r.id );
+// 		    var img = document.createElement("img");
+// 		    img.setAttribute("src", "art/icons/basket.png" );
+// 		    img.setAttribute("style", "cursor:pointer" );
+// 		    img.setAttribute("title", "" );
+// 		    img.setAttribute("id", 'loc_picking_img'+r.id );
+// 		    //img.setAttribute("onclick", "desassociate_loc()" );
+// 		     cellLeft.appendChild(img);
+
+
+// 		     var cellLeft = row.insertCell(3);
+// 		     cellLeft.setAttribute("id", 'loc_stock'+r.id );
+// 		     cellLeft.style.textAlign='right';
+// 		     var cellLeft = row.insertCell(4);
+// 		     var img = document.createElement("img");
+// 		     img.setAttribute("src", "art/icons/cross.png" );
+// 		     img.setAttribute("style", "cursor:pointer" );
+// 		     img.setAttribute("title", "<?=_('Free the location')?>" );
+// 		     img.setAttribute("id", 'loc_del'+r.id );
+// 		     img.setAttribute("onclick", "desassociate_loc("+r.id+")" );
+		     
+// 		     cellLeft.appendChild(img);
+// 		     location_data=r.data;
+// 		     clear_actions();
+		    
+		}else
+		    Dom.get('edit_messages').innerHTML='<span class="error">'+r.msg+'</span>';
+	    }
+	});
+};
+var cancel_new_supplier=function(){
+    Dom.setStyle('current_suppliers_form', 'opacity', 1.0); 
+    Dom.get('new_supplier_form').style.display='none';
+    Dom.get('new_supplier_name').innerHTML='';
+    Dom.get('new_supplier_form').setAttribute('supplier_id','');
+
+
+}	
+
+
+YAHOO.util.Event.onContentReady("adding_new_supplier", function () {
+	var oDS = new YAHOO.util.XHRDataSource("ar_suppliers.php");
+ 	oDS.responseType = YAHOO.util.XHRDataSource.TYPE_JSON;
+ 	oDS.responseSchema = {
+ 	    resultsList : "data",
+ 	    fields : ["name","code","id","names"]
+ 	};
+
+ 	var oAC = new YAHOO.widget.AutoComplete("new_supplier_input", "new_supplier_container", oDS);
+ 	oAC.resultTypeList = false; 
+	oAC.generateRequest = function(sQuery) {
+ 	    return "?tipo=suppliers_name&except_product=<?=$_SESSION['state']['product']['id']?>&query=" + sQuery ;
+ 	};
+	oAC.forceSelection = true; 
+	oAC.itemSelectEvent.subscribe(supplier_selected); 
+    });
+
+
+
+
+
 
 
 // function init(){

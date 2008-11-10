@@ -23,6 +23,31 @@ if(!isset($_REQUEST['tipo']))
 
 $tipo=$_REQUEST['tipo'];
 switch($tipo){
+ case('ep_update_supplier'):
+     $data=array(
+
+		 'supplier_id'=>$_REQUEST['supplier_id'],
+		 'cost'=>$_REQUEST['cost'],
+		 'code'=>$_REQUEST['code'],
+		 'user_id'=>$LU->getProperty('auth_user_id'),
+		 'tipo'=>$_REQUEST['op_tipo']
+		 );
+     $product=new product($_SESSION['state']['product']['id']);
+     $res=$product->update_supplier($data);
+     if($res[0])
+       $response= array(
+			'state'=>200,
+			//			'data'=>$res[1],
+
+			);
+     else
+       $response= array(
+			'state'=>400,
+			'msg'=>$res[1]
+		      );
+     echo json_encode($response);  
+     break;
+
  case('pml_change_location'):
      $data=array(
 

@@ -15,10 +15,6 @@ $view_suppliers=$LU->checkRight(SUP_VIEW);
 $smarty->assign('view_suppliers',$view_suppliers);
 
 
-
-
-
-
 $smarty->assign('view_sales',$view_sales);
 $smarty->assign('view_stock',$view_stock);
 $smarty->assign('create',$create);
@@ -28,11 +24,10 @@ $smarty->assign('view_orders',$view_orders);
 $view_cust=$LU->checkRight(CUST_VIEW);
 $smarty->assign('view_cust',$view_cust);
 
-$smarty->assign('edit_products_block',$_SESSION['views']['edit_products_block']);
 
 
-if(isset($_REQUEST['vp']) and is_numeric($_REQUEST['vp']) and $_REQUEST['vp']>=0 and $_REQUEST['vp']<6)
-  $_SESSION['views']['product_plot']=$_REQUEST['vp'];
+
+
 
 
 if(!isset($_REQUEST['id']) and is_numeric($_REQUEST['id']))
@@ -41,6 +36,7 @@ else
   $product_id=$_REQUEST['id'];
 
 
+$_SESSION['state']['product']['id']=$product_id;
 
 $product= new product($product_id);
 $product->read(array(
@@ -169,6 +165,7 @@ $css_files=array(
 		 $yui_path.'menu/assets/skins/sam/menu.css',
 		  $yui_path.'calendar/assets/skins/sam/calendar.css',
 		 $yui_path.'button/assets/skins/sam/button.css',
+		 $yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
 		 //		 $yui_path.'datatable/assets/skins/sam/datatable.css',
 		 $yui_path.'editor/assets/skins/sam/editor.css',
 		 'text_editor.css',
@@ -191,12 +188,14 @@ $js_files=array(
 		$yui_path.'charts/charts-experimental-min.js',
 		$yui_path.'datatable/datatable-beta.js',
 		$yui_path.'editor/editor-beta-debug.js',
-
+		
 		$yui_path.'json/json-min.js',
+
 		'js/calendar_common.js.php',
 		'js/common.js.php',
 		'js/table_common.js.php',
-		'js/edit_product.js.php'
+		'js/edit_product.js.php',
+
 		);
 
 
@@ -284,7 +283,7 @@ $smarty->assign('time',date('H:i'));
 
 
 
-
+$smarty->assign('edit',$_SESSION['state']['product']['edit']);
 
 $smarty->display('edit_product.tpl');
 ?>

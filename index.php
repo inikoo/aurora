@@ -4,15 +4,26 @@ include_once('classes/Product.php');
 
 
 
-// $sql=sprintf("select  id from product where tdall=0 ");
-// $result =& $db->query($sql);
-// while($row=$result->fetchRow()){
+ $sql=sprintf("select id,order_id from todo_users where tipo='taken' ");
+ $result =& $db->query($sql);
+ while($row=$result->fetchRow()){
 //   $product=new Product($row['id']);
 //   $product->read('first_date');
 //   $product->read('sales_metadata');
 //   $product->read('stock_forecast');
 
-//  }
+   $order_id=$row['order_id'];
+   //   $name=$row['name'];
+   //$tipo=$row['tipo'];
+   $id=$row['id'];
+   $sql="select id from orden where public_id='$order_id'";
+   $resultx =& $db->query($sql);
+   if($rowx=$resultx->fetchRow()){
+     $sql="update todo_users set order_id=".$rowx['id']." where id=$id";
+     mysql_query($sql);
+    }
+
+  }
 $view_orders=$LU->checkRight(ORDER_VIEW);
 $smarty->assign('view_orders',$view_orders);
 

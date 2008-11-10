@@ -468,8 +468,98 @@ class product{
   }
     
 
+  function update_supplier($data){
+    switch($data['tipo']){
+    case('new'):
+      $supplier_id=$data['supplier_id'];
+      $code=stripslashes($data['code']);
+      $user_id=$data['user_id'];
+      $cost=$data['cost'];
+      $date='NOW()';
+
+      $sql=sprintf("select name from supplier  where id=%d",$supplier_id); 
+      $result =& $this->db->query($sql);
+      if($row=$result->fetchRow()){
+	$supplier_name=$row['name'];
+	
+      }else
+	return array(false,_('Supplier do not exist'));
 
 
+      $sql=sprintf("insert into product2supplier (supplier_id,product_id,price,sup_code) values (%d,%d,%.3f,%s)",$supplier_id,$this->id,$cost,prepare_mysql($code));
+
+      $this->db->exec($sql);
+      $p2s_id=$this->db->lastInsertID();
+      $note=_('New supplier for')." ".$this->data['code'].": ".$supplier_name;
+      $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,old_value,new_value,note) values (%s,'PROD',%d,'SUP',%d,'NEW',%d,NULL,'%d',%s)"
+		   ,$date,$this->id,$supplier_id,$user_id,$p2s_id,prepare_mysql($note)); 
+      mysql_query($sql);
+      
+      return array(true);
+      break;
+    case('update'):
+      $supplier_id=$data['supplier_id'];
+      $code=stripslashes($data['code']);
+      $user_id=$data['user_id'];
+      $cost=$data['cost'];
+      $date='NOW()';
+
+      $sql=sprintf("select id,sup_code,price from product2supplier where product_id=%d and supplier_id=%d ",$this->id,$supplier_id); 
+      $result =& $this->db->query($sql);
+      if($row=$result->fetchRow()){
+	$old_code=$row['sup_code'];
+	$old_cost=$row['price'];
+	$p2s_id=$row['id'];
+      }else
+	return array(false,_('Supplier is not associated with the product'));
+
+      if($old_code!=$code){
+	$sql=sprintf("update product2supplier set sup_code=%s where id=%d",prepare_mysql($code),$p2s_id);
+
+	mysql_query($sql);
+
+	$note=_("The suppliers code for")." ".$this->data['code']." "._('changed')." $old_code &rarr; $code";
+	$sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,old_value,new_value,note) values (%s,'PROD',%d,'SUP',%d,'COD',%d,%s,%s,%s)"
+		     ,$date,$this->id,$supplier_id,$user_id,prepare_mysql($old_code),prepare_mysql($code),prepare_mysql($note)); 
+	mysql_query($sql);
+      }
+      if($old_cost!=$cost){
+	$sql=sprintf("update product2supplier set price=%.4f where id=%d",$cost,$p2s_id);
+	mysql_query($sql);
+	$note=_("The suppliers unit cost for")." ".$this->data['code']." "._('changed')." ".money($old_cost)." &rarr; ".money($code);
+	$sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,old_value,new_value,note) values (%s,'PROD',%d,'SUP',%d,'COS',%d,%.4f,'%.4f',%s)"
+		     ,$date,$this->id,$supplier_id,$user_id,$old_cost,$cost,prepare_mysql($note)); 
+	mysql_query($sql);
+      }
+      return array(true);
+      
+      break;
+    case('delete'):
+      $supplier_id=$data['supplier_id'];
+      $user_id=$data['user_id'];
+      $date='NOW()';
+
+
+      $sql=sprintf("select id from product2supplier where product_id=%d and supplier_id%d ",$this->id,$supplier_id); 
+      $result =& $this->db->query($sql);
+      if($row=$result->fetchRow()){
+	$p2s_id=$row['id'];
+      }else
+	return array(false,_('Supplier is not associated with the product'));
+
+      $sql=sprintf("delete from product2supplier where id=%d",$p2s_id);
+      mysql_query($sql);
+      
+
+      $note=$this->code." "._('is no longer supplier by ').$supplier_name;
+      $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,old_value,new_value,note) values (%s,'PROD',%d,'SUP',%d,'DEL',%d,'%d',NULL,%s)"
+		   ,$date,$this->id,$supplier_id,$user_id,$p2s_id,prepare_mysql($note)); 
+      mysql_query($sql);
+      return array(true);
+      break;
+
+    }
+  }
 
   function update_location($data){
     switch($data['tipo']){

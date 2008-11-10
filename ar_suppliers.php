@@ -20,6 +20,47 @@ if(!isset($_REQUEST['tipo']))
 $tipo=$_REQUEST['tipo'];
 switch($tipo){
 
+ case('suppliers_name'):
+
+   if(!isset($_REQUEST['query']) or $_REQUEST['query']==''){
+     $response= array(
+		      'state'=>400,
+		      'data'=>array()
+		      );
+     echo json_encode($response);
+     return;
+   }
+     
+   
+
+   if(isset($_REQUEST['except_product'])){
+     $sql=sprintf("select code,name,id from supplier where code like '%s%%' and (select count(*) from product2supplier where product_id=%d)!=0  ",$_REQUEST['query'],$_REQUEST['except_product']);
+   }else{
+     $sql=sprintf("select code,name,id from supplier where code like '%s%%' ",$_REQUEST['query']);
+   }
+   
+   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   while($row=$res->fetchRow()) {
+
+
+     $data[]=array(
+		   'names'=>$row['code'].($row['code']!=$row['name']?' '.$row['name']:''),
+		   'name'=>$row['name'],
+		   'code'=>$row['code'],
+		   'id'=>$row['id'],
+		   );
+   }
+   
+
+   $response= array(
+		    'state'=>200,
+		    'data'=>$data
+		    );
+   echo json_encode($response);
+
+
+   break;
+
  case('po_go'):
 
    if(isset( $_REQUEST['po_id']) and is_numeric( $_REQUEST['po_id']) ){
