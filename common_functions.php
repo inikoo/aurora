@@ -561,12 +561,36 @@ function extract_product_groups($str,
 				$q_prod_name='product.code like',
 				$q_prod_id='transaction.product_id like',
 				$q_group_name='product_group.name like',
-				$q_group_id='product_group.id like'
+				$q_group_id='product_group.id like',
+				$q_department_name='product_department.name like',
+				$q_department_id='product_department.id like'
 				){
   if($str=='')
     return '';
   $where='';
   $where_g='';
+  $where_d='';
+
+
+   if(preg_match_all('/d\([a-z0-9\-\,]*\)/i',$str,$matches)){
+    
+
+    foreach($matches[0] as $match){
+      
+      $_departments=preg_replace('/\)$/i','',preg_replace('/^d\(/i','',$match));
+      $_departments=preg_split('/\s*,\s*/i',$_departments);
+
+      foreach($_departments as $department){
+	$department_ordered=addslashes($department);
+	if(is_numeric($department_ordered))
+	  $where_d.=" or $q_department_id  '$department_ordered'";
+	else
+	  $where_d.=" or $q_department_name '$department_ordered'";
+      }
+    }
+    $str=preg_replace('/d\([a-z0-9\-\,]*\)/i','',$str);
+  }
+
   if(preg_match_all('/g\([a-z0-9\-\,]*\)/i',$str,$matches)){
     
 
@@ -602,7 +626,7 @@ function extract_product_groups($str,
   
   
 
-  $where=preg_replace('/^\s*or\s*/i','',$where_g.$where_p);
+  $where=preg_replace('/^\s*or\s*/i','',$where_d.$where_g.$where_p);
   return '('.$where.')';
   
 }

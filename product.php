@@ -76,7 +76,7 @@ $product->read(array(
 		     )
 	       );
 
-
+$smarty->assign('data',$product->data);
 
 
 $fam_order=$_SESSION['state']['family']['table']['order'];
@@ -103,18 +103,9 @@ $smarty->assign('suppliers_price',$product->get('supplier_price'));
 
 
 
-// $_SESSION['tables']['order_withprod'][4]=$product_id;
-// $_SESSION['tables']['order_withcustprod'][4]=$product_id;
-// $_SESSION['tables']['stock_history'][4]=$product_id;
-
-
-
-
-
-
 
 $smarty->assign('parent','departments.php');
-$smarty->assign('title',$product->get('group'));
+$smarty->assign('title',$product->get('code'));
 
 
 $product_home="Products Home";
@@ -127,37 +118,11 @@ $smarty->assign('images',$product->get('images'));
 $smarty->assign('image_dir',$myconf['images_dir']);
 
 $smarty->assign('num_images',count($product->get('images')));
-//print_r($product->get('images'));
 
 
-$smarty->assign('product_id',$product_id);
-$smarty->assign('code',$product->get('code'));
-$smarty->assign('ncode',$product->get('ncode'));
-$smarty->assign('id',$product->get('product_id'));
-$smarty->assign('description',$product->get('description'));
-$smarty->assign('units',number($product->get('units')));
-$smarty->assign('unit_price',money($product->get('price')/$product->get('units')));
-$smarty->assign('units_tipo',$_units_tipo[$product->get('units_tipo')]);
-$smarty->assign('stock',number($product->get('stock')));
-$smarty->assign('available',number($product->get('available')));
 
-$smarty->assign('n_price',$product->get('price'));
-$smarty->assign('n_rrp',$product->get('rrp'));
-
-$smarty->assign('price',money($product->get('price')));
-$smarty->assign('rrp',money($product->get('rrp')));
-$smarty->assign('units_carton',$product->get('units_carton'));
-
-
-$smarty->assign('aunits_tipo',$_units_tipo);
-$smarty->assign('ashape',$_shape);
-$smarty->assign('ashape_example',$_shape_example);
-
-$smarty->assign('cur_symbol',$myconf['currency_symbol']);
-
-$smarty->assign('first_date',$product->get('first_date'));
 $weeks=$product->get('weeks_since');
-$smarty->assign('weeks_since',number($weeks));
+
 
 // assign plot tipo depending of the age of the product
 
@@ -179,41 +144,6 @@ $smarty->assign('plot_tipo',$plot_tipo);
 
 
 
-$smarty->assign('outall',number($product->get('outall')));
-$smarty->assign('awoutall',number($product->get('awoutall')));
-$smarty->assign('awoutq',number($product->get('awoutq')));
-
-
-
-
-$smarty->assign('w',$product->get('w'));
-
-$smarty->assign('short_description',$product->get('description_med'));
-
-
-$sql="select id,alias from staff where active=1 order by alias";
-$result =& $db->query($sql);
-
-$associates=array('0'=>_('Other'));
-while($row=$result->fetchRow()){
-  $associates[$row['id']]=$row['alias'];
-  
- }
-
-$smarty->assign('acheckedby',$associates);
-
-$sql="select id,code from supplier  order by code";
-$result =& $db->query($sql);
-
-$asuppliers=array('0'=>_('Choose a supplier'));
-while($row=$result->fetchRow()){
-  $asuppliers[$row['id']]=$row['code'];
-  
- }
-
-$smarty->assign('asuppliers',$asuppliers);
-$smarty->assign('date',date('d-m-Y'));
-$smarty->assign('time',date('H:i'));
 
 $smarty->assign('stock_table_options',array(_('Inv'),_('Pur'),_('Adj'),_('Sal'),_('P Sal')) );
 $smarty->assign('stock_table_options_tipo', $_SESSION['views']['stockh_table_options'] );
@@ -223,32 +153,23 @@ $smarty->assign('table_title_stock',_('Stock History'));
 
 
 
-
-//$smarty->assign('total_records',$product->get('numberof'));
-//$smarty->assign('rpp',$_SESSION['tables']['product_list'][2]);
-
-//$smarty->assign('records_perpage',$_SESSION['tables']['product_list'][2]);
-
 $smarty->assign('key_filter_number',$regex['key_filter_number']);
 $smarty->assign('key_filter_dimension',$regex['key_filter_dimension']);
 
-$manage_stock_data=array();
-$physical_locations=0;
-foreach($locations['data'] as $location){
-  $manage_stock_data['locations'][]=array('name'=>$location['name'],'id'=>$location['location_id'],'stock'=>$location['stock']);
-  if($location['tipo']=='picking' or $location['tipo']=='storing')
-    $physical_locations++;
-}
-$manage_stock_data['physical_locations']=$physical_locations;
 
-$_SESSION['state']['product']['manage_stock_data']=json_encode($manage_stock_data);
 $js_files[]= 'js/search_product.js';
 $js_files[]='js/product.js.php?current_plot='.$plot_tipo;
-$js_files[]='js/product_manage_stock.js.php';
+
+$smarty->assign('tsoall',number($product->data['tsoall']));
+$smarty->assign('awtsoall',number($product->data['awtsoall']));
+$smarty->assign('awtsoq',number($product->data['awtsoq']));
+$smarty->assign('units',number($product->data['units']));
+$smarty->assign('price',money($product->data['price']));
+$smarty->assign('rrp',money($product->data['rrp']));
+$smarty->assign('unit_price',money($product->data['price']/$product->data['units']));
+
 
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
-
-
 $smarty->display('product.tpl');
 ?>

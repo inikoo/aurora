@@ -24,7 +24,7 @@
 	<div class="yui-u first" >
 	  <div id="photo_container" style="margin-top:10px">
 	    <div style="border:1px solid #ddd;padding-top:0;width:220px;xheight:230px;text-align:center;margin:0 10px 0 0px">
-	      <span style="font-size:150%;font-weight:800">{$code}</span>
+	      <span style="font-size:150%;font-weight:800">{$data.code}</span>
 	      <div id="imagediv"  pic_id="{$images[0].id}"  style="border:1px solid #ddd;width:200px;height:140px;padding:0px 0;xborder:none;cursor:pointer;xbackground:red;margin: 0 0 10px 9px">
 		<img src="{ if $images[0]}{$image_dir}{$images[0].src}{else}art/nopic.png{/if}"     id="image"   alt="{t}Image{/t}"/>
 	      </div>
@@ -48,26 +48,30 @@
 
 	
 	<div class="yui-u">
-	  <h1>{$units}x {$description} [{$product_id}]</h1>
+	  <h1>{$units}x {$data.description} [{$data.id}]</h1>
 	  <div class="yui-b"  style="width:100%;">
 	    <div class="yui-g" style="width:100%;font-size:90%"   >
               <div class="yui-u first">
 		<table    class="show_info_product" >
 		  <td class="aright">
-		    <tr>
-		      <td>{t}Sell Price{/t}:</td><td  class="price aright">{$price}{if $units>1} <span style="font-weight:400;color:#555">({$unit_price} {t}each{/t})</span>{/if}</td>
+		    
+		     <tr style="border-bottom:1px solid #5f84ae">
+		      <td></td><td  class="aright"><span  id="online"  >{if $data.online}{t}Online{/t} ({$data.online_status}) {else}{t}Offline{/t}{/if}</span></td>
 		    </tr>
 		    <tr>
-		      <td>{t}RRP{/t}:</td><td  class="aright">{$rrp} {if $units>1}{t}each{/t}{/if}</td>
+		      <td>{t}Sell Price{/t}:</td><td  class="price aright">{$price}{if $data.units>1} <span style="font-weight:400;color:#555">({$unit_price} {t}each{/t})</span>{/if}</td>
+		    </tr>
+		    <tr>
+		      <td>{t}RRP{/t}:</td><td  class="aright">{$rrp} {if $data.units>1}{t}each{/t}{/if}</td>
 		    </tr>
 		    
-		    <tr><td>{t}Sold Since{/t}:</td><td class="aright">{$first_date} ({$weeks_since}{t}w{/t})</td>
+		    <tr><td>{t}Sold Since{/t}:</td><td class="aright">{$data.first_date} ({$data.weeks_since}{t}w{/t})</td>
 		      {if $edit} <td   class="aright" ><input style="text-align:right" class="date_input" size="8" type="text"  id="v_invoice_date"  value="{$v_po_date_invoice}" name="invoice_date" /></td>{/if}
 		    </tr>
-		    <tr><td id="outall_label" title="Total Sales">{t}TS{/t}:</td><td class="aright" >{$outall} {t}Outers{/t}
+		    <tr><td id="outall_label" title="Total Sales">{t}TS{/t}:</td><td class="aright" >{$tsoall} {t}Outers{/t}
 		    </td></tr>
-		    <tr><td id="awoutall_label" title="Average Weelky Sales" >{t}AWS{/t}:</td><td class="aright" >{$awoutall} {t}Outers/w{/t}</td></tr>
-		    <tr><td id="awoutq_label" title="Average Weelky Sales (Last 12 weeks)">{t}AWSQ{/t}:<td class="aright" >{$awoutq} {t}Outers/w{/t}</td></tr>
+		    <tr><td id="awoutall_label" title="Average Weelky Sales" >{t}AWS{/t}:</td><td class="aright" >{$awtsoall} {t}Outers/w{/t}</td></tr>
+		    <tr><td id="awoutq_label" title="Average Weelky Sales (Last 12 weeks)">{t}AWSQ{/t}:<td class="aright" >{$awtsoq} {t}Outers/w{/t}</td></tr>
 		</table>
 		<table    class="show_info_product" >
 		  {if $view_suppliers}
@@ -86,9 +90,9 @@
 	    </div>
               <div class="yui-u">
 
-		  <table   class="show_info_product" {if $edit}class="edit"{/if}>
+		  <table   class="show_info_product" >
 		    <tr>
-		      <td>{t}Stock{/t}:<br>{$stock_units}</td><td class="stock aright" id="stock">{$stock}</td>
+		      <td>{t}Stock{/t}:<br>{$stock_units}</td><td class="stock aright" id="stock">{$data.stock}</td>
 		    </tr>
 		     <tr>
 		      <td>{t}Available{/t}:</td><td class="aright">{$available}</td>
@@ -102,13 +106,13 @@
 			</table>
 		      <td>
 		    {/if}
-		    {if $nextbuy>0   }<tr><td rowspan="2">{t}Next shipment{/t}:</td><td>{$next_buy}</td></tr><tr><td class="noborder">{$nextbuy_when}</td>{/if}
+		    {if $nextbuy>0   }<tr><td rowspan="2">{t}Next shipment{/t}:</td><td>{$data.next_buy}</td></tr><tr><td class="noborder">{$data.nextbuy_when}</td>{/if}
 		    </tr>
 		  </table>
 		  
 		  <table  class="show_info_product">
-		    <tr ><td>{t}Unit Weight{/t}:</td><td id="uw">{$uw}</td></tr>
-		    <tr><td>{t}Unit Dimensions{/t}:</td><td>{$udim}</td></tr>
+		    <tr ><td>{t}Unit Weight{/t}:</td><td id="uw">{$data.weight}{t}Kg{/t}</td></tr>
+		    <tr><td>{t}Unit Dimensions{/t}:</td><td>{$data.dim}</td></tr>
 		    <tr ><td>{t}Outer Weight{/t}:</td></tr>
 		    <tr><td>{t}Outer Dimensions{/t}:</td><td>{$odim}</td></tr>
 		    <tr><td>{t}Colour{/t}:</td><td>{$color}</td></tr>
@@ -180,8 +184,8 @@
 	<td   state="{$display.stock_history}" block="stock_history"  id="change_view_stock_history" {if $display.stock_history==0}title="{t}Show Stock History{/t}" atitle="{t}Hide Stock History{/t}"{else}atitle="{t}Show Stock History{/t}" title="{t}Hide Stock History{/t}"{/if} ><img {if $display.stock_history==0}style="opacity:0.2"{/if} src="art/icons/tick.png"    id="but_logo_stock_history"   /></td>
 	
       </tr>
-      <tr><td  colspan="5" style="text-align:center"><a href="edit_product.php?id={$product_id}">Edit Product</a></td></tr>
-      <tr><td  colspan="5" style="text-align:center"><a href="product_manage_stock.php?id={$product_id}">Manage Stock</a></td></tr>
+      <tr><td  colspan="5" style="text-align:center"><a href="edit_product.php?id={$data.id}">Edit Product</a></td></tr>
+      <tr><td  colspan="5" style="text-align:center"><a href="product_manage_stock.php?id={$data.id}">Manage Stock</a></td></tr>
       
     </table>
     

@@ -47,7 +47,18 @@ switch($tipo){
 		      );
      echo json_encode($response);  
      break;
-
+ case('ep_update'):
+     $data[]=array(
+		 'key'=>$_REQUEST['key'],
+		 'data'=>$_REQUEST['value'],
+		 'user_id'=>$LU->getProperty('auth_user_id'),
+		 );
+     $product=new product($_SESSION['state']['product']['id']);
+     $res=$product->update($data);
+     $response= array('res'=>$res);
+     
+     echo json_encode($response);  
+     break;
  case('pml_change_location'):
      $data=array(
 

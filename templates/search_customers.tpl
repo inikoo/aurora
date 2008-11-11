@@ -33,6 +33,10 @@
       </table>
       </form>
     </div>
+      
+      <div style="padding:30px 40px;display:none" id="searching">
+	{t}Search in progress{/t} <img src="art/progressbar.gif"/>
+      </div>
 
     
     <div id="the_table" class="data_table" style="margin:20px 20px;clear:both;display:none" >
@@ -55,9 +59,10 @@
 
 
 
+      
       <div  class="clean_table_caption"  style="clear:both;">
 	<div style="float:left;"><div id="table_info0" class="clean_table_info">{$table_info} <span class="filter_msg"  id="filter_msg0"></span></div></div>
-	<div class="clean_table_filter" style="display:none"><div class="clean_table_info"><span id="filter_name0">{$filter_name}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value}" size=10/><div id='f_container'></div></div></div>
+	<div class="clean_table_filter" id="clean_table_filter0" style="display:none"><div class="clean_table_info"><span id="filter_name0">{$filter_name}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value}" size=10/><div id='f_container'></div></div></div>
 	  <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator"></span></div></div>
 	</div>
 	<div  id="table0"   class="data_table_container dtable btable "> </div>

@@ -24,12 +24,6 @@ $smarty->assign('view_orders',$view_orders);
 $view_cust=$LU->checkRight(CUST_VIEW);
 $smarty->assign('view_cust',$view_cust);
 
-
-
-
-
-
-
 if(!isset($_REQUEST['id']) and is_numeric($_REQUEST['id']))
   $product_id=1;
 else
@@ -57,14 +51,9 @@ $product->read(array(
 //   $category_list[]=$row[]
 // }
 
-
-//get previoues
-$fam_order=$_SESSION['tables']['products_list'][0];
-
+$fam_order=$_SESSION['state']['family']['table']['order'];
 $sql=sprintf("select id,code from product where  %s<'%s' and  group_id=%d order by %s desc  ",$fam_order,$product->get($fam_order),$product->get('group_id'),$fam_order);
-
 $result =& $db->query($sql);
-
 if(!$prev=$result->fetchRow())
   $prev=array('id'=>0,'code'=>'');
 $sql=sprintf("select id,code from product where  %s>'%s' and group_id=%d order by %s   ",$fam_order,$product->get($fam_order),$product->get('group_id'),$fam_order);
@@ -74,6 +63,7 @@ if(!$next=$result->fetchRow())
 
 $smarty->assign('prev',$prev);
 $smarty->assign('next',$next);
+
 
 // $sql=sprintf("select filename,format,principal,caption,id from image where  product_id=%d ",$product_id);
 // $result =& $db->query($sql);
@@ -151,12 +141,6 @@ $smarty->assign('suppliers_price',$product->get('supplier_price'));
 $smarty->assign('suppliers_num_price',$product->get('supplier_num_price'));
 
 
-$_SESSION['tables']['order_withprod'][4]=$product_id;
-$_SESSION['tables']['order_withcustprod'][4]=$product_id;
-$_SESSION['tables']['stock_history'][4]=$product_id;
-
-
-
 $smarty->assign('box_layout','yui-t0');
 
 
@@ -188,7 +172,6 @@ $js_files=array(
 		$yui_path.'charts/charts-experimental-min.js',
 		$yui_path.'datatable/datatable-beta.js',
 		$yui_path.'editor/editor-beta-debug.js',
-		
 		$yui_path.'json/json-min.js',
 
 		'js/calendar_common.js.php',
@@ -202,80 +185,15 @@ $js_files=array(
 
 
 $smarty->assign('parent','assets_tree.php');
-$smarty->assign('title',$product->get('group'));
+$smarty->assign('title',$product->get('code'));
 
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
 
 $product_home="Products Home";
-$smarty->assign('home',$product_home);
-$smarty->assign('department',$product->get('department'));
-$smarty->assign('department_id',$product->get('department_id'));
-$smarty->assign('family',$product->get('group'));
-$smarty->assign('family_id',$product->get('group_id'));
-$smarty->assign('images',$product->get('images'));
-$smarty->assign('num_images',count($product->get('images')));
-//print_r($product->get('images'));
 
 
-$smarty->assign('product_id',$product_id);
-$smarty->assign('code',$product->get('code'));
-$smarty->assign('ncode',$product->get('ncode'));
-$smarty->assign('id',$product->get('product_id'));
-$smarty->assign('description',$product->get('description'));
-$smarty->assign('sdescription',$product->get('sdescription'));
-$smarty->assign('details',$product->get('details'));
-
-$smarty->assign('units',number($product->get('units')));
-
-$smarty->assign('units_tipo',$_units_tipo[$product->get('units_tipo')]);
-$smarty->assign('stock',number($product->get('stock')));
-$smarty->assign('available',number($product->get('available')));
-
-$smarty->assign('n_price',$product->get('price'));
-$smarty->assign('n_rrp',$product->get('rrp'));
-
-$smarty->assign('price',money($product->get('price')));
-$smarty->assign('rrp',money($product->get('rrp')));
-$smarty->assign('units_carton',$product->get('units_carton'));
-
-
-$smarty->assign('aunits_tipo',$_units_tipo);
-$smarty->assign('ashape',$_shape);
-$smarty->assign('ashape_example',$_shape_example);
-
-$smarty->assign('cur_symbol',$myconf['currency_symbol']);
-
-$smarty->assign('first_date',$product->get('first_date'));
-$smarty->assign('weeks_since',number($product->get('weeks_since')));
-
-
-$smarty->assign('outall',number($product->get('outall')));
-$smarty->assign('awoutall',number($product->get('awoutall')));
-$smarty->assign('awoutq',number($product->get('awoutq')));
-
-
-
-
-$smarty->assign('w',$product->get('w'));
-
-$smarty->assign('short_description',$product->get('description_med'));
-
-
-$sql="select id,alias from staff where active=1 order by alias";
-$result =& $db->query($sql);
-
-$associates=array('0'=>_('Other'));
-while($row=$result->fetchRow()){
-  $associates[$row['id']]=$row['alias'];
-  
- }
-
-$smarty->assign('acheckedby',$associates);
-
-$sql="select id,code from supplier  order by code";
-$result =& $db->query($sql);
 
 
 $smarty->assign('date',date('d-m-Y'));
@@ -284,6 +202,16 @@ $smarty->assign('time',date('H:i'));
 
 
 $smarty->assign('edit',$_SESSION['state']['product']['edit']);
+
+$smarty->assign('shape_example',$_shape_example);
+$smarty->assign('shapes',$_shape);
+$_SESSION['state']['product']['shapes_example']=json_encode($_shape_example);
+$_SESSION['state']['product']['shapes']=json_encode($_shape);
+
+
+
+$smarty->assign('currency',$myconf['currency_symbol']);
+$smarty->assign('data',$product->data);
 
 $smarty->display('edit_product.tpl');
 ?>

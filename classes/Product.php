@@ -44,6 +44,7 @@ class product{
       switch($table){
 
       case('product_info'):
+	global $_shape;
 	$sql=sprintf("select *,UNIX_TIMESTAMP(first_date) as ts_first_date from product where id=%d",$this->id);
 
 	$result =& $this->db->query($sql);
@@ -53,6 +54,14 @@ class product{
 	else
 	  $this->read('first_date');
 
+	
+	
+	$this->data['odim_tipo_id']=$this->data['odim_tipo'];
+	$this->data['odim_tipo']=$_shape[$this->data['odim_tipo_id']];
+	$this->data['dim_tipo_id']=$this->data['dim_tipo'];
+	$this->data['dim_tipo']=$_shape[$this->data['dim_tipo_id']];
+	$this->get('ovol');
+	$this->get('vol');
 	break;
       case('product_tree'):
 	$sql=sprintf('select d.name as department,d.id as department_id,g.name as group_name,group_id from product left join product_group as g on (g.id=group_id)  left join product_department as d on (d.id=department_id) where product.id=%s ',$this->id);
@@ -434,6 +443,12 @@ class product{
   function get($item=''){
 
     switch($item){
+    case('vol'):
+      $this->data['vol']=volumen($this->data['dim_tipo_id'],$this->data['dim']);
+      break;
+    case('ovol'):
+      $this->data['ovol']=volumen($this->data['odim_tipo_id'],$this->data['odim']);
+      break;
     case('a_dim'):
       if($this->data['dim']!='')
 	$a_dim=array($this->data['dim']);
@@ -1077,36 +1092,35 @@ class product{
 
 
   function update($values){
-    if(!isset($this->data['id']))
-      return false;
     
+    $date='NOW()';
     $res=array();
-    foreach($values as $key=>$value){
-      $res[$key]=array('res'=>0,'new_value'=>'','desc'=>'Unkwown Error');
-      switch($key){
+    foreach($values as $value){
+      $res[$value['key']]=array('res'=>0,'new_value'=>'','desc'=>'Unkwown Error');
+      switch($value['key']){
       case('description'):
       case('sdescription'):
-	if($this->data[$key]!=$value){
+	if($this->data[$value['key']]!=$value['data']){
 	  
-	  if($value==''){
-	    $res[$key]['desc']=_('Value Required');
+	  if($value['data']==''){
+	    $res[$value['key']]['desc']=_('Value Required');
 	    break;
 	  }
-	  if(!preg_match('/[a-z]/i',$value)){
-	      $res[$key]['desc']=_('Not Valid Value');
+	  if(!preg_match('/[a-z]/i',$value['data'])){
+	      $res[$value['key']]['desc']=_('Not Valid Value');
 	      break;
 	  }
 
-	  $sql=sprintf("update product set %s=%s where id=%d",$key,prepare_mysql($value),$this->data['id']);
+	  $sql=sprintf("update product set %s=%s where id=%d",$value['key'],prepare_mysql($value['data']),$this->data['id']);
 	  	  mysql_query($sql);
 
-	  $res[$key]=array('res'=>1,'new_value'=>$value);
+	  $res[$value['key']]=array('res'=>1,'new_value'=>$value['data']);
 	}else
-	  $res[$key]=array('res'=>2,'new_value'=>'','desc'=>'No changed');
+	  $res[$value['key']]=array('res'=>2,'new_value'=>'','desc'=>'No changed');
 	
 	break;
       case('cat'):
-	$cats=split($value);
+	$cats=split($value['data']);
 	
 	// delete all cats
 	$sql=sprintf("delete from cat  where product_id=%d",$this->data['id']);
@@ -1115,21 +1129,125 @@ class product{
 	  $sql=sprintf("insert into cat  (cat_id,product_id) values (%d,%d)",$cat,$this->data['id']);
 	  mysql_query($sql);
 	}
-	$res[$key]=array('res'=>1,'new_value'=>join('-',$value));
+	$res[$value['key']]=array('res'=>1,'new_value'=>join('-',$value['data']));
 	break;
       case('details'):
-	$sql=sprintf("update product set %s=%s where id=%d",$key,prepare_mysql($value),$this->data['id']);
+	$sql=sprintf("update product set %s=%s where id=%d",$value['key'],prepare_mysql($value['data']),$this->id);
 	mysql_query($sql);
-	$res[$key]=array('res'=>1,'new_value'=>$sql);
+	$res[$value['key']]=array('res'=>1,'new_value'=>$sql);
+	break;
+      case('weight'):
+      case('oweight'):
+	if(!is_numeric($value['data']))
+	  $res[$value['key']]=array('res'=>2,'new_value'=>'','desc'=>'Wrong data');
+	else{
+	  $old_value=$this->data[$value['key']];
+	  if($old_value!=$value['data']){
+	    $sql=sprintf("update product set %s=%s where id=%d",$value['key'],prepare_mysql($value['data']),$this->id);
+	    $affected=& $this->db->exec($sql);
+	    if (PEAR::isError($affected))
+	      $res[$value['key']]=array('res'=>2,'new_value'=>'','desc'=>'Error while tring to update product');
+	    else{
+	      $res[$value['key']]=array('res'=>1,'new_value'=>$value['data']);
+	      $this->data[$value['key']]=$value;
+	      
+	      if($value['key']=='weight'){
+		$history_text1=_('Product unitary weight set to');
+		$history_text2=_('Product unitary weight changed');
+		$tipo_code='UWE';
+	      }else{
+		$history_text1=_('Product outer weight set to');
+		$history_text2=_('Product outer weight changed');
+		$tipo_code='OWE';
+	      }
+	      
+	      if($old_value=='')
+		$note=$history_text1." ".number($value['data'],3)._('Kg');
+	      else{
+		
+		$note=$history_text2.": ".number($old_value,3)._('Kg')." &rarr; ".number($value['data'],3)._('Kg');
+	      }
+	      $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,old_value,new_value,note) values (%s,'PROD',%d,'UPD',NULL,'%s',%d,%s,%s,%s)"
+			   ,$date,$this->id,$value['user_id'],$tipo_code,($old_value==''?'NULL':$old_value),$value['data'],prepare_mysql($note)); 
+	      
+	      mysql_query($sql);
+	      //	      $res[$value['key']]=array('res'=>2,'new_value'=>'','desc'=>$sql);
+	       $res[$value['key']]=array('res'=>1,'new_value'=>sprintf("%.3f",$value['data']));
+	    }
+	  }
+	}
+	break;
+      case('dim'):
+      case('odim'):
+
+	if($value['key']=='dim')
+	  $preffix='';
+	else
+	  $preffix='o';
+	
+	if(!preg_match('/^shape\d\_/',$value['data']))
+	  $res[$value['key']]=array('res'=>2,'desc'=>'Wrong_data');
+	else{
+	list($tipo,$dims)=preg_split('/_/',$value['data']);
+	$tipo=preg_replace('/^shape/','',$tipo);
+	$_dims=preg_split('/x/',$dims);
+
+	$old_value=$this->data[$value['key']];
+	$old_value_tipo=$this->data[$value['key'].'_tipo'];
+	$old_value_tipo_id=$this->data[$value['key'].'_tipo_id'];
+	if($old_value!=$dims or $old_value_tipo_id!=$tipo){
+	  $sql=sprintf("update product set %s=%s,%s=%s where id=%d",$value['key'],prepare_mysql($dims),$value['key'].'_tipo',prepare_mysql($tipo),$this->id);
+	  //	  return $res[$value['key']]=array('res'=>2,'desc'=>$sql);
+	  $affected=& $this->db->exec($sql);
+	  if (PEAR::isError($affected))
+	    $res[$value['key']]=array('res'=>2,'new_value'=>'','desc'=>'Error while trying to update product');
+	  else{
+	    $res[$value['key']]=array('res'=>1,'new_value'=>$value['data']);
+	    global $_shape;
+	    $this->data[$value['key']]=$dims;
+	    $this->data[$value['key'].'_tipo_id']=$tipo;
+	    $this->data[$value['key'].'_tipo']=$_shape[$tipo];
+	    
+
+	    $this->get($preffix.'vol');
+	    if($value['key']=='dim'){
+	      $history_text1=_('Product dimentions set to');
+	      $history_text2=_('Product dimentions changed');
+	      $tipo_code='UDIM';
+	      
+	    }else{
+	      $history_text1=_('Outer dimentions set to');
+	      $history_text2=_('Outer dimentions changed');
+	      $tipo_code='ODIM';
+	    }
+	    
+	    
+	    if($old_value=='')
+	      $note=$history_text1." ".ln_dim($this->data[$preffix.'dim_tipo_id'],$this->data[$preffix.'dim']);
+	    else{
+	      
+	      $note=$history_text2.": ".ln_dim($old_value_tipo_id,$old_value)." &rarr; ".ln_dim($this->data[$preffix.'dim_tipo_id'],$this->data[$preffix.'dim']);
+		}
+	    $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,old_value,new_value,note) values (%s,'PROD',%d,'UPD',NULL,'%s',%d,%s,%s,%s)"
+			 ,$date,$this->id,$value['user_id'],$tipo_code,($old_value==''?'NULL':prepare_mysql($old_value_tipo_id.'_'.$old_value)),prepare_mysql($tipo.'_'.$dims),prepare_mysql($note)); 
+	    // return $res[$value['key']]=array('res'=>2,'desc'=>$sql);
+	    mysql_query($sql);
+	    //	      $res[$value['key']]=array('res'=>2,'new_value'=>'','desc'=>$sql);
+	    $res[$value['key']]=array('res'=>1,'new_value'=>$dims);
+	  }
+	}
+	}
 	break;
       default:
-	$res[$key]=array('res'=>0,'new_value'=>'','desc'=>'No key');
+	
+	$res[$value['key']]=array('res'=>2,'new_value'=>'','desc'=>'Unkwown key');
+    
       }
+
     }
-      return $res;
-    
-    
+    return $res;
   }
+
   function save_new($datos){
     
     
@@ -1451,6 +1569,65 @@ function get_cat_tree($tipo,$parent_id=false,$deep=0){
   }
   return array($cat,$deep);
 }
+ 
+function volumen($tipo,$data){
+
+  if($data=='')
+    return '';
+  switch($tipo){
+  case 1:
+    $_data=split('x',$data);
+      return $_data[0]* $_data[1]*$_data[2];
+      break;
+  case 2:
+    return $data*$data*$data*0.523598775;
+      break;
+  case 3:
+    $_data=split('x',$data);
+    return 0.785398162*$_data[0]*$data[1];
+      break;
+  case 4:
+    return 0.007853982*$data;
+    break;
+    case 5:
+      $_data=split('x',$data);
+      return $_data[0]* $_data[1]*0.1;
+      break; 
+  default:
+    return '';
+    }
+  
+}
+
+function ln_dim($tipo,$data){
+  global $_shape;
+  if($data=='')
+    return '';
+  switch($tipo){
+  case 1:
+    $_data=split('x',$data);
+    return $_shape[$tipo]." ("._('w').':'.number($_data[0])._('cm').","._('d').":".number($_data[1])._('cm').","._('h').":".number( $_data[2])._('cm').")";
+      break;
+  case 2:
+    return $_shape[$tipo]." (&empty;:".number( $data)._('cm').")";
+      break;
+  case 3:
+    $_data=split('x',$data);
+     return $_shape[$tipo]." ("._('h').':'.number($_data[1])._('cm').",&empty;:".number( $_data[0])._('cm').")";
+      break;
+  case 4:
+    return $_shape[$tipo]." ("._('lenght').":".number( $data)._('cm').")";
+    break;
+  case 5:
+    $_data=split('x',$data);
+    return $_shape[$tipo]." ("._('w').':'.number($_data[0])._('cm').","._('h').":".number( $_data[1])._('cm').")";
+    break; 
+  default:
+    return '';
+  }
+  
+}
+
 
 
 ?>

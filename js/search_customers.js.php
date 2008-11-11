@@ -1,5 +1,12 @@
 <?include_once('../common.php');?>
 
+    var data_returned=function(){
+	 Dom.get('searching').style.display='none';
+	 Dom.get('the_table').style.display='';
+
+
+    }
+
 
 YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
@@ -91,8 +98,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
 
-		    
-		    
+	    
+	    this.table0.subscribe("dataReturnEvent", data_returned);  
 
 
 	    this.table0.filter={key:'<?=$_SESSION['state']['customers']['table']['f_field']?>',value:'<?=$_SESSION['state']['customers']['table']['f_value']?>'};
@@ -179,9 +186,10 @@ var submit_advanced_search = function(e){
     var request='&sf=0&where=' +jsonStr;
     
 
-    Dom.get('the_table').style.display='';
-    alert(request)
+    Dom.get('the_table').style.display='none';
+    Dom.get('searching').style.display='';
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);     
+
 }
 
 YAHOO.util.Event.addListener('submit_advanced_search', "click",submit_advanced_search);

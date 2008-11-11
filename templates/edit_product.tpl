@@ -9,14 +9,14 @@
 {if $next.id>0}<span class="nav2 onright"><a href="edit_product.php?id={$next.id}">{t}Next{/t}</a></span>{/if}
 {if $prev.id>0}<span class="nav2 onright" ><a href="edit_product.php?id={$prev.id}">{t}Previous{/t}</a></span>{/if}
 <span class="nav2 onright" style="margin-left:20px"><a href="assets_family.php?id={$family_id}">{t}Up{/t}</a></span>
-<span class="nav2 onright"><a href="assets_index.php">{t}Product index{/t}</a></span>
-<span class="nav2"><a href="assets_tree.php">{$home}</a></span>
-<span class="nav2"><a href="assets_department.php?id={$department_id}">{$department}</a></span>
-<span class="nav2"><a href="assets_family.php?id={$family_id}">{$family}</a></span>
+<span class="nav2 onright"><a href="products.php">{t}Product index{/t}</a></span>
+<span class="nav2"><a href="departments.php">{$home}</a></span>
+<span class="nav2"><a href="department.php?id={$department_id}">{$department}</a></span>
+<span class="nav2"><a href="family.php?id={$family_id}">{$family}</a></span>
 </div>
 <div id="doc3" style="clear:both;" class="yui-g yui-t4" >
 <div id="yui-main"> 
-<h1>{$code} {$units}x {$description}</h1>
+<h1>{$data.code} {$data.units}x {$data.description}</h1>
 <div class="chooser" >
   <ul>
     <li id="description" {if $edit=='description'}class="selected"{/if} > <img src="art/icons/information.png"> {t}Description{/t}</li>
@@ -29,15 +29,25 @@
 
 <div style="clear:both;padding:20px 20px" id="edit_messages"></div>
 
-<div  {if !$edit=="prices"}style="display:none"{/if}  class="edit_block" id="d_prices">
-
+<div  {if $edit!="prices"}style="display:none"{/if}  class="edit_block" id="d_prices">
+  <table class="edit" >
+    <tr><td></td><td>{t}Price per Outer{/t}</td><td>{t}Price per Units{/t}</tr>
+	
+    <tr><td class="label">{t}Sale Price{/t}:</td><td>{$currency}<input style="text-align:right;width:10em"  id="v_price" value="{$data.price}" ></td></tr>
+    <tr><td class="label">{t}Recomended Retail Price{/t}:</td><td></td><td>{$currency}<input style="text-align:right;width:10em"  id="v_price" value="{$data.price}" ></td><td></td></tr>
+      
+    
+  </table>
 </div>
-<div  {if !$edit=="dimat"}style="display:none"{/if}  class="edit_block" id="d_dimat">
+<div  {if $edit!="dimat"}style="display:none"{/if}  class="edit_block" id="d_dimat">
+
 <table class="edit" >
-  <tr><td class="label">{t}Unit Weight{/t} ({t}Kg{/t}):</td><td></td><td><input style="text-align:right;width:10em" value="" id="v_oweight" value="" ></td></tr>
-  <tr><td class="label">{t}Outer Weight{/t} ({t}Kg{/t}):</td><td></td><td><input style="text-align:right;width:10em" value="" id="v_weight" value="" ></td></tr></tr>
-  <tr><td class="label">{t}Unit Dimensions{/t}:</td><td><span>{$data.dim_tipo}</span></td><td><input style="text-align:right;width:10em" value="" id="v_dim" value="$data.dim" ></td></tr>
-  <tr><td class="label">{t}Outer Dimensions{/t}</td><td><span>{$data.odim_tipo}</span></td><td><input style="text-align:right;width:10em" value="" id="weight" value="$data.odim" ></td></tr>
+  <tr><td class="label">{t}Unit Weight{/t} ({t}Kg{/t}):</td><td colspan=3 class="text-align:left"><input style="float:left;text-align:right;width:10em"   id="weight" tipo="number" value="{$data.weight}"  onkeyup="change_element(this)" ovalue="{$data.weight}"></td><td class="icon"><img id="save_weight" style="cursor:pointer;display:none" onClick="simple_save('weight')" src="art/icons/disk.png"></td></tr>
+  <tr><td class="label">{t}Outer Weight{/t} ({t}Kg{/t}):</td><td colspan=2><input style="float:left;text-align:right;width:10em"  id="oweight"  tipo="number" value="{$data.oweight}"  ovalue="{$data.oweight}" onkeyup="change_element(this)"  ></td><td><img id="save_oweight" style="cursor:pointer;display:none" onClick="simple_save('oweight')" src="art/icons/disk.png"></td></tr></tr>
+</table>
+ <table class="edit" >
+ <tr><td class="label">{t}Unit Dimensions{/t}:</td><td><span id="dim_shape">{$data.dim_tipo}</span></td><td><input style="text-align:right;width:10em"  onkeyup="change_element(this)" tipo="shape{$data.dim_tipo_id}" id="dim" value="{$data.dim}" ovalue="{$data.dim}"   ></td><td style="font-size:90%;color:#777" id="dim_shape_example">{$shape_example[$data.dim_tipo_id]}</td><td><img id="save_dim" style="cursor:pointer;display:none" onClick="simple_save('dim')" src="art/icons/disk.png"></td></tr>
+  <tr><td class="label">{t}Outer Dimensions{/t}</td><td><span>{$data.odim_tipo}</span></td><td><input style="text-align:right;width:10em"  onkeyup="change_element(this)" tipo="shape1"  id="odim" value="{$data.odim}"   ovalue="{$data.odim}"      ></td><td style="font-size:90%;color:#777">{$shape_example[$data.odim_tipo_id]}</td><td><img id="save_odim" style="cursor:pointer;display:none" onClick="simple_save('odim')" src="art/icons/disk.png"></td></tr>
 </tr>
 </table>
 
@@ -124,8 +134,7 @@
 <div  style="float:right;margin-top:10px;text-align:right">{include file='product_search.tpl'}</div>	 
 
 <table  style="width:5em" class="but edit" >
-<tr><td id="save" class="disabled">Save</td></tr>
-<tr><td id="exit" class="ok" >Exit</td></tr>
+<tr><td ><a href="product.php?id={$data.id}">Exit</a></td></tr>
 </table>
 
 
@@ -135,8 +144,21 @@
 
 
 
+</div>
 
+<div id="shapes" class="yuimenu">
+  <div class="bd">
+    <ul class="first-of-type">
+       <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd"> {t}Product Shape{/t}: </li>
+      {foreach from=$shapes item=shape key=shape_id name=foo}
+       {if !$smarty.foreach.foo.first}
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_dim_tipo({$shape_id},0)"> {$shape}</a></li>
+      {/if}
+      {/foreach}
+    </ul>
+  </div>
+</div>
 
-
+{include file='footer.tpl'}
 
 
