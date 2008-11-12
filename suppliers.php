@@ -65,9 +65,9 @@ $smarty->assign('filter_value',($q==''?$_SESSION['state']['suppliers']['table'][
 
 $filter_menu=array(
 		   'code'=>array('db_key'=>'code','menu_label'=>'Suppliers with code starting with  <i>x</i>','label'=>'Code'),
-		   'name'=>array('db_key'=>'customer_name','menu_label'=>'Suppliers which name starting with <i>x</i>','label'=>'Name'),
+		   'name'=>array('db_key'=>'name','menu_label'=>'Suppliers which name starting with <i>x</i>','label'=>'Name'),
 		   'low'=>array('db_key'=>'low','menu_label'=>'Suppliers with more than <i>n</i> low stock products','label'=>'Low'),
-		   'outofstock'=>array('db_key'=>'outofstock','menu_label'=>'Suppliers with more than <i>n</i> products out of stock','label'=>'Out od Stock'),
+		   'outofstock'=>array('db_key'=>'outofstock','menu_label'=>'Suppliers with more than <i>n</i> products out of stock','label'=>'Out of Stock'),
 		   );
 $smarty->assign('filter_menu',$filter_menu);
 $smarty->assign('filter_name',$filter_menu[$tipo_filter]['label']);

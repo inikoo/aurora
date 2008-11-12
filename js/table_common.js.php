@@ -28,7 +28,7 @@ var myhandleDataReturnPayload= function(oRequest, oResponse, oPayload) {
 
     oPayload.filter_msg=oResponse.meta.filter_msg;
 
-    //  alert(oResponse.meta.rowsPerPage)
+    //alert( oResponse.meta.tableid +' '+oResponse.meta.rtext)
 
     if(oResponse.meta.rtext != undefined)
 	YAHOO.util.Dom.get('rtext'+oResponse.meta.tableid).innerHTML=oResponse.meta.rtext;
@@ -45,8 +45,12 @@ var myhandleDataReturnPayload= function(oRequest, oResponse, oPayload) {
 	table.tHead.style.display='none';
 	table.tBodies[0].getElementsByTagName("tr")[0].getElementsByTagName("td")[0].innerHTML='';
 
-	YAHOO.util.Dom.get('clean_table_filter'+oResponse.meta.tableid).style.display='none';
+	//YAHOO.util.Dom.get('clean_table_filter'+oResponse.meta.tableid).style.display='none';
+    }else{
+	var table=YAHOO.util.Dom.get('table'+oResponse.meta.tableid).getElementsByTagName("table")[0];
+	table.tHead.style.display='';
     }
+	
 
     return oPayload;
 };
@@ -81,7 +85,7 @@ var mygetTerms =function (query) {
     var datasource=tables.dataSource0;
     table.filter.value=Dom.get('f_input0').value;
     var request='&sf=0&f_field=' +table.filter.key + '&f_value=' + table.filter.value;
-
+    /// alert(request);
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
 };
 

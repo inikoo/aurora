@@ -802,7 +802,7 @@ $supplier_id=$_SESSION['deliver_note']['supplier_id'];
 
 
 
- case('index'):
+ case('suppliers'):
    
  if(!$LU->checkRight(SUP_VIEW))
     exit;
@@ -846,7 +846,7 @@ if(isset( $_REQUEST['where']))
   $_SESSION['state']['suppliers']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
   $_order=$order;
   $_dir=$order_direction;
-  $filter_msg='';
+
 
 
    $wheref='';
@@ -864,20 +864,52 @@ if(isset( $_REQUEST['where']))
     $total=$row['total'];
    }
    if($wheref==''){
-     $filtered=0;
+     $filtered=0; $total_records=$total;
    }else{
      $sql="select count(*) as total from supplier $where      ";
      $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
      if($row=$res->fetchRow()) {
+       	$total_records=$row['total'];
        $filtered=$row['total']-$total;
      }
      
    }
-   
+   $rtext=$total_records." ".ngettext('supplier','suppliers',$total_records);
+  if($total_records>$number_results)
+    $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
 
+  $filter_msg='';
+  
+     switch($f_field){
+     case('code'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any supplier with code")." <b>$f_value</b>* ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('suppliers with code')." <b>$f_value</b>*) <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;
+     case('name'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any supplier with name")." <b>$f_value</b>* ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('suppliers with name')." <b>$f_value</b>*) <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;
+     case('low'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any supplier with more than ")." <b>".number($f_value)."</b> "._('low stock products');
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('Suppliers with')." <b><".number($f_value)."</b> "._('low stock products').") <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;
+     case('outofstock'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any supplier with more than ")." <b>".number($f_value)."</b> "._('out of stock products');
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('Suppliers with')." <b><".number($f_value)."</b> "._('out of stock products').") <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show all')."</span>";
+       break;
+     }
+
+
+  
    $sql="select id,code,name,contact_id,products,active,outofstock,lowstock from supplier $where $wheref order by $order $order_direction limit $start_from,$number_results";
-   
-   
    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
    $data=array();
    while($row=$res->fetchRow()) {
@@ -896,16 +928,12 @@ if(isset( $_REQUEST['where']))
 		   );
    }
    
-   if($total==0){
-     $rtext=_('No suppliers have been registered yet').'.';
-   }else if($total<$number_results)
-     $rtext=$total.' '.ngettext('supplier returned','suppliers returned',$total);
-   else
-     $rtext='';
+
    $response=array('resultset'=>
 		   array('state'=>200,
 			 'data'=>$data,
 			 'sort_key'=>$_order,
+			 'rtext'=>$rtext,
 			 'sort_dir'=>$_dir,
 			 'tableid'=>$tableid,
 			 'filter_msg'=>$filter_msg,

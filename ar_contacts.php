@@ -433,6 +433,14 @@ from contact     $where $wheref order by $order $order_direction limit $start_fr
    else
      $where=$conf['where'];
   
+  if(isset( $_REQUEST['view']))
+    $view=$_REQUEST['view'];
+  else
+    $view=$_SESSION['state']['hr']['view'];
+
+
+
+
    if(isset( $_REQUEST['tableid']))
     $tableid=$_REQUEST['tableid'];
   else
@@ -445,16 +453,28 @@ from contact     $where $wheref order by $order $order_direction limit $start_fr
 
 
   $_SESSION['state']['hr']['staff']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
-   
-
-  $wheref='';
-  //  if($f_field=='minvalue' and is_numeric($f_value) )
-  //  $wheref.=" and  total>=".$f_value."    ";
+  $_SESSION['state']['hr']['view']=$view;
 
 
+   $wheref='';
+   if($f_field=='name' and $f_value!=''  )
+     $wheref.=" and  name like '%".addslashes($f_value)."%'    ";
+   else if($f_field=='position_id' or $f_field=='area_id'   and is_numeric($f_value) )
+     $wheref.=sprintf(" and  $f_field=%d ",$f_value);
+  
+  
+  switch($view){
+   case('all'):
+     break;
+   case('staff'):
+     $where.=' and active=1  ';
+     break;
+   case('exstaff'):
+     $where.=' and active=0 ';
+     break;
+  }
 
-
-   $sql="select count(*) as total from staff  $where $wheref";
+   $sql="select count(*) as total from staff left join contact on (contact_id=contact.id) $where $wheref";
    //   print "$sql";
    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
    if($row=$res->fetchRow()) {
@@ -463,14 +483,44 @@ from contact     $where $wheref order by $order $order_direction limit $start_fr
      $sql="select count(*) as total from staff   $where ";
      $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
      if($row=$res->fetchRow()) {
+       $total_records=$row['total'];
        $filtered=$row['total']-$total;
      }
 
-   }else
+   }else{
      $filtered=0;
-
-
+     $total_records=$total;
+   }
+   
+   
+   $rtext=$total_records." ".ngettext('record','records',$total_records);
+   if($total_records>$number_results)
+     $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
    $filter_msg='';
+   
+    switch($f_field){
+     case('name'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There is no staff with name")." <b>*".$f_value."*</b> ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('staff with name')." <b>*".$f_value."*</b>) <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;
+    case('area_id'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There is no staff on area")." <b>".$f_value."</b> ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('staff on area')." <b>".$f_value."</b>) <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;
+    case('position_id'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There is no staff with position")." <b>".$f_value."</b> ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('staff with position')." <b>".$f_value."</b>) <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;
+
+    }
+
+
 
    $sql="select staff.id , position_id as position ,staff.alias,name,area_id as area,department_id as department from staff left join contact on (contact_id=contact.id)  $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
@@ -502,7 +552,7 @@ from contact     $where $wheref order by $order $order_direction limit $start_fr
 			 'records_offset'=>$start_from,
 			 'records_returned'=>$start_from+$res->numRows(),
 			 'records_perpage'=>$number_results,
-
+			 'rtext'=>$rtext,
 			 'records_order'=>$order,
 			 'records_order_dir'=>$order_dir,
 			 'filtered'=>$filtered
@@ -752,22 +802,26 @@ else if($f_field=='id'  )
 
 
    $sql="select count(*) as total from customer as cu left join contact on (contact_id=contact.id)  $where $wheref";
-
    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
    if($row=$res->fetchRow()) {
      $total=$row['total'];
    }if($wheref!=''){
      $sql="select count(*) as total_without_filters from customer  as cu left join contact on (contact_id=contact.id) $where ";
-
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+     $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
      if($row=$res->fetchRow()) {
+       $total_records=$row['total_without_filters'];
        $filtered=$row['total_without_filters']-$total;
      }
 
    }else{
      $filtered=0;
      $filter_total=0;
+     $total_records=$total;
    }
+
+   $rtext=$total_records." ".ngettext('identified customers','identified customers',$total_records);
+   if($total_records>$number_results)
+     $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
 
    if($total==0 and $filtered>0){
      switch($f_field){
@@ -779,12 +833,16 @@ else if($f_field=='id'  )
    elseif($filtered>0){
      switch($f_field){
      case('name'):
-       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('only customers starting with')." <b>$f_value</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Remove Filter')."</span>";
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('only customers starting with')." <b>$f_value</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
        break;
      }
    }else
       $filter_msg='';
    
+
+
+
+
    $_order=$order;
    $_dir=$order_direction;
    if($order=='location'){
@@ -798,6 +856,9 @@ else if($f_field=='id'  )
     if($order=='total'){
       $order='supertotal';
    }
+
+
+
 
    $order=preg_replace('/name/','file_as',$order);
 
@@ -874,6 +935,7 @@ else if($f_field=='id'  )
   $response=array('resultset'=>
 		   array('state'=>200,
 			 'data'=>$adata,
+			 'rtext'=>$rtext,
 			 'sort_key'=>$_order,
 			 'sort_dir'=>$_dir,
 			 'tableid'=>$tableid,
@@ -1306,7 +1368,7 @@ if(isset( $_REQUEST['where']))
        if($total==0 and $filtered>0)
 	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any order starting with")." <b>$f_value</b> ";
        elseif($filtered>0)
-	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('only orders starting with')." <b>$f_value</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Remove Filter')."</span>";
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('only orders starting with')." <b>$f_value</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
        break;
      }
 

@@ -264,13 +264,14 @@ $default_state=array(
 						   )
 				    ),
 		     'hr'=>array(
-				    'staff'=>array(
-						   'order'=>'alias',
+				 'view'=>'staff',
+				 'staff'=>array(
+						   'order'=>'name',
 						   'order_dir'=>'',
 						   'sf'=>0,
 						   'nr'=>50,
-						   'where'=>'where active=1',
-						   'f_field'=>'alias',
+						   'where'=>'where true',
+						   'f_field'=>'name',
 						   'f_value'=>''
 						   )
 				    ),

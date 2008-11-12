@@ -76,14 +76,6 @@ $smarty->assign('js_files',$js_files);
 $smarty->assign('table_title',_('Order List'));
 
 
-
-
-
-
-
-
-
-
 $tipo_filter=($q==''?$_SESSION['state']['orders']['table']['f_field']:'public_id');
 $smarty->assign('filter',$tipo_filter);
 $smarty->assign('filter_value',($q==''?$_SESSION['state']['orders']['table']['f_value']:addslashes($q)));

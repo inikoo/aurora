@@ -63,6 +63,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		resultsList: "resultset.data", 
 		metaFields: {
 		    rowsPerPage:"resultset.records_perpage",
+		    rtext:"resultset.rtext",
 		    sort_key:"resultset.sort_key",
 		    sort_dir:"resultset.sort_dir",
 		    tableid:"resultset.tableid",

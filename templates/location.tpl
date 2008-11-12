@@ -57,7 +57,7 @@
 	  <h2>{t}Products{/t}</h2>
 	</div>
 
-	<div id="product_messages" style="clear:both">hola</div>
+	<div id="product_messages" style="clear:both"></div>
 
 
 	<div  id="clean_table_caption1" class="clean_table_caption"  style="clear:both;">

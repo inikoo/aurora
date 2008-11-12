@@ -1,5 +1,5 @@
 <?include_once('../common.php');?>
-
+var Dom   = YAHOO.util.Dom;
 YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
     var tableid=0; // Change if you have more the 1 table
@@ -17,12 +17,13 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       ,{key:"outofstock", label:"<?=_('Out of Stock')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 					 ];
 
-	      this.dataSource0 = new YAHOO.util.DataSource("ar_suppliers.php?tipo=index");
+	      this.dataSource0 = new YAHOO.util.DataSource("ar_suppliers.php?tipo=suppliers");
   this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
+		    rtext:"resultset.rtext",
 		    rowsPerPage:"resultset.records_perpage",
 		    sort_key:"resultset.sort_key",
 		    sort_dir:"resultset.sort_dir",
@@ -69,4 +70,29 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    
 	};
     });
+
+function init(){
+    var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS.queryMatchContains = true;
+    var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container", oACDS);
+    oAutoComp.minQueryLength = 0; 
+}
+YAHOO.util.Event.onDOMReady(init);
+
+YAHOO.util.Event.onContentReady("filtermenu", function () {
+	 var oMenu = new YAHOO.widget.Menu("filtermenu", { context:["filter_name0","tr", "br"]  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+	 YAHOO.util.Event.addListener("filter_name0", "click", oMenu.show, null, oMenu);
+    });
+
+
+YAHOO.util.Event.onContentReady("rppmenu", function () {
+	 var oMenu = new YAHOO.widget.Menu("rppmenu", { context:["filter_name0","tr", "bl"]  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+	 YAHOO.util.Event.addListener("paginator_info0", "click", oMenu.show, null, oMenu);
+    });
+
+
 

@@ -1343,7 +1343,7 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
    }
 
    
-   $rtext=$total_records." ".ngettext('location','locations',$total_records);
+
 
 
 
@@ -1356,7 +1356,7 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
    }elseif($filtered>0){
      switch($f_field){
      case('location.name'):
-       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('only locations starting with')." <b>$f_value</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Remove Filter')."</span>";
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('only locations starting with')." <b>$f_value</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
        break;
      }
    }else
@@ -3593,7 +3593,7 @@ if(isset( $_REQUEST['tableid']))
    if($total==0)
      $rtext=_('No stock movements');
    else
-     $rtext=$total.' '.ngettext('stock operetion','stock operations',$total);
+     $rtext=$total.' '.ngettext('stock operation','stock operations',$total);
    
 
 
@@ -3715,24 +3715,30 @@ if(isset( $_REQUEST['tableid']))
    if($row=$res->fetchRow()) {
      $total=$row['total'];
    }
-   if($wheref=='')
+   if($wheref==''){
        $filtered=0;
-   else{
+       $total_records=$total;
+   }else{
      $sql="select  count(distinct product_id) as total from product2location  $where ";
      
      $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
      if($row=$res->fetchRow()) {
+       $total_records=$row['total'];
        $filtered=$row['total']-$total;
      }
 
    }
    
    
-   if($total==0)
+   if($total_records==0)
      $rtext=_('No products on this location');
    else
-     $rtext=$total.' '.ngettext('product','products',$total);
+     $rtext=$total_records.' '.ngettext('product','products',$total_records);
    
+   if($total_records>$number_results)
+    $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
+   
+
 
 
 

@@ -16,10 +16,13 @@
   <div id="top" class="top_bar">
     <div id="short_menu" class="nodetails" style="{if $show_details}display:none;{/if}width:100%;margin-bottom:0px">
       <table style="float:left;margin:0 0 0 20px ;padding:0"  class="options" >
-	<tr><td  {if $view=='all'}class="selected"{/if} id="all" >{t}All Orders{/t}</td>
+	<tr>
+	  <td  {if $view=='all'}class="selected"{/if} id="all" >{t}All Orders{/t}</td>
 	  <td {if $view=='invoices'}class="selected"{/if}  id="invoices"  >{t}Invoices{/t}</td>
 	  <td  {if $view=='in_process'}class="selected"{/if}  id="in_process"  >{t}In Process{/t}</td>
 	  <td  {if $view=='cancelled'}class="selected"{/if}  id="cancelled"  >{t}Cancelled{/t}</td>
+
+	  
 	  <td style="padding:0;font-weight:100;color:#777;padding:0 0 0 5px;cursor:default;;border:none"><span  class="state_details"  id="show_details">{t}show details{/t}</span></td>
 	</tr>
       </table>
@@ -39,8 +42,8 @@
   <div class="data_table" style="margin:25px 20px;">
     <span class="clean_table_title">{t}{$table_title}{/t}</span>
     <div  class="clean_table_caption"  style="clear:both;">
-      <div style="float:left;"><div id="table_info0" class="clean_table_info">{$table_info} <span class="filter_msg"  id="filter_msg0"></span></div></div>
-      <div class="clean_table_filter"><div class="clean_table_info"><span id="filter_name0">{$filter_name}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value}" size=10/><div id='f_container'></div></div></div>
+      <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
+      <div class="clean_table_filter"  id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0">{$filter_name}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value}" size=10/><div id='f_container'></div></div></div>
       <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator"></span></div></div>
     </div>
     <div  id="table0"   class="data_table_container dtable btable "> </div>

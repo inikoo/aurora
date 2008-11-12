@@ -114,7 +114,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       ,{key:"delete", label:"", width:18,className:"aleft"}
 				       ];
 	    //?tipo=customers&tid=0"
-	    this.dataSource1 = new YAHOO.util.DataSource("ar_assets.php?tipo=products_in_location");
+	    this.dataSource1 = new YAHOO.util.DataSource("ar_assets.php?tipo=products_in_location&tableid="+tableid);
 	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource1.connXhrMode = "queueRequests";
 	    this.dataSource1.responseSchema = {

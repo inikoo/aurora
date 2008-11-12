@@ -49,6 +49,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		resultsList: "resultset.data", 
 		metaFields: {
 		    rowsPerPage:"resultset.records_perpage",
+		    rtext:"resultset.rtext",
 		    sort_key:"resultset.sort_key",
 		    sort_dir:"resultset.sort_dir",
 		    tableid:"resultset.tableid",
@@ -111,6 +112,10 @@ var Dom   = YAHOO.util.Dom;
 //  var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container", oACDS);
 //  oAutoComp.minQueryLength = 0; 
 
+ var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
+ oACDS.queryMatchContains = true;
+ var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container", oACDS);
+ oAutoComp.minQueryLength = 0; 
 
     
 
