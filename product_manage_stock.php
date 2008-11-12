@@ -60,6 +60,7 @@ $product->read(array(
 		     'product_tree'
 		     ,'images'
 		     ,'locations'
+		     ,'same_products'
 		     )
 	       );
 
@@ -78,25 +79,11 @@ $smarty->assign('next',$next);
 
 
 $locations=($product->get('locations'));
-//print_r($locations);
 $smarty->assign('locations',$locations);
 
 
-
-
-
-// $_SESSION['tables']['order_withprod'][4]=$product_id;
-// $_SESSION['tables']['order_withcustprod'][4]=$product_id;
-// $_SESSION['tables']['stock_history'][4]=$product_id;
-
-
-
-
-
-
-
 $smarty->assign('parent','departments.php');
-$smarty->assign('title',$product->get('group'));
+$smarty->assign('title',$product->get('code'));
 
 
 $product_home="Products Home";
@@ -109,34 +96,10 @@ $smarty->assign('images',$product->get('images'));
 $smarty->assign('image_dir',$myconf['images_dir']);
 
 $smarty->assign('num_images',count($product->get('images')));
-//print_r($product->get('images'));
+$smarty->assign('units',number($product->data['units']));
 
-
-$smarty->assign('product_id',$product_id);
-$smarty->assign('code',$product->get('code'));
-
-
-$smarty->assign('date',date('d-m-Y'));
-$smarty->assign('time',date('H:i'));
-
-
-
-// $manage_stock_data=array();
-// $physical_locations=0;
-// foreach($locations['data'] as $location){
-//   $manage_stock_data['locations'][]=array(
-// 					  'name'=>$location['name'],
-// 					  'id'=>$location['location_id'],
-// 					  'stock'=>$location['stock'],
-// 					  'picking'=>$location['rank'],
-// 					  'is_physical'=>$location['is_physical'],
-// 					  'has_stock'=>$location['has_stock']
-// 					  );
-//   if($location['tipo']=='picking' or $location['tipo']=='storing')
-//     $physical_locations++;
-// }
-// $manage_stock_data['physical_locations']=$physical_locations;
-// $smarty->assign('physical_locations',$physical_locations);
+$smarty->assign('data',$product->data);
+$smarty->assign('same_products',$product->same_products);
 
 
 $_SESSION['state']['product']['manage_stock_data']=json_encode($locations);

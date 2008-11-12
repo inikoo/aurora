@@ -173,6 +173,19 @@ class product{
 	$this->suppliers['number']=count($this->suppliers['name']);
 	break;
 	// print_r($this->suppliers);
+      case('same_products'):
+	$sql=sprintf("select id,code,units from product  where location_parent_id=%d and id!=%d order by units",$this->data['location_parent_id'],$this->id);
+	$result =& $this->db->query($sql);
+	$this->same_products=array();
+	while($row=$result->fetchRow()){
+	  $this->same_products[$row['id']]=array(
+						 'code'=>$row['code'],
+						 'units'=>$row['units'],
+						 'f_units'=>number($row['units'])
+						 );
+	    
+	}
+	break;
       case('categories'):
 	$this->categories['list']=array();
 	$sql=sprintf("select cat_id,name from product2cat left join cat on (cat_id=cat.id) where product_id=%d ",$this->id);
