@@ -29,6 +29,7 @@ var myhandleDataReturnPayload= function(oRequest, oResponse, oPayload) {
     oPayload.filter_msg=oResponse.meta.filter_msg;
 
     //  alert(oResponse.meta.rowsPerPage)
+
     if(oResponse.meta.rtext != undefined)
 	YAHOO.util.Dom.get('rtext'+oResponse.meta.tableid).innerHTML=oResponse.meta.rtext;
     //alert('filter_msg'+oResponse.meta.tableid)
@@ -80,6 +81,7 @@ var mygetTerms =function (query) {
     var datasource=tables.dataSource0;
     table.filter.value=Dom.get('f_input0').value;
     var request='&sf=0&f_field=' +table.filter.key + '&f_value=' + table.filter.value;
+
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
 };
 

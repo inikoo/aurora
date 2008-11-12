@@ -205,7 +205,7 @@ $default_state=array(
 								 'sf'=>0,
 								 'nr'=>25,
 								 'where'=>'where true',
-								 'f_field'=>'name',
+								 'f_field'=>'location.name',
 								 'f_value'=>'',
 								 'elements'=>array()
 						   )

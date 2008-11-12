@@ -1313,39 +1313,59 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
 
    
    
-   $filter_msg='';
+ 
    $wheref='';
-   if($f_field=='name' and $f_value!='')
+   if($f_field=='location.name' and $f_value!='')
      $wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
    
 
   
-   $_SESSION['state']['wherehouse']['locations']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+   $_SESSION['state']['warehouse']['locations']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
    
-
+   
    $sql="select count(*) as total from location  left join location_tipo on (tipo_id=location_tipo.id) left join wharehouse_area on (area_id=wharehouse_area.id)  $where $wheref";
-
    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
    if($row=$res->fetchRow()) {
      $total=$row['total'];
    }
-   if($wheref=='')
+   if($wheref==''){
        $filtered=0;
-   else{
+       $total_records=$total;
+   }else{
      $sql="select count(*) as total from location  left join location_tipo on (tipo_id=location_tipo.id) left join wharehouse_area on (area_id=wharehouse_area.id)  $where ";
 
      $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
      if($row=$res->fetchRow()) {
+       $total_records=$row['total'];
        $filtered=$row['total']-$total;
      }
 
    }
 
-
-
-
    
+   $rtext=$total_records." ".ngettext('location','locations',$total_records);
 
+
+
+   if($total==0 and $filtered>0){
+     switch($f_field){
+     case('location.name'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any location name starting with")." <b>$f_value</b> ";
+       break;
+     }
+   }elseif($filtered>0){
+     switch($f_field){
+     case('location.name'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('only locations starting with')." <b>$f_value</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Remove Filter')."</span>";
+       break;
+     }
+   }else
+      $filter_msg='';
+   
+   
+   $rtext=$total_records." ".ngettext('location','locations',$total_records);
+   if($total_records>$number_results)
+     $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
   $_order=$order;
   $_dir=$order_direction;
 
@@ -1361,17 +1381,25 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
     $max_vol=$data['deep']*$data['length']*$data['height'];
   else
     $max_vol='';
-
-  $name=sprintf('<a href="location.php?id=%d" >%s</a>',$data['id'],$data['name']);
-    $adata[]=array(
-		   'id'=>$data['id']
-		   ,'tipo'=>$data['tipo']
-		   ,'name'=>$name
-		   ,'area'=>$data['area']
-		   ,'products'=>$data['products']
-		   ,'max_weight'=>$data['max_weight']
-		   ,'max_volumen'=>$max_vol
-);
+  if($data['name']=='_UNK'){
+    $name=_('Unknown');
+    $tipo='';
+  }elseif($data['name']=='_WHL'){
+    $name=_('White Star');
+    $tipo=_('Balancing');
+  }else{
+    $name=sprintf('<a href="location.php?id=%d" >%s</a>',$data['id'],$data['name']);
+    $tipo=mb_ucwords($data['tipo']);
+  }
+  $adata[]=array(
+		 'id'=>$data['id']
+		 ,'tipo'=>$tipo
+		 ,'name'=>$name
+		 ,'area'=>$data['area']
+		 ,'products'=>$data['products']
+		 ,'max_weight'=>$data['max_weight']
+		 ,'max_volumen'=>$max_vol
+		 );
   }
   $response=array('resultset'=>
 		   array('state'=>200,
@@ -1380,7 +1408,7 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
 			 'sort_dir'=>$_dir,
 			 'tableid'=>$tableid,
 			 'filter_msg'=>$filter_msg,
-
+			 'rtext'=>$rtext,
 			 'total_records'=>$total,
 			 'records_offset'=>$start_from,
 			'records_returned'=>$start_from+$res->numRows(),

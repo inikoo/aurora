@@ -92,5 +92,19 @@ $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
 
+$tipo_filter=$_SESSION['state']['warehouse']['locations']['f_field'];
+$smarty->assign('filter',$tipo_filter);
+$smarty->assign('filter_value',$_SESSION['state']['warehouse']['locations']['f_value']);
+
+$filter_menu=array(
+		   'name'=>array('db_key'=>_('name'),'menu_label'=>'Location Name','label'=>'Name'),
+		   );
+$smarty->assign('filter_menu',$filter_menu);
+$smarty->assign('filter_name',$filter_menu[$tipo_filter]['label']);
+
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu',$paginator_menu);
+
+
 $smarty->display('location.tpl');
 ?>
