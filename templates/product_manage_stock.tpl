@@ -81,11 +81,11 @@
 	      <span id="loc_picking_tipo{$location.location_id}" >{$location.picking_tipo}</span>  
 	      <img  id="loc_picking_img{$location.location_id}"  can_pick="{if $location.can_pick }1{else}0{/if}"   onclick="swap_picking({$location.location_id})" src="{if $location.can_pick }art/icons/basket.png{else}art/icons/basket_delete.png{/if}" style="position:relative;bottom:1px;vertical-align:bottom;cursor:pointer;{if !$location.is_physical}display:none{/if}"/> 
 	    </td>
-	    <td  style="text-align:right"><span   id="loc_stock{$location.location_id}"    >{$location.stock_units}</span></td>
-	    <td  style="text-align:right"><span   id="loc_stock{$location.location_id}"    >{$location.stock_outers}</span></td>
+	    <td  style="text-align:right"><span   id="loc_stock_units{$location.location_id}"    >{$location.stock_units}</span></td>
+	    <td  style="text-align:right"><span   id="loc_stock_outers{$location.location_id}"    >{$location.stock_outers}</span></td>
 	    <td><img  onclick="desassociate_loc({$location.location_id})"   id="loc_del{$location.location_id}"  can_del="{if $location.has_stock}1{else}0{/if}"   title="{t}Free the location{/t}" style="cursor:pointer;{if $location.has_stock and $location.location_id!=1}display:none{/if}"  src="art/icons/cross.png" /></td></tr>
 	  {/foreach}
-	   <tr class="totals"><td  >{t}Total Stock{/t}:</td><td COLSPAN="3" id="total_stock" style="text-align:right" >{$total_units}</td>{$total_stock}<td></td><td></td> </tr>
+	   <tr class="totals"><td  >{t}Total Stock{/t}:</td><td COLSPAN="3" id="total_stock_units" style="text-align:right" >{$locations.stock_units}</td><td id="total_stock_outers" style="text-align:right">{$locations.stock_outers}</td><td></td> </tr>
     </table>
   </div>
   

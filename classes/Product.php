@@ -1,7 +1,4 @@
 <?
-
-
-
 include_once('common/string.php');
 
 
@@ -76,16 +73,34 @@ class product{
 	break;
       case('locations'):
 	global $_location_tipo;
+	$this->read('same_products');
+
 	$_data=array();
 	$this->locations=array('has_display'=>false,'has_unknown'=>false,'has_loading'=>false,'has_white_hole'=>false,'has_picking_area'=>false,'has_physical'=>false,'data'=>array(),'num_physical'=>0,'num_physical_with_stock'=>0,'num_picking_areas'=>0);
 	$sql=sprintf("select name,product2location.id as id,location_id,stock,picking_rank,tipo,stock  from product2location left join location on (location_id=location.id) where product_id=%d and picking_rank is not null order by picking_rank  ",$this->id);
 	$result =& $this->db->query($sql);
+	$num_same_products=count($this->same_products);
+	$stock_units=0;	  
 	while($row=$result->fetchRow()){
+	  $stock=number($row['stock']/$this->data['units'],1);
+	  if($num_same_products==0)
+	    $stock_outers=$stock;
+	  else{
+	    $stock_outers=$stock;
+	    foreach($this->same_products as $_same){
+	      $stock_outers.=';'.number($row['stock']/$_same['units'],1);
+	    }
+	  }
+	  
+	  $stock_units+=$row['stock'];
+	  
 	  $_data[$row['id']]=array(
 				   'id'=>$row['id'],
 				   'name'=>$row['name'],
 				   'location_id'=>$row['location_id'],
-				   'stock'=>$row['stock'],
+				   'stock'=>$stock,
+				   'stock_units'=>$row['stock'],
+				   'stock_outers'=>$stock_outers,
 				   'tipo'=>$_location_tipo[$row['tipo']],
 				   'picking_tipo'=>getOrdinal($row['picking_rank']),
 				   'picking_rank'=>$row['picking_rank'],
@@ -94,10 +109,13 @@ class product{
 				   'has_stock'=>($row['stock']>0?true:false)
 				   );
 	  $this->locations['num_physical']++;
-	   if($row['stock']>0)
-	      $this->locations['num_physical_with_stock']++;
-	   $this->locations['num_picking_areas']++;
-	   $this->locations['has_physical']=true;
+	  if($row['stock']>0)
+	    $this->locations['num_physical_with_stock']++;
+	  $this->locations['num_picking_areas']++;
+	  $this->locations['has_physical']=true;
+	  
+
+
 	}
 	
 
@@ -105,7 +123,18 @@ class product{
 	$sql=sprintf("select name,product2location.id as id,location_id,stock,picking_rank,tipo,stock  from product2location left join location on (location_id=location.id) where product_id=%d and picking_rank is  null order by tipo desc  ",$this->id);
 	$result =& $this->db->query($sql);
 	while($row=$result->fetchRow()){
-	  
+	   $stock_units+=$row['stock'];
+	   $stock=number($row['stock']/$this->data['units'],1);
+	  if($num_same_products==0)
+	    $stock_outers=$stock;
+	  else{
+	    $stock_outers=number($stock,1);
+	    foreach($this->same_products as $_same){
+	      $stock_outers.=';'.number($row['stock']/$_same['units'],1);
+	    }
+	  }
+
+
 	  $is_physical=false;
 	  $picking_tipo='';
 	  $can_pick=false;
@@ -137,7 +166,9 @@ class product{
 					   'id'=>$row['id'],
 					   'name'=>$name,
 					   'location_id'=>$row['location_id'],
-					   'stock'=>$row['stock'],
+					   'stock'=>$stock,
+					   'stock_units'=>$row['stock'],
+					   'stock_outers'=>$stock_outers,
 					   'tipo'=>$tipo,
 					   'picking_tipo'=>$picking_tipo,
 					   'picking_rank'=>'',
@@ -147,12 +178,17 @@ class product{
 					   );
 
 	}
-	$sql=sprintf("select stock from product where id=%d",$this->id);
-	$result =& $this->db->query($sql);
-	if($row=$result->fetchRow()){
-	  $this->locations['stock']=number($row['stock']);
-	}
+	
 	$this->locations['data']=$_data;
+	$this->locations['stock']=$this->data['stock'];
+	$this->locations['stock_units']=$stock_units;
+	$this->locations['stock_outers']=$this->data['stock'];
+
+	foreach($this->same_products as $_same){
+	  $this->locations['stock_outers'].=';'.number($stock_units/$_same['units']);
+	}
+
+
 	break;
       case('suppliers'):
 	$this->suppliers=array();
@@ -1391,7 +1427,8 @@ function get_stock($date=''){
     }
   }
   
-  
+  $stock=$stock/$this->data['units'];
+  $available=$available/$this->data['units'];
  return array($stock,$available,0);
 }
 

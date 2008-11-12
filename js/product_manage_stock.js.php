@@ -79,7 +79,8 @@ var refresh= function(){
 
 	  Dom.get("loc_name"+id).innerHTML=location.name;
 	  Dom.get("loc_tipo"+id).innerHTML=location.tipo;
-	  Dom.get("loc_stock"+id).innerHTML=location.stock;
+	  Dom.get("loc_stock_units"+id).innerHTML=location.stock_units;
+	  Dom.get("loc_stock_outers"+id).innerHTML=location.stock_outers;
 	  Dom.get("loc_picking_tipo"+id).innerHTML=' '+location.picking_tipo+' ';
 
 	  if(location.is_physical==1){
@@ -102,8 +103,8 @@ var refresh= function(){
 	       Dom.get("loc_del"+id).style.display='none';
       }
 
-  Dom.get('total_stock').innerHTML=location_data.stock;
-
+  Dom.get('total_stock_units').innerHTML=location_data.stock_units;
+  Dom.get('total_stock_outers').innerHTML=location_data.stock_outers;
   if(location_data.has_unknown)
       Dom.get("identify_location").style.display='';
   else
@@ -238,19 +239,24 @@ var new_location_save = function(){
 		    img.setAttribute("title", "" );
 		    img.setAttribute("id", 'loc_picking_img'+r.id );
 		    //img.setAttribute("onclick", "desassociate_loc()" );
-		     cellLeft.appendChild(img);
+		    cellLeft.appendChild(img);
+		    
+		    var cellLeft = row.insertCell(3);
+		    cellLeft.setAttribute("id", 'loc_stock_units'+r.id );
+		    cellLeft.style.textAlign='right';
+		    
+		    var cellLeft = row.insertCell(4);
+		    cellLeft.setAttribute("id", 'loc_stock_outers'+r.id );
+		    cellLeft.style.textAlign='right';
 
 
-		     var cellLeft = row.insertCell(3);
-		     cellLeft.setAttribute("id", 'loc_stock'+r.id );
-		     cellLeft.style.textAlign='right';
-		     var cellLeft = row.insertCell(4);
-		     var img = document.createElement("img");
-		     img.setAttribute("src", "art/icons/cross.png" );
-		     img.setAttribute("style", "cursor:pointer" );
-		     img.setAttribute("title", "<?=_('Free the location')?>" );
-		     img.setAttribute("id", 'loc_del'+r.id );
-		     img.setAttribute("onclick", "desassociate_loc("+r.id+")" );
+		    var cellLeft = row.insertCell(5);
+		    var img = document.createElement("img");
+		    img.setAttribute("src", "art/icons/cross.png" );
+		    img.setAttribute("style", "cursor:pointer" );
+		    img.setAttribute("title", "<?=_('Free the location')?>" );
+		    img.setAttribute("id", 'loc_del'+r.id );
+		    img.setAttribute("onclick", "desassociate_loc("+r.id+")" );
 		     
 		     cellLeft.appendChild(img);
 		     location_data=r.data;
@@ -299,8 +305,8 @@ var change_stock_from=function(e,index){
 	    Dom.get("loc_name"+location_data.data[key].location_id).className='';
 	}
     
-    Dom.get('manage_stock_messages').innerHTML='<?=_('How many outers are currently on the location?')?>'
-    Dom.get('manage_stock_engine').innerHTML='<table><tr id="change_stock_qty" ><td><?=_('Number of outers')?></td><td><input id="new_qty" location_id="'+location_data.data[index].id+'"  style="text-align:right;padding:0 3px" type="text"  size="3"  onkeyup="change_stock_ready()"   /> <span style="cursor:pointer" onclick="new_stock_none();">(<?=_('None')?>)</span> <span id="change_stock_continue" style="display:none;padding-left:20px;cursor:pointer;text-decoration:underline" onclick="change_stock_manage('+index+')"><?=_('Continue')?></span></td></tr><tr style="display:none" id="more_outers"><td colspan="3"><span id="more_change"></span> <span><?=_("Outers")?></span>  <span id="more_change_save"  onclick="change_stock_save('+index+')" style="display:none;margin-left:30px;cursor:pointer"  > <?=_('Save')?> <img src="art/icons/disk.png" style="vertical-align:bottom"/></span>   <br> <?=_('Please try to explain why there is more outers than there should be')?>. <b><?=_('If stock has been received plesase add it on')?> <a href="suppliers.php" style="cursor:pointer;text-decoration:underline" ><?=_("Suppliers Area")?></a><b>.</span></td></tr><tr style="display:none" id="less_outers"><td colspan="3"><span id="less_change"></span> <span><?=_('Outers')?></span>  <span id="less_change_save"  onclick="change_stock_save('+index+')" style="display:none;margin-left:30px;cursor:pointer"  > <?=_('Save')?> <img src="art/icons/disk.png" style="vertical-align:bottom"/></span>  <br><?=_('Please give possible reasons of the lost stock ')?>. <b><?=_('If stock has been damaged')?> <span onclick="damaged_stock()" style="cursor:pointer;text-decoration:underline" ><?=_('click here')?></span><b>.</span></td></tr><tr id="change_stock_comments" style="display:none"  ><td><?=_('Explanation')?>:</td><td colspan="2"><textarea id="change_stock_why" onkeyup="change_stock_ready2()" ></textarea></td></tr></table>'};	  
+    Dom.get('manage_stock_messages').innerHTML='<?=_('How many units are currently on the location?')?>'
+    Dom.get('manage_stock_engine').innerHTML='<table><tr id="change_stock_qty" ><td><?=_('Number of units')?></td><td><input id="new_qty" location_id="'+location_data.data[index].id+'"  style="text-align:right;padding:0 3px" type="text"  size="3"  onkeyup="change_stock_ready()"   /> <span style="cursor:pointer" onclick="new_stock_none();">(<?=_('None')?>)</span> <span id="change_stock_continue" style="display:none;padding-left:20px;cursor:pointer;text-decoration:underline" onclick="change_stock_manage('+index+')"><?=_('Continue')?></span></td></tr><tr style="display:none" id="more_outers"><td colspan="3"><span id="more_change"></span> <span><?=_("Units")?></span>  <span id="more_change_save"  onclick="change_stock_save('+index+')" style="display:none;margin-left:30px;cursor:pointer"  > <?=_('Save')?> <img src="art/icons/disk.png" style="vertical-align:bottom"/></span>   <br> <?=_('Please try to explain why there is more units than there should be')?>. <b><?=_('If stock has been received plesase add it on')?> <a href="suppliers.php" style="cursor:pointer;text-decoration:underline" ><?=_("Suppliers Area")?></a><b>.</span></td></tr><tr style="display:none" id="less_outers"><td colspan="3"><span id="less_change"></span> <span><?=_('Units')?></span>  <span id="less_change_save"  onclick="change_stock_save('+index+')" style="display:none;margin-left:30px;cursor:pointer"  > <?=_('Save')?> <img src="art/icons/disk.png" style="vertical-align:bottom"/></span>  <br><?=_('Please give possible reasons of the lost stock ')?>. <b><?=_('If stock has been damaged')?> <span onclick="damaged_stock()" style="cursor:pointer;text-decoration:underline" ><?=_('click here')?></span><b>.</span></td></tr><tr id="change_stock_comments" style="display:none"  ><td><?=_('Explanation')?>:</td><td colspan="2"><textarea id="change_stock_why" onkeyup="change_stock_ready2()" ></textarea></td></tr></table>'};	  
 
 
 var change_stock_ready=function(e){
@@ -335,7 +341,7 @@ var change_stock_manage=function(index){
     if(change==0){
 	Dom.get("new_qty").value='';
 	Dom.get('change_stock_continue').style.display='none';
-	Dom.get('manage_stock_messages').innerHTML='<?=_('So nothing have change, how many outers are currently on the location? ')?>';
+	Dom.get('manage_stock_messages').innerHTML='<?=_('So nothing have change, how many units are currently on the location? ')?>';
 	
     }else if(change<0){
 	Dom.get('change_stock_qty').style.display='none';
@@ -423,7 +429,7 @@ var damaged_stock_save = function(index){
     var request='ar_assets.php?tipo=pml_damaged_stock&from='+ escape(location_id)+'&qty='+escape(qty)+'&message='+escape(message);
  YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-       // alert(o.responseText)
+
        var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if (r.state == 200) {
 		    //update all stock figures (if were changed else were)
@@ -473,18 +479,18 @@ var damaged_stock_ready=function(){
 	    Dom.get('manage_stock_messages').innerHTML='<?=_('Do not give me negative numbers please')?>';
 	    
 	}else if(qty==0){
-	    Dom.get('manage_stock_messages').innerHTML='<?=_('How many outers were damaged?')?>';
+	    Dom.get('manage_stock_messages').innerHTML='<?=_('How many units were damaged?')?>';
 	}else if(qty>max){
-	    Dom.get('manage_stock_messages').innerHTML='<?=_('Only')?> '+max+' <?=_('outers in location')?>';
+	    Dom.get('manage_stock_messages').innerHTML='<?=_('Only')?> '+max+' <?=_('units in location')?>';
 	    
 	}else{
 	    ok2=true;
 	}
     }else if(qty==''){
-	Dom.get('manage_stock_messages').innerHTML='<?=_('How many outers were damaged?')?>';
+	Dom.get('manage_stock_messages').innerHTML='<?=_('How many units were damaged?')?>';
 	
     }else{
-	Dom.get('manage_stock_messages').innerHTML='<?=_('That is not a number, how many outers were damaged?')?>';	
+	Dom.get('manage_stock_messages').innerHTML='<?=_('That is not a number, how many units were damaged?')?>';	
 	
     }
     
@@ -504,7 +510,7 @@ var damaged_stock_from=function(e,index){
 
 
 
-     Dom.get('manage_stock_engine').innerHTML='<table><td><?=_('Outers damaged')?>: </td><td style="padding-right:20px" id="damaged_stock_td_qty"> <input id="damaged_stock_qty" location_id="'+location_data.data[index].id+'"  type="text" max="'+location_data.data[index].stock+'" size="3"  onkeyup="damaged_stock_ready()"   /> (<span style="cursor:pointer" onclick="damaged_stock_all();">'+location_data.data[index].stock+'</span> <?=_('max')?>)</td><td id="damaged_stock_save" onclick="damaged_stock_save()" style="cursor:pointer;display:none"><?=_('Save')?> <img src="art/icons/disk.png" style="vertical-align:bottom"/></td><tr><td><?=_('Comments')?>:</td><td colspan="2"><textarea id="damaged_stock_why" onkeyup="damaged_stock_ready()" ></textarea></td></tr></table>'
+     Dom.get('manage_stock_engine').innerHTML='<table><td><?=_('Units damaged')?>: </td><td style="padding-right:20px" id="damaged_stock_td_qty"> <input id="damaged_stock_qty" location_id="'+location_data.data[index].id+'"  type="text" max="'+location_data.data[index].stock+'" size="3"  onkeyup="damaged_stock_ready()"   /> (<span style="cursor:pointer" onclick="damaged_stock_all();">'+location_data.data[index].stock+'</span> <?=_('max')?>)</td><td id="damaged_stock_save" onclick="damaged_stock_save()" style="cursor:pointer;display:none"><?=_('Save')?> <img src="art/icons/disk.png" style="vertical-align:bottom"/></td><tr><td><?=_('Comments')?>:</td><td colspan="2"><textarea id="damaged_stock_why" onkeyup="damaged_stock_ready()" ></textarea></td></tr></table>'
 
   for (key in location_data.data)
 	{
@@ -558,8 +564,8 @@ var desassociate_loc=function(location_id){
     Dom.get('manage_stock_desktop').style.display='';
     Dom.get('manage_stock_engine').innerHTML='';
     if(location_id==1){
-	var lost=Dom.get('loc_stock1').innerHTML;
-	Dom.get('manage_stock_messages').innerHTML='<b>'+lost+'</b> <?=_('outers will be declared as lost');?><br><?=_('Try to explaian what happened to them')?>';
+	var lost=Dom.get('loc_stock_units1').innerHTML;
+	Dom.get('manage_stock_messages').innerHTML='<b>'+lost+'</b> <?=_('units will be declared as lost');?><br><?=_('Try to explaian what happened to them')?>';
 	Dom.get('manage_stock_engine').innerHTML='<table><tr><td><?=_('Explanation')?>:</td><td colspan="2"><textarea id="desassociate_loc_why" onkeyup="desassociate_loc_ready2()" ></textarea></td></tr><tr><td></td><td style="text-align:right"></td></tr><tr><td></td><td id="delete_unknown" style="text-align:right">  <span id="desassociate_loc_save" onclick="desassociate_loc_save(1)" style="margin-left:30px;cursor:pointer;display:none;vertical-align:bottom"><?=_('Save')?> <img src="art/icons/disk.png" style="vertical-align:bottom"/></span>  </td></tr></table>';
     }else{
     Dom.get('manage_stock_messages').innerHTML='<?=_('Do you want to desassocite the location');?>:<span style="padding-left:20px;cursor:pointer" onclick="desassociate_loc_save('+location_id+')">yes</span> <span style="padding-left:20px;cursor:pointer" onclick="clear_actions();">no</span>';
@@ -721,7 +727,7 @@ var change_location_from  =function(e,location_id){
 		      Dom.get('loc_picking_up'+old_location_id).setAttribute('id','loc_picking_up'+new_location_id);
 		      Dom.get('loc_picking_tipo'+old_location_id).setAttribute('id','loc_picking_tipo'+new_location_id);
 		      Dom.get('loc_picking_img'+old_location_id).setAttribute('id','loc_picking_img'+new_location_id);
-		      Dom.get('loc_stock'+old_location_id).setAttribute('id','loc_stock'+new_location_id);
+		      Dom.get('loc_stock_units'+old_location_id).setAttribute('id','loc_stock_units'+new_location_id);
 		      Dom.get('loc_del'+old_location_id).setAttribute('id','loc_del'+new_location_id);
 		      
 
@@ -782,7 +788,7 @@ var change_location_from  =function(e,location_id){
 		      Dom.get('loc_picking_up'+old_location_id).setAttribute('id','loc_picking_up'+new_location_id);
 		      Dom.get('loc_picking_tipo'+old_location_id).setAttribute('id','loc_picking_tipo'+new_location_id);
 		      Dom.get('loc_picking_img'+old_location_id).setAttribute('id','loc_picking_img'+new_location_id);
-		      Dom.get('loc_stock'+old_location_id).setAttribute('id','loc_stock'+new_location_id);
+		      Dom.get('loc_stock_units'+old_location_id).setAttribute('id','loc_stock_units'+new_location_id);
 		      Dom.get('loc_del'+old_location_id).setAttribute('id','loc_del'+new_location_id);
 		      
 
@@ -864,7 +870,7 @@ var move_stock_save = function(){
 var move_stock_from=function(e,index){
     Dom.get('manage_stock_messages').innerHTML='<?=_('Choose the location where you moved the stock')?>'
     Dom.get('manage_stock_engine').style.display='';
-    Dom.get('manage_stock_engine').innerHTML='<table border=0><tr style="height:30px"><td style="vertical-align:bottom" class="location_name"  id="move_stock_from" location_id="'+location_data.data[index].id+'"  >'+location_data.data[index].name+'</td><td style="vertical-align:bottom" > &rarr; </td><td style="vertical-align:bottom" id="move_stock_to" class="location_name"><b>?</b></td><td style="padding-left:30px;padding-right:30px;display:none;vertical-align:bottom" id="move_stock_td_qty"> <?=_('Outers')?>:  <input style="vertical-align:bottom" id="move_stock_qty" type="text" max="'+location_data.data[index].stock+'" size="3"  onkeyup="move_stock_ready()" />  (<span style="cursor:pointer" onclick="move_stock_all();">'+location_data.data[index].stock+'</span> <?=_('max')?>)  </td><td id="move_stock_save" onclick="move_stock_save()" style="cursor:pointer;display:none;vertical-align:bottom"><?=_('Save')?> <img src="art/icons/disk.png" style="vertical-align:bottom"/></td></tr></table>'
+    Dom.get('manage_stock_engine').innerHTML='<table border=0><tr style="height:30px"><td style="vertical-align:bottom" class="location_name"  id="move_stock_from" location_id="'+location_data.data[index].id+'"  >'+location_data.data[index].name+'</td><td style="vertical-align:bottom" > &rarr; </td><td style="vertical-align:bottom" id="move_stock_to" class="location_name"><b>?</b></td><td style="padding-left:30px;padding-right:30px;display:none;vertical-align:bottom" id="move_stock_td_qty"> <?=_('Units')?>:  <input style="vertical-align:bottom" id="move_stock_qty" type="text" max="'+location_data.data[index].stock+'" size="3"  onkeyup="move_stock_ready()" />  (<span style="cursor:pointer" onclick="move_stock_all();">'+location_data.data[index].stock+'</span> <?=_('max')?>)  </td><td id="move_stock_save" onclick="move_stock_save()" style="cursor:pointer;display:none;vertical-align:bottom"><?=_('Save')?> <img src="art/icons/disk.png" style="vertical-align:bottom"/></td></tr></table>'
     
     var can_to=location_data.num_physical;
     if(can_to==2){
@@ -900,7 +906,7 @@ var move_stock_to=function(e,index){
 	    Dom.get("loc_name"+location_data.data[key].location_id).className='';
 	}
     
-    Dom.get('manage_stock_messages').innerHTML='<?=_('How many outers did you move?')?>'
+    Dom.get('manage_stock_messages').innerHTML='<?=_('How many units did you move?')?>'
     
     Dom.get('move_stock_to').innerHTML=location_data.data[index].name;
     Dom.get('move_stock_to').setAttribute('location_id',location_data.data[index].id);
@@ -915,10 +921,10 @@ var move_stock_ready=function(){
 	    Dom.get('manage_stock_messages').innerHTML='<?=_('Do not give me negative numbers please')?>';
 	    Dom.get('move_stock_save').style.display='none';
 	}else if(qty==0){
-	    Dom.get('manage_stock_messages').innerHTML='<?=_('How many outers did you move?')?>';
+	    Dom.get('manage_stock_messages').innerHTML='<?=_('How many units did you move?')?>';
 	    Dom.get('move_stock_save').style.display='none';
 	}else if(qty>max){
-	    Dom.get('manage_stock_messages').innerHTML='<?=_('You can not move more than')?> '+max+' <?=_('Outers')?>';
+	    Dom.get('manage_stock_messages').innerHTML='<?=_('You can not move more than')?> '+max+' <?=_('Units')?>';
 	    Dom.get('move_stock_save').style.display='none';
 	    
 	}else{
@@ -926,10 +932,10 @@ var move_stock_ready=function(){
 	    Dom.get('move_stock_save').style.display='';
 	}
 		    }else if(qty==''){
-	Dom.get('manage_stock_messages').innerHTML='<?=_('How many outers did you move?')?>';
+	Dom.get('manage_stock_messages').innerHTML='<?=_('How many units did you move?')?>';
 	Dom.get('move_stock_save').style.display='none';
     }else{
-	Dom.get('manage_stock_messages').innerHTML='<?=_('That is not a number, how many outers did you move?')?>';	
+	Dom.get('manage_stock_messages').innerHTML='<?=_('That is not a number, how many units did you move?')?>';	
 	Dom.get('move_stock_save').style.display='none';
     }
 };

@@ -80,7 +80,7 @@ $smarty->assign('next',$next);
 
 $locations=($product->get('locations'));
 $smarty->assign('locations',$locations);
-
+//print_r($locations);
 
 $smarty->assign('parent','departments.php');
 $smarty->assign('title',$product->get('code'));
@@ -100,6 +100,7 @@ $smarty->assign('units',number($product->data['units']));
 
 $smarty->assign('data',$product->data);
 $smarty->assign('same_products',$product->same_products);
+
 
 
 $_SESSION['state']['product']['manage_stock_data']=json_encode($locations);

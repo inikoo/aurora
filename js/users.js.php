@@ -52,18 +52,15 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								 , {
 								     // sortedBy: {key:"<?=$_SESSION['tables']['customers_list'][0]?>", dir:"<?=$_SESSION['tables']['customers_list'][1]?>"},
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
-								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage    : <?=$_SESSION['state']['users']['user_list']['nr']?>,containers : 'paginator', 
- 									      pageReportTemplate : '(<?=_('Page')?> {currentPage} <?=_('of')?> {totalPages})',
-									      previousPageLinkLabel : "<",
- 									      nextPageLinkLabel : ">",
- 									      firstPageLinkLabel :"<<",
- 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
-									      ,template : "{FirstPageLink}{PreviousPageLink}<strong>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
-
-
-
-									  })
+								    //    ,paginator : new YAHOO.widget.Paginator({
+// 									      rowsPerPage    : <?=$_SESSION['state']['users']['user_list']['nr']?>,containers : 'paginator', 
+//  									      pageReportTemplate : '(<?=_('Page')?> {currentPage} <?=_('of')?> {totalPages})',
+// 									      previousPageLinkLabel : "<",
+//  									      nextPageLinkLabel : ">",
+//  									      firstPageLinkLabel :"<<",
+//  									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
+// 									      ,template : "{FirstPageLink}{PreviousPageLink}<strong>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+// 									  })
 								     
 								     ,sortedBy : {
 									 key: "<?=$_SESSION['state']['users']['user_list']['order']?>",
@@ -77,22 +74,19 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    
 	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
-	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	    this.table0.filter={key:'<?=$_SESSION['state']['users']['user_list']['f_field']?>',value:'<?=$_SESSION['state']['users']['user_list']['f_value']?>'};
-	    YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown)
+	    //this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	    //this.table0.filter={key:'<?=$_SESSION['state']['users']['user_list']['f_field']?>',value:'<?=$_SESSION['state']['users']['user_list']['f_value']?>'};
+	    //YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown);
 	
 
 
 
-
-		var tableid=1; // Change if you have more the 1 table
+	    
+	    var tableid=1; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
-
-
-
 	    var ColumnDefs = [
 			      {key:"id", label:"<?=_('Id')?>", width:40,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
-			       {key:"name", label:"<?=_('Group')?>", sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+			      {key:"name", label:"<?=_('Group')?>", sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
 			      {key:"users", label:"<?=_('Users')?>", sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 			      ];
 
@@ -120,18 +114,15 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								 , {
 								     // sortedBy: {key:"<?=$_SESSION['tables']['customers_list'][0]?>", dir:"<?=$_SESSION['tables']['customers_list'][1]?>"},
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
-								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage    : <?=$_SESSION['state']['users']['groups']['nr']?>,containers : 'paginator', 
- 									      pageReportTemplate : '(<?=_('Page')?> {currentPage} <?=_('of')?> {totalPages})',
-									      previousPageLinkLabel : "<",
- 									      nextPageLinkLabel : ">",
- 									      firstPageLinkLabel :"<<",
- 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
-									      ,template : "{FirstPageLink}{PreviousPageLink}<strong>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
-
-
-
-									  })
+								    //    ,paginator : new YAHOO.widget.Paginator({
+// 									      rowsPerPage    : <?=$_SESSION['state']['users']['groups']['nr']?>,containers : 'paginator', 
+//  									      pageReportTemplate : '(<?=_('Page')?> {currentPage} <?=_('of')?> {totalPages})',
+// 									      previousPageLinkLabel : "<",
+//  									      nextPageLinkLabel : ">",
+//  									      firstPageLinkLabel :"<<",
+//  									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
+// 									      ,template : "{FirstPageLink}{PreviousPageLink}<strong>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+// 									  })
 								     
 								     ,sortedBy : {
 									 key: "<?=$_SESSION['state']['users']['groups']['order']?>",
@@ -145,9 +136,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    
 	    this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
-	    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	    this.table1.filter={key:'<?=$_SESSION['state']['users']['user_list']['f_field']?>',value:'<?=$_SESSION['state']['users']['user_list']['f_value']?>'};
-	    YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown)
+	    // this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	    // this.table1.filter={key:'<?=$_SESSION['state']['users']['user_list']['f_field']?>',value:'<?=$_SESSION['state']['users']['user_list']['f_value']?>'};
+	    //YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown)
 
 
 

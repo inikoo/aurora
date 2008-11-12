@@ -213,9 +213,9 @@ function money_cents($a){
   return $a;
 }
 
-function number($a,$fixed=1){
-    $floored=floor($a);
-  if($floored==$a)
+function number($a,$fixed=1,$force_fix=false){
+  $floored=floor($a);
+  if($floored==$a and !$force_fix)
     $fixed=0;
 
   $a=number_format($a,$fixed,$_SESSION['locale_info']['decimal_point'],$_SESSION['locale_info']['thousands_sep']);
