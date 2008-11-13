@@ -2,17 +2,15 @@
 class Email{
   var $db;
   var $data=array();
-  var $tipo;
+  var $id=false;
 
   
   function __construct($id=false) {
      $this->db =MDB2::singleton();
-     $this->tipo=$tipo;
+
      if(is_numeric($id)){
-       if($this->get_data($id))
-	 return true;
+       $this->get_data($id);
      }
-     return false;
 
 
   }
@@ -26,8 +24,20 @@ function get_data($id){
       return true;
     }
     return false;
-
 }
+
+ 
+ function display($tipo=''){
+
+   switch($tipo){
+   case('link'):
+   default:
+     return '<a href="mailto:'.$this->data['email'].'">'.$this->data['email'].'</a>';
+     
+}
+   
+
+ }
 
 
 }

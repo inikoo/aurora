@@ -6,7 +6,7 @@
 <span class="nav2 onright" style="margin-left:20px"><a href="department.php?id={$department_id}">&uarr; {$department} </a></span>
 <span class="nav2 on left"><a href="departments.php">{t}Departments{/t}</a></span>
 <span class="nav2 onleft"><a href="categories.php">{t}Categories{/t}</a></span>
-<span class="nav2 onleft"><a href="products.php">{t}Product index{/t}</a></span>
+<span class="nav2 onleft"><a href="products.php">{t}Customers List{/t}</a></span>
 
   <div class="search_box" >
 

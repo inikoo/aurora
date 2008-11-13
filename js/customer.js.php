@@ -72,6 +72,32 @@
 
 function init(){
 
+//     var shortcut_next = new YAHOO.util.KeyListener(document, {keys:89 },  { fn:key_press });
+//         alert("cac");
+//     shortcut_next.enable();
+//     var key_press=function(type, args, obj){
+// 	alert("caca");
+// 	//	window.location=Dom.get("next").href;
+//     }
+
+//     document.documentElement.focus();
+//     document.body.focus();
+
+    var alt_shortcuts = function(type, args, obj) {
+	if(args[0]==78){
+	    window.location=Dom.get("next").href;
+	}else if(args[0]==80){
+	    window.location=Dom.get("next").href;
+	}
+
+    }
+
+    kpl1 = new YAHOO.util.KeyListener(document, { alt:true ,keys:[78,80] }, { fn:alt_shortcuts } );
+    kpl1.enable();
+
+
+
+
 }
 
 YAHOO.util.Event.onDOMReady(init);

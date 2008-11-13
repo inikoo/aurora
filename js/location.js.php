@@ -8,7 +8,7 @@ var list = new Object;
 var operation='';
 
 
-var remove_prod=function (pl_id,product_id){
+var remove_prod=function (pl_id,product_id){x
     var request='ar_assets.php?tipo=pml_desassociate_location&id='+ escape(pl_id)+'&msg=&product_id='+ escape(product_id);
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
@@ -348,9 +348,9 @@ var damaged_stock=function(){
     operation='damaged_stock'
     Dom.get('manage_stock').style.display='';
     this.className='selected';
-    //    Dom.get('manage_stock_messages').innerHTML='<?=_('Indicate the number of Outers damaged')?>';
+    //    Dom.get('manage_stock_messages').innerHTML='<?=_('Indicate the number of Units damaged')?>';
 
-     Dom.get('manage_stock_messages').innerHTML='<table style="margin:0"><tr><td><?=_('Mensage')?>:</td></tr><tr><td><input id="damaged_note" onchange="check_damaged_form()" type="text" style="background:#fff889" /> </td></tr><tr><td colspan=2 ><?=_('Indicate the number of Outers damaged')?></td></tr></table>';
+     Dom.get('manage_stock_messages').innerHTML='<table style="margin:0"><tr><td><?=_('Mensage')?>:</td></tr><tr><td><input id="damaged_note" onchange="check_damaged_form()" type="text" style="background:#fff889" /> </td></tr><tr><td colspan=2 ><?=_('Indicate the number of units damaged')?></td></tr></table>';
 
     Dom.get('manage_stock_engine').style.visibility='hidden';
     Dom.get('manage_stock_engine').innerHTML='<span onclick="damaged_stock_save()" style="cursor:pointer"><?=_('Save changes')?> <img src="art/icons/disk.png"/></span>';

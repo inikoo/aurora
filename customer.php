@@ -48,6 +48,19 @@ $_SESSION['state']['customer']['table']['sf']=0;
 $customer=new customer($customer_id);
 $customer->load('contacts');
 $smarty->assign('customer',$customer);
+
+$customers_order=$_SESSION['state']['customers']['table']['order'];
+$sql=sprintf("select c.id,c.name as code from customer as c  where  %s<%s  order by %s desc  ",$customers_order,prepare_mysql($customer->data[$customers_order]),$customers_order);
+$result =& $db->query($sql);
+if(!$prev=$result->fetchRow())
+  $prev=array('id'=>0,'code'=>'');
+$smarty->assign('prev',$prev);
+$sql=sprintf("select c.id,c.name as code from customer as c  where  %s>%s  order by %s   ",$customers_order,prepare_mysql($customer->data[$customers_order]),$customers_order);
+$result =& $db->query($sql);
+if(!$next=$result->fetchRow())
+  $next=array('id'=>0,'code'=>'');
+$smarty->assign('prev',$prev);
+$smarty->assign('next',$next);
 // $smarty->assign('data_contact',$customer->contact->data);
 // $smarty->assign('data_telecoms',$customer->contact->data);
 // $smarty->assign('data_emails',$customer->contact->data);
@@ -76,11 +89,11 @@ $smarty->assign('customer',$customer);
 // include('_customer.php');
 
 
-//$customer_data= get_customer_data($customer_id);
+//$customer->data= get_customer_data($customer_id);
 
 
-//$customer_contact_id=$customer_data['contact_id'];
-//$contact_data= get_contact_data($customer_data['contact_id']);
+//$customer_contact_id=$customer->data['contact_id'];
+//$contact_data= get_contact_data($customer->data['contact_id']);
 //print_r($contact_data);
 //$telecoms=get_telecoms($contact_data['id']);
 
@@ -210,7 +223,7 @@ $smarty->assign('title','Customer: '.$customer->data['name']);
 
 $customer_home=_("Customers List");
 // $smarty->assign('home',$customer_home);
-// $smarty->assign('name',$customer_data['name']);
+// $smarty->assign('name',$customer->data['name']);
 $smarty->assign('id',$myconf['customer_id_prefix'].sprintf("%05d",$customer->id));
 // $smarty->assign('atel',$tel);
 // $smarty->assign('afax',$fax);
@@ -232,29 +245,29 @@ $smarty->assign('id',$myconf['customer_id_prefix'].sprintf("%05d",$customer->id)
 // $smarty->assign('acontact_fax',$contact_fax);
 // $smarty->assign('contact_mobiles',$contact_mobiles);
 // $smarty->assign('acontact_mobile',$contact_mobile);
-// $total_orders=$customer_data['num_orders']+$customer_data['num_orders_nd'];
-// $smarty->assign('orders',number($total_orders)  );
-// $total_net=$customer_data['total_net']+$customer_data['total_net_nd'];
-// $smarty->assign('total_net',money($total_net));
-// $total_invoices=$customer_data['num_invoices']+$customer_data['num_invoices_nd'];
-// $smarty->assign('invoices',number($total_invoices)  );
-// if($total_invoices>0)
-//   $smarty->assign('total_net_average',money($total_net/$total_invoices));
+$total_orders=$customer->data['num_orders']+$customer->data['num_orders_nd'];
+$smarty->assign('orders',number($total_orders)  );
+$total_net=$customer->data['total_net']+$customer->data['total_net_nd'];
+$smarty->assign('total_net',money($total_net));
+$total_invoices=$customer->data['num_invoices']+$customer->data['num_invoices_nd'];
+ $smarty->assign('invoices',number($total_invoices)  );
+ if($total_invoices>0)
+   $smarty->assign('total_net_average',money($total_net/$total_invoices));
 
-// $order_interval=$customer_data['order_interval'];
+$order_interval=$customer->data['order_interval'];
 
-// if($order_interval>10){
-//   $order_interval=round($order_interval/7);
-//   if( $order_interval==1)
-//     $order_interval=_('week');
-//   else
-//     $order_interval=$order_interval.' '._('weeks');
+if($order_interval>10){
+  $order_interval=round($order_interval/7);
+  if( $order_interval==1)
+    $order_interval=_('week');
+  else
+    $order_interval=$order_interval.' '._('weeks');
   
-//  }else if($order_interval=='')
-//   $order_interval='';
-//  else
-//    $order_interval=round($order_interval).' '._('days');
-// $smarty->assign('orders_interval',$order_interval);
+ }else if($order_interval=='')
+  $order_interval='';
+ else
+   $order_interval=round($order_interval).' '._('days');
+$smarty->assign('orders_interval',$order_interval);
 // $smarty->assign('table_title',_('History'));
 
 // $smarty->assign('telecoms',$telecoms);

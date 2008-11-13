@@ -2,17 +2,17 @@
 class Address{
   var $db;
   var $data=array();
-  var $tipo;
+  var $id=false;
 
   
   function __construct($id=false) {
      $this->db =MDB2::singleton();
 
      if(is_numeric($id)){
-       if($this->get_data($id))
-	 return true;
+       $this->get_data($id);
+
      }
-     return false;
+
 
 
   }
@@ -58,8 +58,10 @@ function get_data($id){
      }
      
      
-     
+
      $full_address=$header_address.$town_address.($this->data['postcode']!=''?$this->data['postcode'].$separator:'').$country_d1_address.$this->data['country'];
+
+     return $full_address;
    }
    
  }

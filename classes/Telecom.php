@@ -2,17 +2,17 @@
 class Telecom{
   var $db;
   var $data=array();
-  var $tipo;
+  var $id=false;
 
   
   function __construct($id=false) {
      $this->db =MDB2::singleton();
 
      if(is_numeric($id)){
-       if($this->get_data($id))
-	 return true;
+       $this->get_data($id);
+
      }
-     return false;
+
 
 
   }
@@ -29,6 +29,27 @@ function get_data($id){
 
 }
 
+ function display($tipo=''){
+
+   switch($tipo){
+   default:
+     $tmp=($this->data['icode']!=''?'+'.$this->data['icode'].' ':'').($this->data['ncode']!=''?$this->data['ncode'].' ':'').$this->get('spaced_number').($this->data['ext']!=''?' '._('ext').' '.$this->data['ext']:'');
+     return $tmp;
+   }
+ }
+ 
+
+ function get($tipo='')
+ {
+   switch($tipo){
+   case('spaced_number'):
+     return _trim(strrev(chunk_split(strrev($this->data['number']),4," ")));
+     break;
+   default:
+     return false;
+   }
+   
+ }
 
 }
 ?>
