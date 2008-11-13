@@ -84,6 +84,42 @@ switch($tipo){
 		      );
      echo json_encode($response);  
      break;
+ case('pml_unlink'):
+     $data=array(
+		 'tipo'=>'unlink', 'user_id'=>$LU->getProperty('auth_user_id')
+		 );
+     $product=new product($_SESSION['state']['product']['id']);
+     $res=$product->update_location($data);
+     if($res[0])
+       $response= array(
+			'state'=>200,
+			);
+     else
+       $response= array(
+			'state'=>400,
+			'msg'=>$res[1]
+		      );
+     echo json_encode($response);  
+     break;
+   case('pml_link'):
+     $data=array(
+		 'product_id'=>$_REQUEST['product_id'], 'user_id'=>$LU->getProperty('auth_user_id'),
+		 'tipo'=>'link'
+		 );
+     $product=new product($_SESSION['state']['product']['id']);
+     $res=$product->update_location($data);
+     if($res[0])
+       $response= array(
+			'state'=>200,
+			);
+     else
+       $response= array(
+			'state'=>400,
+			'msg'=>$res[1]
+		      );
+     echo json_encode($response);  
+     break;  
+
  case('pml_change_qty'):
      $data=array(
 		 'p2l_id'=>$_REQUEST['id'],

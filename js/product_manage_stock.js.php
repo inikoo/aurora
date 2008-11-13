@@ -13,6 +13,7 @@ catch (e) {
 };
 var deleting=0;
 var swaping=0;
+var new_parent='';
 
 function exchange(i, j, tableID)
 {
@@ -64,7 +65,7 @@ function moverow(row_index, position, tableID)
 
 
 var refresh= function(){
-    
+    new_parent='';
 
   for (key in location_data.data)
       {
@@ -160,6 +161,8 @@ var location_selected= function(){
 
 var clear_actions = function(){
 
+    new_parent='';
+    Dom.get('new_product_input').value='';
 
     if(deleting>0){
 	Dom.get('row_'+deleting).style.background='#fff';
@@ -189,7 +192,7 @@ var clear_actions = function(){
     Dom.get('damaged_stock').className='';
     Dom.get('new_location').className='';
     Dom.get('identify_location').className='';
-
+    Dom.get('link_product').className='';
     
 };
 
@@ -442,6 +445,60 @@ var damaged_stock_save = function(index){
 	    }
 	});
 };
+
+var unlink=function(o){
+    clear_actions();
+    current_engine='link_product';
+    o.className='selected';
+    Dom.get('manage_stock_desktop').style.display='';
+    Dom.get('manage_stock_engine').innerHTML='<span style="padding:5px 20px;cursor:pointer" onCLick="unlink_save()"><?=_('Yes')?></span> <span style="padding:5px 20px;cursor:pointer" onClick="clear_actions()"><?=_('No')?></span>';
+    Dom.get('manage_stock_messages').innerHTML='<?=_('Are you sure the you want to unlink this product');?>';
+}
+var unlink_save=function(){
+    var request='ar_assets.php?tipo=pml_unlink';
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    success:function(o) {
+		alert(o.responseText)
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if (r.state == 200) {
+		    location.reload(true);
+		}else{
+		     Dom.get('manage_stock_messages').innerHTML='<span class="error">'+r.msg+'</span>';
+		}
+		    
+	    }
+	})
+
+}
+
+
+var link=function(o){
+    clear_actions();
+    current_engine='link_product';
+    o.className='selected';
+    Dom.get('manage_stock_desktop').style.display='';
+    Dom.get('manage_stock_products').style.display='';
+    Dom.get('manage_stock_engine').style.display='none';
+    Dom.get('manage_stock_engine').innerHTML='<span style="padding:5px 20px;cursor:pointer" onCLick="link_save()"><?=_('Link')?></span> <span style="padding:5px 20px;cursor:pointer" onClick="clear_actions()"><?=_('Cancel')?></span>';
+    Dom.get('manage_stock_messages').innerHTML='<?=_('Choose the product thet you want to link');?>';
+};
+var link_save=function(){
+    var product_id=new_parent;
+    var request='ar_assets.php?tipo=pml_link&product_id='+escape(product_id);
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    success:function(o) {
+		alert(o.responseText)
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if (r.state == 200) {
+		    location.reload(true);
+		}else{
+		     Dom.get('manage_stock_messages').innerHTML='<span class="error">'+r.msg+'</span>';
+		}
+		    
+	    }
+	})
+
+}
 
 var damaged_stock=function(){
     clear_actions(current_engine);
@@ -995,6 +1052,53 @@ YAHOO.util.Event.onContentReady("manage_stock", function () {
 	 
     });
 
+YAHOO.util.Event.onContentReady("manage_stock_products", function () {
+	var oDS = new YAHOO.util.XHRDataSource("ar_assets.php");
+ 	oDS.responseType = YAHOO.util.XHRDataSource.TYPE_JSON;
+ 	oDS.responseSchema = {
+ 	    resultsList : "data",
+ 	    fields : ["scode","code","description","current_qty","changed_qty","new_qty","_qty_move","_qty_change","_qty_damaged","note","delete","product_id"]
+ 	};
+ 	var oAC = new YAHOO.widget.AutoComplete("new_product_input", "new_product_container", oDS);
+ 	oAC.generateRequest = function(sQuery) {
+ 	    return "?tipo=products_name&except=location&except_id=<?=$_SESSION['state']['product']['id']?>&query=" + sQuery ;
+ 	};
+
+	var myHandler = function(sType, aArgs) {
+
+	    newProductData = aArgs[2];
+
+	};
+	oAC.itemSelectEvent.subscribe(myHandler);
+
+
+
+
+	oAC.forceSelection = true; 
+	oAC.itemSelectEvent.subscribe(product_selected); 
+    });
+
+var product_selected=function(){
+
+    var data = {
+	"code":newProductData[1]
+	,"description":newProductData[2]
+	,"current_qty":newProductData[3]
+	,"changed_qty":newProductData[4]
+	,"new_qty":newProductData[5]
+	,"_qty_move":newProductData[6]
+	,"_qty_change":newProductData[7]
+	,"_qty_damaged":newProductData[8]
+	,"note":newProductData[9]
+	,"delete":newProductData[10]
+	,"product_id":newProductData[11]
+    }; 
+
+    
+    new_parent=data.product_id;
+    Dom.get('manage_stock_engine').style.display='';
+
+}
 
 YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {

@@ -26,8 +26,10 @@ class product{
 
     if(is_numeric($id)){
       $this->id=$id;
-      $this->read(array('product_info'));
-    }
+      if(!$this->read(array('product_info')))
+	return false;
+    }else
+      return false;
 
   }
   
@@ -44,7 +46,7 @@ class product{
 	global $_shape;
 	$sql=sprintf("select *,UNIX_TIMESTAMP(first_date) as ts_first_date from product where id=%d",$this->id);
 
-	$result =& $this->db->query($sql);
+	if($result =& $this->db->query($sql)){
 	$this->data=$result->fetchRow();
 	if($this->data['ts_first_date']!='')
 	  $this->dates=array('ts_first_date'=>$this->data['ts_first_date']);
@@ -59,6 +61,9 @@ class product{
 	$this->data['dim_tipo']=$_shape[$this->data['dim_tipo_id']];
 	$this->get('ovol');
 	$this->get('vol');
+	return true;
+	}else
+	  return false;
 	break;
       case('product_tree'):
 	$sql=sprintf('select d.name as department,d.id as department_id,g.name as group_name,group_id from product left join product_group as g on (g.id=group_id)  left join product_department as d on (d.id=department_id) where product.id=%s ',$this->id);
@@ -76,17 +81,22 @@ class product{
 	$this->read('same_products');
 
 	$_data=array();
-	$this->locations=array('has_display'=>false,'has_unknown'=>false,'has_loading'=>false,'has_white_hole'=>false,'has_picking_area'=>false,'has_physical'=>false,'data'=>array(),'num_physical'=>0,'num_physical_with_stock'=>0,'num_picking_areas'=>0);
-	$sql=sprintf("select name,product2location.id as id,location_id,stock,picking_rank,tipo,stock  from product2location left join location on (location_id=location.id) where product_id=%d and picking_rank is not null order by picking_rank  ",$this->id);
+	$this->locations=array('is_parent'=>false,'has_display'=>false,'has_unknown'=>false,'has_loading'=>false,'has_link'=>false,'has_white_hole'=>false,'has_picking_area'=>false,'has_physical'=>false,'data'=>array(),'num_physical'=>0,'num_physical_with_stock'=>0,'num_picking_areas'=>0);
+	$sql=sprintf("select name,product2location.id as id,location_id,stock,picking_rank,tipo,stock  from product2location left join location on (location_id=location.id) where product_id=%d and picking_rank is not null order by picking_rank  ",$this->data['location_parent_id']);
 	$result =& $this->db->query($sql);
 	$num_same_products=count($this->same_products);
+	if($num_same_products>0){
+	  $this->locations['has_link']=true;
+	  if($this->id==$this->data['location_parent_id'])
+	    $this->locations['is_parent']=true;
+	}
 	$stock_units=0;	  
 	while($row=$result->fetchRow()){
 	  $stock=number($row['stock']/$this->data['units'],1);
 	  if($num_same_products==0)
 	    $stock_outers=$stock;
 	  else{
-	    $stock_outers=$stock;
+	    $stock_outers='<b>'.number($stock,1).'</b>';
 	    foreach($this->same_products as $_same){
 	      $stock_outers.=';'.number($row['stock']/$_same['units'],1);
 	    }
@@ -120,7 +130,7 @@ class product{
 	
 
 
-	$sql=sprintf("select name,product2location.id as id,location_id,stock,picking_rank,tipo,stock  from product2location left join location on (location_id=location.id) where product_id=%d and picking_rank is  null order by tipo desc  ",$this->id);
+	$sql=sprintf("select name,product2location.id as id,location_id,stock,picking_rank,tipo,stock  from product2location left join location on (location_id=location.id) where product_id=%d and picking_rank is  null order by tipo desc  ",$this->data['location_parent_id']);
 	$result =& $this->db->query($sql);
 	while($row=$result->fetchRow()){
 	   $stock_units+=$row['stock'];
@@ -128,7 +138,7 @@ class product{
 	  if($num_same_products==0)
 	    $stock_outers=$stock;
 	  else{
-	    $stock_outers=number($stock,1);
+	    $stock_outers='<b>'.number($stock,1).'</b>';
 	    foreach($this->same_products as $_same){
 	      $stock_outers.=';'.number($row['stock']/$_same['units'],1);
 	    }
@@ -182,7 +192,7 @@ class product{
 	$this->locations['data']=$_data;
 	$this->locations['stock']=$this->data['stock'];
 	$this->locations['stock_units']=$stock_units;
-	$this->locations['stock_outers']=$this->data['stock'];
+	$this->locations['stock_outers']="<b>".$this->data['stock'].'</b>';
 
 	foreach($this->same_products as $_same){
 	  $this->locations['stock_outers'].=';'.number($stock_units/$_same['units']);
@@ -471,7 +481,7 @@ class product{
       }
       
     }
-  
+    return true;
   }
   function set($item_array){
     
@@ -486,7 +496,7 @@ class product{
 	}
 	
       }
-    }
+  }
 
 
   function get($item=''){
@@ -627,6 +637,91 @@ class product{
 
   function update_location($data){
     switch($data['tipo']){
+    case('link'):
+      $user_id=$data['user_id'];
+      $product_id=$data['product_id'];
+      $date='NOW()';
+      
+      if($product_id==$this->id)
+	return array(false,_('Nothing to change '));
+      if(!$link_product=new Product($product_id))
+	return array(false,_('Product to be linked do not exist'));
+      if($link_product->data['units']>=$this->data['units']){
+	$old_value=$this->data['location_parent_id'];
+	$sql=sprintf("update product set location_parent_id=%d where id=%d ",$link_product->id,$this->id);
+	mysql_query($sql);
+	$this->set_stock();
+	
+	$note=$this->data['code']." "._('is now linked to')." ".$link_product->data['code'];
+	$sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,old_value,new_value,note) values (%s,'PROD',%d,'CLO',NULL,'NEW',%d,'%d',%d,%s)"
+		     ,$date,$this->id,$user_id,$old_value ,$link_product->id,prepare_mysql($note)); 
+	mysql_query($sql);
+
+      }else{
+	//this product is the new macho man
+	$sql=sprintf("update product2location set product_id=%d where product_id=%d",$this->id,$link_product->id);
+	mysql_query($sql);
+	$sql=sprintf("update product set location_parent_id=%d where location_parent_id=%d  or id=%d or id=%d ",$this->id,$link_product->id,$this->id,$link_product->id);
+	mysql_query($sql);
+	unset($link_product);
+	$this->set_stock();
+	$this->read('same_products');
+	if($num_linked=count($this->same_products)>0){
+	  $linked_codes='';
+	  $linked_ids='';
+	  foreach($this->same_products as $key=>$value){
+	    $linked_ids.=','.$key;
+	    $linked_codes.=','.$value['code'];
+	  }
+	  $linked_ids=preg_replace('/^\,/','',$linked_ids);
+	  $linked_codes=preg_replace('/^\,/','',$linked_codes);
+	  
+	  $note=$linked_codes." ".ngettext('is now linked to this product','are linked to this product',$num_linked);
+	  $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,old_value,new_value,note) values (%s,'PROD',%d,'CLO',NULL,'NEW',%d,'%d',NULL,%s)"
+		       ,$date,$this->id,$user_id,$linked_ids,prepare_mysql($note)); 
+	  mysql_query($sql);
+	}
+
+	return array(true);
+
+
+      }
+      
+      
+      
+      break;
+
+    case('unlink'):
+      $user_id=$data['user_id'];
+      $date='NOW()';
+      
+      $old_value=$this->data['location_parent_id'];
+      $this->read('same_products');
+      $this->read('locations');
+      
+      if($this->locations['is_parent']){
+	// unlink the children
+	foreach($this->same_products as $key=>$value){
+	  $sql=sprintf("update product set location_parent_id=%d where id=%d",$key,$key);
+	  mysql_query($sql);
+	  $note=_('Product unlinked from')." ".$this->data['code'];
+	  $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,tipo,staff_id,old_value,new_value,note) values (%s,'PROD',%d,'PLO',NULL,'ULI',%s,'%d','%d')",$date,$key,$user_id,$this->id,$key,prepare_mysql($note)); 
+	  mysql_query($sql);
+	}
+	return array(true);	
+      }else if($old_value!=$this->id){
+	
+	
+	$sql=sprintf("update product set location_parent_id=%d where id=%d",$this->id,$this->id);
+	
+	mysql_query($sql);
+	$note=_('Product unlinked from')." ".$this->same_products[$old_value]['code'];
+	$sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,tipo,staff_id,old_value,new_value,note) values (%s,'PROD',%d,'PLO',NULL,'ULI',%s,'%d','%d')",$date,$this->id,$user_id,$old_value,$this->id,prepare_mysql($note)); 
+	mysql_query($sql);
+	return array(true);	
+      }
+      return array(false,_('Nothing to change'));	
+      break;
     case('set_picking_rank'):
       
       // print_r($data);

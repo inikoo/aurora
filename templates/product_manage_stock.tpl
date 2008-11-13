@@ -20,6 +20,9 @@
     <table>
       <tr><td style="vertical-align:bottom;font-size:120%;font-weight:800">{$data.code}</td><td style="vertical-align:middle;color:#777;padding-left:10px"><b>{$units}</b> {t}units per outer{/t}</td></tr>
       {foreach from=$same_products item=product  name=foo}
+      {if $smarty.foreach.foo.first}
+      <tr><td colspan="2">{t}Linked Products{/t}</td></tr>
+      {/if}
       <tr><td style="vertical-align:bottom;font-size:120%;font-weight:800">{$product.code}</td><td style="vertical-align:middle;color:#777;padding-left:10px"><b>{$product.f_units}</b> {t}units per outer{/t}</td></tr>
       {/foreach}
     </table>
@@ -38,9 +41,15 @@
   <div  id="manage_stock" class="manage_stock" style=";width:680px;float:left">
     
     <div class="search_box" style="clear:none;float:right;width:120px" >
-      <span class="search_title" style="padding-right:15px">{t}Product Code{/t}:</span> <br><input size="8" class="text search" id="prod_search" value="" name="search"/><img align="absbottom" id="submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>
+      <span class="search_title">{t}Product Code{/t}:</span> <input size="8" class="text search" id="prod_search" value="" name="search"/><img align="absbottom" id="submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>
       <span  class="search_msg"   id="search_msg"    ></span> <span  class="search_sugestion"   id="search_sugestion"    ></span>
       <br/>
+      <span>{t}Return to product pages{/t}:</span><br/>
+      <a href="product.php?id={$data.id}">{$data.code}</a>
+      {foreach from=$same_products item=product key=sproduct_id name=foo}
+       <br/><a href="product.php?id={$sproduct_id}">{$product.code}</a>
+      {/foreach}
+      
     </div>
 
     <table class="options" style="float:left">
@@ -52,8 +61,13 @@
 	<td  {if $locations.num_physical_with_stock==0}style="display:none"{/if}   id="damaged_stock">Stock Damaged</td>
 	<td id="new_location"  {if $locations.has_unknown}style="display:none"{/if}  >Assign Location</td>
       </tr>
+       <tr>
+	<td id="link_product" onClick="{if $locations.has_link}unlink(this){else}link(this){/if}" >{if $locations.has_link}Unlink Product{else}Link Product{/if}</td>
+	<td style="visibility:hidden"></td>
+	<td style="visibility:hidden"></td>
+       </tr>
     </table>
-    <table class="options" style="clear:both;float:left;margin-bottom:20px">
+    <table class="options" style="clear:left;float:left;margin-bottom:20px">
       <tr class="title"> 
 	<td colspan="2"  {if !$locations.has_unknown and  !$locations.has_physical}style="display:none"{/if}    >{t}Fix Errors{/t}</td></tr>
       <tr >
@@ -62,9 +76,10 @@
 	<td id="identify_location" {if !$locations.has_unknown}style="display:none"{/if}>Identify Location</td>
       </tr>
     </table>
-    <div id="manage_stock_desktop" style="display:none" >
+    <div id="manage_stock_desktop" style="display:none;width:450px" >
       <div id="manage_stock_close"><img src="art/close.png" style="opacity:.5;position:relative;bottom:5px;left:10px;float:right;cursor:pointer" title="{t}{/t}" onclick="clear_actions();"/></div>
       <div id="manage_stock_messages"></div>
+      <div id="manage_stock_products" style="margin:0 0 20px 0;width:100px;display:none"><input id="new_product_input" type="text"><div id="new_product_container"></div></div>
       <div id="manage_stock_locations" style="margin:0 0 20px 0;width:100px;display:none"><input id="new_location_input" type="text"><div id="new_location_container"></div></div>
       <div id="manage_stock_engine"></div>
       <div style="clear:both">
