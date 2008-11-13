@@ -7,11 +7,11 @@
 
   <div id="yui-main">
     <div class="yui-b" >
-       <h1>{$name} <span style="color:SteelBlue">{$id}</span></h1> 
+       <h1>{$customer->data.name} <span style="color:SteelBlue">{$id}</span></h1> 
 <table style="width:500px" border=0>
 
 <tr>
-{if $principal_address}<td valign="top">{$principal_address}</td>{/if}
+{if $customer->data.main_bill_address_id}<td valign="top">{$ustomer->data.main_bill_address}</td>{/if}
 <td  valign="top">
 <table border=0 style="padding:0">
 {if $contact}<tr><td colspan=2>{$contact}</td ></tr>{/if}

@@ -1,7 +1,4 @@
 <?
-include_once('common/string.php');
-
-
 
 class product{
   
@@ -25,26 +22,19 @@ class product{
 
 
     if(is_numeric($id)){
-      $this->id=$id;
-      if(!$this->read(array('product_info')))
+      if(!$this->get_data($id))
 	return false;
     }else
       return false;
 
   }
   
-  
-  function read($data_to_be_read){
 
-    if(!is_array($data_to_be_read))
-      $data_to_be_read=array($data_to_be_read);
-    foreach($data_to_be_read as $table){
 
-      switch($table){
 
-      case('product_info'):
-	global $_shape;
-	$sql=sprintf("select *,UNIX_TIMESTAMP(first_date) as ts_first_date from product where id=%d",$this->id);
+function get_data($product_id){
+  global $_shape;
+  $sql=sprintf("select *,UNIX_TIMESTAMP(first_date) as ts_first_date from product where id=%d",$product_id);
 
 	if($result =& $this->db->query($sql)){
 	$this->data=$result->fetchRow();
@@ -61,10 +51,23 @@ class product{
 	$this->data['dim_tipo']=$_shape[$this->data['dim_tipo_id']];
 	$this->get('ovol');
 	$this->get('vol');
+	$this->id=$this->data['id'];
 	return true;
 	}else
 	  return false;
-	break;
+  
+
+}
+
+  
+  function read($data_to_be_read){
+
+    if(!is_array($data_to_be_read))
+      $data_to_be_read=array($data_to_be_read);
+    foreach($data_to_be_read as $table){
+
+      switch($table){
+
       case('product_tree'):
 	$sql=sprintf('select d.name as department,d.id as department_id,g.name as group_name,group_id from product left join product_group as g on (g.id=group_id)  left join product_department as d on (d.id=department_id) where product.id=%s ',$this->id);
 
@@ -233,9 +236,9 @@ class product{
 	}
 	break;
       case('categories'):
+
 	$this->categories['list']=array();
 	$sql=sprintf("select cat_id,name from product2cat left join cat on (cat_id=cat.id) where product_id=%d ",$this->id);
-	$this->suppliers['list']=array();
 	$result =& $this->db->query($sql);
 	while($row=$result->fetchRow()){
 	  $this->categories['list'][$row['cat_id']]=$row['name'];

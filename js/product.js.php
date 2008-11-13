@@ -224,7 +224,7 @@ function init(){
 	     Dom.get('block_'+block).style.display='';
 	     this.setAttribute('state',1);
 	     YAHOO.util.Dom.setStyle('but_logo_'+block, 'opacity', 1);
-	     YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=product-display-'+block+'&value=1ar');
+	     YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=product-display-'+block+'&value=1');
 	     
 	 }
 

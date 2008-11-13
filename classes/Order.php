@@ -1,5 +1,5 @@
 <?
-include_once('common/string.php');
+
 include_once('classes/Staff.php');
 include_once('classes/Supplier.php');
 

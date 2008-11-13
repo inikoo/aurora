@@ -10,17 +10,17 @@
 	<table border=0 cellpadding="2" style="float:right;margin-top:20px;margin-bottom:10px;" class="view_options">
 	  <tr style="border-bottom:1px solid #ddd">
 	    <th><img src="art/icons/information.png" title="{t}Supplier Details{/t}"/></th>
-	    <th><img  src="art/icons/bricks.png" title="{t}Products{/t}"/></th>
+	    <th><img src="art/icons/bricks.png" title="{t}Products{/t}"/></th>
 	    <th><img src="art/icons/page_paste.png" title="{t}Purchase Orders{/t}"/></th>
 	    <th><img src="art/icons/script.png" title="{t}History{/t}"/></th>
 	  </tr>
 	  <tr style="height:18px;border-bottom:1px solid #ddd">
-	    <td  id="change_view_details" 
+	    <td  id="change_view_details"  state="{$display.details}" block="details"  
 		 {if $display.details==0}title="{t}Show Supplier Details{/t}" atitle="{t}Hide Supplier Details{/t}"{else}atitle="Hide Supplier Details"  title="{t}Hide Supplier Details{/t}"{/if} >
 	      <img {if $hide.details==0}style="opacity:0.2"{/if} src="art/icons/tick.png"  id="but_logo_details"  /></td>
 
 	    <td  id="change_view_products" state="{$display.products}" block="products"  
-		 {if $display.products==0} title="{t}Show Charts{/t}" atitle="{t}Hide Charts{/t}"{else} atitle="{t}Show Charts{/t}" title="{t}Hide Charts{/t}"{/if} >
+		 {if $display.products==0} title="{t}Show Products{/t}" atitle="{t}Hide Products{/t}"{else} atitle="{t}Show Products{/t}" title="{t}Hide Products{/t}"{/if} >
 	      <img {if $display.products==0}style="opacity:0.2"{/if} src="art/icons/tick.png"  id="but_logo_products"  /></td>
 	
 	<td  state="{$display.po}" block="po"  id="change_view_po" 
@@ -63,30 +63,32 @@
 	 
        </table>
 
-       <div >
-  <h2 style="font-size:150%">{t}Supplier Overview{/t}</h2>
-  <table style="padding:0;margin:0;border-top:1px solid black;;border-bottom:1px solid black;width:500px">
-    <tr>
-      <td>
-	{$supplier_overview}
-      </td>
-    </tr>
-  </table>
-</div>
+       <div  id="block_details"  style="{if $display.details==0}display:none;{/if}"   >
+	 <h2 style="font-size:150%">{t}Supplier Overview{/t}</h2>
+	 <table style="padding:0;margin:0;border-top:1px solid black;;border-bottom:1px solid black;width:500px">
+	   <tr>
+	     <td>
+	       {$supplier_overview}
+	     </td>
+	   </tr>
+	 </table>
+       </div>
 
 
       
-<div  id="block_products" class="data_table" style="{if $display.products==0}display:none;{/if}margin:25px 0px;">
-  <span class="clean_table_title">{t}Products{/t}</span>
-  <div  class="clean_table_caption"  style="clear:both;">
-    <div style="float:left;"><div id="table_info0" class="clean_table_info">{$table_info} <span class="filter_msg"  id="filter_msg0"></span></div></div>
-    <div class="clean_table_filter"><div class="clean_table_info"><span id="filter_name0">{$filter_name}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value}" size=10/><div id='f_container'></div></div></div>
-    <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator"></span></div></div>
-  </div>
-  <div  id="table0"   class="data_table_container dtable btable "> </div>
+<div  id="block_products" class="data_table" style="{if $display.products==0}display:none;{/if}margin:25px 0px;clear:both">
+  <div class="data_table" style="">
+   <span class="clean_table_title">{t}Products{/t}</span>
+    <div  class="clean_table_caption"  style="clear:both;">
+      <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
+      <div class="clean_table_filter"  id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0">{$filter_name}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value}" size=10/><div id='f_container'></div></div></div>
+      <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
+    </div>
+    <div  id="table0"   class="data_table_container dtable btable "> </div>
+ </div>
 </div>
 
-<div  id="block_products" class="data_table" style="{if $display.po==0}display:none;{/if}margin:25px 0px;">
+<div  id="block_po" class="data_table" style="{if $display.po==0}display:none;{/if}margin:25px 0px;">
   <span class="clean_table_title">{t}Purchase Orders{/t}</span>
   <div  class="clean_table_caption"  style="clear:both;">
     <div style="float:left;"><div id="table_info1" class="clean_table_info">{$table_info} <span class="filter_msg"  id="filter_msg1"></span></div></div>
@@ -96,7 +98,7 @@
   <div  id="table1"   class="data_table_container dtable btable "> </div>
 </div>
 
-<div  id="block_products" class="data_table" style="{if $display.history==0}display:none;{/if}margin:25px 0px;">
+<div  id="block_history" class="data_table" style="{if $display.history==0}display:none;{/if}margin:25px 0px;">
   <span class="clean_table_title">{t}History{/t}</span>
   <div  class="clean_table_caption"  style="clear:both;">
     <div style="float:left;"><div id="table_info2" class="clean_table_info">{$table_info} <span class="filter_msg"  id="filter_msg2"></span></div></div>

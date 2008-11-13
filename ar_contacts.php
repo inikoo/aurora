@@ -1,7 +1,7 @@
 <?
 require_once 'common.php';
 require_once '_order.php';
-require_once 'string.php';
+
 require_once '_contact.php';
 
 

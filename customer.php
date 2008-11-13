@@ -1,6 +1,6 @@
 <?
 include_once('common.php');
-
+include_once('classes/Customer.php');
 if(!$LU->checkRight(CUST_VIEW))
   exit;
 
@@ -45,6 +45,15 @@ else
 $_SESSION['state']['customer']['id']=$customer_id;
 $_SESSION['state']['customer']['table']['sf']=0;
 
+$customer=new customer($customer_id);
+$customer->load('contacts');
+$smarty->assign('customer',$customer);
+// $smarty->assign('data_contact',$customer->contact->data);
+// $smarty->assign('data_telecoms',$customer->contact->data);
+// $smarty->assign('data_emails',$customer->contact->data);
+
+
+
 //$sql=sprintf("select cu.total,cu.num_orders as orders,cu.order_interval,co.tipo as tipo_customer, cu.id as id,cu.contact_id,cu.name as name from customer as cu  left join contact as co on (cu.contact_id=co.id ) where cu.id=%d ",$customer_id);
 //print $sql;
 
@@ -59,46 +68,46 @@ $_SESSION['state']['customer']['table']['sf']=0;
 
 //$result =& $db->query($sql);
 //$address=$result->fetchRow();
-include('string.php');
-include('_contact.php');
-include('telecom.php');
-include('email.php');
-include('address.php');
-include('_customer.php');
+// include('string.php');
+// include('_contact.php');
+// include('telecom.php');
+// include('email.php');
+// include('address.php');
+// include('_customer.php');
 
 
-$customer_data= get_customer_data($customer_id);
+//$customer_data= get_customer_data($customer_id);
 
 
 //$customer_contact_id=$customer_data['contact_id'];
-$contact_data= get_contact_data($customer_data['contact_id']);
+//$contact_data= get_contact_data($customer_data['contact_id']);
 //print_r($contact_data);
-$telecoms=get_telecoms($contact_data['id']);
+//$telecoms=get_telecoms($contact_data['id']);
 
-$num_children=count($contact_data['child']);
-if($num_children==1){
-  $smarty->assign('contact',$contact_data['child'][0]['name']);
- }
-elseif($num_children==2){
-  $smarty->assign('contact',$contact_data['child'][1]['name'].' & '.$contact_data['child'][0]['name']);
- }
-
-
-
-$since='2004-06-14';
-  update_customer($customer_id,$since);
+// $num_children=count($contact_data['child']);
+// if($num_children==1){
+//   $smarty->assign('contact',$contact_data['child'][0]['name']);
+//  }
+// elseif($num_children==2){
+//   $smarty->assign('contact',$contact_data['child'][1]['name'].' & '.$contact_data['child'][0]['name']);
+//  }
 
 
 
+// //$since='2004-06-14';
+// //  update_customer($customer_id,$since);
 
 
-$tel0='';
-$fax0='';
-$email0='';
 
-$tel=array();
-$fax=array();
-$email=array();
+
+
+// $tel0='';
+// $fax0='';
+// $email0='';
+
+// $tel=array();
+// $fax=array();
+// $email=array();
 
 
 
@@ -125,16 +134,16 @@ $email=array();
 // // Contactos
 // $sql=sprintf("select child_id,contact.name from contact_relations left join contact on (child_id=contact.id)where parent_id=".$customer_contact_id);
 // $result = $db->query($sql);
-$contact_name=array();
-$contact_tel=array();
-$contact_fax=array();
-$contact_email=array();
-$contact_tels=array();
-$contact_faxes=array();
-$contact_emails=array();
-$contact_mobiles=array();
+// $contact_name=array();
+// $contact_tel=array();
+// $contact_fax=array();
+// $contact_email=array();
+// $contact_tels=array();
+// $contact_faxes=array();
+// $contact_emails=array();
+// $contact_mobiles=array();
 
-$contact_mobile=array();
+// $contact_mobile=array();
 
 
 
@@ -195,14 +204,14 @@ $smarty->assign('box_layout','yui-t0');
 
 
 $smarty->assign('parent','customers.php');
-$smarty->assign('title','Customer: '.$customer_data['name']);
+$smarty->assign('title','Customer: '.$customer->data['name']);
 
 
 
 $customer_home=_("Customers List");
-$smarty->assign('home',$customer_home);
-$smarty->assign('name',$customer_data['name']);
-$smarty->assign('id',$myconf['customer_id_prefix'].sprintf("%05d",$customer_data['id']));
+// $smarty->assign('home',$customer_home);
+// $smarty->assign('name',$customer_data['name']);
+$smarty->assign('id',$myconf['customer_id_prefix'].sprintf("%05d",$customer->id));
 // $smarty->assign('atel',$tel);
 // $smarty->assign('afax',$fax);
 // $smarty->assign('tels',count($tel));
@@ -211,7 +220,7 @@ $smarty->assign('id',$myconf['customer_id_prefix'].sprintf("%05d",$customer_data
 // $smarty->assign('aemail',$email);
 // $smarty->assign('tipo_customer',$_tipo_customer[$customer_detail_data['tipo']]);
 // $smarty->assign('tipo_customer_id',$customer_detail_data['tipo']);
- $smarty->assign('principal_address',display_full_address($contact_data['main_address']) );
+// $smarty->assign('principal_address',display_full_address($contact_data['main_address']) );
 
 //$smarty->assign('contacts',$contacts);
 //$smarty->assign('contact_name',$contact_name);
@@ -223,32 +232,32 @@ $smarty->assign('id',$myconf['customer_id_prefix'].sprintf("%05d",$customer_data
 // $smarty->assign('acontact_fax',$contact_fax);
 // $smarty->assign('contact_mobiles',$contact_mobiles);
 // $smarty->assign('acontact_mobile',$contact_mobile);
-$total_orders=$customer_data['num_orders']+$customer_data['num_orders_nd'];
-$smarty->assign('orders',number($total_orders)  );
-$total_net=$customer_data['total_net']+$customer_data['total_net_nd'];
-$smarty->assign('total_net',money($total_net));
-$total_invoices=$customer_data['num_invoices']+$customer_data['num_invoices_nd'];
-$smarty->assign('invoices',number($total_invoices)  );
-if($total_invoices>0)
-  $smarty->assign('total_net_average',money($total_net/$total_invoices));
+// $total_orders=$customer_data['num_orders']+$customer_data['num_orders_nd'];
+// $smarty->assign('orders',number($total_orders)  );
+// $total_net=$customer_data['total_net']+$customer_data['total_net_nd'];
+// $smarty->assign('total_net',money($total_net));
+// $total_invoices=$customer_data['num_invoices']+$customer_data['num_invoices_nd'];
+// $smarty->assign('invoices',number($total_invoices)  );
+// if($total_invoices>0)
+//   $smarty->assign('total_net_average',money($total_net/$total_invoices));
 
-$order_interval=$customer_data['order_interval'];
+// $order_interval=$customer_data['order_interval'];
 
-if($order_interval>10){
-  $order_interval=round($order_interval/7);
-  if( $order_interval==1)
-    $order_interval=_('week');
-  else
-    $order_interval=$order_interval.' '._('weeks');
+// if($order_interval>10){
+//   $order_interval=round($order_interval/7);
+//   if( $order_interval==1)
+//     $order_interval=_('week');
+//   else
+//     $order_interval=$order_interval.' '._('weeks');
   
- }else if($order_interval=='')
-  $order_interval='';
- else
-   $order_interval=round($order_interval).' '._('days');
-$smarty->assign('orders_interval',$order_interval);
-$smarty->assign('table_title',_('History'));
+//  }else if($order_interval=='')
+//   $order_interval='';
+//  else
+//    $order_interval=round($order_interval).' '._('days');
+// $smarty->assign('orders_interval',$order_interval);
+// $smarty->assign('table_title',_('History'));
 
-$smarty->assign('telecoms',$telecoms);
+// $smarty->assign('telecoms',$telecoms);
 
 
 $smarty->display('customer.tpl');

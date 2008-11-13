@@ -1,6 +1,7 @@
 <?include_once('../common.php');?>
 
-
+  var Event = YAHOO.util.Event;
+     var Dom   = YAHOO.util.Dom;
 YAHOO.util.Event.addListener(window, "load", function() {
 	tables = new function() {
 		this.productLink=  function(el, oRecord, oColumn, oData) {
@@ -72,3 +73,46 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    }
 	    }
     );
+
+
+
+
+function init(){
+  var change_view = function (e){
+
+      block=this.getAttribute('block');
+      state=this.getAttribute('state');
+      new_title=this.getAttribute('atitle');
+      old_title=this.getAttribute('title');
+      
+      this.setAttribute('title',new_title);
+      this.setAttribute('atitle',old_title);
+
+      if(state==1){
+	  Dom.get('block_'+block).style.display='none';
+	  this.setAttribute('state',0);
+
+	  YAHOO.util.Dom.setStyle('but_logo_'+block, 'opacity', .2);
+	  YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=supplier-display-'+block+'&value=0');
+      }else{
+
+	  Dom.get('block_'+block).style.display='';
+	  this.setAttribute('state',1);
+	  YAHOO.util.Dom.setStyle('but_logo_'+block, 'opacity', 1);
+	  YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=supplier-display-'+block+'&value=1');
+	  
+	 }
+
+
+     }
+
+    
+    var ids = ["change_view_details","change_view_products","change_view_po","change_view_history"]; 
+    Event.addListener(ids,"click",change_view);
+
+
+
+
+};
+
+YAHOO.util.Event.onDOMReady(init);

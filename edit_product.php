@@ -32,10 +32,10 @@ else
 
 $_SESSION['state']['product']['id']=$product_id;
 
-$product= new product($product_id);
+if(!$product= new product($product_id))
+  exit('Error product not found');
 $product->read(array(
-		     'product_info'
-		     ,'categories'
+		     'categories'
 		     ,'suppliers'
 		     ,'product_tree'
 		     ,'images'
@@ -65,56 +65,16 @@ $smarty->assign('prev',$prev);
 $smarty->assign('next',$next);
 
 
-// $sql=sprintf("select filename,format,principal,caption,id from image where  product_id=%d ",$product_id);
-// $result =& $db->query($sql);
-// $image='';
-// $num_images=0;
-// $image='art/nopic.png';
-// $set_principal=false;
-// $other_images_src=array();
-// $other_images_id=array();
-
-// while($images=$result->fetchRow()){
-//   if($images['principal']==1 and !$set_principal){
-   
-//     $image='images/med/'.$images['filename'].'_med.'.$images['format'];
-//     $set_principal=true;
-//     $smarty->assign('caption',$images['caption']);
-//     $smarty->assign('image_id',$images['id']);
-
-//   }
-//   else{
-//     $other_images_src[]='images/tb/'.$images['filename'].'_tb.'.$images['format'];
-//     $other_images_id[]=$images['id'];
-//   }
-//   $num_images++;
-//  }
-//   $smarty->assign('other_images_src',$other_images_src);
-//   $smarty->assign('other_images_id',$other_images_id);
-//$smarty->assign('images',$product->get('images'));
-
-// $sql=sprintf("select p2s.supplier_id, p2s.price,p2s.sup_code as code,s.name as name from product2supplier as p2s left join supplier as s on (p2s.supplier_id=s.id) where p2s.product_id=%d",$product_id);
-
-// $result =& $db->query($sql);
-// $supplier=array();
-// $supplier_name=array();
-// $supplier_price=array();
-// $supplier_code=array();
-// while($row=$result->fetchRow()){
-//   $supplier_name[$row['supplier_id']]=$row['name'];
-//   $supplier_price[$row['supplier_id']]=money($row['price']);
-//   $supplier_code[$row['supplier_id']]=$row['code'];
-//  }
-
-// $suppliers=count($supplier_name);
 
 list($cat_list,$deep)=get_cat_base(2,'sname');
 
 
-$cat=$product->get('categories');
+
+
+
 $cat_parents=array();
 $v_cat='';
-foreach($cat['list'] as $key => $value){
+foreach($product->categories['list'] as $key => $value){
   $_cat_parents=split(',',$cat_list[$key]['parents']);
   $cat_parents=array_merge($cat_parents,$_cat_parents);
   $cat_parents[]=$key;
@@ -131,8 +91,8 @@ $smarty->assign('v_cat',$v_cat);
 
 $smarty->assign('num_cat_list',count($cat_list));
 
-$smarty->assign('cat',$cat['list']);
-$smarty->assign('num_cat',$cat['number']);
+$smarty->assign('cat',$product->categories['list']);
+$smarty->assign('num_cat',$product->categories['number']);
 
 $smarty->assign('suppliers',$product->get('number_of_suppliers'));
 $smarty->assign('suppliers_name',$product->get('supplier_name'));

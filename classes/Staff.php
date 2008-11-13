@@ -1,7 +1,4 @@
 <?
-include_once('common/string.php');
-
-
 class Staff{
   var $db;
   var $data=array();
@@ -38,10 +35,10 @@ class Staff{
 
   
 
-  function get_data($tipo_id){
+  function get_data($id){
     
 
-    $sql=sprintf("select * from staff where id=%s",prepare_mysql($this->id));
+    $sql=sprintf("select * from staff where id=%s",prepare_mysql($id));
 
     $result =& $this->db->query($sql);
     if(!$this->data=$result->fetchRow()){	     
