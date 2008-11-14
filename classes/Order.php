@@ -8,7 +8,7 @@ class Order{
   var $data=array();
   var $items=array();
   var $status_names=array();
-  var $id;
+  var $id=false;
   var $tipo;
 
 
@@ -16,11 +16,20 @@ class Order{
      $this->db =MDB2::singleton();
      $this->status_names=array(0=>'new');
      
-     if(preg_match('/^order/',$tipo))
-       $this->tipo='order';
-     else
-       $this->tipo=$tipo;
+     if(is_numeric($tipo) and !$id){
+       $id=$tipo;
+       $tipo='order';
+     }
+     
 
+     if(preg_match('/^order$/',$tipo))
+       $this->tipo='order';
+     else if(preg_match('/^(po|purchase order)$/',$tipo))
+       $this->tipo='po';
+     else
+       return;
+
+     
      if(is_numeric($id)){//load from id
        $this->id=$id;
        if(!$this->get_data($tipo))
@@ -29,7 +38,7 @@ class Order{
        $this->create_order($id);
      }
 
-     return true;
+
 
   }
 
@@ -46,7 +55,7 @@ class Order{
   }
 
 
-  function get_data($tipo){
+  function get_data(){
     
     switch($this->tipo){
     case('order'):
@@ -238,25 +247,36 @@ class Order{
 	$this->data['supplier_id']=$porder['supplier_id'];
 	$this->data['items']=(!is_numeric($porder['items'])?0:number($porder['items']));
 	$this->data['status_id']=$porder['tipo'];
+	$this->data['total']=$porder['total'];
+	$this->data['vat']=$porder['vat'];
+	$this->data['goods']=$porder['goods'];
+	$this->data['shipping']=$porder['shipping'];
+	$this->data['charges']=$porder['charges'];
+	$this->data['diff']=$porder['diff'];
+	$this->data['date_creation']=$porder['date_creation'];
+	$this->data['date_submited']=$porder['date_submited'];
+	$this->data['date_expected']=$porder['date_expected'];
+	$this->data['date_received']=$porder['date_received'];
+		
 
 	$this->data['status']=$this->status_names[$this->data['status_id']];
 	
-	$this->dates=array(
-			   'ts_created'=>$porder['date_creation'],
-			   'ts_submited'=>$porder['date_submited'],
-			   'ts_expected'=>$porder['date_expected'],
-			   'ts_invoice'=>$porder['date_invoice'],
-			   'ts_received'=>$porder['date_received'],
+	$this->data['dates']=array(
+			   'created'=>strftime("%e %B %Y %H:%M", $porder['date_creation']),
+			   'submited'=>strftime("%e %B %Y %H:%M", $porder['date_submited']),
+			   'expected'=>strftime("%e %B %Y %H:%M", $porder['date_expected']),
+			   'invoice'=>strftime("%e %B %Y %H:%M", $porder['date_invoice']),
+			   'received'=>strftime("%e %B %Y %H:%M", $porder['date_received']),
 			   'created'=>strftime("%e %B %Y %H:%M", $porder['date_creation'])
 			   );
 	
-	$this->money=array(
-			   'total'=>$porder['total'],
-			   'vat'=>$porder['vat'],
-			   'goods'=>$porder['goods'],
-			   'shipping'=>$porder['shipping'],
-			   'charges'=>$porder['charges'],
-			   'diff'=>$porder['diff']
+	$this->data['money']=array(
+				   'total'=>money($porder['total']),
+				   'vat'=>money($porder['vat']),
+				   'goods'=>money($porder['goods']),
+				   'shipping'=>money($porder['shipping']),
+				   'charges'=>money($porder['charges']),
+				   'diff'=>money($porder['diff'])
 			   );
 
 
@@ -266,11 +286,7 @@ class Order{
 
     }
 
-    // Make dates
-    
-	$this->dates=array(
-			   'created'=>strftime("%e %B %Y %H:%M", $this->dates['ts_created'])
-			   );
+
 
   }
 
@@ -344,12 +360,19 @@ class Order{
 	$goods=0;
 	while($row=$result->fetchRow()){
 	  $items++;
-	  $expected_goods+=($row['expected_price']*$row['expected_qty']);
+	  $expected_goods+=($row['expected_price']);
 	  $goods+=($row['price']*$row['qty']);
 	}
 	$this->data['items']=$items;
-	$this->money['goods_expected']=$expected_goods;
-	$this->money['goods']=$expected;
+	$this->data['goods']=$expected_goods;
+	$this->data['total']=$this->data['goods']+$this->data['vat']+$this->data['shipping']+$this->data['charges']+$this->data['diff'];
+	$this->data['money']['goods']=money($this->data['goods']);
+	$this->data['money']['total']=money($this->data['total']);
+	$sql=sprintf("update porden set items=%d,total=%.2f,goods=%.2f",$items,$this->data['total'],$this->data['goods']);
+	mysql_query($sql);
+
+	
+
       }
       break;
     }
@@ -373,15 +396,47 @@ class Order{
 
   
   function add_item($data){
-    $tipo=$data['tipo'];
-    switch($tipo){
-    case('po_new'):
+
+    switch($this->tipo){
+    case('po'):
       
+      //check if the product is related to the supplier
+      $sql=sprintf("select supplier_id,product2supplier.price,units from product2supplier  left join product on (product_id=product.id) where product2supplier.id=%d",$data['product_id']);
+      $res = $this->db->query($sql);  
+      if ($row=$res->fetchRow()){
+	if($row['supplier_id']!=$this->data['supplier_id'])
+	  return array('ok'=>false,'msg'=>_('Product no related to this supplier'));
+	$price=$row['price'];
+	$units=$row['units'];
+      }else
+	return array('ok'=>false,'msg'=>_('Product not exist'));
       
-      $sql=sprintf("insert into porder_item (porden_id,p2s_id,expected_qty,expected_price) values (%d,%d,%.3f,%.3f)",$this->id,$data['p2s_id'],$data['qty'],$data['price']);
-      mysql_query($sql);
+      //check if already exist 
+      $item_data=array('outers'=>'','est_price'=>'','id'=>$data['product_id'] );
+
+      $sql=sprintf("select porden_item.id from porden_item  where porden_id=%d and p2s_id=%d",$this->id,$data['product_id']);
+
+      $res = $this->db->query($sql);  
+      if ($row=$res->fetchRow()){
+	if($data['qty']!=0){
+	  $sql=sprintf("update porden_item set expected_qty=%.3f,expected_price=%.3f where id=%d    ",$data['qty'],$price,$row['id']);
+	  mysql_query($sql);
+	  $item_data=array('outers'=>number($data['qty']/$units),'est_price'=>money($data['qty']*$price),'id'=>$data['product_id']  );
+	}else{
+	  $sql=sprintf("delete from porden_item  where id=%d    ",$row['id']);
+	  //	  	return array('ok'=>false,'msg'=>$sql);
+	  mysql_query($sql);
+	}
+      }else{
+	if($data['qty']!=0){
+	  $sql=sprintf("insert into porden_item (porden_id,p2s_id,expected_qty,expected_price) values (%d,%d,%.3f,%.3f)",$this->id,$data['product_id'],$data['qty'],$price*$data['qty']);
+	  mysql_query($sql);
+	  $item_data=array('outers'=>number($data['qty']/$units),'est_price'=>money($data['qty']*$price) ,'id'=>$data['product_id'] );
+	}
+	  
+      }
       $this->load('items');
-      return array($this->data,$this->money);
+      return array('ok'=>true,'item_data'=>$item_data);
     }
     
 

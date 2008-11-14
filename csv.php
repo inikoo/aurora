@@ -1,6 +1,6 @@
 <?
 require_once 'common.php';
-require_once 'string.php';
+
 require_once 'name.php';
 if (!$LU or !$LU->isLoggedIn()) {
   $response=array('state'=>402,'resp'=>_('Forbidden'));
@@ -77,6 +77,10 @@ switch($_REQUEST['tipo']){
 
 
     $sql=" select telecom.number,telecom.icode,telecom.ncode,telecom.ext, postcode,town,list_country.code as country_code,code2 as country_code2,list_country.name as country_name, email ,email.contact as email_contact, UNIX_TIMESTAMP(max(date_index)) as last_order ,count(distinct orden.id) as orders, customer.id,customer.name from customer left join orden on (customer_id=customer.id) left join transaction on (order_id=orden.id) left join product on (product_id=product.id)  left join product_group on (group_id=product_group.id) left join product_department on (product_group.department_id=product_department.id) left join email on (main_email=email.id) left join telecom on (main_tel=telecom.id) left join address on (main_bill_address=address.id) left join list_country on (country=list_country.name)   $where  group by customer_id order by customer.name";
+
+    // print $sql;
+    // exit;
+
 
  $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
  $adata=array();

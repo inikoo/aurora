@@ -12,11 +12,15 @@
 
 <div >
 
-<div style="padding:0px;float:right;width:250px;margin:0px 20px;text-align:right;border: 1px solid black">
-  <table style="float:right;text-align:right"  border=1>
-    <tr><td>{$po_date.created}</td><td>{t}Created{/t}</td></tr>
-    <tr><td>{$po_date_submited}</td><td>{if $po_date_submited!=''}{t}Submited{/t}{else}<span id="submit_po" style="cursor:pointer">{t}Submit{/t}</span>{/if}</td></tr>
-    <tr><td colspan=2>
+<div style="padding:0px;float:right;width:250px;margin:0px 20px;text-align:right;xborder: 1px solid black">
+  <table class="submit_order"  border=0>
+    <tr><td>{$po.dates.created}</td><td style="text-align:right">{t}Created{/t}</td></tr>
+    {if $po.submited!=''}
+    <tr><td>{$po_dates.submited}</td><td>{t}Submited{/t}</td></tr>
+    {else}
+    <tr><td></td><td id="submit_po" class="but">{t}Submit{/t}</td></tr>
+    {/if}
+    <tr style="display:none"><td colspan=2>
 	<table >
 	  <tr><td>{t}Submited Date{/t}:</td><td><input id="v_calpop1"   class="text" name="submites_date" type="text"  size="10" maxlength="10"  value="{$now}"    /><img   id="calpop1" style="cursor:pointer" src="art/icons/calendar_view_month.png" align="top" alt=""   /> 	</td></tr>
 	  <tr><td class="aright">{t}Time{/t}:</td><td class="aright"><input id="v_calpop1"   class="text" name="expected_date" type="text"  size="5" maxlength="5"     /><img   id="calpop1" style="cursor:pointer" src="art/icons/time.png" align="top" alt=""   /> 	</td></tr>
@@ -24,10 +28,24 @@
 	    <tr><td colspan=2 class="aright"><span style="cursor:pointer;margin-right:16px">Save <img   src="art/icons/disk.png" align="top" alt=""   /></span></td></tr>
 	</table>
     </td></tr>
-    <tr {if $po_date_submited==''}style="display:none"{/if}><td>{$po_date_expected}</td><td>{t}Expected{/t}</td></tr>
-    <tr ><td></dt><td>{if $po_date_received!=''}{t}Received{/t}{else}<span id="receive_po" style="cursor:pointer">{t}Receive{/t}</span>{/if}</td></tr>
-<tr><td></dt><td>{if $po_date_cancelled!=''}{t}Cancelled{/t}{else}<span id="cancelled_po" style="cursor:pointer">{t}Cancel{/t}</span>{/if}</td></tr>
+    {if $po.expected!=''}
+    <tr><td>{$po_dates.expected}</td><td>{t}Expected{/t}</td></tr>
+    {/if}
+    {if $po.expected=='' and $po.submited!=''}
+    <tr><td></td><td id="set_extimated_po" class="but">{t}Set ET{/t}</td></tr>
+    {/if}
 
+    {if $po.received!=''}
+    <tr><td>{$po_dates.received}</td><td>{t}Recived{/t}</td></tr>
+    {else}
+    <tr><td></td><td id="receive_po" class="but">{t}Receive{/t}</td></tr>
+    {/if}
+    
+    {if $po.cancelled!=''}
+    <tr><td>{$po_dates.cancelled}</td><td>{t}Cancelled{/t}</td></tr>
+    {else}
+    <tr><td></td><td id="cancel_po" class="but">{t}Cancel{/t}</td></tr>
+    {/if}
 
 </table>
 </div>
@@ -35,13 +53,13 @@
 
 <div class="prodinfo" style="margin-left:20px;width:650px;margin-top:25px;border:1px solid black;font-size:85%">
  <table  border=1 style="float:right">
-    <tr><td>{t}Goods{/t}:</td><td id="goods" class="aright">{$value_goods}</td></tr>
-    <tr><td>{t}Shipping{/t}:</td><td class="aright" id="shipping"  >{$value_shipping}</td>
+    <tr><td>{t}Goods{/t}:</td><td id="goods" class="aright">{$po.money.goods}</td></tr>
+    <tr><td>{t}Shipping{/t}:</td><td class="aright" id="shipping"  >{$po.money.shipping}</td>
       <td  id="edit_shipping" style="display:none" > {$currency}
 	<input style="text-align:right" class="text" size="7"  id="v_shipping"  value="{$nm_value_shipping}" name="shipping"  />{$decimal_point}
 	<input style="text-align:right" maxlength="2" id="v_shipping_c" class="text" size="1" name="shipping"  value="{$nc_value_shipping}"/></td></tr>
-    <tr> <tr><td>{t}Vat{/t}:</td><td id="vat" class="aright"   >{$value_vat}</td>
-      <td id="edit_vat" style="display:none"  >{$currency}
+    <tr> <tr><td>{t}Vat{/t}:</td><td id="vat" class="aright"   >{$po.money.vat}</td>
+      <td id="edit_vat" style="display:none"  >{$po.vat}
 	<input style="text-align:right" class="text" size="7"  id="v_vat" value="{$nm_value_vat}" name="vat" />{$decimal_point}
 	<input  maxlength="2" style="text-align:right" id="v_vat_c" class="text" size="1"  value="{$nc_value_vat}"  name="vat"  /></td></tr>
     <tr id="other_charge"  {if $n_value_other==0}style="display:none"{/if} ><td >{t}Other{/t}:</td><td class="aright"  id="other"  >{$value_other}</td>
@@ -54,7 +72,7 @@
     </tr>
     <tr  {if $n_value_dif==0}style="display:none"{/if}  ><td>{t}Diff{/t}:</td><td class="stock aright" style="background:red">{$value_dif}</td></tr>
     <tr>
-      <td>{t}Total{/t}</td><td id="total" class="stock aright ">{$value_total}</td>
+      <td>{t}Total{/t}</td><td id="total" class="stock aright ">{$po.money.total}</td>
       <td  id="edit_total" style="display:none" >  {$currency}
 	<input style="text-align:right" class="text" size="7"  id="v_total" value="{$nm_value_total}" />{$decimal_point}
 	      <input   maxlength="2" style="text-align:right" id="v_total_c" class="text" size="1"   value="{$nc_value_total}" /></td>
@@ -116,11 +134,13 @@
 <div style="clear:both"></div>
 </div>
 
+
+
 <div id="the_table" class="data_table" style="margin:20px 20px;clear:both">
-  <span class="clean_table_title">{t}Products{/t}</span>
+  <span class="clean_table_title">{t}Products{/t}</span><span class="but {if !$all_products}selected{/if}  ">Purchase Order  Products</span><span class="but {if $all_products}selected{/if}">All Supplier Products</span>
   <div  class="clean_table_caption"  style="clear:both;">
-    <div style="float:left;"><div id="table_info0" class="clean_table_info">{$table_info} <span class="filter_msg"  id="filter_msg0"></span></div></div>
-    <div class="clean_table_filter"><div class="clean_table_info"><span class="clean_table_add_items {if $items==0}selected{/if}"  >{if $items>0}{t}Add Products{/t}{else}{t}Adding Products Mode{/t}{/if}</span> <span id="filter_name0">{t}Product Code{/t}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value}" size=10/><div id='f_container'></div></div></div>
+    <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
+    <div class="clean_table_filter"><div class="clean_table_info"><span id="filter_name0">{t}Product Code{/t}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value}" size=10/><div id='f_container'></div></div></div>
     <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator"></span></div></div>
   </div>
   <div  id="table0"   class="data_table_container dtable btable "> </div>

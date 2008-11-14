@@ -1,5 +1,5 @@
 <?
-include_once('common/string.php');
+
 class location{
   var $db;
   var $data=array();

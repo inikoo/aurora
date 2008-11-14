@@ -27,21 +27,21 @@ if($_REQUEST['id']=='new'  ){
 
 $po_id = $po->id;
 $_SESSION['state']['po']['id']=$po->id;
+
 $_SESSION['state']['supplier']['id']=$po->data['supplier_id'];
 
 $supplier=new Supplier($po->data['supplier_id']);
 
 
 $smarty->assign('po',$po->data);
-$smarty->assign('po_date',$po->dates);
-$smarty->assign('po_money',$po->money);
 $smarty->assign('supplier',$supplier->data);
 
 
-
+$all_products=false;
 switch($po->data['status']){
  case('new'):
    $smarty->assign('title',_('New Purchase Order for').' '.$supplier->data['code']);
+   $all_products=true;
  }
 
 // $sql=sprintf("select s.id as id,code as code, s.name as name from supplier as s left join contact as c on (contact_id=c.id) where s.id=%d ",$supplier_id);
@@ -190,6 +190,7 @@ $smarty->assign('parent','suppliers.php');
 
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
+$smarty->assign('all_products',$all_products);
 
 
 //$supplier_home=_("Suppliers List");

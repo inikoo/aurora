@@ -18,7 +18,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    var tableDivEL="table"+tableid;
 		var ColumnDefs = [
 				    {key:"code", label:"<?=_('Code')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"fam", label:"<?=_('Family')?>",width:100,formatter:this.familyLink, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    //  ,{key:"fam", label:"<?=_('Family')?>",width:100,formatter:this.familyLink, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    ,{key:"description", label:"<?=_('Description')?>",width:300, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    ,{key:"stock", label:"<?=_('Stock')?>",width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    ,{key:"sup_code", label:"<?=_('S Code')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
@@ -33,6 +33,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			resultsList: "resultset.data", 
 			metaFields: {
 			    rowsPerPage:"resultset.records_perpage",
+			    rtext:"resultset.rtext",
 			    sort_key:"resultset.sort_key",
 			    sort_dir:"resultset.sort_dir",
 			    tableid:"resultset.tableid",
@@ -49,7 +50,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								 //draggableColumns:true,
 								 renderLoopSize: 50,generateRequest : myRequestBuilder
 								 ,paginator : new YAHOO.widget.Paginator({
-									 rowsPerPage:<?=$_SESSION['state']['supplier']['products']['nr']?>,containers : 'paginator', 
+									 rowsPerPage:<?=$_SESSION['state']['supplier']['products']['nr']?>,containers : 'paginator0', 
 									 pageReportTemplate : '(<?=_('Page')?> {currentPage} <?=_('of')?> {totalPages})',
 									 previousPageLinkLabel : "<",
 									 nextPageLinkLabel : ">",
@@ -66,10 +67,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								 
 							     }
 							     );
-		    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
-		    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
-		    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
-
+		this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
+		this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
+		this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
+		this.table0.filter={key:'<?=$_SESSION['state']['supplier']['products']['f_field']?>',value:'<?=$_SESSION['state']['supplier']['products']['f_value']?>'};
 	    }
 	    }
     );
@@ -78,6 +79,15 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 function init(){
+
+    var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms,{table_id:0});
+    oACDS.queryMatchContains = true;
+    var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
+    oAutoComp.minQueryLength = 0; 
+
+
+
+
   var change_view = function (e){
 
       block=this.getAttribute('block');
@@ -116,3 +126,50 @@ function init(){
 };
 
 YAHOO.util.Event.onDOMReady(init);
+
+
+
+YAHOO.util.Event.onContentReady("filtermenu0", function () {
+	 var oMenu = new YAHOO.widget.Menu("filtermenu0", { context:["filter_name0","tr", "br"]  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+	 YAHOO.util.Event.addListener("filter_name0", "click", oMenu.show, null, oMenu);
+    });
+
+
+YAHOO.util.Event.onContentReady("rppmenu0", function () {
+	 var oMenu = new YAHOO.widget.Menu("rppmenu0", { context:["filter_name0","tr", "bl"]  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+	 YAHOO.util.Event.addListener("paginator_info0", "click", oMenu.show, null, oMenu);
+    });
+
+YAHOO.util.Event.onContentReady("filtermenu1", function () {
+	 var oMenu = new YAHOO.widget.Menu("filtermenu1", { context:["filter_name1","tr", "br"]  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+	 YAHOO.util.Event.addListener("filter_name1", "click", oMenu.show, null, oMenu);
+    });
+
+
+YAHOO.util.Event.onContentReady("rppmenu1", function () {
+	 var oMenu = new YAHOO.widget.Menu("rppmenu1", { context:["filter_name1","tr", "bl"]  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+	 YAHOO.util.Event.addListener("paginator_info1", "click", oMenu.show, null, oMenu);
+    });
+
+YAHOO.util.Event.onContentReady("filtermenu2", function () {
+	 var oMenu = new YAHOO.widget.Menu("filtermenu2", { context:["filter_name2","tr", "br"]  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+	 YAHOO.util.Event.addListener("filter_name2", "click", oMenu.show, null, oMenu);
+    });
+
+
+YAHOO.util.Event.onContentReady("rppmenu2", function () {
+	 var oMenu = new YAHOO.widget.Menu("rppmenu2", { context:["filter_name2","tr", "bl"]  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+	 YAHOO.util.Event.addListener("paginator_info2", "click", oMenu.show, null, oMenu);
+    });

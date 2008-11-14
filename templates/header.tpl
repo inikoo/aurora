@@ -17,7 +17,10 @@
   <body  class=" yui-skin-sam kaktus">
     <div id="{$page_layout}" class="{$box_layout}">
       <div id="hd" >
+
+	    
 	<div style="float:right;font-size:77%;margin:0px 20px 0.15em 0">
+	  <span id="top_message" style=";margin-right:30px"></span>
 	  <span id="language_flag"><img src="art/flags/{$lang_country_code}.gif" alt="{$lang_country_code}" align="absbottom"  /></span>
 	  <span>{t}Hello{/t} {$user}</span>
 	  <span><a style="margin-left:20px;" href="index.php?logout=1">{t}Logout{/t}</a></span>

@@ -232,6 +232,8 @@ table.edit tr.last{ border-bottom:1px solid #a5b6c8}
 
 .data_table_container {width:100%;clear:both;border-top:1px solid SteelBlue;border-bottom:1px solid SteelBlue;margin-bottom:2px;padding-bottom:1px;}
 
+.data_table .but{margin:0 20px;color:#777 }
+.data_table .selected{color:#000 ;font-weight:600}
 
 .view_options td {cursor:pointer}
 
@@ -426,3 +428,7 @@ table.edit_location tr.totals {border-bottom:none }
 
 .inputs_yellow input  { background:#fff889 }
 .inputs_white input  { background:#ffffff }
+
+
+table.submit_order{ float:right;text-align:right ;border-spacing:0px  3px;border-collapse: separate;}
+table.submit_order td.but{ background:#238546;color:#fff;cursor:pointer;padding:2px 3px;text-align:center }

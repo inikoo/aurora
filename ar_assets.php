@@ -2,6 +2,7 @@
 require_once 'common.php';
 require_once 'stock_functions.php';
 require_once 'classes/Product.php';
+require_once 'classes/Order.php';
 
 //require_once 'common_functions.php';
 //require_once 'ar_common.php';
@@ -23,6 +24,28 @@ if(!isset($_REQUEST['tipo']))
 
 $tipo=$_REQUEST['tipo'];
 switch($tipo){
+ case('order_add_item'):
+   $data=array(
+	       'user_id'=>$LU->getProperty('auth_user_id'),
+	       'product_id'=>$_REQUEST['product_id'],
+	       'qty'=>$_REQUEST['qty']
+	       );
+   $order=new order($_REQUEST['tipo_order'],$_REQUEST['order_id']);
+   if(!$order->id){
+     $response= array('state'=>400,'msg'=>_('Error: Order not found'));
+     echo json_encode($response);  
+     exit;
+   }
+     
+   $res=$order->add_item($data);
+   if($res['ok']){
+     $response= array('state'=>200,'data'=>$order->data,'item_data'=>$res['item_data']);
+   }else{
+     $response= array('state'=>400,'msg'=>$res['msg']);
+   }
+   echo json_encode($response);  
+   
+   break;
  case('ep_update_supplier'):
      $data=array(
 
@@ -2676,17 +2699,38 @@ if(isset( $_REQUEST['where']))
     $total=$row['total'];
   }
     if($wheref==''){
-      $filtered=0;
+      $filtered=0; $total_records=$total;
     }else{
       
       $sql="select count(*) as total from product  as p left join product_group as g on (g.id=group_id) left join product_department as d on (d.id=department_id) left join product2supplier as ps on (product_id=p.id)  $where  ";
       $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
       if($row=$res->fetchRow()) {
+	$total_records=$row['total'];
 	$filtered=$row['total']-$total;
       }
       
     }
     
+ $rtext=$total_records." ".ngettext('pruduct','products',$total_records);
+  if($total_records>$number_results)
+    $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
+  $filter_msg='';
+
+ switch($f_field){
+     case('p.code'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any product with code")." <b>".$f_value."*</b> ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('products with code')." <b>".$f_value."*</b>) <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;
+ case('sup_code'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any product with supplier code")." <b>".$f_value."*</b> ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('products with supplier code')." <b>".$f_value."*</b>) <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;
+
+ }
 
 
    $sql="select sup_code,ps.id as p2s_id,(p.units*ps.price) as price_outer,ps.price as price_unit,stock,p.condicion as condicion, p.code as code, p.id as id,p.description as description , group_id,department_id,g.name as fam, d.code as department 
@@ -2717,10 +2761,7 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
 		   );
    }
 
-   if($total<$number_results)
-     $rtext=$total.' '.ngettext('record returned','records returned',$total);
-   else
-     $rtext='';
+
    $response=array('resultset'=>
 		   array('state'=>200,
 			 'data'=>$data,
@@ -2728,6 +2769,7 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
 			 'sort_dir'=>$_dir,
 			 'tableid'=>$tableid,
 			 'filter_msg'=>$filter_msg,
+			 'rtext'=>$rtext,
 			 'total_records'=>$total,
 			 'records_offset'=>$start_from,
 			 'records_returned'=>$start_from+$res->numRows(),
@@ -2839,29 +2881,30 @@ if(isset( $_REQUEST['where']))
 
    $sql="select p.units as punits,(select expected_qty from porden_item where porden_id=$po_id and porden_item.p2s_id=ps.id) as qty,   sup_code,ps.id as p2s_id,(p.units*ps.price) as price_outer,ps.price as price_unit,stock,p.condicion as condicion, p.code as code, p.id as id,p.description as description , group_id,department_id,g.name as fam, d.code as department 
 from product as p left join product_group as g on (g.id=group_id) left join product_department as d on (d.id=department_id) left join product2supplier as ps on (product_id=p.id)  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
-
+   //   print $sql;
    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
    $data=array();
    while($row=$res->fetchRow()) {
-     $code='<a href="product.php?id='.$row['id'].'">'.$row['code'].'</a>';
+     $code='<a tabindex="2" href="product.php?id='.$row['id'].'">'.$row['code'].'</a>';
+
      $data[]=array(
 		   'id'=>$row['id'],
 		   'p2s_id'=>$row['p2s_id'],
 
 		   'condicion'=>$row['condicion'],
-		   'price_unit'=>money($row['price_unit']),
+		   'price_unit'=>"(".money($row['price_unit']).")",
 		   'price_outer'=>money($row['price_outer']),
 		   'stock'=>($row['stock']==''?'':number($row['stock']).' ('.number($row['stock']*$row['punits']).')'  ),
 		   'code'=>$code,
 		   'sup_code'=>$row['sup_code'],
-		   'qty'=>'<input type="text" value="" onchange="value_changed(this)" size="3"  id="p'.$row['id'].'"  pid="'.$row['id'].'" class="aright" />',
-		   'description'=>$row['description'],
+		   'qty'=>"<span id='oqty".$row['p2s_id']."' style='color:#777'>".($row['qty']==''?'':number($row['qty']/$row['punits'],1)).'</span> <input type="text" value="'.($row['qty']==''?'':number($row['qty'],1)).'" onchange="value_changed(this)" size="3"  id="p'.$row['p2s_id'].'"  pid="'.$row['p2s_id'].'" class="aright" />',
+		   'description'=>number($row['punits'])."x ".$row['description'],
 		   'group_id'=>$row['group_id'],
 		   'department_id'=>$row['department_id'],
 		   'fam'=>$row['fam'],
 		   'department'=>$row['department'],
-		   'delete'=>'<img src="art/icons/link_delete.png"/>'
-
+		   'delete'=>'<img src="art/icons/link_delete.png"/>',
+		   'expected_price'=>"<span id='ep".$row['p2s_id']."'>".($row['qty']==''?'':money($row['qty']*$row['price_unit']))."</span>"
 		   );
    }
 

@@ -86,6 +86,20 @@ $smarty->assign('id',$myconf['supplier_id_prefix'].sprintf("%05d",$supplier->id)
 //$smarty->assign('principal_address',display_full_address($contact_data['main_address']) );
 
 
+$tipo_filter=$_SESSION['state']['supplier']['products']['f_field'];
+$smarty->assign('filter',$tipo_filter);
+$smarty->assign('filter_value0',$_SESSION['state']['supplier']['products']['f_value']);
+
+$filter_menu=array(
+		   'p.code'=>array('db_key'=>_('p.code'),'menu_label'=>'Our Product Code','label'=>'Code'),
+		   'sup_code'=>array('db_key'=>_('sup_code'),'menu_label'=>'Supplier Product Code','label'=>'Supplier Code'),
+		   );
+$smarty->assign('filter_menu0',$filter_menu);
+$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu0',$paginator_menu);
+
+
 
 $smarty->display('supplier.tpl');
 ?>

@@ -458,7 +458,7 @@ $default_state=array(
 				       'details'=>false,
 				       'plot'=>'sales_month',
 				       'id'=>1,
-				       'display'=>array('details'=>0,'history'=>1,'products'=>0,'po'=>1),
+				       'display'=>array('details'=>0,'history'=>0,'products'=>1,'po'=>0),
 				       'plot_options'=>array('weeks'=>'','from'=>'','to'=>'','months'=>''),
 				       'products'=>array(
 						       'order'=>'code',
@@ -466,7 +466,7 @@ $default_state=array(
 						       'sf'=>0,
 						       'nr'=>15,
 						       'where'=>'where true',
-						       'f_field'=>'code',
+						       'f_field'=>'p.code',
 						       'f_value'=>'',
 						       'from'=>'',
 						       'to'=>'',

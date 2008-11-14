@@ -80,10 +80,18 @@ var myRequestBuilder = function(oState, oSelf) {
 
 
 var mygetTerms =function (query) {
+
+
+    if(this.table_ids==undefined)
+	var table_id=0;
+    else
+	var table_id=this.table_id;
+
     var Dom   = YAHOO.util.Dom;
-    var table=tables.table0;
-    var datasource=tables.dataSource0;
-    table.filter.value=Dom.get('f_input0').value;
+    var table=tables['table'+table_id];
+    var datasource=tables['dataSource'+table_id];
+
+    table.filter.value=Dom.get('f_input'+table_id).value;
     var request='&sf=0&f_field=' +table.filter.key + '&f_value=' + table.filter.value;
     /// alert(request);
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       

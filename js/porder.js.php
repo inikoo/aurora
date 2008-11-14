@@ -1,18 +1,26 @@
-<?include_once('../common.php');?>
+<?include_once('../common.php');
+?>
     
-    
-    var value_changed=function(o){
+    var po_id='<?=$_SESSION['state']['po']['id']?>';
+var all_products='<?=$_SESSION['state']['po']['id']?>';
+var value_changed=function(o){
 
 	if(isNaN(o.value)){
 	    o.style.background='#fff889';
 	}else{
-	    var request='ar_assets.php?tipo=po_add_item&p2s_id='+escape(o.getAttribute('pid'))+'&qty='+escape(o.value);
-	    alert(request)
+	    var request='ar_assets.php?tipo=order_add_item&tipo_order=po&product_id='+escape(o.getAttribute('pid'))+'&qty='+escape(o.value)+'&order_id='+escape(po_id);
 	    YAHOO.util.Connect.asyncRequest('POST',request ,{
+		    
 		    success:function(o) {
+			//	alert(o.responseText)
 			var r =  YAHOO.lang.JSON.parse(o.responseText);
 			if (r.state == 200) {
-			    
+			    Dom.get('distinct_products').innerHTML=r.data.items;
+			    Dom.get('goods').innerHTML=r.data.money.goods;
+			    Dom.get('vat').innerHTML=r.data.money.vat;
+			    Dom.get('total').innerHTML=r.data.money.total;
+			    Dom.get('oqty'+r.item_data.id).innerHTML=r.item_data.outers;
+			    Dom.get('ep'+r.item_data.id).innerHTML=r.item_data.est_price;
 			}
 		    }
 		});    
@@ -39,15 +47,15 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		 var tableid=0;
 		    var tableDivEL="table"+tableid;
 		var ColumnDefs = [
-				    {key:"code", label:"<?=_('Code')?>", width:90,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    {key:"code", label:"<?=_('Code')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    //				    ,{key:"fam", label:"<?=_('Family')?>",width:80,formatter:this.familyLink, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"description", label:"<?=_('Description')?>",width:250, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"stock", label:"<?=_('Stock (O,U)')?>",width:90,className:"aright"}
-				    ,{key:"stock_time", label:"<?=_('Stock Time')?>",width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"description", label:"<?=_('Description')?>",width:270, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"stock", label:"<?=_('Stock O(U)')?>",width:90,className:"aright"}
+				    ,{key:"stock_time", label:"<?=_('Stock Time')?>",width:75,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    //,{key:"sup_code", label:"<?=_('S Code')?>", width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
-				    ,{key:"qty", label:"<?=_('Qty (U)')?>",width:100,className:"aright"}
-				    ,{key:"price_unit", label:"<?=_('Price (U)')?>",width:70,className:"aright"}
+				    ,{key:"qty", label:"<?=_('Qty O[U]')?>",width:100,className:"aright"}
+				    ,{key:"price_unit", label:"<?=_('Price (U)')?>",width:65,className:"aright"}
 				    ,{key:"expected_price", label:"<?=_('E Cost')?>",width:70,className:"aright"}
 				  ];
 
@@ -67,7 +75,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			},
 			
 			fields: [
-				 "id","family_id","fam","code","description","stock","price_unit","price_outer","delete","p2s_id","sup_code","group_id","qty"
+				 "id","family_id","fam","code","description","stock","price_unit","price_outer","delete","p2s_id","sup_code","group_id","qty","expected_price"
 				 ]};
 	    
 		    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
