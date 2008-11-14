@@ -90,7 +90,7 @@ $tipo_filter=$_SESSION['state']['supplier']['products']['f_field'];
 $smarty->assign('filter',$tipo_filter);
 $smarty->assign('filter_value0',$_SESSION['state']['supplier']['products']['f_value']);
 
-$filter_menu=array(
+$filter_menu=array( 
 		   'p.code'=>array('db_key'=>_('p.code'),'menu_label'=>'Our Product Code','label'=>'Code'),
 		   'sup_code'=>array('db_key'=>_('sup_code'),'menu_label'=>'Supplier Product Code','label'=>'Supplier Code'),
 		   );
