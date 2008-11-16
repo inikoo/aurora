@@ -1,8 +1,33 @@
 <?include_once('../common.php');
 ?>
+     var Dom   = YAHOO.util.Dom;
+var po_id='<?=$_SESSION['state']['po']['id']?>';
+
+
+var swap_show_all_products=function(o,show_all){
+    o.className='selected but';
+    if(show_all){
+	Dom.get('clean_table_filter0').style.visibility='visible';
+	Dom.get('clean_table_controls0').style.visibility='visible';
+	Dom.get('table_po_products').className='but ';
+    }else{
+	Dom.get('table_all_products').className='but ';
+	Dom.get('clean_table_filter0').style.visibility='hidden';
+	Dom.get('clean_table_controls0').style.visibility='hidden';
+
+    }tableid=0;
+    var table=tables['table'+tableid];
+    var datasource=tables['dataSource'+tableid];
+    var request='&show_all=' +show_all;
+
     
-    var po_id='<?=$_SESSION['state']['po']['id']?>';
-var all_products='<?=$_SESSION['state']['po']['id']?>';
+
+    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);    
+    
+};
+    
+
+
 var value_changed=function(o){
 
 	if(isNaN(o.value)){
@@ -34,37 +59,28 @@ var value_changed=function(o){
 
 YAHOO.util.Event.addListener(window, "load", function() {
 	tables = new function() {
-		this.productLink=  function(el, oRecord, oColumn, oData) {
-		    var url="product.php?id="+oRecord.getData("id");
-		    el.innerHTML = oData.link(url);
-		};
-		this.familyLink=  function(el, oRecord, oColumn, oData) {
-		    var url="family.php?id="+oRecord.getData("group_id");
-		    el.innerHTML = oData.link(url);
-		};
-
-
-		 var tableid=0;
-		    var tableDivEL="table"+tableid;
+		
+		var tableid=0;
+		var tableDivEL="table"+tableid;
 		var ColumnDefs = [
-				    {key:"code", label:"<?=_('Code')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    //				    ,{key:"fam", label:"<?=_('Family')?>",width:80,formatter:this.familyLink, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"description", label:"<?=_('Description')?>",width:270, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"stock", label:"<?=_('Stock O(U)')?>",width:90,className:"aright"}
-				    ,{key:"stock_time", label:"<?=_('Stock Time')?>",width:75,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    //,{key:"sup_code", label:"<?=_('S Code')?>", width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-
-				    ,{key:"qty", label:"<?=_('Qty O[U]')?>",width:100,className:"aright"}
-				    ,{key:"price_unit", label:"<?=_('Price (U)')?>",width:65,className:"aright"}
-				    ,{key:"expected_price", label:"<?=_('E Cost')?>",width:70,className:"aright"}
+				  {key:"code", label:"<?=_('Code')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				  //				    ,{key:"fam", label:"<?=_('Family')?>",width:80,formatter:this.familyLink, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				  ,{key:"description", label:"<?=_('Description')?>",width:270, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				  ,{key:"stock", label:"<?=_('Stock O(U)')?>",width:90,className:"aright"}
+				  ,{key:"stock_time", label:"<?=_('Stock Time')?>",width:75,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				  //,{key:"sup_code", label:"<?=_('S Code')?>", width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				  
+				  ,{key:"expected_qty", label:"<?=_('Qty O[U]')?>",width:100,className:"aright"}
+				  ,{key:"price_unit", label:"<?=_('Price (U)')?>",width:65,className:"aright"}
+				  ,{key:"expected_price", label:"<?=_('E Cost')?>",width:70,className:"aright"}
 				  ];
-
+		
 		this.dataSource0 = new YAHOO.util.DataSource("ar_assets.php?tipo=withsupplier_po&tableid="+tableid);
-
-   this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
-		    this.dataSource0.connXhrMode = "queueRequests";
-		    this.dataSource0.responseSchema = {
-			resultsList: "resultset.data", 
+		
+		this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
+		this.dataSource0.connXhrMode = "queueRequests";
+		this.dataSource0.responseSchema = {
+		    resultsList: "resultset.data", 
 			metaFields: {
 			    rowsPerPage:"resultset.records_perpage",
 			    sort_key:"resultset.sort_key",
@@ -75,7 +91,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			},
 			
 			fields: [
-				 "id","family_id","fam","code","description","stock","price_unit","price_outer","delete","p2s_id","sup_code","group_id","qty","expected_price"
+				 "id","family_id","fam","code","description","stock","price_unit","price_outer","delete","p2s_id","sup_code","group_id","qty","expected_price","price","expected_qty"
 				 ]};
 	    
 		    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
@@ -112,7 +128,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
  function init(){
- var Dom   = YAHOO.util.Dom;
+
 
 
  var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
@@ -126,3 +142,20 @@ YAHOO.util.Event.addListener(window, "load", function() {
  }
 
 YAHOO.util.Event.onDOMReady(init);
+YAHOO.util.Event.onContentReady("filtermenu", function () {
+	 var oMenu = new YAHOO.widget.Menu("filtermenu", { context:["filter_name0","tr", "br"]  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+	 YAHOO.util.Event.addListener("filter_name0", "click", oMenu.show, null, oMenu);
+    });
+
+
+YAHOO.util.Event.onContentReady("rppmenu", function () {
+	 var oMenu = new YAHOO.widget.Menu("rppmenu", { context:["filter_name0","tr", "bl"]  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+	 YAHOO.util.Event.addListener("paginator_info0", "click", oMenu.show, null, oMenu);
+    });
+
+
+

@@ -10,7 +10,7 @@ class Order{
   var $status_names=array();
   var $id=false;
   var $tipo;
-
+  var $staus='new';
 
   function __construct($tipo='order',$id=false) {
      $this->db =MDB2::singleton();
@@ -49,6 +49,7 @@ class Order{
       mysql_query($sql);
       $this->id=mysql_insert_id();
       $this->get_data();
+      $this->status='new';
       break;
     }
 
@@ -240,6 +241,17 @@ class Order{
 
       $result =& $this->db->query($sql);
       if($porder=$result->fetchRow()){
+	
+	$tipo=$porder['tipo'];
+	if($tipo==0)
+	  $this->status='new';
+	elseif($tipo==1)
+	  $this->status='submited';
+	elseif($tipo==2)
+	  $this->status='received';
+	elseif($tipo==3)
+	  $this->status='cancelled';
+	$this->data['tipo']=$porder['tipo'];
 	$this->data['id']=$porder['id'];
 	$this->data['received_by']=$porder['received_by'];
 	$this->data['checked_by']=$porder['checked_by'];
@@ -348,7 +360,7 @@ class Order{
     
 
     case('supplier'):
-      $this->supplier=new supplier($this->supplier_id);
+      $this->supplier=new supplier($this->data['supplier_id']);
       break;
     case('items'):
       switch($this->tipo){

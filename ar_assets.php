@@ -2787,9 +2787,9 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
    if(!$LU->checkRight(SUP_VIEW))
     exit;
 
-    $conf=$_SESSION['state']['supplier']['products'];
-  if(isset( $_REQUEST['sf']))
-     $start_from=$_REQUEST['sf'];
+    $conf=$_SESSION['state']['po']['items'];
+    if(isset( $_REQUEST['sf']))
+      $start_from=$_REQUEST['sf'];
    else
      $start_from=$conf['sf'];
    if(isset( $_REQUEST['nr']))
@@ -2811,41 +2811,51 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
 
   if(isset( $_REQUEST['f_value']))
      $f_value=$_REQUEST['f_value'];
-   else
-     $f_value=$conf['f_value'];
-if(isset( $_REQUEST['where']))
-     $where=$_REQUEST['where'];
-   else
-     $where=$conf['where'];
- 
+  else
+    $f_value=$conf['f_value'];
+  if(isset( $_REQUEST['where']))
+    $where=$_REQUEST['where'];
+  else
+    $where=$conf['where'];
+  
 
-   if(isset( $_REQUEST['id']))
+  if(isset( $_REQUEST['id']))
     $supplier_id=$_REQUEST['id'];
   else
     $supplier_id=$_SESSION['state']['supplier']['id'];
-   
- if(isset( $_REQUEST['po_id']))
+  
+  if(isset( $_REQUEST['po_id']))
     $po_id=$_REQUEST['po_id'];
-  else
-    $po_id=$_SESSION['state']['po']['id'];
+ else
+   $po_id=$_SESSION['state']['po']['id'];
+  
+ 
+ if(isset( $_REQUEST['show_all'])){
+    $all_products=$_REQUEST['show_all'];
+    $_SESSION['state']['po']['show_all']=$all_products;
+ }else
+   $all_products=$_SESSION['state']['po']['show_all'];
+ 
 
 
    if(isset( $_REQUEST['tableid']))
     $tableid=$_REQUEST['tableid'];
   else
     $tableid=0;
-
- $filter_msg='';
+   
+   $filter_msg='';
    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
- $_order=$order;
- $_dir=$order_direction;
- 
-
-   $_SESSION['state']['supplier']['products']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+   $_order=$order;
+   $_dir=$order_direction;
+   
+   
+   $_SESSION['state']['po']['items']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
    $_SESSION['state']['supplier']['id']=$supplier_id;
-
-  $where=$where.' and ps.supplier_id='.$supplier_id;
-
+   
+   if($all_products)
+     $where=$where.' and ps.supplier_id='.$supplier_id;
+   else
+     $where=$where.' and porden_id='.$po_id;
 
   $wheref='';
   if(($f_field=='code' or $f_field=='sup_code') and $f_value!='')
@@ -2853,13 +2863,15 @@ if(isset( $_REQUEST['where']))
   if(($f_field=='sup_code') and $f_value!='')
     $wheref.=" and  sup_code like '".addslashes($f_value)."%'";
   
+  
 
 
 
-
-
-  $sql="select count(*) as total from product  as p left join product_group as g on (g.id=group_id) left join product_department as d on (d.id=department_id) left join product2supplier as ps on (product_id=p.id) $where $wheref ";
-
+  if($all_products)
+  $sql="select count(*) as total from product  as p  left join product2supplier as ps on (product_id=p.id) $where $wheref ";
+  else
+    $sql="select count(*) as total from porden_item left join product2supplier as ps on ( p2s_id=ps.id)  left join product as p on (product_id=p.id)    $where $wheref ";
+  // print $sql;
 
   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
   if($row=$res->fetchRow()) {
@@ -2868,23 +2880,51 @@ if(isset( $_REQUEST['where']))
     if($wheref==''){
       $filtered=0;
     }else{
-      
-      $sql="select count(*) as total from product  as p left join product_group as g on (g.id=group_id) left join product_department as d on (d.id=department_id) left join product2supplier as ps on (product_id=p.id)  $where  ";
+      if($all_products)
+      $sql="select count(*) as total from product2supplier  $where  ";
+      else
+	$sql="select count(*) as total from porden_item  $where $wheref ";
       $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
       if($row=$res->fetchRow()) {
 	$filtered=$row['total']-$total;
       }
       
     }
+
     
-
-
-   $sql="select p.units as punits,(select expected_qty from porden_item where porden_id=$po_id and porden_item.p2s_id=ps.id) as qty,   sup_code,ps.id as p2s_id,(p.units*ps.price) as price_outer,ps.price as price_unit,stock,p.condicion as condicion, p.code as code, p.id as id,p.description as description , group_id,department_id,g.name as fam, d.code as department 
+    if($all_products){
+   $sql="select p.units as punits,(select concat_ws('|',IFNULL(expected_price,''),IFNULL(expected_qty,''),IFNULL(price,''),IFNULL(qty,'')) from porden_item where porden_id=$po_id and porden_item.p2s_id=ps.id) as po_data,   sup_code,ps.id as p2s_id,(p.units*ps.price) as price_outer,ps.price as price_unit,stock,p.condicion as condicion, p.code as code, p.id as id,p.description as description , group_id,department_id,g.name as fam, d.code as department 
 from product as p left join product_group as g on (g.id=group_id) left join product_department as d on (d.id=department_id) left join product2supplier as ps on (product_id=p.id)  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
-   //   print $sql;
+    }else{
+      $sql=sprintf("select     p.units as punits, expected_qty,expected_price, porden_item.price,qty  ,   sup_code,ps.id as p2s_id,(p.units*ps.price) as price_outer,ps.price as price_unit,stock,p.condicion as condicion, p.code as code, p.id as id,p.description as description , group_id,department_id,g.name as fam, d.code as department 
+from porden_item left join product2supplier as ps on ( p2s_id=ps.id)  left join product as p on (product_id=p.id)  left join product_group as g on (g.id=group_id) left join product_department as d on (d.id=department_id)  $where $wheref  order by $order $order_direction                   ");
+      
+    }
+    //       print $sql;
    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
    $data=array();
    while($row=$res->fetchRow()) {
+
+     if($all_products){
+       if($row['po_data']!=''){
+	 list($expected_price,$expected_qty,$price,$qty)=preg_split('/\|/',$row['po_data']);
+       }else{
+	 $expected_price='';
+	 $expected_qty='';
+	 $price='';
+	 $qty='';
+	 
+       }
+	 
+     }else{
+       $expected_price=$row['expected_price'];
+       $expected_qty=$row['expected_qty'];
+       $price=$row['price'];
+       $qty=$row['qty'];
+     }
+       
+     //($row['punits']!=1?number($row['stock']:''))
+
      $code='<a tabindex="2" href="product.php?id='.$row['id'].'">'.$row['code'].'</a>';
 
      $data[]=array(
@@ -2894,17 +2934,19 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
 		   'condicion'=>$row['condicion'],
 		   'price_unit'=>"(".money($row['price_unit']).")",
 		   'price_outer'=>money($row['price_outer']),
-		   'stock'=>($row['stock']==''?'':number($row['stock']).' ('.number($row['stock']*$row['punits']).')'  ),
+		   'stock'=>($row['stock']==''?'': ($row['stock']==0?0:     number($row['stock']).($row['punits']!=1?"(".number($row['stock']* $row['punits'] ).")":'')   )),
 		   'code'=>$code,
 		   'sup_code'=>$row['sup_code'],
-		   'qty'=>"<span id='oqty".$row['p2s_id']."' style='color:#777'>".($row['qty']==''?'':number($row['qty']/$row['punits'],1)).'</span> <input type="text" value="'.($row['qty']==''?'':number($row['qty'],1)).'" onchange="value_changed(this)" size="3"  id="p'.$row['p2s_id'].'"  pid="'.$row['p2s_id'].'" class="aright" />',
+		   'qty'=>"<span  style='color:#777'>".($qty==''?'':number($qty/$row['punits'],1)).'</span> ['.($qty==''?'':number($qty,1)).']',
+		   'expected_qty'=>"<span id='oqty".$row['p2s_id']."' style='color:#777'>".($expected_qty==''?'':number($expected_qty/$row['punits'],1)).'</span> <input type="text" value="'.($expected_qty==''?'':number($expected_qty,1)).'" onchange="value_changed(this)" size="3"  id="p'.$row['p2s_id'].'"  pid="'.$row['p2s_id'].'" class="aright" />',
 		   'description'=>number($row['punits'])."x ".$row['description'],
 		   'group_id'=>$row['group_id'],
 		   'department_id'=>$row['department_id'],
 		   'fam'=>$row['fam'],
 		   'department'=>$row['department'],
 		   'delete'=>'<img src="art/icons/link_delete.png"/>',
-		   'expected_price'=>"<span id='ep".$row['p2s_id']."'>".($row['qty']==''?'':money($row['qty']*$row['price_unit']))."</span>"
+		   'price'=>"<span>".($qty==''?'':money($price))."</span>",
+		   'expected_price'=>"<span id='ep".$row['p2s_id']."'>".($expected_qty==''?'':money($expected_price))."</span>"
 		   );
    }
 

@@ -397,7 +397,19 @@ $default_state=array(
 		     'po'=>array(
 				 'id'=>'',
 				 'new'=>'',
-				 'new_timestamp'=>''
+				 'new_data'=>array('num_items'=>0,'name'=>'','total'=>0),
+
+				 'new_timestamp'=>'',
+				 'items'=>array(
+						'order'=>'code',
+						'order_dir'=>'',
+						'sf'=>0,
+						'nr'=>25,
+						'where'=>'where true',
+						'f_field'=>'p.code',
+						'f_value'=>'',
+						'all_products'=>false
+						),
 				 ),
 		     'location'=>array(
 				       'location'=>false,

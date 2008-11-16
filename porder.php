@@ -10,40 +10,62 @@ if($_REQUEST['id']=='new'  ){
   //Check id is any new order open!!!
   if(is_numeric($_SESSION['state']['po']['new']) and  (date('U')-$_SESSION['state']['po']['new_timestamp'])<86400  ){
     $last_order_used=true;
-       $po=new Order('po',$_SESSION['state']['po']['new']);
+    $po=new Order('po',$_SESSION['state']['po']['new']);
+    $po->load('supplier');
     $_SESSION['state']['po']['new_timestamp']=date('U');
+    $_SESSION['state']['po']['new_data']['items']=$po->data['items'];
+    $_SESSION['state']['po']['new_data']['name']=$po->supplier->data['code'];
+    $_SESSION['state']['po']['new_data']['total']=$po->data['money']['total'];
+  
   }else{
      $po=new Order('po',array('supplier_id'=>$_REQUEST['supplier_id']));
-    $_SESSION['state']['po']['new']=$po->id;
-    $_SESSION['state']['po']['new_timestamp']=date('U');
+     $po->load('supplier');
+     $_SESSION['state']['po']['new']=$po->id;
+     $_SESSION['state']['po']['new_timestamp']=date('U');
+     $_SESSION['state']['po']['new_data']['items']=0;
+     $_SESSION['state']['po']['new_data']['name']=$po->supplier->data['code'];
+     $_SESSION['state']['po']['new_data']['total']=0;
   }
  }elseif(isset($_REQUEST['id']) and is_numeric($_REQUEST['id'])){
    
    $po=new Order('po',$_REQUEST['id']);
-
+   $po->load('supplier');
+   $_SESSION['state']['po']['new']='';
 }else
    exit(_('Error the Purchese Order do not exist'));
 
+
+if(is_numeric($_SESSION['state']['po']['new']) and $_SESSION['state']['po']['new_data']['items']==0){
+  $_SESSION['state']['po']['show_all']=true;
+  $smarty->assign('show_all',true);
+ }else{
+  $_SESSION['state']['po']['show_all']=false;
+  $smarty->assign('show_all',false);
+ }
 
 $po_id = $po->id;
 $_SESSION['state']['po']['id']=$po->id;
 
 $_SESSION['state']['supplier']['id']=$po->data['supplier_id'];
 
-$supplier=new Supplier($po->data['supplier_id']);
+
 
 
 $smarty->assign('po',$po->data);
-$smarty->assign('supplier',$supplier->data);
 
 
-$all_products=false;
-switch($po->data['status']){
- case('new'):
-   $smarty->assign('title',_('New Purchase Order for').' '.$supplier->data['code']);
-   $all_products=true;
+
+
+switch($po->data['tipo']){
+ case(0):
+   $smarty->assign('title',_('New Purchase Order for').' '.$po->supplier->data['code']);
+
+
+
  }
 
+
+//print_r($_SESSION['state']['po']);
 // $sql=sprintf("select s.id as id,code as code, s.name as name from supplier as s left join contact as c on (contact_id=c.id) where s.id=%d ",$supplier_id);
 // //print "$sql";
 // $result =& $db->query($sql);
@@ -190,7 +212,7 @@ $smarty->assign('parent','suppliers.php');
 
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
-$smarty->assign('all_products',$all_products);
+
 
 
 //$supplier_home=_("Suppliers List");
@@ -209,6 +231,19 @@ $smarty->assign('currency',$myconf['currency_symbol']);
 $smarty->assign('decimal_point',$myconf['decimal_point']);
 
 
+$tipo_filter=$_SESSION['state']['po']['items']['f_field'];
+$smarty->assign('filter',$tipo_filter);
+$smarty->assign('filter_value0',$_SESSION['state']['po']['items']['f_value']);
 
-$smarty->display('po.tpl');
+$filter_menu=array( 
+		   'p.code'=>array('db_key'=>_('p.code'),'menu_label'=>'Our Product Code','label'=>'Code'),
+		   'sup_code'=>array('db_key'=>_('sup_code'),'menu_label'=>'Supplier Product Code','label'=>'Supplier Code'),
+		    );
+$smarty->assign('filter_menu0',$filter_menu);
+$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
+
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu',$paginator_menu);
+
+$smarty->display('porder.tpl');
 ?>

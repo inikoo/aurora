@@ -137,51 +137,50 @@
 
 
 <div id="the_table" class="data_table" style="margin:20px 20px;clear:both">
-  <span class="clean_table_title">{t}Products{/t}</span><span class="but {if !$all_products}selected{/if}  ">Purchase Order  Products</span><span class="but {if $all_products}selected{/if}">All Supplier Products</span>
+  <span class="clean_table_title">{t}Products{/t}</span><span onClick="swap_show_all_products(this,0)" id="table_po_products" class="but {if !$show_all}selected{/if}  ">Purchase Order  Products</span><span onClick="swap_show_all_products(this,1)" id="table_all_products"  class="but {if $show_all}selected{/if}">All Supplier Products</span>
   <div  class="clean_table_caption"  style="clear:both;">
     <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
-    <div class="clean_table_filter"><div class="clean_table_info"><span id="filter_name0">{t}Product Code{/t}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value}" size=10/><div id='f_container'></div></div></div>
-    <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator"></span></div></div>
+    <div class="clean_table_filter" {if !$show_all}style="visibility:hidden"{/if} id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0">{t}Product Code{/t}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value}" size=10/><div id='f_container'></div></div></div>
+    <div class="clean_table_controls" {if !$show_all}style="visibility:hidden"{/if}  id="clean_table_controls0" ><div><span  style="margin:0 5px" id="paginator"></span></div></div>
   </div>
   <div  id="table0"   class="data_table_container dtable btable "> </div>
 </div>
-
-
-
-
-
-
-      {if $items>0}
-
-
-      
-      <div  id="table0" class="dtable btable" style="margin-bottom:0"></div>
-      <div    style="border:1px solid #ccc;width:200px;float:right;padding:0;margin:0;border-top:none;">
-	<table border=0  style="width:100%,padding:0;margin:0;float:right" >
-	  <tr><td  class="aright" >{t}Order Cost{/t}</td><td width=100 class="aright">{$value_goods}</td></tr>
-	  {if $credit!=0  }<tr><td  class="aright" >{t}Credits{/t}</td><td width=100 class="aright">{$value_credit}</td></tr>{/if}
-	  {if $others!=0  }<tr><td  class="aright" >{t}Charges{/t}</td><td width=100 class="aright">{$value_others}</td></tr>{/if}
-	  <tr><td  class="aright" >{t}Shipping{/t}</td><td width=100 class="aright">{$value_shipping}</td></tr>
-	  <tr><td  class="aright" >{t}VAT{/t}</td><td width=100 class="aright">{$value_vat}</td></tr>
-	  <tr><td  class="aright" >{t}Total{/t}</td><td width=100 class="aright">{$value_total}</td></tr>
-	  
-	</table>
-      </div>
-      
-      
-      {/if}
-
-      
-
-
-
-
-
-
-
+{if $items>0}
+<div  id="table0" class="dtable btable" style="margin-bottom:0"></div>
+<div    style="border:1px solid #ccc;width:200px;float:right;padding:0;margin:0;border-top:none;">
+  <table border=0  style="width:100%,padding:0;margin:0;float:right" >
+    <tr><td  class="aright" >{t}Order Cost{/t}</td><td width=100 class="aright">{$value_goods}</td></tr>
+    {if $credit!=0  }<tr><td  class="aright" >{t}Credits{/t}</td><td width=100 class="aright">{$value_credit}</td></tr>{/if}
+    {if $others!=0  }<tr><td  class="aright" >{t}Charges{/t}</td><td width=100 class="aright">{$value_others}</td></tr>{/if}
+    <tr><td  class="aright" >{t}Shipping{/t}</td><td width=100 class="aright">{$value_shipping}</td></tr>
+    <tr><td  class="aright" >{t}VAT{/t}</td><td width=100 class="aright">{$value_vat}</td></tr>
+    <tr><td  class="aright" >{t}Total{/t}</td><td width=100 class="aright">{$value_total}</td></tr>
+  </table>
+</div>
+{/if}
 </div> 
 
+<div id="filtermenu" class="yuimenu">
+  <div class="bd">
+    <ul class="first-of-type">
+      <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+      {foreach from=$filter_menu0 item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_filter('{$menu.db_key}','{$menu.label}',0)"> {$menu.menu_label}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
 
+<div id="rppmenu" class="yuimenu">
+  <div class="bd">
+    <ul class="first-of-type">
+      <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
+      {foreach from=$paginator_menu item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_rpp({$menu},0)"> {$menu}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
 
 {include file='footer.tpl'}
 
