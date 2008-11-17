@@ -9,6 +9,7 @@
     </div>
     <div  id="table0"   class="data_table_container dtable btable "> </div>
   </div>
+
 </div>
 
 <div id="filtermenu" class="yuimenu">

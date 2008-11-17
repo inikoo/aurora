@@ -57,7 +57,7 @@ class Order{
 
 
   function get_data(){
-    
+    global $_order_status;
     switch($this->tipo){
     case('order'):
       
@@ -237,7 +237,7 @@ class Order{
 
       return true;
     case('po'):
-      $sql=sprintf("select porden.id,ifnull(received_by,-1) as received_by,ifnull(checked_by,-1) as checked_by,public_id,supplier_id,UNIX_TIMESTAMP(date_expected) as date_expected,UNIX_TIMESTAMP(date_submited) as date_submited,UNIX_TIMESTAMP(date_creation) as date_creation,UNIX_TIMESTAMP(date_invoice) as date_invoice,UNIX_TIMESTAMP(date_received) as date_received,tipo,goods,shipping,vat,total,charges,diff,(select count(*) from porden_item where  porden_id=porden.id )as items  from porden where id=%d ",$this->id);
+      $sql=sprintf("select status_id,porden.id,ifnull(received_by,-1) as received_by,ifnull(checked_by,-1) as checked_by,public_id,supplier_id,UNIX_TIMESTAMP(date_expected) as date_expected,UNIX_TIMESTAMP(date_submited) as date_submited,UNIX_TIMESTAMP(date_creation) as date_creation,UNIX_TIMESTAMP(date_invoice) as date_invoice,UNIX_TIMESTAMP(date_received) as date_received,UNIX_TIMESTAMP(date_checked) as date_checked,UNIX_TIMESTAMP(date_consolidated) as date_consolidated,tipo,goods,shipping,vat,total,charges,diff,(select count(*) from porden_item where  porden_id=porden.id )as items  from porden where id=%d ",$this->id);
 
       $result =& $this->db->query($sql);
       if($porder=$result->fetchRow()){
@@ -269,9 +269,10 @@ class Order{
 	$this->data['date_submited']=$porder['date_submited'];
 	$this->data['date_expected']=$porder['date_expected'];
 	$this->data['date_received']=$porder['date_received'];
-		
-
-	$this->data['status']=$this->status_names[$this->data['status_id']];
+	$this->data['date_checked']=$porder['date_checked'];
+	$this->data['date_consolidated']=$porder['date_consolidated'];
+	$this->data['status_id']=$porder['status_id'];
+	$this->data['status']=$_order_status[$porder['status_id']];
 	
 	$this->data['dates']=array(
 			   'created'=>strftime("%e %B %Y %H:%M", $porder['date_creation']),
@@ -279,7 +280,9 @@ class Order{
 			   'expected'=>strftime("%e %B %Y %H:%M", $porder['date_expected']),
 			   'invoice'=>strftime("%e %B %Y %H:%M", $porder['date_invoice']),
 			   'received'=>strftime("%e %B %Y %H:%M", $porder['date_received']),
-			   'created'=>strftime("%e %B %Y %H:%M", $porder['date_creation'])
+			   'created'=>strftime("%e %B %Y %H:%M", $porder['date_creation']),
+			   'checked'=>strftime("%e %B %Y %H:%M", $porder['date_checked']),
+			   'consolidates'=>strftime("%e %B %Y %H:%M", $porder['date_consolidated'])
 			   );
 	
 	$this->data['money']=array(
@@ -405,8 +408,26 @@ class Order{
   }
 
   
+  function submit($data){
+    if($this->data['status']<10){
+      $this->data['tipo']=1;
+      $this->data['status_id']=10;
+      $datetime=prepare_mysql_datetime($data['sdate'].' '.$data['stime']);
+      if(!$datetime[1]){
 
-  
+	$this->get_data();
+	//	return array('ok'=>false,'msg'=>$this->save_history('submit',array('date'=>'NOW','user_id'=>$data['user_id'])));
+	$this->save_history('submit',array('date'=>'NOW','user_id'=>$data['user_id']));
+
+	return array('ok'=>true);
+      }else
+	return array('ok'=>false,'msg'=>_('wrong date').' '.$data['sdate'].' '.$data['stime']);
+    }else{
+      return array('ok'=>false,'msg'=>_('Order is already submited'));
+
+    }
+
+  }
   function add_item($data){
 
     switch($this->tipo){
@@ -453,6 +474,148 @@ class Order{
     
 
   }
+
+function set($tipo,$data){
+    switch($tipo){
+    case('date_expected'):
+      $datetime=prepare_mysql_datetime($data['rdate'].' 12:00:00','datetime');
+      if($datetime['ok']){
+	if($this->data['status']>=10 and  $this->data['status']<80 ){
+	$this->save('date_expected');
+	$this->data['date_expected']=$datetime['ts'];
+	$this->data['dates']['expected']=strftime("%e %B %Y %H:%M",$datetime['ts']);
+
+
+	if(!isset($data['history']) or $data['history'])
+	  $this->save_history('date_expected',array('date'=>'NOW()','user_id'=>$data['user_id']));
+	return array('ok'=>true);
+	}else
+	  return array('ok'=>false,'msg'=>_('Order not submited or already received'));
+      }else
+	return array('ok'=>false,'msg'=>_('Wrong date'));
+      
+      break;
+    case('date_received'):
+      $datetime=prepare_mysql_datetime($data['date'],'datetime');
+      if($datetime['ok']){
+	if($this->data['status']<20){
+	  $this->data['date_received']=$datetime['ts'];
+	  $this->data['dates']['received']=strftime("%e %B %Y %H:%M",$datetime['ts']);
+	  $this->data['status_id']=80;
+	  $this->data['received_by']=$data['done_by'];
+	  $this->save($tipo);
+	  if(!isset($data['history']) or $data['history'])
+	    $this->save_history($tipo,array('date'=>'NOW()','user_id'=>$data['user_id']);
+	  return array('ok'=>true);
+	}else
+	    return array('ok'=>false,'msg'=>_('Already received'));
+      }else
+	return array('ok'=>false,'msg'=>_('Wrong date'));
+    case('date_checked'):
+      $datetime=prepare_mysql_datetime($data['date'],'datetime');
+      if($datetime['ok']){
+	if($this->data['status']<80 or $this->data['status']>=90 ){
+	  $this->data['date_checked']=$datetime['ts'];
+	  $this->data['dates']['checked']=strftime("%e %B %Y %H:%M",$datetime['ts']);
+	  $this->data['status_id']=90;
+	  $this->data['checked_by']=$data['done_by'];
+	  $this->save($tipo);
+	  if(!isset($data['history']) or $data['history'])
+	    $this->save_history($tipo,array('date'=>'NOW()','user_id'=>$data['user_id']));
+	  return array('ok'=>true);
+	}else
+	  return array('ok'=>false,'msg'=>_('Already checked or not received yet'));
+      }else
+	return array('ok'=>false,'msg'=>_('Wrong date'));
+      break;
+    case('date_consolidated'):
+      $datetime=prepare_mysql_datetime($data['date'],'datetime');
+      if($this->data['status']<=90 and $this->data['status']<100 ){
+	$this->save($tipo,$datetime);
+	$this->get_data();
+	if(!isset($data['history']) or $data['history'])
+	  $this->save_history($tipo,array('date'=>'NOW()','user_id'=>$data['user_id'],'done_by'=>$data['done_by']));
+	return array('ok'=>true);
+      }else
+	return array('ok'=>false,'msg'=>_('Error can not be consolidated'));
+      break;
+    case('date_cancelled'):
+      $datetime=prepare_mysql_datetime($data['rdate'],'date');
+      if($this->data['status']<80 ){
+	$this->save($tipo,$datetime);
+	$this->get_data();
+	if(!isset($data['history']) or $data['history'])
+	  $this->save_history($tipo,array('date'=>'NOW()','user_id'=>$data['user_id']));
+	return array('ok'=>true);
+      }else
+	return array('ok'=>false,'msg'=>_('Error, order already received'));
+      break;
+
+
+    }
+    return array('ok'=>false,'msg'=>_('Operation not found')." $tipo");
+}
+  function save($tipo){
+    switch($tipo){
+    case('submit'):
+      if($this->tipo='po'){
+	$sql=sprintf("update porden set date_submited='%s' , tipo=%d, status_id=%d where id=%d",date("Y-m-d H:i:s",strtotime("@".$this->data['submited'])),$this->data['tipo'],$this->data['status_id'],$this->id);
+      }
+      mysql_query($sql);
+      break;
+     case('date_expected'):
+      if($this->tipo='po'){
+	$sql=sprintf("update porden set date_expected=%s where id=%d",date("Y-m-d H:i:s",strtotime("@".$this->data['expected'])),$this->id);
+      }
+      mysql_query($sql);
+      break;  
+    case('date_received'):
+      if($this->tipo='po'){
+	$sql=sprintf("update porden set date_received='%s' ,received_by=%d,status_id=%d   where id=%d",date("Y-m-d H:i:s",strtotime("@".$this->data['received'])),$this->data['consolidated_by'],$this->data['status_id'],$this->id);
+      }
+      mysql_query($sql);
+      break;  
+    case('date_checked'):
+      if($this->tipo='po'){
+	$sql=sprintf("update porden set date_checked='%s' ,checked_by=%d,status_id=%d   where id=%d",date("Y-m-d H:i:s",strtotime("@".$this->data['checked'])),$this->data['checked_by'],$this->data['status_id'],$this->id);
+      }
+      mysql_query($sql);
+      break;  
+    case('date_consolidated'):
+      if($this->tipo='po'){
+	$sql=sprintf("update porden set date_consolidated=%s , consolidated_by=%d ,status_id=%d   where id=%d",date("Y-m-d H:i:s",strtotime("@".$this->data['consolidated'])),$this->data['consolidated_by'],$this->data['status_id'],$this->id);
+      }
+      mysql_query($sql);
+      break;  
+       
+
+    }
+  }
+
+  
+  function save_history($tipo,$data){
+    switch($tipo){
+    case('submit'):
+      if($this->tipo='po'){
+	$note=_('submited')." ".$this->data['dates']['submited'];
+	$sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,old_value,new_value,note) values (%s,'PO',%d,'SDATE',NULL,'NEW',%d,NULL,'%d',%s)"
+		   ,$data['date'],$this->id,$data['user_id'],$this->data['date_submited'],prepare_mysql($note)); 
+      }
+      mysql_query($sql);
+      break;
+    case('date_expected'):
+      if($this->tipo='po'){
+	$note=_('expected')." ".$this->data['dates']['expected'];
+	$sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,old_value,new_value,note) values (%s,'PO',%d,'EDATE',NULL,'CHG',%d,'%d','%d',%s)"
+		     ,$data['date'],$this->id,$data['user_id'],$data['old_value'],$this->data['date_expected'],prepare_mysql($note)); 
+      }
+      mysql_query($sql);
+      break;
+      
+
+    }
+  }
+
 
 }
 

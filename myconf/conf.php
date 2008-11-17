@@ -500,17 +500,20 @@ $default_state=array(
 						       'to'=>'',
 						       ),
 				       'po'=>array(
-						   'order'=>'date',
+						   'order'=>'date_index',
 						   'order_dir'=>'desc',
 						   'sf'=>0,
 						   'nr'=>15,
 						   'where'=>'where true',
-						   'f_field'=>'id',
+						   'f_field'=>'max',
 						   'f_value'=>'',
+						   'to'=>'',
+						   'from'=>'',
+						   'view'=>'all'
 						   
 						   ),
 				       'history'=>array(
-						   'order'=>'date',
+						   'order'=>'date_index',
 						   'order_dir'=>'desc',
 						   'sf'=>0,
 						   'nr'=>15,

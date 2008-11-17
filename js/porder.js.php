@@ -3,10 +3,103 @@
      var Dom   = YAHOO.util.Dom;
 var po_id='<?=$_SESSION['state']['po']['id']?>';
 
+var submit_order_save=function(o){
+    var date=Dom.get('v_calpop1').value;
+    var time=Dom.get('v_time').value;
+    var edate=Dom.get('v_calpop2').value;
+
+    var request='ar_assets.php?tipo=order_submit&tipo_order=po&date='+escape(date)+'&time='+escape(time)+'&edate='+escape(edate)+'&order_id='+escape(po_id);
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    
+	    success:function(o) {
+
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if (r.state == 200) {
+		}
+	    }
+	});    
+}
+var receive_order_save=function(o){
+    var date=Dom.get('v_calpop3').value;
+    var time=Dom.get('v_time3').value;
+
+    var request='ar_assets.php?tipo=order_receive&tipo_order=po&date='+escape(date)+'&time='+escape(time)+'&order_id='+escape(po_id);
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    
+	    success:function(o) {
+		alert(o.responseText)
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if (r.state == 200) {
+		}
+	    }
+	});    
+}
+var check_order_save=function(o){
+    var date=Dom.get('v_calpop4').value;
+    var time=Dom.get('v_time4').value;
+
+    var request='ar_assets.php?tipo=order_check&tipo_order=po&date='+escape(date)+'&time='+escape(time)+'&order_id='+escape(po_id);
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    
+	    success:function(o) {
+
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if (r.state == 200) {
+		}
+	    }
+	});    
+}
+var consolidate_order_save=function(o){
+    var date=Dom.get('v_calpop5').value;
+    var time=Dom.get('v_time5').value;
+
+    var request='ar_assets.php?tipo=order_consolidate&tipo_order=po&date='+escape(date)+'&time='+escape(time)+'&order_id='+escape(po_id);
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    
+	    success:function(o) {
+
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if (r.state == 200) {
+		}
+	    }
+	});    
+}
+
+var cancel_order_save=function(o){
+    var date=Dom.get('v_calpop6').value;
+    var time=Dom.get('v_time6').value;
+
+    var request='ar_assets.php?tipo=order_cancel&tipo_order=po&date='+escape(date)+'&time='+escape(time)+'&order_id='+escape(po_id);
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    
+	    success:function(o) {
+
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if (r.state == 200) {
+		}
+	    }
+	});    
+}
+
+
+
+
 var submit_order=function(o){
     	Dom.get('submit_dialog').style.display='';
-
 }
+var receive_order=function(o){
+    	Dom.get('receive_dialog').style.display='';
+}
+var check_order=function(o){
+    	Dom.get('check_dialog').style.display='';
+}
+var consolidate_order=function(o){
+    	Dom.get('consolidate_dialog').style.display='';
+}
+var cancel_order=function(o){
+    	Dom.get('cancel_dialog').style.display='';
+}
+
 
 var swap_show_all_products=function(o,show_all){
     o.className='selected but';
@@ -37,7 +130,8 @@ var value_changed=function(o){
 	if(isNaN(o.value)){
 	    o.style.background='#fff889';
 	}else{
-	    var request='ar_assets.php?tipo=order_add_item&tipo_order=po&product_id='+escape(o.getAttribute('pid'))+'&qty='+escape(o.value)+'&order_id='+escape(po_id);
+
+	     var request='ar_assets.php?tipo=order_add_item&tipo_order=po&product_id='+escape(o.getAttribute('pid'))+'&qty='+escape(o.value)+'&order_id='+escape(po_id);
 	    YAHOO.util.Connect.asyncRequest('POST',request ,{
 		    
 		    success:function(o) {
@@ -138,26 +232,30 @@ YAHOO.util.Event.addListener(window, "load", function() {
      oAutoComp.minQueryLength = 0; 
 
      cal2 = new YAHOO.widget.Calendar("cal2","cal2Container", { title:"<?=_('Choose a date')?>:", close:true } );
- cal2.update=updateCal;
+     cal2.update=updateCal;
+     cal2.id=2;
+     cal2.render();
+     cal2.update();
+     cal2.selectEvent.subscribe(handleSelect, cal2, true); 
 
- cal2.id=2;
- cal2.render();
- cal2.update();
+     cal1 = new YAHOO.widget.Calendar("cal1","cal1Container", { title:"<?=_('Choose a date')?>:", close:true } );
+     cal1.update=updateCal;
+     cal1.id=1;
+     cal1.render();
+     cal1.update();
+     cal1.selectEvent.subscribe(handleSelect, cal1, true); 
+     cal3 = new YAHOO.widget.Calendar("cal3","cal1Container", { title:"<?=_('Choose a date')?>:", close:true } );
+     cal3.update=updateCal;
+     cal3.id=3;
+     cal3.render();
+     cal3.update();
+     cal3.selectEvent.subscribe(handleSelect, cal3, true); 
+     
+     
 
- cal2.selectEvent.subscribe(handleSelect, cal2, true); 
-
-
- cal1 = new YAHOO.widget.Calendar("cal1","cal1Container", { title:"<?=_('Choose a date')?>:", close:true } );
-
- cal1.update=updateCal;
-
- cal1.id=1;
- cal1.render();
- cal1.update();
- cal1.selectEvent.subscribe(handleSelect, cal1, true); 
- YAHOO.util.Event.addListener("calpop1", "click", cal1.show, cal1, true);
- YAHOO.util.Event.addListener("calpop2", "click", cal2.show, cal2, true);
-
+     YAHOO.util.Event.addListener("calpop1", "click", cal1.show, cal1, true);
+     YAHOO.util.Event.addListener("calpop2", "click", cal2.show, cal2, true);
+     YAHOO.util.Event.addListener("calpop3", "click", cal3.show, cal3, true);
 
  }
 

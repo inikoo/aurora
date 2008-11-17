@@ -27,22 +27,24 @@ function getOrdinal($number){
 function prepare_mysql_datetime($datetime,$tipo='datetime'){
 
   if($datetime=='')
-    return array('',0);
-
+    return array('mysql_date'=>'','status'=>'empty','ok'=>false);
   $time='';
   if($tipo=='datetime'){
+     if(preg_match('/^[0123]\d[\-\/][01]\d[\-\/]\d{4}\s[012]\d:[0123456]\d$/',$datetime))
+       $datetime=$datetime.':00';
     if(!preg_match('/^[0123]\d[\-\/][01]\d[\-\/]\d{4}\s[012]\d:[0123456]\d:[0123456]\d$/',$datetime))
-      return array('',1);
+      return array('mysql_date'=>'','status'=>'error');
+    $ts=date('U',strtotime($datetime));
     list($date,$time)=split(' ',$datetime);
   }else{
     if(!preg_match('/^[0123]\d[\-\/][01]\d[\-\/]\d{4}/',$datetime))
-      return array('',1);
-    
+      return array('mysql_date'=>'','status'=>'wrong date','ok'=>false);
     $date=$datetime;
+    $ts=date('U',strtotime($date));
   }
 
   
-
+  $ts=date('U',strtotime());
   
   $date=str_replace('/','-',$date);
   $date=split('-',$date);
@@ -54,8 +56,8 @@ function prepare_mysql_datetime($datetime,$tipo='datetime'){
   }else
     $mysql_datetime= trim(join ('-',array_reverse($date)).' '.$time);
   
- 
-  return array($mysql_datetime,0);
+  return array('ts'=>$ts,'mysql_date'=>$mysql_datetime,'status'=>'ok','ok'=>true);
+
 }
  
 
@@ -68,9 +70,13 @@ return idate('d', mktime(0, 0, 0, ($month + 1), 0, $year));
 function date_base($from,$to,$step='m',$tipo='complete_both'){
 
 
-  list($mysql_date1,$error1)=prepare_mysql_datetime($from,'date');
-  list($mysql_date2,$error2)=prepare_mysql_datetime($to,'date');
-  if($error1 or $error2)
+  $tmp=prepare_mysql_datetime($from,'date');
+  $mysql_date1=$tmp['mysql_date'];
+  $error1=$tmp['ok'];
+  $tmp=prepare_mysql_datetime($to,'date');
+  $mysql_date2=$tmp['mysql_date'];
+  $error2=$tmp['ok'];
+  
     return array();
   list($date1['y'],$date1['m'],$date1['d'])=split('-',$mysql_date1);
   list($date2['y'],$date2['m'],$date2['d'])=split('-',$mysql_date2);

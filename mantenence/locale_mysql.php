@@ -104,7 +104,7 @@ $res.="\$_shape_example['5']='width x height (in cm)';\n";
 
 //$_tipo_order=array('Unknown','Pro-invoice','Invoice','Canceled','Sample','Donation,''Replacements','Shortages','To Follow','Refund','Credit Note');
 
-$res.="\$_order_tipo['0']=_('Unknown');\n";
+$res.="\$_order_tipo['0']=_('Pre-order');\n";
 $res.="\$_order_tipo['1']=_('Proforma Invoice');\n";
 $res.="\$_order_tipo['2']=_('Invoice');\n";
 $res.="\$_order_tipo['3']=_('Order Canceled');\n";
@@ -115,6 +115,21 @@ $res.="\$_order_tipo['7']=_('Shortage');\n";
 $res.="\$_order_tipo['8']=_('To Follow Order');\n";
 $res.="\$_order_tipo['9']=_('Refund');\n";
 $res.="\$_order_tipo['10']=_('Credit Note');\n";
+
+
+$res.="\$_order_status['0']=_('Created');\n";
+$res.="\$_order_status['10']=_('Submited');\n";
+$res.="\$_order_status['20']=_('Received');\n";
+$res.="\$_order_status['30']=_('Processed');\n";
+$res.="\$_order_status['40']=_('Picking');\n";
+$res.="\$_order_status['50']=_('Packing');\n";
+$res.="\$_order_status['60']=_('Waiting to be delivered');\n";
+$res.="\$_order_status['70']=_('On Transit');\n";
+$res.="\$_order_status['80']=_('Delivered');\n";
+$res.="\$_order_status['90']=_('Items Checked');\n";
+$res.="\$_order_status['100']=_('Payment Checked');\n";
+$res.="\$_order_status['110']=_('On Location');\n";
+$res.="\$_order_status['200']=_('Return to sender');\n";
 
 //$res.="\$_order_tipo['10']=_('Unknown').' 4';\n";
 //$res.="\$_order_tipo['11']=_('Unknown').' 5';\n";

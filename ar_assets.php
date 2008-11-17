@@ -24,6 +24,62 @@ if(!isset($_REQUEST['tipo']))
 
 $tipo=$_REQUEST['tipo'];
 switch($tipo){
+ case('order_receive'):
+ case('order_check'): 
+ case('order_cancel'):
+ case('order_consolidate'):
+   $data=array(
+	       'user_id'=>$LU->getProperty('auth_user_id'),
+	       'done_by'=>(!isset($_REQUEST['done_by'])?$LU->getProperty('auth_user_id'):$_REQUEST['done_by']),
+	       'date'=>$_REQUEST['date'],
+	       'time'=>$_REQUEST['time']
+	       );
+   $order=new order($_REQUEST['tipo_order'],$_REQUEST['order_id']);
+   if(!$order->id){
+     $response= array('state'=>400,'msg'=>_('Error: Order not found'));
+     echo json_encode($response);  
+     exit;
+   }
+   
+   $res=$order->set(preg_replace('/^order\_/','',$tipo)."_date",$data);
+
+   if($res['ok']){
+     $response= array('state'=>200,'data'=>$order->data);
+   }else{
+     $response= array('state'=>400,'msg'=>$res['msg']);
+   }
+   echo json_encode($response);  
+   
+   break;
+
+
+   case('order_submit'):
+   $data=array(
+	       'user_id'=>$LU->getProperty('auth_user_id'),
+	       'sdate'=>$_REQUEST['date'],
+	       'stime'=>$_REQUEST['time']
+	       );
+   $order=new order($_REQUEST['tipo_order'],$_REQUEST['order_id']);
+   if(!$order->id){
+     $response= array('state'=>400,'msg'=>_('Error: Order not found'));
+     echo json_encode($response);  
+     exit;
+   }
+   $res=$order->submit($data);
+   $res_bis=array('ok'=>true);
+   if($_REQUEST['edate']!='' and $res['ok'])
+     $res_bis=$order->set('expected_date',array('edate'=>$_REQUEST['edate'],'user_id'=>$LU->getProperty('auth_user_id'),'history'=>false));
+   if($res['ok']){
+     $response= array('state'=>200,'data'=>$order->data,'res_bis'=>$res_bis);
+     if($_REQUEST['tipo_order']=='po')
+       $_SESSION['state']['po']['new']='';
+   }else{
+     $response= array('state'=>400,'msg'=>$res['msg']);
+   }
+   echo json_encode($response);  
+   
+   break;
+
  case('order_add_item'):
    $data=array(
 	       'user_id'=>$LU->getProperty('auth_user_id'),
@@ -36,7 +92,6 @@ switch($tipo){
      echo json_encode($response);  
      exit;
    }
-     
    $res=$order->add_item($data);
    if($res['ok']){
      $response= array('state'=>200,'data'=>$order->data,'item_data'=>$res['item_data']);

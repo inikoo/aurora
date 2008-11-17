@@ -50,17 +50,19 @@ $_SESSION['state']['supplier']['id']=$po->data['supplier_id'];
 
 
 
-
+//print_r($po->data);
 $smarty->assign('po',$po->data);
 
 
 
 
-switch($po->data['tipo']){
+switch($po->data['status_id']){
  case(0):
    $smarty->assign('title',_('New Purchase Order for').' '.$po->supplier->data['code']);
-
-
+   break;
+ case(10):
+     $smarty->assign('title',$po->supplier->data['code']."<br/>"._('Purchase Order').' '.$po->data['id']);
+     break;
 
  }
 
@@ -195,7 +197,7 @@ $js_files=array(
 		$yui_path.'dragdrop/dragdrop-min.js',
 		$yui_path.'datasource/datasource-min.js',
 		$yui_path.'autocomplete/autocomplete-min.js',
-		$yui_path.'datatable/datatable-min.js',
+		$yui_path.'datatable/datatable.js',
 		$yui_path.'container/container_core-min.js',
 		$yui_path.'menu/menu-min.js',
 		$yui_path.'calendar/calendar-min.js',

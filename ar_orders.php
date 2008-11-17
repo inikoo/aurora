@@ -623,7 +623,209 @@ if(isset( $_REQUEST['where']))
 		   );
    echo json_encode($response);
    break;
+ case('po_supplier'):
+    if(!$LU->checkRight(ORDER_VIEW))
+    exit;
 
+
+    $supplier_id=$_SESSION['state']['supplier']['id'];
+
+    $conf=$_SESSION['state']['supplier']['po'];
+  if(isset( $_REQUEST['sf']))
+     $start_from=$_REQUEST['sf'];
+   else
+     $start_from=$conf['sf'];
+   if(isset( $_REQUEST['nr']))
+     $number_results=$_REQUEST['nr'];
+   else
+     $number_results=$conf['nr'];
+  if(isset( $_REQUEST['o']))
+    $order=$_REQUEST['o'];
+  else
+    $order=$conf['order'];
+  if(isset( $_REQUEST['od']))
+    $order_dir=$_REQUEST['od'];
+  else
+    $order_dir=$conf['order_dir'];
+    if(isset( $_REQUEST['f_field']))
+     $f_field=$_REQUEST['f_field'];
+   else
+     $f_field=$conf['f_field'];
+
+  if(isset( $_REQUEST['f_value']))
+     $f_value=$_REQUEST['f_value'];
+   else
+     $f_value=$conf['f_value'];
+if(isset( $_REQUEST['where']))
+     $where=$_REQUEST['where'];
+   else
+     $where=$conf['where'];
+  
+ if(isset( $_REQUEST['from']))
+    $from=$_REQUEST['from'];
+  else
+    $from=$_SESSION['state']['supplier']['po']['from'];
+  if(isset( $_REQUEST['to']))
+    $to=$_REQUEST['to'];
+  else
+    $to=$_SESSION['state']['supplier']['po']['to'];
+
+
+   if(isset( $_REQUEST['view']))
+    $view=$_REQUEST['view'];
+  else
+    $view=$_SESSION['state']['supplier']['po']['view'];
+
+
+   if(isset( $_REQUEST['tableid']))
+    $tableid=$_REQUEST['tableid'];
+  else
+    $tableid=0;
+
+
+   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+   $_SESSION['state']['supplier']['po']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+   $_SESSION['state']['supplier']['po']['view']=$view;
+   $date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
+   if($date_interval['error']){
+      $date_interval=prepare_mysql_dates($_SESSION['state']['supplier']['po']['from'],$_SESSION['state']['supplier']['po']['to']);
+   }else{
+     $_SESSION['state']['supplier']['po']['from']=$date_interval['from'];
+     $_SESSION['state']['supplier']['po']['to']=$date_interval['to'];
+   }
+
+
+   $where.=sprintf(' and supplier_id=%d',$supplier_id);
+
+   switch($view){
+   case('all'):
+     break;
+   case('submited'):
+     $where.=' and porden.status_id==10 ';
+     break;
+   case('new'):
+     $where.=' and porden.status_id<10 ';
+     break;
+   case('received'):
+     $where.=' and porden.status_id>80 ';
+     break;
+   default:
+     
+     
+   }
+   $where.=$date_interval['mysql'];
+   
+   $wheref='';
+
+  if($f_field=='max' and is_numeric($f_value) )
+    $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(date_index))<=".$f_value."    ";
+  else if($f_field=='min' and is_numeric($f_value) )
+    $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(date_index))>=".$f_value."    ";
+   elseif(($f_field=='customer_name' or $f_field=='public_id') and $f_value!='')
+    $wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
+  else if($f_field=='maxvalue' and is_numeric($f_value) )
+    $wheref.=" and  total<=".$f_value."    ";
+  else if($f_field=='minvalue' and is_numeric($f_value) )
+    $wheref.=" and  total>=".$f_value."    ";
+   
+
+
+   
+
+   
+   $sql="select count(*) as total from porden   $where $wheref ";
+
+   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+  if($row=$res->fetchRow()) {
+    $total=$row['total'];
+  }
+  if($where==''){
+    $filtered=0;
+     $total_records=$total;
+  }else{
+    
+      $sql="select count(*) as total from porden  $where";
+      $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+      if($row=$res->fetchRow()) {
+	$total_records=$row['total'];
+	$filtered=$row['total']-$total;
+      }
+      
+  }
+  $rtext=$total_records." ".ngettext('order','orders',$total_records);
+  if($total_records>$number_results)
+    $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
+  $filter_msg='';
+
+     switch($f_field){
+     case('public_id'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any order with number")." <b>".$f_value."*</b> ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('orders starting with')." <b>$f_value</b>) <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;
+     case('minvalue'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any order minimum value of")." <b>".money($f_value)."</b> ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('orders with min value of')." <b>".money($f_value)."*</b>) <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;  
+   case('maxvalue'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any order maximum value of")." <b>".money($f_value)."</b> ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('orders with max value of')." <b>".money($f_value)."*</b>) <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;  
+ case('max'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any order older than")." <b>".number($f_value)."</b> "._('days');
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('last')." <b>".number($f_value)."</b> "._('days orders').") <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;  
+     }
+
+
+
+   
+   $_order=$order;
+   $_dir=$order_direction;
+
+
+
+  $sql="select id,UNIX_TIMESTAMP(date_index) as date_index,total,items,tipo,status_id from porden  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+  //  print $sql;
+   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   $data=array();
+   while($row=$res->fetchRow()) {
+     $data[]=array(
+		   'id'=>'<a href="porder.php?id='.$row['id'].'">'.$row['id']."</a>",
+		   'date_index'=>strftime("%e %b %Y %H:%M", strtotime('@'.$row['date_index'])),
+		   'total'=>money($row['total']),
+		   'items'=>number($row['items']),
+		   'tipo'=>$_order_tipo[$row['tipo']]." (".$_order_status[$row['status_id']].")"
+		   );
+   }
+
+   $response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$data,
+			 'rtext'=>$rtext,
+			 'sort_key'=>$_order,
+			 'sort_dir'=>$_dir,
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
+			 'total_records'=>$total,
+			 'records_offset'=>$start_from,
+			 'records_returned'=>$start_from+$res->numRows(),
+			 'records_perpage'=>$number_results,
+			 'records_text'=>$rtext,
+			 'records_order'=>$order,
+			 'records_order_dir'=>$order_dir,
+			 'filtered'=>$filtered
+			 )
+		   );
+   echo json_encode($response);
+   break;
  case('pickers_report'):
    
    
