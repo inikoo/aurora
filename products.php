@@ -74,6 +74,7 @@ $js_files=array(
 		$yui_path.'calendar/calendar-min.js',
 		'js/common.js.php',
 		'js/table_common.js.php',
+		'js/search_product.js',
 		'js/products.js.php'
 		);
 
@@ -97,8 +98,8 @@ $tipo_filter=($q==''?$_SESSION['state']['products']['table']['f_field']:'code');
 $smarty->assign('filter',$tipo_filter);
 $smarty->assign('filter_value',($q==''?$_SESSION['state']['products']['table']['f_value']:addslashes($q)));
 $filter_menu=array(
-		   'code'=>array('db_key'=>'code','menu_label'=>'Product starting with  <i>x</i>','label'=>'Order Number'),
-		   'description'=>array('db_key'=>'description','menu_label'=>'Product Description with <i>x</i>','label'=>'Customer'),
+		   'code'=>array('db_key'=>'code','menu_label'=>'Product starting with  <i>x</i>','label'=>'Code'),
+		   'description'=>array('db_key'=>'description','menu_label'=>'Product Description with <i>x</i>','label'=>'Description'),
 		   );
 $smarty->assign('filter_menu',$filter_menu);
 

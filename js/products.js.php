@@ -24,7 +24,7 @@ include_once('../common.php');
 	table.hideColumn('awtsoall');
 	table.hideColumn('awtsoy');
 	table.hideColumn('awtsom');
-
+	table.hideColumn('days_to_ns');
 	if(tipo=='sales'){
 	    table.showColumn('tsall');
 	    table.showColumn('tsy');
@@ -111,6 +111,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.dataSource0.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
+		    rtext:"resultset.rtext",
 		    rowsPerPage:"resultset.records_perpage",
 		    sort_key:"resultset.sort_key",
 		    sort_dir:"resultset.sort_dir",
@@ -155,7 +156,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 	    
 	    this.table0.view='<?=$_SESSION['state']['products']['view']?>';
-
+	    this.table0.filter={key:'<?=$_SESSION['state']['products']['table']['f_field']?>',value:'<?=$_SESSION['state']['products']['table']['f_value']?>'};
 		
 
 
@@ -168,6 +169,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
  function init(){
  var Dom   = YAHOO.util.Dom;
+ var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
+ oACDS.queryMatchContains = true;
+ var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container", oACDS);
+ oAutoComp.minQueryLength = 0; 
 
 
 
@@ -179,7 +184,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
  YAHOO.util.Event.addListener('submit_search', "click",submit_search);
  YAHOO.util.Event.addListener('prod_search', "keydown", submit_search_on_enter);
 
-
+ Event.addListener('submit_search', "click",submit_search);
+ Event.addListener('prod_search', "keydown", submit_search_on_enter);
 
  }
 
@@ -192,4 +198,11 @@ YAHOO.util.Event.onContentReady("rppmenu", function () {
 	 oMenu.render();
 	 oMenu.subscribe("show", oMenu.focus);
 	 YAHOO.util.Event.addListener("paginator_info0", "click", oMenu.show, null, oMenu);
+    });
+
+YAHOO.util.Event.onContentReady("filtermenu", function () {
+	 var oMenu = new YAHOO.widget.Menu("filtermenu", { context:["filter_name0","tr", "br"]  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+	 YAHOO.util.Event.addListener("filter_name0", "click", oMenu.show, null, oMenu);
     });

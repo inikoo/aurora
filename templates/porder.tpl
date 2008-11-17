@@ -3,8 +3,7 @@
 <div id="bd" >
 
   
-<div style="display:none; position:absolute; left:10px; top:200px; z-index:2" id="cal2Container"></div>
-<div style="display:none; position:absolute; left:10px; top:200px; z-index:2" id="cal3Container"></div>
+
 
 <span class="nav2"><a href="suppliers.php">{t}Suppliers List{/t}</a></span>
 <span class="nav2"><a href="supplier.php?id={$supplier.id}">{$supplier.name}</a></span>
@@ -18,13 +17,13 @@
     {if $po.submited!=''}
     <tr><td>{$po_dates.submited}</td><td>{t}Submited{/t}</td></tr>
     {else}
-    <tr><td></td><td id="submit_po" class="but">{t}Submit{/t}</td></tr>
+    <tr><td></td><td id="submit_po" onClick="submit_order(this)" class="but">{t}Submit{/t}</td></tr>
     {/if}
-    <tr style="display:none"><td colspan=2>
+    <tr id="submit_dialog" style="display:none"><td colspan=2>
 	<table >
-	  <tr><td>{t}Submited Date{/t}:</td><td><input id="v_calpop1"   class="text" name="submites_date" type="text"  size="10" maxlength="10"  value="{$now}"    /><img   id="calpop1" style="cursor:pointer" src="art/icons/calendar_view_month.png" align="top" alt=""   /> 	</td></tr>
-	  <tr><td class="aright">{t}Time{/t}:</td><td class="aright"><input id="v_calpop1"   class="text" name="expected_date" type="text"  size="5" maxlength="5"     /><img   id="calpop1" style="cursor:pointer" src="art/icons/time.png" align="top" alt=""   /> 	</td></tr>
-	  <tr><td>{t}Expected Date{/t}:</td><td><input id="v_calpop2"   class="text" name="expected_date" type="text"  size="10" maxlength="10"     /><img   id="calpop1" style="cursor:pointer" src="art/icons/calendar_view_month.png" align="top" alt=""   /> 	</td></tr>
+	  <tr><td>{t}Submited Date{/t}:</td><td><input id="v_calpop1" style="text-align:right;"  class="text" name="submites_date" type="text"  size="10" maxlength="10"  value="{$date}"    /><img   id="calpop1" style="cursor:pointer" src="art/icons/calendar_view_month.png" align="top" alt=""   />  <div id="cal1Container" style="position:absolute;display:none; z-index:2">	</td></tr>
+	  <tr><td class="aright">{t}Time{/t}:</td><td class="aright"><input id="v_calpop1"   style="text-align:right;" class="text" name="expected_date" type="text"  size="5" maxlength="5"  value="{$time}"   /><img   id="calpop1" style="cursor:pointer" src="art/icons/time.png" align="top" alt=""   /> 	</td></tr>
+	  <tr><td>{t}Expected Date{/t}:</td><td><input id="v_calpop2" style="text-align:right;"  class="text" name="expected_date" type="text"  size="10" maxlength="10"     /><img   id="calpop2" style="cursor:pointer" src="art/icons/calendar_view_month.png" align="top" alt=""   /> <div id="cal2Container" style="display:none; z-index:2;position:absolute"></div>	</td></tr>
 	    <tr><td colspan=2 class="aright"><span style="cursor:pointer;margin-right:16px">Save <img   src="art/icons/disk.png" align="top" alt=""   /></span></td></tr>
 	</table>
     </td></tr>

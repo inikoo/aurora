@@ -16,7 +16,7 @@
 
 
    function updateCal() {
-	
+
      var Dom   = YAHOO.util.Dom;
  
      var txtDate1 = Dom.get(this.container_id);

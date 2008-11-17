@@ -1964,66 +1964,64 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
 		   );
    echo json_encode($response);
    break;
- case('products'):
-     $conf=$_SESSION['state']['products']['table'];
-     
-     
+ case('families'):
+     $conf=$_SESSION['state']['families']['table'];
      if(isset( $_REQUEST['view']))
        $view=$_REQUEST['view'];
      else
-       $view=$_SESSION['state']['family']['view'];
+       $view=$_SESSION['state']['families']['view'];
      
       if(isset( $_REQUEST['sf']))
-     $start_from=$_REQUEST['sf'];
-   else
+	$start_from=$_REQUEST['sf'];
+      else
     $start_from=$conf['sf'];
-   if(!is_numeric($start_from))
-     $start_from=0;
-
-  if(isset( $_REQUEST['nr']))
+      if(!is_numeric($start_from))
+	$start_from=0;
+      
+      if(isset( $_REQUEST['nr']))
     $number_results=$_REQUEST['nr'];
-  else
-    $number_results=$conf['nr'];
-   if(!is_numeric($number_results))
-     $number_results=25;
-
-  if(isset( $_REQUEST['o']))
-    $order=$_REQUEST['o'];
-  else
-    $order=$conf['order'];
+      else
+	$number_results=$conf['nr'];
+      if(!is_numeric($number_results))
+	$number_results=25;
+      
+      if(isset( $_REQUEST['o']))
+	$order=$_REQUEST['o'];
+      else
+	$order=$conf['order'];
+      
+      if(isset( $_REQUEST['od']))
+	$order_dir=$_REQUEST['od'];
+      else
+	$order_dir=$conf['order_dir'];
+      $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+      
+      
   
-  if(isset( $_REQUEST['od']))
-    $order_dir=$_REQUEST['od'];
-  else
-    $order_dir=$conf['order_dir'];
-  $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-
-  
-  
-     if(isset( $_REQUEST['where']))
-     $where=addslashes($_REQUEST['where']);
-   else
-     $where=$conf['where'];
-
-    
-   if(isset( $_REQUEST['f_field']))
-     $f_field=$_REQUEST['f_field'];
-   else
-     $f_field=$conf['f_field'];
-
-  if(isset( $_REQUEST['f_value']))
-     $f_value=$_REQUEST['f_value'];
-   else
-     $f_value=$conf['f_value'];
-
-
- if(isset( $_REQUEST['tableid']))
-    $tableid=$_REQUEST['tableid'];
-  else
-    $tableid=0;
-         $_SESSION['state']['products']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
-
-     
+      if(isset( $_REQUEST['where']))
+	$where=addslashes($_REQUEST['where']);
+      else
+	$where=$conf['where'];
+      
+      
+      if(isset( $_REQUEST['f_field']))
+	$f_field=$_REQUEST['f_field'];
+      else
+	$f_field=$conf['f_field'];
+      
+      if(isset( $_REQUEST['f_value']))
+	$f_value=$_REQUEST['f_value'];
+      else
+	$f_value=$conf['f_value'];
+      
+      
+      if(isset( $_REQUEST['tableid']))
+	$tableid=$_REQUEST['tableid'];
+      else
+	$tableid=0;
+      $_SESSION['state']['families']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+      
+      
      $filter_msg='';
      
      $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
@@ -2032,41 +2030,257 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
        $start_from=0;
      if(!is_numeric($number_results))
        $number_results=25;
-
-
- $_order=$order;
- $_dir=$order_direction;
-  $filter_msg='';
-  $wheref='';
-  if($f_field=='code' and $f_value!='')
-    $wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
-
+     
+     
+     $_order=$order;
+     $_dir=$order_direction;
+     $filter_msg='';
+     $wheref='';
+     if($f_field=='code' and $f_value!='')
+       $wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
+     elseif($f_field=='description' and $f_value!='')
+       $wheref.=" and  ".$f_field." like '%".addslashes($f_value)."%'";
 
 
    
 
 
-
-   $sql="select count(*) as total from product  $where $wheref";
-
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-   if($row=$res->fetchRow()) {
-     $total=$row['total'];
-   }
-   if($wheref=='')
+     
+     $sql="select count(*) as total from product_group  $where $wheref";
+     
+     $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+     if($row=$res->fetchRow()) {
+       $total=$row['total'];
+     }
+     if($wheref==''){
        $filtered=0;
-   else{
-     $sql="select count(*) as total from product  $where ";
+       $total_records=$total;
+     } else{
+       $sql="select count(*) as total from product_group  $where ";
 
      $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
      if($row=$res->fetchRow()) {
-       $filtered=$row['total']-$total;
+       $total_records=$row['total'];
+       $filtered=$total_records-$total;
      }
 
    }
 
+     $rtext=$total_records." ".ngettext('family','families',$total_records);
+     if($total_records>$number_results)
+       $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
+     
+       if($total==0 and $filtered>0){
+     switch($f_field){
+     case('code'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any family  like ")." <b>".$f_value."*</b> ";
+       break;
+     case('description'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any family with description like ")." <b>".$f_value."*</b> ";
+       break;
+     }
+   }
+   elseif($filtered>0){
+     switch($f_field){
+     case('code'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('family like')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;
+     case('description'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('family with description like')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break; 
+     }
+   }else
+      $filter_msg='';
+
+   
 
 
+  
+  $sql="select stock_value,outofstock,stockerror, ns_high,ns_normal,ns_low,ns_critical, id,name,description,tsall,tsy,tsq,tsm,tsw,awtsall,awtsy,awtsm,tsoall,tsoy,tsoq,tsom, tsow,awtsoall,awtsoy,awtsom from product_group    $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
+  //print $sql;
+  $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+  
+  $adata=array();
+  
+  while($data=$res->fetchRow()) {
+    $adata[]=array(
+		   'id'=>$data['id']
+		   ,'name'=>$data['name']
+		   ,'description'=>$data['description']
+
+		   ,'outofstock'=>number($data['outofstock'])
+		   ,'stockerror'=>number($data['stockerror'])
+		   ,'ns_high'=>number($data['ns_high'])
+		   ,'ns_normal'=>number($data['ns_normal'])
+		   ,'ns_low'=>number($data['ns_low'])
+		   ,'ns_critical'=>number($data['ns_critical'])
+		   ,'stock_value'=>money($data['stock_value'])
+		   ,'tsall'=>money($data['tsall'])
+		   ,'tsy'=>money($data['tsy'])
+		   ,'tsq'=>money($data['tsq'])
+		   ,'tsm'=>money($data['tsm'])
+		   ,'tsw'=>money($data['tsw'])
+		   ,'awtsall'=>money($data['awtsall'])
+		   ,'awtsy'=>money($data['awtsy'])
+		   ,'awtsm'=>money($data['awtsm'])
+		   ,'tsoall'=>number($data['tsoall'])
+		   ,'tsoy'=>number($data['tsoy'])
+		   ,'tsoq'=>number($data['tsoq'])
+		   ,'tsom'=>number($data['tsom'])
+		   ,'tsow'=>number($data['tsow'])
+		   ,'awtsoall'=>number($data['awtsoall'])
+		   ,'awtsoy'=>number($data['awtsoy'])
+		   ,'awtsom'=>number($data['awtsom'])
+		   
+
+		   );
+  }
+  $response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$adata,
+			 'sort_key'=>$_order,
+			 'rtext'=>$rtext,
+			 'sort_dir'=>$_dir,
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
+			 'total_records'=>$total,
+			 'records_offset'=>$start_from,
+			 'records_returned'=>$start_from+$res->numRows(),
+			 'records_perpage'=>$number_results,
+			 'records_order'=>$order,
+			 'records_order_dir'=>$order_dir,
+			 'filtered'=>$filtered
+			 )
+		   );
+   echo json_encode($response);
+   break;
+case('products'):
+     $conf=$_SESSION['state']['products']['table'];
+     if(isset( $_REQUEST['view']))
+       $view=$_REQUEST['view'];
+     else
+       $view=$_SESSION['state']['products']['view'];
+     
+      if(isset( $_REQUEST['sf']))
+	$start_from=$_REQUEST['sf'];
+      else
+    $start_from=$conf['sf'];
+      if(!is_numeric($start_from))
+	$start_from=0;
+      
+      if(isset( $_REQUEST['nr']))
+    $number_results=$_REQUEST['nr'];
+      else
+	$number_results=$conf['nr'];
+      if(!is_numeric($number_results))
+	$number_results=25;
+      
+      if(isset( $_REQUEST['o']))
+	$order=$_REQUEST['o'];
+      else
+	$order=$conf['order'];
+      
+      if(isset( $_REQUEST['od']))
+	$order_dir=$_REQUEST['od'];
+      else
+	$order_dir=$conf['order_dir'];
+      $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+      
+      
+  
+      if(isset( $_REQUEST['where']))
+	$where=addslashes($_REQUEST['where']);
+      else
+	$where=$conf['where'];
+      
+      
+      if(isset( $_REQUEST['f_field']))
+	$f_field=$_REQUEST['f_field'];
+      else
+	$f_field=$conf['f_field'];
+      
+      if(isset( $_REQUEST['f_value']))
+	$f_value=$_REQUEST['f_value'];
+      else
+	$f_value=$conf['f_value'];
+      
+      
+      if(isset( $_REQUEST['tableid']))
+	$tableid=$_REQUEST['tableid'];
+      else
+	$tableid=0;
+      $_SESSION['state']['products']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+      
+      
+     $filter_msg='';
+     
+     $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+     
+     if(!is_numeric($start_from))
+       $start_from=0;
+     if(!is_numeric($number_results))
+       $number_results=25;
+     
+     
+     $_order=$order;
+     $_dir=$order_direction;
+     $filter_msg='';
+     $wheref='';
+     if($f_field=='code' and $f_value!='')
+       $wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
+     elseif($f_field=='description' and $f_value!='')
+       $wheref.=" and  ".$f_field." like '%".addslashes($f_value)."%'";
+
+
+   
+
+
+     
+     $sql="select count(*) as total from product  $where $wheref";
+     
+     $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+     if($row=$res->fetchRow()) {
+       $total=$row['total'];
+     }
+     if($wheref==''){
+       $filtered=0;
+       $total_records=$total;
+     } else{
+       $sql="select count(*) as total from product  $where ";
+
+     $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+     if($row=$res->fetchRow()) {
+       $total_records=$row['total'];
+       $filtered=$total_records-$total;
+     }
+
+   }
+
+     $rtext=$total_records." ".ngettext('product','products',$total_records);
+     if($total_records>$number_results)
+       $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
+     
+       if($total==0 and $filtered>0){
+     switch($f_field){
+     case('code'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any product with code like ")." <b>".$f_value."*</b> ";
+       break;
+     case('description'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any product with description like ")." <b>".$f_value."*</b> ";
+       break;
+     }
+   }
+   elseif($filtered>0){
+     switch($f_field){
+     case('code'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('products with code like')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;
+     case('description'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('products with description like')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break; 
+     }
+   }else
+      $filter_msg='';
 
    
 
@@ -2114,6 +2328,7 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
 		   array('state'=>200,
 			 'data'=>$adata,
 			 'sort_key'=>$_order,
+			 'rtext'=>$rtext,
 			 'sort_dir'=>$_dir,
 			 'tableid'=>$tableid,
 			 'filter_msg'=>$filter_msg,
@@ -2128,7 +2343,6 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
 		   );
    echo json_encode($response);
    break;
-
 
  case('update_department_name'):
    

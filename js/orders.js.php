@@ -117,45 +117,34 @@ var Dom   = YAHOO.util.Dom;
  var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container", oACDS);
  oAutoComp.minQueryLength = 0; 
 
-    
-
-    	cal2 = new YAHOO.widget.Calendar("cal2","cal2Container", { title:"<?=_('Choose a date')?>:", close:true } );
-	cal2.update=updateCal;
-
-
-	cal2.id=2;
+ cal2 = new YAHOO.widget.Calendar("cal2","cal2Container", { title:"<?=_('Choose a date')?>:", close:true } );
+ cal2.update=updateCal;
+ cal2.id=2;
+ cal2.render();
+ cal2.update();
+ cal2.selectEvent.subscribe(handleSelect, cal2, true); 
+ cal1 = new YAHOO.widget.Calendar("cal1","cal1Container", { title:"<?=_('Choose a date')?>:", close:true } );
+ cal1.update=updateCal;
+ cal1.id=1;
+ cal1.render();
+ cal1.update();
+ cal1.selectEvent.subscribe(handleSelect, cal1, true); 
+ YAHOO.util.Event.addListener("calpop1", "click", cal1.show, cal1, true);
+ YAHOO.util.Event.addListener("calpop2", "click", cal2.show, cal2, true);
 	
-	cal2.render();
-
-	cal2.update();
-
-	cal2.selectEvent.subscribe(handleSelect, cal2, true); 
-	
 
 
-	cal1 = new YAHOO.widget.Calendar("cal1","cal1Container", { title:"<?=_('Choose a date')?>:", close:true } );
-	cal1.update=updateCal;
-	cal1.id=1;
-	cal1.render();
-	cal1.update();
-	cal1.selectEvent.subscribe(handleSelect, cal1, true); 
-
-	YAHOO.util.Event.addListener("calpop1", "click", cal1.show, cal1, true);
-	YAHOO.util.Event.addListener("calpop2", "click", cal2.show, cal2, true);
-
-
-
-	var change_interval = function(e){
-	    from=Dom.get("v_calpop1").value;
-	    to=Dom.get("v_calpop2").value;
-	    var table=tables.table0;
-	    var datasource=tables.dataSource0;
-	    var request='&sf=0&from=' +from+'&to='+to;
-	    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
-
-	}
-
-	YAHOO.util.Event.addListener("submit_interval", "click", change_interval);
+ var change_interval = function(e){
+     from=Dom.get("v_calpop1").value;
+     to=Dom.get("v_calpop2").value;
+     var table=tables.table0;
+     var datasource=tables.dataSource0;
+     var request='&sf=0&from=' +from+'&to='+to;
+     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+     
+ }
+ 
+ YAHOO.util.Event.addListener("submit_interval", "click", change_interval);
 
 
 	var change_view = function (e){

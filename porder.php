@@ -245,5 +245,9 @@ $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu',$paginator_menu);
 
+$smarty->assign('date',date("d-m-Y"));
+$smarty->assign('time',date("H:i"));
+
+
 $smarty->display('porder.tpl');
 ?>

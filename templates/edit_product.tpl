@@ -131,7 +131,11 @@
 
 </div>
 <div class="yui-b">
-<div  style="float:right;margin-top:10px;text-align:right">{include file='product_search.tpl'}</div>	 
+<div  style="float:right;margin-top:10px;text-align:right">
+ <span class="search_title" style="padding-right:15px">{t}Product Code{/t}:</span> <br><input size="8" class="text search" id="prod_search" value="" name="search"/><img align="absbottom" id="submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>
+       <span  class="search_msg"   id="search_msg"    ></span> <span  class="search_sugestion"   id="search_sugestion"    ></span>
+       <br/>
+</div>	 
 
 <table  style="width:5em" class="but edit" >
 <tr><td ><a href="product.php?id={$data.id}">Exit</a></td></tr>
