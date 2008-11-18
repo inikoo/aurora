@@ -12,7 +12,7 @@ var submit_order_save=function(o){
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    
 	    success:function(o) {
-
+		alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if (r.state == 200) {
 		}
@@ -23,11 +23,11 @@ var receive_order_save=function(o){
     var date=Dom.get('v_calpop3').value;
     var time=Dom.get('v_time3').value;
 
-    var request='ar_assets.php?tipo=order_receive&tipo_order=po&date='+escape(date)+'&time='+escape(time)+'&order_id='+escape(po_id);
+    var request='ar_assets.php?tipo=order_received&tipo_order=po&date='+escape(date)+'&time='+escape(time)+'&order_id='+escape(po_id);
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    
 	    success:function(o) {
-		alert(o.responseText)
+		//	alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if (r.state == 200) {
 		}
@@ -38,11 +38,11 @@ var check_order_save=function(o){
     var date=Dom.get('v_calpop4').value;
     var time=Dom.get('v_time4').value;
 
-    var request='ar_assets.php?tipo=order_check&tipo_order=po&date='+escape(date)+'&time='+escape(time)+'&order_id='+escape(po_id);
+    var request='ar_assets.php?tipo=order_checked&tipo_order=po&date='+escape(date)+'&time='+escape(time)+'&order_id='+escape(po_id);
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    
 	    success:function(o) {
-
+		//alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if (r.state == 200) {
 		}
@@ -53,11 +53,12 @@ var consolidate_order_save=function(o){
     var date=Dom.get('v_calpop5').value;
     var time=Dom.get('v_time5').value;
 
-    var request='ar_assets.php?tipo=order_consolidate&tipo_order=po&date='+escape(date)+'&time='+escape(time)+'&order_id='+escape(po_id);
+    var request='ar_assets.php?tipo=order_consolidated&tipo_order=po&date='+escape(date)+'&time='+escape(time)+'&order_id='+escape(po_id);
+
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    
 	    success:function(o) {
-
+		alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if (r.state == 200) {
 		}

@@ -251,5 +251,20 @@ $smarty->assign('date',date("d-m-Y"));
 $smarty->assign('time',date("H:i"));
 
 
+//create user list
+$sql=sprintf("select id,alias,position_id from staff where active=1 order by alias ");
+
+$res = $db->query($sql);
+$i=0;
+$num_cols=5;
+$staff=array();
+while($row=$res->fetchrow()){
+  $staff[]=array('mod'=>fmod($i,$num_cols),'alias'=>$row['alias'],'id'=>$row['id'],'position_id'=>$row['position_id']);
+  $i++;
+ }
+$smarty->assign('staff',$staff);
+$smarty->assign('staff_cols',$num_cols-1);
+
+
 $smarty->display('porder.tpl');
 ?>

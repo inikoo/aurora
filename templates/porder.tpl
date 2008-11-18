@@ -11,7 +11,7 @@
 
 <div >
 
-<div style="padding:0px;float:right;width:250px;margin:0px 20px;text-align:right;xborder: 1px solid black">
+<div style="padding:0px;float:right;width:350px;margin:0px 20px;text-align:right;xborder: 1px solid black">
   <table class="submit_order"  border=0>
     <tr><td>{$po.dates.created}</td><td style="text-align:right">{t}Created{/t}</td></tr>
     {if $po.date_submited!=''}
@@ -34,8 +34,8 @@
     <tr><td></td><td id="set_extimated_po" class="but">{t}Set ET{/t}</td></tr>
     {/if}
 
-    {if $po.received!=''}
-    <tr><td>{$po_dates.received}</td><td>{t}Received{/t}</td></tr>
+    {if $po.date_received!=''}
+    <tr><td>{$po.dates.received}</td><td style="text-align:right">{t}Received{/t}</td></tr>
     {else}
     <tr><td></td><td id="receive_po" class="but" onClick="receive_order(this)"  >{t}Receive{/t}</td></tr>
     {/if}
@@ -48,9 +48,9 @@
 	</table>
     </td></tr>
      {if $po.date_checked!=''}
-    <tr><td>{$po_dates.itemschecked}</td><td>{t}Items Checked{/t}</td></tr>
+    <tr><td>{$po.dates.checked}</td><td  style="text-align:right" >{t}Checked{/t}</td></tr>
     {else}
-    <tr {if !$po.date_received}style="display:none"{/if}  ><td></td><td id="receive_po" class="but">{t}Check{/t}</td></tr>
+    <tr {if !$po.date_received}style="display:none"{/if}  ><td></td><td id="receive_po" class="but"   onClick="check_order(this)"   >{t}Check{/t}</td></tr>
     {/if}
      <tr id="check_dialog" style="display:none;text-align:right"><td colspan=2>
 	<table border=1 style="float:right">
@@ -64,20 +64,20 @@
   {if $po.consolidate!=''  }
     <tr ><td>{$po_dates.consolidates}</td><td>{t}Consolidated{/t}</td></tr>
     {else}
-    <tr {if !$po.date_checked}style="display:none"{/if} ><td></td><td id="receive_po" class="but">{t}Consolidate{/t}</td></tr>
+    <tr {if !$po.date_checked}style="display:none"{/if} ><td></td><td id="receive_po" class="but" onClick="consolidate_order(this)"   >{t}Consolidate{/t}</td></tr>
     {/if}
      <tr id="consolidate_dialog" style="display:none;text-align:right"><td colspan=2>
 	<table border=1 style="float:right">
 	  <tr><td>{t}Consolidated by{/t}:</td><td><span style="c">{t}Choose name{/t}</td></tr>
 	  <tr><td colspan=2 style="text-align:right">{t}at{/t}: <input id="v_calpop5" style="text-align:right;"  class="text" name="submites_date" type="text"  size="10" maxlength="10"  value="{$date}"    /><img   id="calpop5" style="cursor:pointer" src="art/icons/calendar_view_month.png" align="top" alt=""   /> <input id="v_time5"   style="text-align:right;" class="text" name="expected_date" type="text"  size="5" maxlength="5"  value="{$time}"   /><img   id="calpop1" style="cursor:pointer" src="art/icons/time.png" align="top" alt=""   />  <div id="cal5Container" style="position:absolute;display:none; z-index:2"></div>	</td></tr>
 
-	    <tr><td colspan=2 class="aright"><span style="cursor:pointer;margin-right:2px"  onClick="submit_order_save(this)"  >Save <img   src="art/icons/disk.png" align="top" alt=""   /></span></td></tr>
+	    <tr><td colspan=2 class="aright"><span style="cursor:pointer;margin-right:2px"  onClick="consolidate_order_save(this)"  >Save <img   src="art/icons/disk.png" align="top" alt=""   /></span></td></tr>
 	</table>
     </td></tr>
     {if $po.cancelled!=''}
     <tr><td>{$po_dates.cancelled}</td><td>{t}Cancelled{/t}</td></tr>
     {else}
-    <tr><td></td><td id="cancel_po" class="but">{t}Cancel{/t}</td></tr>
+    <tr {if $po.status_id>=80}style="display:none"{/if}  ><td></td><td id="cancel_po" class="but" onClick="cancel_order(this)"   >{t}Cancel{/t}</td></tr>
     {/if}
       <tr id="CANCEL_dialog" style="display:none;text-align:right"><td colspan=2>
 	<table border=1 style="float:right">
@@ -93,7 +93,7 @@
 </div>
 
 
-<div class="prodinfo" style="margin-left:20px;width:650px;margin-top:25px;border:1px solid black;font-size:85%">
+<div class="prodinfo" style="margin-left:20px;width:550px;margin-top:25px;border:1px solid black;font-size:85%">
  <table  border=1 style="float:right">
     <tr><td>{t}Goods{/t}:</td><td id="goods" class="aright">{$po.money.goods}</td></tr>
     <tr><td>{t}Shipping{/t}:</td><td class="aright" id="shipping"  >{$po.money.shipping}</td>
@@ -223,6 +223,18 @@
     </ul>
   </div>
 </div>
+
+
+<div>
+<table border=1>
+{foreach from=$staff item=_staff name=foo}
+{if $_staff.mod==0}<tr>{/if}
+<td>{$_staff.alias}</td>
+{if $_staff.mod==4}</tr>{/if}
+{/foreach}
+</table>
+</div>
+
 
 {include file='footer.tpl'}
 

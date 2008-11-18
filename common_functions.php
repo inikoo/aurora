@@ -33,7 +33,7 @@ function prepare_mysql_datetime($datetime,$tipo='datetime'){
      if(preg_match('/^[0123]\d[\-\/][01]\d[\-\/]\d{4}\s[012]\d:[0123456]\d$/',$datetime))
        $datetime=$datetime.':00';
     if(!preg_match('/^[0123]\d[\-\/][01]\d[\-\/]\d{4}\s[012]\d:[0123456]\d:[0123456]\d$/',$datetime))
-      return array('mysql_date'=>'','status'=>'error');
+      return array('mysql_date'=>'','status'=>_('error, date time not reconozied')." $datetime",'ok'=>false);
     $ts=date('U',strtotime($datetime));
     list($date,$time)=split(' ',$datetime);
   }else{
@@ -44,7 +44,7 @@ function prepare_mysql_datetime($datetime,$tipo='datetime'){
   }
 
   
-  $ts=date('U',strtotime());
+
   
   $date=str_replace('/','-',$date);
   $date=split('-',$date);
@@ -72,11 +72,15 @@ function date_base($from,$to,$step='m',$tipo='complete_both'){
 
   $tmp=prepare_mysql_datetime($from,'date');
   $mysql_date1=$tmp['mysql_date'];
-  $error1=$tmp['ok'];
+  $ok1=$tmp['ok'];
+  if($tmp['status']=='empty')
+    $ok1=true;
   $tmp=prepare_mysql_datetime($to,'date');
   $mysql_date2=$tmp['mysql_date'];
-  $error2=$tmp['ok'];
-  
+  $ok2=$tmp['ok'];
+  if($tmp['status']=='empty')
+    $ok2=true;
+  if( !$ok1  or !$ok2)
     return array();
   list($date1['y'],$date1['m'],$date1['d'])=split('-',$mysql_date1);
   list($date2['y'],$date2['m'],$date2['d'])=split('-',$mysql_date2);
@@ -130,10 +134,18 @@ function prepare_mysql_dates($date1='',$date2='',$date_field='date',$options='')
     $d_option='';
     $date_only=false;
   }
-  list($mysql_date1,$error1)=prepare_mysql_datetime($date1,$d_option);
-  list($mysql_date2,$error2)=prepare_mysql_datetime($date2,$d_option);
+  $tmp=prepare_mysql_datetime($date1,$d_option);
+  $mysql_date1=$tmp['mysql_date'];
+  $ok1=$tmp['ok'];
+  if($tmp['status']=='empty')
+    $ok1=true;
 
-  if($error1 or $error2)
+  $tmp=prepare_mysql_datetime($date2,$d_option);
+  $mysql_date2=$tmp['mysql_date'];
+  $ok2=$tmp['ok'];
+  if($tmp['status']=='empty')
+    $ok2=true;
+  if(!$ok1 or !$ok2)
     $error=1;
   else
     $error=0;

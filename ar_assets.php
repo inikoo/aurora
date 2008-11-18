@@ -24,10 +24,10 @@ if(!isset($_REQUEST['tipo']))
 
 $tipo=$_REQUEST['tipo'];
 switch($tipo){
- case('order_receive'):
- case('order_check'): 
- case('order_cancel'):
- case('order_consolidate'):
+ case('order_received'):
+ case('order_checked'): 
+ case('order_cancelled'):
+ case('order_consolidated'):
    $data=array(
 	       'user_id'=>$LU->getProperty('auth_user_id'),
 	       'done_by'=>(!isset($_REQUEST['done_by'])?$LU->getProperty('auth_user_id'):$_REQUEST['done_by']),
@@ -41,7 +41,7 @@ switch($tipo){
      exit;
    }
    
-   $res=$order->set(preg_replace('/^order\_/','',$tipo)."_date",$data);
+   $res=$order->set(preg_replace('/^order\_/','date_',$tipo),$data);
 
    if($res['ok']){
      $response= array('state'=>200,'data'=>$order->data);

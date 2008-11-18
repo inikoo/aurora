@@ -1017,296 +1017,296 @@ if(isset( $_REQUEST['where']))
    break; 
 
 
- case('update_po'):
-   $key=$_REQUEST['key'];
-   switch($key){
-   case('shipping'):
-     $po_id=$_REQUEST['po_id'];
-     $qty=$_REQUEST['qty'];
-     $sql=sprintf("select *  from porden  where id='%d' ",$po_id);
-     $res = $db->query($sql); 
-     if($row=$res->fetchRow()) {
-       $total=$qty+$row['goods']+$row['vat']+$row['charges'];
-       $sql=sprintf("update porden set shipping='%s', total='%s' where id=%d",$qty,$total,$po_id);
-       $db->exec($sql);
-       $total_int=number($total,0);
-       $total_decimal=money_cents($total);
-       $response=array('state'=>200,'total_int'=>$total_int,'total_decimal'=>$total_decimal,'total'=>money($total),'value'=>money($qty));
-        echo json_encode($response);
-     }
-     break;
-     case('vat'):
-     $po_id=$_REQUEST['po_id'];
-     $qty=$_REQUEST['qty'];
-     $sql=sprintf("select *  from porden  where id='%d' ",$po_id);
-     $res = $db->query($sql); 
-     if($row=$res->fetchRow()) {
-       $total=$qty+$row['goods']+$row['shipping']+$row['charges'];
-       $sql=sprintf("update porden set vat='%s', total='%s' where id=%d",$qty,$total,$po_id);
-       $db->exec($sql);
-       $total_int=number($total,0);
-       $total_decimal=money_cents($total);
-       $response=array('state'=>200,'total_int'=>$total_int,'total_decimal'=>$total_decimal,'total'=>money($total),'value'=>money($qty));
-        echo json_encode($response);
-     }
-     break;
-   case('other'):
-     $po_id=$_REQUEST['po_id'];
-     $qty=$_REQUEST['qty'];
-     $sql=sprintf("select *  from porden  where id='%d' ",$po_id);
-     $res = $db->query($sql); 
-     if($row=$res->fetchRow()) {
-       $total=$qty+$row['goods']+$row['shipping']+$row['vat'];
-       $sql=sprintf("update porden set charges='%s', total='%s' where id=%d",$qty,$total,$po_id);
-       $db->exec($sql);
-       $total_int=number($total,0);
-       $total_decimal=money_cents($total);
-       $response=array('state'=>200,'total_int'=>$total_int,'total_decimal'=>$total_decimal,'total'=>money($total),'value'=>money($qty));
-       echo json_encode($response);
-   }
-     break;
- case('invoice_number'):
-     $po_id=$_REQUEST['po_id'];
-     $qty=$_REQUEST['qty'];
-     $sql=sprintf("select *  from porden  where id='%d' ",$po_id);
-     $res = $db->query($sql); 
-     if($row=$res->fetchRow()) {
+//  case('update_po'):
+//    $key=$_REQUEST['key'];
+//    switch($key){
+//    case('shipping'):
+//      $po_id=$_REQUEST['po_id'];
+//      $qty=$_REQUEST['qty'];
+//      $sql=sprintf("select *  from porden  where id='%d' ",$po_id);
+//      $res = $db->query($sql); 
+//      if($row=$res->fetchRow()) {
+//        $total=$qty+$row['goods']+$row['vat']+$row['charges'];
+//        $sql=sprintf("update porden set shipping='%s', total='%s' where id=%d",$qty,$total,$po_id);
+//        $db->exec($sql);
+//        $total_int=number($total,0);
+//        $total_decimal=money_cents($total);
+//        $response=array('state'=>200,'total_int'=>$total_int,'total_decimal'=>$total_decimal,'total'=>money($total),'value'=>money($qty));
+//         echo json_encode($response);
+//      }
+//      break;
+//      case('vat'):
+//      $po_id=$_REQUEST['po_id'];
+//      $qty=$_REQUEST['qty'];
+//      $sql=sprintf("select *  from porden  where id='%d' ",$po_id);
+//      $res = $db->query($sql); 
+//      if($row=$res->fetchRow()) {
+//        $total=$qty+$row['goods']+$row['shipping']+$row['charges'];
+//        $sql=sprintf("update porden set vat='%s', total='%s' where id=%d",$qty,$total,$po_id);
+//        $db->exec($sql);
+//        $total_int=number($total,0);
+//        $total_decimal=money_cents($total);
+//        $response=array('state'=>200,'total_int'=>$total_int,'total_decimal'=>$total_decimal,'total'=>money($total),'value'=>money($qty));
+//         echo json_encode($response);
+//      }
+//      break;
+//    case('other'):
+//      $po_id=$_REQUEST['po_id'];
+//      $qty=$_REQUEST['qty'];
+//      $sql=sprintf("select *  from porden  where id='%d' ",$po_id);
+//      $res = $db->query($sql); 
+//      if($row=$res->fetchRow()) {
+//        $total=$qty+$row['goods']+$row['shipping']+$row['vat'];
+//        $sql=sprintf("update porden set charges='%s', total='%s' where id=%d",$qty,$total,$po_id);
+//        $db->exec($sql);
+//        $total_int=number($total,0);
+//        $total_decimal=money_cents($total);
+//        $response=array('state'=>200,'total_int'=>$total_int,'total_decimal'=>$total_decimal,'total'=>money($total),'value'=>money($qty));
+//        echo json_encode($response);
+//    }
+//      break;
+//  case('invoice_number'):
+//      $po_id=$_REQUEST['po_id'];
+//      $qty=$_REQUEST['qty'];
+//      $sql=sprintf("select *  from porden  where id='%d' ",$po_id);
+//      $res = $db->query($sql); 
+//      if($row=$res->fetchRow()) {
 
-       $sql=sprintf("update porden set public_id='%s' where id=%d",addslashes($qty),$po_id);
-       $db->exec($sql);
-       $response=array('state'=>200);
-       echo json_encode($response);
-   }
-     break;
- case('checked_by'):
-     $po_id=$_REQUEST['po_id'];
-     $qty=$_REQUEST['qty'];
-     if(!is_numeric($qty)){$response=array('state'=>400);echo json_encode($response);break;}
-     $sql=sprintf("select *  from porden  where id='%d' ",$po_id);
-     $res = $db->query($sql); 
-     if($row=$res->fetchRow()) {
+//        $sql=sprintf("update porden set public_id='%s' where id=%d",addslashes($qty),$po_id);
+//        $db->exec($sql);
+//        $response=array('state'=>200);
+//        echo json_encode($response);
+//    }
+//      break;
+//  case('checked_by'):
+//      $po_id=$_REQUEST['po_id'];
+//      $qty=$_REQUEST['qty'];
+//      if(!is_numeric($qty)){$response=array('state'=>400);echo json_encode($response);break;}
+//      $sql=sprintf("select *  from porden  where id='%d' ",$po_id);
+//      $res = $db->query($sql); 
+//      if($row=$res->fetchRow()) {
 
-       if($qty>0){
-	 $sql=sprintf("select alias  from staff  where id='%d' ",$qty);
-	 $res2 = $db->query($sql); 
-	 if($row2=$res2->fetchRow())
-	   $alias=$row2['alias'];
-       }else if($qty==0)
-	 $alias=_('Nobody');
-       else
-	 $alias='NULL';
+//        if($qty>0){
+// 	 $sql=sprintf("select alias  from staff  where id='%d' ",$qty);
+// 	 $res2 = $db->query($sql); 
+// 	 if($row2=$res2->fetchRow())
+// 	   $alias=$row2['alias'];
+//        }else if($qty==0)
+// 	 $alias=_('Nobody');
+//        else
+// 	 $alias='NULL';
 	   
-       $sql=sprintf("update porden set checked_by=%s where id=%d",$qty,$po_id);
-       $db->exec($sql);
-       $response=array('state'=>200,'alias'=>$row2['alias']);
-       echo json_encode($response);
-   }
-     break;
- case('received_by'):
-     $po_id=$_REQUEST['po_id'];
-     $qty=$_REQUEST['qty'];
-     if(!is_numeric($qty)){$response=array('state'=>400);echo json_encode($response);break;}
-     $sql=sprintf("select *  from porden  where id='%d' ",$po_id);
-     $res = $db->query($sql); 
-     if($row=$res->fetchRow()) {
+//        $sql=sprintf("update porden set checked_by=%s where id=%d",$qty,$po_id);
+//        $db->exec($sql);
+//        $response=array('state'=>200,'alias'=>$row2['alias']);
+//        echo json_encode($response);
+//    }
+//      break;
+//  case('received_by'):
+//      $po_id=$_REQUEST['po_id'];
+//      $qty=$_REQUEST['qty'];
+//      if(!is_numeric($qty)){$response=array('state'=>400);echo json_encode($response);break;}
+//      $sql=sprintf("select *  from porden  where id='%d' ",$po_id);
+//      $res = $db->query($sql); 
+//      if($row=$res->fetchRow()) {
 
-       if($qty>0){
-	 $sql=sprintf("select alias  from staff  where id='%d' ",$qty);
-	 $res2 = $db->query($sql); 
-	 if($row2=$res2->fetchRow())
-	   $alias=$row2['alias'];
-       }else if($qty==0)
-	 $alias=_('Nobody');
-       else
-	 $alias='NULL';
+//        if($qty>0){
+// 	 $sql=sprintf("select alias  from staff  where id='%d' ",$qty);
+// 	 $res2 = $db->query($sql); 
+// 	 if($row2=$res2->fetchRow())
+// 	   $alias=$row2['alias'];
+//        }else if($qty==0)
+// 	 $alias=_('Nobody');
+//        else
+// 	 $alias='NULL';
 	   
-       $sql=sprintf("update porden set received_by=%s where id=%d",$qty,$po_id);
-       $db->exec($sql);
-       $response=array('state'=>200,'alias'=>$row2['alias']);
-       echo json_encode($response);
-   }
-     break;
+//        $sql=sprintf("update porden set received_by=%s where id=%d",$qty,$po_id);
+//        $db->exec($sql);
+//        $response=array('state'=>200,'alias'=>$row2['alias']);
+//        echo json_encode($response);
+//    }
+//      break;
 
- case('invoice_date'):
-     $po_id=$_REQUEST['po_id'];
-     $qty=$_REQUEST['qty'];
-     $sql=sprintf("select *  from porden  where id='%d' ",$po_id);
-     $res = $db->query($sql); 
-     if($row=$res->fetchRow()) {
-       list($date,$error)=prepare_mysql_date($qty);
-       if($error){$response=array('state'=>400,'resp'=>_('Wrong date format, must be dd-mm-yyyy'));echo json_encode($response);break;}
+//  case('invoice_date'):
+//      $po_id=$_REQUEST['po_id'];
+//      $qty=$_REQUEST['qty'];
+//      $sql=sprintf("select *  from porden  where id='%d' ",$po_id);
+//      $res = $db->query($sql); 
+//      if($row=$res->fetchRow()) {
+//        list($date,$error)=prepare_mysql_date($qty);
+//        if($error){$response=array('state'=>400,'resp'=>_('Wrong date format, must be dd-mm-yyyy'));echo json_encode($response);break;}
        
-       $sql=sprintf("update porden set date_invoice='%s' where id=%d",$date,$po_id);
-       $db->exec($sql);
-       $response=array('state'=>$sql);
-       echo json_encode($response);
-   }
-     break;
- case('time_received'):
-     $po_id=$_REQUEST['po_id'];
-     $qty=$_REQUEST['qty'];
-     $sql=sprintf("select *  from porden  where id='%d' ",$po_id);
-     $res = $db->query($sql); 
-     if($row=$res->fetchRow()) {
-       list($date,$error)=prepare_mysql_datetime($qty);
-       if($error){$response=array('state'=>400,'resp'=>_('Wrong date format, must be dd-mm-yyyy'));echo json_encode($response);break;}
+//        $sql=sprintf("update porden set date_invoice='%s' where id=%d",$date,$po_id);
+//        $db->exec($sql);
+//        $response=array('state'=>$sql);
+//        echo json_encode($response);
+//    }
+//      break;
+//  case('time_received'):
+//      $po_id=$_REQUEST['po_id'];
+//      $qty=$_REQUEST['qty'];
+//      $sql=sprintf("select *  from porden  where id='%d' ",$po_id);
+//      $res = $db->query($sql); 
+//      if($row=$res->fetchRow()) {
+//        list($date,$error)=prepare_mysql_datetime($qty);
+//        if($error){$response=array('state'=>400,'resp'=>_('Wrong date format, must be dd-mm-yyyy'));echo json_encode($response);break;}
        
-       $sql=sprintf("update porden set date_received='%s' where id=%d",$date,$po_id);
-       $db->exec($sql);
-       $response=array('state'=>200);
-       echo json_encode($response);
-   }
-     break;
-   }
-   $response=array('state'=>400);
-   break;
- case('update_poitem'):
+//        $sql=sprintf("update porden set date_received='%s' where id=%d",$date,$po_id);
+//        $db->exec($sql);
+//        $response=array('state'=>200);
+//        echo json_encode($response);
+//    }
+//      break;
+//    }
+//    $response=array('state'=>400);
+//    break;
+//  case('update_poitem'):
 
-   $key=$_REQUEST['key'];
-   switch($key){
-   case('ordered'):
-     $qty=$_REQUEST['qty'];
-     $units_tipo=$_REQUEST['units_tipo'];
+//    $key=$_REQUEST['key'];
+//    switch($key){
+//    case('ordered'):
+//      $qty=$_REQUEST['qty'];
+//      $units_tipo=$_REQUEST['units_tipo'];
 
-     $po_id=$_SESSION['tables']['po_item'][4][0];
-     $p2s_id=$_REQUEST['p2s_id'];
+//      $po_id=$_SESSION['tables']['po_item'][4][0];
+//      $p2s_id=$_REQUEST['p2s_id'];
 
-     $sql=sprintf("select price from product2supplier  where id='%d' ",$p2s_id);
-     $res = $db->query($sql); 
-     if($row=$res->fetchRow()) {
-       $price=$row['price'];
+//      $sql=sprintf("select price from product2supplier  where id='%d' ",$p2s_id);
+//      $res = $db->query($sql); 
+//      if($row=$res->fetchRow()) {
+//        $price=$row['price'];
        
-     }
+//      }
      
      
      
-     $expected_price=$price;
+//      $expected_price=$price;
      
-     $sql=sprintf("select id from porden_item  where porden_id='%d' and  p2s_id='%d' ",$po_id,$p2s_id);
-     $res = $db->query($sql); 
-     if($row=$res->fetchRow()) {
-       if($qty==0)
-	 $sql=sprintf("delete from porden_item where id=%d",$row['id']);
-       else
-	 $sql=sprintf("update porden_item set expected_qty='%s'   where id=%d",$qty,$row['id']);
-       $db->exec($sql);
+//      $sql=sprintf("select id from porden_item  where porden_id='%d' and  p2s_id='%d' ",$po_id,$p2s_id);
+//      $res = $db->query($sql); 
+//      if($row=$res->fetchRow()) {
+//        if($qty==0)
+// 	 $sql=sprintf("delete from porden_item where id=%d",$row['id']);
+//        else
+// 	 $sql=sprintf("update porden_item set expected_qty='%s'   where id=%d",$qty,$row['id']);
+//        $db->exec($sql);
        
-     }else{
-       $sql=sprintf("insert into porden_item (porden_id,p2s_id,expected_qty,units_tipo,expected_price) value (%d,%d,'%s',%d,'%s')",$po_id,$p2s_id,$qty,$units_tipo,$expected_price);
-       $db->exec($sql);
-     }
+//      }else{
+//        $sql=sprintf("insert into porden_item (porden_id,p2s_id,expected_qty,units_tipo,expected_price) value (%d,%d,'%s',%d,'%s')",$po_id,$p2s_id,$qty,$units_tipo,$expected_price);
+//        $db->exec($sql);
+//      }
 
-     $expected_price=$expected_price*$qty;
+//      $expected_price=$expected_price*$qty;
 
-     $total_expected_price=0;
-     $items=0;
-     $sql=sprintf("select sum(expected_qty*expected_price) as ep ,count(*) as items from porden_item where  porden_id='%d'  ",$po_id);
-     $res = $db->query($sql); 
-      if($row=$res->fetchRow()) {
-	$total_expected_price=$row['ep'];
-	$items=$row['items'];
-	$sql=sprintf("update porden set total='%s',goods='%s' ,items=%d  where id=%d",$row['ep'],$row['ep'],$items,$po_id);
-       $db->exec($sql);
-      }
+//      $total_expected_price=0;
+//      $items=0;
+//      $sql=sprintf("select sum(expected_qty*expected_price) as ep ,count(*) as items from porden_item where  porden_id='%d'  ",$po_id);
+//      $res = $db->query($sql); 
+//       if($row=$res->fetchRow()) {
+// 	$total_expected_price=$row['ep'];
+// 	$items=$row['items'];
+// 	$sql=sprintf("update porden set total='%s',goods='%s' ,items=%d  where id=%d",$row['ep'],$row['ep'],$items,$po_id);
+//        $db->exec($sql);
+//       }
 
 
-      $response=array('state'=>200,'eprice'=>money($expected_price),'gprice'=>money($total_expected_price),'tprice'=>money($total_expected_price),'items'=>$items);
-     echo json_encode($response);
-     break;
-   case('received'):
-     $qty=$_REQUEST['qty'];
-     $units_tipo=$_REQUEST['units_tipo'];
-     $po_id=$_SESSION['tables']['po_item'][4][0];
-     $p2s_id=$_REQUEST['p2s_id'];
+//       $response=array('state'=>200,'eprice'=>money($expected_price),'gprice'=>money($total_expected_price),'tprice'=>money($total_expected_price),'items'=>$items);
+//      echo json_encode($response);
+//      break;
+//    case('received'):
+//      $qty=$_REQUEST['qty'];
+//      $units_tipo=$_REQUEST['units_tipo'];
+//      $po_id=$_SESSION['tables']['po_item'][4][0];
+//      $p2s_id=$_REQUEST['p2s_id'];
 
-     $sql=sprintf("select price from product2supplier  where id='%d' ",$p2s_id);
-     $res = $db->query($sql); 
-     if($row=$res->fetchRow()) {
-       $price=$row['price'];
+//      $sql=sprintf("select price from product2supplier  where id='%d' ",$p2s_id);
+//      $res = $db->query($sql); 
+//      if($row=$res->fetchRow()) {
+//        $price=$row['price'];
        
-     }
+//      }
 
 
-     $sql=sprintf("select id from porden_item  where porden_id='%d' and  p2s_id='%d' ",$po_id,$p2s_id);
-     $res = $db->query($sql); 
-     if($row=$res->fetchRow()) {
+//      $sql=sprintf("select id from porden_item  where porden_id='%d' and  p2s_id='%d' ",$po_id,$p2s_id);
+//      $res = $db->query($sql); 
+//      if($row=$res->fetchRow()) {
        
 
-       $sql=sprintf("update porden_item set qty='%s'  where id=%d",$qty,$row['id']);
-       $db->exec($sql);
-     }else{
+//        $sql=sprintf("update porden_item set qty='%s'  where id=%d",$qty,$row['id']);
+//        $db->exec($sql);
+//      }else{
        
-       $sql=sprintf("insert into porden_item (porden_id,p2s_id,expected_qty,qty,units_tipo,expected_price,price) value (%d,%d,0,'%s',%d,'%s','%s')",$po_id,$p2s_id,$qty,$units_tipo,$price,$price);
-       $db->exec($sql);
+//        $sql=sprintf("insert into porden_item (porden_id,p2s_id,expected_qty,qty,units_tipo,expected_price,price) value (%d,%d,0,'%s',%d,'%s','%s')",$po_id,$p2s_id,$qty,$units_tipo,$price,$price);
+//        $db->exec($sql);
 
 
-     }
+//      }
 
-     $total_expected_price=0;
-     $items=0;
-     $sql=sprintf("select sum(qty*price) as ep ,count(*) as items from porden_item where  porden_id='%d'  ",$po_id);
-     $res = $db->query($sql); 
-     if($row=$res->fetchRow()) {
-       $total_expected_price=$row['ep'];
-       $items=$row['items'];
-       $sql=sprintf("update porden set total='%s',goods='%s' ,items=%d  where id=%d",$row['ep'],$row['ep'],$items,$po_id);
-       $db->exec($sql);
-     }
-
-
+//      $total_expected_price=0;
+//      $items=0;
+//      $sql=sprintf("select sum(qty*price) as ep ,count(*) as items from porden_item where  porden_id='%d'  ",$po_id);
+//      $res = $db->query($sql); 
+//      if($row=$res->fetchRow()) {
+//        $total_expected_price=$row['ep'];
+//        $items=$row['items'];
+//        $sql=sprintf("update porden set total='%s',goods='%s' ,items=%d  where id=%d",$row['ep'],$row['ep'],$items,$po_id);
+//        $db->exec($sql);
+//      }
 
 
-       $tprice=$qty*$price;
 
 
-       $response=array('state'=>200,'eprice'=>money($tprice),'gprice'=>money($total_expected_price),'tprice'=>money($total_expected_price),'items'=>$items,'v_goods'=>$total_expected_price);
-     echo json_encode($response);
-     break;
-   case('damage'):
-     $qty=$_REQUEST['qty'];
-     $units_tipo=$_REQUEST['units_tipo'];
-     $po_id=$_SESSION['tables']['po_item'][4][0];
-     $p2s_id=$_REQUEST['p2s_id'];
-     $sql=sprintf("select id,qty,expected_qty from porden_item  where porden_id='%d' and  p2s_id='%d' ",$po_id,$p2s_id);
-     $res = $db->query($sql); 
-     if($row=$res->fetchRow()) {
+//        $tprice=$qty*$price;
+
+
+//        $response=array('state'=>200,'eprice'=>money($tprice),'gprice'=>money($total_expected_price),'tprice'=>money($total_expected_price),'items'=>$items,'v_goods'=>$total_expected_price);
+//      echo json_encode($response);
+//      break;
+//    case('damage'):
+//      $qty=$_REQUEST['qty'];
+//      $units_tipo=$_REQUEST['units_tipo'];
+//      $po_id=$_SESSION['tables']['po_item'][4][0];
+//      $p2s_id=$_REQUEST['p2s_id'];
+//      $sql=sprintf("select id,qty,expected_qty from porden_item  where porden_id='%d' and  p2s_id='%d' ",$po_id,$p2s_id);
+//      $res = $db->query($sql); 
+//      if($row=$res->fetchRow()) {
        
-       if($row['qty']=='')
-	 $qty=$row['expected_qty'];
+//        if($row['qty']=='')
+// 	 $qty=$row['expected_qty'];
 	       
-       if($qty<=$row['qty']){
-	 $sql=sprintf("update porden_item set damage='%s'  where id=%d",$qty,$row['id']);
-	 $db->exec($sql);
-       }else{
-	 $response=array('state'=>400,'qty'=>0);echo json_encode($response);break;
-       }
-     }
-     $response=array('state'=>200,'qty'=>$qty);
-     echo json_encode($response);
-     break;
-   case('eprice'):
-     $qty=$_REQUEST['qty'];
-     $units_tipo=$_REQUEST['units_tipo'];
-     $po_id=$_SESSION['tables']['po_item'][4][0];
-     $p2s_id=$_REQUEST['p2s_id'];
-     $sql=sprintf("select id from porden_item  where porden_id='%d' and  p2s_id='%d' ",$po_id,$p2s_id);
-     $res = $db->query($sql); 
-     if($row=$res->fetchRow()) {
-       if($row['qty']>0)
-	 $qty=$qty/$row['qty'];
-       else
-	 $qty=0;
-       $sql=sprintf("update porden_item set price='%s'  where id=%d",$qty,$units_tipo,$expected_price,$row['id']);
-       $db->exec($sql);
-     }
-     $response=array('state'=>200);
-     echo json_encode($response);
-     break;
-   default:
-     $response=array('state'=>404,'resp'=>_('Suboperation not found'));
-     echo json_encode($response);
-   }
-   break;
+//        if($qty<=$row['qty']){
+// 	 $sql=sprintf("update porden_item set damage='%s'  where id=%d",$qty,$row['id']);
+// 	 $db->exec($sql);
+//        }else{
+// 	 $response=array('state'=>400,'qty'=>0);echo json_encode($response);break;
+//        }
+//      }
+//      $response=array('state'=>200,'qty'=>$qty);
+//      echo json_encode($response);
+//      break;
+//    case('eprice'):
+//      $qty=$_REQUEST['qty'];
+//      $units_tipo=$_REQUEST['units_tipo'];
+//      $po_id=$_SESSION['tables']['po_item'][4][0];
+//      $p2s_id=$_REQUEST['p2s_id'];
+//      $sql=sprintf("select id from porden_item  where porden_id='%d' and  p2s_id='%d' ",$po_id,$p2s_id);
+//      $res = $db->query($sql); 
+//      if($row=$res->fetchRow()) {
+//        if($row['qty']>0)
+// 	 $qty=$qty/$row['qty'];
+//        else
+// 	 $qty=0;
+//        $sql=sprintf("update porden_item set price='%s'  where id=%d",$qty,$units_tipo,$expected_price,$row['id']);
+//        $db->exec($sql);
+//      }
+//      $response=array('state'=>200);
+//      echo json_encode($response);
+//      break;
+//    default:
+//      $response=array('state'=>404,'resp'=>_('Suboperation not found'));
+//      echo json_encode($response);
+//    }
+//    break;
 
 
 
