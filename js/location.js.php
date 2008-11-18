@@ -363,6 +363,9 @@ var damaged_stock=function(){
     
 
 };
+
+
+
 var damaged_stock_save= function(){
     
     var jsonStr = YAHOO.lang.JSON.stringify(list);

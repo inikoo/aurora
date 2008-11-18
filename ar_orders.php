@@ -1,5 +1,7 @@
 <?
 require_once 'common.php';
+require_once 'classes/Order.php';
+
 //require_once 'ar_common.php';
 
 
@@ -19,6 +21,16 @@ if(!isset($_REQUEST['tipo']))
 
 $tipo=$_REQUEST['tipo'];
 switch($tipo){
+
+ case('create_po'):
+   $po=new Order('po',array('supplier_id'=>$_SESSION['state']['supplier']['id']));
+   if(is_numeric($po->id)){
+     $response= array('state'=>200,'id'=>$po->id);
+
+   }else
+     $response= array('state'=>400,'id'=>_("Error: Purchase order could 't be created"));
+     echo json_encode($response);  
+   break;
  case('plot_month_outofstock_money'):
  case('plot_month_outofstock'):
 
@@ -536,7 +548,7 @@ if(isset( $_REQUEST['where']))
       $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
       if($row=$res->fetchRow()) {
 	$total_records=$row['total'];
-	$filtered=$row['total']-$total;
+	$filtered=$total_records-$total;
       }
       
   }

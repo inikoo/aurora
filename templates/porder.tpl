@@ -14,11 +14,11 @@
 <div style="padding:0px;float:right;width:350px;margin:0px 20px;text-align:right;xborder: 1px solid black">
   <table class="submit_order"  border=0>
     <tr><td>{$po.dates.created}</td><td style="text-align:right">{t}Created{/t}</td></tr>
-    {if $po.date_submited!=''}
-    <tr><td>{$po.dates.submited}</td><td class="aright">{t}Submited{/t}</td></tr>
-    {else}
-    <tr><td></td><td id="submit_po" onClick="submit_order(this)" class="but">{t}Submit{/t}</td></tr>
-    {/if}
+
+    <tr id="submit_ready" {if $po.date_submited==''}style="display:none"{/if}  ><td id="submit_date">{$po.dates.submited}</td><td class="aright">{t}Submited{/t}</td></tr>
+    
+    <tr id="submit_noready" {if !$po.date_submited==''}style="display:none"{/if} ><td></td><td id="submit_po" onClick="submit_order(this)" class="but">{t}Submit{/t}</td></tr>
+   
     <tr id="submit_dialog" style="display:none"><td colspan=2>
 	<table >
 	  <tr><td>{t}Submited Date{/t}:</td><td><input id="v_calpop1" style="text-align:right;"  class="text" name="submites_date" type="text"  size="10" maxlength="10"  value="{$date}"    /><img   id="calpop1" style="cursor:pointer" src="art/icons/calendar_view_month.png" align="top" alt=""   />  <div id="cal1Container" style="position:absolute;display:none; z-index:2">	</td></tr>
@@ -27,21 +27,29 @@
 	    <tr><td colspan=2 class="aright"><span style="cursor:pointer;margin-right:16px"  onClick="submit_order_save(this)"  >Save <img   src="art/icons/disk.png" align="top" alt=""   /></span></td></tr>
 	</table>
     </td></tr>
-    {if $po.expected!=''}
-    <tr><td>{$po_dates.expected}</td><td>{t}Expected{/t}</td></tr>
-    {/if}
-    {if $po.expected=='' and $po.submited!=''}
-    <tr><td></td><td id="set_extimated_po" class="but">{t}Set ET{/t}</td></tr>
-    {/if}
+
+    <tr id="expected_ready" {if $po.date_expected=='' or $po.date_received!=''  }style="display:none"{/if}   ><td id="expected_date" >{$po.dates.expected}</td><td  style="text-align:right">{t}Expected{/t}</td></tr>
+   
+
+    <tr  id="expected_noready"     {if $po.date_submited=='' or $po.date_expected!='' or $po.status_id>=80}style="display:none"{/if}    ><td></td><td id="set_estimated_po" class="but" onClick="change_et_order(this)">{t}Set ET{/t}</td></tr>
+    <tr  id="expected_change"     {if $po.date_submited==''  or $po.date_expected=='' or $po.status_id>=80}style="display:none"{/if}    ><td></td><td id="change_edtimated_po" class="but" onClick="change_et_order(this)">{t}Change ET{/t}</td></tr>
+     <tr id="expected_dialog" style="display:none;text-align:right"><td colspan=2>
+	<table border=1 style="float:right">
+	  <tr><td>{t}Expected Date{/t}:</td><td><input id="v_calpop7" style="text-align:right;"  class="text" name="expected_date" type="text"  size="10" maxlength="10"     /><img   id="calpop7" style="cursor:pointer" src="art/icons/calendar_view_month.png" align="top" alt=""   /> <div id="cal7Container" style="display:none; z-index:2;position:absolute"></div>	</td></tr>
+	    <tr><td colspan=2 class="aright"><span style="cursor:pointer;margin-right:16px"  onClick="et_order_save(this)"  >Save <img   src="art/icons/disk.png" align="top" alt=""   /></span></td></tr>
+	</table>
+    </td></tr>
 
     {if $po.date_received!=''}
     <tr><td>{$po.dates.received}</td><td style="text-align:right">{t}Received{/t}</td></tr>
     {else}
     <tr><td></td><td id="receive_po" class="but" onClick="receive_order(this)"  >{t}Receive{/t}</td></tr>
     {/if}
+
      <tr id="receive_dialog" style="display:none;text-align:right"><td colspan=2>
-	<table border=1 style="float:right">
-	  <tr><td>{t}Received by{/t}:</td><td><span style="c">{t}Choose name{/t}</td></tr>
+	<table  style="float:right">
+	  <tr><td>{t}Received by{/t}:</td><td  style="text-align:right"><span id="choose_receiver" style="cursor:pointer;font-size:85%;color:#777">{t}Choose name{/t}</td></tr>
+	  <tr><td colspan=2 style="text-align:right" id="receivers_name"></td></tr>
 	  <tr><td colspan=2 style="text-align:right">{t}at{/t}: <input id="v_calpop3" style="text-align:right;"  class="text" name="submites_date" type="text"  size="10" maxlength="10"  value="{$date}"    /><img   id="calpop3" style="cursor:pointer" src="art/icons/calendar_view_month.png" align="top" alt=""   /> <input id="v_time3"   style="text-align:right;" class="text" name="expected_date" type="text"  size="5" maxlength="5"  value="{$time}"   /><img   id="timepop2" style="cursor:pointer" src="art/icons/time.png" align="top" alt=""   />  <div id="cal3Container" style="position:absolute;display:none; z-index:2"></div>	</td></tr>
 
 	    <tr><td colspan=2 class="aright"><span style="cursor:pointer;margin-right:2px"  onClick="receive_order_save(this)"  >Save <img   src="art/icons/disk.png" align="top" alt=""   /></span></td></tr>
@@ -54,7 +62,8 @@
     {/if}
      <tr id="check_dialog" style="display:none;text-align:right"><td colspan=2>
 	<table border=1 style="float:right">
-	  <tr><td>{t}Items Cheked by{/t}:</td><td><span style="c">{t}Choose name{/t}</td></tr>
+	  <tr><td>{t}Items Cheked by{/t}:</td><td><span id="choose_checker" style="cursor:pointer;font-size:85%;color:#777">{t}Choose name{/t}</td></tr>
+	   <tr><td colspan=2 style="text-align:right" id="checkers_name"></td></tr>
 	  <tr><td colspan=2 style="text-align:right">{t}at{/t}: <input id="v_calpop4" style="text-align:right;"  class="text" name="submites_date" type="text"  size="10" maxlength="10"  value="{$date}"    /><img   id="calpop4" style="cursor:pointer" src="art/icons/calendar_view_month.png" align="top" alt=""   /> <input id="v_time4"   style="text-align:right;" class="text" name="expected_date" type="text"  size="5" maxlength="5"  value="{$time}"   /><img   id="calpop1" style="cursor:pointer" src="art/icons/time.png" align="top" alt=""   />  <div id="cal4Container" style="position:absolute;display:none; z-index:2"></div>	</td></tr>
 
 	    <tr><td class="aleft"><span onClick="skip(this,'check')">{t}Skip{/t}</span></td><td class="aright"><span style="cursor:pointer;margin-right:2px"  onClick="check_order_save(this)"  >Save <img   src="art/icons/disk.png" align="top" alt=""   /></span></td></tr>
@@ -79,7 +88,7 @@
     {else}
     <tr {if $po.status_id>=80}style="display:none"{/if}  ><td></td><td id="cancel_po" class="but" onClick="cancel_order(this)"   >{t}Cancel{/t}</td></tr>
     {/if}
-      <tr id="CANCEL_dialog" style="display:none;text-align:right"><td colspan=2>
+      <tr id="cancel_dialog" style="display:none;text-align:right"><td colspan=2>
 	<table border=1 style="float:right">
 	  <tr><td>{t}Canceled by{/t}:</td><td><span style="c">{t}Choose name{/t}</td></tr>
 	  <tr><td colspan=2 style="text-align:right">{t}at{/t}: <input id="v_calpop6" style="text-align:right;"  class="text" name="submites_date" type="text"  size="10" maxlength="10"  value="{$date}"    /><img   id="calpop6" style="cursor:pointer" src="art/icons/calendar_view_month.png" align="top" alt=""   /> <input id="v_time6"   style="text-align:right;" class="text" name="expected_date" type="text"  size="5" maxlength="5"  value="{$time}"   /><img   id="calpop1" style="cursor:pointer" src="art/icons/time.png" align="top" alt=""   />  <div id="cal6Container" style="position:absolute;display:none; z-index:2"></div>	</td></tr>
@@ -88,7 +97,7 @@
 	</table>
     </td></tr>
 
-
+    <tr id="staff_list_row"><td></td></tr>
 </table>
 </div>
 
@@ -122,7 +131,7 @@
     
   </table>
 
-  <h1 style="padding:0px 0 10px 0;width:300px;border:1px solid red">{$title}</h1>
+  <h1 style="padding:0px 0 10px 0;width:300px;xborder:1px solid red" id="po_title">{$title}</h1>
   <table border=1 style="float:left">
     <tr><td>{t}Purchase Order Id{/t}:</td><td class="aright">{$po.id}</td></tr>
     <tr {if $dn_number==''}style="display:none"{/if} id="row_public_id" ><td>{t}Invoice Number{/t}:</td><td id="public_id" class="aright">{$dn_number}</td><td class="aright" id="edit_public_id" style="display:none" ><input style="text-align:right" class="text" size="7"  id="v_invoice_number"  name="invoice_number" value="{$dn_number}"  /></td></tr>
@@ -225,16 +234,17 @@
 </div>
 
 
-<div>
-<table border=1>
-{foreach from=$staff item=_staff name=foo}
-{if $_staff.mod==0}<tr>{/if}
-<td>{$_staff.alias}</td>
-{if $_staff.mod==4}</tr>{/if}
-{/foreach}
-</table>
+<div id="receiver_list" class="yuimenu staff_list"  >
+  <div class="bd">
+    <table border=1>
+      {foreach from=$staff item=_staff name=foo}
+      {if $_staff.mod==0}<tr>{/if}
+	<td staff_id="{$_staff.id}" id="receiver{$_staff.id}" onClick="select_staff(this,event,'receivers')" >{$_staff.alias}</td>
+	{if $_staff.mod==4}</tr>{/if}
+      {/foreach}
+    </table>
+  </div>
 </div>
-
 
 {include file='footer.tpl'}
 

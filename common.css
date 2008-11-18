@@ -432,3 +432,7 @@ table.edit_location tr.totals {border-bottom:none }
 
 table.submit_order{ float:right;text-align:right ;border-spacing:0px  3px;border-collapse: separate;}
 table.submit_order td.but{ background:#238546;color:#fff;cursor:pointer;padding:2px 3px;text-align:center }
+
+
+.staff_list td{ text-align:center;cursor:pointer  }
+.staff_list td.selected{ background:#7296e1;color:white   }

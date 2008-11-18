@@ -117,7 +117,9 @@ $res.="\$_order_tipo['9']=_('Refund');\n";
 $res.="\$_order_tipo['10']=_('Credit Note');\n";
 
 
-$res.="\$_order_status['0']=_('Created');\n";
+$res.="\$_order_status['0']=_('New');\n";
+$res.="\$_order_status['5']=_('To be submited');\n";
+
 $res.="\$_order_status['10']=_('Submited');\n";
 $res.="\$_order_status['20']=_('Received');\n";
 $res.="\$_order_status['30']=_('Processed');\n";

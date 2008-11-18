@@ -25,26 +25,34 @@ if(!isset($_REQUEST['tipo']))
 $tipo=$_REQUEST['tipo'];
 switch($tipo){
  case('order_received'):
+ case('order_expected'):
  case('order_checked'): 
  case('order_cancelled'):
  case('order_consolidated'):
    $data=array(
 	       'user_id'=>$LU->getProperty('auth_user_id'),
-	       'done_by'=>(!isset($_REQUEST['done_by'])?$LU->getProperty('auth_user_id'):$_REQUEST['done_by']),
+	       'done_by'=>(!isset($_REQUEST['done_by'])?$LU->getProperty('auth_user_id'):json_decode(preg_replace('/\\\"/','"',$_REQUEST['done_by']),true)),
 	       'date'=>$_REQUEST['date'],
 	       'time'=>$_REQUEST['time']
 	       );
+
+
+
    $order=new order($_REQUEST['tipo_order'],$_REQUEST['order_id']);
    if(!$order->id){
      $response= array('state'=>400,'msg'=>_('Error: Order not found'));
      echo json_encode($response);  
      exit;
    }
-   
-   $res=$order->set(preg_replace('/^order\_/','date_',$tipo),$data);
+   $_tipo=preg_replace('/^order\_/','date_',$tipo);
+   $_tipo2=preg_replace('/^order\_/','',$tipo);
+   $res=$order->set($_tipo,$data);
 
    if($res['ok']){
-     $response= array('state'=>200,'data'=>$order->data);
+     $order->load('supplier');
+     $response= array('state'=>200,'date'=>$order->data['dates'][$_tipo2],'title'=>$order->supplier->data['code']."<br/>"._('Purchase Order')." ".$order->id." (".$order->data['status'].")",);
+     
+
    }else{
      $response= array('state'=>400,'msg'=>$res['msg']);
    }
@@ -65,12 +73,24 @@ switch($tipo){
      echo json_encode($response);  
      exit;
    }
-   $res=$order->submit($data);
+   $res=$order->set('date_submited',$data);
    $res_bis=array('ok'=>true);
-   if($_REQUEST['edate']!='' and $res['ok'])
-     $res_bis=$order->set('expected_date',array('edate'=>$_REQUEST['edate'],'user_id'=>$LU->getProperty('auth_user_id'),'history'=>false));
+
+   if($_REQUEST['edate']!='' and $res['ok']){
+     $res_bis=$order->set('date_expected',array('date'=>$_REQUEST['edate'],'user_id'=>$LU->getProperty('auth_user_id'),'history'=>false));
+     // print_r( $res_bis);
+   }
    if($res['ok']){
-     $response= array('state'=>200,'data'=>$order->data,'res_bis'=>$res_bis);
+     $order->load('supplier');
+     $response= array(
+		      'state'=>200,
+		      'date_submited'=>$order->data['dates']['submited'],
+		      'ts_submited'=>$order->data['date_submited'],
+		      'title'=>$order->supplier->data['code']."<br/>"._('Purchase Order')." ".$order->id." (".$order->data['status'].")",
+		      'ts_expected'=>$order->data['date_expected'],
+		      'date_expected'=>$order->data['dates']['expected']
+		      //		      'msg'=>print_r($res_bis)
+		      );
      if($_REQUEST['tipo_order']=='po')
        $_SESSION['state']['po']['new']='';
    }else{
@@ -3101,9 +3121,8 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
  
  if(isset( $_REQUEST['show_all'])){
     $all_products=$_REQUEST['show_all'];
-    $_SESSION['state']['po']['show_all']=$all_products;
  }else
-   $all_products=$_SESSION['state']['po']['show_all'];
+   $all_products=$conf['all_products'];
  
 
 
@@ -3118,7 +3137,7 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
    $_dir=$order_direction;
    
    
-   $_SESSION['state']['po']['items']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+   $_SESSION['state']['po']['items']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value,'all_products'=>$all_products);
    $_SESSION['state']['supplier']['id']=$supplier_id;
    
    if($all_products)
@@ -3148,6 +3167,7 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
   }
     if($wheref==''){
       $filtered=0;
+       $total_records=$total;
     }else{
       if($all_products)
       $sql="select count(*) as total from product2supplier  $where  ";
@@ -3155,17 +3175,25 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
 	$sql="select count(*) as total from porden_item  $where $wheref ";
       $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
       if($row=$res->fetchRow()) {
-	$filtered=$row['total']-$total;
+	$total_records=$row['total'];
+	$filtered=$total_records-$total;
       }
       
     }
+     if($all_products)
+       $rtext=$total_records." ".ngettext('products','products',$total_records);
+     else
+       $rtext=$total_records." ".ngettext('products in po','products in po',$total_records);
+    if($total_records>$number_results)
+      $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
+    $filter_msg='';
 
     
     if($all_products){
-   $sql="select p.units as punits,(select concat_ws('|',IFNULL(expected_price,''),IFNULL(expected_qty,''),IFNULL(price,''),IFNULL(qty,'')) from porden_item where porden_id=$po_id and porden_item.p2s_id=ps.id) as po_data,   sup_code,ps.id as p2s_id,(p.units*ps.price) as price_outer,ps.price as price_unit,stock,p.condicion as condicion, p.code as code, p.id as id,p.description as description , group_id,department_id,g.name as fam, d.code as department 
+   $sql="select p.units as punits,(select concat_ws('|',IFNULL(expected_price,''),IFNULL(expected_qty,''),IFNULL(price,''),IFNULL(qty,''),IFNULL(damaged,'')) from porden_item where porden_id=$po_id and porden_item.p2s_id=ps.id) as po_data,   sup_code,ps.id as p2s_id,(p.units*ps.price) as price_outer,ps.price as price_unit,stock,p.condicion as condicion, p.code as code, p.id as id,p.description as description , group_id,department_id,g.name as fam, d.code as department 
 from product as p left join product_group as g on (g.id=group_id) left join product_department as d on (d.id=department_id) left join product2supplier as ps on (product_id=p.id)  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
     }else{
-      $sql=sprintf("select     p.units as punits, expected_qty,expected_price, porden_item.price,qty  ,   sup_code,ps.id as p2s_id,(p.units*ps.price) as price_outer,ps.price as price_unit,stock,p.condicion as condicion, p.code as code, p.id as id,p.description as description , group_id,department_id,g.name as fam, d.code as department 
+      $sql=sprintf("select     damaged,p.units as punits, expected_qty,expected_price, porden_item.price,qty  ,   sup_code,ps.id as p2s_id,(p.units*ps.price) as price_outer,ps.price as price_unit,stock,p.condicion as condicion, p.code as code, p.id as id,p.description as description , group_id,department_id,g.name as fam, d.code as department 
 from porden_item left join product2supplier as ps on ( p2s_id=ps.id)  left join product as p on (product_id=p.id)  left join product_group as g on (g.id=group_id) left join product_department as d on (d.id=department_id)  $where $wheref  order by $order $order_direction                   ");
       
     }
@@ -3176,12 +3204,13 @@ from porden_item left join product2supplier as ps on ( p2s_id=ps.id)  left join 
 
      if($all_products){
        if($row['po_data']!=''){
-	 list($expected_price,$expected_qty,$price,$qty)=preg_split('/\|/',$row['po_data']);
+	 list($expected_price,$expected_qty,$price,$qty,$damaged)=preg_split('/\|/',$row['po_data']);
        }else{
 	 $expected_price='';
 	 $expected_qty='';
 	 $price='';
 	 $qty='';
+	 $damaged='';
 	 
        }
 	 
@@ -3190,11 +3219,17 @@ from porden_item left join product2supplier as ps on ( p2s_id=ps.id)  left join 
        $expected_qty=$row['expected_qty'];
        $price=$row['price'];
        $qty=$row['qty'];
+       $damaged=$row['damaged'];
      }
        
+
+     $diff=$qty-$expected_qty;
+
      //($row['punits']!=1?number($row['stock']:''))
 
      $code='<a tabindex="2" href="product.php?id='.$row['id'].'">'.$row['code'].'</a>';
+
+    
 
      $data[]=array(
 		   'id'=>$row['id'],
@@ -3208,7 +3243,13 @@ from porden_item left join product2supplier as ps on ( p2s_id=ps.id)  left join 
 		   'sup_code'=>$row['sup_code'],
 		   'qty'=>"<span  style='color:#777'>".($qty==''?'':number($qty/$row['punits'],1)).'</span> ['.($qty==''?'':number($qty,1)).']',
 		   'expected_qty'=>"<span id='oqty".$row['p2s_id']."' style='color:#777'>".($expected_qty==''?'':number($expected_qty/$row['punits'],1)).'</span> <input type="text" value="'.($expected_qty==''?'':number($expected_qty,1)).'" onchange="value_changed(this)" size="3"  id="p'.$row['p2s_id'].'"  pid="'.$row['p2s_id'].'" class="aright" />',
+		   'expected_qty_ne'=>"<span  style='color:#777'>".(($expected_qty=='' or $row['punits']==1)?'':number($expected_qty/$row['punits'],1)).'</span> ['.($expected_qty==''?'':number($expected_qty,1))."]",
+		   'diff'=>'<span id="diff'.$row['p2s_id'].'">'.$diff.'</span>',
+		   'qty_check'=>"<span id='ocqty".$row['p2s_id']."' style='color:#777'>".($qty==''?'':number($qty/$row['punits'],1)).'</span> <input type="text" value="'.($qty==''?'':number($qty,1)).'" onchange="value_checked(this)" size="3"  id="pc'.$row['p2s_id'].'"  pid="'.$row['p2s_id'].'" class="aright" />',
+		   'qty_damaged'=>"<span id='odqty".$row['p2s_id']."' style='color:#777'>".($qty==''?'':number($damaged/$row['punits'],1)).'</span> <input type="text" value="'.($damaged==''?'':number($damaged,1)).'" onchange="value_damaged(this)" size="3"  id="pc'.$row['p2s_id'].'"  pid="'.$row['p2s_id'].'" class="aright" />',
 		   'description'=>number($row['punits'])."x ".$row['description'],
+		   
+
 		   'group_id'=>$row['group_id'],
 		   'department_id'=>$row['department_id'],
 		   'fam'=>$row['fam'],
@@ -3219,14 +3260,12 @@ from porden_item left join product2supplier as ps on ( p2s_id=ps.id)  left join 
 		   );
    }
 
-   if($total<$number_results)
-     $rtext=$total.' '.ngettext('record returned','records returned',$total);
-   else
-     $rtext='';
+   
    $response=array('resultset'=>
 		   array('state'=>200,
 			 'data'=>$data,
- 'sort_key'=>$_order,
+			 'sort_key'=>$_order,
+			 'rtext'=>$rtext,
 			 'sort_dir'=>$_dir,
 			 'tableid'=>$tableid,
 			 'filter_msg'=>$filter_msg,

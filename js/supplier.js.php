@@ -2,6 +2,22 @@
 
   var Event = YAHOO.util.Event;
      var Dom   = YAHOO.util.Dom;
+var create_new_po=function(){
+    var request='ar_orders.php?tipo=create_po';
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    
+	    success:function(o) {
+			alert(o.responseText)
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if (r.state == 200) {
+		    window.location.href='porder.php?id='+r.id;
+		}
+	    }
+	});    
+
+}
+
+
 YAHOO.util.Event.addListener(window, "load", function() {
 	tables = new function() {
 		this.productLink=  function(el, oRecord, oColumn, oData) {
