@@ -3190,10 +3190,10 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
 
     
     if($all_products){
-   $sql="select p.units as punits,(select concat_ws('|',IFNULL(expected_price,''),IFNULL(expected_qty,''),IFNULL(price,''),IFNULL(qty,''),IFNULL(damaged,'')) from porden_item where porden_id=$po_id and porden_item.p2s_id=ps.id) as po_data,   sup_code,ps.id as p2s_id,(p.units*ps.price) as price_outer,ps.price as price_unit,stock,p.condicion as condicion, p.code as code, p.id as id,p.description as description , group_id,department_id,g.name as fam, d.code as department 
+   $sql="select p.units as punits,(select concat_ws('|',IFNULL(expected_price,''),IFNULL(expected_qty,''),IFNULL(price,''),IFNULL(qty,''),IFNULL(damaged,''),IFNULL(qty-damaged,'')) from porden_item where porden_id=$po_id and porden_item.p2s_id=ps.id) as po_data,   sup_code,ps.id as p2s_id,(p.units*ps.price) as price_outer,ps.price as price_unit,stock,p.condicion as condicion, p.code as code, p.id as id,p.description as description , group_id,department_id,g.name as fam, d.code as department 
 from product as p left join product_group as g on (g.id=group_id) left join product_department as d on (d.id=department_id) left join product2supplier as ps on (product_id=p.id)  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
     }else{
-      $sql=sprintf("select     damaged,p.units as punits, expected_qty,expected_price, porden_item.price,qty  ,   sup_code,ps.id as p2s_id,(p.units*ps.price) as price_outer,ps.price as price_unit,stock,p.condicion as condicion, p.code as code, p.id as id,p.description as description , group_id,department_id,g.name as fam, d.code as department 
+      $sql=sprintf("select   (qty-damaged) as useful,  damaged,p.units as punits, expected_qty,expected_price, porden_item.price,qty  ,   sup_code,ps.id as p2s_id,(p.units*ps.price) as price_outer,ps.price as price_unit,stock,p.condicion as condicion, p.code as code, p.id as id,p.description as description , group_id,department_id,g.name as fam, d.code as department 
 from porden_item left join product2supplier as ps on ( p2s_id=ps.id)  left join product as p on (product_id=p.id)  left join product_group as g on (g.id=group_id) left join product_department as d on (d.id=department_id)  $where $wheref  order by $order $order_direction                   ");
       
     }
@@ -3204,13 +3204,14 @@ from porden_item left join product2supplier as ps on ( p2s_id=ps.id)  left join 
 
      if($all_products){
        if($row['po_data']!=''){
-	 list($expected_price,$expected_qty,$price,$qty,$damaged)=preg_split('/\|/',$row['po_data']);
+	 list($expected_price,$expected_qty,$price,$qty,$damaged,$useful)=preg_split('/\|/',$row['po_data']);
        }else{
 	 $expected_price='';
 	 $expected_qty='';
 	 $price='';
 	 $qty='';
 	 $damaged='';
+	 $useful='';
 	 
        }
 	 
@@ -3220,11 +3221,14 @@ from porden_item left join product2supplier as ps on ( p2s_id=ps.id)  left join 
        $price=$row['price'];
        $qty=$row['qty'];
        $damaged=$row['damaged'];
+       $useful=$row['useful'];
      }
        
 
      $diff=$qty-$expected_qty;
-
+     if($diff>0)
+       $diff='+'.$diff;
+     
      //($row['punits']!=1?number($row['stock']:''))
 
      $code='<a tabindex="2" href="product.php?id='.$row['id'].'">'.$row['code'].'</a>';
@@ -3243,19 +3247,18 @@ from porden_item left join product2supplier as ps on ( p2s_id=ps.id)  left join 
 		   'sup_code'=>$row['sup_code'],
 		   'qty'=>"<span  style='color:#777'>".($qty==''?'':number($qty/$row['punits'],1)).'</span> ['.($qty==''?'':number($qty,1)).']',
 		   'expected_qty'=>"<span id='oqty".$row['p2s_id']."' style='color:#777'>".($expected_qty==''?'':number($expected_qty/$row['punits'],1)).'</span> <input type="text" value="'.($expected_qty==''?'':number($expected_qty,1)).'" onchange="value_changed(this)" size="3"  id="p'.$row['p2s_id'].'"  pid="'.$row['p2s_id'].'" class="aright" />',
-		   'expected_qty_ne'=>"<span  style='color:#777'>".(($expected_qty=='' or $row['punits']==1)?'':number($expected_qty/$row['punits'],1)).'</span> ['.($expected_qty==''?'':number($expected_qty,1))."]",
+		   'expected_qty_ne'=>"<span  style='color:#777'>".(($expected_qty=='' or $row['punits']==1)?'':number($expected_qty/$row['punits'],1)).'</span> [<span id="eqty'.$row['p2s_id'].'"  onClick="eqty(this,'.$row['p2s_id'].','.$row['punits'].')">'.($expected_qty==''?'':number($expected_qty,1))."</span>]",
 		   'diff'=>'<span id="diff'.$row['p2s_id'].'">'.$diff.'</span>',
-		   'qty_check'=>"<span id='ocqty".$row['p2s_id']."' style='color:#777'>".($qty==''?'':number($qty/$row['punits'],1)).'</span> <input type="text" value="'.($qty==''?'':number($qty,1)).'" onchange="value_checked(this)" size="3"  id="pc'.$row['p2s_id'].'"  pid="'.$row['p2s_id'].'" class="aright" />',
-		   'qty_damaged'=>"<span id='odqty".$row['p2s_id']."' style='color:#777'>".($qty==''?'':number($damaged/$row['punits'],1)).'</span> <input type="text" value="'.($damaged==''?'':number($damaged,1)).'" onchange="value_damaged(this)" size="3"  id="pc'.$row['p2s_id'].'"  pid="'.$row['p2s_id'].'" class="aright" />',
+		   'qty_check'=>"<span id='ocqty".$row['p2s_id']."' style='color:#777'>".($qty==''?'':number($qty/$row['punits'],1)).'</span> <input type="text" value="'.($qty==''?'':number($qty,1)).'" onchange="value_checked(this,'.$row['p2s_id'].','.$row['punits'].')" size="3"  id="qc'.$row['p2s_id'].'"  pid="'.$row['p2s_id'].'" class="aright" />',
+		   'damaged'=>"<span id='do".$row['p2s_id']."' style='color:#777'>".($qty==''?'':number($damaged/$row['punits'],1)).'</span> <input type="text" value="'.($damaged==''?'':number($damaged,1)).'" onchange="value_damaged(this,'.$row['p2s_id'].','.$row['punits'].')" size="3"  id="du'.$row['p2s_id'].'"  pid="'.$row['p2s_id'].'" class="aright" />',
 		   'description'=>number($row['punits'])."x ".$row['description'],
-		   
-
 		   'group_id'=>$row['group_id'],
 		   'department_id'=>$row['department_id'],
 		   'fam'=>$row['fam'],
 		   'department'=>$row['department'],
 		   'delete'=>'<img src="art/icons/link_delete.png"/>',
 		   'price'=>"<span>".($qty==''?'':money($price))."</span>",
+		   'useful'=>'<span id="uo'.$row['p2s_id'].'">'.($row['punits']==1?'':number($useful/$row['punits'])).'</span> [<span id="uu'.$row['p2s_id'].'">'.number($useful)."</span>]",
 		   'expected_price'=>"<span id='ep".$row['p2s_id']."'>".($expected_qty==''?'':money($expected_price))."</span>"
 		   );
    }

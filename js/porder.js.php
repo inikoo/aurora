@@ -9,6 +9,46 @@ var checkers= new Object;
 var active_editor='';
 var receiver_list;
 
+
+
+
+var eqty=function(o,id,units){
+    Dom.get('diff'+id).innerHTML=0;
+    Dom.get('qc'+id).value=o.innerHTML;
+    var damaged=Dom.get('du'+id).value;
+    Dom.get('uu'+id).innerHTML=o.innerHTML-damaged;
+    if(units!=1)
+	Dom.get('uo'+id).innerHTML=(o.innerHTML-damaged)/units;
+
+}
+
+var value_checked=function(o,id,units){
+    var qty=o.value;
+    var eqty=Dom.get('eqty'+id).innerHTML;
+    var diff=qty-eqty;
+    if(diff>0)
+	diff='+'+diff;
+    Dom.get('diff'+id).innerHTML=diff;
+
+    var damaged=Dom.get('du'+id).value;
+    Dom.get('uu'+id).innerHTML=qty-damaged;
+    if(units!=1)
+	Dom.get('uo'+id).innerHTML=(qty-damaged)/units;
+
+}
+
+var value_damaged=function(o,id,units){
+    var damaged=o.value;
+    var qty=Dom.get('qc'+id).value;
+
+    Dom.get('uu'+id).innerHTML=qty-damaged;
+    if(units!=1)
+	Dom.get('uo'+id).innerHTML=(qty-damaged)/units;
+
+}
+
+
+
 var add_staff=function(tipo,id,name){
     if(tipo=='receivers')
 	receivers[id]={'name':name,'id':id};
@@ -355,10 +395,16 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				  ,{key:"stock_time", label:"<?=_('Stock Time')?>",width:75,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}<?=($_SESSION['state']['po']['status']!=0?',hidden:true':'')?>}
 				  //,{key:"sup_code", label:"<?=_('S Code')?>", width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				  
-				  ,{key:"expected_qty", label:"<?=_('Qty O[U]')?>",width:100,className:"aright"<?=($_SESSION['state']['po']['status']!=0?',hidden:true':'')?>}
+				  ,{key:"expected_qty", label:"<?=_('Qty O[U]')?>",width:40,className:"aright"<?=($_SESSION['state']['po']['status']!=0?',hidden:true':'')?>}
 				  ,{key:"expected_qty_ne", label:"<?=_('Qty O[U]')?>",width:100,className:"aright"<?=($_SESSION['state']['po']['status']==0?',hidden:true':'')?>}
 				  ,{key:"price_unit", label:"<?=_('Price (U)')?>",width:65,className:"aright"<?=($_SESSION['state']['po']['status']!=0?',hidden:true':'')?>}
 				  ,{key:"expected_price", label:"<?=_('E Cost')?>",width:70,className:"aright"<?=($_SESSION['state']['po']['status']!=0?',hidden:true':'')?>}
+				  ,{key:"qty_check", label:"<?=_('Qty [U]')?>",width:50,className:"aright"}
+				  ,{key:"diff", label:"<?=_('&Delta;U')?>",width:40,className:"aright"}
+				  ,{key:"damaged", label:"<?=_('Damaged')?>",width:60,className:"aright"}
+				  ,{key:"useful", label:"<?=_('In O[U]')?>",width:55,className:"aright"}
+
+
 				  ];
 		
 		this.dataSource0 = new YAHOO.util.DataSource("ar_assets.php?tipo=withsupplier_po&tableid="+tableid);
@@ -378,7 +424,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			},
 			
 			fields: [
-				 "id","family_id","fam","code","description","stock","price_unit","price_outer","delete","p2s_id","sup_code","group_id","qty","expected_price","price","expected_qty","expected_qty_ne","damaged"
+				 "id","family_id","fam","code","description","stock","price_unit","price_outer","delete","p2s_id","sup_code","group_id","qty","expected_price","price","expected_qty","expected_qty_ne","damaged","qty_check","diff","useful"
 				 ]};
 	    
 		    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
