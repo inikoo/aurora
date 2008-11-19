@@ -33,6 +33,7 @@ class supplier{
       $this->data['name']=$row['name'];
       $this->data['code']=$row['code'];
       $this->data['contact_id']=$row['contact_id'];
+      
       $this->id=$row['id'];
       $this->contact=false;
       return true;

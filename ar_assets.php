@@ -3118,13 +3118,26 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
  else
    $po_id=$_SESSION['state']['po']['id'];
   
+
+  $all_products_supplier=false;
+
+
+ if(isset( $_REQUEST['all_products_supplier'])){
+   $all_products_supplier=$_REQUEST['all_products_supplier'];
+
+ }else
+   $all_products_supplier=$conf['all_products_supplier'];
  
- if(isset( $_REQUEST['show_all'])){
-    $all_products=$_REQUEST['show_all'];
+ $all_products=false;
+if(isset( $_REQUEST['all_products'])){
+   $all_products=$_REQUEST['all_products'];
+
  }else
    $all_products=$conf['all_products'];
  
 
+ if($all_products_supplier)
+   $all_products=false;
 
    if(isset( $_REQUEST['tableid']))
     $tableid=$_REQUEST['tableid'];
@@ -3137,16 +3150,22 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
    $_dir=$order_direction;
    
    
-   $_SESSION['state']['po']['items']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value,'all_products'=>$all_products);
+   $_SESSION['state']['po']['items']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value,'all_products_supplier'=>$all_products_supplier,'all_products'=>$all_products);
    $_SESSION['state']['supplier']['id']=$supplier_id;
    
-   if($all_products)
+   if($all_products_supplier)
      $where=$where.' and ps.supplier_id='.$supplier_id;
-   else
+   elseif($all_products)
+     $all_products_supplier=true;
+   else{
+     $f_value='';
      $where=$where.' and porden_id='.$po_id;
 
+   }
+
+
   $wheref='';
-  if(($f_field=='code' or $f_field=='sup_code') and $f_value!='')
+  if(($f_field=='p.code' or $f_field=='sup_code') and $f_value!='')
     $wheref.=" and  p.code  like '".addslashes($f_value)."%'";
   if(($f_field=='sup_code') and $f_value!='')
     $wheref.=" and  sup_code like '".addslashes($f_value)."%'";
@@ -3155,12 +3174,12 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
 
 
 
-  if($all_products)
+  if($all_products_supplier)
   $sql="select count(*) as total from product  as p  left join product2supplier as ps on (product_id=p.id) $where $wheref ";
   else
     $sql="select count(*) as total from porden_item left join product2supplier as ps on ( p2s_id=ps.id)  left join product as p on (product_id=p.id)    $where $wheref ";
-  // print $sql;
 
+  // print $sql;
   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
   if($row=$res->fetchRow()) {
     $total=$row['total'];
@@ -3169,7 +3188,7 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
       $filtered=0;
        $total_records=$total;
     }else{
-      if($all_products)
+      if($all_products_supplier)
       $sql="select count(*) as total from product2supplier  $where  ";
       else
 	$sql="select count(*) as total from porden_item  $where $wheref ";
@@ -3180,7 +3199,7 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
       }
       
     }
-     if($all_products)
+     if($all_products_supplier)
        $rtext=$total_records." ".ngettext('products','products',$total_records);
      else
        $rtext=$total_records." ".ngettext('products in po','products in po',$total_records);
@@ -3188,8 +3207,26 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
       $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
     $filter_msg='';
 
-    
-    if($all_products){
+    if($total==0 and $filtered>0){
+      switch($f_field){
+      case('sup_code'):
+      case('p.code'):
+	$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any product with code")." <b>".$f_value."*</b> ";
+       break;
+      }
+    }elseif($filtered>0){
+      switch($f_field){
+      case('p.code'):
+      case('sup_code'):
+	$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('products with code')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;
+       
+      }
+    }else
+       $filter_msg='';
+
+
+    if($all_products_supplier){
    $sql="select p.units as punits,(select concat_ws('|',IFNULL(expected_price,''),IFNULL(expected_qty,''),IFNULL(price,''),IFNULL(qty,''),IFNULL(damaged,''),IFNULL(qty-damaged,'')) from porden_item where porden_id=$po_id and porden_item.p2s_id=ps.id) as po_data,   sup_code,ps.id as p2s_id,(p.units*ps.price) as price_outer,ps.price as price_unit,stock,p.condicion as condicion, p.code as code, p.id as id,p.description as description , group_id,department_id,g.name as fam, d.code as department 
 from product as p left join product_group as g on (g.id=group_id) left join product_department as d on (d.id=department_id) left join product2supplier as ps on (product_id=p.id)  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
     }else{
@@ -3197,12 +3234,12 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
 from porden_item left join product2supplier as ps on ( p2s_id=ps.id)  left join product as p on (product_id=p.id)  left join product_group as g on (g.id=group_id) left join product_department as d on (d.id=department_id)  $where $wheref  order by $order $order_direction                   ");
       
     }
-    //       print $sql;
+    //    print $sql;
    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
    $data=array();
    while($row=$res->fetchRow()) {
 
-     if($all_products){
+     if($all_products_supplier){
        if($row['po_data']!=''){
 	 list($expected_price,$expected_qty,$price,$qty,$damaged,$useful)=preg_split('/\|/',$row['po_data']);
        }else{
@@ -3246,11 +3283,11 @@ from porden_item left join product2supplier as ps on ( p2s_id=ps.id)  left join 
 		   'code'=>$code,
 		   'sup_code'=>$row['sup_code'],
 		   'qty'=>"<span  style='color:#777'>".($qty==''?'':number($qty/$row['punits'],1)).'</span> ['.($qty==''?'':number($qty,1)).']',
-		   'expected_qty'=>"<span id='oqty".$row['p2s_id']."' style='color:#777'>".($expected_qty==''?'':number($expected_qty/$row['punits'],1)).'</span> <input type="text" value="'.($expected_qty==''?'':number($expected_qty,1)).'" onchange="value_changed(this)" size="3"  id="p'.$row['p2s_id'].'"  pid="'.$row['p2s_id'].'" class="aright" />',
-		   'expected_qty_ne'=>"<span  style='color:#777'>".(($expected_qty=='' or $row['punits']==1)?'':number($expected_qty/$row['punits'],1)).'</span> [<span id="eqty'.$row['p2s_id'].'"  onClick="eqty(this,'.$row['p2s_id'].','.$row['punits'].')">'.($expected_qty==''?'':number($expected_qty,1))."</span>]",
+		   'expected_qty_edit'=>"<span id='oqty".$row['p2s_id']."' style='color:#777'>".($expected_qty==''?'':number($expected_qty/$row['punits'],1)).'</span> <input type="text" value="'.($expected_qty==''?'':number($expected_qty,1)).'" onchange="value_changed(this)" size="3"  id="p'.$row['p2s_id'].'"  pid="'.$row['p2s_id'].'" class="aright" />',
+		   'expected_qty'=>"<span  style='color:#777'>".(($expected_qty=='' or $row['punits']==1)?'':number($expected_qty/$row['punits'],1)).'</span> [<span id="eqty'.$row['p2s_id'].'"  onClick="eqty(this,'.$row['p2s_id'].','.$row['punits'].')">'.($expected_qty==''?'':number($expected_qty,1))."</span>]",
 		   'diff'=>'<span id="diff'.$row['p2s_id'].'">'.$diff.'</span>',
-		   'qty_check'=>"<span id='ocqty".$row['p2s_id']."' style='color:#777'>".($qty==''?'':number($qty/$row['punits'],1)).'</span> <input type="text" value="'.($qty==''?'':number($qty,1)).'" onchange="value_checked(this,'.$row['p2s_id'].','.$row['punits'].')" size="3"  id="qc'.$row['p2s_id'].'"  pid="'.$row['p2s_id'].'" class="aright" />',
-		   'damaged'=>"<span id='do".$row['p2s_id']."' style='color:#777'>".($qty==''?'':number($damaged/$row['punits'],1)).'</span> <input type="text" value="'.($damaged==''?'':number($damaged,1)).'" onchange="value_damaged(this,'.$row['p2s_id'].','.$row['punits'].')" size="3"  id="du'.$row['p2s_id'].'"  pid="'.$row['p2s_id'].'" class="aright" />',
+		   'qty_edit'=>"<span id='ocqty".$row['p2s_id']."' style='color:#777'>".($qty==''?'':number($qty/$row['punits'],1)).'</span> <input type="text" value="'.($qty==''?'':number($qty,1)).'" onchange="value_checked(this,'.$row['p2s_id'].','.$row['punits'].','.($all_products?1:0).')" size="3"  id="qc'.$row['p2s_id'].'"  pid="'.$row['p2s_id'].'"  prodid="'.$row['id'].'"   class="aright" />',
+		   'damaged_edit'=>"<span id='do".$row['p2s_id']."' style='color:#777'>".($qty==''?'':number($damaged/$row['punits'],1)).'</span> <input type="text" value="'.($damaged==''?'':number($damaged,1)).'" onchange="value_damaged(this,'.$row['p2s_id'].','.$row['punits'].')" size="3"  id="du'.$row['p2s_id'].'"  pid="'.$row['p2s_id'].'" class="aright" />',
 		   'description'=>number($row['punits'])."x ".$row['description'],
 		   'group_id'=>$row['group_id'],
 		   'department_id'=>$row['department_id'],
@@ -3258,7 +3295,7 @@ from porden_item left join product2supplier as ps on ( p2s_id=ps.id)  left join 
 		   'department'=>$row['department'],
 		   'delete'=>'<img src="art/icons/link_delete.png"/>',
 		   'price'=>"<span>".($qty==''?'':money($price))."</span>",
-		   'useful'=>'<span id="uo'.$row['p2s_id'].'">'.($row['punits']==1?'':number($useful/$row['punits'])).'</span> [<span id="uu'.$row['p2s_id'].'">'.number($useful)."</span>]",
+		   'usable'=>'<span id="uo'.$row['p2s_id'].'">'.($row['punits']==1?'':number($useful/$row['punits'])).'</span> [<span id="uu'.$row['p2s_id'].'">'.number($useful)."</span>]",
 		   'expected_price'=>"<span id='ep".$row['p2s_id']."'>".($expected_qty==''?'':money($expected_price))."</span>"
 		   );
    }

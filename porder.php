@@ -18,13 +18,13 @@ if(isset($_REQUEST['id']) and is_numeric($_REQUEST['id'])){
 
 $po_id = $po->id;
 $_SESSION['state']['po']['id']=$po->id;
-
 $_SESSION['state']['supplier']['id']=$po->data['supplier_id'];
 
 
 
 //print_r($po->data);
 $smarty->assign('po',$po->data);
+$smarty->assign('supplier',$po->supplier->data);
 
 
 $smarty->assign('title',$po->supplier->data['code']."<br/>"._('Purchase Order').' '.$po->data['id']." (".$po->data['status'].")");
@@ -37,6 +37,7 @@ if($po->data['items']==0)
 
 
 $_SESSION['state']['po']['status']=floor($po->data['status_id']*.1);
+$smarty->assign('status',$_SESSION['state']['po']['status']);
 
 
 
@@ -79,6 +80,11 @@ while($row=$res->fetchrow()){
  }
 $smarty->assign('staff',$staff);
 $smarty->assign('staff_cols',$num_cols-1);
+
+
+
+
+
 
 
 $css_files=array(

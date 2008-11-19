@@ -424,7 +424,8 @@ $default_state=array(
 						'where'=>'where true',
 						'f_field'=>'p.code',
 						'f_value'=>'',
-						'all_product'=>false
+						'all_products'=>false,
+						'all_products_supplier'=>false
 						),
 				 ),
 		     'location'=>array(

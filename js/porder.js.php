@@ -8,6 +8,7 @@ var checkers= new Object;
 
 var active_editor='';
 var receiver_list;
+var checker_list;
 
 
 
@@ -20,21 +21,26 @@ var eqty=function(o,id,units){
     if(units!=1)
 	Dom.get('uo'+id).innerHTML=(o.innerHTML-damaged)/units;
 
-}
+};
 
-var value_checked=function(o,id,units){
-    var qty=o.value;
-    var eqty=Dom.get('eqty'+id).innerHTML;
-    var diff=qty-eqty;
-    if(diff>0)
-	diff='+'+diff;
-    Dom.get('diff'+id).innerHTML=diff;
+var value_checked=function(o,id,units,add_product){
+    
 
-    var damaged=Dom.get('du'+id).value;
-    Dom.get('uu'+id).innerHTML=qty-damaged;
-    if(units!=1)
-	Dom.get('uo'+id).innerHTML=(qty-damaged)/units;
+	var qty=o.value;
+	var eqty=Dom.get('eqty'+id).innerHTML;
+	if(eqty=='')
+	    eqty=0;
+	var diff=qty-eqty;
+	if(diff>0)
+	    diff='+'+diff;
+	Dom.get('diff'+id).innerHTML=diff;
+	
+	var damaged=Dom.get('du'+id).value;
+	Dom.get('uu'+id).innerHTML=qty-damaged;
+	if(units!=1)
+	    Dom.get('uo'+id).innerHTML=(qty-damaged)/units;
 
+    
 }
 
 var value_damaged=function(o,id,units){
@@ -53,7 +59,7 @@ var add_staff=function(tipo,id,name){
     if(tipo=='receivers')
 	receivers[id]={'name':name,'id':id};
     else if (tipo=='checkers')
-	chekers[id]={'name':name,'id':id};
+	checkers[id]={'name':name,'id':id};
 }
 var delete_staff=function(tipo,id){
     if(tipo=='receivers')
@@ -93,28 +99,38 @@ var display_staff=function(tipo){
 
 
 var select_staff=function(o,e,tipo){
-    if(tipo=='receivers'){
+
 	var staff_id=o.getAttribute('staff_id');
 	var staff_name=o.innerHTML;
 	if (e.ctrlKey==1 || receivers.length==0){
 	    add_staff(tipo,staff_id,staff_name);
 	    o.className='selected';
-	    Dom.get("receivers_name").innerHTML=display_staff(tipo);
+	    Dom.get(tipo+"_name").innerHTML=display_staff(tipo);
 	}else if(e.ctrlKey==0){
-	    for( id in receivers){
-		Dom.get('receiver'+id).className='';
+	    if(tipo=='receivers'){
+		for( id in receivers){
+		    Dom.get(tipo+id).className='';
+		}
+		receivers = new Object;
+	    }else if(tipo=='checkers'){
+		for( id in checkers){
+		    Dom.get(tipo+id).className='';
+		}
+		checkers = new Object;
 	    }
 
-	    receivers = new Object;
-	    Dom.get("receivers_name").innerHTML=staff_name;
+
+	    Dom.get(tipo+"_name").innerHTML=staff_name;
 	    add_staff(tipo,staff_id,staff_name);
-	    receiver_list.cfg.setProperty("visible", false); 
+	    
+	    if(tipo=='receivers')
+		receiver_list.cfg.setProperty("visible", false); 
+	    else
+		checker_list.cfg.setProperty("visible", false); 
+
 	    o.className='selected';
 	}
 
-
-
-    }
 
 }
 
@@ -148,16 +164,43 @@ var submit_order_save=function(o){
 		    Dom.get("submit_ready").style.display='';
 		    Dom.get("submit_date").innerHTML=r.date_submited;
 		    clear_editors();
-		    if(r.date_expected==null){
-			 Dom.get("expected_noready").style.display='';
+		    
+
+		    if(r.date_expected==''){
+			Dom.get("expected_ready").style.display='none';
+			Dom.get("expected_change").style.display='none';
+			Dom.get("expected_noready").style.display='';
+			
 		    }else{
 			Dom.get("expected_ready").style.display='';
 			Dom.get("expected_date").innerHTML=r.date_expected;
 			Dom.get("expected_noready").style.display='none';
 			Dom.get("expected_change").style.display='';
 		    }
+		    //now change the view to only items in po
+		    Dom.get("table_all_products").innerHTML='<?=_('Amend order')?>';
+		    Dom.get("table_all_products").className='but';
+		    Dom.get("table_po_products").className='but selected';
 
-		}
+		    var table=tables['table0'];
+		    var datasource=tables['dataSource0'];
+		    var request='&show_all=0';
+		    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);    
+
+
+		    table.hideColumn('stock');
+		    table.hideColumn('stock_time');
+		    table.hideColumn('expected_qty_edit');
+		    table.hideColumn('price_unit');
+		    table.hideColumn('expected_price');
+		    table.showColumn('expected_qty');	    
+		    table.showColumn('sup_code');	    
+		    
+
+
+
+		}else
+		    alert(r.msg);
 	    }
 	});    
 }
@@ -179,7 +222,8 @@ var et_order_save=function(o){
 			Dom.get("expected_noready").style.display='none';
 			Dom.get("expected_change").style.display='';
 			clear_editors();
-		}
+		}else
+		    alert(r.msg);
 	    }
 	});    
 }
@@ -197,22 +241,44 @@ var receive_order_save=function(o){
 		//alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if (r.state == 200) {
-		}
+		    Dom.get("po_title").innerHTML=r.title;
+		    Dom.get("receive_dialog").style.display='none';
+		    Dom.get("expected_change").style.display='none';
+		    Dom.get("expected_noready").style.display='none';
+		    Dom.get("cancel_noready").style.display='none';
+		    Dom.get("check_noready").style.display='none';
+		    Dom.get("submit_noready").style.display='none';
+		    Dom.get("receive_dialog").style.display='none';
+		    Dom.get("receive_noready").style.display='none';
+		    Dom.get("receive_ready").style.display='';
+		    Dom.get("receive_date").innerHTML=r.date;
+
+
+		}else
+		    alert(r.msg);
 	    }
 	});    
 }
 var check_order_save=function(o){
     var date=Dom.get('v_calpop4').value;
     var time=Dom.get('v_time4').value;
-
-    var request='ar_assets.php?tipo=order_checked&tipo_order=po&date='+escape(date)+'&time='+escape(time)+'&order_id='+escape(po_id);
+    var by= YAHOO.lang.JSON.stringify(checkers);
+    var request='ar_assets.php?tipo=order_checked&tipo_order=po&done_by='+escape(by)+'&date='+escape(date)+'&time='+escape(time)+'&order_id='+escape(po_id);
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    
 	    success:function(o) {
-		//alert(o.responseText)
+		//		alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if (r.state == 200) {
-		}
+		    Dom.get("po_title").innerHTML=r.title;
+		    Dom.get("check_dialog").style.display='none';
+		    Dom.get("check_noready").style.display='none';
+		    Dom.get("check_ready").style.display='';
+		    Dom.get("check_date").innerHTML=r.date;
+
+		    
+		}else
+		    alert(r.msg);
 	    }
 	});    
 }
@@ -291,6 +357,29 @@ var check_order=function(o){
 	clear_editors();
 	active_editor='check';
 	Dom.get('check_dialog').style.display='';
+	//Change table check order format
+// 	Dom.get("table_all_products").innerHTML='<?=_('Amend order')?>';
+	Dom.get("show_found").style.display='';
+	Dom.get("show_new_found").style.display='';
+
+// 	Dom.get("table_po_products").className='but selected';
+
+ 	var table=tables['table0'];
+// 	var datasource=tables['dataSource0'];
+// 	var request='&show_all=0';
+// 	datasource.sendRequest(request,table.onDataReturnInitializeTable, table);    
+
+//	table.hideColumn('description');
+//	table.hideColumn('expected_qty');
+	table.hideColumn('price_unit');
+	table.showColumn('expected_qty');	    
+
+	table.showColumn('qty_edit');	    
+	table.showColumn('diff');	    
+	table.showColumn('damaged_edit');	    
+	table.showColumn('useful');	    
+
+       
     }
 
 }
@@ -316,10 +405,61 @@ var cancel_order=function(o){
     }
 
 
+};
+
+var swap_show_items=function(o){
+
+    var status=o.getAttribute('status');
+    if(status==8){
+	o.className='selected but';
+	Dom.get('show_found').className='but';
+	Dom.get('show_new_found').className='but';
+	
+	var table=tables['table0'];
+	
+	table.showColumn('expected_qty');
+	table.showColumn('damaged_edit');
+	table.showColumn('usable');
+	
+	var datasource=tables['dataSource0'];
+	var request='&all_products=0';
+	
+	Dom.get("clean_table_controls0").style.visibility='visible';
+	Dom.get("clean_table_filter0").style.visibility='visible';
+
+
+	datasource.sendRequest(request,table.onDataReturnInitializeTable, table);    
+
+    }
+    
+}
+
+var swap_item_found=function(o){
+    Dom.get('show_items').className='but'
+    Dom.get('show_new_found').className='but'
+    o.className='selected but';
+    
+
+    var table=tables['table0'];
+    
+    table.hideColumn('expected_qty');
+    table.hideColumn('damaged_edit');
+    table.hideColumn('usable');
+
+    var datasource=tables['dataSource0'];
+    var request='&all_products=1';
+
+    Dom.get("clean_table_controls0").style.visibility='visible';
+    Dom.get("clean_table_filter0").style.visibility='visible';
+
+
+    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);    
+
 }
 
 
-var swap_show_all_products=function(o,show_all){
+
+var swap_show_all_products=function(o){
     o.className='selected but';
     var table=tables['table0'];
     if(show_all){
@@ -388,21 +528,20 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		var tableDivEL="table"+tableid;
 		var ColumnDefs = [
 				  {key:"code", label:"<?=_('Code')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				  ,{key:"sup_code", label:"<?=_('S Code')?>", width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}<?=($_SESSION['state']['po']['status']==0?',hidden:true':'')?>}
-				  //				    ,{key:"fam", label:"<?=_('Family')?>",width:80,formatter:this.familyLink, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				  ,{key:"description", label:"<?=_('Description')?>",width:300, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				  ,{key:"sup_code", label:"<?=_('S Code')?>", width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}<?=(($_SESSION['state']['po']['status']==1 or $_SESSION['state']['po']['status']==8)?'':',hidden:true')?>}
+				  ,{key:"description", label:"<?=_('Description')?>",width:285, sortable:false,className:"aleft"<?=(($_SESSION['state']['po']['status']==0 or $_SESSION['state']['po']['status']==1 or $_SESSION['state']['po']['status']==8)?'':',hidden:true')?>}
 				  ,{key:"stock", label:"<?=_('Stock O(U)')?>",width:90,className:"aright"<?=($_SESSION['state']['po']['status']!=0?',hidden:true':'')?>}
-				  ,{key:"stock_time", label:"<?=_('Stock Time')?>",width:75,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}<?=($_SESSION['state']['po']['status']!=0?',hidden:true':'')?>}
-				  //,{key:"sup_code", label:"<?=_('S Code')?>", width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				  
-				  ,{key:"expected_qty", label:"<?=_('Qty O[U]')?>",width:40,className:"aright"<?=($_SESSION['state']['po']['status']!=0?',hidden:true':'')?>}
-				  ,{key:"expected_qty_ne", label:"<?=_('Qty O[U]')?>",width:100,className:"aright"<?=($_SESSION['state']['po']['status']==0?',hidden:true':'')?>}
-				  ,{key:"price_unit", label:"<?=_('Price (U)')?>",width:65,className:"aright"<?=($_SESSION['state']['po']['status']!=0?',hidden:true':'')?>}
-				  ,{key:"expected_price", label:"<?=_('E Cost')?>",width:70,className:"aright"<?=($_SESSION['state']['po']['status']!=0?',hidden:true':'')?>}
-				  ,{key:"qty_check", label:"<?=_('Qty [U]')?>",width:50,className:"aright"}
-				  ,{key:"diff", label:"<?=_('&Delta;U')?>",width:40,className:"aright"}
-				  ,{key:"damaged", label:"<?=_('Damaged')?>",width:60,className:"aright"}
-				  ,{key:"useful", label:"<?=_('In O[U]')?>",width:55,className:"aright"}
+				  ,{key:"stock_time", label:"<?=_('Stock Time')?>",width:75,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}<?=($_SESSION['state']['po']['status']==0?'':',hidden:true')?>}
+				  ,{key:"expected_qty_edit", label:"<?=_('Qty O[U]')?>",width:70,className:"aright"<?=($_SESSION['state']['po']['status']==0?'':',hidden:true')?>}
+				  ,{key:"expected_qty", label:"<?=_('Qty O[U]')?>",width:100,className:"aright"<?=(($_SESSION['state']['po']['status']==1 or $_SESSION['state']['po']['status']==8 )?'':',hidden:true')?>}
+				  ,{key:"price_unit", label:"<?=_('Price (U)')?>",width:65,className:"aright"<?=($_SESSION['state']['po']['status']==0?'':',hidden:true')?>}
+				  ,{key:"expected_price", label:"<?=_('E Cost')?>",width:70,className:"aright"<?=($_SESSION['state']['po']['status']==0?'':',hidden:true')?>}
+				  ,{key:"qty_edit", label:"<?=_('Qty [U]')?>",width:50,className:"aright",hidden:true}
+				  ,{key:"diff", label:"<?=_('&Delta;U')?>",width:40,className:"aright",hidden:true}
+				  ,{key:"damaged_edit", label:"<?=_('Damaged')?>",width:60,className:"aright",hidden:true}
+
+				  ,{key:"damaged", label:"<?=_('Damaged')?>",width:60,className:"aright"<?=(($_SESSION['state']['po']['status']==10)?'':',hidden:true')?>}
+				  ,{key:"usable", label:"<?=_('In O[U]')?>",width:55,className:"aright"<?=(($_SESSION['state']['po']['status']==10)?'':',hidden:true')?>}
 
 
 				  ];
@@ -424,7 +563,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			},
 			
 			fields: [
-				 "id","family_id","fam","code","description","stock","price_unit","price_outer","delete","p2s_id","sup_code","group_id","qty","expected_price","price","expected_qty","expected_qty_ne","damaged","qty_check","diff","useful"
+				 "id","family_id","fam","code","description","stock","price_unit","price_outer","delete","p2s_id","sup_code","group_id","qty","expected_price","price","expected_qty","expected_qty_edit","damaged","damaged_edit","qty_edit","diff","usable"
 				 ]};
 	    
 		    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
@@ -491,18 +630,16 @@ YAHOO.util.Event.addListener(window, "load", function() {
      cal4.render();
      cal4.update();
      cal4.selectEvent.subscribe(handleSelect, cal4, true); 
+
+     
      cal5 = new YAHOO.widget.Calendar("cal5","cal5Container", { title:"<?=_('Choose a date')?>:", close:true } );
      cal5.update=updateCal;
      cal5.id=5;
      cal5.render();
      cal5.update();
      cal5.selectEvent.subscribe(handleSelect, cal5, true); 
-     cal6 = new YAHOO.widget.Calendar("cal6","cal6Container", { title:"<?=_('Choose a date')?>:", close:true } );
-     cal6.update=updateCal;
-     cal6.id=6;
-     cal6.render();
-     cal6.update();
-     cal6.selectEvent.subscribe(handleSelect, cal6, true); 
+
+
      cal7 = new YAHOO.widget.Calendar("cal7","cal7Container", { title:"<?=_('Choose a date')?>:", close:true } );
      cal7.update=updateCal;
      cal7.id=7;
@@ -514,22 +651,26 @@ YAHOO.util.Event.addListener(window, "load", function() {
      YAHOO.util.Event.addListener("calpop1", "click", cal1.show, cal1, true);
      YAHOO.util.Event.addListener("calpop2", "click", cal2.show, cal2, true);
      YAHOO.util.Event.addListener("calpop3", "click", cal3.show, cal3, true);
+
      YAHOO.util.Event.addListener("calpop4", "click", cal4.show, cal4, true);
      YAHOO.util.Event.addListener("calpop5", "click", cal5.show, cal5, true);
-     YAHOO.util.Event.addListener("calpop6", "click", cal6.show, cal6, true);
-     YAHOO.util.Event.addListener("calpop7", "click", cal7.show, cal7, true);
+
+     YAHOO.util.Event.addListener("calpop7", "click", cal7.show, cal7, true);//expected
 
 
-     
 
-     
+
+
+
      receiver_list = new YAHOO.widget.Menu("receiver_list", {context:["staff_list_row","tr", "br","beforeShow"]  });
      receiver_list.render();
      receiver_list.subscribe("show", receiver_list.focus);
-     
-
      YAHOO.util.Event.addListener("choose_receiver", "click", receiver_list.show, null, receiver_list);
 
+        checker_list = new YAHOO.widget.Menu("checker_list", {context:["staff_list_row","tr", "br","beforeShow"]  });
+     checker_list.render();
+     checker_list.subscribe("show", checker_list.focus);
+     YAHOO.util.Event.addListener("choose_checker", "click", checker_list.show, null, checker_list); 
 
 
 

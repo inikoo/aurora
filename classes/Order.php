@@ -541,7 +541,7 @@ function set($tipo,$data){
 
 	  //	  print "caca";
 	  $done_by=$data['done_by'];
-	  if(count($done_by)==0)
+	  if(count($done_by)==0  or !is_array($done_by))
 	    return array('ok'=>false,'msg'=>_('Error, indicate who receive the order'));
 	  $this->data['received_by']=array();
 	  $received_list='';
@@ -580,10 +580,11 @@ function set($tipo,$data){
 	  $this->data['status_id']=90;
 	  $this->data['status']=$_order_status[$this->data['status_id']];
 	  
-
+	  
 	  $done_by=$data['done_by'];
-	  if(count($done_by)==0)
-	    return array('ok'=>false,'msg'=>_('Error, indicate who check the order'));
+
+	  if(count($done_by)==0 or !is_array($done_by))
+	    return array('ok'=>false,'msg'=>_('Error, indicate who checked the order'));
 	  $this->data['checked_by']=array();
 	  $received_list='';
 	  foreach($done_by as $id=>$value){
@@ -671,7 +672,7 @@ function set($tipo,$data){
 	  $share=1/$num_receivers;
 	  foreach($this->data['received_by'] as $key=>$value){
 	    $sql=sprintf("insert into porden_receiver (po_id,staff_id,share) values (%d,%d,%f)",$this->id,$key,$share);
-	    print "$sql ";
+	    //	    print "$sql ";
 	    mysql_query($sql);
 	  }
 	}
@@ -689,7 +690,7 @@ function set($tipo,$data){
 	  $share=1/$num_checkers;
 	  foreach($this->data['checked_by'] as $key=>$value){
 	    $sql=sprintf("insert into porden_checker (po_id,staff_id,share) values (%d,%d,%f)",$this->id,$key,$share);
-	    print "$sql ";
+	    //	    print "$sql ";
 	    mysql_query($sql);
 	  }
 	}
