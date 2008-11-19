@@ -47,6 +47,7 @@ $smarty->assign('status',$_SESSION['state']['po']['status']);
 $smarty->assign('parent','suppliers.php');
 $smarty->assign('currency',$myconf['currency_symbol']);
 $smarty->assign('decimal_point',$myconf['decimal_point']);
+$smarty->assign('thosusand_sep',$myconf['thosusand_sep']);
 
 
 $tipo_filter=$_SESSION['state']['po']['items']['f_field'];

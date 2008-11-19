@@ -36,7 +36,7 @@
     <tr  id="expected_noready"     {if $po.date_submited=='' or $po.date_expected!='' or $po.status_id>=80}style="display:none"{/if}    ><td></td><td id="set_estimated_po" class="but" onClick="change_et_order(this)">{t}Set ET{/t}</td></tr>
     <tr  id="expected_change"     {if $po.date_submited==''  or $po.date_expected=='' or $po.status_id>=80}style="display:none"{/if}    ><td></td><td id="change_edtimated_po" class="but" onClick="change_et_order(this)">{t}Change ET{/t}</td></tr>
      <tr id="expected_dialog" style="display:none;text-align:right"><td colspan=2>
-	<table border=1 style="float:right">
+	<table  style="float:right">
 	  <tr><td>{t}Expected Date{/t}:</td><td><input id="v_calpop7" style="text-align:right;"  class="text" name="expected_date" type="text"  size="10" maxlength="10"     /><img   id="calpop7" style="cursor:pointer" src="art/icons/calendar_view_month.png" align="top" alt=""   /> <div id="cal7Container" style="display:none; z-index:2;position:absolute"></div>	</td></tr>
 	    <tr><td colspan=2 class="aright"><span style="cursor:pointer;margin-right:16px"  onClick="et_order_save(this)"  >Save <img   src="art/icons/disk.png" align="top" alt=""   /></span></td></tr>
 	</table>
@@ -63,7 +63,7 @@
     <tr id="check_noready"  {if $po.date_checked!='' or $po.status_id<80}style="display:none"{/if}    ><td></td><td id="receive_po" class="but"   onClick="check_order(this)"   >{t}Check{/t}</td></tr>
 
      <tr id="check_dialog" style="display:none;text-align:right"><td colspan=2>
-	<table border=1 style="float:right">
+	<table  style="float:right">
 	  <tr><td>{t}Items Cheked by{/t}:</td><td><span id="choose_checker" style="cursor:pointer;font-size:85%;color:#777">{t}Choose name{/t}</td></tr>
 	   <tr><td colspan=2 style="text-align:right" id="checkers_name"></td></tr>
 	  <tr><td colspan=2 style="text-align:right">{t}at{/t}: <input id="v_calpop4" style="text-align:right;"  class="text" name="submites_date" type="text"  size="10" maxlength="10"  value="{$date}"    /><img   id="calpop4" style="cursor:pointer" src="art/icons/calendar_view_month.png" align="top" alt=""   /> <input id="v_time4"   style="text-align:right;" class="text" name="expected_date" type="text"  size="5" maxlength="5"  value="{$time}"   /><img   id="calpop1" style="cursor:pointer" src="art/icons/time.png" align="top" alt=""   />  <div id="cal4Container" style="position:absolute;display:none; z-index:2"></div>	</td></tr>
@@ -78,7 +78,7 @@
     <tr id="consolidate_noready"  {if $po.date_consolidated!='' or $po.status_id<90 }style="display:none"{/if}   ><td></td><td id="receive_po" class="but" onClick="consolidate_order(this)"   >{t}Consolidate{/t}</td></tr>
 
      <tr id="consolidate_dialog" style="display:none;text-align:right"><td colspan=2>
-	<table border=1 style="float:right">
+	<table  style="float:right">
 	  <tr><td>{t}Consolidated by{/t}:</td><td><span style="c">{t}Choose name{/t}</td></tr>
 	  <tr><td colspan=2 style="text-align:right">{t}at{/t}: <input id="v_calpop5" style="text-align:right;"  class="text" name="submites_date" type="text"  size="10" maxlength="10"  value="{$date}"    /><img   id="calpop5" style="cursor:pointer" src="art/icons/calendar_view_month.png" align="top" alt=""   /> <input id="v_time5"   style="text-align:right;" class="text" name="expected_date" type="text"  size="5" maxlength="5"  value="{$time}"   /><img   id="calpop1" style="cursor:pointer" src="art/icons/time.png" align="top" alt=""   />  <div id="cal5Container" style="position:absolute;display:none; z-index:2"></div>	</td></tr>
 
@@ -104,7 +104,7 @@
 </div>
 
 
-<div class="prodinfo" style="margin-left:20px;width:550px;margin-top:25px;border:1px solid black;font-size:85%">
+<div class="prodinfo" style="margin-left:20px;width:550px;margin-top:25px;xborder:1px solid black;font-size:85%">
  <table  border=1 style="float:right">
     <tr><td>{t}Goods{/t}:</td><td id="goods" class="aright">{$po.money.goods}</td></tr>
     <tr><td>{t}Shipping{/t}:</td><td class="aright" id="shipping"  >{$po.money.shipping}</td>
@@ -175,12 +175,20 @@
     <tr><td>{t}Items{/t}:</td><td class="aright" id="distinct_products">{$po.items}</td></tr>
   </table>
   
-  <table style="clear:left"  border=1>
-    <tr><td>{t}Invoice Number{/t}</td></tr>
-    <tr><td>{t}Invoice Date{/t}</td></tr>
-    <tr><td>{t}Order Reference{/t}</td></tr>
-    <tr><td>{t}Goods Value{/t}</td></tr>
-    
+  <table  class="edit"   style="clear:left" >
+    <tr ><td><span class="but" style="text-align:left">Match to Invoice</span></td><td>Save <img src="art/icons/disk.png" /></td></tr>
+    <tr class="top"><td>{t}Invoice Number{/t}</td><td><input style="width:7em" id="v_invoice_number" value="{$po.public_id}"></td></tr>
+    <tr><td>{t}Order Reference{/t}</td><td><input style="width:7em"  id="v_invoice_number" value="{$po.public_id}"></td></tr>
+    <tr><td>{t}Invoice Date{/t}</td><td><input id="v_invoice_date" style="width:6.5em" value="{$po.date_invoice}"  size="10" maxlength="10" > <img   id="calpop6" style="cursor:pointer" src="art/icons/calendar_view_month.png" align="top" alt="" /><div id="cal6Container" style="position:absolute;display:none; z-index:2"></td></tr>
+
+    <tr class="top"><td>{t}Goods Value{/t}</td><td>{$po.money.goods}</td></tr>
+    <tr><td>{t}Shipping Value{/t}</td><td>{$currency}<input style="width:6em" onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thosusand_sep}',2);"  id="v_shipping" value="{$po.number.shipping}"></td></tr>
+    <tr><td>{t}Charges Value{/t}</td><td>{$currency}<input  style="width:6em" onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thosusand_sep}',2);" id="v_charges" value="{$po.number.charges}"></td></tr>
+    <tr><td>{t}Balance{/t}</td><td>{$currency}<input  style="width:6em" onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thosusand_sep}',2);" id="v_charges" value="{$po.number.diff}"></td></tr>
+
+    <tr><td>{t}Vat Value{/t}</td><td>{$currency}<input  style="width:6em" onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thosusand_sep}',2);"  id="v_vat" value="{$po.number.vat}"></td></tr>
+    <tr><td>{t}Total{/t}</td><td>{$po.money.total}</td></tr>
+
 
   </table>
 
