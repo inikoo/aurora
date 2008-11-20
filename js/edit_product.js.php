@@ -9,7 +9,7 @@ var    num_changed = 0;
 var    num_errors = 0;
 var editor;
 var editing='<?=$_SESSION['state']['product']['edit']?>';
-
+var cat_list;
 jsonString='<?=$_SESSION['state']['product']['shapes'];?>';
 try {
     var shapes = YAHOO.lang.JSON.parse(jsonString);
@@ -509,21 +509,30 @@ function init(){
 	//var myTooltip = new YAHOO.widget.Tooltip("myTooltip", { context:"upo_label,outall_label,awoutall_label,awoutq_label"} ); 
 
 
-	//Details textarea editor ---------------------------------------------------------------------
-	var texteditorConfig = {
-	    height: '300px',
-	    width: '730px',
-	    dompath: true,
-	    focusAtStart: true
-	};     
+// 	//Details textarea editor ---------------------------------------------------------------------
+// 	var texteditorConfig = {
+// 	    height: '300px',
+// 	    width: '730px',
+// 	    dompath: true,
+// 	    focusAtStart: true
+// 	};     
 
- 	editor = new YAHOO.widget.Editor('v_details', texteditorConfig);
+//  	editor = new YAHOO.widget.Editor('v_details', texteditorConfig);
 
- 	editor._defaultToolbar.buttonType = 'basic';
- 	editor.render();
-	editor.on('editorKeyUp',change_textarea,'details' );
-	//-------------------------------------------------------------
-	
+//  	editor._defaultToolbar.buttonType = 'basic';
+//  	editor.render();
+// 	editor.on('editorKeyUp',change_textarea,'details' );
+// 	//-------------------------------------------------------------
+
+
+	cat_list = new YAHOO.widget.Menu("catlist", {context:["browse_cat","tr", "br","beforeShow"]  });
+
+	cat_list.render();
+
+	cat_list.subscribe("show", cat_list.focus);
+
+	YAHOO.util.Event.addListener("browse_cat", "click", cat_list.show, null, cat_list); 
+
 
 }
 

@@ -95,26 +95,19 @@
       <tr><td><img style="visibility:hidden"  id="c_categories" src="art/icons/accept.png" /></td>
 	<td style="vertical-align: top;" >{t}Categories{/t}:</td>
 	<td style="vertical-align: top;" >
-<table id="cat_list" style="border-right:1px solid #ccc;float:left;margin:0 20px 0 0 ">
-  {if $num_cat==0}<tr><td>{t}No assigned catories{/t}<td></td>{/if}
-    {foreach from=$cat key=cat_id item=i}
-  <tr><td tipo="1" id="cat_{$cat_id}" saved="1" >{$i}</td><td onclick="delete_list_item('',{$cat_id})" ><img  id="cat_t_{$cat_id}" cat_id="{$cat_id}" style="cursor:pointer" src="art/icons/cross.png" /></td></tr>
-  {/foreach}
-</table>
+	  
+	  <table border=0 id="cat_list" style="float:left;margin:0 20px 0 0 ">
+	    <tr><td>{if $num_cat==0}{t}No category assigned{/t}{/if}<td><td><span style="margin:0 0 0 25px;cursor:pointer" id="browse_cat">{t}Choose Category{/t}</span></td></td>
+	      {foreach from=$cat key=cat_id item=i}
+	    <tr><td tipo="1" id="cat_{$cat_id}" saved="1" >{$i}</td><td onclick="delete_list_item('',{$cat_id})" ><img  id="cat_t_{$cat_id}" cat_id="{$cat_id}" style="cursor:pointer" src="art/icons/cross.png" /></td></tr>
+	    {/foreach}
+	  </table>
 
+	  
 
-{if $num_cat_list==0}{t}No categories to choose{/t}{else}
-<select name='cat' id="cat_select" prev="0">
-  <option iname="">{t}Choose a category{/t}</option>
-  {foreach from=$cat_list key=myId item=i}
-  <option {if !$i.show}disabled="disabled"{/if}  id="cat_o_{$myId}" iname="{$i.iname}"  parents="{$i.parents}" sname="{$i.name}"  cat_id="{$myId}"   >{$i.name}</option>
-  {/foreach}
-</select>
-<img box="cat_select" id="add_cat" style="position:relative;top:3px;cursor:pointer" src="art/icons/application_go_left.png"/>
-{/if}
+	  
 
-<span style="margin:0 0 0 25px;">{t}Browse Categories{/t}</span></td></tr>
-
+      
       <tr><td><img style="visibility:hidden"  id="c_description" src="art/icons/accept.png" /></td>
 	<td>{t}Description{/t}:</td><td><input     class=''     ovalue="{$description}"   name="v_description"    value="{$description}"  id="v_description" size="40"/></td><td id="m_description"></td></tr>
       <tr><td><img style="visibility:hidden"  id="c_sdescription" src="art/icons/accept.png" /></td>                               
@@ -160,6 +153,30 @@
       {/if}
       {/foreach}
     </ul>
+  </div>
+</div>
+
+<div style="display:none" id="scat_list" class="yuimenu staff_list"  >
+  <div class="bd">
+    <table border=1>
+      {foreach from=$cats item=_cat name=foo}
+      {if $_cat.mod==0}<tr>{/if}
+	<td title="{$_cat.name}" cat_id="{$_cat.id}" id="checkers{$_cat.id}" onClick="select_cat(this,event)" >{$_cat.sname}</td>
+	{if $_cat.mod==$cat_cols}</tr>{/if}
+      {/foreach}
+    </table>
+  </div>
+</div>
+
+<div id="catlist" class="yuimenu staff_list"  >
+  <div class="bd">
+     <table border=1>
+{foreach from=$cats item=_cat name=foo}
+      {if $_cat.mod==0}<tr>{/if}
+	<td title="{$_cat.name}" cat_id="{$_cat.id}" id="checkers{$_cat.id}" onClick="select_cat(this,event)" >{$_cat.sname}</td>
+	{if $_cat.mod==$cat_cols}</tr>{/if}
+      {/foreach}
+    </table>
   </div>
 </div>
 

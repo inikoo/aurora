@@ -805,7 +805,49 @@ function is_url($url){
 
 
 
+function array_transverse($a,$cols){
+  $total=count($a);
+  $rows=ceil($total/$cols);
+  $to_add=($rows*$cols)-$total;
+  $new_total=($rows*$cols);
+  for($i=0;$i<$to_add;$i++){
+    $a[]='';
+  }
+  $tmp=$cols;
+  $cols=$rows;
+  $rows=$tmp;
+  
+  // print "$total $cols $rows $to_add $new_total\n";
 
+
+  $i=0;
+  $j=-1;
+  $old=array();
+  foreach($a as $key=>$value){
+
+  
+
+
+  if(fmod($i,$cols)==0){
+    $i=0;
+    $j++;
+  }
+  //  print "$key $value ; $i $j\n";
+  $old[$i][$j]=$value;
+  $i++;
+}
+ $new=array();
+for($i=0;$i<$cols;$i++){
+  for($j=0;$j<$rows;$j++){
+       $new[]=$old[$i][$j];
+ }
+
+
+
+ }
+ return array($new,$rows);
+
+}
 
 
 ?>

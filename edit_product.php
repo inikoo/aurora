@@ -173,5 +173,24 @@ $_SESSION['state']['product']['shapes']=json_encode($_shape);
 $smarty->assign('currency',$myconf['currency_symbol']);
 $smarty->assign('data',$product->data);
 
+$sql=sprintf("select id,sname,tipo,name,description from cat order by sname ");
+$res = $db->query($sql);
+$num_cols=6;
+$cat=array();
+$i=1;
+while($row=$res->fetchrow()){
+  $cat[]=array('sname'=>$row['sname'],'name'=>$row['name'].": ".$row['description'],'id'=>$row['id'],'tipo'=>$row['tipo']);
+  $i++;
+ }
+
+list($cat,$num_cols)= array_transverse($cat,$num_cols);
+
+foreach($cat as $key=>$_cat){
+  $cat[$key]['mod']=fmod($key,$num_cols);
+}
+
+
+$smarty->assign('cats',$cat);
+$smarty->assign('cat_cols',$num_cols-1);
 $smarty->display('edit_product.tpl');
 ?>

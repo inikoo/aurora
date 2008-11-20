@@ -70,17 +70,21 @@ $smarty->assign('time',date("H:i"));
 
 //create user list
 $sql=sprintf("select id,alias,position_id from staff where active=1 order by alias ");
-
 $res = $db->query($sql);
-$i=0;
 $num_cols=5;
 $staff=array();
 while($row=$res->fetchrow()){
-  $staff[]=array('mod'=>fmod($i,$num_cols),'alias'=>$row['alias'],'id'=>$row['id'],'position_id'=>$row['position_id']);
-  $i++;
+  $staff[]=array('alias'=>$row['alias'],'id'=>$row['id'],'position_id'=>$row['position_id']);
  }
+
+$staff= array_transverse($staff,$num_cols);
+foreach($staff as $key=>$_staff){
+  $staff[$key]['mod']=fmod($key,$num_cols);
+}
+
+
 $smarty->assign('staff',$staff);
-$smarty->assign('staff_cols',$num_cols-1);
+$smarty->assign('staff_cols',$num_cols);
 
 
 
