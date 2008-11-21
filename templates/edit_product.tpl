@@ -156,25 +156,24 @@
   </div>
 </div>
 
-<div style="display:none" id="scat_list" class="yuimenu staff_list"  >
+
+<div id="catlist" class="yuimenu staff_list"  >
   <div class="bd">
+    <span>{t}{/t}</span>
+    <span>Material</span>
     <table border=1>
-      {foreach from=$cats item=_cat name=foo}
+      {foreach from=$material_cat item=_cat name=foo}
       {if $_cat.mod==0}<tr>{/if}
 	<td title="{$_cat.name}" cat_id="{$_cat.id}" id="checkers{$_cat.id}" onClick="select_cat(this,event)" >{$_cat.sname}</td>
 	{if $_cat.mod==$cat_cols}</tr>{/if}
       {/foreach}
     </table>
-  </div>
-</div>
-
-<div id="catlist" class="yuimenu staff_list"  >
-  <div class="bd">
+     <span>Use</span>
      <table border=1>
-{foreach from=$cats item=_cat name=foo}
-      {if $_cat.mod==0}<tr>{/if}
-	<td title="{$_cat.name}" cat_id="{$_cat.id}" id="checkers{$_cat.id}" onClick="select_cat(this,event)" >{$_cat.sname}</td>
-	{if $_cat.mod==$cat_cols}</tr>{/if}
+       {foreach from=$use_cat item=_cat name=foo}
+       {if $_cat.mod==0}<tr>{/if}
+	 <td title="{$_cat.name}" cat_id="{$_cat.id}" id="checkers{$_cat.id}" onClick="select_cat(this,event)" >{$_cat.sname}</td>
+	 {if $_cat.mod==$cat_cols}</tr>{/if}
       {/foreach}
     </table>
   </div>
