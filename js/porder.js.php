@@ -11,6 +11,18 @@ var receiver_list;
 var checker_list;
 
 
+var match_invoice_open=function(){
+    Dom.get("match_invoice").style.display='none'
+    Dom.get("match_invoice_dialog").style.display=''
+}
+var match_invoice_close=function(){
+    Dom.get("match_invoice_dialog").style.display='none'
+    Dom.get("match_invoice").style.display=''
+}
+var match_invoice_save=function(){
+
+}
+
 
 
 var eqty=function(o,id,units){
@@ -489,6 +501,42 @@ var swap_show_all_products=function(o){
     
 };
     
+var match_invoice_changes=0;
+var match_invoice_errors=0;
+
+var changed=function(o){
+    var ovalue=o.getAttribute('ovalue');
+    if(ovalue!=o.value){
+	if(Dom.get('changed_'+o.name).style.visibility!='visible'){
+	    Dom.get('changed_'+o.name).style.visibility='visible';
+	    match_invoice_changes++;
+	}
+    }else{
+	if(Dom.get('changed_'+o.name).style.visibility!='hidden'){
+	    Dom.get('changed_'+o.name).style.visibility='hidden';	
+	    match_invoice_changes--;
+	}
+    }
+    
+    if(o.name=='vat' || o.name=='shipping' || o.name=='diff' || o.name=='charges'){
+
+	var total=
+  	parseFloat(FormatNumber(Dom.get("v_goods").innerHTML,'.','',2))
+  	+parseFloat(FormatNumber(Dom.get('v_vat').value,'.','',2))
+  	+parseFloat(FormatNumber(Dom.get('v_shipping').value,'.','',2))
+  	+parseFloat(FormatNumber(Dom.get('v_diff').value,'.','',2))
+  	+parseFloat(FormatNumber(Dom.get('v_charges').value,'.','',2));
+	total=parseFloat(total).toFixed(2);
+ 	Dom.get("v_total").innerHTML=FormatNumber(total,'.',',',2);
+    }
+
+
+    if(match_invoice_changes>0 && match_invoice_errors==0)
+	Dom.get("match_invoice_save").style.display='';
+    else
+	Dom.get("match_invoice_save").style.display='none';
+
+}
 
 
 var value_changed=function(o){

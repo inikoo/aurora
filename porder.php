@@ -77,7 +77,8 @@ while($row=$res->fetchrow()){
   $staff[]=array('alias'=>$row['alias'],'id'=>$row['id'],'position_id'=>$row['position_id']);
  }
 
-$staff= array_transverse($staff,$num_cols);
+//$staff= array_transverse($staff,$num_cols);
+//print_r($staff);
 foreach($staff as $key=>$_staff){
   $staff[$key]['mod']=fmod($key,$num_cols);
 }

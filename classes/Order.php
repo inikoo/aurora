@@ -295,6 +295,14 @@ class Order{
 				   'charges'=>money($porder['charges']),
 				   'diff'=>money($porder['diff'])
 			   );
+	$this->data['number']=array(
+				    'total'=>number($porder['total'],2,true),
+				    'vat'=>number($porder['vat'],2,true),
+				    'goods'=>number($porder['goods'],2,true),
+				    'shipping'=>number($porder['shipping'],2,true),
+				    'charges'=>number($porder['charges'],2,true),
+				    'diff'=>number($porder['diff'],2,true)
+			   );
 
 
       }else

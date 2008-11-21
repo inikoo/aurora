@@ -176,7 +176,13 @@ function FormatNumber(num,dec,comma,decimalPlaces)
   var minus='';
   var preDecimal='';
   var postDecimal='';
-  
+  var delete_comma=false;
+  if(comma==''){
+      comma=',';
+      delete_comma=true;
+  }
+
+
   try 
   {
    
@@ -244,14 +250,19 @@ function FormatNumber(num,dec,comma,decimalPlaces)
     // the right side decimal formatted value.
     
     var regex  = new RegExp('(-?[0-9]+)([0-9]{3})');
- 
+
     while(regex.test(preDecimal))
-    {
+	{  
        preDecimal = preDecimal.replace(regex, '$1' + comma + '$2');
     }
        
   }
   catch (exception) { AlertError("Format Number",exception); }
+  if(delete_comma){
+
+      preDecimal=preDecimal.replace(/\,/,"");
+  }
+
   return minus + preDecimal + postDecimal;
 }
 

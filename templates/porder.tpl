@@ -107,28 +107,13 @@
 <div class="prodinfo" style="margin-left:20px;width:550px;margin-top:25px;xborder:1px solid black;font-size:85%">
  <table  border=1 style="float:right">
     <tr><td>{t}Goods{/t}:</td><td id="goods" class="aright">{$po.money.goods}</td></tr>
-    <tr><td>{t}Shipping{/t}:</td><td class="aright" id="shipping"  >{$po.money.shipping}</td>
-      <td  id="edit_shipping" style="display:none" > {$currency}
-	<input style="text-align:right" class="text" size="7"  id="v_shipping"  value="{$nm_value_shipping}" name="shipping"  />{$decimal_point}
-	<input style="text-align:right" maxlength="2" id="v_shipping_c" class="text" size="1" name="shipping"  value="{$nc_value_shipping}"/></td></tr>
-    <tr> <tr><td>{t}Vat{/t}:</td><td id="vat" class="aright"   >{$po.money.vat}</td>
-      <td id="edit_vat" style="display:none"  >{$po.vat}
-	<input style="text-align:right" class="text" size="7"  id="v_vat" value="{$nm_value_vat}" name="vat" />{$decimal_point}
-	<input  maxlength="2" style="text-align:right" id="v_vat_c" class="text" size="1"  value="{$nc_value_vat}"  name="vat"  /></td></tr>
+    <tr><td>{t}Shipping{/t}:</td><td class="aright" id="shipping"  >{$po.money.shipping}</td></tr>
+    <tr> <tr><td>{t}Vat{/t}:</td><td id="vat" class="aright"   >{$po.money.vat}</td></tr>
     <tr id="other_charge"  {if $n_value_other==0}style="display:none"{/if} ><td >{t}Other{/t}:</td><td class="aright"  id="other"  >{$value_other}</td>
-      <td id="edit_other" style="display:none">{$currency}
-	
-
-	<input style="text-align:right" class="text" size="7"  id="v_other" value="{$nm_value_other}"   name="other" />{$decimal_point}
-	<input  style="text-align:right" maxlength="2" id="v_other_c" class="text" size="1"   value="{$nc_value_other}"  name="other"   /></td>
-      
     </tr>
     <tr  {if $n_value_dif==0}style="display:none"{/if}  ><td>{t}Diff{/t}:</td><td class="stock aright" style="background:red">{$value_dif}</td></tr>
     <tr>
       <td>{t}Total{/t}</td><td id="total" class="stock aright ">{$po.money.total}</td>
-      <td  id="edit_total" style="display:none" >  {$currency}
-	<input style="text-align:right" class="text" size="7"  id="v_total" value="{$nm_value_total}" />{$decimal_point}
-	      <input   maxlength="2" style="text-align:right" id="v_total_c" class="text" size="1"   value="{$nc_value_total}" /></td>
     </tr>
     
   </table>
@@ -174,20 +159,36 @@
     
     <tr><td>{t}Items{/t}:</td><td class="aright" id="distinct_products">{$po.items}</td></tr>
   </table>
-  
-  <table  class="edit"   style="clear:left" >
-    <tr ><td><span class="but" style="text-align:left">Match to Invoice</span></td><td>Save <img src="art/icons/disk.png" /></td></tr>
-    <tr class="top"><td>{t}Invoice Number{/t}</td><td><input style="width:7em" id="v_invoice_number" value="{$po.public_id}"></td></tr>
-    <tr><td>{t}Order Reference{/t}</td><td><input style="width:7em"  id="v_invoice_number" value="{$po.public_id}"></td></tr>
+  <div style="clear:left" id="match_invoice">
+    <span class="but" style="margin-left:10px" onClick="match_invoice_open()">{t}Match to Invoice{/t}</span>
+  </div>
+  <table  class="edit"   style="clear:left;display:none" id="match_invoice_dialog">
+    <tr ><td style="text-align:left"><span class="but" style="text-align:left" onClick="match_invoice_close()">Close</span></td>
+      <td><span  id="match_invoice_save"  style="cursor:pointer;display:none" onClick="match_invoice_save()">Save <img src="art/icons/disk.png" /></span></td></tr>
+    <tr class="top">
+      <td><span id="changed_invoice_number" class="changed" style="visibility:hidden;">*</span><img id="error_invoice_number" title="" style="visibility:hidden" src="art/icons/exclamation.png"/> {t}Invoice Number{/t}</td>
+      <td><input onChange="changed(this)" style="width:7em" id="v_invoice_number" name="invoice_number" ovalue="{$po.public_id}" value="{$po.public_id}"></td></tr>
+    <tr>
+      <td><span id="changed_order_reference"  class="changed" style="visibility:hidden;">*</span><img id="error_order_reference" title="" style="visibility:hidden" src="art/icons/exclamation.png"/>{t}Order Reference{/t}</td>
+      <td><input onChange="changed(this)" style="width:7em"  name="order_reference" id="v_order_reference" ovalue="{$po.reference}" value="{$po.reference}"></td>
+    </tr>
     <tr><td>{t}Invoice Date{/t}</td><td><input id="v_invoice_date" style="width:6.5em" value="{$po.date_invoice}"  size="10" maxlength="10" > <img   id="calpop6" style="cursor:pointer" src="art/icons/calendar_view_month.png" align="top" alt="" /><div id="cal6Container" style="position:absolute;display:none; z-index:2"></td></tr>
 
-    <tr class="top"><td>{t}Goods Value{/t}</td><td>{$po.money.goods}</td></tr>
-    <tr><td>{t}Shipping Value{/t}</td><td>{$currency}<input style="width:6em" onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thosusand_sep}',2);"  id="v_shipping" value="{$po.number.shipping}"></td></tr>
-    <tr><td>{t}Charges Value{/t}</td><td>{$currency}<input  style="width:6em" onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thosusand_sep}',2);" id="v_charges" value="{$po.number.charges}"></td></tr>
-    <tr><td>{t}Balance{/t}</td><td>{$currency}<input  style="width:6em" onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thosusand_sep}',2);" id="v_charges" value="{$po.number.diff}"></td></tr>
+    <tr class="top">
+      <td>{t}Goods Value{/t}</td>
+      <td>{$currency}<span id="v_goods">{$po.number.goods}</span></td>
+    </tr>
+    <tr>
+      <td><span id="changed_shipping" class="changed" style="visibility:hidden;">*</span><img id="error_shipping" title="" style="visibility:hidden" src="art/icons/exclamation.png"/> {t}Shipping Value{/t}</td>
+      <td>{$currency}<input style="width:6em" onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thosusand_sep}',2);changed(this)"  id="v_shipping" name="shipping" value="{$po.number.shipping}" ovalue="{$po.number.shipping}">
+    </td>
+    </tr>
+    <tr><td><span id="changed_charges" class="changed" style="visibility:hidden;">*</span><img id="error_charges" title="" style="visibility:hidden" src="art/icons/exclamation.png"/> {t}Charges Value{/t}</td>
+      <td>{$currency}<input  style="width:6em" onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thosusand_sep}',2);changed(this)" id="v_charges" name="charges"  ovalue="{$po.number.charges}"  value="{$po.number.charges}"></td></tr>
+    <tr><td><span id="changed_diff" class="changed" style="visibility:hidden;">*</span><img id="error_diff" title="" style="visibility:hidden" src="art/icons/exclamation.png"/> {t}Balance{/t}</td><td>{$currency}<input  style="width:6em" onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thosusand_sep}',2);changed(this)" id="v_diff" name="diff" ovalue="{$po.number.diff}" value="{$po.number.diff}"></td></tr>
 
-    <tr><td>{t}Vat Value{/t}</td><td>{$currency}<input  style="width:6em" onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thosusand_sep}',2);"  id="v_vat" value="{$po.number.vat}"></td></tr>
-    <tr><td>{t}Total{/t}</td><td>{$po.money.total}</td></tr>
+    <tr><td><span id="changed_vat" class="changed" style="visibility:hidden;">*</span><img id="error_vat" title="" style="visibility:hidden" src="art/icons/exclamation.png"/> {t}Vat Value{/t}</td><td>{$currency}<input  style="width:6em" onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thosusand_sep}',2);changed(this)"  id="v_vat" name="vat" ovalue="{$po.number.vat}" value="{$po.number.vat}"></td></tr>
+    <tr><td>{t}Total{/t}</td><td>{$currency}<span id="v_total">{$po.number.total}</span></td></tr>
 
 
   </table>
@@ -266,7 +267,7 @@
       {foreach from=$staff item=_staff name=foo}
       {if $_staff.mod==0}<tr>{/if}
 	<td staff_id="{$_staff.id}" id="receivers{$_staff.id}" onClick="select_staff(this,event,'receivers')" >{$_staff.alias}</td>
-	{if $_staff.mod==4}</tr>{/if}
+	{if $_staff.mod==$staff_cols}</tr>{/if}
       {/foreach}
     </table>
   </div>
@@ -278,7 +279,7 @@
       {foreach from=$staff item=_staff name=foo}
       {if $_staff.mod==0}<tr>{/if}
 	<td staff_id="{$_staff.id}" id="checkers{$_staff.id}" onClick="select_staff(this,event,'checkers')" >{$_staff.alias}</td>
-	{if $_staff.mod==4}</tr>{/if}
+	{if $_staff.mod==$staff_cols}</tr>{/if}
       {/foreach}
     </table>
   </div>
