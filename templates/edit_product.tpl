@@ -160,6 +160,15 @@
 <div id="catlist" class="yuimenu staff_list"  >
   <div class="bd">
     <span>{t}{/t}</span>
+    <span>Pyhical State</span>
+    <table border=1>
+      {foreach from=$state_cat item=_cat name=foo}
+      {if $_cat.mod==0}<tr>{/if}
+	<td title="{$_cat.name}" cat_id="{$_cat.id}" id="checkers{$_cat.id}" onClick="select_cat(this,event)" >{$_cat.sname}</td>
+	{if $_cat.mod==$cat_cols}</tr>{/if}
+      {/foreach}
+    </table>
+
     <span>Material</span>
     <table border=1>
       {foreach from=$material_cat item=_cat name=foo}
@@ -176,6 +185,16 @@
 	 {if $_cat.mod==$cat_cols}</tr>{/if}
       {/foreach}
     </table>
+  <span>{t}Other{/t}</span>
+     <table border=1>
+       {foreach from=$mods_cat item=_cat name=foo}
+       {if $_cat.mod==0}<tr>{/if}
+	 <td title="{$_cat.name}" cat_id="{$_cat.id}" id="checkers{$_cat.id}" onClick="select_cat(this,event)" >{$_cat.sname}</td>
+	 {if $_cat.mod==$cat_cols}</tr>{/if}
+      {/foreach}
+     </table>
+     
+
   </div>
 </div>
 
