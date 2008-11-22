@@ -86,28 +86,24 @@
 </div>
 <div  {if $edit!="description"}style="display:none"{/if} class="edit_block" id="d_description">
   <form id="f_description">
-    <input type="hidden" name="tipo" value="update_product">
-    <input type="hidden" name="product_id" value="{$product_id}">
-    <input type="hidden" id="v_cat" name="v_cat" value="{$v_cat}">
     
     
     <table style="margin:0;" border=0>
-      <tr><td><img style="visibility:hidden"  id="c_categories" src="art/icons/accept.png" /></td>
+      <tr>
+	<td><img style="visibility:hidden"  id="c_categories" src="art/icons/accept.png" /></td>
 	<td style="vertical-align: top;" >{t}Categories{/t}:</td>
 	<td style="vertical-align: top;" >
-	  
-	  <table border=0 id="cat_list" style="float:left;margin:0 20px 0 0 ">
-	    <tr><td>{if $num_cat==0}{t}No category assigned{/t}{/if}<td><td><span style="margin:0 0 0 25px;cursor:pointer" id="browse_cat">{t}Choose Category{/t}</span></td></td>
-	      {foreach from=$cat key=cat_id item=i}
-	    <tr><td tipo="1" id="cat_{$cat_id}" saved="1" >{$i}</td><td onclick="delete_list_item('',{$cat_id})" ><img  id="cat_t_{$cat_id}" cat_id="{$cat_id}" style="cursor:pointer" src="art/icons/cross.png" /></td></tr>
-	    {/foreach}
+	  <table border=1 id="cat_list" style="float:left;margin:0 20px 0 0 ">
+	    <tr>
+	      <td>{if $num_cat==0}{t}No category assigned{/t}{/if}<td><td><span style="margin:0 0 0 25px;cursor:pointer" id="browse_cat">{t}Choose Category{/t}</span></td></td>
+	    </tr>
+	    <tr><td>{t}State{/t}</td></tr>
+	    <tr><td>{t}Use{/t}</td></tr>
+	    <tr><td>{t}Other{/t}</td></tr>
+	    
 	  </table>
-
-	  
-
-	  
-
-      
+	</td>
+      </tr>  
       <tr><td><img style="visibility:hidden"  id="c_description" src="art/icons/accept.png" /></td>
 	<td>{t}Description{/t}:</td><td><input     class=''     ovalue="{$description}"   name="v_description"    value="{$description}"  id="v_description" size="40"/></td><td id="m_description"></td></tr>
       <tr><td><img style="visibility:hidden"  id="c_sdescription" src="art/icons/accept.png" /></td>                               
@@ -164,7 +160,7 @@
     <table border=1>
       {foreach from=$state_cat item=_cat name=foo}
       {if $_cat.mod==0}<tr>{/if}
-	<td title="{$_cat.name}" cat_id="{$_cat.id}" id="checkers{$_cat.id}" onClick="select_cat(this,event)" >{$_cat.sname}</td>
+	<td title="{$_cat.name}" cat_id="{$_cat.id}" id="cat_state{$_cat.id}" cat="state" onClick="select_cat(this,event)" >{$_cat.sname}</td>
 	{if $_cat.mod==$cat_cols}</tr>{/if}
       {/foreach}
     </table>

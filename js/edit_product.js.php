@@ -25,6 +25,24 @@ catch (e) {
     alert("ERROR:P_PES_JSONDATA");
 };
 
+var cats=new Object;
+var select_cat=function(o,e){
+    var tipo=o.getAttribite('cat');
+    var cat_id=o.getAttribute('cat_id');
+    var cat_name=o.innerHTML;
+    
+    if(o.className=='selected'){
+	delete(cats[cat_id])
+	
+    }else{
+
+	cats[cat_id]={'tipo':tipo,'name':cat_name};
+    }
+    display_cats();
+
+}
+
+
 
 
 var is_diferent = function(v1,v2,tipo){

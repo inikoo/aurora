@@ -24,7 +24,7 @@
 <h1>{t}Welcome{/t}</h1>
 
 
-<form name="loginform" id="loginform" method="post"   action="index.php">
+<form name="loginform" id="loginform" method="post"   autocomplete="off" action="index.php">
 <table style="margin:60px auto;" >
             <tr>
                 <td>{t}User{/t}:</td>
@@ -39,11 +39,12 @@
                     <div style="text-align:center">
                         <button id="login_go"   >{t}Log in{/t}</button>
                         <input type="hidden" name="_lang" value="{$lang_id}" />
-			<input type="hidden" id="ep" name="_st1_" value="" />
+			<input type="hidden" id="ep" name="ep" value="{$st}" />
                     </div>
                 </td>
             </tr>
 </table>
+
 </form>
 <div id="other_langs">
 {foreach from=$other_langs item=i key=k}

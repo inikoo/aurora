@@ -56,14 +56,15 @@ require_once 'LiveUser.php';        // PEAR Authentication System
 $LU = LiveUser::singleton($LU_conf);
 if (!$LU->init()) {
   var_dump($LU->getErrors());
-  die('');
+  die('xx');
  }
 if (!$LU) 
   die(_('An unknown error occurred'));
 
 
-$handle = (array_key_exists('_login_', $_REQUEST)) ? $_REQUEST['_login_'] : null;
-$passwd = (array_key_exists('_st1_', $_REQUEST)) ? $_REQUEST['_st1_'] : null;
+
+
+
 $logout = (array_key_exists('logout', $_REQUEST)) ? $_REQUEST['logout'] : false;
 if ($logout){
   
@@ -74,34 +75,71 @@ if ($logout){
   exit;
  }
 
-if(!$LU->isLoggedIn()){
-  if($handle & $passwd){
-    $LU->login($handle, $passwd, true);
-    if ($LU->isLoggedIn()){
-      $sql="insert into session (user_id,ip,start,last) values (".$LU->getProperty('auth_user_id').",'".ip()."',NOW(),NOW())";
-      mysql_query($sql);
-      $session_id=mysql_insert_id();
-      $_SESSION['mysession_id']=$session_id;
-    }
+
+$handle = (array_key_exists('_login_', $_REQUEST)) ? $_REQUEST['_login_'] : false;
+$sk = (array_key_exists('ep', $_REQUEST)) ? $_REQUEST['ep'] : false;
+
+if($handle & $sk){
+  include_once('aes.php');
+  include_once('app_files/db/key.php');
+  $sql=sprintf("select passwd from liveuser_users where handle='%s'",addslashes($handle));
+  $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+  if($row=$res->fetchRow()) {
+    $pwd=$row['passwd'];
     
-  }
-  else{
-    $LU->login(null, null, true);
-    if ($LU->isLoggedIn()){
+    $st=AESDecryptCtr(AESDecryptCtr($sk,$pwd,256),SKEY,256);
+    if(preg_match('/^skstart\|\d+\|[0-9\.]+\|.+\|/',$st)){
+      $data=preg_split('/\|/',$st);
+      $time=$data[1];
+      $ip=$data[2];
+      $ikey=$data[3];
+      if($time-date('U')>0 and ip()==$ip and IKEY==$ikey ){
+	$LU->login($handle, $pwd, true);
+        if ($LU->isLoggedIn()){
+	  $sql="insert into session (user_id,ip,start,last) values (".$LU->getProperty('auth_user_id').",'".ip()."',NOW(),NOW())";
+	  mysql_query($sql);
+	  $session_id=mysql_insert_id();
+	  $_SESSION['mysession_id']=$session_id;
+	  
 
+	}
+      }
     }
-
-  }
-
-  if (!$LU->isLoggedIn()) {
-  
-  $target = $_SERVER['PHP_SELF'];
-  if(preg_match('/js$/',$target))
-    exit();
-  include_once 'login.php';
-  exit();
   }
  }
+
+
+
+//if(!$LU->isLoggedIn()){
+ //  if($handle & $passwd){
+//     $LU->login($handle, $passwd, true);
+//     if ($LU->isLoggedIn()){
+//       $sql="insert into session (user_id,ip,start,last) values (".$LU->getProperty('auth_user_id').",'".ip()."',NOW(),NOW())";
+//       mysql_query($sql);
+//       $session_id=mysql_insert_id();
+//       $_SESSION['mysession_id']=$session_id;
+//     }
+    
+//   }
+//  else{
+//    $LU->login(null, null, true);
+//    if ($LU->isLoggedIn()){
+
+//    }
+
+    //  }
+
+
+
+
+  if (!$LU->isLoggedIn()) {
+    $target = $_SERVER['PHP_SELF'];
+    if(preg_match('/js$/',$target))
+      exit();
+    include_once 'login.php';
+    exit();
+  }
+//}
 
 //print_r($_SESSION);
 
