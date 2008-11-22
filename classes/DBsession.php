@@ -52,7 +52,7 @@ class dbSession
      *                                          cleaned up on the next run of the gc (garbage collection) routine
      *
      *                                          Default is specified in php.ini file
-     *
+     
      *  @param  integer     $gc_probability     (optional) used in conjunction with gc_divisor, is used to manage probability that
      *                                          the gc routine is started. the probability is expressed by the formula
      *
@@ -316,7 +316,7 @@ class dbSession
         
             // if the row was updated
             if ($result > 1) {
-            
+	      
                 // return TRUE
                 return true;
                 
@@ -376,9 +376,7 @@ class dbSession
     function gc($maxlifetime)
     {
 
-        // it deletes expired sessions from database
-       
-      
+
 
       $sql ="
 

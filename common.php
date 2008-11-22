@@ -37,11 +37,14 @@ if(DEBUG)PEAR::setErrorHandling(PEAR_ERROR_RETURN);
 // To have nice arrays when we make some selects :)
 $db->setFetchMode(MDB2_FETCHMODE_ASSOC);  
 
-$session = new dbsession(3600,1,100);
+
 
 //__________________________________________________________________________________________________|
 
 require_once 'myconf/conf.php';            // Configuration file __________________________________________|
+$session = new dbsession($myconf['max_session_time'],1,100);
+
+
 require('/usr/share/php/smarty/Smarty.class.php');
 $smarty = new Smarty();
 
@@ -67,9 +70,13 @@ if (!$LU)
 
 $logout = (array_key_exists('logout', $_REQUEST)) ? $_REQUEST['logout'] : false;
 if ($logout){
-  
+  $sql=sprintf("update session_history set end=NOW()  where session_id=%s  ",prepare_mysql(session_id()));
+  //print $sql;
+  mysql_query($sql);
+
   session_destroy();
   unset($_SESSION);
+  
   $LU->deleteRememberCookie();
   include_once 'login.php';
   exit;
@@ -95,63 +102,52 @@ if($handle & $sk){
       $ikey=$data[3];
       if($time-date('U')>0 and ip()==$ip and IKEY==$ikey ){
 	$LU->login($handle, $pwd, true);
-        if ($LU->isLoggedIn()){
-	  $sql="insert into session (user_id,ip,start,last) values (".$LU->getProperty('auth_user_id').",'".ip()."',NOW(),NOW())";
-	  mysql_query($sql);
-	  $session_id=mysql_insert_id();
-	  $_SESSION['mysession_id']=$session_id;
-	  
-
-	}
       }
     }
   }
- }
-
-
-
-//if(!$LU->isLoggedIn()){
- //  if($handle & $passwd){
-//     $LU->login($handle, $passwd, true);
-//     if ($LU->isLoggedIn()){
-//       $sql="insert into session (user_id,ip,start,last) values (".$LU->getProperty('auth_user_id').",'".ip()."',NOW(),NOW())";
-//       mysql_query($sql);
-//       $session_id=mysql_insert_id();
-//       $_SESSION['mysession_id']=$session_id;
-//     }
-    
-//   }
-//  else{
-//    $LU->login(null, null, true);
-//    if ($LU->isLoggedIn()){
-
-//    }
-
-    //  }
-
-
-
-
-  if (!$LU->isLoggedIn()) {
+ 
+ 
+  
+  if ($LU->isLoggedIn()){
+    $end=date('Y-m-d H:i:s',strtotime($myconf['max_session_time'].' sec'));
+    $sql=sprintf("insert into session_history (user_id,ip,start,last,end,session_id) values (%d,%s,NOW(),NOW(),%s,%s)   ",$LU->getProperty('auth_user_id'),prepare_mysql(ip()),prepare_mysql($end),prepare_mysql(session_id()) );
+    mysql_query($sql);
+  }else{
+    $sql=sprintf("insert into session_noauth (handle,date,ip) values (%s,NOW(),%s)",prepare_mysql($handle),prepare_mysql(ip()));
+    //  print "$sql";
+    mysql_query($sql);
     $target = $_SERVER['PHP_SELF'];
     if(preg_match('/js$/',$target))
       exit();
     include_once 'login.php';
     exit();
-  }
-//}
-
-//print_r($_SESSION);
-
-
-// elseif($LU->isLoggedIn()){
   
-// }else{
-//   if($handle){
-//     $LU->login($handle, $passwd, true);
+  }
 
-//   else{
-//     $LU->login(null, null, true);// try to conect from cookie
+ }else{
+
+  if ($LU->isLoggedIn()) {
+    $end=date('Y-m-d H:i:s',strtotime($myconf['max_session_time'].' sec'));
+    $sql=sprintf("update session_history set last=NOW(),end=%s  where session_id=%s  ",prepare_mysql($end),prepare_mysql(Session_id()));
+
+    mysql_query($sql);
+  }else{
+    //     $sql=sprintf("insert into session_noauth (handle,ip,date,ip) values (NULL,NOW(),%s)",prepare_mysql(ip()));
+    //print $sql;
+    //mysql_query($sql);
+    $target = $_SERVER['PHP_SELF'];
+    if(preg_match('/js$/',$target))
+      exit();
+    include_once 'login.php';
+    exit();
+
+  }
+
+ }
+
+
+
+
  
 
 
@@ -277,6 +273,8 @@ $smarty->assign('lang_country_code',strtolower($lang_country_code));
 $is_supplier=false;
 if($_SESSION['loginInfo']['auth']['propertyValues']['tipo']==2)
   $is_supplier=true;
+
+
 
 $nav_menu=array();
 if($LU->checkRight(USER_VIEW))

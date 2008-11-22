@@ -82,6 +82,7 @@ $LU_conf = array(
 
 
 $myconf=array(
+	      'max_session_time'=>36000,
 	      'name'=>'Ancient Wisdom',
 	      'sname'=>'AW',
 	      'country'=>'GB',
