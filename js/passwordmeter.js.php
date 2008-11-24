@@ -188,26 +188,34 @@ function testPassword(passwd)
 			strLog   = strLog + "2 combo points for letters, numbers and special chars\n"
 		}
 	
-	
+		if(intScore>50)
+		    intScore=50;
+
 		if(intScore < 16)
 		{
 		   strVerdict = "very weak"
+		       color='bd0e00';
 		}
 		else if (intScore > 15 && intScore < 25)
 		{
 		   strVerdict = "weak"
+		       color='ff7f00';
 		}
 		else if (intScore > 24 && intScore < 35)
 		{
 		   strVerdict = "mediocre"
+		       color="4cff00";
+
 		}
 		else if (intScore > 34 && intScore < 45)
 		{
 		   strVerdict = "strong"
+		       color="00ff00";
 		}
 		else
 		{
-		   strVerdict = "stronger"
+		    strVerdict = "stronger";
+		    color="00ff00";
 		}
 	
 		//	document.forms.passwordForm.score.value = (intScore)

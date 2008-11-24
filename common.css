@@ -437,4 +437,7 @@ table.submit_order td.but{ background:#238546;color:#fff;cursor:pointer;padding:
 .staff_list td{ text-align:center;cursor:pointer  }
 .staff_list td.selected{ background:#7296e1;color:white   }
 
-span.but{ background:#238546;color:#fff;cursor:pointer;padding:2px 3px;text-align:center }
+span.but{ background:#238546;color:#fff;cursor:pointer;padding:2px 3px;text-align:center ;border:1px solid #999}
+span.but_disabled{cursor:normal;background:#fff;color:#777}
+span.but_unselected{cursor:normal;background:#fff;color:#777}
+span.small{font-size:80%}

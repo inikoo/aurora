@@ -1,5 +1,7 @@
 <?
 require_once 'common.php';
+require_once 'classes/User.php';
+require_once 'classes/Staff.php';
 
 
 if (!$LU or !$LU->isLoggedIn()) {
@@ -22,6 +24,26 @@ if(!isset($_REQUEST['tipo']))
 
 $tipo=$_REQUEST['tipo'];
 switch($tipo){
+
+ case('edit_user'):
+   
+   $user=new User($_REQUEST['user_id']);
+   if($user->id){
+     $data=array(
+		 'value'=>$_REQUEST['newValue'],
+		 'user_id'=>$LU->getProperty('auth_user_id')
+		 );
+     print_r($data);
+     $res=$user->set($_REQUEST['key'],$data);
+     if($res['ok'])
+       $response=array('state'=>200,'data'=>$user->get($_REQUEST['key']));
+     else
+       $response=array('state'=>400,$res['msg']);
+   }else
+     $response=array('state'=>400,'msg'=>_("User don't exist"));
+   echo json_encode($response);
+   
+   break;
  case('users'):
 
  $conf=$_SESSION['state']['users']['user_list'];
@@ -72,7 +94,7 @@ switch($tipo){
    $filtered=0;
    $adata=array();
    $sql="
-select u.authuserid as id ,gu.group_id,group_concat(distinct g.group_id separator ',') as groups,u.isactive as isactive,u.name as name ,u.surname as surname,u.email as email,u.handle as handle,lower(c.code2) as countrycode,l.id as lang_id,c.Name as country from liveuser_users as u left join liveuser_perm_users as pu on (u.authuserid=pu.auth_user_id) left join liveuser_groupusers as gu on (gu.perm_user_id=pu.perm_user_id) left join liveuser_groups as g on (g.group_id=gu.group_id)  left join lang as l on (l.id=lang_id) left join country as c on (l.country_id=c.id)  where u.authuserid>1  group by u.authuserid   order by $order $order_direction limit $start_from,$number_results    ;
+select tipo,id_in_table,u.authuserid as id ,gu.group_id,group_concat(distinct g.group_id separator ',') as groups,u.isactive as isactive,u.name as name ,u.surname as surname,u.email as email,u.handle as handle,lower(c.code2) as countrycode,l.id as lang_id,c.Name as country from liveuser_users as u left join liveuser_perm_users as pu on (u.authuserid=pu.auth_user_id) left join liveuser_groupusers as gu on (gu.perm_user_id=pu.perm_user_id) left join liveuser_groups as g on (g.group_id=gu.group_id)  left join lang as l on (l.id=lang_id) left join country as c on (l.country_id=c.id)   group by u.authuserid   order by $order $order_direction limit $start_from,$number_results    ;
 ";
    //  print $sql;
 
@@ -99,31 +121,46 @@ select u.authuserid as id ,gu.group_id,group_concat(distinct g.group_id separato
      // $sgroups= preg_replace('/,\s$/','.', $sgroups);
      
      
-     if($row['handle']=='root')
+     if($row['handle']=='root'){
        $name=_('Superuser');
-     else
+       $email='';
+       $_tipo='Admin';
+     }else{
        $name=trim($row['name'].' '.$row['surname'] );
-       
+       switch($row['tipo']){
+       case(1):
+	 $_tipo=_('Staff');
+	 $staff=new Staff($row['id_in_table']);
+	 if($staff->data['name'])
+	   $name=$staff->data['name'];
+	 else
+	   $name='';
+	 if($staff->data['email'])
+	   $email=$staff->data['email'];
+	 else
+	   $email='';
+	 break;
+       }
+     }
+
      $lang='';
      if(is_numeric($row['lang_id']))
        $lang=$_lang[$row['lang_id']];
      
-     if($row['isactive'])
-       $active='<img src="art/icons/status_online.png" />';
-     else
-       $active='<img src="art/icons/status_offline.png" />';
-     
+
+
 
      $adata[]=array(
 		   'handle'=>$row['handle'],
+		   'tipo'=>$_tipo,
 		   'id'=>$row['id'],
 		   'name'=>$name,
 		   'surname'=>$row['surname'],
-		   'email'=>$row['email'],
-		   'lang'=>'<img src="art/flags/'.$row['countrycode'].'.gif" langid="'.$row['lang_id'].'" /> '.$lang,
-		   'groups'=>$sgroups,
+		   'email'=>$email,
+		   'lang'=>$lang,
+		   'groups'=>array('2','4'),//$sgroups,
 		   'password'=>'<img src="art/icons/key.png"/>',
-		   'active'=>$active,
+		   'isactive'=>$row['isactive'],
 		   'delete'=>'<img src="art/icons/status_busy.png"/>'
 		   );
 
@@ -240,8 +277,26 @@ select u.authuserid as id ,gu.group_id,group_concat(distinct g.group_id separato
    echo json_encode($response);
  
    break;
- 
- case('add_user'):
+case ('add_user'):
+
+  $data=array(
+	      'handle'=>$_REQUEST['handle'],
+	      'passwd'=>$_REQUEST['passwd'],
+	      'tipo'=>$_REQUEST['tipo_user'],
+	      'id_in_table'=>$_REQUEST['id_in_table']
+	      );
+  // print_r($data);
+
+  $user=new User('new',$data);
+  $res=$user->msg;
+  if($res['ok']){
+    $response= array('state'=>200);
+  }else
+    $response=array('state'=>400,'msg'=>$res['msg']);
+    
+   echo json_encode($response);  
+  break;
+ case('add_user_borrarme'):
 
 
 

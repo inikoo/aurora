@@ -28,6 +28,8 @@ $js_files=array(
 		'js/common.js.php',
 		'js/table_common.js.php',
 		'js/users.js.php',
+		'js/sha256.js.php',
+		'js/passwordmeter.js.php',
 		'js/edit_users.js.php'
 		);
 $smarty->assign('css_files',$css_files);
@@ -64,7 +66,25 @@ while($row=$res->fetchRow()) {
  }
 $smarty->assign('newuser_groups',$newuser_groups);
 
+//create user list
+$sql=sprintf("select id,alias,(select count(*) from liveuser_users where tipo=1 and id_in_table=staff.id) as is_user from staff where active=1 order by alias");
 
+$res = $db->query($sql);
+$num_cols=5;
+$staff=array();
+while($row=$res->fetchrow()){
+  $staff[]=array('alias'=>$row['alias'],'id'=>$row['id'],'is_user'=>$row['is_user']);
+ }
+
+//$staff= array_transverse($staff,$num_cols);
+//print_r($staff);
+foreach($staff as $key=>$_staff){
+  $staff[$key]['mod']=fmod($key,$num_cols);
+}
+
+
+$smarty->assign('staff',$staff);
+$smarty->assign('staff_cols',$num_cols);
 
 $smarty->display('users.tpl');
 ?>

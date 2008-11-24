@@ -1,4 +1,7 @@
 <?
+require_once 'classes/Name.php';
+require_once 'classes/Email.php';
+
 class Staff{
   var $db;
   var $data=array();
@@ -11,41 +14,53 @@ class Staff{
 
 
 
-  function __construct($tipo_id='id',$id=false) {
+  function __construct($key='id',$data=false) {
      $this->db =MDB2::singleton();
      $this->status_names=array(0=>'new');
+
+
+     if($key=='new' and is_array($data)){
+       $this->create_order($data);
+       if(!$this->id)
+	 return;
+       $key='id';
+       $data=$this->id;
+     }
      
-     if(is_numeric($tipo_id) and !$id){
-       $id= $tipo_id;
-       $tipo_id='id';
+     
+     if(is_numeric($key) and !$data){
+       $data=$key;
+       $key='id';
      }
-
-
-     if($tipo_id=='id'){//load from id
-       $this->id=$id;
-       if(!$this->get_data($tipo_id))
-	 return false;
-     }else if(is_array($id)){// Create a new order
-       $this->create_order($id);
-     }
-
-     return true;
+     $this->get_data($key,$data);
+     
 
   }
 
   
 
-  function get_data($id){
+  function get_data($key,$id){
     
-
-    $sql=sprintf("select * from staff where id=%s",prepare_mysql($id));
+    
+    $sql=sprintf("select * from staff where id=%d",$id);
 
     $result =& $this->db->query($sql);
-    if(!$this->data=$result->fetchRow()){	     
-        return false;
-    }
-    $this->id=$this->data['id'];
-  }
+    if($this->data=$result->fetchRow()) 
+      $this->id=$this->data['id'];
+    
+    $name=new name($this->data['name_id']);
+   
+    if($name->id)
+      $this->data['name']=$name->display();
+    else
+      $this->data['name']=false;
+    $email=new email($this->data['email_id']);
+    if($email->id)
+      $this->data['email']=$email->display();
+    else
+      $this->data['email']=false;
+
+ }
 
 
 }
