@@ -441,3 +441,21 @@ span.but{ background:#238546;color:#fff;cursor:pointer;padding:2px 3px;text-alig
 span.but_disabled{cursor:normal;background:#fff;color:#777}
 span.but_unselected{cursor:normal;background:#fff;color:#777}
 span.small{font-size:80%}
+
+.unselectable_text{
+   -moz-user-select: none;
+   -khtml-user-select: none;
+   user-select: none;
+}
+
+.inbox {padding:0;margin:0 }
+.inbox tr {border-left:1px solid #777;border-right:1px solid #777; }
+.inbox tr.bottom {border-bottom:1px solid #777;height:40px;}
+.inbox tr.bottom  td { vertical-align:top; }
+.inbox tr.tabs { border:none ;border-bottom:1px solid #777;height:30px;vertical-align:bottom}
+.inbox tr.tabs td { vertical-align:bottom;padding:0 10px;margin:0 }
+.inbox tr.buttons { border:none ;height:30px}
+.inbox tr.buttons td { vertical-align:bottom }
+.inbox td span.tab     { border:1px solid #aaa;border-bottom:1px solid #777;color:#ccc ;vertical-align: bottom;;padding:4px 4px 0 4px;margin:0;cursor:pointer}
+.inbox td span.selected{ border:1px solid #777;color:#000;border-bottom:1px solid white;}
+.inbox span.button{border:1px solid #777;padding:4px 4px;cursor:pointer; }

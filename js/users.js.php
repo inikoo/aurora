@@ -35,6 +35,10 @@ print $g;
 
 	      var group=function(el, oRecord, oColumn, oData){
 		  //  var tmp = oData.split(',');
+		  if(oData==''){
+		      el.innerHTML ='';
+		      return;
+		  }
 		  var tmp=oData;
 		  var sgroups='';
 		  for(x in tmp){
@@ -69,7 +73,7 @@ print $g;
 						'POST',
 						request, {
 						    success:function(o) {
-							//alert(o.responseText);
+							alert(o.responseText);
 							var r = YAHOO.lang.JSON.parse(o.responseText);
 							if (r.state == 200) {
 							    callback(true, r.data);
@@ -97,15 +101,20 @@ print $g;
 		//		for( x in record)
 		user_id=record.getData('id');
 		var request='ar_users.php?tipo=edit_user&user_id='+escape(user_id)+'&key=' + column.key + '&newValue=' + escape(newValue) + '&oldValue=' + escape(oldValue)
-		alert(request);
+		//	alert(request);
 		YAHOO.util.Connect.asyncRequest(
 						'POST',
 						request, {
 						    success:function(o) {
-							alert(o.responseText);
+							//alert(o.responseText);
 							var r = YAHOO.lang.JSON.parse(o.responseText);
 							if (r.state == 200) {
 							    callback(true, r.data);
+							    var table=tables['table1'];
+							    var datasource=tables['dataSource1'];
+							    var request='';
+							    datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
+							    
 							} else {
 							    alert(r.msg);
 							    callback();
@@ -122,9 +131,11 @@ print $g;
 	    }	
 	    var ColumnDefs = [
 			         {key:"delete",label:"" ,width:16 ,hidden:true},
+				 {key:"password",label:"" ,width:16 },
+				 {key:"passwordmail",label:"" ,width:16 },
 				 {key:"isactive",formatter:active,label:"Active" ,width:30 ,editor: new YAHOO.widget.RadioCellEditor({radioOptions:[{label:"yes", value:"1"}, {label:"no", value:"0"}],defaultValue:"0",asyncSubmitter:edit_active })  },
 				 
-				 {key:"password",label:"" ,width:16 ,hidden:true},
+
 				 {key:"tipo", label:"<?=_('Type')?>",width:30,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
 				 {key:"handle", label:"<?=_('Handle')?>",width:60,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
 				 {key:"name", label:"<?=_('Name')?>",sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
@@ -160,7 +171,7 @@ print $g;
 		
 		
 		fields: [
-			 "id","isactive","handle","name","email","lang","groups","password","delete","tipo"
+			 "id","isactive","handle","name","email","lang","groups","password","delete","tipo","passwordmail"
 			 ]};
 
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,

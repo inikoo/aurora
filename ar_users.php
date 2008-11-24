@@ -33,7 +33,7 @@ switch($tipo){
 		 'value'=>$_REQUEST['newValue'],
 		 'user_id'=>$LU->getProperty('auth_user_id')
 		 );
-     print_r($data);
+     // print_r($data);
      $res=$user->set($_REQUEST['key'],$data);
      if($res['ok'])
        $response=array('state'=>200,'data'=>$user->get($_REQUEST['key']));
@@ -113,11 +113,11 @@ select tipo,id_in_table,u.authuserid as id ,gu.group_id,group_concat(distinct g.
      $groups=split(',',$row['groups']);
      $sgroups='';
 
-     $sgroups=array();
-     foreach($groups as $group)
-       if(is_numeric($group)){
-	 $sgroups[]='<group id='.$group.'/>'.$_group[$group];
-       }
+    //  $sgroups=array();
+//      foreach($groups as $group)
+//        if(is_numeric($group)){
+// 	 $sgroups[]='<group id='.$group.'/>'.$_group[$group];
+//        }
      // $sgroups= preg_replace('/,\s$/','.', $sgroups);
      
      
@@ -158,8 +158,9 @@ select tipo,id_in_table,u.authuserid as id ,gu.group_id,group_concat(distinct g.
 		   'surname'=>$row['surname'],
 		   'email'=>$email,
 		   'lang'=>$lang,
-		   'groups'=>array('2','4'),//$sgroups,
-		   'password'=>'<img src="art/icons/key.png"/>',
+		   'groups'=>$groups,
+		   'password'=>'<img style="cursor:pointer" user_id="'.$row['id'].'" onClick="change_passwd(this)" src="art/icons/key.png"/>'.($email!=''?'<img src="art/icons/key_go.png"/>':''),
+		   'passwordmail'=>($email!=''?'<img src="art/icons/key_go.png"/>':''),
 		   'isactive'=>$row['isactive'],
 		   'delete'=>'<img src="art/icons/status_busy.png"/>'
 		   );

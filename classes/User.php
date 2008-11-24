@@ -81,10 +81,7 @@ class User{
    
     if(isset($data['group'])){
       foreach($data['group'] as $group_id){
-	if(is_numeric($group_id)){
-
-
-
+	while(is_numeric($group_id)){
 	  $sql=sprintf("insert into liveuser_groupusers (perm_user_id,group_id) values (%d,%d)",$puser_id,$group_id);
 	  mysql_query($sql);
 	}
@@ -95,6 +92,7 @@ class User{
 
 
   function get_data($key,$data){
+    global $_group;
     //    print "acac---- $key ----  $data ---asasqqqqqqqqq";
     $sql=sprintf("select authuserid,handle,isactive,tipo,id_in_table from liveuser_users where authuserid=%d",$data);
     // print $sql;
@@ -110,6 +108,23 @@ class User{
 	$this->data['staff_id']=$row['id_in_table'];
 	break;
       }
+      $sql=sprintf("select  perm_user_id  from liveuser_perm_users  where auth_user_id=%d",$this->id);
+      //      print $sql;
+      $result2 =& $this->db->query($sql);
+       if($row2=$result2->fetchRow()) {
+	 $this->data['perm_id']=$row2['perm_user_id'];
+       }
+
+      $this->data['groups']=array();
+       $sql=sprintf("select group_id from liveuser_groupusers where perm_user_id=%d  ",$this->data['perm_id']);
+       //       print $sql;
+       $result2 =& $this->db->query($sql);
+       $this->data['groups_list']='';
+       while($row2=$result2->fetchRow()) {
+	 $this->data['groups'][]=$row2['group_id'];
+	 $this->data['groups_list'].=', '.$_group[$row2['group_id']];
+       }
+       $this->data['groups_list']=preg_replace('/^\,\s/','',$this->data['groups_list']);
     }
     
   }
@@ -132,8 +147,46 @@ function set($tipo,$data){
     $this->save('isactive');
     $this->save_history('isactive',array('user_id'=>$data['user_id'],'date'=>date('Y-m-d H:i:s'),'old_value'=>$old_value   ));
     return array('ok'=>true);
+    break;
+      case('groups'):
+       global $_group;
+	$groups=split(',',$data['value']);
+	foreach($groups as $key=>$value){
+	  if(!is_numeric($value) )
+	    unset($groups[$key]);
+	}
+       
+	
+	$old_groups=$this->data['groups'];
+	//	print_r($old_groups);
+	//	print_r($groups);
+	$to_delete = array_diff($old_groups, $groups);
+	$to_add = array_diff($groups, $old_groups);
+	//	print_r($to_delete);
+	//	print_r($to_add);
+	
+	$this->data['groups']=$groups;
+	$this->data['groups_list']='';
+	foreach($this->data['groups'] as $group_id){
+	  $this->data['groups_list'].=', '.$_group[$group_id];
+	}
+	$this->data['groups_list']=preg_replace('/^\,\s/','',$this->data['groups_list']);
+	if(count($to_delete)>0){
+	$this->delete_group($to_delete);
+	//$this->save_history('isactive',array('user_id'=>$data['user_id'],'date'=>date('Y-m-d H:i:s'),'old_value'=>$old_value   ));
+	}
+	if(count($to_add)>0){
+	$this->add_group($to_add);
+	//$this->save_history('isactive',array('user_id'=>$data['user_id'],'date'=>date('Y-m-d H:i:s'),'old_value'=>$old_value   ));
+	}
+
+	return array('ok'=>true);
+	break;
   }
 }
+
+
+
 function save($tipo){
   switch($tipo){
   case('isactive'):
@@ -163,13 +216,33 @@ function save_history($tipo,$data){
 
 }
 
+ function add_group($to_add,$history=true){
+   
+   foreach($to_add as $group_id){
+     $sql=sprintf("insert into liveuser_groupusers (perm_user_id,group_id) values (%d,%d) ",$this->data['perm_id'],$group_id);
+     //print $sql;
+     mysql_query($sql);
+   }
+
+ }
+
+ function delete_group($to_add,$history=true){
+   
+   foreach($to_add as $group_id){
+     $sql=sprintf("delete from  liveuser_groupusers where perm_user_id=%d and group_id=%d ",$this->data['perm_id'],$group_id);
+     mysql_query($sql);
+   }
+
+ }
+
 
 
 function get($tipo){
   switch($tipo){
   case('isactive'):
     return $this->data['isactive'];
-
+  case('groups'):
+    return $this->data['groups'];
   }
 }
    

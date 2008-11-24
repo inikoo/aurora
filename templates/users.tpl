@@ -31,38 +31,75 @@
 <div id="add_user_customer">
 
 </div>
-<div id="add_user_staff">
-<div class="bd">
-
-    <table border=1 class="staff_list"  style="margin:10px auto">
-      {foreach from=$staff item=_staff name=foo}
-      {if $_staff.mod==0}<tr>{/if}
+<div id="add_user_staff"  style="background:#fff;padding:20px;border:1px solid#777;font-size:90%;"     >
+  <div class="bd" style="padding:20px">
+    <div style="text-weight:800;margin-bottom:10px">{t}Setting an acount for a member of the staff {/t}</div>
+    
+    <table border=1 class="staff_list" style="margin:0 auto " >
+    {foreach from=$staff item=_staff name=foo}
+    {if $_staff.mod==0}<tr>{/if}
 	<td   staff_id="{$_staff.id}" id="staff{$_staff.id}" {if $_staff.is_user}class="selected" is_in="1" {else} onClick="select_staff(this)"  is_in="0"{/if} >{$_staff.alias}</td>
-     {if $_staff.mod==$staff_cols}</tr>{/if}
-      {/foreach}
+	{if $_staff.mod==$staff_cols}</tr>{/if}
+    {/foreach}
     </table>
+  
+  <table class="edit inbox" >
 
- <table class="edit" >
-   <tr style="display:none" id="staff_handle_container"  ><td style="text-align:left" colspan=2>{t}Handle{/t}: <span style="font-weight:800" id="staff_handle" ></span></td></tr>
-   <tr style="display:none" id="staff_v_handle_container"  ><td style="text-align:left" colspan=2>{t}Handle{/t}: <input id="staff_v_handle" value=""  /></td></tr>
+    
+    <tr class="tabs"  id="staff_choose_method">
+      <td  colspan=2>
+	<span  id="staff_auto_pwd_but" class="tab  unselectable_text" onClick="auto_pwd('staff')">{t}Auto Password{/t}</span>
+	<span id="staff_user_defined_pwd_but"  onClick="user_defined_pwd('staff')" class="tab selected  unselectable_text" style="margin-left:20px ">{t}User Defined Password{/t}</span>
+    </td>
+    </tr>
 
-   <tr style="display:none;border-bottom:1px solid black" style="" id="staff_choose_method"><td style="text-align:center" colspan=2><span id="staff_auto_pwd_but" class="but small" onClick="auto_pwd()">{t}Auto Password{/t}</span><span id="staff_user_defined_pwd_but"  onClick="user_defined_pwd()" class="but small" style="margin-left:20px ">{t}User Defined Password{/t}</span></td></tr>
-   <tbody id="staff_auto_dialog" style="display:none">
-   <tr><td>{t}Password{/t}:</td><td style="text-align:left"><span style="font-weight:800" id="staff_passwd" ></span></td></tr>
+
+    <tr style="display:none" id="staff_v_handle_container"  ><td style="text-align:left" colspan=2>{t}Handle{/t}: <input id="staff_v_handle" value=""  /></td></tr>
+    <tr  style="height:30px"><td colspan=2 id="staff_password_meter" style="padding:0 30px"><div style="float:right" id="staff_password_meter_str"></div><div id="staff_password_meter_bar" style="visibility:hidden;;height:12px;border:1px solid #555; background:#bd0e00;width:0%;font-size:10px;text-align:left;">&nbsp;</div></td></tr>
+    <tr style="display:none" id="staff_handle_container"  ><td  >{t}Handle{/t}:</td><td style="text-align:left"> <span style="font-weight:800" id="staff_handle" ></span></td></tr>
+    <tbody id="staff_auto_dialog" style="display:none">
+      <tr class="bottom" ><td>{t}Password{/t}:</td><td style="text-align:left"><span style="font-weight:800" id="staff_passwd" ></span></td></tr>
     </tbody>
-   <tbody id="staff_user_definded_dialog" style="display:none">
-   <tr><td colspan=2 id="password_meter" style="padding:0 30px"><div style="float:right" id="password_meter_str"></div><div id="password_meter_bar" style="visibility:hidden;;height:12px;border:1px solid #555; background:#bd0e00;width:0%;font-size:10px;text-align:left;">&nbsp;</div></td></tr>
-   <tr><td>{t}Password{/t}:</td><td style="text-align:left"><input onKeyup="change_meter(this.value)" style="width:6em" type="password" id="staff_passwd1" value=""/></td></tr>
-   <tr id="staff_repeat_password"><td><img  id="error_staff_passwd2" style="display:none" src="art/icons/exclamation.png" alt="!"/> {t}Repeat Password{/t}:</td><td style="text-align:left"><input onKeyup="match_passwd(this.value,'staff_passwd1','staff')" style="width:6em" type="password" id="staff_passwd2"  value=""/></td></tr>
-   </tbody>
-   <tr><td style="text-align:left;height:40px"><span style="cursor:pointer;margin-left:30px">{t}Cancel{/t} <img src="art/icons/cross.png"/></span></td><td><span  onclick="staff_new_user()" id="staff_new_save" style="visibility:hidden;cursor:pointer;margin-right:30px">{t}Save{/t} <img src="art/icons/disk.png" ></span></td></tr>
+    <tbody id="staff_user_defined_dialog" >
 
-
- </table>
- 
-
+      <tr><td>{t}Password{/t}:</td><td style="text-align:left"><input onKeyup="change_meter(this.value,'staff')" style="width:6em" type="password" id="staff_passwd1" value=""/></td></tr>
+   <tr  class="bottom" id="staff_repeat_password"><td><img  id="staff_error_passwd2" style="display:none" src="art/icons/exclamation.png" alt="!"/> {t}Repeat Password{/t}:</td><td style="text-align:left"><input onKeyup="match_passwd(this.value,'staff_passwd1','staff')" style="width:6em" type="password" id="staff_passwd2"  value=""/></td></tr>
+    </tbody>
+    <tr class="buttons" >
+      <td style="text-align:left"><span style="margin-left:30px" class="unselectable_text button" onClick="close_dialog('staff')" >{t}Cancel{/t} <img src="art/icons/cross.png"/></span></td>
+      <td><span  onclick="staff_new_user()" id="staff_save"  class="unselectable_text button"     style="visibility:hidden;margin-right:30px" >{t}Save{/t} <img src="art/icons/disk.png" ></span></td></tr>
+  </table>
+  
+  </div>
 </div>
+
+
+<div id="change_staff_password" style="display:nonex;position:absolute;left:-100px;top:-150px;background:#fff;padding:20px;border:1px solid#777;font-size:90%">
+  <div class="bd" >
+    <span style="text-weight:800">{t}Change Password for{/t} <span id="change_staff_alias">x</span></span>
+  <table class="edit inbox" >
+    
+    <tr class="tabs"  id="change_staff_choose_method">
+      <td  colspan=2 >
+	<span  id="change_staff_auto_pwd_but" class="tab unselectable_text" onClick="auto_pwd('change_staff')">{t}Change (Random){/t}</span>
+	<span id="change_staff_user_defined_pwd_but"  onClick="user_defined_pwd('change_staff')" class="tab selected unselectable_text" style="margin-left:20px ">{t}Change (User Defined){/t}</span>
+      </td>
+    </tr>
+     <tr style="height:30px"><td colspan=2 id="change_staff_password_meter" style="padding:0 30px"><div style="float:right" id="change_staff_password_meter_str"></div><div id="change_staff_password_meter_bar" style="visibility:hidden;;height:12px;border:1px solid #555; background:#bd0e00;width:0%;font-size:10px;text-align:left;">&nbsp;</div></td></tr>
+    <tbody id="change_staff_auto_dialog" style="display:none">
+      <tr class="bottom"><td>{t}Password{/t}:</td><td style="text-align:left"><span style="font-weight:800" id="change_staff_passwd" ></span></td></tr>
+    </tbody>
+
+    <tbody id="change_staff_user_defined_dialog" >
+      <tr><td>{t}Password{/t}:</td><td style="text-align:left"><input onKeyup="change_meter(this.value,'change_staff')" style="width:11em" type="password" id="change_staff_passwd1" value=""/></td></tr>
+      <tr id="change_staff_repeat_password" class="bottom"><td style="vertical-align:top" ><img  id="change_staff_error_passwd2" style="visibility:hidden" src="art/icons/exclamation.png" alt="!"/> {t}Repeat Password{/t}:</td><td style="text-align:left"><input onKeyup="match_passwd(this.value,'change_staff_passwd1','change_staff')" style="width:11em" type="password" id="change_staff_passwd2"  value=""/></td></tr>
+    </tbody>
+    <tr class="buttons" ><td style="text-align:left"><span id="change_staff_cancel" style="margin-left:30px" class="unselectable_text button" onClick="close_dialog('change_staff')">{t}Cancel{/t} <img src="art/icons/cross.png"/></span></td><td><span  onclick="change_staff_pwd()" id="change_staff_save"   class="unselectable_text button"     style="visibility:hidden;margin-right:30px">{t}Save{/t} <img src="art/icons/disk.png" ></span></td></tr>
+  </table>
+  </div>
 </div>
+
+
 <div id="add_user_other">
   <div class="hd">{t}New user{/t}</div>
   <div class="bd">
@@ -99,6 +136,8 @@
     </form>
   </div>
 </div>
+
+
 
 
 <div id="add_user_dialog">

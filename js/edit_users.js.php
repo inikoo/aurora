@@ -3,7 +3,7 @@
 
 var id_in_table='';
 var  add_user_dialog_staff;
-
+var  change_staff_password;
 function randPassword()
 {
     var numChars = 8;
@@ -16,6 +16,22 @@ function randPassword()
         * strChars.length));
     }
     return strPass;
+}
+
+var change_passwd=function(o){
+    var y=(Dom.getY(o))
+    var x=(Dom.getX(o))
+    x=x+20;
+    //    alert(y);
+    Dom.setX('change_staff_password', x)
+    Dom.setY('change_staff_password', y)
+    //    add_user_dialog_staff.cfg.setProperty("x", "500");
+    //add_user_dialog_staff.cfg.setProperty("y", 500);
+
+    var user_id=o.getAttribute('user_id');
+    
+    change_staff_password.show();
+    
 }
 
 var select_staff=function(o){
@@ -32,30 +48,31 @@ var select_staff=function(o){
 }
 
 
-var auto_pwd=function(){
-    Dom.get("staff_user_definded_dialog").style.display='none';
-    Dom.get("staff_auto_dialog").style.display='';
+var auto_pwd=function(prefix){
+    
+    Dom.get(prefix+"_user_defined_dialog").style.display='none';
+    Dom.get(prefix+"_auto_dialog").style.display='';
     var pwd=randPassword();
-    Dom.get("staff_passwd").innerHTML= pwd;
-    Dom.get("staff_passwd1").value= pwd;
+    Dom.get(prefix+"_passwd").innerHTML= pwd;
+    Dom.get(prefix+"_passwd1").value= pwd;
 
-    Dom.get('staff_new_save').style.visibility='visible';
-    Dom.get("staff_passwd").style.display='';
-    Dom.get("staff_user_defined_pwd_but").className='but but_unselected';
-    Dom.get("staff_auto_pwd_but").className='but but_selected';
+    Dom.get(prefix+'_save').style.visibility='visible';
+    Dom.get(prefix+"_passwd").style.display='';
+    Dom.get(prefix+"_user_defined_pwd_but").className='tab  but_unselected unselectable_text';
+    Dom.get(prefix+"_auto_pwd_but").className='tab selected unselectable_text';
 
 }
-var user_defined_pwd=function(){
-    Dom.get("staff_auto_dialog").style.display='none';
-    Dom.get("staff_user_definded_dialog").style.display='';
-    Dom.get('staff_new_save').style.visibility='hidden';
-    Dom.get("staff_passwd").style.display='none';
-    Dom.get("staff_passwd2").value='';
-    Dom.get("staff_passwd1").value='';
-    Dom.get('password_meter_bar').style.visibility='hidden';
-    Dom.get('password_meter_bar').style.width="0%";
-    Dom.get("staff_user_defined_pwd_but").className='but but_selected';
-    Dom.get("staff_auto_pwd_but").className='but but_unselected';
+var user_defined_pwd=function(prefix){
+    Dom.get(prefix+"_auto_dialog").style.display='none';
+    Dom.get(prefix+"_user_defined_dialog").style.display='';
+    Dom.get(prefix+"_save").style.visibility='hidden';
+    Dom.get(prefix+"_passwd").style.display='none';
+    Dom.get(prefix+"_passwd2").value='';
+    Dom.get(prefix+"_passwd1").value='';
+    Dom.get(prefix+'_password_meter_bar').style.visibility='hidden';
+    Dom.get(prefix+'_password_meter_bar').style.width="0%";
+    Dom.get(prefix+"_user_defined_pwd_but").className='tab  selected unselectable_text';
+    Dom.get(prefix+"_auto_pwd_but").className='tab unselectable_text';
 }
 
 
@@ -63,9 +80,9 @@ var match_passwd=function(p2,p1,tipo){
     
     p1=Dom.get(p1).value;
     if(p1==p2){
-	Dom.get("error_"+tipo+"_passwd2").style.display='none';
+	Dom.get(tipo+"_error_passwd2").style.visibility='hidden';
     }else{
-	Dom.get("error_"+tipo+"_passwd2").style.display='';
+	Dom.get(tipo+"_error_passwd2").style.visibility='visible';
     }
 
 };
@@ -101,7 +118,7 @@ var staff_new_user=function(){
 
 
 
-var change_meter=function(pwd){
+    var change_meter=function(pwd,prefix){
     
 
     value=testPassword(pwd);
@@ -137,24 +154,34 @@ var change_meter=function(pwd){
 	if(value>100)
 	    value=100;
 
-	Dom.get('password_meter_bar').style.visibility='visible';
+	Dom.get(prefix+'_password_meter_bar').style.visibility='visible';
 	
-	Dom.get('password_meter_str').innerHTML=strVerdict;
-	Dom.get('password_meter_bar').style.width=value+"%";
-	Dom.get('password_meter_bar').style.backgroundColor=color;
+	Dom.get(prefix+'_password_meter_str').innerHTML=strVerdict;
+	Dom.get(prefix+'_password_meter_bar').style.width=value+"%";
+	Dom.get(prefix+'_password_meter_bar').style.backgroundColor=color;
 	if(value>6){
 
-	    Dom.get("staff_passwd").value=pwd;
-	    Dom.get('staff_new_save').style.visibility='visible';
-	    Dom.get("staff_passwd2").value='';
-	    Dom.get("error_staff_passwd2").style.display='';
+	    Dom.get(prefix+"_passwd").value=pwd;
+	    Dom.get(prefix+"_new_save").style.visibility='visible';
+	    Dom.get(prefix+"_passwd2").value='';
+	    Dom.get(prefix+"_error_passwd2").style.visibility='visible';
 	}else{
-	    Dom.get('staff_new_save').style.visibility='hidden';
-	    Dom.get("staff_passwd2").value='';
-	    Dom.get("error_staff_passwd2").style.display='none';
+	    Dom.get(prefix+"_new_save").style.visibility='hidden';
+	    Dom.get(prefix+"_passwd2").value='';
+	    Dom.get(prefix+"_error_passwd2").style.visibility='hidden';
 	}
 
- }
+    };
+
+var close_dialog=function(prefix){
+    switch(prefix){
+    case('change_staff'):
+    Dom.setX('change_staff_password', -1000)
+    Dom.setY('change_staff_password', -1000)
+    change_staff_password.cfg.setProperty("visible", false);;
+
+    }
+}
 
   function init(){
 
@@ -165,10 +192,32 @@ var change_meter=function(pwd){
 
        add_user_dialog_others = new YAHOO.widget.Menu("add_user_other", {context:["add_user","tr", "br","beforeShow"]  });
        add_user_dialog_others.render();
-      add_user_dialog_others.subscribe("show", add_user_dialog_others.focus);
-       add_user_dialog_staff = new YAHOO.widget.Menu("add_user_staff", {context:["add_user","tr", "br","beforeShow"]  });
-       add_user_dialog_staff.render();
-       add_user_dialog_staff.subscribe("show", add_user_dialog_staff.focus);
+       add_user_dialog_others.subscribe("show", add_user_dialog_others.focus);
+      
+  //     add_user_dialog_staff = new YAHOO.widget.Dialog("add_user_staff", {
+// 	      context:["add_user","tr","tr"]  ,
+// 	      visible : false,close:false,underlay: "none",draggable:false,width:550
+	      
+// 	  });
+//        add_user_dialog_staff.render();
+
+ 
+
+      // change_staff_password = new YAHOO.widget.Menu("change_staff_password",{x:100});
+       //change_staff_password.render();
+       //change_staff_password.subscribe("show", add_user_dialog_staff.focus);
+
+
+       change_staff_password = new YAHOO.widget.Dialog("change_staff_password", 
+			{ 
+			    visible : false,close:false,
+			    underlay: "none",draggable:false,
+			    
+			} );
+       change_staff_password.render();
+       //       change_staff_password.show();
+
+       // Dom.get("change_staff_cancel").onselectstart = function() { return(false); };
       
   }
 
