@@ -132,7 +132,7 @@ print $g;
 	    var ColumnDefs = [
 			         {key:"delete",label:"" ,width:16 ,hidden:true},
 				 {key:"password",label:"" ,width:16 },
-				 {key:"passwordmail",label:"" ,width:16 },
+				 //	 {key:"passwordmail",label:"" ,width:16 },
 				 {key:"isactive",formatter:active,label:"Active" ,width:30 ,editor: new YAHOO.widget.RadioCellEditor({radioOptions:[{label:"yes", value:"1"}, {label:"no", value:"0"}],defaultValue:"0",asyncSubmitter:edit_active })  },
 				 
 
