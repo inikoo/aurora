@@ -18,6 +18,19 @@ function randPassword()
     return strPass;
 }
 
+var display_dialog=function(o,tipo){
+    switch(tipo){
+    case('staff'):
+    var y=(Dom.getY("add_user"))
+    var x=(Dom.getX("add_user"))
+    var w=Dom.get("add_user").offsetWidth
+    x=x-350+w;
+     Dom.setX('add_user_staff', x)
+    Dom.setY('add_user_staff', y)
+    add_user_dialog_staff.show();
+    }
+}
+
 var change_passwd=function(o){
     var y=(Dom.getY(o))
     var x=(Dom.getX(o))
@@ -151,6 +164,9 @@ var staff_new_user=function(){
 		color="#00ff00";
 	    }
 	value=2*value;
+    if(value<0)
+	    value=0;
+
 	if(value>100)
 	    value=100;
 
@@ -162,11 +178,11 @@ var staff_new_user=function(){
 	if(value>6){
 
 	    Dom.get(prefix+"_passwd").value=pwd;
-	    Dom.get(prefix+"_new_save").style.visibility='visible';
+	    Dom.get(prefix+"_save").style.visibility='visible';
 	    Dom.get(prefix+"_passwd2").value='';
 	    Dom.get(prefix+"_error_passwd2").style.visibility='visible';
 	}else{
-	    Dom.get(prefix+"_new_save").style.visibility='hidden';
+	    Dom.get(prefix+"_save").style.visibility='hidden';
 	    Dom.get(prefix+"_passwd2").value='';
 	    Dom.get(prefix+"_error_passwd2").style.visibility='hidden';
 	}
@@ -194,12 +210,12 @@ var close_dialog=function(prefix){
        add_user_dialog_others.render();
        add_user_dialog_others.subscribe("show", add_user_dialog_others.focus);
       
-  //     add_user_dialog_staff = new YAHOO.widget.Dialog("add_user_staff", {
-// 	      context:["add_user","tr","tr"]  ,
-// 	      visible : false,close:false,underlay: "none",draggable:false,width:550
+       add_user_dialog_staff = new YAHOO.widget.Dialog("add_user_staff", {
+ 	      context:["add_user","tr","tr"]  ,
+ 	      visible : false,close:false,underlay: "none",draggable:false
 	      
-// 	  });
-//        add_user_dialog_staff.render();
+ 	  });
+        add_user_dialog_staff.render();
 
  
 
@@ -211,7 +227,7 @@ var close_dialog=function(prefix){
        change_staff_password = new YAHOO.widget.Dialog("change_staff_password", 
 			{ 
 			    visible : false,close:false,
-			    underlay: "none",draggable:false,
+			    underlay: "none",draggable:false
 			    
 			} );
        change_staff_password.render();

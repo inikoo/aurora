@@ -127,24 +127,33 @@ function testPassword(passwd)
     
     
     // LETTERS (Not exactly implemented as dictacted above because of my limited understanding of Regex)
-    if (passwd.match(/[a-z]/))                              // [verified] at least one lower case letter
-	{
-	    intScore = (intScore+1)
-			strLog   = strLog + "1 point for at least one lower case char\n"
-		}
-		
-		if (passwd.match(/[A-Z]/))                              // [verified] at least one upper case letter
-		{
-			intScore = (intScore+5)
-			strLog   = strLog + "5 points for at least one upper case char\n"
-		}
-		
-		// NUMBERS
-		if (passwd.match(/\d+/))                                 // [verified] at least one number
-		{
-			intScore = (intScore+5)
-			strLog   = strLog + "5 points for at least one number\n"
-		}
+     if (passwd.match(/[a-z]/))                              // [verified] at least one lower case letter
+	 {
+	     intScore = (intScore+1);
+	     strLog   = strLog + "1 point for at least one lower case char\n";
+	 }
+     
+     if (passwd.match(/[A-Z]/))                              // [verified] at least one upper case letter
+	 {
+	     intScore = (intScore+5);
+	     strLog   = strLog + "5 points for at least one upper case char\n";
+	 }
+     
+     // chaeck secuencies
+     var seq='12345678789012345678909876543210987654321qwertyuioppoiuytrewqasdfghjkllkjhgfdsazxcvbnmmnbvcxz';
+     var patt=new RegExp(passwd);
+     if (patt.test(seq))                                 // [verified] at least one number
+	 {
+	     intScore = (intScore-50);
+	     strLog   = strLog + "50 less points for be a secuence\n";
+	 }
+     
+     // NUMBERS
+     if (passwd.match(/\d+/))                                 // [verified] at least one number
+	 {
+	     intScore = (intScore+5)
+		 strLog   = strLog + "5 points for at least one number\n"
+		 }
 		
 		if (passwd.match(/(.*[0-9].*[0-9].*[0-9])/))             // [verified] at least three numbers
 		{

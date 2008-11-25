@@ -184,15 +184,23 @@ function set($tipo,$data){
 	break;
   }
 }
+ 
 
-
-
-function save($tipo){
+ 
+ function change_password($data){
+   if(strlen($data['value'])!=64)
+     return array('ok'=>false,'msg'=>_('Wrong password'))
+   $sql=sprintf("update liveuser_users set passwd=%s where authuserid=%d",prepare_mysql($data['value']),$this->id);
+   mysql_query($sql);
+   
+ }
+ 
+ function save($tipo){
   switch($tipo){
   case('isactive'):
     $sql=sprintf("update liveuser_users set isactive=%d where authuserid=%d",$this->data['isactive'],$this->id);
     mysql_query($sql);
-
+    break;
   }
 
 }

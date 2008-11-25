@@ -31,9 +31,12 @@
 <div id="add_user_customer">
 
 </div>
-<div id="add_user_staff"  style="background:#fff;padding:20px;border:1px solid#777;font-size:90%;"     >
-  <div class="bd" style="padding:20px">
-    <div style="text-weight:800;margin-bottom:10px">{t}Setting an acount for a member of the staff {/t}</div>
+<div id="add_user_staff"  style="background:#fff;padding:0px;border:1px solid#777;font-size:90%;position:absolute;left:-1000px;top:-1050px;width:350px"     >
+      <div class="hd" style="font-weight:800;background:#238546;color:#fff;cursor:pointer;padding:4px 3px;text-align:center ;border-bottom:1px solid #999">{t}Setting an acount for a member of the staff {/t}</div>
+
+      <div class="bd" style="padding:20px 20px 20px 20px">
+    
+
     
     <table border=1 class="staff_list" style="margin:0 auto " >
     {foreach from=$staff item=_staff name=foo}
@@ -43,7 +46,7 @@
     {/foreach}
     </table>
   
-  <table class="edit inbox" >
+  <table class="edit inbox" style="margin:0 auto " >
 
     
     <tr class="tabs"  id="staff_choose_method">
@@ -145,7 +148,7 @@
   <div class="bd">
     <span>{t}Choose kind of user{/t}</span>
     <ul>
-      <li><span style="cursor:pointer" onCLick="add_user_dialog.cfg.setProperty('visible', false);add_user_dialog_staff.show()">Staff</span></li>
+      <li><span style="cursor:pointer" onCLick="add_user_dialog.cfg.setProperty('visible', false);display_dialog(this,'staff')">Staff</span></li>
       <li><span style="cursor:pointer"onCLick="add_user_dialog.cfg.setProperty('visible', false);add_user_dialog_supplier.show()">Supplier</span></li>
       <li><span style="cursor:pointer"onCLick="add_user_dialog.cfg.setProperty('visible', false);add_user_dialog_customer.show()">Customer</span></li>
       <li><span style="cursor:pointer"onCLick="add_user_dialog.cfg.setProperty('visible', false);add_user_dialog_others.show()">Other</span></li>
