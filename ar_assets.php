@@ -2005,7 +2005,7 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
   while($data=$res->fetchRow()) {
     $adata[]=array(
 		   'id'=>$data['id']
-		   ,'code'=>$data['code']
+		   ,'code'=>sprintf('<a href="product.php?id=%d">%s</a>',$data['id'],$data['code'])
 		   ,'description'=>$data['description']
 		   ,'units'=>number($data['units'])
 		   ,'price'=>money($data['price'])
@@ -2180,7 +2180,7 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
   while($data=$res->fetchRow()) {
     $adata[]=array(
 		   'id'=>$data['id']
-		   ,'name'=>$data['name']
+		   ,'name'=>sprintf('<a href="family.php?id=%d">%s</a>',$data['id'],$data['name'])
 		   ,'description'=>$data['description']
 
 		   ,'outofstock'=>number($data['outofstock'])
@@ -2191,13 +2191,13 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
 		   ,'ns_critical'=>number($data['ns_critical'])
 		   ,'stock_value'=>money($data['stock_value'])
 		   ,'tsall'=>money($data['tsall'])
-		   ,'tsy'=>money($data['tsy'])
-		   ,'tsq'=>money($data['tsq'])
-		   ,'tsm'=>money($data['tsm'])
-		   ,'tsw'=>money($data['tsw'])
+		   ,'tsy'=>($data['tsy']?money($data['tsy']):'')
+		   ,'tsq'=>($data['tsq']?money($data['tsq']):'')
+		   ,'tsm'=>($data['tsm']?money($data['tsm']):'')
+		   ,'tsw'=>($data['tsw']?money($data['tsw']):'')
 		   ,'awtsall'=>money($data['awtsall'])
-		   ,'awtsy'=>money($data['awtsy'])
-		   ,'awtsm'=>money($data['awtsm'])
+		   ,'awtsy'=>($data['awtsy']?money($data['awtsy']):'')
+		   ,'awtsm'=>($data['awtsm']?money($data['awtsm']):'')
 		   ,'tsoall'=>number($data['tsoall'])
 		   ,'tsoy'=>number($data['tsoy'])
 		   ,'tsoq'=>number($data['tsoq'])

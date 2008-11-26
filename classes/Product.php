@@ -34,14 +34,14 @@ class product{
 
 function get_data($product_id){
   global $_shape;
-  $sql=sprintf("select *,UNIX_TIMESTAMP(first_date) as ts_first_date from product where id=%d",$product_id);
+  $sql=sprintf("select *,UNIX_TIMESTAMP(first_date) as first_date from product where id=%d",$product_id);
 
 	if($result =& $this->db->query($sql)){
 	$this->data=$result->fetchRow();
-	if($this->data['ts_first_date']!='')
-	  $this->dates=array('ts_first_date'=>$this->data['ts_first_date']);
-	else
-	  $this->read('first_date');
+	if($this->data['first_date']!='')
+	  $this->data['dates']=array('first_date'=>($this->data['first_date']?strftime("%e %b %Y",$this->data['first_date']):''));
+	  else
+	    $this->load('first_date');
 
 	
 	
@@ -60,14 +60,13 @@ function get_data($product_id){
 }
 
   
-  function read($data_to_be_read){
+  function load($data_to_be_read){
 
     if(!is_array($data_to_be_read))
       $data_to_be_read=array($data_to_be_read);
     foreach($data_to_be_read as $table){
 
       switch($table){
-
       case('product_tree'):
 	$sql=sprintf('select d.name as department,d.id as department_id,g.name as group_name,group_id from product left join product_group as g on (g.id=group_id)  left join product_department as d on (d.id=department_id) where product.id=%s ',$this->id);
 
@@ -300,15 +299,15 @@ function get_data($product_id){
 	  $ts_date=date('U');
 	}
 	
-	$this->data['first_date']=$date;
-	$this->dates['first_date']=$ts_date;
+	$this->data['first_date']=$ts_date;
+	$this->data['dates']['first_date']=strftime("%e %b %Y", $ts_date);
 	$sql=sprintf("update product set first_date='%s' where (first_date>'%s' or  first_date is null )  and id=%d",$date,$date,$this->id);
 	$this->db->exec($sql);
 
 
 	break;
       case('sales_metadata'):
-	$_diff_seconds=date('U')-$this->dates['ts_first_date'];
+	$_diff_seconds=date('U')-$this->data['first_date'];
 	$date_diff=$_diff_seconds/24/3600;
 	$weeks=$date_diff/7;
 
@@ -356,7 +355,7 @@ function get_data($product_id){
 	}
 	
 
-	$date_diff=date('U')-$this->dates['ts_first_date']/24/3600;
+	$date_diff=date('U')-$this->data['first_date']/24/3600;
 	if($date_diff>=365){
 	  $tsy=0;
 	  $tsoy=0;
@@ -516,10 +515,10 @@ function get_data($product_id){
 	$a_dim=array($this->data['dim']);
       split('x',$this->data['dim']);
     case('first_date'):
-       return strftime("%e %B %Y", strtotime($this->data['first_date']));
-       break;
+      return $data->data['dates']['first_date'];
+      break;
     case('weeks_since'):
-      return (date("U")-date("U", strtotime($this->data['first_date'])))/604800;
+      return (date("U")-$this->data['first_date'])  /604800;
       
       break;
     case('number_of_suppliers'):
