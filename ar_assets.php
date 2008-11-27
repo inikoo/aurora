@@ -3458,6 +3458,69 @@ from porden_item left join product2supplier as ps on ( p2s_id=ps.id)  left join 
 
    echo json_encode($response);
    break;
+
+ case('plot_department_monthout'):
+ case('plot_department_monthsales'):
+   $department_id=$_SESSION['state']['department']['id'];
+   $today=sprintf("%d%02d",date("Y"),date("m"));
+ 
+
+
+
+   $sql=sprintf("select month(first_date) as m ,  year(first_date) as y ,period_diff( $today, concat(year(first_date),if(month(first_date)<10,concat('0',month(first_date)) ,month(first_date))   )  )   as since from product_department where id=%d",$department_id);
+
+   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+
+   if($row=$res->fetchRow()) {
+     $month=floor($row['m']);
+     $year=floor($row['y']);
+     $first=sprintf("%d%02d",$year,$month);
+     $since=$row['since'];
+   }
+   //   print "$year $month ";
+
+   $data=array();
+  
+   for($i=$since;$i>=0;$i--){
+
+     $data[]=array(
+		   'asales'=>0,
+		   'out'=>0,
+		   //		   'month'=>$m,
+		   //'year'=>$y,
+		   'date'=>strftime("%m/%y", strtotime("today -$i month")),
+		   'tip'=>'No sales in '.strftime("%b %y", strtotime("today -$i month")),
+		   'since'=>$i
+		   );
+	  
+   }
+ 
+   //   print "$since $month $year";
+   //  print_r($data);
+   $tipo_orders=' (o.tipo!=0 or o.tipo!=3 or  o.tipo!=9 or o.tipo!=10) ';
+   $sql=sprintf("select   -period_diff( $first, concat(year(date_index),if(month(date_index)<10,concat('0',month(date_index)) ,month(date_index))   )  )   as since  ,  sum(charge) as asales ,sum(dispached)as _out ,year(date_index) as y,month(date_index) as m,  concat(year(date_index),100+month(date_index) )  as monthyear    from  transaction as t left join orden as o on (order_id=o.id) left join product on (product_id=product.id) left join product_group as pg on (group_id=pg.id)  where %s and department_id=%d  group by monthyear order by  monthyear ",$tipo_orders,$department _id);
+   //      print "$sql";
+   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+
+   while($row=$res->fetchRow()) {
+     $data[$row['since']]['out']=(int)$row['_out'];
+     $data[$row['since']]['asales']=(float)$row['asales'];
+     if($tipo=='plot_monthout')
+       $data[$row['since']]['tip_out']=_('Outers Dispached')."\n".strftime("%B %Y", strtotime("today -".$row['since']." month"))."\n".number($row['_out']).' '._('Outers');
+     else
+       $data[$row['since']]['tip_asales']=_('Sales')."\n".strftime("%B %Y", strtotime("today -".$row['since']." month"))."\n".money($row['asales'])."\n".number($row['_out']).' '._('Outers');
+ 
+       }
+ $response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$data,
+			 )
+		   );
+
+   echo json_encode($response);
+   break;
+
+
  case('plot_monthout'):
  case('plot_monthsales'):
    $product_id=$_SESSION['state']['product']['id'];

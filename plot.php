@@ -38,6 +38,17 @@ switch($tipo){
    $style='size:5,lineSize:1';
  $tipo_chart='ColumnChart';
     break;
+ case('department_month_sales'):
+   $title=_("Sales per Month");
+   $ar_address='ar_assets.php?tipo=plot_department_monthsales';
+   $fields='"asales","date","tip_asales"';
+   $yfields=array(array('label'=>_('Sales'),'name'=>'asales','axis'=>'formatCurrencyAxisLabel','style'=>'size:10'));
+   $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category','axis'=>'justyears');
+   $style='size:5,lineSize:1';
+ $tipo_chart='ColumnChart';
+    break;
+
+
  case('product_year_sales'):
    $ar_address='ar_assets.php?tipo=plot_yearsales';
    $fields='"asales","date","tip"';

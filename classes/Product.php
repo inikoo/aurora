@@ -306,7 +306,7 @@ function get_data($product_id){
 
 
 	break;
-      case('sales_metadata'):
+      case('sales'):
 	$_diff_seconds=date('U')-$this->data['first_date'];
 	$date_diff=$_diff_seconds/24/3600;
 	$weeks=$date_diff/7;
@@ -504,6 +504,20 @@ function get_data($product_id){
   function get($item=''){
 
     switch($item){
+    case('sales'):
+      $this->data['sales']=array();
+      $sql=sprintf("select * from sales  where tipo='prod' and tipo_id=%d",$this->id);
+      if($result =& $this->db->query($sql)){
+	$this->data['sales']=$result->fetchRow();
+      }else{
+	$sql=sprintf("insert into sales (tipo,tipo_id) values ('prod',%d)"m$this->id);
+	mysql_query($sql);
+	$this->load('sales');
+	$this->save('sales');
+      }
+      
+
+      
     case('vol'):
       $this->data['vol']=volumen($this->data['dim_tipo_id'],$this->data['dim']);
       break;
@@ -1393,6 +1407,186 @@ function get_data($product_id){
     }
     return $res;
   }
+
+
+  function save($tipo){
+    switch($tipo){
+    case('sales'):
+      	$_diff_seconds=date('U')-$this->data['first_date'];
+	$date_diff=$_diff_seconds/24/3600;
+	$weeks=$date_diff/7;
+
+	$sql=sprintf("update product set  tsoall=0,tsall=0,tdall=0,awtsoall=NULL, awtsoy=NULL,  awtsoq=NULL, awtsom=NULL, awtsall=NULL, awtsy=NULL, awtsq=NULL,  awtsm=NULL, awtdall=NULL, awtdy=NULL, awtdq=NULL, awtdm=NULL, tsoy=NULL, tsoq=NULL,  tsom=NULL, tsoq=NULL, tsom=NULL, tsow=NULL, tsw=NULL, tsm=NULL, tsq=NULL, tsy=NULL, tdy=NULL, tdq=NULL, tdm=NULL, tdw=NULL  where id=%d",$this->id);
+	mysql_query($sql);
+
+	$sql=sprintf("update product set tsall=%.2f,tsoall=%.f where id=%d",$this->data['sales']['tsall'],$this->data['sales']['tsoall'],$this->id);
+	mysql_query($sql);
+	if($weeks>=1){
+	  $sql=sprintf("update product set awtsall=%.2f,awtsoall=%f where id=%d",$this->data['sales']['awtsall'],$this->data['sales']['awtsoall'],$this->id);
+	  mysql_query($sql);
+	}
+
+	
+
+	$tsall=0;
+	$tsoall=0;
+	$tdall=0;
+	$sql=sprintf("select  sum(charge) as sales  ,sum(dispached) as outers from  transaction as t left join orden as o on (order_id=o.id) where product_id=%d and o.tipo=2    ",$this->id);
+	$result =& $this->db->query($sql);
+	if($row=$result->fetchRow()){
+	  $tsall=$row['sales'];
+	  $tsoall=$row['outers'];
+	  
+
+	  $sql=sprintf("update product set tsall=%s,tsoall=%s where id=%d",$tsall,$tsoall,$this->id);
+	  mysql_query($sql);
+	  
+	  if($weeks>=1){
+	    $awtsall=$row['sales']/$weeks;
+	    $awtsoall=$row['outers']/$weeks;
+	     $sql=sprintf("update product set awtsall=%s,awtsoall=%s where id=%d",$awtsall,$awtsoall,$this->id);
+	     mysql_query($sql);
+	  }
+
+	}
+	$sql=sprintf("select  sum(dispached) as outers from  transaction as t left join orden as o on (order_id=o.id) where product_id=%d   and (o.tipo!=3 or o.tipo!=7 or o.tipo!=9  or o.tipo!=10  )     ",$this->id);
+	$result =& $this->db->query($sql);
+	if($row=$result->fetchRow()){
+	  $tdall=$row['outers'];
+	  $sql=sprintf("update product set tdall=%s where id=%d",$tdall,$this->id);
+	  mysql_query($sql);
+	  
+	  if($weeks>=1){
+	    $awtdall=$row['outers']/$weeks;
+	    $sql=sprintf("update product set awtdall=%s where id=%d",$awtdall,$this->id);
+	    mysql_query($sql);
+	    
+	  }
+
+	}
+	
+
+	$date_diff=date('U')-$this->data['first_date']/24/3600;
+	if($date_diff>=365){
+	  $tsy=0;
+	  $tsoy=0;
+	  $awtsy=0;
+	  $awtsoy=0;
+	  $tdy=0;
+	  $sql=sprintf("select  sum(charge) as sales ,sum(dispached) as outers  from  transaction as t left join orden as o on (order_id=o.id) where product_id=%d and o.tipo=2 and DATE_SUB(CURDATE(),INTERVAL 1 YEAR) <= date_index   ",$this->id);
+	  $result =& $this->db->query($sql);
+	  if($row=$result->fetchRow()){
+	    $tsy=$row['sales'];
+	    $tsoy=$row['outers'];
+	    $awtsy=$tsy/52.17857142;
+	    $awtsoy=$tsoy/52.17857142;
+	    $sql=sprintf("update product set tsy=%s,tsoy=%s,awtsy=%s,awtsoy=%s where id=%d",$tsy,$tsoy,$awtsy,$awtsoy,$this->id);
+	    mysql_query($sql);
+	  }
+	  $sql=sprintf("select  sum(dispached) as outers  from  transaction as t left join orden as o on (order_id=o.id) where product_id=%d and (o.tipo!=3 or o.tipo!=7 or o.tipo!=9  or o.tipo!=10  )   and DATE_SUB(CURDATE(),INTERVAL 1 YEAR) <= date_index   ",$this->id);
+	  $result =& $this->db->query($sql);
+	  if($row=$result->fetchRow()){
+	    $tdy=$row['outers'];
+	    $awtdy=$row['outers']/52.17857142;;
+	    $sql=sprintf("update product set tdy=%s , awtdy=%s   where id=%d",$tdy,$awtdy,$this->id);
+	    mysql_query($sql);
+	  }
+
+
+	}
+	if($date_diff>=89){
+	  $tsq=0;
+	  $tsoq=0;
+	  $awtsq=0;
+	  $awtsoq=0;
+	  $tdq=0;
+	  
+	  $sql=sprintf("select  sum(charge) as sales ,sum(dispached) as outers  from  transaction as t left join orden as o on (order_id=o.id) where product_id=%d and o.tipo=2 and DATE_SUB(CURDATE(),INTERVAL 3 MONTH) <= date_index   ",$this->id);
+	  $result =& $this->db->query($sql);
+	  if($row=$result->fetchRow()){
+	    
+	    $tsq=$row['sales'];
+	    $tsoq=$row['outers'];
+	    $awtsq=$tsq/13.044642857;
+	    $awtsoq=$tsoq/13.044642857;
+	    $sql=sprintf("update product set tsq=%s,tsoq=%s,awtsq=%s,awtsoq=%s where id=%d",$tsq,$tsoq,$awtsq,$awtsoq,$this->id);
+	    mysql_query($sql);
+	  }
+	  $sql=sprintf("select  sum(dispached) as outers  from  transaction as t left join orden as o on (order_id=o.id) where product_id=%d and (o.tipo!=3 or o.tipo!=7 or o.tipo!=9  or o.tipo!=10  )   and DATE_SUB(CURDATE(),INTERVAL 3 MONTH) <= date_index   ",$this->id);
+	  $result =& $this->db->query($sql);
+	  if($row=$result->fetchRow()){
+	    $tdq=$row['outers'];
+	    $awtdq=$row['outers']/13.044642857;
+	    $sql=sprintf("update product set tdq=%s ,awtdq=%s  where id=%d",$tdq,$awtdq,$this->id);
+	    mysql_query($sql);
+	  }
+	  
+	}
+
+	if($date_diff>=30){
+	  $tsm=0;
+	  $tsom=0;
+	  $awtsm=0;
+	  $awtsom=0;
+	  $tdm=0;
+
+	$sql=sprintf("select  sum(charge) as sales ,sum(dispached) as outers  from  transaction as t left join orden as o on (order_id=o.id) where product_id=%d and o.tipo=2 and DATE_SUB(CURDATE(),INTERVAL 1 MONTH) <= date_index   ",$this->id);
+	$result =& $this->db->query($sql);
+	if($row=$result->fetchRow()){
+	  $tsm=$row['sales'];
+	  $tsom=$row['outers'];
+	  $awtsm=$tsm/4.348214286;
+	  $awtsom=$tsom/4.348214286;
+	  $sql=sprintf("update product set tsm=%s,tsom=%s,awtsm=%s,awtsom=%s where id=%d",$tsm,$tsom,$awtsm,$awtsom,$this->id);
+	  
+	  mysql_query($sql);
+	}
+
+
+	$sql=sprintf("select  sum(dispached) as outers  from  transaction as t left join orden as o on (order_id=o.id) where product_id=%d and (o.tipo!=3 or o.tipo!=7 or o.tipo!=9  or o.tipo!=10  )   and DATE_SUB(CURDATE(),INTERVAL 1  MONTH) <= date_index   ",$this->id);
+	  $result =& $this->db->query($sql);
+	  if($row=$result->fetchRow()){
+	    $tdm=$row['outers'];
+	    $awtdm=$row['outers']/4.348214286;
+	    $sql=sprintf("update product set tdm=%s,  awtdm=%s  where id=%d",$tdm,$awtdm,$this->id);
+	    mysql_query($sql);
+	  }
+	
+	}
+	
+	if($date_diff>5){
+	  $tsw=0;
+	  $tsow=0;
+	  $tdw=0;
+	  
+	  $sql=sprintf("select  sum(charge) as sales ,sum(dispached) as outers  from  transaction as t left join orden as o on (order_id=o.id) where product_id=%d and o.tipo=2 and DATE_SUB(CURDATE(),INTERVAL 1 WEEK) <= date_index   ",$this->id);
+	  $result =& $this->db->query($sql);
+	  if($row=$result->fetchRow()){
+	    $tsw=$row['sales'];
+	  $tsow=$row['outers'];
+	  $sql=sprintf("update product set tsw=%s,tsow=%s where id=%d",$tsw,$tsow,$this->id);
+	  mysql_query($sql);
+	  }
+
+	  $sql=sprintf("select  sum(dispached) as outers  from  transaction as t left join orden as o on (order_id=o.id) where product_id=%d and (o.tipo!=3 or o.tipo!=7 or o.tipo!=9  or o.tipo!=10  )   and DATE_SUB(CURDATE(),INTERVAL 1  WEEK) <= date_index   ",$this->id);
+	  $result =& $this->db->query($sql);
+	  if($row=$result->fetchRow()){
+	    $tdw=$row['outers'];
+	    $sql=sprintf("update product set tdw=%s  where id=%d",$tdm,$this->id);
+	    mysql_query($sql);
+	  }
+
+
+	}
+
+	
+
+
+    }
+
+  }
+
+
 
   function save_new($datos){
     
