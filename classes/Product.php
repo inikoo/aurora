@@ -1416,7 +1416,7 @@ function get_data($product_id){
 	$date_diff=$_diff_seconds/24/3600;
 	$weeks=$date_diff/7;
 
-	$sql=sprintf("update product set  tsoall=0,tsall=0,tdall=0,awtsoall=NULL, awtsoy=NULL,  awtsoq=NULL, awtsom=NULL, awtsall=NULL, awtsy=NULL, awtsq=NULL,  awtsm=NULL, awtdall=NULL, awtdy=NULL, awtdq=NULL, awtdm=NULL, tsoy=NULL, tsoq=NULL,  tsom=NULL, tsoq=NULL, tsom=NULL, tsow=NULL, tsw=NULL, tsm=NULL, tsq=NULL, tsy=NULL, tdy=NULL, tdq=NULL, tdm=NULL, tdw=NULL  where id=%d",$this->id);
+	$sql=sprintf("update sales set  tsoall=0,tsall=0,awtsoall=NULL, awtsoy=NULL,  awtsoq=NULL, awtsom=NULL, awtsall=NULL, awtsy=NULL, awtsq=NULL,  awtsm=NULL, tsoy=NULL, tsoq=NULL,  tsom=NULL, tsoq=NULL, tsom=NULL, tsow=NULL, tsw=NULL, tsm=NULL, tsq=NULL, tsy=NULL   where tipo='prod' and tipo_id=%d",$this->id);
 	mysql_query($sql);
 
 	$sql=sprintf("update product set tsall=%.2f,tsoall=%.f where id=%d",$this->data['sales']['tsall'],$this->data['sales']['tsoall'],$this->id);
