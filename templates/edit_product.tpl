@@ -31,10 +31,22 @@
 
 <div  {if $edit!="prices"}style="display:none"{/if}  class="edit_block" id="d_prices">
   <table class="edit" >
-    <tr><td></td><td>{t}Price per Outer{/t}</td><td>{t}Price per Units{/t}</tr>
+    <tr><td></td><td>{t}Price per Outer{/t} ({$units}{t}xU{/t})</td><td>{t}Price per Units{/t}</tr>
 	
-    <tr><td class="label">{t}Sale Price{/t}:</td><td>{$currency}<input style="text-align:right;width:10em"  id="v_price" value="{$data.price}" ></td></tr>
-    <tr><td class="label">{t}Recomended Retail Price{/t}:</td><td></td><td>{$currency}<input style="text-align:right;width:10em"  id="v_price" value="{$data.price}" ></td><td></td></tr>
+    <tr>
+      <td class="label">{t}Sale Price{/t}:</td>
+      <td>{$currency}<input  onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thosusand_sep}',2);price_changed(this)" style="text-align:right;width:10em"  factor="{$factor_inv_units}" name="price" id="v_price" value="{$data.price}"  ovalue="{$data.price}" ></td>
+      <td id="price_ou">{$price_perunit}</td>
+      <td id="price_change"></td>
+      <td><span onClick="save_price('price')"  name="price" style="cursor:pointer;visibility:hidden" id="price_save">{t}Save{/t} <img src="art/icons/disk.png"/></span></td></tr>
+    <tr>
+      <td class="label">{t}Recomended Retail Price{/t}:</td>
+      <td id="rrp_ou">{$rrp_perouter}</td>
+      <td>{$currency}<input onblur="format_rrp(this)" style="text-align:right;width:10em"   factor="{$factor_units}"   name="rrp" id="v_rrp" ovalue="{$data.rrp}" value="{$data.rrp}" ></td> 
+      <td id="rrp_change">{if $data.rrp==''}{t}RRP not set{/t}{/if}</td>
+      
+      <td><span onClick="save_price('rrp')" name="rrp" style="cursor:pointer;visibility:hidden" id="rrp_save">{t}Save{/t} <img src="art/icons/disk.png"/></span></td>
+    </tr>
       
     
   </table>
@@ -91,9 +103,9 @@
     <table style="margin:0;" border=0>
       <tr>
 	<td><img style="visibility:hidden"  id="c_categories" src="art/icons/accept.png" /></td>
-	<td style="vertical-align: top;" >{t}Categories{/t}:</td>
-	<td style="vertical-align: top;" >
-	  <table border=1 id="cat_list" style="float:left;margin:0 20px 0 0 ">
+	<td style="vertical-align: top;width:175px" >{t}Categories{/t}:</td>
+	<td style="vertical-align: top;width:300px " >
+	  <table border=0 id="cat_list" style="float:left;margin:0 20px 0 0 ">
 	    <tr>
 	      <td>{if $num_cat==0}{t}No category assigned{/t}{/if}<td><td><span style="margin:0 0 0 25px;cursor:pointer" id="browse_cat">{t}Choose Category{/t}</span></td></td>
 	    </tr>
@@ -103,14 +115,34 @@
 	    
 	  </table>
 	</td>
+	<td style="width:300px"></td>
       </tr>  
-      <tr><td><img style="visibility:hidden"  id="c_description" src="art/icons/accept.png" /></td>
-	<td>{t}Description{/t}:</td><td><input     class=''     ovalue="{$description}"   name="v_description"    value="{$description}"  id="v_description" size="40"/></td><td id="m_description"></td></tr>
-      <tr><td><img style="visibility:hidden"  id="c_sdescription" src="art/icons/accept.png" /></td>                               
-	<td>{t}Short Description{/t}:</td><td><input  class=''  ovalue="{$sdescription}"  name="v_sdescription"  value="{$sdescription}" id="v_sdescription"  size="40"   /></td><td id="m_sdescription"></td></tr>
-      <tr><td><img style="visibility:hidden"  id="c_details" src="art/icons/accept.png" /></td>
-	<td>{t}Detailed Description{/t}:<td style="visibility:hidden" class="text_ok" id="i_details"><i>{t}Product details changed{/t}</i></td><td id="m_details"></td></tr>
-      <tr><td></td><td colspan="2"><textarea id="v_details" name="v_details" rows="20" cols="100">{$details}</textarea>
+      <tr>
+	<td><img   id="description_icon" style="visibility:hidden;cursor:pointer" title="{t}Return recorded value{/t}"  src="art/icons/arrow_undo.png" onclick="return_to_old_value('description')" /></td>
+	<td>{t}Description{/t}:</td>
+	<td><input     class=''     ovalue="{$data.description}"   name="description"   onKeyUp="description_changed(this)"   value="{$data.description}"  id="v_description" size="40"/></td>
+	<td>
+	  <span onClick="save_description('description')"  name="description" style="cursor:pointer;display:none" id="description_save">{t}Save{/t} <img src="art/icons/disk.png"/></span>
+	  <span id="description_change">
+	</td>
+      </tr>
+      <tr>
+	<td><img   id="sdescription_icon" style="visibility:hidden;cursor:pointer" title="{t}Return recorded value{/t}"  src="art/icons/arrow_undo.png" onclick="return_to_old_value('sdescription')" /></td>
+	<td>{t}Short Description{/t}:</td>
+	<td><input   onKeyUp="description_changed(this)" class=''  ovalue="{$data.sdescription}"  name="sdescription"  value="{$data.sdescription}" id="v_sdescription"  size="40"   /></td>
+	<td>
+	  <span onClick="save_description('sdescription')"  name="sdescription" style="cursor:pointer;display:none" id="sdescription_save">{t}Save{/t} <img src="art/icons/disk.png"/></span>
+	  <span id="sdescription_change">
+	</td>
+      </tr>
+      
+      <tr>
+	<td></td>
+	<td>{t}Detailed Description{/t}:</td>
+	<td><span onClick="save_description('details')"  name="details" style="cursor:pointer;display:none" id="details_save">{t}Save{/t} <img src="art/icons/disk.png"/> <span id="details_change"></td>
+	<td></td>
+      </tr>
+      <tr><td></td><td colspan="3"><textarea id="v_details" name="v_details" rows="20" cols="100">{$data.details}</textarea>
       </td></tr>
       
     </table>

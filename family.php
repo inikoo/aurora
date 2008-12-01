@@ -1,5 +1,6 @@
 <?
 include_once('common.php');
+include_once('classes/Family.php');
 
 $view_sales=$LU->checkRight(PROD_SALES_VIEW);
 $view_stock=$LU->checkRight(PROD_STK_VIEW);
@@ -55,34 +56,17 @@ if(isset($_REQUEST['view'])){
 
 
 
-$sql=sprintf("select 
-(select count(*) from product where group_id=g.id) as products,
-d.name as department,
-g.products,
-g.name as family,
-g.name as name,
-g.stock_value,
-g.outofstock
-,g.tsq
-,g.tsy
-,g.tsall
-,g.tsm
-,g.products
-,g.active
-,g.description, department_id from product_group as g left join product_department as d on (department_id=d.id) where g.id=%d",$family_id);
+$family=new Family($family_id);
 
-$result =& $db->query($sql);
-if(!$family=$result->fetchRow())
-  exit;
 
 //get previoues
 $families_order=$_SESSION['state']['department']['table']['order'];
-$sql=sprintf("select g.id,g.name as code from product_group as g  where  %s<'%s' and  department_id=%d order by %s desc  ",$families_order,$family[$families_order],$family['department_id'],$families_order);
+$sql=sprintf("select g.id,g.name as code from product_group as g  where  %s<'%s' and  department_id=%d order by %s desc  ",$families_order,$family->get($families_order),$family->data['department_id'],$families_order);
 $result =& $db->query($sql);
 
 if(!$prev=$result->fetchRow())
   $prev=array('id'=>0,'code'=>'');
-$sql=sprintf("select id,name as code from product_group where  %s>'%s' and department_id=%d order by %s   ",$families_order,$family[$families_order],$family['department_id'],$families_order);
+$sql=sprintf("select id,name as code from product_group where  %s>'%s' and department_id=%d order by %s   ",$families_order,$family->get($families_order),$family->data['department_id'],$families_order);
 
 $result =& $db->query($sql);
 if(!$next=$result->fetchRow())
@@ -97,19 +81,19 @@ $smarty->assign('next',$next);
 
 
 $smarty->assign('parent','departments.php');
-$smarty->assign('title',$family['family'].' - '.$family['description']);
+$smarty->assign('title',$family->data['name'].' - '.$family->data['description']);
 
 
 $product_home="Products Home";
 $smarty->assign('home',$product_home);
-$smarty->assign('department',$family['department']);
-$smarty->assign('department_id',$family['department_id']);
-$smarty->assign('products',$family['products']);
+$smarty->assign('department',$family->get('department'));
+$smarty->assign('department_id',$family->data['department_id']);
+$smarty->assign('products',$family->data['n_products']);
 
-$smarty->assign('family',$family['family']);
-$smarty->assign('family_id',$family_id);
+$smarty->assign('family',$family->data['name']);
+$smarty->assign('family_id',$family->id);
 
-$smarty->assign('family_description',$family['description']);
+$smarty->assign('family_description',$family->data['description']);
 
 $smarty->assign('units_tipo',$_units_tipo);
 
@@ -124,7 +108,7 @@ $smarty->assign('view',$_SESSION['state']['family']['view']);
 $smarty->assign('show_details',$_SESSION['state']['family']['details']);
 $table_title=_('Product List');
 $smarty->assign('table_title',$table_title);
-$smarty->assign('table_info',$family['products'].' '.ngettext('Product','Products',$family['products']).' '._('in').' '.$family['name']);
+
 
 
 $smarty->display('family.tpl');

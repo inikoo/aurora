@@ -34,7 +34,7 @@ $_SESSION['state']['product']['id']=$product_id;
 
 if(!$product= new product($product_id))
   exit('Error product not found');
-$product->read(array(
+$product->load(array(
 		     'categories'
 		     ,'suppliers'
 		     ,'product_tree'
@@ -131,7 +131,7 @@ $js_files=array(
 		$yui_path.'autocomplete/autocomplete.js',
 		$yui_path.'charts/charts-experimental-min.js',
 		$yui_path.'datatable/datatable-beta.js',
-		$yui_path.'editor/editor-beta-debug.js',
+		$yui_path.'editor/editor-min.js',
 		$yui_path.'json/json-min.js',
 
 		'js/calendar_common.js.php',
@@ -238,6 +238,16 @@ foreach($cat as $key=>$_cat){
 }
 $smarty->assign('state_cat',$cat);
 $smarty->assign('cat_cols',$num_cols-1);
+$smarty->assign('units',number($product->get('units')));
+$smarty->assign('factor_units',number_format($product->get('units'),6));
+$smarty->assign('factor_inv_units',number_format(1/$product->get('units'),6)  );
 
+$smarty->assign('price_perunit',money($product->get('price')/$product->get('units')));
+if($product->data['rrp']=='')
+  $smarty->assign('rrp_perouter','');
+else
+  $smarty->assign('rrp_perouter',money($product->get('rrp')*$product->get('units')));
+$smarty->assign('decimal_point',$myconf['decimal_point']);
+$smarty->assign('thosusand_sep',$myconf['thosusand_sep']);
 $smarty->display('edit_product.tpl');
 ?>

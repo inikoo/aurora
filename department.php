@@ -57,14 +57,14 @@ product_department.name as department,
 product_department.code as department_code,
 
 product_department.id as department_id,
-product_department.tsq,
-product_department.tsm,
-product_department.tsy,
-product_department.tsall,
+sales.tsq,
+sales.tsm,
+sales.tsy,
+sales.tsall,
 product_department.stock_value,
 product_department.name,
 product_department.products
-from product_group left join product_department on (product_department.id=department_id) where department_id=%d group by department_id",$department_id);
+from product_group left join product_department on (product_department.id=department_id) left join sales on (department_id=tipo_id) where tipo='dept' and department_id=%d group by department_id",$department_id);
 
 $result =& $db->query($sql);
 $families=$result->fetchRow();
@@ -73,11 +73,12 @@ $families=$result->fetchRow();
 
 
 $families_order=$_SESSION['state']['departments']['table']['order'];
-$sql=sprintf("select id,name as code from product_department  where  %s<'%s' order by %s desc  ",$families_order,$families[$families_order],$families_order);
+$sql=sprintf("select product_department.id,name as code from product_department left join sales on (product_department.id=tipo_id)  where tipo='dept' and   %s<'%s' order by %s desc  ",$families_order,$families[$families_order],$families_order);
+
 $result =& $db->query($sql);
 if(!$prev=$result->fetchRow())
   $prev=array('id'=>0,'code'=>'');
-$sql=sprintf("select id,name as code  from product_department  where  %s>'%s' order by %s   ",$families_order,$families[$families_order],$families_order);
+$sql=sprintf("select product_department.id,name as code  from product_department  left join sales on (product_department.id=tipo_id)  where tipo='dept' and   %s>'%s' order by %s   ",$families_order,$families[$families_order],$families_order);
 
 $result =& $db->query($sql);
 if(!$next=$result->fetchRow())

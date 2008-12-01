@@ -68,11 +68,12 @@ $_SESSION['state']['product']['id']=$product_id;
 
 
 $product= new product($product_id);
-$product->read(array(
+$product->load(array(
 		     'suppliers'
 		     ,'product_tree'
 		     ,'images'
 		     ,'locations'
+		     
 		     )
 	       );
 
@@ -160,12 +161,14 @@ $smarty->assign('key_filter_dimension',$regex['key_filter_dimension']);
 $js_files[]= 'js/search_product.js';
 $js_files[]='js/product.js.php?current_plot='.$plot_tipo;
 
-$smarty->assign('tsoall',number($product->data['tsoall']));
-$smarty->assign('awtsoall',number($product->data['awtsoall']));
-$smarty->assign('awtsoq',number($product->data['awtsoq']));
+$smarty->assign('tsoall',number($product->get('tsoall')));
+$smarty->assign('awtsoall',number($product->get('awtsoall')));
+$smarty->assign('awtsoq',number($product->get('awtsoq')));
 $smarty->assign('units',number($product->data['units']));
 $smarty->assign('price',money($product->data['price']));
 $smarty->assign('rrp',money($product->data['rrp']));
+$smarty->assign('weeks_since',number($product->get('weeks')));
+
 $smarty->assign('unit_price',money($product->data['price']/$product->data['units']));
 
 

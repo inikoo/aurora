@@ -53,8 +53,8 @@ $smarty->assign('view',$_SESSION['state']['departments']['view']);
 $smarty->assign('show_details',$_SESSION['state']['departments']['details']);
 
 
-$sql="select id from product";
-$result =& $db->query($sql);
+//$sql="select id from product";
+//$result =& $db->query($sql);
 
 // include_once('classes/product.php');
 // while($row=$result->fetchRow()){
@@ -62,11 +62,14 @@ $result =& $db->query($sql);
 //   $product->set_stock();
 // }
 
-$table_title=_('Department List');
-$sql="select count(*) as numberof,sum(stock_value) as stock_value,sum(tsall) as total_sales  from product_department";
-$result =& $db->query($sql);
-if(!$departments=$result->fetchRow())
-  exit;
+ $table_title=_('Department List');
+ $sql="select count(*) as numberof ,sum(tsall) as total_sales,sum(stock_value) as stock_value  from product_department left join sales on (tipo_id=product_department.id) and tipo='dept' ";
+ $result =& $db->query($sql);
+ if(!$departments=$result->fetchRow())
+   exit;
+
+
+
 $smarty->assign('table_info',$departments['numberof'].' '.ngettext('Department','Departments',$departments['numberof']));
 $sql="select count(*) as numberof from product_group";
 $result =& $db->query($sql);

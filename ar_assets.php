@@ -148,13 +148,26 @@ switch($tipo){
  case('ep_update'):
      $data[]=array(
 		 'key'=>$_REQUEST['key'],
-		 'data'=>$_REQUEST['value'],
-		 'user_id'=>$LU->getProperty('auth_user_id'),
+		 'value'=>$_REQUEST['value']
 		 );
      $product=new product($_SESSION['state']['product']['id']);
      $res=$product->update($data);
-     $response= array('res'=>$res);
+     if($res[$_REQUEST['key']]['ok']){
      
+       $product->save($_REQUEST['key'],array('user_id'=>$LU->getProperty('auth_user_id')));
+       $res=$res[$_REQUEST['key']];
+     }else
+       $res=$res[$_REQUEST['key']];
+
+       if($res['ok'])
+	 $response= array(
+			  'ok'=>true
+			);
+       else
+	 $response= array(
+			  'ok'=>false,
+			  'msg'=>$res['msg']
+			);
      echo json_encode($response);  
      break;
  case('pml_change_location'):
@@ -1195,7 +1208,7 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
   
   $_SESSION['state']['departments']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from);
   
-  $where='';
+  $where=" and tipo='dept'";
   $filtered=0;
   
   $_order=$order;
@@ -1204,11 +1217,12 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
     $order='tsall';
   if($order=='per_tsm')
     $order='tsm';
-  
+   if($order=='id')
+    $order='product_department.id';
   $total_sales=0;
    $total_m=0;
-   $sql="select awtsq,tsall,tsy,tsq,tsm,id,code,name,families,products,active,outofstock,stockerror,stock_value from product_department $where   order by $order $order_direction limit $start_from,$number_results    ";
-   //   print "$sql";   
+   $sql="select awtsq,tsall,tsy,tsq,tsm,product_department.id,code,name,families,products,active,outofstock,stockerror,stock_value from product_department left join sales on (tipo_id=product_department.id)$where   order by $order $order_direction limit $start_from,$number_results    ";
+   //    print "$sql";   
   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
   $adata=array();
   while($row=$res->fetchRow()) {
@@ -1352,13 +1366,17 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
 
 
    
-
-  $_order=$order;
+   if($order=='stockerror')
+     $_order='ns_unknown';
+   else if($order=='outofstock')
+     $_order='ns_outofstock';
+   else
+     $_order=$order;
   $_dir=$order_direction;
 
 
-  $sql="select id,name,description,stock_value,stockerror,outofstock,tsall,tsy,tsq,tsm,awtsq,active from product_group    $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
-
+  $sql="select product_group.id,name,description,stock_value,ns_unknown as stockerror,ns_outofstock as outofstock,tsall,tsy,tsq,tsm,awtsq,(n_products-n_discontinued) as active from product_group  join sales on (product_group.id=tipo_id)    $where $wheref and tipo='fam'  order by $order $order_direction limit $start_from,$number_results    ";
+  //  print "$sql";
   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
   
   $adata=array();
@@ -1996,7 +2014,7 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
 
   $norder=($order=='code'?'ncode':$order);
   
-  $sql="select id,code,description,product.price as price,product.units as units,product.units_tipo as units_tipo,ncode,stock,available,stock_value,tsall,tsy,tsq,tsm,awtsq from product    $where $wheref  order by $norder $order_direction limit $start_from,$number_results    ";
+  $sql="select product.id,code,description,product.price as price,product.units as units,product.units_tipo as units_tipo,ncode,stock,available,stock_value,tsall,tsy,tsq,tsm,awtsq from product  left join sales on (tipo_id=product.id)  $where $wheref and tipo='prod' order by $norder $order_direction limit $start_from,$number_results    ";
 
   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
   
@@ -2097,6 +2115,9 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
       $_SESSION['state']['families']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
       
       
+
+
+
      $filter_msg='';
      
      $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
@@ -2122,7 +2143,7 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
 
      
      $sql="select count(*) as total from product_group  $where $wheref";
-     
+     //     print "$sql";
      $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
      if($row=$res->fetchRow()) {
        $total=$row['total'];
@@ -2171,8 +2192,8 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
 
 
   
-  $sql="select stock_value,outofstock,stockerror, ns_high,ns_normal,ns_low,ns_critical, id,name,description,tsall,tsy,tsq,tsm,tsw,awtsall,awtsy,awtsm,tsoall,tsoy,tsoq,tsom, tsow,awtsoall,awtsoy,awtsom from product_group    $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
-  //print $sql;
+  $sql="select stock_value,ns_outofstock as outofstock,ns_unknown as stockerror, ns_high,ns_normal,ns_low,ns_critical, product_group.id,name,description,tsall,tsy,tsq,tsm,tsw,awtsall,awtsy,awtsm,tsoall,tsoy,tsoq,tsom, tsow,awtsoall,awtsoy,awtsom from product_group  join sales on (product_group.id=tipo_id)   $where $wheref and tipo='fam'  order by $order $order_direction limit $start_from,$number_results    ";
+  //        print "$sql";
   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
   
   $adata=array();

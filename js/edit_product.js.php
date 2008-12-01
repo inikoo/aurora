@@ -1,4 +1,4 @@
-ye<?
+<?
     include_once('../common.php');
 ?>
 var Event = YAHOO.util.Event;
@@ -111,7 +111,111 @@ var change_element= function(o){
 
     }
 
+    function price_change(old_value,new_value){
+	//	alert(old_value+' '+new_value)
+	prefix='';
+	old_value=FormatNumber(old_value,'.','',2);
+	new_value=FormatNumber(new_value,'.','',2);
+	var diff=new_value-old_value;
+	if(diff>0)
+	    prefix='+'+'<?=$myconf['currency_symbol']?>';
+	else
+	    prefix='-'+'<?=$myconf['currency_symbol']?>';
+	
 
+	if(old_value==0)
+	    var per='';
+	else{
+
+	    var per=FormatNumber((100*(diff/old_value)).toFixed(1),'<?=$myconf['decimal_point']?>','<?=$myconf['thosusand_sep']?>',1)+'%';
+	}
+	var diff=FormatNumber(Math.abs(diff).toFixed(2),'<?=$myconf['decimal_point']?>','<?=$myconf['thosusand_sep']?>',2);
+	return prefix+diff+' '+per;
+    }
+
+function format_rrp(o){
+  if(o.value=='')
+      {
+	  price_changed(o);
+      }else{
+      o.value=FormatNumber(o.value,'<?=$myconf['decimal_point']?>','<?=$myconf['thosusand_sep']?>',2);
+      price_changed(o);
+  }
+
+}
+
+function return_to_old_value(key){
+    Dom.get("v_"+key).value=Dom.get("v_"+key).getAttribute('ovalue');
+    
+    if(key=='description')
+	description_changed(Dom.get("v_"+key));
+
+}
+
+
+  function description_changed(o){
+	var ovalue=o.getAttribute('ovalue');
+	var name=o.name;
+
+	    
+	if(ovalue!=o.value){
+
+	    if(o.value==''){
+		Dom.get(name+"_change").innerHTML="<?=_("This value can not be empty")?>";
+		Dom.get(name+"_save").style.display='none';
+		Dom.get(name+"_icon").style.visibility='visible';
+		return;
+	    }
+	    Dom.get(name+"_save").style.display='';
+	    Dom.get(name+"_change").innerHTML='';
+	    Dom.get(name+"_icon").style.visibility='visible';
+	    
+	}
+	else{
+	    Dom.get(name+"_change").innerHTML='';
+	    Dom.get(name+"_save").style.display='none';
+	    Dom.get(name+"_icon").style.visibility='hidden';
+	}
+    
+	
+	
+    }
+
+
+
+
+
+
+
+    function price_changed(o){
+	var ovalue=o.getAttribute('ovalue');
+	var name=o.name;
+
+	    
+	if(ovalue!=o.value){
+	    Dom.get(name+"_save").style.visibility='visible';
+	    if(o.value==''){
+		Dom.get(name+"_change").innerHTML='<?=_('RRP value unset')?>';
+		Dom.get(name+"_ou").innerHTML='';
+	    }else if(ovalue==''){
+		value=FormatNumber(o.value,'.','',2);
+		factor=FormatNumber(o.getAttribute('factor'),'.','',6);
+		Dom.get(name+"_change").innerHTML='<?=_('RRP set to')?> '+'<?=$myconf['currency_symbol']?>'+FormatNumber(value,'<?=$myconf['decimal_point']?>','<?=$myconf['thosusand_sep']?>',2);
+		Dom.get(name+"_ou").innerHTML='<?=$myconf['currency_symbol']?>'+FormatNumber((value*factor).toFixed(2),'<?=$myconf['decimal_point']?>','<?=$myconf['thosusand_sep']?>',2);
+	    }else{
+		value=FormatNumber(o.value,'.','',2);
+		factor=FormatNumber(o.getAttribute('factor'),'.','',6);
+		change=price_change(ovalue,o.value);
+		Dom.get(name+"_change").innerHTML=change;
+		Dom.get(name+"_ou").innerHTML='<?=$myconf['currency_symbol']?>'+FormatNumber((value*factor).toFixed(2),'<?=$myconf['decimal_point']?>','<?=$myconf['thosusand_sep']?>',2);
+	    }
+	}else{
+	    Dom.get(name+"_save").style.visibility='hidden';
+	}
+    
+	
+	
+    }
 
 
 function save_form(){
@@ -335,13 +439,8 @@ function delete_list_item (e,id){
     var change_textarea=function(e,name){
 	//editor.saveHTML(); 
 	//html = editor.get('element').value; 
-	
-	info=Dom.get('i_'+name);
-	if(info.style.visibility=='hidden'){
-	    info.style.visibility='visible';
-	    num_changed++;
-	    interpet_changes();
-	}
+
+	Dom.get('details_save').style.display='';
 
     }
 
@@ -475,6 +574,71 @@ var change_list_element=function(e){
 	this.setAttribute('prev',selected)
     }
 }
+
+    function save_price(key){
+
+	new_value=Dom.get('v_'+key).value;
+	//	alert(key+' >'+new_value+'<');
+	if(key=='rrp' && new_value=='')
+	    value='';
+	else
+	    value=FormatNumber(Dom.get('v_'+key).value,'.','',2);
+	var request='ar_assets.php?tipo=ep_update&key='+escape(key)+'&value='+escape(value);
+	//	alert(request);
+	YAHOO.util.Connect.asyncRequest('POST',request ,{
+		success:function(o) {
+		    //  alert(o.responseText);
+		    var r =  YAHOO.lang.JSON.parse(o.responseText);
+		    //for(x in r['res'])
+		    //	alert(x+' '+r[x])
+		    if(r.ok){
+			Dom.get(key+'_change').innerHTML='';
+			Dom.get(key+'_save').style.visibility='hidden';
+			Dom.get('v_'+key).setAttribute('ovalue',new_value);
+		    }else
+			alert(r.msg);
+		}
+		 
+	    });
+    }
+
+
+ function save_description(key){
+
+	new_value=Dom.get('v_'+key).value;
+	if(key=='rrp' && new_value=='')
+	    value='';
+	else if(key=='price' && key=='rrp')
+	    value=FormatNumber(Dom.get('v_'+key).value,'.','',2);
+	else if (key=='details'){
+	    	editor.saveHTML(); 
+		value = editor.get('element').value; 
+	}else
+	    value=Dom.get('v_'+key).value;
+	var request='ar_assets.php?tipo=ep_update&key='+escape(key)+'&value='+escape(value);
+	alert(request);
+	YAHOO.util.Connect.asyncRequest('POST',request ,{
+		success:function(o) {
+		    //alert(o.responseText);
+		    var r =  YAHOO.lang.JSON.parse(o.responseText);
+		    //for(x in r['res'])
+		    //	alert(x+' '+r[x])
+		    if(r.ok){
+			Dom.get(key+'_change').innerHTML='';
+			Dom.get(key+'_save').style.display='none';
+			Dom.get(key+'_icon').style.visibility='hidden';
+
+			Dom.get('v_'+key).setAttribute('ovalue',new_value);
+		    }else
+			alert(r.msg);
+		}
+		 
+	    });
+    }
+
+
+
+
 var change_block = function(e){
     
 
@@ -527,20 +691,21 @@ function init(){
 	//var myTooltip = new YAHOO.widget.Tooltip("myTooltip", { context:"upo_label,outall_label,awoutall_label,awoutq_label"} ); 
 
 
-// 	//Details textarea editor ---------------------------------------------------------------------
-// 	var texteditorConfig = {
-// 	    height: '300px',
-// 	    width: '730px',
-// 	    dompath: true,
-// 	    focusAtStart: true
-// 	};     
+	//Details textarea editor ---------------------------------------------------------------------
+	var texteditorConfig = {
+	    height: '300px',
+	    width: '730px',
+	    dompath: true,
+	    focusAtStart: true
+	};     
 
-//  	editor = new YAHOO.widget.Editor('v_details', texteditorConfig);
+ 	editor = new YAHOO.widget.Editor('v_details', texteditorConfig);
 
-//  	editor._defaultToolbar.buttonType = 'basic';
-//  	editor.render();
-// 	editor.on('editorKeyUp',change_textarea,'details' );
-// 	//-------------------------------------------------------------
+	editor._defaultToolbar.buttonType = 'basic';
+ 	editor.render();
+
+	editor.on('editorKeyUp',change_textarea,'details' );
+	//-------------------------------------------------------------
 
 
 	cat_list = new YAHOO.widget.Menu("catlist", {context:["browse_cat","tr", "br","beforeShow"]  });
@@ -686,6 +851,9 @@ var cancel_new_supplier=function(){
 
 
 }	
+
+
+
 
 
 YAHOO.util.Event.onContentReady("adding_new_supplier", function () {

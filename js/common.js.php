@@ -183,6 +183,8 @@ function FormatNumber(num,dec,comma,decimalPlaces)
   }
 
 
+  num=''+num;
+
   try 
   {
    

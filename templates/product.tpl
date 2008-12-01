@@ -61,11 +61,11 @@
 		    <tr>
 		      <td>{t}Sell Price{/t}:</td><td  class="price aright">{$price}{if $data.units>1} <span style="font-weight:400;color:#555">({$unit_price} {t}each{/t})</span>{/if}</td>
 		    </tr>
-		    <tr>
+		    <tr {if $data.rrp==''}style="display:none"{/if} >
 		      <td>{t}RRP{/t}:</td><td  class="aright">{$rrp} {if $data.units>1}{t}each{/t}{/if}</td>
 		    </tr>
 		    
-		    <tr><td>{t}Sold Since{/t}:</td><td class="aright">{$data.first_date} ({$data.weeks_since}{t}w{/t})</td>
+		    <tr><td>{t}Sold Since{/t}:</td><td class="aright">{$data.dates.first_date} ({$weeks_since}{t}w{/t})</td>
 		      {if $edit} <td   class="aright" ><input style="text-align:right" class="date_input" size="8" type="text"  id="v_invoice_date"  value="{$v_po_date_invoice}" name="invoice_date" /></td>{/if}
 		    </tr>
 		    <tr><td id="outall_label" title="Total Sales">{t}TS{/t}:</td><td class="aright" >{$tsoall} {t}Outers{/t}

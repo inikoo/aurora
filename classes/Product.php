@@ -79,7 +79,7 @@ class product{
 	break;
       case('locations'):
 	global $_location_tipo;
-	$this->read('same_products');
+	$this->load('same_products');
 
 	$_data=array();
 	$this->locations=array('is_parent'=>false,'has_display'=>false,'has_unknown'=>false,'has_loading'=>false,'has_link'=>false,'has_white_hole'=>false,'has_picking_area'=>false,'has_physical'=>false,'data'=>array(),'num_physical'=>0,'num_physical_with_stock'=>0,'num_picking_areas'=>0);
@@ -418,8 +418,8 @@ class product{
 
 
  function read($key){
+
    $sql=sprintf("select %s as value  from product where id=%d",addslashes($key),$this->id);
-   //   print "$sql\n";
    $res = $this->db->query($sql); 
    if ($row=$res->fetchRow()) {
      return $row['value'];
@@ -434,6 +434,30 @@ class product{
   function get($item=''){
 
     switch($item){
+
+    case('tsall'):
+    case('tsy'):
+    case('tsq'):
+    case('tsm'):
+    case('tsw'):
+    case('tsoall'):
+    case('tsoy'):
+    case('tsoq'):
+    case('tsom'):
+    case('tsow'):
+    case('awtsall'):
+    case('awtsy'):
+    case('awtsq'):
+    case('awtsm'):
+    case('awtsoall'):
+    case('awtsoy'):
+    case('awtsoq'):
+    case('awtsom'):
+      if(!isset($this->data['sales'][$item]))
+	$this->get('sales');
+
+
+      return $this->data['sales'][$item];
     case('sales'):
       $this->data['sales']=array();
       $sql=sprintf("select * from sales  where tipo='prod' and tipo_id=%d",$this->id);
@@ -442,6 +466,7 @@ class product{
       }else{
 	$this->load('sales');
 	$this->save('sales');
+	
       }
       
 
@@ -460,15 +485,20 @@ class product{
       return $data->data['dates']['first_date'];
       break;
     case('weeks'):
-      if(is_numeric($this->data['first_date'])){
-      	$date1=date('d-m-Y',strtotime('@'.$this->data['first_date']));
-	$day1=date('N')-1;
-	$date2=date('d-m-Y');
-	$days=datediff('d',$date1,$date2);
-	$weeks=number_weeks($days,$day1);
-      }else
-	$weeks=0;
-      return $weeks;
+      if(!isset( $this->data['weeks'])){
+
+	if(is_numeric($this->data['first_date'])){
+	  $date1=date('d-m-Y',strtotime('@'.$this->data['first_date']));
+	  $day1=date('N')-1;
+	  $date2=date('d-m-Y');
+	  $days=datediff('d',$date1,$date2);
+	  $weeks=number_weeks($days,$day1);
+	}else
+	  $weeks=0;
+	$this->data['weeks']=$weeks;
+      }
+
+      return $this->data['weeks'];
       
       break;
     case('number_of_suppliers'):
@@ -1221,34 +1251,64 @@ class product{
       case('weight'):
       case('oweight'):
       case('cweight'):
-	if($this->data[$key]==$value)
+	if($this->data[$key]==$value){
+	  $res[$key]['msg']=_('Same values');
+	  $res[$key]['ok']=false;
 	  continue;
+	}
 	if(!is_numeric($value)){
-	  $res[$key]['desc']=_('Value is not numeric');
+	  $res[$key]['msg']=_('Value is not numeric');
+	  $res[$key]['ok']=false;
 	  continue;
 	}
 	$this->data[$key]=$value;
+	$res[$key]['ok']=true;
+	break;
+      case('rrp'):
+	//numeric can be null
+	if($this->data[$key]==$value){
+	  $res[$key]['msg']=_('Same values');
+	  $res[$key]['ok']=false;
+	  continue;
+	}
+	if(!(is_numeric($value) or $value=='' )){
+	  $res[$key]['msg']=_('Value is not numeric');
+	  $res[$key]['ok']=false;
+	  continue;
+	}
+	$this->data[$key]=$value;
+	//	print "RPP:".$this->data[$key]." ";
+	$res[$key]['ok']=true;
 	break;
 	//Must be alpha & not null
       case('description'):
       case('sdescription'):
-	if($this->data[$key]==$value)
+	if($this->data[$key]==$value){
+	   $res[$key]['msg']=_('Same values');
+	   $res[$key]['ok']=false;
 	  continue;
+	}
 	if($value==''){
-	  $res[$key]['desc']=_('Value Required');
+	  $res[$key]['msg']=_('Value Required');
+	  $res[$key]['ok']=false;
 	  continue;
 	}
 	if(!preg_match('/[a-z]/i',$value)){
-	  $res[$key]['desc']=_('Not Valid Value');
+	  $res[$key]['msg']=_('Not Valid Value');
+	  $res[$key]['ok']=false;
 	  continue;
 	}
 	$this->data[$key]=$value;
+	$res[$key]['ok']=true;
 	break;
             
       case('details'):
-	if($this->data[$key]==$value)
+	if($this->data[$key]==$value){
+	  $res[$key]['msg']=_('Same values');
+	   $res[$key]['ok']=true;
 	  continue;
-	$this->data[$key]=$value;
+	}$this->data[$key]=$value;
+	$res[$key]['ok']=true;
 	break;
       case('cat'):
 	$cats=split($value);
@@ -1300,8 +1360,13 @@ class product{
   function save($tipo,$history_data=false){
     switch($tipo){
 
-       
-
+  //   case('price'):
+//       $old_value=$this->read($tipo);
+//       $value=$this->get($tipo);
+//       $sql=sprintf("update product set %s=%s  where  id=%d"
+// 		   ,$tipo,prepare_mysql($value),$this->id);
+//       $this->db->exec($sql);
+//       break;
     case('first_date'):
        $old_value=$this->read($tipo);
 
@@ -1346,19 +1411,21 @@ class product{
 	}  
 	
       }
+      break;
     default:
       
       $old_value=$this->read($tipo);
+      
       // print "$old_value ".$this->data[$tipo]." \n";
 
       if($old_value!=$this->data[$tipo]){
-	$sql=sprintf("update product set %s=%s where id=%d",$tipo,prepare_mysql($this->data[$tipo]),$this->id);
-
+	$sql=sprintf("update product set %s=%s where id=%d",$tipo,prepare_mysql($this->get($tipo)),$this->id);
+	//	print $sql;
 	$this->db->exec($sql);
       }
 
       if(is_array($history_data)){
-	$this->save_history($tipo,$old_value,$history_data);
+	$this->save_history($tipo,$old_value,$this->get($tipo),$history_data);
       }
       
       break; 
@@ -1369,7 +1436,101 @@ class product{
 
 
 
+  function save_history($tipo,$old,$new,$data){
+    
+    switch($tipo){
+    case('description'):
+      $note=_('Product description changed to')." ".$new;
+      $sujeto='PROD';
+      $sujeto_id=$this->id;
+      $objeto='DESC';
+      $objeto_id='';
+      $action='CHG';
+      break;
+   case('sdescription'):
+      $note=_('Product short description changed to')." ".$new;
+      $sujeto='PROD';
+      $sujeto_id=$this->id;
+      $objeto='SDESC';
+      $objeto_id='';
+      $action='CHG';
+      break;
+    case('price'):
+      $diff=$new-$old;
+      $prefix='';
+      if($diff>0){
+	$txt=_('Price incresed by')." ";
+	$prefix='+';
+      }else{
+	$prefix='-';
+	$txt=_('Price decresed by')." ";
+      }
+      
+      $per=percentage($diff,$old);
+      $note=$txt.money($diff)." (".$per.") "._('to')." ".money($new);
 
+      
+      $sujeto='PROD';
+      $sujeto_id=$this->id;
+      $objeto='PRICE';
+      $objeto_id='';
+      $action='CHG';
+      
+       break;
+    case('rrp'):
+      if($old==''){
+	$note=_('RRP set to')." ".money($new);
+      }elseif($new==''){
+	$note=_('RRP unset')." ("._('was')." ".money($old).")";
+      }else{
+      $diff=$new-$old;
+      $prefix='';
+      if($diff>0){
+	$txt=_('RRP incresed by')." ";
+	$prefix='+';
+      }else{
+	$prefix='-';
+	$txt=_('RRP decresed by')." ";
+      }
+      
+      $per=percentage($diff,$old);
+      $note=$txt.money($diff)." (".$per.") "._('to')." ".money($new);
+       }
+      
+      $sujeto='PROD';
+      $sujeto_id=$this->id;
+      $objeto='RRP';
+      $objeto_id='';
+      $action='CHG';
+       
+      break;
+    default:
+      return;
+    }
+    
+    if(isset($data['date']))
+      $date=$data['date'];
+    else
+      $date='NOW()';
+    if(isset($data['user_id']))
+      $user_id=$data['user_id'];
+    else
+      $user_id='';
+    
+    $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,old_value,new_value,note) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+		 ,$date
+		 ,prepare_mysql($sujeto)
+		 ,prepare_mysql($sujeto_id)
+		 ,prepare_mysql($objeto)
+		 ,prepare_mysql($objeto_id)
+		 ,prepare_mysql($action)
+		 ,prepare_mysql($user_id)
+		 ,prepare_mysql($old)	 
+		 ,prepare_mysql($new)	 
+		 ,prepare_mysql($note)); 
+    
+    $this->db->exec($sql);
+  }
 
 
   function create($data){
