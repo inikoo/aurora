@@ -3498,7 +3498,7 @@ from porden_item left join product2supplier as ps on ( p2s_id=ps.id)  left join 
    //   print "$since $month $year";
    //  print_r($data);
    $tipo_orders=' (o.tipo!=0 or o.tipo!=3 or  o.tipo!=9 or o.tipo!=10) ';
-   $sql=sprintf("select   -period_diff( $first, concat(year(date_index),if(month(date_index)<10,concat('0',month(date_index)) ,month(date_index))   )  )   as since  ,  sum(charge) as asales ,sum(dispached)as _out ,year(date_index) as y,month(date_index) as m,  concat(year(date_index),100+month(date_index) )  as monthyear    from  transaction as t left join orden as o on (order_id=o.id) left join product on (product_id=product.id) left join product_group as pg on (group_id=pg.id)  where %s and department_id=%d  group by monthyear order by  monthyear ",$tipo_orders,$department _id);
+   $sql=sprintf("select   -period_diff( $first, concat(year(date_index),if(month(date_index)<10,concat('0',month(date_index)) ,month(date_index))   )  )   as since  ,  sum(charge) as asales ,sum(dispached)as _out ,year(date_index) as y,month(date_index) as m,  concat(year(date_index),100+month(date_index) )  as monthyear    from  transaction as t left join orden as o on (order_id=o.id) left join product on (product_id=product.id) left join product_group as pg on (group_id=pg.id)  where %s and department_id=%d  group by monthyear order by  monthyear ",$tipo_orders,$department_id);
    //      print "$sql";
    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
 

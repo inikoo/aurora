@@ -7,21 +7,60 @@ var $db;
     $this->db =MDB2::singleton();
     
     if(is_numeric($a1) and !$a2  )
-    
       $this->getdata('id',$a1);
     else if($a1=='new' and is_array($a2)){
       $this->create($a2);
-    }
+    }elseif($a2!='')
+      $this->getdata($a1,$a2);
     
  }
 
  function create($data){
 
+   if($data['code']=='' )
+     return array('ok'=>false,'msg'=>_("Wrong department code"));
+   if($data['name']=='' )
+     return array('ok'=>false,'msg'=>_("Wrong department name"));
+
+   $sql=sprintf("select id from product_department where code=%s "
+		,prepare_mysql($data['code'])
+		);
+   print "$sql\n";
+   $res = $this->db->query($sql); 
+   if($tmp=$res->fetchRow()){
+     return array('ok'=>false,'msg'=>_('There is other product department  with the same code'));
+   }
+   $sql=sprintf("insert into product_department (code,name) values (%s,%s)"
+		,prepare_mysql($data['code'])
+		,prepare_mysql($data['name'])
+		);
+   if (PEAR::isError($affected)) {
+     if(preg_match('/^MDB2 Error: constraint violation$/',$affected->getMessage()))
+       return array('ok'=>false,'msg'=> _('Error: Another product department has the same code').'.');
+     else
+       return array('ok'=>false,'msg'=>_('Unknown Error').'.');
+     return false;
+   }
+   $this->data['name']=$data['name'];	
+   $this->data['code']=$data['code'];
+   $this->id=$this->db->lastInsertID();
+   return array('ok'=>true);
  }
  
- function getdata($tipo,$id){
-   $sql=sprintf("select * from product_department where id=%d",$id);
+ function getdata($tipo,$tag){
 
+   switch($tipo){
+   case('id'):
+     $sql=sprintf("select * from product_department where id=%d",$tag);
+     break;
+   case('code'):
+     $sql=sprintf("select * from product_department where code=%s",prepare_mysql($tag));
+     break;
+   default:
+     print "error wring tipo $tipo\n";
+     return;
+   }
+   print "$sql\n";
    if($result =& $this->db->query($sql)){
      $this->data=$result->fetchRow();
      $this->id=$this->data['id'];
@@ -35,8 +74,8 @@ var $db;
  function load($tipo,$args=false){
    switch($tipo){
    case('products'):
-     $sql=sprintf("select id,code from product  left join product_group on  (product_group.id=group_id)  where department_id=%d",$this->id);
-     //  print $sql;
+     $sql=sprintf("select product.id,code from product  left join product_group on  (product_group.id=group_id)  where department_id=%d",$this->id);
+     // print $sql;
      $res = $this->db->query($sql);
      $this->products=array();
      while($row = $res->fetchrow()) {
@@ -44,21 +83,23 @@ var $db;
      }
      break;
    case('families'):
-     $sql=sprintf("select id,name from product_group  department_id=%d",$this->id);
+     $sql=sprintf("select id,name from product_group  where department_id=%d",$this->id);
      //  print $sql;
      $res = $this->db->query($sql);
-     $this->products=array();
+     $this->families=array();
      while($row = $res->fetchrow()) {
-       $this->products[$row['id']]=array('code'=>$row['name']);
+       $this->families[$row['id']]=array('code'=>$row['name']);
      }
      break;
    case('first_date'):
+
      $first_date=date('U');
      $changed=false;
      $this->load('families');
      foreach($this->families as $family_id=>$family_data){
-       $family=new Fmaily($family_id);
+       $family=new Family($family_id);
        $_date=$family->data['first_date'];
+       //   print "$family_id $_date\n";
        if(is_numeric($_date)){
 	 if($_date < $first_date){
 	   $first_date=$_date;
@@ -68,14 +109,17 @@ var $db;
      }
      if($changed){
        $this->data['first_date']=$first_date;
-       if(preg_match('/save/i',$args))
-	 $this->save($tipo);
-     }
+     }else
+       $this->data['first_date']='';
 
+     // if(preg_match('/save/i',$args))
+	 $this->save('first_date');
+     
      break;
-   case('sales_metadata'):
+   case('sales'):
      $this->load('products');
 
+     
      $tsall=0;
      $tsoall=0;
      $tsy=0;
@@ -90,89 +134,64 @@ var $db;
      foreach($this->products as $product_id=>$product_data){
        
        $product=new Product($product_id);
-       $tsall+=$product->data['tsall'];
-       $tsoall+=$product->data['tsoall'];
-       if(is_numeric($product->data['tsy']))
-	 $tsy+=$product->data['tsy'];
-       if(is_numeric($product->data['tsq']))
-	 $tsq+=$product->data['tsq'];
-       if(is_numeric($product->data['tsm']))
-	 $tsm+=$product->data['tsm'];
-       if(is_numeric($product->data['tsw']))
-	 $tsw+=$product->data['tsw'];
-       if(is_numeric($product->data['tsoy']))
-	 $tsoy+=$product->data['tsoy'];
-       if(is_numeric($product->data['tsoq']))
-	 $tsoq+=$product->data['tsoq'];
-       if(is_numeric($product->data['tsom']))
-	 $tsom+=$product->data['tsom'];
-       if(is_numeric($product->data['tsow']))
-	 $tsow+=$product->data['tsow'];
-
-
+       $product->get('sales');
+       $tsall+=$product->data['sales']['tsall'];
+       $tsy+=$product->data['sales']['tsy'];
+       $tsq+=$product->data['sales']['tsq'];
+       $tsm+=$product->data['sales']['tsm'];
+       $tsw+=$product->data['sales']['tsw'];
+       $tsoall+=$product->data['sales']['tsoall'];
+       $tsoy+=$product->data['sales']['tsoy'];
+       $tsoq+=$product->data['sales']['tsoq'];
+       $tsom+=$product->data['sales']['tsom'];
+       $tsow+=$product->data['sales']['tsow'];
      }
-     // print $tsm."\n";
 
-     $this->data['tsall']=$tsall;
-     $this->data['tsoall']=$tsoall;
-     
+
+     $this->data['sales']['tsall']=$tsall;
+     $this->data['sales']['tsy']=$tsy;
+     $this->data['sales']['tsq']=$tsq;
+     $this->data['sales']['tsm']=$tsm;
+     $this->data['sales']['tsw']=$tsw;
+     $this->data['sales']['tsoall']=$tsoall;
+     $this->data['sales']['tsoy']=$tsoy;
+     $this->data['sales']['tsoq']=$tsoq;
+     $this->data['sales']['tsom']=$tsom;
+     $this->data['sales']['tsow']=$tsow;
+
+
      $weeks=$this->get('weeks');
-     $date_diff=$weeks*7;
      if($weeks>0){
-       $this->data['awtsall']=$this->data['tsall']/$weeks;
-       $this->data['awtsoall']=$this->data['tsall']/$weeks;
+       $this->data['sales']['awtsall']=$this->data['sales']['tsall']/$weeks;
+       $this->data['sales']['awtsoall']=$this->data['sales']['tsall']/$weeks;
+       
+       $date1=date("d-m-Y",strtotime("now -1 year"));$day1=date('N')-1;$date2=date('d-m-Y');$days=datediff('d',$date1,$date2);
+       $weeks=number_weeks($days,$day1);
+       $this->data['sales']['awtsy']=$tsy/$weeks;
+       $this->data['sales']['awtsoy']=$tsoy/$weeks;
+       $date1=date("d-m-Y",strtotime("now -3 month"));$day1=date('N')-1;$date2=date('d-m-Y');$days=datediff('d',$date1,$date2);
+       $weeks=number_weeks($days,$day1);
+       $this->data['sales']['awtsq']=$tsq/$weeks;
+       $this->data['sales']['awtsoq']=$tsoq/$weeks;
+       $date1=date("d-m-Y",strtotime("now -1 month"));$day1=date('N')-1;$date2=date('d-m-Y');$days=datediff('d',$date1,$date2);
+       $weeks=number_weeks($days,$day1);
+       $this->data['sales']['awtsm']=$tsm/$weeks;
+       $this->data['sales']['awtsom']=$tsom/$weeks;
+
+
      }else{
-       $this->data['awtsall']=0;
-       $this->data['awtosall']=0;
+       $this->data['sales']['awtsall']='';
+       $this->data['sales']['awtosall']='';
+       $this->data['sales']['awtsy']='';
+       $this->data['sales']['awtsoy']='';
+       $this->data['sales']['awtsq']='';
+       $this->data['sales']['awtsoq']='';
+       $this->data['sales']['awtsm']='';
+       $this->data['sales']['awtsom']='';
      }
-     if($date_diff>=365){
-       $this->data['tsy']=$tsy;
-       $this->data['tsoy']=$tsoy;
-       $this->data['awtsy']=$tsy/52.17857142;
-       $this->data['awtsoy']=$tsoy/52.17857142;
-     }else{
-       $this->data['tsy']='';
-       $this->data['tsoy']='';
-       $this->data['awtsy']='';
-       $this->data['awtsoy']='';
-     }     
-       if($date_diff>=89){
-       $this->data['tsq']=$tsq;
-       $this->data['tsoq']=$tsoq;
-       $this->data['awtsq']=$tsq/13.044642857;
-       $this->data['awtsoq']=$tsoq/13.044642857;
-     }else{
-       $this->data['tsq']='';
-       $this->data['tsoq']='';
-       $this->data['awtsq']='';
-       $this->data['awtsoq']='';
-     }     
-   if($date_diff>=31){
-       $this->data['tsm']=$tsm;
-       $this->data['tsom']=$tsom;
-       $this->data['awtsm']=$tsm/4.348214286;
-       $this->data['awtsom']=$tsom/4.348214286;
-     }else{
-       $this->data['tsm']='';
-       $this->data['tsom']='';
-       $this->data['awtsm']='';
-       $this->data['awtsom']='';
-     }     
- if($date_diff>5){
-       $this->data['tsw']=$tsw;
-       $this->data['tsow']=$tsow;
-     }else{
-       $this->data['tsw']='';
-       $this->data['tsow']='';
-
-     }     
-
-
-
 
      if(preg_match('/save/',$args))
-       $this->save($tipo);
-     
+        $this->save($tipo);
      break;
    
 
@@ -183,70 +202,46 @@ var $db;
  function save($tipo){
    switch($tipo){
    case('first_date'):
-     $sql=sprintf("update product_group set first_date=%s where id=%d",
-		  prepare_mysql(
-				date("Y-m-d H:i:s",strtotime('@'.$this->data['first_date'])))
-		  ,$this->id);
-     //print "$sql;";
-     mysql_query($sql);
 
+     if(is_numeric($this->data['first_date'])){
+       $sql=sprintf("update product_department set first_date=%s where id=%d",
+		    prepare_mysql(
+				  date("Y-m-d H:i:s",strtotime('@'.$this->data['first_date'])))
+		    ,$this->id);
+     }else
+       $sql=sprintf("update product_group set first_date=NULL where id=%d",$this->id);
+     
+     //     print "$sql;\n";
+     mysql_query($sql);
+     
      break;
-   case('sales_metadata'):
+   case('sales'):
+       $sql=sprintf("select id from sales where tipo='dept' and tipo_id=%d",$this->id);
+      $res = $this->db->query($sql); 
+      if ($row=$res->fetchRow()) {
+	$sales_id=$row['id'];
+      }else{
+	$sql=sprintf("insert into sales (tipo,tipo_id) values ('dept',%d)",$this->id);
+	$this->db->exec($sql);
+	$sales_id=$this->db->lastInsertID();
+	
+      }
+      foreach($this->data['sales'] as $key=>$value){
+	if(preg_match('/^aw/',$key)){
+	  if(is_numeric($value))
+	    $sql=sprintf("update sales set %s=%f where id=%d",$key,$value,$sales_id);
+	  else
+	    $sql=sprintf("update sales set %s=NULL where id=%d",$key,$sales_id);
+	  $this->db->exec($sql);
 
-     $sql=sprintf("update product_group set  tsoall=0,tsall=0,tdall=0,awtsoall=NULL, awtsoy=NULL,  awtsoq=NULL, awtsom=NULL, awtsall=NULL, awtsy=NULL, awtsq=NULL,  awtsm=NULL, awtdall=NULL, awtdy=NULL, awtdq=NULL, awtdm=NULL, tsoy=NULL, tsoq=NULL,  tsom=NULL, tsoq=NULL, tsom=NULL, tsow=NULL, tsw=NULL, tsm=NULL, tsq=NULL, tsy=NULL, tdy=NULL, tdq=NULL, tdm=NULL, tdw=NULL  where id=%d",$this->id);
-
-     $sql=sprintf("update product_group set tsall=%.2f,tsoall=%f  where id=%d"
-		  ,$this->data['tsall']
-		  ,$this->data['tsoall']
-		  ,$this->id);
-     mysql_query($sql);
-     $weeks=$this->get('weeks');
-     $date_diff=$weeks*7;
-
-     if($weeks>0){
-       $sql=sprintf("update product_group set awtsall=%.2f,awtsoall=%f where id=%d"
-		    ,$this->data['awtsall']
-		    ,$this->data['awtsoall']
-		    ,$this->id);
-       mysql_query($sql);
-     }
-     if($date_diff>=365){
-       $sql=sprintf("update product_group set  tsy=%.2f,tsoy=%f,awtsy=%.2f,awtsoy=%f where id=%d"
-		    ,$this->data['tsy']
-		    ,$this->data['tsoy']
-		    ,$this->data['awtsy']
-		    ,$this->data['awtsoy']
-		    ,$this->id);
-       mysql_query($sql);
-       //       print "$sql;";
-     } 
-      if($date_diff>=89){
-       $sql=sprintf("update product_group set  tsq=%.2f,tsoq=%f,awtsq=%.2f,awtsoq=%f where id=%d"
-		    ,$this->data['tsq']
-		    ,$this->data['tsoq']
-		    ,$this->data['awtsq']
-		    ,$this->data['awtsoq']
-		    ,$this->id);
-       mysql_query($sql);
-     } 
-      if($date_diff>=31){
-	$sql=sprintf("update product_group set  tsm=%.2f,tsom=%f,awtsm=%.2f,awtsom=%f where id=%d"
-		    ,$this->data['tsm']
-		    ,$this->data['tsom']
-		    ,$this->data['awtsm']
-		    ,$this->data['awtsom']
-		    ,$this->id);
-       mysql_query($sql);
-       // print "$sql";
-     } 
-      
-      if($date_diff>5){
-	$sql=sprintf("update product_group set  tsw=%.2f,tsow=%f  where id=%d"
-		    ,$this->data['tsw']
-		    ,$this->data['tsow']
-		    ,$this->id);
-       mysql_query($sql);
-     } 
+	}
+	if(preg_match('/^ts/',$key)){
+	  $sql=sprintf("update sales set %s=%.2f where id=%d",$key,$value,$sales_id);
+	  // print "$sql\n";
+	  $this->db->exec($sql);
+	}  
+	
+      }
 
 
      break;

@@ -1,7 +1,7 @@
 <?
 
 include_once('../../app_files/db/dns.php');
-include_once('../../classes/Family.php');
+include_once('../../classes/Department.php');
 require_once 'MDB2.php';            // PEAR Database Abstraction Layer
 require_once '../../common_functions.php';
 $db =& MDB2::singleton($dsn);       
@@ -13,14 +13,14 @@ require_once '../../myconf/conf.php';
 date_default_timezone_set('Europe/London');
 
 
-$sql="select id from product_group ";
+$sql="select id from product_department ";
 $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
   while($row=$res->fetchRow()) {
     $id=$row['id'];
-    $family=new Family($id);
+    $family=new Department($id);
     $family->load('first_date','save');
     $family->load('sales','save');
-    printf("$id\r");
+    //  printf("$id\r");
   }
 
 ?>

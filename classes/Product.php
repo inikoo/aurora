@@ -17,55 +17,54 @@ class product{
 
   
 
-  function __construct($id=false) {
+  function __construct($a1,$a2=false) {
     $this->db =MDB2::singleton();
 
 
-    if(is_numeric($id)){
-      if(!$this->get_data($id))
-	return false;
-    }else
-      return false;
+    if(is_numeric($a1) and !$a2){
+      $this->get_data('id',$a1);
+    }
+    else if(($a1=='new' or $a1=='create') and is_array($a2) ){
+      $this->msg=$this->create($a2);
+      
+    } else
+      $this->get_data($a1,$a2);
 
   }
   
 
 
 
-function get_data($product_id){
-  global $_shape;
-  $sql=sprintf("select *,UNIX_TIMESTAMP(first_date) as first_date from product where id=%d",$product_id);
+  function get_data($tipo,$product_id){
+    global $_shape;
+    $sql=sprintf("select *,UNIX_TIMESTAMP(first_date) as first_date from product where id=%d",$product_id);
+    if($result =& $this->db->query($sql)){
+      $this->data=$result->fetchRow();
+            $this->id=$this->data['id'];
+      if($this->data['first_date']!='')
+	$this->data['dates']=array('first_date'=>($this->data['first_date']?strftime("%e %b %Y",$this->data['first_date']):''));
+      else{
+	$this->load('first_date','save');
+      }
+      $this->data['odim_tipo_id']=$this->data['odim_tipo'];
+      $this->data['odim_tipo']=$_shape[$this->data['odim_tipo_id']];
+      $this->data['dim_tipo_id']=$this->data['dim_tipo'];
+      $this->data['dim_tipo']=$_shape[$this->data['dim_tipo_id']];
+      $this->get('ovol');
+      $this->get('vol');
 
-	if($result =& $this->db->query($sql)){
-	$this->data=$result->fetchRow();
-	if($this->data['first_date']!='')
-	  $this->data['dates']=array('first_date'=>($this->data['first_date']?strftime("%e %b %Y",$this->data['first_date']):''));
-	  else
-	    $this->load('first_date');
-
-	
-	
-	$this->data['odim_tipo_id']=$this->data['odim_tipo'];
-	$this->data['odim_tipo']=$_shape[$this->data['odim_tipo_id']];
-	$this->data['dim_tipo_id']=$this->data['dim_tipo'];
-	$this->data['dim_tipo']=$_shape[$this->data['dim_tipo_id']];
-	$this->get('ovol');
-	$this->get('vol');
-	$this->id=$this->data['id'];
-	return true;
-	}else
-	  return false;
+      return true;
+    }else
+      return false;
+  }
   
-
-}
-
   
-  function load($data_to_be_read){
-
+  function load($data_to_be_read,$args=''){
+    
     if(!is_array($data_to_be_read))
       $data_to_be_read=array($data_to_be_read);
     foreach($data_to_be_read as $table){
-
+      
       switch($table){
       case('product_tree'):
 	$sql=sprintf('select d.name as department,d.id as department_id,g.name as group_name,group_id from product left join product_group as g on (g.id=group_id)  left join product_department as d on (d.id=department_id) where product.id=%s ',$this->id);
@@ -287,194 +286,111 @@ function get_data($product_id){
 	break;
       case('first_date'):
 	$sql=sprintf("select date_creation,UNIX_TIMESTAMP(date_creation) as ts_date_creation from transaction left join orden on (order_id=orden.id) where product_id=%d order by date_index limit 1",$this->id);
-
+	//print "$sql\n";
 	$res =& $this->db->query($sql);
-
 	if ($row=$res->fetchRow()) {
-	  $date=$row['date_creation'];
-	  $ts_date=$row['ts_date_creation'];;
-
+	  $this->data['first_date']=$row['ts_date_creation'];;
+	  $this->data['dates']['first_date']=strftime("%e %b %Y", $this->data['first_date']);
 	}else{
-	  $date=date('Y-m-d H:i:s');
-	  $ts_date=date('U');
+	  $this->data['first_date']='';
+	  $this->data['dates']['first_date']='';
 	}
+
+	if(preg_match('/save/',$args))
+	  $this->save('first_date');
 	
-	$this->data['first_date']=$ts_date;
-	$this->data['dates']['first_date']=strftime("%e %b %Y", $ts_date);
-	$sql=sprintf("update product set first_date='%s' where (first_date>'%s' or  first_date is null )  and id=%d",$date,$date,$this->id);
-	$this->db->exec($sql);
-
-
 	break;
       case('sales'):
-	$_diff_seconds=date('U')-$this->data['first_date'];
-	$date_diff=$_diff_seconds/24/3600;
-	$weeks=$date_diff/7;
-
-	$sql=sprintf("update product set  tsoall=0,tsall=0,tdall=0,awtsoall=NULL, awtsoy=NULL,  awtsoq=NULL, awtsom=NULL, awtsall=NULL, awtsy=NULL, awtsq=NULL,  awtsm=NULL, awtdall=NULL, awtdy=NULL, awtdq=NULL, awtdm=NULL, tsoy=NULL, tsoq=NULL,  tsom=NULL, tsoq=NULL, tsom=NULL, tsow=NULL, tsw=NULL, tsm=NULL, tsq=NULL, tsy=NULL, tdy=NULL, tdq=NULL, tdm=NULL, tdw=NULL  where id=%d",$this->id);
-	mysql_query($sql);
-
-
+	$weeks=$this->get('weeks');
 	
 
-	$tsall=0;
-	$tsoall=0;
-	$tdall=0;
-	$sql=sprintf("select  sum(charge) as sales  ,sum(dispached) as outers from  transaction as t left join orden as o on (order_id=o.id) where product_id=%d and o.tipo=2    ",$this->id);
+	$this->data['sales']['tsall']=0;
+	$this->data['sales']['tsoall']=0;
+	$this->data['sales']['awtsall']='';
+	$this->data['sales']['awtsoall']='';
+
+
+	// all the products out
+	$sql=sprintf("select   ifnull(sum(charge),0) as sales  , ifnull(sum(dispached),0) as outers from  transaction as t left join orden as o on (order_id=o.id) where product_id=%d and (o.tipo=2 or o.tipo=4 or o.tipo=5 or o.tipo=6 or o.tipo=8) "
+		     ,$this->id);
 	$result =& $this->db->query($sql);
 	if($row=$result->fetchRow()){
-	  $tsall=$row['sales'];
-	  $tsoall=$row['outers'];
-	  
-
-	  $sql=sprintf("update product set tsall=%s,tsoall=%s where id=%d",$tsall,$tsoall,$this->id);
-	  mysql_query($sql);
-	  
-	  if($weeks>=1){
-	    $awtsall=$row['sales']/$weeks;
-	    $awtsoall=$row['outers']/$weeks;
-	     $sql=sprintf("update product set awtsall=%s,awtsoall=%s where id=%d",$awtsall,$awtsoall,$this->id);
-	     mysql_query($sql);
-	  }
-
+	  $this->data['sales']['tsall']=$row['sales'];
+	  $this->data['sales']['tsoall']=$row['outers'];
 	}
-	$sql=sprintf("select  sum(dispached) as outers from  transaction as t left join orden as o on (order_id=o.id) where product_id=%d   and (o.tipo!=3 or o.tipo!=7 or o.tipo!=9  or o.tipo!=10  )     ",$this->id);
+	if($weeks>0){
+	  $this->data['sales']['awtsall']= $this->data['sales']['tsall']/$weeks;
+	  $this->data['sales']['awtsoall']=$this->data['sales']['tsoall']/$weeks;
+	}
+	
+	$sql=sprintf("select (TO_DAYS(NOW())-TO_DAYS(DATE_SUB(CURDATE(),INTERVAL 1 year))) as days, weekday(DATE_SUB(CURDATE(),INTERVAL 1 year)) as day,    sum(charge) as sales ,sum(dispached) as outers  from  transaction as t left join orden as o on (order_id=o.id) where product_id=%d and (o.tipo=2 or o.tipo=4 or o.tipo=5 or o.tipo=6 or o.tipo=8)   and DATE_SUB(CURDATE(),INTERVAL 1 YEAR) <= date_index "
+		     ,$this->id);
 	$result =& $this->db->query($sql);
 	if($row=$result->fetchRow()){
-	  $tdall=$row['outers'];
-	  $sql=sprintf("update product set tdall=%s where id=%d",$tdall,$this->id);
-	  mysql_query($sql);
-	  
-	  if($weeks>=1){
-	    $awtdall=$row['outers']/$weeks;
-	    $sql=sprintf("update product set awtdall=%s where id=%d",$awtdall,$this->id);
-	    mysql_query($sql);
-	    
+	  $this->data['sales']['tsy']=$row['sales'];
+	  $this->data['sales']['tsoy']=$row['outers'];
+	  $_weeks=number_weeks($row['days'],$row['day']);
+	  if($weeks>=$_weeks){
+	    $this->data['sales']['awtsy']=$row['sales']/$_weeks;
+	    $this->data['sales']['awtsoy']=$row['outers']/$_weeks;
+	  }else{
+	    $this->data['sales']['awtsy']=$this->data['sales']['awtsall'];
+	    $this->data['sales']['awtsoy']=$this->data['sales']['awtsall'];
 	  }
-
 	}
-	
-
-	$date_diff=date('U')-$this->data['first_date']/24/3600;
-	if($date_diff>=365){
-	  $tsy=0;
-	  $tsoy=0;
-	  $awtsy=0;
-	  $awtsoy=0;
-	  $tdy=0;
-	  $sql=sprintf("select  sum(charge) as sales ,sum(dispached) as outers  from  transaction as t left join orden as o on (order_id=o.id) where product_id=%d and o.tipo=2 and DATE_SUB(CURDATE(),INTERVAL 1 YEAR) <= date_index   ",$this->id);
-	  $result =& $this->db->query($sql);
-	  if($row=$result->fetchRow()){
-	    $tsy=$row['sales'];
-	    $tsoy=$row['outers'];
-	    $awtsy=$tsy/52.17857142;
-	    $awtsoy=$tsoy/52.17857142;
-	    $sql=sprintf("update product set tsy=%s,tsoy=%s,awtsy=%s,awtsoy=%s where id=%d",$tsy,$tsoy,$awtsy,$awtsoy,$this->id);
-	    mysql_query($sql);
-	  }
-	  $sql=sprintf("select  sum(dispached) as outers  from  transaction as t left join orden as o on (order_id=o.id) where product_id=%d and (o.tipo!=3 or o.tipo!=7 or o.tipo!=9  or o.tipo!=10  )   and DATE_SUB(CURDATE(),INTERVAL 1 YEAR) <= date_index   ",$this->id);
-	  $result =& $this->db->query($sql);
-	  if($row=$result->fetchRow()){
-	    $tdy=$row['outers'];
-	    $awtdy=$row['outers']/52.17857142;;
-	    $sql=sprintf("update product set tdy=%s , awtdy=%s   where id=%d",$tdy,$awtdy,$this->id);
-	    mysql_query($sql);
-	  }
-
-
-	}
-	if($date_diff>=89){
-	  $tsq=0;
-	  $tsoq=0;
-	  $awtsq=0;
-	  $awtsoq=0;
-	  $tdq=0;
-	  
-	  $sql=sprintf("select  sum(charge) as sales ,sum(dispached) as outers  from  transaction as t left join orden as o on (order_id=o.id) where product_id=%d and o.tipo=2 and DATE_SUB(CURDATE(),INTERVAL 3 MONTH) <= date_index   ",$this->id);
-	  $result =& $this->db->query($sql);
-	  if($row=$result->fetchRow()){
-	    
-	    $tsq=$row['sales'];
-	    $tsoq=$row['outers'];
-	    $awtsq=$tsq/13.044642857;
-	    $awtsoq=$tsoq/13.044642857;
-	    $sql=sprintf("update product set tsq=%s,tsoq=%s,awtsq=%s,awtsoq=%s where id=%d",$tsq,$tsoq,$awtsq,$awtsoq,$this->id);
-	    mysql_query($sql);
-	  }
-	  $sql=sprintf("select  sum(dispached) as outers  from  transaction as t left join orden as o on (order_id=o.id) where product_id=%d and (o.tipo!=3 or o.tipo!=7 or o.tipo!=9  or o.tipo!=10  )   and DATE_SUB(CURDATE(),INTERVAL 3 MONTH) <= date_index   ",$this->id);
-	  $result =& $this->db->query($sql);
-	  if($row=$result->fetchRow()){
-	    $tdq=$row['outers'];
-	    $awtdq=$row['outers']/13.044642857;
-	    $sql=sprintf("update product set tdq=%s ,awtdq=%s  where id=%d",$tdq,$awtdq,$this->id);
-	    mysql_query($sql);
-	  }
-	  
-	}
-
-	if($date_diff>=30){
-	  $tsm=0;
-	  $tsom=0;
-	  $awtsm=0;
-	  $awtsom=0;
-	  $tdm=0;
-
-	$sql=sprintf("select  sum(charge) as sales ,sum(dispached) as outers  from  transaction as t left join orden as o on (order_id=o.id) where product_id=%d and o.tipo=2 and DATE_SUB(CURDATE(),INTERVAL 1 MONTH) <= date_index   ",$this->id);
+	$sql=sprintf("select (TO_DAYS(NOW())-TO_DAYS(DATE_SUB(CURDATE(),INTERVAL 3 month))) as days, weekday(DATE_SUB(CURDATE(),INTERVAL 3 month)) as day,    ifnull( sum(charge),0) as sales , ifnull(sum(dispached),0) as outers  from  transaction as t left join orden as o on (order_id=o.id) where product_id=%d and (o.tipo=2 or o.tipo=4 or o.tipo=5 or o.tipo=6 or o.tipo=8)   and DATE_SUB(CURDATE(),INTERVAL 3 month) <= date_index "
+		     ,$this->id);
 	$result =& $this->db->query($sql);
 	if($row=$result->fetchRow()){
-	  $tsm=$row['sales'];
-	  $tsom=$row['outers'];
-	  $awtsm=$tsm/4.348214286;
-	  $awtsom=$tsom/4.348214286;
-	  $sql=sprintf("update product set tsm=%s,tsom=%s,awtsm=%s,awtsom=%s where id=%d",$tsm,$tsom,$awtsm,$awtsom,$this->id);
+	  $this->data['sales']['tsq']=$row['sales'];
+	  $this->data['sales']['tsoq']=$row['outers'];
+	  $_weeks=number_weeks($row['days'],$row['day']);
+	  if($weeks>=$_weeks){
+	    $this->data['sales']['awtsq']=$row['sales']/$_weeks;
+	    $this->data['sales']['awtsoq']=$row['outers']/$_weeks;
+	  }else{
+	    $this->data['sales']['awtsq']=$this->data['sales']['awtsall'];
+	    $this->data['sales']['awtsoq']=$this->data['sales']['awtsall'];
+	  }
+	}
+
+	$sql=sprintf("select (TO_DAYS(NOW())-TO_DAYS(DATE_SUB(CURDATE(),INTERVAL 1 month))) as days, weekday(DATE_SUB(CURDATE(),INTERVAL 1 month)) as day,    ifnull(sum(charge),0) as sales , ifnull(sum(dispached),0) as outers  from  transaction as t left join orden as o on (order_id=o.id) where product_id=%d and (o.tipo=2 or o.tipo=4 or o.tipo=5 or o.tipo=6 or o.tipo=8)   and DATE_SUB(CURDATE(),INTERVAL 1 month) <= date_index "
+		     ,$this->id);
+	$result =& $this->db->query($sql);
+	if($row=$result->fetchRow()){
+	  $this->data['sales']['tsm']=$row['sales'];
+	  $this->data['sales']['tsom']=$row['outers'];
+
+	  $_weeks=number_weeks($row['days'],$row['day']);
+	  if($weeks>=$_weeks){
+	    $this->data['sales']['awtsm']=$row['sales']/$_weeks;
+	    $this->data['sales']['awtsom']=$row['outers']/$_weeks;
+	  }else{
+	    $this->data['sales']['awtsm']=$this->data['sales']['awtsall'];
+	    $this->data['sales']['awtsom']=$this->data['sales']['awtsall'];
+	  }
+	}
+	$sql=sprintf("select     ifnull(sum(charge),0) as sales , ifnull(sum(dispached),0) as outers  from  transaction as t left join orden as o on (order_id=o.id) where product_id=%d and (o.tipo=2 or o.tipo=4 or o.tipo=5 or o.tipo=6 or o.tipo=8)   and DATE_SUB(CURDATE(),INTERVAL 1 week) <= date_index "
+		     ,$this->id);
+	$result =& $this->db->query($sql);
+	if($row=$result->fetchRow()){
 	  
-	  mysql_query($sql);
-	}
-
-
-	$sql=sprintf("select  sum(dispached) as outers  from  transaction as t left join orden as o on (order_id=o.id) where product_id=%d and (o.tipo!=3 or o.tipo!=7 or o.tipo!=9  or o.tipo!=10  )   and DATE_SUB(CURDATE(),INTERVAL 1  MONTH) <= date_index   ",$this->id);
-	  $result =& $this->db->query($sql);
-	  if($row=$result->fetchRow()){
-	    $tdm=$row['outers'];
-	    $awtdm=$row['outers']/4.348214286;
-	    $sql=sprintf("update product set tdm=%s,  awtdm=%s  where id=%d",$tdm,$awtdm,$this->id);
-	    mysql_query($sql);
-	  }
-	
-	}
-	
-	if($date_diff>5){
-	  $tsw=0;
-	  $tsow=0;
-	  $tdw=0;
-	  
-	  $sql=sprintf("select  sum(charge) as sales ,sum(dispached) as outers  from  transaction as t left join orden as o on (order_id=o.id) where product_id=%d and o.tipo=2 and DATE_SUB(CURDATE(),INTERVAL 1 WEEK) <= date_index   ",$this->id);
-	  $result =& $this->db->query($sql);
-	  if($row=$result->fetchRow()){
-	    $tsw=$row['sales'];
-	  $tsow=$row['outers'];
-	  $sql=sprintf("update product set tsw=%s,tsow=%s where id=%d",$tsw,$tsow,$this->id);
-	  mysql_query($sql);
-	  }
-
-	  $sql=sprintf("select  sum(dispached) as outers  from  transaction as t left join orden as o on (order_id=o.id) where product_id=%d and (o.tipo!=3 or o.tipo!=7 or o.tipo!=9  or o.tipo!=10  )   and DATE_SUB(CURDATE(),INTERVAL 1  WEEK) <= date_index   ",$this->id);
-	  $result =& $this->db->query($sql);
-	  if($row=$result->fetchRow()){
-	    $tdw=$row['outers'];
-	    $sql=sprintf("update product set tdw=%s  where id=%d",$tdm,$this->id);
-	    mysql_query($sql);
-	  }
-
+	  $this->data['sales']['tsw']=$row['sales'];
+	  $this->data['sales']['tsow']=$row['outers'];
 
 	}
 
-	
 
-	$this->read('product_info');
+
+
+
+
+
 
 	break;
-      case('parents'):
-	break;
+       
+	case('parents'):
+	  break;
       case('children'):
 	break;
       case('notes'):
@@ -501,6 +417,20 @@ function get_data($product_id){
   }
 
 
+ function read($key){
+   $sql=sprintf("select %s as value  from product where id=%d",addslashes($key),$this->id);
+   //   print "$sql\n";
+   $res = $this->db->query($sql); 
+   if ($row=$res->fetchRow()) {
+     return $row['value'];
+   }else
+     return false;
+	
+
+  }
+
+
+
   function get($item=''){
 
     switch($item){
@@ -510,8 +440,6 @@ function get_data($product_id){
       if($result =& $this->db->query($sql)){
 	$this->data['sales']=$result->fetchRow();
       }else{
-	$sql=sprintf("insert into sales (tipo,tipo_id) values ('prod',%d)"m$this->id);
-	mysql_query($sql);
 	$this->load('sales');
 	$this->save('sales');
       }
@@ -531,8 +459,16 @@ function get_data($product_id){
     case('first_date'):
       return $data->data['dates']['first_date'];
       break;
-    case('weeks_since'):
-      return (date("U")-$this->data['first_date'])  /604800;
+    case('weeks'):
+      if(is_numeric($this->data['first_date'])){
+      	$date1=date('d-m-Y',strtotime('@'.$this->data['first_date']));
+	$day1=date('N')-1;
+	$date2=date('d-m-Y');
+	$days=datediff('d',$date1,$date2);
+	$weeks=number_weeks($days,$day1);
+      }else
+	$weeks=0;
+      return $weeks;
       
       break;
     case('number_of_suppliers'):
@@ -954,11 +890,15 @@ function get_data($product_id){
       return array(true,$locations_data);
       break;
 
+    case('delete_all'):
+
+      $sql=sprintf("delete from product2location  where product_id=%d",$this->id); 
+      mysql_query($sql);
+      break;
+
     case('desassociate_location'):
       $id=$data['p2l_id'];
-      $user_id=$data['user_id'];
-      $msg=$data['msg'];
-      $date='NOW()';
+
       $sql=sprintf("select location.name,code,product2location.stock,product_id,location_id from product2location  left join product on (product.id=product_id) left join location on (location_id=location.id) where product2location.id=%d",$id); 
       //print $sql;
       $result =& $this->db->query($sql);
@@ -978,24 +918,31 @@ function get_data($product_id){
 
 
 
-      $this->update_location(array('tipo'=>'set_picking_rank','product2location_id'=>$id,'rank'=>0,'user_id'=>$user_id,'no_history'=>true));
+      $this->update_location(array('tipo'=>'set_picking_rank','product2location_id'=>$id,'rank'=>0,'user_id'=>'','no_history'=>true));
       
       // procced to delete
       $sql=sprintf("delete from product2location  where id=%d",$id); 
 
       mysql_query($sql);
       
-      if($location_id==1){
-	if($stock>0){
-	  $note=number($stock)." "._('outers lost, its location was never identificated;').' '.stripslashes($msg);
-	  $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,note,old_value,new_value) values (%s,'PROD',%d,'P2L',%d,'STK',%d,%s,'%s','%s')",$date,$this->id,$id,$user_id,prepare_mysql($note),$stock,0); 
+      if(!isset($data['no_history'])){
+	$user_id=$data['user_id'];
+	$msg=$data['msg'];
+	$date='NOW()';
+	
+	
+	if($location_id==1){
+	  if($stock>0){
+	    $note=number($stock)." "._('outers lost, its location was never identificated;').' '.stripslashes($msg);
+	    $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,note,old_value,new_value) values (%s,'PROD',%d,'P2L',%d,'STK',%d,%s,'%s','%s')",$date,$this->id,$id,$user_id,prepare_mysql($note),$stock,0); 
+	    mysql_query($sql);
+	  }
+      }
+	else{
+	  $note=$product_code." "._('no longer located on')." $location_name";
+	  $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,note) values (%s,'PROD',%d,'LOC',%d,'DEL',%d,%s)",$date,$this->id,$location_id,$user_id,prepare_mysql($note)); 
 	  mysql_query($sql);
 	}
-      }
-      else{
-	$note=$product_code." "._('no longer located on')." $location_name";
-	$sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,note) values (%s,'PROD',%d,'LOC',%d,'DEL',%d,%s)",$date,$this->id,$location_id,$user_id,prepare_mysql($note)); 
-      mysql_query($sql);
       }
       $this->set_stock();
       $this->read('locations');
@@ -1251,36 +1198,60 @@ function get_data($product_id){
   }
 
 
-  function update($values){
+  function update($values,$args=''){
     
+
+
     $date='NOW()';
     $res=array();
-    foreach($values as $value){
-      $res[$value['key']]=array('res'=>0,'new_value'=>'','desc'=>'Unkwown Error');
-      switch($value['key']){
+    foreach($values as $data){
+      
+      
+      $key=$data['key'];
+      $value=$data['value'];
+      $res[$key]=array('res'=>0,'new_value'=>'','desc'=>'Unkwown Error');
+      
+      
+      
+      
+      switch($key){
+	//Must be numeric
+      case('units'):
+      case('price'):
+      case('weight'):
+      case('oweight'):
+      case('cweight'):
+	if($this->data[$key]==$value)
+	  continue;
+	if(!is_numeric($value)){
+	  $res[$key]['desc']=_('Value is not numeric');
+	  continue;
+	}
+	$this->data[$key]=$value;
+	break;
+	//Must be alpha & not null
       case('description'):
       case('sdescription'):
-	if($this->data[$value['key']]!=$value['data']){
-	  
-	  if($value['data']==''){
-	    $res[$value['key']]['desc']=_('Value Required');
-	    break;
-	  }
-	  if(!preg_match('/[a-z]/i',$value['data'])){
-	      $res[$value['key']]['desc']=_('Not Valid Value');
-	      break;
-	  }
-
-	  $sql=sprintf("update product set %s=%s where id=%d",$value['key'],prepare_mysql($value['data']),$this->data['id']);
-	  	  mysql_query($sql);
-
-	  $res[$value['key']]=array('res'=>1,'new_value'=>$value['data']);
-	}else
-	  $res[$value['key']]=array('res'=>2,'new_value'=>'','desc'=>'No changed');
-	
+	if($this->data[$key]==$value)
+	  continue;
+	if($value==''){
+	  $res[$key]['desc']=_('Value Required');
+	  continue;
+	}
+	if(!preg_match('/[a-z]/i',$value)){
+	  $res[$key]['desc']=_('Not Valid Value');
+	  continue;
+	}
+	$this->data[$key]=$value;
+	break;
+            
+      case('details'):
+	if($this->data[$key]==$value)
+	  continue;
+	$this->data[$key]=$value;
 	break;
       case('cat'):
-	$cats=split($value['data']);
+	$cats=split($value);
 	
 	// delete all cats
 	$sql=sprintf("delete from cat  where product_id=%d",$this->data['id']);
@@ -1289,339 +1260,223 @@ function get_data($product_id){
 	  $sql=sprintf("insert into cat  (cat_id,product_id) values (%d,%d)",$cat,$this->data['id']);
 	  mysql_query($sql);
 	}
-	$res[$value['key']]=array('res'=>1,'new_value'=>join('-',$value['data']));
-	break;
-      case('details'):
-	$sql=sprintf("update product set %s=%s where id=%d",$value['key'],prepare_mysql($value['data']),$this->id);
-	mysql_query($sql);
-	$res[$value['key']]=array('res'=>1,'new_value'=>$sql);
-	break;
-      case('weight'):
-      case('oweight'):
-	if(!is_numeric($value['data']))
-	  $res[$value['key']]=array('res'=>2,'new_value'=>'','desc'=>'Wrong data');
-	else{
-	  $old_value=$this->data[$value['key']];
-	  if($old_value!=$value['data']){
-	    $sql=sprintf("update product set %s=%s where id=%d",$value['key'],prepare_mysql($value['data']),$this->id);
-	    $affected=& $this->db->exec($sql);
-	    if (PEAR::isError($affected))
-	      $res[$value['key']]=array('res'=>2,'new_value'=>'','desc'=>'Error while tring to update product');
-	    else{
-	      $res[$value['key']]=array('res'=>1,'new_value'=>$value['data']);
-	      $this->data[$value['key']]=$value;
-	      
-	      if($value['key']=='weight'){
-		$history_text1=_('Product unitary weight set to');
-		$history_text2=_('Product unitary weight changed');
-		$tipo_code='UWE';
-	      }else{
-		$history_text1=_('Product outer weight set to');
-		$history_text2=_('Product outer weight changed');
-		$tipo_code='OWE';
-	      }
-	      
-	      if($old_value=='')
-		$note=$history_text1." ".number($value['data'],3)._('Kg');
-	      else{
-		
-		$note=$history_text2.": ".number($old_value,3)._('Kg')." &rarr; ".number($value['data'],3)._('Kg');
-	      }
-	      $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,old_value,new_value,note) values (%s,'PROD',%d,'UPD',NULL,'%s',%d,%s,%s,%s)"
-			   ,$date,$this->id,$value['user_id'],$tipo_code,($old_value==''?'NULL':$old_value),$value['data'],prepare_mysql($note)); 
-	      
-	      mysql_query($sql);
-	      //	      $res[$value['key']]=array('res'=>2,'new_value'=>'','desc'=>$sql);
-	       $res[$value['key']]=array('res'=>1,'new_value'=>sprintf("%.3f",$value['data']));
-	    }
-	  }
-	}
+	$res[$key]=array('res'=>1,'new_value'=>join('-',$value));
 	break;
       case('dim'):
       case('odim'):
-
-	if($value['key']=='dim')
+      
+	if($key=='dim')
 	  $preffix='';
 	else
 	  $preffix='o';
 	
-	if(!preg_match('/^shape\d\_/',$value['data']))
-	  $res[$value['key']]=array('res'=>2,'desc'=>'Wrong_data');
-	else{
-	list($tipo,$dims)=preg_split('/_/',$value['data']);
+	if(!preg_match('/^shape\d\_/',$value)){
+	  $res[$key]=array('res'=>2,'desc'=>'Wrong_data');
+	  continue;
+	}
+	
+	list($tipo,$dims)=preg_split('/_/',$value);
 	$tipo=preg_replace('/^shape/','',$tipo);
 	$_dims=preg_split('/x/',$dims);
-
-	$old_value=$this->data[$value['key']];
-	$old_value_tipo=$this->data[$value['key'].'_tipo'];
-	$old_value_tipo_id=$this->data[$value['key'].'_tipo_id'];
-	if($old_value!=$dims or $old_value_tipo_id!=$tipo){
-	  $sql=sprintf("update product set %s=%s,%s=%s where id=%d",$value['key'],prepare_mysql($dims),$value['key'].'_tipo',prepare_mysql($tipo),$this->id);
-	  //	  return $res[$value['key']]=array('res'=>2,'desc'=>$sql);
-	  $affected=& $this->db->exec($sql);
-	  if (PEAR::isError($affected))
-	    $res[$value['key']]=array('res'=>2,'new_value'=>'','desc'=>'Error while trying to update product');
-	  else{
-	    $res[$value['key']]=array('res'=>1,'new_value'=>$value['data']);
-	    global $_shape;
-	    $this->data[$value['key']]=$dims;
-	    $this->data[$value['key'].'_tipo_id']=$tipo;
-	    $this->data[$value['key'].'_tipo']=$_shape[$tipo];
-	    
-
-	    $this->get($preffix.'vol');
-	    if($value['key']=='dim'){
-	      $history_text1=_('Product dimentions set to');
-	      $history_text2=_('Product dimentions changed');
-	      $tipo_code='UDIM';
-	      
-	    }else{
-	      $history_text1=_('Outer dimentions set to');
-	      $history_text2=_('Outer dimentions changed');
-	      $tipo_code='ODIM';
-	    }
-	    
-	    
-	    if($old_value=='')
-	      $note=$history_text1." ".ln_dim($this->data[$preffix.'dim_tipo_id'],$this->data[$preffix.'dim']);
-	    else{
-	      
-	      $note=$history_text2.": ".ln_dim($old_value_tipo_id,$old_value)." &rarr; ".ln_dim($this->data[$preffix.'dim_tipo_id'],$this->data[$preffix.'dim']);
-		}
-	    $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,old_value,new_value,note) values (%s,'PROD',%d,'UPD',NULL,'%s',%d,%s,%s,%s)"
-			 ,$date,$this->id,$value['user_id'],$tipo_code,($old_value==''?'NULL':prepare_mysql($old_value_tipo_id.'_'.$old_value)),prepare_mysql($tipo.'_'.$dims),prepare_mysql($note)); 
-	    // return $res[$value['key']]=array('res'=>2,'desc'=>$sql);
-	    mysql_query($sql);
-	    //	      $res[$value['key']]=array('res'=>2,'new_value'=>'','desc'=>$sql);
-	    $res[$value['key']]=array('res'=>1,'new_value'=>$dims);
-	  }
-	}
-	}
-	break;
-      default:
 	
-	$res[$value['key']]=array('res'=>2,'new_value'=>'','desc'=>'Unkwown key');
-    
+	$this->data[$key]=$dims;
+	$this->data[$key.'_tipo']=$tipo;
+      
+	break;
+	default:
+	
+	$res[$key]=array('res'=>2,'new_value'=>'','desc'=>'Unkwown key');
       }
+      if(preg_match('/save/',$args)){
 
+	$this->save($key);
+	
+      }
     }
     return $res;
   }
 
 
-  function save($tipo){
+  function save($tipo,$history_data=false){
     switch($tipo){
+
+       
+
+    case('first_date'):
+       $old_value=$this->read($tipo);
+
+      if(is_numeric($this->data['first_date'])){
+	$date=date("Y-m-d H:i:s",strtotime("@".$this->data['first_date']));
+
+	$sql=sprintf("update product set first_date=%s  where  id=%d"
+		     ,prepare_mysql($date),$this->id);
+	//	print "$sql\n";
+	$this->db->exec($sql);
+	
+	if(is_array($history_data)){
+	  $this->save_history($tipo,$old_value,$history_data);
+	}
+
+      }
+      break;
     case('sales'):
-      	$_diff_seconds=date('U')-$this->data['first_date'];
-	$date_diff=$_diff_seconds/24/3600;
-	$weeks=$date_diff/7;
-
-	$sql=sprintf("update sales set  tsoall=0,tsall=0,awtsoall=NULL, awtsoy=NULL,  awtsoq=NULL, awtsom=NULL, awtsall=NULL, awtsy=NULL, awtsq=NULL,  awtsm=NULL, tsoy=NULL, tsoq=NULL,  tsom=NULL, tsoq=NULL, tsom=NULL, tsow=NULL, tsw=NULL, tsm=NULL, tsq=NULL, tsy=NULL   where tipo='prod' and tipo_id=%d",$this->id);
-	mysql_query($sql);
-
-	$sql=sprintf("update product set tsall=%.2f,tsoall=%.f where id=%d",$this->data['sales']['tsall'],$this->data['sales']['tsoall'],$this->id);
-	mysql_query($sql);
-	if($weeks>=1){
-	  $sql=sprintf("update product set awtsall=%.2f,awtsoall=%f where id=%d",$this->data['sales']['awtsall'],$this->data['sales']['awtsoall'],$this->id);
-	  mysql_query($sql);
-	}
-
+      $sql=sprintf("select id from sales where tipo='prod' and tipo_id=%d",$this->id);
+      $res = $this->db->query($sql); 
+      if ($row=$res->fetchRow()) {
+	$sales_id=$row['id'];
+      }else{
+	$sql=sprintf("insert into sales (tipo,tipo_id) values ('prod',%d)",$this->id);
+	$this->db->exec($sql);
+	$sales_id=$this->db->lastInsertID();
 	
-
-	$tsall=0;
-	$tsoall=0;
-	$tdall=0;
-	$sql=sprintf("select  sum(charge) as sales  ,sum(dispached) as outers from  transaction as t left join orden as o on (order_id=o.id) where product_id=%d and o.tipo=2    ",$this->id);
-	$result =& $this->db->query($sql);
-	if($row=$result->fetchRow()){
-	  $tsall=$row['sales'];
-	  $tsoall=$row['outers'];
-	  
-
-	  $sql=sprintf("update product set tsall=%s,tsoall=%s where id=%d",$tsall,$tsoall,$this->id);
-	  mysql_query($sql);
-	  
-	  if($weeks>=1){
-	    $awtsall=$row['sales']/$weeks;
-	    $awtsoall=$row['outers']/$weeks;
-	     $sql=sprintf("update product set awtsall=%s,awtsoall=%s where id=%d",$awtsall,$awtsoall,$this->id);
-	     mysql_query($sql);
-	  }
+      }
+      foreach($this->data['sales'] as $key=>$value){
+	if(preg_match('/^aw/',$key)){
+	  if(is_numeric($value))
+	    $sql=sprintf("update sales set %s=%f where id=%d",$key,$value,$sales_id);
+	  else
+	    $sql=sprintf("update sales set %s=NULL where id=%d",$key,$sales_id);
+	  $this->db->exec($sql);
 
 	}
-	$sql=sprintf("select  sum(dispached) as outers from  transaction as t left join orden as o on (order_id=o.id) where product_id=%d   and (o.tipo!=3 or o.tipo!=7 or o.tipo!=9  or o.tipo!=10  )     ",$this->id);
-	$result =& $this->db->query($sql);
-	if($row=$result->fetchRow()){
-	  $tdall=$row['outers'];
-	  $sql=sprintf("update product set tdall=%s where id=%d",$tdall,$this->id);
-	  mysql_query($sql);
-	  
-	  if($weeks>=1){
-	    $awtdall=$row['outers']/$weeks;
-	    $sql=sprintf("update product set awtdall=%s where id=%d",$awtdall,$this->id);
-	    mysql_query($sql);
-	    
-	  }
-
-	}
+	if(preg_match('/^ts/',$key)){
+	  $sql=sprintf("update sales set %s=%.2f where id=%d",$key,$value,$sales_id);
+	  //	  print "$sql\n";
+	  $this->db->exec($sql);
+	}  
 	
+      }
+    default:
+      
+      $old_value=$this->read($tipo);
+      // print "$old_value ".$this->data[$tipo]." \n";
 
-	$date_diff=date('U')-$this->data['first_date']/24/3600;
-	if($date_diff>=365){
-	  $tsy=0;
-	  $tsoy=0;
-	  $awtsy=0;
-	  $awtsoy=0;
-	  $tdy=0;
-	  $sql=sprintf("select  sum(charge) as sales ,sum(dispached) as outers  from  transaction as t left join orden as o on (order_id=o.id) where product_id=%d and o.tipo=2 and DATE_SUB(CURDATE(),INTERVAL 1 YEAR) <= date_index   ",$this->id);
-	  $result =& $this->db->query($sql);
-	  if($row=$result->fetchRow()){
-	    $tsy=$row['sales'];
-	    $tsoy=$row['outers'];
-	    $awtsy=$tsy/52.17857142;
-	    $awtsoy=$tsoy/52.17857142;
-	    $sql=sprintf("update product set tsy=%s,tsoy=%s,awtsy=%s,awtsoy=%s where id=%d",$tsy,$tsoy,$awtsy,$awtsoy,$this->id);
-	    mysql_query($sql);
-	  }
-	  $sql=sprintf("select  sum(dispached) as outers  from  transaction as t left join orden as o on (order_id=o.id) where product_id=%d and (o.tipo!=3 or o.tipo!=7 or o.tipo!=9  or o.tipo!=10  )   and DATE_SUB(CURDATE(),INTERVAL 1 YEAR) <= date_index   ",$this->id);
-	  $result =& $this->db->query($sql);
-	  if($row=$result->fetchRow()){
-	    $tdy=$row['outers'];
-	    $awtdy=$row['outers']/52.17857142;;
-	    $sql=sprintf("update product set tdy=%s , awtdy=%s   where id=%d",$tdy,$awtdy,$this->id);
-	    mysql_query($sql);
-	  }
+      if($old_value!=$this->data[$tipo]){
+	$sql=sprintf("update product set %s=%s where id=%d",$tipo,prepare_mysql($this->data[$tipo]),$this->id);
 
+	$this->db->exec($sql);
+      }
 
-	}
-	if($date_diff>=89){
-	  $tsq=0;
-	  $tsoq=0;
-	  $awtsq=0;
-	  $awtsoq=0;
-	  $tdq=0;
-	  
-	  $sql=sprintf("select  sum(charge) as sales ,sum(dispached) as outers  from  transaction as t left join orden as o on (order_id=o.id) where product_id=%d and o.tipo=2 and DATE_SUB(CURDATE(),INTERVAL 3 MONTH) <= date_index   ",$this->id);
-	  $result =& $this->db->query($sql);
-	  if($row=$result->fetchRow()){
-	    
-	    $tsq=$row['sales'];
-	    $tsoq=$row['outers'];
-	    $awtsq=$tsq/13.044642857;
-	    $awtsoq=$tsoq/13.044642857;
-	    $sql=sprintf("update product set tsq=%s,tsoq=%s,awtsq=%s,awtsoq=%s where id=%d",$tsq,$tsoq,$awtsq,$awtsoq,$this->id);
-	    mysql_query($sql);
-	  }
-	  $sql=sprintf("select  sum(dispached) as outers  from  transaction as t left join orden as o on (order_id=o.id) where product_id=%d and (o.tipo!=3 or o.tipo!=7 or o.tipo!=9  or o.tipo!=10  )   and DATE_SUB(CURDATE(),INTERVAL 3 MONTH) <= date_index   ",$this->id);
-	  $result =& $this->db->query($sql);
-	  if($row=$result->fetchRow()){
-	    $tdq=$row['outers'];
-	    $awtdq=$row['outers']/13.044642857;
-	    $sql=sprintf("update product set tdq=%s ,awtdq=%s  where id=%d",$tdq,$awtdq,$this->id);
-	    mysql_query($sql);
-	  }
-	  
-	}
-
-	if($date_diff>=30){
-	  $tsm=0;
-	  $tsom=0;
-	  $awtsm=0;
-	  $awtsom=0;
-	  $tdm=0;
-
-	$sql=sprintf("select  sum(charge) as sales ,sum(dispached) as outers  from  transaction as t left join orden as o on (order_id=o.id) where product_id=%d and o.tipo=2 and DATE_SUB(CURDATE(),INTERVAL 1 MONTH) <= date_index   ",$this->id);
-	$result =& $this->db->query($sql);
-	if($row=$result->fetchRow()){
-	  $tsm=$row['sales'];
-	  $tsom=$row['outers'];
-	  $awtsm=$tsm/4.348214286;
-	  $awtsom=$tsom/4.348214286;
-	  $sql=sprintf("update product set tsm=%s,tsom=%s,awtsm=%s,awtsom=%s where id=%d",$tsm,$tsom,$awtsm,$awtsom,$this->id);
-	  
-	  mysql_query($sql);
-	}
-
-
-	$sql=sprintf("select  sum(dispached) as outers  from  transaction as t left join orden as o on (order_id=o.id) where product_id=%d and (o.tipo!=3 or o.tipo!=7 or o.tipo!=9  or o.tipo!=10  )   and DATE_SUB(CURDATE(),INTERVAL 1  MONTH) <= date_index   ",$this->id);
-	  $result =& $this->db->query($sql);
-	  if($row=$result->fetchRow()){
-	    $tdm=$row['outers'];
-	    $awtdm=$row['outers']/4.348214286;
-	    $sql=sprintf("update product set tdm=%s,  awtdm=%s  where id=%d",$tdm,$awtdm,$this->id);
-	    mysql_query($sql);
-	  }
-	
-	}
-	
-	if($date_diff>5){
-	  $tsw=0;
-	  $tsow=0;
-	  $tdw=0;
-	  
-	  $sql=sprintf("select  sum(charge) as sales ,sum(dispached) as outers  from  transaction as t left join orden as o on (order_id=o.id) where product_id=%d and o.tipo=2 and DATE_SUB(CURDATE(),INTERVAL 1 WEEK) <= date_index   ",$this->id);
-	  $result =& $this->db->query($sql);
-	  if($row=$result->fetchRow()){
-	    $tsw=$row['sales'];
-	  $tsow=$row['outers'];
-	  $sql=sprintf("update product set tsw=%s,tsow=%s where id=%d",$tsw,$tsow,$this->id);
-	  mysql_query($sql);
-	  }
-
-	  $sql=sprintf("select  sum(dispached) as outers  from  transaction as t left join orden as o on (order_id=o.id) where product_id=%d and (o.tipo!=3 or o.tipo!=7 or o.tipo!=9  or o.tipo!=10  )   and DATE_SUB(CURDATE(),INTERVAL 1  WEEK) <= date_index   ",$this->id);
-	  $result =& $this->db->query($sql);
-	  if($row=$result->fetchRow()){
-	    $tdw=$row['outers'];
-	    $sql=sprintf("update product set tdw=%s  where id=%d",$tdm,$this->id);
-	    mysql_query($sql);
-	  }
-
-
-	}
-
-	
-
-
+      if(is_array($history_data)){
+	$this->save_history($tipo,$old_value,$history_data);
+      }
+      
+      break; 
     }
 
   }
 
 
 
-  function save_new($datos){
-    
-    
 
 
-    $ncode=normalize_code($code);
-    $rpp=(isset($datos['rrp']) and is_numeric($datos['rrp'])?$datos['rrp']:'NULL');
-    $sql=sprintf("insert into  product (ncode,rrp,units,units_tipo,price,description,code,group_id,first_date) values ('%s',%s,%s,'%s',%d,'%s','%s','%s',%d,NOW())",
-		 addslashes($ncode),
+
+
+  function create($data){
+
+
+    if(!is_numeric($data['group_id']) or $data['group_id']<=0 )
+      return array('ok'=>false,'msg'=>_("Wrong group id"));
+    if($data['code']=='' )
+      return array('ok'=>false,'msg'=>_("Wrong product code"));
+    if($data['description']=='' )
+      return array('ok'=>false,'msg'=>_("Wrong description, it can't be empty"));
+    
+    $sql=sprintf("select id from product_group where id=%d"
+		 ,$data['group_id']);
+     $res = $this->db->query($sql); 
+     if(!$tmp=$res->fetchRow()){
+       return array('ok'=>false,'msg'=>_("The product group don't exist"));
+     }
+     
+     $sql=sprintf("select id from product where code=%s "
+		  ,prepare_mysql($data['code'])
+		  );
+     $res = $this->db->query($sql); 
+     if($tmp=$res->fetchRow()){
+       return array(
+		    'ok'=>false
+		    ,'msg'=>_('There is other product family with the same name/description')
+		  );
+     }
+     
+     $code=$data['code'];
+     $ncode=$this->normalize_code($code);
+     $rpp=(isset($data['rrp']) and is_numeric($data['rrp'])?$data['rrp']:'NULL');
+     
+
+     if( isset($data['rrp']) and is_numeric($data['rrp'])    )
+       $rrp=$data['rrp'];
+     else
+       $rrp='NULL';
+     
+     if( isset($data['units_tipo']) and is_numeric($data['units_tipo'])   and $data['units_tipo']>0 )
+       $units_tipo=$data['units_tipo'];
+     else
+      $units_tipo=1;
+     
+     if( isset($data['units']) and is_numeric($data['units'])   and $data['units']>0 )
+       $units=$data['units'];
+     else
+       $units=1;
+
+     
+     if( isset($data['sdescription'])  and $data['sdescription']!='' )
+       $sdescription=$data['sdescription'];
+     else
+       $sdescription=$data['description'];
+     
+
+
+     
+    $sale_status=(
+		  (
+		   !isset($data['sale_status']) 
+		   or $data['sale_status']!='normal'
+		   or $data['sale_status']!='nosale'
+		   or $data['sale_status']!='discontinued'
+		   )?'nosale':$data['sale_status']);
+    $sql=sprintf("insert into  product (sale_status,ncode,rrp,units,units_tipo,price,description,sdescription,code,group_id) values (%s,%s,%s,%.3f,%d,%.2f,%s,%s,%s,%d)",
+		 prepare_mysql($sale_status),
+		 prepare_mysql($ncode),
 		 $rrp,
-		 $datos['units'],
-		 $datos['units_tipo'],
-		 $datos['price'],
-		 addslashes($datos['description']),
-		 addslashes($datos['code']),
+		 $units,
+		 $units_tipo,
+		 
+		 $data['price'],
+		 prepare_mysql($data['description']),
+		 prepare_mysql($sdescription),
+		 prepare_mysql($data['code']),
+		 $data['group_id']
 
-		 $datos['group_id']);
+		 );
+    
+    //  print "$sql\n";
+
     $affected=& $this->db->exec($sql);
     if (PEAR::isError($affected)) {
       if(preg_match('/^MDB2 Error: constraint violation$/',$affected->getMessage()))
-	$this->error_msg=_('Error: Another product has the same code').'.';
+	return array('ok'=>false,'msg'=>_('Error: Another product has the same code').'.');
       else
-	$this->error_msg=_('Unknown Error').'.';
-      return false;
+	return array('ok'=>false,'msg'=>_('Unknwon Error').'.');
     }
     $this->id = $this->db->lastInsertID();
-    $sql=sprintf("insert into inventory(fuzzy,date_start,date_end,name) values (1,NOW,NOW,'%s',)",_('New product'));
-    $this->db->exec($sql);
-    $inv_id = $this->db->lastInsertID();
-    $sql=sprintf("insert into inventory_item (product_id,inventory_id,fecha) values (%d,,%d,NOW)", $this->id,$inv_id);
-    $this->db->exec($sql);
-    $this->fix_todotransaction();
-    $this->set_stock(true);
-    $this->set_sales(true);
+    $this->data['ncode']=$ncode;	
+    $this->data['code']=$data['code'];
+    $this->data['group_id']=$data['group_id'];
+    $this->data['units']=$units;
+    $this->data['units_tipo']=$units_tipo;
+    $this->data['price']=$data['price'];
+
+    $this->data['rrp']=$rrp;
+    $this->data['description']=$data['description'];
+    $this->data['sdescription']=$data['sdescription'];
+
+    return array('ok'=>true);
+
+    //$this->fix_todotransaction();
+    //$this->set_stock(true);
+    //$this->set_sales(true);
   }
   
   
@@ -1969,6 +1824,85 @@ function ln_dim($tipo,$data){
   
 }
 
+	   //    if($key=='weight'){
+// 		$history_text1=_('Product unitary weight set to');
+// 		$history_text2=_('Product unitary weight changed');
+// 		$tipo_code='UWE';
+// 	      }else{
+// 		$history_text1=_('Product outer weight set to');
+// 		$history_text2=_('Product outer weight changed');
+// 		$tipo_code='OWE';
+// 	      }
+	      
+// 	      if($old_value=='')
+// 		$note=$history_text1." ".number($value,3)._('Kg');
+// 	      else{
+		
+// 		$note=$history_text2.": ".number($old_value,3)._('Kg')." &rarr; ".number($value,3)._('Kg');
+// 	      }
+// 	      $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,old_value,new_value,note) values (%s,'PROD',%d,'UPD',NULL,'%s',%d,%s,%s,%s)"
+// 			   ,$date,$this->id,$value['user_id'],$tipo_code,($old_value==''?'NULL':$old_value),$value,prepare_mysql($note)); 
+	      
+// 	      mysql_query($sql);
+// 	      //	      $res[$key]=array('res'=>2,'new_value'=>'','desc'=>$sql);
+// 	       $res[$key]=array('res'=>1,'new_value'=>sprintf("%.3f",$value));
+// 	    }
+// 	  }
+// 	}
+//	break;
+
+
+
+
+
+
+
+
+// 	$old_value=$this->data[$key];
+// 	$old_value_tipo=$this->data[$key.'_tipo'];
+// 	$old_value_tipo_id=$this->data[$key.'_tipo_id'];
+// 	if($old_value!=$dims or $old_value_tipo_id!=$tipo){
+// 	  $sql=sprintf("update product set %s=%s,%s=%s where id=%d",$key,prepare_mysql($dims),$key.'_tipo',prepare_mysql($tipo),$this->id);
+// 	  //	  return $res[$key]=array('res'=>2,'desc'=>$sql);
+// 	  $affected=& $this->db->exec($sql);
+// 	  if (PEAR::isError($affected))
+// 	    $res[$key]=array('res'=>2,'new_value'=>'','desc'=>'Error while trying to update product');
+// 	  else{
+// 	    $res[$key]=array('res'=>1,'new_value'=>$value);
+// 	    global $_shape;
+// 	    $this->data[$key]=$dims;
+// 	    $this->data[$key.'_tipo_id']=$tipo;
+// 	    $this->data[$key.'_tipo']=$_shape[$tipo];
+	    
+
+// 	    $this->get($preffix.'vol');
+// 	    if($key=='dim'){
+// 	      $history_text1=_('Product dimentions set to');
+// 	      $history_text2=_('Product dimentions changed');
+// 	      $tipo_code='UDIM';
+	      
+// 	    }else{
+// 	      $history_text1=_('Outer dimentions set to');
+// 	      $history_text2=_('Outer dimentions changed');
+// 	      $tipo_code='ODIM';
+// 	    }
+	    
+	    
+// 	    if($old_value=='')
+// 	      $note=$history_text1." ".ln_dim($this->data[$preffix.'dim_tipo_id'],$this->data[$preffix.'dim']);
+// 	    else{
+	      
+// 	      $note=$history_text2.": ".ln_dim($old_value_tipo_id,$old_value)." &rarr; ".ln_dim($this->data[$preffix.'dim_tipo_id'],$this->data[$preffix.'dim']);
+// 		}
+// 	    $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,old_value,new_value,note) values (%s,'PROD',%d,'UPD',NULL,'%s',%d,%s,%s,%s)"
+// 			 ,$date,$this->id,$value['user_id'],$tipo_code,($old_value==''?'NULL':prepare_mysql($old_value_tipo_id.'_'.$old_value)),prepare_mysql($tipo.'_'.$dims),prepare_mysql($note)); 
+// 	    // return $res[$key]=array('res'=>2,'desc'=>$sql);
+// 	    mysql_query($sql);
+// 	    //	      $res[$key]=array('res'=>2,'new_value'=>'','desc'=>$sql);
+// 	    $res[$key]=array('res'=>1,'new_value'=>$dims);
+// 	  }
+// 	}
+// 	}
 
 
 ?>
