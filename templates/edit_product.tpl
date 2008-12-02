@@ -91,11 +91,34 @@
 </div>
 
 <div  {if !$edit=="pictures"}style="display:none"{/if}  class="edit_block" id="d_pictures">
-  <form action="upload.php" enctype="multipart/form-data" method="post" id="testForm">
-<input type="file" name="testFile"/>
-<input type="button" id="uploadButton" value="Upload"/>
-</form>
 
+  <form action="upload.php" enctype="multipart/form-data" method="post" id="testForm">
+    <input type="file" name="testFile"/>
+    <input type="button" id="uploadButton" value="Upload"/>
+  </form>
+  
+  <div  id="images" class="edit_images" principal="{$data.principal_image}" >
+    {foreach from=$images item=image  name=foo}
+    <div id="image{$image.id}" class="image" >
+      <div>{$image.name}</div>
+      <img  src="{$image.med}"/> 
+      <div class="operations">
+	{if $image.principal==1}
+	<span class="img_set_principal" ><img id="img_set_principal{$image.id}" onClick="set_image_as_principal(this)" title="{t}Main Image{/t}" image_id="{$image.id}" principal="1" src="art/icons/asterisk_orange.png"></span>
+	{else}
+	<span  class="img_set_principal" style="cursor:pointer"  ><img id="img_set_principal{$image.id}" onClick="set_image_as_principal(this)" title="{t}Set as the principal image{/t}" image_id="{$image.id}" principal="0" src="art/icons/picture_empty.png"></span>
+	{/if}
+	<span style="cursor:pointer" onClick="delete_image({$image.id})">{t}Delete{/t} <img src="art/icons/cross.png"></span>
+      </div>
+      <div class="caption" >
+	<span>{t}Caption{/t}:</span><br/>
+	<span class="save" ><img  id="save_img_caption{$image.id}" onClick="save_image('img_caption',{$image.id})" title="{t}Save caption{/t}"  src="art/icons/disk.png"></span>
+	<textarea onkeydown="caption_changed(this)" id="img_caption{$image.id}" image_id="{$image.id}" ovalue="{$image.caption}">{$image.caption}</textarea>
+      </div>
+    
+    </div>
+    {/foreach}
+  </div>
 
 
 

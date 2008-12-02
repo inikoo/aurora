@@ -18,11 +18,14 @@ $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessag
   while($row=$res->fetchRow()) {
     $id=$row['id'];
     $product=new Product($id);
-    // $product->load('first_date','save');
+    $product->load('first_date','save');
     $product->load('sales');
     $product->save('sales');
-	
-     printf("$id\r");
+    $index=$product->get('num_images')+1;
+    $sql="update product set image_index=$index where id=".$product->id;
+    
+    mysql_query($sql);
+    //printf("$id\r");
   }
 
 ?>

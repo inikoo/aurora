@@ -11,7 +11,7 @@ class product{
   var $suppliers=array();
   var $locations=array();
   var $notes=array();
-  var $images=array();
+  var $images=false;
 
   var $db;
 
@@ -246,21 +246,41 @@ class product{
 	$this->categories['number']=count($this->categories['list']);
 	break;
       case('images'):
+	$this->image_path='server_files/images/';
 	$this->images=array();
-	$sql=sprintf("select checksum,filename,format,principal,caption,id from image where  product_id=%d order by principal desc",$this->id);
+	$sql=sprintf("select checksum,name,format,principal,caption,id,width,height,size from image where  product_id=%d order by principal desc",$this->id);
 	$result =& $this->db->query($sql);
 	$principal=false;
+	$default=false;
 	while($row=$result->fetchRow()){
+	  if(!$default)
+	    $default=$row['id'];
 	  if($row['principal']==1 and !$principal){
-	    $src='med/'.$row['filename'].'_med.'.$row['format'];
 	    $set_principal=true;
-	  }else{
-	    $src='tb/'.$row['filename'].'_tb.'.$row['format'];
-	  }
-	  $this->images[]=array('id'=>$row['id'],'src'=>$src,'caption'=>$row['caption'],'checksum'=>$row['checksum']);
+	    $principal=true;
+	    $this->data['principal_image']=$row['id'];
+	  }else
+	    $set_principal=false;
+	  
+	  $this->images[$row['id']]=array(
+				'id'=>$row['id'],
+				'width'=>$row['width'],
+				'height'=>$row['height'],
+				'size'=>$row['size'],
+				'caption'=>$row['caption'],
+				'checksum'=>$row['checksum'],
+				'principal'=>$set_principal,
+				'tb'=>$this->image_path.'tb/'.$row['name'].'_tb.'.$row['format'],
+				'med'=>$this->image_path.'med/'.$row['name'].'_med.'.$row['format'],
+				'orig'=>$this->image_path.'original/'.$row['name'].'_orig.'.$row['format'],
+				'name'=>$row['name']
+				);
 	}
-
-	
+	if(!$principal){
+	  $this->images[$default]['principal']=true;
+	  $this->data['principal_image']=$default;
+	}
+	  
 	break;
       case('stock_forecast'):
 	//simplest one
@@ -417,9 +437,43 @@ class product{
   }
 
 
- function read($key){
+  function read($key,$data=false){
 
-   $sql=sprintf("select %s as value  from product where id=%d",addslashes($key),$this->id);
+    if($key=='image'){
+	$sql=sprintf("select checksum,name,format,principal,caption,id,width,height,size from image where  id=%d",$data);
+	$result =& $this->db->query($sql);
+	if($row=$result->fetchRow()){
+	  $image=array(
+		       'id'=>$row['id'],
+		       'width'=>$row['width'],
+		       'height'=>$row['height'],
+		       'size'=>$row['size'],
+		       'caption'=>$row['caption'],
+		       'checksum'=>$row['checksum'],
+		       'principal'=>$row['principal'],
+		       'tb'=>$this->image_path.'tb/'.$row['name'].'_tb.'.$row['format'],
+		       'med'=>$this->image_path.'med/'.$row['name'].'_med.'.$row['format'],
+		       'orig'=>$this->image_path.'original/'.$row['name'].'_orig.'.$row['format'],
+		       'name'=>$row['name']
+		       );
+	  return $image;
+	  
+	}else
+	  return false;
+	
+	
+
+
+    }
+
+
+   if($key=='img_new')
+     return false;
+   
+   if($key=='img_caption')
+     $sql=sprintf("select caption as value from image where id=%d",$this->changing_img);
+   else
+     $sql=sprintf("select %s as value  from product where id=%d",addslashes($key),$this->id);
    $res = $this->db->query($sql); 
    if ($row=$res->fetchRow()) {
      return $row['value'];
@@ -434,7 +488,12 @@ class product{
   function get($item=''){
 
     switch($item){
-
+    case('new_image'):
+      if(isset($this->changing_img)  and isset($this->images[$this->changing_img]))
+	return $this->images[$this->changing_img];
+      else
+	return false;
+      break;
     case('tsall'):
     case('tsy'):
     case('tsq'):
@@ -468,9 +527,13 @@ class product{
 	$this->save('sales');
 	
       }
-      
-
-      
+      break;
+    case('img_caption'):
+      return $this->images[$this->changing_img]['caption'];
+      break;
+    case('img_new'):
+      return $this->images[0];
+      break;
     case('vol'):
       $this->data['vol']=volumen($this->data['dim_tipo_id'],$this->data['dim']);
       break;
@@ -513,6 +576,8 @@ class product{
       return  $this->suppliers['num_price'];
     case('num_pics'):
     case('num_images'):
+      if(!$this->images)
+	$this->load('images');
       return count($this->images);
     default:
 
@@ -1242,12 +1307,97 @@ class product{
       
       $key=$data['key'];
       $value=$data['value'];
-      $res[$key]=array('res'=>0,'new_value'=>'','desc'=>'Unkwown Error');
+      $res[$key]=array('ok'=>false,'msg'=>'');
       
       
       
       
       switch($key){
+	
+      case('img_set_principal'):
+	if(!$this->images)
+	  $this->load('images');
+	$this->changing_img=$value;
+	if(!isset($this->images[$this->changing_img])){
+	  $res[$key]['msg']=_('Image not found');
+	  $res[$key]['ok']=false;
+	  continue;
+
+	}
+
+	if($this->images[$this->changing_img]['principal']){
+	  $res[$key]['msg']=_('Image is already the principal');
+	  $res[$key]['ok']=false;
+	  continue;
+
+	}
+	  
+	foreach($this->images as $_key => $value){
+	  $this->images[$_key]['principal']=false;
+	}
+	$this->images[$this->changing_img]['principal']=true;
+	$res[$key]['ok']=true;
+	break;
+
+      case('img_delete'):
+	if(!$this->images)
+	  $this->load('images');
+	$this->img_to_delete=$value;
+	if(!isset($this->images[$this->img_to_delete])){
+	  $res[$key]['msg']=_('Image not found');
+	  $res[$key]['ok']=false;
+	  continue;
+
+	}
+
+	unset($this->images[$this->img_to_delete]);
+	$res[$key]['ok']=true;
+	break;
+      case('img_new'):
+	if(!$this->images)
+	  $this->load('images');
+
+
+	$code=$this->get('code');
+	$target_path = $value;
+	
+	$im = @imagecreatefromjpeg($target_path);
+	if ($im) {  
+	  $images=$this->data['image_index'];
+	  $this->data['image_index']=$images+1;
+	  $this->images[0]=array(
+				 'width' => imagesx($im),
+				 'height' => imagesy($im),
+				 'size'=>$s=filesize($target_path),
+				 'checksum'=>$c=md5_file($target_path),
+				 'principal'=>($images==0?true:false),
+				 'caption'=>'',
+				 'name'=>$code.'_'.$images,
+				 'tmp_filename'=>$target_path,
+				 'format'=>'jpg'
+				 );
+	}
+ 
+	 $res[$key]['ok']=true;
+	
+
+	break;
+      case('img_caption'):
+	if(!$this->images)
+	  $this->load('images');
+	$image_id=$data['image_id'];
+	//	print_r($data);
+
+	if(!isset($this->images[$image_id])){
+	  $res[$key]['msg']=_('Image not found');
+	  $res[$key]['ok']=false;
+	  continue;
+	}
+	$this->images[$image_id]['caption']=$value;
+	$this->changing_img=$image_id;
+	 $res[$key]['ok']=true;
+	 break;
+	
 	//Must be numeric
       case('units'):
       case('price'):
@@ -1362,14 +1512,140 @@ class product{
 
   function save($tipo,$history_data=false){
     switch($tipo){
+    case('img_set_principal'):
+      $old_value=$this->data['principal_image'];
+      $old_value=$old_value['name'];
+      $sql="update image set principal=0 where product_id=".$this->id;
+      $this->db->exec($sql);
+      $sql=sprintf("update image set principal=1 where id=%d",$this->changing_img);
+      $this->db->exec($sql);
 
-  //   case('price'):
-//       $old_value=$this->read($tipo);
-//       $value=$this->get($tipo);
-//       $sql=sprintf("update product set %s=%s  where  id=%d"
-// 		   ,$tipo,prepare_mysql($value),$this->id);
-//       $this->db->exec($sql);
-//       break;
+      
+      if(is_array($history_data)){
+	$history_data['image_id']=$this->changing_img;
+ 	$this->save_history($tipo,$old_value,$this->images[$this->changing_img]['name'],$history_data);
+      }
+     
+      break;
+    case('img_delete'):
+      $old_value=$this->read('image',$this->img_to_delete);
+
+
+      if(is_file($old_value['tb'])) {
+	unlink($old_value['tb']);
+      }
+      if(is_file($old_value['med'])) {
+      unlink($old_value['med']);
+      }
+      if(is_file($old_value['orig'])) {
+	unlink($old_value['orig']);
+      }
+
+
+
+      $sql=sprintf("delete from image where id=%d",$this->img_to_delete);
+      //      print $sql;
+      $this->db->exec($sql);
+      if(is_array($history_data)){
+	 $history_data['image_id']=$old_value['id'];
+	$this->save_history($tipo,$old_value['name'],'',$history_data);
+      }
+      
+      break;
+    case('img_new'):
+       $old_value='';
+       $value=$this->images[0];
+
+
+       // 	if(move_uploaded_file($tmp_file, $target_path)) {
+	  $im = @imagecreatefromjpeg($value['tmp_filename']);
+ 	  if ($im) { 
+	    $w = imagesx($im);
+	    $h = imagesy($im);
+	    
+	    if($h > 0) 
+	      { 
+		$r = $w/$h;
+		imagejpeg($im,$this->image_path.'original/'.$value['name'].'_orig.jpg');
+		
+		$med_maxh=130;
+		$med_maxw=190;
+		$tb_maxh=21;
+		$tb_maxw=30;
+
+
+	     if($r>1.4615){
+	       $med_w=$med_maxw;
+	       $med_h=$med_w/$r;
+	       $tb_w=$tb_maxw;
+	       $tb_h=$tb_w/$r;
+
+	     }else{
+	       
+	       $med_h=$med_maxh;
+	       $med_w=$med_h*$r;
+	       $tb_h=$tb_maxh;
+	       $tb_w=$tb_h*$r;
+	     }
+	     
+	     $im_med = imagecreatetruecolor($med_w, $med_h);
+	     imagecopyresampled($im_med, $im, 0, 0, 0, 0, $med_w, $med_h, $w, $h);
+	     imagejpeg($im_med,$this->image_path.'med/'.$value['name'].'_med.jpg');
+	     $im_tb = imagecreatetruecolor($tb_w, $tb_h);
+	     imagecopyresampled($im_tb, $im, 0, 0, 0, 0, $tb_w, $tb_h, $w, $h);
+	     imagejpeg($im_tb,$this->image_path.'tb/'.$value['name'].'_tb.jpg');
+	     
+	     
+
+
+	   }
+	  }
+    
+
+
+
+       $sql=sprintf("insert into image  (name,product_id,width,height,size,checksum,principal) values (%s,%d,%d,%d,%d,%s,%d)"
+		    ,prepare_mysql($value['name'])
+		    ,$this->id
+		    ,$value['width']
+		    ,$value['height']
+		    ,$value['size']
+		    ,prepare_mysql($value['checksum'])
+		    ,($value['principal']?1:0)
+		    );
+       $affected=& $this->db->exec($sql);
+       if (PEAR::isError($affected)) {
+	 if(preg_match('/^MDB2 Error: constraint violation$/',$affected->getMessage()))
+	   return array('ok'=>false,'msg'=>_('Error: Another product has the same code').'.');
+	 else
+	   return array('ok'=>false,'msg'=>_('Unknwon Error').'.');
+       }
+       $image_id = $this->db->lastInsertID();
+
+       $sql=sprintf("update product set image_index=%d where id=",$this->data['image_index'],$this->id);
+       $this->db->exec($sql);
+       $this->changing_img=$image_id;
+       $this->images= array_change_key_name( 0, $image_id,$this->images );
+       $this->images[$image_id]['id']=$image_id;
+       if(is_array($history_data)){
+	 $history_data['image_id']=$image_id;
+	$this->save_history($tipo,'',$this->images[$image_id]['name'],$history_data);
+      }
+
+       break;
+     case('img_caption'):
+       $old_value=$this->read($tipo);
+       $value=$this->get($tipo);
+       $sql=sprintf("update image set caption=%s  where  id=%d"
+ 		   ,prepare_mysql($value),$this->changing_img);
+       $this->db->exec($sql);
+
+       if(is_array($history_data)){
+	 $history_data['image_id']=$this->changing_img;
+	$this->save_history($tipo,$old_value,$this->get($tipo),$history_data);
+      }
+
+       break;
     case('first_date'):
        $old_value=$this->read($tipo);
 
@@ -1417,19 +1693,16 @@ class product{
       break;
     default:
       
-      $old_value=$this->read($tipo);
-      
-      // print "$old_value ".$this->data[$tipo]." \n";
+    //   $old_value=$this->read($tipo);
+//       if($old_value!=$this->data[$tipo]){
+// 	$sql=sprintf("update product set %s=%s where id=%d",$tipo,prepare_mysql($this->get($tipo)),$this->id);
+// 	//	print $sql;
+// 	$this->db->exec($sql);
+//       }
 
-      if($old_value!=$this->data[$tipo]){
-	$sql=sprintf("update product set %s=%s where id=%d",$tipo,prepare_mysql($this->get($tipo)),$this->id);
-	//	print $sql;
-	$this->db->exec($sql);
-      }
-
-      if(is_array($history_data)){
-	$this->save_history($tipo,$old_value,$this->get($tipo),$history_data);
-      }
+//       if(is_array($history_data)){
+// 	$this->save_history($tipo,$old_value,$this->get($tipo),$history_data);
+//       }
       
       break; 
     }
@@ -1442,6 +1715,45 @@ class product{
   function save_history($tipo,$old,$new,$data){
     
     switch($tipo){
+    case('img_set_principal'):
+      $note=_('Image set to principal').": ".$new;
+      $sujeto='PROD';
+      $sujeto_id=$this->id;
+      $objeto='IMG';
+      $objeto_id=$data['image_id'];
+      $action='PRI';
+      break;
+     
+    case('img_delete'):
+      $note=_('Image deleted').": ".$old;
+      $sujeto='PROD';
+      $sujeto_id=$this->id;
+      $objeto='IMG';
+      $objeto_id=$data['image_id'];
+      $action='DEL';
+      break;
+    case('img_new'):
+      $note=_('New image')." ".$this->images[$data['image_id']]['name'];
+      $sujeto='PROD';
+      $sujeto_id=$this->id;
+      $objeto='IMG';
+      $objeto_id=$data['image_id'];
+      $action='NEW';
+      break;
+      
+
+    case('img_caption'):
+      if($new=='')
+	$note=_('Caption deleted for image')." ".$this->images[$data['image_id']]['name'];
+      else
+	$note=_('Caption for image')." ".$this->images[$data['image_id']]['name']." "._('changed to')." ".$new;
+      $sujeto='PROD';
+      $sujeto_id=$this->id;
+      $objeto='IMGCAP';
+      $objeto_id=$data['image_id'];
+      $action='CHG';
+      break;
+      
     case('details'):
       $note=_('Product detailed description changed');
       $sujeto='PROD';
@@ -1632,7 +1944,7 @@ class product{
       else
 	return array('ok'=>false,'msg'=>_('Unknwon Error').'.');
     }
-    $this->id = $this->db->lastInsertID();
+    $this->id = $this->db->lastInsertID();  
     $this->data['ncode']=$ncode;	
     $this->data['code']=$data['code'];
     $this->data['group_id']=$data['group_id'];

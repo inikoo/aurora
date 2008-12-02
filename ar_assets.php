@@ -149,9 +149,31 @@ switch($tipo){
      $data[]=array(
 		 'key'=>$_REQUEST['key'],
 		 'value'=>$_REQUEST['value']
-		 );
+		   
+		   );
+     if(isset($_REQUEST['image_id']))
+       $data[0]['image_id']=$_REQUEST['image_id'];
+     if($_REQUEST['key']=='img_new'){
+       if($_FILES['testFile']['tmp_name']==''){
+	 $response= array(
+			  'ok'=>false,
+			  'msg'=>_('No file')
+			  );
+	 echo json_encode($response);  
+	 break;
+       }
+
+       $target_path = "uploads/".$_REQUEST["PHPSESSID"].'_'.date('U');
+       if(move_uploaded_file($_FILES['testFile']['tmp_name'],$target_path )) {
+
+       }
+       $data[0]['value']=$target_path;
+       
+     }
+
      $product=new product($_SESSION['state']['product']['id']);
      $res=$product->update($data);
+     // print_r($res);
      if($res[$_REQUEST['key']]['ok']){
      
        $product->save($_REQUEST['key'],array('user_id'=>$LU->getProperty('auth_user_id')));
@@ -159,15 +181,21 @@ switch($tipo){
      }else
        $res=$res[$_REQUEST['key']];
 
-       if($res['ok'])
+     if($res['ok']){
 	 $response= array(
 			  'ok'=>true
 			);
+	  if($_REQUEST['key']=='img_new'){
+	    $response['data']=$product->get('new_image');
+	  }
+	 
+     }
        else
 	 $response= array(
 			  'ok'=>false,
 			  'msg'=>$res['msg']
 			);
+
      echo json_encode($response);  
      break;
  case('pml_change_location'):
@@ -850,10 +878,10 @@ switch($tipo){
 	     return;
 	     $im_med = imagecreatetruecolor($med_w, $med_h);
 	     imagecopyresampled($im_med, $im, 0, 0, 0, 0, $med_w, $med_h, $w, $h);
-	     imagejpeg($im_med,'app_files/images/med/'.$code.'_'.$images.'_med.jpg');
+	     imagejpeg($im_med,$this->image_path.'med/'.$code.'_'.$images.'_med.jpg');
 	     $im_tb = imagecreatetruecolor($tb_w, $tb_h);
 	     imagecopyresampled($im_tb, $im, 0, 0, 0, 0, $tb_w, $tb_h, $w, $h);
-	     imagejpeg($im_tb,'app_files/images/tb/'.$code.'_'.$images.'_tb.jpg');
+	     imagejpeg($im_tb,$this->image_path.'tb/'.$code.'_'.$images.'_tb.jpg');
 
 	   }
        }

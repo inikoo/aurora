@@ -101,6 +101,9 @@ $smarty->assign('suppliers_price',$product->get('supplier_price'));
 $smarty->assign('suppliers_num_price',$product->get('supplier_num_price'));
 
 
+$smarty->assign('images',$product->images);
+
+
 $smarty->assign('box_layout','yui-t0');
 
 

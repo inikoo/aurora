@@ -152,6 +152,64 @@ function return_to_old_value(key){
 
 }
 
+function delete_image(image_id){
+    var request='ar_assets.php?tipo=ep_update&key=img_delete'+'&value='+escape(image_id);
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    success:function(o) {
+		alert(o.responseText);
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		    if(r.ok){
+			Dom.get('image'+image_id).style.display='none';
+		    }else
+			alert(r.msg);
+		}
+		 
+	    });
+
+}
+
+
+function set_image_as_principal(o){
+
+    if(o.getAttribute('principal')==1)
+	return;
+    image_id=o.getAttribute('image_id');
+
+    var request='ar_assets.php?tipo=ep_update&key=img_set_principal'+'&value='+escape(image_id);
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    success:function(o) {
+		//	alert(o.responseText);
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		    if(r.ok){
+			var old_principal=Dom.get('images').getAttribute('principal');
+			var new_principal=image_id;
+			Dom.get('images').setAttribute('principal',image_id);
+			var old_but=Dom.get('img_set_principal'+old_principal);
+			var new_but=Dom.get('img_set_principal'+new_principal);
+			old_but.setAttribute('title','<?=_('Set as the principal image')?>');
+			old_but.setAttribute('principal',0);
+			old_but.setAttribute('src',"art/icons/picture_empty.png");
+			old_but.style.cursor="pointer";
+			new_but.setAttribute('title','<?=_('Main Image')?>');
+			new_but.setAttribute('principal',1);
+			new_but.setAttribute('src',"art/icons/asterisk_orange.png");		
+			new_but.style.cursor="default";
+		    }else
+			alert(r.msg);
+		}
+		 
+	    });
+
+}
+
+
+function caption_changed(o){
+    if(o.value!=o.getAttribute('ovalue')){
+	Dom.get("save_img_caption"+o.getAttribute('image_id')).style.visibility='visible';
+    }else
+	Dom.get("save_img_caption"+o.getAttribute('image_id')).style.visibility='hidden';
+
+}
 
   function description_changed(o){
 	var ovalue=o.getAttribute('ovalue');
@@ -603,6 +661,27 @@ var change_list_element=function(e){
     }
 
 
+function save_image(key,image_id){
+    new_value=Dom.get(key+image_id).value;
+    var request='ar_assets.php?tipo=ep_update&key='+escape(key)+'&value='+escape(new_value)+'&image_id='+image_id;
+	YAHOO.util.Connect.asyncRequest('POST',request ,{
+		success:function(o) {
+		    alert(o.responseText);
+		    var r =  YAHOO.lang.JSON.parse(o.responseText);
+		    //for(x in r['res'])
+		    //	alert(x+' '+r[x])
+		    if(r.ok){
+			
+			Dom.get('save_'+key+image_id).style.visibility='hidden';
+			Dom.get(key+image_id).setAttribute('ovalue',new_value);
+		    }else
+			alert(r.msg);
+		}
+		 
+	    });
+
+}
+
  function save_description(key){
 
 	new_value=Dom.get('v_'+key).value;
@@ -617,7 +696,7 @@ var change_list_element=function(e){
 	}else
 	    value=Dom.get('v_'+key).value;
 	var request='ar_assets.php?tipo=ep_update&key='+escape(key)+'&value='+escape(value);
-	alert(request);
+	//	alert(request);
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
 		    //alert(o.responseText);
@@ -726,10 +805,37 @@ function init(){
 
     var uploadHandler = {
       upload: function(o) {
-        alert(o.responseText);
+	    
+	    var r =  YAHOO.lang.JSON.parse(o.responseText);
+	    if(r.ok){
+		var images=Dom.get('images');
+		var image_div=document.createElement("div");
+		image_div.setAttribute("id", data.id);
+		image_div.className('image');
+
+		var name_div=document.createElement("div");
+		name_div.data.name;
+		
+		var image_img=document.createElement("img");
+		image_div.setAttribute("src", data.med);
+		
+		
+		
+		images.appendChild(image_div);
+		
+
+		var span = document.createElement("span");
+		  span.innerHTML=' &uarr; ';
+		    span.setAttribute("onclick", "rank_up("+r.id+")" );
+		    cellLeft.appendChild(img);
+	    }else
+		alert(r.msg);
+	    
+	    
+
       }
     };
-    var request='ar_assets.php?tipo=uploadpic';
+    var request='ar_assets.php?tipo=ep_update&key=img_new&value=';
     YAHOO.util.Connect.asyncRequest('POST',request, uploadHandler);
   };
   YAHOO.util.Event.on('uploadButton', 'click', onUploadButtonClick);

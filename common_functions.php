@@ -974,4 +974,11 @@ function number_weeks($days,$day){
   return floor($days/7)+$rainbow[$day][fmod($days,7)];
 }
 
+function array_change_key_name( $orig, $new, &$array )
+{
+    foreach ( $array as $k => $v )
+        $return[ ( $k === $orig ) ? $new : $k ] = $v;
+    return ( array ) $return;
+}
+
 ?>
