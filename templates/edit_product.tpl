@@ -91,6 +91,10 @@
 </div>
 
 <div  {if !$edit=="pictures"}style="display:none"{/if}  class="edit_block" id="d_pictures">
+  <form action="upload.php" enctype="multipart/form-data" method="post" id="testForm">
+<input type="file" name="testFile"/>
+<input type="button" id="uploadButton" value="Upload"/>
+</form>
 
 
 
@@ -137,7 +141,7 @@
       </tr>
       
       <tr>
-	<td></td>
+	<td><img   id="details_icon" style="visibility:hidden;cursor:pointer" title="{t}Return recorded value{/t}"  src="art/icons/arrow_undo.png" onclick="return_to_old_value('details')" /></td>
 	<td>{t}Detailed Description{/t}:</td>
 	<td><span onClick="save_description('details')"  name="details" style="cursor:pointer;display:none" id="details_save">{t}Save{/t} <img src="art/icons/disk.png"/> <span id="details_change"></td>
 	<td></td>

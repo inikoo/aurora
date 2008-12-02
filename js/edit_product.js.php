@@ -612,7 +612,8 @@ var change_list_element=function(e){
 	    value=FormatNumber(Dom.get('v_'+key).value,'.','',2);
 	else if (key=='details'){
 	    	editor.saveHTML(); 
-		value = editor.get('element').value; 
+		value = editor.get('element').value;
+		new_value=value;
 	}else
 	    value=Dom.get('v_'+key).value;
 	var request='ar_assets.php?tipo=ep_update&key='+escape(key)+'&value='+escape(value);
@@ -627,7 +628,6 @@ var change_list_element=function(e){
 			Dom.get(key+'_change').innerHTML='';
 			Dom.get(key+'_save').style.display='none';
 			Dom.get(key+'_icon').style.visibility='hidden';
-
 			Dom.get('v_'+key).setAttribute('ovalue',new_value);
 		    }else
 			alert(r.msg);
@@ -715,6 +715,25 @@ function init(){
 	cat_list.subscribe("show", cat_list.focus);
 
 	YAHOO.util.Event.addListener("browse_cat", "click", cat_list.show, null, cat_list); 
+
+
+
+
+ var onUploadButtonClick = function(e){
+    //the second argument of setForm is crucial,
+    //which tells Connection Manager this is a file upload form
+    YAHOO.util.Connect.setForm('testForm', true);
+
+    var uploadHandler = {
+      upload: function(o) {
+        alert(o.responseText);
+      }
+    };
+    var request='ar_assets.php?tipo=uploadpic';
+    YAHOO.util.Connect.asyncRequest('POST',request, uploadHandler);
+  };
+  YAHOO.util.Event.on('uploadButton', 'click', onUploadButtonClick);
+
 
 
 }

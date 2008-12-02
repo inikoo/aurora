@@ -247,7 +247,7 @@ class product{
 	break;
       case('images'):
 	$this->images=array();
-	$sql=sprintf("select filename,format,principal,caption,id from image where  product_id=%d order by principal desc",$this->id);
+	$sql=sprintf("select checksum,filename,format,principal,caption,id from image where  product_id=%d order by principal desc",$this->id);
 	$result =& $this->db->query($sql);
 	$principal=false;
 	while($row=$result->fetchRow()){
@@ -257,7 +257,7 @@ class product{
 	  }else{
 	    $src='tb/'.$row['filename'].'_tb.'.$row['format'];
 	  }
-	  $this->images[]=array('id'=>$row['id'],'src'=>$src,'caption'=>$row['caption']);
+	  $this->images[]=array('id'=>$row['id'],'src'=>$src,'caption'=>$row['caption'],'checksum'=>$row['checksum']);
 	}
 
 	
@@ -511,6 +511,9 @@ class product{
       return  $this->suppliers['price'];
     case('supplier_num_price'):
       return  $this->suppliers['num_price'];
+    case('num_pics'):
+    case('num_images'):
+      return count($this->images);
     default:
 
       if(isset($this->data[$item]))
@@ -1439,6 +1442,14 @@ class product{
   function save_history($tipo,$old,$new,$data){
     
     switch($tipo){
+    case('details'):
+      $note=_('Product detailed description changed');
+      $sujeto='PROD';
+      $sujeto_id=$this->id;
+      $objeto='DEST';
+      $objeto_id='';
+      $action='CHG';
+      break;
     case('description'):
       $note=_('Product description changed to')." ".$new;
       $sujeto='PROD';

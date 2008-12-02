@@ -799,56 +799,37 @@ switch($tipo){
      break;
 
  case('uploadpic'):
-   $id=$_REQUEST['product_id'];
-   $sql=sprintf("select code from product where id=%d",$id);
-   $res = $db->query($sql);
-   if($row=$res->fetchRow()) {
-     $code=strtolower($row['code']);
-     $target_path = "uploads/";
-     $target_path = $target_path . $_REQUEST["PHPSESSID"].date('U');
-     if(move_uploaded_file($_FILES['uploadedfile']['tmp_name'], $target_path)) {
+
+   $id=$_SESSION['state']['product']['id'];
+  
+   $product= new Product($id);
+   $product->load('images');
+   $code=$product->get('code');
+   $target_path = "uploads/".$_REQUEST["PHPSESSID"].'_'.date('U');
+   if(move_uploaded_file($_FILES['testFile']['tmp_name'], $target_path)) {
        $im = @imagecreatefromjpeg($target_path);
        if ($im) { 
 	 $w = imagesx($im);
 	 $h = imagesy($im);
 	 
 	 if($h > 0) 
-	   { $r = $w/$h;
-	     
+	   { 
+	     $r = $w/$h;
 	     $s=filesize($target_path);
 	     $c=md5_file($target_path);
 	     
-
-
-	     
-	     $sql=sprintf("select checksum  from image where  product_id=%d",$id);
-	     $res2 = $db->query($sql);
-	     while($row2=$res2->fetchRow()) {
-	       if($c==$row2['checksum']){
-		 $response=array('state'=>400,'resp'=>_('Image already uploaded'));
-		 echo json_encode($response);
-		 break 2;
-	       }
-	       
-	     }
-
-
-
-	     $sql=sprintf("select count(*) as num from image where  product_id=%d",$id);
-	     $res2 = $db->query($sql);
-	     if($row2=$res2->fetchRow()) {
-	       $images=$row2['num'];
-	     }
-	     
-	     
-	     $med_maxh=130;
-	     $med_maxw=190;
-	     $tb_maxh=21;
-	     $tb_maxw=30;
 	     
 
 	     //   print "$images $w $h $s $c";
-	     imagejpeg($im,'images/original/'.$code.'_'.$images.'_orig.jpg');
+	     $images=$product->get('num_images');
+	     //	     print $images;
+	     imagejpeg($im,'app_files/images/original/'.$code.'_'.$images.'_orig.jpg');
+
+ 	     $med_maxh=130;
+ 	     $med_maxw=190;
+ 	     $tb_maxh=21;
+ 	     $tb_maxw=30;
+
 
 	     if($r>1.4615){
 	       $med_w=$med_maxw;
@@ -863,84 +844,164 @@ switch($tipo){
 	       $tb_h=$tb_maxh;
 	       $tb_w=$tb_h*$r;
 	     }
+	     
 
+
+	     return;
 	     $im_med = imagecreatetruecolor($med_w, $med_h);
 	     imagecopyresampled($im_med, $im, 0, 0, 0, 0, $med_w, $med_h, $w, $h);
-	     imagejpeg($im_med,'images/med/'.$code.'_'.$images.'_med.jpg');
+	     imagejpeg($im_med,'app_files/images/med/'.$code.'_'.$images.'_med.jpg');
 	     $im_tb = imagecreatetruecolor($tb_w, $tb_h);
 	     imagecopyresampled($im_tb, $im, 0, 0, 0, 0, $tb_w, $tb_h, $w, $h);
-	     imagejpeg($im_tb,'images/tb/'.$code.'_'.$images.'_tb.jpg');
-	     
+	     imagejpeg($im_tb,'app_files/images/tb/'.$code.'_'.$images.'_tb.jpg');
 
-	     $sql=sprintf("update image set principal=0 where product_id=%d",$id);
-	     $db->exec($sql);
-
-	     $caption=$_REQUEST['caption'];
-	     $sql=sprintf("insert into image (filename,product_id,width,height,size,checksum,caption,principal) values ('%s',%d,%d,%d,%d,'%s','%s',1)",$code.'_'.$images,$id,$w,$h,$s,$c,addslashes($caption));
-	     $db->exec($sql);
-	     $new_id = $db->lastInsertID();
-	     // make the new pric the pricipal
-
-
-	     
-
-	     
-	     $sql=sprintf("select filename,id,format from image where product_id=%d and principal=0 limit 5",$id);
-
-	     $res2 = $db->query($sql);
-	     $other_img_src=array('','','','','');
-	     $other_img_id=array(0,0,0,0,0);
-	     $num_others=0;
-	     while($row2=$res2->fetchRow()) {
-	       $other_img_src[$num_others]='images/tb/'.$row2['filename'].'_tb.'.$row2['format'];
-	       $other_img_id[$num_others]=$row2['id'];
-	       $num_others++;
-	     }
-	      $num_others++;
-	     
-	     $response=array(
-			   'state'=>200,
-			   'new_src'=>'images/med/'.$code.'_'.$images.'_med.jpg',
-			   'new_id'=>$new_id,
-			   'other_img'=>$other_img_src,
-			   'other_img_id'=>$other_img_id,
-			   'others'=>$num_others,
-			   'caption'=>$caption
-			   
-		     );
-	     echo json_encode($response);
-	     break;
-
-
-
-
-
-
-
-
-	     
 	   }
-	 
        }
-
-
-
-       // save the original (expeced to be  a big file)
-
-       
-       //       print "$w $h";
-       
-       
-     }else{
-       $response=array('state'=>400,'resp'=>_('Error'));
-       echo json_encode($response);
-       break;
-     }
-     
    }
- $response=array('state'=>400,'resp'=>_('Error'));
-       echo json_encode($response);
-       break;
+ 
+
+
+ //   $sql=sprintf("select code from product where id=%d",$id);
+//    $res = $db->query($sql);
+//    if($row=$res->fetchRow()) {
+//      $code=strtolower($row['code']);
+//      $target_path = "uploads/";
+//      $target_path = $target_path . $_REQUEST["PHPSESSID"].date('U');
+//      if(move_uploaded_file($_FILES['uploadedfile']['tmp_name'], $target_path)) {
+//        $im = @imagecreatefromjpeg($target_path);
+//        if ($im) { 
+// 	 $w = imagesx($im);
+// 	 $h = imagesy($im);
+	 
+// 	 if($h > 0) 
+// 	   { $r = $w/$h;
+	     
+// 	     $s=filesize($target_path);
+// 	     $c=md5_file($target_path);
+	     
+
+
+	     
+// 	     $sql=sprintf("select checksum  from image where  product_id=%d",$id);
+// 	     $res2 = $db->query($sql);
+// 	     while($row2=$res2->fetchRow()) {
+// 	       if($c==$row2['checksum']){
+// 		 $response=array('state'=>400,'resp'=>_('Image already uploaded'));
+// 		 echo json_encode($response);
+// 		 break 2;
+// 	       }
+	       
+// 	     }
+
+
+
+// 	     $sql=sprintf("select count(*) as num from image where  product_id=%d",$id);
+// 	     $res2 = $db->query($sql);
+// 	     if($row2=$res2->fetchRow()) {
+// 	       $images=$row2['num'];
+// 	     }
+	     
+	     
+// 	     $med_maxh=130;
+// 	     $med_maxw=190;
+// 	     $tb_maxh=21;
+// 	     $tb_maxw=30;
+	     
+
+// 	     //   print "$images $w $h $s $c";
+// 	     imagejpeg($im,'images/original/'.$code.'_'.$images.'_orig.jpg');
+
+// 	     if($r>1.4615){
+// 	       $med_w=$med_maxw;
+// 	       $med_h=$med_w/$r;
+// 	       $tb_w=$tb_maxw;
+// 	       $tb_h=$tb_w/$r;
+
+// 	     }else{
+	       
+// 	       $med_h=$med_maxh;
+// 	       $med_w=$med_h*$r;
+// 	       $tb_h=$tb_maxh;
+// 	       $tb_w=$tb_h*$r;
+// 	     }
+
+// 	     $im_med = imagecreatetruecolor($med_w, $med_h);
+// 	     imagecopyresampled($im_med, $im, 0, 0, 0, 0, $med_w, $med_h, $w, $h);
+// 	     imagejpeg($im_med,'images/med/'.$code.'_'.$images.'_med.jpg');
+// 	     $im_tb = imagecreatetruecolor($tb_w, $tb_h);
+// 	     imagecopyresampled($im_tb, $im, 0, 0, 0, 0, $tb_w, $tb_h, $w, $h);
+// 	     imagejpeg($im_tb,'images/tb/'.$code.'_'.$images.'_tb.jpg');
+	     
+
+// 	     $sql=sprintf("update image set principal=0 where product_id=%d",$id);
+// 	     $db->exec($sql);
+
+// 	     $caption=$_REQUEST['caption'];
+// 	     $sql=sprintf("insert into image (filename,product_id,width,height,size,checksum,caption,principal) values ('%s',%d,%d,%d,%d,'%s','%s',1)",$code.'_'.$images,$id,$w,$h,$s,$c,addslashes($caption));
+// 	     $db->exec($sql);
+// 	     $new_id = $db->lastInsertID();
+// 	     // make the new pric the pricipal
+
+
+	     
+
+	     
+// 	     $sql=sprintf("select filename,id,format from image where product_id=%d and principal=0 limit 5",$id);
+
+// 	     $res2 = $db->query($sql);
+// 	     $other_img_src=array('','','','','');
+// 	     $other_img_id=array(0,0,0,0,0);
+// 	     $num_others=0;
+// 	     while($row2=$res2->fetchRow()) {
+// 	       $other_img_src[$num_others]='images/tb/'.$row2['filename'].'_tb.'.$row2['format'];
+// 	       $other_img_id[$num_others]=$row2['id'];
+// 	       $num_others++;
+// 	     }
+// 	      $num_others++;
+	     
+// 	     $response=array(
+// 			   'state'=>200,
+// 			   'new_src'=>'images/med/'.$code.'_'.$images.'_med.jpg',
+// 			   'new_id'=>$new_id,
+// 			   'other_img'=>$other_img_src,
+// 			   'other_img_id'=>$other_img_id,
+// 			   'others'=>$num_others,
+// 			   'caption'=>$caption
+			   
+// 		     );
+// 	     echo json_encode($response);
+// 	     break;
+
+
+
+
+
+
+
+
+	     
+// 	   }
+	 
+//        }
+
+
+
+//        // save the original (expeced to be  a big file)
+
+       
+//        //       print "$w $h";
+       
+       
+//      }else{
+//        $response=array('state'=>400,'resp'=>_('Error'));
+//        echo json_encode($response);
+//        break;
+//      }
+     
+//    }
+//  $response=array('state'=>400,'resp'=>_('Error'));
+//        echo json_encode($response);
+//        break;
  
    break;
 
