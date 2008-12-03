@@ -14,15 +14,12 @@ class supplier{
   var $id;
   var $tipo;
 
-  function __construct($id=false) {
+  function __construct($arg1=false,$arg2=false) {
      $this->db =MDB2::singleton();
-     if(is_numeric($id)){
-       if(!$this->get_data($id))
-	 return false;
-       else
-	 return true;
-     }else
-       return false;
+     if(is_numeric($arg1)){
+       $this->get_data($arg1);
+       return ;
+     }
   }
 
 
@@ -46,11 +43,12 @@ class supplier{
    
     case('contacts'):
     case('contact'):
-      if($this->contact=new Contact($this->data['contact_id'])){
-	
+      $this->contact=new Contact($this->data['contact_id']);
+      if($this->contact->id){
 	$this->contact->load('telecoms');
 	$this->contact->load('contacts');
       }
+
     }
     
   }

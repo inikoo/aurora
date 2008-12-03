@@ -46,14 +46,22 @@ class Contact{
       $this->data['genero']=$row['genero'];
       $this->data['main_email']=$row['main_email'];
       $main_email=new Email($this->data['main_email']);
-      if(!is_numeric($main_email->id))
-	$main_email='';
-      $this->data['main']=array(
-			'address'=>$row['main_address'],
-			'tel'=>$row['main_tel'],
-			'email'=>$main_email->data['email'],
-			'contact'=>$row['main_contact']
-			);
+      if($main_email->id){
+	$this->data['main']['email']=$main_email->data['email'];
+	$this->data['main']['formated_email']=$main_email->display();
+      }else{
+	$this->data['main_email']=false;
+	$this->data['main']['email']='';
+	$this->data['main']['formated_email']='';
+      }
+      unset($main_email);
+// 	$main_email='';
+//       $this->data['main']=array(
+// 			'address'=>$row['main_address'],
+// 			'tel'=>$row['main_tel'],
+// 			'email'=>$main_email->data['email'],
+// 			'contact'=>$row['main_contact']
+// 			);
       $this->id=$row['id'];
 
     }

@@ -531,8 +531,11 @@ from contact     $where $wheref order by $order $order_direction limit $start_fr
        $pos=$_position_tipo[$data['position']];
      else
        $pos='';
+
+     $_id=$myconf['staff_prefix'].sprintf('%03d',$data['id']);
+     $id=sprintf('<a href="staff.php?id=%d">%s</a>',$data['id'],$_id);
      $adata[]=array(
-		    'id'=>$data['id'],
+		    'id'=>$id,
 		    'alias'=>$data['alias'],
 		    'name'=>$data['name'],
 		    'department'=>$_company_department_tipo[$data['department']],

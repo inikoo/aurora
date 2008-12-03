@@ -121,6 +121,7 @@ $myconf=array(
 	      'config_dir' => 'server_files/smarty/configs',
 	      'images_dir' => 'server_files/images/',
 	      'yui_version'=>'2.6.0',
+	      'staff_prefix'=>'SF',
 	      'supplier_id_prefix'=>'S',
 	      'po_id_prefix'=>'PO',
 	      'customer_id_prefix'=>'C',
