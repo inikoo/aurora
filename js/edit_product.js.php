@@ -152,19 +152,36 @@ function return_to_old_value(key){
 
 }
 
-function delete_image(image_id){
-    var request='ar_assets.php?tipo=ep_update&key=img_delete'+'&value='+escape(image_id);
-    YAHOO.util.Connect.asyncRequest('POST',request ,{
-	    success:function(o) {
-		alert(o.responseText);
-		var r =  YAHOO.lang.JSON.parse(o.responseText);
+function delete_image(image_id,image_name){
+    var answer = confirm("<?=_('Are you sure you want to delete this image')?> ("+image_name+")");
+    if (answer){
+
+	
+
+	var request='ar_assets.php?tipo=ep_update&key=img_delete'+'&value='+escape(image_id);
+	YAHOO.util.Connect.asyncRequest('POST',request ,{
+		success:function(o) {
+		    //alert(o.responseText);
+		    var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if(r.ok){
 			Dom.get('image'+image_id).style.display='none';
+			if(r.new_principal!=''){
+			    var new_principal=r.new_principal;
+			    Dom.get('images').setAttribute('principal',new_principal);
+			    var new_but=Dom.get('img_set_principal'+new_principal);
+			    new_but.setAttribute('title','<?=_('Main Image')?>');
+			    new_but.setAttribute('principal',1);
+			    new_but.setAttribute('src',"art/icons/asterisk_orange.png");		
+			    new_but.style.cursor="default";
+			}
+
 		    }else
 			alert(r.msg);
 		}
-		 
+		
 	    });
+    }
+
 
 }
 
@@ -178,12 +195,11 @@ function set_image_as_principal(o){
     var request='ar_assets.php?tipo=ep_update&key=img_set_principal'+'&value='+escape(image_id);
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-		//	alert(o.responseText);
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if(r.ok){
 			var old_principal=Dom.get('images').getAttribute('principal');
 			var new_principal=image_id;
-			Dom.get('images').setAttribute('principal',image_id);
+			Dom.get('images').setAttribute('principal',new_principal);
 			var old_but=Dom.get('img_set_principal'+old_principal);
 			var new_but=Dom.get('img_set_principal'+new_principal);
 			old_but.setAttribute('title','<?=_('Set as the principal image')?>');
@@ -805,29 +821,93 @@ function init(){
 
     var uploadHandler = {
       upload: function(o) {
-	    
+	    alert(o.responseText);
 	    var r =  YAHOO.lang.JSON.parse(o.responseText);
 	    if(r.ok){
 		var images=Dom.get('images');
 		var image_div=document.createElement("div");
-		image_div.setAttribute("id", data.id);
-		image_div.className('image');
+		image_div.setAttribute("id", "image"+r.data.id);
+		image_div.setAttribute("class",'image');
 
 		var name_div=document.createElement("div");
-		name_div.data.name;
-		
-		var image_img=document.createElement("img");
-		image_div.setAttribute("src", data.med);
+		name_div.innerHTML=r.data.name;
 		
 		
-		
-		images.appendChild(image_div);
-		
+		var picture_img=document.createElement("img");
+		picture_img.setAttribute("src", r.data.med);
+		picture_img.setAttribute("class", 'picture');
 
-		var span = document.createElement("span");
-		  span.innerHTML=' &uarr; ';
-		    span.setAttribute("onclick", "rank_up("+r.id+")" );
-		    cellLeft.appendChild(img);
+		var operations_div=document.createElement("div");
+		operations_div.setAttribute("class",'operations');
+		var set_principal_span=document.createElement("span");
+		set_principal_span.setAttribute("class",'img_set_principal');
+		set_principal_span.style.cursor='pointer';
+		
+		var set_principal_img=document.createElement("img");
+		set_principal_img.setAttribute("id", "img_set_principal"+r.data.id);
+		set_principal_img.setAttribute("image_id", r.data.id);
+
+
+		set_principal_img.setAttribute("onClick", 'set_image_as_principal(this)');
+		
+		if(r.is_principal==1){
+		    Dom.get('images').setAttribute('principal',r.data.id)
+		    set_principal_img.setAttribute("principal", 1);
+		    set_principal_img.setAttribute("src", 'art/icons/asterisk_orange.png');
+		    set_principal_img.setAttribute("title", "<?=_('Main Image')?>");
+		}else{
+		    set_principal_img.setAttribute("principal", 0);
+		    set_principal_img.setAttribute("src", 'art/icons/picture_empty.png');
+		    set_principal_img.setAttribute("title", "<?=_('Set as the principal image')?>");
+		}	
+
+
+
+		set_principal_span.appendChild(set_principal_img);
+		var delete_span=document.createElement("span");
+		delete_span.style.cursor='pointer';
+		delete_span.innerHTML='<?=_('Delete')?> <img src="art/icons/cross.png">';
+		delete_span.setAttribute("onClick", 'delete_image('+r.data.id+',"'+r.data.name+'")');
+
+		operations_div.appendChild(set_principal_span);
+		operations_div.appendChild(delete_span);
+
+
+		var caption_div=document.createElement("div");
+		caption_div.setAttribute("class",'caption');
+		var caption_tag_div=document.createElement("div");
+		caption_tag_div.innerHTML='<?=_('Caption')?>:';
+		var save_caption_span=document.createElement("span");
+		save_caption_span.setAttribute("class",'save');
+		var save_caption_img=document.createElement("img");
+		save_caption_img.setAttribute("src",'art/icons/disk.png');
+		save_caption_img.setAttribute("title",'<?=_('Save caption')?>');
+		save_caption_img.setAttribute("id",'save_img_caption'+r.data.id);
+		save_caption_img.setAttribute("onClick",'save_image("img_caption",'+r.data.id+')');
+		save_caption_img.setAttribute("class",'caption');
+
+
+		var caption_textarea=document.createElement("textarea");
+		caption_textarea.setAttribute("id",'img_caption'+r.data.id);
+		caption_textarea.setAttribute("image_id",r.data.id);
+		caption_textarea.setAttribute("ovalue",'');
+		caption_textarea.setAttribute("onkeydown",'caption_changed(this)');
+		caption_textarea.setAttribute("class",'caption');
+		//caption_textarea.style.width='150px';
+
+		save_caption_span.appendChild(save_caption_img);
+		caption_div.appendChild(caption_tag_div);
+		caption_div.appendChild(save_caption_span);
+		caption_div.appendChild(caption_textarea);
+
+		image_div.appendChild(name_div);
+		image_div.appendChild(picture_img);
+		image_div.appendChild(operations_div);
+		image_div.appendChild(caption_div);
+
+		images.appendChild(image_div);
+
+
 	    }else
 		alert(r.msg);
 	    

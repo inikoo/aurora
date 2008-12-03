@@ -1,8 +1,8 @@
 <?
-include_once('classes/Telecom.php');
-include_once('classes/Email.php');
-include_once('classes/Address.php');
-include_once('classes/Name.php');
+include_once('Telecom.php');
+include_once('Email.php');
+include_once('Address.php');
+include_once('Name.php');
 
 class Contact{
   var $db;
@@ -14,15 +14,15 @@ class Contact{
 
 
 
-  function __construct($id=false) {
+  function __construct($arg1=false,$arg2=false) {
      $this->db =MDB2::singleton();
      
 
-     if(is_numeric($id)){
-       if(!$this->get_data($id))
-	  return false;
+     if(is_numeric($arg1) and !$arg2){
+       $this->get_data($arg1);
+
      }
-     return false;
+
 
 
   }
@@ -30,6 +30,7 @@ class Contact{
 
   function get_data($id){
     $sql=sprintf("select id,name,file_as,alias,has_child,has_parent,UNIX_TIMESTAMP(date_creation) as date_creation,UNIX_TIMESTAMP(date_updated) as date_updated,tipo,genero,main_address,main_tel,main_email,main_contact from contact where id=%d",$id);
+    // print $sql;
     $result =& $this->db->query($sql);
     if($row=$result->fetchRow()){
       $this->data['name']=$row['name'];
@@ -43,18 +44,88 @@ class Contact{
 			 );
       $this->data['tipo']=$row['tipo'];
       $this->data['genero']=$row['genero'];
-      
-      $this->main=array(
+      $this->data['main_email']=$row['main_email'];
+      $main_email=new Email($this->data['main_email']);
+      if(!is_numeric($main_email->id))
+	$main_email='';
+      $this->data['main']=array(
 			'address'=>$row['main_address'],
 			'tel'=>$row['main_tel'],
-			'email'=>$row['main_email'],
+			'email'=>$main_email->data['email'],
 			'contact'=>$row['main_contact']
 			);
       $this->id=$row['id'];
-      return true;
+
     }
-    return false;
+
   }
+
+ function get($item=''){
+
+ switch($item){
+ case('main_email'):
+
+   return $this->data['main']['email'];
+   break;
+ default:
+   
+   if(isset($this->data[$item]))
+     return $this->data[$item];
+   else
+     return false;
+       
+ }
+ }
+
+ function update($values,$args=''){
+    $res=array();
+    foreach($values as $data){
+      
+      $key=$data['key'];
+      $value=$data['value'];
+      $res[$key]=array('ok'=>false,'msg'=>'');
+      
+      switch($key){
+      case('main_email'):
+	$main_email=new email($value);
+	if(!$main_email->id){
+	  $res[$key]['msg']=_('Email not found');
+	  $res[$key]['ok']=false;
+	  continue;
+	}
+	$this->old['main_email']=$this->data['main']['email'];
+	$this->data['main_email']=$value;
+	$this->data['main']['email']=$main_email->data['email'];
+	$res[$key]['ok']=true;
+
+
+      }
+
+    }
+    return $res;
+ }
+
+
+ function save($key,$history_data=false){
+    switch($key){
+      case('main_email'):
+	$sql=sprintf('update contact set %s=%s where id=%d',$key,prepare_mysql($this->data[$key]),$this->id);
+	//	print "$sql\n";
+	$this->db->exec($sql);
+
+	if(is_array($history_data)){
+	  $this->save_history($key,$this->old[$key],$this->data['main']['email'],$history_data);
+	}
+
+
+	break;
+    }
+
+ }
+
+ function save_history($key,$old,$new,$data){
+   
+ }
 
   function load($key=''){
     switch($key){

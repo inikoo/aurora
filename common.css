@@ -462,10 +462,10 @@ span.small{font-size:80%}
 
 .edit_images{ margin:20px 0;width:800px; }
 .edit_images div.image{float:left;width:180px;margin:10px  20px 10px 0; }
-.edit_images div.image img{border:1px solid #ccc }
+.edit_images img.picture {border:1px solid #ccc }
 .edit_images .img_set_principal{ float:right;margin-right:25px }
 
 .edit_images div.operations,.edit_images div.captio{ margin-top:5px }
 .edit_images div.caption span.save { float:right;margin-right:5px }
-.edit_images div.caption span.save img {visibility:hidden;cursor:pointer }
-.edit_images div.caption textarea{ width:150px }
+.edit_images div.caption span.save img.caption {visibility:hidden;cursor:pointer }
+.edit_images div.caption textarea.caption{ width:150px }

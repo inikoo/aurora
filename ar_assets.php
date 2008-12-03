@@ -187,8 +187,16 @@ switch($tipo){
 			);
 	  if($_REQUEST['key']=='img_new'){
 	    $response['data']=$product->get('new_image');
+	    if($product->get('num_images')==1)
+	      $response['is_principal']=1;
+	    else
+	      $response['is_principal']=0;
+
 	  }
-	 
+	  if($_REQUEST['key']=='img_delete'){
+	    $response['new_principal']=$product->new_principal_img;
+	  }
+
      }
        else
 	 $response= array(

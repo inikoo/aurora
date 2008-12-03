@@ -276,7 +276,7 @@ class product{
 				'name'=>$row['name']
 				);
 	}
-	if(!$principal){
+	if(!$principal and count($this->images)>0){
 	  $this->images[$default]['principal']=true;
 	  $this->data['principal_image']=$default;
 	}
@@ -466,6 +466,49 @@ class product{
 
     }
 
+
+    if($key=='principal_image'){
+      $sql=sprintf("select checksum,name,format,principal,caption,id,width,height,size from image where  principal=1 and product_id=%d",$this->id);
+      $result =& $this->db->query($sql);
+      if($row=$result->fetchRow()){
+	$image=array(
+		       'id'=>$row['id'],
+		       'width'=>$row['width'],
+		       'height'=>$row['height'],
+		       'size'=>$row['size'],
+		       'caption'=>$row['caption'],
+		       'checksum'=>$row['checksum'],
+		       'principal'=>$row['principal'],
+		       'tb'=>$this->image_path.'tb/'.$row['name'].'_tb.'.$row['format'],
+		       'med'=>$this->image_path.'med/'.$row['name'].'_med.'.$row['format'],
+		       'orig'=>$this->image_path.'original/'.$row['name'].'_orig.'.$row['format'],
+		       'name'=>$row['name']
+		       );
+	return $image;
+	
+      }else{
+	$sql=sprintf("select checksum,name,format,principal,caption,id,width,height,size from image where  product_id=%d order by principal desc",$this->id);
+	$result =& $this->db->query($sql);
+	if($row=$result->fetchRow()){
+	  $image=array(
+		       'id'=>$row['id'],
+		       'width'=>$row['width'],
+		       'height'=>$row['height'],
+		       'size'=>$row['size'],
+		       'caption'=>$row['caption'],
+		       'checksum'=>$row['checksum'],
+		       'principal'=>$row['principal'],
+		       'tb'=>$this->image_path.'tb/'.$row['name'].'_tb.'.$row['format'],
+		       'med'=>$this->image_path.'med/'.$row['name'].'_med.'.$row['format'],
+		       'orig'=>$this->image_path.'original/'.$row['name'].'_orig.'.$row['format'],
+		       'name'=>$row['name']
+		       );
+	  return $image;
+	  
+	}
+      }
+      return false;
+    }
 
    if($key=='img_new')
      return false;
@@ -1297,13 +1340,8 @@ class product{
 
 
   function update($values,$args=''){
-    
-
-
-    $date='NOW()';
     $res=array();
     foreach($values as $data){
-      
       
       $key=$data['key'];
       $value=$data['value'];
@@ -1335,6 +1373,7 @@ class product{
 	foreach($this->images as $_key => $value){
 	  $this->images[$_key]['principal']=false;
 	}
+	$this->data['principal_image']=$this->changing_img;
 	$this->images[$this->changing_img]['principal']=true;
 	$res[$key]['ok']=true;
 	break;
@@ -1349,14 +1388,56 @@ class product{
 	  continue;
 
 	}
-
+	$this->new_principal_img='';
+	if($this->images[$this->img_to_delete]['principal'] and count($this->images)>1  ){
+	 
+	  foreach($this->images as $_key=>$_value){
+	    if($_key!=$this->img_to_delete){
+	      $_data[]=array(
+					'key'=>'img_set_principal',
+					'value'=>$_key,
+			     );
+	      $_res=$this->update($_data);
+	      // print_r($_res);
+	      $this->save('img_set_principal',
+			  array(
+				'user_id'=>0
+				)
+			  );
+	      $this->new_principal_img=$_key;
+	      break;
+	    }
+	  }
+	}
+	  
 	unset($this->images[$this->img_to_delete]);
+	
+	
 	$res[$key]['ok']=true;
+	
+
 	break;
       case('img_new'):
 	if(!$this->images)
 	  $this->load('images');
+	$checksum=md5_file($value);
+	$same_as_other=false;
+	foreach($this->images as $_key=>$_value){
+	  if($_value['checksum']==$checksum){
+	    $same_as_other=true;
+	    $same_as=$_value['name'];
+	    break;
+	  }
+	    
+	}
 
+	if($same_as_other){
+	  $res[$key]['msg']=_('Image already uploaded')." (".$same_as.")";
+	  $res[$key]['ok']=false;
+	  unlink($value);
+	  continue;
+
+	}
 
 	$code=$this->get('code');
 	$target_path = $value;
@@ -1365,22 +1446,29 @@ class product{
 	if ($im) {  
 	  $images=$this->data['image_index'];
 	  $this->data['image_index']=$images+1;
+
+	  $format='jpg';
+	  $name=$code.'_'.$images;
 	  $this->images[0]=array(
 				 'width' => imagesx($im),
 				 'height' => imagesy($im),
 				 'size'=>$s=filesize($target_path),
-				 'checksum'=>$c=md5_file($target_path),
+				 'checksum'=>$checksum,
 				 'principal'=>($images==0?true:false),
 				 'caption'=>'',
-				 'name'=>$code.'_'.$images,
+				 'name'=>$name,
 				 'tmp_filename'=>$target_path,
-				 'format'=>'jpg'
+				 'format'=>$format,
+				 'tb'=>$this->image_path.'tb/'.$name.'_tb.'.$format,
+				 'med'=>$this->image_path.'med/'.$name.'_med.'.$format,
+				 'orig'=>$this->image_path.'original/'.$name.'_orig.'.$format,
+				 
+
 				 );
 	}
  
 	 $res[$key]['ok']=true;
-	
-
+	 
 	break;
       case('img_caption'):
 	if(!$this->images)
@@ -1513,8 +1601,8 @@ class product{
   function save($tipo,$history_data=false){
     switch($tipo){
     case('img_set_principal'):
-      $old_value=$this->data['principal_image'];
-      $old_value=$old_value['name'];
+      $old_image=$this->read('principal_image');
+      $old_value=$old_image['name'];
       $sql="update image set principal=0 where product_id=".$this->id;
       $this->db->exec($sql);
       $sql=sprintf("update image set principal=1 where id=%d",$this->changing_img);
@@ -1558,9 +1646,9 @@ class product{
 
 
        // 	if(move_uploaded_file($tmp_file, $target_path)) {
-	  $im = @imagecreatefromjpeg($value['tmp_filename']);
- 	  if ($im) { 
-	    $w = imagesx($im);
+       $im = @imagecreatefromjpeg($value['tmp_filename']);
+       if ($im) { 
+	 $w = imagesx($im);
 	    $h = imagesy($im);
 	    
 	    if($h > 0) 
@@ -1599,8 +1687,8 @@ class product{
 
 
 	   }
-	  }
-    
+       }
+       unlink($value['tmp_filename']);
 
 
 
@@ -1622,7 +1710,8 @@ class product{
        }
        $image_id = $this->db->lastInsertID();
 
-       $sql=sprintf("update product set image_index=%d where id=",$this->data['image_index'],$this->id);
+       $sql=sprintf("update product set image_index=%d where id=%d",$this->data['image_index'],$this->id);
+       //  print $sql;
        $this->db->exec($sql);
        $this->changing_img=$image_id;
        $this->images= array_change_key_name( 0, $image_id,$this->images );
@@ -1716,7 +1805,7 @@ class product{
     
     switch($tipo){
     case('img_set_principal'):
-      $note=_('Image set to principal').": ".$new;
+      $note=_('New image marked as  principal').": ".$new;
       $sujeto='PROD';
       $sujeto_id=$this->id;
       $objeto='IMG';

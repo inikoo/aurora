@@ -118,7 +118,7 @@ $smarty->assign('family_id',$product->get('group_id'));
 $smarty->assign('images',$product->get('images'));
 $smarty->assign('image_dir',$myconf['images_dir']);
 
-$smarty->assign('num_images',count($product->get('images')));
+$smarty->assign('num_images',$product->get('num_images'));
 
 
 

@@ -100,7 +100,7 @@ $smarty->assign('suppliers_code',$product->get('supplier_code'));
 $smarty->assign('suppliers_price',$product->get('supplier_price'));
 $smarty->assign('suppliers_num_price',$product->get('supplier_num_price'));
 
-
+//print_r($product->images);
 $smarty->assign('images',$product->images);
 
 
