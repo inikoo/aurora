@@ -99,6 +99,8 @@ $smarty->assign('suppliers_name',$product->get('supplier_name'));
 $smarty->assign('suppliers_code',$product->get('supplier_code'));
 $smarty->assign('suppliers_price',$product->get('supplier_price'));
 $smarty->assign('suppliers_num_price',$product->get('supplier_num_price'));
+$smarty->assign('suppliers_units_tipo',$product->get('supplier_units_tipo'));
+
 
 //print_r($product->images);
 $smarty->assign('images',$product->images);
@@ -252,5 +254,12 @@ else
   $smarty->assign('rrp_perouter',money($product->get('rrp')*$product->get('units')));
 $smarty->assign('decimal_point',$myconf['decimal_point']);
 $smarty->assign('thosusand_sep',$myconf['thosusand_sep']);
+
+foreach($_units_tipo as $key=>$value){
+  $units_tipo[$key]=array('id'=>$key,'name'=>$value,'sname'=>$_units_tipo_plural[$key]);
+}
+
+$smarty->assign('units_tipo_list',$units_tipo);
+
 $smarty->display('edit_product.tpl');
 ?>

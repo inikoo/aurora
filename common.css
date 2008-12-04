@@ -186,7 +186,9 @@ table.edit td {vertical-align:middle  }
 table.edit td.label{ text-align:left }
 table.edit td.icon{ padding:0 5px;width:16px}
 table.edit tr.top{ border-top:1px solid #1d4e85}
-table.edit tr.title{ border-bottom:1px solid #a5b6c8}
+table.edit tr.title{text-align:left; border-bottom:1px solid #a5b6c8}
+table.edit tr.title td{font-weight:800;text-align:left;}
+
 table.edit tr.last{ border-bottom:1px solid #a5b6c8}
 
 .chooser {padding:15px 20px 0 20px;}
@@ -469,3 +471,7 @@ span.small{font-size:80%}
 .edit_images div.caption span.save { float:right;margin-right:5px }
 .edit_images div.caption span.save img.caption {visibility:hidden;cursor:pointer }
 .edit_images div.caption textarea.caption{ width:150px }
+
+#d_config table.tipo{ ;border-collapse: separate;;border-spacing:10px 0px}
+#d_config table.tipo td {cursor:pointer;color:#999; width:100px;height:100px;border: 1px solid #ccc;text-align:center;vertical-align:middle }
+#d_config table.tipo td.selected {color:#000;font-weight:800}

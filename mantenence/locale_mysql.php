@@ -62,17 +62,23 @@ $res.="\$_tipo_email['0']=_('Work Email');\n";
 $res.="\$_tipo_email['1']=_('Personal Email');\n";
 $res.="\$_tipo_email['2']=_('Company Email');\n";
 
-$res.="\$_units_tipo['1']=_('item');\n";
+$res.="\$_units_tipo['1']=_('piece');\n";
 $res.="\$_units_tipo['2']=_('gram');\n";
 $res.="\$_units_tipo['3']=_('miliLiter');\n";
 $res.="\$_units_tipo['4']=_('Kilogram');\n";
 $res.="\$_units_tipo['5']=_('Liter');\n";
 
-$res.="\$_units_tipo_abr['1']='';\n";
+$res.="\$_units_tipo_abr['1']='Pcs';\n";
 $res.="\$_units_tipo_abr['2']=_('g');\n";
 $res.="\$_units_tipo_abr['3']=_('mL');\n";
 $res.="\$_units_tipo_abr['4']=_('Kg');\n";
 $res.="\$_units_tipo_abr['5']=_('L');\n"; 
+
+$res.="\$_units_tipo_plural['1']='Pcs';\n";
+$res.="\$_units_tipo_plural['2']=_('Grams');\n";
+$res.="\$_units_tipo_plural['3']=_('miliLiters');\n";
+$res.="\$_units_tipo_plural['4']=_('Kgs');\n";
+$res.="\$_units_tipo_plural['5']=_('Liters');\n"; 
 
 
 $res.="\$_pm_tipo['0']=_('Unknown');\n";

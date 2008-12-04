@@ -111,6 +111,9 @@ var change_element= function(o){
 
     }
 
+
+
+
     function price_change(old_value,new_value){
 	//	alert(old_value+' '+new_value)
 	prefix='';
@@ -257,7 +260,77 @@ function caption_changed(o){
 
 
 
+function weight_changed(o){
+	var ovalue=o.getAttribute('ovalue');
+	var name=o.name;
+	if(ovalue!=o.value){
+	    Dom.get(name+"_save").style.visibility='visible';
 
+		
+	}else{
+	    Dom.get(name+"_save").style.visibility='hidden';
+	}
+}
+
+
+function validate_dim(value,tipo){
+    switch(tipo){
+    case('shape0'):
+	return {ok:false,msg:''};
+	break;
+    case('shape1'):
+	if(!value.match(/^[0-9\<?=$myconf['decimal_point']?>]+x[0-9\<?=$myconf['decimal_point']?>]+x[0-9\<?=$myconf['decimal_point']?>]+$/))
+	    return {ok:false,msg:''};
+	else
+	    return {ok:true,msg:''};
+	break;
+    case('shape2'):
+    case('shape4'):
+	if(!value.match(/^[0-9\<?=$myconf['decimal_point']?>\s]+$/))
+	    return {ok:false,msg:''};
+	else
+	    return {ok:true,msg:''};
+	break;	
+    case('shape3'):
+    case('shape5'):
+	if(!value.match(/^[0-9\<?=$myconf['decimal_point']?>]+x[0-9\<?=$myconf['decimal_point']?>]+$/))
+	    return {ok:false,msg:''};
+	else
+	    return {ok:true,msg:''};
+	break;
+    default:
+	
+    }
+
+    alert(value+" "+tipo);
+    return true;
+
+}
+
+function dim_changed(o){
+
+
+    var tipo=o.getAttribute('tipo');
+    var name=o.name;
+
+    if(validate_dim(o.value,tipo).ok){
+	var ovalue=o.getAttribute('ovalue');
+	if(ovalue!=o.value){
+	    Dom.get(name+"_save").style.visibility='visible';
+	    
+	}else{
+	    Dom.get(name+"_save").style.visibility='hidden';
+	}
+	Dom.get(name+"_alert").style.visibility='hidden';
+		
+    }else{
+
+	Dom.get(name+"_save").style.visibility='hidden';
+	Dom.get(name+"_alert").style.visibility='visible';
+
+    }
+
+}
 
 
 
@@ -329,38 +402,23 @@ var interpet_changes = function(id){
 function simple_save(name){
 
     if(name=='dim' || name=='odim')
-	var value = Dom.get(name).getAttribute('tipo')+'_'+Dom.get(name).value;
+	var value = Dom.get('v_'+name).getAttribute('tipo')+'_'+Dom.get('v_'+name).value;
     else
-	var value = Dom.get(name).value;
+	var value = Dom.get('v_'+name).value;
 
     var request='ar_assets.php?tipo=ep_update&key='+ escape(name)+'&value='+ escape(value);
-
+    // alert(request)
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-		alert(o.responseText)
+		alert(o.responseText);
+		
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
-
-		var num_ok=0;
-		var num_err=0;
-		var err_msg='';
-		for (x in r.res){
-		    if(r.res[x]['res']==1){
-			num_changed--;
-			Dom.get(x).className='';
-			num_ok++;
-			Dom.get('save_'+x).style.display='none';
-			Dom.get(x).value=r.res[x]['new_value'];
-		    }else{
-			num_err++;
-			err_msg=err_msg+' '+r.res[x]['desc'];
-		    }
-			
-		    
-		}
-		if(num_err>0)
+		if(r.ok){
+		Dom.get(name+'_save').style.visibility='hidden';
+		Dom.get('v_'+name).setAttribute('ovalue',value);
+		}else{
 		    Dom.get('product_messages').innerHTML='<span class="error">'+r.msg+'</span>';
-		//	}else
-		//    Dom.get('product_messages').innerHTML='<span class="error">'+r.msg+'</span>';
+		}
 	    }
 	});
 
@@ -627,8 +685,20 @@ var prepare_list_element=function(e){
     prev=this.getAttribute('prev')
     if(!(prev==0 || selected==prev))
 	alert(prev+' '+selected)
-	    }
+	    };
+function change_units_tipo(id,name,sname){
+    var current=Dom.get('v_units_tipo').getAttribute('ovalue');
+    if(id!=current){
+	Dom.get('v_units_tipo').innerHTML=name;
+	Dom.get('units_tipo_plural').innerHTML=sname;
+	Dom.get('v_units_tipo').setAttribute('value',id);
+	Dom.get('units_tipo_save').style.visibility='visible';
+    }else{
+	Dom.get('units_tipo_save').style.visibility='hidden';
 
+    }
+    
+}
 var change_list_element=function(e){
 	    
     selected=this.selectedIndex;
@@ -742,11 +812,14 @@ var change_block = function(e){
     Dom.get('d_suppliers').style.display='none';
     Dom.get('d_prices').style.display='none';
     Dom.get('d_dimat').style.display='none';
+    Dom.get('d_config').style.display='none';
+    
     Dom.get('d_description').style.display='none';
     Dom.get('d_'+this.id).style.display='';
     
 
-    
+    Dom.get('config').className='';
+
     Dom.get('suppliers').className='';
     Dom.get('pictures').className='';
     Dom.get('suppliers').className='';
@@ -770,7 +843,7 @@ function init(){
 
 	var ids = ["cat_select"]; 
 	YAHOO.util.Event.addListener(ids, "change", change_list_element);
-	var ids = ["description","pictures","prices","suppliers","dimat"]; 
+	var ids = ["description","pictures","prices","suppliers","dimat","config"]; 
 	YAHOO.util.Event.addListener(ids, "click", change_block);
 	
 	//	YAHOO.util.Event.addListener(ids, "click", prepare_list_element);
@@ -928,8 +1001,8 @@ var change_dim_tipo=function(tipo){
     Dom.get('dim_shape').innerHTML=shapes[tipo];
     Dom.get('dim_shape_example').innerHTML=shapes_example[tipo];
 
-    Dom.get('dim').setAttribute('tipo','shape'+tipo);
-    change_element(Dom.get('dim'));
+    Dom.get('v_dim').setAttribute('tipo','shape'+tipo);
+    dim_changed(Dom.get('v_dim'));
 }
 
 YAHOO.util.Event.onContentReady("shapes", function () {
@@ -1079,5 +1152,10 @@ YAHOO.util.Event.onContentReady("adding_new_supplier", function () {
     });
 
 
-
+YAHOO.util.Event.onContentReady("units_tipo_list", function () {
+	 var oMenu = new YAHOO.widget.Menu("units_tipo_list", { context:["v_units_tipo","tr", "br"]  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+	 YAHOO.util.Event.addListener("v_units_tipo", "click", oMenu.show, null, oMenu);
+    });
 

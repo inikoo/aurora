@@ -184,6 +184,17 @@ function FormatNumber(num,dec,comma,decimalPlaces)
 
 
   num=''+num;
+  var index=num.lastIndexOf('.')
+  if(index>=0){
+      var integers=num.substr(0,index);
+      var decimals=FormatClean(num.substr(index))+FormatEmptyNumber('',decimalPlaces);
+      //   alert(decimals);
+      decimals=decimals.substr(0,decimalPlaces);
+
+      num=integers+decimals
+  }else{
+      num=num+ FormatEmptyNumber('',decimalPlaces-1)
+  }
 
   try 
   {
@@ -195,10 +206,10 @@ function FormatNumber(num,dec,comma,decimalPlaces)
     if (num.lastIndexOf("-") == 0) { minus='-'; }
    
     preDecimal = FormatClean(num);
-    
+    // alert(preDecimal);
     // preDecimal doesn't contain a number at all.
     // Return formatted zero representation.
-    
+
     if (preDecimal.length < 1)
     {
        return minus + FormatEmptyNumber(dec,decimalPlaces);
@@ -214,7 +225,7 @@ function FormatNumber(num,dec,comma,decimalPlaces)
     
     // predecimal has no numbers to the left.
     // Return formatted zero representation.
-    
+
     if (preDecimal.length == decimalPlaces)
     {
       return minus + '0' + dec + preDecimal;
@@ -226,13 +237,14 @@ function FormatNumber(num,dec,comma,decimalPlaces)
     
     if (preDecimal.length < decimalPlaces)
     {
+	//	alert(preDecimal.length);
        if (decimalPlaces == 2)
        {
         return minus + FormatEmptyNumber(dec,decimalPlaces - 1) + preDecimal;
        }
-       return minus + FormatEmptyNumber(dec,decimalPlaces - 2) + preDecimal;
+       return minus + FormatEmptyNumber(dec,decimalPlaces - preDecimal.length) + preDecimal;
     }
-    
+
     // predecimal contains enough characters to
     // qualify to need decimal points rendered.
     // Parse out the pre and post decimal values

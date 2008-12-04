@@ -36,20 +36,36 @@ class product{
 
 
   function get_data($tipo,$product_id){
-    global $_shape;
+    global $_shape,$_units_tipo,$_units_tipo_abr,$_units_tipo_plural;
+
+    $this->dim_units='cm';
+
     $sql=sprintf("select *,UNIX_TIMESTAMP(first_date) as first_date from product where id=%d",$product_id);
     if($result =& $this->db->query($sql)){
       $this->data=$result->fetchRow();
-            $this->id=$this->data['id'];
+      $this->id=$this->data['id'];
       if($this->data['first_date']!='')
 	$this->data['dates']=array('first_date'=>($this->data['first_date']?strftime("%e %b %Y",$this->data['first_date']):''));
       else{
 	$this->load('first_date','save');
       }
-      $this->data['odim_tipo_id']=$this->data['odim_tipo'];
-      $this->data['odim_tipo']=$_shape[$this->data['odim_tipo_id']];
-      $this->data['dim_tipo_id']=$this->data['dim_tipo'];
-      $this->data['dim_tipo']=$_shape[$this->data['dim_tipo_id']];
+      $this->data['units_tipo_name']=$_units_tipo[$this->data['units_tipo']];
+      $this->data['units_tipo_shortname']=$_units_tipo_abr[$this->data['units_tipo']];
+      $this->data['units_tipo_plural']=$_units_tipo_plural[$this->data['units_tipo']];
+      
+      $this->data['odim_tipo']=$this->data['odim_tipo'];
+      $this->data['odim_tipo_name']=$_shape[$this->data['odim_tipo']];
+      $this->data['dim_tipo']=$this->data['dim_tipo'];
+      $this->data['dim_tipo_name']=$_shape[$this->data['dim_tipo']];
+      if($this->data['odim']!='')
+	$this->data['odimension']=$this->data['odim_tipo_name']." (".$this->data['odim'].")".$this->dim_units;
+      else
+	$this->data['odimension']='';
+      if($this->data['dim']!='')
+	$this->data['dimension']=$this->data['dim_tipo_name']." (".$this->data['dim'].")".$this->dim_units;
+      else
+	$this->data['dimension']='';
+	  
       $this->get('ovol');
       $this->get('vol');
 
@@ -439,35 +455,45 @@ class product{
 
   function read($key,$data=false){
 
-    if($key=='image'){
-	$sql=sprintf("select checksum,name,format,principal,caption,id,width,height,size from image where  id=%d",$data);
-	$result =& $this->db->query($sql);
+
+    switch($key){
+    case('dimension'):
+    case('odimension'):
+
+
+      global $_shape;
+      $sql=sprintf("select dim as dimension,odim as odimension,dim_tipo as dimension_tipo,odim_tipo as odimension_tipo from product where  id=%d",$this->id);
+      
+      $result =& $this->db->query($sql);
 	if($row=$result->fetchRow()){
-	  $image=array(
-		       'id'=>$row['id'],
-		       'width'=>$row['width'],
-		       'height'=>$row['height'],
-		       'size'=>$row['size'],
-		       'caption'=>$row['caption'],
-		       'checksum'=>$row['checksum'],
-		       'principal'=>$row['principal'],
-		       'tb'=>$this->image_path.'tb/'.$row['name'].'_tb.'.$row['format'],
-		       'med'=>$this->image_path.'med/'.$row['name'].'_med.'.$row['format'],
-		       'orig'=>$this->image_path.'original/'.$row['name'].'_orig.'.$row['format'],
+	  if($row[$key]!='')
+	    return $_shape[$row[$key.'_tipo']]." (".$row[$key].')'.$this->dim_units;
+	  else
+	    return '';
+	}
+	break;
+    case('image'):
+      $sql=sprintf("select checksum,name,format,principal,caption,id,width,height,size from image where  id=%d",$data);
+      $result =& $this->db->query($sql);
+      if($row=$result->fetchRow()){
+	$image=array(
+		     'id'=>$row['id'],
+		     'width'=>$row['width'],
+		     'height'=>$row['height'],
+		     'size'=>$row['size'],
+		     'caption'=>$row['caption'],
+		     'checksum'=>$row['checksum'],
+		     'principal'=>$row['principal'],
+		     'tb'=>$this->image_path.'tb/'.$row['name'].'_tb.'.$row['format'],
+		     'med'=>$this->image_path.'med/'.$row['name'].'_med.'.$row['format'],
+		     'orig'=>$this->image_path.'original/'.$row['name'].'_orig.'.$row['format'],
 		       'name'=>$row['name']
-		       );
-	  return $image;
-	  
-	}else
-	  return false;
+		     );
+	return $image;
 	
-	
-
-
-    }
-
-
-    if($key=='principal_image'){
+      }
+      break;
+    case('principal_image'):
       $sql=sprintf("select checksum,name,format,principal,caption,id,width,height,size from image where  principal=1 and product_id=%d",$this->id);
       $result =& $this->db->query($sql);
       if($row=$result->fetchRow()){
@@ -507,22 +533,27 @@ class product{
 	  
 	}
       }
-      return false;
+      break;
+    
+    case('img_new'):
+      break;
+    case('img_caption'):
+      $sql=sprintf("select caption as value from image where id=%d",$this->changing_img);
+      $res = $this->db->query($sql); 
+      if ($row=$res->fetchRow()) {
+	return $row['value'];
+      }
+      break;
+    default:
+      $sql=sprintf("select %s as value  from product where id=%d",addslashes($key),$this->id);
+      print "$sql";
+      $res = $this->db->query($sql); 
+      if ($row=$res->fetchRow()) {
+	return $row['value'];
+      }
     }
-
-   if($key=='img_new')
-     return false;
-   
-   if($key=='img_caption')
-     $sql=sprintf("select caption as value from image where id=%d",$this->changing_img);
-   else
-     $sql=sprintf("select %s as value  from product where id=%d",addslashes($key),$this->id);
-   $res = $this->db->query($sql); 
-   if ($row=$res->fetchRow()) {
-     return $row['value'];
-   }else
-     return false;
-	
+    return false;
+    
 
   }
 
@@ -578,10 +609,10 @@ class product{
       return $this->images[0];
       break;
     case('vol'):
-      $this->data['vol']=volumen($this->data['dim_tipo_id'],$this->data['dim']);
+      $this->data['vol']=volumen($this->data['dim_tipo'],$this->data['dim']);
       break;
     case('ovol'):
-      $this->data['ovol']=volumen($this->data['odim_tipo_id'],$this->data['odim']);
+      $this->data['ovol']=volumen($this->data['odim_tipo'],$this->data['odim']);
       break;
     case('a_dim'):
       if($this->data['dim']!='')
@@ -622,6 +653,22 @@ class product{
       if(!$this->images)
 	$this->load('images');
       return count($this->images);
+    case('dimension'):
+      global $_shape;
+      if($this->data['dim']!='')
+	return $_shape[$this->data['dim_tipo']]." (".$this->data['dim'].")".$this->dim_units;
+      else
+	return '';
+      break;
+    case('odimension'):
+      global $_shape;
+      if($this->data['odim']!='')
+	return $_shape[$this->data['odim_tipo']]." (".$this->data['odim'].")".$this->dim_units;
+      else
+	return '';
+      break;  
+
+
     default:
 
       if(isset($this->data[$item]))
@@ -1565,14 +1612,10 @@ class product{
 	break;
       case('dim'):
       case('odim'):
-      
-	if($key=='dim')
-	  $preffix='';
-	else
-	  $preffix='o';
+
 	
 	if(!preg_match('/^shape\d\_/',$value)){
-	  $res[$key]=array('res'=>2,'desc'=>'Wrong_data');
+	  $res[$key]=array('ok'=>false,'msg'=>'Wrong_data');
 	  continue;
 	}
 	
@@ -1582,9 +1625,10 @@ class product{
 	
 	$this->data[$key]=$dims;
 	$this->data[$key.'_tipo']=$tipo;
-      
+	$res[$key]=array('ok'=>true,'msg'=>'');
 	break;
-	default:
+	
+      default:
 	
 	$res[$key]=array('res'=>2,'new_value'=>'','desc'=>'Unkwown key');
       }
@@ -1598,8 +1642,8 @@ class product{
   }
 
 
-  function save($tipo,$history_data=false){
-    switch($tipo){
+  function save($key,$history_data=false){
+    switch($key){
     case('img_set_principal'):
       $old_image=$this->read('principal_image');
       $old_value=$old_image['name'];
@@ -1611,7 +1655,7 @@ class product{
       
       if(is_array($history_data)){
 	$history_data['image_id']=$this->changing_img;
- 	$this->save_history($tipo,$old_value,$this->images[$this->changing_img]['name'],$history_data);
+ 	$this->save_history($key,$old_value,$this->images[$this->changing_img]['name'],$history_data);
       }
      
       break;
@@ -1636,7 +1680,7 @@ class product{
       $this->db->exec($sql);
       if(is_array($history_data)){
 	 $history_data['image_id']=$old_value['id'];
-	$this->save_history($tipo,$old_value['name'],'',$history_data);
+	$this->save_history($key,$old_value['name'],'',$history_data);
       }
       
       break;
@@ -1718,25 +1762,25 @@ class product{
        $this->images[$image_id]['id']=$image_id;
        if(is_array($history_data)){
 	 $history_data['image_id']=$image_id;
-	$this->save_history($tipo,'',$this->images[$image_id]['name'],$history_data);
+	$this->save_history($key,'',$this->images[$image_id]['name'],$history_data);
       }
 
        break;
      case('img_caption'):
-       $old_value=$this->read($tipo);
-       $value=$this->get($tipo);
+       $old_value=$this->read($key);
+       $value=$this->get($key);
        $sql=sprintf("update image set caption=%s  where  id=%d"
  		   ,prepare_mysql($value),$this->changing_img);
        $this->db->exec($sql);
 
        if(is_array($history_data)){
 	 $history_data['image_id']=$this->changing_img;
-	$this->save_history($tipo,$old_value,$this->get($tipo),$history_data);
+	$this->save_history($key,$old_value,$this->get($key),$history_data);
       }
 
        break;
     case('first_date'):
-       $old_value=$this->read($tipo);
+       $old_value=$this->read($key);
 
       if(is_numeric($this->data['first_date'])){
 	$date=date("Y-m-d H:i:s",strtotime("@".$this->data['first_date']));
@@ -1747,7 +1791,7 @@ class product{
 	$this->db->exec($sql);
 	
 	if(is_array($history_data)){
-	  $this->save_history($tipo,$old_value,$history_data);
+	  $this->save_history($key,$old_value,$history_data);
 	}
 
       }
@@ -1778,20 +1822,35 @@ class product{
 	  $this->db->exec($sql);
 	}  
 	
+
       }
       break;
+    case('odim'):
+    case('dim'):
+      $old_value=$this->read($key.'ension');
+      $dims=$this->data[$key];
+      $dims_tipo=$this->data[$key.'_tipo'];
+      $sql=sprintf("update product set %s=%s,%s=%s where id=%d",$key,prepare_mysql($dims),$key.'_tipo',prepare_mysql($dims_tipo),$this->id);
+      $this->db->exec($sql);
+      if(is_array($history_data)){
+	$new_value=$this->get($key.'ension');
+	$this->save_history($key,$old_value,$new_value,$history_data);
+      }
+
+
+	  break;
     default:
       
-    //   $old_value=$this->read($tipo);
-//       if($old_value!=$this->data[$tipo]){
-// 	$sql=sprintf("update product set %s=%s where id=%d",$tipo,prepare_mysql($this->get($tipo)),$this->id);
-// 	//	print $sql;
-// 	$this->db->exec($sql);
-//       }
+       $old_value=$this->read($key);
+       if($old_value!=$this->data[$key]){
+ 	$sql=sprintf("update product set %s=%s where id=%d",$key,prepare_mysql($this->get($key)),$this->id);
+ 		print $sql;
+ 	$this->db->exec($sql);
+       }
 
-//       if(is_array($history_data)){
-// 	$this->save_history($tipo,$old_value,$this->get($tipo),$history_data);
-//       }
+       if(is_array($history_data)){
+ 	$this->save_history($key,$old_value,$this->get($key),$history_data);
+       }
       
       break; 
     }
@@ -1801,9 +1860,44 @@ class product{
 
 
 
-  function save_history($tipo,$old,$new,$data){
+  function save_history($key,$old,$new,$data){
     
-    switch($tipo){
+    switch($key){
+      
+  case('odim'):
+      $note=_('Product outer dimentions set to').": ".$new;
+      $sujeto='PROD';
+      $sujeto_id=$this->id;
+      $objeto='ODIM';
+      $objeto_id='';
+      $action='CHG';
+      break;
+    case('dim'):
+      $note=_('Product dimentions set to').": ".$new;
+      $sujeto='PROD';
+      $sujeto_id=$this->id;
+      $objeto='DIM';
+      $objeto_id='';
+      $action='CHG';
+      break;   
+    case('oweight'):
+      $note=_('Product weight set to').": ".number($new,3).' '._("Kg").' '._('per outer');
+      $sujeto='PROD';
+      $sujeto_id=$this->id;
+      $objeto='OWEIGTH';
+      $objeto_id='';
+      $action='CHG';
+      break;
+
+    case('weight'):
+      $note=_('Product weight set to').": ".number($new,3).' '._("Kg").' '._('per').' '.$this->data['units_tipo_name'];
+      $sujeto='PROD';
+      $sujeto_id=$this->id;
+      $objeto='WEIGTH';
+      $objeto_id='';
+      $action='CHG';
+      break;
+
     case('img_set_principal'):
       $note=_('New image marked as  principal').": ".$new;
       $sujeto='PROD';

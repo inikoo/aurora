@@ -16,22 +16,59 @@
 </div>
 <div id="doc3" style="clear:both;" class="yui-g yui-t4" >
 <div id="yui-main"> 
-<h1>{$data.code} {$data.units}x {$data.description}</h1>
+<h1>{$data.code} {$units}x {$data.description}</h1>
 <div class="chooser" >
   <ul>
+    <li id="config" {if $edit=='config'}class="selected"{/if} ><img src="art/icons/cog.png"> {t}Product Configuration{/t}</li>
     <li id="description" {if $edit=='description'}class="selected"{/if} > <img src="art/icons/information.png"> {t}Description{/t}</li>
     <li id="pictures" {if $edit=='pictures'}class="selected"{/if} > <img src="art/icons/photos.png"> {t}Pictures{/t}</li>
     <li id="prices" {if $edit=='prices'}class="selected"{/if} ><img src="art/icons/money_add.png"> {t}Price, Discounts{/t}</li>
     <li id="suppliers" {if $edit=='suppliers'}class="selected"{/if} ><img src="art/icons/cog_add.png"> {t}Suppiers{/t}</li>
     <li id="dimat" {if $edit=='dimat'}class="selected"{/if} ><img src="art/icons/shape_ungroup.png"> {t}Dimensions, Materials{/t}</li>
+
+
   </ul>
+
+
 </div> 
+
+
 
 <div style="clear:both;padding:20px 20px" id="edit_messages"></div>
 
+
+<div  {if $edit!="config"}style="display:none"{/if}  class="edit_block" id="d_config">
+  
+  <table class="tipo">
+    <tr>
+      <td {if $data.product_tipo=='normal'}class="selected"{/if}>{t}Normal{/t}</td>
+      <td {if $data.product_tipo=='dependant'}class="selected"{/if}>{t}Stock Dependant{/t}</td>
+      <td {if $data.product_tipo=='shortcut'}class="selected"{/if}>{t}Shortcut{/t}</td>
+      <td {if $data.product_tipo=='mix'}class="selected"{/if}>{t}Mixture{/t}</td>
+    </tr>
+  </table>
+  
+  <div {if $data.product_tipo!='dependant'}display="none"{/if} >
+    <table class="edit" >
+      <tr>
+	<td style="width:10em">{t}Units Definition{/t}:</td>
+	<td style="width:10em" id="v_units_tipo" ovalue="$data.units_tipo" value="$data.units_tipo">{$data.units_tipo_name}</td>
+	<td><span id="units_tipo_save"  style="cursor:pointer;visibility:hidden" onclick="uniit_tipo_save()">{t}Save{/t} <img src="art/icons/disk.png"/></span></td>
+      </tr>
+
+      <tr>
+	<td><span id="units_tipo_plural">{$data.units_tipo_plural}</span> {t}Per Outer{/t}:</td>
+	<td><input ovalue="{$data.units}" value="{$data.units}" onblur="units_changed(this)" style="text-align:right;width:5em"></td>
+      </tr>
+    </table>
+  </div>
+
+</div>
+
+
 <div  {if $edit!="prices"}style="display:none"{/if}  class="edit_block" id="d_prices">
   <table class="edit" >
-    <tr><td></td><td>{t}Price per Outer{/t} ({$units}{t}xU{/t})</td><td>{t}Price per Units{/t}</tr>
+    <tr class="title"><td></td><td style="text-align:right">{t}Price per Outer{/t} ({$units}{$data.units_tipo_shortname})</td><td style="text-align:right">{t}Price per{/t} {$data.units_tipo_name}</tr>
 	
     <tr>
       <td class="label">{t}Sale Price{/t}:</td>
@@ -54,12 +91,34 @@
 <div  {if $edit!="dimat"}style="display:none"{/if}  class="edit_block" id="d_dimat">
 
 <table class="edit" >
-  <tr><td class="label">{t}Unit Weight{/t} ({t}Kg{/t}):</td><td colspan=3 class="text-align:left"><input style="float:left;text-align:right;width:10em"   id="weight" tipo="number" value="{$data.weight}"  onkeyup="change_element(this)" ovalue="{$data.weight}"></td><td class="icon"><img id="save_weight" style="cursor:pointer;display:none" onClick="simple_save('weight')" src="art/icons/disk.png"></td></tr>
-  <tr><td class="label">{t}Outer Weight{/t} ({t}Kg{/t}):</td><td colspan=2><input style="float:left;text-align:right;width:10em"  id="oweight"  tipo="number" value="{$data.oweight}"  ovalue="{$data.oweight}" onkeyup="change_element(this)"  ></td><td><img id="save_oweight" style="cursor:pointer;display:none" onClick="simple_save('oweight')" src="art/icons/disk.png"></td></tr></tr>
+  <tr class="title"><td colspan=6>{t}Weight{/t}</td></tr>
+  <tr>
+    <td class="label" style="width:12em">{t}Per{/t} {$data.units_tipo_name}:</td>
+    <td style="width:4em" class="text-align:left">{t}Kg{/t}</td>
+    <td><input style="text-align:right;width:5em"  name="weight"   id="v_weight" tipo="number" value="{$data.weight}"   onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thosusand_sep}',3);weight_changed(this)"     ovalue="{$data.weight}"></td>
+    <td class="icon" style="width:20px"><img id="weight_save" style="cursor:pointer;visibility:hidden" onClick="simple_save('weight')" src="art/icons/disk.png"></td>
+  </tr>
+  <tr>
+    <td class="label">{t}Per outer{/t}:<br>{t}including packing{/t}</td>
+    <td>{t}Kg{/t}</td>
+    <td><input style="text-align:right;width:5em"  id="v_oweight"  tipo="number" value="{$data.oweight}"  name="oweight"  ovalue="{$data.oweight}"  onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thosusand_sep}',3);weight_changed(this)"  ></td>
+    <td class="icon"><img id="oweight_save" style="cursor:pointer;visibility:hidden" onClick="simple_save('oweight')" src="art/icons/disk.png"></td>
+  </tr>
 </table>
  <table class="edit" >
- <tr><td class="label">{t}Unit Dimensions{/t}:</td><td><span id="dim_shape">{$data.dim_tipo}</span></td><td><input style="text-align:right;width:10em"  onkeyup="change_element(this)" tipo="shape{$data.dim_tipo_id}" id="dim" value="{$data.dim}" ovalue="{$data.dim}"   ></td><td style="font-size:90%;color:#777" id="dim_shape_example">{$shape_example[$data.dim_tipo_id]}</td><td><img id="save_dim" style="cursor:pointer;display:none" onClick="simple_save('dim')" src="art/icons/disk.png"></td></tr>
-  <tr><td class="label">{t}Outer Dimensions{/t}</td><td><span>{$data.odim_tipo}</span></td><td><input style="text-align:right;width:10em"  onkeyup="change_element(this)" tipo="shape1"  id="odim" value="{$data.odim}"   ovalue="{$data.odim}"      ></td><td style="font-size:90%;color:#777">{$shape_example[$data.odim_tipo_id]}</td><td><img id="save_odim" style="cursor:pointer;display:none" onClick="simple_save('odim')" src="art/icons/disk.png"></td></tr>
+    <tr class="title"><td colspan=5>{t}Dimensions{/t}</td></tr>
+ <tr>
+   <td class="label" style="width:12em">{$data.units_tipo_name|capitalize}:</td>
+   <td style="width:4em"><span  style="cursor:pointer" id="dim_shape">{$data.dim_tipo_name}</span></td>
+   <td><input style="text-align:right;width:10em"  onblur="dim_changed(this)" tipo="shape{$data.dim_tipo}" name="dim" id="v_dim" value="{$data.dim}" ovalue="{$data.dim}"   ></td>
+   <td style="width:16em" style="font-size:90%;color:#777" ><img id="dim_alert" src="art/icons/exclamation.png" title="{t}Wrong Format{/t}"  style="cursor:pointer;;visibility:hidden;float:left" /> <span id="dim_shape_example">{$shape_example[$data.dim_tipo]}<span></td>
+   <td  style="width:20px"><img id="dim_save" style="cursor:pointer;visibility:hidden" onClick="simple_save('dim')" src="art/icons/disk.png"></td></tr>
+    <tr>
+      <td class="label">{t}Outer{/t}:<br>{t}including packing{/t}</td>
+      <td ><span style="cursor:pointer">{$data.odim_tipo_name}</span></td>
+      <td><input style="text-align:right;width:10em"  onblur="dim_changed(this)" tipo="shape1"  name="odim"   id="v_odim" value="{$data.odim}"   ovalue="{$data.odim}"      ></td>
+      <td style="font-size:90%;color:#777"><img id="odim_alert" src="art/icons/exclamation.png" title="{t}Wrong Format{/t}"  style="cursor:pointer;;visibility:hidden;float:left" /> {$shape_example[$data.odim_tipo]}</td>
+      <td><img id="odim_save" style="cursor:pointer;visibility:hidden" onClick="simple_save('odim')" src="art/icons/disk.png"></td></tr>
 </tr>
 </table>
 
@@ -75,14 +134,14 @@
     <tbody id="new_supplier_form" style="display:none;background:#f1fdf2"  supplier_id="" >
     <tr class="top title"><td class="label">{t}Supplier{/t}: <img id="save_supplier_{$supplier_id}" src="art/icons/new.png"></td><td id="new_supplier_name"></td><td class="icon"><img id="save_supplier_new" onClick="save_new_supplier()"   src="art/icons/disk.png"></td><td class="icon"><img id="cancel_new" onClick="cancel_new_supplier()" src="art/icons/cross.png"></td></tr>
     <tr><td class="label">{t}Suppliers product code{/t}:</td><td colspan=3><input style="text-align:right;width:10em" value="" id="new_supplier_code" value="" ></td></tr>
-    <tr class="last"><td class="label">{t}Price (Unit){/t}:</td><td colspan=3>{$cur_symbol}<input style="text-align:right;width:6em" value="" id="new_supplier_cost" id=""></td></tr>
+    <tr class="last"><td class="label">{t}Estimated price per{/t} {$data.units_tipo_name}:</td><td colspan=3>{$currency}<input style="text-align:right;width:6em" value="" id="new_supplier_cost" id=""></td></tr>
     <tr><td style="background:white" colspan="4"></td></tr>
     </tbody>
     <tbody id="current_suppliers_form">
     {foreach from=$suppliers_name item=supplier key=supplier_id }
     <tr class="top title"><td class="label">{t}Supplier{/t}:</td><td><a href="supplier.php?id={$supplier_id}">{$supplier}</a> {if $supplier!=$suppliers_name[$supplier_id] }{$suppliers_name[$supplier_id]}{/if}</td><td class="icon"><img id="save_supplier_{$supplier_id}" style="cursor:pointer;display:none" onClick="save_supplier({$supplier_id})" src="art/icons/disk.png"></td><td class="icon"><img style="cursor:pointer" id="delete_supplier_{$supplier_id}" src="art/icons/cross.png"></td></tr>
     <tr><td class="label">{t}Suppliers product code{/t}:</td><td colspan=3><input style="text-align:right;width:10em" value="{$suppliers_code[$supplier_id]}"  supplier_id="{$supplier_id}"      tipo="text" onkeyup="change_element(this)" ovalue="{$suppliers_code[$supplier_id]}" id="v_supplier_code{$supplier_id}"></td></tr>
-    <tr class="last"><td class="label">{t}Price (Unit){/t}:</td><td colspan=3>{$cur_symbol}<input id="v_supplier_cost{$supplier_id}" style="text-align:right;width:6em"  supplier_id="{$supplier_id}"  tipo="money" onkeyup="change_element(this)" value="{$suppliers_num_price[$supplier_id]}" ovalue="{$suppliers_num_price[$supplier_id]}" ></td></tr>
+    <tr class="last"><td class="label">{t}Estimated  price per{/t} {$data.units_tipo_name}:</td><td colspan=3>{$currency}<input id="v_supplier_cost{$supplier_id}" style="text-align:right;width:6em"  supplier_id="{$supplier_id}"  tipo="money" onkeyup="change_element(this)" value="{$suppliers_num_price[$supplier_id]}" ovalue="{$suppliers_num_price[$supplier_id]}" ></td></tr>
     <tr><td colspan="4"></td></tr>
     {/foreach}
     </body>
@@ -90,7 +149,7 @@
 </table>	  
 </div>
 
-<div  {if !$edit=="pictures"}style="display:none"{/if}  class="edit_block" id="d_pictures">
+<div  {if $edit!="pictures"}style="display:none"{/if}  class="edit_block" id="d_pictures">
 
   <form action="upload.php" enctype="multipart/form-data" method="post" id="testForm">
     <input type="file" name="testFile"/>
@@ -255,6 +314,17 @@
 
   </div>
 </div>
+
+<div id="units_tipo_list" class="yuimenu">
+  <div class="bd">
+    <ul class="first-of-type">
+      {foreach from=$units_tipo_list item=menu }
+       <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_units_tipo({$menu.id},'{$menu.name}','{$menu.sname}')"> {$menu.name}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
+
 
 {include file='footer.tpl'}
 
