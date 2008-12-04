@@ -155,6 +155,40 @@ function return_to_old_value(key){
 
 }
 
+function delete_supplier(id,name){
+    var answer = confirm("<?=_('Are you sure you want to desassociate this supplier')?> ("+name+")");
+    if (answer){
+
+	
+
+	var request='ar_assets.php?tipo=ep_update&key=supplier_delete'+'&value='+escape(image_id);
+	YAHOO.util.Connect.asyncRequest('POST',request ,{
+		success:function(o) {
+		    //alert(o.responseText);
+		    var r =  YAHOO.lang.JSON.parse(o.responseText);
+		    if(r.ok){
+			Dom.get('image'+image_id).style.display='none';
+			if(r.new_principal!=''){
+			    var new_principal=r.new_principal;
+			    Dom.get('images').setAttribute('principal',new_principal);
+			    var new_but=Dom.get('img_set_principal'+new_principal);
+			    new_but.setAttribute('title','<?=_('Main Image')?>');
+			    new_but.setAttribute('principal',1);
+			    new_but.setAttribute('src',"art/icons/asterisk_orange.png");		
+			    new_but.style.cursor="default";
+			}
+
+		    }else
+			alert(r.msg);
+		}
+		
+	    });
+    }
+
+
+}
+
+
 function delete_image(image_id,image_name){
     var answer = confirm("<?=_('Are you sure you want to delete this image')?> ("+image_name+")");
     if (answer){

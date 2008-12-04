@@ -139,10 +139,12 @@
     </tbody>
     <tbody id="current_suppliers_form">
     {foreach from=$suppliers_name item=supplier key=supplier_id }
-    <tr class="top title"><td class="label">{t}Supplier{/t}:</td><td><a href="supplier.php?id={$supplier_id}">{$supplier}</a> {if $supplier!=$suppliers_name[$supplier_id] }{$suppliers_name[$supplier_id]}{/if}</td><td class="icon"><img id="save_supplier_{$supplier_id}" style="cursor:pointer;display:none" onClick="save_supplier({$supplier_id})" src="art/icons/disk.png"></td><td class="icon"><img style="cursor:pointer" id="delete_supplier_{$supplier_id}" src="art/icons/cross.png"></td></tr>
+    <tbody id="supplier_body{$supplier_id}">
+    <tr  class="top title"><td class="label">{t}Supplier{/t}:</td><td><a href="supplier.php?id={$supplier_id}">{$supplier}</a> {if $supplier!=$suppliers_name[$supplier_id] }{$suppliers_name[$supplier_id]}{/if}</td><td class="icon"><img id="save_supplier_{$supplier_id}" style="cursor:pointer;display:none" onClick="save_supplier({$supplier_id})" src="art/icons/disk.png"></td><td class="icon"><img onclick="delete_supplier({$supplier_id},'{$supplier}')" style="cursor:pointer" id="delete_supplier_{$supplier_id}" src="art/icons/cross.png"></td></tr>
     <tr><td class="label">{t}Suppliers product code{/t}:</td><td colspan=3><input style="text-align:right;width:10em" value="{$suppliers_code[$supplier_id]}"  supplier_id="{$supplier_id}"      tipo="text" onkeyup="change_element(this)" ovalue="{$suppliers_code[$supplier_id]}" id="v_supplier_code{$supplier_id}"></td></tr>
-    <tr class="last"><td class="label">{t}Estimated  price per{/t} {$data.units_tipo_name}:</td><td colspan=3>{$currency}<input id="v_supplier_cost{$supplier_id}" style="text-align:right;width:6em"  supplier_id="{$supplier_id}"  tipo="money" onkeyup="change_element(this)" value="{$suppliers_num_price[$supplier_id]}" ovalue="{$suppliers_num_price[$supplier_id]}" ></td></tr>
+    <tr class="last"><td class="label">{t}Cost per{/t} {$data.units_tipo_name}:</td><td colspan=3>{$currency}<input id="v_supplier_cost{$supplier_id}" style="text-align:right;width:6em"  supplier_id="{$supplier_id}"  tipo="money" onkeyup="change_element(this)" value="{$suppliers_num_price[$supplier_id]}" ovalue="{$suppliers_num_price[$supplier_id]}" ></td></tr>
     <tr><td colspan="4"></td></tr>
+    </tbody>
     {/foreach}
     </body>
     
