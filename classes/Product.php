@@ -8,7 +8,7 @@ class product{
 
   var $parents=array();
   var $childs=array();
-  var $suppliers=array();
+  var $supplier=false;
   var $locations=array();
   var $notes=array();
   var $images=false;
@@ -219,21 +219,30 @@ class product{
 	break;
       case('suppliers'):
 	$this->suppliers=array();
-	$sql=sprintf("select p2s.supplier_id, p2s.price,p2s.sup_code as code,s.name as name from product2supplier as p2s left join supplier as s on (p2s.supplier_id=s.id) where p2s.product_id=%d",$this->id);
+	$sql=sprintf("select p2s.supplier_id, p2s.price,p2s.sup_code,s.code as code,s.name as name from product2supplier as p2s left join supplier as s on (p2s.supplier_id=s.id) where p2s.product_id=%d",$this->id);
 	
 	$result =& $this->db->query($sql);
 	//$supplier=array();
-	$this->suppliers['name']=array();
-	$this->suppliers['price']=array();
-	$this->suppliers['code']=array();
+	//	$this->suppliers['name']=array();
+	//$this->suppliers['price']=array();
+	//$this->suppliers['code']=array();
 	while($row=$result->fetchRow()){
-	  $this->suppliers['name'][$row['supplier_id']]=$row['name'];
-	  $this->suppliers['price'][$row['supplier_id']]=money($row['price']);
-	  $this->suppliers['num_price'][$row['supplier_id']]=$row['price'];
-	  $this->suppliers['code'][$row['supplier_id']]=$row['code'];
+	  $this->supplier[$row['supplier_id']]=array(
+						     'id'=>$row['supplier_id'],
+						     'name'=>$row['name'],
+						     'price'=>$row['price'],
+						     'formated_price'=>money($row['price']),
+						     'supplier_product_code'=>$row['sup_code'],
+						     'code'=>$row['code']
+
+						     );
+	  //$this->suppliers['name'][$row['supplier_id']]=$row['name'];
+	  //$this->suppliers['price'][$row['supplier_id']]=money($row['price']);
+	  //$this->suppliers['num_price'][$row['supplier_id']]=$row['price'];
+	  //$this->suppliers['code'][$row['supplier_id']]=$row['code'];
 	}
 
-	$this->suppliers['number']=count($this->suppliers['name']);
+	//$this->suppliers['number']=count($this->suppliers['name']);
 	break;
 	// print_r($this->suppliers);
       case('same_products'):
@@ -638,16 +647,11 @@ class product{
       return $this->data['weeks'];
       
       break;
+    case('num_suppliers'):
     case('number_of_suppliers'):
-      return  $this->suppliers['number'];
-    case('supplier_name'):
-      return  $this->suppliers['name'];
-    case('supplier_code'):
-      return  $this->suppliers['code'];
-    case('supplier_price'):
-      return  $this->suppliers['price'];
-    case('supplier_num_price'):
-      return  $this->suppliers['num_price'];
+      if(!$this->supplier)
+	$this->load('suppliers');
+      return  count($this->supplier);
     case('num_pics'):
     case('num_images'):
       if(!$this->images)
@@ -1398,6 +1402,27 @@ class product{
       
       
       switch($key){
+
+
+
+      case('supplier_delete'):
+	
+	if(!$this->supplier){
+	  $this->load('suppliers');
+	}
+	if(!$this->supplier[$value]){
+	  $res[$key]['msg']=_('Supplier not associated with the product');
+	  $res[$key]['ok']=false;
+	  continue;
+	}
+	$this->supplier_to_delete_name=$this->supplier[$value]['code'];
+	unset($this->supplier[$value]);
+	$this->supplier_to_delete=$value;
+	$res[$key]['ok']=true;
+
+      break;
+
+
 	
       case('img_set_principal'):
 	if(!$this->images)
@@ -1644,6 +1669,14 @@ class product{
 
   function save($key,$history_data=false){
     switch($key){
+    case('supplier_delete'):
+
+      $sql=sprintf("delete from product2supplier where product_id=%d and supplier_id=%d",$this->id,$this->supplier_to_delete);
+      $this->db->exec($sql);
+      if(is_array($history_data)){
+ 	$this->save_history($key,$this->supplier_to_delete_name,'',$history_data);
+      }
+      break;
     case('img_set_principal'):
       $old_image=$this->read('principal_image');
       $old_value=$old_image['name'];
@@ -1651,8 +1684,6 @@ class product{
       $this->db->exec($sql);
       $sql=sprintf("update image set principal=1 where id=%d",$this->changing_img);
       $this->db->exec($sql);
-
-      
       if(is_array($history_data)){
 	$history_data['image_id']=$this->changing_img;
  	$this->save_history($key,$old_value,$this->images[$this->changing_img]['name'],$history_data);
@@ -1863,7 +1894,14 @@ class product{
   function save_history($key,$old,$new,$data){
     
     switch($key){
-      
+    case('supplier_delete'):
+      $note=_('Supplier')." ".$old." "._('no longer supplies this product');
+      $sujeto='PROD';
+      $sujeto_id=$this->id;
+      $objeto='SUP';
+      $objeto_id='';
+      $action='DEL';
+      break;
   case('odim'):
       $note=_('Product outer dimentions set to').": ".$new;
       $sujeto='PROD';

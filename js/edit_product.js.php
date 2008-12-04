@@ -161,23 +161,20 @@ function delete_supplier(id,name){
 
 	
 
-	var request='ar_assets.php?tipo=ep_update&key=supplier_delete'+'&value='+escape(image_id);
+	var request='ar_assets.php?tipo=ep_update&key=supplier_delete'+'&value='+escape(id);
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
-		    //alert(o.responseText);
+		    alert(o.responseText);
 		    var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if(r.ok){
-			Dom.get('image'+image_id).style.display='none';
-			if(r.new_principal!=''){
-			    var new_principal=r.new_principal;
-			    Dom.get('images').setAttribute('principal',new_principal);
-			    var new_but=Dom.get('img_set_principal'+new_principal);
-			    new_but.setAttribute('title','<?=_('Main Image')?>');
-			    new_but.setAttribute('principal',1);
-			    new_but.setAttribute('src',"art/icons/asterisk_orange.png");		
-			    new_but.style.cursor="default";
-			}
-
+			el=Dom.get("sup_tr1_"+id);
+			el.parentNode.removeChild(el);
+			el=Dom.get("sup_tr2_"+id);
+			el.parentNode.removeChild(el);
+			el=Dom.get("sup_tr3_"+id);
+			el.parentNode.removeChild(el);
+			el=Dom.get("sup_tr4_"+id);
+			el.parentNode.removeChild(el);
 		    }else
 			alert(r.msg);
 		}

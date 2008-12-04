@@ -74,10 +74,12 @@
 		<table    class="show_info_product" >
 		  {if $view_suppliers}
 		  {if $suppliers>0}
-		  {foreach from=$suppliers_name item=supplier key=supplier_id }
-		  <tr><td>{t}Supplier{/t}:</td><td><a href="supplier.php?id={$supplier_id}">{$supplier}</a></td></tr>
-		  
-		  <tr><td>{t}Unit Cost Price{/t}:</td><td>{$suppliers_price[$supplier_id]}</td></tr>
+		  {foreach from=$suppliers item=supplier key=supplier_id }
+		  <tr>
+		    <td>{t}Supplier{/t}:</td>
+		    <td><a href="supplier.php?id={$supplier_id}">{$supplier.name}</a></td>
+		  </tr>
+		  <tr><td>{t}Cost per{/t} {$data.units_tipo_name}:</td><td>{$supplier.formated_price}</td></tr>
 		  {/foreach}
 		  {else}
 		  <tr><td colspan=2 style="color:brown;font-weight:bold;cursor:pointer">{t}No supplier set{/t}</td></tr>
@@ -109,11 +111,11 @@
 		  </table>
 		  
 		  <table  class="show_info_product">
-		    <tr ><td>{t}Unit Weight{/t}:</td><td id="uw">{$data.weight}{t}Kg{/t}</td></tr>
-		    <tr><td>{t}Unit Dimensions{/t}:</td><td>{$data.dim}</td></tr>
-		    <tr ><td>{t}Outer Weight{/t}:</td></tr>
-		    <tr><td>{t}Outer Dimensions{/t}:</td><td>{$odim}</td></tr>
-		    <tr><td>{t}Colour{/t}:</td><td>{$color}</td></tr>
+		    <tr ><td>{t}Unit Weight{/t}:</td><td class="aright">{$data.weight}{t}Kg{/t}</td></tr>
+		    <tr><td>{t}Unit Dimensions{/t}:</td><td class="aright">{$data.dimension}</td></tr>
+		    <tr ><td>{t}Outer Weight{/t}:</td><td class="aright">{$data.oweight}{t}Kg{/t}</td></tr>
+		    <tr><td>{t}Outer Dimensions{/t}:</td><td class="aright">{$data.odimension}</td></tr>
+
 		  </table>
 		  <table  class="show_info_product">
 		    <tr>

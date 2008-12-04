@@ -130,25 +130,51 @@
   <div id="adding_new_supplier" style="width:200px;margin-bottom:45px"><input id="new_supplier_input" type="text"><div id="new_supplier_container"></div></div>
 
   
-  <table  class="edit"  >
+  <table  class="edit" style="width:33em"  >
     <tbody id="new_supplier_form" style="display:none;background:#f1fdf2"  supplier_id="" >
-    <tr class="top title"><td class="label">{t}Supplier{/t}: <img id="save_supplier_{$supplier_id}" src="art/icons/new.png"></td><td id="new_supplier_name"></td><td class="icon"><img id="save_supplier_new" onClick="save_new_supplier()"   src="art/icons/disk.png"></td><td class="icon"><img id="cancel_new" onClick="cancel_new_supplier()" src="art/icons/cross.png"></td></tr>
-    <tr><td class="label">{t}Suppliers product code{/t}:</td><td colspan=3><input style="text-align:right;width:10em" value="" id="new_supplier_code" value="" ></td></tr>
-    <tr class="last"><td class="label">{t}Estimated price per{/t} {$data.units_tipo_name}:</td><td colspan=3>{$currency}<input style="text-align:right;width:6em" value="" id="new_supplier_cost" id=""></td></tr>
-    <tr><td style="background:white" colspan="4"></td></tr>
+      <tr class="top title">
+	<td style="width:18em" class="label" colspan=2>
+	  <img id="cancel_new"         class="icon" onClick="cancel_new_supplier()" src="art/icons/cross.png">
+	  <img id="save_supplier_new"  class="icon" onClick="save_new_supplier()" src="art/icons/disk.png">
+	  <span id="new_supplier_name"></span> <img id="save_supplier_{$supplier_id}" src="art/icons/new.png">
+	</td>
+      </tr>
+      <tr>
+	<td class="label">{t}Suppliers product code{/t}:</td>
+	<td style="text-align:left;width:11em"><input style="text-align:right;width:10em" value="" id="new_supplier_code" value="" ></td>
+      </tr>
+      <tr class="last">
+	<td class="label">{t}Estimated price per{/t} {$data.units_tipo_name}:</td>
+	<td style="text-align:left">{$currency}<input style="text-align:right;width:6em" value="" id="new_supplier_cost" id=""></td>
+      </tr>
+      <tr>
+	<td style="background:white" colspan="4"></td>
+      </tr>
     </tbody>
     <tbody id="current_suppliers_form">
-    {foreach from=$suppliers_name item=supplier key=supplier_id }
-    <tbody id="supplier_body{$supplier_id}">
-    <tr  class="top title"><td class="label">{t}Supplier{/t}:</td><td><a href="supplier.php?id={$supplier_id}">{$supplier}</a> {if $supplier!=$suppliers_name[$supplier_id] }{$suppliers_name[$supplier_id]}{/if}</td><td class="icon"><img id="save_supplier_{$supplier_id}" style="cursor:pointer;display:none" onClick="save_supplier({$supplier_id})" src="art/icons/disk.png"></td><td class="icon"><img onclick="delete_supplier({$supplier_id},'{$supplier}')" style="cursor:pointer" id="delete_supplier_{$supplier_id}" src="art/icons/cross.png"></td></tr>
-    <tr><td class="label">{t}Suppliers product code{/t}:</td><td colspan=3><input style="text-align:right;width:10em" value="{$suppliers_code[$supplier_id]}"  supplier_id="{$supplier_id}"      tipo="text" onkeyup="change_element(this)" ovalue="{$suppliers_code[$supplier_id]}" id="v_supplier_code{$supplier_id}"></td></tr>
-    <tr class="last"><td class="label">{t}Cost per{/t} {$data.units_tipo_name}:</td><td colspan=3>{$currency}<input id="v_supplier_cost{$supplier_id}" style="text-align:right;width:6em"  supplier_id="{$supplier_id}"  tipo="money" onkeyup="change_element(this)" value="{$suppliers_num_price[$supplier_id]}" ovalue="{$suppliers_num_price[$supplier_id]}" ></td></tr>
-    <tr><td colspan="4"></td></tr>
+      {foreach from=$supplier item=supplier key=supplier_id }
+      <tr  id="sup_tr1_{$supplier_id}" class="top title">
+	<td style="width:18em" class="label" colspan=2>
+	  <img id="delete_supplier_{$supplier_id}" class="icon" onclick="delete_supplier({$supplier_id},'{$supplier}')"  src="art/icons/cross.png">
+	  <img id="save_supplier_{$supplier_id}" class="icon" style="visibility:hidden" onClick="save_supplier({$supplier_id})" src="art/icons/disk.png">
+	  <a href="supplier.php?id={$supplier_id}">{$supplier.code}</a>
+	</td>
+      </tr>
+      <tr id="sup_tr2_{$supplier_id}">
+	<td class="label">{t}Suppliers product code{/t}:</td>
+	<td style="text-align:left;width:11em"><input style="text-align:right;width:10em" value="{$supplier.supplier_product_code}" supplier_id="{$supplier_id}"  tipo="text" onkeyup="change_element(this)" ovalue="{$supplier.supplier_product_code}" id="v_supplier_code{$supplier_id}"></td>
+      </tr>
+      <tr id="sup_tr3_{$supplier_id}" class="last">
+	<td class="label">{t}Cost per{/t} {$data.units_tipo_name}:</td>
+	<td style="text-align:left">{$currency}<input id="v_supplier_cost{$supplier_id}" style="text-align:right;width:6em"  supplier_id="{$supplier_id}"  tipo="money" onkeyup="change_element(this)" value="{$supplier.price}" ovalue="{$supplier.price}" ></td>
+      </tr>
+      <tr id="sup_tr4_{$supplier_id}">
+	<td colspan="2"></td>
+      </tr>
+      {/foreach}
     </tbody>
-    {/foreach}
-    </body>
     
-</table>	  
+  </table>	  
 </div>
 
 <div  {if $edit!="pictures"}style="display:none"{/if}  class="edit_block" id="d_pictures">

@@ -97,11 +97,8 @@ $smarty->assign('next',$next);
 $locations=($product->get('locations'));
 
 $smarty->assign('locations',$locations['data']);
-$smarty->assign('suppliers',$product->get('number_of_suppliers'));
-$smarty->assign('suppliers_name',$product->get('supplier_name'));
-$smarty->assign('suppliers_code',$product->get('supplier_code'));
-$smarty->assign('suppliers_price',$product->get('supplier_price'));
-
+$smarty->assign('num_suppliers',$product->get('number_of_suppliers'));
+$smarty->assign('suppliers',$product->supplier);
 
 
 
