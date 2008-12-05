@@ -111,9 +111,16 @@ var change_element= function(o){
 
     }
 
-
-
-
+    function supplier_changed(o,id){
+     var code=Dom.get('v_supplier_code'+id);
+     var cost=Dom.get('v_supplier_cost'+id);
+     name=o.name;
+     if(cost.value!=cost.getAttribute('ovalue') || code.value!=code.getAttribute('ovalue')){
+	 Dom.get('save_supplier_'+id).style.visibility='visible';
+     }else
+	 Dom.get('save_supplier_'+id).style.visibility='hidden';
+     
+ }
     function price_change(old_value,new_value){
 	//	alert(old_value+' '+new_value)
 	prefix='';
@@ -1066,22 +1073,13 @@ var supplier_selected=function(sType, aArgs){
 var save_supplier=function(supplier_id){
     var cost=Dom.get('v_supplier_cost'+supplier_id).value;
     var code=Dom.get('v_supplier_code'+supplier_id).value;
-    var request='ar_assets.php?tipo=ep_update_supplier&op_tipo=update&supplier_id='+ escape(supplier_id)+'&cost='+ escape(cost)+'&code='+ escape(code);
+    var request='ar_assets.php?tipo=ep_update&op_tipo=supplier&value='+ escape(supplier_id)+'&sup_cost='+ escape(cost)+'&sup_code='+ escape(code);
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
+		alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
-		if (r.state == 200) {
-		    //retutn to normal classes
-		    if(Dom.get('v_supplier_cost'+supplier_id).className=='ok'){
-			Dom.get('v_supplier_cost'+supplier_id).className='';
-			num_changed--;
-		    }
-		    if(Dom.get('v_supplier_code'+supplier_id).className=='ok'){
-			Dom.get('v_supplier_code'+supplier_id).className='';
-			num_changed--;
-		    }
-
-		    
+		if (r.ok) {
+		    Dom.get('save_supplier_'+supplier_id).style.visibility='hidden';
 		}else
 		    Dom.get('edit_messages').innerHTML='<span class="error">'+r.msg+'</span>';
 	    }

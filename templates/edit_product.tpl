@@ -154,19 +154,19 @@
     <tbody id="current_suppliers_form">
       {foreach from=$supplier item=supplier key=supplier_id }
       <tr  id="sup_tr1_{$supplier_id}" class="top title">
-	<td style="width:18em" class="label" colspan=2>
+	<td  class="label" colspan=2>
 	  <img id="delete_supplier_{$supplier_id}" class="icon" onclick="delete_supplier({$supplier_id},'{$supplier}')"  src="art/icons/cross.png">
 	  <img id="save_supplier_{$supplier_id}" class="icon" style="visibility:hidden" onClick="save_supplier({$supplier_id})" src="art/icons/disk.png">
 	  <a href="supplier.php?id={$supplier_id}">{$supplier.code}</a>
 	</td>
       </tr>
       <tr id="sup_tr2_{$supplier_id}">
-	<td class="label">{t}Suppliers product code{/t}:</td>
-	<td style="text-align:left;width:11em"><input style="text-align:right;width:10em" value="{$supplier.supplier_product_code}" supplier_id="{$supplier_id}"  tipo="text" onkeyup="change_element(this)" ovalue="{$supplier.supplier_product_code}" id="v_supplier_code{$supplier_id}"></td>
+	<td class="label" style="width:15em">{t}Suppliers product code{/t}:</td>
+	<td style="text-align:left;"><input style="padding-left:2px;text-align:left;width:10em" value="{$supplier.supplier_product_code}" name="code"   onkeyup="supplier_changed(this,{$supplier_id})" ovalue="{$supplier.supplier_product_code}" id="v_supplier_code{$supplier_id}"></td>
       </tr>
       <tr id="sup_tr3_{$supplier_id}" class="last">
 	<td class="label">{t}Cost per{/t} {$data.units_tipo_name}:</td>
-	<td style="text-align:left">{$currency}<input id="v_supplier_cost{$supplier_id}" style="text-align:right;width:6em"  supplier_id="{$supplier_id}"  tipo="money" onkeyup="change_element(this)" value="{$supplier.price}" ovalue="{$supplier.price}" ></td>
+	<td style="text-align:left">{$currency}<input id="v_supplier_cost{$supplier_id}" style="text-align:right;width:6em"  name="price " onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thosusand_sep}',4);supplier_changed(this,{$supplier_id})"  value="{$supplier.price}" ovalue="{$supplier.price}" ></td>
       </tr>
       <tr id="sup_tr4_{$supplier_id}">
 	<td colspan="2"></td>

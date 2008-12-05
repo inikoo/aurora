@@ -151,6 +151,10 @@ switch($tipo){
 		 'value'=>$_REQUEST['value']
 		   
 		   );
+     if(isset($_REQUEST['sup_cost']))
+       $data[0]['sup_cost']=$_REQUEST['sup_cost'];
+     if(isset($_REQUEST['sup_code']))
+       $data[0]['sup_code']=$_REQUEST['sup_code'];
      if(isset($_REQUEST['image_id']))
        $data[0]['image_id']=$_REQUEST['image_id'];
      if($_REQUEST['key']=='img_new'){

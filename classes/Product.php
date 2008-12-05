@@ -1402,9 +1402,39 @@ class product{
       
       
       switch($key){
+      case('supplier'):
+	if(!$this->supplier){
+	  $this->load('suppliers');
+	}
+	if(!$this->supplier[$value]){
+	  $res[$key]['msg']=_('Supplier not associated with the product');
+	  $res[$key]['ok']=false;
+	  continue;
+	}
 
-
-
+	$data['sup_cost']= unformat_money($data['sup_cost']);
+	
+	if(!is_numeric($data['sup_cost'])){
+	  $res[$key]['msg']=_('Product cost is not a nubner');
+	  $res[$key]['ok']=false;
+	  continue;
+	}
+	$this->supplier_to_update=$value;
+	if($this->supplier[$value]['price']!=$data['sup_cost']){
+	  $this->supplier_cost_changed=true;
+	  $this->old_supplier_cost=$this->supplier[$value]['price'];
+	  $this->supplier[$value]['price']=$data['sup_cost'];
+	}else
+	  $this->supplier_cost_changed=false;
+	
+	if($this->supplier[$value]['supplier_product_code']!=$data['sup_code']){
+	  $this->old_supplier_code=$this->supplier[$value]['supplier_product_code'];
+	  $this->supplier[$value]['supplier_product_code']=$data['sup_code'];
+	  $this->supplier_code_changed=true;
+	}else
+	  $this->supplier_code_changed=true;
+	
+	break;
       case('supplier_delete'):
 	
 	if(!$this->supplier){
@@ -1669,6 +1699,28 @@ class product{
 
   function save($key,$history_data=false){
     switch($key){
+    case('supplier'):
+
+      if(isset($this->supplier_code_changed) and $this->supplier_code_changed){
+	$code=$this->supplier[$this->supplier_to_update]['supplier_product_code'];
+	$sql=sprintf("update product2supplier set sup_code=%s  where product_id=%d and supplier_id=%d",$code,$this->id,$this->supplier_to_delete);
+	$this->db->exec($sql);
+	if(is_array($history_data)){
+	  $this->save_history($key,$this->supplier_to_delete_name,'',$history_data);
+	}
+
+      }
+
+      $cost=$this->supplier[$this->supplier_to_update]['price'];
+
+      
+      $sql=sprintf("update product2supplier set price=%.4f, sup_code=%s  product_id=%d and supplier_id=%d",$cost,$code,$this->id,$this->supplier_to_delete);
+      $this->db->exec($sql);
+      if(is_array($history_data)){
+ 	$this->save_history($key,$this->supplier_to_delete_name,'',$history_data);
+      }
+      break;
+
     case('supplier_delete'):
 
       $sql=sprintf("delete from product2supplier where product_id=%d and supplier_id=%d",$this->id,$this->supplier_to_delete);

@@ -15,6 +15,13 @@
 //   return array($mysql_date,0);
 // }
 
+
+function unformat_money($number){
+  $number=preg_replace('/\\'.$_SESSION['locale_info']['mon_thousands_sep'].'/','',$number);
+  $number=preg_replace('/\\'.$_SESSION['locale_info']['mon_decimal_point'].'/','.',$number);
+  return $number;
+}
+
 function getOrdinal($number){
  // get first digit
  $digit = abs($number) % 10;
