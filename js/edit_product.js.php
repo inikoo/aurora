@@ -1073,10 +1073,10 @@ var supplier_selected=function(sType, aArgs){
 var save_supplier=function(supplier_id){
     var cost=Dom.get('v_supplier_cost'+supplier_id).value;
     var code=Dom.get('v_supplier_code'+supplier_id).value;
-    var request='ar_assets.php?tipo=ep_update&op_tipo=supplier&value='+ escape(supplier_id)+'&sup_cost='+ escape(cost)+'&sup_code='+ escape(code);
+    var request='ar_assets.php?tipo=ep_update&key=supplier&value='+ escape(supplier_id)+'&sup_cost='+ escape(cost)+'&sup_code='+ escape(code);
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-		alert(o.responseText)
+		//	alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if (r.ok) {
 		    Dom.get('save_supplier_'+supplier_id).style.visibility='hidden';

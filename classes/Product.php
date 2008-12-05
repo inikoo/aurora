@@ -1399,7 +1399,7 @@ class product{
       $res[$key]=array('ok'=>false,'msg'=>'');
       
       
-      
+
       
       switch($key){
       case('supplier'):
@@ -1419,6 +1419,14 @@ class product{
 	  $res[$key]['ok']=false;
 	  continue;
 	}
+
+	if($data['sup_cost']==''){
+	  $res[$key]['msg']=_('Supplier product code should have al least one characher');
+	  $res[$key]['ok']=false;
+	  continue;
+	}
+		
+	$this->supplier_to_update_name= $this->supplier[$value]['code'];
 	$this->supplier_to_update=$value;
 	if($this->supplier[$value]['price']!=$data['sup_cost']){
 	  $this->supplier_cost_changed=true;
@@ -1432,7 +1440,8 @@ class product{
 	  $this->supplier[$value]['supplier_product_code']=$data['sup_code'];
 	  $this->supplier_code_changed=true;
 	}else
-	  $this->supplier_code_changed=true;
+	  $this->supplier_code_changed=false;
+	$res[$key]['ok']=true;
 	
 	break;
       case('supplier_delete'):
@@ -1702,23 +1711,30 @@ class product{
     case('supplier'):
 
       if(isset($this->supplier_code_changed) and $this->supplier_code_changed){
+
 	$code=$this->supplier[$this->supplier_to_update]['supplier_product_code'];
-	$sql=sprintf("update product2supplier set sup_code=%s  where product_id=%d and supplier_id=%d",$code,$this->id,$this->supplier_to_delete);
+	$sql=sprintf("update product2supplier set sup_code=%s  where product_id=%d and supplier_id=%d",$code,$this->id,$this->supplier_to_update);
 	$this->db->exec($sql);
 	if(is_array($history_data)){
-	  $this->save_history($key,$this->supplier_to_delete_name,'',$history_data);
+	  $history_data['supplier_id']=$this->supplier_to_update;
+	  $history_data['supplier_name']=$this->supplier_to_update_name;
+	  $this->save_history('supplier_code',$this->old_supplier_code,$code,$history_data);
 	}
-
       }
-
-      $cost=$this->supplier[$this->supplier_to_update]['price'];
+      
+      if(isset($this->supplier_cost_changed) and $this->supplier_cost_changed){
+	$cost=$this->supplier[$this->supplier_to_update]['price'];
+	$sql=sprintf("update product2supplier set   price=%.4f where product_id=%d and supplier_id=%d",$cost,$this->id,$this->supplier_to_update);
+	$this->db->exec($sql);
+	if(is_array($history_data)){
+	  $history_data['supplier_id']=$this->supplier_to_update;
+	  $history_data['supplier_name']=$this->supplier_to_update_name;
+	  $this->save_history('supplier_cost',$this->old_supplier_cost,$cost,$history_data);
+	}
+      }
 
       
-      $sql=sprintf("update product2supplier set price=%.4f, sup_code=%s  product_id=%d and supplier_id=%d",$cost,$code,$this->id,$this->supplier_to_delete);
-      $this->db->exec($sql);
-      if(is_array($history_data)){
- 	$this->save_history($key,$this->supplier_to_delete_name,'',$history_data);
-      }
+      
       break;
 
     case('supplier_delete'):
@@ -1726,6 +1742,7 @@ class product{
       $sql=sprintf("delete from product2supplier where product_id=%d and supplier_id=%d",$this->id,$this->supplier_to_delete);
       $this->db->exec($sql);
       if(is_array($history_data)){
+	$history_data['supplier_id']=$this->supplier_to_delete;
  	$this->save_history($key,$this->supplier_to_delete_name,'',$history_data);
       }
       break;
@@ -1946,12 +1963,43 @@ class product{
   function save_history($key,$old,$new,$data){
     
     switch($key){
+    case('supplier_cost'):
+
+      if(is_numeric($old)){
+      $diff=$new-$old;
+      $prefix='';
+      if($diff>0){
+	$txt=_('Product cost ('.$data['supplier_name'].') incresed by')." ";
+	$prefix='+';
+      }else{
+	$prefix='-';
+	$txt=_('Product cost ('.$data['supplier_name'].') decresed by')." ";
+      }
+      
+      $per=percentage($diff,$old);
+      $note=$txt.money($diff)." (".$per.") "._('to')." ".money($new).' '._('per').' '.$this->data['units_tipo_name'];
+      }else
+	$note=_('Product cost ('.$data['supplier_name'].') set to')." ".money($new).' '._('per').' '.$this->data['units_tipo_shortname'];
+      $sujeto='PROD';
+      $sujeto_id=$this->id;
+      $objeto='SUPCOST';
+      $objeto_id=$data['supplier_id'];
+      $action='CHNG';
+      break;
+    case('supplier_code'):
+      $note=_('Supplier ('.$data['supplier_name'].') product code set to')." ".$new;
+      $sujeto='PROD';
+      $sujeto_id=$this->id;
+      $objeto='SUP';
+      $objeto_id=$data['supplier_id'];
+      $action='DEL';
+      break;
     case('supplier_delete'):
       $note=_('Supplier')." ".$old." "._('no longer supplies this product');
       $sujeto='PROD';
       $sujeto_id=$this->id;
       $objeto='SUP';
-      $objeto_id='';
+      $objeto_id=$data['supplier_id'];
       $action='DEL';
       break;
   case('odim'):
@@ -2063,7 +2111,7 @@ class product{
       }
       
       $per=percentage($diff,$old);
-      $note=$txt.money($diff)." (".$per.") "._('to')." ".money($new);
+      $note=$txt.money($diff)." (".$per.") "._('to')." ".money($new).' '._('per').' '.$this->data['units_tipo_shortname'];
 
       
       $sujeto='PROD';
