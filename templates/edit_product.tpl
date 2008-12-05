@@ -162,7 +162,8 @@
       </tr>
       <tr id="sup_tr2_{$supplier_id}">
 	<td class="label" style="width:15em">{t}Suppliers product code{/t}:</td>
-	<td style="text-align:left;"><input style="padding-left:2px;text-align:left;width:10em" value="{$supplier.supplier_product_code}" name="code"   onkeyup="supplier_changed(this,{$supplier_id})" ovalue="{$supplier.supplier_product_code}" id="v_supplier_code{$supplier_id}"></td>
+	<td style="text-align:left;">
+	  <input style="padding-left:2px;text-align:left;width:10em" value="{$supplier.supplier_product_code}" name="code"   onkeyup="supplier_changed(this,{$supplier_id})" ovalue="{$supplier.supplier_product_code}" id="v_supplier_code{$supplier_id}"></td>
       </tr>
       <tr id="sup_tr3_{$supplier_id}" class="last">
 	<td class="label">{t}Cost per{/t} {$data.units_tipo_name}:</td>

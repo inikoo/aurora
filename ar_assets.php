@@ -195,8 +195,17 @@ switch($tipo){
 	      $response['is_principal']=1;
 	    else
 	      $response['is_principal']=0;
-
 	  }
+	   if($_REQUEST['key']=='supplier_new'){
+	    $response['data']=$product->supplier[$product->new_supplier];
+	    $response['currency']=$myconf['currency_symbol'];
+	    $response['thosusand_sep']=$myconf['thosusand_sep'];
+	    $response['decimal_point']=$myconf['decimal_point'];
+
+	    $response['units_tipo_name']=$product->data['units_tipo_name'];
+	   }
+
+
 	  if($_REQUEST['key']=='img_delete'){
 	    $response['new_principal']=$product->new_principal_img;
 	  }

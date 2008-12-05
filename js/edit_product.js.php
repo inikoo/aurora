@@ -1068,6 +1068,10 @@ var supplier_selected=function(sType, aArgs){
     Dom.get('new_supplier_name').innerHTML=oData.names;
     Dom.get('new_supplier_form').setAttribute('supplier_id',oData.id);
     Dom.get('new_supplier_input').value='';
+    Dom.get('new_supplier_cost').value='';
+    Dom.get('new_supplier_code').value='';
+
+
 };
 
 var save_supplier=function(supplier_id){
@@ -1092,59 +1096,96 @@ var save_new_supplier=function(){
     var cost=Dom.get('new_supplier_cost').value;
     var code=Dom.get('new_supplier_code').value;
     var supplier_id=Dom.get('new_supplier_form').getAttribute('supplier_id');
-    var request='ar_assets.php?tipo=ep_update_supplier&op_tipo=new&supplier_id='+ escape(supplier_id)+'&cost='+ escape(cost)+'&code='+ escape(code);
+    var request='ar_assets.php?tipo=ep_update&key=supplier_new&value='+ escape(supplier_id)+'&sup_cost='+ escape(cost)+'&sup_code='+ escape(code);
 
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-
+		alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 
-		if (r.state == 200) {
+		if (r.ok) {
 
-
-		//     var row = Dom.get('location_table').insertRow(r.where);
-// 		    row.setAttribute("id", 'row_'+r.id );
-// 		    row.setAttribute("pl_id", r.pl_id );
-// 		    var cellLeft = row.insertCell(0);
-// 		    cellLeft.setAttribute("id", 'loc_name'+r.id );
-// 		    var cellLeft = row.insertCell(1);
-// 		    cellLeft.setAttribute("id", 'loc_tipo'+r.id );
-// 		    var cellLeft = row.insertCell(2);
-// 		    var span = document.createElement("span");
-// 		    span.innerHTML=' &uarr; ';
-// 		    span.setAttribute("onclick", "rank_up("+r.id+")" );
-// 		    span.setAttribute("style", "cursor:pointer" );
-// 		    span.setAttribute("id", 'loc_picking_up'+r.id );
-// 		    cellLeft.appendChild(span);
-// 		    var span = document.createElement("span");
-// 		    span.setAttribute("id", 'loc_picking_tipo'+r.id );
-// 		    cellLeft.appendChild(span);
-// 		    cellLeft.style.textAlign='right';
-// 		    cellLeft.setAttribute("id", 'loc_pick_info'+r.id );
-// 		    var img = document.createElement("img");
-// 		    img.setAttribute("src", "art/icons/basket.png" );
-// 		    img.setAttribute("style", "cursor:pointer" );
-// 		    img.setAttribute("title", "" );
-// 		    img.setAttribute("id", 'loc_picking_img'+r.id );
-// 		    //img.setAttribute("onclick", "desassociate_loc()" );
-// 		     cellLeft.appendChild(img);
-
-
-// 		     var cellLeft = row.insertCell(3);
-// 		     cellLeft.setAttribute("id", 'loc_stock'+r.id );
-// 		     cellLeft.style.textAlign='right';
-// 		     var cellLeft = row.insertCell(4);
-// 		     var img = document.createElement("img");
-// 		     img.setAttribute("src", "art/icons/cross.png" );
-// 		     img.setAttribute("style", "cursor:pointer" );
-// 		     img.setAttribute("title", "<?=_('Free the location')?>" );
-// 		     img.setAttribute("id", 'loc_del'+r.id );
-// 		     img.setAttribute("onclick", "desassociate_loc("+r.id+")" );
-		     
-// 		     cellLeft.appendChild(img);
-// 		     location_data=r.data;
-// 		     clear_actions();
+		    tbody=Dom.get("current_suppliers_form");
 		    
+		    var tr = document.createElement("tr");
+		    tr.setAttribute("id",'sup_tr1_'+supplier_id );
+		    tr.setAttribute("class","top title" );
+		    var td = document.createElement("td");
+		    td.setAttribute("class","label" );
+		    td.setAttribute("colspan","2" );
+		    var img = document.createElement("img");
+		    img.setAttribute("class","icon" );
+		    img.setAttribute("id","delete_supplier_"+supplier_id );
+		    img.setAttribute("onClick","delete_supplier("+supplier_id+",'"+r.data.code+"')");
+		    img.setAttribute("src","art/icons/cross.png");
+		    td.appendChild(img);
+		    var img = document.createElement("img");
+		    img.setAttribute("class","icon" );
+		    img.setAttribute("id","save_supplier_"+supplier_id );
+		    img.setAttribute("onClick","save_supplier("+supplier_id+")");
+		    img.setAttribute("src","art/icons/disk.png");
+		    img.setAttribute("style","visibility:hidden");
+		    td.appendChild(img);
+		    var txt = document.createElement("textNode");
+		    txt.innerHTML=r.data.code;
+		    td.appendChild(txt);
+		    tr.appendChild(td);
+		    tbody.appendChild(tr);
+
+
+		    var tr = document.createElement("tr");
+		    tr.setAttribute("id",'sup_tr2_'+supplier_id );
+		    var td = document.createElement("td");
+		    td.setAttribute("class","label" );
+		    td.setAttribute("style","width:15em" );
+		    td.innerHTML='<?=_('Suppliers product code')?>:';
+		    tr.appendChild(td);
+		    var td = document.createElement("td");
+		    td.setAttribute("style","text-align:left;" );
+		    var input = document.createElement("input");
+		    input.setAttribute("id","v_supplier_code"+supplier_id );
+		    input.setAttribute("style","padding-left:2px;text-align:left;width:10em" );
+		    input.setAttribute("ovalue",r.data.supplier_product_code );
+		    input.setAttribute("name",'code' );
+		    input.setAttribute("onkeyup","supplier_changed(this,"+supplier_id+")" );
+		    input.value=r.data.supplier_product_code;
+		    td.appendChild(input);
+		    tr.appendChild(td);
+		    tbody.appendChild(tr);
+
+		    var tr = document.createElement("tr");
+		    tr.setAttribute("id",'sup_tr3_'+supplier_id );
+		    var td = document.createElement("td");
+		    td.setAttribute("class","label" );
+		    td.innerHTML='<?=_('Cost per')?> '+r.units_tipo_name+':';
+		    tr.appendChild(td);
+
+		    var td = document.createElement("td");
+		    td.setAttribute("style","text-align:left" );
+
+		    var txt = document.createElement("textNode");
+		    txt.innerHTML=r.currency;
+
+		    var input = document.createElement("input");
+		    input.setAttribute("id","v_supplier_cost"+supplier_id );
+		    input.setAttribute("style","text-align:right;width:6em" );
+		    input.setAttribute("ovalue",r.data.price );
+		    input.setAttribute("name",'price' );
+		    input.setAttribute("onblur","this.value=FormatNumber(this.value,'"+r.decimal_point+"','"+r.thosusand_sep+"',4);supplier_changed(this,"+supplier_id+")" );
+		    input.value=r.data.price;
+		    
+		    td.appendChild(txt);
+		    td.appendChild(input);
+		    tr.appendChild(td);
+		    tbody.appendChild(tr);
+		    var tr = document.createElement("tr");
+		    tr.setAttribute("id",'sup_tr4_'+supplier_id );
+		    var td = document.createElement("td");
+		    td.setAttribute("colspan","2" );
+		    tr.appendChild(td);
+		    tbody.appendChild(tr);
+		    Dom.get('new_supplier_form').style.display='none';
+		    Dom.setStyle('current_suppliers_form', 'opacity', 1); 
 		}else
 		    Dom.get('edit_messages').innerHTML='<span class="error">'+r.msg+'</span>';
 	    }

@@ -218,14 +218,11 @@ class product{
 
 	break;
       case('suppliers'):
-	$this->suppliers=array();
+	$this->supplier=array();
 	$sql=sprintf("select p2s.supplier_id, p2s.price,p2s.sup_code,s.code as code,s.name as name from product2supplier as p2s left join supplier as s on (p2s.supplier_id=s.id) where p2s.product_id=%d",$this->id);
 	
+	
 	$result =& $this->db->query($sql);
-	//$supplier=array();
-	//	$this->suppliers['name']=array();
-	//$this->suppliers['price']=array();
-	//$this->suppliers['code']=array();
 	while($row=$result->fetchRow()){
 	  $this->supplier[$row['supplier_id']]=array(
 						     'id'=>$row['supplier_id'],
@@ -236,13 +233,9 @@ class product{
 						     'code'=>$row['code']
 
 						     );
-	  //$this->suppliers['name'][$row['supplier_id']]=$row['name'];
-	  //$this->suppliers['price'][$row['supplier_id']]=money($row['price']);
-	  //$this->suppliers['num_price'][$row['supplier_id']]=$row['price'];
-	  //$this->suppliers['code'][$row['supplier_id']]=$row['code'];
 	}
 
-	//$this->suppliers['number']=count($this->suppliers['name']);
+
 	break;
 	// print_r($this->suppliers);
       case('same_products'):
@@ -1398,10 +1391,63 @@ class product{
       $value=$data['value'];
       $res[$key]=array('ok'=>false,'msg'=>'');
       
-      
-
-      
       switch($key){
+      case('supplier_new'):
+	if(!is_numeric($value) or $value<1){
+	  $res[$key]['msg']=_('Wrong supplier indentifier');
+	  $res[$key]['ok']=false;
+	  continue;
+	}
+	
+	if(isset($this->supplier[$value])){
+	  $res[$key]['msg']=_('Supplier already associated with product');
+	  $res[$key]['ok']=false;
+	  continue;
+	}
+
+	$supplier=new Supplier($value);
+	if(!$supplier->id){
+	  $res[$key]['msg']=_('Supplier not found');
+	  $res[$key]['ok']=false;
+	  continue;
+	}
+	if(!$this->supplier){
+	  $this->load('suppliers');
+	}
+	$this->supplier_to_update=$value;
+	$this->new_supplier=$value;
+	if(!is_numeric($data['sup_cost'])){
+	  $price='';
+	  $this->supplier_cost_changed=false;
+	}else{
+	  $price=$data['sup_cost'];
+	  $this->old_supplier_cost='';
+	  $this->supplier_cost_changed=true;
+	}
+	if(preg_match('/^\s*$/',$data['sup_code']) ){
+	  $code='';
+	  $this->supplier_code_changed=false;
+	}else{
+	  $code=$data['sup_code'];
+	  $this->old_supplier_code='';
+	  $this->supplier_code_changed=true;
+	}
+
+
+	$this->supplier[$value]=array(
+				      'id'=>$supplier->id,
+				      'name'=>$supplier->data['name'],
+				      'price'=>$price,
+				      'formated_price'=>money($price),
+				      'supplier_product_code'=>$code,
+				      'code'=>$supplier->data['code']
+				      );
+	
+	
+	
+
+	$res[$key]['ok']=true;
+	break;
       case('supplier'):
 	if(!$this->supplier){
 	  $this->load('suppliers');
@@ -1415,12 +1461,12 @@ class product{
 	$data['sup_cost']= unformat_money($data['sup_cost']);
 	
 	if(!is_numeric($data['sup_cost'])){
-	  $res[$key]['msg']=_('Product cost is not a nubner');
+	  $res[$key]['msg']=_('Product cost is not a numbner');
 	  $res[$key]['ok']=false;
 	  continue;
 	}
 
-	if($data['sup_cost']==''){
+	if(preg_match('/^\s*$/',$data['sup_code'])){
 	  $res[$key]['msg']=_('Supplier product code should have al least one characher');
 	  $res[$key]['ok']=false;
 	  continue;
@@ -1708,6 +1754,16 @@ class product{
 
   function save($key,$history_data=false){
     switch($key){
+    case('supplier_new'):
+      
+      $sql=sprintf("insert into product2supplier (supplier_id,product_id) values (%d,%d)",$this->new_supplier,$this->id);
+      $this->db->exec($sql);
+      if(is_array($history_data)){
+	$history_data['supplier_id']=$this->new_supplier;
+	$this->save_history('supplier_new','',$this->supplier[$this->new_supplier]['code'],$history_data);
+      }
+      $this->save('supplier');
+      
     case('supplier'):
 
       if(isset($this->supplier_code_changed) and $this->supplier_code_changed){
@@ -1963,6 +2019,15 @@ class product{
   function save_history($key,$old,$new,$data){
     
     switch($key){
+
+    case('supplier_new'):
+      $note=_('Supplier associated with this product').": ".$new;
+      $sujeto='PROD';
+      $sujeto_id=$this->id;
+      $objeto='SUP';
+      $objeto_id=$data['supplier_id'];
+      $action='NEW';
+      break;
     case('supplier_cost'):
 
       if(is_numeric($old)){
@@ -1984,7 +2049,7 @@ class product{
       $sujeto_id=$this->id;
       $objeto='SUPCOST';
       $objeto_id=$data['supplier_id'];
-      $action='CHNG';
+      $action='CHG';
       break;
     case('supplier_code'):
       $note=_('Supplier ('.$data['supplier_name'].') product code set to')." ".$new;
