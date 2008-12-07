@@ -42,6 +42,7 @@ $db->setFetchMode(MDB2_FETCHMODE_ASSOC);
 //__________________________________________________________________________________________________|
 
 require_once 'myconf/conf.php';            // Configuration file __________________________________________|
+
 $session = new dbsession($myconf['max_session_time'],1,100);
 
 
@@ -78,6 +79,7 @@ if ($logout){
   unset($_SESSION);
   
   $LU->deleteRememberCookie();
+  //  $LU->logout(true); 
   include_once 'login.php';
   exit;
  }
@@ -86,64 +88,108 @@ if ($logout){
 $handle = (array_key_exists('_login_', $_REQUEST)) ? $_REQUEST['_login_'] : false;
 $sk = (array_key_exists('ep', $_REQUEST)) ? $_REQUEST['ep'] : false;
 
-if($handle & $sk){
-  include_once('aes.php');
-  include_once('app_files/db/key.php');
-  $sql=sprintf("select passwd from liveuser_users where handle='%s'",addslashes($handle));
-  $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-  if($row=$res->fetchRow()) {
-    $pwd=$row['passwd'];
-    
-    $st=AESDecryptCtr(AESDecryptCtr($sk,$pwd,256),SKEY,256);
-    if(preg_match('/^skstart\|\d+\|[0-9\.]+\|.+\|/',$st)){
-      $data=preg_split('/\|/',$st);
-      $time=$data[1];
-      $ip=$data[2];
-      $ikey=$data[3];
-      if($time-date('U')>0 and ip()==$ip and IKEY==$ikey ){
-	$LU->login($handle, $pwd, true);
-      }
-    }
-  }
- 
- 
-  
-  if ($LU->isLoggedIn()){
-    $end=date('Y-m-d H:i:s',strtotime($myconf['max_session_time'].' sec'));
-    $sql=sprintf("insert into session_history (user_id,ip,start,last,end,session_id) values (%d,%s,NOW(),NOW(),%s,%s)   ",$LU->getProperty('auth_user_id'),prepare_mysql(ip()),prepare_mysql($end),prepare_mysql(session_id()) );
-    mysql_query($sql);
-  }else{
-    $sql=sprintf("insert into session_noauth (handle,date,ip) values (%s,NOW(),%s)",prepare_mysql($handle),prepare_mysql(ip()));
-    //  print "$sql";
-    mysql_query($sql);
-    $target = $_SERVER['PHP_SELF'];
-    if(preg_match('/js$/',$target))
-      exit();
-    include_once 'login.php';
-    exit();
-  
-  }
 
- }else{
-
-  if ($LU->isLoggedIn()) {
-    $end=date('Y-m-d H:i:s',strtotime($myconf['max_session_time'].' sec'));
-    $sql=sprintf("update session_history set last=NOW(),end=%s  where session_id=%s  ",prepare_mysql($end),prepare_mysql(Session_id()));
-
-    mysql_query($sql);
-  }else{
-    //     $sql=sprintf("insert into session_noauth (handle,ip,date,ip) values (NULL,NOW(),%s)",prepare_mysql(ip()));
-    //print $sql;
-    //mysql_query($sql);
-    $target = $_SERVER['PHP_SELF'];
-    if(preg_match('/js$/',$target))
-      exit();
-    include_once 'login.php';
-    exit();
-
-  }
-
+ if(!$LU->isLoggedIn() || ($handle && $LU->getProperty('handle') != $handle)){
+   if (!$handle){
+     $LU->login(null, null, true);
+   }else{
+      
+       include_once('aes.php');
+       include_once('app_files/db/key.php');
+       $sql=sprintf("select passwd from liveuser_users where handle='%s'",addslashes($handle));
+       $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+       if($row=$res->fetchRow()) {
+ 	$pwd=$row['passwd'];
+ 	$st=AESDecryptCtr(AESDecryptCtr($sk,$pwd,256),SKEY,256);
+ 	if(preg_match('/^skstart\|\d+\|[0-9\.]+\|.+\|/',$st)){
+ 	  $data=preg_split('/\|/',$st);
+	  $time=$data[1];
+ 	  $ip=$data[2];
+ 	  $ikey=$data[3];
+ 	  if($time-date('U')>0 and ip()==$ip and IKEY==$ikey )
+ 	    $LU->login($handle, $pwd,true);
+	}
+       }
+   }
  }
+
+
+
+if(!$LU->isLoggedIn()){
+  $target = $_SERVER['PHP_SELF'];
+  if(preg_match('/js$/',$target)) 
+    exit();
+  include_once 'login.php';
+  exit();
+ }
+
+
+
+
+
+
+
+
+// if($handle & $sk){
+//   include_once('aes.php');
+//   include_once('app_files/db/key.php');
+//   $sql=sprintf("select passwd from liveuser_users where handle='%s'",addslashes($handle));
+//   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+//   if($row=$res->fetchRow()) {
+//     $pwd=$row['passwd'];
+    
+//     $st=AESDecryptCtr(AESDecryptCtr($sk,$pwd,256),SKEY,256);
+//     if(preg_match('/^skstart\|\d+\|[0-9\.]+\|.+\|/',$st)){
+//       $data=preg_split('/\|/',$st);
+//       $time=$data[1];
+//       $ip=$data[2];
+//       $ikey=$data[3];
+//       if($time-date('U')>0 and ip()==$ip and IKEY==$ikey ){
+// 	$LU->login($handle, $pwd, true);
+//       }
+//     }
+//   }
+  
+ 
+  
+//   if ($LU->isLoggedIn()){
+//     $end=date('Y-m-d H:i:s',strtotime($myconf['max_session_time'].' sec'));
+//     $sql=sprintf("insert into session_history (user_id,ip,start,last,end,session_id) values (%d,%s,NOW(),NOW(),%s,%s)   ",$LU->getProperty('auth_user_id'),prepare_mysql(ip()),prepare_mysql($end),prepare_mysql(session_id()) );
+//     mysql_query($sql);
+//   }else{
+//     $sql=sprintf("insert into session_noauth (handle,date,ip) values (%s,NOW(),%s)",prepare_mysql($handle),prepare_mysql(ip()));
+//     //  print "$sql";
+//     mysql_query($sql);
+//     $target = $_SERVER['PHP_SELF'];
+//     if(preg_match('/js$/',$target))
+//       exit();
+//     include_once 'login.php';
+//     exit();
+  
+//   }
+
+//  }else{
+
+//   if ($LU->isLoggedIn()) {
+//     $end=date('Y-m-d H:i:s',strtotime($myconf['max_session_time'].' sec'));
+//     $sql=sprintf("update session_history set last=NOW(),end=%s  where session_id=%s  ",prepare_mysql($end),prepare_mysql(Session_id()));
+
+//     mysql_query($sql);
+//   }else{
+//     //     $sql=sprintf("insert into session_noauth (handle,ip,date,ip) values (NULL,NOW(),%s)",prepare_mysql(ip()));
+//     //print $sql;
+//     //mysql_query($sql);
+//     print "caca";
+    
+//     $target = $_SERVER['PHP_SELF'];
+//     if(preg_match('/js$/',$target))
+//       exit();
+//     include_once 'login.php';
+//     exit();
+
+//   }
+
+//  }
 
 
 

@@ -42,7 +42,21 @@ var select_cat=function(o,e){
 
 }
 
+    var to_save_on_enter=function(e,o){
+     var key;     
+     if(window.event)
+          key = window.event.keyCode; //IE
+     else
+          key = e.which; //firefox     
 
+     //     alert(key);
+     if (key == 13){
+	 //	 alert(o.name+'_save');
+	
+	 o.blur();
+
+     }
+ }
 
 
 var is_diferent = function(v1,v2,tipo){
@@ -61,6 +75,18 @@ var is_diferent = function(v1,v2,tipo){
 	
 
 }
+
+    var change_units=function(){
+	Dom.get("units_cancel").style.visibility='visible';
+	Dom.get("change_units_but").style.display='none';
+	Dom.get("units").style.display='none';
+	Dom.get("v_units").style.display='';
+	Dom.get("change_units_price").style.display='';
+	Dom.get("change_units_oweight").style.display='';
+	Dom.get("change_units_odim").style.display='';
+	Dom.get("change_units_odim_example").style.display='';
+	Dom.get("change_units_tipo_but").style.display='none';
+    }
 
 
 var change_element= function(o){
@@ -162,16 +188,61 @@ function return_to_old_value(key){
 
 }
 
+function change_to_dependant(){
+    Dom.get("product_tipo_dependant").style.display='';
+
+}
+
+function units_save(){
+    var units=Dom.get('v_units').value;
+    var price=Dom.get('v_price').value;
+    var oweight=Dom.get('v_oweight_fcu').value;
+    var name='odim_fcu';
+    var odim=Dom.get('v_'+name).getAttribute('tipo')+'_'+Dom.get('v_'+name).value;
+
+    var request='ar_assets.php?tipo=ep_update&key=units'+'&value='+escape(units)+'&price='+escape(price)+'&oweight='+escape(oweight)+'&odim='+escape(odim);
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    success:function(o) {
+		//alert(o.responseText);
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if(r.ok){
+		    Dom.get("units_cancel").style.visibility='hidden';
+		    Dom.get("units_save").style.visibility='hidden';
+
+		    Dom.get("change_units_diff").style.display='none';
+		    Dom.get("change_units_but").style.display='';
+		    Dom.get("units").style.display='';
+		    Dom.get("v_units").style.display='none';
+		    Dom.get("change_units_price").style.display='none';
+		    Dom.get("change_units_oweight").style.display='none';
+		    Dom.get("change_units_odim").style.display='none';
+		    Dom.get("change_units_odim_example").style.display='none';
+		    Dom.get("change_units_tipo_but").style.display='';
+		    Dom.get("v_units").setAttribute('ovalue',units);
+		    Dom.get("v_oweight_fcu").setAttribute('ovalue',oweight);
+		    Dom.get("v_odim_fcu").setAttribute('ovalue',odim);
+		    Dom.get("v_price_fcu").setAttribute('ovalue',price);
+		    Dom.get("change_units_price_diff").style.display='none';
+		    Dom.get("change_units_oweight_diff").style.display='none';
+		    Dom.get("change_units_odim_diff").style.display='none';
+		    Dom.get('edit_messages').innerHTML='<span>'+r.msg+'</span>';
+		}else
+		    Dom.get('edit_messages').innerHTML='<span class="error">'+r.msg+'</span>';
+	    }
+	    
+	    });
+
+
+}
+
 function delete_supplier(id,name){
     var answer = confirm("<?=_('Are you sure you want to desassociate this supplier')?> ("+name+")");
     if (answer){
 
-	
-
 	var request='ar_assets.php?tipo=ep_update&key=supplier_delete'+'&value='+escape(id);
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
-		    alert(o.responseText);
+		    //alert(o.responseText);
 		    var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if(r.ok){
 			el=Dom.get("sup_tr1_"+id);
@@ -274,27 +345,98 @@ function caption_changed(o){
 
 	    
 	if(ovalue!=o.value){
-
-	    if(o.value==''){
-		Dom.get(name+"_change").innerHTML="<?=_("This value can not be empty")?>";
-		Dom.get(name+"_save").style.display='none';
-		Dom.get(name+"_icon").style.visibility='visible';
-		return;
+	    if(name=='description'){
+		if(o.value==''){
+		    Dom.get("edit_messages").innerHTML="<?=_("The product description can not be empty")?>";
+		    Dom.get(name+"_save").style.visibility='hidden';
+		    return;
+		}
+		if(o.value.lenght>75){
+		    Dom.get("edit_messages").innerHTML="<?=_("The product description can not be longer the 75 characters")?>";
+		    Dom.get(name+"_save").style.visibility='hidden';
+		    return;
+		}
+	    }else if(name=='sdescription'){
+		if(o.value==''){
+		    Dom.get("edit_messages").innerHTML="<?=_("The product short description can not be empty")?>";
+		    Dom.get(name+"_save").style.visibility='hidden';
+		    return;
+		}
+		if(o.value.lenght>75){
+		    Dom.get("edit_messages").innerHTML="<?=_("The product short description can not be longer the 40 characters")?>";
+		    Dom.get(name+"_save").style.visibility='hidden';
+		    return;
+		}
 	    }
-	    Dom.get(name+"_save").style.display='';
-	    Dom.get(name+"_change").innerHTML='';
-	    Dom.get(name+"_icon").style.visibility='visible';
+
+
+	    
+
+	    Dom.get("edit_messages").innerHTML='';
+	    Dom.get(name+"_save").style.visibility='visible';
+	    //Dom.get(name+"_icon").style.visibility='visible';
 	    
 	}
 	else{
-	    Dom.get(name+"_change").innerHTML='';
-	    Dom.get(name+"_save").style.display='none';
-	    Dom.get(name+"_icon").style.visibility='hidden';
+	    Dom.get("edit_messages").innerHTML='';
+	    Dom.get(name+"_save").style.visibility='hidden';
+	    //Dom.get(name+"_icon").style.visibility='hidden';
 	}
     
 	
 	
     }
+
+function percentage(old_value,new_value){
+    if(new_value==0)
+	return '';
+    old_value=FormatNumber(old_value,'.','',4);
+    new_value=FormatNumber(new_value,'.','',4);
+    var diff=new_value-old_value;
+    if(diff>0)
+	prefix='+';
+    else
+	prefix='';
+    var txt=prefix+FormatNumber((100*(diff/old_value)).toFixed(1),'<?=$myconf['decimal_point']?>','<?=$myconf['thosusand_sep']?>',1)+'%';
+
+    return txt;
+
+}
+
+
+function units_changed(o){
+	var ovalue=o.getAttribute('ovalue');
+	var name=o.name;
+
+	if(ovalue!=o.value){
+
+	    Dom.get(name+"_save").style.visibility='visible';
+	    //Dom.get(name+"_cancel").style.display='none';
+	    Dom.get("change_units_diff").style.display='';
+	    if(o.value==0){
+		Dom.get(name+"_save").style.visibility='hidden';
+		Dom.get(name+"_cancel").style.display='';
+	   
+		Dom.get("change_units_diff").innerHTML='<?_('Error')?>';
+	    }else{
+		Dom.get("change_units_diff").innerHTML=percentage(ovalue,o.value);
+		Dom.get("change_units_price_diff").innerHTML=percentage(Dom.get("v_price_fcu").getAttribute('ovalue'),Dom.get("v_price_fcu").value);	
+		Dom.get("change_units_oweight_diff").innerHTML=percentage(Dom.get("v_oweight_fcu").getAttribute('ovalue'),Dom.get("v_oweight_fcu").value);	
+		Dom.get("change_units_odim_diff").innerHTML=percentage(Dom.get("v_odim_fcu").getAttribute('ovalue'),Dom.get("v_odim_fcu").value);	
+
+	    
+	    }	    
+	    
+	    
+	    
+	}else{
+
+	    Dom.get(name+"_save").style.visibility='hidden';
+	    //Dom.get(name+"_cancel").style.display='';
+	    Dom.get("change_units_diff").style.display='none';
+	    
+	}
+}
 
 
 
@@ -319,8 +461,15 @@ function validate_dim(value,tipo){
     case('shape1'):
 	if(!value.match(/^[0-9\<?=$myconf['decimal_point']?>]+x[0-9\<?=$myconf['decimal_point']?>]+x[0-9\<?=$myconf['decimal_point']?>]+$/))
 	    return {ok:false,msg:''};
-	else
-	    return {ok:true,msg:''};
+	else{
+	    var dim=value.split("x",3);
+	    var vol=dim[0]*dim[1]*dim[2];
+	    if(vol==0)
+		return {ok:false,msg:'<?=_('Zero volumen')?>'};
+	    else
+		return {ok:true,msg:'',vol:vol};
+
+	}
 	break;
     case('shape2'):
     case('shape4'):
@@ -369,10 +518,28 @@ function dim_changed(o){
     }
 
 }
-
-
-
-    function price_changed(o){
+function price_fcu_changed(o){
+    var ovalue=o.getAttribute('ovalue');
+    Dom.get('change_units_price_diff').innerHTML=percentage(ovalue,o.value);
+}
+function oweight_fcu_changed(o){
+    var ovalue=o.getAttribute('ovalue');
+    Dom.get('change_units_oweight_diff').innerHTML=percentage(ovalue,o.value);
+}
+function odim_fcu_changed(o){
+    
+    tipo_shape=o.getAttribute('tipo');
+    data_old=validate_dim(o.getAttribute('ovalue'),tipo_shape);
+    data_new=validate_dim(o.value,tipo_shape);
+    if(!data_new.ok){
+	Dom.get('change_units_odim_diff').innerHTML='<?_('Error')?>';
+	
+    }else{
+	if(data_old.ok)
+	    Dom.get('change_units_odim_diff').innerHTML=percentage(data_old.vol,data_new.vol);
+    }
+}
+function price_changed(o){
 	var ovalue=o.getAttribute('ovalue');
 	var name=o.name;
 
@@ -448,14 +615,15 @@ function simple_save(name){
     // alert(request)
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-		alert(o.responseText);
+		//alert(o.responseText);
 		
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if(r.ok){
 		Dom.get(name+'_save').style.visibility='hidden';
 		Dom.get('v_'+name).setAttribute('ovalue',value);
+		Dom.get('edit_messages').innerHTML=r.msg;
 		}else{
-		    Dom.get('product_messages').innerHTML='<span class="error">'+r.msg+'</span>';
+		    Dom.get('edit_messages').innerHTML='<span class="error">'+r.msg+'</span>';
 		}
 	    }
 	});
@@ -769,16 +937,16 @@ var change_list_element=function(e){
 	//	alert(request);
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
-		    //  alert(o.responseText);
+		     alert(o.responseText);
 		    var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    //for(x in r['res'])
 		    //	alert(x+' '+r[x])
 		    if(r.ok){
-			Dom.get(key+'_change').innerHTML='';
+			//Dom.get(key+'_change').innerHTML='';
 			Dom.get(key+'_save').style.visibility='hidden';
 			Dom.get('v_'+key).setAttribute('ovalue',new_value);
-		    }else
-			alert(r.msg);
+		    }
+		    Dom.get('edit_messages').innerHTML=r.msg;
 		}
 		 
 	    });
@@ -823,17 +991,18 @@ function save_image(key,image_id){
 	//	alert(request);
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
-		    //alert(o.responseText);
+		    // alert(o.responseText);
 		    var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    //for(x in r['res'])
 		    //	alert(x+' '+r[x])
 		    if(r.ok){
-			Dom.get(key+'_change').innerHTML='';
-			Dom.get(key+'_save').style.display='none';
-			Dom.get(key+'_icon').style.visibility='hidden';
+			//	Dom.get(key+'_change').innerHTML='';
+			Dom.get(key+'_save').style.visibility='hidden';
+			//Dom.get(key+'_icon').style.visibility='hidden';
 			Dom.get('v_'+key).setAttribute('ovalue',new_value);
+			Dom.get("edit_messages").innerHTML=r.msg;
 		    }else
-			alert(r.msg);
+			Dom.get("edit_messages").innerHTML=r.msg;
 		}
 		 
 	    });
@@ -1080,7 +1249,7 @@ var save_supplier=function(supplier_id){
     var request='ar_assets.php?tipo=ep_update&key=supplier&value='+ escape(supplier_id)+'&sup_cost='+ escape(cost)+'&sup_code='+ escape(code);
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-		//	alert(o.responseText)
+			alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if (r.ok) {
 		    Dom.get('save_supplier_'+supplier_id).style.visibility='hidden';
@@ -1215,6 +1384,7 @@ YAHOO.util.Event.onContentReady("adding_new_supplier", function () {
  	var oAC = new YAHOO.widget.AutoComplete("new_supplier_input", "new_supplier_container", oDS);
  	oAC.resultTypeList = false; 
 	oAC.generateRequest = function(sQuery) {
+	    // alert("?tipo=suppliers_name&except_product=<?=$_SESSION['state']['product']['id']?>&query=" + sQuery)
  	    return "?tipo=suppliers_name&except_product=<?=$_SESSION['state']['product']['id']?>&query=" + sQuery ;
  	};
 	oAC.forceSelection = true; 

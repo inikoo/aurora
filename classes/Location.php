@@ -66,10 +66,11 @@ class location{
     case('product'):
       include_once('classes/Product.php');
        $sql=sprintf("select product_id from product2location where location_id=%d ",$this->id);
-      $result =& $this->db->query($sql);
-      while($row=$result->fetchRow()){
-	$this->items[]=new product($row['product_id']);
-      }
+       print $sql;
+       $result =& $this->db->query($sql);
+       while($row=$result->fetchRow()){
+	 $this->items[]=new product($row['product_id']);
+       }
     }
       
 

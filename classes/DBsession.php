@@ -80,7 +80,7 @@ class dbSession
      *
      *  @return void
      */
-    function dbSession($gc_maxlifetime = "", $gc_probability = "", $gc_divisor = "", $securityCode = "sfjw8rq3pe28rnqwep8qwn*&P*(P3184713847P883pe8qfmwq8efneprm52gxn&^&^&^")
+    function dbSession($gc_maxlifetime = "", $gc_probability = "", $gc_divisor = "", $securityCode = "sfjw8rq3pe28rnqwep8qwn*&P*(P31fne;fa84713847P883pe8qfmwq8efneprm52gxn&^&^&^")
     {
       $this->db=& MDB2::singleton();
       
@@ -110,7 +110,7 @@ class dbSession
 
         // get session lifetime
         $this->sessionLifetime = ini_get("session.gc_maxlifetime");
-        
+
         // we'll use this later on in order to try to prevent HTTP_USER_AGENT spoofing
         $this->securityCode = $securityCode;
 
@@ -303,6 +303,8 @@ class dbSession
                 session_expire = '".addslashes(time() + $this->sessionLifetime)."'
 
         ";
+
+
       $result =& $this->db->exec($sql);
       if (PEAR::isError($result)) {
 	die($result->getMessage());

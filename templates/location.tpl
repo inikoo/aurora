@@ -39,17 +39,30 @@
 	<div style="">
 
 	  <div style="float:right;padding:0;margin:0">
-	  <table class="options" style="float:right;padding:0;margin:0">
-	    <tr>
-	      <td  id="change_stock">Audit</td>
-	      <td  id="move_stock">Move Stock</td>
-	      <td  id="damaged_stock">Set Stock as Damaged</td>
-	    </tr>
-	  </table>
+
+	    <table class="options" style="float:right;padding:0;margin:0">
+	      <tr>
+		<td  style="{if $num_products<1}visibility:hidden;{/if}" id="move_stock">Move Stock</td>
+		<td  style="{if $num_products==0}visibility:hidden;{/if}" id="change_stock">Audit</td>
+		<td  style="{if $num_products==0}visibility:hidden;{/if}" id="damaged_stock">Set Stock as Damaged</td>
+		<td  id="add_product">Add Product</td>
+
+	      </tr>
+	    </table>
+
+
 	  <div id="manage_stock" style="display:none;clear:both;margin:0 0 20px 5px">
 	    <div id="manage_stock_messages" ></div>
-	    <div id="manage_stock_locations" style="width:100px;display:none;margin-bottom:30px;margin-left:2px"><input id="new_location_input" type="text"><div id="new_location_container"></div></div>
-	    <div id="manage_stock_products" style="width:100px;display:none;margin-bottom:30px;margin-left:2px;"><input id="new_product_input" type="text"><div id="new_product_container"></div></div>
+	    <div id="manage_stock_locations" style="width:100px;display:none;margin-bottom:30px;margin-left:2px">
+	      <input id="new_location_input" type="text">
+	      <div id="new_location_container"></div>
+	    </div>
+	    <div id="manage_stock_products" style="width:100px;xdisplay:none;margin-bottom:30px;margin-left:2px;">
+	      <input id="new_product_input" type="text">
+	      <div id="new_product_container">
+		
+	      </div>
+	    </div>
 	     
 	    <div id="manage_stock_engine"></div>
 	  </div>

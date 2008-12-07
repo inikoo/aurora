@@ -8,11 +8,11 @@ var list = new Object;
 var operation='';
 
 
-var remove_prod=function (pl_id,product_id){x
+var remove_prod=function (pl_id,product_id){
     var request='ar_assets.php?tipo=pml_desassociate_location&id='+ escape(pl_id)+'&msg=&product_id='+ escape(product_id);
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-
+		alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 
 		if (r.state == 200) {
@@ -185,6 +185,8 @@ YAHOO.util.Event.onContentReady("manage_stock_locations", function () {
 	oAC.itemSelectEvent.subscribe(location_selected); 
     });
 YAHOO.util.Event.onContentReady("manage_stock_products", function () {
+
+
 	var oDS = new YAHOO.util.XHRDataSource("ar_assets.php");
  	oDS.responseType = YAHOO.util.XHRDataSource.TYPE_JSON;
  	oDS.responseSchema = {
@@ -228,7 +230,8 @@ var product_selected=function(){
     
     // add the product
 
-
+    // alert(data.note);
+    //return;
     var request='ar_assets.php?tipo=pml_new_location&is_primary=false&can_pick=true&location_id=<?=$_SESSION['state']['location']['id']?>&msg=&product_id='+ escape(data.product_id);
 
     YAHOO.util.Connect.asyncRequest('POST',request ,{
@@ -615,14 +618,20 @@ var clear_all=function(){
     table.showColumn('delete');
     table.showColumn('current_qty');
     list = new Object;
-}
+};
 
+function add_product(){
+    Dom.get("manage_stock").style.display='';
+    Dom.get("manage_stock_messages").innerHTML='<?=_('Choose the product the you want to place in this location')?>.';
+    Dom.get("manage_stock_products").style.display='';
+}
 
 function init(){
 
 	
 	 Event.addListener("damaged_stock", "click", damaged_stock);
 	 Event.addListener("move_stock", "click", move_stock);
+	 Event.addListener("add_product", "click", add_product);
 	 Event.addListener("change_stock", "click", change_stock);
 
 	

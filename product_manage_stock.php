@@ -56,7 +56,7 @@ $_SESSION['state']['product']['id']=$product_id;
 
 
 $product= new product($product_id);
-$product->read(array(
+$product->load(array(
 		     'product_tree'
 		     ,'images'
 		     ,'locations'

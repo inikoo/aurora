@@ -34,11 +34,11 @@ switch($tipo){
    
 
    if(isset($_REQUEST['except_product'])){
-     $sql=sprintf("select code,name,id from supplier where code like '%s%%' and (select count(*) from product2supplier where product_id=%d)!=0  ",$_REQUEST['query'],$_REQUEST['except_product']);
+     $sql=sprintf("select code,name,id from supplier where code like '%s%%' and (select count(*) from product2supplier where product_id=%d and supplier_id=supplier.id)=0  ",$_REQUEST['query'],$_REQUEST['except_product']);
    }else{
      $sql=sprintf("select code,name,id from supplier where code like '%s%%' ",$_REQUEST['query']);
    }
-   
+   // print $sql;
    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
    while($row=$res->fetchRow()) {
 

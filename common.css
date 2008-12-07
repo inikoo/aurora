@@ -22,7 +22,7 @@ a:hover {text-decoration:underline;color:#000}
 .yui-dt-hidden div { display:none }
 .aright  {text-align:right;}
 .aright .yui-dt-liner{ text-align:right; }
-.aleft {text-align:left}
+.aleft,td.aleft {text-align:left}
 .aleft .yui-dt-liner{text-align:left}
 span.nav2 {float:left;background:#6d84b4;padding:0 10px;position:relative;bottom:6px;color:#fff;font-size:85%;margin:0 2px}
 span.nav2 a {color:#fff}
@@ -182,17 +182,21 @@ input.normal_right{color:#000;text-align:right}
 img{vertical-align:bottom}
 table.edit td{ text-align:right;padding-left:10px;padding-right:10px }
 table.edit input{ padding-right:4px;text-align:right; }
+table.edit input.left{ padding-left:4px;text-align:left; }
+
 table.edit td {vertical-align:middle  }
 table.edit td.label{ text-align:left }
+table.edit td.left{ text-align:left }
+
 table.edit td.icon{ padding:0 5px;width:16px}
 table.edit tr.top{ border-top:1px solid #1d4e85}
 table.edit tr.title{text-align:left; border-bottom:1px solid #a5b6c8}
 table.edit tr.title td{font-weight:800;text-align:left;}
 table.edit img.icon{margin-left:10px;float:right;cursor:pointer}
 table.edit tr.last{ border-bottom:1px solid #a5b6c8}
-
-.chooser {padding:15px 20px 0 20px;}
-.chooser li {float:left;padding:3px 5px 5px 5px ;margin: 0 5px 0px 0;border: 1px solid #ccc;cursor:pointer;;opacity: .5;filter: alpha(opacity=40);}
+.chooser {width:780px;}
+.chooser {padding:15px 0px 0 0px;}
+.chooser li {float:left;padding:3px 5px 5px 5px ;margin: 0 5px 10px 0;border: 1px solid #ccc;cursor:pointer;;opacity: .5;filter: alpha(opacity=40);}
 .chooser li:hover {opacity: .8;filter: alpha(opacity=80);}
 .chooser img {position:relative;top:2px;}
 .chooser li.selected {cursor:default;border-color:#aaa;;opacity: 1;filter: alpha(opacity=100);font-weight:800;color:#555}
@@ -287,7 +291,7 @@ table.plot_menu img.selected {opacity: 1.0;filter: alpha(opacity=100);}
 
 input {border: 1px solid #777}
 .changed{color:red}
-.error{background:#fdafaf;color:#000}
+.error{xbackground:#fdafaf;color:red}
 
 table.sbut {margin:5px;border-spacing:10px  10px;border-collapse: separate;width:100%}
 table.but{margin:5px 0 ;width:140px;border:none;clear:right;float:right;border-collapse: separate;;border-spacing:3px  3px;}
@@ -471,7 +475,9 @@ span.small{font-size:80%}
 .edit_images div.caption span.save { float:right;margin-right:5px }
 .edit_images div.caption span.save img.caption {visibility:hidden;cursor:pointer }
 .edit_images div.caption textarea.caption{ width:150px }
-
+#d_config table.tipo {height:8em;font-size:100%;font-weight:600;}
 #d_config table.tipo{ ;border-collapse: separate;;border-spacing:10px 0px}
-#d_config table.tipo td {cursor:pointer;color:#999; width:100px;height:100px;border: 1px solid #ccc;text-align:center;vertical-align:middle }
-#d_config table.tipo td.selected {color:#000;font-weight:800}
+#d_config table.tipo div{padding:10px;margin:10px;border:1px solid #ddd;width:20em;height:4em}
+#d_config table.options{ ;border-collapse: separate;;border-spacing:0px .25em;width:12em}
+
+#d_config table.tipo td.selected {background:#daf8bb;cursor:pointer;color:#555; width:100px;border: 1px solid #ccc;text-align:center;vertical-align:middle }

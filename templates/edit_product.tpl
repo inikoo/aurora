@@ -18,48 +18,154 @@
 <div id="yui-main"> 
 <h1>{$data.code} {$units}x {$data.description}</h1>
 <div class="chooser" >
-  <ul>
+  <ul >
     <li id="config" {if $edit=='config'}class="selected"{/if} ><img src="art/icons/cog.png"> {t}Product Configuration{/t}</li>
     <li id="description" {if $edit=='description'}class="selected"{/if} > <img src="art/icons/information.png"> {t}Description{/t}</li>
     <li id="pictures" {if $edit=='pictures'}class="selected"{/if} > <img src="art/icons/photos.png"> {t}Pictures{/t}</li>
     <li id="prices" {if $edit=='prices'}class="selected"{/if} ><img src="art/icons/money_add.png"> {t}Price, Discounts{/t}</li>
     <li id="suppliers" {if $edit=='suppliers'}class="selected"{/if} ><img src="art/icons/cog_add.png"> {t}Suppiers{/t}</li>
-    <li id="dimat" {if $edit=='dimat'}class="selected"{/if} ><img src="art/icons/shape_ungroup.png"> {t}Dimensions, Materials{/t}</li>
+    <li id="dimat" {if $edit=='dimat'}class="selected"{/if} ><img src="art/icons/shape_ungroup.png"> {t}Dimensions{/t}</li>
 
 
   </ul>
 
-
+<div style="clear:both;height:3em;padding:10px 20px;;margin:20px 80px 20px 20px;border: 1px solid #ccc;" id="edit_messages"></div>
 </div> 
 
 
 
-<div style="clear:both;padding:20px 20px" id="edit_messages"></div>
+
 
 
 <div  {if $edit!="config"}style="display:none"{/if}  class="edit_block" id="d_config">
   
-  <table class="tipo">
+  <table class="tipo" has_stock=''>
     <tr>
-      <td {if $data.product_tipo=='normal'}class="selected"{/if}>{t}Normal{/t}</td>
-      <td {if $data.product_tipo=='dependant'}class="selected"{/if}>{t}Stock Dependant{/t}</td>
-      <td {if $data.product_tipo=='shortcut'}class="selected"{/if}>{t}Shortcut{/t}</td>
-      <td {if $data.product_tipo=='mix'}class="selected"{/if}>{t}Mixture{/t}</td>
+      <td class="selected">{t}Normal{/t}</td>
+      <td style="width:17em" class="options">
+	<table border=0 style="height:6em" class="options">
+	     <tr><td onClick="change_to_dependant()" style="height:2em;">{t}Stock Dependant{/t}</td><tr>
+	     <tr><td style="height:2em">{t}Shortcut{/t}</td><tr>
+	     <tr><td style="height:2em">{t}Mixture{/t}</td><tr>
+	</table>
+      </td>
+      <td class="explanation">
+	<div style="display:none" id="product_tipo_normal"></div>
+	{if $data.stock}
+	<div style="display:none" id="product_tipo_dependant">
+	  {t}Choose the parent product{/t}
+	</div>
+	{else}
+	<div style="display:none" id="product_tipo_dependant">
+	  {t}This product has already stock in a specific location, in order to assign a stock parent you should get ride of that first{/t}
+	</div>
+	{/if}
+	<div style="display:none" id="product_tipo_normal"></div>
+
+      </td>
     </tr>
   </table>
   
   <div {if $data.product_tipo!='dependant'}display="none"{/if} >
-    <table class="edit" >
+    <table class="edit" border=0>
       <tr>
-	<td style="width:10em">{t}Units Definition{/t}:</td>
+	<td  class="label" style="width:10em">{t}Units Definition{/t}:</td>
 	<td style="width:10em" id="v_units_tipo" ovalue="$data.units_tipo" value="$data.units_tipo">{$data.units_tipo_name}</td>
-	<td><span id="units_tipo_save"  style="cursor:pointer;visibility:hidden" onclick="uniit_tipo_save()">{t}Save{/t} <img src="art/icons/disk.png"/></span></td>
+	<td><span onclick="change_units_tipo()" id="change_units_tipo_but" style="cursor:pointer;text-decoration:underline;color:#777">{t}Change{/t}</span>
+	  <span id="change_units_tipo_diff" style="display:none"></span></td>
+	<td><span id="units_tipo_save"  style="cursor:pointer;visibility:hidden" onclick="units_tipo_save()">{t}Save{/t} <img src="art/icons/disk.png"/></span></td>
+	
       </tr>
 
       <tr>
-	<td><span id="units_tipo_plural">{$data.units_tipo_plural}</span> {t}Per Outer{/t}:</td>
-	<td><input ovalue="{$data.units}" value="{$data.units}" onblur="units_changed(this)" style="text-align:right;width:5em"></td>
+	<td class="label"><span id="units_tipo_plural">{$data.units_tipo_plural}</span> {t}per outer{/t}:</td>
+	<td><span id="units">{$units}</span>
+	  <input 
+	     id="v_units" 
+	     ovalue="{$units}" 
+	     name="units" 
+	     value="{$units}"  
+	     style="display:none;text-align:right;width:5em"     
+	     onkeydown="to_save_on_enter(event,this)" 
+	     onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thosusand_sep}',3);units_changed(this)" />
+	</td>
+	<td style="width:5em">
+	  <span 
+	     onclick="change_units()" 
+	     id="change_units_but" 
+	     style="cursor:pointer;text-decoration:underline;color:#777">{t}Change{/t}</span>
+	  <span id="change_units_diff" style="display:none"></span>
+	</td>
+	<td>
+	  <span 
+	     id="units_cancel" 
+	     style="cursor:pointer;visibility:hidden;color:#777" 
+	     onclick="units_cancel()">
+	    {t}Cancel{/t}
+	  </span>
+	  <span 
+	     id="units_save"   
+	     style="margin-left:10px;cursor:pointer;visibility:hidden;color:#777" 
+	     onclick="units_save()">
+	    {t}Save{/t} <img src="art/icons/disk.png"/>
+	  </span>
+
+
+	</td>
       </tr>
+      <tr style="display:none" id="change_units_price">
+	<td class="label">{t}Outers Sale Price{/t}:</td>
+	<td>{$currency} <input  
+			   onkeydown="to_save_on_enter(event,this)"  
+			   onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thosusand_sep}',2);price_fcu_changed(this)" 
+			   style="text-align:right;width:6em"  
+			   factor="{$factor_inv_units}" 
+			   name="price_fcu" 
+			   id="v_price_fcu" 
+			   value="{$data.price}"  
+			   ovalue="{$data.price}" >
+	</td>
+	<td><span id="change_units_price_diff"></span></td>
+      <tr>
+
+
+      <tr style="display:none" id="change_units_oweight">
+	<td class="label">{t}Outers Weight{/t}:</td>
+	<td >{t}Kg{/t} <input 
+			  style="text-align:right;width:5em"  
+			  onkeydown="to_save_on_enter(event,this)" 
+			  id="v_oweight_fcu"  
+			  tipo="number" 
+			  value="{$data.oweight}"  
+			  name="oweight"  
+			  ovalue="{$data.oweight}" 
+			  onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thosusand_sep}',3);oweight_fcu_changed(this)"  >
+	</td>
+	<td ><span id="change_units_oweight_diff"></span></td>
+      </tr>
+    
+      <tr style="display:none" id="change_units_odim">
+	<td class="label">{t}Outers Dimensions{/t}:</td>
+	<td ><span style="cursor:pointer">{$data.odim_tipo_name}</span> 
+	  <input 
+	     style="text-align:right;width:6em" 
+	     onkeydown="to_save_on_enter(event,this)"   
+	     onblur="odim_fcu_changed(this)" 
+	     tipo="shape1"  
+	     name="odim"   
+	     id="v_odim_fcu" 
+	     value="{$data.odim}"   
+	     ovalue="{$data.odim}">
+	</td>
+	<td ><span id="change_units_odim_diff"></span></td>
+	
+      </tr>
+      <tr style="display:none" id="change_units_odim_example">
+	
+	<td style="font-size:90%;color:#777" colspan=2><img id="odim_alert_fcu" src="art/icons/exclamation.png" title="{t}Wrong Format{/t}"  style="cursor:pointer;;visibility:hidden;float:left" /> {$shape_example[$data.odim_tipo]}</td>
+	<td></td>
+      <tr>
+	
     </table>
   </div>
 
@@ -72,14 +178,14 @@
 	
     <tr>
       <td class="label">{t}Sale Price{/t}:</td>
-      <td>{$currency}<input  onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thosusand_sep}',2);price_changed(this)" style="text-align:right;width:10em"  factor="{$factor_inv_units}" name="price" id="v_price" value="{$data.price}"  ovalue="{$data.price}" ></td>
+      <td>{$currency}<input  onkeydown="to_save_on_enter(event,this)"  onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thosusand_sep}',2);price_changed(this)" style="text-align:right;width:10em"  factor="{$factor_inv_units}" name="price" id="v_price" value="{$data.price}"  ovalue="{$data.price}" ></td>
       <td id="price_ou">{$price_perunit}</td>
       <td id="price_change"></td>
-      <td><span onClick="save_price('price')"  name="price" style="cursor:pointer;visibility:hidden" id="price_save">{t}Save{/t} <img src="art/icons/disk.png"/></span></td></tr>
+      <td><span onClick="save_price('price')" name="price" style="cursor:pointer;visibility:hidden" id="price_save">{t}Save{/t} <img src="art/icons/disk.png"/></span></td></tr>
     <tr>
       <td class="label">{t}Recomended Retail Price{/t}:</td>
       <td id="rrp_ou">{$rrp_perouter}</td>
-      <td>{$currency}<input onblur="format_rrp(this)" style="text-align:right;width:10em"   factor="{$factor_units}"   name="rrp" id="v_rrp" ovalue="{$data.rrp}" value="{$data.rrp}" ></td> 
+      <td>{$currency}<input onkeydown="to_save_on_enter(event,this)" onblur="format_rrp(this)" style="text-align:right;width:10em"   factor="{$factor_units}"   name="rrp" id="v_rrp" ovalue="{$data.rrp}" value="{$data.rrp}" ></td> 
       <td id="rrp_change">{if $data.rrp==''}{t}RRP not set{/t}{/if}</td>
       
       <td><span onClick="save_price('rrp')" name="rrp" style="cursor:pointer;visibility:hidden" id="rrp_save">{t}Save{/t} <img src="art/icons/disk.png"/></span></td>
@@ -95,13 +201,13 @@
   <tr>
     <td class="label" style="width:12em">{t}Per{/t} {$data.units_tipo_name}:</td>
     <td style="width:4em" class="text-align:left">{t}Kg{/t}</td>
-    <td><input style="text-align:right;width:5em"  name="weight"   id="v_weight" tipo="number" value="{$data.weight}"   onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thosusand_sep}',3);weight_changed(this)"     ovalue="{$data.weight}"></td>
+    <td><input style="text-align:right;width:5em"  onkeydown="to_save_on_enter(event,this)" name="weight"   id="v_weight" tipo="number" value="{$data.weight}"   onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thosusand_sep}',3);weight_changed(this)"     ovalue="{$data.weight}"></td>
     <td class="icon" style="width:20px"><img id="weight_save" style="cursor:pointer;visibility:hidden" onClick="simple_save('weight')" src="art/icons/disk.png"></td>
   </tr>
   <tr>
     <td class="label">{t}Per outer{/t}:<br>{t}including packing{/t}</td>
     <td>{t}Kg{/t}</td>
-    <td><input style="text-align:right;width:5em"  id="v_oweight"  tipo="number" value="{$data.oweight}"  name="oweight"  ovalue="{$data.oweight}"  onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thosusand_sep}',3);weight_changed(this)"  ></td>
+    <td><input style="text-align:right;width:5em"  onkeydown="to_save_on_enter(event,this)" id="v_oweight"  tipo="number" value="{$data.oweight}"  name="oweight"  ovalue="{$data.oweight}"  onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thosusand_sep}',3);weight_changed(this)"  ></td>
     <td class="icon"><img id="oweight_save" style="cursor:pointer;visibility:hidden" onClick="simple_save('oweight')" src="art/icons/disk.png"></td>
   </tr>
 </table>
@@ -110,13 +216,13 @@
  <tr>
    <td class="label" style="width:12em">{$data.units_tipo_name|capitalize}:</td>
    <td style="width:4em"><span  style="cursor:pointer" id="dim_shape">{$data.dim_tipo_name}</span></td>
-   <td><input style="text-align:right;width:10em"  onblur="dim_changed(this)" tipo="shape{$data.dim_tipo}" name="dim" id="v_dim" value="{$data.dim}" ovalue="{$data.dim}"   ></td>
-   <td style="width:16em" style="font-size:90%;color:#777" ><img id="dim_alert" src="art/icons/exclamation.png" title="{t}Wrong Format{/t}"  style="cursor:pointer;;visibility:hidden;float:left" /> <span id="dim_shape_example">{$shape_example[$data.dim_tipo]}<span></td>
+   <td><input style="text-align:right;width:10em"  onkeydown="to_save_on_enter(event,this)"  onblur="dim_changed(this)" tipo="shape{$data.dim_tipo}" name="dim" id="v_dim" value="{$data.dim}" ovalue="{$data.dim}"   ></td>
+   <td style="width:24em" style="font-size:90%;color:#777" ><img id="dim_alert" src="art/icons/exclamation.png" title="{t}Wrong Format{/t}"  style="cursor:pointer;;visibility:hidden;float:left" /> <span id="dim_shape_example">{$shape_example[$data.dim_tipo]}<span></td>
    <td  style="width:20px"><img id="dim_save" style="cursor:pointer;visibility:hidden" onClick="simple_save('dim')" src="art/icons/disk.png"></td></tr>
     <tr>
       <td class="label">{t}Outer{/t}:<br>{t}including packing{/t}</td>
       <td ><span style="cursor:pointer">{$data.odim_tipo_name}</span></td>
-      <td><input style="text-align:right;width:10em"  onblur="dim_changed(this)" tipo="shape1"  name="odim"   id="v_odim" value="{$data.odim}"   ovalue="{$data.odim}"      ></td>
+      <td><input style="text-align:right;width:10em" onkeydown="to_save_on_enter(event,this)"   onblur="dim_changed(this)" tipo="shape1"  name="odim"   id="v_odim" value="{$data.odim}"   ovalue="{$data.odim}"      ></td>
       <td style="font-size:90%;color:#777"><img id="odim_alert" src="art/icons/exclamation.png" title="{t}Wrong Format{/t}"  style="cursor:pointer;;visibility:hidden;float:left" /> {$shape_example[$data.odim_tipo]}</td>
       <td><img id="odim_save" style="cursor:pointer;visibility:hidden" onClick="simple_save('odim')" src="art/icons/disk.png"></td></tr>
 </tr>
@@ -218,49 +324,32 @@
   <form id="f_description">
     
     
-    <table style="margin:0;" border=0>
+
+    <table style="margin:0;" border=1 class="edit">
+      <tr class="title"><td colspan="2">{t}Categories{/t}:</td></tr>
+      <tr class="title"><td colspan=2>{t}Product Info{/t}:</td></tr>
       <tr>
-	<td><img style="visibility:hidden"  id="c_categories" src="art/icons/accept.png" /></td>
-	<td style="vertical-align: top;width:175px" >{t}Categories{/t}:</td>
-	<td style="vertical-align: top;width:300px " >
-	  <table border=0 id="cat_list" style="float:left;margin:0 20px 0 0 ">
-	    <tr>
-	      <td>{if $num_cat==0}{t}No category assigned{/t}{/if}<td><td><span style="margin:0 0 0 25px;cursor:pointer" id="browse_cat">{t}Choose Category{/t}</span></td></td>
-	    </tr>
-	    <tr><td>{t}State{/t}</td></tr>
-	    <tr><td>{t}Use{/t}</td></tr>
-	    <tr><td>{t}Other{/t}</td></tr>
-	    
-	  </table>
-	</td>
-	<td style="width:300px"></td>
-      </tr>  
-      <tr>
-	<td><img   id="description_icon" style="visibility:hidden;cursor:pointer" title="{t}Return recorded value{/t}"  src="art/icons/arrow_undo.png" onclick="return_to_old_value('description')" /></td>
-	<td>{t}Description{/t}:</td>
-	<td><input     class=''     ovalue="{$data.description}"   name="description"   onKeyUp="description_changed(this)"   value="{$data.description}"  id="v_description" size="40"/></td>
-	<td>
-	  <span onClick="save_description('description')"  name="description" style="cursor:pointer;display:none" id="description_save">{t}Save{/t} <img src="art/icons/disk.png"/></span>
-	  <span id="description_change">
+	<td class="label">{t}Description{/t}:</td>
+	<td class="left">
+	  <input class='left' ovalue="{$data.description}"   name="description"   onKeyUp="description_changed(this)"   value="{$data.description}"  id="v_description" size="40"  MAXLENGTH="75" />
+	  <span onClick="save_description('description')"  name="description" style="cursor:pointer;visibility:hidden" id="description_save"><img  title="{t}Save description{/t}" src="art/icons/disk.png"/></span>
 	</td>
       </tr>
       <tr>
-	<td><img   id="sdescription_icon" style="visibility:hidden;cursor:pointer" title="{t}Return recorded value{/t}"  src="art/icons/arrow_undo.png" onclick="return_to_old_value('sdescription')" /></td>
-	<td>{t}Short Description{/t}:</td>
-	<td><input   onKeyUp="description_changed(this)" class=''  ovalue="{$data.sdescription}"  name="sdescription"  value="{$data.sdescription}" id="v_sdescription"  size="40"   /></td>
-	<td>
-	  <span onClick="save_description('sdescription')"  name="sdescription" style="cursor:pointer;display:none" id="sdescription_save">{t}Save{/t} <img src="art/icons/disk.png"/></span>
-	  <span id="sdescription_change">
+	<td class="label">{t}Short Description{/t}:</td>
+	<td class="left" ><input   onKeyUp="description_changed(this)" class='left'  ovalue="{$data.sdescription}"  name="sdescription"  value="{$data.sdescription}" id="v_sdescription"  size="40"  MAXLENGTH="40"   />
+	
+	  <span onClick="save_description('sdescription')"  name="sdescription" style="cursor:pointer;visibility:hidden" id="sdescription_save"><img src="art/icons/disk.png" title="{t}Save short description{/t}"/></span>
+
 	</td>
       </tr>
       
       <tr>
-	<td><img   id="details_icon" style="visibility:hidden;cursor:pointer" title="{t}Return recorded value{/t}"  src="art/icons/arrow_undo.png" onclick="return_to_old_value('details')" /></td>
-	<td>{t}Detailed Description{/t}:</td>
+	<td class="label">{t}Detailed Description{/t}:</td>
 	<td><span onClick="save_description('details')"  name="details" style="cursor:pointer;display:none" id="details_save">{t}Save{/t} <img src="art/icons/disk.png"/> <span id="details_change"></td>
-	<td></td>
+
       </tr>
-      <tr><td></td><td colspan="3"><textarea id="v_details" name="v_details" rows="20" cols="100">{$data.details}</textarea>
+      <tr><td colspan="2"><textarea id="v_details" name="v_details" rows="20" cols="100">{$data.details}</textarea>
       </td></tr>
       
     </table>

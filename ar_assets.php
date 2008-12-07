@@ -121,35 +121,11 @@ switch($tipo){
    echo json_encode($response);  
    
    break;
- case('ep_update_supplier'):
-     $data=array(
 
-		 'supplier_id'=>$_REQUEST['supplier_id'],
-		 'cost'=>$_REQUEST['cost'],
-		 'code'=>$_REQUEST['code'],
-		 'user_id'=>$LU->getProperty('auth_user_id'),
-		 'tipo'=>$_REQUEST['op_tipo']
-		 );
-     $product=new product($_SESSION['state']['product']['id']);
-     $res=$product->update_supplier($data);
-     if($res[0])
-       $response= array(
-			'state'=>200,
-			//			'data'=>$res[1],
-
-			);
-     else
-       $response= array(
-			'state'=>400,
-			'msg'=>$res[1]
-		      );
-     echo json_encode($response);  
-     break;
  case('ep_update'):
      $data[]=array(
 		 'key'=>$_REQUEST['key'],
 		 'value'=>$_REQUEST['value']
-		   
 		   );
      if(isset($_REQUEST['sup_cost']))
        $data[0]['sup_cost']=$_REQUEST['sup_cost'];
@@ -157,6 +133,13 @@ switch($tipo){
        $data[0]['sup_code']=$_REQUEST['sup_code'];
      if(isset($_REQUEST['image_id']))
        $data[0]['image_id']=$_REQUEST['image_id'];
+     if(isset($_REQUEST['price']))
+       $data[0]['price']=$_REQUEST['price'];
+     if(isset($_REQUEST['odim']))
+       $data[0]['odim']=$_REQUEST['odim'];
+     if(isset($_REQUEST['oweight']))
+       $data[0]['oweight']=$_REQUEST['oweight'];
+     
      if($_REQUEST['key']=='img_new'){
        if($_FILES['testFile']['tmp_name']==''){
 	 $response= array(
@@ -176,18 +159,37 @@ switch($tipo){
      }
 
      $product=new product($_SESSION['state']['product']['id']);
-     $res=$product->update($data);
-     // print_r($res);
-     if($res[$_REQUEST['key']]['ok']){
-     
-       $product->save($_REQUEST['key'],array('user_id'=>$LU->getProperty('auth_user_id')));
-       $res=$res[$_REQUEST['key']];
-     }else
-       $res=$res[$_REQUEST['key']];
+     $_res=$product->update($data);
+     //print_r($_res);
+      $res=$_res[$_REQUEST['key']];
+      if($res['ok']){
+	$res['msg']=$product->save($_REQUEST['key'],array('user_id'=>$LU->getProperty('auth_user_id')));
+	
+	if($_REQUEST['key']=='units'){
 
+	  if($_res['price']['ok'])
+	    $res['msg'].='; '.$product->save('price',array('user_id'=>$LU->getProperty('auth_user_id')));
+	  else
+	    $res['msg'].='; '.$_res['price']['msg'];
+
+	  if($_res['oweight']['ok'])
+	    $res['msg'].='; '.$product->save('oweight',array('user_id'=>$LU->getProperty('auth_user_id')));
+	  else
+	    $res['msg'].='; '.$_res['oweight']['msg'];
+	  
+	  if($_res['odim']['ok'])
+	    $res['msg'].='; '.$product->save('odim',array('user_id'=>$LU->getProperty('auth_user_id')));
+	  else
+	    $res['msg'].='; '.$_res['odim']['msg'];
+	}
+
+      }
+     
+     
      if($res['ok']){
 	 $response= array(
-			  'ok'=>true
+			  'ok'=>true,
+			  'msg'=>$res['msg']
 			);
 	  if($_REQUEST['key']=='img_new'){
 	    $response['data']=$product->get('new_image');
@@ -652,7 +654,7 @@ switch($tipo){
      
      if($_REQUEST['except']=='location'){
 
-       $sql=sprintf("select product_id,description,product.code,product2location.id as id,0 as qty from product left join product2location on (product.id=product_id) where product.code like   '%s%%'   and (select count(*) from product2location as p2l  where location_id=%s and p2l.product_id=product.id)=0   order by ncode ",addslashes($_REQUEST['query']),$_REQUEST['except_id']);
+       $sql=sprintf("select product.id as product_id,description,product.code,product2location.id as id,0 as qty from product left join product2location on (product.id=product_id) where product.code like   '%s%%'   and (select count(*) from product2location as p2l  where location_id=%s and p2l.product_id=product.id)=0   order by ncode ",addslashes($_REQUEST['query']),$_REQUEST['except_id']);
        $_data=array();
        $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
        while($data=$res->fetchRow()) {
@@ -666,7 +668,7 @@ switch($tipo){
 			 ,'_qty_move'=>'<input id="qm'.$data['id'].'" onchange="qty_changed('.$data['id'].','.$data['product_id'].')" type="text" value="" size=3>'
 			 ,'_qty_change'=>'<input id="qc'.$data['id'].'" onchange="qty_changed('.$data['id'].','.$data['product_id'].')" type="text" value="" size=3>'
 			 ,'_qty_damaged'=>'<input id="qd'.$data['id'].'" onchange="qty_changed('.$data['id'].','.$data['product_id'].')" type="text" value="" size=3>'
-			 ,'note'=>'<input  id="n'.$data['id'].'" type="text" value="" style="width:100px">'
+			 ,'note'=>$sql//'<input  id="n'.$data['id'].'" type="text" value="" style="width:100px">'
 			,'delete'=>($data['qty']==0?'<img onclick="remove_prod('.$data['id'].','.$data['product_id'].')" style="cursor:pointer" title="'._('Remove').' '.$data['code'].'" alt="'._('Desassociate Product').'" src="art/icons/cross.png".>':'')
 			 ,'product_id'=>$data['product_id']
 			);

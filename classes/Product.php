@@ -41,6 +41,7 @@ class product{
     $this->dim_units='cm';
 
     $sql=sprintf("select *,UNIX_TIMESTAMP(first_date) as first_date from product where id=%d",$product_id);
+    // print $sql;
     if($result =& $this->db->query($sql)){
       $this->data=$result->fetchRow();
       $this->id=$this->data['id'];
@@ -219,7 +220,7 @@ class product{
 	break;
       case('suppliers'):
 	$this->supplier=array();
-	$sql=sprintf("select p2s.supplier_id, p2s.price,p2s.sup_code,s.code as code,s.name as name from product2supplier as p2s left join supplier as s on (p2s.supplier_id=s.id) where p2s.product_id=%d",$this->id);
+	$sql=sprintf("select p2s.supplier_id, p2s.price,p2s.sup_code,s.code as code,s.name as name from product2supplier as p2s left join supplier as s on (p2s.supplier_id=s.id) where p2s.product_id=%d order by s.code",$this->id);
 	
 	
 	$result =& $this->db->query($sql);
@@ -547,8 +548,9 @@ class product{
       }
       break;
     default:
+
       $sql=sprintf("select %s as value  from product where id=%d",addslashes($key),$this->id);
-      print "$sql";
+
       $res = $this->db->query($sql); 
       if ($row=$res->fetchRow()) {
 	return $row['value'];
@@ -679,98 +681,7 @@ class product{
   }
     
 
-  function update_supplier($data){
-    switch($data['tipo']){
-    case('new'):
-      $supplier_id=$data['supplier_id'];
-      $code=stripslashes($data['code']);
-      $user_id=$data['user_id'];
-      $cost=$data['cost'];
-      $date='NOW()';
 
-      $sql=sprintf("select name from supplier  where id=%d",$supplier_id); 
-      $result =& $this->db->query($sql);
-      if($row=$result->fetchRow()){
-	$supplier_name=$row['name'];
-	
-      }else
-	return array(false,_('Supplier do not exist'));
-
-
-      $sql=sprintf("insert into product2supplier (supplier_id,product_id,price,sup_code) values (%d,%d,%.3f,%s)",$supplier_id,$this->id,$cost,prepare_mysql($code));
-
-      $this->db->exec($sql);
-      $p2s_id=$this->db->lastInsertID();
-      $note=_('New supplier for')." ".$this->data['code'].": ".$supplier_name;
-      $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,old_value,new_value,note) values (%s,'PROD',%d,'SUP',%d,'NEW',%d,NULL,'%d',%s)"
-		   ,$date,$this->id,$supplier_id,$user_id,$p2s_id,prepare_mysql($note)); 
-      mysql_query($sql);
-      
-      return array(true);
-      break;
-    case('update'):
-      $supplier_id=$data['supplier_id'];
-      $code=stripslashes($data['code']);
-      $user_id=$data['user_id'];
-      $cost=$data['cost'];
-      $date='NOW()';
-
-      $sql=sprintf("select id,sup_code,price from product2supplier where product_id=%d and supplier_id=%d ",$this->id,$supplier_id); 
-      $result =& $this->db->query($sql);
-      if($row=$result->fetchRow()){
-	$old_code=$row['sup_code'];
-	$old_cost=$row['price'];
-	$p2s_id=$row['id'];
-      }else
-	return array(false,_('Supplier is not associated with the product'));
-
-      if($old_code!=$code){
-	$sql=sprintf("update product2supplier set sup_code=%s where id=%d",prepare_mysql($code),$p2s_id);
-
-	mysql_query($sql);
-
-	$note=_("The suppliers code for")." ".$this->data['code']." "._('changed')." $old_code &rarr; $code";
-	$sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,old_value,new_value,note) values (%s,'PROD',%d,'SUP',%d,'COD',%d,%s,%s,%s)"
-		     ,$date,$this->id,$supplier_id,$user_id,prepare_mysql($old_code),prepare_mysql($code),prepare_mysql($note)); 
-	mysql_query($sql);
-      }
-      if($old_cost!=$cost){
-	$sql=sprintf("update product2supplier set price=%.4f where id=%d",$cost,$p2s_id);
-	mysql_query($sql);
-	$note=_("The suppliers unit cost for")." ".$this->data['code']." "._('changed')." ".money($old_cost)." &rarr; ".money($code);
-	$sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,old_value,new_value,note) values (%s,'PROD',%d,'SUP',%d,'COS',%d,%.4f,'%.4f',%s)"
-		     ,$date,$this->id,$supplier_id,$user_id,$old_cost,$cost,prepare_mysql($note)); 
-	mysql_query($sql);
-      }
-      return array(true);
-      
-      break;
-    case('delete'):
-      $supplier_id=$data['supplier_id'];
-      $user_id=$data['user_id'];
-      $date='NOW()';
-
-
-      $sql=sprintf("select id from product2supplier where product_id=%d and supplier_id%d ",$this->id,$supplier_id); 
-      $result =& $this->db->query($sql);
-      if($row=$result->fetchRow()){
-	$p2s_id=$row['id'];
-      }else
-	return array(false,_('Supplier is not associated with the product'));
-
-      $sql=sprintf("delete from product2supplier where id=%d",$p2s_id);
-      mysql_query($sql);
-      
-
-      $note=$this->code." "._('is no longer supplier by ').$supplier_name;
-      $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,old_value,new_value,note) values (%s,'PROD',%d,'SUP',%d,'DEL',%d,'%d',NULL,%s)"
-		   ,$date,$this->id,$supplier_id,$user_id,$p2s_id,prepare_mysql($note)); 
-      mysql_query($sql);
-      return array(true);
-      break;
-
-    }
-  }
 
   function update_location($data){
     switch($data['tipo']){
@@ -802,7 +713,7 @@ class product{
 	mysql_query($sql);
 	unset($link_product);
 	$this->set_stock();
-	$this->read('same_products');
+	$this->load('same_products');
 	if($num_linked=count($this->same_products)>0){
 	  $linked_codes='';
 	  $linked_ids='';
@@ -833,8 +744,8 @@ class product{
       $date='NOW()';
       
       $old_value=$this->data['location_parent_id'];
-      $this->read('same_products');
-      $this->read('locations');
+      $this->load('same_products');
+      $this->load('locations');
       
       if($this->locations['is_parent']){
 	// unlink the children
@@ -875,7 +786,7 @@ class product{
 	$old_rank=$row['picking_rank'];
       }else
 	return array(false,_('No such location'));
-      $this->read(array('locations'));
+      $this->load('locations');
       $location_data=$this->get('locations');
 
       if(preg_match('/^\+/',$rank)){
@@ -937,7 +848,7 @@ class product{
 	mysql_query($sql);
       }
       
-      $this->read(array('locations'));
+      $this->load('locations');
       $locations_data=$this->get('locations');
       return array(true,$locations_data);	
       
@@ -983,7 +894,7 @@ class product{
 	$sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,note,old_value,new_value) values (%s,'PROD',%d,'LOC',%d,'AUD',%d,%s,'%s','%s')",$date,$this->id,$location_id,$user_id,prepare_mysql($note),$old_qty, $qty); 
 	mysql_query($sql);
       }
-	$this->read(array('locations'));
+	$this->load(array('locations'));
       $locations_data=$this->get('locations');
       return array(true,$locations_data,$this->data['stock']);
       break;
@@ -1034,7 +945,7 @@ class product{
       //      return array(false,$sql);
       mysql_query($sql);
       
-      $this->read(array('locations'));
+      $this->load(array('locations'));
       $locations_data=$this->get('locations');
       return array(true,$locations_data,$new_location_id);
       break;
@@ -1070,7 +981,7 @@ class product{
 
       mysql_query($sql);
 	
-      $this->read('locations');
+      $this->load('locations');
       $locations_data=$this->get('locations');
       return array(true,$locations_data);
       break;
@@ -1130,7 +1041,7 @@ class product{
 	}
       }
       $this->set_stock();
-      $this->read('locations');
+      $this->load('locations');
       $locations_data=$this->get('locations');
       return array(true,$locations_data);
       break;
@@ -1174,11 +1085,11 @@ class product{
 	  $rank=1;
 	else
 	  $rank=99999999;
-
+	//	print_r(array('tipo'=>'set_picking_rank','product2location_id'=>$id,'rank'=>$rank,'user_id'=>$user_id,'no_history'=>true));
 	$this->update_location(array('tipo'=>'set_picking_rank','product2location_id'=>$id,'rank'=>$rank,'user_id'=>$user_id,'no_history'=>true));
       }
       
-      $this->read(array('locations'));
+      $this->load(array('locations'));
       $locations_data=$this->get('locations');
       
       
@@ -1193,7 +1104,7 @@ class product{
       mysql_query($sql);
 
 	
-      $this->read(array('locations'));
+      $this->load(array('locations'));
       $locations_data=$this->get('locations');
       return array(true,$locations_data,$location_id,$location_name,$location_tipo,$rank,($rank==1?getOrdinal(1):getOrdinal($locations_data['num_physical'])) ,$id);
   
@@ -1231,7 +1142,7 @@ class product{
 
 
       $this->set_stock();
-      $this->read(array('locations'));
+      $this->load(array('locations'));
       $locations_data=$this->get('locations');
       return array(true,$locations_data);
 
@@ -1283,7 +1194,7 @@ class product{
       
       //   return array(false,$sql);
       
-      $this->read(array('locations'));
+      $this->load(array('locations'));
       $locations_data=$this->get('locations');
 
       return array(true,$locations_data);
@@ -1370,7 +1281,7 @@ class product{
 
 
       
-      $this->read(array('locations'));
+      $this->load(array('locations'));
       $locations_data=$this->get('locations');
 
       return array(true,$locations_data);
@@ -1392,6 +1303,35 @@ class product{
       $res[$key]=array('ok'=>false,'msg'=>'');
       
       switch($key){
+      case('units'):
+	if(!is_numeric($value)){
+	  $res[$key]['msg']=_('Units per outer should be a number');
+	  $res[$key]['ok']=false;
+	  continue;
+	}
+	if($value<=0){
+	  $res[$key]['msg']=_('Units per outer should be a positive number');
+	  $res[$key]['ok']=false;
+	  continue;
+	}
+	if($value==$this->data['units']){
+	  $res[$key]['msg']=_('Units per outer no to changed');
+	  $res[$key]['ok']=false;
+	  continue;
+	}
+	$this->data['units']=$value;
+	
+	$res_oweight=$this->update(array(array('key'=>'oweight','value'=>$data['oweight'])));
+	$res_odim=$this->update(array(array('key'=>'odim','value'=>$data['odim'])));
+	$res_price=$this->update(array(array('key'=>'price','value'=>$data['price'])));
+	
+	$res['oweight']=$res_oweight['oweight'];
+	$res['odim']=$res_odim['odim'];
+	$res['price']=$res_price['price'];
+	$res[$key]['ok']=true;
+	continue;
+	
+	break;
       case('supplier_new'):
 	if(!is_numeric($value) or $value<1){
 	  $res[$key]['msg']=_('Wrong supplier indentifier');
@@ -1415,6 +1355,7 @@ class product{
 	  $this->load('suppliers');
 	}
 	$this->supplier_to_update=$value;
+	$this->supplier_to_update_name=$supplier->data['code'];
 	$this->new_supplier=$value;
 	if(!is_numeric($data['sup_cost'])){
 	  $price='';
@@ -1457,15 +1398,19 @@ class product{
 	  $res[$key]['ok']=false;
 	  continue;
 	}
-
-	$data['sup_cost']= unformat_money($data['sup_cost']);
 	
-	if(!is_numeric($data['sup_cost'])){
-	  $res[$key]['msg']=_('Product cost is not a numbner');
-	  $res[$key]['ok']=false;
-	  continue;
-	}
+	if($data['sup_cost']=='' and $this->supplier[$value]['price']=='')
+	  $this->supplier_cost_changed=false;
+	else{
 
+	  $data['sup_cost']= unformat_money($data['sup_cost']);
+	  
+	  if(!is_numeric($data['sup_cost'])){
+	    $res[$key]['msg']=_("Product cost is not a number")." ";
+	    $res[$key]['ok']=false;
+	    continue;
+	  }
+	}
 	if(preg_match('/^\s*$/',$data['sup_code'])){
 	  $res[$key]['msg']=_('Supplier product code should have al least one characher');
 	  $res[$key]['ok']=false;
@@ -1644,18 +1589,38 @@ class product{
 	 break;
 	
 	//Must be numeric
-      case('units'):
       case('price'):
       case('weight'):
       case('oweight'):
-      case('cweight'):
 	if($this->data[$key]==$value){
-	  $res[$key]['msg']=_('Same values');
+
+	  switch($key){
+	  case('price'):
+	    $same_msg=_('Price per outer has not change');
+	    break;
+	  case('weight'):
+	    $same_msg=_('Weight per unit has not change');
+	    break;
+	  case('oweight'):
+	    $same_msg=_('Weight per outer has not change');
+	  }
+
+	  
+	  $res[$key]['msg']=$same_msg;
 	  $res[$key]['ok']=false;
 	  continue;
 	}
 	if(!is_numeric($value)){
-	  $res[$key]['msg']=_('Value is not numeric');
+	  switch($key){
+	  case('price'):
+	    $err_msg=_('Error: Price per outer must be a number');
+	  case('weight'):
+	    $err_msg=_('Error: Weight per unit must be a number');
+	  case('oweight'):
+	    $err_msg=_('Error: Weight per outer must be a number');
+	  }
+
+	  $res[$key]['msg']=$err_msg;
 	  $res[$key]['ok']=false;
 	  continue;
 	}
@@ -1725,16 +1690,29 @@ class product{
 
 	
 	if(!preg_match('/^shape\d\_/',$value)){
-	  $res[$key]=array('ok'=>false,'msg'=>'Wrong_data');
+	  $res[$key]=array('ok'=>false,'msg'=>_('Error: Dimension with wrong format'));
 	  continue;
 	}
 	
+	
+
 	list($tipo,$dims)=preg_split('/_/',$value);
 	$tipo=preg_replace('/^shape/','',$tipo);
 	$_dims=preg_split('/x/',$dims);
 	
+	if($this->data[$key]==$dims and $this->data[$key.'_tipo']==$tipo ){
+	  if($key=='dim')
+	    $res[$key]=array('ok'=>false,'msg'=>_('Product volume not change'));
+	  else
+	    $res[$key]=array('ok'=>false,'msg'=>_('Outer volume not change'));
+	  continue;
+	}
+	
 	$this->data[$key]=$dims;
 	$this->data[$key.'_tipo']=$tipo;
+	
+
+
 	$res[$key]=array('ok'=>true,'msg'=>'');
 	break;
 	
@@ -1753,6 +1731,7 @@ class product{
 
 
   function save($key,$history_data=false){
+    $msg='';
     switch($key){
     case('supplier_new'):
       
@@ -1760,21 +1739,23 @@ class product{
       $this->db->exec($sql);
       if(is_array($history_data)){
 	$history_data['supplier_id']=$this->new_supplier;
-	$this->save_history('supplier_new','',$this->supplier[$this->new_supplier]['code'],$history_data);
+	$msg=$this->save_history('supplier_new','',$this->supplier[$this->new_supplier]['code'],$history_data);
       }
-      $this->save('supplier');
-      
+      $msg.=$this->save('supplier');
+     
+     
     case('supplier'):
 
       if(isset($this->supplier_code_changed) and $this->supplier_code_changed){
 
 	$code=$this->supplier[$this->supplier_to_update]['supplier_product_code'];
-	$sql=sprintf("update product2supplier set sup_code=%s  where product_id=%d and supplier_id=%d",$code,$this->id,$this->supplier_to_update);
+	$sql=sprintf("update product2supplier set sup_code=%s  where product_id=%d and supplier_id=%d",prepare_mysql($code),$this->id,$this->supplier_to_update);
+	//	print $sql;
 	$this->db->exec($sql);
 	if(is_array($history_data)){
 	  $history_data['supplier_id']=$this->supplier_to_update;
 	  $history_data['supplier_name']=$this->supplier_to_update_name;
-	  $this->save_history('supplier_code',$this->old_supplier_code,$code,$history_data);
+	  $msg=$this->save_history('supplier_code',$this->old_supplier_code,$code,$history_data);
 	}
       }
       
@@ -1785,7 +1766,7 @@ class product{
 	if(is_array($history_data)){
 	  $history_data['supplier_id']=$this->supplier_to_update;
 	  $history_data['supplier_name']=$this->supplier_to_update_name;
-	  $this->save_history('supplier_cost',$this->old_supplier_cost,$cost,$history_data);
+	  $msg=$this->save_history('supplier_cost',$this->old_supplier_cost,$cost,$history_data);
 	}
       }
 
@@ -1799,7 +1780,7 @@ class product{
       $this->db->exec($sql);
       if(is_array($history_data)){
 	$history_data['supplier_id']=$this->supplier_to_delete;
- 	$this->save_history($key,$this->supplier_to_delete_name,'',$history_data);
+ 	$msg=$this->save_history($key,$this->supplier_to_delete_name,'',$history_data);
       }
       break;
     case('img_set_principal'):
@@ -1811,7 +1792,7 @@ class product{
       $this->db->exec($sql);
       if(is_array($history_data)){
 	$history_data['image_id']=$this->changing_img;
- 	$this->save_history($key,$old_value,$this->images[$this->changing_img]['name'],$history_data);
+ 	$msg=$this->save_history($key,$old_value,$this->images[$this->changing_img]['name'],$history_data);
       }
      
       break;
@@ -1836,7 +1817,7 @@ class product{
       $this->db->exec($sql);
       if(is_array($history_data)){
 	 $history_data['image_id']=$old_value['id'];
-	$this->save_history($key,$old_value['name'],'',$history_data);
+	$msg=$this->save_history($key,$old_value['name'],'',$history_data);
       }
       
       break;
@@ -1918,7 +1899,7 @@ class product{
        $this->images[$image_id]['id']=$image_id;
        if(is_array($history_data)){
 	 $history_data['image_id']=$image_id;
-	$this->save_history($key,'',$this->images[$image_id]['name'],$history_data);
+	$msg=$this->save_history($key,'',$this->images[$image_id]['name'],$history_data);
       }
 
        break;
@@ -1931,7 +1912,7 @@ class product{
 
        if(is_array($history_data)){
 	 $history_data['image_id']=$this->changing_img;
-	$this->save_history($key,$old_value,$this->get($key),$history_data);
+	$msg=$this->save_history($key,$old_value,$this->get($key),$history_data);
       }
 
        break;
@@ -1947,7 +1928,7 @@ class product{
 	$this->db->exec($sql);
 	
 	if(is_array($history_data)){
-	  $this->save_history($key,$old_value,$history_data);
+	  $msg=$this->save_history($key,$old_value,$history_data);
 	}
 
       }
@@ -1990,7 +1971,7 @@ class product{
       $this->db->exec($sql);
       if(is_array($history_data)){
 	$new_value=$this->get($key.'ension');
-	$this->save_history($key,$old_value,$new_value,$history_data);
+	$msg=$this->save_history($key,$old_value,$new_value,$history_data);
       }
 
 
@@ -2000,16 +1981,17 @@ class product{
        $old_value=$this->read($key);
        if($old_value!=$this->data[$key]){
  	$sql=sprintf("update product set %s=%s where id=%d",$key,prepare_mysql($this->get($key)),$this->id);
- 		print $sql;
+
  	$this->db->exec($sql);
        }
 
        if(is_array($history_data)){
- 	$this->save_history($key,$old_value,$this->get($key),$history_data);
+ 	$msg=$this->save_history($key,$old_value,$this->get($key),$history_data);
        }
       
       break; 
     }
+    return $msg;
 
   }
 
@@ -2019,7 +2001,14 @@ class product{
   function save_history($key,$old,$new,$data){
     
     switch($key){
-
+    case('units'):
+      $note=_('Units per outer changed to').": ".$new;
+      $sujeto='PROD';
+      $sujeto_id=$this->id;
+      $objeto='UNITS';
+      $objeto_id='';
+      $action='CHG';
+      break;
     case('supplier_new'):
       $note=_('Supplier associated with this product').": ".$new;
       $sujeto='PROD';
@@ -2239,6 +2228,8 @@ class product{
 		 ,prepare_mysql($note)); 
     
     $this->db->exec($sql);
+
+    return $note;
   }
 
 
@@ -2773,6 +2764,98 @@ function ln_dim($tipo,$data){
 // 	  }
 // 	}
 // 	}
+//  function update_supplier($data){
+//     switch($data['tipo']){
+//     case('new'):
+//       $supplier_id=$data['supplier_id'];
+//       $code=stripslashes($data['code']);
+//       $user_id=$data['user_id'];
+//       $cost=$data['cost'];
+//       $date='NOW()';
+
+//       $sql=sprintf("select name from supplier  where id=%d",$supplier_id); 
+//       $result =& $this->db->query($sql);
+//       if($row=$result->fetchRow()){
+// 	$supplier_name=$row['name'];
+	
+//       }else
+// 	return array(false,_('Supplier do not exist'));
+
+
+//       $sql=sprintf("insert into product2supplier (supplier_id,product_id,price,sup_code) values (%d,%d,%.3f,%s)",$supplier_id,$this->id,$cost,prepare_mysql($code));
+
+//       $this->db->exec($sql);
+//       $p2s_id=$this->db->lastInsertID();
+//       $note=_('New supplier for')." ".$this->data['code'].": ".$supplier_name;
+//       $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,old_value,new_value,note) values (%s,'PROD',%d,'SUP',%d,'NEW',%d,NULL,'%d',%s)"
+// 		   ,$date,$this->id,$supplier_id,$user_id,$p2s_id,prepare_mysql($note)); 
+//       mysql_query($sql);
+      
+//       return array(true);
+//       break;
+//     case('update'):
+//       $supplier_id=$data['supplier_id'];
+//       $code=stripslashes($data['code']);
+//       $user_id=$data['user_id'];
+//       $cost=$data['cost'];
+//       $date='NOW()';
+
+//       $sql=sprintf("select id,sup_code,price from product2supplier where product_id=%d and supplier_id=%d ",$this->id,$supplier_id); 
+//       $result =& $this->db->query($sql);
+//       if($row=$result->fetchRow()){
+// 	$old_code=$row['sup_code'];
+// 	$old_cost=$row['price'];
+// 	$p2s_id=$row['id'];
+//       }else
+// 	return array(false,_('Supplier is not associated with the product'));
+
+//       if($old_code!=$code){
+// 	$sql=sprintf("update product2supplier set sup_code=%s where id=%d",prepare_mysql($code),$p2s_id);
+
+// 	mysql_query($sql);
+
+// 	$note=_("The suppliers code for")." ".$this->data['code']." "._('changed')." $old_code &rarr; $code";
+// 	$sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,old_value,new_value,note) values (%s,'PROD',%d,'SUP',%d,'COD',%d,%s,%s,%s)"
+// 		     ,$date,$this->id,$supplier_id,$user_id,prepare_mysql($old_code),prepare_mysql($code),prepare_mysql($note)); 
+// 	mysql_query($sql);
+//       }
+//       if($old_cost!=$cost){
+// 	$sql=sprintf("update product2supplier set price=%.4f where id=%d",$cost,$p2s_id);
+// 	mysql_query($sql);
+// 	$note=_("The suppliers unit cost for")." ".$this->data['code']." "._('changed')." ".money($old_cost)." &rarr; ".money($code);
+// 	$sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,old_value,new_value,note) values (%s,'PROD',%d,'SUP',%d,'COS',%d,%.4f,'%.4f',%s)"
+// 		     ,$date,$this->id,$supplier_id,$user_id,$old_cost,$cost,prepare_mysql($note)); 
+// 	mysql_query($sql);
+//       }
+//       return array(true);
+      
+//       break;
+//     case('delete'):
+//       $supplier_id=$data['supplier_id'];
+//       $user_id=$data['user_id'];
+//       $date='NOW()';
+
+
+//       $sql=sprintf("select id from product2supplier where product_id=%d and supplier_id%d ",$this->id,$supplier_id); 
+//       $result =& $this->db->query($sql);
+//       if($row=$result->fetchRow()){
+// 	$p2s_id=$row['id'];
+//       }else
+// 	return array(false,_('Supplier is not associated with the product'));
+
+//       $sql=sprintf("delete from product2supplier where id=%d",$p2s_id);
+//       mysql_query($sql);
+      
+
+//       $note=$this->code." "._('is no longer supplier by ').$supplier_name;
+//       $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,old_value,new_value,note) values (%s,'PROD',%d,'SUP',%d,'DEL',%d,'%d',NULL,%s)"
+// 		   ,$date,$this->id,$supplier_id,$user_id,$p2s_id,prepare_mysql($note)); 
+//       mysql_query($sql);
+//       return array(true);
+//       break;
+
+//     }
+//   }
 
 
 ?>

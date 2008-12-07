@@ -4,21 +4,21 @@
 $LU_conf = array(
 		
 		'session'           => array('name' => 'PHPSESSID','varname' => 'loginInfo'),
-		'logout'            => array('destroy'  => true),
+		'logout'            => array('destroy'  => false),
 		'cookie'            => array(
 					     'name' => 'loginInfo',
 					     'path' => '/',
 					     'domain' => '',
 					     'secure' => false,
-					     'lifetime' => 1,
-					     'secret' => 'jfeq49rm49',
-					     'savedir' => './server_files/ck/',
+					     'lifetime' => 30,
+					     'secret' => 'jfeb65c5bi6ihc56iq49rm49',
+					     'savedir' => 'server_files/ck',
 					     ),
 		'authContainers'    => array(
 					     'DB' => array(
 							   'type'          => 'MDB2',
 							   'expireTime'   => 43200,
-							   'idleTime'     => 3600,
+							   'idleTime'     => 43200,
 							   'allowDuplicateHandles' => 0,
 							   'allowEmptyPasswords'   => 0,     // 0=false, 1=true
 							   'passwordEncryptionMode' => 'plain',

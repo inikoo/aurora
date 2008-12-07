@@ -78,6 +78,7 @@ $location->load('product');
 
 //print_r($locations);
 $smarty->assign('products',$location->items);
+$smarty->assign('num_products',count($location->items));
 
 $smarty->assign('parent','warehouse.php');
 $smarty->assign('title',_('Location ').$location->data['name']);
