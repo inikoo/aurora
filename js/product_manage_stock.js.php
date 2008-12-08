@@ -83,7 +83,8 @@ var refresh= function(){
 	  Dom.get("loc_stock_units"+id).innerHTML=location.stock_units;
 	  Dom.get("loc_stock_outers"+id).innerHTML=location.stock_outers;
 	  Dom.get("loc_picking_tipo"+id).innerHTML=' '+location.picking_tipo+' ';
-
+	  
+	  
 	  if(location.is_physical==1){
 	      Dom.get("loc_picking_img"+id).style.display='';
 	  }else{
@@ -111,16 +112,20 @@ var refresh= function(){
   else
       Dom.get("identify_location").style.display='none';
 
+    //    alert(location_data.num_physical+'y '+location_data.has_physical+'x '+location_data.physical_with_stock);
+
   if(location_data.has_physical){
       Dom.get("change_stock").style.display='';
       Dom.get("change_location").style.display='';
       Dom.get("new_location").style.display='';
       
-      if(location_data.num_physical>1)
+      if(location_data.num_physical>1){
 	  Dom.get("move_stock").style.display='';
-      else
+
+      }else
 	  Dom.get("move_stock").style.display='none';
-      if(location_data.physical_with_stock>0)
+      //      alert(location_data.num_physical_with_stock)
+      if(location_data.num_physical_with_stock>0)
 	  Dom.get("move_stock").style.display='';
       else
 	  Dom.get("move_stock").style.display='none';
@@ -567,7 +572,7 @@ var damaged_stock_from=function(e,index){
 
 
 
-     Dom.get('manage_stock_engine').innerHTML='<table><td><?=_('Units damaged')?>: </td><td style="padding-right:20px" id="damaged_stock_td_qty"> <input id="damaged_stock_qty" location_id="'+location_data.data[index].id+'"  type="text" max="'+location_data.data[index].stock+'" size="3"  onkeyup="damaged_stock_ready()"   /> (<span style="cursor:pointer" onclick="damaged_stock_all();">'+location_data.data[index].stock+'</span> <?=_('max')?>)</td><td id="damaged_stock_save" onclick="damaged_stock_save()" style="cursor:pointer;display:none"><?=_('Save')?> <img src="art/icons/disk.png" style="vertical-align:bottom"/></td><tr><td><?=_('Comments')?>:</td><td colspan="2"><textarea id="damaged_stock_why" onkeyup="damaged_stock_ready()" ></textarea></td></tr></table>'
+     Dom.get('manage_stock_engine').innerHTML='<table><td><?=_('Units damaged')?>: </td><td style="padding-right:20px" id="damaged_stock_td_qty"> <input id="damaged_stock_qty" location_id="'+location_data.data[index].id+'"  type="text" max="'+location_data.data[index].stock_units+'" size="3"  onkeyup="damaged_stock_ready()"   /> (<span style="cursor:pointer" onclick="damaged_stock_all();">'+location_data.data[index].stock_units+'</span> <?=_('max')?>)</td><td id="damaged_stock_save" onclick="damaged_stock_save()" style="cursor:pointer;display:none"><?=_('Save')?> <img src="art/icons/disk.png" style="vertical-align:bottom"/></td><tr><td><?=_('Comments')?>:</td><td colspan="2"><textarea id="damaged_stock_why" onkeyup="damaged_stock_ready()" ></textarea></td></tr></table>'
 
   for (key in location_data.data)
 	{
@@ -910,6 +915,7 @@ var move_stock_save = function(){
     // return
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
+		alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if (r.state == 200) {
 		    //update all stock figures (if were changed else were)
@@ -927,7 +933,7 @@ var move_stock_save = function(){
 var move_stock_from=function(e,index){
     Dom.get('manage_stock_messages').innerHTML='<?=_('Choose the location where you moved the stock')?>'
     Dom.get('manage_stock_engine').style.display='';
-    Dom.get('manage_stock_engine').innerHTML='<table border=0><tr style="height:30px"><td style="vertical-align:bottom" class="location_name"  id="move_stock_from" location_id="'+location_data.data[index].id+'"  >'+location_data.data[index].name+'</td><td style="vertical-align:bottom" > &rarr; </td><td style="vertical-align:bottom" id="move_stock_to" class="location_name"><b>?</b></td><td style="padding-left:30px;padding-right:30px;display:none;vertical-align:bottom" id="move_stock_td_qty"> <?=_('Units')?>:  <input style="vertical-align:bottom" id="move_stock_qty" type="text" max="'+location_data.data[index].stock+'" size="3"  onkeyup="move_stock_ready()" />  (<span style="cursor:pointer" onclick="move_stock_all();">'+location_data.data[index].stock+'</span> <?=_('max')?>)  </td><td id="move_stock_save" onclick="move_stock_save()" style="cursor:pointer;display:none;vertical-align:bottom"><?=_('Save')?> <img src="art/icons/disk.png" style="vertical-align:bottom"/></td></tr></table>'
+    Dom.get('manage_stock_engine').innerHTML='<table border=0><tr style="height:30px"><td style="vertical-align:bottom" class="location_name"  id="move_stock_from" location_id="'+location_data.data[index].id+'"  >'+location_data.data[index].name+'</td><td style="vertical-align:bottom" > &rarr; </td><td style="vertical-align:bottom" id="move_stock_to" class="location_name"><b>?</b></td><td style="padding-left:30px;padding-right:30px;display:none;vertical-align:bottom" id="move_stock_td_qty"> <?=_('Units')?>:  <input style="vertical-align:bottom" id="move_stock_qty" type="text" max="'+location_data.data[index].stock_units+'" size="3"  onkeyup="move_stock_ready()" />  (<span style="cursor:pointer" onclick="move_stock_all();">'+location_data.data[index].stock_units+'</span> <?=_('max')?>)  </td><td id="move_stock_save" onclick="move_stock_save()" style="cursor:pointer;display:none;vertical-align:bottom"><?=_('Save')?> <img src="art/icons/disk.png" style="vertical-align:bottom"/></td></tr></table>'
     
     var can_to=location_data.num_physical;
     if(can_to==2){

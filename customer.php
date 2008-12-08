@@ -50,12 +50,14 @@ $customer->load('contacts');
 $smarty->assign('customer',$customer);
 
 $customers_order=$_SESSION['state']['customers']['table']['order'];
-$sql=sprintf("select c.id,c.name as code from customer as c  where  %s<%s  order by %s desc  ",$customers_order,prepare_mysql($customer->data[$customers_order]),$customers_order);
+
+$sql=sprintf("select c.id,c.name as code from customer as c  where  %s<%s  order by %s desc  ",$customers_order,prepare_mysql($customer->get($customers_order)),$customers_order);
+
 $result =& $db->query($sql);
 if(!$prev=$result->fetchRow())
   $prev=array('id'=>0,'code'=>'');
 $smarty->assign('prev',$prev);
-$sql=sprintf("select c.id,c.name as code from customer as c  where  %s>%s  order by %s   ",$customers_order,prepare_mysql($customer->data[$customers_order]),$customers_order);
+$sql=sprintf("select c.id,c.name as code from customer as c  where  %s>%s  order by %s   ",$customers_order,prepare_mysql($customer->get($customers_order)),$customers_order);
 $result =& $db->query($sql);
 if(!$next=$result->fetchRow())
   $next=array('id'=>0,'code'=>'');

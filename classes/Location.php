@@ -3,7 +3,7 @@
 class location{
   var $db;
   var $data=array();
-  var $items=array();
+  var $items=false;
 
   var $id;
   var $tipo;
@@ -63,16 +63,48 @@ class location{
 
   function load($key=''){
     switch($key){
+    case('items'):
+    case('products'):
     case('product'):
       include_once('classes/Product.php');
-       $sql=sprintf("select product_id from product2location where location_id=%d ",$this->id);
-       print $sql;
+       $sql=sprintf("select product_id,stock from product2location where location_id=%d ",$this->id);
+       //       print $sql;
        $result =& $this->db->query($sql);
+       $this->items=array();
+       $has_stock=false;
        while($row=$result->fetchRow()){
-	 $this->items[]=new product($row['product_id']);
+	 $product=new product($row['product_id']);
+	 $this->items[$product->id]=array(
+					  'id'=>$product->id,
+					  'code'=>$product->get('code'),
+					  'stock'=>$row['stock']
+					  );
+	 if($row['stock']>0)
+	   $has_stock=true;
        }
+       $this->data['has_stock']=$has_stock;
     }
       
+
+  }
+
+
+  function get($key){
+    switch($key){
+    case('num_items'):
+    case('num_products'):
+      if(!$this->items)
+	$this->load('products');
+      return count($this->items);
+      break;
+    case('has_stock'):
+        if(!$this->items)
+	$this->load('products');
+        return $this->data['has_stock'];
+      break;
+      
+    }
+
 
   }
   

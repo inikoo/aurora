@@ -42,9 +42,9 @@
 
 	    <table class="options" style="float:right;padding:0;margin:0">
 	      <tr>
-		<td  style="{if $num_products<1}visibility:hidden;{/if}" id="move_stock">Move Stock</td>
+		<td  style="{if $num_products<1 or !$has_stock}visibility:hidden;{/if}" id="move_stock">Move Stock</td>
+		<td  style="{if !$has_stock}visibility:hidden;{/if}" id="damaged_stock">Set Stock as Damaged</td>
 		<td  style="{if $num_products==0}visibility:hidden;{/if}" id="change_stock">Audit</td>
-		<td  style="{if $num_products==0}visibility:hidden;{/if}" id="damaged_stock">Set Stock as Damaged</td>
 		<td  id="add_product">Add Product</td>
 
 	      </tr>

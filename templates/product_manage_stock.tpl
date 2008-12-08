@@ -89,7 +89,7 @@
       <tr><td>{t}Location{/t}</td><td >{t}Type{/t}</td><td></td><td  style="text-align:right">{t}Units{/t}</td><td  style="text-align:right">{t}Outers{/t}</td><td ></td> </tr>
       {foreach  from=$locations.data item=location name=foo }
       <tr  id="row_{$location.location_id}"   pl_id="{$location.id}"  >
-	<td id="loc_name{$location.location_id}" class="aleft"  > {$location.name}</td>
+	<td id="loc_name{$location.location_id}" class="aleft"  ><a href="location.php?id={$location.location_id}">{$location.name}</a></td>
 	<td id="loc_tipo{$location.location_id}" >{$location.tipo}</td>
 	    <td style="text-align:right"  id="loc_pick_info{$location.location_id}" >
 	      <span id="loc_picking_up{$location.location_id}"  rank={$location.picking_rank}  onClick="rank_up({$location.location_id})"   style="cursor:pointer;{if  $location.picking_rank<2 or !$location.picking_rank}display:none;{/if}">&uarr;</span> 

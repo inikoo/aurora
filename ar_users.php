@@ -5,7 +5,7 @@ require_once 'classes/Staff.php';
 
 
 if (!$LU or !$LU->isLoggedIn()) {
-  $response=array('state'=>402,'resp'=>_('Forbidden'));
+  $response=array('state'=>402,'msg'=>_('Forbidden'));
   echo json_encode($response);
   exit;
  }
@@ -17,7 +17,7 @@ if (!$LU or !$LU->isLoggedIn()) {
 //  }
 if(!isset($_REQUEST['tipo']))
   {
-    $response=array('state'=>405,'resp'=>_('Non acceptable request').' (t)');
+    $response=array('state'=>405,'msg'=>_('Non acceptable request').' (t)');
     echo json_encode($response);
     exit;
   }
@@ -25,6 +25,19 @@ if(!isset($_REQUEST['tipo']))
 $tipo=$_REQUEST['tipo'];
 switch($tipo){
 
+ case('change_passwd'):
+   $user=new User($_REQUEST['user_id']);
+     if($user->id){
+       $res=$user->change_password($value);
+       echo json_encode($res);
+       break;
+       
+   }else
+     $response=array('state'=>400,'msg'=>_("User don't exist"));
+   echo json_encode($response);
+   
+   break;
+   
  case('edit_user'):
    
    $user=new User($_REQUEST['user_id']);
@@ -159,7 +172,7 @@ select tipo,id_in_table,u.authuserid as id ,gu.group_id,group_concat(distinct g.
 		   'email'=>$email,
 		   'lang'=>$lang,
 		   'groups'=>$groups,
-		   'password'=>'<img style="cursor:pointer" user_id="'.$row['id'].'" onClick="change_passwd(this)" src="art/icons/key.png"/>'.($email!=''?'<img src="art/icons/key_go.png"/>':''),
+		   'password'=>'<img style="cursor:pointer" user_name="'.$name.'" user_id="'.$row['id'].'" onClick="change_passwd(this)" src="art/icons/key.png"/>'.($email!=''?'<img src="art/icons/key_go.png"/>':''),
 		   'passwordmail'=>($email!=''?'<img src="art/icons/key_go.png"/>':''),
 		   'isactive'=>$row['isactive'],
 		   'delete'=>'<img src="art/icons/status_busy.png"/>'
@@ -577,13 +590,13 @@ select u.authuserid,gu.group_id,group_concat(distinct g.group_id separator ',') 
      }
      break;
    default:
-     $response=array('state'=>404,'resp'=>_('Sub-operation not found'));
+     $response=array('state'=>404,'msg'=>_('Sub-operation not found'));
      echo json_encode($response);
    }
    
    break;
  default:
-   $response=array('state'=>404,'resp'=>_('Operation not found'));
+   $response=array('state'=>404,'msg'=>_('Operation not found'));
    echo json_encode($response);
    
  }

@@ -19,30 +19,32 @@ if(isset($_REQUEST['id']) and is_numeric($_REQUEST['id'])){
 $po_id = $po->id;
 $_SESSION['state']['po']['id']=$po->id;
 $_SESSION['state']['supplier']['id']=$po->data['supplier_id'];
-
-
-
 //print_r($po->data);
 $smarty->assign('po',$po->data);
+
+
 $smarty->assign('supplier',$po->supplier->data);
 
 
 $smarty->assign('title',$po->supplier->data['code']."<br/>"._('Purchase Order').' '.$po->data['id']." (".$po->data['status'].")");
 
 
+$_SESSION['state']['po']['items']['all_products']=false;
+
 if($po->data['items']==0)
-  $_SESSION['state']['po']['items']['all_products']=true;
+  $_SESSION['state']['po']['items']['all_products_supplier']=true;
  else
-   $_SESSION['state']['po']['items']['all_products']=false;
+   $_SESSION['state']['po']['items']['all_products_supplier']=false;
 
 
 $_SESSION['state']['po']['status']=floor($po->data['status_id']*.1);
 $smarty->assign('status',$_SESSION['state']['po']['status']);
 
 
-
- $smarty->assign('show_all',$_SESSION['state']['po']['items']['all_products']);
-
+if($_SESSION['state']['po']['items']['all_products'] or $_SESSION['state']['po']['items']['all_products_supplier'])
+  $smarty->assign('show_all',1);
+else
+  $smarty->assign('show_all',0);
 
 $smarty->assign('parent','suppliers.php');
 $smarty->assign('currency',$myconf['currency_symbol']);

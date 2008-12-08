@@ -42,7 +42,9 @@ var change_passwd=function(o){
     //add_user_dialog_staff.cfg.setProperty("y", 500);
 
     var user_id=o.getAttribute('user_id');
-    
+    var user_name=o.getAttribute('user_name');
+    Dom.get("change_staff_password_alias").setAttribute('user_id',user_id);
+    Dom.get("change_staff_password_alias").innerHTML=user_name;
     change_staff_password.show();
     
 }
@@ -99,6 +101,32 @@ var match_passwd=function(p2,p1,tipo){
     }
 
 };
+
+var change_staff_pwd=function(){
+    
+    passwd=sha256_digest(Dom.get('change_staff_passwd1').value);
+    user_id=Dom.get('change_staff_password_alias').getAttribute('user_id');
+    var request='ar_users.php?tipo=change_passwd&user_id='+escape(user_id)+'&value='+escape(passwd);
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    
+	    success:function(o) {
+		//		alert(o.responseText)
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if (r.ok) {
+		    
+		    Dom.get('change_staff_passwd1').value='';
+		    Dom.get('change_staff_passwd2').value='';
+
+		    change_staff_password.cfg.setProperty("visible", false);
+		    Dom.get('change_staff_password_alias').setAttribute('user_id','');
+		    Dom.get('change_staff_password_alias').innerHTML='';
+		    Dom.get('change_staff_save').style.visibility='hidden';
+		    Dom.get('staff_password_meter').style.visibility='hidden';
+		}else
+		    alert(r.msg);
+	    }
+	});    
+}
 
 var staff_new_user=function(){
     var handle=Dom.get("staff_v_handle").value;

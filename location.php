@@ -58,6 +58,8 @@ $_SESSION['state']['location']['id']=$location_id;
 
 $location= new location($location_id);
 
+
+
 //print_r($location->data);
 $warehouse_order=$_SESSION['state']['warehouse']['locations']['order'];
 $sql=sprintf("select id,name as code from location where  %s<'%s'  order by %s desc  ",$warehouse_order,$location->data[$warehouse_order],$warehouse_order);
@@ -75,7 +77,7 @@ $smarty->assign('next',$next);
 
 
 $location->load('product');
-
+$smarty->assign('has_stock',$location->get('has_stock'));
 //print_r($locations);
 $smarty->assign('products',$location->items);
 $smarty->assign('num_products',count($location->items));

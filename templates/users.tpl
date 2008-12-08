@@ -79,7 +79,7 @@
 
 <div id="change_staff_password" style="display:nonex;position:absolute;left:-100px;top:-150px;background:#fff;padding:20px;border:1px solid#777;font-size:90%">
   <div class="bd" >
-    <span style="text-weight:800">{t}Change Password for{/t} <span id="change_staff_alias">x</span></span>
+    <span style="text-weight:800">{t}Change Password for{/t} <span user_id='' id="change_staff_password_alias"></span></span>
   <table class="edit inbox" >
     
     <tr class="tabs"  id="change_staff_choose_method">

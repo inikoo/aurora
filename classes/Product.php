@@ -305,12 +305,12 @@ class product{
 	//simplest one
 	//get the best possible average
 	$aw=0;
-	if(is_numeric($this->data['awtdq']) and $this->data['awtdq']>0)
-	  $aw=$this->data['awtsq'];
-	elseif(is_numeric($this->data['awtdm']) and $this->data['awtdm']>0)
-	  $aw=$this->data['awtdq'];
-	elseif(is_numeric($this->data['tdw']) and $this->data['tdw']>0)
-	  $aw=$this->data['tdw'];
+	if(is_numeric($this->get('awtsoq')) and $this->get('awtsoq')>0)
+	  $aw=$this->get('awtsoq');
+	elseif(is_numeric($this->get('awtsom')) and $this->get('awtsom')>0)
+	  $aw=$this->get('awtsoq');
+	elseif(is_numeric($this->get('tsow')) and $this->get('tsow')>0)
+	  $aw=$this->get('tdso');
 	
 
 
@@ -550,7 +550,7 @@ class product{
     default:
 
       $sql=sprintf("select %s as value  from product where id=%d",addslashes($key),$this->id);
-
+      print $key;
       $res = $this->db->query($sql); 
       if ($row=$res->fetchRow()) {
 	return $row['value'];
@@ -1185,10 +1185,19 @@ class product{
       $sql=sprintf("update product2location set stock=%s where id=%d",$to_qty+$qty,$to_id); 
       // print "$sql";
       mysql_query($sql);
-      $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,note,old_value,new_value) values (%s,'PROD',%d,'LOC',%d,'MOF',%d,'%s',%d,%d)",$date,$this->id,$from_location__id,$user_id,$qty.' '._('outers has been moved from').' '.$from_name.' '._('to').' '.$to_name,$from_qty-$qty); 
+      $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,note,old_value,new_value) values (%s,'PROD',%d,'LOC',%d,'MOF',%d,'%s',%d,%d)"
+		   ,$date
+		   ,$this->id
+		   ,$from_location_id
+		   ,$user_id
+		   ,$qty.' '._('outers has been moved from').' '.$from_name.' '._('to').' '.$to_name
+		   ,$from_qty
+		   ,$from_qty-$qty
+		   ); 
+
       mysql_query($sql);
       
-      $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,note,old_value,new_value) values (%s,'PROD',%d,'LOC',%d,'MOT',%d,'%s',%d,%d)",$date,$this->id,$to_location_id,$user_id,$qty.' '._('outers has been moved from').' '.$from_name.' '._('to').' '.$to_name,$to_qty+$qty); 
+      $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,note,old_value,new_value) values (%s,'PROD',%d,'LOC',%d,'MOT',%d,'%s',%d,%d)",$date,$this->id,$to_location_id,$user_id,$qty.' '._('outers has been moved from').' '.$from_name.' '._('to').' '.$to_name,$to_qty,$to_qty+$qty); 
       mysql_query($sql);
       
       
@@ -2408,7 +2417,7 @@ class product{
 		   );
 
       $this->db->exec($sql);
-      $this->read('stock_forecast');
+      $this->load('stock_forecast');
       
     }
     

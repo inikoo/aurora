@@ -485,6 +485,58 @@ class Order{
 
   }
 
+ function item_checked($data){
+
+    switch($this->tipo){
+    case('po'):
+      
+      //check if the product is related to the supplier
+      $sql=sprintf("select supplier_id,product2supplier.price,units from product2supplier  left join product on (product_id=product.id) where product2supplier.id=%d",$data['product_id']);
+      $res = $this->db->query($sql);  
+      if ($row=$res->fetchRow()){
+	if($row['supplier_id']!=$this->data['supplier_id']){
+	  // product not related
+	  $product-
+
+	}
+	$price=$row['price'];
+	$units=$row['units'];
+      }else
+	return array('ok'=>false,'msg'=>_('Product not exist'));
+      
+      //check if already exist 
+      $item_data=array('outers'=>'','est_price'=>'','id'=>$data['product_id'] );
+
+      $sql=sprintf("select porden_item.id from porden_item  where porden_id=%d and p2s_id=%d",$this->id,$data['product_id']);
+
+      $res = $this->db->query($sql);  
+      if ($row=$res->fetchRow()){
+	if($data['qty']!=0){
+	  $sql=sprintf("update porden_item set expected_qty=%.3f,expected_price=%.3f where id=%d    ",$data['qty'],$price,$row['id']);
+	  mysql_query($sql);
+	  $item_data=array('outers'=>number($data['qty']/$units),'est_price'=>money($data['qty']*$price),'id'=>$data['product_id']  );
+	}else{
+	  $sql=sprintf("delete from porden_item  where id=%d    ",$row['id']);
+	  //	  	return array('ok'=>false,'msg'=>$sql);
+	  mysql_query($sql);
+	}
+      }else{
+	if($data['qty']!=0){
+	  $sql=sprintf("insert into porden_item (porden_id,p2s_id,expected_qty,expected_price) values (%d,%d,%.3f,%.3f)",$this->id,$data['product_id'],$data['qty'],$price*$data['qty']);
+	  mysql_query($sql);
+	  $item_data=array('outers'=>number($data['qty']/$units),'est_price'=>money($data['qty']*$price) ,'id'=>$data['product_id'] );
+	}
+	  
+      }
+      $this->load('items');
+      $this->save('items');
+      return array('ok'=>true,'item_data'=>$item_data);
+    }
+    
+
+  }
+
+
 function set($tipo,$data){
   global $_order_status;
     switch($tipo){

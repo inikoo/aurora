@@ -12,7 +12,7 @@ var remove_prod=function (pl_id,product_id){
     var request='ar_assets.php?tipo=pml_desassociate_location&id='+ escape(pl_id)+'&msg=&product_id='+ escape(product_id);
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-		alert(o.responseText)
+		//		alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 
 		if (r.state == 200) {
@@ -236,12 +236,29 @@ var product_selected=function(){
 
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-		alert(o.responseText);
+		//		alert(o.responseText);
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 
 		if (r.state == 200) {
 		    tables.table1.addRow(data,0);
-		    check_audit_form();
+		    //check_audit_form();
+		    if(operation=='change_stock')
+			check_audit_form();
+		    else{
+			Dom.get("change_stock").style.visibility='visible';
+			if(r.has_stock)
+			    Dom.get("damaged_stock").style.visibility='visible';
+			if(r.num_products>1)
+			    Dom.get("move_stock").style.visibility='visible';
+			Dom.get('manage_stock_messages').innerHTML='';
+			Dom.get('manage_stock').style.display='none';
+
+		    }
+		    Dom.get('new_product_input').value='';
+		    var table=tables.table0;
+		    var datasource=tables.dataSource0;
+		    var request='';
+		    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
 		    }else
 		    Dom.get('product_messages').innerHTML='<span class="error">'+r.msg+'</span>';
 	    }
@@ -405,14 +422,20 @@ var change_stock_save= function(){
 
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-
+		alert(o.responseText);
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		
 		if (r.state == 200) {
 		    var table=tables.table1;
 		    var datasource=tables.dataSource1;
 		    var request='';
-		    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);   
+		    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);  
+		    var table=tables.table0;
+		    var datasource=tables.dataSource0;
+		    var request='';
+		    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);  
+		    
+ 
 		    clear_all();
 		    
 		}else

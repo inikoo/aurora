@@ -3,6 +3,7 @@ require_once 'common.php';
 require_once 'stock_functions.php';
 require_once 'classes/Product.php';
 require_once 'classes/Order.php';
+require_once 'classes/Location.php';
 
 //require_once 'common_functions.php';
 //require_once 'ar_common.php';
@@ -121,7 +122,27 @@ switch($tipo){
    echo json_encode($response);  
    
    break;
-
+ case('order_item_checked'):
+   $data=array(
+	       'user_id'=>$LU->getProperty('auth_user_id'),
+	       'product_id'=>$_REQUEST['product_id'],
+	       'qty'=>$_REQUEST['qty']
+	       );
+   $order=new order($_REQUEST['tipo_order'],$_REQUEST['order_id']);
+   if(!$order->id){
+     $response= array('state'=>400,'msg'=>_('Error: Order not found'));
+     echo json_encode($response);  
+     exit;
+   }
+   $res=$order->item_checked($data);
+   if($res['ok']){
+     $response= array('state'=>200,'data'=>$order->data,'item_data'=>$res['item_data']);
+   }else{
+     $response= array('state'=>400,'msg'=>$res['msg']);
+   }
+   echo json_encode($response);  
+   
+   break;
  case('ep_update'):
      $data[]=array(
 		 'key'=>$_REQUEST['key'],
@@ -420,6 +441,8 @@ switch($tipo){
    }
    
    if($res[0]){
+     // calculate the numer of products on this location
+     $location=new Location($res[2]);
 
      $response= array(
 		      'where'=>$row,
@@ -430,7 +453,9 @@ switch($tipo){
 		      'tipo_rank'=>$res[6],
 		      'rank_img'=>$tipo_img,
 		      'id'=>$res[2],
-		      'pl_id'=>$res[7]
+		      'pl_id'=>$res[7],
+		      'num_products'=>$location->get('num_produts'),
+		      'stock'=>$location->get('has_stock')
 		      );
  }else
      $response= array(
@@ -660,7 +685,7 @@ switch($tipo){
        while($data=$res->fetchRow()) {
 	 $_data[]= array(
 			 'scode'=>$data['code']
-			 ,'code'=>sprintf('<a href="product.php?id=%d">%s</a>',$data['product_id'],$data['code'])
+			 ,'code'=>sprintf('<a href="product_manage_stock.php?id=%d">%s</a>',$data['product_id'],$data['code'])
 			,'description'=>$data['description']
 			 ,'current_qty'=>sprintf('<span  used="0"  value="%s" id="s'.$data['id'].'"  onclick="fill_value(%s,%d,%d)">%s</span>',$data['qty'],$data['qty'],$data['id'],$data['product_id'],number($data['qty']))
 			 ,'changed_qty'=>sprintf('<span   used="0" id="cs'.$data['id'].'"  onclick="change_reset(%d,%d)"   ">0</span>',$data['id'],$data['product_id'])
@@ -668,7 +693,7 @@ switch($tipo){
 			 ,'_qty_move'=>'<input id="qm'.$data['id'].'" onchange="qty_changed('.$data['id'].','.$data['product_id'].')" type="text" value="" size=3>'
 			 ,'_qty_change'=>'<input id="qc'.$data['id'].'" onchange="qty_changed('.$data['id'].','.$data['product_id'].')" type="text" value="" size=3>'
 			 ,'_qty_damaged'=>'<input id="qd'.$data['id'].'" onchange="qty_changed('.$data['id'].','.$data['product_id'].')" type="text" value="" size=3>'
-			 ,'note'=>$sql//'<input  id="n'.$data['id'].'" type="text" value="" style="width:100px">'
+			 ,'note'=>'<input  id="n'.$data['id'].'" type="text" value="" style="width:100px">'
 			,'delete'=>($data['qty']==0?'<img onclick="remove_prod('.$data['id'].','.$data['product_id'].')" style="cursor:pointer" title="'._('Remove').' '.$data['code'].'" alt="'._('Desassociate Product').'" src="art/icons/cross.png".>':'')
 			 ,'product_id'=>$data['product_id']
 			);
@@ -2445,8 +2470,8 @@ case('products'):
 
      
      $sql="select count(*) as total from product  $where $wheref";
-     
-     $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+
+     $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die("here ".$res->getMessage());}
      if($row=$res->fetchRow()) {
        $total=$row['total'];
      }
@@ -2494,8 +2519,8 @@ case('products'):
 
   $norder=($order=='code'?'ncode':$order);
   
-  $sql="select days_to_ns,id,code,description,product.price as price,product.units as units,product.units_tipo as units_tipo,ncode,stock,available,stock_value,tsall,tsy,tsq,tsm,tsw,awtsall,awtsy,awtsm,tsoall,tsoy,tsoq,tsom,tsow,awtsoall,awtsoy,awtsom from product    $where $wheref  order by $norder $order_direction limit $start_from,$number_results    ";
-
+  $sql="select days_to_ns,product.id,code,description,product.price as price,product.units as units,product.units_tipo as units_tipo,ncode,stock,available,stock_value,tsall,tsy,tsq,tsm,tsw,awtsall,awtsy,awtsm,tsoall,tsoy,tsoq,tsom,tsow,awtsoall,awtsoy,awtsom from product  left join sales on (sales.tipo_id=product.id)  $where $wheref  and sales.tipo='prod' order by $norder $order_direction limit $start_from,$number_results    ";
+  //  print $sql;
   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
   
   $adata=array();
@@ -2504,7 +2529,7 @@ case('products'):
     $adata[]=array(
 		   'id'=>$data['id']
 		   ,'code'=>$data['code']
-		   ,'description'=>$data['description']
+		   ,'description'=>number($data['units']).'x '.$data['description']
 		   ,'units'=>number($data['units'])
 		   ,'price'=>money($data['price'])
 		   ,'units_tipo'=>$_units_tipo_abr[($data['units_tipo'])]
@@ -3282,10 +3307,14 @@ if(isset( $_REQUEST['all_products'])){
    $_order=$order;
    $_dir=$order_direction;
    
+
+
    
    $_SESSION['state']['po']['items']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value,'all_products_supplier'=>$all_products_supplier,'all_products'=>$all_products);
    $_SESSION['state']['supplier']['id']=$supplier_id;
    
+
+
    if($all_products_supplier)
      $where=$where.' and ps.supplier_id='.$supplier_id;
    elseif($all_products)
@@ -3362,12 +3391,13 @@ if(isset( $_REQUEST['all_products'])){
     if($all_products_supplier){
    $sql="select p.units as punits,(select concat_ws('|',IFNULL(expected_price,''),IFNULL(expected_qty,''),IFNULL(price,''),IFNULL(qty,''),IFNULL(damaged,''),IFNULL(qty-damaged,'')) from porden_item where porden_id=$po_id and porden_item.p2s_id=ps.id) as po_data,   sup_code,ps.id as p2s_id,(p.units*ps.price) as price_outer,ps.price as price_unit,stock,p.condicion as condicion, p.code as code, p.id as id,p.description as description , group_id,department_id,g.name as fam, d.code as department 
 from product as p left join product_group as g on (g.id=group_id) left join product_department as d on (d.id=department_id) left join product2supplier as ps on (product_id=p.id)  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+
     }else{
       $sql=sprintf("select   (qty-damaged) as useful,  damaged,p.units as punits, expected_qty,expected_price, porden_item.price,qty  ,   sup_code,ps.id as p2s_id,(p.units*ps.price) as price_outer,ps.price as price_unit,stock,p.condicion as condicion, p.code as code, p.id as id,p.description as description , group_id,department_id,g.name as fam, d.code as department 
 from porden_item left join product2supplier as ps on ( p2s_id=ps.id)  left join product as p on (product_id=p.id)  left join product_group as g on (g.id=group_id) left join product_department as d on (d.id=department_id)  $where $wheref  order by $order $order_direction                   ");
-      
+
     }
-    //    print $sql;
+  
    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
    $data=array();
    while($row=$res->fetchRow()) {
@@ -4416,7 +4446,7 @@ if(isset( $_REQUEST['tableid']))
 
     $adata[]=array(
 
-		   'code'=>sprintf('<a href="product.php?id=%d">%s</a>',$data['product_id'],$data['code'])
+		   'code'=>sprintf('<a href="product_manage_stock.php?id=%d">%s</a>',$data['product_id'],$data['code'])
 		   ,'description'=>$data['description']
 		   ,'current_qty'=>sprintf('<span  used="0"  value="%s" id="s'.$data['id'].'"  onclick="fill_value(%s,%d,%d)">%s</span>',$data['qty'],$data['qty'],$data['id'],$data['product_id'],number($data['qty']))
 		   ,'changed_qty'=>sprintf('<span   used="0" id="cs'.$data['id'].'"  onclick="change_reset(%d,%d)"   ">0</span>',$data['id'],$data['product_id'])

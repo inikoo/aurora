@@ -150,7 +150,19 @@ class Customer{
  }
 
 
-
+ function get($key){
+   switch($key){
+   case('orders'):
+     return $this->data['num_invoices']+$this->data['num_invoices_nd'];
+     break;
+   default:
+     if(isset($this->data[$key]))
+       return $this->data[$key];
+     else
+       return false;
+   }
+   
+ }
 
 }
 ?>

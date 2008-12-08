@@ -39,6 +39,7 @@ var value_checked=function(o,id,units,add_product){
     
 
 	var qty=o.value;
+
 	var eqty=Dom.get('eqty'+id).innerHTML;
 	if(eqty=='')
 	    eqty=0;
@@ -53,6 +54,26 @@ var value_checked=function(o,id,units,add_product){
 	    Dom.get('uo'+id).innerHTML=(qty-damaged)/units;
 
     
+	  var request='ar_assets.php?tipo=order_add_item&tipo_order=po&product_id='+escape(o.getAttribute('pid'))+'&qty='+escape(o.value)+'&order_id='+escape(po_id);
+	//	alert(request);
+	    YAHOO.util.Connect.asyncRequest('POST',request ,{
+		    
+		    success:function(o) {
+			alert(o.responseText)
+			var r =  YAHOO.lang.JSON.parse(o.responseText);
+			if (r.state == 200) {
+			    Dom.get('distinct_products').innerHTML=r.data.items;
+			    Dom.get('goods').innerHTML=r.data.money.goods;
+			    Dom.get('vat').innerHTML=r.data.money.vat;
+			    Dom.get('total').innerHTML=r.data.money.total;
+			    //Dom.get('oqty'+r.item_data.id).innerHTML=r.item_data.outers;
+			    //Dom.get('ep'+r.item_data.id).innerHTML=r.item_data.est_price;
+			}
+		    }
+		});    
+	
+
+
 }
 
 var value_damaged=function(o,id,units){
@@ -422,7 +443,18 @@ var cancel_order=function(o){
 var swap_show_items=function(o){
 
     var status=o.getAttribute('status');
-    if(status==8){
+
+    if(status==0){
+	o.className='selected but';
+	Dom.get('show_all_products').className='but';
+	var table=tables['table0'];
+	var datasource=tables['dataSource0'];
+	var request='&all_products=0&all_products_supplier=0';
+	
+	Dom.get("clean_table_controls0").style.visibility='visible';
+	Dom.get("clean_table_filter0").style.visibility='visible';
+		datasource.sendRequest(request,table.onDataReturnInitializeTable, table);    
+    }else if(status==8){
 	o.className='selected but';
 	Dom.get('show_found').className='but';
 	Dom.get('show_new_found').className='but';
@@ -472,32 +504,48 @@ var swap_item_found=function(o){
 
 
 var swap_show_all_products=function(o){
-    o.className='selected but';
-    var table=tables['table0'];
-    if(show_all){
-	Dom.get('clean_table_filter0').style.visibility='visible';
-	Dom.get('clean_table_controls0').style.visibility='visible';
-	Dom.get('table_po_products').className='but ';
+
+var status=o.getAttribute('status');
+//alert(status)
+
+ if(status==0){
+	o.className='selected but';
+	Dom.get('show_items').className='but';
+	var table=tables['table0'];
+	var datasource=tables['dataSource0'];
+	var request='&all_products=0&all_products_supplier=1';
 	
-	<?=($_SESSION['state']['po']['status']==1?"table.showColumn('expected_qty');table.hideColumn('expected_qty_ne');":'')?>
+	Dom.get("clean_table_controls0").style.visibility='visible';
+	Dom.get("clean_table_filter0").style.visibility='visible';
+	datasource.sendRequest(request,table.onDataReturnInitializeTable, table);    
+    }
 
-
-    }else{
-	Dom.get('table_all_products').className='but ';
-	Dom.get('clean_table_filter0').style.visibility='hidden';
-	Dom.get('clean_table_controls0').style.visibility='hidden';
+  //   o.className='selected but';
+//     var table=tables['table0'];
+//     if(show_all){
+// 	Dom.get('clean_table_filter0').style.visibility='visible';
+// 	Dom.get('clean_table_controls0').style.visibility='visible';
+// 	Dom.get('table_po_products').className='but ';
 	
-	<?=($_SESSION['state']['po']['status']==1?"table.hideColumn('expected_qty');table.showColumn('expected_qty_ne');":'')?>
+// 	<?=($_SESSION['state']['po']['status']==1?"table.showColumn('expected_qty');table.hideColumn('expected_qty_ne');":'')?>
 
 
-    }tableid=0;
-    var table=tables['table'+tableid];
-    var datasource=tables['dataSource'+tableid];
-    var request='&show_all=' +show_all;
+//     }else{
+// 	Dom.get('table_all_products').className='but ';
+// 	Dom.get('clean_table_filter0').style.visibility='hidden';
+// 	Dom.get('clean_table_controls0').style.visibility='hidden';
+	
+// 	<?=($_SESSION['state']['po']['status']==1?"table.hideColumn('expected_qty');table.showColumn('expected_qty_ne');":'')?>
+
+
+//     }tableid=0;
+//     var table=tables['table'+tableid];
+//     var datasource=tables['dataSource'+tableid];
+//     var request='&show_all=' +show_all;
 
     
 
-    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);    
+//     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);    
     
 };
     
@@ -545,11 +593,11 @@ var value_changed=function(o){
 	    o.style.background='#fff889';
 	}else{
 
-	     var request='ar_assets.php?tipo=order_add_item&tipo_order=po&product_id='+escape(o.getAttribute('pid'))+'&qty='+escape(o.value)+'&order_id='+escape(po_id);
+	    var request='ar_assets.php?tipo=order_add_item&tipo_order=po&product_id='+escape(o.getAttribute('pid'))+'&qty='+escape(o.value)+'&order_id='+escape(po_id);
 	    YAHOO.util.Connect.asyncRequest('POST',request ,{
 		    
 		    success:function(o) {
-			//	alert(o.responseText)
+		       	//alert(o.responseText)
 			var r =  YAHOO.lang.JSON.parse(o.responseText);
 			if (r.state == 200) {
 			    Dom.get('distinct_products').innerHTML=r.data.items;
