@@ -870,7 +870,7 @@ else if($f_field=='id'  )
 
    $sql="select   email ,email.contact as email_contact, telecom.number,telecom.icode,telecom.ncode,telecom.ext,  (select count(*) from customer2group where group_id=9 and customer_id=cu.id) as is_staff, num_invoices,list_country.name as country_name, cu.file_as,(total_nd+total) as super_total,total_nd,total_nd/(total_nd+total) as  factor_num_orders_nd ,(cu.total/num_invoices) as total_avg,  postcode,cu.id as id ,cu.name as name , (num_invoices+num_invoices_nd) as orders,num_orders_nd,UNIX_TIMESTAMP(last_order) date,cu.total as total,town,code2 as country_code2, code as country_code from customer as cu      left join email on (main_email=email.id) left join telecom on (main_tel=telecom.id)      left join address on (main_bill_address=address.id) left join list_country on (country=list_country.name)   $where $wheref  order by $order $order_direction limit $start_from,$number_results";
 
-
+   //  print $sql;
   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
 
   $adata=array();

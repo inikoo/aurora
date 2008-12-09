@@ -496,7 +496,7 @@ class Order{
       if ($row=$res->fetchRow()){
 	if($row['supplier_id']!=$this->data['supplier_id']){
 	  // product not related
-	  $product-
+	  
 
 	}
 	$price=$row['price'];

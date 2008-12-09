@@ -82,7 +82,15 @@ class Customer{
   }
  function load($key=''){
     switch($key){
-   
+    case('location'):
+      if($this->main_bill_address){
+
+      }else{
+     
+      $sql=sprintf('select * from  address on (main_bill_address=address.id) left join list_country on (country=list_country.name) where id=%d ',$this->main_bill_address);
+
+      }
+      break;
     case('contacts'):
     case('contact'):
       if($this->contact=new contact($this->data['contact_id'])){
@@ -152,6 +160,12 @@ class Customer{
 
  function get($key){
    switch($key){
+   case('location'):
+          return 'cac';
+	  break;
+   case('super_total'):
+          return $this->data['total_nd']+$this->data['total'];
+	  break;
    case('orders'):
      return $this->data['num_invoices']+$this->data['num_invoices_nd'];
      break;
@@ -159,7 +173,7 @@ class Customer{
      if(isset($this->data[$key]))
        return $this->data[$key];
      else
-       return false;
+       return '';
    }
    
  }
