@@ -9,13 +9,13 @@ class product{
   var $parents=array();
   var $childs=array();
   var $supplier=false;
-  var $locations=array();
+  var $locations=false;
   var $notes=array();
   var $images=false;
 
   var $db;
 
-  
+  var $location_to_update=false;
 
   function __construct($a1,$a2=false) {
     $this->db =MDB2::singleton();
@@ -100,7 +100,7 @@ class product{
 
 	$_data=array();
 	$this->locations=array('is_parent'=>false,'has_display'=>false,'has_unknown'=>false,'has_loading'=>false,'has_link'=>false,'has_white_hole'=>false,'has_picking_area'=>false,'has_physical'=>false,'data'=>array(),'num_physical'=>0,'num_physical_with_stock'=>0,'num_picking_areas'=>0);
-	$sql=sprintf("select name,product2location.id as id,location_id,stock,picking_rank,tipo,stock  from product2location left join location on (location_id=location.id) where product_id=%d and picking_rank is not null order by picking_rank  ",$this->data['location_parent_id']);
+	$sql=sprintf("select max_stock,name,product2location.id as id,location_id,stock,picking_rank,tipo,stock  from product2location left join location on (location_id=location.id) where product_id=%d and picking_rank is not null order by picking_rank  ",$this->data['location_parent_id']);
 	$result =& $this->db->query($sql);
 	$num_same_products=count($this->same_products);
 	if($num_same_products>0){
@@ -122,6 +122,10 @@ class product{
 	  
 	  $stock_units+=$row['stock'];
 	  
+	  if($row['max_stock']=='' or $row['max_stock']<=0 )
+	    $max_units=_('Not set');
+	  else
+	    $max_units=$row['max_stock'];
 	  $_data[$row['id']]=array(
 				   'id'=>$row['id'],
 				   'name'=>$row['name'],
@@ -129,6 +133,7 @@ class product{
 				   'stock'=>$stock,
 				   'stock_units'=>$row['stock'],
 				   'stock_outers'=>$stock_outers,
+				   'max_units'=>$max_units,
 				   'tipo'=>$_location_tipo[$row['tipo']],
 				   'picking_tipo'=>getOrdinal($row['picking_rank']),
 				   'picking_rank'=>$row['picking_rank'],
@@ -148,7 +153,7 @@ class product{
 	
 
 
-	$sql=sprintf("select name,product2location.id as id,location_id,stock,picking_rank,tipo,stock  from product2location left join location on (location_id=location.id) where product_id=%d and picking_rank is  null order by tipo desc  ",$this->data['location_parent_id']);
+	$sql=sprintf("select max_stock,name,product2location.id as id,location_id,stock,picking_rank,tipo,stock  from product2location left join location on (location_id=location.id) where product_id=%d and picking_rank is  null order by tipo desc  ",$this->data['location_parent_id']);
 	$result =& $this->db->query($sql);
 	while($row=$result->fetchRow()){
 	   $stock_units+=$row['stock'];
@@ -188,7 +193,10 @@ class product{
 	    $is_physical=true;
 	  }
 	    
-	  
+	   if($row['max_stock']=='' or $row['max_stock']<=0 )
+	    $max_units=_('Not set');
+	  else
+	    $max_units=$row['max_stock'];
 
 	  $_data[$row['id']]=array(
 					   'id'=>$row['id'],
@@ -197,6 +205,7 @@ class product{
 					   'stock'=>$stock,
 					   'stock_units'=>$row['stock'],
 					   'stock_outers'=>$stock_outers,
+					   'max_units'=>$max_units,
 					   'tipo'=>$tipo,
 					   'picking_tipo'=>$picking_tipo,
 					   'picking_rank'=>'',
@@ -460,6 +469,18 @@ class product{
 
 
     switch($key){
+    case('max_units_per_location'):
+      
+      
+      $sql=sprintf("select max_stock from product2location  where   id=%d and product_id=%d",$data['id'],$this->id);
+      //      print $sql;
+      $result =& $this->db->query($sql);
+      if($row=$result->fetchRow()){
+	return $row['max_stock'];
+      }else
+	return false;
+      
+      break;
     case('dimension'):
     case('odimension'):
 
@@ -550,7 +571,7 @@ class product{
     default:
 
       $sql=sprintf("select %s as value  from product where id=%d",addslashes($key),$this->id);
-      print $key;
+      //      print $key;
       $res = $this->db->query($sql); 
       if ($row=$res->fetchRow()) {
 	return $row['value'];
@@ -563,7 +584,7 @@ class product{
 
 
 
-  function get($item=''){
+  function get($item='',$data=false){
 
     switch($item){
     case('new_image'):
@@ -666,8 +687,33 @@ class product{
       else
 	return '';
       break;  
-
-
+    case('max_units_per_location'):
+      $p2l_id=false;
+      $_key=key($data);
+      if($_key=='id'){
+	$p2l_id=$data[$_key];
+      }
+      if(isset($this->locations['data'][$p2l_id]['max_units']))
+	if($this->locations['data'][$p2l_id]['max_units']=='')
+	  return _('Not set');
+	else
+	  return $this->locations['data'][$p2l_id]['max_units'];
+      else
+	return false;
+      break;
+    case('pl2_id'):
+      if(!$this->locations)
+	$this->load('locations');
+      $_key=key($data);
+      if($_key=='id'){
+	foreach($this->locations['data'] as $p2l_id=>$loc_data){
+	  // print "$p2l_id *******8\n";
+	  if($loc_data['location_id']==$data[$_key])
+	    return $p2l_id;
+	}
+      }
+      return false;
+      break;
     default:
 
       if(isset($this->data[$item]))
@@ -1106,7 +1152,16 @@ class product{
 	
       $this->load(array('locations'));
       $locations_data=$this->get('locations');
-      return array(true,$locations_data,$location_id,$location_name,$location_tipo,$rank,($rank==1?getOrdinal(1):getOrdinal($locations_data['num_physical'])) ,$id);
+      return array(true,
+		   $locations_data,
+		   $location_id,
+		   $location_name,
+		   $location_tipo,
+		   $rank,
+		   ($rank==1?getOrdinal(1):getOrdinal($locations_data['num_physical'])) ,
+		   $id,
+		   $can_pick
+		   );
   
       break;
       
@@ -1312,6 +1367,39 @@ class product{
       $res[$key]=array('ok'=>false,'msg'=>'');
       
       switch($key){
+      case('max_units_per_location'):
+	$p2l_id=$data['p2l_id'];
+	//	print $p2l_id;
+	if(!is_numeric($p2l_id) or $p2l_id<=0){
+	  $res[$key]['msg']=_('Wrong location id');
+	  $res[$key]['ok']=false;
+	  continue;
+	}
+	if(!$this->locations){
+	  $this->load('locations');
+
+	}
+	//	print_r($this->locations['data']);
+	if(!isset($this->locations['data'][$p2l_id])){
+	    $res[$key]['msg']=_('Error: Location not assocated with product');
+	    $res[$key]['ok']=false;
+	    continue;
+	  }
+	if(!is_numeric($value) or  $value<=0){
+	  $value='';
+	}
+
+	if($this->locations['data'][$p2l_id]['max_units']==$value){
+	    $res[$key]['msg']=_('Max units not changed (same values)');
+	    $res[$key]['ok']=false;
+	    continue;
+	}
+	 $this->locations['data'][$p2l_id]['max_units']=$value;
+	 $this->location_to_update=$p2l_id;
+	  $res[$key]['msg']=_('Max units in location changed');
+	  $res[$key]['ok']=true;
+
+	break;
       case('units'):
 	if(!is_numeric($value)){
 	  $res[$key]['msg']=_('Units per outer should be a number');
@@ -1740,8 +1828,23 @@ class product{
 
 
   function save($key,$history_data=false){
+
     $msg='';
     switch($key){
+    case('max_units_per_location'):
+      $old_value=$this->read($key,array('id'=>$this->location_to_update));
+      $sql=sprintf("update  product2location set max_stock=%s where id=%d",prepare_mysql($this->locations['data'][$this->location_to_update]['max_units']),$this->location_to_update);
+      // print $sql;
+      $this->db->exec($sql);
+      
+      if(is_array($history_data)){
+	$history_data['p2l_id']=$this->location_to_update;
+	$history_data['location_id']=$this->locations['data'][$this->location_to_update]['location_id'];
+	$history_data['loc_name']=$this->locations['data'][$this->location_to_update]['name'];
+	$msg=$this->save_history($key,$old_value,$this->locations['data'][$this->location_to_update]['max_units'],$history_data);
+      }
+
+      break;
     case('supplier_new'):
       
       $sql=sprintf("insert into product2supplier (supplier_id,product_id) values (%d,%d)",$this->new_supplier,$this->id);
@@ -1752,7 +1855,7 @@ class product{
       }
       $msg.=$this->save('supplier');
      
-     
+      break;
     case('supplier'):
 
       if(isset($this->supplier_code_changed) and $this->supplier_code_changed){
@@ -1986,11 +2089,12 @@ class product{
 
 	  break;
     default:
-      
+
        $old_value=$this->read($key);
+       //print $old_value." ".$this->data[$key]."\n";
        if($old_value!=$this->data[$key]){
  	$sql=sprintf("update product set %s=%s where id=%d",$key,prepare_mysql($this->get($key)),$this->id);
-
+	//print "$sql\n";
  	$this->db->exec($sql);
        }
 
@@ -2010,6 +2114,18 @@ class product{
   function save_history($key,$old,$new,$data){
     
     switch($key){
+
+    case('max_units_per_location'):
+      if(is_numeric($new))
+	$note=_('Max units in location')." ".$data['loc_name']." "._('set to').' '.$new;
+      else
+	$note=_('Max units uncapped in location')." ".$data['loc_name'];
+      $sujeto='PROD';
+      $sujeto_id=$this->id;
+      $objeto='LOC';
+      $objeto_id=$data['location_id'];
+      $action='CHGMAX';
+      break;
     case('units'):
       $note=_('Units per outer changed to').": ".$new;
       $sujeto='PROD';
@@ -2235,7 +2351,7 @@ class product{
 		 ,prepare_mysql($old)	 
 		 ,prepare_mysql($new)	 
 		 ,prepare_mysql($note)); 
-    
+    //    print $sql;
     $this->db->exec($sql);
 
     return $note;

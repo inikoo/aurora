@@ -229,36 +229,65 @@ var new_location_save = function(){
 		    cellLeft.setAttribute("id", 'loc_name'+r.id );
 		    var cellLeft = row.insertCell(1);
 		    cellLeft.setAttribute("id", 'loc_tipo'+r.id );
+		    
 		    var cellLeft = row.insertCell(2);
+		    
 		    var span = document.createElement("span");
 		    span.innerHTML=' &uarr; ';
 		    span.setAttribute("onclick", "rank_up("+r.id+")" );
 		    span.setAttribute("style", "cursor:pointer" );
 		    span.setAttribute("id", 'loc_picking_up'+r.id );
+		    span.setAttribute("rank", +r.picking_rank );
+		    span.style.cursor='pointer';
+		    if(r.picking_rank<2 || r.picking_rank=='')
+			span.style.display='none';
 		    cellLeft.appendChild(span);
+		    
 		    var span = document.createElement("span");
 		    span.setAttribute("id", 'loc_picking_tipo'+r.id );
 		    cellLeft.appendChild(span);
-		    cellLeft.style.textAlign='right';
-		    cellLeft.setAttribute("id", 'loc_pick_info'+r.id );
+		    
 		    var img = document.createElement("img");
-		    img.setAttribute("src", "art/icons/basket.png" );
-		    img.setAttribute("style", "cursor:pointer" );
-		    img.setAttribute("title", "" );
 		    img.setAttribute("id", 'loc_picking_img'+r.id );
-		    //img.setAttribute("onclick", "desassociate_loc()" );
+		    img.setAttribute("can_pick", r.can_pick );
+		    img.setAttribute("onclick","swap_picking("+r.id+")"  );
+		    img.setAttribute("src", "art/icons/basket.png" );
+		    img.setAttribute("style", "position:relative;bottom:1px;vertical-align:bottom;cursor:pointer;" );
+		    img.setAttribute("title", "" );
+
 		    cellLeft.appendChild(img);
 		    
+		    cellLeft.setAttribute("id", 'loc_pick_info'+r.id );
+		    cellLeft.style.textAlign='right';
+
+
 		    var cellLeft = row.insertCell(3);
-		    cellLeft.setAttribute("id", 'loc_stock_units'+r.id );
 		    cellLeft.style.textAlign='right';
-		    
+		    var span = document.createElement("span");
+		    span.setAttribute("id", 'loc_stock_units'+r.id );
+		    span.innerHTML='0';
+		    cellLeft.appendChild(span);
+
 		    var cellLeft = row.insertCell(4);
-		    cellLeft.setAttribute("id", 'loc_stock_outers'+r.id );
 		    cellLeft.style.textAlign='right';
-
-
+		    var span = document.createElement("span");
+		    span.setAttribute("id", 'loc_stock_outers'+r.id );
+		    span.innerHTML='0';
+		    cellLeft.appendChild(span);
+		    
 		    var cellLeft = row.insertCell(5);
+		    cellLeft.style.textAlign='right';
+		    var span = document.createElement("span");
+		    span.setAttribute("style", 'cursor:pointer' );
+				    
+		    span.setAttribute("id", 'loc_stock_max_units'+r.pl_id );
+
+				    
+		    span.setAttribute("onClick", "change_max_units_dialog(this,"+r.pl_id+",'"+location_name+"')");
+		    span.innerHTML='<?=_('Not Set')?>';
+		     cellLeft.appendChild(span);
+		     
+		    var cellLeft = row.insertCell(6);
 		    var img = document.createElement("img");
 		    img.setAttribute("src", "art/icons/cross.png" );
 		    img.setAttribute("style", "cursor:pointer" );
@@ -463,7 +492,7 @@ var unlink_save=function(){
     var request='ar_assets.php?tipo=pml_unlink';
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-		alert(o.responseText)
+		//alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if (r.state == 200) {
 		    location.reload(true);
@@ -492,7 +521,7 @@ var link_save=function(){
     var request='ar_assets.php?tipo=pml_link&product_id='+escape(product_id);
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-		alert(o.responseText)
+		//alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if (r.state == 200) {
 		    location.reload(true);
@@ -915,7 +944,7 @@ var move_stock_save = function(){
     // return
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-		alert(o.responseText)
+		//alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if (r.state == 200) {
 		    //update all stock figures (if were changed else were)
@@ -1010,6 +1039,69 @@ var move_stock_all=function(index){
 
 
 YAHOO.util.Event.onContentReady("manage_stock_locations", function () {
+function init(){
+  //   change_max_units = new YAHOO.widget.Dialog("change_max_units", 
+// 			{ 
+// 			    visible : false,close:false,
+// 			    underlay: "none",draggable:false
+			    
+// 			} );
+    //change_max_units.render();
+    //    alert("hola");
+	 Event.addListener('submit_search', "click",submit_search);
+	 Event.addListener('prod_search', "keydown", submit_search_on_enter);
+	 
+};
+YAHOO.util.Event.onDOMReady(init);
+ save_max_units=function(){
+    var p2l_id= Dom.get("change_max_units_location_name").getAttribute('pl2_id');
+    var max_units=Dom.get("change_max_units_value").value;
+    var request='ar_assets.php?tipo=pml_change_max_units&key=max_units_per_location&p2l_id='+ escape(p2l_id)+'&value='+escape(max_units);
+    //alert(request);
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    success:function(o) {
+		//alert(o.responseText);
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if (r.ok) {
+		    Dom.get('loc_stock_max_units'+p2l_id).innerHTML=r.max_units;
+		    var table=tables.table0;
+		    var datasource=tables.dataSource0;
+		    var request='&sf=0';
+		    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);     
+		    
+		}else
+		    Dom.get('manage_stock_messages').innerHTML='<span class="error">'+r.msg+'</span>';
+
+		change_max_cancel();
+	       }
+	   });
+};
+
+ change_max_cancel=function(){
+    Dom.setX('change_max_units', -1000)
+    Dom.setY('change_max_units', -1000)
+    Dom.get("change_max_units_location_name").innerHTML='';
+    Dom.get("change_max_units_location_name").setAttribute('pl2_id','');
+    Dom.get("change_max_units_value").value='';
+};
+
+ change_max_units_dialog=function(o,id,name){
+    var y=(Dom.getY(o))
+    var x=(Dom.getX(o))
+    x=x-300;
+    //    alert(y);
+    Dom.setX('change_max_units', x)
+    Dom.setY('change_max_units', y)
+    Dom.get("change_max_units_location_name").innerHTML=name;
+    Dom.get("change_max_units_location_name").setAttribute('pl2_id',id);
+    if(is_numeric(o.innerHTML))
+	Dom.get("change_max_units_value").value=o.innerHTML;
+    else
+	Dom.get("change_max_units_value").value='';
+
+}
+
+YAHOO.util.Event.onDOMReady(init);
 	//function init(){
 	
 

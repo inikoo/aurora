@@ -83,11 +83,20 @@ class Customer{
  function load($key=''){
     switch($key){
     case('location'):
-      if($this->main_bill_address){
-
+      global $myconf;
+      if($this->data['main_bill_address_id']==''){
+	$this->data['location']['country_code']=$myconf['country_code'];
+	$this->data['location']['town']='';
       }else{
      
-      $sql=sprintf('select * from  address on (main_bill_address=address.id) left join list_country on (country=list_country.name) where id=%d ',$this->main_bill_address);
+      $sql=sprintf('select code,town from  address  left join list_country on (country=list_country.name) where address.id=%d ',$this->data['main_bill_address_id']);
+      //     print_r($this->data);
+      // print $sql;
+      $result =& $this->db->query($sql);
+      if($row=$result->fetchRow()){	     
+	$this->data['location']['country_code']=$row['code'];
+	$this->data['location']['town']=$row['town'];
+      }
 
       }
       break;
@@ -161,8 +170,10 @@ class Customer{
  function get($key){
    switch($key){
    case('location'):
-          return 'cac';
-	  break;
+     if(!isset($this->data['location']))
+       $this->load('location');
+     return $this->data['location']['country_code'].$this->data['location']['town'];
+     break;
    case('super_total'):
           return $this->data['total_nd']+$this->data['total'];
 	  break;

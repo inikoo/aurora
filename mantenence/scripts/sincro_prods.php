@@ -3,6 +3,7 @@ include_once('../../app_files/db/dns.php');
 include_once('../../classes/Department.php');
 include_once('../../classes/Family.php');
 include_once('../../classes/Product.php');
+include_once('../../classes/Location.php');
 
 require_once 'MDB2.php';            // PEAR Database Abstraction Layer
 require_once '../../common_functions.php';
@@ -21,10 +22,11 @@ $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessag
 while($row=$res->fetchRow()) {
   $code=$row['code'];
   $id=$row['id'];
-
+  // print "updating $code\n";
   $sql=sprintf("select * from aw_old.product where code like '%s'",$code);
   $res2 = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
   if($row2=$res2->fetchRow()) {
+    $old_stock=$row2['stock']*$row2['units'];
     $product=new Product($id);
     $product->update(
 		     array(
@@ -33,21 +35,88 @@ while($row=$res->fetchRow()) {
 			   array('key'=>'price','value'=>$row2['price'])
 			   )
 		     ,'save');
-    $product->update_location(array('tipo'=>'delete_all'));
+       $product->update_location(array('tipo'=>'delete_all'));
 
-    $sql="select * from aw_old.location where product_id=".$row2['id'];
-    $resloc = $db->query($sql); 
-    if($rowloc=$resloc->fetchRow()) {
-     $loc_code=$rowloc['code'];
-     if(!preg_match('/^(\d+[abcbdefgh]\d+|\d+\-\d+\-\d+)$/i',$loc_code))
-       print "$loc_code\n";
-    }
-    
+     $sql="select * from aw_old.location  where product_id=".$row2['id']." order by tipo" ;
+     $resloc = $db->query($sql); 
+     $has_location=false;
+     $primary=true;
+     while($rowloc=$resloc->fetchRow()) {
+       
+       $has_location=true;
+       $loc_code=$rowloc['code'];
+       if(!preg_match('/^(\d+[abcbdefgh]\d+|\d+\-\d+\-\d+|UPSTAIRS|Production|canteen)$/i',$loc_code))
+	 print "$code $old_stock Wrong location $loc_code\n";
+       else{
+	 // Check if the location already exist
+	 $location=new Location('name',$loc_code);
+	 if($location->id){
+	   // print "location found in new database\n";
+	 }else{
+	   //print "Creating location $loc_code\n";
+
+	   if(preg_match('/^(\d+\-\d+\-\d+)$/i',$loc_code))
+	     $_tipo='storing';
+	   else
+	     $_tipo='picking';
+	   $location=new Location('new',array('name'=>$loc_code,'tipo'=>$_tipo));
+	   
+	   //  exit;
+	 }
+	   
+	   
+	 if($primary){
+	   //  print "$old_stock units  found in $loc_code\n";
+	   $data=array(
+		       'location_name'=>$location->get('name'),
+		       'is_primary'=>true,
+		       'user_id'=>0,
+		       'can_pick'=>true,
+		       'tipo'=>'associate_location'
+	       );
+	   // print_r($data);
+	   $product->update_location($data);
+	   
+	   $p2l_id=$product->get('pl2_id',array('id'=>$location->id));
+	   
+	   
+	   $data=array(
+		 'p2l_id'=>$p2l_id,
+		 'qty'=>$old_stock,
+		 'msg'=>'Value taken from old database',
+		 'user_id'=>0,
+		 'tipo'=>'change_qty'
+		 );
+
+	   $product->update_location($data);
+
+
+
+	 }
+
+	 else{
+	   $data=array(
+		       'location_name'=>$location->get('name'),
+		       'is_primary'=>false,
+		       'user_id'=>0,
+		       'can_pick'=>false,
+		       'tipo'=>'associate_location'
+	       );
+	   // print_r($data);
+	   $product->update_location($data);
+	 }
+	 $primary=false;
+       }
+     }
+     
+     if(!$has_location){
+       //print "product has no old location\n";
+     }
   }
   //print " $id\r";
  }
 
-
+exit;
 
 
 $sql="select * from aw_old.product ";

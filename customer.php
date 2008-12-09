@@ -55,16 +55,18 @@ if($customers_order=='orders'){
   $_customers_order='(num_invoices+num_invoices_nd)';
  }else if($customers_order=='super_total'){
   $_customers_order='(total_nd+total)';
+ }else if($customers_order=='location'){
+  $_customers_order='concat(list_country.code,town)';
  }else
   $_customers_order=$customers_order;
 
-$sql=sprintf("select  (num_invoices+num_invoices_nd) as orders,(total_nd+total) as super_total,c.id,c.name as code from customer as c  where  %s<%s  order by %s desc  limit 1",$_customers_order,prepare_mysql($customer->get($customers_order)),$customers_order);
-print $customer->get($customers_order)."<br>";
+$sql=sprintf("select  concat(list_country.code,town) as location, (num_invoices+num_invoices_nd) as orders,(total_nd+total) as super_total,c.id,c.name as code from customer as c    left join address on (main_bill_address=address.id) left join list_country on (country=list_country.name)     where  %s < %s  order by %s desc  limit 1",$_customers_order,prepare_mysql($customer->get($customers_order)),$customers_order);
+//print $sql;
 $result =& $db->query($sql);
 if(!$prev=$result->fetchRow())
   $prev=array('id'=>0,'code'=>'');
 $smarty->assign('prev',$prev);
-$sql=sprintf("select  (num_invoices+num_invoices_nd)as orders,(total_nd+total) as super_total,c.id,c.name as code from customer as c  where  %s>%s  order by %s   ",$_customers_order,prepare_mysql($customer->get($customers_order)),$customers_order);
+$sql=sprintf("select   concat(list_country.code,town) as location,(num_invoices+num_invoices_nd)as orders,(total_nd+total) as super_total,c.id,c.name as code from customer as c   left join address on (main_bill_address=address.id) left join list_country on (country=list_country.name)  where  %s>%s  order by %s   ",$_customers_order,prepare_mysql($customer->get($customers_order)),$customers_order);
 $result =& $db->query($sql);
 if(!$next=$result->fetchRow())
   $next=array('id'=>0,'code'=>'');

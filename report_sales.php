@@ -46,6 +46,35 @@ if($tipo=='f'){
   $from=$_REQUEST['from'];
   $to=$_REQUEST['to'];
    $title=_('Sales Report');
+ }elseif($tipo=='w'){
+   $year=$_REQUEST['y'];
+   $week=$_REQUEST['w'];
+   
+   $sql=sprintf("select UNIX_TIMESTAMP(first_day) as date from list_week where yearweek=%s",prepare_mysql($year.$week));
+
+   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   if($row=$res->fetchRow()) {
+     //     print $row['date'];
+     $_time=strtotime('@'.$row['date']);
+     $_time_n=strtotime('@'.($row['date']+604800));
+     $_time_aln=strtotime('@'.($row['date']+604800));
+     $_time_p=strtotime('@'.($row['date']-604800));
+   }else
+     die('error no year-week found');
+
+
+
+   $ffrom=date("d/m", $_time);
+   $fto=date("d/m", $_time_n);
+   $from=date("d-m-Y", $_time);
+   $to=date("d-m-Y", $_time_n);
+   $period=date("W Y", $_time);
+   $title=_('Week')." $period ($ffrom-$fto)"._('Sales Report');
+
+   $smarty->assign('up',array('url'=>'tipo=y&y='.date("Y",$_time),'title'=>date("Y",$_time)));
+   $smarty->assign('next',array('url'=>'tipo=w&m='.date("w",$_time_n).'&y='.date("Y",$_time_n),'title'=>_('Week').' '.date("W-Y",$_time_n)));
+   $smarty->assign('prev',array('url'=>'tipo=w&m='.date("w",$_time_p).'&y='.date("Y",$_time_p),'title'=>date("F",$_time_p)));
+
  }elseif($tipo=='m'){
    $year=$_REQUEST['y'];
    $month=$_REQUEST['m'];

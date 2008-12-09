@@ -5,33 +5,69 @@ class location{
   var $data=array();
   var $items=false;
 
-  var $id;
+
   var $tipo;
+  var $id=false;
 
 
-
-  function __construct($id=false,$tipo='shelf') {
+  function __construct($arg1=false,$arg2=false,$tipo='shelf') {
      $this->db =MDB2::singleton();
      
      $this->tipo=$tipo;
-     if(is_numeric($id)){
-       $this->id=$id;
-       $this->get_data();
+
+     if($arg1=='new' and is_array($arg2)){
+       $this->create($arg2);
+       return;
      }
 
+     if(is_numeric($arg1)){
+       $this->get_data('id',$arg1);
+       return;
+     }
+     $this->get_data($arg1,$arg2);
+     
 
 
   }
 
 
-  function get_data(){
+  function create ($data){
+    $name=$data['name'];
+    $tipo=$data['tipo'];
+    print_r($data);
+     if($name=='')
+       return array('ok'=>false,'msg'=>_('Wrong location name').'.');
+    
+    if(!($tipo=='picking' or $tipo=='storing' or $tipo=='loading' or $tipo=='display'))
+       return array('ok'=>false,'msg'=>_('Wrong location tipo').'.');
+    $sql=sprintf('insert into location (name,tipo) values(%s,%s)',prepare_mysql($name),prepare_mysql($tipo));
+    print "$sql\n";
+    $affected=& $this->db->exec($sql);
+    if (PEAR::isError($affected)) {
+      if(preg_match('/^MDB2 Error: constraint violation$/',$affected->getMessage()))
+	return array('ok'=>false,'msg'=>_('Error: Another product has the same code').'.');
+	 else
+	   return array('ok'=>false,'msg'=>_('Unknwon Error').'.');
+    }
+    $id = $this->db->lastInsertID();
+    $this->get_data('id',$id);
+  }
+
+  function get_data($key,$tag){
     
     switch($this->tipo){
     case('shelf'):
-      $sql=sprintf("select (select count(*) from product2location where location_id=location.id ) as products ,max_heigth,deep,length,height,location_tipo.max_weight as max_weight,location.id,location.tipo,location.name,wharehouse_area.name as area  from location  left join location_tipo on (tipo_id=location_tipo.id) left join wharehouse_area on (area_id=wharehouse_area.id) where location.id=%d ",$this->id);
+      if($key=='id')
+      $sql=sprintf("select location.id,(select count(*) from product2location where location_id=location.id ) as products ,max_heigth,deep,length,height,location_tipo.max_weight as max_weight,location.id,location.tipo,location.name,wharehouse_area.name as area  from location  left join location_tipo on (tipo_id=location_tipo.id) left join wharehouse_area on (area_id=wharehouse_area.id) where location.id=%d ",$tag);
+      else if($key=='name')
+	$sql=sprintf("select location.id,(select count(*) from product2location where location_id=location.id ) as products ,max_heigth,deep,length,height,location_tipo.max_weight as max_weight,location.id,location.tipo,location.name,wharehouse_area.name as area  from location  left join location_tipo on (tipo_id=location_tipo.id) left join wharehouse_area on (area_id=wharehouse_area.id) where location.name=%s ",prepare_mysql($tag));
 
+      else
+	return;
+      //  print $sql;
       $result =& $this->db->query($sql);
       if($row=$result->fetchRow()){
+	$this->id=$row['id'];
 	$this->data['name']=$row['name'];
 	$this->data['num_products']=$row['products'];
 	$this->data['used_for']=$row['tipo'];
@@ -102,6 +138,11 @@ class location{
 	$this->load('products');
         return $this->data['has_stock'];
       break;
+    default:
+      if(isset($this->data[$key]))
+	return $this->data[$key];
+      else
+	return '';
       
     }
 

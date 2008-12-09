@@ -86,6 +86,7 @@ $myconf=array(
 	      'name'=>'Ancient Wisdom',
 	      'sname'=>'AW',
 	      'country'=>'GB',
+	      'country_code'=>'GBR',
 	      'lang'=>'en',
 	      'country_id'=>30,
 	      'home_id'=>30,

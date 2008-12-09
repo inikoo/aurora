@@ -242,6 +242,32 @@ switch($tipo){
 
      echo json_encode($response);  
      break;
+ case('pml_change_max_units'):
+     $data[]=array(
+		 'key'=>$_REQUEST['key'],
+		 'value'=>$_REQUEST['value'],
+		 'p2l_id'=>$_REQUEST['p2l_id']
+		   );
+
+     $product=new product($_SESSION['state']['product']['id']);
+     $_res=$product->update($data);
+     $res=$_res[$_REQUEST['key']];
+
+     if($res['ok']){
+       $res['msg']=$product->save($_REQUEST['key'],array('user_id'=>$LU->getProperty('auth_user_id')));
+        $response= array(
+			  'ok'=>true,
+			  'msg'=>$res['msg'],
+			  'max_units'=>$product->get('max_units_per_location',array('id'=>$_REQUEST['p2l_id']))
+			);
+     }else
+	 $response= array(
+			  'ok'=>false,
+			  'msg'=>$res['msg']
+			);
+
+     echo json_encode($response);  
+     break;
  case('pml_change_location'):
      $data=array(
 
@@ -450,7 +476,9 @@ switch($tipo){
 		      'data'=>$res[1],
 		      'name'=>$res[3],
 		      'tipo'=>$_location_tipo[$res[4]],
+		      'picking_rank'=>$res[5],
 		      'tipo_rank'=>$res[6],
+		      'can_pick'=>$res[8],
 		      'rank_img'=>$tipo_img,
 		      'id'=>$res[2],
 		      'pl_id'=>$res[7],
@@ -1998,9 +2026,10 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
 
   $norder=($order=='code'?'ncode':$order);
   $norder=($order=='orders'?'public_id':$order);
-  $norder='code, '.$norder;
-  $sql="select product_id,outofstock.id,orden.public_id,staff.alias as picker,product.code as code,product.stock,date_index from outofstock left join orden on (orden.id=order_id) left join product on (product.id=product_id) left join pick on (pick.order_id=orden.id) left join staff on (picker_id=staff.id)   $where $wheref and orden.tipo=2   order by $norder $order_direction limit $start_from,$number_results     ";
-   print "$sql";
+  $norder=($order=='pickers'?'pickers':$order);
+  // $norder='code, '.$norder;
+  $sql="select product_id,outofstock.id,orden.public_id,staff.alias as pickers,product.code as code,product.stock,UNIX_TIMESTAMP(date_index) as udate_index,date_index from outofstock left join orden on (orden.id=order_id) left join product on (product.id=product_id) left join pick on (pick.order_id=orden.id) left join staff on (picker_id=staff.id)   $where $wheref and orden.tipo=2   order by $norder $order_direction limit $start_from,$number_results     ";
+  //    print "$sql";
   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
   
   $adata=array();
@@ -2008,11 +2037,11 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
   while($data=$res->fetchRow()) {
     $adata[]=array(
 		   'id'=>$data['id']
-		   ,'pickers'=>$data['picker']
+		   ,'pickers'=>$data['pickers']
 		   ,'orders'=>$data['public_id']
 		   ,'code'=>$data['code']
 		   ,'stock'=> number(stock_date($data['product_id'],$data['date_index'])).'  <b>'.number($data['stock']).'</b>'
-		   ,'date'=>$data['date_index']
+		   ,'date'=>strftime("%e %b %Y %H:%M", strtotime('@'.$data['udate_index']))
 		   
 		   );
   }
@@ -4064,11 +4093,11 @@ case('plot_daystock'):
      $f_value=$_REQUEST['f_value'];
    else
      $f_value=$conf['f_value'];
-if(isset( $_REQUEST['tableid']))
+  if(isset( $_REQUEST['tableid']))
     $tableid=$_REQUEST['tableid'];
   else
     $tableid=0;
- 
+  
  
  list($date_interval,$error)=prepare_mysql_dates($from,$to);
   if($error){

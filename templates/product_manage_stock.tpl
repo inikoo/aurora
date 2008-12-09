@@ -43,7 +43,9 @@
     <div class="search_box" style="clear:none;float:right;width:120px" >
       <span class="search_title">{t}Product Code{/t}:</span> <input size="8" class="text search" id="prod_search" value="" name="search"/><img align="absbottom" id="submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>
       <span  class="search_msg"   id="search_msg"    ></span> <span  class="search_sugestion"   id="search_sugestion"    ></span>
-      <br/>
+    
+      
+  <br/>
       <span>{t}Return to product pages{/t}:</span><br/>
       <a href="product.php?id={$data.id}">{$data.code}</a>
       {foreach from=$same_products item=product key=sproduct_id name=foo}
@@ -86,21 +88,28 @@
       </div>
     </div>
     <table class="edit_location" id="location_table"  style="clear:both">
-      <tr><td>{t}Location{/t}</td><td >{t}Type{/t}</td><td></td><td  style="text-align:right">{t}Units{/t}</td><td  style="text-align:right">{t}Outers{/t}</td><td ></td> </tr>
+      <tr><td>{t}Location{/t}</td><td >{t}Type{/t}</td><td></td><td  style="text-align:right">{t}Units{/t}</td><td  style="text-align:right">{t}Outers{/t}</td><td  style="text-align:right">{t}Max Units{/t}</td><td ></td> </tr>
       {foreach  from=$locations.data item=location name=foo }
       <tr  id="row_{$location.location_id}"   pl_id="{$location.id}"  >
-	<td id="loc_name{$location.location_id}" class="aleft"  ><a href="location.php?id={$location.location_id}">{$location.name}</a></td>
+	<td id="loc_name{$location.location_id}" class="aleft"  >{$location.name} <a href="location.php?id={$location.location_id}"><img style="vertical-align:baseline"  src="art/icons/external.png"/></a></td>
 	<td id="loc_tipo{$location.location_id}" >{$location.tipo}</td>
-	    <td style="text-align:right"  id="loc_pick_info{$location.location_id}" >
-	      <span id="loc_picking_up{$location.location_id}"  rank={$location.picking_rank}  onClick="rank_up({$location.location_id})"   style="cursor:pointer;{if  $location.picking_rank<2 or !$location.picking_rank}display:none;{/if}">&uarr;</span> 
-	      <span id="loc_picking_tipo{$location.location_id}" >{$location.picking_tipo}</span>  
-	      <img  id="loc_picking_img{$location.location_id}"  can_pick="{if $location.can_pick }1{else}0{/if}"   onclick="swap_picking({$location.location_id})" src="{if $location.can_pick }art/icons/basket.png{else}art/icons/basket_delete.png{/if}" style="position:relative;bottom:1px;vertical-align:bottom;cursor:pointer;{if !$location.is_physical}display:none{/if}"/> 
-	    </td>
-	    <td  style="text-align:right"><span   id="loc_stock_units{$location.location_id}"    >{$location.stock_units}</span></td>
-	    <td  style="text-align:right"><span   id="loc_stock_outers{$location.location_id}"    >{$location.stock_outers}</span></td>
+	<td style="text-align:right"  id="loc_pick_info{$location.location_id}" >
+	  <span id="loc_picking_up{$location.location_id}"  rank={$location.picking_rank}  onClick="rank_up({$location.location_id})"   style="cursor:pointer;{if  $location.picking_rank<2 or !$location.picking_rank}display:none;{/if}">&uarr;</span> 
+	  <span id="loc_picking_tipo{$location.location_id}" >{$location.picking_tipo}</span>  
+	  <img  
+	     id="loc_picking_img{$location.location_id}"  
+	     can_pick="{if $location.can_pick }1{else}0{/if}"   
+	     onclick="swap_picking({$location.location_id})" 
+	     src="{if $location.can_pick }art/icons/basket.png{else}art/icons/basket_delete.png{/if}" 
+	     style="position:relative;bottom:1px;vertical-align:bottom;cursor:pointer;{if !$location.is_physical}display:none{/if}"
+	     /> 
+	</td>
+	<td  style="text-align:right"><span   id="loc_stock_units{$location.location_id}"    >{$location.stock_units}</span></td>
+	<td  style="text-align:right"><span   id="loc_stock_outers{$location.location_id}"   >{$location.stock_outers}</span></td>
+	<td  style="text-align:right"><span  style="cursor:pointer" onclick="change_max_units_dialog(this,{$location.id},'{$location.name}')" id="loc_stock_max_units{$location.id}"    >{$location.max_units}</span></td>
 	    <td><img  onclick="desassociate_loc({$location.location_id})"   id="loc_del{$location.location_id}"  can_del="{if $location.has_stock}1{else}0{/if}"   title="{t}Free the location{/t}" style="cursor:pointer;{if $location.has_stock and $location.location_id!=1}display:none{/if}"  src="art/icons/cross.png" /></td></tr>
 	  {/foreach}
-	   <tr class="totals"><td  >{t}Total Stock{/t}:</td><td COLSPAN="3" id="total_stock_units" style="text-align:right" >{$locations.stock_units}</td><td id="total_stock_outers" style="text-align:right">{$locations.stock_outers}</td><td></td> </tr>
+	   <tr class="totals"><td  >{t}Total Stock{/t}:</td><td COLSPAN="3" id="total_stock_units" style="text-align:right" >{$locations.stock_units}</td><td id="total_stock_outers" style="text-align:right">{$locations.stock_outers}</td><td></td><td></td> </tr>
     </table>
   </div>
   
@@ -122,6 +131,15 @@
 </div>
 
 
+<div id="change_max_units" style="position:absolute;left:-100px;top:-150px;background:#fff;padding:20px;border:1px solid#777;font-size:90%">
+  <div class="bd" >
+    <span style="text-weight:800">{t}Maximum units on{/t} <span p2l_id='' id="change_max_units_location_name"></span></span>
+  <table class="edit" >
+    <tr><td>{t}Max units{/t}</td><td><input id="change_max_units_value" value="" /></td></tr>
+     <tr class="buttons" ><td style="text-align:left"><span id="change_max_cancel" style="margin-left:30px" class="unselectable_text button" onClick="change_max_cancel()">{t}Cancel{/t} <img src="art/icons/cross.png"/></span></td><td><span  onclick="save_max_units()" id="change_max_save"   class="unselectable_text button"     style="visibility:visible;margin-right:30px">{t}Save{/t} <img src="art/icons/disk.png" ></span></td></tr>
+  </table>
+  </div>
+</div>
 
 
 {include file='footer.tpl'}

@@ -460,11 +460,12 @@ span.small{font-size:80%}
 .inbox tr.bottom  td { vertical-align:top; }
 .inbox tr.tabs { border:none ;border-bottom:1px solid #777;height:30px;vertical-align:bottom}
 .inbox tr.tabs td { vertical-align:bottom;padding:0 10px;margin:0 }
-.inbox tr.buttons { border:none ;height:30px}
-.inbox tr.buttons td { vertical-align:bottom }
+.inbox tr.buttons,.edit tr.buttons { border:none ;height:30px}
+.inbox tr.buttons td, .edit tr.buttons td{ vertical-align:bottom }
+
 .inbox td span.tab     { border:1px solid #aaa;border-bottom:1px solid #777;color:#ccc ;vertical-align: bottom;;padding:4px 4px 0 4px;margin:0;cursor:pointer}
 .inbox td span.selected{ border:1px solid #777;color:#000;border-bottom:1px solid white;}
-.inbox span.button{border:1px solid #777;padding:4px 4px;cursor:pointer; }
+.inbox span.button,.edit span.button{border:1px solid #777;padding:4px 4px;cursor:pointer; }
 
 .edit_images{ margin:20px 0;width:800px; }
 .edit_images div.image{float:left;width:180px;margin:10px  20px 10px 0; }

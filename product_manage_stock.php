@@ -42,6 +42,7 @@ $js_files=array(
 		$yui_path.'autocomplete/autocomplete-min.js',
 		$yui_path.'container/container_core-min.js',
 		$yui_path.'menu/menu-min.js',
+		'js/search_product.js',
 		'js/common.js.php',
 		'js/table_common.js.php',
 		);

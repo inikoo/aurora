@@ -51,13 +51,16 @@
       </td>
       <td class="explanation">
 	<div style="display:none" id="product_tipo_normal"></div>
-	{if $data.stock}
+	{if $data.stock==0 or $data.stock==''}
 	<div style="display:none" id="product_tipo_dependant">
 	  {t}Choose the parent product{/t}
+	  <br>
+	  <input id="new_product_input" type="text">
+	  <div id="new_product_container">
 	</div>
 	{else}
 	<div style="display:none" id="product_tipo_dependant">
-	  {t}This product has already stock in a specific location, in order to assign a stock parent you should get ride of that first{/t}
+	  {t}This product has already stock in a specific location{/t}<br/><a href="product_manage_stock.php?id={$data.id}">{t}Stock Managment{/t}</a>
 	</div>
 	{/if}
 	<div style="display:none" id="product_tipo_normal"></div>

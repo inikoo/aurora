@@ -95,8 +95,8 @@ $_SESSION['state']['report_outofstock']['to']=$to;
   
 
 
-$smarty->assign('parent','orders.php');
-$smarty->assign('title', _('Orders'));
+$smarty->assign('parent','reports.php');
+$smarty->assign('title', _('Out of Stock Report'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
