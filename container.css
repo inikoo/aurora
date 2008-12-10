@@ -220,7 +220,6 @@ PLEASE NOTE:
 .yui-panel .bd p {
     margin:0 0 1em;
 }
-
 .yui-panel .container-close {
     position:absolute;
     top:5px;
@@ -233,7 +232,11 @@ PLEASE NOTE:
     background:url('art/icons/close.gif') no-repeat;
     cursor:pointer;
     visibility:inherit;
+    text-indent:-10000em;
+    overflow:hidden;
+    text-decoration:none;
 }
+
 
 .yui-panel .ft {
     padding:4px;

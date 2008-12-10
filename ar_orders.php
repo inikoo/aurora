@@ -429,11 +429,15 @@ case('changesalesplot'):
 		   );
    echo json_encode($response);
    break;
+ case('orders_report'):
+   $_REQUEST['saveto']='report_sales';
  case('orders'):
     if(!$LU->checkRight(ORDER_VIEW))
     exit;
-
-    $conf=$_SESSION['state']['orders']['table'];
+    if(isset($_REQUEST['saveto']) and $_REQUEST['saveto']=='report_sales')
+      $conf=$_SESSION['state']['report']['sales'];
+    else
+      $conf=$_SESSION['state']['orders']['table'];
   if(isset( $_REQUEST['sf']))
      $start_from=$_REQUEST['sf'];
    else
@@ -466,20 +470,31 @@ if(isset( $_REQUEST['where']))
   
  if(isset( $_REQUEST['from']))
     $from=$_REQUEST['from'];
-  else
-    $from=$_SESSION['state']['orders']['from'];
+ else{
+   if(isset($_REQUEST['saveto']) and $_REQUEST['saveto']=='report_sales')
+     $from=$conf['from'];
+   else
+     $from=$_SESSION['state']['orders']['from'];
+ }
+
   if(isset( $_REQUEST['to']))
     $to=$_REQUEST['to'];
-  else
-    $to=$_SESSION['state']['orders']['to'];
-
+  else{
+    if(isset($_REQUEST['saveto']) and $_REQUEST['saveto']=='report_sales')
+      $to=$conf['to'];
+    else
+      $to=$_SESSION['state']['orders']['to'];
+  }
 
    if(isset( $_REQUEST['view']))
     $view=$_REQUEST['view'];
-  else
-    $view=$_SESSION['state']['orders']['view'];
+   else{
+     if(isset($_REQUEST['saveto']) and $_REQUEST['saveto']=='report_sales')
+       $view=$conf['view'];
+     else
+       $view=$_SESSION['state']['orders']['view'];
 
-
+   }
    if(isset( $_REQUEST['tableid']))
     $tableid=$_REQUEST['tableid'];
   else
@@ -487,16 +502,33 @@ if(isset( $_REQUEST['where']))
 
 
    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-   $_SESSION['state']['orders']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
-   $_SESSION['state']['orders']['view']=$view;
-   $date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
-   if($date_interval['error']){
-      $date_interval=prepare_mysql_dates($_SESSION['state']['orders']['from'],$_SESSION['state']['orders']['to']);
-   }else{
-     $_SESSION['state']['orders']['from']=$date_interval['from'];
-     $_SESSION['state']['orders']['to']=$date_interval['to'];
-   }
 
+        
+   if(isset($_REQUEST['saveto']) and $_REQUEST['saveto']=='report_sales'){
+     
+     $_SESSION['state']['report']['sales']['order']=$order;
+     $_SESSION['state']['report']['sales']['order_dir']=$order_direction;
+     $_SESSION['state']['report']['sales']['nr']=$number_results;
+     $_SESSION['state']['report']['sales']['sf']=$start_from;
+     $_SESSION['state']['report']['sales']['where']=$where;
+     $_SESSION['state']['report']['sales']['f_field']=$f_field;
+     $_SESSION['state']['report']['sales']['f_value']=$f_value;
+     $_SESSION['state']['report']['sales']['to']=$to;
+     $_SESSION['state']['report']['sales']['from']=$from;
+     $date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
+     
+   }else{
+
+     $_SESSION['state']['orders']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+     $_SESSION['state']['orders']['view']=$view;
+     $date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
+     if($date_interval['error']){
+       $date_interval=prepare_mysql_dates($_SESSION['state']['orders']['from'],$_SESSION['state']['orders']['to']);
+     }else{
+       $_SESSION['state']['orders']['from']=$date_interval['from'];
+       $_SESSION['state']['orders']['to']=$date_interval['to'];
+     }
+   }
    switch($view){
    case('all'):
      break;
@@ -533,8 +565,8 @@ if(isset( $_REQUEST['where']))
    
 
    
-   $sql="select count(*) as total from orden   $where $wheref ";
-
+  $sql="select count(*) as total from orden   $where $wheref ";
+  // print $sql ;
    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
   if($row=$res->fetchRow()) {
     $total=$row['total'];

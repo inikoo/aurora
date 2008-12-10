@@ -185,7 +185,7 @@ function sales_in_interval($from,$to){
   $invoices_org=0;
 
   $sql=sprintf("select sum(net) as net,sum(tax) as tax , count(*) as invoices from orden   where  orden.tipo=2 and partner=0  %s ",$int[0]);
-
+  // print $sql;
   $res = $db->query($sql);
   if($row=$res->fetchRow()) {
     //    print $refund_net;
@@ -303,7 +303,8 @@ $countries='(';
      $top3[]=array('country'=>$row['name'],'net'=>$row['net'],'tax'=>$row['tax']);
    }
    $countries=array();
-   $sql=sprintf("select country.id,country.code2,country.name, sum(net) as net ,sum(tax) as tax,count(*) as orders from orden left join list_country as country on (del_country_id=country.id) where del_country_id!=30 and partner=0  %s group by del_country_id order by net desc ",$int[0]);
+   $sql=sprintf("select country.id,country.code2,country.name, sum(net) as net ,sum(tax) as tax,count(*) as orders from orden left join list_country as country on (del_country_id=country.id) where del_country_id!=30 and partner=0  and tipo=2 %s group by del_country_id order by net desc ",$int[0]);
+   //print $sql;
    $res = $db->query($sql);
    while($row=$res->fetchRow()) {
 
@@ -313,7 +314,7 @@ $countries='(';
        $eu=1;
      else
        $eu=0;
-     $countries[]=array('country'=>'<img src="art/flags/'.strtolower($row['code2']).'.gif">'.' '.$row['name'],'net'=>money($row['net']),'tax'=>money($row['tax']),'orders'=>$row['orders'],'share'=>percentage($row['net'],$net_nohome,2),'eu'=>$eu);
+     $countries[]=array('country'=>'<img src="art/flags/'.strtolower($row['code2']).'.gif">'.' '.$row['name'],'net'=>money($row['net']),'tax'=>money($row['tax']),'orders'=>$row['orders'],'share'=>percentage($row['net'],$net_nohome,2),'eu'=>$eu,'id'=>$row['id'],'name'=>$row['name']);
    }
 
    $exports=array('num_countries'=>$num_countries,'top3'=>$top3,'countries'=>$countries);

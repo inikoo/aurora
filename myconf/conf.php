@@ -457,6 +457,15 @@ $default_state=array(
 							 )
 				       ),
 		     'report'=>array(
+				     'sales'=>array(
+						    'from'=>'',
+						    'to'=>'',
+						    'period'=>'',
+						    'order'=>'date_index',
+						    'order_dir'=>'desc',
+						    'sf'=>0,
+						    'nr'=>25,
+						    ),
 				     'pickers'=>array(
 						 'order'=>'units',
 						 'order_dir'=>'',

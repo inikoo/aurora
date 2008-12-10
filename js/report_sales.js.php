@@ -1,75 +1,179 @@
 <?
 include_once('../common.php');
 ?>
+    var view='invoices';
+    var panel1;
 
-function formatCurrencyAxisLabel( value )
-{
-     if( value==0)
-	 return ''
-    if( value>=10000){
-	value=value/1000;
-	var str=YAHOO.util.Number.format( value,{prefix: "<?=$myconf['currency_symbol']?>",thousandsSeparator: ",",decimalPlaces: 0});
-	return str+'K';
+ var show_invoices=function(){
+     Dom.get('clean_table_title0').innerHTML='<?=_('Orders invoiced').' '.$_SESSION['state']['report']['sales']['period']?>.';
+     request="ar_orders.php?tipo=orders_report&saveto=report_sales&where="+escape('where true')+"&view=invoices&sf=0&nr=10&from=<?=$_SESSION['state']['report']['sales']['from']?>&to=<?=$_SESSION['state']['report']['sales']['to']?>"
+     //  alert(request);
+     var table=tables.table0;
+     var datasource=tables.dataSource0;
+     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+     panel1.show();
 
-    }else
-     return YAHOO.util.Number.format( value,{prefix: "<?=$myconf['currency_symbol']?>",thousandsSeparator: ",",decimalPlaces: 2});
-} 
+ }
+ var show_invoices_home=function(){
+     Dom.get('clean_table_title0').innerHTML='<?=$myconf['_home']." "._('orders invoiced (excluding partners)').' '.$_SESSION['state']['report']['sales']['period']?>.';
+     request="ar_orders.php?tipo=orders_report&saveto=report_sales&where="+escape('where  partner=0 and del_country_id=<?=$myconf['country_id']?>')+"&view=invoices&sf=0&nr=10&from=<?=$_SESSION['state']['report']['sales']['from']?>&to=<?=$_SESSION['state']['report']['sales']['to']?>"
+
+     var table=tables.table0;
+     var datasource=tables.dataSource0;
+     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+     panel1.show();
+
+ }
+
+var show_invoices_nohome=function(){
+     Dom.get('clean_table_title0').innerHTML='<?=_('Export orders invoiced (excluding partners)').' '.$_SESSION['state']['report']['sales']['period']?>';
+     request="ar_orders.php?tipo=orders_report&saveto=report_sales&where="+escape('where  partner=0 and del_country_id!=<?=$myconf['country_id']?>')+"&view=invoices&sf=0&nr=10&from=<?=$_SESSION['state']['report']['sales']['from']?>&to=<?=$_SESSION['state']['report']['sales']['to']?>"
+
+     var table=tables.table0;
+     var datasource=tables.dataSource0;
+     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+     panel1.show();
+
+ }
+   
+var show_invoices_partner=function(){
+     Dom.get('clean_table_title0').innerHTML='<?=_('Partners orders invoiced').' '.$_SESSION['state']['report']['sales']['period']?>';
+     request="ar_orders.php?tipo=orders_report&saveto=report_sales&where="+escape('where  partner!=0 ')+"&view=invoices&sf=0&nr=10&from=<?=$_SESSION['state']['report']['sales']['from']?>&to=<?=$_SESSION['state']['report']['sales']['to']?>"
+
+     var table=tables.table0;
+     var datasource=tables.dataSource0;
+     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+     panel1.show();
+
+ }
+
+    var show_invoices_country=function(country_id,name){
+     Dom.get('clean_table_title0').innerHTML=name+' <?=_('orders invoiced').' '.$_SESSION['state']['report']['sales']['period']?>';
+     request="ar_orders.php?tipo=orders_report&saveto=report_sales&where="+escape('where  partner=0 and del_country_id=')+country_id+"&view=invoices&sf=0&nr=10&from=<?=$_SESSION['state']['report']['sales']['from']?>&to=<?=$_SESSION['state']['report']['sales']['to']?>"
+
+     var table=tables.table0;
+     var datasource=tables.dataSource0;
+     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+     panel1.show();
+
+ }
+
+
+
+YAHOO.util.Event.addListener(window, "load", function() {
+    tables = new function() {
+
+
+	    this.orderLink=  function(el, oRecord, oColumn, oData) {
+		var url="order.php?id="+oRecord.getData("id");
+		el.innerHTML = oData.link(url);
+	    }
+	    
+	    this.customerLink=  function(el, oRecord, oColumn, oData) {
+		if(oData==null)
+		    oData='<?=_('Error, no customer name')?>';
+
+		var url="customer.php?id="+oRecord.getData("customer_id");
+		el.innerHTML = oData.link(url);
+	    };
+	    
+	    
+	    
+	    var tableid=0; // Change if you have more the 1 table
+	    var tableDivEL="table"+tableid;
+
+
+
+	    var OrdersColumnDefs = [
+				       {key:"public_id", label:"<?=_('Number')?>", width:80,formatter:this.orderLink,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				       {key:"titulo", label:"<?=_('Type')?>", width:115,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				       {key:"customer_name",label:"<?=_('Customer')?>",formatter:this.customerLink, width:280,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				       {key:"date_index", label:"<?=_('Date')?>", width:145,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
+
+				       {key:"total", label:"<?=_('Total')?>", width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				      
+				      //					 {key:"families", label:"<?=_('Customers')?>", sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
+				      //{key:"active", label:"<?=_('Customers')?>", sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				      
+
+					 ];
+	    
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_orders.php?tipo=orders_report&view="+view+"&nr=10&from=<?=$_SESSION['state']['report']['sales']['from']?>&to=<?=$_SESSION['state']['report']['sales']['to']?>");
+	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource0.connXhrMode = "queueRequests";
+	    this.dataSource0.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		    rowsPerPage:"resultset.records_perpage",
+		    rtext:"resultset.rtext",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
+		},
+		
+		fields: [
+			 "id",
+			 "public_id",
+			 "customer_name",
+			 "customer_id",
+			 "date_index",
+			 "total",
+			 "titulo",
+			 "tipo"
+			 ]};
+
+	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
+						     this.dataSource0, {draggableColumns:true,
+							   renderLoopSize: 50,generateRequest : myRequestBuilder
+								       ,paginator : new YAHOO.widget.Paginator({
+									       rowsPerPage    : <?=$_SESSION['state']['orders']['table']['nr']?>,containers : 'paginator0', 
+ 									      pageReportTemplate : '(<?=_('Page')?> {currentPage} <?=_('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>"
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+									  })
+								     
+								     ,sortedBy : {
+									 key: "<?=$_SESSION['state']['orders']['table']['order']?>",
+									 dir: "<?=$_SESSION['state']['orders']['table']['order_dir']?>"
+								     }
+							   ,dynamicData : true
+
+						     }
+						     );
+	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	    this.table0.filter={key:'public_id',value:''};
+
+	    
+	};
+    });
+
+
+
 
 function init(){
-YAHOO.widget.Chart.SWFURL = "http://yui.yahooapis.com/2.5.2/build//charts/assets/charts.swf";
-	
-//--- data
-
-var plot_monthsalesData = new YAHOO.util.DataSource( "ar_orders.php?tipo=plot_monthsales"  );
-
-
-plot_monthsalesData.connMethodPost = true;
-plot_monthsalesData.responseType = YAHOO.util.DataSource.TYPE_JSON;
-plot_monthsalesData.responseSchema =
-    {
-	resultsList: "resultset.data",
-	fields: ["date","sales","tip","losses","tip_losses"]
-    };
+    
+var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
+ oACDS.queryMatchContains = true;
+ var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
+ oAutoComp.minQueryLength = 0; 
 
 
+ panel1 = new YAHOO.widget.Panel("orders1", { visible:false, constraintoviewport:true } );
+    panel1.render();
 
+    YAHOO.util.Event.addListener("invoices", "click", show_invoices);
+    YAHOO.util.Event.addListener("invoices_total", "click", show_invoices);
+    YAHOO.util.Event.addListener("invoices_home", "click", show_invoices_home);
+    YAHOO.util.Event.addListener("invoices_nohome", "click", show_invoices_nohome);
+    YAHOO.util.Event.addListener("invoices_partner", "click", show_invoices_partner);
 
-
-var seriesDef = [
-		 //		 { displayName: "<?=_('Losses')?>", yField: "losses", style:{color: 0xff0000,lineSize: 2,size:8}},
-		 { displayName: "<?=_('Sales')?>", yField: "sales" }
-
- 
-];
-
-var plot_monthsales_currencyAxis = new YAHOO.widget.NumericAxis();
-plot_monthsales_currencyAxis.labelFunction = "formatCurrencyAxisLabel";
-
-getDataTipText = function( item, index, series )
-{
-    //	var toolTipText = series.displayName + " for " + item.month;
-    //	toolTipText += "\n" + YAHOO.example.formatCurrencyAxisLabel( item[series.yField] );
-    //	return toolTipText;
-    if(series.yField=='sales')
-	return item.tip;
-    else
-	return item.tip_losses;
-}
-
-
-var mychart = new YAHOO.widget.LineChart( "main_sales_plot",plot_monthsalesData ,
-					  {
-					      
-					      series: seriesDef,
-					      xField: "date",
-					      wmode: "opaque",
-					      polling: 1000, 
-					      yAxis: plot_monthsales_currencyAxis,
-					      //yAxis: currencyAxis,
-					        dataTipFunction: getDataTipText,
-					      //only needed for flash player express install
-					      expressInstall: "assets/expressinstall.swf"
-					  });
 
 }
 

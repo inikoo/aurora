@@ -24,14 +24,14 @@ $js_files=array(
 		$yui_path.'datasource/datasource-min.js',
 		$yui_path.'autocomplete/autocomplete-min.js',
 		$yui_path.'datatable/datatable-min.js',
-		$yui_path.'container/container_core-min.js',
+		$yui_path.'container/container-min.js',
 		$yui_path.'menu/menu-min.js',
 		$yui_path.'calendar/calendar-min.js',
 		'js/common.js.php',
 		'js/table_common.js.php',
 		'js/calendar_common.js.php',
 
-		'js/repost_sales.js.php'
+		'js/report_sales.js.php'
 		);
 
 
@@ -56,8 +56,8 @@ if($tipo=='f'){
    if($row=$res->fetchRow()) {
      //     print $row['date'];
      $_time=strtotime('@'.$row['date']);
-     $_time_n=strtotime('@'.($row['date']+604800));
-     $_time_aln=strtotime('@'.($row['date']+604800));
+     $_time_n=strtotime('@'.($row['date']+604799));
+     //     $_time_n_=strtotime('@'.($row['date']+604799));
      $_time_p=strtotime('@'.($row['date']-604800));
    }else
      die('error no year-week found');
@@ -119,6 +119,9 @@ if($tipo=='f'){
   }
   
 
+$_SESSION['state']['report']['sales']['to']=$to;
+$_SESSION['state']['report']['sales']['from']=$from;
+$_SESSION['state']['report']['sales']['period']=$period;
 
   
   $interval_data=sales_in_interval($from,$to);
@@ -126,7 +129,7 @@ if($tipo=='f'){
 
 
   
-   $day_interval=get_time_interval(strtotime($from),(strtotime($to)));
+   $day_interval=get_time_interval(strtotime($from),(strtotime($to)))+1;
 
    if($day_interval>=7){
      $_from=$from;
@@ -145,38 +148,61 @@ if($tipo=='f'){
      $invoices_ly=$interval_data_last_year['invoices']['total_invoices'];
      $net=$interval_data['sales']['total_net'];
      $net_ly=$interval_data_last_year['sales']['total_net'];
+     $net=$interval_data['sales']['total_net'];
+     $net_ly=$interval_data_last_year['sales']['total_net'];
+     $orders_received=$interval_data['sales']['orders_total'];
+     $orders_received_ly=$interval_data_last_year['sales']['orders_total'];
+
+     $smarty->assign('diff_sales',$net-$net_ly);
+     $smarty->assign('per_diff_sales',percentage($net-$net_ly,$net_ly,2));
+     $smarty->assign('diff_invoices',$invoices-$invoices_ly);
+     $smarty->assign('per_diff_invoices',percentage($invoices-$invoices_ly,$invoices_ly,2));
+      $smarty->assign('diff_orders_received',$orders_received-$orders_received_ly);
+     $smarty->assign('per_diff_orders_received',percentage($orders_received-$orders_received_ly,$orders_received_ly,2));
 
       $diff_sales=0;
       if($net_ly>$net){
 	$diff_sales=-1;
 	$smarty->assign('text_diff_sales',_('a decrese of').' '.percentage(($net_ly-$net),$net_ly));
-      }elseif($net_ly<$net){
+
+
+      }elseif($net_ly < $net){
 	$diff_sales=+1;
 	$smarty->assign('text_diff_sales',_('an increse of').' '.percentage(($net-$net_ly),$net_ly));
-      }else
+
+      }else{
 	 $smarty->assign('text_diff_sales',_('no change'));
+
+      }
+      
+
+
       if($invoices_ly>$invoices){
 	if($diff_sales==1)
 	  $link=_('but');
 	else
 	  $link=_('and');
-	$smarty->assign('text_diff_orders_link',$link.' ');
-	$smarty->assign('text_diff_orders',($invoices_ly-$invoices).' '._(' less'));
-      }elseif($invoices_ly<$invoices){
+	$smarty->assign('text_diff_invoices_link',$link.' ');
+	$smarty->assign('text_diff_invoices',($invoices_ly-$invoices).' '._(' less'));
 
+      }elseif($invoices_ly<$invoices){
+	
 	if($diff_sales==-1)
 	  $link=_('but');
 	else
 	  $link=_('and');
-	$smarty->assign('text_diff_orders_link',$link.' ');
+	$smarty->assign('text_diff_invoices_link',$link.' ');
+	
+	$smarty->assign('text_diff_invoices',$invoices-$invoices_ly.' '._(' more '));
 
-	$smarty->assign('text_diff_orders',$invoices-$invoices_ly.' '._(' more '));
+      }else{
+	 $smarty->assign('text_diff_invoices','');
 
-      }else
-	 $smarty->assign('text_diff_orders','');
-
-
+      
+      }
    }
+//end last year
+
 
 if(isset($interval_data['exports']['top3'][0])){
   $smarty->assign('export_country1',$interval_data['exports']['top3'][0]['country']);

@@ -44,15 +44,15 @@
 
 {if $total_invoices>0}
 <p style="width:450px">
-<b>{$total_invoices}</b> orders has been invoiced during this period ({$days}), which amounts to a net total of <b>{$total_net}</b>.{if $todo_orders>0}{/if } 
+<b>{$total_invoices}</b> <img id="invoices" style="vertical-align:middle;cursor:pointer" title="{t}Display orders invoiced in this period{/t}"src="art/icons/magnify-clip.png"/> orders has been invoiced during this period ({$days}), which amounts to a net total of <b>{$total_net}</b>.{if $todo_orders>0}{/if } 
 </p>
 <table class="report_sales1">
 <tr><td></td><td>{t}Invoices{/t}</td><td>{t}Net Sales{/t}</td><td>{t}Tax{/t}</td><td>{t}Refunds{/t}</td><td>{t}Customers{/t}</td></tr>
-<tr class="first"><td class="label">{$home}</td><td>{$invoices_home}</td><td>{$net_home}</td><td>{$tax_home}</td><td>{$refund_home}</td></tr>
-<tr class="first"><td class="label">{t}Exports{/t}</td><td>{$total_invoices_nohome}</td><td>{$total_net_nohome}</td><td>{$total_tax_nohome}</td><td>{$refund_nohome}</td></tr>
+<tr class="first"><td class="label">{$home}</td><td>{$invoices_home} <img id="invoices_home" style="vertical-align:middle;cursor:pointer" title="{t}Display home orders invoiced in this period{/t}"src="art/icons/magnify-clip.png"/></td><td>{$net_home}</td><td>{$tax_home}</td><td>{$refund_home}</td></tr>
+<tr class="first"><td class="label">{t}Exports{/t}</td><td>{$invoices_nohome} <img id="invoices_nohome" style="vertical-align:middle;cursor:pointer" title="{t}Display export orders invoiced in this period{/t}"src="art/icons/magnify-clip.png"/></td><td>{$net_nohome}</td><td>{$tax_nohome}</td><td>{$refund_nohome}</td></tr>
 
-<tr class="partners"><td>Partners</td><td class="label">{$invoices_p}</td><td>{$net_p}</td><td>{$tax_p}</td><td>{$refund_p}</td></tr>
-<tr class="total" ><td>Total</td><td>{$total_invoices}</td><td>{$total_net}</td><td>{$total_tax}</td><td>{$refund}</td></tr>
+<tr class="partners"><td>Partners</td><td class="label">{$invoices_p} <img id="invoices_partner" style="vertical-align:middle;cursor:pointer" title="{t}Display pertner's orders invoiced in this period{/t}"src="art/icons/magnify-clip.png"/></td><td>{$net_p}</td><td>{$tax_p}</td><td>{$refund_p}</td></tr>
+<tr class="total" ><td>Total</td><td>{$total_invoices} <img id="invoices_total" style="vertical-align:middle;cursor:pointer" title="{t}Display orders invoiced in this period{/t}"src="art/icons/magnify-clip.png"/></td><td>{$total_net}</td><td>{$total_tax}</td><td>{$refund}</td></tr>
 </table>
 <p style="width:375px">
 We received <b>{$orders_total}</b> orders on {if $tipo=='m'}{$period}{/if},   <b>{$per_orders_invoices}</b> has been invoiced. The average process time was {$orders_ptime}. 
@@ -71,6 +71,23 @@ We received <b>{$orders_total}</b> orders on {if $tipo=='m'}{$period}{/if},   <b
 <tr class="total" ><td>Total</td><td>{$orders_total}</td><td>{$orders_total_net}</td></tr>
 </table>
 
+<h2>Comparision Prevous Year</h2>
+<table border=0>
+<tr>
+<td><img src="{if $diff_sales<0}art/down.png{else}art/up.png{/if}"/></td>
+<td><b>{t}Net Sales{/t}</b><br>{$per_diff_sales}</td>
+<td style="padding-left:30px"><img src="{if $diff_invoices<0}art/down.png{else}art/up.png{/if}"/></td>
+<td><b>{t}Orders Invoiced{/t}</b><br>{$per_diff_invoices}</td>
+<td style="padding-left:30px"><img src="up.png"/></td>
+<td><b>{t}Orders Received{/t}</b><br>33.33%</td>
+</tr>
+</table>
+<p style="width:500px;clear:both">
+With respect last year there is <b>{$text_diff_sales}</b> on the sales {$text_diff_invoices_link} <b>{$text_diff_invoices}</b> orders invoiced.
+</p>
+
+
+
 
 <h2>Partners</h2>
 <p>
@@ -81,7 +98,7 @@ The {$per_partner_sales} of the sales are due to our partners
 <tr class="tlabels"><td class="country">Country</td><td>Orders</td><td>Sales</td><td>Taxes</td><td></td></tr>
 {foreach name=outer item=countries from=$export_countries}
   <tr>
- <td class="country">{$countries.country}</td><td>{$countries.orders}</td><td>{$countries.net}</td><td>{$countries.tax}</td><td>{$countries.share}</td><td>{if $countries.eu}<img src="art/flags/eu.gif">{/if}</td>
+ <td class="country">{$countries.country}</td><td>{$countries.orders} <img onClick="show_invoices_country({$countries.id},'{$countries.name}')" style="vertical-align:middle;cursor:pointer" title="{t}Display {$countries.name} orders{/t}"src="art/icons/magnify-clip.png"/></td><td>{$countries.net}</td><td>{$countries.tax}</td><td>{$countries.share}</td><td>{if $countries.eu}<img src="art/flags/eu.gif">{/if}</td>
 
 </tr>
 {/foreach}
@@ -131,5 +148,25 @@ With respect last year there is <b>{$text_diff_sales}</b> on the sales {$text_di
 
   </div>
 </div> 
+
+
+<div id="orders1">
+  <div id="orders1_hd" class="hd">&nbsp;</div>
+  <div class="bd">
+     <div class="data_table" style="margin:5px 20px;">
+    <span class="clean_table_title" id="clean_table_title0"></span>
+    <div  class="clean_table_caption"  style="clear:both;">
+      <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
+      <div class="clean_table_filter" id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0">{t}Number{/t}</span>: <input style="border-bottom:none" id='f_input0' value="" size=10/><div id='f_container0'></div></div></div>
+      <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
+    </div>
+    <div  id="table0"   class="data_table_container dtable btable "> </div>
+  </div>
+  </div>
+  <div class="ft"></div>
+</div>
+
+
+
 {include file='footer.tpl'}
 
