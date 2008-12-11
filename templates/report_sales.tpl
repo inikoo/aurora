@@ -52,13 +52,26 @@
 <tr class="first"><td class="label">{t}Exports{/t}</td><td>{$invoices_nohome} <img id="invoices_nohome" style="vertical-align:middle;cursor:pointer" title="{t}Display export orders invoiced in this period{/t}"src="art/icons/magnify-clip.png"/></td><td>{$net_nohome}</td><td>{$tax_nohome}</td><td>{$refund_nohome}</td></tr>
 
 <tr class="partners"><td>Partners</td><td class="label">{$invoices_p} <img id="invoices_partner" style="vertical-align:middle;cursor:pointer" title="{t}Display pertner's orders invoiced in this period{/t}"src="art/icons/magnify-clip.png"/></td><td>{$net_p}</td><td>{$tax_p}</td><td>{$refund_p}</td></tr>
-<tr class="total last" ><td>Total</td><td>{$total_invoices} <img id="invoices_total" style="vertical-align:middle;cursor:pointer" title="{t}Display orders invoiced in this period{/t}"src="art/icons/magnify-clip.png"/></td><td>{$total_net}</td><td>{$total_tax}</td><td>{$refund}</td></tr>
-
-{foreach from=$error_taxable   item=data key=rate}
-<tr class="geo"><td class="label">{$rate} {t}rate{/t}</td><td>{$data.invoices}</td><td>{$data.sales}</td></tr>
+<tr class="total" ><td>Total</td><td>{$total_invoices} <img id="invoices_total" style="vertical-align:middle;cursor:pointer" title="{t}Display orders invoiced in this period{/t}"src="art/icons/magnify-clip.png"/></td><td>{$total_net}</td><td>{$total_tax}</td><td>{$refund}</td></tr>
+<tr class="title"><td class="label">{t}Taxable Invoices{/t}</td></tr>
+{foreach from=$taxable   item=data key=rate}
+<tr class="geo"><td class="label">{$rate} {t}rate{/t}</td><td>{$data.invoices}</td><td>{$data.sales}</td><td>{$data.tax}</td></tr>
 {/foreach}
-<tr class="geo"><td class="label">{t}Total{/t}</td><td>{$invoices_taxeable_all}</td><td>{$net_taxable_all}</td></tr>
-<tr class="geo"><td class="label">{t}Tax Free Invoices{/t}</td><td>{$orders_follows}</td><td>{$orders_follows_net}</td></tr>
+{foreach from=$error_taxable   item=data key=rate}
+<tr class="geo"><td class="label"><img src="art/icons/error.png"/> {$rate} {t}rate{/t}</td><td>{$data.invoices}</td><td>{$data.sales}</td><td>{$data.tax}</td></tr>
+{/foreach}
+{if $novalue_invoices>0}
+<tr class="geo"><td class="label"><img src="art/icons/error.png"/> {t}Zero Value{/t}</td><td>{$f_novalue_invoices}</td><td></td><td></td></tr>
+{/if}
+<tr class="total"><td class="label">{t}Total{/t}</td><td>{$invoices_taxeable_all}</td><td>{$net_taxable_all}</td></tr>
+<tr class="title"><td class="label">{t}Tax Free Invoices{/t}</td></tr>
+{foreach from=$notaxable   item=data key=rate}
+<tr class="geo"><td class="label">{t}0% rate{/t}</td><td>{$data.invoices}</td><td>{$data.sales}</td><td>{$data.tax}</td></tr>
+{/foreach}
+{foreach from=$error_notaxable   item=data key=rate}
+<tr class="geo"><td class="label"><img src="art/icons/error.png"/> {t}Non zero rate{/t}</td><td>{$data.invoices}</td><td>{$data.sales}</td><td>{$data.tax}</td></tr>
+{/foreach}
+<tr class="total"><td class="label">{t}Total{/t}</td><td>{$invoices_no_taxeable_all}</td><td>{$net_notaxable_all}</td></tr>
 
 
 </table>

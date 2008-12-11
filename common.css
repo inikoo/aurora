@@ -250,6 +250,7 @@ table.edit tr.last{ border-bottom:1px solid #a5b6c8}
 .report_sales1 tr.org {background:b2bef8;border-top:1px solid RoyalBlue;border-bottom:1px solid RoyalBlue}
 .report_sales1 tr.outside {}
 .report_sales1 tr.geo,.report_sales1 tr.first  {}
+.report_sales1 tr.title {border-top:none;border-bottom:1px solid #bbb;;font-weight:400}
 
 .report_sales1 tr.first {border-top:1px solid #999;}
 .report_sales1 tr.partners {border-top:1px solid #999}

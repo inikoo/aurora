@@ -17,29 +17,22 @@ function sales_in_interval($from,$to,$valid_tax_rates_data=false){
    $_to=date('U',strtotime($to));
    $valid_tax_rates=array();
    foreach($valid_tax_rates_data as $key=>$data){
-     $_date=date('U',strtotime($data['date']));
-
-     if($_from>=$_date){
-       print " $_from   $_date  <br>";
-       if(!isset($valid_tax_rates_data[$key+1]))
-	 $valid_tax_rates[]=$data['rate'];
-       else{ 
-	 
-	 print date('U',strtotime($valid_tax_rates_data[$key+1]['date']))." $_to <br>";
-	 if(date('U',strtotime($valid_tax_rates_data[$key+1]['date']))<$_to)
-	   $valid_tax_rates[]=$data['rate'];
-
-       }
-     }
+     $_date_inicio=date('U',strtotime($data['date']));
+     if(!isset($valid_tax_rates_data[$key+1]))
+       $_date_fin=$_to+1;
+     else
+       $_date_fin=date('U',strtotime($valid_tax_rates_data[$key+1]['date']));
+     
+     if($_from>=$_date_inicio and $_to<$_date_fin)
+       $valid_tax_rates[]=$data['rate'];
    }
-   }
+   }     
    
-   print_r($valid_tax_rates);
-   exit;
+
    $int=prepare_mysql_dates($from,$to,'date_done','only_dates');
 
 
-
+   
 
 
   
@@ -238,29 +231,44 @@ function sales_in_interval($from,$to,$valid_tax_rates_data=false){
   $tax_taxable_all=0;
   $invoices_taxable_all=0;
 
+  $taxable=array();
+  $notaxable=array();
+
   $taxable_error=array();
   $notaxable_error=array();
-
+  $novalue_invoices=0;
   
  
   if(is_array($valid_tax_rates)){
-    $avg_rate=0;
-    foreach($valid_tax_rates as $rate){
-      $avg_rate+=$rate;
-    }
-    $avg_rate=$avg_rate/count($valid_tax_rates);
+
    $sql=sprintf("select ROUND(100*ifnull(tax,0)/net,1) as vat_rate,  sum(net) as net,sum(tax) as tax , count(*) as invoices from orden   where  orden.tipo=2 and vateable=1 %s group by vat_rate",$int[0]);
-   //   print $sql;
+   //  print $sql;
     $res = $db->query($sql);
     while($row=$res->fetchRow()) {
 	$net_taxable_all+=$row['net'];
 	$tax_taxable_all+=$row['tax'];
 	$invoices_taxable_all+=$row['invoices'];
       
-	if(in_array($row['vat_rate'],$valid_tax_rates) or $row['vat_rate']==''){
-	  $net_taxable+=$row['net'];
-	  $tax_taxable+=$row['tax'];
-	  $invoices_taxable+=$row['invoices'];
+	if($row['vat_rate']==''){
+	  $novalue_invoices=$row['invoices'];
+
+	}else if(in_array($row['vat_rate'],$valid_tax_rates)){
+	  $index=number($closest_rate)."%";
+	  if(!isset($taxable[$index]))
+	    $taxable[$index]=array(
+				   'sales'=>$row['net'],
+				   'tax'=>$row['tax'],
+				   'invoices'=>$row['invoices']
+				   );
+	  else
+	    $taxable[$index]=array(
+				   'sales'=>$row['net']+$taxable[$index]['sales'],
+				   'tax'=>$row['tax']+$taxable[$index]['tax'],
+				   'invoices'=>$row['invoices']+$taxable[$index]['invoices']
+				   );
+	  
+	  
+
 	}else{
 	  
 	  // chech each case
@@ -269,14 +277,35 @@ function sales_in_interval($from,$to,$valid_tax_rates_data=false){
 	  $_invoices_taxable=0;
 	  $errors=false;
 	  $sql=sprintf("select public_id,net ,tax from orden   where  orden.tipo=2 and vateable=1 and ROUND(100*ifnull(tax,0)/net,1)=%.1f   %s  ",$row['vat_rate'],$int[0]);
-	  print $sql." | ".$row['vat_rate']."   <br>";
+	  //  print $sql." | ".$row['vat_rate']."   <br>";
 	  $res2 = $db->query($sql);
 	  while($row2=$res2->fetchRow()) {
-	     print abs($avg_rate-$row['vat_rate'])." ".abs(1/$row2['net'])."<br>";
-	    if(abs($avg_rate-$row['vat_rate'])<abs(1/$row2['net']) ){
-	      $net_taxable+=$row2['net'];
-	      $tax_taxable+=$row2['tax'];
-	      $invoices_taxable+=1;
+	    // print abs($avg_rate-$row['vat_rate'])." ".abs(1/$row2['net'])."<br>";
+	    $min_diff=0;
+	    $closest_rate=false;
+	    foreach($valid_tax_rates as $rate){
+	      $_min_diff=abs($rate-$row['vat_rate']);
+	      if(!$closest_rate or $_min_diff<$min_diff){
+		$closest_rate=$rate;
+		$min_diff=$_min_diff;
+	      }
+	    }
+
+	    if($min_diff<abs(1/$row2['net']) ){
+	      if(!isset($taxable[number($closest_rate)."%"]))
+		$taxable[number($closest_rate)."%"]=array(
+							 'sales'=>$row2['net'],
+							 'tax'=>$row2['tax'],
+							 'invoices'=>1
+							 );
+	      else
+		$taxable[number($closest_rate)."%"]=array(
+							 'sales'=>$row2['net']+$taxable[number($closest_rate)."%"]['sales'],
+							 'tax'=>$row2['tax']+$taxable[number($closest_rate)."%"]['tax'],
+							 'invoices'=>1+$taxable[number($closest_rate)."%"]['invoices']
+							 );
+	      
+
 	    }else{
 	      $errors=true;
 	      $_net_taxable+=$row2['net'];
@@ -284,13 +313,15 @@ function sales_in_interval($from,$to,$valid_tax_rates_data=false){
 	      $_invoices_taxable+=1;
 	    }
 	    
+
+
 	  }
 	  if($errors){
 	    //print "AQYUUUUUUUUUU" .$row['vat_rate']."<br>";
-	    $taxable_error[$row['vat_rate']]=array(
-						 'sales'=>$_net_taxable,
-						 'tax'=>$_tax_taxable,
-						 'invoices'=>$_invoices_taxable
+	    $taxable_error[number($row['vat_rate'])."%"]=array(
+						   'sales'=>money($_net_taxable),
+						   'tax'=>money($_tax_taxable),
+						   'invoices'=>number($_invoices_taxable)
 						 );
 	  }
 
@@ -298,8 +329,32 @@ function sales_in_interval($from,$to,$valid_tax_rates_data=false){
     }
     
   }
-  // exit;
+  
+  
+ $sql=sprintf("select sum(net) as net,sum(tax) as tax , count(*) as invoices  from orden   where  orden.tipo=2 and vateable=0 and tax!=0 %s ",$int[0]);
+ // print $sql;
+ $res = $db->query($sql);
+ if($row=$res->fetchRow()) {
+   $notaxable_error[]=array(
+			 'sales'=>$row['net'],
+			 'tax'=>$row['tax'],
+			 'invoices'=>$row['invoices']
+			    );
+      
+ }
+ 
+ $sql=sprintf("select sum(net) as net,sum(tax) as tax , count(*) as invoices  from orden   where  orden.tipo=2 and vateable=0 and tax=0 %s ",$int[0]);
+  $res = $db->query($sql);
+  if($row=$res->fetchRow()) {
+    $notaxable[]=array(
+		       'sales'=>$row['net'],
+		       'tax'=>$row['tax'],
+			 'invoices'=>$row['invoices']
+		       );
+  }
 
+  // exit;
+  //  print_r($taxable);
   $sql=sprintf("select sum(net) as net,sum(tax) as tax , count(*) as invoices,avg(datediff(date_index,date_creation)) as dispatch_days from orden   where  orden.tipo=2 and partner=0  %s ",$int[0]);
 
 
@@ -553,7 +608,7 @@ $sql=sprintf("select count(*) as num ,sum(net) as net  from orden where true %s 
   $sales=array(
 	       'net_taxable_all'=>$net_taxable_all,
 	       'tax_taxable_all'=>$tax_taxable_all,
-	       'net_taxable'=>$net_taxable,
+	        'net_taxable'=>$net_taxable,
 	       'tax_axable'=>$tax_taxable,
 	       'total_net'=>$net_p+$net,
 	       'total_tax'=>$tax_p+$tax,
@@ -634,8 +689,9 @@ $sql=sprintf("select count(*) as num ,sum(net) as net  from orden where true %s 
   $errors=array(
 		'taxable'=>$taxable_error,
 		'notaxable'=>$notaxable_error,
+		'novalue_invoices'=>$novalue_invoices
 		);
-  return array('invoices'=>$invoices,'sales'=>$sales,'refunds'=>$refunds,'orders'=>$orders,'exports'=>$exports,'other_data'=>$other_data,'errors'=>$errors);
+  return array('invoices'=>$invoices,'sales'=>$sales,'refunds'=>$refunds,'orders'=>$orders,'exports'=>$exports,'other_data'=>$other_data,'errors'=>$errors,'taxable'=>$taxable,'notaxable'=>$notaxable);
 
 }
 

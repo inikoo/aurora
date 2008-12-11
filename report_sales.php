@@ -131,8 +131,19 @@ $valid_rates=array(
 
 $interval_data=sales_in_interval($from,$to,$valid_rates);
 
+$smarty->assign('novalue_invoices',$interval_data['errors']['novalue_invoices']);
+$smarty->assign('f_novalue_invoices',number($interval_data['errors']['novalue_invoices']));
 
 $smarty->assign('error_taxable',$interval_data['errors']['taxable']);
+$smarty->assign('error_notaxable',$interval_data['errors']['notaxable']);
+foreach($interval_data['taxable'] as $key=>$value){
+  $interval_data['taxable'][$key]['invoices']=number($value['invoices']);
+  $interval_data['taxable'][$key]['sales']=money($value['sales']);
+    
+}
+$smarty->assign('taxable',$interval_data['taxable']);
+$smarty->assign('notaxable',$interval_data['notaxable']);
+
 
 $day_interval=get_time_interval(strtotime($from),(strtotime($to)))+1;
 
