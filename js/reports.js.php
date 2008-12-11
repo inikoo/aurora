@@ -39,7 +39,9 @@ function init(){
 		    plot_sales='net_sales_month';
 		}
 
-	    }else if(this.id=='net_diff1y_sales_month'){
+	    }else if(this.id=='net_diff1y_sales_month' || this.id=='net_diff1y_sales_month_net'){
+
+		Dom.get('net_diff1y_sales_month_net').checked=true;
 		Dom.get('the_plot').src = 'plot.php?tipo=net_diff1y_sales_month';
 		YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=reports-sales-plot&value=net_diff1y_sales_month' );
 		plot_sales='net_diff1y_sales_month';

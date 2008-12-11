@@ -52,6 +52,8 @@ $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 $smarty->assign('year',date('Y'));
 $smarty->assign('month',date('m'));
+$smarty->assign('day',date('d'));
+
 $smarty->assign('month_name',date('F'));
 
 $smarty->assign('week',date('W'));

@@ -1,12 +1,51 @@
 <?
 
 
-function sales_in_interval($from,$to){
+function taxable_sales_in_interval($from,$to){
+  
+
+}
+
+
+function sales_in_interval($from,$to,$valid_tax_rates_data=false){
    $db =& MDB2::singleton();
    global $myconf;
   
+   $valid_tax_rates=false;
+   if($valid_tax_rates_data){
+   $_from=date('U',strtotime($from));
+   $_to=date('U',strtotime($to));
+   $valid_tax_rates=array();
+   foreach($valid_tax_rates_data as $key=>$data){
+     $_date=date('U',strtotime($data['date']));
+
+     if($_from>=$_date){
+       print " $_from   $_date  <br>";
+       if(!isset($valid_tax_rates_data[$key+1]))
+	 $valid_tax_rates[]=$data['rate'];
+       else{ 
+	 
+	 print date('U',strtotime($valid_tax_rates_data[$key+1]['date']))." $_to <br>";
+	 if(date('U',strtotime($valid_tax_rates_data[$key+1]['date']))<$_to)
+	   $valid_tax_rates[]=$data['rate'];
+
+       }
+     }
+   }
+   }
    
+   print_r($valid_tax_rates);
+   exit;
    $int=prepare_mysql_dates($from,$to,'date_done','only_dates');
+
+
+
+
+
+  
+   
+
+
 
   // Get refunds first
   
@@ -129,7 +168,15 @@ function sales_in_interval($from,$to){
 
 
 
+ $int=prepare_mysql_dates($from,$to,'date_index','only_dates');
+  $sql=sprintf("select sum(net) as net,sum(tax) as tax , count(*) as invoices from orden where  tipo=2 and partner=1 %s ",$int[0]);
 
+  $res = $db->query($sql);
+  if($row=$res->fetchRow()) {
+    $net_p=$row['net']+$refund_net_p;
+    $tax_p=$row['tax']+$refund_tax_p;
+    $invoices_p=$row['invoices'];
+  }
 
 
 
@@ -184,27 +231,114 @@ function sales_in_interval($from,$to){
   $tax_org=0;
   $invoices_org=0;
 
-  $sql=sprintf("select sum(net) as net,sum(tax) as tax , count(*) as invoices from orden   where  orden.tipo=2 and partner=0  %s ",$int[0]);
-  // print $sql;
+  $net_taxable=0;
+  $tax_taxable=0;
+  $invoices_taxable=0;
+  $net_taxable_all=0;
+  $tax_taxable_all=0;
+  $invoices_taxable_all=0;
+
+  $taxable_error=array();
+  $notaxable_error=array();
+
+  
+ 
+  if(is_array($valid_tax_rates)){
+    $avg_rate=0;
+    foreach($valid_tax_rates as $rate){
+      $avg_rate+=$rate;
+    }
+    $avg_rate=$avg_rate/count($valid_tax_rates);
+   $sql=sprintf("select ROUND(100*ifnull(tax,0)/net,1) as vat_rate,  sum(net) as net,sum(tax) as tax , count(*) as invoices from orden   where  orden.tipo=2 and vateable=1 %s group by vat_rate",$int[0]);
+   //   print $sql;
+    $res = $db->query($sql);
+    while($row=$res->fetchRow()) {
+	$net_taxable_all+=$row['net'];
+	$tax_taxable_all+=$row['tax'];
+	$invoices_taxable_all+=$row['invoices'];
+      
+	if(in_array($row['vat_rate'],$valid_tax_rates) or $row['vat_rate']==''){
+	  $net_taxable+=$row['net'];
+	  $tax_taxable+=$row['tax'];
+	  $invoices_taxable+=$row['invoices'];
+	}else{
+	  
+	  // chech each case
+	  $_net_taxable=0;
+	  $_tax_taxable=0;
+	  $_invoices_taxable=0;
+	  $errors=false;
+	  $sql=sprintf("select public_id,net ,tax from orden   where  orden.tipo=2 and vateable=1 and ROUND(100*ifnull(tax,0)/net,1)=%.1f   %s  ",$row['vat_rate'],$int[0]);
+	  print $sql." | ".$row['vat_rate']."   <br>";
+	  $res2 = $db->query($sql);
+	  while($row2=$res2->fetchRow()) {
+	     print abs($avg_rate-$row['vat_rate'])." ".abs(1/$row2['net'])."<br>";
+	    if(abs($avg_rate-$row['vat_rate'])<abs(1/$row2['net']) ){
+	      $net_taxable+=$row2['net'];
+	      $tax_taxable+=$row2['tax'];
+	      $invoices_taxable+=1;
+	    }else{
+	      $errors=true;
+	      $_net_taxable+=$row2['net'];
+	      $_tax_taxable+=$row2['tax'];
+	      $_invoices_taxable+=1;
+	    }
+	    
+	  }
+	  if($errors){
+	    //print "AQYUUUUUUUUUU" .$row['vat_rate']."<br>";
+	    $taxable_error[$row['vat_rate']]=array(
+						 'sales'=>$_net_taxable,
+						 'tax'=>$_tax_taxable,
+						 'invoices'=>$_invoices_taxable
+						 );
+	  }
+
+      }
+    }
+    
+  }
+  // exit;
+
+  $sql=sprintf("select sum(net) as net,sum(tax) as tax , count(*) as invoices,avg(datediff(date_index,date_creation)) as dispatch_days from orden   where  orden.tipo=2 and partner=0  %s ",$int[0]);
+
+
   $res = $db->query($sql);
   if($row=$res->fetchRow()) {
-    //    print $refund_net;
+    $dispatch_days=$row['dispatch_days'];
     $net=$row['net']+$refund_net;
-    
     $tax=$row['tax']+$refund_tax;
     $invoices=$row['invoices'];
   }
-  
-  $sql=sprintf("select sum(net) as net,sum(tax) as tax , count(*) as invoices from orden   where  orden.tipo=2 and partner=0 and del_country_id=%d %s ",$myconf['country_id'],$int[0]);
+
+
+
+  $sql=sprintf("select sum(net) as net,sum(tax) as tax , count(*) as invoices,avg(datediff(date_index,date_creation)) as dispatch_days from orden   where  orden.tipo=2 and partner=0 and del_country_id=%d %s ",$myconf['country_id'],$int[0]);
 
 
   $res = $db->query($sql);
   if($row=$res->fetchRow()) {
+    $dispatch_days_home=$row['dispatch_days'];
     $net_home=$row['net']+$refund_net_home;
     $tax_home=$row['tax']+$refund_tax_home;;
     $invoices_home=$row['invoices'];
   }
-  
+
+
+ $sql=sprintf("select sum(net) as net,sum(tax) as tax , count(*) as invoices,avg(datediff(date_index,date_creation)) as dispatch_days from orden   where  orden.tipo=2 and partner=0 and del_country_id!=%d %s ",$myconf['country_id'],$int[0]);
+
+
+  $res = $db->query($sql);
+  if($row=$res->fetchRow()) {
+    $dispatch_days_nohome=$row['dispatch_days'];
+    $net_nohome=$row['net']+$refund_net_nohome;
+    $tax_nohome=$row['tax']+$refund_tax_nohome;;
+    $invoices_nohome=$row['invoices'];
+  }
+
+  //  print "$net $net_home $net_nohome ".($net-$net_home-$net_nohome)."\n";
+  //print "$invoices $invoices_home $invoices_nohome ".($invoices-$invoices_home-$invoices_nohome)."\n";
+  //exit;
   $countries='(';
   foreach($myconf['extended_home_id'] as $county_id){
     $countries.='del_country_id='.$county_id.' or ';
@@ -255,9 +389,9 @@ $countries='(';
   }
 
   
-  $net_nohome=$net-$net_home;
-  $tax_nohome=$tax-$tax_home;
-  $invoices_nohome=$invoices-$invoices_home;
+  //  $net_nohome=$net-$net_home;
+  //$tax_nohome=$tax-$tax_home;
+  //$invoices_nohome=$invoices-$invoices_home;
 
   $net_extended_home_nohome=$net_extended_home-$net_home;
   $tax_extended_home_nohome=$tax_extended_home-$tax_home;
@@ -409,48 +543,59 @@ $sql=sprintf("select count(*) as num ,sum(net) as net  from orden where true %s 
 
 
 		 );
+  $other_data=array(
+		    'dispatch_days'=>$dispatch_days,
+		    'dispatch_days_home'=>$dispatch_days_home,
+		    'dispatch_days_nohome'=>$dispatch_days_nohome,
+		    );
+  
 
   $sales=array(
+	       'net_taxable_all'=>$net_taxable_all,
+	       'tax_taxable_all'=>$tax_taxable_all,
+	       'net_taxable'=>$net_taxable,
+	       'tax_axable'=>$tax_taxable,
 	       'total_net'=>$net_p+$net,
-		  'total_tax'=>$tax_p+$tax,
-		  'total_net_nohome'=>$net_p_nohome+$net_nohome,
-		  'total_tax_nohome'=>$tax_p_nohome+$tax_nohome,
-		  'net_p'=>$net_p,
-		 'tax_p'=>$tax_p,
-		 'net_p_home'=>$net_p_home,
-		 'tax_p_home'=>$tax_p_home,
-		 'net_p_nohome'=>$net_p_nohome,
-		 'tax_p_nohome'=>$tax_p_nohome,
-		 'net'=>$net,
-		 'tax'=>$tax,
-		 'net_home'=>$net_home,
-		 'tax_home'=>$tax_home,
-		 'net_nohome'=>$net_nohome,
-		 'tax_nohome'=>$tax_nohome,
-		 'net_extended_home'=>$net_extended_home,
-		 'tax_extended_home'=>$tax_extended_home,
-		 'net_region'=>$net_region,
-		  'tax_region'=>$tax_region,
-		  'net_region2'=>$net_region2,
-		  'tax_region2'=>$tax_region2,
-		  'net_outside'=>$net-$net_region2,
-		  'tax_outside'=>$tax-$tax_region2,
-		 'net_org'=>$net_org,
-		 'tax_org'=>$tax_org,
-		 'net_extended_home_nohome'=>$net_extended_home_nohome,
-		 'tax_extended_home_nohome'=>$tax_extended_home_nohome,
-		 'net_region_nohome'=>$net_region_nohome,
-		 'tax_region_nohome'=>$tax_region_nohome,
-		 'net_region2_nohome'=>$net_region2_nohome,
-		 'tax_region2_nohome'=>$tax_region2_nohome,
-		 'net_org_nohome'=>$net_org_nohome,
-		 'tax_org_nohome'=>$tax_org_nohome
-
-
+	       'total_tax'=>$tax_p+$tax,
+	       'total_net_nohome'=>$net_p_nohome+$net_nohome,
+	       'total_tax_nohome'=>$tax_p_nohome+$tax_nohome,
+	       'net_p'=>$net_p,
+	       'tax_p'=>$tax_p,
+	       'net_p_home'=>$net_p_home,
+	       'tax_p_home'=>$tax_p_home,
+	       'net_p_nohome'=>$net_p_nohome,
+	       'tax_p_nohome'=>$tax_p_nohome,
+	       'net'=>$net,
+	       'tax'=>$tax,
+	       'net_home'=>$net_home,
+	       'tax_home'=>$tax_home,
+	       'net_nohome'=>$net_nohome,
+	       'tax_nohome'=>$tax_nohome,
+	       'net_extended_home'=>$net_extended_home,
+	       'tax_extended_home'=>$tax_extended_home,
+	       'net_region'=>$net_region,
+	       'tax_region'=>$tax_region,
+	       'net_region2'=>$net_region2,
+	       'tax_region2'=>$tax_region2,
+	       'net_outside'=>$net-$net_region2,
+	       'tax_outside'=>$tax-$tax_region2,
+	       'net_org'=>$net_org,
+	       'tax_org'=>$tax_org,
+	       'net_extended_home_nohome'=>$net_extended_home_nohome,
+	       'tax_extended_home_nohome'=>$tax_extended_home_nohome,
+	       'net_region_nohome'=>$net_region_nohome,
+	       'tax_region_nohome'=>$tax_region_nohome,
+	       'net_region2_nohome'=>$net_region2_nohome,
+	       'tax_region2_nohome'=>$tax_region2_nohome,
+	       'net_org_nohome'=>$net_org_nohome,
+	       'tax_org_nohome'=>$tax_org_nohome
+	       
+	       
 		 );
   $invoices=array(
-		  
-		 'invoices'=>$invoices,
+		  'invoices_taxeable_all'=>$invoices_taxable_all,
+		  'invoices_taxeable'=>$invoices_taxable,
+		  'invoices'=>$invoices,
 		 'invoices_home'=>$invoices_home,
 		 'invoices_nohome'=>$invoices_nohome,
 		 'invoices_extended_home'=>$invoices_extended_home,
@@ -483,13 +628,14 @@ $sql=sprintf("select count(*) as num ,sum(net) as net  from orden where true %s 
 		'orders_follows_net'=>$orders_follows_net,
 		'orders_donations_net'=>$orders_donations_net,
 		'orders_others_net'=>$orders_others_net
-
-
 		);
 
 
-
-  return array('invoices'=>$invoices,'sales'=>$sales,'refunds'=>$refunds,'orders'=>$orders,'exports'=>$exports);
+  $errors=array(
+		'taxable'=>$taxable_error,
+		'notaxable'=>$notaxable_error,
+		);
+  return array('invoices'=>$invoices,'sales'=>$sales,'refunds'=>$refunds,'orders'=>$orders,'exports'=>$exports,'other_data'=>$other_data,'errors'=>$errors);
 
 }
 

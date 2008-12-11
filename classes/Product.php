@@ -745,7 +745,7 @@ class product{
       if($link_product->get('units_tipo_id')!=$this->get('units_tipo_id'))
 	return array(false,_('Product to be links has dirent units type'));
 
-      $parent=new Product($this->get('location_parent_id'))
+      $parent=new Product($this->get('location_parent_id'));
 
       if($link_product->data['units']>=$parent->data['units']){
 	$old_value=$this->data['location_parent_id'];

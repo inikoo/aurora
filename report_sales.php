@@ -124,12 +124,17 @@ $_SESSION['state']['report']['sales']['from']=$from;
 $_SESSION['state']['report']['sales']['period']=$period;
 
   
-  $interval_data=sales_in_interval($from,$to);
+$valid_rates=array(
+		   array('date'=>'01-01-2000','rate'=>17.5),
+		   array('date'=>'01-12-2008','rate'=>15)
+		   );
+
+$interval_data=sales_in_interval($from,$to,$valid_rates);
 
 
+$smarty->assign('error_taxable',$interval_data['errors']['taxable']);
 
-  
-   $day_interval=get_time_interval(strtotime($from),(strtotime($to)))+1;
+$day_interval=get_time_interval(strtotime($from),(strtotime($to)))+1;
 
    if($day_interval>=7){
      $_from=$from;
@@ -142,7 +147,7 @@ $_SESSION['state']['report']['sales']['period']=$period;
      $_to=preg_replace('/\d{4}$/',$last_year,$_to);
 
 
-     $interval_data_last_year=sales_in_interval($_from,$_to);
+     $interval_data_last_year=sales_in_interval($_from,$_to,$valid_rates);
 
      $invoices=$interval_data['invoices']['total_invoices'];
      $invoices_ly=$interval_data_last_year['invoices']['total_invoices'];
@@ -152,12 +157,57 @@ $_SESSION['state']['report']['sales']['period']=$period;
      $net_ly=$interval_data_last_year['sales']['total_net'];
      $orders_received=$interval_data['orders']['orders_total'];
      $orders_received_ly=$interval_data_last_year['orders']['orders_total'];
+     
+     $diff_sales=$net-$net_ly;
+     $diff_sales_change=($diff_sales>0?'+':'');
+     $smarty->assign('diff_sales_change',$diff_sales_change);
+     $smarty->assign('diff_sales',money($diff_sales));
+     $smarty->assign('diff_sales_per',percentage($diff_sales,$net_ly,2));
+   
+     $diff_invoices=$invoices-$invoices_ly;
+     $diff_invoices_change=($diff_invoices>0?'+':'');
+     $smarty->assign('diff_invoices_change',$diff_invoices_change);
+     $smarty->assign('diff_invoices',$diff_invoices_change.number($diff_invoices));
+     $smarty->assign('diff_invoices_per',percentage($diff_invoices,$invoices_ly,2));
 
-     $smarty->assign('diff_sales',$net-$net_ly);
-     $smarty->assign('per_diff_sales',percentage($net-$net_ly,$net_ly,2));
-     $smarty->assign('diff_invoices',$invoices-$invoices_ly);
-     $smarty->assign('per_diff_invoices',percentage($invoices-$invoices_ly,$invoices_ly,2));
-      $smarty->assign('diff_orders_received',$orders_received-$orders_received_ly);
+     
+     
+     $diff_invoices_home=$interval_data['invoices']['invoices_home']-$interval_data_last_year['invoices']['invoices_home'];
+     $diff_invoices_home_change=($diff_invoices_home>0?'+':'');
+     $smarty->assign('diff_invoices_home_change',$diff_invoices_home_change);
+     $smarty->assign('diff_invoices_home',$diff_invoices_home_change.number($diff_invoices_home));
+     $smarty->assign('diff_invoices_home_per',percentage($diff_invoices_home,$interval_data_last_year['invoices']['invoices_home'],2));
+     $diff_invoices_nohome=$interval_data['invoices']['invoices_nohome']-$interval_data_last_year['invoices']['invoices_nohome'];
+     $diff_invoices_nohome_change=($diff_invoices_nohome>0?'+':'');
+     $smarty->assign('diff_invoices_nohome_change',$diff_invoices_nohome_change);
+     $smarty->assign('diff_invoices_nohome',$diff_invoices_nohome_change.number($diff_invoices_nohome));
+     $smarty->assign('diff_invoices_nohome_per',percentage($diff_invoices_nohome,$interval_data_last_year['invoices']['invoices_nohome'],2));
+     $diff_invoices_partners=$interval_data['invoices']['invoices_p']-$interval_data_last_year['invoices']['invoices_p'];
+     $diff_invoices_partners_change=($diff_invoices_partners>0?'+':'');
+     $smarty->assign('diff_invoices_partners_change',$diff_invoices_partners_change);
+     $smarty->assign('diff_invoices_partners',$diff_invoices_partners_change.number($diff_invoices_partners));
+     $smarty->assign('diff_invoices_partners_per',percentage($diff_invoices_partners,$interval_data_last_year['invoices']['invoices_p'],2));
+
+
+     $diff_sales_home=$interval_data['sales']['net_home']-$interval_data_last_year['sales']['net_home'];
+     $diff_sales_home_change=($diff_sales_home>0?'+':'');
+     $smarty->assign('diff_sales_home_change',$diff_sales_home_change);
+     $smarty->assign('diff_sales_home',money($diff_sales_home));
+     $smarty->assign('diff_sales_home_per',percentage($diff_sales_home,$interval_data_last_year['sales']['net_home'],2));
+     $diff_sales_nohome=$interval_data['sales']['net_nohome']-$interval_data_last_year['sales']['net_nohome'];
+     $diff_sales_nohome_change=($diff_sales_nohome>0?'+':'');
+     $smarty->assign('diff_sales_nohome_change',$diff_sales_nohome_change);
+     $smarty->assign('diff_sales_nohome',money($diff_sales_nohome));
+     $smarty->assign('diff_sales_nohome_per',percentage($diff_sales_nohome,$interval_data_last_year['sales']['net_nohome'],2));
+     $diff_sales_partners=$interval_data['sales']['net_p']-$interval_data_last_year['sales']['net_p'];
+     $diff_sales_partners_change=($diff_sales_partners>0?'+':'');
+     $smarty->assign('diff_sales_partners_change',$diff_sales_partners_change);
+     $smarty->assign('diff_sales_partners',money($diff_sales_partners));
+     $smarty->assign('diff_sales_partners_per',percentage($diff_sales_partners,$interval_data_last_year['sales']['net_p'],2));
+
+
+
+     $smarty->assign('diff_orders_received',$orders_received-$orders_received_ly);
      $smarty->assign('per_diff_orders_received',percentage($orders_received-$orders_received_ly,$orders_received_ly,2));
 
       $diff_sales=0;
@@ -256,6 +306,10 @@ $smarty->assign('export_countries',$interval_data['exports']['countries']);
      $smarty->assign($key, number($value));
    }
 
+$smarty->assign('dispatch_days', number($interval_data['other_data']['dispatch_days'],2));
+$smarty->assign('dispatch_days_home', number($interval_data['other_data']['dispatch_days_home'],2));
+$smarty->assign('dispatch_days_nohome', number($interval_data['other_data']['dispatch_days_nohome'],2));
+
 $total_orders=$interval_data['orders']['orders_total'];
 foreach($interval_data['orders'] as $key=>$value){
   if(preg_match('/_net$/',$key)){
@@ -278,6 +332,8 @@ $smarty->assign('month_name',date('M'));
 $smarty->assign('week',date('W'));
 $smarty->assign('from',date('d-m-Y'));
 $smarty->assign('to',date('d-m-Y'));
+$smarty->assign('currency',$myconf['currency_symbol']);
+
 
 $smarty->display('report_sales.tpl');
 

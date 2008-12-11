@@ -16,10 +16,10 @@
   <div {if $tipo!='sales'}style="display:none"{/if}  id="header_sales"  class="report_header" >
     <h2 >{t}Sales Reports{/t}</h2>
     <ul>
-      <li ><a href="report_sales.php?tipo=y&y={$year}"> <img src="art/icons/calendar_view_year.png"> Anual ({$year})</a>
-	</li>
+      <li ><a href="report_sales.php?tipo=y&y={$year}"> <img src="art/icons/calendar_view_year.png"> Anual ({$year})</a></li>
       <li ><a href="report_sales.php?tipo=m&y={$year}&m={$month}"> <img src="art/icons/calendar_view_month.png"> Monthly ({$month_name})</a></li>
       <li ><a href="report_sales.php?tipo=w&y={$year}&w={$week}"> <img src="art/icons/calendar_view_week.png"> Weekly({$week} {$year})</a></li>
+      <li ><a href="report_sales.php?tipo=d&y={$year}&m={$month}&d={$day}"> <img src="art/icons/calendar_view_day.png"> {t}Today{/t}</a></li>
       <li style="cursor:default"><img src="art/icons/date.png"> Custom Dates <span style="position:relative;left:0px;"><input id="v_calpop1" type="text" class="text" size="11" maxlength="10" name="from" value="{$from}"/><img   id="calpop1" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /> <span class="calpop">&rarr;</span> <input   class="calpop" id="v_calpop2" size="11" maxlength="10"   type="text" class="text" size="8" name="to" value="{$to}"/><img   id="calpop2" class="calpop_to" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /> 
 	  <img style="position:relative;right:26px;cursor:pointer" align="absbottom" src="art/icons/application_go.png"  alt="{t}Go{/t}" id="go_free_report"/>
 	</span>

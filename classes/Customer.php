@@ -125,6 +125,19 @@ class Customer{
       $res[$key]=array('ok'=>false,'msg'=>'');
       
       switch($key){
+      case('tax_number_valid'):
+	if($value)
+	  $this->data['tax_number_valid']=1;
+	else
+	  $this->data['tax_number_valid']=0;
+	
+	break;
+
+      case('tax_number'):
+	$this->data['tax_number']=$value;
+	if($value=='')
+	  $this->update(array(array('key'=>'tax_number_valid','value'=>0)),'save');
+	break;
       case('main_email'):
 	$main_email=new email($value);
 	if(!$main_email->id){
@@ -138,6 +151,9 @@ class Customer{
 	$res[$key]['ok']=true;
 
 
+      } 
+      if(preg_match('/save/',$args)){
+	$this->save($key);
       }
 
     }
@@ -146,17 +162,19 @@ class Customer{
 
 
  function save($key,$history_data=false){
-    switch($key){
-      case('main_email'):
-	$sql=sprintf('update customer set %s=%s where id=%d',$key,prepare_mysql($this->data[$key]),$this->id);
-	//	print "$sql\n";
-	$this->db->exec($sql);
-
+   switch($key){
+   case('tax_number'):
+   case('tax_number_valid'):
+   case('main_email'):
+     $sql=sprintf('update customer set %s=%s where id=%d',$key,prepare_mysql($this->data[$key]),$this->id);
+     //print "$sql\n";
+     $this->db->exec($sql);
+     
 	if(is_array($history_data)){
 	  $this->save_history($key,$this->old[$key],$this->data['main']['email'],$history_data);
 	}
-
-
+       
+	
 	break;
     }
 

@@ -52,10 +52,18 @@
 <tr class="first"><td class="label">{t}Exports{/t}</td><td>{$invoices_nohome} <img id="invoices_nohome" style="vertical-align:middle;cursor:pointer" title="{t}Display export orders invoiced in this period{/t}"src="art/icons/magnify-clip.png"/></td><td>{$net_nohome}</td><td>{$tax_nohome}</td><td>{$refund_nohome}</td></tr>
 
 <tr class="partners"><td>Partners</td><td class="label">{$invoices_p} <img id="invoices_partner" style="vertical-align:middle;cursor:pointer" title="{t}Display pertner's orders invoiced in this period{/t}"src="art/icons/magnify-clip.png"/></td><td>{$net_p}</td><td>{$tax_p}</td><td>{$refund_p}</td></tr>
-<tr class="total" ><td>Total</td><td>{$total_invoices} <img id="invoices_total" style="vertical-align:middle;cursor:pointer" title="{t}Display orders invoiced in this period{/t}"src="art/icons/magnify-clip.png"/></td><td>{$total_net}</td><td>{$total_tax}</td><td>{$refund}</td></tr>
+<tr class="total last" ><td>Total</td><td>{$total_invoices} <img id="invoices_total" style="vertical-align:middle;cursor:pointer" title="{t}Display orders invoiced in this period{/t}"src="art/icons/magnify-clip.png"/></td><td>{$total_net}</td><td>{$total_tax}</td><td>{$refund}</td></tr>
+
+{foreach from=$error_taxable   item=data key=rate}
+<tr class="geo"><td class="label">{$rate} {t}rate{/t}</td><td>{$data.invoices}</td><td>{$data.sales}</td></tr>
+{/foreach}
+<tr class="geo"><td class="label">{t}Total{/t}</td><td>{$invoices_taxeable_all}</td><td>{$net_taxable_all}</td></tr>
+<tr class="geo"><td class="label">{t}Tax Free Invoices{/t}</td><td>{$orders_follows}</td><td>{$orders_follows_net}</td></tr>
+
+
 </table>
 <p style="width:375px">
-We received <b>{$orders_total}</b> orders on {if $tipo=='m'}{$period}{/if},   <b>{$per_orders_invoices}</b> has been invoiced. The average process time was {$orders_ptime}. 
+We received <b>{$orders_total}</b> orders on {if $tipo=='m'}{$period}{/if},   <b>{$per_orders_invoices}</b> has been invoiced. The average process time was <b>{$dispatch_days}</b> days, (<b>{$dispatch_days_home}</b> days for {$_home} orders, <b>{$dispatch_days_nohome}</b> days for export ones). 
 </p>
 <table class="report_sales1">
 <tr><td></td><td>Number</td><td>Net Value</td><td></tr>
@@ -69,23 +77,34 @@ We received <b>{$orders_total}</b> orders on {if $tipo=='m'}{$period}{/if},   <b
 
 
 <tr class="total" ><td>Total</td><td>{$orders_total}</td><td>{$orders_total_net}</td></tr>
+
+
+
+
 </table>
 
 <h2>Comparision Prevous Year</h2>
 <table border=0>
 <tr>
-<td><img src="{if $diff_sales<0}art/down.png{else}art/up.png{/if}"/></td>
-<td><b>{t}Net Sales{/t}</b><br>{$per_diff_sales}</td>
-<td style="padding-left:30px"><img src="{if $diff_invoices<0}art/down.png{else}art/up.png{/if}"/></td>
-<td><b>{t}Orders Invoiced{/t}</b><br>{$per_diff_invoices}</td>
-<td style="padding-left:30px"><img src="{if $diff_orders_received<0}art/down.png{else}art/up.png{/if}"/></td>
-<td><b>{t}Orders Received{/t}</b><br>{$per_diff_orders_received}</td>
+<td><img src="{if $diff_sales_change!="+"}art/down.png{else}art/up.png{/if}"/></td>
+<td><b>{t}Net Sales{/t}</b><br>{$diff_sales_per}</td>
+<td style="padding-left:30px"><img src="{if $diff_invoices_change!="+"}art/down.png{else}art/up.png{/if}"/></td>
+<td><b>{t}Orders Invoiced{/t}</b><br>{$diff_invoices_per}</td>
+<td style="padding-left:30px"><img src="{if $diff_orders_received!="+"}art/down.png{else}art/up.png{/if}"/></td>
+<td><b>{t}Orders Received{/t}</b><br>{$diff_orders_received_per}</td>
 </tr>
 </table>
 <p style="width:500px;clear:both">
 With respect last year there is <b>{$text_diff_sales}</b> on the sales {$text_diff_invoices_link} <b>{$text_diff_invoices}</b> orders invoiced.
 </p>
+<table class="report_sales1">
+<tr><td></td><td>&Delta; {t}Orders{/t}</td><td>%&Delta; {t}Orders{/t}</td><td>&Delta; {t}Value{/t}({$currency})</td><td>%&Delta; {t}Value{/t}</td></tr>
 
+<tr class="first"><td class="label">{$_home} {t}Invoices{/t}</td><td>{$diff_invoices_home}</td><td>{$diff_invoices_home_per}</td><td>{$diff_sales_home}</td><td>{$diff_sales_home_per}</td></tr>
+<tr class="first"><td class="label">{t}Export Invoices{/t}</td><td>{$diff_invoices_nohome}</td><td>{$diff_invoices_nohome_per}</td><td>{$diff_sales_nohome}</td><td>{$diff_sales_nohome_per}</td></tr>
+<tr class="first"><td class="label">{t}Partner Invoices{/t}</td><td>{$diff_invoices_partners}</td><td>{$diff_invoices_partners_per}</td><td>{$diff_sales_partners}</td><td>{$diff_sales_partners_per}</td></tr>
+<tr class="total"><td class="label">{t}All Invoices{/t}</td><td>{$diff_invoices}</td><td>{$diff_invoices_per}</td><td>{$diff_sales}</td><td>{$diff_sales_per}</td></tr>
+</table>
 
 
 

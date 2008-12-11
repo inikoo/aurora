@@ -1,10 +1,10 @@
 <?
 
-include_once('classes/Contact.php');
-include_once('classes/Telecom.php');
-include_once('classes/Email.php');
-include_once('classes/Address.php');
-include_once('classes/Name.php');
+include_once('Contact.php');
+include_once('Telecom.php');
+include_once('Email.php');
+include_once('Address.php');
+include_once('Name.php');
 
 class supplier{
   var $db;

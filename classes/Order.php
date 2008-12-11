@@ -1,7 +1,7 @@
 <?
 
-include_once('classes/Staff.php');
-include_once('classes/Supplier.php');
+include_once('Staff.php');
+include_once('Supplier.php');
 
 class Order{
   var $db;
@@ -12,31 +12,51 @@ class Order{
   var $tipo;
   var $staus='new';
 
-  function __construct($tipo='order',$id=false) {
+  function __construct($tipo='order',$arg1=false,$arg2=false) {
      $this->db =MDB2::singleton();
      $this->status_names=array(0=>'new');
      
-     if(is_numeric($tipo) and !$id){
-       $id=$tipo;
-       $tipo='order';
-     }
-     
-
-     if(preg_match('/^order$/',$tipo))
+     if(is_numeric($tipo)){
        $this->tipo='order';
-     else if(preg_match('/^(po|purchase order)$/',$tipo))
-       $this->tipo='po';
+       $this->get_data('id',$tipo);
+       return false;
+     }
+     
+     if(preg_match('/^(order|orden|invoice)$/',$tipo))
+       $this->tipo='order';
      else
-       return;
+        $this->tipo='po';
+
+     if(is_numeric($arg1)){
+       $this->get_data('id',$arg1);
+       return false;
+     }elseif(is_array($arg1)){
+       $this->create_order($arg1);
+     }else{
+       $this->get_data($arg1,$arg2);
+       
+     }
+
 
      
-     if(is_numeric($id)){//load from id
-       $this->id=$id;
-       if(!$this->get_data($tipo))
-	 return false;
-     }else if(is_array($id)){// Create a new order
-       $this->create_order($id);
-     }
+     
+
+
+//      if(preg_match('/^order$/',$tipo))
+//        $this->tipo='order';
+//      else if(preg_match('/^(po|purchase order)$/',$tipo))
+//        $this->tipo='po';
+//      else
+//        return;
+
+     
+//      if(is_numeric($id)){//load from id
+//        $this->id=$id;
+//        if(!$this->get_data($tipo))
+// 	 return false;
+//      }else if(is_array($id)){// Create a new order
+//        $this->create_order($id);
+//      }
 
 
 
@@ -56,15 +76,17 @@ class Order{
   }
 
 
-  function get_data(){
+  function get_data($key,$id){
     global $_order_status;
     switch($this->tipo){
     case('order'):
-      
-      if($tipo=='order_public_id')
-	$sql=sprintf("select * from orden where public_id=%s",prepare_mysql($this->id));
+      $this->db_table='orden';
+      if($key=='public_id')
+	$sql=sprintf("select * from orden where public_id=%s",prepare_mysql($id));
       else
-	$sql=sprintf("select * from orden where id=%d",$this->id);
+	$sql=sprintf("select * from orden where id=%d",$id);
+
+      //print "$sql\n";
       $result =& $this->db->query($sql);
       if(!$this->data=$result->fetchRow()){	     
         return false;
@@ -237,6 +259,7 @@ class Order{
 
       return true;
     case('po'):
+      $this->db_table='porden';
       $sql=sprintf("select consolidated_by,status_id,porden.id,public_id,supplier_id,UNIX_TIMESTAMP(date_expected) as date_expected,UNIX_TIMESTAMP(date_submited) as date_submited,UNIX_TIMESTAMP(date_creation) as date_creation,UNIX_TIMESTAMP(date_invoice) as date_invoice,UNIX_TIMESTAMP(date_received) as date_received,UNIX_TIMESTAMP(date_checked) as date_checked,UNIX_TIMESTAMP(date_consolidated) as date_consolidated,tipo,goods,shipping,vat,total,charges,diff,(select count(*) from porden_item where  porden_id=porden.id )as items  from porden where id=%d ",$this->id);
       
       $result =& $this->db->query($sql);
@@ -327,12 +350,12 @@ class Order{
 	   $w=$row['w'];
 	 }
 	 return $w;
-	  
+	 
        }
        
        break;
      case('pick_factor'):
-         if($this->tipo=='order'){
+       if($this->tipo=='order'){
 	 $factor=10;
 	 $sql=sprintf("select count(distinct group_id) as families,count(distinct product_id) as products from transaction left join product on (product.id=product_id) where order_id=%d ",$this->id);
 	 $result =& $this->db->query($sql);
@@ -344,8 +367,8 @@ class Order{
        }
        
        break;
-        case('pack_factor'):
-         if($this->tipo=='order'){
+     case('pack_factor'):
+       if($this->tipo=='order'){
 	 $factor=10;
 	 $sql=sprintf("select sum(dispached) as dispached ,count(distinct product_id) as products from transaction left join product on (product.id=product_id) where order_id=%d ",$this->id);
 	 $result =& $this->db->query($sql);
@@ -356,15 +379,20 @@ class Order{
 	     $factor=5*$row['products']+($row['dispached']/$row['products']);
 	 }
 	 return $this->get('estimated_weight')/2+$factor;
-	  
+	 
        }
-       
+     default:
+
+       if(isset($this->data[$key])){
+	 //  print $this->data[$key];
+	  return $this->data[$key];
+       }
        break; 
 
        
      }
 
-
+     return false;
   }
 
 
@@ -698,8 +726,8 @@ function set($tipo,$data){
     }
     return array('ok'=>false,'msg'=>_('Operation not found')." $tipo");
 }
-  function save($tipo){
-    switch($tipo){
+  function save($key){
+    switch($key){
 
     case('items'):
       if($this->tipo='po'){
@@ -766,14 +794,18 @@ function set($tipo,$data){
       }
       mysql_query($sql);
       break;  
-       
+    case('vateable'):
+      $value=$this->get($key);
+      $sql=sprintf("update %s set %s=%d where id=%d",$this->db_table,$key,$value,$this->id);
+      //print $sql;
+      $this->db->exec($sql);
 
     }
   }
 
   
-  function save_history($tipo,$data){
-    switch($tipo){
+  function save_history($key,$data){
+    switch($key){
     case('date_submited'):
       if($this->tipo='po'){
 	$note=_('submited')." ".$this->data['dates']['submited'];
@@ -794,6 +826,33 @@ function set($tipo,$data){
 
     }
   }
+
+ function update($values,$args=''){
+    $res=array();
+
+    foreach($values as $data){
+
+      $key=$data['key'];
+      $value=$data['value'];
+      $res[$key]=array('ok'=>false,'msg'=>'');
+      
+      switch($key){
+      case('vateable'):
+	if($value)
+	  $this->data[$key]=1;
+	else
+	  $this->data[$key]=0;
+	break;
+      default:
+	$res[$key]=array('res'=>2,'new_value'=>'','desc'=>'Unkwown key');
+      }
+      if(preg_match('/save/',$args))
+	$this->save($key);
+      
+    }
+    return $res;
+ }
+
 
 
 }

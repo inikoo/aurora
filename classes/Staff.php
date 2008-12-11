@@ -1,6 +1,6 @@
 <?
-require_once 'classes/Name.php';
-require_once 'classes/Email.php';
+require_once 'Name.php';
+require_once 'Email.php';
 
 class Staff{
   var $db;
