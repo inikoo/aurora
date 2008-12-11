@@ -82,7 +82,11 @@
     <div {if $tipo!='sales'}style="display:none"{/if} id="plot_options_sales" class="plot_options">
       
       <table style="margin-top:30px;font-size:87%">
+	<tr><td><span  id="net_sales_month"  class="but">Net Sales</span></td></tr>
 	<tr><td>Group by month <input style="position:relative;top:2px" {if $plot_tipo=='net_sales_gmonth'}checked="checked"{/if}type="checkbox" id="net_sales_gmonth" name="net_sales_gmonth" value="net_sales_gmonth"><td></tr>
+	<tr><td><span id="net_diff1y_sales_month"  class="but">Growth</span></td></tr>
+	<tr><td>{t}Net difference{/t} <input style="position:relative;top:2px" {if $plot_tipo=='net_diff1y_sales_month'}checked="checked"{/if} type="radio" id="net_diff1y_sales_month_net" name="net_diff1y_sales_month" value="net_sales_gmonth"><td></tr>
+	<tr><td>{t}Percentage{/t} <input style="position:relative;top:2px" {if $plot_tipo=='net_diff1y_sales_month_per'}checked="checked"{/if} type="radio" id="net_diff1y_sales_month_per" name="net_diff1y_sales_month" value="net_sales_gmonth"><td></tr>
       </table>
     </div>
     <div {if $tipo!='stock'}style="display:none"{/if} id="plot_options_stock" class="plot_options">

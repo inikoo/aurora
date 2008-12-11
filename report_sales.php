@@ -150,8 +150,8 @@ $_SESSION['state']['report']['sales']['period']=$period;
      $net_ly=$interval_data_last_year['sales']['total_net'];
      $net=$interval_data['sales']['total_net'];
      $net_ly=$interval_data_last_year['sales']['total_net'];
-     $orders_received=$interval_data['sales']['orders_total'];
-     $orders_received_ly=$interval_data_last_year['sales']['orders_total'];
+     $orders_received=$interval_data['orders']['orders_total'];
+     $orders_received_ly=$interval_data_last_year['orders']['orders_total'];
 
      $smarty->assign('diff_sales',$net-$net_ly);
      $smarty->assign('per_diff_sales',percentage($net-$net_ly,$net_ly,2));

@@ -109,6 +109,26 @@ switch($tipo){
    $style='';
    $tipo_chart='LineChart';
    break;
+ case('net_diff1y_sales_month'):
+   $title=_("Monthy net sales change compared with previos year");
+   $ar_address='ar_orders.php?tipo=plot_net_diff1y_sales_month';
+   $fields='"sales_diff","tip_sales_diff","date"';
+   $yfields=array(
+		  array('label'=>_('Month Net Sales'),'name'=>'sales_diff','axis'=>'formatCurrencyAxisLabel','style'=>'size:10,color: 0x62a74b')
+		  );;
+   $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category','axis'=>'justyears');
+   $tipo_chart='ColumnChart';$style='';
+   break;
+ case('net_diff1y_sales_month_per'):
+   $title=_("Monthy net sales change compared with previos year");
+   $ar_address='ar_orders.php?tipo=plot_net_diff1y_sales_month';
+   $fields='"sales_diff_per","tip_sales_diff_per","date"';
+   $yfields=array(
+		  array('label'=>_('Month Net Sales'),'name'=>'sales_diff_per','axis'=>'formatPercentageAxisLabel','style'=>'size:10,color: 0x62a74b')
+		  );;
+   $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category','axis'=>'justyears');
+   $tipo_chart='ColumnChart';$style='';
+   break;
  case('total_sales_week'):
    $title=_("Total Net Sales per Week");
    $ar_address='ar_orders.php?tipo=plot_weeksales';
@@ -209,10 +229,22 @@ if( value==0)
 	 return "";
 else if ( value>=10000){
 return YAHOO.util.Number.format( value/1000,{prefix: "'.$myconf['currency_symbol'].'",thousandsSeparator: ",",decimalPlaces: 0})+"K";
-}else
-return YAHOO.util.Number.format( value,{prefix: "'.$myconf['currency_symbol'].'",thousandsSeparator: ",",decimalPlaces: 2});
-
 }
+else if ( value<=10000){
+return YAHOO.util.Number.format( value/1000,{prefix: "'.$myconf['currency_symbol'].'",thousandsSeparator: ",",decimalPlaces: 0})+"K";
+}
+else
+return YAHOO.util.Number.format( value,{prefix: "'.$myconf['currency_symbol'].'",thousandsSeparator: ",",decimalPlaces: 2});
+}
+
+ function formatPercentageAxisLabel( value ){
+return value+"%";
+}
+
+
+
+
+
  function formatNumberAxisLabel( value ){return YAHOO.util.Number.format( value,{prefix: "",thousandsSeparator: ",",decimalPlaces: 0});}
  function formatPercentageAxisLabel( value ){return YAHOO.util.Number.format( value,{prefix: "",thousandsSeparator: ",",decimalPlaces: 0})+"%";}
 

@@ -28,7 +28,7 @@ function init(){
 
 	var change_plot = function(e){
 		
-	    if(this.name=='net_sales_gmonth'){
+	    if(this.id=='net_sales_gmonth'){
 		if(this.checked){
 		    Dom.get('the_plot').src = 'plot.php?tipo=total_sales_groupby_month';
 		    YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=reports-sales-plot&value=total_sales_groupby_month' );
@@ -39,11 +39,28 @@ function init(){
 		    plot_sales='net_sales_month';
 		}
 
+	    }else if(this.id=='net_diff1y_sales_month'){
+		Dom.get('the_plot').src = 'plot.php?tipo=net_diff1y_sales_month';
+		YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=reports-sales-plot&value=net_diff1y_sales_month' );
+		plot_sales='net_diff1y_sales_month';
+
+	    }if(this.id=='net_diff1y_sales_month_per'){
+		Dom.get('the_plot').src = 'plot.php?tipo=net_diff1y_sales_month_per';
+		YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=reports-sales-plot&value=net_diff1y_sales_month_per' );
+		plot_sales='net_diff1y_sales_month_per';
+
+
 	    }
+
+
 	}
-	
-	var ids = ["net_sales_gmonth"]; 
+	var ids = ["net_diff1y_sales_month"]; 
+ 	Event.addListener(ids, "click", change_plot);
+	var ids = ["net_sales_gmonth","net_diff1y_sales_month_per","net_diff1y_sales_month_net"]; 
  	Event.addListener(ids, "change", change_plot);
+	var ids = ["net_sales_month"]; 
+ 	Event.addListener(ids, "click", change_plot);
+
 
 	var go_free = function(e){
 	    var from=Dom.get('v_calpop1').value;

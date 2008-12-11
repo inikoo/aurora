@@ -738,9 +738,16 @@ class product{
       
       if($product_id==$this->id)
 	return array(false,_('Nothing to change '));
-      if(!$link_product=new Product($product_id))
+      $link_product=new Product($product_id);
+      if($link_product->id)
 	return array(false,_('Product to be linked do not exist'));
-      if($link_product->data['units']>=$this->data['units']){
+
+      if($link_product->get('units_tipo_id')!=$this->get('units_tipo_id'))
+	return array(false,_('Product to be links has dirent units type'));
+
+      $parent=new Product($this->get('location_parent_id'))
+
+      if($link_product->data['units']>=$parent->data['units']){
 	$old_value=$this->data['location_parent_id'];
 	$sql=sprintf("update product set location_parent_id=%d where id=%d ",$link_product->id,$this->id);
 	mysql_query($sql);

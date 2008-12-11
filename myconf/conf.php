@@ -127,7 +127,7 @@ $myconf=array(
 	      'po_id_prefix'=>'PO',
 	      'customer_id_prefix'=>'C',
 	      'order_id_prefix'=>'',
-	      'data_since'=>'2004-06-14',
+	      'data_since'=>'14-06-2004',
 	      'product_code_separator'=>'-'
 	      );
 

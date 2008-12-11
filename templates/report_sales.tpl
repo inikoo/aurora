@@ -78,8 +78,8 @@ We received <b>{$orders_total}</b> orders on {if $tipo=='m'}{$period}{/if},   <b
 <td><b>{t}Net Sales{/t}</b><br>{$per_diff_sales}</td>
 <td style="padding-left:30px"><img src="{if $diff_invoices<0}art/down.png{else}art/up.png{/if}"/></td>
 <td><b>{t}Orders Invoiced{/t}</b><br>{$per_diff_invoices}</td>
-<td style="padding-left:30px"><img src="up.png"/></td>
-<td><b>{t}Orders Received{/t}</b><br>33.33%</td>
+<td style="padding-left:30px"><img src="{if $diff_orders_received<0}art/down.png{else}art/up.png{/if}"/></td>
+<td><b>{t}Orders Received{/t}</b><br>{$per_diff_orders_received}</td>
 </tr>
 </table>
 <p style="width:500px;clear:both">
