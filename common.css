@@ -245,6 +245,7 @@ table.edit tr.last{ border-bottom:1px solid #a5b6c8}
 
 
 .report_sales1 td {text-align:right;padding:0 15px;}
+.compact td{ padding:0 12.5px; }
 .report_sales1 tr {border-top:1px solid #ddd}
 
 .report_sales1 tr.org {background:b2bef8;border-top:1px solid RoyalBlue;border-bottom:1px solid RoyalBlue}

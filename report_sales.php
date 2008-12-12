@@ -139,10 +139,16 @@ $smarty->assign('error_notaxable',$interval_data['errors']['notaxable']);
 foreach($interval_data['taxable'] as $key=>$value){
   $interval_data['taxable'][$key]['invoices']=number($value['invoices']);
   $interval_data['taxable'][$key]['sales']=money($value['sales']);
-    
+  $interval_data['taxable'][$key]['tax']=money($value['tax']);
+}
+foreach($interval_data['notaxable'] as $key=>$value){
+  $interval_data['notaxable'][$key]['invoices']=number($value['invoices']);
+  $interval_data['notaxable'][$key]['sales']=money($value['sales']);
+  $interval_data['notaxable'][$key]['tax']=money($value['tax']);
 }
 $smarty->assign('taxable',$interval_data['taxable']);
 $smarty->assign('notaxable',$interval_data['notaxable']);
+$smarty->assign('balance',$interval_data['balance']);
 
 
 $day_interval=get_time_interval(strtotime($from),(strtotime($to)))+1;
