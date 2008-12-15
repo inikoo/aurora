@@ -1,14 +1,28 @@
 {include file='header.tpl'}
 <div id="bd" >
   <div id="yui-main">
-    <div class="yui-b">
+    <div class="yui-b" style="padding:0px 20px">
       <h2>{t}Warehouse{/t}</h2>
-      <div  style="display:none" class="yui-b" style="border:1px solid #ccc;text-align:left;margin:0px;padding:10px;height:60px;margin: 0 0 10px 0">
-	<embed  style="display:none" src="warehouse.svg" name="printable_map" type="image/svg+xml" />
+<div class="search_box" >
+  <span class="search_title" style="padding-right:15px">{t}Location{/t}:</span> <br><input size="8" class="text search" id="location_search" value="" name="search"/><img align="absbottom" id="location_submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>
+  <span  class="search_msg"   id="location_search_msg"    ></span> <span  class="search_sugestion"   id="location_search_sugestion"    ></span>
+  <br/>
+  <a style="font-weight:800;color:#777;cursor:pointer" href="edit_location.php?id={$id}">{t}Add Location{/t}</a><br/>
+  <a style="font-weight:800;color:#777;cursor:pointer" href="edit_location.php?id={$id}">{t}Add Area{/t}</a>
 
+</div>
+
+      <div  class="yui-b" style="border:1px solid #ccc;text-align:left;margin:0px;padding:10px;height:300px;width:600px;margin: 0 0 10px 0;float:left">
+	<embed  style="display:none" src="warehouse.svg" name="printable_map" type="image/svg+xml" />
       </div>
       
-      <div id="the_table" class="data_table" style="margin:20px 20px;clear:both">
+<div class="list_of_buttons">
+{foreach from=$areas item=area  }
+<div id="area{$area.id}" class="" onClick="choose_area({$area.id})">{$area.name}</div>
+{/foreach}
+</div>
+
+      <div id="the_table" class="data_table" style="margin:20px 0px;clear:both">
       <span class="clean_table_title">{t}{$table_title}{/t}</span>
       <div  class="clean_table_caption"  style="clear:both;">
 	<div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>

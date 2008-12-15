@@ -1,5 +1,6 @@
 <?
 include_once('common.php');
+include_once('classes/Warehouse.php');
 
 
 
@@ -48,7 +49,7 @@ $smarty->assign('js_files',$js_files);
 $smarty->assign('table_title',_('Location List'));
 
 
-
+$warehouse=new warehouse($_SESSION['state']['warehouse']['id']);
 
 
 $tipo_filter=$_SESSION['state']['warehouse']['locations']['f_field'];
@@ -66,8 +67,10 @@ $smarty->assign('paginator_menu',$paginator_menu);
 
 
 
+$smarty->assign('areas',$warehouse->get('areas'));
+//print_r($warehouse->get('areas'));
 
-
+$smarty->assign('paginator_menu',$paginator_menu);
 
 
 $smarty->display('warehouse.tpl');

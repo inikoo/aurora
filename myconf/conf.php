@@ -205,8 +205,8 @@ $default_state=array(
 						   )
 				    ),
 		     'warehouse'=>array(
-					
-						  'locations'=>array(
+					'id'=>1,
+					'locations'=>array(
 								 'order'=>'name',
 								 'order_dir'=>'',
 								 'sf'=>0,
@@ -378,12 +378,16 @@ $default_state=array(
 
 		      'product'=>array(
 				       'details'=>false,
-				       'plot'=>'sales_month',
+				       'plot'=>'product_week_outers',
+				       'plot_data'=>array(
+							  'months'=>12,
+							  'max_sigma'=>false
+							  
+							  ),
 				       'id'=>1,
 				       'edit'=>'description',
 				       'display'=>array('details'=>0,'plot'=>1,'orders'=>0,'customers'=>0,'stock_history'=>0),
-				       'plot'=>'',
-				       'plot_options'=>array('weeks'=>'','from'=>'','to'=>'','months'=>''),
+
 				       'orders'=>array(
 						       'order'=>'date_index',
 						       'order_dir'=>'',

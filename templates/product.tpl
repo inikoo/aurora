@@ -151,8 +151,8 @@
   <div class="yui-b">
 
      <div class="search_box" >
-       <span class="search_title" style="padding-right:15px">{t}Product Code{/t}:</span> <br><input size="8" class="text search" id="prod_search" value="" name="search"/><img align="absbottom" id="submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>
-       <span  class="search_msg"   id="search_msg"    ></span> <span  class="search_sugestion"   id="search_sugestion"    ></span>
+       <span class="search_title" style="padding-right:15px">{t}Product Code{/t}:</span> <br><input size="8" class="text search" id="product_search" value="" name="search"/><img align="absbottom" id="submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>
+       <span  class="search_msg"   id="product_search_msg"    ></span> <span  class="search_sugestion"   id="product_search_sugestion"    ></span>
        <br/>
      </div>
 
@@ -233,10 +233,10 @@
 	<table >
 	  <tr class="title"><td>Dates</td><tr> 
 	  <tr><td >Show last</td><tr> 
-	  <tr><td>  <input type="text" size="2" style="vertical-align:bottom"/> <span style="">months</span></td><tr> 
+	  <tr><td>  <input type="text" size="2" style="vertical-align:bottom;text-align:right" id="plot_months" value="{$plot_data.months}"/> <span style="cursor:pointer" onclick="change_plot_months(this)">months</span></td><tr> 
 	  <tr class="title"><td>Y-Axis Range</td><tr> 
-	  <tr><td>All <input type="radio" name="y_range" checked="cheked" value="all"></td><tr> 
-	  <tr><td>&sigma; <input type="radio" name="y_range" value="sigma"></td><tr> 
+	  <tr><td>All <input type="radio" onchange="change_plot_sigma(this)" name="y_range" {if !$plot_data.max_sigma}checked="cheked"{/if} value="0"></td><tr> 
+	  <tr><td>&sigma; <input type="radio" name="y_range"  onchange="change_plot_sigma(this)"  {if $plot_data.max_sigma}checked="cheked"{/if} value="1"></td><tr> 
 
 	</table>
       </div>

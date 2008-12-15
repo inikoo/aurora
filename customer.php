@@ -57,6 +57,10 @@ if($customers_order=='orders'){
   $_customers_order='(total_nd+total)';
  }else if($customers_order=='location'){
   $_customers_order='concat(list_country.code,town)';
+ }else if($customers_order=='name'){
+    $_customers_order='c.name';
+
+  $customers_order='c.name';
  }else
   $_customers_order=$customers_order;
 

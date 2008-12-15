@@ -17,7 +17,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		else if(product_id==''){
 		    el.innerHTML =oData;
 	    }else{
-		var url="assets_product.php?id="+oRecord.getData("product_id");
+		var url="product.php?id="+oRecord.getData("product_id");
 		    el.innerHTML = oData.link(url);
 		}
 	    }

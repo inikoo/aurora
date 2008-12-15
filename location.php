@@ -44,6 +44,7 @@ $js_files=array(
 		$yui_path.'container/container_core-min.js',
 		$yui_path.'menu/menu-min.js',
 		'js/common.js.php',
+		'js/search.js',
 		'js/table_common.js.php',
 		);
 
@@ -91,6 +92,7 @@ $smarty->assign('title',_('Location ').$location->data['name']);
 $js_files[]='js/location.js.php';
 
 $smarty->assign('data',$location->data);
+$smarty->assign('id',$location->id);
 
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);

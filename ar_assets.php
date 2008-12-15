@@ -1640,7 +1640,7 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
    $_SESSION['state']['warehouse']['locations']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
    
    
-   $sql="select count(*) as total from location  left join location_tipo on (tipo_id=location_tipo.id) left join wharehouse_area on (area_id=wharehouse_area.id)  $where $wheref";
+   $sql="select count(*) as total from location  left join location_tipo on (tipo_id=location_tipo.id) left join warehouse_area on (area_id=warehouse_area.id)  $where $wheref";
    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
    if($row=$res->fetchRow()) {
      $total=$row['total'];
@@ -1649,7 +1649,7 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
        $filtered=0;
        $total_records=$total;
    }else{
-     $sql="select count(*) as total from location  left join location_tipo on (tipo_id=location_tipo.id) left join wharehouse_area on (area_id=wharehouse_area.id)  $where ";
+     $sql="select count(*) as total from location  left join location_tipo on (tipo_id=location_tipo.id) left join warehouse_area on (area_id=warehouse_area.id)  $where ";
 
      $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
      if($row=$res->fetchRow()) {
@@ -1687,7 +1687,7 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
   $_dir=$order_direction;
 
 
-  $sql="select (select count(*) from product2location where location_id=location.id ) as products ,deep,length,height,location_tipo.max_weight as max_weight,location.id,location.tipo,location.name,wharehouse_area.name as area  from location  left join location_tipo on (tipo_id=location_tipo.id) left join wharehouse_area on (area_id=wharehouse_area.id)  $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
+  $sql="select (select count(*) from product2location where location_id=location.id ) as products ,deep,length,height,location_tipo.max_weight as max_weight,location.id,location.tipo,location.name,warehouse_area.name as area  from location  left join location_tipo on (tipo_id=location_tipo.id) left join warehouse_area on (area_id=warehouse_area.id)  $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
   //  print "$sql";
   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
   
@@ -3587,10 +3587,10 @@ from porden_item left join product2supplier as ps on ( p2s_id=ps.id)  left join 
      print "$value\n";
    }
    break;
- case('plot_weekout'): 
- case('plot_weeksales'):
+ case('plot_product_week_outers'): 
+ case('plot_product_week_sales'):
    
-   $product_id=$_SESSION['state']['product']['id'];
+   //$product_id=$_SESSION['state']['product']['id'];
 
 //    $sql=sprintf("select (TO_DAYS(NOW())-TO_DAYS(first_date))/7 as weeks_since  from product where id=%d",$product_id);
 //    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
@@ -3598,23 +3598,32 @@ from porden_item left join product2supplier as ps on ( p2s_id=ps.id)  left join 
 //    if($row=$res->fetchRow()) {
 //      $weeks=floor($row['weeks_since']);
 //    }
-
-   $first_day=addslashes($myconf['data_since']);
-   $sql="select first_day as date, yearweek,date_format(first_day,'%v %x') as week,  UNIX_TIMESTAMP(first_day) as utime  from list_week where first_day>'$first_day' and first_day < NOW(); ";
+   // $product=new Product($product_id);
+   //$first_day=$product->get('mysql_first_date');
+   $product_id=$_REQUEST['product_id'];
+   $first_day=$_REQUEST['first_day'];
+   // print $first_day;
+  
+   $sql="select date_format(first_day,'%c') as month, first_day as date, yearweek,date_format(first_day,'%v %x') as week,  UNIX_TIMESTAMP(first_day)+36000 as utime  from list_week where first_day>'$first_day' and first_day < NOW(); ";
 
    $data=array();
    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
    $i=0;
+   $last_month='';
    while($row=$res->fetchRow()) {
      $index[$row['yearweek']]=$i;
+     $date=$row['utime'].'x  '.strftime("%b%y",$row['utime']);
      $data[]=array(
-		   'tip'=>_('No sales this week'),
-		   'date'=>$row['date'],
+		   'tip_asales'=>_('No sales this week'),
+		   'tip_out'=>_('No sales this week'),
+		   'tip_bonus'=>_('No bonus this week'),
+		   'date'=>$date,
 		   'week'=>$row['week'],
 		   'utime'=>$row['utime'],
 		   'asales'=>0,
 		   'out'=>0,
-		   
+		   'bonus'=>0,
+		   'outofstock'=>0,
 		   );
 
      $i++;
@@ -3633,14 +3642,26 @@ from porden_item left join product2supplier as ps on ( p2s_id=ps.id)  left join 
 	$data[$_index]['asales']=(float)$row['asales'];
 	$data[$_index]['out']=(int)$row['_out'];
 	$fday=strftime("%d %b", strtotime('@'.$data[$_index]['utime']));
-	if($tipo=='plot_weekout')
-	  $data[$_index]['tip']=_('Outer Dispached')."\n"._('Week').' '.$data[$_index]['week']."\n"._('Starting')." ".$fday."\n".number($row['_out']).' '._('Outers');
-	else
-	  $data[$_index]['tip']=_('Sales')."\n"._('Week').' '.$data[$_index]['week']."\n"._('Starting')." ".$fday."\n".money($row['asales']);
+	$data[$_index]['tip_out']=_('Outer Dispached')."\n"._('Week').' '.$data[$_index]['week']."\n"._('Starting')." ".$fday."\n".number($row['_out']).' '._('Outers');
+	$data[$_index]['tip_asales']=_('Sales')."\n"._('Week').' '.$data[$_index]['week']."\n"._('Starting')." ".$fday."\n".money($row['asales']);
       }
     }
     
-   
+    $tipo_orders=' (orden.tipo!=0 or orden.tipo!=3 or  orden.tipo!=9 or orden.tipo!=10) ';
+   $sql=sprintf("select YEARWEEK(date_index) as yearweek,sum(qty)as bono from bonus left join orden on (order_id=orden.id) where %s and product_id=%d  group by YEARWEEK(date_index)",$tipo_orders,$product_id);
+
+   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+
+    while($row=$res->fetchRow()) {
+
+      if(isset($index[$row['yearweek']])){
+	$_index=$index[$row['yearweek']];
+	$data[$_index]['bonus']=(float)$row['bono'];
+	$fday=strftime("%d %b", strtotime('@'.$data[$_index]['utime']));
+	$data[$_index]['tip_bonus']=_('Free Bonus')."\n"._('Week').' '.$data[$_index]['week']."\n"._('Starting')." ".$fday."\n".number($row['bono']).' '._('Outers');
+
+      }
+    }
 
  $response=array('resultset'=>
 		   array('state'=>200,
@@ -3678,6 +3699,7 @@ from porden_item left join product2supplier as ps on ( p2s_id=ps.id)  left join 
      $data[]=array(
 		   'asales'=>0,
 		   'out'=>0,
+		   'bonus'=>0,
 		   //		   'month'=>$m,
 		   //'year'=>$y,
 		   'date'=>strftime("%m/%y", strtotime("today -$i month")),
@@ -3702,7 +3724,9 @@ from porden_item left join product2supplier as ps on ( p2s_id=ps.id)  left join 
      else
        $data[$row['since']]['tip_asales']=_('Sales')."\n".strftime("%B %Y", strtotime("today -".$row['since']." month"))."\n".money($row['asales'])."\n".number($row['_out']).' '._('Outers');
  
-       }
+   }
+
+
  $response=array('resultset'=>
 		   array('state'=>200,
 			 'data'=>$data,

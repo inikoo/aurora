@@ -1,5 +1,4 @@
 <?
-
 class location{
   var $db;
   var $data=array();
@@ -58,33 +57,36 @@ class location{
     switch($this->tipo){
     case('shelf'):
       if($key=='id')
-      $sql=sprintf("select location.id,(select count(*) from product2location where location_id=location.id ) as products ,max_heigth,deep,length,height,location_tipo.max_weight as max_weight,location.id,location.tipo,location.name,wharehouse_area.name as area  from location  left join location_tipo on (tipo_id=location_tipo.id) left join wharehouse_area on (area_id=wharehouse_area.id) where location.id=%d ",$tag);
+	$sql=sprintf("select location.id,(select count(*) from product2location where location_id=location.id ) as products ,max_heigth,deep,width,max_products,location.id,location.tipo,location.name,warehouse_area.name as area  from location   left join warehouse_area on (area_id=warehouse_area.id)");
+      if($key=='id')
+	$sql.=sprintf("where location.id=%d ",$tag);
       else if($key=='name')
-	$sql=sprintf("select location.id,(select count(*) from product2location where location_id=location.id ) as products ,max_heigth,deep,length,height,location_tipo.max_weight as max_weight,location.id,location.tipo,location.name,wharehouse_area.name as area  from location  left join location_tipo on (tipo_id=location_tipo.id) left join wharehouse_area on (area_id=wharehouse_area.id) where location.name=%s ",prepare_mysql($tag));
+	$sql.=sprintf("where  location.name=%s ",prepare_mysql($tag));
 
       else
 	return;
-      //  print $sql;
+      //      print $sql;
       $result =& $this->db->query($sql);
       if($row=$result->fetchRow()){
 	$this->id=$row['id'];
 	$this->data['name']=$row['name'];
 	$this->data['num_products']=$row['products'];
-	$this->data['used_for']=$row['tipo'];
+	$this->data['max_products']=$row['max_products'];
+	$this->data['tipo']=$row['tipo'];
 	$this->data['area']=$row['area'];
-	$this->data['dim']=array(
-				 'max_heigth'=>$row['max_heigth'],
-				 'max_weight'=>$row['max_weight'],
-				 'max_length'=>$row['length'],
-				 'max_deep'=>$row['deep'],
-				 'max_vol'=>false
-				 );
-	if(
-	   is_numeric($this->data['dim']['max_heigth']) 
-	   and is_numeric($this->data['dim']['max_length']) 
-	   and is_numeric($this->data['dim']['max_deep']) 
-	   )$this->data['dim']['max_vol']=$this->data['dim']['max_heigth']*$this->data['dim']['max_length']*$this->data['dim']['max_deep'];
+	$this->data['area_id']=$row['area_id'];
+	$this->data['deep']=$row['deep'];
+	$this->data['width']=$row['width'];
+	$this->data['max_heigth']=$row['max_heigth'];
+	$this->data['max_weight']=$row['max_weight'];
 
+	if(
+	   is_numeric($this->['max_heigth']) 
+	   and is_numeric($this->['deep']) 
+	   and is_numeric($this->['width']) 
+	   )$this->data['max_vol']=$this->data['max_heigth']*$this->data['width']*$this->data['deep']*0.001;
+	else
+	  $this->data['max_vol']='';
 	
 
 	
@@ -94,6 +96,216 @@ class location{
 
 
     }
+  }
+
+
+  function update($data){
+    foreach($data as $key =>$value)
+      switch($key){
+      case('name'):
+	$name=_trim($value);
+	
+	if($name==''){
+	  $this->msg=_('Wrong location name');
+	  $this->update_ok=false;
+	  return;
+	}
+
+	if($name==$this->get($tipo)){
+	  $this->msg=_('Nothing to change');
+	  $this->update_ok=false;
+	  return;
+	}
+
+	$location=new Location('name',$value);
+	if($location->id){
+	  $this->msg=_('Name already exists');
+	  $this->update_ok=false;
+	  return;
+	}
+	$this->data['name']=$name;
+	$this->msg=_('Location name change');
+	$this->update_ok=true;
+	break;
+   case('max_weight'):
+     $value=_trim($value);
+     
+     if(!is_numeric($value)){
+       $this->msg=_('The maximum weight for this location show be numeric');
+       $this->update_ok=false;
+	  return;
+     }
+     if($value < 0){
+       $this->msg=_('The maximum weight can not be negative');
+       $this->update_ok=false;
+       return;
+     }
+     if($value < 0){
+	  $this->msg=_('The maximum weight can not be zero');
+	  $this->update_ok=false;
+	  return;
+     }
+     if($value==$this->get($tipo)){
+       $this->msg=_('Nothing to change');
+       $this->update_ok=false;
+       return;
+	}
+     
+     $this->data['max_weight']=$value;
+     $this->msg=_('Location manxium weight changed');
+     $this->update_ok=true;
+     break;
+ case('max_height'):
+     $value=_trim($value);
+     
+     if(!is_numeric($value)){
+       $this->msg=_('The maximum height for this location show be numeric');
+       $this->update_ok=false;
+	  return;
+     }
+     if($value < 0){
+       $this->msg=_('The maximum height can not be negative');
+       $this->update_ok=false;
+       return;
+     }
+     if($value < 0){
+	  $this->msg=_('The maximum height can not be zero');
+	  $this->update_ok=false;
+	  return;
+     }
+     if($value==$this->get($tipo)){
+       $this->msg=_('Nothing to change');
+       $this->update_ok=false;
+       return;
+	}
+     
+     $this->data['max_height']=$value;
+     $this->msg=_('Location maxium height changed');
+     $this->update_ok=true;
+     break;	
+ case('deep'):
+     $value=_trim($value);
+     
+     if(!is_numeric($value)){
+       $this->msg=_('The maximum deep for this location show be numeric');
+       $this->update_ok=false;
+	  return;
+     }
+     if($value < 0){
+       $this->msg=_('The deep can not be negative');
+       $this->update_ok=false;
+       return;
+     }
+     if($value < 0){
+	  $this->msg=_('The deep can not be zero');
+	  $this->update_ok=false;
+	  return;
+     }
+     if($value==$this->get($tipo)){
+       $this->msg=_('Nothing to change');
+       $this->update_ok=false;
+       return;
+	}
+     
+     $this->data['max_height']=$value;
+     $this->msg=_('Location deep changed');
+     $this->update_ok=true;
+     break;
+ case('width'):
+     $value=_trim($value);
+     
+     if(!is_numeric($value)){
+       $this->msg=_('The maximum width for this location show be numeric');
+       $this->update_ok=false;
+	  return;
+     }
+     if($value < 0){
+       $this->msg=_('The width can not be negative');
+       $this->update_ok=false;
+       return;
+     }
+     if($value < 0){
+	  $this->msg=_('The width can not be zero');
+	  $this->update_ok=false;
+	  return;
+     }
+     if($value==$this->get($tipo)){
+       $this->msg=_('Nothing to change');
+       $this->update_ok=false;
+       return;
+	}
+     
+     $this->data['max_height']=$value;
+     $this->msg=_('Location width changed');
+     $this->update_ok=true;
+     break;	
+case('width'):
+     $value=_trim($value);
+     
+     if(!is_numeric($value)){
+       $this->msg=_('The maximum width for this location show be numeric');
+       $this->update_ok=false;
+	  return;
+     }
+     if($value < 0){
+       $this->msg=_('The width can not be negative');
+       $this->update_ok=false;
+       return;
+     }
+     if($value < 0){
+	  $this->msg=_('The width can not be zero');
+	  $this->update_ok=false;
+	  return;
+     }
+     if($value==$this->get($tipo)){
+       $this->msg=_('Nothing to change');
+       $this->update_ok=false;
+       return;
+	}
+     
+     $this->data['max_height']=$value;
+     $this->msg=_('Location width changed');
+     $this->update_ok=true;
+     break;	
+case('max_products'):
+     $value=_trim($value);
+     
+     if(!is_numeric($value) or $value<=0){
+         $value='';
+     }
+     if($value==$this->get($tipo)){
+       $this->msg=_('Nothing to change');
+       $this->update_ok=false;
+       return;
+     }
+
+     
+     $this->data['max_products']=$value;
+     $this->msg=_('Location max_products changed');
+     $this->update_ok=true;
+     break;	
+case('tipo'):
+     $value=_trim($value);
+     
+
+     if($value==$this->get($tipo)){
+       $this->msg=_('Nothing to change');
+       $this->update_ok=false;
+       return;
+     }
+     if($value!='picking' or $value!='storing' or $value!='display' or $value!='loading'){
+       $this->msg=_('Wrong location tipo');
+       $this->update_ok=false;
+       return;
+     }
+     
+     $this->data['tipo']=$value;
+     $this->msg=_('Location type changed');
+     $this->update_ok=true;
+     break;	
+      }
+
+
   }
 
 

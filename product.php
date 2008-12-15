@@ -124,21 +124,26 @@ $weeks=$product->get('weeks_since');
 
 // assign plot tipo depending of the age of the product
 
-$tipo_plot='sales';
-if(preg_match('/outers/',$_SESSION['state']['product']['plot']))
-  $tipo_plot='outers';
+// $tipo_plot='sales';
+// if(preg_match('/outers/',$_SESSION['state']['product']['plot']))
+//   $tipo_plot='outers';
 
 
-if($weeks>500){
-  $time_plot='month';
- }elseif($weeks>52){
-   $time_plot='month';
- }else{
-   $time_plot='week';
- }
+// if($weeks>500){
+//   $time_plot='month';
+//  }elseif($weeks>52){
+//    $time_plot='month';
+//  }else{
+//    $time_plot='week';
+//  }
 
-$plot_tipo='product_'.$time_plot.'_'.$tipo_plot;
+//$plot_tipo='product_'.$time_plot.'_'.$tipo_plot;
+$plot_tipo=$_SESSION['state']['product']['plot'];
+$plot_data=$_SESSION['state']['product']['plot_data'];
+
+//print print_r($_SESSION['state']['product']);
 $smarty->assign('plot_tipo',$plot_tipo);
+$smarty->assign('plot_data',$plot_data);
 
 
 
@@ -156,7 +161,7 @@ $smarty->assign('key_filter_dimension',$regex['key_filter_dimension']);
 
 
 $js_files[]= 'js/search_product.js';
-$js_files[]='js/product.js.php?current_plot='.$plot_tipo;
+$js_files[]='js/product.js.php';
 
 $smarty->assign('tsoall',number($product->get('tsoall')));
 $smarty->assign('awtsoall',number($product->get('awtsoall')));

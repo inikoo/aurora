@@ -1,5 +1,18 @@
 <?include_once('../common.php');?>
-    var plot='<?=$_REQUEST['current_plot']?>';
+    var plot='<?=$_SESSION['state']['product']['plot']?>';
+  var Dom   = YAHOO.util.Dom;
+var change_plot_sigma=function(o){
+
+    max_sigma=o.value;
+      Dom.get("the_plot").src='plot.php?tipo='+plot+'&max_sigma='+escape(max_sigma);
+      YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=product-plot_data-max_sigma&value='+escape(max_sigma) );
+}
+  var change_plot_months=function(o){
+	 
+      months=Dom.get('plot_months').value;
+      Dom.get("the_plot").src='plot.php?tipo='+plot+'&months='+escape(months);
+      YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=product-plot_data-months&value='+escape(months) );
+     }
 
 YAHOO.util.Event.addListener(window, "load", function() {
 	tables = new function() {
@@ -232,10 +245,14 @@ function init(){
      }
 
 
+
+
   var change_plot = function (e){
 
       //      alert(plot)
       Dom.get("the_plot").src='plot.php?tipo='+this.id;
+      YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=product-plot&value='+this.id );
+
       this.className='selected';
       Dom.get(plot).className='opaque';
       plot=this.id;
@@ -246,11 +263,8 @@ function init(){
      var ids = ["product_week_sales","product_month_sales","product_quarter_sales","product_year_sales","product_week_outers","product_week_outers" ,"product_week_outers","product_week_outers","product_stock_history"]; 
      Event.addListener(ids,"click",change_plot);
 
-
-
-
-	 Event.addListener('submit_search', "click",submit_search);
-	 Event.addListener('prod_search', "keydown", submit_search_on_enter);
+     Event.addListener('submit_search', "click",submit_search);
+     Event.addListener('prod_search', "keydown", submit_search_on_enter);
 
 
 

@@ -1,4 +1,5 @@
 <?
+
 $colors=array(
 	      '0x62a74b',
 	      '0xc665a7',
@@ -8,19 +9,96 @@ $colors=array(
 	      );
 
 require_once 'common.php';
+require_once 'classes/Product.php';
+
 $tipo='';
 if(isset($_REQUEST['tipo']))
   $tipo=$_REQUEST['tipo'];
 $title='';
 switch($tipo){
  case('product_week_sales'):
-   $ar_address='ar_assets.php?tipo=plot_weeksales';
-   $fields='"tip","asales","date"';
+
+ $product=new Product($_SESSION['state']['product']['id']);
+   $product_id=$product->id;
+
+   if(isset($_REQUEST['months'])){
+     $months=$_REQUEST['months'];
+     $_SESSION['state']['product']['plot_data']['months']=$months;
+
+   }else
+     $months=$_SESSION['state']['product']['plot_data']['months'];
+   
+
+   if(isset($_REQUEST['max_sigma'])){
+     $max_sigma=$_REQUEST['max_sigma'];
+     $_SESSION['state']['product']['plot_data']['max_sigma']=$max_sigma;
+   }else
+     $max_sigma=$_SESSION['state']['product']['plot_data']['max_sigma'];
+       
+   
+   if(is_numeric($months) and $months>0)
+     $first_day=date("Y-m-d",strtotime("- $months  month"));
+   else
+     $first_day=$product->get('mysql_first_date');
+   
+
+   if($max_sigma)
+     $max=4*$product->get('awtsoall');
+
+
+   $ar_address='ar_assets.php?tipo=plot_product_week_sales&product_id='.$product_id.'&first_day='.$first_day;
+
+   $fields='"tip_asales","asales","date"';
    $yfields=array(array('label'=>_('Sales'),'name'=>'asales','axis'=>'formatCurrencyAxisLabel','style'=>'size:5,lineSize:2'));
-   $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category');
+   $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category','axis'=>'fdate');
    $style='size:1';
    $tipo_chart='LineChart';
    break;
+ case('product_week_outers'):
+   
+   $product=new Product($_SESSION['state']['product']['id']);
+   $product_id=$product->id;
+
+   if(isset($_REQUEST['months'])){
+     $months=$_REQUEST['months'];
+     $_SESSION['state']['product']['plot_data']['months']=$months;
+
+   }else
+     $months=$_SESSION['state']['product']['plot_data']['months'];
+   
+
+   if(isset($_REQUEST['max_sigma'])){
+     $max_sigma=$_REQUEST['max_sigma'];
+     $_SESSION['state']['product']['plot_data']['max_sigma']=$max_sigma;
+   }else
+     $max_sigma=$_SESSION['state']['product']['plot_data']['max_sigma'];
+       
+   
+   if(is_numeric($months) and $months>0)
+     $first_day=date("Y-m-d",strtotime("- $months  month"));
+   else
+     $first_day=$product->get('mysql_first_date');
+   
+
+   if($max_sigma)
+     $max=4*$product->get('awtsoall');
+
+   
+   $title=_("Outers dispached per Week");
+   $ar_address='ar_assets.php?tipo=plot_product_week_outers&product_id='.$product_id.'&first_day='.$first_day;
+   // print_r($_REQUEST);
+   // print $ar_address;
+   $fields='"tip_out","out","date","bonus","tip_bonus"';
+   $yfields=array(
+		  array('label'=>_('Sold Outers'),'name'=>'out','axis'=>'formatNumberAxisLabel','style'=>'size:5,lineSize:2','type'=>'line'),
+		  array('label'=>_('Bonus Outers'),'name'=>'bonus','axis'=>'formatNumberAxisLabel','style'=>'size:5,lineSize:2')
+
+		  );
+   $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category','axis'=>'fdate');
+   $style='size:10';
+   $tipo_chart='ColumnChart';
+   break;
+
  case('product_quarter_sales'):
    $ar_address='ar_assets.php?tipo=plot_quartersales';
    $fields='"tip","asales","date"';
@@ -59,7 +137,7 @@ switch($tipo){
     break;
  case('product_week_outers'):
     $title=_("Outers sold per Week");
-   $ar_address='ar_assets.php?tipo=plot_weekout';
+   $ar_address='ar_assets.php?tipo=plot_product_week_outers';
    $fields='"tip","out","date"';
    $yfields=array(array('label'=>_('Outers'),'name'=>'out','axis'=>'formatNumberAxisLabel','style'=>''));
    $xfield=array('label'=>_('Date'),'name'=>'date');
@@ -69,9 +147,9 @@ switch($tipo){
  case('product_quarter_outers'):
     $title=_("Outers sold per Quarter");
    $ar_address='ar_assets.php?tipo=plot_quarterout';
-   $fields='"tip","out","date"';
-		 $yfields=array(array('label'=>_('Outers'),'name'=>'out','axis'=>'formatNumberAxisLabel','style'=>''));
-   $xfield=array('label'=>_('Date'),'name'=>'date');
+   $fields='"tip_out","out","date"';
+   $yfields=array(array('label'=>_('Outers'),'name'=>'out','axis'=>'formatNumberAxisLabel','style'=>''));
+   $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category','axis'=>'fdate');
    $style='size:20,lineSize:1';
  $tipo_chart='ColumnChart';
    break;
@@ -79,8 +157,8 @@ switch($tipo){
    $title=_("Outers sold per Month");
    $ar_address='ar_assets.php?tipo=plot_monthout';
    $fields='"out","date","tip"';
-		  $yfields=array(array('label'=>_('Outers'),'name'=>'out','axis'=>'formatNumberAxisLabel'));
-   $xfield=array('label'=>_('Date'),'name'=>'date');
+   $yfields=array(array('label'=>_('Outers'),'name'=>'out','axis'=>'formatNumberAxisLabel'));
+   $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category','axis'=>'fdate');
    $style='size:10,lineSize:1';
  $tipo_chart='ColumnChart';
     break;
@@ -230,7 +308,7 @@ if( value==0)
 else if ( value>=10000){
 return YAHOO.util.Number.format( value/1000,{prefix: "'.$myconf['currency_symbol'].'",thousandsSeparator: ",",decimalPlaces: 0})+"K";
 }
-else if ( value<=10000){
+else if ( value<=-10000){
 return YAHOO.util.Number.format( value/1000,{prefix: "'.$myconf['currency_symbol'].'",thousandsSeparator: ",",decimalPlaces: 0})+"K";
 }
 else
@@ -264,11 +342,25 @@ var jsonData = new YAHOO.util.DataSource( "'.$ar_address.'" );
  var seriesDef = ['."\n";
 $i=0;
 foreach($yfields as $yfield){
-  $out.=($i>0?',':'').'{ displayName: "'.$yfield['label'].'",  yField: "'.$yfield['name'].'" '.(isset($yfield['style'])?',style:{'.$yfield['style'].'}':'').'}'."\n";
+
+  if(isset($yfield['type']))
+    $type='type:"'.$yfield['type'].'",';
+  else
+    $type='';
+  $out.=($i>0?',':'').'{  '.$type.'  displayName: "'.$yfield['label'].'",  yField: "'.$yfield['name'].'" '.(isset($yfield['style'])?',style:{'.$yfield['style'].'}':'').'}'."\n";
   $i++;
 }
 $out.='];'."\n".'var yAxis = new YAHOO.widget.NumericAxis();
 yAxis.labelFunction = "'.$yfield['axis'].'";
+
+';
+if(isset($max))
+  $out.='yAxis.maximum = '.$max.';'; 
+$out.='
+
+function fdate(value){
+return value.replace(/^\d*x/g,"");
+}
 
 function justyears(value){
 var isjune= /^06/;

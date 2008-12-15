@@ -643,6 +643,35 @@ var clear_all=function(){
     list = new Object;
 };
 
+
+
+</div>
+<div class="yui-b">
+  
+    <div class="search_box" >
+      <span class="search_title" style="padding-right:15px">{t}Location{/t}:</span> <br><input size="8" class="text search" id="location_search" value="" name="search"/><img align="absbottom" id="location_submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>
+      <span  class="search_msg"   id="location_search_msg"    ></span> <span  class="search_sugestion"   id="location_search_sugestion"    ></span>
+      <br/>
+    </div>
+    
+
+    
+    
+  </div> 
+  
+  </div>
+</div>
+
+	<div class="yui-u">
+	  <h1>{$data.name}</h1>
+	  <table>
+	    <tr><td>{t}Used for{/t}:</td><td>{$data.used_for}</td></tr>
+	    <tr><td>{t}Max Capacity{/t}:</td><td>{$data.dim.max_vol}</td></tr>
+	    <tr><td>{t}Max Weight{/t}:</td><td>{$data.dim.max_weight}{t}Kg{/t}</td></tr>
+	  </table>
+	</div>
+
+
 function add_product(){
     Dom.get("manage_stock").style.display='';
     Dom.get("manage_stock_messages").innerHTML='<?=_('Choose the product the you want to place in this location')?>.';
@@ -650,12 +679,16 @@ function add_product(){
 }
 
 function init(){
-
-	
-	 Event.addListener("damaged_stock", "click", damaged_stock);
-	 Event.addListener("move_stock", "click", move_stock);
-	 Event.addListener("add_product", "click", add_product);
-	 Event.addListener("change_stock", "click", change_stock);
+ var Dom   = YAHOO.util.Dom;
+ var Event = YAHOO.util.Event;
+ 
+Event.addListener('location_submit_search', "click",submit_search,'location');
+ Event.addListener('location_search', "keydown", submit_search_on_enter,'location');
+ 
+ Event.addListener("damaged_stock", "click", damaged_stock);
+ Event.addListener("move_stock", "click", move_stock);
+ Event.addListener("add_product", "click", add_product);
+ Event.addListener("change_stock", "click", change_stock);
 
 	
  }

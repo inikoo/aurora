@@ -643,8 +643,11 @@ class product{
       if($this->data['dim']!='')
 	$a_dim=array($this->data['dim']);
       split('x',$this->data['dim']);
+    case('mysql_first_date'):
+      return  date("Y-m-d",strtotime("@".$this->data['first_date']));;
+      break;
     case('first_date'):
-      return $data->data['dates']['first_date'];
+      return $this->data['dates']['first_date'];
       break;
     case('weeks'):
       if(!isset( $this->data['weeks'])){
