@@ -25,6 +25,7 @@
     <li id="prices" {if $edit=='prices'}class="selected"{/if} ><img src="art/icons/money_add.png"> {t}Price, Discounts{/t}</li>
     <li id="suppliers" {if $edit=='suppliers'}class="selected"{/if} ><img src="art/icons/cog_add.png"> {t}Suppiers{/t}</li>
     <li id="dimat" {if $edit=='dimat'}class="selected"{/if} ><img src="art/icons/shape_ungroup.png"> {t}Dimensions{/t}</li>
+    <li id="dimat" {if $edit=='web'}class="selected"{/if} ><img src="art/icons/page_world.png"> {t}Web Pages{/t}</li>
 
 
   </ul>
@@ -172,6 +173,17 @@
     </table>
   </div>
 
+</div>
+
+<div  {if $edit!="web"}style="display:none"{/if}  class="edit_block" id="d_web">
+  <table class="edit" >
+
+    {foreach from=$web_pages item=page }
+    <tr><td><input id="pagetitle{$page.id}" value="{$page.title}" ovalue="{$page.title}"/></td><td><input id="pageurl{$page.id}" value="{$page.url}" ovalue="{$page.url}"/></td><td><img src="art/icons/cross.png"/></td><td><img src="art/icons/disk.png"/></td></tr>
+    {/foreach}
+      
+    
+  </table>
 </div>
 
 

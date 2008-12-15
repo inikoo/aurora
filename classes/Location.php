@@ -80,10 +80,11 @@ class location{
 	$this->data['max_heigth']=$row['max_heigth'];
 	$this->data['max_weight']=$row['max_weight'];
 
+
 	if(
-	   is_numeric($this->['max_heigth']) 
-	   and is_numeric($this->['deep']) 
-	   and is_numeric($this->['width']) 
+	   is_numeric($this->data['max_heigth']) 
+	   and is_numeric($this->data['deep']) 
+	   and is_numeric($this->data['width']) 
 	   )$this->data['max_vol']=$this->data['max_heigth']*$this->data['width']*$this->data['deep']*0.001;
 	else
 	  $this->data['max_vol']='';

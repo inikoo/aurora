@@ -48,8 +48,11 @@ switch($tipo){
 
    $ar_address='ar_assets.php?tipo=plot_product_week_sales&product_id='.$product_id.'&first_day='.$first_day;
 
-   $fields='"tip_asales","asales","date"';
-   $yfields=array(array('label'=>_('Sales'),'name'=>'asales','axis'=>'formatCurrencyAxisLabel','style'=>'size:5,lineSize:2'));
+   $fields='"tip_asales","asales","date","profit","tip_profit"';
+   $yfields=array(
+		  array('label'=>_('Sales'),'name'=>'asales','axis'=>'formatCurrencyAxisLabel','style'=>'size:5,lineSize:2'),
+		  array('label'=>_('Profit'),'name'=>'profit','axis'=>'formatCurrencyAxisLabel','style'=>'size:5,lineSize:2')
+		  );
    $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category','axis'=>'fdate');
    $style='size:1';
    $tipo_chart='LineChart';

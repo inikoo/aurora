@@ -138,6 +138,7 @@ $js_files=array(
 		'js/calendar_common.js.php',
 		'js/common.js.php',
 		'js/table_common.js.php',
+		'js/search.js',
 		'js/edit_product.js.php',
 
 		);

@@ -987,11 +987,11 @@ function save_image(key,image_id){
 		new_value=value;
 	}else
 	    value=Dom.get('v_'+key).value;
-	var request='ar_assets.php?tipo=ep_update&key='+escape(key)+'&value='+escape(value);
+	var request='ar_assets.php?tipo=ep_update&key='+escape(key)+'&value='+value;
 	//	alert(request);
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
-		    // alert(o.responseText);
+		    alert(o.responseText);
 		    var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    //for(x in r['res'])
 		    //	alert(x+' '+r[x])

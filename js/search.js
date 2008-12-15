@@ -21,6 +21,7 @@ var submit_search_on_enter=function(e,tipo){
      if(q=='')
 	 return;
      var request='ar_search.php?tipo='+tipo+'&q='+escape(q);
+     // alert(request)
      YAHOO.util.Connect.asyncRequest('POST',request ,{
 	     success:function(o) {
 
@@ -28,6 +29,7 @@ var submit_search_on_enter=function(e,tipo){
 		 if (r.state == 200){
 		     window.location.href=r.url;
 		 }else if(r.state==400){
+
 		     Dom.get(tipo+'_search_msg').innerHTML=r.msg1;
 		     Dom.get(tipo+'_search_sugestion').innerHTML=r.msg2;
 		 }else

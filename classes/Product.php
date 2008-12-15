@@ -1370,6 +1370,7 @@ class product{
 
   function update($values,$args=''){
     $res=array();
+
     foreach($values as $data){
       
       $key=$data['key'];
@@ -1768,6 +1769,7 @@ class product{
 	  $res[$key]['ok']=false;
 	  continue;
 	}
+	
 	$this->data[$key]=$value;
 	$res[$key]['ok']=true;
 	break;
@@ -2104,7 +2106,7 @@ class product{
        //print $old_value." ".$this->data[$key]."\n";
        if($old_value!=$this->data[$key]){
  	$sql=sprintf("update product set %s=%s where id=%d",$key,prepare_mysql($this->get($key)),$this->id);
-	//print "$sql\n";
+	//	print $this->get($key);
  	$this->db->exec($sql);
        }
 
