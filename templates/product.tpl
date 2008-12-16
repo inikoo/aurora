@@ -50,12 +50,21 @@
 	  <div class="yui-b"  style="width:100%;">
 	    <div class="yui-g" style="width:100%;font-size:90%"   >
               <div class="yui-u first">
-		<table    class="show_info_product" >
+		<table    class="show_info_product">
 		  <td class="aright">
 		    
-		     <tr style="border-bottom:1px solid #5f84ae">
-		      <td></td><td  class="aright"><span  id="online"  >{if $data.online}{t}Online{/t} ({$data.online_status}) {else}{t}Offline{/t}{/if}</span></td>
-		    </tr>
+		     <tr >
+		      <td><span id="web_status"   style="cursor:pointer">{$web_status}</span> 
+			    <img id="web_status_error" onclick="sincronize_all()" style="{if !$web_status_error}visibility:hidden;{/if}vertical-align:top;position:relative;bottom:2px;cursor:pointer"src="art/icons/exclamation.png" title="{$web_status_error_title}"/></td><td  class="aright">
+			 <img id="no_sincro_pages" title="{$data.nosincro_pages_why}" onclick="manual_check()" style="{if $data.sincro_pages==1}visibility:hidden;{/if}vertical-align:top;position:relative;bottom:2px;cursor:pointer" src="art/icons/page_error.png"/> 
+			 <img id="no_sincro_db" title="{$data.nosincro_db_why}" onclick="sincronizar()" src="art/icons/database_error.png" style="{if $data.sincro_db==1}visibility:hidden;{/if}vertical-align:top;position:relative;bottom:2px;cursor:pointer"/>  
+			 <span  id="online"  >{if $num_links>0}{t}Online{/t} ({$fnum_links}) {else}{t}Offline{/t}{/if}</span></td>
+		     </tr>
+		     <tr style="border-bottom:1px solid #5f84ae;">
+		       <td colspan=2><span id="edit_web_messages"></span></td>
+		     </tr>
+		</table>
+		<table    class="show_info_product">
 		    <tr>
 		      <td>{t}Sell Price{/t}:</td><td  class="price aright">{$price}{if $data.units>1} <span style="font-weight:400;color:#555">({$unit_price} {t}each{/t})</span>{/if}</td>
 		    </tr>
@@ -90,10 +99,26 @@
 	    </div>
               <div class="yui-u">
 
-		  <table   class="show_info_product" >
-		    <tr>
-		      <td>{t}Stock{/t}:<br>{$stock_units}</td><td class="stock aright" id="stock">{$data.stock}</td>
-		    </tr>
+		{if $data.sale_status=='discontinued'}
+		<table  style="margin:0;padding:5px 10px;border-top:1px solid #574017;width:100%;background:#deceb2"  >
+		  <tr><td style="font-weight:800;font-size:160%;text-align:center">{t}Discontinued{/t}</td></tr>
+		</table>
+		{/if}
+		{if $data.sale_status=='tobediscontinued'}
+		<table  style="margin:0;padding:5px 10px;border-top:1px solid #574017;width:100%;background:#deceb2"  >
+		  <tr><td style="font-weight:800;font-size:160%;text-align:center">{t}Discontinued{/t}</td></tr>
+		</table>
+		{/if}
+		{if $data.sale_status=='nosale'}
+		<table  style="margin:0;padding:5px 10px;border-top:1px solid #c7cbe0;width:100%;background:#deceb2"  >
+		  <tr><td style="font-weight:800;font-size:160%;text-align:center">{t}Not for Sale{/t}</td></tr>
+		</table>
+		{/if}
+
+		<table   class="show_info_product" >
+		  <tr>
+		    <td>{t}Stock{/t}:<br>{$stock_units}</td><td class="stock aright" id="stock">{$data.stock}</td>
+		  </tr>
 		     <tr>
 		      <td>{t}Available{/t}:</td><td class="aright">{$available}</td>
 		    </tr>
@@ -285,6 +310,16 @@
 
 
 </div>
+</div>
+<div id="web_status_menu" class="yuimenu">
+  <div class="bd">
+    <ul class="first-of-type">
+
+      {foreach from=$web_status_menu key=status_id item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_web_status('{$status_id}')"> {$menu}</a></li>
+      {/foreach}
+    </ul>
+  </div>
 </div>
 
 </div>{include file='footer.tpl'}

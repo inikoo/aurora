@@ -215,9 +215,87 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    };
     });
 
+var manual_check=function(){
+    var request='ar_assets.php?tipo=sincro_pages';
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    success:function(o) {
+			alert(o.responseText)
+		var r =  YAHOO.lang.JSON.parse(o.responseText);	
+		if(r.ok){
+		    Dom.get('no_sincro_pages').style.visibility='hidden';
+		    Dom.get('no_sincro_pages').setAttribute('title','');
+		    Dom.get('edit_web_messages').innerHTML=r.msg;
+	
+		}else
+		    Dom.get('edit_web_messages').innerHTML='<span class="error">'+r.msg+'</span>';
+	    }
+	    
+	});
+}
+
+var  change_web_status =function(tipo){
+    var request='ar_assets.php?tipo=ep_update&key=web_status'+'&value='+escape(tipo);
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    success:function(o) {
+		//	alert(o.responseText)
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if(r.ok){
+		    Dom.get('web_status').innerHTML=r.web_status;
+		    if(r.web_status_error==1){
+			Dom.get('web_status_error').style.visibility='visible';
+			Dom.get('web_status_error').setAttribute('title',r.web_status_error);
+		    }else
+			Dom.get('web_status_error').style.visibility='hidden';
+
+		     if(!r.same){
+			 Dom.get('no_sincro_pages').style.visibility='visible';
+			 Dom.get('no_sincro_db').style.visibility='visible';
+		     }
+		     Dom.get('edit_web_messages').innerHTML='<?=_('Syncronizing product')?>';
+		}
+
+		Dom.get('edit_web_messages').innerHTML='<?=_('Syncronizing product')?>';
+		var request='ar_xml.php?tipo=sincronize';
+		YAHOO.util.Connect.asyncRequest('POST',request ,{
+			success:function(o) {
+			    //				 alert(o.responseText)
+			    var r =  YAHOO.lang.JSON.parse(o.responseText);
+			    if(r.ok){
+				Dom.get('no_sincro_db').style.visibility='hidden';
+				Dom.get('edit_web_messages').innerHTML=r.msg;
+				
+			    }else
+				Dom.get('edit_web_messages').innerHTML='<span class="error">'+r.msg+'</span>';
+			}
+			
+		    });
+
+
+
+
+
+
+
+
+	    }
+	    
+	    });
+
+      }
+
 function init(){
      var Event = YAHOO.util.Event;
      var Dom   = YAHOO.util.Dom;
+
+
+
+
+YAHOO.util.Event.onContentReady("web_status_menu", function () {
+	 var oMenu = new YAHOO.widget.Menu("web_status_menu", { context:["web_status","tl", "bl"]  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+	 YAHOO.util.Event.addListener("web_status", "click", oMenu.show, null, oMenu);
+    });
 
      var change_view = function (e){
 	 block=this.getAttribute('block');

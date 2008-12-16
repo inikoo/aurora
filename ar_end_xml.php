@@ -4,6 +4,8 @@ include_once('external_libs/xml/minixml.inc.php');
 
 $key ="mc49015kfkuto0lk,rbijr0gl*(&172225224961644tui0f9jf98d345hpyl09jpl9fhlptjip_[[gdo;dlfkglklyndfUIHNNUIOSO832&*^)*(^^&*^*32KJLSDJFSNXRJ";
 $key2="dsoap968m0()*)mERG048m03495xm3[7eyf7ERG8awe8723mx7o0sjt6pvp[rp9uyt87JYRTdr6erwet6r7twe6rt71wert7FWEw6u1s7t6dv1t71ry7i6yv1i78r6ui78rvu";
+$key3='fdmc4m75nc2-387xn5982472cnp78N787HNP8n7p878NP87j8P7Jp7J87j877&^*N00980k(*k08J90J8H8GV76O78693942873NENASUHSDALL34R2PP234N384X5N857XN3';
+
 $path="app_files/p_xmldb/";
 $separator='-';
 if(!isset($_REQUEST['data'])){
@@ -23,10 +25,7 @@ if(is_array($data) and $data['key']==$key2){
     if(!file_exists($file))
       error('No/Wrong data file');
     if($file_content=file_get_contents($file)){
-      $finger_print=AESEncryptCtr(
-				  json_encode(array('key'=>$key2,'trash'=>trash())),
-				  $key,256);
-      $response=array('state'=>200,'msg'=>'file returned','file'=>$file,'file_contant'=>$file_content,'finget_print'=>$finger_print);
+      $response=array('state'=>200,'ok'=>true,'msg'=>'file returned','file'=>$file,'file_contant'=>$file_content,'finget_print'=>finger_print());
       echo json_encode($response);
       exit;
     }else
@@ -38,9 +37,11 @@ if(is_array($data) and $data['key']==$key2){
       error('Wrong code');
     $file=get_file($code);
     if(!file_exists($file)){
-
+      $same=false;
       $handle = fopen($file, 'x+');
       fclose($handle);
+    }else{
+      $same=true;
     }
       
     $xml_data=file_get_contents($file);
@@ -53,8 +54,11 @@ if(is_array($data) and $data['key']==$key2){
 	error("Cannot write on file");
 
       fclose($handle);
-      $response=array('state'=>200,'msg'=>'product_updated','finget_print'=>finger_print());
+      
+
+      $response=array('same'=>$same,'state'=>200,'ok'=>true,'msg'=>'product_updated','fingerprint'=>finger_print());
       echo json_encode($response);
+      exit;
     }else
       	error('Data file not writeable');
     
@@ -113,12 +117,16 @@ function get_file($code){
 }
 
 function finger_print(){
-  return "weoirwpoirpoifopdsfipsdf";
+  global $key3;
+  $finger_print=AESEncryptCtr(
+			      json_encode(array('ok',trash())),
+			      $key3,256);
+  return base64_encode($finger_print);
 }
 
 function error($msg='Error'){
   global $key,$key2;
-  $response=array('state'=>400,'msg'=>$msg);
+  $response=array('state'=>400,'msg'=>$msg,'ok'=>false);
   echo json_encode($response);
   exit;
 

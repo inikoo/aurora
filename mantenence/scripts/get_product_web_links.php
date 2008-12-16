@@ -74,12 +74,13 @@ if(preg_match_all($regex_indv,$txt,$matches)){
   foreach($codes as $code){
     $product=new Product('code',$code);
     if($product->id){
-      print "caca";
+      $data_toupdate[]=array('key'=>'weblink','value'=>$original_file,'title'=>$title);
+      $product->update($data_toupdate,'save');
     }else
       print"Warning!! ->$code<- not found\n";
     
   }
-  exit;
+  
 //    $sql=sprintf("select id from product where  code='%s'",addslashes($code));
 //    $res = $db->query($sql);
 //    if($x=$res->fetchRow()) {
@@ -121,6 +122,7 @@ function get_pages($ftp_data){
   if($login_result = ftp_login($conn_id, $ftp_user, $ftp_pass)){
     
     $contents = ftp_rawlist($conn_id, $_dir);
+
     foreach($contents as $dir){
       if(preg_match('/^d.*/i',$dir)){
 	//	preg_match('/[a-z0-9]+$/i',$dir,$match);
@@ -166,7 +168,8 @@ function get_pages($ftp_data){
 
   }
   ftp_close($conn_id);  
-  }
+  }else
+    print "cannot conect to the ftp\n";
 }
 
 

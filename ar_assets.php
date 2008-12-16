@@ -143,12 +143,22 @@ switch($tipo){
    echo json_encode($response);  
    
    break;
+ case('sincro_pages'):
+   $product=new product($_SESSION['state']['product']['id']);
+   $product->save($tipo,array('user_id'=>$LU->getProperty('auth_user_id')));
+   $response= array(
+		    'ok'=>true,
+		    'msg'=>_('Pages checked')
+		    );
+   echo json_encode($response);  
+   break;
+   break;
  case('ep_update'):
      $data[]=array(
 		 'key'=>$_REQUEST['key'],
 		 'value'=>$_REQUEST['value']
 		   );
-
+     //     print_r($data);
      if(isset($_REQUEST['sup_cost']))
        $data[0]['sup_cost']=$_REQUEST['sup_cost'];
      if(isset($_REQUEST['sup_code']))
@@ -182,18 +192,18 @@ switch($tipo){
 
      $product=new product($_SESSION['state']['product']['id']);
      $_res=$product->update($data);
-     //print_r($_res);
-      $res=$_res[$_REQUEST['key']];
-      if($res['ok']){
-	$res['msg']=$product->save($_REQUEST['key'],array('user_id'=>$LU->getProperty('auth_user_id')));
-	
+     // print_r($_res);
+     $res=$_res[$_REQUEST['key']];
+     if($res['ok']){
+       $res['msg']=$product->save($_REQUEST['key'],array('user_id'=>$LU->getProperty('auth_user_id')));
+       
 	if($_REQUEST['key']=='units'){
-
+	  
 	  if($_res['price']['ok'])
 	    $res['msg'].='; '.$product->save('price',array('user_id'=>$LU->getProperty('auth_user_id')));
 	  else
 	    $res['msg'].='; '.$_res['price']['msg'];
-
+	  
 	  if($_res['oweight']['ok'])
 	    $res['msg'].='; '.$product->save('oweight',array('user_id'=>$LU->getProperty('auth_user_id')));
 	  else
@@ -204,15 +214,37 @@ switch($tipo){
 	  else
 	    $res['msg'].='; '.$_res['odim']['msg'];
 	}
-
-      }
-     
+	
+     }
+	
      
      if($res['ok']){
 	 $response= array(
 			  'ok'=>true,
 			  'msg'=>$res['msg']
 			);
+
+	 if($_REQUEST['key']=='web_status'){
+	   $response['same']=$res['same'];
+	   $response['web_status']=$_web_status[$product->get('web_status')];
+
+	   $web_status_error=0;
+	   $web_status_error_title='';
+	   if($product->get('web_status')=='onsale'){
+	     if(!($product->get('stock')>0)){
+	       $web_status_error=1;
+	       $web_status_error_title=_('This product is out of stock');
+	     }
+	   }else{
+	     if($product->get('stock')>0){
+	       $web_status_error=1;
+	       $web_status_error_title=_('This product is not for sale on the webpage');
+	     }
+	   }
+	   $response['web_status_error']=$web_status_error;
+	   $response['web_status_error_title']=$web_status_error_title;
+	 }
+
 	  if($_REQUEST['key']=='img_new'){
 	    $response['data']=$product->get('new_image');
 	    if($product->get('num_images')==1)

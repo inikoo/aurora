@@ -125,6 +125,7 @@ class Customer{
       $res[$key]=array('ok'=>false,'msg'=>'');
       
       switch($key){
+
       case('tax_number_valid'):
 	if($value)
 	  $this->data['tax_number_valid']=1;
@@ -163,6 +164,7 @@ class Customer{
 
  function save($key,$history_data=false){
    switch($key){
+
    case('tax_number'):
    case('tax_number_valid'):
    case('main_email'):

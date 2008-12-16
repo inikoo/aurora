@@ -73,11 +73,32 @@ $product->load(array(
 		     ,'product_tree'
 		     ,'images'
 		     ,'locations'
-		     
+		     ,'weblinks'
 		     )
 	       );
 
+$num_links=$product->get('num_links');
+$smarty->assign('num_links',$num_links);
+$smarty->assign('fnum_links',number($num_links).' '.ngettext($num_links,'link','links'));
+//print_r($product->data);
 $smarty->assign('data',$product->data);
+$smarty->assign('web_status',$_web_status[$product->get('web_status')]);
+$web_status_error=false;
+$web_status_error_title='';
+ if($product->get('web_status')=='onsale'){
+   if(!($product->get('stock')>0)){
+     $web_status_error=true;
+     $web_status_error_title=_('This product is out of stock');
+   }
+  }else{
+   if($product->get('stock')>0){
+       $web_status_error=true;
+       $web_status_error_title=_('This product is not for sale on the webpage');
+   }
+ }
+
+$smarty->assign('web_status_error',$web_status_error);
+$smarty->assign('web_status_error_title',$web_status_error_title);
 
 
 $fam_order=$_SESSION['state']['family']['table']['order'];
@@ -176,5 +197,9 @@ $smarty->assign('unit_price',money($product->data['price']/$product->data['units
 
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
+
+$smarty->assign('web_status_menu',$_web_status);
+
+
 $smarty->display('product.tpl');
 ?>

@@ -150,6 +150,12 @@ $res.="\$_porder_tipo['1']=_('Submited');\n";
 $res.="\$_porder_tipo['2']=_('Received');\n";
 $res.="\$_porder_tipo['3']=_('Cancelled');\n";
 
+$res.="\$_web_status['onsale']=_('On sale');\n";
+$res.="\$_web_status['outofstock']=_('Out of stock');\n";
+$res.="\$_web_status['discontinued']=_('Discontinued');\n";
+$res.="\$_web_status['hidden']=_('Hidden');\n";
+$res.="\$_web_status['offline']='';\n";
+
 
 
 $res.="\$_product_tipo['0']=_('Active');\n";

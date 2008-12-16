@@ -26,7 +26,7 @@ while($row=$res->fetchRow()) {
   $charge=$row['charge'];
   $estimated_cost=estimated_cost($product_id,$date);
   $profit=$charge-($row['units']*$dispached*$estimated_cost);
-  print "$id $charge $profit\r";
+  print "$id $charge $profit \r";
   $sql=sprintf("update transaction set profit=%.2f where id=%d",$profit,$id);
   mysql_query($sql);
  }

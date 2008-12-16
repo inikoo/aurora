@@ -12,7 +12,7 @@ class product{
   var $locations=false;
   var $notes=array();
   var $images=false;
-
+  var $weblink=false;
   var $db;
 
   var $location_to_update=false;
@@ -62,6 +62,8 @@ class product{
       $this->data['units_tipo_shortname']=$_units_tipo_abr[$this->data['units_tipo']];
       $this->data['units_tipo_plural']=$_units_tipo_plural[$this->data['units_tipo']];
       
+
+
       $this->data['odim_tipo']=$this->data['odim_tipo'];
       $this->data['odim_tipo_name']=$_shape[$this->data['odim_tipo']];
       $this->data['dim_tipo']=$this->data['dim_tipo'];
@@ -91,6 +93,16 @@ class product{
     foreach($data_to_be_read as $table){
       
       switch($table){
+      case('weblinks'):
+	$this->weblink=array();
+	$sql=sprintf("select * from product_webpages  where   product_id=%d ",$this->id);
+	$result =& $this->db->query($sql);
+	while($row=$result->fetchRow()){
+	  $this->weblink[$row['link']]=array('id'=>$row['id'],'title'=>$row['title']);
+	}
+	
+	break;
+
       case('product_tree'):
 	$sql=sprintf('select d.name as department,d.id as department_id,g.name as group_name,group_id from product left join product_group as g on (g.id=group_id)  left join product_department as d on (d.id=department_id) where product.id=%s ',$this->id);
 
@@ -477,6 +489,14 @@ class product{
 
 
     switch($key){
+    case('weblink'):
+      $sql=sprintf("select * from product_webpages  where   product_id=%d and link=%s",$this->id,prepare_mysql($data));
+       $result =& $this->db->query($sql);
+      if($row=$result->fetchRow()){
+	return array('id'=>$row['id'],'link'=>$row['link'],'title'=>$row['title']);
+      }else
+	return false;
+      break;
     case('max_units_per_location'):
       
       
@@ -595,6 +615,17 @@ class product{
   function get($item='',$data=false){
 
     switch($item){
+    case('weblinks'):
+      if(!$this->weblink)
+	$this->load('weblinks');
+      return $this->weblink;
+      break;
+    case('num_links'):
+    case('num_weblinks'):
+      if(!$this->weblink)
+	$this->load('weblinks');
+      return count($this->weblink);
+      break;
     case('new_image'):
       if(isset($this->changing_img)  and isset($this->images[$this->changing_img]))
 	return $this->images[$this->changing_img];
@@ -1376,10 +1407,12 @@ class product{
   }
 
 
-  function update($data,$args=''){
+  function update($values,$args=''){
     $res=array();
     
-    foreach($data as $key=>$data){
+     foreach($values as $data){
+
+      $key=$data['key'];
       
       $value=$data['value'];
       $res[$key]=array('ok'=>false,'msg'=>'');
@@ -1390,9 +1423,12 @@ class product{
 	if(!$this->weblink)
 	  $this->load('weblinks');
 	
-	$this->weblink[$value]=array('title'=>$data['title']);
-	$this->link_updated=$value;
-	exit;
+	$value=_($value);
+	$title=_($data['title']);
+	$this->weblink[$value]=array('title'=>$title);
+	$this->weblink_updated=$value;
+
+	break;
 	
       case('max_units_per_location'):
 	$p2l_id=$data['p2l_id'];
@@ -1840,13 +1876,43 @@ class product{
 
 	$res[$key]=array('ok'=>true,'msg'=>'');
 	break;
+      case('web_status'):
 	
+	if($value=='onsale' or $value=='discontinued' or $value=='hidden' or $value=='offline' or $value=='outofstock'){
+	  if($this->data['web_status']==$value){
+	    $res[$key]['msg']=_('Nothing to change');
+	    $res[$key]['ok']=false;
+	    $res[$key]['same']=true;
+	    continue;
+	  }else{
+	    $this->data['web_status']=$value;
+	    $res[$key]['ok']=true;
+	    $res[$key]['same']=false;
+	    $res[$key]['msg']=_('Web status changed');
+	    //
+	    $this->data['sincro_db']=0;
+	    $this->data['sincro_pages']=0;
+	    
+
+	  }
+
+	  
+	}else{
+	  $res[$key]['msg']=_('Wrong web status value');
+	  $res[$key]['ok']=false;
+	  continue;
+
+	}
+
+
+	break;
       default:
 	
-	$res[$key]=array('res'=>2,'new_value'=>'','desc'=>'Unkwown key');
+	$res[$key]=array('ok'=>false,'msg'=>_('Unkwown key'));
       }
-      if(preg_match('/save/',$args)){
 
+      if(preg_match('/save/',$args)){
+       
 	$this->save($key);
 	
       }
@@ -1860,9 +1926,24 @@ class product{
     $msg='';
     switch($key){
     case('weblink'):
-      $sql=sprintf('insert into ');
+      
+      if(!$old_data=$this->read('weblink',$this->weblink_updated)){
+	$sql=sprintf("insert into product_webpages (product_id,link,title) values (%d,%s,%s)"
+		     ,$this->id
+		     ,prepare_mysql($this->weblink_updated)
+		     ,prepare_mysql($this->weblink[$this->weblink_updated]['title'])
+		     );
+	print "$sql\n";
+	$this->db->exec($sql);
+      }else{
+	$sql=sprintf("update product_webpages set title=%s where id=%d "
+		     ,prepare_mysql($this->weblink[$this->weblink_updated]['title'])
+		    ,$old_data['id']
+		     );
+	$this->db->exec($sql);
+      }
 
-
+      break;
     case('max_units_per_location'):
       $old_value=$this->read($key,array('id'=>$this->location_to_update));
       $sql=sprintf("update  product2location set max_stock=%s where id=%d",prepare_mysql($this->locations['data'][$this->location_to_update]['max_units']),$this->location_to_update);
@@ -2120,12 +2201,51 @@ class product{
 
 
 	  break;
+    case('sincro_db'):
+	$sql=sprintf("update product set sincro_db=1,nosincro_db_why=NULL where id=%d"
+		     ,$this->id
+		     );
+ 	$this->db->exec($sql);
+	//	print $sql;
+	break;
+   case('sincro_pages'):
+     $old=$this->read('sincro_pages');
+     $new=1;
+     
+     if($old!=$new){
+       $sql=sprintf("update product set sincro_pages=1,nosincro_pages_why=NULL where id=%d"
+		    ,$this->id
+		    );
+       // print $sql;
+       $this->db->exec($sql);
+       if(is_array($history_data)){
+	 $old_why=$this->get('nosincro_pages_why');
+	 $msg=$this->save_history($key,$old_why,'',$history_data);
+       }
+     }
+     break;	
+    case('web_status'):
+      
+      $sql=sprintf("update product set web_status=%s , sincro_pages=0,sincro_db=0,nosincro_db_why=%s,nosincro_db_why=%s where id=%d"
+		   ,prepare_mysql($this->get($key))
+		   ,prepare_mysql(_('Web status changes'))
+		   ,prepare_mysql(_('Web status changes'))
+		   ,$this->id
+		   );
+      //  print $sql;
+      $this->db->exec($sql);
+      
+      break;
+       
+       
+
     default:
 
        $old_value=$this->read($key);
        //print $old_value." ".$this->data[$key]."\n";
        if($old_value!=$this->data[$key]){
  	$sql=sprintf("update product set %s=%s where id=%d",$key,prepare_mysql($this->get($key)),$this->id);
+	//	print $sql;
 	//	print $this->get($key);
  	$this->db->exec($sql);
        }
@@ -2146,7 +2266,14 @@ class product{
   function save_history($key,$old,$new,$data){
     
     switch($key){
-
+    case('sincro_pages'):
+      $note=_('Web pages checked');
+      $sujeto='PROD';
+      $sujeto_id=$this->id;
+      $objeto='SYNP';
+      $objeto_id='';
+      $action='OK';
+      break;
     case('max_units_per_location'):
       if(is_numeric($new))
 	$note=_('Max units in location')." ".$data['loc_name']." "._('set to').' '.$new;
@@ -2383,7 +2510,7 @@ class product{
 		 ,prepare_mysql($old)	 
 		 ,prepare_mysql($new)	 
 		 ,prepare_mysql($note)); 
-    //    print $sql;
+      print $sql;
     $this->db->exec($sql);
 
     return $note;
