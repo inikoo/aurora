@@ -24,12 +24,18 @@ $ftp_data=array(
 $res=get_pages($ftp_data);
 //update_file('files/bcp/index.html');
 
-function update_file($filename){
+function update_file($filename,$original_file){
  $db =& MDB2::singleton();
 
  print "$filename\n";
  
   $txt=file_get_contents($filename);
+  
+ 
+  if(preg_match('/\<title\>.*\<\/title\>/i',$txt,$match)){
+
+    $title=preg_replace('/\<title\>|\<\/title\>/i','',$match[0]);
+  }
 
   $codes=array();
    $sdesc=array();
@@ -61,17 +67,19 @@ if(preg_match_all($regex_indv,$txt,$matches)){
     }
   }
    
-
-   //  print $txt;
+ $original_file=preg_replace('/htdocs/','www.ancientwisdom.biz',$original_file);
+ print "url $original_file \n";
+   print "title $title \n";
  print_r($codes);
   foreach($codes as $code){
     $product=new Product('code',$code);
     if($product->id){
-
+      print "caca";
     }else
       print"Warning!! ->$code<- not found\n";
     
   }
+  exit;
 //    $sql=sprintf("select id from product where  code='%s'",addslashes($code));
 //    $res = $db->query($sql);
 //    if($x=$res->fetchRow()) {
@@ -132,7 +140,7 @@ function get_pages($ftp_data){
 	    if (ftp_get($conn_id, $local_file, $server_file, FTP_BINARY)) {
 
 
-	      update_file($local_file);
+	      update_file($local_file,$server_file);
 	      
 
 	    } else {

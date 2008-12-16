@@ -35,13 +35,21 @@ class product{
 
 
 
-  function get_data($tipo,$product_id){
+  function get_data($tipo,$tag){
     global $_shape,$_units_tipo,$_units_tipo_abr,$_units_tipo_plural;
 
     $this->dim_units='cm';
 
-    $sql=sprintf("select *,UNIX_TIMESTAMP(first_date) as first_date from product where id=%d",$product_id);
-    // print $sql;
+
+      
+    $sql=sprintf("select *,UNIX_TIMESTAMP(first_date) as first_date from product ");
+
+
+    if($tipo=='id')
+      $sql.=sprintf("where id=%d",$tag);
+    else if($tipo=='code')
+      $sql.=sprintf("where code=%s",prepare_mysql($tag));
+    //     print $sql;
     if($result =& $this->db->query($sql)){
       $this->data=$result->fetchRow();
       $this->id=$this->data['id'];
@@ -1368,16 +1376,24 @@ class product{
   }
 
 
-  function update($values,$args=''){
+  function update($data,$args=''){
     $res=array();
-
-    foreach($values as $data){
+    
+    foreach($data as $key=>$data){
       
-      $key=$data['key'];
       $value=$data['value'];
       $res[$key]=array('ok'=>false,'msg'=>'');
       
       switch($key){
+	
+      case('weblink'):
+	if(!$this->weblink)
+	  $this->load('weblinks');
+	
+	$this->weblink[$value]=array('title'=>$data['title']);
+	$this->link_updated=$value;
+	exit;
+	
       case('max_units_per_location'):
 	$p2l_id=$data['p2l_id'];
 	//	print $p2l_id;
@@ -1843,6 +1859,10 @@ class product{
 
     $msg='';
     switch($key){
+    case('weblink'):
+      $sql=sprintf('insert into ');
+
+
     case('max_units_per_location'):
       $old_value=$this->read($key,array('id'=>$this->location_to_update));
       $sql=sprintf("update  product2location set max_stock=%s where id=%d",prepare_mysql($this->locations['data'][$this->location_to_update]['max_units']),$this->location_to_update);
