@@ -1,12 +1,28 @@
 <?
 include_once('common.php');
 
+if(!$LU->checkRight(SUP_VIEW) or !$LU->checkRight(SUP_ALL_VIEW))
+  exit(_('Access Forbiden'));
+
+
 $q='';
 $sql="select count(*) as numberof from supplier";
 $result =& $db->query($sql);
 if(!$suppliers=$result->fetchRow())
   exit;
 
+$view_sales=$LU->checkRight(PROD_SALES_VIEW);
+$view_stock=$LU->checkRight(PROD_STK_VIEW);
+$create=$LU->checkRight(SUP_CREATE);
+$modify=$LU->checkRight(SUP_MODIFY);
+
+$smarty->assign('create',$create);
+$smarty->assign('modify',$modify);
+
+$smarty->assign('view',$_SESSION['state']['suppliers']['view']);
+$smarty->assign('show_details',$_SESSION['state']['suppliers']['details']);
+$smarty->assign('view_sales',$view_sales);
+$smarty->assign('view_stock',$view_stock);
 
 $smarty->assign('box_layout','yui-t4');
 

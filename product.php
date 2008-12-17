@@ -181,7 +181,7 @@ $smarty->assign('key_filter_number',$regex['key_filter_number']);
 $smarty->assign('key_filter_dimension',$regex['key_filter_dimension']);
 
 
-$js_files[]= 'js/search_product.js';
+$js_files[]= 'js/search.js';
 $js_files[]='js/product.js.php';
 
 $smarty->assign('tsoall',number($product->get('tsoall')));

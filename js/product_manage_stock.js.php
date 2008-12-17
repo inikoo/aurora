@@ -492,7 +492,7 @@ var unlink_save=function(){
     var request='ar_assets.php?tipo=pml_unlink';
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-		//alert(o.responseText)
+		//		alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if (r.state == 200) {
 		    location.reload(true);
@@ -521,10 +521,10 @@ var link_save=function(){
     var request='ar_assets.php?tipo=pml_link&product_id='+escape(product_id);
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-		//alert(o.responseText)
+		alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if (r.state == 200) {
-		    location.reload(true);
+		    window.location="product_manage_stock.php?id="+r.master_id;
 		}else{
 		     Dom.get('manage_stock_messages').innerHTML='<span class="error">'+r.msg+'</span>';
 		}
@@ -1047,9 +1047,10 @@ function init(){
 			    
 // 			} );
     //change_max_units.render();
-    //    alert("hola");
-	 Event.addListener('submit_search', "click",submit_search);
-	 Event.addListener('prod_search', "keydown", submit_search_on_enter);
+
+    YAHOO.util.Event.addListener('product_manage_stock_submit_search', "click",submit_search,'product_manage_stock');
+    YAHOO.util.Event.addListener('product_manage_stock_search', "keydown", submit_search_on_enter,'product_manage_stock');
+
 	 
 };
 YAHOO.util.Event.onDOMReady(init);
@@ -1101,7 +1102,7 @@ YAHOO.util.Event.onDOMReady(init);
 
 }
 
-YAHOO.util.Event.onDOMReady(init);
+ //YAHOO.util.Event.onDOMReady(init);
 	//function init(){
 	
 

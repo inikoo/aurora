@@ -45,7 +45,6 @@
       <td class="selected">{t}Normal{/t}</td>
       <td style="width:17em" class="options">
 	<table border=0 style="height:6em" class="options">
-	     <tr><td onClick="change_to_dependant()" style="height:2em;">{t}Stock Dependant{/t}</td><tr>
 	     <tr><td style="height:2em">{t}Shortcut{/t}</td><tr>
 	     <tr><td style="height:2em">{t}Mixture{/t}</td><tr>
 	</table>
@@ -75,7 +74,7 @@
       <tr>
 	<td  class="label" style="width:10em">{t}Units Definition{/t}:</td>
 	<td style="width:10em" id="v_units_tipo" ovalue="$data.units_tipo" value="$data.units_tipo">{$data.units_tipo_name}</td>
-	<td><span onclick="change_units_tipo()" id="change_units_tipo_but" style="cursor:pointer;text-decoration:underline;color:#777">{t}Change{/t}</span>
+	<td><span onclick="change_units_tipo()" id="change_units_tipo_but" style="display:none;cursor:pointer;text-decoration:underline;color:#777">{t}Change{/t}</span>
 	  <span id="change_units_tipo_diff" style="display:none"></span></td>
 	<td><span id="units_tipo_save"  style="cursor:pointer;visibility:hidden" onclick="units_tipo_save()">{t}Save{/t} <img src="art/icons/disk.png"/></span></td>
 	

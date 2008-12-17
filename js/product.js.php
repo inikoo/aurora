@@ -343,8 +343,8 @@ YAHOO.util.Event.onContentReady("web_status_menu", function () {
      var ids = ["product_week_sales","product_month_sales","product_quarter_sales","product_year_sales","product_week_outers","product_week_outers" ,"product_week_outers","product_week_outers","product_stock_history"]; 
      Event.addListener(ids,"click",change_plot);
 
-     Event.addListener('submit_search', "click",submit_search);
-     Event.addListener('prod_search', "keydown", submit_search_on_enter);
+     Event.addListener('product_submit_search', "click",submit_search,'product');
+     Event.addListener('product_search', "keydown", submit_search_on_enter,'product');
 
 
 

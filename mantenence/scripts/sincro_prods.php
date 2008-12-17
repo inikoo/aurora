@@ -45,9 +45,53 @@ while($row=$res->fetchRow()) {
        
        $has_location=true;
        $loc_code=$rowloc['code'];
-       if(!preg_match('/^(\d+[abcbdefgh]\d+|\d+\-\d+\-\d+|UPSTAIRS|Production|canteen)$/i',$loc_code))
+       if(!preg_match('/^(\d+[abcbdefgh]\d+|\d+\-\d+\-\d+|UPSTAIRS|Production|canteen)$/i',$loc_code)){
 	 print "$code $old_stock Wrong location $loc_code\n";
-       else{
+	 // add stock to unknown
+	 if($old_stock>0){
+	     $data=array(
+		       'location_name'=>'_UNK',
+		       'is_primary'=>true,
+		       'user_id'=>0,
+		       'can_pick'=>true,
+		       'tipo'=>'associate_location'
+	       );
+	   $_res=$product->update_location($data);
+	   //   print_r($_res);
+	      $data=array(
+		 'p2l_id'=>$product->get('pl2_id',array('id'=>1)),
+		 'qty'=>$old_stock,
+		 'msg'=>'Value taken from old database',
+		 'user_id'=>0,
+		 'tipo'=>'change_qty'
+		 );
+
+	   $product->update_location($data);
+	 }elseif($old_stock<0 and false){
+	   
+	   
+	   $data=array(
+		       'location_name'=>'_WHL',
+		       'is_primary'=>true,
+		       'user_id'=>0,
+		       'can_pick'=>true,
+		       'tipo'=>'associate_location'
+	       );
+	   $product->update_location($data);
+	   
+	      $data=array(
+		 'p2l_id'=>$product->get('pl2_id',array('id'=>2)),
+		 'qty'=>$old_stock,
+		 'msg'=>'Value taken from old database',
+		 'user_id'=>0,
+		 'tipo'=>'change_qty'
+		 );
+
+	   $product->update_location($data);
+	 }
+
+
+       }else{
 	 // Check if the location already exist
 	 $location=new Location('name',$loc_code);
 	 if($location->id){
@@ -74,7 +118,6 @@ while($row=$res->fetchRow()) {
 		       'can_pick'=>true,
 		       'tipo'=>'associate_location'
 	       );
-	   // print_r($data);
 	   $product->update_location($data);
 	   
 	   $p2l_id=$product->get('pl2_id',array('id'=>$location->id));
@@ -108,15 +151,70 @@ while($row=$res->fetchRow()) {
 	 $primary=false;
        }
      }
+       
+
+     
      
      if(!$has_location){
-       //print "product has no old location\n";
+        if($old_stock>0){
+	  
+	     $data=array(
+		       'location_name'=>'_UNK',
+		       'is_primary'=>true,
+		       'user_id'=>0,
+		       'can_pick'=>true,
+		       'tipo'=>'associate_location'
+	       );
+	   $product->update_location($data);
+	   
+	      $data=array(
+			  'p2l_id'=>$product->get('pl2_id',array('id'=>1)),
+		 'qty'=>$old_stock,
+		 'msg'=>'Value taken from old database',
+		 'user_id'=>0,
+		 'tipo'=>'change_qty'
+		 );
+	      // print_r($data);
+	      $product->update_location($data);
+
+	      //xit("caca\n");
+	 }elseif($old_stock<0 and false){
+	   
+	   
+	   $data=array(
+		       'location_name'=>'_WHL',
+		       'is_primary'=>true,
+		       'user_id'=>0,
+		       'can_pick'=>true,
+		       'tipo'=>'associate_location'
+	       );
+	   $_res=$product->update_location($data);
+	   // print_r($_res);
+	      $data=array(
+		 'p2l_id'=>$product->get('pl2_id',array('id'=>2)),
+		 'qty'=>$old_stock,
+		 'msg'=>'Value taken from old database',
+		 'user_id'=>0,
+		 'tipo'=>'change_qty'
+		 );
+
+	   $_res=$product->update_location($data);
+	   //  print_r($data);
+	   // print_r($_res);
+	   //exit;
+	}
      }
   }
+
+    
+
+
+ 
+
   //print " $id\r";
  }
 
-exit;
+
 
 
 $sql="select * from aw_old.product ";

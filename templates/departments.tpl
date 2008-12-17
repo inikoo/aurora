@@ -14,7 +14,7 @@
   <div id="top" class="top_bar">
     <div id="short_menu" class="nodetails" style="{if $show_details}display:none;{/if}width:100%;margin-bottom:0px">
       <table style="float:left;margin:0 0 0 20px ;padding:0"  class="options" {if $products==0 }style="display:none"{/if}>
-	<tr><td  {if $view=='general'}class="selected"{/if} id="general" >{t}General{/t}</td>
+	<tr><td  {if $view=='contacts'}class="selected"{/if} id="contacts" >{t}Contacts{/t}</td>
 	  {if $view_stock}<td {if $view=='stock'}class="selected"{/if}  id="stock"  >{t}Stock{/t}</td>{/if}
 	  {if $view_sales}<td  {if $view=='sales'}class="selected"{/if}  id="sales"  >{t}Sales{/t}</td>{/if}
 	</tr>

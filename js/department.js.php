@@ -169,8 +169,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
      YAHOO.util.Event.addListener('show_details', "click",show_details,'department');
 
- YAHOO.util.Event.addListener('submit_search', "click",submit_search);
- YAHOO.util.Event.addListener('prod_search', "keydown", submit_search_on_enter);
+ YAHOO.util.Event.addListener('product_submit_search', "click",submit_search,"product");
+ YAHOO.util.Event.addListener('product_search', "keydown", submit_search_on_enter,"product");
 
 
 

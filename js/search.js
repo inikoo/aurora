@@ -16,12 +16,12 @@ var submit_search_on_enter=function(e,tipo){
 
      var submit_search=function(e,tipo){
 
-	 //alert(tipo);
+
      var q =Dom.get(tipo+'_search').value;
      if(q=='')
 	 return;
      var request='ar_search.php?tipo='+tipo+'&q='+escape(q);
-     // alert(request)
+
      YAHOO.util.Connect.asyncRequest('POST',request ,{
 	     success:function(o) {
 

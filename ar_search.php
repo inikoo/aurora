@@ -17,15 +17,25 @@ if(!isset($_REQUEST['tipo']))
 
 $tipo=$_REQUEST['tipo'];
 switch($tipo){
-case('product'):
-   $q=$_REQUEST['q'];
+
+ case('product'):
+ case('product_manage_stock'):
+ case('edit_product'):
+  if($tipo=='product_manage_stock')
+    $target='product_manage_stock.php';
+  else
+   $target='product.php';
+
+  $q=$_REQUEST['q'];
    $sql=sprintf("select id from product where code='%s' ",addslashes($q));
    $result =& $db->query($sql);
    if($found=$result->fetchRow()){
-     $url='product.php?id='. $found['id'];
+     $url=$target.'?id='. $found['id'];
      echo json_encode(array('state'=>200,'url'=>$url));
      break;
    }
+
+   if($tipo=='product'){
    $sql=sprintf("select id from product_group where name='%s' ",addslashes($q));
    $result =& $db->query($sql);
    if($found=$result->fetchRow()){
@@ -33,7 +43,7 @@ case('product'):
      echo json_encode(array('state'=>200,'url'=>$url));
      break;
    }
-   
+   }
    // try to get similar results 
    //   if($myconf['product_code_separator']!=''){
    if(  ($myconf['product_code_separator']!='' and   preg_match('/'.$myconf['product_code_separator'].'/',$q)) or  $myconf['product_code_separator']==''  ){
@@ -41,13 +51,13 @@ case('product'):
      $result =& $db->query($sql);
      if($found=$result->fetchRow()){
        if($found['dist1']<3){
-	 echo json_encode(array('state'=>400,'msg1'=>_('Did you mean'),'msg2'=>'<a href="product.php?id='.$found['id'].'">'.$found['code'].'</a>'));
+	 echo json_encode(array('state'=>400,'msg1'=>_('Did you mean'),'msg2'=>'<a href="'.$target.'?id='.$found['id'].'">'.$found['code'].'</a>'));
 	 break;
        }
      }
     
      
-   }else{
+   }elseif($tipo=='product'){
      // look on the family list
      $sql=sprintf("select levenshtein(UPPER(%s),UPPER(name)) as dist1,    levenshtein(UPPER(SOUNDEX(%s)),UPPER(SOUNDEX(name))) as dist2, name ,id from product_group  order by dist1,dist2 limit 1;",prepare_mysql($q),prepare_mysql($q));
      $result =& $db->query($sql);

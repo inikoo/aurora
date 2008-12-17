@@ -909,7 +909,8 @@ if(isset( $_REQUEST['where']))
 
 
   
-   $sql="select id,code,name,contact_id,products,active,outofstock,lowstock from supplier $where $wheref order by $order $order_direction limit $start_from,$number_results";
+   $sql="select id,code,name,contact_id,(p_normal+p_nosale+p_discontinued+p_tobediscontinued) as products,(p_normal+p_tobediscontinued)as active,s_outofstock,s_low from supplier $where $wheref order by $order $order_direction limit $start_from,$number_results";
+   // print $sql;
    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
    $data=array();
    while($row=$res->fetchRow()) {
@@ -921,8 +922,8 @@ if(isset( $_REQUEST['where']))
 		   'name'=>$row['name'],
 		   'products'=>number($row['products']),
 		   'active'=>number($row['active']),
-		   'outofstock'=>number($row['outofstock']),
-		   'lowstock'=>number($row['lowstock']),
+		   's_outofstock'=>number($row['s_outofstock']),
+		   's_low'=>number($row['s_low']),
 		   'delete'=>'<img src="art/icons/status_busy.png"/>'
 
 		   );

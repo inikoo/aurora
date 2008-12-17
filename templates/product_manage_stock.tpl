@@ -41,9 +41,8 @@
   <div  id="manage_stock" class="manage_stock" style=";width:680px;float:left">
     
     <div class="search_box" style="clear:none;float:right;width:120px" >
-      <span class="search_title">{t}Product Code{/t}:</span> <input size="8" class="text search" id="prod_search" value="" name="search"/><img align="absbottom" id="submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>
-      <span  class="search_msg"   id="search_msg"    ></span> <span  class="search_sugestion"   id="search_sugestion"    ></span>
-    
+         <span class="search_title">{t}Product Code{/t}:</span> <input size="8"	class="text search" id="product_manage_stock_search" value="" name="search"/><img align="absbottom" id="product_manage_stock_submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>
+     <span  class="search_msg"   id="product_manage_stock_search_msg"    ></span> <span  class="search_sugestion"   id="product_manage_stock_search_sugestion"    ></span>
       
   <br/>
       <span>{t}Return to product pages{/t}:</span><br/>
@@ -64,7 +63,7 @@
 	<td id="new_location"  {if $locations.has_unknown}style="display:none"{/if}  >Assign Location</td>
       </tr>
        <tr>
-	<td id="link_product" onClick="{if $locations.has_link}unlink(this){else}link(this){/if}" >{if $locations.has_link}Unlink Product{else}Link Product{/if}</td>
+       	<td id="link_product"  {if $locations.has_link}style="display:none"{/if}   onClick="{if !$locations.has_link}link(this){/if}" >{if !$locations.has_link}Link Product{/if}</td>
 	<td style="visibility:hidden"></td>
 	<td style="visibility:hidden"></td>
        </tr>

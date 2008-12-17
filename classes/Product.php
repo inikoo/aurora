@@ -615,6 +615,15 @@ class product{
   function get($item='',$data=false){
 
     switch($item){
+    case('p2l_id'):
+      $key=key($data);
+       if(!$this->locations)
+	$this->load('locations');
+       foreach($this->locations['data'] as $_id=>$_loc){
+	 if($_loc[$key]==$data[$key])
+	   return $_id;
+       }
+       return false;
     case('weblinks'):
       if(!$this->weblink)
 	$this->load('weblinks');
@@ -775,62 +784,174 @@ class product{
     switch($data['tipo']){
     case('link'):
       $user_id=$data['user_id'];
-      $product_id=$data['product_id'];
+      $product_to_link_id=$data['product_id'];
       $date='NOW()';
-      
-      if($product_id==$this->id)
+      $this->load('locations');
+      if($product_to_link_id==$this->id)
 	return array(false,_('Nothing to change '));
-      $link_product=new Product($product_id);
-      if($link_product->id)
-	return array(false,_('Product to be linked do not exist'));
+      $link_product=new Product($product_to_link_id);
+      $link_product->load('locations');
+      if(!$link_product->id)
+	return array('ok'=>false,'msg'=>_('Product to be linked do not exist'));
 
       if($link_product->get('units_tipo_id')!=$this->get('units_tipo_id'))
-	return array(false,_('Product to be links has dirent units type'));
+	return array('ok'=>false,'msg'=>_('Product to be links has dirent units type'));
 
-      $parent=new Product($this->get('location_parent_id'));
+      
 
-      if($link_product->data['units']>=$parent->data['units']){
+
+
+      $_parent=new Product($this->get('location_parent_id'));
+      $_parent->load('locations');
+      
+
+
+
+      if($link_product->data['units']>=$_parent->data['units']){
+	$this_parent=true;
+	$parent=$_parent;
+	$child=$link_product;
+
+      }else{
+	$this_parent=false;
+	$child=$_parent;
+	$parent=$link_product;
+
+      }
+      //	$old_value=$child->data['location_parent_id'];
+
+
+      //print "chilsd id:".$child->id."  ".$child->data['code']." locs:".count($child->locations['data'])."\n";
+      //print " parent id: ".$parent->id."   ".$parent->data['code']." locs:".count($parent->locations['data'])."\n";
+
+      foreach($child->locations['data'] as $_p2l_id=>$_location_data){
+	$_stock_units=$_location_data['stock_units'];
+
+	print "locid ".$_location_data['location_id'];
+	print_r($parent->locations['data']);
+       
+	if($pl2_id=$parent->get('p2l_id',array('location_id'=>$_location_data['location_id']))){
+	  
+	}else{
+
+	  $data=array(
+		      //    'product_id'=>$product_id,
+	       'location_name'=>$_location_data['name'],
+	       'is_primary'=>0,
+	       'user_id'=>0,
+	       'can_pick'=>0,
+	       'tipo'=>'associate_location'
+		      );
+	  //	  print_r($data);
+
+	  $res=$parent->update_location($data);
+	  //print_r($res);
+	  //exit;
+	  $pl2_id=$parent->new_location_p2l_id;
+	}
+
+
+	if($_stock_units>0){
+	    $data=array(
+			'p2l_id'=>$_p2l_id,
+			'qty'=>0,
+			'msg'=>_('Stock transfer to master product  arfer linking'),
+			'user_id'=>0,
+			'tipo'=>'change_qty'
+			);
+	    $child->update_location($data);
+	    
+	    $data=array(
+			'p2l_id'=>$pl2_id,
+			'qty'=>$_location_data['stock_units']+$parent->locations['data'][$pl2_id]['stock_units'],
+			'msg'=>_('Adding stock from dependant product arfer linking'),
+			'user_id'=>0,
+			'tipo'=>'change_qty'
+			);
+	    $parent->update_location($data);
+	  }
+	  
+	  $data=array(
+
+		      'p2l_id'=>$_p2l_id,
+		      'user_id'=>0,
+		      'tipo'=>'desassociate_location',
+		      'msg'=>_('Linking locations to a master product')
+		      );
+	  $child->update_location($data);
+      }
+      
+
+      
+      if(!$this_parent){
+	// this has a new parent
 	$old_value=$this->data['location_parent_id'];
-	$sql=sprintf("update product set location_parent_id=%d where id=%d ",$link_product->id,$this->id);
+	$sql=sprintf("update product set location_parent_id=%d where id=%d ",$link_product->data['location_parent_id'],$this->id);
+	$this->save('has_parent');
+	$link_product->save('has_child');
+	//	print $sql;
 	mysql_query($sql);
 	$this->set_stock();
 	
-	$note=$this->data['code']." "._('is now linked to')." ".$link_product->data['code'];
+	$note=$this->data['code']." "._('is linked to')." ".$link_product->data['code'];
 	$sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,old_value,new_value,note) values (%s,'PROD',%d,'CLO',NULL,'NEW',%d,'%d',%d,%s)"
 		     ,$date,$this->id,$user_id,$old_value ,$link_product->id,prepare_mysql($note)); 
 	mysql_query($sql);
-
+	$sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,old_value,new_value,note) values (%s,'PROD',%d,'CLO',NULL,'NEW',%d,'%d',%d,%s)"
+		     ,$date,$link_product->id,$user_id,$old_value ,$link_product->id,prepare_mysql($note)); 
+	mysql_query($sql);
+	return array(
+		     'ok'=>true,
+		     'master_id'=>$link_product->id
+		     );
+    
       }else{
-	//this product is the new macho man
-	$sql=sprintf("update product2location set product_id=%d where product_id=%d",$this->id,$link_product->id);
+	// THIS IS THE PARENT
+
+	$this->save('has_child');
+	$link_product->save('has_parent');
+      
+	$note=$link_product->data['code']." "._('is linked to')." ".$this->data['code'];
+	$sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,old_value,new_value,note) values (%s,'PROD',%d,'CLO',NULL,'NEW',%d,'%d',%d,%s)"
+		     ,$date,$link_product->id,$user_id,$link_product->data['location_parent_id'] ,$this->id,prepare_mysql($note)); 
 	mysql_query($sql);
-	$sql=sprintf("update product set location_parent_id=%d where location_parent_id=%d  or id=%d or id=%d ",$this->id,$link_product->id,$this->id,$link_product->id);
+		$sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,old_value,new_value,note) values (%s,'PROD',%d,'CLO',NULL,'NEW',%d,'%d',%d,%s)"
+		     ,$date,$this->id,$user_id,$link_product->data['location_parent_id'] ,$this->id,prepare_mysql($note)); 
 	mysql_query($sql);
-	unset($link_product);
-	$this->set_stock();
-	$this->load('same_products');
-	if($num_linked=count($this->same_products)>0){
-	  $linked_codes='';
-	  $linked_ids='';
-	  foreach($this->same_products as $key=>$value){
-	    $linked_ids.=','.$key;
-	    $linked_codes.=','.$value['code'];
-	  }
-	  $linked_ids=preg_replace('/^\,/','',$linked_ids);
-	  $linked_codes=preg_replace('/^\,/','',$linked_codes);
-	  
-	  $note=$linked_codes." ".ngettext('is now linked to this product','are linked to this product',$num_linked);
-	  $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,old_value,new_value,note) values (%s,'PROD',%d,'CLO',NULL,'NEW',%d,'%d',NULL,%s)"
-		       ,$date,$this->id,$user_id,$linked_ids,prepare_mysql($note)); 
+
+
+	$link_product->load('same_products');
+	foreach($link_product->same_products as $key=>$value){
+	  $_tmp=new Product($key);
+	  $old_value=$_tmp->data['location_parent_id'];
+	  $note=$link_product->same_products[$key]['code']." "._('is linked to')." ".$this->data['code'];
+	  $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,old_value,new_value,note) values (%s,'PROD',%d,'CLO',NULL,'NEW',%d,'%d',%d,%s)"
+		       ,$date,$key,$user_id,$old_value ,$this->id,prepare_mysql($note)); 
 	  mysql_query($sql);
+	  $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,old_value,new_value,note) values (%s,'PROD',%d,'CLO',NULL,'NEW',%d,'%d',%d,%s)"
+		       ,$date,$this->id,$user_id,$old_value ,$this->id,prepare_mysql($note)); 
+	  mysql_query($sql); 
+	    
 	}
 
-	return array(true);
+	$sql=sprintf("update product set location_parent_id=%d where location_parent_id=%d or    id=%d   ",$this->data['location_parent_id'],$link_product->id,$link_product->id);
+	//	print $sql;
+	mysql_query($sql);
+	$this->set_stock();
+	return array(
+		     'ok'=>true,
+		     'master_id'=>$this->id
+		     );
+    }
 
+	
+	
+    
+	
 
-      }
+    
       
-      
+    
       
       break;
 
@@ -960,8 +1081,10 @@ class product{
       $qty=$data['qty'];
       $msg=$data['msg'];
       $date='NOW()';
-      if(!is_numeric($qty) or $qty<0)
+      if(!is_numeric($qty) )
 	return array(false,_('Wrong stock value'));
+
+
 
 
       $sql=sprintf("select stock,picking_rank,product_id,location_id,name from product2location  left join location on (location.id=location_id) where product2location.id=%d",$id); 
@@ -976,16 +1099,19 @@ class product{
       }else
 	return array(false,_('This location is no associated with the product'));
 
+      if($qty<0 and $location_id!=2)
+	return array(false,_('Stock can not be negative'));
+
 
       if($change==0){
-	$note=_('Audit').', '.number($qty).' '.ngettext('outer','outers',$change).' '._('in').' '.$location_name.$msg;
+	$note=_('Audit').', '.number($qty).' '.ngettext('outer','outers',$change).' '._('in').' '.$location_name.' '.$msg;
 	$sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,note,old_value,new_value) values (%s,'PROD',%d,'LOC',%d,'AUD',%d,%s,'%s','%s')",$date,$this->id,$location_id,$user_id,prepare_mysql($note),$old_qty, $qty); 
 	mysql_query($sql);
       }else{
 	$sql=sprintf("update product2location set stock=%.4f where id=%d",$qty,$id); 
 	mysql_query($sql);
 	$this->set_stock();
-	$note=_('Audit').', '.number($qty).' '.ngettext('outer','outers',$change).' '._('in').' '.$location_name.' ('.($change>0?'+':'').number($change).')'.$msg;
+	$note=_('Audit').', '.number($qty).' '.ngettext('outer','outers',$change).' '._('in').' '.$location_name.' ('.($change>0?'+':'').number($change).')'.' '.$msg;
 	$sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,note,old_value,new_value) values (%s,'PROD',%d,'LOC',%d,'AUD',%d,%s,'%s','%s')",$date,$this->id,$location_id,$user_id,prepare_mysql($note),$old_qty, $qty); 
 	mysql_query($sql);
       }
@@ -1200,6 +1326,7 @@ class product{
 
 	
       $this->load(array('locations'));
+      $this->new_location_p2l_id=$id;
       $locations_data=$this->get('locations');
       return array(true,
 		   $locations_data,
@@ -1925,6 +2052,23 @@ class product{
 
     $msg='';
     switch($key){
+    case('has_child'):
+      $sql=sprintf("update product set has_child=1 where id=%d",$this->id);
+      $this->db->exec($sql);
+      break;
+    case('has_child'):
+      $sql=sprintf("update product set has_child=0 where id=%d",$this->id);
+      $this->db->exec($sql);
+      break;
+
+    case('has_parent'):
+      $sql=sprintf("update product set has_parent=1 where id=%d",$this->id);
+      $this->db->exec($sql);
+      break;
+    case('has_no_parent'):
+      $sql=sprintf("update product set has_parent=0 where id=%d",$this->id);
+      $this->db->exec($sql);
+      break;
     case('weblink'):
       
       if(!$old_data=$this->read('weblink',$this->weblink_updated)){

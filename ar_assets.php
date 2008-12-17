@@ -350,14 +350,15 @@ switch($tipo){
 		 );
      $product=new product($_SESSION['state']['product']['id']);
      $res=$product->update_location($data);
-     if($res[0])
+     if($res['ok'])
        $response= array(
 			'state'=>200,
+			'master_id'=>$res['master_id'],
 			);
      else
        $response= array(
 			'state'=>400,
-			'msg'=>$res[1]
+			'msg'=>$res['msg']
 		      );
      echo json_encode($response);  
      break;  
