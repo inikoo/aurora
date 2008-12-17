@@ -8,6 +8,7 @@ class Contact{
   var $db;
   var $data=array();
   var $items=array();
+  var $emails=false;
 
   var $id;
   var $tipo;
@@ -68,9 +69,14 @@ class Contact{
 
   }
 
- function get($item=''){
+  function get($item='',$data=false){
 
  switch($item){
+ case('has_email_id'):
+   if(!$this->emails)
+     $this->load('emails');
+   return array_key_exists($data,$this->emails);
+   break;
  case('main_email'):
 
    return $this->data['main']['email'];
@@ -152,9 +158,13 @@ class Contact{
     case('emails'):
       $sql=sprintf("select id from email where contact_id=%d ",$this->id);
       $result =& $this->db->query($sql);
+      $this->emails=array();
       while($row=$result->fetchRow()){
-	if($email=new telecom($row['id']))
-	  $this->email[]=$email;
+	$email=new Email($row['id']);
+	$this->emails[$email->id]=array(
+					'email'=>$email->get('email'),
+				       'email_link'=>$email->get('link')
+				       );
       }
       break;
     case('contacts'):
