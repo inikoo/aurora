@@ -1933,7 +1933,7 @@ class product{
 		     ,prepare_mysql($this->weblink_updated)
 		     ,prepare_mysql($this->weblink[$this->weblink_updated]['title'])
 		     );
-	print "$sql\n";
+	//print "$sql\n";
 	$this->db->exec($sql);
       }else{
 	$sql=sprintf("update product_webpages set title=%s where id=%d "

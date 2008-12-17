@@ -33,7 +33,7 @@ $js_files=array(
 		$yui_path.'menu/menu-min.js',
 		'js/common.js.php',
 		'js/table_common.js.php',
-		'js/search_product.js',
+		'js/search.js',
 		'js/family.js.php'
 		);
 $smarty->assign('css_files',$css_files);
@@ -88,7 +88,11 @@ $product_home="Products Home";
 $smarty->assign('home',$product_home);
 $smarty->assign('department',$family->get('department'));
 $smarty->assign('department_id',$family->data['department_id']);
-$smarty->assign('products',$family->data['n_products']);
+$smarty->assign('products',$family->get('product_numbers'));
+$smarty->assign('data',$family->data);
+
+
+
 
 $smarty->assign('family',$family->data['name']);
 $smarty->assign('family_id',$family->id);

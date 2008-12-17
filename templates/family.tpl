@@ -10,8 +10,8 @@
 
   <div class="search_box" >
 
-   <span class="search_title">{t}Product Code{/t}:</span> <input size="8" class="text search" id="prod_search" value="" name="search"/><img align="absbottom" id="submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>
-     <span  class="search_msg"   id="search_msg"    ></span> <span  class="search_sugestion"   id="search_sugestion"    ></span>
+   <span class="search_title">{t}Product Code{/t}:</span> <input size="8" class="text search" id="product_search" value="" name="search"/><img align="absbottom" id="product_submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>
+     <span  class="search_msg"   id="product_search_msg"    ></span> <span  class="product_search_sugestion"   id="search_sugestion"    ></span>
      <br/>
     <span  class="state_details" state="{$show_details}"  id="show_details"  atitle="{if $show_details}{t}show details{/t}{else}{t}hide details{/t}{/if}"  >{if $show_details}{t}hide details{/t}{else}{t}show details{/t}{/if}</span>
   </div>
@@ -20,7 +20,7 @@
   <div id="top" class="top_bar">
     <h1>{$family} {$family_description}</h1>
     <div id="short_menu" class="nodetails" style="{if $show_details}display:none;{/if}width:100%;margin-bottom:0px">
-      <table style="float:left;margin:0 0 0 20px ;padding:0"  class="options" {if $products==0 }style="display:none"{/if}>
+      <table style="float:left;margin:0 0 0 20px ;padding:0"  class="options" {if $data.products==0 }style="display:none"{/if}>
 	<tr><td  {if $view=='general'}class="selected"{/if} id="general" >{t}General{/t}</td>
 	  {if $view_stock}<td {if $view=='stock'}class="selected"{/if}  id="stock"  >{t}Stock{/t}</td>{/if}
 	  {if $view_sales}<td  {if $view=='sales'}class="selected"{/if}  id="sales"  >{t}Sales{/t}</td>{/if}
@@ -30,16 +30,17 @@
     </div>
     
     <div id="details" class="details" style="{if !$show_details}display:none;{/if}">
-      <div id="details_general"  {if $view!='general'}style="display:none"{/if}>
-	<table>
+      <div id="details_general" style="width:300px"  {if $view!='general'}style="display:none"{/if}>
+	Products
+	<table class="show_info_product">
 	  <tr>
-	    <td>{t}Number of Products{/t}:</td><td class="aright">{$products}</td>
-	</tr>
-	  <tr>
-	    <td>{t}Number of Families{/t}:</td><td class="aright">{$families}</td>
+	    <td>{t}On sale{/t}:</td><td class="aright">{$products.onsale}</td>
 	  </tr>
 	  <tr>
-	    <td>{t}Number of Departments{/t}:</td><td class="aright">{$departments}</td>
+	    <td>{t}To be Discontinued{/t}:</td><td class="aright">{$products.tobe_discontinued}</td>
+	  </tr>
+	  <tr>
+	    <td>{t}Discontonued{/t}:</td><td class="aright">{$products_discontinued}</td>
 	  </tr>
 	</table>
       </div>

@@ -150,7 +150,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
 
 		    <?}?>
-			<?if($LU->checkRight(PROD_STK_VIEW)){?>
+			<?if($LU->checkRight(PROD_STK_VIEW) and false ){?>
 		    var tableid=2;
 		    var tableDivEL="table"+tableid;
 		    var ColumnDefs = [
@@ -194,14 +194,16 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									 ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info2'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
 								     })
 								 
-								 ,sortedBy : {
-								     key: "<?=$_SESSION['state']['product']['stock_history']['order']?>",
-									 dir: "<?=$_SESSION['state']['product']['stock_history']['order_dir']?>"
-								 }
+								 //	 ,sortedBy : {
+								 //   key: "<?=$_SESSION['state']['product']['stock_history']['order']?>",
+								 //   dir: "<?=$_SESSION['state']['product']['stock_history']['order_dir']?>"
+								 // }
 								 ,dynamicData : true
 								 
 							     }
 							     );
+
+
 		    this.table2.handleDataReturnPayload =myhandleDataReturnPayload;
 		    this.table2.doBeforeSortColumn = mydoBeforeSortColumn;
 		    this.table2.doBeforePaginatorChange = mydoBeforePaginatorChange;
@@ -219,7 +221,7 @@ var manual_check=function(){
     var request='ar_assets.php?tipo=sincro_pages';
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-			alert(o.responseText)
+		//alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);	
 		if(r.ok){
 		    Dom.get('no_sincro_pages').style.visibility='hidden';
@@ -258,7 +260,7 @@ var  change_web_status =function(tipo){
 		var request='ar_xml.php?tipo=sincronize';
 		YAHOO.util.Connect.asyncRequest('POST',request ,{
 			success:function(o) {
-			    //				 alert(o.responseText)
+			    				 alert(o.responseText)
 			    var r =  YAHOO.lang.JSON.parse(o.responseText);
 			    if(r.ok){
 				Dom.get('no_sincro_db').style.visibility='hidden';

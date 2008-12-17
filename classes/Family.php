@@ -88,6 +88,9 @@ var $db;
 
  function load($tipo,$args=false){
    switch($tipo){
+   case('products_data'):
+     
+     break;
    case('products'):
      $sql=sprintf("select id,code from product  where group_id=%d",$this->id);
      //  print $sql;
