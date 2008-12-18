@@ -51,6 +51,8 @@ $smarty->assign('customer',$customer);
 
 $customers_order=$_SESSION['state']['customers']['table']['order'];
 
+if($customers_order=='orders' or $customers_order=='super_total'  or $customers_order=='name'){
+
 if($customers_order=='orders'){
   $_customers_order='(num_invoices+num_invoices_nd)';
  }else if($customers_order=='super_total'){
@@ -76,6 +78,9 @@ if(!$next=$result->fetchRow())
   $next=array('id'=>0,'code'=>'');
 $smarty->assign('prev',$prev);
 $smarty->assign('next',$next);
+
+ }
+
 // $smarty->assign('data_contact',$customer->contact->data);
 // $smarty->assign('data_telecoms',$customer->contact->data);
 // $smarty->assign('data_emails',$customer->contact->data);

@@ -34,7 +34,7 @@ switch($tipo){
      echo json_encode(array('state'=>200,'url'=>$url));
      break;
    }
-
+   
    if($tipo=='product'){
    $sql=sprintf("select id from product_group where name='%s' ",addslashes($q));
    $result =& $db->query($sql);
@@ -89,8 +89,62 @@ case('location'):
        break;
      }
    }
-   echo json_encode(array('state'=>500,'msg'=>_('Product not found')));
+   echo json_encode(array('state'=>500,'msg'=>_('Location not found')));
    break;
+ case('customer_name'):
+   $target='customer.php';
+   $q=$_REQUEST['q'];
+   $sql=sprintf("select id,name from customer where name=%s ",prepare_mysql($q));
+   $result =& $db->query($sql);
+   
+ $number_results=$result->numRows();
+ if($number_results==1){
+     if($found=$result->fetchRow()){
+       $url=$target.'?id='. $found['id'];
+       echo json_encode(array('state'=>200,'url'=>$url));
+       break;
+     }
+   }elseif($number_results>1){
+     $url='';
+     while($found=$result->fetchRow()){
+       $url.=sprintf('<href="%s?id=%d">%s (%d)</a><br>',$target,$found['name'],$found['id'],$found['id']);
+       
+     }
+     
+     echo json_encode(array('state'=>200,'url'=>$url));
+     break;
+     echo json_encode(array('state'=>400,'msg1'=>_('There are')." $number_results "._('customers with this name'),'msg2'=>$url));
+     break;
+
+   }
+
+
+
+
+
+   // try to find aprox names
+   
+   $sql=sprintf("select levenshtein(UPPER(%s),UPPER(name))/LENGTH(name) as dist1,    levenshtein(UPPER(SOUNDEX(%s)),UPPER(SOUNDEX(name))) as dist2,name,id from customer  order by dist1,dist2 limit 5;",prepare_mysql($q),prepare_mysql($q));
+   $result =& $db->query($sql);
+   // print $sql;
+   $msg2='';
+   while($found=$result->fetchRow()){
+     if($found['dist1']<.5){
+       $msg2.=sprintf(', <a href="%s?id=%d">%s</a>',$target,$found['id'],$found['name']);
+     }
+   }
+   if($msg2!=''){
+     $msg2=preg_replace('/^\,\s*/','',$msg2);
+     echo json_encode(array('state'=>400,'msg1'=>_('Did you mean').":",'msg2'=>$msg2));
+     break;
+   }
+
+   echo json_encode(array('state'=>500,'msg'=>_('Customer not found')));
+   break;
+
+
+
+
  default:
    $response=array('state'=>404,'resp'=>_('Operation not found'));
    echo json_encode($response);

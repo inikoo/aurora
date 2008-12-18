@@ -20,9 +20,11 @@
   <div style="padding-left:20px">
     <h1>{$data.name}</h1>
     <table>
-      <tr><td>{t}Used for{/t}:</td><td>{$data.used_for}</td></tr>
-      <tr><td>{t}Max Capacity{/t}:</td><td>{$data.dim.max_vol}</td></tr>
-      <tr><td>{t}Max Weight{/t}:</td><td>{$data.dim.max_weight}{t}Kg{/t}</td></tr>
+      <tr><td>{t}Used for{/t}:</td><td>{$data.tipo|capitalize}</td></tr>
+      <tr><td>{t}Max Capacity{/t}:</td><td>{$max_vol}</td></tr>
+      <tr><td>{t}Max Weight{/t}:</td><td>{$max_weight}</td></tr>
+      <tr><td>{t}Max Slots{/t}:</td><td>{$max_slots}</td></tr>
+
     </table>
   </div>
 

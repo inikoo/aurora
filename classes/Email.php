@@ -8,7 +8,9 @@ class Email{
   
   function __construct($arg1=false,$arg2=false) {
      $this->db =MDB2::singleton();
-
+     
+     if(!$arg1 and !$arg2)
+       return;
      if(is_numeric($arg1)){
        $this->get_data('id',$arg1);
        return;
@@ -23,11 +25,10 @@ class Email{
 
 
   function get_data($tipo,$tag){
-    
     if($tipo=='id')
-      $sql=sprintf("select * from email where  id=%d",$id);
+      $sql=sprintf("select * from email where  id=%d",$tag);
     elseif($tipo=='email')
-      $sql=sprintf("select * from email where  email=%d",$id);
+      $sql=sprintf("select * from email where  email=%d",$tag);
     
    $result =& $this->db->query($sql);
     if($this->data=$result->fetchRow()){

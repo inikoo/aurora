@@ -969,7 +969,7 @@ class product{
 	  $sql=sprintf("update product set location_parent_id=%d where id=%d",$key,$key);
 	  mysql_query($sql);
 	  $note=_('Product unlinked from')." ".$this->data['code'];
-	  $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,tipo,staff_id,old_value,new_value,note) values (%s,'PROD',%d,'PLO',NULL,'ULI',%s,'%d','%d')",$date,$key,$user_id,$this->id,$key,prepare_mysql($note)); 
+	  $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,tipo,staff_id,old_value,new_value,note) values (%s,'PROD',%d,'PLO',NULL,'CHG',%s,'%d','%d')",$date,$key,$user_id,$this->id,$key,prepare_mysql($note)); 
 	  mysql_query($sql);
 	}
 	return array(true);	
@@ -980,7 +980,7 @@ class product{
 	
 	mysql_query($sql);
 	$note=_('Product unlinked from')." ".$this->same_products[$old_value]['code'];
-	$sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,tipo,staff_id,old_value,new_value,note) values (%s,'PROD',%d,'PLO',NULL,'ULI',%s,'%d','%d')",$date,$this->id,$user_id,$old_value,$this->id,prepare_mysql($note)); 
+	$sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,tipo,staff_id,old_value,new_value,note) values (%s,'PROD',%d,'PLO',NULL,'CHG',%s,'%d','%d')",$date,$this->id,$user_id,$old_value,$this->id,prepare_mysql($note)); 
 	mysql_query($sql);
 	return array(true);	
       }
@@ -1060,7 +1060,8 @@ class product{
       }
       
       if($history){
-	$sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,tipo,staff_id,old_value,new_value) values (%s,'PROD',%d,'LOC',%d,'CPI',%s,'%d','%d')",$date,$this->id,$location_id,$user_id,(is_numeric($rank_old)?$rank_old:0),$rank); 
+	$note=_('Picking rank for').' '.$this->get('code').' '._('changed to')." ".$rank;
+	$sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,tipo,staff_id,old_value,new_value,note) values (%s,'PROD',%d,'LOC',%d,'CHGRANK',%s,'%d','%d',%s)",$date,$this->id,$location_id,$user_id,(is_numeric($rank_old)?$rank_old:0),$rank,prepare_mysql($note)); 
 	mysql_query($sql);
       }
       
@@ -1161,7 +1162,7 @@ class product{
       else
 	$note=$new_location_name.' '._('was wrongly identified as').' '.$old_location_name.' ('._('Corrected').')'.($msg!=''?'; '.stripslashes($msg):'');
       
-      $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,old_value,new_value,note) values (%s,'PROD',%d,'L2P',%d,'ERL',%d,'%d','%d',%s)"
+      $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,old_value,new_value,note) values (%s,'PROD',%d,'L2P',%d,'CHG',%d,'%d','%d',%s)"
 		   ,$date,$this->id,$id,$user_id,$old_location_id, $new_location_id,prepare_mysql($note)); 
       //      return array(false,$sql);
       mysql_query($sql);

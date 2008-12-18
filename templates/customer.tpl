@@ -18,7 +18,7 @@
 <td  valign="top">
 <table border=0 style="padding:0">
 {if $customer->data.main_contact_id}<tr><td colspan=2>{$customer->data.main_contact_name}</td ></tr>{/if}
-{if $customer->data.main_email_id}<tr><td colspan=2>{$customer->data.main_email}</td ></tr>{/if}
+{if $customer->data.main_email_id}<tr><td colspan=2>{$customer->data.main.email}</td ></tr>{/if}
 {if $customer->data.main_tel_id}<tr><td colspan=2 class="aright">{$customer->data.main_tel}</td ></tr>{/if}
 
 {foreach from=$telecoms item=telecom}

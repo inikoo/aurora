@@ -57,7 +57,7 @@ class location{
     switch($this->tipo){
     case('shelf'):
       
-	$sql=sprintf("select location.id,(select count(*) from product2location where location_id=location.id ) as products ,max_heigth,deep,width,max_products,location.id,location.tipo,location.name,warehouse_area.name as area  from location   left join warehouse_area on (area_id=warehouse_area.id)");
+	$sql=sprintf("select location.id,(select count(*) from product2location where location_id=location.id ) as products ,max_weight,max_heigth,deep,width,max_products,location.id,location.tipo,location.name,warehouse_area.name as area,area_id  from location   left join warehouse_area on (area_id=warehouse_area.id)");
       if($key=='id')
 	$sql.=sprintf("where location.id=%d ",$tag);
       else if($key=='name')
@@ -65,7 +65,7 @@ class location{
 
       else
 	return;
-      //print $sql;
+      //      print $sql;
       $result =& $this->db->query($sql);
       if($row=$result->fetchRow()){
 	$this->id=$row['id'];

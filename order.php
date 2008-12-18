@@ -81,6 +81,8 @@ $smarty->assign('order_hist',$order->data['order_hist']);
 $smarty->assign('items_out_of_stock',$order->data['items_out_of_stock']);
 
 $smarty->assign('customer_name',$order->data['customer_name']);
+$smarty->assign('customer_id',$order->data['customer_id']);
+
 $smarty->assign('contact',$order->data['contact_name']);
 $smarty->assign('shipping_vateable',money($order->data['shipping_vateable']));
 $smarty->assign('shipping_no_vateable',money($order->data['shipping_no_vateable']));

@@ -54,8 +54,9 @@ class Customer{
 
       $o_main_email=new email($this->data['main_email']);
       if($o_main_email->id){
+	
 	$this->data['main_email_id']=$o_main_email->id;
-	$this->data['main']['email']=$o_main_email->data['email'];
+	$this->data['main']['email']=$o_main_email->display();
 	$this->data['main']['formated_email']=$o_main_email->display('link');
       }else{
 	//try to auto fix it

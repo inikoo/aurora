@@ -5,14 +5,20 @@
     
   <div >
     
- <div class="search_box" id="the_search_box" >
-      <form  id="search_form" action="customers.php" method="GET"  >
-	<label style="position:relative;left:16px">{$search_field} {t}Search{/t}:</label><input size="12" class="text search" id="prod_search" value="{$search3}" name="q_id3"/><img onclick="document.getElementById('id3_search_form').submit()"align="absbottom" id="submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search">
-      </form>
-      <a id="but_advanced_search"  class="state_details" href="search_customers.php">{t}Advanced Search{/t}</a><br/>
-      <span id="but_show_details" state="{$details}" atitle="{if $details==0}{t}Hide Details{/t}{else}{t}Show Details{/t}{/if}" class="state_details"   >{if $details==1}{t}Hide Details{/t}{else}{t}Show Details{/t}{/if}</span>
+  <div class="search_box" >
+       <span class="search_title" style="padding-right:15px" tipo="customer_name">{t}Customer Name{/t}:</span> <br>
+       <input size="8" class="text search" id="customer_search" value="" name="search"/><img align="absbottom" id="customer_submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>
+       <span  class="product_search_msg"   id="customer_search_msg"    ></span> <span  class="search_sugestion"   id="customer_search_sugestion"    ></span>
+       <br/>
+ <a id="but_advanced_search"  class="state_details" href="search_customers.
+							  php">{t}Advanced Search{/t}</a><br/>
+ <span id="but_show_details" state="{$details}" atitle="{if $details==0}{t}Hide Details{/t}{else}{t}Show Details{/t}{/if}" class="state_details"   >{if $details==1}{t}Hide Details{/t}{else}{t}Show Details{/t}{/if}</span>
  
-   </div>
+       
+  </div>
+    
+
+
     
  <div id="top" class="top_bar">
     <div id="short_menu" class="nodetails" style="width:100%;margin-bottom:0px">

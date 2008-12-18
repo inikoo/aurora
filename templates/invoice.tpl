@@ -7,7 +7,7 @@
 
        <div style="xborder:1px solid #ddd;width:350px;float:left"> 
         <h1 style="padding:0 0 10px 0">{$tipo_f} {$public_id}</h1>
-        <h2 style="padding:0">{$customer_name}</h2>
+        <h2 style="padding:0"><a href="customer.php?id={$customer_id}">{$customer_name}</a></h2>
         {$contact}<br/>
            {if $tel!=''}{t}Tel{/t}: {$tel}<br/>{/if}
 	{if $address_delbill!=''}<div style="float:left;line-height: 1.0em;margin:5px 0px;color:#444"><span style="font-weight:500;color:#000">{t}B&D Address{/t}</span>:<br/>{$address_delbill}</div>{/if}
