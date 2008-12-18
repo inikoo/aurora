@@ -3,6 +3,7 @@ require_once 'common.php';
 require_once '_order.php';
 
 require_once '_contact.php';
+require_once 'classes/Customer.php';
 
 
 if (!$LU or !$LU->isLoggedIn()) {
@@ -21,7 +22,33 @@ if(!isset($_REQUEST['tipo']))  {
 $tipo=$_REQUEST['tipo'];
 switch($tipo){
 
- case('update_contact'):
+ case('update_customer'):
+   $key=$_REQUEST['key'];
+   
+   $customer=new customer($_SESSION['state']['customer']['id']);
+   if(!$customer->id){
+     $response=array('state'=>400,'msg'=>_('Customer not found'));
+     echo json_encode($response);
+     return;
+   }
+   
+   switch($key){
+   case('add_note'):
+   case('new_note'):
+     $data=array(
+		 'note'=>$_REQUEST['value'],
+		 'user_id'=>$LU->getProperty('auth_user_id')
+
+		 );
+     $customer->save_history('new_note','','',$data);
+     $response=array('state'=>200,'msg'=>$customer->msg);
+     echo json_encode($response);
+     return;
+     break;
+ 
+   }
+
+case('update_contact'):
    $key=$_REQUEST['key'];
 
 
@@ -1317,6 +1344,220 @@ if(isset( $_REQUEST['where']))
      $_SESSION['state']['customer']['table']['to']=$date_interval['to'];
    }
 
+   $where.=sprintf(' and  sujeto="CUST" and  sujeto_id=%d',$customer_id);
+
+   foreach($elements as $element=>$value){
+     if(!$value ){
+       $where.=sprintf(" and objeto!=%s ",prepare_mysql($element));
+     }
+   }
+   
+   $where.=$date_interval['mysql'];
+   
+   $wheref='';
+
+    // if( ($f_field=='public_id'   or  $f_field=='customer_name')  and $f_value=!'' )
+   //   $wheref.=" and   $f_field like '".addslashes($f_value)."%'   ";
+   if($f_field=='max' and is_numeric($f_value) )
+     $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(date))<=".$f_value."    ";
+   else if($f_field=='min' and is_numeric($f_value) )
+     $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(date))>=".$f_value."    ";
+   elseif(($f_field=='customer_name' or $f_field=='public_id') and $f_value!='')
+     $wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
+  else if($f_field=='maxvalue' and is_numeric($f_value) )
+    $wheref.=" and  total<=".$f_value."    ";
+  else if($f_field=='min' and is_numeric($f_value) )
+    $wheref.=" and  total>=".$f_value."    ";
+   
+
+
+   
+
+
+   
+   $sql="select count(*) as total from  history   $where $wheref ";
+   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   if($row=$res->fetchRow()) {
+     $total=$row['total'];
+   }
+   if($where==''){
+     $filtered=0;
+     $filter_total=0;
+     $total_records=$total;
+   }else{
+     
+     $sql="select count(*) as total from history  $where";
+     $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+     if($row=$res->fetchRow()) {
+	$filtered=$row['total']-$total;
+	$total_records=$row['total'];
+     }
+     
+   }
+   
+   
+   $rtext=$total_records." ".ngettext('record','records',$total_records);
+   if($total_records>$number_results)
+     $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
+
+   
+   $filter_msg='';
+   
+   switch($f_field){
+     case('public_id'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any order starting with")." <b>$f_value</b> ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('only orders starting with')." <b>$f_value</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;
+   }
+   
+
+
+   
+   $_order=$order;
+   $_dir=$order_direction;
+   if($order=='op'){
+     $order="op $order_direction, date_index desc ";
+     $order_direction='';
+
+   }
+
+
+   $sql="select objeto,staff_id,history.id,note,UNIX_TIMESTAMP(date) as udate from history   $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+   // print $sql;
+   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   $data=array();
+   while($row=$res->fetchRow()) {
+     
+     if($row['objeto']=='NOTE'){
+       $tipo=_('Note');
+     }elseif($row['objeto']=='ORDER'){
+       $tipo=_('Order');
+     }elseif($row['objeto']=='ATTACH'){
+       $tipo=_('Attachment');
+     }elseif(preg_match('/^CHG/',$row['objeto'])){
+       $tipo=_('Change');
+     }elseif(preg_match('/^NEW/',$row['objeto'])){
+       $tipo=_('New');
+     }else{
+       $tipo=_('Other');
+     }
+     
+     $author=$row['staff_id'];
+     
+     $data[]=array(
+		   'id'=>$row['id'],
+		   'date'=>strftime("%a %e %b %Y", strtotime('@'.$row['udate'])),
+		   'time'=>strftime("%H:%M", strtotime('@'.$row['udate'])),
+		   'objeto'=>$tipo,
+		   'note'=>$row['note'],
+		   'author'=>$author
+		   );
+   }
+   
+   $response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$data,
+			 'sort_key'=>$_order,
+			 'sort_dir'=>$_dir,
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
+			 'total_records'=>$total,
+			 'records_offset'=>$start_from,
+			 'records_returned'=>$start_from+$res->numRows(),
+			 'records_perpage'=>$number_results,
+			 'rtext'=>$rtext,
+			 'records_order'=>$order,
+			 'records_order_dir'=>$order_dir,
+			 'filtered'=>$filtered
+			 )
+		   );
+   echo json_encode($response);
+   break;
+
+case('customer_history_old'):
+    if(!$LU->checkRight(ORDER_VIEW))
+    exit;
+
+    $conf=$_SESSION['state']['customer']['table'];
+
+    if(isset( $_REQUEST['id']))
+      $customer_id=$_REQUEST['id'];
+    else
+      $customer_id=$_SESSION['state']['customer']['id'];
+    
+
+    if(isset( $_REQUEST['sf']))
+      $start_from=$_REQUEST['sf'];
+    else
+      $start_from=$conf['sf'];
+    
+    if(isset( $_REQUEST['nr']))
+      $number_results=$_REQUEST['nr'];
+    else
+      $number_results=$conf['nr'];
+    if(isset( $_REQUEST['o']))
+      $order=$_REQUEST['o'];
+    else
+      $order=$conf['order'];
+    if(isset( $_REQUEST['od']))
+    $order_dir=$_REQUEST['od'];
+  else
+    $order_dir=$conf['order_dir'];
+    if(isset( $_REQUEST['f_field']))
+     $f_field=$_REQUEST['f_field'];
+   else
+     $f_field=$conf['f_field'];
+
+  if(isset( $_REQUEST['f_value']))
+     $f_value=$_REQUEST['f_value'];
+   else
+     $f_value=$conf['f_value'];
+if(isset( $_REQUEST['where']))
+     $where=$_REQUEST['where'];
+   else
+     $where=$conf['where'];
+  
+ if(isset( $_REQUEST['from']))
+    $from=$_REQUEST['from'];
+  else
+    $from=$conf['from'];
+  if(isset( $_REQUEST['to']))
+    $to=$_REQUEST['to'];
+  else
+    $to=$conf['to'];
+
+  $elements=$conf['elements'];
+  if(isset( $_REQUEST['element_orden']))
+    $elements['orden']=$_REQUEST['e_orden'];
+  if(isset( $_REQUEST['element_h_cust']))
+    $elements['h_cust']=$_REQUEST['e_orden'];
+  if(isset( $_REQUEST['element_h_cont']))
+    $elements['h_cont']=$_REQUEST['e_orden'];
+  if(isset( $_REQUEST['element_note']))
+    $elements['note']=$_REQUEST['e_orden'];
+  
+
+   if(isset( $_REQUEST['tableid']))
+    $tableid=$_REQUEST['tableid'];
+  else
+    $tableid=0;
+
+
+
+
+   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+   $_SESSION['state']['customer']['id']=$customer_id;
+   $_SESSION['state']['customer']['table']=array('elements'=>$elements,'order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+   $date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
+   if($date_interval['error']){
+      $date_interval=prepare_mysql_dates($_SESSION['state']['customer']['table']['from'],$_SESSION['state']['customer']['table']['to']);
+   }else{
+     $_SESSION['state']['customer']['table']['from']=$date_interval['from'];
+     $_SESSION['state']['customer']['table']['to']=$date_interval['to'];
+   }
+
    $where.=sprintf(' and customer_id=%d',$customer_id);
 
    foreach($elements as $element=>$value){
@@ -1472,7 +1713,6 @@ if(isset( $_REQUEST['where']))
 		   );
    echo json_encode($response);
    break;
-
 
  case('customer_history_todelete'):
 

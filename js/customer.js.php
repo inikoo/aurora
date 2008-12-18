@@ -1,16 +1,104 @@
 <?include_once('../common.php');?>
-    
-    YAHOO.util.Event.addListener(window, "load", function() {
+    var Dom   = YAHOO.util.Dom;
+var Event = YAHOO.util.Event;
+var dialog_note;
+
+function save(tipo){
+    switch(tipo){
+    case('note'):
+	var value=escape(Dom.get(tipo+"_input").value);
+	var request="ar_contacts.php?tipo=update_customer&key=new_note&value="+value;
+	YAHOO.util.Connect.asyncRequest('POST',request ,{
+		success:function(o) {
+		    //	alert(o.responseText);
+
+		    var r =  YAHOO.lang.JSON.parse(o.responseText);
+		    if (r.state==200) {
+			close_dialog(tipo)
+			var table=tables['table0'];
+			var datasource=tables['dataSource0'];
+			var request='';
+			datasource.sendRequest(request,table.onDataReturnInitializeTable, table);    
+
+		    }else
+			Dom.get(tipo+'_msg').innerHTML=r.msg;
+		}
+	    });        
+	
+
+	break;
+    }
+};
+
+function change(e,o,tipo){
+    switch(tipo){
+    case('note'):
+	if(o.value!=''){
+	    enable_save(tipo);
+
+	    if(window.event)
+		key = window.event.keyCode; //IE
+	    else
+		key = e.which; //firefox     
+	    
+	    if (key == 13)
+		save(tipo);
+
+
+	}else
+	    disable_save(tipo);
+	break;
+    }
+};
+
+
+function enable_save(tipo){
+    switch(tipo){
+    case('note'):
+	Dom.get(tipo+'_save').style.visibility='visible';
+	break;
+    }
+};
+
+function disable_save(tipo){
+    switch(tipo){
+    case('note'):
+	Dom.get(tipo+'_save').style.visibility='hidden';
+	break;
+    }
+};
+
+
+function close_dialog(tipo){
+    switch(tipo){
+  //   case('long_note'):
+// 	//Dom.get(tipo+"_input").value='';
+// 	dialog_note.hide();
+
+// 	break;
+
+    case('note'):
+
+	Dom.get(tipo+"_input").value='';
+	Dom.get(tipo+'_save').style.visibility='hidden';
+	dialog_note.hide();
+
+	break;
+    }
+};
+
+ 
+YAHOO.util.Event.addListener(window, "load", function() {
 	    tables = new function() {
 		    
 		    var tableid=0; // Change if you have more the 1 table
 		    var tableDivEL="table"+tableid;  
 		    
 		    var ColumnDefs = [
-				      {key:"date_index", label:"<?=_('Date')?>",className:"aright",width:150,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-					   ,{key:"time", label:"<?=_('Time')?>",className:"aleft",width:50}
-					   ,{key:"op", label:"<?=_('Type')?>", className:"aleft",width:70,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					   ,{key:"description", label:"<?=_('Description')?>",className:"aleft",width:500}
+				      {key:"date", label:"<?=_('Date')?>",className:"aright",width:150,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				      ,{key:"time", label:"<?=_('Time')?>",className:"aleft",width:50}
+				      ,{key:"objeto", label:"<?=_('Type')?>", className:"aleft",width:70,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				      ,{key:"note", label:"<?=_('Notes')?>",className:"aleft",width:500}
 					   ];
 		
 		    this.dataSource0  = new YAHOO.util.DataSource("ar_contacts.php?tipo=customer_history&tid="+tableid);
@@ -19,6 +107,7 @@
 	    this.dataSource0.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
+		    rtext:"resultset.rtext",
 		    rowsPerPage:"resultset.records_perpage",
 		    sort_key:"resultset.sort_key",
 		    sort_dir:"resultset.sort_dir",
@@ -26,7 +115,7 @@
 		    filter_msg:"resultset.filter_msg",
 		    totalRecords: "resultset.total_records" // Access to value in the server response
 		},
-		fields: ["description","date_index","op","time" ]};
+		fields: ["note","date","objeto","time","author" ]};
 		    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
 								   this.dataSource0
 								 , {
@@ -94,6 +183,37 @@ function init(){
 
     kpl1 = new YAHOO.util.KeyListener(document, { alt:true ,keys:[78,80] }, { fn:alt_shortcuts } );
     kpl1.enable();
+
+   var search_data={tipo:'customer_name',container:'customer'};
+Event.addListener('customer_submit_search', "click",submit_search,search_data);
+Event.addListener('customer_search', "keydown", submit_search_on_enter,search_data); 
+
+
+	//Details textarea editor ---------------------------------------------------------------------
+	var texteditorConfig = {
+	    height: '270px',
+	    width: '750px',
+	    dompath: true,
+	    focusAtStart: true
+	};     
+
+ 	editor = new YAHOO.widget.Editor('long_note_input', texteditorConfig);
+
+	editor._defaultToolbar.buttonType = 'basic';
+ 	editor.render();
+
+	//	editor.on('editorKeyUp',change_textarea,'details' );
+	//-------------------------------------------------------------
+
+
+dialog_note = new YAHOO.widget.Dialog("dialog_note", {context:["note","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
+dialog_note.render();
+Event.addListener("note", "click", dialog_note.show,dialog_note , true);
+dialog_long_note = new YAHOO.widget.Dialog("dialog_long_note", {context:["customer_data","tl","tl"] ,visible : false,close:false,underlay: "none",draggable:false});
+dialog_long_note.render();
+Event.addListener("long_note", "click", dialog_long_note.show,dialog_long_note , true);
+
+//Event.addListener("note", "click", dialog_note.hide,dialog_note , true);
 
 
 

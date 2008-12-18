@@ -245,12 +245,12 @@ $default_state=array(
 					'id'=>1,
 				       
 					'table'=>array(
-						       'order'=>'date_index',
+						       'order'=>'date',
 						       'order_dir'=>'desc',
 						       'sf'=>0,
 						       'nr'=>10,
 						       'where'=>'where true',
-						       'f_field'=>'description',
+						       'f_field'=>'note',
 						       'f_value'=>'',
 						       'from'=>'',
 						       'to'=>'',

@@ -208,12 +208,7 @@ YAHOO.util.Event.addListener(ids, "click",change_view);
 //YAHOO.util.Event.addListener('submit_advanced_search', "click",submit_advanced_search);
 
 var search_data={tipo:'customer_name',container:'customer'};
-
-
 Event.addListener('customer_submit_search', "click",submit_search,search_data);
-
-
-
 Event.addListener('customer_search', "keydown", submit_search_on_enter,search_data);
 
  

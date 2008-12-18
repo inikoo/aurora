@@ -184,7 +184,80 @@ class Customer{
  }
 
  function save_history($key,$old,$new,$data){
-   
+     if(isset($data['user_id']))
+       $user=$data['user_id'];
+     else
+       $user=0;
+     
+     if(isset($data['date']))
+       $date=$data['date'];
+     else
+       $date='NOW()';
+
+   switch($key){
+   case('new_note'):
+   case('add_note'):
+     if(preg_match('/^\s*$/',$data['note'])){
+       $this->msg=_('Invalid value');
+       return false;
+     
+     }
+
+     $tipo='NOTE';
+     $note=$data['note'];
+     
+
+
+     $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,old_value,new_value,note) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+		  ,$date
+		  ,prepare_mysql('CUST')
+		  ,prepare_mysql($this->id)
+		  ,prepare_mysql($tipo)
+		  ,'NULL'
+		  ,prepare_mysql('NEW')
+		  ,prepare_mysql($user)
+		  ,prepare_mysql($old)	 
+		  ,prepare_mysql($new)	 
+		  ,prepare_mysql($note)
+		  );
+     //  print $sql;
+     $this->db->exec($sql);
+     $this->msg=_('Note Added');
+     return true;
+     break;
+
+       case('new_note'):
+   case('order'):
+     if(preg_match('/^\s*$/',$data['note'])){
+       $this->msg=_('Invalid value');
+       return false;
+     
+     }
+
+     $tipo='Order';
+     $note=$data['note'];
+     
+     $action=$data['action'];
+
+
+     $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,old_value,new_value,note) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+		  ,$date
+		  ,prepare_mysql('CUST')
+		  ,prepare_mysql($this->id)
+		  ,prepare_mysql($tipo)
+		  ,'NULL'
+		  ,prepare_mysql($action)
+		  ,prepare_mysql($user)
+		  ,prepare_mysql($old)	 
+		  ,prepare_mysql($new)	 
+		  ,prepare_mysql($note)
+		  );
+     //  print $sql;
+     $this->db->exec($sql);
+     $this->msg=_('Note Added');
+     return true;
+
+   }
  }
 
 
