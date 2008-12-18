@@ -86,7 +86,7 @@ class Order{
       else
 	$sql=sprintf("select * from orden where id=%d",$id);
 
-      //print "$sql\n";
+      // print "$sql\n";
       $result =& $this->db->query($sql);
       if(!$this->data=$result->fetchRow()){	     
         return false;

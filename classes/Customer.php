@@ -1,5 +1,7 @@
 <?
 include_once('Contact.php');
+include_once('Order.php');
+
 class Customer{
   var $db; 
   var $id=false;
@@ -190,7 +192,7 @@ class Customer{
        $user=0;
      
      if(isset($data['date']))
-       $date=$data['date'];
+       $date=prepare_mysql($data['date']);
      else
        $date='NOW()';
 
@@ -204,7 +206,7 @@ class Customer{
      }
 
      $tipo='NOTE';
-     $note=$data['note'];
+     $note=_trim($data['note']);
      
 
 
@@ -228,16 +230,34 @@ class Customer{
 
        case('new_note'):
    case('order'):
-     if(preg_match('/^\s*$/',$data['note'])){
-       $this->msg=_('Invalid value');
+     $tipo='ORDER';
+     $order=new order('order',$data['order_id']);
+     $action=$data['action'];
+     switch($action){
+     case('creation'):
+       $_action='DATE_CR';
+       $note=_('Customer place order').' <a href="order.php?id='.$order->id.'">'.$order->get('public_id').'</a>';
+       break;
+     case('processed'):
+       $_action='DATE_PR';
+       $note=_('Order').' <a href="order.php?id='.$order->id.'">'.$order->get('public_id').'</a> '._('has been processed');
+       
+       break;
+     case('invoiced'):
+       $_action='DATE_IN';
+       $note=_('Order').' <a href="order.php?id='.$order->id.'">'.$order->get('public_id').'</a> '._('invoiced');
+       break;
+     case('cancelled'):
+       $_action='DATE_CA';
+       $note=_('Order').' <a href="order.php?id='.$order->id.'">'.$order->get('public_id').'</a> '._('has been cancelled');
+       break;
+     default:
+       $this->msg=_('Unknown action');
        return false;
-     
      }
 
-     $tipo='Order';
-     $note=$data['note'];
-     
-     $action=$data['action'];
+
+
 
 
      $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,old_value,new_value,note) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
@@ -245,14 +265,14 @@ class Customer{
 		  ,prepare_mysql('CUST')
 		  ,prepare_mysql($this->id)
 		  ,prepare_mysql($tipo)
-		  ,'NULL'
-		  ,prepare_mysql($action)
+		  ,$order->id
+		  ,prepare_mysql($_action)
 		  ,prepare_mysql($user)
 		  ,prepare_mysql($old)	 
 		  ,prepare_mysql($new)	 
 		  ,prepare_mysql($note)
 		  );
-     //  print $sql;
+     //    print "$sql\n";
      $this->db->exec($sql);
      $this->msg=_('Note Added');
      return true;
