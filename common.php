@@ -89,6 +89,8 @@ $handle = (array_key_exists('_login_', $_REQUEST)) ? $_REQUEST['_login_'] : fals
 $sk = (array_key_exists('ep', $_REQUEST)) ? $_REQUEST['ep'] : false;
 
 
+
+
  if(!$LU->isLoggedIn() || ($handle && $LU->getProperty('handle') != $handle)){
    if (!$handle){
      $LU->login(null, null, true);
@@ -97,11 +99,13 @@ $sk = (array_key_exists('ep', $_REQUEST)) ? $_REQUEST['ep'] : false;
        include_once('aes.php');
        include_once('app_files/db/key.php');
        $sql=sprintf("select passwd from liveuser_users where handle='%s'",addslashes($handle));
+
        $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
        if($row=$res->fetchRow()) {
  	$pwd=$row['passwd'];
  	$st=AESDecryptCtr(AESDecryptCtr($sk,$pwd,256),SKEY,256);
- 	if(preg_match('/^skstart\|\d+\|[0-9\.]+\|.+\|/',$st)){
+
+	   if(preg_match('/^skstart\|\d+\|[0-9\.]+\|.+\|/',$st)){
  	  $data=preg_split('/\|/',$st);
 	  $time=$data[1];
  	  $ip=$data[2];
