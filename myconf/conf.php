@@ -250,10 +250,11 @@ $default_state=array(
 						       'sf'=>0,
 						       'nr'=>10,
 						       'where'=>'where true',
-						       'f_field'=>'note',
+						       'f_field'=>'notes',
 						       'f_value'=>'',
 						       'from'=>'',
 						       'to'=>'',
+						       'details'=>0,
 						       'elements'=>array('orden'=>1,'h_cust'=>1,'h_cont'=>1,'note'=>1)
 						   )
 				    ),

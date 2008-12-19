@@ -32,10 +32,13 @@ var myhandleDataReturnPayload= function(oRequest, oResponse, oPayload) {
 
     if(oResponse.meta.rtext != undefined)
 	YAHOO.util.Dom.get('rtext'+oResponse.meta.tableid).innerHTML=oResponse.meta.rtext;
-    //alert('filter_msg'+oResponse.meta.tableid)
+    
+    if(oResponse.meta.rtext_rpp != undefined)
+	YAHOO.util.Dom.get('rtext_rpp'+oResponse.meta.tableid).innerHTML=oResponse.meta.rtext_rpp;
+
+
     YAHOO.util.Dom.get('filter_msg'+oResponse.meta.tableid).innerHTML=oPayload.filter_msg
-    //    oPayload.sortedBy.key=oResponse.meta.sort_key;
-    //oPayload.sortedBy.dir=oResponse.meta.sort_dir;
+
     oPayload.totalRecords = parseInt(oResponse.meta.totalRecords);
     
     if(oPayload.totalRecords==0){

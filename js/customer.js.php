@@ -98,6 +98,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				      {key:"date", label:"<?=_('Date')?>",className:"aright",width:150,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				      ,{key:"time", label:"<?=_('Time')?>",className:"aleft",width:50}
 				      ,{key:"objeto", label:"<?=_('Type')?>", className:"aleft",width:70,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				      ,{key:"handle", label:"<?=_('Author')?>",className:"aleft",width:80,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
 				      ,{key:"note", label:"<?=_('Notes')?>",className:"aleft",width:500}
 					   ];
 		
@@ -108,6 +110,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		resultsList: "resultset.data", 
 		metaFields: {
 		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+
 		    rowsPerPage:"resultset.records_perpage",
 		    sort_key:"resultset.sort_key",
 		    sort_dir:"resultset.sort_dir",
@@ -115,14 +119,14 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    filter_msg:"resultset.filter_msg",
 		    totalRecords: "resultset.total_records" // Access to value in the server response
 		},
-		fields: ["note","date","objeto","time","author" ]};
+		fields: ["note","date","objeto","time","handle" ]};
 		    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
 								   this.dataSource0
 								 , {
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
 									      rowsPerPage    : <?=$_SESSION['state']['customer']['table']['nr']?>,containers : 'paginator', 
- 									      pageReportTemplate : '(<?=_('Page')?> {currentPage} <?=_('of')?> {totalPages})',
+ 									      pageReportTemplate : '(<?=_('Page')?> {currentPage} <?=_('of')?> {totalPages})',alwaysVisible:false,
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
  									      firstPageLinkLabel :"<<",
@@ -158,7 +162,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	};
     });
 
-
+var oMenu;
 function init(){
 
 //     var shortcut_next = new YAHOO.util.KeyListener(document, {keys:89 },  { fn:key_press });
@@ -216,6 +220,30 @@ Event.addListener("long_note", "click", dialog_long_note.show,dialog_long_note ,
 //Event.addListener("note", "click", dialog_note.hide,dialog_note , true);
 
 
+
+ var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
+ oACDS.queryMatchContains = true;
+ var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container", oACDS);
+ oAutoComp.minQueryLength = 0; 
+
+
+
+YAHOO.util.Event.onContentReady("filtermenu", function () {
+	 var oMenu = new YAHOO.widget.Menu("filtermenu", { context:["filter_name0","tr", "br"]  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+	 YAHOO.util.Event.addListener("filter_name0", "click", oMenu.show, null, oMenu);
+    });
+
+
+YAHOO.util.Event.onContentReady("rppmenu", function () {
+	 rppmenu = new YAHOO.widget.Menu("rppmenu", { context:["rtext_rpp0","bl", "bl"]  });
+	 rppmenu.render();
+	 rppmenu.subscribe("show", rppmenu.focus);
+	 YAHOO.util.Event.addListener("rtext_rpp0", "click", rppmenu.show, null, rppmenu);
+
+
+    });
 
 
 }

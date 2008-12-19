@@ -17,8 +17,8 @@
 
 
 function unformat_money($number){
-  $number=preg_replace('/\\'.$_SESSION['locale_info']['mon_thousands_sep'].'/','',$number);
-  $number=preg_replace('/\\'.$_SESSION['locale_info']['mon_decimal_point'].'/','.',$number);
+  $number=preg_replace('/\\'.$myconf['thosusand_sep'].'/','',$number);
+  $number=preg_replace('/\\'.$myconf['decimal_point'].'/','.',$number);
   return $number;
 }
 
@@ -221,15 +221,16 @@ function percentage($a,$b,$fixed=1,$error_txt='NA',$psign='%',$plus_sing=false){
 }
 
 function money($a,$symbol=true){
+  global $myconf;
   if($a<0)
     $neg=true;
   else
     $neg=false;
   $a=abs($a);
 
-  $a=number_format($a,2,$_SESSION['locale_info']['mon_decimal_point'],$_SESSION['locale_info']['mon_thousands_sep']);
+  $a=number_format($a,2,$myconf['decimal_point'],$myconf['thosusand_sep']);
   if($symbol)
-    $a=($neg?'-':'').$_SESSION['locale_info']['currency_symbol'].$a;
+    $a=($neg?'-':'').$myconf['currency_symbol'].$a;
   return $a;
 }
 

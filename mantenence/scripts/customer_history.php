@@ -7,6 +7,8 @@ include_once('../../classes/Customer.php');
 
 
 require_once 'MDB2.php';            // PEAR Database Abstraction Layer
+require_once '../../myconf/conf.php';
+
 require_once '../../common_functions.php';
 $db =& MDB2::factory($dsn);       
 if (PEAR::isError($db)){echo $db->getMessage() . ' ' . $db->getUserInfo();}
@@ -16,7 +18,8 @@ $db->query("SET time_zone ='UTC'");
 require_once '../../myconf/conf.php';           
 date_default_timezone_set('Europe/London');
 
-$sql="select customer_id,id,date_creation,date_processed,date_invoiced,date_dispached from orden ";
+
+$sql="select date_index,tipo,customer_id,id,date_creation,date_processed,date_invoiced,date_dispached from orden ";
 //print $sql;
 $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
 while($row=$res->fetchRow()) {
@@ -27,29 +30,38 @@ while($row=$res->fetchRow()) {
   $date_processed=$row['date_processed'];
   $date_invoiced=$row['date_invoiced'];
   $date_dispached=$row['date_dispached'];
+  $date_index=$row['date_index'];
+  $tipo=$row['tipo'];
 
   $customer=new Customer($customer_id);
   if($customer->id){
-
-
-    if($date_creation!='' and $date_creation!=$date_processed){
-      $data=array(
-		  'action'=>'creation',
-		  'date'=>$date_creation,
-		  'order_id'=>$id
+    
+    if($tipo<=3){
+      if($date_creation!='' and $date_creation!=$date_processed){
+	$data=array(
+		    'action'=>'creation',
+		    'date'=>$date_creation,
+		    'order_id'=>$id,
+		    'display'=>'details'
 		  );
       $customer->save_history('order','','',$data);
     }
     
     if($date_processed!=''){
+      if($tipo==2 or $tipo==3)
+	$details='details';
+      else
+	$details='normal';
       $data=array(
 		  'action'=>'processed',
 		  'date'=>$date_processed,
-		  'order_id'=>$id
+		  'order_id'=>$id,
+		  'display'=>$details
 		  );
       // print_r($data);
        $customer->save_history('order','','',$data);
        //print $customer->msg;
+       // exit;
     }
 
     if($date_invoiced!=''){
@@ -61,6 +73,70 @@ while($row=$res->fetchRow()) {
        $customer->save_history('order','','',$data);
     }
     
+    if($tipo==3){
+      $data=array(
+		  'action'=>'cancelled',
+		  'date'=>$date_index,
+		  'order_id'=>$id
+		  );
+       $customer->save_history('order','','',$data);
+      
+    }
+    }
+
+    if($tipo==4){
+      $data=array(
+		  'action'=>'sample',
+		  'date'=>$date_index,
+		  'order_id'=>$id
+		  );
+       $customer->save_history('order','','',$data);
+
+    }
+
+    if($tipo==4){
+      $data=array(
+		  'action'=>'sample',
+		  'date'=>$date_index,
+		  'order_id'=>$id
+		  );
+       $customer->save_history('order','','',$data);
+
+    }
+   if($tipo==5){
+      $data=array(
+		  'action'=>'donation',
+		  'date'=>$date_index,
+		  'order_id'=>$id
+		  );
+       $customer->save_history('order','','',$data);
+    }
+    if($tipo==6){
+      $data=array(
+		  'action'=>'replacement',
+		  'date'=>$date_index,
+		  'order_id'=>$id
+		  );
+       $customer->save_history('order','','',$data);
+    }
+    if($tipo==7){
+      $data=array(
+		  'action'=>'shortages',
+		  'date'=>$date_index,
+		  'order_id'=>$id
+		  );
+       $customer->save_history('order','','',$data);
+    }
+    if($tipo==8){
+      $data=array(
+		  'action'=>'followup',
+		  'date'=>$date_index,
+		  'order_id'=>$id
+		  );
+       $customer->save_history('order','','',$data);
+    }
+
+
 
   }else{
     print "Error customer not found customer_id:$customer_id order id:$id";

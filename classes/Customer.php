@@ -233,6 +233,12 @@ class Customer{
      $tipo='ORDER';
      $order=new order('order',$data['order_id']);
      $action=$data['action'];
+
+     if(isset($data['display']))
+       $display=$data['display'];
+     else
+       $display='normal';
+
      switch($action){
      case('creation'):
        $_action='DATE_CR';
@@ -240,16 +246,54 @@ class Customer{
        break;
      case('processed'):
        $_action='DATE_PR';
-       $note=_('Order').' <a href="order.php?id='.$order->id.'">'.$order->get('public_id').'</a> '._('has been processed');
+       $note=_('Order').' <a href="order.php?id='.$order->id.'">'.$order->get('public_id').'</a> '._('processed');
        
        break;
      case('invoiced'):
        $_action='DATE_IN';
-       $note=_('Order').' <a href="order.php?id='.$order->id.'">'.$order->get('public_id').'</a> '._('invoiced');
+       $note=_('Order').' <a href="order.php?id='.$order->id.'">'.$order->get('public_id').'</a> '._('for').' '.money((float)$order->get('total'));
        break;
      case('cancelled'):
        $_action='DATE_CA';
        $note=_('Order').' <a href="order.php?id='.$order->id.'">'.$order->get('public_id').'</a> '._('has been cancelled');
+       break;
+   case('sample'):
+       $_action='DATE_DI';
+       $note=_('Sample send').' (<a href="order.php?id='.$order->id.'">'.$order->get('public_id').'</a>)';
+       break;
+   case('donation'):
+       $_action='DATE_DI';
+       $note=_('Donation').' (<a href="order.php?id='.$order->id.'">'.$order->get('public_id').'</a>)';
+       break;
+   case('replacement'):
+       $_action='DATE_DI';
+       $parent_order='';
+       if($order->get('parent_id')){
+	 $parent=new Order($order->get('parent_id'));
+	 if($parent->id)
+	   $parent_order=' '._('for order').' (<a href="order.php?id='.$parent->id.'">'.$parent->get('public_id').'</a>';
+       }
+       $note=_('Replacement').' (<a href="order.php?id='.$order->id.'">'.$order->get('public_id').'</a>)'.$parent_order;
+       break;
+   case('shortages'):
+       $_action='DATE_DI';
+       $parent_order='';
+       if($order->get('parent_id')){
+	 $parent=new Order($order->get('parent_id'));
+	 if($parent->id)
+	   $parent_order=' '._('for order').' (<a href="order.php?id='.$parent->id.'">'.$parent->get('public_id').'</a>';
+       }
+       $note=_('shortages').' (<a href="order.php?id='.$order->id.'">'.$order->get('public_id').'</a>)'.$parent_order;
+       break;
+   case('followup'):
+       $_action='DATE_DI';
+       $parent_order='';
+       if($order->get('parent_id')){
+	 $parent=new Order($order->get('parent_id'));
+	 if($parent->id)
+	   $parent_order=' '._('for order').' (<a href="order.php?id='.$parent->id.'">'.$parent->get('public_id').'</a>';
+       }
+       $note=_('Follow up').' (<a href="order.php?id='.$order->id.'">'.$order->get('public_id').'</a>)'.$parent_order;
        break;
      default:
        $this->msg=_('Unknown action');
@@ -260,7 +304,7 @@ class Customer{
 
 
 
-     $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,old_value,new_value,note) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+     $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,old_value,new_value,note,display) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
 		  ,$date
 		  ,prepare_mysql('CUST')
 		  ,prepare_mysql($this->id)
@@ -271,8 +315,9 @@ class Customer{
 		  ,prepare_mysql($old)	 
 		  ,prepare_mysql($new)	 
 		  ,prepare_mysql($note)
+		  ,prepare_mysql($display)
 		  );
-     //    print "$sql\n";
+     // print "$sql\n";
      $this->db->exec($sql);
      $this->msg=_('Note Added');
      return true;

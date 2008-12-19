@@ -297,5 +297,24 @@ $smarty->assign('orders_interval',$order_interval);
 // $smarty->assign('telecoms',$telecoms);
 
 
+$filter_menu=array(
+		   'notes'=>array('db_key'=>'notes','menu_label'=>'Records with  notes *<i>x</i>*','label'=>_('Notes')),
+		   'author'=>array('db_key'=>'author','menu_label'=>'Done by <i>x</i>*','label'=>_('Notes')),
+
+		   'uptu'=>array('db_key'=>'upto','menu_label'=>'Records up to <i>n</i> days','label'=>_('Up to (days)')),
+		   'older'=>array('db_key'=>'older','menu_label'=>'Records older than  <i>n</i> days','label'=>_('Older than (days)'))
+		   );
+$tipo_filter=$_SESSION['state']['customer']['table']['f_field'];
+$filter_value=$_SESSION['state']['customer']['table']['f_value'];
+//print_r($_SESSION['state']['customer']['table']);
+$smarty->assign('filter_value',$filter_value);
+
+$smarty->assign('filter_menu',$filter_menu);
+$smarty->assign('filter_name',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu',$paginator_menu);
+
+
+
 $smarty->display('customer.tpl');
 ?>

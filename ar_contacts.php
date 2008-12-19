@@ -1291,6 +1291,13 @@ case('customer_history'):
     $order_dir=$_REQUEST['od'];
   else
     $order_dir=$conf['order_dir'];
+
+    if(isset( $_REQUEST['details']))
+      $details=$_REQUEST['details'];
+    else
+      $details=$conf['details'];
+    
+
     if(isset( $_REQUEST['f_field']))
      $f_field=$_REQUEST['f_field'];
    else
@@ -1300,6 +1307,7 @@ case('customer_history'):
      $f_value=$_REQUEST['f_value'];
    else
      $f_value=$conf['f_value'];
+
 if(isset( $_REQUEST['where']))
      $where=$_REQUEST['where'];
    else
@@ -1335,7 +1343,7 @@ if(isset( $_REQUEST['where']))
 
    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
    $_SESSION['state']['customer']['id']=$customer_id;
-   $_SESSION['state']['customer']['table']=array('elements'=>$elements,'order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+   $_SESSION['state']['customer']['table']=array('details'=>$details,'elements'=>$elements,'order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
    $date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
    if($date_interval['error']){
       $date_interval=prepare_mysql_dates($_SESSION['state']['customer']['table']['from'],$_SESSION['state']['customer']['table']['to']);
@@ -1345,7 +1353,8 @@ if(isset( $_REQUEST['where']))
    }
 
    $where.=sprintf(' and  sujeto="CUST" and  sujeto_id=%d',$customer_id);
-
+   if(!$details)
+     $where.=" and display!='details'";
    foreach($elements as $element=>$value){
      if(!$value ){
        $where.=sprintf(" and objeto!=%s ",prepare_mysql($element));
@@ -1356,26 +1365,34 @@ if(isset( $_REQUEST['where']))
    
    $wheref='';
 
-    // if( ($f_field=='public_id'   or  $f_field=='customer_name')  and $f_value=!'' )
-   //   $wheref.=" and   $f_field like '".addslashes($f_value)."%'   ";
-   if($f_field=='max' and is_numeric($f_value) )
+
+
+   if( $f_field=='notes' and $f_value!='' )
+     $wheref.=" and   note like '%".addslashes($f_value)."%'   ";
+   if($f_field=='upto' and is_numeric($f_value) )
      $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(date))<=".$f_value."    ";
-   else if($f_field=='min' and is_numeric($f_value) )
+   else if($f_field=='older' and is_numeric($f_value))
      $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(date))>=".$f_value."    ";
-   elseif(($f_field=='customer_name' or $f_field=='public_id') and $f_value!='')
-     $wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
-  else if($f_field=='maxvalue' and is_numeric($f_value) )
-    $wheref.=" and  total<=".$f_value."    ";
-  else if($f_field=='min' and is_numeric($f_value) )
-    $wheref.=" and  total>=".$f_value."    ";
+   elseif($f_field=='author' and $f_value!=''){
+       if(is_numeric($f_value))
+	 $wheref.=" and   staff_id=$f_value   ";
+       else{
+	 $wheref.=" and  handle like='".addslashes($f_value)."%'   ";
+       }
+     }
+	  
+   
+
+   
+   
+       
+
    
 
 
    
-
-
-   
-   $sql="select count(*) as total from  history   $where $wheref ";
+   $sql="select count(*) as total from  history   left join liveuser_users on (staff_id=authuserid) $where $wheref ";
+  // print $sql;
    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
    if($row=$res->fetchRow()) {
      $total=$row['total'];
@@ -1386,7 +1403,8 @@ if(isset( $_REQUEST['where']))
      $total_records=$total;
    }else{
      
-     $sql="select count(*) as total from history  $where";
+     $sql="select count(*) as total from history   $where";
+    // print $sql;
      $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
      if($row=$res->fetchRow()) {
 	$filtered=$row['total']-$total;
@@ -1397,21 +1415,41 @@ if(isset( $_REQUEST['where']))
    
    
    $rtext=$total_records." ".ngettext('record','records',$total_records);
-   if($total_records>$number_results)
-     $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
+   
+   if($total==0)
+     $rtext_rpp='';
+   elseif($total_records>$number_results)
+     $rtext_rpp=sprintf('(%d%s)',$number_results,_('rpp'));
+   else
+     $rtext_rpp=_('Showing all');
 
-   
+
+//   print "$f_value $filtered  $total_records  $filter_total";
    $filter_msg='';
-   
+   if($filtered>0){
    switch($f_field){
-     case('public_id'):
+     case('notes'):
        if($total==0 and $filtered>0)
-	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any order starting with")." <b>$f_value</b> ";
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any record matching")." <b>$f_value</b> ";
        elseif($filtered>0)
-	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('only orders starting with')." <b>$f_value</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/> '._('Showing')." $total ".ngettext($total,'record matching','records matching')." <b>$f_value</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
        break;
+  case('older'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any record older than")." <b>$f_value</b> ".ngettext($f_value,'day','days');
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/> '._('Showing')." $total ".ngettext($total,'record older than','records older than')." <b>$f_value</b> ".ngettext($f_value,'day','days')." <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;
+     case('upto'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any record in the last")." <b>$f_value</b> ".ngettext($f_value,'day','days');
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/> '._('Showing')." $total ".ngettext($total,'record in the last','records inthe last')." <b>$f_value</b> ".ngettext($f_value,'day','days')."<span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;  
+
+
    }
-   
+   }
 
 
    
@@ -1424,8 +1462,8 @@ if(isset( $_REQUEST['where']))
    }
 
 
-   $sql="select objeto,staff_id,history.id,note,UNIX_TIMESTAMP(date) as udate from history   $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
-   // print $sql;
+   $sql="select handle,objeto,staff_id,history.id,note,UNIX_TIMESTAMP(date) as udate from history  left join liveuser_users on (staff_id=authuserid)   $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+   //print $sql;
    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
    $data=array();
    while($row=$res->fetchRow()) {
@@ -1444,15 +1482,17 @@ if(isset( $_REQUEST['where']))
        $tipo=_('Other');
      }
      
-     $author=$row['staff_id'];
-     
+     if($row['staff_id']>0)
+       $author='<a href="user.php?id='.$row['staff_id'].'">'.$row['handle'].'</a>';
+     else
+       $author=_('System');
      $data[]=array(
 		   'id'=>$row['id'],
 		   'date'=>strftime("%a %e %b %Y", strtotime('@'.$row['udate'])),
 		   'time'=>strftime("%H:%M", strtotime('@'.$row['udate'])),
 		   'objeto'=>$tipo,
 		   'note'=>$row['note'],
-		   'author'=>$author
+		   'handle'=>$author
 		   );
    }
    
@@ -1468,6 +1508,7 @@ if(isset( $_REQUEST['where']))
 			 'records_returned'=>$start_from+$res->numRows(),
 			 'records_perpage'=>$number_results,
 			 'rtext'=>$rtext,
+			 'rtext_rpp'=>$rtext_rpp,
 			 'records_order'=>$order,
 			 'records_order_dir'=>$order_dir,
 			 'filtered'=>$filtered
