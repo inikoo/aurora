@@ -26,43 +26,49 @@ class Email{
 
   function get_data($tipo,$tag){
     if($tipo=='id')
-      $sql=sprintf("select * from email where  id=%d",$tag);
+      $sql=sprintf("select * from `Email Dimension` where  `Email Key`=%d",$tag);
     elseif($tipo=='email')
-      $sql=sprintf("select * from email where  email=%d",$tag);
+      $sql=sprintf("select * from `Email Dimension` where  `Email`=%s",prepare_mysql($tag));
     
    $result =& $this->db->query($sql);
     if($this->data=$result->fetchRow()){
-      $this->id=$this->data['id'];
+      $this->id=$this->data['email key'];
       return true;
     }
     return false;
 }
 
-  function create($data,$history_data=false){
+  function create($data,$args=''){
+
    if($data['email']==''){
-     $this->new_email=false;
+     $this->new=false;
+     $this->msg=_('No email provided');
      return false;
    }
    if($this->is_valid($data['email']))
-     $validated='yes';
-   else
-     $validated='no';
-   $sql=sprintf("insert into email  (email,contact,tipo,tipo_email,contact_id,validated) values (%s,%s,%d,%d)"
+     $data['email Validated']=1;
+   $sql=sprintf("insert into `Email Dimension`  (`Email`,`Email Contact Name`,`Email Type`,`Email Description`,`Email Validated`,`Email Verified`) values (%s,%s,%s,%s,%d,%d)"
 		,prepare_mysql($data['email'])
-		,prepare_mysql($data['contact'])
-		,$data['tipo']
-		,$data['tipo_email']
-		,$data['contact_id']
-		,$validated
+		,prepare_mysql($data['email contact name'])
+		,prepare_mysql($data['email type'])
+		,prepare_mysql($data['email description'])
+		,$data['email validated']
+		,$data['email verified']
 		);
+   print "$sql\n";
    $affected=& $this->db->exec($sql);
    if (PEAR::isError($affected)){
-      $this->new_email=false;
+      $this->new=false;
+      $this->msg=_('Unknown error');
       return false;
    }else{
-      $this->new_email=$this->db->lastInsertID();
-      if(is_array($history_data))
-	$this->save_history('new',$history_data);
+      $this->id=$this->db->lastInsertID();
+      //      if(is_array($history_data))
+      //	$this->save_history('new',$history_data);
+      $this->get_data('id',$this->id);
+      $this->new=true;
+
+      $this->msg=_('New Email');
       return true;
    }
      
@@ -70,6 +76,10 @@ class Email{
  }
 
  function get($key){
+ $key=strtolower($key);
+    if(isset($this->data[$key]))
+      return $this->data[$key];
+
     switch($key){
     case('link'):
       return $this->display();
@@ -304,6 +314,8 @@ class Email{
  function display($tipo='link'){
 
    switch($tipo){
+   case('html'):
+   case('xhtml'):
    case('link'):
    default:
      return '<a href="mailto:'.$this->data['email'].'">'.$this->data['email'].'</a>';

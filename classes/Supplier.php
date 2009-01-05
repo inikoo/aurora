@@ -1,5 +1,5 @@
 <?
-
+include_once('Company.php');
 include_once('Contact.php');
 include_once('Telecom.php');
 include_once('Email.php');
@@ -11,31 +11,87 @@ class supplier{
   var $data=array();
   var $items=array();
 
-  var $id;
-  var $tipo;
+  var $id=false;
+
 
   function __construct($arg1=false,$arg2=false) {
      $this->db =MDB2::singleton();
+     
+
      if(is_numeric($arg1)){
-       $this->get_data($arg1);
+       $this->get_data('id',$arg1);
        return ;
      }
-  }
+     if(preg_match('/create|new/i',$arg1))
+       $this->create($arg2);
+       
+ }
 
 
-  function get_data($id){
-    $sql=sprintf("select id,name,code,contact_id from supplier where id=%d",$id);
+  function get_data($tipo,$id){
+    $sql=sprintf("select * from `Vendor Dimension` where `Vendor Key`=%d",$id);
     $result =& $this->db->query($sql);
     if($row=$result->fetchRow()){
-      $this->data['name']=$row['name'];
-      $this->data['code']=$row['code'];
-      $this->data['contact_id']=$row['contact_id'];
-      
+      $this->data=$row;
       $this->id=$row['id'];
-      $this->contact=false;
-      return true;
-    }else
-      return false;
+    }
+     
+  }
+
+   function get($key){
+    $key=strtolower($key);
+    if(isset($this->data[$key]))
+      return $this->data[$key];
+   
+    return false;
+
+  }
+
+  function create($data){
+    if(!is_array($data))
+      $data=array('name'=>_('Unknown Supplier'));
+    // print_r($data);
+    if($data['name']!='')
+      $name=$data['name'];
+    else
+      $name=_('Unknown Supplier');
+    if(!isset($data['code']) or $data['code']=='')
+      $_code=$this->create_code($name);
+    else
+      $_code=$data['code'];
+    
+    $code=$this->check_code($_code);
+
+
+
+    
+
+
+    $contact=new contact('new',$data_contact);
+ 
+    $company=new company('new',
+			 array('name'=>$name,'contact key'=>$contact->id)
+			 );
+
+    $sql=sprintf("insert into `Vendor Dimension` (`Vendor Code`,`Vendor Name`,`Company Key`,`Vendor Main Contact Key`,`Vendor Accounts Payable Contact Key`,`Vendor Sales Contact Key`) values (%s,%s,%d,%d,%d,%d)",
+		 prepare_mysql($code),
+		 prepare_mysql($name),
+		 $company->id,
+		 $contact->id,
+		 $contact->id,
+		 $contact->id
+		 );
+    //  print "$sql\n";
+    $affected=& $this->db->exec($sql);
+    if (PEAR::isError($affected)) {
+      if(preg_match('/^MDB2 Error: constraint violation$/',$affected->getMessage()))
+	return array('ok'=>false,'msg'=>_('Error: Another supplier has the same code/id').'.');
+      else
+      return array('ok'=>false,'msg'=>_('Unknwon Error').'.');
+    }
+    $this->id = $this->db->lastInsertID();  
+    $this->get_data('id',$this->id);
+  
   }
 
   function load($key=''){
@@ -53,18 +109,18 @@ class supplier{
     
   }
   
-  function get_date($key='',$tipo='dt'){
-    if(isset($this->dates['ts_'.$key]) and is_numeric($this->dates['ts_'.$key]) ){
 
-      switch($tipo){
-      case('dt'):
-      default:
-	return strftime("%e %B %Y %H:%M", $porder['date_expected']);
-      }
-    }else
-      return false;
+  function create_code($name){
+    preg_replace('/[!a-z]/i','',$name);
+    preg_replace('/^(the|el|la|les|los|a)\s+/i','',$name);
+    preg_replace('/\s+(plc|inc|co|ltd)$/i','',$name);
+    preg_split('/\s*/',$name);
+    return $name;
   }
-  
+
+  function check_code($name){
+    return $name;
+  }
   
 
 }

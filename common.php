@@ -217,10 +217,10 @@ if(isset($_REQUEST['_lang']) and is_numeric($_REQUEST['_lang'])){
  }
 if(!isset($_SESSION['lang'])){
   
-  $sql="select id  from lang where code='".$myconf['lang'].'_'.$myconf['country']."'";
+  $sql="select `Language Key`  from `Language Dimension` where `Locale Code`='".$myconf['lang'].'_'.$myconf['country']."'";
   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
   if($row=$res->fetchRow()) {
-    $_SESSION['lang']=$row['id'];
+    $_SESSION['lang']=$row['Language Key'];
   }else{
     $_SESSION['lang']=1;
 
@@ -230,20 +230,27 @@ if(!isset($_SESSION['lang'])){
 
 
 
-$sql="select  country_id,country.name as country_name,lang.id as lang_id,lang.code,country.code2 as country_code  from lang left join list_country as country on (country.id=country_id) where lang.id=".$_SESSION['lang'];
-$res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-$other_langs=array();
-if($sql_data=$res->fetchRow()) {
- setlocale(LC_MESSAGES, $sql_data['code'].'_'.$sql_data['country_code'].($myconf['encoding']!=''?'.'.$myconf['encoding']:''));
- setlocale(LC_TIME, $sql_data['code'].'_'.$sql_data['country_code'].($myconf['encoding']!=''?'.'.$myconf['encoding']:''));
+$sql="select   `EAI Locale Code` ,`Language Code` ,`Country 2 Alpha Code` , `Locale Code` from `Language Country Bridge`   where `Language Key`=".$_SESSION['lang'];
 
- if(isset($_SESSION['loginInfo']['auth']['propertyValues']['lang']))
-   $_SESSION['lang']=$_SESSION['loginInfo']['auth']['propertyValues']['lang']=$_SESSION['lang'];
- $lang_country_code=$sql_data['country_code'];
- $default_country=$sql_data['country_name'];
- $default_country_id=$sql_data['country_id'];
- $lang_code=$sql_data['code'];
-}
+$res = $db->query($sql); 
+$other_langs=array();
+
+if($sql_data=$res->fetchRow()) {
+
+  // setlocale(LC_MESSAGES, $sql_data['code'].'_'.$sql_data['country_code'].($myconf['encoding']!=''?'.'.$myconf['encoding']:''));
+  //setlocale(LC_TIME, $sql_data['code'].'_'.$sql_data['country_code'].($myconf['encoding']!=''?'.'.$myconf['encoding']:''));
+  setlocale(LC_MESSAGES, $sql_data['eai locale code']);
+  setlocale(LC_TIME, $sql_data['eai locale code']);
+  if(isset($_SESSION['loginInfo']['auth']['propertyValues']['lang']))
+    $_SESSION['lang']=$_SESSION['loginInfo']['auth']['propertyValues']['lang']=$_SESSION['lang'];
+  $lang_country_code=$sql_data['country 2 alpha code'];
+  // $default_country=$sql_data['Country Name'];
+  //$default_country_id=$sql_data['country_id'];
+  $lang_code=$sql_data['language code'];
+ }else{
+  $lang_country_code='gb';
+  $lang_code='EN';
+ }
 
 bindtextdomain('kaktus', './locale');
 bind_textdomain_codeset('kaktus', $myconf['encoding']);
@@ -358,11 +365,11 @@ foreach($_GET as $key => $value){
   if($key!='_lang')
     $args.=$key.'='.$value.'&';
 }
-$sql="select lang.id as id ,lower(c.code2) as country,lang.code as code  from lang left join list_country as c on (c.id=country_id) where lang.id!=".$_SESSION['lang'];
+$sql="select `Language Key`,`Country 2 Alpha Code` from `Language Country Bridge` where `EAI Access`=1 and `Language Key`!=".$_SESSION['lang'];
 $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
 $lang_menu=array();
 while($row = $res->fetchrow()) {
-  $lang_menu[]=array($_SERVER['PHP_SELF'].$args.'_lang='.$row['id'],$row['country'],$_lang[$row['id']]);
+  $lang_menu[]=array($_SERVER['PHP_SELF'].$args.'_lang='.$row['language key'],$row['country 2 alpha code'],$_lang[$row['language key']]);
  }
 $smarty->assign('lang_menu',$lang_menu);
 $smarty->assign('page_layout','doc4');

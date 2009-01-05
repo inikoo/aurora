@@ -1,33 +1,68 @@
 <?
+include_once('Country.php');
 class Address{
   var $db;
   var $data=array();
   var $id=false;
 
   
-  function __construct($id=false) {
+  function __construct($arg1=false,$arg2=false) {
      $this->db =MDB2::singleton();
 
      if(is_numeric($id)){
-       $this->get_data($id);
-
+       $this->get_data('id',$arg1);
+       return;
      }
-
-
-
+     if($arg1=='fuzzy all'){
+       $this->get_data('fuzzy all');
+       return;
+     }elseif($arg1=='fuzzy country'){
+       if(!is_numeric($arg2)){
+	 $this->get_data('fuzzy all');
+	 return;
+       }
+       $country=new Country($arg2);
+       if(is_numeric($country_id) and $country->get('country code')!='UNK'){
+	 $this->get_data('fuzzy country',$arg2);
+	 return;
+       }else{
+	  $this->get_data('fuzzy all');
+	 return;
+       }
+	 
+	 
+     }
   }
 
 
-function get_data($id){
-   $sql=sprintf("select * from address where  id=%d",$id);
+  function get_data($tipo,$id=false){
+    
+    if($tipo=='id')
+      $sql=sprintf("select * from `Address Dimension` where  'Address Key'=%d",$id);
+    elseif('tipo'=='fuzzy country')
+      $sql=sprintf("select * from `Address Dimension` where  `Fuzzy Address`=1 and `Address Fuzzy Type`='country' and `Address Country Key`=%d   ",$id);
+    else
+      $sql=sprintf("select * from `Address Dimension` where  `Fuzzy Address`=1 and `Address Fuzzy Type`='all' ",$id);
+
+    //PRINT $sql;
    $result =& $this->db->query($sql);
     if($this->data=$result->fetchRow()){
-      $this->id=$this->data['id'];
-      return true;
+      $this->id=$this->data['address key'];
+
     }
-    return false;
+
 
 }
+
+
+  function get($key){
+    $key=strtolower($key);
+    if(isset($this->data[$key]))
+      return $this->data[$key];
+   
+    return false;
+
+  }
 
  function display($tipo=''){
    $separator="\n";
