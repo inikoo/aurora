@@ -218,10 +218,12 @@ class Contact{
      
      $sql=sprintf("insert into  `Email Bridge` (`Email Key`, `Contact Key`) values (%d,%d)  ",$email->id,$this->id);
      $this->db->exec($sql);
-     // print "$sql\n";
-     $sql=sprintf("update `Contact Dimension` set `Main XHTML Email`=%s where `Contact Key`=%d",prepare_mysql($email->display('html')),$this->id);
-     // print "$sql\n";
-     $this->db->exec($sql);
+     if(preg_match('/principal/i',$args)){
+       $sql=sprintf("update `Contact Dimension` set `Contact Main XHTML Email`=%s where `Contact Key`=%d",prepare_mysql($email->display('html')),$this->id);
+       $this->data['contact main xhtml email']=$email->display('html');
+       $this->db->exec($sql);
+     }
+
      $this->add_email=true;
    }else{
      $this->add_email=false;

@@ -1,6 +1,6 @@
 <?
-include_once('Contact.php');
-class Email{
+
+class Page{
   var $db;
   var $data=array();
   var $id=false;
@@ -26,13 +26,13 @@ class Email{
 
   function get_data($tipo,$tag){
     if($tipo=='id')
-      $sql=sprintf("select * from `Email Dimension` where  `Email Key`=%d",$tag);
-    elseif($tipo=='email')
-      $sql=sprintf("select * from `Email Dimension` where  `Email`=%s",prepare_mysql($tag));
+      $sql=sprintf("select * from `Page Dimension` where  `Page Key`=%d",$tag);
+    elseif($tipo=='url')
+      $sql=sprintf("select * from `Page Dimension` where  `Page URL`=%s",prepare_mysql($tag));
     
    $result =& $this->db->query($sql);
     if($this->data=$result->fetchRow()){
-      $this->id=$this->data['email key'];
+      $this->id=$this->data['page key'];
       return true;
     }
     return false;
@@ -40,20 +40,19 @@ class Email{
 
   function create($data,$args=''){
 
-   if($data['email']==''){
+   if($data['page url']==''){
      $this->new=false;
-     $this->msg=_('No email provided');
+     $this->msg=_('No page URL provided');
      return false;
    }
-   if($this->is_valid($data['email']))
-     $data['email validated']=1;
-   $sql=sprintf("insert into `Email Dimension`  (`Email`,`Email Contact Name`,`Email Type`,`Email Description`,`Email Validated`,`Email Verified`) values (%s,%s,%s,%s,%d,%d)"
-		,prepare_mysql($data['email'])
-		,prepare_mysql($data['email contact name'])
-		,prepare_mysql($data['email type'])
-		,prepare_mysql($data['email description'])
-		,$data['email validated']
-		,$data['email verified']
+   if($this->is_valid($data['page url']))
+     $data['page validated']=1;
+   $sql=sprintf("insert into `Page Dimension`  (`Page URL`,`Page Type`,`Page Description`,`Page Validated`,`Page Verified`) values (%s,%s,%s,%d,%d)"
+		,prepare_mysql($data['page url'])
+		,prepare_mysql($data['page type'])
+		,prepare_mysql($data['page description'])
+		,$data['page validated']
+		,$data['page verified']
 		);
    print "$sql\n";
    $affected=& $this->db->exec($sql);
@@ -68,7 +67,7 @@ class Email{
       $this->get_data('id',$this->id);
       $this->new=true;
 
-      $this->msg=_('New Email');
+      $this->msg=_('New Page');
       return true;
    }
      
@@ -103,57 +102,57 @@ class Email{
    $key=key($data);
    $value=$data['value'];
    switch($key){
-   case('email'):
+   case('page'):
      if($value==''){
-       $this->update_msg=_('The new email is empty');
+       $this->update_msg=_('The new page is empty');
        return false;
      }
      if(!$this->is_valid($value)){
-       $this->update_msg=_('The new email is not valid');
+       $this->update_msg=_('The new page is not valid');
        return false;
      }
      if($value==$this->get($key)){
-       $this->update_msg=_('The new email is the same as the old one');
+       $this->update_msg=_('The new page is the same as the old one');
        return false;
      }
-     $this->update_msg=_('Email changed to')." ".$value;
+     $this->update_msg=_('Page changed to')." ".$value;
 
      break;     
    case('contact'):
      if($value==$this->get($key)){
-       $this->update_msg=_('The new email contact  is the same as the old one');
+       $this->update_msg=_('The new page contact  is the same as the old one');
        return false;
      }
 
-     $this->update_msg=_('Email contact changed to')." ".$value;
+     $this->update_msg=_('Page contact changed to')." ".$value;
      break;    
    case('tipo'):
      if($value==$this->get($key)){
-       $this->update_msg=_('The new email type is the same as the old one');
+       $this->update_msg=_('The new page type is the same as the old one');
        return false;
      }
 
-     $this->old_value2=$this->get('tipo_email');
+     $this->old_value2=$this->get('tipo_page');
      switch($value){
      case(0):
-       $this->set('tipo_email','work');
+       $this->set('tipo_page','work');
        break;
      case 1:
-       $this->set('tipo_email','personal');
+       $this->set('tipo_page','personal');
        break;
      case 2:
-       $this->set('tipo_email','company');
+       $this->set('tipo_page','company');
        break;
      default:
-       $this->update_msg=_('Wrong email type');
+       $this->update_msg=_('Wrong page type');
        return false;
      }
 
-     $this->update_msg=_('Email type changed to')." ".$this->get('tipo_email');
+     $this->update_msg=_('Page type changed to')." ".$this->get('tipo_page');
      break; 
- case('tipo_email'):
+ case('tipo_page'):
     if($value==$this->get($key)){
-       $this->update_msg=_('The new email type is the same as the old one');
+       $this->update_msg=_('The new page type is the same as the old one');
        return false;
      }
 
@@ -163,21 +162,21 @@ class Email{
        $this->set('tipo',0);
        break;
      case ('personal'):
-       $this->set('tipo_email',1);
+       $this->set('tipo_page',1);
        break;
      case ('company'):
-       $this->set('tipo_email',2);
+       $this->set('tipo_page',2);
        break;
      default:
-       $this->update_msg=_('Wrong email type');
+       $this->update_msg=_('Wrong page type');
        return false;
      }
 
-     $this->update_msg=_('Email type changed to')." ".$this->get('tipo_email');
+     $this->update_msg=_('Page type changed to')." ".$this->get('tipo_page');
      break; 
    case('contact_id'):
      if($value==$this->get($key)){
-       $this->update_msg=_('The new email contact the same as the old one');
+       $this->update_msg=_('The new page contact the same as the old one');
        return false;
      }
      $contact=new Contact($value);
@@ -185,8 +184,8 @@ class Email{
        $this->update_msg=_('Contact do not exist');
        return false;
      }
-     if($contact->get('has_email_id',$id)){
-       $this->update_msg=_('Contact already has this email');
+     if($contact->get('has_page_id',$id)){
+       $this->update_msg=_('Contact already has this page');
        return false;
      }
      
@@ -203,8 +202,8 @@ class Email{
      $this->save($key,$history_data);
      if($key=='tipo'){
        $this->old_value=$this->old_value2;
-       $this->save('tipo_email',$history_data);
-     }elseif($key=='tipo_email'){
+       $this->save('tipo_page',$history_data);
+     }elseif($key=='tipo_page'){
        $this->old_value=$this->old_value2;
        $this->save('tipo',$history_data);
      }
@@ -219,7 +218,7 @@ class Email{
 
 
     default:
-      $sql=sprintf("update email set %s=%s where id=%d",$key,$this->get($key),$this->id);
+      $sql=sprintf("update page set %s=%s where id=%d",$key,$this->get($key),$this->id);
       $this->db->exec($sql);
       if(is_array($history_data)){
 	$this->save_history($key,$history_data);
@@ -233,7 +232,7 @@ class Email{
    $old=$this->old_value;
    if($key=='new'){
      $old='';
-     $new=$this->get('email');
+     $new=$this->get('page');
      }else{
      $new=$this->get($key);
      $old=$this->old_value;
@@ -261,7 +260,7 @@ class Email{
 
 
    }else{
-     $sujeto='EMAIL';
+     $sujeto='PAGE';
      $sujeto_id=$this->$id;
      $objeto=$key;
      $objeto_id='';
@@ -270,20 +269,20 @@ class Email{
      else
        $tipo='CHG';
      switch($key){
-     case('email'):
-       $objeto='EMAIL';
+     case('page'):
+       $objeto='PAGE';
        break;
      case('contact'):
-        $objeto='EMAILC';
+        $objeto='PAGEC';
 	break;
      case('verified'):
-       $objeto='EMAILV';
+       $objeto='PAGEV';
        break;
      case('tipo'):
-       $objeto='EMAILT';
+       $objeto='PAGET';
        break;
      case('contact_id'):
-       $objeto='EMAILC';
+       $objeto='PAGEC';
        break;
      case('new'):
        $objeto='';
@@ -318,7 +317,7 @@ class Email{
    case('xhtml'):
    case('link'):
    default:
-     return '<a href="mailto:'.$this->data['email'].'">'.$this->data['email'].'</a>';
+     return '<a href="'.$this->data['page'].'">'.$this->data['page'].'</a>';
      
    }
    
@@ -328,36 +327,12 @@ class Email{
 
 
  
- function is_valid($email){
-   // First, we check that there's one @ symbol, and that the lengths are right
-   if (!ereg("^[^@]{1,64}@[^@]{1,255}$", $email)) {
-     // Email invalid because wrong number of characters in one section, or wrong number of @ symbols.
+ function is_valid($url){
+   if (preg_match("/^(http(s?):\\/\\/|ftp:\\/\\/{1})((\w+\.)+)\w{2,}(\/?)$/i", $url))
+     return true;
+   else
      return false;
-   }
- 
-   // Split it into sections to make life easier
-   $email_array = explode("@", $email);
-   $local_array = explode(".", $email_array[0]);
-   for ($i = 0; $i < sizeof($local_array); $i++) {
-     if (!ereg("^(([A-Za-z0-9!#$%&'*+/=?^_`{|}~-][A-Za-z0-9!#$%&'*+/=?^_`{|}~\.-]{0,63})|(\"[^(\\|\")]{0,62}\"))$", $local_array[$i])) {
-       return false;
-     }
-   }
-   if (!ereg("^\[?[0-9\.]+\]?$", $email_array[1])) { // Check if domain is IP. If not, it should be valid domain name
-     $domain_array = explode(".", $email_array[1]);
-     if (sizeof($domain_array) < 2) {
-       return false; // Not enough parts to domain
-     }
-     for ($i = 0; $i < sizeof($domain_array); $i++) {
-       if (!ereg("^(([A-Za-z0-9][A-Za-z0-9-]{0,61}[A-Za-z0-9])|([A-Za-z0-9]+))$", $domain_array[$i])) {
-	 return false;
-       }
-     }
-   }
-   return true;
+   
  }
-
-
-}
 
 ?>

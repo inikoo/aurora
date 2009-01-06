@@ -73,7 +73,7 @@ class company{
     }
 
     //print_r($contact->data);
-    $sql=sprintf("insert into `Company Dimension` (`Company ID`,`Company Name`,`Company File as`,`Company XHTML Address`,`Company Country Key`,`Company Country`,`Company Location`,`Company Principal Contact`,`Company Principal Contact Key`) values (%d,%s,%s,%s,%s,%s,%s,%s,%d)",
+    $sql=sprintf("insert into `Company Dimension` (`Company ID`,`Company Name`,`Company File as`,`Company Main XHTML Address`,`Company Mail Country Key`,`Company Main Country`,`Company Main Location`,`Company Main Contact`,`Company Main Contact Key`) values (%d,%s,%s,%s,%s,%s,%s,%s,%d)",
 		 $company_id,
 		 prepare_mysql($name),
 		 prepare_mysql($file_as),
@@ -129,7 +129,41 @@ class company{
     }
     
   }
-  
+  function add_page($page_data,$args='principal'){
+    $url=$data['page url'];
+    if(isset($data['page_type']) and preg_match('/internal/i',$data['page_type']))
+      $email_type='Internal';
+    else
+      $email_type='External';
+    $url_data=array(
+		     'page description'=>'',
+		     'page url'=>$url,
+		     'page type'=>$email_type,
+		     'page validated'=>0,
+		     'page verified'=>0,
+		     );
+    
+    if(isset($data['page description']) and $data['page description']!='')
+      $url_data['page description']=$data['page description'];
+    $page=new page('new',$url_data);
+   if($email->new){
+     
+     $sql=sprintf("insert into  `Company Web Site Bridge` (`Page Key`, `Company Key`) values (%d,%d)  ",$page->id,$this->id);
+     $this->db->exec($sql);
+     if(preg_match('/principal/i',$args)){
+     $sql=sprintf("update `Company Dimension` set `Company Main XHTML Page`=%s where `Contact Key`=%d",prepare_mysql($page->display('html')),$this->id);
+     // print "$sql\n";
+     $this->db->exec($sql);
+     }
+
+     $this->add_page=true;
+   }else{
+     $this->add_page=false;
+     
+   }
+
+  }
+
   function add_email($email_data,$args='principal'){
     //  $emails=$this->get('emails');
     //  print_r($this->data);
@@ -141,6 +175,11 @@ class company{
 
     if($contact->add_email){
       $this->msg['email added'];
+      if(preg_match('/principal/i',$args)){
+	$sql=sprintf("update `Company Dimension` set `Company Main XHTML Email`=%s where `Company Key`=%d",prepare_mysql($contact->get('Main Contact XHTML Email')),$this->id);
+	$this->db->exec($sql);
+     }
+
     }
 
   }
@@ -154,6 +193,13 @@ class company{
    
    if($contact->add_tel){
       $this->msg['telecom added'];
+        if(preg_match('/principal/i',$args)){
+	  $sql=sprintf("update `Company Dimension` set `Company Main Telephone`=%s where `Company Key`=%d",prepare_mysql($contact->get('Main Contact Telephone')),$this->id);
+	  $this->db->exec($sql);
+	  $sql=sprintf("update `Company Dimension` set `Company Main FAX`=%s where `Company Key`=%d",prepare_mysql($contact->get('Main Contact Fax')),$this->id);
+	  $this->db->exec($sql);
+	}
+
     }
 
   }
