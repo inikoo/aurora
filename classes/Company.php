@@ -73,7 +73,7 @@ class company{
     }
 
     //print_r($contact->data);
-    $sql=sprintf("insert into `Company Dimension` (`Company ID`,`Company Name`,`Company File as`,`Company Main XHTML Address`,`Company Mail Country Key`,`Company Main Country`,`Company Main Location`,`Company Main Contact`,`Company Main Contact Key`) values (%d,%s,%s,%s,%s,%s,%s,%s,%d)",
+    $sql=sprintf("insert into `Company Dimension` (`Company ID`,`Company Name`,`Company File as`,`Company Main XHTML Address`,`Company Main Country Key`,`Company Main Country`,`Company Main Location`,`Company Main Contact`,`Company Main Contact Key`) values (%d,%s,%s,%s,%s,%s,%s,%s,%d)",
 		 $company_id,
 		 prepare_mysql($name),
 		 prepare_mysql($file_as),
@@ -86,7 +86,7 @@ class company{
 
 		 
 		 );
-    //    print "$sql\n";
+    // print "$sql\n";
     $affected=& $this->db->exec($sql);
     if (PEAR::isError($affected)) {
       if(preg_match('/^MDB2 Error: constraint violation$/',$affected->getMessage()))
@@ -168,27 +168,28 @@ class company{
     //  $emails=$this->get('emails');
     //  print_r($this->data);
 
-    $contact=new contact($this->get('company principal contact key'));
-
-
-    $contact->add_email($email_data,$args);
-
-    if($contact->add_email){
-      $this->msg['email added'];
-      if(preg_match('/principal/i',$args)){
-	$sql=sprintf("update `Company Dimension` set `Company Main XHTML Email`=%s where `Company Key`=%d",prepare_mysql($contact->get('Main Contact XHTML Email')),$this->id);
-	$this->db->exec($sql);
-     }
-
+    $contact=new contact($this->get('company main contact key'));
+    if($contact->id){
+    
+      $contact->add_email($email_data,$args);
+      
+      if($contact->add_email){
+	$this->msg['email added'];
+	if(preg_match('/principal/i',$args)){
+	  $sql=sprintf("update `Company Dimension` set `Company Main XHTML Email`=%s where `Company Key`=%d",prepare_mysql($contact->get('Main Contact XHTML Email')),$this->id);
+	  $this->db->exec($sql);
+	}
+	
+      }
     }
-
   }
 
  function add_tel($tel_data,$args='principal'){
 
-   $tel_data['country key']=$this->get('Company Country Key');
-   $contact=new contact($this->get('company principal contact key'));
-
+   $tel_data['country key']=$this->get('Company main Country Key');
+   $contact=new contact($this->get('company main contact key'));
+   //print_r($this->data);
+   if($contact->id){
    $contact->add_tel($tel_data,$args);
    
    if($contact->add_tel){
@@ -201,7 +202,8 @@ class company{
 	}
 
     }
-
+ }else
+   print "Error\n";
   }
 
 

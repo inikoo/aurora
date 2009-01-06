@@ -665,6 +665,8 @@ function extract_product_groups($str,
 function _trim($string){
   $string=preg_replace('/^\s*/','',$string);
   $string=preg_replace('/\s*$/','',$string);
+  $string=preg_replace('/\s+/',' ',$string);
+
   return $string;
 }
 

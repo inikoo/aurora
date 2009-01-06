@@ -93,6 +93,17 @@ class Country{
 
   }
 
+  
+function get($key){
+    $key=strtolower($key);
+    if(isset($this->data[$key]))
+      return $this->data[$key];
+   
+    return false;
+
+  }
+
+
 }
 
 

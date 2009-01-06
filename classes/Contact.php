@@ -19,18 +19,20 @@ class Contact{
      $this->db =MDB2::singleton();
      
      $this->unknown_name=_('Unknown Name');
+     $this->unknown_informal_greeting=_('Hello');
+     $this->unknown_formal_greeting=_('Dear Sir or Madam');
 
-     if(preg_match('/^new$/',$arg1)){
+  if(preg_match('/^new$/',$arg1)){
 
        $this->create($arg2);
-
+       return;
      }
 
      if(is_numeric($arg1) and !$arg2){
        $this->get_data('id',$arg1);
-
+       return;
      }
-
+     $this->get_data($arg1,$arg2);
 
 
   }
@@ -78,6 +80,9 @@ class Contact{
       $sql=sprintf("SELECT * FROM dw.`Contact Dimension` C where `Contact Key`=%d",$id); 
     else
       return;
+
+   
+
     $result =& $this->db->query($sql);
     if($row=$result->fetchRow()){
       $this->data=$row;
@@ -90,31 +95,54 @@ class Contact{
     if(!is_array($data))
       $data=array();
 
-    // print_r($data);
+    //    print_r($data);
 
+    $this->data=array(
+		     'contact salutation'=>'',
+		     'contact name'=>'',
+		     'contact file as'=>'',
+		     'contact first name'=>'',
+		     'contact surname'=>'',
+		     'contact suffix'=>'',
+		     'contact gender'=>'Unknown',
+		     'contact informal greeting'=>'',
+		     'contact formal greeting'=>''
+		      );
+    
     if(isset($data['name_data'])){
-      $this->name=$data['name_data'];
-      $name=$this->display('name');
-      
-    }elseif(isset($data['name']) and $data['name']!=''){
-      $name=$data['name'];
-      $this->name=$this->parse_name_data($name);
-    }else{
-      $name=$this->unknown_name;
-      $this->name=array();
+      $this->parse_name_data($data['name_data']);
+    }elseif(isset($data['name'])){
+      $this->parse($data['name']);
+      // print_r( $this->data);
     }
     
-    $this->data['contact name']=$name;
-    $file_as=$this->file_as();
+    if($this->data['contact name']==''){
+      $this->data['contact name']=$this->unknown_name;
+      $this->data['contact file as']=$this->unknown_name;
+      $this->data['contact informal greeting']=$this->unknown_informal_greeting;
+      $this->data['contact formal greeting']=$this->unknown_formal_greeting;
+    }
+      
     
     $contact_id=$this->get_id();
-    $sql=sprintf("insert into `Contact Dimension` (`Contact ID`,`Contact Name`,`Contact File as`) values (%d,%s,%s)",
+
+    // print_r( $this->data);
+
+    $sql=sprintf("insert into `Contact Dimension` (`Contact ID`,`Contact Name`,`Contact File as`,`Contact Salutation`,`Contact First Name`,`Contact Surname`,`Contact Suffix`,`Contact Gender`,`Contact Informal Greeting`,`Contact Formal Greeting`) values (%d,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
 		 $contact_id,
-		 prepare_mysql($name),
-		 prepare_mysql($file_as)
-		 
+		 prepare_mysql($this->data['contact name']),
+		 prepare_mysql($this->data['contact file as']),
+		 prepare_mysql($this->data['contact salutation']),
+		 prepare_mysql($this->data['contact first name']),
+		 prepare_mysql($this->data['contact surname']),
+		 prepare_mysql($this->data['contact suffix']),
+		 prepare_mysql($this->data['contact gender']),
+		 prepare_mysql($this->data['contact informal greeting']),
+		 prepare_mysql($this->data['contact formal greeting'])
+
+
 	       );
-    //  print $sql;
+    //print $sql;
     $affected=& $this->db->exec($sql);
     if (PEAR::isError($affected)) {
       if(preg_match('/^MDB2 Error: constraint violation$/',$affected->getMessage()))
@@ -123,8 +151,8 @@ class Contact{
 	return array('ok'=>false,'msg'=>_('Unknwon Error').'.');
     }
     $this->id = $this->db->lastInsertID();  
-  
 
+    
     if(!isset($data['address']) and !isset($data['address_data'])){
       $address=new address('fuzzy all');
     }else if(isset($data['address'])){
@@ -133,8 +161,9 @@ class Contact{
       else
 	 $address=new address('fuzzy all');
     }else{
-      $address_data=$this->parse_address($data['address_data']);
-      $address=new address('new',$address_data);
+      //$address_data=$this->parse_address($data['address_data']);
+
+      $address=new address('new',$data['address_data']);
       
     }
     $address_id=$address->id;
@@ -244,7 +273,7 @@ class Contact{
      
      $sql=sprintf("insert into  `Telecom Bridge` (`Telecom Key`, `Contact Key`) values (%d,%d)  ",$telecom->id,$this->id);
      $this->db->exec($sql);
-     print "$sql\n";
+     //   print "$sql\n";
 
      if(preg_match('/principal/i',$args)){
 
@@ -255,7 +284,7 @@ class Contact{
        else
 	 $telecom_tipo='Main Main Telephone';
        $sql=sprintf("update `Contact Dimension` set `%s`=%s where `Contact Key`=%d",$telecom_tipo,prepare_mysql($telecom->display('html')),$this->id);
-       print "$sql\n";
+       //  print "$sql\n";
        $this->db->exec($sql);
      }
 
@@ -392,26 +421,26 @@ class Contact{
     
   }
   
-  function get_date($key='',$tipo='dt'){
-    if(isset($this->dates['ts_'.$key]) and is_numeric($this->dates['ts_'.$key]) ){
+ //  function get_date($key='',$tipo='dt'){
+//     if(isset($this->dates['ts_'.$key]) and is_numeric($this->dates['ts_'.$key]) ){
 
-      switch($tipo){
-      case('dt'):
-      default:
-	return strftime("%e %B %Y %H:%M", $porder['date_expected']);
-      }
-    }else
-      return false;
-  }
+//       switch($tipo){
+//       case('dt'):
+//       default:
+// 	return strftime("%e %B %Y %H:%M", $porder['date_expected']);
+//       }
+//     }else
+//       return false;
+//   }
   
 
-  function file_as(){
+//   function file_as(){
     
-    if($this->data['contact name']==$this->unknown_name)
-      return $this->unknown_name;
-    else
-      return $this->data['contact name'];
-  }
+//     if($this->data['contact name']==$this->unknown_name)
+//       return $this->unknown_name;
+//     else
+//       return $this->data['contact name'];
+//   }
 
    function get_id(){
     
@@ -460,8 +489,329 @@ class Contact{
     
      return $address_data;
    }
+   
+
+ function parse_name_data($data){
+
+   if(isset($data['salutation']))
+     $this->data['contact salutation']=mb_ucwords(_trim($data['salutation']));
+   if(isset($data['first']) or $data['middle'])
+     $this->data['contact first name']=mb_ucwords(_trim($data['first'].' '.$data['middle']));
+   if(isset($data['surname']))
+     $this->data['contact surname']=mb_ucwords(_trim($data['surname']));
+   if(isset($data['suffix']))
+     $this->data['contact suffix']=mb_ucwords(_trim($data['suffix']));
+   if(isset($data['gender']) and ($data['gender']=='Male' or $data['gender']=='Female'))
+     $this->data['contact gender']=_trim($data['gender']);
+   
+    if($this->data['contact gender']=='Unknown')
+      $this->data['contact gender']=$this->gender();
+
+   
+
+ 
+
+    $this->data=array(
+		      'contact name'=>$this->display('name'),
+		      'contact file as'=>$this->display('file_as'),
+		      'contact informal greeting'=>$this->display('informal gretting'),
+		      'contact formal greeting'=>$this->display('formal gretting')
+		     );
 
 
+  
+
+
+   }
+
+
+   function parse($raw_name){
+
+ $name=array(
+	      'prefix'=>'',
+	      'first'=>'',
+	      'middle'=>'',
+	      'last'=>'',
+	      'suffix'=>'',
+	      'alias'=>''
+	      );
+     
+ $raw_name=_trim($raw_name);
+ $raw_name=preg_replace('/\./',' ',$raw_name);
+ $names=preg_split('/\s+/',$raw_name);
+
+  $parts=count($names);
+  switch($parts){
+  case(1):
+    if($this->is_surname($names[0]))
+      $name['last']=$names[0];
+    else if($this->is_givenname($names[0]))
+      $name['first']=$names[0];
+    else if($this->is_prefix($names[0]))
+      $name['prefix']=$names[0];
+    else
+      $name['first']=$names[0];
+    break;
+  case(2):
+    // firt the most obious choise
+    
+    if( $this->is_givenname($names[0])){
+      $name['first']=$names[0];
+      $name['last']=$names[1];
+      
+
+    }else if( $this->is_givenname($names[0]) and   $this->is_surname($names[1])){
+      $name['first']=$names[0];
+      $name['last']=$names[1];
+
+    }else if( $this->is_prefix($names[0]) and   $this->is_surname($names[1])){
+      $name['prefix']=$names[0];
+      $name['last']=$names[1];
+    }else if( $this->is_prefix($names[0]) and   $this->is_givenname($names[1])){
+      $name['prefix']=$names[0];
+      $name['first']=$names[1];
+    }else if( $this->is_surname($names[0]) and   $this->is_surname($names[1])){
+      $name['last']=$names[0].' '.$names[1];
+    }else{
+      $name['first']=$names[0];
+      $name['last']=$names[1];
+
+    }
+    break;
+  case(3):
+    // firt the most obious choise
+
+    if(!$this->is_prefix($names[0]) and  strlen($names[1])==1   and   strlen($names[2])>1  ){
+      $name['first']=$names[0];
+      $name['middle']=$names[1];
+      $name['last']=$names[2];
+    }elseif( $this->is_prefix($names[0])) {
+	$name['prefix']=$names[0];
+	$name['first']=$names[1];
+	$name['last']=$names[2];
+
+// 	if(   $this->is_givenname($names[1]) and   $this->is_surname($names[2])){
+
+// 	  $name['first']=$names[1];
+// 	  $name['last']=$names[2];
+// 	}else if(    strlen($names[1])==1 and   $this->is_surname($names[2])){
+	  
+// 	  $name['first']=$names[1];
+// 	  $name['last']=$names[2];
+// 	}else if(   $this->is_givenname($names[1])    and   $this->is_givenname($names[2])){
+	  
+// 	  $name['first']=$names[1].' '.$names[2];
+// 	}else if(  $this->is_surname($names[1])    and   $this->is_surname($names[2])){
+	  
+// 	  $name['last']=$names[1].' '.$names[2];
+// 	}else{
+// 	  $name['first']=$names[1];
+// 	  $name['last']=$names[2];
+	  
+// 	}
+	
+
+      }else if(  $this->is_givenname($names[0])   and   $this->is_givenname($names[1])  and   $this->is_surname($names[2])){
+	$name['first']=$names[0].' '.$names[1];
+	$name['last']=$names[2];
+      }else if(  $this->is_givenname($names[0])   and   $this->is_surname($names[1])  and   $this->is_surname($names[2])){
+	$name['first']=$names[0];
+	$name['last']=$names[1].' '.$names[2];
+      }else if( $this->is_givenname($names[0]) and     strlen($names[1])==1 and   $this->is_surname($names[2])){
+	$name['first']=$names[0];
+	$name['middle']=$names[1];
+	$name['last']=$names[2];
+      }else{
+	$name['first']=$names[0];
+	$name['last']=$names[1].' '.$names[2];
+      }
+      break;
+    case(4):
+
+
+      
+  if( $this->is_prefix($names[0])) {
+	$name['prefix']=$names[0];
+	
+	if(  $this->is_givenname($names[1]) and    strlen($names[2])==1 and  $this->is_surname($names[3])){
+
+	  $name['first']=$names[1];
+	  $name['middle']=$names[2];
+	  $name['last']=$names[3];
+	}else if(  $this->is_givenname($names[1]) and   $this->is_givenname($names[2])  and  $this->is_surname($names[3])){
+
+	  $name['first']=$names[1].' '.$names[2];
+	  $name['last']=$names[3];
+	}else if( $this->is_prefix($names[0]) and     $this->is_givenname($names[1]) and   $this->is_surname($names[2])  and  $this->is_surname($names[3])){
+	  
+	  $name['first']=$names[1];
+	  $name['last']=$names[2].' '.$names[3];
+	  
+	}else
+	  $name['first']=$names[1].' '.$names[2];
+	  $name['last']=$names[3];
+	
+
+    // firt the most obious choise
+  }else if(      $this->is_givenname($names[0]) and $this->is_givenname($names[1]) and    $this->is_surname($names[2])  and  $this->is_surname($names[3])     ){
+
+      $name['first']=$names[0].' '.$names[1];
+      $name['last']=$names[2].' '.$names[3];
+    }else  if(      $this->is_givenname($names[0]) and $this->is_givenname($names[1]) and    $this->is_givenname($names[2])  and  $this->is_surname($names[3])     ){
+
+      $name['first']=$names[0].' '.$names[1].' '.$names[2];
+      $name['last']=$names[3];
+    }else{
+      $name['first']=$names[0];
+      $name['last']=$names[1].' '.$names[2].' '.$names[3];
+    }
+    break;
+  case(5):
+      if( $this->is_prefix($names[0]) and     $this->is_givenname($names[1]) and   $this->is_givenname($names[2])   and  $this->is_surname($names[3]) and $this->is_surname($names[4])  ){
+      $name['prefix']=$names[0];
+      $name['first']=$names[1].' '.$names[2];
+      $name['first']=$names[3].' '.$names[4];
+      }
+      else
+	$name['last']=join(' ',$names);
+    break;
+  default:
+    $name['last']=join(' ',$names);
+    
+  }
+
+  
+
+  foreach($name as $key=>$value){
+    $name[$key]=mb_ucwords($value);
+     
+  }
+
+  //print_r($name);
+ 
+
+ 
+  $this->data['contact salutation']=_trim($name['prefix']);
+  $this->data['contact first name']=_trim($name['first'].' '.$name['middle']);
+  $this->data['contact surname']=_trim($name['last']);
+  $this->data['contact suffix']=_trim($name['suffix']);
+  $this->data['contact name']=$this->display('name');
+  $this->data['contact file as']=$this->display('file_as');
+  $this->data['contact gender']=$this->gender();
+  $this->data['contact informal greeting']=$this->display('informal gretting');
+  $this->data['contact formal greeting']=$this->display('formal gretting');
+		    
+
+
+   }
+
+   function display($tipo='name'){
+
+     switch($tipo){
+     case('name'):
+       $name=_trim($this->data['contact salutation'].' '.$this->data['contact first name'].' '.$this->data['contact surname']);
+       $name=preg_replace('/\s+/',' ',$name);
+       return $name;
+     case('file as'):
+        $name=_trim($this->data['contact surname'].' '.$this->data['contact first name']);
+       $name=preg_replace('/\s+/',' ',$name);
+       return $name;
+     case('informal gretting'):
+       $gretting=_('Hello').' ';
+       $name=_trim($this->data['contact first name']);
+       $name=preg_replace('/\s+/',' ',$name);
+       if(strlen($name)>1 and !preg_match('/^[a-z] [a-z]$/i',$name) and  !preg_match('/^[a-z] [a-z] [a-z]$/i',$name)  ) 
+	 return $gretting.$name;
+       if(strlen($this->data['contact surname'])>1){
+	 $name=_trim($this->data['contact salutation'].' '.$this->data['contact surname']);
+	 $name=preg_replace('/\s+/',' ',$name);
+	 return $gretting.$name;
+       }
+       return $this->unknown_informal_greeting;
+     case('formal gretting'):
+       $gretting=_('Dear').' ';
+       if(strlen($this->data['contact surname'])>1){
+	 
+	 if($this->data['contact salutation']!=''){
+	   $name=_trim($this->data['contact salutation'].' '.$this->data['contact surname']);
+	   return $gretting.$name;
+	 }elseif($this->data['contact first name']!=''){
+	   $name=_trim($this->data['contact first name'].' '.$this->data['contact surname']);
+	   return $gretting.$name;
+	 }
+       }
+       return $this->unknown_formal_greeting;	 
+
+     }
+     
+     return false;
+
+   }
+
+function gender(){
+  
+  $prefix=$this->data['contact salutation'];
+  $first_name=$this->data['contact first name'];
+  $sql=sprintf("select `Gender` from  `Salutation Dimension`  where `Salutation`=%s ",prepare_mysql($prefix));
+  // print "$sql\n"; 
+  $res = $this->db->query($sql); 
+  if ($row=$res->fetchRow()){
+    if($row['gender']=='Male' or $row['gender']=='Female')
+      return $row['gender'];
+  }
+  
+
+  $male=0;
+  $felame=0;
+  $names=preg_split('/\s+/',$first_name);
+  foreach($names as $name){
+    $sql=sprintf("select `Gender` as genero from  `First Name Dimension` where `First Name`=%s",prepare_mysql($name));
+    //    print "$sql\n";
+    $res = $this->db->query($sql); 
+    if ($row=$res->fetchRow()){
+      if($row['genero']=='Male')
+	$male++;
+      if($row['genero']=='Felame')
+	$felame++;
+    }
+  }
+  if($felame>$male)
+    return 'Felame';
+  else if ($male>$felame)
+    return 'Male';
+  else
+    return 'Unknown';
+  
+}
+
+function is_givenname($name){
+  $sql=sprintf("select `First Name Key` as id from  `First Name Dimension` where `First Name`=%s",prepare_mysql($name));
+  $res2 = $this->db->query($sql); 
+  if ($row2=$res2->fetchRow()){
+    return $row2['id'];
+  }else
+    return 0;
+}
+
+function is_surname($name){
+
+  $sql=sprintf("select `Surname` as id from  `Surname Dimension` where `Surname`=%s",prepare_mysql($name));
+  $res2 = $this->db->query($sql); 
+  if ($row2=$res2->fetchRow()){
+    return $row2['id'];
+  }else
+    return 0;
+}
+function is_prefix($name){
+
+  $sql=sprintf("select `Salutation` as id from `Salutation Dimension`  where `Salutation`=%s",prepare_mysql($name));
+
+  $res2 = $this->db->query($sql); 
+  if ($row2=$res2->fetchRow()){
+    return $row2['id'];
+  }else
+    return 0;
+}
 
 }
 

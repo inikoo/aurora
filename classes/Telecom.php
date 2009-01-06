@@ -64,23 +64,32 @@ class Telecom{
 
 
  function create($data){
+
+ 
    $country=new country('code','UNK');
-   $this->data['country key']=$country->id;
+   $this->unknown_country_id=$country->id;
+   if(isset($data['country key']) and $data['country key']!='')
+     $this->data['telecom country key']=$data['country key'];
+   else
+     $this->data['telecom country key']=$this->unknown_country_id;
+
+
    $this->data['telecom original number']='';
    $this->data['telecom original extension']='';
    $this->data['telecom original area code']='';
    $this->data['telecom original country code']='';
    $this->data['telecom original type']='';
-      $this->data['telecom original restricted country key']='';
-
-     $this->data['telecom number']='';
+   
+   $this->data['telecom original restricted country key']='';
+   
+   $this->data['telecom number']='';
    $this->data['telecom extension']='';
    $this->data['telecom area code']='';
    $this->data['telecom country code']='';
    $this->data['telecom type']='';
       $this->data['telecom restricted country key']='';
 
-   
+      $this->data['telecom national access code']='';
    
    if(isset($data['telecom number']))
      $this->data['telecom original number']=$data['telecom number'];
@@ -94,15 +103,15 @@ class Telecom{
      $this->data['telecom original type']=$data['telecom type'];
     if(isset($data['telecom restricted country key']))
       $this->data['telecom original restricted country key']=$data['telecom restricted country key'];
-    if(isset($data['country key']))
-      $this->data['country key']=$data['country key'];
+  //   if(isset($data['country key']))
+//       $this->data['country key']=$data['country key'];
     
 
-    $country=new country('id', $this->data['country key']);
-    if($country->id)
-      $this->data['telecom country code']=$country->get('Country Telephone Code');
+ //    $country=new country('id', $this->data['country key']);
+//     if($country->id)
+//       $this->data['telecom country code']=$country->get('Country Telephone Code');
     //    print_r( $data);
-    // print_r( $this->data);
+    //    print_r( $this->data);
     $this->parse_telecom();
     
     //  print_r( $this->data);
@@ -112,15 +121,16 @@ class Telecom{
       return false;
     }
     
-    $sql=sprintf("insert into `Telecom Dimension` (`Telecom Type`,`Telecom Country Code`,`Telecom Area Code`,`Telecom Number`,`Telecom Extension`,`Telecom Restricted Country Key`) values (%s,%s,%s,%s,%s,%s)",
+    $sql=sprintf("insert into `Telecom Dimension` (`Telecom Type`,`Telecom Country Code`,`Telecom National Access Code`,`Telecom Area Code`,`Telecom Number`,`Telecom Extension`,`Telecom Country Key`) values (%s,%s,%s,%s,%s,%s,%s)",
 		 prepare_mysql($this->data['telecom type']),
 		 prepare_mysql($this->data['telecom country code']),
+		 prepare_mysql($this->data['telecom national access code']),
 		 prepare_mysql($this->data['telecom area code']),
 		 prepare_mysql($this->data['telecom number']),
 		 prepare_mysql($this->data['telecom extension']),
-		 prepare_mysql($this->data['telecom restricted country key'])
+		 prepare_mysql($this->data['telecom country key'])
 		 );
-    print "$sql\n";
+    //print "$sql\n";
     $affected=& $this->db->exec($sql);
     if (PEAR::isError($affected)) {
        $this->new=false;
@@ -136,9 +146,25 @@ class Telecom{
 
  
  function parse_telecom(){
-   
    $raw_tel=$this->get('telecom original number');
+   $raw_tel=preg_replace('/\(/',' (',$raw_tel);
+   $raw_tel=preg_replace('/\)/',') ',$raw_tel);
+
+   $raw_tel=_trim($raw_tel);
    
+   if(preg_match('/^\+\d{1,4}\s/',$raw_tel,$match)){
+     $len=strlen($match[0]);
+     $this->data['telecom country code']=preg_replace('/[^0-9]/','',$match[0]);
+     $raw_tel=substr($raw_tel,$len);
+   }
+
+   if(preg_match('/^\s*\(\d+\)\s*/',$raw_tel,$match)){
+     $len=strlen($match[0]);
+     $this->data['telecom national access code']=preg_replace('/[^0-9]/','',$match[0]);
+     $raw_tel=substr($raw_tel,$len);
+   }
+
+
    if($this->data['telecom country code']=='')
      $this->data['telecom country code']=preg_replace('/[^0-9]/','',$this->get('telecom original country code'));
   
@@ -147,6 +173,8 @@ class Telecom{
    $this->data['telecom area code']=preg_replace('/[^0-9]/','',$this->get('telecom original area code'));
 
    // fisrt try to see if it has an extension;
+
+
    $tel_ext=preg_split('/ext/i',$raw_tel);
 
   if(count($tel_ext)==2){
@@ -156,7 +184,7 @@ class Telecom{
   }else{
   
     $this->data['telecom extension']=preg_replace('/[^0-9]/','',$this->get('telecom original extension'));
-    $this->data['telecom number']=preg_replace('/[^0-9]/','',$this->get('telecom original number'));
+    $this->data['telecom number']=preg_replace('/[^0-9]/','',$raw_tel);
 
   }
   
@@ -167,18 +195,33 @@ class Telecom{
   
   // print_r($this->data);
   // country expcific
-  $country_id=$this->get('country key');
+  $country_id=$this->get('telecom country key');
+
+
+  
+  if($country_id==$this->unknown_country_id)
+    $country_id=$this->get_country_id();
+  //print $country_id;exit;
+  //print
+
+  $this->data['telecom country key']=$country_id;
+
   $this->data['is_mobile']='';
+
+
+
   switch($country_id){
-     
+    
   case(30)://UK
     if(preg_match('/^0845/',$this->data['telecom number'])){
-      $this->data['telecom restricted country key']=30;
+      $this->data['national only telecom']=1;
       $this->data['telecom country code']='';
       $this->data['telecom area code']='0845';
+      $this->data['telecom national access code']='';
       $this->data['telecom number']=preg_replace('/^0845/','',$this->data['telecom number']);
     }
     $number=preg_replace('/^0/','',$number);
+     $this->data['telecom national access code']='0';
     if(preg_match('/^7/',$number))
       $this->data['is_mobile']=1;
     else
@@ -206,10 +249,23 @@ class Telecom{
   else 
     $this->data['telecom type']=$this->data['telecom original type'];
   
-  
+  // print_r($this->data);
  }
  
 
+ function get_country_id(){
+   if($this->data['telecom country code']){
+     $sql="select * from `Country Dimension` where `Country Telephone Code`=".prepare_mysql($this->data['telecom country code']);
+     //   print $sql;
+     $result =& $this->db->query($sql);
+     if($row=$result->fetchRow()){
+       //print_r($row);
+       return $row['country key'];
+     }
+     
+   }
+   return false;
+ }
 
 }
 ?>

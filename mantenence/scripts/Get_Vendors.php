@@ -24,18 +24,39 @@ $version='V 1.0';
 
 $Data_Audit_ETL_Software="$software $version";
 
-$sql="select * from aw_old.supplier where id=119";
+$sql=" select * from aw_old.supplier left join aw_old.address on address_id=address.id ";
   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
     while($row=$res->fetchRow()) {
+      $data=array();
+
+      
       if($row['name_long']=='')
 	$row['name_long']=$row['name'];
       $data=array(
 		  'name'=>$row['name_long'],
-		  'code'=>$row['name']
+		  'code'=>$row['name'],
+		  'contact_name'=>$row['att'],
 		  );
 
+
+      if($row['address_id']){
+	$data['address_data']=array(
+				    'type'=>'3line',
+				    'address1'=>$row['line1'],
+				    'address2'=>$row['line2'],
+				    'address3'=>$row['line3'],
+				    'town'=>$row['city'],
+				    'country'=>$row['country'],
+				    'country_d1'=>'',
+				    'country_d2'=>'',
+				    'postcode'=>$row['postcode'],
+				    'default_country_id'=>30
+				    );
+      }
+      //  print_r($data);
       $supplier=new Supplier('new',$data);
       $supplier_company_id=$supplier->get('Company Key');
+      
 
       $company=new company('id',$supplier_company_id);
       // print_r($company->data);
@@ -70,7 +91,12 @@ $sql="select * from aw_old.supplier where id=119";
 	$data['telecom type']='Office Phone';
 	$company->add_tel($data,'principal');
       }
-    }
+   
+
+      
+
+
+ }
 
 
 

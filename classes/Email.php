@@ -55,7 +55,7 @@ class Email{
 		,$data['email validated']
 		,$data['email verified']
 		);
-   print "$sql\n";
+   //   print "$sql\n";
    $affected=& $this->db->exec($sql);
    if (PEAR::isError($affected)){
       $this->new=false;

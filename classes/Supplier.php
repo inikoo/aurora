@@ -63,10 +63,16 @@ class supplier{
     $code=$this->check_code($_code);
 
 
+    if(isset($data['contact_name']))
+      $data_contact=array('name'=>$data['contact_name']);
+    elseif(isset($data['contact_name_data']))
+      $data_contact=array('name_data'=>$data['contact_name_data']);
+    else
+      $data_contact=array(array());
 
-    
 
-
+    if(isset($data['address_data']))
+      $data_contact['address_data']=$data['address_data'];
     $contact=new contact('new',$data_contact);
  
     $company=new company('new',
