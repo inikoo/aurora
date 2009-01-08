@@ -12,13 +12,16 @@ class Customer{
     $this->status_names=array(0=>'new');
     
     if(is_numeric($arg1) and !$arg2){
-       $this->get_data($arg1);
+      $this->get_data('id',$arg1);
        return;
     }
     
-    
+    if($arg1=='new'){
+       $this->create($arg2);
+       return;
+    }
 
-    
+    $this->get_data($arg1,$arg2);
     
     
   }
@@ -26,60 +29,60 @@ class Customer{
 
 
 
- function get_data($id){
-   $sql=sprintf("select * from customer where id=%s",prepare_mysql($id));
+  function get_data($tag,$id){
+   $sql=sprintf("select * from `Customer Dimension` where `Customer Key`=%s",prepare_mysql($id));
    $result =& $this->db->query($sql);
    if($this->data=$result->fetchRow()){	     
-      $this->id=$this->data['id'];
+      $this->id=$this->data['customer key'];
       
-      $o_main_bill_address=new address($this->data['main_bill_address']);
-      if($o_main_bill_address->id){
-	$this->data['main_bill_address_id']=$o_main_bill_address->id;
-	$this->data['main_bill_address']=$o_main_bill_address->display('html');
+ //      $o_main_bill_address=new address($this->data['main_bill_address']);
+//       if($o_main_bill_address->id){
+// 	$this->data['main_bill_address_id']=$o_main_bill_address->id;
+// 	$this->data['main_bill_address']=$o_main_bill_address->display('html');
 	
-      }else{
-	  $this->data['main_bill_address_id']=false;
-	  $this->data['main_bill_address']='';
-      }
-      unset($o_main_bill_address);
+//       }else{
+// 	  $this->data['main_bill_address_id']=false;
+// 	  $this->data['main_bill_address']='';
+//       }
+//       unset($o_main_bill_address);
 
-      $o_main_contact_name=new name($this->data['main_contact_name']);
-      if($o_main_contact_name->id){
-	$this->data['main_contact_name_id']=$o_main_contact_name->id;
-	$this->data['main_contact_name']=$o_main_contact_name->display('html');
-      }else{
-	//try to auto fix it
-	$this->data['main_contact_name_id']=false;
-	$this->data['main_contact_name']='';
-      }
-      unset($o_main_contact_name);
+//       $o_main_contact_name=new name($this->data['main_contact_name']);
+//       if($o_main_contact_name->id){
+// 	$this->data['main_contact_name_id']=$o_main_contact_name->id;
+// 	$this->data['main_contact_name']=$o_main_contact_name->display('html');
+//       }else{
+// 	//try to auto fix it
+// 	$this->data['main_contact_name_id']=false;
+// 	$this->data['main_contact_name']='';
+//       }
+//       unset($o_main_contact_name);
 
-      $o_main_email=new email($this->data['main_email']);
-      if($o_main_email->id){
+//       $o_main_email=new email($this->data['main_email']);
+//       if($o_main_email->id){
 	
-	$this->data['main_email_id']=$o_main_email->id;
-	$this->data['main']['email']=$o_main_email->display();
-	$this->data['main']['formated_email']=$o_main_email->display('link');
-      }else{
-	//try to auto fix it
-	$this->data['main_email_id']=false;
-	$this->data['main']['email']='';
-	$this->data['main']['formated_email']='';
-      }
-      unset($o_main_email);
+// 	$this->data['main_email_id']=$o_main_email->id;
+// 	$this->data['main']['email']=$o_main_email->display();
+// 	$this->data['main']['formated_email']=$o_main_email->display('link');
+//       }else{
+// 	//try to auto fix it
+// 	$this->data['main_email_id']=false;
+// 	$this->data['main']['email']='';
+// 	$this->data['main']['formated_email']='';
+//       }
+//       unset($o_main_email);
 
-      $o_main_tel=new telecom($this->data['main_tel']);
-      if($o_main_tel->id){
-	$this->data['main_tel_id']=$o_main_tel->id;
-	$this->data['main_tel']=$o_main_tel->display('link');
-      }else{
-	//try to auto fix it
-	$this->data['main_tel_id']=false;
-	$this->data['main_tel']='';
-      }
-      unset($o_main_tel);
+//       $o_main_tel=new telecom($this->data['main_tel']);
+//       if($o_main_tel->id){
+// 	$this->data['main_tel_id']=$o_main_tel->id;
+// 	$this->data['main_tel']=$o_main_tel->display('link');
+//       }else{
+// 	//try to auto fix it
+// 	$this->data['main_tel_id']=false;
+// 	$this->data['main_tel']='';
+//       }
+//       unset($o_main_tel);
 
-    }
+     }
 
 
   }
@@ -114,8 +117,81 @@ class Customer{
     
   }
 
- function create_new(){
+ function create($data=false){
+   global $myconf;
+   $this->unknown_contact=$myconf['unknown_contact'];
+   $this->unknown_company=$myconf['unknown_company'];
+   $this->unknown_customer=$myconf['unknown_customer'];
+   // print_r($data);
+   $contact_name=$this->unknown_contact;
+   $company_name=$this->unknown_company;
+   $unique_id=$this-> get_id();
+   
+   $type='Unknown';
 
+   if(isset($data['type']) and ($data['type']=='Company' or $data['type']=='Person'))
+     $type=$data['type'];
+   
+   if(isset($data['contact_name']) and $data['contact_name']!='')
+     $contact_name=$data['contact_name'];
+    if(isset($data['company_name']) and $data['company_name']!='')
+     $company_name=$data['company_name'];
+   
+   $data_contact=array('name'=>$contact_name);
+   if(isset($data['address_data']))
+     $data_contact['address_data']=$data['address_data'];
+   if(isset($data['email'])){
+     $data_contact['email']=$data['email'];
+     if($type=='Company')
+       $data_contact['email type']='Work';
+   }
+   if(isset($data['telephone']))
+     $data_contact['telephone']=$data['telephone'];
+   if(isset($data['fax']))
+     $data_contact['fax']=$data['fax'];
+   
+
+   $main_contact=new contact('new',$data_contact);
+   //print_r($main_contact->data);
+   if($type=='Company'){
+     $company=new company('new',
+			  array('name'=>$company_name,'contact key'=>$main_contact->id)
+			  );
+     // print_r($company->data);
+     $customer_name=$company->get('company name');
+     $company_key=$company->id;
+
+
+   }else{
+     $customer_name=$main_contact->get('contact name');
+     $company_key='';
+   }
+
+   if($customer_name=='Unknown Contact' or $customer_name=='Unknown Company')
+     $customer_name=$this->unknown_customer;
+    $sql=sprintf("insert into `Customer Dimension` (`Customer ID`,`Customer Main Contact Key`,`Customer Main Contact Name`,`Customer Name`,`Customer Type`,`Customer Company Key`,`Customer Main Location`,`Customer Main XTML Email`,`Customer Main Telephone`) values (%d,%d,%s,%s,%s,%s,%s,%s,%s)"
+		 ,$unique_id
+		 ,$main_contact->id
+		 ,prepare_mysql($main_contact->get('contact name'))
+		 ,prepare_mysql($customer_name)
+		 ,prepare_mysql($type)
+		 ,prepare_mysql($company_key)
+		 ,prepare_mysql($main_contact->get('contact main location'))
+		 ,prepare_mysql($main_contact->get('Contact Main XHTML Email'))
+		 ,prepare_mysql($main_contact->get('Contact Main Telephone'))
+	       );
+    //print_r($main_contact->data);
+    //print "$sql\n";
+    $affected=& $this->db->exec($sql);
+    if (PEAR::isError($affected)) {
+
+      return; 
+    }    
+
+    $this->id = $this->db->lastInsertID();  
+    $this->get_data('id',$this->id);
+
+    //    print_r($this->data);
  }
 
 
@@ -348,5 +424,28 @@ class Customer{
    
  }
 
-}
+
+  function get_id(){
+    
+    $sql="select max(`Customer ID`)  as customer_id from `Customer Dimension`";
+    $result =& $this->db->query($sql);
+    if( $row=$result->fetchRow()){
+      if(!preg_match('/\d*/',_trim($row['customer_id']),$match))
+	$match[0]=1;
+      $right_side=$match[0];
+      // print "$right_side\n";
+      $number=(double) $right_side;
+      $number++;
+      $id=$number;
+    }else{
+      $id=1;
+    }  
+    // print "$id\n";
+    return $id;
+  }
+
+
+ 
+
+ }
 ?>

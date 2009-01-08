@@ -15,7 +15,7 @@ class Email{
        $this->get_data('id',$arg1);
        return;
      }
-      if(is_array($arg2) and $arg1='new'){
+     if ($arg1='new'){
        $this->create($arg2);
        return;
      }
@@ -29,7 +29,9 @@ class Email{
       $sql=sprintf("select * from `Email Dimension` where  `Email Key`=%d",$tag);
     elseif($tipo=='email')
       $sql=sprintf("select * from `Email Dimension` where  `Email`=%s",prepare_mysql($tag));
-    
+    else
+      return;
+
    $result =& $this->db->query($sql);
     if($this->data=$result->fetchRow()){
       $this->id=$this->data['email key'];
@@ -39,12 +41,27 @@ class Email{
 }
 
   function create($data,$args=''){
+    
+    if(!$data)
+      return;
 
+    global $myconf;
    if($data['email']==''){
      $this->new=false;
      $this->msg=_('No email provided');
      return false;
    }
+   if(!isset($data['email contact name']) or (isset($data['email contact name']) and $data['email contact name']==$myconf['unknown_contact'] ) )
+     $data['email contact name']='';
+   if(!isset($data['email type']))
+     $data['email type']='Unknown';
+    if(!isset($data['email description']))
+     $data['email description']='';
+    if(!isset($data['email validated']))
+      $data['email validated']=0;
+  if(!isset($data['email verified']))
+      $data['email verified']=0;
+
    if($this->is_valid($data['email']))
      $data['email validated']=1;
    $sql=sprintf("insert into `Email Dimension`  (`Email`,`Email Contact Name`,`Email Type`,`Email Description`,`Email Validated`,`Email Verified`) values (%s,%s,%s,%s,%d,%d)"

@@ -22,18 +22,25 @@ class supplier{
        $this->get_data('id',$arg1);
        return ;
      }
-     if(preg_match('/create|new/i',$arg1))
+     if(preg_match('/create|new/i',$arg1)){
        $this->create($arg2);
-       
+       return;
+     }       
+     $this->get_data($arg1,$arg2);
+     
  }
 
 
   function get_data($tipo,$id){
-    $sql=sprintf("select * from `Vendor Dimension` where `Vendor Key`=%d",$id);
+    if($tipo=='id')
+      $sql=sprintf("select * from `Vendor Dimension` where `Vendor Key`=%d",$id);
+    else
+      $sql=sprintf("select * from `Vendor Dimension` where `Vendor Code`=%s",prepare_mysql($id));
+
     $result =& $this->db->query($sql);
     if($row=$result->fetchRow()){
       $this->data=$row;
-      $this->id=$row['id'];
+      $this->id=$row['vendor key'];
     }
      
   }
@@ -50,7 +57,7 @@ class supplier{
   function create($data){
     if(!is_array($data))
       $data=array('name'=>_('Unknown Supplier'));
-    // print_r($data);
+
     if($data['name']!='')
       $name=$data['name'];
     else
@@ -78,6 +85,8 @@ class supplier{
     $company=new company('new',
 			 array('name'=>$name,'contact key'=>$contact->id)
 			 );
+
+    
 
     $sql=sprintf("insert into `Vendor Dimension` (`Vendor Code`,`Vendor Name`,`Company Key`,`Vendor Main Contact Key`,`Vendor Accounts Payable Contact Key`,`Vendor Sales Contact Key`) values (%s,%s,%d,%d,%d,%d)",
 		 prepare_mysql($code),

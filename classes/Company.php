@@ -72,19 +72,21 @@ class company{
     $contact=new contact($contact_id);
     }
 
+    
     //print_r($contact->data);
-    $sql=sprintf("insert into `Company Dimension` (`Company ID`,`Company Name`,`Company File as`,`Company Main XHTML Address`,`Company Main Country Key`,`Company Main Country`,`Company Main Location`,`Company Main Contact`,`Company Main Contact Key`) values (%d,%s,%s,%s,%s,%s,%s,%s,%d)",
+    $sql=sprintf("insert into `Company Dimension` (`Company ID`,`Company Name`,`Company File as`,`Company Main XHTML Address`,`Company Main Country Key`,`Company Main Country`,`Company Main Location`,`Company Main Contact`,`Company Main Contact Key`,`Company Main Telephone`,`Company Main FAX`,`Company Main XHTML Email`) values (%d,%s,%s,%s,%s,%s,%s,%s,%d,%s,%s,%s)",
 		 $company_id,
 		 prepare_mysql($name),
 		 prepare_mysql($file_as),
-		 prepare_mysql($contact->get('Main Contact XHTML Address')),
-		 prepare_mysql($contact->get('Main Contact Country Code')),
-		 prepare_mysql($contact->get('Main Contact Country')),
-		 prepare_mysql($contact->get('Main Contact location')),
+		 prepare_mysql($contact->get('Contact Main XHTML Address')),
+		 prepare_mysql($contact->get('Contact Main Country Key')),
+		 prepare_mysql($contact->get('Contact Main Country')),
+		 prepare_mysql($contact->get('Contact Main location')),
 		 prepare_mysql($contact->get('contact name')),
-		 $contact->id
-
-		 
+		 $contact->id,
+		 prepare_mysql($contact->get('contact main telephone')),
+		 prepare_mysql($contact->get('contact main fax')),
+		 prepare_mysql($contact->get('Contact Main XHTML Email'))
 		 );
     // print "$sql\n";
     $affected=& $this->db->exec($sql);
@@ -96,7 +98,7 @@ class company{
     }
     $this->id = $this->db->lastInsertID();  
     
-  
+    $this->get_data('id',$this->id);
   }
 
   function get_id(){
@@ -104,7 +106,8 @@ class company{
     $sql="select max(`Company ID`)  as company_id from `Company Dimension`";
     $result =& $this->db->query($sql);
     if( $row=$result->fetchRow()){
-      preg_match('/\d+$/',_trim($row['company_id']),$match);
+      if(!preg_match('/\d*/',_trim($row['company_id']),$match))
+	$match[0]=1;
       $right_side=$match[0];
       $number=(double) $right_side;
       $number++;
@@ -176,7 +179,7 @@ class company{
       if($contact->add_email){
 	$this->msg['email added'];
 	if(preg_match('/principal/i',$args)){
-	  $sql=sprintf("update `Company Dimension` set `Company Main XHTML Email`=%s where `Company Key`=%d",prepare_mysql($contact->get('Main Contact XHTML Email')),$this->id);
+	  $sql=sprintf("update `Company Dimension` set `Company Main XHTML Email`=%s where `Company Key`=%d",prepare_mysql($contact->get('Contact Main XHTML Email')),$this->id);
 	  $this->db->exec($sql);
 	}
 	
@@ -195,9 +198,9 @@ class company{
    if($contact->add_tel){
       $this->msg['telecom added'];
         if(preg_match('/principal/i',$args)){
-	  $sql=sprintf("update `Company Dimension` set `Company Main Telephone`=%s where `Company Key`=%d",prepare_mysql($contact->get('Main Contact Telephone')),$this->id);
+	  $sql=sprintf("update `Company Dimension` set `Company Main Telephone`=%s where `Company Key`=%d",prepare_mysql($contact->get('Contact Main Telephone')),$this->id);
 	  $this->db->exec($sql);
-	  $sql=sprintf("update `Company Dimension` set `Company Main FAX`=%s where `Company Key`=%d",prepare_mysql($contact->get('Main Contact Fax')),$this->id);
+	  $sql=sprintf("update `Company Dimension` set `Company Main FAX`=%s where `Company Key`=%d",prepare_mysql($contact->get('Contact Main Fax')),$this->id);
 	  $this->db->exec($sql);
 	}
 

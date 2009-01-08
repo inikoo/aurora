@@ -17,10 +17,10 @@ class Contact{
 
   function __construct($arg1=false,$arg2=false) {
      $this->db =MDB2::singleton();
-     
-     $this->unknown_name=_('Unknown Name');
-     $this->unknown_informal_greeting=_('Hello');
-     $this->unknown_formal_greeting=_('Dear Sir or Madam');
+      global $myconf;
+     $this->unknown_name=$myconf['unknown_contact'];
+     $this->unknown_informal_greeting=$myconf['unknown_informal_greting'];
+     $this->unknown_formal_greeting=$myconf['unknown_formal_greting'];
 
   if(preg_match('/^new$/',$arg1)){
 
@@ -115,6 +115,11 @@ class Contact{
       $this->parse($data['name']);
       // print_r( $this->data);
     }
+//     print "->".$data['name']."<-\n";
+//     print  "->".$this->unknown_name."<-\n";
+//     exit;
+    if($data['name']==$this->unknown_name)
+      $this->data['contact name']='';
     
     if($this->data['contact name']==''){
       $this->data['contact name']=$this->unknown_name;
@@ -167,24 +172,132 @@ class Contact{
       
     }
     $address_id=$address->id;
-    // print_r($address->data);
+
     $sql=sprintf("insert into `Contact Bridge` (`Contact Key`,`Address Key`) values (%d,%d)",
 		 $this->id,
 		 $address->id
 	       );
     $this->db->exec($sql);
 
-    //print "$sql\n";
-    $sql=sprintf("update `Contact Dimension`  set `Main Contact Location`=%s ,`Main Contact XHTML Address`=%s , `Main Contact Country Key`=%d,`Main Contact Country`=%s,`Main Country Code`=%s where `Contact Key`=%d ",
+    //  print "$sql\n";
+    $sql=sprintf("update `Contact Dimension`  set `Contact main Location`=%s ,`Contact Main XHTML Address`=%s , `Contact Main Country Key`=%d,`Contact Main Country`=%s,`Contact Main Country Code`=%s where `Contact Key`=%d ",
 		 prepare_mysql($address->get('address location')),
 		 prepare_mysql($address->get('xhtml address')),
-		 $address->get('Country Id'),
+		 $address->get('address country Key'),
 		 prepare_mysql($address->get('address Country name')),
 		 prepare_mysql($address->get('address Country Code')),
 		 $this->id
 		 );
-    //print "$sql\n";
+    // print "\n$sql\n";
     $this->db->exec($sql);
+    $this->get_data('id',$this->id);
+    if(isset($data['email']) & $data['email']!=''){
+      $email_data=array('email'=>$data['email'],'email contact'=>$this->display('name'));
+      
+      if(isset($data['email type']))
+	$email_data['email type']=$data['email type'];
+      $email=new email('new',$email_data);
+      if($email->id){
+	$sql=sprintf("insert into  `Email Bridge` (`Email Key`, `Contact Key`) values (%d,%d)  ",$email->id,$this->id);
+	$this->db->exec($sql);
+	$sql=sprintf("update  `Contact Dimension` set  `Contact Main XHTML Email`=%s  where `Contact Key` ",prepare_mysql($email->display('html')),$this->id);
+	//	print $sql;
+	$this->db->exec($sql);
+
+      }
+	
+    }
+    
+    if(isset($data['fax']) & $data['fax']!=''){
+      $tel_data=array(
+		      'country key'=>$this->get('Contact Main Country Key')
+		      ,'telecom number'=>$data['fax']
+		      ,'telecom type'=>'Bussiness Fax'
+		      );
+      if(isset($data['fax type']) and ($data['fax type']=='Home' or $data['fax type']=='Bussiness' ) )
+	$tel_data['telecom type']=$data['fax type'].' Fax';
+      $tel=new Telecom('new',$tel_data);
+      if($tel->id){
+	$sql=sprintf("insert into  `Telecom Bridge` (`Telecom Key`, `Contact Key`) values (%d,%d)  ",$tel->id,$this->id);
+	$this->db->exec($sql);
+	if(preg_match('/fax/i',$tel->get('telecom type'))){
+	  $sql=sprintf("update  `Contact Dimension` set  `Contact Main FAX`=%s  where `Contact Key` ",prepare_mysql($tel->display()),$this->id);
+	  $this->db->exec($sql);
+	}elseif(preg_match('/mobile/i',$tel->get('telecom type'))){
+	  $sql=sprintf("update  `Contact Dimension` set  `Contact Main Mobile`=%s  where `Contact Key` ",prepare_mysql($tel->display()),$this->id);
+	  $this->db->exec($sql);
+	}
+	
+	
+      }
+      
+    }
+
+    
+    if(isset($data['mobile']) & $data['mobile']!=''){
+      $tel_data=array(
+		      'country key'=>$this->get('Contact Main Country Key')
+		      ,'telecom number'=>$data['mobile']
+		      ,'telecom type'=>'Mobile'
+		      );
+
+      $tel=new Telecom('new',$tel_data);
+      if($tel->id){
+	$sql=sprintf("insert into  `Telecom Bridge` (`Telecom Key`, `Contact Key`) values (%d,%d)  ",$tel->id,$this->id);
+	$this->db->exec($sql);
+	if(preg_match('/mobile/i',$tel->get('telecom type'))){
+	  $sql=sprintf("update  `Contact Dimension` set  `Contact Main Mobile`=%s  where `Contact Key` ",prepare_mysql($tel->display()),$this->id);
+	    $this->db->exec($sql);
+	}elseif(preg_match('/telephone/i',$tel->get('telecom type'))){
+	  $sql=sprintf("update  `Contact Dimension` set  `Contact Main Telephone`=%s  where `Contact Key` ",prepare_mysql($tel->display()),$this->id);
+	  $this->db->exec($sql);
+	}
+	
+
+      }
+      
+     }
+
+
+     
+     if(isset($data['telephone']) & $data['telephone']!=''){
+       $tel_data=array(
+		       'country key'=>$this->get('Contact Main Country Key')
+		      ,'telecom number'=>$data['telephone']
+		       ,'telecom type'=>'Bussiness Telephone'
+		       );
+       if(isset($data['telephone type']) and ($data['telephone type']=='Home' or $data['telephone type']=='Bussiness' ) )
+	 $tel_data['telecom type']=$data['telephone type'].' Telephone';
+       $tel=new Telecom('new',$tel_data);
+       if($tel->id){
+	$sql=sprintf("insert into  `Telecom Bridge` (`Telecom Key`, `Contact Key`) values (%d,%d)  ",$tel->id,$this->id);
+	$this->db->exec($sql);
+
+	//	print_r($tel->data);
+	if(preg_match('/telephone|mobile/i',$tel->get('telecom type'))){
+	  $sql=sprintf("update  `Contact Dimension` set  `Contact Main Telephone`=%s  where `Contact Key` ",prepare_mysql($tel->display()),$this->id);
+
+	  $this->db->exec($sql);
+	}
+	if(preg_match('/mobile/i',$tel->get('telecom type'))){
+	  $sql=sprintf("update  `Contact Dimension` set  `Contact Main Mobile`=%s  where `Contact Key` ",prepare_mysql($tel->display()),$this->id);
+	    $this->db->exec($sql);
+	}
+	
+       }
+       
+     }
+
+
+
+	  
+	  
+
+
+    $this->get_data('id',$this->id);
+    //  print_r($data);
+    //print_r($this->data);
+    //exit;
   }    
   
   
@@ -444,10 +557,12 @@ class Contact{
 
    function get_id(){
     
-    $sql="select max(`Contact ID`)  as company_id from `Contact Dimension`";
+    $sql="select max(`Contact ID`)  as contact_id from `Contact Dimension`";
     $result =& $this->db->query($sql);
     if( $row=$result->fetchRow()){
-      preg_match('/\d+$/',_trim($row['company_id']),$match);
+      
+      if(!preg_match('/\d*/',_trim($row['contact_id']),$match))
+	$match[0]=1;
       $right_side=$match[0];
       $number=(double) $right_side;
       $number++;

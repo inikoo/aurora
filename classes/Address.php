@@ -61,10 +61,26 @@ class Address{
 
   function create($data){
 
+
+
     if(isset($data['type']) and $data['type']=='3line'){
       //   print_r($data);
       $prepared_data=$this->prepare_3line($data);
-      
+    }elseif(isset($data['type']) and $data['type']=='aw'){
+      $prepared_data=$data;
+
+      $prepared_data['town_d1_id']='';
+      $prepared_data['town_d2_id']='';
+      $prepared_data['country_d1_id']='';
+      $prepared_data['country_d1_id']='';
+      $prepared_data['town_id']='';
+      $country=new country('name',$prepared_data['country']);
+      $prepared_data['country_id']=$country->id;
+      //     print_r($prepared_data);exit;
+    }else
+       return;
+
+
       if($prepared_data['town_d1_id']==0)$prepared_data['town_d1_id']='';
       if($prepared_data['town_d2_id']==0)$prepared_data['town_d2_id']='';
       if($prepared_data['country_d1_id']==0)$prepared_data['country_d1_id']='';
@@ -108,10 +124,7 @@ class Address{
       $this->data['address location']=$this->display('location');
       $this->data['xhtml address']=$this->display('xhtml');
 
-      //      $this->parse_internal($prepared_data['street_address']);
-
-      //  print_r($prepared_data);
-      //  print_r($this->data);
+      
 
       $keys='`Address Data Creation`';
       $values='Now()';
@@ -123,7 +136,7 @@ class Address{
       $keys=preg_replace('/^,/','',$keys);
 
       $sql="insert into `Address Dimension` ($keys) values ($values)";
-      // print $sql;
+      //    print $sql;
       $affected=& $this->db->exec($sql);
       if (PEAR::isError($affected)) {
 	return array('ok'=>false,'msg'=>_('Unknwon Error').'.');
@@ -134,7 +147,7 @@ class Address{
 
       
 
-    }
+    
 
 
   }

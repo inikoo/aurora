@@ -132,7 +132,13 @@ $myconf=array(
 	      'customer_id_prefix'=>'C',
 	      'order_id_prefix'=>'',
 	      'data_since'=>'14-06-2004',
-	      'product_code_separator'=>'-'
+	      'product_code_separator'=>'-',
+	      'unknown_company'=>'Unknown Company',
+	      'unknown_contact'=>'Unknown Contact',
+	      'unknown_customer'=>'Unknown Customer',
+	      'unknown_supplier'=>'Unknown Supplier',
+	      'unknown_informal_greting'=>'Hello',
+	      'unknown_formal_greting'=>'Dear Sir or Madam'
 	      );
 
 $default_state=array(
