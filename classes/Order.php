@@ -2,6 +2,7 @@
 
 include_once('Staff.php');
 include_once('Supplier.php');
+include_once('Customer.php');
 
 class Order{
   var $db;
@@ -12,69 +13,265 @@ class Order{
   var $tipo;
   var $staus='new';
 
-  function __construct($tipo='order',$arg1=false,$arg2=false) {
+  function __construct($arg1=false,$arg2=false) {
      $this->db =MDB2::singleton();
      $this->status_names=array(0=>'new');
      
-     if(is_numeric($tipo)){
-       $this->tipo='order';
-       $this->get_data('id',$tipo);
-       return false;
-     }
-     
-     if(preg_match('/^(order|orden|invoice)$/',$tipo))
-       $this->tipo='order';
-     else
-        $this->tipo='po';
-
      if(is_numeric($arg1)){
        $this->get_data('id',$arg1);
        return false;
-     }elseif(is_array($arg1)){
-       $this->create_order($arg1);
-     }else{
-       $this->get_data($arg1,$arg2);
-       
+     }
+     
+     if(preg_match('/new/i',$arg1)){
+       $this->create_order($arg2);
      }
 
 
      
      
-
-
-//      if(preg_match('/^order$/',$tipo))
-//        $this->tipo='order';
-//      else if(preg_match('/^(po|purchase order)$/',$tipo))
-//        $this->tipo='po';
-//      else
-//        return;
-
-     
-//      if(is_numeric($id)){//load from id
-//        $this->id=$id;
-//        if(!$this->get_data($tipo))
-// 	 return false;
-//      }else if(is_array($id)){// Create a new order
-//        $this->create_order($id);
-//      }
-
-
 
   }
 
   function create_order($data){
-    switch($this->tipo){
-    case('po'):
-      $sql=sprintf("insert into porden (date_creation,date_index,supplier_id) values (NOW(),NOW(),%d)",$data['supplier_id']);
-      mysql_query($sql);
-      $this->id=mysql_insert_id();
-      $this->get_data();
-      $this->status='new';
-      break;
-    }
+    if(!isset($data['type']))
+      return;
+    $type=$data['type'];
+    switch($type){
+    case('imap_email_mals-e'):
 
+      $mbox = imap_open("{imap.gmail.com:993/imap/ssl}INBOX", $data['email'], $data['pwd'])or die("can't connect: " . imap_last_error());
+      $imap_obj = imap_check($mbox);
+      
+      //$email= imap_body($mbox,1);
+//           $email="
+
+// Username    : 6116085
+// Date        : 23 May 2008 - 16:56
+// Shopper Id  : 11555634
+// IP number   : 91.84.99.64
+// For payment by: Card  Visa
+
+
+// Product : Quantity : Price
+// EO-01 Lavender Essential Oil 10ml : 1 : 0.89
+// EO-03 Eucalyptus Essential Oil 10ml : 1 : 0.85
+// EO-05 Rosemary Essential Oil 10ml : 1 : 1.10
+// EO-07 Clary Sage Essential Oil 10ml : 1 : 1.95
+// EO-08 Geranium Essential Oil 10ml : 1 : 1.65
+// EO-10 Patchouli Essential Oil 10ml : 1 : 1.95
+// EO-12 Lemon Essential Oil 10ml : 1 : 0.95
+// EO-35 Orange Essential Oil 10ml : 1 : 0.80
+// EO-76 White Birch Essential Oil 10ml : 1 : 2.10
+// DC-05 Navy Blue Dinner Candles (box of 30) : 1 : 4.50
+// DC-06 Dark Green Dinner Candles (box of 30) : 1 : 4.50
+// DC-10 Black Dinner Candles (box of 30) : 1 : 4.50
+// DC-12 Purple Dinner Candles (box of 30) : 1 : 4.50
+// ChipCKH-01 Green Aventurine Bracelet : 1 : 2.25
+// ChipCKH-02 Amethyst Bracelet : 1 : 2.25
+// Combo-03  12x Amethyst & Clear Quartz Chipstone : 1 : 2.40
+// Combo-05  12x Amethyst & Blue Lace Agate Chipstone : 1 : 2.40
+// Combo-10  12x Howlite Turquoise & Hematite Chipstone : 1 : 2.40
+// Tib-57 Large Ganesh Singing Bowl : 1 : 10.50
+// Tib-47 Wooden Stick with Velvet : 2 : 0.95
+// Tib-41 Mini Brass Tingsha - Om Mani  : 2 : 4.95
+
+// Voucher  : -0.00
+// Discount : -0.00
+// Subtotal : 64.24
+// Shipping : 7.50
+// Tax      : 12.55
+// TOTAL    : 84.29
+
+// Invoice to:
+//  Inv Name    : Mrs Elizabeth Anne Holtum
+//  Inv Company : Rainbow Spirit Ltd
+//  Inv Address : 55 Molesworth Street
+//  Inv City    : Wadebridge
+//  Inv State   : Cornwall
+//  Inv Pst Code: PL27 7DR
+//  Inv Country : UK
+
+// Tel     : 01208816554
+// Fax     : 
+// Email   : beth@rainbow-spirit.co.uk
+
+// Deliver to:
+//  Ship Name    : Mrs Elizabeth Anne Holtum
+//  Ship Company : Rainbow Spirit Ltd
+//  Ship Address : 55 Molesworth Street
+//  Ship City    : Wadebridge
+//  Ship State   : Cornwall
+//  Ship Pst Code: PL27 7DR
+//  Ship Country : UK
+//  Ship Tel     : 
+
+// Message : 
+
+// Extra customer data: White : Yes
+
+// https://www.mals-e.com/login.php?user=6116085
+
+
+// ";
+      // print $email;
+
+      if(preg_match('/\nUsername\s*:\s*\d+/',$email,$match))
+	$edata['username']=preg_replace('/username\s*:\s*/i','',_trim($match[0]));
+      if(preg_match('/\nDate\s*:\s*[a-zA-Z0-9\-\s]+:\d\d\s*/',$email,$match)){
+	$date=preg_replace('/date\s*:\s*/i','',_trim($match[0]));
+	$date=preg_replace('/\-/','',$date);
+
+	$edata['date']=date("Y-m-d H:i:s",strtotime($date));
+      }
+      if(preg_match('/\nShopper Id\s*:\s*\d+/',$email,$match))
+	$edata['shopper_id']=preg_replace('/shopper id\s*:\s*/i','',_trim($match[0]));
+      if(preg_match('/\nIP number\s*:\s*\d+\.\d+\.\d+\.\d+/',$email,$match))
+	$edata['ip_number']=preg_replace('/ip number\s*:\s*/i','',_trim($match[0]));
+      if(preg_match('/\nFor payment by\s*:\s*.+\n/',$email,$match))
+	$edata['for_payment_by']=preg_replace('/for payment by\s*:\s*/i','',_trim($match[0]));
+      
+      if( !preg_match('/\nTel\s*:\s*\n/',$email)  and  preg_match('/\nTel\s*:\s*.+\n/',$email,$match))
+	$edata['tel']=preg_replace('/tel\s*:\s*/i','',_trim($match[0]));
+
+      if( !preg_match('/\nFax\s*:\s*\n/',$email)  and preg_match('/\nFax\s*:\s*.+\n/',$email,$match))
+	$edata['fax']=preg_replace('/fax\s*:\s*/i','',_trim($match[0]));
+
+      if(!preg_match('/\nEmail\s*:\s*\n/',$email)  and    preg_match('/\nEmail\s*:\s*.+\n/',$email,$match))
+	$edata['email']=preg_replace('/email\s*:\s*/i','',_trim($match[0]));
+
+
+      if(preg_match('/\nVoucher\s*:\s*[0-9\.`-]+\n/',$email,$match)){
+	$edata['voucher']=preg_replace('/voucher\s*:\s*/i','',_trim($match[0]));
+	if($edata['voucher']=='-0.00')
+	  $edata['voucher']='0.00';
+      }
+      if(preg_match('/\nDiscount\s*:\s*[0-9\.`-]+\n/',$email,$match)){
+	$edata['discount']=preg_replace('/discount\s*:\s*/i','',_trim($match[0]));
+	if($edata['discount']=='-0.00')
+	  $edata['discount']='0.00';
+      }
+
+      
+   if(preg_match('/\nSubtotal\s*:\s*[0-9\.`-]+\n/',$email,$match)){
+	$edata['subtotal']=preg_replace('/subtotal\s*:\s*/i','',_trim($match[0]));
+	if($edata['subtotal']=='-0.00')
+	  $edata['subtotal']='0.00';
+      }
+
+ if(preg_match('/\nTax\s*:\s*[0-9\.`-]+\n/',$email,$match)){
+	$edata['tax']=preg_replace('/tax\s*:\s*/i','',_trim($match[0]));
+	if($edata['tax']=='-0.00')
+	  $edata['tax']='0.00';
+      }
+ if(preg_match('/\nTOTAL\s*:\s*[0-9\.`-]+\n/',$email,$match)){
+	$edata['total']=preg_replace('/total\s*:\s*/i','',_trim($match[0]));
+	if($edata['total']=='-0.00')
+	  $edata['total']='0.00';
+      }
+
+ if(preg_match('/\nShipping\s*:\s*[0-9\.`-]+\n/',$email,$match)){
+	$edata['shipping']=preg_replace('/shipping\s*:\s*/i','',_trim($match[0]));
+	if($edata['shipping']=='-0.00')
+	  $edata['shipping']='0.00';
+      }
+
+ //Delivery data
+ 
+ $tags=array(' Inv Name',' Inv Company',' Inv Address',' Inv City',' Inv State',' Inv Pst Code',' Inv Country',' Ship Name',' Ship Company',' Ship Address',' Ship City',' Ship State',' Ship Pst Code',' Ship Country',' Ship Tel');
+ foreach($tags as $tag){
+     if(preg_match('/\n'.$tag.'\s*:.*\n/',$email,$match))
+       $edata[strtolower(_trim($tag))]=preg_replace('/'._trim($tag).'\s*:\s*/i','',_trim($match[0]));
+ }
+
+
+ $lines=preg_split('/\n/',$email);
+ $products=false;
+ $_products=array();
+ foreach($lines as $line){
+
+
+   //   print "$products $line\n";
+   if(preg_match('/Product : Quantity : Price/',$line))
+     $products=true;
+   elseif(preg_match('/Voucher  :/',$line))
+     $products=false;
+   elseif($products and !preg_match('/^\s*$/',$line))
+     $_products[]=$line;
+ }
+ global $myconf;
+ $cdata['contact_name']=$edata['inv name'];
+ $cdata['type']='Person';
+ if(isset($edata['tel']) and $edata['tel']!='')
+   $cdata['telephone']=$edata['tel'];
+ if(isset($edata['fax']) and $edata['fax']!='')
+   $cdata['fax']=$edata['fax'];
+if(isset($edata['email']) and $edata['email']!='')
+   $cdata['email']=$edata['email'];
+ if($edata['inv company']!=''){
+   $cdata['type']='Company';
+   $cdata['company_name']=$edata['inv company'];
+ 
+ }
+ 
+ 
+ 
+ $cdata['address_data']=array(
+			      'address1'=>$edata['inv address']
+			      ,'address2'=>''
+			      ,'address3'=>''
+			      ,'town'=>$edata['inv city']
+			      ,'country'=>$edata['inv country']
+			      ,'country_d1'=>$edata['inv state']
+			      ,'country_d2'=>''
+			      ,'default_country_id'=>$myconf['country_id']
+			      ,'postcode'=>$edata['inv pst code']
+			      );
+$cdata['address_shipping_data']=array(
+				      'name'=>$edata['ship name']
+				      ,'company'=>$edata['ship company']
+				      ,'telephone'=>$edata['ship tel']
+				      ,'address1'=>$edata['ship address']
+				      ,'address2'=>''
+				      ,'address3'=>''
+				      ,'town'=>$edata['ship city']
+				      ,'country'=>$edata['ship country']
+				      ,'country_d1'=>$edata['ship state']
+				      ,'country_d2'=>''
+				      ,'default_country_id'=>$myconf['country_id']
+				      ,'postcode'=>$edata['ship pst code']
+				      );
+ 
+
+
+ 
+      $customer_identification_method='email';
+
+      $customer_id=$this->find_customer($customer_identification_method,$cdata);
+    }
   }
 
+
+
+    function find_customer($method,$data){
+
+      switch($method){
+      case('email'):
+      case('email strict'):
+	
+	$email=$data['email'];
+
+	if($email!=''){
+	  $customer=new Customer('email',$email);
+	  if($customer->id)
+	    return $customer->id;
+	}
+       
+	$customer=new Customer('new',$data);
+	return $customer->id;
+	break;
+      }
+
+    }
 
   function get_data($key,$id){
     global $_order_status;

@@ -67,7 +67,7 @@ if(preg_match('/^(DB-IS|EO-Sticker|ECBox-01|SHOP-Fit)$/i',$code) and $price=='')
     $units=$cols[5];
     $description=$cols[6];
 
-    if($price>=0 )
+    if($price>=0  )
       print "C:$code D:$units x $description P:$price\n";
     
   }

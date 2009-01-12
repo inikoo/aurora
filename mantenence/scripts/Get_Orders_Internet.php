@@ -4,9 +4,10 @@ include_once('../../classes/Department.php');
 include_once('../../classes/Family.php');
 include_once('../../classes/Product.php');
 include_once('../../classes/Supplier.php');
-include_once('../../classes/Customer.php');
+include_once('../../classes/Order.php');
 
-require_once 'MDB2.php';$PEAR_Error_skiptrace = &PEAR::getStaticProperty('PEAR_Error','skiptrace');$PEAR_Error_skiptrace = true;
+
+require_once 'MDB2.php';            // PEAR Database Abstraction Layer
 require_once '../../common_functions.php';
 $db =& MDB2::factory($dsn);       
 if (PEAR::isError($db)){echo $db->getMessage() . ' ' . $db->getUserInfo();}
@@ -20,18 +21,18 @@ date_default_timezone_set('Europe/London');
 
 
 
-
-$software='Get_Transactions.php';
+$software='Get_Orders_Internet.php';
 $version='V 1.0';
 
 $Data_Audit_ETL_Software="$software $version";
 
-$sql=" select * from aw.transaction left join aw.orden on (order_id=orden.id) limit 1";
+$data=array(
+	    'type'=>'imap_email_mals-e',
+	    'email'=>'orders.aw@googlemail.com',
+	    'pwd'=>'eo-01,eid-04'
+);
 
-$res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-while($row=$res->fetchRow()) {
-  //print_r($row);
+$order= new Order('new',$data);
 
-  $sql="insert into `Order Accumulating Fact` (`Order ID`,`Product Key`,`Supplier Key`)";
-  
- }
+
+?>

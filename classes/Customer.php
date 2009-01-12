@@ -30,7 +30,12 @@ class Customer{
 
 
   function get_data($tag,$id){
-   $sql=sprintf("select * from `Customer Dimension` where `Customer Key`=%s",prepare_mysql($id));
+    if($tag=='id')
+      $sql=sprintf("select * from `Customer Dimension` where `Customer Key`=%s",prepare_mysql($id));
+    elseif($tag=='email')
+      $sql=sprintf("select * from `Customer Dimension` where `Customer Email`=%s",prepare_mysql($id));
+    else
+      return false;
    $result =& $this->db->query($sql);
    if($this->data=$result->fetchRow()){	     
       $this->id=$this->data['customer key'];
@@ -118,11 +123,18 @@ class Customer{
   }
 
  function create($data=false){
+   // type:  Company|Person|Unknown
+   // contact_name:
+   // company_name:
+   // address_data[]
+   // email:
+   // 'email tyoe': Work
+
    global $myconf;
    $this->unknown_contact=$myconf['unknown_contact'];
    $this->unknown_company=$myconf['unknown_company'];
    $this->unknown_customer=$myconf['unknown_customer'];
-   // print_r($data);
+   print_r($data);
    $contact_name=$this->unknown_contact;
    $company_name=$this->unknown_company;
    $unique_id=$this-> get_id();
@@ -169,7 +181,7 @@ class Customer{
 
    if($customer_name=='Unknown Contact' or $customer_name=='Unknown Company')
      $customer_name=$this->unknown_customer;
-    $sql=sprintf("insert into `Customer Dimension` (`Customer ID`,`Customer Main Contact Key`,`Customer Main Contact Name`,`Customer Name`,`Customer Type`,`Customer Company Key`,`Customer Main Location`,`Customer Main XTML Email`,`Customer Main Telephone`) values (%d,%d,%s,%s,%s,%s,%s,%s,%s)"
+    $sql=sprintf("insert into `Customer Dimension` (`Customer ID`,`Customer Main Contact Key`,`Customer Main Contact Name`,`Customer Name`,`Customer Type`,`Customer Company Key`,`Customer Main Location`,`Customer Main XTML Email`,`Customer Email`,`Customer Main Telephone`) values (%d,%d,%s,%s,%s,%s,%s,%s,%s,%s)"
 		 ,$unique_id
 		 ,$main_contact->id
 		 ,prepare_mysql($main_contact->get('contact name'))
@@ -178,6 +190,7 @@ class Customer{
 		 ,prepare_mysql($company_key)
 		 ,prepare_mysql($main_contact->get('contact main location'))
 		 ,prepare_mysql($main_contact->get('Contact Main XHTML Email'))
+		 ,prepare_mysql(strip_tags($main_contact->get('Contact Main XHTML Email')))
 		 ,prepare_mysql($main_contact->get('Contact Main Telephone'))
 	       );
     //print_r($main_contact->data);
