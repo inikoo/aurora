@@ -29,7 +29,37 @@ $Data_Audit_ETL_Software="$software $version";
 $data=array(
 	    'type'=>'imap_email_mals-e',
 	    'email'=>'orders.aw@googlemail.com',
-	    'pwd'=>'eo-01,eid-04'
+	    'pwd'=>'eo-01,eid-04',
+	    'product code exceptions'=>array('FIRST','Please'),
+	    'product code replacements'=>array(
+					       'jutesc-04'=>array(
+								  array(
+									'replacement'=>'JuteS-04C',
+									'from'=>date('U',strtotime('- 10 year')),
+									'to'=>date('U',strtotime('+ 10 year')),
+									'confirm'=>'JuteS-04C'
+									)
+								  ),
+					       '10x'=>array(
+							    array('replacement'=>'Scrun-01',
+								  'from'=>date('U',strtotime('- 10 year')),
+								  'to'=>date('U',strtotime('+ 10 year')),
+								  'line'=>'10x Scrun-01'),
+							     array('replacement'=>'Scrun-02',
+								  'from'=>date('U',strtotime('- 10 year')),
+								  'to'=>date('U',strtotime('+ 10 year')),
+								  'line'=>'10x Scrun-02'),
+							    array('replacement'=>'Scrun-03',
+								  'from'=>date('U',strtotime('- 10 year')),
+								  'to'=>date('U',strtotime('+ 10 year')),
+								  'line'=>'10x Scrun-03'),
+							      array('replacement'=>'Scrun-04',
+								  'from'=>date('U',strtotime('- 10 year')),
+								  'to'=>date('U',strtotime('+ 10 year')),
+								  'line'=>'10x Scrun-04'),
+							    )
+					       )
+
 );
 
 $order= new Order('new',$data);

@@ -134,10 +134,10 @@ class Customer{
    $this->unknown_contact=$myconf['unknown_contact'];
    $this->unknown_company=$myconf['unknown_company'];
    $this->unknown_customer=$myconf['unknown_customer'];
-   print_r($data);
+   //print_r($data);
    $contact_name=$this->unknown_contact;
    $company_name=$this->unknown_company;
-   $unique_id=$this-> get_id();
+   $unique_id=$this->get_id();
    
    $type='Unknown';
 
@@ -208,7 +208,37 @@ class Customer{
  }
 
 
- function update($values,$args=''){
+ function update($key,$data=false,$args='false'){
+
+   switch($key){
+   case('orders'):
+   case('orders_data'):
+     $sql="select count(*)as orders, sum(if(`Order Header Current State`='Cancelled',1,0)) as cancelled,  sum(if(`Order Header Current State`='Consolidated',1,0)) as invoiced,sum(if(`Order Header Current State`='Unknown',1,0)) as unknown   from `Order Header Dimension` where `Order Header Customer Key`=".$this->id;
+      $result =& $this->db->query($sql);
+      $this->data['customer orders']=0;
+      $this->data['customer orders cancelled']=0;
+      $this->data['customer orders invoiced']=0;
+      if($row=$result->fetchRow()){	     
+	$this->data['customer orders']=$row['orders'];
+	$this->data['customer orders cancelled']=$row['cancelled'];
+	$this->data['customer orders invoiced']=$row['invoiced'];
+
+      }
+      $sql=sprintf("update `Customer Dimension` set `Customer Orders`=%d,`Customer Orders Cancelled`=%d,`Customer Orders Invoiced`=%d where `Customer Key`=%d",
+		   $this->data['customer orders']
+		   ,$this->data['customer orders cancelled']
+		   ,$this->data['customer orders invoiced']
+		   ,$this->id
+		   );
+      //  print $sql;
+      //exit;
+      $this->db->exec($sql);
+      break;
+   }
+
+ }
+
+ function updatex($values,$args=''){
     $res=array();
     foreach($values as $data){
       
@@ -416,6 +446,12 @@ class Customer{
 
 
  function get($key){
+
+   $key=strtolower($key);
+    if(isset($this->data[$key]))
+      return $this->data[$key]; 
+
+
    switch($key){
    case('location'):
      if(!isset($this->data['location']))

@@ -32,11 +32,37 @@ class company{
  }
 
 
-  function get($key){
+  function get($key,$arg1=false){
     //  print $key."xxxxxxxx";
     $key=strtolower($key);
     if(isset($this->data[$key]))
       return $this->data[$key];
+
+    switch($key){
+    case('departments'):
+      if(!isset($this->departments))
+	$this->load('departments');
+      return $this->departments;
+      break;
+    case('department'):
+      if(!isset($this->departments))
+	$this->load('departments');
+      if(is_numeric($arg1)){
+	if(isset($this->departments[$arg1]))
+	  return $this->departments[$arg1];
+	else
+	  return false;
+      }
+      if(is_string($arg1)){
+	foreach($this->departments as $department){
+	  if($department['company department code']==$arg1)
+	    return $department;
+	}
+	return false;
+      }
+      
+      
+    }
    
     return false;
 

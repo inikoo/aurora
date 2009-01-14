@@ -30,6 +30,28 @@ exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_
 $handle_csv = fopen($csv_file, "r");
 $column=0;
 $products=false;
+$count=0;
+
+ // 	$data=array(
+//  		    'code'=>'L&P-ST',
+//  		    'price'=>76.80,
+//  		    'rrp'=>'',
+//  		    'units per case'=>1,
+//  		    'name'=>'Starter - Mixed selection of 10 boxes (of 6) plus one bonus box. 66 jars in total'
+//  		    );
+//  	$product=new Product('create',$data);
+  	$data=array(
+  		    'code'=>'Bag-03mx',
+  		    'price'=>47.25,
+  		    'rrp'=>'',
+  		    'units per case'=>1,
+  		    'name'=>'Velvet Pouch - 150 Mix'
+  		    );
+  	$product=new Product('create',$data);
+
+ exit;
+
+
 
 while(($cols = fgetcsv($handle_csv))!== false){
   $read=true;
@@ -44,13 +66,17 @@ while(($cols = fgetcsv($handle_csv))!== false){
   }
   $price=$cols[7];
   
+
+
+
+
   if($code=='' or !preg_match('/\-/',$code) or preg_match('/total/i',$price)  or  preg_match('/^(pi\-|cxd\-|fw\-04)/i',$code))
     $read=false;
  if(preg_match('/^(ob\-108|ob\-156|ish\-94|rds\-47)/i',$code))
     $read=false;
 
- if(preg_match('/-st$/i',$code) and $price=='')
-    $read=false;
+ // if(preg_match('/-st$/i',$code) and $price=='')
+//     $read=false;
  if(preg_match('/^staf-set/i',$code) and $price=='')
    $read=false;
  if(preg_match('/^hook-/i',$code) and $price=='')
@@ -62,14 +88,42 @@ if(preg_match('/^pack-01a|Pack-02a/i',$code) and $price=='')
 if(preg_match('/^(DB-IS|EO-Sticker|ECBox-01|SHOP-Fit)$/i',$code) and $price=='')
    $read=false;
 
+//  if(!preg_match('/Bag-03mx/i',$code) )
+//     $read=false;
+//  else{
+//    //  print_r($cols);
+//    print "$code\n";
+//  }
   if($products and  $read){
-
+    //  print_r($cols);
+    //exit;
     $units=$cols[5];
     $description=$cols[6];
+    $rrp=$cols[16];
+    if($price>=0  ){
+      $product=new Product('code',$code);
+      if(!$product->id){
+	$data=array(
+		    'code'=>$code,
+		    'price'=>$price,
+		    'rrp'=>$rrp,
+		    'units per case'=>$units,
+		    'name'=>$description
+		    );
+	$product=new Product('create',$data);
+	print_r($product->data);
 
-    if($price>=0  )
-      print "C:$code D:$units x $description P:$price\n";
-    
+	//print "xxx\n";
+	//exit;
+      }else{
+	print $count."\r";
+	//	print_r($product->data);
+	//print $product->get('product code')."\n";
+      }
+	
+      //print "C:$code D:$units x $description P:$price\n";
+    }
+    $count++;
   }
 
 

@@ -82,6 +82,8 @@ $LU_conf = array(
 
 
 $myconf=array(
+	      'Order ID type'=>'Order Header Numeric ID',
+	      
 	      'max_session_time'=>36000,
 	      'name'=>'Ancient Wisdom',
 	      'sname'=>'AW',

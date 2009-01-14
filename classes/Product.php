@@ -17,7 +17,7 @@ class product{
 
   var $location_to_update=false;
 
-  function __construct($a1,$a2=false) {
+  function __construct($a1,$a2=false,$a3=false) {
     $this->db =MDB2::singleton();
 
 
@@ -28,62 +28,72 @@ class product{
       $this->msg=$this->create($a2);
       
     } else
-      $this->get_data($a1,$a2);
+      $this->get_data($a1,$a2,$a3);
 
   }
   
 
 
 
-  function get_data($tipo,$tag){
+  function get_data($tipo,$tag,$tag2){
     global $_shape,$_units_tipo,$_units_tipo_abr,$_units_tipo_plural;
 
-    $this->dim_units='cm';
-
-
-      
-    $sql=sprintf("select *,UNIX_TIMESTAMP(first_date) as first_date from product ");
-
-
     if($tipo=='id')
-      $sql.=sprintf("where id=%d",$tag);
-    else if($tipo=='code')
-      $sql.=sprintf("where code=%s",prepare_mysql($tag));
-    //     print $sql;
+      $sql=sprintf("select * from `Product Dimension` where `Product Key`=%d ",$tag);
+    elseif($tipo=='code'){
+      $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s order by `Product Valid To` ",prepare_mysql($tag));
+    }
+
+    //print "$sql\n";
     if($result =& $this->db->query($sql)){
       $this->data=$result->fetchRow();
-      $this->id=$this->data['id'];
-      if($this->data['first_date']!='')
-	$this->data['dates']=array('first_date'=>($this->data['first_date']?strftime("%e %b %Y",$this->data['first_date']):''));
-      else{
-	$this->load('first_date','save');
-      }
-      $this->data['units_tipo_name']=$_units_tipo[$this->data['units_tipo']];
-      $this->data['units_tipo_shortname']=$_units_tipo_abr[$this->data['units_tipo']];
-      $this->data['units_tipo_plural']=$_units_tipo_plural[$this->data['units_tipo']];
+      $this->id=$this->data['product key'];
+    }
+  }
+
+ //    $this->dim_units='cm';
+
+
+      
+//     $sql=sprintf("select *,UNIX_TIMESTAMP(first_date) as first_date from product ");
+
+
+//     if($tipo=='id')
+//       $sql.=sprintf("where id=%d",$tag);
+//     else if($tipo=='code')
+//       $sql.=sprintf("where code=%s",prepare_mysql($tag));
+//     //     print $sql;
+//     if($result =& $this->db->query($sql)){
+//       $this->data=$result->fetchRow();
+//       $this->id=$this->data['id'];
+//       if($this->data['first_date']!='')
+// 	$this->data['dates']=array('first_date'=>($this->data['first_date']?strftime("%e %b %Y",$this->data['first_date']):''));
+//       else{
+// 	$this->load('first_date','save');
+//       }
+//       $this->data['units_tipo_name']=$_units_tipo[$this->data['units_tipo']];
+//       $this->data['units_tipo_shortname']=$_units_tipo_abr[$this->data['units_tipo']];
+//       $this->data['units_tipo_plural']=$_units_tipo_plural[$this->data['units_tipo']];
       
 
 
-      $this->data['odim_tipo']=$this->data['odim_tipo'];
-      $this->data['odim_tipo_name']=$_shape[$this->data['odim_tipo']];
-      $this->data['dim_tipo']=$this->data['dim_tipo'];
-      $this->data['dim_tipo_name']=$_shape[$this->data['dim_tipo']];
-      if($this->data['odim']!='')
-	$this->data['odimension']=$this->data['odim_tipo_name']." (".$this->data['odim'].")".$this->dim_units;
-      else
-	$this->data['odimension']='';
-      if($this->data['dim']!='')
-	$this->data['dimension']=$this->data['dim_tipo_name']." (".$this->data['dim'].")".$this->dim_units;
-      else
-	$this->data['dimension']='';
+//       $this->data['odim_tipo']=$this->data['odim_tipo'];
+//       $this->data['odim_tipo_name']=$_shape[$this->data['odim_tipo']];
+//       $this->data['dim_tipo']=$this->data['dim_tipo'];
+//       $this->data['dim_tipo_name']=$_shape[$this->data['dim_tipo']];
+//       if($this->data['odim']!='')
+// 	$this->data['odimension']=$this->data['odim_tipo_name']." (".$this->data['odim'].")".$this->dim_units;
+//       else
+// 	$this->data['odimension']='';
+//       if($this->data['dim']!='')
+// 	$this->data['dimension']=$this->data['dim_tipo_name']." (".$this->data['dim'].")".$this->dim_units;
+//       else
+// 	$this->data['dimension']='';
 	  
-      $this->get('ovol');
-      $this->get('vol');
+//       $this->get('ovol');
+//       $this->get('vol');
 
-      return true;
-    }else
-      return false;
-  }
+
   
   
   function load($data_to_be_read,$args=''){
@@ -2767,11 +2777,11 @@ function new_sku(){
     //else{
     // 
     // }
-    if(isset($data['units factor']) and is_numeric($data['units factor']) and $data['units factor']>0)
-      $units_factor=$data['units factor'];
+    if(isset($data['units per case']) and is_numeric($data['units per case']) and $data['units per case']>0)
+      $units_factor=$data['units per case'];
     else
       $units_factor=1;
-    $sql=sprintf("insert into  `Product Dimension` (`Product SKU number`,`Product Alphanumeric Code`,`Product Code`,`Product Status`,`Product Units Factor`,`Product Valid From`,`Product Valid To`,`Product Most Recent`) values (%s,%s,%s,'%s',%f,NOW(),'%s','Yes')",
+    $sql=sprintf("insert into  `Product Dimension` (`Product SKU number`,`Product Alphanumeric Code`,`Product Code`,`Product Status`,`Product Units Per Case`,`Product Valid From`,`Product Valid To`,`Product Most Recent`) values (%s,%s,%s,'%s',%f,NOW(),'%s','Yes')",
 		 prepare_mysql($sku_number),
 		 prepare_mysql($ncode),
 		 prepare_mysql($code),
@@ -2780,7 +2790,8 @@ function new_sku(){
 		 date("Y-m-d H:i:s",strtotime("+24 month"))
 		 );
     
-    //print "$sql\n";
+
+    print "$sql\n";
 
     $affected=& $this->db->exec($sql);
     if (PEAR::isError($affected)) {
