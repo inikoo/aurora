@@ -100,10 +100,11 @@ class company{
 
     
     //print_r($contact->data);
-    $sql=sprintf("insert into `Company Dimension` (`Company ID`,`Company Name`,`Company File as`,`Company Main XHTML Address`,`Company Main Country Key`,`Company Main Country`,`Company Main Location`,`Company Main Contact`,`Company Main Contact Key`,`Company Main Telephone`,`Company Main FAX`,`Company Main XHTML Email`) values (%d,%s,%s,%s,%s,%s,%s,%s,%d,%s,%s,%s)",
+    $sql=sprintf("insert into `Company Dimension` (`Company ID`,`Company Name`,`Company File as`,`Company Main Address Key`,`Company Main XHTML Address`,`Company Main Country Key`,`Company Main Country`,`Company Main Location`,`Company Main Contact`,`Company Main Contact Key`,`Company Main Telephone`,`Company Main FAX`,`Company Main XHTML Email`) values (%d,%s,%s,%s,%s,%s,%s,%s,%s,%d,%s,%s,%s)",
 		 $company_id,
 		 prepare_mysql($name),
 		 prepare_mysql($file_as),
+		 prepare_mysql($contact->get('Contact Main Address key')),
 		 prepare_mysql($contact->get('Contact Main XHTML Address')),
 		 prepare_mysql($contact->get('Contact Main Country Key')),
 		 prepare_mysql($contact->get('Contact Main Country')),

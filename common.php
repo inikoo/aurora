@@ -56,6 +56,9 @@ $smarty->config_dir = $myconf['config_dir'];
 
 
 // Authentication Stuff ----------------------------------------------------------------------------|
+
+
+
 require_once 'LiveUser.php';        // PEAR Authentication System
 $LU = LiveUser::singleton($LU_conf);
 if (!$LU->init()) {
@@ -71,6 +74,7 @@ if (!$LU)
 
 $logout = (array_key_exists('logout', $_REQUEST)) ? $_REQUEST['logout'] : false;
 if ($logout){
+  
   $sql=sprintf("update session_history set end=NOW()  where session_id=%s  ",prepare_mysql(session_id()));
   //print $sql;
   mysql_query($sql);
@@ -91,7 +95,7 @@ $sk = (array_key_exists('ep', $_REQUEST)) ? $_REQUEST['ep'] : false;
 
 
 
- if(!$LU->isLoggedIn() || ($handle && $LU->getProperty('handle') != $handle)){
+if(!$LU->isLoggedIn() || ($handle && $LU->getProperty('handle') != $handle)){
    if (!$handle){
      $LU->login(null, null, true);
    }else{

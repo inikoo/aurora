@@ -37,7 +37,31 @@ $data=array(
 									'replacement'=>'JuteS-04C',
 									'from'=>date('U',strtotime('- 10 year')),
 									'to'=>date('U',strtotime('+ 10 year')),
-									'confirm'=>'JuteS-04C'
+									'confirm'=>'JuteSC-04'
+									)
+								  ),
+					       'jutesc-03'=>array(
+								  array(
+									'replacement'=>'JuteS-04C',
+									'from'=>date('U',strtotime('- 10 year')),
+									'to'=>date('U',strtotime('+ 10 year')),
+									'confirm'=>'JuteSC-03'
+									)
+								  ),
+					       'jutesc-02'=>array(
+								  array(
+									'replacement'=>'JuteS-02C',
+									'from'=>date('U',strtotime('- 10 year')),
+									'to'=>date('U',strtotime('+ 10 year')),
+									'confirm'=>'JuteSC-02'
+									)
+								  ),
+					        'l0-11'=>array(
+								  array(
+									'replacement'=>'LO-11',
+									'from'=>date('U',strtotime('- 10 year')),
+									'to'=>date('U',strtotime('+ 10 year')),
+									'confirm'=>'L0-11'
 									)
 								  ),
 					       '10x'=>array(

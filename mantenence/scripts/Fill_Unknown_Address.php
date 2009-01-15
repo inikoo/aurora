@@ -45,7 +45,7 @@ $sql="SELECT * FROM dw.`Country Dimension` C where `Country key`!=244 group by `
 		   ,prepare_mysql($xhtml_address)
 		   );
       $db->exec($sql);
-      print "$sql\n";
+      //      print "$sql\n";
       //print_r($country->data);
     }
 

@@ -834,12 +834,12 @@ else if($f_field=='id'  )
 
 
 
-   $sql="select count(*) as total from customer as cu left join contact on (contact_id=contact.id)  $where $wheref";
+   $sql="select count(*) as total from `Customer Dimension`  $where $wheref";
    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
    if($row=$res->fetchRow()) {
      $total=$row['total'];
    }if($wheref!=''){
-     $sql="select count(*) as total_without_filters from customer  as cu left join contact on (contact_id=contact.id) $where ";
+     $sql="select count(*) as total_without_filters from customer `Customer Dimension`  $where ";
      $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
      if($row=$res->fetchRow()) {
        $total_records=$row['total_without_filters'];
@@ -878,86 +878,93 @@ else if($f_field=='id'  )
 
    $_order=$order;
    $_dir=$order_direction;
-   if($order=='location'){
-     if($order_direction=='desc')
-       $order='country_code desc ,town desc';
-     else
-       $order='country_code,town';
-     $order_direction='';
-   }
+   // if($order=='location'){
+//      if($order_direction=='desc')
+//        $order='country_code desc ,town desc';
+//      else
+//        $order='country_code,town';
+//      $order_direction='';
+//    }
 
-    if($order=='total'){
-      $order='supertotal';
-   }
+//     if($order=='total'){
+//       $order='supertotal';
+//    }
+    
 
+   if($order=='name')
+     $order='customer file as';
+   elseif($order=='id')
+     $order='customer id';
+   elseif($order=='location')
+     $order='customer main location';
+   elseif($order=='orders')
+     $order='customer orders';
+   elseif($order=='email')
+     $order='customer email';
+   elseif($order=='telephone')
+     $order='customer main telehone';
+    elseif($order=='last_order')
+     $order='customer last order date';
+     elseif($order=='total_payments')
+     $order='customer total payments';
 
-
-
-   $order=preg_replace('/name/','file_as',$order);
-
-   $sql="select   email ,email.contact as email_contact, telecom.number,telecom.icode,telecom.ncode,telecom.ext,  (select count(*) from customer2group where group_id=9 and customer_id=cu.id) as is_staff, num_invoices,list_country.name as country_name, cu.file_as,(total_nd+total) as super_total,total_nd,total_nd/(total_nd+total) as  factor_num_orders_nd ,(cu.total/num_invoices) as total_avg,  postcode,cu.id as id ,cu.name as name , (num_invoices+num_invoices_nd) as orders,num_orders_nd,UNIX_TIMESTAMP(last_order) date,cu.total as total,town,code2 as country_code2, ifnull(code,'".$myconf['country_code']."') as country_code from customer as cu      left join email on (main_email=email.id) left join telecom on (main_tel=telecom.id)      left join address on (main_bill_address=address.id) left join list_country on (country=list_country.name)   $where $wheref  order by $order $order_direction limit $start_from,$number_results";
-
-   //  print $sql;
+   $sql="select   * from `Customer Dimension`  $where $wheref  order by `$order` $order_direction limit $start_from,$number_results";
+   //      print $sql;
+   
   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
 
   $adata=array();
   
   while($data=$res->fetchRow()) {
-    $last_order=$data['date'];
-    $id="<a href='customer.php?id=".$data['id']."'>".$myconf['customer_id_prefix'].sprintf("%05d",$data['id']).'</a>';
+
+    $id="<a href='customer.php?id=".$data['customer id']."'>".$myconf['customer_id_prefix'].sprintf("%05d",$data['customer id']).'</a>';
   
     
     
-    if($data['factor_num_orders_nd']>.60)
-      $color='bbb';
-    elseif($data['factor_num_orders_nd']>.40)
-      $color='888';
-    elseif($data['factor_num_orders_nd']>.20)
-      $color='444';
-    else
-      $color='000';
+   //  if($data['factor_num_orders_nd']>.60)
+//       $color='bbb';
+//     elseif($data['factor_num_orders_nd']>.40)
+//       $color='888';
+//     elseif($data['factor_num_orders_nd']>.20)
+//       $color='444';
+//     else
+//       $color='000';
 
-    if($data['factor_num_orders_nd']<.05)
-      $old_orders='';
-    else{
-      $orders_with_no_data=number($data['num_orders_nd']);
-      $old_orders='<span title="'.$orders_with_no_data.' '.ngettext('order','orders',$orders_with_no_data).' '._('with no data available.').'" style="cuersor:pointer;position: relative;top: -0.3em;color:#'.$color.';font-size: 0.8em;">*</span>';
-    }
+//     if($data['factor_num_orders_nd']<.05)
+//       $old_orders='';
+//     else{
+//       $orders_with_no_data=number($data['num_orders_nd']);
+//       $old_orders='<span title="'.$orders_with_no_data.' '.ngettext('order','orders',$orders_with_no_data).' '._('with no data available.').'" style="cuersor:pointer;position: relative;top: -0.3em;color:#'.$color.';font-size: 0.8em;">*</span>';
+//     }
 
-    if($data['num_invoices']==0){
-      $color='bbb';
-      $super_total='<i  style="color:#'.$color.'">'._('ND').'</i>';
-      $orders_with_no_data=number($data['num_orders_nd']);
-      $old_orders='<span title="'.$orders_with_no_data.' '.ngettext('order','orders',$orders_with_no_data).' '._('with no data available.').'" style="cuersor:pointer;position: relative;top: -0.3em;color:#'.$color.';font-size: 0.8em;">*</span>';
-    }else
-      $super_total='<i  style="color:#'.$color.'">'.money($data['super_total']).'</i>';
-    $orders=$old_orders.'<i  style="color:#'.$color.'">'.number($data['orders']).'</i>';
-    if($data['is_staff']>0)
-      $location='<span style="color:#999">('._('ex').')</span>'._('Staff');
-    else
-      $location='<img title="'.$data['country_name'].'"  src="art/flags/'.strtolower($data['country_code2']).'.gif" alt="'.$data['country_code'].'"> '.$data['town'].' '.preg_replace('/\s/','',$data['postcode']);
+//     if($data['num_invoices']==0){
+//       $color='bbb';
+//       $super_total='<i  style="color:#'.$color.'">'._('ND').'</i>';
+//       $orders_with_no_data=number($data['num_orders_nd']);
+//       $old_orders='<span title="'.$orders_with_no_data.' '.ngettext('order','orders',$orders_with_no_data).' '._('with no data available.').'" style="cuersor:pointer;position: relative;top: -0.3em;color:#'.$color.';font-size: 0.8em;">*</span>';
+//     }else
+//       $super_total='<i  style="color:#'.$color.'">'.money($data['super_total']).'</i>';
+//     $orders=$old_orders.'<i  style="color:#'.$color.'">'.number($data['orders']).'</i>';
+//     if($data['is_staff']>0)
+//       $location='<span style="color:#999">('._('ex').')</span>'._('Staff');
+//     else
+//       $location='<img title="'.$data['country_name'].'"  src="art/flags/'.strtolower($data['country_code2']).'.gif" alt="'.$data['country_code'].'"> '.$data['town'].' '.preg_replace('/\s/','',$data['postcode']);
 
-     $email='';
-     if($data['email']!='')
-       $email='<a href="emailto:'.$data['email'].'"  >'.$data['email'].'</a>';
-     $tel='';
-     if($data['number']!='')
-       $tel=($data['icode']!=''?'+'.$data['icode'].' ':'').$data['number'];
+//      $email='';
+//      if($data['email']!='')
+//        $email='<a href="emailto:'.$data['email'].'"  >'.$data['email'].'</a>';
+//      $tel='';
+//      if($data['number']!='')
+//        $tel=($data['icode']!=''?'+'.$data['icode'].' ':'').$data['number'];
     $adata[]=array(
 		   'id'=>$id,
-		   'name'=>$data['name'],
-
-	//	   'id2'=>$data['id2'],
-	//	   'id3'=>$data['id3'],
-
-		   //	   'location'=>$data['location'],
-		   'location'=>$location,
-		   'orders'=>$orders,
-		   'email'=>$email,
-		   'tel'=>$tel,
-		   // 'last_order'=>$last_order,
-		   'last_order'=>strftime("%e %b %Y", strtotime('@'.$last_order)),
-		   'super_total'=>$super_total
+		   'name'=>$data['customer name'],
+		   'location'=>$data['customer main location'],
+		   'orders'=>$data['customer orders'],
+		   'email'=>$data['customer main xhtml email'],
+		   'telephone'=>$data['customer main telephone'],
+		   'last_order'=>strftime("%e %b %Y", strtotime($data['customer last order date'])),
+		   'total_payments'=>$data['customer total payments']
       
 		   );
   }

@@ -991,4 +991,30 @@ function array_change_key_name( $orig, $new, &$array )
     return ( array ) $return;
 }
 
+
+function average($array){
+    $sum   = array_sum($array);
+    $count = count($array);
+    if($count==0)
+      return false;
+    return $sum/$count;
+}
+
+//The average function can be use independantly but the deviation function uses the average function.
+
+function deviation ($array){
+   
+    $avg = average($array);
+    if(!$avg)
+      return false;
+
+    foreach ($array as $value) {
+        $variance[] = pow($value-$avg, 2);
+    }
+    $deviation = sqrt(average($variance));
+    return $deviation;
+}
+
+
+
 ?>

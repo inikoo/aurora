@@ -58,7 +58,7 @@ var myhandleDataReturnPayload= function(oRequest, oResponse, oPayload) {
 
     }
 	
-
+    
     return oPayload;
 };
 

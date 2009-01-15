@@ -62,10 +62,13 @@ class Address{
   function create($data){
 
 
-
     if(isset($data['type']) and $data['type']=='3line'){
-      //   print_r($data);
+      // print_r($data);
+      
       $prepared_data=$this->prepare_3line($data);
+
+	
+
     }elseif(isset($data['type']) and $data['type']=='aw'){
       $prepared_data=$data;
 
@@ -80,6 +83,29 @@ class Address{
     }else
        return;
 
+    $fuzzy=0;
+    $fuzzy_type='';
+    if($address_raw_data['address1']=='' 
+       and $address_raw_data['address2']==''
+       and $address_raw_data['address3']==''){
+	$fuzzy=1;
+	$fuzzy_type='City';
+    }
+
+    
+    if($address_raw_data['town']==''){
+      $fuzzy=1;
+      $fuzzy_type='Country';
+    } 
+
+
+
+    $country_unknown=new Country('code','UNK');
+
+    if($address_raw_data['country_id']==$country_unknown->id){
+      $fuzzy=1;
+      $fuzzy_type='All';
+    } 
 
       if($prepared_data['town_d1_id']==0)$prepared_data['town_d1_id']='';
       if($prepared_data['town_d2_id']==0)$prepared_data['town_d2_id']='';
@@ -115,6 +141,8 @@ class Address{
 	$this->data['address country primary division']=$prepared_data['country_d1'];
 
       $country=new country($prepared_data['country_id']);
+      $this->data['fuzzy address']=$fuzzy;
+      $this->data['address fuzzy type']=$fuzzy_type;
       $this->data['address country code']=$country->get('country code');
       $this->data['address country 2 alpha code']=$country->get('country 2 alpha code');
       $this->data['address country key']=$country->get('country key');
@@ -124,7 +152,8 @@ class Address{
       $this->data['address location']=$this->display('location');
       $this->data['xhtml address']=$this->display('xhtml');
 
-      
+
+      print_r($this->data);
 
       $keys='`Address Data Creation`';
       $values='Now()';
@@ -136,8 +165,9 @@ class Address{
       $keys=preg_replace('/^,/','',$keys);
 
       $sql="insert into `Address Dimension` ($keys) values ($values)";
-      //    print $sql;
-      $affected=& $this->db->exec($sql);
+      print $sql;
+      exit;
+	  $affected=& $this->db->exec($sql);
       if (PEAR::isError($affected)) {
 	return array('ok'=>false,'msg'=>_('Unknwon Error').'.');
       }
@@ -166,7 +196,27 @@ class Address{
    $separator="\n";
    switch($tipo){
    case('location'):
-     $location=sprintf('<img src="art/flags/%s.png" title="%s"> %s',strtolower($this->data['address country 2 alpha code']),$this->data['address country code'],$this->data['address town']);
+     //  print_r($this->data);
+
+     if($this->get('fuzzy address')){
+       //       print $this->get('address fuzzy type')."zzzzz\n";
+       switch($this->get('address fuzzy type')){
+       case('Country'):
+	 $location=sprintf('<img src="art/flags/%s.gif" title="%s"> %s',strtolower($this->data['address country 2 alpha code']),$this->data['address country code'],_('Somewhere in').' '.$this->get('address country name'));
+	 break;
+       case('All'):
+	 $location=sprintf('<img src="art/flags/%s.gif" title="%s"> %s',strtolower($this->data['address country 2 alpha code']),$this->data['address country code'],_('Somewhere in the world'));
+	 break;	 
+       case('City'):
+	 $location=sprintf('<img src="art/flags/%s.gif" title="%s"> %s',strtolower($this->data['address country 2 alpha code']),$this->data['address country code'],_('Somewhere in').' '.$this->data['address town']);
+       break;
+     default:
+        $location=sprintf('<img src="art/flags/%s.gif" title="%s"> %s',strtolower($this->data['address country 2 alpha code']),$this->data['address country code'],_('Unknown'));
+       }
+
+     }else{
+     $location=sprintf('<img src="art/flags/%s.gif" title="%s"> %s',strtolower($this->data['address country 2 alpha code']),$this->data['address country code'],$this->data['address town']);
+     }
      return _trim($location);
      break;
    case('xhtml'):
@@ -220,13 +270,13 @@ class Address{
    $debug=false;
  if($debug)
     print_r($address_raw_data);
-  if($address_raw_data['address1']=='' 
-     and $address_raw_data['address2']==''
-     and $address_raw_data['address3']=='')
-    return false;
+ //  if($address_raw_data['address1']=='' 
+//      and $address_raw_data['address2']==''
+//      and $address_raw_data['address3']=='')
+//     return false;
 
 
-  
+  $military_base='No';
   $address1='';
   $address2='';
   $address3='';
@@ -243,7 +293,7 @@ class Address{
   $country_d2_id=0;
   $country_d1_id=0;
  $country_id=0;
-
+ $military_instalation=array();
 
  if($fix2){
    if(preg_match('/^St. Thomas.*Virgin Islands$/i',$address_raw_data['town']))
@@ -315,7 +365,7 @@ class Address{
 
 
   $sql=sprintf("select `Country Key` as id from `Country Dimension` left join `Country Alias Dimension` on  (`Country Alias Code`=`Country Code`) where `Country Alias`=%s or `Country Name`=%s ",prepare_mysql($address_raw_data['country']),prepare_mysql($address_raw_data['country']));
-  // print "$sql\n";
+   print "$sql\n";
     $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
     if($row = mysql_fetch_array($result, MYSQL_ASSOC)) 
       $country_id=$row['id'];
@@ -1081,6 +1131,43 @@ if($town=='Salamina')
       $country_d1=$country_d2;
       $country_d2='';
     }
+  $town=_trim($town);
+  $postcode=_trim($postcode);
+  //apo address
+  if(preg_match('/^(09|96|340)\d+$/',$postcode)){
+    $military_base='Yes';
+    
+    $address1=$address1.' '$address2.' '.$address3;
+    
+
+ //    if(preg_match('/^(apo|ae)$/i',$town)){
+//       $town='';
+//     }
+//     if(preg_match('/^(apo|ae)$/i',$country_d1)){
+//       $country_d1='';
+//     }
+//     if(preg_match('/^(apo|ae)$/i',$country_d2)){
+//       $country_d2='';
+//     }
+     $military_instalation['address']=$address1;
+     $military_instalation['military base country key']=229;
+     $military_instalation['military base name']='';
+     $military_instalation['military base location']='';
+     $military_instalation['military base type']='';
+     $military_instalation['military base postal code']=$postcode;
+
+
+//     if(preg_match('/^(09)/',$postcode)){
+
+//     $militaty_instalation_address='';
+//         $militaty_instalation_code='';
+
+//     $militaty_instalation_name='';
+//     $militaty_instalation_location='';
+//     $militaty_instalation_country_key='';
+  }
+
+
 
     $town=preg_replace('/Lousiana/i','Louisiana',$town);
     
@@ -2098,7 +2185,8 @@ if($country_d2!=''){
 		      'country_d2_id'=>$country_d2_id,
 		      'country_d1_id'=>$country_d1_id,
 		      'country_id'=>$country_id,
-
+		      'military instalation'=>$military_instalation,
+		      'military_base'=>$military_base
 		      );
 
   
@@ -2115,7 +2203,7 @@ if($country_d2!=''){
 //    print_r($address_data);
 //    exit;
 //   }
-//   // print_r($address_data);
+  //  print_r($address_data);
      return $address_data;
 
 
@@ -2179,14 +2267,32 @@ function get_country_d1_name($id=''){
 }
 
 
+function is_country_d1($country_d1,$country_id){
+   if($country_d1=='')
+     return false;
+      $db =& MDB2::singleton();
+  if($country_id>0)
+    $sql=sprintf("select `Country Primary Division Key` as id from `Country Primary Division Dimension` where (`Country Primary Division Name`='%s' or `Country Primary Division Native Name`='%s' or `Country Primary Division Local Native Name`='%s') and `Country Key`=%d",addslashes($country_d1),addslashes($country_d1),addslashes($country_d1),$country_id);
+  else
+    $sql=sprintf("select `Country Primary Division Key` as id from `Country Primary Division Dimension` where (`Country Primary Division Name`='%s' or `Country Primary Division Native Name`='%s' or `Country Primary Division Local Native Name`='%s') ",addslashes($country_d1),addslashes($country_d1),addslashes($country_d1));
+
+  //    print "$sql\n";
+ $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
+ if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+    return true;
+  }else
+    return false;
+}
+
+
 function is_country_d2($country_d2,$country_id){
    if($country_d2=='')
      return false;
       $db =& MDB2::singleton();
   if($country_id>0)
-    $sql=sprintf("select `Country Secondary Division Key` as id from `Country Secondary Division Dimension` where (`Country Secondary Division Name`='%s' or `Country Secondary Division Native Name`='%s' or `Country Secondary Division Local Natve Name`='%s') and `Country Key`=%d",addslashes($country_d2),addslashes($country_d2),addslashes($country_d2),$country_id);
+    $sql=sprintf("select `Country Secondary Division Key` as id from `Country Secondary Division Dimension` where (`Country Secondary Division Name`='%s' or `Country Secondary Division Native Name`='%s' or `Country Secondary Division Local Native Name`='%s') and `Country Key`=%d",addslashes($country_d2),addslashes($country_d2),addslashes($country_d2),$country_id);
   else
-    $sql=sprintf("select `Country Secondary Division Key` as id from `Country Secondary Division Dimension` where (`Country Secondary Division Name`='%s' or `Country Secondary Division Native Name`='%s' or `Country Secondary Division Local Natve Name`='%s') ",addslashes($country_d2),addslashes($country_d2),addslashes($country_d2));
+    $sql=sprintf("select `Country Secondary Division Key` as id from `Country Secondary Division Dimension` where (`Country Secondary Division Name`='%s' or `Country Secondary Division Native Name`='%s' or `Country Secondary Division Local Native Name`='%s') ",addslashes($country_d2),addslashes($country_d2),addslashes($country_d2));
 
   //    print "$sql\n";
  $result = mysql_query($sql) or die('Query failed: ' . mysql_error());

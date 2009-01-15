@@ -6,33 +6,33 @@ YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
 
 
-	    this.customerLink=  function(el, oRecord, oColumn, oData) {
-		    var url="customer.php?id="+oRecord.getData("id");
-		    el.innerHTML = oData.link(url);
+// 	    this.customerLink=  function(el, oRecord, oColumn, oData) {
+// 		    var url="customer.php?id="+oRecord.getData("id");
+// 		    el.innerHTML = oData.link(url);
 
-	    };
+// 	    };
 
-	    this.customer_name=  function(el, oRecord, oColumn, oData) {
-		if(oData!= null){
-		    el.style.color='#000';
-		    el.innerHTML = oData;
-		}else{
-		    el.style.color='#ccc';
-		    el.innerHTML = "<?=_('Unknown')?>";
-		}
+// 	    this.customer_name=  function(el, oRecord, oColumn, oData) {
+// 		if(oData!= null){
+// 		    el.style.color='#000';
+// 		    el.innerHTML = oData;
+// 		}else{
+// 		    el.style.color='#ccc';
+// 		    el.innerHTML = "<?=_('Unknown')?>";
+// 		}
 
-		};
+// 		};
 
 
-	    this.date=  function(el, oRecord, oColumn, oData) {
-		el.innerHTML =oRecord.getData("flast_order") ;
-	    };
-	    this.total=  function(el, oRecord, oColumn, oData) {
-		el.innerHTML =oRecord.getData("ftotal") ;
-	    };	
-	    this.location=  function(el, oRecord, oColumn, oData) {
-		el.innerHTML =oRecord.getData("flocation") ;
-	    };	
+// 	    this.date=  function(el, oRecord, oColumn, oData) {
+// 		el.innerHTML =oRecord.getData("flast_order") ;
+// 	    };
+// 	    this.total=  function(el, oRecord, oColumn, oData) {
+// 		el.innerHTML =oRecord.getData("ftotal") ;
+// 	    };	
+// 	    this.location=  function(el, oRecord, oColumn, oData) {
+// 		el.innerHTML =oRecord.getData("flocation") ;
+// 	    };	
 
 
 	     //START OF THE TABLE=========================================================================================================================
@@ -43,14 +43,14 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 	    var CustomersColumnDefs = [
-				       {key:"id", label:"<?=$customers_ids[0]?>", formatter:this.customerLink,width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"name", label:"<?=_('Name')?>", width:250,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       {key:"id", label:"<?=$customers_ids[0]?>",width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"name", label:"<?=_('Name')?>", width:250,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"location", label:"<?=_('Location')?>",<?=($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?> width:230,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"last_order", label:"<?=_('Last Order')?>",<?=($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?>width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				       ,{key:"orders", label:"<?=_('Orders')?>",<?=($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       ,{key:"super_total", label:"<?=_('Total')?>",<?=($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"total_payments", label:"<?=_('Total')?>",<?=($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				       ,{key:"email", label:"<?=_('Email')?>",<?=($_SESSION['state']['customers']['view']=='contact'?'':'hidden:true,')?>sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       ,{key:"tel", label:"<?=_('Telephone')?>",<?=($_SESSION['state']['customers']['view']=='contact'?'':'hidden:true,')?>sortable:false,className:"aright"}
+				       ,{key:"telephone", label:"<?=_('Telephone')?>",<?=($_SESSION['state']['customers']['view']=='contact'?'':'hidden:true,')?>sortable:false,className:"aright"}
 				       //					 {key:"families", label:"<?=_('Customers')?>", sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
 				      //{key:"active", label:"<?=_('Customers')?>", sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				      
@@ -74,14 +74,14 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		
 		
 		fields: [
-			 "id"
-			 ,"name"
-			 ,'location'
-			 ,'orders'
-			 ,'last_order'
-			 ,'super_total','email','tel'
-			 //,{key:"families",parser:YAHOO.util.DataSource.parseNumber},
-			 //	    {key:"active",parser:YAHOO.util.DataSource.parseNumber}
+			 'id',
+			 'name',
+			 'location',
+			 'orders',
+			 'email',
+			 'telephone',
+			 'last_order',
+			 'total_payments'
 			 ]};
 	    //__You shouls not change anything from here
 

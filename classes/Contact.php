@@ -95,7 +95,7 @@ class Contact{
     if(!is_array($data))
       $data=array();
 
-    //    print_r($data);
+
 
     $this->data=array(
 		     'contact salutation'=>'',
@@ -167,7 +167,7 @@ class Contact{
 	 $address=new address('fuzzy all');
     }else{
       //$address_data=$this->parse_address($data['address_data']);
-
+      // print "caca";
       $address=new address('new',$data['address_data']);
       
     }
@@ -180,7 +180,8 @@ class Contact{
     $this->db->exec($sql);
 
     //  print "$sql\n";
-    $sql=sprintf("update `Contact Dimension`  set `Contact main Location`=%s ,`Contact Main XHTML Address`=%s , `Contact Main Country Key`=%d,`Contact Main Country`=%s,`Contact Main Country Code`=%s where `Contact Key`=%d ",
+    $sql=sprintf("update `Contact Dimension`  set `Contact Main Address key`=%s ,`Contact main Location`=%s ,`Contact Main XHTML Address`=%s , `Contact Main Country Key`=%d,`Contact Main Country`=%s,`Contact Main Country Code`=%s where `Contact Key`=%d ",
+		 prepare_mysql($address->id),
 		 prepare_mysql($address->get('address location')),
 		 prepare_mysql($address->get('xhtml address')),
 		 $address->get('address country Key'),
@@ -188,8 +189,10 @@ class Contact{
 		 prepare_mysql($address->get('address Country Code')),
 		 $this->id
 		 );
-    // print "\n$sql\n";
-    $this->db->exec($sql);
+  //   print_r($address->data);
+//      print "\n$sql\n";
+//      exit;
+     $this->db->exec($sql);
     $this->get_data('id',$this->id);
     if(isset($data['email']) & $data['email']!=''){
       $email_data=array('email'=>$data['email'],'email contact'=>$this->display('name'));

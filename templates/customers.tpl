@@ -10,8 +10,7 @@
        <input size="8" class="text search" id="customer_search" value="" name="search"/><img align="absbottom" id="customer_submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>
        <span  class="product_search_msg"   id="customer_search_msg"    ></span> <span  class="search_sugestion"   id="customer_search_sugestion"    ></span>
        <br/>
- <a id="but_advanced_search"  class="state_details" href="search_customers.
-							  php">{t}Advanced Search{/t}</a><br/>
+ <a id="but_advanced_search"  class="state_details" href="search_customers.php">{t}Advanced Search{/t}</a><br/>
  <span id="but_show_details" state="{$details}" atitle="{if $details==0}{t}Hide Details{/t}{else}{t}Show Details{/t}{/if}" class="state_details"   >{if $details==1}{t}Hide Details{/t}{else}{t}Show Details{/t}{/if}</span>
  
        

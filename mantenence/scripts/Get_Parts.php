@@ -91,7 +91,8 @@ foreach($_supplier as $key =>$value){
 }
 
 foreach($parts as $part){
-  $sql=sprintf("insert into `Part Dimension` (`Vendor Key`,`Part Code`,`Part Current Cost`) values (%d,%s,%s)"
+  $sql=sprintf("insert into `Part Dimension` (`Customer Uniqe ID
+`,`Part Code`,`Part Current Cost`) values (%d,%s,%s)"
 	       ,$_supplier[strtolower($part['supplier'])]
 	       ,prepare_mysql($part['code'])
 	       ,prepare_mysql($part['cost'])

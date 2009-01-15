@@ -40,17 +40,26 @@ $count=0;
 //  		    'name'=>'Starter - Mixed selection of 10 boxes (of 6) plus one bonus box. 66 jars in total'
 //  		    );
 //  	$product=new Product('create',$data);
-  	$data=array(
-  		    'code'=>'Bag-03mx',
-  		    'price'=>47.25,
-  		    'rrp'=>'',
-  		    'units per case'=>1,
-  		    'name'=>'Velvet Pouch - 150 Mix'
-  		    );
-  	$product=new Product('create',$data);
+ //  	$data=array(
+//   		    'code'=>'Bag-03mx',
+//   		    'price'=>47.25,
+//   		    'rrp'=>'',
+//   		    'units per case'=>1,
+//   		    'name'=>'Velvet Pouch - 150 Mix'
+//   		    );
+//   	$product=new Product('create',$data);
 
- exit;
 
+ //  	$data=array(
+//    		    'code'=>'LCC-MIX1',
+//    		    'price'=>11.76,
+//    		    'rrp'=>'',
+//    		    'units per case'=>12,
+//    		    'name'=>'12x Mixed Crystal Cubes - discounted price'
+//    		    );
+//    	$product=new Product('create',$data);
+ 
+// exit;
 
 
 while(($cols = fgetcsv($handle_csv))!== false){
@@ -66,8 +75,7 @@ while(($cols = fgetcsv($handle_csv))!== false){
   }
   $price=$cols[7];
   
-
-
+ 
 
 
   if($code=='' or !preg_match('/\-/',$code) or preg_match('/total/i',$price)  or  preg_match('/^(pi\-|cxd\-|fw\-04)/i',$code))
@@ -88,15 +96,18 @@ if(preg_match('/^pack-01a|Pack-02a/i',$code) and $price=='')
 if(preg_match('/^(DB-IS|EO-Sticker|ECBox-01|SHOP-Fit)$/i',$code) and $price=='')
    $read=false;
 
-//  if(!preg_match('/Bag-03mx/i',$code) )
-//     $read=false;
-//  else{
-//    //  print_r($cols);
-//    print "$code\n";
-//  }
+//    if(!preg_match('/SunCH-0/i',$code) )     $read=false;
+//    else{
+//        print_r($cols);
+//     print "$products $price $read $code\n";
+//     //  exit;
+    
+//    }
   if($products and  $read){
     //  print_r($cols);
     //exit;
+  //   if(preg_match('/EarC-06-0/i',$code) )
+//       print "$code\n";
     $units=$cols[5];
     $description=$cols[6];
     $rrp=$cols[16];
@@ -110,6 +121,7 @@ if(preg_match('/^(DB-IS|EO-Sticker|ECBox-01|SHOP-Fit)$/i',$code) and $price=='')
 		    'units per case'=>$units,
 		    'name'=>$description
 		    );
+	print_r($data);
 	$product=new Product('create',$data);
 	print_r($product->data);
 

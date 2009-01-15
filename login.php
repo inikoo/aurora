@@ -49,7 +49,8 @@ $smarty->assign('js_files',$js_files);
 setlocale(LC_MESSAGES, $myconf['lang'].'_'.$myconf['country'].($myconf['encoding']!=''?'.'.$myconf['encoding']:''));
 $current_lang=$myconf['lang'];
 if(isset($_REQUEST['_lang']) and is_numeric($_REQUEST['_lang'])){
-  $sql="select  lang.code as code ,country.code2 as country_code  from lang left join list_country as country on (country.id=country_id) where lang.id=".$_REQUEST['_lang'];
+  $sql="select `Language Code` as code ,`Country 2 Alpha Code`  as country_code  from `Language Dimension` where `Language Key`=".$_REQUEST['_lang'];
+
   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
   if($sql_data=$res->fetchRow()) {
     setlocale(LC_MESSAGES, $sql_data['code'].'_'.strtoupper($sql_data['country_code']).($myconf['encoding']!=''?'.'.$myconf['encoding']:''));
@@ -71,7 +72,8 @@ $smarty->assign('log_in', _('Log in'));
 
 
 
-$sql="select id,original_name,code from lang";
+$sql="select `Language Key` as id,`Language Original Name` as original_name, `Language Code` as code    from `Language Dimension`";
+
 $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
 $other_langs=array();
 while($row=$res->fetchRow()) {

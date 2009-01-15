@@ -40,15 +40,15 @@ class Order{
     switch($type){
     case('imap_email_mals-e'):
       $ip = gethostbyname('imap.gmail.com');
-
+      $ip ='imap.gmail.com';
       $mbox = imap_open("{".$ip.":993/imap/ssl/novalidate-cert}INBOX", $data['email'], $data['pwd'])or die("can't connect: " . imap_last_error());
       $imap_obj = imap_check($mbox);
       $imap_obj->Nmsgs;
 
-      for($i=950;$i<=$imap_obj->Nmsgs;$i++){
-	print "MENSGE NUMBER $i\n";
+      for($i=15;$i<=$imap_obj->Nmsgs;$i++){
+	print "MENSSAGE NUMBER $i\n";
 	$email= imap_body($mbox,$i);
-
+	print $email;
 	if(preg_match('/\nUsername\s*:\s*\d+/',$email,$match))
 	  $edata['username']=preg_replace('/username\s*:\s*/i','',_trim($match[0]));
 	if(preg_match('/\nDate\s*:\s*[a-zA-Z0-9\-\s]+:\d\d\s*/',$email,$match)){
@@ -140,8 +140,8 @@ class Order{
 
 
 	}
-	print "$email";
-	print_r($_products);
+	//	print "$email";
+	//print_r($_products);
 	
 
 	global $myconf;
@@ -162,7 +162,8 @@ class Order{
  
  
 	$cdata['address_data']=array(
-				     'address1'=>$edata['inv address']
+				     'type'=>'3line'
+				     ,'address1'=>$edata['inv address']
 				     ,'address2'=>''
 				     ,'address3'=>''
 				     ,'town'=>$edata['inv city']
@@ -221,7 +222,7 @@ class Order{
 	foreach($_products as $product_line){
 	  $_data=preg_split('/:/',$product_line);
 	  if(count($_data)>3 and count($_data)<6){
-	    print_r($_data);
+	    // print_r($_data);
 	    $__code=='';
 	    for($j=0;$j<count($_data)-2;$j++){
 	      $__code.=$_data[$j].' ';
@@ -286,7 +287,8 @@ class Order{
       
 	// $customer=new Customer($customer_id);
 	$customer->update('orders');
-      
+	$customer->update('no normal data');
+
 	
       }
     }
