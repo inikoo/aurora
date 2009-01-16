@@ -348,12 +348,20 @@ class Address{
 
 
     if($address_raw_data['default_country_id']==30){
-      if(preg_match('/^([A-PR-UWYZ0-9][A-HK-Y0-9][AEHMNPRTVXY0-9]?[ABEHMNPRVWXY0-9]? {0,2}[0-9][ABD-HJLN-UW-Z]{2}|GIR 0AA)$/i',$address_raw_data['postcode']))
+      if($this->is_valid_postcode($address_raw_data['postcode'],30)){
+	$address_raw_data['country_d1']=_trim($address_raw_data['country_d1'].' '.$address_raw_data['country']);
 	$address_raw_data['country']='United Kingdom';
+      }elseif($this->is_valid_postcode($address_raw_data['country'],30)){
+	$address_raw_data['country_d1']=_trim($address_raw_data['country_d1'].' '.$address_raw_data['postcode']);
+	$address_raw_data['postcode']=$address_raw_data['country'];
+	$address_raw_data['country']='United Kingdom';
+      }
+      
+
     }
     
-    if(preg_match('/re$/i',$address_raw_data['country'])  and preg_match('/^(Co Kildare|)$/i',$address_raw_data['country_d1'])  and preg_match('/\-{0,5}|Dublin/i',$address_raw_data['postcode'])  )
-      $address_raw_data['country']='Ireland';
+  //   if(preg_match('/re$/i',$address_raw_data['country'])  and preg_match('/^(Co Kildare|)$/i',$address_raw_data['country_d1'])  and preg_match('/\-{0,5}|Dublin/i',$address_raw_data['postcode'])  )
+//       $address_raw_data['country']='Ireland';
     
 
     if(preg_match('/SCOTLAND|wales/i',$address_raw_data['country']))
@@ -410,10 +418,10 @@ class Address{
     $address_raw_data['country']='UK';
 
 
-
-
+  $address_raw_data['country']=preg_replace('/^,|[,\.]$/','',$address_raw_data['country']);
+    
   $sql=sprintf("select `Country Key` as id from `Country Dimension` left join `Country Alias Dimension` on  (`Country Alias Code`=`Country Code`) where `Country Alias`=%s or `Country Name`=%s ",prepare_mysql($address_raw_data['country']),prepare_mysql($address_raw_data['country']));
-  //   print "$sql\n";
+     print "$sql\n";
     $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
     if($row = mysql_fetch_array($result, MYSQL_ASSOC)) 
       $country_id=$row['id'];
@@ -2369,9 +2377,9 @@ function is_town($town,$country_id){
      return false;
       $db =& MDB2::singleton();
   if($country_id>0)
-    $sql=sprintf("select `Town Key` as id from `Town Dimension` where (`Town Name`='%s' or `Town Native Name`='%s' or `Town Local Natve Name`='%s') and `Country Key`=%d",addslashes($town),addslashes($town),addslashes($town),$country_id);
+    $sql=sprintf("select `Town Key` as id from `Town Dimension` where (`Town Name`='%s' or `Town Native Name`='%s' or `Town Local Native Name`='%s') and `Country Key`=%d",addslashes($town),addslashes($town),addslashes($town),$country_id);
   else
-    $sql=sprintf("select `Town Key` as id from `Town Dimension` where (`Town Name`='%s' or `Town Native Name`='%s' or `Town Local Natve Name`='%s') ",addslashes($town),addslashes($town),addslashes($town));
+    $sql=sprintf("select `Town Key` as id from `Town Dimension` where (`Town Name`='%s' or `Town Native Name`='%s' or `Town Local Native Name`='%s') ",addslashes($town),addslashes($town),addslashes($town));
 
   //  print "$sql\n";
  $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
@@ -2382,7 +2390,19 @@ function is_town($town,$country_id){
 }
 
 
-
+ function is_valid_postcode($postcode,$country_id){
+   $postcode=_trim($postcode);
+   switch($country_id){
+   case 30:
+     if(preg_match('/^([A-PR-UWYZ0-9][A-HK-Y0-9][AEHMNPRTVXY0-9]?[ABEHMNPRVWXY0-9]? {0,2}[0-9][ABD-HJLN-UW-Z]{2}|GIR 0AA)$/i',$postcode))
+       return true;
+     else
+       return false;
+     break;
+   }
+   return false;
+   
+ }
 
  function parse_street($line){
 
@@ -2441,6 +2461,8 @@ function is_town($town,$country_id){
 
 
  }
+
+ 
 
 
 }

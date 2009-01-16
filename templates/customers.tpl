@@ -25,7 +25,9 @@
 	<tr>
 	  <td  {if $view=='general'}class="selected"{/if} id="general" >{t}General{/t}</td>
 	  <td {if $view=='contact'}class="selected"{/if}  id="contact"  >{t}Contact{/t}</td>
-	  
+	  <td {if $view=='addresses'}class="selected"{/if}  id="address"  >{t}Address{/t}</td>
+	  <td {if $view=='ship_to_addresses'}class="selected"{/if}  id="ship_to_address"  >{t}Shipping Address{/t}</td>
+		  
 	</tr>
       </table>
     </div>

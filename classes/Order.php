@@ -45,10 +45,14 @@ class Order{
       $imap_obj = imap_check($mbox);
       $imap_obj->Nmsgs;
 
-      for($i=3205;$i<=$imap_obj->Nmsgs;$i++){
+      for($i=30;$i<=$imap_obj->Nmsgs;$i++){
 	print "MENSSAGE NUMBER $i\n";
 	$email= imap_body($mbox,$i);
+	$email = mb_convert_encoding($email, "UTF-8", "UTF-8, ISO-8859-1");
 	print $email;
+
+// 	print "\n**********\n".mb_detect_encoding($email,'UTF-8, ISO-8859-1')."\n";
+// 	exit;
 	if(preg_match('/\nUsername\s*:\s*\d+/',$email,$match))
 	  $edata['username']=preg_replace('/username\s*:\s*/i','',_trim($match[0]));
 	if(preg_match('/\nDate\s*:\s*[a-zA-Z0-9\-\s]+:\d\d\s*/',$email,$match)){
@@ -147,8 +151,13 @@ class Order{
 	global $myconf;
 	$cdata['contact_name']=$edata['inv name'];
 	$cdata['type']='Person';
-	if(isset($edata['tel']) and $edata['tel']!='')
+	$__tel='';
+	$__company='';
+	$__name=='';
+	if(isset($edata['tel']) and $edata['tel']!=''){
 	  $cdata['telephone']=$edata['tel'];
+	  $__tel=$edata['tel'];
+	}
 	if(isset($edata['fax']) and $edata['fax']!='')
 	  $cdata['fax']=$edata['fax'];
 	if(isset($edata['email']) and $edata['email']!='')
@@ -156,12 +165,10 @@ class Order{
 	if($edata['inv company']!=''){
 	  $cdata['type']='Company';
 	  $cdata['company_name']=$edata['inv company'];
- 
+	  $__company=$edata['inv company'];
 	}
  
- 
- 
-	$cdata['address_data']=array(
+ 	$cdata['address_data']=array(
 				     'type'=>'3line'
 				     ,'address1'=>$edata['inv address']
 				     ,'address2'=>''
@@ -172,9 +179,42 @@ class Order{
 				     ,'country_d2'=>''
 				     ,'default_country_id'=>$myconf['country_id']
 				     ,'postcode'=>$edata['inv pst code']
+				     
+				     );
+ 
+	$__name=$edata['inv name'];
+	if($edata['ship name']==''){
+	  $__name='';
+	}
+	$__company=$cdata['company_name'];
+	if($edata['ship company']==''){
+	  $__company='';
+	}
+	if($edata['ship tel']==''){
+	  $__tel='';
+	}
+	  
+
+
+	$cdata['address_inv_data']=array(
+				     'type'=>'3line'
+				     ,'name'=>$__name
+				     ,'company'=>$edata['inv company']
+				     ,'telephone'=>$__tel
+				     ,'address1'=>$edata['inv address']
+				     ,'address2'=>''
+				     ,'address3'=>''
+				     ,'town'=>$edata['inv city']
+				     ,'country'=>$edata['inv country']
+				     ,'country_d1'=>$edata['inv state']
+				     ,'country_d2'=>''
+				     ,'default_country_id'=>$myconf['country_id']
+				     ,'postcode'=>$edata['inv pst code']
+				     
 				     );
 	$cdata['address_shipping_data']=array(
-					      'name'=>$edata['ship name']
+					      'type'=>'3line'
+					      ,'name'=>$edata['ship name']
 					      ,'company'=>$edata['ship company']
 					      ,'telephone'=>$edata['ship tel']
 					      ,'address1'=>$edata['ship address']
@@ -188,9 +228,86 @@ class Order{
 					      ,'postcode'=>$edata['ship pst code']
 					      );
  
+	//check if the addresses are the same:
+	$diff_result = array_diff($cdata['address_inv_data'], $cdata['address_shipping_data']);
+	
+	if(count($diff_result)==0){
+
+	  $same_address=true;
+	  $same_contact=true;
+	  $same_company=true;
+	  $same_email=true;
+	  $same_telaphone=true;
 
 
- 
+	}else{
+	  
+	  print_r($diff_result);
+	  $percentage=array('address1'=>1,'town'=>1,'country'=>1,'country_d1'=>1,'postcode'=>1);
+	  $percentage_address=array();
+
+	  foreach($diff_result as $key=>$value){
+	    similar_text($cdata['address_shipping_data'][$key],$cdata['address_inv_data'][$key],$p);
+	    $percentage[$key]=$p/100;
+	    if(preg_match('/address1|town|^country$|postcode|country_d1/i',$key))
+	      $percentage_address[$key]=$p/100;
+	  }
+	  $avg_percentage=average($percentage);
+	  $avg_percentage_address=average($percentage_address);
+
+	  print "AVG DIFF $avg_percentage $avg_percentage_address \n";
+	  
+	  if($cdata['address_shipping_data']['name']=='' or !array_key_exists('name',$diff_result) )
+	    $same_contact=true;
+	  else{
+	    $_max=1000000;
+	    $irand=mt_rand(0,1000000);
+	    $rand=$irand/$_max;
+	    if($rand<$percentage['name'] and $percentage['name']>.90 ){
+	      $same_contact=true;
+	    }else
+	      $same_contact=false;
+	  }
+	  if($cdata['address_shipping_data']['company']=='' or !array_key_exists('company',$diff_result) )
+	    $same_company=true;
+	  else{
+	    $_max=1000000;
+	    $irand=mt_rand(0,1000000);
+	    $rand=$irand/$_max;
+	    print "xxx ".$percentage['company']."\n";
+	    if($rand<$percentage['company']and $percentage['company']>.90){
+	      $same_company=true;
+	    }else
+	      $same_company=false;
+	  }
+	  
+	  if($cdata['address_shipping_data']['telephone']=='' or !array_key_exists('telephone',$diff_result) )
+	    $same_telephone=true;
+	  else
+	    $same_telephone=false;
+
+
+	  if($avg_percentage_address==1)
+	    $same_address=true;
+	  else
+	    $same_address=false;
+	  
+	  print "C:$same_contact  CM:$same_company  T:$same_telephone E:$same_email  A:$same_address \n";
+	  // exit;
+
+	}
+	$cdata['has_shipping']=true;
+	$cdata['shipping_data']=$cdata['address_shipping_data'];
+
+
+	$cdata['same_address']=$same_address;
+	$cdata['same_contact']=$same_contact;
+	$cdata['same_company']=$same_company;
+	$cdata['same_email']=$same_email;
+	$cdata['same_telephone']=$same_email;
+
+
+
 	$customer_identification_method='email';
 
 	$customer_id=$this->find_customer($customer_identification_method,$cdata);

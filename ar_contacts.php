@@ -907,7 +907,8 @@ else if($f_field=='id'  )
      $order='customer last order date';
      elseif($order=='total_payments')
      $order='customer total payments';
-
+  elseif($order=='contact_name')
+     $order='customer main contact_name';
    $sql="select   * from `Customer Dimension`  $where $wheref  order by `$order` $order_direction limit $start_from,$number_results";
    //      print $sql;
    
@@ -920,7 +921,7 @@ else if($f_field=='id'  )
     $id="<a href='customer.php?id=".$data['customer id']."'>".$myconf['customer_id_prefix'].sprintf("%05d",$data['customer id']).'</a>';
   
     
-    
+  
    //  if($data['factor_num_orders_nd']>.60)
 //       $color='bbb';
 //     elseif($data['factor_num_orders_nd']>.40)
@@ -964,8 +965,8 @@ else if($f_field=='id'  )
 		   'email'=>$data['customer main xhtml email'],
 		   'telephone'=>$data['customer main telephone'],
 		   'last_order'=>strftime("%e %b %Y", strtotime($data['customer last order date'])),
-		   'total_payments'=>$data['customer total payments']
-      
+		   'total_payments'=>$data['customer total payments'],
+		   'contact_name'=>$data['customer main contact name']
 		   );
   }
 

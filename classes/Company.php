@@ -32,6 +32,7 @@ class company{
  }
 
 
+  
   function get($key,$arg1=false){
     //  print $key."xxxxxxxx";
     $key=strtolower($key);
@@ -100,7 +101,7 @@ class company{
 
     
     //print_r($contact->data);
-    $sql=sprintf("insert into `Company Dimension` (`Company ID`,`Company Name`,`Company File as`,`Company Main Address Key`,`Company Main XHTML Address`,`Company Main Country Key`,`Company Main Country`,`Company Main Location`,`Company Main Contact`,`Company Main Contact Key`,`Company Main Telephone`,`Company Main FAX`,`Company Main XHTML Email`) values (%d,%s,%s,%s,%s,%s,%s,%s,%s,%d,%s,%s,%s)",
+    $sql=sprintf("insert into `Company Dimension` (`Company ID`,`Company Name`,`Company File as`,`Company Main Address Key`,`Company Main XHTML Address`,`Company Main Country Key`,`Company Main Country`,`Company Main Location`,`Company Main Contact`,`Company Main Contact Key`,`Company Main Telephone`,`Company Main FAX`,`Company Main XHTML Email`,`Company Main Telephone Key`,`Company Main FAX Key`,`Company Main Email Key`) values (%d,%s,%s,%s,%s,%s,%s,%s,%s,%d,%s,%s,%s,%s,%s,%s)",
 		 $company_id,
 		 prepare_mysql($name),
 		 prepare_mysql($file_as),
@@ -113,7 +114,11 @@ class company{
 		 $contact->id,
 		 prepare_mysql($contact->get('contact main telephone')),
 		 prepare_mysql($contact->get('contact main fax')),
-		 prepare_mysql($contact->get('Contact Main XHTML Email'))
+		 prepare_mysql($contact->get('Contact Main XHTML Email')),
+		 prepare_mysql($contact->get('contact main telephone key')),
+		 prepare_mysql($contact->get('contact main fax key')),
+		 prepare_mysql($contact->get('Contact Main Email key'))
+
 		 );
     // print "$sql\n";
     $affected=& $this->db->exec($sql);

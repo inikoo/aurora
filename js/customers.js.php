@@ -44,11 +44,13 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 	    var CustomersColumnDefs = [
 				       {key:"id", label:"<?=$customers_ids[0]?>",width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"name", label:"<?=_('Name')?>", width:250,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"name", label:"<?=_('Customer Name')?>", width:250,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"location", label:"<?=_('Location')?>",<?=($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?> width:230,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"last_order", label:"<?=_('Last Order')?>",<?=($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?>width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				       ,{key:"orders", label:"<?=_('Orders')?>",<?=($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       ,{key:"total_payments", label:"<?=_('Total')?>",<?=($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"total_payments", label:"<?=_('Total')?>",<?=($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}} 
+				       ,{key:"contact_name", label:"<?=_('Contact Name')?>",<?=($_SESSION['state']['customers']['view']=='contact'?'':'hidden:true,')?>sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       
 				       ,{key:"email", label:"<?=_('Email')?>",<?=($_SESSION['state']['customers']['view']=='contact'?'':'hidden:true,')?>sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				       ,{key:"telephone", label:"<?=_('Telephone')?>",<?=($_SESSION['state']['customers']['view']=='contact'?'':'hidden:true,')?>sortable:false,className:"aright"}
 				       //					 {key:"families", label:"<?=_('Customers')?>", sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
@@ -81,7 +83,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 'email',
 			 'telephone',
 			 'last_order',
-			 'total_payments'
+			 'total_payments','contact_name'
 			 ]};
 	    //__You shouls not change anything from here
 
@@ -178,22 +180,28 @@ YAHOO.util.Event.onContentReady("rppmenu", function () {
       
       if(tipo=='general'){
 	  table.hideColumn('email');
-	  table.hideColumn('tel');
+	  table.hideColumn('telephone');
+	  table.hideColumn('contact_name');
+
 	  table.showColumn('location');
 	  table.showColumn('last_order');
 	  table.showColumn('orders');
-	  table.showColumn('super_total');
+	  table.showColumn('total_payments');
+	  Dom.get('adresses').className='';
+	  Dom.get('ship_to_addresses').className='';
 	  Dom.get('contact').className='';
 	  Dom.get('general').className='selected';
-      }else{
-	  table.showColumn('email');
-	  table.showColumn('tel');
+      }else if(tipo=='contact'){
 	  table.hideColumn('location');
 	  table.hideColumn('last_order');
 	  table.hideColumn('orders');
-	  table.hideColumn('super_total');
+	  table.hideColumn('total_payments');
 
-
+	  table.showColumn('contact_name');
+	  table.showColumn('email');
+	  table.showColumn('telephone');
+	  Dom.get('contact').className='selected';
+	  Dom.get('general').className='';
       }
 
 
