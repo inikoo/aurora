@@ -45,7 +45,7 @@ class Order{
       $imap_obj = imap_check($mbox);
       $imap_obj->Nmsgs;
 
-      for($i=15;$i<=$imap_obj->Nmsgs;$i++){
+      for($i=3205;$i<=$imap_obj->Nmsgs;$i++){
 	print "MENSSAGE NUMBER $i\n";
 	$email= imap_body($mbox,$i);
 	print $email;

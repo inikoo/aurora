@@ -67,8 +67,6 @@ class Address{
       
       $prepared_data=$this->prepare_3line($data);
 
-	
-
     }elseif(isset($data['type']) and $data['type']=='aw'){
       $prepared_data=$data;
 
@@ -85,15 +83,18 @@ class Address{
 
     $fuzzy=0;
     $fuzzy_type='';
-    if($address_raw_data['address1']=='' 
-       and $address_raw_data['address2']==''
-       and $address_raw_data['address3']==''){
+
+    // print_r($prepared_data);
+    // exit;
+    if($prepared_data['internal_address']=='' 
+       and $prepared_data['building_address']==''
+       and $prepared_data['street_address']==''){
 	$fuzzy=1;
 	$fuzzy_type='City';
     }
 
     
-    if($address_raw_data['town']==''){
+    if($prepared_data['town']=='' and  $prepared_data['military_base']=='No'){
       $fuzzy=1;
       $fuzzy_type='Country';
     } 
@@ -106,6 +107,8 @@ class Address{
       $fuzzy=1;
       $fuzzy_type='All';
     } 
+
+
 
       if($prepared_data['town_d1_id']==0)$prepared_data['town_d1_id']='';
       if($prepared_data['town_d2_id']==0)$prepared_data['town_d2_id']='';
@@ -149,11 +152,17 @@ class Address{
       $this->data['address country name']=$country->get('country name');
       $this->data['address world region']=$country->get('World region');
       $this->data['address continent']=$country->get('continent');
+      $this->data['military address']=$prepared_data['military_base'];
+      $this->data['military installation address']=_trim($this->data['address internal'].' '.$this->data['address building']);
+      $this->data['military installation name']=$prepared_data['military_installation_data']['military base name'];
+      $this->data['military installation country key']=$prepared_data['military_installation_data']['military base country key'];
+      $this->data['military installation type']=$prepared_data['military_installation_data']['military base type'];
+
       $this->data['address location']=$this->display('location');
       $this->data['xhtml address']=$this->display('xhtml');
 
 
-      print_r($this->data);
+            print_r($this->data);
 
       $keys='`Address Data Creation`';
       $values='Now()';
@@ -165,8 +174,10 @@ class Address{
       $keys=preg_replace('/^,/','',$keys);
 
       $sql="insert into `Address Dimension` ($keys) values ($values)";
-      print $sql;
-      exit;
+      //print $sql;
+      if($this->get('address country code')=='UNK')
+	exit;
+      //exit;
 	  $affected=& $this->db->exec($sql);
       if (PEAR::isError($affected)) {
 	return array('ok'=>false,'msg'=>_('Unknwon Error').'.');
@@ -198,6 +209,10 @@ class Address{
    case('location'):
      //  print_r($this->data);
 
+     if($this->get('military address')=='Yes'){
+       $location=sprintf('<img src="art/flags/%s.gif" title="%s"> %s',strtolower($this->data['address country 2 alpha code']),$this->data['address country code'],$this->get('military installation type'));
+     }else{
+
      if($this->get('fuzzy address')){
        //       print $this->get('address fuzzy type')."zzzzz\n";
        switch($this->get('address fuzzy type')){
@@ -217,6 +232,7 @@ class Address{
      }else{
      $location=sprintf('<img src="art/flags/%s.gif" title="%s"> %s',strtolower($this->data['address country 2 alpha code']),$this->data['address country code'],$this->data['address town']);
      }
+     }
      return _trim($location);
      break;
    case('xhtml'):
@@ -224,7 +240,17 @@ class Address{
      $separator="<br/>";
      
    default:
-     
+      if($this->get('military address')=='Yes'){
+	$address=$this->data['military installation address'];
+	$address_type=_trim($this->data['military installation type']);
+	if($address_type!='')
+	  $address.=$separator.$address_type;
+	$address_type=_trim($this->get('postal code'));
+	if($address_type!='')
+	  $address.=$separator.$address_type;
+	$address.=$separator.$this->data['address country name'];
+
+      }else{
      $address='';
      $header_address=_trim($this->data['address internal'].' '.$this->data['address bulding']);
      if($header_address!='')
@@ -253,7 +279,7 @@ class Address{
        $address.=$ps_address.$separator;
      
      $address.=$this->data['address country name'];
-
+      }
      return $address;
    }
    
@@ -292,8 +318,16 @@ class Address{
   $town_id=0;
   $country_d2_id=0;
   $country_d1_id=0;
- $country_id=0;
- $military_instalation=array();
+  $country_id=0;
+  $military_installation['address']='';
+  $military_installation['military base country key']='';
+  $military_installation['military base name']='';
+  $military_installation['military base location']='';
+  $military_installation['military base type']='';
+  $military_installation['military base postal code']='';
+  
+
+
 
  if($fix2){
    if(preg_match('/^St. Thomas.*Virgin Islands$/i',$address_raw_data['town']))
@@ -310,6 +344,20 @@ class Address{
   }else{// Try to guess country
 
     // Common missconceptions
+
+
+
+    if($address_raw_data['default_country_id']==30){
+      if(preg_match('/^([A-PR-UWYZ0-9][A-HK-Y0-9][AEHMNPRTVXY0-9]?[ABEHMNPRVWXY0-9]? {0,2}[0-9][ABD-HJLN-UW-Z]{2}|GIR 0AA)$/i',$address_raw_data['postcode']))
+	$address_raw_data['country']='United Kingdom';
+    }
+    
+    if(preg_match('/re$/i',$address_raw_data['country'])  and preg_match('/^(Co Kildare|)$/i',$address_raw_data['country_d1'])  and preg_match('/\-{0,5}|Dublin/i',$address_raw_data['postcode'])  )
+      $address_raw_data['country']='Ireland';
+    
+
+    if(preg_match('/SCOTLAND|wales/i',$address_raw_data['country']))
+      $address_raw_data['country']='United Kingdom';
     if(preg_match('/^england$|^inglaterra$/i',$address_raw_data['country'])){
       $address_raw_data['country']='United Kingdom';
      if($country_d1=='')
@@ -365,7 +413,7 @@ class Address{
 
 
   $sql=sprintf("select `Country Key` as id from `Country Dimension` left join `Country Alias Dimension` on  (`Country Alias Code`=`Country Code`) where `Country Alias`=%s or `Country Name`=%s ",prepare_mysql($address_raw_data['country']),prepare_mysql($address_raw_data['country']));
-   print "$sql\n";
+  //   print "$sql\n";
     $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
     if($row = mysql_fetch_array($result, MYSQL_ASSOC)) 
       $country_id=$row['id'];
@@ -1135,10 +1183,24 @@ if($town=='Salamina')
   $postcode=_trim($postcode);
   //apo address
   if(preg_match('/^(09|96|340)\d+$/',$postcode)){
+
+
     $military_base='Yes';
     
-    $address1=$address1.' '$address2.' '.$address3;
-    
+    $address1=_trim($address1.' '.$address2.' '.$address3.' '.$town.' '.$country_d2.' '.$country_d1);
+    $address2='';
+    $address3='';
+    $town='';
+    $country_d2='';
+    $country_d1='';
+    $military_installation['address']=$address1;
+    $military_installation['military base country key']='';
+    $military_installation['military base postal code']=$postcode;
+    if(preg_match('/apo ae$/i',$address1) or preg_match('/\sapo ae\s+/i',$address1)){
+      $address1=_trim(preg_replace('/apo ae/i','',$address1));
+      $military_installation['military base type']='APO AE';
+    }
+      
 
  //    if(preg_match('/^(apo|ae)$/i',$town)){
 //       $town='';
@@ -1149,22 +1211,22 @@ if($town=='Salamina')
 //     if(preg_match('/^(apo|ae)$/i',$country_d2)){
 //       $country_d2='';
 //     }
-     $military_instalation['address']=$address1;
-     $military_instalation['military base country key']=229;
-     $military_instalation['military base name']='';
-     $military_instalation['military base location']='';
-     $military_instalation['military base type']='';
-     $military_instalation['military base postal code']=$postcode;
+ //     $military_installation['address']=$address1;
+//      $military_installation['military base country key']=229;
+//      $military_installation['military base name']='';
+//      $military_installation['military base location']='';
+//      $military_installation['military base type']='';
+//      $military_installation['military base postal code']=$postcode;
 
 
 //     if(preg_match('/^(09)/',$postcode)){
 
-//     $militaty_instalation_address='';
-//         $militaty_instalation_code='';
+//     $militaty_installation_address='';
+//         $militaty_installation_code='';
 
-//     $militaty_instalation_name='';
-//     $militaty_instalation_location='';
-//     $militaty_instalation_country_key='';
+//     $militaty_installation_name='';
+//     $militaty_installation_location='';
+//     $militaty_installation_country_key='';
   }
 
 
@@ -1919,7 +1981,7 @@ case(171)://Sweden
 
 
     if($country_d1==''){
-      $country_d1=get_country_d1($town,177);
+      $country_d1=$this->get_country_d1_name($town,177);
       
 
     }
@@ -2185,14 +2247,14 @@ if($country_d2!=''){
 		      'country_d2_id'=>$country_d2_id,
 		      'country_d1_id'=>$country_d1_id,
 		      'country_id'=>$country_id,
-		      'military instalation'=>$military_instalation,
+		      'military_installation_data'=>$military_installation,
 		      'military_base'=>$military_base
 		      );
 
   
 
   // print_r($address_data);
-
+  // exit;
 
  //  if($country_id==244){
 //      print_r($address_data);
@@ -2323,6 +2385,9 @@ function is_town($town,$country_id){
 
 
  function parse_street($line){
+
+   print "********** $line\n";
+
    $number='';
    $name='';
    $direction='';
@@ -2340,6 +2405,8 @@ function is_town($town,$country_id){
      $name=substr($line,strlen($line)-$len);
 
    }
+   $name=preg_replace('/^\s*,\s*/','',$name);
+
    $name=_trim($name);
    $number=_trim($number);
    
