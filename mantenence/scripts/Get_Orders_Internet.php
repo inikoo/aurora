@@ -28,7 +28,7 @@ $version='V 1.0';
 
 $Data_Audit_ETL_Software="$software $version";
 
-$_SESSION['lang']=1;
+
 
 $data=array(
 	    'type'=>'imap_email_mals-e',

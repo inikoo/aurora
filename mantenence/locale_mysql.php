@@ -123,6 +123,10 @@ $res.="\$_order_tipo['9']=_('Refund');\n";
 $res.="\$_order_tipo['10']=_('Credit Note');\n";
 
 
+$res.="\$_history_direct_object['Customer']=_('Customer');\n";
+$res.="\$_history_direct_object['Note']=_('Note');\n";
+
+
 $res.="\$_order_status['0']=_('New');\n";
 $res.="\$_order_status['5']=_('To be submited');\n";
 
