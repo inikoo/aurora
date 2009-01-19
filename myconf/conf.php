@@ -169,7 +169,7 @@ $default_state=array(
 				      'from'=>'',
 				      'to'=>'',	  
 				      'table'=>array(
-						     'order'=>'date_index',
+						     'order'=>'last_date',
 						     'order_dir'=>'',
 						     'sf'=>0,
 						     'nr'=>25,
@@ -401,7 +401,7 @@ $default_state=array(
 				       'display'=>array('details'=>0,'plot'=>1,'orders'=>0,'customers'=>0,'stock_history'=>0),
 
 				       'orders'=>array(
-						       'order'=>'date_index',
+						       'order'=>'last_date',
 						       'order_dir'=>'',
 						       'sf'=>0,
 						       'nr'=>15,

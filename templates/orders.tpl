@@ -11,19 +11,22 @@
     </form>
     <div id="cal1Container" style="position:absolute;display:none; z-index:2"></div>
     <div style="position:relative;right:-80px"><div id="cal2Container" style="display:none; z-index:2;position:absolute"></div></div>
+    <span  class="state_details"  id="show_details">{t}Orders Overview{/t}</span>
   </div>
 
   <div id="top" class="top_bar">
     <div id="short_menu" class="nodetails" style="{if $show_details}display:none;{/if}width:100%;margin-bottom:0px">
       <table style="float:left;margin:0 0 0 20px ;padding:0"  class="options" >
 	<tr>
-	  <td  {if $view=='all'}class="selected"{/if} id="all" >{t}All Orders{/t}</td>
+	  <td  {if $view=='all'}class="selected"{/if} id="all" >{t}Orders{/t}</td>
 	  <td {if $view=='invoices'}class="selected"{/if}  id="invoices"  >{t}Invoices{/t}</td>
-	  <td  {if $view=='in_process'}class="selected"{/if}  id="in_process"  >{t}In Process{/t}</td>
-	  <td  {if $view=='cancelled'}class="selected"{/if}  id="cancelled"  >{t}Cancelled{/t}</td>
+	  <td style="padding:0;font-weight:100;color:#777;padding:0 0 0 25px;cursor:default;;border:none"><span  class="state_details"  id="show_details">{t}show only{/t}</span></td>
+
+	  <td  style="" {if $view=='in_process'}class="selected"{/if}  id="in_process"  >{t}In Process{/t}</td>
+	  <td  style="" {if $view=='cancelled'}class="selected"{/if}  id="cancelled"  >{t}Cancelled{/t}</td>
 
 	  
-	  <td style="padding:0;font-weight:100;color:#777;padding:0 0 0 5px;cursor:default;;border:none"><span  class="state_details"  id="show_details">{t}show details{/t}</span></td>
+
 	</tr>
       </table>
     </div>

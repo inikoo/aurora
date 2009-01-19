@@ -77,44 +77,49 @@ class Order{
 	if(!preg_match('/\nEmail\s*:\s*\n/',$email)  and    preg_match('/\nEmail\s*:\s*.+\n/',$email,$match))
 	  $edata['email']=preg_replace('/email\s*:\s*/i','',_trim($match[0]));
 
-
-	if(preg_match('/\nVoucher\s*:\s*[0-9\.`-]+\n/',$email,$match)){
+	$edata['voucher']='0.00';
+	if(preg_match('/\nVoucher\s*:\s*[0-9\.`-]+\s*\n/',$email,$match)){
 	  $edata['voucher']=preg_replace('/voucher\s*:\s*/i','',_trim($match[0]));
 	  if($edata['voucher']=='-0.00')
 	    $edata['voucher']='0.00';
 	}
-	if(preg_match('/\nDiscount\s*:\s*[0-9\.`-]+\n/',$email,$match)){
+	$edata['discount']='0.00';
+	if(preg_match('/\nDiscount\s*:\s*[0-9\.`-]+\s*\n/',$email,$match)){
 	  $edata['discount']=preg_replace('/discount\s*:\s*/i','',_trim($match[0]));
 	  if($edata['discount']=='-0.00')
 	    $edata['discount']='0.00';
 	}
 
-      
-	if(preg_match('/\nSubtotal\s*:\s*[0-9\.`-]+\n/',$email,$match)){
+      	$edata['subtotal']='0.00';
+	if(preg_match('/\nSubtotal\s*:\s*[0-9\.`-]+\s*\n/',$email,$match)){
 	  $edata['subtotal']=preg_replace('/subtotal\s*:\s*/i','',_trim($match[0]));
 	  if($edata['subtotal']=='-0.00')
 	    $edata['subtotal']='0.00';
 	}
-
-	if(preg_match('/\nTax\s*:\s*[0-9\.`-]+\n/',$email,$match)){
+	$edata['tax']='0.00';
+	if(preg_match('/\nTax\s*:\s*[0-9\.\-]+\s*\n/',$email,$match)){
 	  $edata['tax']=preg_replace('/tax\s*:\s*/i','',_trim($match[0]));
 	  if($edata['tax']=='-0.00')
 	    $edata['tax']='0.00';
 	}
-	if(preg_match('/\nTOTAL\s*:\s*[0-9\.`-]+\n/',$email,$match)){
+
+
+	$edata['total']='0.00';
+	if(preg_match('/\nTOTAL\s*:\s*[0-9\.`-]+\s*\n/',$email,$match)){
 	  $edata['total']=preg_replace('/total\s*:\s*/i','',_trim($match[0]));
 	  if($edata['total']=='-0.00')
 	    $edata['total']='0.00';
 	}
-
-	if(preg_match('/\nShipping\s*:\s*[0-9\.`-]+\n/',$email,$match)){
+	$edata['shipping']='0.00';
+	if(preg_match('/\nShipping\s*:\s*[0-9\.`-]+\s*\n/',$email,$match)){
 	  $edata['shipping']=preg_replace('/shipping\s*:\s*/i','',_trim($match[0]));
 	  if($edata['shipping']=='-0.00')
 	    $edata['shipping']='0.00';
 	}
-
+// 	print_r($edata);
+// 	exit;
 	//Delivery data
- 
+
 	$tags=array(' Inv Name',' Inv Company',' Inv Address',' Inv City',' Inv State',' Inv Pst Code',' Inv Country',' Ship Name',' Ship Company',' Ship Address',' Ship City',' Ship State',' Ship Pst Code',' Ship Country',' Ship Tel');
 	foreach($tags as $tag){
 	  if(preg_match('/\n'.$tag.'\s*:.*\n/',$email,$match))
@@ -313,26 +318,36 @@ class Order{
 
 	$customer_id=$this->find_customer($customer_identification_method,$cdata);
 	$customer=new Customer($customer_id);
-
+	$ship_to_key=$customer->get('customer last ship to key');
+	$ship_to=$customer->get('xhtml ship to',$ship_to_key);
 
 	$store=new Store('code','AW.web');
 	if(!$store->id)
 	  $store=new Store('unknown');
 	
-	$this->data['order header date']=$edata['date'];
-	$this->data['order header alphanumeric id']=$edata['shopper_id'];
-	$this->data['order header numeric id']=$edata['shopper_id'];
-	$this->data['order header customer key']=$customer->id;
-	$this->data['order header customer name']=$customer->get('customer name');
-	$this->data['order header current state']='In Process';
-	$this->data['order header current title']=_('Order').' '.$this->get($myconf['order_id_type']);
-	$this->data['order header customer message']=_trim($edata['message']);
-	$this->data['order header original data mime type']='text/plain';
-	$this->data['order header original data']=$email;
-	$this->data['order header main store key']=$store->id;
-	$this->data['order header main store code']=$store->get('code');
-	$this->data['order header main store type']=$store->get('type');
+	$this->data['order date']=$edata['date'];
+	$this->data['order id']=$edata['shopper_id'];
+	$this->data['order customer key']=$customer->id;
+	$this->data['order customer name']=$customer->get('customer name');
+	$this->data['order current dispatch state']='In Process';
+	$this->data['order current payment state']='Waiting Invoice';
+	$this->data['order current xhtml state']='In Process';
+	$this->data['order customer message']=_trim($edata['message']);
+	$this->data['order original data mime type']='text/plain';
+	$this->data['order original data']=$email;
+	$this->data['order main store key']=$store->id;
+	$this->data['order main store code']=$store->get('code');
+	$this->data['order main store type']=$store->get('type');
+	$this->data['order gross amount']=$edata['subtotal'];
+	$this->data['order shipping amount']=$edata['shipping'];
 
+	$this->data['order discount ammont']=$edata['discount']+$edata['voucher'];
+	$this->data['order total tax amount']=$edata['tax'];
+	$this->data['order main ship to key']=$ship_to_key;
+	$this->data['order main xhtml ship to']=$ship_to;
+	//	print "$email";
+	//	print_r($edata);
+	//exit;
 
 	$this->create_order_header();
 
@@ -373,7 +388,7 @@ class Order{
 	    }
 
 	    // print_r($_data);
-	    $product=new Product('code',$code,$this->get('Order Header Date'));
+	    $product=new Product('code',$code,$this->get('Order Date'));
 	    if(!$product->id){
 	      $this->errors[]=_('Error(1): Undentified Product. Line:').$product_line;
 	      print "Error(1), product undentified Line: $code $product_line\n";
@@ -396,7 +411,7 @@ class Order{
 	$pdata=$this->get_discounts($pdata);
 	$line_number=1;
 	foreach($pdata as $product_data){
-	  $product_data['date']=$this->data['order header date'];
+	  $product_data['date']=$this->data['order date'];
 	  $product_data['line_number']=$line_number;
 	  $this->add_order_transaction($product_data);
 	  $line_number++;
@@ -411,26 +426,26 @@ class Order{
 
 	switch($_SESSION['lang']){
 	default:
-	  $abstract=sprintf('Internet Order <a href="order.php?id=%d">%s</a>',$this->get('order header key'),$this->get($myconf['order_id_type']));
+	  $abstract=sprintf('Internet Order <a href="order.php?id=%d">%s</a>',$this->get('order key'),$this->get('order id'));
 	  $note=sprintf('%s (<a href="customer.php?id=%d">%s) place an order by internet using IP:%d at %s'
 			,$customer->get('customer name')
 			,$customer->id
 			,$customer->get('customer id')
 			,$edata['ip_number']
-			,strftime("%e %b %Y %H:%M",strtotime($this->data['order header date']))
+			,strftime("%e %b %Y %H:%M",strtotime($this->data['order date']))
 			);
 	}
 
 	$sql=sprintf("insert into `History Dimension` (`History Date`,`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`History Details`,`Author Key`,`Author Name`) values(%s,'Customer','%s','Placed','Order',%d,%s,0,%s)"
-		     ,prepare_mysql($this->data['order header date'])
+		     ,prepare_mysql($this->data['order date'])
 		     ,$customer->id
-		     ,$this->data['order header key']
+		     ,$this->data['order key']
 		     ,prepare_mysql($note)
 		     ,prepare_mysql(_('System'))
 		     );
 	$this->db->exec($sql);
 	$history_id=$this->db->lastInsertID();
-	$abstract.=' (<span class="like_a" onclick="showdetails(this)" hid="'.$history_id.'">'._('see more').'<span>)';
+	$abstract.=' (<span class="like_a" onclick="showdetails(this)" d="0" id="ch'.$history_id.'"  hid="'.$history_id.'">'._('view details').'</span>)';
 	$sql=sprintf("update `History Dimension` set `History Abstract`=%s where `History Key`=%d",prepare_mysql($abstract),$history_id);
 	//	print "$sql\n";
 	$this->db->exec($sql);
@@ -465,18 +480,20 @@ class Order{
   }
 
   function add_order_transaction($data){
-    $sql=sprintf("insert into `Order Transaction Fact` (`Order Date`,`Order Last Updated Date`,`Product Key`,`Current Dispatching State`,`Current Payment State`,`Customer Key`,`Order Header Key`,`Order Alphanumeric ID`,`Order Numeric ID`,`Order Line`,`Order Quantity`) values (%s,%s,%d,%s,%s,%s,%s,%s,%s,%d,%f) "
+    $sql=sprintf("insert into `Order Transaction Fact` (`Order Date`,`Order Last Updated Date`,`Product Key`,`Current Dispatching State`,`Current Payment State`,`Customer Key`,`Order Key`,`Order ID`,`Order Line`,`Order Quantity`) values (%s,%s,%d,%s,%s,%s,%s,%s,%d,%f) "
 		 ,prepare_mysql($data['date'])
 		 ,prepare_mysql($data['date'])
 		 ,$data['product_id']
 		 ,prepare_mysql('Waiting authorization to be picked')
 		 ,prepare_mysql('Waiting Payment')
-		 ,prepare_mysql($this->get('Order Header Customer Key'))
-		 ,prepare_mysql($this->get('Order Header Key'))
-		 ,prepare_mysql($this->get('Order Header Alphanumeric ID'))
-		 ,prepare_mysql($this->get('Order Header Numeric ID'))
+		 ,prepare_mysql($this->get('Order Customer Key'))
+		 ,prepare_mysql($this->get('Order Key'))
+		 ,prepare_mysql($this->get('Order ID'))
 		 ,$data['line_number']
 		 ,number($data['qty'])
+		 ,prepare_mysql($this->data['order main ship to key']);
+
+
 		 );
     $this->db->exec($sql);
 
@@ -491,29 +508,32 @@ class Order{
   }
 
   function create_order_header(){
-    $sql=sprintf("insert into `Order Header Dimension` (`Order Header Date`,`Order Header Last Updated Date`,`Order Header Alphanumeric ID`,`Order Header Numeric ID`,`Order Header Main Store Key`,`Order Header Main Store Code`,`Order Header Main Store Type`,`Order Header Customer Key`,`Order Header Customer Name`,`Order Header Current State`,`Order Header Current Title`,`Order Header Customer Message`,`Order Header Original Data MIME Type`,`Order Header Original Data`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-		 ,prepare_mysql($this->get('Order Header Date'))
-		 ,prepare_mysql($this->get('Order Header Date'))
-		 ,prepare_mysql($this->get('Order Header Alphanumeric ID'))
-		 ,prepare_mysql($this->get('Order Header Numeric ID'))
-		 ,prepare_mysql($this->get('Order Header Main Store Key'))
-		 ,prepare_mysql($this->get('Order Header Main Store Code'))
-		 ,prepare_mysql($this->get('Order Header Main Store Type'))
-		 ,prepare_mysql($this->get('Order Header Customer Key'))
-		 ,prepare_mysql($this->get('Order Header Customer Name'))
-		 ,prepare_mysql($this->get('Order Header Current State'))
-		 ,prepare_mysql($this->get('Order Header Current Title'))
-		 ,prepare_mysql($this->get('Order Header Customer Message'))
-		 ,prepare_mysql($this->get('Order Header Original Data MIME Type'))
-		 ,prepare_mysql($this->get('Order Header Original Data'))
-		   
-
+    $sql=sprintf("insert into `Order Dimension` (`Order Date`,`Order Last Updated Date`,`Order ID`,`Order Main Store Key`,`Order Main Store Code`,`Order Main Store Type`,`Order Customer Key`,`Order Customer Name`,`Order Current Dispatch State`,`Order Current Payment State`,`Order Current XHTML State`,`Order Customer Message`,`Order Original Data MIME Type`,`Order Original Data`,`Order Gross Amount`,`Order Discount Amount`,`Order Total Tax Amount`,`Order Shipping Amount`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%.2f,%.2f,%.2f,%.2f)"
+		 ,prepare_mysql($this->get('Order Date'))
+		 ,prepare_mysql($this->get('Order Date'))
+		 ,prepare_mysql($this->get('Order ID'))
+		 ,prepare_mysql($this->get('Order Main Store Key'))
+		 ,prepare_mysql($this->get('Order Main Store Code'))
+		 ,prepare_mysql($this->get('Order Main Store Type'))
+		 ,prepare_mysql($this->get('Order Customer Key'))
+		 ,prepare_mysql($this->get('Order Customer Name'))
+		 ,prepare_mysql($this->get('Order Current Dispatch State'))
+		 ,prepare_mysql($this->get('Order Current Payment State'))
+		 ,prepare_mysql($this->get('Order Current XHTML State'))
+		 ,prepare_mysql($this->get('Order Customer Message'))
+		 ,prepare_mysql($this->get('Order Original Data MIME Type'))
+		 ,prepare_mysql($this->get('Order Original Datac'))
+		 ,$this->get('Order Gross Amount')
+		 ,$this->get('Order Discount Amount')
+		 ,$this->get('Order Total Tax Amount')
+		 ,$this->get('Order Shipping Amount')
 		 );
+    print $sql;
     $affected=& $this->db->exec($sql);
     if (PEAR::isError($affected)) {
       $this->error=array('ok'=>false,'msg'=>_('Unknwon Error').'.');
     }else{
-      $this->data['order header key']=$this->db->lastInsertID();
+      $this->data['order key']=$this->db->lastInsertID();
     }
     //print "$sql\n";
   }
@@ -522,265 +542,15 @@ class Order{
 
 
   function get_data($key,$id){
-    global $_order_status;
-    switch($this->tipo){
-    case('order'):
-      $this->db_table='orden';
-      if($key=='public_id')
-	$sql=sprintf("select * from orden where public_id=%s",prepare_mysql($id));
-      else
-	$sql=sprintf("select * from orden where id=%d",$id);
-
-      // print "$sql\n";
+    if($key=='id'){
+      $sql=sprintf("select * from `Order Dimension` where `Order Key`=%d",$id);
+      //print $sql;
       $result =& $this->db->query($sql);
-      if(!$this->data=$result->fetchRow()){	     
-        return false;
+      if($this->data=$result->fetchRow()){	     
+	$this->id=$this->data['order key'];
       }
-      $this->id=$this->data['id'];
-
-
-      if($this->data['weight']==''){
-	$this->data['weight']=$this->get('estimated_weight');
-	$this->data['weight_estimated']=1;
-      }
-      if($this->data['pick_factor']==''){
-	$this->data['pick_factor']=(int) $this->get('pick_factor');
-      }
-      if($this->data['pack_factor']==''){
-	$this->data['pack_factor']=(int) $this->get('pack_factor');
-      }
-      
-
-      $shipping_vateable=0;
-      $shipping_no_vateable=0;
-      $charges_vateable=0;
-      $charges_no_vateable=0;
-      $items_vateable=0;
-      $items_no_vateable=0;
-      $credits_vateable=0;
-      $credits_no_vateable=0;
-      
-      $deliver_by='';
-      $sql=sprintf("select supplier_id  from shipping where  order_id=%d",$this->id);
-      $res2 = $this->db->query($sql);  
-      if ($row2=$res2->fetchRow()){
-	if($row2['supplier_id']>0){
-	  // get the anme
-	  $s_id=$row2['supplier_id'];
-	  $supplier=new Supplier($s_id);
-	  $deliver_by.='<a href="supplier.php?id='.$s_id.'">'.$supplier->data['name'].'</a>, ';
-	}
-      }    
-      $deliver_by=preg_replace('/\,\s$/','',$deliver_by);
-      if($deliver_by=='')
-	$deliver_by=_('Unknown');
-
-
-
-      $picked_by='';
-      $sql=sprintf("select picker_id  from pick  where  order_id=%d",$this->id);
-      $res2 = $this->db->query($sql);  
-      if ($row2=$res2->fetchRow()){
-	if($row2['picker_id']>0){
-	  // get the anme
-	  $s_id=$row2['picker_id'];
-	
-	  if($staff=new Staff('id',$s_id))
-	    $picked_by.='<a href="staff.php?id='.$s_id.'">'.$staff->data['alias'].'</a>, ';
-	}
-      }    
-      $picked_by=preg_replace('/\,\s$/','',$picked_by);
-      if($picked_by=='')
-	$picked_by=_('Unknown');
-
-      $packed_by='';
-      $sql=sprintf("select packer_id  from pack  where  order_id=%d",$this->id);
-      $res2 = $this->db->query($sql);  
-      if ($row2=$res2->fetchRow()){
-	if($row2['packer_id']>0){
-	  // get the anme
-	  $s_id=$row2['packer_id'];
-	  if($staff=new Staff('id',$s_id))
-	    $packed_by.='<a href="staff.php?id='.$s_id.'">'.$staff->data['alias'].'</a>, ';
-	}
-      }    
-      $packed_by=preg_replace('/\,\s$/','',$packed_by);
-      if($packed_by=='')
-	$packed_by=_('Unknown');
-
-
-
-
-
-      $sql=sprintf("select sum(value) as value from shipping where tax_code='S' and  order_id=%d",$this->id);
-
-      $res2 = $this->db->query($sql);  
-      if ($row2=$res2->fetchRow())
-	$shipping_vateable=$row2['value'];
-      $res2 = $this->db->query($sql);  
-      $sql=sprintf("select sum(value) as value from shipping where tax_code='' and order_id=%d",$this->id);
-      $res2 = $this->db->query($sql);  
-      if ($row2=$res2->fetchRow())
-	$shipping_no_vateable=$row2['value'];
-
-
-
-
-      $sql=sprintf("select sum(value) as value from charge where tax_code='S' and  order_id=%d",$this->id);
-
-      $res2 = $this->db->query($sql);  
-      if ($row2=$res2->fetchRow())
-	$charges_vateable=$row2['value'];
-      $res2 = $this->db->query($sql);  
-      $sql=sprintf("select sum(value) as value from charge where tax_code='' and order_id=%d",$this->id);
-      $res2 = $this->db->query($sql);  
-      if ($row2=$res2->fetchRow())
-	$charges_no_vateable=$row2['value'];
-
-
-
-      $sql=sprintf("select sum(charge) as value from transaction where tax_code='S' and  order_id=%d",$this->id);
-    
-      $res2 = $this->db->query($sql);  
-      if ($row2=$res2->fetchRow())
-	$items_vateable=$row2['value'];
-      $res2 = $this->db->query($sql);  
-      $sql=sprintf("select sum(charge) as value from transaction where tax_code='' and order_id=%d",$this->id);
-      $res2 = $this->db->query($sql);  
-      if ($row2=$res2->fetchRow())
-	$items_no_vateable=$row2['value'];
-     
-      $sql=sprintf("select sum(price*(1-discount)*(ordered-reorder)) as value from todo_transaction where tax_code='S' and  order_id=%d",$this->id);
-
-      $res2 = $this->db->query($sql);  
-      if ($row2=$res2->fetchRow())
-	$items_vateable=$items_vateable+$row2['value'];
-      $res2 = $this->db->query($sql);  
-      $sql=sprintf("select sum(price*(1-discount)*(ordered-reorder))  as value from todo_transaction where tax_code='' and order_id=%d",$this->id);
-      $res2 = $this->db->query($sql);  
-      if ($row2=$res2->fetchRow())
-	$items_no_vateable=$items_no_vateable+$row2['value'];
-     
-
-      $sql=sprintf("select sum(value_net) as value from debit where tax_code='S' and  order_affected_id=%d",$this->id);
- 
-      $res2 = $this->db->query($sql);  
-      if ($row2=$res2->fetchRow())
-	$credits_vateable=$row2['value'];
-      $res2 = $this->db->query($sql);  
-      $sql=sprintf("select sum(value_net) as value from debit where tax_code='' and order_affected_id=%d",$this->id);
-      $res2 = $this->db->query($sql);  
-      if ($row2=$res2->fetchRow())
-	$credits_no_vateable=$row2['value'];
-
-      // number of items out of stock
-      $items_out_of_stock=0;
-      $sql=sprintf("select count(*) as num from outofstock where order_id=%d",$this->id);
-      $res2 = $this->db->query($sql);  
-      if ($row2=$res2->fetchRow())
-	$items_out_of_stock=$row2['num'];
-  
-      if($staff=new Staff($this->data['taken_by'])){
-	$this->data['taken_by']=$staff->data['alias'];
-      }else
-	$this->data['taken_by']=_('Unknown');
-    
-  
-      $this->data['items_out_of_stock']=$items_out_of_stock;
-      $this->data['deliver_by']=$deliver_by;
-      $this->data['picked_by']=$picked_by;
-      $this->data['packed_by']=$packed_by;
-    
-      $this->data['credits_vateable']=$credits_vateable;
-      $this->data['credits_no_vateable']=$credits_no_vateable;
-      $this->data['shipping_vateable']=$shipping_vateable;
-      $this->data['shipping_no_vateable']=$shipping_no_vateable;
-      $this->data['charges_vateable']=$charges_vateable;
-      $this->data['charges_no_vateable']=$charges_no_vateable;
-      $this->data['items_vateable']=$items_vateable;
-      $this->data['items_no_vateable']=$items_no_vateable;
-  
-
-
-      return true;
-    case('po'):
-      $this->db_table='porden';
-      $sql=sprintf("select consolidated_by,status_id,porden.id,public_id,supplier_id,UNIX_TIMESTAMP(date_expected) as date_expected,UNIX_TIMESTAMP(date_submited) as date_submited,UNIX_TIMESTAMP(date_creation) as date_creation,UNIX_TIMESTAMP(date_invoice) as date_invoice,UNIX_TIMESTAMP(date_received) as date_received,UNIX_TIMESTAMP(date_checked) as date_checked,UNIX_TIMESTAMP(date_consolidated) as date_consolidated,tipo,goods,shipping,vat,total,charges,diff,(select count(*) from porden_item where  porden_id=porden.id )as items  from porden where id=%d ",$this->id);
-      
-      $result =& $this->db->query($sql);
-      if($porder=$result->fetchRow()){
-	
-	$tipo=$porder['tipo'];
-	// 	if($tipo==0)
-	// 	  $this->status='new';
-	// 	elseif($tipo==1)
-	// 	  $this->status='submited';
-	// 	elseif($tipo==2)
-	// 	  $this->status='received';
-	// 	elseif($tipo==3)
-	// 	  $this->status='cancelled';
-	$this->data['tipo']=$porder['tipo'];
-	$this->data['id']=$porder['id'];
-	//$this->data['received_by']=$porder['received_by'];
-	//$this->data['checked_by']=$porder['checked_by'];
-	$this->data['consolidated_by']=$porder['consolidated_by'];
-
-	
-	$this->data['public_id']=$porder['public_id'];
-	$this->data['supplier_id']=$porder['supplier_id'];
-	$this->data['items']=(!is_numeric($porder['items'])?0:number($porder['items']));
-	$this->data['status_id']=$porder['status_id'];
-	$this->data['total']=$porder['total'];
-	$this->data['vat']=$porder['vat'];
-	$this->data['goods']=$porder['goods'];
-	$this->data['shipping']=$porder['shipping'];
-	$this->data['charges']=$porder['charges'];
-	$this->data['diff']=$porder['diff'];
-	$this->data['date_creation']=$porder['date_creation'];
-	$this->data['date_submited']=$porder['date_submited'];
-	$this->data['date_expected']=$porder['date_expected'];
-	$this->data['date_received']=$porder['date_received'];
-	$this->data['date_checked']=$porder['date_checked'];
-	$this->data['date_consolidated']=$porder['date_consolidated'];
-
-	$this->data['status']=$_order_status[$porder['status_id']];
-	
-	$this->data['dates']=array(
-				   'created'=>($porder['date_creation']?strftime("%e %b %Y %H:%M", $porder['date_creation']):''),
-				   'submited'=>($porder['date_submited']?strftime("%e %b %Y %H:%M", $porder['date_submited']):''),
-				   'expected'=>($porder['date_expected']?strftime("%e %b %Y", $porder['date_expected']):''),
-				   'invoice'=>($porder['date_invoice']?strftime("%e %b %Y %H:%M", $porder['date_invoice']):''),
-				   'received'=>($porder['date_received']?strftime("%e %b %Y %H:%M", $porder['date_received']):''),
-				   'checked'=>($porder['date_checked']?strftime("%e %b %Y %H:%M", $porder['date_checked']):''),
-				   'consolidates'=>($porder['date_consolidated']?strftime("%e %b %Y %H:%M", $porder['date_consolidated']):'')
-				   );
-	
-	$this->data['money']=array(
-				   'total'=>money($porder['total']),
-				   'vat'=>money($porder['vat']),
-				   'goods'=>money($porder['goods']),
-				   'shipping'=>money($porder['shipping']),
-				   'charges'=>money($porder['charges']),
-				   'diff'=>money($porder['diff'])
-				   );
-	$this->data['number']=array(
-				    'total'=>number($porder['total'],2,true),
-				    'vat'=>number($porder['vat'],2,true),
-				    'goods'=>number($porder['goods'],2,true),
-				    'shipping'=>number($porder['shipping'],2,true),
-				    'charges'=>number($porder['charges'],2,true),
-				    'diff'=>number($porder['diff'],2,true)
-				    );
-
-
-      }else
-	$this->msg=_('Purchese Order do not exist');
-
-
+      return;
     }
-
-
-
   }
 
 

@@ -39,10 +39,10 @@
 {if $customer->get('Customer Main Address Key')}<td valign="top">{$customer->get('Customer Main XHTML Address')}</td>{/if}
 <td  valign="top">
 <table border=0 style="padding:0">
-{if $customer->get('Customer Main Contact Key')}<tr><td></td><td colspan=2>{$customer->get('Customer Main Contact Name')}</td ></tr>{/if}
-{if $customer->get('Customer Main Email Key')}<tr><td></td><td colspan=2>{$customer->get('customer main XHTML email')}</td ></tr>{/if}
-{if $customer->get('Customer Main Telephone Key')}<tr><td><img src="art/icons/telephone.png"/></td><td colspan=2 class="aright">{$customer->get('customer main telephone')}</td ></tr>{/if}
-{if $customer->get('Customer Main Fax Key')}<tr><td><img src="art/icons/telephone.png"/></td><td colspan=2 class="aright">{$customer->get('customer main fax')}</td ></tr>{/if}
+{if $customer->get('Customer Main Contact Key')}<tr><td colspan=2  class="aright">{$customer->get('Customer Main Contact Name')}</td ></tr>{/if}
+{if $customer->get('Customer Main Email Key')}<tr><td colspan=2  class="aright">{$customer->get('customer main XHTML email')}</td ></tr>{/if}
+{if $customer->get('Customer Main Telephone Key')}<tr><td colspan=2 class="aright">{$customer->get('customer main telephone')}</td ><td><img src="art/icons/telephone.png"/></td></tr>{/if}
+{if $customer->get('Customer Main Fax Key')}<tr><td colspan=2 class="aright">{$customer->get('customer main fax')}</td ><td><img src="art/icons/telephone.png"/></td></tr>{/if}
 
 {foreach from=$telecoms item=telecom}
 <tr><td >

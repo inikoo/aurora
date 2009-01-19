@@ -637,7 +637,7 @@ if(isset( $_REQUEST['where']))
    
 
    
-  $sql="select count(*) as total from orden   $where $wheref ";
+  $sql="select count(*) as total from `Order Dimension`   $where $wheref ";
   // print $sql ;
    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
   if($row=$res->fetchRow()) {
@@ -648,7 +648,7 @@ if(isset( $_REQUEST['where']))
      $total_records=$total;
   }else{
     
-      $sql="select count(*) as total from orden  $where";
+      $sql="select count(*) as total from `Order Dimension`  $where";
       $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
       if($row=$res->fetchRow()) {
 	$total_records=$row['total'];
@@ -700,22 +700,30 @@ if(isset( $_REQUEST['where']))
    $_order=$order;
    $_dir=$order_direction;
 
+   
+   if($order=='date')
+     $order='`Order Date`';
+   else if($order=='last_date')
+     $order='`Order Last Updated Date`';
+   else if($order=='id')
+     $order='`Order File As`';
+   else if($order=='state')
+     $order='`Order Current Dispatch State`,`Order Current Payment State`';
 
-
-  $sql="select UNIX_TIMESTAMP(date_index) as date_index,public_id,customer_name,id,customer_id,total,titulo,tipo from orden  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
-  //print $sql;
+  $sql="select `Order key`,`Order ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Date`,(`Order Gross Amount`+`Order Discount Amount`+`Order Shipping Amount`+`Order Total Tax Amount`) as total_amount ,`Order Current XHTML State` from `Order Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+  //  print $sql;
    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
    $data=array();
    while($row=$res->fetchRow()) {
+     $order_id=sprintf('<a href="order.php?id=%d">%s</a>',$row['order key'],$row['order id']);
+     $customer=sprintf('<a href="order.php?id=%d">%s</a>',$row['order customer key'],$row['order customer name']);
      $data[]=array(
-		   'id'=>$row['id'],
-		   'public_id'=>$row['public_id'],
-		   'customer_name'=>$row['customer_name'],
-		   'customer_id'=>$row['customer_id'],
-		   'date_index'=>strftime("%e %b %Y %H:%M", strtotime('@'.$row['date_index'])),
-		   'total'=>money($row['total']),
-		   'titulo'=>$_order_tipo[$row['tipo']],
-		   'tipo'=>$row['tipo']
+		   'id'=>$order_id,
+		   'customer'=>$customer,
+		   'date'=>strftime("%e %b %y %H:%M", strtotime($row['order date'])),
+		   'last_date'=>strftime("%e %b %y %H:%M", strtotime($row['order last updated date'])),
+		   'total_amount'=>money($row['total_amount']),
+		   'state'=>$row['order current xhtml state']
 		   );
    }
 

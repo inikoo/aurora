@@ -8,19 +8,6 @@ YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
 
 
-	    this.orderLink=  function(el, oRecord, oColumn, oData) {
-		var url="order.php?id="+oRecord.getData("id");
-		el.innerHTML = oData.link(url);
-	    }
-	    
-	    this.customerLink=  function(el, oRecord, oColumn, oData) {
-		if(oData==null)
-		    oData='<?=_('Error, no customer name')?>';
-
-		var url="customer.php?id="+oRecord.getData("customer_id");
-		el.innerHTML = oData.link(url);
-	    };
-	    
 	    
 	    
 	    var tableid=0; // Change if you have more the 1 table
@@ -29,17 +16,14 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 	    var OrdersColumnDefs = [
-				       {key:"public_id", label:"<?=_('Number')?>", width:80,formatter:this.orderLink,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-				       {key:"titulo", label:"<?=_('Type')?>", width:115,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-				       {key:"customer_name",label:"<?=_('Customer')?>",formatter:this.customerLink, width:280,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-				       {key:"date_index", label:"<?=_('Date')?>", width:145,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
+				       {key:"id", label:"<?=_('Order ID')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				       {key:"last_date", label:"<?=_('Last Updated')?>", width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
+				       //   {key:"date", label:"<?=_('Ordered at')?>", width:145,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
 
-				       {key:"total", label:"<?=_('Total')?>", width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       {key:"customer",label:"<?=_('Customer')?>", width:180,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				       {key:"state", label:"<?=_('Status')?>", width:240,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				       {key:"total_amount", label:"<?=_('Total')?>", width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				      
-				      //					 {key:"families", label:"<?=_('Customers')?>", sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
-				      //{key:"active", label:"<?=_('Customers')?>", sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				      
-
 					 ];
 
 	    this.dataSource0 = new YAHOO.util.DataSource("ar_orders.php?tipo=orders");
@@ -59,13 +43,11 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		
 		fields: [
 			 "id",
-			 "public_id",
-			 "customer_name",
-			 "customer_id",
-			 "date_index",
-			 "total",
-			 "titulo",
-			 "tipo"
+			 "state",
+			 "customer",
+			 "date",
+			 "last_date",
+			 "total_amount"
 			 ]};
 
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,

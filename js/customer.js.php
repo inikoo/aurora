@@ -4,13 +4,53 @@ var Event = YAHOO.util.Event;
 var dialog_note;
 
 function showdetails(o){
+
+
+
     var history_id=o.getAttribute('hid');
-    td=Dom.getAncestorByTagName(o,'tr').getAttribute('id');
-    row=parseInt(td.match(/\d*$/));
-    var data = {date:"one",two:"two",three:"three"}; 
-    var table=tables['table0'];
-    // alert(row);
-    table.addRow(data,row+1);
+    var details=o.getAttribute('d');
+    tr=Dom.getAncestorByTagName(o,'tr');
+    row_index=tr.rowIndex+1;
+    var table=Dom.getAncestorByTagName(o,'table');
+    if(details==0){
+	row_class=tr.getAttribute('class');
+
+	var request="ar_contacts.php?tipo=customer_history_details&id="+history_id;
+	YAHOO.util.Connect.asyncRequest('POST',request ,{
+		success:function(o) {
+		    var r =  YAHOO.lang.JSON.parse(o.responseText);
+		    if (r.state==200) {
+			var x=table.insertRow(row_index);
+			x.setAttribute('class',row_class);
+			x.setAttribute('id','chd'+history_id);
+
+			var c1=x.insertCell(0);
+			var c2=x.insertCell(1);
+			var c3=x.insertCell(2);
+			x.setAttribute('style','padding:10px 0 ;border-top:none')
+			c1.innerHTML="";
+			c2.innerHTML="";
+			c3.setAttribute('style','padding:10px 0 ;');
+
+
+			c3.setAttribute('colspan',3);
+			c3.innerHTML=r.details;
+			Dom.get('ch'+history_id).innerHTML='<?=_('Hide details')?>';
+			Dom.get('ch'+history_id).setAttribute('d',1);
+
+			
+		    }
+		       
+		}
+	    });   
+    }else{
+	Dom.get('ch'+history_id).innerHTML='<?=_('view details')?>';
+	Dom.get('ch'+history_id).setAttribute('d',0);
+	table.deleteRow(row_index);
+
+    }
+     
+	
 }
 
 function save(tipo){
@@ -129,7 +169,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    filter_msg:"resultset.filter_msg",
 		    totalRecords: "resultset.total_records" // Access to value in the server response
 		},
-		fields: ["note","date","time","handle" ]};
+		fields: ["note","date","time","handle","objeto" ]};
 		    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
 								   this.dataSource0
 								 , {

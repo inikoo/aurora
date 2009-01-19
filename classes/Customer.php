@@ -447,7 +447,7 @@ class Customer{
 		,prepare_mysql($is_active)
 		,prepare_mysql($is_principal)
 		);
-   //   print "$sql\n";
+
    $affected=& $this->db->exec($sql);
    //   print"$address xx\n";exit;
    $ship_to_key = $this->db->lastInsertID();  
@@ -497,7 +497,7 @@ class Customer{
    switch($key){
    case('no normal data'):
    case('no_normal_data'):
-      $sql="select min(`Order Header Date`) as date   from `Order Header Dimension` where `Order Header Customer Key`=".$this->id;
+      $sql="select min(`Order Date`) as date   from `Order Dimension` where `Order Customer Key`=".$this->id;
       $result =& $this->db->query($sql);
       if($row=$result->fetchRow()){
 	$first_order_date=date('U',strtotime($row['date']));
@@ -534,7 +534,7 @@ class Customer{
 
      $sigma_factor=3.2906;//99.9% value assuming normal distribution
 
-     $sql="select min(`Order Header Date`) as first_order_date ,max(`Order Header Date`) as last_order_date,count(*)as orders, sum(if(`Order Header Current State`='Cancelled',1,0)) as cancelled,  sum(if(`Order Header Current State`='Consolidated',1,0)) as invoiced,sum(if(`Order Header Current State`='Unknown',1,0)) as unknown   from `Order Header Dimension` where `Order Header Customer Key`=".$this->id;
+     $sql="select min(`Order Date`) as first_order_date ,max(`Order Date`) as last_order_date,count(*)as orders, sum(if(`Order Current Payment State` like '%Cancelled',1,0)) as cancelled,  sum( if(`Order Current Payment State` like '%Paid%'    ,1,0)) as invoiced,sum( if(`Order Current Payment State` like '%Refund%'    ,1,0)) as refunded,sum(if(`Order Current Dispatch State`='Unknown',1,0)) as unknown   from `Order Dimension` where `Order Customer Key`=".$this->id;
      $result =& $this->db->query($sql);
      $this->data['customer orders']=0;
      $this->data['customer orders cancelled']=0;
@@ -547,7 +547,7 @@ class Customer{
      $this->data['new served customer']='No';
      $this->data['active customer']='Unkwnown';
      
-     
+     //print "$sql\n";     
      
      if($row=$result->fetchRow()){	     
        $this->data['customer orders']=$row['orders'];
@@ -590,7 +590,7 @@ class Customer{
       }
 
       if($this->data['customer orders']>1){
-	 $sql="select `Order Header Date` as date from `Order Header Dimension` where `Order Header Customer Key`=".$this->id." order by `Order Header Date`";
+	 $sql="select `Order Date` as date from `Order Dimension` where `Order Customer Key`=".$this->id." order by `Order Date`";
 	 $result =& $this->db->query($sql);
 	 $last_order=false;
 	 $intervals=array();
@@ -741,22 +741,24 @@ class Customer{
 
      $tipo='NOTE';
      $note=_trim($data['note']);
-     
+     $details='';
 
 
-     $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,old_value,new_value,note) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+     $sql=sprintf("insert into `History Dimension` (`History Date`,`Subject`,`Subject Key`,`Action`,`Direct Object`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`Author Name`,`Author Key`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
 		  ,$date
-		  ,prepare_mysql('CUST')
+		  ,prepare_mysql('User')
+		  ,prepare_mysql($data['user_id'])
+		  ,prepare_mysql('wrote')
+		  ,prepare_mysql('Note')
+		  ,prepare_mysql('about')
+		  ,prepare_mysql('Customer')
 		  ,prepare_mysql($this->id)
-		  ,prepare_mysql($tipo)
-		  ,'NULL'
-		  ,prepare_mysql('NEW')
-		  ,prepare_mysql($user)
-		  ,prepare_mysql($old)	 
-		  ,prepare_mysql($new)	 
 		  ,prepare_mysql($note)
+		  ,prepare_mysql($details)
+		  ,prepare_mysql($data['author'])
+		  ,prepare_mysql($data['author_key'])
 		  );
-     //  print $sql;
+     //   print $sql;
      $this->db->exec($sql);
      $this->msg=_('Note Added');
      return true;

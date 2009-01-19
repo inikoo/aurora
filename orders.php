@@ -21,7 +21,7 @@ if(isset($_REQUEST['search']) and $_REQUEST['search']!=''  ){
 
 
 
-$sql="select count(*) as numberof from orden";
+$sql="select count(*) as numberof from `Order Dimension`";
 $result =& $db->query($sql);
 if($row=$result->fetchRow())
   $orders=$row['numberof'];
@@ -92,7 +92,7 @@ $smarty->assign('filter_menu',$filter_menu);
 
 $smarty->assign('filter_name',$filter_menu[$tipo_filter]['label']);
 
-$smarty->assign('table_info',$orders.'  '.ngettext('Order','Orders',$orders));
+
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu',$paginator_menu);
 $smarty->display('orders.tpl');

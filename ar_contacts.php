@@ -21,7 +21,23 @@ if(!isset($_REQUEST['tipo']))  {
 
 $tipo=$_REQUEST['tipo'];
 switch($tipo){
-
+ case('customer_history_details'):
+   
+   if(isset($_REQUEST['id']) and is_numeric($_REQUEST['id'])){
+     $sql=sprintf("select `History Details` as details from `History Dimension` where `History Key`=%d",$_REQUEST['id']);
+   $res = $db->query($sql);
+   if($data=$res->fetchRow()) {
+       $response=array('state'=>200,'details'=>$data['details']);
+     echo json_encode($response);
+     return;
+   }
+   }
+    $response=array('state'=>400,'msg'=>_("Can not get hisory details"));
+     echo json_encode($response);
+     return;
+   
+   
+   break;
  case('update_customer'):
    $key=$_REQUEST['key'];
    
@@ -35,10 +51,20 @@ switch($tipo){
    switch($key){
    case('add_note'):
    case('new_note'):
+     $handle=$LU->getProperty('handle');
+     if($handle='root'){
+       $author=_('Administrator');
+       $author_key='';
+     }else{
+       $author=_('Unknown');
+       $author_key='';
+     }
+       
      $data=array(
 		 'note'=>$_REQUEST['value'],
-		 'user_id'=>$LU->getProperty('auth_user_id')
-
+		 'user_id'=>$LU->getProperty('auth_user_id'),
+		 'author'=>$author,
+		 'author_key'=>$author_key
 		 );
      $customer->save_history('new_note','','',$data);
      $response=array('state'=>200,'msg'=>$customer->msg);
@@ -1416,7 +1442,7 @@ if(isset( $_REQUEST['where']))
      $_SESSION['state']['customer']['table']['to']=$date_interval['to'];
    }
 
-   $where.=sprintf(' and ( (`Subject`="Customer" and  `Subject Key`=%d) or (`Direct Object`="Customer" and  `Direct Object key`=%d ) ) ',$customer_id,$customer_id);
+   $where.=sprintf(' and (  (`Subject`="Customer" and  `Subject Key`=%d) or (`Direct Object`="Customer" and  `Direct Object key`=%d ) or (`Indirect Object`="Customer" and  `Indirect Object key`=%d )         ) ',$customer_id,$customer_id,$customer_id);
 //   if(!$details)
  //    $where.=" and display!='details'";
  //  foreach($elements as $element=>$value){
