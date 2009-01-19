@@ -27,7 +27,9 @@
 	  <td {if $view=='contact'}class="selected"{/if}  id="contact"  >{t}Contact{/t}</td>
 	  <td {if $view=='addresses'}class="selected"{/if}  id="address"  >{t}Address{/t}</td>
 	  <td {if $view=='ship_to_addresses'}class="selected"{/if}  id="ship_to_address"  >{t}Shipping Address{/t}</td>
-		  
+	  <td {if $view=='balance'}class="selected"{/if}  id="balance"  >{t}Balance{/t}</td>
+	  <td {if $view=='rank'}class="selected"{/if}  id="rank"  >{t}Ranking{/t}</td>
+
 	</tr>
       </table>
     </div>

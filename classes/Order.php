@@ -45,11 +45,11 @@ class Order{
       $imap_obj = imap_check($mbox);
       $imap_obj->Nmsgs;
 
-      for($i=30;$i<=$imap_obj->Nmsgs;$i++){
+      for($i=1;$i<=$imap_obj->Nmsgs;$i++){
 	print "MENSSAGE NUMBER $i\n";
 	$email= imap_body($mbox,$i);
 	$email = mb_convert_encoding($email, "UTF-8", "UTF-8, ISO-8859-1");
-	print $email;
+	//	print $email;
 
 // 	print "\n**********\n".mb_detect_encoding($email,'UTF-8, ISO-8859-1')."\n";
 // 	exit;
@@ -183,16 +183,16 @@ class Order{
 				     );
  
 	$__name=$edata['inv name'];
-	if($edata['ship name']==''){
-	  $__name='';
-	}
-	$__company=$cdata['company_name'];
-	if($edata['ship company']==''){
-	  $__company='';
-	}
-	if($edata['ship tel']==''){
-	  $__tel='';
-	}
+// 	if($edata['ship name']==''){
+// 	  $__name='';
+// 	}
+//	$__company=$cdata['company_name'];
+// 	if($edata['ship company']==''){
+// 	  $__company='';
+// 	}
+// 	if($edata['ship tel']==''){
+// 	  $__tel='';
+// 	}
 	  
 
 
@@ -242,7 +242,7 @@ class Order{
 
 	}else{
 	  
-	  print_r($diff_result);
+	  // print_r($diff_result);
 	  $percentage=array('address1'=>1,'town'=>1,'country'=>1,'country_d1'=>1,'postcode'=>1);
 	  $percentage_address=array();
 
@@ -255,7 +255,7 @@ class Order{
 	  $avg_percentage=average($percentage);
 	  $avg_percentage_address=average($percentage_address);
 
-	  print "AVG DIFF $avg_percentage $avg_percentage_address \n";
+	  //print "AVG DIFF $avg_percentage $avg_percentage_address \n";
 	  
 	  if($cdata['address_shipping_data']['name']=='' or !array_key_exists('name',$diff_result) )
 	    $same_contact=true;
@@ -265,6 +265,7 @@ class Order{
 	    $rand=$irand/$_max;
 	    if($rand<$percentage['name'] and $percentage['name']>.90 ){
 	      $same_contact=true;
+	     
 	    }else
 	      $same_contact=false;
 	  }
@@ -274,17 +275,17 @@ class Order{
 	    $_max=1000000;
 	    $irand=mt_rand(0,1000000);
 	    $rand=$irand/$_max;
-	    print "xxx ".$percentage['company']."\n";
+	    //print "xxx ".$percentage['company']."\n";
 	    if($rand<$percentage['company']and $percentage['company']>.90){
 	      $same_company=true;
 	    }else
 	      $same_company=false;
 	  }
 	  
-	  if($cdata['address_shipping_data']['telephone']=='' or !array_key_exists('telephone',$diff_result) )
-	    $same_telephone=true;
-	  else
+	  if(array_key_exists('telephone',$diff_result) )
 	    $same_telephone=false;
+	  else
+	    $same_telephone=true;
 
 
 	  if($avg_percentage_address==1)
@@ -292,7 +293,7 @@ class Order{
 	  else
 	    $same_address=false;
 	  
-	  print "C:$same_contact  CM:$same_company  T:$same_telephone E:$same_email  A:$same_address \n";
+	  //print "C:$same_contact  CM:$same_company  T:$same_telephone E:$same_email  A:$same_address \n";
 	  // exit;
 
 	}
@@ -307,7 +308,7 @@ class Order{
 	$cdata['same_telephone']=$same_email;
 
 
-
+	//	exit;
 	$customer_identification_method='email';
 
 	$customer_id=$this->find_customer($customer_identification_method,$cdata);
@@ -324,7 +325,7 @@ class Order{
 	$this->data['order header customer key']=$customer->id;
 	$this->data['order header customer name']=$customer->get('customer name');
 	$this->data['order header current state']='In Process';
-	$this->data['order header current title']=_('Order').' '.$this->get($myconf['Order ID type']);
+	$this->data['order header current title']=_('Order').' '.$this->get($myconf['order_id_type']);
 	$this->data['order header customer message']=_trim($edata['message']);
 	$this->data['order header original data mime type']='text/plain';
 	$this->data['order header original data']=$email;
@@ -405,8 +406,37 @@ class Order{
 	// $customer=new Customer($customer_id);
 	$customer->update('orders');
 	$customer->update('no normal data');
+	
+	$this->cutomer_rankings();
+
+	switch($_SESSION['lang']){
+	default:
+	  $abstract=sprintf('Internet Order <a href="order.php?id=%d">%s</a>',$this->get('order header key'),$this->get($myconf['order_id_type']));
+	  $note=sprintf('%s (<a href="customer.php?id=%d">%s) place an order by internet using IP:%d at %s'
+			,$customer->get('customer name')
+			,$customer->id
+			,$customer->get('customer id')
+			,$edata['ip_number']
+			,strftime("%e %b %Y %H:%M",strtotime($this->data['order header date']))
+			);
+	}
+
+	$sql=sprintf("insert into `History Dimension` (`History Date`,`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`History Details`,`Author Key`,`Author Name`) values(%s,'Customer','%s','Placed','Order',%d,%s,0,%s)"
+		     ,prepare_mysql($this->data['order header date'])
+		     ,$customer->id
+		     ,$this->data['order header key']
+		     ,prepare_mysql($note)
+		     ,prepare_mysql(_('System'))
+		     );
+	$this->db->exec($sql);
+	$history_id=$this->db->lastInsertID();
+	$abstract.=' (<span class="like_a" onclick="showdetails(this)" hid="'.$history_id.'">'._('see more').'<span>)';
+	$sql=sprintf("update `History Dimension` set `History Abstract`=%s where `History Key`=%d",prepare_mysql($abstract),$history_id);
+	//	print "$sql\n";
+	$this->db->exec($sql);
 
 	
+	//	print "$sql\n";
       }
     }
   }
@@ -449,6 +479,8 @@ class Order{
 		 ,number($data['qty'])
 		 );
     $this->db->exec($sql);
+
+
     // print_r($data);
     //print "$sql\n";
 
@@ -1272,7 +1304,28 @@ class Order{
     return $res;
   }
 
-
+  function cutomer_rankings(){
+    $sql=sprintf("select `Customer Key` as id,`Customer Orders` as orders, (select count(*) from `Customer Dimension` as TC where TC.`Customer Orders`<C.`Customer Orders`) as better,(select count(DISTINCT `Customer ID` ) from `Customer Dimension`) total  from `Customer Dimension` as C order by `Customer Orders` desc ;");
+    	$result =& $this->db->query($sql);
+	$orders=-99999;
+	$position=0;
+	while($row=$result->fetchRow()){
+	  if($row['orders']!=$orders){
+	    $position++;
+	    $orders=$row['orders'];
+	  }
+	  $better_than=$row['better'];
+	  $total=$row['total'];
+	  if($total>0)
+	    $top=sprintf("%f",100*(1.0-($better_than/$total))) ;
+	  else
+	    $top='null';
+	  $id=$row['id'];
+	  $sql=sprintf("update `Customer Dimension` set `Customer Orders Top Percentage`=%s,`Customer Orders Position`=%d,`Customer Has More Orders Than`=%d where `Customer Key`=%d",$top,$position,$better_than,$id);
+	  // print "$sql\n";
+	  $this->db->exec($sql);
+	}
+  } 
 
 }
 

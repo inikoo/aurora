@@ -9,7 +9,7 @@ class Address{
   function __construct($arg1=false,$arg2=false) {
      $this->db =MDB2::singleton();
 
-     if(is_numeric($id)){
+     if(is_numeric($arg1)){
        $this->get_data('id',$arg1);
        return;
      }
@@ -27,7 +27,7 @@ class Address{
 	 return;
        }
        $country=new Country($arg2);
-       if(is_numeric($country_id) and $country->get('country code')!='UNK'){
+       if(is_numeric($arg2) and $country->get('country code')!='UNK'){
 	 $this->get_data('fuzzy country',$arg2);
 	 return;
        }else{
@@ -43,7 +43,7 @@ class Address{
   function get_data($tipo,$id=false){
     
     if($tipo=='id')
-      $sql=sprintf("select * from `Address Dimension` where  'Address Key'=%d",$id);
+      $sql=sprintf("select * from `Address Dimension` where  `Address Key`=%d",$id);
     elseif('tipo'=='fuzzy country')
       $sql=sprintf("select * from `Address Dimension` where  `Fuzzy Address`=1 and `Address Fuzzy Type`='country' and `Address Country Key`=%d   ",$id);
     else
@@ -60,10 +60,10 @@ class Address{
 }
 
   function create($data){
-
+    //print_r($data);
 
     if(isset($data['type']) and $data['type']=='3line'){
-      // print_r($data);
+
       
       $prepared_data=$this->prepare_3line($data);
 
@@ -161,23 +161,26 @@ class Address{
       $this->data['address location']=$this->display('location');
       $this->data['xhtml address']=$this->display('xhtml');
 
-
-            print_r($this->data);
+      //  print"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
+      //prepare_mysql(0);
+      //exit;
+      //print_r($this->data);
 
       $keys='`Address Data Creation`';
       $values='Now()';
       foreach($this->data as $key=>$value){
 	$keys.=",`".$key."`";
 	$values.=','.prepare_mysql($value);
+	//	print "$key $value ".prepare_mysql($value)."  **********************    \n";
       }
       $values=preg_replace('/^,/','',$values);
       $keys=preg_replace('/^,/','',$keys);
 
       $sql="insert into `Address Dimension` ($keys) values ($values)";
-      //print $sql;
-      if($this->get('address country code')=='UNK')
-	exit;
-      //exit;
+      //print "$sql\n";      exit;
+      //if($this->get('address country code')=='UNK')
+      //	exit('address code is UNKNOWN');
+
 	  $affected=& $this->db->exec($sql);
       if (PEAR::isError($affected)) {
 	return array('ok'=>false,'msg'=>_('Unknwon Error').'.');
@@ -199,6 +202,17 @@ class Address{
     if(isset($this->data[$key]))
       return $this->data[$key];
    
+    switch($key){
+    case('country region'):
+      if($this->get('Address Country Primary Division')!='')
+	return $this->get('Address Country Primary Division');
+      else
+	return $this->get('Address Country Secondary Division');
+      break;
+    
+      
+    }
+
     return false;
 
   }
@@ -280,9 +294,32 @@ class Address{
      
      $address.=$this->data['address country name'];
       }
-     return $address;
-   }
+      return _trim($address);
+  
+   case('header'):
+     $separator=', ';
+     $address='';
+     $header_address=_trim($this->data['address internal'].' '.$this->data['address bulding']);
+     if($header_address!='')
+       $address.=$header_address.$separator;
+     
+     $street_address=_trim($this->data['street number'].' '.$this->data['street name'].' '.$this->data['street type']);
+     if($street_address!='')
+       $address.=$street_address.$separator;
+     
+     
+     $subtown_address=$this->data['address town secondary division'];
+     if($this->data['address town primary division'])
+       $subtown_address.=' ,'.$this->data['address town primary division'];
+     $subtown_address=_trim($subtown_address);
+     if($subtown_address!='')
+       $address.=$subtown_address.$separator;
+      return _trim($address);
+
+ }
    
+   
+
  }
 
 
@@ -421,7 +458,7 @@ class Address{
   $address_raw_data['country']=preg_replace('/^,|[,\.]$/','',$address_raw_data['country']);
     
   $sql=sprintf("select `Country Key` as id from `Country Dimension` left join `Country Alias Dimension` on  (`Country Alias Code`=`Country Code`) where `Country Alias`=%s or `Country Name`=%s ",prepare_mysql($address_raw_data['country']),prepare_mysql($address_raw_data['country']));
-     print "$sql\n";
+  //     print "$sql\n";
     $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
     if($row = mysql_fetch_array($result, MYSQL_ASSOC)) 
       $country_id=$row['id'];
@@ -2239,16 +2276,16 @@ if($country_d2!=''){
   $town=preg_replace('/(\,|\-)$\s*/','',$town);
   
   $address_data=array(
-		      'internal_address'=>_trim($address1),
-		      'building_address'=>_trim($address2),
-		      'street_address'=>_trim($address3),
-		      'town_d2'=>_trim($town_d2),
-		      'town_d1'=>_trim($town_d1),
-		      'town'=>_trim($town),
-		      'country_d2'=>_trim($country_d2),
-		      'country_d1'=>_trim($country_d1),
-		      'postcode'=>_trim($postcode),
-		      'country'=>_trim($country),
+		      'internal_address'=>mb_ucwords(_trim($address1)),
+		      'building_address'=>mb_ucwords(_trim($address2)),
+		      'street_address'=>mb_ucwords(_trim($address3)),
+		      'town_d2'=>mb_ucwords(_trim($town_d2)),
+		      'town_d1'=>mb_ucwords(_trim($town_d1)),
+		      'town'=>mb_ucwords(_trim($town)),
+		      'country_d2'=>mb_ucwords(_trim($country_d2)),
+		      'country_d1'=>mb_ucwords(_trim($country_d1)),
+		      'postcode'=>mb_ucwords(_trim($postcode)),
+		      'country'=>mb_ucwords(_trim($country)),
 		      'town_d2_id'=>$town_d2_id,
 		      'town_d1_id'=>$town_d1_id,
 		      'town_id'=>$town_id,
@@ -2406,7 +2443,7 @@ function is_town($town,$country_id){
 
  function parse_street($line){
 
-   print "********** $line\n";
+   //print "********** $line\n";
 
    $number='';
    $name='';

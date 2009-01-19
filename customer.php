@@ -53,37 +53,76 @@ $customer=new customer($customer_id);
 $customer->load('contacts');
 $smarty->assign('customer',$customer);
 
-$customers_order=$_SESSION['state']['customers']['table']['order'];
+$order=$_SESSION['state']['customers']['table']['order'];
 
-if($customers_order=='orders' or $customers_order=='super_total'  or $customers_order=='name'){
+if($order=='name')
+  $order='customer file as';
+elseif($order=='id')
+$order='customer id';
+elseif($order=='location')
+$order='customer main location';
+elseif($order=='orders')
+     $order='customer orders';
+elseif($order=='email')
+$order='customer email';
+elseif($order=='telephone')
+$order='customer main telehone';
+elseif($order=='last_order')
+$order='customer last order date';
+elseif($order=='contact_name')
+$order='customer main contact_name';
+elseif($order=='address')
+$order='customer main address header';
+elseif($order=='town')
+$order='customer main address town';
+elseif($order=='postcode')
+$order='customer main address postal code';
+elseif($order=='region')
+$order='customer main address country region';
+elseif($order=='country')
+$order='customer main address country';
+elseif($order=='ship_address')
+$order='customer main ship to header';
+   elseif($order=='ship_town')
+   $order='customer main ship to town';
+elseif($order=='ship_postcode')
+$order='customer main ship to postal code';
+elseif($order=='ship_region')
+$order='customer main ship to country region';
+   elseif($order=='ship_country')
+     $order='customer main ship to country';
+   elseif($order=='total_balance')
+     $order='customer total balance';
+   elseif($order=='balance')
+     $order='customer outstanding balance';
+   elseif($order=='total_profit')
+     $order='customer total profit';
+   elseif($order=='total_payments')
+     $order='customer total payments';
+   elseif($order=='top_profits')
+     $order='customer profits top percentage';
+   elseif($order=='top_balance')
+     $order='customer balance top percentage';
+   elseif($order=='top_orders')
+     $order='customer orders top percentage';
+   elseif($order=='top_invoices')
+     $order='customer invoices top percentage';
 
-if($customers_order=='orders'){
-  $_customers_order='(num_invoices+num_invoices_nd)';
- }else if($customers_order=='super_total'){
-  $_customers_order='(total_nd+total)';
- }else if($customers_order=='location'){
-  $_customers_order='concat(list_country.code,town)';
- }else if($customers_order=='name'){
-    $_customers_order='c.name';
 
-  $customers_order='c.name';
- }else
-  $_customers_order=$customers_order;
-
-$sql=sprintf("select  concat(list_country.code,town) as location, (num_invoices+num_invoices_nd) as orders,(total_nd+total) as super_total,c.id,c.name as code from customer as c    left join address on (main_bill_address=address.id) left join list_country on (country=list_country.name)     where  %s < %s  order by %s desc  limit 1",$_customers_order,prepare_mysql($customer->get($customers_order)),$customers_order);
+$sql=sprintf("select `Customer Name` as name from `Customer Dimension`   where  `%s` < %s  order by `%s` desc  limit 1",$order,prepare_mysql($customer->get($order)),$order);
 //print $sql;
 $result =& $db->query($sql);
 if(!$prev=$result->fetchRow())
   $prev=array('id'=>0,'code'=>'');
 $smarty->assign('prev',$prev);
-$sql=sprintf("select   concat(list_country.code,town) as location,(num_invoices+num_invoices_nd)as orders,(total_nd+total) as super_total,c.id,c.name as code from customer as c   left join address on (main_bill_address=address.id) left join list_country on (country=list_country.name)  where  %s>%s  order by %s   ",$_customers_order,prepare_mysql($customer->get($customers_order)),$customers_order);
+$sql=sprintf("select  `Customer Name` as name from `Customer Dimension`     where  `%s`>%s  order by `%s`   ",$order,prepare_mysql($customer->get($order)),$order);
 $result =& $db->query($sql);
 if(!$next=$result->fetchRow())
   $next=array('id'=>0,'code'=>'');
 $smarty->assign('prev',$prev);
 $smarty->assign('next',$next);
 
- }
+
 
 // $smarty->assign('data_contact',$customer->contact->data);
 // $smarty->assign('data_telecoms',$customer->contact->data);
@@ -241,7 +280,7 @@ $smarty->assign('box_layout','yui-t0');
 
 
 $smarty->assign('parent','customers.php');
-$smarty->assign('title','Customer: '.$customer->data['name']);
+$smarty->assign('title','Customer: '.$customer->get('customer name'));
 
 
 
@@ -269,16 +308,16 @@ $smarty->assign('id',$myconf['customer_id_prefix'].sprintf("%05d",$customer->id)
 // $smarty->assign('acontact_fax',$contact_fax);
 // $smarty->assign('contact_mobiles',$contact_mobiles);
 // $smarty->assign('acontact_mobile',$contact_mobile);
-$total_orders=$customer->data['num_orders']+$customer->data['num_orders_nd'];
+$total_orders=$customer->get('customer orders');
 $smarty->assign('orders',number($total_orders)  );
-$total_net=$customer->data['total_net']+$customer->data['total_net_nd'];
+$total_net=$customer->get('customer total net payments');
 $smarty->assign('total_net',money($total_net));
-$total_invoices=$customer->data['num_invoices']+$customer->data['num_invoices_nd'];
+$total_invoices=$customer->get('customer invoices');
  $smarty->assign('invoices',number($total_invoices)  );
  if($total_invoices>0)
    $smarty->assign('total_net_average',money($total_net/$total_invoices));
 
-$order_interval=$customer->data['order_interval'];
+$order_interval=$customer->get('Customer Order Interval');
 
 if($order_interval>10){
   $order_interval=round($order_interval/7);

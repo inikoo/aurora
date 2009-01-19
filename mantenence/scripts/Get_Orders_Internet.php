@@ -15,7 +15,7 @@ if(DEBUG)PEAR::setErrorHandling(PEAR_ERROR_RETURN);
 $db->setFetchMode(MDB2_FETCHMODE_ASSOC);  
 $db->query("SET time_zone ='UTC'");
 $db->query("SET NAMES 'utf8'");
-
+$PEAR_Error_skiptrace = &PEAR::getStaticProperty('PEAR_Error','skiptrace');$PEAR_Error_skiptrace = true;// Fix memory leak
 require_once '../../myconf/conf.php';           
 date_default_timezone_set('Europe/London');
 
@@ -27,6 +27,8 @@ $software='Get_Orders_Internet.php';
 $version='V 1.0';
 
 $Data_Audit_ETL_Software="$software $version";
+
+$_SESSION['lang']=1;
 
 $data=array(
 	    'type'=>'imap_email_mals-e',

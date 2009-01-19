@@ -44,17 +44,41 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 	    var CustomersColumnDefs = [
 				       {key:"id", label:"<?=$customers_ids[0]?>",width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"name", label:"<?=_('Customer Name')?>", width:250,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"name", label:"<?=_('Customer Name')?>",<?=( ( $_SESSION['state']['customers']['view']=='general' or  $_SESSION['state']['customers']['view']=='contact' ) ?'':'hidden:true,')?> width:250,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"location", label:"<?=_('Location')?>",<?=($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?> width:230,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"last_order", label:"<?=_('Last Order')?>",<?=($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?>width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				       ,{key:"orders", label:"<?=_('Orders')?>",<?=($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       ,{key:"total_payments", label:"<?=_('Total')?>",<?=($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}} 
+				       // ,{key:"total_payments", label:"<?=_('Total')?>",<?=($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}} 
 				       ,{key:"contact_name", label:"<?=_('Contact Name')?>",<?=($_SESSION['state']['customers']['view']=='contact'?'':'hidden:true,')?>sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				       
 				       ,{key:"email", label:"<?=_('Email')?>",<?=($_SESSION['state']['customers']['view']=='contact'?'':'hidden:true,')?>sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				       ,{key:"telephone", label:"<?=_('Telephone')?>",<?=($_SESSION['state']['customers']['view']=='contact'?'':'hidden:true,')?>sortable:false,className:"aright"}
-				       //					 {key:"families", label:"<?=_('Customers')?>", sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
-				      //{key:"active", label:"<?=_('Customers')?>", sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       
+				       ,{key:"address", label:"<?=_('Main Address')?>",<?=($_SESSION['state']['customers']['view']=='address'?'':'hidden:true,')?>sortable:true,className:"aright"}
+				       ,{key:"town", label:"<?=_('Town')?>",<?=($_SESSION['state']['customers']['view']=='address'?'':'hidden:true,')?>sortable:true,className:"aright"}
+				       ,{key:"postcode", label:"<?=_('Postal Code')?>",<?=($_SESSION['state']['customers']['view']=='address'?'':'hidden:true,')?>sortable:true,className:"aright"}
+				       ,{key:"region", label:"<?=_('Region')?>",<?=($_SESSION['state']['customers']['view']=='address'?'':'hidden:true,')?>sortable:true,className:"aright"}
+				       ,{key:"country", label:"<?=_('Country')?>",<?=($_SESSION['state']['customers']['view']=='address'?'':'hidden:true,')?>sortable:true,className:"aright"}
+				       ,{key:"ship_address", label:"<?=_('Ship to Address')?>",<?=($_SESSION['state']['customers']['view']=='ship_to_address'?'':'hidden:true,')?>sortable:true,className:"aright"}
+				       ,{key:"ship_town", label:"<?=_('Town')?>",<?=($_SESSION['state']['customers']['view']=='ship_to_address'?'':'hidden:true,')?>sortable:true,className:"aright"}
+				       ,{key:"ship_postcode", label:"<?=_('Postal Code')?>",<?=($_SESSION['state']['customers']['view']=='ship_to_address'?'':'hidden:true,')?>sortable:true,className:"aright"}
+				       ,{key:"ship_region", label:"<?=_('Region')?>",<?=($_SESSION['state']['customers']['view']=='ship_to_address'?'':'hidden:true,')?>sortable:true,className:"aright"}
+				       ,{key:"ship_country", label:"<?=_('Country')?>",<?=($_SESSION['state']['customers']['view']=='ship_to_address'?'':'hidden:true,')?>sortable:true,className:"aright"}
+				       ,{key:"total_payments", label:"<?=_('Payments')?>",<?=($_SESSION['state']['customers']['view']=='balance'?'':'hidden:true,')?>sortable:true,className:"aright"}
+				       ,{key:"total_refunds", label:"<?=_('Refunds')?>",<?=($_SESSION['state']['customers']['view']=='balance'?'':'hidden:true,')?>sortable:true,className:"aright"}
+				       ,{key:"total_balance", label:"<?=_('Balance')?>",<?=($_SESSION['state']['customers']['view']=='balance'?'':'hidden:true,')?>sortable:true,className:"aright"}
+				       ,{key:"balance", label:"<?=_('Outstanding')?>",<?=($_SESSION['state']['customers']['view']=='balance'?'':'hidden:true,')?>sortable:true,className:"aright"}
+				       ,{key:"total_profit", label:"<?=_('Profit')?>",<?=($_SESSION['state']['customers']['view']=='balance'?'':'hidden:true,')?>sortable:true,className:"aright"}
+				       ,{key:"top_orders", label:"<?=_('Rank Orders')?>",<?=($_SESSION['state']['customers']['view']=='rank'?'':'hidden:true,')?>sortable:true,className:"aright"}
+				       ,{key:"top_invoices", label:"<?=_('Rank Invoices')?>",<?=($_SESSION['state']['customers']['view']=='rank'?'':'hidden:true,')?>sortable:true,className:"aright"}
+				       ,{key:"top_balance", label:"<?=_('Rank Balance')?>",<?=($_SESSION['state']['customers']['view']=='rank'?'':'hidden:true,')?>sortable:true,className:"aright"}
+				       ,{key:"top_profits", label:"<?=_('Rank Profits')?>",<?=($_SESSION['state']['customers']['view']=='rank'?'':'hidden:true,')?>sortable:true,className:"aright"}
+
+				       
+
+
+//					 {key:"families", label:"<?=_('Customers')?>", sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
+				       //{key:"active", label:"<?=_('Customers')?>", sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				      
 
 					 ];
@@ -84,6 +108,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 'telephone',
 			 'last_order',
 			 'total_payments','contact_name'
+			 ,"address","town","postcode","region","country"
+			 ,"ship_address","ship_town","ship_postcode","ship_region","ship_country"
+			 ,"total_paymants","total_refunds","total_balance","total_profit","balance"
+			 ,"top_orders","top_invoices","top_balance","top_profits"
 			 ]};
 	    //__You shouls not change anything from here
 
@@ -178,30 +206,88 @@ YAHOO.util.Event.onContentReady("rppmenu", function () {
       var table=tables['table0'];
       old_view=table.view;
       
-      if(tipo=='general'){
-	  table.hideColumn('email');
-	  table.hideColumn('telephone');
-	  table.hideColumn('contact_name');
+      Dom.get('general').className='';
+      Dom.get('contact').className='';
+      Dom.get('address').className='';
+      Dom.get('ship_to_address').className='';
+      Dom.get('balance').className='';
+      Dom.get('rank').className='';
 
+      Dom.get(tipo).className='selected';
+       table.hideColumn('location');
+     table.hideColumn('last_order');
+       table.hideColumn('orders');
+
+       table.hideColumn('email');
+       table.hideColumn('telephone');
+      table.hideColumn('contact_name');
+      table.hideColumn('name');
+      table.hideColumn('address');
+      table.hideColumn('town');
+      table.hideColumn('postcode');
+      table.hideColumn('region');
+      table.hideColumn('country');
+      table.hideColumn('ship_address');
+      table.hideColumn('ship_town');
+      table.hideColumn('ship_postcode');
+      table.hideColumn('ship_region');
+      table.hideColumn('ship_country');
+      table.hideColumn('total_payments');
+      table.hideColumn('total_balance');
+      table.hideColumn('total_refunds');
+      table.hideColumn('total_profit');
+
+      table.hideColumn('balance');
+      table.hideColumn('top_orders');
+      table.hideColumn('top_invoices');
+      table.hideColumn('top_balance');
+      table.hideColumn('top_profits');
+
+
+
+      if(tipo=='general'){
+	  table.showColumn('name');
 	  table.showColumn('location');
 	  table.showColumn('last_order');
 	  table.showColumn('orders');
 	  table.showColumn('total_payments');
-	  Dom.get('adresses').className='';
-	  Dom.get('ship_to_addresses').className='';
-	  Dom.get('contact').className='';
 	  Dom.get('general').className='selected';
       }else if(tipo=='contact'){
-	  table.hideColumn('location');
-	  table.hideColumn('last_order');
-	  table.hideColumn('orders');
-	  table.hideColumn('total_payments');
-
+	  table.showColumn('name');
 	  table.showColumn('contact_name');
 	  table.showColumn('email');
 	  table.showColumn('telephone');
-	  Dom.get('contact').className='selected';
-	  Dom.get('general').className='';
+
+      }else if(tipo=='address'){
+	  table.showColumn('address');
+	  table.showColumn('town');
+	  table.showColumn('postcode');
+	  table.showColumn('region');
+	  table.showColumn('country');
+	  Dom.get('address').className='selected';
+      }else if(tipo=='ship_to_address'){
+	  table.showColumn('ship_address');
+	  table.showColumn('ship_town');
+	  table.showColumn('ship_postcode');
+	  table.showColumn('ship_region');
+	  table.showColumn('ship_country');
+
+      }else if(tipo=='balance'){
+	     table.showColumn('name');
+	  table.showColumn('total_balance');
+	  table.showColumn('total_refunds');
+	  table.showColumn('total_payments');
+	  table.showColumn('total_profit');
+
+	  table.showColumn('balance');
+
+      }else if(tipo=='rank'){
+	     table.showColumn('name');
+	  table.showColumn('top_orders');
+	  table.showColumn('top_invoices');
+	  table.showColumn('top_balance');
+	  table.showColumn('top_profits');
+
       }
 
 
@@ -211,7 +297,7 @@ YAHOO.util.Event.onContentReady("rppmenu", function () {
 
 
 YAHOO.util.Event.addListener('but_show_details', "click",show_details,'customers');
-var ids=['general','contact'];
+var ids=['general','contact','address','ship_to_address','balance','rank'];
 YAHOO.util.Event.addListener(ids, "click",change_view);
 //YAHOO.util.Event.addListener('submit_advanced_search', "click",submit_advanced_search);
 

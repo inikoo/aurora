@@ -3,6 +3,16 @@
 var Event = YAHOO.util.Event;
 var dialog_note;
 
+function showdetails(o){
+    var history_id=o.getAttribute('hid');
+    td=Dom.getAncestorByTagName(o,'tr').getAttribute('id');
+    row=parseInt(td.match(/\d*$/));
+    var data = {date:"one",two:"two",three:"three"}; 
+    var table=tables['table0'];
+    // alert(row);
+    table.addRow(data,row+1);
+}
+
 function save(tipo){
     switch(tipo){
     case('note'):
@@ -100,7 +110,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				      ,{key:"objeto", label:"<?=_('Type')?>", className:"aleft",width:70,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				      ,{key:"handle", label:"<?=_('Author')?>",className:"aleft",width:80,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
-				      ,{key:"note", label:"<?=_('Notes')?>",className:"aleft",width:500}
+				      ,{key:"note", label:"<?=_('Notes')?>",className:"aleft",width:400}
 					   ];
 		
 		    this.dataSource0  = new YAHOO.util.DataSource("ar_contacts.php?tipo=customer_history&tid="+tableid);
@@ -119,11 +129,11 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    filter_msg:"resultset.filter_msg",
 		    totalRecords: "resultset.total_records" // Access to value in the server response
 		},
-		fields: ["note","date","objeto","time","handle" ]};
+		fields: ["note","date","time","handle" ]};
 		    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
 								   this.dataSource0
 								 , {
-								     renderLoopSize: 50,generateRequest : myRequestBuilder
+								     renderLoopSize: 5,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
 									      rowsPerPage    : <?=$_SESSION['state']['customer']['table']['nr']?>,containers : 'paginator', 
  									      pageReportTemplate : '(<?=_('Page')?> {currentPage} <?=_('of')?> {totalPages})',alwaysVisible:false,

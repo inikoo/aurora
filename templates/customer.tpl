@@ -1,7 +1,7 @@
 {include file='header.tpl'}
 <div id="bd" style="padding:0 20px">
-<span class="nav2 onright"  {if $next.id==0}style="display:none"{/if} ><a id="next" href="customer.php?id={$next.id}">{$next.code} &rarr; </a></span>
-<span class="nav2 onright"  {if $prev.id==0}style="display:none"{/if}  ><a id="prev" href="customer.php?id={$prev.id}">&larr; {$prev.code}</a></span>
+<span class="nav2 onright"  {if $next.id==0}style="display:none"{/if} ><a id="next" href="customer.php?id={$next.id}">{$next.name} &rarr; </a></span>
+<span class="nav2 onright"  {if $prev.id==0}style="display:none"{/if}  ><a id="prev" href="customer.php?id={$prev.id}">&larr; {$prev.name}</a></span>
 <span class="nav2 onleft"><a href="customers.php">{t}Customers List{/t}</a></span>
 
 
@@ -32,16 +32,17 @@
 
 
     <div class="yui-b" >
-       <h1>{$customer->data.name} <span style="color:SteelBlue">{$id}</span></h1> 
+       <h1>{$customer->get('customer name')} <span style="color:SteelBlue">{$id}</span></h1> 
 <table id="customer_data" style="width:500px" border=0>
 
 <tr>
-{if $customer->data.main_bill_address_id}<td valign="top">{$customer->data.main_bill_address}</td>{/if}
+{if $customer->get('Customer Main Address Key')}<td valign="top">{$customer->get('Customer Main XHTML Address')}</td>{/if}
 <td  valign="top">
 <table border=0 style="padding:0">
-{if $customer->data.main_contact_id}<tr><td colspan=2>{$customer->data.main_contact_name}</td ></tr>{/if}
-{if $customer->data.main_email_id}<tr><td colspan=2>{$customer->data.main.email}</td ></tr>{/if}
-{if $customer->data.main_tel_id}<tr><td colspan=2 class="aright">{$customer->data.main_tel}</td ></tr>{/if}
+{if $customer->get('Customer Main Contact Key')}<tr><td></td><td colspan=2>{$customer->get('Customer Main Contact Name')}</td ></tr>{/if}
+{if $customer->get('Customer Main Email Key')}<tr><td></td><td colspan=2>{$customer->get('customer main XHTML email')}</td ></tr>{/if}
+{if $customer->get('Customer Main Telephone Key')}<tr><td><img src="art/icons/telephone.png"/></td><td colspan=2 class="aright">{$customer->get('customer main telephone')}</td ></tr>{/if}
+{if $customer->get('Customer Main Fax Key')}<tr><td><img src="art/icons/telephone.png"/></td><td colspan=2 class="aright">{$customer->get('customer main fax')}</td ></tr>{/if}
 
 {foreach from=$telecoms item=telecom}
 <tr><td >
@@ -64,10 +65,10 @@
   <h2 style="font-size:150%">{t}Orders Overview{/t}</h2>
   <table style="padding:0;margin:0;border-top:1px solid black;;border-bottom:1px solid black;width:500px">
     <tr><td>
-	{if $customer->data.num_invoices==1}
-	{$customer->data.name} {t}has place one order of{/t} {$total_net}.  
-	{elseif $customer->data.num_invoices>1 } 
-	{$customer->data.name} {t}has placed{/t} <b>{$invoices}</b> {t}orders so far{/t}, {t}which amounts to a total of{/t} <b>{$total_net}</b> {t}plus tax{/t} ({t}an average of{/t} {$total_net_average} {t}per order{/t}).
+	{if $customer->get('customer orders')==1}
+	{$customer->get('customer name')} {t}has place one order{/t}.  
+	{elseif $customer->get('customer orders')>1 } 
+	{$customer->get('customer name')} {t}has placed{/t} <b>{$customer->get('customer orders')}</b> {t}orders so far{/t}, {t}which amounts to a total of{/t} <b>{$total_net}</b> {t}plus tax{/t} ({t}an average of{/t} {$total_net_average} {t}per order{/t}).
 	{if $orders_interval}<br/>{t}This customer usually places an order every{/t} {$orders_interval}.{/if}
 	{/if}
 	
@@ -77,7 +78,7 @@
 
       
  <div class="data_table" style="margin:25px 0">
-    <span class="clean_table_title">{t}History{/t}</span>
+    <span class="clean_table_title">{t}History/Notes{/t}</span>
     <div  class="clean_table_caption"  style="clear:both;">
       <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span  id="rtext_rpp0" class="rtext_rpp"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
       <div class="clean_table_filter" id="filter_div0"  ><div class="clean_table_info" ><span id="filter_name0">{$filter_name}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value}" size=10/><div id='f_container'></div></div></div>

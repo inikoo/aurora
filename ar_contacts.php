@@ -903,12 +903,46 @@ else if($f_field=='id'  )
      $order='customer email';
    elseif($order=='telephone')
      $order='customer main telehone';
-    elseif($order=='last_order')
+   elseif($order=='last_order')
      $order='customer last order date';
-     elseif($order=='total_payments')
-     $order='customer total payments';
-  elseif($order=='contact_name')
+   elseif($order=='contact_name')
      $order='customer main contact_name';
+   elseif($order=='address')
+     $order='customer main address header';
+   elseif($order=='town')
+     $order='customer main address town';
+   elseif($order=='postcode')
+     $order='customer main address postal code';
+   elseif($order=='region')
+     $order='customer main address country region';
+   elseif($order=='country')
+     $order='customer main address country';
+  elseif($order=='ship_address')
+     $order='customer main ship to header';
+   elseif($order=='ship_town')
+     $order='customer main ship to town';
+   elseif($order=='ship_postcode')
+     $order='customer main ship to postal code';
+   elseif($order=='ship_region')
+     $order='customer main ship to country region';
+   elseif($order=='ship_country')
+     $order='customer main ship to country';
+   elseif($order=='total_balance')
+     $order='customer total balance';
+   elseif($order=='balance')
+     $order='customer outstanding balance';
+   elseif($order=='total_profit')
+     $order='customer total profit';
+   elseif($order=='total_payments')
+     $order='customer total payments';
+   elseif($order=='top_profits')
+     $order='customer profits top percentage';
+   elseif($order=='top_balance')
+     $order='customer balance top percentage';
+   elseif($order=='top_orders')
+     $order='customer orders top percentage';
+   elseif($order=='top_invoices')
+     $order='customer invoices top percentage';
    $sql="select   * from `Customer Dimension`  $where $wheref  order by `$order` $order_direction limit $start_from,$number_results";
    //      print $sql;
    
@@ -962,11 +996,33 @@ else if($f_field=='id'  )
 		   'name'=>$data['customer name'],
 		   'location'=>$data['customer main location'],
 		   'orders'=>$data['customer orders'],
+		   'invoices'=>$data['customer orders invoiced'],
 		   'email'=>$data['customer main xhtml email'],
 		   'telephone'=>$data['customer main telephone'],
 		   'last_order'=>strftime("%e %b %Y", strtotime($data['customer last order date'])),
 		   'total_payments'=>$data['customer total payments'],
-		   'contact_name'=>$data['customer main contact name']
+		   'total_balance'=>$data['customer total balance'],
+		   'total_refunds'=>$data['customer total refunds'],
+		   'total_profit'=>$data['customer total profit'],
+		   'balance'=>$data['customer outstandig balance'],
+
+
+		   'top_orders'=>number($data['customer orders top percentage']).'%',
+		   'top_invoices'=>number($data['customer invoices top percentage']).'%',
+		   'top_balance'=>number($data['customer balance top percentage']).'%',
+		   'top_profits'=>number($data['customer profits top percentage']).'%',
+		   'contact_name'=>$data['customer main contact name'],
+		   'address'=>$data['customer main address header'],
+		   'town'=>$data['customer main address town'],
+		   'postcode'=>$data['customer main address postal code'],
+		   'region'=>$data['customer main address country region'],
+		   'country'=>$data['customer main address country'],
+		   'ship_address'=>$data['customer main ship to header'],
+		   'ship_town'=>$data['customer main ship to town'],
+		   'ship_postcode'>$data['customer main ship to postal code'],
+		   'ship_region'=>$data['customer main ship to country region'],
+		   'ship_country'=>$data['customer main ship to country'],
+		   
 		   );
   }
 
@@ -1360,14 +1416,14 @@ if(isset( $_REQUEST['where']))
      $_SESSION['state']['customer']['table']['to']=$date_interval['to'];
    }
 
-   $where.=sprintf(' and  sujeto="CUST" and  sujeto_id=%d',$customer_id);
-   if(!$details)
-     $where.=" and display!='details'";
-   foreach($elements as $element=>$value){
-     if(!$value ){
-       $where.=sprintf(" and objeto!=%s ",prepare_mysql($element));
-     }
-   }
+   $where.=sprintf(' and ( (`Subject`="Customer" and  `Subject Key`=%d) or (`Direct Object`="Customer" and  `Direct Object key`=%d ) ) ',$customer_id,$customer_id);
+//   if(!$details)
+ //    $where.=" and display!='details'";
+ //  foreach($elements as $element=>$value){
+ //    if(!$value ){
+ //      $where.=sprintf(" and objeto!=%s ",prepare_mysql($element));
+ //    }
+ //  }
    
    $where.=$date_interval['mysql'];
    
@@ -1399,8 +1455,8 @@ if(isset( $_REQUEST['where']))
 
 
    
-   $sql="select count(*) as total from  history   left join liveuser_users on (staff_id=authuserid) $where $wheref ";
-  // print $sql;
+   $sql="select count(*) as total from  `History Dimension`   $where $wheref ";
+ // print $sql;
    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
    if($row=$res->fetchRow()) {
      $total=$row['total'];
@@ -1411,7 +1467,7 @@ if(isset( $_REQUEST['where']))
      $total_records=$total;
    }else{
      
-     $sql="select count(*) as total from history   $where";
+     $sql="select count(*) as total from  `History Dimension`  $where";
     // print $sql;
      $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
      if($row=$res->fetchRow()) {
@@ -1463,44 +1519,27 @@ if(isset( $_REQUEST['where']))
    
    $_order=$order;
    $_dir=$order_direction;
-   if($order=='op'){
-     $order="op $order_direction, date_index desc ";
-     $order_direction='';
+   if($order=='date')
+     $order='History Date';
+   if($order=='note')
+     $order='History Abstract';
+   if($order=='objeto')
+     $order='Direct Object';
 
-   }
-
-
-   $sql="select handle,objeto,staff_id,history.id,note,UNIX_TIMESTAMP(date) as udate from history  left join liveuser_users on (staff_id=authuserid)   $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
-   //print $sql;
+   $sql="select * from `History Dimension`   $where $wheref  order by `$order` $order_direction limit $start_from,$number_results ";
+   //  print $sql;
    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
    $data=array();
    while($row=$res->fetchRow()) {
      
-     if($row['objeto']=='NOTE'){
-       $tipo=_('Note');
-     }elseif($row['objeto']=='ORDER'){
-       $tipo=_('Order');
-     }elseif($row['objeto']=='ATTACH'){
-       $tipo=_('Attachment');
-     }elseif(preg_match('/^CHG/',$row['objeto'])){
-       $tipo=_('Change');
-     }elseif(preg_match('/^NEW/',$row['objeto'])){
-       $tipo=_('New');
-     }else{
-       $tipo=_('Other');
-     }
-     
-     if($row['staff_id']>0)
-       $author='<a href="user.php?id='.$row['staff_id'].'">'.$row['handle'].'</a>';
-     else
-       $author=_('System');
+
      $data[]=array(
-		   'id'=>$row['id'],
-		   'date'=>strftime("%a %e %b %Y", strtotime('@'.$row['udate'])),
-		   'time'=>strftime("%H:%M", strtotime('@'.$row['udate'])),
-		   'objeto'=>$tipo,
-		   'note'=>$row['note'],
-		   'handle'=>$author
+		   'id'=>$row['history key'],
+		   'date'=>strftime("%a %e %b %Y", strtotime($row['history date'])),
+		   'time'=>strftime("%H:%M", strtotime($row['history date'])),
+		   'objeto'=>$row['direct object'],
+		   'note'=>$row['history abstract'],
+		   'handle'=>$row['author name']
 		   );
    }
    

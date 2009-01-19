@@ -490,3 +490,6 @@ span.small{font-size:80%}
 .list_of_buttons div{padding:2.5px 5px;border:1px solid #ccc;margin:3px 5px;cursor:pointer;width:100px;float:left}
 
 .button{ cursor:pointer }
+
+.like_a{cursor:pointer;}
+.like_a:hover{text-decoration:underline}
