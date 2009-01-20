@@ -36,7 +36,8 @@ if (PEAR::isError($db)){echo $db->getMessage() . ' ' . $db->getUserInfo();}
 if(DEBUG)PEAR::setErrorHandling(PEAR_ERROR_RETURN);
 // To have nice arrays when we make some selects :)
 $db->setFetchMode(MDB2_FETCHMODE_ASSOC);  
-
+$db->query("SET time_zone ='UTC'");
+$db->query("SET NAMES 'utf8'");
 
 
 //__________________________________________________________________________________________________|

@@ -93,7 +93,7 @@ class Customer{
 
 
   }
- function load($key=''){
+  function load($key='',$arg1){
     switch($key){
     case('location'):
       global $myconf;
@@ -103,8 +103,6 @@ class Customer{
       }else{
      
       $sql=sprintf('select code,town from  address  left join list_country on (country=list_country.name) where address.id=%d ',$this->data['main_bill_address_id']);
-      //     print_r($this->data);
-      // print $sql;
       $result =& $this->db->query($sql);
       if($row=$result->fetchRow()){	     
 	$this->data['location']['country_code']=$row['code'];
@@ -121,6 +119,16 @@ class Customer{
       else
 	$this->errors[]='Error geting contact data object. Contact key:'.$this->get('customer contact key');
       break;
+    case('ship to'):
+      
+      $sql=sprintf('select * from `Ship To Dimension` where `Ship To Key`=%d ',$arg1);
+      //  print $sql;
+      $result =& $this->db->query($sql);
+      if(!$this->ship_to[$arg1]=$result->fetchRow()){	     
+	$this->errors[]='Error loading ship to data. Ship to Key:'.$arg1;
+      }
+
+      break; 
     }
 
  }
@@ -862,7 +870,7 @@ class Customer{
  }
 
 
- function get($key){
+ function get($key,$arg1=false){
 
    $key=strtolower($key);
    if(isset($this->data[$key]))
@@ -876,7 +884,48 @@ class Customer{
    }
 
 
+
+
+    if(preg_match('/^ship to /i',$key)){
+      if(!$arg1)
+	$ship_to_key=$this->get('customer main ship to key');
+      else
+	$ship_to_key=$arg1;
+      if(!$this->ship_to[$ship_to_key])
+       $this->load('ship to',$ship_to_key);
+     if(isset($this->ship_to[$ship_to_key][$key]))
+       return $this->ship_to[$ship_to_key][$key]; 
+   }
+
+
+
    switch($key){
+   case('xhtml ship to'):
+       if(!$arg1)
+	$ship_to_key=$this->get('customer main ship to key');
+      else
+	$ship_to_key=$arg1;
+      if(!$this->ship_to[$ship_to_key])
+       $this->load('ship to',$ship_to_key);
+      if(isset($this->ship_to[$ship_to_key]['ship to key'])){
+	$contact=$this->ship_to[$ship_to_key]['ship to contact name'];
+	$company=$this->ship_to[$ship_to_key]['ship to company name'];
+	$address=$this->ship_to[$ship_to_key]['ship to xhtml address'];
+	$tel=$this->ship_to[$ship_to_key]['ship to telephone'];
+	$ship_to='';
+	if($contact!='')
+	  $ship_to.='<b>'.$contact.'</b>';
+	if($company!='')
+	  $ship_to.='<br/>'.$company;
+	if($address!='')
+	  $ship_to.='<br/>'.$address;
+	if($tel!='')
+	  $ship_to.='<br/>'.$tel;
+	return $ship_to;
+      }
+    
+
+     break;
      //   case('customer main address key')
 
      

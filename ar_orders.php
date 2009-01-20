@@ -1268,6 +1268,60 @@ if(isset( $_REQUEST['where']))
 		   );
    echo json_encode($response);
    break;
+ case('transactions_to_precess'):
+   
+   if(isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id']))
+     $order_id=$_REQUEST['id'];
+   else
+     $order_id=$_SESSION['state']['order']['id'];
+
+   $where=' where `Order Key`='.$order_id;
+
+   $total_charged=0;
+   $total_discounts=0;
+   $total_picks=0;
+
+   
+   $sql="select * from `Order Transiction Fact` O left join `Product Dimension` P on (O.`Product key`=P.`Product Key`) $where   ";
+   
+   //  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispached,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
+   //     print $sql;
+   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   $data=array();
+   while($row=$res->fetchRow()) {
+     $total_charged+=$row['charge'];
+     $total_discounts+=$ndiscount;
+     $total_picks+=$row['dispached'];
+     $data[]=array(
+
+		   ,'code'=>$row['product code']
+		   ,'description'=>$row['product short description']
+		   ,'quantity'=>number($row['order quantity'])
+		   ,'gross'=>money($row['order quantity']*$row['product price'])
+		   ,'discount'=>money()
+
+		   );
+   }
+
+
+ 
+   
+
+   $response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$data
+// 			 'total_records'=>$total,
+// 			 'records_offset'=>$start_from,
+// 			 'records_returned'=>$start_from+$res->numRows(),
+// 			 'records_perpage'=>$number_results,
+// 			 'records_text'=>$rtext,
+// 			 'records_order'=>$order,
+// 			 'records_order_dir'=>$order_dir,
+// 			 'filtered'=>$filtered
+			 )
+		   );
+   echo json_encode($response);
+   break;
  case('transactions'):
    
    if(isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id']))
@@ -1493,7 +1547,6 @@ if(isset( $_REQUEST['where']))
 		   );
    echo json_encode($response);
    break;
-
  case('withproduct'):
 
    $conf=$_SESSION['state']['product']['orders'];

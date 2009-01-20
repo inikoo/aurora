@@ -1,5 +1,4 @@
 <?
-
 include_once('common.php');
 include_once('classes/Product.php');
 include_once('classes/Order.php');

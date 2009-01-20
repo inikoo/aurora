@@ -343,8 +343,9 @@ class Order{
 
 	$this->data['order discount ammont']=$edata['discount']+$edata['voucher'];
 	$this->data['order total tax amount']=$edata['tax'];
-	$this->data['order main ship to key']=$ship_to_key;
 	$this->data['order main xhtml ship to']=$ship_to;
+	$this->data['order ship to addresses']=1;
+
 	//	print "$email";
 	//	print_r($edata);
 	//exit;
@@ -480,7 +481,7 @@ class Order{
   }
 
   function add_order_transaction($data){
-    $sql=sprintf("insert into `Order Transaction Fact` (`Order Date`,`Order Last Updated Date`,`Product Key`,`Current Dispatching State`,`Current Payment State`,`Customer Key`,`Order Key`,`Order ID`,`Order Line`,`Order Quantity`) values (%s,%s,%d,%s,%s,%s,%s,%s,%d,%f) "
+    $sql=sprintf("insert into `Order Transaction Fact` (`Order Date`,`Order Last Updated Date`,`Product Key`,`Current Dispatching State`,`Current Payment State`,`Customer Key`,`Order Key`,`Order ID`,`Order Line`,`Order Quantity`,`Ship To Key`) values (%s,%s,%d,%s,%s,%s,%s,%s,%d,%f) "
 		 ,prepare_mysql($data['date'])
 		 ,prepare_mysql($data['date'])
 		 ,$data['product_id']
@@ -491,7 +492,7 @@ class Order{
 		 ,prepare_mysql($this->get('Order ID'))
 		 ,$data['line_number']
 		 ,number($data['qty'])
-		 ,prepare_mysql($this->data['order main ship to key']);
+		 ,prepare_mysql($this->data['order main ship to key'])
 
 
 		 );
@@ -508,7 +509,7 @@ class Order{
   }
 
   function create_order_header(){
-    $sql=sprintf("insert into `Order Dimension` (`Order Date`,`Order Last Updated Date`,`Order ID`,`Order Main Store Key`,`Order Main Store Code`,`Order Main Store Type`,`Order Customer Key`,`Order Customer Name`,`Order Current Dispatch State`,`Order Current Payment State`,`Order Current XHTML State`,`Order Customer Message`,`Order Original Data MIME Type`,`Order Original Data`,`Order Gross Amount`,`Order Discount Amount`,`Order Total Tax Amount`,`Order Shipping Amount`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%.2f,%.2f,%.2f,%.2f)"
+    $sql=sprintf("insert into `Order Dimension` (`Order Date`,`Order Last Updated Date`,`Order ID`,`Order Main Store Key`,`Order Main Store Code`,`Order Main Store Type`,`Order Customer Key`,`Order Customer Name`,`Order Current Dispatch State`,`Order Current Payment State`,`Order Current XHTML State`,`Order Customer Message`,`Order Original Data MIME Type`,`Order Original Data`,`Order Gross Amount`,`Order Discount Amount`,`Order Total Tax Amount`,`Order Shipping Amount`,`Order Main XHTML Ship To`,`Order Ship To Addresses`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%.2f,%.2f,%.2f,%.2f,%s,%d)"
 		 ,prepare_mysql($this->get('Order Date'))
 		 ,prepare_mysql($this->get('Order Date'))
 		 ,prepare_mysql($this->get('Order ID'))
@@ -522,11 +523,14 @@ class Order{
 		 ,prepare_mysql($this->get('Order Current XHTML State'))
 		 ,prepare_mysql($this->get('Order Customer Message'))
 		 ,prepare_mysql($this->get('Order Original Data MIME Type'))
-		 ,prepare_mysql($this->get('Order Original Datac'))
+		 ,prepare_mysql($this->get('Order Original Data'))
 		 ,$this->get('Order Gross Amount')
 		 ,$this->get('Order Discount Amount')
 		 ,$this->get('Order Total Tax Amount')
 		 ,$this->get('Order Shipping Amount')
+		 ,prepare_mysql($this->get('Order Main XHTML Ship to'))
+		 ,$this->get('Order Ship To Addresses')
+
 		 );
     print $sql;
     $affected=& $this->db->exec($sql);

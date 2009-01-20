@@ -11,7 +11,7 @@
         {$contact}<br/>
            {if $tel!=''}{t}Tel{/t}: {$tel}<br/>{/if}
 	<div style="float:left;line-height: 1.0em;margin:5px 0px;color:#444"><span style="font-weight:500;color:#000">{t}To be paid by{/t}</span>:<br/>{$customer->get('Customer Main Company name')}<br/><b>{$customer->get('Customer Main Contact name')}</b><br/>{$customer->get('Customer Main XHTML Address')}</div>
-	<div style="float:left;line-height: 1.0em;margin:5px 0px;color:#444"><span style="font-weight:500;color:#000">{t}To be shipped to{/t}</span>:<br/>{$customer->get('Order Main XHTML Ship to')}</div>
+	<div style="float:left;line-height: 1.0em;margin:5px 0 0 30px;color:#444"><span style="font-weight:500;color:#000">{t}To be shipped to{/t}</span>:<br/><br/>{$order->get('Order Main XHTML Ship To')}</div>
 	{if $address_delbill!=''}<div style="float:left;line-height: 1.0em;margin:5px 0px;color:#444"><span style="font-weight:500;color:#000">{t}B&D Address{/t}</span>:<br/>{$address_delbill}</div>{/if}
 
 	{if $address_del!=''}<div style="float:left;line-height: 1.0em;margin:5px 0px;color:#444"><span style="font-weight:500;color:#000">{t}Delivery Address{/t}</span>:<br/>{$address_del}</div>{/if}
@@ -46,7 +46,7 @@
 
 <div style="border:0px solid #ddd;width:250px;float:right">
 <table border=0  style="width:100%;border-top:1px solid #333;border-bottom:1px solid #333;width:100%,padding:0;margin:0;float:right;margin-left:120px" >
-	  <tr><td  class="aright" >{t}Items Cost{/t}</td><td width=100 class="aright">{$items_vateable}</td></tr>
+	  <tr><td  class="aright" >{t}Items Cost{/t}</td><td width=100 class="aright">{$order->get('order gross amount')}</td></tr>
 	  {if $credits_vateable  }<tr><td  class="aright" >{t}Credits{/t}</td><td width=100 class="aright">{$credits_vateable}</td></tr>{/if}
 	  {if $other_charges_vateable  }<tr><td  class="aright" >{t}Charges{/t}</td><td width=100 class="aright">{$other_charges_vateable}</td></tr>{/if}
 	  <tr style="border-bottom:1px solid #777"><td  class="aright" >{t}Shipping{/t}</td><td width=100 class="aright">{$shipping_vateable}</td></tr>
