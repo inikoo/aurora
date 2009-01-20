@@ -42,15 +42,7 @@ class deal{
 
   function create($data){
 
-    if($data['shortcut']){
-      switch($data['shortcut']){
-      case('interval,qty in family'):
-	
 
-      }
-
-
-    }
 
 
   }
@@ -61,12 +53,6 @@ class deal{
       return $this->data[$key];
     
     switch($key){
-    case('code'):
-      return $this->data['deal code'];
-      break;
-    case('type'):
-      return $this->data['deal type'];
-      break;
       
     }
     

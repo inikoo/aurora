@@ -35,13 +35,13 @@ class product{
 
 
 
-  function get_data($tipo,$tag,$tag2){
+  function get_data($tipo,$tag,$extra=false){
     global $_shape,$_units_tipo,$_units_tipo_abr,$_units_tipo_plural;
 
     if($tipo=='id')
       $sql=sprintf("select * from `Product Dimension` where `Product Key`=%d ",$tag);
     elseif($tipo=='code'){
-      $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s order by `Product Valid To` ",prepare_mysql($tag));
+      $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s and `Product Most Recent`='Yes' ",prepare_mysql($tag));
     }
 
     //print "$sql\n";
@@ -623,6 +623,10 @@ class product{
 
 
   function get($item='',$data=false){
+    $key=strtolower($item);
+    if(isset($this->data[$key]))
+      return $this->data[$key];
+    
 
     switch($item){
     case('p2l_id'):
@@ -2676,7 +2680,7 @@ function new_sku(){
   
   $left_side=1101018;
   
-  $sql="select count(DISTINCT `Product SKU number`) as sku_numbers from `Product Dimension`";
+  $sql="select count(DISTINCT `Product SKU number`) as sku_numbers from `Product Dimension`  ";
   $result =& $this->db->query($sql);
   if($row=$result->fetchRow()){
     
@@ -2759,12 +2763,9 @@ function new_sku(){
 			'name'=>$data['family name'],
 			);
 	$family=new Family('create',$fam_data);
-	
-	$family->add_product($this->id,'principal');
-	
-	
-	
       }
+      $family->add_product($this->id,'principal');
+
     }
     if(isset($data['department code']) and  $data['department code']!=''){
       if(!isset($data['department name']) or  $data['department name']=='')
@@ -2780,8 +2781,11 @@ function new_sku(){
 	if(is_object($family) and $family->id)
 	  $department->add_family($family->id,'principal');
 	
-	$department->add_product($this->,'principal');
+
       }
+
+      $department->add_product($this->id,'principal');
+
     }
 
     

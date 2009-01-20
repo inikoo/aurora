@@ -1,0 +1,1 @@
+truncate `Product Department Dimension`;truncate `Product Family Dimension`;truncate `Product Dimension`; 

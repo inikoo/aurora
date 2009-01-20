@@ -14,7 +14,7 @@ $db->setFetchMode(MDB2_FETCHMODE_ASSOC);
 $db->query("SET time_zone ='UTC'");
 require_once '../../myconf/conf.php';           
 date_default_timezone_set('Europe/London');
-
+$PEAR_Error_skiptrace = &PEAR::getStaticProperty('PEAR_Error','skiptrace');$PEAR_Error_skiptrace = true;// Fix memory leak
 
 
 
@@ -60,11 +60,14 @@ $count=0;
 //    	$product=new Product('create',$data);
  
 // exit;
+
+
 $__cols=array();
 $inicio=false;
 while(($_cols = fgetcsv($handle_csv))!== false){
-  $code=$_cols[3];
   
+  $code=$_cols[3];
+ 
   if($code=='FO-A1' and !$inicio){
     $inicio=true;
     $x=$__cols[count($__cols)-4];
@@ -85,6 +88,8 @@ while(($_cols = fgetcsv($handle_csv))!== false){
   
   $__cols[]=$_cols;
  }
+
+
 
 $new_family=true;
 
@@ -283,7 +288,7 @@ foreach($__cols as $cols){
 	//	exit;
        	$product=new Product('create',$data);
 	print_r($product->data);
-	exit;
+	//exit;
       }else{
 	print $count."\r";
 	//	print_r($product->data);

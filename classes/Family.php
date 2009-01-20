@@ -3,12 +3,15 @@ include_once('Product.php');
 
 class family{
 var $db;
+ var $products=false;
+ var $id=false;
+
  function __construct($a1=false,$a2=false) {
     $this->db =MDB2::singleton();
     
     if(is_numeric($a1) and !$a2  )
       $this->getdata('id',$a1);
-    else if($a1=='new' and is_array($a2)){
+    else if(preg_match('/new|create/',$a1) ){
       $this->msg=$this->create($a2);
     }elseif($a2!='')
        $this->getdata($a1,$a2);
@@ -16,34 +19,15 @@ var $db;
  }
 
  function create($data){
-   //print_r($data);
-   
- //   if(!is_numeric($data['department_id']) or $data['department_id']<=0 )
-//       return array('ok'=>false,'msg'=>_("Wrong department id"));
-//    $sql=sprintf("select id from product_department where id=%d"
-// 		,$data['department_id']);
-//    // print "$sql\n";
-//    $res = $this->db->query($sql); 
-//    if(!$tmp=$res->fetchRow()){
-//      return array('ok'=>false,'msg'=>_("The department don't exist"));
-//    }
-
-//    $sql=sprintf("select id from product_group where name=%s and description=%s"
-// 		,prepare_mysql($data['name'])
-// 		,prepare_mysql($data['decription'])
-// 		);
-//    $res = $this->db->query($sql); 
-//    if($tmp=$res->fetchRow()){
-//      return array('ok'=>false,'msg'=>_('There is other product family with the same name/description'));
-//    }
    
    
 
    $sql=sprintf("insert into `Product Family Dimension` (`Product Family Code`,`Product Family Name`) values (%s,%s)"
-		,prepare_mysql($data['family code'])
-		,prepare_mysql($data['family name'])
+		,prepare_mysql($data['code'])
+		,prepare_mysql($data['name'])
 		);
    
+   // print_r($data);
    //print "$sql\n";
    $affected=& $this->db->exec($sql);
    
@@ -55,7 +39,7 @@ var $db;
      return false;
    }
    $this->id=$this->db->lastInsertID();
-   $this->getdata($this->id);
+   $this->getdata('id',$this->id);
    
    
    // print "***********************".$this->id;
@@ -67,17 +51,16 @@ var $db;
 
    switch($tipo){
    case('id'):
-     $sql=sprintf("select *  from `Product Family` where `Product Family Key`=%d",$tag);
+     $sql=sprintf("select *  from `Product Family Dimension` where `Product Family Key`=%d ",$tag);
      break;
    case('code'):
-     $sql=sprintf("select *  from `Product Family` where `Product Family Code`==%s",prepare_mysql($tag));
+     $sql=sprintf("select *  from `Product Family Dimension` where `Product Family Code`=%s and `Product Family Most Recent`='Yes'",prepare_mysql($tag));
      break;
    }
-   //   print "$sql\n";
-
+   //   print "S:$tipo $sql\n";
    $result = $this->db->query($sql);
    if($this->data=$result->fetchRow())
-     $this->id=$this->data['prodct family key'];
+     $this->id=$this->data['product family key'];
 
  }
 
@@ -90,8 +73,8 @@ var $db;
      
      break;
    case('products'):
-     $sql=sprintf("select * from `Product`  where `Product Family Key`=%d and `Product Most Recent`='Yes'",$this->id);
-     //  print $sql;
+     $sql=sprintf("select * from `Product Dimension` P left join `Product Family Bridge` B  on (P.`Product Key`=B.`Product Key`) where `Product Family Key`=%d ",$this->id);
+     //    print $sql;
      $res = $this->db->query($sql);
      $this->products=array();
      while($row = $res->fetchrow()) {
@@ -252,11 +235,19 @@ var $db;
 
  function get($tipo){
 
-   $key=strtolower($key);
-    if(isset($this->data[$key]))
-      return $this->data[$key];
+   $key=strtolower($tipo);
+   if(isset($this->data[$key]))
+     return $this->data[$key];
+
+
 
    switch($tipo){
+   case('products'):
+     if(!$this->products)
+       $this->load('products');
+     return $this->products;
+     
+     break;
    case('weeks'):
       if(is_numeric($this->data['first_date'])){
      	$date1=date('d-m-Y',strtotime('@'.$this->data['first_date']));
@@ -272,17 +263,24 @@ var $db;
  }
  
  function add_product($product_id,$args=false){
+   print "************\n";
+  print_r($this->data);
+
    $product=New Product($product_id);
    if($product->id){
      $sql=sprintf("insert into `Product Family Bridge` (`Product Key`,`Product Family Key`) values (%d,%d)",$product->id,$this->id);
+
+     print "$sql\n";
      $this->db->exec($sql);
-     if(preg_match('/principal/',$args)){
-       $sql=speintf("update  `Product Dimension` set `Product Main Family Key`=%d ,`Product Main Family Code`=%s,`Product Main Family Name`=%s where `Product Key`=%s    "
-		    ,$this->id
-		    ,$this->get('product family code')
-		    ,$this->get('product family name')
+     if(preg_match('/principal/i',$args)){
+        print_r($this->data);
+       $sql=sprintf("update  `Product Dimension` set `Product Main Family Key`=%d ,`Product Main Family Code`=%s,`Product Main Family Name`=%s where `Product Key`=%s    "
+		    ,$this->id                
+		    ,prepare_mysql($this->get('product family code'))
+		    ,prepare_mysql($this->get('product family name'))
 		    ,$product->id);
        $this->db->exec($sql);
+       print "$sql\n";
      }
    }
  }
