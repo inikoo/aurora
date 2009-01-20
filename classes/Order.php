@@ -504,7 +504,20 @@ class Order{
 
   }
 
-  function get_discounts($data){
+  function get_discounts($data,$customer_id,$date){
+
+    foreach($data as $item){
+      $sql=sprintf("select * from `Deal Dimension` where `Allowance Type`='Percentage Off' and  `Triger`='Product' and `Trigger Key`=%d ",$item['product_id']);
+      $result =& $this->db->query($sql);
+      while($row=$result->fetchRow()){
+	$deal=new Deal($row['deal key']);
+	
+	$discount_function = create_function("$data,$customer_id,$date", $row['deal metadata']);
+	$discount[$item['product_id']][$row['deal key']]['discount']=$discount_function($data,$customer,$date);
+	$discount[$item['product_id']][$row['deal key']]['deal key']=$row['deal key'];
+      }
+      
+    }
     return $data;
   }
 

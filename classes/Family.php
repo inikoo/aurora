@@ -18,31 +18,30 @@ var $db;
  function create($data){
    //print_r($data);
    
-   if(!is_numeric($data['department_id']) or $data['department_id']<=0 )
-      return array('ok'=>false,'msg'=>_("Wrong department id"));
-   $sql=sprintf("select id from product_department where id=%d"
-		,$data['department_id']);
-   // print "$sql\n";
-   $res = $this->db->query($sql); 
-   if(!$tmp=$res->fetchRow()){
-     return array('ok'=>false,'msg'=>_("The department don't exist"));
-   }
+ //   if(!is_numeric($data['department_id']) or $data['department_id']<=0 )
+//       return array('ok'=>false,'msg'=>_("Wrong department id"));
+//    $sql=sprintf("select id from product_department where id=%d"
+// 		,$data['department_id']);
+//    // print "$sql\n";
+//    $res = $this->db->query($sql); 
+//    if(!$tmp=$res->fetchRow()){
+//      return array('ok'=>false,'msg'=>_("The department don't exist"));
+//    }
 
-   $sql=sprintf("select id from product_group where name=%s and description=%s"
-		,prepare_mysql($data['name'])
-		,prepare_mysql($data['decription'])
-		);
-   $res = $this->db->query($sql); 
-   if($tmp=$res->fetchRow()){
-     return array('ok'=>false,'msg'=>_('There is other product family with the same name/description'));
-   }
+//    $sql=sprintf("select id from product_group where name=%s and description=%s"
+// 		,prepare_mysql($data['name'])
+// 		,prepare_mysql($data['decription'])
+// 		);
+//    $res = $this->db->query($sql); 
+//    if($tmp=$res->fetchRow()){
+//      return array('ok'=>false,'msg'=>_('There is other product family with the same name/description'));
+//    }
    
    
 
-   $sql=sprintf("insert into product_group (name,description,department_id) values (%s,%s,%d)"
-		,prepare_mysql($data['name'])
-		,prepare_mysql($data['description'])
-		,$data['department_id']
+   $sql=sprintf("insert into `Product Family Dimension` (`Product Family Code`,`Product Family Name`) values (%s,%s)"
+		,prepare_mysql($data['family code'])
+		,prepare_mysql($data['family name'])
 		);
    
    //print "$sql\n";
@@ -55,11 +54,10 @@ var $db;
        return array('ok'=>false,'msg'=>_('Unknown Error').'.');
      return false;
    }
-   $this->data['name']=$data['name'];	
-   $this->data['description']=$data['description'];
-   $this->data['department_id']=$data['department_id'];
    $this->id=$this->db->lastInsertID();
-
+   $this->getdata($this->id);
+   
+   
    // print "***********************".$this->id;
    return array('ok'=>true);
    
@@ -69,17 +67,17 @@ var $db;
 
    switch($tipo){
    case('id'):
-     $sql=sprintf("select *,UNIX_TIMESTAMP(first_date) as first_date from product_group where id=%d",$tag);
+     $sql=sprintf("select *  from `Product Family` where `Product Family Key`=%d",$tag);
      break;
-   case('name'):
-     $sql=sprintf("select *,UNIX_TIMESTAMP(first_date) as first_date from product_group where name=%s",prepare_mysql($tag));
+   case('code'):
+     $sql=sprintf("select *  from `Product Family` where `Product Family Code`==%s",prepare_mysql($tag));
      break;
    }
    //   print "$sql\n";
 
    $result = $this->db->query($sql);
    if($this->data=$result->fetchRow())
-     $this->id=$this->data['id'];
+     $this->id=$this->data['prodct family key'];
 
  }
 
@@ -92,12 +90,12 @@ var $db;
      
      break;
    case('products'):
-     $sql=sprintf("select id,code from product  where group_id=%d",$this->id);
+     $sql=sprintf("select * from `Product`  where `Product Family Key`=%d and `Product Most Recent`='Yes'",$this->id);
      //  print $sql;
      $res = $this->db->query($sql);
      $this->products=array();
      while($row = $res->fetchrow()) {
-       $this->products[$row['id']]=array('code'=>$row['code']);
+       $this->products[$row['product key']]=$row;
      }
      break;
    case('first_date'):
@@ -253,6 +251,11 @@ var $db;
 
 
  function get($tipo){
+
+   $key=strtolower($key);
+    if(isset($this->data[$key]))
+      return $this->data[$key];
+
    switch($tipo){
    case('weeks'):
       if(is_numeric($this->data['first_date'])){
@@ -268,6 +271,22 @@ var $db;
 
  }
  
+ function add_product($product_id,$args=false){
+   $product=New Product($product_id);
+   if($product->id){
+     $sql=sprintf("insert into `Product Family Bridge` (`Product Key`,`Product Family Key`) values (%d,%d)",$product->id,$this->id);
+     $this->db->exec($sql);
+     if(preg_match('/principal/',$args)){
+       $sql=speintf("update  `Product Dimension` set `Product Main Family Key`=%d ,`Product Main Family Code`=%s,`Product Main Family Name`=%s where `Product Key`=%s    "
+		    ,$this->id
+		    ,$this->get('product family code')
+		    ,$this->get('product family name')
+		    ,$product->id);
+       $this->db->exec($sql);
+     }
+   }
+ }
+
 
 }
 

@@ -2708,75 +2708,12 @@ function new_sku(){
   function create($data){
 
 
-    //    if(!is_numeric($data['group_id']) or $data['group_id']<=0 )
-    //       return array('ok'=>false,'msg'=>_("Wrong group id"));
-    //     if($data['code']=='' )
-    //       return array('ok'=>false,'msg'=>_("Wrong product code"));
-    //     if($data['description']=='' )
-    //       return array('ok'=>false,'msg'=>_("Wrong description, it can't be empty"));
     
-    //     $sql=sprintf("select id from product_group where id=%d"
-    // 		 ,$data['group_id']);
-    //      $res = $this->db->query($sql); 
-    //      if(!$tmp=$res->fetchRow()){
-    //        return array('ok'=>false,'msg'=>_("The product group don't exist"));
-    //      }
-     
-    //      $sql=sprintf("select id from product where code=%s "
-    // 		  ,prepare_mysql($data['code'])
-    // 		  );
-    //      $res = $this->db->query($sql); 
-    //      if($tmp=$res->fetchRow()){
-    //        return array(
-    // 		    'ok'=>false
-    // 		    ,'msg'=>_('There is other product family with the same name/description')
-    // 		  );
-    //      }
-     
     $code=$data['code'];
     $ncode=$this->normalize_code($code);
-    //   $rpp=(isset($data['rrp']) and is_numeric($data['rrp'])?$data['rrp']:'NULL');
-     
 
-    //      if( isset($data['rrp']) and is_numeric($data['rrp'])    )
-    //        $rrp=$data['rrp'];
-    //      else
-    //        $rrp='NULL';
-     
-    //      if( isset($data['units_tipo']) and is_numeric($data['units_tipo'])   and $data['units_tipo']>0 )
-    //        $units_tipo=$data['units_tipo'];
-    //      else
-    //       $units_tipo=1;
-     
-    //      if( isset($data['units']) and is_numeric($data['units'])   and $data['units']>0 )
-    //        $units=$data['units'];
-    //      else
-    //        $units=1;
-
-     
-    //      if( isset($data['sdescription'])  and $data['sdescription']!='' )
-    //        $sdescription=$data['sdescription'];
-    //      else
-    //        $sdescription=$data['description'];
-     
-
-
-     
-    //  $product_status=(
-    // 		  (
-    // 		   !isset($data['sale_status']) 
-    // 		   or $data['sale_status']!='On sale'
-    // 		   or $data['sale_status']!='Not For sale'
-    // 		   or $data['sale_status']!='Discontinued'
-    // 		   )?'Historic Data':$data['sale_status']);
-    
-    //  if(!isset($data['sku_number']))
     $sku_number=$this->new_sku();
-    //  print "$code $sku_number\n";
-    //exit;
-    //else{
-    // 
-    // }
+
     if(isset($data['units per case']) and is_numeric($data['units per case']) and $data['units per case']>0)
       $units_factor=$data['units per case'];
     else
@@ -2807,6 +2744,55 @@ function new_sku(){
     //$this->data['units']=$units;
     //$this->data['units_tipo']=$units_tipo;
    
+
+    $family=false;
+    $department=false;
+
+    if(isset($data['family code']) and  $data['family code']!=''){
+      if(!isset($data['family name']) or  $data['family name']=='')
+	$data['family name']=$data['family code'];
+      
+      $family=new Family('code',$data['family code']);
+      if(!$family->id){
+	$fam_data=array(
+			'code'=>$data['family code'],
+			'name'=>$data['family name'],
+			);
+	$family=new Family('create',$fam_data);
+	
+	$family->add_product($this->id,'principal');
+	
+	
+	
+      }
+    }
+    if(isset($data['department code']) and  $data['department code']!=''){
+      if(!isset($data['department name']) or  $data['department name']=='')
+	$data['department name']=$data['department code'];
+      
+      $department=new Department('code',$data['department code']);
+      if(!$department->id){
+	$dept_data=array(
+			'code'=>$data['department code'],
+			'name'=>$data['department name'],
+			);
+	$department=new Department('create',$dept_data);
+	if(is_object($family) and $family->id)
+	  $department->add_family($family->id,'principal');
+	
+	$department->add_product($this->,'principal');
+      }
+    }
+
+    
+
+
+
+
+
+
+
+
     $sql=sprintf("update  `Product Dimension` set `Product Current Product Key`=%d where `Product Key`=%d",$this->id,$this->id);
       $this->db->exec($sql);
 

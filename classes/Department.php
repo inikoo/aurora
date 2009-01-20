@@ -17,22 +17,28 @@ var $db;
 
  function create($data){
 
-   if($data['code']=='' )
-     return array('ok'=>false,'msg'=>_("Wrong department code"));
-   if($data['name']=='' )
-     return array('ok'=>false,'msg'=>_("Wrong department name"));
+   
 
-   $sql=sprintf("select id from product_department where code=%s "
-		,prepare_mysql($data['code'])
-		);
-   print "$sql\n";
-   $res = $this->db->query($sql); 
-   if($tmp=$res->fetchRow()){
-     return array('ok'=>false,'msg'=>_('There is other product department  with the same code'));
+   if($data['department code']=='' ){
+     
+     return array('ok'=>false,'msg'=>_("Wrong department code"));
    }
-   $sql=sprintf("insert into product_department (code,name) values (%s,%s)"
-		,prepare_mysql($data['code'])
-		,prepare_mysql($data['name'])
+//    if($data['name']=='' )
+//      return array('ok'=>false,'msg'=>_("Wrong department name"));
+
+//    $sql=sprintf("select id from product_department where code=%s "
+// 		,prepare_mysql($data['code'])
+// 		);
+//    print "$sql\n";
+//    $res = $this->db->query($sql); 
+//    if($tmp=$res->fetchRow()){
+//      return array('ok'=>false,'msg'=>_('There is other product department  with the same code'));
+//    }
+
+
+   $sql=sprintf("insert into `Product Department Dimension` (`Product Department Code`,`Product Department Name`) values (%s,%s)"
+		,prepare_mysql($data['department code'])
+		,prepare_mysql($data['department name'])
 		);
    if (PEAR::isError($affected)) {
      if(preg_match('/^MDB2 Error: constraint violation$/',$affected->getMessage()))
@@ -41,9 +47,9 @@ var $db;
        return array('ok'=>false,'msg'=>_('Unknown Error').'.');
      return false;
    }
-   $this->data['name']=$data['name'];	
-   $this->data['code']=$data['code'];
-   $this->id=$this->db->lastInsertID();
+   $this->id = $this->db->lastInsertID();  
+   $this->getdata($this->id);
+
    return array('ok'=>true);
  }
  
@@ -51,19 +57,19 @@ var $db;
 
    switch($tipo){
    case('id'):
-     $sql=sprintf("select * from product_department where id=%d",$tag);
+     $sql=sprintf("select * from `Product Department` where `Product Deparment Key`=%d",$tag);
      break;
    case('code'):
-     $sql=sprintf("select * from product_department where code=%s",prepare_mysql($tag));
+     $sql=sprintf("select * from `Product Department` where `Product Deparment Code`=%s",prepare_mysql($tag));
      break;
-   default:
-     print "error wring tipo $tipo\n";
-     return;
+  //  default:
+//      print "error wring tipo $tipo\n";
+//      return;
    }
-   print "$sql\n";
+   //   print "$sql\n";
    if($result =& $this->db->query($sql)){
      $this->data=$result->fetchRow();
-     $this->id=$this->data['id'];
+     $this->id=$this->data['product department key'];
    }
    
  }
@@ -74,21 +80,21 @@ var $db;
  function load($tipo,$args=false){
    switch($tipo){
    case('products'):
-     $sql=sprintf("select product.id,code from product  left join product_group on  (product_group.id=group_id)  where department_id=%d",$this->id);
+     $sql=sprintf("select * from `Product Dimension` where `Product Department Key`=%d",$this->id);
      // print $sql;
      $res = $this->db->query($sql);
      $this->products=array();
      while($row = $res->fetchrow()) {
-       $this->products[$row['id']]=array('code'=>$row['code']);
+       $this->products[$row['product key']]=$row;
      }
      break;
    case('families'):
-     $sql=sprintf("select id,name from product_group  where department_id=%d",$this->id);
+     $sql=sprintf("select * from `Product Family`  where  `Product Family Department Key`=%d",$this->id);
      //  print $sql;
      $res = $this->db->query($sql);
      $this->families=array();
      while($row = $res->fetchrow()) {
-       $this->families[$row['id']]=array('code'=>$row['name']);
+       $this->families[$row['family key']]=$row;
      }
      break;
    case('first_date'):
@@ -251,6 +257,11 @@ var $db;
 
 
  function get($tipo){
+$key=strtolower($key);
+    if(isset($this->data[$key]))
+      return $this->data[$key];
+
+
    switch($tipo){
    case('weeks'):
      $_diff_seconds=date('U')-$this->data['first_date'];
@@ -261,6 +272,44 @@ var $db;
 
  }
  
+function add_product($product_id,$args=false){
+   $product=New Product($product_id);
+   if($product->id){
+     $sql=sprintf("insert into `Product Department Bridge` (`Product Key`,`Product Department Key`) values (%d,%d)",$product->id,$this->id);
+     $this->db->exec($sql);
+     if(preg_match('/principal/',$args)){
+       $sql=speintf("update  `Product Dimension` set `Product Main Department Key`=%d ,`Product Main Department Code`=%s,`Product Main Department Name`=%s where `Product Key`=%s    "
+		    ,$this->id
+		    ,$this->get('product department code')
+		    ,$this->get('product department name')
+		    ,$product->id);
+       $this->db->exec($sql);
+     }
+   }
+ }
+
+function add_family($family_id,$args=false){
+   $family=New Family($family_id);
+   if($family->id){
+     $sql=sprintf("insert into `Product Family Department Bridge` (`Product Family Key`,`Product Department Key`) values (%d,%d)",$family->id,$this->id);
+     $this->db->exec($sql);
+
+     foreach($family->get('products') as $key => $value){
+       $this->add_product($key,$args);
+     }
+
+
+     if(preg_match('/principal/',$args)){
+       $sql=speintf("update  `Product Family Dimension` set `Product Family Main Department Key`=%d ,`Product Family Main Department Code`=%s,`Product Family Main Department Name`=%s where `Product Family Key`=%s    "
+		    ,$this->id
+		    ,$this->get('product department code')
+		    ,$this->get('product department name')
+		    ,$family->id);
+       $this->db->exec($sql);
+     }
+   }
+ }
+
 
 }
 
