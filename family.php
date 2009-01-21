@@ -59,47 +59,68 @@ if(isset($_REQUEST['view'])){
 $family=new Family($family_id);
 
 
-//get previoues
-$families_order=$_SESSION['state']['department']['table']['order'];
-$sql=sprintf("select g.id,g.name as code from product_group as g  where  %s<'%s' and  department_id=%d order by %s desc  ",$families_order,$family->get($families_order),$family->data['department_id'],$families_order);
+if(isset($_REQUEST['dpl']) and is_numeric($_REQUEST['dpl'])){
+$order=$_SESSION['state']['department']['table']['order'];
+ if($order=='per_tsall' or $order=='tsall')
+   $order='total_sales';
+ if($order=='per_tsm' or $order=='tms')
+   $order='month_sales';
+if($order=='code')
+   $order='Product Family Code';
+ if($order=='name')
+   $order='Product Family Name';
+ if($order=='active')
+   $order='Product Family On Sale Products';
+ if($order=='outofstock')
+   $order='Product Family Out Of Stock Products';
+ if($order=='stockerror')
+    $order='Product Family Unknown Stock Products';
+
+
+
+
+$sql=sprintf("select  *,`Product Family Total Acc Invoiced Gross Amount`+`Product Family Total Acc Invoiced Discount Amount` as `product family total acc invoiced amount` ,`Product Family 1 Month Acc Invoiced Gross Amount`+`Product Family 1 Month Acc Invoiced Discount Amount` as `product family 1 month acc invoiced amount`   from `Product Family Dimension`   F left join `Product Family Department Bridge` FD on (FD.`Product Family Key`=F.`Product Family Key`) where  `%s`<'%s' and `Product Department Key`=%d  order by `%s` desc  ",$order,$family->get($order),$_REQUEST['dpl'],$order);
+//print $sql;
 $result =& $db->query($sql);
 
 if(!$prev=$result->fetchRow())
   $prev=array('id'=>0,'code'=>'');
-$sql=sprintf("select id,name as code from product_group where  %s>'%s' and department_id=%d order by %s   ",$families_order,$family->get($families_order),$family->data['department_id'],$families_order);
+$sql=sprintf("select  *,`Product Family Total Acc Invoiced Gross Amount`+`Product Family Total Acc Invoiced Discount Amount` as `product family total acc invoiced amount` ,`Product Family 1 Month Acc Invoiced Gross Amount`+`Product Family 1 Month Acc Invoiced Discount Amount` as `product family 1 month acc invoiced amount` from `Product Family Dimension`   F left join `Product Family Department Bridge` FD on (FD.`Product Family Key`=F.`Product Family Key`)  where  `%s`>'%s' and `Product Department Key`=%d order by `%s`   ",$order,$family->get($order),$_REQUEST['dpl'],$order);
 
 $result =& $db->query($sql);
 if(!$next=$result->fetchRow())
   $next=array('id'=>0,'code'=>'');
+
+
+
+ }
+
 
 $smarty->assign('prev',$prev);
 $smarty->assign('next',$next);
 
 
 
-
-
-
 $smarty->assign('parent','departments.php');
-$smarty->assign('title',$family->data['name'].' - '.$family->data['description']);
+$smarty->assign('title',$family->get('product family code').' - '.$family->get('product family name'));
 
 
 $product_home="Products Home";
 $smarty->assign('home',$product_home);
-$smarty->assign('department',$family->get('department'));
-$smarty->assign('department_id',$family->data['department_id']);
-$smarty->assign('products',$family->get('product_numbers'));
-$smarty->assign('data',$family->data);
+// $smarty->assign('department',$family->get('department'));
+// $smarty->assign('department_id',$family->data['department_id']);
+// $smarty->assign('products',$family->get('product_numbers'));
+// $smarty->assign('data',$family->data);
 
 
 
 
-$smarty->assign('family',$family->data['name']);
-$smarty->assign('family_id',$family->id);
+// $smarty->assign('family',$family->data['name']);
+// $smarty->assign('family_id',$family->id);
 
-$smarty->assign('family_description',$family->data['description']);
+// $smarty->assign('family_description',$family->data['description']);
 
-$smarty->assign('units_tipo',$_units_tipo);
+// $smarty->assign('units_tipo',$_units_tipo);
 
 
 $smarty->assign('filter','code');

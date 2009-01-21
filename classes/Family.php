@@ -70,10 +70,37 @@ var $db;
  function load($tipo,$args=false){
    switch($tipo){
    case('products_data'):
+   case('products_info'):
      
+  $sql=sprintf("select sum(if(`Product Sales State`='Unknown',1,0)) as sale_unknown, sum(if(`Product Sales State`='Discontinued',1,0)) as discontinued,sum(if(`Product Sales State`='Not for sale',1,0)) as not_for_sale,sum(if(`Product Sales State`='For sale',1,0)) as for_sale,sum(if(`Product Sales State`='In Process',1,0)) as in_process,sum(if(`Product Availability State`='Unknown',1,0)) as availability_unknown,sum(if(`Product Availability State`='Optimal',1,0)) as availability_optimal,sum(if(`Product Availability State`='Low',1,0)) as availability_low,sum(if(`Product Availability State`='Critical',1,0)) as availability_critical,sum(if(`Product Availability State`='Out Of Stock',1,0)) as availability_outofstock from `Product Dimension` where `Product Family Key`=%d",$this->id);
+     //  print $sql;
+     $res = $this->db->query($sql);
+     if($row = $res->fetchrow()) {
+
+       $sql=sprintf("update `Product Family Dimension` set `Product Family For Sale Products`=%d ,`Product Family Discontinued Products`=%d ,`Product Family Not For Sale Products`=%d ,`Product Family Unknown Sales State Products`=%d, `Product Family Optimal Availability Products`=%d , `Product Family Low Availability Products`=%d ,`Product Family Critical Availability Products`=%d ,`Product Family Out Of Stock Products`=%d,`Product Family Unknown Stock Products`=%d ,`Product Family Surplus Availability Products`=%d where `Product Family Key`=%d  ",
+		    $row['for_sale'],
+		    $row['discontinued'],
+		    $row['not_for_sale'],
+		    $row['sale_unknown'],
+		    $row['availability_optimal'],
+		    $row['availability_low'],
+		    $row['availability_critical'],
+		    $row['availability_outofstock'],
+		    $row['availability_unknown'],
+		    $row['availability_surplus'],
+		    $this->id
+	    );
+       //  print "$sql\n";exit;
+       $this->db->exec($sql);
+
+    
+     }
+
+     $this->getdata('id',$this->id);
+
      break;
    case('products'):
-     $sql=sprintf("select * from `Product Dimension` P left join `Product Family Bridge` B  on (P.`Product Key`=B.`Product Key`) where `Product Family Key`=%d ",$this->id);
+     $sql=sprintf("select * from `Product Dimension` where `Product Family Key`=%d ",$this->id);
      //    print $sql;
      $res = $this->db->query($sql);
      $this->products=array();
@@ -263,28 +290,19 @@ var $db;
  }
  
  function add_product($product_id,$args=false){
-   print "************\n";
-  print_r($this->data);
-
+   
    $product=New Product($product_id);
    if($product->id){
-     $sql=sprintf("insert into `Product Family Bridge` (`Product Key`,`Product Family Key`) values (%d,%d)",$product->id,$this->id);
-
-     print "$sql\n";
+     $sql=sprintf("update  `Product Dimension` set `Product Family Key`=%d ,`Product Family Code`=%s,`Product Family Name`=%s where `Product Key`=%s    "
+		  ,$this->id                
+		  ,prepare_mysql($this->get('product family code'))
+		  ,prepare_mysql($this->get('product family name'))
+		  ,$product->id);
      $this->db->exec($sql);
-     if(preg_match('/principal/i',$args)){
-        print_r($this->data);
-       $sql=sprintf("update  `Product Dimension` set `Product Main Family Key`=%d ,`Product Main Family Code`=%s,`Product Main Family Name`=%s where `Product Key`=%s    "
-		    ,$this->id                
-		    ,prepare_mysql($this->get('product family code'))
-		    ,prepare_mysql($this->get('product family name'))
-		    ,$product->id);
-       $this->db->exec($sql);
-       print "$sql\n";
-     }
+     $this->load('products_info');
+     // print "$sql\n";
    }
  }
-
 
 }
 

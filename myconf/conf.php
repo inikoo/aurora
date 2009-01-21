@@ -333,12 +333,12 @@ $default_state=array(
 				       'view'=>'general',
 				       'id'=>1,
 				       'table'=>array(
-						      'order'=>'name',
+						      'order'=>'code',
 						      'order_dir'=>'',
 						      'sf'=>0,
 						      'nr'=>200,
 						      'where'=>'where true',
-						      'f_field'=>'id',
+						      'f_field'=>'code',
 						      'f_value'=>''
 
 						      )

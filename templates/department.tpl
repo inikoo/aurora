@@ -1,8 +1,8 @@
 {include file='header.tpl'}
 <div id="bd" >
 
-{if $next.id>0}<span class="nav2 onright"><a href="family.php?id={$next.id}">{$next.code} &rarr; </a></span>{/if}
-{if $prev.id>0}<span class="nav2 onright" ><a href="family.php?id={$prev.id}">&larr; {$prev.code}</a></span>{/if}
+{if $next.id>0}<span class="nav2 onright"><a href="department.php?id={$next.id}">{$next.code} &rarr; </a></span>{/if}
+{if $prev.id>0}<span class="nav2 onright" ><a href="department.php?id={$prev.id}">&larr; {$prev.code}</a></span>{/if}
   <span class="nav2 onright" style="margin-left:20px"><a href="departments.php">&uarr; {t}All Departments{/t}</a></span>
   <span class="nav2 on left"><a href="departments.php">{t}Departments{/t}</a></span>
   <span class="nav2 onleft"><a href="categories.php">{t}Categories{/t}</a></span>

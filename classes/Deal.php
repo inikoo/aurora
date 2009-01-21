@@ -42,8 +42,37 @@ class deal{
 
   function create($data){
 
+    $base_data=array(
+		     'deal trigger'=>'',
+		     'deal trigger key'=>'',
+		     'deal campain name'=>'',
+		     'deal description'=>'',
+		     'deal terms type'=>'',
+		     'deal terms description'=>'',
+		     'deal allowance type'=>'',
+		     'deal allowance target'=>'',
+		     'deal allowance target key'=>'',
+		     'deal allowance description'=>'',
+		     'deal metadata'=>'',
+		     'deal begin date'=>'',
+		     'deal expiration date'=>''
+		     );
 
-
+    foreach($data as $key=>$value){
+      $base_data[$key]=$value;
+    }
+    $keys='(';$values='values(';
+    foreach($base_data as $key=>$value){
+      $keys.="`$key`,";
+      $values.=prepare_mysql($value).",";
+    }
+    $keys=preg_replace('/,$/',')',$keys);
+    $values=preg_replace('/,$/',')',$values);
+    $sql=sprintf("insert into `Deal Dimension` %s %s",$keys,$values);
+    //print "$sql\n";exit;
+    $affected=& $this->db->exec($sql);
+    $this->id = $this->db->lastInsertID();  
+    $this->get_data('id',$this->id);
 
   }
 

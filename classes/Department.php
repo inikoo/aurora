@@ -47,16 +47,16 @@ var $db;
 
    switch($tipo){
    case('id'):
-     $sql=sprintf("select * from `Product Department Dimension` where `Product Department Key`=%d ",$tag);
+     $sql=sprintf("select *,`Product Department Total Acc Invoiced Gross Amount`+`Product Department Total Acc Invoiced Discount Amount` as `product department total acc invoiced amount` ,`Product Department 1 Month Acc Invoiced Gross Amount`+`Product Department 1 Month Acc Invoiced Discount Amount` as `product department 1 month acc invoiced amount` from `Product Department Dimension` where `Product Department Key`=%d ",$tag);
      break;
    case('code'):
-     $sql=sprintf("select * from `Product Department Dimension` where `Product Department Code`=%s and `Product Department Most Recent`='Yes'",prepare_mysql($tag));
+     $sql=sprintf("select *,`Product Department Total Acc Invoiced Gross Amount`+`Product Department Total Acc Invoiced Discount Amount` as `product department total acc invoiced amount` ,`Product Department 1 Month Acc Invoiced Gross Amount`+`Product Department 1 Month Acc Invoiced Discount Amount` as `product department 1 month acc invoiced amount` from `Product Department Dimension` where `Product Department Code`=%s and `Product Department Most Recent`='Yes'",prepare_mysql($tag));
      break;
   //  default:
 //      print "error wring tipo $tipo\n";
 //      return;
    }
-   //    print "$sql\n";
+   //  print "$sql\n";
    if($result =& $this->db->query($sql)){
      $this->data=$result->fetchRow();
      $this->id=$this->data['product department key'];
@@ -69,6 +69,33 @@ var $db;
 
  function load($tipo,$args=false){
    switch($tipo){
+   case('products_info'):
+      $sql=sprintf("select sum(if(`Product Sales State`='Unknown',1,0)) as sale_unknown, sum(if(`Product Sales State`='Discontinued',1,0)) as discontinued,sum(if(`Product Sales State`='Not for sale',1,0)) as not_for_sale,sum(if(`Product Sales State`='For sale',1,0)) as for_sale,sum(if(`Product Sales State`='In Process',1,0)) as in_process,sum(if(`Product Availability State`='Unknown',1,0)) as availability_unknown,sum(if(`Product Availability State`='Optimal',1,0)) as availability_optimal,sum(if(`Product Availability State`='Low',1,0)) as availability_low,sum(if(`Product Availability State`='Critical',1,0)) as availability_critical,sum(if(`Product Availability State`='Out Of Stock',1,0)) as availability_outofstock from `Product Dimension` P left join  `Product Department Bridge` B on (P.`Product Key`=B.`Product Key`) where `Product Department Key`=%d",$this->id);
+     //  print $sql;
+     $res = $this->db->query($sql);
+     if($row = $res->fetchrow()) {
+
+       $sql=sprintf("update `Product Department Dimension` set `Product Department For Sale Products`=%d ,`Product Department Discontinued Products`=%d ,`Product Department Not For Sale Products`=%d ,`Product Department Unknown Sales State Products`=%d, `Product Department Optimal Availability Products`=%d , `Product Department Low Availability Products`=%d ,`Product Department Critical Availability Products`=%d ,`Product Department Out Of Stock Products`=%d,`Product Department Unknown Stock Products`=%d ,`Product Department Surplus Availability Products`=%d where `Product Department Key`=%d  ",
+		    $row['for_sale'],
+		    $row['discontinued'],
+		    $row['not_for_sale'],
+		    $row['sale_unknown'],
+		    $row['availability_optimal'],
+		    $row['availability_low'],
+		    $row['availability_critical'],
+		    $row['availability_outofstock'],
+		    $row['availability_unknown'],
+		    $row['availability_surplus'],
+		    $this->id
+	    );
+       //  print "$sql\n";exit;
+       $this->db->exec($sql);
+
+    
+     }
+
+     $this->getdata('id',$this->id);
+     break;
    case('products'):
      $sql=sprintf("select * from `Product Dimension` where `Product Department Key`=%d",$this->id);
      // print $sql;
@@ -253,6 +280,7 @@ var $db;
 
 
    switch($tipo){
+
    case('weeks'):
      $_diff_seconds=date('U')-$this->data['first_date'];
      $day_diff=$_diff_seconds/24/3600;
@@ -269,6 +297,34 @@ function add_product($product_id,$args=false){
    if($product->id){
      $sql=sprintf("insert into `Product Department Bridge` (`Product Key`,`Product Department Key`) values (%d,%d)",$product->id,$this->id);
      $this->db->exec($sql);
+     $this->load('products_info');
+
+    //  $sql=sprintf("select sum(if(`Product Sales State`='Unknown',1,0)) as sale_unknown, sum(if(`Product Sales State`='Discontinued',1,0)) as discontinued,sum(if(`Product Sales State`='Not for sale',1,0)) as not_for_sale,sum(if(`Product Sales State`='For sale',1,0)) as for_sale,sum(if(`Product Sales State`='In Process',1,0)) as in_process,sum(if(`Product Availability State`='Unknown',1,0)) as availability_unknown,sum(if(`Product Availability State`='Optimal',1,0)) as availability_optimal,sum(if(`Product Availability State`='Low',1,0)) as availability_low,sum(if(`Product Availability State`='Critical',1,0)) as availability_critical,sum(if(`Product Availability State`='Out Of Stock',1,0)) as availability_outofstock from `Product Dimension` P left join  `Product Department Bridge` B on (P.`Product Key`=B.`Product Key`) where `Product Department Key`=%d",$this->id);
+//      //  print $sql;
+//      $res = $this->db->query($sql);
+//      if($row = $res->fetchrow()) {
+
+//        $sql=sprintf("update `Product Department Dimension` set `Product Department For Sale Products`=%d ,`Product Department Discontinued Products`=%d ,`Product Department Not For Sale Products`=%d ,`Product Department Unknown Sales State Products`=%d, `Product Department Optimal Availability Products`=%d , `Product Department Low Availability Products`=%d ,`Product Department Critical Availability Products`=%d ,`Product Department Out Of Stock Products`=%d,`Product Department Unknown Stock Products`=%d ,`Product Department Surplus Availability Products`=%d where `Product Department Key`=%d  ",
+// 		    $row['for_sale'],
+// 		    $row['discontinued'],
+// 		    $row['not_for_sale'],
+// 		    $row['sale_unknown'],
+// 		    $row['availability_optimal'],
+// 		    $row['availability_low'],
+// 		    $row['availability_critical'],
+// 		    $row['availability_outofstock'],
+// 		    $row['availability_unknown'],
+// 		    $row['availability_surplus'],
+// 		    $this->id
+// 	    );
+//        //  print "$sql\n";exit;
+//        $this->db->exec($sql);
+
+    
+//      }
+
+
+     
      if(preg_match('/principal/',$args)){
        $sql=sprintf("update  `Product Dimension` set `Product Main Department Key`=%d ,`Product Main Department Code`=%s,`Product Main Department Name`=%s where `Product Key`=%s    "
 		    ,$this->id
@@ -286,6 +342,18 @@ function add_family($family_id,$args=false){
    if($family->id){
      $sql=sprintf("insert into `Product Family Department Bridge` (`Product Family Key`,`Product Department Key`) values (%d,%d)",$family->id,$this->id);
      $this->db->exec($sql);
+
+
+     $sql=sprintf("select count(*) as num from `Product Family Department Bridge`  where `Product Department Key`=%d",$this->id);
+     $res = $this->db->query($sql);
+     if($row = $res->fetchrow()) {
+       $sql=sprintf("update `Product Department Dimension` set `Product Department Families`=%d   where `Product Department Key`=%d  ",
+		    $row['num'],
+		    $this->id
+		    );
+       //  print "$sql\n";exit;
+       $this->db->exec($sql);
+     }
 
      foreach($family->get('products') as $key => $value){
        $this->add_product($key,$args);

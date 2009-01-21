@@ -1,5 +1,5 @@
 <?
-
+include_once('Deal.php');
 class product{
   
  
@@ -629,6 +629,18 @@ class product{
     
 
     switch($item){
+    case('xhtml short description'):
+      global $myconf;
+      $desc='';
+      if($this->get('Product Units per Case')>1){
+	$desc=number($this->get('Product Units per Case')).'x ';
+	}
+      $desc.=' <span class="prod_sdesc">'.$this->get('Product Name').'</span>';
+      if($this->get('Product Price')>0){
+	$desc.=' ('.money($this->get('Product Units per Case')).')';
+	}
+      
+      return _trim($desc);
     case('p2l_id'):
       $key=key($data);
       if(!$this->locations)
@@ -2722,7 +2734,7 @@ function new_sku(){
       $units_factor=$data['units per case'];
     else
       $units_factor=1;
-    $sql=sprintf("insert into  `Product Dimension` (`Product SKU number`,`Product Alphanumeric Code`,`Product Code`,`Product Status`,`Product Units Per Case`,`Product Valid From`,`Product Valid To`,`Product Most Recent`) values (%s,%s,%s,'%s',%f,NOW(),'%s','Yes')",
+    $sql=sprintf("insert into  `Product Dimension` (`Product SKU number`,`Product Code File As`,`Product Code`,`Product Status`,`Product Units Per Case`,`Product Valid From`,`Product Valid To`,`Product Most Recent`) values (%s,%s,%s,'%s',%f,NOW(),'%s','Yes')",
 		 prepare_mysql($sku_number),
 		 prepare_mysql($ncode),
 		 prepare_mysql($code),
@@ -2732,7 +2744,7 @@ function new_sku(){
 		 );
     
 
-    print "$sql\n";
+    //   print "$sql\n";
 
     $affected=& $this->db->exec($sql);
     if (PEAR::isError($affected)) {
@@ -2742,12 +2754,7 @@ function new_sku(){
 	return array('ok'=>false,'msg'=>_('Unknwon Error').'.');
     }
     $this->id = $this->db->lastInsertID();  
-    $this->data['product alphanumeric code']=$ncode;	
-    $this->data['product code']=$code;
-    //$this->data['group_id']=$data['group_id'];
-    //$this->data['units']=$units;
-    //$this->data['units_tipo']=$units_tipo;
-   
+    $this->get_data('id',$this->id);
 
     $family=false;
     $department=false;
@@ -2767,6 +2774,8 @@ function new_sku(){
       $family->add_product($this->id,'principal');
 
     }
+    $this->get_data('id',$this->id);
+    
     if(isset($data['department code']) and  $data['department code']!=''){
       if(!isset($data['department name']) or  $data['department name']=='')
 	$data['department name']=$data['department code'];
@@ -2778,16 +2787,13 @@ function new_sku(){
 			'name'=>$data['department name'],
 			);
 	$department=new Department('create',$dept_data);
-	if(is_object($family) and $family->id)
-	  $department->add_family($family->id,'principal');
-	
-
       }
-
+      if(is_object($family) and $family->id)
+	$department->add_family($family->id,'principal');
       $department->add_product($this->id,'principal');
 
     }
-
+$this->get_data('id',$this->id);
     
 
 
@@ -2822,22 +2828,62 @@ function new_sku(){
       $sql=sprintf("update  `Product Dimension` set `Product Short Name`=%s where `Product Key`=%d",prepare_mysql($data['short name']),$this->id);
       $this->db->exec($sql);
      }
-     if(isset($data['family code']) and $data['family code']!=''){
-       $sql=sprintf("update  `Product Dimension` set `Product Family Code`=%s where `Product Key`=%d",prepare_mysql($data['family code']),$this->id);
-       $this->db->exec($sql);
+    $this->get_data('id',$this->id);
+
+     if($this->get('xhtml short description')){
+    $sql=sprintf("update  `Product Dimension` set `Product XHTML Short Description`=%s where `Product Key`=%d",prepare_mysql($this->get('xhtml short description')),$this->id);
+    //  print $sql;
+      
+      $this->db->exec($sql);
+           }
+
+    
+    if(isset($data['deals']) and is_array($data['deals'])){
+      
+      foreach($data['deals'] as $deal_data){
+	if($deal_data['deal trigger']=='Family')
+	  $deal_data['deal trigger key']=$this->get('product family key');
+	if($deal_data['deal trigger']='Product')
+	  $deal_data['deal trigger key']=$this->id;
+	if($deal_data['deal allowance target']='Product')
+	  $deal_data['deal allowance target key']=$this->id;
+	$deal=new Deal('create',$deal_data);
+	
+      }
+      
+
+  }
+
+    if(isset($data['sale state']) and preg_match('/^for sale|discontinued|in prrocess|unknown|history|not for sale/i',$data['sale state']) ){
+      $sql=sprintf("update  `Product Dimension` set `Product Sales State`=%s where `Product Key`=%d",prepare_mysql($data['sale state']),$this->id);
+      //  print "$sql\n";exit;
+	
+      $this->db->exec($sql);
      }
-     if(isset($data['family name']) and $data['family name']!=''){
-       $sql=sprintf("update  `Product Dimension` set `Product Family Name`=%s where `Product Key`=%d",prepare_mysql($data['family name']),$this->id);
-       $this->db->exec($sql);
-     }
-     if(isset($data['special characteristic']) and $data['special characteristic']!=''){
-       $sql=sprintf("update  `Product Dimension` set `Product Special Characteristic`=%s where `Product Key`=%d",prepare_mysql($data['special characteristic']),$this->id);
-       $this->db->exec($sql);
-     }
-  if(isset($data['department name']) and $data['department name']!=''){
-       $sql=sprintf("update  `Product Dimension` set `Product Department Name`=%s where `Product Key`=%d",prepare_mysql($data['department name']),$this->id);
-       $this->db->exec($sql);
-     }
+    
+    
+
+    $this->get_data('id',$this->id);
+    
+    
+
+
+  //    if(isset($data['family code']) and $data['family code']!=''){
+//        $sql=sprintf("update  `Product Dimension` set `Product Family Code`=%s where `Product Key`=%d",prepare_mysql($data['family code']),$this->id);
+//        $this->db->exec($sql);
+//      }
+//      if(isset($data['family name']) and $data['family name']!=''){
+//        $sql=sprintf("update  `Product Dimension` set `Product Family Name`=%s where `Product Key`=%d",prepare_mysql($data['family name']),$this->id);
+//        $this->db->exec($sql);
+//      }
+//      if(isset($data['special characteristic']) and $data['special characteristic']!=''){
+//        $sql=sprintf("update  `Product Dimension` set `Product Special Characteristic`=%s where `Product Key`=%d",prepare_mysql($data['special characteristic']),$this->id);
+//        $this->db->exec($sql);
+//      }
+//   if(isset($data['department name']) and $data['department name']!=''){
+//        $sql=sprintf("update  `Product Dimension` set `Product Department Name`=%s where `Product Key`=%d",prepare_mysql($data['department name']),$this->id);
+//        $this->db->exec($sql);
+//      }
 
     //$this->data['price']=$data['price'];
 

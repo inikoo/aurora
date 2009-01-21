@@ -83,8 +83,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableid=0;
 	    var tableDivEL="table"+tableid;
 	    var ColumnDefs = [ 
-				    {key:"code", label:"<?=_('Code')?>", width:80,sortable:true,formatter:this.productLink,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"description", label:"<?=_('Description')?>",width:280, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    {key:"code", label:"<?=_('Code')?>", width:70,sortable:true,formatter:this.productLink,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"description", label:"<?=_('Description')?>",width:380, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    ,{key:"stock", label:"<?=_('Stock')?>", width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    ,{key:"ty", label:"<?=_('T 1y')?>", width:90,sortable:true,className:"aright",<?=($_SESSION['state']['family']['view']!='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    ,{key:"per_tsall", label:"<?=_('T %S')?>", width:70,sortable:true,className:"aright",<?=($_SESSION['state']['family']['view']=='sales'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
@@ -114,6 +114,15 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 ,"tsall","tsq","tsy","tsm","per_tsall","per_tsm","stock_value"
 			 ]};
 	    
+	    var myRowFormatter = function(elTr, oRecord) {
+		if (oRecord.getData('total') < ==1) {
+		    Dom.addClass(elTr, 'total');
+		}
+		return true;
+	    }; 
+
+	    
+
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
 						     this.dataSource0, {
 							 //draggableColumns:true,
@@ -132,7 +141,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									 key: "<?=$_SESSION['state']['family']['table']['order']?>",
 									 dir: "<?=$_SESSION['state']['family']['table']['order_dir']?>"
 								     }
-							   ,dynamicData : true
+							   ,dynamicData : true  , formatRow: myRowFormatter
 
 						     }
 						     );
@@ -140,7 +149,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
 
-
+	    
 	    
 	    this.table0.view='<?=$_SESSION['state']['family']['view']?>';
 

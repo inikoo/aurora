@@ -1370,7 +1370,7 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
 		   );
    echo json_encode($response);
    break;
- case('index'):
+ case('departments'):
 
    $conf=$_SESSION['state']['departments']['table'];
    if(isset( $_REQUEST['sf']))
@@ -1407,52 +1407,72 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
   
   $_SESSION['state']['departments']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from);
   
-  $where=" and tipo='dept'";
+  $where=" '";
   $filtered=0;
   
   $_order=$order;
   $_dir=$order_direction;
-  if($order=='per_tsall')
-    $order='tsall';
-  if($order=='per_tsm')
-    $order='tsm';
-   if($order=='id')
-    $order='product_department.id';
-  $total_sales=0;
-   $total_m=0;
-   $sql="select awtsq,tsall,tsy,tsq,tsm,product_department.id,code,name,families,products,active,outofstock,stockerror,stock_value from product_department left join sales on (tipo_id=product_department.id)$where   order by $order $order_direction limit $start_from,$number_results    ";
-   //    print "$sql";   
-  $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+  
+if($order=='per_tsall' or $order=='tsall')
+    $order='total_sales';
+ if($order=='per_tsm' or $order=='tms')
+   $order='month_sales';
+ if($order=='name')
+    $order='Product Department Name';
+  if($order=='families')
+    $order='Product Department Families';
+ if($order=='active')
+    $order='Product Department For Sale Products';
+if($order=='outofstock')
+    $order='Product Department Out Of Stock Products';
+if($order=='stockerror')
+    $order='Product Department Unknown Stock Products';
+ $sum_families=0;
+ $sum_total_sales=0;
+ $sum_month_sales=0;$sum_active=0;
+ $sql="select sum(`Product Department For Sale Products`) as sum_active,sum(`Product Department Families`) as sum_families,sum(`Product Department Total Acc Invoiced Gross Amount`+`Product Department Total Acc Invoiced Discount Amount`) as sum_total_sales ,sum(`Product Department 1 Month Acc Invoiced Gross Amount`+`Product Department 1 Month Acc Invoiced Discount Amount`) as sum_month_sales  from `Product Department Dimension`    ";
+
+ $res = $db->query($sql); 
+  if($row=$res->fetchRow()) {
+    $sum_families=$row['sum_families'];
+    $sum_total_sales=$row['sum_total_sales'];
+    $sum_month_sales=$row['sum_month_sales'];
+    $sum_active=$row['sum_active'];
+  }
+ 
+   $sql="select *,`Product Department Total Acc Invoiced Gross Amount`+`Product Department Total Acc Invoiced Discount Amount` as `product department total acc invoiced amount` ,`Product Department 1 Month Acc Invoiced Gross Amount`+`Product Department 1 Month Acc Invoiced Discount Amount` as `product department 1 month acc invoiced amount`  from `Product Department Dimension`  order by `$order` $order_direction limit $start_from,$number_results    ";
+   // print "$sql";   
+  $res = $db->query($sql); 
   $adata=array();
   while($row=$res->fetchRow()) {
-    $total_sales+=$row['tsall'];
-    $total_m+=$row['tsm'];
+    $name=sprintf('<a href="department.php?id=%d">%s</a>',$row['product department key'],$row['product department name']);
     $adata[]=array(
-		   'id'=>$row['id'],
 
-		   'code'=>$row['code'],
-		   'name'=>$row['code'],
-		   'families'=>number($row['families']),
-		   'products'=>number($row['products']),
-		   'active'=>number($row['active']),
-		   'outofstock'=>number($row['outofstock']),
-		   'stockerror'=>number($row['stockerror']),
-		   'stock_value'=>money($row['stock_value']),
-		   'tsy'=>money($row['tsy']),
-		   'tsq'=>money($row['tsq']),
-		   'tsm'=>money($row['tsm']),
-		   'tsall'=>money($row['tsall']),
-		   'per_tsm'=>$row['tsm'],
-		   'per_tsall'=>$row['tsall'],
-		   'awtsq'=>money($row['awtsq'])
+		   'name'=>$name,
+		   'families'=>number($row['product department families']),
+		   'active'=>number($row['product department for sale products']),
+		   'outofstock'=>number($row['product department out of stock products']),
+		   'stockerror'=>number($row['product department unknown stock products']),
+		   'stock_value'=>money($row['product department stock value']),
+		   'tsall'=>money($row['product department total acc invoiced amount']),
+		   'per_tsall'=>percentage($row['product department total acc invoiced amount'],$sum_total_sales,2),
+		   'tsm'=>money($row['product department 1 month acc invoiced amount']),
+		   'per_tsm'=>percentage($row['product department 1 month acc invoiced amount'],$sum_month_sales,2),
 		   );
   }
-  foreach($adata as $key=>$value){
-    $adata[$key]['per_tsall']=percentage($adata[$key]['per_tsall'],$total_sales,2);
-    $adata[$key]['per_tsm']=percentage($adata[$key]['per_tsm'],$total_sales,2);
+  $adata[]=array(
 
-  }
-
+		 'name'=>_('Total'),
+		 'families'=>number( $sum_families),
+		 'active'=>number($sum_active),
+		 'outofstock'=>number($row['product department out of stock products']),
+		 'stockerror'=>number($row['product department unknown stock products']),
+		 'stock_value'=>money($row['product department stock value']),
+		 'tsall'=>money($row['product department total acc invoiced amount']),
+		 'per_tsall'=>percentage($row['product department total acc invoiced amount'],$sum_total_sales,2),
+		 'tsm'=>money($row['product department 1 month acc invoiced amount']),
+		 'per_tsm'=>percentage($row['product department 1 month acc invoiced amount'],$sum_month_sales,2),
+		 );
 
 
   $total=$res->numRows();
@@ -1528,11 +1548,12 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
    else
     $tableid=0;
    
-
+    $_SESSION['state']['department']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
   // print_r($_SESSION['tables']['families_list']);
 
   //  print_r($_SESSION['tables']['families_list']);
-
+   $where.=" and `Product Department Key`=".$id;
+   
  $filter_msg='';
   $wheref='';
   if($f_field=='name' and $f_value!='')
@@ -1540,62 +1561,77 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
 
 
   
-    $_SESSION['state']['department']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
-   $where =$where.sprintf(' and department_id=%d',$id);
 
-   $sql="select count(*) as total from product_group  $where $wheref";
 
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+
+   $sql="select count(*) as total from `Product Family Dimension`  F left join `Product Family Department Bridge` FD on (FD.`Product Family Key`=F.`Product Family Key`)    $where $wheref";
+
+   $res = $db->query($sql); 
    if($row=$res->fetchRow()) {
      $total=$row['total'];
    }
    if($wheref=='')
        $filtered=0;
    else{
-     $sql="select count(*) as total from product_group  $where ";
+     $sql="select count(*) as total `Product Family Dimension`   F left join `Product Family Department Bridge` FD on (FD.`Product Family Key`=F.`Product Family Key`) $where ";
 
-     $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+     $res = $db->query($sql); 
      if($row=$res->fetchRow()) {
        $filtered=$row['total']-$total;
      }
 
    }
 
+$_dir=$order_direction;
+ $_order=$order;
+
+ if($order=='per_tsall' or $order=='tsall')
+   $order='total_sales';
+ if($order=='per_tsm' or $order=='tms')
+   $order='month_sales';
+if($order=='code')
+   $order='Product Family Code';
+ if($order=='name')
+   $order='Product Family Name';
+ if($order=='active')
+   $order='Product Family For Sale Products';
+ if($order=='outofstock')
+   $order='Product Family Out Of Stock Products';
+ if($order=='stockerror')
+    $order='Product Family Unknown Stock Products';
+ 
+ $sum_total_sales=0;
+ $sum_month_sales=0;
+ $sql="select sum(`Product Family Total Acc Invoiced Gross Amount`+`Product Family Total Acc Invoiced Discount Amount`) as sum_total_sales ,sum(`Product Family 1 Month Acc Invoiced Gross Amount`+`Product Family 1 Month Acc Invoiced Discount Amount`) as sum_month_sales  from `Product Family Dimension`  F left join `Product Family Department Bridge` FD on (FD.`Product Family Key`=F.`Product Family Key`)   $where   ";
+
+ $res = $db->query($sql); 
+  if($row=$res->fetchRow()) {
+    $sum_total_sales=$row['sum_total_sales'];
+    $sum_month_sales=$row['sum_month_sales'];
+  }
 
 
-
-   
-   if($order=='stockerror')
-     $_order='ns_unknown';
-   else if($order=='outofstock')
-     $_order='ns_outofstock';
-   else
-     $_order=$order;
-  $_dir=$order_direction;
-
-
-  $sql="select product_group.id,name,description,stock_value,ns_unknown as stockerror,ns_outofstock as outofstock,tsall,tsy,tsq,tsm,awtsq,(n_products-n_discontinued) as active from product_group  join sales on (product_group.id=tipo_id)    $where $wheref and tipo='fam'  order by $order $order_direction limit $start_from,$number_results    ";
-  //  print "$sql";
-  $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+  $sql="select *,`Product Family Total Acc Invoiced Gross Amount`+`Product Family Total Acc Invoiced Discount Amount` as `product family total acc invoiced amount` ,`Product Family 1 Month Acc Invoiced Gross Amount`+`Product Family 1 Month Acc Invoiced Discount Amount` as `product family 1 month acc invoiced amount`  from `Product Family Dimension`   F left join `Product Family Department Bridge` FD on (FD.`Product Family Key`=F.`Product Family Key`)       $where order by `$order` $order_direction limit $start_from,$number_results    ";
+  //  print $sql;
+  $res = $db->query($sql); 
   
   $adata=array();
   
-  while($data=$res->fetchRow()) {
+  while($row=$res->fetchRow()) {
+    $code=sprintf('<a href="family.php?id=%d&dpl=%d">%s</a>',$row['product family key'],$id,$row['product family code']);
     $adata[]=array(
-		   'id'=>$data['id']
-		   ,'name'=>$data['name']
-		   ,'description'=>$data['description']
-		   ,'stock_value'=>money($data['stock_value'])
-		   ,'stockerror'=>number($data['stockerror'])
-		   ,'outofstock'=>number($data['outofstock'])
-		   ,'tsall'=>money($data['tsall'])
-		   ,'tsy'=>money($data['tsy'])
-		   ,'tsq'=>money($data['tsq'])
-		   ,'tsm'=>money($data['tsm'])
-		   ,'awtsq'=>money($data['awtsq'])
-		   ,'active'=>number($data['active'])
-
-);
+		   'code'=>$code,
+		   'name'=>$row['product family name'],
+		   'active'=>number($row['product family for sale products']),
+		   'outofstock'=>number($row['product family out of stock products']),
+		   'stockerror'=>number($row['product family unknown stock products']),
+		   'stock_value'=>money($row['product family stock value']),
+		   'tsall'=>money($row['product family total acc invoiced amount']),
+		   'per_tsall'=>percentage($row['product family total acc invoiced amount'],$sum_total_sales,2),
+		   'tsm'=>money($row['product family 1 month acc invoiced amount']),
+		   'per_tsm'=>percentage($row['product family 1 month acc invoiced amount'],$sum_month_sales,2),
+		   
+		   );
   }
   $response=array('resultset'=>
 		   array('state'=>200,
@@ -2187,10 +2223,10 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
 
 
    
-   $where =$where.sprintf(' and group_id=%d',$id);
+   $where =$where.sprintf(' and `Product Family Key`=%d',$id);
 
 
-   $sql="select count(*) as total from product  $where $wheref";
+   $sql="select count(*) as total from `Product Dimension`  $where $wheref";
 
    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
    if($row=$res->fetchRow()) {
@@ -2199,7 +2235,7 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
    if($wheref=='')
        $filtered=0;
    else{
-     $sql="select count(*) as total from product  $where ";
+     $sql="select count(*) as total from `Product Dimension`  $where ";
 
      $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
      if($row=$res->fetchRow()) {
@@ -2211,32 +2247,26 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
 
 
 
-   
+   if($order=='code')
+     $order='`Product Code File As`';
+ if($order=='description')
+     $order='`Product Name`';
+ if($order=='availability')
+     $order='`Product Availability`';
 
-  $norder=($order=='code'?'ncode':$order);
   
-  $sql="select product.id,code,description,product.price as price,product.units as units,product.units_tipo as units_tipo,ncode,stock,available,stock_value,tsall,tsy,tsq,tsm,awtsq from product  left join sales on (tipo_id=product.id)  $where $wheref and tipo='prod' order by $norder $order_direction limit $start_from,$number_results    ";
-
+  $sql="select * from `Product Dimension` $where order by $order $order_direction limit $start_from,$number_results    ";
+  // print $sql;
   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
   
   $adata=array();
   
   while($data=$res->fetchRow()) {
     $adata[]=array(
-		   'id'=>$data['id']
-		   ,'code'=>sprintf('<a href="product.php?id=%d">%s</a>',$data['id'],$data['code'])
-		   ,'description'=>$data['description']
-		   ,'units'=>number($data['units'])
-		   ,'price'=>money($data['price'])
-		   ,'units_tipo'=>$_units_tipo_abr[($data['units_tipo'])]
-		   ,'stock'=>number($data['stock'])
-		   ,'available'=>number($data['available'])
-		   ,'stock_value'=>money($data['stock_value'])
-		   ,'tsall'=>money($data['tsall'])
-		   ,'tsy'=>money($data['tsy'])
-		   ,'tsq'=>money($data['tsq'])
-		   ,'tsm'=>money($data['tsm'])
-		   ,'awtsq'=>money($data['awtsq'])
+		   'code'=>sprintf('<a href="product.php?id=%d">%s</a>',$data['product key'],$data['product code'])
+		   ,'description'=>$data['product xhtml short description']
+		   ,'availability'=>number($data['product availability'])
+
 
 		   );
   }

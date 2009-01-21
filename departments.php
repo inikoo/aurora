@@ -63,33 +63,34 @@ $smarty->assign('show_details',$_SESSION['state']['departments']['details']);
 // }
 
  $table_title=_('Department List');
- $sql="select count(*) as numberof ,sum(tsall) as total_sales,sum(stock_value) as stock_value  from product_department left join sales on (tipo_id=product_department.id) and tipo='dept' ";
- $result =& $db->query($sql);
- if(!$departments=$result->fetchRow())
-   exit;
+//  $sql="select count(*) as numberof ,sum(tsall) as total_sales,sum(stock_value) as stock_value  from product_department left join sales on (tipo_id=product_department.id) and tipo='dept' ";
+//  $result =& $db->query($sql);
+//  if(!$departments=$result->fetchRow())
+//    exit;
 
 
 
-$smarty->assign('table_info',$departments['numberof'].' '.ngettext('Department','Departments',$departments['numberof']));
-$sql="select count(*) as numberof from product_group";
-$result =& $db->query($sql);
-$families=$result->fetchRow();
-$sql="select count(*) as numberof from product";
-$result =& $db->query($sql);
-$products=$result->fetchRow();
+// //$smarty->assign('table_info',$departments['numberof'].' '.ngettext('Department','Departments',$departments['numberof']));
+// $sql="select count(*) as numberof from product_group";
+// $result =& $db->query($sql);
+// $families=$result->fetchRow();
+// $sql="select count(*) as numberof from product";
+// $result =& $db->query($sql);
+// $products=$result->fetchRow();
 
 
 
 
 
-$smarty->assign('stock_value',money($departments['stock_value']));
-$smarty->assign('total_sales',money($departments['total_sales']));
-$smarty->assign('departments',number($departments['numberof']));
-$smarty->assign('families',number($families['numberof']));
-$smarty->assign('products',number($products['numberof']));
+// $smarty->assign('stock_value',money($departments['stock_value']));
+// $smarty->assign('total_sales',money($departments['total_sales']));
+// $smarty->assign('departments',number($departments['numberof']));
+// $smarty->assign('families',number($families['numberof']));
+// $smarty->assign('products',number($products['numberof']));
+
 $smarty->assign('parent','departments.php');
 $smarty->assign('title', _('Product Departments'));
-$smarty->assign('total_departments',$departments['numberof']);
+//$smarty->assign('total_departments',$departments['numberof']);
 $smarty->assign('table_title',$table_title);
 
 $smarty->display('departments.tpl');

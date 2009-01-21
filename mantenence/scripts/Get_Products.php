@@ -12,6 +12,7 @@ if (PEAR::isError($db)){echo $db->getMessage() . ' ' . $db->getUserInfo();}
 if(DEBUG)PEAR::setErrorHandling(PEAR_ERROR_RETURN);
 $db->setFetchMode(MDB2_FETCHMODE_ASSOC);  
 $db->query("SET time_zone ='UTC'");
+$db->query("SET NAMES 'utf8'");
 require_once '../../myconf/conf.php';           
 date_default_timezone_set('Europe/London');
 $PEAR_Error_skiptrace = &PEAR::getStaticProperty('PEAR_Error','skiptrace');$PEAR_Error_skiptrace = true;// Fix memory leak
@@ -177,19 +178,19 @@ foreach($__cols as $cols){
 		       ,'deal allowance description'=>$allowance
 		       ,'deal allowance type'=>'Percentage Off'
 		       ,'deal allowance target'=>'Product'
-		       ,'deal allowance target key'=>'Self'
+		       ,'deal allowance target key'=>''
 		       );
 
 	$deals[]=array(
 		       'deal campain name'=>''
-		       ,'deal trigger'=>'Product'
+		       ,'deal trigger'=>'Family'
 		       ,'deal description'=>$allowance.' if '.$terms.' same family'
 		       ,'deal terms type'=>'Family Quantity Ordered'
 		       ,'deal terms description'=>'order '.$terms
 		       ,'deal allowance description'=>$allowance
 		       ,'deal allowance type'=>'Percentage Off'
 		       ,'deal allowance target'=>'Product'
-		       ,'deal allowance target key'=>'Self'
+		       ,'deal allowance target key'=>''
 		       );	
 
 
@@ -210,19 +211,19 @@ foreach($__cols as $cols){
 		     ,'deal allowance description'=>$allowance
 		     ,'deal allowance type'=>'Percentage Off'
 		     ,'deal allowance target'=>'Product'
-		     ,'deal allowance target key'=>'Self'
+		     ,'deal allowance target key'=>''
 		       );
 
 	$deals[]=array(
 		       'deal campain name'=>''
-		       ,'deal trigger'=>'Product'
+		       ,'deal trigger'=>'Family'
 		       ,'deal description'=>$allowance.' if '.$terms.' same family'
 		       ,'deal terms type'=>'Family Quantity Ordered'
 		       ,'deal terms description'=>'order '.$terms
 		       ,'deal allowance description'=>$allowance
 		       ,'deal allowance type'=>'Percentage Off'
 		       ,'deal allowance target'=>'Product'
-		       ,'deal allowance target key'=>'Self'
+		       ,'deal allowance target key'=>''
 		       );	
 
 
@@ -243,7 +244,7 @@ foreach($__cols as $cols){
 		       ,'deal allowance description'=>$get.' free'
 		       ,'deal allowance type'=>'Get Free'
 		       ,'deal allowance target'=>'Product'
-		       ,'deal allowance target key'=>'Self'
+		       ,'deal allowance target key'=>''
 		     );	
 
 
@@ -270,6 +271,7 @@ foreach($__cols as $cols){
       $product=new Product('code',$code);
       if(!$product->id){
 	$data=array(
+		    'sale state'=>'For sale',
 		    'code'=>$code,
 		    'price'=>$price,
 		    'rrp'=>$rrp,

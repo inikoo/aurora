@@ -1,5 +1,7 @@
 <?
 include_once('common.php');
+include_once('classes/Department.php');
+
 $view_sales=$LU->checkRight(PROD_SALES_VIEW);
 $view_stock=$LU->checkRight(PROD_STK_VIEW);
 $create=$LU->checkRight(PROD_CREATE);
@@ -50,36 +52,33 @@ if(!isset($_REQUEST['id']) or !is_numeric($_REQUEST['id']) )
 $department_id=$_REQUEST['id'];
 $_SESSION['state']['department']['id']=$_REQUEST['id'];
 
-
-$sql=sprintf("select 
-count(*) as families,
-product_department.name as department,
-product_department.code as department_code,
-
-product_department.id as department_id,
-sales.tsq,
-sales.tsm,
-sales.tsy,
-sales.tsall,
-product_department.stock_value,
-product_department.name,
-product_department.products
-from product_group left join product_department on (product_department.id=department_id) left join sales on (department_id=tipo_id) where tipo='dept' and department_id=%d group by department_id",$department_id);
-
-$result =& $db->query($sql);
-$families=$result->fetchRow();
-  
+$department=new Department($department_id);
 
 
+$order=$_SESSION['state']['departments']['table']['order'];
+if($order=='per_tsall' or $order=='tsall')
+    $order='total_sales';
+ if($order=='per_tsm' or $order=='tms')
+   $order='month_sales';
+ if($order=='name')
+    $order='Product Department Name';
+  if($order=='families')
+    $order='Product Department Families';
+ if($order=='active')
+    $order='Product Department On Sale Products';
+if($order=='outofstock')
+    $order='Product Department Out Of Stock Products';
+if($order=='stockerror')
+    $order='Product Department Unknown Stock Products';
 
-$families_order=$_SESSION['state']['departments']['table']['order'];
-$sql=sprintf("select product_department.id,name as code from product_department left join sales on (product_department.id=tipo_id)  where tipo='dept' and   %s<'%s' order by %s desc  ",$families_order,$families[$families_order],$families_order);
+$sql=sprintf("select `Product Department Key` as id,`Product Department Name` as code,`Product Department Total Acc Invoiced Gross Amount`+`Product Department Total Acc Invoiced Discount Amount` as `product department total acc invoiced amount` ,`Product Department 1 Month Acc Invoiced Gross Amount`+`Product Department 1 Month Acc Invoiced Discount Amount` as `product department 1 month acc invoiced amount` from `Product Department Dimension` where  `%s`<'%s' order by `%s` desc  ",$order,$department->get($order),$order);
 
 $result =& $db->query($sql);
 if(!$prev=$result->fetchRow())
   $prev=array('id'=>0,'code'=>'');
-$sql=sprintf("select product_department.id,name as code  from product_department  left join sales on (product_department.id=tipo_id)  where tipo='dept' and   %s>'%s' order by %s   ",$families_order,$families[$families_order],$families_order);
+$sql=sprintf("select `Product Department Key` as id,`Product Department Name` as code,`Product Department Total Acc Invoiced Gross Amount`+`Product Department Total Acc Invoiced Discount Amount` as `product department total acc invoiced amount` ,`Product Department 1 Month Acc Invoiced Gross Amount`+`Product Department 1 Month Acc Invoiced Discount Amount` as `product department 1 month acc invoiced amount` from `Product Department Dimension`   where    `%s`>'%s' order by `%s`   ",$order,$department->get($order),$order);
 
+//print $sql;
 $result =& $db->query($sql);
 if(!$next=$result->fetchRow())
   $next=array('id'=>0,'code'=>'');
@@ -93,18 +92,20 @@ $smarty->assign('parent','departments.php');
 $smarty->assign('title', _('Product Families'));
 $product_home="Products Home";
 $smarty->assign('home',$product_home);
-$smarty->assign('department',$families['department']);
-$smarty->assign('department_id',$_REQUEST['id']);
-$smarty->assign('products',$families['products']);
+// $smarty->assign('department',$families['department']);
+// $smarty->assign('department_id',$_REQUEST['id']);
+// $smarty->assign('products',$families['products']);
 
 $smarty->assign('filter',$_SESSION['state']['department']['table']['f_field']);
 $smarty->assign('filter_value',$_SESSION['state']['department']['table']['f_value']);
 $smarty->assign('filter_name',_('Family code'));
+
 $smarty->assign('view',$_SESSION['state']['department']['view']);
 $smarty->assign('show_details',$_SESSION['state']['department']['details']);
-$table_title=_('Family List');
-$smarty->assign('table_title',$table_title);
-$smarty->assign('table_info',$families['families'].' '.ngettext('Families','Families',$families['families']).' '._('in').' '.$families['department']);
+
+//$table_title=_('Family List');
+//$smarty->assign('table_title',$table_title);
+//$smarty->assign('table_info',$families['families'].' '.ngettext('Families','Families',$families['families']).' '._('in').' '.$families['department']);
 
 $smarty->display('department.tpl');
 ?>
