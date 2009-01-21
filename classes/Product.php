@@ -105,191 +105,191 @@ class product{
       switch($table){
       case('weblinks'):
 	$this->weblink=array();
-	$sql=sprintf("select * from product_webpages  where   product_id=%d ",$this->id);
-	$result =& $this->db->query($sql);
-	while($row=$result->fetchRow()){
-	  $this->weblink[$row['link']]=array('id'=>$row['id'],'title'=>$row['title']);
-	}
+// 	$sql=sprintf("select * from product_webpages  where   product_id=%d ",$this->id);
+// 	$result =& $this->db->query($sql);
+// 	while($row=$result->fetchRow()){
+// 	  $this->weblink[$row['link']]=array('id'=>$row['id'],'title'=>$row['title']);
+// 	}
 	
 	break;
 
       case('product_tree'):
-	$sql=sprintf('select d.name as department,d.id as department_id,g.name as group_name,group_id from product left join product_group as g on (g.id=group_id)  left join product_department as d on (d.id=department_id) where product.id=%s ',$this->id);
+// 	$sql=sprintf('select d.name as department,d.id as department_id,g.name as group_name,group_id from product left join product_group as g on (g.id=group_id)  left join product_department as d on (d.id=department_id) where product.id=%s ',$this->id);
 
-	$res = $this->db->query($sql); 
-	if ($row=$res->fetchRow()) {
-	  $this->group_id=$row['group_id'];
-	  $this->department_id=$row['department_id'];
-	  $this->group=$row['group_name'];
-	  $this->department=$row['department'];
-	}
+// 	$res = $this->db->query($sql); 
+// 	if ($row=$res->fetchRow()) {
+// 	  $this->group_id=$row['group_id'];
+// 	  $this->department_id=$row['department_id'];
+// 	  $this->group=$row['group_name'];
+// 	  $this->department=$row['department'];
+// 	}
 	break;
       case('locations'):
 	global $_location_tipo;
 	$this->load('same_products');
 
-	$_data=array();
-	$this->locations=array('is_parent'=>false,'has_display'=>false,'has_unknown'=>false,'has_loading'=>false,'has_link'=>false,'has_white_hole'=>false,'has_picking_area'=>false,'has_physical'=>false,'data'=>array(),'num_physical'=>0,'num_physical_with_stock'=>0,'num_picking_areas'=>0);
-	$sql=sprintf("select max_stock,name,product2location.id as id,location_id,stock,picking_rank,tipo,stock  from product2location left join location on (location_id=location.id) where product_id=%d and picking_rank is not null order by picking_rank  ",$this->data['location_parent_id']);
-	$result =& $this->db->query($sql);
-	$num_same_products=count($this->same_products);
-	if($num_same_products>0){
-	  $this->locations['has_link']=true;
-	  if($this->id==$this->data['location_parent_id'])
-	    $this->locations['is_parent']=true;
-	}
-	$stock_units=0;	  
-	while($row=$result->fetchRow()){
-	  $stock=number($row['stock']/$this->data['units'],1);
-	  if($num_same_products==0)
-	    $stock_outers=$stock;
-	  else{
-	    $stock_outers='<b>'.number($stock,1).'</b>';
-	    foreach($this->same_products as $_same){
-	      $stock_outers.=';'.number($row['stock']/$_same['units'],1);
-	    }
-	  }
+// 	$_data=array();
+// 	$this->locations=array('is_parent'=>false,'has_display'=>false,'has_unknown'=>false,'has_loading'=>false,'has_link'=>false,'has_white_hole'=>false,'has_picking_area'=>false,'has_physical'=>false,'data'=>array(),'num_physical'=>0,'num_physical_with_stock'=>0,'num_picking_areas'=>0);
+// 	$sql=sprintf("select max_stock,name,product2location.id as id,location_id,stock,picking_rank,tipo,stock  from product2location left join location on (location_id=location.id) where product_id=%d and picking_rank is not null order by picking_rank  ",$this->data['location_parent_id']);
+// 	$result =& $this->db->query($sql);
+// 	$num_same_products=count($this->same_products);
+// 	if($num_same_products>0){
+// 	  $this->locations['has_link']=true;
+// 	  if($this->id==$this->data['location_parent_id'])
+// 	    $this->locations['is_parent']=true;
+// 	}
+// 	$stock_units=0;	  
+// 	while($row=$result->fetchRow()){
+// 	  $stock=number($row['stock']/$this->data['units'],1);
+// 	  if($num_same_products==0)
+// 	    $stock_outers=$stock;
+// 	  else{
+// 	    $stock_outers='<b>'.number($stock,1).'</b>';
+// 	    foreach($this->same_products as $_same){
+// 	      $stock_outers.=';'.number($row['stock']/$_same['units'],1);
+// 	    }
+// 	  }
 	  
-	  $stock_units+=$row['stock'];
+// 	  $stock_units+=$row['stock'];
 	  
-	  if($row['max_stock']=='' or $row['max_stock']<=0 )
-	    $max_units=_('Not set');
-	  else
-	    $max_units=$row['max_stock'];
-	  $_data[$row['id']]=array(
-				   'id'=>$row['id'],
-				   'name'=>$row['name'],
-				   'location_id'=>$row['location_id'],
-				   'stock'=>$stock,
-				   'stock_units'=>$row['stock'],
-				   'stock_outers'=>$stock_outers,
-				   'max_units'=>$max_units,
-				   'tipo'=>$_location_tipo[$row['tipo']],
-				   'picking_tipo'=>getOrdinal($row['picking_rank']),
-				   'picking_rank'=>$row['picking_rank'],
-				   'is_physical'=>true,
-				   'can_pick'=>true,
-				   'has_stock'=>($row['stock']>0?true:false)
-				   );
-	  $this->locations['num_physical']++;
-	  if($row['stock']>0)
-	    $this->locations['num_physical_with_stock']++;
-	  $this->locations['num_picking_areas']++;
-	  $this->locations['has_physical']=true;
+// 	  if($row['max_stock']=='' or $row['max_stock']<=0 )
+// 	    $max_units=_('Not set');
+// 	  else
+// 	    $max_units=$row['max_stock'];
+// 	  $_data[$row['id']]=array(
+// 				   'id'=>$row['id'],
+// 				   'name'=>$row['name'],
+// 				   'location_id'=>$row['location_id'],
+// 				   'stock'=>$stock,
+// 				   'stock_units'=>$row['stock'],
+// 				   'stock_outers'=>$stock_outers,
+// 				   'max_units'=>$max_units,
+// 				   'tipo'=>$_location_tipo[$row['tipo']],
+// 				   'picking_tipo'=>getOrdinal($row['picking_rank']),
+// 				   'picking_rank'=>$row['picking_rank'],
+// 				   'is_physical'=>true,
+// 				   'can_pick'=>true,
+// 				   'has_stock'=>($row['stock']>0?true:false)
+// 				   );
+// 	  $this->locations['num_physical']++;
+// 	  if($row['stock']>0)
+// 	    $this->locations['num_physical_with_stock']++;
+// 	  $this->locations['num_picking_areas']++;
+// 	  $this->locations['has_physical']=true;
 	  
 
 
-	}
+// 	}
 	
 
 
-	$sql=sprintf("select max_stock,name,product2location.id as id,location_id,stock,picking_rank,tipo,stock  from product2location left join location on (location_id=location.id) where product_id=%d and picking_rank is  null order by tipo desc  ",$this->data['location_parent_id']);
-	$result =& $this->db->query($sql);
-	while($row=$result->fetchRow()){
-	  $stock_units+=$row['stock'];
-	  $stock=number($row['stock']/$this->data['units'],1);
-	  if($num_same_products==0)
-	    $stock_outers=$stock;
-	  else{
-	    $stock_outers='<b>'.number($stock,1).'</b>';
-	    foreach($this->same_products as $_same){
-	      $stock_outers.=';'.number($row['stock']/$_same['units'],1);
-	    }
-	  }
+// 	$sql=sprintf("select max_stock,name,product2location.id as id,location_id,stock,picking_rank,tipo,stock  from product2location left join location on (location_id=location.id) where product_id=%d and picking_rank is  null order by tipo desc  ",$this->data['location_parent_id']);
+// 	$result =& $this->db->query($sql);
+// 	while($row=$result->fetchRow()){
+// 	  $stock_units+=$row['stock'];
+// 	  $stock=number($row['stock']/$this->data['units'],1);
+// 	  if($num_same_products==0)
+// 	    $stock_outers=$stock;
+// 	  else{
+// 	    $stock_outers='<b>'.number($stock,1).'</b>';
+// 	    foreach($this->same_products as $_same){
+// 	      $stock_outers.=';'.number($row['stock']/$_same['units'],1);
+// 	    }
+// 	  }
 
 
-	  $is_physical=false;
-	  $picking_tipo='';
-	  $can_pick=false;
-	  $icon='';
-	  $tipo='';
-	  if($row['tipo']=='unknown'){
-	    $this->locations['has_unknown']=true;
-	    $name=$_location_tipo[$row['tipo']];
-	  }else if($row['tipo']=='white_hole'){
-	    $this->locations['has_white_hole']=true;
-	    $name=$_location_tipo[$row['tipo']];
-	  }else if($row['tipo']=='loading'){
-	    $this->locations['has_loading']=true;
-	    $name=$row['name'];
+// 	  $is_physical=false;
+// 	  $picking_tipo='';
+// 	  $can_pick=false;
+// 	  $icon='';
+// 	  $tipo='';
+// 	  if($row['tipo']=='unknown'){
+// 	    $this->locations['has_unknown']=true;
+// 	    $name=$_location_tipo[$row['tipo']];
+// 	  }else if($row['tipo']=='white_hole'){
+// 	    $this->locations['has_white_hole']=true;
+// 	    $name=$_location_tipo[$row['tipo']];
+// 	  }else if($row['tipo']=='loading'){
+// 	    $this->locations['has_loading']=true;
+// 	    $name=$row['name'];
 	  
-	  }else{
-	    $tipo=$_location_tipo[$row['tipo']];
-	    $name=$row['name'];
-	    $this->locations['has_physical']=true;
-	    $this->locations['num_physical']++;
-	    if($row['stock']>0)
-	      $this->locations['num_physical_with_stock']++;
-	    $is_physical=true;
-	  }
+// 	  }else{
+// 	    $tipo=$_location_tipo[$row['tipo']];
+// 	    $name=$row['name'];
+// 	    $this->locations['has_physical']=true;
+// 	    $this->locations['num_physical']++;
+// 	    if($row['stock']>0)
+// 	      $this->locations['num_physical_with_stock']++;
+// 	    $is_physical=true;
+// 	  }
 	    
-	  if($row['max_stock']=='' or $row['max_stock']<=0 )
-	    $max_units=_('Not set');
-	  else
-	    $max_units=$row['max_stock'];
+// 	  if($row['max_stock']=='' or $row['max_stock']<=0 )
+// 	    $max_units=_('Not set');
+// 	  else
+// 	    $max_units=$row['max_stock'];
 
-	  $_data[$row['id']]=array(
-				   'id'=>$row['id'],
-				   'name'=>$name,
-				   'location_id'=>$row['location_id'],
-				   'stock'=>$stock,
-				   'stock_units'=>$row['stock'],
-				   'stock_outers'=>$stock_outers,
-				   'max_units'=>$max_units,
-				   'tipo'=>$tipo,
-				   'picking_tipo'=>$picking_tipo,
-				   'picking_rank'=>'',
-				   'is_physical'=>$is_physical,
-				   'can_pick'=>$can_pick,
-				   'has_stock'=>($row['stock']>0?true:false)
-				   );
+// 	  $_data[$row['id']]=array(
+// 				   'id'=>$row['id'],
+// 				   'name'=>$name,
+// 				   'location_id'=>$row['location_id'],
+// 				   'stock'=>$stock,
+// 				   'stock_units'=>$row['stock'],
+// 				   'stock_outers'=>$stock_outers,
+// 				   'max_units'=>$max_units,
+// 				   'tipo'=>$tipo,
+// 				   'picking_tipo'=>$picking_tipo,
+// 				   'picking_rank'=>'',
+// 				   'is_physical'=>$is_physical,
+// 				   'can_pick'=>$can_pick,
+// 				   'has_stock'=>($row['stock']>0?true:false)
+// 				   );
 
-	}
+// 	}
 	
-	$this->locations['data']=$_data;
-	$this->locations['stock']=$this->data['stock'];
-	$this->locations['stock_units']=$stock_units;
-	$this->locations['stock_outers']="<b>".$this->data['stock'].'</b>';
+// 	$this->locations['data']=$_data;
+// 	$this->locations['stock']=$this->data['stock'];
+// 	$this->locations['stock_units']=$stock_units;
+// 	$this->locations['stock_outers']="<b>".$this->data['stock'].'</b>';
 
-	foreach($this->same_products as $_same){
-	  $this->locations['stock_outers'].=';'.number($stock_units/$_same['units']);
-	}
+// 	foreach($this->same_products as $_same){
+// 	  $this->locations['stock_outers'].=';'.number($stock_units/$_same['units']);
+// 	}
 
 
-	break;
-      case('suppliers'):
-	$this->supplier=array();
-	$sql=sprintf("select p2s.supplier_id, p2s.price,p2s.sup_code,s.code as code,s.name as name from product2supplier as p2s left join supplier as s on (p2s.supplier_id=s.id) where p2s.product_id=%d order by s.code",$this->id);
+// 	break;
+//       case('suppliers'):
+// 	$this->supplier=array();
+// // 	$sql=sprintf("select p2s.supplier_id, p2s.price,p2s.sup_code,s.code as code,s.name as name from product2supplier as p2s left join supplier as s on (p2s.supplier_id=s.id) where p2s.product_id=%d order by s.code",$this->id);
 	
 	
-	$result =& $this->db->query($sql);
-	while($row=$result->fetchRow()){
-	  $this->supplier[$row['supplier_id']]=array(
-						     'id'=>$row['supplier_id'],
-						     'name'=>$row['name'],
-						     'price'=>$row['price'],
-						     'formated_price'=>money($row['price']),
-						     'supplier_product_code'=>$row['sup_code'],
-						     'code'=>$row['code']
+// // 	$result =& $this->db->query($sql);
+// // 	while($row=$result->fetchRow()){
+// // 	  $this->supplier[$row['supplier_id']]=array(
+// // 						     'id'=>$row['supplier_id'],
+// // 						     'name'=>$row['name'],
+// // 						     'price'=>$row['price'],
+// // 						     'formated_price'=>money($row['price']),
+// // 						     'supplier_product_code'=>$row['sup_code'],
+// // 						     'code'=>$row['code']
 
-						     );
-	}
+// // 						     );
+// // 	}
 
 
 	break;
 	// print_r($this->suppliers);
       case('same_products'):
-	$sql=sprintf("select id,code,units from product  where location_parent_id=%d and id!=%d order by units",$this->data['location_parent_id'],$this->id);
-	$result =& $this->db->query($sql);
-	$this->same_products=array();
-	while($row=$result->fetchRow()){
-	  $this->same_products[$row['id']]=array(
-						 'code'=>$row['code'],
-						 'units'=>$row['units'],
-						 'f_units'=>number($row['units'])
-						 );
+// 	$sql=sprintf("select id,code,units from product  where location_parent_id=%d and id!=%d order by units",$this->data['location_parent_id'],$this->id);
+// 	$result =& $this->db->query($sql);
+// 	$this->same_products=array();
+// 	while($row=$result->fetchRow()){
+// 	  $this->same_products[$row['id']]=array(
+// 						 'code'=>$row['code'],
+// 						 'units'=>$row['units'],
+// 						 'f_units'=>number($row['units'])
+// 						 );
 	    
-	}
+// 	}
 	break;
       case('categories'):
 
@@ -304,40 +304,40 @@ class product{
 	$this->categories['number']=count($this->categories['list']);
 	break;
       case('images'):
-	$this->image_path='server_files/images/';
-	$this->images=array();
-	$sql=sprintf("select checksum,name,format,principal,caption,id,width,height,size from image where  product_id=%d order by principal desc",$this->id);
-	$result =& $this->db->query($sql);
-	$principal=false;
-	$default=false;
-	while($row=$result->fetchRow()){
-	  if(!$default)
-	    $default=$row['id'];
-	  if($row['principal']==1 and !$principal){
-	    $set_principal=true;
-	    $principal=true;
-	    $this->data['principal_image']=$row['id'];
-	  }else
-	    $set_principal=false;
+// 	$this->image_path='server_files/images/';
+// 	$this->images=array();
+// 	$sql=sprintf("select checksum,name,format,principal,caption,id,width,height,size from image where  product_id=%d order by principal desc",$this->id);
+// 	$result =& $this->db->query($sql);
+// 	$principal=false;
+// 	$default=false;
+// 	while($row=$result->fetchRow()){
+// 	  if(!$default)
+// 	    $default=$row['id'];
+// 	  if($row['principal']==1 and !$principal){
+// 	    $set_principal=true;
+// 	    $principal=true;
+// 	    $this->data['principal_image']=$row['id'];
+// 	  }else
+// 	    $set_principal=false;
 	  
-	  $this->images[$row['id']]=array(
-					  'id'=>$row['id'],
-					  'width'=>$row['width'],
-					  'height'=>$row['height'],
-					  'size'=>$row['size'],
-					  'caption'=>$row['caption'],
-					  'checksum'=>$row['checksum'],
-					  'principal'=>$set_principal,
-					  'tb'=>$this->image_path.'tb/'.$row['name'].'_tb.'.$row['format'],
-					  'med'=>$this->image_path.'med/'.$row['name'].'_med.'.$row['format'],
-					  'orig'=>$this->image_path.'original/'.$row['name'].'_orig.'.$row['format'],
-					  'name'=>$row['name']
-					  );
-	}
-	if(!$principal and count($this->images)>0){
-	  $this->images[$default]['principal']=true;
-	  $this->data['principal_image']=$default;
-	}
+// 	  $this->images[$row['id']]=array(
+// 					  'id'=>$row['id'],
+// 					  'width'=>$row['width'],
+// 					  'height'=>$row['height'],
+// 					  'size'=>$row['size'],
+// 					  'caption'=>$row['caption'],
+// 					  'checksum'=>$row['checksum'],
+// 					  'principal'=>$set_principal,
+// 					  'tb'=>$this->image_path.'tb/'.$row['name'].'_tb.'.$row['format'],
+// 					  'med'=>$this->image_path.'med/'.$row['name'].'_med.'.$row['format'],
+// 					  'orig'=>$this->image_path.'original/'.$row['name'].'_orig.'.$row['format'],
+// 					  'name'=>$row['name']
+// 					  );
+// 	}
+// 	if(!$principal and count($this->images)>0){
+// 	  $this->images[$default]['principal']=true;
+// 	  $this->data['principal_image']=$default;
+// 	}
 	  
 	break;
       case('stock_forecast'):
@@ -685,21 +685,22 @@ class product{
     case('awtsoy'):
     case('awtsoq'):
     case('awtsom'):
-      if(!isset($this->data['sales'][$item]))
-	$this->get('sales');
+   //    if(!isset($this->data['sales'][$item]))
+// 	$this->get('sales');
 
 
-      return $this->data['sales'][$item];
+//       return $this->data['sales'][$item];
+      break;
     case('sales'):
-      $this->data['sales']=array();
-      $sql=sprintf("select * from sales  where tipo='prod' and tipo_id=%d",$this->id);
-      if($result =& $this->db->query($sql)){
-	$this->data['sales']=$result->fetchRow();
-      }else{
-	$this->load('sales');
-	$this->save('sales');
+    //   $this->data['sales']=array();
+//       $sql=sprintf("select * from sales  where tipo='prod' and tipo_id=%d",$this->id);
+//       if($result =& $this->db->query($sql)){
+// 	$this->data['sales']=$result->fetchRow();
+//       }else{
+// 	$this->load('sales');
+// 	$this->save('sales');
 	
-      }
+//       }
       break;
     case('img_caption'):
       return $this->images[$this->changing_img]['caption'];

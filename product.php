@@ -77,12 +77,15 @@ $product->load(array(
 		     )
 	       );
 
+$smarty->assign('product',$product);
 $num_links=$product->get('num_links');
 $smarty->assign('num_links',$num_links);
 $smarty->assign('fnum_links',number($num_links).' '.ngettext($num_links,'link','links'));
 //print_r($product->data);
 $smarty->assign('data',$product->data);
-$smarty->assign('web_status',$_web_status[$product->get('web_status')]);
+
+//$smarty->assign('web_status',$_web_status[$product->get('web_status')]);
+
 $web_status_error=false;
 $web_status_error_title='';
  if($product->get('web_status')=='onsale'){
@@ -101,18 +104,18 @@ $smarty->assign('web_status_error',$web_status_error);
 $smarty->assign('web_status_error_title',$web_status_error_title);
 
 
-$fam_order=$_SESSION['state']['family']['table']['order'];
-$sql=sprintf("select id,code from product where  %s<'%s' and  group_id=%d order by %s desc  ",$fam_order,$product->get($fam_order),$product->get('group_id'),$fam_order);
-$result =& $db->query($sql);
-if(!$prev=$result->fetchRow())
-  $prev=array('id'=>0,'code'=>'');
-$sql=sprintf("select id,code from product where  %s>'%s' and group_id=%d order by %s   ",$fam_order,$product->get($fam_order),$product->get('group_id'),$fam_order);
-$result =& $db->query($sql);
-if(!$next=$result->fetchRow())
-  $next=array('id'=>0,'code'=>'');
+// $fam_order=$_SESSION['state']['family']['table']['order'];
+// $sql=sprintf("select id,code from product where  %s<'%s' and  group_id=%d order by %s desc  ",$fam_order,$product->get($fam_order),$product->get('group_id'),$fam_order);
+// $result =& $db->query($sql);
+// if(!$prev=$result->fetchRow())
+//   $prev=array('id'=>0,'code'=>'');
+// $sql=sprintf("select id,code from product where  %s>'%s' and group_id=%d order by %s   ",$fam_order,$product->get($fam_order),$product->get('group_id'),$fam_order);
+// $result =& $db->query($sql);
+// if(!$next=$result->fetchRow())
+//   $next=array('id'=>0,'code'=>'');
 
-$smarty->assign('prev',$prev);
-$smarty->assign('next',$next);
+// $smarty->assign('prev',$prev);
+// $smarty->assign('next',$next);
 
 
 $locations=($product->get('locations'));
@@ -184,15 +187,15 @@ $smarty->assign('key_filter_dimension',$regex['key_filter_dimension']);
 $js_files[]= 'js/search.js';
 $js_files[]='js/product.js.php';
 
-$smarty->assign('tsoall',number($product->get('tsoall')));
-$smarty->assign('awtsoall',number($product->get('awtsoall')));
-$smarty->assign('awtsoq',number($product->get('awtsoq')));
-$smarty->assign('units',number($product->data['units']));
-$smarty->assign('price',money($product->data['price']));
-$smarty->assign('rrp',money($product->data['rrp']));
-$smarty->assign('weeks_since',number($product->get('weeks')));
+// $smarty->assign('tsoall',number($product->get('tsoall')));
+// $smarty->assign('awtsoall',number($product->get('awtsoall')));
+// $smarty->assign('awtsoq',number($product->get('awtsoq')));
+// $smarty->assign('units',number($product->gr['units']));
+// $smarty->assign('price',money($product->data['price']));
+// $smarty->assign('rrp',money($product->data['rrp']));
+// $smarty->assign('weeks_since',number($product->get('weeks')));
 
-$smarty->assign('unit_price',money($product->data['price']/$product->data['units']));
+// $smarty->assign('unit_price',money($product->data['price']/$product->data['units']));
 
 
 $smarty->assign('css_files',$css_files);

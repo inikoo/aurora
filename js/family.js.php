@@ -115,7 +115,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 ]};
 	    
 	    var myRowFormatter = function(elTr, oRecord) {
-		if (oRecord.getData('total') < ==1) {
+		if (oRecord.getData('total')==1) {
 		    Dom.addClass(elTr, 'total');
 		}
 		return true;

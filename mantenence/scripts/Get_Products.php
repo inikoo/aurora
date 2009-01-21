@@ -135,7 +135,7 @@ foreach($__cols as $cols){
   if($is_product){
     
 
-    print "$column\n";
+    // print "$column\n";
     
 
     //  if( $fam_code!='' and $fam_name!='' and ($fam_position-$column)<2 ){
@@ -284,19 +284,19 @@ foreach($__cols as $cols){
 		    
 
 		    );
-	print_r($data);
+	//print_r($data);
 	//  	if($code=='BW-01')
 	//  exit;
 	//	exit;
        	$product=new Product('create',$data);
-	print_r($product->data);
+	//print_r($product->data);
 	//exit;
       }else{
 	print $count."\r";
 	//	print_r($product->data);
 	//print $product->get('product code')."\n";
       }
-	
+      
       //print "C:$code D:$units x $description P:$price\n";
     }
     $count++;

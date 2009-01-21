@@ -24,7 +24,7 @@
 	<div class="yui-u first" >
 	  <div id="photo_container" style="margin-top:10px">
 	    <div style="border:1px solid #ddd;padding-top:0;width:220px;xheight:230px;text-align:center;margin:0 10px 0 0px">
-	      <span style="font-size:150%;font-weight:800">{$data.code}</span>
+	      <span style="font-size:150%;font-weight:800">{$product->get('product code')}</span>
 	      <div id="imagediv"   style="border:1px solid #ddd;width:200px;height:140px;padding:0px 0;xborder:none;cursor:pointer;xbackground:red;margin: 0 0 10px 9px">
 		<img src="{ if $num_images>0}{$images[$data.principal_image].med}{else}art/nopic.png{/if}"     id="image"   alt="{t}Image{/t}"/>
 	      </div>
@@ -46,7 +46,7 @@
 
 	
 	<div class="yui-u">
-	  <h1>{$units}x {$data.description} [{$data.id}]</h1>
+	  <h1>{$units}x {$data.description} [{$product->get('product sku number')}]</h1>
 	  <div class="yui-b"  style="width:100%;">
 	    <div class="yui-g" style="width:100%;font-size:90%"   >
               <div class="yui-u first">
