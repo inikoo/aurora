@@ -105,13 +105,15 @@ $promotion='';
 
 foreach($__cols as $cols){
   
-  //print_r($cols);
+
   $is_product=true;
 
   $code=$cols[3];
-  $price=$cols[4];
-
-
+  $price=$cols[7];
+  // if(preg_match('/PPB-01/i',$code)){
+//     print_r($cols);
+//     exit;
+//   }
 
   if($code=='' or !preg_match('/\-/',$code) or preg_match('/total/i',$price)  or  preg_match('/^(pi\-|cxd\-|fw\-04)/i',$code))
     $is_product=false;
@@ -137,7 +139,6 @@ foreach($__cols as $cols){
 
     // print "$column\n";
     
-
     //  if( $fam_code!='' and $fam_name!='' and ($fam_position-$column)<2 ){
       $current_fam_name=$fam_name;
       $current_fam_code=$fam_code;
@@ -172,13 +173,15 @@ foreach($__cols as $cols){
 	$deals[]=array(
 		       'deal campain name'=>'Gold Reward'
 		       ,'deal trigger'=>'Order'
-		       ,'deal description'=>$allowance.' if last order within 30 days'
+		       ,'deal description'=>$allowance.' if last order within 1 calendar month'
 		       ,'deal terms type'=>'Order Interval'
-		       ,'deal terms description'=>'last order within 30 days'
+		       ,'deal terms description'=>'last order within 1 calendar month'
 		       ,'deal allowance description'=>$allowance
 		       ,'deal allowance type'=>'Percentage Off'
 		       ,'deal allowance target'=>'Product'
 		       ,'deal allowance target key'=>''
+		          ,'deal begin date'=>'2006-01-01 00:00:00'
+		       ,'deal expiration date'=>date("Y-m-d 23:59:59",strtotime('now + 1 year'))
 		       );
 
 	$deals[]=array(
@@ -191,6 +194,8 @@ foreach($__cols as $cols){
 		       ,'deal allowance type'=>'Percentage Off'
 		       ,'deal allowance target'=>'Product'
 		       ,'deal allowance target key'=>''
+		          ,'deal begin date'=>'2006-01-01 00:00:00'
+		       ,'deal expiration date'=>date("Y-m-d 23:59:59",strtotime('now + 1 year'))
 		       );	
 
 
@@ -205,13 +210,15 @@ foreach($__cols as $cols){
       $deals[]=array(
 		     'deal campain name'=>'Gold Reward'
 		     ,'deal trigger'=>'Order'
-		       ,'deal description'=>$allowance.' if last order within 30 days'
+		       ,'deal description'=>$allowance.' if last order within 1 calendar month'
 		     ,'deal terms type'=>'Order Interval'
-		     ,'deal terms description'=>'last order within 30 days'
+		     ,'deal terms description'=>'last order within 1 calendar month'
 		     ,'deal allowance description'=>$allowance
 		     ,'deal allowance type'=>'Percentage Off'
 		     ,'deal allowance target'=>'Product'
 		     ,'deal allowance target key'=>''
+		        ,'deal begin date'=>'2006-01-01 00:00:00'
+		       ,'deal expiration date'=>date("Y-m-d 23:59:59",strtotime('now + 1 year'))
 		       );
 
 	$deals[]=array(
@@ -224,6 +231,9 @@ foreach($__cols as $cols){
 		       ,'deal allowance type'=>'Percentage Off'
 		       ,'deal allowance target'=>'Product'
 		       ,'deal allowance target key'=>''
+		       ,'deal begin date'=>'2006-01-01 00:00:00'
+		       ,'deal expiration date'=>date("Y-m-d 23:59:59",strtotime('now + 1 year'))
+
 		       );	
 
 
@@ -245,6 +255,8 @@ foreach($__cols as $cols){
 		       ,'deal allowance type'=>'Get Free'
 		       ,'deal allowance target'=>'Product'
 		       ,'deal allowance target key'=>''
+		       ,'deal begin date'=>'2006-01-01 00:00:00'
+		       ,'deal expiration date'=>date("Y-m-d 23:59:59",strtotime('now + 1 year'))
 		     );	
 
 
@@ -326,7 +338,7 @@ foreach($__cols as $cols){
 
       $promotion=_trim($promotion);
       $promotion_position=$column;
-        print "*********** Promotion $promotion $promotion_position \n";
+      // print "*********** Promotion $promotion $promotion_position \n";
     }
     if($cols[3]=='' and $cols[6]==''){
       $blank_position=$column;

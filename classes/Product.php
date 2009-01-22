@@ -2790,11 +2790,11 @@ function new_sku(){
 	$department=new Department('create',$dept_data);
       }
       if(is_object($family) and $family->id)
-	$department->add_family($family->id,'principal');
+	$department->add_family($family->id,'principal noproducts');
       $department->add_product($this->id,'principal');
 
     }
-$this->get_data('id',$this->id);
+    $this->get_data('id',$this->id);
     
 
 
@@ -2840,20 +2840,21 @@ $this->get_data('id',$this->id);
 
     
     if(isset($data['deals']) and is_array($data['deals'])){
-      
+
+
       foreach($data['deals'] as $deal_data){
+	//	print_r($deal_data);
 	if($deal_data['deal trigger']=='Family')
 	  $deal_data['deal trigger key']=$this->get('product family key');
-	if($deal_data['deal trigger']='Product')
+	if($deal_data['deal trigger']=='Product')
 	  $deal_data['deal trigger key']=$this->id;
-	if($deal_data['deal allowance target']='Product')
+	if($deal_data['deal allowance target']=='Product')
 	  $deal_data['deal allowance target key']=$this->id;
 	$deal=new Deal('create',$deal_data);
 	
       }
-      
-
-  }
+    }
+    //   exit;
 
     if(isset($data['sale state']) and preg_match('/^for sale|discontinued|in prrocess|unknown|history|not for sale/i',$data['sale state']) ){
       $sql=sprintf("update  `Product Dimension` set `Product Sales State`=%s where `Product Key`=%d",prepare_mysql($data['sale state']),$this->id);

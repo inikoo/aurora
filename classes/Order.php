@@ -398,7 +398,10 @@ class Order{
 	    else{
 	      $qty=_trim($_data[1]);
 	      // Get here the discounts
-	      $pdata[]=array('product_id'=>$product->id,'qty'=>$qty);
+	      if(isset($pdata[$product->id]))
+		$pdata[$product->id]['qty']=$pdata[$product->id]['qty']+$qty;
+	      else
+		$pdata[$product->id]=array('code'=>$product->get('product code'),'amount'=>$product->get('product price')*$qty,'case_price'=>$product->get('product price'),'product_id'=>$product->id,'qty'=>$qty,'family_id'=>$product->get('product family key'));
 		
 	    }
 	  }else{
@@ -408,8 +411,9 @@ class Order{
 	    exit;
 	  }
 	}
-      
-	$pdata=$this->get_discounts($pdata);
+	
+
+	$pdata=$this->get_discounts($pdata,$customer->id,$this->data['order date']);
 	$line_number=1;
 	foreach($pdata as $product_data){
 	  $product_data['date']=$this->data['order date'];
@@ -505,19 +509,175 @@ class Order{
   }
 
   function get_discounts($data,$customer_id,$date){
+     
+    $family=array();
+     foreach($data as $item){
+       $nodeal[$item['product_id']]=_('No deal Available|');
+       if(!isset($family[$item['family_id']]))
+	 $family[$item['family_id']]=1;
+       else
+	 $family[$item['family_id']]++;
+     }
 
-    foreach($data as $item){
-      $sql=sprintf("select * from `Deal Dimension` where `Allowance Type`='Percentage Off' and  `Triger`='Product' and `Trigger Key`=%d ",$item['product_id']);
-      $result =& $this->db->query($sql);
-      while($row=$result->fetchRow()){
-	$deal=new Deal($row['deal key']);
+
+     print_r($data);
+     exit;
+     foreach($data as $item){
+       $sql=sprintf("select * from `Deal Dimension` where `Deal Allowance Type`='Percentage Off' and  `Deal Allowance Target`='Product' and `Deal Allowance Target Key`=%d and %s BETWEEN `Deal Begin Date` and  `Deal Expiration Date` ",$item['product_id'],prepare_mysql($date));
+
+       $result =& $this->db->query($sql);
+       while($row=$result->fetchRow()){
+
+	 print_r($row);
+	 
+	 $metadata=split(',',$row['deal allowance metadata']);
+	 if($row['deal allowance type']=='Percentage Off'){
+	   print "percentage off ";
+	 if(preg_match('/Quantity Ordered$/i',$row['deal terms type'])){//Depending on the quantity ordered
+	   // Family trigger -------------------------------------------------
+
+
+	   if($row['deal trigger']=='Family' and $row['deal trigger key']==$item['family_id']){
+	     print $family[$item['family_id']].'  '.$metadata[0]." family target\n"  ;
+	     if($family[$item['family_id']]>=$metadata[0]){
+	       $deal[$item['product_id']][]=array(
+						  'description'=>$row['deal description'],
+						  'awollance'=>$row['deal allowance type'],
+						  'discount_amount'=>$metadata[1]*$item['amount'],
+						  'target'=>$row['deal allowance target'],
+						  'trigger'=>$row['deal trigger'],
+						  'terms'=>$row['deal terms type'],
+						  'add'=>0,
+						  'use'=>1
+						);
+	     }else
+	       $nodeal[$item['product_id']].='; '._('Not enought products ordered.')." ".$family[$item['family_id']]."/".$metadata[0];
+	   }//_______________________________________________________________|
+	   // Product selft trigger -------------------------------------------------
+	   elseif($row['deal trigger']=='Product' and $row['deal trigger key']==$item['product_id']){
+	     if($item['qty']>=$metadata[0]){
+	       $deal[$item['product_id']][]=array(
+						   'description'=>$row['deal description'],
+						  'awollance'=>$row['deal allowance type'],
+						  'discount_amount'=>$metadata[1]*$item['amount'],
+						  'target'=>$row['deal allowance target'],
+						  'trigger'=>$row['deal trigger'],
+						  'terms'=>$row['deal terms type'],
+						  'add'=>0,
+						  'use'=>1
+						);
+	     }
+	   }//________________________________________________________________|
+	   // Other Product  trigger -------------------------------------------------
+	   elseif($row['deal trigger']=='Product' and $row['deal trigger key']!=$item['product_id']){
+	     
+	     if(isset($data[$row['deal trigger key']]))
+	       $qty=$data[$row['deal trigger key']]['qty'];
+	     else
+	       $qty=0;
+
+
+	     if($qty>=$metadata[0]){
+	       $deal[$item['product_id']][]=array(
+						   'description'=>$row['deal description'],
+						  'awollance'=>$row['deal allowance type'],
+						  'discount_amount'=>$metadata[1]*$item['amount'],
+						  'target'=>$row['deal allowance target'],
+						  'trigger'=>$row['deal trigger'],
+						  'terms'=>$row['deal terms type'],
+						  'add'=>0,
+						  'use'=>1
+						  );
+	     }
+	   }//________________________________________________________________|
+	   
+
+	 }//end Depending quantity ordered
+	 if(preg_match('/Order Interval$/i',$row['deal terms type'])){//Depending on the order interval
+
+	   //get order interval;
+	   $customer=new Customer($customer_id);
+	   if($customer->get('order within',$metadata[0])){
+	      $deal[$item['product_id']][]=array(
+					       'description'=>$row['deal description'],
+						'discount_amount'=>$metadata[1]*$item['amount']
+						);
+	   }else{
+	     if($customer->get('customer orders')==0)
+	       $nodeal[$item['product_id']].='; '._("No prevous orders");
+	     else
+	       $nodeal[$item['product_id']].='; '._("Last order not with in").' '.$metadata[0];
+	   }
+
+
+	 }//end Depending ordwer interval;
+
+	 }//end Percentage Off
+	 else if($row['deal allowance type']=='Get Free'){
+	   
+	   if($row['deal trigger']=='Product' and $row['deal trigger key']!=$item['product_id']){
+	     $valid_orders=floor($item['qty']/$metadata[0]);
+	     $free_qty=$valid_orders*$metadata[1];
+	     $deal[$item['product_id']][]=array(
+					      'target'=>$row['deal allowance target type'],
+					      'trigger'=>$row['deal trigger'],
+					      'terms'=>$row['deal terms type'],
+					      'add'=>$free_qty,
+					      'discount_amount'=>$free_qty*$item['case_price']
+					      );
+	   }
+
+	 }//end Get Free
+
+       }
+
+     }
+     
+     foreach($nodeal as $key=>$value){
+       if(preg_match('/\;/',$value))
+	 $nodeal[$key]=_trim(preg_replace('/.*\|\;/','',$value));
+       else
+	 $nodeal[$key]=_trim(preg_replace('/\|/','',$value));
+     }
+
+     print_r($deal);
+  
+     //strip duplicate deals perdentage off deals
+     foreach($deal as $key=>$value){
+       if($value['allowance']=='Percentage Off'){
+	 if($data[$key]['discount']<$value['discount_amount'])
+	   $data[$key]['discount']=$value['discount_amount'];
+
+       }
+
+     }
+     foreach($deal as $key=>$value){
+       if($value['allowance']=='Get Free'){
+	 if($data[$key]['get_free']<$value['add'])
+	   $data[$key]['get_free']=$value['add'];
+
+       }
+
+     }
+
+     print_r($data);
+
+
+   //   print_r($nodeal);
+     if(count($deal)>0)
+       exit;
+
+//       $sql=sprintf("select * from `Deal Dimension` where `Allowance Type`='Percentage Off' and  `Triger`='Product' and `Trigger Key`=%d ",$item['product_id']);
+//       $result =& $this->db->query($sql);
+//       while($row=$result->fetchRow()){
+// 	$deal=new Deal($row['deal key']);
 	
-	$discount_function = create_function("$data,$customer_id,$date", $row['deal metadata']);
-	$discount[$item['product_id']][$row['deal key']]['discount']=$discount_function($data,$customer,$date);
-	$discount[$item['product_id']][$row['deal key']]['deal key']=$row['deal key'];
-      }
+// 	$discount_function = create_function("$data,$customer_id,$date", $row['deal metadata']);
+// 	$discount[$item['product_id']][$row['deal key']]['discount']=$discount_function($data,$customer,$date);
+// 	$discount[$item['product_id']][$row['deal key']]['deal key']=$row['deal key'];
+//       }
       
-    }
+//     }
     return $data;
   }
 
@@ -545,7 +705,7 @@ class Order{
 		 ,$this->get('Order Ship To Addresses')
 
 		 );
-    print $sql;
+    //    print $sql;
     $affected=& $this->db->exec($sql);
     if (PEAR::isError($affected)) {
       $this->error=array('ok'=>false,'msg'=>_('Unknwon Error').'.');

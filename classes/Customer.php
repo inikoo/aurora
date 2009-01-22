@@ -900,6 +900,20 @@ class Customer{
 
 
    switch($key){
+   case('order within'):
+     
+     if(!$args)
+       $args='1 MONTH';
+     //get customer last invoice;
+     $sql="select count(*)as num  from `Order Dimension` where `Order Type`='Order' and `Order Current Dispatch State`!='Cancelled' and `Order Customer Key`=".$this->id." and DATE_SUB(CURDATE(),INTERVAL $args) <=`Order Date`  ";
+     // print $sql;
+     $result =& $this->db->query($sql);
+     if($row=$result->fetchRow()){ 
+       if($row['num']>0)
+	 return true;
+     }
+     return false;
+     break;
    case('xhtml ship to'):
        if(!$arg1)
 	$ship_to_key=$this->get('customer main ship to key');

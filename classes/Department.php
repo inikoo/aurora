@@ -354,11 +354,12 @@ function add_family($family_id,$args=false){
        //  print "$sql\n";exit;
        $this->db->exec($sql);
      }
-
-     foreach($family->get('products') as $key => $value){
-       $this->add_product($key,$args);
+     if(!preg_match('/noproduct/i',$args) ){
+       foreach($family->get('products') as $key => $value){
+	 $this->add_product($key,$args);
+       }
      }
-
+   
 
      if(preg_match('/principal/',$args)){
        $sql=sprintf("update  `Product Family Dimension` set `Product Family Main Department Key`=%d ,`Product Family Main Department Code`=%s,`Product Family Main Department Name`=%s where `Product Family Key`=%s    "

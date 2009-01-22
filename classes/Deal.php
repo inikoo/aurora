@@ -53,14 +53,57 @@ class deal{
 		     'deal allowance target'=>'',
 		     'deal allowance target key'=>'',
 		     'deal allowance description'=>'',
-		     'deal metadata'=>'',
+		     'deal allowance metadata'=>'',
 		     'deal begin date'=>'',
 		     'deal expiration date'=>''
 		     );
 
+
     foreach($data as $key=>$value){
-      $base_data[$key]=$value;
+      $base_data[$key]=_trim($value);
     }
+    // print_r($base_data);
+   
+    if($base_data['deal allowance type']=='Percentage Off' and preg_match('/Quantity Ordered/i',$base_data['deal terms type'])){
+      //   print "***********";
+      if(preg_match('/order \d+ or more/i',$base_data['deal terms description'],$match))
+	$a=preg_replace('/[^\d]/','',$match[0]);
+      
+      if(preg_match('/^\d+\%/i',$base_data['deal allowance description'],$match))
+	$b=.01*preg_replace('/\%/','',$match[0]);
+      $base_data['deal allowance metadata']="$a,$b";
+      //    print_r($match);
+    } if($base_data['deal allowance type']=='Percentage Off' and preg_match('/Order Interval/i',$base_data['deal terms type'])){
+      //   print "***********";
+      if(preg_match('/last order within \d+ days/i',$base_data['deal terms description'],$match))
+	$a=preg_replace('/[^\d]/','',$match[0]).' day';
+       if(preg_match('/last order within \d+ .* month/i',$base_data['deal terms description'],$match))
+	$a=preg_replace('/[^\d]/','',$match[0]).' month';
+
+      if(preg_match('/^\d+\%/i',$base_data['deal allowance description'],$match))
+	$b=.01*preg_replace('/\%/','',$match[0]);
+      $base_data['deal allowance metadata']="$a,$b";
+      //    print_r($match);
+    }elseif($base_data['deal allowance type']=='Get Free' and preg_match('/Quantity Ordered^/i',$base_data['deal terms type']) ){
+
+     $base_data['deal allowance description']=preg_replace('/ one /',' 1 ',$base_data['deal allowance description']);
+     $base_data['deal allowance description']=preg_replace('/ two /',' 2 ',$base_data['deal allowance description']);
+     $base_data['deal allowance description']=preg_replace('/ three /',' 3 ',$base_data['deal allowance description']);
+     
+      preg_match('/buy \d+/i',$base_data['deal allowance description'],$match);
+      $buy=_trim(preg_replace('/[^\d]/','',$match[0]));
+
+      preg_match('/get \d+/i',$base_data['deal allowance description'],$match);
+      $get=_trim(preg_replace('/[^\d]/','',$match[0]));
+      
+
+
+      $base_data['deal allowance metadata']=$buy.','.$get;
+    }
+
+   
+    //print_r($base_data);
+
     $keys='(';$values='values(';
     foreach($base_data as $key=>$value){
       $keys.="`$key`,";
@@ -69,7 +112,7 @@ class deal{
     $keys=preg_replace('/,$/',')',$keys);
     $values=preg_replace('/,$/',')',$values);
     $sql=sprintf("insert into `Deal Dimension` %s %s",$keys,$values);
-    //print "$sql\n";exit;
+    // print "$sql\n";
     $affected=& $this->db->exec($sql);
     $this->id = $this->db->lastInsertID();  
     $this->get_data('id',$this->id);
