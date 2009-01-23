@@ -34,8 +34,11 @@ class supplier{
   function get_data($tipo,$id){
     if($tipo=='id')
       $sql=sprintf("select * from `Vendor Dimension` where `Vendor Key`=%d",$id);
-    else
+    else{
+      if($id=='')
+	$id=_('Unknown Supplier');
       $sql=sprintf("select * from `Vendor Dimension` where `Vendor Code`=%s",prepare_mysql($id));
+    }
 
     $result =& $this->db->query($sql);
     if($row=$result->fetchRow()){
@@ -55,6 +58,8 @@ class supplier{
   }
 
   function create($data){
+    // print_r($data);
+    
     if(!is_array($data))
       $data=array('name'=>_('Unknown Supplier'));
 
@@ -96,7 +101,8 @@ class supplier{
 		 $contact->id,
 		 $contact->id
 		 );
-    //  print "$sql\n";
+    //print "$sql\n";
+    //exit;
     $affected=& $this->db->exec($sql);
     if (PEAR::isError($affected)) {
       if(preg_match('/^MDB2 Error: constraint violation$/',$affected->getMessage()))

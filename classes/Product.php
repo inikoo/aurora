@@ -2689,38 +2689,39 @@ class product{
     return $note;
   }
 
-function new_sku(){
+function new_upc(){
   
   $left_side=1101018;
   
-  $sql="select count(DISTINCT `Product SKU number`) as sku_numbers from `Product Dimension`  ";
+  $sql="select count(DISTINCT `Product UPC number`) as upc_numbers from `Product Dimension`  ";
   $result =& $this->db->query($sql);
   if($row=$result->fetchRow()){
     
   }
 
-  $sql="select max(`Product SKU number`) as sku_number from `Product Dimension`";
+  $sql="select max(`Product UPC number`) as upc_number from `Product Dimension`";
   $result =& $this->db->query($sql);
 
   if(    $row=$result->fetchRow()){
-    preg_match('/\d{6}$/',$row['sku_number'],$match);
+    preg_match('/\d{6}$/',$row['upc_number'],$match);
     $right_side=$match[0];
     
     $number=(double) $right_side;
     $number++;
-     $sku=$left_side.sprintf("%06d",$number);
+     $upc=$left_side.sprintf("%06d",$number);
      //   print_r($row);
      //print "$number";
      //exit;
   }else{
 
-    $sku="$left_side"."000001";
+    $upc="$left_side"."000001";
   }  
 
-  //print "$sku\n";
+  //print "$upc\n";
   // exit;
-  return $sku;
+  return $upc;
 }
+
 
   function create($data){
 
@@ -2729,14 +2730,14 @@ function new_sku(){
     $code=$data['code'];
     $ncode=$this->normalize_code($code);
 
-    $sku_number=$this->new_sku();
+    $upc_number=$this->new_upc();
 
     if(isset($data['units per case']) and is_numeric($data['units per case']) and $data['units per case']>0)
       $units_factor=$data['units per case'];
     else
       $units_factor=1;
-    $sql=sprintf("insert into  `Product Dimension` (`Product SKU number`,`Product Code File As`,`Product Code`,`Product Status`,`Product Units Per Case`,`Product Valid From`,`Product Valid To`,`Product Most Recent`) values (%s,%s,%s,'%s',%f,NOW(),'%s','Yes')",
-		 prepare_mysql($sku_number),
+    $sql=sprintf("insert into  `Product Dimension` (`Product UPC number`,`Product Code File As`,`Product Code`,`Product Status`,`Product Units Per Case`,`Product Valid From`,`Product Valid To`,`Product Most Recent`) values (%s,%s,%s,'%s',%f,NOW(),'%s','Yes')",
+		 prepare_mysql($upc_number),
 		 prepare_mysql($ncode),
 		 prepare_mysql($code),
 		 'Preparing Product',
@@ -2902,6 +2903,11 @@ function new_sku(){
   
 
 
+
+  function new_part_list($part_list){
+
+
+  }
 
 
   function normalize_code($code){
@@ -3451,14 +3457,14 @@ function ln_dim($tipo,$data){
 //     }
 //   }
 
-function xnew_sku(){
+function xnew_upc(){
   $left_side='101011';
     
     
-  $select="select max(`Product SKU number`) as sku_number from `Product Dimension`";
+  $select="select max(`Product UPC number`) as upc_number from `Product Dimension`";
   if($result =& $this->db->query($sql)){
     $row=$result->fetchRow();
-    return $row['sku_number']+1;
+    return $row['upc_number']+1;
   }else
     return $left_side.'000001';
   

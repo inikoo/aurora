@@ -351,28 +351,41 @@ $default_state=array(
 						      'order'=>'code',
 						      'order_dir'=>'',
 						      'sf'=>0,
-						      'nr'=>200,
+						      'nr'=>20,
 						      'where'=>'where true',
 						      'f_field'=>'id',
 						      'f_value'=>''
 
 						      )
 				     ),
-		     'products'=>array(
+		     'parts'=>array(
+				       'details'=>false,
+				       'view'=>'general',
+				       'table'=>array(
+						      'order'=>'sku',
+						      'order_dir'=>'',
+						      'sf'=>0,
+						      'nr'=>20,
+						      'where'=>'where true',
+						      'f_field'=>'description',
+						      'f_value'=>''
+
+						      )
+				     ),
+	     'products'=>array(
 				       'details'=>false,
 				       'view'=>'general',
 				       'table'=>array(
 						      'order'=>'code',
 						      'order_dir'=>'',
 						      'sf'=>0,
-						      'nr'=>200,
+						      'nr'=>20,
 						      'where'=>'where true',
 						      'f_field'=>'code',
 						      'f_value'=>''
 
 						      )
 				     ),
-
 		       'families'=>array(
 				       'details'=>false,
 				       'view'=>'general',

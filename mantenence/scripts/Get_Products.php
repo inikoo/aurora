@@ -4,6 +4,8 @@ include_once('../../classes/Department.php');
 include_once('../../classes/Family.php');
 include_once('../../classes/Product.php');
 include_once('../../classes/Supplier.php');
+include_once('../../classes/Part.php');
+
 
 require_once 'MDB2.php';            // PEAR Database Abstraction Layer
 require_once '../../common_functions.php';
@@ -110,6 +112,9 @@ foreach($__cols as $cols){
 
   $code=$cols[3];
   $price=$cols[7];
+  $supplier_code=$cols[21];
+  $part_code=$cols[22];
+  $supplier_cost=$cols[23];
   // if(preg_match('/PPB-01/i',$code)){
 //     print_r($cols);
 //     exit;
@@ -136,6 +141,10 @@ foreach($__cols as $cols){
 
   if($is_product){
     
+
+
+
+      
 
     // print "$column\n";
     
@@ -304,7 +313,7 @@ foreach($__cols as $cols){
 	//print_r($product->data);
 	//exit;
       }else{
-	print $count."\r";
+	//	print $count."\r";
 	//	print_r($product->data);
 	//print $product->get('product code')."\n";
       }
@@ -313,7 +322,59 @@ foreach($__cols as $cols){
     }
     $count++;
     $product_position=$column;
-  }else{
+    
+    $scode=$cols[20];
+    $supplier_code=$cols[21];
+    $cost=$cols[23];
+    
+  //   print_r($cols);
+//     exit;
+
+    if(preg_match('/^SG\-/i',$code))
+      $supplier_code='AW';
+    
+    
+    if($supplier_code=='AW')
+      $scode=$code;
+
+    $supplier=new Supplier('code',$supplier_code);
+    if(!$supplier->id){
+      $data=array(
+		  'name'=>$supplier_code,
+		  'code'=>$supplier_code,
+		  );
+      $supplier=new Supplier('new',$data);
+    }
+
+    
+
+    $part=new Part('supplier_product',array('supplier key'=>$supplier_id,'supplier product code'=>$part_code));
+    if(!$part->id){
+      $part_data=array(
+		       'Part Most Recent'=>'Yes',
+		       'Part Vendor Key'=>$supplier->id,
+		       'Part Vendor Product Code'=>$scode,
+		       'Part Vendor Product Unit Price'=>$cost,
+		       'Part Vendor Product Units Per Part'=>$product->get('Product Units per Case'),
+		       'Part Vendor Product Unit Description'=>$product->get('product name'),
+		       'Part XHTML Used In Products'=>$product->get('product code'),
+		       'Part XHTML Description'=>preg_replace('/\(.*\)\s*$/i','',$product->get('Product XHTML Short Description'))
+		       );
+        print_r($part_data);
+      $part=new Part('new',$part_data);
+    }
+    
+    $part_list[]=array(
+		     'Part SKU'=>$part->get('part sku'),
+		     'Product Part Id'=>1,
+		     'requiered'=>'Yes',
+		     'Parts Per Product'=>1,
+		     'Product Part Type'=>'Simple Pick'
+		       );
+    $product->new_part_list($part_list);
+
+
+}else{
 
     $new_family=true;
 

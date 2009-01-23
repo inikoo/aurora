@@ -2557,13 +2557,8 @@ case('products'):
        $wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
      elseif($f_field=='description' and $f_value!='')
        $wheref.=" and  ".$f_field." like '%".addslashes($f_value)."%'";
-
-
-   
-
-
      
-     $sql="select count(*) as total from product  $where $wheref";
+     $sql="select count(*) as total from `Product Dimension`  $where $wheref";
 
      $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die("here ".$res->getMessage());}
      if($row=$res->fetchRow()) {
@@ -2573,7 +2568,7 @@ case('products'):
        $filtered=0;
        $total_records=$total;
      } else{
-       $sql="select count(*) as total from product  $where ";
+       $sql="select count(*) as total from `Product Dimension`  $where ";
 
      $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
      if($row=$res->fetchRow()) {
@@ -2608,12 +2603,20 @@ case('products'):
      }
    }else
       $filter_msg='';
+       
+       $_order=$order;
+       $_order_dir=$order_dir;
 
-   
+       
+       if($order=='code')
+	 $order='`Product Code File As`';
+       else if($order=='description')
+	 $order='`Product Name`';
+       else if($order=='available_for')
+	 $order='`Product Available Days Forecast`';
 
-  $norder=($order=='code'?'ncode':$order);
-  
-  $sql="select days_to_ns,product.id,code,description,product.price as price,product.units as units,product.units_tipo as units_tipo,ncode,stock,available,stock_value,tsall,tsy,tsq,tsm,tsw,awtsall,awtsy,awtsm,tsoall,tsoy,tsoq,tsom,tsow,awtsoall,awtsoy,awtsom from product  left join sales on (sales.tipo_id=product.id)  $where $wheref  and sales.tipo='prod' order by $norder $order_direction limit $start_from,$number_results    ";
+
+       $sql="select * from `Product Dimension`  $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
   //  print $sql;
   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
   
@@ -2621,34 +2624,11 @@ case('products'):
   
   while($data=$res->fetchRow()) {
     $adata[]=array(
-		   'id'=>$data['id']
-		   ,'code'=>$data['code']
-		   ,'description'=>number($data['units']).'x '.$data['description']
-		   ,'units'=>number($data['units'])
-		   ,'price'=>money($data['price'])
-		   ,'units_tipo'=>$_units_tipo_abr[($data['units_tipo'])]
-		   ,'stock'=>number($data['stock'])
-		   ,'days_to_ns'=>interval($data['days_to_ns'])
-		   ,'available'=>number($data['available'])
-		   ,'stock_value'=>money($data['stock_value'])
-		   ,'tsall'=>money($data['tsall'])
-		   ,'tsy'=>money($data['tsy'])
-		   ,'tsq'=>money($data['tsq'])
-		   ,'tsm'=>money($data['tsm'])
-		   ,'tsw'=>money($data['tsw'])
-		   ,'awtsall'=>money($data['awtsall'])
-		   ,'awtsy'=>money($data['awtsy'])
-		   ,'awtsm'=>money($data['awtsm'])
-		   ,'tsoall'=>number($data['tsoall'])
-		   ,'tsoy'=>number($data['tsoy'])
-		   ,'tsoq'=>number($data['tsoq'])
-		   ,'tsom'=>number($data['tsom'])
-		   ,'tsow'=>number($data['tsow'])
-		   ,'awtsoall'=>number($data['awtsoall'])
-		   ,'awtsoy'=>number($data['awtsoy'])
-		   ,'awtsom'=>number($data['awtsom'])
-		   
-
+		   'code'=>sprintf('<a href="product.php?id=%d">%s</a>',$data['product key'],$data['product code'])
+		   ,'description'=>$data['product xhtml short description']
+		   ,'available'=>number($data['product availability'])
+		   ,'available_for'=>interval($data['product xhtml available forecast'])
+		   ,'family'=>sprintf('<a href="family.php?id=%d">%s</a>',$data['product family key'],$data['product family code'])
 		   );
   }
   $response=array('resultset'=>
@@ -2663,14 +2643,181 @@ case('products'):
 			 'records_offset'=>$start_from,
 			 'records_returned'=>$start_from+$res->numRows(),
 			 'records_perpage'=>$number_results,
-			 'records_order'=>$order,
-			 'records_order_dir'=>$order_dir,
+			 'records_order'=>$_order,
+			 'records_order_dir'=>$_order_dir,
 			 'filtered'=>$filtered
 			 )
 		   );
    echo json_encode($response);
    break;
+case('parts'):
+     $conf=$_SESSION['state']['parts']['table'];
+     if(isset( $_REQUEST['view']))
+       $view=$_REQUEST['view'];
+     else
+       $view=$_SESSION['state']['parts']['view'];
+     
+      if(isset( $_REQUEST['sf']))
+	$start_from=$_REQUEST['sf'];
+      else
+    $start_from=$conf['sf'];
+      if(!is_numeric($start_from))
+	$start_from=0;
+      
+      if(isset( $_REQUEST['nr']))
+    $number_results=$_REQUEST['nr'];
+      else
+	$number_results=$conf['nr'];
+      if(!is_numeric($number_results))
+	$number_results=25;
+      
+      if(isset( $_REQUEST['o']))
+	$order=$_REQUEST['o'];
+      else
+	$order=$conf['order'];
+      
+      if(isset( $_REQUEST['od']))
+	$order_dir=$_REQUEST['od'];
+      else
+	$order_dir=$conf['order_dir'];
+      $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+      
+      
+  
+      if(isset( $_REQUEST['where']))
+	$where=addslashes($_REQUEST['where']);
+      else
+	$where=$conf['where'];
+      
+      
+      if(isset( $_REQUEST['f_field']))
+	$f_field=$_REQUEST['f_field'];
+      else
+	$f_field=$conf['f_field'];
+      
+      if(isset( $_REQUEST['f_value']))
+	$f_value=$_REQUEST['f_value'];
+      else
+	$f_value=$conf['f_value'];
+      
+      
+      if(isset( $_REQUEST['tableid']))
+	$tableid=$_REQUEST['tableid'];
+      else
+	$tableid=0;
+      $_SESSION['state']['parts']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+      
+      
+     $filter_msg='';
+     
+     $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+     
+     if(!is_numeric($start_from))
+       $start_from=0;
+     if(!is_numeric($number_results))
+       $number_results=25;
+     
+     
+     $_order=$order;
+     $_dir=$order_direction;
+     $filter_msg='';
+     $wheref='';
+     if($f_field=='code' and $f_value!='')
+       $wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
+     elseif($f_field=='description' and $f_value!='')
+       $wheref.=" and  ".$f_field." like '%".addslashes($f_value)."%'";
+     
+     $sql="select count(*) as total from `Part Dimension`  $where $wheref";
 
+     $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die("here ".$res->getMessage());}
+     if($row=$res->fetchRow()) {
+       $total=$row['total'];
+     }
+     if($wheref==''){
+       $filtered=0;
+       $total_records=$total;
+     } else{
+       $sql="select count(*) as total from `Part Dimension`  $where ";
+
+     $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+     if($row=$res->fetchRow()) {
+       $total_records=$row['total'];
+       $filtered=$total_records-$total;
+     }
+
+   }
+
+     $rtext=$total_records." ".ngettext('part','parts',$total_records);
+     if($total_records>$number_results)
+       $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
+     
+       if($total==0 and $filtered>0){
+     switch($f_field){
+     case('code'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any part with code like ")." <b>".$f_value."*</b> ";
+       break;
+     case('description'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any part with description like ")." <b>".$f_value."*</b> ";
+       break;
+     }
+   }
+   elseif($filtered>0){
+     switch($f_field){
+     case('code'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('parts with code like')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;
+     case('description'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('parts with description like')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break; 
+     }
+   }else
+      $filter_msg='';
+       
+       $_order=$order;
+       $_order_dir=$order_dir;
+
+       
+       if($order=='sku')
+	 $order='`Part SKU`';
+       else if($order=='description')
+	 $order='`Part XHTML Description`';
+       else if($order=='available_for')
+	 $order='`Part Available Days Forecast`';
+
+
+       $sql="select * from `Part Dimension`  $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
+       // print $sql;
+  $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+  
+  $adata=array();
+  
+  while($data=$res->fetchRow()) {
+    $adata[]=array(
+		   'sku'=>sprintf('<a href="part.php?id=%d">%s</a>',$data['part key'],$data['part sku'])
+		   ,'description'=>$data['part xhtml description']
+		   ,'stock'=>number($data['part current stock'])
+		   ,'available_for'=>interval($data['part xhtml available for forecast'])
+		   );
+  }
+  $response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$adata,
+			 'sort_key'=>$_order,
+			 'rtext'=>$rtext,
+			 'sort_dir'=>$_dir,
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
+			 'total_records'=>$total,
+			 'records_offset'=>$start_from,
+			 'records_returned'=>$start_from+$res->numRows(),
+			 'records_perpage'=>$number_results,
+			 'records_order'=>$_order,
+			 'records_order_dir'=>$_order_dir,
+			 'filtered'=>$filtered
+			 )
+		   );
+   echo json_encode($response);
+   break;
  case('update_department_name'):
    
    if(isset($_REQUEST['id'])  and  isset($_REQUEST['value'])  and is_numeric($_REQUEST['id']) and $_REQUEST['value']!=''){

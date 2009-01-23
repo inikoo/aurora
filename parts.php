@@ -10,41 +10,11 @@ $smarty->assign('create',$create);
 $smarty->assign('modify',$modify);
 
 $q='';
-if(isset($_REQUEST['search']) and $_REQUEST['search']!=''  ){
-  // SEARCH!!!!!!!!!!!!
-  $q=$_REQUEST['search'];
-  //  print "$q";
-  $sql=sprintf("select `Product Key` from `Product Dimension` where `Product Code`=%s ",prepare_mysql($q));
-  $result =& $db->query($sql);
-  if($found=$result->fetchRow()){
-    header('Location: product.php?id='. $found['product key']);
-    exit;
-  }
-  
-  $sql=sprintf("select `Product Family Key`  from `Product family Dimension`  where `Product Family Code`='%s' ",prepare_mysql($q));
-  $result =& $db->query($sql);
-  if($found=$result->fetchRow()){
-    header('Location: family.php?id='. $found['product family key']);
-    exit;
-  }
 
-
-  //do you mean
-  $from_url=$_REQUEST['from_url'];
-  
-    
-//   $_SESSION['tables']['pindex_list'][5]='p.code';
-//   $_SESSION['tables']['pindex_list'][6]=$q;
-  
- }
-
-
-
-
-$sql="select count(*) as total_products,sum(if(`Product Sales State`='For sale',1,0)) as for_sale  from `Product Dimension` where `Product Most Recent`='Yes'";
-$result =& $db->query($sql);
-if(!$products=$result->fetchRow())
-  exit;
+// $sql="select count(*) as total_products,sum(if(`Product Sales State`='For sale',1,0)) as for_sale  from `Product Dimension` where `Product Most Recent`='Yes'";
+// $result =& $db->query($sql);
+// if(!$products=$result->fetchRow())
+//   exit;
 
 
 $smarty->assign('box_layout','yui-t0');
@@ -75,7 +45,7 @@ $js_files=array(
 		'js/common.js.php',
 		'js/table_common.js.php',
 		'js/search_product.js',
-		'js/products.js.php'
+		'js/parts.js.php'
 		);
 
 
@@ -84,7 +54,7 @@ $js_files=array(
 
 
 $smarty->assign('parent','departments.php');
-$smarty->assign('title', _('Product Index'));
+$smarty->assign('title', _('Parts Index'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
@@ -92,8 +62,8 @@ $product_home="Products Home";
 $smarty->assign('home',$product_home);
 
 
-$number_products=$products['for_sale'];
-$smarty->assign('total_products',$number_products);
+
+
 $tipo_filter=($q==''?$_SESSION['state']['products']['table']['f_field']:'code');
 $smarty->assign('filter',$tipo_filter);
 $smarty->assign('filter_value',($q==''?$_SESSION['state']['products']['table']['f_value']:addslashes($q)));
@@ -104,15 +74,11 @@ $filter_menu=array(
 $smarty->assign('filter_menu',$filter_menu);
 
 $smarty->assign('filter_name',$filter_menu[$tipo_filter]['label']);
-$smarty->assign('table_info',$number_products.'  '.ngettext('Product','Products',$number_products));
+
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu',$paginator_menu);
 $smarty->assign('view',$_SESSION['state']['products']['view']);
-$smarty->assign('table_title',_('Product List'));
-
 $smarty->assign('currency',$myconf['currency_symbol']);
 
-
-
-$smarty->display('products.tpl');
+$smarty->display('parts.tpl');
 ?>
