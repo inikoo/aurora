@@ -7,11 +7,14 @@
 <div id="sub_header">
 {if $next.id>0}<span class="nav2 onright"><a href="product.php?id={$next.id}">{$next.code} &rarr; </a></span>{/if}
 {if $prev.id>0}<span class="nav2 onright" ><a href="product.php?id={$prev.id}">&larr; {$prev.code}</a></span>{/if}
-<span class="nav2 onright"><a href="family.php?id={$family_id}">&uarr; {$family}</a></span>
-<span class="nav2 onright"><a href="department.php?id={$department_id}">&uarr;&uarr; {$department}</a></span>
-<span class="nav2 on left"><a href="departments.php">{t}Departments{/t}</a></span>
-<span class="nav2 onleft"><a href="categories.php">{t}Categories{/t}</a></span>
-<span class="nav2 onleft"><a href="products.php">{t}Product index{/t}</a></span>
+<span class="nav2 onright"><a href="family.php?id={$family_id}">&uarr; {$product->get('product family name')}</a></span>
+<span class="nav2 onright"><a href="department.php?id={$department_id}">&uarr;&uarr; {$product->get('product main department name')}</a></span>
+ <span class="nav2 onleft"><a  href="departments.php">{t}Departments{/t}</a></span>
+  <span class="nav2 onleft"><a href="families.php">{t}Families{/t}</a></span>
+  <span class="nav2 onleft"><a href="products.php">{t}Products{/t}</a></span>
+  <span class="nav2 onleft"><a href="categories.php">{t}Categories{/t}</a></span>
+  <span class="nav2 onleft"><a href="parts.php">{t}Parts{/t}</a></span>
+
 </div>
 
 <div  id="doc3" style="clear:both;" class="yui-g yui-t4" >
@@ -46,7 +49,7 @@
 
 	
 	<div class="yui-u">
-	  <h1>{$units}x {$data.description} [{$product->get('product sku number')}]</h1>
+	  <h2>{$product->get('Product Name')} [{$product->get('product id')}]</h2>
 	  <div class="yui-b"  style="width:100%;">
 	    <div class="yui-g" style="width:100%;font-size:90%"   >
               <div class="yui-u first">
@@ -66,13 +69,13 @@
 		</table>
 		<table    class="show_info_product">
 		    <tr>
-		      <td>{t}Sell Price{/t}:</td><td  class="price aright">{$price}{if $data.units>1} <span style="font-weight:400;color:#555">({$unit_price} {t}each{/t})</span>{/if}</td>
+		      <td>{t}Sell Price{/t}:</td><td  class="price aright">{$product->get('formated price')}{if $product->get('product Units per Case')>1} <span style="font-weight:400;color:#555">({$unit_price} {t}each{/t})</span>{/if}</td>
 		    </tr>
-		    <tr {if $data.rrp==''}style="display:none"{/if} >
-		      <td>{t}RRP{/t}:</td><td  class="aright">{$rrp} {if $data.units>1}{t}each{/t}{/if}</td>
+		    <tr {if $product->get('Product Unitary RRP')==''}style="display:none"{/if} >
+		      <td>{t}RRP{/t}:</td><td  class="aright">{$product->get('formated unitary rrp')} {if $product->get('product Units per Case')>1}{t}each{/t}{/if}</td>
 		    </tr>
 		    
-		    <tr><td>{t}Sold Since{/t}:</td><td class="aright">{$data.dates.first_date} ({$weeks_since}{t}w{/t})</td>
+		    <tr><td>{t}Sold Since{/t}:</td><td class="aright">{$product->get('formated product for sale since date')} (   {if $product->get('actual for sale weeks')!=$product->get('for sale weeks')} }{$product->get('actual for sale weeks')}/{/if}{$product->get('for sale weeks')}{t}w{/t})</td>
 		      {if $edit} <td   class="aright" ><input style="text-align:right" class="date_input" size="8" type="text"  id="v_invoice_date"  value="{$v_po_date_invoice}" name="invoice_date" /></td>{/if}
 		    </tr>
 		    <tr><td id="outall_label" title="Total Sales">{t}TS{/t}:</td><td class="aright" >{$tsoall} {t}Outers{/t}
@@ -88,7 +91,7 @@
 		    <td>{t}Supplier{/t}:</td>
 		    <td><a href="supplier.php?id={$supplier_id}">{$supplier.name}</a></td>
 		  </tr>
-		  <tr><td>{t}Cost per{/t} {$data.units_tipo_name}:</td><td>{$supplier.formated_price}</td></tr>
+		  <tr><td>{t}Cost per{/t} :</td><td>{$supplier.formated_price}</td></tr>
 		  {/foreach}
 		  {else}
 		  <tr><td colspan=2 style="color:brown;font-weight:bold;cursor:pointer">{t}No supplier set{/t}</td></tr>

@@ -6,8 +6,7 @@ include_once('Customer.php');
 include_once('Store.php');
 
 class Order{
-  var $db;
-  var $data=array();
+  var $db;  var $data=array();
   var $items=array();
   var $status_names=array();
   var $id=false;
@@ -33,11 +32,105 @@ class Order{
 
   }
 
+  
+
+
+
+
+
   function create_order($data){
     if(!isset($data['type']))
       return;
     $type=$data['type'];
     switch($type){
+      
+    case('direct_data_injection'):
+      
+
+      
+      $this->compare_addresses($data['cdata']);
+      $data['cdata']['same_address']=$this->same_address;
+      $data['cdata']['same_contact']=$this->same_contact;
+      $data['cdata']['same_company']=$this->same_company;
+      $data['cdata']['same_email']=$this->same_email;
+      $data['cdata']['same_telephone']=$this->same_telephone;
+
+      
+      
+      $customer_identification_method='email';
+      $customer_id=$this->find_customer($customer_identification_method,$data['cdata']);
+      $customer=new Customer($customer_id);
+
+      $ship_to_key=$customer->get('customer last ship to key');
+      $ship_to=$customer->get('xhtml ship to',$ship_to_key);
+      $store=new Store('code',$data['store_code']);
+      if(!$store->id)
+	$store=new Store('unknown');
+      $this->data['order date']=$data['date'];
+      $this->data['order id']=$data['order_id'];
+      $this->data['order customer key']=$customer->id;
+      $this->data['order customer name']=$customer->get('customer name');
+      $this->data['order current dispatch state']='In Process';
+      $this->data['order current payment state']='Waiting Invoice';
+      $this->data['order current xhtml state']='In Process';
+	$this->data['order customer message']=_trim($data['message']);
+	$this->data['order original data mime type']=$data['original_data_type'];
+	$this->data['order original data']=$data['original_data'];
+	$this->data['order main store key']=$store->id;
+	$this->data['order main store code']=$store->get('code');
+	$this->data['order main store type']=$store->get('type');
+	$this->data['order gross amount']=$data['subtotal'];
+	$this->data['order shipping amount']=$data['shipping'];
+	$this->data['order discount ammont']=$data['discount']+$data['voucher'];
+	$this->data['order total tax amount']=$data['tax'];
+	$this->data['order main xhtml ship to']=$ship_to;
+	$this->data['order main ship to key']=$ship_to_key;
+	$this->data['order ship to addresses']=1;
+	$this->create_order_header();
+
+
+	
+	
+	foreach($data['products'] as $product_data){
+	  $product_data['date']=$this->data['order date'];
+	  $product_data['line_number']=$line_number;
+	  $this->add_order_transaction($product_data);
+	  $line_number++;
+	}
+
+	$customer->update('orders');
+	$customer->update('no normal data');
+	
+	$this->cutomer_rankings();
+
+	switch($_SESSION['lang']){
+	default:
+	  $abstract=sprintf('Order <a href="order.php?id=%d">%s</a>',$this->get('order key'),$this->get('order id'));
+	  $note=sprintf('%s (<a href="customer.php?id=%d">%s) place an order at %s'
+			,$customer->get('customer name')
+			,$customer->id
+			,$customer->get('customer id')
+			,strftime("%e %b %Y %H:%M",strtotime($this->data['order date']))
+			);
+	}
+
+	$sql=sprintf("insert into `History Dimension` (`History Date`,`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`History Details`,`Author Key`,`Author Name`) values(%s,'Customer','%s','Placed','Order',%d,%s,0,%s)"
+		     ,prepare_mysql($this->data['order date'])
+		     ,$customer->id
+		     ,$this->data['order key']
+		     ,prepare_mysql($note)
+		     ,prepare_mysql(_('System'))
+		     );
+	$this->db->exec($sql);
+	$history_id=$this->db->lastInsertID();
+	$abstract.=' (<span class="like_a" onclick="showdetails(this)" d="0" id="ch'.$history_id.'"  hid="'.$history_id.'">'._('view details').'</span>)';
+	$sql=sprintf("update `History Dimension` set `History Abstract`=%s where `History Key`=%d",prepare_mysql($abstract),$history_id);
+	//	print "$sql\n";
+	$this->db->exec($sql);
+	
+    
+      
+      break;
     case('imap_email_mals-e'):
       $ip = gethostbyname('imap.gmail.com');
       $ip ='imap.gmail.com';
@@ -149,6 +242,11 @@ class Order{
 
 
 	}
+
+      
+
+
+
 	//	print "$email";
 	//print_r($_products);
 	
@@ -188,19 +286,6 @@ class Order{
 				     );
  
 	$__name=$edata['inv name'];
-// 	if($edata['ship name']==''){
-// 	  $__name='';
-// 	}
-//	$__company=$cdata['company_name'];
-// 	if($edata['ship company']==''){
-// 	  $__company='';
-// 	}
-// 	if($edata['ship tel']==''){
-// 	  $__tel='';
-// 	}
-	  
-
-
 	$cdata['address_inv_data']=array(
 				     'type'=>'3line'
 				     ,'name'=>$__name
@@ -313,9 +398,11 @@ class Order{
 	$cdata['same_telephone']=$same_email;
 
 
-	//	exit;
-	$customer_identification_method='email';
 
+
+
+    
+	$customer_identification_method='email';
 	$customer_id=$this->find_customer($customer_identification_method,$cdata);
 	$customer=new Customer($customer_id);
 	$ship_to_key=$customer->get('customer last ship to key');
@@ -458,6 +545,8 @@ class Order{
 	
 	//	print "$sql\n";
       }
+   
+
     }
   }
   
@@ -485,7 +574,8 @@ class Order{
   }
 
   function add_order_transaction($data){
-    $sql=sprintf("insert into `Order Transaction Fact` (`Order Date`,`Order Last Updated Date`,`Product Key`,`Current Dispatching State`,`Current Payment State`,`Customer Key`,`Order Key`,`Order ID`,`Order Line`,`Order Quantity`,`Ship To Key`) values (%s,%s,%d,%s,%s,%s,%s,%s,%d,%f) "
+
+    $sql=sprintf("insert into `Order Transaction Fact` (`Order Date`,`Order Last Updated Date`,`Product Key`,`Current Dispatching State`,`Current Payment State`,`Customer Key`,`Order Key`,`Order ID`,`Order Line`,`Order Quantity`,`Ship To Key`) values (%s,%s,%d,%s,%s,%s,%s,%s,%d,%f,%s) "
 		 ,prepare_mysql($data['date'])
 		 ,prepare_mysql($data['date'])
 		 ,$data['product_id']
@@ -503,7 +593,7 @@ class Order{
     $this->db->exec($sql);
 
 
-    // print_r($data);
+    //     print_r($data);
     //print "$sql\n";
 
   }
@@ -520,8 +610,8 @@ class Order{
      }
 
 
-     print_r($data);
-     exit;
+     //print_r($data);
+     //exit;
      foreach($data as $item){
        $sql=sprintf("select * from `Deal Dimension` where `Deal Allowance Type`='Percentage Off' and  `Deal Allowance Target`='Product' and `Deal Allowance Target Key`=%d and %s BETWEEN `Deal Begin Date` and  `Deal Expiration Date` ",$item['product_id'],prepare_mysql($date));
 
@@ -1273,6 +1363,83 @@ class Order{
 	  $this->db->exec($sql);
 	}
   } 
+
+  function compare_addresses($cdata){
+
+    	//check if the addresses are the same:
+	$diff_result = array_diff($cdata['address_data'], $cdata['shipping_data']);
+	
+	if(count($diff_result)==0){
+
+	  $this->same_address=true;
+	  $this->same_contact=true;
+	  $this->same_company=true;
+	  $this->same_email=true;
+	  $this->same_telephone=true;
+
+
+	}else{
+	  
+	  // print_r($diff_result);
+	  $percentage=array('address1'=>1,'town'=>1,'country'=>1,'country_d1'=>1,'postcode'=>1);
+	  $percentage_address=array();
+
+	  foreach($diff_result as $key=>$value){
+	    similar_text($cdata['address_shipping_data'][$key],$cdata['address_inv_data'][$key],$p);
+	    $percentage[$key]=$p/100;
+	    if(preg_match('/address1|town|^country$|postcode|country_d1/i',$key))
+	      $percentage_address[$key]=$p/100;
+	  }
+	  $avg_percentage=average($percentage);
+	  $avg_percentage_address=average($percentage_address);
+
+	  //print "AVG DIFF $avg_percentage $avg_percentage_address \n";
+	  
+	  if($cdata['address_shipping_data']['name']=='' or !array_key_exists('name',$diff_result) )
+	    $this->same_contact=true;
+	  else{
+	    $_max=1000000;
+	    $irand=mt_rand(0,1000000);
+	    $rand=$irand/$_max;
+	    if($rand<$percentage['name'] and $percentage['name']>.90 ){
+	      $this->same_contact=true;
+	     
+	    }else
+	      $this->same_contact=false;
+	  }
+	  if($cdata['address_shipping_data']['company']=='' or !array_key_exists('company',$diff_result) )
+	    $this->same_company=true;
+	  else{
+	    $_max=1000000;
+	    $irand=mt_rand(0,1000000);
+	    $rand=$irand/$_max;
+	    //print "xxx ".$percentage['company']."\n";
+	    if($rand<$percentage['company']and $percentage['company']>.90){
+	      $this->same_company=true;
+	    }else
+	      $this->same_company=false;
+	  }
+	  
+	  if(array_key_exists('telephone',$diff_result) )
+	    $this->same_telephone=false;
+	  else
+	    $this->same_telephone=true;
+
+
+	  if($avg_percentage_address==1)
+	    $this->same_address=true;
+	  else
+	    $this->same_address=false;
+	  
+	  //print "C:$this->same_contact  CM:$this->same_company  T:$this->same_telephone E:$this->same_email  A:$this->same_address \n";
+	  // exit;
+
+	}
+
+
+
+  }
+
 
 }
 

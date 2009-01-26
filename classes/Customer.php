@@ -144,8 +144,9 @@ class Customer{
 
    global $myconf;
 
-   //  print_r($data);
-
+   //print_r($data);
+   // exit;
+    
    $this->unknown_contact=$myconf['unknown_contact'];
    $this->unknown_company=$myconf['unknown_company'];
    $this->unknown_customer=$myconf['unknown_customer'];
@@ -183,41 +184,41 @@ class Customer{
    $shipping_same_contact=false;
    $shipping_same_address=false;
    
-   if(isset($data['shipping']) and isset($data['shipping_data'])){
-      $shipping=true;
-      switch($data['shipping']){
-      case('same'):
-	$shipping_same=true;
-	break;
-      case('same_contact'):
-	$shipping_same=false;
-	$shipping_same_contact=false;
-	$shipping_same_address=true;
-	break;	
-      case('shipping_cold_sale'):
-	$shipping_cold_sale=true;
-	$shipping_same=false;
-	$shipping_same_contact=false;
-	$shipping_same_address=false;
-	break;
-      case('same_address'):
-	$shipping_same=false;
-	$shipping_same_contact=true;
-	$shipping_same_address=false;
-	if($type!='Company'){
-	  $type='Company';
-	  $company_name=$contact_name;
-	}
+  //  if(isset($data['shipping']) and isset($data['shipping_data'])){
+//       $shipping=true;
+//       switch($data['shipping']){
+//       case('same'):
+// 	$shipping_same=true;
+// 	break;
+//       case('same_contact'):
+// 	$shipping_same=false;
+// 	$shipping_same_contact=false;
+// 	$shipping_same_address=true;
+// 	break;	
+//       case('shipping_cold_sale'):
+// 	$shipping_cold_sale=true;
+// 	$shipping_same=false;
+// 	$shipping_same_contact=false;
+// 	$shipping_same_address=false;
+// 	break;
+//       case('same_address'):
+// 	$shipping_same=false;
+// 	$shipping_same_contact=true;
+// 	$shipping_same_address=false;
+// 	if($type!='Company'){
+// 	  $type='Company';
+// 	  $company_name=$contact_name;
+// 	}
 
-	break;
-      default:
-	$shipping_same=false;
-	$shipping_same_contact=true;
-	$shipping_same_address=false;
-	break;	
-      }
+// 	break;
+//       default:
+// 	$shipping_same=false;
+// 	$shipping_same_contact=true;
+// 	$shipping_same_address=false;
+// 	break;	
+//       }
 
-   }
+//    }
 
 
    $main_contact=new contact('new',$data_contact);

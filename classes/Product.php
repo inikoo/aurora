@@ -627,8 +627,16 @@ class product{
     if(isset($this->data[$key]))
       return $this->data[$key];
     
+    
+
 
     switch($item){
+    case('formated price'):
+      return money($this->data['product price']);
+      break;
+    case('formated unitary rrp'):
+      return money($this->data['product unitary rrp']);
+      break;
     case('xhtml short description'):
       global $myconf;
       $desc='';

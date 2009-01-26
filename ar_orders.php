@@ -1294,7 +1294,7 @@ if(isset( $_REQUEST['where']))
      $total_picks+=$row['dispached'];
      $data[]=array(
 
-		   ,'code'=>$row['product code']
+		   'code'=>$row['product code']
 		   ,'description'=>$row['product short description']
 		   ,'quantity'=>number($row['order quantity'])
 		   ,'gross'=>money($row['order quantity']*$row['product price'])
