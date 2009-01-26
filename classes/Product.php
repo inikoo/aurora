@@ -2689,37 +2689,23 @@ class product{
     return $note;
   }
 
-function new_upc(){
+function new_id(){
   
-  $left_side=1101018;
-  
-  $sql="select count(DISTINCT `Product UPC number`) as upc_numbers from `Product Dimension`  ";
-  $result =& $this->db->query($sql);
-  if($row=$result->fetchRow()){
-    
-  }
 
-  $sql="select max(`Product UPC number`) as upc_number from `Product Dimension`";
+  $sql="select max(`Product id`) as id from `Product Dimension`";
   $result =& $this->db->query($sql);
 
   if(    $row=$result->fetchRow()){
-    preg_match('/\d{6}$/',$row['upc_number'],$match);
-    $right_side=$match[0];
-    
-    $number=(double) $right_side;
-    $number++;
-     $upc=$left_side.sprintf("%06d",$number);
-     //   print_r($row);
-     //print "$number";
-     //exit;
+
+    $id=$row['id']+1;
   }else{
 
-    $upc="$left_side"."000001";
+    $id=1;
   }  
 
-  //print "$upc\n";
+  //print "$id\n";
   // exit;
-  return $upc;
+  return $id;
 }
 
 
@@ -2730,14 +2716,14 @@ function new_upc(){
     $code=$data['code'];
     $ncode=$this->normalize_code($code);
 
-    $upc_number=$this->new_upc();
+    $id_number=$this->new_id();
 
     if(isset($data['units per case']) and is_numeric($data['units per case']) and $data['units per case']>0)
       $units_factor=$data['units per case'];
     else
       $units_factor=1;
-    $sql=sprintf("insert into  `Product Dimension` (`Product UPC number`,`Product Code File As`,`Product Code`,`Product Status`,`Product Units Per Case`,`Product Valid From`,`Product Valid To`,`Product Most Recent`) values (%s,%s,%s,'%s',%f,NOW(),'%s','Yes')",
-		 prepare_mysql($upc_number),
+    $sql=sprintf("insert into  `Product Dimension` (`Product id`,`Product Code File As`,`Product Code`,`Product Status`,`Product Units Per Case`,`Product Valid From`,`Product Valid To`,`Product Most Recent`) values (%s,%s,%s,'%s',%f,NOW(),'%s','Yes')",
+		 prepare_mysql($id_number),
 		 prepare_mysql($ncode),
 		 prepare_mysql($code),
 		 'Preparing Product',
@@ -2774,7 +2760,6 @@ function new_upc(){
 	$family=new Family('create',$fam_data);
       }
       $family->add_product($this->id,'principal');
-
     }
     $this->get_data('id',$this->id);
     
@@ -2905,12 +2890,58 @@ function new_upc(){
 
 
   function new_part_list($part_list){
+    
+    $_base_data=array(
+		      'product id'=>$this->data['product id'],
+		      'part sku'=>'',
+		      'product part id'=>'',
+		      'requiered'=>'',
+		      'parts per product'=>'',
+		      'product part note'=>'',
+		      'product part type'=>'',
+		      'product part metadata'=>'',
+		      'product part valid from'=>'',
+		      'product part valid to'=>'',
+		      'product part most recent'=>'Yes'
+		     );
 
 
+    
+    foreach($part_list as $data){
+      $_date='NOW()';
+      
+      $_date=$data['product part valid from'];
+      if(!preg_match('/now/i',$_date))
+	$_date=prepare_mysql($_date);
+
+    
+    $sql=sprintf("update `Product Part List`  set `Product Part Most Recent`='No' ,`Product Part Valid To`=%s where `Product ID`=%d and `Part SKU`=%d  and `Product Part Most Recent`='Yes' ",$_date,$this->data['product id'],$data['part sku']);
+    $this->db->exec($sql);
+    
+    $base_data=$_base_data;
+    foreach($data as $key=>$value){
+      $base_data[strtolower($key)]=_trim($value);
+    }
+    
+    $keys='(';$values='values(';
+    foreach($base_data as $key=>$value){
+      $keys.="`$key`,";
+      if(($key='product part valid from' or $key=='product part valid to') and preg_match('/now/i',$value))
+	$values.="NOW(),";
+      else
+	$values.=prepare_mysql($value).",";
+    }
+    $keys=preg_replace('/,$/',')',$keys);
+    $values=preg_replace('/,$/',')',$values);
+    $sql=sprintf("insert into `Product Part List` %s %s",$keys,$values);
+    //    print "$sql\n";exit;
+    $affected=& $this->db->exec($sql);
+  }
+  
   }
 
 
-  function normalize_code($code){
+function normalize_code($code){
     $ncode=$code;
     $c=split('-',$code);
     if(count($c)==2){
@@ -3457,14 +3488,14 @@ function ln_dim($tipo,$data){
 //     }
 //   }
 
-function xnew_upc(){
+function xnew_id(){
   $left_side='101011';
     
     
-  $select="select max(`Product UPC number`) as upc_number from `Product Dimension`";
+  $select="select max(`Product id`) as id_number from `Product Dimension`";
   if($result =& $this->db->query($sql)){
     $row=$result->fetchRow();
-    return $row['upc_number']+1;
+    return $row['id_number']+1;
   }else
     return $left_side.'000001';
   

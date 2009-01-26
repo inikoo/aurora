@@ -10,7 +10,7 @@
 	<table border=0 cellpadding="2" style="float:right;margin-top:20px;margin-bottom:10px;" class="view_options">
 	  <tr style="border-bottom:1px solid #ddd">
 	    <th><img src="art/icons/information.png" title="{t}Supplier Details{/t}"/></th>
-	    <th><img src="art/icons/bricks.png" title="{t}Products{/t}"/></th>
+	    <th><img src="art/icons/bricks.png" title="{t}Supplier Products{/t}"/></th>
 	    <th><img src="art/icons/page_paste.png" title="{t}Purchase Orders{/t}"/></th>
 	    <th><img src="art/icons/script.png" title="{t}History{/t}"/></th>
 	  </tr>
@@ -78,7 +78,7 @@
       
 <div  id="block_products" class="data_table" style="{if $display.products==0}display:none;{/if}margin:25px 0px;clear:both">
   <div class="data_table" style="">
-   <span class="clean_table_title">{t}Products{/t}</span>
+   <span class="clean_table_title">{t}Supplier Products{/t}</span>
     <div  class="clean_table_caption"  style="clear:both;">
       <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
       <div class="clean_table_filter"  id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0">{$filter_name0}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value0}" size=10/><div id='f_container0'></div></div></div>

@@ -6,7 +6,7 @@ if(!$LU->checkRight(SUP_VIEW) or !$LU->checkRight(SUP_ALL_VIEW))
 
 
 $q='';
-$sql="select count(*) as numberof from supplier";
+$sql="select count(*) as numberof from `Supplier Dimension`";
 $result =& $db->query($sql);
 if(!$suppliers=$result->fetchRow())
   exit;

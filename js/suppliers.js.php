@@ -8,25 +8,23 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 	    var SuppliersColumnDefs = [
-
 				       {key:"id", label:"<?=_('Id')?>",  width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"code", label:"<?=_('Code')?>",width:100, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"name", label:"<?=_('Name')?>", width:190,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"location", label:"<?=_('Location')?>", width:190,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"email", label:"<?=_('Email')?>", width:190,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"tel", label:"<?=_('Tel')?>", width:190,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"p_normal", label:"<?=_('On sale')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       ,{key:"p_tobedicontinued", label:"<?=_('To be disc')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       ,{key:"p_discontinued", label:"<?=_('Disc')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       ,{key:"p_nosale", label:"<?=_('Not for sale')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       ,{key:"stock_value", label:"<?=_('Stock Value')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       ,{key:"s_high", label:"<?=_('High')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       ,{key:"s_normal", label:"<?=_('Normal')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       ,{key:"s_low", label:"<?=_('Low')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       ,{key:"s_crical", label:"<?=_('Critical')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       ,{key:"s_outofstock", label:"<?=_('Out of Stock')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       ,{key:"tsall", label:"<?=_('Total Sales')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       ,{key:"tgall", label:"<?=_('Total Profit')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"tel",<?=($_SESSION['state']['suppliers']['view']!='contact'?'hidden:true,':'')?> label:"<?=_('Tel')?>", width:190,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"for_sale", <?=($_SESSION['state']['suppliers']['view']!='products'?'hidden:true,':'')?> label:"<?=_('For sale')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"tobedicontinued", <?=($_SESSION['state']['suppliers']['view']!='products'?'hidden:true,':'')?> label:"<?=_('To be disc')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"discontinued",<?=($_SESSION['state']['suppliers']['view']!='products'?'hidden:true,':'')?>  label:"<?=_('Disc')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"nosale", <?=($_SESSION['state']['suppliers']['view']!='products'?'hidden:true,':'')?> label:"<?=_('Not for sale')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"stock_value",<?=($_SESSION['state']['suppliers']['view']!='money'?'hidden:true,':'')?>  label:"<?=_('Stock Value')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"high",<?=($_SESSION['state']['suppliers']['view']!='product_availability'?'hidden:true,':'')?>  label:"<?=_('High')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"normal",<?=($_SESSION['state']['suppliers']['view']!='product_availability'?'hidden:true,':'')?>  label:"<?=_('Normal')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"low", <?=($_SESSION['state']['suppliers']['view']!='product_availability'?'hidden:true,':'')?> label:"<?=_('Low')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"crical", <?=($_SESSION['state']['suppliers']['view']!='product_availability'?'hidden:true,':'')?> label:"<?=_('Critical')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"outofstock", <?=($_SESSION['state']['suppliers']['view']!='product_availability'?'hidden:true,':'')?> label:"<?=_('Out of Stock')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+
 				       
 				       
 				       ];
@@ -50,9 +48,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 "id"
 			 ,"name"
 			 ,"code"
-			 ,"active"
+			 ,"forsale"
 			 ,"outofstock"
-			 ,"lowstock"
+			 ,"low"
 	 ]};
 
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, SuppliersColumnDefs,

@@ -26,8 +26,6 @@ class part{
   function get_data($tipo,$tag){
     if($tipo=='id')
       $sql=sprintf("select * from `Part Dimension` where `Part Key`=%d ",$tag);
-    elseif($tipo=='supplier_code')
-      $sql=sprintf("select * from `Part Dimension` where `Part Vendor Product Code`=%s and `Vendor Key`=%d `Part Most Recent`='Yes' ",prepare_mysql($tag['supplier product code']),$tag['supplier key']);
     else
       return;
 
@@ -42,16 +40,9 @@ class part{
     
      $base_data=array(
 		     'part type'=>'Physical',
-		     'part vendor key'=>'',
-		     'part vendor product code'=>'',
-		     'part vendor product code save as'=>'',
-		     'part vendor product upc'=>'',
-		     'part vendor product unit price'=>'',
-		     'part vendor product unit description'=>'',
-		     'part vendor product units per part'=>'',
-
 		     'part sku'=>'',
-		     'part xhtml used in products'=>'',
+		     'part xhtml currently used in'=>'',
+		     'part xhtml currently supplied by'=>'',
 		     'part unit description'=>'',
 		     'part package size metadata'=>'',
 		     'part package volume'=>'',
@@ -93,6 +84,11 @@ class part{
     $key=strtolower($key);
     if(isset($this->data[$key]))
       return $this->data[$key];
+
+     $_key=preg_replace('/^part /','',$key);
+    if(isset($this->data[$_key]))
+      return $this->data[$key];
+
     
     switch($key){
       

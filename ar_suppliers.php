@@ -858,7 +858,7 @@ if(isset( $_REQUEST['where']))
     $wheref.=" and outofstock>=$f_value  ";
 
 
-   $sql="select count(*) as total from supplier    $where $wheref";
+   $sql="select count(*) as total from `Supplier Dimension`    $where $wheref";
    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
    if($row=$res->fetchRow()) {
     $total=$row['total'];
@@ -866,7 +866,7 @@ if(isset( $_REQUEST['where']))
    if($wheref==''){
      $filtered=0; $total_records=$total;
    }else{
-     $sql="select count(*) as total from supplier $where      ";
+     $sql="select count(*) as total from `Supplier Dimension` $where      ";
      $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
      if($row=$res->fetchRow()) {
        	$total_records=$row['total'];
@@ -907,24 +907,30 @@ if(isset( $_REQUEST['where']))
        break;
      }
 
-
+     
+     if($order=='code')
+       $order='`Supplier Code`';
+     elseif($order=='name')
+       $order='`Supplier Name`';
+     elseif($order=='id')
+       $order='`Supplier Key`';
   
-   $sql="select id,code,name,contact_id,(p_normal+p_nosale+p_discontinued+p_tobediscontinued) as products,(p_normal+p_tobediscontinued)as active,s_outofstock,s_low from supplier $where $wheref order by $order $order_direction limit $start_from,$number_results";
+   $sql="select *   from `Supplier Dimension` $where $wheref order by $order $order_direction limit $start_from,$number_results";
    // print $sql;
    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
    $data=array();
    while($row=$res->fetchRow()) {
 
-     $id="<a href='supplier.php?id=".$row['id']."'>".$myconf['supplier_id_prefix'].sprintf("%05d",$row['id']).'</a>';
+     $id="<a href='supplier.php?id=".$row['supplier key']."'>".$myconf['supplier_id_prefix'].sprintf("%05d",$row['supplier key']).'</a>';
+     $code="<a href='supplier.php?id=".$row['supplier key']."'>".$row['supplier name']."</a>";
      $data[]=array(
 		   'id'=>$id,
-		   'code'=>$row['code'],
-		   'name'=>$row['name'],
-		   'products'=>number($row['products']),
-		   'active'=>number($row['active']),
-		   's_outofstock'=>number($row['s_outofstock']),
-		   's_low'=>number($row['s_low']),
-		   'delete'=>'<img src="art/icons/status_busy.png"/>'
+		   'code'=>$code,
+		   'name'=>$row['supplier name'],
+		   'for_sale'=>number($row['supplier for sale products']),
+		   'low'=>number($row['supplier low availability products']),
+		   'outofstock'=>number($row['supplier out of stock products'])
+//		   'delete'=>'<img src="art/icons/status_busy.png"/>'
 
 		   );
    }

@@ -3310,7 +3310,7 @@ break;
    echo json_encode($response);
    break;
    
- case('withsupplier'):
+ case('supplier_products'):
    if(!$LU->checkRight(SUP_VIEW))
     exit;
 
@@ -3366,7 +3366,7 @@ if(isset( $_REQUEST['where']))
    $_SESSION['state']['supplier']['products']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
    $_SESSION['state']['supplier']['id']=$supplier_id;
 
-  $where=$where.' and ps.supplier_id='.$supplier_id;
+  $where=$where.' and `Supplier Product Supplier Key`='.$supplier_id;
 
 
   $wheref='';
@@ -3379,7 +3379,7 @@ if(isset( $_REQUEST['where']))
 
 
 
-  $sql="select count(*) as total from product  as p left join product_group as g on (g.id=group_id) left join product_department as d on (d.id=department_id) left join product2supplier as ps on (product_id=p.id) $where $wheref ";
+  $sql="select count(*) as total from `Supplier Product Dimension`  $where $wheref ";
 
 
   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
@@ -3390,7 +3390,7 @@ if(isset( $_REQUEST['where']))
       $filtered=0; $total_records=$total;
     }else{
       
-      $sql="select count(*) as total from product  as p left join product_group as g on (g.id=group_id) left join product_department as d on (d.id=department_id) left join product2supplier as ps on (product_id=p.id)  $where  ";
+      $sql="select count(*) as total `Supplier Product Dimension`  $where  ";
       $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
       if($row=$res->fetchRow()) {
 	$total_records=$row['total'];
@@ -3419,32 +3419,22 @@ if(isset( $_REQUEST['where']))
        break;
 
  }
-
-
-   $sql="select sup_code,ps.id as p2s_id,(p.units*ps.price) as price_outer,ps.price as price_unit,stock,p.condicion as condicion, p.code as code, p.id as id,p.description as description , group_id,department_id,g.name as fam, d.code as department 
-from product as p left join product_group as g on (g.id=group_id) left join product_department as d on (d.id=department_id) left join product2supplier as ps on (product_id=p.id)  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+ if($order=='id')
+   $order='`Supplier Product ID`';
+ elseif($order=='code')
+   $order='`Supplier Product Code`';
+ 
+   $sql="select * from `Supplier Product Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
 
    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
    $data=array();
    while($row=$res->fetchRow()) {
-     $code='<a href="product.php?id='.$row['id'].'">'.$row['code'].'</a>';
+
      $data[]=array(
-		   'id'=>$row['id'],
-		   'p2s_id'=>$row['p2s_id'],
-
-		   'condicion'=>$row['condicion'],
-		   'price_unit'=>money($row['price_unit']),
-		   'price_outer'=>money($row['price_outer']),
-		   'stock'=>($row['stock']==''?'':number($row['stock'])),
-		   'code'=>$code,
-		   'sup_code'=>$row['sup_code'],
-
-		   'description'=>$row['description'],
-		   'group_id'=>$row['group_id'],
-		   'department_id'=>$row['department_id'],
-		   'fam'=>$row['fam'],
-		   'department'=>$row['department'],
-		   'delete'=>'<img src="art/icons/link_delete.png"/>'
+		   'id'=>sprintf('<a href="supplier_product.php?id=%d">%s</a>',$row['supplier product key'],$row['supplier product id'])
+		   ,'code'=>sprintf('<a href="supplier_product.php?id=%d">%s</a>',$row['supplier product key'],$row['supplier product code'])
+		   ,'name'=>$row['supplier product name']
+		   ,'cost'=>money($row['supplier product cost'])
 
 		   );
    }

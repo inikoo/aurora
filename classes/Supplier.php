@@ -33,17 +33,17 @@ class supplier{
 
   function get_data($tipo,$id){
     if($tipo=='id')
-      $sql=sprintf("select * from `Vendor Dimension` where `Vendor Key`=%d",$id);
+      $sql=sprintf("select * from `Supplier Dimension` where `Supplier Key`=%d",$id);
     else{
       if($id=='')
 	$id=_('Unknown Supplier');
-      $sql=sprintf("select * from `Vendor Dimension` where `Vendor Code`=%s",prepare_mysql($id));
+      $sql=sprintf("select * from `Supplier Dimension` where `Supplier Code`=%s",prepare_mysql($id));
     }
 
     $result =& $this->db->query($sql);
     if($row=$result->fetchRow()){
       $this->data=$row;
-      $this->id=$row['vendor key'];
+      $this->id=$row['supplier key'];
     }
      
   }
@@ -53,6 +53,11 @@ class supplier{
     if(isset($this->data[$key]))
       return $this->data[$key];
    
+   $_key=preg_replace('/^supplier /','',$key);
+    if(isset($this->data[$_key]))
+      return $this->data[$key];
+
+
     return false;
 
   }
@@ -93,7 +98,7 @@ class supplier{
 
     
 
-    $sql=sprintf("insert into `Vendor Dimension` (`Vendor Code`,`Vendor Name`,`Company Key`,`Vendor Main Contact Key`,`Vendor Accounts Payable Contact Key`,`Vendor Sales Contact Key`) values (%s,%s,%d,%d,%d,%d)",
+    $sql=sprintf("insert into `Supplier Dimension` (`Supplier Code`,`Supplier Name`,`Company Key`,`Supplier Main Contact Key`,`Supplier Accounts Payable Contact Key`,`Supplier Sales Contact Key`) values (%s,%s,%d,%d,%d,%d)",
 		 prepare_mysql($code),
 		 prepare_mysql($name),
 		 $company->id,
@@ -120,10 +125,10 @@ class supplier{
    
     case('contacts'):
     case('contact'):
-      $this->contact=new Contact($this->data['contact_id']);
+      $this->contact=new Contact($this->data['supplier main contact key']);
       if($this->contact->id){
-	$this->contact->load('telecoms');
-	$this->contact->load('contacts');
+	//$this->contact->load('telecoms');
+	//$this->contact->load('contacts');
       }
 
     }

@@ -5,6 +5,7 @@ include_once('../../classes/Family.php');
 include_once('../../classes/Product.php');
 include_once('../../classes/Supplier.php');
 include_once('../../classes/Part.php');
+include_once('../../classes/SupplierProduct.php');
 
 
 require_once 'MDB2.php';            // PEAR Database Abstraction Layer
@@ -69,6 +70,7 @@ $__cols=array();
 $inicio=false;
 while(($_cols = fgetcsv($handle_csv))!== false){
   
+
   $code=$_cols[3];
  
   if($code=='FO-A1' and !$inicio){
@@ -109,17 +111,17 @@ foreach($__cols as $cols){
   
 
   $is_product=true;
-
+  
   $code=$cols[3];
   $price=$cols[7];
   $supplier_code=$cols[21];
   $part_code=$cols[22];
   $supplier_cost=$cols[23];
   // if(preg_match('/PPB-01/i',$code)){
-//     print_r($cols);
-//     exit;
+  //     print_r($cols);
+  //     exit;
 //   }
-
+  
   if($code=='' or !preg_match('/\-/',$code) or preg_match('/total/i',$price)  or  preg_match('/^(pi\-|cxd\-|fw\-04)/i',$code))
     $is_product=false;
   if(preg_match('/^(ob\-108|ob\-156|ish\-94|rds\-47)/i',$code))
@@ -138,77 +140,59 @@ foreach($__cols as $cols){
 
 
 
-
+  
   if($is_product){
     
-
-
-
-      
-
-    // print "$column\n";
+    $part_list=array();
+    $rules=array();
     
-    //  if( $fam_code!='' and $fam_name!='' and ($fam_position-$column)<2 ){
-      $current_fam_name=$fam_name;
-      $current_fam_code=$fam_code;
- //      $new_family=true;
-      
-//     }
-    
+    $current_fam_name=$fam_name;
+    $current_fam_code=$fam_code;
     if($new_family){
       //    print "New family $column $promotion_position \n";
       if($promotion!='' and  ($column-$promotion_position)<4 ){
 	$current_promotion=$promotion;
       }else
 	$current_promotion='';
-
-
       $new_family=false;
     }
-
-
-
-	$deals=array();
-      
+    $deals=array();
     if(preg_match('/off\s+\d+\s+or\s+more/i',_trim($current_promotion))){
+      preg_match('/^\d+\% off/i',$current_promotion,$match);
+      $allowance=$match[0];
+      preg_match('/off.*more/',$current_promotion,$match);
+      $terms=preg_replace('/^off\s*/i','',$match[0]);
+      
+      $deals[]=array(
+		     'deal campain name'=>'Gold Reward'
+		     ,'deal trigger'=>'Order'
+		     ,'deal description'=>$allowance.' if last order within 1 calendar month'
+		     ,'deal terms type'=>'Order Interval'
+		     ,'deal terms description'=>'last order within 1 calendar month'
+		     ,'deal allowance description'=>$allowance
+		     ,'deal allowance type'=>'Percentage Off'
+		     ,'deal allowance target'=>'Product'
+		     ,'deal allowance target key'=>''
+		     ,'deal begin date'=>'2006-01-01 00:00:00'
+		       ,'deal expiration date'=>date("Y-m-d 23:59:59",strtotime('now + 1 year'))
+		     );
+      
+      $deals[]=array(
+		     'deal campain name'=>''
+		     ,'deal trigger'=>'Family'
+		     ,'deal description'=>$allowance.' if '.$terms.' same family'
+		     ,'deal terms type'=>'Family Quantity Ordered'
+		     ,'deal terms description'=>'order '.$terms
+		     ,'deal allowance description'=>$allowance
+		     ,'deal allowance type'=>'Percentage Off'
+		     ,'deal allowance target'=>'Product'
+		     ,'deal allowance target key'=>''
+		     ,'deal begin date'=>'2006-01-01 00:00:00'
+		     ,'deal expiration date'=>date("Y-m-d 23:59:59",strtotime('now + 1 year'))
+		     );	
+
       
       
-      //  print "----------- $current_promotion\n";
-	preg_match('/^\d+\% off/i',$current_promotion,$match);
-	$allowance=$match[0];
-	preg_match('/off.*more/',$current_promotion,$match);
-	$terms=preg_replace('/^off\s*/i','',$match[0]);
-
-	$deals[]=array(
-		       'deal campain name'=>'Gold Reward'
-		       ,'deal trigger'=>'Order'
-		       ,'deal description'=>$allowance.' if last order within 1 calendar month'
-		       ,'deal terms type'=>'Order Interval'
-		       ,'deal terms description'=>'last order within 1 calendar month'
-		       ,'deal allowance description'=>$allowance
-		       ,'deal allowance type'=>'Percentage Off'
-		       ,'deal allowance target'=>'Product'
-		       ,'deal allowance target key'=>''
-		          ,'deal begin date'=>'2006-01-01 00:00:00'
-		       ,'deal expiration date'=>date("Y-m-d 23:59:59",strtotime('now + 1 year'))
-		       );
-
-	$deals[]=array(
-		       'deal campain name'=>''
-		       ,'deal trigger'=>'Family'
-		       ,'deal description'=>$allowance.' if '.$terms.' same family'
-		       ,'deal terms type'=>'Family Quantity Ordered'
-		       ,'deal terms description'=>'order '.$terms
-		       ,'deal allowance description'=>$allowance
-		       ,'deal allowance type'=>'Percentage Off'
-		       ,'deal allowance target'=>'Product'
-		       ,'deal allowance target key'=>''
-		          ,'deal begin date'=>'2006-01-01 00:00:00'
-		       ,'deal expiration date'=>date("Y-m-d 23:59:59",strtotime('now + 1 year'))
-		       );	
-
-
-
     }elseif(preg_match('/\d+\s*or more\s*\d+\%$/i',_trim($current_promotion))){
       // print $current_promotion." *********\n";
       preg_match('/\d+\%$/i',$current_promotion,$match);
@@ -219,7 +203,7 @@ foreach($__cols as $cols){
       $deals[]=array(
 		     'deal campain name'=>'Gold Reward'
 		     ,'deal trigger'=>'Order'
-		       ,'deal description'=>$allowance.' if last order within 1 calendar month'
+		     ,'deal description'=>$allowance.' if last order within 1 calendar month'
 		     ,'deal terms type'=>'Order Interval'
 		     ,'deal terms description'=>'last order within 1 calendar month'
 		     ,'deal allowance description'=>$allowance
@@ -242,9 +226,9 @@ foreach($__cols as $cols){
 		       ,'deal allowance target key'=>''
 		       ,'deal begin date'=>'2006-01-01 00:00:00'
 		       ,'deal expiration date'=>date("Y-m-d 23:59:59",strtotime('now + 1 year'))
-
+		       
 		       );	
-
+	
 
     }elseif(preg_match('/^buy \d+ get \d+ free$/i',_trim($current_promotion))){
       // print $current_promotion." *********\n";
@@ -269,115 +253,75 @@ foreach($__cols as $cols){
 		     );	
 
 
-  }else
+    }else
        $deals=array();
     
-
-
-    //    $fam_code='';
-    // $fam_name='';
-    //$fam_position=0;
-    
-
     $units=$cols[5];
     $description=$cols[6];
     $rrp=$cols[16];
-    if($price>=0  ){
-      
-
-   //    print "$price $code\n";
-
-      
-
-      $product=new Product('code',$code);
-      if(!$product->id){
-	$data=array(
-		    'sale state'=>'For sale',
-		    'code'=>$code,
-		    'price'=>$price,
-		    'rrp'=>$rrp,
-		    'units per case'=>$units,
-		    'name'=>$description,
-		    'family code'=>$current_fam_code,
-		    'family name'=>$current_fam_name,
-		    'department code'=>$department_name,
-		    'deals'=>$deals
-		    
-
-		    );
-	//print_r($data);
-	//  	if($code=='BW-01')
-	//  exit;
-	//	exit;
-       	$product=new Product('create',$data);
-	//print_r($product->data);
-	//exit;
-      }else{
-	//	print $count."\r";
-	//	print_r($product->data);
-	//print $product->get('product code')."\n";
-      }
-      
-      //print "C:$code D:$units x $description P:$price\n";
-    }
-    $count++;
-    $product_position=$column;
-    
-    $scode=$cols[20];
     $supplier_code=$cols[21];
-    $cost=$cols[23];
+    $supplier_price=$cols[23];
     
-  //   print_r($cols);
-//     exit;
-
-    if(preg_match('/^SG\-/i',$code))
-      $supplier_code='AW';
-    
-    
-    if($supplier_code=='AW')
-      $scode=$code;
-
-    $supplier=new Supplier('code',$supplier_code);
-    if(!$supplier->id){
+    $product=new Product('code',$code);
+    if(!$product->id){
       $data=array(
-		  'name'=>$supplier_code,
-		  'code'=>$supplier_code,
-		  );
-      $supplier=new Supplier('new',$data);
-    }
-
-    
-
-    $part=new Part('supplier_product',array('supplier key'=>$supplier_id,'supplier product code'=>$part_code));
-    if(!$part->id){
-      $part_data=array(
-		       'Part Most Recent'=>'Yes',
-		       'Part Vendor Key'=>$supplier->id,
-		       'Part Vendor Product Code'=>$scode,
-		       'Part Vendor Product Unit Price'=>$cost,
-		       'Part Vendor Product Units Per Part'=>$product->get('Product Units per Case'),
-		       'Part Vendor Product Unit Description'=>$product->get('product name'),
-		       'Part XHTML Used In Products'=>$product->get('product code'),
-		       'Part XHTML Description'=>preg_replace('/\(.*\)\s*$/i','',$product->get('Product XHTML Short Description'))
+		  'sale state'=>'For sale',
+		  'code'=>$code,
+		  'price'=>$price,
+		  'rrp'=>$rrp,
+		  'units per case'=>$units,
+		  'name'=>$description,
+		  'family code'=>$current_fam_code,
+		  'family name'=>$current_fam_name,
+		  'department code'=>$department_name,
+		  'deals'=>$deals
+		    );
+       	$product=new Product('create',$data);
+	$scode=$cols[20];
+	$supplier_code=$cols[21];
+	$cost=$cols[23];
+	if(preg_match('/^SG\-/i',$code))
+	  $supplier_code='AW';
+	if($supplier_code=='AW')
+	  $scode=$code;
+	$supplier=new Supplier('code',$supplier_code);
+	if(!$supplier->id){
+	  $data=array(
+		      'name'=>$supplier_code,
+		      'code'=>$supplier_code,
+		      );
+	  $supplier=new Supplier('new',$data);
+	}
+	$sp_data=array(
+		       'Supplier Product Supplier Key'=>$supplier->id,
+		       'Supplier Product Code'=>$scode,
+		       'Supplier Product Cost'=>$cost
 		       );
-        print_r($part_data);
-      $part=new Part('new',$part_data);
+	$supplier_product=new SupplierProduct('new',$sp_data);
+	$part_data=array(
+			 'Part Most Recent'=>'Yes',
+			 'Part XHTML Currently Supplied By'=>sprintf('<a href="supplier.php?id=%d">%s</a>',$supplier->id,$supplier->get('supplier code')),
+			 'Part XHTML Currently Used In'=>sprintf('<a href="product.php?id=%d">%s</a>',$product->id,$product->get('product code')),
+			 'Part XHTML Description'=>preg_replace('/\(.*\)\s*$/i','',$product->get('Product XHTML Short Description'))
+			 );
+	$part=new Part('new',$part_data);
+	$rules[]=array('Part Key'=>$part->id,'Supplier Product Units Per Part'=>$units);
+	$supplier_product->new_rules($rules);
+	$part_list[]=array(
+			   'Product ID'=>$product->get('product ID'),
+			   'Part SKU'=>$part->get('part sku'),
+			   'Product Part Id'=>1,
+			   'requiered'=>'Yes',
+			   'Parts Per Product'=>1,
+			   'Product Part Type'=>'Simple Pick'
+			   );
+	$product->new_part_list($part_list);
     }
     
-    $part_list[]=array(
-		     'Part SKU'=>$part->get('part sku'),
-		     'Product Part Id'=>1,
-		     'requiered'=>'Yes',
-		     'Parts Per Product'=>1,
-		     'Product Part Type'=>'Simple Pick'
-		       );
-    $product->new_part_list($part_list);
-
-
-}else{
+  }else{
 
     $new_family=true;
-
+    
     // print "Col $column\n";
     //print_r($cols);
     if($cols[3]!='' and $cols[6]!=''){
