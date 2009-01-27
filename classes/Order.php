@@ -569,7 +569,29 @@ class Order{
       $customer=new Customer('new',$data);
       return $customer->id;
       break;
-    }
+    case('auto'):
+      
+      //get list of posible customers (email);
+
+      $email=$data['email'];
+      if($email!=''){
+	$sql=sprintf("select `Customer Key`,(length(`Customer Email`)-levenshtein(`Customer Email`,'%s'))/length(`Customer Email`) as similarity from `Customer Dimension`  where similarity>0  order by similarity limit 500",add_slashes($email));
+      $result =& $this->db->query($sql);
+      $p_customer_by_email=array();
+      while($row=$result->fetchRow()){
+	$p_customer_by_email[$row['customer key']]=$row['similarity'];
+	if(!isset($multiplicity[$row['similarity']]))
+	  $multiplicity[$row['similarity']]=1;
+	else
+	  $multiplicity[$row['similarity']]++;
+      }
+      
+      
+
+
+      break;
+
+  }
 
   }
 
