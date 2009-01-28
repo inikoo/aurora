@@ -583,7 +583,7 @@ class Order{
 	if(!isset($multiplicity[$row['similarity']]))
 	  $multiplicity[$row['similarity']]=1;
 	else
-	  $multiplicity[$row['similarity']]++;
+	  $multiplicity[$row['similarity']];
       }
       
       
@@ -592,6 +592,8 @@ class Order{
       break;
 
   }
+
+    }
 
   }
 

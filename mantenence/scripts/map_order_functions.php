@@ -1,5 +1,2762 @@
 <?
 
+function guess_email($email,$contact='',$tipo=1){
+  if(check_email_address($email) ){
+
+    // if($contact=='')
+    //  $contact=get_name($contact_id);
+    $email_data=array ('email'=>$email,'contact'=>$contact,'tipo'=>$tipo);
+    
+    return $email_data;
+    
+  }
+
+  else
+    return false;
+}
+
+function guess_tel($raw_tel,$country_id='',$city_id=''){
+  if($raw_tel=='')
+    return false;
+  $is_mobile=2; // 2 unknown 1 yes 0 no
+  $icode='';
+  $ncode='';
+  $number='';
+  $ext='';
+  // fisrt try to see if it has an extension;
+  $tel_ext=preg_split('/ext|#/i',$raw_tel);
+
+  if(count($tel_ext)==2){
+    $ext=preg_replace('/[^0-9]/','',$tel_ext[1]);
+  }   
+  
+  $number=$tel_ext[0];
+  // if (*) founf the numbers at the left could be  icodes and the number iside could be the ncode ane the number ate the rigth the numbner
+  
+ //  if(preg_match('/\(.*\)/i',$number,$possible_ncode)){
+//     $possible_ncode=preg_replace('/\(|\)/','', $possible_ncode[0]);
+//     if(preg_match('/^0*$/', $possible_ncode)){
+//       // forget it
+//     }else{
+//       $ncode=$possible_ncode;
+//     }
+//     $number_parts=preg_split('/\(.*\)/i',$number);
+//     $icode=$number_parts[0];
+//     $number=$number_parts[1];
+    
+//   }
+  
+  
+
+//   // remove the internatinal code if found
+//   if($country_code=get_icode($country_id))
+//     $icode_match="/^\+?$country_code\s*/";
+//   else 
+//     $icode_match='/^\+\d{1,3}\s+/';
+
+//   if(preg_match($icode_match,$number,$a_ncode)){
+//     $icode= $a_ncode[0];
+//     $number=str_replace($icode,'',$number);
+//   }
+//   //$number=preg_replace('/\[\d*\]/','',$number);
+
+  $icode=preg_replace('/[^0-9]/','',$icode);
+  $ncode=preg_replace('/[^0-9]/','',$ncode);
+  $number=preg_replace('/[^0-9]/','',$number);
+  $ext=preg_replace('/[^0-9]/','',$ext);
+  
+  if($icode=get_icode($country_id)){
+    $regex_icode="/^0{0,2}$icode/";
+    //    print "$regex_icode  xxxxxxxxxxxxx\n";
+    $number=preg_replace($regex_icode,'',$number);
+  }
+  
+
+  // country expcific
+
+  switch($country_id){
+     
+  case(30)://UK
+    if(preg_match('/^0845/',$number)){
+      $icode='';
+      $ncode='0845';
+      $number=preg_replace('/^0845/','',$number);
+    }
+    $number=preg_replace('/^0/','',$number);
+    if(preg_match('/^7/',$number))
+      $is_mobile=1;
+    else
+      $is_mobile=0;
+    break;
+  case(75)://Ireland
+    if(preg_match('/^0?8(2|3|5|6|7|8|9)/',$number))
+      $is_mobile=1;
+    else
+      $is_mobile=0;
+    break;
+  case(47)://Spain
+  case(165)://France
+    if(preg_match('/^0?6/',$number))
+      $is_mobile=1;
+    else
+      $is_mobile=0;
+    break;
+  }
+  
+  
+  $number=preg_replace('/[^\d]/','',$number);
+  $telecom_data=array('icode'=>$icode,'ncode'=>$ncode,'number'=>$number,'ext'=>$ext,'is_mobile'=>$is_mobile);
+  //print "$raw_tel\n";
+   //print_r($telecom_data);
+   // if(!($country_id==30 ))
+   //  exit;
+  return $telecom_data;
+
+}
+
+function get_icode($country_id){
+  $db =& MDB2::singleton();
+  $sql=sprintf("select `Country Telephone Code` as tel_code from `Country Dimension`  where `Country Key`=%d",$country_id);
+  $res = $db->query($sql);  
+  if ($row=$res->fetchRow()){
+    if($row['tel_code']!='')
+      return $row['tel_code'];
+  }else
+    return '';
+}
+
+
+function country_id($address_id,$default=0){
+   $db =& MDB2::singleton();
+   $sql=sprintf("select country_id from address_atom where address_id=%d ",$address_id);
+   $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
+   if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+     return $row['country_id'];
+   }else
+     return $default;
+ 
+
+}
+
+function is_street($string){
+  if($string=='')
+    return false;
+
+  $string=_trim($string);
+  // if(preg_match('/^\d+[a-z]?\s+\w|^\s*calle\s+|\s+close\s*$|/\s+lane\s*$|\s+street\s*$|\s+st\.?\s*$/i',$string))
+
+  if(preg_match('/\s+rd\.?\s*$|\s+road\s*$|^\d+[a-z]?\s+\w|^\s*calle\s+|\s+close\s*$|\s+lane\s*$|\s+street\s*$|\s+st\.?\s*$/i',$string))
+    return true;
+   if(preg_match('/[a-z\-\#\,]{1,}\s*\d/i',$string))
+    return true;
+
+  if(preg_match('/\d.*[a-z]{1,}/i',$string))
+    return true;
+
+  
+
+    return false;
+}
+
+function is_internal($string){
+  if($string=='')
+    return false;
+  // if(preg_match('/^\d+[a-z]?\s+\w|^\s*calle\s+|\s+close\s*$|/\s+lane\s*$|\s+street\s*$|\s+st\.?\s*$/i',$string))
+
+  if(preg_match('/lot\s*(n-)?\s*\d|suite\s*\d|shop\s*\d|apt\s*\d/i',$string))
+    return true;
+  else
+    return false;
+}
+
+
+
+
+function is_country_d2($country_d2,$country_id){
+   if($country_d2=='')
+     return false;
+      $db =& MDB2::singleton();
+  if($country_id>0)
+    $sql=sprintf("select id from list_country_d2 where (name='%s' or oname='%s') and country_id=%d",addslashes($country_d2),addslashes($country_d2),$country_id);
+  else
+    $sql=sprintf("select id from list_country_d2 where (name='%s' or oname='%s') ",addslashes($country_d2),addslashes($country_d2));
+
+  //    print "$sql\n";
+ $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
+ if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+    return true;
+  }else
+    return false;
+}
+
+function is_town($town,$country_id){
+   if($town=='')
+     return false;
+      $db =& MDB2::singleton();
+  if($country_id>0)
+    $sql=sprintf("select id from list_town where (name='%s' or oname='%s') and country_id=%d",addslashes($town),addslashes($town),$country_id);
+  else
+    $sql=sprintf("select id from list_town where (name='%s' or oname='%s') ",addslashes($town),addslashes($town));
+
+  //  print "$sql\n";
+ $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
+ if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+    return true;
+  }else
+    return false;
+}
+
+function guess_address($address_raw_data,$defaults,$untrusted=true){
+
+ $db =& MDB2::singleton();
+ //print_r($address_raw_data);
+
+ $fix2=true;
+ $debug=true;
+   $debug=false;
+ if($debug)
+    print_r($address_raw_data);
+  if($address_raw_data['address1']=='' 
+     and $address_raw_data['address2']==''
+     and $address_raw_data['address3']=='')
+    return false;
+
+
+  
+  $address1='';
+  $address2='';
+  $address3='';
+  $town_d2='';
+  $town_d1='';
+  $town='';
+  $country_d2='';
+  $country_d1='';
+  $postcode='';
+  $country='';
+  $town_d2_id=0;
+  $town_d1_id=0;
+  $town_id=0;
+  $country_d2_id=0;
+  $country_d1_id=0;
+ $country_id=0;
+
+
+ if($fix2){
+   if(preg_match('/^St. Thomas.*Virgin Islands$/i',$address_raw_data['town']))
+     $address_raw_data['country']='Virgin Islands, U.S.';
+   
+ }
+ 
+
+  
+  $country_d1=$address_raw_data['country_d1'];
+  if(!isset($address_raw_data['country']) or $address_raw_data['country']==''){
+    $country_id=$defaults['country_id'];
+    
+  }else{// Try to guess country
+
+    // Common missconceptions
+    if(preg_match('/^england$|^inglaterra$/i',$address_raw_data['country'])){
+      $address_raw_data['country']='United Kingdom';
+     if($country_d1=='')
+	$country_d1='England';
+    }else if(preg_match('/^nor.*ireland$|n\.{2}ireland/i',$address_raw_data['country'])){
+      $address_raw_data['country']='United Kingdom';
+      if($country_d1=='')
+	$country_d1='Northen Ireland';
+    }else if(preg_match('/^r.*ireland$|^s.*ireland|^eire$/i',$address_raw_data['country'])){
+      $address_raw_data['country']='Ireland';
+    }else if(preg_match('/me.ico|m.xico/i',$address_raw_data['country'])){
+      $address_raw_data['country']='Mexico';
+    }else if(preg_match('/scotland|escocia/i',$address_raw_data['country'])){
+
+      $address_raw_data['country']='United Kingdom';
+      if($country_d1=='')
+	$country_d1='Scotland';
+    }else if(preg_match('/.*\s+(w|g)ales$/i',$address_raw_data['country'])){
+      $address_raw_data['country']='United Kingdom';
+      if($country_d1=='')
+	$country_d1='Wales';
+    }else if(preg_match('/canarias$/i',$address_raw_data['country'])){
+      $address_raw_data['country']='Spain';
+      if($country_d1=='')
+      $country_d1='Canarias';
+    }else if(preg_match('/^Channel Islands$/i',$address_raw_data['country'])){
+
+      if($country_d1!=''){
+	$address_raw_data['country']=$country_d1;
+	$country_d1='';
+	
+      }else if($address_raw_data['country_d2']!=''){
+	$address_raw_data['country']=$address_raw_data['country_d2'];
+	$address_raw_data['country_d2']='';
+	
+      } else if($address_raw_data['town']!=''){
+	$address_raw_data['country']=$address_raw_data['town'];
+	$address_raw_data['town']='';
+	
+      }
+      
+
+      
+    }
+    
+
+ $_p=$address_raw_data['postcode'];
+
+  if(preg_match('/^\s*BFPO\s*\d{1,}\s*$/i',$_p))
+    $address_raw_data['country']='UK';
+
+
+
+
+    $sql=sprintf("select country.id,name, alias from list_country as country left join list_country_alias as country_alias on (country.code=country_alias.code) where alias='%s' or country.name='%s' group by country.id ",$address_raw_data['country'],$address_raw_data['country']);
+    // print "$sql\n";
+
+
+
+ $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
+	   if($row = mysql_fetch_array($result, MYSQL_ASSOC)) 
+      $country_id=$row['id'];
+      else
+	$country_id=244;
+  }
+  // Ok the country is already guessed, wat else ok depending of the country letys gloing to try to get the orthers bits of the address
+
+
+
+
+  // pushh all address up
+
+  if($untrusted){
+
+
+    //Change town if misplaced
+    
+    if($address_raw_data['town']=='') {
+
+      if(is_town($address_raw_data['address3'],$country_id) ){
+	$address_raw_data['town']=$address_raw_data['address3'];
+	$address_raw_data['address3']='';
+      }else if(is_town($address_raw_data['country_d2'],$country_id) ){
+	$address_raw_data['town']=$address_raw_data['country_d2'];
+	$address_raw_data['country_d2']='';
+      }
+
+
+    }
+
+
+
+    if(preg_match('/^\d[a-z]?(bis)?\s*,/',$address_raw_data['address1'])){
+      $address_raw_data['address1']=preg_replace('/\s*,\s*/',' ',$address_raw_data['address1']);
+    }
+    if(preg_match('/^\d[a-z]?(bis)?\s*,/',$address_raw_data['address2'])){
+      $address_raw_data['address2']=preg_replace('/\s*,\s*/',' ',$address_raw_data['address2']);
+    }
+    if(preg_match('/^\d[a-z]?(bis)?\s*,/',$address_raw_data['address3'])){
+      $address_raw_data['address3']=preg_replace('/\s*,\s*/',' ',$address_raw_data['address3']);
+    }
+    
+    $address_raw_data['address1']=preg_replace('/,\s*$/',' ',$address_raw_data['address1']);
+    $address_raw_data['address2']=preg_replace('/,\s*$/',' ',$address_raw_data['address2']);
+    $address_raw_data['address3']=preg_replace('/,\s*$/',' ',$address_raw_data['address3']);
+
+
+    // this is going to ve dirty
+    //print_r($address_raw_data);
+    
+    if(is_street($address_raw_data['address2']) and  $address_raw_data['address1']!=''  and $address_raw_data['address3']==''  ){
+      $tmp=preg_split('/\s*,\s*/i',$address_raw_data['address1']);
+      if(count($tmp)==2 and !preg_match('/^\d*$/i',$tmp[0])   and !preg_match('/^\d*$/i',$tmp[1]) ){
+	$address_raw_data['address3']=$address_raw_data['address2'];
+	$address_raw_data['address1']=$tmp[0];
+	$address_raw_data['address2']=$tmp[1];
+
+
+      }
+
+    }
+    //  print_r($address_raw_data);
+
+    //print $address_raw_data['address1']."----------------\n";
+    // print $address_raw_data['address2']."----------------\n";
+
+
+
+    if($address_raw_data['address1']==''){ 
+      if($address_raw_data['address2']==''){
+	// if line 1 and 2  has not data
+	$address_raw_data['address1']=$address_raw_data['address3'];
+	$address_raw_data['address3']='';
+      
+
+      }else{
+
+	if($address_raw_data['address3']==''){
+
+	    $address_raw_data['address1']=$address_raw_data['address2'];
+	    $address_raw_data['address2']='';
+	    
+	  }else{
+	    $address_raw_data['address1']=$address_raw_data['address2'];
+	    $address_raw_data['address2']=$address_raw_data['address3'];
+	    $address_raw_data['address3']='';
+	  }
+
+
+      }
+      
+    }else if($address_raw_data['address2']==''){
+      $address_raw_data['address2']=$address_raw_data['address3'];
+      $address_raw_data['address3']='';
+    }
+
+
+  //then volter alas address
+
+    // print_r($address_raw_data);
+    // exit;
+
+  //lets do it as an experiment if the only line is 1 has data
+  // split the data in that line  to see what happens
+  if($address_raw_data['address1']!='' and $address_raw_data['address2']=='' and $address_raw_data['address3']==''){
+    $splited_address=preg_split('/\s*,\s*/i',$address_raw_data['address1']);
+    if(count($splited_address)==1){
+      $address3=$splited_address[0];
+    }else if(count($splited_address)==2){
+      // ok separeta bu on li if the sub partes are not like numbers
+
+      $parte_1=_trim($splited_address[1]);
+      $parte_0=_trim($splited_address[0]);
+      // print "->$parte_1<- ->$parte_0<-\n";
+      if(preg_match('/^\d*$/',$parte_0) or preg_match('/^\d*$/',$parte_1)  ){
+	 $address3=$address_raw_data['address1'];
+
+
+
+      }else{
+	
+	if(preg_match('/^\d{1,}.+$/',$parte_0) or preg_match('/^.+\d{1,}$/',$parte_1)   ){
+	  $address3=$address_raw_data['address1'];
+	}else {
+	  $address2=$parte_0;
+	  $address3=$parte_1;
+	}
+      }
+      // exit ("$address3\n");
+    }else if(count($splited_address)==3){
+      $address1=$splited_address[0];
+      $address2=$splited_address[1];
+      $address3=$splited_address[2];
+    }
+      
+  }else if( $address_raw_data['address3']==''){
+    $address2=$address_raw_data['address1'];
+    $address3=$address_raw_data['address2'];
+
+  }else{
+
+    // print_r($address_raw_data);
+    $address1=$address_raw_data['address1'];
+    $address2=$address_raw_data['address2'];
+    $address3=$address_raw_data['address3'];
+
+  }
+
+  // print("a1 $address1 a2 $address2 a3 $address3 \n");
+
+
+     $town=$address_raw_data['town'];
+  $town_d2=$address_raw_data['town_d2'];
+  $town_d1=$address_raw_data['town_d1'];
+
+  //  print "1:$address1 2:$address2 3:$address3 t:$town \n";
+
+  $f_a1=($address1==''?false:true);
+  $f_a2=($address2==''?false:true);
+  $f_a3=($address2==''?false:true);
+
+
+
+  $f_t=($town==''?false:true);
+  $f_ta=($town_d2==''?false:true);
+  $f_td=($town_d1==''?false:true);
+
+  $s_a1=is_street($address1);
+  $s_a2=is_street($address2);
+  $s_a3=is_street($address3);
+  $i_a1=is_internal($address1);
+  $i_a2=is_internal($address2);
+  $i_a3=is_internal($address3);
+
+
+
+  // print "Street grade 1-$s_a1 2-$s_a2 3-$s_a3 \n";
+  //   print "Internal grade 1-$i_a1 2-$i_a2 3-$i_a3 \n";
+  //   print "Filled grade 1-$f_a1 2-$f_a2 3-$f_a3 \n";
+  //   exit;    
+   if(!$f_a1 and $f_a2 and $f_a3){
+     
+     if($s_a2 and $i_a3){
+       
+       $_a=$address3;
+       $address3=$address2;
+       $address2=$_a;
+     }
+       
+   }
+
+   
+   //   exit;
+
+  // super special case
+  //  if(!$f_a1 and $f_a2 and $f_a3 and )
+   //print("a1 $address1 a2 $address2 a3 $address3 \n");
+  $town_filled=false;
+  // caso 1 all filled a1,a2 and a3
+  if($f_a1 and $f_a2 and $f_a3){ // caso 1 all filled a1,a2 and a3
+    //print "AAAAAAAA\n";
+    if($s_a1 and !$s_a2 and !$s_a3){ //caso    soo  (moviing 2 )
+      
+      if(!$f_ta and !$f_td and !$f_t){ // caso ooo (towns)
+	//print "AAAAAAAA\n";
+	$town_filled=true;
+	$town=$address3;
+	$town_d2=$address2;
+	$address3=$address1;
+	$address2='';
+	$address1='';
+
+      }else if(!$f_ta and !$f_td and $f_t){// caso oot
+	
+	$town_d1=$address3;
+	$town_d2=$address2;
+	$address3=$address1;
+	$address2='';
+	$address1='';
+
+      }else{
+	$address3=$address1.', '.$address2.', '.$address3;
+	$address2='';
+	$address1='';
+	  
+      }
+    }else if ((!$s_a1 and $s_a2 and !$s_a3) OR ($s_a1 and $s_a2 and !$s_a3)){ //caso    oso OR  sso  (move one)
+      //  print "HOLAAAAAAAAAAAA";
+       if($s_a1 and $s_a2 and !$f_a3 and $f_t){ 
+	 $address3=$address2;
+	 $address2=$address1;
+	 $address1='';
+	 
+       }elseif(!$f_ta and !$f_td and !$f_t){ // caso ooo (towns)
+	$town=$address3;
+	$address3=$address2;
+	$address2=$address1;
+	$address1='';
+      }else if(!$f_ta and !$f_td and $f_t){// caso oot
+	$town_d2=$address3;
+	$address3=$address2;
+	$address2=$address1;
+	$address1='';
+      }else{
+	$address3=$address2.', '.$address3;
+	$address2=$address1;
+	$address1='';
+      }
+    }
+
+  }elseif(!$f_a1 and $f_a2 and $f_a3){ // case xoo
+
+    //   print "1 $address1 2 $address2 3 $address3 \n";
+    if($s_a2 and   !$i_a3 and !$s_a3  ){
+      //   print "caca";
+     if(!$f_ta and !$f_td and !$f_t){ // caso ooo (towns)
+       
+       $town=$address3;
+	$address3=$address2;
+	$address2=$address1;
+	$address1='';
+      }else if(!$f_ta and !$f_td and $f_t){// caso oot
+       
+	$town_d2=$address3;
+	$address3=$address2;
+	$address2=$address1;
+	$address1='';
+
+      }else{
+       
+	$address3=$address2.', '.$address3;
+	$address2=$address1;
+	$address1='';
+      }
+
+
+   }
+
+
+
+  }
+
+  
+
+
+  }
+
+  
+
+  // exit("a1 $address1 a2 $address2 a3 $address3 \n");
+
+ // get country name
+  
+  $sql=sprintf("select name from  list_country where id=%d",$country_id);
+
+ $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
+	   if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+    $country=$row['name'];
+  }
+
+
+  // take opff the name of the comntry from the poscode part
+	   $postcode=$address_raw_data['postcode'];
+
+
+
+  // $regex='/\s*'.$country.'\s*/i';
+  //  $postcode=preg_replace($regex,'',$postcode);
+
+
+
+  // print $postcode." $regex XXXXXXXXXXXXXXXXX \n";
+
+
+  $country_d2=$address_raw_data['country_d2'];
+  
+
+
+
+
+  if(preg_match('/^P\.o\.box\s+\d+$|^po\s+\d+$|^p\.o\.\s+\d+$/i',$town_d2)){
+
+    $po=$town_d2;
+    $town_d2='';
+    $po=preg_replace('/^P\.o\.box\s+|^po\s+|^p\.o\.\s+/i','PO BOX ',$po);
+    if($address1=='')
+      $address1=$po;
+    else
+      $address1=$po.', '.$address1;
+    
+  }
+
+
+
+
+  switch($country_id){
+  case(30)://UK
+    // ok try to determine the city from aour super database of cities and towns
+
+    if(preg_match('/Andover.*\sHampshire/i',$town))
+      $town='Andover';
+
+    if($town_filled){
+      if(is_country_d2($town,30) and is_town($town_d2,30)){
+	$country_d2=$town;	
+	$town=$town_d2;
+	$town_d2='';
+      }
+	
+    }
+
+   
+
+    if($town==''){
+    if($town_d1!='' ){
+      $town=$town_d1;
+      $town_d1='';
+    }
+    elseif($town_d2!=''){
+      $town=$town_d2;
+      $town_d2='';
+    }
+    elseif($address3!='' and ($address2!='' or $address1!='') ){
+      $town=$address3;
+      $address3='';
+    }else if($address2!='' and $address1!=''){
+      $town=$address2;
+      $address2='';
+    }
+
+  }
+
+
+
+
+
+
+
+    $postcode=preg_replace('/,?\s*scotland\s*$|united kingdom/i','',$postcode);
+    $postcode=preg_replace('/\s/','',$postcode);
+    if(preg_match('/^bfpo\s*\d/i',$postcode) )
+      $postcode=preg_replace('/bfpo/i','BFPO ',$postcode);
+    else
+      $postcode=substr($postcode,0,strlen($postcode)-3).' '.substr($postcode,-3,3);
+
+    
+    break;
+case(78)://Italy
+  $postcode=preg_replace('/italy|italia/i','',$postcode);
+  $postcode=preg_replace('/\s/i','',$postcode);
+
+  if($town=='Padova'){
+    $country_d1='Veneto';
+    $country_d2='Padova';
+  }
+ if($town=='Mestre'){
+    $country_d1='Venezia';
+    $country_d2='Veneto';
+  }
+ 
+ if(preg_match('/Genova\s*(\- Ge)?/i',$town)){
+    $country_d1='Genoa';
+    $country_d2='Liguria';
+    $town='Genova';
+  }
+ 
+ if(preg_match('/Spilamberto/i',$address3) and preg_match('/Modena/i',$town)){
+    $country_d1='Emilia-Romagna';
+    $country_d2='Modena';
+    $town='Spilamberto';
+    $address3='';
+  }
+ 
+ if(preg_match('/Pescia/i',$address3) and preg_match('/Toscana/i',$town)){
+    $country_d1='Toscana';
+    $country_d2='Pistoia';
+    $town='Pescia';
+    $address3='';
+  }
+
+if( preg_match('/Villasor.*Cagliari/i',$town)){
+    $country_d1='Sardinia';
+    $country_d2='Cagliari';
+    $town='Villasor';
+  }
+if( preg_match('/Nocera Superiore/i',$town)){
+    $country_d1='Campania';
+    $country_d2='Salerno';
+    $town='Nocera Superiore';
+  }
+if( preg_match('/^Vicenza$/i',$town)){
+    $country_d1='Veneto';
+    $country_d2='Vicenza';
+    $town='Vicenza';
+  }
+
+if( preg_match('/^Rome$/i',$town)){
+    $country_d1='Lazio';
+    $country_d2='Rome';
+    $town='Rome';
+  }
+$postcode=_trim($postcode);
+  if(preg_match('/^\d{2}$/',$postcode))
+      $postcode='000'.$postcode;
+  if(preg_match('/^\d{3}$/',$postcode))
+      $postcode='00'.$postcode;
+
+    if(preg_match('/^\d{4}$/',$postcode))
+      $postcode='0'.$postcode;
+  break;
+  case(75)://Ireland
+
+    // print "address1: $address1\n";
+    //print "address2: $address2\n";
+    //print "address3: $address3\n";
+    //print "townarea: $town_d2\n";
+    //print "town: $town\n";
+    //    print "country_d2: $country_d2\n";
+    //      print "postcode: $postcode\n";
+    
+    $postcode=_trim($postcode);
+    
+    
+
+
+    $country_d2=_trim($country_d2);
+    $postcode=preg_replace('/County COrK/i','',$postcode);
+    $postcode=preg_replace('/^co\.\s*|Republique of Ireland|Louth Ireland|ireland/i','',$postcode);
+    $country_d2=preg_replace('/^co\.\s*|republic of ireland|republic of|ireland/i','',$country_d2);
+    $country_d2=preg_replace('/(co|county)\s+[a-z]+$/i','',$country_d2);
+     $country_d2=preg_replace('/(co|county)\s+[a-z]+,?\s*(ireland)?/i','',$country_d2);
+   $country_d2 =preg_replace('/(co|county)\s+[a-z]+$/i','',$country_d2);
+
+    $postcode=preg_replace('/\,+\s*^ireland$/i','',$postcode);
+    $postcode=preg_replace('/(co|county)\s+[a-z]+,?\s*(ireland)?/i','',$postcode);
+    $town=preg_replace('/(co|county)\s+[a-z]+$/i','',$town);
+
+    if($town=='Cork')
+      $postcode='';
+
+    $postcode=preg_replace('/co\s*Donegal|eire|republic of ireland|rep\? of Ireland|n\/a|^ireland$|/i','',$postcode);
+ $postcode=_trim($postcode);
+ $country_d2=_trim($country_d2);
+    //print "country_d2: $country_d2\n";
+    $town=preg_replace('/\-?\s*eire|\s*\-?\s*ireland/i','',$town);
+    //exit;
+    if($country_d2=='Wesstmeath')
+      $country_d2='Westmeath';
+
+    if($town=='Wesstmeath' or $town=='Westmeath' ){
+      $town='';
+    }
+
+    
+
+    if(is_town($town_d2,$country_id) and is_country_d2($town,$country_id)){
+      $county_d2=$town;
+      $town=$town_d2;
+      $town_d2='';
+
+    }
+      
+
+
+    $postcode=preg_replace('/Rep.?of/i','',$postcode);
+    $postcode=str_replace(',','',$postcode);
+    $postcode=str_replace('.','',$postcode);
+    $postcode=str_replace('DUBLIN','',$postcode);
+    $postcode=str_replace('N/A','',$postcode);
+    $postcode=preg_replace('/Republic\s?of/i','',$postcode);
+    $postcode=preg_replace('/Erie/i','',$postcode);
+    $postcode=preg_replace('/county/i','',$postcode);
+    
+    $postcode=preg_replace('/^co/i','County ',$postcode);
+    $postcode=preg_replace('/\s{2,}/',' ',$postcode);
+    $postcode=_trim($postcode);
+
+    $valid_postalcodes=array('D1','D2','D3','D4','D5','D6','D6w','D7','D8','D9','D10','D11','D12','D13','D14','D15','D16','D17','D18','D20','D22','D24');
+
+    if($postcode!=''){
+    $sql="select name from list_country_d2 where  country_id=75 and name like '%$postcode%'";
+    //print "$sql\n";
+    $res = $db->query($sql);  
+    if ($row=$res->fetchRow()){
+      $postcode='';
+      $country_d2=$row['name'];
+
+    }    
+    }
+    // delete unganted  postcodes
+    if(preg_match('/COMAYORepublicof|COGALWAY|RepublicofTIPPERARY|Republiqueof|NCW|eire|WD3|123|CoKerry,EIRE|COCORK|COOFFALY|WICKLOW|CoKerry/i',$postcode))
+      $postcode='';
+
+    if(preg_match('/^co\.?\s+|^country\s+/i',$postcode)){
+      $postcode='';
+      if($country_d2=='')
+	$country_d2=$postcode;
+      $postcode='';
+    }
+
+    $town=preg_replace('/\s+ireland\s*/i','',$town);
+    $country_d2=preg_replace('/\s+ireland\s*/i','',$country_d2);
+	
+    
+    $town=preg_replace('/co\.\s*/i','Co ',$town);
+    $town=preg_replace('/county\s+/i','Co ',$town);
+
+    // print "$town";
+    $split_town=preg_split('/\s*-\s*|\s*,\s*/i',$town);
+    if(count($split_town)==2){
+      if(preg_match('/^co\s+/i',$split_town[1])){
+	 if($country_d2=='')
+	   $country_d2=$split_town[1];
+	 $town=$split_town[0];
+      }
+
+    }
+
+
+    if(preg_match('/^co\s+/i' ,$town)){
+      if($country_d2=='')
+	$country_d2=$town;
+      $town=preg_replace('/^co\s+/i','',$town);
+    }
+      
+    $country_d2=preg_replace('/co\.?\s+/i','',$country_d2);
+    $country_d2=preg_replace('/county\s+/i','',$country_d2);
+    
+    if(preg_match('/\s*Cork\sCity\s*/i',$town_d2)){
+      $town_d2=='';
+      if($town=='')
+	$town='Cock';
+    }
+    
+    if(preg_match('/^dublin\s+\d+$/i',$town_d2)){
+
+      if($town=='')
+	$town='Dublin';
+      if($town_d1=='')
+	$town_d1=preg_replace('/dublin\s+/i','',$town_d2);
+      if($postcode==preg_replace('/dublin\s+/i','',$town_d2))
+	$postcode='';
+      $town_d2=='';
+    }
+
+
+    if(preg_match('/^dublin\s*\d{1,2}$/i',$postcode)){
+      $postcode=preg_replace('/^dublin\s*/i','',$postcode);
+    }
+    $town=_trim($town);
+    
+ //  print "$town +++++++++++++++\n";
+    $town=preg_replace('/\s*,?\s*Leinster/i','',$town);
+    if(preg_match('/^dublin\s*6w$/i',$town)){
+      $postcode='D6W';
+      $town='Dublin';
+    }
+
+    //  print "$town +++++++++++++++\n";
+    if(preg_match('/^dublin\s*\-\s*\d$/i',$town)){
+      $postcode=preg_replace('/^dublin\s*\-\s*/i','',$town);
+      $town='Dublin';
+    }
+
+     if(preg_match('/^dublin\s*d?\d{1,2}$/i',$town)){
+       $postcode=preg_replace('/^dublin\s*/i','',$town);
+       $town='Dublin';
+    }
+     
+     if(is_numeric($postcode))
+       $postcode='D'.$postcode;
+
+
+      if($town==''){
+      if($town_d1!='' ){
+	$town=$town_d1;
+	$town_d1='';
+      }
+      elseif($town_d2!=''){
+	$town=$town_d2;
+	$town_d2='';
+      }
+      elseif($address3!='' and ($address2!='' or $address1!='') ){
+	$town=$address3;
+	$address3='';
+      }else if($address2!='' and $address1!=''){
+	$town=$address2;
+	$address2='';
+      }
+      }
+      $country_d2=mb_ucwords($country_d2);
+
+      $postcode=str_replace('-','',$postcode);
+      $postcode=preg_replace('/MUNSTER|County RK/i','',$postcode);
+      $postcode=_trim($postcode);
+      break; 
+
+  case(89)://Canada
+    $postcode=preg_replace('/\s*canada\s*/i','',$postcode);
+
+    if($country_d2!='' and $country_d1==''){
+      $country_d1=$country_d2;
+      $country_d2='';
+    }
+    break;
+  case(208)://Czech Republic
+     $postcode=preg_replace('/\s*Czech Republic\s*/i','',$postcode);
+     $postcode=preg_replace('/\s*/i','',$postcode);
+    break;
+case(108)://Cypruss
+       $postcode=preg_replace('/\s*cyprus\s*/i','',$postcode);
+
+       $postcode=preg_replace('/^cy\-?/i','',$postcode);
+
+       if($town=='Lefkosia (Nicosia)')
+	 $town='Nicosia';
+       if($town=='Limassol City Centre')
+	 $town='Limassol';
+       
+        if($town=='Cyprus')
+	 $town='';
+
+      if($town==''){
+      if($town_d1!='' ){
+	$town=$town_d1;
+	$town_d1='';
+      }
+      elseif($town_d2!=''){
+	$town=$town_d2;
+	$town_d2='';
+      }
+      elseif($address3!='' and ($address2!='' or $address1!='') ){
+	$town=$address3;
+	$address3='';
+      }else if($address2!='' and $address1!=''){
+	$town=$address2;
+	$address2='';
+      }
+      }
+
+       break;
+  case(240):
+    $town=preg_replace('/\,?\s*Guernsey Islands$/i','',$town);
+     $town=preg_replace('/\,?\s*Guernsey$/i','',$town);
+     $town=preg_replace('/\,?\s*Channel Islands$/i','',$town);
+     $town=preg_replace('/\,?\s*CI$/i','',$town);
+     $town=preg_replace('/\,?\s*C.I.$/i','',$town);
+
+     if($town==''){
+      if($town_d1!='' ){
+	$town=$town_d1;
+	$town_d1='';
+      }
+      elseif($town_d2!=''){
+	$town=$town_d2;
+	$town_d2='';
+      }
+      elseif($address3!='' and ($address2!='' or $address1!='') ){
+	if(!preg_match('/^rue\s/i',$address3)){
+	$town=$address3;
+	$address3=$address2;
+	$address2='';
+	}
+	  }else if($address2!='' and $address1!=''){
+	$town=$address2;
+	$address2='';
+      }
+
+      
+
+      
+     }
+     
+
+
+
+
+    break;
+  case(104):// Greece
+    $postcode=preg_replace('/greece/i','',$postcode);
+
+    $postcode=preg_replace('/^(GK|T\.?k\.?)/i','',$postcode);
+    $postcode=preg_replace('/\s/i','',$postcode);
+    $postcode=_trim($postcode);
+
+    if(preg_match('/^(Attica|Ionian Islands)$/i',$town))
+      $town='';
+if($country_d1=='Attoka'){
+      $country_d1='Attica';
+
+    }
+    if($town=='Athens')
+      $country_d1='Attica';
+if($town=='Salamina')
+      $country_d1='Attica';
+ if($town=='Corfu'){
+   $town='';
+   $country_d1='Ionian Islands';
+   $country_d2='Corfu';
+ }
+    if($town=='Kefalonia')
+      $country_d1='Ionian Islands';
+    if($town=='Thessaloniki')
+      $country_d1='Central Macedonia';
+
+    if($town=='Xania - Krete'){
+      $country_d1='Crete';
+      $town='Xania';
+    }
+    if($town=='Salamina - Tsami'){
+      $country_d1='Attica';
+      $town='Salamina';
+	if($town_d2=='')
+	  $town_d2='Tsami';
+    }
+
+
+    break;
+
+  case(229)://USA
+  if($country_d2!='' and $country_d1==''){
+      $country_d1=$country_d2;
+      $country_d2='';
+    }
+
+    $town=preg_replace('/Lousiana/i','Louisiana',$town);
+    
+    $country_d1=_trim($country_d1);
+    if(preg_match('/^[a-z]\s*[a-z]$/i',$country_d1))
+      $country_d1=preg_replace('/\s/','',$country_d1);
+    
+    $postcode=_trim($postcode);
+
+
+
+
+
+    $postcode=preg_replace('/united states of america/i','',$postcode);
+    
+
+    $postcode=preg_replace('/\s*u\s*s\s*a\s*|^United States\s+|United Stated|usa|^united states$|^united states of america$|^america$/i','',$postcode);
+    $postcode=_trim($postcode);
+
+    if($country_d1==''){
+      $regex='/\s*\-?\s*[a-z]{2}\.?\s*\-?\s*/i';
+      if(preg_match($regex,$postcode,$match)){
+	$country_d1=preg_replace('/[^a-z]/i','',$match[0]);
+	$postcode=preg_replace($regex,'',$postcode);
+      }
+      $regex='/\([a-z]{2}\)/i';
+      if(preg_match($regex,$town,$match)){
+	$country_d1=preg_replace('/[^a-z]/i','',$match[0]);
+	$town=preg_replace($regex,'',$town);
+      }
+      $regex='/\s{1,}\-?\s*[a-z]{2}\.?$/i';
+      if(preg_match($regex,$town,$match)){
+	$country_d1=preg_replace('/[^a-z]/i','',$match[0]);
+	$town=preg_replace($regex,'',$town);
+      }
+
+
+      if(is_country_d1($town,229) and $town_d2!=''){
+	$country_d1=$town;
+	$town=$town_d2;
+	$town_d2='';
+	
+      }
+
+    }
+
+
+    //   print "$postcode ******** ";
+    if($postcode=='' and preg_match('/\s*\d{4,5}\s*/',$town,$match)){
+       $postcode=trim(trim($match[0]));
+       $town=_trim(preg_replace('/\s*\d{4,5}\s*/','',$town));
+    }
+
+    $town=preg_replace('/\s*\-\s*$/','',$town);
+
+    $town_split=preg_split('/\s*\-\s*|\s*,\s*/',$town);
+
+    $country_d1=_trim($country_d1);
+
+    if(count($town_split)==2 and is_country_d1($town_split[1],229)){
+
+      $country_d1=$town_split[1];
+      $town=$town_split[0];
+
+      
+
+    }
+    
+
+
+    if($country_d1=='N Y')
+      $country_d1='New York';
+
+    $states=array('AL'=>'Alabama','AK'=>'Alaska','AZ'=>'Arizona','AR'=>'Arkansas','CA'=>'California','CO'=>'Colorado','CT'=>'Connecticut','DE'=>'Delaware','FL'=>'Florida','GA'=>'Georgia','HI'=>'Hawaii','ID'=>'Idaho','IL'=>'Illinois','IN'=>'Indiana','IA'=>'Iowa','KS'=>'Kansas','KY'=>'Kentucky','LA'=>'Louisiana','ME'=>'Maine','MD'=>'Maryland','MA'=>'Massachusetts','MI'=>'Michigan','MN'=>'Minnesota','MS'=>'Mississippi','MO'=>'Missouri','MT'=>'Montana','NE'=>'Nebraska','NV'=>'Nevada','NH'=>'New Hampshire','NJ'=>'New Jersey','NM'=>'New Mexico','NY'=>'New York','NC'=>'North Carolina','ND'=>'North Dakota','OH'=>'Ohio','OK'=>'Oklahoma','OR'=>'Oregon','PA'=>'Pennsylvania','RI'=>'Rhode Island','SC'=>'South Carolina','SD'=>'South Dakota','TN'=>'Tennessee','TX'=>'Texas','UT'=>'Utah','VT'=>'Vermont','VA'=>'Virginia','WA'=>'Washington','WV'=>'West Virginia','WI'=>'Wisconsin','WY'=>'Wyoming');
+    if(strlen($country_d1)==2){
+      if (array_key_exists(strtoupper($country_d1), $states)) {
+	$country_d1=$states[strtoupper($country_d1)];
+      }
+    }
+    
+    if($country_d1==$country_d2)
+      $country_d2='';
+    
+    if($town_d1=='Brooklyn' and $town=='New York'){
+      $country_d1='New York';
+    }
+    $postcode=_trim($postcode);
+    if(preg_match('/^d{4}$/',$postcode))
+       $postcode='0'.$postcode;
+       
+    break;
+ case(105)://Croatia
+    $postcode=_trim($postcode);
+   $postcode=preg_replace('/croatia/i','',$postcode);
+    $postcode=preg_replace('/^hr-?/i','',$postcode);
+     $postcode=_trim($postcode);
+   break;
+ case(160)://Portugal
+   $postcode=_trim($postcode);
+   $postcode=preg_replace('/portugal/i','',$postcode);
+   $town=preg_replace('/\-?\s*portugal/i','',$town);
+
+
+   if($postcode=='' and preg_match('/\s*\d{4}\s*/',$town,$match)){
+       $postcode=trim(trim($match[0]));
+       $town=_trim(preg_replace('/\s*\d{4}\s*/','',$town));
+    }
+
+
+   //   if(preg_match('/algarve/i'$town))
+
+
+   if($town==''){
+      if($town_d1!='' ){
+	$town=$town_d1;
+	$town_d1='';
+      }
+      elseif($town_d2!=''){
+	$town=$town_d2;
+	$town_d2='';
+      }
+      elseif($address3!='' and ($address2!='' or $address1!='') ){
+	$town=$address3;
+	$address3=$address2;
+	$address2=$address1;
+	$address1='';
+      }else if($address2!='' and $address1!=''){
+	$town=$address2;
+	$address2='';
+      }
+      }
+
+
+
+
+    break;
+ case(21)://Belgium
+  $postcode=_trim($postcode);
+  $postcode=preg_replace('/belgium/i','',$postcode);
+  $postcode=preg_replace('/^b\-?/i','',$postcode);
+  $postcode=_trim($postcode);
+  $t=preg_split('/\s*,\s*/',$town);
+  if(count($t)==2){
+    if(is_country_d1($t[1],$country_id)){
+      $country_d1=$t[1];
+      $town=$t[0];
+    }
+
+
+  }
+
+  $town=_trim($town);
+  if(is_country_d1($town,$country_d1) and $country_d1==''  and ($address2!='' and $address3!='') ){
+   $country_d1=$town;
+   $town='';
+
+ }
+  if($town=='West Vlaanderen')
+    $town=='West-Vlaanderen';
+
+  if(is_country_d1($town,$country_d1) and $country_d1==''  and $town_d2!=''  ){
+   $country_d1=$town_d2;
+   $town_d2='';
+
+ }
+
+
+
+
+  break;
+
+
+  case(80)://Austria
+  $postcode=_trim($postcode);
+  $postcode=preg_replace('/a\-?/i','',$postcode);
+  $town=_trim($town);
+  if(is_country_d1($town,$country_id) and $country_d1==''  and ($address2!='' and $address3!='') ){
+   $country_d1=$town;
+   $town='';
+
+ }
+ if(is_country_d1($town,$country_d1) and $country_d1==''  and $town_d2!=''  ){
+   $country_d1=$town_d2;
+   $town_d2='';
+
+ }
+
+
+
+
+    break;
+case(15)://Australia
+ $postcode=preg_replace('/\s*australia\s*/i','',$postcode);
+  $regex='/\(QLD\)/i';
+  if(preg_match($regex,$town)){
+    $country_d1='Queensland';
+    $town=preg_replace($regex,'',$town);
+  }
+  $regex='/, Western Australia/i';
+  if(preg_match($regex,$town)){
+    $country_d1='Western Australia';
+    $town=preg_replace($regex,'',$town);
+  }
+
+  if($country_d2='' and $country_d1=='' ){
+    $country_d1=$country_d2;
+    $country_d2='';
+  }
+    
+
+
+
+ $town=_trim($town);
+
+  if(is_country_d1($town,15) and $town_d2!=''){
+	$country_d1=$town;
+	$town=$town_d2;
+	$town_d2='';
+	
+      }
+
+
+  if(is_country_d1($town,15) and $country_d1==''  and ($address2!='' and $address3!='') ){
+   $country_d1=$town;
+   $town='';
+
+ }
+
+     if($town==''){
+      if($town_d1!='' ){
+	$town=$town_d1;
+	$town_d1='';
+      }
+      elseif($town_d2!=''){
+	$town=$town_d2;
+	$town_d2='';
+      }
+      elseif($address3!='' and ($address2!='' or $address1!='') ){
+	$town=$address3;
+	$address3=$address2;
+	$address2=$address1;
+	$address1='';
+      }else if($address2!='' and $address1!=''){
+	$town=$address2;
+	$address2='';
+      }
+      }
+
+
+
+
+
+
+
+  break;
+   case(47)://Spain
+ if(preg_match('/Majorca/i',$town)){
+   $country_d2='Islas Baleares';
+   $country_d1='Islas Baleares';
+   $town='';
+ }
+if(preg_match('/Balearic Islands|Balearic Island/i',$country_d1))
+   $country_d1='Balearic Islands';
+ if(preg_match('/Balearic Islands|Balearic Island/i',$country_d2))
+   $country_d2='Balearic Islands';
+
+
+
+
+ if(preg_match('/Baleares/i',$address3) and preg_match('/Palma de Mallorca/i',$address2)){
+   $town='Palma de Mallorca';
+   $address3='';
+   $address2='';
+   $country_d1='Balearic Islands';
+}
+
+
+
+
+     if(preg_match('/Zugena - Provincia Almeria/i',$town)){
+	 $country_d2='Almeria';
+	 $town='Zugena';
+       }
+ if(preg_match('/Hinojares - Juen/i',$town)){
+	 $country_d2='Jaen';
+	 $town='Hinojares';
+       }
+
+
+     if(preg_match('/Mijas Costa, Malaga/i',$town)){
+	 $country_d2='Malaga';
+	 $town='Mijas Costa';
+       }
+	 if(preg_match('/Calvia - Mallorca/i',$town)){
+	 $town='Calvia';
+	 $country_d1='Balearic Islands';
+       } 
+
+	 if(preg_match('/Ciutadella - Menorca/i',$town)){
+	 $town='Ciutadella';
+	 $country_d1='Balearic Islands';
+       } 
+ if(preg_match('/Sax\s*(Alicante)/i',$town)){
+	 $town='Sax';
+	 $country_d2='Alicante';
+       } 
+
+
+     if(preg_match('/malaga/i',$town)){
+       if(preg_match('/Marbella/i',$address3)){
+	 $address3='';
+	 $town='Marbella';
+       }
+
+	 
+
+     }
+
+     $postcode=_trim($postcode);
+     $postcode=preg_replace('/spain/i','',$postcode);
+
+     
+     if($postcode=='' and preg_match('/\s*\d{4,5}\s*/',$town,$match)){
+       $postcode=_trim($match[0]);
+       $town=_trim(preg_replace('/\s*\d{4,5}\s*/','',$town));
+     }
+
+    
+
+
+    if(preg_match('/^\d{4}$/',$postcode))
+      $postcode='0'.$postcode;
+
+    $country_d1=_trim(preg_replace('/^Adaluc.a$/i','Andalusia',_trim($country_d1)));
+
+    $town=_trim($town);
+
+    if(preg_match('/El Cucador/i',$town)){
+	 $town_d2='El Cucador';
+	 $town='Zurgena';
+	 $country_d2='Almeria';
+	 $country_d1='Andalusia';
+	 $postcode='04661';
+	 if($address2=='Cepsa Garage (Zugena)')
+	   $address2='';
+    }
+ if(preg_match('/^Arona$/i',$town)){
+	 $country_d2='Santa Cruz de Tenerife';
+	 $country_d1='Islas Canarias';
+
+    }
+ if(preg_match('/^Ceuta$/i',$town)){
+
+	 $country_d1='Ceuta';
+
+    }
+
+
+
+
+    break;
+  case(126)://Malta
+    $postcode=preg_replace('/malta/i','',$postcode);
+    $postcode=_trim($postcode);
+    $postcode=preg_replace('/\s/i','',$postcode);
+
+    if(preg_match('/[a-z]*/i',$postcode,$ap) and preg_match('/[0-9]{1,}/i',$postcode,$xxx))
+      $postcode=$ap[0].' '.$xxx[0];
+
+    $town=preg_replace('/-?\s*malta|gozo\s*\-?/i','',$town);
+
+      $town=_trim($town);
+
+    break;
+ case(110)://Latvia
+    $postcode=_trim($postcode);
+    $postcode=preg_replace('/Latvia/i','',$postcode);
+    $postcode=preg_replace('/LV\s*\-?\s*/i','',$postcode);
+    $town=_trim($town);
+    $postcode=_trim($postcode);
+    if(preg_match('/^\d{4}$/',$postcode))
+      $postcode='LV-'.$postcode;
+    break;
+
+  case(117)://Luxembourg
+    $postcode=_trim($postcode);
+    $postcode=preg_replace('/Luxembourg/i','',$postcode);
+    $postcode=preg_replace('/L\s*\-?\s*/i','',$postcode);
+    $town=preg_replace('/\-?\s*Luxembourg/i','',$town);
+    if($town=='')
+      $town='Luxembourg';
+    $town=_trim($town);
+    $postcode=_trim($postcode);
+    if(preg_match('/^\d{4}$/',$postcode))
+      $postcode='L-'.$postcode;
+    break;
+  case(165)://France
+    $postcode=_trim($postcode);
+    $postcode=preg_replace('/FRANCE|french republic/i','',$postcode);
+    if($postcode=='' and preg_match('/\s*\d{4,5}\s*/',$town,$match)){
+       $postcode=trim(trim($match[0]));
+       $town=preg_replace('/\s*\d{4,5}\s*/','',$town);
+    }
+
+    if(preg_match('/Digne les Bains|Dignes les Bains/i',$town))
+      $town='Digne-les-Bains';
+
+     $town=preg_replace('/,\s*france\s*$/i','',$town);
+
+    if($town=='St Cristophe - Charante'){
+      $town='St Cristophe';
+      $country_d2='Charente';
+      $country_d1='Poitou-Charentes';
+    }
+ if($town=='Cauro - Corse Du Sud'){
+      $town='Cauro';
+      $country_d2='Corse Du Sud';
+      $country_d1='Corse';
+    }
+
+    if($town=='Charente'){
+      $town='';
+       $country_d2='Charente';
+       $country_d1='Poitou-Charentes';
+    }
+
+  if($town==''){
+      if($town_d1!='' ){
+	$town=$town_d1;
+	$town_d1='';
+      }
+      elseif($town_d2!=''){
+	$town=$town_d2;
+	$town_d2='';
+      }
+      elseif($address3!='' and ($address2!='' or $address1!='') ){
+	$town=$address3;
+	$address3=$address2;
+	$address2=$address1;
+	$address1='';
+      }else if($address2!='' and $address1!=''){
+	$town=$address2;
+	$address2='';
+      }
+      }
+    $postcode=_trim($postcode);
+    if(preg_match('/^\d{4}$/',$postcode))
+      $postcode='0'.$postcode;
+    break;
+
+  case(196)://Switzerland
+    $postcode=_trim($postcode);
+    $postcode=preg_replace('/Switzerland/i','',$postcode);
+
+    if(preg_match('/^\d{4}\s+/',$town,$match)){
+      if($postcode=='' or $postcode==trim($match[0])){
+	$postcode=trim($match[0]);
+	$town=preg_replace('/^\d{4}\s+/','',$town);
+      }
+    }
+    
+    $postcode=preg_replace('/^CH\-/i','',$postcode);
+    break;
+case(193)://Findland
+  $postcode=_trim($postcode);
+  $postcode=preg_replace('/findland|finland/i','',$postcode);
+ $postcode=preg_replace('/^fi\s*\-?\s*/i','',$postcode);
+
+ if($address3=='Klaukkala' and $town=='Nurmijarvi'){
+   $address3='';
+   $town='Klaukkala';
+     }
+ if(preg_match('/^\d{3}$/',$postcode))
+      $postcode='00'.$postcode;
+
+    if(preg_match('/^\d{4}$/',$postcode))
+      $postcode='0'.$postcode;
+
+    break;
+case(242)://Isle of man
+ if($town==''){
+      if($town_d1!='' ){
+	$town=$town_d1;
+	$town_d1='';
+      }
+      elseif($town_d2!=''){
+	$town=$town_d2;
+	$town_d2='';
+      }
+      elseif($address3!='' and ($address2!='' or $address1!='') ){
+	$town=$address3;
+	$address3='';
+      }else if($address2!='' and $address1!=''){
+	$town=$address2;
+	$address2='';
+      }
+      
+    }
+
+
+
+
+
+  
+    break;
+
+
+case(241)://Jersey
+
+  $town=preg_replace('/^jersey$|^jersey\s*c\.?i\.?$/i','',$town);
+  $town=preg_replace('/\,?\s*Channel Islands$/i','',$town);
+  $town=preg_replace('/\,?\s*CI$/i','',$town);
+  $town=preg_replace('/\,?\s*C.I.$/i','',$town);
+  $town=preg_replace('/\-?\s*jersey$/i','',$town);
+  $country_d2=preg_replace('/\-?\s*jersey$|Jersy Channel Isles/i','',$country_d2);
+  //  print "1$address1 2$address2 3$address3\n";
+ if($town==''){
+      if($town_d1!='' ){
+	$town=$town_d1;
+	$town_d1='';
+      }
+      elseif($town_d2!=''){
+	$town=$town_d2;
+	$town_d2='';
+      }
+      elseif($address3!='' and ($address2!='' or $address1!='') ){
+	$town=$address3;
+	$address3=$address2;
+	$address2=$address1;
+	$address1='';
+      }else if($address2!='' and $address1!=''){
+	$town=$address2;
+	$address2='';
+      }
+      }
+
+
+
+
+
+
+    $town=_trim($town);
+     if($town_d2=='' and  preg_match('/\w+\.?\s*St\.? Helier$/i',$town) ){
+       $town_d2=_trim( preg_replace('/St\.? Helier$/i','',$town));
+       $town='St Helier';
+  }
+
+     $town_d2=preg_replace('/\./','',$town_d2);
+     $town=preg_replace('/^St\s{1,}/','St. ',$town);
+  
+    break;
+
+case(171)://Sweden
+  $postcode=_trim($postcode);
+  $postcode=preg_replace('/sweden/i','',$postcode);
+
+  $postcode=preg_replace('/^SE\-?/i','',$postcode);
+  if($town=='Malmo')
+    $town='Malmö';
+  if($country_d2=='Sweden')
+    $country_d2='';
+  if(preg_match('/Skaraborg/i',$town))
+    $town='';
+  
+  $postcode=preg_replace('/\s/','',$postcode);
+
+  if(is_country_d1($town,171) and   $address1='' and $address2!='' and $address3!='' ){
+    $country_d1=$town;
+    $address3=$address2;
+    $address2='';
+  }
+ if(is_country_d1($town,171) and   $address1!='' and $address2!='' and $address3!='' ){
+    $country_d1=$town;
+    $address3=$address2;
+    $address2=$address1;
+    $address1='';
+  }
+
+ if($country_d2!='' and $contry_d1==''){
+   $country_d1=$country_d2;
+   $country_d2='';
+ }
+
+ $postcode=preg_replace('/\s/','',$postcode);
+
+ break;
+  case(149)://Norway
+      $postcode=_trim($postcode);
+      $postcode=preg_replace('/norway/i','',$postcode);
+
+    if(preg_match('/^no.\d+$/i',$town)){
+      if($postcode==''){
+	$postcode=$town;
+	$town='';
+      }
+    }
+    $postcode=preg_replace('/^NO\s*\-?\s*/i','',$postcode);
+
+    $postcode=preg_replace('/^N\-/i','',$postcode);
+    if(preg_match('/^\d{3}$/',$postcode))
+      $postcode='0'.$postcode;
+
+
+    break; 
+  case(2)://Netherlands
+    $town=preg_replace('/Noord Brabant/i','Noord-Brabant',$town);
+    $country_d1=preg_replace('/Noord Brabant/i','Noord-Brabant',$country_d1);
+    $country_d2=preg_replace('/Noord Brabant/i','Noord-Brabant',$country_d2);
+ $town=preg_replace('/Zuid Holland/i','Zuid-Holland',$town);
+    $country_d1=preg_replace('/Zuid Holland/i','Zuid-Holland',$country_d1);
+    $country_d2=preg_replace('/Zuid Holland/i','Zuid-Holland',$country_d2);
+ $town=preg_replace('/Noord Holland/i','Noord-Holland',$town);
+    $country_d1=preg_replace('/Noord Holland/i','Noord-Holland',$country_d1);
+    $country_d2=preg_replace('/Noord Holland/i','Noord-Holland',$country_d2);
+ $town=preg_replace('/Gerderland/i','Gelderland',$town);
+
+
+ $postcode=_trim($postcode);
+ $postcode=preg_replace('/Netherlands|holland/i','',$postcode);
+
+ if($postcode==''){
+   preg_match('/\s*\d{4,6}\s*[a-z]{2}\s*/i',$town,$match2);
+   $postcode=_trim($match2[0]);
+ }
+ $postcode=strtoupper($postcode);
+ $postcode=preg_replace('/\s/','',$postcode);
+ if(preg_match('/^\d{4}[a-z]{2}$/i',$postcode)){
+   $town=str_replace($postcode,'',$town);
+   $town=str_replace(strtolower($postcode),'',$town);
+   $_postcode=substr($postcode,0,4).' '.substr($postcode,4,2);
+   $postcode=$_postcode;
+   $town=str_replace($postcode,'',$town);
+   $town=str_replace(strtolower($postcode),'',$town);
+
+ }
+ $town=_trim($town);
+  if(is_country_d1($address3,2) and $country_d1=='' and $town==''   and ($address1!='' and $address2!='') ){
+   $country_d1=$address3;
+   $address3='';
+
+ }
+
+  if(is_country_d1($town,2) and $country_d1=='' and (($address1!='' and $address2!='') or ($address2!='' and $address3!='') or ($address1!='' and $address3!='')  )   ){
+   $country_d1=$town;
+   $town='';
+
+ }
+   
+
+ if($town=='NH'){
+   $country_d1='North Holland';
+    $town='';
+ }
+
+ if($town=='Zuid Holland'){
+    $country_d1='Zuid Holland';
+    $town='';
+ }
+ similar_text($country_d1,$country_d2,$w);
+ if($w>90){
+   $country_d2='';
+ }
+
+ if($country_d1=='' and $country_d2!=''){
+   $country_d1=$country_d2;
+   $country_d2='';
+ }
+
+ if(preg_match('/Zuid.Holland|ZuidHolland/i',$country_d1))
+   $country_d1='Zuid Holland';
+
+
+ if($town==''){
+   if($town_d1!='' ){
+     $town=$town_d1;
+     $town_d1='';
+   }
+   elseif($town_d2!=''){
+     $town=$town_d2;
+     $town_d2='';
+   }
+   elseif($address3!='' and ($address2!='' or $address1!='') ){
+     $town=$address3;
+     $address3=$address2;
+     $address2=$address1;
+     $address1='';
+   }else if($address2!='' and $address1!=''){
+     $town=$address2;
+     $address2='';
+     $address3=$address1;
+     $address1='';
+   }
+ }
+
+
+
+ $town_split=preg_split('/\s*\-\s*|\s*,\s*/',$town);
+ if(count($town_split)==2 and is_country_d1($town_split[1],2)){
+   $country_d1=$town_split[1];
+   $town=$town_split[0];
+ }
+ 
+ if($address1!='' and $address2=='' and $address3==''){
+   $address3=$address1;
+   $address1='';
+ }
+
+
+
+
+    break; 
+
+
+  case(177):// Germany
+     $postcode=_trim($postcode);
+ $postcode=preg_replace('/germany/i','',$postcode);
+    if($country_d2!='' and $country_d1==''){
+      $country_d1=$country_d2;
+      $country_d2='';
+    }
+      
+
+    $town=preg_replace('/NRW\s*$/i','',$town);
+
+
+    if(preg_match('/^berlin$/i',$town))
+      $country_d1='Berlin';
+       if(preg_match('/^Hamburg$/i',$town))
+      $country_d1='Hamburg';
+       if(preg_match('/^Bremen$/i',$town))
+      $country_d1='Bremen';
+
+       if(preg_match('/^Nuernberg$/i',$town))
+      $town='Nürnberg';
+    
+    if(preg_match('/^Osnabruek$/i',$town)){
+   $country_d1='Niedersachsen';
+   $town='Osnabrück';
+ }
+   if(preg_match('/^bavaria$/i',$country_d1))
+      $country_d1='Bayern';
+
+
+    $regex='/^\s*\d{5}\s+|\s+\d{5}\s*$/';
+    if(preg_match($regex,$town,$match)){
+      if($postcode=='')$postcode=trim($match[0]);
+      $town=preg_replace($regex,'',$town);
+    }
+
+
+    if($country_d1==''){
+      $country_d1=get_country_d1($town,177);
+      
+
+    }
+
+
+
+    break;
+  case(201)://Denmark
+   // FIx postcode in town
+       $postcode=_trim($postcode);
+ $postcode=preg_replace('/denmark|Demnark/i','',$postcode);
+$postcode=preg_replace('/^dk\s*\-?\s*/i','',$postcode);
+ $town=_trim($town);
+
+   if($postcode=='' and preg_match('/^\d{4}\s+/',$town,$match)){
+     $postcode=trim($match[0]);
+     $town=preg_replace('/^\d{4}\s+/','',$town);
+   }
+
+    $regex='/\s*2610 Rodovre\s*/i';
+    if(preg_match($regex,$town,$match)){
+      $town='Rodovre';
+      $postcode='2610';
+    }
+ $regex='/KBH K|Kobenhavn/i';
+    if(preg_match($regex,$town,$match)){
+      $town='Kobenhavn';
+    }
+ $regex='/Copenhagen/i';
+    if(preg_match($regex,$town,$match)){
+      $town='Copenhagen';
+    }
+  $regex='/Aarhus C/i';
+    if(preg_match($regex,$town,$match)){
+      $town_d2='Aarhus C';
+      $town='Aarhus';
+    }
+
+
+     $regex='/Odense\s*,?\s*/i';
+    if(preg_match($regex,$town,$match)){
+      $town='Odense';
+    }
+     $regex='/\s*Odense\s*/i';
+    if(preg_match($regex,$address3,$match)){
+      $address3='';
+      $town='Odense';
+    }
+
+    $postcode=_trim($postcode);
+    if(preg_match('/^\d{4}$/',$postcode)){
+      $postcode='DK-'.$postcode;
+    }
+    if(preg_match('/^KLD$/i',$address3))
+       $address3='';
+  
+    if(preg_match('/^DK\- 7470 Karup J$/i',$address3)){
+      $address3='';
+      $postcode='DK-7470';
+      $town='Karup J';
+    }
+      
+          
+    if(preg_match('/Sjalland|Zealand|Sjælland|Sealand/i',$country_d2))
+      $country_d2='';
+    
+
+       
+    if(preg_match('/Sjalland|Zealand/i',$town))
+      $town='';
+
+       
+if($address3=='' and $address2!='' and  $address1=='' ){
+     $address3=$address2;
+     $address2=$address1;
+
+   }
+
+
+if($address3=='' and $address2!='' and  $address1!='' ){
+     $address3=$address2;
+     $address2=$address1;
+     $address1='';
+   }
+
+ if($town==''){
+   if($town_d1!='' ){
+     $town=$town_d1;
+     $town_d1='';
+   }
+   elseif($town_d2!=''){
+     $town=$town_d2;
+     $town_d2='';
+   }
+   elseif($address3!='' and ($address2!='' or $address1!='') ){
+     $town=$address3;
+     $address3=$address2;
+     $address2=$address1;
+     $address1='';
+   }else if($address2!='' and $address1!=''){
+     $town=$address2;
+     $address2='';
+     $address3=$address1;
+     $address1='';
+   }
+ }
+    
+
+
+
+
+
+    break; 
+  default:
+    $postcode=$address_raw_data['postcode'];
+    $regex='/\s*'.$country.'\s*/i';
+    $postcode=preg_replace($regex,'',$postcode);
+    
+  }
+
+
+if($address3=='' and $address2!='' and  $address1=='' ){
+     $address3=$address2;
+     $address2=$address1;
+
+   }
+
+
+if($address3=='' and $address2!='' and  $address1!='' ){
+     $address3=$address2;
+     $address2=$address1;
+     $address1='';
+   }
+
+ if($town==''){
+   if($town_d1!='' ){
+     $town=$town_d1;
+     $town_d1='';
+   }
+   elseif($town_d2!=''){
+     $town=$town_d2;
+     $town_d2='';
+   }
+   elseif($address3!='' and ($address2!='' or $address1!='') ){
+     $town=$address3;
+     $address3=$address2;
+     $address2=$address1;
+     $address1='';
+   }else if($address2!='' and $address1!=''){
+     $town=$address2;
+     $address2='';
+     $address3=$address1;
+     $address1='';
+   }
+ }
+    
+  
+
+
+  // Country ids
+
+ $sql=sprintf("select id  from list_country_d1 where (name='%s' or oname='%s') and country_id=%d",addslashes($country_d1),addslashes($country_d1),$country_id);
+    //  print "$sql\n";
+    $res = $db->query($sql);  
+    if ($row=$res->fetchRow())
+      $country_d1_id=$row['id'];
+    
+    $sql=sprintf("select id,country_d1_id from list_country_d2 where (name='%s' or oname='%s') and country_id=%d",addslashes($country_d2),addslashes($country_d2),$country_id);
+    $res = $db->query($sql);  
+    
+    if ($row=$res->fetchRow()){
+	$country_d2_id=$row['id'];
+	if($res->numRows()==1){
+	  $country_d1_id=$row['country_d1_id'];
+	}
+	
+    }
+    else
+      $country_d2_id=0;
+
+
+    $sql=sprintf("select id,country_d2_id,country_d1_id from list_town where (name='%s' or oname='%s') and country_id=%d",addslashes($town),addslashes($town),$country_id);
+
+    $res = $db->query($sql);  
+    if($res->numRows()==1){
+      
+    if ($row=$res->fetchRow()){
+	$town_id=$row['id'];
+	if($res->numRows()==1){
+	  if($country_d2_id==0)
+	    $country_d2_id=$row['country_d2_id'];
+	  if($country_d1_id==0)
+	    $country_d1_id=$row['country_d1_id'];
+	}
+	
+    }
+    }
+    else
+      $town_id=0;
+
+
+
+
+  //=------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  if(preg_match('/\d+\s*\-\s*\d+/',$address3)){
+    $address3=preg_replace('/\s*\-\s*/','-',$address3);
+  }
+   if(preg_match('/\d+\s*\-\s*\d+/',$address2)){
+     $address2=preg_replace('/\s*\-\s*/','-',$address2);
+  }
+ $address1=  preg_replace('/^P\.o\.box\s+/i','PO BOX ',$address1);
+  $address2=  preg_replace('/^P\.o\.box\s+/i','PO BOX ',$address2);
+  $address3=  preg_replace('/^P\.o\.box\s+/i','PO BOX ',$address3);
+  $address3=  preg_replace('/^p o box\s+/i','PO BOX ',$address3);
+ $address3=  preg_replace('/^NULL$/i','',$address3);
+
+  $address1=preg_replace('/\s{2,}/',' ',$address1);
+  $address2=preg_replace('/\s{2,}/',' ',$address2);
+  $address3=preg_replace('/\s{2,}/',' ',$address3);
+  $town=preg_replace('/\s{2,}/',' ',$town);
+  $town_d1=preg_replace('/\s{2,}/',' ',$town_d1);
+  $town_d2=preg_replace('/\s{2,}/',' ',$town_d2);
+  $town=preg_replace('/(\,|\-)$\s*/','',$town);
+  
+  $address_data=array(
+		      'internal_address'=>_trim($address1),
+		      'building_address'=>_trim($address2),
+		      'street_address'=>_trim($address3),
+		      'town_d2'=>_trim($town_d2),
+		      'town_d1'=>_trim($town_d1),
+		      'town'=>_trim($town),
+		      'country_d2'=>_trim($country_d2),
+		      'country_d1'=>_trim($country_d1),
+		      'postcode'=>_trim($postcode),
+		      'country'=>_trim($country),
+		      'town_d2_id'=>$town_d2_id,
+		      'town_d1_id'=>$town_d1_id,
+		      'town_id'=>$town_id,
+		      'country_d2_id'=>$country_d2_id,
+		      'country_d1_id'=>$country_d1_id,
+		      'country_id'=>$country_id,
+
+		      );
+
+  
+
+  // print_r($address_data);
+
+
+  if($country_id==244){
+     print_r($address_data);
+    exit("Unknown country");
+  }
+  
+  if($debug){
+   print_r($address_data);
+   exit;
+  }
+  // print_r($address_data);
+     return $address_data;
+
+}
+
+
+function display_full_address($address_id,$separator="<br/>"){
+  //  include ('locale.php');
+
+  if(!is_numeric($address_id))
+    return false;
+
+  $address_data=get_address_data($address_id);
+  if(!$address_data)
+    return false;
+  
+
+  $header_address=($address_data['internal_address']!=''?$address_data['internal_address'].$separator:'').($address_data['building_address']!=''?$address_data['building_address'].$separator:'').($address_data['street_address']!=''?$address_data['street_address'].$separator:'');
+  $town_address='';
+  if($address_data['town_d2']!='' or $address_data['town_d1']!=''){
+    $town_address=_trim($address_data['town_d2'].' '.$address_data['town_d1']).$separator;
+    $town_address=_trim($town_address);
+  }
+  $town_address.=_trim($address_data['town']).$separator;
+
+  if($address_data['country_d2']==$address_data['country_d1'])
+    $address_data['country_d1']=='';
+  if($address_data['town']==$address_data['country_d2'])
+    $address_data['country_d2']=='';
+
+
+  $country_d1_address='';
+  if($address_data['country_d2']!='' or $address_data['country_d1']!=''){
+    $country_d1_address=_trim($address_data['country_d2'].' '.$address_data['country_d1']).$separator;
+    $country_d1_address=$country_d1_address;
+  }
+
+  
+
+  $full_address=$header_address.$town_address.($address_data['postcode']!=''?$address_data['postcode'].$separator:'').$country_d1_address.$address_data['country'];
+
+  
+  return $full_address;
+   
+
+}
+
+
+
+function get_address_data($address_id){
+ $db =& MDB2::singleton();
+  $sql=sprintf("select internal_address,building_address, street_address,town_d2,town_d1 ,country_d2,country_d1,town,postcode,country from address where id=%d",$address_id);
+  //print "$sql\n";
+  $res = $db->query($sql);  
+  if (!$address_data=$res->fetchRow())
+    return false;
+  $sql=sprintf("select address_id,town_d2_id,town_d1_id,country_d2_id,country_d1_id,town_id,country_id from address_atom where address_id=%d",$address_id);
+  //print "$sql\n";
+
+  $res = $db->query($sql);  
+  if (!$address_data_atom=$res->fetchRow())
+    return false;
+  
+  //  print "===========>\n";
+  //print_r($address_data);
+  // print "_==========>\n";
+  return array_merge($address_data, $address_data_atom);
+  
+}
+
+
+
+function insert_address($address_data){
+ $db =& MDB2::singleton();
+ 
+ // print_r($address_data);
+
+  //$pc=addslashes($address_data['postcode']);
+ $internal_address=($address_data['internal_address']!=''?'"'.addslashes(trim(mb_ucwords($address_data['internal_address']))).'"':'null');
+ $building_address=($address_data['building_address']!=''?'"'.addslashes(mb_ucwords($address_data['building_address'])).'"':'null');
+ $street_address=($address_data['street_address']!=''?'"'.addslashes(mb_ucwords($address_data['street_address'])).'"':'null');
+ 
+ 
+ $town_id=$address_data['town_id'];
+ $country_d1_id=$address_data['country_d1_id'];
+ $country_d2_id=$address_data['country_d2_id'];
+ $town_d2_id=$address_data['town_d2_id'];
+ $town_d1_id=$address_data['town_d1_id'];
+
+ if($address_data['town']!='')
+   $town='"'.addslashes(mb_ucwords($address_data['town'])).'"';
+ else{
+   $town= 'null';
+   if($address_data['town_id']==0)
+     $town_id='null';
+ }
+ 
+ if($address_data['country_d1']!='')
+   $country_d1='"'.addslashes(mb_ucwords($address_data['country_d1'])).'"';
+ else{
+   $country_d1= 'null';
+   if($address_data['country_d1_id']==0)
+     $country_d1_id='null';
+ }
+ 
+
+
+if($address_data['country_d2']!='')
+  $country_d2='"'.addslashes(mb_ucwords($address_data['country_d2'])).'"';
+ else{
+   $country_d2= 'null';
+   if($address_data['country_d2_id']==0)
+     $country_d2_id='null';
+ }
+ if($address_data['town_d2']!='')
+   $town_d2='"'.addslashes(mb_ucwords($address_data['town_d2'])).'"';
+ else{
+   $town_d2= 'null';
+   if($address_data['town_d2_id']==0)
+     $town_d2_id='null';
+ }
+if($address_data['town_d1']!='')
+  $town_d1='"'.addslashes(mb_ucwords($address_data['town_d1'])).'"';
+ else{
+   $town_d1= 'null';
+   if($address_data['town_d1_id']==0)
+     $town_d1_id='null';
+ }
+
+ $postcode=($address_data['postcode']!=''?'"'.addslashes($address_data['postcode']).'"':'null');
+ $country=mb_ucwords($address_data['country']);
+ $country_id=$address_data['country_id'];
+ 
+ 
+ 
+ $sql=sprintf("insert into address (internal_address,building_address,street_address,town_d2,town_d1,town,country_d2,postcode,country_d1,country) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,'%s')",
+	      $internal_address,$building_address,$street_address,$town_d2,$town_d1,$town,$country_d2,$postcode,$country_d1,$country
+	      );
+ //$db->exec($sql);
+ //$address_id = $db->lastInsertID();
+
+ mysql_query($sql);
+ $address_id=mysql_insert_id();
+
+$sql=sprintf("insert into address_atom (address_id,town_d2_id,town_d1_id,town_id,country_d2_id,country_d1_id,country_id) values (%d,%s,%s,%s,%s,%s,%d)",
+	     $address_id,$town_d2_id,$town_d1_id,$town_id,$country_d2_id,$country_d1_id,$country_id
+	     );
+//print "$sql\n";
+//$db->exec($sql);
+ mysql_query($sql);
+
+
+
+ return $address_id;
+ 
+}
+
+
+function get_address_metadata($address_id){
+  $db =& MDB2::singleton();
+  global $_contact_tipo;
+  global $_address_tipo;
+  $sql=sprintf("select contact_id,contact.tipo as c_tipo,address2contact.tipo as address_tipo  from address2contact left join contact on (contact_id=contact.id) where address_id=%d",$address_id);
+  // print "$sql\n";
+  $res = $db->query($sql);  
+  $metadata=array();
+  while ($row=$res->fetchRow()){
+    
+    $metadata[]=array(
+		    'contact_tipo'=>$_contact_tipo[$row['c_tipo']],
+		    'address_tipo'=>$_address_tipo[$row['address_tipo']],
+		    'contact_id'=>$row['contact_id'] ,
+		    'contact_tipo_id'=>$row['c_tipo'],
+		    'address_tipo_id'=>$row['address_tipo'],
+		    );
+    return $metadata;
+      
+
+  }
+   return $metadata;
+}
+
+
+
+
+
+function update_address($address_id,$address_data,$date_index='',$note=''){
+ $db =& MDB2::singleton();
+
+
+ $address_keys=array('postcode','internal_address','building_address','street_address','town_d2','town_d1','country_d2','country_d1','country');
+ $address_atom_keys=array('town_d2_id','town_d1_id','country_d2_id','country_d1_id','country_id');
+ 
+ 
+ $old_values=get_address_data($address_id);
+ $array_metadata=get_address_metadata($address_id);
+
+ // print_r($old_values);
+ //print_r($address_data);
+ $update_sql='';
+ $values=array();
+ foreach($address_keys as $key){
+   //print $old_values[$key]."z".$address_data[$key]."zz\n";
+    if(strcmp($old_values[$key],$address_data[$key])){
+
+      $values[]=array('old'=>$old_values[$key],'new'=>$address_data[$key]);
+      $array_history_sql[]="insert into history_item (history_id,columna,old_value,new_value) values (%d,'$key',%s,%s)";
+      $update_sql.=" $key=".prepare_mysql($address_data[$key])." ,";
+	
+    }
+  }
+  //print_r($values);
+
+
+ if(count($values)>0){
+   $update_sql=preg_replace('/,$/','',$update_sql);
+    $sql=sprintf("update address  set %s where id=%d",$update_sql,$address_id);
+    //  print "$sql\n";
+    //$db->exec($sql);
+       mysql_query($sql);
+    foreach($array_metadata as $metadata){
+
+      $recipient_id=$metadata['contact_id'];
+  //     if(is_numeric($customer_id= get_customer_from_contact($recipient_id))){
+// 	$recipient_id=$customer_id;
+// 	$sujeto='Customer';
+//       }else
+// 	$sujeto='Contact';
+
+
+      
+	$sujeto='Contact';
+
+
+
+
+      $sql=sprintf("insert into history (tipo,sujeto,sujeto_id,objeto,objeto_id,date) values ('UPD','%s',%d,'%s',%d,%s)",$sujeto,$recipient_id,$metadata['address_tipo'],$address_id,prepare_mysql_date($date_index));
+      //       print "$sql\n";
+       // $db->exec($sql);
+       //$history_id=$db->lastInsertID();
+        mysql_query($sql);
+      $history_id=mysql_insert_id();
+      if($metadata['address_tipo']<4){
+	foreach($array_history_sql as $key=>$history_sql){
+	  $sql=sprintf($history_sql,$history_id,prepare_mysql($values[$key]['old']),prepare_mysql($values[$key]['new']));
+	  //print "$sql\n";
+	  // $db->exec($sql);
+	  mysql_query($sql);
+	}
+      }
+    }
+ }
+
+
+
+//  $internal_address=($address_data['internal_address']!=''?'"'.addslashes(trim($address_data['internal_address'])).'"':'null');
+//  $building_address=($address_data['building_address']!=''?'"'.addslashes($address_data['building_address']).'"':'null');
+//  $street_address=($address_data['street_address']!=''?'"'.addslashes($address_data['street_address']).'"':'null');
+
+
+// if($address_data['town']!='')
+//    $town='"'.addslashes($address_data['town']).'"';
+//  else{$town= 'null';if($town_id==0)$town_id='null';}
+ 
+//  if($address_data['town_d1']!='')
+//    $town_d1='"'.addslashes($address_data['town_d1']).'"';
+//  else{$town_d1= 'null';if($town_d1_id==0)$town_d1_id='null';}
+ 
+//  if($address_data['country_d2']!='')
+//    $country_d2='"'.addslashes($address_data['country_d2']).'"';
+//  else{$country_d2= 'null';if($country_d2_id==0)$country_d2_id='null';}
+
+
+// if($address_data['country_d1']!='')
+//    $country_d1='"'.addslashes($address_data['country_d1']).'"';
+//  else{$country_d1= 'null';if($country_d1_id==0)$country_d1_id='null';}
+
+
+//  if($address_data['town_d2']!='')
+//    $town_d2='"'.addslashes($address_data['town_d2']).'"';
+//  else{$town_d2= 'null';if($town_d2_id==0)$town_d2_id='null';}
+
+
+
+
+//   $country=$address_data['country'];
+
+//  // Check what is different and act accordinly
+//  $old_address_data=get_address_data($address_id);
+
+//  $update=array();
+//  if($old_address_data['country']!=$country)$update['country']=true;
+//  if($old_address_data['country_d1']!=$country_d1)$update['country_d1']=true;
+//  if($old_address_data['country_d2']!=$country_d2)$update['country_d2']=true;
+//  if($old_address_data['town']!=$town)$update['town']=true;
+//  if($old_address_data['town_d2']!=$town_d2)$update['town_d2']=true;
+//  if($old_address_data['town_d1']!=$town_d1)$update['division']=true;
+//  if($old_address_data['postcode']!=$country_d1)$update['division']=true;
+//  if($old_address_data['street_address']!=$street_address)$update['street_address']=true;
+//  if($old_address_data['build_address']!=$build_address)$update['build_address']=true;
+//  if($old_address_data['internal_address']!=$internal_address)$update['internal_address']=true;
+
+ 
+ 
+
+
+//  $sql=sprintf("update  address set internal_address=%s,building_address=%s,street_address=%s,town=%s,town_d2=%s,town_d1=%s,country_d2=%s,country_d1=%s,postcode=%s,country=%d where id=%d",
+// 	      $internal_address,$building_address,$street_address,$town,$town_d2,$town_d1,$country_d2,$country_d1,$postcode,$country,$address_id
+// 	      );
+//  $db->exec($sql);
+//  $sql=sprintf("update  address_atom set town_id=%s,town_d2_id=%s,town_d1_id=%s,country_d2=%s,country_d1_id=%s,country_id=%d where address_id=%d",$town_id,$town_d2_id,$town_d1_id,$country_d2_id,$country_d1_id,$country_id,$address_id);
+//  $db->exec($sql);
+
+//  if(count($update)>0){
+//    $note=($note==''?'null':$note);
+//    $sql=sprintf("insert into history (tipo,sujeto,objeto,date,note) values (2,'contact','address','%s',%s)",$date,$ntre);
+//      print "$sql\n";
+//     $db->exec($sql);
+//     $history_id = $db->lastInsertID();
+//  }
+
+//  foreach($update as  $key => $value){
+//     $sql=sprintf("insert into history_item (history_id,columna,old_value,new_value) values (%d,'%s','%s','%s')"
+// 		 ,$history_id,$old_address_data[$key],$$key);
+//     print "$sql\n";
+//     $db->exec($sql);
+//  }
+
+// exit("update address\n");
+}
+
+
+function associate_address($address_id,$contact_id,$tipo,$description='',$date_index='',$history=true){
+ 
+  // print "$address_id  ++\n";
+
+ global $_contact_tipo;
+   global $_address_tipo;
+  $db =& MDB2::singleton();
+
+  $sql=sprintf("insert into address2contact  (address_id,contact_id,tipo,description) values (%d,%d,%d,%s)",$address_id,$contact_id,$tipo,prepare_mysql($description));
+  // $db->exec($sql);
+  mysql_query($sql);
+  
+  if($history){
+
+    if($date_index=='')
+      exit("no date on hisroty associate address\n");
+  //rint "xxxx $contact_id "   ;
+   $contact_data=get_contact_data($contact_id);
+   if(!$contact_data){
+     print "Notice: error no contact data in associate address $contact_id\n";
+     exit;
+   }
+   $contact_tipo=$_contact_tipo[$contact_data['tipo']];
+
+
+//     if(is_numeric($customer_id= get_customer_from_contact($contact_id))){
+// 	$recipient_id=$customer_id;
+// 	$sujeto='Customer';
+//     }else{
+// 	$sujeto='Contact';
+// 	$recipient_id=$contact_id;
+//     }
+
+	$sujeto='Contact';
+	$recipient_id=$contact_id;
+
+  $sql=sprintf("insert into history (tipo,sujeto,sujeto_id,objeto,objeto_id,date) values ('NEW','%s',%d,'%s',%d,%s)",$sujeto,$recipient_id,$_address_tipo[$tipo],$address_id,prepare_mysql_date($date_index));
+  // print "$sql\n";
+  //$db->exec($sql);
+  //$history_id=$db->lastInsertID();
+   mysql_query($sql);
+   $history_id=mysql_insert_id();
+
+
+  $address=display_full_address($address_id);
+  $sql=sprintf("insert into history_item (history_id,columna,old_value,new_value) values (%d,'%s',NULL,%s)",$history_id,$_address_tipo[$tipo],prepare_mysql($address));
+  // print "$sql\n";
+  // $db->exec($sql);
+  mysql_query($sql);
+  // exit("address add\n");
+  }
+
+
+  return true;
+  
+}
+
+function get_principal_address($tipo,$contact_id){
+ $db =& MDB2::singleton();
+
+  if($tipo=='del_address' or $tipo=='bill_address'){
+    $customer_id=get_customer_from_contact($contact_id);
+    if($tipo=='bill_address')
+      $objeto='main_bill_address';
+    elseif($tipo=='del_address')
+      $objeto='main_del_address';
+    $sql=sprintf("select %s as principal from customer where id=%d",$objeto,$customer_id);
+    $res = $db->query($sql);  
+    if ($row=$res->fetchRow()){
+      return $row['principal'];
+    }
+  }elseif($tipo=='main_address' or $tipo=='shop_address'){
+     $sql=sprintf("select main_address as principal from contact where id=%d",$contact_id);
+    $res = $db->query($sql);  
+    if ($row=$res->fetchRow()){
+      return $row['principal'];
+    }
+    
+  }
+  
+  return false;
+  
+}
+
+
+function set_principal_address($recipient_id,$tipo,$address_id,$date_index='',$history=true,$update=false){
+  $db =& MDB2::singleton();
+  global $_address_tipo;
+  global $_contact_tipo;
+
+  // check if it actually changed
+  if($tipo==2)
+    $princial_address=get_principal_address('bill_address',$recipient_id);
+  elseif($tipo==3)
+    $princial_address=get_principal_address('del_address',$recipient_id);
+  elseif($tipo==1)
+    $princial_address=get_principal_address('main_address',$recipient_id);
+
+  //  print "$address_id= "
+  if($address_id==$princial_address)
+    return;
+
+
+  $tipo_history=($update?'CHG':'NEW');
+
+  //  print "$tipo    $recipient_id  $address_id history  $history  \n";
+
+   if($address_id==''){
+     print "warning no address_id trying to set principal address\n";
+     
+   }
+
+  if($tipo==2 or $tipo==3){
+    $col=($tipo==2?'main_bill_address':'main_del_address');
+    $col2=($tipo==2?'Main Billing Address':'Main Delivery Address');
+ 
+  $customer_id=get_customer_from_contact($recipient_id);
+  if(!$customer_id){
+	 exit("$recipient_id  $col Error nop customer id where trying to update del or bill address\n");
+       }
+    
+   $sql=sprintf("select %s from customer where id=%d",$col,$customer_id);
+   $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
+   if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+     $old_address_id=$row[$col];
+     if($old_address_id=='')
+       $change=false;
+     else
+       $change=true;
+     if($old_address_id!=$address_id){
+
+        $contact_data=get_customer_data($customer_id);
+	$old_data=$contact_data[$col];
+
+       $sql=sprintf("update customer set %s=%d where id=%d",$col,$address_id,$customer_id);
+       mysql_query($sql);
+       if($change and $history){
+	 $sql=sprintf("insert into history (tipo,sujeto,sujeto_id,objeto,objeto_id,date) values ('%s','Customer',%d,%s,%d,%s)",$tipo_history,$customer_id,prepare_mysql($col2),$address_id,prepare_mysql_date($date_index));
+	 
+	 mysql_query($sql);
+	 $history_id=mysql_insert_id();
+
+
+	 $sql=sprintf("insert into history_item (history_id,columna,old_value,new_value) values (%d,%s,%s,%s)",$history_id,prepare_mysql($col2),prepare_mysql($old_data),$address_id);
+	 
+	 // $db->exec($sql);
+	 mysql_query($sql);
+       }
+     }
+   }
+  }else if($tipo==1){
+    $col='main_address';
+    $col2='Main Address';
+
+    $contact_data=get_contact_data($recipient_id);
+    $old_data=$contact_data[$col];
+
+    $sql=sprintf("update contact set %s=%d where id=%d",$col,$address_id,$recipient_id);
+    //  $db->exec($sql);
+    mysql_query($sql);
+    if($history){
+
+  //     if(is_numeric($customer_id= get_customer_from_contact($recipient_id))){
+// 	$recipient_id=$customer_id;
+// 	$sujeto='Customer';
+//       }else
+// 	$sujeto='Contact';
+ $sujeto='Contact';
+      
+      $sql=sprintf("insert into history (tipo,sujeto,sujeto_id,objeto,objeto_id,date) values (%s,%s,%d,%s,%d,%s)",prepare_mysql($tipo_history),prepare_mysql($sujeto),$recipient_id,prepare_mysql($col2),$address_id,prepare_mysql_date($date_index));
+      //  print "qqqqqqqqq $sql\n";
+    //$db->exec($sql);
+    //$history_id=$db->lastInsertID();
+     mysql_query($sql);
+     $history_id=mysql_insert_id();
+
+
+     
+    $sql=sprintf("insert into history_item (history_id,columna,old_value,new_value) values (%d,%s,%s,%s)",$history_id,prepare_mysql($col2),prepare_mysql($old_data),$address_id);
+    //print "qqqqqqqqq $sql\n";
+    //$db->exec($sql);
+      mysql_query($sql);
+    }
+  }
+
+
+
+
+  //  exit("associate xxxxxxxxxsaddress\n");
+  
+}
+
+
+
+function is_country_d1($name,$country_id){
+  $name=_trim($name);
+  if($name=='')
+    return false;
+
+  switch($country_id){
+    
+  case(229):
+
+
+    $states=array('AL'=>'Alabama','AK'=>'Alaska','AZ'=>'Arizona','AR'=>'Arkansas','CA'=>'California','CO'=>'Colorado','CT'=>'Connecticut','DE'=>'Delaware','FL'=>'Florida','GA'=>'Georgia','HI'=>'Hawaii','ID'=>'Idaho','IL'=>'Illinois','IN'=>'Indiana','IA'=>'Iowa','KS'=>'Kansas','KY'=>'Kentucky','LA'=>'Louisiana','ME'=>'Maine','MD'=>'Maryland','MA'=>'Massachusetts','MI'=>'Michigan','MN'=>'Minnesota','MS'=>'Mississippi','MO'=>'Missouri','MT'=>'Montana','NE'=>'Nebraska','NV'=>'Nevada','NH'=>'New Hampshire','NJ'=>'New Jersey','NM'=>'New Mexico','NY'=>'New York','NC'=>'North Carolina','ND'=>'North Dakota','OH'=>'Ohio','OK'=>'Oklahoma','OR'=>'Oregon','PA'=>'Pennsylvania','RI'=>'Rhode Island','SC'=>'South Carolina','SD'=>'South Dakota','TN'=>'Tennessee','TX'=>'Texas','UT'=>'Utah','VT'=>'Vermont','VA'=>'Virginia','WA'=>'Washington','WV'=>'West Virginia','WI'=>'Wisconsin','WY'=>'Wyoming');
+    if(strlen($name)==2){
+      
+      if (array_key_exists(strtoupper($name), $states)) {
+	return true;
+      }
+    }
+
+    if(in_array(mb_ucwords($name),$states)){
+      return true;
+    }
+
+    break;
+  default:
+    $name=addslashes($name);
+    $sql=sprintf("select id from list_country_d1 where (name='%s' or oname='%s' or osname='%s') and country_id=%d",$name,$name,$name,$country_id);
+    $db =& MDB2::singleton();
+    $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
+    if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+      return true;
+    }else
+      return false;
+  }
+  // print mb_ucwords($name);
+  return false;
+
+
+}
+
+function get_country_d1($name,$country_id,$tipo='town'){
+
+  $d1='';
+  if($name=='')
+    return $d1;
+  $sql=sprintf("select list_country_d1.name  from list_town left join list_country_d1 on (country_d1_id=list_country_d1 .id) where list_town.name=%s or list_town.oname=%s and list_town.country_id=%d",prepare_mysql($name),prepare_mysql($name),$country_id);
+  $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
+  if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+    $d1=$row['name'];
+  }
+
+  return $d1;
+}
+
+
+function check_email_address($email) {
+// First, we check that there's one @ symbol, and that the lengths are right
+if (!ereg("^[^@]{1,64}@[^@]{1,255}$", $email)) {
+// Email invalid because wrong number of characters in one section, or wrong number of @ symbols.
+return false;
+}
+// Split it into sections to make life easier
+$email_array = explode("@", $email);
+$local_array = explode(".", $email_array[0]);
+for ($i = 0; $i < sizeof($local_array); $i++) {
+if (!ereg("^(([A-Za-z0-9!#$%&'*+/=?^_`{|}~-][A-Za-z0-9!#$%&'*+/=?^_`{|}~\.-]{0,63})|(\"[^(\\|\")]{0,62}\"))$", $local_array[$i])) {
+return false;
+}
+}
+if (!ereg("^\[?[0-9\.]+\]?$", $email_array[1])) { // Check if domain is IP. If not, it should be valid domain name
+$domain_array = explode(".", $email_array[1]);
+if (sizeof($domain_array) < 2) {
+return false; // Not enough parts to domain
+}
+for ($i = 0; $i < sizeof($domain_array); $i++) {
+if (!ereg("^(([A-Za-z0-9][A-Za-z0-9-]{0,61}[A-Za-z0-9])|([A-Za-z0-9]+))$", $domain_array[$i])) {
+return false;
+}
+}
+}
+return true;
+}
+
+function get_address_raw(){
+  
+ $address1='';
+  $address2='';
+  $address3='';
+  $town_d2='';
+  $town_d1='';
+  $town='';
+  $country_d2='';
+  $country_d1='';
+  $postcode='';
+  $country='';
+  $town_d2_id=0;
+  $town_d1_id=0;
+  $town_id=0;
+  $country_d2_id=0;
+  $country_d1_id=0;
+  $country_id=0;
+  
+   $address_data=array(
+		      'address1'=>$address1,
+		      'address2'=>$address2,
+		      'address3'=>$address3,
+		      'town_d2'=>$town_d2,
+		      'town_d1'=>$town_d1,
+		      'town'=>$town,
+		      'country_d2'=>$country_d2,
+		      'country_d1'=>$country_d1,
+		      'postcode'=>$postcode,
+		      'country'=>$country,
+		      'town_d2_id'=>$town_d2_id,
+		      'town_d1_id'=>$town_d1_id,
+		      'town_id'=>$town_id,
+		      'country_d2_id'=>$country_d2_id,
+		      'country_d1_id'=>$country_d1_id,
+		      'country'=>$country_id,
+
+		       );
+
+   return $address_data;
+}
 
 
 
@@ -4505,10 +7262,7 @@ if(preg_match('/^524 95 Ljung$/i',$act_data['town']) and $act_data['postcode']='
 
 
 
-   
-
-    
-    $sql=sprintf("select country.id,name, alias from list_country as country left join list_country_alias as country_alias on (country.code=country_alias.code) where alias='%s' or country.name='%s' group by country.id ",$header_data['country'],$header_data['country']);
+    $sql=sprintf("select `Country Key` as id from `Country Dimension` left join `Country Alias Dimension` on  (`Country Alias Code`=`Country Code`) where `Country Alias`=%s or `Country Name`=%s ",prepare_mysql($header_data['country']),prepare_mysql($header_data['country']));
     $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
     if(!$row = mysql_fetch_array($result, MYSQL_ASSOC)) 
       $header_data['country']=$act_data['country'];
@@ -4538,20 +7292,26 @@ if(preg_match('/^524 95 Ljung$/i',$act_data['town']) and $act_data['postcode']='
     $tmp_array=preg_split('/\s+/',$act_data['postcode']) ;
 
     if(count($tmp_array)==2){
-      $sql=sprintf("select country.id,name, alias from list_country as country left join list_country_alias as country_alias on (country.code=country_alias.code) where alias='%s' or country.name='%s' group by country.id ",$tmp_array[0],$tmp_array[0]);
+      $sql=sprintf("select `Country Name` as name from `Country Dimension` left join `Country Alias Dimension` on  (`Country Alias Code`=`Country Code`) where `Country Alias`=%s or `Country Name`=%s ",prepare_mysql($tmp_array[0]),prepare_mysql($tmp_array[0]));
+
+
       $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
       if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
 	$act_data['country']=$row['name'];
 	$act_data['postcode']=$tmp_array[1];
       }
-      $sql=sprintf("select country.id,name, alias from list_country as country left join list_country_alias as country_alias on (country.code=country_alias.code) where alias='%s' or country.name='%s' group by country.id ",$tmp_array[1],$tmp_array[1]);
+
+       $sql=sprintf("select `Country Name` as name from `Country Dimension` left join `Country Alias Dimension` on  (`Country Alias Code`=`Country Code`) where `Country Alias`=%s or `Country Name`=%s ",prepare_mysql($tmp_array[1]),prepare_mysql($tmp_array[1]));
+      
+
       $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
       if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
 	$act_data['country']=$row['name'];
 	$act_data['postcode']=$tmp_array[0];
       }
     }elseif(count($tmp_array)==1){
-      $sql=sprintf("select country.id,name, alias from list_country as country left join list_country_alias as country_alias on (country.code=country_alias.code) where alias='%s' or country.name='%s' group by country.id ",$tmp_array[0],$tmp_array[0]);
+      $sql=sprintf("select country.id,name, alias from list_country as country left join list_country_alias as country_alias on (country.code=country_alias.code) where alias='%s' or country.name='%s' group by country.id ",$tmp_array[1],$tmp_array[1]);
+
 
       $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
       if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -5635,9 +8395,9 @@ if($act_data['town']=='Hornbæk - Sjælland'){
   //  print $act_data['contact']." >>> $extra_contact   \n ";
     
   if($act_data['name']!=$act_data['contact'] )
-    $tipo_customer='company';
+    $tipo_customer='Company';
   else{	  
-    $tipo_customer='person';
+    $tipo_customer='Person';
       
       
       
@@ -5680,9 +8440,9 @@ if($act_data['town']=='Hornbæk - Sjælland'){
 
 
   
+  
 
-  $shop_address_data=guess_address($address_raw_data,array('country_id'=>30));
-
+  $shop_address_data=$address_raw_data;
     
   $extra_id1=$act_data['act'];
   $extra_id2=$shop_address_data['postcode'];
@@ -5715,7 +8475,7 @@ if($act_data['town']=='Hornbæk - Sjælland'){
 
 
     //print_r($address_raw_data_del);
-    $del_address_data=guess_address($address_raw_data_del,array('country_id'=>30));
+    $del_address_data=$address_raw_data_del;
    
       
     $different_del_address=true;
@@ -5823,7 +8583,9 @@ if($act_data['town']=='Hornbæk - Sjælland'){
 
 
 
-  $country_id=$shop_address_data['country_id'];
+  //  $country_id=$shop_address_data['country_id'];
+
+
   $act_data['tel']=preg_replace('/\[\d*\]/','',$act_data['tel']);
   $act_data['tel']=preg_replace('/\(/','',$act_data['tel']);
   $act_data['tel']=preg_replace('/\)/','',$act_data['tel']);
@@ -5833,85 +8595,6 @@ if($act_data['town']=='Hornbæk - Sjælland'){
   $act_data['mob']=preg_replace('/\[\d*\]/','',$act_data['mob']);
   $act_data['mob']=preg_replace('/\(/','',$act_data['mob']);
   $act_data['mob']=preg_replace('/\)/','',$act_data['mob']);
-  $tel_data=guess_tel($act_data['tel'],$country_id);
-  $fax_data=guess_tel($act_data['fax'],$country_id);
-  $mob_data=guess_tel($act_data['mob'],$country_id);
-
-    
-  $principal_tel_is_mobile=false;
-  if($mob_data and  $tel_data and !$mob_data['is_mobile'] and $tel_data['is_mobile']){
-    // meansd the they swift the tel and te mobile phone is the rtpncipal contact
-    $principal_tel_is_mobile=true;
-    $tmp=$tel_data;
-    $tel_data=$mob_data;
-    $mob_data=$tmp;
-
-  }
-  // if the fax and tel is the same 
-  $same_faxtel=false;
-  if($fax_data and  $tel_data and $tel_data['number']==$fax_data['number']){
-    // meansd the they swift the tel and te mobile phone is the rtpncipal contact
-    $same_faxtel=true;
-    $fax_data=false; 
-  }
-
-
-  if($tel_data and $tel_data['number']==$fax_data['number']){
-    // meansd the they swift the tel and te mobile phone is the rtpncipal contact
-    $same_faxtel=true;
-    $fax_data=false; 
-  }
-
-
-  // first chech id we hae repetitions
-  if($mob_data and $fax_data and $mob_data['number']==$fax_data['number']){
-    if($mob_data['is_mobile']){
-      $fax_data=false;
-    }else{
-      $mob_data=false;
-    }
-  }
-
-  //    print $act_data['mob']."sssssssssssss\n";
-  $extra_tel_data=false;
-  $extra_mob_data=false;
-    
-  if($fax_data and $fax_data['is_mobile']){
-    if(!$mob_data){
-      $mob_data=$fax_data;
-      $fax_data=false;
-    }else{
-      $extra_mob_data=$fax_data;
-      $fax_data=false;
-    }
-  }
-
-
-  if($tel_data and $tel_data['is_mobile']){
-    if(!$mob_data){
-      $mob_data=$tel_data;
-      $tel_data=false;
-    }else{
-      $extra_mob_data=$tel_data;
-      $tel_data=false;
-    }
-  }
-
-  if($mob_data and !$mob_data['is_mobile']){
-    if(!$tel_data){
-      $tel_data=$mob_data;
-      $mob_data=false;
-    }else{
-      $extra_tel_data=$mob_data;
-      $mob_data=false;
-    }
-  }
-
-  //print_r($tel_data);
-  //print_r($fax_data);
-  //print_r($mob_data);
-  //print_r($extra_tel_data);
-  //print_r($extra_mob_data);
 
   $email_data=guess_email($act_data['email']);
   
@@ -5919,255 +8602,55 @@ if($act_data['town']=='Hornbæk - Sjælland'){
   //print "$tipo_customer\n";
   //print_r($act_data);
     
-  $matches=get_matches($email_data['email'],$mob_data['number'],$tel_data['number'],$fax_data['number'],$act_data['name'],$act_data['contact'],$shop_address_data,$act_data['act']);
-  
+  $customer_data['type']=$tipo_customer;
+  $customer_data['contact_name']=$act_data['contact'];
+  $customer_data['company_name']=$act_data['name'];
+  $customer_data['email']=$email_data['email'];
+  $customer_data['telephone']=_trim($act_data['tel']);
+  $customer_data['fax']=$act_data['fax'];
+  $customer_data['mobile']=$act_data['mob'];
+  $customer_data['address_data']=$shop_address_data;
+  $customer_data['address_data']['type']='3line';
+
+  $customer_data['has_shipping']=true;
+  if($customer_data['has_shipping']){
+    $customer_data['shipping_data']=$del_address_data;
+
+    $customer_data['shipping_data']['name']=$header_data['customer_contact'];
+    $customer_data['shipping_data']['company']=$header_data['trade_name'];
+
+
+    $_tel=preg_split('/ /',$header_data['phone']);
+    $email=$_tel[count($_tel)-1];
+    if(preg_match('/@/i',$email)){
+      
+    $tel=_trim(preg_replace('/'.$email.'/','',$row['tel']));
+    $email=_trim($email);
+    }else{
+      $email='';
+      $tel=$row['tel'];
+    }
+
+    $customer_data['shipping_data']['telephone']=$tel;
+    $customer_data['shipping_data']['email']=$email;
+
+      $customer_data['shipping_data']['type']='3line';
     
-  // print "***** $date_index  ***";
-  // print_r($matches);
-
-  if(count($matches)>0  and $matches[0]['score']==81 )
-    print "Warning match 81 N:".$act_data['name']." C:".$act_data['contact']."  \n";
-  if(count($matches)==0  or (   count($matches)>0 and $matches[0]['score']<100        ) ){
-    // MEW CONTCT
-    //      print $act_data['name']."     $tipo_customer  ddddd\n";
-
-    $contact_id=insert_contact($act_data['name'],$tipo_customer,0,0,$date_index,$extra_id1,$extra_id2,'',true,($this_is_order_number==1?true:false));
-      
-    $tel_id=edit_contact('add','tel',$contact_id,$date_index,$tel_data,false,false,false);
-    $fax_id=edit_contact('add','fax',$contact_id,$date_index,$fax_data,false,false,false);
-    $mob_id=edit_contact('add','mob',$contact_id,$date_index,$mob_data,false,false,false);
-    $extra_tel_id=edit_contact('add','tel',$contact_id,$date_index,$extra_tel_data,false,false,false);
-    $extra_mob_id=edit_contact('add','fax',$contact_id,$date_index,$extra_mob_data,false,false,false);
-    //print "cacacaca $contact_id \n";
-    $shop_address_id= edit_contact('add','shop_address',$contact_id,$date_index,$shop_address_data,false,false,false);
-    // print "cacacaca\n";
-    edit_contact('set_principal','shop_address',$contact_id,$date_index,$shop_address_id,false,false,false);
-      
-
-    if($tel_id>0)
-      edit_contact('set_principal','tel',$contact_id,$date_index,$tel_id,'','',false);
-    else if ($mob_id>0)
-      edit_contact('set_principal','mob',$contact_id,$date_index,$mob_id,'','',false);
-     
-
- 
-
-    if($different_del_address){
-      $del_address_id=edit_contact('add','del_address',$contact_id,$date_index,$del_address_data,false,false,false);
-      
-    }
-    else{
-      edit_contact('associate','del_address',$contact_id,$date_index,$shop_address_id,false,false,false);
-      $del_address_id=$shop_address_id;
-    }
-
-
-    if($tipo_customer=='company'){
-	
-      //associate telecoms
-      edit_contact('associate','tel',$contact_id,$date_index,$tel_id,1,false,false);
-      edit_contact('associate','fax',$contact_id,$date_index,$fax_id,2,false,false);
-      edit_contact('associate','tel',$contact_id,$date_index,$extra_tel_id,1,false,false);
-	
-      // customer is a COMPANY ----------------------------------------------------------
-      if($act_data['contact']!=''){
-	// have contact ----------------------------------------------------------
-
-	$child_id=insert_contact($act_data['contact'],'person',1,0,$date_index,'','','',true,($this_is_order_number==1?true:false));
-	set_contact_relation($contact_id,$child_id);
-
-	edit_contact('set_principal','child',$contact_id,$date_index,$child_id,false,false,false);
-	edit_contact('set_principal','child',$child_id,$date_index,$child_id,false,false,false);
-	if($mob_id>0)
-	  edit_contact('set_principal','mob',$child_id,$date_index,$mob_id,'','',false);
-	else if ($tel_id>0)
-	  edit_contact('set_principal','tel',$child_id,$date_index,$tel_id,'','',false);
-     
-
-	edit_contact('associate','tel',$child_id,$date_index,$tel_id,4,false,false);
-	edit_contact('associate','fax',$child_id,$date_index,$fax_id,5,false,false);
-	edit_contact('associate','tel',$child_id,$date_index,$extra_tel_id,4,false,false);
-	edit_contact('associate','mob',$child_id,$date_index,$mob_id,3,false,false);
-	edit_contact('associate','mob',$child_id,$date_index,$extra_mob_id,3,false,false);
-	if($same_faxtel)
-	  edit_contact('associate','fax',$contact_id,$date_index,$tel_id,2,false,false);
-	$email_data=guess_email($act_data['email'],get_name($child_id));
-
-	$email_id=edit_contact('add','email',$child_id,$date_index,$email_data,false,false,false);
-	if($email_id>0){
-	  edit_contact('set_principal','email',$contact_id,$date_index,$email_id,false,false,false);
-	  edit_contact('set_principal','email',$child_id,$date_index,$email_id,false,false,false);
-	}
-	if($extra_contact){
-	  $extra_child_id=insert_contact($extra_contact,'person',1,0,$date_index,'','','',true,($this_is_order_number==1?true:false));
-	  set_contact_relation($contact_id,$extra_child_id);
-	  edit_contact('associate','tel',$extra_child_id,$date_index,$tel_id,4,false,false);
-	  edit_contact('associate','fax',$extra_child_id,$date_index,$fax_id,5,false,false);
-	  edit_contact('associate','tel',$extra_child_id,$date_index,$extra_tel_id,4,false,false);
-	  if ($tel_id>0)
-	    edit_contact('set_principal','tel',$extra_child_id,$date_index,$tel_id,'','',false);
-	  edit_contact('set_principal','child',$extra_child_id,$date_index,$extra_child_id,false,false,false);
-
-	}
-      }else{
-	// DO NOT HAVE contact ----------------------------------------------------------
-	edit_contact('associate','tel',$contact_id,$date_index,$mob_id,1,false,false);
-	edit_contact('associate','tel',$contact_id,$date_index,$extra_mob_id,1,false,false);
-
-	$email_data=guess_email($act_data['email'],get_name($contact_id));
-
-	$email_id=edit_contact('add','email',$contact_id,$date_index,$email_data,false,false,false);
-	edit_contact('set_principal','email',$contact_id,$date_index,$email_id,false,false,false);
-	//  edit_contact('set_principal','child',$contact_id,$date_index,$contact_id,false,false,false);
-	print "$tipo_customer WARNING NO CONTACT\n";
-      }
-
-      // customer is a person ---------------------------------------------------
-    }else if($tipo_customer=='person'){// No child it ussualy means the customer is a pernon not a company
-
-      edit_contact('associate','tel',$contact_id,$date_index,$tel_id,1,false,false);
-      edit_contact('associate','fax',$contact_id,$date_index,$fax_id,2,false,false);
-      edit_contact('associate','mob',$contact_id,$date_index,$mob_id,3,false,false);
-      edit_contact('associate','mob',$contact_id,$date_index,$extra_mob_id,3,false,false);
-      edit_contact('associate','tel',$contact_id,$date_index,$extra_tel_id,1,false,false);
-
-	  
-      $email_data=guess_email($act_data['email'],get_name($contact_id));
-      edit_contact('add','email',$contact_id,$date_index,$email_data,false,false,false);
-      edit_contact('set_principal','child',$contact_id,$date_index,$contact_id,false,false,false);
-    }
-
-
-
-
-    // insert new customwer
-      
-      
-    $groups=get_customer_groups($shop_address_data,$header_data,$act_data);
-
-
-
-    $customer_id = insert_customer($contact_id,$groups,$date_index,($this_is_order_number==1?true:false));
-
-
-    $new_customer=true;
-
-    //  print "cacaca";
-    edit_contact('set_principal','del_address',$contact_id,$date_index,$del_address_id,false,false,false);
-
-
-    //print "new $contact_id\n";
-  }else{
-    // Found older contact
-    // print "Old contact\n";
-    $contact_id=$matches[0]['contact'];
-    //print "OLD CONTACT   $contact_id  \n";
-    $contact_data=get_contact_data($contact_id);
-
-
-    if($contact_data['tipo']==1 and $tipo_customer=='company'){
-    
-       $tmp['date']=$date_index;
-      $tmp['name']=get_name($contact_id);
-
-      change_tipo_contact($contact_id,0,$date_index,true);
-      update_contact_name($contact_id,$act_data['name'],$contact_data['name'],$date_index,false);
-      // insert old thin as contacr
-
-
-      $child_id=edit_contact('add','child',$contact_id,$date_index,$tmp,'','',false);
-      //      exit;
-      
-    }
-
-    //	print "$contact_id \n";
-    //	print_r( $act_data);
-    //	print_r($contact_data);
-
-    $is_a_kid=false;
-    // hacemmos esto en el caso de que se encuentre un mach pero la nueva invoice es
-    // del child (contacto) no de la empresa, referenciando la orden al contacto :)
-    foreach($contact_data['child'] as $child_data){
-      similar_text($child_data['name'],$act_data['name'],$tmp);
-      if($tmp>95){
-	$is_a_kid=$child_data['id'];
-	break;
-      }
-    }
-
-    if($is_a_kid){
-      print "IS A KID OF A PREVOUS CONTACT\n";
-      $contact_email=display_person_name(guess_name($act_data['name']));
-      $name_data=$contact_email;
-      $email_data=guess_email($act_data['email'],  $contact_email );
-
-
-      $customer_id =get_customer_id($is_a_kid);
-      if(!$customer_id){
-	$groups=get_customer_groups($shop_address_data,$header_data,$act_data);
-	$customer_id = insert_customer($is_a_kid,$groups,$date_index,($this_is_order_number==1?true:false));
-	$new_customer=true;
-      }else
-	$new_customer=false;
-      
-      $tmp=update_contact($is_a_kid,array('name'=>$name_data,'child'=>false,'email'=>$email_data,
-					  'tel'=>$tel_data,
-					  'mob'=>$mob_data,
-					  'fax'=>$fax_data
-					  ,'shop_address'=>$shop_address_data,'del_address'=>$del_address_data),$date_index);
-
-	  
-      $shop_address_id=$tmp['shop_address'];
-      $del_address_id=$tmp['del_address'];
-	  
-
-
-      $bill_address_id='false';
-      return array($is_a_kid,$customer_id,$shop_address_id,$del_address_id,$bill_address_id,$new_customer,$co);
-      exit;
-    }
-
-
-	
-
-    $customer_id =get_customer_id($contact_id);
-	
-	
-    //		print       $matches[0]['score']." Old order detected $contact_id  $customer_id\n";
-    //      	exit;
-    $contact_data=guess_name($act_data['contact']);
-
-    //    $email_data=guess_email($act_data['email'],($act_data['name']!=$act_data['contact'] and $act_data['contact']!=''?display_person_name($contact_data):display_person_name($name_data)  ));
-    if($act_data['name']!=$act_data['contact'] and $act_data['contact']!=''){
-      $name_data=$act_data['name'];
-      $contact_email=display_person_name($contact_data);
-    }
-    else{
-      // no child
-      $contact_email=display_person_name(guess_name($act_data['name']));
-      $name_data=$contact_email;
-      $contact_data=false;
-    }
-    $email_data=guess_email($act_data['email'],  $contact_email );
-      
-
-    //      list($address_id,$del_address_id)
-    $tmp=update_contact($contact_id,array('name'=>$name_data,'child'=>$contact_data,'email'=>$email_data,'tel'=>$tel_data,'mob'=>$mob_data,'fax'=>$fax_data,'shop_address'=>$shop_address_data,'del_address'=>$del_address_data),$date_index);
-    //print_r($tmp);
-    $shop_address_id=$tmp['shop_address'];
-    $del_address_id=$tmp['del_address'];
-
-    //print "old $contact_id\n";
   }
 
-  if(!isset($customer_id))
-    print('error no customer id');
-    
-  //    print "$shop_address_id,$del_address_id\n";
-    
-  $bill_address_id='';
-  //  exit;
-  return array($contact_id,$customer_id,$shop_address_id,$del_address_id,$bill_address_id,$new_customer,$co);
+  $customer_data['other_id']=$act_data['act'];
+
+  //$customer_data['address_data']=
+  
+  
+  
+
+  return $customer_data;
+
+
+
+  
+
 }
 
 

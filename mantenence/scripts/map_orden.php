@@ -2,33 +2,35 @@
 
 
 error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
-require_once 'local_map.php';     
-require_once 'tipos.php';
+include_once('../../app_files/db/dns.php');
+include_once('../../classes/Department.php');
+include_once('../../classes/Family.php');
+include_once('../../classes/Product.php');
+include_once('../../classes/Supplier.php');
+include_once('../../classes/Order.php');
+include_once('local_map.php');
+
+include_once('map_order_functions.php');
+
+
 require_once 'MDB2.php';            // PEAR Database Abstraction Layer
-require_once 'address.php';
-require_once 'telecom.php';
-require_once 'email.php';
-require_once 'name.php';
+require_once '../../common_functions.php';
 
-require_once '_contact.php';
 
-require_once '_customer.php';
+$db =& MDB2::factory($dsn);       
+if (PEAR::isError($db)){echo $db->getMessage() . ' ' . $db->getUserInfo();}
 
-require_once 'similars.php';
+$db->setFetchMode(MDB2_FETCHMODE_ASSOC);  
+$db->query("SET time_zone ='UTC'");
+$db->query("SET NAMES 'utf8'");
+$PEAR_Error_skiptrace = &PEAR::getStaticProperty('PEAR_Error','skiptrace');$PEAR_Error_skiptrace = true;// Fix memory leak
+require_once '../../myconf/conf.php';           
+date_default_timezone_set('Europe/London');
 
-require_once 'string.php';
-require_once 'stock.php';
-
-require_once 'staff.php';
-require_once 'shipping_suppliers.php';
-require_once 'map_order_functions.php';
+$tmp_directory='/tmp/';
 
 $old_mem=0;
 
-$db =& MDB2::singleton($dsn);  
-$db->setFetchMode(MDB2_FETCHMODE_ASSOC);  
-$db->query("SET time_zone ='UTC'");
-$debug=false;
 
 
 $outstock_norecord=array('7927'=>true);
@@ -42,32 +44,21 @@ $do_refunds=false;
 $correct_partner=true;
 $force_update=false;
 
-//$orders_array = glob($xls_dir."*.xls");
-//$orders_array_full_path = glob("/data/old_orderss/7306.xls");
-//$orders_array_full_path = glob("/mnt/*/Orders/34947.xls");
-$orders_array_full_path = glob("/mnt/y/Orders/8*.xls");
-//$orders_array_full_path = glob("/mnt/*/Orders/8837.xls");
 
-//$orders_array_full_path = glob("orders/*.xls");
-//shuffle($orders_array_full_path);
+$orders_array_full_path = glob("/mnt/y/Orders/8*.xls");
+
 if(count($orders_array_full_path)==0)
   exit;
 
 foreach($orders_array_full_path as $key=>$order){
   $tmp=str_replace('.xls','',$order);
-  // $tmp=preg_replace('/\/data\/old_orders_.\//i','',$tmp);
   $tmp=preg_replace('/.*rders\//i','',$tmp);
-  //$tmp=preg_replace('/orders\//i','',$tmp);
   $orders_array[]=$tmp;
 }
 
 
 
 
-
-//array_multisort($orders_array,$orders_array_full_path);
-
-// Filter gwr only good files
 $good_files=array();
 $good_files_number=array();
 
@@ -81,26 +72,15 @@ foreach($orders_array as $order_index=>$order){
 
 }
 
-//print_r($orders_array);
-
-
 if($do_refunds){
 
 foreach($orders_array as $order_index=>$order){
   if(preg_match('/^\d{4,5}r$|^\d{4,5}ref$|^\d{4,5}\s?refund$|^\d{4,5}rr$|^\d{4,5}ra$|^\d{4,5}r2$|^\d{4,5}.2ref$/i',$order)){
-
     $parent_order_id=preg_replace('/[^\d]*$|r2$||\-2ref$/i','',$order);
-
     if(is_numeric($index=array_search($parent_order_id, $good_files_number))){
-
       array_splice($good_files_number, $index+1, 0, $order);
       array_splice($good_files, $index+1, 0, $orders_array_full_path[$order_index]);
-      //  print "$index $order  $parent_order_id";
-      // exit;
     }else{
-      //   print "Parent of order $order not found!\n";
-
-      
       for($i=$parent_order_id;$i>1;$i--){
 	//	print "look for $i $order \n";
 	if(is_numeric($index=array_search($i, $good_files_number))){
@@ -109,15 +89,12 @@ foreach($orders_array as $order_index=>$order){
 	  continue 2;
 	}
       }
-      
       array_splice($good_files_number, 0, 0, $order);
       array_splice($good_files, 0, 0, $orders_array_full_path[$order_index]);
-	  
     }
-      
   }
-}
-
+ }
+ 
  }
 
 
@@ -131,14 +108,8 @@ foreach($good_files_number as $order_index=>$order){
   $is_refund=false;
   $act_data=array();
   $map=array();
-
-
-
-
   if(!preg_match('/^\d{4,5}$/i',$order)){
-    //   print "Is refund $order\n";
     $is_refund=true;
-
   }
   $filename=$good_files[$order_index];
 
@@ -146,15 +117,17 @@ foreach($good_files_number as $order_index=>$order){
 
 
   $filedate=filemtime($filename);
-  $sql="select UNIX_TIMESTAMP(date) as date,checksum,checksum_header,checksum_products,order_id from orden_file where filename='$filename'";
-  //   print "$sql\n";
-  
+  $sql=sprintf("select `Order Key` as order_id, `Order Original Metadata` as metadata from `Order Dimension` where `Order Original Data Source`='Excel File' and `Order Original Data`=%s",prepare_mysql($filename));
+
+
+
   $res = $db->query($sql); 
   if ($row=$res->fetchRow()) {
-    $date_read=$row['date'];
-    $checksum_read=$row['checksum'];
-    $checksum_header_read=$row['checksum_header'];
-    $checksum_products_read=$row['checksum_products'];
+    $metadata=split('|',$row['metadata']);
+    $date_read=$metadata[0];
+    $checksum_read=$metadata[1];
+    $checksum_header_read=$metadata[2];
+    $checksum_products_read=$metadata[3];
     $order_id=$row['order_id'];
     //print "$filedate $date_read ".date("d-m-Y H:i:s",strtotime('@'.$filedate))." => ".date("d-m-Y H:i:s",strtotime('@'.$date_read))." $filename $order_id\n";
     
@@ -237,96 +210,12 @@ or isset($header[3][5]) and preg_match('/refund|credit note/i',$header[3][5])
 
 
 	if($tipo_order==9 ){
-
-	  $sql="select debit_id from debit_file where filename='$filename'";
-	  $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
-	  if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-	    $debit_id=$row['debit_id'];
-	    $sql="delete from debit_file where filename='$filename'";
-	    mysql_query($sql);
-	    $sql="delete from debit where id=$debit_id";
-	    mysql_query($sql);
-	  }      
-
-	   
-	  list($date_index,$date_order,$date_inv)=get_dates($filedate,$header_data,$tipo_order,true);
-	  if($date_order=='')
-	    $date_index2=$date_index;
-	  else
-	    $date_index2=$date_order;
-	  global $tax_rate;
-	  $total_tax=-abs($header_data['tax1']+$header_data['tax2']);
-	  $total_net=-abs($header_data['total_net']);
-	  $total=-abs($header_data['total_topay']);
-
-	  $bal_tax=$total_tax;
-	  $bal=$total_net;
-	  if(abs($total-$total_tax-$total_net)>0.001){
-	    print $total_tax+$total_net." $total  Error in refund tax balance\n";
-	  }
-
-	    
-	  if($bal_tax!=0 and $bal!=0){
-	    $_tax_code='S';
-	  }else
-	    $_tax_code='';
-
-	    
-	  if($total==0 and $total_tax!=0  ){
-	    $bal_tax=$total_tax;
-	    $bal=0;
-	    $_tax_code='X';
-	  }
-
-	  if( $_tax_code!='X')
-	    $_bal_tax=0;
-	  else
-	    $_bal_tax=$bal_tax;
-
-	  // print "$parent_order_id\n";
-	  $sql=sprintf("insert into debit (tipo,order_affected_id,value_net,value_tax,date_done,tax_code) values (4,%s,%.2f,%.2f,%s,%s)",prepare_mysql($parent_order_id),$bal,$_bal_tax,$date_index,prepare_mysql($_tax_code));
-	  //  print "$sql\n";
-	  mysql_query($sql);
-	  //$refund_id = $db->lastInsertID();
-	  $refund_id=mysql_insert_id();
-	  $sql=sprintf("insert into debit_file (filename,debit_id) values (%s,%d)",prepare_mysql($filename),$refund_id);
-	  mysql_query($sql);
-
-	   
-	  if(is_numeric($parent_order_id)){
-
-
-
-	    // Calculate debits
-	    $debit_value_net=0;
-	    $debit_value_tax=0;
-	    $sql=sprintf("select value_net,value_tax from debit where order_affected_id=%d",$parent_order_id);
-	    // print "$sql\n";
-	    $result = mysql_query($sql) or die('Query failed:zzasa ' . mysql_error());
-	    while($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-	      $debit_value_net+=$row['value_net'];
-	      $debit_value_tax+=$row['value_tax'];
-	    }      
-	    $sql=sprintf("select total,net,tax from orden where id=%d",$parent_order_id);
-	     
-	    $result = mysql_query($sql) or die('Query failed:zz ' . mysql_error());
-	    if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-	      $balance_net=$row['net']+$debit_value_net;
-	      $balance_tax=$row['tax']+$debit_value_tax;
-	      $balance_total=$row['total']+$debit_value_net+$debit_value_tax;
-	       
-	      $sql=sprintf("update orden set balance_net='%.2f' , balance_tax='%.2f' , balance_total='%.2f' where id=%d",$balance_net,$balance_tax,$balance_total,$parent_order_id);
-	      mysql_query($sql);//$db->exec($sql);
-	    }     
-    
-	  }
-
-
-	  update_orden_files('NULL',$filename,$checksum,$checksum_header,$checksum_products,$filedate);
-	   
+	  
+	  
+	  
 
 	}elseif($tipo_order==10  or $tipo_order==11){
-	  update_orden_files('NULL',$filename,$checksum,$checksum_header,$checksum_products,$filedate);
+	  //credut note or quote
 
 	}else{
 	  // if no refund or cretit note
@@ -348,31 +237,11 @@ or isset($header[3][5]) and preg_match('/refund|credit note/i',$header[3][5])
 	  
 	  
 	  //=====================================================
-	  list($contact_id,$customer_id,$shop_address_id,$del_address_id,$bill_address_id,$new_customer,$co)=setup_contact($act_data,$header_data,$date_index2);
-	  
-	  $partner=0;
-	  if(isset($partners[$customer_id]))
-	    $partner=1;
-	  
-	      
-	    
-	  
-	  $tax_code=update_orden($order_id,
-				 $customer_id,
-				 $header_data,
-				 $act_data,	 
-				 $date_index2,
-				 $date_order,
-				 $date_inv,
-				 $tipo_order,
-				 $del_address_id,
-				 $bill_address_id,
-				 $new_customer,$is_island,$parent_order_id,$partner,$co);
-	  
-	  
-	  set_pickers_and_packers($order_id,$header_data);
-	  update_orden_files($order_id,$filename,$checksum,$checksum_header,$checksum_products,$filedate);
-	  update_customer($customer_id,$since);
+	  $customer_data=setup_contact($act_data,$header_data,$date_index2);
+	  print_r($customer_data);
+	  exit;
+	  //update Ordern
+
 	}
 	$ltipo=$header_data['ltipo'];
 	
@@ -381,27 +250,11 @@ or isset($header[3][5]) and preg_match('/refund|credit note/i',$header[3][5])
       }else{
 	$_same_header=true;
 	print " same header ";
-	$sql=sprintf("select titulo,customer_id,tax,net,total from orden where id=%d",$order_id);
 
-	$res = $db->query($sql); 
-	if ($row=$res->fetchRow()) {
-	  $ltipo=$row['titulo'];
-	  $customer_id=$row['customer_id'];
-
-	  if($row['tax']!=0 and $row['total']!=0 )
-	    $tax_code='S';
-	  else
-	    $tax_code='NULL';
-	      
-	    
-	}elseif($is_refund and 	$_same_header){
-	  print "Refund not changed\n";
-	}else
-	  exit("Fatal error no original orden when trying to update it\n");
       }
       
 
-
+      
       if( $checksum_products_read!=$checksum_products or  $force_update){
 	print " *transactions ";
 	list($act_data,$header_data)=read_header($header,$map_act,$y_map,$map);
@@ -411,7 +264,7 @@ or isset($header[3][5]) and preg_match('/refund|credit note/i',$header[3][5])
 	
 	$record_outofstock=true;
 	$customer_data=get_customer_data($customer_id);
-
+	
 	  
        
 	  $record_outofstock=true;
@@ -646,45 +499,10 @@ or isset($header[3][5]) and preg_match('/refund|credit note/i',$header[3][5])
 	
 
       //=====================================================
-      list($contact_id,$customer_id,$shop_address_id,$del_address_id,$bill_address_id,$new_customer,$co)=setup_contact($act_data,$header_data,$date_index2);
-
-      if($bill_address_id=='' and $shop_address_id!=''){
-	$bill_address_id=$shop_address_id;
-      }
-
-	$partner=0;
-	if(isset($partners[$customer_id]))
-	  $partner=1;
-	
-	
-	
-	
-      list($order_id,$tax_code)=create_orden($customer_id,
-					     $header_data,
-					     $act_data,
-					     $date_index2,
-					     $date_order,
-					     $date_inv,
-					     $tipo_order,
-					     $del_address_id,
-					     $bill_address_id,
-					     $new_customer,$is_island,$parent_order_id,$partner,$co);
-
-
-	$customer_data=get_customer_data($customer_id);
-	$record_outofstock=true;
-	if(isset($outstock_norecord[$customer_id]))
-	  $record_outofstock=false;
-	
-	
-	
-	
-
-
-      $transction_data=set_transactions($transactions,$order_id,$tipo_order,$parent_order_id,$date_index,$record_outofstock,$tax_code);
-      set_pickers_and_packers($order_id,$header_data);
-      insert_orden_files($order_id,$filename,$checksum,$checksum_header,$checksum_products,$filedate);
-      update_customer($customer_id,$since);
+      $customer_data=setup_contact($act_data,$header_data,$date_index2);
+      print_r($transactions);
+      exit;
+      
     }
   }
 
