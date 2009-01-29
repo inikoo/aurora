@@ -42,6 +42,18 @@ class product{
       $sql=sprintf("select * from `Product Dimension` where `Product Key`=%d ",$tag);
     elseif($tipo=='code'){
       $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s and `Product Most Recent`='Yes' ",prepare_mysql($tag));
+      elseif($tipo=='code_fuzzy'){
+	$code=$tag['code'];
+	$name=$tag['name'];
+	$units=$tag['units'];
+	$unit_type=$tag['unit_type'];
+	$price=$tag['price'];
+	
+	$date=$tag['date'];
+
+	$auto_fix=$tag['auto_fix'];
+	$sql=sprintf("select * from `Product Dimension` where `Product Code`=%s and `Product Price`=%s and `Product Name`=%s and `Product Units Per Case`=%s and `Product Unit Type`  ",prepare_mysql($tag)); 
+
     }
 
     //print "$sql\n";

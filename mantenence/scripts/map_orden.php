@@ -125,9 +125,9 @@ foreach($good_files_number as $order_index=>$order){
   if ($row=$res->fetchRow()) {
     $metadata=split('|',$row['metadata']);
     $date_read=$metadata[0];
-    $checksum_read=$metadata[1];
-    $checksum_header_read=$metadata[2];
-    $checksum_products_read=$metadata[3];
+
+    $checksum_header_read=$metadata[1];
+    $checksum_products_read=$metadata[2];
     $order_id=$row['order_id'];
     //print "$filedate $date_read ".date("d-m-Y H:i:s",strtotime('@'.$filedate))." => ".date("d-m-Y H:i:s",strtotime('@'.$date_read))." $filename $order_id\n";
     
@@ -496,17 +496,23 @@ or isset($header[3][5]) and preg_match('/refund|credit note/i',$header[3][5])
       }else if($filename=='/mnt/s/Orders/12752.xls'){
 	$header_data['history']=16;
       }
-	
+
 
       //=====================================================
       $customer_data=setup_contact($act_data,$header_data,$date_index2);
       $data=array();
       $data['order date']=$date_order;
-      $data['order customer message']=$header_data['note2'];
+      $data['order customer message']=$header_data['notes2'];
       $data['order original data mime type']='text/plain';
-      $data['order original data'];
-      print_r($header_data);
-      
+      $data['order original data']=$filename;
+      $data['order original data source']='Excel File';
+      $data['order original metadata']=$filedate."|".$checksum_header.'|'.$checksum_products;
+
+      print_r($transactions);
+      foreach($transactions as $prod){
+	$product=new Product('code',$prod['code'])
+
+      }
 
       exit;
       
