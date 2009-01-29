@@ -3505,6 +3505,14 @@ function read_products($raw_product_data,$y_map){
 
       $transaction[$key]=$_data;
     }
+
+
+    if($transaction['units']==1 or $transaction['units']=='')
+      $transaction['name']=$transaction['description'];
+    else
+      $transaction['name']=trim($transaction['units'].'x '.$transaction['description']);
+
+
     $transaction['fob']=$raw_data['fob'];
     $transactions[]=$transaction;
   }
@@ -8816,6 +8824,16 @@ function read_records($handle_csv,$y_map,$number_header_rows){
 		 or ( is_numeric($cols[$y_map['bonus']])   and  $cols[$y_map['bonus']]!=0   ) )  
 	  )or (preg_match('/credit/i',$cols[$y_map['code']])   and  $cols[$y_map['price']]!='' and  $cols[$y_map['price']]!=0  )
 	 ){
+
+
+	
+
+
+// 	if($cols['units']==1 or $cols['units']='')
+// 	  $cols['name']=$cols['description'];
+// 	else
+// 	  $cols['name']=$cols['units'].'x '.$cols['description'];
+
 	$cols['fob']=$first_order_bonus;
 	$products[]=$cols;
       }else if(preg_match('/^public\d*$|^nic$/i',$cols[0])  )

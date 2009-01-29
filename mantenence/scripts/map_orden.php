@@ -500,7 +500,14 @@ or isset($header[3][5]) and preg_match('/refund|credit note/i',$header[3][5])
 
       //=====================================================
       $customer_data=setup_contact($act_data,$header_data,$date_index2);
-      print_r($transactions);
+      $data=array();
+      $data['order date']=$date_order;
+      $data['order customer message']=$header_data['note2'];
+      $data['order original data mime type']='text/plain';
+      $data['order original data'];
+      print_r($header_data);
+      
+
       exit;
       
     }

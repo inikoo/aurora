@@ -44,6 +44,7 @@ class Order{
     $type=$data['type'];
     switch($type){
       
+
     case('direct_data_injection'):
       
 
@@ -73,20 +74,20 @@ class Order{
       $this->data['order current dispatch state']='In Process';
       $this->data['order current payment state']='Waiting Invoice';
       $this->data['order current xhtml state']='In Process';
-	$this->data['order customer message']=_trim($data['message']);
-	$this->data['order original data mime type']=$data['original_data_type'];
-	$this->data['order original data']=$data['original_data'];
-	$this->data['order main store key']=$store->id;
-	$this->data['order main store code']=$store->get('code');
-	$this->data['order main store type']=$store->get('type');
-	$this->data['order gross amount']=$data['subtotal'];
-	$this->data['order shipping amount']=$data['shipping'];
-	$this->data['order discount ammont']=$data['discount']+$data['voucher'];
-	$this->data['order total tax amount']=$data['tax'];
-	$this->data['order main xhtml ship to']=$ship_to;
-	$this->data['order main ship to key']=$ship_to_key;
-	$this->data['order ship to addresses']=1;
-	$this->create_order_header();
+      $this->data['order customer message']=_trim($data['message']);
+      $this->data['order original data mime type']=$data['original_data_type'];
+      $this->data['order original data']=$data['original_data'];
+      $this->data['order main store key']=$store->id;
+      $this->data['order main store code']=$store->get('code');
+      $this->data['order main store type']=$store->get('type');
+      $this->data['order gross amount']=$data['subtotal'];
+      $this->data['order shipping amount']=$data['shipping'];
+      $this->data['order discount ammont']=$data['discount']+$data['voucher'];
+      $this->data['order total tax amount']=$data['tax'];
+      $this->data['order main xhtml ship to']=$ship_to;
+      $this->data['order main ship to key']=$ship_to_key;
+      $this->data['order ship to addresses']=1;
+      $this->create_order_header();
 
 
 	
