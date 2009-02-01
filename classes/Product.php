@@ -42,7 +42,7 @@ class product{
       $sql=sprintf("select * from `Product Dimension` where `Product Key`=%d ",$tag);
     elseif($tipo=='code'){
       $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s and `Product Most Recent`='Yes' ",prepare_mysql($tag));
-      elseif($tipo=='code_fuzzy'){
+    }      elseif($tipo=='code_fuzzy'){
 	$code=$tag['code'];
 	$name=$tag['name'];
 	$units=$tag['units'];
