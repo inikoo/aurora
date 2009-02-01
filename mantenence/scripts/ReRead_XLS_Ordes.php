@@ -65,9 +65,9 @@ if ($row=$res->fetchRow()) {
   $checksum_products= md5($_products);
   
   $sql=sprintf("update orders_data.order_data set header=%s ,checksum_header=%s,products=%s,checksum_prod=%s where id=%d"
-	       ,prepare_mysql($_header)
+ ,prepare_mysql(mb_convert_encoding($_header, "UTF-8", "ISO-8859-1,UTF-8"))
 	       ,prepare_mysql($checksum_header)
-	       ,prepare_mysql($_products)
+,prepare_mysql(mb_convert_encoding($_products, "UTF-8", "ISO-8859-1,UTF-8"))
 	       ,prepare_mysql($checksum_products)
 	       ,$id);
     $db->exec($sql);
