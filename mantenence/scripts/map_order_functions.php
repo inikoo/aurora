@@ -1,5 +1,15 @@
 <?
 
+function filter_header($data){
+  foreach($data as $key=>$value){
+    $data[$key]=_trim($value);
+  }
+  
+  if(preg_match('/\d{2}-\d{2}-\d{2}/',$data['notes2']))
+     $data['notes2']='';
+  return $data;
+}
+
 function guess_email($email,$contact='',$tipo=1){
   if(check_email_address($email) ){
 
@@ -3822,15 +3832,15 @@ function get_dates($filedate,$header_data,$tipo_order,$new_file=true){
   list($date_updated,$time_updated)=split(' ',$datetime_updated);
   if($new_file){
     if($tipo_order==2){
-      print "$date_updated ".$header_data['date_inv']."  \n";
+      // print "$date_updated ".$header_data['date_inv']."  \n";
       if($date_updated ==$header_data['date_inv']){
-	$date_charged="'".$date_updated." ".$time_updated."'";
+	$date_charged=$date_updated." ".$time_updated;
 	if($header_data['date_inv']==$header_data['date_order'])
-	  $date_processed=$header_data['date_order']." ".$time_updated_menos30min."'";
-	$date_processed="'".$header_data['date_order']." 09:30:00'";
+	  $date_processed=$header_data['date_order']." ".$time_updated_menos30min;
+	$date_processed=$header_data['date_order']." 09:30:00";
       }else{
-	$date_charged="'".$header_data['date_inv']." 16:30:00'";
-	$date_processed="'".$header_data['date_order']." 09:30:00'";
+	$date_charged=$header_data['date_inv']." 16:30:00";
+	$date_processed=$header_data['date_order']." 09:30:00";
       }
       $date_index=$date_charged;
     }else{
@@ -3840,19 +3850,19 @@ function get_dates($filedate,$header_data,$tipo_order,$new_file=true){
       $date_charged="NULL";
       if($date_updated ==$header_data['date_order']){
 	//print $header_data['date_order']." xssssssssssssxx";
-	$date_processed="'".$date_updated." ".$time_updated."'";
+	$date_processed=$date_updated." ".$time_updated;
 	// print "$date_processed  xssssssssssssxx\n";
 
       }
       else
-	$date_processed="'".$header_data['date_order']." 08:30:00'";
+	$date_processed=$header_data['date_order']." 08:30:00";
       $date_index=$date_processed;
 
       // print $date_index." xxx\n";
 
     }
   }
-  print "$date_index,$date_processed,$date_charged\n";
+  //  print "$date_index,$date_processed,$date_charged\n";
   return array($date_index,$date_processed,$date_charged);
 
 }
@@ -8517,9 +8527,9 @@ if($act_data['town']=='Hornbæk - Sjælland'){
 
 
 
-       //  print_r($a_diff);
+       // print_r($shop_address_data);
        //exit;   
- if($shop_address_data['country_id']==75){
+       if(preg_match('/ireland/i',$shop_address_data['country'])){
    if(count($a_diff)==1 and array_key_exists('postcode',$a_diff))
      $different_del_address=false;
    if(count($a_diff)==1 and array_key_exists('country_d2',$a_diff))

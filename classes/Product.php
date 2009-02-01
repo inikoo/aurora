@@ -38,11 +38,12 @@ class product{
   function get_data($tipo,$tag,$extra=false){
     global $_shape,$_units_tipo,$_units_tipo_abr,$_units_tipo_plural;
 
+
     if($tipo=='id')
       $sql=sprintf("select * from `Product Dimension` where `Product Key`=%d ",$tag);
     elseif($tipo=='code'){
       $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s and `Product Most Recent`='Yes' ",prepare_mysql($tag));
-    }      elseif($tipo=='code_fuzzy'){
+    }elseif($tipo=='code_fuzzy'){
 	$code=$tag['code'];
 	$name=$tag['name'];
 	$units=$tag['units'];
