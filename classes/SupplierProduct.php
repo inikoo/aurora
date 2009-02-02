@@ -179,7 +179,8 @@ function used_id($id){
 }
 
  function new_id(){
-   $select="select max(`Supplier Product ID`) as id from `Supplier Product Dimension`";
+   $sql="select max(`Supplier Product ID`) as id from `Supplier Product Dimension`";
+
   if($result =& $this->db->query($sql)){
     $row=$result->fetchRow();
     return $row['id']+1;
@@ -189,7 +190,7 @@ function used_id($id){
  }
 
 
-  function new_part_list($data){
+  function new_part_list($part_list){
     
     $_base_data=array(
 		      'supplier product key'=>$this->id,
