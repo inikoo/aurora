@@ -45,7 +45,7 @@ $correct_partner=true;
 $force_update=true;
 
 
-$orders_array_full_path = glob("/mnt/*/Orders/8*.xls");
+$orders_array_full_path = glob("/mnt/*/Orders/86403.xls");
 $orders_array_full_path=array_reverse($orders_array_full_path);
 
 if(count($orders_array_full_path)==0)

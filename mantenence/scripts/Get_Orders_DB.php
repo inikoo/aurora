@@ -29,17 +29,19 @@ $version='V 1.0';
 $Data_Audit_ETL_Software="$software $version";
 
 
-$sql="select * from orders_data.order_data where id>11";
+$sql="select id from orders_data.order_data where id=19087";
 $res = $db->query($sql);
-while($row=$res->fetchRow()) {
-
-
+while($row2=$res->fetchRow()) {
   
+  print $row2['id']."\r";
+  $sql="select * from orders_data.order_data where id=".$row2['id'];
+  $res2 = $db->query($sql);
+  if($row=$res2->fetchRow()) {
   
     
-$header=unserialize($row['header']);
+$header=mb_unserialize($row['header']);
 
-  $products=unserialize($row['products']);
+  $products=mb_unserialize($row['products']);
 
   $filename_number=str_replace('.xls','',str_replace($row['directory'],'',$row['filename']));
   $map_act=$_map_act;$map=$_map;$y_map=$_y_map;
@@ -73,15 +75,18 @@ $header=unserialize($row['header']);
   $data['order original data source']='DB:orders_data.order.data';
   $data['order original metadata']=$row['id'];
   
-  print $row['id']."\n";
-  //foreach($transactions as $transaction){
-  //  print $transaction['supplier_product_code']."\n";
-  // }
+
+//   foreach($transactions as $transaction){
+//     print $transaction['supplier_product_code']."\n";
+//   }
 
  }
+ }
 
-
-
+function mb_unserialize($serial_str) {
+$out = preg_replace('!s:(\d+):"(.*?)";!se', "'s:'.strlen('$2').':\"$2\";'", $serial_str );
+return unserialize($out);
+} 
 
 
 ?>

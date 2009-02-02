@@ -41,26 +41,18 @@ class Staff{
 
   function get_data($key,$id){
     
-    
-    $sql=sprintf("select * from staff where id=%d",$id);
-
+    if($key=='alias')
+      $sql=sprintf("select * from `Employee Dimension` where `Employee Alias`=%s",prepare_mysql($id));
+    elseif($key=='id')
+            $sql=sprintf("select * from  `Employee Dimension`     where `Employee Key`=%d",$id);
+    else
+      return;
     $result =& $this->db->query($sql);
     if($this->data=$result->fetchRow()) 
-      $this->id=$this->data['id'];
+      $this->id=$this->data['employee key'];
     
-    $name=new name($this->data['name_id']);
-   
-    if($name->id)
-      $this->data['name']=$name->display();
-    else
-      $this->data['name']=false;
-    $email=new email($this->data['email_id']);
-    if($email->id)
-      $this->data['email']=$email->display();
-    else
-      $this->data['email']=false;
 
- }
+  }
 
 
 }
