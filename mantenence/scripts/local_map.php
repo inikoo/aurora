@@ -54,7 +54,7 @@ $_y_map['rrp']=16;
 $_y_map['discount']=18;
 $_y_map['units']=5;
 $_y_map['supplier_code']=21;
-$_y_map['supplier_product_code']=22;
+$_y_map['supplier_product_code']=20;
 $_y_map['supplier_product_cost']=23;
 
 
@@ -69,7 +69,7 @@ $_y_map_old['rrp']=15;
 $_y_map_old['discount']=17;
 $_y_map_old['units']=4;
 $_y_map_old['supplier_code']=20;
-$_y_map_old['supplier_product_code']=21;
+$_y_map_old['supplier_product_code']=19;
 $_y_map_old['supplier_product_cost']=22;
 
 

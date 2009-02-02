@@ -29,7 +29,7 @@ $version='V 1.0';
 $Data_Audit_ETL_Software="$software $version";
 
 
-$sql="select id from orders_data.order_data where id=19087";
+$sql="select id from orders_data.order_data  order by id desc";
 $res = $db->query($sql);
 while($row2=$res->fetchRow()) {
   
@@ -75,12 +75,13 @@ $header=mb_unserialize($row['header']);
   $data['order original data source']='DB:orders_data.order.data';
   $data['order original metadata']=$row['id'];
   
+  //  print_r($products);
+   foreach($transactions as $transaction){
+     print $transaction['code'].' '.$transaction['supplier_product_cost']."\n";
+   }
 
-//   foreach($transactions as $transaction){
-//     print $transaction['supplier_product_code']."\n";
-//   }
-
- }
+  }
+  exit;
  }
 
 function mb_unserialize($serial_str) {

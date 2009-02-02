@@ -305,8 +305,12 @@ foreach($__cols as $cols){
 			 'Part XHTML Description'=>preg_replace('/\(.*\)\s*$/i','',$product->get('Product XHTML Short Description'))
 			 );
 	$part=new Part('new',$part_data);
-	$rules[]=array('Part Key'=>$part->id,'Supplier Product Units Per Part'=>$units);
-	$supplier_product->new_rules($rules);
+	$rules[]=array('Part Key'=>$part->id,'Supplier Product Units Per Part'=>$units
+		       ,'supplier product part list most recent'=>'Yes'
+		       ,'supplier product part list valid from'=>date('Y-m-d H:i:s')
+		       ,'supplier product part list valid to'=>date('Y-m-d H:i:s')
+		       );
+	$supplier_product->new_part_list($rules);
 	$part_list[]=array(
 			   'Product ID'=>$product->get('product ID'),
 			   'Part SKU'=>$part->get('part sku'),

@@ -3510,8 +3510,9 @@ function read_products($raw_product_data,$y_map){
 
 
       }
-
-
+      if($key=='supplier_product_code' and $raw_data[$y_map['supplier_code']]=='AW'   ){
+	$_data=$raw_data[$y_map['code']];
+      }
 
       $transaction[$key]=$_data;
     }
@@ -8663,7 +8664,7 @@ if($act_data['town']=='Hornbæk - Sjælland'){
       $email=preg_replace('/\/com$/','.com',$email);
       $email=preg_replace('/\//','',$email);
 
-      print $email;
+
       $tel=_trim(preg_replace('/'.$email.'/','',$header_data['phone']));
     $email=_trim($email);
     }else{

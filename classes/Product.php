@@ -14,7 +14,7 @@ class product{
   var $images=false;
   var $weblink=false;
   var $db;
-
+  var $new=false;
   var $location_to_update=false;
 
   function __construct($a1,$a2=false,$a3=false) {
@@ -43,17 +43,120 @@ class product{
       $sql=sprintf("select * from `Product Dimension` where `Product Key`=%d ",$tag);
     elseif($tipo=='code'){
       $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s and `Product Most Recent`='Yes' ",prepare_mysql($tag));
-    }elseif($tipo=='code_fuzzy'){
+    }elseif($tipo=='code-name-units-price'){
 	$code=$tag['code'];
 	$name=$tag['name'];
 	$units=$tag['units'];
 	$unit_type=$tag['unit_type'];
 	$price=$tag['price'];
-	
+	$rrp=$tag['rrp'];
 	$date=$tag['date'];
 
-	$auto_fix=$tag['auto_fix'];
-	$sql=sprintf("select * from `Product Dimension` where `Product Code`=%s and `Product Price`=%s and `Product Name`=%s and `Product Units Per Case`=%s and `Product Unit Type`  ",prepare_mysql($tag)); 
+	$supplier_code=$tag['supplier_code'];
+	$supplier_product_code=$tag['supplier_product_code'];
+	$supplier_product_price=$tag['supplier_product_price'];
+
+	$auto_add=$tag['auto_add'];
+
+	$sql=sprintf("select * from `Product Dimension` where `Product Code`=%s and `Product Name`=%s and `Product Units Per Case`=%s and `Product Unit Type`  "
+		     ,prepare_mysql($code)
+		     ,prepare_mysql($name)
+		     ,prepare_mysql($units)
+		     ,prepare_mysql($units_type)
+		     ); 
+	
+	if($result =& $this->db->query($sql)){
+	  $this->data=$result->fetchRow();
+	  $this->id=$this->data['product key'];
+	}elseif($auto_add){
+	  //create new product ID with this carateristic
+	  
+	  $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s ",prepare_mysql($code));
+	  if($result2 =& $this->db->query($sql)){
+	    $row=$result2->fetchRow();
+	     $current_fam_key=$row['product family key'];
+	     $current_fam_code=$row['product family code'];
+	     $current_fam_name=$row['product family name'];
+	     $department_key=$row['product main department key'];
+	     $department_name=$row['product main department name'];
+	     $department_code=$row['product main department code'];
+	     $new=false;
+	  }else{
+	    $current_fam_key='';
+	     $current_fam_code='';
+	     $current_fam_name='';
+	     $department_key='';
+	     $department_name='';
+	     $department_code='';
+	     $new=true;
+	     $this->new=true;
+	  }
+	    
+	  
+
+
+	  $data=array(
+		      'sale state'=>'For sale',
+		      'code'=>$code,
+		      'price'=>$price,
+		      'rrp'=>$rrp,
+		      'units per case'=>$units,
+		      'units type'=>$units_type,
+		      'name'=>$description,
+		      'family code'=>$current_fam_code,
+		      'family name'=>$current_fam_name,
+		      'department code'=>$department_name,
+		      'deals'=>'',
+		      'date'=>$date
+		      );
+	  $this->create($data);
+
+
+	  if($new){
+	    // create alse the part
+	    $part=new Part('new',$part_data);
+	    $rules[]=array('Part Key'=>$part->id,'Supplier Product Units Per Part'=>$units);
+	    $supplier_product->new_rules($rules);
+	    $part_list[]=array(
+			       'Product ID'=>$product->get('product ID'),
+			       'Part SKU'=>$part->get('part sku'),
+			       'Product Part Id'=>1,
+			       'requiered'=>'Yes',
+			       'Parts Per Product'=>1,
+			       'Product Part Type'=>'Simple Pick'
+			       );
+	    $product->new_part_list($part_list);
+	  }
+
+	  $supplier=new Supplier('code',$supplier_code);
+	  if(!$supplier->id){
+	    $data=array(
+			'name'=>$supplier_code,
+			'code'=>$supplier_code,
+			);
+	    $supplier=new Supplier('new',$data);
+	  }
+
+	  $sp_data=array(
+			 'supplier product supplier key'=>$supplier->id,
+			 'supplier product code'=>$scode,
+			 'supplier product cost'=>$cost,
+			 'auto add'=>true,
+			 'date'=>$date
+			 );
+	  $supplier_product=new SupplierProduct('supplier-code-name-cost',$sp_data);
+
+	  if($new or   $supplier_product->new){
+	    $rules[]=array('Part Key'=>$part->id,'Supplier Product Units Per Part'=>$units);
+	    $supplier_product->new_rules($rules);
+	  }
+	  
+	  
+
+
+	}else
+	   return;
+	
 
     }
 
