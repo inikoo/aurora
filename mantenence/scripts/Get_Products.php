@@ -174,7 +174,7 @@ foreach($__cols as $cols){
 		     ,'deal allowance target'=>'Product'
 		     ,'deal allowance target key'=>''
 		     ,'deal begin date'=>'2006-01-01 00:00:00'
-		       ,'deal expiration date'=>date("Y-m-d 23:59:59",strtotime('now + 1 year'))
+		     ,'deal expiration date'=>date("Y-m-d 23:59:59",strtotime('now + 1 year'))
 		     );
       
       $deals[]=array(
@@ -306,9 +306,11 @@ foreach($__cols as $cols){
 			 );
 	$part=new Part('new',$part_data);
 	$rules[]=array('Part Key'=>$part->id,'Supplier Product Units Per Part'=>$units
-		       ,'supplier product part list most recent'=>'Yes'
-		       ,'supplier product part list valid from'=>date('Y-m-d H:i:s')
-		       ,'supplier product part list valid to'=>date('Y-m-d H:i:s')
+		       ,'supplier product part most recent'=>'Yes'
+		       ,'supplier product part valid from'=>date('Y-m-d H:i:s')
+		       ,'supplier product part valid to'=>date('Y-m-d H:i:s')
+		       
+		       ,'factor supplier product'=>1
 		       );
 	$supplier_product->new_part_list($rules);
 	$part_list[]=array(

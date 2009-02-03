@@ -2846,13 +2846,21 @@ function new_id(){
       $units_factor=$data['units per case'];
     else
       $units_factor=1;
-    $sql=sprintf("insert into  `Product Dimension` (`Product id`,`Product Code File As`,`Product Code`,`Product Status`,`Product Units Per Case`,`Product Valid From`,`Product Valid To`,`Product Most Recent`) values (%s,%s,%s,'%s',%f,NOW(),'%s','Yes')",
+
+    $from=date("Y-m-d H:i:s");
+    $to=date("Y-m-d H:i:s");
+    $most_recent='Yes';
+
+
+    $sql=sprintf("insert into  `Product Dimension` (`Product id`,`Product Code File As`,`Product Code`,`Product Status`,`Product Units Per Case`,`Product Valid From`,`Product Valid To`,`Product Most Recent`) values (%s,%s,%s,'%s',%f,%s,%s,%s')",
 		 prepare_mysql($id_number),
 		 prepare_mysql($ncode),
 		 prepare_mysql($code),
 		 'Preparing Product',
 		 $units_factor,
-		 date("Y-m-d H:i:s",strtotime("+24 month"))
+		 prepare_mysql($from),
+		 prepare_mysql($to),
+		 prepare_mysql($most_recent)
 		 );
     
 
@@ -3024,10 +3032,11 @@ function new_id(){
 		      'product part note'=>'',
 		      'product part type'=>'',
 		      'product part metadata'=>'',
-		      'product part valid from'=>'',
-		      'product part valid to'=>'',
-		      'product part most recent'=>'Yes'
-		     );
+		      'product part valid from'=>date('Y-m-d H:i:s'),
+		      'product part valid to'=>date('Y-m-d H:i:s'),
+		      'product part most recent'=>'Yes',
+		      'product part most recent key'=>''
+		      );
 
 
     
@@ -3058,8 +3067,16 @@ function new_id(){
     $keys=preg_replace('/,$/',')',$keys);
     $values=preg_replace('/,$/',')',$values);
     $sql=sprintf("insert into `Product Part List` %s %s",$keys,$values);
-    //    print "$sql\n";exit;
+    //   print "$sql\n";exit;
     $affected=& $this->db->exec($sql);
+
+    $id=$this->db->lastInsertID();
+     if($base_data['product part most recent']=='Yes'){
+      $sql=sprintf('update `Product Part List` set `Product Part Most Recent Key`=%d where `Product Part List Key`=%d',$id,$id);
+  
+      $this->db->exec($sql);
+    }
+
   }
   
   }

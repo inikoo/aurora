@@ -117,6 +117,12 @@ class supplierproduct{
        $base_data['supplier product id']=$this->new_id();
      }
 
+     if(preg_match('/^yes$/i',$base_data['supplier product most recent']))
+       $base_data['supplier product most recent']='Yes';
+     else
+       $base_data['supplier product most recent']='No';
+
+
      $keys='(';$values='values(';
     foreach($base_data as $key=>$value){
       $keys.="`$key`,";
@@ -125,7 +131,7 @@ class supplierproduct{
     $keys=preg_replace('/,$/',')',$keys);
     $values=preg_replace('/,$/',')',$values);
     $sql=sprintf("insert into `Supplier Product Dimension` %s %s",$keys,$values);
-    //  print "$sql\n";
+    // print "$sql\n";
     $affected=& $this->db->exec($sql);
     $this->id = $this->db->lastInsertID();
 
@@ -197,9 +203,10 @@ function used_id($id){
 		      'part key'=>'',
 		      'factor supplier product'=>'',
 		      'supplier product units per part'=>'',
-		      'supplier product part list valid from'=>'',
-		      'supplier product part list valid to'=>'',
-		      'supplier product part list most recent'=>'',
+		      'supplier product part valid from'=>date('Y-m-d H:i:s'),
+		      'supplier product part valid to'=>date('Y-m-d H:i:s'),
+		      'supplier product part most recent'=>'Yes',
+		      'supplier product part most recent key'=>'',
 		     );
 
 
@@ -210,29 +217,37 @@ function used_id($id){
       $_date=$data['supplier product part valid from'];
       if(!preg_match('/now/i',$_date))
 	$_date=prepare_mysql($_date);
-
-    
-    $sql=sprintf("update `Supplier Product Part List`  set `Supplier Product Part Most Recent`='No' ,`Supplier Product Part Valid To`=%s where `Product ID`=%d and `Part SKU`=%d  and `Supplier Product Part Most Recent`='Yes' ",$_date,$this->data['product id'],$data['part sku']);
-    $this->db->exec($sql);
-    
-    $base_data=$_base_data;
-    foreach($data as $key=>$value){
-      $base_data[strtolower($key)]=_trim($value);
-    }
-    
-    $keys='(';$values='values(';
-    foreach($base_data as $key=>$value){
-      $keys.="`$key`,";
-      if(($key='supplier product part valid from' or $key=='supplier product part valid to') and preg_match('/now/i',$value))
+      
+      
+      $sql=sprintf("update `Supplier Product Part List`  set `Supplier Product Part Most Recent`='No' ,`Supplier Product Part Valid To`=%s where `Product ID`=%d and `Part SKU`=%d  and `Supplier Product Part Most Recent`='Yes' ",$_date,$this->data['product id'],$data['part sku']);
+      $this->db->exec($sql);
+      
+      $base_data=$_base_data;
+      foreach($data as $key=>$value){
+	$base_data[strtolower($key)]=_trim($value);
+      }
+      
+      $keys='(';$values='values(';
+      foreach($base_data as $key=>$value){
+	$keys.="`$key`,";
+	if(($key='supplier product part valid from' or $key=='supplier product part valid to') and preg_match('/now/i',$value))
 	$values.="NOW(),";
-      else
-	$values.=prepare_mysql($value).",";
+	else
+	  $values.=prepare_mysql($value).",";
     }
     $keys=preg_replace('/,$/',')',$keys);
     $values=preg_replace('/,$/',')',$values);
     $sql=sprintf("insert into `Supplier Product Part List` %s %s",$keys,$values);
-    //    print "$sql\n";exit;
+    //print "$sql\n";exit;
     $affected=& $this->db->exec($sql);
+
+      $id=$this->db->lastInsertID();
+     if($base_data['supplier product part most recent']=='Yes'){
+      $sql=sprintf('update `Supplier Product Part List` set `Supplier Product Part Most Recent Key`=%d where `Supplier Product Part List Key`=%d',$id,$id);
+  
+      $this->db->exec($sql);
+    }
+
   }
   
   }

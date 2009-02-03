@@ -96,17 +96,36 @@ class supplier{
 			 array('name'=>$name,'contact key'=>$contact->id)
 			 );
 
-    
 
-    $sql=sprintf("insert into `Supplier Dimension` (`Supplier Code`,`Supplier Name`,`Company Key`,`Supplier Main Contact Key`,`Supplier Accounts Payable Contact Key`,`Supplier Sales Contact Key`) values (%s,%s,%d,%d,%d,%d)",
+    $most_recent='Yes';
+    $from=date("Y-m-d H:i:s");
+    $to=date("Y-m-d H:i:s");
+    $most_recent_key='';
+
+    if(isset($data['most_recent']) and preg_match('/no/i',$data['most_recent']))
+      $most_recent='No';
+    
+    if(isset($data['from']))
+      $from=$data['from'];
+    if(isset($data['to']))
+      $to=$data['to'];
+    
+    if(isset($data['most_recent_key']) and is_numeric($data['most_recent_key'])  and $data['most_recent_key']>0  )
+      $most_recent_key=$data['most_recent_key'];
+
+    $sql=sprintf("insert into `Supplier Dimension` (`Supplier Code`,`Supplier Name`,`Supplier Company Key`,`Supplier Main Contact Key`,`Supplier Accounts Payable Contact Key`,`Supplier Sales Contact Key`,`Supplier Valid From`,`Supplier Valid To`,`Supplier Most Recent`,`Supplier Most Recent Key`) values (%s,%s,%d,%d,%d,%d,%s,%s,%s,%s)",
 		 prepare_mysql($code),
 		 prepare_mysql($name),
 		 $company->id,
 		 $contact->id,
 		 $contact->id,
-		 $contact->id
+		 $contact->id,
+		 prepare_mysql($from),
+		 prepare_mysql($to),
+		 prepare_mysql($most_recent),
+		 prepare_mysql($most_recent_key)
 		 );
-    //print "$sql\n";
+    // print "$sql\n";
     //exit;
     $affected=& $this->db->exec($sql);
     if (PEAR::isError($affected)) {
@@ -117,7 +136,13 @@ class supplier{
     }
     $this->id = $this->db->lastInsertID();  
     $this->get_data('id',$this->id);
-  
+    
+    if($most_recent=='Yes'){
+      $sql=sprintf('update `Supplier Dimension` set `Supplier Most Recent Key`=%d where `Supplier Key`=%d',$this->id,$this->id);
+      $this->db->exec($sql);
+    }
+
+
   }
 
   function load($key=''){
