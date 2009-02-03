@@ -264,16 +264,25 @@ foreach($__cols as $cols){
     
     $product=new Product('code',$code);
     if(!$product->id){
+      if($units=='')
+	$units=1;
+      
+      if(is_numeric($rrp))
+	$rrp=$rrp*$units;
+      else
+	$rrp='';
+	
       $data=array(
-		  'sale state'=>'For sale',
-		  'code'=>$code,
-		  'price'=>$price,
-		  'rrp'=>$rrp,
-		  'units per case'=>$units,
-		  'name'=>$description,
-		  'family code'=>$current_fam_code,
-		  'family name'=>$current_fam_name,
-		  'department code'=>$department_name,
+		  'product sale state'=>'For sale',
+		  'product code'=>$code,
+		  'product price'=>$price,
+		  'product rrp'=>$rrp,
+		  'product units per case'=>$units,
+		  'product name'=>$description,
+		  'product family code'=>$current_fam_code,
+		  'product family name'=>$current_fam_name,
+		  'product main department name'=>$department_name,
+		  'product main department code'=>$department_name,
 		  'deals'=>$deals
 		    );
        	$product=new Product('create',$data);
@@ -284,6 +293,9 @@ foreach($__cols as $cols){
 	  $supplier_code='AW';
 	if($supplier_code=='AW')
 	  $scode=$code;
+
+	if($supplier_code=='')
+	  $supplier_code=='Unknown';
 	$supplier=new Supplier('code',$supplier_code);
 	if(!$supplier->id){
 	  $data=array(
@@ -292,6 +304,9 @@ foreach($__cols as $cols){
 		      );
 	  $supplier=new Supplier('new',$data);
 	}
+
+	if($scode=='')
+	  $scode='?'.$code;
 	$sp_data=array(
 		       'Supplier Product Supplier Key'=>$supplier->id,
 		       'Supplier Product Code'=>$scode,
@@ -309,7 +324,6 @@ foreach($__cols as $cols){
 		       ,'supplier product part most recent'=>'Yes'
 		       ,'supplier product part valid from'=>date('Y-m-d H:i:s')
 		       ,'supplier product part valid to'=>date('Y-m-d H:i:s')
-		       
 		       ,'factor supplier product'=>1
 		       );
 	$supplier_product->new_part_list($rules);

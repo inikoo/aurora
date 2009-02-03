@@ -44,80 +44,112 @@ class product{
     elseif($tipo=='code'){
       $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s and `Product Most Recent`='Yes' ",prepare_mysql($tag));
     }elseif($tipo=='code-name-units-price'){
-	$code=$tag['code'];
-	$name=$tag['name'];
-	$units=$tag['units'];
-	$unit_type=$tag['unit_type'];
-	$price=$tag['price'];
-	$rrp=$tag['rrp'];
-	$date=$tag['date'];
 
-	$supplier_code=$tag['supplier_code'];
-	$supplier_product_code=$tag['supplier_product_code'];
-	$supplier_product_price=$tag['supplier_product_price'];
 
-	$auto_add=$tag['auto_add'];
+      $auto_add=$tag['auto_add'];
+      
+      $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s and `Product Name`=%s and `Product Units Per Case`=%s and `Product Unit Type`=%s  "
+		   ,prepare_mysql($tag['product code'])
+		   ,prepare_mysql($tag['product name'])
+		   ,prepare_mysql($tag['product units per case'])
+		   ,prepare_mysql($tag['product unit type'])
+		   ); 
 
-	$sql=sprintf("select * from `Product Dimension` where `Product Code`=%s and `Product Name`=%s and `Product Units Per Case`=%s and `Product Unit Type`  "
-		     ,prepare_mysql($code)
-		     ,prepare_mysql($name)
-		     ,prepare_mysql($units)
-		     ,prepare_mysql($units_type)
-		     ); 
+      $result =& $this->db->query($sql);
+      if($this->data=$result->fetchRow()){
+	$this->id=$this->data['product key'];
+
+	if(strtotime($this->data['product valid to'])<strtotime($tag['date'])  ){
+	  $sql=sprintf("update `Product Dimension` set `Product Valid To`=%s where `Product Key`=%d",prepare_mysql($tag['date']),$this->id);
+	    $this->db->exec($sql);
+	}
+	if(strtotime($this->data['product valid from'])>strtotime($tag['date'])  ){
+	  $sql=sprintf("update `Product Dimension` set `Product Valid From`=%s where `Product Key`=%d",prepare_mysql($tag['date']),$this->id);
+	    $this->db->exec($sql);
+	}
+
+	return;
+      }
+      
+
+      if($auto_add){
+	//create new product ID with this carateristic
+
+	$sql=sprintf("select * from `Product Dimension` where `Product Code`=%s and `Product Most Recent`='Yes'",prepare_mysql($tag['product code']));
+	$result2 =& $this->db->query($sql);
+	$different_price=true;
+	$different_name=true;
+	$different_units=true;
+	$different_units_type=true;
 	
-	if($result =& $this->db->query($sql)){
-	  $this->data=$result->fetchRow();
-	  $this->id=$this->data['product key'];
-	}elseif($auto_add){
-	  //create new product ID with this carateristic
+	if($row=$result2->fetchRow()){
+	  $tag['product family key']=$row['product family key'];
+	  $tag['product family code']=$row['product family code'];
+	  $tag['product family name']=$row['product family name'];
+	  $tag['product main department key']=$row['product main department key'];
+	  $tag['product main department name']=$row['product main department name'];
+	  $tag['product main department code']=$row['product main department code'];
 	  
-	  $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s ",prepare_mysql($code));
-	  if($result2 =& $this->db->query($sql)){
-	    $row=$result2->fetchRow();
-	     $current_fam_key=$row['product family key'];
-	     $current_fam_code=$row['product family code'];
-	     $current_fam_name=$row['product family name'];
-	     $department_key=$row['product main department key'];
-	     $department_name=$row['product main department name'];
-	     $department_code=$row['product main department code'];
-	     $new=false;
+	  
+	  
+	  if(strtotime($tag['date'])>$row['product valid to']){
+	    $tag['product most recent']='Yes';
+	    $tag['product valid from']=$tag['date'];
+	    $tag['product valid to']=$tag['date'];
 	  }else{
-	    $current_fam_key='';
-	     $current_fam_code='';
-	     $current_fam_name='';
-	     $department_key='';
-	     $department_name='';
-	     $department_code='';
-	     $new=true;
-	     $this->new=true;
+	    $tag['product most recent']='No';
+	    $tag['product valid from']=$tag['date'];
+	    $tag['product valid to']=$tag['date'];
+	    $sql=sprintf("update `Product Dimension` set `Product Most Recent`='No',`Product Valid To`=%s where `Product Key`=%d",prepare_mysql($tag['date']),$row['product key']);
+	    $this->db->exec($sql);
 	  }
 	    
+	  if($row['product price']==$tag['product price'])
+	    $different_price=false;
+	  if($row['product name']==$tag['product name'])
+	    $different_name=false;
+	  if($row['product units per case']==$tag['product units per case'])
+	    $different_units=false;
+	  if($row['product units type']==$tag['product units type'])
+	    $different_units_type=false;
 	  
+	  if($different_name or $different_unit or $different_unit){
+	    $tag['product id']=new_id();
+	  }else{
+
+	    $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s and `Product Most Recent`='Yes'",prepare_mysql($tag['product code']));
+	    $result3 =& $this->db->query($sql);
+	    
+	    
+	    $tag['product id']=$product_id
+	  }
 
 
-	  $data=array(
-		      'sale state'=>'For sale',
-		      'code'=>$code,
-		      'price'=>$price,
-		      'rrp'=>$rrp,
-		      'units per case'=>$units,
-		      'units type'=>$units_type,
-		      'name'=>$description,
-		      'family code'=>$current_fam_code,
-		      'family name'=>$current_fam_name,
-		      'department code'=>$department_name,
-		      'deals'=>'',
-		      'date'=>$date
-		      );
-	  $this->create($data);
+	  $new=false;
+	}else{
+	  
+	  $tag['product most recent']='Yes';
+	  $tag['product valid from']=$tag['date'];
+	  $tag['product valid to']=$tag['date'];
+
+	  $new=true;
+	  $this->new=true;
+	}
 
 
-	  if($new){
-	    // create alse the part
-	    $part=new Part('new',$part_data);
-	    $rules[]=array('Part Key'=>$part->id,'Supplier Product Units Per Part'=>$units);
-	    $supplier_product->new_rules($rules);
-	    $part_list[]=array(
+
+
+
+	$this->create($tag);
+	print_r($this->data);
+	
+	
+	if($new){
+	  // create alse the part
+	  $part=new Part('new',$part_data);
+	  $rules[]=array('Part Key'=>$part->id,'Supplier Product Units Per Part'=>$units);
+	  $supplier_product->new_rules($rules);
+	  $part_list[]=array(
 			       'Product ID'=>$product->get('product ID'),
 			       'Part SKU'=>$part->get('part sku'),
 			       'Product Part Id'=>1,
@@ -2832,39 +2864,114 @@ function new_id(){
   return $id;
 }
 
+function valid_id($id){
+  if(is_numeric($id) and $id>0 and $id<9223372036854775807)
+    return true;
+  else
+    return false;
+}
+
+
 
   function create($data){
 
+    $base_data=array(
+		     'product sales state'=>'Unknown',
+		     'product id'=>'',
+		     'product code file as'=>'',
+		     'product code'=>'',
+		     'product status'=>'Unknown',
+		     'product price'=>'',
+		     'product rrp'=>'',
+		     'product name'=>'',
+		     'product short description'=>'',
+		     'product xhtml short description'=>'',
+		     'product special characteristic'=>'',
+		     'product description'=>'',
+		     'product brand name'=>'',
+		     'product family key'=>'',
+		     'product family code'=>'',
+		     'product family name'=>'',
+		     'product main department key'=>'',
+		     'product main department code'=>'',
+		     'product main department name'=>'',
+		     'product package type description'=>'Unknown',
+		     'product package size metadata'=>'',
+		     'product net weight'=>'',
+		     'product gross weight'=>'',
+		     'product units per case'=>'1',
+		     'product unit type'=>'Piece',
+		     'product unit container'=>'',
+		     'product unit xhtml description'=>'',
+		     'product availability state'=>'Unknown',
+		     'product valid from'=>date("Y-m-d H:i:s"),
+		     'product valid to'=>date("Y-m-d H:i:s"),
+		     'product most recent'=>'Yes',
+		     'product current product key'=>''
+		     );
+    
+    foreach($data as $key=>$value){
+
+      if(isset($base_data[strtolower($key)]))
+	$base_data[strtolower($key)]=_trim($value);
+    }
+
+    if(!$this->valid_id($base_data['product id'])  ){
+       $base_data['product id']=$this->new_id();
+     }
+    $base_data['product code file as']=$this->normalize_code($base_data['product code']);
+
+    if(!is_numeric($base_data['product units per case']) or $base_data['product units per case']<1)
+      $base_data['product units per case']=1;
+
+    $family=false;$new_family=false;
+    if($base_data['product family code']!='' and $base_data['product family key']==''){
+      $family=new Family('code',$base_data['product family code']);
+      if(!$family->id){
+	$fam_data=array(
+			'code'=>$base_data['product family code'],
+			'name'=>$base_data['product family name'],
+			);
+	$family=new Family('create',$fam_data);
+	$new_family=true;
+      }
+      $base_data['product family key']=$family->id;
+    }
+    $department=false;$new_department=false;
+    // print $base_data['product main department code']."\n";
+    if($base_data['product main department code']!='' and $base_data['product main department key']==''){
+      $department=new Department('code',$base_data['product main department code']);
+      if(!$department->id){
+	$dept_data=array(
+			'code'=>$base_data['product main department code'],
+			'name'=>$base_data['product main department name'],
+			);
+	$department=new Department('create',$dept_data);
+
+	$new_department=true;
+      }
+      $base_data['product main department key']=$department->id;
+    }
 
     
-    $code=$data['code'];
-    $ncode=$this->normalize_code($code);
-
-    $id_number=$this->new_id();
-
-    if(isset($data['units per case']) and is_numeric($data['units per case']) and $data['units per case']>0)
-      $units_factor=$data['units per case'];
-    else
-      $units_factor=1;
-
-    $from=date("Y-m-d H:i:s");
-    $to=date("Y-m-d H:i:s");
-    $most_recent='Yes';
 
 
-    $sql=sprintf("insert into  `Product Dimension` (`Product id`,`Product Code File As`,`Product Code`,`Product Status`,`Product Units Per Case`,`Product Valid From`,`Product Valid To`,`Product Most Recent`) values (%s,%s,%s,'%s',%f,%s,%s,%s')",
-		 prepare_mysql($id_number),
-		 prepare_mysql($ncode),
-		 prepare_mysql($code),
-		 'Preparing Product',
-		 $units_factor,
-		 prepare_mysql($from),
-		 prepare_mysql($to),
-		 prepare_mysql($most_recent)
-		 );
+    
+    
+    $keys='(';$values='values(';
+    foreach($base_data as $key=>$value){
+      $keys.="`$key`,";
+      $values.=prepare_mysql($value).",";
+    }
+    $keys=preg_replace('/,$/',')',$keys);
+    $values=preg_replace('/,$/',')',$values);
+    $sql=sprintf("insert into `Product Dimension` %s %s",$keys,$values);
+
+
     
 
-    //   print "$sql\n";
+
+    // print "$sql\n";
 
     $affected=& $this->db->exec($sql);
     if (PEAR::isError($affected)) {
@@ -2876,86 +2983,25 @@ function new_id(){
     $this->id = $this->db->lastInsertID();  
     $this->get_data('id',$this->id);
 
-    $family=false;
-    $department=false;
-
-    if(isset($data['family code']) and  $data['family code']!=''){
-      if(!isset($data['family name']) or  $data['family name']=='')
-	$data['family name']=$data['family code'];
-      
-      $family=new Family('code',$data['family code']);
-      if(!$family->id){
-	$fam_data=array(
-			'code'=>$data['family code'],
-			'name'=>$data['family name'],
-			);
-	$family=new Family('create',$fam_data);
-      }
-      $family->add_product($this->id,'principal');
-    }
-    $this->get_data('id',$this->id);
     
-    if(isset($data['department code']) and  $data['department code']!=''){
-      if(!isset($data['department name']) or  $data['department name']=='')
-	$data['department name']=$data['department code'];
-      
-      $department=new Department('code',$data['department code']);
-      if(!$department->id){
-	$dept_data=array(
-			'code'=>$data['department code'],
-			'name'=>$data['department name'],
-			);
-	$department=new Department('create',$dept_data);
-      }
-      if(is_object($family) and $family->id)
-	$department->add_family($family->id,'principal noproducts');
-      $department->add_product($this->id,'principal');
-
-    }
-    $this->get_data('id',$this->id);
+    
     
 
 
 
-
-
-
-
-
-    $sql=sprintf("update  `Product Dimension` set `Product Current Product Key`=%d where `Product Key`=%d",$this->id,$this->id);
-      $this->db->exec($sql);
-
-    if(isset($data['price']) and is_numeric($data['price'])){
-      $sql=sprintf("update  `Product Dimension` set `Product Price`=%.2f where `Product Key`=%d",$data['price'],$this->id);
-      $this->db->exec($sql);
-      $price=$data['price']/$units_factor;
-      if($price<0.01)
-	$price=0.01;
-      $sql=sprintf("update  `Product Dimension` set `Product Unitary Price`=%.2f where `Product Key`=%d",$price,$this->id);
-      $this->db->exec($sql);
-    }
-    if(isset($data['rrp']) and is_numeric($data['rrp'])){
-      
-      $sql=sprintf("update  `Product Dimension` set `Product Unitary RRP`=%.2f where `Product Key`=%d",$data['rrp'],$this->id);
-      $this->db->exec($sql);
-    }
-    if(isset($data['name']) and $data['name']!=''){
-      $sql=sprintf("update  `Product Dimension` set `Product Name`=%s where `Product Key`=%d",prepare_mysql($data['name']),$this->id);
-      $this->db->exec($sql);
-    }
-    if(isset($data['short name']) and $data['short name']!=''){
-      $sql=sprintf("update  `Product Dimension` set `Product Short Name`=%s where `Product Key`=%d",prepare_mysql($data['short name']),$this->id);
-      $this->db->exec($sql);
-     }
     $this->get_data('id',$this->id);
-
-     if($this->get('xhtml short description')){
-    $sql=sprintf("update  `Product Dimension` set `Product XHTML Short Description`=%s where `Product Key`=%d",prepare_mysql($this->get('xhtml short description')),$this->id);
-    //  print $sql;
-      
+    if($base_data['product most recent']=='Yes'){
+      $sql=sprintf("update  `Product Dimension` set `Product Current Product Key`=%d where `Product Key`=%d",$this->id,$this->id);
       $this->db->exec($sql);
-           }
+    }
 
+
+
+    if($this->get('xhtml short description')){
+      $sql=sprintf("update  `Product Dimension` set `Product XHTML Short Description`=%s where `Product Key`=%d",prepare_mysql($this->get('xhtml short description')),$this->id);
+      $this->db->exec($sql);
+    }
+    
     
     if(isset($data['deals']) and is_array($data['deals'])){
 
@@ -2974,45 +3020,26 @@ function new_id(){
     }
     //   exit;
 
-    if(isset($data['sale state']) and preg_match('/^for sale|discontinued|in prrocess|unknown|history|not for sale/i',$data['sale state']) ){
-      $sql=sprintf("update  `Product Dimension` set `Product Sales State`=%s where `Product Key`=%d",prepare_mysql($data['sale state']),$this->id);
-      //  print "$sql\n";exit;
-	
-      $this->db->exec($sql);
-     }
-    
-    
-
     $this->get_data('id',$this->id);
+    $this->msg='Product Created';
+    $this->new=true;
+
+    if($new_family){
+      $family->add_product($this->id,'principal');
+      
+      if(is_object($department) and $department->id)
+	$department->add_family($family->id,'principal noproducts');
+    }
+
+    if(is_object($department) and $department->id){
+      $department->add_product($this->id,'principal');
+    }
+
     
-    
 
-
-  //    if(isset($data['family code']) and $data['family code']!=''){
-//        $sql=sprintf("update  `Product Dimension` set `Product Family Code`=%s where `Product Key`=%d",prepare_mysql($data['family code']),$this->id);
-//        $this->db->exec($sql);
-//      }
-//      if(isset($data['family name']) and $data['family name']!=''){
-//        $sql=sprintf("update  `Product Dimension` set `Product Family Name`=%s where `Product Key`=%d",prepare_mysql($data['family name']),$this->id);
-//        $this->db->exec($sql);
-//      }
-//      if(isset($data['special characteristic']) and $data['special characteristic']!=''){
-//        $sql=sprintf("update  `Product Dimension` set `Product Special Characteristic`=%s where `Product Key`=%d",prepare_mysql($data['special characteristic']),$this->id);
-//        $this->db->exec($sql);
-//      }
-//   if(isset($data['department name']) and $data['department name']!=''){
-//        $sql=sprintf("update  `Product Dimension` set `Product Department Name`=%s where `Product Key`=%d",prepare_mysql($data['department name']),$this->id);
-//        $this->db->exec($sql);
-//      }
-
-    //$this->data['price']=$data['price'];
-
-    //$this->data['rrp']=$rrp;
-    //$this->data['description']=$data['description'];
-    //$this->data['sdescription']=$data['sdescription'];
-
-     $this->msg='Product Created';
-    
+    //$family->add_product($this->id,'principal');
+    //	$department->add_family($family->id,'principal noproducts');
+    //  $department->add_product($this->id,'principal');
     //$this->fix_todotransaction();
     //$this->set_stock(true);
     //$this->set_sales(true);
@@ -3628,6 +3655,8 @@ function ln_dim($tipo,$data){
 
 //     }
 //   }
+
+
 
 function xnew_id(){
   $left_side='101011';

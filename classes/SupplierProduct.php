@@ -104,9 +104,9 @@ class supplierproduct{
 		      'supplier product name'=>'',
 		      'supplier product description'=>'',
 		      'supplier product cost'=>'',
-		      'supplier product valid from'=>'',
-		      'supplier product valid to'=>'',
-		      'supplier product most recent'=>'',
+		      'supplier product valid from'=>date("Y-m-d H:i:s"),
+		      'supplier product valid to'=>date("Y-m-d H:i:s"),
+		      'supplier product most recent'=>'Yes',
 		      'supplier product most recent key'=>''
 		      );
      foreach($data as $key=>$value){
@@ -131,17 +131,19 @@ class supplierproduct{
     $keys=preg_replace('/,$/',')',$keys);
     $values=preg_replace('/,$/',')',$values);
     $sql=sprintf("insert into `Supplier Product Dimension` %s %s",$keys,$values);
-    // print "$sql\n";
+    //print "$sql\n";
     $affected=& $this->db->exec($sql);
     $this->id = $this->db->lastInsertID();
 
     if($base_data['supplier product most recent']=='Yes'){
-      $sql=sprintf("update `Supplier Product Part List` set `Supplier Product Part List Most Recent Key`=%d",$this->id);
+      $sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Most Recent Key`=%d where `Supplier Product Key`=%d",$this->id,$this->id);
+      //print "$sql\n";
       $this->db->exec($sql);
     }
 
 
-  
+      
+      
     $this->get_data('id',$this->id);
 
  }

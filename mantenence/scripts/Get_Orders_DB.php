@@ -29,11 +29,11 @@ $version='V 1.0';
 $Data_Audit_ETL_Software="$software $version";
 
 
-$sql="select id from orders_data.order_data  order by id desc";
+$sql="select id from orders_data.order_data  limit 1000";
 $res = $db->query($sql);
 while($row2=$res->fetchRow()) {
   
-  print $row2['id']."\r";
+    print $row2['id']."\r";
   $sql="select * from orders_data.order_data where id=".$row2['id'];
   $res2 = $db->query($sql);
   if($row=$res2->fetchRow()) {
@@ -76,9 +76,51 @@ $header=mb_unserialize($row['header']);
   $data['order original metadata']=$row['id'];
   
   //  print_r($products);
-   foreach($transactions as $transaction){
-     print $transaction['code'].' '.$transaction['supplier_product_cost']."\n";
-   }
+  $product_data=array();
+  foreach($transactions as $transaction){
+    //    print_r($transaction);
+    if($transaction['units']=='')
+      $transaction['units']=1;
+    if($transaction['supplier_product_code']=='')
+      $transaction['supplier_product_code']='?'.$transaction['code'];
+    
+
+    
+
+    if(preg_match('/^SG\-/i',$transaction['code']))
+     $transaction['supplier_code'] ='AW';
+    if($transaction['supplier_code']=='AW')
+      $transaction['supplier_product_code']=$transaction['code'];
+
+
+    if($transaction['supplier_code']=='')
+      $transaction['supplier_code']='Unknown';
+
+    $unit_type='Piece';
+
+    $product_data=array(
+			  'product code'=>$transaction['code']
+			  ,'product name'=>$transaction['description']
+			  ,'product unit type'=>$unit_type
+			  ,'product units per case'=>$transaction['units']
+			  ,'product rrp'=>sprintf("%.2f",$transaction['rrp']*$transaction['units'])
+			  ,'product price'=>sprintf("%.2f",$transaction['price'])
+			  ,'supplier code'=>$transaction['supplier_code']
+			  ,'supplier product cost'=>$transaction['supplier_product_cost']
+			  ,'supplier product code'=>$transaction['supplier_product_code']
+			  ,'auto_add'=>true
+			  );
+    
+    $product=new Product('code-name-units-price',$product_data);
+    
+    if(!$product->id){
+      print_r($product_data);
+      exit;
+    
+    }
+  }
+
+  //print_r($product_data);
 
   }
   exit;

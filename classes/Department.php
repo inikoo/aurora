@@ -27,7 +27,7 @@ var $db;
 		,prepare_mysql($data['code'])
 		,prepare_mysql($data['name'])
 		);
-   
+   // print "$sql\n";
      $affected=& $this->db->exec($sql);
 
    if (PEAR::isError($affected)) {
