@@ -106,8 +106,12 @@ $header=mb_unserialize($row['header']);
 			  ,'product rrp'=>sprintf("%.2f",$transaction['rrp']*$transaction['units'])
 			  ,'product price'=>sprintf("%.2f",$transaction['price'])
 			  ,'supplier code'=>$transaction['supplier_code']
+			  ,'supplier name'=>$transaction['supplier_code']
+
 			  ,'supplier product cost'=>$transaction['supplier_product_cost']
 			  ,'supplier product code'=>$transaction['supplier_product_code']
+			  ,'supplier product name'=>$transaction['description']
+
 			  ,'auto_add'=>true
 			  ,'date'=>$date_order
 			);

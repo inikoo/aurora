@@ -1,6 +1,7 @@
 <?
 include_once('Deal.php');
 include_once('SupplierProduct.php');
+include_once('Part.php');
 
 class product{
   
@@ -42,10 +43,20 @@ class product{
     global $_shape,$_units_tipo,$_units_tipo_abr,$_units_tipo_plural;
 
 
-    if($tipo=='id')
+    if($tipo=='id'){
+      
       $sql=sprintf("select * from `Product Dimension` where `Product Key`=%d ",$tag);
-    elseif($tipo=='code'){
+      $result =& $this->db->query($sql);
+      if($this->data=$result->fetchRow())
+	$this->id=$this->data['product key'];
+      return;
+    }elseif($tipo=='code'){
       $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s and `Product Most Recent`='Yes' ",prepare_mysql($tag));
+      $result =& $this->db->query($sql);
+      if($this->data=$result->fetchRow())
+	$this->id=$this->data['product key'];
+      return;
+
     }elseif($tipo=='code-name-units-price'){
 
 
@@ -57,7 +68,7 @@ class product{
 		   ,prepare_mysql($tag['product units per case'])
 		   ,prepare_mysql($tag['product unit type'])
 		   ); 
-
+      
       $result =& $this->db->query($sql);
       if($this->data=$result->fetchRow()){
 	$this->id=$this->data['product key'];
@@ -73,143 +84,233 @@ class product{
 
 	return;
       }
+      if(!$auto_add)
+	return;
+
       
+      $different_price=true;
+      $different_name=true;
+      $different_units=true;
+      $different_units_type=true;
+      $this->new=true;
+      $this->new_id=false;
+      $this->new_part=true;
+      $this->new_supplier_product=false;
 
-      if($auto_add){
-	//create new product ID with this carateristic
-
-	$sql=sprintf("select * from `Product Dimension` where `Product Code`=%s and `Product Most Recent`='Yes'",prepare_mysql($tag['product code']));
-	$result2 =& $this->db->query($sql);
-	$different_price=true;
-	$different_name=true;
-	$different_units=true;
-	$different_units_type=true;
+      $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s and `Product Most Recent`='Yes'",prepare_mysql($tag['product code']));
+      $result2 =& $this->db->query($sql);
+      if($most_recent_product_data=$result2->fetchRow()){
+	if($most_recent_product_data['product price']==$tag['product price'])
+	  $different_price=false;
+	if($most_recent_product_data['product name']==$tag['product name'])
+	  $different_name=false;
+	if($most_recent_product_data['product units per case']==$tag['product units per case'])
+	  $different_units=false;
+	if($most_recent_product_data['product unit type']==$tag['product unit type'])
+	  $different_units_type=false;
 	
-	if($row=$result2->fetchRow()){
-	  $tag['product family key']=$row['product family key'];
-	  $tag['product family code']=$row['product family code'];
-	  $tag['product family name']=$row['product family name'];
-	  $tag['product main department key']=$row['product main department key'];
-	  $tag['product main department name']=$row['product main department name'];
-	  $tag['product main department code']=$row['product main department code'];
-	  
-	  
-	  
-	  if(strtotime($tag['date'])>$row['product valid to']){
-	    $tag['product most recent']='Yes';
-	    $tag['product valid from']=$tag['date'];
-	    $tag['product valid to']=$tag['date'];
-	  }else{
-	    $tag['product most recent']='No';
-	    $tag['product valid from']=$tag['date'];
-	    $tag['product valid to']=$tag['date'];
-	    $sql=sprintf("update `Product Dimension` set `Product Most Recent`='No',`Product Valid To`=%s where `Product Key`=%d",prepare_mysql($tag['date']),$row['product key']);
-	    $this->db->exec($sql);
-	  }
-	    
-	  if($row['product price']==$tag['product price'])
-	    $different_price=false;
-	  if($row['product name']==$tag['product name'])
-	    $different_name=false;
-	  if($row['product units per case']==$tag['product units per case'])
-	    $different_units=false;
-	  if($row['product units type']==$tag['product units type'])
-	    $different_units_type=false;
-	  
-	  if($different_name or $different_unit or $different_unit){
-	    $tag['product id']=new_id();
-	    $this->new_id=true;
-	  }else{
+	if($different_name or $different_units or $different_units_type)
+	  $this->new_id=true;
+      }else
+	$this->new_id=true;
 
-	    $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s where `Product Valid To`<%s   order by `Product Valid To` desc ",prepare_mysql($tag['product code']),prepare_mysql($tag['date']));
-	    $result3 =& $this->db->query($sql);
-	    if($row3=$result3->fetchRow()){
-	      $product_id=$row3['product key'];
-	    }else{
-	       $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s where `Product Valid From`>%s   order by `Product Valid From`  ",prepare_mysql($tag['product code']),prepare_mysql($tag['date']));
-	       $result3 =& $this->db->query($sql);
-	       if($row3=$result3->fetchRow()){
-		 $product_id=$row3['product key'];
-	       }else
-		 $product_id=$row['product key'];
-
-	    }
-	    
-	    $tag['product id']=$product_id;
-	  }
-
-
-	  $new=false;
-	}else{
-	  
-	  $tag['product most recent']='Yes';
-	  $tag['product valid from']=$tag['date'];
-	  $tag['product valid to']=$tag['date'];
-
-	  $new=true;
-	  $this->new=true;
-	}
-
-
-
-
-
-	$this->create($tag);
-	print_r($this->data);
-	
-	
-	if($this->new_id){
-	  // create alse the part
-	  $part=new Part('new',$tag);
-	  $rules[]=array('Part Key'=>$part->id,'Supplier Product Units Per Part'=>$this->data['product units per case']);
-	  $supplier_product->new_rules($rules);
-	  $part_list[]=array(
-			       'Product ID'=>$this->data['product id'],
-			       'Part SKU'=>$part->get('part sku'),
-			       'Product Part Id'=>1,
-			       'requiered'=>'Yes',
-			       'Parts Per Product'=>1,
-			       'Product Part Type'=>'Simple Pick'
-			       );
-	    $product->new_part_list($part_list);
-	}
-
+      
 	$supplier=new Supplier('code',$tag['supplier product code']);
 	if(!$supplier->id){
 	  $data=array(
-		      'name'=>$tag['supplier product name'],
-		      'code'=>$tag['supplier product code'],
+		      'name'=>$tag['supplier name'],
+		      'code'=>$tag['supplier code'],
 		      );
-	  $supplier=new Supplier('new',$data);
+
+	  //$supplier=new Supplier('new',$data);
 	}
 	
-	  $sp_data=array(
-			 'supplier product supplier key'=>$supplier->id,
-			 'supplier product code'=>$tag['supplier product code'],
-			 'supplier product cost'=>$tag['supplier product cost'],
-			 'auto add'=>true,
-			 'date'=>$tag['date']
-			 );
-	  $supplier_product=new SupplierProduct('supplier-code-name-cost',$sp_data);
+	$sp_data=array(
+		       'supplier product supplier key'=>$supplier->id,
+		       'supplier product code'=>$tag['supplier product code'],
+		       'supplier product cost'=>$tag['supplier product cost'],
+		       'supplier product name'=>$tag['supplier product name'],
+		       'auto_add'=>true,
+		       'date'=>$tag['date']
+		       );
+	$supplier_product=new SupplierProduct('supplier-code-name-cost',$sp_data);
+	
+	if($supplier_product->new){
+	  $this->new_supplier_product=true;
+	}
+      
 
-	  if($new or   $supplier_product->new){
-	    $rules[]=array('Part Key'=>$part->id,'Supplier Product Units Per Part'=>$units);
-	    $supplier_product->new_rules($rules);
-	  }
+      
+      if($different_name and !$different_units and !$different_units_type)
+	$this->new_part=false;
+
+	print "diff price: $different_price ,old:  new:".$tag['product price']."\n";
+	print "diff name: $different_name \n";
+	print "diff units: $different_units \n";
+	print "diff units t: $different_units_type \n";
+	print "new id ".$this->new_id."\n";
+	print "new code :".$this->new." ".$tag['product code']."  \n";
+	print "new part :".$this->new_part." \n";
+	print "new sup prod :".$this->new_supplier_product." \n";
+      
+      exit;
+
+
+      
+     //  $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s and `Product Most Recent`='Yes'",prepare_mysql($tag['product code']));
+// 	$result2 =& $this->db->query($sql);
+// 	if($most_recent_product_data=$result2->fetchRow()){
+// 	  $tag['product family key']=$most_recent_product_data['product family key'];
+// 	  $tag['product family code']=$most_recent_product_data['product family code'];
+// 	  $tag['product family name']=$most_recent_product_data['product family name'];
+// 	  $tag['product main department key']=$most_recent_product_data['product main department key'];
+// 	  $tag['product main department name']=$most_recent_product_data['product main department name'];
+// 	  $tag['product main department code']=$most_recent_product_data['product main department code'];
 	  
 	  
+	  
+// 	  if(strtotime($tag['date'])>$most_recent_product_data['product valid to']){
+// 	    $tag['product most recent']='Yes';
+// 	    $tag['product valid from']=$tag['date'];
+// 	    $tag['product valid to']=$tag['date'];
+// 	  }else{
+// 	    $tag['product most recent']='No';
+// 	    $tag['product valid from']=$tag['date'];
+// 	    $tag['product valid to']=$tag['date'];
+// 	    $sql=sprintf("update `Product Dimension` set `Product Most Recent`='No',`Product Valid To`=%s where `Product Key`=%d",prepare_mysql($tag['date']),$most_recent_product_data['product key']);
+// 	    $this->db->exec($sql);
+// 	  }
+	    
+// 	  if($most_recent_product_data['product price']==$tag['product price'])
+// 	    $different_price=false;
+// 	  if($most_recent_product_data['product name']==$tag['product name'])
+// 	    $different_name=false;
+// 	  if($most_recent_product_data['product units per case']==$tag['product units per case'])
+// 	    $different_units=false;
+// 	  if($most_recent_product_data['product unit type']==$tag['product unit type'])
+// 	    $different_units_type=false;
+	  
+// 	  if($different_name or $different_units or $different_units_type){
+// 	    $tag['product id']=$this->new_id();
+// 	    $this->new_id=true;
+// 	  }else{
+
+// 	    $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s where `Product Valid To`<%s   order by `Product Valid To` desc ",prepare_mysql($tag['product code']),prepare_mysql($tag['date']));
+// 	    $result3 =& $this->db->query($sql);
+// 	    if($most_recent_product_data3=$result3->fetchRow()){
+// 	      $product_id=$most_recent_product_data3['product key'];
+// 	    }else{
+// 	       $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s where `Product Valid From`>%s   order by `Product Valid From`  ",prepare_mysql($tag['product code']),prepare_mysql($tag['date']));
+// 	       $result3 =& $this->db->query($sql);
+// 	       if($row3=$result3->fetchRow()){
+// 		 $product_id=$row3['product key'];
+// 	       }else
+// 		 $product_id=$row['product key'];
+
+// 	    }
+	    
+// 	    $tag['product id']=$product_id;
+// 	  }
 
 
-	}else
-	   return;
+// 	  $new=false;
+// 	}else{
+	  
+// 	  $tag['product most recent']='Yes';
+// 	  $tag['product valid from']=$tag['date'];
+// 	  $tag['product valid to']=$tag['date'];
+
+// 	  $new=true;
+// 	  $this->new=true;
+// 	  $this->new_id=true;
+// 	}
+
+
+
+
+
+// 	$this->create($tag);
+
+// 	$this->new_part=false;
+
+// 	if($this->new or $this->new_id)
+// 	  $this->new_part=true;
+
+// 	// is not a mew part if only the name changed
+// 	if($different_name and !$different_units and !$different_units_type)
+// 	  $this->new_part=false;
+
+// 	print "diff price: $different_price \n";
+// 	print "diff name: $different_name \n";
+// 	print "diff units: $different_units \n";
+// 	print "diff units t: $different_units_type \n";
+// 	print "new id ".$this->new_id."\n";
+// 	print "new code :".$this->new." ".$tag['product code']."  \n";
+// 	print "new part :".$this->new_part." \n";
+
 	
 
-    }
+// 	exit;
+	
+	
+// 	if($this->new_id){
+// 	  // create alse the part
+// 	  $part=new Part('new',$tag);
+// 	  $rules[]=array('Part Key'=>$part->id,'Supplier Product Units Per Part'=>$this->data['product units per case']);
+// 	  $supplier_product->new_rules($rules);
+// 	  $part_list[]=array(
+// 			       'Product ID'=>$this->data['product id'],
+// 			       'Part SKU'=>$part->get('part sku'),
+// 			       'Product Part Id'=>1,
+// 			       'requiered'=>'Yes',
+// 			       'Parts Per Product'=>1,
+// 			       'Product Part Type'=>'Simple Pick'
+// 			       );
+// 	    $product->new_part_list($part_list);
+// 	}
 
-    //print "$sql\n";
-    if($result =& $this->db->query($sql)){
-      $this->data=$result->fetchRow();
-      $this->id=$this->data['product key'];
+// 	$supplier=new Supplier('code',$tag['supplier product code']);
+// 	if(!$supplier->id){
+// 	  $data=array(
+// 		      'name'=>$tag['supplier product name'],
+// 		      'code'=>$tag['supplier product code'],
+// 		      );
+// 	  $supplier=new Supplier('new',$data);
+// 	}
+	
+// 	  $sp_data=array(
+// 			 'supplier product supplier key'=>$supplier->id,
+// 			 'supplier product code'=>$tag['supplier product code'],
+// 			 'supplier product cost'=>$tag['supplier product cost'],
+// 			 'supplier product name'=>$tag['supplier product name'],
+
+// 			 'auto add'=>true,
+// 			 'date'=>$tag['date']
+// 			 );
+// 	  $supplier_product=new SupplierProduct('supplier-code-name-cost',$sp_data);
+
+// 	  if($new or   $supplier_product->new){
+// 	    $rules[]=array('Part Key'=>$part->id,'Supplier Product Units Per Part'=>$units);
+// 	    $supplier_product->new_rules($rules);
+// 	  }
+	  
+	  
+
+
+// 	}else
+// 	   return;
+	
+
+//     }
+
+//     //print "$sql\n";
+//     if($result =& $this->db->query($sql)){
+//       $this->data=$result->fetchRow();
+//       $this->id=$this->data['product key'];
+//     }
+//   }
+
+
     }
   }
 

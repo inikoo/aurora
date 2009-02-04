@@ -30,8 +30,8 @@ class part{
       return;
 
     //print "$sql\n";
-    if($result =& $this->db->query($sql)){
-      $this->data=$result->fetchRow();
+    $result =& $this->db->query($sql);
+    if($this->data=$result->fetchRow()){
       $this->id=$this->data['part key'];
     }
   }
@@ -107,7 +107,8 @@ class part{
 
 function used_sku($sku){
   $sql="select count(*) as num from `Part Dimension` where `Part SKU`=".prepare_mysql($sku);
-  if($result =& $this->db->query($sql)){
+  $result =& $this->db->query($sql);
+  if($row=$result->fetchRow()){
     if($row['num']>0)
       return true;
   }
@@ -116,7 +117,8 @@ function used_sku($sku){
 
  function new_sku(){
    $select="select max(`Part SKU`) as sku from `Part Dimension`";
-  if($result =& $this->db->query($sql)){
+   $result =& $this->db->query($sql);
+   if($row=$result->fetchRow()){
     $row=$result->fetchRow();
     return $row['sku']+1;
   }else

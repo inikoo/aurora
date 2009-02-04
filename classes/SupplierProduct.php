@@ -26,74 +26,182 @@ class supplierproduct{
 
 
   function get_data($tipo,$tag){
-    if($tipo=='id')
+    if($tipo=='id'){
       $sql=sprintf("select * from `Supplier Product Dimension` where `Supplier Product Key`=%d ",$tag);
-    elseif($tipo='supplier-code-name-cost'){
-      $sql=sprintf("select * from `Supplier Product Dimension` where `Supplier Product Code`=%s  and `Supplier Product Name`=%s and `Supplier Product Cost`=%s and `Supplier Product Supplier Key`=%d ",$tag['supplier product code'],$tag['supplier product name'],$tag['supplier product cost'],$tag['supplier product supplier key']);
-      if($result =& $this->db->query($sql)){
-	  $this->data=$result->fetchRow();
-	  $this->id=$this->data['supplier product key'];
-	  
-      }elseif($auto_add){
-	$most_recent='';
-	$sql=sprintf("select * from `Supplier Product Dimension` where `Supplier Product Code`=%s  and `Supplier Product Supplier Key`=%d order by `Supplier Product Valid To` desc      ",$tag['supplier product code']);
-	if($result2 =& $this->db->query($sql)){
-	  $row3=$result->fetchRow();
-	  $most_recent=$row['supplier product most recent key'];
-	  
-	  if(date('U',strtotime($row3['Supplier Product Valid To']))< date('U',strtotime($tag['date']))){
-	    $this->most_recent=true;
-	    $old_most_recent=$row3['id'];
-	    
-	  }else
-	    $most_recent=$row3['id'];
-	  
-	  $this->new_id=true;
-	}else{
-	  $this->most_recent=true;
-	  $this->new=true;
+      $result =& $this->db->query($sql);
+      if($this->data=$result->fetchRow())
+	$this->id=$this->data['supplier product key'];
+      return;
+
+    }elseif($tipo='supplier-code-name-cost'){
+      
+      $auto_add=$tag['auto_add'];
+      $sql=sprintf("select * from `Supplier Product Dimension` where `Supplier Product Code`=%s  and `Supplier Product Name`=%s and `Supplier Product Cost`=%s and `Supplier Product Supplier Key`=%d "
+		   ,prepare_mysql($tag['supplier product code'])
+		   ,prepare_mysql($tag['supplier product name'])
+		   ,prepare_mysql($tag['supplier product cost'])
+		   ,prepare_mysql($tag['supplier product supplier key'])
+
+);
+      $result =& $this->db->query($sql);
+	if($this->data=$result->fetchRow()){
+	$this->id=$this->data['supplier product key'];
+	return;
+      }
+
+      if(!$auto_add)
+	return;
+
+
+      $diff_price=true;
+      $diff_name=true;
+      $this->new_id=false;
+      $this->new=true;
+      $this->new_code=false;
+
+      $sql=sprintf("select count(*) as num from `Supplier Product Dimension` where `Supplier Product Code`=%s  and `Supplier Product Supplier Key`=%d"
+		   ,prepare_mysql($tag['supplier product code'])
+		   ,prepare_mysql($tag['supplier product supplier key'])
+		   );
+      $result2 =& $this->db->query($sql);
+      
+      if($row=$result2->fetchRow()){
+	$number_sp=$row['num'];
+      }
+      if($number_sp==0){
+	$this->new_code=true;
+      }else{
+	$sql=sprintf("select * from `Supplier Product Dimension` where `Supplier Product Most Recent`='Yes',`Supplier Product Code`=%s  and `Supplier Product Supplier Key`=%d  and   `Supplier Product Name`=%s   "
+		     ,prepare_mysql($tag['supplier product code'])
+		     ,prepare_mysql($tag['supplier product supplier key'])
+		     ,prepare_mysql($tag['supplier product name'])
+		     );
+      $result2 =& $this->db->query($sql);
+      if($same_id_data=$result->fetchRow()){
+	// just price difference
+	$diff_name=false;
+	if($tag['supplier product cost']==$same_id_data['supplier product cost'])
+	  $diff_price=false;
+	$this->new_id=false;
+	
+      }else{
+	$this->new_id=true;
+	$diff_price=false;
+	$diff_name=false;
+      }
+
+      }
+
+      if($this->new_code){
+	$tag['supplier product id']=$this->new_id();
+	$tag['supplier product most recent']='Yes';
+	$tag['supplier product most recent key']='';
+	$tag['supplier product valid from']=$tag['date'];
+	$tag['supplier product valid to']=$tag['date'];
+
+      }elseif($this->new_id){
+	$tag['supplier product id']=$this->new_id();
+	$tag['supplier product most recent']='Yes';
+	$tag['supplier product most recent key']='';
+	$tag['supplier product valid from']=$tag['date'];
+	$tag['supplier product valid to']=$tag['date'];
+      }else{
+
+	$sql=sprintf("select * from  `Supplier Product Dimension` where `Supplier Product Valid To`<%s order by `Supplier Product Most Recent`='Yes' desc   ",$tag['date']);
+	$result3 =& $this->db->query($sql);
+	if($last_data=$result->fetchRow()){
+	  $tag['supplier product id']=$last_data['supplier product id'];
+	  $sql=sprintf("update `Supplier Product Dimension`  set `Supplier Product Valid To`=");
+
 	}
+	
+
+	// see if it is the mos recent
+
+	if(strtotime($most_recent_data['supplier product valit to'])<strtotime($tag['date'])){
+	  $tag['supplier product most recent']='Yes';
+	  if($this->new_id)
+	    $tag['supplier product id']=$this->new_id();
+	  else
+	    $tag['supplier product id']=$most_recent_data['supplier product id'];
+
+	  $sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Most Recent`='No',`Supplier Product Valid To`=%s where `Supplier Product Key`=%s  ");
+
+	}else{
+	  //chack if is another down the road
+	  
 
 
-      $date=$tag['date'];
-      $data=array(
+	}
+	  
+
+
+      
+
+      }
+      
+
+
+       $data=array(
 		  'supplier product supplier key'=>$tag['supplier product supplier key'],
+		  'supplier product id'=>$tag['supplier product id'],
 		  'supplier product code'=>$tag['supplier product code'],
 		  'supplier product name'=>$tag['supplier product name'],
 		  'supplier product cost'=>$tag['supplier product cost'],
 		  'supplier product valid from'=>$tag['date'],
 		  'supplier product valid to'=>$tag['date'],
-		  'supplier product most recent'=>($this->most_recent?'Yes':'No'),
-		  'supplier product most recent key'=>$most_recent,
+		  'supplier product most recent'=>$tag['supplier product most recent'],
+		  'supplier product most recent key'=>$tag['supplier product most recent key'],
 		  );
       $this->create($data);
 
 
-
-      
-      if($this->most_recent and !$this->new){
-	$sql=sprintf("update `Supplier Product Dimension`  set `Supplier Product Valid To`=%s where `Supplier Product Key`=%d   ",$tag['date'],$old_most_recent);
-	$this->db->exec($sql);
-	$sql=sprintf("update `Supplier Product Dimension`  set  `Supplier Product Most Recent`='No' and  `Supplier Product Most Recent Key`=%d where `Supplier Product Most Recent Key`=%d  ",$this->id,$old_most_recent);
-	$this->db->exec($sql);
-      }
-      
-
-      
+// 	$most_recent=$row['supplier product most recent key'];
 	
-      }else
-	 return;
+// 	if(date('U',strtotime($row3['Supplier Product Valid To']))< date('U',strtotime($tag['date']))){
+// 	    $this->most_recent=true;
+// 	    $old_most_recent=$row3['id'];
+	    
+// 	}else
+// 	  $most_recent=$row3['id'];
+	
+// 	  $this->new_id=true;
+//       }else{
+// 	  $this->most_recent=true;
+// 	  $this->new=true;
+// 	}
 
 
-    }else
-       return;
+//       $date=$tag['date'];
+//       $data=array(
+// 		  'supplier product supplier key'=>$tag['supplier product supplier key'],
+// 		  'supplier product code'=>$tag['supplier product code'],
+// 		  'supplier product name'=>$tag['supplier product name'],
+// 		  'supplier product cost'=>$tag['supplier product cost'],
+// 		  'supplier product valid from'=>$tag['date'],
+// 		  'supplier product valid to'=>$tag['date'],
+// 		  'supplier product most recent'=>($this->most_recent?'Yes':'No'),
+// 		  'supplier product most recent key'=>$most_recent,
+// 		  );
+//       $this->create($data);
 
-    //print "$sql\n";
-    if($result =& $this->db->query($sql)){
-      $this->data=$result->fetchRow();
-      $this->id=$this->data['supplier product key'];
+
+
+      
+//       if($this->most_recent and !$this->new){
+// 	$sql=sprintf("update `Supplier Product Dimension`  set `Supplier Product Valid To`=%s where `Supplier Product Key`=%d   ",$tag['date'],$old_most_recent);
+// 	$this->db->exec($sql);
+// 	$sql=sprintf("update `Supplier Product Dimension`  set  `Supplier Product Most Recent`='No' and  `Supplier Product Most Recent Key`=%d where `Supplier Product Most Recent Key`=%d  ",$this->id,$old_most_recent);
+// 	$this->db->exec($sql);
+//       }
+      
+
+      
     }
   }
+
+
+
   
   function create($data){
     
