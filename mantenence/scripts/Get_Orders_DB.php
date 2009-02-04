@@ -97,7 +97,7 @@ $header=mb_unserialize($row['header']);
       $transaction['supplier_code']='Unknown';
 
     $unit_type='Piece';
-
+    
     $product_data=array(
 			  'product code'=>$transaction['code']
 			  ,'product name'=>$transaction['description']
@@ -109,7 +109,8 @@ $header=mb_unserialize($row['header']);
 			  ,'supplier product cost'=>$transaction['supplier_product_cost']
 			  ,'supplier product code'=>$transaction['supplier_product_code']
 			  ,'auto_add'=>true
-			  );
+			  ,'date'=>$date_order
+			);
     
     $product=new Product('code-name-units-price',$product_data);
     

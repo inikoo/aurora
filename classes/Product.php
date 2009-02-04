@@ -1,5 +1,7 @@
 <?
 include_once('Deal.php');
+include_once('SupplierProduct.php');
+
 class product{
   
  
@@ -15,6 +17,7 @@ class product{
   var $weblink=false;
   var $db;
   var $new=false;
+  var $new_id=false;
   var $location_to_update=false;
 
   function __construct($a1,$a2=false,$a3=false) {
@@ -115,13 +118,24 @@ class product{
 	  
 	  if($different_name or $different_unit or $different_unit){
 	    $tag['product id']=new_id();
+	    $this->new_id=true;
 	  }else{
 
-	    $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s and `Product Most Recent`='Yes'",prepare_mysql($tag['product code']));
+	    $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s where `Product Valid To`<%s   order by `Product Valid To` desc ",prepare_mysql($tag['product code']),prepare_mysql($tag['date']));
 	    $result3 =& $this->db->query($sql);
+	    if($row3=$result3->fetchRow()){
+	      $product_id=$row3['product key'];
+	    }else{
+	       $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s where `Product Valid From`>%s   order by `Product Valid From`  ",prepare_mysql($tag['product code']),prepare_mysql($tag['date']));
+	       $result3 =& $this->db->query($sql);
+	       if($row3=$result3->fetchRow()){
+		 $product_id=$row3['product key'];
+	       }else
+		 $product_id=$row['product key'];
+
+	    }
 	    
-	    
-	    $tag['product id']=$product_id
+	    $tag['product id']=$product_id;
 	  }
 
 
@@ -144,13 +158,13 @@ class product{
 	print_r($this->data);
 	
 	
-	if($new){
+	if($this->new_id){
 	  // create alse the part
-	  $part=new Part('new',$part_data);
-	  $rules[]=array('Part Key'=>$part->id,'Supplier Product Units Per Part'=>$units);
+	  $part=new Part('new',$tag);
+	  $rules[]=array('Part Key'=>$part->id,'Supplier Product Units Per Part'=>$this->data['product units per case']);
 	  $supplier_product->new_rules($rules);
 	  $part_list[]=array(
-			       'Product ID'=>$product->get('product ID'),
+			       'Product ID'=>$this->data['product id'],
 			       'Part SKU'=>$part->get('part sku'),
 			       'Product Part Id'=>1,
 			       'requiered'=>'Yes',
@@ -158,23 +172,23 @@ class product{
 			       'Product Part Type'=>'Simple Pick'
 			       );
 	    $product->new_part_list($part_list);
-	  }
+	}
 
-	  $supplier=new Supplier('code',$supplier_code);
-	  if(!$supplier->id){
-	    $data=array(
-			'name'=>$supplier_code,
-			'code'=>$supplier_code,
-			);
-	    $supplier=new Supplier('new',$data);
-	  }
-
+	$supplier=new Supplier('code',$tag['supplier product code']);
+	if(!$supplier->id){
+	  $data=array(
+		      'name'=>$tag['supplier product name'],
+		      'code'=>$tag['supplier product code'],
+		      );
+	  $supplier=new Supplier('new',$data);
+	}
+	
 	  $sp_data=array(
 			 'supplier product supplier key'=>$supplier->id,
-			 'supplier product code'=>$scode,
-			 'supplier product cost'=>$cost,
+			 'supplier product code'=>$tag['supplier product code'],
+			 'supplier product cost'=>$tag['supplier product cost'],
 			 'auto add'=>true,
-			 'date'=>$date
+			 'date'=>$tag['date']
 			 );
 	  $supplier_product=new SupplierProduct('supplier-code-name-cost',$sp_data);
 
@@ -785,6 +799,19 @@ class product{
     case('formated unitary rrp'):
       return money($this->data['product unitary rrp']);
       break;
+   case('short description'):
+      global $myconf;
+      $desc='';
+      if($this->get('Product Units per Case')>1){
+	$desc=number($this->get('Product Units per Case')).'x ';
+	}
+      $desc.=' '.$this->get('Product Name');
+      if($this->get('Product Price')>0){
+	$desc.=' ('.money($this->get('Product Units per Case')).')';
+	}
+      
+      return _trim($desc);
+
     case('xhtml short description'):
       global $myconf;
       $desc='';
@@ -2880,7 +2907,6 @@ function valid_id($id){
 		     'product id'=>'',
 		     'product code file as'=>'',
 		     'product code'=>'',
-		     'product status'=>'Unknown',
 		     'product price'=>'',
 		     'product rrp'=>'',
 		     'product name'=>'',
@@ -2954,7 +2980,8 @@ function valid_id($id){
     }
 
     
-
+    
+    
 
     
     
@@ -2997,10 +3024,10 @@ function valid_id($id){
 
 
 
-    if($this->get('xhtml short description')){
-      $sql=sprintf("update  `Product Dimension` set `Product XHTML Short Description`=%s where `Product Key`=%d",prepare_mysql($this->get('xhtml short description')),$this->id);
-      $this->db->exec($sql);
-    }
+
+   $sql=sprintf("update  `Product Dimension` set `Product Short Description`=%s ,`Product XHTML Short Description`=%s where `Product Key`=%d",prepare_mysql($this->get('short description')),prepare_mysql($this->get('xhtml short description')),$this->id);
+   $this->db->exec($sql);
+
     
     
     if(isset($data['deals']) and is_array($data['deals'])){

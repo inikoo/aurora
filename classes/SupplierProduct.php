@@ -29,7 +29,7 @@ class supplierproduct{
     if($tipo=='id')
       $sql=sprintf("select * from `Supplier Product Dimension` where `Supplier Product Key`=%d ",$tag);
     elseif($tipo='supplier-code-name-cost'){
-      $sql=sprintf("select * from `Supplier Product Dimension` where `Supplier Product Code`=%s  and `Supplier Product Name`=$s and `Supplier Product Cost`=$s and `Supplier Product Supplier Key`=%d ",$tag['supplier product code'],$tag['supplier product name'],$tag['supplier product cost'],$tag['supplier product supplier key']);
+      $sql=sprintf("select * from `Supplier Product Dimension` where `Supplier Product Code`=%s  and `Supplier Product Name`=%s and `Supplier Product Cost`=%s and `Supplier Product Supplier Key`=%d ",$tag['supplier product code'],$tag['supplier product name'],$tag['supplier product cost'],$tag['supplier product supplier key']);
       if($result =& $this->db->query($sql)){
 	  $this->data=$result->fetchRow();
 	  $this->id=$this->data['supplier product key'];

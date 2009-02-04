@@ -72,6 +72,7 @@ while(($_cols = fgetcsv($handle_csv))!== false){
   
 
   $code=$_cols[3];
+
  
   if($code=='FO-A1' and !$inicio){
     $inicio=true;
@@ -113,6 +114,8 @@ foreach($__cols as $cols){
   $is_product=true;
   
   $code=$cols[3];
+
+
   $price=$cols[7];
   $supplier_code=$cols[21];
   $part_code=$cols[22];
@@ -142,7 +145,7 @@ foreach($__cols as $cols){
 
   
   if($is_product){
-    
+      print "$code\r";
     $part_list=array();
     $rules=array();
     
@@ -271,7 +274,15 @@ foreach($__cols as $cols){
 	$rrp=$rrp*$units;
       else
 	$rrp='';
+      
+      
+      $_f=preg_replace('/s$/i','',$current_fam_name);
+      //print "$_f\n";
+      $special_char=preg_replace('/'.str_replace('/','\/',$_f).'$/i','',$description);
+      $special_char=preg_replace('/'.str_replace('/','\/',$current_fam_name).'$/i','',$special_char);
+	    
 	
+
       $data=array(
 		  'product sale state'=>'For sale',
 		  'product code'=>$code,
@@ -283,6 +294,7 @@ foreach($__cols as $cols){
 		  'product family name'=>$current_fam_name,
 		  'product main department name'=>$department_name,
 		  'product main department code'=>$department_name,
+		  'product special characteristic'=>$special_char,
 		  'deals'=>$deals
 		    );
        	$product=new Product('create',$data);
@@ -310,7 +322,9 @@ foreach($__cols as $cols){
 	$sp_data=array(
 		       'Supplier Product Supplier Key'=>$supplier->id,
 		       'Supplier Product Code'=>$scode,
-		       'Supplier Product Cost'=>$cost
+		       'Supplier Product Cost'=>$cost,
+		       'Supplier Product Name'=>$description,
+		       'Supplier Product Description'=>$description
 		       );
 	$supplier_product=new SupplierProduct('new',$sp_data);
 	$part_data=array(
