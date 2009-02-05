@@ -52,13 +52,14 @@ class product{
 
       $auto_add=$tag['auto_add'];
       
-      $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s and `Product Name`=%s and `Product Units Per Case`=%s and `Product Unit Type`=%s  "
+      $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s and `Product Name`=%s and `Product Units Per Case`=%s and `Product Unit Type`=%s  and `Product Price`=%s  "
 		   ,prepare_mysql($tag['product code'])
 		   ,prepare_mysql($tag['product name'])
 		   ,prepare_mysql($tag['product units per case'])
 		   ,prepare_mysql($tag['product unit type'])
+		   ,prepare_mysql($tag['product price'])
 		   ); 
-      
+
       $result =& $this->db->query($sql);
       if($this->data=$result->fetchRow()){
 	$this->id=$this->data['product key'];
@@ -66,17 +67,22 @@ class product{
 	if(strtotime($this->data['product valid to'])<strtotime($tag['date'])  ){
 	  $sql=sprintf("update `Product Dimension` set `Product Valid To`=%s where `Product Key`=%d",prepare_mysql($tag['date']),$this->id);
 	  $this->data['product valid to']=$tag['date'];
+	  // print "$sql\n";
 	  $this->db->exec($sql);
 	}
 	if(strtotime($this->data['product valid from'])>strtotime($tag['date'])  ){
 	  $sql=sprintf("update `Product Dimension` set `Product Valid From`=%s where `Product Key`=%d",prepare_mysql($tag['date']),$this->id);
 	  $this->db->exec($sql);
+	  //  print "$sql\n";
 	  $this->data['product valid from']=$tag['date'];
 	}
 
 
 	return;
       }
+
+
+
       if(!$auto_add)
 	return;
       
@@ -103,12 +109,14 @@ class product{
 	$number_sp=$row2['num'];
       }
 
-
+      // print "$number_sp\n";
       if($number_sp==0){
 	$this->new_code=true;
 	$tag['product id']=$this->new_id();
 	$tag['product most recent']='Yes';
 	$tag['Part Most Recent']='Yes';
+	$tag['product valid to']=$tag['date'];
+	$tag['product valid from']=$tag['date'];
 	$this->create($tag);
 	$part=new Part('new',$tag);
 	$part_list[]=array(
@@ -124,7 +132,7 @@ class product{
 
 	$this->new_part=true;
       }else{
-       
+
 	$sql=sprintf("select * from `Product Dimension` where `Product Code`=%s and `Product Name`=%s and `Product Units Per Case`=%s and `Product Unit Type`=%s"
 		     ,prepare_mysql($tag['product code'])
 		     ,prepare_mysql($tag['product name'])
@@ -153,13 +161,18 @@ class product{
 	  $tag['product most recent']='Yes';
 	
 	$this->new_part=false;
-	
+	$tag['product valid to']=$tag['date'];
+	$tag['product valid from']=$tag['date'];
+
 	$this->create($tag);
   
 	}else{
+	  // Different name or units
+
 	  $this->new_id=true;
 	  $tag['product id']=$this->new_id();
 	  $tag['product most recent']='Yes';
+	  
 	  
 	  $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s   ",prepare_mysql($tag['product code']));
 	  $result4 =& $this->db->query($sql);
@@ -171,6 +184,8 @@ class product{
 	    $tag['product main department name']=$most_recent_product_data['product main department name'];
 	    $tag['product main department code']=$most_recent_product_data['product main department code'];
 	  }
+	  $tag['product valid to']=$tag['date'];
+	  $tag['product valid from']=$tag['date'];
 	  
 	  $this->create($tag);
 	  $tag['Part Most Recent']='Yes';
@@ -240,8 +255,8 @@ class product{
 			 );
 	  $supplier_product->new_part_list('',$rules);
 	}else{
-	  print "i dont now wat to do\n";
-	  exit;
+	   print "i dont now wat to do\n";
+	   exit;
 	}
       }
 
@@ -3179,7 +3194,7 @@ function valid_id($id){
     
     
 
-    
+    //  print_r($base_data);
     
     $keys='(';$values='values(';
     foreach($base_data as $key=>$value){
@@ -3194,8 +3209,8 @@ function valid_id($id){
     
 
 
-    //    print "$sql\n";
-
+    //print "$sql\n";
+    //exit;
     $affected=& $this->db->exec($sql);
     if (PEAR::isError($affected)) {
       if(preg_match('/^MDB2 Error: constraint violation$/',$affected->getMessage()))

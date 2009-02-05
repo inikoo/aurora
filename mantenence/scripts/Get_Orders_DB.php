@@ -29,11 +29,11 @@ $version='V 1.0';
 $Data_Audit_ETL_Software="$software $version";
 
 
-$sql="select id from orders_data.order_data  limit 1000";
+$sql="select id from orders_data.order_data ";
 $res = $db->query($sql);
 while($row2=$res->fetchRow()) {
   
-    print $row2['id']."\r";
+  //  print $row2['id']."\r";
   $sql="select * from orders_data.order_data where id=".$row2['id'];
   $res2 = $db->query($sql);
   if($row=$res2->fetchRow()) {
@@ -79,6 +79,13 @@ $header=mb_unserialize($row['header']);
   $product_data=array();
   foreach($transactions as $transaction){
     //    print_r($transaction);
+
+    if(preg_match('/^credit/i',$transaction['code']))
+      continue;
+      
+    
+
+
     if($transaction['units']=='')
       $transaction['units']=1;
     if($transaction['supplier_product_code']=='')
@@ -97,38 +104,57 @@ $header=mb_unserialize($row['header']);
       $transaction['supplier_code']='Unknown';
 
     $unit_type='Piece';
-    
+
+    $description=_trim($transaction['description']);
+     $description=str_replace("\\\"","\"",$description);
+
+
+    if(preg_match('/Joie/i',$description) and preg_match('/abpx-01/i',$transaction['code']))
+      $description='2 boxes joie (replacement due out of stock)';
     $product_data=array(
-			  'product code'=>$transaction['code']
-			  ,'product name'=>$transaction['description']
-			  ,'product unit type'=>$unit_type
-			  ,'product units per case'=>$transaction['units']
-			  ,'product rrp'=>sprintf("%.2f",$transaction['rrp']*$transaction['units'])
-			  ,'product price'=>sprintf("%.2f",$transaction['price'])
-			  ,'supplier code'=>$transaction['supplier_code']
-			  ,'supplier name'=>$transaction['supplier_code']
-
-			  ,'supplier product cost'=>$transaction['supplier_product_cost']
-			  ,'supplier product code'=>$transaction['supplier_product_code']
-			  ,'supplier product name'=>$transaction['description']
-
-			  ,'auto_add'=>true
-			  ,'date'=>$date_order
+			'product code'=>_trim($transaction['code'])
+			,'product name'=>$description
+			,'product unit type'=>$unit_type
+			,'product units per case'=>$transaction['units']
+			,'product rrp'=>sprintf("%.2f",$transaction['rrp']*$transaction['units'])
+			,'product price'=>sprintf("%.2f",$transaction['price'])
+			,'supplier code'=>_trim($transaction['supplier_code'])
+			,'supplier name'=>_trim($transaction['supplier_code'])
+			
+			,'supplier product cost'=>sprintf("%.4f",$transaction['supplier_product_cost'])
+			,'supplier product code'=>_trim($transaction['supplier_product_code'])
+			,'supplier product name'=>$description
+			
+			,'auto_add'=>true
+			,'date'=>$date_order
 			);
+    //   print_r($product_data);
+
+ //    if(preg_match('/ish-33/i',$transaction['code'])){
+//       print $row2['id']."\n";
+//       print_r($product_data);
+//     }
     
+
     $product=new Product('code-name-units-price',$product_data);
-    
+    //     "Ahh canto male pedict\n";
     if(!$product->id){
+      
       print_r($product_data);
+      print "Ahh canto male pedict\n";
       exit;
     
     }
+ 
+    
+
+
   }
 
   //print_r($product_data);
 
   }
-  exit;
+ 
  }
 
 function mb_unserialize($serial_str) {

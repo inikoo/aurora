@@ -114,12 +114,12 @@ foreach($__cols as $cols){
 
   $is_product=true;
   
-  $code=$cols[3];
+  $code=_trim($cols[3]);
 
 
   $price=$cols[7];
-  $supplier_code=$cols[21];
-  $part_code=$cols[22];
+  $supplier_code=_trim($cols[21]);
+  $part_code=_trim($cols[22]);
   $supplier_cost=$cols[23];
   // if(preg_match('/PPB-01/i',$code)){
   //     print_r($cols);
@@ -262,9 +262,9 @@ foreach($__cols as $cols){
        $deals=array();
     
     $units=$cols[5];
-    $description=$cols[6];
+    $description=_trim($cols[6]);
     $rrp=$cols[16];
-    $supplier_code=$cols[21];
+    $supplier_code=_trim($cols[21]);
     $supplier_price=$cols[23];
     
     $product=new Product('code',$code);
@@ -273,7 +273,7 @@ foreach($__cols as $cols){
 	$units=1;
       
       if(is_numeric($rrp))
-	$rrp=$rrp*$units;
+	$rrp=sprintf("%.2f",$rrp*$units);
       else
 	$rrp='';
       
@@ -288,7 +288,7 @@ foreach($__cols as $cols){
       $data=array(
 		  'product sale state'=>'For sale',
 		  'product code'=>$code,
-		  'product price'=>$price,
+		  'product price'=>sprintf("%.2f",$price),
 		  'product rrp'=>$rrp,
 		  'product units per case'=>$units,
 		  'product name'=>$description,
@@ -326,7 +326,7 @@ foreach($__cols as $cols){
 	$sp_data=array(
 		       'Supplier Product Supplier Key'=>$supplier->id,
 		       'Supplier Product Code'=>$scode,
-		       'Supplier Product Cost'=>$cost,
+		       'Supplier Product Cost'=>sprintf("%.4f",$cost),
 		       'Supplier Product Name'=>$description,
 		       'Supplier Product Description'=>$description
 		       );
