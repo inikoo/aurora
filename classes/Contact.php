@@ -118,7 +118,7 @@ class Contact{
 //     print "->".$data['name']."<-\n";
 //     print  "->".$this->unknown_name."<-\n";
 //     exit;
-    if($data['name']==$this->unknown_name)
+    if(!isset($data['name']) or $data['name']==$this->unknown_name)
       $this->data['contact name']='';
     
     if($this->data['contact name']==''){
@@ -200,7 +200,7 @@ class Contact{
 //      exit;
      $this->db->exec($sql);
     $this->get_data('id',$this->id);
-    if(isset($data['email']) & $data['email']!=''){
+    if(isset($data['email']) and  $data['email']!=''){
       $email_data=array('email'=>$data['email'],'email contact'=>$this->display('name'));
       
       if(isset($data['email type']))
@@ -217,7 +217,7 @@ class Contact{
 	
     }
     
-    if(isset($data['fax']) & $data['fax']!=''){
+    if(isset($data['fax']) and $data['fax']!=''){
       $tel_data=array(
 		      'country key'=>$this->get('Contact Main Country Key')
 		      ,'telecom number'=>$data['fax']
@@ -243,7 +243,7 @@ class Contact{
     }
 
     
-    if(isset($data['mobile']) & $data['mobile']!=''){
+    if(isset($data['mobile']) and $data['mobile']!=''){
       $tel_data=array(
 		      'country key'=>$this->get('Contact Main Country Key')
 		      ,'telecom number'=>$data['mobile']
@@ -269,7 +269,7 @@ class Contact{
 
 
      
-     if(isset($data['telephone']) & $data['telephone']!=''){
+     if(isset($data['telephone']) and $data['telephone']!=''){
        $tel_data=array(
 		       'country key'=>$this->get('Contact Main Country Key')
 		      ,'telecom number'=>$data['telephone']

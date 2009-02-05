@@ -6,13 +6,14 @@ include_once('../../classes/Product.php');
 include_once('../../classes/Supplier.php');
 include_once('../../classes/Part.php');
 include_once('../../classes/SupplierProduct.php');
+error_reporting(E_ALL);
 
 
 require_once 'MDB2.php';            // PEAR Database Abstraction Layer
 require_once '../../common_functions.php';
 $db =& MDB2::factory($dsn);       
 if (PEAR::isError($db)){echo $db->getMessage() . ' ' . $db->getUserInfo();}
-if(DEBUG)PEAR::setErrorHandling(PEAR_ERROR_RETURN);
+
 $db->setFetchMode(MDB2_FETCHMODE_ASSOC);  
 $db->query("SET time_zone ='UTC'");
 $db->query("SET NAMES 'utf8'");
@@ -161,11 +162,12 @@ foreach($__cols as $cols){
     }
     $deals=array();
     if(preg_match('/off\s+\d+\s+or\s+more/i',_trim($current_promotion))){
-      preg_match('/^\d+\% off/i',$current_promotion,$match);
-      $allowance=$match[0];
-      preg_match('/off.*more/',$current_promotion,$match);
-      $terms=preg_replace('/^off\s*/i','',$match[0]);
-      
+      if(preg_match('/^\d+\% off/i',$current_promotion,$match))
+	$allowance=$match[0];
+      if(preg_match('/off.*more/i',$current_promotion,$match))
+	$terms=preg_replace('/^off\s*/i','',$match[0]);
+      else
+	print "************".$current_promotion."\n";
       $deals[]=array(
 		     'deal campain name'=>'Gold Reward'
 		     ,'deal trigger'=>'Order'
@@ -297,7 +299,9 @@ foreach($__cols as $cols){
 		  'product special characteristic'=>$special_char,
 		  'deals'=>$deals
 		    );
+
        	$product=new Product('create',$data);
+
 	$scode=$cols[20];
 	$supplier_code=$cols[21];
 	$cost=$cols[23];
@@ -326,7 +330,9 @@ foreach($__cols as $cols){
 		       'Supplier Product Name'=>$description,
 		       'Supplier Product Description'=>$description
 		       );
+
 	$supplier_product=new SupplierProduct('new',$sp_data);
+
 	$part_data=array(
 			 'Part Most Recent'=>'Yes',
 			 'Part XHTML Currently Supplied By'=>sprintf('<a href="supplier.php?id=%d">%s</a>',$supplier->id,$supplier->get('supplier code')),
@@ -340,7 +346,7 @@ foreach($__cols as $cols){
 		       ,'supplier product part valid to'=>date('Y-m-d H:i:s')
 		       ,'factor supplier product'=>1
 		       );
-	$supplier_product->new_part_list($rules);
+	$supplier_product->new_part_list('',$rules);
 	$part_list[]=array(
 			   'Product ID'=>$product->get('product ID'),
 			   'Part SKU'=>$part->get('part sku'),
@@ -349,7 +355,7 @@ foreach($__cols as $cols){
 			   'Parts Per Product'=>1,
 			   'Product Part Type'=>'Simple Pick'
 			   );
-	$product->new_part_list($part_list);
+	$product->new_part_list('',$part_list);
     }
     
   }else{

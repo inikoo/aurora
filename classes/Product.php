@@ -20,31 +20,21 @@ class product{
   var $new=false;
   var $new_id=false;
   var $location_to_update=false;
-
+  var $id=false;
   function __construct($a1,$a2=false,$a3=false) {
     $this->db =MDB2::singleton();
-
-
     if(is_numeric($a1) and !$a2){
       $this->get_data('id',$a1);
     }
     else if(($a1=='new' or $a1=='create') and is_array($a2) ){
       $this->msg=$this->create($a2);
-      
     } else
       $this->get_data($a1,$a2,$a3);
-
   }
-  
-
-
 
   function get_data($tipo,$tag,$extra=false){
     global $_shape,$_units_tipo,$_units_tipo_abr,$_units_tipo_plural;
-
-
     if($tipo=='id'){
-      
       $sql=sprintf("select * from `Product Dimension` where `Product Key`=%d ",$tag);
       $result =& $this->db->query($sql);
       if($this->data=$result->fetchRow())
@@ -75,17 +65,21 @@ class product{
 
 	if(strtotime($this->data['product valid to'])<strtotime($tag['date'])  ){
 	  $sql=sprintf("update `Product Dimension` set `Product Valid To`=%s where `Product Key`=%d",prepare_mysql($tag['date']),$this->id);
-	    $this->db->exec($sql);
+	  $this->data['product valid to']=$tag['date'];
+	  $this->db->exec($sql);
 	}
 	if(strtotime($this->data['product valid from'])>strtotime($tag['date'])  ){
 	  $sql=sprintf("update `Product Dimension` set `Product Valid From`=%s where `Product Key`=%d",prepare_mysql($tag['date']),$this->id);
-	    $this->db->exec($sql);
+	  $this->db->exec($sql);
+	  $this->data['product valid from']=$tag['date'];
 	}
+
 
 	return;
       }
       if(!$auto_add)
 	return;
+      
 
       
       $different_price=true;
@@ -93,67 +87,163 @@ class product{
       $different_units=true;
       $different_units_type=true;
       $this->new=true;
+      $this->new_code=false;
       $this->new_id=false;
-      $this->new_part=true;
+      $this->new_part=false;
       $this->new_supplier_product=false;
 
-      $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s and `Product Most Recent`='Yes'",prepare_mysql($tag['product code']));
+      $sql=sprintf("select count(*) as num from `Product Dimension` where `Product Code`=%s  "
+		   ,prepare_mysql($tag['product code'])
+		 
+		   );
+
       $result2 =& $this->db->query($sql);
-      if($most_recent_product_data=$result2->fetchRow()){
-	if($most_recent_product_data['product price']==$tag['product price'])
-	  $different_price=false;
-	if($most_recent_product_data['product name']==$tag['product name'])
+      
+      if($row2=$result2->fetchRow()){
+	$number_sp=$row2['num'];
+      }
+
+
+      if($number_sp==0){
+	$this->new_code=true;
+	$tag['product id']=$this->new_id();
+	$tag['product most recent']='Yes';
+	$tag['Part Most Recent']='Yes';
+	$this->create($tag);
+	$part=new Part('new',$tag);
+	$part_list[]=array(
+			   'Product ID'=>$this->get('product ID'),
+			   'Part SKU'=>$part->get('part sku'),
+			   'Product Part Id'=>1,
+			   'requiered'=>'Yes',
+			   'Parts Per Product'=>1,
+			   'Product Part Type'=>'Simple Pick'
+			   );
+	$this->new_part_list('',$part_list);
+	
+
+	$this->new_part=true;
+      }else{
+       
+	$sql=sprintf("select * from `Product Dimension` where `Product Code`=%s and `Product Name`=%s and `Product Units Per Case`=%s and `Product Unit Type`=%s"
+		     ,prepare_mysql($tag['product code'])
+		     ,prepare_mysql($tag['product name'])
+		     ,prepare_mysql($tag['product units per case'])
+		     ,prepare_mysql($tag['product unit type'])
+
+
+		     );
+	//print "$sql\n";
+	$result2 =& $this->db->query($sql);
+	if($same_id_data=$result2->fetchRow()){
+	  // Price changes all is the same
+
 	  $different_name=false;
-	if($most_recent_product_data['product units per case']==$tag['product units per case'])
 	  $different_units=false;
-	if($most_recent_product_data['product unit type']==$tag['product unit type'])
 	  $different_units_type=false;
+	  $this->new_id=false;
+	  $tag['product id']=$same_id_data['product id'];
+	  
+	 $sql=sprintf("select * as number from  `Product Dimension` where `Product Valid To`<%s and `Product Most Recent`='Yes' and `Product ID`=%d  ",$tag['date'],$same_id_data['product id']);
+	$result3 =& $this->db->query($sql);
+	if($last_data=$result->fetchRow()){
+	  $tag['product most recent']='No';
+	  $tag['product most reent key']=$last_data['product key'];
+	}else
+	  $tag['product most recent']='Yes';
 	
-	if($different_name or $different_units or $different_units_type)
-	  $this->new_id=true;
-      }else
-	$this->new_id=true;
-
-      
-	$supplier=new Supplier('code',$tag['supplier product code']);
-	if(!$supplier->id){
-	  $data=array(
-		      'name'=>$tag['supplier name'],
-		      'code'=>$tag['supplier code'],
-		      );
-
-	  //$supplier=new Supplier('new',$data);
-	}
-	
-	$sp_data=array(
-		       'supplier product supplier key'=>$supplier->id,
-		       'supplier product code'=>$tag['supplier product code'],
-		       'supplier product cost'=>$tag['supplier product cost'],
-		       'supplier product name'=>$tag['supplier product name'],
-		       'auto_add'=>true,
-		       'date'=>$tag['date']
-		       );
-	$supplier_product=new SupplierProduct('supplier-code-name-cost',$sp_data);
-	
-	if($supplier_product->new){
-	  $this->new_supplier_product=true;
-	}
-      
-
-      
-      if($different_name and !$different_units and !$different_units_type)
 	$this->new_part=false;
+	
+	$this->create($tag);
+  
+	}else{
+	  $this->new_id=true;
+	  $tag['product id']=$this->new_id();
+	  $tag['product most recent']='Yes';
+	  
+	  $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s   ",prepare_mysql($tag['product code']));
+	  $result4 =& $this->db->query($sql);
+	  if($most_recent_product_data=$result4->fetchRow()){
+	    $tag['product family key']=$most_recent_product_data['product family key'];
+	    $tag['product family code']=$most_recent_product_data['product family code'];
+	    $tag['product family name']=$most_recent_product_data['product family name'];
+	    $tag['product main department key']=$most_recent_product_data['product main department key'];
+	    $tag['product main department name']=$most_recent_product_data['product main department name'];
+	    $tag['product main department code']=$most_recent_product_data['product main department code'];
+	  }
+	  
+	  $this->create($tag);
+	  $tag['Part Most Recent']='Yes';
+	  $part=new Part('new',$tag);
+	  $this->new_part=true;
+	  
 
-	print "diff price: $different_price ,old:  new:".$tag['product price']."\n";
-	print "diff name: $different_name \n";
-	print "diff units: $different_units \n";
-	print "diff units t: $different_units_type \n";
-	print "new id ".$this->new_id."\n";
-	print "new code :".$this->new." ".$tag['product code']."  \n";
-	print "new part :".$this->new_part." \n";
-	print "new sup prod :".$this->new_supplier_product." \n";
+
+
+
+	  $part=new Part('new',$tag);
+	  $part_list[]=array(
+			     'Product ID'=>$this->get('product ID'),
+			     'Part SKU'=>$part->get('part sku'),
+			     'Product Part Id'=>1,
+			     'requiered'=>'Yes',
+			     'Parts Per Product'=>1,
+			     'Product Part Type'=>'Simple Pick'
+			     );
+	  $this->new_part_list('',$part_list);
+
+
+	}
+      }
+    
       
-      exit;
+
+
+
+      $supplier=new Supplier('code',$tag['supplier code']);
+      if(!$supplier->id){
+	$data=array(
+		    'name'=>$tag['supplier name'],
+		    'code'=>$tag['supplier code'],
+		    );
+
+
+	$supplier=new Supplier('new',$data);
+
+      }
+	
+      $sp_data=array(
+		     'supplier product supplier key'=>$supplier->id,
+		     'supplier product code'=>$tag['supplier product code'],
+		     'supplier product cost'=>$tag['supplier product cost'],
+		     'supplier product name'=>$tag['supplier product name'],
+		     'auto_add'=>true,
+		     'date'=>$tag['date']
+		     );
+      $supplier_product=new SupplierProduct('supplier-code-name-cost',$sp_data);
+      
+      if($supplier_product->new){
+	$this->new_supplier_product=true;
+      }
+      
+
+      if($this->new_supplier_product or $this->new_part){
+	
+	if($this->new_part){
+	  $rules[]=array(
+			 'Part Key'=>$part->id
+			 ,'Supplier Product Units Per Part'=>$this->data['product units per case']
+			 ,'supplier product part most recent'=>'Yes'
+			 ,'supplier product part valid from'=>$tag['date']
+			 ,'supplier product part valid to'=>$tag['date']
+			 ,'factor supplier product'=>1
+			 );
+	  $supplier_product->new_part_list('',$rules);
+	}else{
+	  print "i dont now wat to do\n";
+	  exit;
+	}
+      }
 
 
       
@@ -2974,23 +3064,28 @@ class product{
   }
 
 function new_id(){
-  
-
   $sql="select max(`Product id`) as id from `Product Dimension`";
   $result =& $this->db->query($sql);
-
-  if(    $row=$result->fetchRow()){
-
+  if($row=$result->fetchRow()){
     $id=$row['id']+1;
   }else{
-
     $id=1;
   }  
-
-  //print "$id\n";
-  // exit;
   return $id;
 }
+
+function new_part_list_id(){
+  $sql="select max(`Product Part ID`) as id from `Product Part List`";
+  $result =& $this->db->query($sql);
+  if($row=$result->fetchRow()){
+    $id=$row['id']+1;
+  }else{
+    $id=1;
+  }  
+  return $id;
+}
+
+
 
 function valid_id($id){
   if(is_numeric($id) and $id>0 and $id<9223372036854775807)
@@ -3099,7 +3194,7 @@ function valid_id($id){
     
 
 
-    // print "$sql\n";
+    //    print "$sql\n";
 
     $affected=& $this->db->exec($sql);
     if (PEAR::isError($affected)) {
@@ -3111,20 +3206,17 @@ function valid_id($id){
     $this->id = $this->db->lastInsertID();  
     $this->get_data('id',$this->id);
 
-    
-    
-    
+     $sql=sprintf("update `Product Dimension` set `Product Most Recent`='No' where `Product ID`=%d  and `Product Key`!=%d",$base_data['product id'],$this->id);
+      $this->db->exec($sql);
 
 
-
-    $this->get_data('id',$this->id);
     if($base_data['product most recent']=='Yes'){
       $sql=sprintf("update  `Product Dimension` set `Product Current Product Key`=%d where `Product Key`=%d",$this->id,$this->id);
       $this->db->exec($sql);
     }
 
 
-
+    $this->get_data('id',$this->id);
 
    $sql=sprintf("update  `Product Dimension` set `Product Short Description`=%s ,`Product XHTML Short Description`=%s where `Product Key`=%d",prepare_mysql($this->get('short description')),prepare_mysql($this->get('xhtml short description')),$this->id);
    $this->db->exec($sql);
@@ -3176,12 +3268,14 @@ function valid_id($id){
 
 
 
-  function new_part_list($part_list){
+  function new_part_list($product_list_id,$part_list){
     
+    if(!$this->valid_id($product_list_id))
+      $product_list_id=$this->new_part_list_id();
+
     $_base_data=array(
 		      'product id'=>$this->data['product id'],
 		      'part sku'=>'',
-		      'product part id'=>'',
 		      'requiered'=>'',
 		      'parts per product'=>'',
 		      'product part note'=>'',
@@ -3196,44 +3290,51 @@ function valid_id($id){
 
     
     foreach($part_list as $data){
-      $_date='NOW()';
+    //   $_date='NOW()';
       
-      $_date=$data['product part valid from'];
-      if(!preg_match('/now/i',$_date))
-	$_date=prepare_mysql($_date);
+//       $_date=$data['product part valid from'];
+//       if(!preg_match('/now/i',$_date))
+// 	$_date=prepare_mysql($_date);
+      
+      
+//       $sql=sprintf("update `Product Part List`  set `Product Part Most Recent`='No' ,`Product Part Valid To`=%s where `Product ID`=%d and `Part SKU`=%d  and `Product Part Most Recent`='Yes' ",$_date,$this->data['product id'],$data['part sku']);
+//       $this->db->exec($sql);
+      
+      $base_data=$_base_data;
+      foreach($data as $key=>$value){
+	if(isset($base_data[strtolower($key)]))
+	  $base_data[strtolower($key)]=_trim($value);
+      }
+      
+      $base_data['product part id']=$product_list_id;
+      
+      $keys='(';$values='values(';
+      foreach($base_data as $key=>$value){
+	$keys.="`$key`,";
+	if(($key='product part valid from' or $key=='product part valid to') and preg_match('/now/i',$value))
+	  $values.="NOW(),";
+	else
+	  $values.=prepare_mysql($value).",";
+      }
+      $keys=preg_replace('/,$/',')',$keys);
+      $values=preg_replace('/,$/',')',$values);
+      $sql=sprintf("insert into `Product Part List` %s %s",$keys,$values);
+      //   print "$sql\n";exit;
+      $affected=& $this->db->exec($sql);
+      
+      $id=$this->db->lastInsertID();
+      if($base_data['product part most recent']=='Yes'){
+	
+	$sql=sprintf("update `Product Part List`  set `Product Part Most Recent`='No',`Product Part Most Recent Key`=%d where `Product Part ID`=%d and `Product Part Key`!=%d  ",$id,$base_data['product part id'],$id);
+	$this->db->exec($sql);
 
-    
-    $sql=sprintf("update `Product Part List`  set `Product Part Most Recent`='No' ,`Product Part Valid To`=%s where `Product ID`=%d and `Part SKU`=%d  and `Product Part Most Recent`='Yes' ",$_date,$this->data['product id'],$data['part sku']);
-    $this->db->exec($sql);
-    
-    $base_data=$_base_data;
-    foreach($data as $key=>$value){
-      $base_data[strtolower($key)]=_trim($value);
-    }
-    
-    $keys='(';$values='values(';
-    foreach($base_data as $key=>$value){
-      $keys.="`$key`,";
-      if(($key='product part valid from' or $key=='product part valid to') and preg_match('/now/i',$value))
-	$values.="NOW(),";
-      else
-	$values.=prepare_mysql($value).",";
-    }
-    $keys=preg_replace('/,$/',')',$keys);
-    $values=preg_replace('/,$/',')',$values);
-    $sql=sprintf("insert into `Product Part List` %s %s",$keys,$values);
-    //   print "$sql\n";exit;
-    $affected=& $this->db->exec($sql);
-
-    $id=$this->db->lastInsertID();
-     if($base_data['product part most recent']=='Yes'){
-      $sql=sprintf('update `Product Part List` set `Product Part Most Recent Key`=%d where `Product Part List Key`=%d',$id,$id);
+	$sql=sprintf('update `Product Part List` set `Product Part Most Recent Key`=%d where `Product Part Key`=%d',$id,$id);
   
-      $this->db->exec($sql);
+	$this->db->exec($sql);
     }
-
-  }
-  
+      
+    }
+    
   }
 
 

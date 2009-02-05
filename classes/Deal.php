@@ -68,7 +68,12 @@ class deal{
       //   print "***********";
       if(preg_match('/order \d+ or more/i',$base_data['deal terms description'],$match))
 	$a=preg_replace('/[^\d]/','',$match[0]);
-      
+      else{
+	print "ohh no a not foun in deal class ".$base_data['deal terms description']."\n";
+	print_r($data);
+	exit;
+      }
+	
       if(preg_match('/^\d+\%/i',$base_data['deal allowance description'],$match))
 	$b=.01*preg_replace('/\%/','',$match[0]);
       $base_data['deal allowance metadata']="$a,$b";

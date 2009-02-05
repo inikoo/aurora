@@ -39,7 +39,7 @@ class supplier{
 	$id=_('Unknown Supplier');
       $sql=sprintf("select * from `Supplier Dimension` where `Supplier Code`=%s",prepare_mysql($id));
     }
-
+    //print "$sql\n";
     $result =& $this->db->query($sql);
     if($row=$result->fetchRow()){
       $this->data=$row;
@@ -90,8 +90,9 @@ class supplier{
 
     if(isset($data['address_data']))
       $data_contact['address_data']=$data['address_data'];
+
     $contact=new contact('new',$data_contact);
- 
+   
     $company=new company('new',
 			 array('name'=>$name,'contact key'=>$contact->id)
 			 );
