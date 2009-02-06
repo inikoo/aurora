@@ -29,11 +29,15 @@ $version='V 1.0';
 $Data_Audit_ETL_Software="$software $version";
 
 
-$sql="select id from orders_data.order_data ";
+$sql="select id from orders_data.order_data where id=5138 ";
+
 $res = $db->query($sql);
+
 while($row2=$res->fetchRow()) {
   
-  //  print $row2['id']."\r";
+   print $row2['id']."\r";
+
+
   $sql="select * from orders_data.order_data where id=".$row2['id'];
   $res2 = $db->query($sql);
   if($row=$res2->fetchRow()) {
@@ -84,24 +88,32 @@ $header=mb_unserialize($row['header']);
       continue;
       
     
-
+    $supplier_product_cost=sprintf("%.4f",$transaction['supplier_product_cost']);
 
     if($transaction['units']=='')
       $transaction['units']=1;
     if($transaction['supplier_product_code']=='')
       $transaction['supplier_product_code']='?'.$transaction['code'];
     
+    if(preg_match('/^(wheat)\-/i',$transaction['code'])  and  preg_match('/\d/',$transaction['supplier_code']) ){
+      $transaction['supplier_code'] ='';
+      $supplier_product_cost='';
+    }
 
-    
+ if(preg_match('/^(bw)\-/i',$transaction['code'])  and  preg_match('/\d/',$transaction['supplier_code']) ){
+      $transaction['supplier_code'] ='';
+     
+    }
 
-    if(preg_match('/^SG\-/i',$transaction['code']))
+
+    if(preg_match('/^(SG|FO)\-/i',$transaction['code']))
      $transaction['supplier_code'] ='AW';
     if($transaction['supplier_code']=='AW')
       $transaction['supplier_product_code']=$transaction['code'];
 
 
     if($transaction['supplier_code']=='')
-      $transaction['supplier_code']='Unknown';
+      $transaction['supplier_code']='Unknown Supplier';
 
     $unit_type='Piece';
 
@@ -121,21 +133,27 @@ $header=mb_unserialize($row['header']);
 			,'supplier code'=>_trim($transaction['supplier_code'])
 			,'supplier name'=>_trim($transaction['supplier_code'])
 			
-			,'supplier product cost'=>sprintf("%.4f",$transaction['supplier_product_cost'])
+			,'supplier product cost'=>$supplier_product_cost
 			,'supplier product code'=>_trim($transaction['supplier_product_code'])
 			,'supplier product name'=>$description
 			
 			,'auto_add'=>true
 			,'date'=>$date_order
 			);
-    //   print_r($product_data);
+
+    if(is_numeric($transaction['supplier_code'])  or preg_match('/\d/',$transaction['supplier_code'])){
+      print $row2['id']."\n";
+      print_r($product_data);
+    }
+
+     print_r($products);
 
  //    if(preg_match('/ish-33/i',$transaction['code'])){
 //       print $row2['id']."\n";
 //       print_r($product_data);
 //     }
     
-
+    //print_r($product_data);
     $product=new Product('code-name-units-price',$product_data);
     //     "Ahh canto male pedict\n";
     if(!$product->id){

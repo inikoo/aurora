@@ -34,12 +34,16 @@ class supplier{
   function get_data($tipo,$id){
     if($tipo=='id')
       $sql=sprintf("select * from `Supplier Dimension` where `Supplier Key`=%d",$id);
-    else{
+    elseif ($tipo=='code'){
       if($id=='')
 	$id=_('Unknown Supplier');
-      $sql=sprintf("select * from `Supplier Dimension` where `Supplier Code`=%s",prepare_mysql($id));
+      
+      $sql=sprintf("select * from `Supplier Dimension` where `Supplier Code`=%s  and `Supplier Most Recent`='Yes'",prepare_mysql($id));
+      
     }
-    //print "$sql\n";
+
+
+
     $result =& $this->db->query($sql);
     if($row=$result->fetchRow()){
       $this->data=$row;
@@ -79,6 +83,8 @@ class supplier{
     
     $code=$this->check_code($_code);
 
+    if(!isset($data['supplier id']) or !is_valid_id($data['supplier id'])  )
+      $data['supplier id']=$this->new_id();
 
     if(isset($data['contact_name']))
       $data_contact=array('name'=>$data['contact_name']);
@@ -114,7 +120,7 @@ class supplier{
     if(isset($data['most_recent_key']) and is_numeric($data['most_recent_key'])  and $data['most_recent_key']>0  )
       $most_recent_key=$data['most_recent_key'];
 
-    $sql=sprintf("insert into `Supplier Dimension` (`Supplier Code`,`Supplier Name`,`Supplier Company Key`,`Supplier Main Contact Key`,`Supplier Accounts Payable Contact Key`,`Supplier Sales Contact Key`,`Supplier Valid From`,`Supplier Valid To`,`Supplier Most Recent`,`Supplier Most Recent Key`) values (%s,%s,%d,%d,%d,%d,%s,%s,%s,%s)",
+    $sql=sprintf("insert into `Supplier Dimension` (`Supplier Code`,`Supplier Name`,`Supplier Company Key`,`Supplier Main Contact Key`,`Supplier Accounts Payable Contact Key`,`Supplier Sales Contact Key`,`Supplier Valid From`,`Supplier Valid To`,`Supplier Most Recent`,`Supplier Most Recent Key`,`Supplier ID`) values (%s,%s,%d,%d,%d,%d,%s,%s,%s,%s,%s)",
 		 prepare_mysql($code),
 		 prepare_mysql($name),
 		 $company->id,
@@ -124,10 +130,11 @@ class supplier{
 		 prepare_mysql($from),
 		 prepare_mysql($to),
 		 prepare_mysql($most_recent),
-		 prepare_mysql($most_recent_key)
+		 prepare_mysql($most_recent_key),
+		 prepare_mysql($data['supplier id'])
 		 );
-    // print "$sql\n";
-    //exit;
+    print "$sql\n";
+    //    exit;
     $affected=& $this->db->exec($sql);
     if (PEAR::isError($affected)) {
       if(preg_match('/^MDB2 Error: constraint violation$/',$affected->getMessage()))
@@ -174,6 +181,24 @@ class supplier{
     return $name;
   }
   
+function new_id(){
+  $sql="select max(`Supplier ID`) as id from `Supplier Dimension`";
+  $result =& $this->db->query($sql);
+  if($row=$result->fetchRow()){
+    $id=$row['id']+1;
+  }else{
+    $id=1;
+  }  
+  return $id;
+}
+
+function valid_id($id){
+  if(is_numeric($id) and $id>0 and $id<9223372036854775807)
+    return true;
+  else
+    return false;
+}
+
 
 }
 

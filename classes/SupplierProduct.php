@@ -36,15 +36,17 @@ class supplierproduct{
     }elseif($tipo='supplier-code-name-cost'){
       
       $auto_add=$tag['auto_add'];
-      $sql=sprintf("select * from `Supplier Product Dimension` where `Supplier Product Code`=%s  and `Supplier Product Name`=%s and `Supplier Product Cost`=%s and `Supplier Product Supplier Key`=%d "
+      $sql=sprintf("select * from `Supplier Product Dimension` where `Supplier Product Code`=%s  and `Supplier Product Name`=%s and `Supplier Product Cost`=%s and `Supplier Product Supplier Key`=%s "
 		   ,prepare_mysql($tag['supplier product code'])
 		   ,prepare_mysql($tag['supplier product name'])
 		   ,prepare_mysql($tag['supplier product cost'])
 		   ,prepare_mysql($tag['supplier product supplier key'])
 
 		   );
+
       $result =& $this->db->query($sql);
       if($this->data=$result->fetchRow()){
+
 	$this->id=$this->data['supplier product key'];
 	
 	if(strtotime($this->data['supplier product valid to'])<strtotime($tag['date'])  ){

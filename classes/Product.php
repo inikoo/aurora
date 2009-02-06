@@ -235,11 +235,15 @@ class product{
 		     'auto_add'=>true,
 		     'date'=>$tag['date']
 		     );
+      //  print_r($sp_data);
       $supplier_product=new SupplierProduct('supplier-code-name-cost',$sp_data);
       
-      if($supplier_product->new){
+      if($supplier_product->new_id){
+	print "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n";
 	$this->new_supplier_product=true;
       }
+      
+      
       
 
       if($this->new_supplier_product or $this->new_part){
