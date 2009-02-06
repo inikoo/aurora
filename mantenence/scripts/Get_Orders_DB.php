@@ -143,8 +143,13 @@ $header=mb_unserialize($row['header']);
       print "Ahh canto male pedict\n";
       exit;
     }
-    $products_data[]=array('product_id'=>$product->id,'qty'=>$transaction['order']);
-    
+    $products_data[]=array(
+			   'product_id'=>$product->id
+			   ,'qty'=>$transaction['order']
+			   ,'gross_amount'=>$transaction['order']*$transaction['price']
+			   ,'discount_amount'=>$transaction['order']*$transaction['price']*$transaction['discount']
+			   );
+
 
 
   }

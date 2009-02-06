@@ -710,12 +710,12 @@ if(isset( $_REQUEST['where']))
    else if($order=='state')
      $order='`Order Current Dispatch State`,`Order Current Payment State`';
 
-  $sql="select `Order key`,`Order ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Date`,(`Order Gross Amount`+`Order Discount Amount`+`Order Shipping Amount`+`Order Total Tax Amount`) as total_amount ,`Order Current XHTML State` from `Order Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+  $sql="select `Order key`,`Order Public ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Date`,(`Order Gross Amount`+`Order Discount Amount`+`Order Shipping Amount`+`Order Total Tax Amount`) as total_amount ,`Order Current XHTML State` from `Order Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
   //  print $sql;
    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
    $data=array();
    while($row=$res->fetchRow()) {
-     $order_id=sprintf('<a href="order.php?id=%d">%s</a>',$row['order key'],$row['order id']);
+     $order_id=sprintf('<a href="order.php?id=%d">%s</a>',$row['order key'],$row['order public id']);
      $customer=sprintf('<a href="order.php?id=%d">%s</a>',$row['order customer key'],$row['order customer name']);
      $data[]=array(
 		   'id'=>$order_id,

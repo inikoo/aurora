@@ -91,25 +91,35 @@ class Order{
       
       
 
+
+
       $this->create_order_header();
-
-
 	
       $line_number=1;
-	foreach($data['products'] as $product_data){
-	  $product_data['date']=$this->data['order date'];
-	  $product_data['line_number']=$line_number;
-	  $this->add_order_transaction($product_data);
-	  $line_number++;
-	}
-
-	$customer->update('orders');
-	$customer->update('no normal data');
-	
-	$this->cutomer_rankings();
-
-	switch($_SESSION['lang']){
-	default:
+      foreach($data['products'] as $product_data){
+	$product_data['date']=$this->data['order date'];
+	$product_data['line_number']=$line_number;
+	$this->add_order_transaction($product_data);
+	$line_number++;
+      }
+      $sql="select sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) as discount from `Order Transaction Fact` where `Order Key`=".$this->data['order key'];
+       $result =& $this->db->query($sql);
+       //  print "$sql\n";
+       if($row=$result->fetchRow()){
+	 $sql=sprintf("update `Order Dimension` set `Order Gross Amount`=%.2f, `Order Discount Amount`=%.2f where  `Order Key`=%d ",$row['gross'],$row['discount'],$this->data['order key']);
+	 //	 print "$sql\n";
+	 $this->db->exec($sql);
+       }
+      
+      
+      
+      $customer->update('orders');
+      $customer->update('no normal data');
+      
+      $this->cutomer_rankings();
+      
+      switch($_SESSION['lang']){
+      default:
 	  $abstract=sprintf('Order <a href="order.php?id=%d">%s</a>',$this->get('order key'),$this->get('order id'));
 	  $note=sprintf('%s (<a href="customer.php?id=%d">%s) place an order at %s'
 			,$customer->get('customer name')
@@ -604,21 +614,23 @@ class Order{
 
   function add_order_transaction($data){
 
-    $sql=sprintf("insert into `Order Transaction Fact` (`Order Date`,`Order Last Updated Date`,`Product Key`,`Current Dispatching State`,`Current Payment State`,`Customer Key`,`Order Key`,`Order ID`,`Order Line`,`Order Quantity`,`Ship To Key`) values (%s,%s,%d,%s,%s,%s,%s,%s,%d,%f,%s) "
+    $sql=sprintf("insert into `Order Transaction Fact` (`Order Date`,`Order Last Updated Date`,`Product Key`,`Current Dispatching State`,`Current Payment State`,`Customer Key`,`Order Key`,`Order Public ID`,`Order Line`,`Order Quantity`,`Ship To Key`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`) values (%s,%s,%d,%s,%s,%s,%s,%s,%d,%f,%s,%.2f,%.2f) "
 		 ,prepare_mysql($data['date'])
 		 ,prepare_mysql($data['date'])
 		 ,$data['product_id']
 		 ,prepare_mysql('Waiting authorization to be picked')
 		 ,prepare_mysql('Waiting Payment')
 		 ,prepare_mysql($this->get('Order Customer Key'))
-		 ,prepare_mysql($this->get('Order Key'))
-		 ,prepare_mysql($this->get('Order ID'))
+		  ,prepare_mysql($this->get('Order Key'))
+		 ,prepare_mysql($this->get('Order Public ID'))
 		 ,$data['line_number']
 		 ,number($data['qty'])
 		 ,prepare_mysql($this->data['order main ship to key'])
-
+		 ,$data['gross_amount']
+		 ,$data['discount_amount']
 
 		 );
+    //   print "$sql\n";
     $this->db->exec($sql);
 
 
@@ -647,7 +659,7 @@ class Order{
        $result =& $this->db->query($sql);
        while($row=$result->fetchRow()){
 
-	 print_r($row);
+	
 	 
 	 $metadata=split(',',$row['deal allowance metadata']);
 	 if($row['deal allowance type']=='Percentage Off'){
@@ -801,7 +813,14 @@ class Order{
   }
 
   function create_order_header(){
-    $sql=sprintf("insert into `Order Dimension` (`Order Date`,`Order Last Updated Date`,`Order ID`,`Order Main Store Key`,`Order Main Store Code`,`Order Main Store Type`,`Order Customer Key`,`Order Customer Name`,`Order Current Dispatch State`,`Order Current Payment State`,`Order Current XHTML State`,`Order Customer Message`,`Order Original Data MIME Type`,`Order Original Data`,`Order Main XHTML Ship To`,`Order Ship To Addresses`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%d)"
+
+    //calculate the order total
+     $this->data['order gross amount']=0;
+     $this->data['order discount amount']=0;
+//     $sql="select sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) from `Order Transaction Fact` where "
+
+
+    $sql=sprintf("insert into `Order Dimension` (`Order Date`,`Order Last Updated Date`,`Order Public ID`,`Order Main Store Key`,`Order Main Store Code`,`Order Main Store Type`,`Order Customer Key`,`Order Customer Name`,`Order Current Dispatch State`,`Order Current Payment State`,`Order Current XHTML State`,`Order Customer Message`,`Order Original Data MIME Type`,`Order Original Data`,`Order Main XHTML Ship To`,`Order Ship To Addresses`,`Order Gross Amount`,`Order Discount Amount`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%d,%.2f,%.2f)"
 		 ,prepare_mysql($this->get('Order Date'))
 		 ,prepare_mysql($this->get('Order Date'))
 		 ,prepare_mysql($this->get('Order ID'))
@@ -818,7 +837,8 @@ class Order{
 		 ,prepare_mysql($this->get('Order Original Data'))
 		 ,prepare_mysql($this->get('Order Main XHTML Ship to'))
 		 ,$this->get('Order Ship To Addresses')
-
+		 ,$this->data['order gross amount']
+		 ,$this->data['order discount amount']
 		 );
     //    print $sql;
     $affected=& $this->db->exec($sql);
@@ -827,7 +847,7 @@ class Order{
     }else{
       $this->data['order key']=$this->db->lastInsertID();
     }
-    //print "$sql\n";
+    // print "$sql\n";
   }
     
 
