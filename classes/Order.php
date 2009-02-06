@@ -53,7 +53,6 @@ class Order{
       $data['cdata']['same_address']=$this->same_address;
       $data['cdata']['same_contact']=$this->same_contact;
       $data['cdata']['same_company']=$this->same_company;
-      $data['cdata']['same_email']=$this->same_email;
       $data['cdata']['same_telephone']=$this->same_telephone;
 
       
@@ -70,14 +69,14 @@ class Order{
       $store=new Store('code',$data['store_code']);
       if(!$store->id)
 	$store=new Store('unknown');
-      $this->data['order date']=$data['date'];
-      $this->data['order id']=$data['order_id'];
+      $this->data['order date']=$data['order date'];
+      $this->data['order id']=$data['order id'];
       $this->data['order customer key']=$customer->id;
       $this->data['order customer name']=$customer->get('customer name');
       $this->data['order current dispatch state']='In Process';
       $this->data['order current payment state']='Waiting Invoice';
       $this->data['order current xhtml state']='In Process';
-      $this->data['order customer message']=_trim($data['message']);
+      $this->data['order customer message']=_trim($data['order customer message']);
       $this->data['order original data mime type']=$data['order original data mime type'];
       $this->data['order original data']=$data['order original data'];
       $this->data['order original data source']=$data['order original data source'];
@@ -96,7 +95,7 @@ class Order{
 
 
 	
-	
+      $line_number=1;
 	foreach($data['products'] as $product_data){
 	  $product_data['date']=$this->data['order date'];
 	  $product_data['line_number']=$line_number;
@@ -498,7 +497,7 @@ class Order{
 		
 	    }
 	  }else{
-	    print_r($_data);
+	    //print_r($_data);
 	    $this->errors[]=_('Error(2): Can not read product line. Line:').$product_line;
 	    print "Error(2), product undentified Count:".count($_data)." Line:$product_line\n";
 	    exit;
@@ -760,7 +759,7 @@ class Order{
 	 $nodeal[$key]=_trim(preg_replace('/\|/','',$value));
      }
 
-     print_r($deal);
+     //print_r($deal);
   
      //strip duplicate deals perdentage off deals
      foreach($deal as $key=>$value){
@@ -780,7 +779,7 @@ class Order{
 
      }
 
-     print_r($data);
+     // print_r($data);
 
 
    //   print_r($nodeal);
@@ -1391,6 +1390,10 @@ class Order{
   } 
 
   function compare_addresses($cdata){
+    
+
+    
+
 
     	//check if the addresses are the same:
 	$diff_result = array_diff($cdata['address_data'], $cdata['shipping_data']);
@@ -1400,7 +1403,7 @@ class Order{
 	  $this->same_address=true;
 	  $this->same_contact=true;
 	  $this->same_company=true;
-	  $this->same_email=true;
+
 	  $this->same_telephone=true;
 
 
@@ -1411,7 +1414,7 @@ class Order{
 	  $percentage_address=array();
 
 	  foreach($diff_result as $key=>$value){
-	    similar_text($cdata['address_shipping_data'][$key],$cdata['address_inv_data'][$key],$p);
+	    similar_text($cdata['shipping_data'][$key],$cdata['address_data'][$key],$p);
 	    $percentage[$key]=$p/100;
 	    if(preg_match('/address1|town|^country$|postcode|country_d1/i',$key))
 	      $percentage_address[$key]=$p/100;
@@ -1421,7 +1424,7 @@ class Order{
 
 	  //print "AVG DIFF $avg_percentage $avg_percentage_address \n";
 	  
-	  if($cdata['address_shipping_data']['name']=='' or !array_key_exists('name',$diff_result) )
+	  if($cdata['shipping_data']['name']=='' or !array_key_exists('name',$diff_result) )
 	    $this->same_contact=true;
 	  else{
 	    $_max=1000000;
@@ -1433,7 +1436,7 @@ class Order{
 	    }else
 	      $this->same_contact=false;
 	  }
-	  if($cdata['address_shipping_data']['company']=='' or !array_key_exists('company',$diff_result) )
+	  if($cdata['shipping_data']['company']=='' or !array_key_exists('company',$diff_result) )
 	    $this->same_company=true;
 	  else{
 	    $_max=1000000;

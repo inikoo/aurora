@@ -7,7 +7,7 @@ class Customer{
   var $db; 
   var $id=false;
   var $contact_data=false;
-
+  var $ship_to=array();
 
   function __construct($arg1=false,$arg2=false) {
     $this->db =MDB2::singleton();
@@ -286,7 +286,7 @@ class Customer{
 
     if(isset($data['has_shipping']) and $data['has_shipping'] and  isset($data['shipping_data']) and is_array($data['shipping_data'])){
       
-      if($data['same_address'] and $data['same_contact'] and $data['same_company'] and $data['same_email'] and $data['same_telephone']){
+      if($data['same_address'] and $data['same_contact'] and $data['same_company'] and $data['same_telephone']){
 	$this->add_ship_to('shipping_same_as_main','Yes');
       }else{
 
@@ -349,47 +349,47 @@ class Customer{
 	  $shipping['contact_key']=$this->get('Customer Main Contact Key');
 	  
 	}
+	$shipping_contact_key=$shipping['contact_key'];
 
 
-
-	if(!$data['same_email']){
-	  $shipping_contact=new Contact($shipping_contact_key);
-	  if($shipping_contact->id){
-	    $shipping_contact->add_email(array('email'=>$data['shipping_data']['email']));
-	    $this->shipping['email_key']=$shipping_contact->add_email;
-	    if($this->shipping['email_key']){
-	    $email=new Email($this->shipping['email_key']);
-	    $this->shipping['email_key']=$email->display('html');
-	    }else
-	      $this->shipping['email_key']='';
-	  }else{
-	    $this->shipping['email_key']='';
-	    $this->shipping['email']='<a href="mailto:'.$data['shipping_data']['email'].'">'.$data['shipping_data']['email'].'</a>';
-	  }
-	}else{
-	   $this->shipping['email_key']=$this->get('Customer Main Email Key');
-	   $this->shipping['email']=$this->get('Customer Main XHTML Email');
-	}
+// 	if(!$data['same_email']){
+// 	  $shipping_contact=new Contact($shipping_contact_key);
+// 	  if($shipping_contact->id){
+// 	    $shipping_contact->add_email(array('email'=>$data['shipping_data']['email']));
+// 	    $this->shipping['email_key']=$shipping_contact->add_email;
+// 	    if($this->shipping['email_key']){
+// 	    $email=new Email($this->shipping['email_key']);
+// 	    $this->shipping['email_key']=$email->display('html');
+// 	    }else
+// 	      $this->shipping['email_key']='';
+// 	  }else{
+// 	    $this->shipping['email_key']='';
+// 	    $this->shipping['email']='<a href="mailto:'.$data['shipping_data']['email'].'">'.$data['shipping_data']['email'].'</a>';
+// 	  }
+// 	}else{
+// 	   $this->shipping['email_key']=$this->get('Customer Main Email Key');
+// 	   $this->shipping['email']=$this->get('Customer Main XHTML Email');
+// 	}
 
 	if(!$data['same_telephone']){
 	  $shipping_contact=new Contact($shipping_contact_key);
 	  if($shipping_contact->id){
 	    $shipping_contact->add_tel(array(
-					     'telecom number'=>$data['shipping_data']['tel']
+					     'telecom number'=>$data['shipping_data']['telephone']
 					     )
 				       );
-	    if($shipping_contact->add_tel){
+	    if($shipping_contact->add_telecom){
 	      $shipping_tel=$shipping_contact->add_tel;
 	      $this->shipping['telephone_key']=$shipping_tel->id;
 	      $this->shipping['telephone']=$shipping_tel->display('html');
 	    }
 	    else{
 	      $this->shipping['telephone_key']='';
-	      $this->shipping['telephone']=$data['shipping_data']['tel'];
+	      $this->shipping['telephone']=$data['shipping_data']['telephone'];
 	    }
 	  }else{
 	    $this->shipping['telephone_key']='';
-	    $this->shipping['telephone']=$data['shipping_data']['tel'];
+	    $this->shipping['telephone']=$data['shipping_data']['telephone'];
 	  }
 	}else{
 	   $this->shipping['telephone_key']=$this->get('Customer Main Telephone Key');
@@ -580,7 +580,7 @@ class Customer{
 	if($row2=$result2->fetchRow()){
 	  $average_max_interval=$row2['a'];
 	  if(is_numeric($average_max_interval)){
-	    if(date('U')-$last_date<$average_max_interval){
+	    if(   (strtotime('now')-strtotime($this->data['customer last order date']))/(3600*24)  <  $average_max_interval){
 	      $this->data['active customer']='Maybe';
 	      $this->data['customer type by activity']='New';
 
@@ -920,7 +920,7 @@ class Customer{
 	$ship_to_key=$this->get('customer main ship to key');
       else
 	$ship_to_key=$arg1;
-      if(!$this->ship_to[$ship_to_key])
+      if(!isset($this->ship_to[$ship_to_key]['ship to key']))
        $this->load('ship to',$ship_to_key);
       if(isset($this->ship_to[$ship_to_key]['ship to key'])){
 	$contact=$this->ship_to[$ship_to_key]['ship to contact name'];

@@ -389,7 +389,7 @@ class Contact{
 
  function add_tel($data,$args='principal'){
 
-   if(!$data['country key'])
+   if(!isset($data['country key']) or !$data['country key'])
      $data['country key']=$this->get('Customer Shipping Address Country Key');
    $telecom=new telecom('new',$data);
    if($telecom->new){

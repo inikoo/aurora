@@ -146,7 +146,11 @@ class Telecom{
 
  
  function parse_telecom(){
+
+
    $raw_tel=$this->get('telecom original number');
+
+
    $raw_tel=preg_replace('/\(/',' (',$raw_tel);
    $raw_tel=preg_replace('/\)/',') ',$raw_tel);
 
@@ -220,22 +224,22 @@ class Telecom{
       $this->data['telecom national access code']='';
       $this->data['telecom number']=preg_replace('/^0845/','',$this->data['telecom number']);
     }
-    $number=preg_replace('/^0/','',$number);
+    $this->data['telecom number']=preg_replace('/^0/','',$this->data['telecom number']);
      $this->data['telecom national access code']='0';
-    if(preg_match('/^7/',$number))
+    if(preg_match('/^7/',$this->data['telecom number']))
       $this->data['is_mobile']=1;
     else
       $this->data['is_mobile']=0;
     break;
   case(75)://Ireland
-    if(preg_match('/^0?8(2|3|5|6|7|8|9)/',$number))
+    if(preg_match('/^0?8(2|3|5|6|7|8|9)/',$this->data['telecom number']))
       $this->data['is_mobile']=1;
     else
       $this->data['is_mobile']=0;
     break;
   case(47)://Spain
   case(165)://France
-    if(preg_match('/^0?6/',$number))
+    if(preg_match('/^0?6/',$this->data['telecom number']))
     $this->data['is_mobile']=1;
     else
       $this->data['is_mobile']=0;

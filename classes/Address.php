@@ -60,7 +60,6 @@ class Address{
 }
 
   function create($data){
-    //print_r($data);
 
     if(isset($data['type']) and $data['type']=='3line'){
 
@@ -103,7 +102,7 @@ class Address{
 
     $country_unknown=new Country('code','UNK');
 
-    if($address_raw_data['country_id']==$country_unknown->id){
+    if($prepared_data['country_id']==$country_unknown->id){
       $fuzzy=1;
       $fuzzy_type='All';
     } 
@@ -265,13 +264,14 @@ class Address{
 	$address.=$separator.$this->data['address country name'];
 
       }else{
-     $address='';
-     $header_address=_trim($this->data['address internal'].' '.$this->data['address bulding']);
-     if($header_address!='')
-       $address.=$header_address.$separator;
-
-     $street_address=_trim($this->data['street number'].' '.$this->data['street name'].' '.$this->data['street type']);
-     if($street_address!='')
+	//print_r($this->data);
+	$address='';
+	$header_address=_trim($this->data['address internal'].' '.$this->data['address building']);
+	if($header_address!='')
+	  $address.=$header_address.$separator;
+	
+	$street_address=_trim($this->data['street number'].' '.$this->data['street name'].' '.$this->data['street type']);
+	if($street_address!='')
        $address.=$street_address.$separator;
 
      
@@ -284,11 +284,11 @@ class Address{
 
 
      
-     $town_address.=_trim($this->data['address town']);
+     $town_address=_trim($this->data['address town']);
      if($town_address!='')
        $address.=$town_address.$separator;
 
-     $ps_address.=_trim($this->data['postal code']);
+     $ps_address=_trim($this->data['postal code']);
      if($ps_address!='')
        $address.=$ps_address.$separator;
      
@@ -299,7 +299,7 @@ class Address{
    case('header'):
      $separator=', ';
      $address='';
-     $header_address=_trim($this->data['address internal'].' '.$this->data['address bulding']);
+     $header_address=_trim($this->data['address internal'].' '.$this->data['address building']);
      if($header_address!='')
        $address.=$header_address.$separator;
      
@@ -326,8 +326,9 @@ class Address{
  function prepare_3line($address_raw_data,$untrusted=true){
 
 
- //print_r($address_raw_data);
-
+   // print_r($address_raw_data);
+ if(!isset($address_raw_data['country']))
+   exit;
  $fix2=true;
  $debug=true;
    $debug=false;
@@ -2467,22 +2468,22 @@ function is_town($town,$country_id){
    $name=_trim($name);
    $number=_trim($number);
    
-   if(preg_match('/\s(street|st\.?)$/i',$name,$match[0])){
+   if(preg_match('/\s(street|st\.?)$/i',$name,$match)){
      $type="Street";
  $len=strlen($match[0])+1;
      $name=substr($name,0,strlen($name)-$len);
    }
-   if(preg_match('/\s(road|rd\.?)$/i',$name,$match[0])){
+   if(preg_match('/\s(road|rd\.?)$/i',$name,$match)){
      $type="Road";
       $len=strlen($match[0])+1;
      $name=substr($name,0,strlen($name)-$len);
    }
-   if(preg_match('/\s(close)$/i',$name,$match[0])){
+   if(preg_match('/\s(close)$/i',$name,$match)){
      $type="Close";
  $len=strlen($match[0])+1;
      $name=substr($name,0,strlen($name)-$len);
    }
-   if(preg_match('/\s(Av\.?|avenue|ave\.?)$/i',$name,$match[0])){
+   if(preg_match('/\s(Av\.?|avenue|ave\.?)$/i',$name,$match)){
      $type="Avenue";
      $len=strlen($match[0])+1;
      $name=substr($name,0,strlen($name)-$len);

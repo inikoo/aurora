@@ -18,7 +18,7 @@ $db->query("SET NAMES 'utf8'");
 $PEAR_Error_skiptrace = &PEAR::getStaticProperty('PEAR_Error','skiptrace');$PEAR_Error_skiptrace = true;// Fix memory leak
 require_once '../../myconf/conf.php';           
 date_default_timezone_set('Europe/London');
-
+$_SESSION['lang']=1;
 include_once('local_map.php');
 
 include_once('map_order_functions.php');
@@ -29,7 +29,7 @@ $version='V 1.0';
 $Data_Audit_ETL_Software="$software $version";
 
 
-$sql="select id from orders_data.order_data where id=5138 ";
+$sql="select id from orders_data.order_data  ";
 
 $res = $db->query($sql);
 
@@ -71,8 +71,11 @@ $header=mb_unserialize($row['header']);
 
   $transactions=read_products($products,$prod_map);
   $customer_data=setup_contact($act_data,$header_data,$date_index2);
+
+
   $data=array();
   $data['order date']=$date_order;
+  $data['order id']=$header_data['order_num'];
   $data['order customer message']=$header_data['notes2'];
   $data['order original data mime type']='application/vnd.ms-excel';
   $data['order original data']=$row['filename'];
@@ -80,47 +83,29 @@ $header=mb_unserialize($row['header']);
   $data['order original metadata']=$row['id'];
   
   //  print_r($products);
-  $product_data=array();
+  $products_data=array();
   foreach($transactions as $transaction){
-    //    print_r($transaction);
-
     if(preg_match('/^credit/i',$transaction['code']))
       continue;
-      
-    
     $supplier_product_cost=sprintf("%.4f",$transaction['supplier_product_cost']);
-
+    // print_r($transaction);
     if($transaction['units']=='')
       $transaction['units']=1;
     if($transaction['supplier_product_code']=='')
       $transaction['supplier_product_code']='?'.$transaction['code'];
     
-    if(preg_match('/^(wheat)\-/i',$transaction['code'])  and  preg_match('/\d/',$transaction['supplier_code']) ){
+    if( preg_match('/\d/',$transaction['supplier_code']) ){
       $transaction['supplier_code'] ='';
       $supplier_product_cost='';
     }
-
- if(preg_match('/^(bw)\-/i',$transaction['code'])  and  preg_match('/\d/',$transaction['supplier_code']) ){
-      $transaction['supplier_code'] ='';
-     
-    }
-
-
     if(preg_match('/^(SG|FO)\-/i',$transaction['code']))
      $transaction['supplier_code'] ='AW';
     if($transaction['supplier_code']=='AW')
       $transaction['supplier_product_code']=$transaction['code'];
-
-
-    if($transaction['supplier_code']=='')
+    if($transaction['supplier_code']=='' or preg_match('/\d/',$transaction['supplier_code']) )
       $transaction['supplier_code']='Unknown Supplier';
-
     $unit_type='Piece';
-
-    $description=_trim($transaction['description']);
-     $description=str_replace("\\\"","\"",$description);
-
-
+    $description=_trim($transaction['description']);$description=str_replace("\\\"","\"",$description);
     if(preg_match('/Joie/i',$description) and preg_match('/abpx-01/i',$transaction['code']))
       $description='2 boxes joie (replacement due out of stock)';
     $product_data=array(
@@ -132,21 +117,18 @@ $header=mb_unserialize($row['header']);
 			,'product price'=>sprintf("%.2f",$transaction['price'])
 			,'supplier code'=>_trim($transaction['supplier_code'])
 			,'supplier name'=>_trim($transaction['supplier_code'])
-			
 			,'supplier product cost'=>$supplier_product_cost
 			,'supplier product code'=>_trim($transaction['supplier_product_code'])
 			,'supplier product name'=>$description
-			
 			,'auto_add'=>true
 			,'date'=>$date_order
 			);
+ //    if(is_numeric($transaction['supplier_code'])  or preg_match('/\d/',$transaction['supplier_code'])){
+//       print $row2['id']."\n";
+//       print_r($product_data);
+//     }
 
-    if(is_numeric($transaction['supplier_code'])  or preg_match('/\d/',$transaction['supplier_code'])){
-      print $row2['id']."\n";
-      print_r($product_data);
-    }
-
-     print_r($products);
+//      print_r($products);
 
  //    if(preg_match('/ish-33/i',$transaction['code'])){
 //       print $row2['id']."\n";
@@ -157,20 +139,44 @@ $header=mb_unserialize($row['header']);
     $product=new Product('code-name-units-price',$product_data);
     //     "Ahh canto male pedict\n";
     if(!$product->id){
-      
       print_r($product_data);
       print "Ahh canto male pedict\n";
       exit;
-    
     }
- 
+    $products_data[]=array('product_id'=>$product->id,'qty'=>$transaction['order']);
     
 
 
   }
 
-  //print_r($product_data);
 
+  $data['type']='direct_data_injection';
+  $data['products']=$products_data;
+  $data['cdata']=$customer_data;
+
+  //Tipo order
+  // 1 DELIVERY NOTE
+  // 2 INVOICE
+  // 3 CANCEL
+  // 4 SAMPLE
+  // 5 donation
+  // 6 REPLACEMENT
+  // 7 MISSING
+  // 8 follow
+  // 9 refund
+  // 10 credit
+  // 11 quote
+
+  if($tipo_order<=5){
+    //print_r($data);
+    
+    $order= new Order('new',$data);
+  }
+
+  
+  //  print_r($data);
+  //print "\n$tipo_order\n";
+  
   }
  
  }
