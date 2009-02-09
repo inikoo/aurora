@@ -1,21 +1,25 @@
 <?
-include_once('../../app_files/db/dns.php');
+include("../../external_libs/adminpro/adminpro_config.php");
+
+
 include_once('../../classes/Department.php');
 include_once('../../classes/Family.php');
 include_once('../../classes/Product.php');
 include_once('../../classes/Supplier.php');
 include_once('../../classes/Order.php');
 error_reporting(E_ALL);
+$con=@mysql_connect($globalConfig['dbhost'],$globalConfig['dbuser'], $globalConfig['dbpass']);
+if(!$con){print "Error can not connect with database server\n";exit;}
+$db=@mysql_select_db($globalConfig['dbase'], $con);
+if (!$db){print "Error can not access the database\n";exit;}
 
-require_once 'MDB2.php';            // PEAR Database Abstraction Layer
+
+
 require_once '../../common_functions.php';
-$db =& MDB2::factory($dsn);       
-if (PEAR::isError($db)){echo $db->getMessage() . ' ' . $db->getUserInfo();}
 
-$db->setFetchMode(MDB2_FETCHMODE_ASSOC);  
-$db->query("SET time_zone ='UTC'");
-$db->query("SET NAMES 'utf8'");
-$PEAR_Error_skiptrace = &PEAR::getStaticProperty('PEAR_Error','skiptrace');$PEAR_Error_skiptrace = true;// Fix memory leak
+mysql_query("SET time_zone ='UTC'");
+mysql_query("SET NAMES 'utf8'");
+
 require_once '../../myconf/conf.php';           
 date_default_timezone_set('Europe/London');
 $_SESSION['lang']=1;
@@ -30,37 +34,29 @@ $Data_Audit_ETL_Software="$software $version";
 
 
 $sql="select id from orders_data.order_data  ";
-
-$res = $db->query($sql);
-
-while($row2=$res->fetchRow()) {
-  
-   print $row2['id']."\r";
-
-
+$res=mysql_query($sql);
+while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
+  print $row2['id']."\r";
   $sql="select * from orders_data.order_data where id=".$row2['id'];
-  $res2 = $db->query($sql);
-  if($row=$res2->fetchRow()) {
-  
-    
-$header=mb_unserialize($row['header']);
-
-  $products=mb_unserialize($row['products']);
-
-  $filename_number=str_replace('.xls','',str_replace($row['directory'],'',$row['filename']));
-  $map_act=$_map_act;$map=$_map;$y_map=$_y_map;
-  
-  // tomando en coeuntas diferencias en la posicion de los elementos
-  if($filename_number<18803){// Change map if the orders are old
-	$y_map=$_y_map_old;
-	foreach($_map_old as $key=>$value)
-	  $map[$key]=$value;
-  }
-  $prod_map=$y_map;
-  if($filename_number==53378){
-    $prod_map['no_price_bonus']=true;
-    $prod_map['no_reorder']=true;
-    $prod_map['bonus']=11;
+  $result=mysql_query($sql);
+  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+     $header=mb_unserialize($row['header']);
+     $products=mb_unserialize($row['products']);
+     
+     $filename_number=str_replace('.xls','',str_replace($row['directory'],'',$row['filename']));
+     $map_act=$_map_act;$map=$_map;$y_map=$_y_map;
+     
+     // tomando en coeuntas diferencias en la posicion de los elementos
+     if($filename_number<18803){// Change map if the orders are old
+       $y_map=$_y_map_old;
+       foreach($_map_old as $key=>$value)
+	 $map[$key]=$value;
+     }
+     $prod_map=$y_map;
+     if($filename_number==53378){
+       $prod_map['no_price_bonus']=true;
+       $prod_map['no_reorder']=true;
+       $prod_map['bonus']=11;
   }
   list($act_data,$header_data)=read_header($header,$map_act,$y_map,$map);
   $header_data=filter_header($header_data);

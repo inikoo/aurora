@@ -15,7 +15,7 @@ class supplier{
 
 
   function __construct($arg1=false,$arg2=false) {
-     $this->db =MDB2::singleton();
+    //   $this->db =MDB2::singleton();
      
 
      if(is_numeric($arg1)){
@@ -42,27 +42,29 @@ class supplier{
       
     }
 
-
-
-    $result =& $this->db->query($sql);
-    if($row=$result->fetchRow()){
-      $this->data=$row;
-      $this->id=$row['supplier key'];
-    }
+    
+    
+    $result=mysql_query($sql);
+    if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   )
+      $this->id=$this->data['Supplier Key'];
+    
      
   }
 
    function get($key){
-    $key=strtolower($key);
-    if(isset($this->data[$key]))
-      return $this->data[$key];
-   
-   $_key=preg_replace('/^supplier /','',$key);
-    if(isset($this->data[$_key]))
-      return $this->data[$key];
 
+     if(array_key_exists($key,$this->data))
+       return $this->data[$key];
+     
+     $_key=preg_replace('/^Supplier /','',$key);
+     if(isset($this->data[$_key]))
+       return $this->data[$key];
 
-    return false;
+     $_key=ucfirst($key);
+     if(isset($this->data[$_key]))
+       return $this->data[$_key];
+     print "Error $key not found in get from address\n";
+     return false;
 
   }
 
@@ -133,23 +135,21 @@ class supplier{
 		 prepare_mysql($most_recent_key),
 		 prepare_mysql($data['supplier id'])
 		 );
-    print "$sql\n";
+    //  print "$sql\n";
     //    exit;
-    $affected=& $this->db->exec($sql);
-    if (PEAR::isError($affected)) {
-      if(preg_match('/^MDB2 Error: constraint violation$/',$affected->getMessage()))
-	return array('ok'=>false,'msg'=>_('Error: Another supplier has the same code/id').'.');
-      else
-      return array('ok'=>false,'msg'=>_('Unknwon Error').'.');
-    }
-    $this->id = $this->db->lastInsertID();  
-    $this->get_data('id',$this->id);
-    
-    if($most_recent=='Yes'){
-      $sql=sprintf('update `Supplier Dimension` set `Supplier Most Recent Key`=%d where `Supplier Key`=%d',$this->id,$this->id);
-      $this->db->exec($sql);
-    }
 
+    if(mysql_query($sql)){
+
+      $this->id=mysql_insert_id();
+      $this->get_data('id',$this->id);
+      
+      if($most_recent=='Yes'){
+	$sql=sprintf('update `Supplier Dimension` set `Supplier Most Recent Key`=%d where `Supplier Key`=%d',$this->id,$this->id);
+	mysql_query($sql);
+      }
+    }else{
+      print "Error can not create supplier\n";exit;
+    }
 
   }
 
@@ -158,7 +158,7 @@ class supplier{
    
     case('contacts'):
     case('contact'):
-      $this->contact=new Contact($this->data['supplier main contact key']);
+      $this->contact=new Contact($this->data['Supplier Main Contact Key']);
       if($this->contact->id){
 	//$this->contact->load('telecoms');
 	//$this->contact->load('contacts');
@@ -183,8 +183,8 @@ class supplier{
   
 function new_id(){
   $sql="select max(`Supplier ID`) as id from `Supplier Dimension`";
-  $result =& $this->db->query($sql);
-  if($row=$result->fetchRow()){
+  $result=mysql_query($sql);
+  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
     $id=$row['id']+1;
   }else{
     $id=1;

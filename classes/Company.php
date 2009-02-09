@@ -7,7 +7,7 @@ include_once('Address.php');
 include_once('Name.php');
 
 class company{
-  var $db;
+
   var $data=array();
   var $items=array();
 
@@ -15,7 +15,7 @@ class company{
 
 
   function __construct($arg1=false,$arg2=false) {
-     $this->db =MDB2::singleton();
+
      
 
      if(is_numeric($arg1)){
@@ -35,8 +35,8 @@ class company{
   
   function get($key,$arg1=false){
     //  print $key."xxxxxxxx";
-    $key=strtolower($key);
-    if(isset($this->data[$key]))
+    
+    if(array_key_exists($key,$this->data))
       return $this->data[$key];
 
     switch($key){
@@ -65,6 +65,11 @@ class company{
       
     }
    
+     $_key=ucfirst($key);
+    if(isset($this->data[$_key]))
+      return $this->data[$_key];
+    print "Error $key not found in get from address\n";
+
     return false;
 
   }
@@ -73,14 +78,13 @@ class company{
   function get_data($tipo,$id){
     $sql=sprintf("select * from `Company Dimension` where `Company Key`=%d",$id);
     // print $sql;
-    $result =& $this->db->query($sql);
-    if($row=$result->fetchRow()){
-      $this->data=$row;
-      $this->id=$row['company key'];
+    $result=mysql_query($sql);
+    if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)){
+      $this->id=$this->data['Company Key'];
     }
-     
   }
 
+  
   function create($data){
     if(!is_array($data))
       $data=array('name'=>_('Unknown Name'));
@@ -120,24 +124,21 @@ class company{
 		 prepare_mysql($contact->get('Contact Main Email key'))
 
 		 );
-    // print "$sql\n";
-    $affected=& $this->db->exec($sql);
-    if (PEAR::isError($affected)) {
-      if(preg_match('/^MDB2 Error: constraint violation$/',$affected->getMessage()))
-	return array('ok'=>false,'msg'=>_('Error: Another company has the same id').'.');
-      else
-      return array('ok'=>false,'msg'=>_('Unknwon Error').'.');
-    }
-    $this->id = $this->db->lastInsertID();  
-    
-    $this->get_data('id',$this->id);
+
+     if(mysql_query($sql)){
+      $this->id = mysql_insert_id();
+      $this->get_data('id',$this->id);
+     }else{
+       print "Error, company can not be created";exit;
+     }
+
   }
 
   function get_id(){
     
     $sql="select max(`Company ID`)  as company_id from `Company Dimension`";
-    $result =& $this->db->query($sql);
-    if( $row=$result->fetchRow()){
+    $result=mysql_query($sql);
+    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
       if(!preg_match('/\d*/',_trim($row['company_id']),$match))
 	$match[0]=1;
       $right_side=$match[0];
@@ -184,11 +185,11 @@ class company{
    if($email->new){
      
      $sql=sprintf("insert into  `Company Web Site Bridge` (`Page Key`, `Company Key`) values (%d,%d)  ",$page->id,$this->id);
-     $this->db->exec($sql);
+     mysql_query($sql);
      if(preg_match('/principal/i',$args)){
      $sql=sprintf("update `Company Dimension` set `Company Main XHTML Page`=%s where `Contact Key`=%d",prepare_mysql($page->display('html')),$this->id);
      // print "$sql\n";
-     $this->db->exec($sql);
+     mysql_query($sql);
      }
 
      $this->add_page=true;
@@ -212,7 +213,7 @@ class company{
 	$this->msg['email added'];
 	if(preg_match('/principal/i',$args)){
 	  $sql=sprintf("update `Company Dimension` set `Company Main XHTML Email`=%s where `Company Key`=%d",prepare_mysql($contact->get('Contact Main XHTML Email')),$this->id);
-	  $this->db->exec($sql);
+	  mysql_query($sql);
 	}
 	
       }
@@ -233,7 +234,7 @@ class company{
 	  $sql=sprintf("update `Company Dimension` set `Company Main Telephone`=%s where `Company Key`=%d",prepare_mysql($contact->get('Contact Main Telephone')),$this->id);
 	  $this->db->exec($sql);
 	  $sql=sprintf("update `Company Dimension` set `Company Main FAX`=%s where `Company Key`=%d",prepare_mysql($contact->get('Contact Main Fax')),$this->id);
-	  $this->db->exec($sql);
+	  mysql_query($sql);
 	}
 
     }

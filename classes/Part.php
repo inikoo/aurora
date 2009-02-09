@@ -2,11 +2,11 @@
 
 class part{
   
-  var $db;
+
   var $id=false;
 
   function __construct($a1,$a2=false) {
-    $this->db =MDB2::singleton();
+
 
 
     if(is_numeric($a1) and !$a2){
@@ -29,11 +29,12 @@ class part{
     else
       return;
 
-    //print "$sql\n";
-    $result =& $this->db->query($sql);
-    if($this->data=$result->fetchRow()){
-      $this->id=$this->data['part key'];
+    $result=mysql_query($sql);
+    if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)){
+      $this->id=$this->data['Part Key'];
     }
+    
+
   }
   
   function create($data){
@@ -54,7 +55,8 @@ class part{
 		     'part current part key'=>''
 		     );
      foreach($data as $key=>$value){
-       $base_data[strtolower($key)]=_trim($value);
+       if(isset( $base_data[strtolower($key)]) )
+	 $base_data[strtolower($key)]=_trim($value);
      }
  
      if($this->valid_sku($base_data['part sku']) or $this->used_sku($base_data['part sku'])  ){
@@ -69,10 +71,13 @@ class part{
     $keys=preg_replace('/,$/',')',$keys);
     $values=preg_replace('/,$/',')',$values);
     $sql=sprintf("insert into `Part Dimension` %s %s",$keys,$values);
-    //  print "$sql\n";
-    $affected=& $this->db->exec($sql);
-    $this->id = $this->db->lastInsertID();  
-    $this->get_data('id',$this->id);
+    print "$sql\n";
+    if(mysql_query($sql)){
+      $this->id = mysql_insert_id();
+      $this->get_data('id',$this->id);
+    }else{
+      print "Error Part can not be created\n";exit;
+    }
 
  }
 
@@ -81,8 +86,8 @@ class part{
   }
   
  function get($key=''){
-    $key=strtolower($key);
-    if(isset($this->data[$key]))
+   
+    if(array_key_exists($key,$this->data))
       return $this->data[$key];
 
      $_key=preg_replace('/^part /','',$key);
@@ -107,8 +112,8 @@ class part{
 
 function used_sku($sku){
   $sql="select count(*) as num from `Part Dimension` where `Part SKU`=".prepare_mysql($sku);
-  $result =& $this->db->query($sql);
-  if($row=$result->fetchRow()){
+ $result=mysql_query($sql);
+  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
     if($row['num']>0)
       return true;
   }
@@ -117,14 +122,14 @@ function used_sku($sku){
 
  function new_sku(){
    $select="select max(`Part SKU`) as sku from `Part Dimension`";
-   $result =& $this->db->query($sql);
-   if($row=$result->fetchRow()){
+   $result=mysql_query($sql);
+   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
     $row=$result->fetchRow();
     return $row['sku']+1;
-  }else
-    return 1;
-
+   }else
+     return 1;
+   
  }
-
+ 
 
 }

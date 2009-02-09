@@ -1,10 +1,13 @@
 <?
 include_once('Family.php');
 
+
+
 class department{
-var $db;
+ var $id=false;
+
  function __construct($a1=false,$a2=false) {
-    $this->db =MDB2::singleton();
+   //    $this->db =MDB2::singleton();
     
     if(is_numeric($a1) and !$a2  )
       $this->getdata('id',$a1);
@@ -27,24 +30,21 @@ var $db;
 		,prepare_mysql($data['code'])
 		,prepare_mysql($data['name'])
 		);
-   // print "$sql\n";
-     $affected=& $this->db->exec($sql);
 
-   if (PEAR::isError($affected)) {
-     if(preg_match('/^MDB2 Error: constraint violation$/',$affected->getMessage()))
-       return array('ok'=>false,'msg'=> _('Error: Another product department has the same code').'.');
-     else
-       return array('ok'=>false,'msg'=>_('Unknown Error').'.');
-     return false;
-   }
-   $this->id = $this->db->lastInsertID();  
+   
+
+ if(mysql_query($sql)){
+   $this->id = mysql_insert_id();
    $this->getdata('id',$this->id);
-
    return array('ok'=>true);
+ }else{
+   print "Error can not create department\n";exit;
+ }
+
  }
  
  function getdata($tipo,$tag){
-
+   
    switch($tipo){
    case('id'):
      $sql=sprintf("select *,`Product Department Total Acc Invoiced Gross Amount`+`Product Department Total Acc Invoiced Discount Amount` as `product department total acc invoiced amount` ,`Product Department 1 Month Acc Invoiced Gross Amount`+`Product Department 1 Month Acc Invoiced Discount Amount` as `product department 1 month acc invoiced amount` from `Product Department Dimension` where `Product Department Key`=%d ",$tag);
@@ -52,32 +52,31 @@ var $db;
    case('code'):
      $sql=sprintf("select *,`Product Department Total Acc Invoiced Gross Amount`+`Product Department Total Acc Invoiced Discount Amount` as `product department total acc invoiced amount` ,`Product Department 1 Month Acc Invoiced Gross Amount`+`Product Department 1 Month Acc Invoiced Discount Amount` as `product department 1 month acc invoiced amount` from `Product Department Dimension` where `Product Department Code`=%s and `Product Department Most Recent`='Yes'",prepare_mysql($tag));
      break;
-  //  default:
+     //  default:
 //      print "error wring tipo $tipo\n";
 //      return;
    }
    //  print "$sql\n";
-   if($result =& $this->db->query($sql)){
-     $this->data=$result->fetchRow();
-     $this->id=$this->data['product department key'];
-   }
+   
+   $result=mysql_query($sql);
+   if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   )
+     $this->id=$this->data['Product Department Key'];
+   
    
  }
 
 
 
-
+ 
  function load($tipo,$args=false){
    switch($tipo){
    case('products_info'):
       $sql=sprintf("select sum(if(`Product Sales State`='Unknown',1,0)) as sale_unknown, sum(if(`Product Sales State`='Discontinued',1,0)) as discontinued,sum(if(`Product Sales State`='Not for sale',1,0)) as not_for_sale,sum(if(`Product Sales State`='For sale',1,0)) as for_sale,sum(if(`Product Sales State`='In Process',1,0)) as in_process,sum(if(`Product Availability State`='Unknown',1,0)) as availability_unknown,sum(if(`Product Availability State`='Optimal',1,0)) as availability_optimal,sum(if(`Product Availability State`='Low',1,0)) as availability_low
 ,sum(if(`Product Availability State`='Critical',1,0)) as availability_critical,
-sum(if(`Product Availability State`='Surplus',1,0)) as availability_surplus,
-
-sum(if(`Product Availability State`='Out Of Stock',1,0)) as availability_outofstock from `Product Dimension` P left join  `Product Department Bridge` B on (P.`Product Key`=B.`Product Key`) where `Product Department Key`=%d",$this->id);
+sum(if(`Product Availability State`='Surplus',1,0)) as availability_surplus,sum(if(`Product Availability State`='Out Of Stock',1,0)) as availability_outofstock from `Product Dimension` P left join  `Product Department Bridge` B on (P.`Product Key`=B.`Product Key`) where `Product Department Key`=%d",$this->id);
      //  print $sql;
-     $res = $this->db->query($sql);
-     if($row = $res->fetchrow()) {
+ $result=mysql_query($sql);
+  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
        $sql=sprintf("update `Product Department Dimension` set `Product Department For Sale Products`=%d ,`Product Department Discontinued Products`=%d ,`Product Department Not For Sale Products`=%d ,`Product Department Unknown Sales State Products`=%d, `Product Department Optimal Availability Products`=%d , `Product Department Low Availability Products`=%d ,`Product Department Critical Availability Products`=%d ,`Product Department Out Of Stock Products`=%d,`Product Department Unknown Stock Products`=%d ,`Product Department Surplus Availability Products`=%d where `Product Department Key`=%d  ",
 		    $row['for_sale'],
@@ -93,7 +92,7 @@ sum(if(`Product Availability State`='Out Of Stock',1,0)) as availability_outofst
 		    $this->id
 	    );
        //  print "$sql\n";exit;
-       $this->db->exec($sql);
+       mysql_query($sql);
 
     
      }
@@ -103,44 +102,46 @@ sum(if(`Product Availability State`='Out Of Stock',1,0)) as availability_outofst
    case('products'):
      $sql=sprintf("select * from `Product Dimension` where `Product Department Key`=%d",$this->id);
      // print $sql;
-     $res = $this->db->query($sql);
      $this->products=array();
-     while($row = $res->fetchrow()) {
+     $result=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+       
        $this->products[$row['product key']]=$row;
      }
      break;
    case('families'):
      $sql=sprintf("select * from `Product Family Dimension`  where  `Product Family Department Key`=%d",$this->id);
      //  print $sql;
-     $res = $this->db->query($sql);
+
      $this->families=array();
-     while($row = $res->fetchrow()) {
+     $result=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
        $this->families[$row['family key']]=$row;
      }
      break;
    case('first_date'):
 
-     $first_date=date('U');
-     $changed=false;
-     $this->load('families');
-     foreach($this->families as $family_id=>$family_data){
-       $family=new Family($family_id);
-       $_date=$family->data['first_date'];
-       //   print "$family_id $_date\n";
-       if(is_numeric($_date)){
-	 if($_date < $first_date){
-	   $first_date=$_date;
-	   $changed=true;
-	 }
-       }
-     }
-     if($changed){
-       $this->data['first_date']=$first_date;
-     }else
-       $this->data['first_date']='';
+  //    $first_date=date('U');
+//      $changed=false;
+//      $this->load('families');
+//      foreach($this->families as $family_id=>$family_data){
+//        $family=new Family($family_id);
+//        $_date=$family->data['first_date'];
+//        //   print "$family_id $_date\n";
+//        if(is_numeric($_date)){
+// 	 if($_date < $first_date){
+// 	   $first_date=$_date;
+// 	   $changed=true;
+// 	 }
+//        }
+//      }
+//      if($changed){
+//        $this->data['first_date']=$first_date;
+//      }else
+//        $this->data['first_date']='';
 
-     // if(preg_match('/save/i',$args))
-	 $this->save('first_date');
+//      // if(preg_match('/save/i',$args))
+// 	 $this->save('first_date');
      
      break;
    case('sales'):
@@ -277,20 +278,20 @@ sum(if(`Product Availability State`='Out Of Stock',1,0)) as availability_outofst
  }
 
 
- function get($tipo){
-   $key=strtolower($tipo);
-    if(isset($this->data[$key]))
+ function get($key){
+
+   if(array_key_exists($key,$this->data))
       return $this->data[$key];
 
 
-   switch($tipo){
+   switch($key){
 
-   case('weeks'):
-     $_diff_seconds=date('U')-$this->data['first_date'];
-     $day_diff=$_diff_seconds/24/3600;
-     $weeks=$day_diff/7;
-     return $weeks;
-   }
+ //   case('weeks'):
+//      $_diff_seconds=date('U')-$this->data['first_date'];
+//      $day_diff=$_diff_seconds/24/3600;
+//      $weeks=$day_diff/7;
+//      return $weeks;
+    }
 
  }
  
@@ -300,7 +301,7 @@ function add_product($product_id,$args=false){
    $product=New Product($product_id);
    if($product->id){
      $sql=sprintf("insert into `Product Department Bridge` (`Product Key`,`Product Department Key`) values (%d,%d)",$product->id,$this->id);
-     $this->db->exec($sql);
+     mysql_query($sql);
      $this->load('products_info');
 
     //  $sql=sprintf("select sum(if(`Product Sales State`='Unknown',1,0)) as sale_unknown, sum(if(`Product Sales State`='Discontinued',1,0)) as discontinued,sum(if(`Product Sales State`='Not for sale',1,0)) as not_for_sale,sum(if(`Product Sales State`='For sale',1,0)) as for_sale,sum(if(`Product Sales State`='In Process',1,0)) as in_process,sum(if(`Product Availability State`='Unknown',1,0)) as availability_unknown,sum(if(`Product Availability State`='Optimal',1,0)) as availability_optimal,sum(if(`Product Availability State`='Low',1,0)) as availability_low,sum(if(`Product Availability State`='Critical',1,0)) as availability_critical,sum(if(`Product Availability State`='Out Of Stock',1,0)) as availability_outofstock from `Product Dimension` P left join  `Product Department Bridge` B on (P.`Product Key`=B.`Product Key`) where `Product Department Key`=%d",$this->id);
@@ -336,7 +337,7 @@ function add_product($product_id,$args=false){
 		    ,prepare_mysql($this->get('product department name'))
 		    ,$product->id);
 
-       $this->db->exec($sql);
+       mysql_query($sql);
      }
    }
  }
@@ -345,18 +346,18 @@ function add_family($family_id,$args=false){
    $family=New Family($family_id);
    if($family->id){
      $sql=sprintf("insert into `Product Family Department Bridge` (`Product Family Key`,`Product Department Key`) values (%d,%d)",$family->id,$this->id);
-     $this->db->exec($sql);
+     mysql_query($sql);
 
 
      $sql=sprintf("select count(*) as num from `Product Family Department Bridge`  where `Product Department Key`=%d",$this->id);
-     $res = $this->db->query($sql);
-     if($row = $res->fetchrow()) {
+     $result=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
        $sql=sprintf("update `Product Department Dimension` set `Product Department Families`=%d   where `Product Department Key`=%d  ",
 		    $row['num'],
 		    $this->id
 		    );
        //  print "$sql\n";exit;
-       $this->db->exec($sql);
+       mysql_query($sql);
      }
      if(!preg_match('/noproduct/i',$args) ){
        foreach($family->get('products') as $key => $value){
@@ -371,12 +372,12 @@ function add_family($family_id,$args=false){
 		    ,prepare_mysql($this->get('product department code'))
 		    ,prepare_mysql($this->get('product department name'))
 		    ,$family->id);
-       $this->db->exec($sql);
+       mysql_query($sql);
      }
    }
  }
 
 
-}
+ }
 
 ?>

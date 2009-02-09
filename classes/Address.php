@@ -1,13 +1,13 @@
 <?
 include_once('Country.php');
 class Address{
-  var $db;
+
   var $data=array();
   var $id=false;
 
   
   function __construct($arg1=false,$arg2=false) {
-     $this->db =MDB2::singleton();
+
 
      if(is_numeric($arg1)){
        $this->get_data('id',$arg1);
@@ -27,7 +27,7 @@ class Address{
 	 return;
        }
        $country=new Country($arg2);
-       if(is_numeric($arg2) and $country->get('country code')!='UNK'){
+       if(is_numeric($arg2) and $country->get('Country Code')!='UNK'){
 	 $this->get_data('fuzzy country',$arg2);
 	 return;
        }else{
@@ -49,12 +49,15 @@ class Address{
     else
       $sql=sprintf("select * from `Address Dimension` where  `Fuzzy Address`=1 and `Address Fuzzy Type`='all' ",$id);
 
-    //PRINT $sql;
-   $result =& $this->db->query($sql);
-    if($this->data=$result->fetchRow()){
-      $this->id=$this->data['address key'];
 
-    }
+
+
+    $result=mysql_query($sql);
+    if($this->data=mysql_fetch_array($result, MYSQL_ASSOC))
+      $this->id=$this->data['Address Key'];
+
+    
+
 
 
 }
@@ -116,50 +119,53 @@ class Address{
 
 
 
-      $this->data['address internal']=$prepared_data['internal_address'];
-      $this->data['address building']=$prepared_data['building_address'];
+      $this->data['Address Internal']=$prepared_data['internal_address'];
+      $this->data['Address Building']=$prepared_data['building_address'];
       $this->parse_street($prepared_data['street_address']);
-      $this->data['address town secondary division']=$prepared_data['town_d2'];
+      $this->data['Address Town Secondary Division']=$prepared_data['town_d2'];
       //   $this->data['address town secondary division key']=$prepared_data['town_d2_id'];
-      $this->data['address town primary division']=$prepared_data['town_d1'];
+      $this->data['Address Town Primary Division']=$prepared_data['town_d1'];
       // $this->data['address town primary division key']=$prepared_data['town_d1_id'];
-      $this->data['address town']=$prepared_data['town'];
-      $this->data['address town key']=$prepared_data['town_id'];
-      $this->data['postal code']=$prepared_data['postcode'];
+      $this->data['Address Town']=$prepared_data['town'];
+      $this->data['Address Town Key']=$prepared_data['town_id'];
+      $this->data['Postal Code']=$prepared_data['postcode'];
 
-      $this->data['address country secondary division key']=$prepared_data['country_d2_id'];
-      $d2=$this->get_country_d2_name($this->data['address country secondary division key']);
+      $this->data['Address Country Secondary Division Key']=$prepared_data['country_d2_id'];
+      $d2=$this->get_country_d2_name($this->data['Address Country Secondary Division Key']);
       if($d2!='')
-	$this->data['address country secondary division']=$d2;
+	$this->data['Address Country Secondary Division']=$d2;
       else
-	$this->data['address country secondary division']=$prepared_data['country_d2'];
+	$this->data['Address Country Secondary Division']=$prepared_data['country_d2'];
 
-      $this->data['address country primary division key']=$prepared_data['country_d1_id'];
+      $this->data['Address Country Primary Division Key']=$prepared_data['country_d1_id'];
       
-      $d1=$this->get_country_d1_name($this->data['address country primary division key']);
+      $d1=$this->get_country_d1_name($this->data['Address Country Primary Division Key']);
       if($d1!='')
-	$this->data['address country primary division']=$d1;
+	$this->data['Address Country Primary Division']=$d1;
       else
-	$this->data['address country primary division']=$prepared_data['country_d1'];
+	$this->data['Address Country Primary Division']=$prepared_data['country_d1'];
 
       $country=new country($prepared_data['country_id']);
-      $this->data['fuzzy address']=$fuzzy;
-      $this->data['address fuzzy type']=$fuzzy_type;
-      $this->data['address country code']=$country->get('country code');
-      $this->data['address country 2 alpha code']=$country->get('country 2 alpha code');
-      $this->data['address country key']=$country->get('country key');
-      $this->data['address country name']=$country->get('country name');
-      $this->data['address world region']=$country->get('World region');
-      $this->data['address continent']=$country->get('continent');
-      $this->data['military address']=$prepared_data['military_base'];
-      $this->data['military installation address']=_trim($this->data['address internal'].' '.$this->data['address building']);
-      $this->data['military installation name']=$prepared_data['military_installation_data']['military base name'];
-      $this->data['military installation country key']=$prepared_data['military_installation_data']['military base country key'];
-      $this->data['military installation type']=$prepared_data['military_installation_data']['military base type'];
 
-      $this->data['address location']=$this->display('location');
-      $this->data['xhtml address']=$this->display('xhtml');
+      $this->data['Fuzzy Address']=$fuzzy;
+      $this->data['Address Fuzzy Type']=$fuzzy_type;
+      $this->data['Address Country Code']=$country->get('Country Code');
+      $this->data['Address Country 2 Alpha Code']=$country->get('Country 2 Alpha Code');
+      $this->data['Address Country Key']=$country->get('Country Key');
+      $this->data['Address Country Name']=$country->get('Country Name');
+      $this->data['Address World Region']=$country->get('World Region');
+      $this->data['Address Continent']=$country->get('Continent');
+      $this->data['Military Address']=$prepared_data['military_base'];
+      $this->data['Military Installation Address']=_trim($this->data['Address Internal'].' '.$this->data['Address Building']);
+      $this->data['Military Installation Name']=$prepared_data['military_installation_data']['military base name'];
+      $this->data['Military Installation Country Key']=$prepared_data['military_installation_data']['military base country key'];
+      $this->data['Military Installation Type']=$prepared_data['military_installation_data']['military base type'];
 
+
+
+      $this->data['Address Location']=$this->display('location');
+      $this->data['XHTML Address']=$this->display('xhtml');
+      
       //  print"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
       //prepare_mysql(0);
       //exit;
@@ -176,18 +182,19 @@ class Address{
       $keys=preg_replace('/^,/','',$keys);
 
       $sql="insert into `Address Dimension` ($keys) values ($values)";
+      //      print_r($this->data);
       //print "$sql\n";      exit;
       //if($this->get('address country code')=='UNK')
       //	exit('address code is UNKNOWN');
 
-	  $affected=& $this->db->exec($sql);
-      if (PEAR::isError($affected)) {
-	return array('ok'=>false,'msg'=>_('Unknwon Error').'.');
+      if(mysql_query($sql)){
+	$this->id = mysql_insert_id();
+	$this->data['Address Key']= $this->id;
+      }else{
+	print "Error can not create address\n";exit;
+	
       }
-      $this->id = $this->db->lastInsertID();  
-      $this->data['address key']= $this->id;
-      
-
+	
       
 
     
@@ -197,8 +204,9 @@ class Address{
 
 
   function get($key){
-    $key=strtolower($key);
-    if(isset($this->data[$key]))
+
+    
+    if(array_key_exists($key,$this->data))
       return $this->data[$key];
    
     switch($key){
@@ -211,7 +219,14 @@ class Address{
     
       
     }
-
+    
+   print_r($this->data);
+    $_key=ucwords($key);
+    if(array_key_exists($_key,$this->data))
+      return $this->data[$_key];
+    print "Error $key not found in get from address\n";
+    asds();
+    exit;
     return false;
 
   }
@@ -222,28 +237,28 @@ class Address{
    case('location'):
      //  print_r($this->data);
 
-     if($this->get('military address')=='Yes'){
-       $location=sprintf('<img src="art/flags/%s.gif" title="%s"> %s',strtolower($this->data['address country 2 alpha code']),$this->data['address country code'],$this->get('military installation type'));
+     if($this->get('Military Address')=='Yes'){
+       $location=sprintf('<img src="art/flags/%s.gif" title="%s"> %s',strtolower($this->data['Address Country 2 Alpha Code']),$this->data['Address Country Code'],$this->data['Military Installation Type']);
      }else{
 
      if($this->get('fuzzy address')){
        //       print $this->get('address fuzzy type')."zzzzz\n";
        switch($this->get('address fuzzy type')){
        case('Country'):
-	 $location=sprintf('<img src="art/flags/%s.gif" title="%s"> %s',strtolower($this->data['address country 2 alpha code']),$this->data['address country code'],_('Somewhere in').' '.$this->get('address country name'));
+	 $location=sprintf('<img src="art/flags/%s.gif" title="%s"> %s',strtolower($this->data['Address Country 2 Alpha Code']),$this->data['Address Country Code'],_('Somewhere in').' '.$this->data['Address Country Name']);
 	 break;
        case('All'):
-	 $location=sprintf('<img src="art/flags/%s.gif" title="%s"> %s',strtolower($this->data['address country 2 alpha code']),$this->data['address country code'],_('Somewhere in the world'));
+	 $location=sprintf('<img src="art/flags/%s.gif" title="%s"> %s',strtolower($this->data['Address Country 2 Alpha Code']),$this->data['Address Country Code'],_('Somewhere in the world'));
 	 break;	 
        case('City'):
-	 $location=sprintf('<img src="art/flags/%s.gif" title="%s"> %s',strtolower($this->data['address country 2 alpha code']),$this->data['address country code'],_('Somewhere in').' '.$this->data['address town']);
+	 $location=sprintf('<img src="art/flags/%s.gif" title="%s"> %s',strtolower($this->data['Address Country 2 Alpha Code']),$this->datA['Address Country Code'],_('Somewhere in').' '.$this->data['Address Town']);
        break;
      default:
-        $location=sprintf('<img src="art/flags/%s.gif" title="%s"> %s',strtolower($this->data['address country 2 alpha code']),$this->data['address country code'],_('Unknown'));
+        $location=sprintf('<img src="art/flags/%s.gif" title="%s"> %s',strtolower($this->data['Address Country 2 Alpha Code']),$this->data['Address Country Code'],_('Unknown'));
        }
 
      }else{
-     $location=sprintf('<img src="art/flags/%s.gif" title="%s"> %s',strtolower($this->data['address country 2 alpha code']),$this->data['address country code'],$this->data['address town']);
+     $location=sprintf('<img src="art/flags/%s.gif" title="%s"> %s',strtolower($this->data['Address Country 2 Alpha Code']),$this->data['Address Country Code'],$this->data['Address Town']);
      }
      }
      return _trim($location);
@@ -253,67 +268,70 @@ class Address{
      $separator="<br/>";
      
    default:
-      if($this->get('military address')=='Yes'){
-	$address=$this->data['military installation address'];
-	$address_type=_trim($this->data['military installation type']);
+      if($this->data['Military Address']=='Yes'){
+	$address=$this->data['Military Installation Address'];
+	$address_type=_trim($this->data['Military Installation Type']);
 	if($address_type!='')
 	  $address.=$separator.$address_type;
-	$address_type=_trim($this->get('postal code'));
+	$address_type=_trim($this->data['Postal Code']);
 	if($address_type!='')
 	  $address.=$separator.$address_type;
-	$address.=$separator.$this->data['address country name'];
+	$address.=$separator.$this->data['Address Country Name'];
 
       }else{
 	//print_r($this->data);
 	$address='';
-	$header_address=_trim($this->data['address internal'].' '.$this->data['address building']);
+	$header_address=_trim($this->data['Address Internal'].' '.$this->data['Address Building']);
 	if($header_address!='')
 	  $address.=$header_address.$separator;
 	
-	$street_address=_trim($this->data['street number'].' '.$this->data['street name'].' '.$this->data['street type']);
+	$street_address=_trim($this->data['Street Number'].' '.$this->data['Street Name'].' '.$this->data['Street Type']);
 	if($street_address!='')
        $address.=$street_address.$separator;
 
      
-     $subtown_address=$this->data['address town secondary division'];
-     if($this->data['address town primary division'])
-       $subtown_address.=' ,'.$this->data['address town primary division'];
+     $subtown_address=$this->data['Address Town Secondary Division'];
+     if($this->data['Address Town Primary Division'])
+       $subtown_address.=' ,'.$this->data['Address Town Primary Division'];
      $subtown_address=_trim($subtown_address);
        if($subtown_address!='')
        $address.=$subtown_address.$separator;
 
 
      
-     $town_address=_trim($this->data['address town']);
+     $town_address=_trim($this->data['Address Town']);
      if($town_address!='')
        $address.=$town_address.$separator;
 
-     $ps_address=_trim($this->data['postal code']);
+     $ps_address=_trim($this->data['Postal Code']);
      if($ps_address!='')
        $address.=$ps_address.$separator;
      
-     $address.=$this->data['address country name'];
+     $address.=$this->data['Address Country Name'];
       }
       return _trim($address);
   
    case('header'):
+
      $separator=', ';
      $address='';
-     $header_address=_trim($this->data['address internal'].' '.$this->data['address building']);
+     $header_address=_trim($this->data['Address Internal'].' '.$this->data['Address Building']);
      if($header_address!='')
        $address.=$header_address.$separator;
      
-     $street_address=_trim($this->data['street number'].' '.$this->data['street name'].' '.$this->data['street type']);
+     $street_address=_trim($this->data['Street Number'].' '.$this->data['Street Name'].' '.$this->data['Street Type']);
      if($street_address!='')
        $address.=$street_address.$separator;
      
      
-     $subtown_address=$this->data['address town secondary division'];
-     if($this->data['address town primary division'])
-       $subtown_address.=' ,'.$this->data['address town primary division'];
+     $subtown_address=$this->data['Address Town Secondary Division'];
+     if($this->data['Address Town Primary Division'])
+       $subtown_address.=' ,'.$this->data['Address Town Primary Division'];
      $subtown_address=_trim($subtown_address);
      if($subtown_address!='')
        $address.=$subtown_address.$separator;
+
+
       return _trim($address);
 
  }
@@ -983,8 +1001,10 @@ $postcode=_trim($postcode);
     if($postcode!=''){
     $sql="select `Country Secondary Division Name` from `Country Secondary Division Dimension` where  `Country Key`=75 and `Country Secondary Division Name` like '%$postcode%'";
     //print "$sql\n";
-    $res = $this->db->query($sql);  
-    if ($row=$res->fetchRow()){
+    
+    $result=mysql_query($sql);
+    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+      
       $postcode='';
       $country_d2=$row['name'];
 
@@ -2191,8 +2211,9 @@ if($address3=='' and $address2!='' and  $address1!='' ){
  if($country_d1!=''){
  $sql=sprintf("select `Country Primary Division Key` as id  from  `Country Primary Division Dimension` where (`Country Primary Division Name`='%s' or `Country Primary Division Native Name`='%s' or `Country Primary Division Local Native Name`='%s' ) and `Country Key`=%d",addslashes($country_d1),addslashes($country_d1),addslashes($country_d1),$country_id);
  //  print "$sql\n";
- $res = $this->db->query($sql);  
- if ($row=$res->fetchRow())
+ 
+ $result=mysql_query($sql);
+ if($row=mysql_fetch_array($result, MYSQL_ASSOC))
    $country_d1_id=$row['id'];
  }
 
@@ -2200,14 +2221,16 @@ if($address3=='' and $address2!='' and  $address1!='' ){
 if($country_d2!=''){
     $sql=sprintf("select `Country Secondary Division Key`  as id, `Country Primary Division Key`   as country_d1_id from `Country Secondary Division Dimension`   where (`Country Secondary Division Name`='%s' or `Country Secondary Division Native Name`='%s' or `Country Secondary Division Local Native Name`='%s' ) and `Country Key`=%d",addslashes($country_d2),addslashes($country_d2),addslashes($country_d2),$country_id);
    
-    $res = $this->db->query($sql);  
-    
-    if ($row=$res->fetchRow()){
-	$country_d2_id=$row['id'];
-	if($res->numRows()==1){
+
+    $result=mysql_query($sql);
+    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+      
+      
+      $country_d2_id=$row['id'];
+      if(mysql_num_rows($result)==1){
 	  $country_d1_id=$row['country_d1_id'];
-	}
-	
+      }
+      
     }
     else
       $country_d2_id=0;
@@ -2215,103 +2238,68 @@ if($country_d2!=''){
 
 
 
-    $sql=sprintf("select `Town Key` as id,`Country Secondary Division Key` as  country_d2_id, `Country Primary Division Key` as country_d1_id from `Town Dimension` where (`Town Name`='%s' or `Town Native Name`='%s' or `Town Local Native Name`='%s' ) and `Country Key`=%d",addslashes($town),addslashes($town),addslashes($town),$country_id);
-    //print $sql;
-    $res = $this->db->query($sql);  
-    if($res->numRows()==1){
-      
-    if ($row=$res->fetchRow()){
-	$town_id=$row['id'];
-	if($res->numRows()==1){
-	  if($country_d2_id==0)
-	    $country_d2_id=$row['country_d2_id'];
-	  if($country_d1_id==0)
-	    $country_d1_id=$row['country_d1_id'];
-	}
-	
-    }
-    }
-    else
-      $town_id=0;
-
-
-    // print $country_d2_id;exit;
-
-  //=------------------------
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  if(preg_match('/\d+\s*\-\s*\d+/',$address3)){
+ $sql=sprintf("select `Town Key` as id,`Country Secondary Division Key` as  country_d2_id, `Country Primary Division Key` as country_d1_id from `Town Dimension` where (`Town Name`='%s' or `Town Native Name`='%s' or `Town Local Native Name`='%s' ) and `Country Key`=%d",addslashes($town),addslashes($town),addslashes($town),$country_id);
+ //print $sql;
+ $res = mysql_query($sql);  
+ 
+ if(mysql_num_rows($res)==1){
+   
+   $row=mysql_fetch_array($res, MYSQL_ASSOC);
+   $town_id=$row['id'];
+   if($country_d2_id==0)
+     $country_d2_id=$row['country_d2_id'];
+   if($country_d1_id==0)
+     $country_d1_id=$row['country_d1_id'];
+   
+     
+   
+ }
+ else
+   $town_id=0;
+ 
+ 
+ if(preg_match('/\d+\s*\-\s*\d+/',$address3)){
     $address3=preg_replace('/\s*\-\s*/','-',$address3);
-  }
-   if(preg_match('/\d+\s*\-\s*\d+/',$address2)){
-     $address2=preg_replace('/\s*\-\s*/','-',$address2);
+ }
+ if(preg_match('/\d+\s*\-\s*\d+/',$address2)){
+   $address2=preg_replace('/\s*\-\s*/','-',$address2);
   }
  $address1=  preg_replace('/^P\.o\.box\s+/i','PO BOX ',$address1);
-  $address2=  preg_replace('/^P\.o\.box\s+/i','PO BOX ',$address2);
-  $address3=  preg_replace('/^P\.o\.box\s+/i','PO BOX ',$address3);
-  $address3=  preg_replace('/^p o box\s+/i','PO BOX ',$address3);
+ $address2=  preg_replace('/^P\.o\.box\s+/i','PO BOX ',$address2);
+ $address3=  preg_replace('/^P\.o\.box\s+/i','PO BOX ',$address3);
+ $address3=  preg_replace('/^p o box\s+/i','PO BOX ',$address3);
  $address3=  preg_replace('/^NULL$/i','',$address3);
 
-  $address1=preg_replace('/\s{2,}/',' ',$address1);
-  $address2=preg_replace('/\s{2,}/',' ',$address2);
-  $address3=preg_replace('/\s{2,}/',' ',$address3);
-  $town=preg_replace('/\s{2,}/',' ',$town);
-  $town_d1=preg_replace('/\s{2,}/',' ',$town_d1);
-  $town_d2=preg_replace('/\s{2,}/',' ',$town_d2);
-  $town=preg_replace('/(\,|\-)$\s*/','',$town);
+ $address1=preg_replace('/\s{2,}/',' ',$address1);
+ $address2=preg_replace('/\s{2,}/',' ',$address2);
+ $address3=preg_replace('/\s{2,}/',' ',$address3);
+ $town=preg_replace('/\s{2,}/',' ',$town);
+ $town_d1=preg_replace('/\s{2,}/',' ',$town_d1);
+ $town_d2=preg_replace('/\s{2,}/',' ',$town_d2);
+ $town=preg_replace('/(\,|\-)$\s*/','',$town);
   
-  $address_data=array(
-		      'internal_address'=>mb_ucwords(_trim($address1)),
-		      'building_address'=>mb_ucwords(_trim($address2)),
-		      'street_address'=>mb_ucwords(_trim($address3)),
-		      'town_d2'=>mb_ucwords(_trim($town_d2)),
-		      'town_d1'=>mb_ucwords(_trim($town_d1)),
-		      'town'=>mb_ucwords(_trim($town)),
-		      'country_d2'=>mb_ucwords(_trim($country_d2)),
-		      'country_d1'=>mb_ucwords(_trim($country_d1)),
-		      'postcode'=>mb_ucwords(_trim($postcode)),
+ $address_data=array(
+		     'internal_address'=>mb_ucwords(_trim($address1)),
+		     'building_address'=>mb_ucwords(_trim($address2)),
+		     'street_address'=>mb_ucwords(_trim($address3)),
+		     'town_d2'=>mb_ucwords(_trim($town_d2)),
+		     'town_d1'=>mb_ucwords(_trim($town_d1)),
+		     'town'=>mb_ucwords(_trim($town)),
+		     'country_d2'=>mb_ucwords(_trim($country_d2)),
+		     'country_d1'=>mb_ucwords(_trim($country_d1)),
+		     'postcode'=>mb_ucwords(_trim($postcode)),
 		      'country'=>mb_ucwords(_trim($country)),
-		      'town_d2_id'=>$town_d2_id,
-		      'town_d1_id'=>$town_d1_id,
-		      'town_id'=>$town_id,
-		      'country_d2_id'=>$country_d2_id,
-		      'country_d1_id'=>$country_d1_id,
-		      'country_id'=>$country_id,
-		      'military_installation_data'=>$military_installation,
-		      'military_base'=>$military_base
-		      );
+		     'town_d2_id'=>$town_d2_id,
+		     'town_d1_id'=>$town_d1_id,
+		     'town_id'=>$town_id,
+		     'country_d2_id'=>$country_d2_id,
+		     'country_d1_id'=>$country_d1_id,
+		     'country_id'=>$country_id,
+		     'military_installation_data'=>$military_installation,
+		     'military_base'=>$military_base
+		     );
+ 
 
-  
-
-  // print_r($address_data);
-  // exit;
-
- //  if($country_id==244){
-//      print_r($address_data);
-//     exit("Unknown country");
-//   }
-  
-//   if($debug){
-//    print_r($address_data);
-//    exit;
-//   }
-  //  print_r($address_data);
      return $address_data;
 
 
@@ -2492,10 +2480,10 @@ function is_town($town,$country_id){
 
    $name=_trim($name);
    
-   $this->data['street number']=$number;
-   $this->data['street name']=$name;
-   $this->data['street type']=$type;
-   $this->data['street direction']=$direction;
+   $this->data['Street Number']=$number;
+   $this->data['Street Name']=$name;
+   $this->data['Street Type']=$type;
+   $this->data['Street Direction']=$direction;
 
 
  }

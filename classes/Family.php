@@ -2,12 +2,12 @@
 include_once('Product.php');
 
 class family{
-var $db;
+
  var $products=false;
  var $id=false;
 
  function __construct($a1=false,$a2=false) {
-    $this->db =MDB2::singleton();
+
     
     if(is_numeric($a1) and !$a2  )
       $this->getdata('id',$a1);
@@ -29,22 +29,16 @@ var $db;
    
    // print_r($data);
    //print "$sql\n";
-   $affected=& $this->db->exec($sql);
-   
-   if (PEAR::isError($affected)) {
-     if(preg_match('/^MDB2 Error: constraint violation$/',$affected->getMessage()))
-       return array('ok'=>false,'msg'=> _('Error: Another product family has the same name/description').'.');
-     else
-       return array('ok'=>false,'msg'=>_('Unknown Error').'.');
-     return false;
-   }
-   $this->id=$this->db->lastInsertID();
+ if(mysql_query($sql)){
+   $this->id = mysql_insert_id();
    $this->getdata('id',$this->id);
-   
-   
-   // print "***********************".$this->id;
    return array('ok'=>true);
+ }else{
+   print "Error can not create family\n";exit;
    
+ }   
+
+
  }
  
  function getdata($tipo,$tag){
@@ -58,9 +52,10 @@ var $db;
      break;
    }
    //   print "S:$tipo $sql\n";
-   $result = $this->db->query($sql);
-   if($this->data=$result->fetchRow())
-     $this->id=$this->data['product family key'];
+
+   $result=mysql_query($sql);
+   if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   )
+     $this->id=$this->data['Product Family Key'];
 
  }
 
@@ -78,9 +73,8 @@ var $db;
 
 ,sum(if(`Product Availability State`='Critical',1,0)) as availability_critical,sum(if(`Product Availability State`='Out Of Stock',1,0)) as availability_outofstock from `Product Dimension` where `Product Family Key`=%d",$this->id);
      //  print $sql;
-     $res = $this->db->query($sql);
-     if($row = $res->fetchrow()) {
-
+  $result=mysql_query($sql);
+  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
        $sql=sprintf("update `Product Family Dimension` set `Product Family For Sale Products`=%d ,`Product Family Discontinued Products`=%d ,`Product Family Not For Sale Products`=%d ,`Product Family Unknown Sales State Products`=%d, `Product Family Optimal Availability Products`=%d , `Product Family Low Availability Products`=%d ,`Product Family Critical Availability Products`=%d ,`Product Family Out Of Stock Products`=%d,`Product Family Unknown Stock Products`=%d ,`Product Family Surplus Availability Products`=%d where `Product Family Key`=%d  ",
 		    $row['for_sale'],
 		    $row['discontinued'],
@@ -95,7 +89,7 @@ var $db;
 		    $this->id
 	    );
        //  print "$sql\n";exit;
-       $this->db->exec($sql);
+       mysql_query($sql);
 
     
      }
@@ -106,36 +100,37 @@ var $db;
    case('products'):
      $sql=sprintf("select * from `Product Dimension` where `Product Family Key`=%d ",$this->id);
      //    print $sql;
-     $res = $this->db->query($sql);
+
      $this->products=array();
-     while($row = $res->fetchrow()) {
+     $result=mysql_query($sql);
+     while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
        $this->products[$row['product key']]=$row;
      }
      break;
-   case('first_date'):
-     $first_date=date('U');
-     $changed=false;
-     $this->load('products');
-     foreach($this->products as $product_id=>$product_data){
-       $product=new Product($product_id);
-       $_date=$product->data['first_date'];
-       //   print "$_date\n";
-       if(is_numeric($_date)){
-	 // print "hola $product_id   $_date   $first_date  \n";
-	 if($_date < $first_date){
-	   $first_date=$_date;
-	   $changed=true;
-	 }
-       }
-     }
-     //  print "$first_dat\n";
-     if($changed){
-       $this->data['first_date']=$first_date;
-       if(preg_match('/save/i',$args))
-	 $this->save($tipo);
-     }
+ //   case('first_date'):
+//      $first_date=date('U');
+//      $changed=false;
+//      $this->load('products');
+//      foreach($this->products as $product_id=>$product_data){
+//        $product=new Product($product_id);
+//        $_date=$product->data['first_date'];
+//        //   print "$_date\n";
+//        if(is_numeric($_date)){
+// 	 // print "hola $product_id   $_date   $first_date  \n";
+// 	 if($_date < $first_date){
+// 	   $first_date=$_date;
+// 	   $changed=true;
+// 	 }
+//        }
+//      }
+//      //  print "$first_dat\n";
+//      if($changed){
+//        $this->data['first_date']=$first_date;
+//        if(preg_match('/save/i',$args))
+// 	 $this->save($tipo);
+//      }
 
-     break;
+//      break;
    case('sales'):
      $this->load('products');
 
@@ -264,15 +259,17 @@ var $db;
  }
 
 
- function get($tipo){
+ function get($key){
 
-   $key=strtolower($tipo);
-   if(isset($this->data[$key]))
+
+
+
+   if(array_key_exists($key,$this->data))
      return $this->data[$key];
 
 
 
-   switch($tipo){
+   switch($key){
    case('products'):
      if(!$this->products)
        $this->load('products');
@@ -302,7 +299,7 @@ var $db;
 		  ,prepare_mysql($this->get('product family code'))
 		  ,prepare_mysql($this->get('product family name'))
 		  ,$product->id);
-     $this->db->exec($sql);
+     mysql_query($sql);
      $this->load('products_info');
      // print "$sql\n";
    }

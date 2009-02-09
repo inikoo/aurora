@@ -2,12 +2,12 @@
 
 class store{
 
-  var $db;
+
   var $id=false;
 
 
   function __construct($a1,$a2=false) {
-    $this->db =MDB2::singleton();
+
 
 
     if(is_numeric($a1) and !$a2){
@@ -24,11 +24,10 @@ class store{
   }
   
 function get_unknown(){
-   $sql=sprintf("select * from `Store Dimension` where `Store Type`='unknown'");
-   if($result =& $this->db->query($sql)){
-      $this->data=$result->fetchRow();
-      $this->id=$this->data['store key'];
-    }
+  $sql=sprintf("select * from `Store Dimension` where `Store Type`='unknown'");
+  $result=mysql_query($sql);
+  if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   )
+    $this->id=$this->data['Store Key'];
 }
 
 
@@ -40,31 +39,38 @@ function get_unknown(){
       $sql=sprintf("select * from `Store Dimension` where `Store Code`=%s",prepare_mysql($tag));
     // print $sql;
 
-    if($result =& $this->db->query($sql)){
-      $this->data=$result->fetchRow();
-      $this->id=$this->data['store key'];
-    }
+    $result=mysql_query($sql);
+    if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   )
+      $this->id=$this->data['Product Key'];
+    
+
   }
+
+
   
 
   
 
   function get($key=''){
-    $key=strtolower($key);
+
     if(isset($this->data[$key]))
       return $this->data[$key];
     
     switch($key){
     case('code'):
-      return $this->data['store code'];
+      return $this->data['Store Code'];
       break;
     case('type'):
-      return $this->data['store type'];
+      return $this->data['Store Type'];
       break;
       
     }
-    
-    return false;
+    $_key=ucfirst($key);
+    if(isset($this->data[$_key]))
+      return $this->data[$_key];
+    print "Error $key not found in get from Product\n";
+    return false; 
+
   }
 
 }

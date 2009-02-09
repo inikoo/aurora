@@ -6,7 +6,7 @@ include_once('Customer.php');
 include_once('Store.php');
 
 class Order{
-  var $db;  var $data=array();
+ var $data=array();
   var $items=array();
   var $status_names=array();
   var $id=false;
@@ -14,7 +14,7 @@ class Order{
   var $staus='new';
 
   function __construct($arg1=false,$arg2=false) {
-    $this->db =MDB2::singleton();
+
     $this->status_names=array(0=>'new');
      
     if(is_numeric($arg1)){
@@ -56,12 +56,14 @@ class Order{
       $data['cdata']['same_telephone']=$this->same_telephone;
 
       
-      
+
       $customer_identification_method='email';
       $customer_id=$this->find_customer($customer_identification_method,$data['cdata']);
       $customer=new Customer($customer_id);
-
-      $ship_to_key=$customer->get('customer last ship to key');
+      
+      
+      $ship_to_key=$customer->get('Customer Last Ship To Key');
+      
       $ship_to=$customer->get('xhtml ship to',$ship_to_key);
       
       if(!isset($data['store_code']))
@@ -69,25 +71,25 @@ class Order{
       $store=new Store('code',$data['store_code']);
       if(!$store->id)
 	$store=new Store('unknown');
-      $this->data['order date']=$data['order date'];
-      $this->data['order id']=$data['order id'];
-      $this->data['order customer key']=$customer->id;
-      $this->data['order customer name']=$customer->get('customer name');
-      $this->data['order current dispatch state']='In Process';
-      $this->data['order current payment state']='Waiting Invoice';
-      $this->data['order current xhtml state']='In Process';
-      $this->data['order customer message']=_trim($data['order customer message']);
-      $this->data['order original data mime type']=$data['order original data mime type'];
-      $this->data['order original data']=$data['order original data'];
-      $this->data['order original data source']=$data['order original data source'];
+      $this->data['Order Date']=$data['order date'];
+      $this->data['Order ID']=$data['order id'];
+      $this->data['Order Customer Key']=$customer->id;
+      $this->data['Order Customer Name']=$customer->get('Customer Name');
+      $this->data['Order Current Dispatch State']='In Process';
+      $this->data['Order Current Payment State']='Waiting Invoice';
+      $this->data['Order Current XHTML State']='In Process';
+      $this->data['Order Customer Message']=_trim($data['order customer message']);
+      $this->data['Order Original Data MIME Type']=$data['order original data mime type'];
+      $this->data['Order Original Data']=$data['order original data'];
+      $this->data['Order Original Data Source']=$data['order original data source'];
 
-      $this->data['order original metadata']=$data['order original metadata'];
-      $this->data['order main store key']=$store->id;
-      $this->data['order main store code']=$store->get('code');
-      $this->data['order main store type']=$store->get('type');
-      $this->data['order main xhtml ship to']=$ship_to;
-      $this->data['order main ship to key']=$ship_to_key;
-      $this->data['order ship to addresses']=1;
+      $this->data['Order Original Metadata']=$data['order original metadata'];
+      $this->data['Order Main Store Key']=$store->id;
+      $this->data['Order Main Store Code']=$store->get('code');
+      $this->data['Order Main Store Type']=$store->get('type');
+      $this->data['Order Main XHTML Ship To']=$ship_to;
+      $this->data['Order Main Ship To Key']=$ship_to_key;
+      $this->data['Order Ship To Addresses']=1;
       
       
 
@@ -97,19 +99,18 @@ class Order{
 	
       $line_number=1;
       foreach($data['products'] as $product_data){
-	$product_data['date']=$this->data['order date'];
+	$product_data['date']=$this->data['Order Date'];
 	$product_data['line_number']=$line_number;
 	$this->add_order_transaction($product_data);
 	$line_number++;
       }
-      $sql="select sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) as discount from `Order Transaction Fact` where `Order Key`=".$this->data['order key'];
-       $result =& $this->db->query($sql);
-       //  print "$sql\n";
-       if($row=$result->fetchRow()){
-	 $sql=sprintf("update `Order Dimension` set `Order Gross Amount`=%.2f, `Order Discount Amount`=%.2f where  `Order Key`=%d ",$row['gross'],$row['discount'],$this->data['order key']);
-	 //	 print "$sql\n";
-	 $this->db->exec($sql);
-       }
+      $sql="select sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) as discount from `Order Transaction Fact` where `Order Key`=".$this->data['Order Key'];
+      $result=mysql_query($sql);
+      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+	$sql=sprintf("update `Order Dimension` set `Order Gross Amount`=%.2f, `Order Discount Amount`=%.2f where  `Order Key`=%d ",$row['gross'],$row['discount'],$this->data['Order Key']);
+	
+	mysql_query($sql);
+      }
       
       
       
@@ -120,28 +121,28 @@ class Order{
       
       switch($_SESSION['lang']){
       default:
-	  $abstract=sprintf('Order <a href="order.php?id=%d">%s</a>',$this->get('order key'),$this->get('order id'));
+	  $abstract=sprintf('Order <a href="order.php?id=%d">%s</a>',$this->get('order key'),$this->get('Order ID'));
 	  $note=sprintf('%s (<a href="customer.php?id=%d">%s) place an order at %s'
 			,$customer->get('customer name')
 			,$customer->id
 			,$customer->get('customer id')
-			,strftime("%e %b %Y %H:%M",strtotime($this->data['order date']))
+			,strftime("%e %b %Y %H:%M",strtotime($this->data['Order Date']))
 			);
 	}
 
 	$sql=sprintf("insert into `History Dimension` (`History Date`,`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`History Details`,`Author Key`,`Author Name`) values(%s,'Customer','%s','Placed','Order',%d,%s,0,%s)"
-		     ,prepare_mysql($this->data['order date'])
+		     ,prepare_mysql($this->data['Order Date'])
 		     ,$customer->id
-		     ,$this->data['order key']
+		     ,$this->data['Order Key']
 		     ,prepare_mysql($note)
 		     ,prepare_mysql(_('System'))
 		     );
-	$this->db->exec($sql);
-	$history_id=$this->db->lastInsertID();
+	mysql_query($sql);
+	$history_id= mysql_insert_id();
 	$abstract.=' (<span class="like_a" onclick="showdetails(this)" d="0" id="ch'.$history_id.'"  hid="'.$history_id.'">'._('view details').'</span>)';
 	$sql=sprintf("update `History Dimension` set `History Abstract`=%s where `History Key`=%d",prepare_mysql($abstract),$history_id);
 	//	print "$sql\n";
-	$this->db->exec($sql);
+	mysql_query($sql);
 	
     
       
@@ -335,7 +336,7 @@ class Order{
  
 	//check if the addresses are the same:
 	$diff_result = array_diff($cdata['address_inv_data'], $cdata['address_shipping_data']);
-	
+
 	if(count($diff_result)==0){
 
 	  $same_address=true;
@@ -347,7 +348,8 @@ class Order{
 
 	}else{
 	  
-	  // print_r($diff_result);
+	  
+
 	  $percentage=array('address1'=>1,'town'=>1,'country'=>1,'country_d1'=>1,'postcode'=>1);
 	  $percentage_address=array();
 
@@ -550,12 +552,12 @@ class Order{
 		     ,prepare_mysql($note)
 		     ,prepare_mysql(_('System'))
 		     );
-	$this->db->exec($sql);
+	mysql_query($sql);
 	$history_id=$this->db->lastInsertID();
 	$abstract.=' (<span class="like_a" onclick="showdetails(this)" d="0" id="ch'.$history_id.'"  hid="'.$history_id.'">'._('view details').'</span>)';
 	$sql=sprintf("update `History Dimension` set `History Abstract`=%s where `History Key`=%d",prepare_mysql($abstract),$history_id);
 	//	print "$sql\n";
-	$this->db->exec($sql);
+	mysql_query($sql);
 
 	
 	//	print "$sql\n";
@@ -625,13 +627,13 @@ class Order{
 		 ,prepare_mysql($this->get('Order Public ID'))
 		 ,$data['line_number']
 		 ,number($data['qty'])
-		 ,prepare_mysql($this->data['order main ship to key'])
+		 ,prepare_mysql($this->data['Order Main Ship To Key'])
 		 ,$data['gross_amount']
 		 ,$data['discount_amount']
 
 		 );
     //   print "$sql\n";
-    $this->db->exec($sql);
+    mysql_query($sql);
 
 
     //     print_r($data);
@@ -835,19 +837,18 @@ class Order{
 		 ,prepare_mysql($this->get('Order Customer Message'))
 		 ,prepare_mysql($this->get('Order Original Data MIME Type'))
 		 ,prepare_mysql($this->get('Order Original Data'))
-		 ,prepare_mysql($this->get('Order Main XHTML Ship to'))
+		 ,prepare_mysql($this->get('Order Main XHTML Ship To'))
 		 ,$this->get('Order Ship To Addresses')
 		 ,$this->data['order gross amount']
 		 ,$this->data['order discount amount']
 		 );
-    //    print $sql;
-    $affected=& $this->db->exec($sql);
-    if (PEAR::isError($affected)) {
-      $this->error=array('ok'=>false,'msg'=>_('Unknwon Error').'.');
-    }else{
-      $this->data['order key']=$this->db->lastInsertID();
-    }
-    // print "$sql\n";
+     if(mysql_query($sql)){
+       $this->id = mysql_insert_id();
+       $this->data['Order Key']=$this->id ;
+     }else{
+       print "Error coan not create order header";exit;
+     }
+
   }
     
 
@@ -867,7 +868,7 @@ class Order{
 
 
   function get($key=''){
-    $key=strtolower($key);
+
     if(isset($this->data[$key]))
       return $this->data[$key];
     
@@ -914,16 +915,12 @@ class Order{
 	return $this->get('estimated_weight')/2+$factor;
 	 
       }
-    default:
-
-      if(isset($this->data[$key])){
-	//  print $this->data[$key];
-	return $this->data[$key];
-      }
-      break; 
-
-       
     }
+        $_key=ucfirst($key);
+    if(isset($this->data[$_key]))
+      return $this->data[$_key];
+    print "Error $key not found in get from Order\n";
+    return false;
 
     return false;
   }
@@ -1331,7 +1328,7 @@ class Order{
       $value=$this->get($key);
       $sql=sprintf("update %s set %s=%d where id=%d",$this->db_table,$key,$value,$this->id);
       //print $sql;
-      $this->db->exec($sql);
+      mysql_query($sql);
 
     }
   }
@@ -1388,16 +1385,20 @@ class Order{
 
   function cutomer_rankings(){
     $sql=sprintf("select `Customer Key` as id,`Customer Orders` as orders, (select count(*) from `Customer Dimension` as TC where TC.`Customer Orders`<C.`Customer Orders`) as better,(select count(DISTINCT `Customer ID` ) from `Customer Dimension`) total  from `Customer Dimension` as C order by `Customer Orders` desc ;");
-    	$result =& $this->db->query($sql);
-	$orders=-99999;
-	$position=0;
-	while($row=$result->fetchRow()){
-	  if($row['orders']!=$orders){
+
+    $orders=-99999;
+    $position=0;
+    
+    $result=mysql_query($sql);
+    while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+      
+
+      if($row['orders']!=$orders){
 	    $position++;
 	    $orders=$row['orders'];
-	  }
-	  $better_than=$row['better'];
-	  $total=$row['total'];
+      }
+      $better_than=$row['better'];
+      $total=$row['total'];
 	  if($total>0)
 	    $top=sprintf("%f",100*(1.0-($better_than/$total))) ;
 	  else
@@ -1405,32 +1406,36 @@ class Order{
 	  $id=$row['id'];
 	  $sql=sprintf("update `Customer Dimension` set `Customer Orders Top Percentage`=%s,`Customer Orders Position`=%d,`Customer Has More Orders Than`=%d where `Customer Key`=%d",$top,$position,$better_than,$id);
 	  // print "$sql\n";
-	  $this->db->exec($sql);
+	  mysql_query($sql);
 	}
   } 
 
   function compare_addresses($cdata){
     
-
     
-
-
-    	//check if the addresses are the same:
+    
+    
+    
+    //check if the addresses are the same:
 	$diff_result = array_diff($cdata['address_data'], $cdata['shipping_data']);
 	
 	if(count($diff_result)==0){
-
+	  
 	  $this->same_address=true;
 	  $this->same_contact=true;
 	  $this->same_company=true;
-
+	  
 	  $this->same_telephone=true;
-
+	  
 
 	}else{
 	  
-	  // print_r($diff_result);
-	  $percentage=array('address1'=>1,'town'=>1,'country'=>1,'country_d1'=>1,'postcode'=>1);
+
+	  print telecom::parse_telecom('434534534534534');
+
+	   print_r($diff_result);
+	   exit;
+	   $percentage=array('address1'=>1,'town'=>1,'country'=>1,'country_d1'=>1,'postcode'=>1);
 	  $percentage_address=array();
 
 	  foreach($diff_result as $key=>$value){

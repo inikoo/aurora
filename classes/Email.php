@@ -1,13 +1,13 @@
 <?
 include_once('Contact.php');
 class Email{
-  var $db;
+
   var $data=array();
   var $id=false;
 
   
   function __construct($arg1=false,$arg2=false) {
-     $this->db =MDB2::singleton();
+
      
      if(!$arg1 and !$arg2)
        return;
@@ -32,12 +32,12 @@ class Email{
     else
       return;
 
-   $result =& $this->db->query($sql);
-    if($this->data=$result->fetchRow()){
-      $this->id=$this->data['email key'];
-      return true;
-    }
-    return false;
+
+
+    $result=mysql_query($sql);
+    if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   )
+      $this->id=$this->data['Email Key'];
+
 }
 
   function create($data,$args=''){
@@ -72,40 +72,36 @@ class Email{
 		,$data['email validated']
 		,$data['email verified']
 		);
-   //   print "$sql\n";
-   $affected=& $this->db->exec($sql);
-   if (PEAR::isError($affected)){
-      $this->new=false;
-      $this->msg=_('Unknown error');
-      return false;
-   }else{
-      $this->id=$this->db->lastInsertID();
-      //      if(is_array($history_data))
-      //	$this->save_history('new',$history_data);
+   
+    if(mysql_query($sql)){
+      $this->id = mysql_insert_id();
       $this->get_data('id',$this->id);
       $this->new=true;
-
+      
       $this->msg=_('New Email');
       return true;
-   }
+    }else{
+      print "Error can not create email;\n";exit;
+    }
      
      
  }
 
  function get($key){
- $key=strtolower($key);
-    if(isset($this->data[$key]))
-      return $this->data[$key];
-
-    switch($key){
-    case('link'):
-      return $this->display();
-      break;
-    default:
-      if(isset($this->data[$key]))
-	return $this->data[$key];
-    }
+   if(isset($this->data[$key]))
+     return $this->data[$key];
+   
+   switch($key){
+   case('link'):
+     return $this->display();
+     break;
+   }
+    $_key=ucfirst($key);
+    if(isset($this->data[$_key]))
+      return $this->data[$_key];
+    print "Error $key not found in get from email\n";
     return false;
+   
  }
 
  function set($key,$value){
@@ -237,7 +233,7 @@ class Email{
 
     default:
       $sql=sprintf("update email set %s=%s where id=%d",$key,$this->get($key),$this->id);
-      $this->db->exec($sql);
+      mysql_query($sql);
       if(is_array($history_data)){
 	$this->save_history($key,$history_data);
       }
@@ -320,8 +316,8 @@ class Email{
 		 ,prepare_mysql($old)	 
 		 ,prepare_mysql($new)	 
 		 ,prepare_mysql($note)); 
-    // print $sql;
-    $this->db->exec($sql);
+
+    mysql_query($sql);
 
 
  }
@@ -335,7 +331,7 @@ class Email{
    case('xhtml'):
    case('link'):
    default:
-     return '<a href="mailto:'.$this->data['email'].'">'.$this->data['email'].'</a>';
+     return '<a href="mailto:'.$this->data['Email'].'">'.$this->data['Email'].'</a>';
      
    }
    

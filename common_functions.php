@@ -661,11 +661,14 @@ function extract_product_groups($str,
 }
 
 
+//print _trim('        d ca        ca  caca    ');
 
 function _trim($string){
-  $string=preg_replace('/^\s*/','',$string);
-  $string=preg_replace('/\s*$/','',$string);
-  $string=preg_replace('/\s+/',' ',$string);
+  $string=preg_replace('/\s+/',' ',trim($string));
+
+ //  $string=preg_replace('/^\s*/','',$string);
+//   $string=preg_replace('/\s*$/','',$string);
+//   $string=preg_replace('/\s+/',' ',$string);
 
   return $string;
 }
@@ -779,24 +782,25 @@ elseif(preg_match('/^[^\s]+\.(com|uk|info|biz|org)$/i',$val)){
   return $return;
 }
 
+//print prepare_mysql(0)."\n";
 
-function prepare_mysql($string,$no_null=false){
-  //print "->".$string."<-";
-  if(is_array($string)){
-    print "Warning is array (prepare_mysql)\n";
-    print_r($string);
-    return 'NULL';
-  }
+function prepare_mysql($string){
 
-  if($no_null)
-    return "'".addslashes($string)."'";
-  // print "->".$string."<-";
-  if(strlen($string)==0){
-    
-    // print "-------->".$string."<-----";
+  
+  if(strlen($string)==0)
     return 'null';
-  }else
+  else
     return "'".addslashes($string)."'";
+
+ //  if($no_null)
+//     return "'".addslashes($string)."'";
+//   // print "->".$string."<-";
+//   if(strlen($string)==0){
+    
+//     // print "-------->".$string."<-----";
+//     return 'null';
+//   }else
+//     return "'".addslashes($string)."'";
 
 }
 

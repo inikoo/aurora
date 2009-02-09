@@ -4,13 +4,13 @@ include_once('Order.php');
 include_once('Address.php');
 
 class Customer{
-  var $db; 
+
   var $id=false;
   var $contact_data=false;
   var $ship_to=array();
 
   function __construct($arg1=false,$arg2=false) {
-    $this->db =MDB2::singleton();
+
     $this->status_names=array(0=>'new');
     
     if(is_numeric($arg1) and !$arg2){
@@ -38,9 +38,11 @@ class Customer{
       $sql=sprintf("select * from `Customer Dimension` where `Customer Email`=%s",prepare_mysql($id));
     else
       return false;
-   $result =& $this->db->query($sql);
-   if($this->data=$result->fetchRow()){	     
-      $this->id=$this->data['customer key'];
+    
+    $result=mysql_query($sql);
+    if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+   
+      $this->id=$this->data['Customer Key'];
       
  //      $o_main_bill_address=new address($this->data['main_bill_address']);
 //       if($o_main_bill_address->id){
@@ -93,24 +95,8 @@ class Customer{
 
 
   }
-  function load($key='',$arg1){
-    switch($key){
-    case('location'):
-      global $myconf;
-      if($this->data['main_bill_address_id']==''){
-	$this->data['location']['country_code']=$myconf['country_code'];
-	$this->data['location']['town']='';
-      }else{
-     
-      $sql=sprintf('select code,town from  address  left join list_country on (country=list_country.name) where address.id=%d ',$this->data['main_bill_address_id']);
-      $result =& $this->db->query($sql);
-      if($row=$result->fetchRow()){	     
-	$this->data['location']['country_code']=$row['code'];
-	$this->data['location']['town']=$row['town'];
-      }
-
-      }
-      break;
+   function load($key='',$arg1){
+     switch($key){
     case('contact_data'):
     case('contact data'):
       $contact=new Contact($this->get('customer contact key'));
@@ -122,16 +108,19 @@ class Customer{
     case('ship to'):
       
       $sql=sprintf('select * from `Ship To Dimension` where `Ship To Key`=%d ',$arg1);
-      //  print $sql;
-      $result =& $this->db->query($sql);
-      if(!$this->ship_to[$arg1]=$result->fetchRow()){	     
+
+      
+      $result=mysql_query($sql);
+      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+	
+	
 	$this->errors[]='Error loading ship to data. Ship to Key:'.$arg1;
       }
 
       break; 
-    }
+     }
 
- }
+  }
 
 
  function create($data=false){
@@ -226,15 +215,15 @@ class Customer{
      $company=new company('new',
 			  array('name'=>$company_name,'contact key'=>$main_contact->id)
 			  );
-     $customer_name=$company->get('company name');
-     $customer_file_as=$company->get('company file as');
+     $customer_name=$company->get('Company Name');
+     $customer_file_as=$company->get('Company File As');
      
      $company_key=$company->id;
 
 
    }else{
-     $customer_name=$main_contact->get('contact name');
-     $customer_file_as=$main_contact->get('contact file as');
+     $customer_name=$main_contact->get('Contact Name');
+     $customer_file_as=$main_contact->get('Contact File As');
      $company_key='';
    }
 
@@ -243,20 +232,20 @@ class Customer{
    if($customer_name=='Unknown Contact' or $customer_name=='Unknown Company')
      $customer_name=$this->unknown_customer;
    
-   $address=new Address($main_contact->get('contact main address key'));
+   $address=new Address($main_contact->get('Contact Main Address Key'));
    
     $sql=sprintf("insert into `Customer Dimension` (`Customer ID`,`Customer Main Contact Key`,`Customer Main Contact Name`,`Customer Name`,`Customer File As`,`Customer Type`,`Customer Company Key`,`Customer Main Address Key`,`Customer Main Location`,`Customer Main XHTML Address`,`Customer Main XHTML Email`,`Customer Email`,`Customer Main Email Key`,`Customer Main Telephone`,`Customer Main Telephone Key`,`Customer Main Address Header`,`Customer Main Address Town`,`Customer Main Address Postal Code`,`Customer Main Address Country Region`,`Customer Main Address Country`,`Customer Main Address Country Key`) values (%d,%d,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
 		 ,$unique_id
 		 ,$main_contact->id
-		 ,prepare_mysql($main_contact->get('contact name'))
+		 ,prepare_mysql($main_contact->get('Contact Name'))
 		 ,prepare_mysql($customer_name)
 		 ,prepare_mysql($customer_file_as)
 
 		 ,prepare_mysql($type)
 		 ,prepare_mysql($company_key)
-		 ,prepare_mysql($main_contact->get('contact main address key'))
-		 ,prepare_mysql($main_contact->get('contact main location'))
-		 ,prepare_mysql($main_contact->get('contact main xhtml address'))
+		 ,prepare_mysql($main_contact->get('Contact Main Address Key'))
+		 ,prepare_mysql($main_contact->get('Contact Main Location'))
+		 ,prepare_mysql($main_contact->get('Contact Main XHTML Address'))
 
 		 ,prepare_mysql($main_contact->get('Contact Main XHTML Email'))
 		 ,prepare_mysql(strip_tags($main_contact->get('Contact Main XHTML Email')))
@@ -264,44 +253,44 @@ class Customer{
 		 ,prepare_mysql($main_contact->get('Contact Main Telephone'))
 		 ,prepare_mysql($main_contact->get('Contact Main Telephone key'))
 		 ,prepare_mysql($address->display('header'))
-		 ,prepare_mysql($address->get('address town'))
-		 ,prepare_mysql($address->get('postal code'))
-		 ,prepare_mysql($address->get('country region'))
+		 ,prepare_mysql($address->get('Address Town'))
+		 ,prepare_mysql($address->get('Postal Code'))
+		 ,prepare_mysql($address->get('Address Country Primary Division'))
 		 ,prepare_mysql($address->get('Address Country Name'))
 		 ,prepare_mysql($address->get('Address Country Key'))
 	       );
     //     print_r($main_contact->data);
-    // print "$sql\n";
-    //  exit;
-    $affected=& $this->db->exec($sql);
-    if (PEAR::isError($affected)) {
+    
+    print_r($data);
+    exit;
 
-      return; 
-    }    
-
-    $this->id = $this->db->lastInsertID();  
-    $this->get_data('id',$this->id);
-    // print_r($data);
-    //exit;
-
-    if(isset($data['has_shipping']) and $data['has_shipping'] and  isset($data['shipping_data']) and is_array($data['shipping_data'])){
+    if(mysql_query($sql)){
       
-      if($data['same_address'] and $data['same_contact'] and $data['same_company'] and $data['same_telephone']){
-	$this->add_ship_to('shipping_same_as_main','Yes');
+      $this->id =  mysql_insert_id();
+      $this->get_data('id',$this->id);
+
+      
+
+      
+
+      if(isset($data['has_shipping']) and $data['has_shipping'] and  isset($data['shipping_data']) and is_array($data['shipping_data'])){
+	
+	if($data['same_address'] and $data['same_contact'] and $data['same_company'] and $data['same_telephone']){
+	  $this->add_ship_to('shipping_same_as_main','Yes');
       }else{
-
-	$this->shipping['contact_key']='';
-	$this->shipping['contact']='';
-	$this->shipping['company_key']='';
-	$this->shipping['company']='';
-	$this->shipping['telephone']='';
-	$this->shipping['telephone_key']='';
-	$this->shipping['email']='';
-	$this->shipping['email_key']='';
-	$this->shipping['address']='';
-	$this->shipping['address_key']='';
-	$this->shipping['address_country_key']='';
-
+	  
+	  $this->shipping['contact_key']='';
+	  $this->shipping['contact']='';
+	  $this->shipping['company_key']='';
+	  $this->shipping['company']='';
+	  $this->shipping['telephone']='';
+	  $this->shipping['telephone_key']='';
+	  $this->shipping['email']='';
+	  $this->shipping['email_key']='';
+	  $this->shipping['address']='';
+	  $this->shipping['address_key']='';
+	  $this->shipping['address_country_key']='';
+	  
 
 
 	if(!$data['same_address']){
@@ -396,12 +385,18 @@ class Customer{
 	   $this->shipping['telephone']=$this->get('Customer Main Telephone');
 
 	}
+	
+	print_r($this->shipping);
+	
 	$this->add_ship_to('other','Yes');
       }
 
     }
 
-
+    }else{
+      print "Error, customer con not be created\n";exit;
+      
+    }
 
 
  }
@@ -409,9 +404,11 @@ class Customer{
  function add_ship_to($tipo='shipping_same_as_main',$is_principal='No'){
    
    $is_active='Yes';
+   
 
 
    if($tipo='shipping_same_as_main'){
+
      $contact_key=$this->get('Customer Main Contact Key');
      $contact_name=$this->get('Customer Main Contact Name');
      $company_key=$this->get('Customer Company Key');
@@ -425,6 +422,7 @@ class Customer{
      $country_key=$this->get('Customer Main Address Country Key');
      // print_r($this->data);
   }else{
+
      $contact_key=$this->shipping['contact_key'];
      $contact_name=$this->shipping['contact'];
      $company_key=$this->shipping['company_key'];
@@ -456,25 +454,27 @@ class Customer{
 		,prepare_mysql($is_active)
 		,prepare_mysql($is_principal)
 		);
+   
+   
+   if(mysql_query($sql)){
 
-   $affected=& $this->db->exec($sql);
-   //   print"$address xx\n";exit;
-   $ship_to_key = $this->db->lastInsertID();  
-
-
+   $ship_to_key = mysql_insert_id();
+   
+   
    $sql=sprintf("select count(*) as total,sum(if(`Ship To Is Active`='Yes',1,0)) as active from `Ship To Dimension` where `Ship To Customer Key`=%d ",$this->id);
    // print $sql;
-   $result =& $this->db->query($sql);
-    if($row=$result->fetchRow()){
-      $active=$row['active'];
-      $total=$row['total'];
-    }
-
+ $result=mysql_query($sql);
+  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+     $active=$row['active'];
+     $total=$row['total'];
+   }
+   
    if($is_principal='Yes'){
      
      $sql=sprintf("update `Ship To Dimension` set `Ship To Is Principal`='No' where `Ship To Customer Key`=%d ",$this->id);
-     $this->db->exec($sql);
+     mysql_query($sql);
      $address=new Address($address_key);
+
      $sql=sprintf("update `Customer Dimension` set `Customer Main Ship To Key`=%s,`Customer Main Ship To Header`=%s,`Customer Main Ship To Town`=%s,`Customer Main Ship To Postal Code`=%s,`Customer Main Ship To Country Region`=%s,`Customer Main Ship To Country`=%s,`Customer Main Ship To Country Key`=%s,`Customer Active Ship To Records`=%d,`Customer Total Ship To Records`=%d where `Customer Key`=%d"
 		  ,prepare_mysql($ship_to_key)
 		  ,prepare_mysql($address->display('header'))
@@ -487,7 +487,7 @@ class Customer{
 		  ,$total
 		  ,$this->id
 		  );
-     $this->db->exec($sql);
+     mysql_query($sql);
      
    }else{
  $sql=sprintf("update `Customer Dimension` set `Customer Active Ship To Records`=%d,`Customer Total Ship To Records`=%d where `Customer Key`=%d"
@@ -495,8 +495,12 @@ class Customer{
 		  ,$total
 		  ,$this->id
 		  );
-     $this->db->exec($sql);
+     mysql_query($sql);
    }
+ }else{
+   print "Error , can not create Ship to\n";exit;
+ }
+
 
  }
 
@@ -507,20 +511,21 @@ class Customer{
    case('no normal data'):
    case('no_normal_data'):
       $sql="select min(`Order Date`) as date   from `Order Dimension` where `Order Customer Key`=".$this->id;
-      $result =& $this->db->query($sql);
-      if($row=$result->fetchRow()){
+      $result=mysql_query($sql);
+      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+
 	$first_order_date=date('U',strtotime($row['date']));
 	if($row['date']!='' 
 	   and (
-		$this->data['customer first contacted date']=='' 
-		or ( date('U',strtotime($this->data['customer first contacted date']))>$first_order_date  )
+		$this->data['Customer First Contacted Date']=='' 
+		or ( date('U',strtotime($this->data['Customer First Contacted Date']))>$first_order_date  )
 		)
 	   ){
 	  $sql=sprintf("update `Customer Dimension` set `Customer First Contacted Date`=%d, where `Customer Key`=%d"
 		       ,prepare_mysql($row['date'])
 		       ,$this->id
 		       );
-	  $this->db->exec($sql);
+	  mysql_query($sql);
 	}	 
       }
       $address_fuzzy=false;
@@ -544,7 +549,7 @@ class Customer{
      $sigma_factor=3.2906;//99.9% value assuming normal distribution
 
      $sql="select min(`Order Date`) as first_order_date ,max(`Order Date`) as last_order_date,count(*)as orders, sum(if(`Order Current Payment State` like '%Cancelled',1,0)) as cancelled,  sum( if(`Order Current Payment State` like '%Paid%'    ,1,0)) as invoiced,sum( if(`Order Current Payment State` like '%Refund%'    ,1,0)) as refunded,sum(if(`Order Current Dispatch State`='Unknown',1,0)) as unknown   from `Order Dimension` where `Order Customer Key`=".$this->id;
-     $result =& $this->db->query($sql);
+
      $this->data['customer orders']=0;
      $this->data['customer orders cancelled']=0;
      $this->data['customer orders invoiced']=0;
@@ -557,66 +562,68 @@ class Customer{
      $this->data['active customer']='Unkwnown';
      
      //print "$sql\n";     
-     
-     if($row=$result->fetchRow()){	     
+     $result=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+       
        $this->data['customer orders']=$row['orders'];
        $this->data['customer orders cancelled']=$row['cancelled'];
        $this->data['customer orders invoiced']=$row['invoiced'];
-     }
-     
-      if($this->data['customer orders']>0){
-	$this->data['customer first order date']=$row['first_order_date'];
-	$this->data['customer last order date']=$row['last_order_date'] ;
-	$this->data['actual customer']='Yes';
-      }else{
-	$this->data['actual customer']='No';
-	$this->data['customer type by activity']='Prospect';
-
-      }
-
-      if($this->data['customer orders']==1){
-	$sql="select avg((`Customer Order Interval`)+($sigma_factor*`Customer Order Interval STD`)) as a from `Customer Dimension`";
-	$result2 =& $this->db->query($sql);
-	if($row2=$result2->fetchRow()){
-	  $average_max_interval=$row2['a'];
-	  if(is_numeric($average_max_interval)){
-	    if(   (strtotime('now')-strtotime($this->data['customer last order date']))/(3600*24)  <  $average_max_interval){
-	      $this->data['active customer']='Maybe';
-	      $this->data['customer type by activity']='New';
-
-	    }else{
-	      $this->data['active customer']='No';
-	      $this->data['customer type by activity']='Inactive';
-
-	    }
-	  }else
-	    $this->data['active customer']='Unknown';
-	  $this->data['customer type by activity']='Unknown';
-
-	  
-	  }	
-
-      }
-
-      if($this->data['customer orders']>1){
+       
+       
+       if($this->data['customer orders']>0){
+	 $this->data['customer first order date']=$row['first_order_date'];
+	 $this->data['customer last order date']=$row['last_order_date'] ;
+	 $this->data['actual customer']='Yes';
+       }else{
+	 $this->data['actual customer']='No';
+	 $this->data['customer type by activity']='Prospect';
+	 
+       }
+       
+       if($this->data['customer orders']==1){
+	 $sql="select avg((`Customer Order Interval`)+($sigma_factor*`Customer Order Interval STD`)) as a from `Customer Dimension`";
+	 
+	 $result2=mysql_query($sql);
+	 if($row2=mysql_fetch_array($result2, MYSQL_ASSOC)){
+	   $average_max_interval=$row2['a'];
+	   if(is_numeric($average_max_interval)){
+	     if(   (strtotime('now')-strtotime($this->data['customer last order date']))/(3600*24)  <  $average_max_interval){
+	       $this->data['active customer']='Maybe';
+	       $this->data['customer type by activity']='New';
+	       
+	     }else{
+	       $this->data['active customer']='No';
+	       $this->data['customer type by activity']='Inactive';
+	       
+	     }
+	   }else
+	     $this->data['active customer']='Unknown';
+	   $this->data['customer type by activity']='Unknown';
+	   
+	   
+	 }	
+	 
+       }
+       
+       if($this->data['customer orders']>1){
 	 $sql="select `Order Date` as date from `Order Dimension` where `Order Customer Key`=".$this->id." order by `Order Date`";
-	 $result =& $this->db->query($sql);
 	 $last_order=false;
 	 $intervals=array();
-	 while($row=$result->fetchRow()){
-	   $this_date=date('U',strtotime($row['date']));
+	 $result2=mysql_query($sql);
+	 while($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ){
+	   $this_date=date('U',strtotime($row2['date']));
 	   if($last_order){
 	     $intervals[]=($this_date-$last_date)/3600/24;
 	   }
 	   
 	   $last_date=$this_date;
 	   $last_order=true;
-
+	   
 	 }
 	 //	 print $sql;
 	 //print_r($intervals);
-
-	   
+	 
+	 
 	 $this->data['customer order interval']=average($intervals);
 	 $this->data['customer order interval std']=deviation($intervals);
 	 
@@ -630,27 +637,27 @@ class Customer{
 	   $this->data['customer type by activity']='Inactive';
 
 	 }
-      }
+       }
+       
       
-      
-
-      $sql=sprintf("update `Customer Dimension` set `Customer Orders`=%d,`Customer Orders Cancelled`=%d,`Customer Orders Invoiced`=%d,`Customer First Order Date`=%s,`Customer Last Order Date`=%s,`Customer Order Interval`=%s,`Customer Order Interval STD`=%s,`Active Customer`=%s,`Actual Customer`=%s,`Customer Type by Activity`=%s where `Customer Key`=%d",
-		   $this->data['customer orders']
-		   ,$this->data['customer orders cancelled']
-		   ,$this->data['customer orders invoiced']
-		   ,prepare_mysql($this->data['customer first order date'])
-		   ,prepare_mysql($this->data['customer last order date'])
-		   ,prepare_mysql($this->data['customer order interval'])
-		   ,prepare_mysql($this->data['customer order interval std'])
-		   ,prepare_mysql($this->data['active customer'])
-		   ,prepare_mysql($this->data['actual customer'])
-		   ,prepare_mysql($this->data['customer type by activity'])
-		   ,$this->id
-		   );
-      // print "$sql\n";
-      //exit;
-      $this->db->exec($sql);
-     
+       
+       $sql=sprintf("update `Customer Dimension` set `Customer Orders`=%d,`Customer Orders Cancelled`=%d,`Customer Orders Invoiced`=%d,`Customer First Order Date`=%s,`Customer Last Order Date`=%s,`Customer Order Interval`=%s,`Customer Order Interval STD`=%s,`Active Customer`=%s,`Actual Customer`=%s,`Customer Type by Activity`=%s where `Customer Key`=%d",
+		    $this->data['customer orders']
+		    ,$this->data['customer orders cancelled']
+		    ,$this->data['customer orders invoiced']
+		    ,prepare_mysql($this->data['customer first order date'])
+		    ,prepare_mysql($this->data['customer last order date'])
+		    ,prepare_mysql($this->data['customer order interval'])
+		    ,prepare_mysql($this->data['customer order interval std'])
+		    ,prepare_mysql($this->data['active customer'])
+		    ,prepare_mysql($this->data['actual customer'])
+		    ,prepare_mysql($this->data['customer type by activity'])
+		    ,$this->id
+		    );
+       // print "$sql\n";
+       //exit;
+       mysql_query($sql);
+     }
 
 
       //      $sql=sprintf("select `Customer Orders` from `Customer Dimension` order by `Customer Order`");
@@ -716,7 +723,7 @@ class Customer{
    case('main_email'):
      $sql=sprintf('update customer set %s=%s where id=%d',$key,prepare_mysql($this->data[$key]),$this->id);
      //print "$sql\n";
-     $this->db->exec($sql);
+     mysql_query($sql);
      
 	if(is_array($history_data)){
 	  $this->save_history($key,$this->old[$key],$this->data['main']['email'],$history_data);
@@ -768,7 +775,7 @@ class Customer{
 		  ,prepare_mysql($data['author_key'])
 		  );
      //   print $sql;
-     $this->db->exec($sql);
+     mysql_query($sql);
      $this->msg=_('Note Added');
      return true;
      break;
@@ -863,7 +870,7 @@ class Customer{
 		  ,prepare_mysql($display)
 		  );
      // print "$sql\n";
-     $this->db->exec($sql);
+     mysql_query($sql);
      $this->msg=_('Note Added');
      return true;
 
@@ -872,32 +879,31 @@ class Customer{
 
 
  function get($key,$arg1=false){
-
-   $key=strtolower($key);
-   if(isset($this->data[$key]))
+   if(array_key_exists($key,$this->data)){
      return $this->data[$key]; 
+   }
    
    if(preg_match('/^contact /i',$key)){
      if(!$this->contact_data)
        $this->load('contact data');
      if(isset($this->contact_data[$key]))
-     return $this->contact_data[$key]; 
+       return $this->contact_data[$key]; 
    }
+   
 
 
 
-
-    if(preg_match('/^ship to /i',$key)){
-      if(!$arg1)
-	$ship_to_key=$this->get('customer main ship to key');
-      else
-	$ship_to_key=$arg1;
+   if(preg_match('/^ship to /i',$key)){
+     if(!$arg1)
+       $ship_to_key=$this->data['Customer Main Ship To Key'];
+     else
+       $ship_to_key=$arg1;
       if(!$this->ship_to[$ship_to_key])
-       $this->load('ship to',$ship_to_key);
-     if(isset($this->ship_to[$ship_to_key][$key]))
-       return $this->ship_to[$ship_to_key][$key]; 
+	$this->load('ship to',$ship_to_key);
+      if(isset($this->ship_to[$ship_to_key])    and  array_key_exists($key,$this->ship_to[$ship_to_key]) )
+	return $this->ship_to[$ship_to_key][$key]; 
    }
-
+   
 
 
    switch($key){
@@ -908,20 +914,35 @@ class Customer{
      //get customer last invoice;
      $sql="select count(*)as num  from `Order Dimension` where `Order Type`='Order' and `Order Current Dispatch State`!='Cancelled' and `Order Customer Key`=".$this->id." and DATE_SUB(CURDATE(),INTERVAL $args) <=`Order Date`  ";
      // print $sql;
-     $result =& $this->db->query($sql);
-     if($row=$result->fetchRow()){ 
+     
+     $result=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+       
        if($row['num']>0)
 	 return true;
      }
      return false;
      break;
    case('xhtml ship to'):
-       if(!$arg1)
-	$ship_to_key=$this->get('customer main ship to key');
-      else
-	$ship_to_key=$arg1;
-      if(!isset($this->ship_to[$ship_to_key]['ship to key']))
-       $this->load('ship to',$ship_to_key);
+   
+     
+     if(!$arg1)
+       $ship_to_key=$this->data['Customer Main Ship To Key'];
+     else
+       $ship_to_key=$arg1;
+     
+     if(!$ship_to_key){
+       print "Warning no ship to key un customer.php\n";
+       sdsd();
+       return false;
+	 
+     }
+
+     if(!isset($this->ship_to[$ship_to_key]['ship to key']))
+	 $this->load('ship to',$ship_to_key);
+      
+
+      
       if(isset($this->ship_to[$ship_to_key]['ship to key'])){
 	$contact=$this->ship_to[$ship_to_key]['ship to contact name'];
 	$company=$this->ship_to[$ship_to_key]['ship to company name'];
@@ -941,6 +962,7 @@ class Customer{
     
 
      break;
+
      //   case('customer main address key')
 
      
@@ -962,14 +984,23 @@ class Customer{
 //        return '';
    }
    
+   $_key=ucwords($key);
+   if(isset($this->data[$_key]))
+     return $this->data[$_key];
+
+   print "Error ->$key not found in get, from Customer\n";
+   return false;
+   exit;
  }
 
 
   function get_id(){
     
     $sql="select max(`Customer ID`)  as customer_id from `Customer Dimension`";
-    $result =& $this->db->query($sql);
-    if( $row=$result->fetchRow()){
+    $result=mysql_query($sql);
+    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+      
+      
       if(!preg_match('/\d*/',_trim($row['customer_id']),$match))
 	$match[0]=1;
       $right_side=$match[0];

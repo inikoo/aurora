@@ -1,4 +1,6 @@
 <?
+include("../../external_libs/adminpro/adminpro_config.php");
+//include("../../external_libs/adminpro/mysql_dialog.php");
 include_once('../../app_files/db/dns.php');
 include_once('../../classes/Department.php');
 include_once('../../classes/Family.php');
@@ -9,17 +11,19 @@ include_once('../../classes/SupplierProduct.php');
 error_reporting(E_ALL);
 
 
-require_once 'MDB2.php';            // PEAR Database Abstraction Layer
-require_once '../../common_functions.php';
-$db =& MDB2::factory($dsn);       
-if (PEAR::isError($db)){echo $db->getMessage() . ' ' . $db->getUserInfo();}
 
-$db->setFetchMode(MDB2_FETCHMODE_ASSOC);  
-$db->query("SET time_zone ='UTC'");
-$db->query("SET NAMES 'utf8'");
+$con=@mysql_connect($globalConfig['dbhost'],$globalConfig['dbuser'], $globalConfig['dbpass']);
+if(!$con){print "Error can not connect with database server\n";exit;}
+$db=@mysql_select_db($globalConfig['dbase'], $con);
+if (!$db){print "Error can not access the database\n";exit;}
+  
+
+require_once '../../common_functions.php';
+mysql_query("SET time_zone ='UTC'");
+mysql_query("SET NAMES 'utf8'");
 require_once '../../myconf/conf.php';           
 date_default_timezone_set('Europe/London');
-$PEAR_Error_skiptrace = &PEAR::getStaticProperty('PEAR_Error','skiptrace');$PEAR_Error_skiptrace = true;// Fix memory leak
+
 
 
 
@@ -121,10 +125,9 @@ foreach($__cols as $cols){
   $supplier_code=_trim($cols[21]);
   $part_code=_trim($cols[22]);
   $supplier_cost=$cols[23];
-  // if(preg_match('/PPB-01/i',$code)){
+  // if(preg_match('/EO-/i',$code)){
   //     print_r($cols);
-  //     exit;
-//   }
+  //   exit;   }
   
   if($code=='' or !preg_match('/\-/',$code) or preg_match('/total/i',$price)  or  preg_match('/^(pi\-|cxd\-|fw\-04)/i',$code))
     $is_product=false;
@@ -146,7 +149,7 @@ foreach($__cols as $cols){
 
   
   if($is_product){
-      print "$code\r";
+    //     print "$code\r";
     $part_list=array();
     $rules=array();
     
@@ -167,7 +170,7 @@ foreach($__cols as $cols){
       if(preg_match('/off.*more/i',$current_promotion,$match))
 	$terms=preg_replace('/^off\s*/i','',$match[0]);
       else
-	print "************".$current_promotion."\n";
+	//	print "************".$current_promotion."\n";
       $deals[]=array(
 		     'deal campain name'=>'Gold Reward'
 		     ,'deal trigger'=>'Order'
@@ -335,8 +338,8 @@ foreach($__cols as $cols){
 
 	$part_data=array(
 			 'Part Most Recent'=>'Yes',
-			 'Part XHTML Currently Supplied By'=>sprintf('<a href="supplier.php?id=%d">%s</a>',$supplier->id,$supplier->get('supplier code')),
-			 'Part XHTML Currently Used In'=>sprintf('<a href="product.php?id=%d">%s</a>',$product->id,$product->get('product code')),
+			 'Part XHTML Currently Supplied By'=>sprintf('<a href="supplier.php?id=%d">%s</a>',$supplier->id,$supplier->get('Supplier Code')),
+			 'Part XHTML Currently Used In'=>sprintf('<a href="product.php?id=%d">%s</a>',$product->id,$product->get('Product Code')),
 			 'Part XHTML Description'=>preg_replace('/\(.*\)\s*$/i','',$product->get('Product XHTML Short Description'))
 			 );
 	$part=new Part('new',$part_data);
@@ -348,8 +351,8 @@ foreach($__cols as $cols){
 		       );
 	$supplier_product->new_part_list('',$rules);
 	$part_list[]=array(
-			   'Product ID'=>$product->get('product ID'),
-			   'Part SKU'=>$part->get('part sku'),
+			   'Product ID'=>$product->get('Product ID'),
+			   'Part SKU'=>$part->get('Part SKU'),
 			   'Product Part Id'=>1,
 			   'requiered'=>'Yes',
 			   'Parts Per Product'=>1,

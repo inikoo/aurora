@@ -7,7 +7,7 @@ class deal{
 
 
   function __construct($a1,$a2=false) {
-    $this->db =MDB2::singleton();
+    //  $this->db =MDB2::singleton();
 
 
     if(is_numeric($a1) and !$a2){
@@ -31,11 +31,11 @@ class deal{
     //    elseif($tipo=='code')
     //  $sql=sprintf("select * from `Deal Dimension` where `Deal Code`=%s",prepare_mysql($tag));
     // print $sql;
-
-    if($result =& $this->db->query($sql)){
-      $this->data=$result->fetchRow();
+    $result=mysql_query($sql);
+    
+    if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)  ){
       $this->calculate_deal=create_function('$transaction_data,$customer_id,$date', $this->get('Deal Metadata'));
-      $this->id=$this->data['deal key'];
+      $this->id=$this->data['Deal Key'];
     }
   }
   
@@ -118,14 +118,17 @@ class deal{
     $values=preg_replace('/,$/',')',$values);
     $sql=sprintf("insert into `Deal Dimension` %s %s",$keys,$values);
     // print "$sql\n";
-    $affected=& $this->db->exec($sql);
-    $this->id = $this->db->lastInsertID();  
-    $this->get_data('id',$this->id);
+    if(mysql_query($sql)){
+      $this->id = mysql_insert_id();
+      $this->get_data('id',$this->id);
+    }else{
+      print "Error can not create deal \n";exit;
 
+    }
   }
 
   function get($key=''){
-    $key=strtolower($key);
+
     if(isset($this->data[$key]))
       return $this->data[$key];
     
