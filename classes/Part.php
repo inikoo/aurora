@@ -38,12 +38,13 @@ class part{
   }
   
   function create($data){
-    
+    // print_r($data);
      $base_data=array(
 		     'part type'=>'Physical',
 		     'part sku'=>'',
 		     'part xhtml currently used in'=>'',
 		     'part xhtml currently supplied by'=>'',
+		     'part xhtml description'=>'',
 		     'part unit description'=>'',
 		     'part package size metadata'=>'',
 		     'part package volume'=>'',
@@ -52,14 +53,15 @@ class part{
 		     'part valid from'=>'',
 		     'part valid to'=>'',
 		     'part most recent'=>'',
-		     'part current part key'=>''
+		     'part most recent key'=>''
 		     );
      foreach($data as $key=>$value){
        if(isset( $base_data[strtolower($key)]) )
 	 $base_data[strtolower($key)]=_trim($value);
      }
  
-     if($this->valid_sku($base_data['part sku']) or $this->used_sku($base_data['part sku'])  ){
+     if(!$this->valid_sku($base_data['part sku']) ){
+
        $base_data['part sku']=$this->new_sku();
      }
 
@@ -70,10 +72,17 @@ class part{
     }
     $keys=preg_replace('/,$/',')',$keys);
     $values=preg_replace('/,$/',')',$values);
+    
     $sql=sprintf("insert into `Part Dimension` %s %s",$keys,$values);
-    print "$sql\n";
+    // print "$sql\n";
+    // exit;
     if(mysql_query($sql)){
       $this->id = mysql_insert_id();
+
+      if($base_data['part most recent']=='Yes')
+      	$sql=sprintf("update  `Part Dimension` set `Part Most Recent Key`=%d where `Part Key`=%d",$this->id,$this->id);
+	mysql_query($sql);
+
       $this->get_data('id',$this->id);
     }else{
       print "Error Part can not be created\n";exit;
@@ -104,6 +113,7 @@ class part{
   
 
  function valid_sku($sku){
+   // print "validadndo sku $sku";
    if(is_numeric($sku) and $sku>0 and $sku<9223372036854775807)
      return true;
    else
@@ -112,7 +122,8 @@ class part{
 
 function used_sku($sku){
   $sql="select count(*) as num from `Part Dimension` where `Part SKU`=".prepare_mysql($sku);
- $result=mysql_query($sql);
+  // print "$sql\n";
+  $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
     if($row['num']>0)
       return true;
@@ -121,11 +132,11 @@ function used_sku($sku){
 }
 
  function new_sku(){
-   $select="select max(`Part SKU`) as sku from `Part Dimension`";
+   $sql="select max(`Part SKU`) as sku from `Part Dimension`";
+   //   print "$sql\n";
    $result=mysql_query($sql);
    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-    $row=$result->fetchRow();
-    return $row['sku']+1;
+     return $row['sku']+1;
    }else
      return 1;
    

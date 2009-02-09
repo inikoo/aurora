@@ -53,7 +53,7 @@ class supplierproduct{
 	  $this->data['Supplier Product Valid To']=$tag['date'];
 	  mysql_query($sql);
 	}
-	if(strtotime($this->data['supplier product valid from'])>strtotime($tag['date'])  ){
+	if(strtotime($this->data['Supplier Product Valid From'])>strtotime($tag['date'])  ){
 	  $sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Valid From`=%s where `Supplier Product Key`=%d",prepare_mysql($tag['date']),$this->id);
 	  mysql_query($sql);
 	  $this->data['Supplier Product Valid From']=$tag['date'];
@@ -98,13 +98,13 @@ class supplierproduct{
 		     );
 	
 	$result=mysql_query($sql);
-	if($same_data_id=mysql_fetch_array($result, MYSQL_ASSOC)){
+	if($same_id_data=mysql_fetch_array($result, MYSQL_ASSOC)){
 	  // just price difference
 	  $diff_name=false;
-	  if($tag['supplier product cost']==$same_id_data['supplier product cost'])
+	  if($tag['supplier product cost']==$same_id_data['Supplier Product Cost'])
 	    $diff_price=false;
 	  $this->new_id=false;
-	  $tag['supplier product id']=$same_id_data['supplier product id'];
+	  $tag['supplier product id']=$same_id_data['Supplier Product Id'];
 	  
 	  $tag['supplier product valid from']=$tag['date'];
 	  $tag['supplier product valid to']=$tag['date'];
@@ -115,7 +115,7 @@ class supplierproduct{
 	  $result=mysql_query($sql);
 	  if($last_data=mysql_fetch_array($result, MYSQL_ASSOC)){
 	    $tag['supplier product most recent']='No';
-	    $tag['supplier product most recent key']=$last_data['product key'];
+	    $tag['supplier product most recent key']=$last_data['Product Key'];
 	  }else{
 	    $tag['supplier product most recent']='Yes';
 	  }
@@ -157,21 +157,21 @@ class supplierproduct{
 		     'supplier product description'=>'',
 		     'supplier product cost'=>'',
 		     'supplier product valid from'=>date("Y-m-d H:i:s"),
-		       'supplier product valid to'=>date("Y-m-d H:i:s"),
+		     'supplier product valid to'=>date("Y-m-d H:i:s"),
 		     'supplier product most recent'=>'Yes',
 		     'supplier product most recent key'=>''
 		     );
     foreach($data as $key=>$value){
       if(isset($base_data[strtolower($key)]))
 	$base_data[strtolower($key)]=_trim($value);
-      }
+    }
     
     if(!$this->valid_id($base_data['supplier product id'])  ){
       $base_data['supplier product id']=$this->new_id();
     }
     
     if(preg_match('/^yes$/i',$base_data['supplier product most recent']))
-	$base_data['supplier product most recent']='Yes';
+      $base_data['supplier product most recent']='Yes';
     else
       $base_data['supplier product most recent']='No';
     
@@ -180,7 +180,7 @@ class supplierproduct{
     foreach($base_data as $key=>$value){
       $keys.="`$key`,";
       $values.=prepare_mysql($value).",";
-      }
+    }
     $keys=preg_replace('/,$/',')',$keys);
     $values=preg_replace('/,$/',')',$values);
     $sql=sprintf("insert into `Supplier Product Dimension` %s %s",$keys,$values);
@@ -190,12 +190,12 @@ class supplierproduct{
       
       if($base_data['supplier product most recent']=='Yes'){
 	
-      $sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Most Recent`='No' where `Supplier Product ID`=%d  and `Product Supplier Key`!=%d",$base_data['supplier product id'],$this->id);
-      mysql_query($sql);
+	$sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Most Recent`='No' where `Supplier Product ID`=%d  and `Product Supplier Key`!=%d",$base_data['supplier product id'],$this->id);
+	mysql_query($sql);
       
-      $sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Most Recent Key`=%d where `Supplier Product Key`=%d",$this->id,$this->id);
-      mysql_query($sql);
-    }
+	$sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Most Recent Key`=%d where `Supplier Product Key`=%d",$this->id,$this->id);
+	mysql_query($sql);
+      }
       
 
       
@@ -204,49 +204,49 @@ class supplierproduct{
     }else{
       print "Error can not create Product Supplier\n";exit;
     }
-  
-
-
-    }
-
-    function load($data_to_be_read,$args=''){
-
-    }
-  
-    function get($key=''){
-
-      if(array_key_exists($key,$this->data))
-	return $this->data[$key];
-
-      $_key=preg_replace('/^Supplier Product /','',$key);
-      if(isset($this->data[$_key]))
-	return $this->data[$key];
-
     
-      switch($key){
+    
+    
+    }
+  
+  function load($data_to_be_read,$args=''){
+    
+    }
+  
+  function get($key=''){
+    
+    if(array_key_exists($key,$this->data))
+      return $this->data[$key];
+    
+    $_key=preg_replace('/^Supplier Product /','',$key);
+    if(isset($this->data[$_key]))
+      return $this->data[$key];
+    
+    
+    switch($key){
       
-      }
-    
-      return false;
     }
+    
+    return false;
+  }
   
 
-    function valid_id($id){
-      if(is_numeric($id) and $id>0 and $id<9223372036854775807)
-	return true;
-      else
-	return false;
-    }
-
-    function used_id($id){
-      $sql="select count(*) as num from `Supplier Product Dimension` where `Supplier Product ID`=".prepare_mysql($id);
-      $result=mysql_query($sql);
-      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-	if($row['num']>0)
-	  return true;
-      }
+  function valid_id($id){
+    if(is_numeric($id) and $id>0 and $id<9223372036854775807)
+      return true;
+    else
       return false;
+  }
+  
+  function used_id($id){
+    $sql="select count(*) as num from `Supplier Product Dimension` where `Supplier Product ID`=".prepare_mysql($id);
+    $result=mysql_query($sql);
+    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+      if($row['num']>0)
+	  return true;
     }
+    return false;
+  }
 
     function new_id(){
       $sql="select max(`Supplier Product ID`) as id from `Supplier Product Dimension`";

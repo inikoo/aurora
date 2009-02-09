@@ -109,13 +109,14 @@ class Customer{
       
       $sql=sprintf('select * from `Ship To Dimension` where `Ship To Key`=%d ',$arg1);
 
-      
+      //  print $sql;
       $result=mysql_query($sql);
       if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+	$this->ship_to[$row['Ship To Key']]=$row;
 	
-	
+
+      }else
 	$this->errors[]='Error loading ship to data. Ship to Key:'.$arg1;
-      }
 
       break; 
      }
@@ -133,7 +134,7 @@ class Customer{
 
    global $myconf;
 
-   //print_r($data);
+   // print_r($data);
    // exit;
     
    $this->unknown_contact=$myconf['unknown_contact'];
@@ -211,6 +212,8 @@ class Customer{
 
 
    $main_contact=new contact('new',$data_contact);
+
+
    if($type=='Company'){
      $company=new company('new',
 			  array('name'=>$company_name,'contact key'=>$main_contact->id)
@@ -261,8 +264,8 @@ class Customer{
 	       );
     //     print_r($main_contact->data);
     
-    print_r($data);
-    exit;
+    //print_r($data);
+    //exit;
 
     if(mysql_query($sql)){
       
@@ -364,11 +367,14 @@ class Customer{
 	  $shipping_contact=new Contact($shipping_contact_key);
 	  if($shipping_contact->id){
 	    $shipping_contact->add_tel(array(
-					     'telecom number'=>$data['shipping_data']['telephone']
+					     'Telecom Original Number'=>$data['shipping_data']['telephone']
 					     )
 				       );
+	    
 	    if($shipping_contact->add_telecom){
-	      $shipping_tel=$shipping_contact->add_tel;
+	      //  print "hola\n";
+	      $shipping_tel=new Telecom($shipping_contact->add_telecom);
+
 	      $this->shipping['telephone_key']=$shipping_tel->id;
 	      $this->shipping['telephone']=$shipping_tel->display('html');
 	    }
@@ -386,7 +392,7 @@ class Customer{
 
 	}
 	
-	print_r($this->shipping);
+	//print_r($this->shipping);
 	
 	$this->add_ship_to('other','Yes');
       }
@@ -932,22 +938,25 @@ class Customer{
        $ship_to_key=$arg1;
      
      if(!$ship_to_key){
-       print "Warning no ship to key un customer.php\n";
+       print_r($this->data);
+       print "\n*** Warning no ship to key un customer.php\n";
        sdsd();
+       exit;
        return false;
-	 
+       
      }
 
      if(!isset($this->ship_to[$ship_to_key]['ship to key']))
 	 $this->load('ship to',$ship_to_key);
       
 
-      
-      if(isset($this->ship_to[$ship_to_key]['ship to key'])){
-	$contact=$this->ship_to[$ship_to_key]['ship to contact name'];
-	$company=$this->ship_to[$ship_to_key]['ship to company name'];
-	$address=$this->ship_to[$ship_to_key]['ship to xhtml address'];
-	$tel=$this->ship_to[$ship_to_key]['ship to telephone'];
+     //print_r($this->ship_to);
+
+      if(isset($this->ship_to[$ship_to_key]['Ship To Key'])){
+	$contact=$this->ship_to[$ship_to_key]['Ship To Contact Name'];
+	$company=$this->ship_to[$ship_to_key]['Ship To Company Name'];
+	$address=$this->ship_to[$ship_to_key]['Ship To XHTML Address'];
+	$tel=$this->ship_to[$ship_to_key]['Ship To Telephone'];
 	$ship_to='';
 	if($contact!='')
 	  $ship_to.='<b>'.$contact.'</b>';
@@ -960,7 +969,9 @@ class Customer{
 	return $ship_to;
       }
     
-
+      print "Warning no ship to key $ship_to_key un customer*** .php\n";
+     
+       exit;
      break;
 
      //   case('customer main address key')
@@ -988,9 +999,10 @@ class Customer{
    if(isset($this->data[$_key]))
      return $this->data[$_key];
 
-   print "Error ->$key not found in get, from Customer\n";
-   return false;
+   print "Error ->$key not found in get,* from Customer\n";
    exit;
+   return false;
+
  }
 
 

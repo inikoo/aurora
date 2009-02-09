@@ -8676,12 +8676,15 @@ if($act_data['town']=='Hornbæk - Sjælland'){
 
 
       $tel=_trim(preg_replace('/'.$email.'/','',$header_data['phone']));
+
     $email=_trim($email);
     }else{
       $email='';
       $tel=$header_data['phone'];
+      
     }
-
+    $tel=_trim(preg_replace('/^\s*\[\s*1\s*\]\s*/','',$tel));
+    // print "***** $tel\n";
     $customer_data['shipping_data']['telephone']=$tel;
     $customer_data['shipping_data']['email']=$email;
     $customer_data['shipping_data']['type']='3line';

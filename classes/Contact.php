@@ -89,6 +89,9 @@ class Contact{
   }
 
   function create ($data){
+
+    //   print_r($data);
+
     if(!is_array($data))
       $data=array();
 
@@ -193,7 +196,7 @@ class Contact{
       //      print "\n$sql\n";
       //      exit;
       mysql_query($sql);
-      
+
       $this->get_data('id',$this->id);
       if(isset($data['email']) and  $data['email']!=''){
 	$email_data=array('email'=>$data['email'],'email contact'=>$this->display('name'));
@@ -214,12 +217,12 @@ class Contact{
     
       if(isset($data['fax']) and $data['fax']!=''){
 	$tel_data=array(
-			'country key'=>$this->get('Contact Main Country Key')
-			,'telecom number'=>$data['fax']
-			,'telecom type'=>'Bussiness Fax'
+			'Telecom Original Country Key'=>$this->get('Contact Main Country Key')
+			,'Telecom Original Number'=>$data['fax']
+			,'Telecom Original Type'=>'Bussiness Fax'
 			);
 	if(isset($data['fax type']) and ($data['fax type']=='Home' or $data['fax type']=='Bussiness' ) )
-	  $tel_data['telecom type']=$data['fax type'].' Fax';
+	  $tel_data['Telecom Original Type']=$data['fax type'].' Fax';
 	$tel=new Telecom('new',$tel_data);
 	if($tel->id){
 	  $sql=sprintf("insert into  `Telecom Bridge` (`Telecom Key`, `Contact Key`) values (%d,%d)  ",$tel->id,$this->id);
@@ -240,9 +243,9 @@ class Contact{
     
       if(isset($data['mobile']) and $data['mobile']!=''){
 	$tel_data=array(
-			'country key'=>$this->get('Contact Main Country Key')
-			,'telecom number'=>$data['mobile']
-			,'telecom type'=>'Mobile'
+			'Telecom Original Country Key'=>$this->get('Contact Main Country Key')
+			,'Telecom Original Number'=>$data['mobile']
+			,'Telecom Original Type'=>'Mobile'
 			);
 
 	$tel=new Telecom('new',$tel_data);
@@ -266,12 +269,15 @@ class Contact{
      
       if(isset($data['telephone']) and $data['telephone']!=''){
 	$tel_data=array(
-			'country key'=>$this->get('Contact Main Country Key')
-			,'telecom number'=>$data['telephone']
-			,'telecom type'=>'Bussiness Telephone'
+			'Telecom Original Country Key'=>$this->get('Contact Main Country Key')
+			,'Telecom Original Number'=>$data['telephone']
+			,'Telecom Original Type'=>'Bussiness Telephone'
 			);
+
+
 	if(isset($data['telephone type']) and ($data['telephone type']=='Home' or $data['telephone type']=='Bussiness' ) )
-	  $tel_data['telecom type']=$data['telephone type'].' Telephone';
+	  $tel_data['Telecom Original Type']=$data['telephone type'].' Telephone';
+	//print_r($tel_data);
 	$tel=new Telecom('new',$tel_data);
 	if($tel->id){
 	  $sql=sprintf("insert into  `Telecom Bridge` (`Telecom Key`, `Contact Key`) values (%d,%d)  ",$tel->id,$this->id);
@@ -295,10 +301,13 @@ class Contact{
 
 
 	  
-	  
+
 
 
       $this->get_data('id',$this->id);
+
+
+
     }else{
       print "Error can not create contact \n";exit;
     }
@@ -382,18 +391,18 @@ class Contact{
 
   function add_tel($data,$args='principal'){
 
-    if(!isset($data['country key']) or !$data['country key'])
-      $data['country key']=$this->get('Customer Shipping Address Country Key');
+    if(!isset($data['Telecom Original Country Key']) or !$data['Telecom Original Country Key'])
+      $data['Telecom Original Country Key']=$this->get('Customer Shipping Address Country Key');
     $telecom=new telecom('new',$data);
     if($telecom->new){
-     
+      
       $sql=sprintf("insert into  `Telecom Bridge` (`Telecom Key`, `Contact Key`) values (%d,%d)  ",$telecom->id,$this->id);
       mysql_query($sql);
       //   print "$sql\n";
 
       if(preg_match('/principal/i',$args)){
-
-	if($telecom->get('telecom type')=='Mobile')
+	
+	if($telecom->get('Telecom Type')=='Mobile')
 	  $telecom_tipo='Main Contact Mobile';
 	elseif(preg_match('/fax/i',$telecom->get('telecom type')))
 	  $telecom_tipo='Main Contact FAX';
@@ -403,10 +412,12 @@ class Contact{
 	//  print "$sql\n";
 	mysql_query($sql);
       }
+      
 
-
-
+      
       $this->add_telecom=$telecom->id;
+
+
     }else{
       $this->add_telecom=0;
      

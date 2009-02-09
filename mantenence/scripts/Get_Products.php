@@ -1,6 +1,7 @@
 <?
-include("../../external_libs/adminpro/adminpro_config.php");
+//include("../../external_libs/adminpro/adminpro_config.php");
 //include("../../external_libs/adminpro/mysql_dialog.php");
+
 include_once('../../app_files/db/dns.php');
 include_once('../../classes/Department.php');
 include_once('../../classes/Family.php');
@@ -12,9 +13,10 @@ error_reporting(E_ALL);
 
 
 
-$con=@mysql_connect($globalConfig['dbhost'],$globalConfig['dbuser'], $globalConfig['dbpass']);
+$con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
+
 if(!$con){print "Error can not connect with database server\n";exit;}
-$db=@mysql_select_db($globalConfig['dbase'], $con);
+$db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
   
 
@@ -340,7 +342,9 @@ foreach($__cols as $cols){
 			 'Part Most Recent'=>'Yes',
 			 'Part XHTML Currently Supplied By'=>sprintf('<a href="supplier.php?id=%d">%s</a>',$supplier->id,$supplier->get('Supplier Code')),
 			 'Part XHTML Currently Used In'=>sprintf('<a href="product.php?id=%d">%s</a>',$product->id,$product->get('Product Code')),
-			 'Part XHTML Description'=>preg_replace('/\(.*\)\s*$/i','',$product->get('Product XHTML Short Description'))
+			 'Part XHTML Description'=>preg_replace('/\(.*\)\s*$/i','',$product->get('Product XHTML Short Description')),
+			 'part valid from'=>date('Y-m-d H:i:s'),
+			 'part valid to'=>date('Y-m-d H:i:s')
 			 );
 	$part=new Part('new',$part_data);
 	$rules[]=array('Part Key'=>$part->id,'Supplier Product Units Per Part'=>$units

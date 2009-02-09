@@ -56,23 +56,27 @@ class Order{
       $data['cdata']['same_telephone']=$this->same_telephone;
 
       
-
+      
       $customer_identification_method='email';
+
       $customer_id=$this->find_customer($customer_identification_method,$data['cdata']);
+
       $customer=new Customer($customer_id);
       
       
       $ship_to_key=$customer->get('Customer Last Ship To Key');
+
+      
       
       $ship_to=$customer->get('xhtml ship to',$ship_to_key);
-      
+
       if(!isset($data['store_code']))
 	$data['store_code']='Unknown';
       $store=new Store('code',$data['store_code']);
       if(!$store->id)
 	$store=new Store('unknown');
       $this->data['Order Date']=$data['order date'];
-      $this->data['Order ID']=$data['order id'];
+      $this->data['Order Public ID']=$data['order id'];
       $this->data['Order Customer Key']=$customer->id;
       $this->data['Order Customer Name']=$customer->get('Customer Name');
       $this->data['Order Current Dispatch State']='In Process';
@@ -113,19 +117,19 @@ class Order{
       }
       
       
-      
+
       $customer->update('orders');
       $customer->update('no normal data');
-      
+
       $this->cutomer_rankings();
       
       switch($_SESSION['lang']){
       default:
-	  $abstract=sprintf('Order <a href="order.php?id=%d">%s</a>',$this->get('order key'),$this->get('Order ID'));
+	  $abstract=sprintf('Order <a href="order.php?id=%d">%s</a>',$this->data['Order Key'],$this->data['Order Public ID']);
 	  $note=sprintf('%s (<a href="customer.php?id=%d">%s) place an order at %s'
-			,$customer->get('customer name')
+			,$customer->get('Customer Name')
 			,$customer->id
-			,$customer->get('customer id')
+			,$customer->get('Customer ID')
 			,strftime("%e %b %Y %H:%M",strtotime($this->data['Order Date']))
 			);
 	}
@@ -144,8 +148,8 @@ class Order{
 	//	print "$sql\n";
 	mysql_query($sql);
 	
-    
-      
+
+	
       break;
     case('imap_email_mals-e'):
       $ip = gethostbyname('imap.gmail.com');
@@ -422,7 +426,7 @@ class Order{
 	$customer_identification_method='email';
 	$customer_id=$this->find_customer($customer_identification_method,$cdata);
 	$customer=new Customer($customer_id);
-	$ship_to_key=$customer->get('customer last ship to key');
+	$ship_to_key=$customer->data['Customer Last Ship To Key'];
 	$ship_to=$customer->get('xhtml ship to',$ship_to_key);
 
 	$store=new Store('code','AW.web');
@@ -430,9 +434,9 @@ class Order{
 	  $store=new Store('unknown');
 	
 	$this->data['order date']=$edata['date'];
-	$this->data['order id']=$edata['shopper_id'];
+	$this->data['order public id']=$edata['shopper_id'];
 	$this->data['order customer key']=$customer->id;
-	$this->data['order customer name']=$customer->get('customer name');
+	$this->data['order customer name']=$customer->data['customer name'];
 	$this->data['order current dispatch state']='In Process';
 	$this->data['order current payment state']='Waiting Invoice';
 	$this->data['order current xhtml state']='In Process';
@@ -493,7 +497,7 @@ class Order{
 	    }
 
 	    // print_r($_data);
-	    $product=new Product('code',$code,$this->get('Order Date'));
+	    $product=new Product('code',$code,$this->data['Order Date']);
 	    if(!$product->id){
 	      $this->errors[]=_('Error(1): Undentified Product. Line:').$product_line;
 	      print "Error(1), product undentified Line: $code $product_line\n";
@@ -505,7 +509,7 @@ class Order{
 	      if(isset($pdata[$product->id]))
 		$pdata[$product->id]['qty']=$pdata[$product->id]['qty']+$qty;
 	      else
-		$pdata[$product->id]=array('code'=>$product->get('product code'),'amount'=>$product->get('product price')*$qty,'case_price'=>$product->get('product price'),'product_id'=>$product->id,'qty'=>$qty,'family_id'=>$product->get('product family key'));
+		$pdata[$product->id]=array('code'=>$product->get('product code'),'amount'=>$product->data['Product Price']*$qty,'case_price'=>$product->get['Product Price'],'product_id'=>$product->id,'qty'=>$qty,'family_id'=>$product->data['Product Family Key']);
 		
 	    }
 	  }else{
@@ -517,10 +521,10 @@ class Order{
 	}
 	
 
-	$pdata=$this->get_discounts($pdata,$customer->id,$this->data['order date']);
+	$pdata=$this->get_discounts($pdata,$customer->id,$this->data['Order Date']);
 	$line_number=1;
 	foreach($pdata as $product_data){
-	  $product_data['date']=$this->data['order date'];
+	  $product_data['date']=$this->data['Order Date'];
 	  $product_data['line_number']=$line_number;
 	  $this->add_order_transaction($product_data);
 	  $line_number++;
@@ -528,36 +532,36 @@ class Order{
 	// $this->finish_new_order();
       
 	// $customer=new Customer($customer_id);
-	$customer->update('orders');
-	$customer->update('no normal data');
+	//$customer->update('orders');
+	//$customer->update('no normal data');
 	
-	$this->cutomer_rankings();
+	//$this->cutomer_rankings();
 
-	switch($_SESSION['lang']){
-	default:
-	  $abstract=sprintf('Internet Order <a href="order.php?id=%d">%s</a>',$this->get('order key'),$this->get('order id'));
-	  $note=sprintf('%s (<a href="customer.php?id=%d">%s) place an order by internet using IP:%d at %s'
-			,$customer->get('customer name')
-			,$customer->id
-			,$customer->get('customer id')
-			,$edata['ip_number']
-			,strftime("%e %b %Y %H:%M",strtotime($this->data['order date']))
-			);
-	}
+// 	switch($_SESSION['lang']){
+// 	default:
+// 	  $abstract=sprintf('Internet Order <a href="order.php?id=%d">%s</a>',$this->get('order key'),$this->get('order public id'));
+// 	  $note=sprintf('%s (<a href="customer.php?id=%d">%s) place an order by internet using IP:%d at %s'
+// 			,$customer->get('customer name')
+// 			,$customer->id
+// 			,$customer->get('customer id')
+// 			,$edata['ip_number']
+// 			,strftime("%e %b %Y %H:%M",strtotime($this->data['order date']))
+// 			);
+// 	}
 
-	$sql=sprintf("insert into `History Dimension` (`History Date`,`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`History Details`,`Author Key`,`Author Name`) values(%s,'Customer','%s','Placed','Order',%d,%s,0,%s)"
-		     ,prepare_mysql($this->data['order date'])
-		     ,$customer->id
-		     ,$this->data['order key']
-		     ,prepare_mysql($note)
-		     ,prepare_mysql(_('System'))
-		     );
-	mysql_query($sql);
-	$history_id=$this->db->lastInsertID();
-	$abstract.=' (<span class="like_a" onclick="showdetails(this)" d="0" id="ch'.$history_id.'"  hid="'.$history_id.'">'._('view details').'</span>)';
-	$sql=sprintf("update `History Dimension` set `History Abstract`=%s where `History Key`=%d",prepare_mysql($abstract),$history_id);
-	//	print "$sql\n";
-	mysql_query($sql);
+// 	$sql=sprintf("insert into `History Dimension` (`History Date`,`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`History Details`,`Author Key`,`Author Name`) values(%s,'Customer','%s','Placed','Order',%d,%s,0,%s)"
+// 		     ,prepare_mysql($this->data['order date'])
+// 		     ,$customer->id
+// 		     ,$this->data['order key']
+// 		     ,prepare_mysql($note)
+// 		     ,prepare_mysql(_('System'))
+// 		     );
+// 	mysql_query($sql);
+// 	$history_id=$this->db->lastInsertID();
+// 	$abstract.=' (<span class="like_a" onclick="showdetails(this)" d="0" id="ch'.$history_id.'"  hid="'.$history_id.'">'._('view details').'</span>)';
+// 	$sql=sprintf("update `History Dimension` set `History Abstract`=%s where `History Key`=%d",prepare_mysql($abstract),$history_id);
+// 	//	print "$sql\n";
+// 	mysql_query($sql);
 
 	
 	//	print "$sql\n";
@@ -575,13 +579,13 @@ class Order{
     case('email'):
     case('email strict'):
 	
-      $email=$data['email'];
+   //    $email=$data['email'];
 
-      if($email!=''){
-	$customer=new Customer('email',$email);
-	if($customer->id)
-	  return $customer->id;
-      }
+//       if($email!=''){
+// 	$customer=new Customer('email',$email);
+// 	if($customer->id)
+// 	  return $customer->id;
+//       }
        
       $customer=new Customer('new',$data);
       return $customer->id;
@@ -825,7 +829,7 @@ class Order{
     $sql=sprintf("insert into `Order Dimension` (`Order Date`,`Order Last Updated Date`,`Order Public ID`,`Order Main Store Key`,`Order Main Store Code`,`Order Main Store Type`,`Order Customer Key`,`Order Customer Name`,`Order Current Dispatch State`,`Order Current Payment State`,`Order Current XHTML State`,`Order Customer Message`,`Order Original Data MIME Type`,`Order Original Data`,`Order Main XHTML Ship To`,`Order Ship To Addresses`,`Order Gross Amount`,`Order Discount Amount`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%d,%.2f,%.2f)"
 		 ,prepare_mysql($this->get('Order Date'))
 		 ,prepare_mysql($this->get('Order Date'))
-		 ,prepare_mysql($this->get('Order ID'))
+		 ,prepare_mysql($this->get('Order Public ID'))
 		 ,prepare_mysql($this->get('Order Main Store Key'))
 		 ,prepare_mysql($this->get('Order Main Store Code'))
 		 ,prepare_mysql($this->get('Order Main Store Type'))
@@ -869,7 +873,7 @@ class Order{
 
   function get($key=''){
 
-    if(isset($this->data[$key]))
+    if(array_key_exists($key,$this->data))
       return $this->data[$key];
     
     
@@ -916,10 +920,14 @@ class Order{
 	 
       }
     }
-        $_key=ucfirst($key);
-    if(isset($this->data[$_key]))
+    $_key=ucwords($key);
+    if(array_key_exists($_key,$this->data))
       return $this->data[$_key];
+
+    print_r($this->data);
+
     print "Error $key not found in get from Order\n";
+    exit;
     return false;
 
     return false;
@@ -1414,6 +1422,8 @@ class Order{
     
     
     
+    //print_r($cdata['address_data']);
+    //print_r($cdata['shipping_data']);
     
     
     //check if the addresses are the same:
@@ -1431,10 +1441,9 @@ class Order{
 	}else{
 	  
 
-	  print telecom::parse_telecom('434534534534534');
 
-	   print_r($diff_result);
-	   exit;
+	  // print_r($diff_result);
+	   //   exit;
 	   $percentage=array('address1'=>1,'town'=>1,'country'=>1,'country_d1'=>1,'postcode'=>1);
 	  $percentage_address=array();
 
@@ -1444,10 +1453,17 @@ class Order{
 	    if(preg_match('/address1|town|^country$|postcode|country_d1/i',$key))
 	      $percentage_address[$key]=$p/100;
 	  }
-	  $avg_percentage=average($percentage);
-	  $avg_percentage_address=average($percentage_address);
-
-	  //print "AVG DIFF $avg_percentage $avg_percentage_address \n";
+	  if(count($percentage)==0)
+	    $avg_percentage=1;
+	  else
+	    $avg_percentage=average($percentage);
+	  
+	  if(count($percentage_address)==0)
+	    $avg_percentage_address=1;
+	  else
+	    $avg_percentage_address=average($percentage_address);
+	  
+	  //	  print "AVG DIFF O:$avg_percentage A:$avg_percentage_address \n";
 	  
 	  if($cdata['shipping_data']['name']=='' or !array_key_exists('name',$diff_result) )
 	    $this->same_contact=true;
@@ -1485,7 +1501,7 @@ class Order{
 	  else
 	    $this->same_address=false;
 	  
-	  //print "C:$this->same_contact  CM:$this->same_company  T:$this->same_telephone E:$this->same_email  A:$this->same_address \n";
+	  //  print "C:$this->same_contact  CM:$this->same_company  T:$this->same_telephone   A:$this->same_address \n";
 	  // exit;
 
 	}

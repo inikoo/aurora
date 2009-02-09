@@ -3,7 +3,7 @@ require_once 'Name.php';
 require_once 'Email.php';
 
 class Staff{
-  var $db;
+
   var $data=array();
   var $items=array();
   var $status_names=array();
@@ -15,7 +15,7 @@ class Staff{
 
 
   function __construct($key='id',$data=false) {
-     $this->db =MDB2::singleton();
+
      $this->status_names=array(0=>'new');
 
 
@@ -47,9 +47,10 @@ class Staff{
             $sql=sprintf("select * from  `Employee Dimension`     where `Employee Key`=%d",$id);
     else
       return;
-    $result =& $this->db->query($sql);
-    if($this->data=$result->fetchRow()) 
-      $this->id=$this->data['employee key'];
+
+   $result=mysql_query($sql);
+   if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   )
+     $this->id=$this->data['Employee Key'];
     
 
   }

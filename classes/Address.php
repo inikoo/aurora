@@ -220,7 +220,7 @@ class Address{
       
     }
     
-   print_r($this->data);
+    // print_r($this->data);
     $_key=ucwords($key);
     if(array_key_exists($_key,$this->data))
       return $this->data[$_key];
@@ -251,7 +251,7 @@ class Address{
 	 $location=sprintf('<img src="art/flags/%s.gif" title="%s"> %s',strtolower($this->data['Address Country 2 Alpha Code']),$this->data['Address Country Code'],_('Somewhere in the world'));
 	 break;	 
        case('City'):
-	 $location=sprintf('<img src="art/flags/%s.gif" title="%s"> %s',strtolower($this->data['Address Country 2 Alpha Code']),$this->datA['Address Country Code'],_('Somewhere in').' '.$this->data['Address Town']);
+	 $location=sprintf('<img src="art/flags/%s.gif" title="%s"> %s',strtolower($this->data['Address Country 2 Alpha Code']),$this->data['Address Country Code'],_('Somewhere in').' '.$this->data['Address Town']);
        break;
      default:
         $location=sprintf('<img src="art/flags/%s.gif" title="%s"> %s',strtolower($this->data['Address Country 2 Alpha Code']),$this->data['Address Country Code'],_('Unknown'));
@@ -2366,7 +2366,7 @@ function get_country_d1_name($id=''){
 function is_country_d1($country_d1,$country_id){
    if($country_d1=='')
      return false;
-      $db =& MDB2::singleton();
+
   if($country_id>0)
     $sql=sprintf("select `Country Primary Division Key` as id from `Country Primary Division Dimension` where (`Country Primary Division Name`='%s' or `Country Primary Division Native Name`='%s' or `Country Primary Division Local Native Name`='%s') and `Country Key`=%d",addslashes($country_d1),addslashes($country_d1),addslashes($country_d1),$country_id);
   else
@@ -2384,7 +2384,7 @@ function is_country_d1($country_d1,$country_id){
 function is_country_d2($country_d2,$country_id){
    if($country_d2=='')
      return false;
-      $db =& MDB2::singleton();
+
   if($country_id>0)
     $sql=sprintf("select `Country Secondary Division Key` as id from `Country Secondary Division Dimension` where (`Country Secondary Division Name`='%s' or `Country Secondary Division Native Name`='%s' or `Country Secondary Division Local Native Name`='%s') and `Country Key`=%d",addslashes($country_d2),addslashes($country_d2),addslashes($country_d2),$country_id);
   else
@@ -2401,7 +2401,7 @@ function is_country_d2($country_d2,$country_id){
 function is_town($town,$country_id){
    if($town=='')
      return false;
-      $db =& MDB2::singleton();
+
   if($country_id>0)
     $sql=sprintf("select `Town Key` as id from `Town Dimension` where (`Town Name`='%s' or `Town Native Name`='%s' or `Town Local Native Name`='%s') and `Country Key`=%d",addslashes($town),addslashes($town),addslashes($town),$country_id);
   else

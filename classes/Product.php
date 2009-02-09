@@ -121,11 +121,15 @@ class product{
 	$tag['Part Most Recent']='Yes';
 	$tag['product valid to']=$tag['date'];
 	$tag['product valid from']=$tag['date'];
+	$tag['Part SKU']='';
+	$tag['part valid to']=$tag['date'];
+	$tag['part valid from']=$tag['date'];
+
 	$this->create($tag);
 	$part=new Part('new',$tag);
 	$part_list[]=array(
-			   'Product ID'=>$this->get('product ID'),
-			   'Part SKU'=>$part->get('part sku'),
+			   'Product ID'=>$this->get('Product ID'),
+			   'Part SKU'=>$part->get('Part SKU'),
 			   'Product Part Id'=>1,
 			   'requiered'=>'Yes',
 			   'Parts Per Product'=>1,
@@ -154,13 +158,14 @@ class product{
 	  $different_units=false;
 	  $different_units_type=false;
 	  $this->new_id=false;
-	  $tag['product id']=$same_id_data['product id'];
+	  $tag['product id']=$same_id_data['Product ID'];
 	  
-	 $sql=sprintf("select * as number from  `Product Dimension` where `Product Valid To`<%s and `Product Most Recent`='Yes' and `Product ID`=%d  ",$tag['date'],$same_id_data['product id']);
+	  $sql=sprintf("select `Product Key`  from  `Product Dimension` where `Product Valid To`<%s and `Product Most Recent`='Yes' and `Product ID`=%d  ",prepare_mysql($tag['date']),$same_id_data['Product ID']);
+	  //print "$sql\n";
 	 $result3=mysql_query($sql);
 	if($last_data=mysql_fetch_array($result3, MYSQL_ASSOC) ){
 	  $tag['product most recent']='No';
-	  $tag['product most reent key']=$last_data['product key'];
+	  $tag['product most reent key']=$last_data['Product Key'];
 	}else
 	  $tag['product most recent']='Yes';
 	
@@ -545,7 +550,7 @@ function valid_id($id){
 		     'product valid from'=>date("Y-m-d H:i:s"),
 		     'product valid to'=>date("Y-m-d H:i:s"),
 		     'product most recent'=>'Yes',
-		     'product current product key'=>''
+		     'product most recent key'=>''
 		     );
     
     foreach($data as $key=>$value){
@@ -610,8 +615,8 @@ function valid_id($id){
     
 
 
-    //print "$sql\n";
-    //exit;
+  //   print "$sql\n";
+//     exit;
 
     if(mysql_query($sql)){
       $this->id = mysql_insert_id();
@@ -620,7 +625,7 @@ function valid_id($id){
       $sql=sprintf("update `Product Dimension` set `Product Most Recent`='No' where `Product ID`=%d  and `Product Key`!=%d",$base_data['product id'],$this->id);
       mysql_query($sql);
       if($base_data['product most recent']=='Yes'){
-	$sql=sprintf("update  `Product Dimension` set `Product Current Product Key`=%d where `Product Key`=%d",$this->id,$this->id);
+	$sql=sprintf("update  `Product Dimension` set `Product Most Recent Key`=%d where `Product Key`=%d",$this->id,$this->id);
 	mysql_query($sql);
       }
       $this->get_data('id',$this->id);

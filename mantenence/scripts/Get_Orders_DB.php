@@ -1,16 +1,16 @@
 <?
-include("../../external_libs/adminpro/adminpro_config.php");
+//include("../../external_libs/adminpro/adminpro_config.php");
 
-
+include_once('../../app_files/db/dns.php');
 include_once('../../classes/Department.php');
 include_once('../../classes/Family.php');
 include_once('../../classes/Product.php');
 include_once('../../classes/Supplier.php');
 include_once('../../classes/Order.php');
 error_reporting(E_ALL);
-$con=@mysql_connect($globalConfig['dbhost'],$globalConfig['dbuser'], $globalConfig['dbpass']);
+$con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 if(!$con){print "Error can not connect with database server\n";exit;}
-$db=@mysql_select_db($globalConfig['dbase'], $con);
+$db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
 
 
@@ -33,7 +33,7 @@ $version='V 1.0';
 $Data_Audit_ETL_Software="$software $version";
 
 
-$sql="select id from orders_data.order_data  ";
+$sql="select id from orders_data.order_data limit 30800,100";
 $res=mysql_query($sql);
 while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
   print $row2['id']."\r";
@@ -172,6 +172,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     //print_r($data);
     
     $order= new Order('new',$data);
+    
   }
 
   
