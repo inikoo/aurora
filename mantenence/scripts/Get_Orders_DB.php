@@ -78,9 +78,13 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
   $data['order original data source']='DB:orders_data.order.data';
   $data['order original metadata']=$row['id'];
   
-  //  print_r($products);
+  //print_r($header_data);
   $products_data=array();
-  $products_invoice=array();
+  $data_invoice_transactions=array();
+  $data_dn_transactions=array();
+  $data_bonus_transactions=array();
+
+
   foreach($transactions as $transaction){
     if(preg_match('/^credit/i',$transaction['code']))
       continue;
@@ -146,14 +150,28 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 			   ,'gross_amount'=>$transaction['order']*$transaction['price']
 			   ,'discount_amount'=>$transaction['order']*$transaction['price']*$transaction['discount']
 			   );
-    $products_invoice[]=array(
-			      'product_id'=>$product->id
-			      ,'invoice qty'=>$transaction['order']-$transaction['reorder']
-			      ,'gross amount'=>($transaction['order']-$transaction['reorder'])*$transaction['price']
-			   ,'discount amount'=>($transaction['order']-$transaction['reorder'])  *$transaction['price']*$transaction['discount']
-			      );		   
+    $data_invoice_transactions[]=array(
+				       'product_id'=>$product->id
+				       ,'invoice qty'=>$transaction['order']-$transaction['reorder']
+				       ,'gross amount'=>($transaction['order']-$transaction['reorder'])*$transaction['price']
+				       ,'discount amount'=>($transaction['order']-$transaction['reorder'])  *$transaction['price']*$transaction['discount']
+				       ,'current payment state'=>'Paid'
+				       );		   
+    
+    
+    $data_dn_transactions[]=array(
+				  'product_id'=>$product->id
+				  ,'db qty'=>$transaction['order']-$transaction['reorder']+$transaction['bonus']
+				  );		   
 
+    if($transaction['bonus']>0){
 
+      $data_bonus_transactions[]=array(
+				    'product_id'=>$product->id
+				    ,'db qty'=>$transaction['order']-$transaction['reorder']+$transaction['bonus']
+				    );
+      
+    }
 
   }
 
@@ -180,7 +198,26 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     
     $order= new Order('new',$data);
     if($tipo_order==2){
-      $order->add_invoice_transactions($data_invoice);
+
+      $payment_method=parse_payment_method($header_data['pay_method']);
+
+      $data_invoice=array(
+			  'Invoice Date'=>$date_inv
+			  ,'Invoice Public ID'=>$header_data['order_num']
+			  ,'Invoice File As'=>$header_data['order_num']
+			  ,'Invoice Main Payment Method'=>$payment_method
+			  ,'Invoice Multiple Payment Methods'=>0
+			  );
+       $data_dn=array(
+			  'Invoice Date'=>$date_inv
+			  ,'Invoice Public ID'=>$header_data['order_num']
+			  ,'Invoice File As'=>$header_data['order_num']
+			  ,'Invoice Main Payment Method'=>$payment_method
+			  ,'Invoice Multiple Payment Methods'=>0
+			  );
+
+
+      $order->create_invoice_simple($data_invoice,$data_invoice_transactions);
     }
       
   }
@@ -197,6 +234,42 @@ function mb_unserialize($serial_str) {
 $out = preg_replace('!s:(\d+):"(.*?)";!se', "'s:'.strlen('$2').':\"$2\";'", $serial_str );
 return unserialize($out);
 } 
+
+
+
+function parse_payment_method($method){
+
+
+  $method=_trim($method);
+  //  print "$method\n";
+  if($method=='' or $method=='0')
+    return 0;
+  if(preg_match('/^(Card Credit|credit  card|Debit card|Crredit Card|Credit Card|Solo|Cr Card|Switch|visa|electron|mastercard|card|credit Card0|Visa Electron|Credi Card|Credit crad)$/i',$method))
+    return 'Credit Card';
+
+  //  print "$method\n";
+  if(preg_match('/^(Cheque receiv.|APC|\*Cheque on Delivery\s*|Cheque|APC to Collect|chq|PD CHQ|APC collect CHQ|APC to coll CHQ|APC collect cheque)$/i',$method))
+    return 'Check';
+  if(preg_match('/^(Account|7 Day A.C|Pay into a.c|pay into account)$/i',$method))
+    return 'Other';
+  if(preg_match('/^(cash|casg|casn)$/i',$method))
+    return 'Cash';
+  if(preg_match('/^(Paypal|paypall|pay pal)$/i',$method))
+    return 'Paypal';
+  if(preg_match('/^(bacs|Bank Transfer|Bank Transfert|Direct Bank)$/i',$method))
+    return 'Bank Transfer';
+  if(preg_match('/^(draft|bank draft|bankers draft)$/i',$method))
+    return 'Other';
+  if(preg_match('/^(postal order)$/i',$method))
+    return 'Other';
+  if(preg_match('/^(Moneybookers)$/i',$method))
+    return 'Other';
+
+
+  return 'Unknown';
+
+}
+
 
 
 ?>

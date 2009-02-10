@@ -91,9 +91,11 @@ class Order{
       $this->data['Order Main Store Key']=$store->id;
       $this->data['Order Main Store Code']=$store->get('code');
       $this->data['Order Main Store Type']=$store->get('type');
+      $this->data['Order Multiple Stores']=0;
+
       $this->data['Order XHTML Ship Tos']=$ship_to;
       //$this->data['Order Main Ship To Key']=$ship_to_key;
-      $this->data['Order Multiple Ship Tos']=1;
+      $this->data['Order Multiple Ship Tos']=0;
       
       
 
@@ -112,41 +114,42 @@ class Order{
       $result=mysql_query($sql);
       if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 	$sql=sprintf("update `Order Dimension` set `Order Gross Amount`=%.2f, `Order Discount Amount`=%.2f where  `Order Key`=%d ",$row['gross'],$row['discount'],$this->data['Order Key']);
-	    print "$sql\n";exit;
+
 	mysql_query($sql);
       }
       
       
+
 
    //    $customer->update('orders');
 //       $customer->update('no normal data');
 
 //       $this->cutomer_rankings();
       
-      switch($_SESSION['lang']){
-      default:
-	  $abstract=sprintf('Order <a href="order.php?id=%d">%s</a>',$this->data['Order Key'],$this->data['Order Public ID']);
-	  $note=sprintf('%s (<a href="customer.php?id=%d">%s) place an order at %s'
-			,$customer->get('Customer Name')
-			,$customer->id
-			,$customer->get('Customer ID')
-			,strftime("%e %b %Y %H:%M",strtotime($this->data['Order Date']))
-			);
-	}
+//       switch($_SESSION['lang']){
+//       default:
+// 	  $abstract=sprintf('Order <a href="order.php?id=%d">%s</a>',$this->data['Order Key'],$this->data['Order Public ID']);
+// 	  $note=sprintf('%s (<a href="customer.php?id=%d">%s) place an order at %s'
+// 			,$customer->get('Customer Name')
+// 			,$customer->id
+// 			,$customer->get('Customer ID')
+// 			,strftime("%e %b %Y %H:%M",strtotime($this->data['Order Date']))
+// 			);
+// 	}
 
-	$sql=sprintf("insert into `History Dimension` (`History Date`,`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`History Details`,`Author Key`,`Author Name`) values(%s,'Customer','%s','Placed','Order',%d,%s,0,%s)"
-		     ,prepare_mysql($this->data['Order Date'])
-		     ,$customer->id
-		     ,$this->data['Order Key']
-		     ,prepare_mysql($note)
-		     ,prepare_mysql(_('System'))
-		     );
-	mysql_query($sql);
-	$history_id= mysql_insert_id();
-	$abstract.=' (<span class="like_a" onclick="showdetails(this)" d="0" id="ch'.$history_id.'"  hid="'.$history_id.'">'._('view details').'</span>)';
-	$sql=sprintf("update `History Dimension` set `History Abstract`=%s where `History Key`=%d",prepare_mysql($abstract),$history_id);
-	//	print "$sql\n";
-	mysql_query($sql);
+// 	$sql=sprintf("insert into `History Dimension` (`History Date`,`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`History Details`,`Author Key`,`Author Name`) values(%s,'Customer','%s','Placed','Order',%d,%s,0,%s)"
+// 		     ,prepare_mysql($this->data['Order Date'])
+// 		     ,$customer->id
+// 		     ,$this->data['Order Key']
+// 		     ,prepare_mysql($note)
+// 		     ,prepare_mysql(_('System'))
+// 		     );
+// 	mysql_query($sql);
+// 	$history_id= mysql_insert_id();
+// 	$abstract.=' (<span class="like_a" onclick="showdetails(this)" d="0" id="ch'.$history_id.'"  hid="'.$history_id.'">'._('view details').'</span>)';
+// 	$sql=sprintf("update `History Dimension` set `History Abstract`=%s where `History Key`=%d",prepare_mysql($abstract),$history_id);
+// 	//	print "$sql\n";
+// 	mysql_query($sql);
 	
 
 	
@@ -646,30 +649,94 @@ class Order{
   }
 
 
-function add_invoice_transactions($data_array){
+  function create_invoice_simple($invoice_data,$transacions_data){
+    $this->data['Invoice Date']=$invoice_data['Invoice Date'];
+    $this->data['Invoice Public ID']=$invoice_data['Invoice Public ID'];
+    $this->data['Invoice File As']=$invoice_data['Invoice File As'];
+    $this->data['Invoice Main Store Key']=$this->data['Order Main Store Key'];
+    $this->data['Invoice Main Store Code']=$this->data['Order Main Store Code'];
+    $this->data['Invoice Main Store Type']=$this->data['Order Main Store Type'];
+    $this->data['Invoice Multiple Stores']=$this->data['Order Multiple Stores'];
+    $this->data['Invoice Customer Key']=$this->data['Order Customer Key'];
+    $this->data['Invoice Customer Name']=$this->data['Order Customer Name'];
+    $this->data['Invoice XHTML Ship Tos']=$this->data['Order XHTML Ship Tos'];
+    $this->data['Invoice Multiple Ship Tos']=$this->data['Order Multiple Ship Tos'];
+    $this->create_invoice_header();
+    
+    $line_number=1;
+    $amount=0;
+    $discounts=0;
+    foreach($transacions_data as $data){
+      $sql=sprintf("update  `Order Transaction Fact`  set `Invoice Date`=%s,`Order Last Updated Date`=%s, `Invoice Public ID`=%s,`Invoice Line`=%d,`Current Payment State`=%s ,`Invoice Quantity`=%s ,`Ship To Key`=%s ,`Invoice Transaction Gross Amount`=%.2f,`Invoice Transaction Total Discount Amount`=%.2f  where `Order Key`=%d and  'Product Key'=%d"
+		   ,prepare_mysql($invoice_data['Invoice Date'])
+		   ,prepare_mysql($invoice_data['Invoice Date'])
+		   ,prepare_mysql($this->data['Invoice Public ID'])
+		   ,$line_number
+		   ,prepare_mysql($data['current payment state'])
+		   ,number($data['invoice qty'])
+		   ,prepare_mysql($this->data['Order Main Ship To Key'])
+		   ,$data['gross amount']
+		   ,$data['discount amount']
+		   ,$this->data['Order Key']
+		   ,$$data['product_id']
+		   );
+      $amount+=$data['gross amount'];
+      $discounts+=$data['discount amount'];
+      
+      //   print "$sql\n";
+      $line_number++;
+      mysql_query($sql);
+      
+    }
 
-  $line_number=1;
-  foreach($data_array as $data){
-    $sql=sprintf("update  `Order Transaction Fact`  set `Invoice Date`=%s,`Order Last Updated Date`, `Invoice Public ID`=%s,`Invoice Line`=%d,`Current Payment State`=%s where `Order Key`=%d and  "
-		 ,prepare_mysql($data['date'])
-		 ,prepare_mysql($data['date'])
-		 ,prepare_mysql($this->data['invoice public id'])
-		 ,prepare_mysql($data['Current Payment State'])
-		 ,number($data['invoice qty'])
-		 ,prepare_mysql($this->data['Order Main Ship To Key'])
-		 ,$data['gross amount']
-		 ,$data['discount amount']
-		 
-		 );
-    print "$sql\n";
-    $line_number++;
+    $sql=sprintf("update `Invoice Dimension` set `Invoice Gross Amount`=%.2f ,`Invoice Discount Amount`=%.2f where `Invoice Key`=%d",$amount,$discounts,$this->data['Invoice Key']);
     mysql_query($sql);
-
-  }
     //     print_r($data);
-    //print "$sql\n";
 
   }
+
+ function create_dn_simple($invoice_data,$transacions_data){
+    $this->data['Delivery Note Date']=$invoice_data['Delivery Note Date'];
+    $this->data['Delivery Note ID']=$invoice_data['Delivery Note ID'];
+    $this->data['Delivery Note File As']=$invoice_data['Delivery Note File As'];
+    $this->data['Delivery Note Customer Key']=$this->data['Order Customer Key'];
+    $this->data['Delivery Note Customer Name']=$this->data['Order Customer Name'];
+    $this->data['Delivery Note XHTML Ship To']=$this->data['Order XHTML Ship Tos'];
+    $this->data['Delivery Note Ship To Key']=$this->data['Order XHTML Ship To Key'];
+    $this->create_invoice_header();
+    
+    $line_number=1;
+    $amount=0;
+    $discounts=0;
+    foreach($transacions_data as $data){
+      $sql=sprintf("update  `Order Transaction Fact`  set `Delivery Note Date`=%s,`Order Last Updated Date`=%s, `Delivery Note Public ID`=%s,`Delivery Note Line`=%d,  where `Order Key`=%d and  'Product Key'=%d"
+		   ,prepare_mysql($invoice_data['Invoice Date'])
+		   ,prepare_mysql($invoice_data['Invoice Date'])
+		   ,prepare_mysql($this->data['Invoice Public ID'])
+		   ,$line_number
+		   ,prepare_mysql($data['current payment state'])
+		   ,number($data['invoice qty'])
+		   ,prepare_mysql($this->data['Order Main Ship To Key'])
+		   ,$data['gross amount']
+		   ,$data['discount amount']
+		   ,$this->data['Order Key']
+		   ,$$data['product_id']
+		   );
+      $amount+=$data['gross amount'];
+      $discounts+=$data['discount amount'];
+      
+      //   print "$sql\n";
+      $line_number++;
+      mysql_query($sql);
+      
+    }
+
+    $sql=sprintf("update `Invoice Dimension` set `Invoice Gross Amount`=%.2f ,`Invoice Discount Amount`=%.2f where `Invoice Key`=%d",$amount,$discounts,$this->data['Invoice Key']);
+    mysql_query($sql);
+    //     print_r($data);
+
+  }
+
 
   function get_discounts($data,$customer_id,$date){
      
@@ -894,22 +961,23 @@ function add_invoice_transactions($data_array){
 //     $sql="select sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) from `Order Transaction Fact` where "
 
 
-    $sql=sprintf("insert into `Invoice Dimension` (`Invoice Date`,`Invoice Public ID`,`Invoice Main Store Key`,`Invoice Main Store Code`,`Invoice Main Store Type`,`Invoice Multiple  Stores`,`Invoice Customer Key`,`Invoice Customer Name`,`Invoice Current Dispatch State`,`Invoice Current Payment State`,`Invoice Current XHTML State`,`Invoice Customer Message`,`Invoice Original Data MIME Type`,`Invoice Original Data`,`Invoice Main XHTML Ship To`,`Invoice Ship To Addresses`,`Invoice Gross Amount`,`Invoice Discount Amount`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%d,%.2f,%.2f)"
+    $sql=sprintf("insert into `Invoice Dimension` (`Invoice Date`,`Invoice Public ID`,`Invoice File As`,`Invoice Main Store Key`,`Invoice Main Store Code`,`Invoice Main Store Type`,`Invoice Multiple Stores`,`Invoice Customer Key`,`Invoice Customer Name`,`Invoice XHTML Ship Tos`,`Invoice Multiple Ship Tos`,`Invoice Gross Amount`,`Invoice Discount Amount`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%d,%.2f,%.2f)"
 		 ,prepare_mysql($this->data['Invoice Date'])
 		 ,prepare_mysql($this->data['Invoice Public ID'])
+		 ,prepare_mysql($this->data['Invoice File As'])
 		 ,prepare_mysql($this->data['Invoice Main Store Key'])
 		 ,prepare_mysql($this->data['Invoice Main Store Code'])
 		 ,prepare_mysql($this->data['Invoice Main Store Type'])
 		 ,prepare_mysql($this->data['Invoice Multiple Stores'])
 		 ,prepare_mysql($this->data['Invoice Customer Key'])
 		 ,prepare_mysql($this->data['Invoice Customer Name'])
-		 ,prepare_mysql($this->data['Invoice Main XHTML Ship To'])
-		 ,$this->data['Invoice Ship To Addresses']
-		 ,$this->data['Order Gross Amount']
-		 ,$this->data['Order Discount Amount']
+		 ,prepare_mysql($this->data['Invoice XHTML Ship Tos'])
+		 ,$this->data['Invoice Multiple Ship Tos']
+		 ,$this->data['Invoice Gross Amount']
+		 ,$this->data['Invoice Discount Amount']
 		 );
     
-    print "$sql\n";exit;
+
     if(mysql_query($sql)){
        $this->id = mysql_insert_id();
        $this->data['Invoice Key']=$this->id ;
