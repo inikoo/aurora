@@ -999,7 +999,7 @@ $postcode=_trim($postcode);
     $valid_postalcodes=array('D1','D2','D3','D4','D5','D6','D6w','D7','D8','D9','D10','D11','D12','D13','D14','D15','D16','D17','D18','D20','D22','D24');
 
     if($postcode!=''){
-    $sql="select `Country Secondary Division Name` from `Country Secondary Division Dimension` where  `Country Key`=75 and `Country Secondary Division Name` like '%$postcode%'";
+    $sql="select `Country Secondary Division Name` as name from `Country Secondary Division Dimension` where  `Country Key`=75 and `Country Secondary Division Name` like '%$postcode%'";
     //print "$sql\n";
     
     $result=mysql_query($sql);

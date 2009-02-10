@@ -33,7 +33,7 @@ $version='V 1.0';
 $Data_Audit_ETL_Software="$software $version";
 
 
-$sql="select id from orders_data.order_data limit 30800,100";
+$sql="select id from orders_data.order_data ";
 $res=mysql_query($sql);
 while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
   print $row2['id']."\r";
@@ -144,7 +144,12 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 			   ,'qty'=>$transaction['order']
 			   ,'gross_amount'=>$transaction['order']*$transaction['price']
 			   ,'discount_amount'=>$transaction['order']*$transaction['price']*$transaction['discount']
-			   );
+	 $products_invoice[]=array(
+			   'product_id'=>$product->id
+			   ,'invoice qty'=>$transaction['order']-$transaction['reorder']
+			   ,'gross amount'=>($transaction['order']-$transaction['reorder'])*$transaction['price']
+			   ,'discount amount'=>($transaction['order']-$transaction['reorder'])  *$transaction['price']*$transaction['discount']
+			   );		   );
 
 
 
@@ -172,7 +177,10 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     //print_r($data);
     
     $order= new Order('new',$data);
-    
+    if($tipo_order==2){
+      $order->add_invoice_transactions($data_invoice);
+    }
+      
   }
 
   
