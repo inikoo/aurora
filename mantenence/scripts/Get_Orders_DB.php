@@ -80,6 +80,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
   
   //  print_r($products);
   $products_data=array();
+  $products_invoice=array();
   foreach($transactions as $transaction){
     if(preg_match('/^credit/i',$transaction['code']))
       continue;
@@ -144,12 +145,13 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 			   ,'qty'=>$transaction['order']
 			   ,'gross_amount'=>$transaction['order']*$transaction['price']
 			   ,'discount_amount'=>$transaction['order']*$transaction['price']*$transaction['discount']
-	 $products_invoice[]=array(
-			   'product_id'=>$product->id
-			   ,'invoice qty'=>$transaction['order']-$transaction['reorder']
-			   ,'gross amount'=>($transaction['order']-$transaction['reorder'])*$transaction['price']
+			   );
+    $products_invoice[]=array(
+			      'product_id'=>$product->id
+			      ,'invoice qty'=>$transaction['order']-$transaction['reorder']
+			      ,'gross amount'=>($transaction['order']-$transaction['reorder'])*$transaction['price']
 			   ,'discount amount'=>($transaction['order']-$transaction['reorder'])  *$transaction['price']*$transaction['discount']
-			   );		   );
+			      );		   
 
 
 

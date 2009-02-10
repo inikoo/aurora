@@ -646,24 +646,26 @@ class Order{
   }
 
 
-function add_invoice_transaction($data){
+function add_invoice_transactions($data_array){
 
-    $sql=sprintf("update  `Order Transaction Fact`  set `Invoice Date`=%s,`Order Last Updated Date`, `Invoice Public ID`=%s,`Invoice Line`=%d,`Current Payment State`=%s "
+  $line_number=1;
+  foreach($data_array as $data){
+    $sql=sprintf("update  `Order Transaction Fact`  set `Invoice Date`=%s,`Order Last Updated Date`, `Invoice Public ID`=%s,`Invoice Line`=%d,`Current Payment State`=%s where `Order Key`=%d and  "
 		 ,prepare_mysql($data['date'])
 		 ,prepare_mysql($data['date'])
 		 ,prepare_mysql($this->data['invoice public id'])
-		 ,$data['line_number']
 		 ,prepare_mysql($data['Current Payment State'])
 		 ,number($data['invoice qty'])
 		 ,prepare_mysql($this->data['Order Main Ship To Key'])
 		 ,$data['gross amount']
 		 ,$data['discount amount']
-
+		 
 		 );
-       print "$sql\n";
+    print "$sql\n";
+    $line_number++;
     mysql_query($sql);
 
-
+  }
     //     print_r($data);
     //print "$sql\n";
 
