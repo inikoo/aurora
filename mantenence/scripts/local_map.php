@@ -55,8 +55,8 @@ $_y_map['discount']=18;
 $_y_map['units']=5;
 $_y_map['supplier_code']=21;
 $_y_map['supplier_product_code']=20;
-$_y_map['supplier_product_cost']=23;
-
+$_y_map['supplier_product_cost']=25;
+$_y_map['w']=28;
 
 $_y_map_old['code']=3;
 $_y_map_old['description']=5;
@@ -70,8 +70,8 @@ $_y_map_old['discount']=17;
 $_y_map_old['units']=4;
 $_y_map_old['supplier_code']=20;
 $_y_map_old['supplier_product_code']=19;
-$_y_map_old['supplier_product_cost']=22;
-
+$_y_map_old['supplier_product_cost']=24;
+$_y_map_old['w']=27;
 
 $_map['stipo']=array('row'=>2,'col'=>0);
 $_map['ltipo']=array('row'=>2,'col'=>6);

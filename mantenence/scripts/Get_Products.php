@@ -151,7 +151,7 @@ foreach($__cols as $cols){
 
   
   if($is_product){
-    //     print "$code\r";
+       print "$code\r";
     $part_list=array();
     $rules=array();
     
@@ -270,8 +270,8 @@ foreach($__cols as $cols){
     $description=_trim($cols[6]);
     $rrp=$cols[16];
     $supplier_code=_trim($cols[21]);
-    $supplier_price=$cols[23];
-    
+    $supplier_price=$cols[25];
+    $w=$cols[28];
     $product=new Product('code',$code);
     if(!$product->id){
       if($units=='')
@@ -290,6 +290,15 @@ foreach($__cols as $cols){
 	    
 	
 
+      if(is_numeric($w)){
+	$w=$w*$units;
+	if($w<0.001 and $w>0)
+	  $_w=0.001;
+	else
+	  $_w=sprintf("%.3f",$w);
+      }else
+	$_w='';
+      
       $data=array(
 		  'product sale state'=>'For sale',
 		  'product code'=>$code,
@@ -302,14 +311,18 @@ foreach($__cols as $cols){
 		  'product main department name'=>$department_name,
 		  'product main department code'=>$department_name,
 		  'product special characteristic'=>$special_char,
+		  'product net weight'=>$_w,
+		  'product gross weight'=>$_w,
 		  'deals'=>$deals
 		    );
-
+      //     print_r($cols);
+      //print_r($data);
+      
        	$product=new Product('create',$data);
 
 	$scode=$cols[20];
 	$supplier_code=$cols[21];
-	$cost=$cols[23];
+	$cost=$cols[25];
 	if(preg_match('/^SG\-/i',$code))
 	  $supplier_code='AW';
 	if($supplier_code=='AW')
@@ -336,6 +349,12 @@ foreach($__cols as $cols){
 		       'Supplier Product Description'=>$description
 		       );
 
+// 	if($code=='FO-A1'){
+// 	  print_r($sp_data);
+// 	  exit;
+// 	}
+
+	//print_r($sp_data);
 	$supplier_product=new SupplierProduct('new',$sp_data);
 
 	$part_data=array(
@@ -344,10 +363,13 @@ foreach($__cols as $cols){
 			 'Part XHTML Currently Used In'=>sprintf('<a href="product.php?id=%d">%s</a>',$product->id,$product->get('Product Code')),
 			 'Part XHTML Description'=>preg_replace('/\(.*\)\s*$/i','',$product->get('Product XHTML Short Description')),
 			 'part valid from'=>date('Y-m-d H:i:s'),
-			 'part valid to'=>date('Y-m-d H:i:s')
+			 'part valid to'=>date('Y-m-d H:i:s'),
+			 'Part Gross Weight'=>$w
 			 );
 	$part=new Part('new',$part_data);
-	$rules[]=array('Part Key'=>$part->id,'Supplier Product Units Per Part'=>$units
+	//	print_r($part->data);
+	$rules[]=array('Part Sku'=>$part->data['Part SKU'],
+		       'Supplier Product Units Per Part'=>$units
 		       ,'supplier product part most recent'=>'Yes'
 		       ,'supplier product part valid from'=>date('Y-m-d H:i:s')
 		       ,'supplier product part valid to'=>date('Y-m-d H:i:s')

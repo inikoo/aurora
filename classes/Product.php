@@ -66,21 +66,93 @@ class product{
 
 	if(strtotime($this->data['Product Valid To'])<strtotime($tag['date'])  ){
 	  $sql=sprintf("update `Product Dimension` set `Product Valid To`=%s where `Product Key`=%d",prepare_mysql($tag['date']),$this->id);
-	  $this->data['product valid to']=$tag['date'];
-	  // print "$sql\n";
-	  //$this->db->exec($sql);
+	  $this->data['product valid to']=$tag['date2'];
 	  mysql_query($sql);
-
+	  
 	}
 	if(strtotime($this->data['Product Valid From'])>strtotime($tag['date'])  ){
 	  $sql=sprintf("update `Product Dimension` set `Product Valid From`=%s where `Product Key`=%d",prepare_mysql($tag['date']),$this->id);
-	  //	  $this->db->exec($sql);
 	  mysql_query($sql);
- //  print "$sql\n";
 	  $this->data['Product Valid From']=$tag['date'];
 	}
 
+	$sql=sprintf("select  `Part SKU`  from `Product Part List`  where  `Product ID`=%s " ,$this->data['Product ID']);
+	$result2=mysql_query($sql);
+	while($row2=mysql_fetch_array($result2, MYSQL_ASSOC)){
+	  $part_sku=$row2['Part SKU'];
+	  
+	  $sql=sprintf("update `Part Dimension`  set `Part Valid From`=%s  where `Part SKU`=%s and `Part Valid From`>%s"
+		       ,prepare_mysql($tag['date'])
+		       ,prepare_mysql($part_sku)
+		       ,prepare_mysql($tag['date'])
+		       );
+	  mysql_query($sql);
+	  
+	  $sql=sprintf("update `Part Dimension`  set `Part Valid To`=%s  where `Part SKU`=%s and `Part Valid To`<%s"
+		       ,prepare_mysql($tag['date'])
+		       ,prepare_mysql($part_sku)
+		       ,prepare_mysql($tag['date2'])
+		       );
+	  mysql_query($sql);
+	  
+	  
+	  $sql=sprintf("select `Supplier Key`,`Supplier Product ID` from `Supplier Product Part List` where `Part SKU`=%s ",prepare_mysql($part_sku));
 
+	  $result3=mysql_query($sql);
+	  while($row3=mysql_fetch_array($result3, MYSQL_ASSOC)){
+	    
+	    $sql=sprintf("update `Supplier Product Dimension`  set `Supplier Product Valid From`=%s  where `Supplier Product ID`=%s and `Supplier Product Valid From`>%s"
+			 ,prepare_mysql($tag['date'])
+			 ,$this->data['Product ID']  
+			 ,prepare_mysql($tag['date'])
+			 );
+
+	    mysql_query($sql);
+	    
+		$sql=sprintf("update `Supplier Product Dimension`  set `Supplier Product Valid To`=%s  where `Supplier Product ID`=%s and `Supplier Product Valid To`<%s"
+			     ,prepare_mysql($tag['date'])
+		     ,$row3['Supplier Product ID']
+		     ,prepare_mysql($tag['date2'])
+		     );
+	mysql_query($sql);
+
+	$sql=sprintf("update `Supplier Dimension`  set `Supplier Valid From`=%s  where `Supplier Key`=%s and `Supplier Valid From`>%s"
+		     ,prepare_mysql($tag['date'])
+		     ,$row3['Supplier Key']
+		     ,prepare_mysql($tag['date'])
+		     );
+	mysql_query($sql);
+
+	$sql=sprintf("update `Supplier Dimension`  set `Supplier Valid From`=%s  where `Supplier Key`=%s and `Supplier Valid From`<%s"
+		     ,prepare_mysql($tag['date'])
+		     ,$row3['Supplier Key']
+		     ,prepare_mysql($tag['date2'])
+		     );
+	mysql_query($sql);
+	    
+	    
+	  }
+	}
+
+	$sql=sprintf("update `Product Part List`  set `Product Part Valid From`=%s  where `Product ID`=%s and `Product Part Valid From`>%s"
+		     ,prepare_mysql($tag['date'])
+		     ,$this->data['Product ID']
+		     ,prepare_mysql($tag['date'])
+		     );
+	mysql_query($sql);
+
+	$sql=sprintf("update `Product Part List`  set `Product Part Valid To`=%s  where `Product ID`=%s and `Product Part Valid To`<%s"
+		     ,prepare_mysql($tag['date'])
+		     ,$this->data['Product ID']
+		     ,prepare_mysql($tag['date2'])
+		     );
+	mysql_query($sql);
+
+
+
+	
+	
+	
 	return;
       }
 
@@ -259,7 +331,7 @@ class product{
 	
 	if($this->new_part){
 	  $rules[]=array(
-			 'Part Key'=>$part->id
+			 'Part SKU'=>$part->data['Part SKU']
 			 ,'Supplier Product Units Per Part'=>$this->data['Product Units Per Case']
 			 ,'supplier product part most recent'=>'Yes'
 			 ,'supplier product part valid from'=>$tag['date']
@@ -806,6 +878,23 @@ function normalize_code($code){
   }
   
 
+//  function onload($key){
+
+//    switch($key){
+//    case('sales'):
+//      $sql=sprintf("select sum(``) as cost_sup ,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ``from `Order Transaction Fact` where `Product Key`",$this->id);
+//      $this->data['Product Total Invoiced Gross Amount']=$row['gross'];
+//      $this->data['Product Total Invoiced Gross Amount']=$row['disc'];
+//      $this->data['Product Total Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
+//      $this->data['Product Total Quantity Ordered']=$row['ordered'];
+//      $this->data['Product Total Quantity Invoiced']=$row['invoiced'];
+//      $this->data['Product Total Quantity Delivered']=$row['delivered'];
+     
+   
+//    }
+   
+
+//  }
 
 
 }

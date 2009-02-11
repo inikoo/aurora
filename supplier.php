@@ -78,9 +78,9 @@ $smarty->assign('data',$supplier->data);
 $smarty->assign('display',$_SESSION['state']['supplier']['display']);
 $smarty->assign('box_layout','yui-t0');
 $smarty->assign('parent','suppliers.php');
-$smarty->assign('title','Supplier: '.$supplier->get('supplier code'));
+$smarty->assign('title','Supplier: '.$supplier->get('Supplier Code'));
 
-$smarty->assign('name',$supplier->get('name'));
+$smarty->assign('name',$supplier->get('Supplier Name'));
 
 $smarty->assign('id',$myconf['supplier_id_prefix'].sprintf("%05d",$supplier->id));
 //$smarty->assign('principal_address',display_full_address($contact_data['main_address']) );

@@ -34,7 +34,7 @@ class supplierproduct{
       return;
       
     }elseif($tipo='supplier-code-name-cost'){
-      
+
       $auto_add=$tag['auto_add'];
       $sql=sprintf("select * from `Supplier Product Dimension` where `Supplier Product Code`=%s  and `Supplier Product Name`=%s and `Supplier Product Cost`=%s and `Supplier Product Supplier Key`=%s "
 		   ,prepare_mysql($tag['supplier product code'])
@@ -48,6 +48,8 @@ class supplierproduct{
       if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 	$this->id=$this->data['Supplier Product Key'];
 	
+
+
 	if(strtotime($this->data['Supplier Product Valid To'])<strtotime($tag['date'])  ){
 	  $sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Valid To`=%s where `Supplier Product Key`=%d",prepare_mysql($tag['date']),$this->id);
 	  $this->data['Supplier Product Valid To']=$tag['date'];
@@ -265,8 +267,9 @@ class supplierproduct{
 	$product_list_id=$this->new_part_list_id();
       
       $_base_data=array(
-			'supplier product key'=>$this->id,
-			'part key'=>'',
+			'supplier product id'=>$this->data['Supplier Product ID'],
+			'supplier key'=>$this->data['Supplier Product Supplier Key'],
+			'part sku'=>'',
 			'factor supplier product'=>'',
 			'supplier product units per part'=>'',
 			'supplier product part valid from'=>date('Y-m-d H:i:s'),

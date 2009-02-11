@@ -49,7 +49,7 @@ class part{
 		     'part package size metadata'=>'',
 		     'part package volume'=>'',
 		     'part package minimun orthogonal volume'=>'',
-		     'part package weight'=>'',
+		     'part gross weight'=>'',
 		     'part valid from'=>'',
 		     'part valid to'=>'',
 		     'part most recent'=>'',

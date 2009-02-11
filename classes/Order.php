@@ -661,13 +661,15 @@ class Order{
     $this->data['Invoice Customer Name']=$this->data['Order Customer Name'];
     $this->data['Invoice XHTML Ship Tos']=$this->data['Order XHTML Ship Tos'];
     $this->data['Invoice Multiple Ship Tos']=$this->data['Order Multiple Ship Tos'];
+
+
     $this->create_invoice_header();
     
     $line_number=1;
     $amount=0;
     $discounts=0;
     foreach($transacions_data as $data){
-      $sql=sprintf("update  `Order Transaction Fact`  set `Invoice Date`=%s,`Order Last Updated Date`=%s, `Invoice Public ID`=%s,`Invoice Line`=%d,`Current Payment State`=%s ,`Invoice Quantity`=%s ,`Ship To Key`=%s ,`Invoice Transaction Gross Amount`=%.2f,`Invoice Transaction Total Discount Amount`=%.2f  where `Order Key`=%d and  'Product Key'=%d"
+      $sql=sprintf("update  `Order Transaction Fact`  set `Invoice Date`=%s,`Order Last Updated Date`=%s, `Invoice Public ID`=%s,`Invoice Line`=%d,`Current Payment State`=%s ,`Invoice Quantity`=%s ,`Ship To Key`=%s ,`Invoice Transaction Gross Amount`=%.2f,`Invoice Transaction Total Discount Amount`=%.2f  where `Order Key`=%d and  'Order Line'=%d"
 		   ,prepare_mysql($invoice_data['Invoice Date'])
 		   ,prepare_mysql($invoice_data['Invoice Date'])
 		   ,prepare_mysql($this->data['Invoice Public ID'])
@@ -678,7 +680,7 @@ class Order{
 		   ,$data['gross amount']
 		   ,$data['discount amount']
 		   ,$this->data['Order Key']
-		   ,$$data['product_id']
+		    ,$line_number
 		   );
       $amount+=$data['gross amount'];
       $discounts+=$data['discount amount'];
@@ -690,8 +692,27 @@ class Order{
     }
 
     $sql=sprintf("update `Invoice Dimension` set `Invoice Gross Amount`=%.2f ,`Invoice Discount Amount`=%.2f where `Invoice Key`=%d",$amount,$discounts,$this->data['Invoice Key']);
-    mysql_query($sql);
-    //     print_r($data);
+    if(!mysql_query($sql))
+      exit("can not update invoice dimension after inv\n");
+
+    
+    $invoice_txt="Invoice";
+
+    $sql=sprintf("update `Order Dimension` set `Order Current Dispatch State`='%s' ,`Order Current Payment State`='%s',`Order Current XHTML State`='%s <a href=invoice.php?id=%d>%s</a>' where `Order Key`=%d"
+		 ,'Dispached'
+		 ,'Paid'
+		 ,$invoice_txt
+		 ,$this->data['Invoice Key']
+
+		 ,addslashes($this->data['Invoice Public ID'])
+		 ,$this->data['Order Key']);
+    if(!mysql_query($sql))
+      exit("can not update order dimension after inv\n");
+
+
+
+
+
 
   }
 
@@ -702,40 +723,132 @@ class Order{
     $this->data['Delivery Note Customer Key']=$this->data['Order Customer Key'];
     $this->data['Delivery Note Customer Name']=$this->data['Order Customer Name'];
     $this->data['Delivery Note XHTML Ship To']=$this->data['Order XHTML Ship Tos'];
-    $this->data['Delivery Note Ship To Key']=$this->data['Order XHTML Ship To Key'];
-    $this->create_invoice_header();
+    $this->data['Delivery Note Ship To Key']=$this->data['Order Main Ship To Key'];
+    $this->create_dn_header();
     
     $line_number=1;
     $amount=0;
     $discounts=0;
     foreach($transacions_data as $data){
-      $sql=sprintf("update  `Order Transaction Fact`  set `Delivery Note Date`=%s,`Order Last Updated Date`=%s, `Delivery Note Public ID`=%s,`Delivery Note Line`=%d,  where `Order Key`=%d and  'Product Key'=%d"
-		   ,prepare_mysql($invoice_data['Invoice Date'])
-		   ,prepare_mysql($invoice_data['Invoice Date'])
-		   ,prepare_mysql($this->data['Invoice Public ID'])
+
+      $cost_supplier=0;
+      $cost_manu='';
+      $cost_storing='';
+      $cost_hand='';
+      $cost_shipping='';
+
+
+      
+      
+       $sql=sprintf("select `Parts Per Product`,`Product Part Key`,`Part SKU` from `Product Part List` where `Product ID`=%s ",prepare_mysql($data['Product ID']));
+      $result=mysql_query($sql);
+      $part_sku=array();$qty=array();
+      
+      $index=0;
+      //  print "$sql\n";
+      while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+	$part_sku[$index]['sku']=$row['Part SKU'];
+	$parts_per_product=$row['Parts Per Product'];
+	//get supplier product id
+	
+	$sql=sprintf("select `Supplier Product ID`,`Supplier Product Units Per Part` from  `Supplier Product Part List` where `Part SKU`=%s  ",prepare_mysql($row['Part SKU']));
+	 $result2=mysql_query($sql);
+	 //	 print "$sql\n";
+	 while($row2=mysql_fetch_array($result2, MYSQL_ASSOC)){
+	   $part_sku[$index]['sp_id'][]=$row2['Supplier Product ID'];
+
+	   $sp_units_per_part=$row2['Supplier Product Units Per Part'];
+
+	   //get cost of the product (thet means the cost in this time difficult no how to do it mmmm
+	   //method 1 using the date average of the supplier product cost
+	   
+	   $sql=sprintf("select avg(`Supplier Product Cost`) as cost from `Supplier Product Dimension` where  `Supplier Product Valid From`<%s and `Supplier Product Valid To`>%s  and `Supplier Product ID`=%s ",
+			prepare_mysql($this->data['Delivery Note Date'])
+			,prepare_mysql($this->data['Delivery Note Date'])
+			,prepare_mysql($row2['Supplier Product ID']));
+
+
+	   $result3=mysql_query($sql);
+	   if($row3=mysql_fetch_array($result3, MYSQL_ASSOC)){
+	     $cost=$row3['cost']*$sp_units_per_part*$parts_per_product;
+	     
+	   }else{
+	     exit("can not take cost of a product");
+	     
+	   }
+	   $cost_supplier+=$cost;
+	   
+	   
+	   //method 2 if we have stock location stoff can we take that info dor the value of ther sotk in questuion
+
+	 }
+	 
+	 if(count( $part_sku[$index]['sp_id'])==1)
+	   $qty[$index]=$row['Parts Per Product']*$data['Shipped Quantity'];
+	 else{
+	   exit ("ahh more than one suppli erproduct id per part\n");
+	 }
+
+	 $index++; 
+      }
+      
+      
+
+      
+      foreach($part_sku as $key=>$value){
+	
+	
+	$sql=sprintf("insert into `Warehouse Inventory Transition Fact`  (`Date`,`Part SKU`,`Warehouse Key`,`Warehouse Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`) values (%s,%s,1,1,%s,NULL) ",prepare_mysql($this->data['Delivery Note Date'])
+		     ,prepare_mysql($part_sku[$key]['sku'])
+		     ,prepare_mysql($qty[$key])
+		     );
+	if(!mysql_query($sql))
+	  exit("can not create Warehouse * 888 $sql   Inventory Transition Fact\n");
+      }
+
+
+
+
+
+
+
+
+
+
+      
+      $sql=sprintf("update  `Order Transaction Fact`  set `Actual Shipping Date`=%s,`Order Last Updated Date`=%s, `Delivery Note ID`=%s,`Delivery Note Line`=%d,`Current Autorized to Sell Quantity`=%s ,`Delivery Note Quantity`=%s ,`Shipped Quantity`=%s ,`No Shipped Due Out of Stock`=%s ,`No Shipped Due No Authorized`=%s ,`No Shipped Due Not Found`=%s ,`No Shipped Due Other`=%s ,`Cost Supplier`=%s,`Cost Manufacure`=%s,`Cost Storing`=%s,`Cost Handing`=%s,`Cost Shipping`=%s  where `Order Key`=%d and  'Order Line'=%d"
+		   ,prepare_mysql($this->data['Delivery Note Date'])
+		   ,prepare_mysql($this->data['Delivery Note Date'])
+		   ,prepare_mysql($this->data['Delivery Note ID'])
 		   ,$line_number
-		   ,prepare_mysql($data['current payment state'])
-		   ,number($data['invoice qty'])
-		   ,prepare_mysql($this->data['Order Main Ship To Key'])
-		   ,$data['gross amount']
-		   ,$data['discount amount']
+		   ,$data['Current Autorized to Sell Quantity']
+		   ,$data['Delivery Note Quantity']
+		   ,$data['Shipped Quantity']
+		   ,$data['No Shipped Due Out of Stock']
+		   ,$data['No Shipped Due No Authorized']
+		   ,$data['No Shipped Due Not Found']
+		   ,$data['No Shipped Due Other']
+		   ,prepare_mysql($cost_supplier)
+		   ,prepare_mysql($cost_manu)
+		   ,prepare_mysql($cost_storing)
+		   ,prepare_mysql($cost_hand)
+		   ,prepare_mysql($cost_shipping)
+
+
 		   ,$this->data['Order Key']
-		   ,$$data['product_id']
+		   ,$line_number
 		   );
-      $amount+=$data['gross amount'];
-      $discounts+=$data['discount amount'];
       
-      //   print "$sql\n";
+      
+      print "$sql\n";
       $line_number++;
-      mysql_query($sql);
+      if(!mysql_query($sql))
+	exit("$sql\n can not update order transacrion aferter dn 313123");
       
+
     }
 
-    $sql=sprintf("update `Invoice Dimension` set `Invoice Gross Amount`=%.2f ,`Invoice Discount Amount`=%.2f where `Invoice Key`=%d",$amount,$discounts,$this->data['Invoice Key']);
-    mysql_query($sql);
-    //     print_r($data);
-
-  }
+ }
 
 
   function get_discounts($data,$customer_id,$date){
@@ -955,9 +1068,17 @@ class Order{
      $this->data['Invoice Gross Amount']=0;
      $this->data['Invoice Discount Amount']=0;
      $this->data['Invoice Total Tax Amount']=0;
-
-	  
-
+     
+  //    $this->data['Invoice Date']=
+//        $this->data['Invoice File As']
+//        $this->data['Invoice Main Store Key']
+//        $this->data['Invoice Main Store Code']
+//        $this->data['Invoice Main Store Type']
+//        $this->data['Invoice Multiple Stores']
+//        $this->data['Invoice Customer Key']
+//        $this->data['Invoice Customer Name']
+//        $this->data['Invoice XHTML Ship Tos']
+//        $this->data['Invoice Multiple Ship Tos']
 //     $sql="select sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) from `Order Transaction Fact` where "
 
 
@@ -986,6 +1107,36 @@ class Order{
      }
 
   }
+
+
+ function create_dn_header(){
+
+
+
+
+    $sql=sprintf("insert into `Delivery Note Dimension` (`Delivery Note Date`,`Delivery Note ID`,`Delivery Note File As`,`Delivery Note Customer Key`,`Delivery Note Customer Name`,`Delivery Note XHTML Ship To`,`Delivery Note Ship To Key`) values (%s,%s,%s,%s,%s,%s,%s)"
+		 ,prepare_mysql($this->data['Delivery Note Date'])
+		 ,prepare_mysql($this->data['Delivery Note ID'])
+		 ,prepare_mysql($this->data['Delivery Note File As'])
+		 ,prepare_mysql($this->data['Delivery Note Customer Key'])
+		 ,prepare_mysql($this->data['Delivery Note Customer Name'])
+		 ,prepare_mysql($this->data['Delivery Note XHTML Ship To'])
+		 ,prepare_mysql($this->data['Delivery Note Ship To Key'])
+		 );
+    
+
+    if(mysql_query($sql)){
+       $this->id = mysql_insert_id();
+       $this->data['Delivery Note Key']=$this->id ;
+     }else{
+       print "Error can not create dn header";exit;
+     }
+
+  }
+
+
+
+
 
 
   function get_data($key,$id){

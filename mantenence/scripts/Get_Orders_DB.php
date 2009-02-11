@@ -109,11 +109,23 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     $description=_trim($transaction['description']);$description=str_replace("\\\"","\"",$description);
     if(preg_match('/Joie/i',$description) and preg_match('/abpx-01/i',$transaction['code']))
       $description='2 boxes joie (replacement due out of stock)';
+    
+    if(is_numeric($transaction['w'])){
+
+      if($transaction['w']<0.001 and $transaction['w']>0)
+	$w=0.001*$transaction['units'];
+      else
+	$w=sprintf("%.3f",$transaction['w']*$transaction['units']);
+    }else
+      $w='';
     $product_data=array(
 			'product code'=>_trim($transaction['code'])
 			,'product name'=>$description
 			,'product unit type'=>$unit_type
 			,'product units per case'=>$transaction['units']
+			,'product net weight'=>$w
+			,'product gross weight'=>$w
+			,'part gross weight'=>$w
 			,'product rrp'=>sprintf("%.2f",$transaction['rrp']*$transaction['units'])
 			,'product price'=>sprintf("%.2f",$transaction['price'])
 			,'supplier code'=>_trim($transaction['supplier_code'])
@@ -123,6 +135,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 			,'supplier product name'=>$description
 			,'auto_add'=>true
 			,'date'=>$date_order
+			,'date2'=>$date_inv
 			);
  //    if(is_numeric($transaction['supplier_code'])  or preg_match('/\d/',$transaction['supplier_code'])){
 //       print $row2['id']."\n";
@@ -133,7 +146,8 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
  //    if(preg_match('/ish-33/i',$transaction['code'])){
 //       print $row2['id']."\n";
-//       print_r($product_data);
+    // print_r($product_data);
+     
 //     }
     
     //print_r($product_data);
@@ -161,15 +175,45 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     
     $data_dn_transactions[]=array(
 				  'product_id'=>$product->id
-				  ,'db qty'=>$transaction['order']-$transaction['reorder']+$transaction['bonus']
+				  ,'Product ID'=>$product->data['Product ID']
+				  ,'Delivery Note Quantity'=>$transaction['order']-$transaction['reorder']
+				  ,'Current Autorized to Sell Quantity'=>$transaction['order']
+				  ,'Shipped Quantity'=>$transaction['order']-$transaction['reorder']
+				  ,'No Shipped Due Out of Stock'=>$transaction['reorder']
+				  ,'No Shipped Due No Authorized'=>0
+				  ,'No Shipped Due Not Found'=>0
+				  ,'No Shipped Due Other'=>0
 				  );		   
 
     if($transaction['bonus']>0){
+  $products_data[]=array(
+			   'product_id'=>$product->id
+			   ,'qty'=>0
+			   ,'gross_amount'=>0
+			   ,'discount_amount'=>0
+			   );
+       $data_invoice_transactions[]=array(
+				       'product_id'=>$product->id
+				       ,'invoice qty'=>$transaction['bonus']
+				       ,'gross amount'=>($transaction['bonus'])*$transaction['price']
+				       ,'discount amount'=>($transaction['bonus'])*$transaction['price']
+				       ,'current payment state'=>'No Applicable'
+				       );		   
+    
+    
+    $data_dn_transactions[]=array(
+				  'product_id'=>$product->id
+				   ,'Product ID'=>$product->data['Product ID']
+				  ,'Delivery Note Quantity'=>$transaction['bonus']
+				  ,'Current Autorized to Sell Quantity'=>$transaction['bonus']
+				  ,'Shipped Quantity'=>$transaction['bonus']
+				  ,'No Shipped Due Out of Stock'=>0
+				  ,'No Shipped Due No Authorized'=>0
+				  ,'No Shipped Due Not Found'=>0
+				  ,'No Shipped Due Other'=>0
+				  );		   
 
-      $data_bonus_transactions[]=array(
-				    'product_id'=>$product->id
-				    ,'db qty'=>$transaction['order']-$transaction['reorder']+$transaction['bonus']
-				    );
+
       
     }
 
@@ -209,15 +253,13 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 			  ,'Invoice Multiple Payment Methods'=>0
 			  );
        $data_dn=array(
-			  'Invoice Date'=>$date_inv
-			  ,'Invoice Public ID'=>$header_data['order_num']
-			  ,'Invoice File As'=>$header_data['order_num']
-			  ,'Invoice Main Payment Method'=>$payment_method
-			  ,'Invoice Multiple Payment Methods'=>0
+			  'Delivery Note Date'=>$date_inv
+			  ,'Delivery Note ID'=>$header_data['order_num']
+			  ,'Delivery Note File As'=>$header_data['order_num']
+			  
 			  );
-
-
-      $order->create_invoice_simple($data_invoice,$data_invoice_transactions);
+       $order->create_dn_simple($data_dn,$data_dn_transactions);
+       $order->create_invoice_simple($data_invoice,$data_invoice_transactions);
     }
       
   }

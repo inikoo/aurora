@@ -785,8 +785,9 @@ elseif(preg_match('/^[^\s]+\.(com|uk|info|biz|org)$/i',$val)){
 //print prepare_mysql(0)."\n";
 
 function prepare_mysql($string){
-
   
+ //  if(is_array($string))
+//     print_r($string);
   if(strlen($string)==0)
     return 'null';
   else
