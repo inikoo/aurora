@@ -273,7 +273,13 @@ class Customer{
       $this->get_data('id',$this->id);
 
       
+      if(isset($data['other id']) and $data['other id']!=''){
 
+	$sql=sprintf("update `Customer Dimension` set `Customer Other ID`=%s where `Customer Key`=%d",prepare_mysql($data['other id']),$this->id);
+
+	if(!mysql_query($sql))
+	  exit("can not update customer other id\n");
+      }
       
 
       if(isset($data['has_shipping']) and $data['has_shipping'] and  isset($data['shipping_data']) and is_array($data['shipping_data'])){

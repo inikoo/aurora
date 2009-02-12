@@ -8641,7 +8641,12 @@ if($act_data['town']=='Hornbæk - Sjælland'){
     
   $shop_address_data['default_country_id']=30;
 
-
+  if(isset($act_data['act']))
+    $customer_data['other id']=$act_data['act'];
+  else
+    $customer_data['other id']='';
+      
+  
   $customer_data['type']=$tipo_customer;
   $customer_data['contact_name']=$act_data['contact'];
   $customer_data['company_name']=$act_data['name'];
@@ -8691,11 +8696,15 @@ if($act_data['town']=='Hornbæk - Sjælland'){
     
   }
 
-  $customer_data['other_id']=$act_data['act'];
+  //  $customer_data['other_id']=$act_data['act'];
 
   //$customer_data['address_data']=
   
-  
+    if(isset($act_data['act']))
+    $customer_data['other id']=$act_data['act'];
+  else
+    $customer_data['other id']='';
+      
   
 
   return $customer_data;

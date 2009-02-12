@@ -57,7 +57,7 @@ class Order{
 
       
       
-      $customer_identification_method='email';
+      $customer_identification_method='other id';
 
       $customer_id=$this->find_customer($customer_identification_method,$data['cdata']);
 
@@ -121,35 +121,35 @@ class Order{
       
 
 
-   //    $customer->update('orders');
-//       $customer->update('no normal data');
+      $customer->update('orders');       
+      $customer->update('no normal data');
 
 //       $this->cutomer_rankings();
       
-//       switch($_SESSION['lang']){
-//       default:
-// 	  $abstract=sprintf('Order <a href="order.php?id=%d">%s</a>',$this->data['Order Key'],$this->data['Order Public ID']);
-// 	  $note=sprintf('%s (<a href="customer.php?id=%d">%s) place an order at %s'
-// 			,$customer->get('Customer Name')
-// 			,$customer->id
-// 			,$customer->get('Customer ID')
-// 			,strftime("%e %b %Y %H:%M",strtotime($this->data['Order Date']))
-// 			);
-// 	}
+      switch($_SESSION['lang']){
+      default:
+	  $abstract=sprintf('Order <a href="order.php?id=%d">%s</a>',$this->data['Order Key'],$this->data['Order Public ID']);
+	  $note=sprintf('%s (<a href="customer.php?id=%d">%s) place an order at %s'
+			,$customer->get('Customer Name')
+			,$customer->id
+			,$customer->get('Customer ID')
+			,strftime("%e %b %Y %H:%M",strtotime($this->data['Order Date']))
+			);
+	}
 
-// 	$sql=sprintf("insert into `History Dimension` (`History Date`,`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`History Details`,`Author Key`,`Author Name`) values(%s,'Customer','%s','Placed','Order',%d,%s,0,%s)"
-// 		     ,prepare_mysql($this->data['Order Date'])
-// 		     ,$customer->id
-// 		     ,$this->data['Order Key']
-// 		     ,prepare_mysql($note)
-// 		     ,prepare_mysql(_('System'))
-// 		     );
-// 	mysql_query($sql);
-// 	$history_id= mysql_insert_id();
-// 	$abstract.=' (<span class="like_a" onclick="showdetails(this)" d="0" id="ch'.$history_id.'"  hid="'.$history_id.'">'._('view details').'</span>)';
-// 	$sql=sprintf("update `History Dimension` set `History Abstract`=%s where `History Key`=%d",prepare_mysql($abstract),$history_id);
-// 	//	print "$sql\n";
-// 	mysql_query($sql);
+	$sql=sprintf("insert into `History Dimension` (`History Date`,`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`History Details`,`Author Key`,`Author Name`) values(%s,'Customer','%s','Placed','Order',%d,%s,0,%s)"
+		     ,prepare_mysql($this->data['Order Date'])
+		     ,$customer->id
+		     ,$this->data['Order Key']
+		     ,prepare_mysql($note)
+		     ,prepare_mysql(_('System'))
+		     );
+	mysql_query($sql);
+	$history_id= mysql_insert_id();
+	$abstract.=' (<span class="like_a" onclick="showdetails(this)" d="0" id="ch'.$history_id.'"  hid="'.$history_id.'">'._('view details').'</span>)';
+	$sql=sprintf("update `History Dimension` set `History Abstract`=%s where `History Key`=%d",prepare_mysql($abstract),$history_id);
+	//	print "$sql\n";
+	mysql_query($sql);
 	
 
 	
@@ -534,38 +534,39 @@ class Order{
 	}
 	// $this->finish_new_order();
       
-	// $customer=new Customer($customer_id);
-	//$customer->update('orders');
-	//$customer->update('no normal data');
+	 $customer=new Customer($customer_id);
+	$customer->update('orders');
+	$customer->update('no normal data');
 	
 	//$this->cutomer_rankings();
 
-// 	switch($_SESSION['lang']){
-// 	default:
-// 	  $abstract=sprintf('Internet Order <a href="order.php?id=%d">%s</a>',$this->get('order key'),$this->get('order public id'));
-// 	  $note=sprintf('%s (<a href="customer.php?id=%d">%s) place an order by internet using IP:%d at %s'
-// 			,$customer->get('customer name')
-// 			,$customer->id
-// 			,$customer->get('customer id')
-// 			,$edata['ip_number']
-// 			,strftime("%e %b %Y %H:%M",strtotime($this->data['order date']))
-// 			);
-// 	}
+	switch($_SESSION['lang']){
+	default:
+	  $abstract=sprintf('Internet Order <a href="order.php?id=%d">%s</a>',$this->get('order key'),$this->get('order public id'));
+	  $note=sprintf('%s (<a href="customer.php?id=%d">%s) place an order by internet using IP:%d at %s'
+			,$customer->get('customer name')
+			,$customer->id
+			,$customer->get('customer id')
+			,$edata['ip_number']
+			,strftime("%e %b %Y %H:%M",strtotime($this->data['order date']))
+			);
+	}
 
-// 	$sql=sprintf("insert bzr commitinto `History Dimension` (`History Date`,`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`History Details`,`Author Key`,`Author Name`) values(%s,'Customer','%s','Placed','Order',%d,%s,0,%s)"
-// 		     ,prepare_mysql($this->data['order date'])
-// 		     ,$customer->id
-// 		     ,$this->data['order key']
-// 		     ,prepare_mysql($note)
-// 		     ,prepare_mysql(_('System'))
-// 		     );
-// 	mysql_query($sql);
-// 	$history_id=$this->db->lastInsertID();
-// 	$abstract.=' (<span class="like_a" onclick="showdetails(this)" d="0" id="ch'.$history_id.'"  hid="'.$history_id.'">'._('view details').'</span>)';
-// 	$sql=sprintf("update `History Dimension` set `History Abstract`=%s where `History Key`=%d",prepare_mysql($abstract),$history_id);
-// 	//	print "$sql\n";
-// 	mysql_query($sql);
-
+	$sql=sprintf("insert into `History Dimension` (`History Date`,`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`History Details`,`Author Key`,`Author Name`) values(%s,'Customer','%s','Placed','Order',%d,%s,0,%s)"
+		     ,prepare_mysql($this->data['order date'])
+		     ,$customer->id
+		     ,$this->data['order key']
+		     ,prepare_mysql($note)
+		     ,prepare_mysql(_('System'))
+		     );
+	if(mysql_query($sql)){
+	$history_id=mysql_insert_id();
+	$abstract.=' (<span class="like_a" onclick="showdetails(this)" d="0" id="ch'.$history_id.'"  hid="'.$history_id.'">'._('view details').'</span>)';
+	$sql=sprintf("update `History Dimension` set `History Abstract`=%s where `History Key`=%d",prepare_mysql($abstract),$history_id);
+	//	print "$sql\n";
+	mysql_query($sql);
+	}else
+	  exit("error can not insert  history");
 	
 	//	print "$sql\n";
       }
@@ -593,37 +594,56 @@ class Order{
       $customer=new Customer('new',$data);
       return $customer->id;
       break;
-    case('auto'):
-      
-      //get list of posible customers (email);
 
-      $email=$data['email'];
-      if($email!=''){
-	$sql=sprintf("select `Customer Key`,(length(`Customer Email`)-levenshtein(`Customer Email`,'%s'))/length(`Customer Email`) as similarity from `Customer Dimension`  where similarity>0  order by similarity limit 500",add_slashes($email));
-      $result =& $this->db->query($sql);
-      $p_customer_by_email=array();
-      while($row=$result->fetchRow()){
-	$p_customer_by_email[$row['customer key']]=$row['similarity'];
-	if(!isset($multiplicity[$row['similarity']]))
-	  $multiplicity[$row['similarity']]=1;
-	else
-	  $multiplicity[$row['similarity']];
+    case('other id'):
+      
+      if($data['other id']==''){
+	$customer=new Customer('new',$data);
+	return $customer->id;
       }
       
+      $sql=sprintf("select `Customer Key` from `Customer Dimension`  where `Customer Other ID`=%s",addslashes($data['other id']));
+      $result =mysql_query($sql);
+      if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+	$customer=new Customer($row['Customer Key']);
+	return $customer->id;
+      }
+      $customer=new Customer('new',$data);
+      return $customer->id;
+      
+      break;
+ //    case('auto'):
+      
+//       //get list of posible customers (email);
+
+//       $email=$data['email'];
+//       if($email!=''){
+// 	$sql=sprintf("select `Customer Key`,(length(`Customer Email`)-levenshtein(`Customer Email`,'%s'))/length(`Customer Email`) as similarity from `Customer Dimension`  where similarity>0  order by similarity limit 500",add_slashes($email));
+//       $result =& $this->db->query($sql);
+//       $p_customer_by_email=array();
+//       while($row=$result->fetchRow()){
+// 	$p_customer_by_email[$row['customer key']]=$row['similarity'];
+// 	if(!isset($multiplicity[$row['similarity']]))
+// 	  $multiplicity[$row['similarity']]=1;
+// 	else
+// 	  $multiplicity[$row['similarity']];
+//       }
+      
       
 
 
-      break;
-
-  }
+//       break;
 
     }
 
   }
 
+  
+
   function add_order_transaction($data){
 
-    $sql=sprintf("insert into `Order Transaction Fact` (`Order Date`,`Order Last Updated Date`,`Product Key`,`Current Dispatching State`,`Current Payment State`,`Customer Key`,`Order Key`,`Order Public ID`,`Order Line`,`Order Quantity`,`Ship To Key`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`) values (%s,%s,%d,%s,%s,%s,%s,%s,%d,%f,%s,%.2f,%.2f) "
+    $sql=sprintf("insert into `Order Transaction Fact` (`Estimated Weight`,`Order Date`,`Order Last Updated Date`,`Product Key`,`Current Dispatching State`,`Current Payment State`,`Customer Key`,`Order Key`,`Order Public ID`,`Order Line`,`Order Quantity`,`Ship To Key`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`) values (%s,%s,%s,%d,%s,%s,%s,%s,%s,%d,%f,%s,%.2f,%.2f) "
+		 ,prepare_mysql($data['Estimated Weight'])
 		 ,prepare_mysql($data['date'])
 		 ,prepare_mysql($data['date'])
 		 ,$data['product_id']
@@ -639,9 +659,9 @@ class Order{
 		 ,$data['discount_amount']
 
 		 );
-    //   print "$sql\n";
-    mysql_query($sql);
-
+    // print "$sql\n";
+    if(!mysql_query($sql))
+      exit("can not update order trwansiocion facrt after invoice 1223");
 
     //     print_r($data);
     //print "$sql\n";
@@ -661,6 +681,8 @@ class Order{
     $this->data['Invoice Customer Name']=$this->data['Order Customer Name'];
     $this->data['Invoice XHTML Ship Tos']=$this->data['Order XHTML Ship Tos'];
     $this->data['Invoice Multiple Ship Tos']=$this->data['Order Multiple Ship Tos'];
+    $this->data['Invoice Gross Shipping Amount']=$invoice_data['Invoice Gross Shipping Amount'];
+    $this->data['Invoice Gross Charges Amount']=$invoice_data['Invoice Gross Charges Amount'];
 
 
     $this->create_invoice_header();
@@ -669,7 +691,9 @@ class Order{
     $amount=0;
     $discounts=0;
     foreach($transacions_data as $data){
-      $sql=sprintf("update  `Order Transaction Fact`  set `Invoice Date`=%s,`Order Last Updated Date`=%s, `Invoice Public ID`=%s,`Invoice Line`=%d,`Current Payment State`=%s ,`Invoice Quantity`=%s ,`Ship To Key`=%s ,`Invoice Transaction Gross Amount`=%.2f,`Invoice Transaction Total Discount Amount`=%.2f  where `Order Key`=%d and  'Order Line'=%d"
+      $sql=sprintf("update  `Order Transaction Fact`  set `Current Payment State`=%s,`Current Dispatching State`=%s,`Invoice Date`=%s,`Order Last Updated Date`=%s, `Invoice Public ID`=%s,`Invoice Line`=%d,`Current Payment State`=%s ,`Invoice Quantity`=%s ,`Ship To Key`=%s ,`Invoice Transaction Gross Amount`=%.2f,`Invoice Transaction Total Discount Amount`=%.2f  where `Order Key`=%d and  `Order Line`=%d"
+		   ,prepare_mysql('Paid')
+		   ,prepare_mysql('Received by customer')
 		   ,prepare_mysql($invoice_data['Invoice Date'])
 		   ,prepare_mysql($invoice_data['Invoice Date'])
 		   ,prepare_mysql($this->data['Invoice Public ID'])
@@ -685,9 +709,10 @@ class Order{
       $amount+=$data['gross amount'];
       $discounts+=$data['discount amount'];
       
-      //   print "$sql\n";
+
       $line_number++;
-      mysql_query($sql);
+      if(!mysql_query($sql))
+	exit("can not update order trwansiocion facrt after invoice");
       
     }
 
@@ -818,7 +843,8 @@ class Order{
 
 
       
-      $sql=sprintf("update  `Order Transaction Fact`  set `Actual Shipping Date`=%s,`Order Last Updated Date`=%s, `Delivery Note ID`=%s,`Delivery Note Line`=%d,`Current Autorized to Sell Quantity`=%s ,`Delivery Note Quantity`=%s ,`Shipped Quantity`=%s ,`No Shipped Due Out of Stock`=%s ,`No Shipped Due No Authorized`=%s ,`No Shipped Due Not Found`=%s ,`No Shipped Due Other`=%s ,`Cost Supplier`=%s,`Cost Manufacure`=%s,`Cost Storing`=%s,`Cost Handing`=%s,`Cost Shipping`=%s  where `Order Key`=%d and  'Order Line'=%d"
+      $sql=sprintf("update  `Order Transaction Fact` set `Estimated Weight`=%s,`Actual Shipping Date`=%s,`Order Last Updated Date`=%s, `Delivery Note ID`=%s,`Delivery Note Line`=%d,`Current Autorized to Sell Quantity`=%s ,`Delivery Note Quantity`=%s ,`Shipped Quantity`=%s ,`No Shipped Due Out of Stock`=%s ,`No Shipped Due No Authorized`=%s ,`No Shipped Due Not Found`=%s ,`No Shipped Due Other`=%s ,`Cost Supplier`=%s,`Cost Manufacure`=%s,`Cost Storing`=%s,`Cost Handing`=%s,`Cost Shipping`=%s  where `Order Key`=%d and  `Order Line`=%d"
+		   ,prepare_mysql($data['Estimated Weight'])
 		   ,prepare_mysql($this->data['Delivery Note Date'])
 		   ,prepare_mysql($this->data['Delivery Note Date'])
 		   ,prepare_mysql($this->data['Delivery Note ID'])
@@ -1088,7 +1114,7 @@ class Order{
 //     $sql="select sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) from `Order Transaction Fact` where "
 
 
-    $sql=sprintf("insert into `Invoice Dimension` (`Invoice Date`,`Invoice Public ID`,`Invoice File As`,`Invoice Main Store Key`,`Invoice Main Store Code`,`Invoice Main Store Type`,`Invoice Multiple Stores`,`Invoice Customer Key`,`Invoice Customer Name`,`Invoice XHTML Ship Tos`,`Invoice Multiple Ship Tos`,`Invoice Gross Amount`,`Invoice Discount Amount`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%d,%.2f,%.2f)"
+    $sql=sprintf("insert into `Invoice Dimension` (`Invoice Date`,`Invoice Public ID`,`Invoice File As`,`Invoice Main Store Key`,`Invoice Main Store Code`,`Invoice Main Store Type`,`Invoice Multiple Stores`,`Invoice Customer Key`,`Invoice Customer Name`,`Invoice XHTML Ship Tos`,`Invoice Multiple Ship Tos`,`Invoice Gross Amount`,`Invoice Discount Amount`,`Invoice Gross Shipping Amount`,`Invoice Gross Charges Amount`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%d,%.2f,%.2f,%.2f,%.2f)"
 		 ,prepare_mysql($this->data['Invoice Date'])
 		 ,prepare_mysql($this->data['Invoice Public ID'])
 		 ,prepare_mysql($this->data['Invoice File As'])
@@ -1102,6 +1128,8 @@ class Order{
 		 ,$this->data['Invoice Multiple Ship Tos']
 		 ,$this->data['Invoice Gross Amount']
 		 ,$this->data['Invoice Discount Amount']
+		 ,$this->data['Invoice Gross Shipping Amount']
+		 ,$this->data['Invoice Gross Charges Amount']
 		 );
     
 
@@ -1109,6 +1137,7 @@ class Order{
        $this->id = mysql_insert_id();
        $this->data['Invoice Key']=$this->id ;
      }else{
+
        print "Error can not create order header";exit;
      }
 

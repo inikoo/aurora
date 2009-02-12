@@ -881,23 +881,39 @@ function normalize_code($code){
   }
   
 
-//  function onload($key){
+ function load($key){
 
-//    switch($key){
-//    case('sales'):
-//      $sql=sprintf("select sum(``) as cost_sup ,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ``from `Order Transaction Fact` where `Product Key`",$this->id);
-//      $this->data['Product Total Invoiced Gross Amount']=$row['gross'];
-//      $this->data['Product Total Invoiced Gross Amount']=$row['disc'];
-//      $this->data['Product Total Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
-//      $this->data['Product Total Quantity Ordered']=$row['ordered'];
-//      $this->data['Product Total Quantity Invoiced']=$row['invoiced'];
-//      $this->data['Product Total Quantity Delivered']=$row['delivered'];
+   switch($key){
+   case('sales'):
+     $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Key`=%d",$this->id);
+     print "$sql\n";
+     $result=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
      
-   
-//    }
+       $this->data['Product Total Invoiced Gross Amount']=$row['gross'];
+       $this->data['Product Total Invoiced Gross Amount']=$row['disc'];
+       $this->data['Product Total Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
+       $this->data['Product Total Quantity Ordered']=$row['ordered'];
+       $this->data['Product Total Quantity Invoiced']=$row['invoiced'];
+       $this->data['Product Total Quantity Delivered']=$row['delivered'];
+     }
+     $sql=sprintf("update `Product Dimension` set `Product Total Invoiced Gross Amount`=%.2f,`Product Total Invoiced Gross Amount`=%.2f,`Product Total Profit`=%.2f `Product Total Quantity Ordered`=%s , `Product Total Quantity Invoiced`=%s,`Product Total Quantity Delivered`=%s  where `Product Key`=%d "
+		  ,$this->data['Product Total Invoiced Gross Amount']
+		  ,$this->data['Product Total Invoiced Gross Amount']
+		  ,$this->data['Product Total Profit']
+		  ,number($this->data['Product Total Quantity Ordered'])
+		  ,number($this->data['Product Total Quantity Invoiced'])
+		  ,number($this->data['Product Total Quantity Delivered'])
+		  ,$this->id
+		  );
+     if(!mysql_query($sql))
+       exit("can not update product sales\n");
+     
+     
+   }
    
 
-//  }
+ }
 
 
 }

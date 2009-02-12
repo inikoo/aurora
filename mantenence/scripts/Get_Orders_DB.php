@@ -68,7 +68,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
   $transactions=read_products($products,$prod_map);
   $customer_data=setup_contact($act_data,$header_data,$date_index2);
 
-
+  //print_r($customer_data);
   $data=array();
   $data['order date']=$date_order;
   $data['order id']=$header_data['order_num'];
@@ -79,6 +79,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
   $data['order original metadata']=$row['id'];
   
   //print_r($header_data);
+
   $products_data=array();
   $data_invoice_transactions=array();
   $data_dn_transactions=array();
@@ -160,6 +161,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     }
     $products_data[]=array(
 			   'product_id'=>$product->id
+			   ,'Estimated Weight'=>$product->data['Product Gross Weight']*$transaction['order']
 			   ,'qty'=>$transaction['order']
 			   ,'gross_amount'=>$transaction['order']*$transaction['price']
 			   ,'discount_amount'=>$transaction['order']*$transaction['price']*$transaction['discount']
@@ -170,11 +172,15 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 				       ,'gross amount'=>($transaction['order']-$transaction['reorder'])*$transaction['price']
 				       ,'discount amount'=>($transaction['order']-$transaction['reorder'])  *$transaction['price']*$transaction['discount']
 				       ,'current payment state'=>'Paid'
+
+
+
 				       );		   
     
     
     $data_dn_transactions[]=array(
 				  'product_id'=>$product->id
+				  ,'Estimated Weight'=>$product->data['Product Gross Weight']*($transaction['order']-$transaction['reorder'])
 				  ,'Product ID'=>$product->data['Product ID']
 				  ,'Delivery Note Quantity'=>$transaction['order']-$transaction['reorder']
 				  ,'Current Autorized to Sell Quantity'=>$transaction['order']
@@ -191,6 +197,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 			   ,'qty'=>0
 			   ,'gross_amount'=>0
 			   ,'discount_amount'=>0
+			   ,'Estimated Weight'=>0
 			   );
        $data_invoice_transactions[]=array(
 				       'product_id'=>$product->id
@@ -198,6 +205,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 				       ,'gross amount'=>($transaction['bonus'])*$transaction['price']
 				       ,'discount amount'=>($transaction['bonus'])*$transaction['price']
 				       ,'current payment state'=>'No Applicable'
+
 				       );		   
     
     
@@ -211,6 +219,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 				  ,'No Shipped Due No Authorized'=>0
 				  ,'No Shipped Due Not Found'=>0
 				  ,'No Shipped Due Other'=>0
+				  ,'Estimated Weight'=>$product->data['Product Gross Weight']*($transaction['bonus'])
 				  );		   
 
 
@@ -251,6 +260,8 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 			  ,'Invoice File As'=>$header_data['order_num']
 			  ,'Invoice Main Payment Method'=>$payment_method
 			  ,'Invoice Multiple Payment Methods'=>0
+			  ,'Invoice Gross Shipping Amount'=>$header_data['shipping']
+			  ,'Invoice Gross Charges Amount'=>$header_data['charges']
 			  );
        $data_dn=array(
 			  'Delivery Note Date'=>$date_inv
