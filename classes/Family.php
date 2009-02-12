@@ -132,82 +132,111 @@ class family{
 
 //      break;
    case('sales'):
-     $this->load('products');
 
-     $tsall=0;
-     $tsoall=0;
-     $tsy=0;
-     $tsq=0;
-     $tsm=0;
-     $tsw=0;
-     $tsoy=0;
-     $tsoq=0;
-     $tsom=0;
-     $tsow=0;
+      $sql="select sum(`Product Total Invoiced Gross Amount`) as gross,sum(`Product Total Invoiced Discount Amount`) as disc, sum(`Product Total Profit`)as profit ,sum(`Product Total Quantity Delivered`) as delivered,sum(`Product Total Quantity Ordered`) as ordered,sum(`Product Total Quantity Invoiced`) as invoiced  from `Product Dimension` where `Product Family Key`=".$this->id;
+     $result=mysql_query($sql);
 
-     foreach($this->products as $product_id=>$product_data){
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+       $this->data['Product Family Total Invoiced Gross Amount']=$row['gross'];
+       $this->data['Product Family Total Invoiced Discount Amount']=$row['disc'];
+       $this->data['Product Family Total Profit']=$row['profit'];
+       $this->data['Product Family Total Quantity Ordered']=$row['ordered'];
+       $this->data['Product Family Total Quantity Invoiced']=$row['invoiced'];
+       $this->data['Product Family Total Quantity Delivered']=$row['delivered'];
+      
+        
+     $sql=sprintf("update `Product Family Dimension` set `Product Family Total Invoiced Gross Amount`=%.2f,`Product Family Total Invoiced Discount Amount`=%.2f,`Product Family Total Profit`=%.2f, `Product Family Total Quantity Ordered`=%s , `Product Family Total Quantity Invoiced`=%s,`Product Family Total Quantity Delivered`=%s  where `Product Family Key`=%d "
+		  ,$this->data['Product Family Total Invoiced Gross Amount']
+		  ,$this->data['Product Family Total Invoiced Discount Amount']
+		  ,$this->data['Product Family Total Profit']
+		  ,($this->data['Product Family Total Quantity Ordered'])
+		  ,prepare_mysql($this->data['Product Family Total Quantity Invoiced'])
+		  ,prepare_mysql($this->data['Product Family Total Quantity Delivered'])
+		  ,$this->id
+		  );
+
+     if(!mysql_query($sql))
+       exit("$sql\ncan not update fam sales\n");
        
-       $product=new Product($product_id);
-       $product->get('sales');
-       $tsall+=$product->data['sales']['tsall'];
-       $tsy+=$product->data['sales']['tsy'];
-       $tsq+=$product->data['sales']['tsq'];
-       $tsm+=$product->data['sales']['tsm'];
-       $tsw+=$product->data['sales']['tsw'];
-       $tsoall+=$product->data['sales']['tsoall'];
-       $tsoy+=$product->data['sales']['tsoy'];
-       $tsoq+=$product->data['sales']['tsoq'];
-       $tsom+=$product->data['sales']['tsom'];
-       $tsow+=$product->data['sales']['tsow'];
      }
 
 
-     $this->data['sales']['tsall']=$tsall;
-     $this->data['sales']['tsy']=$tsy;
-     $this->data['sales']['tsq']=$tsq;
-     $this->data['sales']['tsm']=$tsm;
-     $this->data['sales']['tsw']=$tsw;
-     $this->data['sales']['tsoall']=$tsoall;
-     $this->data['sales']['tsoy']=$tsoy;
-     $this->data['sales']['tsoq']=$tsoq;
-     $this->data['sales']['tsom']=$tsom;
-     $this->data['sales']['tsow']=$tsow;
+   //   $this->load('products');
 
+//      $tsall=0;
+//      $tsoall=0;
+//      $tsy=0;
+//      $tsq=0;
+//      $tsm=0;
+//      $tsw=0;
+//      $tsoy=0;
+//      $tsoq=0;
+//      $tsom=0;
+//      $tsow=0;
 
-     $weeks=$this->get('weeks');
-     if($weeks>0){
-       $this->data['sales']['awtsall']=$this->data['sales']['tsall']/$weeks;
-       $this->data['sales']['awtsoall']=$this->data['sales']['tsall']/$weeks;
+//      foreach($this->products as $product_id=>$product_data){
        
-       $date1=date("d-m-Y",strtotime("now -1 year"));$day1=date('N')-1;$date2=date('d-m-Y');$days=datediff('d',$date1,$date2);
-       $weeks=number_weeks($days,$day1);
-       $this->data['sales']['awtsy']=$tsy/$weeks;
-       $this->data['sales']['awtsoy']=$tsoy/$weeks;
-       $date1=date("d-m-Y",strtotime("now -3 month"));$day1=date('N')-1;$date2=date('d-m-Y');$days=datediff('d',$date1,$date2);
-       $weeks=number_weeks($days,$day1);
-       $this->data['sales']['awtsq']=$tsq/$weeks;
-       $this->data['sales']['awtsoq']=$tsoq/$weeks;
-       $date1=date("d-m-Y",strtotime("now -1 month"));$day1=date('N')-1;$date2=date('d-m-Y');$days=datediff('d',$date1,$date2);
-       $weeks=number_weeks($days,$day1);
-       $this->data['sales']['awtsm']=$tsm/$weeks;
-       $this->data['sales']['awtsom']=$tsom/$weeks;
+//        $product=new Product($product_id);
+//        $product->get('sales');
+//        $tsall+=$product->data['sales']['tsall'];
+//        $tsy+=$product->data['sales']['tsy'];
+//        $tsq+=$product->data['sales']['tsq'];
+//        $tsm+=$product->data['sales']['tsm'];
+//        $tsw+=$product->data['sales']['tsw'];
+//        $tsoall+=$product->data['sales']['tsoall'];
+//        $tsoy+=$product->data['sales']['tsoy'];
+//        $tsoq+=$product->data['sales']['tsoq'];
+//        $tsom+=$product->data['sales']['tsom'];
+//        $tsow+=$product->data['sales']['tsow'];
+//      }
 
 
-     }else{
-       $this->data['sales']['awtsall']='';
-       $this->data['sales']['awtosall']='';
-       $this->data['sales']['awtsy']='';
-       $this->data['sales']['awtsoy']='';
-       $this->data['sales']['awtsq']='';
-       $this->data['sales']['awtsoq']='';
-       $this->data['sales']['awtsm']='';
-       $this->data['sales']['awtsom']='';
-     }
+//      $this->data['sales']['tsall']=$tsall;
+//      $this->data['sales']['tsy']=$tsy;
+//      $this->data['sales']['tsq']=$tsq;
+//      $this->data['sales']['tsm']=$tsm;
+//      $this->data['sales']['tsw']=$tsw;
+//      $this->data['sales']['tsoall']=$tsoall;
+//      $this->data['sales']['tsoy']=$tsoy;
+//      $this->data['sales']['tsoq']=$tsoq;
+//      $this->data['sales']['tsom']=$tsom;
+//      $this->data['sales']['tsow']=$tsow;
 
-     if(preg_match('/save/',$args))
-        $this->save($tipo);
+
+//      $weeks=$this->get('weeks');
+//      if($weeks>0){
+//        $this->data['sales']['awtsall']=$this->data['sales']['tsall']/$weeks;
+//        $this->data['sales']['awtsoall']=$this->data['sales']['tsall']/$weeks;
+       
+//        $date1=date("d-m-Y",strtotime("now -1 year"));$day1=date('N')-1;$date2=date('d-m-Y');$days=datediff('d',$date1,$date2);
+//        $weeks=number_weeks($days,$day1);
+//        $this->data['sales']['awtsy']=$tsy/$weeks;
+//        $this->data['sales']['awtsoy']=$tsoy/$weeks;
+//        $date1=date("d-m-Y",strtotime("now -3 month"));$day1=date('N')-1;$date2=date('d-m-Y');$days=datediff('d',$date1,$date2);
+//        $weeks=number_weeks($days,$day1);
+//        $this->data['sales']['awtsq']=$tsq/$weeks;
+//        $this->data['sales']['awtsoq']=$tsoq/$weeks;
+//        $date1=date("d-m-Y",strtotime("now -1 month"));$day1=date('N')-1;$date2=date('d-m-Y');$days=datediff('d',$date1,$date2);
+//        $weeks=number_weeks($days,$day1);
+//        $this->data['sales']['awtsm']=$tsm/$weeks;
+//        $this->data['sales']['awtsom']=$tsom/$weeks;
+
+
+//      }else{
+//        $this->data['sales']['awtsall']='';
+//        $this->data['sales']['awtosall']='';
+//        $this->data['sales']['awtsy']='';
+//        $this->data['sales']['awtsoy']='';
+//        $this->data['sales']['awtsq']='';
+//        $this->data['sales']['awtsoq']='';
+//        $this->data['sales']['awtsm']='';
+//        $this->data['sales']['awtsom']='';
+//      }
+
+//      if(preg_match('/save/',$args))
+//         $this->save($tipo);
      
-     break;
+//      break;
    
 
    }

@@ -1430,7 +1430,7 @@ if($order=='stockerror')
  $sum_families=0;
  $sum_total_sales=0;
  $sum_month_sales=0;$sum_active=0;
- $sql="select sum(`Product Department For Sale Products`) as sum_active,sum(`Product Department Families`) as sum_families,sum(`Product Department Total Acc Invoiced Gross Amount`+`Product Department Total Acc Invoiced Discount Amount`) as sum_total_sales ,sum(`Product Department 1 Month Acc Invoiced Gross Amount`+`Product Department 1 Month Acc Invoiced Discount Amount`) as sum_month_sales  from `Product Department Dimension`    ";
+ $sql="select sum(`Product Department For Sale Products`) as sum_active,sum(`Product Department Families`) as sum_families,sum(`Product Department Total Invoiced Gross Amount`+`Product Department Total Invoiced Discount Amount`) as sum_total_sales ,sum(`Product Department 1 Month Acc Invoiced Gross Amount`+`Product Department 1 Month Acc Invoiced Discount Amount`) as sum_month_sales  from `Product Department Dimension`    ";
 
  $res = $db->query($sql); 
   if($row=$res->fetchRow()) {
@@ -1440,7 +1440,7 @@ if($order=='stockerror')
     $sum_active=$row['sum_active'];
   }
  
-   $sql="select *,`Product Department Total Acc Invoiced Gross Amount`+`Product Department Total Acc Invoiced Discount Amount` as `product department total acc invoiced amount` ,`Product Department 1 Month Acc Invoiced Gross Amount`+`Product Department 1 Month Acc Invoiced Discount Amount` as `product department 1 month acc invoiced amount`  from `Product Department Dimension`  order by `$order` $order_direction limit $start_from,$number_results    ";
+   $sql="select *,`Product Department Total Invoiced Gross Amount`+`Product Department Total Invoiced Discount Amount` as `product department total invoiced amount` ,`Product Department 1 Month Acc Invoiced Gross Amount`+`Product Department 1 Month Acc Invoiced Discount Amount` as `product department 1 month acc invoiced amount`  from `Product Department Dimension`  order by `$order` $order_direction limit $start_from,$number_results    ";
    // print "$sql";   
   $res = $db->query($sql); 
   $adata=array();
@@ -1454,8 +1454,8 @@ if($order=='stockerror')
 		   'outofstock'=>number($row['product department out of stock products']),
 		   'stockerror'=>number($row['product department unknown stock products']),
 		   'stock_value'=>money($row['product department stock value']),
-		   'tsall'=>money($row['product department total acc invoiced amount']),
-		   'per_tsall'=>percentage($row['product department total acc invoiced amount'],$sum_total_sales,2),
+		   'tsall'=>money($row['product department total invoiced amount']),
+		   'per_tsall'=>percentage($row['product department total invoiced amount'],$sum_total_sales,2),
 		   'tsm'=>money($row['product department 1 month acc invoiced amount']),
 		   'per_tsm'=>percentage($row['product department 1 month acc invoiced amount'],$sum_month_sales,2),
 		   );
@@ -1468,8 +1468,8 @@ if($order=='stockerror')
 		 'outofstock'=>number($row['product department out of stock products']),
 		 'stockerror'=>number($row['product department unknown stock products']),
 		 'stock_value'=>money($row['product department stock value']),
-		 'tsall'=>money($row['product department total acc invoiced amount']),
-		 'per_tsall'=>percentage($row['product department total acc invoiced amount'],$sum_total_sales,2),
+		 'tsall'=>money($row['product department total invoiced amount']),
+		 'per_tsall'=>percentage($row['product department total invoiced amount'],$sum_total_sales,2),
 		 'tsm'=>money($row['product department 1 month acc invoiced amount']),
 		 'per_tsm'=>percentage($row['product department 1 month acc invoiced amount'],$sum_month_sales,2),
 		 );
@@ -1602,7 +1602,7 @@ if($order=='code')
  
  $sum_total_sales=0;
  $sum_month_sales=0;
- $sql="select sum(`Product Family Total Acc Invoiced Gross Amount`+`Product Family Total Acc Invoiced Discount Amount`) as sum_total_sales ,sum(`Product Family 1 Month Acc Invoiced Gross Amount`+`Product Family 1 Month Acc Invoiced Discount Amount`) as sum_month_sales  from `Product Family Dimension`  F left join `Product Family Department Bridge` FD on (FD.`Product Family Key`=F.`Product Family Key`)   $where   ";
+ $sql="select sum(`Product Family Total Invoiced Gross Amount`+`Product Family Total Invoiced Discount Amount`) as sum_total_sales ,sum(`Product Family 1 Month Acc Invoiced Gross Amount`+`Product Family 1 Month Acc Invoiced Discount Amount`) as sum_month_sales  from `Product Family Dimension`  F left join `Product Family Department Bridge` FD on (FD.`Product Family Key`=F.`Product Family Key`)   $where   ";
 
  $res = $db->query($sql); 
   if($row=$res->fetchRow()) {
@@ -1611,7 +1611,7 @@ if($order=='code')
   }
 
 
-  $sql="select *,`Product Family Total Acc Invoiced Gross Amount`+`Product Family Total Acc Invoiced Discount Amount` as `product family total acc invoiced amount` ,`Product Family 1 Month Acc Invoiced Gross Amount`+`Product Family 1 Month Acc Invoiced Discount Amount` as `product family 1 month acc invoiced amount`  from `Product Family Dimension`   F left join `Product Family Department Bridge` FD on (FD.`Product Family Key`=F.`Product Family Key`)       $where order by `$order` $order_direction limit $start_from,$number_results    ";
+  $sql="select *,`Product Family Total Invoiced Gross Amount`+`Product Family Total Invoiced Discount Amount` as `product family total invoiced amount` ,`Product Family 1 Month Acc Invoiced Gross Amount`+`Product Family 1 Month Acc Invoiced Discount Amount` as `product family 1 month acc invoiced amount`  from `Product Family Dimension`   F left join `Product Family Department Bridge` FD on (FD.`Product Family Key`=F.`Product Family Key`)       $where order by `$order` $order_direction limit $start_from,$number_results    ";
   //  print $sql;
   $res = $db->query($sql); 
   
@@ -1626,8 +1626,8 @@ if($order=='code')
 		   'outofstock'=>number($row['product family out of stock products']),
 		   'stockerror'=>number($row['product family unknown stock products']),
 		   'stock_value'=>money($row['product family stock value']),
-		   'tsall'=>money($row['product family total acc invoiced amount']),
-		   'per_tsall'=>percentage($row['product family total acc invoiced amount'],$sum_total_sales,2),
+		   'tsall'=>money($row['product family total invoiced amount']),
+		   'per_tsall'=>percentage($row['product family total invoiced amount'],$sum_total_sales,2),
 		   'tsm'=>money($row['product family 1 month acc invoiced amount']),
 		   'per_tsm'=>percentage($row['product family 1 month acc invoiced amount'],$sum_month_sales,2),
 		   
