@@ -42,11 +42,12 @@ $update_all=false;
 $contador=1;
 $do_refunds=false;
 $correct_partner=true;
-$force_update=true;
+$force_update=false;
 
 
-$orders_array_full_path = glob("/mnt/*/Orders/86403.xls");
+$orders_array_full_path = glob("/mnt/*/Orders/*.xls");
 $orders_array_full_path=array_reverse($orders_array_full_path);
+
 
 if(count($orders_array_full_path)==0)
   exit;

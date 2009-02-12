@@ -35,9 +35,13 @@ $old_mem=0;
 
 $sql=sprintf("select * from orders_data.order_data ");
 $res = $db->query($sql); 
-if ($row=$res->fetchRow()) {
+while ($row=$res->fetchRow()) {
   
-  print $row['filename']."\n";
+  if(mb_unserialize($row['header'])  and  mb_unserialize($row['products'])){
+    print $row['id']."\r";
+    continue;
+  }
+  print $row['id'].' '.$row['filename']."\n";
   $handle_csv = fopen($row['filename_cvs'], "r");
   
   $sql=sprintf("update orders_data.order_data set last_read=NOW() where id=%d",$row['id']);
@@ -46,6 +50,9 @@ if ($row=$res->fetchRow()) {
   $map_act=$_map_act;
   $map=$_map;
   $y_map=$_y_map;
+
+   $order=str_replace('.xls','',str_replace($row['directory'],'',$row['filename']));
+
   if($order<18803){// Change map if the orders are old
     $y_map=$_y_map_old;
     foreach($_map_old as $key=>$value)
@@ -64,16 +71,20 @@ if ($row=$res->fetchRow()) {
   $checksum_header= md5($_header);
   $checksum_products= md5($_products);
   
+ 
+
+  
   $sql=sprintf("update orders_data.order_data set header=%s ,checksum_header=%s,products=%s,checksum_prod=%s where id=%d"
  ,prepare_mysql(mb_convert_encoding($_header, "UTF-8", "ISO-8859-1,UTF-8"))
 	       ,prepare_mysql($checksum_header)
 ,prepare_mysql(mb_convert_encoding($_products, "UTF-8", "ISO-8859-1,UTF-8"))
 	       ,prepare_mysql($checksum_products)
-	       ,$id);
+	       ,$row['id']);
     $db->exec($sql);
+    //print $sql;
+      
+
  }
-
-
 
 
 function mb_unserialize($serial_str) {

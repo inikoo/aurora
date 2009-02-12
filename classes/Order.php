@@ -653,7 +653,7 @@ class Order{
 		  ,prepare_mysql($this->get('Order Key'))
 		 ,prepare_mysql($this->get('Order Public ID'))
 		 ,$data['line_number']
-		 ,number($data['qty'])
+		 ,prepare_mysql($data['qty'])
 		 ,prepare_mysql($this->data['Order Main Ship To Key'])
 		 ,$data['gross_amount']
 		 ,$data['discount_amount']
@@ -699,7 +699,7 @@ class Order{
 		   ,prepare_mysql($this->data['Invoice Public ID'])
 		   ,$line_number
 		   ,prepare_mysql($data['current payment state'])
-		   ,number($data['invoice qty'])
+		   ,prepare_mysql($data['invoice qty'])
 		   ,prepare_mysql($this->data['Order Main Ship To Key'])
 		   ,$data['gross amount']
 		   ,$data['discount amount']
