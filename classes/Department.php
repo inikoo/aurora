@@ -360,8 +360,8 @@ function add_product($product_id,$args=false){
      if(preg_match('/principal/',$args)){
        $sql=sprintf("update  `Product Dimension` set `Product Main Department Key`=%d ,`Product Main Department Code`=%s,`Product Main Department Name`=%s where `Product Key`=%s    "
 		    ,$this->id
-		    ,prepare_mysql($this->get('product department code'))
-		    ,prepare_mysql($this->get('product department name'))
+		    ,prepare_mysql($this->get('Product Department Code'))
+		    ,prepare_mysql($this->get('Product Department Name'))
 		    ,$product->id);
 
        mysql_query($sql);
@@ -396,8 +396,8 @@ function add_family($family_id,$args=false){
      if(preg_match('/principal/',$args)){
        $sql=sprintf("update  `Product Family Dimension` set `Product Family Main Department Key`=%d ,`Product Family Main Department Code`=%s,`Product Family Main Department Name`=%s where `Product Family Key`=%s    "
 		    ,$this->id
-		    ,prepare_mysql($this->get('product department code'))
-		    ,prepare_mysql($this->get('product department name'))
+		    ,prepare_mysql($this->get('Product Department Code'))
+		    ,prepare_mysql($this->get('Product Department Name'))
 		    ,$family->id);
        mysql_query($sql);
      }

@@ -4,8 +4,7 @@ include_once('SupplierProduct.php');
 include_once('Part.php');
 
 class product{
-  
- 
+   
   var $product=array();
   var $categories=array();
 
@@ -643,6 +642,7 @@ function valid_id($id){
       $base_data['product units per case']=1;
 
     $family=false;$new_family=false;
+
     if($base_data['product family code']!='' and $base_data['product family key']==''){
       $family=new Family('code',$base_data['product family code']);
       if(!$family->id){
@@ -654,6 +654,8 @@ function valid_id($id){
 	$new_family=true;
       }
       $base_data['product family key']=$family->id;
+      $base_data['product family code']=$family->data['Product Family Code'];
+      $base_data['product family name']=$family->data['Product Family Name'];
     }
     $department=false;$new_department=false;
     // print $base_data['product main department code']."\n";
@@ -669,13 +671,16 @@ function valid_id($id){
 	$new_department=true;
       }
       $base_data['product main department key']=$department->id;
+      $base_data['product main department code']=$department->data['Product Department Code'];
+      $base_data['product main department name']=$department->data['Product Department Name'];
+
+      
     }
 
     
     
     
 
-    //  print_r($base_data);
     
     $keys='(';$values='values(';
     foreach($base_data as $key=>$value){
@@ -740,6 +745,16 @@ function valid_id($id){
 	$department->add_product($this->id,'principal');
       }
       
+
+      $sql="select count(*) as num from `Product Department Bridge` where `Product Key`=".$this->id;
+      $result=mysql_query($sql);
+      if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+	$sql=sprintf("update  `Product Dimension` set `Product Department Degeneration`=%s where `Product Key`=%d",$row['num'],$this->id);
+	mysql_query($sql);
+       }
+
+
+
       
     }else{
       print "Error Product cannot be created\n";

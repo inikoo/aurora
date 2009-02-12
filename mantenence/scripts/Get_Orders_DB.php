@@ -119,6 +119,13 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	$w=sprintf("%.3f",$transaction['w']*$transaction['units']);
     }else
       $w='';
+    $transaction['supplier_product_code']=_trim($transaction['supplier_product_code']);
+    if($transaction['supplier_product_code']!='')
+      $sup_prod_code=$transaction['supplier_product_code'];
+    else
+      $sup_prod_code='?'._trim($transaction['code']);
+	
+
     $product_data=array(
 			'product code'=>_trim($transaction['code'])
 			,'product name'=>$description
@@ -132,7 +139,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 			,'supplier code'=>_trim($transaction['supplier_code'])
 			,'supplier name'=>_trim($transaction['supplier_code'])
 			,'supplier product cost'=>$supplier_product_cost
-			,'supplier product code'=>_trim($transaction['supplier_product_code'])
+			,'supplier product code'=>$sup_prod_code
 			,'supplier product name'=>$description
 			,'auto_add'=>true
 			,'date'=>$date_order

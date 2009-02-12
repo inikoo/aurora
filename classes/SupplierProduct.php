@@ -181,7 +181,7 @@ class supplierproduct{
     $keys=preg_replace('/,$/',')',$keys);
     $values=preg_replace('/,$/',')',$values);
     $sql=sprintf("insert into `Supplier Product Dimension` %s %s",$keys,$values);
-    //print "$sql\n";
+    //print "$sql\\n\nn";
     if(mysql_query($sql)){
       $this->id = mysql_insert_id();
       

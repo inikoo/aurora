@@ -325,8 +325,8 @@ class family{
    if($product->id){
      $sql=sprintf("update  `Product Dimension` set `Product Family Key`=%d ,`Product Family Code`=%s,`Product Family Name`=%s where `Product Key`=%s    "
 		  ,$this->id                
-		  ,prepare_mysql($this->get('product family code'))
-		  ,prepare_mysql($this->get('product family name'))
+		  ,prepare_mysql($this->get('Product Family Code'))
+		  ,prepare_mysql($this->get('Product Family Name'))
 		  ,$product->id);
      mysql_query($sql);
      $this->load('products_info');
