@@ -301,6 +301,8 @@ class product{
 	$data=array(
 		    'name'=>$tag['supplier name'],
 		    'code'=>$tag['supplier code'],
+		    'from'=>$tag['date'],
+		    'to'=>$tag['date']
 		    );
 
 
@@ -314,7 +316,8 @@ class product{
 		     'supplier product cost'=>$tag['supplier product cost'],
 		     'supplier product name'=>$tag['supplier product name'],
 		     'auto_add'=>true,
-		     'date'=>$tag['date']
+		     'supplier product valid from'=>$tag['date'],
+		     'supplier product valid to'=>$tag['date2']
 		     );
       //  print_r($sp_data);
       $supplier_product=new SupplierProduct('supplier-code-name-cost',$sp_data);
@@ -335,7 +338,7 @@ class product{
 			 ,'Supplier Product Units Per Part'=>$this->data['Product Units Per Case']
 			 ,'supplier product part most recent'=>'Yes'
 			 ,'supplier product part valid from'=>$tag['date']
-			 ,'supplier product part valid to'=>$tag['date']
+			 ,'supplier product part valid to'=>$tag['date2']
 			 ,'factor supplier product'=>1
 			 );
 	  $supplier_product->new_part_list('',$rules);

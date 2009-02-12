@@ -1874,7 +1874,7 @@ case(171)://Sweden
     $address1='';
   }
 
- if($country_d2!='' and $contry_d1==''){
+ if($country_d2!='' and $country_d1==''){
    $country_d1=$country_d2;
    $country_d2='';
  }

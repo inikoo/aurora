@@ -762,12 +762,12 @@ class Order{
 	   //get cost of the product (thet means the cost in this time difficult no how to do it mmmm
 	   //method 1 using the date average of the supplier product cost
 	   
-	   $sql=sprintf("select avg(`Supplier Product Cost`) as cost from `Supplier Product Dimension` where  `Supplier Product Valid From`<%s and `Supplier Product Valid To`>%s  and `Supplier Product ID`=%s ",
+	   $sql=sprintf("select avg(`Supplier Product Cost`) as cost from `Supplier Product Dimension` where  `Supplier Product Valid From`<=%s and `Supplier Product Valid To`>=%s  and `Supplier Product ID`=%s ",
 			prepare_mysql($this->data['Delivery Note Date'])
 			,prepare_mysql($this->data['Delivery Note Date'])
 			,prepare_mysql($row2['Supplier Product ID']));
 
-
+	   //   print "$sql\n";
 	   $result3=mysql_query($sql);
 	   if($row3=mysql_fetch_array($result3, MYSQL_ASSOC)){
 	     $cost=$row3['cost']*$sp_units_per_part*$parts_per_product;
@@ -776,6 +776,8 @@ class Order{
 	     exit("can not take cost of a product");
 	     
 	   }
+	   if($cost_supplier=='')
+	     $cost_supplier=0;
 	   $cost_supplier+=$cost;
 	   
 	   
@@ -800,7 +802,7 @@ class Order{
 	
 	$sql=sprintf("insert into `Warehouse Inventory Transition Fact`  (`Date`,`Part SKU`,`Warehouse Key`,`Warehouse Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`) values (%s,%s,1,1,%s,NULL) ",prepare_mysql($this->data['Delivery Note Date'])
 		     ,prepare_mysql($part_sku[$key]['sku'])
-		     ,prepare_mysql($qty[$key])
+		     ,prepare_mysql(-$qty[$key])
 		     );
 	if(!mysql_query($sql))
 	  exit("can not create Warehouse * 888 $sql   Inventory Transition Fact\n");
@@ -839,8 +841,12 @@ class Order{
 		   ,$line_number
 		   );
       
-      
-      print "$sql\n";
+      // $prod=new Product($data['product_id']);
+
+      //      print "\n ".$prod->data['Product Code']." $cost_supplier \n\n\n\n********************\n\n";
+
+//       if($prod->data['Product Code']=='Joie-01')
+// 	exit;
       $line_number++;
       if(!mysql_query($sql))
 	exit("$sql\n can not update order transacrion aferter dn 313123");

@@ -50,15 +50,15 @@ class supplierproduct{
 	
 
 
-	if(strtotime($this->data['Supplier Product Valid To'])<strtotime($tag['date'])  ){
-	  $sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Valid To`=%s where `Supplier Product Key`=%d",prepare_mysql($tag['date']),$this->id);
-	  $this->data['Supplier Product Valid To']=$tag['date'];
+	if(strtotime($this->data['Supplier Product Valid To'])<strtotime($tag['supplier product valid to'])  ){
+	  $sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Valid To`=%s where `Supplier Product Key`=%d",prepare_mysql($tag['supplier product valid to']),$this->id);
+	  $this->data['Supplier Product Valid To']=$tag['supplier product valid to'];
 	  mysql_query($sql);
 	}
-	if(strtotime($this->data['Supplier Product Valid From'])>strtotime($tag['date'])  ){
-	  $sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Valid From`=%s where `Supplier Product Key`=%d",prepare_mysql($tag['date']),$this->id);
+	if(strtotime($this->data['Supplier Product Valid From'])>strtotime($tag['supplier product valid from'])  ){
+	  $sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Valid From`=%s where `Supplier Product Key`=%d",prepare_mysql($tag['supplier product valid from']),$this->id);
 	  mysql_query($sql);
-	  $this->data['Supplier Product Valid From']=$tag['date'];
+	  $this->data['Supplier Product Valid From']=$tag['supplier product valid from'];
 	}
 	return;
       }      
@@ -86,8 +86,6 @@ class supplierproduct{
       if($number_sp==0){
 	$this->new_code=true;
 	$tag['supplier product id']=$this->new_id();
-	$tag['supplier product valid from']=$tag['date'];
-	$tag['supplier product valid to']=$tag['date'];
 	$tag['supplier product most recent']='Yes';
 	$tag['supplier product most recent key']='';
 	$this->create($tag);
@@ -108,10 +106,9 @@ class supplierproduct{
 	  $this->new_id=false;
 	  $tag['supplier product id']=$same_id_data['Supplier Product Id'];
 	  
-	  $tag['supplier product valid from']=$tag['date'];
-	  $tag['supplier product valid to']=$tag['date'];
+
 	  
-	  $sql=sprintf("select * from  `Supplier Product Dimension` where `Supplier Product Valid To`<%s and `Supplier Product Most Recent`='Yes' and `Supplier Product ID`=%d  ",$tag['date'],$tag['supplier product most recent key']);
+	  $sql=sprintf("select * from  `Supplier Product Dimension` where `Supplier Product Valid To`<%s and `Supplier Product Most Recent`='Yes' and `Supplier Product ID`=%d  ",$tag['supplier product valid to'],$tag['supplier product most recent key']);
 	  
 	  
 	  $result=mysql_query($sql);
@@ -130,8 +127,6 @@ class supplierproduct{
 	  $diff_name=false;
 	  $this->new_code=true;
 	  $tag['supplier product id']=$this->new_id();
-	  $tag['supplier product valid from']=$tag['date'];
-	  $tag['supplier product valid to']=$tag['date'];
 	  $tag['supplier product most recent']='Yes';
 	  $tag['supplier product most recent key']='';
 	  $this->create($tag);
