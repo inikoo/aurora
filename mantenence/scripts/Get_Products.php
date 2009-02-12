@@ -320,7 +320,7 @@ foreach($__cols as $cols){
       
        	$product=new Product('create',$data);
 
-	$scode=$cols[20];
+	$scode=_trim($cols[20]);
 	$supplier_code=$cols[21];
 	$cost=$cols[25];
 	if(preg_match('/^SG\-/i',$code))
@@ -328,7 +328,7 @@ foreach($__cols as $cols){
 	if($supplier_code=='AW')
 	  $scode=$code;
 
-	if($supplier_code=='')
+	if($supplier_code=='' or $supplier_code=='0')
 	  $supplier_code=='Unknown';
 	$supplier=new Supplier('code',$supplier_code);
 	if(!$supplier->id){
@@ -339,7 +339,7 @@ foreach($__cols as $cols){
 	  $supplier=new Supplier('new',$data);
 	}
 
-	if($scode=='')
+	if($scode=='' or $scode=='0')
 	  $scode='?'.$code;
 	$sp_data=array(
 		       'Supplier Product Supplier Key'=>$supplier->id,

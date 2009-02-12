@@ -95,57 +95,57 @@ class product{
 	  mysql_query($sql);
 	  
 	  
-	  $sql=sprintf("select `Supplier Key`,`Supplier Product ID` from `Supplier Product Part List` where `Part SKU`=%s ",prepare_mysql($part_sku));
+	  $sqlxx=sprintf("select `Supplier Key`,`Supplier Product ID` from `Supplier Product Part List` where `Part SKU`=%s ",prepare_mysql($part_sku));
 
-	  $result3=mysql_query($sql);
+	  $result3=mysql_query($sqlxx);
 	  while($row3=mysql_fetch_array($result3, MYSQL_ASSOC)){
 	    
-	    $sql=sprintf("update `Supplier Product Dimension`  set `Supplier Product Valid From`=%s  where `Supplier Product ID`=%s and `Supplier Product Valid From`>%s"
+	    $sqlw=sprintf("update `Supplier Product Dimension`  set `Supplier Product Valid From`=%s  where `Supplier Product ID`=%s and `Supplier Product Valid From`>%s"
 			 ,prepare_mysql($tag['date'])
 			 ,$this->data['Product ID']  
 			 ,prepare_mysql($tag['date'])
 			 );
 
-	    mysql_query($sql);
+	    mysql_query($sqlw);
 	    
-		$sql=sprintf("update `Supplier Product Dimension`  set `Supplier Product Valid To`=%s  where `Supplier Product ID`=%s and `Supplier Product Valid To`<%s"
-			     ,prepare_mysql($tag['date'])
-		     ,$row3['Supplier Product ID']
-		     ,prepare_mysql($tag['date2'])
-		     );
-	mysql_query($sql);
+	    $sqlaa=sprintf("update `Supplier Product Dimension`  set `Supplier Product Valid To`=%s  where `Supplier Product ID`=%s and `Supplier Product Valid To`<%s"
+			 ,prepare_mysql($tag['date'])
+			 ,$row3['Supplier Product ID']
+			 ,prepare_mysql($tag['date2'])
+			 );
+	    mysql_query($sqlaa);
 
-	$sql=sprintf("update `Supplier Dimension`  set `Supplier Valid From`=%s  where `Supplier Key`=%s and `Supplier Valid From`>%s"
+	$sqlbb=sprintf("update `Supplier Dimension`  set `Supplier Valid From`=%s  where `Supplier Key`=%s and `Supplier Valid From`>%s"
 		     ,prepare_mysql($tag['date'])
 		     ,$row3['Supplier Key']
 		     ,prepare_mysql($tag['date'])
 		     );
-	mysql_query($sql);
+	mysql_query($sqlbb);
 
-	$sql=sprintf("update `Supplier Dimension`  set `Supplier Valid From`=%s  where `Supplier Key`=%s and `Supplier Valid From`<%s"
+	$sqlcc=sprintf("update `Supplier Dimension`  set `Supplier Valid From`=%s  where `Supplier Key`=%s and `Supplier Valid From`<%s"
 		     ,prepare_mysql($tag['date'])
 		     ,$row3['Supplier Key']
 		     ,prepare_mysql($tag['date2'])
 		     );
-	mysql_query($sql);
+	mysql_query($sqlcc);
 	    
 	    
 	  }
 	}
 
-	$sql=sprintf("update `Product Part List`  set `Product Part Valid From`=%s  where `Product ID`=%s and `Product Part Valid From`>%s"
+	$sqldd=sprintf("update `Product Part List`  set `Product Part Valid From`=%s  where `Product ID`=%s and `Product Part Valid From`>%s"
 		     ,prepare_mysql($tag['date'])
 		     ,$this->data['Product ID']
 		     ,prepare_mysql($tag['date'])
 		     );
-	mysql_query($sql);
+	mysql_query($sqldd);
 
-	$sql=sprintf("update `Product Part List`  set `Product Part Valid To`=%s  where `Product ID`=%s and `Product Part Valid To`<%s"
+	$sqlee=sprintf("update `Product Part List`  set `Product Part Valid To`=%s  where `Product ID`=%s and `Product Part Valid To`<%s"
 		     ,prepare_mysql($tag['date'])
 		     ,$this->data['Product ID']
 		     ,prepare_mysql($tag['date2'])
 		     );
-	mysql_query($sql);
+	mysql_query($sqlee);
 
 
 

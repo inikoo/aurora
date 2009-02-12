@@ -120,10 +120,14 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     }else
       $w='';
     $transaction['supplier_product_code']=_trim($transaction['supplier_product_code']);
-    if($transaction['supplier_product_code']!='')
-      $sup_prod_code=$transaction['supplier_product_code'];
-    else
+
+
+    if($transaction['supplier_product_code']=='' or $transaction['supplier_product_code']=='0')
       $sup_prod_code='?'._trim($transaction['code']);
+    else
+      $sup_prod_code=$transaction['supplier_product_code'];
+
+
 	
 
     $product_data=array(

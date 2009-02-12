@@ -71,10 +71,8 @@ class department{
  function load($tipo,$args=false){
    switch($tipo){
    case('products_info'):
-      $sql=sprintf("select sum(if(`Product Sales State`='Unknown',1,0)) as sale_unknown, sum(if(`Product Sales State`='Discontinued',1,0)) as discontinued,sum(if(`Product Sales State`='Not for sale',1,0)) as not_for_sale,sum(if(`Product Sales State`='For sale',1,0)) as for_sale,sum(if(`Product Sales State`='In Process',1,0)) as in_process,sum(if(`Product Availability State`='Unknown',1,0)) as availability_unknown,sum(if(`Product Availability State`='Optimal',1,0)) as availability_optimal,sum(if(`Product Availability State`='Low',1,0)) as availability_low
-,sum(if(`Product Availability State`='Critical',1,0)) as availability_critical,
-sum(if(`Product Availability State`='Surplus',1,0)) as availability_surplus,sum(if(`Product Availability State`='Out Of Stock',1,0)) as availability_outofstock from `Product Dimension` P left join  `Product Department Bridge` B on (P.`Product Key`=B.`Product Key`) where `Product Department Key`=%d",$this->id);
-     //  print $sql;
+      $sql=sprintf("select sum(if(`Product Sales State`='Unknown',1,0)) as sale_unknown, sum(if(`Product Sales State`='Discontinued',1,0)) as discontinued,sum(if(`Product Sales State`='Not for sale',1,0)) as not_for_sale,sum(if(`Product Sales State`='For sale',1,0)) as for_sale,sum(if(`Product Sales State`='In Process',1,0)) as in_process,sum(if(`Product Availability State`='Unknown',1,0)) as availability_unknown,sum(if(`Product Availability State`='Optimal',1,0)) as availability_optimal,sum(if(`Product Availability State`='Low',1,0)) as availability_low,sum(if(`Product Availability State`='Critical',1,0)) as availability_critical,sum(if(`Product Availability State`='Surplus',1,0)) as availability_surplus,sum(if(`Product Availability State`='Out Of Stock',1,0)) as availability_outofstock from `Product Dimension` P left join  `Product Department Bridge` B on (P.`Product Key`=B.`Product Key`) where `Product Department Key`=%d",$this->id);
+      // print "$sql\n\n\n";
  $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
@@ -99,16 +97,28 @@ sum(if(`Product Availability State`='Surplus',1,0)) as availability_surplus,sum(
 
      $this->getdata('id',$this->id);
      break;
-   case('products'):
-     $sql=sprintf("select * from `Product Dimension` where `Product Department Key`=%d",$this->id);
-     // print $sql;
-     $this->products=array();
-     $result=mysql_query($sql);
-     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+ //   case('products'):
+//      $sql=sprintf("select * from `Product Dimension` where `Product Department Key`=%d",$this->id);
+//      // print $sql;
+//      $this->products=array();
+//      $result=mysql_query($sql);
+//      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
        
-       $this->products[$row['product key']]=$row;
-     }
-     break;
+//        $this->products[$row['product key']]=$row;
+//      }
+//      break;
+//    case('number of products same code'):
+//      $sql=sprintf("select count(DISTINCT `Product Code`) as num from `Product Dimension` as P left join `Product Department Bridge` as B on (B.`Product key`=P.`Product Key`)  where `Product Department Key`=%d ",$this->id);
+//      // print $sql;
+//      $this->products=array();
+//      $result=mysql_query($sql);
+//      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+       
+//        $this->data[]=$row['num'];
+//      }
+     
+
+//      break;
    case('families'):
      $sql=sprintf("select * from `Product Family Dimension`  where  `Product Family Department Key`=%d",$this->id);
      //  print $sql;

@@ -29,6 +29,7 @@ $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $product=new Department($row['Product Department Key']);
   $product->load('sales');
+  $product->load('products_info');
 
  }
 
