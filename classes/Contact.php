@@ -109,18 +109,16 @@ class Contact{
 		      'Contact Formal Greeting'=>''
 		      );
     
+
+    
+
     if(isset($data['name_data'])){
       $this->parse_name_data($data['name_data']);
-    }elseif(isset($data['name'])){
+    }elseif(isset($data['name'])  and $data['name']!=$this->unknown_name){
       $this->parse($data['name']);
-      // print_r( $this->data);
-    }
-    //     print "->".$data['name']."<-\n";
-    //     print  "->".$this->unknown_name."<-\n";
-    //     exit;
-    if(!isset($data['name']) or $data['name']==$this->unknown_name)
-      $this->data['Contact Name']='';
-    
+    }else
+       $this->data['Contact Name']='';
+
     if($this->data['Contact Name']==''){
       $this->data['Contact Name']=$this->unknown_name;
       $this->data['Contact File As']=$this->unknown_name;
@@ -131,7 +129,6 @@ class Contact{
     
     $contact_id=$this->get_id();
 
-    // print_r( $this->data);
 
     $sql=sprintf("insert into `Contact Dimension` (`Contact ID`,`Contact Name`,`Contact File as`,`Contact Salutation`,`Contact First Name`,`Contact Surname`,`Contact Suffix`,`Contact Gender`,`Contact Informal Greeting`,`Contact Formal Greeting`) values (%d,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
 		 $contact_id,
@@ -628,18 +625,18 @@ class Contact{
   function parse_name_data($data){
 
     if(isset($data['salutation']))
-      $this->data['contact salutation']=mb_ucwords(_trim($data['salutation']));
+      $this->data['Contact Salutation']=mb_ucwords(_trim($data['salutation']));
     if(isset($data['first']) or $data['middle'])
-      $this->data['contact first name']=mb_ucwords(_trim($data['first'].' '.$data['middle']));
+      $this->data['Contact First Name']=mb_ucwords(_trim($data['first'].' '.$data['middle']));
     if(isset($data['surname']))
-      $this->data['contact surname']=mb_ucwords(_trim($data['surname']));
+      $this->data['Contact Surname']=mb_ucwords(_trim($data['surname']));
     if(isset($data['suffix']))
-      $this->data['contact suffix']=mb_ucwords(_trim($data['suffix']));
+      $this->data['Contact Suffix']=mb_ucwords(_trim($data['suffix']));
     if(isset($data['gender']) and ($data['gender']=='Male' or $data['gender']=='Female'))
-      $this->data['contact gender']=_trim($data['gender']);
+      $this->data['Contact Gender']=_trim($data['gender']);
    
-    if($this->data['contact gender']=='Unknown')
-      $this->data['contact gender']=$this->gender();
+    if($this->data['Contact Gender']=='Unknown')
+      $this->data['Contact Gender']=$this->gender();
 
    
 
@@ -661,6 +658,8 @@ class Contact{
 
   function parse($raw_name){
 
+
+
     $name=array(
 		'prefix'=>'',
 		'first'=>'',
@@ -675,6 +674,7 @@ class Contact{
     $names=preg_split('/\s+/',$raw_name);
 
     $parts=count($names);
+
     switch($parts){
     case(1):
       if($this->is_surname($names[0]))
@@ -714,7 +714,8 @@ class Contact{
       break;
     case(3):
       // firt the most obious choise
-
+      
+      
       if(!$this->is_prefix($names[0]) and  strlen($names[1])==1   and   strlen($names[2])>1  ){
 	$name['first']=$names[0];
 	$name['middle']=$names[1];
@@ -724,6 +725,7 @@ class Contact{
 	$name['first']=$names[1];
 	$name['last']=$names[2];
 
+	
 	// 	if(   $this->is_givenname($names[1]) and   $this->is_surname($names[2])){
 
 	// 	  $name['first']=$names[1];
@@ -821,19 +823,18 @@ class Contact{
      
     }
   
-    //print_r($name);
- 
+
 
  
-    $this->data['contact salutation']=_trim($name['prefix']);
-    $this->data['contact first name']=_trim($name['first'].' '.$name['middle']);
-    $this->data['contact surname']=_trim($name['last']);
-    $this->data['contact suffix']=_trim($name['suffix']);
-    $this->data['contact name']=$this->display('name');
-    $this->data['contact file as']=$this->display('file_as');
-    $this->data['contact gender']=$this->gender();
-    $this->data['contact informal greeting']=$this->display('informal gretting');
-    $this->data['contact formal greeting']=$this->display('formal gretting');
+    $this->data['Contact Salutation']=_trim($name['prefix']);
+    $this->data['Contact First Name']=_trim($name['first'].' '.$name['middle']);
+    $this->data['Contact Surname']=_trim($name['last']);
+    $this->data['Contact Suffix']=_trim($name['suffix']);
+    $this->data['Contact Name']=$this->display('name');
+    $this->data['Contact File As']=$this->display('file_as');
+    $this->data['Contact Gender']=$this->gender();
+    $this->data['Contact Informal Greeting']=$this->display('informal gretting');
+    $this->data['Contact Formal Greeting']=$this->display('formal gretting');
 		    
 
 
@@ -885,7 +886,7 @@ class Contact{
 	if($this->data['Contact Salutation']!=''){
 	  $name=_trim($this->data['Contact Salutation'].' '.$this->data['Contact Surname']);
 	  return $gretting.$name;
-	}elseif($this->data['contact first name']!=''){
+	}elseif($this->data['Contact First Name']!=''){
 	  $name=_trim($this->data['Contact First Name'].' '.$this->data['Contact Surname']);
 	  return $gretting.$name;
 	}

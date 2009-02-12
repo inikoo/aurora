@@ -602,7 +602,7 @@ class Order{
 	return $customer->id;
       }
       
-      $sql=sprintf("select `Customer Key` from `Customer Dimension`  where `Customer Other ID`=%s",addslashes($data['other id']));
+      $sql=sprintf("select `Customer Key` from `Customer Dimension`  where `Customer Other ID`=%s",prepare_mysql($data['other id']));
       $result =mysql_query($sql);
       if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 	$customer=new Customer($row['Customer Key']);

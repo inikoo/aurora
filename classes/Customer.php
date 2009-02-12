@@ -210,9 +210,9 @@ class Customer{
 
 //    }
 
-
+   //print_r($data_contact);
    $main_contact=new contact('new',$data_contact);
-
+   // print_r($main_contact->data);
 
    if($type=='Company'){
      $company=new company('new',
@@ -225,6 +225,7 @@ class Customer{
 
 
    }else{
+
      $customer_name=$main_contact->get('Contact Name');
      $customer_file_as=$main_contact->get('Contact File As');
      $company_key='';
@@ -262,10 +263,11 @@ class Customer{
 		 ,prepare_mysql($address->get('Address Country Name'))
 		 ,prepare_mysql($address->get('Address Country Key'))
 	       );
-    //     print_r($main_contact->data);
+    //  print_r($main_contact->data);
     
     //print_r($data);
-    //exit;
+   //  print "$sql\n";
+//     exit;
 
     if(mysql_query($sql)){
       

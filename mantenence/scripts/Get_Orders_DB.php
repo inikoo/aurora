@@ -68,7 +68,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
   $transactions=read_products($products,$prod_map);
   $customer_data=setup_contact($act_data,$header_data,$date_index2);
 
-  //print_r($customer_data);
+
   $data=array();
   $data['order date']=$date_order;
   $data['order id']=$header_data['order_num'];
