@@ -132,6 +132,8 @@ class department{
    case('sales'):
      
      $sql="select sum(`Product Family Total Invoiced Gross Amount`) as gross,sum(`Product Family Total Invoiced Discount Amount`) as disc, sum(`Product Family Total Profit`)as profit ,sum(`Product Family Total Quantity Delivered`) as delivered,sum(`Product Family Total Quantity Ordered`) as ordered,sum(`Product Family Total Quantity Invoiced`) as invoiced  from `Product Family Dimension` as F left join `Product Family Department Bridge` as B on (B.`Product Family Key`=F.`Product Family Key`)  where `Product Department Key`=".$this->id;
+     print $sql;
+     exit;
      $result=mysql_query($sql);
  
      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
@@ -144,9 +146,9 @@ class department{
       
         
      $sql=sprintf("update `Product Department Dimension` set `Product Department Total Invoiced Gross Amount`=%.2f,`Product Department Total Invoiced Discount Amount`=%.2f,`Product Department Total Profit`=%.2f, `Product Department Total Quantity Ordered`=%s , `Product Department Total Quantity Invoiced`=%s,`Product Department Total Quantity Delivered`=%s  where `Product Department Key`=%d "
-		  ,$this->data['Product Department Total Invoiced Gross Amount']
-		  ,$this->data['Product Department Total Invoiced Discount Amount']
-		  ,$this->data['Product Department Total Profit']
+		  ,prepare_mysql($this->data['Product Department Total Invoiced Gross Amount'])
+		  ,prepare_mysql($this->data['Product Department Total Invoiced Discount Amount'])
+		  ,prepare_mysql($this->data['Product Department Total Profit'])
 		  ,prepare_mysql($this->data['Product Department Total Quantity Ordered'])
 		  ,prepare_mysql($this->data['Product Department Total Quantity Invoiced'])
 		  ,prepare_mysql($this->data['Product Department Total Quantity Delivered'])
@@ -155,108 +157,109 @@ class department{
      // print "$sql\n";
      if(!mysql_query($sql))
        exit("$sql\ncan not update dept sales\n");
-       
+     }
+ $sql="select sum(`Product Family 1 Year Acc Invoiced Gross Amount`) as gross,sum(`Product Family 1 Year Acc Invoiced Discount Amount`) as disc, sum(`Product Family 1 Year Acc Profit`)as profit ,sum(`Product Family 1 Year Acc Quantity Delivered`) as delivered,sum(`Product Family 1 Year Acc Quantity Ordered`) as ordered,sum(`Product Family 1 Year Acc Quantity Invoiced`) as invoiced  from `Product Family Dimension` as F left join `Product Family Department Bridge` as B on (B.`Product Family Key`=F.`Product Family Key`)  where `Product Department Key`=".$this->id;
+     $result=mysql_query($sql);
+ 
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+       $this->data['Product Department 1 Year Acc Invoiced Gross Amount']=$row['gross'];
+       $this->data['Product Department 1 Year Acc Invoiced Discount Amount']=$row['disc'];
+       $this->data['Product Department 1 Year Acc Profit']=$row['profit'];
+       $this->data['Product Department 1 Year Acc Quantity Ordered']=$row['ordered'];
+       $this->data['Product Department 1 Year Acc Quantity Invoiced']=$row['invoiced'];
+       $this->data['Product Department 1 Year Acc Quantity Delivered']=$row['delivered'];
+      
+        
+     $sql=sprintf("update `Product Department Dimension` set `Product Department 1 Year Acc Invoiced Gross Amount`=%.2f,`Product Department 1 Year Acc Invoiced Discount Amount`=%.2f,`Product Department 1 Year Acc Profit`=%.2f, `Product Department 1 Year Acc Quantity Ordered`=%s , `Product Department 1 Year Acc Quantity Invoiced`=%s,`Product Department 1 Year Acc Quantity Delivered`=%s  where `Product Department Key`=%d "
+		  ,prepare_mysql($this->data['Product Department 1 Year Acc Invoiced Gross Amount'])
+		  ,prepare_mysql($this->data['Product Department 1 Year Acc Invoiced Discount Amount'])
+		  ,prepare_mysql($this->data['Product Department 1 Year Acc Profit'])
+		  ,prepare_mysql($this->data['Product Department 1 Year Acc Quantity Ordered'])
+		  ,prepare_mysql($this->data['Product Department 1 Year Acc Quantity Invoiced'])
+		  ,prepare_mysql($this->data['Product Department 1 Year Acc Quantity Delivered'])
+		  ,$this->id
+		  );
+     // print "$sql\n";
+     if(!mysql_query($sql))
+       exit("$sql\ncan not update dept sales\n");
+     }
+      $sql="select sum(`Product Family 1 Quarter Acc Invoiced Gross Amount`) as gross,sum(`Product Family 1 Quarter Acc Invoiced Discount Amount`) as disc, sum(`Product Family 1 Quarter Acc Profit`)as profit ,sum(`Product Family 1 Quarter Acc Quantity Delivered`) as delivered,sum(`Product Family 1 Quarter Acc Quantity Ordered`) as ordered,sum(`Product Family 1 Quarter Acc Quantity Invoiced`) as invoiced  from `Product Family Dimension` as F left join `Product Family Department Bridge` as B on (B.`Product Family Key`=F.`Product Family Key`)  where `Product Department Key`=".$this->id;
+     $result=mysql_query($sql);
+ 
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+       $this->data['Product Department 1 Quarter Acc Invoiced Gross Amount']=$row['gross'];
+       $this->data['Product Department 1 Quarter Acc Invoiced Discount Amount']=$row['disc'];
+       $this->data['Product Department 1 Quarter Acc Profit']=$row['profit'];
+       $this->data['Product Department 1 Quarter Acc Quantity Ordered']=$row['ordered'];
+       $this->data['Product Department 1 Quarter Acc Quantity Invoiced']=$row['invoiced'];
+       $this->data['Product Department 1 Quarter Acc Quantity Delivered']=$row['delivered'];
+      
+        
+     $sql=sprintf("update `Product Department Dimension` set `Product Department 1 Quarter Acc Invoiced Gross Amount`=%.2f,`Product Department 1 Quarter Acc Invoiced Discount Amount`=%.2f,`Product Department 1 Quarter Acc Profit`=%.2f, `Product Department 1 Quarter Acc Quantity Ordered`=%s , `Product Department 1 Quarter Acc Quantity Invoiced`=%s,`Product Department 1 Quarter Acc Quantity Delivered`=%s  where `Product Department Key`=%d "
+		  ,prepare_mysql($this->data['Product Department 1 Quarter Acc Invoiced Gross Amount'])
+		  ,prepare_mysql($this->data['Product Department 1 Quarter Acc Invoiced Discount Amount'])
+		  ,prepare_mysql($this->data['Product Department 1 Quarter Acc Profit'])
+		  ,prepare_mysql($this->data['Product Department 1 Quarter Acc Quantity Ordered'])
+		  ,prepare_mysql($this->data['Product Department 1 Quarter Acc Quantity Invoiced'])
+		  ,prepare_mysql($this->data['Product Department 1 Quarter Acc Quantity Delivered'])
+		  ,$this->id
+		  );
+     // print "$sql\n";
+     if(!mysql_query($sql))
+       exit("$sql\ncan not update dept sales\n");
+     }
+  $sql="select sum(`Product Family 1 Month Acc Invoiced Gross Amount`) as gross,sum(`Product Family 1 Month Acc Invoiced Discount Amount`) as disc, sum(`Product Family 1 Month Acc Profit`)as profit ,sum(`Product Family 1 Month Acc Quantity Delivered`) as delivered,sum(`Product Family 1 Month Acc Quantity Ordered`) as ordered,sum(`Product Family 1 Month Acc Quantity Invoiced`) as invoiced  from `Product Family Dimension` as F left join `Product Family Department Bridge` as B on (B.`Product Family Key`=F.`Product Family Key`)  where `Product Department Key`=".$this->id;
+     $result=mysql_query($sql);
+ 
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+       $this->data['Product Department 1 Month Acc Invoiced Gross Amount']=$row['gross'];
+       $this->data['Product Department 1 Month Acc Invoiced Discount Amount']=$row['disc'];
+       $this->data['Product Department 1 Month Acc Profit']=$row['profit'];
+       $this->data['Product Department 1 Month Acc Quantity Ordered']=$row['ordered'];
+       $this->data['Product Department 1 Month Acc Quantity Invoiced']=$row['invoiced'];
+       $this->data['Product Department 1 Month Acc Quantity Delivered']=$row['delivered'];
+      
+        
+     $sql=sprintf("update `Product Department Dimension` set `Product Department 1 Month Acc Invoiced Gross Amount`=%.2f,`Product Department 1 Month Acc Invoiced Discount Amount`=%.2f,`Product Department 1 Month Acc Profit`=%.2f, `Product Department 1 Month Acc Quantity Ordered`=%s , `Product Department 1 Month Acc Quantity Invoiced`=%s,`Product Department 1 Month Acc Quantity Delivered`=%s  where `Product Department Key`=%d "
+		  ,prepare_mysql($this->data['Product Department 1 Month Acc Invoiced Gross Amount'])
+		  ,prepare_mysql($this->data['Product Department 1 Month Acc Invoiced Discount Amount'])
+		  ,prepare_mysql($this->data['Product Department 1 Month Acc Profit'])
+		  ,prepare_mysql($this->data['Product Department 1 Month Acc Quantity Ordered'])
+		  ,prepare_mysql($this->data['Product Department 1 Month Acc Quantity Invoiced'])
+		  ,prepare_mysql($this->data['Product Department 1 Month Acc Quantity Delivered'])
+		  ,$this->id
+		  );
+     // print "$sql\n";
+     if(!mysql_query($sql))
+       exit("$sql\ncan not update dept sales\n");
+     }
+ $sql="select sum(`Product Family 1 Week Acc Invoiced Gross Amount`) as gross,sum(`Product Family 1 Week Acc Invoiced Discount Amount`) as disc, sum(`Product Family 1 Week Acc Profit`)as profit ,sum(`Product Family 1 Week Acc Quantity Delivered`) as delivered,sum(`Product Family 1 Week Acc Quantity Ordered`) as ordered,sum(`Product Family 1 Week Acc Quantity Invoiced`) as invoiced  from `Product Family Dimension` as F left join `Product Family Department Bridge` as B on (B.`Product Family Key`=F.`Product Family Key`)  where `Product Department Key`=".$this->id;
+     $result=mysql_query($sql);
+
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+       $this->data['Product Department 1 Week Acc Invoiced Gross Amount']=$row['gross'];
+       $this->data['Product Department 1 Week Acc Invoiced Discount Amount']=$row['disc'];
+       $this->data['Product Department 1 Week Acc Profit']=$row['profit'];
+       $this->data['Product Department 1 Week Acc Quantity Ordered']=$row['ordered'];
+       $this->data['Product Department 1 Week Acc Quantity Invoiced']=$row['invoiced'];
+       $this->data['Product Department 1 Week Acc Quantity Delivered']=$row['delivered'];
+      
+        
+     $sql=sprintf("update `Product Department Dimension` set `Product Department 1 Week Acc Invoiced Gross Amount`=%.2f,`Product Department 1 Week Acc Invoiced Discount Amount`=%.2f,`Product Department 1 Week Acc Profit`=%.2f, `Product Department 1 Week Acc Quantity Ordered`=%s , `Product Department 1 Week Acc Quantity Invoiced`=%s,`Product Department 1 Week Acc Quantity Delivered`=%s  where `Product Department Key`=%d "
+		  ,prepare_mysql($this->data['Product Department 1 Week Acc Invoiced Gross Amount'])
+		  ,prepare_mysql($this->data['Product Department 1 Week Acc Invoiced Discount Amount'])
+		  ,prepare_mysql($this->data['Product Department 1 Week Acc Profit'])
+		  ,prepare_mysql($this->data['Product Department 1 Week Acc Quantity Ordered'])
+		  ,prepare_mysql($this->data['Product Department 1 Week Acc Quantity Invoiced'])
+		  ,prepare_mysql($this->data['Product Department 1 Week Acc Quantity Delivered'])
+		  ,$this->id
+		  );
+     // print "$sql\n";
+     if(!mysql_query($sql))
+       exit("$sql\ncan not update dept sales\n");
+     
      }
      
-  //    $first_date=date('U');
-//      $changed=false;
-//      $this->load('families');
-//      foreach($this->families as $family_id=>$family_data){
-//        $family=new Family($family_id);
-//        $_date=$family->data['first_date'];
-//        //   print "$family_id $_date\n";
-//        if(is_numeric($_date)){
-// 	 if($_date < $first_date){
-// 	   $first_date=$_date;
-// 	   $changed=true;
-// 	 }
-//        }
-//      }
-//      if($changed){
-//        $this->data['first_date']=$first_date;
-//      }else
-//        $this->data['first_date']='';
-
-//      // if(preg_match('/save/i',$args))
-// 	 $this->save('first_date');
-     
- //     break;
-//    case('sales'):
-   //   $this->load('products');
-
-     
-//      $tsall=0;
-//      $tsoall=0;
-//      $tsy=0;
-//      $tsq=0;
-//      $tsm=0;
-//      $tsw=0;
-//      $tsoy=0;
-//      $tsoq=0;
-//      $tsom=0;
-//      $tsow=0;
-
-//      foreach($this->products as $product_id=>$product_data){
-       
-//        $product=new Product($product_id);
-//        $product->get('sales');
-//        $tsall+=$product->data['sales']['tsall'];
-//        $tsy+=$product->data['sales']['tsy'];
-//        $tsq+=$product->data['sales']['tsq'];
-//        $tsm+=$product->data['sales']['tsm'];
-//        $tsw+=$product->data['sales']['tsw'];
-//        $tsoall+=$product->data['sales']['tsoall'];
-//        $tsoy+=$product->data['sales']['tsoy'];
-//        $tsoq+=$product->data['sales']['tsoq'];
-//        $tsom+=$product->data['sales']['tsom'];
-//        $tsow+=$product->data['sales']['tsow'];
-//      }
-
-
-//      $this->data['sales']['tsall']=$tsall;
-//      $this->data['sales']['tsy']=$tsy;
-//      $this->data['sales']['tsq']=$tsq;
-//      $this->data['sales']['tsm']=$tsm;
-//      $this->data['sales']['tsw']=$tsw;
-//      $this->data['sales']['tsoall']=$tsoall;
-//      $this->data['sales']['tsoy']=$tsoy;
-//      $this->data['sales']['tsoq']=$tsoq;
-//      $this->data['sales']['tsom']=$tsom;
-//      $this->data['sales']['tsow']=$tsow;
-
-
-//      $weeks=$this->get('weeks');
-//      if($weeks>0){
-//        $this->data['sales']['awtsall']=$this->data['sales']['tsall']/$weeks;
-//        $this->data['sales']['awtsoall']=$this->data['sales']['tsall']/$weeks;
-       
-//        $date1=date("d-m-Y",strtotime("now -1 year"));$day1=date('N')-1;$date2=date('d-m-Y');$days=datediff('d',$date1,$date2);
-//        $weeks=number_weeks($days,$day1);
-//        $this->data['sales']['awtsy']=$tsy/$weeks;
-//        $this->data['sales']['awtsoy']=$tsoy/$weeks;
-//        $date1=date("d-m-Y",strtotime("now -3 month"));$day1=date('N')-1;$date2=date('d-m-Y');$days=datediff('d',$date1,$date2);
-//        $weeks=number_weeks($days,$day1);
-//        $this->data['sales']['awtsq']=$tsq/$weeks;
-//        $this->data['sales']['awtsoq']=$tsoq/$weeks;
-//        $date1=date("d-m-Y",strtotime("now -1 month"));$day1=date('N')-1;$date2=date('d-m-Y');$days=datediff('d',$date1,$date2);
-//        $weeks=number_weeks($days,$day1);
-//        $this->data['sales']['awtsm']=$tsm/$weeks;
-//        $this->data['sales']['awtsom']=$tsom/$weeks;
-
-
-//      }else{
-//        $this->data['sales']['awtsall']='';
-//        $this->data['sales']['awtosall']='';
-//        $this->data['sales']['awtsy']='';
-//        $this->data['sales']['awtsoy']='';
-//        $this->data['sales']['awtsq']='';
-//        $this->data['sales']['awtsoq']='';
-//        $this->data['sales']['awtsm']='';
-//        $this->data['sales']['awtsom']='';
-//      }
-
-//      if(preg_match('/save/',$args))
-//         $this->save($tipo);
      break;
    
 

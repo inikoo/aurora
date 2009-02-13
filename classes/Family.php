@@ -133,9 +133,9 @@ class family{
 //      break;
    case('sales'):
 
-      $sql="select sum(`Product Total Invoiced Gross Amount`) as gross,sum(`Product Total Invoiced Discount Amount`) as disc, sum(`Product Total Profit`)as profit ,sum(`Product Total Quantity Delivered`) as delivered,sum(`Product Total Quantity Ordered`) as ordered,sum(`Product Total Quantity Invoiced`) as invoiced  from `Product Dimension` where `Product Family Key`=".$this->id;
+     $sql="select sum(`Product Total Invoiced Gross Amount`) as gross,sum(`Product Total Invoiced Discount Amount`) as disc, sum(`Product Total Profit`)as profit ,sum(`Product Total Quantity Delivered`) as delivered,sum(`Product Total Quantity Ordered`) as ordered,sum(`Product Total Quantity Invoiced`) as invoiced  from `Product Dimension` where `Product Family Key`=".$this->id;
      $result=mysql_query($sql);
-
+     
      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
        $this->data['Product Family Total Invoiced Gross Amount']=$row['gross'];
        $this->data['Product Family Total Invoiced Discount Amount']=$row['disc'];
@@ -143,8 +143,8 @@ class family{
        $this->data['Product Family Total Quantity Ordered']=$row['ordered'];
        $this->data['Product Family Total Quantity Invoiced']=$row['invoiced'];
        $this->data['Product Family Total Quantity Delivered']=$row['delivered'];
-      
-        
+       
+       
      $sql=sprintf("update `Product Family Dimension` set `Product Family Total Invoiced Gross Amount`=%.2f,`Product Family Total Invoiced Discount Amount`=%.2f,`Product Family Total Profit`=%.2f, `Product Family Total Quantity Ordered`=%s , `Product Family Total Quantity Invoiced`=%s,`Product Family Total Quantity Delivered`=%s  where `Product Family Key`=%d "
 		  ,$this->data['Product Family Total Invoiced Gross Amount']
 		  ,$this->data['Product Family Total Invoiced Discount Amount']
@@ -154,12 +154,111 @@ class family{
 		  ,prepare_mysql($this->data['Product Family Total Quantity Delivered'])
 		  ,$this->id
 		  );
-
+     
      if(!mysql_query($sql))
        exit("$sql\ncan not update fam sales\n");
-       
      }
-
+     
+       $sql="select sum(`Product 1 Year Acc Invoiced Gross Amount`) as gross,sum(`Product 1 Year Acc Invoiced Discount Amount`) as disc, sum(`Product 1 Year Acc Profit`)as profit ,sum(`Product 1 Year Acc Quantity Delivered`) as delivered,sum(`Product 1 Year Acc Quantity Ordered`) as ordered,sum(`Product 1 Year Acc Quantity Invoiced`) as invoiced  from `Product Dimension` where `Product Family Key`=".$this->id;
+     $result=mysql_query($sql);
+     
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+       $this->data['Product Family 1 Year Acc Invoiced Gross Amount']=$row['gross'];
+       $this->data['Product Family 1 Year Acc Invoiced Discount Amount']=$row['disc'];
+       $this->data['Product Family 1 Year Acc Profit']=$row['profit'];
+       $this->data['Product Family 1 Year Acc Quantity Ordered']=$row['ordered'];
+       $this->data['Product Family 1 Year Acc Quantity Invoiced']=$row['invoiced'];
+       $this->data['Product Family 1 Year Acc Quantity Delivered']=$row['delivered'];
+       
+       
+     $sql=sprintf("update `Product Family Dimension` set `Product Family 1 Year Acc Invoiced Gross Amount`=%.2f,`Product Family 1 Year Acc Invoiced Discount Amount`=%.2f,`Product Family 1 Year Acc Profit`=%.2f, `Product Family 1 Year Acc Quantity Ordered`=%s , `Product Family 1 Year Acc Quantity Invoiced`=%s,`Product Family 1 Year Acc Quantity Delivered`=%s  where `Product Family Key`=%d "
+		  ,prepare_mysql($this->data['Product Family 1 Year Acc Invoiced Gross Amount'])
+		  ,prepare_mysql($this->data['Product Family 1 Year Acc Invoiced Discount Amount'])
+		  ,prepare_mysql($this->data['Product Family 1 Year Acc Profit'])
+		  ,prepare_mysql($this->data['Product Family 1 Year Acc Quantity Ordered'])
+		  ,prepare_mysql($this->data['Product Family 1 Year Acc Quantity Invoiced'])
+		  ,prepare_mysql($this->data['Product Family 1 Year Acc Quantity Delivered'])
+		  ,$this->id
+		  );
+     
+     if(!mysql_query($sql))
+       exit("$sql\ncan not update fam sales\n");
+     }
+ $sql="select sum(`Product 1 Quarter Acc Invoiced Gross Amount`) as gross,sum(`Product 1 Quarter Acc Invoiced Discount Amount`) as disc, sum(`Product 1 Quarter Acc Profit`)as profit ,sum(`Product 1 Quarter Acc Quantity Delivered`) as delivered,sum(`Product 1 Quarter Acc Quantity Ordered`) as ordered,sum(`Product 1 Quarter Acc Quantity Invoiced`) as invoiced  from `Product Dimension` where `Product Family Key`=".$this->id;
+     $result=mysql_query($sql);
+     
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+       $this->data['Product Family 1 Quarter Acc Invoiced Gross Amount']=$row['gross'];
+       $this->data['Product Family 1 Quarter Acc Invoiced Discount Amount']=$row['disc'];
+       $this->data['Product Family 1 Quarter Acc Profit']=$row['profit'];
+       $this->data['Product Family 1 Quarter Acc Quantity Ordered']=$row['ordered'];
+       $this->data['Product Family 1 Quarter Acc Quantity Invoiced']=$row['invoiced'];
+       $this->data['Product Family 1 Quarter Acc Quantity Delivered']=$row['delivered'];
+       
+       
+     $sql=sprintf("update `Product Family Dimension` set `Product Family 1 Quarter Acc Invoiced Gross Amount`=%.2f,`Product Family 1 Quarter Acc Invoiced Discount Amount`=%.2f,`Product Family 1 Quarter Acc Profit`=%.2f, `Product Family 1 Quarter Acc Quantity Ordered`=%s , `Product Family 1 Quarter Acc Quantity Invoiced`=%s,`Product Family 1 Quarter Acc Quantity Delivered`=%s  where `Product Family Key`=%d "
+		  ,prepare_mysql($this->data['Product Family 1 Quarter Acc Invoiced Gross Amount'])
+		  ,prepare_mysql($this->data['Product Family 1 Quarter Acc Invoiced Discount Amount'])
+		  ,prepare_mysql($this->data['Product Family 1 Quarter Acc Profit'])
+		  ,prepare_mysql($this->data['Product Family 1 Quarter Acc Quantity Ordered'])
+		  ,prepare_mysql($this->data['Product Family 1 Quarter Acc Quantity Invoiced'])
+		  ,prepare_mysql($this->data['Product Family 1 Quarter Acc Quantity Delivered'])
+		  ,$this->id
+		  );
+     
+     if(!mysql_query($sql))
+       exit("$sql\ncan not update fam sales\n");
+     }
+$sql="select sum(`Product 1 Month Acc Invoiced Gross Amount`) as gross,sum(`Product 1 Month Acc Invoiced Discount Amount`) as disc, sum(`Product 1 Month Acc Profit`)as profit ,sum(`Product 1 Month Acc Quantity Delivered`) as delivered,sum(`Product 1 Month Acc Quantity Ordered`) as ordered,sum(`Product 1 Month Acc Quantity Invoiced`) as invoiced  from `Product Dimension` where `Product Family Key`=".$this->id;
+     $result=mysql_query($sql);
+     
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+       $this->data['Product Family 1 Month Acc Invoiced Gross Amount']=$row['gross'];
+       $this->data['Product Family 1 Month Acc Invoiced Discount Amount']=$row['disc'];
+       $this->data['Product Family 1 Month Acc Profit']=$row['profit'];
+       $this->data['Product Family 1 Month Acc Quantity Ordered']=$row['ordered'];
+       $this->data['Product Family 1 Month Acc Quantity Invoiced']=$row['invoiced'];
+       $this->data['Product Family 1 Month Acc Quantity Delivered']=$row['delivered'];
+       
+       
+     $sql=sprintf("update `Product Family Dimension` set `Product Family 1 Month Acc Invoiced Gross Amount`=%.2f,`Product Family 1 Month Acc Invoiced Discount Amount`=%.2f,`Product Family 1 Month Acc Profit`=%.2f, `Product Family 1 Month Acc Quantity Ordered`=%s , `Product Family 1 Month Acc Quantity Invoiced`=%s,`Product Family 1 Month Acc Quantity Delivered`=%s  where `Product Family Key`=%d "
+		  ,prepare_mysql($this->data['Product Family 1 Month Acc Invoiced Gross Amount'])
+		  ,prepare_mysql($this->data['Product Family 1 Month Acc Invoiced Discount Amount'])
+		  ,prepare_mysql($this->data['Product Family 1 Month Acc Profit'])
+		  ,prepare_mysql($this->data['Product Family 1 Month Acc Quantity Ordered'])
+		  ,prepare_mysql($this->data['Product Family 1 Month Acc Quantity Invoiced'])
+		  ,prepare_mysql($this->data['Product Family 1 Month Acc Quantity Delivered'])
+		  ,$this->id
+		  );
+     
+     if(!mysql_query($sql))
+       exit("$sql\ncan not update fam sales\n");
+     }
+$sql="select sum(`Product 1 Week Acc Invoiced Gross Amount`) as gross,sum(`Product 1 Week Acc Invoiced Discount Amount`) as disc, sum(`Product 1 Week Acc Profit`)as profit ,sum(`Product 1 Week Acc Quantity Delivered`) as delivered,sum(`Product 1 Week Acc Quantity Ordered`) as ordered,sum(`Product 1 Week Acc Quantity Invoiced`) as invoiced  from `Product Dimension` where `Product Family Key`=".$this->id;
+     $result=mysql_query($sql);
+     
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+       $this->data['Product Family 1 Week Acc Invoiced Gross Amount']=$row['gross'];
+       $this->data['Product Family 1 Week Acc Invoiced Discount Amount']=$row['disc'];
+       $this->data['Product Family 1 Week Acc Profit']=$row['profit'];
+       $this->data['Product Family 1 Week Acc Quantity Ordered']=$row['ordered'];
+       $this->data['Product Family 1 Week Acc Quantity Invoiced']=$row['invoiced'];
+       $this->data['Product Family 1 Week Acc Quantity Delivered']=$row['delivered'];
+       
+       
+     $sql=sprintf("update `Product Family Dimension` set `Product Family 1 Week Acc Invoiced Gross Amount`=%.2f,`Product Family 1 Week Acc Invoiced Discount Amount`=%.2f,`Product Family 1 Week Acc Profit`=%.2f, `Product Family 1 Week Acc Quantity Ordered`=%s , `Product Family 1 Week Acc Quantity Invoiced`=%s,`Product Family 1 Week Acc Quantity Delivered`=%s  where `Product Family Key`=%d "
+		  ,prepare_mysql($this->data['Product Family 1 Week Acc Invoiced Gross Amount'])
+		  ,prepare_mysql($this->data['Product Family 1 Week Acc Invoiced Discount Amount'])
+		  ,prepare_mysql($this->data['Product Family 1 Week Acc Profit'])
+		  ,prepare_mysql($this->data['Product Family 1 Week Acc Quantity Ordered'])
+		  ,prepare_mysql($this->data['Product Family 1 Week Acc Quantity Invoiced'])
+		  ,prepare_mysql($this->data['Product Family 1 Week Acc Quantity Delivered'])
+		  ,$this->id
+		  );
+     
+     if(!mysql_query($sql))
+       exit("$sql\ncan not update fam sales\n");
+     }
 
    //   $this->load('products');
 

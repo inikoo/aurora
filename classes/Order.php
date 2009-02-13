@@ -642,7 +642,7 @@ class Order{
 
   function add_order_transaction($data){
 
-    $sql=sprintf("insert into `Order Transaction Fact` (`Estimated Weight`,`Order Date`,`Order Last Updated Date`,`Product Key`,`Current Dispatching State`,`Current Payment State`,`Customer Key`,`Order Key`,`Order Public ID`,`Order Line`,`Order Quantity`,`Ship To Key`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`) values (%s,%s,%s,%d,%s,%s,%s,%s,%s,%d,%f,%s,%.2f,%.2f) "
+    $sql=sprintf("insert into `Order Transaction Fact` (`Estimated Weight`,`Order Date`,`Order Last Updated Date`,`Product Key`,`Current Dispatching State`,`Current Payment State`,`Customer Key`,`Order Key`,`Order Public ID`,`Order Line`,`Order Quantity`,`Ship To Key`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`) values (%s,%s,%s,%d,%s,%s,%s,%s,%s,%d,%s,%s,%.2f,%.2f) "
 		 ,prepare_mysql($data['Estimated Weight'])
 		 ,prepare_mysql($data['date'])
 		 ,prepare_mysql($data['date'])
