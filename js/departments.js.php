@@ -90,7 +90,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    ,{key:"families", label:"<?=_('Families')?>", width:100,sortable:true,className:"aright",<?=($_SESSION['state']['departments']['view']=='general'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    ,{key:"active", label:"<?=_('Products')?>",  width:100,sortable:true,className:"aright",<?=($_SESSION['state']['departments']['view']=='general'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    ,{key:"tsall", label:"<?=_('TS')?>", width:90,sortable:true,className:"aright",<?=($_SESSION['state']['departments']['view']!='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"per_tsall", label:"<?=_('%TS')?>", width:70,sortable:true,className:"aright",<?=($_SESSION['state']['departments']['view']=='sales'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"tprofit", label:"<?=_('TP')?>", width:90,sortable:true,className:"aright",<?=($_SESSION['state']['departments']['view']!='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+
 				    ,{key:"tsm", label:"<?=_('30d S')?>", width:90,sortable:true,className:"aright",<?=($_SESSION['state']['departments']['view']=='sales'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    ,{key:"per_tsm", label:"<?=_('30d %S')?>", width:70,sortable:true,className:"aright",<?=($_SESSION['state']['departments']['view']=='sales'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    ,{key:"stock_value", label:"<?=_('Stk Value')?>", width:70,sortable:true,className:"aright",<?=($_SESSION['state']['departments']['view']=='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
@@ -118,7 +119,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 'id',
 			 "name",
 			 'families',
-			 'active',"tsall","tsq","tsy","tsm","per_tsall","per_tsm","stock_error","stock_value","outofstock"
+			 'active',"tsall","tsq","tsy","tsm","per_tsall","per_tsm","stock_error","stock_value","outofstock","tprofit"
 			 ]};
 	    
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
@@ -170,6 +171,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
  YAHOO.util.Event.addListener('show_details', "click",show_details,'departments');
+ YAHOO.util.Event.addListener('show_percentages', "click",show_percentages,'departments');
 
 
  YAHOO.util.Event.addListener('product_submit_search', "click",submit_search,'product');

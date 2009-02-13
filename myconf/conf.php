@@ -183,6 +183,7 @@ $default_state=array(
 				    ),
 		      'products'=>array(
 				      'details'=>false,
+				      'percentages'=>false,
 				      'view'=>'general',
 				      'from'=>'',
 				      'to'=>'',	  
@@ -318,6 +319,7 @@ $default_state=array(
 
 		     'departments'=>array(
 					  'details'=>false,
+					  'percentages'=>true,
 					  'view'=>'general',
 					  'table'=>array(
 							 'order'=>'name',
@@ -330,6 +332,7 @@ $default_state=array(
 		     
 		     'department'=>array(
 				       'details'=>false,
+				       'percentages'=>true,
 				       'view'=>'general',
 				       'id'=>1,
 				       'table'=>array(
@@ -345,6 +348,7 @@ $default_state=array(
 					 ),
 		     'family'=>array(
 				       'details'=>false,
+				       'percentages'=>false,
 				       'view'=>'general',
 				       'id'=>1,
 				       'table'=>array(

@@ -12,12 +12,13 @@
      <span  class="search_msg"   id="product_search_msg"    ></span> <span  class="search_sugestion"   id="product_search_sugestion"    ></span>
      <br/>
       <span  class="state_details" state="{$show_details}"  id="show_details"  atitle="{if $show_details}{t}show details{/t}{else}{t}hide details{/t}{/if}"  >{if $show_details}{t}hide details{/t}{else}{t}show details{/t}{/if}</span>
-  </div>
+   <br/><span  class="state_details" state="{$show_percentages}"  id="show_percentages"  atitle="{if $show_percentages}{t}show percentages{/t}{else}{t}show absolute values{/t}{/if}"  >{if $show_percentages}{t}show amounts{/t}{else}{t}show percentages{/t}{/if}</span>
+ </div>
   
   <div id="top" class="top_bar">
     <div id="short_menu" class="nodetails" style="{if $show_details}display:none;{/if}width:100%;margin-bottom:0px">
       <table style="float:left;margin:0 0 0 20px ;padding:0"  class="options" {if $products==0 }style="display:none"{/if}>
-	<tr><td  {if $view=='contacts'}class="selected"{/if} id="contacts" >{t}Contacts{/t}</td>
+	<tr><td  {if $view=='general'}class="selected"{/if} id="general" >{t}General{/t}</td>
 	  {if $view_stock}<td {if $view=='stock'}class="selected"{/if}  id="stock"  >{t}Stock{/t}</td>{/if}
 	  {if $view_sales}<td  {if $view=='sales'}class="selected"{/if}  id="sales"  >{t}Sales{/t}</td>{/if}
 	</tr>

@@ -51,6 +51,7 @@ if(isset($_REQUEST['view'])){
  }
 $smarty->assign('view',$_SESSION['state']['departments']['view']);
 $smarty->assign('show_details',$_SESSION['state']['departments']['details']);
+$smarty->assign('show_percentages',$_SESSION['state']['departments']['percentages']);
 
 
 //$sql="select id from product";
@@ -62,11 +63,12 @@ $smarty->assign('show_details',$_SESSION['state']['departments']['details']);
 //   $product->set_stock();
 // }
 
+
  $table_title=_('Department List');
-//  $sql="select count(*) as numberof ,sum(tsall) as total_sales,sum(stock_value) as stock_value  from product_department left join sales on (tipo_id=product_department.id) and tipo='dept' ";
-//  $result =& $db->query($sql);
-//  if(!$departments=$result->fetchRow())
-//    exit;
+  $sql="select count(*) as numberof ,sum(`Product Department Total Invoiced Gross Amount`-`Product Department Total Invoiced Discount Amount`) as total_sales  from `Product Department Dimension`  ";
+$result =mysql_query($sql);
+if(!$departments=mysql_fetch_array($result, MYSQL_ASSOC))
+  exit("Internal Error DEPS");
 
 
 
@@ -83,8 +85,8 @@ $smarty->assign('show_details',$_SESSION['state']['departments']['details']);
 
 
 // $smarty->assign('stock_value',money($departments['stock_value']));
-// $smarty->assign('total_sales',money($departments['total_sales']));
-// $smarty->assign('departments',number($departments['numberof']));
+$smarty->assign('total_sales',money($departments['total_sales']));
+$smarty->assign('departments',number($departments['numberof']));
 // $smarty->assign('families',number($families['numberof']));
 // $smarty->assign('products',number($products['numberof']));
 

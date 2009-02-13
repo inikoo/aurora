@@ -132,8 +132,7 @@ class department{
    case('sales'):
      
      $sql="select sum(`Product Family Total Invoiced Gross Amount`) as gross,sum(`Product Family Total Invoiced Discount Amount`) as disc, sum(`Product Family Total Profit`)as profit ,sum(`Product Family Total Quantity Delivered`) as delivered,sum(`Product Family Total Quantity Ordered`) as ordered,sum(`Product Family Total Quantity Invoiced`) as invoiced  from `Product Family Dimension` as F left join `Product Family Department Bridge` as B on (B.`Product Family Key`=F.`Product Family Key`)  where `Product Department Key`=".$this->id;
-     print $sql;
-     exit;
+     //    print "$sql\n\n";
      $result=mysql_query($sql);
  
      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
@@ -145,7 +144,7 @@ class department{
        $this->data['Product Department Total Quantity Delivered']=$row['delivered'];
       
         
-     $sql=sprintf("update `Product Department Dimension` set `Product Department Total Invoiced Gross Amount`=%.2f,`Product Department Total Invoiced Discount Amount`=%.2f,`Product Department Total Profit`=%.2f, `Product Department Total Quantity Ordered`=%s , `Product Department Total Quantity Invoiced`=%s,`Product Department Total Quantity Delivered`=%s  where `Product Department Key`=%d "
+     $sql=sprintf("update `Product Department Dimension` set `Product Department Total Invoiced Gross Amount`=%s,`Product Department Total Invoiced Discount Amount`=%s,`Product Department Total Profit`=%s, `Product Department Total Quantity Ordered`=%s , `Product Department Total Quantity Invoiced`=%s,`Product Department Total Quantity Delivered`=%s  where `Product Department Key`=%d "
 		  ,prepare_mysql($this->data['Product Department Total Invoiced Gross Amount'])
 		  ,prepare_mysql($this->data['Product Department Total Invoiced Discount Amount'])
 		  ,prepare_mysql($this->data['Product Department Total Profit'])
@@ -154,7 +153,8 @@ class department{
 		  ,prepare_mysql($this->data['Product Department Total Quantity Delivered'])
 		  ,$this->id
 		  );
-     // print "$sql\n";
+     //  print "$sql\n";
+     //  exit;
      if(!mysql_query($sql))
        exit("$sql\ncan not update dept sales\n");
      }
@@ -170,7 +170,7 @@ class department{
        $this->data['Product Department 1 Year Acc Quantity Delivered']=$row['delivered'];
       
         
-     $sql=sprintf("update `Product Department Dimension` set `Product Department 1 Year Acc Invoiced Gross Amount`=%.2f,`Product Department 1 Year Acc Invoiced Discount Amount`=%.2f,`Product Department 1 Year Acc Profit`=%.2f, `Product Department 1 Year Acc Quantity Ordered`=%s , `Product Department 1 Year Acc Quantity Invoiced`=%s,`Product Department 1 Year Acc Quantity Delivered`=%s  where `Product Department Key`=%d "
+     $sql=sprintf("update `Product Department Dimension` set `Product Department 1 Year Acc Invoiced Gross Amount`=%s,`Product Department 1 Year Acc Invoiced Discount Amount`=%s,`Product Department 1 Year Acc Profit`=%s, `Product Department 1 Year Acc Quantity Ordered`=%s , `Product Department 1 Year Acc Quantity Invoiced`=%s,`Product Department 1 Year Acc Quantity Delivered`=%s  where `Product Department Key`=%d "
 		  ,prepare_mysql($this->data['Product Department 1 Year Acc Invoiced Gross Amount'])
 		  ,prepare_mysql($this->data['Product Department 1 Year Acc Invoiced Discount Amount'])
 		  ,prepare_mysql($this->data['Product Department 1 Year Acc Profit'])
@@ -195,7 +195,7 @@ class department{
        $this->data['Product Department 1 Quarter Acc Quantity Delivered']=$row['delivered'];
       
         
-     $sql=sprintf("update `Product Department Dimension` set `Product Department 1 Quarter Acc Invoiced Gross Amount`=%.2f,`Product Department 1 Quarter Acc Invoiced Discount Amount`=%.2f,`Product Department 1 Quarter Acc Profit`=%.2f, `Product Department 1 Quarter Acc Quantity Ordered`=%s , `Product Department 1 Quarter Acc Quantity Invoiced`=%s,`Product Department 1 Quarter Acc Quantity Delivered`=%s  where `Product Department Key`=%d "
+     $sql=sprintf("update `Product Department Dimension` set `Product Department 1 Quarter Acc Invoiced Gross Amount`=%s,`Product Department 1 Quarter Acc Invoiced Discount Amount`=%s,`Product Department 1 Quarter Acc Profit`=%s, `Product Department 1 Quarter Acc Quantity Ordered`=%s , `Product Department 1 Quarter Acc Quantity Invoiced`=%s,`Product Department 1 Quarter Acc Quantity Delivered`=%s  where `Product Department Key`=%d "
 		  ,prepare_mysql($this->data['Product Department 1 Quarter Acc Invoiced Gross Amount'])
 		  ,prepare_mysql($this->data['Product Department 1 Quarter Acc Invoiced Discount Amount'])
 		  ,prepare_mysql($this->data['Product Department 1 Quarter Acc Profit'])
@@ -220,7 +220,7 @@ class department{
        $this->data['Product Department 1 Month Acc Quantity Delivered']=$row['delivered'];
       
         
-     $sql=sprintf("update `Product Department Dimension` set `Product Department 1 Month Acc Invoiced Gross Amount`=%.2f,`Product Department 1 Month Acc Invoiced Discount Amount`=%.2f,`Product Department 1 Month Acc Profit`=%.2f, `Product Department 1 Month Acc Quantity Ordered`=%s , `Product Department 1 Month Acc Quantity Invoiced`=%s,`Product Department 1 Month Acc Quantity Delivered`=%s  where `Product Department Key`=%d "
+     $sql=sprintf("update `Product Department Dimension` set `Product Department 1 Month Acc Invoiced Gross Amount`=%s,`Product Department 1 Month Acc Invoiced Discount Amount`=%s,`Product Department 1 Month Acc Profit`=%s, `Product Department 1 Month Acc Quantity Ordered`=%s , `Product Department 1 Month Acc Quantity Invoiced`=%s,`Product Department 1 Month Acc Quantity Delivered`=%s  where `Product Department Key`=%d "
 		  ,prepare_mysql($this->data['Product Department 1 Month Acc Invoiced Gross Amount'])
 		  ,prepare_mysql($this->data['Product Department 1 Month Acc Invoiced Discount Amount'])
 		  ,prepare_mysql($this->data['Product Department 1 Month Acc Profit'])
@@ -245,7 +245,7 @@ class department{
        $this->data['Product Department 1 Week Acc Quantity Delivered']=$row['delivered'];
       
         
-     $sql=sprintf("update `Product Department Dimension` set `Product Department 1 Week Acc Invoiced Gross Amount`=%.2f,`Product Department 1 Week Acc Invoiced Discount Amount`=%.2f,`Product Department 1 Week Acc Profit`=%.2f, `Product Department 1 Week Acc Quantity Ordered`=%s , `Product Department 1 Week Acc Quantity Invoiced`=%s,`Product Department 1 Week Acc Quantity Delivered`=%s  where `Product Department Key`=%d "
+     $sql=sprintf("update `Product Department Dimension` set `Product Department 1 Week Acc Invoiced Gross Amount`=%s,`Product Department 1 Week Acc Invoiced Discount Amount`=%s,`Product Department 1 Week Acc Profit`=%s, `Product Department 1 Week Acc Quantity Ordered`=%s , `Product Department 1 Week Acc Quantity Invoiced`=%s,`Product Department 1 Week Acc Quantity Delivered`=%s  where `Product Department Key`=%d "
 		  ,prepare_mysql($this->data['Product Department 1 Week Acc Invoiced Gross Amount'])
 		  ,prepare_mysql($this->data['Product Department 1 Week Acc Invoiced Discount Amount'])
 		  ,prepare_mysql($this->data['Product Department 1 Week Acc Profit'])

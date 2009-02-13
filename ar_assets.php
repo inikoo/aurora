@@ -1414,9 +1414,9 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
   $_dir=$order_direction;
   
 if($order=='per_tsall' or $order=='tsall')
-    $order='total_sales';
+    $order='product department total invoiced amount';
  if($order=='per_tsm' or $order=='tms')
-   $order='month_sales';
+   $order='product department 1 month acc invoiced amount';
  if($order=='name')
     $order='Product Department Name';
   if($order=='families')
@@ -1430,7 +1430,7 @@ if($order=='stockerror')
  $sum_families=0;
  $sum_total_sales=0;
  $sum_month_sales=0;$sum_active=0;
- $sql="select sum(`Product Department For Sale Products`) as sum_active,sum(`Product Department Families`) as sum_families,sum(`Product Department Total Invoiced Gross Amount`+`Product Department Total Invoiced Discount Amount`) as sum_total_sales ,sum(`Product Department 1 Month Acc Invoiced Gross Amount`+`Product Department 1 Month Acc Invoiced Discount Amount`) as sum_month_sales  from `Product Department Dimension`    ";
+ $sql="select sum(if(`Product Department Total Profit`<0,`Product Department Total Profit`,0)) as total_profit_minus,sum(if(`Product Department Total Profit`>=0,`Product Department Total Profit`,0)) as total_profit_plus,sum(`Product Department For Sale Products`) as sum_active,sum(`Product Department Families`) as sum_families,sum(`Product Department Total Invoiced Gross Amount`+`Product Department Total Invoiced Discount Amount`) as sum_total_sales ,sum(`Product Department 1 Month Acc Invoiced Gross Amount`+`Product Department 1 Month Acc Invoiced Discount Amount`) as sum_month_sales  from `Product Department Dimension`    ";
 
  $res = $db->query($sql); 
   if($row=$res->fetchRow()) {
@@ -1438,28 +1438,51 @@ if($order=='stockerror')
     $sum_total_sales=$row['sum_total_sales'];
     $sum_month_sales=$row['sum_month_sales'];
     $sum_active=$row['sum_active'];
+    $sum_total_profit_plus=$row['total_profit_plus'];
+    $sum_total_profit_minus=$row['total_profit_minus'];
+    $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
   }
  
-   $sql="select *,`Product Department Total Invoiced Gross Amount`+`Product Department Total Invoiced Discount Amount` as `product department total invoiced amount` ,`Product Department 1 Month Acc Invoiced Gross Amount`+`Product Department 1 Month Acc Invoiced Discount Amount` as `product department 1 month acc invoiced amount`  from `Product Department Dimension`  order by `$order` $order_direction limit $start_from,$number_results    ";
+   $sql="select *,`Product Department Name`,`Product Department Key`,`Product Department Total Profit`,`Product Department Total Invoiced Gross Amount`-`Product Department Total Invoiced Discount Amount` as `product department total invoiced amount` ,`Product Department 1 Month Acc Invoiced Gross Amount`-`Product Department 1 Month Acc Invoiced Discount Amount` as `product department 1 month acc invoiced amount`  from `Product Department Dimension`  order by `$order` $order_direction limit $start_from,$number_results    ";
    // print "$sql";   
-  $res = $db->query($sql); 
+   $res = mysql_query($sql);
   $adata=array();
-  while($row=$res->fetchRow()) {
-    $name=sprintf('<a href="department.php?id=%d">%s</a>',$row['product department key'],$row['product department name']);
-    $adata[]=array(
+  while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+    $name=sprintf('<a href="department.php?id=%d">%s</a>',$row['Product Department Key'],$row['Product Department Name']);
+    if($_SESSION['state']['departments']['percentages']){
+      $tsall=percentage($row['product department total invoiced amount'],$sum_total_sales,2);
+      if($row['Product Department Total Profit']>=0)
+	$tprofit=percentage($row['Product Department Total Profit'],$sum_total_profit_plus,2);
+      else
+	$tprofit=percentage($row['Product Department Total Profit'],$sum_total_profit_minus,2);
+
+    }else{
+      $tsall=money($row['product department total invoiced amount']);
+      $tprofit=money($row['Product Department Total Profit']);
+    }
+   $adata[]=array(
 
 		   'name'=>$name,
-		   'families'=>number($row['product department families']),
-		   'active'=>number($row['product department for sale products']),
-		   'outofstock'=>number($row['product department out of stock products']),
-		   'stockerror'=>number($row['product department unknown stock products']),
-		   'stock_value'=>money($row['product department stock value']),
-		   'tsall'=>money($row['product department total invoiced amount']),
-		   'per_tsall'=>percentage($row['product department total invoiced amount'],$sum_total_sales,2),
+		   'families'=>number($row['Product Department Families']),
+		   'active'=>number($row['Product Department For Sale Products']),
+		   'outofstock'=>number($row['Product Department Out Of Stock Products']),
+		   'stockerror'=>number($row['Product Department Unknown Stock Products']),
+		   'stock_value'=>money($row['Product Department Stock Value']),
+		   'tsall'=>$tsall,
+		   'tprofit'=>$tprofit,
 		   'tsm'=>money($row['product department 1 month acc invoiced amount']),
 		   'per_tsm'=>percentage($row['product department 1 month acc invoiced amount'],$sum_month_sales,2),
 		   );
   }
+
+   if($_SESSION['state']['departments']['percentages']){
+      $tsall='100.00%';
+      $tprofit='100.00%';
+    }else{
+     $tsall=money($sum_total_sales);
+     $tprofit=money($sum_total_profit);
+   }
+
   $adata[]=array(
 
 		 'name'=>_('Total'),
@@ -1468,14 +1491,14 @@ if($order=='stockerror')
 		 'outofstock'=>number($row['product department out of stock products']),
 		 'stockerror'=>number($row['product department unknown stock products']),
 		 'stock_value'=>money($row['product department stock value']),
-		 'tsall'=>money($row['product department total invoiced amount']),
+		 'tsall'=>$tsall,'tprofit'=>$tprofit,
 		 'per_tsall'=>percentage($row['product department total invoiced amount'],$sum_total_sales,2),
 		 'tsm'=>money($row['product department 1 month acc invoiced amount']),
 		 'per_tsm'=>percentage($row['product department 1 month acc invoiced amount'],$sum_month_sales,2),
 		 );
 
 
-  $total=$res->numRows();
+  $total=mysql_num_rows($res);
   if($total<$number_results)
     $rtext=$total.' '.ngettext('department','departments',$total);
   else
@@ -1490,7 +1513,7 @@ if($order=='stockerror')
 			 'filter_msg'=>$filter_msg,
 			'total_records'=>$total,
 			'records_offset'=>$start_from,
-			'records_returned'=>$start_from+$res->numRows(),
+			'records_returned'=>$start_from+$total,
 			'records_perpage'=>$number_results,
 			'records_order'=>$order,
 			'records_order_dir'=>$order_dir,
