@@ -4784,13 +4784,13 @@ function setup_contact($act_data,$header_data,$date_index){
 	$act_data['name']=$staff_name;
 	break;
       case(77175):
-	$name="adriana";
-	$staff_id=get_user_id($name,'' , '',false);
-	$staff_data=get_staff_data($staff_id);
-	$contact_id=$staff_data['contact_id'];
-	$customer_id = $staff_data['customer_id'];
-	$new_customer=false;
-	return array($contact_id,$customer_id,false,false,false,$new_customer,$co);
+
+	$name='Adriana';
+	$staff=new Staff('alias',$name);
+	$staff_id=$staff->id;
+	$act_data['name']=$name;
+	$skip_del_address=true;
+	$act_data['contact']=$name;
 
 	break;
       default:

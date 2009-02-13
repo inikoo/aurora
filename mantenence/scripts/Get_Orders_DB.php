@@ -33,7 +33,7 @@ $version='V 1.0';
 $Data_Audit_ETL_Software="$software $version";
 
 
-$sql="select id from orders_data.order_data  ";
+$sql="select id from orders_data.order_data limit 35008,100000 ";
 $res=mysql_query($sql);
 while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
   print $row2['id']."\r";
