@@ -851,11 +851,11 @@ class Order{
 		   ,$line_number
 		   ,$data['Current Autorized to Sell Quantity']
 		   ,$data['Delivery Note Quantity']
-		   ,$data['Shipped Quantity']
-		   ,$data['No Shipped Due Out of Stock']
-		   ,$data['No Shipped Due No Authorized']
-		   ,$data['No Shipped Due Not Found']
-		   ,$data['No Shipped Due Other']
+		   ,prepare_mysql($data['Shipped Quantity'])
+		   ,prepare_mysql($data['No Shipped Due Out of Stock'])
+		   ,prepare_mysql($data['No Shipped Due No Authorized'])
+		   ,prepare_mysql($data['No Shipped Due Not Found'])
+		   ,prepare_mysql($data['No Shipped Due Other'])
 		   ,prepare_mysql($cost_supplier)
 		   ,prepare_mysql($cost_manu)
 		   ,prepare_mysql($cost_storing)
