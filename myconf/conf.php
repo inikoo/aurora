@@ -322,10 +322,11 @@ $default_state=array(
 					  'percentages'=>true,
 					  'view'=>'general',
 					  'table'=>array(
+							 
 							 'order'=>'name',
 							 'order_dir'=>'',
 							 'sf'=>0,
-							 'nr'=>200,
+							 'nr'=>25,
 							 )
 					  ),
 
@@ -393,13 +394,14 @@ $default_state=array(
 		       'families'=>array(
 				       'details'=>false,
 				       'view'=>'general',
+				       'percentages'=>true,
 				       'table'=>array(
-						      'order'=>'name',
+						      'order'=>'code',
 						      'order_dir'=>'',
 						      'sf'=>0,
-						      'nr'=>200,
+						      'nr'=>20,
 						      'where'=>'where true',
-						      'f_field'=>'name',
+						      'f_field'=>'code',
 						      'f_value'=>''
 
 						      )

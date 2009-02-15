@@ -444,22 +444,22 @@ var show_percentages=function(e,location){
      var state=this.getAttribute('state');
 
      if(state==1){
-
-	 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys='+location+'-percentages&value=0');
+	 state=0
+	 
 	 this.setAttribute('state',0);
      }else{
+	 state=1
 
-	 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys='+location+'-percentages&value=1');
 	 this.setAttribute('state',1);
      }
 
      var tmp=this.innerHTML;
       this.innerHTML=this.getAttribute('atitle');
       this.setAttribute('atitle',tmp);
-//      var table=tables['table0'];
-//      var datasource=tables.dataSource0;
-//      var request='';
-//      datasource.sendRequest(request,table.onDataReturnInitializeTable, table);   
+      var table=tables['table0'];
+      var datasource=tables.dataSource0;
+      var request='&percentages='+state;
+      datasource.sendRequest(request,table.onDataReturnInitializeTable, table);   
 
 }
 

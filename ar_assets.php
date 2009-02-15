@@ -1390,6 +1390,12 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
   else
     $order_dir=$conf['order_dir'];
   
+  if(isset( $_REQUEST['percentages'])){
+    $percentages=$_REQUEST['percentages'];
+    $_SESSION['state']['departments']['percentages']=$percentages;
+  }else
+    $percentages=$_SESSION['state']['departments']['percentages'];
+
   
    if(isset( $_REQUEST['tableid']))
     $tableid=$_REQUEST['tableid'];
@@ -1413,24 +1419,26 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
   $_order=$order;
   $_dir=$order_direction;
   
-if($order=='per_tsall' or $order=='tsall')
+  if($order=='tprofit')
+    $order='product department total profit';
+  elseif($order=='tsall')
     $order='product department total invoiced amount';
- if($order=='per_tsm' or $order=='tms')
+  elseif($order=='per_tsm' or $order=='tms')
    $order='product department 1 month acc invoiced amount';
- if($order=='name')
+  elseif($order=='name')
     $order='Product Department Name';
-  if($order=='families')
+  elseif($order=='families')
     $order='Product Department Families';
- if($order=='active')
+  elseif($order=='active')
     $order='Product Department For Sale Products';
-if($order=='outofstock')
+  elseif($order=='outofstock')
     $order='Product Department Out Of Stock Products';
-if($order=='stockerror')
+  elseif($order=='stockerror')
     $order='Product Department Unknown Stock Products';
- $sum_families=0;
- $sum_total_sales=0;
- $sum_month_sales=0;$sum_active=0;
- $sql="select sum(if(`Product Department Total Profit`<0,`Product Department Total Profit`,0)) as total_profit_minus,sum(if(`Product Department Total Profit`>=0,`Product Department Total Profit`,0)) as total_profit_plus,sum(`Product Department For Sale Products`) as sum_active,sum(`Product Department Families`) as sum_families,sum(`Product Department Total Invoiced Gross Amount`+`Product Department Total Invoiced Discount Amount`) as sum_total_sales ,sum(`Product Department 1 Month Acc Invoiced Gross Amount`+`Product Department 1 Month Acc Invoiced Discount Amount`) as sum_month_sales  from `Product Department Dimension`    ";
+  $sum_families=0;
+  $sum_total_sales=0;
+  $sum_month_sales=0;$sum_active=0;
+  $sql="select sum(if(`Product Department Total Profit`<0,`Product Department Total Profit`,0)) as total_profit_minus,sum(if(`Product Department Total Profit`>=0,`Product Department Total Profit`,0)) as total_profit_plus,sum(`Product Department For Sale Products`) as sum_active,sum(`Product Department Families`) as sum_families,sum(`Product Department Total Invoiced Gross Amount`+`Product Department Total Invoiced Discount Amount`) as sum_total_sales ,sum(`Product Department 1 Month Acc Invoiced Gross Amount`+`Product Department 1 Month Acc Invoiced Discount Amount`) as sum_month_sales  from `Product Department Dimension`    ";
 
  $res = $db->query($sql); 
   if($row=$res->fetchRow()) {
@@ -1449,7 +1457,7 @@ if($order=='stockerror')
   $adata=array();
   while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
     $name=sprintf('<a href="department.php?id=%d">%s</a>',$row['Product Department Key'],$row['Product Department Name']);
-    if($_SESSION['state']['departments']['percentages']){
+    if($percentages){
       $tsall=percentage($row['product department total invoiced amount'],$sum_total_sales,2);
       if($row['Product Department Total Profit']>=0)
 	$tprofit=percentage($row['Product Department Total Profit'],$sum_total_profit_plus,2);
@@ -1475,7 +1483,7 @@ if($order=='stockerror')
 		   );
   }
 
-   if($_SESSION['state']['departments']['percentages']){
+   if($percentages){
       $tsall='100.00%';
       $tprofit='100.00%';
     }else{
@@ -1522,7 +1530,163 @@ if($order=='stockerror')
 		  );
   echo json_encode($response);
   break;
+   case('families'):
+
+   $conf=$_SESSION['state']['families']['table'];
+   if(isset( $_REQUEST['sf']))
+     $start_from=$_REQUEST['sf'];
+   else
+     $start_from=$conf['sf'];
+   if(isset( $_REQUEST['nr']))
+     $number_results=$_REQUEST['nr'];
+   else
+     $number_results=$conf['nr'];
+  if(isset( $_REQUEST['o']))
+    $order=$_REQUEST['o'];
+  else
+    $order=$conf['order'];
+  if(isset( $_REQUEST['od']))
+    $order_dir=$_REQUEST['od'];
+  else
+    $order_dir=$conf['order_dir'];
   
+  if(isset( $_REQUEST['percentages'])){
+    $percentages=$_REQUEST['percentages'];
+    $_SESSION['state']['families']['percentages']=$percentages;
+  }else
+    $percentages=$_SESSION['state']['families']['percentages'];
+
+  
+   if(isset( $_REQUEST['tableid']))
+    $tableid=$_REQUEST['tableid'];
+  else
+    $tableid=0;
+
+
+
+   $filter_msg='';
+
+
+
+  $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+  
+  
+  $_SESSION['state']['families']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from);
+  
+  $where=" '";
+  $filtered=0;
+  
+  $_order=$order;
+  $_dir=$order_direction;
+   if($order=='code')
+    $order='product family code';
+  if($order=='tprofit')
+    $order='product family total profit';
+  elseif($order=='tsall')
+    $order='product family total invoiced amount';
+  elseif($order=='per_tsm' or $order=='tms')
+   $order='product family 1 month acc invoiced amount';
+  elseif($order=='name')
+    $order='Product Family Name';
+  elseif($order=='active')
+    $order='Product Family For Sale Products';
+  elseif($order=='outofstock')
+    $order='Product Family Out Of Stock Products';
+  elseif($order=='stockerror')
+    $order='Product Family Unknown Stock Products';
+  $sum_families=0;
+  $sum_total_sales=0;
+  $sum_month_sales=0;$sum_active=0;
+  $sql="select sum(if(`Product Family Total Profit`<0,`Product Family Total Profit`,0)) as total_profit_minus,sum(if(`Product Family Total Profit`>=0,`Product Family Total Profit`,0)) as total_profit_plus,sum(`Product Family For Sale Products`) as sum_active,sum(`Product Family Total Invoiced Gross Amount`+`Product Family Total Invoiced Discount Amount`) as sum_total_sales ,sum(`Product Family 1 Month Acc Invoiced Gross Amount`+`Product Family 1 Month Acc Invoiced Discount Amount`) as sum_month_sales  from `Product Family Dimension`    ";
+
+ $res = $db->query($sql); 
+  if($row=$res->fetchRow()) {
+
+    $sum_total_sales=$row['sum_total_sales'];
+    $sum_month_sales=$row['sum_month_sales'];
+    $sum_active=$row['sum_active'];
+    $sum_total_profit_plus=$row['total_profit_plus'];
+    $sum_total_profit_minus=$row['total_profit_minus'];
+    $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
+  }
+ 
+   $sql="select *,`Product Family Name`,`Product Family Key`,`Product Family Total Profit`,`Product Family Total Invoiced Gross Amount`-`Product Family Total Invoiced Discount Amount` as `product family total invoiced amount` ,`Product Family 1 Month Acc Invoiced Gross Amount`-`Product Family 1 Month Acc Invoiced Discount Amount` as `product family 1 month acc invoiced amount`  from `Product Family Dimension`  order by `$order` $order_direction limit $start_from,$number_results    ";
+   //    print "$sql";   
+   $res = mysql_query($sql);
+  $adata=array();
+  while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+    $name=sprintf('<a href="family.php?id=%d">%s</a>',$row['Product Family Key'],$row['Product Family Code']);
+    if($percentages){
+      $tsall=percentage($row['product family total invoiced amount'],$sum_total_sales,2);
+      if($row['Product Family Total Profit']>=0)
+	$tprofit=percentage($row['Product Family Total Profit'],$sum_total_profit_plus,2);
+      else
+	$tprofit=percentage($row['Product Family Total Profit'],$sum_total_profit_minus,2);
+
+    }else{
+      $tsall=money($row['product family total invoiced amount']);
+      $tprofit=money($row['Product Family Total Profit']);
+    }
+   $adata[]=array(
+
+		   'code'=>$name,
+		   'active'=>number($row['Product Family For Sale Products']),
+		   'outofstock'=>number($row['Product Family Out Of Stock Products']),
+		   'stockerror'=>number($row['Product Family Unknown Stock Products']),
+		   'stock_value'=>money($row['Product Family Stock Value']),
+		   'tsall'=>$tsall,
+		   'tprofit'=>$tprofit,
+		   'tsm'=>money($row['product family 1 month acc invoiced amount']),
+		   'per_tsm'=>percentage($row['product family 1 month acc invoiced amount'],$sum_month_sales,2),
+		   );
+  }
+
+   if($percentages){
+      $tsall='100.00%';
+      $tprofit='100.00%';
+    }else{
+     $tsall=money($sum_total_sales);
+     $tprofit=money($sum_total_profit);
+   }
+
+  $adata[]=array(
+
+		 'name'=>_('Total'),
+		 'active'=>number($sum_active),
+		 'outofstock'=>number($row['product family out of stock products']),
+		 'stockerror'=>number($row['product family unknown stock products']),
+		 'stock_value'=>money($row['product family stock value']),
+		 'tsall'=>$tsall,'tprofit'=>$tprofit,
+		 'per_tsall'=>percentage($row['product family total invoiced amount'],$sum_total_sales,2),
+		 'tsm'=>money($row['product family 1 month acc invoiced amount']),
+		 'per_tsm'=>percentage($row['product family 1 month acc invoiced amount'],$sum_month_sales,2),
+		 );
+
+
+  $total=mysql_num_rows($res);
+  if($total<$number_results)
+    $rtext=$total.' '.ngettext('family','families',$total);
+  else
+    $rtext='';
+  
+  $response=array('resultset'=>
+		  array('state'=>200,
+			'data'=>$adata,
+			'sort_key'=>$_order,
+			 'sort_dir'=>$_dir,
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
+			'total_records'=>$total,
+			'records_offset'=>$start_from,
+			'records_returned'=>$start_from+$total,
+			'records_perpage'=>$number_results,
+			'records_order'=>$order,
+			'records_order_dir'=>$order_dir,
+			'filtered'=>$filtered
+			)
+		  );
+  echo json_encode($response);
+  break;
   
  case('department'):
    
@@ -2246,7 +2410,7 @@ if($order=='code')
 
 
    
-   $where =$where.sprintf(' and `Product Family Key`=%d',$id);
+   $where =$where.sprintf(' and `Product Most Recent`="Yes"  and  `Product Family Key`=%d',$id);
 
 
    $sql="select count(*) as total from `Product Dimension`  $where $wheref";

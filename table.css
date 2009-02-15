@@ -74,7 +74,8 @@ th.yui-dt-resizeable .yui-dt-liner{position:relative;}
 .kaktus .yui-dt-list tr.yui-dt-even td.yui-dt-selected,.kaktus .yui-dt-list tr.yui-dt-odd td.yui-dt-selected{background-color:#446CD7;color:#FFF;}
 .kaktus .yui-pg-container,.kaktus .yui-dt-paginator{display:block;margin:6px 0;white-space:nowrap;}
 
-.kaktus tr.yui-dt-lastx{border-bottom:1px solid steelblue}
+.kaktus tr.yui-dt-last{border-bottom:1px solid steelblue}
+
 
 
 
@@ -123,3 +124,5 @@ div.wider{height:1.8em}
     opacity: .25;
     *filter: alpha(opacity=25);  /* Set opacity in IE */
 }
+
+.kaktus .with_total tr.yui-dt-last{border-top:1px solid steelblue;border-bottom:none;background:#fff}

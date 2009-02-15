@@ -130,7 +130,14 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       $sup_prod_code=$transaction['supplier_product_code'];
 
 
-	
+    if(preg_match('/GP-\d{2}/i',$transaction['code']) and $transaction['units']==1200){
+      $transaction['units']=1;
+      $w=6;
+      $supplier_product_cost=4.4500;
+      $transaction['rrp']=60;
+    }	
+
+
 
     $product_data=array(
 			'product code'=>_trim($transaction['code'])
@@ -158,11 +165,11 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
 //      print_r($products);
 
- //    if(preg_match('/ish-33/i',$transaction['code'])){
-//       print $row2['id']."\n";
-    // print_r($product_data);
+//    if(preg_match('/Gp-04/i',$transaction['code'])){
+// //       print $row2['id']."\n";
+//      print_r($product_data);
      
-//     }
+    // }
     
     //print_r($product_data);
     $product=new Product('code-name-units-price',$product_data);

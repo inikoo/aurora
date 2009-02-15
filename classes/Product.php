@@ -20,6 +20,8 @@ class product{
   var $new_id=false;
   var $location_to_update=false;
   var $id=false;
+  var $unknown_txt='Unknown';
+
   function __construct($a1,$a2=false,$a3=false) {
     //    $this->db =MDB2::singleton();
     if(is_numeric($a1) and !$a2){
@@ -63,8 +65,8 @@ class product{
       if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)){
 	$this->id=$this->data['Product Key'];
 
-	if(strtotime($this->data['Product Valid To'])<strtotime($tag['date'])  ){
-	  $sql=sprintf("update `Product Dimension` set `Product Valid To`=%s where `Product Key`=%d",prepare_mysql($tag['date']),$this->id);
+	if(strtotime($this->data['Product Valid To'])<strtotime($tag['date2'])  ){
+	  $sql=sprintf("update `Product Dimension` set `Product Valid To`=%s where `Product Key`=%d",prepare_mysql($tag['date2']),$this->id);
 	  $this->data['product valid to']=$tag['date2'];
 	  mysql_query($sql);
 	  
@@ -190,7 +192,7 @@ class product{
 	$tag['product id']=$this->new_id();
 	$tag['product most recent']='Yes';
 	$tag['Part Most Recent']='Yes';
-	$tag['product valid to']=$tag['date'];
+	$tag['product valid to']=$tag['date2'];
 	$tag['product valid from']=$tag['date'];
 	$tag['Part SKU']='';
 	$tag['part valid to']=$tag['date'];
@@ -231,22 +233,32 @@ class product{
 	  $this->new_id=false;
 	  $tag['product id']=$same_id_data['Product ID'];
 	  
-	  $sql=sprintf("select `Product Key`  from  `Product Dimension` where `Product Valid To`<%s and `Product Most Recent`='Yes' and `Product ID`=%d  ",prepare_mysql($tag['date']),$same_id_data['Product ID']);
-	  //print "$sql\n";
-	 $result3=mysql_query($sql);
-	if($last_data=mysql_fetch_array($result3, MYSQL_ASSOC) ){
-	  $tag['product most recent']='No';
-	  $tag['product most reent key']=$last_data['Product Key'];
-	}else
-	  $tag['product most recent']='Yes';
-	
-	$this->new_part=false;
-	$tag['product valid to']=$tag['date'];
-	$tag['product valid from']=$tag['date'];
+	  $sql=sprintf("select *  from  `Product Dimension` where  `Product Most Recent`='Yes' and `Product ID`=%d  ",$same_id_data['Product ID']);
+	  $result3=mysql_query($sql);
+	  $result3=mysql_query($sql);
+	  if($row3=mysql_fetch_array($result3, MYSQL_ASSOC) ){
+	    $last_day=$row3['Product Valid To'];
+	    if(strtotime($last_day)<strtotime($tag['date'])){
+		$tag['product most recent']='Yes';
 
-	$this->create($tag);
-  
-	}else{
+	      }else{
+		$tag['product most recent']='No';
+		$tag['product most recent key']=$row3['Product Key'];
+	      }
+	    
+
+	  }else{
+	    print_r($tag);
+	    print "$sql\n";
+	    exit("error in product ceratuon 45667303");
+	  }
+	    
+	    $tag['product valid to']=$tag['date2'];
+	    $tag['product valid from']=$tag['date'];
+	    
+	    $this->create($tag);
+	    
+	  }else{
 	  // Different name or units
 
 	  $this->new_id=true;
@@ -264,7 +276,7 @@ class product{
 	    $tag['product main department name']=$most_recent_product_data['Product Main Department Name'];
 	    $tag['product main department code']=$most_recent_product_data['Product Main Department Code'];
 	  }
-	  $tag['product valid to']=$tag['date'];
+	  $tag['product valid to']=$tag['date2'];
 	  $tag['product valid from']=$tag['date'];
 	  
 	  $this->create($tag);
@@ -360,13 +372,24 @@ class product{
     if(array_key_exists($key,$this->data))
       return $this->data[$key];
     
+
     switch($key){
+    case('Product Total Invoiced Net Amount'):
+      return $this->data['Product Total Invoiced Gross Amount']-$this->data['Product Total Invoiced Discount Amount'];
+    case('formated total net sales'):
+      return money($this->data['Product Total Invoiced Gross Amount']-$this->data['Product Total Invoiced Discount Amount']);
+    case('Formated Product Total Quantity Invoiced'):
+      return number($this->data['Product Total Quantity Invoiced']);
     case('formated price'):
       return money($this->data['Product Price']);
       break;
     case('formated unitary rrp'):
       return money($this->data['Product Unitary RRP']);
       break;
+ case('Formated Weight'):
+      return number($this->data['Product Net Weight'])."Kg";
+      break;
+
     case('short description'):
       global $myconf;
       $desc='';
@@ -472,8 +495,12 @@ class product{
     case('mysql_first_date'):
       return  date("Y-m-d",strtotime("@".$this->data['first_date']));;
       break;
-    case('first_date'):
-      return $this->data['dates']['first_date'];
+    case('formated product for sale since date'):
+      $date=strtotime($this->data['Product For Sale Since Date']);
+      if($date)
+	return date("d/m/Y",$date);
+      else
+	return $this->unknown_txt;
       break;
     case('weeks'):
       if(!isset( $this->data['weeks'])){
@@ -548,7 +575,7 @@ class product{
     if(isset($this->data[$_key]))
       return $this->data[$_key];
     print "Error $key not found in get from Product\n";
-    sdsd();
+   
     return false;
 
   }
@@ -692,20 +719,21 @@ function valid_id($id){
     $sql=sprintf("insert into `Product Dimension` %s %s",$keys,$values);
 
 
-    
+    // print "$sql\n\n";    
 
-
-  //   print "$sql\n";
-//     exit;
-
+     //   if(preg_match('/abp-01/i',$base_data['product code'])){
+// 	 print "$sql\n\n"; 
+//        }
     if(mysql_query($sql)){
       $this->id = mysql_insert_id();
 	$this->get_data('id',$this->id);
 
-      $sql=sprintf("update `Product Dimension` set `Product Most Recent`='No' where `Product ID`=%d  and `Product Key`!=%d",$base_data['product id'],$this->id);
-      mysql_query($sql);
+
       if($base_data['product most recent']=='Yes'){
-	$sql=sprintf("update  `Product Dimension` set `Product Most Recent Key`=%d where `Product Key`=%d",$this->id,$this->id);
+	$sql=sprintf("update `Product Dimension` set `Product Most Recent`='No' where `Product ID`=%d  and `Product Key`!=%d",$base_data['product id'],$this->id);
+	mysql_query($sql);
+	
+	$sql=sprintf("update  `Product Dimension` set `Product Most Recent`='Yes',`Product Most Recent Key`=%d where `Product Key`=%d",$this->id,$this->id);
 	mysql_query($sql);
       }
       $this->get_data('id',$this->id);
@@ -895,6 +923,20 @@ function normalize_code($code){
     return $ncode;
   }
   
+ function group_by($key){
+   switch($key){
+   case('code'):
+     $sql=sprintf("select sum(`Product Total Quantity Invoiced`) as `Product Total Quantity Invoiced`,sum(`Product Total Invoiced Gross Amount`) as `Product Total Invoiced Gross Amount`, sum(`Product Total Invoiced Discount Amount`) as `Product Total Invoiced Discount Amount` from `Product Dimension` where `Product Code`=%s ",prepare_mysql($this->data['Product Code']));
+     $result=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+       foreach($row as $_key=>$value)
+	 $this->data[$_key]=$value;
+     }
+
+     }
+
+ }
+
 
  function load($key){
 

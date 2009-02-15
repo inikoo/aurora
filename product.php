@@ -68,6 +68,7 @@ $_SESSION['state']['product']['id']=$product_id;
 
 
 $product= new product($product_id);
+$product->group_by('code');
 $product->load(array(
 		     'suppliers'
 		     ,'product_tree'
@@ -88,13 +89,13 @@ $smarty->assign('data',$product->data);
 
 $web_status_error=false;
 $web_status_error_title='';
- if($product->get('web_status')=='onsale'){
-   if(!($product->get('stock')>0)){
+ if($product->get('Product Web State')=='Online For Sale'){
+   if(!($product->get('Product Availability')>0)){
      $web_status_error=true;
      $web_status_error_title=_('This product is out of stock');
    }
   }else{
-   if($product->get('stock')>0){
+   if($product->get('Product Availability')>0){
        $web_status_error=true;
        $web_status_error_title=_('This product is not for sale on the webpage');
    }
@@ -118,32 +119,31 @@ $smarty->assign('web_status_error_title',$web_status_error_title);
 // $smarty->assign('next',$next);
 
 
-$locations=($product->get('locations'));
+//$locations=($product->get('locations'));
 
-$smarty->assign('locations',$locations['data']);
-$smarty->assign('num_suppliers',$product->get('number_of_suppliers'));
-$smarty->assign('suppliers',$product->supplier);
+//$smarty->assign('locations',$locations['data']);
+//$smarty->assign('num_suppliers',$product->get('number_of_suppliers'));
+//$smarty->assign('suppliers',$product->supplier);
 
 
 
 $smarty->assign('parent','departments.php');
-$smarty->assign('title',$product->get('code'));
+$smarty->assign('title',$product->get('Product Code'));
 
 
 $product_home="Products Home";
 $smarty->assign('home',$product_home);
-$smarty->assign('department',$product->get('department'));
-$smarty->assign('department_id',$product->get('department_id'));
-$smarty->assign('family',$product->get('group'));
-$smarty->assign('family_id',$product->get('group_id'));
-$smarty->assign('images',$product->get('images'));
-$smarty->assign('image_dir',$myconf['images_dir']);
-
-$smarty->assign('num_images',$product->get('num_images'));
-
+$smarty->assign('department',$product->get('Product Main Department Name'));
+$smarty->assign('department_id',$product->get('Product Main Department Key'));
+$smarty->assign('family',$product->get('Product Family Code'));
+$smarty->assign('family_id',$product->get('Product Family Key'));
+//$smarty->assign('images',$product->get('images'));
+//$smarty->assign('image_dir',$myconf['images_dir']);
+//$smarty->assign('num_images',$product->get('num_images'));
 
 
-$weeks=$product->get('weeks_since');
+
+//$weeks=$product->get('weeks_since');
 
 
 // assign plot tipo depending of the age of the product

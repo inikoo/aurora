@@ -63,7 +63,7 @@
       <div style="float:left;"><div id="table_info0" class="clean_table_info">{$table_info} <span class="filter_msg"  id="filter_msg0"></span></div></div>
       <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator">{t}Showing all Records{/t}</span></div></div>
     </div>
-    <div  id="table0"   class="data_table_container dtable btable "> </div>
+    <div  id="table0"   class="data_table_container dtable btable with_total"> </div>
   </div>
   
 </div> 

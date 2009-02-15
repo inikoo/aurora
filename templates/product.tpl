@@ -7,8 +7,8 @@
 <div id="sub_header">
 {if $next.id>0}<span class="nav2 onright"><a href="product.php?id={$next.id}">{$next.code} &rarr; </a></span>{/if}
 {if $prev.id>0}<span class="nav2 onright" ><a href="product.php?id={$prev.id}">&larr; {$prev.code}</a></span>{/if}
-<span class="nav2 onright"><a href="family.php?id={$family_id}">&uarr; {$product->get('product family name')}</a></span>
-<span class="nav2 onright"><a href="department.php?id={$department_id}">&uarr;&uarr; {$product->get('product main department name')}</a></span>
+<span class="nav2 onright"><a href="family.php?id={$family_id}">&uarr; {$product->get('Product Family Name')}</a></span>
+<span class="nav2 onright"><a href="department.php?id={$department_id}">&uarr;&uarr; {$product->get('Product Main Department Name')}</a></span>
  <span class="nav2 onleft"><a  href="departments.php">{t}Departments{/t}</a></span>
   <span class="nav2 onleft"><a href="families.php">{t}Families{/t}</a></span>
   <span class="nav2 onleft"><a href="products.php">{t}Products{/t}</a></span>
@@ -27,7 +27,7 @@
 	<div class="yui-u first" >
 	  <div id="photo_container" style="margin-top:10px">
 	    <div style="border:1px solid #ddd;padding-top:0;width:220px;xheight:230px;text-align:center;margin:0 10px 0 0px">
-	      <span style="font-size:150%;font-weight:800">{$product->get('product code')}</span>
+	      <span style="font-size:150%;font-weight:800">{$product->get('Product Code')}</span>
 	      <div id="imagediv"   style="border:1px solid #ddd;width:200px;height:140px;padding:0px 0;xborder:none;cursor:pointer;xbackground:red;margin: 0 0 10px 9px">
 		<img src="{ if $num_images>0}{$images[$data.principal_image].med}{else}art/nopic.png{/if}"     id="image"   alt="{t}Image{/t}"/>
 	      </div>
@@ -49,7 +49,7 @@
 
 	
 	<div class="yui-u">
-	  <h2>{$product->get('Product Name')} [{$product->get('product id')}]</h2>
+	  <h2>{$product->get('Product Name')} [{$product->get('Product ID')}]</h2>
 	  <div class="yui-b"  style="width:100%;">
 	    <div class="yui-g" style="width:100%;font-size:90%"   >
               <div class="yui-u first">
@@ -69,16 +69,16 @@
 		</table>
 		<table    class="show_info_product">
 		    <tr>
-		      <td>{t}Sell Price{/t}:</td><td  class="price aright">{$product->get('formated price')}{if $product->get('product Units per Case')>1} <span style="font-weight:400;color:#555">({$unit_price} {t}each{/t})</span>{/if}</td>
+		      <td>{t}Sell Price{/t}:</td><td  class="price aright">{$product->get('formated price')}{if $product->get('Product Units per Case')>1} <span style="font-weight:400;color:#555">({$unit_price} {t}each{/t})</span>{/if}</td>
 		    </tr>
 		    <tr {if $product->get('Product Unitary RRP')==''}style="display:none"{/if} >
 		      <td>{t}RRP{/t}:</td><td  class="aright">{$product->get('formated unitary rrp')} {if $product->get('product Units per Case')>1}{t}each{/t}{/if}</td>
 		    </tr>
 		    
-		    <tr><td>{t}Sold Since{/t}:</td><td class="aright">{$product->get('formated product for sale since date')} (   {if $product->get('actual for sale weeks')!=$product->get('for sale weeks')} }{$product->get('actual for sale weeks')}/{/if}{$product->get('for sale weeks')}{t}w{/t})</td>
+		    <tr><td>{t}Sold Since{/t}:</td><td class="aright">{$product->get('formated product for sale since date')} </td>
 		      {if $edit} <td   class="aright" ><input style="text-align:right" class="date_input" size="8" type="text"  id="v_invoice_date"  value="{$v_po_date_invoice}" name="invoice_date" /></td>{/if}
 		    </tr>
-		    <tr><td id="outall_label" title="Total Sales">{t}TS{/t}:</td><td class="aright" >{$tsoall} {t}Outers{/t}
+		    <tr><td id="outall_label" title="Total Sales">{t}TS{/t}:</td><td class="aright" >{$product->get('Formated Product Total Quantity Invoiced')} {t}Outers{/t}
 		    </td></tr>
 		    <tr><td id="awoutall_label" title="Average Weelky Sales" >{t}AWS{/t}:</td><td class="aright" >{$awtsoall} {t}Outers/w{/t}</td></tr>
 		    <tr><td id="awoutq_label" title="Average Weelky Sales (Last 12 weeks)">{t}AWSQ{/t}:<td class="aright" >{$awtsoq} {t}Outers/w{/t}</td></tr>
@@ -139,14 +139,17 @@
 		  </table>
 		  
 		  <table  class="show_info_product">
-		    <tr ><td>{t}Unit Weight{/t}:</td><td class="aright">{$data.weight}{t}Kg{/t}</td></tr>
+		    <tr ><td>{t}Unit Weight{/t}:</td><td class="aright">{$product->get('Formated Weight')}</td></tr>
 		    <tr><td>{t}Unit Dimensions{/t}:</td><td class="aright">{$data.dimension}</td></tr>
 		    <tr ><td>{t}Outer Weight{/t}:</td><td class="aright">{$data.oweight}{t}Kg{/t}</td></tr>
 		    <tr><td>{t}Outer Dimensions{/t}:</td><td class="aright">{$data.odimension}</td></tr>
 
 		  </table>
 		  <table  class="show_info_product">
-		    <tr>
+		    
+
+
+<tr>
 		      <td>{t}Categories{/t}:</td>
 		      <td>{$categories}</td>
 		    </tr>
