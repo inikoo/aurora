@@ -765,76 +765,92 @@ class Order{
 
       
       
-       $sql=sprintf("select `Parts Per Product`,`Product Part Key`,`Part SKU` from `Product Part List` where `Product ID`=%s ",prepare_mysql($data['Product ID']));
+      $sql=sprintf("select `Parts Per Product`,`Product Part Key`,`Part SKU` from `Product Part List` where `Product ID`=%s ",prepare_mysql($data['Product ID']));
       $result=mysql_query($sql);
       $part_sku=array();$qty=array();
       
       $index=0;
       //  print "$sql\n";
+      $supplier_cost=0;
       while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-	$part_sku[$index]['sku']=$row['Part SKU'];
+	$part_sku=$row['Part SKU'];
 	$parts_per_product=$row['Parts Per Product'];
 	//get supplier product id
 	
-	$sql=sprintf("select `Supplier Product ID`,`Supplier Product Units Per Part` from  `Supplier Product Part List` where `Part SKU`=%s  ",prepare_mysql($row['Part SKU']));
+
+
+
+
+	$sql=sprintf(" select SPD.`Supplier Product ID`,`Supplier Product Units Per Part`,`Supplier Product Cost` from  `Supplier Product Dimension`   SPD left join `Supplier Product Part List` SPPL  on (SPD.`Supplier Product ID`=SPPL.`Supplier Product ID`) where `Part SKU`=%s  ",prepare_mysql($row['Part SKU']));
 	 $result2=mysql_query($sql);
 	 //	 print "$sql\n";
-	 while($row2=mysql_fetch_array($result2, MYSQL_ASSOC)){
-	   $part_sku[$index]['sp_id'][]=$row2['Supplier Product ID'];
+	 
+	 $num_sp=mysql_num_rows($result2);
 
+	 if($num_sp==1){
+	   $row2=mysql_fetch_array($result2, MYSQL_ASSOC);
+	   $supplier_product_id=$row2['Supplier Product ID'];
 	   $sp_units_per_part=$row2['Supplier Product Units Per Part'];
-
-	   //get cost of the product (thet means the cost in this time difficult no how to do it mmmm
-	   //method 1 using the date average of the supplier product cost
-	   
-	   $sql=sprintf("select avg(`Supplier Product Cost`) as cost from `Supplier Product Dimension` where  `Supplier Product Valid From`<=%s and `Supplier Product Valid To`>=%s  and `Supplier Product ID`=%s ",
-			prepare_mysql($this->data['Delivery Note Date'])
+	   $cost=$row2['Supplier Product Cost']*$sp_units_per_part*$parts_per_product*$data['Shipped Quantity'];
+	   $supplier_cost+=$cost;
+	   $sql=sprintf("insert into `Inventory Transition Fact`  (`Date`,`Part SKU`,`Supplier Product ID`,`Warehouse Key`,`Warehouse Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`) values (%s,%s,%s,1,1,%s,'Sale',%.2f) "
 			,prepare_mysql($this->data['Delivery Note Date'])
-			,prepare_mysql($row2['Supplier Product ID']));
+			,prepare_mysql($part_sku)
+			,prepare_mysql($supplier_product_id)
+			,prepare_mysql(-$parts_per_product*$data['Shipped Quantity'])
+			,-$cost
+		     );
+	   if(!mysql_query($sql))
+	     exit("can not create Warehouse * 888 $sql   Inventory Transition Fact\n");
+	   
 
-	   //   print "$sql\n";
-	   $result3=mysql_query($sql);
-	   if($row3=mysql_fetch_array($result3, MYSQL_ASSOC)){
-	     $cost=$row3['cost']*$sp_units_per_part*$parts_per_product;
-	     
-	   }else{
-	     exit("can not take cost of a product");
-	     
+	   
+	 }else{// More than one suplier product providing this part get at random (approx)
+	   $tmp=array();
+	   while($row2=mysql_fetch_array($result2, MYSQL_ASSOC)){
+	     $tmp[$row2['Supplier Product ID']]=array(
+						      'supplier product id'=>$row2['Supplier Product ID']
+						      ,'supplier product units per part'=>$row2['Supplier Product Units Per Part']
+						      ,'supplier product cost'=>$row2['Supplier Product Cost']
+						      ,'taken'=>0
+						      );
 	   }
-	   if($cost_supplier=='')
-	     $cost_supplier=0;
-	   $cost_supplier+=$cost;
-	   
-	   
-	   //method 2 if we have stock location stoff can we take that info dor the value of ther sotk in questuion
 
+	   $total_sps=$sp_units_per_part*$parts_per_product*$data['Shipped Quantity'];
+	   $rand_keys = array_rand($tmp,floor($total_sps));
+	   foreach($rand_keys as $key){
+	     $tmp[$key]['taken']++;
+
+	   }
+	   if(floor($total_sps)!=$total_sps ){
+	     $rand_keys=array_rand($tmp,1);
+	     $tmp[$rand_keys]['taken']+=$total_sps-floor($total_sps);
+	   }
+
+
+	   foreach($tmp as $key=>$values){
+	     
+	     if($values['taken']>0){
+
+	       $cost=$values['taken']*$values['supplier product cost'];
+	       $supplier_cost+=$cost;
+	       $sql=sprintf("insert into `Inventory Transition Fact`  (`Date`,`Part SKU`,`Supplier Product ID`,`Warehouse Key`,`Warehouse Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`) values (%s,%s,%s,1,1,%s,'Sale',%.2f) "
+			    ,prepare_mysql($this->data['Delivery Note Date'])
+			    ,prepare_mysql($part_sku)
+			    ,prepare_mysql($values['supplier product id'])
+			    ,prepare_mysql(-$parts_per_product*$data['Shipped Quantity'])
+			    -$cost
+			    );
+	       if(!mysql_query($sql))
+		 exit("can not create Warehouse * 888 $sql   Inventory Transition Fact\n");
+	     }
+	   }
+	   
 	 }
 	 
-	 if(count( $part_sku[$index]['sp_id'])==1)
-	   $qty[$index]=$row['Parts Per Product']*$data['Shipped Quantity'];
-	 else{
-	   exit ("ahh more than one suppli erproduct id per part\n");
-	 }
-
-	 $index++; 
       }
       
-      
-
-      
-      foreach($part_sku as $key=>$value){
-	
-	
-	$sql=sprintf("insert into `Warehouse Inventory Transition Fact`  (`Date`,`Part SKU`,`Warehouse Key`,`Warehouse Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`) values (%s,%s,1,1,%s,NULL) ",prepare_mysql($this->data['Delivery Note Date'])
-		     ,prepare_mysql($part_sku[$key]['sku'])
-		     ,prepare_mysql(-$qty[$key])
-		     );
-	if(!mysql_query($sql))
-	  exit("can not create Warehouse * 888 $sql   Inventory Transition Fact\n");
-      }
-
-
-
+    
 
 
 

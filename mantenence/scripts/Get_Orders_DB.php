@@ -32,7 +32,7 @@ $version='V 1.0';
 
 $Data_Audit_ETL_Software="$software $version";
 
-
+srand(12344);
 
 $sql="select id from orders_data.order_data ";
 

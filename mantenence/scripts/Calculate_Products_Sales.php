@@ -29,7 +29,29 @@ $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $product=new Product($row['Product Key']);
   $product->load('sales');
+
+
+  $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s order by `Product Valid To` desc",prepare_mysql($row['Product Code']));
+  $most_recent='Yes';
+  $result2=mysql_query($sql);
+  while($row2=mysql_fetch_array($result2, MYSQL_ASSOC)){
+    if($most_recent=='Yes')
+      $most_recent_key=$row2['Product Key'];
+    
+    $sql=sprintf("upadate `Product Dimension` where `Product Same Code Most Recent`=%s,`Product Same Code Most Recent`=%s  where `Product Key`=%s ",$row['Product Key'],prepare_mysql($most_recent),$most_recent_key,$row2['Product Key']);
+    mysql_query($sql);
+     if($most_recent=='Yes')
+       $most_recent=='No';
+
+  }
+    
+
+
   print $row['Product Code']."\r";
+
+
+
+
  }
 
 
