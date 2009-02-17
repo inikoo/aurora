@@ -91,7 +91,27 @@ class part{
  }
 
   function load($data_to_be_read,$args=''){
+    switch($data_to_be_read){
+    case("sales"):
+      // the product wich this one is 
 
+      $required=0;
+      $provided=0;
+
+      $sql=sprintf("select sum(`Required`) as required,sum(`Given`) as given,sum(`Amount In`) as amount_in,sum(`Inventory Transaction Quantity`) as qty,sum(`Inventory Transaction Amount`) as value  `Product Part Dimension` where `Part SKU`=%s and `Inventory Transaction Type`='Sale' and `Date`>=%s  and `Date`<=%s   ",preapre_mysql($this->data['Part SKU']),prepare_mysql($this->data['Part Valid From']),prepare_mysql($this->data['Part Valid To'])  );
+      $result=mysql_query($sql);
+      if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+	$required=$row['required'];
+	$provided=$row['qty'];
+      }
+      $sql=sprintf("update `Part Dimension` set `Part Total Required`=%.f ,`Part Total Provided`=.%f  where `Part Key`=%d ",$required,$provided,$this->id);
+      mysql_query($sql);
+	
+	
+
+      
+
+      }
   }
   
  function get($key=''){

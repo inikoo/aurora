@@ -799,8 +799,8 @@ class Order{
 			,prepare_mysql($supplier_product_id)
 			,prepare_mysql(-$parts_per_product*$data['Shipped Quantity'])
 			,-$cost
-			,$data['required']
-			,$data['given']
+			,$data['required']*$parts_per_product
+			,$data['given']*$parts_per_product
 			,$data['amount in']
 			
 		     );
@@ -845,8 +845,8 @@ class Order{
 			    ,prepare_mysql($values['supplier product id'])
 			    ,prepare_mysql(-$parts_per_product*$data['Shipped Quantity'])
 			    -$cost
-			    ,$data['required']
-			    ,$data['given']
+			    ,$data['required']*$parts_per_product
+			    ,$data['given']*$parts_per_product
 			    ,$data['amount in']
 			    );
 	       //	       print "$sql\n";
