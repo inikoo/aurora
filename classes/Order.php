@@ -793,13 +793,18 @@ class Order{
 	   $sp_units_per_part=$row2['Supplier Product Units Per Part'];
 	   $cost=$row2['Supplier Product Cost']*$sp_units_per_part*$parts_per_product*$data['Shipped Quantity'];
 	   $supplier_cost+=$cost;
-	   $sql=sprintf("insert into `Inventory Transition Fact`  (`Date`,`Part SKU`,`Supplier Product ID`,`Warehouse Key`,`Warehouse Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`) values (%s,%s,%s,1,1,%s,'Sale',%.2f) "
+	   $sql=sprintf("insert into `Inventory Transition Fact`  (`Date`,`Part SKU`,`Supplier Product ID`,`Warehouse Key`,`Warehouse Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`) values (%s,%s,%s,1,1,%s,'Sale',%.2f,%f,%f,%.2f) "
 			,prepare_mysql($this->data['Delivery Note Date'])
 			,prepare_mysql($part_sku)
 			,prepare_mysql($supplier_product_id)
 			,prepare_mysql(-$parts_per_product*$data['Shipped Quantity'])
 			,-$cost
+			,$data['required']
+			,$data['given']
+			,$data['amount in']
+			
 		     );
+	   //   print "$sql\n";
 	   if(!mysql_query($sql))
 	     exit("can not create Warehouse * 888 $sql   Inventory Transition Fact\n");
 	   
@@ -834,13 +839,17 @@ class Order{
 
 	       $cost=$values['taken']*$values['supplier product cost'];
 	       $supplier_cost+=$cost;
-	       $sql=sprintf("insert into `Inventory Transition Fact`  (`Date`,`Part SKU`,`Supplier Product ID`,`Warehouse Key`,`Warehouse Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`) values (%s,%s,%s,1,1,%s,'Sale',%.2f) "
+	       $sql=sprintf("insert into `Inventory Transition Fact`  (`Date`,`Part SKU`,`Supplier Product ID`,`Warehouse Key`,`Warehouse Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`) values (%s,%s,%s,1,1,%s,'Sale',%.2f,%f,%f,%.2f) "
 			    ,prepare_mysql($this->data['Delivery Note Date'])
 			    ,prepare_mysql($part_sku)
 			    ,prepare_mysql($values['supplier product id'])
 			    ,prepare_mysql(-$parts_per_product*$data['Shipped Quantity'])
 			    -$cost
+			    ,$data['required']
+			    ,$data['given']
+			    ,$data['amount in']
 			    );
+	       //	       print "$sql\n";
 	       if(!mysql_query($sql))
 		 exit("can not create Warehouse * 888 $sql   Inventory Transition Fact\n");
 	     }

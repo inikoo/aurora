@@ -77,8 +77,20 @@
 
       
 <div  id="block_products" class="data_table" style="{if $display.products==0}display:none;{/if}margin:25px 0px;clear:both">
-  <div class="data_table" style="">
+ 
+ <div class="data_table" style="xborder:1px solid black">
    <span class="clean_table_title">{t}Supplier Products{/t}</span>
+   <table style="position:relative;float:none;margin:0 0 0px 150px ;padding:0;left:20px;bottom:5px"  class="options" {if $products==0 }style="display:none"{/if}>
+	<tr>
+	  <td {if $products_view=='general'}class="selected"{/if} id="general" >{t}General{/t}</td>
+	  <td {if $products_view=='stock'}class="selected"{/if}  id="stock"  >{t}Stock{/t}</td>
+	  <td {if $products_view=='sales'}class="selected"{/if}  id="sales"  >{t}Sales{/t}</td>
+	  <td {if $products_view=='forescast'}class="selected"{/if}  id="sales"  >{t}Forescast{/t}</td>
+
+	</tr>
+      </table>
+   
+
     <div  class="clean_table_caption"  style="clear:both;">
       <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
       <div class="clean_table_filter"  id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0">{$filter_name0}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value0}" size=10/><div id='f_container0'></div></div></div>

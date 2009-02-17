@@ -209,16 +209,35 @@ class supplierproduct{
   function load($data_to_be_read,$args=''){
     switch($data_to_be_read){
     case('used in'):
+
+      $used_in_products='';
       $sql=sprintf("select `Product Same Code Most Recent Key`,`Product Code` from `Supplier Product Dimension` SPD left join `Supplier Product Part List` SPPL on (SPD.`Supplier Product ID`=SPPL.`Supplier Product ID`) left join `Product Part List` PPL on (SPPL.`Part SKU`=PPL.`Part SKU`) left join `Product Dimension` PD on (PPL.`Product ID`=PD.`Product ID`) where `Supplier Product Key`=%d group by `Product Code`;",$this->data['Supplier Product Key']);
-      
       $result=mysql_query($sql);
-      $used_in='';
       while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-	$used_in.=sprintf(', <a href="product.php?id=%d">%s</a>',$row['Product Same Code Most Recent Key'],$row['Product Code']);
+	$used_in_products.=sprintf(', <a href="product.php?id=%d">%s</a>',$row['Product Same Code Most Recent Key'],$row['Product Code']);
       }
-      $used_in=preg_replace('/^, /','',$used_in);
-      $sql=sprintf("update `Supplier Product Dimension` set `Supplier Product XHTML Used In`=%s where `Supplier Product Key`=%d",prepare_mysql($used_in),$this->id);
-      print "$sql\n";
+      $used_in_products=preg_replace('/^, /','',$used_in_products);
+      
+      $used_in_parts='';
+      $sql=sprintf("select `Part Key`,PD.`Part SKU` from `Supplier Product Dimension` SPD left join `Supplier Product Part List` SPPL on (SPD.`Supplier Product ID`=SPPL.`Supplier Product ID`)  left join `Part Dimension` PD on (SPPL.`Part SKU`=PD.`Part SKU`) where `Supplier Product Key`=%d group by PD.`Part SKU`;",$this->data['Supplier Product Key']);
+      $result=mysql_query($sql);
+      $num_parts=0;
+      //print "$sql\n";
+      while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+	$used_in_parts.=sprintf(', <a href="part.php?id=%d">%s</a>',$row['Part Key'],$row['Part SKU']);
+	$num_parts++;
+      }
+      $used_in_parts=preg_replace('/^, /','',$used_in_parts);
+      
+      if($num_parts==0)
+	$used_in_parts='';
+      elseif($num_parts==1)
+	$used_in_parts='(SKU:'.$used_in_parts.')';
+      else
+	$used_in_parts='(SKUs:'.$used_in_parts.')';
+
+      $sql=sprintf("update `Supplier Product Dimension` set `Supplier Product XHTML Used In`=%s where `Supplier Product Key`=%d",prepare_mysql(_trim($used_in_products.' '.$used_in_parts)),$this->id);
+      //print "$sql\n";
       mysql_query($sql);
       
 	

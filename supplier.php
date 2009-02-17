@@ -76,6 +76,10 @@ $smarty->assign('data',$supplier->data);
 
 
 $smarty->assign('display',$_SESSION['state']['supplier']['display']);
+$smarty->assign('products_view',$_SESSION['state']['supplier']['products']['view']);
+$smarty->assign('products_percentage',$_SESSION['state']['supplier']['products']['percentage']);
+$smarty->assign('products_period',$_SESSION['state']['supplier']['products']['period']);
+
 $smarty->assign('box_layout','yui-t0');
 $smarty->assign('parent','suppliers.php');
 $smarty->assign('title','Supplier: '.$supplier->get('Supplier Code'));

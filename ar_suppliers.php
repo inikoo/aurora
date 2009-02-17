@@ -919,9 +919,9 @@ if(isset( $_REQUEST['where']))
 
    $sql="select *   from `Supplier Dimension` $where $wheref order by $order $order_direction limit $start_from,$number_results";
    // print $sql;
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   $result=mysql_query($sql);
    $data=array();
-   while($row=$res->fetchRow()) {
+   while($row=mysql_fetch_array($result, MYSQL_ASSOC) ) {
 
      $id="<a href='supplier.php?id=".$row['Supplier Key']."'>".$myconf['supplier_id_prefix'].sprintf("%05d",$row['Supplier Key']).'</a>';
      $code="<a href='supplier.php?id=".$row['Supplier Key']."'>".$row['Supplier Name']."</a>";

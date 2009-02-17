@@ -34,7 +34,7 @@ $Data_Audit_ETL_Software="$software $version";
 
 srand(12344);
 
-$sql="select id from orders_data.order_data  ";
+$sql="select id from orders_data.order_data   ";
 
 $res=mysql_query($sql);
 while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
@@ -209,6 +209,9 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 				  ,'No Shipped Due No Authorized'=>0
 				  ,'No Shipped Due Not Found'=>0
 				  ,'No Shipped Due Other'=>0
+				  ,'amount in'=>(($transaction['order']-$transaction['reorder'])*$transaction['price'])*(1-$transaction['discount'])
+				  ,'given'=>0
+				  ,'required'=>$transaction['order']
 				  );		   
 
     if($transaction['bonus']>0){
@@ -225,7 +228,6 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 				       ,'gross amount'=>($transaction['bonus'])*$transaction['price']
 				       ,'discount amount'=>($transaction['bonus'])*$transaction['price']
 				       ,'current payment state'=>'No Applicable'
-
 				       );		   
     
     
@@ -240,6 +242,9 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 				  ,'No Shipped Due Not Found'=>0
 				  ,'No Shipped Due Other'=>0
 				  ,'Estimated Weight'=>$product->data['Product Gross Weight']*($transaction['bonus'])
+				  ,'amount in'=>0
+				  ,'given'=>$transaction['bonus']
+				  ,'required'=>0
 				  );		   
 
 

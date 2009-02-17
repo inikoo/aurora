@@ -40,8 +40,8 @@ while($today<strtotime('now -2 day') and  $days<20000  ){
   //print $_first_date." + $days days \n";
   $today=strtotime($_first_date." + $days days ");
 
-  $sql=sprintf("select * from `Part Dimension`  where `Part Valid From`<=%s and `Part Valid To`>=%s  and `Part SKU`=8135  group by `Part SKU` ",prepare_mysql(date("Y-m-d",$today)),prepare_mysql(date("Y-m-d",$today)));
-  print "$sql\n";
+  $sql=sprintf("select * from `Part Dimension`  where `Part Valid From`<=%s and `Part Valid To`>=%s   group by `Part SKU` ",prepare_mysql(date("Y-m-d",$today)),prepare_mysql(date("Y-m-d",$today)));
+  // print "$sql\n";
 $result=mysql_query($sql);
   while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
@@ -50,14 +50,14 @@ $result=mysql_query($sql);
      $amount_sold=0;
      $qty_inicio='NULL';
      $value_inicio='NULL';
-     $sql=sprintf("select IFNULL(`Quantity On Hand`,'NULL') as qoh,IFNULL(`Value At Cost`,'NULL')as vac   from `Inventory Spanshot Fact` where `Snapshot Period`='Day' and DATE(`Date`)=%s",prepare_mysql(date("Y-m-d",$yesterday)));
+     $sql=sprintf("select IFNULL(`Quantity On Hand`,'NULL') as qoh,IFNULL(`Value At Cost`,'NULL')as vac   from `Inventory Spanshot Fact` where `Snapshot Period`='Day'  and `Part SKU`=%s  and DATE(`Date`)=%s",prepare_mysql($row['Part SKU']),prepare_mysql(date("Y-m-d",$yesterday)));
      //  print "$sql\n";
      $result2=mysql_query($sql);
      if($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ){
        $qty_inicio=$row2['qoh'];
        $value_inicio=$row2['vac'];
      }
-     //   print "$qty_inicio\n";
+        print " INIL $qty_inicio ";
     $sql=sprintf("delete from  `Inventory Transition Fact` where  `Inventory Transaction Type`='Adjust' and `Part Sku`=%s  and DATE(`Date`)=%s ",prepare_mysql($row['Part SKU']),prepare_mysql(date("Y-m-d",$today)));
     mysql_query($sql);
 
@@ -122,18 +122,28 @@ $result=mysql_query($sql);
       $last_selling_price=$qty_inicio*get_selling_price($row['Part SKU'],date("Y-m-d",$today));
     else
       $last_selling_price='';
-    $sql=sprintf("insert into `Inventory Spanshot Fact` (`Snapshot Period`,`Date`,`Part SKU`,`Warehouse Key`,`Location Key`,`Quantity on Hand`,`Value at Cost`,`Sold Amount`,`Value at Latest Selling Price`,`Storing Cost`) values ('Day',%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+
+    if($qty_inicio<0 or $qty_inicio=='NULL' or !is_numeric($qty_inicio)){
+      $qty_inicio='NULL';
+      $value_inicio='NULL';
+      $last_selling_price='NULL';
+    }
+    print " FIN: $qty_inicio  \n";
+    
+
+
+    $sql=sprintf("insert into `Inventory Spanshot Fact` (`Snapshot Period`,`Date`,`Part SKU`,`Warehouse Key`,`Location Key`,`Quantity on Hand`,`Value at Cost`,`Sold Amount`,`Value at Latest Selling Price`,`Storing Cost`) values ('Day',%s,%s,%s,%s,%s,%s,%s,%f,%s)"
 		 ,prepare_mysql(date("Y-m-d",$today))
 		 ,$row['Part SKU']
 		 ,'NULL'
 		 ,'NULL'
-		 ,prepare_mysql($qty_inicio)
-		 ,prepare_mysql($value_inicio)
-		 ,prepare_mysql($amount_sold)
-		 ,prepare_mysql($last_selling_price)
+		 ,$qty_inicio
+		 ,$value_inicio
+		 ,$amount_sold
+		 ,$last_selling_price
 		 ,'NULL');
     //  print "$sql\n";
-    print " $qty_inicio  \n";
+
 
 
     if(!mysql_query($sql))
