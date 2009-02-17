@@ -2892,7 +2892,19 @@ case('parts'):
 	$tableid=$_REQUEST['tableid'];
       else
 	$tableid=0;
-      $_SESSION['state']['parts']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+
+      if(isset( $_REQUEST['period']))
+	$period=$_REQUEST['period'];
+      else
+	$period=$conf['period'];
+      
+      if(isset( $_REQUEST['percentage']))
+	$percentage=$_REQUEST['percentage'];
+      else
+	$percentage=$conf['percentage'];
+
+
+      $_SESSION['state']['parts']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value,'period'=>$period,'percentage'=>$percentage);
       
       
      $filter_msg='';
@@ -2904,7 +2916,8 @@ case('parts'):
      if(!is_numeric($number_results))
        $number_results=25;
      
-     
+     $where.=" and `Part Most Recent`='Yes' ";
+
      $_order=$order;
      $_dir=$order_direction;
      $filter_msg='';
@@ -2974,16 +2987,73 @@ case('parts'):
 
        $sql="select * from `Part Dimension`  $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
        // print $sql;
-  $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-  
   $adata=array();
+     $result=mysql_query($sql);
+      while($data=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   
-  while($data=$res->fetchRow()) {
+	if($period=='all'){
+	  $sold=number($data['Part Total Sold']);
+	  $given=number($data['Part Total Given']);
+	  if($given!=0)
+	    $sold="$sold ($given)"; 
+
+	  $sold_amount=money($data['Part Total Sold Amount']);
+	  $abs_profit=money($data['Part Total Absolute Profit']);
+	  $profit_sold=money($data['Part Total Profit When Sold']);
+	  $margin=percentage($sold_amount-$profit_sold,$sold_amount);
+	}elseif($period='year'){
+	  $sold=number($data['Part 1 Year Acc Sold']);
+	  $given=number($data['Part 1 Year Acc Given']);
+	  if($given!=0)
+	    $sold="$sold ($given)"; 
+	  $sold_amount=money($data['Part 1 Year Acc Sold Amount']);
+	  $abs_profit=money($data['Part 1 Year Acc Absolute Profit']);
+	  $profit_sold=money($data['Part 1 Year Acc Profit When Sold']);
+  $margin=percentage($sold_amount-$profit_sold,$sold_amount);
+	}elseif($period='quarter'){
+	  $sold=number($data['Part 1 Quarter Acc Sold']);
+	  $given=number($data['Part 1 Quarter Acc Given']);
+	   if($given!=0)
+	    $sold="$sold ($given)"; 
+	  $sold_amount=money($data['Part 1 Quarter Acc Sold Amount']);
+	  $abs_profit=money($data['Part 1 Quarter Acc Absolute Profit']);
+	  $profit_sold=money($data['Part 1 Quarter Acc Profit When Sold']);
+
+	}elseif($period='month'){
+	  $sold=number($data['Part 1 Month Acc Sold']);
+	  $given=number($data['Part 1 Month Acc Given']);
+	  $sold_amount=money($data['Part 1 Month Acc Sold Amount']);
+	  $abs_profit=money($data['Part 1 Month Acc Absolute Profit']);
+	  $profit_sold=money($data['Part 1 Month Acc Profit When Sold']);
+  $margin=percentage($sold_amount-$profit_sold,$sold_amount);
+	}elseif($period='week'){
+	  $sold=number($data['Part 1 Week Acc Sold']);
+	  $given=number($data['Part 1 Week Acc Given']);
+	   if($given!=0)
+	     $sold="$sold ($given)"; 
+	  $sold_amount=money($data['Part 1 Week Acc Sold Amount']);
+	  $abs_profit=money($data['Part 1 Week Acc Absolute Profit']);
+	  $profit_sold=money($data['Part 1 Week Acc Profit When Sold']);
+  $margin=percentage($sold_amount-$profit_sold,$sold_amount);
+	}
+
+
+
     $adata[]=array(
-		   'sku'=>sprintf('<a href="part.php?id=%d">%s</a>',$data['part key'],$data['part sku'])
-		   ,'description'=>$data['part xhtml description']
-		   ,'stock'=>number($data['part current stock'])
-		   ,'available_for'=>interval($data['part xhtml available for forecast'])
+		   'sku'=>sprintf('<a href="part.php?id=%d">%06d</a>',$data['Part Key'],$data['Part SKU'])
+		   ,'description'=>$data['Part XHTML Description']
+		   ,'used_in'=>$data['Part XHTML Currently Used In']
+		   ,'supplied_by'=>$data['Part XHTML Currently Supplied By']
+		   ,'stock'=>number($data['Part Current Stock'])
+		   ,'available_for'=>interval($data['Part XHTML Available For Forecast'])
+		   ,'stock_value'=>number($data['Part Current Stock Cost'])
+		   ,'sold'=>$sold
+		   ,'given'=>$given
+		   ,'money_in'=>$sold_amount
+		   ,'profit'=>$abs_profit
+		   ,'profit_sold'=>$profit_sold
+		   ,'margin'=>$margin
+		   
 		   );
   }
   $response=array('resultset'=>

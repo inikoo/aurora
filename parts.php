@@ -36,9 +36,9 @@ $js_files=array(
 		$yui_path.'element/element-beta-min.js',
 		$yui_path.'paginator/paginator-min.js',
 		$yui_path.'dragdrop/dragdrop-min.js',
-		$yui_path.'datasource/datasource-min.js',
+		$yui_path.'datasource/datasource.js',
 		$yui_path.'autocomplete/autocomplete-min.js',
-		$yui_path.'datatable/datatable-min.js',
+		$yui_path.'datatable/datatable.js',
 		$yui_path.'container/container_core-min.js',
 		$yui_path.'menu/menu-min.js',
 		$yui_path.'calendar/calendar-min.js',
@@ -77,7 +77,7 @@ $smarty->assign('filter_name',$filter_menu[$tipo_filter]['label']);
 
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu',$paginator_menu);
-$smarty->assign('view',$_SESSION['state']['products']['view']);
+$smarty->assign('view',$_SESSION['state']['parts']['view']);
 $smarty->assign('currency',$myconf['currency_symbol']);
 
 $smarty->display('parts.tpl');
