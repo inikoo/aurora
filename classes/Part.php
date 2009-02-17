@@ -98,14 +98,17 @@ class part{
       $required=0;
       $provided=0;
 
-      $sql=sprintf("select sum(`Required`) as required,sum(`Given`) as given,sum(`Amount In`) as amount_in,sum(`Inventory Transaction Quantity`) as qty,sum(`Inventory Transaction Amount`) as value  `Product Part Dimension` where `Part SKU`=%s and `Inventory Transaction Type`='Sale' and `Date`>=%s  and `Date`<=%s   ",preapre_mysql($this->data['Part SKU']),prepare_mysql($this->data['Part Valid From']),prepare_mysql($this->data['Part Valid To'])  );
+      $sql=sprintf("select ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(`Inventory Transaction Quantity`),0) as qty, ifnull(sum(`Inventory Transaction Amount`),0) as value from  `Inventory Transition Fact` where `Part SKU`=%s and `Inventory Transaction Type`='Sale' and `Date`>=%s  and `Date`<=%s   ",prepare_mysql($this->data['Part SKU']),prepare_mysql($this->data['Part Valid From']),prepare_mysql($this->data['Part Valid To'])  );
+      //  print "$sql\n";
       $result=mysql_query($sql);
       if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 	$required=$row['required'];
 	$provided=$row['qty'];
       }
-      $sql=sprintf("update `Part Dimension` set `Part Total Required`=%.f ,`Part Total Provided`=.%f  where `Part Key`=%d ",$required,$provided,$this->id);
-      mysql_query($sql);
+      $sql=sprintf("update `Part Dimension` set `Part Total Required`=%f ,`Part Total Provided`=%f  where `Part Key`=%d ",$required,$provided,$this->id);
+      //      print "$sql\n";
+      if(!mysql_query($sql))
+	exit("error con not uopdate product part when loading sales");
 	
 	
 

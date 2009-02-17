@@ -137,7 +137,10 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       $transaction['rrp']=60;
     }	
 
-
+    if($tipo_order==2)
+      $date2=$date_inv;
+    else
+      $date2=$date_order;
 
     $product_data=array(
 			'product code'=>_trim($transaction['code'])
@@ -156,7 +159,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 			,'supplier product name'=>$description
 			,'auto_add'=>true
 			,'date'=>$date_order
-			,'date2'=>$date_inv
+			,'date2'=>$date2
 			);
  //    if(is_numeric($transaction['supplier_code'])  or preg_match('/\d/',$transaction['supplier_code'])){
 //       print $row2['id']."\n";
