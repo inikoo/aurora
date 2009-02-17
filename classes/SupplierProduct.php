@@ -207,8 +207,24 @@ class supplierproduct{
     }
   
   function load($data_to_be_read,$args=''){
-    
+    switch($data_to_be_read){
+    case('used in'):
+      $sql=sprintf("select `Product Same Code Most Recent Key`,`Product Code` from `Supplier Product Dimension` SPD left join `Supplier Product Part List` SPPL on (SPD.`Supplier Product ID`=SPPL.`Supplier Product ID`) left join `Product Part List` PPL on (SPPL.`Part SKU`=PPL.`Part SKU`) left join `Product Dimension` PD on (PPL.`Product ID`=PD.`Product ID`) where `Supplier Product Key`=%d group by `Product Code`;",$this->data['Supplier Product Key']);
+      
+      $result=mysql_query($sql);
+      $used_in='';
+      while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+	$used_in.=sprintf(', <a href="product.php?id=%d">%s</a>',$row['Product Same Code Most Recent Key'],$row['Product Code']);
+      }
+      $used_in=preg_replace('/^, /','',$used_in);
+      $sql=sprintf("update `Supplier Product Dimension` set `Supplier Product XHTML Used In`=%s where `Supplier Product Key`=%d",prepare_mysql($used_in),$this->id);
+      print "$sql\n";
+      mysql_query($sql);
+      
+	
+      break;
     }
+  }
   
   function get($key=''){
     
@@ -221,7 +237,7 @@ class supplierproduct{
     
     
     switch($key){
-      
+
     }
     
     return false;

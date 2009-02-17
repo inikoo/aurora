@@ -90,7 +90,7 @@ class product{
 	  mysql_query($sql);
 	  
 	  $sql=sprintf("update `Part Dimension`  set `Part Valid To`=%s  where `Part SKU`=%s and `Part Valid To`<%s"
-		       ,prepare_mysql($tag['date'])
+		       ,prepare_mysql($tag['date2'])
 		       ,prepare_mysql($part_sku)
 		       ,prepare_mysql($tag['date2'])
 		       );
@@ -111,7 +111,7 @@ class product{
 	    mysql_query($sqlw);
 	    
 	    $sqlaa=sprintf("update `Supplier Product Dimension`  set `Supplier Product Valid To`=%s  where `Supplier Product ID`=%s and `Supplier Product Valid To`<%s"
-			 ,prepare_mysql($tag['date'])
+			 ,prepare_mysql($tag['date2'])
 			 ,$row3['Supplier Product ID']
 			 ,prepare_mysql($tag['date2'])
 			 );
@@ -125,7 +125,7 @@ class product{
 	mysql_query($sqlbb);
 
 	$sqlcc=sprintf("update `Supplier Dimension`  set `Supplier Valid From`=%s  where `Supplier Key`=%s and `Supplier Valid From`<%s"
-		     ,prepare_mysql($tag['date'])
+		     ,prepare_mysql($tag['date2'])
 		     ,$row3['Supplier Key']
 		     ,prepare_mysql($tag['date2'])
 		     );
@@ -143,7 +143,7 @@ class product{
 	mysql_query($sqldd);
 
 	$sqlee=sprintf("update `Product Part List`  set `Product Part Valid To`=%s  where `Product ID`=%s and `Product Part Valid To`<%s"
-		     ,prepare_mysql($tag['date'])
+		     ,prepare_mysql($tag['date2'])
 		     ,$this->data['Product ID']
 		     ,prepare_mysql($tag['date2'])
 		     );

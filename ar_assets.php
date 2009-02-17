@@ -3610,19 +3610,21 @@ if(isset( $_REQUEST['where']))
    $order='`Supplier Product ID`';
  elseif($order=='code')
    $order='`Supplier Product Code`';
- 
-   $sql="select * from `Supplier Product Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+ elseif($order='usedin')
+   $order='`Supplier Product XHTML Used In`';
 
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   $sql="select * from `Supplier Product Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
    $data=array();
-   while($row=$res->fetchRow()) {
+
+   $result=mysql_query($sql);
+   while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
      $data[]=array(
-		   'id'=>sprintf('<a href="supplier_product.php?id=%d">%s</a>',$row['supplier product key'],$row['supplier product id'])
-		   ,'code'=>sprintf('<a href="supplier_product.php?id=%d">%s</a>',$row['supplier product key'],$row['supplier product code'])
-		   ,'name'=>$row['supplier product name']
-		   ,'cost'=>money($row['supplier product cost'])
-
+		   'id'=>sprintf('<a href="supplier_product.php?id=%d">%s</a>',$row['Supplier Product Key'],$row['Supplier Product ID'])
+		   ,'code'=>sprintf('<a href="supplier_product.php?id=%d">%s</a>',$row['Supplier Product Key'],$row['Supplier Product Code'])
+		   ,'name'=>$row['Supplier Product Name']
+		   ,'cost'=>money($row['Supplier Product Cost'])
+		   ,'usedin'=>$row['Supplier Product XHTML Used In']
 		   );
    }
 

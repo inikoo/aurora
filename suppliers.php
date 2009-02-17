@@ -20,6 +20,7 @@ $smarty->assign('create',$create);
 $smarty->assign('modify',$modify);
 
 $smarty->assign('view',$_SESSION['state']['suppliers']['view']);
+print $_SESSION['state']['suppliers']['view'];
 $smarty->assign('show_details',$_SESSION['state']['suppliers']['details']);
 $smarty->assign('view_sales',$view_sales);
 $smarty->assign('view_stock',$view_stock);

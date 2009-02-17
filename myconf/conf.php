@@ -272,7 +272,7 @@ $default_state=array(
 
 		      'suppliers'=>array(
 					 'details'=>false,
-					 'view'=>'contacts',
+					 'view'=>'general',
 				    'table'=>array(
 						   'order'=>'name',
 						   'order_dir'=>'',

@@ -34,7 +34,7 @@ $Data_Audit_ETL_Software="$software $version";
 
 srand(12344);
 
-$sql="select id from orders_data.order_data ";
+$sql="select id from orders_data.order_data  ";
 
 $res=mysql_query($sql);
 while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){

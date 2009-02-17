@@ -25,10 +25,11 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		 var tableid=0;
 		    var tableDivEL="table"+tableid;
 		var ColumnDefs = [
-				  {key:"id", label:"<?=_('Id')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				  ,{key:"code", label:"<?=_('Code')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				  {key:"id", label:"<?=_('Id')?>", width:35,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				  ,{key:"code", label:"<?=_('Code')?>", width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				  ,{key:"name", label:"<?=_('Name')?>",width:300, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				  ,{key:"cost", label:"<?=_('Cost')?>",width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				  ,{key:"usedin", label:"<?=_('Used In')?>",width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				  ,{key:"cost", label:"<?=_('Cost')?>",width:35,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				  ];
 
 		this.dataSource0 = new YAHOO.util.DataSource("ar_assets.php?tipo=supplier_products&tableid="+tableid);
@@ -48,7 +49,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			},
 			
 			fields: [
-				 "id","code","name","cost"
+				 "id","code","name","cost","usedin"
 				 ]};
 	    
 		    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,

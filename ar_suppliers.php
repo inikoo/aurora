@@ -914,22 +914,25 @@ if(isset( $_REQUEST['where']))
        $order='`Supplier Name`';
      elseif($order=='id')
        $order='`Supplier Key`';
-  
+ //    elseif($order='used_in')
+//        $order='Supplier Product XHTML Used In';
+
    $sql="select *   from `Supplier Dimension` $where $wheref order by $order $order_direction limit $start_from,$number_results";
    // print $sql;
    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
    $data=array();
    while($row=$res->fetchRow()) {
 
-     $id="<a href='supplier.php?id=".$row['supplier key']."'>".$myconf['supplier_id_prefix'].sprintf("%05d",$row['supplier key']).'</a>';
-     $code="<a href='supplier.php?id=".$row['supplier key']."'>".$row['supplier name']."</a>";
+     $id="<a href='supplier.php?id=".$row['Supplier Key']."'>".$myconf['supplier_id_prefix'].sprintf("%05d",$row['Supplier Key']).'</a>';
+     $code="<a href='supplier.php?id=".$row['Supplier Key']."'>".$row['Supplier Name']."</a>";
      $data[]=array(
 		   'id'=>$id,
 		   'code'=>$code,
-		   'name'=>$row['supplier name'],
-		   'for_sale'=>number($row['supplier for sale products']),
-		   'low'=>number($row['supplier low availability products']),
-		   'outofstock'=>number($row['supplier out of stock products'])
+		   'name'=>$row['Supplier Name'],
+		   //  'used_in'=>$row['Supplier Product XHTML Used In']
+		   'for_sale'=>number($row['Supplier For Sale Products']),
+		   'low'=>number($row['Supplier Low Availability Products']),
+		   'outofstock'=>number($row['Supplier Out Of Stock Products'])
 //		   'delete'=>'<img src="art/icons/status_busy.png"/>'
 
 		   );

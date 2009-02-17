@@ -8,8 +8,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 	    var SuppliersColumnDefs = [
-				       {key:"id", label:"<?=_('Id')?>",  width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"code", label:"<?=_('Code')?>",width:100, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				         {key:"id", label:"<?=_('Id')?>",  width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					 ,{key:"code", label:"<?=_('Code')?>",width:100, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"name", label:"<?=_('Name')?>", width:190,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"location", label:"<?=_('Location')?>", width:190,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"email", label:"<?=_('Email')?>", width:190,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
@@ -78,7 +78,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
 	    this.table0.filter={key:'<?=$_SESSION['state']['suppliers']['table']['f_field']?>',value:'<?=$_SESSION['state']['suppliers']['table']['f_value']?>'};
-
+	    this.table0.view='<?=$_SESSION['state']['suppliers']['view']?>';
 	    
 
 
@@ -86,11 +86,61 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	};
     });
 
+
+ var change_view=function(e){
+	
+	var table=tables['table0'];
+	var tipo=this.id;
+
+	table.hideColumn('location');
+	table.hideColumn('email');
+	table.hideColumn('for_sale');
+	table.hideColumn('tobediscontinued');
+	table.hideColumn('nosale');
+	table.hideColumn('high');
+	table.hideColumn('normal');
+	table.hideColumn('low');
+	table.hideColumn('critical');
+	table.hideColumn('outofstock');
+	if(tipo=='general'){
+	    table.showColumn('name');
+	    table.showColumn('location');
+	    table.showColumn('email');
+	}else if(tipo=='stock'){
+	    table.showColumn('high');
+	    table.showColumn('normal');
+	    table.showColumn('low');
+	    table.showColumn('critical');
+	    table.showColumn('outofstock');
+
+
+	}else if(tipo=='sale'){
+	    
+	}else if(tipo=='products'){
+	    table.showColumn('for_sale');
+	    table.showColumn('tobediscontinued');
+	    table.showColumn('nosale');
+	}
+	
+
+	Dom.get(table.view).className="";
+	Dom.get(tipo).className="selected";
+	table.view=tipo
+	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=suppliers-view&value=' + escape(tipo) );
+    }
+
+
 function init(){
     var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
     oACDS.queryMatchContains = true;
     var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container", oACDS);
     oAutoComp.minQueryLength = 0; 
+
+    
+    ids=['general','sales','stock','products'];
+    YAHOO.util.Event.addListener(ids, "click",change_view)
+
+
 }
 YAHOO.util.Event.onDOMReady(init);
 
