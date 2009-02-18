@@ -25,11 +25,15 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		 var tableid=0;
 		    var tableDivEL="table"+tableid;
 		var ColumnDefs = [
-				  {key:"id", label:"<?=_('Id')?>",<?=($_SESSION['state']['supplier']['products']['view']=='general'?'':'hidden:true,')?> width:35,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				  ,{key:"code", label:"<?=_('Code')?>",<?=($_SESSION['state']['supplier']['products']['view']=='general'?'':'hidden:true,')?>  width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				  ,{key:"name", label:"<?=_('Name')?>",<?=($_SESSION['state']['supplier']['products']['view']=='general'?'':'hidden:true,')?> width:300, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				  ,{key:"usedin", label:"<?=_('Used In')?>",<?=($_SESSION['state']['supplier']['products']['view']=='general'?'':'hidden:true,')?> width:250,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				  ,{key:"cost", label:"<?=_('Cost')?>",<?=($_SESSION['state']['supplier']['products']['view']=='sales'?'':'hidden:true,')?> width:35,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				  {key:"id", label:"<?=_('Id')?>",width:45,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				  ,{key:"code", label:"<?=_('Code')?>",  width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				  ,{key:"name", label:"<?=_('Name')?>",<?=($_SESSION['state']['supplier']['products']['view']=='product_general'?'':'hidden:true,')?>width:300, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				  ,{key:"usedin", label:"<?=_('Used In')?>", width:250,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				  ,{key:"cost", label:"<?=_('Cost')?>",<?=($_SESSION['state']['supplier']['products']['view']=='product_sales'?'':'hidden:true,')?> width:35,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				  ,{key:"required", label:"<?=_('Required')?>",<?=($_SESSION['state']['supplier']['products']['view']=='product_sales'?'':'hidden:true,')?> width:55,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				  ,{key:"provided", label:"<?=_('Used')?>",<?=($_SESSION['state']['supplier']['products']['view']=='product_sales'?'':'hidden:true,')?> width:55,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				  ,{key:"profit", label:"<?=_('Profit')?>",<?=($_SESSION['state']['supplier']['products']['view']=='product_sales'?'':'hidden:true,')?> width:55,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+
 				  ];
 
 		this.dataSource0 = new YAHOO.util.DataSource("ar_assets.php?tipo=supplier_products&tableid="+tableid);
@@ -49,7 +53,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			},
 			
 			fields: [
-				 "id","code","name","cost","usedin"
+				 "id","code","name","cost","usedin","profit","allcost","used","required","provided","lost","broken"
 				 ]};
 	    
 		    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
@@ -78,7 +82,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 		this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
 		this.table0.filter={key:'<?=$_SESSION['state']['supplier']['products']['f_field']?>',value:'<?=$_SESSION['state']['supplier']['products']['f_value']?>'};
-
+		this.table0.view='<?=$_SESSION['state']['supplier']['products']['view']?>';
 
 			     var tableid=1; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
@@ -151,6 +155,51 @@ YAHOO.util.Event.addListener(window, "load", function() {
     );
 
 
+  var product_change_view=function(e){
+	
+	var table=tables['table0'];
+	var tipo=this.id;
+
+	if(table.view!=tipo){
+	    table.hideColumn('cost');
+	    table.hideColumn('required');
+	    table.hideColumn('provided');
+	    table.hideColumn('profit');
+	    table.hideColumn('name');
+
+	    
+	    
+	    if(tipo=='product_sales'){
+		table.showColumn('cost');
+		table.showColumn('provided');
+		table.showColumn('required');
+		table.showColumn('profit');
+
+
+	    }
+	    else if(tipo=='product_general'){
+		
+	    }
+	    if(tipo=='product_stock'){
+		
+		
+	    }
+	    
+	    
+	    
+
+	    Dom.get(table.view).className="";
+	    Dom.get(tipo).className="selected";
+
+	    table.view=tipo;
+
+	    YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=supplier-products-view&value=' + escape(tipo) );
+	    
+	}
+ }
+
+
+
 
 
 function init(){
@@ -161,9 +210,10 @@ function init(){
     oAutoComp.minQueryLength = 0; 
 
 
+    ids=['product_general','product_sales','product_stock','product_forecast'];
+    YAHOO.util.Event.addListener(ids, "click",product_change_view)
 
-
-  var change_view = function (e){
+  var change_view2 = function (e){
 
       block=this.getAttribute('block');
       state=this.getAttribute('state');
@@ -193,7 +243,7 @@ function init(){
 
     
     var ids = ["change_view_details","change_view_products","change_view_po","change_view_history"]; 
-    Event.addListener(ids,"click",change_view);
+    Event.addListener(ids,"click",change_view2);
 
 
 

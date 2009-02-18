@@ -273,7 +273,7 @@ $default_state=array(
 		      'suppliers'=>array(
 					 'details'=>false,
 					 'view'=>'general',
-				    'table'=>array(
+					 'table'=>array(
 						   'order'=>'name',
 						   'order_dir'=>'',
 						   'sf'=>0,
@@ -281,21 +281,21 @@ $default_state=array(
 						   'where'=>'where true',
 						   'f_field'=>'name',
 						   'f_value'=>''
-						   )
+							)
 				    ),
 		     'hr'=>array(
 				 'view'=>'staff',
 				 'staff'=>array(
-						   'order'=>'name',
-						   'order_dir'=>'',
-						   'sf'=>0,
-						   'nr'=>50,
-						   'where'=>'where true',
-						   'f_field'=>'name',
+						'order'=>'name',
+						'order_dir'=>'',
+						'sf'=>0,
+						'nr'=>50,
+						'where'=>'where true',
+						'f_field'=>'name',
 						   'f_value'=>''
-						   )
-				    ),
-		      'users'=>array(
+						)
+				 ),
+		     'users'=>array(
 				    'user_list'=>array(
 						       'order'=>'handle',
 						       'order_dir'=>'',
@@ -305,16 +305,16 @@ $default_state=array(
 						       'f_field'=>'name',
 						       'f_value'=>''
 						       ),
-				     'groups'=>array(
-						       'order'=>'name',
-						       'order_dir'=>'',
-						       'sf'=>0,
-						       'nr'=>50,
+				    'groups'=>array(
+						    'order'=>'name',
+						    'order_dir'=>'',
+						    'sf'=>0,
+						    'nr'=>50,
 						       'where'=>'where true',
-						       'f_field'=>'name',
-						       'f_value'=>''
-						       ),
-
+						    'f_field'=>'name',
+						    'f_value'=>''
+						    ),
+				    
 				    ),
 
 		     'departments'=>array(
@@ -393,7 +393,7 @@ $default_state=array(
 
 						      )
 				     ),
-		       'families'=>array(
+		     'families'=>array(
 				       'details'=>false,
 				       'view'=>'general',
 				       'percentages'=>true,
@@ -543,9 +543,9 @@ $default_state=array(
 				       'display'=>array('details'=>0,'history'=>0,'products'=>1,'po'=>0),
 				       'plot_options'=>array('weeks'=>'','from'=>'','to'=>'','months'=>''),
 				       'products'=>array(
-							 'view'=>'general',
+							 'view'=>'product_general',
 							 'percentage'=>0,
-							 'period'=>'1y',
+							 'period'=>'year',
 							 'order'=>'code',
 							 'order_dir'=>'',
 							 'sf'=>0,

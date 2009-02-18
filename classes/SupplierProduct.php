@@ -242,7 +242,203 @@ class supplierproduct{
       
 	
       break;
-    }
+    case('sales'):
+      $sold=0;
+      $required=0;
+      $provided=0;
+      $given=0;
+      $amount_in=0;
+      $value=0;
+      $value_free=0;
+      $margin=0;
+      $sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(`Inventory Transaction Quantity`),0) as qty, ifnull(sum(`Inventory Transaction Amount`),0) as value from  `Inventory Transition Fact` where `Supplier Product ID`=%s and `Inventory Transaction Type`='Sale' and `Date`>=%s  and `Date`<=%s   ",prepare_mysql($this->data['Supplier Product ID']),prepare_mysql($this->data['Supplier Product Valid From']),prepare_mysql($this->data['Supplier Product Valid To'])  );
+      //      print "$sql\n";
+      $result=mysql_query($sql);
+      if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+	$required=$row['required'];
+	$provided=-$row['qty'];
+	$given=$row['given'];
+	$amount_in=$row['amount_in'];
+	$value=$row['value'];
+	$value_free=$row['value_free'];
+	$sold=-$row['qty']-$row['given'];
+      }
+      $abs_profit=$amount_in+$value;
+      $profit_sold=$amount_in+$value-$value_free;
+      if($amount_in==0)
+	$margin=0;
+      else
+	$margin=($value-$value_free)/$amount_in;
+
+
+      $sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Total Parts Required`=%f ,`Supplier Product Total Parts Provided`=%f,`Supplier Product Total Parts Used`=%f ,`Supplier Product Total Sold Amount`=%f ,`Supplier Product Total Parts Profit`=%f  where `Supplier Product Key`=%d "
+		   ,$required
+		   ,$provided
+		   ,$given+$provided
+		   ,$amount_in
+		   ,$profit_sold
+		   ,$this->id);
+      //          print "$sql\n";
+      if(!mysql_query($sql))
+	exit("error con not uopdate product part when loading sales");
+
+      $sold=0;
+      $required=0;
+      $provided=0;
+      $given=0;
+      $amount_in=0;
+      $value=0;
+      $value_free=0;
+      $margin=0;
+      $sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(`Inventory Transaction Quantity`),0) as qty, ifnull(sum(`Inventory Transaction Amount`),0) as value from  `Inventory Transition Fact` where `Supplier Product ID`=%s and `Inventory Transaction Type`='Sale' and `Date`>=%s  and `Date`<=%s and `Date`>=%s    ",prepare_mysql($this->data['Supplier Product ID']),prepare_mysql($this->data['Supplier Product Valid From']),prepare_mysql($this->data['Supplier Product Valid To']) ,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -1 year")))  );
+            print "$sql\n";
+      $result=mysql_query($sql);
+      if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+	$required=$row['required'];
+	$provided=-$row['qty'];
+	$given=$row['given'];
+	$amount_in=$row['amount_in'];
+	$value=$row['value'];
+	$value_free=$row['value_free'];
+	$sold=-$row['qty']-$row['given'];
+      }
+      $abs_profit=$amount_in+$value;
+      $profit_sold=$amount_in+$value-$value_free;
+      if($amount_in==0)
+	$margin=0;
+      else
+	$margin=($value-$value_free)/$amount_in;
+
+
+      $sql=sprintf("update `Supplier Product Dimension` set `Supplier Product 1 Year Acc Parts Required`=%f ,`Supplier Product 1 Year Acc Parts Provided`=%f,`Supplier Product 1 Year Acc Parts Used`=%f ,`Supplier Product 1 Year Acc Sold Amount`=%f ,`Supplier Product 1 Year Acc Parts Profit`=%f  where `Supplier Product Key`=%d "
+		   ,$required
+		   ,$provided
+		   ,$given+$provided
+		   ,$amount_in
+		   ,$profit_sold
+		   ,$this->id);
+                        print "$sql\n";
+      if(!mysql_query($sql))
+	exit("error con not uopdate product part when loading sales");
+ $sold=0;
+      $required=0;
+      $provided=0;
+      $given=0;
+      $amount_in=0;
+      $value=0;
+      $value_free=0;
+      $margin=0;
+      $sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(`Inventory Transaction Quantity`),0) as qty, ifnull(sum(`Inventory Transaction Amount`),0) as value from  `Inventory Transition Fact` where `Supplier Product ID`=%s and `Inventory Transaction Type`='Sale' and `Date`>=%s  and `Date`<=%s and `Date`>=%s    ",prepare_mysql($this->data['Supplier Product ID']),prepare_mysql($this->data['Supplier Product Valid From']),prepare_mysql($this->data['Supplier Product Valid To']) ,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -3 month")))  );
+      //      print "$sql\n";
+      $result=mysql_query($sql);
+      if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+	$required=$row['required'];
+	$provided=-$row['qty'];
+	$given=$row['given'];
+	$amount_in=$row['amount_in'];
+	$value=$row['value'];
+	$value_free=$row['value_free'];
+	$sold=-$row['qty']-$row['given'];
+      }
+      $abs_profit=$amount_in+$value;
+      $profit_sold=$amount_in+$value-$value_free;
+      if($amount_in==0)
+	$margin=0;
+      else
+	$margin=($value-$value_free)/$amount_in;
+
+
+      $sql=sprintf("update `Supplier Product Dimension` set `Supplier Product 1 Quarter Acc Parts Required`=%f ,`Supplier Product 1 Quarter Acc Parts Provided`=%f,`Supplier Product 1 Quarter Acc Parts Used`=%f ,`Supplier Product 1 Quarter Acc Sold Amount`=%f ,`Supplier Product 1 Quarter Acc Parts Profit`=%f  where `Supplier Product Key`=%d "
+		   ,$required
+		   ,$provided
+		   ,$given+$provided
+		   ,$amount_in
+		   ,$profit_sold
+		   ,$this->id);
+      //                  print "$sql\n";
+      if(!mysql_query($sql))
+	exit("error con not uopdate product part when loading sales");
+
+ $sold=0;
+      $required=0;
+      $provided=0;
+      $given=0;
+      $amount_in=0;
+      $value=0;
+      $value_free=0;
+      $margin=0;
+      $sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(`Inventory Transaction Quantity`),0) as qty, ifnull(sum(`Inventory Transaction Amount`),0) as value from  `Inventory Transition Fact` where `Supplier Product ID`=%s and `Inventory Transaction Type`='Sale' and `Date`>=%s  and `Date`<=%s and `Date`>=%s    ",prepare_mysql($this->data['Supplier Product ID']),prepare_mysql($this->data['Supplier Product Valid From']),prepare_mysql($this->data['Supplier Product Valid To']) ,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -1 month")))  );
+      //      print "$sql\n";
+      $result=mysql_query($sql);
+      if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+	$required=$row['required'];
+	$provided=-$row['qty'];
+	$given=$row['given'];
+	$amount_in=$row['amount_in'];
+	$value=$row['value'];
+	$value_free=$row['value_free'];
+	$sold=-$row['qty']-$row['given'];
+      }
+      $abs_profit=$amount_in+$value;
+      $profit_sold=$amount_in+$value-$value_free;
+      if($amount_in==0)
+	$margin=0;
+      else
+	$margin=($value-$value_free)/$amount_in;
+
+
+      $sql=sprintf("update `Supplier Product Dimension` set `Supplier Product 1 Month Acc Parts Required`=%f ,`Supplier Product 1 Month Acc Parts Provided`=%f,`Supplier Product 1 Month Acc Parts Used`=%f ,`Supplier Product 1 Month Acc Sold Amount`=%f ,`Supplier Product 1 Month Acc Parts Profit`=%f  where `Supplier Product Key`=%d "
+		   ,$required
+		   ,$provided
+		   ,$given+$provided
+		   ,$amount_in
+		   ,$profit_sold
+		   ,$this->id);
+      //                  print "$sql\n";
+      if(!mysql_query($sql))
+	exit("error con not uopdate product part when loading sales");
+ $sold=0;
+      $required=0;
+      $provided=0;
+      $given=0;
+      $amount_in=0;
+      $value=0;
+      $value_free=0;
+      $margin=0;
+      $sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(`Inventory Transaction Quantity`),0) as qty, ifnull(sum(`Inventory Transaction Amount`),0) as value from  `Inventory Transition Fact` where `Supplier Product ID`=%s and `Inventory Transaction Type`='Sale' and `Date`>=%s  and `Date`<=%s and `Date`>=%s    ",prepare_mysql($this->data['Supplier Product ID']),prepare_mysql($this->data['Supplier Product Valid From']),prepare_mysql($this->data['Supplier Product Valid To']) ,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -1 week")))  );
+      //      print "$sql\n";
+      $result=mysql_query($sql);
+      if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+	$required=$row['required'];
+	$provided=-$row['qty'];
+	$given=$row['given'];
+	$amount_in=$row['amount_in'];
+	$value=$row['value'];
+	$value_free=$row['value_free'];
+	$sold=-$row['qty']-$row['given'];
+      }
+      $abs_profit=$amount_in+$value;
+      $profit_sold=$amount_in+$value-$value_free;
+      if($amount_in==0)
+	$margin=0;
+      else
+	$margin=($value-$value_free)/$amount_in;
+
+
+      $sql=sprintf("update `Supplier Product Dimension` set `Supplier Product 1 Week Acc Parts Required`=%f ,`Supplier Product 1 Week Acc Parts Provided`=%f,`Supplier Product 1 Week Acc Parts Used`=%f ,`Supplier Product 1 Week Acc Sold Amount`=%f ,`Supplier Product 1 Week Acc Parts Profit`=%f  where `Supplier Product Key`=%d "
+		   ,$required
+		   ,$provided
+		   ,$given+$provided
+		   ,$amount_in
+		   ,$profit_sold
+		   ,$this->id);
+      //                  print "$sql\n";
+      if(!mysql_query($sql))
+	exit("error con not uopdate product part when loading sales");
+
+      break;
+      
+ }
   }
   
   function get($key=''){

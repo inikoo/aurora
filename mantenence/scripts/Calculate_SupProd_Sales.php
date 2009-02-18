@@ -27,11 +27,13 @@ date_default_timezone_set('Europe/London');
 
 
 
-$sql="select * from `Supplier Product Dimension`";
+$sql="select * from `Supplier Product Dimension` where `Supplier Product Key`=2420 ";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $sp=new SupplierProduct($row['Supplier Product Key']);
   $sp->load('used in');
+  $sp->load('sales');
+  print $row['Supplier Product Key']."\r";
  }
 
 

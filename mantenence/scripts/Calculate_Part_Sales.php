@@ -30,7 +30,7 @@ $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $part=new Part($row['Part Key']);
   $part->load('sales');
-
+  $part->load('used in');
   
   print $row['Part Key']."\r";
 

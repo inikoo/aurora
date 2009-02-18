@@ -76,37 +76,42 @@
 
 
       
-<div  id="block_products" class="data_table" style="{if $display.products==0}display:none;{/if}margin:25px 0px;clear:both">
- 
- <div class="data_table" style="xborder:1px solid black">
-   <span class="clean_table_title">{t}Supplier Products{/t}</span>
-   <table style="position:relative;float:none;margin:0 0 0px 150px ;padding:0;left:20px;bottom:5px"  class="options" {if $products==0 }style="display:none"{/if}>
-	<tr>
-	  <td {if $products_view=='general'}class="selected"{/if} id="general" >{t}General{/t}</td>
-	  <td {if $products_view=='stock'}class="selected"{/if}  id="stock"  >{t}Stock{/t}</td>
-	  <td {if $products_view=='sales'}class="selected"{/if}  id="sales"  >{t}Sales{/t}</td>
-	  <td {if $products_view=='forescast'}class="selected"{/if}  id="sales"  >{t}Forescast{/t}</td>
+       <div  id="block_products" class="data_table" style="{if $display.products==0}display:none;{/if}margin:25px 0px;clear:both">
+	 <div class="data_table" >
+	   <span class="clean_table_title">{t}Supplier Products{/t}</span>
+	   <table style="position:relative;bottom:4px;float:left;margin:0 0 0px 20px ;padding:0;"  class="options" {if $products==0 }style="display:none"{/if}>
+	     <tr>
+	       <td {if $products_view=='product_general'}class="selected"{/if} id="product_general" >{t}General{/t}</td>
+	       <td {if $products_view=='product_stock'}class="selected"{/if}  id="product_stock"  >{t}Stock{/t}</td>
+	       <td {if $products_view=='product_sales'}class="selected"{/if}  id="product_sales"  >{t}Sales{/t}</td>
+	       <td {if $products_view=='product_forecast'}class="selected"{/if}  id="product_forecasr"  >{t}Forecast{/t}</td>
+	     </tr>
+	   </table>
+	   <table style="position:relative;bottom:4px;clear:none;float:left;margin:0 0 0 20px ;padding:0"  class="options" {if $parts==0 }style="display:none"{/if}>
+	     <tr>
+	       <td {if $products_period=='all'}class="selected"{/if} id="product_period_all" >{t}All{/t}</td>
+	       <td {if $products_period=='year'}class="selected"{/if}  id="product_period_year"  >{t}1Yr{/t}</td>
+	       <td {if $products_period=='quarter'}class="selected"{/if}  id="product_period_quarter"  >{t}1Qtr{/t}</td>
+	       <td {if $products_period=='month'}class="selected"{/if}  id="product_period_month"  >{t}1M{/t}</td>
+	       <td {if $products_period=='week'}class="selected"{/if}  id="product_period_week"  >{t}1W{/t}</td>
+	     </tr>
+	   </table>
+	   <div  class="clean_table_caption"  style="clear:both;">
+	     <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
+	     <div class="clean_table_filter"  id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0">{$filter_name0}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value0}" size=10/><div id='f_container0'></div></div></div>
+	     <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
+	   </div>
+	   <div  id="table0"   class="data_table_container dtable btable "> </div>
+	 </div>
+       </div>
 
-	</tr>
-      </table>
-   
-
-    <div  class="clean_table_caption"  style="clear:both;">
-      <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
-      <div class="clean_table_filter"  id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0">{$filter_name0}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value0}" size=10/><div id='f_container0'></div></div></div>
-      <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
-    </div>
-    <div  id="table0"   class="data_table_container dtable btable "> </div>
- </div>
-</div>
-
-<div  id="block_po" class="data_table" style="{if $display.po==0}display:none;{/if}margin:25px 0px;">
-  <span class="clean_table_title">{t}Purchase Orders{/t}</span>
-  <div  class="clean_table_caption"  style="clear:both;">
-    <div style="float:left;"><div id="table_info1" class="clean_table_info"><span id="rtext1"></span> <span class="filter_msg"  id="filter_msg1"></span></div></div>
-    <div class="clean_table_filter"><div class="clean_table_info"><span id="filter_name1">{$filter_name}</span>: <input style="border-bottom:none" id='f_input1' value="{$filter_value}" size=10/><div id='f_container1'></div></div></div>
-    <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator1"></span></div></div>
-  </div>
+       <div  id="block_po" class="data_table" style="{if $display.po==0}display:none;{/if}margin:25px 0px;">
+	 <span class="clean_table_title">{t}Purchase Orders{/t}</span>
+	 <div  class="clean_table_caption"  style="clear:both;">
+	   <div style="float:left;"><div id="table_info1" class="clean_table_info"><span id="rtext1"></span> <span class="filter_msg"  id="filter_msg1"></span></div></div>
+	   <div class="clean_table_filter"><div class="clean_table_info"><span id="filter_name1">{$filter_name}</span>: <input style="border-bottom:none" id='f_input1' value="{$filter_value}" size=10/><div id='f_container1'></div></div></div>
+	   <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator1"></span></div></div>
+	 </div>
   <div  id="table1"   class="data_table_container dtable btable "> </div>
 </div>
 

@@ -2976,17 +2976,29 @@ case('parts'):
        $_order=$order;
        $_order_dir=$order_dir;
 
-       
+
        if($order=='sku')
 	 $order='`Part SKU`';
        else if($order=='description')
 	 $order='`Part XHTML Description`';
        else if($order=='available_for')
 	 $order='`Part Available Days Forecast`';
-
-
+       else if($order=='margin'){
+	 if($period=='all')
+	   $order=' `Part Total Margin` ';
+	 elseif($period=='year')
+	   $order=' `Part 1 Year Acc Margin` ';
+	 elseif($period=='quarter')
+	   $order=' `Part 1 Quarter Acc Margin` ';
+	 elseif($period=='month')
+	   $order=' `Part 1 Month Acc Margin` ';
+	 elseif($period=='week')
+	   $order=' `Part 1 Week Acc Margin` ';
+	 
+       }
+       
        $sql="select * from `Part Dimension`  $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
-       // print $sql;
+       //              print $sql;
   $adata=array();
      $result=mysql_query($sql);
       while($data=mysql_fetch_array($result, MYSQL_ASSOC)   ){
@@ -3000,8 +3012,8 @@ case('parts'):
 	  $sold_amount=money($data['Part Total Sold Amount']);
 	  $abs_profit=money($data['Part Total Absolute Profit']);
 	  $profit_sold=money($data['Part Total Profit When Sold']);
-	  $margin=percentage($sold_amount-$profit_sold,$sold_amount);
-	}elseif($period='year'){
+	  $margin=percentage($data['Part Total Margin'],1);
+	}elseif($period=='year'){
 	  $sold=number($data['Part 1 Year Acc Sold']);
 	  $given=number($data['Part 1 Year Acc Given']);
 	  if($given!=0)
@@ -3009,8 +3021,9 @@ case('parts'):
 	  $sold_amount=money($data['Part 1 Year Acc Sold Amount']);
 	  $abs_profit=money($data['Part 1 Year Acc Absolute Profit']);
 	  $profit_sold=money($data['Part 1 Year Acc Profit When Sold']);
-  $margin=percentage($sold_amount-$profit_sold,$sold_amount);
-	}elseif($period='quarter'){
+	  $margin=percentage($data['Part 1 Year Acc Margin'],1);
+
+	}elseif($period=='quarter'){
 	  $sold=number($data['Part 1 Quarter Acc Sold']);
 	  $given=number($data['Part 1 Quarter Acc Given']);
 	   if($given!=0)
@@ -3018,15 +3031,15 @@ case('parts'):
 	  $sold_amount=money($data['Part 1 Quarter Acc Sold Amount']);
 	  $abs_profit=money($data['Part 1 Quarter Acc Absolute Profit']);
 	  $profit_sold=money($data['Part 1 Quarter Acc Profit When Sold']);
-
-	}elseif($period='month'){
+	  $margin=percentage($data['Part 1 Quarter Acc Margin'],1);
+	}elseif($period=='month'){
 	  $sold=number($data['Part 1 Month Acc Sold']);
 	  $given=number($data['Part 1 Month Acc Given']);
 	  $sold_amount=money($data['Part 1 Month Acc Sold Amount']);
 	  $abs_profit=money($data['Part 1 Month Acc Absolute Profit']);
 	  $profit_sold=money($data['Part 1 Month Acc Profit When Sold']);
-  $margin=percentage($sold_amount-$profit_sold,$sold_amount);
-	}elseif($period='week'){
+	  $margin=percentage($data['Part 1 Month Acc Margin'],1);
+	}elseif($period=='week'){
 	  $sold=number($data['Part 1 Week Acc Sold']);
 	  $given=number($data['Part 1 Week Acc Given']);
 	   if($given!=0)
@@ -3034,7 +3047,7 @@ case('parts'):
 	  $sold_amount=money($data['Part 1 Week Acc Sold Amount']);
 	  $abs_profit=money($data['Part 1 Week Acc Absolute Profit']);
 	  $profit_sold=money($data['Part 1 Week Acc Profit When Sold']);
-  $margin=percentage($sold_amount-$profit_sold,$sold_amount);
+	  $margin=percentage($data['Part 1 Week Acc Margin'],1);
 	}
 
 
@@ -3570,14 +3583,14 @@ break;
  case('supplier_products'):
    if(!$LU->checkRight(SUP_VIEW))
     exit;
-
-    $conf=$_SESSION['state']['supplier']['products'];
+   
+   $conf=$_SESSION['state']['supplier']['products'];
   if(isset( $_REQUEST['sf']))
-     $start_from=$_REQUEST['sf'];
-   else
-     $start_from=$conf['sf'];
-   if(isset( $_REQUEST['nr']))
-     $number_results=$_REQUEST['nr'];
+    $start_from=$_REQUEST['sf'];
+  else
+    $start_from=$conf['sf'];
+  if(isset( $_REQUEST['nr']))
+    $number_results=$_REQUEST['nr'];
    else
      $number_results=$conf['nr'];
   if(isset( $_REQUEST['o']))
@@ -3588,39 +3601,57 @@ break;
     $order_dir=$_REQUEST['od'];
   else
     $order_dir=$conf['order_dir'];
-    if(isset( $_REQUEST['f_field']))
-     $f_field=$_REQUEST['f_field'];
+  if(isset( $_REQUEST['f_field']))
+    $f_field=$_REQUEST['f_field'];
    else
      $f_field=$conf['f_field'];
-
+  
   if(isset( $_REQUEST['f_value']))
-     $f_value=$_REQUEST['f_value'];
-   else
-     $f_value=$conf['f_value'];
-if(isset( $_REQUEST['where']))
-     $where=$_REQUEST['where'];
+    $f_value=$_REQUEST['f_value'];
+  else
+    $f_value=$conf['f_value'];
+  if(isset( $_REQUEST['where']))
+    $where=$_REQUEST['where'];
    else
      $where=$conf['where'];
- 
-
-   if(isset( $_REQUEST['id']))
+  
+  
+  if(isset( $_REQUEST['id']))
     $supplier_id=$_REQUEST['id'];
   else
     $supplier_id=$_SESSION['state']['supplier']['id'];
-
-
+  
+  
    if(isset( $_REQUEST['tableid']))
-    $tableid=$_REQUEST['tableid'];
-  else
+     $tableid=$_REQUEST['tableid'];
+   else
     $tableid=0;
+   
+   if(isset( $_REQUEST['product_view']))
+     $product_view=$_REQUEST['product_view'];
+   else
+     $product_view=$conf['view'];
+   if(isset( $_REQUEST['product_period']))
+     $product_period=$_REQUEST['product_period'];
+   else
+     $product_period=$conf['period'];
+   
+ if(isset( $_REQUEST['product_percentage']))
+     $product_percentage=$_REQUEST['product_percentage'];
+   else
+     $product_percentage=$conf['percentage'];
 
- $filter_msg='';
+   $filter_msg='';
    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
- $_order=$order;
- $_dir=$order_direction;
+   $_order=$order;
+   $_dir=$order_direction;
  
 
-   $_SESSION['state']['supplier']['products']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+   $_SESSION['state']['supplier']['products']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value
+						    ,'view'=>$product_view
+						    ,'percentage'=>$product_percentage
+						    ,'period'=>$product_period
+						    );
    $_SESSION['state']['supplier']['id']=$supplier_id;
 
   $where=$where.' and `Supplier Product Supplier Key`='.$supplier_id;
@@ -3689,12 +3720,68 @@ if(isset( $_REQUEST['where']))
    $result=mysql_query($sql);
    while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
+
+     if($product_period=='all'){
+       $profit=money($row['Supplier Product Total Parts Profit']);
+       $profit2=money($row['Supplier Product Total Parts Profit After Storing']);
+       $allcost=money($row['Supplier Product Total Cost']);
+       $used=number($row['Supplier Product Total Parts Used']);
+       $required=number($row['Supplier Product Total Parts Required']);
+       $provided=number($row['Supplier Product Total Parts Provided']);
+       $lost=number($row['Supplier Product Total Parts Lost']);
+       $broken=$row['Supplier Product Total Parts Broken'];
+     }else if($product_period=='year'){
+       $profit=money($row['Supplier Product 1 Year Acc Parts Profit']);
+       $profit2=money($row['Supplier Product 1 Year Acc Parts Profit After Storing']);
+       $allcost=money($row['Supplier Product 1 Year Acc Cost']);
+       $used=number($row['Supplier Product 1 Year Acc Parts Used']);
+       $required=number($row['Supplier Product 1 Year Acc Parts Required']);
+       $provided=number($row['Supplier Product 1 Year Acc Parts Provided']);
+       $lost=number($row['Supplier Product 1 Year Acc Parts Lost']);
+       $broken=number($row['Supplier Product 1 Year Acc Parts Broken']);
+     }else if($product_period=='quarter'){
+       $profit=money($row['Supplier Product 1 Quarter Acc Parts Profit']);
+       $profit2=money($row['Supplier Product 1 Quarter Acc Parts Profit After Storing']);
+       $allcost=money($row['Supplier Product 1 Quarter Acc Cost']);
+       $used=number($row['Supplier Product 1 Quarter Acc Parts Used']);
+       $required=number($row['Supplier Product 1 Quarter Acc Parts Required']);
+       $provided=number($row['Supplier Product 1 Quarter Acc Parts Provided']);
+       $lost=number($row['Supplier Product 1 Quarter Acc Parts Lost']);
+       $broken=number($row['Supplier Product 1 Quarter Acc Parts Broken']);
+     }else if($product_period=='month'){
+       $profit=money($row['Supplier Product 1 Month Acc Parts Profit']);
+       $profit2=money($row['Supplier Product 1 Month Acc Parts Profit After Storing']);
+       $allcost=money($row['Supplier Product 1 Month Acc Cost']);
+       $used=number($row['Supplier Product 1 Month Acc Parts Used']);
+       $required=number($row['Supplier Product 1 Month Acc Parts Required']);
+       $provided=number($row['Supplier Product 1 Month Acc Parts Provided']);
+       $lost=number($row['Supplier Product 1 Month Acc Parts Lost']);
+       $broken=number($row['Supplier Product 1 Month Acc Parts Broken']);
+     }else if($product_period=='week'){
+       $profit=money($row['Supplier Product 1 Week Acc Parts Profit']);
+       $profit2=money($row['Supplier Product 1 Week Acc Parts Profit After Storing']);
+       $allcost=money($row['Supplier Product 1 Week Acc Cost']);
+       $used=number($row['Supplier Product 1 Week Acc Parts Used']);
+       $required=number($row['Supplier Product 1 Week Acc Parts Required']);
+       $provided=number($row['Supplier Product 1 Week Acc Parts Provided']);
+       $lost=number($row['Supplier Product 1 Week Acc Parts Lost']);
+       $broken=number($row['Supplier Product 1 Week Acc Parts Broken']);
+     }
+     
+
      $data[]=array(
-		   'id'=>sprintf('<a href="supplier_product.php?id=%d">%s</a>',$row['Supplier Product Key'],$row['Supplier Product ID'])
+		   'id'=>sprintf('<a href="supplier_product.php?id=%d">%06d</a>',$row['Supplier Product Key'],$row['Supplier Product ID'])
 		   ,'code'=>sprintf('<a href="supplier_product.php?id=%d">%s</a>',$row['Supplier Product Key'],$row['Supplier Product Code'])
 		   ,'name'=>$row['Supplier Product Name']
 		   ,'cost'=>money($row['Supplier Product Cost'])
 		   ,'usedin'=>$row['Supplier Product XHTML Used In']
+		   ,'profit'=>$profit
+		   ,'allcost'=>$allcost
+		   ,'used'=>$used
+		   ,'required'=>$required
+		   ,'provided'=>$provided
+		   ,'lost'=>$lost
+		   ,'broken'=>$broken
 		   );
    }
 
