@@ -85,7 +85,7 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
     
 
 
-  print $row['Product Code']."\r";
+  print $row['Product Key']."\r";
 
 
 

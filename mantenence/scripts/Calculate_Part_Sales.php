@@ -29,9 +29,9 @@ $sql="select * from `Part Dimension`  ";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $part=new Part($row['Part Key']);
-//   $part->load('sales');
-//   $part->load('used in');
-//  $part->load('stock');
+   $part->load('sales');
+   // $part->load('used in');
+  $part->load('stock');
   $part->load('stock_history');
  print $row['Part Key']."\r";
 

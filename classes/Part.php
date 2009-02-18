@@ -215,7 +215,7 @@ class part{
 		    ,$this->id);
        //   print "$sql\n";
        if(!mysql_query($sql))
-	 exit("errot con not update part stock history yr");
+	 exit("errot con not update part stock history yr aa");
 
 
   $astock=0;
@@ -266,7 +266,7 @@ class part{
 		    ,$this->id);
        //   print "$sql\n";
        if(!mysql_query($sql))
-	 exit("errot con not update part stock history yr");
+	 exit("errot con not update part stock history yr bb");
 
   $astock=0;
        $avalue=0;
@@ -316,7 +316,7 @@ class part{
 		    ,$this->id);
        //   print "$sql\n";
        if(!mysql_query($sql))
-	 exit("errot con not update part stock history yr");
+	 exit("errot con not update part stock history yr cc");
 
 
   $astock=0;
@@ -394,7 +394,7 @@ class part{
       $value_free=0;
       $margin=0;
       $sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(-`Inventory Transaction Quantity`),0) as qty, ifnull(sum(-`Inventory Transaction Amount`),0) as value from  `Inventory Transition Fact` where `Part SKU`=%s and `Inventory Transaction Type`='Sale' and `Date`>=%s  and `Date`<=%s   ",prepare_mysql($this->data['Part SKU']),prepare_mysql($this->data['Part Valid From']),prepare_mysql($this->data['Part Valid To'])  );
-      //  print "$sql\n\n\n";
+      //       print "$sql\n\n\n";
       $result=mysql_query($sql);
       if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 	$required=$row['required'];

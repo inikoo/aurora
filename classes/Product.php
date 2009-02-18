@@ -195,10 +195,12 @@ class product{
 	$tag['product valid to']=$tag['date2'];
 	$tag['product valid from']=$tag['date'];
 	$tag['Part SKU']='';
-	$tag['part valid to']=$tag['date'];
+	$tag['part valid to']=$tag['date2'];
 	$tag['part valid from']=$tag['date'];
 
+	
 	$this->create($tag);
+	$tag['Part XHTML Currently Used In']=sprintf('<a href="product.php?%d">%s</a>',$this->id,$this->data['Product Code']);
 	$part=new Part('new',$tag);
 	$part_list[]=array(
 			   'Product ID'=>$this->get('Product ID'),
@@ -219,7 +221,7 @@ class product{
 		     ,prepare_mysql($tag['product name'])
 		     ,prepare_mysql($tag['product units per case'])
 		     ,prepare_mysql($tag['product unit type'])
-
+		     
 
 		     );
 	//print "$sql\n";
@@ -281,6 +283,12 @@ class product{
 	  
 	  $this->create($tag);
 	  $tag['Part Most Recent']='Yes';
+	  $tag['Part Valid From']=$tag['date'];
+	  $tag['Part Valid To']=$tag['date2'];
+	  $tag['Part XHTML Currently Used In']=sprintf('<a href="product.php?%d">%s</a>',$this->id,$this->data['Product Code']);
+
+	  //  if($tag['product code']=='TB-13')
+	  //print_r($tag);
 	  $part=new Part('new',$tag);
 	  $this->new_part=true;
 	  
@@ -288,7 +296,7 @@ class product{
 
 
 
-	  $part=new Part('new',$tag);
+	  //$part=new Part('new',$tag);
 	  $part_list[]=array(
 			     'Product ID'=>$this->get('Product ID'),
 			     'Part SKU'=>$part->get('Part SKU'),
