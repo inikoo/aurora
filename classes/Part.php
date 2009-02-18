@@ -92,7 +92,284 @@ class part{
 
   function load($data_to_be_read,$args=''){
     switch($data_to_be_read){
+    case('stock'):
+      $stock='';
+      $value='';
+      $sql=sprintf("select sum(`Quantity On Hand`) as stock,sum(`Value At Cost`) as value from `Inventory Spanshot Fact` where `Snapshot Period`='Day' and `Part SKU`=%d and `Date`=%s",$this->data['Part SKU'],prepare_mysql(date("Y-m-d",strtotime('today -1 day'))));
+      $result=mysql_query($sql);
+      if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+	$stock=$row['stock'];
+	$value=$row['value'];
+      }
 
+      if(!is_numeric($stock))
+	$stock='NULL';
+       if(!is_numeric($value))
+	$value='NULL';
+
+       $sql=sprintf("update `Part Dimension` set `Part Current Stock`=%s ,`Part Current Stock Cost`=%s  where `Part Key`=%d "
+		    ,$stock
+		    ,$value
+		   ,$this->id);
+      //    print "$sql\n";
+      if(!mysql_query($sql))
+       	exit("  errorcant not uopdate parts stock");
+
+      break;
+    case('stock_history'):
+      $astock=0;
+      $avalue=0;
+      
+      $sql=sprintf("select ifnull(avg(`Quantity On Hand`),'ERROR') as stock,avg(`Value At Cost`) as value from `Inventory Spanshot Fact` where `Snapshot Period`='Day'   and `Part SKU`=%d and `Date`>=%s and `Date`<=%s group by `Date`",$this->data['Part SKU'],prepare_mysql(date("Y-m-d",strtotime($this->data['Part Valid From']))),prepare_mysql(date("Y-m-d",strtotime($this->data['Part Valid To']))  ));
+      // print "$sql\n";
+      $result=mysql_query($sql);
+      $days=0;
+      $errors=0;
+      $outstock=0;
+      while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+	if(is_numeric($row['stock']))
+	  $astock+=$row['stock'];
+	if(is_numeric($row['value']))
+	  $avalue+=$row['value'];
+	$days++;
+
+	  if(is_numeric($row['stock']) and $row['stock']==0)
+	  $outstock++;
+	if($row['stock']=='ERROR')
+	  $errors++;
+      }
+      
+      $days_ok=$days-$errors;
+      
+      $gmroi='NULL';
+      if($days_ok>0){
+	$astock=$astock/$days_ok;
+	$avalue=$avalue/$days_ok;
+	if($avalue>0)
+	  $gmroi=$this->data['Part Total Profit When Sold']/$avalue;
+      }else{
+	$astock='NULL';
+	$avalue='NULL';
+      }
+
+      $tdays = (strtotime($this->data['Part Valid To']) - strtotime($this->data['Part Valid From'])) / (60 * 60 * 24);
+      //print "$tdays $days o: $outstock e: $errors \n";
+      $unknown=$tdays-$days_ok;
+       $sql=sprintf("update `Part Dimension` set `Part Total AVG Stock`=%s ,`Part Total AVG Stock Value`=%s,`Part Total Keeping Days`=%f ,`Part Total Out of Stock Days`=%f , `Part Total Unknown Stock Days`=%s, `Part Total GMROI`=%s where `Part Key`=%d"
+		    ,$astock
+		    ,$avalue
+		    ,$tdays
+		    ,$outstock
+		    ,$unknown
+		    ,$gmroi
+		    ,$this->id);
+       // print "$sql\n";
+       if(!mysql_query($sql))
+	 exit("$sql  errot con not update part stock history all");
+
+       $astock=0;
+       $avalue=0;
+       
+       $sql=sprintf("select ifnull(avg(`Quantity On Hand`),'ERROR') as stock,avg(`Value At Cost`) as value from `Inventory Spanshot Fact` where `Snapshot Period`='Day'   and `Part SKU`=%d and `Date`>=%s and `Date`<=%s  and `Date`>=%s    group by `Date`",$this->data['Part SKU'],prepare_mysql(date("Y-m-d",strtotime($this->data['Part Valid From']))),prepare_mysql(date("Y-m-d",strtotime($this->data['Part Valid To']))  )  ,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -1 year")))  );
+       // print "$sql\n";
+      $result=mysql_query($sql);
+      $days=0;
+      $errors=0;
+      $outstock=0;
+      while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+	if(is_numeric($row['stock']))
+	  $astock+=$row['stock'];
+	if(is_numeric($row['value']))
+	  $avalue+=$row['value'];
+	$days++;
+
+	  if(is_numeric($row['stock']) and $row['stock']==0)
+	  $outstock++;
+	if($row['stock']=='ERROR')
+	  $errors++;
+      }
+      
+      $days_ok=$days-$errors;
+      
+      $gmroi='NULL';
+      if($days_ok>0){
+	$astock=$astock/$days_ok;
+	$avalue=$avalue/$days_ok;
+	if($avalue>0)
+	  $gmroi=$this->data['Part 1 Year Acc Profit When Sold']/$avalue;
+      }else{
+	$astock='NULL';
+	$avalue='NULL';
+      }
+
+      $tdays = (strtotime($this->data['Part Valid To']) - strtotime($this->data['Part Valid From'])) / (60 * 60 * 24);
+      //print "$tdays $days o: $outstock e: $errors \n";
+      $unknown=$tdays-$days_ok;
+       $sql=sprintf("update `Part Dimension` set `Part 1 Year Acc AVG Stock`=%s ,`Part 1 Year Acc AVG Stock Value`=%s,`Part 1 Year Acc Keeping Days`=%f ,`Part 1 Year Acc Out of Stock Days`=%f , `Part 1 Year Acc Unknown Stock Days`=%s, `Part 1 Year Acc GMROI`=%s where `Part Key`=%d"
+		    ,$astock
+		    ,$avalue
+		    ,$tdays
+		    ,$outstock
+		    ,$unknown
+		    ,$gmroi
+		    ,$this->id);
+       //   print "$sql\n";
+       if(!mysql_query($sql))
+	 exit("errot con not update part stock history yr");
+
+
+  $astock=0;
+       $avalue=0;
+       
+       $sql=sprintf("select ifnull(avg(`Quantity On Hand`),'ERROR') as stock,avg(`Value At Cost`) as value from `Inventory Spanshot Fact` where `Snapshot Period`='Day'   and `Part SKU`=%d and `Date`>=%s and `Date`<=%s  and `Date`>=%s    group by `Date`",$this->data['Part SKU'],prepare_mysql(date("Y-m-d",strtotime($this->data['Part Valid From']))),prepare_mysql(date("Y-m-d",strtotime($this->data['Part Valid To']))  )  ,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -3 month")))  );
+       // print "$sql\n";
+      $result=mysql_query($sql);
+      $days=0;
+      $errors=0;
+      $outstock=0;
+      while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+	if(is_numeric($row['stock']))
+	  $astock+=$row['stock'];
+	if(is_numeric($row['value']))
+	  $avalue+=$row['value'];
+	$days++;
+
+	  if(is_numeric($row['stock']) and $row['stock']==0)
+	  $outstock++;
+	if($row['stock']=='ERROR')
+	  $errors++;
+      }
+      
+      $days_ok=$days-$errors;
+      
+      $gmroi='NULL';
+      if($days_ok>0){
+	$astock=$astock/$days_ok;
+	$avalue=$avalue/$days_ok;
+	if($avalue>0)
+	  $gmroi=$this->data['Part 1 Quarter Acc Profit When Sold']/$avalue;
+      }else{
+	$astock='NULL';
+	$avalue='NULL';
+      }
+
+      $tdays = (strtotime($this->data['Part Valid To']) - strtotime($this->data['Part Valid From'])) / (60 * 60 * 24);
+      //print "$tdays $days o: $outstock e: $errors \n";
+      $unknown=$tdays-$days_ok;
+       $sql=sprintf("update `Part Dimension` set `Part 1 Quarter Acc AVG Stock`=%s ,`Part 1 Quarter Acc AVG Stock Value`=%s,`Part 1 Quarter Acc Keeping Days`=%f ,`Part 1 Quarter Acc Out of Stock Days`=%f , `Part 1 Quarter Acc Unknown Stock Days`=%s, `Part 1 Quarter Acc GMROI`=%s where `Part Key`=%d"
+		    ,$astock
+		    ,$avalue
+		    ,$tdays
+		    ,$outstock
+		    ,$unknown
+		    ,$gmroi
+		    ,$this->id);
+       //   print "$sql\n";
+       if(!mysql_query($sql))
+	 exit("errot con not update part stock history yr");
+
+  $astock=0;
+       $avalue=0;
+       
+       $sql=sprintf("select ifnull(avg(`Quantity On Hand`),'ERROR') as stock,avg(`Value At Cost`) as value from `Inventory Spanshot Fact` where `Snapshot Period`='Day'   and `Part SKU`=%d and `Date`>=%s and `Date`<=%s  and `Date`>=%s    group by `Date`",$this->data['Part SKU'],prepare_mysql(date("Y-m-d",strtotime($this->data['Part Valid From']))),prepare_mysql(date("Y-m-d",strtotime($this->data['Part Valid To']))  )  ,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -1 month")))  );
+       // print "$sql\n";
+      $result=mysql_query($sql);
+      $days=0;
+      $errors=0;
+      $outstock=0;
+      while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+	if(is_numeric($row['stock']))
+	  $astock+=$row['stock'];
+	if(is_numeric($row['value']))
+	  $avalue+=$row['value'];
+	$days++;
+
+	  if(is_numeric($row['stock']) and $row['stock']==0)
+	  $outstock++;
+	if($row['stock']=='ERROR')
+	  $errors++;
+      }
+      
+      $days_ok=$days-$errors;
+      
+      $gmroi='NULL';
+      if($days_ok>0){
+	$astock=$astock/$days_ok;
+	$avalue=$avalue/$days_ok;
+	if($avalue>0)
+	  $gmroi=$this->data['Part 1 Month Acc Profit When Sold']/$avalue;
+      }else{
+	$astock='NULL';
+	$avalue='NULL';
+      }
+
+      $tdays = (strtotime($this->data['Part Valid To']) - strtotime($this->data['Part Valid From'])) / (60 * 60 * 24);
+      //print "$tdays $days o: $outstock e: $errors \n";
+      $unknown=$tdays-$days_ok;
+       $sql=sprintf("update `Part Dimension` set `Part 1 Month Acc AVG Stock`=%s ,`Part 1 Month Acc AVG Stock Value`=%s,`Part 1 Month Acc Keeping Days`=%f ,`Part 1 Month Acc Out of Stock Days`=%f , `Part 1 Month Acc Unknown Stock Days`=%s, `Part 1 Month Acc GMROI`=%s where `Part Key`=%d"
+		    ,$astock
+		    ,$avalue
+		    ,$tdays
+		    ,$outstock
+		    ,$unknown
+		    ,$gmroi
+		    ,$this->id);
+       //   print "$sql\n";
+       if(!mysql_query($sql))
+	 exit("errot con not update part stock history yr");
+
+
+  $astock=0;
+       $avalue=0;
+       
+       $sql=sprintf("select ifnull(avg(`Quantity On Hand`),'ERROR') as stock,avg(`Value At Cost`) as value from `Inventory Spanshot Fact` where `Snapshot Period`='Day'   and `Part SKU`=%d and `Date`>=%s and `Date`<=%s  and `Date`>=%s    group by `Date`",$this->data['Part SKU'],prepare_mysql(date("Y-m-d",strtotime($this->data['Part Valid From']))),prepare_mysql(date("Y-m-d",strtotime($this->data['Part Valid To']))  )  ,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -1 week")))  );
+       // print "$sql\n";
+      $result=mysql_query($sql);
+      $days=0;
+      $errors=0;
+      $outstock=0;
+      while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+	if(is_numeric($row['stock']))
+	  $astock+=$row['stock'];
+	if(is_numeric($row['value']))
+	  $avalue+=$row['value'];
+	$days++;
+
+	  if(is_numeric($row['stock']) and $row['stock']==0)
+	  $outstock++;
+	if($row['stock']=='ERROR')
+	  $errors++;
+      }
+      
+      $days_ok=$days-$errors;
+      
+      $gmroi='NULL';
+      if($days_ok>0){
+	$astock=$astock/$days_ok;
+	$avalue=$avalue/$days_ok;
+	if($avalue>0)
+	  $gmroi=$this->data['Part 1 Week Acc Profit When Sold']/$avalue;
+      }else{
+	$astock='NULL';
+	$avalue='NULL';
+      }
+
+      $tdays = (strtotime($this->data['Part Valid To']) - strtotime($this->data['Part Valid From'])) / (60 * 60 * 24);
+      //print "$tdays $days o: $outstock e: $errors \n";
+      $unknown=$tdays-$days_ok;
+       $sql=sprintf("update `Part Dimension` set `Part 1 Week Acc AVG Stock`=%s ,`Part 1 Week Acc AVG Stock Value`=%s,`Part 1 Week Acc Keeping Days`=%f ,`Part 1 Week Acc Out of Stock Days`=%f , `Part 1 Week Acc Unknown Stock Days`=%s, `Part 1 Week Acc GMROI`=%s where `Part Key`=%d"
+		    ,$astock
+		    ,$avalue
+		    ,$tdays
+		    ,$outstock
+		    ,$unknown
+		    ,$gmroi
+		    ,$this->id);
+       //   print "$sql\n";
+       if(!mysql_query($sql))
+	 exit("errot con not update part stock history yr");
+
+      break;
     case("used in"):
        $used_in_products='';
       $sql=sprintf("select `Product Same Code Most Recent Key`,`Product Code` from `Product Part List` PPL left join `Product Dimension` PD on (PD.`Product ID`=PPL.`Product ID`)  where `Part SKU`=%d group by `Product Code`;",$this->data['Part SKU']);
@@ -116,27 +393,34 @@ class part{
       $value=0;
       $value_free=0;
       $margin=0;
-      $sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(`Inventory Transaction Quantity`),0) as qty, ifnull(sum(`Inventory Transaction Amount`),0) as value from  `Inventory Transition Fact` where `Part SKU`=%s and `Inventory Transaction Type`='Sale' and `Date`>=%s  and `Date`<=%s   ",prepare_mysql($this->data['Part SKU']),prepare_mysql($this->data['Part Valid From']),prepare_mysql($this->data['Part Valid To'])  );
-      //      print "$sql\n";
+      $sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(-`Inventory Transaction Quantity`),0) as qty, ifnull(sum(-`Inventory Transaction Amount`),0) as value from  `Inventory Transition Fact` where `Part SKU`=%s and `Inventory Transaction Type`='Sale' and `Date`>=%s  and `Date`<=%s   ",prepare_mysql($this->data['Part SKU']),prepare_mysql($this->data['Part Valid From']),prepare_mysql($this->data['Part Valid To'])  );
+      //  print "$sql\n\n\n";
       $result=mysql_query($sql);
       if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 	$required=$row['required'];
-	$provided=-$row['qty'];
+	$provided=$row['qty'];
 	$given=$row['given'];
-	$amount_in=$row['amount_in'];
-	$value=$row['value'];
-	$value_free=$row['value_free'];
-	$sold=-$row['qty']-$row['given'];
+	$amount_in=floatval($row['amount_in']);
+	$value=floatval($row['value']);
+	$value_free=floatval($row['value_free']);
+	$sold=$row['qty']-$row['given'];
       }
-      $abs_profit=$amount_in+$value;
-      $profit_sold=$amount_in+$value-$value_free;
+      $abs_profit=$amount_in-$value;
+      $profit_sold=$amount_in-$value+$value_free;
       if($amount_in==0)
 	$margin=0;
-      else
-	$margin=($value-$value_free)/$amount_in;
+      else{
+	$margin=$profit_sold/$amount_in;
+	//	$margin=($value-$value_free)/$amount_in;
+	//	$margin=sprintf("%.6f",($value)*$tmp);
+	$margin=preg_replace('/:/','1',$margin);
+	//$margin=$value/$amount_in;
+      }
 
-
-      $sql=sprintf("update `Part Dimension` set `Part Total Required`=%f ,`Part Total Provided`=%f,`Part Total Given`=%f ,`Part Total Sold Amount`=%f ,`Part Total Absolute Profit`=%f ,`Part Total Profit When Sold`=%f , `Part Total Sold`=%f , `Part Total Margin`=%s  where `Part Key`=%d "
+  //     var_dump( $value );
+//       var_dump(  $amount_in);
+//       var_dump( 0.7/7 );
+      $sql=sprintf("update `Part Dimension` set `Part Total Required`=%f ,`Part Total Provided`=%f,`Part Total Given`=%f ,`Part Total Sold Amount`=%f ,`Part Total Absolute Profit`=%f ,`Part Total Profit When Sold`=%f , `Part Total Sold`=%f , `Part Total Margin`=%f  where `Part Key`=%d "
 		   ,$required
 		   ,$provided
 		   ,$given
@@ -144,9 +428,9 @@ class part{
 		   ,$abs_profit
 		   ,$profit_sold,$sold,$margin
 		   ,$this->id);
-      //            print "$sql\n";
+      //    print "$sql\n";
       if(!mysql_query($sql))
-	exit("error con not uopdate product part when loading sales");
+       	exit("  error a $margin b $value c $value_free d $amount_in  con not uopdate product part when loading sales");
 	
       $sold=0;
       $required=0;
@@ -156,24 +440,24 @@ class part{
       $value=0;
       $value_free=0;
       $margin=0;
-      $sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(`Inventory Transaction Quantity`),0) as qty, ifnull(sum(`Inventory Transaction Amount`),0) as value from  `Inventory Transition Fact` where `Part SKU`=%s and `Inventory Transaction Type`='Sale' and `Date`>=%s  and `Date`<=%s  and `Date`>=%s     ",prepare_mysql($this->data['Part SKU']),prepare_mysql($this->data['Part Valid From']),prepare_mysql($this->data['Part Valid To']) ,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -1 year")))  );
-      //print "$sql\n";
+      $sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(-`Inventory Transaction Quantity`),0) as qty, ifnull(sum(-`Inventory Transaction Amount`),0) as value from  `Inventory Transition Fact` where `Part SKU`=%s and `Inventory Transaction Type`='Sale' and `Date`>=%s  and `Date`<=%s  and `Date`>=%s     ",prepare_mysql($this->data['Part SKU']),prepare_mysql($this->data['Part Valid From']),prepare_mysql($this->data['Part Valid To']) ,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -1 year")))  );
+      // print "$sql\n";
       $result=mysql_query($sql);
       if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 	$required=$row['required'];
-	$provided=-$row['qty'];
+	$provided=$row['qty'];
 	$given=$row['given'];
 	$amount_in=$row['amount_in'];
-	$value=-$row['value'];
+	$value=$row['value'];
 	$value_free=$row['value_free'];
-	$sold=-$row['qty']-$row['given'];
+	$sold=$row['qty']-$row['given'];
       }
-      $abs_profit=$amount_in+$value;
-      $profit_sold=$amount_in+$value-$value_free;
+      $abs_profit=$amount_in-$value;
+      $profit_sold=$amount_in-$value+$value_free;
       if($amount_in==0)
 	$margin=0;
       else
-	$margin=($value-$value_free)/$amount_in;
+	$margin=$profit_sold/$amount_in;
       $sql=sprintf("update `Part Dimension` set `Part 1 Year Acc Required`=%f ,`Part 1 Year Acc Provided`=%f,`Part 1 Year Acc Given`=%f ,`Part 1 Year Acc Sold Amount`=%f ,`Part 1 Year Acc Absolute Profit`=%f ,`Part 1 Year Acc Profit When Sold`=%f , `Part 1 Year Acc Sold`=%f , `Part 1 Year Acc Margin`=%s where `Part Key`=%d "
 		   ,$required
 		   ,$provided
@@ -182,9 +466,9 @@ class part{
 		   ,$abs_profit
 		   ,$profit_sold,$sold,$margin
 		   ,$this->id);
-      //            print "$sql\n";
+      //  print "$sql\n";
       if(!mysql_query($sql))
-	exit("error con not uopdate product part when loading sales");
+	exit(" $sql\n error con not uopdate product part when loading sales");
       
       $sold=0;
        $required=0;
@@ -194,24 +478,25 @@ class part{
       $value=0;
       $value_free=0;
       $margin=0;
-      $sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(`Inventory Transaction Quantity`),0) as qty, ifnull(sum(`Inventory Transaction Amount`),0) as value from  `Inventory Transition Fact` where `Part SKU`=%s and `Inventory Transaction Type`='Sale' and `Date`>=%s  and `Date`<=%s  and `Date`>=%s     ",prepare_mysql($this->data['Part SKU']),prepare_mysql($this->data['Part Valid From']),prepare_mysql($this->data['Part Valid To']) ,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -3 month")))  );
+      $sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(-`Inventory Transaction Quantity`),0) as qty, ifnull(sum(-`Inventory Transaction Amount`),0) as value from  `Inventory Transition Fact` where `Part SKU`=%s and `Inventory Transaction Type`='Sale' and `Date`>=%s  and `Date`<=%s  and `Date`>=%s     ",prepare_mysql($this->data['Part SKU']),prepare_mysql($this->data['Part Valid From']),prepare_mysql($this->data['Part Valid To']) ,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -3 month")))  );
       //      print "$sql\n";
       $result=mysql_query($sql);
       if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 	$required=$row['required'];
-	$provided=-$row['qty'];
+	$provided=$row['qty'];
 	$given=$row['given'];
 	$amount_in=$row['amount_in'];
 	$value=$row['value'];
-	$value_free=$row['value_free'];$sold=-$row['qty']-$row['given'];
+	$value_free=$row['value_free'];
+	$sold=$row['qty']-$row['given'];
       }
-      $abs_profit=$amount_in+$value;
-      $profit_sold=$amount_in+$value-$value_free;
+      $abs_profit=$amount_in-$value;
+      $profit_sold=$amount_in-$value+$value_free;
 
       if($amount_in==0)
 	$margin=0;
       else
-	$margin=($value-$value_free)/$amount_in;
+	$margin=$profit_sold/$amount_in;
 
       $sql=sprintf("update `Part Dimension` set `Part 1 Quarter Acc Required`=%f ,`Part 1 Quarter Acc Provided`=%f,`Part 1 Quarter Acc Given`=%f ,`Part 1 Quarter Acc Sold Amount`=%f ,`Part 1 Quarter Acc Absolute Profit`=%f ,`Part 1 Quarter Acc Profit When Sold`=%f  , `Part 1 Quarter Acc Sold`=%f  , `Part 1 Quarter Acc Margin`=%s where `Part Key`=%d "
 		   ,$required
@@ -233,24 +518,25 @@ class part{
       $value=0;
       $value_free=0;
       $margin=0;
-      $sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(`Inventory Transaction Quantity`),0) as qty, ifnull(sum(`Inventory Transaction Amount`),0) as value from  `Inventory Transition Fact` where `Part SKU`=%s and `Inventory Transaction Type`='Sale' and `Date`>=%s  and `Date`<=%s  and `Date`>=%s     ",prepare_mysql($this->data['Part SKU']),prepare_mysql($this->data['Part Valid From']),prepare_mysql($this->data['Part Valid To']) ,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -1 month")))  );
+      $sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(-`Inventory Transaction Quantity`),0) as qty, ifnull(sum(-`Inventory Transaction Amount`),0) as value from  `Inventory Transition Fact` where `Part SKU`=%s and `Inventory Transaction Type`='Sale' and `Date`>=%s  and `Date`<=%s  and `Date`>=%s     ",prepare_mysql($this->data['Part SKU']),prepare_mysql($this->data['Part Valid From']),prepare_mysql($this->data['Part Valid To']) ,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -1 month")))  );
       //      print "$sql\n";
       $result=mysql_query($sql);
       if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 	$required=$row['required'];
-	$provided=-$row['qty'];
+	$provided=$row['qty'];
 	$given=$row['given'];
 	$amount_in=$row['amount_in'];
 	$value=$row['value'];
-	$value_free=$row['value_free'];$sold=-$row['qty']-$row['given'];
+	$value_free=$row['value_free'];
+	$sold=$row['qty']-$row['given'];
       }
-      $abs_profit=$amount_in+$value;
-      $profit_sold=$amount_in+$value-$value_free;
+      $abs_profit=$amount_in-$value;
+      $profit_sold=$amount_in-$value+$value_free;
 
       if($amount_in==0)
 	$margin=0;
       else
-	$margin=($value-$value_free)/$amount_in;
+	$margin=$profit_sold/$amount_in;
 
 
       $sql=sprintf("update `Part Dimension` set `Part 1 Month Acc Required`=%f ,`Part 1 Month Acc Provided`=%f,`Part 1 Month Acc Given`=%f ,`Part 1 Month Acc Sold Amount`=%f ,`Part 1 Month Acc Absolute Profit`=%f ,`Part 1 Month Acc Profit When Sold`=%f  , `Part 1 Month Acc Sold`=%f , `Part 1 Month Acc Margin`=%s  where `Part Key`=%d "
@@ -263,7 +549,7 @@ class part{
 		   ,$this->id);
       //            print "$sql\n";
       if(!mysql_query($sql))
-	exit("error con not uopdate product part when loading sales");
+	exit(" $sql\n error con not uopdate product part when loading sales");
 
   $sold=0;
          $required=0;
@@ -273,23 +559,23 @@ class part{
       $value=0;
       $value_free=0;
       $margin=0;
-      $sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(`Inventory Transaction Quantity`),0) as qty, ifnull(sum(`Inventory Transaction Amount`),0) as value from  `Inventory Transition Fact` where `Part SKU`=%s and `Inventory Transaction Type`='Sale' and `Date`>=%s  and `Date`<=%s  and `Date`>=%s     ",prepare_mysql($this->data['Part SKU']),prepare_mysql($this->data['Part Valid From']),prepare_mysql($this->data['Part Valid To']) ,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -1 week")))  );
+      $sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(-`Inventory Transaction Quantity`),0) as qty, ifnull(sum(-`Inventory Transaction Amount`),0) as value from  `Inventory Transition Fact` where `Part SKU`=%s and `Inventory Transaction Type`='Sale' and `Date`>=%s  and `Date`<=%s  and `Date`>=%s     ",prepare_mysql($this->data['Part SKU']),prepare_mysql($this->data['Part Valid From']),prepare_mysql($this->data['Part Valid To']) ,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -1 week")))  );
       //      print "$sql\n";
       $result=mysql_query($sql);
       if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 	$required=$row['required'];
-	$provided=-$row['qty'];
+	$provided=$row['qty'];
 	$given=$row['given'];
 	$amount_in=$row['amount_in'];
 	$value=$row['value'];
-	$value_free=$row['value_free'];$sold=-$row['qty']-$row['given'];
+	$value_free=$row['value_free'];$sold=$row['qty']-$row['given'];
       }
-      $abs_profit=$amount_in+$value;
-      $profit_sold=$amount_in+$value-$value_free;
+      $abs_profit=$amount_in-$value;
+      $profit_sold=$amount_in-$value+$value_free;
       if($amount_in==0)
 	$margin=0;
       else
-	$margin=($value-$value_free)/$amount_in;
+	$margin=$profit_sold/$amount_in;
 
       $sql=sprintf("update `Part Dimension` set `Part 1 Week Acc Required`=%f ,`Part 1 Week Acc Provided`=%f,`Part 1 Week Acc Given`=%f ,`Part 1 Week Acc Sold Amount`=%f ,`Part 1 Week Acc Absolute Profit`=%f ,`Part 1 Week Acc Profit When Sold`=%f  , `Part 1 Week Acc Sold`=%f , `Part 1 Week Acc Margin`=%s where `Part Key`=%d "
 		   ,$required
@@ -301,7 +587,7 @@ class part{
 		   ,$this->id);
       //            print "$sql\n";
       if(!mysql_query($sql))
-	exit("error con not uopdate product part when loading sales");
+	exit(" $sql\n error con not uopdate product part when loading sales");
 
 
 

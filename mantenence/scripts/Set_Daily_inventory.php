@@ -26,9 +26,18 @@ $not_found=00;
 
 $_first_date="2007-03-24";
 
+
+$sql="select * from `Part Dimension`  group by `Part SKU` ";
+$resultx=mysql_query($sql);
+while($rowx=mysql_fetch_array($resultx, MYSQL_ASSOC)   ){
+
+$part_sku=$rowx['Part SKU'];
 $today=strtotime("2007-04-01");
 
-$sql=sprintf("delete from `Inventory Spanshot Fact` ");
+
+
+
+$sql=sprintf("delete from `Inventory Spanshot Fact` where `Part SKU`=%d ",$part_sku);
 mysql_query($sql);
 
 
@@ -40,7 +49,7 @@ while($today<strtotime('now -2 day') and  $days<20000  ){
   //print $_first_date." + $days days \n";
   $today=strtotime($_first_date." + $days days ");
 
-  $sql=sprintf("select * from `Part Dimension`  where `Part Valid From`<=%s and `Part Valid To`>=%s   group by `Part SKU` ",prepare_mysql(date("Y-m-d",$today)),prepare_mysql(date("Y-m-d",$today)));
+  $sql=sprintf("select * from `Part Dimension`  where `Part Valid From`<=%s and `Part Valid To`>=%s  and `Part SKU`=%d   ",prepare_mysql(date("Y-m-d",$today)),prepare_mysql(date("Y-m-d",$today)),$part_sku);
   // print "$sql\n";
 $result=mysql_query($sql);
   while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
@@ -163,7 +172,7 @@ $result=mysql_query($sql);
 
 
 //  }
-
+ }
 
 function get_cost($part_sku,$date){
 
@@ -199,7 +208,7 @@ function get_cost($part_sku,$date){
 
 }
 
-
+ 
 
 function get_selling_price($part_sku,$date){
 

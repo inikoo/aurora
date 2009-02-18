@@ -107,9 +107,9 @@ switch($tipo){
    $filtered=0;
    $adata=array();
    $sql="
-select tipo,id_in_table,u.authuserid as id ,gu.group_id,group_concat(distinct g.group_id separator ',') as groups,u.isactive as isactive,u.name as name ,u.surname as surname,u.email as email,u.handle as handle,lower(c.code2) as countrycode,l.id as lang_id,c.Name as country from liveuser_users as u left join liveuser_perm_users as pu on (u.authuserid=pu.auth_user_id) left join liveuser_groupusers as gu on (gu.perm_user_id=pu.perm_user_id) left join liveuser_groups as g on (g.group_id=gu.group_id)  left join lang as l on (l.id=lang_id) left join country as c on (l.country_id=c.id)   group by u.authuserid   order by $order $order_direction limit $start_from,$number_results    ;
+select tipo,id_in_table,u.authuserid as id ,gu.group_id,group_concat(distinct g.group_id separator ',') as groups,u.isactive as isactive,u.name as name ,u.surname as surname,u.email as email,u.handle as handle,lower(c.`Country 2 Alpha Code`) as countrycode,l.`Language Key` as lang_id,c.`Country Name` as country from liveuser_users as u left join liveuser_perm_users as pu on (u.authuserid=pu.auth_user_id) left join liveuser_groupusers as gu on (gu.perm_user_id=pu.perm_user_id) left join liveuser_groups as g on (g.group_id=gu.group_id)  left join `Language Dimension` as l on (l.`Language Key`=lang_id) left join `Country Dimension` as c on (l.`Country 2 Alpha Code`=c.`Country 2 Alpha Code`)   group by u.authuserid   order by $order $order_direction limit $start_from,$number_results    ;
 ";
-   //  print $sql;
+   // print $sql;
 
    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
    $total=$res->numRows();

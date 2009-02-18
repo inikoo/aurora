@@ -68,12 +68,14 @@ $smarty->assign('home',$product_home);
 
 
 
-$tipo_filter=($q==''?$_SESSION['state']['products']['table']['f_field']:'code');
+$tipo_filter=($q==''?$_SESSION['state']['parts']['table']['f_field']:'code');
 $smarty->assign('filter',$tipo_filter);
-$smarty->assign('filter_value',($q==''?$_SESSION['state']['products']['table']['f_value']:addslashes($q)));
+$smarty->assign('filter_value',($q==''?$_SESSION['state']['parts']['table']['f_value']:addslashes($q)));
 $filter_menu=array(
-		   'code'=>array('db_key'=>'code','menu_label'=>'Product starting with  <i>x</i>','label'=>'Code'),
-		   'description'=>array('db_key'=>'description','menu_label'=>'Product Description with <i>x</i>','label'=>'Description'),
+		   'used_in'=>array('db_key'=>'used_in','menu_label'=>'Used in <i>x</i>','label'=>'Used in'),
+		   'supplied_by'=>array('db_key'=>'supplied_by','menu_label'=>'Supplied by <i>x</i>','label'=>'Supplied by'),
+		   'description'=>array('db_key'=>'description','menu_label'=>'Part Description like <i>x</i>','label'=>'Description'),
+
 		   );
 $smarty->assign('filter_menu',$filter_menu);
 
@@ -82,6 +84,9 @@ $smarty->assign('filter_name',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu',$paginator_menu);
 $smarty->assign('view',$_SESSION['state']['parts']['view']);
+$smarty->assign('period',$_SESSION['state']['parts']['period']);
+$smarty->assign('avg',$_SESSION['state']['parts']['avg']);
+
 $smarty->assign('currency',$myconf['currency_symbol']);
 
 $smarty->display('parts.tpl');

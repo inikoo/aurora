@@ -366,15 +366,17 @@ $default_state=array(
 		     'parts'=>array(
 				       'details'=>false,
 				       'view'=>'general',
+				       'period'=>'year',
+				       'percentage'=>0,
+				       'mode'=>'all',
+				       'avg'=>'totals',
 				       'table'=>array(
-						      'percentage'=>0,
-						      'period'=>'year',
 						      'order'=>'sku',
 						      'order_dir'=>'',
 						      'sf'=>0,
 						      'nr'=>20,
 						      'where'=>'where true',
-						      'f_field'=>'description',
+						      'f_field'=>'used_in',
 						      'f_value'=>''
 
 						      )

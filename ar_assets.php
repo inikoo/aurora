@@ -2893,18 +2893,27 @@ case('parts'):
       else
 	$tableid=0;
 
-      if(isset( $_REQUEST['period']))
+      if(isset( $_REQUEST['avg']))
+	$avg=$_REQUEST['avg'];
+      else
+	$avg=$_SESSION['state']['parts']['avg'];
+      $_SESSION['state']['parts']['avg']=$avg;
+
+
+ if(isset( $_REQUEST['period']))
 	$period=$_REQUEST['period'];
       else
-	$period=$conf['period'];
+	$period=$_SESSION['state']['parts']['period'];
+      $_SESSION['state']['parts']['period']=$period;
+
       
       if(isset( $_REQUEST['percentage']))
 	$percentage=$_REQUEST['percentage'];
       else
-	$percentage=$conf['percentage'];
+	$percentage=$_SESSION['state']['parts']['percentage'];
+      $_SESSION['state']['parts']['percentage']=$percentage;
 
-
-      $_SESSION['state']['parts']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value,'period'=>$period,'percentage'=>$percentage);
+      $_SESSION['state']['parts']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
       
       
      $filter_msg='';
@@ -2922,11 +2931,14 @@ case('parts'):
      $_dir=$order_direction;
      $filter_msg='';
      $wheref='';
-     if($f_field=='code' and $f_value!='')
-       $wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
+     if($f_field=='used_in' and $f_value!='')
+       $wheref.=" and  `Part XHTML Currently Used In` like '%".addslashes($f_value)."%'";
      elseif($f_field=='description' and $f_value!='')
-       $wheref.=" and  ".$f_field." like '%".addslashes($f_value)."%'";
-     
+       $wheref.=" and  `Part XHTML Description` like '%".addslashes($f_value)."%'";
+     elseif($f_field=='supplied_by' and $f_value!='')
+       $wheref.=" and  `Part XHTML Currently Supplied By` like '%".addslashes($f_value)."%'";
+
+
      $sql="select count(*) as total from `Part Dimension`  $where $wheref";
 
      $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die("here ".$res->getMessage());}
@@ -2947,24 +2959,35 @@ case('parts'):
 
    }
 
+
+
+
      $rtext=$total_records." ".ngettext('part','parts',$total_records);
      if($total_records>$number_results)
        $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
      
        if($total==0 and $filtered>0){
      switch($f_field){
-     case('code'):
-       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any part with code like ")." <b>".$f_value."*</b> ";
+     case('used_in'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any part used in ")." <b>".$f_value."*</b> ";
+       break;
+     case('suppiled_by'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any part supplied by ")." <b>".$f_value."*</b> ";
        break;
      case('description'):
        $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any part with description like ")." <b>".$f_value."*</b> ";
        break;
      }
-   }
+       }
    elseif($filtered>0){
+
+
      switch($f_field){
-     case('code'):
-       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('parts with code like')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+     case('used_in'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('parts used in')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;
+  case('supplied_by'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('parts supplied by')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
        break;
      case('description'):
        $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('parts with description like')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
@@ -2973,6 +2996,9 @@ case('parts'):
    }else
       $filter_msg='';
        
+
+
+
        $_order=$order;
        $_order_dir=$order_dir;
 
@@ -2983,6 +3009,11 @@ case('parts'):
 	 $order='`Part XHTML Description`';
        else if($order=='available_for')
 	 $order='`Part Available Days Forecast`';
+       else if($order=='supplied_by')
+	 $order='`Part XHTML Currently Supplied By`';
+       else if($order=='used_in')
+	 $order='`Part XHTML Currently Used In`';
+
        else if($order=='margin'){
 	 if($period=='all')
 	   $order=' `Part Total Margin` ';
@@ -2995,59 +3026,368 @@ case('parts'):
 	 elseif($period=='week')
 	   $order=' `Part 1 Week Acc Margin` ';
 	 
+       }else if($order=='sold'){
+	 if($period=='all')
+	   $order=' `Part Total Sold` ';
+	 elseif($period=='year')
+	   $order=' `Part 1 Year Acc Sold` ';
+	 elseif($period=='quarter')
+	   $order=' `Part 1 Quarter Acc Sold` ';
+	 elseif($period=='month')
+	   $order=' `Part 1 Month Acc Sold` ';
+	 elseif($period=='week')
+	   $order=' `Part 1 Week Acc Sold` ';
+	 
+       }else if($order=='money_in'){
+	 if($period=='all')
+	   $order=' `Part Total Sold Amount` ';
+	 elseif($period=='year')
+	   $order=' `Part 1 Year Acc Sold Amount` ';
+	 elseif($period=='quarter')
+	   $order=' `Part 1 Quarter Acc Sold Amount` ';
+	 elseif($period=='month')
+	   $order=' `Part 1 Month Acc Sold Amount` ';
+	 elseif($period=='week')
+	   $order=' `Part 1 Week Acc Sold Amount` ';
+	 
+       }else if($order=='profit_sold'){
+	 if($period=='all')
+	   $order=' `Part Total Profit When Sold` ';
+	 elseif($period=='year')
+	   $order=' `Part 1 Year Acc Profit When Sold` ';
+	 elseif($period=='quarter')
+	   $order=' `Part 1 Quarter Acc Profit When Sold` ';
+	 elseif($period=='month')
+	   $order=' `Part 1 Month Acc Profit When Sold` ';
+	 elseif($period=='week')
+	   $order=' `Part 1 Week Acc Profit When Sold` ';
+	 
+       }else if($order=='avg_stock'){
+	 if($period=='all')
+	   $order=' `Part Total AVG Stock` ';
+	 elseif($period=='year')
+	   $order=' `Part 1 Year Acc AVG Stock` ';
+	 elseif($period=='quarter')
+	   $order=' `Part 1 Quarter Acc AVG Stock` ';
+	 elseif($period=='month')
+	   $order=' `Part 1 Month Acc AVG Stock` ';
+	 elseif($period=='week')
+	   $order=' `Part 1 Week Acc AVG Stock` ';
+	 
+       }else if($order=='avg_stockvalue'){
+	 if($period=='all')
+	   $order=' `Part Total AVG Stock Value` ';
+	 elseif($period=='year')
+	   $order=' `Part 1 Year Acc AVG Stock Value` ';
+	 elseif($period=='quarter')
+	   $order=' `Part 1 Quarter Acc AVG Stock Value` ';
+	 elseif($period=='month')
+	   $order=' `Part 1 Month Acc AVG Stock Value` ';
+	 elseif($period=='week')
+	   $order=' `Part 1 Week Acc AVG Stock Value` ';
+	 
+       }else if($order=='keep_days'){
+	 if($period=='all')
+	   $order=' `Part Total Keeping Days` ';
+	 elseif($period=='year')
+	   $order=' `Part 1 Year Acc Keeping Days` ';
+	 elseif($period=='quarter')
+	   $order=' `Part 1 Quarter Acc Keeping Days` ';
+	 elseif($period=='month')
+	   $order=' `Part 1 Month Acc Keeping Days` ';
+	 elseif($period=='week')
+	   $order=' `Part 1 Week Acc Keeping Days` ';
+	 
+       }else if($order=='outstock_days'){
+	 if($period=='all')
+	   $order=' `Part Total Out of Stock Days` ';
+	 elseif($period=='year')
+	   $order=' `Part 1 Year Acc Out of Stock Days` ';
+	 elseif($period=='quarter')
+	   $order=' `Part 1 Quarter Acc Out of Stock Days` ';
+	 elseif($period=='month')
+	   $order=' `Part 1 Month Acc Out of Stock Days` ';
+	 elseif($period=='week')
+	   $order=' `Part 1 Week Acc Out of Stock Days` ';
+	 
+       }else if($order=='unknown_days'){
+	 if($period=='all')
+	   $order=' `Part Total Unknown Stock Days` ';
+	 elseif($period=='year')
+	   $order=' `Part 1 Year Unknown Stock Days` ';
+	 elseif($period=='quarter')
+	   $order=' `Part 1 Quarter Acc Unknown Stock Days` ';
+	 elseif($period=='month')
+	   $order=' `Part 1 Month Acc Unknown Stock Days` ';
+	 elseif($period=='week')
+	   $order=' `Part 1 Week Acc Unknown Stock Days` ';
+	 
+       }else if($order=='gmroi'){
+	 if($period=='all')
+	   $order=' `Part Total GMROI` ';
+	 elseif($period=='year')
+	   $order=' `Part 1 Year Acc GMROI` ';
+	 elseif($period=='quarter')
+	   $order=' `Part 1 Quarter Acc GMROI` ';
+	 elseif($period=='month')
+	   $order=' `Part 1 Month Acc GMROI` ';
+	 elseif($period=='week')
+	   $order=' `Part 1 Week Acc GMROI` ';
+	 
        }
        
+ 
+
+
+       
        $sql="select * from `Part Dimension`  $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
-       //              print $sql;
-  $adata=array();
-     $result=mysql_query($sql);
+       // print $sql;
+       $adata=array();
+       $result=mysql_query($sql);
       while($data=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   
 	if($period=='all'){
-	  $sold=number($data['Part Total Sold']);
-	  $given=number($data['Part Total Given']);
-	  if($given!=0)
-	    $sold="$sold ($given)"; 
+	  if($avg=='totals'){
+	    $sold=number($data['Part Total Sold']);
+	    $given=number($data['Part Total Given']);
+	    $sold_amount=money($data['Part Total Sold Amount']);
+	    $abs_profit=money($data['Part Total Absolute Profit']);
+	    $profit_sold=money($data['Part Total Profit When Sold']);
+	  }else{
 
-	  $sold_amount=money($data['Part Total Sold Amount']);
-	  $abs_profit=money($data['Part Total Absolute Profit']);
-	  $profit_sold=money($data['Part Total Profit When Sold']);
-	  $margin=percentage($data['Part Total Margin'],1);
-	}elseif($period=='year'){
-	  $sold=number($data['Part 1 Year Acc Sold']);
-	  $given=number($data['Part 1 Year Acc Given']);
+	    if($avg=='month')
+	      $factor=$data['Part Total Keeping Days']/30.4368499;
+	    elseif($avg=='month_eff')
+	      $factor=($data['Part Total Keeping Days']-$data['Part Total Out of Stock Days'])/30.4368499;
+	    elseif($avg=='week')
+	      $factor=$data['Part Total Keeping Days']/7;
+	    elseif($avg=='week_eff')
+	      $factor=($data['Part Total Keeping Days']-$data['Part Total Out of Stock Days'])/7;
+	    else
+	      $factor=1;
+	    if($factor==0){
+	      $sold=0;
+	      $given=0;
+	      $sold_amount=money(0);
+	      $abs_profit=money(0);
+	      $profit_sold=money(0);
+	    }else{
+	      $sold=number($data['Part Total Sold']/$factor);
+	      $given=number($data['Part Total Given']/$factor);
+	      $sold_amount=money($data['Part Total Sold Amount']/$factor);
+	      $abs_profit=money($data['Part Total Absolute Profit']/$factor);
+	      $profit_sold=money($data['Part Total Profit When Sold']/$factor);
+	    }
+	  }
+	  
 	  if($given!=0)
 	    $sold="$sold ($given)"; 
-	  $sold_amount=money($data['Part 1 Year Acc Sold Amount']);
-	  $abs_profit=money($data['Part 1 Year Acc Absolute Profit']);
-	  $profit_sold=money($data['Part 1 Year Acc Profit When Sold']);
+	  $margin=percentage($data['Part Total Margin'],1);
+	  $avg_stock=number($data['Part Total AVG Stock']);
+	  $avg_stockvalue=money($data['Part Total AVG Stock Value']);
+	  $keep_days=number($data['Part Total Keeping Days'],0);
+	  $outstock_days=percentage($data['Part Total Out of Stock Days'],$data['Part Total Keeping Days']);
+	  $unknown_days=percentage($data['Part Total Unknown Stock Days'],$data['Part Total Keeping Days']);
+	  $gmroi=number($data['Part Total GMROI'],0);
+
+	}elseif($period=='year'){
+
+	  
+	  if($avg=='totals'){
+	    $sold=number($data['Part 1 Year Acc Sold']);
+	    $given=number($data['Part 1 Year Acc Given']);
+	    $sold_amount=money($data['Part 1 Year Acc Sold Amount']);
+	    $abs_profit=money($data['Part 1 Year Acc Absolute Profit']);
+	    $profit_sold=money($data['Part 1 Year Acc Profit When Sold']);
+	  }else{
+
+	    if($avg=='month')
+	      $factor=$data['Part 1 Year Acc Keeping Days']/30.4368499;
+	    elseif($avg=='month_eff')
+	      $factor=($data['Part 1 Year Acc Keeping Days']-$data['Part 1 Year Acc Out of Stock Days'])/30.4368499;
+	    elseif($avg=='week')
+	      $factor=$data['Part 1 Year Acc Keeping Days']/7;
+	    elseif($avg=='week_eff')
+	      $factor=($data['Part 1 Year Acc Keeping Days']-$data['Part 1 Year Acc Out of Stock Days'])/7;
+	    else
+	      $factor=1;
+	    if($factor==0){
+	      $sold=0;
+	      $given=0;
+	      $sold_amount=money(0);
+	      $abs_profit=money(0);
+	      $profit_sold=money(0);
+	    }else{
+	      $sold=number($data['Part 1 Year Acc Sold']/$factor);
+	      $given=number($data['Part 1 Year Acc Given']/$factor);
+	      $sold_amount=money($data['Part 1 Year Acc Sold Amount']/$factor);
+	      $abs_profit=money($data['Part 1 Year Acc Absolute Profit']/$factor);
+	      $profit_sold=money($data['Part 1 Year Acc Profit When Sold']/$factor);
+	    }
+	  }
+
+	   if($given!=0)
+	    $sold="$sold ($given)"; 
+	  
+
 	  $margin=percentage($data['Part 1 Year Acc Margin'],1);
+	  $avg_stock=number($data['Part 1 Year Acc AVG Stock']);
+	  $avg_stockvalue=money($data['Part 1 Year Acc AVG Stock Value']);
+	  $keep_days=number($data['Part 1 Year Acc Keeping Days'],0);
+	  $outstock_days=percentage($data['Part 1 Year Acc Out of Stock Days'],$data['Part 1 Year Acc Keeping Days']);
+	  $unknown_days=percentage($data['Part 1 Year Acc Unknown Stock Days'],$data['Part 1 Year Acc Keeping Days']);
+	  $gmroi=number($data['Part 1 Year Acc GMROI'],0);
+	  
+
 
 	}elseif($period=='quarter'){
-	  $sold=number($data['Part 1 Quarter Acc Sold']);
-	  $given=number($data['Part 1 Quarter Acc Given']);
+
+
+	   if($avg=='totals'){
+	    $sold=number($data['Part 1 Quarter Acc Sold']);
+	    $given=number($data['Part 1 Quarter Acc Given']);
+	    $sold_amount=money($data['Part 1 Quarter Acc Sold Amount']);
+	    $abs_profit=money($data['Part 1 Quarter Acc Absolute Profit']);
+	    $profit_sold=money($data['Part 1 Quarter Acc Profit When Sold']);
+	  }else{
+
+	    if($avg=='month')
+	      $factor=$data['Part 1 Quarter Acc Keeping Days']/30.4368499;
+	    elseif($avg=='month_eff')
+	      $factor=($data['Part 1 Quarter Acc Keeping Days']-$data['Part 1 Quarter Acc Out of Stock Days'])/30.4368499;
+	    elseif($avg=='week')
+	      $factor=$data['Part 1 Quarter Acc Keeping Days']/7;
+	    elseif($avg=='week_eff')
+	      $factor=($data['Part 1 Quarter Acc Keeping Days']-$data['Part 1 Quarter Acc Out of Stock Days'])/7;
+	    else
+	      $factor=1;
+	    if($factor==0){
+	      $sold=0;
+	      $given=0;
+	      $sold_amount=money(0);
+	      $abs_profit=money(0);
+	      $profit_sold=money(0);
+	    }else{
+	      $sold=number($data['Part 1 Quarter Acc Sold']/$factor);
+	      $given=number($data['Part 1 Quarter Acc Given']/$factor);
+	      $sold_amount=money($data['Part 1 Quarter Acc Sold Amount']/$factor);
+	      $abs_profit=money($data['Part 1 Quarter Acc Absolute Profit']/$factor);
+	      $profit_sold=money($data['Part 1 Quarter Acc Profit When Sold']/$factor);
+	    }
+	  }
+
+
+
 	   if($given!=0)
 	    $sold="$sold ($given)"; 
-	  $sold_amount=money($data['Part 1 Quarter Acc Sold Amount']);
-	  $abs_profit=money($data['Part 1 Quarter Acc Absolute Profit']);
-	  $profit_sold=money($data['Part 1 Quarter Acc Profit When Sold']);
-	  $margin=percentage($data['Part 1 Quarter Acc Margin'],1);
+	   $margin=percentage($data['Part 1 Quarter Acc Margin'],1);
+	   $avg_stock=number($data['Part 1 Quarter Acc AVG Stock']);
+	   $avg_stockvalue=money($data['Part 1 Quarter Acc AVG Stock Value']);
+	   $keep_days=number($data['Part 1 Quarter Acc Keeping Days'],0);
+	   $outstock_days=percentage($data['Part 1 Quarter Acc Out of Stock Days'],$data['Part 1 Quarter Acc Keeping Days']);
+	   $unknown_days=percentage($data['Part 1 Quarter Acc Unknown Stock Days'],$data['Part 1 Quarter Acc Keeping Days']);
+	   $gmroi=number($data['Part 1 Quarter Acc GMROI'],0);
+
 	}elseif($period=='month'){
-	  $sold=number($data['Part 1 Month Acc Sold']);
-	  $given=number($data['Part 1 Month Acc Given']);
-	  $sold_amount=money($data['Part 1 Month Acc Sold Amount']);
-	  $abs_profit=money($data['Part 1 Month Acc Absolute Profit']);
-	  $profit_sold=money($data['Part 1 Month Acc Profit When Sold']);
+
+
+
+	  
+	  if($avg=='totals'){
+	    $sold=number($data['Part 1 Month Acc Sold']);
+	    $given=number($data['Part 1 Month Acc Given']);
+	    $sold_amount=money($data['Part 1 Month Acc Sold Amount']);
+	    $abs_profit=money($data['Part 1 Month Acc Absolute Profit']);
+	    $profit_sold=money($data['Part 1 Month Acc Profit When Sold']);
+	  }else{
+
+	    if($avg=='month')
+	      $factor=$data['Part 1 Month Acc Keeping Days']/30.4368499;
+	    elseif($avg=='month_eff')
+	      $factor=($data['Part 1 Month Acc Keeping Days']-$data['Part 1 Month Acc Out of Stock Days'])/30.4368499;
+	    elseif($avg=='week')
+	      $factor=$data['Part 1 Month Acc Keeping Days']/7;
+	    elseif($avg=='week_eff')
+	      $factor=($data['Part 1 Month Acc Keeping Days']-$data['Part 1 Month Acc Out of Stock Days'])/7;
+	    else
+	      $factor=1;
+	    if($factor==0){
+	      $sold=0;
+	      $given=0;
+	      $sold_amount=money(0);
+	      $abs_profit=money(0);
+	      $profit_sold=money(0);
+	    }else{
+	      $sold=number($data['Part 1 Month Acc Sold']/$factor);
+	      $given=number($data['Part 1 Month Acc Given']/$factor);
+	      $sold_amount=money($data['Part 1 Month Acc Sold Amount']/$factor);
+	      $abs_profit=money($data['Part 1 Month Acc Absolute Profit']/$factor);
+	      $profit_sold=money($data['Part 1 Month Acc Profit When Sold']/$factor);
+	    }
+	  }
+
+
+	  if($given!=0)
+	    $sold="$sold ($given)"; 
+	  
 	  $margin=percentage($data['Part 1 Month Acc Margin'],1);
+
+	  $avg_stock=number($data['Part 1 Month Acc AVG Stock']);
+	  $avg_stockvalue=money($data['Part 1 Month Acc AVG Stock Value']);
+	  $keep_days=number($data['Part 1 Month Acc Keeping Days'],0);
+	  $outstock_days=percentage($data['Part 1 Month Acc Out of Stock Days'],$data['Part 1 Month Acc Keeping Days']);
+	  $unknown_days=percentage($data['Part 1 Month Acc Unknown Stock Days'],$data['Part 1 Month Acc Keeping Days']);
+	  $gmroi=number($data['Part 1 Month Acc GMROI'],0);
+	  
+
 	}elseif($period=='week'){
-	  $sold=number($data['Part 1 Week Acc Sold']);
-	  $given=number($data['Part 1 Week Acc Given']);
-	   if($given!=0)
+
+	    
+	  if($avg=='totals'){
+	    $sold=number($data['Part 1 Week Acc Sold']);
+	    $given=number($data['Part 1 Week Acc Given']);
+	    $sold_amount=money($data['Part 1 Week Acc Sold Amount']);
+	    $abs_profit=money($data['Part 1 Week Acc Absolute Profit']);
+	    $profit_sold=money($data['Part 1 Week Acc Profit When Sold']);
+	  }else{
+
+	    if($avg=='week')
+	      $factor=$data['Part 1 Week Acc Keeping Days']/30.4368499;
+	    elseif($avg=='week_eff')
+	      $factor=($data['Part 1 Week Acc Keeping Days']-$data['Part 1 Week Acc Out of Stock Days'])/30.4368499;
+	    elseif($avg=='week')
+	      $factor=$data['Part 1 Week Acc Keeping Days']/7;
+	    elseif($avg=='week_eff')
+	      $factor=($data['Part 1 Week Acc Keeping Days']-$data['Part 1 Week Acc Out of Stock Days'])/7;
+	    else
+	      $factor=1;
+	    if($factor==0){
+	      $sold=0;
+	      $given=0;
+	      $sold_amount=money(0);
+	      $abs_profit=money(0);
+	      $profit_sold=money(0);
+	    }else{
+	      $sold=number($data['Part 1 Week Acc Sold']/$factor);
+	      $given=number($data['Part 1 Week Acc Given']/$factor);
+	      $sold_amount=money($data['Part 1 Week Acc Sold Amount']/$factor);
+	      $abs_profit=money($data['Part 1 Week Acc Absolute Profit']/$factor);
+	      $profit_sold=money($data['Part 1 Week Acc Profit When Sold']/$factor);
+	    }
+	  }
+
+
+
+	  if($given!=0)
 	     $sold="$sold ($given)"; 
-	  $sold_amount=money($data['Part 1 Week Acc Sold Amount']);
-	  $abs_profit=money($data['Part 1 Week Acc Absolute Profit']);
-	  $profit_sold=money($data['Part 1 Week Acc Profit When Sold']);
 	  $margin=percentage($data['Part 1 Week Acc Margin'],1);
+	   $avg_stock=number($data['Part 1 Week Acc AVG Stock']);
+	  $avg_stockvalue=money($data['Part 1 Week Acc AVG Stock Value']);
+	  $keep_days=number($data['Part 1 Week Acc Keeping Days'],0);
+	  $outstock_days=percentage($data['Part 1 Week Acc Out of Stock Days'],$data['Part 1 Week Acc Keeping Days']);
+	  $unknown_days=percentage($data['Part 1 Week Acc Unknown Stock Days'],$data['Part 1 Week Acc Keeping Days']);
+	  $gmroi=number($data['Part 1 Week Acc GMROI'],0);
+	  
 	}
 
 
@@ -3059,14 +3399,19 @@ case('parts'):
 		   ,'supplied_by'=>$data['Part XHTML Currently Supplied By']
 		   ,'stock'=>number($data['Part Current Stock'])
 		   ,'available_for'=>interval($data['Part XHTML Available For Forecast'])
-		   ,'stock_value'=>number($data['Part Current Stock Cost'])
+		   ,'stock_value'=>money($data['Part Current Stock Cost'])
 		   ,'sold'=>$sold
 		   ,'given'=>$given
 		   ,'money_in'=>$sold_amount
 		   ,'profit'=>$abs_profit
 		   ,'profit_sold'=>$profit_sold
 		   ,'margin'=>$margin
-		   
+		   ,'avg_stock'=>$avg_stock
+		   ,'avg_stockvalue'=>$avg_stockvalue
+		   ,'keep_days'=>$keep_days
+		   ,'outstock_days'=>$outstock_days
+		   ,'unknown_days'=>$unknown_days
+		   ,'gmroi'=>$gmroi
 		   );
   }
   $response=array('resultset'=>

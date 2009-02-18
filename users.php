@@ -50,10 +50,10 @@ $smarty->assign('parent','users.php');
 $smarty->assign('title', _('Users'));
 
 
-$sql="select id from lang";
+$sql="select `Language Key` id from `Language Dimension`";
 $newuser_langs=array();
-$res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-while($row=$res->fetchRow()) {
+$result=mysql_query($sql);
+ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $newuser_langs[$row['id']]=$_lang[$row['id']];
  }
 $smarty->assign('newuser_langs',$newuser_langs);
@@ -67,12 +67,15 @@ while($row=$res->fetchRow()) {
 $smarty->assign('newuser_groups',$newuser_groups);
 
 //create user list
-$sql=sprintf("select id,alias,(select count(*) from liveuser_users where tipo=1 and id_in_table=staff.id) as is_user from staff where active=1 order by alias");
+$sql=sprintf("select `Employee ID` as id,`Employee Alias` as alias,(select count(*) from liveuser_users where tipo=1 and id_in_table=`Employee Dimension`.`Employee Key`) as is_user from `Employee Dimension` where `Employee Status`='Working' and `Employee Most Recent`='Yes' order by `Employee Alias`");
 
-$res = $db->query($sql);
+//print $sql;
+ $result=mysql_query($sql);
+
 $num_cols=5;
 $staff=array();
-while($row=$res->fetchrow()){
+
+while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $staff[]=array('alias'=>$row['alias'],'id'=>$row['id'],'is_user'=>$row['is_user']);
  }
 
