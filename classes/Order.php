@@ -87,6 +87,7 @@ class Order{
       $this->data['Order Original Data']=$data['order original data'];
       $this->data['Order Original Data Source']=$data['order original data source'];
 
+
       $this->data['Order Original Metadata']=$data['order original metadata'];
       $this->data['Order Main Store Key']=$store->id;
       $this->data['Order Main Store Code']=$store->get('code');
@@ -686,7 +687,7 @@ class Order{
     $this->data['Invoice Multiple Ship Tos']=$this->data['Order Multiple Ship Tos'];
     $this->data['Invoice Gross Shipping Amount']=$invoice_data['Invoice Gross Shipping Amount'];
     $this->data['Invoice Gross Charges Amount']=$invoice_data['Invoice Gross Charges Amount'];
-    $this->data['Invoice Metadata']=$this->data['Order Metadata'];
+    $this->data['Invoice Metadata']=$this->data['Order Original Metadata'];
 
     $this->create_invoice_header();
     
@@ -752,7 +753,7 @@ class Order{
     $this->data['Delivery Note Customer Name']=$this->data['Order Customer Name'];
     $this->data['Delivery Note XHTML Ship To']=$this->data['Order XHTML Ship Tos'];
     $this->data['Delivery Note Ship To Key']=$this->data['Order Main Ship To Key'];
-    $this->data['Delivery Note Metadata']=$this->data['Order Metadata'];
+    $this->data['Delivery Note Metadata']=$this->data['Order Original Metadata'];
   $this->create_dn_header();
     
     $line_number=1;
@@ -1093,7 +1094,7 @@ class Order{
 //     $sql="select sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) from `Order Transaction Fact` where "
 
 
-    $sql=sprintf("insert into `Order Dimension` (`Order Date`,`Order Last Updated Date`,`Order Public ID`,`Order Main Store Key`,`Order Main Store Code`,`Order Main Store Type`,`Order Customer Key`,`Order Customer Name`,`Order Current Dispatch State`,`Order Current Payment State`,`Order Current XHTML State`,`Order Customer Message`,`Order Original Data MIME Type`,`Order Original Data`,`Order XHTML Ship Tos`,`Order Gross Amount`,`Order Discount Amount`,`Order Metadata`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%.2f,%.2f,%s)"
+    $sql=sprintf("insert into `Order Dimension` (`Order Date`,`Order Last Updated Date`,`Order Public ID`,`Order Main Store Key`,`Order Main Store Code`,`Order Main Store Type`,`Order Customer Key`,`Order Customer Name`,`Order Current Dispatch State`,`Order Current Payment State`,`Order Current XHTML State`,`Order Customer Message`,`Order Original Data MIME Type`,`Order Original Data`,`Order XHTML Ship Tos`,`Order Gross Amount`,`Order Discount Amount`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%.2f,%.2f)"
 		 ,prepare_mysql($this->data['Order Date'])
 		 ,prepare_mysql($this->data['Order Date'])
 		 ,prepare_mysql($this->data['Order Public ID'])
@@ -1112,7 +1113,7 @@ class Order{
 		 
 		 ,$this->data['Order Gross Amount']
 		 ,$this->data['Order Discount Amount']
-		 ,prepare_mysql($this->data['Order Metadata'])
+		
 		 );
 
      If(mysql_query($sql)){
