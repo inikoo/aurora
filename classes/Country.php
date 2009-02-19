@@ -39,7 +39,7 @@ class Country{
   function get_data($key,$id){
     
     if($key=='id'){
-      $sql=sprintf("SELECT * FROM dw.`Country Dimension` C where `Country Key`=%d",$id); 
+      $sql=sprintf("SELECT * FROM `Country Dimension` C where `Country Key`=%d",$id); 
       $result=mysql_query($sql);
       if($this->data=mysql_fetch_array($result, MYSQL_ASSOC))
 	$this->id=$this->data['Country Key'];
@@ -47,14 +47,14 @@ class Country{
       return;
     }
     if($key=='2 alpha code'){
-      $sql=sprintf("SELECT * FROM dw.`Country Dimension` C where `Country 2 alpha code`=%s",prepare_mysql($id)); 
+      $sql=sprintf("SELECT * FROM `Country Dimension` C where `Country 2 alpha code`=%s",prepare_mysql($id)); 
       $result=mysql_query($sql);
       if($this->data=mysql_fetch_array($result, MYSQL_ASSOC))
 	$this->id=$this->data['Country Key'];
       return;
     } 
     if($key=='code'){
-      $sql=sprintf("SELECT * FROM dw.`Country Dimension` C where `Country Code`=%s",prepare_mysql($id)); 
+      $sql=sprintf("SELECT * FROM `Country Dimension` C where `Country Code`=%s",prepare_mysql($id)); 
       $result=mysql_query($sql);
       if($this->data=mysql_fetch_array($result, MYSQL_ASSOC))
 	$this->id=$this->data['Country Key'];
@@ -62,18 +62,18 @@ class Country{
     } 
     
     if($key=='name'){
-      $sql=sprintf("SELECT * FROM dw.`Country Dimension` C where `Country Name`=%s",prepare_mysql($id)); 
+      $sql=sprintf("SELECT * FROM `Country Dimension` C where `Country Name`=%s",prepare_mysql($id)); 
       $result=mysql_query($sql);
       if($this->data=mysql_fetch_array($result, MYSQL_ASSOC))
 	$this->id=$this->data['Country Key'];
       return;
       
-      $sql=sprintf("SELECT * FROM dw.`Country Dimension` C where `Country Official Name`=%s",prepare_mysql($id)); 
+      $sql=sprintf("SELECT * FROM `Country Dimension` C where `Country Official Name`=%s",prepare_mysql($id)); 
       $result=mysql_query($sql);
       if($this->data=mysql_fetch_array($result, MYSQL_ASSOC))
 	$this->id=$this->data['Country Key'];
       return;
-      $sql=sprintf("SELECT * FROM dw.`Country Dimension` C where `Country Native Name`=%s",prepare_mysql($id)); 
+      $sql=sprintf("SELECT * FROM `Country Dimension` C where `Country Native Name`=%s",prepare_mysql($id)); 
       $result=mysql_query($sql);
       if($this->data=mysql_fetch_array($result, MYSQL_ASSOC))
 	$this->id=$this->data['Country Key'];

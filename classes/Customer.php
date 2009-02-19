@@ -210,7 +210,7 @@ class Customer{
 
 //    }
 
-   //print_r($data_contact);
+
    $main_contact=new contact('new',$data_contact);
    
 
