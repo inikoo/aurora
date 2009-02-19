@@ -102,6 +102,17 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
   foreach($transactions as $transaction){
     if(preg_match('/^credit/i',$transaction['code']))
       continue;
+
+    $__code=strtolower($transaction['code']);
+
+    if($__code=='eo-st' or $__code=='mol-st' or  $__code=='jbb-st' or $__code=='lwheat-st' or  $__code=='jbb-st' 
+       or $__code=='scrub-st' or $__code=='eye-st' or $__code=='tbm-st' or $__code=='tbc-st' or $__code=='tbs-st'
+       or $__code=='gemd-st' or $__code=='cryc-st' or $__code=='gp-st'  or $__code=='dc-st'
+       ){
+      continue;
+      
+    }
+
     $supplier_product_cost=sprintf("%.4f",$transaction['supplier_product_cost']);
     // print_r($transaction);
     if($transaction['units']=='')
@@ -153,6 +164,33 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     else
       $date2=$date_order;
 
+    if($transaction['units']=='' OR $transaction['units']<=0)
+      $transaction['units']=1;
+    
+    if(!is_numeric($transaction['price']) or $transaction['price']<=0){
+       print "\n\n\n  Price Zero ".$transaction['code']."\n\n";
+       $transaction['price']=0;
+     }
+
+     if(!is_numeric($supplier_product_cost)  or $supplier_product_cost<=0 ){
+       
+       if(preg_match('/Catalogue/i',$description)){
+	 $supplier_product_cost=.25;
+       }elseif($transaction['price']==0){
+	 $supplier_product_cost=.45;
+       }else{
+	 $supplier_product_cost=0.4*$transaction['price']/$transaction['units'];
+	 print_r($transaction);
+	 print "\n ".$transaction['code']." assuming supplier cost of 40% $supplier_product_cost ** \n\n";
+       }
+       
+       
+       exit;
+    }
+    
+
+
+
     $product_data=array(
 			'product code'=>_trim($transaction['code'])
 			,'product name'=>$description
@@ -172,20 +210,8 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 			,'date'=>$date_order
 			,'date2'=>$date2
 			);
- //    if(is_numeric($transaction['supplier_code'])  or preg_match('/\d/',$transaction['supplier_code'])){
-//       print $row2['id']."\n";
-//       print_r($product_data);
-//     }
-
-//      print_r($products);
-
-//    if(preg_match('/Gp-04/i',$transaction['code'])){
-// //       print $row2['id']."\n";
-//      print_r($product_data);
-     
-    // }
-    
-    //print_r($product_data);
+   
+    print_r($product_data);
     $product=new Product('code-name-units-price',$product_data);
     //     "Ahh canto male pedict\n";
     if(!$product->id){

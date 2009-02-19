@@ -16,6 +16,7 @@ error_reporting(E_ALL);
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 
 if(!$con){print "Error can not connect with database server\n";exit;}
+$dns_db='dw2';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
   
@@ -126,7 +127,10 @@ foreach($__cols as $cols){
   $price=$cols[7];
   $supplier_code=_trim($cols[21]);
   $part_code=_trim($cols[22]);
-  $supplier_cost=$cols[23];
+  $supplier_cost=$cols[25];
+  
+
+
   // if(preg_match('/EO-/i',$code)){
   //     print_r($cols);
   //   exit;   }
@@ -151,7 +155,7 @@ foreach($__cols as $cols){
 
   
   if($is_product){
-       print "$code\r";
+    //       print "$code\r";
     $part_list=array();
     $rules=array();
     
@@ -267,11 +271,44 @@ foreach($__cols as $cols){
        $deals=array();
     
     $units=$cols[5];
+    if($units=='' OR $units<=0)
+      $units=1;
+
     $description=_trim($cols[6]);
     $rrp=$cols[16];
     $supplier_code=_trim($cols[21]);
-    $supplier_price=$cols[25];
+
     $w=$cols[28];
+
+
+
+    if($code=='EO-ST' or $code=='MOL-ST' or  $code=='JBB-st' or $code=='LWHEAT-ST' or  $code=='JBB-St' 
+       or $code=='Scrub-St' or $code=='Eye-st' or $code=='Tbm-ST' or $code=='Tbc-ST' or $code=='Tbs-ST'
+       or $code=='GemD-ST' or $code=='CryC-ST' or $code=='GP-ST'  or $code=='DC-ST'
+       ){
+      print "Skipping $code\n";
+      
+    }else{
+
+      
+      if(!is_numeric($price) or $price<=0){
+	print "Price Zero  $code \n";
+	$price=0;
+      }
+
+
+      if($code=='Tib-20')
+	$supplier_cost=0.2;
+
+    if(!is_numeric($supplier_cost)  or $supplier_cost<=0 ){
+      //   print_r($cols);
+      print "$code   assumind supplier cost of 40%  \n";
+      $supplier_cost=0.4*$price/$units;
+      
+    }
+
+
+
     $product=new Product('code',$code);
     if(!$product->id){
       if($units=='')
@@ -322,7 +359,7 @@ foreach($__cols as $cols){
 
 	$scode=_trim($cols[20]);
 	$supplier_code=$cols[21];
-	$cost=$cols[25];
+       
 	if(preg_match('/^SG\-/i',$code))
 	  $supplier_code='AW';
 	if($supplier_code=='AW')
@@ -344,7 +381,7 @@ foreach($__cols as $cols){
 	$sp_data=array(
 		       'Supplier Product Supplier Key'=>$supplier->id,
 		       'Supplier Product Code'=>$scode,
-		       'Supplier Product Cost'=>sprintf("%.4f",$cost),
+		       'Supplier Product Cost'=>sprintf("%.4f",$supplier_cost),
 		       'Supplier Product Name'=>$description,
 		       'Supplier Product Description'=>$description
 		       );
@@ -385,8 +422,11 @@ foreach($__cols as $cols){
 			   'Product Part Type'=>'Simple Pick'
 			   );
 	$product->new_part_list('',$part_list);
-    }
+   
     
+ }
+    
+    }
   }else{
 
     $new_family=true;
@@ -431,6 +471,9 @@ foreach($__cols as $cols){
   
   $column++;
   }
+
+
+
 
 
 

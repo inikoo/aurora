@@ -8,6 +8,7 @@ include_once('../../classes/Country.php');
 error_reporting(E_ALL);
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 if(!$con){print "Error can not connect with database server\n";exit;}
+$dns_db='dw2';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
 
