@@ -193,8 +193,8 @@ class Contact{
       //   print_r($address->data);
       //      print "\n$sql\n";
       //      exit;
-      if(mysql_query($sql))
-	exit("error can not update address data on contact");
+      if(!mysql_query($sql))
+	exit(" $sql\n error can not update address data on contact");
       $this->get_data('id',$this->id);
       if(isset($data['email']) and  $data['email']!=''){
 	$email_data=array('email'=>$data['email'],'email contact'=>$this->display('name'));

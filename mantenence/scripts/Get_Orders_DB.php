@@ -10,7 +10,7 @@ include_once('../../classes/Order.php');
 error_reporting(E_ALL);
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 if(!$con){print "Error can not connect with database server\n";exit;}
-$dns_db='dw2';
+$dns_db='dw';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
 
@@ -47,7 +47,7 @@ $sql="select id from orders_data.order_data  ";
 
 $res=mysql_query($sql);
 while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
-  print $row2['id']."\n";
+  print $row2['id']."\r";
   $sql="select * from orders_data.order_data where id=".$row2['id'];
   $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
@@ -168,7 +168,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       $transaction['units']=1;
     
     if(!is_numeric($transaction['price']) or $transaction['price']<=0){
-       print "Price Zero ".$transaction['code']."\n";
+      //       print "Price Zero ".$transaction['code']."\n";
        $transaction['price']=0;
      }
 
@@ -181,7 +181,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
        }else{
 	 $supplier_product_cost=0.4*$transaction['price']/$transaction['units'];
 	 //print_r($transaction);
-	 print $transaction['code']." assuming supplier cost of 40% $supplier_product_cost **\n";
+	 //	 print $transaction['code']." assuming supplier cost of 40% $supplier_product_cost **\n";
        }
        
        
