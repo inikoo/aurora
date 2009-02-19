@@ -31,6 +31,8 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $product->load('sales');
   $product->load('products_info');
 
+  
+  print $product->id."\r";
  }
 
 

@@ -291,7 +291,7 @@ class supplierproduct{
       $value_free=0;
       $margin=0;
       $sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(`Inventory Transaction Quantity`),0) as qty, ifnull(sum(`Inventory Transaction Amount`),0) as value from  `Inventory Transition Fact` where `Supplier Product ID`=%s and `Inventory Transaction Type`='Sale' and `Date`>=%s  and `Date`<=%s and `Date`>=%s    ",prepare_mysql($this->data['Supplier Product ID']),prepare_mysql($this->data['Supplier Product Valid From']),prepare_mysql($this->data['Supplier Product Valid To']) ,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -1 year")))  );
-            print "$sql\n";
+      // print "$sql\n";
       $result=mysql_query($sql);
       if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 	$required=$row['required'];
@@ -317,7 +317,7 @@ class supplierproduct{
 		   ,$amount_in
 		   ,$profit_sold
 		   ,$this->id);
-                        print "$sql\n";
+      //    print "$sql\n";
       if(!mysql_query($sql))
 	exit("error con not uopdate product part when loading sales");
  $sold=0;

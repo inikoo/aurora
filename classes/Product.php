@@ -949,9 +949,80 @@ function normalize_code($code){
  function load($key){
 
    switch($key){
+     
+   case('days'):
+     $tdays = (strtotime($this->data['Product Valid To']) - strtotime($this->data['Product Valid From'])) / (60 * 60 * 24);
+     
+
+     if(strtotime($this->data['Product Valid To'])<strtotime('today -1 year'))
+       $ydays=0;
+     else{
+       $_to=strtotime($this->data['Product Valid To']);
+       if(strtotime($this->data['Product Valid From'])<strtotime('today -1 year'))
+	 $_from=strtotime('today -1 year');
+       else
+	 $_from=strtotime($this->data['Product Valid From']);
+       $ydays=($_to-$_from)/ (60 * 60 * 24);
+     } 
+     
+     
+     if(strtotime($this->data['Product Valid To'])<strtotime('today -3 month'))
+       $qdays=0;
+     else{
+       $_to=strtotime($this->data['Product Valid To']);
+       if(strtotime($this->data['Product Valid From'])<strtotime('today -3 month'))
+	 $_from=strtotime('today -3 month');
+       else
+	 $_from=strtotime($this->data['Product Valid From']);
+       $qdays=($_to-$_from)/ (60 * 60 * 24);
+     }
+
+     if(strtotime($this->data['Product Valid To'])<strtotime('today -1 month'))
+       $mdays=0;
+     else{
+       $_to=strtotime($this->data['Product Valid To']);
+       if(strtotime($this->data['Product Valid From'])<strtotime('today -1 month'))
+	 $_from=strtotime('today -1 month');
+       else
+	 $_from=strtotime($this->data['Product Valid From']);
+       $mdays=($_to-$_from)/ (60 * 60 * 24);
+     }
+     if(strtotime($this->data['Product Valid To'])<strtotime('today -1 week'))
+       $wdays=0;
+     else{
+       $_to=strtotime($this->data['Product Valid To']);
+       if(strtotime($this->data['Product Valid From'])<strtotime('today -1 week'))
+	 $_from=strtotime('today -1 week');
+       else
+	 $_from=strtotime($this->data['Product Valid From']);
+       $wdays=($_to-$_from)/ (60 * 60 * 24);
+     }
+     
+     
+     $for_sale_since=$this->data['Product Valid From'];
+     $last_sold_date=$this->data['Product Valid To'];
+     
+
+     
+     $sql=sprintf("update `Product Dimension` set `Product Total Days On Sale`=%f , `Product 1 Year Acc Days On Sale`=%f ,`Product 1 Quarter Acc Days On Sale`=%f ,`Product 1 Month Acc Days On Sale`=%f ,`Product 1 Week Acc Days On Sale`=%f ,`Product For Sale Since Date`=%s ,`Product Last Sold Date`=%s where `Product Key`=%d "
+		  ,$tdays
+		  ,$ydays
+		  ,$qdays
+		  ,$mdays
+		  ,$wdays
+		  ,prepare_mysql($for_sale_since)
+		  ,prepare_mysql($last_sold_date)
+		  
+		  ,$this->id
+		  );
+     if(!mysql_query($sql))
+       exit("$sql\ncan not update product days\n");
+   
+ 
+     break;
    case('sales'):
      $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Key`=%d",$this->id);
-     //  print "$sql\n\n";
+   
      $result=mysql_query($sql);
      if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
      
@@ -961,7 +1032,9 @@ function normalize_code($code){
        $this->data['Product Total Quantity Ordered']=$row['ordered'];
        $this->data['Product Total Quantity Invoiced']=$row['invoiced'];
        $this->data['Product Total Quantity Delivered']=$row['delivered'];
-     
+   
+       print $row['cost_sup']."\n";
+  
      $sql=sprintf("update `Product Dimension` set `Product Total Invoiced Gross Amount`=%.2f,`Product Total Invoiced Discount Amount`=%.2f,`Product Total Profit`=%.2f, `Product Total Quantity Ordered`=%s , `Product Total Quantity Invoiced`=%s,`Product Total Quantity Delivered`=%s  where `Product Key`=%d "
 		  ,$this->data['Product Total Invoiced Gross Amount']
 		  ,$this->data['Product Total Invoiced Discount Amount']
@@ -971,6 +1044,8 @@ function normalize_code($code){
 		  ,prepare_mysql($this->data['Product Total Quantity Delivered'])
 		  ,$this->id
 		  );
+   
+
      if(!mysql_query($sql))
        exit("$sql\ncan not update product sales\n");
      }

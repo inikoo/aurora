@@ -30,7 +30,7 @@ $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $product=new Product($row['Product Key']);
   $product->load('sales');
-
+  $product->load('days');
   
   $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s order by `Product Valid From` limit 1",prepare_mysql($row['Product Code']));
   $result2=mysql_query($sql);
@@ -77,13 +77,22 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   mysql_query($sql);
 
 
- 
+  $product=new Product($row['Product Key']);
+  
+  if($product->data['Product Same Code Most Recent'])
+    $state='For sale';
+  else
+    $state='History';
 
 
+  if($product->data['Product 1 Year Acc Quantity Ordered']==0)
+    $state='Discontinued';
 
 
-    
-
+  $sql=sprintf("update `Product Dimension` set  `Product Sales State`=%s where `Product Key`=%s",prepare_mysql($state),$product->id);
+  // print "$sql\n\n";
+  if(!mysql_query($sql))
+    exit("can not upodate state of the product");
 
   print $row['Product Key']."\r";
 

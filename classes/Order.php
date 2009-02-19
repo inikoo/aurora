@@ -97,7 +97,10 @@ class Order{
       //$this->data['Order Main Ship To Key']=$ship_to_key;
       $this->data['Order Multiple Ship Tos']=0;
       
-      
+      if(isset($data['metadata_id']))
+	$this->data['Order Metadata']=$data['metadata_id'];
+      else
+	$this->data['Order Metadata']='';
 
 
 
@@ -683,7 +686,7 @@ class Order{
     $this->data['Invoice Multiple Ship Tos']=$this->data['Order Multiple Ship Tos'];
     $this->data['Invoice Gross Shipping Amount']=$invoice_data['Invoice Gross Shipping Amount'];
     $this->data['Invoice Gross Charges Amount']=$invoice_data['Invoice Gross Charges Amount'];
-
+    $this->data['Invoice Metadata']=$this->data['Order Metadata'];
 
     $this->create_invoice_header();
     
@@ -749,7 +752,8 @@ class Order{
     $this->data['Delivery Note Customer Name']=$this->data['Order Customer Name'];
     $this->data['Delivery Note XHTML Ship To']=$this->data['Order XHTML Ship Tos'];
     $this->data['Delivery Note Ship To Key']=$this->data['Order Main Ship To Key'];
-    $this->create_dn_header();
+    $this->data['Delivery Note Metadata']=$this->data['Order Metadata'];
+  $this->create_dn_header();
     
     $line_number=1;
     $amount=0;
@@ -771,7 +775,7 @@ class Order{
       
       $index=0;
       //  print "$sql\n";
-      $supplier_cost=0;
+      //     $supplier_cost=0;
       while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 	$part_sku=$row['Part SKU'];
 	$parts_per_product=$row['Parts Per Product'];
@@ -792,8 +796,8 @@ class Order{
 	   $supplier_product_id=$row2['Supplier Product ID'];
 	   $sp_units_per_part=$row2['Supplier Product Units Per Part'];
 	   $cost=$row2['Supplier Product Cost']*$sp_units_per_part*$parts_per_product*$data['Shipped Quantity'];
-	   $supplier_cost+=$cost;
-	   $sql=sprintf("insert into `Inventory Transition Fact`  (`Date`,`Part SKU`,`Supplier Product ID`,`Warehouse Key`,`Warehouse Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`) values (%s,%s,%s,1,1,%s,'Sale',%.2f,%f,%f,%.2f) "
+	   $cost_supplier+=$cost;
+	   $sql=sprintf("insert into `Inventory Transition Fact`  (`Date`,`Part SKU`,`Supplier Product ID`,`Warehouse Key`,`Warehouse Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`) values (%s,%s,%s,1,1,%s,'Sale',%.2f,%f,%f,%.2f,%s) "
 			,prepare_mysql($this->data['Delivery Note Date'])
 			,prepare_mysql($part_sku)
 			,prepare_mysql($supplier_product_id)
@@ -802,7 +806,7 @@ class Order{
 			,$data['required']*$parts_per_product
 			,$data['given']*$parts_per_product
 			,$data['amount in']
-			
+			,prepare_mysql($this->data['Delivery Note Metadata'])
 		     );
 	   //   print "$sql\n";
 	   if(!mysql_query($sql))
@@ -838,8 +842,8 @@ class Order{
 	     if($values['taken']>0){
 
 	       $cost=$values['taken']*$values['supplier product cost'];
-	       $supplier_cost+=$cost;
-	       $sql=sprintf("insert into `Inventory Transition Fact`  (`Date`,`Part SKU`,`Supplier Product ID`,`Warehouse Key`,`Warehouse Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`) values (%s,%s,%s,1,1,%s,'Sale',%.2f,%f,%f,%.2f) "
+	       $cost_supplier+=$cost;
+	       $sql=sprintf("insert into `Inventory Transition Fact`  (`Date`,`Part SKU`,`Supplier Product ID`,`Warehouse Key`,`Warehouse Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`) values (%s,%s,%s,1,1,%s,'Sale',%.2f,%f,%f,%.2f,%s) "
 			    ,prepare_mysql($this->data['Delivery Note Date'])
 			    ,prepare_mysql($part_sku)
 			    ,prepare_mysql($values['supplier product id'])
@@ -847,7 +851,7 @@ class Order{
 			    -$cost
 			    ,$data['required']*$parts_per_product
 			    ,$data['given']*$parts_per_product
-			    ,$data['amount in']
+			    ,$data['amount in'],prepare_mysql($this->data['Delivery Note Metadata'])
 			    );
 	       //	       print "$sql\n";
 	       if(!mysql_query($sql))
@@ -1089,7 +1093,7 @@ class Order{
 //     $sql="select sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) from `Order Transaction Fact` where "
 
 
-    $sql=sprintf("insert into `Order Dimension` (`Order Date`,`Order Last Updated Date`,`Order Public ID`,`Order Main Store Key`,`Order Main Store Code`,`Order Main Store Type`,`Order Customer Key`,`Order Customer Name`,`Order Current Dispatch State`,`Order Current Payment State`,`Order Current XHTML State`,`Order Customer Message`,`Order Original Data MIME Type`,`Order Original Data`,`Order XHTML Ship Tos`,`Order Gross Amount`,`Order Discount Amount`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%.2f,%.2f)"
+    $sql=sprintf("insert into `Order Dimension` (`Order Date`,`Order Last Updated Date`,`Order Public ID`,`Order Main Store Key`,`Order Main Store Code`,`Order Main Store Type`,`Order Customer Key`,`Order Customer Name`,`Order Current Dispatch State`,`Order Current Payment State`,`Order Current XHTML State`,`Order Customer Message`,`Order Original Data MIME Type`,`Order Original Data`,`Order XHTML Ship Tos`,`Order Gross Amount`,`Order Discount Amount`,`Order Metadata`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%.2f,%.2f,%s)"
 		 ,prepare_mysql($this->data['Order Date'])
 		 ,prepare_mysql($this->data['Order Date'])
 		 ,prepare_mysql($this->data['Order Public ID'])
@@ -1105,9 +1109,10 @@ class Order{
 		 ,prepare_mysql($this->data['Order Original Data MIME Type'])
 		 ,prepare_mysql($this->data['Order Original Data'])
 		 ,prepare_mysql($this->data['Order XHTML Ship Tos'])
-		
+		 
 		 ,$this->data['Order Gross Amount']
 		 ,$this->data['Order Discount Amount']
+		 ,prepare_mysql($this->data['Order Metadata'])
 		 );
 
      If(mysql_query($sql)){
@@ -1139,7 +1144,7 @@ class Order{
 //     $sql="select sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) from `Order Transaction Fact` where "
 
 
-    $sql=sprintf("insert into `Invoice Dimension` (`Invoice Date`,`Invoice Public ID`,`Invoice File As`,`Invoice Main Store Key`,`Invoice Main Store Code`,`Invoice Main Store Type`,`Invoice Multiple Stores`,`Invoice Customer Key`,`Invoice Customer Name`,`Invoice XHTML Ship Tos`,`Invoice Multiple Ship Tos`,`Invoice Gross Amount`,`Invoice Discount Amount`,`Invoice Gross Shipping Amount`,`Invoice Gross Charges Amount`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%d,%.2f,%.2f,%.2f,%.2f)"
+    $sql=sprintf("insert into `Invoice Dimension` (`Invoice Date`,`Invoice Public ID`,`Invoice File As`,`Invoice Main Store Key`,`Invoice Main Store Code`,`Invoice Main Store Type`,`Invoice Multiple Stores`,`Invoice Customer Key`,`Invoice Customer Name`,`Invoice XHTML Ship Tos`,`Invoice Multiple Ship Tos`,`Invoice Gross Amount`,`Invoice Discount Amount`,`Invoice Gross Shipping Amount`,`Invoice Gross Charges Amount`,`Invoice Metadata`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%d,%.2f,%.2f,%.2f,%.2f,%s)"
 		 ,prepare_mysql($this->data['Invoice Date'])
 		 ,prepare_mysql($this->data['Invoice Public ID'])
 		 ,prepare_mysql($this->data['Invoice File As'])
@@ -1155,6 +1160,7 @@ class Order{
 		 ,$this->data['Invoice Discount Amount']
 		 ,$this->data['Invoice Gross Shipping Amount']
 		 ,$this->data['Invoice Gross Charges Amount']
+		 ,prepare_mysql($this->data['Invoice Metadata'])
 		 );
     
 
@@ -1174,7 +1180,7 @@ class Order{
 
 
 
-    $sql=sprintf("insert into `Delivery Note Dimension` (`Delivery Note Date`,`Delivery Note ID`,`Delivery Note File As`,`Delivery Note Customer Key`,`Delivery Note Customer Name`,`Delivery Note XHTML Ship To`,`Delivery Note Ship To Key`) values (%s,%s,%s,%s,%s,%s,%s)"
+    $sql=sprintf("insert into `Delivery Note Dimension` (`Delivery Note Date`,`Delivery Note ID`,`Delivery Note File As`,`Delivery Note Customer Key`,`Delivery Note Customer Name`,`Delivery Note XHTML Ship To`,`Delivery Note Ship To Key`,`Delivery Note Metadata`) values (%s,%s,%s,%s,%s,%s,%s,%s)"
 		 ,prepare_mysql($this->data['Delivery Note Date'])
 		 ,prepare_mysql($this->data['Delivery Note ID'])
 		 ,prepare_mysql($this->data['Delivery Note File As'])
@@ -1182,6 +1188,7 @@ class Order{
 		 ,prepare_mysql($this->data['Delivery Note Customer Name'])
 		 ,prepare_mysql($this->data['Delivery Note XHTML Ship To'])
 		 ,prepare_mysql($this->data['Delivery Note Ship To Key'])
+		 ,prepare_mysql($this->data['Delivery Note Metadata'])
 		 );
     
 

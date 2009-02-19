@@ -47,10 +47,10 @@ class department{
    
    switch($tipo){
    case('id'):
-     $sql=sprintf("select *,`Product Department Total Acc Invoiced Gross Amount`+`Product Department Total Acc Invoiced Discount Amount` as `product department total acc invoiced amount` ,`Product Department 1 Month Acc Invoiced Gross Amount`+`Product Department 1 Month Acc Invoiced Discount Amount` as `product department 1 month acc invoiced amount` from `Product Department Dimension` where `Product Department Key`=%d ",$tag);
+     $sql=sprintf("select *,`Product Department Total Invoiced Gross Amount`+`Product Department Total Invoiced Discount Amount` as `Product Department Total Invoiced Amount` ,`Product Department 1 Month Acc Invoiced Gross Amount`+`Product Department 1 Month Acc Invoiced Discount Amount` as `Product Department 1 Month Acc Invoiced Amount` from `Product Department Dimension` where `Product Department Key`=%d ",$tag);
      break;
    case('code'):
-     $sql=sprintf("select *,`Product Department Total Acc Invoiced Gross Amount`+`Product Department Total Acc Invoiced Discount Amount` as `product department total acc invoiced amount` ,`Product Department 1 Month Acc Invoiced Gross Amount`+`Product Department 1 Month Acc Invoiced Discount Amount` as `product department 1 month acc invoiced amount` from `Product Department Dimension` where `Product Department Code`=%s and `Product Department Most Recent`='Yes'",prepare_mysql($tag));
+     $sql=sprintf("select *,`Product Department Total Invoiced Gross Amount`+`Product Department Total Invoiced Discount Amount` as `Product Department Total Invoiced Amount` ,`Product Department 1 Month Acc Invoiced Gross Amount`+`Product Department 1 Month Acc Invoiced Discount Amount` as `Product Department 1 Month Acc Invoiced Amount` from `Product Department Dimension` where `Product Department Code`=%s and `Product Department Most Recent`='Yes'",prepare_mysql($tag));
      break;
      //  default:
 //      print "error wring tipo $tipo\n";
@@ -131,9 +131,33 @@ class department{
      break;
    case('sales'):
      
-     $sql="select sum(`Product Family Total Invoiced Gross Amount`) as gross,sum(`Product Family Total Invoiced Discount Amount`) as disc, sum(`Product Family Total Profit`)as profit ,sum(`Product Family Total Quantity Delivered`) as delivered,sum(`Product Family Total Quantity Ordered`) as ordered,sum(`Product Family Total Quantity Invoiced`) as invoiced  from `Product Family Dimension` as F left join `Product Family Department Bridge` as B on (B.`Product Family Key`=F.`Product Family Key`)  where `Product Department Key`=".$this->id;
-     //    print "$sql\n\n";
-     $result=mysql_query($sql);
+     $on_sale_days=0;
+     
+     $sql="select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as tto, sum(if(`Product Sales State`='For sale',1,0)) as for_sale   from `Product Dimension` as P left join `Product Department Bridge` as B on (B.`Product Key`=P.`Product Key`)  where `Product Department Key`=".$this->id;
+
+      $result=mysql_query($sql);
+      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+	$from=strtotime($row['ffrom']);
+	$_from=date("Y-m-d H:i:s",$from);
+	if($row['for_sale']>0){
+	 $to=strtotime('today');
+	 $_to=date("Y-m-d H:i:s");
+	}else{
+	 $to=strtotime($row['tto']);
+	 $_to=date("Y-m-d H:i:s",$to);
+	}
+	 $on_sale_days=($to-$from)/ (60 * 60 * 24);
+
+       if($row['prods']==0)
+	 $on_sale_days=0;
+
+      }
+$sql="select sum(`Product Total Invoiced Gross Amount`) as gross,sum(`Product Total Invoiced Discount Amount`) as disc, sum(`Product Total Profit`)as profit ,sum(`Product Total Quantity Delivered`) as delivered,sum(`Product Total Quantity Ordered`) as ordered,sum(`Product Total Quantity Invoiced`) as invoiced  from `Product Dimension` as P left join `Product Department Bridge` as B on (B.`Product Key`=P.`Product Key`)  where `Product Department Key`=".$this->id;
+
+
+ print "$sql\n\n";
+ exit;
+ $result=mysql_query($sql);
  
      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
        $this->data['Product Department Total Invoiced Gross Amount']=$row['gross'];
@@ -142,25 +166,69 @@ class department{
        $this->data['Product Department Total Quantity Ordered']=$row['ordered'];
        $this->data['Product Department Total Quantity Invoiced']=$row['invoiced'];
        $this->data['Product Department Total Quantity Delivered']=$row['delivered'];
-      
-        
-     $sql=sprintf("update `Product Department Dimension` set `Product Department Total Invoiced Gross Amount`=%s,`Product Department Total Invoiced Discount Amount`=%s,`Product Department Total Profit`=%s, `Product Department Total Quantity Ordered`=%s , `Product Department Total Quantity Invoiced`=%s,`Product Department Total Quantity Delivered`=%s  where `Product Department Key`=%d "
-		  ,prepare_mysql($this->data['Product Department Total Invoiced Gross Amount'])
-		  ,prepare_mysql($this->data['Product Department Total Invoiced Discount Amount'])
-		  ,prepare_mysql($this->data['Product Department Total Profit'])
-		  ,prepare_mysql($this->data['Product Department Total Quantity Ordered'])
-		  ,prepare_mysql($this->data['Product Department Total Quantity Invoiced'])
-		  ,prepare_mysql($this->data['Product Department Total Quantity Delivered'])
-		  ,$this->id
-		  );
+       $this->data['Product Department Total Days On Sale']=$on_sale_days;
+       $this->data['Product Department Valid From']=$_from;
+       $this->data['Product Department Valid To']=$_to;
+       $sql=sprintf("update `Product Department Dimension` set `Product Department Total Invoiced Gross Amount`=%s,`Product Department Total Invoiced Discount Amount`=%s,`Product Department Total Profit`=%s, `Product Department Total Quantity Ordered`=%s , `Product Department Total Quantity Invoiced`=%s,`Product Department Total Quantity Delivered`=%s ,`Product Department Total Days On Sale`=%f ,`Product Department Valid From`=%s,`Product Department Valid To`=%s where `Product Department Key`=%d "
+		    ,prepare_mysql($this->data['Product Department Total Invoiced Gross Amount'])
+		    ,prepare_mysql($this->data['Product Department Total Invoiced Discount Amount'])
+		    ,prepare_mysql($this->data['Product Department Total Profit'])
+		    ,prepare_mysql($this->data['Product Department Total Quantity Ordered'])
+		    ,prepare_mysql($this->data['Product Department Total Quantity Invoiced'])
+		    ,prepare_mysql($this->data['Product Department Total Quantity Delivered'])
+		    ,$on_sale_days
+		    ,prepare_mysql($this->data['Product Department Valid From'])
+		    ,prepare_mysql($this->data['Product Department Valid To'])
+		    ,$this->id
+		    );
      //  print "$sql\n";
      //  exit;
      if(!mysql_query($sql))
        exit("$sql\ncan not update dept sales\n");
      }
- $sql="select sum(`Product Family 1 Year Acc Invoiced Gross Amount`) as gross,sum(`Product Family 1 Year Acc Invoiced Discount Amount`) as disc, sum(`Product Family 1 Year Acc Profit`)as profit ,sum(`Product Family 1 Year Acc Quantity Delivered`) as delivered,sum(`Product Family 1 Year Acc Quantity Ordered`) as ordered,sum(`Product Family 1 Year Acc Quantity Invoiced`) as invoiced  from `Product Family Dimension` as F left join `Product Family Department Bridge` as B on (B.`Product Family Key`=F.`Product Family Key`)  where `Product Department Key`=".$this->id;
-     $result=mysql_query($sql);
- 
+     // days on sale
+     
+   $on_sale_days=0;
+
+
+
+ $sql="select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as `to`, sum(if(`Product Sales State`='For sale',1,0)) as for_sale   from `Product Dimension` as P left join `Product Department Bridge` as B on (B.`Product Key`=P.`Product Key`)  where `Product Department Key`=".$this->id;
+ // print "$sql\n\n";
+ $result=mysql_query($sql);
+      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+	if($row['prods']==0)
+	 $on_sale_days=0;
+	else{
+	
+
+	  if($row['for_sale']>0)
+	    $to=strtotime('today');
+	  else
+	    $to=strtotime($row['to']);
+	  // print "*** ".$row['to']." T:$to  ".strtotime('today')."  ".strtotime('today -1 year')."  \n";
+	  // print "*** T:$to   ".strtotime('today -1 year')."  \n";
+	  if($to>strtotime('today -1 year')){
+	    //print "caca";
+	    $from=strtotime($row['ffrom']);
+	    if($from<strtotime('today -1 year'))
+	      $from=strtotime('today -1 year');
+	    
+	    //	    print "*** T:$to F:$from\n";
+	    $on_sale_days=($to-$from)/ (60 * 60 * 24);
+	  }else{
+	    //   print "pipi";
+	    $on_sale_days=0;
+
+	  }
+	}
+      }
+
+
+
+ $sql="select sum(`Product 1 Year Acc Invoiced Gross Amount`) as gross,sum(`Product 1 Year Acc Invoiced Discount Amount`) as disc, sum(`Product 1 Year Acc Profit`)as profit ,sum(`Product 1 Year Acc Quantity Delivered`) as delivered,sum(`Product 1 Year Acc Quantity Ordered`) as ordered,sum(`Product 1 Year Acc Quantity Invoiced`) as invoiced  from `Product Dimension` as P left join `Product Department Bridge` as B on (B.`Product Key`=P.`Product Key`)  where `Product Department Key`=".$this->id;
+     
+ $result=mysql_query($sql);
+
      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
        $this->data['Product Department 1 Year Acc Invoiced Gross Amount']=$row['gross'];
        $this->data['Product Department 1 Year Acc Invoiced Discount Amount']=$row['disc'];
@@ -170,20 +238,53 @@ class department{
        $this->data['Product Department 1 Year Acc Quantity Delivered']=$row['delivered'];
       
         
-     $sql=sprintf("update `Product Department Dimension` set `Product Department 1 Year Acc Invoiced Gross Amount`=%s,`Product Department 1 Year Acc Invoiced Discount Amount`=%s,`Product Department 1 Year Acc Profit`=%s, `Product Department 1 Year Acc Quantity Ordered`=%s , `Product Department 1 Year Acc Quantity Invoiced`=%s,`Product Department 1 Year Acc Quantity Delivered`=%s  where `Product Department Key`=%d "
+     $sql=sprintf("update `Product Department Dimension` set `Product Department 1 Year Acc Invoiced Gross Amount`=%s,`Product Department 1 Year Acc Invoiced Discount Amount`=%s,`Product Department 1 Year Acc Profit`=%s, `Product Department 1 Year Acc Quantity Ordered`=%s , `Product Department 1 Year Acc Quantity Invoiced`=%s,`Product Department 1 Year Acc Quantity Delivered`=%s ,`Product Department 1 Year Acc Days On Sale`=%f  where `Product Department Key`=%d "
 		  ,prepare_mysql($this->data['Product Department 1 Year Acc Invoiced Gross Amount'])
 		  ,prepare_mysql($this->data['Product Department 1 Year Acc Invoiced Discount Amount'])
 		  ,prepare_mysql($this->data['Product Department 1 Year Acc Profit'])
 		  ,prepare_mysql($this->data['Product Department 1 Year Acc Quantity Ordered'])
 		  ,prepare_mysql($this->data['Product Department 1 Year Acc Quantity Invoiced'])
 		  ,prepare_mysql($this->data['Product Department 1 Year Acc Quantity Delivered'])
+		  ,$on_sale_days
 		  ,$this->id
 		  );
-     // print "$sql\n";
+     //  print "$sql\n";
      if(!mysql_query($sql))
        exit("$sql\ncan not update dept sales\n");
      }
-      $sql="select sum(`Product Family 1 Quarter Acc Invoiced Gross Amount`) as gross,sum(`Product Family 1 Quarter Acc Invoiced Discount Amount`) as disc, sum(`Product Family 1 Quarter Acc Profit`)as profit ,sum(`Product Family 1 Quarter Acc Quantity Delivered`) as delivered,sum(`Product Family 1 Quarter Acc Quantity Ordered`) as ordered,sum(`Product Family 1 Quarter Acc Quantity Invoiced`) as invoiced  from `Product Family Dimension` as F left join `Product Family Department Bridge` as B on (B.`Product Family Key`=F.`Product Family Key`)  where `Product Department Key`=".$this->id;
+     // exit;
+      $on_sale_days=0;
+      
+
+$sql="select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as `to`, sum(if(`Product Sales State`='For sale',1,0)) as for_sale   from `Product Dimension` as P left join `Product Department Bridge` as B on (B.`Product Key`=P.`Product Key`)  where `Product Department Key`=".$this->id;
+
+ $result=mysql_query($sql);
+      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+	if($row['prods']==0)
+	 $on_sale_days=0;
+	else{
+	
+
+	  if($row['for_sale']>0)
+	    $to=strtotime('today');
+	  else
+	    $to=strtotime($row['to']);
+	  if($to>strtotime('today -3 month')){
+	    
+	    $from=strtotime($row['ffrom']);
+	    if($from<strtotime('today -3 month'))
+	      $from=strtotime('today -3 month');
+	    
+	    
+	    $on_sale_days=($to-$from)/ (60 * 60 * 24);
+	  }else
+	    $on_sale_days=0;
+	}
+      }
+
+$sql="select sum(`Product 1 Quarter Acc Invoiced Gross Amount`) as gross,sum(`Product 1 Quarter Acc Invoiced Discount Amount`) as disc, sum(`Product 1 Quarter Acc Profit`)as profit ,sum(`Product 1 Quarter Acc Quantity Delivered`) as delivered,sum(`Product 1 Quarter Acc Quantity Ordered`) as ordered,sum(`Product 1 Quarter Acc Quantity Invoiced`) as invoiced  from `Product Dimension` as P left join `Product Department Bridge` as B on (B.`Product Key`=P.`Product Key`)  where `Product Department Key`=".$this->id;
+
+
      $result=mysql_query($sql);
  
      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
@@ -195,20 +296,51 @@ class department{
        $this->data['Product Department 1 Quarter Acc Quantity Delivered']=$row['delivered'];
       
         
-     $sql=sprintf("update `Product Department Dimension` set `Product Department 1 Quarter Acc Invoiced Gross Amount`=%s,`Product Department 1 Quarter Acc Invoiced Discount Amount`=%s,`Product Department 1 Quarter Acc Profit`=%s, `Product Department 1 Quarter Acc Quantity Ordered`=%s , `Product Department 1 Quarter Acc Quantity Invoiced`=%s,`Product Department 1 Quarter Acc Quantity Delivered`=%s  where `Product Department Key`=%d "
+     $sql=sprintf("update `Product Department Dimension` set `Product Department 1 Quarter Acc Invoiced Gross Amount`=%s,`Product Department 1 Quarter Acc Invoiced Discount Amount`=%s,`Product Department 1 Quarter Acc Profit`=%s, `Product Department 1 Quarter Acc Quantity Ordered`=%s , `Product Department 1 Quarter Acc Quantity Invoiced`=%s,`Product Department 1 Quarter Acc Quantity Delivered`=%s  ,`Product Department 1 Quarter Acc Days On Sale`=%f where `Product Department Key`=%d "
 		  ,prepare_mysql($this->data['Product Department 1 Quarter Acc Invoiced Gross Amount'])
 		  ,prepare_mysql($this->data['Product Department 1 Quarter Acc Invoiced Discount Amount'])
 		  ,prepare_mysql($this->data['Product Department 1 Quarter Acc Profit'])
 		  ,prepare_mysql($this->data['Product Department 1 Quarter Acc Quantity Ordered'])
 		  ,prepare_mysql($this->data['Product Department 1 Quarter Acc Quantity Invoiced'])
 		  ,prepare_mysql($this->data['Product Department 1 Quarter Acc Quantity Delivered'])
+		   ,$on_sale_days
 		  ,$this->id
 		  );
      // print "$sql\n";
      if(!mysql_query($sql))
        exit("$sql\ncan not update dept sales\n");
      }
-  $sql="select sum(`Product Family 1 Month Acc Invoiced Gross Amount`) as gross,sum(`Product Family 1 Month Acc Invoiced Discount Amount`) as disc, sum(`Product Family 1 Month Acc Profit`)as profit ,sum(`Product Family 1 Month Acc Quantity Delivered`) as delivered,sum(`Product Family 1 Month Acc Quantity Ordered`) as ordered,sum(`Product Family 1 Month Acc Quantity Invoiced`) as invoiced  from `Product Family Dimension` as F left join `Product Family Department Bridge` as B on (B.`Product Family Key`=F.`Product Family Key`)  where `Product Department Key`=".$this->id;
+
+$on_sale_days=0;
+
+$sql="select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as `to`, sum(if(`Product Sales State`='For sale',1,0)) as for_sale   from `Product Dimension` as P left join `Product Department Bridge` as B on (B.`Product Key`=P.`Product Key`)  where `Product Department Key`=".$this->id;
+      $result=mysql_query($sql);
+      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+	if($row['prods']==0)
+	 $on_sale_days=0;
+	else{
+	
+
+	  if($row['for_sale']>0)
+	    $to=strtotime('today');
+	  else
+	    $to=strtotime($row['to']);
+	  if($to>strtotime('today -1 month')){
+	    
+	    $from=strtotime($row['ffrom']);
+	    if($from<strtotime('today -1 month'))
+	      $from=strtotime('today -1 month');
+	    
+	    
+	    $on_sale_days=($to-$from)/ (60 * 60 * 24);
+	  }else
+	    $on_sale_days=0;
+	}
+      }
+
+$sql="select sum(`Product 1 Month Acc Invoiced Gross Amount`) as gross,sum(`Product 1 Month Acc Invoiced Discount Amount`) as disc, sum(`Product 1 Month Acc Profit`)as profit ,sum(`Product 1 Month Acc Quantity Delivered`) as delivered,sum(`Product 1 Month Acc Quantity Ordered`) as ordered,sum(`Product 1 Month Acc Quantity Invoiced`) as invoiced  from `Product Dimension` as P left join `Product Department Bridge` as B on (B.`Product Key`=P.`Product Key`)  where `Product Department Key`=".$this->id;
+
+    
      $result=mysql_query($sql);
  
      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
@@ -220,21 +352,54 @@ class department{
        $this->data['Product Department 1 Month Acc Quantity Delivered']=$row['delivered'];
       
         
-     $sql=sprintf("update `Product Department Dimension` set `Product Department 1 Month Acc Invoiced Gross Amount`=%s,`Product Department 1 Month Acc Invoiced Discount Amount`=%s,`Product Department 1 Month Acc Profit`=%s, `Product Department 1 Month Acc Quantity Ordered`=%s , `Product Department 1 Month Acc Quantity Invoiced`=%s,`Product Department 1 Month Acc Quantity Delivered`=%s  where `Product Department Key`=%d "
+     $sql=sprintf("update `Product Department Dimension` set `Product Department 1 Month Acc Invoiced Gross Amount`=%s,`Product Department 1 Month Acc Invoiced Discount Amount`=%s,`Product Department 1 Month Acc Profit`=%s, `Product Department 1 Month Acc Quantity Ordered`=%s , `Product Department 1 Month Acc Quantity Invoiced`=%s,`Product Department 1 Month Acc Quantity Delivered`=%s  ,`Product Department 1 Month Acc Days On Sale`=%f where `Product Department Key`=%d "
 		  ,prepare_mysql($this->data['Product Department 1 Month Acc Invoiced Gross Amount'])
 		  ,prepare_mysql($this->data['Product Department 1 Month Acc Invoiced Discount Amount'])
 		  ,prepare_mysql($this->data['Product Department 1 Month Acc Profit'])
 		  ,prepare_mysql($this->data['Product Department 1 Month Acc Quantity Ordered'])
 		  ,prepare_mysql($this->data['Product Department 1 Month Acc Quantity Invoiced'])
 		  ,prepare_mysql($this->data['Product Department 1 Month Acc Quantity Delivered'])
+		   ,$on_sale_days
 		  ,$this->id
 		  );
      // print "$sql\n";
      if(!mysql_query($sql))
        exit("$sql\ncan not update dept sales\n");
      }
- $sql="select sum(`Product Family 1 Week Acc Invoiced Gross Amount`) as gross,sum(`Product Family 1 Week Acc Invoiced Discount Amount`) as disc, sum(`Product Family 1 Week Acc Profit`)as profit ,sum(`Product Family 1 Week Acc Quantity Delivered`) as delivered,sum(`Product Family 1 Week Acc Quantity Ordered`) as ordered,sum(`Product Family 1 Week Acc Quantity Invoiced`) as invoiced  from `Product Family Dimension` as F left join `Product Family Department Bridge` as B on (B.`Product Family Key`=F.`Product Family Key`)  where `Product Department Key`=".$this->id;
-     $result=mysql_query($sql);
+
+          $on_sale_days=0;
+$sql="select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as `to`, sum(if(`Product Sales State`='For sale',1,0)) as for_sale   from `Product Dimension` as P left join `Product Department Bridge` as B on (B.`Product Key`=P.`Product Key`)  where `Product Department Key`=".$this->id;
+      $result=mysql_query($sql);
+      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+	if($row['prods']==0)
+	 $on_sale_days=0;
+	else{
+	
+
+	  if($row['for_sale']>0)
+	    $to=strtotime('today');
+	  else
+	    $to=strtotime($row['to']);
+	  if($to>strtotime('today -1 week')){
+	    
+	    $from=strtotime($row['ffrom']);
+	    if($from<strtotime('today -1 week'))
+	      $from=strtotime('today -1 week');
+	    
+	    
+	    $on_sale_days=($to-$from)/ (60 * 60 * 24);
+	  }else
+	    $on_sale_days=0;
+	}
+      }
+
+
+  
+$sql="select sum(`Product 1 Week Acc Invoiced Gross Amount`) as gross,sum(`Product 1 Week Acc Invoiced Discount Amount`) as disc, sum(`Product 1 Week Acc Profit`)as profit ,sum(`Product 1 Week Acc Quantity Delivered`) as delivered,sum(`Product 1 Week Acc Quantity Ordered`) as ordered,sum(`Product 1 Week Acc Quantity Invoiced`) as invoiced  from `Product Dimension` as P left join `Product Department Bridge` as B on (B.`Product Key`=P.`Product Key`)  where `Product Department Key`=".$this->id;
+
+
+
+   $result=mysql_query($sql);
 
      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
        $this->data['Product Department 1 Week Acc Invoiced Gross Amount']=$row['gross'];
@@ -245,13 +410,14 @@ class department{
        $this->data['Product Department 1 Week Acc Quantity Delivered']=$row['delivered'];
       
         
-     $sql=sprintf("update `Product Department Dimension` set `Product Department 1 Week Acc Invoiced Gross Amount`=%s,`Product Department 1 Week Acc Invoiced Discount Amount`=%s,`Product Department 1 Week Acc Profit`=%s, `Product Department 1 Week Acc Quantity Ordered`=%s , `Product Department 1 Week Acc Quantity Invoiced`=%s,`Product Department 1 Week Acc Quantity Delivered`=%s  where `Product Department Key`=%d "
+     $sql=sprintf("update `Product Department Dimension` set `Product Department 1 Week Acc Invoiced Gross Amount`=%s,`Product Department 1 Week Acc Invoiced Discount Amount`=%s,`Product Department 1 Week Acc Profit`=%s, `Product Department 1 Week Acc Quantity Ordered`=%s , `Product Department 1 Week Acc Quantity Invoiced`=%s,`Product Department 1 Week Acc Quantity Delivered`=%s ,`Product Department 1 Week Acc Days On Sale`=%f  where `Product Department Key`=%d "
 		  ,prepare_mysql($this->data['Product Department 1 Week Acc Invoiced Gross Amount'])
 		  ,prepare_mysql($this->data['Product Department 1 Week Acc Invoiced Discount Amount'])
 		  ,prepare_mysql($this->data['Product Department 1 Week Acc Profit'])
 		  ,prepare_mysql($this->data['Product Department 1 Week Acc Quantity Ordered'])
 		  ,prepare_mysql($this->data['Product Department 1 Week Acc Quantity Invoiced'])
 		  ,prepare_mysql($this->data['Product Department 1 Week Acc Quantity Delivered'])
+		  ,$on_sale_days
 		  ,$this->id
 		  );
      // print "$sql\n";
@@ -261,7 +427,7 @@ class department{
      }
      
      break;
-   
+  
 
    }
    

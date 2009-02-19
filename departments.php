@@ -58,6 +58,8 @@ if(isset($_REQUEST['view'])){
 $smarty->assign('view',$_SESSION['state']['departments']['view']);
 $smarty->assign('show_details',$_SESSION['state']['departments']['details']);
 $smarty->assign('show_percentages',$_SESSION['state']['departments']['percentages']);
+$smarty->assign('avg',$_SESSION['state']['departments']['avg']);
+$smarty->assign('period',$_SESSION['state']['departments']['period']);
 
 
 //$sql="select id from product";

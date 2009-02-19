@@ -50,6 +50,8 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
   $sql="select * from orders_data.order_data where id=".$row2['id'];
   $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+    $order_data_id=$row['id'];
+    
      $header=mb_unserialize($row['header']);
      $products=mb_unserialize($row['products']);
      
@@ -260,6 +262,9 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
 
       
+    $sql="update order_data set last_transcribed='".date('Y-m-d H:i:s')."' where id=".$order_data_id;
+    if(!mysql_query($sql))
+      exit("error uopdatin data date las trancibes");
     }
 
   }
@@ -268,6 +273,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
   $data['type']='direct_data_injection';
   $data['products']=$products_data;
   $data['cdata']=$customer_data;
+  $data['metadata_id']=$order_data_id;
 
   //Tipo order
   // 1 DELIVERY NOTE
@@ -317,6 +323,9 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
   
   }
  
+
+
+
  }
 
 function mb_unserialize($serial_str) {
