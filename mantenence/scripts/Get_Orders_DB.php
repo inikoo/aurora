@@ -42,12 +42,12 @@ $Data_Audit_ETL_Software="$software $version";
 srand(12344);
 
 
-$sql="select id from orders_data.order_data   ";
+$sql="select id from orders_data.order_data  ";
 
 
 $res=mysql_query($sql);
 while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
-  print $row2['id']."\r";
+  print $row2['id']."\n";
   $sql="select * from orders_data.order_data where id=".$row2['id'];
   $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
@@ -168,7 +168,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       $transaction['units']=1;
     
     if(!is_numeric($transaction['price']) or $transaction['price']<=0){
-       print "\n\n\n  Price Zero ".$transaction['code']."\n\n";
+       print "Price Zero ".$transaction['code']."\n";
        $transaction['price']=0;
      }
 
@@ -177,15 +177,15 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
        if(preg_match('/Catalogue/i',$description)){
 	 $supplier_product_cost=.25;
        }elseif($transaction['price']==0){
-	 $supplier_product_cost=.45;
+	 $supplier_product_cost=.20;
        }else{
 	 $supplier_product_cost=0.4*$transaction['price']/$transaction['units'];
-	 print_r($transaction);
-	 print "\n ".$transaction['code']." assuming supplier cost of 40% $supplier_product_cost ** \n\n";
+	 //print_r($transaction);
+	 print $transaction['code']." assuming supplier cost of 40% $supplier_product_cost **\n";
        }
        
        
-       exit;
+       
     }
     
 
@@ -211,7 +211,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 			,'date2'=>$date2
 			);
    
-    print_r($product_data);
+    // print_r($product_data);
     $product=new Product('code-name-units-price',$product_data);
     //     "Ahh canto male pedict\n";
     if(!$product->id){

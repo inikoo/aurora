@@ -787,12 +787,19 @@ elseif(preg_match('/^[^\s]+\.(com|uk|info|biz|org)$/i',$val)){
 function prepare_mysql($string){
   
  //  if(is_array($string))
-//     print_r($string);
-  if(strlen($string)==0)
-    return 'null';
-  else
-    return "'".addslashes($string)."'";
+ // print "---->$string<----";
+  if(is_numeric($string)){
+    // print "numeric\n";
+    return "'".$string."'";
+  }elseif($string==''){
+    //print "NULL\n";
+    return 'NULL';
+  }else{
+    // print "normal\n";
+     return "'".addslashes($string)."'";
+  
 
+  }
  //  if($no_null)
 //     return "'".addslashes($string)."'";
 //   // print "->".$string."<-";

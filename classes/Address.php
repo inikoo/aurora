@@ -55,7 +55,12 @@ class Address{
     $result=mysql_query($sql);
     if($this->data=mysql_fetch_array($result, MYSQL_ASSOC))
       $this->id=$this->data['Address Key'];
+    else{
+      print "$sql\n  can not fpuns \n";
+     
+      // exit(" $sql\n can not open address");
 
+    }
     
 
 
@@ -224,6 +229,7 @@ class Address{
     $_key=ucwords($key);
     if(array_key_exists($_key,$this->data))
       return $this->data[$_key];
+    print_r($this->data);
     print "Error $key not found in get from address\n";
     asds();
     exit;

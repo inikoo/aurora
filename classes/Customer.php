@@ -210,9 +210,11 @@ class Customer{
 
 //    }
 
-   //print_r($data_contact);
+   print_r($data_contact);
    $main_contact=new contact('new',$data_contact);
-   // print_r($main_contact->data);
+   
+
+ // print_r($main_contact->data);
 
    if($type=='Company'){
      $company=new company('new',
@@ -237,7 +239,12 @@ class Customer{
      $customer_name=$this->unknown_customer;
    
    $address=new Address($main_contact->get('Contact Main Address Key'));
-   
+   if(!$address->id){
+     print_r($data_contact);
+     print_r($main_contact->data);
+     dsadasdas();
+   }
+
     $sql=sprintf("insert into `Customer Dimension` (`Customer ID`,`Customer Main Contact Key`,`Customer Main Contact Name`,`Customer Name`,`Customer File As`,`Customer Type`,`Customer Company Key`,`Customer Main Address Key`,`Customer Main Location`,`Customer Main XHTML Address`,`Customer Main XHTML Email`,`Customer Email`,`Customer Main Email Key`,`Customer Main Telephone`,`Customer Main Telephone Key`,`Customer Main Address Header`,`Customer Main Address Town`,`Customer Main Address Postal Code`,`Customer Main Address Country Region`,`Customer Main Address Country`,`Customer Main Address Country Key`) values (%d,%d,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
 		 ,$unique_id
 		 ,$main_contact->id

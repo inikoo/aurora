@@ -767,7 +767,7 @@ class Order{
       $cost_hand='';
       $cost_shipping='';
 
-       print "nre --------------\n";
+      //       print "nre --------------\n";
       
       
       $sql=sprintf("select `Parts Per Product`,`Product Part Key`,`Part SKU` from `Product Part List` where `Product ID`=%s ",prepare_mysql($data['Product ID']));
@@ -788,22 +788,22 @@ class Order{
 
 	$sql=sprintf(" select SPD.`Supplier Product ID`,`Supplier Product Units Per Part`,`Supplier Product Cost` from  `Supplier Product Dimension`   SPD left join `Supplier Product Part List` SPPL  on (SPD.`Supplier Product ID`=SPPL.`Supplier Product ID`) where `Part SKU`=%s  ",prepare_mysql($row['Part SKU']));
 	 $result2=mysql_query($sql);
-	 print "$sql\n";
+	 // print "$sql\n";
 	 
 	 $num_sp=mysql_num_rows($result2);
 
 	 if($num_sp==1){
-	   print "AQYIIIII";
+	   //print "AQYIIIII";
 	   
 	   $row2=mysql_fetch_array($result2, MYSQL_ASSOC);
 	   $supplier_product_id=$row2['Supplier Product ID'];
 	   $sp_units_per_part=$row2['Supplier Product Units Per Part'];
 	   $cost=$row2['Supplier Product Cost']*$sp_units_per_part*$parts_per_product*$data['Shipped Quantity'];
 	   $cost_supplier+=$cost;
-	   
-	   print "$cost_supplier $cost    \n";
-	   if($cost=='')
-	     print_r($data);
+	   //print_r($row2);
+	   // print "$cost_supplier * $cost * $sp_units_per_part  $parts_per_product  \n";
+	   //if($cost=='')
+	   //  print_r($data);
 	   
 	   $sql=sprintf("insert into `Inventory Transition Fact`  (`Date`,`Part SKU`,`Supplier Product ID`,`Warehouse Key`,`Warehouse Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`) values (%s,%s,%s,1,1,%s,'Sale',%.2f,%f,%f,%.2f,%s) "
 			,prepare_mysql($this->data['Delivery Note Date'])
@@ -903,10 +903,11 @@ class Order{
 		   ,$this->data['Order Key']
 		   ,$line_number
 		   );
-      if($cost_supplier==''){
-	print $sql;
-	exit;
-      }
+   //    if($cost_supplier==''){
+// 	print "$sql\n $cost_supplier\n";
+// 	print 
+// 	exit;
+//       }
       
       // $prod=new Product($data['product_id']);
 

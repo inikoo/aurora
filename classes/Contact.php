@@ -146,7 +146,7 @@ class Contact{
 		 );
     //print $sql;
 
-    if(mysql_query($sql)){
+    if(mysql_query($sql)){//nre contacr
       $this->id = mysql_insert_id();
     
       if(!isset($data['address']) and !isset($data['address_data']) and !isset($data['address_key'])  ){
@@ -173,15 +173,16 @@ class Contact{
 
       $address_id=$address->id;
       
-      $sql=sprintf("insert into `Contact Bridge` (`Contact Key`,`Address Key`) values (%d,%d)",
+      $sql=sprintf("insert into `Address Contact Bridge` (`Contact Key`,`Address Key`) values (%d,%d)",
 		   $this->id,
-		   $address->id
+		   $address_id
 		   );
 
-      mysql_query($sql);
+      if(!mysql_query($sql))
+	exit("$sql\n error can no create contact address bridge");
       //  print "$sql\n";
-      $sql=sprintf("update `Contact Dimension`  set `Contact Main Address key`=%s ,`Contact main Location`=%s ,`Contact Main XHTML Address`=%s , `Contact Main Country Key`=%d,`Contact Main Country`=%s,`Contact Main Country Code`=%s where `Contact Key`=%d ",
-		   prepare_mysql($address->id),
+      $sql=sprintf("update `Contact Dimension`  set `Contact Main Address Key`=%s ,`Contact main Location`=%s ,`Contact Main XHTML Address`=%s , `Contact Main Country Key`=%d,`Contact Main Country`=%s,`Contact Main Country Code`=%s where `Contact Key`=%d ",
+		   prepare_mysql($address_id),
 		   prepare_mysql($address->get('Address Location')),
 		   prepare_mysql($address->get('XHTML Address')),
 		   $address->get('Address Country Key'),
@@ -192,8 +193,8 @@ class Contact{
       //   print_r($address->data);
       //      print "\n$sql\n";
       //      exit;
-      mysql_query($sql);
-
+      if(mysql_query($sql))
+	exit("error can not update address data on contact");
       $this->get_data('id',$this->id);
       if(isset($data['email']) and  $data['email']!=''){
 	$email_data=array('email'=>$data['email'],'email contact'=>$this->display('name'));
