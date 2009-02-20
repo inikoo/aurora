@@ -116,6 +116,10 @@ $smarty->assign('table_title',_('Product List'));
 
 $smarty->assign('currency',$myconf['currency_symbol']);
 
+$smarty->assign('show_details',$_SESSION['state']['products']['details']);
+$smarty->assign('show_percentages',$_SESSION['state']['products']['percentages']);
+$smarty->assign('avg',$_SESSION['state']['products']['avg']);
+$smarty->assign('period',$_SESSION['state']['products']['period']);
 
 
 $smarty->display('products.tpl');

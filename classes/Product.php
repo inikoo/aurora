@@ -1028,6 +1028,8 @@ function normalize_code($code){
      
        $this->data['Product Total Invoiced Gross Amount']=$row['gross'];
        $this->data['Product Total Invoiced Discount Amount']=$row['disc'];
+       $this->data['Product Total Invoiced Amount']=$row['gross']-$row['disc'];
+	      
        $this->data['Product Total Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
        $this->data['Product Total Quantity Ordered']=$row['ordered'];
        $this->data['Product Total Quantity Invoiced']=$row['invoiced'];
@@ -1035,6 +1037,7 @@ function normalize_code($code){
      }else{
        $this->data['Product Total Invoiced Gross Amount']=0;
        $this->data['Product Total Invoiced Discount Amount']=0;
+       $this->data['Product Total Invoiced Amount']=0;
        $this->data['Product Total Profit']=0;
        $this->data['Product Total Quantity Ordered']=0;
        $this->data['Product Total Quantity Invoiced']=0;
@@ -1046,9 +1049,11 @@ function normalize_code($code){
 
        // print $row['cost_sup']." ".$this->id."  \n";
   
-     $sql=sprintf("update `Product Dimension` set `Product Total Invoiced Gross Amount`=%.2f,`Product Total Invoiced Discount Amount`=%.2f,`Product Total Profit`=%.2f, `Product Total Quantity Ordered`=%s , `Product Total Quantity Invoiced`=%s,`Product Total Quantity Delivered`=%s  where `Product Key`=%d "
+     $sql=sprintf("update `Product Dimension` set `Product Total Invoiced Gross Amount`=%.2f,`Product Total Invoiced Discount Amount`=%.2f,`Product Total Invoiced Amount`=%.2f,`Product Total Profit`=%.2f, `Product Total Quantity Ordered`=%s , `Product Total Quantity Invoiced`=%s,`Product Total Quantity Delivered`=%s  where `Product Key`=%d "
 		  ,$this->data['Product Total Invoiced Gross Amount']
 		  ,$this->data['Product Total Invoiced Discount Amount']
+		  ,$this->data['Product Total Invoiced Amount']
+
 		  ,$this->data['Product Total Profit']
 		  ,prepare_mysql($this->data['Product Total Quantity Ordered'])
 		  ,prepare_mysql($this->data['Product Total Quantity Invoiced'])
@@ -1067,6 +1072,8 @@ function normalize_code($code){
        
        $this->data['Product 1 Year Acc Invoiced Gross Amount']=$row['gross'];
        $this->data['Product 1 Year Acc Invoiced Discount Amount']=$row['disc'];
+       $this->data['Product 1 Year Acc Invoiced Amount']=$row['gross']-$row['disc'];
+
        $this->data['Product 1 Year Acc Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
        $this->data['Product 1 Year Acc Quantity Ordered']=$row['ordered'];
        $this->data['Product 1 Year Acc Quantity Invoiced']=$row['invoiced'];
@@ -1074,15 +1081,16 @@ function normalize_code($code){
      }else{
 	 $this->data['Product 1 Year Acc Invoiced Gross Amount']=0;
 	 $this->data['Product 1 Year Acc Invoiced Discount Amount']=0;
-	 $this->data['Product 1 Year Acc Profit']=0;
+	 $this->data['Product 1 Year Acc Profit']=0;$this->data['Product 1 Year Acc Invoiced Amount']=0;
 	 $this->data['Product 1 Year Acc Quantity Ordered']=0;
 	 $this->data['Product 1 Year Acc Quantity Invoiced']=0;
 	 $this->data['Product 1 Year Acc Quantity Delivered']=0;
        }
        
-       $sql=sprintf("update `Product Dimension` set `Product 1 Year Acc Invoiced Gross Amount`=%.2f,`Product 1 Year Acc Invoiced Discount Amount`=%.2f,`Product 1 Year Acc Profit`=%.2f, `Product 1 Year Acc Quantity Ordered`=%s , `Product 1 Year Acc Quantity Invoiced`=%s,`Product 1 Year Acc Quantity Delivered`=%s  where `Product Key`=%d "
+       $sql=sprintf("update `Product Dimension` set `Product 1 Year Acc Invoiced Gross Amount`=%.2f,`Product 1 Year Acc Invoiced Discount Amount`=%.2f,`Product 1 Year Acc Invoiced Amount`=%.2f,`Product 1 Year Acc Profit`=%.2f, `Product 1 Year Acc Quantity Ordered`=%s , `Product 1 Year Acc Quantity Invoiced`=%s,`Product 1 Year Acc Quantity Delivered`=%s  where `Product Key`=%d "
 		    ,$this->data['Product 1 Year Acc Invoiced Gross Amount']
 		    ,$this->data['Product 1 Year Acc Invoiced Discount Amount']
+		    ,$this->data['Product 1 Year Acc Invoiced Amount']
 		    ,$this->data['Product 1 Year Acc Profit']
 		    ,prepare_mysql($this->data['Product 1 Year Acc Quantity Ordered'])
 		    ,prepare_mysql($this->data['Product 1 Year Acc Quantity Invoiced'])
@@ -1099,6 +1107,8 @@ function normalize_code($code){
      
        $this->data['Product 1 Quarter Acc Invoiced Gross Amount']=$row['gross'];
        $this->data['Product 1 Quarter Acc Invoiced Discount Amount']=$row['disc'];
+       $this->data['Product 1 Quarter Acc Invoiced Amount']=$row['gross']-$row['disc'];
+
        $this->data['Product 1 Quarter Acc Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
        $this->data['Product 1 Quarter Acc Quantity Ordered']=$row['ordered'];
        $this->data['Product 1 Quarter Acc Quantity Invoiced']=$row['invoiced'];
@@ -1106,14 +1116,15 @@ function normalize_code($code){
       }else{
 	 $this->data['Product 1 Quarter Acc Invoiced Gross Amount']=0;
 	 $this->data['Product 1 Quarter Acc Invoiced Discount Amount']=0;
-	 $this->data['Product 1 Quarter Acc Profit']=0;
+	 $this->data['Product 1 Quarter Acc Profit']=0; $this->data['Product 1 Quarter Acc Invoiced Amount']=0;
 	 $this->data['Product 1 Quarter Acc Quantity Ordered']=0;
 	 $this->data['Product 1 Quarter Acc Quantity Invoiced']=0;
 	 $this->data['Product 1 Quarter Acc Quantity Delivered']=0;
        }
-     $sql=sprintf("update `Product Dimension` set `Product 1 Quarter Acc Invoiced Gross Amount`=%.2f,`Product 1 Quarter Acc Invoiced Discount Amount`=%.2f,`Product 1 Quarter Acc Profit`=%.2f, `Product 1 Quarter Acc Quantity Ordered`=%s , `Product 1 Quarter Acc Quantity Invoiced`=%s,`Product 1 Quarter Acc Quantity Delivered`=%s  where `Product Key`=%d "
+     $sql=sprintf("update `Product Dimension` set `Product 1 Quarter Acc Invoiced Gross Amount`=%.2f,`Product 1 Quarter Acc Invoiced Discount Amount`=%.2f,`Product 1 Quarter Acc Invoiced Amount`=%.2f,`Product 1 Quarter Acc Profit`=%.2f, `Product 1 Quarter Acc Quantity Ordered`=%s , `Product 1 Quarter Acc Quantity Invoiced`=%s,`Product 1 Quarter Acc Quantity Delivered`=%s  where `Product Key`=%d "
 		  ,$this->data['Product 1 Quarter Acc Invoiced Gross Amount']
 		  ,$this->data['Product 1 Quarter Acc Invoiced Discount Amount']
+		  ,$this->data['Product 1 Quarter Acc Invoiced Amount']
 		  ,$this->data['Product 1 Quarter Acc Profit']
 		  ,prepare_mysql($this->data['Product 1 Quarter Acc Quantity Ordered'])
 		  ,prepare_mysql($this->data['Product 1 Quarter Acc Quantity Invoiced'])
@@ -1131,21 +1142,22 @@ function normalize_code($code){
      
        $this->data['Product 1 Month Acc Invoiced Gross Amount']=$row['gross'];
        $this->data['Product 1 Month Acc Invoiced Discount Amount']=$row['disc'];
+       $this->data['Product 1 Month Acc Invoiced Amount']=$row['gross']-$row['disc'];
        $this->data['Product 1 Month Acc Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
        $this->data['Product 1 Month Acc Quantity Ordered']=$row['ordered'];
        $this->data['Product 1 Month Acc Quantity Invoiced']=$row['invoiced'];
        $this->data['Product 1 Month Acc Quantity Delivered']=$row['delivered'];
      }else{
        $this->data['Product 1 Month Acc Invoiced Gross Amount']=0;
-       $this->data['Product 1 Month Acc Invoiced Discount Amount']=0;
+       $this->data['Product 1 Month Acc Invoiced Discount Amount']=0;$this->data['Product 1 Month Acc Invoiced Amount']=0;
        $this->data['Product 1 Month Acc Profit']=0;
        $this->data['Product 1 Month Acc Quantity Ordered']=0;
        $this->data['Product 1 Month Acc Quantity Invoiced']=0;
        $this->data['Product 1 Month Acc Quantity Delivered']=0;
        }
-     $sql=sprintf("update `Product Dimension` set `Product 1 Month Acc Invoiced Gross Amount`=%.2f,`Product 1 Month Acc Invoiced Discount Amount`=%.2f,`Product 1 Month Acc Profit`=%.2f, `Product 1 Month Acc Quantity Ordered`=%s , `Product 1 Month Acc Quantity Invoiced`=%s,`Product 1 Month Acc Quantity Delivered`=%s  where `Product Key`=%d "
+     $sql=sprintf("update `Product Dimension` set `Product 1 Month Acc Invoiced Gross Amount`=%.2f,`Product 1 Month Acc Invoiced Discount Amount`=%.2f,`Product 1 Month Acc Invoiced Amount`=%.2f,`Product 1 Month Acc Profit`=%.2f, `Product 1 Month Acc Quantity Ordered`=%s , `Product 1 Month Acc Quantity Invoiced`=%s,`Product 1 Month Acc Quantity Delivered`=%s  where `Product Key`=%d "
 		  ,$this->data['Product 1 Month Acc Invoiced Gross Amount']
-		  ,$this->data['Product 1 Month Acc Invoiced Discount Amount']
+		  ,$this->data['Product 1 Month Acc Invoiced Discount Amount'],$this->data['Product 1 Month Acc Invoiced Amount']
 		  ,$this->data['Product 1 Month Acc Profit']
 		  ,prepare_mysql($this->data['Product 1 Month Acc Quantity Ordered'])
 		  ,prepare_mysql($this->data['Product 1 Month Acc Quantity Invoiced'])
@@ -1164,21 +1176,23 @@ function normalize_code($code){
      
        $this->data['Product 1 Week Acc Invoiced Gross Amount']=$row['gross'];
        $this->data['Product 1 Week Acc Invoiced Discount Amount']=$row['disc'];
+       $this->data['Product 1 Week Acc Invoiced Amount']=$row['gross']-$row['disc'];
        $this->data['Product 1 Week Acc Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
        $this->data['Product 1 Week Acc Quantity Ordered']=$row['ordered'];
        $this->data['Product 1 Week Acc Quantity Invoiced']=$row['invoiced'];
        $this->data['Product 1 Week Acc Quantity Delivered']=$row['delivered'];
       }else{
 	 $this->data['Product 1 Week Acc Invoiced Gross Amount']=0;
-	 $this->data['Product 1 Week Acc Invoiced Discount Amount']=0;
+	 $this->data['Product 1 Week Acc Invoiced Discount Amount']=0; $this->data['Product 1 Week Acc Invoiced Amount']=0;
 	 $this->data['Product 1 Week Acc Profit']=0;
 	 $this->data['Product 1 Week Acc Quantity Ordered']=0;
 	 $this->data['Product 1 Week Acc Quantity Invoiced']=0;
 	 $this->data['Product 1 Week Acc Quantity Delivered']=0;
        }
-     $sql=sprintf("update `Product Dimension` set `Product 1 Week Acc Invoiced Gross Amount`=%.2f,`Product 1 Week Acc Invoiced Discount Amount`=%.2f,`Product 1 Week Acc Profit`=%.2f, `Product 1 Week Acc Quantity Ordered`=%s , `Product 1 Week Acc Quantity Invoiced`=%s,`Product 1 Week Acc Quantity Delivered`=%s  where `Product Key`=%d "
+     $sql=sprintf("update `Product Dimension` set `Product 1 Week Acc Invoiced Gross Amount`=%.2f,`Product 1 Week Acc Invoiced Discount Amount`=%.2f,`Product 1 Week Acc Invoiced Amount`=%.2f,`Product 1 Week Acc Profit`=%.2f, `Product 1 Week Acc Quantity Ordered`=%s , `Product 1 Week Acc Quantity Invoiced`=%s,`Product 1 Week Acc Quantity Delivered`=%s  where `Product Key`=%d "
 		  ,$this->data['Product 1 Week Acc Invoiced Gross Amount']
 		  ,$this->data['Product 1 Week Acc Invoiced Discount Amount']
+		   ,$this->data['Product 1 Week Acc Invoiced Amount']
 		  ,$this->data['Product 1 Week Acc Profit']
 		  ,prepare_mysql($this->data['Product 1 Week Acc Quantity Ordered'])
 		  ,prepare_mysql($this->data['Product 1 Week Acc Quantity Invoiced'])
@@ -1186,7 +1200,7 @@ function normalize_code($code){
 		  ,$this->id
 		  );
      if(!mysql_query($sql))
-       exit("$sql\ncan not update product sales 1 qtr acc\n");
+       exit("$sql\ncan not update product sales 1 week acc\n");
      
      
      break;

@@ -94,6 +94,108 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   if(!mysql_query($sql))
     exit("can not upodate state of the product");
 
+  //check iif it is in a department;
+
+  $dept_no_dept=new Department('code','No department');
+  if(!$dept_no_dept->id){
+    $dept_data=array(
+		     'code'=>'No Department',
+		     'name'=>'Products Without Department',
+		     );
+    $dept_no_dept=new Department('create',$dept_data);
+  }
+
+   $promo=new Department('code','Promotional Items');
+  if(!$promo->id){
+    $dept_data=array(
+		     'code'=>'Promotional Items',
+		     'name'=>'Promotional Items',
+		     );
+    $promo=new Department('create',$dept_data);
+  }
+
+  $charges=new Department('code','Charges');
+  if(!$charges->id){
+    $dept_data=array(
+		     'code'=>'Charges',
+		     'name'=>'Charges & Ajustments',
+		     );
+    $charges=new Department('create',$dept_data);
+  }
+
+  $frc_fam=new Family('code','FRC');
+  if(!$frc_fam->id){
+    $fam_data=array(
+		    'code'=>'FRC',
+		    'name'=>'Freight Charges',
+		    );
+    $frc_fam=new Family('create',$fam_data);
+
+  }
+
+  if(preg_match('/^frc-/i',$product->data['Product Code'])){
+    $sql=sprintf("update from `Product Dimension` set `Product Family Key`=%d,`Product Family Code`=%s,`Product Family Name`=%s  where `Product Key`=%d "
+		 ,$frc_fam->id
+		 ,prepare_mysql($frc_fam->data['Product Family Code'])
+		 ,prepare_mysql($frc_fam->data['Product Family Name'])
+		 ,$product->id);
+    mysql_query($sql);
+     $sql=sprintf("delete from `Product Department Bridge` where `Product Key`=%d ",$product->id);
+    mysql_query($sql);
+    $sql=sprintf("insert into  `Product Department Bridge` (`Product Key`,`Product Department Key`) values (%d,%d)",$product->id,$charges->id);
+    mysql_query($sql);
+  }
+
+
+
+  if(preg_match('/^pi-|catalogue|^info|Mug-26x|OB-39x|SG-xMIXx|wsl-1275x|wsl-1474x|wsl-1474x|wsl-1479x|^FW-|^MFH-XX$|wsl-1513x|wsl-1487x|wsl-1636x|wsl-1637x/i',$product->data['Product Code'])){
+    
+     $sql=sprintf("update from `Product Dimension` set `Product Main Department Key`=%d,`Product Main Department Code`=%s,`Product Main Department Name`=%s  where `Product Key`=%d "
+		 ,$promo->id
+		 ,prepare_mysql($promo->data['Product Department Code'])
+		 ,prepare_mysql($promo->data['Product Department Name'])
+		 ,$product->id);
+    mysql_query($sql);
+
+    $sql=sprintf("delete from `Product Department Bridge` where `Product Key`=%d ",$product->id);
+    if(!mysql_query($sql))
+      exit("errir a");
+    $sql=sprintf("insert into  `Product Department Bridge` (`Product Key`,`Product Department Key`) values (%d,%d)",$product->id,$promo->id);
+    if(!mysql_query($sql))
+      exit("errir b");
+
+  }
+
+
+  $sql=sprintf("select * from `Product Department Bridge` where `Product Key`=%d",$product->id);
+  $result_a=mysql_query($sql);
+  $num_deptos=0;
+  $no_dep=false;
+  if($row_a=mysql_fetch_array($result_a, MYSQL_ASSOC)){
+    $num_deptos++;
+    if($row_a['Product Department Key']==$dept_no_dept->id)
+      $no_dep=true;
+  }
+  if($num_deptos>1 and $no_dep){
+    $sql=sprintf("delete from `Product Department Bridge` where `Product Key`=%d and `Product Department Key`=%d",$product->id,$dept_no_dept->id);
+    mysql_query($sql);
+  }
+
+
+  if($num_deptos==0){
+    
+   $sql=sprintf("update from `Product Dimension` set `Product Main Department Key`=%d,`Product Main Department Code`=%s,`Product Main Department Name`=%s  where `Product Key`=%d "
+		 ,$dept_no_dept->id
+		 ,prepare_mysql($dept_no_dept->data['Product Department Code'])
+		 ,prepare_mysql($dept_no_dept->data['Product Department Name'])
+		 ,$product->id);
+    mysql_query($sql);
+     $sql=sprintf("insert into  `Product Department Bridge` (`Product Key`,`Product Department Key`) values (%d,%d)",$product->id,$dept_no_dept->id);
+    mysql_query($sql);
+
+  }
+
+
   print $row['Product Key']."\r";
 
 

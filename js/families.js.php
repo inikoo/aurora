@@ -3,6 +3,8 @@ include_once('../common.php');
 ?>
 var Dom   = YAHOO.util.Dom;
 
+ var period='period_<?=$_SESSION['state']['families']['period']?>';
+    var avg='avg_<?=$_SESSION['state']['families']['avg']?>';
 
 
     var change_view=function(e){
@@ -11,71 +13,40 @@ var Dom   = YAHOO.util.Dom;
 	var tipo=this.id;
 	//	alert(table.view+' '+tipo)
 	if(table.view!=tipo){
+	       table.hideColumn('stock_value');
+	     table.hideColumn('stock_error');
+	     table.hideColumn('outofstock');
+	     table.hideColumn('active');
+	     table.hideColumn('sales');
+	     table.hideColumn('profit');
+
+
 	    if(tipo=='sales'){
-		table.showColumn('per_tsall');
-		table.showColumn('per_tsm');
-		
-		if(table.view=='general'){
-		    table.hideColumn('active');
-		    table.hideColumn('families');
+		table.showColumn('profit');
+		table.showColumn('sales');
+			Dom.get('period_options').style.display='';
+		Dom.get('avg_options').style.display='';
 
-		}
-		if(table.view=='stock'){
-		    table.hideColumn('stock_value');
-		    table.hideColumn('stock_error');
-		    table.hideColumn('outofstock');
-		    table.showColumn('tsall');
-		    table.showColumn('tsm');
-		}
-		
-
-	    }
-	    if(tipo=='general'){
+	    }else if(tipo=='general'){
 		  table.showColumn('active');
-		    table.showColumn('families');
-		if(table.view=='sales'){
-		    table.hideColumn('per_tsall');
-		    table.hideColumn('per_tsm');
-		}
-		if(table.view=='stock'){
-		    table.hideColumn('stock_value');
-		    table.hideColumn('stock_error');
-		    table.hideColumn('outofstock');
-		    table.showColumn('tsall');
-		    table.showColumn('tsm');
-		    table.showColumn('active');
-		    table.showColumn('families');
-		}
-
-	    }
-	    if(tipo=='stock'){
-		if(table.view=='general'){
-		    table.hideColumn('tsall');
-		    table.hideColumn('tsm');
-		    table.hideColumn('active');
-		    table.hideColumn('families');
+	Dom.get('period_options').style.display='none';
+		Dom.get('avg_options').style.display='none';
+	    }else if(tipo=='stock'){
 		    table.showColumn('stock_value');
 		    table.showColumn('stock_error');
 		    table.showColumn('outofstock');
-		}
-		if(table.view=='sales'){
-		    table.hideColumn('tsall');
-		    table.hideColumn('tsm');
-		    table.hideColumn('per_tsall');
-		    table.hideColumn('per_tsm');
-		    table.showColumn('stock_value');
-		    table.showColumn('stock_error');
-		    table.showColumn('outofstock');
-		}
-
+		    	Dom.get('period_options').style.display='';
+		Dom.get('avg_options').style.display='none';
 	    }
+	    
 
-	}
 	Dom.get(table.view).className="";
 	Dom.get(tipo).className="selected";
 	table.view=tipo
 	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=families-view&value=' + escape(tipo) );
-    }
+  
+	}
+  }
 
 
 
@@ -89,11 +60,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    {key:"code", label:"<?=_('Name')?>", width:350,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
 				    ,{key:"active", label:"<?=_('Products')?>",  width:100,sortable:true,className:"aright",<?=($_SESSION['state']['families']['view']=='general'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"tsall", label:"<?=_('TS')?>", width:90,sortable:true,className:"aright",<?=($_SESSION['state']['families']['view']!='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"tprofit", label:"<?=_('TP')?>", width:90,sortable:true,className:"aright",<?=($_SESSION['state']['families']['view']!='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-
-				    ,{key:"tsm", label:"<?=_('30d S')?>", width:90,sortable:true,className:"aright",<?=($_SESSION['state']['families']['view']=='sales'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"per_tsm", label:"<?=_('30d %S')?>", width:70,sortable:true,className:"aright",<?=($_SESSION['state']['families']['view']=='sales'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"sales", label:"<?=_('Sales')?>", width:90,sortable:true,className:"aright",<?=($_SESSION['state']['families']['view']!='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"profit", label:"<?=_('Profit')?>", width:90,sortable:true,className:"aright",<?=($_SESSION['state']['families']['view']!='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    ,{key:"stock_value", label:"<?=_('Stk Value')?>", width:70,sortable:true,className:"aright",<?=($_SESSION['state']['families']['view']=='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    ,{key:"outofstock", label:"<?=_('Out of Stk')?>", width:70,sortable:true,className:"aright",<?=($_SESSION['state']['families']['view']=='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    ,{key:"stock_error", label:"<?=_('Stk Error')?>", width:70,sortable:true,className:"aright",<?=($_SESSION['state']['families']['view']=='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
@@ -118,8 +86,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		fields: [
 			 'id',
 			 "code",
-			 
-			 'active',"tsall","tsq","tsy","tsm","per_tsall","per_tsm","stock_error","stock_value","outofstock","tprofit"
+			 "name",
+			 'active',"stock_error","stock_value","outofstock","sales","profit"
 			 ]};
 	    
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
@@ -160,6 +128,32 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 	};
     });
+function change_period(e,table_id){
+
+    tipo=this.id;
+    Dom.get(period).className="";
+    Dom.get(tipo).className="selected";	
+    period=tipo;
+    var table=tables['table'+table_id];
+    var datasource=tables['dataSource'+table_id];
+    var request='&period=' + this.getAttribute('period');
+    // alert(request);
+    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+}
+function change_avg(e,table_id){
+
+    //  alert(avg);
+    tipo=this.id;
+    Dom.get(avg).className="";
+    Dom.get(tipo).className="selected";	
+    avg=tipo;
+    var table=tables['table'+table_id];
+    var datasource=tables['dataSource'+table_id];
+    var request='&avg=' + this.getAttribute('avg');
+    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+}
+
+
 
 
  function init(){
@@ -169,8 +163,15 @@ YAHOO.util.Event.addListener(window, "load", function() {
  ids=['general','sales','stock'];
  YAHOO.util.Event.addListener(ids, "click",change_view)
 
+ ids=['period_all','period_year','period_quarter','period_month','period_week'];
+ YAHOO.util.Event.addListener(ids, "click",change_period,0);
+
+ ids=['avg_totals','avg_month','avg_week',"avg_month_eff","avg_week_eff"];
+ YAHOO.util.Event.addListener(ids, "click",change_avg,0);
+
 
  YAHOO.util.Event.addListener('show_details', "click",show_details,'families');
+
  YAHOO.util.Event.addListener('show_percentages', "click",show_percentages,'families');
 
 

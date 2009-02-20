@@ -57,8 +57,8 @@ th.yui-dt-resizeable .yui-dt-liner{position:relative;}
 .kaktus .yui-dt-data tr{border-top:1px solid #ccf}
 .kaktus tr.yui-dt-even{background-color:#f2f2ff;}
 .kaktus tr.yui-dt-odd{background-color:#FFF;}
-.kaktus tr.yui-dt-even td.yui-dt-asc,.kaktus tr.yui-dt-even td.yui-dt-desc{background-color:#F2f2ff;}
-.kaktus tr.yui-dt-odd td.yui-dt-asc,.kaktus tr.yui-dt-odd td.yui-dt-desc{background-color:#FFF;}
+.kaktus tr.yui-dt-even td.yui-dt-asc   ,.kaktus tr.yui-dt-even td.yui-dt-desc{background-color:#F2f2ff;}
+.kaktus tr.yui-dt-odd td.yui-dt-asc    ,.kaktus tr.yui-dt-odd td.yui-dt-desc{background-color:#FFF;}
 
 .kaktus .yui-dt-list tr.yui-dt-even{background-color:#FFF;}
 .kaktus .yui-dt-list tr.yui-dt-odd{background-color:#FFF;}
@@ -124,5 +124,8 @@ div.wider{height:1.8em}
     opacity: .25;
     *filter: alpha(opacity=25);  /* Set opacity in IE */
 }
+.kaktus .with_total tr.yui-dt-last td.yui-dt-asc{border-top:1px solid steelblue;border-bottom:none;background:#fff}
 
-.kaktus .with_total tr.yui-dt-last{border-top:1px solid steelblue;border-bottom:none;background:#fff}
+.kaktus .with_total tr.yui-dt-last td.yui-dt-desc {border-top:1px solid steelblue;border-bottom:none;background:#fff}
+.kaktus .with_total tr.yui-dt-last  {border-top:1px solid steelblue;border-bottom:none;background:#fff}
+

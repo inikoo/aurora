@@ -134,6 +134,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 function change_period(e,table_id){
+
     tipo=this.id;
     Dom.get(period).className="";
     Dom.get(tipo).className="selected";	
@@ -141,6 +142,7 @@ function change_period(e,table_id){
     var table=tables['table'+table_id];
     var datasource=tables['dataSource'+table_id];
     var request='&period=' + this.getAttribute('period');
+    // alert(request);
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
 }
 function change_avg(e,table_id){

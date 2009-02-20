@@ -441,6 +441,7 @@ var show_details=function(e,location){
 
 var show_percentages=function(e,location){
 
+
      var state=this.getAttribute('state');
 
      if(state==1){
@@ -492,3 +493,29 @@ var show_percentages=function(e,location){
             }
         }
     }
+
+
+function change_period(e,table_id){
+
+    tipo=this.id;
+    Dom.get(period).className="";
+    Dom.get(tipo).className="selected";	
+    period=tipo;
+    var table=tables['table'+table_id];
+    var datasource=tables['dataSource'+table_id];
+    var request='&period=' + this.getAttribute('period');
+    // alert(request);
+    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+}
+function change_avg(e,table_id){
+
+    //  alert(avg);
+    tipo=this.id;
+    Dom.get(avg).className="";
+    Dom.get(tipo).className="selected";	
+    avg=tipo;
+    var table=tables['table'+table_id];
+    var datasource=tables['dataSource'+table_id];
+    var request='&avg=' + this.getAttribute('avg');
+    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+}

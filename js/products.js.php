@@ -1,60 +1,33 @@
 <?
 include_once('../common.php');
 ?>
+ var period='period_<?=$_SESSION['state']['products']['period']?>';
+    var avg='avg_<?=$_SESSION['state']['products']['avg']?>';
 
     var change_view=function(e){
 	tipo=this.id;
 	var table=tables['table0'];
 	
-	table.hideColumn('description');
+	table.hideColumn('name');
 	table.hideColumn('stock');
 	table.hideColumn('stock_value');
-	table.hideColumn('awtdm');
-	table.hideColumn('tsall');
-	table.hideColumn('tsy');
-	table.hideColumn('tsm');
-	table.hideColumn('tsw');
-	table.hideColumn('awtsall');
-	table.hideColumn('awtsy');
-	table.hideColumn('awtsm');
-	table.hideColumn('tsoall');
-	table.hideColumn('tsoy');
-	table.hideColumn('tsom');
-	table.hideColumn('tsow');
-	table.hideColumn('awtsoall');
-	table.hideColumn('awtsoy');
-	table.hideColumn('awtsom');
-	table.hideColumn('days_to_ns');
+	table.hideColumn('sales');
+	table.hideColumn('profit');
 	if(tipo=='sales'){
-	    table.showColumn('tsall');
-	    table.showColumn('tsy');
-	    table.showColumn('tsm');
-	    table.showColumn('tsw');
-	    table.showColumn('awtsall');
-	    table.showColumn('awtsy');
-	    table.showColumn('awtsm');
+	    table.showColumn('sales');
+	    table.showColumn('profit');
 	}if(tipo=='sales_outers'){
-	    table.showColumn('tsoall');
-	    table.showColumn('tsoy');
-	    table.showColumn('tsom');
-	    table.showColumn('tsow');
-	    table.showColumn('awtsoall');
-	    table.showColumn('awtsoy');
-	    table.showColumn('awtsom');
+	    table.showColumn('stock');
+	    table.showColumn('stock_value');
 	}
 
 	else if(tipo=='general'){
-	    table.showColumn('description');
-	    table.showColumn('tsall');
-	    table.showColumn('awtsoall');
-	    table.showColumn('awtsall');
-	    table.showColumn('stock');
-	    table.showColumn('days_to_ns');
+	    table.showColumn('name');
+
 	}else if(tipo=='stock'){
 	    table.showColumn('stock');
 	    table.showColumn('stock_value');
-	    table.showColumn('awtdm');
-	    table.showColumn('days_to_ns');
+
 	}
 
 
@@ -70,16 +43,15 @@ include_once('../common.php');
 YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
 
-	    this.productLink=  function(el, oRecord, oColumn, oData) {
-		var url="product.php?id="+oRecord.getData("id");
-		el.innerHTML = oData.link(url);
-	    }
+
 	    var tableid=0;
 	    var tableDivEL="table"+tableid;
 	    var ColumnDefs = [ 
-				    {key:"code", label:"<?=_('Code')?>", width:60,sortable:true,formatter:this.productLink,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"description", label:"<?=_('Description')?>",width:436,<?=($_SESSION['state']['products']['view']!='general'?'hidden:true,':'')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"available", label:"<?=_('Available')?>", width:70,sortable:true,className:"aright",<?=(($_SESSION['state']['products']['view']=='stock' or $_SESSION['state']['products']['view']=='general')  ?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    {key:"code", label:"<?=_('Code')?>", width:90,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"name", label:"<?=_('Name')?>",width:400,<?=($_SESSION['state']['products']['view']!='general'?'hidden:true,':'')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"sales", label:"<?=_('Sales')?>",width:100,<?=($_SESSION['state']['products']['view']=='sales'?'':'hidden:true,')?> sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"profit", label:"<?=_('Profit')?>",width:100,<?=($_SESSION['state']['products']['view']=='sales'?'':'hidden:true,')?> sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"stock", label:"<?=_('Available')?>", width:70,sortable:true,className:"aright",<?=(($_SESSION['state']['products']['view']=='stock' or $_SESSION['state']['products']['view']=='general')  ?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
 				    
 
@@ -103,8 +75,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		fields: [
 			 'id'
 			 ,"code"
-			 ,"description","stock"
-			 ,"tsall","tsq","tsy","tsm","stock_value","tsy","tsw","awtsall","awtsy","awtsm","awtdm","tsoall","tsoq","tsoy","tsom","tsoy","tsow","awtsoall","awtsoy","awtsom","days_to_ns"
+			 ,"name","stock","stock_value"
+			 ,'sales','profit'
 			 ]};
 	    
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
@@ -158,6 +130,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
  ids=['general','sales','stock','sales_outers'];
  YAHOO.util.Event.addListener(ids, "click",change_view);
+ ids=['period_all','period_year','period_quarter','period_month','period_week'];
+ YAHOO.util.Event.addListener(ids, "click",change_period,0);
+ ids=['avg_totals','avg_month','avg_week',"avg_month_eff","avg_week_eff"];
+ YAHOO.util.Event.addListener(ids, "click",change_avg,0);
  
  YAHOO.util.Event.addListener('show_details', "click",show_details,'products')
      

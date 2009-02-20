@@ -28,6 +28,7 @@ $sql="select * from `Product Family Dimension`";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $product=new Family($row['Product Family Key']);
+  $product->load('products_info');
   $product->load('sales');
   print $row['Product Family Code']."\r";
  }

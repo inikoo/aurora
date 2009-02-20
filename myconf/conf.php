@@ -181,35 +181,35 @@ $default_state=array(
 						     'elements'=>array()
 						   )
 				    ),
-		      'products'=>array(
-				      'details'=>false,
-				      'percentages'=>false,
-				      'view'=>'general',
-				      'from'=>'',
-				      'to'=>'',
-				          'period'=>'year',
+		     'products'=>array(
+				       'details'=>false,
+				       'percentages'=>false,
+				       'view'=>'general',
+				       'from'=>'',
+				       'to'=>'',
+				       'period'=>'year',
 				       'percentage'=>0,
 				       'mode'=>'all',
 				       'avg'=>'totals',
-				      'table'=>array(
-						     'order'=>'code',
-						     'order_dir'=>'',
-						     'sf'=>0,
-						     'nr'=>25,
-						     'where'=>'where true',
-						     'f_field'=>'code',
-						     'f_value'=>'',
-						     'from'=>'',
-						     'to'=>'',
-						     'elements'=>array()
-						   )
-				    ),
-		       'report_outofstock'=>array(
-						  'from'=>'',
-						  'to'=>'',	  
-						  'table'=>array(
-								 'order'=>'code',
-								 'order_dir'=>'',
+				       'table'=>array(
+						      'order'=>'code',
+						      'order_dir'=>'',
+						      'sf'=>0,
+						      'nr'=>25,
+						      'where'=>'where true',
+						      'f_field'=>'code',
+						      'f_value'=>'',
+						      'from'=>'',
+						      'to'=>'',
+						      'elements'=>array()
+						      )
+				       ),
+		     'report_outofstock'=>array(
+						'from'=>'',
+						'to'=>'',	  
+						'table'=>array(
+							       'order'=>'code',
+							       'order_dir'=>'',
 								 'sf'=>0,
 								 'nr'=>25,
 								 'where'=>'where true',
@@ -330,7 +330,9 @@ $default_state=array(
 				       'mode'=>'all',
 				       'avg'=>'totals',
 					  'table'=>array(
-							 
+							 'where'=>'where true',
+							 'f_field'=>'code',
+							 'f_value'=>'',
 							 'order'=>'name',
 							 'order_dir'=>'',
 							 'sf'=>0,
@@ -397,24 +399,15 @@ $default_state=array(
 
 						      )
 				     ),
-	     'products'=>array(
-				       'details'=>false,
-				       'view'=>'general',
-				       'table'=>array(
-						      'order'=>'code',
-						      'order_dir'=>'',
-						      'sf'=>0,
-						      'nr'=>20,
-						      'where'=>'where true',
-						      'f_field'=>'code',
-						      'f_value'=>''
 
-						      )
-				     ),
 		     'families'=>array(
 				       'details'=>false,
 				       'view'=>'general',
 				       'percentages'=>true,
+				       'period'=>'year',
+				       'percentage'=>0,
+				       'mode'=>'all',
+				       'avg'=>'totals',
 				       'table'=>array(
 						      'order'=>'code',
 						      'order_dir'=>'',

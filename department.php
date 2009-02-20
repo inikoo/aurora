@@ -61,31 +61,54 @@ $department=new Department($department_id);
 
 
 $order=$_SESSION['state']['departments']['table']['order'];
-if($order=='per_tsall' or $order=='tsall')
-    $order='total_sales';
- if($order=='per_tsm' or $order=='tms')
-   $order='month_sales';
- if($order=='name')
-    $order='Product Department Name';
-  if($order=='families')
-    $order='Product Department Families';
- if($order=='active')
-    $order='Product Department On Sale Products';
-if($order=='outofstock')
-    $order='Product Department Out Of Stock Products';
-if($order=='stockerror')
-    $order='Product Department Unknown Stock Products';
+$period=$_SESSION['state']['departments']['period'];
+ if($order=='profit'){
+    if($period=='all')
+      $order='`Product Department Total Profit`';
+    elseif($period=='year')
+      $order='`Product Department 1 Year Acc Profit`';
+    elseif($period=='quarter')
+      $order='`Product Department 1 Quarter Acc Profit`';
+    elseif($period=='month')
+      $order='`Product Department 1 Month Acc Profit`';
+    elseif($period=='week')
+      $order='`Product Department 1 Week Acc Profit`';
+  }elseif($order=='sales'){
+    if($period=='all')
+      $order='`Product Department Total Invoiced Amount`';
+    elseif($period=='year')
+      $order='`Product Department 1 Year Acc Invoiced Amount`';
+    elseif($period=='quarter')
+      $order='`Product Department 1 Quarter Acc Invoiced Amount`';
+    elseif($period=='month')
+      $order='`Product Department 1 Month Acc Invoiced Amount`';
+    elseif($period=='week')
+      $order='`Product Department 1 Week Acc Invoiced Amount`';
 
-$sql=sprintf("select `Product Department Key` as id,`Product Department Name` as code,`Product Department Total Acc Invoiced Gross Amount`+`Product Department Total Acc Invoiced Discount Amount` as `product department total acc invoiced amount` ,`Product Department 1 Month Acc Invoiced Gross Amount`+`Product Department 1 Month Acc Invoiced Discount Amount` as `product department 1 month acc invoiced amount` from `Product Department Dimension` where  `%s`<'%s' order by `%s` desc  ",$order,$department->get($order),$order);
+  }
+  elseif($order=='name')
+    $order='`Product Department Name`';
+  elseif($order=='families')
+    $order='`Product Department Families`';
+  elseif($order=='active')
+    $order='`Product Department For Sale Products`';
+  elseif($order=='outofstock')
+    $order='`Product Department Out Of Stock Products`';
+  elseif($order=='stockerror')
+    $order='`Product Department Unknown Stock Products`';
 
-$result =& $db->query($sql);
-if(!$prev=$result->fetchRow())
+
+
+$sql=sprintf("select `Product Department Key` as id,`Product Department Name` as code  from `Product Department Dimension` where  %s<'%s' order by %s desc  ",$order,$department->get(str_replace('`','',$order)),$order);
+
+$result=mysql_query($sql);
+if(!$prev=mysql_fetch_array($result, MYSQL_ASSOC)   )
   $prev=array('id'=>0,'code'=>'');
-$sql=sprintf("select `Product Department Key` as id,`Product Department Name` as code,`Product Department Total Acc Invoiced Gross Amount`+`Product Department Total Acc Invoiced Discount Amount` as `product department total acc invoiced amount` ,`Product Department 1 Month Acc Invoiced Gross Amount`+`Product Department 1 Month Acc Invoiced Discount Amount` as `product department 1 month acc invoiced amount` from `Product Department Dimension`   where    `%s`>'%s' order by `%s`   ",$order,$department->get($order),$order);
+$sql=sprintf("select `Product Department Key` as id,`Product Department Name` as code  from `Product Department Dimension`   where    %s>'%s' order by %s   ",$order,$department->get(str_replace('`','',$order)),$order);
 
 //print $sql;
-$result =& $db->query($sql);
-if(!$next=$result->fetchRow())
+$result=mysql_query($sql);
+if(!$next=mysql_fetch_array($result, MYSQL_ASSOC)   )
   $next=array('id'=>0,'code'=>'');
 
 $smarty->assign('prev',$prev);
@@ -94,10 +117,10 @@ $smarty->assign('next',$next);
 
 
 $smarty->assign('parent','departments.php');
-$smarty->assign('title', _('Product Families'));
+$smarty->assign('title', _('Families in').' '.$department->get('Product Department Name'));
 $product_home="Products Home";
 $smarty->assign('home',$product_home);
-// $smarty->assign('department',$families['department']);
+$smarty->assign('department',$department);
 // $smarty->assign('department_id',$_REQUEST['id']);
 // $smarty->assign('products',$families['products']);
 
@@ -107,6 +130,10 @@ $smarty->assign('filter_name',_('Family code'));
 
 $smarty->assign('view',$_SESSION['state']['department']['view']);
 $smarty->assign('show_details',$_SESSION['state']['department']['details']);
+$smarty->assign('show_percentages',$_SESSION['state']['department']['percentages']);
+$smarty->assign('avg',$_SESSION['state']['department']['avg']);
+$smarty->assign('period',$_SESSION['state']['department']['period']);
+
 
 //$table_title=_('Family List');
 //$smarty->assign('table_title',$table_title);
