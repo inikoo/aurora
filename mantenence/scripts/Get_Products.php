@@ -150,7 +150,8 @@ foreach($__cols as $cols){
   if(preg_match('/^(DB-IS|EO-Sticker|ECBox-01|SHOP-Fit)$/i',$code) and $price=='')
     $is_product=false;
 
-
+ if(preg_match('/^credit|Freight|^frc-|^cxd-|^wsl$/i',$code) and $price=='')
+    $is_product=false;
 
 
   

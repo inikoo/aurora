@@ -25,16 +25,16 @@ date_default_timezone_set('Europe/London');
 
 
 //$sql="select * from `Product Dimension` where `Product Code`='FO-A1'";
-$sql="select * from `Product Dimension` limit 1 ";
+$sql="select * from `Product Dimension`  ";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-    print "hola";
+
   $product=new Product($row['Product Key']);
- print "hola1";
+
   $product->load('sales');
- print "hola2";
+
   $product->load('days');
- print "hola3";
+
 
   $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s order by `Product Valid From` limit 1",prepare_mysql($row['Product Code']));
   $result2=mysql_query($sql);

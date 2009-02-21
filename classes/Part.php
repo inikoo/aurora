@@ -40,8 +40,7 @@ class part{
   function create($data){
     // print_r($data);
      $base_data=array(
-		     'part type'=>'Physical',
-		     'part sku'=>'',
+		      'part status'=>'In Use',
 		     'part xhtml currently used in'=>'',
 		     'part xhtml currently supplied by'=>'',
 		     'part xhtml description'=>'',
@@ -52,18 +51,15 @@ class part{
 		     'part gross weight'=>'',
 		     'part valid from'=>'',
 		     'part valid to'=>'',
-		     'part most recent'=>'',
-		     'part most recent key'=>''
 		     );
      foreach($data as $key=>$value){
        if(isset( $base_data[strtolower($key)]) )
 	 $base_data[strtolower($key)]=_trim($value);
      }
  
-     if(!$this->valid_sku($base_data['part sku']) ){
-
-       $base_data['part sku']=$this->new_sku();
-     }
+     //    if(!$this->valid_sku($base_data['part sku']) ){
+     $base_data['part sku']=$this->new_sku();
+       // }
 
      $keys='(';$values='values(';
     foreach($base_data as $key=>$value){
@@ -79,9 +75,9 @@ class part{
     if(mysql_query($sql)){
       $this->id = mysql_insert_id();
 
-      if($base_data['part most recent']=='Yes')
-      	$sql=sprintf("update  `Part Dimension` set `Part Most Recent Key`=%d where `Part Key`=%d",$this->id,$this->id);
-	mysql_query($sql);
+    //   if($base_data['part most recent']=='Yes')
+//       	$sql=sprintf("update  `Part Dimension` set `Part Most Recent Key`=%d where `Part Key`=%d",$this->id,$this->id);
+// 	mysql_query($sql);
 
       $this->get_data('id',$this->id);
     }else{

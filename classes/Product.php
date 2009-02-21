@@ -1048,7 +1048,7 @@ function normalize_code($code){
 
 
      }
-     print "$sql\n";
+     // print "$sql\n";
 
        // print $row['cost_sup']." ".$this->id."  \n";
   

@@ -14,10 +14,7 @@ $dns_db='dw';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
 
-
-
 require_once '../../common_functions.php';
-
 mysql_query("SET time_zone ='UTC'");
 mysql_query("SET NAMES 'utf8'");
 
@@ -32,13 +29,6 @@ $software='Get_Orders_DB.php';
 $version='V 1.0';
 
 $Data_Audit_ETL_Software="$software $version";
-
-
-
-
-
-
-
 srand(12344);
 
 
@@ -135,6 +125,26 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     $transaction['description']=preg_replace('/\s*\-from prev order$/i','',$transaction['description']);
     $transaction['description']=preg_replace('/TO FOLLOW$/','',$transaction['description']);
 
+    if(preg_match('/^sg\-$|^SG\-mix$|^sg-xx$/i',$transaction['code']) ){
+      $transaction['code']='SG-mix';
+      $transaction['description']='Simmering Granules Mixed Box';
+    }
+    if(preg_match('/SG-Y2/i',$transaction['code'])   and preg_match('/mix/i',$transaction['description'])){
+      $transaction['code']='SG-mix';
+      $transaction['description']='Simmering Granules Mixed Box';
+    }
+    if(preg_match('/sg-bn/i',$transaction['code']) ){
+      $transaction['code']='SG-BN';
+      $transaction['description']='Simmering Granules Mixed Box';
+    }
+     if(preg_match('/^sg$/i',$transaction['code']) and preg_match('/^(Mixed Simmering Granules|Mixed Simmering Granuels|Random Mix Simmering Granules)$/i',$transaction['description']) ){
+      $transaction['code']='SG-mix';
+      $transaction['description']='Simmering Granules Mixed Box';
+    }
+ if(preg_match('/^sg$/i',$transaction['code']) and preg_match('/25/i',$transaction['description']) ){
+      $transaction['code']='SG';
+      $transaction['description']='25Kg Hydrosoft Granular Salt';
+    }
 
 
     if(preg_match('/^bot-01$/i',$transaction['code'])   and preg_match('/10ml Amber Bottles.*tamper.*ap/i',$transaction['description']))
@@ -250,10 +260,10 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
        $transaction['description']=preg_replace('/^Alternative Gift\s*(\:|\-)\s*/i','Alternative Gift to Wine: ',$transaction['description']);
        $transaction['description']=preg_replace('/^Alternative Gift to Wine\s*(\-)\*/i','Alternative Gift to Wine: ',$transaction['description']);
-
+ $transaction['description']=preg_replace('/Alternative Gift to Wine (\:|\-)/i','Alternative Gift to Wine: ',$transaction['description']);
 
        if(preg_match('/1.*box.*sim.*granules|\/simmering grans$|Alternative Gift to Wine.*Mixed simmering/i',$transaction['description'])){
-	 $transaction['description']='Alternative Gift: 1 box of simmering granules';
+	 $transaction['description']='Alternative Gift to Wine: 1 box of simmering granules';
        }
 
      }
