@@ -191,7 +191,7 @@ function get_tipo_order($ltipo,$header){
     $tipo=6;
 }elseif(preg_match('/Damaged Parcel|MISSING|Missing Parcel|missing\s+\d|^reemplazo por falta|shortages|Missing From Order|missing form order|Mising from|^Missing Item|Missing - Replacement|^Shortage|Lost Parcel/i',$ltipo)){
     $tipo=7;
-  }elseif(preg_match('/^to follow|Follow On Order/i',$ltipo)){
+  }elseif(preg_match('/^to follow|Follow.On Order/i',$ltipo)){
     $tipo=8;
 
 

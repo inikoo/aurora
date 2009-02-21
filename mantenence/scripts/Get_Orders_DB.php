@@ -10,7 +10,7 @@ include_once('../../classes/Order.php');
 error_reporting(E_ALL);
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 if(!$con){print "Error can not connect with database server\n";exit;}
-$dns_db='dw2';
+$dns_db='dw';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
 
@@ -60,7 +60,13 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
      $map_act=$_map_act;$map=$_map;$y_map=$_y_map;
      
      // tomando en coeuntas diferencias en la posicion de los elementos
-     if($filename_number<18803){// Change map if the orders are old
+  
+       if($filename_number==19015){
+	 $y_map['code']=4;
+     }
+     
+
+   if($filename_number<18803){// Change map if the orders are old
        $y_map=$_y_map_old;
        foreach($_map_old as $key=>$value)
 	 $map[$key]=$value;
@@ -70,7 +76,10 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
        $prod_map['no_price_bonus']=true;
        $prod_map['no_reorder']=true;
        $prod_map['bonus']=11;
-  }
+     }
+     
+
+
   list($act_data,$header_data)=read_header($header,$map_act,$y_map,$map);
   $header_data=filter_header($header_data);
   list($tipo_order,$parent_order_id)=get_tipo_order($header_data['ltipo'],$header_data);
@@ -100,7 +109,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
 
   foreach($transactions as $transaction){
-    if(preg_match('/^credit/i',$transaction['code']))
+    if(preg_match('/^credit|Freight|^frc-|^cxd-|^wsl$/i',$transaction['code']))
       continue;
 
     $__code=strtolower($transaction['code']);
@@ -112,6 +121,143 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       continue;
       
     }
+    
+    $transaction['description']=preg_replace('/\s*\(\s*replacements?\s*\)\s*$/i','',$transaction['description']);
+    $transaction['description']=preg_replace('/\s*(\-|\/)\s*replacements?\s*$/i','',$transaction['description']);
+    $transaction['description']=preg_replace('/\s*(\-|\/)\s*SHOWROOM\s*$/i','',$transaction['description']);
+    $transaction['description']=preg_replace('/\s*(\-|\/)\s*to.follow\/?\s*$/i','',$transaction['description']);
+    $transaction['description']=preg_replace('/\s*(\-|\/)\s*missing\s*$/i','',$transaction['description']);
+    $transaction['description']=preg_replace('/\/missed off prev.order$/i','',$transaction['description']);
+    $transaction['description']=preg_replace('/\(missed off on last order\)$/i','',$transaction['description']);
+    $transaction['description']=preg_replace('/\/from prev order$/i','',$transaction['description']);
+    $transaction['description']=preg_replace('/\s*\(owed from prev order\)$/i','',$transaction['description']);
+    $transaction['description']=preg_replace('/\s*\/prev order$/i','',$transaction['description']);
+    $transaction['description']=preg_replace('/\s*\-from prev order$/i','',$transaction['description']);
+    $transaction['description']=preg_replace('/TO FOLLOW$/','',$transaction['description']);
+
+
+
+    if(preg_match('/^bot-01$/i',$transaction['code'])   and preg_match('/10ml Amber Bottles.*tamper.*ap/i',$transaction['description']))
+      $transaction['description']='10ml Amber Bottles & Tamper Proof Caps';
+    if(preg_match('/^bot-01$/i',$transaction['code'])   and preg_match('/10ml Amber Bottles.*only/i',$transaction['description']))
+      $transaction['description']='10ml Amber Bottles Only';
+    if(preg_match('/^bot-01$/i',$transaction['code'])   and preg_match('/10ml Amber Bottles.already supplied/i',$transaction['description']))
+      $transaction['description']='10ml Amber Bottles';
+    if(preg_match('/^bag-07$/i',$transaction['code'])   and preg_match('/^Mini Bag.*mix|^Mixed Mini Bag$/i',$transaction['description']))
+      $transaction['description']='Mini Bag - Mix';
+    if(preg_match('/^bag-07$/i',$transaction['code'])   and preg_match('/Mini Bag .replacement/i',$transaction['description']))
+      $transaction['description']='Mini Bag';
+    if(preg_match('/^bag-07$/i',$transaction['code'])   and preg_match('/Mini Organza Bags Mixed|Organza Mini Bag . Mix/i',$transaction['description']))
+      $transaction['description']='Organza Mini Bag - Mixed';
+    if(preg_match('/^bag-02$/i',$transaction['code']))
+      $transaction['description']='Organza Bags';
+    if(preg_match('/^bag-02a$/i',$transaction['code'])   and preg_match('/gold/i',$transaction['description']))
+      $transaction['description']='Organza Bag - Gold';
+    if(preg_match('/^bag-02a$/i',$transaction['code'])   and preg_match('/misc|mix|showroom/i',$transaction['description']))
+      $transaction['description']='Organza Bag - Mix';
+    if(preg_match('/^bag-07a$/i',$transaction['code'])   and preg_match('/misc|mix|showroom/i',$transaction['description']))
+      $transaction['description']='Organza Mini Bag - Mix';
+    if(preg_match('/^bag$/i',$transaction['code']) )
+      $transaction['description']='Organza Bag - Mix';
+     if(preg_match('/^eid-04$/i',$transaction['code']) )
+      $transaction['description']='Nag Champa 15g';
+     if(preg_match('/^ish-13$/i',$transaction['code'])   and preg_match('/Smoke Boxes Natural/i',$transaction['description'])   )
+       $transaction['description']='Smoke Boxes Natural';
+     if(preg_match('/^asoap-09$/i',$transaction['code'])   and preg_match('/maychang-orange tint old showrooms/i',$transaction['description'])   )
+       $transaction['description']='May Chang - Orange -EO Soap Loaf';
+     if(preg_match('/^asoap-02$/i',$transaction['code'])   and preg_match('/old showrooms/i',$transaction['description'])   )
+       $transaction['description']='Tea Tree - Green -EO Soap Loaf';
+
+     if(preg_match('/^wsl-1039$/i',$transaction['code'])     )
+       $transaction['description']='Arty Coffee Twist Candle 24cm';
+     if(preg_match('/^joie-01$/i',$transaction['code'])   and preg_match('/assorted/i',$transaction['description'])    )
+       $transaction['description']='Joie Boxed - Assorted';
+     if(preg_match('/^wsl-01$/i',$transaction['code'])   and preg_match('/Mixed packs of Incense.Shipp.cost covered./i',$transaction['description'])    )
+    $transaction['description']='Mixed packs of Incense';
+  if(preg_match('/^gp-01$/i',$transaction['code'])   and preg_match('/^(Glass Pebbles Assorted|Glass Pebbles mixed colours|Glass Pebbles-Mixed)$/i',$transaction['description'])    )
+    $transaction['description']='Glass Pebbles mixed colours';
+
+ if(preg_match('/^HemM-01$/i',$transaction['code'])   and preg_match('/Pair of Hermatite Magnets/i',$transaction['description'])    )
+    $transaction['description']='Pair of Hematite Magnets';
+
+ if(preg_match('/Box of 6 Nightlights -Flower Garden/i',$transaction['description'])    )
+    $transaction['description']='Box of 6 Nightlights - Flower Garden';
+
+
+     if(preg_match('/^FW-01$/i',$transaction['code'])  ){
+       if(preg_match('/gift|alter/i',$transaction['description'])){
+	 $transaction['code']='FW-04';
+       }elseif(preg_match('/white/i',$transaction['description'])){
+	 $transaction['code']='FW-02';
+	 $transaction['description']='Promo Wine White';
+       } elseif(preg_match('/rose/i',$transaction['description'])){
+	 $transaction['code']='FW-03';
+	 $transaction['description']='Promo Wine Rose';
+       } elseif(preg_match('/red/i',$transaction['description'])){
+	 $transaction['description']='Promo Wine Red';
+       } elseif(preg_match('/Veuve/i',$transaction['description'])){
+	 $transaction['description']='Veuve Clicquote Champagne';
+       } elseif(preg_match('/champagne/i',$transaction['description'])){
+	 $transaction['description']='Champagne';
+       }
+     }
+  if(preg_match('/^FW-02$/i',$transaction['code'])  ){
+       if(preg_match('/gift|alter/i',$transaction['description'])){
+	 $transaction['code']='FW-04';
+       }elseif(preg_match('/white/i',$transaction['description'])){
+	 $transaction['code']='FW-02';
+	 $transaction['description']='Promo Wine White';
+       } elseif(preg_match('/rose/i',$transaction['description'])){
+	 $transaction['code']='FW-03';
+	 $transaction['description']='Promo Wine Rose';
+       } elseif(preg_match('/red/i',$transaction['description'])){
+	 $transaction['code']='FW-01';
+	 $transaction['description']='Promo Wine Red';
+	 
+       } elseif(preg_match('/Veuve/i',$transaction['description'])){
+	  $transaction['code']='FW-01';
+	 $transaction['description']='Veuve Clicquote Champagne';
+       } elseif(preg_match('/champagne/i',$transaction['description'])){
+	 $transaction['code']='FW-01';
+	 $transaction['description']='Champagne';
+       }
+     }
+  if(preg_match('/^FW-03$/i',$transaction['code'])  ){
+       if(preg_match('/gift|alter/i',$transaction['description'])){
+	 $transaction['code']='FW-04';
+       }elseif(preg_match('/white/i',$transaction['description'])){
+	 $transaction['code']='FW-02';
+	 $transaction['description']='Promo Wine White';
+       } elseif(preg_match('/rose/i',$transaction['description'])){
+	 $transaction['code']='FW-03';
+	 $transaction['description']='Promo Wine Rose';
+       } elseif(preg_match('/red/i',$transaction['description'])){
+	 $transaction['code']='FW-01';
+	 $transaction['description']='Promo Wine Red';
+	 
+       } elseif(preg_match('/Veuve/i',$transaction['description'])){
+	  $transaction['code']='FW-01';
+	 $transaction['description']='Veuve Clicquote Champagne';
+       } elseif(preg_match('/champagne/i',$transaction['description'])){
+	 $transaction['code']='FW-01';
+	 $transaction['description']='Champagne';
+       }
+     }
+    
+ if(preg_match('/^FW-04$/i',$transaction['code'])  ){
+       $transaction['description']=preg_replace('/^Alternative Gift\s*\/\s*/i','Alternative Gift to Wine: ',$transaction['description']);
+       $transaction['description']=preg_replace('/^Gift\s*(\:|\-)\*/i','Alternative Gift to Wine: ',$transaction['description']);
+
+       $transaction['description']=preg_replace('/^Alternative Gift\s*(\:|\-)\s*/i','Alternative Gift to Wine: ',$transaction['description']);
+       $transaction['description']=preg_replace('/^Alternative Gift to Wine\s*(\-)\*/i','Alternative Gift to Wine: ',$transaction['description']);
+
+
+       if(preg_match('/1.*box.*sim.*granules|\/simmering grans$|Alternative Gift to Wine.*Mixed simmering/i',$transaction['description'])){
+	 $transaction['description']='Alternative Gift: 1 box of simmering granules';
+       }
+
+     }
+
 
     $supplier_product_cost=sprintf("%.4f",$transaction['supplier_product_cost']);
     // print_r($transaction);
@@ -131,7 +277,8 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     if($transaction['supplier_code']=='' or preg_match('/\d/',$transaction['supplier_code']) )
       $transaction['supplier_code']='Unknown Supplier';
     $unit_type='Piece';
-    $description=_trim($transaction['description']);$description=str_replace("\\\"","\"",$description);
+    $description=_trim($transaction['description']);
+    $description=str_replace("\\\"","\"",$description);
     if(preg_match('/Joie/i',$description) and preg_match('/abpx-01/i',$transaction['code']))
       $description='2 boxes joie (replacement due out of stock)';
     
@@ -188,8 +335,8 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
        
     }
     
-
-
+     
+     
 
     $product_data=array(
 			'product code'=>_trim($transaction['code'])

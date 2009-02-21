@@ -13,9 +13,14 @@ include_once('../common.php');
 	table.hideColumn('stock_value');
 	table.hideColumn('sales');
 	table.hideColumn('profit');
+	table.hideColumn('sold');
+	table.hideColumn('margin');
 	if(tipo=='sales'){
+	    table.showColumn('sold');
 	    table.showColumn('sales');
 	    table.showColumn('profit');
+	    table.showColumn('margin');
+
 	}if(tipo=='sales_outers'){
 	    table.showColumn('stock');
 	    table.showColumn('stock_value');
@@ -49,8 +54,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var ColumnDefs = [ 
 				    {key:"code", label:"<?=_('Code')?>", width:90,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    ,{key:"name", label:"<?=_('Name')?>",width:400,<?=($_SESSION['state']['products']['view']!='general'?'hidden:true,':'')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"sales", label:"<?=_('Sales')?>",width:100,<?=($_SESSION['state']['products']['view']=='sales'?'':'hidden:true,')?> sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"profit", label:"<?=_('Profit')?>",width:100,<?=($_SESSION['state']['products']['view']=='sales'?'':'hidden:true,')?> sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"sold", label:"<?=_('Sold')?>",width:100,<?=($_SESSION['state']['products']['view']=='sales'?'':'hidden:true,')?> sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"sales", label:"<?=_('Sales')?>",width:100,<?=($_SESSION['state']['products']['view']=='sales'?'':'hidden:true,')?> sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"profit", label:"<?=_('Profit')?>",width:100,<?=($_SESSION['state']['products']['view']=='sales'?'':'hidden:true,')?> sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"margin", label:"<?=_('Margin')?>",width:100,<?=($_SESSION['state']['products']['view']=='sales'?'':'hidden:true,')?> sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    ,{key:"stock", label:"<?=_('Available')?>", width:70,sortable:true,className:"aright",<?=(($_SESSION['state']['products']['view']=='stock' or $_SESSION['state']['products']['view']=='general')  ?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
 				    
@@ -64,6 +71,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		resultsList: "resultset.data", 
 		metaFields: {
 		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
 		    rowsPerPage:"resultset.records_perpage",
 		    sort_key:"resultset.sort_key",
 		    sort_dir:"resultset.sort_dir",
@@ -76,7 +84,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 'id'
 			 ,"code"
 			 ,"name","stock","stock_value"
-			 ,'sales','profit'
+			 ,'sales','profit','margin','sold'
 			 ]};
 	    
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
@@ -150,10 +158,10 @@ YAHOO.util.Event.onDOMReady(init);
 
 
 YAHOO.util.Event.onContentReady("rppmenu", function () {
-	 var oMenu = new YAHOO.widget.Menu("rppmenu", { context:["paginator0","tr", "bl"]  });
+	 var oMenu = new YAHOO.widget.Menu("rppmenu", { context:["rtext_rpp0","tl", "tr"]  });
 	 oMenu.render();
 	 oMenu.subscribe("show", oMenu.focus);
-	 YAHOO.util.Event.addListener("paginator_info0", "click", oMenu.show, null, oMenu);
+	 YAHOO.util.Event.addListener("rtext_rpp0", "click", oMenu.show, null, oMenu);
     });
 
 YAHOO.util.Event.onContentReady("filtermenu", function () {

@@ -105,9 +105,11 @@ if(!$LU->isLoggedIn() || ($handle && $LU->getProperty('handle') != $handle)){
        include_once('app_files/db/key.php');
        $sql=sprintf("select passwd from liveuser_users where handle='%s'",addslashes($handle));
 
-       $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-       if($row=$res->fetchRow()) {
- 	$pwd=$row['passwd'];
+       
+       $result=mysql_query($sql);
+       if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+
+	$pwd=$row['passwd'];
  	$st=AESDecryptCtr(AESDecryptCtr($sk,$pwd,256),SKEY,256);
 
 	   if(preg_match('/^skstart\|\d+\|[0-9\.]+\|.+\|/',$st)){
@@ -223,8 +225,9 @@ if(isset($_REQUEST['_lang']) and is_numeric($_REQUEST['_lang'])){
 if(!isset($_SESSION['lang'])){
   
   $sql="select `Language Key`  from `Language Dimension` where `Locale Code`='".$myconf['lang'].'_'.$myconf['country']."'";
-  $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-  if($row=$res->fetchRow()) {
+  $result=mysql_query($sql);
+  if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+
     $_SESSION['lang']=$row['Language Key'];
   }else{
     $_SESSION['lang']=1;
@@ -233,25 +236,24 @@ if(!isset($_SESSION['lang'])){
  }
 
 
-
+$other_langs=array();
 
 $sql="select   `EAI Locale Code` ,`Language Code` ,`Country 2 Alpha Code` , `Locale Code` from `Language Country Bridge`   where `Language Key`=".$_SESSION['lang'];
 
-$res = $db->query($sql); 
-$other_langs=array();
 
-if($sql_data=$res->fetchRow()) {
+$result=mysql_query($sql);
+if($sql_data=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
   // setlocale(LC_MESSAGES, $sql_data['code'].'_'.$sql_data['country_code'].($myconf['encoding']!=''?'.'.$myconf['encoding']:''));
   //setlocale(LC_TIME, $sql_data['code'].'_'.$sql_data['country_code'].($myconf['encoding']!=''?'.'.$myconf['encoding']:''));
-  setlocale(LC_MESSAGES, $sql_data['eai locale code']);
-  setlocale(LC_TIME, $sql_data['eai locale code']);
+  setlocale(LC_MESSAGES, $sql_data['EAI Locale Code']);
+  setlocale(LC_TIME, $sql_data['EAI Locale Code']);
   if(isset($_SESSION['loginInfo']['auth']['propertyValues']['lang']))
     $_SESSION['lang']=$_SESSION['loginInfo']['auth']['propertyValues']['lang']=$_SESSION['lang'];
-  $lang_country_code=$sql_data['country 2 alpha code'];
+  $lang_country_code=$sql_data['Country 2 Alpha Code'];
   // $default_country=$sql_data['Country Name'];
   //$default_country_id=$sql_data['country_id'];
-  $lang_code=$sql_data['language code'];
+  $lang_code=$sql_data['Language Code'];
  }else{
   $lang_country_code='gb';
   $lang_code='EN';
@@ -370,11 +372,14 @@ foreach($_GET as $key => $value){
   if($key!='_lang')
     $args.=$key.'='.$value.'&';
 }
-$sql="select `Language Key`,`Country 2 Alpha Code` from `Language Country Bridge` where `EAI Access`=1 and `Language Key`!=".$_SESSION['lang'];
-$res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
 $lang_menu=array();
-while($row = $res->fetchrow()) {
-  $lang_menu[]=array($_SERVER['PHP_SELF'].$args.'_lang='.$row['language key'],$row['country 2 alpha code'],$_lang[$row['language key']]);
+$sql="select `Language Key`,`Country 2 Alpha Code` from `Language Country Bridge` where `EAI Access`=1 and `Language Key`!=".$_SESSION['lang'];
+
+
+ $result=mysql_query($sql);
+while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+  
+  $lang_menu[]=array($_SERVER['PHP_SELF'].$args.'_lang='.$row['Language Key'],$row['Country 2 Alpha Code'],$_lang[$row['Language Key']]);
  }
 $smarty->assign('lang_menu',$lang_menu);
 $smarty->assign('page_layout','doc4');

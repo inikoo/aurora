@@ -3852,7 +3852,9 @@ case('products'):
 
 
       $_SESSION['state']['products']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
-      
+
+
+        $group='group by `Product Code`';
       
      $filter_msg='';
      
@@ -3873,8 +3875,8 @@ case('products'):
      elseif($f_field=='name' and $f_value!='')
        $wheref.=" and  `Product Name` like '%".addslashes($f_value)."%'";
      
-     $sql="select count(*) as total from `Product Dimension`  $where $wheref";
-
+     $sql="select count(*) as total from `Product Dimension`  $where $wheref and `Product Same Code Most Recent`='Yes'  ";
+     //  print $sql;
      $res=mysql_query($sql);
      if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
        $total=$row['total'];
@@ -3883,7 +3885,7 @@ case('products'):
        $filtered=0;
        $total_records=$total;
      } else{
-       $sql="select count(*) as total from `Product Dimension`  $where ";
+       $sql="select count(*) as total from `Product Dimension`  $where and `Product Same Code Most Recent`='Yes'  ";
        $res=mysql_query($sql);
        if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 	 $total_records=$row['total'];
@@ -3892,12 +3894,15 @@ case('products'):
 
    }
 
+     
      $rtext=$total_records." ".ngettext('product','products',$total_records);
      if($total_records>$number_results)
-       $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
+       $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+     else
+       $rtext_rpp='';
      
-       if($total==0 and $filtered>0){
-     switch($f_field){
+     if($total==0 and $filtered>0){
+       switch($f_field){
      case('code'):
        $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any product with code like ")." <b>".$f_value."*</b> ";
        break;
@@ -3953,16 +3958,48 @@ case('products'):
     elseif($period=='week')
       $order='`Product 1 Week Acc Invoiced Amount`';
 
+  }elseif($order=='margin'){
+    if($period=='all')
+      $order='`Product Total Margin`';
+    elseif($period=='year')
+      $order='`Product 1 Year Acc Margin`';
+    elseif($period=='quarter')
+      $order='`Product 1 Quarter Acc Margin`';
+    elseif($period=='month')
+      $order='`Product 1 Month Acc Margin`';
+    elseif($period=='week')
+      $order='`Product 1 Week Acc Margin`';
+
+  }elseif($order=='sold'){
+    if($period=='all')
+      $order='`Product Total Quantity Invoiced`';
+    elseif($period=='year')
+      $order='`Product 1 Year Acc Quantity Invoiced`';
+    elseif($period=='quarter')
+      $order='`Product 1 Quarter Acc Quantity Invoiced`';
+    elseif($period=='month')
+      $order='`Product 1 Month Acc Quantity Invoiced`';
+    elseif($period=='week')
+      $order='`Product 1 Week Acc Quantity Invoiced`';
+
   }
 
-
+ if($percentages){
+ 
+ $sum_total_stock_value=0;
+   $sql="select sum(`Product Stock Value`) as sum_stock_value  from `Product Dimension` $where $wheref     ";
+    
+    $res = $db->query($sql); 
+    if($row=$res->fetchRow()) {
+      $sum_total_stock_value=$row['sum_stock_value'];
+    }
 
   if($period=='all'){
 
 
     $sum_total_sales=0;
     $sum_month_sales=0;
-    $sql="select sum(if(`Product Total Profit`<0,`Product Total Profit`,0)) as total_profit_minus,sum(if(`Product Total Profit`>=0,`Product Total Profit`,0)) as total_profit_plus,sum(`Product Total Invoiced Amount`) as sum_total_sales   from `Product Dimension` $where $wheref     ";
+    $sql="select sum(if(`Product Total Profit`<0,`Product Total Profit`,0)) as total_profit_minus,sum(if(`Product Total Profit`>=0,`Product Total Profit`,0)) as total_profit_plus,sum(`Product Total Invoiced Amount`) as sum_total_sales ,sum(`Product Stock Value`) as sum_stock_value  from `Product Dimension` $where $wheref     ";
     
     $res = $db->query($sql); 
     if($row=$res->fetchRow()) {
@@ -3972,6 +4009,7 @@ case('products'):
       $sum_total_profit_plus=$row['total_profit_plus'];
       $sum_total_profit_minus=$row['total_profit_minus'];
       $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
+
     }
   }elseif($period=='year'){
 
@@ -4030,18 +4068,42 @@ case('products'):
       $sum_total_sales=$row['sum_total_sales'];
 
       $sum_total_profit_plus=$row['total_profit_plus'];
+
       $sum_total_profit_minus=$row['total_profit_minus'];
       $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
     }
   }
 
+ }
 
- 
-   $sql="select *  from `Product Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
-   
+  $sql="select (select `Product Name` from `Product Dimension` where `Product Key`=P.`Product Same Code Most Recent key`) as `Product Name`,`Product Code`,`Product Same Code Most Recent Key` as `Product Key`
+,sum(`Product Total Invoiced Amount`) as `Product Total Invoiced Amount`
+,sum(`Product 1 Year Acc Invoiced Amount`) as `Product 1 Year Acc Invoiced Amount`
+,sum(`Product 1 Quarter Acc Invoiced Amount`) as `Product 1 Quarter Acc Invoiced Amount`
+,sum(`Product 1 Month Acc Invoiced Amount`) as `Product 1 Month Acc Invoiced Amount`
+,sum(`Product 1 Week Acc Invoiced Amount`) as `Product 1 Week Acc Invoiced Amount`
+,sum(`Product Total Profit`) as `Product Total Profit`
+,sum(`Product 1 Year Acc Profit`) as `Product 1 Year Acc Profit`
+,sum(`Product 1 Quarter Acc Profit`) as `Product 1 Quarter Acc Profit`
+,sum(`Product 1 Month Acc Profit`) as `Product 1 Month Acc Profit`
+,sum(`Product 1 Week Acc Profit`) as `Product 1 Week Acc Profit`
+,sum(`Product Total Quantity Invoiced`) as `Product Total Quantity Invoiced`
+,sum(`Product 1 Year Acc Quantity Invoiced`) as `Product 1 Year Acc Quantity Invoiced`
+,sum(`Product 1 Quarter Acc Quantity Invoiced`) as `Product 1 Quarter Acc Quantity Invoiced`
+,sum(`Product 1 Month Acc Quantity Invoiced`) as `Product 1 Month Acc Quantity Invoiced`
+,sum(`Product 1 Week Acc Quantity Invoiced`) as `Product 1 Week Acc Quantity Invoiced`
+,100*sum(`Product Total Profit`)/sum(`Product Total Invoiced Amount`) as `Product Total Margin`
+,100*sum(`Product 1 Year Acc Profit`)/sum(`Product 1 Year Acc Invoiced Amount`) as `Product 1 Year Acc Margin`
+,100*sum(`Product 1 Quarter Acc Profit`)/sum(`Product 1 Quarter Acc Invoiced Amount`) as `Product 1 Quarter Acc Margin`
+,100*sum(`Product 1 Month Acc Profit`)/sum(`Product 1 Month Acc Invoiced Amount`) as `Product 1 Month Acc Margin`
+,100*sum(`Product 1 Week Acc Profit`)/sum(`Product 1 Week Acc Invoiced Amount`) as `Product 1 Week Acc Margin`
+,sum(`Product Stock Value`) as `Product Stock Value`
+,max(`Product Total Days On Sale`) as `Product Total Days On Sale`
+from `Product Dimension` P   $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
+  
    $res = mysql_query($sql);
   $adata=array();
-  //  print "$sql";
+  // print "$sql";
   while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
     $code=sprintf('<a href="product.php?id=%d">%s</a>',$row['Product Key'],$row['Product Code']);
     if($percentages){
@@ -4114,8 +4176,9 @@ case('products'):
 
 	$tsall=money($row['Product Total Invoiced Amount']*$factor);
 	$tprofit=money($row['Product Total Profit']*$factor);
-   
-
+	$sold=number($row['Product Total Quantity Invoiced']*$factor,1,true);
+	$margin=number($row['Product Total Margin'],1)."%";
+	  
 
 
    }elseif($period=='year'){
@@ -4154,7 +4217,8 @@ case('products'):
 
 
 
-
+	$sold=number($row['Product 1 Year Acc Quantity Invoiced']*$factor);
+	$margin=number($row['Product 1 Year Acc Margin'],1)."%";
 
 
 
@@ -4189,6 +4253,8 @@ case('products'):
 	  else
 	    $factor=0;
 	}
+	$sold=number($row['Product 1 Quarter Acc Quantity Invoiced']*$factor);
+	$margin=
 
 
 	$tsall=money($row['Product 1 Quarter Acc Invoiced Amount']*$factor);
@@ -4226,6 +4292,8 @@ case('products'):
 
 	$tsall=money($row['Product 1 Month Acc Invoiced Amount']*$factor);
 	$tprofit=money($row['Product 1 Month Acc Profit']*$factor);
+	$sold=number($row['Product 1 Month Acc Quantity Invoiced']*$factor);
+	$margin=percentage($row['Product 1 Month Acc Profit']/$row['Product 1 Month Acc Invoiced Amount']);
       }elseif($period=='week'){
 		if($avg=='totals')
 	  $factor=1;
@@ -4255,6 +4323,8 @@ case('products'):
 	  else
 	    $factor=0;
 	}
+	$sold=number($row['Product 1 Week Acc Quantity Invoiced']*$factor);
+	$margin=number($row['Product 1 Week Acc Margin'],1)."%";
 
 
 	$tsall=money($row['Product 1 Week Acc Invoiced Amount']*$factor);
@@ -4270,36 +4340,46 @@ case('products'):
 		   'name'=>$row['Product Name'],
 		   'stock_value'=>money($row['Product Stock Value']),
 		   'sales'=>$tsall,
-		   'profit'=>$tprofit
-		   
+		   'profit'=>$tprofit,
+		   'margin'=>$margin,
+		   'sold'=>$sold
 		   );
   }
 
-   if($percentages){
-      $tsall='100.00%';
-      $tprofit='100.00%';
-    }else{
-     $tsall=money($sum_total_sales);
-     $tprofit=money($sum_total_profit);
-   }
+ //   if($percentages){
+//       $tsall='100.00%';
+//       $tprofit='100.00%';
+//       $tstock_value='100.00%';
+//     }else{
+//      $tsall=money($sum_total_sales);
+//      $tprofit=money($sum_total_profit);
+//      $tstock_value=money($sum_total_stock_value);
 
-  $adata[]=array(
-
-		 'code'=>_('Total'),
-		 'name'=>'',
-		 'stock_value'=>money($row['Product Stock Value']),
-		 'sales'=>$tsall,
-		 'profit'=>$tprofit
-
-		 );
+//    }
 
 
-  $total=mysql_num_rows($res);
-  if($total<$number_results)
-    $rtext=$total.' '.ngettext('department','departments',$total);
-  else
-    $rtext='';
-  
+//    $total_title='';
+//    if($view=='sales') 
+//      $total_title=_('Total');
+
+//    $adata[]=array(
+		  
+// 		  'code'=>$total_title,
+// 		  'name'=>'',
+// 		  'stock_value'=>$tstock_value,
+// 		  'sales'=>$tsall,
+// 		  'profit'=>$tprofit
+		  
+// 		 );
+
+
+  //$total=mysql_num_rows($res);
+ //  if($total<$number_results)
+//     $rtext=$total.' '.ngettext('department','departments',$total);
+//   else
+//     $rtext='';
+
+//  PRINT "$number_results $start_from";
   $response=array('resultset'=>
 		  array('state'=>200,
 			'data'=>$adata,
@@ -4308,12 +4388,14 @@ case('products'):
 			 'tableid'=>$tableid,
 			 'filter_msg'=>$filter_msg,
 			'total_records'=>$total,
-			'records_offset'=>$start_from,
-			'records_returned'=>$start_from+$total,
-			'records_perpage'=>$number_results,
+			//'records_offset'=>$start_from,
+			//'records_returned'=>$start_from+$total,
+			'records_perpage'=>$number_results,//$number_results,
 			'records_order'=>$order,
 			'records_order_dir'=>$order_dir,
-			'filtered'=>$filtered
+			//'filtered'=>$filtered,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp
 			)
 		  );
 

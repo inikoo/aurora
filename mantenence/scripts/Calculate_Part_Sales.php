@@ -25,7 +25,7 @@ date_default_timezone_set('Europe/London');
 
 
 //$sql="select * from `Product Dimension` where `Product Code`='FO-A1'";
-$sql="select * from `Part Dimension`  ";
+$sql="select * from `Part Dimension` limit 500,500 ";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $part=new Part($row['Part Key']);

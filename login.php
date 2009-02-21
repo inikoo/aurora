@@ -50,9 +50,10 @@ setlocale(LC_MESSAGES, $myconf['lang'].'_'.$myconf['country'].($myconf['encoding
 $current_lang=$myconf['lang'];
 if(isset($_REQUEST['_lang']) and is_numeric($_REQUEST['_lang'])){
   $sql="select `Language Code` as code ,`Country 2 Alpha Code`  as country_code  from `Language Dimension` where `Language Key`=".$_REQUEST['_lang'];
+  
+  $result=mysql_query($sql);
+  if($sql_data=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
-  $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-  if($sql_data=$res->fetchRow()) {
     setlocale(LC_MESSAGES, $sql_data['code'].'_'.strtoupper($sql_data['country_code']).($myconf['encoding']!=''?'.'.$myconf['encoding']:''));
     $current_lang=$sql_data['code'];
   }
@@ -71,12 +72,14 @@ $smarty->assign('password', _('Password'));
 $smarty->assign('log_in', _('Log in'));
 
 
-
+$other_langs=array();
 $sql="select `Language Key` as id,`Language Original Name` as original_name, `Language Code` as code    from `Language Dimension`";
 
-$res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-$other_langs=array();
-while($row=$res->fetchRow()) {
+
+
+ $result=mysql_query($sql);
+       while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+
   if($row['code']==$current_lang){
     $smarty->assign('lang_id', $row['id']);
     $smarty->assign('lang_code', $row['code']);

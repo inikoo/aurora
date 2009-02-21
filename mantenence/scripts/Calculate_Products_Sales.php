@@ -25,13 +25,17 @@ date_default_timezone_set('Europe/London');
 
 
 //$sql="select * from `Product Dimension` where `Product Code`='FO-A1'";
-$sql="select * from `Product Dimension` ";
+$sql="select * from `Product Dimension` limit 1 ";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+    print "hola";
   $product=new Product($row['Product Key']);
+ print "hola1";
   $product->load('sales');
+ print "hola2";
   $product->load('days');
-  
+ print "hola3";
+
   $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s order by `Product Valid From` limit 1",prepare_mysql($row['Product Code']));
   $result2=mysql_query($sql);
   if($row2=mysql_fetch_array($result2, MYSQL_ASSOC)){
@@ -40,16 +44,17 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s order by `Product Valid To` desc",prepare_mysql($row['Product Code']));
   $most_recent='Yes';
   $result2=mysql_query($sql);
+  //print "$sql\n";
   while($row2=mysql_fetch_array($result2, MYSQL_ASSOC)){
     if($most_recent=='Yes'){
       $most_recent_key=$row2['Product Key'];
       $same_code_to=$row2['Product Valid To'];
     }
-    $sql=sprintf("update `Product Dimension` set  `Product Same Code Valid From`=%s ,`Product Same Code Valid To`=%s , `Product Same Code Most Recent Key`=%s,`Product Same Code Most Recent`=%s  where `Product Key`=%s ",prepare_mysql($same_code_from),prepare_mysql($same_code_to),$row['Product Key'],prepare_mysql($most_recent),$most_recent_key,$row2['Product Key']);
+    $sql=sprintf("update `Product Dimension` set  `Product Same Code Valid From`=%s ,`Product Same Code Valid To`=%s , `Product Same Code Most Recent Key`=%s,`Product Same Code Most Recent`=%s  where `Product Key`=%s ",prepare_mysql($same_code_from),prepare_mysql($same_code_to),$most_recent_key,prepare_mysql($most_recent),$row2['Product Key']);
     //   print "$sql\n\n";
     mysql_query($sql);
-     if($most_recent=='Yes')
-       $most_recent=='No';
+    if($most_recent=='Yes')
+      $most_recent='No';
 
   }
 
@@ -114,37 +119,37 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
     $promo=new Department('create',$dept_data);
   }
 
-  $charges=new Department('code','Charges');
-  if(!$charges->id){
-    $dept_data=array(
-		     'code'=>'Charges',
-		     'name'=>'Charges & Ajustments',
-		     );
-    $charges=new Department('create',$dept_data);
-  }
+//   $charges=new Department('code','Charges');
+//   if(!$charges->id){
+//     $dept_data=array(
+// 		     'code'=>'Charges',
+// 		     'name'=>'Charges & Ajustments',
+// 		     );
+//     $charges=new Department('create',$dept_data);
+//   }
 
-  $frc_fam=new Family('code','FRC');
-  if(!$frc_fam->id){
-    $fam_data=array(
-		    'code'=>'FRC',
-		    'name'=>'Freight Charges',
-		    );
-    $frc_fam=new Family('create',$fam_data);
+//   $frc_fam=new Family('code','FRC');
+//   if(!$frc_fam->id){
+//     $fam_data=array(
+// 		    'code'=>'FRC',
+// 		    'name'=>'Freight Charges',
+// 		    );
+//     $frc_fam=new Family('create',$fam_data);
 
-  }
+//   }
 
-  if(preg_match('/^frc-/i',$product->data['Product Code'])){
-    $sql=sprintf("update from `Product Dimension` set `Product Family Key`=%d,`Product Family Code`=%s,`Product Family Name`=%s  where `Product Key`=%d "
-		 ,$frc_fam->id
-		 ,prepare_mysql($frc_fam->data['Product Family Code'])
-		 ,prepare_mysql($frc_fam->data['Product Family Name'])
-		 ,$product->id);
-    mysql_query($sql);
-     $sql=sprintf("delete from `Product Department Bridge` where `Product Key`=%d ",$product->id);
-    mysql_query($sql);
-    $sql=sprintf("insert into  `Product Department Bridge` (`Product Key`,`Product Department Key`) values (%d,%d)",$product->id,$charges->id);
-    mysql_query($sql);
-  }
+//   if(preg_match('/^frc-/i',$product->data['Product Code'])){
+//     $sql=sprintf("update from `Product Dimension` set `Product Family Key`=%d,`Product Family Code`=%s,`Product Family Name`=%s  where `Product Key`=%d "
+// 		 ,$frc_fam->id
+// 		 ,prepare_mysql($frc_fam->data['Product Family Code'])
+// 		 ,prepare_mysql($frc_fam->data['Product Family Name'])
+// 		 ,$product->id);
+//     mysql_query($sql);
+//      $sql=sprintf("delete from `Product Department Bridge` where `Product Key`=%d ",$product->id);
+//     mysql_query($sql);
+//     $sql=sprintf("insert into  `Product Department Bridge` (`Product Key`,`Product Department Key`) values (%d,%d)",$product->id,$charges->id);
+//     mysql_query($sql);
+//   }
 
 
 

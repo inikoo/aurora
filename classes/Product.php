@@ -33,6 +33,8 @@ class product{
       $this->get_data($a1,$a2,$a3);
   }
 
+
+
   function get_data($tipo,$tag,$extra=false){
     global $_shape,$_units_tipo,$_units_tipo_abr,$_units_tipo_plural;
     if($tipo=='id'){
@@ -40,11 +42,12 @@ class product{
 
       $result=mysql_query($sql);
       if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   )
+
+
 	$this->id=$this->data['Product Key'];
       return;
     }elseif($tipo=='code'){
       $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s and `Product Most Recent`='Yes' ",prepare_mysql($tag));
-      //      $result =& $this->db->query($sql);
       $result=mysql_query($sql);
       if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)){
 	$this->id=$this->data['Product Key'];
@@ -1045,7 +1048,7 @@ function normalize_code($code){
 
 
      }
-     
+     print "$sql\n";
 
        // print $row['cost_sup']." ".$this->id."  \n";
   

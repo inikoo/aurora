@@ -321,6 +321,17 @@ table.options{margin:0 ;float:right;border-collapse: separate;;border-spacing:3p
 .options tr.title td{background:#fff;border:none;cursor:default;color:#555;text-align:left}
 .options tr.title td:hover{color:#555}
 
+table.options_mini{margin:0 ;float:right;border-collapse: separate;;border-spacing:3px  3px;font-size:70%;font-weight:600;}
+
+
+.options_mini td{border:1px solid #aaa;color:#aaa;text-align:center;padding:1px 2px 3px 2px;cursor:pointer}
+.options_mini td:hover{border:1px solid #777;color:#777}
+.options_mini td.selected{background:#7296e1;border:1px solid #466ab5;color:#f6f6f6}
+.options_mini td.disabled{background:#fff;border:1px solid #eee;color:#ddd;cursor:default}
+
+
+
+
 
 .edit_button td,td.editx{background:#dc4f58;border:1px solid #b52b34;color:#f4cdd0;}
 .edit_button td:hover,td.editx:hover{background:#dc4f58;border:1px solid #b52b34;color:#f4cdd0;}
@@ -495,3 +506,5 @@ span.small{font-size:80%}
 .like_a:hover{text-decoration:underline}
 
 .prod_sdesc{ font-weight:800;}
+
+.rtext_rpp{cursor:pointer}
