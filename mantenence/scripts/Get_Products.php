@@ -44,34 +44,6 @@ $column=0;
 $products=false;
 $count=0;
 
- // 	$data=array(
-//  		    'code'=>'L&P-ST',
-//  		    'price'=>76.80,
-//  		    'rrp'=>'',
-//  		    'units per case'=>1,
-//  		    'name'=>'Starter - Mixed selection of 10 boxes (of 6) plus one bonus box. 66 jars in total'
-//  		    );
-//  	$product=new Product('create',$data);
- //  	$data=array(
-//   		    'code'=>'Bag-03mx',
-//   		    'price'=>47.25,
-//   		    'rrp'=>'',
-//   		    'units per case'=>1,
-//   		    'name'=>'Velvet Pouch - 150 Mix'
-//   		    );
-//   	$product=new Product('create',$data);
-
-
- //  	$data=array(
-//    		    'code'=>'LCC-MIX1',
-//    		    'price'=>11.76,
-//    		    'rrp'=>'',
-//    		    'units per case'=>12,
-//    		    'name'=>'12x Mixed Crystal Cubes - discounted price'
-//    		    );
-//    	$product=new Product('create',$data);
- 
-// exit;
 
 
 $__cols=array();
@@ -150,12 +122,14 @@ foreach($__cols as $cols){
   if(preg_match('/^(DB-IS|EO-Sticker|ECBox-01|SHOP-Fit)$/i',$code) and $price=='')
     $is_product=false;
 
- if(preg_match('/^credit|Freight|^frc-|^cxd-|^wsl$/i',$code) and $price=='')
+ if(preg_match('/^credit|Freight|^frc-|^cxd-|^wsl$|^postage$/i',$code) and $price=='')
     $is_product=false;
 
 
   
   if($is_product){
+
+
     //       print "$code\r";
     $part_list=array();
     $rules=array();
@@ -275,7 +249,15 @@ foreach($__cols as $cols){
     if($units=='' OR $units<=0)
       $units=1;
 
-    $description=_trim($cols[6]);
+    $description=_trim( mb_convert_encoding($cols[6], "UTF-8", "ISO-8859-1,UTF-8"));
+
+
+ //    if(preg_match('/wsl-535/i',$code)){
+//       print_r($cols);
+//       exit;
+
+//     }
+
     $rrp=$cols[16];
     $supplier_code=_trim($cols[21]);
 
@@ -436,7 +418,7 @@ foreach($__cols as $cols){
     //print_r($cols);
     if($cols[3]!='' and $cols[6]!=''){
       $fam_code=$cols[3];
-      $fam_name=$cols[6];
+      $fam_name=_trim( mb_convert_encoding($cols[6], "UTF-8", "ISO-8859-1,UTF-8"));
       $fam_position=$column;
 
       

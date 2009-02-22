@@ -27,7 +27,7 @@ $not_found=00;
 
 $first_day_with_data=strtotime("2007-03-24");
 
-$sql="select `Part Status`,`Part SKU`,`Part Valid From`,`Part Valid To` from `Part Dimension`   ";
+$sql="select `Part Status`,`Part SKU`,`Part Valid From`,`Part Valid To` from `Part Dimension` limit 13234,100000  ";
 $resultx=mysql_query($sql);
 while($rowx=mysql_fetch_array($resultx, MYSQL_ASSOC)   ){
   
@@ -36,15 +36,19 @@ while($rowx=mysql_fetch_array($resultx, MYSQL_ASSOC)   ){
   if($from<$first_day_with_data)
     $from=$first_day_with_data;
   if($rowx['Part Status']=='In Use')
-    $to=srttotime('today');
+    $to=strtotime('today');
   else
     $to=strtotime($rowx['Part Valid To']);
 
+ 
   
   $sql=sprintf("delete from `Inventory Spanshot Fact` where `Part SKU`=%d ",$part_sku);
   mysql_query($sql);
 
-  
+  if($to<$first_day_with_data){
+    print "Skipping $part_sku \r";
+    continue;
+  }
   if($from>$to)
     exit("error");
   $start_date = date("Y-m-d",$from);
@@ -146,10 +150,9 @@ while($rowx=mysql_fetch_array($resultx, MYSQL_ASSOC)   ){
      if(is_numeric($qty_inicio)){
        //   echo "$part_sku  $check_date $qty_inicio $value_inicio $amount_sold $last_selling_price  \n";
        
-       $sql=sprintf("insert into `Inventory Spanshot Fact` (`Snapshot Period`,`Date`,`Part SKU`,`Warehouse Key`,`Location Key`,`Quantity on Hand`,`Value at Cost`,`Sold Amount`,`Value at Latest Selling Price`,`Storing Cost`) values ('Day',%s,%s,%s,%s,%s,%s,%s,%f,%s)"
+       $sql=sprintf("insert into `Inventory Spanshot Fact` (`Date`,`Part SKU`,`Location Key`,`Quantity on Hand`,`Value at Cost`,`Sold Amount`,`Value at Latest Selling Price`,`Storing Cost`) values (%s,%s,%s,%.6f,%.2f,%.6f,%.2f,%s)"
 		    ,prepare_mysql($check_date)
 		    ,$part_sku
-		    ,'NULL'
 		    ,'NULL'
 		    ,$qty_inicio
 		    ,$value_inicio

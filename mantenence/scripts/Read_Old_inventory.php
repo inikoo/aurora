@@ -112,7 +112,7 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
       $sql=sprintf("update `Product Dimension` set `Product Same ID Valid From`=%s where `Product ID`=%d",prepare_mysql($date),$row2['Product ID']);
      //      print "$sql\n";
       mysql_query($sql);
-      
+     
       
       
     }else{

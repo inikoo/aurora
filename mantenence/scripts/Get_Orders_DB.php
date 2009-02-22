@@ -99,9 +99,12 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
 
   foreach($transactions as $transaction){
-    if(preg_match('/^credit|Freight|^frc-|^cxd-|^wsl$/i',$transaction['code']))
+    $transaction['code']=_trim($transaction['code']);
+    if(preg_match('/^credit|Freight|^frc-|^cxd-|^wsl$|refund|Postage|^eye$/i',$transaction['code']))
       continue;
-
+    if(preg_match('/difference in prices|Diff.in price for|difference in prices/i',$transaction['description']))
+      continue;
+    
     $__code=strtolower($transaction['code']);
 
     if($__code=='eo-st' or $__code=='mol-st' or  $__code=='jbb-st' or $__code=='lwheat-st' or  $__code=='jbb-st' 
@@ -112,6 +115,9 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       
     }
     
+
+
+
     $transaction['description']=preg_replace('/\s*\(\s*replacements?\s*\)\s*$/i','',$transaction['description']);
     $transaction['description']=preg_replace('/\s*(\-|\/)\s*replacements?\s*$/i','',$transaction['description']);
     $transaction['description']=preg_replace('/\s*(\-|\/)\s*SHOWROOM\s*$/i','',$transaction['description']);
@@ -141,15 +147,42 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       $transaction['code']='SG-mix';
       $transaction['description']='Simmering Granules Mixed Box';
     }
- if(preg_match('/^sg$/i',$transaction['code']) and preg_match('/25/i',$transaction['description']) ){
-      $transaction['code']='SG';
-      $transaction['description']='25Kg Hydrosoft Granular Salt';
-    }
+     if(preg_match('/^(sg|salt)$/i',$transaction['code']) and preg_match('/25/i',$transaction['description']) ){
+       $transaction['code']='SG';
+       $transaction['description']='25Kg Hydrosoft Granular Salt';
+     }
+     if(preg_match('/^(salty)$/i',$transaction['code']) and preg_match('/25/i',$transaction['description']) ){
+       $transaction['code']='SG';
+     }
+     
+     if(preg_match('/^(salt|salt-xx|salt-11w|Salt-Misc)$/i',$transaction['code']) and preg_match('/fit/i',$transaction['description']) ){
+       $transaction['code']='Salt-Fitting';
+       $transaction['description']='Spare Fitting for Salt Lamp';
+     }
+ 
+     
+     if((preg_match('/^(salt-11w)$/i',$transaction['code']) and preg_match('/^Wood Base|^Bases/i',$transaction['description'])) or preg_match('/Salt-11 bases/i',$transaction['code']) or  preg_match('/Black Base for Salt Lamp/i',$transaction['description']) ){
+       $transaction['code']='Salt-Base';
+   $transaction['description']='Spare Base for Salt Lamp';
+     }
+     
+     if(preg_match('/^wsl-320$/i',$transaction['code'])){
+       $transaction['description']='Two Tone Palm Wax Candles Sml';
+     }
+      if(preg_match('/^wsl-631$/i',$transaction['code'])){
+       $transaction['description']='Pewter Pegasus & Ball with LED';
+      }
 
+    
 
-    if(preg_match('/^bot-01$/i',$transaction['code'])   and preg_match('/10ml Amber Bottles.*tamper.*ap/i',$transaction['description']))
-      $transaction['description']='10ml Amber Bottles & Tamper Proof Caps';
-    if(preg_match('/^bot-01$/i',$transaction['code'])   and preg_match('/10ml Amber Bottles.*only/i',$transaction['description']))
+      if(preg_match('/^wsl-848$/i',$transaction['code'])   and preg_match('/wsl-848, simple message candle/i',$transaction['description'])){
+	$transaction['description']='Simple Message Candle 3x6';
+	 $transaction['code']='wsl-877';
+	 }
+
+     if(preg_match('/^bot-01$/i',$transaction['code'])   and preg_match('/10ml Amber Bottles.*tamper.*ap/i',$transaction['description']))
+       $transaction['description']='10ml Amber Bottles & Tamper Proof Caps';
+     if(preg_match('/^bot-01$/i',$transaction['code'])   and preg_match('/10ml Amber Bottles.*only/i',$transaction['description']))
       $transaction['description']='10ml Amber Bottles Only';
     if(preg_match('/^bot-01$/i',$transaction['code'])   and preg_match('/10ml Amber Bottles.already supplied/i',$transaction['description']))
       $transaction['description']='10ml Amber Bottles';
@@ -255,16 +288,21 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
      }
     
  if(preg_match('/^FW-04$/i',$transaction['code'])  ){
-       $transaction['description']=preg_replace('/^Alternative Gift\s*\/\s*/i','Alternative Gift to Wine: ',$transaction['description']);
-       $transaction['description']=preg_replace('/^Gift\s*(\:|\-)\*/i','Alternative Gift to Wine: ',$transaction['description']);
-
-       $transaction['description']=preg_replace('/^Alternative Gift\s*(\:|\-)\s*/i','Alternative Gift to Wine: ',$transaction['description']);
-       $transaction['description']=preg_replace('/^Alternative Gift to Wine\s*(\-)\*/i','Alternative Gift to Wine: ',$transaction['description']);
- $transaction['description']=preg_replace('/Alternative Gift to Wine (\:|\-)/i','Alternative Gift to Wine: ',$transaction['description']);
-
-       if(preg_match('/1.*box.*sim.*granules|\/simmering grans$|Alternative Gift to Wine.*Mixed simmering/i',$transaction['description'])){
+   $transaction['description']=preg_replace('/^Alternative Gift\s*\/\s*/i','Alternative Gift to Wine: ',$transaction['description']);
+   $transaction['description']=preg_replace('/^Gift\s*(\:|\-)\*/i','Alternative Gift to Wine: ',$transaction['description']);
+     $transaction['description']=preg_replace('/^Alternative Gift to Wine(\-|\/)/i','Alternative Gift to Wine: ',$transaction['description']);
+   $transaction['description']=preg_replace('/^Alternative Gift\s*(\:|\-)\s*/i','Alternative Gift to Wine: ',$transaction['description']);
+   $transaction['description']=preg_replace('/^Alternative Gift to Wine\s*(\-)\*/i','Alternative Gift to Wine: ',$transaction['description']);
+   $transaction['description']=preg_replace('/Alternative Gift to Wine (\:|\-)/i','Alternative Gift to Wine: ',$transaction['description']);
+   
+       if(preg_match('/sim|Alternative Gift to Wine. 1x sg mixed box|SG please|Mix SG/i',$transaction['description'])){
 	 $transaction['description']='Alternative Gift to Wine: 1 box of simmering granules';
        }
+       if(preg_match('/^(gift|Promo Alternative to wine|Alternative|Alternative Gift|Alternative Gift .from prev order)$|order/i',$transaction['description'])){
+	 $transaction['description']='Alternative Gift to Wine';
+       }
+
+
 
      }
 

@@ -191,17 +191,15 @@ class product{
 
       // print "$number_sp\n";
       if($number_sp==0){
+	// ****************************************  NEW CODE ************************************************
 	$this->new_code=true;
 	$tag['product id']=$this->new_id();
 	$tag['product most recent']='Yes';
 	$tag['Part Most Recent']='Yes';
 	$tag['product valid to']=$tag['date2'];
 	$tag['product valid from']=$tag['date'];
-	$tag['Part SKU']='';
 	$tag['part valid to']=$tag['date2'];
 	$tag['part valid from']=$tag['date'];
-
-	
 	$this->create($tag);
 	$tag['Part XHTML Currently Used In']=sprintf('<a href="product.php?%d">%s</a>',$this->id,$this->data['Product Code']);
 	$part=new Part('new',$tag);
@@ -214,23 +212,52 @@ class product{
 			   'Product Part Type'=>'Simple Pick'
 			   );
 	$this->new_part_list('',$part_list);
-	
-
-	$this->new_part=true;
+	$supplier=new Supplier('code',$tag['supplier code']);
+	if(!$supplier->id){
+	  $data=array(
+		      'name'=>$tag['supplier name'],
+		      'code'=>$tag['supplier code'],
+		      'from'=>$tag['date'],
+		      'to'=>$tag['date2']
+		      );
+	$supplier=new Supplier('new',$data);
+	}	
+	$sp_data=array(
+		       'supplier product supplier key'=>$supplier->id,
+		       'supplier product code'=>$tag['supplier product code'],
+		       'supplier product cost'=>$tag['supplier product cost'],
+		       'supplier product name'=>$tag['supplier product name'],
+		       'auto_add'=>true,
+		       'supplier product valid from'=>$tag['date'],
+		       'supplier product valid to'=>$tag['date2']
+		       );
+	//  print_r($sp_data);
+	$supplier_product=new SupplierProduct('supplier-code-name-cost',$sp_data);
+	$rules[]=array(
+		       'Part SKU'=>$part->data['Part SKU']
+		       ,'Supplier Product Units Per Part'=>$this->data['Product Units Per Case']
+		       ,'supplier product part most recent'=>'Yes'
+		       ,'supplier product part valid from'=>$tag['date']
+		       ,'supplier product part valid to'=>$tag['date2']
+		       ,'factor supplier product'=>1
+		       );
+	$supplier_product->new_part_list('',$rules);
+	$supplier_product->load('used in');
+	return;
       }else{
 
-	$sql=sprintf("select * from `Product Dimension` where `Product Code`=%s and `Product Name`=%s and `Product Units Per Case`=%s and `Product Unit Type`=%s"
+	$sql=sprintf("select * from `Product Dimension` where `Product Code`=%s and  `Product Units Per Case`=%s"
 		     ,prepare_mysql($tag['product code'])
-		     ,prepare_mysql($tag['product name'])
+		     //		     ,prepare_mysql($tag['product name'])
 		     ,prepare_mysql($tag['product units per case'])
-		     ,prepare_mysql($tag['product unit type'])
+		     //  ,prepare_mysql($tag['product unit type'])
 		     
 
 		     );
 	//print "$sql\n";
 	$result2=mysql_query($sql);
 	if($same_id_data=mysql_fetch_array($result2, MYSQL_ASSOC)){
-	  // Price changes all is the same
+	  // Price  or name change, same units per case
 
 	  $different_name=false;
 	  $different_units=false;
@@ -264,7 +291,7 @@ class product{
 	    $this->create($tag);
 	    
 	  }else{
-	  // Different name or units
+	  // Different units that meabs niew id and new product part list
 
 	  $this->new_id=true;
 	  $tag['product id']=$this->new_id();
@@ -285,30 +312,25 @@ class product{
 	  $tag['product valid from']=$tag['date'];
 	  
 	  $this->create($tag);
-	  $tag['Part Most Recent']='Yes';
-	  $tag['Part Valid From']=$tag['date'];
-	  $tag['Part Valid To']=$tag['date2'];
-	  $tag['Part XHTML Currently Used In']=sprintf('<a href="product.php?%d">%s</a>',$this->id,$this->data['Product Code']);
+ 	  $tag['Part Most Recent']='Yes';
+ 	  $tag['Part Valid From']=$tag['date'];
+ 	  $tag['Part Valid To']=$tag['date2'];
+ 	  $tag['Part XHTML Currently Used In']=sprintf('<a href="product.php?%d">%s</a>',$this->id,$this->data['Product Code']);
 
-	  //  if($tag['product code']=='TB-13')
-	  //print_r($tag);
+
+ 	  $this->new_part=true;
 	  $part=new Part('new',$tag);
-	  $this->new_part=true;
-	  
-
-
-
-
-	  //$part=new Part('new',$tag);
 	  $part_list[]=array(
 			     'Product ID'=>$this->get('Product ID'),
-			     'Part SKU'=>$part->get('Part SKU'),
+			     'Part SKU'=>$part->data['Part SKU'],
 			     'Product Part Id'=>1,
 			     'requiered'=>'Yes',
 			     'Parts Per Product'=>1,
 			     'Product Part Type'=>'Simple Pick'
 			     );
 	  $this->new_part_list('',$part_list);
+	  
+	  
 
 
 	}
@@ -317,14 +339,14 @@ class product{
       
 
 
-
+      
       $supplier=new Supplier('code',$tag['supplier code']);
       if(!$supplier->id){
 	$data=array(
 		    'name'=>$tag['supplier name'],
 		    'code'=>$tag['supplier code'],
 		    'from'=>$tag['date'],
-		    'to'=>$tag['date']
+		    'to'=>$tag['date2']
 		    );
 
 
@@ -347,6 +369,7 @@ class product{
       if($supplier_product->new_id){
 	print "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n";
 	$this->new_supplier_product=true;
+
       }
       
       
@@ -364,6 +387,7 @@ class product{
 			 ,'factor supplier product'=>1
 			 );
 	  $supplier_product->new_part_list('',$rules);
+	  $supplier_product->load('used in');
 	}else{
 	   print "i dont now wat to do\n";
 	   exit;
