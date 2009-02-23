@@ -4184,10 +4184,9 @@ from `Product Dimension` P   $where $wheref $group order by $order $order_direct
 	    $factor='ND';
 	}
 	if($factor=='ND'){
-	$tsall='ND';
-	$tprofit='ND';
-	$sold='ND';
-
+	  $tsall=_('ND');
+	  $tprofit=_('ND');
+	  $sold=_('ND');
 	}else{
 	
 	$tsall=money($row['Product Total Invoiced Amount']*$factor);
@@ -4209,40 +4208,38 @@ from `Product Dimension` P   $where $wheref $group order by $order $order_direct
 	  if($row['Product 1 Year Acc Days On Sale']>0)
 	    $factor=30.4368499/$row['Product 1 Year Acc Days On Sale'];
 	  else
-	    $factor=0;
+	    $factor='ND';
 	}elseif($avg=='month'){
 	  if($row['Product 1 Year Acc Days On Sale']>0)
 	    $factor=30.4368499/$row['Product 1 Year Acc Days On Sale'];
 	  else
-	    $factor=0;
+	    $factor='ND';
 	}elseif($avg=='week'){
 	  if($row['Product 1 Year Acc Days On Sale']>0)
 	    $factor=7/$row['Product 1 Year Acc Days On Sale'];
 	  else
-	    $factor=0;
+	    $factor='ND';
 	}elseif($avg=='month_eff'){
 	  if($row['Product 1 Year Acc Days Available']>0)
 	    $factor=30.4368499/$row['Product 1 Year Acc Days Available'];
 	  else
-	    $factor=0;
+	    $factor='ND';
 	}elseif($avg=='week_eff'){
 	  if($row['Product 1 Year Acc Days Available']>0)
 	    $factor=7/$row['Product 1 Year Acc Days Available'];
 	  else
-	    $factor=0;
+	    $factor='ND';
 	}
-	
-
-
-
-
+	if($factor=='ND'){
+	  $tsall=_('ND');
+	  $tprofit=_('ND');
+	  $sold=_('ND');
+	}else{
 	$sold=number($row['Product 1 Year Acc Quantity Invoiced']*$factor);
-	$margin=number($row['Product 1 Year Acc Margin'],1)."%";
-
-
-
 	$tsall=money($row['Product 1 Year Acc Invoiced Amount']*$factor);
 	$tprofit=money($row['Product 1 Year Acc Profit']*$factor);
+	}
+	$margin=number($row['Product 1 Year Acc Margin'],1)."%";
       }elseif($period=='quarter'){
 	if($avg=='totals')
 	  $factor=1;
@@ -4250,34 +4247,40 @@ from `Product Dimension` P   $where $wheref $group order by $order $order_direct
 	  if($row['Product 1 Quarter Acc Days On Sale']>0)
 	    $factor=30.4368499/$row['Product 1 Quarter Acc Days On Sale'];
 	  else
-	    $factor=0;
+	    $factor='ND';
 	}elseif($avg=='month'){
 	  if($row['Product 1 Quarter Acc Days On Sale']>0)
 	    $factor=30.4368499/$row['Product 1 Quarter Acc Days On Sale'];
 	  else
-	    $factor=0;
+	    $factor='ND';
 	}elseif($avg=='week'){
 	  if($row['Product 1 Quarter Acc Days On Sale']>0)
 	    $factor=7/$row['Product 1 Quarter Acc Days On Sale'];
 	  else
-	    $factor=0;
+	    $factor='ND';
 	}elseif($avg=='month_eff'){
 	  if($row['Product 1 Quarter Acc Days Available']>0)
 	    $factor=30.4368499/$row['Product 1 Quarter Acc Days Available'];
 	  else
-	    $factor=0;
+	    $factor='ND';
 	}elseif($avg=='week_eff'){
 	  if($row['Product 1 Quarter Acc Days Available']>0)
 	    $factor=7/$row['Product 1 Quarter Acc Days Available'];
 	  else
-	    $factor=0;
+	    $factor='ND';
 	}
+
+		if($factor=='ND'){
+	  $tsall=_('ND');
+	  $tprofit=_('ND');
+	  $sold=_('ND');
+	}else{
 	$sold=number($row['Product 1 Quarter Acc Quantity Invoiced']*$factor);
-	$margin=
-
-
 	$tsall=money($row['Product 1 Quarter Acc Invoiced Amount']*$factor);
 	$tprofit=money($row['Product 1 Quarter Acc Profit']*$factor);
+		}
+	$margin=number($row['Product 1 Quarter Acc Margin'],1)."%";
+
       }elseif($period=='month'){
 		if($avg=='totals')
 	  $factor=1;
@@ -4285,37 +4288,38 @@ from `Product Dimension` P   $where $wheref $group order by $order $order_direct
 	  if($row['Product 1 Month Acc Days On Sale']>0)
 	    $factor=30.4368499/$row['Product 1 Month Acc Days On Sale'];
 	  else
-	    $factor=0;
+	    $factor='ND';
 	}elseif($avg=='month'){
 	  if($row['Product 1 Month Acc Days On Sale']>0)
 	    $factor=30.4368499/$row['Product 1 Month Acc Days On Sale'];
 	  else
-	    $factor=0;
+	    $factor='ND';
 	}elseif($avg=='week'){
 	  if($row['Product 1 Month Acc Days On Sale']>0)
 	    $factor=7/$row['Product 1 Month Acc Days On Sale'];
 	  else
-	    $factor=0;
+	    $factor='ND';
 	}elseif($avg=='month_eff'){
 	  if($row['Product 1 Month Acc Days Available']>0)
 	    $factor=30.4368499/$row['Product 1 Month Acc Days Available'];
 	  else
-	    $factor=0;
+	    $factor='ND';
 	}elseif($avg=='week_eff'){
 	  if($row['Product 1 Month Acc Days Available']>0)
 	    $factor=7/$row['Product 1 Month Acc Days Available'];
 	  else
-	    $factor=0;
+	    $factor='ND';
 	}
 
-
-	$tsall=money($row['Product 1 Month Acc Invoiced Amount']*$factor);
-	$tprofit=money($row['Product 1 Month Acc Profit']*$factor);
-	$sold=number($row['Product 1 Month Acc Quantity Invoiced']*$factor);
-// 	if($row['Product 1 Month Acc Invoiced Amount']!=0)
-// 	  $margin=percentage($row['Product 1 Month Acc Profit']/$row['Product 1 Month Acc Invoiced Amount']);
-// 	else
-// 	  $margin=_('ND');
+	if($factor=='ND'){
+	  $tsall=_('ND');
+	  $tprofit=_('ND');
+	  $sold=_('ND');
+	}else{
+	  $tsall=money($row['Product 1 Month Acc Invoiced Amount']*$factor);
+	  $tprofit=money($row['Product 1 Month Acc Profit']*$factor);
+	  $sold=number($row['Product 1 Month Acc Quantity Invoiced']*$factor);
+	}
 	$margin=number($row['Product 1 Month Acc Margin'],1)."%";
       }elseif($period=='week'){
 		if($avg=='totals')
@@ -4324,34 +4328,39 @@ from `Product Dimension` P   $where $wheref $group order by $order $order_direct
 	  if($row['Product 1 Week Acc Days On Sale']>0)
 	    $factor=30.4368499/$row['Product 1 Week Acc Days On Sale'];
 	  else
-	    $factor=0;
+	    $factor='ND';
 	}elseif($avg=='month'){
 	  if($row['Product 1 Week Acc Days On Sale']>0)
 	    $factor=30.4368499/$row['Product 1 Week Acc Days On Sale'];
 	  else
-	    $factor=0;
+	    $factor='ND';
 	}elseif($avg=='week'){
 	  if($row['Product 1 Week Acc Days On Sale']>0)
 	    $factor=7/$row['Product 1 Week Acc Days On Sale'];
 	  else
-	    $factor=0;
+	    $factor='ND';
 	}elseif($avg=='month_eff'){
 	  if($row['Product 1 Week Acc Days Available']>0)
 	    $factor=30.4368499/$row['Product 1 Week Acc Days Available'];
 	  else
-	    $factor=0;
+	    $factor='ND';
 	}elseif($avg=='week_eff'){
 	  if($row['Product 1 Week Acc Days Available']>0)
 	    $factor=7/$row['Product 1 Week Acc Days Available'];
 	  else
-	    $factor=0;
+	    $factor='ND';
 	}
-	$sold=number($row['Product 1 Week Acc Quantity Invoiced']*$factor);
+	if($factor=='ND'){
+	  $tsall=_('ND');
+	  $tprofit=_('ND');
+	  $sold=_('ND');
+	}else{
+	  $sold=number($row['Product 1 Week Acc Quantity Invoiced']*$factor);
+	  $tsall=money($row['Product 1 Week Acc Invoiced Amount']*$factor);
+	  $tprofit=money($row['Product 1 Week Acc Profit']*$factor);
+	}
 	$margin=number($row['Product 1 Week Acc Margin'],1)."%";
 
-
-	$tsall=money($row['Product 1 Week Acc Invoiced Amount']*$factor);
-	$tprofit=money($row['Product 1 Week Acc Profit']*$factor);
       }
 
 
