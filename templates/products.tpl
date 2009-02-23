@@ -19,6 +19,7 @@
 	<tr><td  {if $view=='general'}class="selected"{/if} id="general" >{t}General{/t}</td>
 	  {if $view_stock}<td {if $view=='stock'}class="selected"{/if}  id="stock"  >{t}Stock{/t}</td>{/if}
 	  {if $view_sales}<td  {if $view=='sales'}class="selected"{/if}  id="sales"  >{t}Sales{/t}</td>{/if}
+	  <td  {if $view=='parts'}class="selected"{/if}  id="parts"  >{t}Parts{/t}</td>
 	</tr>
       </table>
        <table style="float:left;margin:0 0 0 20px ;padding:0"  class="options_mini" {if $parts==0 }style="display:none"{/if}>

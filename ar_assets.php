@@ -2901,19 +2901,19 @@ $sum_active=0;
      $tprofit=money($sum_total_profit);
    }
 
-  $adata[]=array(
+  // $adata[]=array(
 
-		 'name'=>_('Total'),
+// 		 'name'=>_('Total'),
 
-		 'active'=>number($sum_active),
-		 'outofstock'=>number($row['product department out of stock products']),
-		 'stockerror'=>number($row['product department unknown stock products']),
-		 'stock_value'=>money($row['product department stock value']),
-		 'tsall'=>$tsall,'tprofit'=>$tprofit,
-		 'per_tsall'=>percentage($row['product department total invoiced amount'],$sum_total_sales,2),
-		 'tsm'=>money($row['product department 1 month acc invoiced amount']),
-		 'per_tsm'=>percentage($row['product department 1 month acc invoiced amount'],$sum_month_sales,2),
-		 );
+// 		 'active'=>number($sum_active),
+// 		 'outofstock'=>number($row['product department out of stock products']),
+// 		 'stockerror'=>number($row['product department unknown stock products']),
+// 		 'stock_value'=>money($row['product department stock value']),
+// 		 'tsall'=>$tsall,'tprofit'=>$tprofit,
+// 		 'per_tsall'=>percentage($row['product department total invoiced amount'],$sum_total_sales,2),
+// 		 'tsm'=>money($row['product department 1 month acc invoiced amount']),
+// 		 'per_tsm'=>percentage($row['product department 1 month acc invoiced amount'],$sum_month_sales,2),
+// 		 );
 
 
    $total=mysql_num_rows($res);
@@ -3923,30 +3923,31 @@ case('products'):
    }else
       $filter_msg='';
        
-       $_order=$order;
-       $_order_dir=$order_dir;
-
-       
-       if($order=='code')
+     $_order=$order;
+     $_order_dir=$order_dir;
+     
+     if($order=='stock')
+       $order='`Product Availability`';
+     if($order=='code')
 	 $order='`Product Code File As`';
-       else if($order=='description')
-	 $order='`Product Name`';
-       else if($order=='available_for')
-	 $order='`Product Available Days Forecast`';
-       
+     else if($order=='name')
+       $order='`Product Name`';
+     else if($order=='available_for')
+       $order='`Product Available Days Forecast`';
+     
 
- if($order=='profit'){
-    if($period=='all')
-      $order='`Product Total Profit`';
-    elseif($period=='year')
-      $order='`Product 1 Year Acc Profit`';
-    elseif($period=='quarter')
-      $order='`Product 1 Quarter Acc Profit`';
+     if($order=='profit'){
+       if($period=='all')
+	 $order='`Product Total Profit`';
+       elseif($period=='year')
+	 $order='`Product 1 Year Acc Profit`';
+       elseif($period=='quarter')
+	 $order='`Product 1 Quarter Acc Profit`';
     elseif($period=='month')
       $order='`Product 1 Month Acc Profit`';
     elseif($period=='week')
       $order='`Product 1 Week Acc Profit`';
-  }elseif($order=='sales'){
+     }elseif($order=='sales'){
     if($period=='all')
       $order='`Product Total Invoiced Amount`';
     elseif($period=='year')
@@ -4076,7 +4077,7 @@ case('products'):
 
  }
 
-  $sql="select (select `Product Name` from `Product Dimension` where `Product Key`=P.`Product Same Code Most Recent key`) as `Product Name`,`Product Code`,`Product Same Code Most Recent Key` as `Product Key`
+  $sql="select (select `Product XHTML Short Description` from `Product Dimension` where `Product Key`=P.`Product Same Code Most Recent key`) as `Product XHTML Short Description`,`Product Code`,`Product Same Code Most Recent Key` as `Product Key`
 ,sum(`Product Total Invoiced Amount`) as `Product Total Invoiced Amount`
 ,sum(`Product 1 Year Acc Invoiced Amount`) as `Product 1 Year Acc Invoiced Amount`
 ,sum(`Product 1 Quarter Acc Invoiced Amount`) as `Product 1 Quarter Acc Invoiced Amount`
@@ -4097,13 +4098,15 @@ case('products'):
 ,100*sum(`Product 1 Quarter Acc Profit`)/sum(`Product 1 Quarter Acc Invoiced Amount`) as `Product 1 Quarter Acc Margin`
 ,100*sum(`Product 1 Month Acc Profit`)/sum(`Product 1 Month Acc Invoiced Amount`) as `Product 1 Month Acc Margin`
 ,100*sum(`Product 1 Week Acc Profit`)/sum(`Product 1 Week Acc Invoiced Amount`) as `Product 1 Week Acc Margin`
+,sum(`Product Availability`) as `Product Availability`
 ,sum(`Product Stock Value`) as `Product Stock Value`
+
 ,max(`Product Total Days On Sale`) as `Product Total Days On Sale`
 from `Product Dimension` P   $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
   
    $res = mysql_query($sql);
   $adata=array();
-  // print "$sql";
+  //  print "$sql";
   while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
     $code=sprintf('<a href="product.php?id=%d">%s</a>',$row['Product Key'],$row['Product Code']);
     if($percentages){
@@ -4334,11 +4337,17 @@ from `Product Dimension` P   $where $wheref $group order by $order $order_direct
 
 
     }
+
+    if(is_numeric($row['Product Availability']))
+      $stock=number($row['Product Availability']);
+    else
+      $stock='?';
    $adata[]=array(
 
 		   'code'=>$code,
-		   'name'=>$row['Product Name'],
+		   'name'=>$row['Product XHTML Short Description'],
 		   'stock_value'=>money($row['Product Stock Value']),
+		   'stock'=>$stock,
 		   'sales'=>$tsall,
 		   'profit'=>$tprofit,
 		   'margin'=>$margin,
@@ -4492,7 +4501,7 @@ case('parts'):
      if(!is_numeric($number_results))
        $number_results=25;
      
-     $where.=" and `Part Most Recent`='Yes' ";
+     $where.="  ";
 
      $_order=$order;
      $_dir=$order_direction;
@@ -4508,9 +4517,11 @@ case('parts'):
 
      $sql="select count(*) as total from `Part Dimension`  $where $wheref";
 
-     $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die("here ".$res->getMessage());}
-     if($row=$res->fetchRow()) {
-       $total=$row['total'];
+     //   print $sql;
+     $result=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+       
+   $total=$row['total'];
      }
      if($wheref==''){
        $filtered=0;
@@ -4518,8 +4529,10 @@ case('parts'):
      } else{
        $sql="select count(*) as total from `Part Dimension`  $where ";
 
-     $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-     if($row=$res->fetchRow()) {
+       
+       $result=mysql_query($sql);
+       if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+
        $total_records=$row['total'];
        $filtered=$total_records-$total;
      }
@@ -4569,7 +4582,8 @@ case('parts'):
        $_order=$order;
        $_order_dir=$order_dir;
 
-
+       if($order=='stock')
+	 $order='`Part Current Stock`';
        if($order=='sku')
 	 $order='`Part SKU`';
        else if($order=='description')
@@ -4708,7 +4722,7 @@ case('parts'):
 
        
        $sql="select * from `Part Dimension`  $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
-       // print $sql;
+       //   print $sql;
        $adata=array();
        $result=mysql_query($sql);
       while($data=mysql_fetch_array($result, MYSQL_ASSOC)   ){
@@ -4991,7 +5005,7 @@ case('parts'):
 			 'filter_msg'=>$filter_msg,
 			 'total_records'=>$total,
 			 'records_offset'=>$start_from,
-			 'records_returned'=>$start_from+$res->numRows(),
+			 'records_returned'=>$start_from+$total,
 			 'records_perpage'=>$number_results,
 			 'records_order'=>$_order,
 			 'records_order_dir'=>$_order_dir,

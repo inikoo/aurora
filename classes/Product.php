@@ -840,7 +840,7 @@ function valid_id($id){
     
     if(!$this->valid_id($product_list_id))
       $product_list_id=$this->new_part_list_id();
-
+    
     $_base_data=array(
 		      'product id'=>$this->data['Product ID'],
 		      'part sku'=>'',
@@ -854,19 +854,11 @@ function valid_id($id){
 		      'product part most recent'=>'Yes',
 		      'product part most recent key'=>''
 		      );
-
-
+    
+    
     
     foreach($part_list as $data){
-    //   $_date='NOW()';
-      
-//       $_date=$data['product part valid from'];
-//       if(!preg_match('/now/i',$_date))
-// 	$_date=prepare_mysql($_date);
-      
-      
-//       $sql=sprintf("update `Product Part List`  set `Product Part Most Recent`='No' ,`Product Part Valid To`=%s where `Product ID`=%d and `Part SKU`=%d  and `Product Part Most Recent`='Yes' ",$_date,$this->data['product id'],$data['part sku']);
-//       $this->db->exec($sql);
+
       
       $base_data=$_base_data;
       foreach($data as $key=>$value){
@@ -879,10 +871,6 @@ function valid_id($id){
       $keys='(';$values='values(';
       foreach($base_data as $key=>$value){
 	$keys.="`$key`,";
-	if(($key='product part valid from' or $key=='product part valid to') and preg_match('/now/i',$value))
-	  $values.="NOW(),";
-	else
-	  $values.=prepare_mysql($value).",";
       }
       $keys=preg_replace('/,$/',')',$keys);
       $values=preg_replace('/,$/',')',$values);
@@ -894,11 +882,11 @@ function valid_id($id){
 	$id=mysql_insert_id();
 	if($base_data['product part most recent']=='Yes'){
 	  
-	  $sql=sprintf("update `Product Part List`  set `Product Part Most Recent`='No',`Product Part Most Recent Key`=%d where `Product Part ID`=%d   ",$id,$base_data['product part id']);
+	  $sql=sprintf("update `Product Part List` set `Product Part Most Recent`='No',`Product Part Most Recent Key`=%d where `Product ID`=%d  and `Product Part ID`!=%d      ",$id,$base_data['product id'],$base_date['product part id']);
 	  mysql_query($sql);
-
-	$sql=sprintf('update `Product Part List` set `Product Part Most Recent Key`=%d where `Product Part Key`=%d',$id,$id);
-	mysql_query($sql);
+	  
+	  $sql=sprintf('update `Product Part List` set `Product Part Most Recent Key`=%d where `Product Part Key`=%d',$id,$id);
+	  mysql_query($sql);
 	}
 
 
@@ -906,7 +894,7 @@ function valid_id($id){
 	print "can not create part list";
 	exit;
       }
-
+      
     }
   }
 
@@ -976,7 +964,35 @@ function normalize_code($code){
  function load($key){
 
    switch($key){
+   case('avalilability'):
+   case('stock'):
+     // get parts;
+     $sql=sprintf(" select `Part Current Stock`,`Parts Per Product` from `Part Dimension` PD left join `Product Part List` PPL on (PD.`Part SKU`=PPL.`Part SKU`)  where `Product ID`=%s  and `Product Part Most Recent`='Yes' group by PD.`Part SKU`  ",prepare_mysql($this->data['Product ID']));
+     //print "$sql\n";
+     $result=mysql_query($sql);
+     $stock=99999999999;
+     $change=false;
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+       if(is_numeric($row['Part Current Stock']) and is_numeric($row['Parts Per Product'])  and $row['Parts Per Product']>0 ) {
+	 $_stock=$row['Part Current Stock']/$row['Parts Per Product'];
+	 if($stock>$_stock){
+	   $stock=$_stock;
+	   $change=true;
+	 }
+       }else{
+	 $stock='NULL';
+	 break;
+       }
+	 
+     }
      
+     if(!$change)
+       $stock='NULL';
+
+     $sql=sprintf("update `Product Dimension` set `Product Availability`=%s where `Product key`=%d",$stock,$this->id);
+     // print "$sql\n";
+     mysql_query($sql);
+     break;
    case('days'):
      $tdays = (strtotime($this->data['Product Valid To']) - strtotime($this->data['Product Valid From'])) / (60 * 60 * 24);
      

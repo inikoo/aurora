@@ -25,7 +25,7 @@ date_default_timezone_set('Europe/London');
 
 
 //$sql="select * from `Product Dimension` where `Product Code`='FO-A1'";
-$sql="select * from `Product Dimension`  ";
+$sql="select * from `Product Dimension`   ";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
@@ -34,6 +34,7 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $product->load('sales');
 
   $product->load('days');
+  $product->load('stock');
 
 
   $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s order by `Product Valid From` limit 1",prepare_mysql($row['Product Code']));

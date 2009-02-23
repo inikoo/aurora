@@ -27,19 +27,26 @@ $not_found=00;
 
 $first_day_with_data=strtotime("2007-03-24");
 
-$sql="select `Part Status`,`Part SKU`,`Part Valid From`,`Part Valid To` from `Part Dimension` limit 13234,100000  ";
+$sql="select `Part Status`,`Part SKU`,`Part Valid From`,`Part Valid To` from `Part Dimension`   ";
 $resultx=mysql_query($sql);
 while($rowx=mysql_fetch_array($resultx, MYSQL_ASSOC)   ){
   
   $part_sku=$rowx['Part SKU'];
   $from=strtotime($rowx['Part Valid From']);
-  if($from<$first_day_with_data)
+  if($from<$first_day_with_data){
     $from=$first_day_with_data;
-  if($rowx['Part Status']=='In Use')
-    $to=strtotime('today');
-  else
-    $to=strtotime($rowx['Part Valid To']);
+    
+  }else{
+    $from=strtotime($rowx['Part Valid From']);
+    //   print "From: $from ".$rowx['Part Valid From']."  \n";
+  }
 
+  if($rowx['Part Status']=='In Use'){
+    $to=strtotime('today');
+  }else{
+    $to=strtotime($rowx['Part Valid To']);
+    // print "To.:  $to ".$rowx['Part Valid To']."  \n";
+  }
  
   
   $sql=sprintf("delete from `Inventory Spanshot Fact` where `Part SKU`=%d ",$part_sku);
@@ -49,8 +56,11 @@ while($rowx=mysql_fetch_array($resultx, MYSQL_ASSOC)   ){
     print "Skipping $part_sku \r";
     continue;
   }
-  if($from>$to)
-    exit("error");
+  if($from>$to){
+    print("error  $part_sku ".$rowx['Part Valid From']." ".$rowx['Part Valid To']."   \n   ");
+    continue;
+  }
+
   $start_date = date("Y-m-d",$from);
   $check_date = $start_date;
   $end_date =date("Y-m-d",$to);

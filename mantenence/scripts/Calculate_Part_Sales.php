@@ -45,10 +45,10 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   if(!mysql_query($sql))
     exit("ERROR $sql\n");
   
-//    $part->load('sales');
-//    $part->load('used in');
-//    $part->load('stock');
-//    $part->load('stock_history');
+    $part->load('sales');
+    $part->load('used in');
+    $part->load('stock');
+    $part->load('stock_history');
   print $row['Part Key']."\r";
 
  }

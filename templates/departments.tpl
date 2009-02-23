@@ -24,7 +24,7 @@
 	  {if $view_sales}<td  {if $view=='sales'}class="selected"{/if}  id="sales"  >{t}Sales{/t}</td>{/if}
 	</tr>
       </table>
-        <table id="period_options" style="float:left;margin:0 0 0 20px ;padding:0{if $view=='general'};display:none{/if}"  class="options" >
+        <table id="period_options" style="float:left;margin:0 0 0 20px ;padding:0{if $view=='general'};display:none{/if}"  class="options_mini" >
 	<tr>
 
 	  <td  {if $period=='all'}class="selected"{/if} period="all"  id="period_all" >{t}All{/t}</td>
@@ -36,7 +36,7 @@
       </table>
 
 
-       <table  id="avg_options" style="float:left;margin:0 0 0 20px ;padding:0 {if $view!='sales'};display:none{/if}"  class="options" >
+       <table  id="avg_options" style="float:left;margin:0 0 0 20px ;padding:0 {if $view!='sales'};display:none{/if}"  class="options_mini" >
 	<tr>
 	  <td {if $avg=='totals'}class="selected"{/if} avg="totals"  id="avg_totals" >{t}Totals{/t}</td>
 	  <td {if $avg=='month'}class="selected"{/if}  avg="month"  id="avg_month"  >{t}M AVG{/t}</td>

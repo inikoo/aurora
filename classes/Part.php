@@ -92,6 +92,7 @@ class part{
       $stock='';
       $value='';
       $sql=sprintf("select sum(`Quantity On Hand`) as stock,sum(`Value At Cost`) as value from `Inventory Spanshot Fact` where  `Part SKU`=%d and `Date`=%s",$this->data['Part SKU'],prepare_mysql(date("Y-m-d",strtotime('today -1 day'))));
+      // print "$sql\n";
       $result=mysql_query($sql);
       if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 	$stock=$row['stock'];
