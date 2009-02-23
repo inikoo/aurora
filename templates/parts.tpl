@@ -1,10 +1,10 @@
 {include file='header.tpl'}
 <div id="bd" >
- <span class="nav2 onleft"><a class="selected" href="departments.php">{t}Departments{/t}</a></span>
+ <span class="nav2 onleft"><a href="departments.php">{t}Departments{/t}</a></span>
   <span class="nav2 onleft"><a href="families.php">{t}Families{/t}</a></span>
   <span class="nav2 onleft"><a href="products.php">{t}Products{/t}</a></span>
   <span class="nav2 onleft"><a href="categories.php">{t}Categories{/t}</a></span>
-  <span class="nav2 onleft"><a href="parts.php">{t}Parts{/t}</a></span>
+  <span class="nav2 onleft"><a class="selected" href="parts.php">{t}Parts{/t}</a></span>
   
   <div class="search_box" >
      <span class="search_title" style="padding-right:15px">{t}Part Code{/t}:</span> <br><input size="8" class="text search" id="prod_search" value="" name="search"/><img align="absbottom" id="submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>
@@ -15,14 +15,15 @@
 
   <div id="top" class="top_bar">
     <div id="short_menu" class="nodetails" style="{if $show_details}display:none;{/if}width:100%;margin-bottom:0px">
-      <table style="float:left;margin:0 0 0 20px ;padding:0"  class="options" {if $parts==0 }style="display:none"{/if}>
+      <div    {if $parts==0    }style="display:none"{/if}  >
+      <table style="float:left;margin:0 0 0 20px ;padding:0" class="options" >
 	<tr>
 	  <td  {if $view=='general'}class="selected"{/if} id="general" >{t}General{/t}</td>
 	  {if $view_stock}<td {if $view=='stock'}class="selected"{/if}  id="stock"  >{t}Stock{/t}</td>{/if}
 	  {if $view_sales}<td  {if $view=='sales'}class="selected"{/if}  id="sales"  >{t}Sales{/t}</td>{/if}
 	</tr>
       </table>
-       <table style="float:left;margin:0 0 0 20px ;padding:0"  class="options" {if $parts==0 }style="display:none"{/if}>
+       <table  id="period_options" style="float:left;margin:0 0 0 20px ;padding:0{if $view=='general' };display:none{/if}"  class="options_mini" >
 	<tr>
 	  <td  {if $period=='all'}class="selected"{/if} period="all"  id="period_all" >{t}All{/t}</td>
 	  <td {if $period=='year'}class="selected"{/if}  period="year"  id="period_year"  >{t}1Yr{/t}</td>
@@ -31,16 +32,16 @@
 	  <td  {if $period=='week'}class="selected"{/if} period="week"  id="period_week"  >{t}1W{/t}</td>
 	</tr>
       </table>
-       <table style="float:left;margin:0 0 0 20px ;padding:0"  class="options" {if $parts==0 }style="display:none"{/if}>
+       <table id="avg_options"  style="float:left;margin:0 0 0 20px ;padding:0{if $view!='sales' };display:none{/if}"  class="options_mini" >
 	<tr>
 	  <td {if $avg=='totals'}class="selected"{/if} avg="totals"  id="avg_totals" >{t}Totals{/t}</td>
 	  <td {if $avg=='month'}class="selected"{/if}  avg="month"  id="avg_month"  >{t}M AVG{/t}</td>
 	  <td {if $avg=='week'}class="selected"{/if}  avg="week"  id="avg_week"  >{t}W AVG{/t}</td>
-	  <td {if $avg=='month_eff'}class="selected"{/if}  avg="month_eff"  id="avg_month_eff"  >{t}M EAVG{/t}</td>
-	  <td {if $avg=='week_eff'}class="selected"{/if}  avg="week_eff"  id="avg_week_eff"  >{t}W EAVG{/t}</td>
+	  <td {if $avg=='month_eff'}class="selected"{/if} style="display:none" avg="month_eff"  id="avg_month_eff"  >{t}M EAVG{/t}</td>
+	  <td {if $avg=='week_eff'}class="selected"{/if} style="display:none"  avg="week_eff"  id="avg_week_eff"  >{t}W EAVG{/t}</td>
 	</tr>
-      </table>
-
+       </table>
+      </div>
       
     </div>
     

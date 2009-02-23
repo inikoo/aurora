@@ -1,8 +1,8 @@
 {include file='header.tpl'}
 <div id="bd" >
- <span class="nav2 onleft"><a class="selected" href="departments.php">{t}Departments{/t}</a></span>
+ <span class="nav2 onleft"><a href="departments.php">{t}Departments{/t}</a></span>
   <span class="nav2 onleft"><a href="families.php">{t}Families{/t}</a></span>
-  <span class="nav2 onleft"><a href="products.php">{t}Products{/t}</a></span>
+  <span class="nav2 onleft"><a class="selected" href="products.php">{t}Products{/t}</a></span>
   <span class="nav2 onleft"><a href="categories.php">{t}Categories{/t}</a></span>
   <span class="nav2 onleft"><a href="parts.php">{t}Parts{/t}</a></span>
   

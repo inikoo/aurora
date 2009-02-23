@@ -26,6 +26,8 @@ a:hover {text-decoration:underline;color:#000}
 .aleft .yui-dt-liner{text-align:left}
 span.nav2 {float:left;background:#6d84b4;padding:0 10px;position:relative;bottom:6px;color:#fff;font-size:85%;margin:0 2px}
 span.nav2 a {color:#fff}
+span.nav2 a.selected {color:yellow;font-weight:400}
+
 span.onright {float:right}
 
 #hd{height:3.46em;background:#3b5998 url("art/headerbg.png") bottom left repeat-x;color:#fff;}

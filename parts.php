@@ -15,10 +15,13 @@ $smarty->assign('modify',$modify);
 
 $q='';
 
-// $sql="select count(*) as total_products,sum(if(`Product Sales State`='For sale',1,0)) as for_sale  from `Product Dimension` where `Product Most Recent`='Yes'";
-// $result =& $db->query($sql);
-// if(!$products=$result->fetchRow())
-//   exit;
+$sql="select count(*) as total_parts   from `Part Dimension` ";
+$result=mysql_query($sql);
+if(!$parts=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+  
+  exit("Internal Error\n");
+ }
+  
 
 
 $smarty->assign('box_layout','yui-t0');
@@ -88,6 +91,8 @@ $smarty->assign('period',$_SESSION['state']['parts']['period']);
 $smarty->assign('avg',$_SESSION['state']['parts']['avg']);
 
 $smarty->assign('currency',$myconf['currency_symbol']);
+$smarty->assign('parts',$parts['total_parts']);
+
 
 $smarty->display('parts.tpl');
 ?>

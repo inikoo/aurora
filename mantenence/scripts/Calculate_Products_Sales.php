@@ -35,7 +35,7 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
   $product->load('days');
   $product->load('stock');
-
+  $product->load('parts');
 
   $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s order by `Product Valid From` limit 1",prepare_mysql($row['Product Code']));
   $result2=mysql_query($sql);

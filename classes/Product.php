@@ -964,6 +964,34 @@ function normalize_code($code){
  function load($key){
 
    switch($key){
+   case('parts'):
+     $parts='';
+     $sql=sprintf("select `Part SKU` from `Product Part List` where `Product ID`=%d and `Product Part Most Recent`='Yes';",$this->data['Product ID']);
+     $result=mysql_query($sql);
+     while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+       $parts.=sprintf(', <a href="part.php?sku=%d">%s</a>',$row['Part SKU'],$row['Part SKU']);
+     }
+     $parts=preg_replace('/^, /','',$parts);
+     
+ $supplied_by='';
+     $sql=sprintf("select `Supp` from `Product Part List` where `Product ID`=%d and `Product Part Most Recent`='Yes';",$this->data['Product ID']);
+     $result=mysql_query($sql);
+     while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+       $supplied_by.=sprintf(', <a href="part.php?sku=%d">%s</a>',$row['Part SKU'],$row['Part SKU']);
+     }
+     $supplied_by=preg_replace('/^, /','',$supplied_by);
+     
+
+     
+     $sql=sprintf("update `Product Dimension` set `Product XHTML Parts`=%s where `Product Key`=%d",prepare_mysql(_trim($parts)),$this->id);
+     //print "$sql\n";
+     if(!mysql_query($sql))
+       exit("$sql  eerror can not updat eparts pf product 1234234\n");
+     
+     
+
+
+     break;
    case('avalilability'):
    case('stock'):
      // get parts;

@@ -381,6 +381,41 @@ class part{
       //print "$sql\n";
       mysql_query($sql);
       break;
+    case("supplied by"):
+       $used_in_products='';
+      $sql=sprintf("select  (select `Supplier Product Code` from `Supplier Product Dimension` where `Supplier Product ID`=SPPL.`Supplier Product ID` and `Supplier Product Most Recent` limit 1) as `Supplier Product Code`,(select `Supplier Product Key` from `Supplier Product Dimension` where `Supplier Product ID`=SPPL.`Supplier Product ID` and `Supplier Product Most Recent` limit 1) as `Supplier Product Key` ,  SD.`Supplier Key`,`Supplier Code` from `Supplier Product Part List` SPPL   left join `Supplier Dimension` SD on (SD.`Supplier Key`=SPPL.`Supplier Key`)   where `Part SKU`=%d  order by `Supplier Key`;",$this->data['Part SKU']);
+      $result=mysql_query($sql);
+      //print "$sql\n";
+      $supplier=array();
+      $current_supplier='_';
+      while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+	$_current_supplier=$row['Supplier Key'];
+	if($_current_supplier!=$current_supplier){
+	  $used_in_products.=sprintf(', <a href="supplier.php?id=%d">%s</a>(<a href="supplier_product.php?id=%d">%s</a>',$row['Supplier Key'],$row['Supplier Code'],$row['Supplier Product Key'],$row['Supplier Product Code']);
+	  $current_supplier=$_current_supplier;
+	}else{
+	   $used_in_products.=sprintf(', <a href="supplier_product.php?id=%d">%s</a>',$row['Supplier Product Key'],$row['Supplier Product Code']);
+
+	}
+	
+      }
+      $used_in_products.=")";
+
+
+
+
+
+      $used_in_products=_trim(preg_replace('/^, /','',$used_in_products));
+      if($used_in_products=='')
+	$used_in_products=_('Unknown Supplier');
+
+       $sql=sprintf("update `Part Dimension` set `Part XHTML Currently Supplied By`=%s where `Part Key`=%d",prepare_mysql(_trim($used_in_products)),$this->id);
+       //       print "$sql\n";exit;
+      if(!mysql_query($sql))
+	exit("error can no suplied by part 498239048");
+      break;
+
+
     case("sales"):
       // the product wich this one is 
       $sold=0;

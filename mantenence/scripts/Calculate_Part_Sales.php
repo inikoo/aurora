@@ -47,6 +47,8 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   
     $part->load('sales');
     $part->load('used in');
+    $part->load('supplied by');
+
     $part->load('stock');
     $part->load('stock_history');
   print $row['Part Key']."\n";
