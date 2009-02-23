@@ -41,6 +41,7 @@ class product{
       $sql=sprintf("select * from `Product Dimension` where `Product Key`=%d ",$tag);
 
       $result=mysql_query($sql);
+
       if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   )
 
 
@@ -964,26 +965,74 @@ function normalize_code($code){
  function load($key){
 
    switch($key){
+   case('same code data'):
+     $sql=sprintf("select * from `Product Dimension` where  `Product Key`=%d",$this->data['Product Same Code Most Recent Key']);
+     //  print "$sql\n";
+     $result=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+
+       $fam=sprintf('<a href="family.php?id=%d">%s</a>',$row['Product Family Key'],$row['Product Family Code']);
+       $dept=sprintf('<a href="department.php?id=%d">%s</a>',$row['Product Main Department Key'],$row['Product Main Department Code']);
+       $sql=sprintf("update `Product Dimension` set `Product Same Code XHTML Family`=%s, `Product Same Code Family Code`=%s,  `Product Same Code XHTML Main Department`=%s,  `Product Same Code Main Department Code`=%s ,`Product Same Code Tariff Code`=%s,`Product Same Code XHTML Short Description`=%s,`Product Same Code XHTML Parts`=%s,`Product Same Code XHTML Supplied By`=%s ,`Product Same Code XHTML Picking`=%s ,`Product Same Code Main Picking Location`=%s where `Product Key`=%d "
+		    ,prepare_mysql($fam)
+		    ,prepare_mysql($row['Product Family Code'])
+		    ,prepare_mysql($dept)
+		    ,prepare_mysql($row['Product Main Department Code'])
+
+		    ,prepare_mysql($row['Product Tariff Code'])
+		    ,prepare_mysql($row['Product XHTML Short Description'])
+		    ,prepare_mysql($row['Product XHTML Parts'])
+		    ,prepare_mysql($row['Product XHTML Supplied By'])
+		    ,prepare_mysql($row['Product XHTML Picking'])
+		    ,prepare_mysql($row['Product Main Picking Location'])
+		    ,$this->id
+		    );
+       //  print "$sql\n";
+       if(!mysql_query($sql))
+	 exit("$sql can not update prioduct ame code data\n");
+ 
+     }
+
+     break;
    case('parts'):
      $parts='';
+     $mysql_where='';
      $sql=sprintf("select `Part SKU` from `Product Part List` where `Product ID`=%d and `Product Part Most Recent`='Yes';",$this->data['Product ID']);
      $result=mysql_query($sql);
      while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
        $parts.=sprintf(', <a href="part.php?sku=%d">%s</a>',$row['Part SKU'],$row['Part SKU']);
+       $mysql_where.=', '.$row['Part SKU'];
      }
      $parts=preg_replace('/^, /','',$parts);
-     
- $supplied_by='';
-     $sql=sprintf("select `Supp` from `Product Part List` where `Product ID`=%d and `Product Part Most Recent`='Yes';",$this->data['Product ID']);
-     $result=mysql_query($sql);
-     while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-       $supplied_by.=sprintf(', <a href="part.php?sku=%d">%s</a>',$row['Part SKU'],$row['Part SKU']);
-     }
-     $supplied_by=preg_replace('/^, /','',$supplied_by);
-     
+     $mysql_where=preg_replace('/^, /','',$mysql_where);
 
-     
-     $sql=sprintf("update `Product Dimension` set `Product XHTML Parts`=%s where `Product Key`=%d",prepare_mysql(_trim($parts)),$this->id);
+       $supplied_by='';
+       $sql=sprintf("select  (select `Supplier Product Code` from `Supplier Product Dimension` where `Supplier Product ID`=SPPL.`Supplier Product ID` and `Supplier Product Most Recent` limit 1) as `Supplier Product Code`,(select `Supplier Product Key` from `Supplier Product Dimension` where `Supplier Product ID`=SPPL.`Supplier Product ID` and `Supplier Product Most Recent` limit 1) as `Supplier Product Key` ,  SD.`Supplier Key`,`Supplier Code` from `Supplier Product Part List` SPPL   left join `Supplier Dimension` SD on (SD.`Supplier Key`=SPPL.`Supplier Key`)   where `Part SKU` in (%s) order by `Supplier Key`;",$mysql_where);
+      $result=mysql_query($sql);
+      //      print "$sql\n";
+      // exit;
+      $supplier=array();
+      $current_supplier='_';
+      while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+	$_current_supplier=$row['Supplier Key'];
+	if($_current_supplier!=$current_supplier){
+	  $supplied_by.=sprintf(', <a href="supplier.php?id=%d">%s</a>(<a href="supplier_product.php?id=%d">%s</a>',$row['Supplier Key'],$row['Supplier Code'],$row['Supplier Product Key'],$row['Supplier Product Code']);
+	  $current_supplier=$_current_supplier;
+	}else{
+	   $supplied_by.=sprintf(', <a href="supplier_product.php?id=%d">%s</a>',$row['Supplier Product Key'],$row['Supplier Product Code']);
+
+	}
+	
+      }
+      $supplied_by.=")";
+
+      $supplied_by=_trim(preg_replace('/^, /','',$supplied_by));
+      if($supplied_by=='')
+	$supplied_by=_('Unknown Supplier');
+
+
+
+      $sql=sprintf("update `Product Dimension` set `Product XHTML Parts`=%s  , `Product XHTML Supplied By`=%s where `Product Key`=%d",prepare_mysql(_trim($parts)),prepare_mysql(_trim($supplied_by)),$this->id);
      //print "$sql\n";
      if(!mysql_query($sql))
        exit("$sql  eerror can not updat eparts pf product 1234234\n");

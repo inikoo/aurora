@@ -29,24 +29,15 @@ $sql="select * from `Product Dimension`  ";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
-  $product=new Product($row['Product Key']);
+  
+  //print $row['Product Key']."\n";
+   $product=new Product($row['Product Key']);
 
-  $product->load('sales');
+  
+  
 
-  //  $product->load('days');
-  $product->load('stock');
-  $product->load('parts');
+   $product->load('same code data');
 
-
-
-
-  print $row['Product Key']."\r";
-
-
-
+    print $row['Product Key']."\n";
 
  }
-
-
-
-?>

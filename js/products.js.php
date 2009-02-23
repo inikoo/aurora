@@ -15,24 +15,47 @@ include_once('../common.php');
 	table.hideColumn('profit');
 	table.hideColumn('sold');
 	table.hideColumn('margin');
+
+	table.hideColumn('parts');
+	table.hideColumn('supplied');
+	table.hideColumn('gmroi');
+	
+	table.hideColumn('family');
+	table.hideColumn('dept');
+	table.hideColumn('expcode');  
+
+
+
 	if(tipo=='sales'){
 	    table.showColumn('sold');
 	    table.showColumn('sales');
 	    table.showColumn('profit');
 	    table.showColumn('margin');
-
-	}if(tipo=='sales_outers'){
-	    table.showColumn('stock');
-	    table.showColumn('stock_value');
-	}
-
-	else if(tipo=='general'){
+	    Dom.get('period_options').style.display='';
+	    Dom.get('avg_options').style.display='';
+	}else if(tipo=='general'){
 	    table.showColumn('name');
-
+	    Dom.get('period_options').style.display='none';
+	    Dom.get('avg_options').style.display='none';
+	    table.showColumn('gmroi');
 	}else if(tipo=='stock'){
 	    table.showColumn('stock');
 	    table.showColumn('stock_value');
-
+	    Dom.get('period_options').style.display='none';
+	    Dom.get('avg_options').style.display='none';
+	}else if(tipo=='parts'){
+	    table.showColumn('parts');
+	    table.showColumn('supplied');
+	    table.showColumn('gmroi');
+	    Dom.get('period_options').style.display='none';
+	    Dom.get('avg_options').style.display='none';
+	    
+	}else if(tipo=='cats'){
+	    Dom.get('period_options').style.display='none';
+	    Dom.get('avg_options').style.display='none';
+	    table.showColumn('family');
+	    table.showColumn('dept');
+	    table.showColumn('expcode');
 	}
 
 
@@ -59,10 +82,15 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    ,{key:"profit", label:"<?=_('Profit')?>",width:100,<?=($_SESSION['state']['products']['view']=='sales'?'':'hidden:true,')?> sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    ,{key:"margin", label:"<?=_('Margin')?>",width:100,<?=($_SESSION['state']['products']['view']=='sales'?'':'hidden:true,')?> sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    ,{key:"stock", label:"<?=_('Available')?>", width:70,sortable:true,className:"aright",<?=(($_SESSION['state']['products']['view']=='stock' or $_SESSION['state']['products']['view']=='general')  ?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"parts", label:"<?=_('Parts')?>",width:200,<?=($_SESSION['state']['products']['view']!='parts'?'hidden:true,':'')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"supplied", label:"<?=_('Supplied by')?>",width:200,<?=($_SESSION['state']['products']['view']!='parts'?'hidden:true,':'')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"gmroi", label:"<?=_('GMROI')?>", width:100,sortable:true,className:"aright",<?=(($_SESSION['state']['products']['view']=='parts' or $_SESSION['state']['products']['view']=='general')  ?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"family", label:"<?=_('Family')?>",width:120,<?=($_SESSION['state']['products']['view']!='cats'?'hidden:true,':'')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"dept", label:"<?=_('Main Department')?>",width:300,<?=($_SESSION['state']['products']['view']!='cats'?'hidden:true,':'')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"expcode", label:"<?=_('TC(UK)')?>",width:200,<?=($_SESSION['state']['products']['view']!='cats'?'hidden:true,':'')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
-				    
 
-				     ];
+			       ];
 
 	    this.dataSource0 = new YAHOO.util.DataSource("ar_assets.php?tipo=products");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -84,7 +112,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 'id'
 			 ,"code"
 			 ,"name","stock","stock_value"
-			 ,'sales','profit','margin','sold'
+			 ,'sales','profit','margin','sold',"parts","supplied","gmroi","family","dept","expcode"
 			 ]};
 	    
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
@@ -136,7 +164,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 
- ids=['general','sales','stock','sales_outers'];
+ ids=['general','sales','stock','parts','cats'];
  YAHOO.util.Event.addListener(ids, "click",change_view);
  ids=['period_all','period_year','period_quarter','period_month','period_week'];
  YAHOO.util.Event.addListener(ids, "click",change_period,0);

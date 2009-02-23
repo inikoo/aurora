@@ -3985,7 +3985,19 @@ case('products'):
     elseif($period=='week')
       $order='`Product 1 Week Acc Quantity Invoiced`';
 
-  }
+     }elseif($order=='family'){
+	$order='`Product Family`Code';
+     }elseif($order=='dept'){
+	$order='`Product Main Department Code`';
+     }elseif($order=='expcode'){
+	$order='`Product Tariff Code`';
+     }elseif($order=='parts'){
+	$order='`Product XHTML Parts`';
+     }elseif($order=='supplied'){
+	$order='`Product XHTML Supplied By`';
+     }elseif($order=='gmroi'){
+	$order='`Product GMROI`';
+     }
 
  if($percentages){
  
@@ -4079,7 +4091,9 @@ case('products'):
 
  }
 
-  $sql="select (select `Product XHTML Short Description` from `Product Dimension` where `Product Key`=P.`Product Same Code Most Recent key`) as `Product XHTML Short Description`,`Product Code`,`Product Same Code Most Recent Key` as `Product Key`
+  $sql="select 
+`Product Code`
+,`Product Same Code Most Recent Key` as `Product Key`
 ,sum(`Product Total Invoiced Amount`) as `Product Total Invoiced Amount`
 ,sum(`Product 1 Year Acc Invoiced Amount`) as `Product 1 Year Acc Invoiced Amount`
 ,sum(`Product 1 Quarter Acc Invoiced Amount`) as `Product 1 Quarter Acc Invoiced Amount`
@@ -4108,12 +4122,24 @@ case('products'):
 ,`Product Same Code 1 Quarter Acc Days On Sale` as `Product 1 Quarter Acc Days On Sale`
 ,`Product Same Code 1 Month Acc Days On Sale` as `Product 1 Month Acc Days On Sale`
 ,`Product Same Code 1 Week Acc Days On Sale` as `Product 1 Week Acc Days On Sale` 
+,`Product Same Code GMROI` as `Product GMROI`
+,`Product Same Code XHTML Family` as `Product XHTML Family` 
+,`Product Same Code Family Code` as `Product Family Code`
+,`Product Same Code XHTML Main Department` as `Product XHTML Main Department`
+,`Product Same Code Main Department Code` as `Product Main Department Code`
+,`Product Same Code Tariff Code` as `Product Tariff Code`
+,`Product Same Code XHTML Short Description`  as `Product XHTML Short Description`
+,`Product Same Code XHTML Picking`  as `Product XHTML Picking`
+,`Product Same Code Main Picking Location`  as `Product Main Picking Location`
+
+,`Product Same Code XHTML Parts`  as `Product XHTML Parts`
+,`Product Same Code XHTML Supplied By`  as `Product XHTML Supplied By`
 
 from `Product Dimension` P   $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
   
    $res = mysql_query($sql);
   $adata=array();
-  // print "$sql";
+  //  print "$sql";
   while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
     $code=sprintf('<a href="product.php?id=%d">%s</a>',$row['Product Key'],$row['Product Code']);
     if($percentages){
@@ -4371,10 +4397,18 @@ from `Product Dimension` P   $where $wheref $group order by $order $order_direct
       $stock=number($row['Product Availability']);
     else
       $stock='?';
-   $adata[]=array(
 
+
+   $adata[]=array(
+		  
 		   'code'=>$code,
 		   'name'=>$row['Product XHTML Short Description'],
+		   'family'=>$row['Product XHTML Family'],
+		   'dept'=>$row['Product XHTML Main Department'],
+		   'expcode'=>$row['Product Tariff Code'],
+		   'parts'=>$row['Product XHTML Parts'],
+		   'supplied'=>$row['Product XHTML Supplied By'],
+		   'gmroi'=>$row['Product GMROI'],
 		   'stock_value'=>money($row['Product Stock Value']),
 		   'stock'=>$stock,
 		   'sales'=>$tsall,

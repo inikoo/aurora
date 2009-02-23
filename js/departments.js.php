@@ -20,6 +20,7 @@ var Dom   = YAHOO.util.Dom;
 	    table.hideColumn('stock_error');
 	    table.hideColumn('outofstock');
 
+
 	    if(tipo=='sales'){
 		Dom.get('period_options').style.display='';
 		Dom.get('avg_options').style.display='';
