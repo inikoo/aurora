@@ -27,7 +27,7 @@ $not_found=00;
 
 $first_day_with_data=strtotime("2007-03-24");
 
-$sql="select `Part Status`,`Part SKU`,`Part Valid From`,`Part Valid To` from `Part Dimension`   ";
+$sql="select `Part Status`,`Part SKU`,`Part Valid From`,`Part Valid To` from `Part Dimension` limit 9630  ";
 $resultx=mysql_query($sql);
 while($rowx=mysql_fetch_array($resultx, MYSQL_ASSOC)   ){
   

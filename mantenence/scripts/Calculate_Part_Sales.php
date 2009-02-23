@@ -25,7 +25,7 @@ date_default_timezone_set('Europe/London');
 
 
 //$sql="select * from `Product Dimension` where `Product Code`='FO-A1'";
-$sql="select * from `Part Dimension`";
+$sql="select * from `Part Dimension` ";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $part=new Part($row['Part Key']);
@@ -49,7 +49,7 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
     $part->load('used in');
     $part->load('stock');
     $part->load('stock_history');
-  print $row['Part Key']."\r";
+  print $row['Part Key']."\n";
 
  }
 

@@ -16,7 +16,7 @@ error_reporting(E_ALL);
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 
 if(!$con){print "Error can not connect with database server\n";exit;}
-$dns_db='dw';
+$dns_db='dw2';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
   
@@ -129,8 +129,8 @@ foreach($__cols as $cols){
   
   if($is_product){
 
+           print "$code\r";
 
-    //       print "$code\r";
     $part_list=array();
     $rules=array();
     
@@ -293,6 +293,7 @@ foreach($__cols as $cols){
 
 
     $product=new Product('code',$code);
+    // print "** ".$product->data['Product Code']."\n";
     if(!$product->id){
       if($units=='')
 	$units=1;

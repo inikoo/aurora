@@ -212,7 +212,7 @@ class part{
 		    ,$this->id);
        //   print "$sql\n";
        if(!mysql_query($sql))
-	 exit("errot con not update part stock history yr aa");
+	 exit("$sql errot con not update part stock history yr aa");
 
 
   $astock=0;
@@ -263,7 +263,7 @@ class part{
 		    ,$this->id);
        //   print "$sql\n";
        if(!mysql_query($sql))
-	 exit("errot con not update part stock history yr bb");
+	 exit("$sql errot con not update part stock history yr bb");
 
   $astock=0;
        $avalue=0;
@@ -313,7 +313,7 @@ class part{
 		    ,$this->id);
        //   print "$sql\n";
        if(!mysql_query($sql))
-	 exit("errot con not update part stock history yr cc");
+	 exit(" $sql errot con not update part stock history yr cc");
 
 
   $astock=0;
@@ -342,8 +342,9 @@ class part{
       
       $gmroi='NULL';
       if($days_ok>0){
-	$astock=$astock/$days_ok;
-	$avalue=$avalue/$days_ok;
+	$tmp=1.0000001/$days_ok;
+	$astock=$astock*$tmp;
+	$avalue=$avalue*$tmp;
 	if($avalue>0)
 	  $gmroi=$this->data['Part 1 Week Acc Profit When Sold']/$avalue;
       }else{
@@ -364,7 +365,7 @@ class part{
 		    ,$this->id);
        //   print "$sql\n";
        if(!mysql_query($sql))
-	 exit("errot con not update part stock history yr");
+	 exit("$sql errot con not update part stock history wk");
 
       break;
     case("used in"):
