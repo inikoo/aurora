@@ -3993,7 +3993,7 @@ case('products'):
 	$order='`Product Tariff Code`';
      }elseif($order=='parts'){
 	$order='`Product XHTML Parts`';
-     }elseif($order=='supplied'){bz
+     }elseif($order=='supplied'){
 	$order='`Product XHTML Supplied By`';
      }elseif($order=='gmroi'){
 	$order='`Product GMROI`';

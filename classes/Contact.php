@@ -90,8 +90,8 @@ class Contact{
 
   function create ($data){
 
-    //   print_r($data);
 
+    
     if(!is_array($data))
       $data=array();
 
@@ -196,6 +196,8 @@ class Contact{
 
       if(!mysql_query($sql))
 	exit(" $sql\n error can not update address data on contact");
+
+
 
       $this->get_data('id',$this->id);
       if(isset($data['email']) and  $data['email']!=''){

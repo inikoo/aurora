@@ -36,14 +36,14 @@ class supplier{
       $sql=sprintf("select * from `Supplier Dimension` where `Supplier Key`=%d",$id);
     elseif ($tipo=='code'){
       if($id=='')
-	$id=_('Unknown Supplier');
+	$id=_('Unknown');
       
       $sql=sprintf("select * from `Supplier Dimension` where `Supplier Code`=%s  and `Supplier Most Recent`='Yes'",prepare_mysql($id));
       
     }
 
     
-    
+    // print "$sql\n";
     $result=mysql_query($sql);
     if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   )
       $this->id=$this->data['Supplier Key'];
@@ -93,11 +93,16 @@ class supplier{
     elseif(isset($data['contact_name_data']))
       $data_contact=array('name_data'=>$data['contact_name_data']);
     else
-      $data_contact=array(array());
+      $data_contact=array();
 
 
     if(isset($data['address_data']))
       $data_contact['address_data']=$data['address_data'];
+    if(isset($data['email']))
+      $data_contact['email']=$data['email'];
+    if(isset($data['www']))
+      $data_contact['www']=$data['www'];
+
 
     $contact=new contact('new',$data_contact);
    
@@ -122,7 +127,7 @@ class supplier{
     if(isset($data['most_recent_key']) and is_numeric($data['most_recent_key'])  and $data['most_recent_key']>0  )
       $most_recent_key=$data['most_recent_key'];
 
-    $sql=sprintf("insert into `Supplier Dimension` (`Supplier Code`,`Supplier Name`,`Supplier Company Key`,`Supplier Main Contact Key`,`Supplier Accounts Payable Contact Key`,`Supplier Sales Contact Key`,`Supplier Valid From`,`Supplier Valid To`,`Supplier Most Recent`,`Supplier Most Recent Key`,`Supplier ID`) values (%s,%s,%d,%d,%d,%d,%s,%s,%s,%s,%s)",
+    $sql=sprintf("insert into `Supplier Dimension` (`Supplier Code`,`Supplier Name`,`Supplier Company Key`,`Supplier Main Contact Key`,`Supplier Accounts Payable Contact Key`,`Supplier Sales Contact Key`,`Supplier Valid From`,`Supplier Valid To`,`Supplier Most Recent`,`Supplier Most Recent Key`,`Supplier ID`,`Supplier Location`,`Supplier Main XHTML Email`) values (%s,%s,%d,%d,%d,%d,%s,%s,%s,%s,%s,%s,%s)",
 		 prepare_mysql($code),
 		 prepare_mysql($name),
 		 $company->id,
@@ -133,10 +138,13 @@ class supplier{
 		 prepare_mysql($to),
 		 prepare_mysql($most_recent),
 		 prepare_mysql($most_recent_key),
-		 prepare_mysql($data['supplier id'])
+		 prepare_mysql($data['supplier id']),
+		 prepare_mysql($contact->data['Contact Main Location']),
+		 prepare_mysql($contact->data['Contact Main XHTML Email'])
 		 );
-    //  print "$sql\n";
-    //    exit;
+    // print "$sql\n";
+    //print_r($contact->data);
+    //exit;
 
     if(mysql_query($sql)){
 
@@ -150,6 +158,11 @@ class supplier{
     }else{
       print "Error can not create supplier\n";exit;
     }
+
+
+
+
+
 
   }
 

@@ -914,6 +914,11 @@ if(isset( $_REQUEST['where']))
        $order='`Supplier Name`';
      elseif($order=='id')
        $order='`Supplier Key`';
+      elseif($order=='location')
+       $order='`Supplier Location`';
+      elseif($order=='email')
+       $order='`Supplier Main XHTML Email`';
+
  //    elseif($order='used_in')
 //        $order='Supplier Product XHTML Used In';
 
@@ -924,16 +929,17 @@ if(isset( $_REQUEST['where']))
    while($row=mysql_fetch_array($result, MYSQL_ASSOC) ) {
 
      $id="<a href='supplier.php?id=".$row['Supplier Key']."'>".$myconf['supplier_id_prefix'].sprintf("%05d",$row['Supplier Key']).'</a>';
-     $code="<a href='supplier.php?id=".$row['Supplier Key']."'>".$row['Supplier Name']."</a>";
+     $code="<a href='supplier.php?id=".$row['Supplier Key']."'>".$row['Supplier Code']."</a>";
      $data[]=array(
-		   'id'=>$id,
-		   'code'=>$code,
-		   'name'=>$row['Supplier Name'],
-		   //  'used_in'=>$row['Supplier Product XHTML Used In']
-		   'for_sale'=>number($row['Supplier For Sale Products']),
-		   'low'=>number($row['Supplier Low Availability Products']),
-		   'outofstock'=>number($row['Supplier Out Of Stock Products'])
-//		   'delete'=>'<img src="art/icons/status_busy.png"/>'
+		   'id'=>$id
+		   ,'code'=>$code
+		   ,'name'=>$row['Supplier Name']
+		   ,'for_sale'=>number($row['Supplier For Sale Products'])
+		   ,'low'=>number($row['Supplier Low Availability Products'])
+		   ,'outofstock'=>number($row['Supplier Out Of Stock Products'])
+		   ,'location'=>$row['Supplier Location']
+		   ,'email'=>$row['Supplier Main XHTML Email']
+
 
 		   );
    }

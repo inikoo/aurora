@@ -16,7 +16,7 @@ error_reporting(E_ALL);
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 
 if(!$con){print "Error can not connect with database server\n";exit;}
-$dns_db='dw2';
+$dns_db='dw';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
   
@@ -349,16 +349,167 @@ foreach($__cols as $cols){
 	if($supplier_code=='AW')
 	  $scode=$code;
 
-	if($supplier_code=='' or $supplier_code=='0')
-	  $supplier_code=='Unknown';
-	$supplier=new Supplier('code',$supplier_code);
-	if(!$supplier->id){
-	  $data=array(
+	$the_supplier_data=array(
 		      'name'=>$supplier_code,
 		      'code'=>$supplier_code,
 		      );
-	  $supplier=new Supplier('new',$data);
+
+
+	// Suppplier data
+	if(preg_match('/Ackerman|Ackerrman|Akerman/i',$supplier_code)){
+	  $supplier_code='Ackerman';
+	  $the_supplier_data=array(
+				   'name'=>'Ackerman Group',
+				   'code'=>$supplier_code,
+				   'address_data'=>array(
+							 'type'=>'3line'
+							 ,'address1'=>'Unit 15/16'
+							 ,'address2'=>'Hickman Avenue'
+							 ,'address3'=>''
+							 ,'town'=>'London'
+							 ,'town_d1'=>''
+							 ,'town_d2'=>'Chingford'
+							 ,'country'=>'UK'
+							 ,'country_d1'=>''
+							 ,'country_d2'=>''
+							 ,'default_country_id'=>$myconf['country_id']
+							 ,'postcode'=>'E4 9JG'
+							 ),
+				   'email'=>'office@ackerman.co.uk'
+				   ,'telephone'=>'020 8527 6439'
+				   );
 	}
+
+
+	
+
+	if(preg_match('/^AW$/i',$supplier_code)){
+	  $supplier_code='AW';
+	  $the_supplier_data=array(
+				   'name'=>'Ancient Wisdom Marketing',
+				   'code'=>$supplier_code,
+				   'address_data'=>array(
+							 'type'=>'3line'
+							 ,'address1'=>'Block B'
+							 ,'address2'=>'Parkwood Business Park'
+							 ,'address3'=>'Parkwood Road'
+							 ,'town'=>'Sheffield'
+							 ,'town_d1'=>''
+							 ,'town_d2'=>''
+							 ,'country'=>'UK'
+							 ,'country_d1'=>''
+							 ,'country_d2'=>''
+							 ,'default_country_id'=>$myconf['country_id']
+							 ,'postcode'=>'S3 8AL'
+							 ),
+				   'email'=>'mail@ancientwisdom.biz'
+				   ,'telephone'=>'44 (0)114 2729165'
+
+				   );
+	}
+
+	if(preg_match('/^(AWR|costa)$/i',$supplier_code)){
+	  $supplier_code='AWR';
+	  $the_supplier_data=array(
+				   'name'=>'Costa Imports'
+				   ,'code'=>$supplier_code
+				   ,'address_data'=>array(
+							 'type'=>'3line'
+							 ,'address1'=>'Nave 8'
+							 ,'address2'=>'Polígono Ind. Alhaurín de la Torre Fase 1'
+							 ,'address3'=>'Paseo de la Hispanidad'
+							 ,'town'=>'Málaga'
+							 ,'town_d1'=>''
+							 ,'town_d2'=>''
+							 ,'country'=>'Spain'
+							 ,'country_d1'=>''
+							 ,'country_d2'=>''
+							 ,'default_country_id'=>$myconf['country_id']
+							 ,'postcode'=>'29130'
+							 )
+				   ,'contact_name'=>'Carlos'
+				   ,'email'=>'carlos@aw-regalos.com'
+				   ,'telephone'=>'(+34) 952 417 609'
+				   );
+	}
+
+	if(preg_match('/^(salco)$/i',$supplier_code)){
+	  $supplier_code='Salco';
+	  $the_supplier_data=array(
+				   'name'=>'Salco Group'
+				   ,'code'=>$supplier_code
+				   ,'address_data'=>array(
+							 'type'=>'3line'
+							 ,'address1'=>'Salco House'
+							 ,'address2'=>'5 Central Road'
+							 ,'address3'=>''
+							 ,'town'=>'Harlow'
+							 ,'town_d1'=>''
+							 ,'town_d2'=>''
+							 ,'country'=>'UK'
+							 ,'country_d1'=>'Essex'
+							 ,'country_d2'=>''
+							 ,'default_country_id'=>$myconf['country_id']
+							 ,'postcode'=>'CM20 2ST'
+							 )
+				   //				   ,'contact_name'=>'Carlos'
+				   ,'email'=>'alco@salcogroup.com'
+				   ,'telephone'=>'01279 439991'
+				   );
+	}
+	if(preg_match('/^(apac)$/i',$supplier_code)){
+	  $supplier_code='Salco';
+	  $the_supplier_data=array(
+				   'name'=>'APAC Packaging Ltd'
+				   ,'code'=>$supplier_code
+				   ,'address_data'=>array(
+							 'type'=>'3line'
+							 ,'address1'=>'Loughborough Road'
+							 ,'address2'=>''
+							 ,'address3'=>''
+							 ,'town'=>'Leicester'
+							 ,'town_d1'=>'Rothley'
+							 ,'town_d2'=>''
+							 ,'country'=>'UK'
+							 ,'country_d1'=>''
+							 ,'country_d2'=>''
+							 ,'default_country_id'=>$myconf['country_id']
+							 ,'postcode'=>'LE7 7NL'
+							 )
+				   //				   ,'contact_name'=>'Carlos'
+				   ,'email'=>''
+				   ,'telephone'=>'0116 230 2555'
+				   ,'www'=>'www.apacpackaging.com'
+				   ,'fax'=>'0116 230 3555'
+				   );
+	}
+	if(preg_match('/^(andy.*?)$/i',$supplier_code)){
+	  $supplier_code='Andy';
+	  $the_supplier_data=array(
+				   'name'=>'Andy'
+				   ,'code'=>$supplier_code
+				   );
+	}
+
+
+	if($supplier_code=='' or $supplier_code=='0'){
+	  $supplier_code='Unknown';
+	  $the_supplier_data=array(
+				   'name'=>'Unknown Supplier'
+				   ,'code'=>$supplier_code
+				   );
+	}
+	$supplier=new Supplier('code',$supplier_code);
+	if(!$supplier->id){
+	  $supplier=new Supplier('new',$the_supplier_data);
+	}
+	$scode=_trim($scode);
+	$scode=preg_replace('/^\"\s*/','',$scode);
+	$scode=preg_replace('/\s*\"$/','',$scode);
+	if(preg_match('/\d+ or more|0.10000007/i',$scode))
+	  $scode='';
+	if(preg_match('/^(\?|new)$/i',$scode))
+	  $scode='';
 
 	if($scode=='' or $scode=='0')
 	  $scode='?'.$code;

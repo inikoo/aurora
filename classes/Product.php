@@ -869,9 +869,11 @@ function valid_id($id){
       
       $base_data['product part id']=$product_list_id;
       
-      $keys='(';$values='values(';
+      $keys='(';
+      $values='values(';
       foreach($base_data as $key=>$value){
 	$keys.="`$key`,";
+	$values.=prepare_mysql($value).',';
       }
       $keys=preg_replace('/,$/',')',$keys);
       $values=preg_replace('/,$/',')',$values);
@@ -883,7 +885,7 @@ function valid_id($id){
 	$id=mysql_insert_id();
 	if($base_data['product part most recent']=='Yes'){
 	  
-	  $sql=sprintf("update `Product Part List` set `Product Part Most Recent`='No',`Product Part Most Recent Key`=%d where `Product ID`=%d  and `Product Part ID`!=%d      ",$id,$base_data['product id'],$base_date['product part id']);
+	  $sql=sprintf("update `Product Part List` set `Product Part Most Recent`='No',`Product Part Most Recent Key`=%d where `Product ID`=%d  and `Product Part ID`!=%d      ",$id,$base_data['product id'],$base_data['product part id']);
 	  mysql_query($sql);
 	  
 	  $sql=sprintf('update `Product Part List` set `Product Part Most Recent Key`=%d where `Product Part Key`=%d',$id,$id);
@@ -892,7 +894,7 @@ function valid_id($id){
 
 
       }else{
-	print "can not create part list";
+	print "$sql\n can not create part list";
 	exit;
       }
       

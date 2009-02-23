@@ -50,7 +50,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 ,"code"
 			 ,"forsale"
 			 ,"outofstock"
-			 ,"low"
+			 ,"low","location","email"
 	 ]};
 
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, SuppliersColumnDefs,
