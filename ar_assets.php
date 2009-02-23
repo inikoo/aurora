@@ -2529,6 +2529,8 @@ $where=" ";
    $_dir=$order_direction;
    $_order=$order;
    
+     if($order=='families')
+       $order='`Product Department Families`';
 
     if($order=='profit'){
     if($period=='all')
@@ -2882,7 +2884,7 @@ $sum_active=0;
    $adata[]=array(
 
 		   'name'=>$name,
-
+		   'families'=>number($row['Product Department Families']),
 		   'active'=>number($row['Product Department For Sale Products']),
 		   'outofstock'=>number($row['Product Department Out Of Stock Products']),
 		   'stockerror'=>number($row['Product Department Unknown Stock Products']),
@@ -4100,13 +4102,18 @@ case('products'):
 ,100*sum(`Product 1 Week Acc Profit`)/sum(`Product 1 Week Acc Invoiced Amount`) as `Product 1 Week Acc Margin`
 ,sum(`Product Availability`) as `Product Availability`
 ,sum(`Product Stock Value`) as `Product Stock Value`
-
 ,max(`Product Total Days On Sale`) as `Product Total Days On Sale`
+,`Product Same Code Total Days On Sale` as `Product Total Days On Sale`
+,`Product Same Code 1 Year Acc Days On Sale` as `Product 1 Year Acc Days On Sale`
+,`Product Same Code 1 Quarter Acc Days On Sale` as `Product 1 Quarter Acc Days On Sale`
+,`Product Same Code 1 Month Acc Days On Sale` as `Product 1 Month Acc Days On Sale`
+,`Product Same Code 1 Week Acc Days On Sale` as `Product 1 Week Acc Days On Sale` 
+
 from `Product Dimension` P   $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
   
    $res = mysql_query($sql);
   $adata=array();
-  //  print "$sql";
+  // print "$sql";
   while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
     $code=sprintf('<a href="product.php?id=%d">%s</a>',$row['Product Key'],$row['Product Code']);
     if($percentages){
@@ -4159,27 +4166,36 @@ from `Product Dimension` P   $where $wheref $group order by $order $order_direct
 	  if($row['Product Total Days On Sale']>0)
 	    $factor=30.4368499/$row['Product Total Days On Sale'];
 	  else
-	    $factor=0;
+	    $factor='ND';
 	}elseif($avg=='week'){
 	  if($row['Product Total Days On Sale']>0)
 	    $factor=7/$row['Product Total Days On Sale'];
 	  else
-	    $factor=0;
+	    $factor='ND';
 	}elseif($avg=='month_eff'){
 	  if($row['Product Total Days Available']>0)
 	    $factor=30.4368499/$row['Product Total Days Available'];
 	  else
-	    $factor=0;
+	    $factor='ND';
 	}elseif($avg=='week_eff'){
 	  if($row['Product Total Days Available']>0)
 	    $factor=7/$row['Product Total Days Available'];
 	  else
-	    $factor=0;
+	    $factor='ND';
 	}
+	if($factor=='ND'){
+	$tsall='ND';
+	$tprofit='ND';
+	$sold='ND';
 
+	}else{
+	
 	$tsall=money($row['Product Total Invoiced Amount']*$factor);
 	$tprofit=money($row['Product Total Profit']*$factor);
 	$sold=number($row['Product Total Quantity Invoiced']*$factor,1,true);
+	}
+
+
 	$margin=number($row['Product Total Margin'],1)."%";
 	  
 
@@ -4296,7 +4312,11 @@ from `Product Dimension` P   $where $wheref $group order by $order $order_direct
 	$tsall=money($row['Product 1 Month Acc Invoiced Amount']*$factor);
 	$tprofit=money($row['Product 1 Month Acc Profit']*$factor);
 	$sold=number($row['Product 1 Month Acc Quantity Invoiced']*$factor);
-	$margin=percentage($row['Product 1 Month Acc Profit']/$row['Product 1 Month Acc Invoiced Amount']);
+// 	if($row['Product 1 Month Acc Invoiced Amount']!=0)
+// 	  $margin=percentage($row['Product 1 Month Acc Profit']/$row['Product 1 Month Acc Invoiced Amount']);
+// 	else
+// 	  $margin=_('ND');
+	$margin=number($row['Product 1 Month Acc Margin'],1)."%";
       }elseif($period=='week'){
 		if($avg=='totals')
 	  $factor=1;

@@ -33,7 +33,7 @@ var Dom   = YAHOO.util.Dom;
 		table.showColumn('families');
 	    }
 	    if(tipo=='stock'){
-		Dom.get('period_options').style.display='';
+		Dom.get('period_options').style.display='none';
 		Dom.get('avg_options').style.display='none';
 		
 		    table.showColumn('stock_value');

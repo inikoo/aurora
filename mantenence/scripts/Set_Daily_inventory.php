@@ -82,19 +82,19 @@ while($rowx=mysql_fetch_array($resultx, MYSQL_ASSOC)   ){
 
   while ($check_date != $end_date) {
     $check_date = date ("Y-m-d", strtotime ("+1 day", strtotime($check_date)));
-
+    
     if(!is_numeric($qty_inicio)){
       $sql=sprintf("select count(*) as num  from `Inventory Transition Fact` where  `Part Sku`=%s  and DATE(`Date`)=%s and `Inventory Transaction Type`='Audit' ",prepare_mysql($part_sku),prepare_mysql($check_date));
-    $result3=mysql_query($sql);
+      $result3=mysql_query($sql);
     //  print "$sql\n";
-    $row2=mysql_fetch_array($result3, MYSQL_ASSOC);
-    // print "$check_date ".$row2['num']."\n";
-    if($row2['num']==0){
-
-      continue;
-    
-    }
-
+      $row2=mysql_fetch_array($result3, MYSQL_ASSOC);
+      // print "$check_date ".$row2['num']."\n";
+      if($row2['num']==0){
+	
+	continue;
+	
+      }
+      
     }
     
 
