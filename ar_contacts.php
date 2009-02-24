@@ -834,8 +834,8 @@ if(isset( $_REQUEST['where']))
    $filter_msg='';
   $wheref='';
 
-  if(($f_field=='name'     )  and $f_value!=''){
-      $wheref="  and  cu.name like '".addslashes($f_value)."%'";
+  if(($f_field=='customer name'     )  and $f_value!=''){
+      $wheref="  and  `Customer Name` like '%".addslashes($f_value)."%'";
   }else if($f_field=='id3'  )
     $wheref.=" and  extra_id2 like '".addslashes(preg_replace('/\s*|\,|\./','',$f_value))."%' ";
   else if($f_field=='id2'  )
@@ -861,13 +861,16 @@ else if($f_field=='id'  )
 
 
    $sql="select count(*) as total from `Customer Dimension`  $where $wheref";
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-   if($row=$res->fetchRow()) {
+
+ $res=mysql_query($sql);
+     if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
      $total=$row['total'];
    }if($wheref!=''){
-     $sql="select count(*) as total_without_filters from customer `Customer Dimension`  $where ";
-     $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-     if($row=$res->fetchRow()) {
+     $sql="select count(*) as total_without_filters from `Customer Dimension`  $where ";
+     $res=mysql_query($sql);
+     if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+    
        $total_records=$row['total_without_filters'];
        $filtered=$row['total_without_filters']-$total;
      }
@@ -884,15 +887,15 @@ else if($f_field=='id'  )
 
    if($total==0 and $filtered>0){
      switch($f_field){
-     case('name'):
-       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any customer starting with")." <b>$f_value</b> ";
+     case('customer name'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any customer like")." <b>$f_value</b> ";
        break;
      }
    }
    elseif($filtered>0){
      switch($f_field){
-     case('name'):
-       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('customers with name')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+     case('customer name'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('customers with name like')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
        break;
      }
    }else

@@ -12,6 +12,8 @@ if(!isset($_REQUEST['id']) or !is_numeric($_REQUEST['id']))
   exit(_('Error'));
 $order_id=$_REQUEST['id'];
 
+$_SESSION['state']['order']['id']=$order_id;
+
 if(!$order=new Order($order_id))
   exit(_('Error, order not found'));
 
@@ -24,6 +26,12 @@ switch(strtolower($order->get('Order Current Dispatch State'))){
  case('in process'):
   $js_file='order_in_process.js.php';
   $template='order_in_process.tpl';
+  break;
+ default:
+   $js_file='order_in_process.js.php';
+  $template='order_in_process.tpl';
+  break;
+  
  }
 
 $smarty->assign('order',$order);
@@ -163,7 +171,7 @@ $js_files=array(
 
 
 $smarty->assign('parent','order.php');
-$smarty->assign('title',_('Order').' '.$order->get('order id') );
+$smarty->assign('title',_('Order').' '.$order->get('Order Public ID') );
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 

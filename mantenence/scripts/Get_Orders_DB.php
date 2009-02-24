@@ -10,7 +10,7 @@ include_once('../../classes/Order.php');
 error_reporting(E_ALL);
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 if(!$con){print "Error can not connect with database server\n";exit;}
-$dns_db='dw2';
+$dns_db='dw';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
 
@@ -100,7 +100,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
   foreach($transactions as $transaction){
     $transaction['code']=_trim($transaction['code']);
-    if(preg_match('/^credit|Freight|^frc-|^cxd-|^wsl$|refund|Postage|^eye$/i',$transaction['code']))
+    if(preg_match('/^credit|Freight|^frc-|^cxd-|^wsl$|refund|Postage|^eye$|^\d$|2009promo/i',$transaction['code']))
       continue;
     if(preg_match('/difference in prices|Diff.in price for|difference in prices/i',$transaction['description']))
       continue;
@@ -182,6 +182,11 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
      if(preg_match('/^bot-01$/i',$transaction['code'])   and preg_match('/10ml Amber Bottles.*tamper.*ap/i',$transaction['description']))
        $transaction['description']='10ml Amber Bottles & Tamper Proof Caps';
+     if(preg_match('/^81992$/i',$transaction['code'])   and preg_match('/Amber Bottles/i',$transaction['description']))
+       $transaction['code']='Bot-02';
+ 
+
+
      if(preg_match('/^bot-01$/i',$transaction['code'])   and preg_match('/10ml Amber Bottles.*only/i',$transaction['description']))
       $transaction['description']='10ml Amber Bottles Only';
     if(preg_match('/^bot-01$/i',$transaction['code'])   and preg_match('/10ml Amber Bottles.already supplied/i',$transaction['description']))

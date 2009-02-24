@@ -133,7 +133,7 @@ $tipo_filter=$_SESSION['state']['customers']['table']['f_field'];
 $smarty->assign('filter',$tipo_filter);
 $smarty->assign('filter_value',$_SESSION['state']['customers']['table']['f_value']);
 
-$filter_menu=array('name'=>array('db_key'=>_('customer name'),'menu_label'=>'Customer Name','label'=>'Name'),
+$filter_menu=array('customer name'=>array('db_key'=>_('customer name'),'menu_label'=>'Customer Name','label'=>'Name'),
 		   );
 $smarty->assign('filter_menu',$filter_menu);
 $smarty->assign('filter_name',$filter_menu[$tipo_filter]['label']);

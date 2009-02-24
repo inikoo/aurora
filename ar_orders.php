@@ -1268,12 +1268,15 @@ if(isset( $_REQUEST['where']))
 		   );
    echo json_encode($response);
    break;
- case('transactions_to_precess'):
+ case('transactions_to_process'):
    
    if(isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id']))
      $order_id=$_REQUEST['id'];
    else
      $order_id=$_SESSION['state']['order']['id'];
+   
+
+
 
    $where=' where `Order Key`='.$order_id;
 
@@ -1281,25 +1284,24 @@ if(isset( $_REQUEST['where']))
    $total_discounts=0;
    $total_picks=0;
 
-   
-   $sql="select * from `Order Transiction Fact` O left join `Product Dimension` P on (O.`Product key`=P.`Product Key`) $where   ";
+   $data=array();
+   $sql="select * from `Order Transaction Fact` O left join `Product Dimension` P on (O.`Product key`=P.`Product Key`) $where   ";
    
    //  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispached,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
-   //     print $sql;
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-   $data=array();
-   while($row=$res->fetchRow()) {
-     $total_charged+=$row['charge'];
-     $total_discounts+=$ndiscount;
-     $total_picks+=$row['dispached'];
+   //   print $sql;
+   $result=mysql_query($sql);
+   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+   //   $total_charged+=$row['charge'];
+//      $total_discounts+=$ndiscount;
+//      $total_picks+=$row['dispached'];
      $data[]=array(
 
-		   'code'=>$row['product code']
-		   ,'description'=>$row['product short description']
-		   ,'quantity'=>number($row['order quantity'])
-		   ,'gross'=>money($row['order quantity']*$row['product price'])
-		   ,'discount'=>money()
-
+		   'code'=>$row['Product Code']
+		   ,'description'=>$row['Product XHTML Short Description']
+		   ,'quantity'=>number($row['Order Quantity'])
+		   ,'gross'=>money($row['Order Transaction Gross Amount'])
+		   ,'discount'=>money($row['Order Transaction Total Discount Amount'])
+		   ,'to_charge'=>money($row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount'])
 		   );
    }
 

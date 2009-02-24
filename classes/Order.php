@@ -1222,12 +1222,12 @@ class Order{
   function get_data($key,$id){
     if($key=='id'){
       $sql=sprintf("select * from `Order Dimension` where `Order Key`=%d",$id);
-      //print $sql;
-      $result =& $this->db->query($sql);
-      if($this->data=$result->fetchRow()){	     
-	$this->id=$this->data['order key'];
+      $result=mysql_query($sql);
+      if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)){
+	$this->id=$this->data['Order Key'];
       }
-      return;
+
+
     }
   }
 

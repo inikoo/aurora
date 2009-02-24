@@ -308,11 +308,11 @@ $smarty->assign('id',$myconf['customer_id_prefix'].sprintf("%05d",$customer->id)
 // $smarty->assign('acontact_fax',$contact_fax);
 // $smarty->assign('contact_mobiles',$contact_mobiles);
 // $smarty->assign('acontact_mobile',$contact_mobile);
-$total_orders=$customer->get('customer orders');
+$total_orders=$customer->get('Customer Orders');
 $smarty->assign('orders',number($total_orders)  );
-$total_net=$customer->get('customer total net payments');
+$total_net=$customer->get('Customer Total Net Payments');
 $smarty->assign('total_net',money($total_net));
-$total_invoices=$customer->get('customer invoices');
+$total_invoices=$customer->get('Customer Orders Invoiced');
  $smarty->assign('invoices',number($total_invoices)  );
  if($total_invoices>0)
    $smarty->assign('total_net_average',money($total_net/$total_invoices));

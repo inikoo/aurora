@@ -26,17 +26,17 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				     ];
 
 
-	    this.InvoiceDataSource = new YAHOO.util.DataSource("ar_orders.php?tipo=transactions_to_precess&tid=0");
+	    this.InvoiceDataSource = new YAHOO.util.DataSource("ar_orders.php?tipo=transactions_to_process&tid=0");
 	    this.InvoiceDataSource.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.InvoiceDataSource.connXhrMode = "queueRequests";
 	    this.InvoiceDataSource.responseSchema = {
 		resultsList: "resultset.data", 
 		fields: [
-			 ,"code"
-			 ,"name"
+			 "code"
+			 ,"description"
 			 ,"quantity"
 			 ,"discount"
-			 ,"to_charge"
+			 ,"to_charge","gross"
 			 // "promotion_id",
 			 ]};
 	    this.InvoiceDataTable = new YAHOO.widget.DataTable(tableDivEL, InvoiceColumnDefs,

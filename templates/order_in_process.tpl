@@ -6,12 +6,12 @@
       <div class="yui-b" style="border:1px solid #ccc;text-align:left;padding:10px;margin: 30px 0 10px 0">
 
        <div style="xborder:1px solid #ddd;width:350px;float:left"> 
-        <h1 style="padding:0 0 10px 0">{t}Order{/t} {$order->get('Order ID')}</h1>
-        <h2 style="padding:0"><a href="customer.php?id={$order->get('order customer key')}">{$order->get('order customer name')} (ID:{$customer->get('customer id')})</a></h2>
+        <h1 style="padding:0 0 10px 0">{t}Order{/t} {$order->get('Order Public ID')}</h1>
+        <h2 style="padding:0"><a href="customer.php?id={$order->get('order customer key')}">{$order->get('order customer name')} (ID:{$customer->get('Customer ID')})</a></h2>
         {$contact}<br/>
            {if $tel!=''}{t}Tel{/t}: {$tel}<br/>{/if}
-	<div style="float:left;line-height: 1.0em;margin:5px 0px;color:#444"><span style="font-weight:500;color:#000">{t}To be paid by{/t}</span>:<br/>{$customer->get('Customer Main Company name')}<br/><b>{$customer->get('Customer Main Contact name')}</b><br/>{$customer->get('Customer Main XHTML Address')}</div>
-	<div style="float:left;line-height: 1.0em;margin:5px 0 0 30px;color:#444"><span style="font-weight:500;color:#000">{t}To be shipped to{/t}</span>:<br/><br/>{$order->get('Order Main XHTML Ship To')}</div>
+	<div style="float:left;line-height: 1.0em;margin:5px 0px;color:#444"><span style="font-weight:500;color:#000">{t}To be paid by{/t}</span>:<br/><b>{$customer->get('Customer Main Contact Name')}</b><br/>{$customer->get('Customer Main XHTML Address')}</div>
+	<div style="float:left;line-height: 1.0em;margin:5px 0 0 30px;color:#444"><span style="font-weight:500;color:#000">{t}To be shipped to{/t}</span>:<br/><br/>{$order->get('Order XHTML Ship Tos')}</div>
 	{if $address_delbill!=''}<div style="float:left;line-height: 1.0em;margin:5px 0px;color:#444"><span style="font-weight:500;color:#000">{t}B&D Address{/t}</span>:<br/>{$address_delbill}</div>{/if}
 
 	{if $address_del!=''}<div style="float:left;line-height: 1.0em;margin:5px 0px;color:#444"><span style="font-weight:500;color:#000">{t}Delivery Address{/t}</span>:<br/>{$address_del}</div>{/if}
@@ -25,11 +25,11 @@
 
 <table border=0  style="border-top:1px solid #333;border-bottom:1px solid #333;width:100%,padding-right:20px;margin:0 30px;float:right" >
 
-<tr><td>{t}Received Date{/t}:</td><td class="aright">{$order->get('Date')}</td></tr>
+<tr><td>{t}Received Date{/t}:</td><td class="aright">{$order->get('Order Date')}</td></tr>
 <tr><td>{t}IP Address{/t}:</td><td class="aright">{$order_hist}</td></tr>
 
 
-<tr  ><td>{t}Created Date{/t}:</td><td class="aright">{$order->get('Date Created')}</td></tr>
+<tr  ><td>{t}Created Date{/t}:</td><td class="aright">{$order->get('Order Date')}</td></tr>
 
 <tr><td>{t}Order Number{/t}:</td><td class="aright">{$order_hist}</td></tr>
 <tr><td>{t}Payment Method{/t}:</td><td class="aright">{$payment_method}</td></tr>

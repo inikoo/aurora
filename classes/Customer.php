@@ -95,7 +95,7 @@ class Customer{
 
 
   }
-   function load($key='',$arg1){
+   function load($key='',$arg1=false){
      switch($key){
     case('contact_data'):
     case('contact data'):
