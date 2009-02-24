@@ -212,6 +212,9 @@ class supplierproduct{
 
       $used_in_products='';
       $sql=sprintf("select `Product Same Code Most Recent Key`,`Product Code` from `Supplier Product Dimension` SPD left join `Supplier Product Part List` SPPL on (SPD.`Supplier Product ID`=SPPL.`Supplier Product ID`) left join `Product Part List` PPL on (SPPL.`Part SKU`=PPL.`Part SKU`) left join `Product Dimension` PD on (PPL.`Product ID`=PD.`Product ID`) where `Supplier Product Key`=%d group by `Product Code`;",$this->data['Supplier Product Key']);
+      print $sql;
+      exit;
+
       $result=mysql_query($sql);
       while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 	$used_in_products.=sprintf(', <a href="product.php?id=%d">%s</a>',$row['Product Same Code Most Recent Key'],$row['Product Code']);

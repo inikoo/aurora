@@ -1,6 +1,8 @@
 {include file='header.tpl'}
 <div id="bd" >
- <span class="nav2 onleft"><a href="porders.php">{t}Purchase Orders{/t}</a></span>
+  <span class="nav2 onleft"><a class="selected" href="suppliers.php">{t}Suppliers{/t}</a></span>
+  <span class="nav2 onleft"><a href="porders.php">{t}Purchase Orders{/t}</a></span>
+  <span class="nav2 onleft"><a href="supplier_products.php">{t}Suppliers Products{/t}</a></span>
 
  <div class="search_box" >
     <span class="search_title">{t}Product Supplier Code{/t}:</span> <input size="8" class="text search" id="product_search" value="" name="search"/><img align="absbottom" id="product_submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>

@@ -850,9 +850,11 @@ if(isset( $_REQUEST['where']))
 
 
    $wheref='';
-  if(($f_field=='code' or $f_field=='name') and $f_value!='')
-    $wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
-  elseif($f_field=='low' and is_numeric($f_value))
+  if($f_field=='code'  and $f_value!='')
+    $wheref.=" and `Supplier Code` like '".addslashes($f_value)."%'";
+  if($f_field=='name' and $f_value!='')
+    $wheref.=" and  `Supplier Name` like '".addslashes($f_value)."%'";
+ elseif($f_field=='low' and is_numeric($f_value))
     $wheref.=" and lowstock>=$f_value  ";
    elseif($f_field=='outofstock' and is_numeric($f_value))
     $wheref.=" and outofstock>=$f_value  ";

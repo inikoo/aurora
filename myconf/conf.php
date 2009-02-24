@@ -204,6 +204,31 @@ $default_state=array(
 						      'elements'=>array()
 						      )
 				       ),
+		      'supplier_products'=>array(
+				       'details'=>false,
+				       'percentages'=>false,
+				       'view'=>'general',
+				       'from'=>'',
+				       'to'=>'',
+				       'period'=>'year',
+				       'percentage'=>0,
+				       'mode'=>'all',
+				       'avg'=>'totals',
+				       'table'=>array(
+						      'order'=>'code',
+						      'order_dir'=>'',
+						      'sf'=>0,
+						      'nr'=>25,
+						      'where'=>'where true',
+						      'f_field'=>'sup_code',
+						      'f_value'=>'',
+						      'from'=>'',
+						      'to'=>'',
+						      'elements'=>array()
+						      )
+				       ),
+
+
 		     'report_outofstock'=>array(
 						'from'=>'',
 						'to'=>'',	  
@@ -277,6 +302,7 @@ $default_state=array(
 		      'suppliers'=>array(
 					 'details'=>false,
 					 'view'=>'general',
+					 
 					 'table'=>array(
 						   'order'=>'name',
 						   'order_dir'=>'',

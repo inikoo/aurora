@@ -379,8 +379,193 @@ foreach($__cols as $cols){
 				   ,'telephone'=>'020 8527 6439'
 				   );
 	}
+if(preg_match('/^puck$/i',$supplier_code)){
+	  $supplier_code='Puck';
+	  $the_supplier_data=array(
+				   'name'=>'Puckator',
+				   'code'=>$supplier_code,
+				   'address_data'=>array(
+							 'type'=>'3line'
+							 ,'address1'=>'Lowman Works'
+							 ,'address2'=>''
+							 ,'address3'=>''
+							 ,'town'=>'East Taphouse'
+							 ,'town_d1'=>''
+							 ,'town_d2'=>'Near Liskeard'
+							 ,'country'=>'UK'
+							 ,'country_d1'=>''
+							 ,'country_d2'=>''
+							 ,'default_country_id'=>$myconf['country_id']
+							 ,'postcode'=>'PL14 4NQ'
+							 ),
+				   'email'=>'accounts@puckator.co.uk'
+				   ,'telephone'=>'1579321550'
+				   ,'fax'=>'1579321520'
+				   );
+	}
+
+ if(preg_match('/^decent gem$/i',$supplier_code)){
+	  $supplier_code='DecGem';
+	  $the_supplier_data=array(
+				   'name'=>'Decent Gemstone Exports',
+				   'code'=>$supplier_code,
+				   'address_data'=>array(
+							 'type'=>'3line'
+							 ,'address1'=>"Besides Balaji's Mandir"
+							 ,'address2'=>'Near Rajputwad'
+							 ,'address3'=>''
+							 ,'town'=>'Khambhat'
+							 ,'town_d1'=>''
+							 ,'town_d2'=>''
+							 ,'country'=>'India'
+							 ,'country_d1'=>''
+							 ,'country_d2'=>''
+							 ,'default_country_id'=>$myconf['country_id']
+							 ,'postcode'=>'388620'
+							 ),
+				   'email'=>'decentstone@sancharnet.in'
+				   ,'telephone'=>'00917926578604'
+				   ,'fax'=>'00917926584997'
+				   );
+	}
+
+  if(preg_match('/^CraftS$/i',$supplier_code)){
+	  $supplier_code='CraftS';
+	  $the_supplier_data=array(
+				   'name'=>'Craftstones Europe Ltd',
+				   'code'=>$supplier_code,
+				   'address_data'=>array(
+							 'type'=>'3line'
+							 ,'address1'=>"52/54 Homethorphe Avenue"
+							 ,'address2'=>'Homethorphe Ind. Estate'
+							 ,'address3'=>''
+							 ,'town'=>'Redhill'
+							 ,'town_d1'=>''
+							 ,'town_d2'=>''
+							 ,'country'=>'UK'
+							 ,'country_d1'=>''
+							 ,'country_d2'=>''
+							 ,'default_country_id'=>$myconf['country_id']
+							 ,'postcode'=>'RH1 2NL'
+							 ),
+				   'contact_name'=>'Jose'
+				   'email'=>''
+				   ,'telephone'=>'01737767363'
+				   ,'fax'=>'01737768627'
+				   );
+	}
+
+ if(preg_match('/^Simpson$/i',$supplier_code)){
+	  $supplier_code='CraftS';
+	  $the_supplier_data=array(
+				   'name'=>'Simpson Packaging',
+				   'code'=>$supplier_code,
+				   'address_data'=>array(
+							 'type'=>'3line'
+							 ,'address1'=>"Unit 1"
+							 ,'address2'=>'Shaw Cross Business Park'
+							 ,'address3'=>''
+							 ,'town'=>'Dewsbury'
+							 ,'town_d1'=>''
+							 ,'town_d2'=>''
+							 ,'country'=>'UK'
+							 ,'country_d1'=>''
+							 ,'country_d2'=>''
+							 ,'default_country_id'=>$myconf['country_id']
+							 ,'postcode'=>'WF12 7RF'
+							 ),
+
+				   'email'=>'sales@simpson-packaging.co.uk'
+				   ,'telephone'=>'01924869010'
+				   ,'fax'=>'01924439252'
+				   ,'www'=>'wwww.simpson-packaging.co.uk'
+				   );
+	}
 
 
+
+ if(preg_match('/^amanis$/i',$supplier_code)){
+	  $supplier_code='AmAnis';
+	  $the_supplier_data=array(
+				   'name'=>'Amanis',
+				   'code'=>$supplier_code,
+				   'address_data'=>array(
+							 'type'=>'3line'
+							 ,'address1'=>"Unit 6"
+							 ,'address2'=>'Bowlimng Court Industrial Estate'
+							 ,'address3'=>'Mary Street'
+							 ,'town'=>'Bradford'
+							 ,'town_d1'=>''
+							 ,'town_d2'=>''
+							 ,'country'=>'UK'
+							 ,'country_d1'=>''
+							 ,'country_d2'=>''
+							 ,'default_country_id'=>$myconf['country_id']
+							 ,'postcode'=>'BD4 8TT'
+							 ),
+
+				   'email'=>'saltlamps@aol.com'
+				   ,'telephone'=>'4401274394100'
+				   ,'fax'=>'4401274743243'
+				   ,'www'=>'www.saltlamps-r-us.com'
+				   );
+	}
+
+
+if(preg_match('/^amanis$/i',$supplier_code)){
+	  $supplier_code='AmAnis';
+	  $the_supplier_data=array(
+				   'name'=>'Amanis',
+				   'code'=>$supplier_code,
+				   'address_data'=>array(
+							 'type'=>'3line'
+							 ,'address1'=>"Unit 6"
+							 ,'address2'=>'Bowlimng Court Industrial Estate'
+							 ,'address3'=>'Mary Street'
+							 ,'town'=>'Bradford'
+							 ,'town_d1'=>''
+							 ,'town_d2'=>''
+							 ,'country'=>'UK'
+							 ,'country_d1'=>''
+							 ,'country_d2'=>''
+							 ,'default_country_id'=>$myconf['country_id']
+							 ,'postcode'=>'BD4 8TT'
+							 ),
+
+				   'email'=>'saltlamps@aol.com'
+				   ,'telephone'=>'4401274394100'
+				   ,'fax'=>'4401274743243'
+				   ,'www'=>'www.saltlamps-r-us.com'
+				   );
+	}
+
+
+if(preg_match('/^Wenzels$/i',$supplier_code)){
+	  $supplier_code='Wenzels';
+	  $the_supplier_data=array(
+				   'name'=>'Richard Wenzel GMBH & CO KG',
+				   'code'=>$supplier_code,
+				   'address_data'=>array(
+							 'type'=>'3line'
+							 ,'address1'=>"Benzstraße 5"
+							 ,'address2'=>''
+							 ,'address3'=>''
+							 ,'town'=>'Aschaffenburg'
+							 ,'town_d1'=>''
+							 ,'town_d2'=>''
+							 ,'country'=>'Germany'
+							 ,'country_d1'=>''
+							 ,'country_d2'=>''
+							 ,'default_country_id'=>$myconf['country_id']
+							 ,'postcode'=>'63741'
+							 ),
+
+
+				   ,'telephone'=>'49602134690'
+				   ,'fax'=>'496021346940'
+
+				   );
+	}
 	
 
 	if(preg_match('/^AW$/i',$supplier_code)){
@@ -506,9 +691,9 @@ foreach($__cols as $cols){
 	$scode=_trim($scode);
 	$scode=preg_replace('/^\"\s*/','',$scode);
 	$scode=preg_replace('/\s*\"$/','',$scode);
-	if(preg_match('/\d+ or more|0.10000007/i',$scode))
+	if(preg_match('/\d+ or more|0.10000007|0.050000038|0.150000076|0.8000006103|1.100000610|1.16666666|1.650001220|1.80000122070/i',$scode))
 	  $scode='';
-	if(preg_match('/^(\?|new)$/i',$scode))
+	if(preg_match('/^(\?|new|0.25|0.5|0.8|0.8000006103|01 Glass Jewellery Box|1|0.1|0.05|1.5625|10|\d{1,2}\s?\+\s?\d{1,2}\%)$/i',$scode))
 	  $scode='';
 
 	if($scode=='' or $scode=='0')
