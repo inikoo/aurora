@@ -107,6 +107,7 @@ foreach($__cols as $cols){
   //     print_r($cols);
   //   exit;   }
   
+  $code=_trim($code);
   if($code=='' or !preg_match('/\-/',$code) or preg_match('/total/i',$price)  or  preg_match('/^(pi\-|cxd\-|fw\-04)/i',$code))
     $is_product=false;
   if(preg_match('/^(ob\-108|ob\-156|ish\-94|rds\-47)/i',$code))
@@ -121,16 +122,18 @@ foreach($__cols as $cols){
     $is_product=false;
   if(preg_match('/^(DB-IS|EO-Sticker|ECBox-01|SHOP-Fit)$/i',$code) and $price=='')
     $is_product=false;
-
- if(preg_match('/^credit|Freight|^frc-|^cxd-|^wsl$|^postage$/i',$code) and $price=='')
+  
+  
+  if(preg_match('/^credit|Freight|^frc\-|^cxd\-|^wsl$|^postage$/i',$code) )
     $is_product=false;
 
 
   
   if($is_product){
+    
+    print "$code\r";
 
-           print "$code\r";
-
+    
     $part_list=array();
     $rules=array();
     
@@ -344,7 +347,7 @@ foreach($__cols as $cols){
 	$scode=_trim($cols[20]);
 	$supplier_code=$cols[21];
        
-	if(preg_match('/^SG\-/i',$code))
+	if(preg_match('/^SG\-|^info\-/i',$code))
 	  $supplier_code='AW';
 	if($supplier_code=='AW')
 	  $scode=$code;
@@ -403,31 +406,161 @@ if(preg_match('/^puck$/i',$supplier_code)){
 				   ,'fax'=>'1579321520'
 				   );
 	}
-
+ 
  if(preg_match('/^decent gem$/i',$supplier_code)){
-	  $supplier_code='DecGem';
-	  $the_supplier_data=array(
-				   'name'=>'Decent Gemstone Exports',
-				   'code'=>$supplier_code,
-				   'address_data'=>array(
-							 'type'=>'3line'
-							 ,'address1'=>"Besides Balaji's Mandir"
-							 ,'address2'=>'Near Rajputwad'
-							 ,'address3'=>''
-							 ,'town'=>'Khambhat'
-							 ,'town_d1'=>''
-							 ,'town_d2'=>''
-							 ,'country'=>'India'
-							 ,'country_d1'=>''
-							 ,'country_d2'=>''
-							 ,'default_country_id'=>$myconf['country_id']
-							 ,'postcode'=>'388620'
-							 ),
-				   'email'=>'decentstone@sancharnet.in'
-				   ,'telephone'=>'00917926578604'
-				   ,'fax'=>'00917926584997'
-				   );
-	}
+   $supplier_code='DecGem';
+   $the_supplier_data=array(
+			    'name'=>'Decent Gemstone Exports',
+			    'code'=>$supplier_code,
+			    'address_data'=>array(
+						  'type'=>'3line'
+						  ,'address1'=>"Besides Balaji's Mandir"
+						  ,'address2'=>'Near Rajputwad'
+						  ,'address3'=>''
+						  ,'town'=>'Khambhat'
+						  ,'town_d1'=>''
+						  ,'town_d2'=>''
+						  ,'country'=>'India'
+						  ,'country_d1'=>''
+						  ,'country_d2'=>''
+						  ,'default_country_id'=>$myconf['country_id']
+						  ,'postcode'=>'388620'
+						  ),
+			    'email'=>'decentstone@sancharnet.in'
+			    ,'telephone'=>'00917926578604'
+			    ,'fax'=>'00917926584997'
+			    );
+ }
+  if(preg_match('/^kiran$/i',$supplier_code)){
+
+   $the_supplier_data=array(
+			    'name'=>'Kiran Agencies',
+			    'code'=>$supplier_code,
+			    'address_data'=>array(
+						  'type'=>'3line'
+						  ,'address1'=>"4D Garstin Place"
+						  ,'address2'=>''
+						  ,'address3'=>''
+						  ,'town'=>'Kolkata'
+						  ,'town_d1'=>''
+						  ,'town_d2'=>''
+						  ,'country'=>'India'
+						  ,'country_d1'=>''
+						  ,'country_d2'=>''
+						  ,'default_country_id'=>$myconf['country_id']
+						  ,'postcode'=>'700001'
+						  )
+			    ,'telephone'=>'919830020595'
+
+			    );
+ }
+ 
+
+if(preg_match('/^watkins$/i',$supplier_code)){
+
+   $the_supplier_data=array(
+			    'name'=>'Watkins Soap Co Ltd',
+			    'code'=>$supplier_code,
+			    'address_data'=>array(
+						  'type'=>'3line'
+						  ,'address1'=>"Reed Willos Trading Est"
+						  ,'address2'=>'Finborough Rd'
+						  ,'address3'=>''
+						  ,'town'=>'Stowmarket'
+						  ,'town_d1'=>''
+						  ,'town_d2'=>''
+						  ,'country'=>'UK'
+						  ,'country_d1'=>''
+						  ,'country_d2'=>''
+						  ,'default_country_id'=>$myconf['country_id']
+						  ,'postcode'=>'IP14 3BU'
+						  )
+
+			    ,'telephone'=>'01142501012'
+			    ,'fax'=>'01142501006'
+			    );
+ }
+
+
+
+if(preg_match('/^decree$/i',$supplier_code)){
+
+   $the_supplier_data=array(
+			    'name'=>'Decree Thermo Limited',
+			    'code'=>$supplier_code,
+			    'address_data'=>array(
+						  'type'=>'3line'
+						  ,'address1'=>"300 Shalemoor"
+						  ,'address2'=>'Finborough Rd'
+						  ,'address3'=>''
+						  ,'town'=>'Sheffield'
+						  ,'town_d1'=>''
+						  ,'town_d2'=>''
+						  ,'country'=>'UK'
+						  ,'country_d1'=>''
+						  ,'country_d2'=>''
+						  ,'default_country_id'=>$myconf['country_id']
+						  ,'postcode'=>'S3 8AL'
+						  )
+			    ,'contact_name'=>'Zoie'
+			    ,'email'=>'Watkins@soapfactory.fsnet.co.uk'
+			    ,'telephone'=>'01449614445'
+			    ,'fax'=>'014497111643'
+			    );
+ }
+
+if(preg_match('/^cbs$/i',$supplier_code)){
+
+   $the_supplier_data=array(
+			    'name'=>'Carrierbagshop',
+			    'code'=>$supplier_code,
+			    'address_data'=>array(
+						  'type'=>'3line'
+						  ,'address1'=>"Unit C18/21"
+						  ,'address2'=>'Hastingwood trading Estate'
+						  ,'address3'=>'35 Harbet Road'
+						  ,'town'=>'London'
+						  ,'town_d1'=>''
+						  ,'town_d2'=>''
+						  ,'country'=>'UK'
+						  ,'country_d1'=>''
+						  ,'country_d2'=>''
+						  ,'default_country_id'=>$myconf['country_id']
+						  ,'postcode'=>'N18 3HU'
+						  )
+			    ,'contact_name'=>'Neil'
+			    ,'email'=>'info@carrierbagshop.co.uk'
+			    ,'telephone'=>'08712300980'
+			    ,'fax'=>'08712300981'
+			    );
+ }
+
+
+if(preg_match('/^giftw$/i',$supplier_code)){
+
+   $the_supplier_data=array(
+			    'name'=>'Giftworks Ltd',
+			    'code'=>$supplier_code,
+			    'address_data'=>array(
+						  'type'=>'3line'
+						  ,'address1'=>"Unit 14"
+						  ,'address2'=>'Cheddar Bussiness Park'
+						  ,'address3'=>'Wedmore Road'
+						  ,'town'=>'Cheddar'
+						  ,'town_d1'=>''
+						  ,'town_d2'=>''
+						  ,'country'=>'UK'
+						  ,'country_d1'=>''
+						  ,'country_d2'=>''
+						  ,'default_country_id'=>$myconf['country_id']
+						  ,'postcode'=>'BS27 3EB'
+						  )
+			    ,'email'=>'info@giftworks.tv'
+			    ,'telephone'=>'441934742777'
+			    ,'fax'=>'441934740033'
+			    ,'www.giftworks.tv'
+			    );
+ }
 
 
  if(preg_match('/^Sheikh$/i',$supplier_code)){

@@ -109,19 +109,19 @@ class company{
 		 $company_id,
 		 prepare_mysql($name),
 		 prepare_mysql($file_as),
-		 prepare_mysql($contact->get('Contact Main Address key')),
+		 prepare_mysql($contact->get('Contact Main Address Key')),
 		 prepare_mysql($contact->get('Contact Main XHTML Address')),
 		 prepare_mysql($contact->get('Contact Main Country Key')),
 		 prepare_mysql($contact->get('Contact Main Country')),
-		 prepare_mysql($contact->get('Contact Main location')),
-		 prepare_mysql($contact->get('contact name')),
+		 prepare_mysql($contact->get('Contact Main Location')),
+		 prepare_mysql($contact->get('Contact Name')),
 		 $contact->id,
-		 prepare_mysql($contact->get('contact main telephone')),
-		 prepare_mysql($contact->get('contact main fax')),
+		 prepare_mysql($contact->get('Contact Main Telephone')),
+		 prepare_mysql($contact->get('Contact Main FAX')),
 		 prepare_mysql($contact->get('Contact Main XHTML Email')),
-		 prepare_mysql($contact->get('contact main telephone key')),
-		 prepare_mysql($contact->get('contact main fax key')),
-		 prepare_mysql($contact->get('Contact Main Email key'))
+		 prepare_mysql($contact->get('Contact Main Telephone Key')),
+		 prepare_mysql($contact->get('Contact Main Fax Key')),
+		 prepare_mysql($contact->get('Contact Main Email Key'))
 
 		 );
 

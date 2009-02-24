@@ -242,9 +242,11 @@ class supplierproduct{
 
       $sql=sprintf("update `Supplier Product Dimension` set `Supplier Product XHTML Used In`=%s where `Supplier Product Key`=%d",prepare_mysql(_trim($used_in_products.' '.$used_in_parts)),$this->id);
       //print "$sql\n";
-      mysql_query($sql);
-      
+      if(!mysql_query($sql))
+	exit("error can not update used in insuppiler product \n");
 	
+      //exit;
+      
       break;
     case('sales'):
       $sold=0;

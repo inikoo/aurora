@@ -1,10 +1,10 @@
 {include file='header.tpl'}
 <div id="bd" >
-<span class="nav2"><a href="suppliers.php">{t}Suppliers{/t}</a></span>
-<span class="nav2"><a href="suppliers.php">{t}Purchase Orders{/t}</a></span>
-<span class="nav2"><a href="suppliers.php">{t}Delivery Notes{/t}</a></span>
-<span class="nav2"><a href="suppliers.php">{t}History{/t}</a></span>
- <div id="yui-main">
+  <span class="nav2"><a href="suppliers.php">{t}Suppliers{/t}</a></span>
+  <span class="nav2"><a href="suppliers.php">{t}Purchase Orders{/t}</a></span>
+  <span class="nav2"><a href="suppliers.php">{t}Delivery Notes{/t}</a></span>
+  <span class="nav2"><a href="suppliers.php">{t}History{/t}</a></span>
+  <div id="yui-main">
     <div class="yui-b" style="padding:0 20px">
       <div class="search_box" >
 	<table border=0 cellpadding="2" style="float:right;margin-top:20px;margin-bottom:10px;" class="view_options">
@@ -22,13 +22,13 @@
 	    <td  id="change_view_products" state="{$display.products}" block="products"  
 		 {if $display.products==0} title="{t}Show Products{/t}" atitle="{t}Hide Products{/t}"{else} atitle="{t}Show Products{/t}" title="{t}Hide Products{/t}"{/if} >
 	      <img {if $display.products==0}style="opacity:0.2"{/if} src="art/icons/tick.png"  id="but_logo_products"  /></td>
-	
-	<td  state="{$display.po}" block="po"  id="change_view_po" 
-	     {if $display.po==0}title="{t}Show the Purchase Orders{/t}" atitle="{t}Hide the Purchase Orders{/t}" {else} atitle="{t}Show the Purchase Orders{/t}" title="{t}Hide the Purchase Orders{/t}" {/if} >
+	    
+	    <td  state="{$display.po}" block="po"  id="change_view_po" 
+		 {if $display.po==0}title="{t}Show the Purchase Orders{/t}" atitle="{t}Hide the Purchase Orders{/t}" {else} atitle="{t}Show the Purchase Orders{/t}" title="{t}Hide the Purchase Orders{/t}" {/if} >
 	  <img {if $display.po==0}style="opacity:0.2"{/if} src="art/icons/tick.png"    id="but_logo_po"   /></td>
-	
-	<td  state="{$display.history}" block="history"   id="change_view_history" {if $display.history==0}title="{t}Show History{/t}" atitle="{t}Hide History{/t}"{else}atitle="{t}Show History{/t}" title="{t}Hide History{/t}"{/if} ><img {if $display.history==0}style="opacity:0.2"{/if} src="art/icons/tick.png"    id="but_logo_history"   /></td>
-
+	    
+	    <td  state="{$display.history}" block="history"   id="change_view_history" {if $display.history==0}title="{t}Show History{/t}" atitle="{t}Hide History{/t}"{else}atitle="{t}Show History{/t}" title="{t}Hide History{/t}"{/if} ><img {if $display.history==0}style="opacity:0.2"{/if} src="art/icons/tick.png"    id="but_logo_history"   /></td>
+	    
 	
 	  </tr>
 	</table>
@@ -38,17 +38,23 @@
 	  
 	</table>
       </div>
+      
+      
+      <h1>{$name} <span style="color:SteelBlue">{$id}</span></h1> 
+      <table style="width:500px" >
+	
+	<tr>
+	  <td valign="top">{$company->get('Company Main XHTML Address')}</td>
+	  <td  valign="top">
+	    <table border=0 style="padding:0">
+	      <tr><td colspan=2>{$company->get('Company Main Contact')}</td ></tr>
+	      <tr><td colspan=2>{$company->get('Company Main XHTML Email')}</td ></tr>
+	      <tr><td colspan=2>{$company->get('Company Main Telephone')}</td ></tr>
+	      <tr><td colspan=2>{$company->get('Company Main FAX')}</td ></tr>
 
-
-       <h1>{$name} <span style="color:SteelBlue">{$id}</span></h1> 
-       <table style="width:500px" border=1>
-	 
-	 <tr>
-	   {if $principal_address}<td valign="top">{$principal_address}</td>{/if}
-	   <td  valign="top">
-	     <table border=0 style="padding:0">
-	       {if $contact}<tr><td colspan=2>{$contact}</td ></tr>{/if}
-	       {foreach from=$telecoms item=telecom}
+	      
+	      
+	      {foreach from=$telecoms item=telecom}
 	       <tr><td >
 		   {if $telecom[0]=='mob'}<img src="art/icons/phone.png"/ title="{t}Mobile Phone{/t}">
 		   {elseif   $telecom[0]=='tel'}<img src="art/icons/telephone.png"/ title="{t}Telephone{/t}">

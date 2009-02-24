@@ -12,9 +12,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		var tableDivEL="table"+tableid;
 		var ColumnDefs = [
 				  {key:"id", label:"<?=_('Id')?>",width:45,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				  				   ,{key:"supplier", label:"<?=_('Supplier')?>",  width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-
-	  ,{key:"code", label:"<?=_('Code')?>",  width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				  ,{key:"supplier", label:"<?=_('Supplier')?>",  width:60,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				  
+	  ,{key:"code", label:"<?=_('Code')?>",  width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				  ,{key:"name", label:"<?=_('Name')?>",<?=($_SESSION['state']['supplier_products']['view']=='product_general'?'':'hidden:true,')?>width:300, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				  ,{key:"usedin", label:"<?=_('Used In')?>", width:250,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 

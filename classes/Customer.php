@@ -260,9 +260,9 @@ class Customer{
 
 		 ,prepare_mysql($main_contact->get('Contact Main XHTML Email'))
 		 ,prepare_mysql(strip_tags($main_contact->get('Contact Main XHTML Email')))
-		 ,prepare_mysql($main_contact->get('Contact Main Email key'))
+		 ,prepare_mysql($main_contact->get('Contact Main Email Key'))
 		 ,prepare_mysql($main_contact->get('Contact Main Telephone'))
-		 ,prepare_mysql($main_contact->get('Contact Main Telephone key'))
+		 ,prepare_mysql($main_contact->get('Contact Main Telephone Key'))
 		 ,prepare_mysql($address->display('header'))
 		 ,prepare_mysql($address->get('Address Town'))
 		 ,prepare_mysql($address->get('Postal Code'))

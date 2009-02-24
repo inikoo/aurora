@@ -37,7 +37,7 @@ $sql="select id from orders_data.order_data  ";
 
 $res=mysql_query($sql);
 while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
-  print $row2['id']."\r";
+  print "OrderData ID".$row2['id']."\n";
   $sql="select * from orders_data.order_data where id=".$row2['id'];
   $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
@@ -79,6 +79,9 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
   $transactions=read_products($products,$prod_map);
   $customer_data=setup_contact($act_data,$header_data,$date_index2);
+
+  //  print_r($transactions);
+  
 
 
   $data=array();
@@ -332,19 +335,20 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     
 
 
-
-
+    if(preg_match('/Ackerman|Ackerrman|Akerman/i',$transaction['supplier_code'])){
+      $transaction['supplier_code']='Ackerman';
+    }
 
     if( preg_match('/\d/',$transaction['supplier_code']) ){
       $transaction['supplier_code'] ='';
       $supplier_product_cost='';
     }
-    if(preg_match('/^(SG|FO)\-/i',$transaction['code']))
+    if(preg_match('/^(SG|FO|EO|PS|BO)\-/i',$transaction['code']))
      $transaction['supplier_code'] ='AW';
     if($transaction['supplier_code']=='AW')
       $transaction['supplier_product_code']=$transaction['code'];
     if($transaction['supplier_code']=='' or preg_match('/\d/',$transaction['supplier_code']) )
-      $transaction['supplier_code']='Unknown Supplier';
+      $transaction['supplier_code']='Unknown';
     $unit_type='Piece';
     $description=_trim($transaction['description']);
     $description=str_replace("\\\"","\"",$description);
@@ -517,6 +521,10 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
   $data['products']=$products_data;
   $data['cdata']=$customer_data;
   $data['metadata_id']=$order_data_id;
+
+
+  // print_r($products_data);
+  // exit;
 
   //Tipo order
   // 1 DELIVERY NOTE

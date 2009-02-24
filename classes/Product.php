@@ -203,6 +203,7 @@ class product{
 	$tag['part valid from']=$tag['date'];
 	$this->create($tag);
 	$tag['Part XHTML Currently Used In']=sprintf('<a href="product.php?%d">%s</a>',$this->id,$this->data['Product Code']);
+	$tag['Part XHTML Description']=preg_replace('/\(.*\)\s*$/i','',$this->get('Product XHTML Short Description'));
 	$part=new Part('new',$tag);
 	$part_list[]=array(
 			   'Product ID'=>$this->get('Product ID'),
@@ -213,6 +214,8 @@ class product{
 			   'Product Part Type'=>'Simple Pick'
 			   );
 	$this->new_part_list('',$part_list);
+	$part->load('used in');
+	$this->load('parts');
 	$supplier=new Supplier('code',$tag['supplier code']);
 	if(!$supplier->id){
 	  $data=array(
@@ -236,6 +239,8 @@ class product{
 		       );
 	//  print_r($sp_data);
 	$supplier_product=new SupplierProduct('supplier-code-name-cost',$sp_data);
+	
+
 	$rules[]=array(
 		       'Part SKU'=>$part->data['Part SKU']
 		       ,'Supplier Product Units Per Part'=>$this->data['Product Units Per Case']
@@ -246,6 +251,8 @@ class product{
 		       );
 	$supplier_product->new_part_list('',$rules);
 	$supplier_product->load('used in');
+	$part->load('supplied by');
+	$this->load('parts');
 	return;
       }else{
 
@@ -319,7 +326,7 @@ class product{
  	  $tag['Part Valid From']=$tag['date'];
  	  $tag['Part Valid To']=$tag['date2'];
  	  $tag['Part XHTML Currently Used In']=sprintf('<a href="product.php?%d">%s</a>',$this->id,$this->data['Product Code']);
-
+	  $tag['Part XHTML Description']=preg_replace('/\(.*\)\s*$/i','',$this->get('Product XHTML Short Description'));
 
  	  $this->new_part=true;
 	  $part=new Part('new',$tag);
@@ -332,8 +339,8 @@ class product{
 			     'Product Part Type'=>'Simple Pick'
 			     );
 	  $this->new_part_list('',$part_list);
-	  
-	  
+	  $this->load('parts');
+	  $part->load('used in');
 
 
 	}
@@ -370,7 +377,7 @@ class product{
 		     );
       //  print_r($sp_data);
       $supplier_product=new SupplierProduct('supplier-code-name-cost',$sp_data);
-      
+      $this->load('parts');
       if($supplier_product->new_id){
 	print "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n";
 	$this->new_supplier_product=true;
@@ -393,10 +400,16 @@ class product{
 			 );
 	  $supplier_product->new_part_list('',$rules);
 	  $supplier_product->load('used in');
+	  $part->load('supplied by');
+	  $this->load('parts');
 	}else{
 	   print "i dont now wat to do\n";
 	   exit;
 	}
+      }
+      if($supplier_product->new){
+      print_r($supplier_product->data);
+      exit;
       }
 
   }
@@ -1034,7 +1047,7 @@ function normalize_code($code){
 
       $supplied_by=_trim(preg_replace('/^, /','',$supplied_by));
       if($supplied_by=='')
-	$supplied_by=_('Unknown Supplier');
+	$supplied_by=_('Unknown');
 
 
 

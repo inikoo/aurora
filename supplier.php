@@ -56,7 +56,10 @@ $_SESSION['state']['supplier']['id']=$supplier_id;
 $smarty->assign('supplier_id',$supplier_id);
 
 $supplier=new Supplier($supplier_id);
-$supplier->load('contacts');
+$company=new Company($supplier->data['Supplier Company Key']);
+//$supplier->load('contacts');
+$smarty->assign('supplier',$supplier);
+$smarty->assign('company',$company);
 
 
 $smarty->assign('data',$supplier->data);

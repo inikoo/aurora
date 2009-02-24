@@ -340,6 +340,9 @@ class Contact{
       return $this->data['main']['email'];
       break;
     }
+    
+    exit("$key can not be found in contact class\n");
+
   }
 
   function add_email($data,$args='principal'){
@@ -394,7 +397,7 @@ class Contact{
   function add_tel($data,$args='principal'){
 
     if(!isset($data['Telecom Original Country Key']) or !$data['Telecom Original Country Key'])
-      $data['Telecom Original Country Key']=$this->get('Customer Shipping Address Country Key');
+      $data['Telecom Original Country Key']=$this->data['Contact Main Country Key'];
     $telecom=new telecom('new',$data);
     if($telecom->new){
       
