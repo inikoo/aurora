@@ -51,16 +51,16 @@ class warehouse{
   function get_data($key,$tag){
     
     if($key=='id')
-      $sql=sprintf("select id,name from warehouse where warehouse.id=%d",$tag);
+      $sql=sprintf("select * from `Warehouse Dimension` where `Warehouse Key`=%d",$tag);
     else if($key=='name')
-      $sql=sprintf("select id,name from warehouse where warehouse.name=%s ",prepare_mysql($tag));
+      $sql=sprintf("select * from `Warehouse Dimension` where `Warehouse Name`=%s ",prepare_mysql($tag));
     else
       return;
     //print $sql;    
     $result =& $this->db->query($sql);
     if($row=$result->fetchRow()){
-      $this->id=$row['id'];
-      $this->data['name']=$row['name'];
+      $this->id=$row['Warehouse Key'];
+      $this->data=$row;
     }      
     $this->msg=_('Warehouse not found');
 
@@ -106,16 +106,18 @@ class warehouse{
   function load($key=''){
     switch($key){
     case('areas'):
-       $sql=sprintf("select id,name from warehouse_area where warehouse_id=%d ",$this->id);
+  //     $sql=sprintf("select id,name from warehouse_area where warehouse_id=%d ",$this->id);
+      
+//       $result =& $this->db->query($sql);
+//       $this->areas=array();
+//       while($row=$result->fetchRow()){
+// 	$this->areas[$row['id']]=array(
+// 				       'id'=>$row['id'],
+// 					  'name'=>$row['name'],
+// 				       );
+//       }
+      break;
 
-    $result =& $this->db->query($sql);
-       $this->areas=array();
-       while($row=$result->fetchRow()){
-	 $this->areas[$row['id']]=array(
-					  'id'=>$row['id'],
-					  'name'=>$row['name'],
-					  );
-       }
     }
       
 

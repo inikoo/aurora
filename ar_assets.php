@@ -5881,44 +5881,46 @@ break;
 
   $wheref='';
   if(($f_field=='code' ) and $f_value!='')
-    $wheref.=" and  `Supplier Product XHTML Used In` like '".addslashes($f_value)."%'";
+    $wheref.=" and  `Supplier Product XHTML Used In` like '%".addslashes($f_value)."%'";
 if($f_field=='sup_code' and $f_value!='')
     $wheref.=" and  `Supplier Product Code` like '".addslashes($f_value)."%'";
   
 
 
 
-
+ 
 
   $sql="select count(*) as total from `Supplier Product Dimension`  $where $wheref ";
 
+  $result=mysql_query($sql);
+  if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){ 
 
-  $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-  if($row=$res->fetchRow()) {
-    $total=$row['total'];
+   $total=$row['total'];
   }
     if($wheref==''){
       $filtered=0; $total_records=$total;
     }else{
       
-      $sql="select count(*) as total `Supplier Product Dimension`  $where  ";
-      $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-      if($row=$res->fetchRow()) {
+      $sql="select count(*) as total from `Supplier Product Dimension`  $where  ";
+      $result=mysql_query($sql);
+      if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){ 
 	$total_records=$row['total'];
 	$filtered=$row['total']-$total;
       }
       
     }
-    
- $rtext=$total_records." ".ngettext('pruduct','products',$total_records);
-  if($total_records>$number_results)
-    $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
-  $filter_msg='';
 
+    
+    
+    $rtext=$total_records." ".ngettext('pruduct','products',$total_records);
+    if($total_records>$number_results)
+      $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
+    $filter_msg='';
+    
  switch($f_field){
-     case('p.code'):
+ case('code'):
        if($total==0 and $filtered>0)
-	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any product with code")." <b>".$f_value."*</b> ";
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any product with code")." <b>".$f_value."*</b>  <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Clear Filter')."</span>";
        elseif($filtered>0)
 	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('products with code')." <b>".$f_value."*</b>) <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
        break;
@@ -5938,6 +5940,7 @@ if($f_field=='sup_code' and $f_value!='')
    $order='`Supplier Product XHTML Used In`';
 
    $sql="select * from `Supplier Product Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+
    $data=array();
 
    $result=mysql_query($sql);
@@ -5991,7 +5994,7 @@ if($f_field=='sup_code' and $f_value!='')
        $broken=number($row['Supplier Product 1 Week Acc Parts Broken']);
      }
      
-
+     $supplier=sprintf('<a href="supplier.php?id=%d">%s</a>',$row['Supplier Product Supplier Key'],$row['Supplier Product Supplier Code']);
      $data[]=array(
 		   'id'=>sprintf('<a href="supplier_product.php?id=%d">%06d</a>',$row['Supplier Product Key'],$row['Supplier Product ID'])
 		   ,'code'=>sprintf('<a href="supplier_product.php?id=%d">%s</a>',$row['Supplier Product Key'],$row['Supplier Product Code'])
@@ -6005,6 +6008,7 @@ if($f_field=='sup_code' and $f_value!='')
 		   ,'provided'=>$provided
 		   ,'lost'=>$lost
 		   ,'broken'=>$broken
+		   ,'supplier'=>$supplier
 		   );
    }
 
@@ -6012,14 +6016,14 @@ if($f_field=='sup_code' and $f_value!='')
    $response=array('resultset'=>
 		   array('state'=>200,
 			 'data'=>$data,
- 'sort_key'=>$_order,
+			 'sort_key'=>$_order,
 			 'sort_dir'=>$_dir,
 			 'tableid'=>$tableid,
 			 'filter_msg'=>$filter_msg,
 			 'rtext'=>$rtext,
 			 'total_records'=>$total,
 			 'records_offset'=>$start_from,
-			 'records_returned'=>$start_from+$res->numRows(),
+			 'records_returned'=>$start_from+$total,
 			 'records_perpage'=>$number_results,
 			 'records_text'=>$rtext,
 			 'records_order'=>$order,

@@ -148,6 +148,8 @@ class supplierproduct{
     
     $base_data=array(
 		     'supplier product supplier key'=>'',
+		     'supplier product supplier code'=>'',
+		     'supplier product supplier name'=>'',
 		     'supplier product id'=>'',
 		     'supplier product code'=>'',
 		     'supplier product name'=>'',
@@ -212,8 +214,7 @@ class supplierproduct{
 
       $used_in_products='';
       $sql=sprintf("select `Product Same Code Most Recent Key`,`Product Code` from `Supplier Product Dimension` SPD left join `Supplier Product Part List` SPPL on (SPD.`Supplier Product ID`=SPPL.`Supplier Product ID`) left join `Product Part List` PPL on (SPPL.`Part SKU`=PPL.`Part SKU`) left join `Product Dimension` PD on (PPL.`Product ID`=PD.`Product ID`) where `Supplier Product Key`=%d group by `Product Code`;",$this->data['Supplier Product Key']);
-      print $sql;
-      exit;
+
 
       $result=mysql_query($sql);
       while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){

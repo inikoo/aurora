@@ -311,9 +311,25 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     // print_r($transaction);
     if($transaction['units']=='')
       $transaction['units']=1;
+    
+
+    	$transaction['supplier_product_code']=_trim($transaction['supplier_product_code']);
+	$transaction['supplier_product_code']=preg_replace('/^\"\s*/','',$transaction['supplier_product_code']);
+	$transaction['supplier_product_code']=preg_replace('/\s*\"$/','',$transaction['supplier_product_code']);
+	if(preg_match('/\d+ or more|0.10000007|0.050000038|0.150000076|0.8000006103|1.100000610|1.16666666|1.650001220|1.80000122070/i',$transaction['supplier_product_code']))
+	  $transaction['supplier_product_code']='';
+	if(preg_match('/^(\?|new|0.25|0.5|0.8|0.8000006103|01 Glass Jewellery Box|1|0.1|0.05|1.5625|10|\d{1,2}\s?\+\s?\d{1,2}\%)$/i',$transaction['supplier_product_code']))
+	  $transaction['supplier_product_code']='';
+
+
     if($transaction['supplier_product_code']=='')
       $transaction['supplier_product_code']='?'.$transaction['code'];
     
+
+
+
+
+
     if( preg_match('/\d/',$transaction['supplier_code']) ){
       $transaction['supplier_code'] ='';
       $supplier_product_cost='';

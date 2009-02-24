@@ -225,6 +225,8 @@ class product{
 	}	
 	$sp_data=array(
 		       'supplier product supplier key'=>$supplier->id,
+		       'supplier product supplier code'=>$supplier->data['Supplier Code'],
+		       'supplier product supplier name'=>$supplier->data['Supplier Name'],
 		       'supplier product code'=>$tag['supplier product code'],
 		       'supplier product cost'=>$tag['supplier product cost'],
 		       'supplier product name'=>$tag['supplier product name'],
@@ -357,6 +359,8 @@ class product{
 	
       $sp_data=array(
 		     'supplier product supplier key'=>$supplier->id,
+		     'supplier product supplier code'=>$supplier->data['Supplier Code'],
+		     'supplier product supplier name'=>$supplier->data['Supplier Name'],
 		     'supplier product code'=>$tag['supplier product code'],
 		     'supplier product cost'=>$tag['supplier product cost'],
 		     'supplier product name'=>$tag['supplier product name'],

@@ -17,8 +17,8 @@
       <div    {if $products==0    }style="display:none"{/if}  >
       <table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" >
 	<tr><td  {if $view=='general'}class="selected"{/if} id="general" >{t}General{/t}</td>
-	  {if $view_stock}<td {if $view=='stock'}class="selected"{/if}  id="stock"  >{t}Stock{/t}</td>{/if}
-	  {if $view_sales}<td  {if $view=='sales'}class="selected"{/if}  id="sales"  >{t}Sales{/t}</td>{/if}
+	  <td {if $view=='stock'}class="selected"{/if}  id="stock"  >{t}Stock{/t}</td>
+	  <td  {if $view=='sales'}class="selected"{/if}  id="sales"  >{t}Sales{/t}</td>
 	</tr>
       </table>
         <table id="period_options" style="float:left;margin:0 0 0 20px ;padding:0{if $view!='general' };display:none{/if}"  class="options_mini" >

@@ -429,6 +429,52 @@ if(preg_match('/^puck$/i',$supplier_code)){
 				   );
 	}
 
+
+ if(preg_match('/^Sheikh$/i',$supplier_code)){
+	  $supplier_code='Sheikh';
+	  $the_supplier_data=array(
+				   'name'=>'Sheikh Enterprises',
+				   'code'=>$supplier_code,
+				   'address_data'=>array(
+							 'type'=>'3line'
+							 ,'address1'=>"Eidgah Road"
+							 ,'address2'=>'Opp. Islamia Inter College'
+							 ,'address3'=>''
+							 ,'town'=>'Saharanpur'
+							 ,'town_d1'=>''
+							 ,'town_d2'=>''
+							 ,'country'=>'India'
+							 ,'country_d1'=>''
+							 ,'country_d2'=>''
+							 ,'default_country_id'=>$myconf['country_id']
+							 ,'postcode'=>'247001'
+							 )
+
+				   );
+	}
+if(preg_match('/^Gopal$/i',$supplier_code)){
+	  $supplier_code='Gopal';
+	  $the_supplier_data=array(
+				   'name'=>'Gopal Corporation Limited',
+				   'code'=>$supplier_code,
+				   'address_data'=>array(
+							 'type'=>'3line'
+							 ,'address1'=>"240 Okhla Industrial Estate"
+							 ,'address2'=>'Phase III'
+							 ,'address3'=>''
+							 ,'town'=>'New Delhi'
+							 ,'town_d1'=>''
+							 ,'town_d2'=>''
+							 ,'country'=>'India'
+							 ,'country_d1'=>''
+							 ,'country_d2'=>''
+							 ,'default_country_id'=>$myconf['country_id']
+							 ,'postcode'=>'110020'
+							 )
+				   ,'telephone'=>'00911126320185'
+				   );
+	}
+
   if(preg_match('/^CraftS$/i',$supplier_code)){
 	  $supplier_code='CraftS';
 	  $the_supplier_data=array(
@@ -449,7 +495,7 @@ if(preg_match('/^puck$/i',$supplier_code)){
 							 ,'postcode'=>'RH1 2NL'
 							 ),
 				   'contact_name'=>'Jose'
-				   'email'=>''
+
 				   ,'telephone'=>'01737767363'
 				   ,'fax'=>'01737768627'
 				   );
@@ -561,7 +607,7 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 							 ),
 
 
-				   ,'telephone'=>'49602134690'
+				   'telephone'=>'49602134690'
 				   ,'fax'=>'496021346940'
 
 				   );
@@ -593,6 +639,137 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 				   );
 	}
 
+
+	if(preg_match('/^EB$/i',$supplier_code)){
+	  $supplier_code='EB';
+	  $the_supplier_data=array(
+				   'name'=>'Elements Bodycare Ltd'
+				   ,'code'=>$supplier_code
+				   ,'address_data'=>array(
+							 'type'=>'3line'
+							 ,'address1'=>'Unit 2'
+							 ,'address2'=>'Carbrook Bussiness Park'
+							 ,'address3'=>'Dunlop Street'
+							 ,'town'=>'Sheffield'
+							 ,'town_d1'=>''
+							 ,'town_d2'=>''
+							 ,'country'=>'UK'
+							 ,'country_d1'=>''
+							 ,'country_d2'=>''
+							 ,'default_country_id'=>$myconf['country_id']
+							 ,'postcode'=>'S9 2HR'
+							 )
+
+				   ,'telephone'=>'011422434000'
+				   ,'www'=>'www.elements-bodycare.co.uk'
+				   ,'email'=>'info@elements-bodycare.co.uk'
+
+				   );
+	}
+
+	if(preg_match('/^Paradise$/i',$supplier_code)){
+	  $supplier_code='Paradise';
+	  $the_supplier_data=array(
+				   'name'=>'Paradise Music Ltd'
+				   ,'code'=>$supplier_code
+				   ,'address_data'=>array(
+							 'type'=>'3line'
+							 ,'address1'=>'PO BOX 998'
+							 ,'address2'=>'Carbrook Bussiness Park'
+							 ,'address3'=>'Dunlop Street'
+							 ,'town'=>'Tring'
+							 ,'town_d1'=>''
+							 ,'town_d2'=>''
+							 ,'country'=>'UK'
+							 ,'country_d1'=>''
+							 ,'country_d2'=>''
+							 ,'default_country_id'=>$myconf['country_id']
+							 ,'postcode'=>'HP23 4ZJ'
+							 )
+
+				   ,'telephone'=>'01296668193'
+
+
+				   );
+	}
+	if(preg_match('/^MCC$/i',$supplier_code)){
+	  $supplier_code='MCC';
+	  $the_supplier_data=array(
+				   'name'=>'Manchester Candle Company'
+				   ,'code'=>$supplier_code
+				   ,'address_data'=>array(
+							 'type'=>'3line'
+							 ,'address1'=>'The Manchester Group'
+							 ,'address2'=>'Kenwood Road'
+							 ,'address3'=>''
+							 ,'town'=>'North Reddish'
+							 ,'town_d1'=>''
+							 ,'town_d2'=>''
+							 ,'country'=>'UK'
+							 ,'country_d1'=>''
+							 ,'country_d2'=>''
+							 ,'default_country_id'=>$myconf['country_id']
+							 ,'postcode'=>'SK5 6PH'
+							 )
+				   ,'contact_name'=>'Brian'
+				   ,'telephone'=>'01614320811'
+				   ,'fax'=>'01614310328'
+				   ,'www'=>'manchestercandle.com'
+
+				   );
+	}
+	if(preg_match('/^Aquavision$/i',$supplier_code)){
+	  $supplier_code='Aquavision';
+	  $the_supplier_data=array(
+				   'name'=>'Aquavision Music Ltd'
+				   ,'code'=>$supplier_code
+				   ,'address_data'=>array(
+							 'type'=>'3line'
+							 ,'address1'=>'PO BOX 2796'
+							 ,'address2'=>''
+							 ,'address3'=>''
+							 ,'town'=>'Iver'
+							 ,'town_d1'=>''
+							 ,'town_d2'=>''
+							 ,'country'=>'UK'
+							 ,'country_d1'=>''
+							 ,'country_d2'=>''
+							 ,'default_country_id'=>$myconf['country_id']
+							 ,'postcode'=>'SL0 9ZR'
+							 )
+
+				   ,'telephone'=>'01753653188'
+				   ,'fax'=>'01753655059'
+				   ,'www'=>'www.aquavisionwholesale.co.uk'
+				   ,'email'=>'info@aquavisionwholesale.co.uk'
+				   );
+	}
+
+	if(preg_match('/^CXD$/i',$supplier_code)){
+	  $supplier_code='CXD';
+	  $the_supplier_data=array(
+				   'name'=>'CXD Designs Ltd'
+				   ,'code'=>$supplier_code
+				   ,'address_data'=>array(
+							 'type'=>'3line'
+							 ,'address1'=>'Unit 2'
+							 ,'address2'=>'Imperial Park'
+							 ,'address3'=>'Towerfiald Road'
+							 ,'town'=>'Shoeburyness'
+							 ,'town_d1'=>''
+							 ,'town_d2'=>''
+							 ,'country'=>'UK'
+							 ,'country_d1'=>'Essex'
+							 ,'country_d2'=>''
+							 ,'default_country_id'=>$myconf['country_id']
+							 ,'postcode'=>'SS3 9QT'
+							 )
+
+				   ,'telephone'=>'01702292028'
+				   ,'fax'=>'01702298486'
+
+				   );
+	}
 	if(preg_match('/^(AWR|costa)$/i',$supplier_code)){
 	  $supplier_code='AWR';
 	  $the_supplier_data=array(
@@ -700,6 +877,8 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 	  $scode='?'.$code;
 	$sp_data=array(
 		       'Supplier Product Supplier Key'=>$supplier->id,
+		       'Supplier Product Supplier Code'=>$supplier->data['Supplier Code'],
+		       'Supplier Product Supplier Name'=>$supplier->data['Supplier Name'],
 		       'Supplier Product Code'=>$scode,
 		       'Supplier Product Cost'=>sprintf("%.4f",$supplier_cost),
 		       'Supplier Product Name'=>$description,
@@ -742,7 +921,10 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 			   'Product Part Type'=>'Simple Pick'
 			   );
 	$product->new_part_list('',$part_list);
-   
+	$supplier_product->load('used in');
+	$product->load('parts');
+	$part->load('used in');
+	$part->load('supplied by');
     
  }
     
