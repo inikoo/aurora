@@ -32,13 +32,25 @@ class supplierproduct{
       if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   )
 	$this->id=$this->data['Supplier Product Key'];
       return;
-      
-    }elseif($tipo='supplier-code-name-cost'){
-
-      $auto_add=$tag['auto_add'];
-      $sql=sprintf("select * from `Supplier Product Dimension` where `Supplier Product Code`=%s  and `Supplier Product Name`=%s and `Supplier Product Cost`=%s and `Supplier Product Supplier Key`=%s "
+    }elseif('supplier-code'){
+       $sql=sprintf("select * from `Supplier Product Dimension` where `Supplier Product Code`=%s and   `Supplier Product Supplier Key`=%s "
 		   ,prepare_mysql($tag['supplier product code'])
-		   ,prepare_mysql($tag['supplier product name'])
+		   ,prepare_mysql($tag['supplier product supplier key'])
+		   
+		   );
+
+      $result=mysql_query($sql);
+      if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+	$this->id=$this->data['Supplier Product Key'];
+      }
+      return;
+
+    }elseif($tipo='supplier-code-cost'){
+      
+      $auto_add=$tag['auto_add'];
+      $sql=sprintf("select * from `Supplier Product Dimension` where `Supplier Product Code`=%s  and  `Supplier Product Cost`=%s and `Supplier Product Supplier Key`=%s "
+		   ,prepare_mysql($tag['supplier product code'])
+
 		   ,prepare_mysql($tag['supplier product cost'])
 		   ,prepare_mysql($tag['supplier product supplier key'])
 		   
@@ -73,30 +85,34 @@ class supplierproduct{
       $this->new_id=false;
       $this->new=true;
       $this->new_code=false;
-      
+      //print "-----------------\n";
+      //print_r($tag);
       $sql=sprintf("select count(*) as num from `Supplier Product Dimension` where `Supplier Product Code`=%s  and `Supplier Product Supplier Key`=%d"
 		   ,prepare_mysql($tag['supplier product code'])
-		   ,prepare_mysql($tag['supplier product supplier key'])
+		   ,$tag['supplier product supplier key']
 		   );
-
+      //print "$sql\n";
       $result=mysql_query($sql);
       if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 	$number_sp=$row['num'];
       }
       if($number_sp==0){
 	$this->new_code=true;
+	$this->new=true;
+	$this->new_id=true;
 	$tag['supplier product id']=$this->new_id();
 	$tag['supplier product most recent']='Yes';
 	$tag['supplier product most recent key']='';
 	$this->create($tag);
       
       }else{
-	$sql=sprintf("select * from `Supplier Product Dimension` where `Supplier Product Most Recent`='Yes',`Supplier Product Code`=%s  and `Supplier Product Supplier Key`=%d  and   `Supplier Product Name`=%s   "
+	$sql=sprintf("select * from `Supplier Product Dimension` where `Supplier Product Code`=%s  and `Supplier Product Supplier Key`=%d    "
 		     ,prepare_mysql($tag['supplier product code'])
-		     ,prepare_mysql($tag['supplier product supplier key'])
-		     ,prepare_mysql($tag['supplier product name'])
+		     ,$tag['supplier product supplier key']
+
 		     );
 	
+	//print "$sql\n";
 	$result=mysql_query($sql);
 	if($same_id_data=mysql_fetch_array($result, MYSQL_ASSOC)){
 	  // just price difference
@@ -104,11 +120,12 @@ class supplierproduct{
 	  if($tag['supplier product cost']==$same_id_data['Supplier Product Cost'])
 	    $diff_price=false;
 	  $this->new_id=false;
-	  $tag['supplier product id']=$same_id_data['Supplier Product Id'];
+	  $this->new=true;
+	  $tag['supplier product id']=$same_id_data['Supplier Product ID'];
 	  
 
 	  
-	  $sql=sprintf("select * from  `Supplier Product Dimension` where `Supplier Product Valid To`<%s and `Supplier Product Most Recent`='Yes' and `Supplier Product ID`=%d  ",$tag['supplier product valid to'],$tag['supplier product most recent key']);
+	  $sql=sprintf("select * from  `Supplier Product Dimension` where `Supplier Product Valid To`<%s and `Supplier Product Most Recent`='Yes' and `Supplier Product ID`=%d  ",prepare_mysql($tag['supplier product valid to']),$tag['supplier product id']);
 	  
 	  
 	  $result=mysql_query($sql);
@@ -119,7 +136,7 @@ class supplierproduct{
 	    $tag['supplier product most recent']='Yes';
 	  }
 	  $this->create($tag);
-	  
+	  $this->new=true;
 	  
 	}else{
 	  $this->new_id=true;
@@ -130,7 +147,7 @@ class supplierproduct{
 	  $tag['supplier product most recent']='Yes';
 	  $tag['supplier product most recent key']='';
 	  $this->create($tag);
-	  
+	  $this->new=true;
 	}
 	
       }
@@ -183,7 +200,7 @@ class supplierproduct{
     $keys=preg_replace('/,$/',')',$keys);
     $values=preg_replace('/,$/',')',$values);
     $sql=sprintf("insert into `Supplier Product Dimension` %s %s",$keys,$values);
-    //print "$sql\\n\nn";
+    //  print "$sql\n\n";
     if(mysql_query($sql)){
       $this->id = mysql_insert_id();
       
@@ -521,15 +538,12 @@ class supplierproduct{
 	$keys='(';$values='values(';
 	foreach($base_data as $key=>$value){
 	  $keys.="`$key`,";
-	  if(($key='supplier product part valid from' or $key=='supplier product part valid to') and preg_match('/now/i',$value))
-	    $values.="NOW(),";
-	  else
-	    $values.=prepare_mysql($value).",";
+	  $values.=prepare_mysql($value).",";
 	}
 	$keys=preg_replace('/,$/',')',$keys);
 	$values=preg_replace('/,$/',')',$values);
 	$sql=sprintf("insert into `Supplier Product Part List` %s %s",$keys,$values);
-
+	//	print "---------------------\n$sql\n";
 	 if(mysql_query($sql)){
 	   $id = mysql_insert_id();
 	   

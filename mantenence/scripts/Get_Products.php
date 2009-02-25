@@ -357,6 +357,13 @@ foreach($__cols as $cols){
 		      'code'=>$supplier_code,
 		      );
 
+	if($scode=='SSK-452A' and $supplier_code=='Smen')
+	  $scode='SSK-452A bis';
+
+
+	if(preg_match('/^(StoneM|Smen)$/i',$supplier_code)){
+	  $supplier_code='StoneM';
+	}
 
 	// Suppplier data
 	if(preg_match('/Ackerman|Ackerrman|Akerman/i',$supplier_code)){
@@ -1001,31 +1008,35 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 	$scode=_trim($scode);
 	$scode=preg_replace('/^\"\s*/','',$scode);
 	$scode=preg_replace('/\s*\"$/','',$scode);
-	if(preg_match('/\d+ or more|0.10000007|0.050000038|0.150000076|0.8000006103|1.100000610|1.16666666|1.650001220|1.80000122070/i',$scode))
+	
+
+
+	if(preg_match('/\d+ or more|0.10000007|8.0600048828125|0.050000038|0.150000076|0.8000006103|1.100000610|1.16666666|1.650001220|1.80000122070/i',$scode))
 	  $scode='';
-	if(preg_match('/^(\?|new|0.25|0.5|0.8|0.8000006103|01 Glass Jewellery Box|1|0.1|0.05|1.5625|10|\d{1,2}\s?\+\s?\d{1,2}\%)$/i',$scode))
+	if(preg_match('/^(\?|new|\d|0.25|0.5|0.8|0.8000006103|01 Glass Jewellery Box|1|0.1|0.05|1.5625|10|\d{1,2}\s?\+\s?\d{1,2}\%)$/i',$scode))
 	  $scode='';
 
+	
+
+	if($scode=='same')
+	  $scode=$code;
 	if($scode=='' or $scode=='0')
 	  $scode='?'.$code;
 	$sp_data=array(
-		       'Supplier Product Supplier Key'=>$supplier->id,
-		       'Supplier Product Supplier Code'=>$supplier->data['Supplier Code'],
-		       'Supplier Product Supplier Name'=>$supplier->data['Supplier Name'],
-		       'Supplier Product Code'=>$scode,
-		       'Supplier Product Cost'=>sprintf("%.4f",$supplier_cost),
-		       'Supplier Product Name'=>$description,
-		       'Supplier Product Description'=>$description
+		       'supplier product supplier key'=>$supplier->id,
+		       'supplier product supplier code'=>$supplier->data['Supplier Code'],
+		       'supplier product supplier name'=>$supplier->data['Supplier Name'],
+		       'supplier product code'=>$scode,
+		       'supplier product cost'=>sprintf("%.4f",$supplier_cost),
+		       'supplier product name'=>$description,
+		       'supplier product description'=>$description
 		       );
-
-// 	if($code=='FO-A1'){
-// 	  print_r($sp_data);
-// 	  exit;
-// 	}
-
-	//print_r($sp_data);
-	$supplier_product=new SupplierProduct('new',$sp_data);
-
+	$new_supplier_product=false;
+	$supplier_product=new SupplierProduct('supplier-code',$sp_data);
+	if(!$supplier_product->id){
+	  $new_supplier_product=true;
+	  $supplier_product=new SupplierProduct('new',$sp_data);
+	}
 	$part_data=array(
 			 'Part Most Recent'=>'Yes',
 			 'Part XHTML Currently Supplied By'=>sprintf('<a href="supplier.php?id=%d">%s</a>',$supplier->id,$supplier->get('Supplier Code')),
@@ -1037,6 +1048,7 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 			 );
 	$part=new Part('new',$part_data);
 	//	print_r($part->data);
+	
 	$rules[]=array('Part Sku'=>$part->data['Part SKU'],
 		       'Supplier Product Units Per Part'=>$units
 		       ,'supplier product part most recent'=>'Yes'
@@ -1045,6 +1057,7 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 		       ,'factor supplier product'=>1
 		       );
 	$supplier_product->new_part_list('',$rules);
+	
 	$part_list[]=array(
 			   'Product ID'=>$product->get('Product ID'),
 			   'Part SKU'=>$part->get('Part SKU'),

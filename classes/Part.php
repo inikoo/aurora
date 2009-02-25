@@ -26,6 +26,9 @@ class part{
   function get_data($tipo,$tag){
     if($tipo=='id')
       $sql=sprintf("select * from `Part Dimension` where `Part Key`=%d ",$tag);
+    elseif($tipo=='sku')
+      $sql=sprintf("select * from `Part Dimension` where `Part SKU`=%d ",$tag);
+
     else
       return;
 

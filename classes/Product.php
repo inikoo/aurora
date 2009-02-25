@@ -58,6 +58,9 @@ class product{
     }elseif($tipo=='code-name-units-price'){
       $auto_add=$tag['auto_add'];
       
+
+
+
       $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s and `Product Name`=%s and `Product Units Per Case`=%s and `Product Unit Type`=%s  and `Product Price`=%s  "
 		   ,prepare_mysql($tag['product code'])
 		   ,prepare_mysql($tag['product name'])
@@ -81,11 +84,12 @@ class product{
 	  $this->data['Product Valid From']=$tag['date'];
 	}
 
-	$sql=sprintf("select  `Part SKU`  from `Product Part List`  where  `Product ID`=%s " ,$this->data['Product ID']);
+	$sql=sprintf("select  `Part SKU`  from `Product Part List`  where  `Product ID`=%s group by `Part SKU`" ,$this->data['Product ID']);
 	$result2=mysql_query($sql);
+	$part_skus=array();
 	while($row2=mysql_fetch_array($result2, MYSQL_ASSOC)){
 	  $part_sku=$row2['Part SKU'];
-	  
+	  $part_skus[]=$part_sku;
 	  $sql=sprintf("update `Part Dimension`  set `Part Valid From`=%s  where `Part SKU`=%s and `Part Valid From`>%s"
 		       ,prepare_mysql($tag['date'])
 		       ,prepare_mysql($part_sku)
@@ -101,42 +105,42 @@ class product{
 	  mysql_query($sql);
 	  
 	  
-	  $sqlxx=sprintf("select `Supplier Key`,`Supplier Product ID` from `Supplier Product Part List` where `Part SKU`=%s ",prepare_mysql($part_sku));
+// 	  $sqlxx=sprintf("select `Supplier Key`,`Supplier Product ID` from `Supplier Product Part List` where `Part SKU`=%s ",prepare_mysql($part_sku));
 
-	  $result3=mysql_query($sqlxx);
-	  while($row3=mysql_fetch_array($result3, MYSQL_ASSOC)){
+// 	  $result3=mysql_query($sqlxx);
+// 	  while($row3=mysql_fetch_array($result3, MYSQL_ASSOC)){
 	    
-	    $sqlw=sprintf("update `Supplier Product Dimension`  set `Supplier Product Valid From`=%s  where `Supplier Product ID`=%s and `Supplier Product Valid From`>%s"
-			 ,prepare_mysql($tag['date'])
-			 ,$this->data['Product ID']  
-			 ,prepare_mysql($tag['date'])
-			 );
+// 	    $sqlw=sprintf("update `Supplier Product Dimension`  set `Supplier Product Valid From`=%s  where `Supplier Product ID`=%s and `Supplier Product Valid From`>%s"
+// 			 ,prepare_mysql($tag['date'])
+// 			  ,$row3['Supplier Product ID']
+// 			 ,prepare_mysql($tag['date'])
+// 			 );
 
-	    mysql_query($sqlw);
+// 	    mysql_query($sqlw);
 	    
-	    $sqlaa=sprintf("update `Supplier Product Dimension`  set `Supplier Product Valid To`=%s  where `Supplier Product ID`=%s and `Supplier Product Valid To`<%s"
-			 ,prepare_mysql($tag['date2'])
-			 ,$row3['Supplier Product ID']
-			 ,prepare_mysql($tag['date2'])
-			 );
-	    mysql_query($sqlaa);
+// 	    $sqlaa=sprintf("update `Supplier Product Dimension`  set `Supplier Product Valid To`=%s  where `Supplier Product ID`=%s and `Supplier Product Valid To`<%s"
+// 			 ,prepare_mysql($tag['date2'])
+// 			 ,$row3['Supplier Product ID']
+// 			 ,prepare_mysql($tag['date2'])
+// 			 );
+// 	    mysql_query($sqlaa);
 
-	$sqlbb=sprintf("update `Supplier Dimension`  set `Supplier Valid From`=%s  where `Supplier Key`=%s and `Supplier Valid From`>%s"
-		     ,prepare_mysql($tag['date'])
-		     ,$row3['Supplier Key']
-		     ,prepare_mysql($tag['date'])
-		     );
-	mysql_query($sqlbb);
+// 	$sqlbb=sprintf("update `Supplier Dimension`  set `Supplier Valid From`=%s  where `Supplier Key`=%s and `Supplier Valid From`>%s"
+// 		     ,prepare_mysql($tag['date'])
+// 		     ,$row3['Supplier Key']
+// 		     ,prepare_mysql($tag['date'])
+// 		     );
+// 	mysql_query($sqlbb);
 
-	$sqlcc=sprintf("update `Supplier Dimension`  set `Supplier Valid From`=%s  where `Supplier Key`=%s and `Supplier Valid From`<%s"
-		     ,prepare_mysql($tag['date2'])
-		     ,$row3['Supplier Key']
-		     ,prepare_mysql($tag['date2'])
-		     );
-	mysql_query($sqlcc);
+// 	$sqlcc=sprintf("update `Supplier Dimension`  set `Supplier Valid From`=%s  where `Supplier Key`=%s and `Supplier Valid From`<%s"
+// 		     ,prepare_mysql($tag['date2'])
+// 		     ,$row3['Supplier Key']
+// 		     ,prepare_mysql($tag['date2'])
+// 		     );
+// 	mysql_query($sqlcc);
 	    
 	    
-	  }
+// 	  }
 	}
 
 	$sqldd=sprintf("update `Product Part List`  set `Product Part Valid From`=%s  where `Product ID`=%s and `Product Part Valid From`>%s"
@@ -154,6 +158,66 @@ class product{
 	mysql_query($sqlee);
 
 
+	$supplier=new Supplier('code',$tag['supplier code']);
+	if(!$supplier->id){
+	  $data=array(
+		      'name'=>$tag['supplier name'],
+		      'code'=>$tag['supplier code'],
+		      'from'=>$tag['date'],
+		      'to'=>$tag['date2']
+		      );
+	$supplier=new Supplier('new',$data);
+	}	
+	$sp_data=array(
+		       'supplier product supplier key'=>$supplier->id,
+		       'supplier product supplier code'=>$supplier->data['Supplier Code'],
+		       'supplier product supplier name'=>$supplier->data['Supplier Name'],
+		       'supplier product code'=>$tag['supplier product code'],
+		       'supplier product cost'=>$tag['supplier product cost'],
+		       'supplier product name'=>$tag['supplier product name'],
+		       'auto_add'=>true,
+		       'supplier product valid from'=>$tag['date'],
+		       'supplier product valid to'=>$tag['date2']
+		       );
+	//  print_r($sp_data);
+	$supplier_product=new SupplierProduct('supplier-code-cost',$sp_data);
+	
+	if($supplier_product->new_id ){
+	  //make new part list
+	  foreach($part_skus as $sku){
+	    $part=new Part('sku',$sku);
+	    $rules[]=array(
+			   'Part SKU'=>$part->data['Part SKU']
+			   ,'Supplier Product Units Per Part'=>$this->data['Product Units Per Case']
+			   ,'supplier product part most recent'=>'Yes'
+			   ,'supplier product part valid from'=>$tag['date']
+			   ,'supplier product part valid to'=>$tag['date2']
+			   ,'factor supplier product'=>1
+			   );
+	    $supplier_product->new_part_list('',$rules);
+	    $supplier_product->load('used in');
+	    $part->load('supplied by');
+	  }
+	  $this->load('parts');
+
+	}else{
+
+	    $sqlw=sprintf("update `Supplier Product Dimension`  set `Supplier Product Valid From`=%s  where `Supplier Product ID`=%s and `Supplier Product Valid From`>%s"
+			 ,prepare_mysql($tag['date'])
+			  ,$supplier_product->id
+			 ,prepare_mysql($tag['date'])
+			 );
+
+	    mysql_query($sqlw);
+	    
+	    $sqlaa=sprintf("update `Supplier Product Dimension`  set `Supplier Product Valid To`=%s  where `Supplier Product ID`=%s and `Supplier Product Valid To`<%s"
+			 ,prepare_mysql($tag['date2'])
+			 ,$supplier_product->id
+			 ,prepare_mysql($tag['date2'])
+			 );
+	    mysql_query($sqlaa);
+
+	}
 
 	
 	
@@ -238,7 +302,7 @@ class product{
 		       'supplier product valid to'=>$tag['date2']
 		       );
 	//  print_r($sp_data);
-	$supplier_product=new SupplierProduct('supplier-code-name-cost',$sp_data);
+	$supplier_product=new SupplierProduct('supplier-code-cost',$sp_data);
 	
 
 	$rules[]=array(
@@ -255,54 +319,43 @@ class product{
 	$this->load('parts');
 	return;
       }else{
-
+	//old code
 	$sql=sprintf("select * from `Product Dimension` where `Product Code`=%s and  `Product Units Per Case`=%s"
 		     ,prepare_mysql($tag['product code'])
-		     //		     ,prepare_mysql($tag['product name'])
 		     ,prepare_mysql($tag['product units per case'])
-		     //  ,prepare_mysql($tag['product unit type'])
-		     
-
 		     );
 	//print "$sql\n";
 	$result2=mysql_query($sql);
 	if($same_id_data=mysql_fetch_array($result2, MYSQL_ASSOC)){
 	  // Price  or name change, same units per case
-
 	  $different_name=false;
 	  $different_units=false;
 	  $different_units_type=false;
 	  $this->new_id=false;
 	  $tag['product id']=$same_id_data['Product ID'];
-	  
 	  $sql=sprintf("select *  from  `Product Dimension` where  `Product Most Recent`='Yes' and `Product ID`=%d  ",$same_id_data['Product ID']);
 	  $result3=mysql_query($sql);
 	  $result3=mysql_query($sql);
 	  if($row3=mysql_fetch_array($result3, MYSQL_ASSOC) ){
 	    $last_day=$row3['Product Valid To'];
 	    if(strtotime($last_day)<strtotime($tag['date'])){
-		$tag['product most recent']='Yes';
-
-	      }else{
-		$tag['product most recent']='No';
-		$tag['product most recent key']=$row3['Product Key'];
-	      }
-	    
-
+	      $tag['product most recent']='Yes';
+	    }else{
+	      $tag['product most recent']='No';
+	      $tag['product most recent key']=$row3['Product Key'];
+	    }
 	  }else{
 	    print_r($tag);
 	    print "$sql\n";
 	    exit("error in product ceratuon 45667303");
 	  }
-	    
-	    $tag['product valid to']=$tag['date2'];
-	    $tag['product valid from']=$tag['date'];
-	    
-	    $this->create($tag);
-	    
-	  }else{
+	  $tag['product valid to']=$tag['date2'];
+	  $tag['product valid from']=$tag['date'];
+	  $this->create($tag);
+	  // find sku 
+	
+	}else{
 	  // Different units that meabs niew id and new product part list
-
 	  $this->new_id=true;
 	  $tag['product id']=$this->new_id();
 	  $tag['product most recent']='Yes';
@@ -376,18 +429,20 @@ class product{
 		     'supplier product valid to'=>$tag['date2']
 		     );
       //  print_r($sp_data);
-      $supplier_product=new SupplierProduct('supplier-code-name-cost',$sp_data);
+      $supplier_product=new SupplierProduct('supplier-code-cost',$sp_data);
       $this->load('parts');
-      if($supplier_product->new_id){
-	print "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n";
-	$this->new_supplier_product=true;
+    //   if($supplier_product->new_id){
+// 	//	print_r($sp_data);
+	
+// 	//	print "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n";
+// 	$this->new_supplier_product=true;
 
-      }
+//       }
       
       
       
 
-      if($this->new_supplier_product or $this->new_part){
+      if($supplier_product->new_id or $this->new_part){
 	
 	if($this->new_part){
 	  $rules[]=array(
@@ -403,14 +458,52 @@ class product{
 	  $part->load('supplied by');
 	  $this->load('parts');
 	}else{
-	   print "i dont now wat to do\n";
-	   exit;
+	  
+	  $sql=sprintf("select  `Part SKU`  from `Product Part List`  where  `Product ID`=%s group by `Part SKU`" ,$this->data['Product ID']);
+	  $result211=mysql_query($sql);
+	  $part_skus=array();
+	  while($row211=mysql_fetch_array($result211, MYSQL_ASSOC)){
+	    $part_sku=$row211['Part SKU'];
+	    $part_skus[]=$part_sku;
+	  }
+	//   print_r($part_skus);
+// 	  print_r($supplier_product->data);
+	  
+// 	  print "i dont now wat to do\n";
+// 	  exit;
+
+
+
+	   foreach($part_skus as $sku){
+	     $part=new Part('sku',$sku);
+	     $rules[]=array(
+			    'Part SKU'=>$part->data['Part SKU']
+			   ,'Supplier Product Units Per Part'=>$this->data['Product Units Per Case']
+			    ,'supplier product part most recent'=>'Yes'
+			    ,'supplier product part valid from'=>$tag['date']
+			    ,'supplier product part valid to'=>$tag['date2']
+			   ,'factor supplier product'=>1
+			    );
+	     $supplier_product->new_part_list('',$rules);
+	     $supplier_product->load('used in');
+	     $part->load('supplied by');
+	   }
+	  $this->load('parts');
+	  
+
+
+
+
+
+
+
+
 	}
       }
-      if($supplier_product->new){
-      print_r($supplier_product->data);
-      exit;
-      }
+      //      if($supplier_product->new){
+      //print_r($supplier_product->data);
+      //exit;
+      // }
 
   }
   }
