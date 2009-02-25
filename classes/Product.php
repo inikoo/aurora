@@ -59,8 +59,8 @@ class product{
       $auto_add=$tag['auto_add'];
       
 
-   //    if($tag['product code']=='Pack-06')
-// 	print_r($tag);
+  //     if($tag['product code']=='wsl-123')
+//  	print_r($tag);
 
       $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s and `Product Name`=%s and `Product Units Per Case`=%s and `Product Unit Type`=%s  and `Product Price`=%s  "
 		   ,prepare_mysql($tag['product code'])

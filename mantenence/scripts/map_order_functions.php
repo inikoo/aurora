@@ -3838,7 +3838,8 @@ function get_dates($filedate,$header_data,$tipo_order,$new_file=true){
 	$date_charged=$date_updated." ".$time_updated;
 	if($header_data['date_inv']==$header_data['date_order'])
 	  $date_processed=$header_data['date_order']." ".$time_updated_menos30min;
-	$date_processed=$header_data['date_order']." 09:30:00";
+	else
+	  $date_processed=$header_data['date_order']." 09:30:00";
       }else{
 	$date_charged=$header_data['date_inv']." 16:30:00";
 	$date_processed=$header_data['date_order']." 09:30:00";
@@ -3881,7 +3882,7 @@ function setup_contact($act_data,$header_data,$date_index){
 
   $this_is_order_number=$header_data['history'];
   if(!is_numeric($this_is_order_number)){
-    print "Warning history not numeric\n";
+    //    print "Warning history not numeric\n";
     $this_is_order_number=1;
 
   }
@@ -8568,7 +8569,7 @@ if($act_data['town']=='Hornbæk - Sjælland'){
 	      $shop_address_data['country']=='Channel Islands' 
 
 	      )){
-	print "PC of the del address taken (a)\n";
+	//	print "PC of the del address taken (a)\n";
 	$different_del_address=false;
 	$shop_address_data['postcode']=$del_address_data['postcode'];
       }
@@ -8594,14 +8595,14 @@ if($act_data['town']=='Hornbæk - Sjælland'){
 	      $shop_address_data['country']=='United Kingdom' or
 	      $shop_address_data['country']=='Channel Islands' 
 	      )){
-	print "PC of the del address taken\n";
+	//	print "PC of the del address taken\n";
 	$different_del_address=false;
 	$shop_address_data['postcode']=$del_address_data['postcode'];
       }
       elseif(array_key_exists('country_d2',$a_diff) 
 	     or array_key_exists('country_d1',$a_diff) 
 	     ){
-	print "D2 x of the del address taken\n";
+	//print "D2 x of the del address taken\n";
 	$different_del_address=false;
 
       }

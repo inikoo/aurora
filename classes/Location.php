@@ -54,10 +54,8 @@ class location{
 
   function get_data($key,$tag){
     
-    switch($this->tipo){
-    case('shelf'):
       
-	$sql=sprintf("select location.id,(select count(*) from product2location where location_id=location.id ) as products ,max_weight,max_heigth,deep,width,max_products,location.id,location.tipo,location.name,warehouse_area.name as area,area_id  from location   left join warehouse_area on (area_id=warehouse_area.id)");
+    $sql=sprintf("select * from `Location Dimension`");
       if($key=='id')
 	$sql.=sprintf("where location.id=%d ",$tag);
       else if($key=='name')
@@ -96,7 +94,7 @@ class location{
 	$this->msg=_('Location do not exist');
 
 
-    }
+    
   }
 
 

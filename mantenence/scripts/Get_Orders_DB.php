@@ -32,17 +32,19 @@ $Data_Audit_ETL_Software="$software $version";
 srand(12344);
 
 
-$sql="select id from orders_data.order_data   ";
+$sql="select id  from orders_data.order_data order by id desc  ";
 
 
 $res=mysql_query($sql);
 while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
-  print $row2['id']."\r";
+
+
   $sql="select * from orders_data.order_data where id=".$row2['id'];
   $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
     $order_data_id=$row['id'];
-    
+    $filename=$row['filename'];
+    print "$order_data_id $filename\r";
      $header=mb_unserialize($row['header']);
      $products=mb_unserialize($row['products']);
      
@@ -73,16 +75,49 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
   list($act_data,$header_data)=read_header($header,$map_act,$y_map,$map);
   $header_data=filter_header($header_data);
   list($tipo_order,$parent_order_id)=get_tipo_order($header_data['ltipo'],$header_data);
+  
+  if(preg_match('/^\d{5}sh$/i',$filename_number)){
+    $tipo_order=7;
+    $parent_order_id=preg_replace('/sh/i','',$filename_number);
+  }
+  if(preg_match('/^\d{5}rpl$/i',$filename_number)){
+    $tipo_order=6;
+    $parent_order_id=preg_replace('/rpl/i','',$filename_number);
+  }
+  if(preg_match('/^\d{4,5}r$|^\d{4,5}ref$|^\d{4,5}\s?refund$|^\d{4,5}rr$|^\d{4,5}ra$|^\d{4,5}r2$|^\d{4,5}\-2ref$|^\d{5}rfn$/i',$filename_number)){
+    $tipo_order=9;
+    $parent_order_id=preg_replace('/r$|ref$|refund$|rr$|ra$|r2$|\-2ref$|rfn$/i','',$filename_number);
+
+
+  }
+
+
+  
+  
+
   list($date_index,$date_order,$date_inv)=get_dates($row['timestamp'],$header_data,$tipo_order,true);
   if($date_order=='')$date_index2=$date_index;else$date_index2=$date_order;
 
+  if($tipo_order==2   )
+    $date2=$date_inv;
+  elseif($tipo_order==4  or   $tipo_order==5 or   $tipo_order==6 or  $tipo_order==7 or  $tipo_order==8  or  $tipo_order==9)
+    $date2=$date_index;
+  else
+    $date2=$date_order;
+  
 
   $transactions=read_products($products,$prod_map);
   $customer_data=setup_contact($act_data,$header_data,$date_index2);
 
   //  print_r($transactions);
   
-
+ if(strtotime($date_order)>strtotime($date2)){
+      
+       print "ERROR ON DATES\n >    ".$header_data['date_order']."  ".$header_data['date_inv']."  ".$header_data['order_num']."  $date_order  $date2   $order_data_id   $filename  \n ";
+      
+       
+ }
+ continue;
 
   $data=array();
   $data['order date']=$date_order;
@@ -400,10 +435,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       $transaction['rrp']=60;
     }	
 
-    if($tipo_order==2)
-      $date2=$date_inv;
-    else
-      $date2=$date_order;
+
 
     if($transaction['units']=='' OR $transaction['units']<=0)
       $transaction['units']=1;
@@ -430,7 +462,8 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     }
     
      
-     
+
+
 
     $product_data=array(
 			'product code'=>_trim($transaction['code'])

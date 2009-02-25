@@ -187,9 +187,9 @@ function get_tipo_order($ltipo,$header){
     $tipo=4;
     }elseif(preg_match('/donation/i',$ltipo)){
     $tipo=5; 
-  }elseif(preg_match('/^\s*REPLACEMENT|Replcement|^reemplazo por roturas|^replacement|REPLACMENT|DELIVERY COLLECTION|repplacements|repalcements/i',$ltipo)){
+  }elseif(preg_match('/^\s*REPLACEMENT|Replcement|^reemplazo por roturas|^replacement|Damaged item|REPLACMENT|DELIVERY COLLECTION|repplacements|repalcements/i',$ltipo)){
     $tipo=6;
-}elseif(preg_match('/Damaged Parcel|MISSING|Missing Parcel|missing\s+\d|^reemplazo por falta|shortages|Missing From Order|missing form order|Mising from|^Missing Item|Missing - Replacement|^Shortage|Lost Parcel/i',$ltipo)){
+}elseif(preg_match('/Damaged Parcel|MISSING|Missing Parcel|missing\s+\d|^reemplazo por falta|SHORTAHGE|shortages|Missing From Order|missing form order|Mising from|^Missing Item|Missing - Replacement|^Shortage|Lost Parcel/i',$ltipo)){
     $tipo=7;
   }elseif(preg_match('/^to follow|Follow.On Order/i',$ltipo)){
     $tipo=8;
