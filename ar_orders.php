@@ -173,44 +173,69 @@ case('plot_net_diff1y_sales_month'):
  break;
 case('plot_monthsales'):
  $time=strtotime($myconf['data_since']);
-  if(date("d",$time)==1)
-    $from=date("Y-m-d",$time);
-  else{
-    $from=date("Y-",$time).(date("m",$time)+1).'-01';
-  }
+ 
 
-  $sql="SELECT count(*) as invoices,month(date_index) as month, UNIX_TIMESTAMP(date_index) as date ,substring(date_index, 1,7) AS dd, COUNT(id)as orders ,sum(net) as sales FROM orden where tipo=2 and date_index>'$from'  GROUP BY dd";
-  //  print $sql;  
- $data=array();
+ 
+ $pivot=strtotime($myconf['data_since']);
+ $today=strtotime('today');
+ while($pivot<$today){
+   
+   $tip=_('Sales')." ".strftime("%B %Y",$pivot)."\n".money(0)."\n(0 "._('Invoices').")";
+   $tip_losses='';
+
+   $data[date('Y-m',$pivot)]=array(
+				   'tip_sales'=>$tip,
+				   'tip_losses'=>$tip_losses,
+				   'sales'=>0,
+				   'losses'=>0,
+				   'date'=>strftime("%m/%y",$pivot)
+				   );
+   $pivot=strtotime(date('Y-m-d',$pivot).' +1 month');
+ }
+
+
+
+
+ 
+
+  if(date("d",$time)==1)
+     $from=date("Y-m-d",$time);
+   else{
+     $from=date("Y-",$time).(date("m",$time)+1).'-01';
+   }
+
+  $sql="SELECT count(*) as invoices,month(`Invoice Date`) as month, UNIX_TIMESTAMP(`Invoice Date`) as date ,substring(`Invoice Date`, 1,7) AS dd ,sum(`Invoice Gross Amount`-`Invoice Discount Amount`) as sales FROM `Invoice Dimension` where `Invoice Date`>'$from'  GROUP BY dd";
+  
+
  $prev_month='';
  $prev_year=array();
-  $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-   while($row=$res->fetchRow()) {
-     if(is_numeric($prev_month)){
-       $diff=$row['sales']-$prev_month;
-       $diff_prev_month=percentage($diff,$prev_month,1,'NA','%',true)." "._('change (last month)')."\n";
-       //       print $row['sales']."---------  $prev_month ----------    $diff_prev_month   <br >";
-     }else
-       $diff_prev_month='';
-     
-      if(isset($prev_year[$row['month']])){
-	$diff=$row['sales']-$prev_year[$row['month']];
-	$diff_prev_year=percentage($diff,$prev_year[$row['month']],1,'NA','%',true)." "._('change (last year)')."\n";
-	//	 print $row['sales']."------ ---  ".$prev_year[$row['month']]." ----- $diff  -----    $diff_prev_year   <br >";
-      }else{
-	//	print $row['sales']."  <br >";
-	$diff_prev_year='';
-      }
-
-      $credits=0;//$row['credits'];
-      $outstoke_value=0;//=$row['outstock'];
-      $losses=$credits+$outstoke_value;
-      $percentage_losses=percentage($losses,$row['sales']);
-
-      $tip=_('Sales')." ".strftime("%B %Y", strtotime('@'.$row['date']))."\n".money($row['sales'])."\n".$diff_prev_month.$diff_prev_year."(".$row['invoices']." "._('Orders').")";
-      $tip_losses=_('Lost Sales')." ".strftime("%B %Y", strtotime('@'.$row['date']))."\n".money($losses)." ($percentage_losses)".($credits>0?"\n".money($credits)." "._('due to refund/credits'):"").($outstoke_value>0?"\n".money($outstoke_value)." "._('due to out of stock'):"");
-
-   $data[]=array(
+ $res = mysql_query($sql); 
+ while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+ if(is_numeric($prev_month)){
+   $diff=$row['sales']-$prev_month;
+   $diff_prev_month=percentage($diff,$prev_month,1,'NA','%',true)." "._('change (last month)')."\n";
+   //       print $row['sales']."---------  $prev_month ----------    $diff_prev_month   <br >";
+ }else
+   $diff_prev_month='';
+ 
+ if(isset($prev_year[$row['month']])){
+   $diff=$row['sales']-$prev_year[$row['month']];
+   $diff_prev_year=percentage($diff,$prev_year[$row['month']],1,'NA','%',true)." "._('change (last year)')."\n";
+   //	 print $row['sales']."------ ---  ".$prev_year[$row['month']]." ----- $diff  -----    $diff_prev_year   <br >";
+ }else{
+   //	print $row['sales']."  <br >";
+   $diff_prev_year='';
+ }
+ 
+ $credits=0;//$row['credits'];
+ $outstoke_value=0;//=$row['outstock'];
+ $losses=$credits+$outstoke_value;
+ $percentage_losses=percentage($losses,$row['sales']);
+ 
+ $tip=_('Sales')." ".strftime("%B %Y", strtotime('@'.$row['date']))."\n".money($row['sales'])."\n".$diff_prev_month.$diff_prev_year."(".$row['invoices']." "._('Invoices').")";
+ $tip_losses=_('Lost Sales')." ".strftime("%B %Y", strtotime('@'.$row['date']))."\n".money($losses)." ($percentage_losses)".($credits>0?"\n".money($credits)." "._('due to refund/credits'):"").($outstoke_value>0?"\n".money($outstoke_value)." "._('due to out of stock'):"");
+ 
+ $data[$row['dd']]=array(
 		   'tip_sales'=>$tip,
 		   'tip_losses'=>$tip_losses,
 		   'sales'=>(float) $row['sales'],
@@ -220,11 +245,18 @@ case('plot_monthsales'):
      $prev_month=$row['sales'];
      $prev_year[$row['month']]=$row['sales'];
    }
-  
+   $_data=array();
+   $i=0;
+   foreach($data as $__data){
+     $_data[]=$__data;
+
+   }
+
+
 
  $response=array('resultset'=>
 		   array('state'=>200,
-			 'data'=>$data,
+			 'data'=>$_data,
 			 )
 		   );
 
@@ -312,10 +344,25 @@ case('plot_gmonthsales'):
   $number_years=4;
   $from='2004-07-00';
   $current_year=date('Y');
-  $data=array(1=>'',2=>'',3=>'',4=>'',5=>'',6=>'',7=>'',8=>'',9=>'',10=>'',11=>'',12=>'');
+  $data=array(
+	      1=>''
+	      ,2=>''
+	      ,3=>''
+	      ,4=>'',5=>'',6=>'',7=>'',8=>'',9=>'',10=>'',11=>'',12=>'');
+
+
+  foreach($data as $key=>$value){
+    $data[$key]['date']=strftime("%b", strtotime('2000-01-01 + '.($key-1).' month'));
+    for($i=date('Y');$i>=date('Y')-5;$i--){
+      $data[$key]['sales'.$i]=0;
+      $data[$key]['tip_sales'.$i]=_('No Sales');
+    }
+  }
+
+  
 
   foreach (range( $current_year-$number_years,  $current_year) as $year) {
-$sql="SELECT year(date_index)as year, count(*) as invoices,month(date_index) as month, UNIX_TIMESTAMP(date_index) as date , COUNT(id)as orders ,sum(net) as sales FROM orden where tipo=2 and year(date_index)=$year  GROUP BY month  order by month(date_index)";
+$sql="SELECT year(`Invoice Date`)as year, count(*) as invoices,month(`Invoice Date`) as month, UNIX_TIMESTAMP(`Invoice Date`) as date ,sum(`Invoice Gross Amount`-`Invoice Discount Amount`) as sales FROM `Invoice Dimension` where year(`Invoice Date`)=$year  GROUP BY month  order by month(`Invoice Date`)";
 //print "$sql<br>";
 
  $prev_month='';
@@ -364,7 +411,8 @@ $sql="SELECT year(date_index)as year, count(*) as invoices,month(date_index) as 
     $_data[]=$dt;
   }
 
- $response=array('resultset'=>
+  //print_r($_data);
+  $response=array('resultset'=>
 		   array('state'=>200,
 			 'data'=>$_data,
 			 )

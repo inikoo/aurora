@@ -225,8 +225,10 @@ switch($tipo){
 
    $title=_("Total Net Sales per Month (Group by month)");
    $ar_address='ar_orders.php?tipo=plot_gmonthsales';
-   $fields='"sales2004","sales2005","sales2006","sales2007","sales2008","tip_sales2004","tip_sales2005","tip_sales2006","tip_sales2007","tip_sales2008","date"';
-   
+   $fields='"date"';
+    for($i=date('Y');$i>=date('Y')-5;$i--){
+      $fields.=",'sales$i','tip_sales$i'";
+    }
    $_year=date('Y');
    $_years=5;
    if($_years>5)
