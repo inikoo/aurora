@@ -32,7 +32,7 @@ class supplierproduct{
       if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   )
 	$this->id=$this->data['Supplier Product Key'];
       return;
-    }elseif('supplier-code'){
+    }else if($tipo=='supplier-code'){
        $sql=sprintf("select * from `Supplier Product Dimension` where `Supplier Product Code`=%s and   `Supplier Product Supplier Key`=%s "
 		   ,prepare_mysql($tag['supplier product code'])
 		   ,prepare_mysql($tag['supplier product supplier key'])
@@ -45,7 +45,7 @@ class supplierproduct{
       }
       return;
 
-    }elseif($tipo='supplier-code-cost'){
+    }elseif($tipo=='supplier-code-cost'){
       
       $auto_add=$tag['auto_add'];
       $sql=sprintf("select * from `Supplier Product Dimension` where `Supplier Product Code`=%s  and  `Supplier Product Cost`=%s and `Supplier Product Supplier Key`=%s "
@@ -131,7 +131,7 @@ class supplierproduct{
 	  $result=mysql_query($sql);
 	  if($last_data=mysql_fetch_array($result, MYSQL_ASSOC)){
 	    $tag['supplier product most recent']='No';
-	    $tag['supplier product most recent key']=$last_data['Product Key'];
+	    $tag['supplier product most recent key']=$last_data['Supplier Product Key'];
 	  }else{
 	    $tag['supplier product most recent']='Yes';
 	  }
@@ -162,7 +162,7 @@ class supplierproduct{
 
   
   function create($data){
-    
+
     $base_data=array(
 		     'supplier product supplier key'=>'',
 		     'supplier product supplier code'=>'',
@@ -182,6 +182,11 @@ class supplierproduct{
 	$base_data[strtolower($key)]=_trim($value);
     }
     
+    //    if($base_data['supplier product code']=='?Bag-03a'){
+    //   print_r($data);
+    //  exit;
+    // }
+
     if(!$this->valid_id($base_data['supplier product id'])  ){
       $base_data['supplier product id']=$this->new_id();
     }

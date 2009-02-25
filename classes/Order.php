@@ -25,18 +25,7 @@ class Order{
     if(preg_match('/new/i',$arg1)){
       $this->create_order($arg2);
     }
-
-
-     
-     
-
   }
-
-  
-
-
-
-
 
   function create_order($data){
     if(!isset($data['type']))
@@ -46,9 +35,6 @@ class Order{
       
 
     case('direct_data_injection'):
-      
-
-      
       $this->compare_addresses($data['cdata']);
       $data['cdata']['same_address']=$this->same_address;
       $data['cdata']['same_contact']=$this->same_contact;
@@ -111,6 +97,7 @@ class Order{
       foreach($data['products'] as $product_data){
 	$product_data['date']=$this->data['Order Date'];
 	$product_data['line_number']=$line_number;
+	$product_data['metadata']=$data['metadata_id'];
 	$this->add_order_transaction($product_data);
 	$line_number++;
       }
@@ -646,7 +633,7 @@ class Order{
 
   function add_order_transaction($data){
 
-    $sql=sprintf("insert into `Order Transaction Fact` (`Estimated Weight`,`Order Date`,`Order Last Updated Date`,`Product Key`,`Current Dispatching State`,`Current Payment State`,`Customer Key`,`Order Key`,`Order Public ID`,`Order Line`,`Order Quantity`,`Ship To Key`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`) values (%s,%s,%s,%d,%s,%s,%s,%s,%s,%d,%s,%s,%.2f,%.2f) "
+    $sql=sprintf("insert into `Order Transaction Fact` (`Estimated Weight`,`Order Date`,`Order Last Updated Date`,`Product Key`,`Current Dispatching State`,`Current Payment State`,`Customer Key`,`Order Key`,`Order Public ID`,`Order Line`,`Order Quantity`,`Ship To Key`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Metadata`) values (%s,%s,%s,%d,%s,%s,%s,%s,%s,%d,%s,%s,%.2f,%.2f,%s) "
 		 ,prepare_mysql($data['Estimated Weight'])
 		 ,prepare_mysql($data['date'])
 		 ,prepare_mysql($data['date'])
@@ -661,7 +648,7 @@ class Order{
 		 ,prepare_mysql($this->data['Order Main Ship To Key'])
 		 ,$data['gross_amount']
 		 ,$data['discount_amount']
-
+		 ,prepare_mysql($data['metadata'])
 		 );
     // print "$sql\n";
     if(!mysql_query($sql))
@@ -761,6 +748,58 @@ class Order{
     $discounts=0;
     foreach($transacions_data as $data){
 
+      if($data['pick_method']=='historic'){
+	$cost_supplier=0;
+	 $cost_manu='';
+      $cost_storing='';
+      $cost_hand='';
+      $cost_shipping='';
+      $sql=sprintf("select `Parts Per Product`,`Product Part Key`,`Part SKU` from `Product Part List` where `Product Part ID`=%d and `Part SKU`=%d",$data['pick_method_data']['product part id'],$data['pick_method_data']['part sku']);
+	$result=mysql_query($sql);
+	$part_sku=array();$qty=array();
+	if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+	  $parts_per_product=$row['Parts Per Product'];
+	  $part_sku=$row['Part SKU'];
+
+	  $sql=sprintf(" select `Supplier Product Code`,`Supplier Product Valid From`,`Supplier Product Valid To`,`Supplier Product Key`,SPD.`Supplier Product ID`,`Supplier Product Units Per Part`,`Supplier Product Cost` from  `Supplier Product Dimension`   SPD left join `Supplier Product Part List` SPPL  on (SPD.`Supplier Product ID`=SPPL.`Supplier Product ID`) where `Part SKU`=%s  and `Supplier Product Valid From`<=%s and `Supplier Product Valid To`>=%s  and `Supplier Product Key`=%s",prepare_mysql($row['Part SKU'])
+		     ,prepare_mysql($this->data['Delivery Note Date'])
+		     ,prepare_mysql($this->data['Delivery Note Date'])
+		       ,$data['pick_method_data']['supplier product key']
+);
+	  
+	  $result2=mysql_query($sql);
+
+	  $num_sp=mysql_num_rows($result2);
+	  if($num_sp!=1)
+	   exit("$sql\n error in order class 0we49qwqeqwe history 1\n");
+	  
+	  $row2=mysql_fetch_array($result2, MYSQL_ASSOC);
+	  $supplier_product_id=$row2['Supplier Product ID'];
+	  $sp_units_per_part=$row2['Supplier Product Units Per Part'];
+	  $cost=$row2['Supplier Product Cost']*$sp_units_per_part*$parts_per_product*$data['Shipped Quantity'];
+
+	  $cost_supplier+=$cost;
+	   $sql=sprintf("insert into `Inventory Transition Fact`  (`Date`,`Part SKU`,`Supplier Product ID`,`Warehouse Key`,`Warehouse Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`) values (%s,%s,%s,1,1,%s,'Sale',%.2f,%f,%f,%.2f,%s) "
+		       ,prepare_mysql($this->data['Delivery Note Date'])
+		       ,prepare_mysql($part_sku)
+		       ,prepare_mysql($supplier_product_id)
+		       ,prepare_mysql(-$parts_per_product*$data['Shipped Quantity'])
+		       ,-$cost
+		     ,$data['required']*$parts_per_product
+		       ,$data['given']*$parts_per_product
+		       ,$data['amount in']
+		       ,prepare_mysql($this->data['Delivery Note Metadata'])
+		       );
+	  //   print "$sql\n";
+	  if(!mysql_query($sql))
+	    exit("can not create Warehouse * 888 $sql   Inventory Transition Fact\n");
+	}else
+	  exit("error no sku found order php l 792\n");
+	  
+	
+
+      }if($data['pick_method']=='historic2'){
+
       $cost_supplier=0;
       $cost_manu='';
       $cost_storing='';
@@ -770,6 +809,8 @@ class Order{
       //       print "nre --------------\n";
       
       
+
+
       $sql=sprintf("select `Parts Per Product`,`Product Part Key`,`Part SKU` from `Product Part List` where `Product ID`=%s ",prepare_mysql($data['Product ID']));
       $result=mysql_query($sql);
       $part_sku=array();$qty=array();
@@ -783,7 +824,7 @@ class Order{
 	//get supplier product id
 	
 
-
+      
 
 
 	$sql=sprintf(" select `Supplier Product Code`,`Supplier Product Valid From`,`Supplier Product Valid To`,`Supplier Product Key`,SPD.`Supplier Product ID`,`Supplier Product Units Per Part`,`Supplier Product Cost` from  `Supplier Product Dimension`   SPD left join `Supplier Product Part List` SPPL  on (SPD.`Supplier Product ID`=SPPL.`Supplier Product ID`) where `Part SKU`=%s  and `Supplier Product Valid From`<=%s and `Supplier Product Valid To`>=%s",prepare_mysql($row['Part SKU'])
@@ -830,7 +871,7 @@ class Order{
 	   
 	   print "$sql\n";
 	   print "more than 2 prod to choose\n";
-	   exit;
+	   //   exit;
 
 	   $tmp=array();
 	   while($row2=mysql_fetch_array($result2, MYSQL_ASSOC)){
@@ -860,7 +901,7 @@ class Order{
 	   }
 	   
 	   
-
+	 
 
 
 	   //print_r($tmp);
@@ -919,7 +960,7 @@ class Order{
 
 
 
-
+      }
 
 
 

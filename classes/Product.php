@@ -59,7 +59,8 @@ class product{
       $auto_add=$tag['auto_add'];
       
 
-
+   //    if($tag['product code']=='Pack-06')
+// 	print_r($tag);
 
       $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s and `Product Name`=%s and `Product Units Per Case`=%s and `Product Unit Type`=%s  and `Product Price`=%s  "
 		   ,prepare_mysql($tag['product code'])
@@ -70,6 +71,9 @@ class product{
 		   ); 
       $result=mysql_query($sql);
       if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)){
+
+	//	print $tag['product code']." FOUND OLS\n";
+
 	$this->id=$this->data['Product Key'];
 
 	if(strtotime($this->data['Product Valid To'])<strtotime($tag['date2'])  ){
@@ -84,12 +88,26 @@ class product{
 	  $this->data['Product Valid From']=$tag['date'];
 	}
 
-	$sql=sprintf("select  `Part SKU`  from `Product Part List`  where  `Product ID`=%s group by `Part SKU`" ,$this->data['Product ID']);
+	//found the part
+
+
+	$sql=sprintf("select  count(Distinct `Product Part ID`) as lists  from `Product Part List`  where  `Product ID`=%s  " ,$this->data['Product ID']);
 	$result2=mysql_query($sql);
-	$part_skus=array();
-	while($row2=mysql_fetch_array($result2, MYSQL_ASSOC)){
+	if($row2=mysql_fetch_array($result2, MYSQL_ASSOC)){
+	  $num_lists=$row2['lists'];
+	  if($num_lists!=1)
+	    exit("$sql  error wrong numer if lists\n");
+	}
+
+ 	$sql=sprintf("select  `Part SKU`, `Product Part ID`  from `Product Part List`  where  `Product ID`=%s  " ,$this->data['Product ID']);
+ 	$result2=mysql_query($sql);
+ 	$part_skus=array();
+	// only whorls with single ones
+	if($row2=mysql_fetch_array($result2, MYSQL_ASSOC)){
 	  $part_sku=$row2['Part SKU'];
 	  $part_skus[]=$part_sku;
+	  $this->part_sku=$row2['Part SKU'];
+	  $this->product_part_id=$row2['Product Part ID'];
 	  $sql=sprintf("update `Part Dimension`  set `Part Valid From`=%s  where `Part SKU`=%s and `Part Valid From`>%s"
 		       ,prepare_mysql($tag['date'])
 		       ,prepare_mysql($part_sku)
@@ -103,60 +121,22 @@ class product{
 		       ,prepare_mysql($tag['date2'])
 		       );
 	  mysql_query($sql);
-	  
-	  
-// 	  $sqlxx=sprintf("select `Supplier Key`,`Supplier Product ID` from `Supplier Product Part List` where `Part SKU`=%s ",prepare_mysql($part_sku));
-
-// 	  $result3=mysql_query($sqlxx);
-// 	  while($row3=mysql_fetch_array($result3, MYSQL_ASSOC)){
-	    
-// 	    $sqlw=sprintf("update `Supplier Product Dimension`  set `Supplier Product Valid From`=%s  where `Supplier Product ID`=%s and `Supplier Product Valid From`>%s"
-// 			 ,prepare_mysql($tag['date'])
-// 			  ,$row3['Supplier Product ID']
-// 			 ,prepare_mysql($tag['date'])
-// 			 );
-
-// 	    mysql_query($sqlw);
-	    
-// 	    $sqlaa=sprintf("update `Supplier Product Dimension`  set `Supplier Product Valid To`=%s  where `Supplier Product ID`=%s and `Supplier Product Valid To`<%s"
-// 			 ,prepare_mysql($tag['date2'])
-// 			 ,$row3['Supplier Product ID']
-// 			 ,prepare_mysql($tag['date2'])
-// 			 );
-// 	    mysql_query($sqlaa);
-
-// 	$sqlbb=sprintf("update `Supplier Dimension`  set `Supplier Valid From`=%s  where `Supplier Key`=%s and `Supplier Valid From`>%s"
-// 		     ,prepare_mysql($tag['date'])
-// 		     ,$row3['Supplier Key']
-// 		     ,prepare_mysql($tag['date'])
-// 		     );
-// 	mysql_query($sqlbb);
-
-// 	$sqlcc=sprintf("update `Supplier Dimension`  set `Supplier Valid From`=%s  where `Supplier Key`=%s and `Supplier Valid From`<%s"
-// 		     ,prepare_mysql($tag['date2'])
-// 		     ,$row3['Supplier Key']
-// 		     ,prepare_mysql($tag['date2'])
-// 		     );
-// 	mysql_query($sqlcc);
-	    
-	    
-// 	  }
 	}
 
-	$sqldd=sprintf("update `Product Part List`  set `Product Part Valid From`=%s  where `Product ID`=%s and `Product Part Valid From`>%s"
+	$sqldd=sprintf("update `Product Part List`  set `Product Part Valid From`=%s  where `Product Part ID`=%s and `Product Part Valid From`>%s"
 		     ,prepare_mysql($tag['date'])
-		     ,$this->data['Product ID']
+		     ,$this->product_part_id
 		     ,prepare_mysql($tag['date'])
 		     );
 	mysql_query($sqldd);
 
-	$sqlee=sprintf("update `Product Part List`  set `Product Part Valid To`=%s  where `Product ID`=%s and `Product Part Valid To`<%s"
+	$sqlee=sprintf("update `Product Part List`  set `Product Part Valid To`=%s  where `Product Part ID`=%s and `Product Part Valid To`<%s"
 		     ,prepare_mysql($tag['date2'])
-		     ,$this->data['Product ID']
+		     ,$this->product_part_id
 		     ,prepare_mysql($tag['date2'])
 		     );
 	mysql_query($sqlee);
-
+	
 
 	$supplier=new Supplier('code',$tag['supplier code']);
 	if(!$supplier->id){
@@ -182,11 +162,17 @@ class product{
 	//  print_r($sp_data);
 	$supplier_product=new SupplierProduct('supplier-code-cost',$sp_data);
 	
+	if(!$supplier_product->id)
+	  exit("error culnt create supplier producr Product.php 185\n");
+	$this->supplier_product_key=$supplier_product->id;
+	
 	if($supplier_product->new_id ){
 	  //make new part list
-	  print "caca";
+	  //print "caca";
 	  foreach($part_skus as $sku){
 	    $part=new Part('sku',$sku);
+	    if(!$part->id)
+	      exit("error culnt create part Product.php 193\n");
 	    $rules[]=array(
 			   'Part SKU'=>$part->data['Part SKU']
 			   ,'Supplier Product Units Per Part'=>$this->data['Product Units Per Case']
@@ -202,23 +188,48 @@ class product{
 	  $this->load('parts');
 
 	}else{
+	  //check if the sppl exist if not create
+	  $sql=sprintf('select `Supplier Product Code`,`Supplier Product Valid From`,`Supplier Product Valid To`,`Supplier Product Key`,SPD.`Supplier Product ID`,`Supplier Product Units Per Part`,`Supplier Product Cost` from  `Supplier Product Dimension`   SPD left join `Supplier Product Part List` SPPL  on (SPD.`Supplier Product ID`=SPPL.`Supplier Product ID`) where `Part SKU`=%d  and `Supplier Product Key`=%d',$this->part_sku,$supplier_product->id);
+	  $result_=mysql_query($sql);
+	  if(!$row2=mysql_fetch_array($result_, MYSQL_ASSOC)){
+	    $part=new Part('sku',$this->part_sku);
+	    if(!$part->id)
+	      exit("error culnt create part Product.php 193\n");
 
-	    $sqlw=sprintf("update `Supplier Product Dimension`  set `Supplier Product Valid From`=%s  where `Supplier Product ID`=%s and `Supplier Product Valid From`>%s"
+	    $rules[]=array(
+			   'Part SKU'=>$this->part_sku
+			   ,'Supplier Product Units Per Part'=>$this->data['Product Units Per Case']
+			   ,'supplier product part most recent'=>'Yes'
+			   ,'supplier product part valid from'=>$tag['date']
+			   ,'supplier product part valid to'=>$tag['date2']
+			   ,'factor supplier product'=>1
+			   );
+	    $supplier_product->new_part_list('',$rules);
+	    $supplier_product->load('used in');
+	    $part->load('supplied by');
+	    $this->load('parts');
+	    
+
+	  }
+
+	}
+
+	$sqlw=sprintf("update `Supplier Product Dimension`  set `Supplier Product Valid From`=%s  where `Supplier Product ID`=%s and `Supplier Product Valid From`>%s"
 			 ,prepare_mysql($tag['date'])
 			  ,$supplier_product->id
 			 ,prepare_mysql($tag['date'])
 			 );
 
-	    mysql_query($sqlw);
-	    
-	    $sqlaa=sprintf("update `Supplier Product Dimension`  set `Supplier Product Valid To`=%s  where `Supplier Product ID`=%s and `Supplier Product Valid To`<%s"
-			 ,prepare_mysql($tag['date2'])
-			 ,$supplier_product->id
-			 ,prepare_mysql($tag['date2'])
-			 );
-	    mysql_query($sqlaa);
-
-	}
+	mysql_query($sqlw);
+	
+	$sqlaa=sprintf("update `Supplier Product Dimension`  set `Supplier Product Valid To`=%s  where `Supplier Product ID`=%s and `Supplier Product Valid To`<%s"
+		       ,prepare_mysql($tag['date2'])
+		       ,$supplier_product->id
+		       ,prepare_mysql($tag['date2'])
+		       );
+	mysql_query($sqlaa);
+	
+	
 
 	
 	
@@ -258,6 +269,7 @@ class product{
       // print "$number_sp\n";
       if($number_sp==0){
 	// ****************************************  NEW CODE ************************************************
+	//	print "NEW Cpde\n";
 	$this->new_code=true;
 	$tag['product id']=$this->new_id();
 	$tag['product most recent']='Yes';
@@ -270,6 +282,9 @@ class product{
 	$tag['Part XHTML Currently Used In']=sprintf('<a href="product.php?%d">%s</a>',$this->id,$this->data['Product Code']);
 	$tag['Part XHTML Description']=preg_replace('/\(.*\)\s*$/i','',$this->get('Product XHTML Short Description'));
 	$part=new Part('new',$tag);
+	if(!$part->id)
+	      exit("error culnt create part Product.php 278\n");
+
 	$part_list[]=array(
 			   'Product ID'=>$this->get('Product ID'),
 			   'Part SKU'=>$part->get('Part SKU'),
@@ -278,7 +293,10 @@ class product{
 			   'Parts Per Product'=>1,
 			   'Product Part Type'=>'Simple Pick'
 			   );
-	$this->new_part_list('',$part_list);
+	$this->product_part_id=$this->new_part_list('',$part_list);
+	$this->part_sku=$part->get('Part SKU');
+	
+
 	$part->load('used in');
 	$this->load('parts');
 	$supplier=new Supplier('code',$tag['supplier code']);
@@ -304,8 +322,10 @@ class product{
 		       );
 	//  print_r($sp_data);
 	$supplier_product=new SupplierProduct('supplier-code-cost',$sp_data);
+	if(!$supplier_product->id)
+	  exit("error culnt create supplier producr Product.php 310\n");
+	$this->supplier_product_key=$supplier_product->id;
 	
-
 	$rules[]=array(
 		       'Part SKU'=>$part->data['Part SKU']
 		       ,'Supplier Product Units Per Part'=>$this->data['Product Units Per Case']
@@ -328,6 +348,7 @@ class product{
 	//print "$sql\n";
 	$result2=mysql_query($sql);
 	if($same_id_data=mysql_fetch_array($result2, MYSQL_ASSOC)){
+	  //print "new price \n";
 	  // Price  or name change, same units per case
 	  $different_name=false;
 	  $different_units=false;
@@ -353,9 +374,28 @@ class product{
 	  $tag['product valid to']=$tag['date2'];
 	  $tag['product valid from']=$tag['date'];
 	  $this->create($tag);
+
+
+	  $sql=sprintf("select  count(Distinct `Product Part ID`) as lists  from `Product Part List`  where  `Product ID`=%s  " ,$this->data['Product ID']);
+	  $result2111=mysql_query($sql);
+	  if($row2111=mysql_fetch_array($result2111, MYSQL_ASSOC)){
+	    $num_lists=$row2111['lists'];
+	    if($num_lists!=1)
+	      exit("$sql  error wrong numer if lists BIS\n");
+	}
+
+	  $sql=sprintf("select  `Product Part ID`,`Part SKU`  from `Product Part List`  where  `Product ID`=%s  " ,$this->data['Product ID']);
+	  $result2111=mysql_query($sql);
+	  
+	  if($row2111=mysql_fetch_array($result2111, MYSQL_ASSOC)){
+	    $this->product_part_id=$row2111['Product Part ID'];
+	    $this->part_sku=$row2111['Part SKU'];
+	  }
+
 	  // find sku 
 	
 	}else{
+	  //  print "new price new part\n";
 	  // Different units that meabs niew id and new product part list
 	  $this->new_id=true;
 	  $tag['product id']=$this->new_id();
@@ -384,6 +424,8 @@ class product{
 
  	  $this->new_part=true;
 	  $part=new Part('new',$tag);
+	   if(!$part->id)
+	      exit("error culnt create part Product.php 193\n");
 	  $part_list[]=array(
 			     'Product ID'=>$this->get('Product ID'),
 			     'Part SKU'=>$part->data['Part SKU'],
@@ -392,7 +434,8 @@ class product{
 			     'Parts Per Product'=>1,
 			     'Product Part Type'=>'Simple Pick'
 			     );
-	  $this->new_part_list('',$part_list);
+	  $this->product_part_id=$this->new_part_list('',$part_list);
+	  $this->part_sku=$part->data['Part SKU'];
 	  $this->load('parts');
 	  $part->load('used in');
 
@@ -431,20 +474,13 @@ class product{
 		     );
       //  print_r($sp_data);
       $supplier_product=new SupplierProduct('supplier-code-cost',$sp_data);
-      $this->load('parts');
-    //   if($supplier_product->new_id){
-// 	//	print_r($sp_data);
-	
-// 	//	print "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n";
-// 	$this->new_supplier_product=true;
+      if(!$supplier_product->id)
+	exit("error culnt create supplier producr Product.php 185\n");
+      $this->supplier_product_key=$supplier_product->id;
 
-//       }
-      
-      
-      
+      $this->load('parts');
 
       if($supplier_product->new_id or $this->new_part){
-	
 	if($this->new_part){
 	  $rules[]=array(
 			 'Part SKU'=>$part->data['Part SKU']
@@ -460,28 +496,24 @@ class product{
 	  $this->load('parts');
 	}else{
 	  
-	  $sql=sprintf("select  `Part SKU`  from `Product Part List`  where  `Product ID`=%s group by `Part SKU`" ,$this->data['Product ID']);
+	  $sql=sprintf("select  `Part SKU`  from `Product Part List`  where  `Product Part ID`=%s group by `Part SKU`" ,$this->product_part_id);
 	  $result211=mysql_query($sql);
 	  $part_skus=array();
 	  while($row211=mysql_fetch_array($result211, MYSQL_ASSOC)){
 	    $part_sku=$row211['Part SKU'];
+	    $this->part_sku=$part_sku;
 	    $part_skus[]=$part_sku;
 	  }
-	//   print_r($part_skus);
-// 	  print_r($supplier_product->data);
 	  
-// 	  print "i dont now wat to do\n";
-// 	  exit;
-
-
-
-	   foreach($part_skus as $sku){
-	     $part=new Part('sku',$sku);
-	     $rules[]=array(
-			    'Part SKU'=>$part->data['Part SKU']
-			   ,'Supplier Product Units Per Part'=>$this->data['Product Units Per Case']
-			    ,'supplier product part most recent'=>'Yes'
-			    ,'supplier product part valid from'=>$tag['date']
+	  foreach($part_skus as $sku){
+	    $part=new Part('sku',$sku);
+	    if(!$part->id)
+	      exit("error culnt create part Product.php 193\n");
+	    $rules[]=array(
+			   'Part SKU'=>$part->data['Part SKU']
+			    ,'Supplier Product Units Per Part'=>$this->data['Product Units Per Case']
+			   ,'supplier product part most recent'=>'Yes'
+			   ,'supplier product part valid from'=>$tag['date']
 			    ,'supplier product part valid to'=>$tag['date2']
 			   ,'factor supplier product'=>1
 			    );
@@ -490,16 +522,33 @@ class product{
 	     $part->load('supplied by');
 	   }
 	  $this->load('parts');
-	  
-
-
-
-
-
-
-
-
 	}
+      }else{
+
+	 //check if the sppl exist if not create
+	  $sql=sprintf('select `Supplier Product Code`,`Supplier Product Valid From`,`Supplier Product Valid To`,`Supplier Product Key`,SPD.`Supplier Product ID`,`Supplier Product Units Per Part`,`Supplier Product Cost` from  `Supplier Product Dimension`   SPD left join `Supplier Product Part List` SPPL  on (SPD.`Supplier Product ID`=SPPL.`Supplier Product ID`) where `Part SKU`=%d  and `Supplier Product Key`=%d',$this->part_sku,$supplier_product->id);
+	  $result_=mysql_query($sql);
+	  if(!$row2=mysql_fetch_array($result_, MYSQL_ASSOC)){
+	    $part=new Part('sku',$this->part_sku);
+	    if(!$part->id)
+	      exit("error culnt create part Product.php 193\n");
+
+	    $rules[]=array(
+			   'Part SKU'=>$this->part_sku
+			   ,'Supplier Product Units Per Part'=>$this->data['Product Units Per Case']
+			   ,'supplier product part most recent'=>'Yes'
+			   ,'supplier product part valid from'=>$tag['date']
+			   ,'supplier product part valid to'=>$tag['date2']
+			   ,'factor supplier product'=>1
+			   );
+	    $supplier_product->new_part_list('',$rules);
+	    $supplier_product->load('used in');
+	    $part->load('supplied by');
+	    $this->load('parts');
+	    
+
+	  }
+
       }
       //      if($supplier_product->new){
       //print_r($supplier_product->data);
@@ -1002,7 +1051,7 @@ function valid_id($id){
 	  $sql=sprintf('update `Product Part List` set `Product Part Most Recent Key`=%d where `Product Part Key`=%d',$id,$id);
 	  mysql_query($sql);
 	}
-
+	return $base_data['product part id'];
 
       }else{
 	print "$sql\n can not create part list";

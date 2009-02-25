@@ -37,7 +37,7 @@ $sql="select id from orders_data.order_data   ";
 
 $res=mysql_query($sql);
 while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
-  print "OrderData ID".$row2['id']."\n";
+  print $row2['id']."\r";
   $sql="select * from orders_data.order_data where id=".$row2['id'];
   $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
@@ -234,6 +234,9 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
  if(preg_match('/Box of 6 Nightlights -Flower Garden/i',$transaction['description'])    )
     $transaction['description']='Box of 6 Nightlights - Flower Garden';
 
+ 
+ if(preg_match('/Grip Seal Bags 4 x 5.5 inch/i',$transaction['description'])    )
+   $transaction['description']='Grip Seal Bags 4x5.5inch';
 
      if(preg_match('/^FW-01$/i',$transaction['code'])  ){
        if(preg_match('/gift|alter/i',$transaction['description'])){
@@ -313,12 +316,17 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
 
      }
-
-
-    $supplier_product_cost=sprintf("%.4f",$transaction['supplier_product_cost']);
+ if(!is_numeric($transaction['units']))
+   $transaction['units']=1;
+ if($transaction['price']>0){
+   $margin=$transaction['supplier_product_cost']*$transaction['units']/$transaction['price'];
+   if($margin>1 or $margin<0.01){
+     $transaction['supplier_product_cost']=0.4*$transaction['price']/$transaction['units'];
+     }
+ }
+ $supplier_product_cost=sprintf("%.4f",$transaction['supplier_product_cost']);
     // print_r($transaction);
-    if($transaction['units']=='')
-      $transaction['units']=1;
+
     
 
 
@@ -328,7 +336,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	$transaction['supplier_product_code']=preg_replace('/\s*\"$/','',$transaction['supplier_product_code']);
 
 
-	if(preg_match('/\d+ or more|0.10000007|0.050000038|0.150000076|0.8000006103|1.100000610|1.16666666|1.650001220|1.80000122070/i',$transaction['supplier_product_code']))
+	if(preg_match('/\d+ or more|\d|0.10000007|0.050000038|0.150000076|0.8000006103|1.100000610|1.16666666|1.650001220|1.80000122070/i',$transaction['supplier_product_code']))
 	  $transaction['supplier_product_code']='';
 	if(preg_match('/^(\?|new|0.25|0.5|0.8|8.0600048828125|0.8000006103|01 Glass Jewellery Box|1|0.1|0.05|1.5625|10|\d{1,2}\s?\+\s?\d{1,2}\%)$/i',$transaction['supplier_product_code']))
 	  $transaction['supplier_product_code']='';
@@ -485,6 +493,12 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 				  ,'amount in'=>(($transaction['order']-$transaction['reorder'])*$transaction['price'])*(1-$transaction['discount'])
 				  ,'given'=>0
 				  ,'required'=>$transaction['order']
+				  ,'pick_method'=>'historic'
+				  ,'pick_method_data'=>array(
+								  'supplier product key'=>$product->supplier_product_key,
+								  'part sku'=>$product->part_sku,
+								  'product part id'=>$product->product_part_id
+								  )
 				  );		   
 
     if($transaction['bonus']>0){
@@ -518,6 +532,13 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 				  ,'amount in'=>0
 				  ,'given'=>$transaction['bonus']
 				  ,'required'=>0
+				   ,'pick_method'=>'historic'
+				  ,'pick_method_data'=>array(
+								  'supplier product key'=>$product->supplier_product_key,
+								  'part sku'=>$product->part_sku,
+								  'product part id'=>$product->product_part_id
+								  )
+				  
 				  );		   
 
 
