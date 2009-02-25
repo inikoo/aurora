@@ -184,6 +184,7 @@ class product{
 	
 	if($supplier_product->new_id ){
 	  //make new part list
+	  print "caca";
 	  foreach($part_skus as $sku){
 	    $part=new Part('sku',$sku);
 	    $rules[]=array(

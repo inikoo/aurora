@@ -218,7 +218,7 @@ class supplierproduct{
       
       $this->get_data('id',$this->id);
     }else{
-      print "Error can not create Product Supplier\n";exit;
+      print "$sql  Error can not create Product Supplier\n";exit;
     }
     
     
@@ -555,7 +555,7 @@ class supplierproduct{
 	     mysql_query($sql);
 	   }
 	 }else{
-	   print "Error can not create new Supplier Product Part\n";exit;
+	   print "$sql Error can not create new Supplier Product Part\n";exit;
 	 }
 
       }
