@@ -1205,12 +1205,17 @@ function normalize_code($code){
      break;
    case('avalilability'):
    case('stock'):
+
+     $stock_forecast_method='basic1';
+     $stock_tipo_method='basic1';
+
      // get parts;
      $sql=sprintf(" select `Part Current Stock`,`Parts Per Product` from `Part Dimension` PD left join `Product Part List` PPL on (PD.`Part SKU`=PPL.`Part SKU`)  where `Product ID`=%s  and `Product Part Most Recent`='Yes' group by PD.`Part SKU`  ",prepare_mysql($this->data['Product ID']));
      //print "$sql\n";
      $result=mysql_query($sql);
      $stock=99999999999;
      $change=false;
+     $stock_error=false;
      if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
        if(is_numeric($row['Part Current Stock']) and is_numeric($row['Parts Per Product'])  and $row['Parts Per Product']>0 ) {
 	 $_stock=$row['Part Current Stock']/$row['Parts Per Product'];
@@ -1219,18 +1224,95 @@ function normalize_code($code){
 	   $change=true;
 	 }
        }else{
-	 $stock='NULL';
-	 break;
+	 $stock=0;
+	 $stock_error=true;
        }
 	 
      }
+
+     if(!$change or $stock_error)
+       $stock='NULL';
      
-     if(!$change)
+     if(is_numeric($stock) and $stock<0)
        $stock='NULL';
 
      $sql=sprintf("update `Product Dimension` set `Product Availability`=%s where `Product key`=%d",$stock,$this->id);
-     // print "$sql\n";
      mysql_query($sql);
+     $days_available='NULL';
+     $avg_day_sales=0;
+
+
+     
+     switch($stock_forecast_method){
+     case('basic1'):
+       
+       $sql=sprintf("select sum(`Product 1 Year Acc Quantity Invoiced`) as sales from `Product Dimension` where `Product Code`=%s",prepare_mysql($this->data['Product Code']));
+       $res = mysql_query($sql);
+       $sales=0;
+       if($row=mysql_fetch_array($res, MYSQL_ASSOC)) 
+	 $sales=$row['sales'];
+       if($sales<=0){
+	 $days_available='NULL';
+	 $avg_day_sales=0;
+       }else{
+	 if($this->data['Product Same Code 1 Year Acc Days On Sale']>0){
+	   $avg_day_sales=$sales/$this->data['Product Same Code 1 Year Acc Days On Sale'];
+	   if($stock=='NULL' or $avg_day_sales<=0)
+	     $days_available='NULL';
+	   else{
+	     $days_available=$sales/$avg_day_sales;
+	     
+	   }
+	 }else{
+	   $days_available='NULL';
+	   $avg_day_sales=0;
+	 }
+       }
+       
+       break;
+     }
+     
+     
+     //   print "State ".$this->data['Product Sales State']."\n";
+     
+     if($this->data['Product Sales State']=='Discontinued'){
+       if($stock=='NULL')
+	 $tipo='No applicable';
+       else
+	 $tipo='Optimal';
+       
+       // print "$tipo\n";
+     }else if($this->data['Product Sales State']=='For sale'){
+       if($stock=='NULL' or $stock<0)
+	 $tipo='Unknown';
+       else if($stock==0)
+	 $tipo='Out of stock';
+       else{
+	 if(is_numeric($days_available)){
+	   
+	   switch($stock_tipo_method){
+	   case('basic1'):
+	     if($days_available<7)
+	       $tipo='Critical';
+	     elseif($days_available>182.50)
+	       $tipo='Surplus';
+	     elseif($days_available<21)
+	       $tipo='Low';
+	     else
+	       $tipo='Optimal';
+	     break;
+	   }
+	 }else
+	   $tipo='Unknown';
+       }
+     }else{
+       $tipo='No applicable';
+     }
+
+
+     $sql=sprintf("update `Product Dimension` set `Product Availability State`=%s,`Product Available Days Forecast`=%s where `Product key`=%d",prepare_mysql($tipo),$days_available,$this->id);
+     if(!mysql_query($sql))
+       exit("can no update stock prod product.php l 1311\n");
      break;
    case('days'):
      $tdays = (strtotime($this->data['Product Valid To']) - strtotime($this->data['Product Valid From'])) / (60 * 60 * 24);

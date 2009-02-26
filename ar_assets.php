@@ -1900,21 +1900,16 @@ $sum_active=0;
 		  );
   echo json_encode($response);
   break;
-   case('families'):
-      $conf=$_SESSION['state']['families']['table'];
-
-
-  
-  
-
-   if(isset( $_REQUEST['sf']))
-     $start_from=$_REQUEST['sf'];
-   else
-     $start_from=$conf['sf'];
-   if(isset( $_REQUEST['nr']))
+ case('families'):
+     $conf=$_SESSION['state']['families']['table'];
+     if(isset( $_REQUEST['sf']))
+       $start_from=$_REQUEST['sf'];
+     else
+       $start_from=$conf['sf'];
+     if(isset( $_REQUEST['nr']))
      $number_results=$_REQUEST['nr'];
-   else
-     $number_results=$conf['nr'];
+     else
+       $number_results=$conf['nr'];
   if(isset( $_REQUEST['o']))
     $order=$_REQUEST['o'];
   else
@@ -2038,14 +2033,21 @@ $sum_active=0;
     $order='`Product Family Code`';
   elseif($order=='name')
     $order='`Product Family Name`';
-  elseif($order=='families')
-    $order='`Product Family Families`';
   elseif($order=='active')
     $order='`Product Family For Sale Products`';
   elseif($order=='outofstock')
     $order='`Product Family Out Of Stock Products`';
-  elseif($order=='stockerror')
+  elseif($order=='stock_error')
     $order='`Product Family Unknown Stock Products`';
+  elseif($order=='surplus')
+    $order='`Product Family Surplus Availability Products`';
+ elseif($order=='optimal')
+    $order='`Product Family Optimal Availability Products`';
+ elseif($order=='low')
+   $order='`Product Family Low Availability Products`';
+ elseif($order=='critical')
+   $order='`Product Family Critical Availability Products`';
+
 
 
 
@@ -2372,11 +2374,14 @@ $sum_active=0;
 		   'name'=>$row['Product Family Name'],
 		   'active'=>number($row['Product Family For Sale Products']),
 		   'outofstock'=>number($row['Product Family Out Of Stock Products']),
-		   'stockerror'=>number($row['Product Family Unknown Stock Products']),
+		   'stock_error'=>number($row['Product Family Unknown Stock Products']),
 		   'stock_value'=>money($row['Product Family Stock Value']),
 		   'sales'=>$tsall,
-		   'profit'=>$tprofit
-		   
+		   'profit'=>$tprofit,
+		   'surplus'=>number($row['Product Family Surplus Availability Products']),
+		   'optimal'=>number($row['Product Family Optimal Availability Products']),
+		   'low'=>number($row['Product Family Low Availability Products']),
+		   'critical'=>number($row['Product Family Critical Availability Products'])
 		   );
   }
 
@@ -2388,18 +2393,18 @@ $sum_active=0;
      $tprofit=money($sum_total_profit);
    }
 
-  $adata[]=array(
+  // $adata[]=array(
 
-		 'code'=>_('Total'),
-		 'name'=>'',
-		 'active'=>number($sum_active),
-		 'outofstock'=>number($row['product family out of stock products']),
-		 'stockerror'=>number($row['product family unknown stock products']),
-		 'stock_value'=>money($row['product family stock value']),
-		 'sales'=>$tsall,
-		 'profit'=>$tprofit
+// 		 'code'=>_('Total'),
+// 		 'name'=>'',
+// 		 'active'=>number($sum_active),
+// 		 'outofstock'=>number($row['product family out of stock products']),
+// 		 'stockerror'=>number($row['product family unknown stock products']),
+// 		 'stock_value'=>money($row['product family stock value']),
+// 		 'sales'=>$tsall,
+// 		 'profit'=>$tprofit
 
-		 );
+// 		 );
 
 
   $total=mysql_num_rows($res);
@@ -2562,8 +2567,17 @@ $where=" ";
     $order='`Product Department For Sale Products`';
   elseif($order=='outofstock')
     $order='`Product Department Out Of Stock Products`';
-  elseif($order=='stockerror')
+  elseif($order=='stock_error')
     $order='`Product Department Unknown Stock Products`';
+ elseif($order=='surplus')
+    $order='`Product Department Surplus Availability Products`';
+ elseif($order=='optimal')
+    $order='`Product Department Optimal Availability Products`';
+ elseif($order=='low')
+   $order='`Product Department Low Availability Products`';
+ elseif($order=='critical')
+   $order='`Product Department Critical Availability Products`';
+
 
 $sum_families=0;
 $sum_active=0;
@@ -2887,8 +2901,14 @@ $sum_active=0;
 		   'families'=>number($row['Product Department Families']),
 		   'active'=>number($row['Product Department For Sale Products']),
 		   'outofstock'=>number($row['Product Department Out Of Stock Products']),
-		   'stockerror'=>number($row['Product Department Unknown Stock Products']),
+		   'stock_error'=>number($row['Product Department Unknown Stock Products']),
 		   'stock_value'=>money($row['Product Department Stock Value']),
+		   'surplus'=>number($row['Product Department Surplus Availability Products']),
+		   'optimal'=>number($row['Product Department Optimal Availability Products']),
+		   'low'=>number($row['Product Department Low Availability Products']),
+		   'critical'=>number($row['Product Department Critical Availability Products']),
+
+
 		   'sales'=>$tsall,
 		   'profit'=>$tprofit
 		   

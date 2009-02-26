@@ -3,22 +3,26 @@ include_once('../common.php');
 ?>
 var Dom   = YAHOO.util.Dom;
 
- var period='period_<?=$_SESSION['state']['families']['period']?>';
-    var avg='avg_<?=$_SESSION['state']['families']['avg']?>';
+var period='period_<?=$_SESSION['state']['families']['period']?>';
+var avg='avg_<?=$_SESSION['state']['families']['avg']?>';
 
 
-    var change_view=function(e){
-	
-	var table=tables['table0'];
+var change_view=function(e){
+    
+    var table=tables['table0'];
 	var tipo=this.id;
-	//	alert(table.view+' '+tipo)
-	if(table.view!=tipo){
-	       table.hideColumn('stock_value');
+    //	alert(table.view+' '+tipo)
+    if(table.view!=tipo){
+	table.hideColumn('stock_value');
 	     table.hideColumn('stock_error');
 	     table.hideColumn('outofstock');
 	     table.hideColumn('active');
 	     table.hideColumn('sales');
 	     table.hideColumn('profit');
+	         table.hideColumn('surplus');
+	    table.hideColumn('optimal');
+	    table.hideColumn('low');
+	    table.hideColumn('critcal');
 
 
 	    if(tipo=='sales'){
@@ -29,13 +33,19 @@ var Dom   = YAHOO.util.Dom;
 
 	    }else if(tipo=='general'){
 		  table.showColumn('active');
-	Dom.get('period_options').style.display='none';
+		  Dom.get('period_options').style.display='none';
 		Dom.get('avg_options').style.display='none';
 	    }else if(tipo=='stock'){
-		    table.showColumn('stock_value');
 		    table.showColumn('stock_error');
 		    table.showColumn('outofstock');
-		    	Dom.get('period_options').style.display='';
+		    table.showColumn('surplus');
+		    table.showColumn('optimal');
+		    table.showColumn('low');
+		    table.showColumn('critcal');
+
+		    Dom.get('period_options').style.display='';
+
+
 		Dom.get('avg_options').style.display='none';
 	    }
 	    
@@ -57,16 +67,25 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableid=0; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 	    var OrdersColumnDefs = [ 
-				    {key:"code", label:"<?=_('Name')?>", width:350,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-
+				    {key:"code", label:"<?=_('Code')?>", width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"name", label:"<?=_('Name')?>", width:280,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    ,{key:"active", label:"<?=_('Products')?>",  width:100,sortable:true,className:"aright",<?=($_SESSION['state']['families']['view']=='general'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    ,{key:"sales", label:"<?=_('Sales')?>", width:90,sortable:true,className:"aright",<?=($_SESSION['state']['families']['view']!='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    ,{key:"profit", label:"<?=_('Profit')?>", width:90,sortable:true,className:"aright",<?=($_SESSION['state']['families']['view']!='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"stock_value", label:"<?=_('Stk Value')?>", width:70,sortable:true,className:"aright",<?=($_SESSION['state']['families']['view']=='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"outofstock", label:"<?=_('Out of Stk')?>", width:70,sortable:true,className:"aright",<?=($_SESSION['state']['families']['view']=='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"stock_error", label:"<?=_('Stk Error')?>", width:70,sortable:true,className:"aright",<?=($_SESSION['state']['families']['view']=='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+
+				       ,{key:"surplus", label:"<?=_('Surplus')?>", width:60,sortable:true,className:"aright",<?=($_SESSION['state']['families']['view']=='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"optimal", label:"<?=_('OK')?>", width:60,sortable:true,className:"aright",<?=($_SESSION['state']['families']['view']=='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"low", label:"<?=_('Low')?>", width:60,sortable:true,className:"aright",<?=($_SESSION['state']['families']['view']=='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"critical", label:"<?=_('Critical')?>", width:60,sortable:true,className:"aright",<?=($_SESSION['state']['families']['view']=='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    
 
 
+
+				    ,{key:"outofstock", label:"<?=_('Gone')?>", width:60,sortable:true,className:"aright",<?=($_SESSION['state']['families']['view']=='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"stock_error", label:"<?=_('Unknown')?>", width:60,sortable:true,className:"aright",<?=($_SESSION['state']['families']['view']=='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    
+				    
+				    
 				     ];
 
 	    this.dataSource0 = new YAHOO.util.DataSource("ar_assets.php?tipo=families");
@@ -87,7 +106,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 'id',
 			 "code",
 			 "name",
-			 'active',"stock_error","stock_value","outofstock","sales","profit"
+			 'active',"stock_error","stock_value","outofstock","sales","profit","surplus","optimal","low","critical"
 			 ]};
 	    
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,

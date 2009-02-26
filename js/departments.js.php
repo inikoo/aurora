@@ -16,10 +16,13 @@ var Dom   = YAHOO.util.Dom;
 	    table.hideColumn('families');
 	    table.hideColumn('sales');
 	    table.hideColumn('profit');
-	    table.hideColumn('stock_value');
+	    //    table.hideColumn('stock_value');
 	    table.hideColumn('stock_error');
 	    table.hideColumn('outofstock');
-
+	    table.hideColumn('surplus');
+	    table.hideColumn('optimal');
+	    table.hideColumn('low');
+	    table.hideColumn('critcal');
 
 	    if(tipo=='sales'){
 		Dom.get('period_options').style.display='';
@@ -37,9 +40,12 @@ var Dom   = YAHOO.util.Dom;
 		Dom.get('period_options').style.display='none';
 		Dom.get('avg_options').style.display='none';
 		
-		    table.showColumn('stock_value');
-		    table.showColumn('stock_error');
-		    table.showColumn('outofstock');
+		table.showColumn('surplus');
+		table.showColumn('optimal');
+		table.showColumn('low');
+		table.showColumn('critcal');
+		table.showColumn('stock_error');
+		table.showColumn('outofstock');
 	    }
 
 	    
@@ -66,9 +72,23 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    ,{key:"active", label:"<?=_('Products')?>",  width:100,sortable:true,className:"aright",<?=($_SESSION['state']['departments']['view']=='general'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    ,{key:"sales", label:"<?=_('Sales')?>", width:90,sortable:true,className:"aright",<?=($_SESSION['state']['departments']['view']=='sales'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    ,{key:"profit", label:"<?=_('Profit')?>", width:90,sortable:true,className:"aright",<?=($_SESSION['state']['departments']['view']=='sales'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"stock_value", label:"<?=_('Stk Value')?>", width:70,sortable:true,className:"aright",<?=($_SESSION['state']['departments']['view']=='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"outofstock", label:"<?=_('Out of Stk')?>", width:70,sortable:true,className:"aright",<?=($_SESSION['state']['departments']['view']=='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"stock_error", label:"<?=_('Stk Error')?>", width:70,sortable:true,className:"aright",<?=($_SESSION['state']['departments']['view']=='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+
+
+
+				    ,{key:"surplus", label:"<?=_('Surplus')?>", width:70,sortable:true,className:"aright",<?=($_SESSION['state']['departments']['view']=='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"optimal", label:"<?=_('OK')?>", width:70,sortable:true,className:"aright",<?=($_SESSION['state']['departments']['view']=='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"low", label:"<?=_('Low')?>", width:70,sortable:true,className:"aright",<?=($_SESSION['state']['departments']['view']=='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+
+
+
+
+				    ,{key:"critical", label:"<?=_('Critical')?>", width:70,sortable:true,className:"aright",<?=($_SESSION['state']['departments']['view']=='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    
+
+
+
+				    ,{key:"outofstock", label:"<?=_('Gone')?>", width:70,sortable:true,className:"aright",<?=($_SESSION['state']['departments']['view']=='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"stock_error", label:"<?=_('Unknown')?>", width:70,sortable:true,className:"aright",<?=($_SESSION['state']['departments']['view']=='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
 
 				     ];
@@ -91,7 +111,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 'id',
 			 "name",
 			 'families',
-			 'active',"sales","stock_error","stock_value","outofstock","profit"
+			 'active',"sales","stock_error","stock_value","outofstock","profit","surplus","optimal","low","critical"
 			 ]};
 	    
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,

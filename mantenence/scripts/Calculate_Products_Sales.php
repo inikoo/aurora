@@ -36,7 +36,7 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
   //  $product->load('days');
   $product->load('stock');
-  $product->load('parts');
+  //  $product->load('parts');
 
 
 

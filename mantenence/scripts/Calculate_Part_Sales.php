@@ -52,7 +52,7 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
     $part->load('stock');
     $part->load('stock_history');
-  print $row['Part Key']."\n";
+  print $row['Part Key']."\r";
 
  }
 
