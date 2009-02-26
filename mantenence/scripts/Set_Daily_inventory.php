@@ -13,6 +13,7 @@ error_reporting(E_ALL);
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 
 if(!$con){print "Error can not connect with database server\n";exit;}
+$dns_db='dw';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
   
@@ -27,10 +28,10 @@ $not_found=00;
 
 $first_day_with_data=strtotime("2007-03-24");
 
-$sql="select `Part Status`,`Part SKU`,`Part Valid From`,`Part Valid To` from `Part Dimension` limit 9630  ";
+$sql="select `Part Status`,`Part SKU`,`Part Valid From`,`Part Valid To`,`Part XHTML Currently Used In` from `Part Dimension` order by `Part Total Sold`   ";
 $resultx=mysql_query($sql);
 while($rowx=mysql_fetch_array($resultx, MYSQL_ASSOC)   ){
-  
+  $daysin=0;
   $part_sku=$rowx['Part SKU'];
   $from=strtotime($rowx['Part Valid From']);
   if($from<$first_day_with_data){
@@ -68,10 +69,12 @@ while($rowx=mysql_fetch_array($resultx, MYSQL_ASSOC)   ){
   $i = 0;
   
 
+
   $qty_inicio='NULL';
-  
+  $value_inicio=0;
+
    $sql=sprintf("select `Inventory Transaction Quantity` from `Inventory Transition Fact` where  `Part Sku`=%s  and DATE(`Date`)<%s and `Inventory Transaction Type`='Audit' order by `Date` desc limit 1",prepare_mysql($part_sku),prepare_mysql($start_date));
-   // print $sql;
+   //print $sql;
    $result2=mysql_query($sql);
     if($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ){
       $qty_inicio=$row2['Inventory Transaction Quantity'];
@@ -159,7 +162,7 @@ while($rowx=mysql_fetch_array($resultx, MYSQL_ASSOC)   ){
      $amount_sold=-1*$amount_sold;
      if(is_numeric($qty_inicio)){
        //   echo "$part_sku  $check_date $qty_inicio $value_inicio $amount_sold $last_selling_price  \n";
-       
+       $daysin++;
        $sql=sprintf("insert into `Inventory Spanshot Fact` (`Date`,`Part SKU`,`Location Key`,`Quantity on Hand`,`Value at Cost`,`Sold Amount`,`Value at Latest Selling Price`,`Storing Cost`) values (%s,%s,%s,%.6f,%.2f,%.6f,%.2f,%s)"
 		    ,prepare_mysql($check_date)
 		    ,$part_sku
@@ -179,7 +182,7 @@ while($rowx=mysql_fetch_array($resultx, MYSQL_ASSOC)   ){
     $i++;
     if ($i > 5000) { die ('Error!'); } 
   }  
-  echo "$part_sku  $check_date $qty_inicio   \n";
+  echo "$part_sku  $check_date $qty_inicio Days in:$daysin  Part: ".$rowx['Part XHTML Currently Used In']."  \n";
 
   
 

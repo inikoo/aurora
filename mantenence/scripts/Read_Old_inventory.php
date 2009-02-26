@@ -13,6 +13,7 @@ error_reporting(E_ALL);
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 
 if(!$con){print "Error can not connect with database server\n";exit;}
+$dns_db='dw';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
   
@@ -76,51 +77,61 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
 
     }
+    
+    continue;
+  }
+  // if the audit is ager the last 
 
-  }else{
-    $sql=sprintf("select `Product Key`,`Product ID` from `Product Dimension` where `Product Most Recent`='Yes' and  `Product Code`=%s and `Product Same ID Valid From`>%s   order by `Product Same ID Valid From`  ",prepare_mysql($code),prepare_mysql($date));
-    $result2=mysql_query($sql);
+
+
+  $sql=sprintf("select `Product ID` from `Product Dimension` P where   `Product Code`=%s and `Product Same ID Valid To`<=%s order by `Product Same ID Valid To` desc ",prepare_mysql($code),prepare_mysql($date),prepare_mysql($date));
+  $result2=mysql_query($sql);
+  // print "$sql\n";
+  if($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ){
+
+    $product_ID=$row2['Product ID'];
+
+    $sql=sprintf("select `Part SKU`,`Parts Per Product` from `Product Part List` where `Product ID`=%s  ",prepare_mysql($product_ID));
     // print "$sql\n";
-    if($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ){
-      $product_ID=$row2['Product ID'];
-      
-      $sql=sprintf("select `Part SKU`,`Parts Per Product` from `Product Part List` where `Product ID`=%s  ",prepare_mysql($product_ID));
+    $result3=mysql_query($sql);
+    $num = mysql_num_rows($result3);
+    if($num!=1)
+      exit ("no ideal product");
+    
+    if($row3=mysql_fetch_array($result3, MYSQL_ASSOC)   ){
+      $part_sku=$row3['Part SKU'];
+      $parts_per_product=$row3['Parts Per Product'];
+    }
+    
+    
+    $cost_per_part=get_cost($part_sku,$date);
+    
+   
+
+    if($tipo==2){
+
+      $sql=sprintf("insert into `Inventory Transition Fact` (`Date`,`Part SKU`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Transaction Metadata`) values (%s,%s,'Audit',%s,%s,%s)",prepare_mysql($date),prepare_mysql($part_sku),prepare_mysql($qty*$parts_per_product),prepare_mysql($cost_per_part*$qty*$parts_per_product),prepare_mysql($notes));
       // print "$sql\n";
-      $result3=mysql_query($sql);
-      $num = mysql_num_rows($result3);
-      if($num!=1)
-	exit ("no ideal product");
-      
-      if($row3=mysql_fetch_array($result3, MYSQL_ASSOC)   ){
-	$part_sku=$row3['Part SKU'];
-	$parts_per_product=$row3['Parts Per Product'];
-      }
-      $cost_per_part=get_cost($part_sku,$date);
-      if($tipo==2){
-	$sql=sprintf("insert into `Inventory Transition Fact` (`Date`,`Part SKU`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Transaction Metadata`) values (%s,%s,'Audit',%s,%s,%s)",prepare_mysql($date),prepare_mysql($part_sku),prepare_mysql($qty*$parts_per_product),prepare_mysql($cost_per_part*$qty*$parts_per_product),prepare_mysql($notes));
-	// print "$sql\n";
-	if(!mysql_query($sql))
-	  exit("$sql can into insert Inventory Transition Fact ");
-      }else{
-	$sql=sprintf("insert into `Inventory Transition Fact` (`Date`,`Part SKU`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Transaction Metadata`) values (%s,%s,'In',%s,%s,%s)",prepare_mysql($date),prepare_mysql($part_sku),prepare_mysql($qty*$parts_per_product),prepare_mysql($cost_per_part*$qty*$parts_per_product),prepare_mysql($notes));
-	// print "$sql\n";
-	if(!mysql_query($sql))
-	  exit("$sql can into insert Inventory Transition Fact ");
-      }
-      $sql=sprintf("update `Product Dimension` set `Product Valid From`=%s where `Product Key`=%d",prepare_mysql($date),$row2['Product Key']);
-      mysql_query($sql);
-      $sql=sprintf("update `Product Dimension` set `Product Same ID Valid From`=%s where `Product ID`=%d",prepare_mysql($date),$row2['Product ID']);
-     //      print "$sql\n";
-      mysql_query($sql);
-     
-      
-      
+      if(!mysql_query($sql))
+	exit("$sql can into insert Inventory Transition Fact ");
     }else{
-      if($qty!=0)
-	print "$code $date $qty \n";
+      
+      
+      $sql=sprintf("insert into `Inventory Transition Fact` (`Date`,`Part SKU`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Transaction Metadata`) values (%s,%s,'In',%s,%s,%s)",prepare_mysql($date),prepare_mysql($part_sku),prepare_mysql($qty*$parts_per_product),prepare_mysql($cost_per_part*$qty*$parts_per_product),prepare_mysql($notes));
+      // print "$sql\n";
+      if(!mysql_query($sql))
+	exit("$sql can into insert Inventory Transition Fact ");
+
 
     }
+    
+    continue;
   }
+
+
+
+
+
 
 
 
@@ -131,6 +142,12 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
 
 
+
+
+
+
+
+  
 
 
 

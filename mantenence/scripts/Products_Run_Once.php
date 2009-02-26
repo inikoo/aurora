@@ -13,6 +13,7 @@ error_reporting(E_ALL);
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 
 if(!$con){print "Error can not connect with database server\n";exit;}
+$dns_db='dw';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
   
@@ -77,16 +78,24 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   
   $product=new Product($row['Product Key']);
 
-   $product=new Product($row['Product Key']);
+  // print $product->id." ".$product->data['Product Same Code Most Recent']."\n";
   
-  if($product->data['Product Same Code Most Recent'])
+  if($product->data['Product Same Code Most Recent']=='Yes'){
     $state='For sale';
-  else
+    if($product->data['Product 1 Year Acc Quantity Ordered']==0)
+    $state='Discontinued';
+
+    $sql=sprintf("select id,code  from aw_old.product  where product.code=%s and  condicion=2 and stock=0  ",prepare_mysql($product->data['Product Code']));
+     $result2a=mysql_query($sql);
+     if($row2a=mysql_fetch_array($result2a, MYSQL_ASSOC)   ){
+       $state='Discontinued';
+     }
+       
+  }else
     $state='History';
 
 
-  if($product->data['Product 1 Year Acc Quantity Ordered']==0)
-    $state='Discontinued';
+
 
 
   $sql=sprintf("update `Product Dimension` set  `Product Sales State`=%s where `Product Key`=%s",prepare_mysql($state),$product->id);

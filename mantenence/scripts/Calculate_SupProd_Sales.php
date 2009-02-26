@@ -13,6 +13,7 @@ error_reporting(E_ALL);
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 
 if(!$con){print "Error can not connect with database server\n";exit;}
+$dns_db='dw';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
   
@@ -27,7 +28,7 @@ date_default_timezone_set('Europe/London');
 
 
 
-$sql="select * from `Supplier Product Dimension` where `Supplier Product Key`=13258 ";
+$sql="select * from `Supplier Product Dimension`  ";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $sp=new SupplierProduct($row['Supplier Product Key']);
