@@ -132,7 +132,7 @@ class department{
    case('stock'):
      $sql="select  sum(`Product Next Day Availability`) as value  from `Product Dimension` as P left join `Product Department Bridge` as B on (B.`Product Key`=P.`Product Key`)  where `Product Department Key`=".$this->id;
 
-     $st
+    
       $result=mysql_query($sql);
       if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 	$from=strtotime($row['ffrom']);
