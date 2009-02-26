@@ -28,7 +28,7 @@ $not_found=00;
 
 $first_day_with_data=strtotime("2007-03-24");
 
-$sql="select `Part Status`,`Part SKU`,`Part Valid From`,`Part Valid To`,`Part XHTML Currently Used In` from `Part Dimension` order by `Part Total Sold`   ";
+$sql="select `Part Status`,`Part SKU`,`Part Valid From`,`Part Valid To`,`Part XHTML Currently Used In` from `Part Dimension` order by `Part Total Sold` desc  ";
 $resultx=mysql_query($sql);
 while($rowx=mysql_fetch_array($resultx, MYSQL_ASSOC)   ){
   $daysin=0;
@@ -73,7 +73,7 @@ while($rowx=mysql_fetch_array($resultx, MYSQL_ASSOC)   ){
   $qty_inicio='NULL';
   $value_inicio=0;
 
-   $sql=sprintf("select `Inventory Transaction Quantity` from `Inventory Transition Fact` where  `Part Sku`=%s  and DATE(`Date`)<%s and `Inventory Transaction Type`='Audit' order by `Date` desc limit 1",prepare_mysql($part_sku),prepare_mysql($start_date));
+   $sql=sprintf("select `Inventory Transaction Quantity` from `Inventory Transition Fact` where  `Part Sku`=%s  and DATE(`Date`)<%s and `Inventory Transaction Type` in ('Audit','Not Found')  order by `Date` desc limit 1",prepare_mysql($part_sku),prepare_mysql($start_date));
    //print $sql;
    $result2=mysql_query($sql);
     if($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ){
@@ -87,7 +87,7 @@ while($rowx=mysql_fetch_array($resultx, MYSQL_ASSOC)   ){
     $check_date = date ("Y-m-d", strtotime ("+1 day", strtotime($check_date)));
     
     if(!is_numeric($qty_inicio)){
-      $sql=sprintf("select count(*) as num  from `Inventory Transition Fact` where  `Part Sku`=%s  and DATE(`Date`)=%s and `Inventory Transaction Type`='Audit' ",prepare_mysql($part_sku),prepare_mysql($check_date));
+      $sql=sprintf("select count(*) as num  from `Inventory Transition Fact` where  `Part Sku`=%s  and DATE(`Date`)=%s and `Inventory Transaction Type`in ('Audit','Not Found')  ",prepare_mysql($part_sku),prepare_mysql($check_date));
       $result3=mysql_query($sql);
     //  print "$sql\n";
       $row2=mysql_fetch_array($result3, MYSQL_ASSOC);
@@ -111,7 +111,7 @@ while($rowx=mysql_fetch_array($resultx, MYSQL_ASSOC)   ){
     //   print "$sql\n";
      while($row2=mysql_fetch_array($result3, MYSQL_ASSOC)   ){
       $qty=$row2['Inventory Transaction Quantity'];
-      if($row2['Inventory Transaction Type']=='Audit'){
+      if($row2['Inventory Transaction Type']=='Audit' or $row2['Inventory Transaction Type']=='Not Found' ){
 	//print "AUDITTT!!!! ";
 	$cost=get_cost($part_sku,$check_date);
 	if(is_numeric($qty_inicio)){

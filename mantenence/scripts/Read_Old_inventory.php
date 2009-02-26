@@ -189,6 +189,30 @@ function get_cost($part_sku,$date){
 
 }
 
+$sql="delete  from `Inventory Transition Fact`  where `Inventory Transaction Type`='Not Found' ";
+mysql_query($sql);
+
+
+$sql="select `No Shipped Due Out of Stock`,`Invoice Date`,`Product ID` from `Order Transaction Fact` OTF left join `Product Dimension` PD  on  (PD.`Product Key`=OTF.`Product Key`)  where `No Shipped Due Out of Stock`>0;";
+$resultx=mysql_query($sql);
+while($rowx=mysql_fetch_array($resultx, MYSQL_ASSOC)   ){
+  $product_id=$rowx['Product ID'];
+  $notes='';
+
+  $sql=sprintf(" select `Part SKU` from  `Product Part List`  where `Product ID`=%d and `Product Part Valid From`<%s  and `Product Part Valid To`>%s ",$product_id,prepare_mysql($rowx['Invoice Date']),prepare_mysql($rowx['Invoice Date']));
+  $result=mysql_query($sql);
+  while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+    $sql=sprintf("insert into `Inventory Transition Fact` (`Date`,`Part SKU`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Transaction Metadata`) values (%s,%s,'Not Found',%s,%s,%s)",prepare_mysql($rowx['Invoice Date']),prepare_mysql($row['Part SKU']),0,0,prepare_mysql($notes));
+    // print "$sql\n";
+      if(!mysql_query($sql))
+	exit("$sql can into insert Inventory Transition Fact ");
+
+  }
+
+ }
+
+  
+
 
 ?>
 
