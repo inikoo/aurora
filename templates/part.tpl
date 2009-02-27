@@ -5,15 +5,14 @@
 <div id="bd" >
   
 <div id="sub_header">
-{if $next.id>0}<span class="nav2 onright"><a href="product.php?id={$next.id}">{$next.code} &rarr; </a></span>{/if}
-{if $prev.id>0}<span class="nav2 onright" ><a href="product.php?id={$prev.id}">&larr; {$prev.code}</a></span>{/if}
-<span class="nav2 onright"><a href="family.php?id={$family_id}">&uarr; {$product->get('Product Family Name')}</a></span>
-<span class="nav2 onright"><a href="department.php?id={$department_id}">&uarr;&uarr; {$product->get('Product Main Department Name')}</a></span>
+{if $next.id>0}<span class="nav2 onright"><a href="part.php?id={$next.id}">{$next.code} &rarr; </a></span>{/if}
+{if $prev.id>0}<span class="nav2 onright" ><a href="part.php?id={$prev.id}">&larr; {$prev.code}</a></span>{/if}
+
  <span class="nav2 onleft"><a  href="departments.php">{t}Departments{/t}</a></span>
   <span class="nav2 onleft"><a href="families.php">{t}Families{/t}</a></span>
   <span class="nav2 onleft"><a href="products.php">{t}Products{/t}</a></span>
   <span class="nav2 onleft"><a href="categories.php">{t}Categories{/t}</a></span>
-  <span class="nav2 onleft"><a href="parts.php">{t}Parts{/t}</a></span>
+  <span class="nav2 onleft"><a  href="parts.php">{t}Parts{/t}</a></span>
 
 </div>
 
@@ -27,7 +26,7 @@
 	<div class="yui-u first" >
 	  <div id="photo_container" style="margin-top:10px">
 	    <div style="border:1px solid #ddd;padding-top:0;width:220px;xheight:230px;text-align:center;margin:0 10px 0 0px">
-	      <span style="font-size:150%;font-weight:800">{$product->get('Product Code')}</span>
+	      <span style="font-size:150%;font-weight:800">{t}Part SKU{/t} {$part->get('Part SKU')}</span>
 	      <div id="imagediv"   style="border:1px solid #ddd;width:200px;height:140px;padding:0px 0;xborder:none;cursor:pointer;xbackground:red;margin: 0 0 10px 9px">
 		<img src="{ if $num_images>0}{$images[$data.principal_image].med}{else}art/nopic.png{/if}"     id="image"   alt="{t}Image{/t}"/>
 	      </div>
@@ -49,7 +48,8 @@
 
 	
 	<div class="yui-u">
-	  <h2>{$product->get('Product Name')} [{$product->get('Product ID')}]</h2>
+	  <h2>{$part->get('Part XHTML Description')}</h2>
+	  <h2>{t}Used in{/t}: {$part->get('Part XHTML Currently Used In')}</h2>
 	  <div class="yui-b"  style="width:100%;">
 	    <div class="yui-g" style="width:100%;font-size:90%"   >
               <div class="yui-u first">
@@ -57,74 +57,27 @@
 		  <td class="aright">
 		    
 		     <tr >
-		      <td><span id="web_status"   style="cursor:pointer">{$web_status}</span> 
-			    <img id="web_status_error" onclick="sincronize_all()" style="{if !$web_status_error}visibility:hidden;{/if}vertical-align:top;position:relative;bottom:2px;cursor:pointer"src="art/icons/exclamation.png" title="{$web_status_error_title}"/></td><td  class="aright">
-			 <img id="no_sincro_pages" title="{$data.nosincro_pages_why}" onclick="manual_check()" style="{if $data.sincro_pages==1}visibility:hidden;{/if}vertical-align:top;position:relative;bottom:2px;cursor:pointer" src="art/icons/page_error.png"/> 
-			 <img id="no_sincro_db" title="{$data.nosincro_db_why}" onclick="sincronizar()" src="art/icons/database_error.png" style="{if $data.sincro_db==1}visibility:hidden;{/if}vertical-align:top;position:relative;bottom:2px;cursor:pointer"/>  
-			 <span  id="online"  >{if $num_links>0}{t}Online{/t} ({$fnum_links}) {else}{t}Offline{/t}{/if}</span></td>
+
 		     </tr>
 		     <tr style="border-bottom:1px solid #5f84ae;">
 		       <td colspan=2><span id="edit_web_messages"></span></td>
 		     </tr>
 		</table>
 		<table    class="show_info_product">
-		    <tr>
-		      <td>{t}Sell Price{/t}:</td><td  class="price aright">{$product->get('formated price')}{if $product->get('Product Units per Case')>1} <span style="font-weight:400;color:#555">({$unit_price} {t}each{/t})</span>{/if}</td>
-		    </tr>
-		    <tr {if $product->get('Product Unitary RRP')==''}style="display:none"{/if} >
-		      <td>{t}RRP{/t}:</td><td  class="aright">{$product->get('formated unitary rrp')} {if $product->get('product Units per Case')>1}{t}each{/t}{/if}</td>
-		    </tr>
-		    
-		    <tr><td>{t}Sold Since{/t}:</td><td class="aright">{$product->get('formated product for sale since date')} </td>
-		      {if $edit} <td   class="aright" ><input style="text-align:right" class="date_input" size="8" type="text"  id="v_invoice_date"  value="{$v_po_date_invoice}" name="invoice_date" /></td>{/if}
-		    </tr>
-		    <tr><td id="outall_label" title="Total Sales">{t}TS{/t}:</td><td class="aright" >{$product->get('Formated Product Total Quantity Invoiced')} {t}Outers{/t}
-		    </td></tr>
-		    <tr><td id="awoutall_label" title="Average Weelky Sales" >{t}AWS{/t}:</td><td class="aright" >{$awtsoall} {t}Outers/w{/t}</td></tr>
-		    <tr><td id="awoutq_label" title="Average Weelky Sales (Last 12 weeks)">{t}AWSQ{/t}:<td class="aright" >{$awtsoq} {t}Outers/w{/t}</td></tr>
+
 		</table>
 		<table    class="show_info_product" >
-		  {if $view_suppliers}
-		  {if $suppliers>0}
-		  {foreach from=$suppliers item=supplier key=supplier_id }
-		  <tr>
-		    <td>{t}Supplier{/t}:</td>
-		    <td><a href="supplier.php?id={$supplier_id}">{$supplier.name}</a></td>
-		  </tr>
-		  <tr><td>{t}Cost per{/t} :</td><td>{$supplier.formated_price}</td></tr>
-		  {/foreach}
-		  {else}
-		  <tr><td colspan=2 style="color:brown;font-weight:bold;cursor:pointer">{t}No supplier set{/t}</td></tr>
-		  {/if}
-		  {/if}
 		  
 		</table>
-	    </div>
+	      </div>
               <div class="yui-u">
 
-		{if $data.sale_status=='discontinued'}
-		<table  style="margin:0;padding:5px 10px;border-top:1px solid #574017;width:100%;background:#deceb2"  >
-		  <tr><td style="font-weight:800;font-size:160%;text-align:center">{t}Discontinued{/t}</td></tr>
-		</table>
-		{/if}
-		{if $data.sale_status=='tobediscontinued'}
-		<table  style="margin:0;padding:5px 10px;border-top:1px solid #574017;width:100%;background:#deceb2"  >
-		  <tr><td style="font-weight:800;font-size:160%;text-align:center">{t}Discontinued{/t}</td></tr>
-		</table>
-		{/if}
-		{if $data.sale_status=='nosale'}
-		<table  style="margin:0;padding:5px 10px;border-top:1px solid #c7cbe0;width:100%;background:#deceb2"  >
-		  <tr><td style="font-weight:800;font-size:160%;text-align:center">{t}Not for Sale{/t}</td></tr>
-		</table>
-		{/if}
-
+		
 		<table   class="show_info_product" >
 		  <tr>
-		    <td>{t}Stock{/t}:<br>{$stock_units}</td><td class="stock aright" id="stock">{$data.stock}</td>
+		    <td>{t}Stock{/t}:<br>{$stock_units}</td><td class="stock aright" id="stock">{$part->get('Part Current Stock')}</td>
 		  </tr>
-		     <tr>
-		      <td>{t}Available{/t}:</td><td class="aright">{$available}</td>
-		    </tr>
+
 		    {if $locations}
 		    <tr><td>{t}Location{/t}:</td><td class="aright">
 			<table class="locations " style="float:right"  >
@@ -139,17 +92,14 @@
 		  </table>
 		  
 		  <table  class="show_info_product">
-		    <tr ><td>{t}Unit Weight{/t}:</td><td class="aright">{$product->get('Formated Weight')}</td></tr>
-		    <tr><td>{t}Unit Dimensions{/t}:</td><td class="aright">{$data.dimension}</td></tr>
-		    <tr ><td>{t}Outer Weight{/t}:</td><td class="aright">{$data.oweight}{t}Kg{/t}</td></tr>
-		    <tr><td>{t}Outer Dimensions{/t}:</td><td class="aright">{$data.odimension}</td></tr>
+
 
 		  </table>
 		  <table  class="show_info_product">
 		    
 
 
-<tr>
+		    <tr>
 		      <td>{t}Categories{/t}:</td>
 		      <td>{$categories}</td>
 		    </tr>
@@ -282,27 +232,8 @@
       </div>
       
 
-      {if $view_orders} 
-      <div  id="block_orders" class="data_table" style="{if $display.orders==0}display:none;{/if}clear:both;margin:25px 20px">
-	<span id="table_title" class="clean_table_title">{t}{$table_title_orders}{/t}</span>
-	<div  class="clean_table_caption"  style="clear:both;">
-	  <div style="float:left;"><div id="table_info0" class="clean_table_info">{$table_info} <span class="filter_msg"  id="filter_msg0"></span></div></div>
-	  <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator">{t}Showing all orders{/t}</span></div></div>
-	</div>
-	<div  id="table0"   class="data_table_container dtable btable "> </div>
-      </div>
-{/if}
       
-      {if $view_customers} 
-<div  id="block_customers" class="data_table" style="{if $display.customers==0}display:none;{/if}clear:both;margin:25px 20px">
-  <span id="table_title" class="clean_table_title">{t}{$table_title_customers}{/t}</span>
-  <div  class="clean_table_caption"  style="clear:both;">
-    <div style="float:left;"><div id="table_info1" class="clean_table_info">{$table_info} <span class="filter_msg"  id="filter_msg1"></span></div></div>
-    <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator">{t}Showing all customers{/t}</span></div></div>
-  </div>
-  <div  id="table1"   class="data_table_container dtable btable "> </div>
-</div>
-{/if}
+
 {if $view_stock}
 <div  id="block_stock_history" class="data_table" style="{if $display.stock_history==0}display:none;{/if}clear:both;margin:25px 20px">
   <span id="table_title" class="clean_table_title">{t}{$table_title_stock}{/t}</span>

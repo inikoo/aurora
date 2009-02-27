@@ -38,7 +38,7 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   // print "$sql\n";
   $result2=mysql_query($sql);
   while($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ){
-    if(preg_match('/^For sale|In proceess|Not for sale|Unknown/i',$row2['Product Sales State']))
+    if(preg_match('/^For sale|In process|Not for sale|Unknown/i',$row2['Product Sales State']))
       $in_use='In Use';
   }
   $sql=sprintf("update `Part Dimension` set `Part Status`=%s  where `Part SKU`=%d   ",prepare_mysql($in_use),$part->data['Part SKU']);

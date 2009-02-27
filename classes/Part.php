@@ -44,7 +44,7 @@ class part{
     // print_r($data);
      $base_data=array(
 		      'part status'=>'In Use',
-		     'part xhtml currently used in'=>'',
+		      'part xhtml currently used in'=>'',
 		     'part xhtml currently supplied by'=>'',
 		     'part xhtml description'=>'',
 		     'part unit description'=>'',

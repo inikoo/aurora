@@ -19,26 +19,26 @@ switch($tipo){
  case('product_week_sales'):
 
  $product=new Product($_SESSION['state']['product']['id']);
-   $product_id=$product->id;
-
-   if(isset($_REQUEST['months'])){
-     $months=$_REQUEST['months'];
-     $_SESSION['state']['product']['plot_data']['months']=$months;
-
-   }else
-     $months=$_SESSION['state']['product']['plot_data']['months'];
+ $product_id=$product->id;
+ 
+ if(isset($_REQUEST['months'])){
+   $months=$_REQUEST['months'];
+   $_SESSION['state']['product']['plot_data']['months']=$months;
    
-
-   if(isset($_REQUEST['max_sigma'])){
-     $max_sigma=$_REQUEST['max_sigma'];
-     $_SESSION['state']['product']['plot_data']['max_sigma']=$max_sigma;
-   }else
-     $max_sigma=$_SESSION['state']['product']['plot_data']['max_sigma'];
+ }else
+   $months=$_SESSION['state']['product']['plot_data']['months'];
+   
+ 
+ if(isset($_REQUEST['max_sigma'])){
+   $max_sigma=$_REQUEST['max_sigma'];
+   $_SESSION['state']['product']['plot_data']['max_sigma']=$max_sigma;
+ }else
+   $max_sigma=$_SESSION['state']['product']['plot_data']['max_sigma'];
        
-   
-   if(is_numeric($months) and $months>0)
-     $first_day=date("Y-m-d",strtotime("- $months  month"));
-   else
+ 
+ if(is_numeric($months) and $months>0)
+   $first_day=date("Y-m-d",strtotime("- $months  month"));
+ else
      $first_day=$product->get('mysql_first_date');
    
 
@@ -276,7 +276,24 @@ switch($tipo){
    $style='minorGridLines:{size:5,color: 0x4c77d1},  legend:{display: "bottom"}';
    $tipo_chart='LineChart';
    break;
+ case('part_stock_history'):
+   $title="Part Stock History";
+   $ar_address='ar_assets.php?tipo=plot_daily_part_stock_history';
+   if(isset($_REQUEST['sku']) and is_numeric($_REQUEST['sku']))
+     $ar_address.='&sku='.$_REQUEST['sku'];
+   $fields='"stock","tip_stock","tip_sales","sales","date"';
+   $yfields=array(
+		  
+		  array('label'=>_('Stock'),'name'=>'stock','axis'=>'formatNumberAxisLabel','style'=>'size:3,lineSize:2'),
 
+
+
+		  );
+
+   $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category');
+   $style='minorGridLines:{size:5,color: 0x4c77d1}';
+   $tipo_chart='LineChart';
+   break;
  default:
    exit;
    

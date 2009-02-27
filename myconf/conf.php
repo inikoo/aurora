@@ -407,6 +407,8 @@ $default_state=array(
 
 						      )
 				     ),
+		     
+		     
 		     'parts'=>array(
 				       'details'=>false,
 				       'view'=>'general',
@@ -491,6 +493,33 @@ $default_state=array(
 							      'elements'=>array()
 							      )
 				       ),
+		     'part'=>array(
+				       'details'=>false,
+				       'plot'=>'part_stock_history',
+				       'plot_data'=>array(
+							  'months'=>12,
+							  'max_sigma'=>false
+							  
+							  ),
+				       'id'=>1,
+				       'edit'=>'description',
+				       'display'=>array('details'=>0,'plot'=>1,'orders'=>0,'customers'=>0,'stock_history'=>0),
+
+				       'stock_history'=>array(
+							      'order'=>'date',
+							      'order_dir'=>'',
+							      'sf'=>0,
+							      'nr'=>15,
+							      'where'=>'where true',
+							      'f_field'=>'id',
+							      'f_value'=>'',
+							      'from'=>'',
+							      'to'=>'',
+							      'elements'=>array()
+							      )
+				       ),
+
+
 		     'po'=>array(
 				 'id'=>'',
 				 'new'=>'',

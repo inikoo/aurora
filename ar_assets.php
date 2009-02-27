@@ -6383,6 +6383,38 @@ from porden_item left join product2supplier as ps on ( p2s_id=ps.id)  left join 
      print "$value\n";
    }
    break;
+
+ case('plot_daily_part_stock_history'):
+   if(isset($_REQUEST['sku'])){
+     $part_sku=$_REQUEST['sku'];
+   }else
+     $part_sku=$_SESSION['state']['part']['sku'];
+   $sql=sprintf("select `Quantity Sold`,IFNULL(`Quantity On Hand`,-999999) as `Quantity On Hand`,`Date` from `Inventory Spanshot Fact` where `Part SKU`=%d",$part_sku);
+   $res = mysql_query($sql);
+   $data=array();
+   while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+     if($row['Quantity On Hand']<0)
+       $_stock=_('Unknown');
+     else
+       $_stock=number($row['Quantity On Hand']);
+     $data[]=array(
+		   'sales'=>(float)$row['Quantity Sold']
+		   ,'tip_sales'=>''
+		   ,'stock'=>(float)$row['Quantity On Hand']
+		   ,'tip_stock'=>strftime("%e %b %Y", strtotime($row['Date']))."\n"._('Stock').":$_stock "._('Units')."\n"._('Sold').":".number($row['Quantity Sold'])." "._('Units')
+		   ,'date'=>strftime("%e %b %Y", strtotime($row['Date']))
+		   );
+   }
+   $response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$data,
+			 )
+		   );
+   
+   echo json_encode($response);
+
+break;
+
  case('plot_product_week_outers'): 
  case('plot_product_week_sales'):
    
