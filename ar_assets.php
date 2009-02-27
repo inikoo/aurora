@@ -3015,15 +3015,15 @@ $sum_active=0;
    
  
    $wheref='';
-   if($f_field=='location.name' and $f_value!='')
-     $wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
+   if($f_field=='code' and $f_value!='')
+     $wheref.=" and  `Location Code` like '".addslashes($f_value)."%'";
    
 
   
    $_SESSION['state']['warehouse']['locations']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
    
    
-   $sql="select count(*) as total from location   left join warehouse_area on (area_id=warehouse_area.id)  $where $wheref";
+   $sql="select count(*) as total from `Location Dimension`    $where $wheref";
    // print $sql;
    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
    if($row=$res->fetchRow()) {
@@ -3033,7 +3033,7 @@ $sum_active=0;
        $filtered=0;
        $total_records=$total;
    }else{
-     $sql="select count(*) as total from location  left join warehouse_area on (area_id=warehouse_area.id)  $where ";
+     $sql="select count(*) as total from `Location Dimension`  $where ";
 
      $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
      if($row=$res->fetchRow()) {
@@ -3050,13 +3050,13 @@ $sum_active=0;
 
    if($total==0 and $filtered>0){
      switch($f_field){
-     case('location.name'):
+     case('code'):
        $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any location name starting with")." <b>$f_value</b> ";
        break;
      }
    }elseif($filtered>0){
      switch($f_field){
-     case('location.name'):
+     case('code'):
        $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('only locations starting with')." <b>$f_value</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
        break;
      }
@@ -3070,41 +3070,44 @@ $sum_active=0;
   $_order=$order;
   $_dir=$order_direction;
 
+  if($order=='code')
+    $order='`Location Code`';
+      
 
-  $sql="select (select count(*) from product2location where location_id=location.id ) as products ,deep,width,max_heigth,max_weight,location.id,location.tipo,location.name,warehouse_area.name as area  from location  left join warehouse_area on (area_id=warehouse_area.id)  $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
-  //  print "$sql";
-  $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-  
-  $adata=array();
+  $data=array();
+  $sql="select * from `Location Dimension`  $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
+  //  print $sql;
+  $result=mysql_query($sql);
+  while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+    $code=sprintf('<a href="location.php?id=%d" >%s</a>',$row['Location Key'],$row['Location Code']);
+    $tipo=$row['Location Mainly Used For'];
 
-  while($data=$res->fetchRow()) {
-  if(is_numeric($data['deep']) and is_numeric($data['length']) and is_numeric($data['height']))
-    $max_vol=$data['deep']*$data['length']*$data['height'];
-  else
-    $max_vol='';
-  if($data['name']=='_UNK'){
-    $name=_('Unknown');
-    $tipo='';
-  }elseif($data['name']=='_WHL'){
-    $name=_('White Star');
-    $tipo=_('Balancing');
-  }else{
-    $name=sprintf('<a href="location.php?id=%d" >%s</a>',$data['id'],$data['name']);
-    $tipo=mb_ucwords($data['tipo']);
-  }
-  $adata[]=array(
-		 'id'=>$data['id']
+    if($row['Location Max Weight']=='' or $row['Location Max Weight']<=0)
+      $max_weight=_('Unknown');
+    else
+      $max_weight=number($row['Location Max Weight'])._('Kg');
+    if($row['Location Max Volume']==''  or $row['Location Max Volume']<=0)
+      $max_vol=_('Unknown');
+    else
+      $max_vol=number($row['Location Max Volume'])._('L');
+
+    if($row['Location Area']=='')
+      $area=_('Unknown');
+    else
+      $area=$row['Location Area'];
+    $data[]=array(
+		 'id'=>$row['Location Key']
 		 ,'tipo'=>$tipo
-		 ,'name'=>$name
-		 ,'area'=>$data['area']
-		 ,'products'=>$data['products']
-		 ,'max_weight'=>$data['max_weight']
+		 ,'code'=>$code
+		 ,'area'=>$area
+		 ,'products'=>number($row['Location Distinct Parts'])
+		 ,'max_weight'=>$max_weight
 		 ,'max_volumen'=>$max_vol
 		 );
   }
   $response=array('resultset'=>
 		   array('state'=>200,
-			 'data'=>$adata,
+			 'data'=>$data,
 			 	'sort_key'=>$_order,
 			 'sort_dir'=>$_dir,
 			 'tableid'=>$tableid,
@@ -3112,7 +3115,7 @@ $sum_active=0;
 			 'rtext'=>$rtext,
 			 'total_records'=>$total,
 			 'records_offset'=>$start_from,
-			'records_returned'=>$start_from+$res->numRows(),
+			'records_returned'=>$start_from+$total,
 			'records_perpage'=>$number_results,
 
 			'records_order'=>$order,
@@ -6389,7 +6392,7 @@ from porden_item left join product2supplier as ps on ( p2s_id=ps.id)  left join 
      $part_sku=$_REQUEST['sku'];
    }else
      $part_sku=$_SESSION['state']['part']['sku'];
-   $sql=sprintf("select `Quantity Sold`,IFNULL(`Quantity On Hand`,-999999) as `Quantity On Hand`,`Date` from `Inventory Spanshot Fact` where `Part SKU`=%d",$part_sku);
+   $sql=sprintf("select `Quantity Sold`,IFNULL(`Quantity On Hand`,-1) as `Quantity On Hand`,`Date` from `Inventory Spanshot Fact` where `Part SKU`=%d order by `Date`  ",$part_sku);
    $res = mysql_query($sql);
    $data=array();
    while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {

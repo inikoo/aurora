@@ -57,7 +57,7 @@ $smarty->assign('filter',$tipo_filter);
 $smarty->assign('filter_value',$_SESSION['state']['warehouse']['locations']['f_value']);
 
 $filter_menu=array(
-		   'location.name'=>array('db_key'=>_('location.name'),'menu_label'=>'Location Name','label'=>'Name'),
+		   'code'=>array('db_key'=>_('code'),'menu_label'=>'Location Code','label'=>'Code'),
 		   );
 $smarty->assign('filter_menu',$filter_menu);
 $smarty->assign('filter_name',$filter_menu[$tipo_filter]['label']);

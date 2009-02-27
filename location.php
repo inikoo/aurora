@@ -58,16 +58,18 @@ $_SESSION['state']['location']['id']=$location_id;
 
 
 $location= new location($location_id);
+$order=$_SESSION['state']['warehouse']['locations']['order'];
+if($order=='code'){
+  $order='`Location Code`';
+  $_order='Location Code';
+ }
 
+$sql=sprintf("select `Location Key` as id,`Location Code` as code from `Location Dimension` where  %s<'%s'  order by %s desc  ",$order,$location->data[$_order],$order);
 
-
-//print_r($location->data);
-$warehouse_order=$_SESSION['state']['warehouse']['locations']['order'];
-$sql=sprintf("select id,name as code from location where  %s<'%s'  order by %s desc  ",$warehouse_order,$location->data[$warehouse_order],$warehouse_order);
 $result =& $db->query($sql);
 if(!$prev=$result->fetchRow())
   $prev=array('id'=>0,'code'=>'');
-$sql=sprintf("select id,name as code from location where  %s>'%s'   order by %s   ",$warehouse_order,$location->data[$warehouse_order],$warehouse_order);
+$sql=sprintf("select `Location Key` as id,`Location Code` as code  from `Location Dimension` where  %s>'%s'   order by %s   ",$order,$location->data[$_order],$order);
 //print "$sql";
 $result =& $db->query($sql);
 if(!$next=$result->fetchRow())
@@ -78,21 +80,20 @@ $smarty->assign('next',$next);
 
 
 $location->load('product');
-$smarty->assign('has_stock',$location->get('has_stock'));
+
 //print_r($locations);
-$smarty->assign('products',$location->items);
-$smarty->assign('num_products',count($location->items));
+
 
 $smarty->assign('parent','warehouse.php');
-$smarty->assign('title',_('Location ').$location->data['name']);
+$smarty->assign('title',_('Location ').$location->data['Location Code']);
 
 
 
 
 $js_files[]='js/location.js.php';
 
-$smarty->assign('data',$location->data);
-$smarty->assign('id',$location->id);
+$smarty->assign('location',$location);
+
 
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);

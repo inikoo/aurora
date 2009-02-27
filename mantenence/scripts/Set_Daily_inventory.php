@@ -28,7 +28,7 @@ $not_found=00;
 
 $first_day_with_data=strtotime("2007-03-24");
 
-$sql="select `Part Status`,`Part SKU`,`Part Valid From`,`Part Valid To`,`Part XHTML Currently Used In` from `Part Dimension` order by `Part Total Sold` desc  ";
+$sql="select `Part Status`,`Part SKU`,`Part Valid From`,`Part Valid To`,`Part XHTML Currently Used In` from `Part Dimension` where `Part SKU`=643 order by `Part Total Sold` desc  ";
 $resultx=mysql_query($sql);
 $counter=1;
 while($rowx=mysql_fetch_array($resultx, MYSQL_ASSOC)   ){
@@ -87,19 +87,19 @@ while($rowx=mysql_fetch_array($resultx, MYSQL_ASSOC)   ){
   while ($check_date != $end_date) {
     $check_date = date ("Y-m-d", strtotime ("+1 day", strtotime($check_date)));
     
-    if(!is_numeric($qty_inicio)){
-      $sql=sprintf("select count(*) as num  from `Inventory Transition Fact` where  `Part Sku`=%s  and DATE(`Date`)=%s and `Inventory Transaction Type`in ('Audit','Not Found')  ",prepare_mysql($part_sku),prepare_mysql($check_date));
-      $result3=mysql_query($sql);
-    //  print "$sql\n";
-      $row2=mysql_fetch_array($result3, MYSQL_ASSOC);
-      // print "$check_date ".$row2['num']."\n";
-      if($row2['num']==0){
+  //   if(!is_numeric($qty_inicio)){
+//       $sql=sprintf("select count(*) as num  from `Inventory Transition Fact` where  `Part Sku`=%s  and DATE(`Date`)=%s and `Inventory Transaction Type`in ('Audit','Not Found')  ",prepare_mysql($part_sku),prepare_mysql($check_date));
+//       $result3=mysql_query($sql);
+//       //  print "$sql\n";
+//       $row2=mysql_fetch_array($result3, MYSQL_ASSOC);
+//       // print "$check_date ".$row2['num']."\n";
+//       if($row2['num']==0){
 	
-	continue;
+// 	continue;
 	
-      }
+//       }
       
-    }
+//     }
     
 
     
@@ -162,13 +162,15 @@ while($rowx=mysql_fetch_array($resultx, MYSQL_ASSOC)   ){
        $qty_inicio='NULL';
        $value_inicio='NULL';
        $last_selling_price='NULL';
-     }else
+     }else{
         $daysin++;
+	$qty_inicio=sprintf("%.6f",$qty_inicio);
+     }
      $amount_sold=-1*$amount_sold;
-     
+	
        //   echo "$part_sku  $check_date $qty_inicio $value_inicio $amount_sold $last_selling_price  \n";
 
-     $sql=sprintf("insert into `Inventory Spanshot Fact` (`Date`,`Part SKU`,`Location Key`,`Quantity on Hand`,`Value at Cost`,`Sold Amount`,`Value at Latest Selling Price`,`Storing Cost`,`Quantity Sold`,`Quantity In`) values (%s,%s,%s,%.6f,%.2f,%.6f,%.2f,%s,%f,%f)"
+     $sql=sprintf("insert into `Inventory Spanshot Fact` (`Date`,`Part SKU`,`Location Key`,`Quantity on Hand`,`Value at Cost`,`Sold Amount`,`Value at Latest Selling Price`,`Storing Cost`,`Quantity Sold`,`Quantity In`) values (%s,%s,%s,%s,%.2f,%.6f,%.2f,%s,%f,%f)"
 		  ,prepare_mysql($check_date)
 		  ,$part_sku
 		    ,'NULL'

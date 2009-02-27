@@ -575,6 +575,7 @@ function interval($days,$units='auto'){
   return $interval;
 }
   
+
 function get_time_interval($d1,$d2,$units='days'){
   $interval=$d2-$d1;
   switch($units){
@@ -1033,6 +1034,10 @@ function deviation ($array){
     $deviation = sqrt(average($variance));
     return $deviation;
 }
+
+
+
+
 
 
 

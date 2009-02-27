@@ -18,12 +18,12 @@
   <div id="location_map" style="float:left;border:1px solid #ccc;height:160px;width:360px;margin-top:10px;margin-right:20px">
   </div>
   <div style="padding-left:20px">
-    <h1>{$data.name}</h1>
+    <h1>{$location->get('Location Code')}</h1>
     <table>
-      <tr><td>{t}Used for{/t}:</td><td>{$data.tipo|capitalize}</td></tr>
-      <tr><td>{t}Max Capacity{/t}:</td><td>{$max_vol}</td></tr>
-      <tr><td>{t}Max Weight{/t}:</td><td>{$max_weight}</td></tr>
-      <tr><td>{t}Max Slots{/t}:</td><td>{$max_slots}</td></tr>
+      <tr><td>{t}Used for{/t}:</td><td>{$location->get('Location Mainly Used For')}</td></tr>
+      <tr><td>{t}Max Capacity{/t}:</td><td>{$location->get('Location Max Volume')}</td></tr>
+      <tr><td>{t}Max Weight{/t}:</td><td>{$location->get('Location Max Weight')}</td></tr>
+      <tr><td>{t}Max Slots{/t}:</td><td>{$location->get('Location Max Slots')}</td></tr>
 
     </table>
   </div>
@@ -40,7 +40,7 @@
 	  <td  style="{if $num_products<1 or !$has_stock}visibility:hidden;{/if}" id="move_stock">Move Stock</td>
 	  <td  style="{if !$has_stock}visibility:hidden;{/if}" id="damaged_stock">Set Stock as Damaged</td>
 	  <td  style="{if $num_products==0}visibility:hidden;{/if}" id="change_stock">Audit</td>
-	  <td  id="add_product">Add Product</td>
+	  <td  id="add_product">Add Part</td>
 	  
 	</tr>
       </table>
@@ -62,7 +62,7 @@
 	<div id="manage_stock_engine"></div>
       </div>
     </div>
-    <h2>{t}Products{/t}</h2>
+    <h2>{t}Parts{/t}</h2>
   </div>
   
   <div id="product_messages" style="clear:both"></div>

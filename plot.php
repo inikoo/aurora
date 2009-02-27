@@ -15,6 +15,8 @@ $tipo='';
 if(isset($_REQUEST['tipo']))
   $tipo=$_REQUEST['tipo'];
 $title='';
+
+$options='';
 switch($tipo){
  case('product_week_sales'):
 
@@ -290,6 +292,9 @@ switch($tipo){
 
 		  );
 
+
+$options='yAxis.minimum = 0;';
+
    $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category');
    $style='minorGridLines:{size:5,color: 0x4c77d1}';
    $tipo_chart='LineChart';
@@ -397,6 +402,7 @@ var xAxis = new YAHOO.widget.'.$xfield['tipo_axis'].'Axis();
 
 '.(isset($xfield['axis'])?'xAxis.labelFunction = "'.$xfield['axis'].'";':'').'
 
+'.$options.'
 
 var mychart = new YAHOO.widget.'.$tipo_chart.'( '.($tipo_chart=='CartesianChart'?"'line',":'').'  "plot", jsonData,
 

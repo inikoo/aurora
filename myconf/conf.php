@@ -246,12 +246,12 @@ $default_state=array(
 		     'warehouse'=>array(
 					'id'=>1,
 					'locations'=>array(
-								 'order'=>'name',
+								 'order'=>'code',
 								 'order_dir'=>'',
 								 'sf'=>0,
 								 'nr'=>25,
 								 'where'=>'where true',
-								 'f_field'=>'location.name',
+								 'f_field'=>'code',
 								 'f_value'=>'',
 								 'elements'=>array()
 						   )
