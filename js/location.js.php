@@ -102,7 +102,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		var tableid=1; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 	    var CustomersColumnDefs = [
-				       {key:"code", label:"<?=_('Code')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       {key:"sku", label:"<?=_('Code')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"description", label:"<?=_('Description')?>", width:390,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"current_qty", label:"<?=_('Qty')?>", width:50,className:"aright"}
 				       ,{key:"changed_qty", label:"<?=_('Change')?>", width:50,className:"aright",hidden:true}
@@ -114,7 +114,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       ,{key:"delete", label:"", width:18,className:"aleft"}
 				       ];
 	    //?tipo=customers&tid=0"
-	    this.dataSource1 = new YAHOO.util.DataSource("ar_assets.php?tipo=products_in_location&tableid="+tableid);
+	    this.dataSource1 = new YAHOO.util.DataSource("ar_assets.php?tipo=parts_at_location&tableid="+tableid);
 	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource1.connXhrMode = "queueRequests";
 	    this.dataSource1.responseSchema = {
@@ -131,7 +131,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		
 		
 		fields: [
-			 "code"
+			 "sku"
 			 ,"description"
 			 ,'current_qty'
 			 ,'changed_qty'
@@ -148,8 +148,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							 renderLoopSize: 50,generateRequest : myRequestBuilder
 							 
 							 ,sortedBy : {
-							     key: "<?=$_SESSION['state']['location']['products']['order']?>",
-							     dir: "<?=$_SESSION['state']['location']['products']['order_dir']?>"
+							     key: "<?=$_SESSION['state']['location']['parts']['order']?>",
+							     dir: "<?=$_SESSION['state']['location']['parts']['order_dir']?>"
 							 },
 							 dynamicData : true
 							 
@@ -163,7 +163,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 		    
 		    
-	    this.table1.filter={key:'<?=$_SESSION['state']['product']['stock_history']['f_field']?>',value:'<?=$_SESSION['state']['product']['stock_history']['f_value']?>'};
+	    this.table1.filter={key:'<?=$_SESSION['state']['location']['parts']['f_field']?>',value:'<?=$_SESSION['state']['location']['parts']['f_value']?>'};
 	    YAHOO.util.Event.addListener('yui-pg1-0-page-report', "click",myRowsPerPageDropdown)
 
 	};

@@ -3072,7 +3072,16 @@ $sum_active=0;
 
   if($order=='code')
     $order='`Location Code`';
-      
+  elseif($order=='parts')
+    $order='`Location Distinct Parts`';
+ elseif($order=='max_volumen')
+    $order='`Location Max Volume`';
+  elseif($order=='max_weight')
+    $order='`Location Max Weight`';
+  elseif($order=='tipo')
+    $order='`Location Mainly Used For`';
+ elseif($order=='area')
+    $order='`Location Area`';
 
   $data=array();
   $sql="select * from `Location Dimension`  $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
@@ -3100,7 +3109,7 @@ $sum_active=0;
 		 ,'tipo'=>$tipo
 		 ,'code'=>$code
 		 ,'area'=>$area
-		 ,'products'=>number($row['Location Distinct Parts'])
+		 ,'parts'=>number($row['Location Distinct Parts'])
 		 ,'max_weight'=>$max_weight
 		 ,'max_volumen'=>$max_vol
 		 );
@@ -7152,12 +7161,12 @@ if(isset( $_REQUEST['tableid']))
 
   $wheref='';
 
-  $where=$where.sprintf(" and objeto='LOC' and objeto_id=%d  ",$location_id);
+  $where=$where.sprintf(" and `Location Key`=%d  ",$location_id);
 
    
   //   $where =$where.$view.sprintf(' and product_id=%d  %s',$product_id,$date_interval);
    
-   $sql="select count(*) as total from history   $where $wheref";
+   $sql="select count(*) as total from `Location Dimension`   $where $wheref";
    //   print "$sql";
    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
    if($row=$res->fetchRow()) {
@@ -7166,7 +7175,7 @@ if(isset( $_REQUEST['tableid']))
    if($wheref=='')
        $filtered=0;
    else{
-     $sql="select count(*) as total from history   $where ";
+     $sql="select count(*) as total from `Location Dimension`   $where ";
      
      $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
      if($row=$res->fetchRow()) {
@@ -7184,18 +7193,28 @@ if(isset( $_REQUEST['tableid']))
 
 
 
-  $sql=sprintf("select  UNIX_TIMESTAMP(date) as date,handle as author ,history.note,history.staff_id  from history left join liveuser_users  on (authuserid=history.staff_id)  left join product2location on (product2location.id=objeto_id)  $where $wheref order by $order $order_direction limit $start_from,$number_results ");
-  // print $sql;
+   $sql=sprintf("select  *,IFNULL(`User Key`,-1) as user from `Inventory Transition Fact`  $where $wheref order by $order $order_direction limit $start_from,$number_results ");
+  print $sql;
   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
   $adata=array();
   while($data=$res->fetchRow()) {
-
-
+    
+    if($data['user']=-1)
+      $author=_('Unknown');
+    elseif($data['user']=0)
+      $author=_('System');
+    else
+      $author=$data['user'];
+    $tipo=$data['Inventory Transaction Type'];
+    
     $adata[]=array(
 
-		   'author'=>$data['author']
-		   ,'note'=>$data['note']
-		   ,'date'=>strftime("%a %e %b %Y %T", strtotime('@'.$data['date'])),
+		   'author'=>$author
+		   ,'tipo'=>$tipo
+		   ,'diff_qty'=>number('Inventory Transaction Quantity')
+		   ,'diff_amount'=>money('Inventory Transaction Amount')
+		   ,'note'=>$data['Note']
+		   ,'date'=>strftime("%a %e %b %Y %T", strtotime('@'.$data['Date'])),
 		   );
   }
   $response=array('resultset'=>
@@ -7218,9 +7237,9 @@ if(isset( $_REQUEST['tableid']))
 		   );
    echo json_encode($response);
    break;
- case('products_in_location'):
+ case('parts_at_location'):
 
-   $conf=$_SESSION['state']['location']['products'];
+   $conf=$_SESSION['state']['location']['parts'];
    $location_id=$_SESSION['state']['location']['id'];
    
    if(isset( $_REQUEST['o']))
@@ -7237,6 +7256,13 @@ if(isset( $_REQUEST['tableid']))
      $where=addslashes($_REQUEST['where']);
    else
      $where=$conf['where'];
+
+ if(isset( $_REQUEST['date']))
+     $date=$_REQUEST['date'];
+   else
+     $date=date("Y-m-d");
+ 
+
    
    if(isset( $_REQUEST['f_field']))
      $f_field=$_REQUEST['f_field'];
@@ -7255,7 +7281,7 @@ if(isset( $_REQUEST['tableid']))
  
 
 
-  $_SESSION['state']['location']['products']=
+  $_SESSION['state']['location']['parts']=
     array(
 	  'order'=>$order,
 	  'order_dir'=>$order_direction,
@@ -7289,37 +7315,44 @@ if(isset( $_REQUEST['tableid']))
   
   $start_from=0;
   $number_results=99999999;
+  
+  
 
-  $where=$where.sprintf(" and location_id=%d",$location_id);
+  $where=$where.sprintf(" and `Location Key`=%d and Date=%s",$location_id,prepare_mysql($date));
 
    
-  //   $where =$where.$view.sprintf(' and product_id=%d  %s',$product_id,$date_interval);
+  //   $where =$where.$view.sprintf(' and part_id=%d  %s',$part_id,$date_interval);
    
-   $sql="select count(distinct product_id) as total from product2location    $where $wheref";
+   $sql="select count(*) as total from `Inventory Spanshot Fact`   $where $wheref";
    //   print "$sql";
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-   if($row=$res->fetchRow()) {
+   
+   $res = mysql_query($sql);
+   if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+
      $total=$row['total'];
    }
    if($wheref==''){
        $filtered=0;
        $total_records=$total;
    }else{
-     $sql="select  count(distinct product_id) as total from product2location  $where ";
-     
-     $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-     if($row=$res->fetchRow()) {
+     $sql="select  count(*) as total from `Inventory Spanshot Fact`  $where ";
+     $res = mysql_query($sql);
+     if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
        $total_records=$row['total'];
        $filtered=$row['total']-$total;
      }
 
    }
    
+   if($order=='sku')
+     $order='PD.`Part SKU`';
    
    if($total_records==0)
-     $rtext=_('No products on this location');
+     $rtext=_('No parts on this location');
    else
-     $rtext=$total_records.' '.ngettext('product','products',$total_records);
+     $rtext=$total_records.' '.ngettext('part','parts',$total_records);
    
    if($total_records>$number_results)
     $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
@@ -7328,25 +7361,27 @@ if(isset( $_REQUEST['tableid']))
 
 
 
-   $sql=sprintf("select  product2location.id,product_id,product.code as code, product.description ,product2location.stock as qty from product2location left join product on (product.id=product_id) $where $wheref order by $order $order_direction  ");
+   $sql=sprintf("select  * from `Inventory Spanshot Fact` ISF left join `Part Dimension` PD on (PD.`Part SKU`=ISF.`Part SKU`)    $where $wheref    order by $order $order_direction  ");
 
-  $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+
   $adata=array();
-  while($data=$res->fetchRow()) {
 
-
+ $res = mysql_query($sql);
+ // print $sql;
+ while($data=mysql_fetch_array($res, MYSQL_ASSOC)) {
+    
     $adata[]=array(
 
-		   'code'=>sprintf('<a href="product_manage_stock.php?id=%d">%s</a>',$data['product_id'],$data['code'])
-		   ,'description'=>$data['description']
-		   ,'current_qty'=>sprintf('<span  used="0"  value="%s" id="s'.$data['id'].'"  onclick="fill_value(%s,%d,%d)">%s</span>',$data['qty'],$data['qty'],$data['id'],$data['product_id'],number($data['qty']))
-		   ,'changed_qty'=>sprintf('<span   used="0" id="cs'.$data['id'].'"  onclick="change_reset(%d,%d)"   ">0</span>',$data['id'],$data['product_id'])
-		   ,'new_qty'=>sprintf('<span  used="0"  value="%s" id="ns'.$data['id'].'"  onclick="fill_value(%s,%d,%d)">%s</span>',$data['qty'],$data['qty'],$data['id'],$data['product_id'],number($data['qty']))
-		   ,'_qty_move'=>'<input id="qm'.$data['id'].'" onchange="qty_changed('.$data['id'].','.$data['product_id'].')" type="text" value="" size=3>'
-		   ,'_qty_change'=>'<input id="qc'.$data['id'].'" onchange="qty_changed('.$data['id'].','.$data['product_id'].')" type="text" value="" size=3>'
-		   ,'_qty_damaged'=>'<input id="qd'.$data['id'].'" onchange="qty_changed('.$data['id'].','.$data['product_id'].')" type="text" value="" size=3>'
-		   ,'note'=>'<input  id="n'.$data['id'].'" type="text" value="" style="width:100px">'
-		   ,'delete'=>($data['qty']==0?'<img onclick="remove_prod('.$data['id'].','.$data['product_id'].')" style="cursor:pointer" title="'._('Remove').' '.$data['code'].'" alt="'._('Desassociate Product').'" src="art/icons/cross.png".>':'')
+		   'sku'=>sprintf('<a href="part_manage_stock.php?id=%d">%s</a>',$data['Part SKU'],$data['Part SKU'])
+		   ,'description'=>$data['Part XHTML Description']
+		   ,'current_qty'=>sprintf('<span  used="0"  value="%s" id="s'.$data['Inventory Spanshot Key'].'"  onclick="fill_value(%s,%d,%d)">%s</span>',$data['Quantity On Hand'],$data['Quantity On Hand'],$data['Inventory Spanshot Key'],$data['Part SKU'],number($data['Quantity On Hand']))
+		   ,'changed_qty'=>sprintf('<span   used="0" id="cs'.$data['Inventory Spanshot Key'].'"  onclick="change_reset(%d,%d)"   ">0</span>',$data['Inventory Spanshot Key'],$data['Part SKU'])
+		   ,'new_qty'=>sprintf('<span  used="0"  value="%s" id="ns'.$data['Inventory Spanshot Key'].'"  onclick="fill_value(%s,%d,%d)">%s</span>',$data['Quantity On Hand'],$data['Quantity On Hand'],$data['Inventory Spanshot Key'],$data['Part SKU'],number($data['Quantity On Hand']))
+		   ,'_qty_move'=>'<input id="qm'.$data['Inventory Spanshot Key'].'" onchange="qty_changed('.$data['Inventory Spanshot Key'].','.$data['Part SKU'].')" type="text" value="" size=3>'
+		   ,'_qty_change'=>'<input id="qc'.$data['Inventory Spanshot Key'].'" onchange="qty_changed('.$data['Inventory Spanshot Key'].','.$data['Part SKU'].')" type="text" value="" size=3>'
+		   ,'_qty_damaged'=>'<input id="qd'.$data['Inventory Spanshot Key'].'" onchange="qty_changed('.$data['Inventory Spanshot Key'].','.$data['Part SKU'].')" type="text" value="" size=3>'
+		   ,'note'=>'<input  id="n'.$data['Inventory Spanshot Key'].'" type="text" value="" style="width:100px">'
+		   ,'delete'=>($data['Quantity On Hand']==0?'<img onclick="remove_prod('.$data['Inventory Spanshot Key'].','.$data['Part SKU'].')" style="cursor:pointer" title="'._('Remove').' '.$data['Part SKU'].'" alt="'._('Desassociate Product').'" src="art/icons/cross.png".>':'')
 		   );
   }
   $response=array('resultset'=>
@@ -7359,7 +7394,7 @@ if(isset( $_REQUEST['tableid']))
 			 'filter_msg'=>$filter_msg,
 			 'total_records'=>$total,
 			 'records_offset'=>$start_from,
-			 'records_returned'=>$start_from+$res->numRows(),
+			 'records_returned'=>$start_from+$total,
 			 'records_perpage'=>$number_results,
 			 'records_text'=>$rtext,
 			 'records_order'=>$order,

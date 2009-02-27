@@ -4,7 +4,7 @@ include_once('SupplierProduct.php');
 include_once('Part.php');
 
 class product{
-   
+ 
   var $product=array();
   var $categories=array();
 
@@ -570,6 +570,15 @@ class product{
     
 
     switch($key){
+    case('Parts SKU'):
+      $sql=sprintf("select `Part SKU` from `Product Part List` where `Product ID`=%d and `Product Part Most Recent`='Yes';",$this->data['Product ID']);
+      $result=mysql_query($sql);
+      $parts=array();
+     while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+       $parts[]=$row['Part SKU'];
+     }
+     return $parts;
+      break;
     case('Product Total Invoiced Net Amount'):
       return $this->data['Product Total Invoiced Gross Amount']-$this->data['Product Total Invoiced Discount Amount'];
     case('formated total net sales'):

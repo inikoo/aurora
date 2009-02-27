@@ -39,7 +39,7 @@ $js_files=array(
 		$yui_path.'dragdrop/dragdrop-min.js',
 		$yui_path.'animation/animation-min.js',
 		$yui_path.'datasource/datasource-min.js',	
-		$yui_path.'datatable/datatable-min.js',
+		$yui_path.'datatable/datatable.js',
 		$yui_path.'autocomplete/autocomplete-min.js',
 		$yui_path.'container/container_core-min.js',
 		$yui_path.'menu/menu-min.js',
@@ -61,8 +61,18 @@ $location= new location($location_id);
 $order=$_SESSION['state']['warehouse']['locations']['order'];
 if($order=='code'){
   $order='`Location Code`';
-  $_order='Location Code';
  }
+ elseif($order=='parts')
+    $order='`Location Distinct Parts`';
+ elseif($order=='max_volumen')
+    $order='`Location Max Volume`';
+  elseif($order=='max_weight')
+    $order='`Location Max Weight`';
+  elseif($order=='tipo')
+    $order='`Location Mainly Used For`';
+ elseif($order=='area')
+    $order='`Location Area`';
+$_order=str_replace('`','',$order);
 
 $sql=sprintf("select `Location Key` as id,`Location Code` as code from `Location Dimension` where  %s<'%s'  order by %s desc  ",$order,$location->data[$_order],$order);
 

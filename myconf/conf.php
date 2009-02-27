@@ -540,13 +540,13 @@ $default_state=array(
 				 ),
 		     'location'=>array(
 				       'location'=>false,
-				       'products'=>array(
-							 'order'=>'code',
+				       'parts'=>array(
+							 'order'=>'sku',
 							 'order_dir'=>'',
 							 'sf'=>0,
 							 'nr'=>25,
 							 'where'=>'where true',
-							 'f_field'=>'name',
+							 'f_field'=>'sku',
 							 'f_value'=>'',
 							 'elements'=>array()
 							 ),
@@ -558,7 +558,7 @@ $default_state=array(
 							 'from'=>'',
 							 'to'=>'',
 							 'where'=>'where true',
-							 'f_field'=>'name',
+							 'f_field'=>'author',
 							 'f_value'=>'',
 							 'elements'=>array()
 							 )

@@ -12,7 +12,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       ,{key:"tipo", label:"<?=_('Used for')?>",width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"max_weight", label:"<?=_('Max Weight')?>",width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				       ,{key:"max_volumen", label:"<?=_('Max Volume')?>",width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       ,{key:"products", label:"<?=_('Products')?>",sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"parts", label:"<?=_('Products')?>",sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				      
 
 					 ];
@@ -37,7 +37,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 "id"
 			 ,"code"
 			 ,'location'
-			 ,'products'
+			 ,'parts'
 			 ,'max_weight'
 			 ,'max_volumen','tipo',"area"
 			 ]};

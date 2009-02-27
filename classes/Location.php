@@ -1,4 +1,5 @@
 <?
+include_once('Part.php');
 class location{
 
   var $data=array();
@@ -285,30 +286,71 @@ case('tipo'):
     case('items'):
     case('parts'):
     case('part'):
-      include_once('classes/Part.php');
+
       if(!$args)
 	$date=date("Y-m-d");
       else
 	$date=$args;
       
-      $sql=sprintf("select `Part SKU` from `Inventory Spanshot Fact`  where `Location Key`=%d  and `Date`=%s group by `Part SKU`",$this->id,prepare_mysql($date));
+      $sql=sprintf("select `Part SKU`,sum(`Quantity On Hand`) as qty from `Inventory Spanshot Fact`  where `Location Key`=%d  and `Date`=%s group by `Part SKU`",$this->id,prepare_mysql($date));
        //       print $sql;
 
       $this->parts=array();
       $result=mysql_query($sql);
+      $has_stock='No';
       while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 	$part=new part('sku',$row['Part SKU']);
 	$this->parts[$part->id]=array(
 				      'id'=>$part->id,
 				      'sku'=>$part->get('Part SKU'),
 				      );
-	
+	if(is_numeric($row['qty']) and $row['qty']>0)
+	  $has_stock='Yes';
       }
+     
 
-       
-
+      $this->data['Location Distinct Parts']=count($this->parts);
+      $this->data['Location has Stock']=$has_stock;
+      $sql=sprintf("update `Location Dimension` set `Location Distinct Parts`=%d,`Location Has Stock`=%s where `Location Key`=%d"
+		   ,$this->data['Location Distinct Parts']
+		   ,prepare_mysql($this->data['Location has Stock'])
+		   ,$this->id
+		   );
+      mysql_query($sql);
        break;
-    }
+    case('parts_data'):
+
+      if(!$args)
+	$date=date("Y-m-d");
+      else
+	$date=$args;
+      
+      $sql=sprintf("select count(`Part SKU`) as skus,sum(`Quantity On Hand`) as qty from `Inventory Spanshot Fact`  where `Location Key`=%d  and `Date`=%s group by `Part SKU`",$this->id,prepare_mysql($date));
+      // print $sql;
+
+      $this->parts=array();
+      $result=mysql_query($sql);
+      $has_stock='No';
+      $parts=0;
+      while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+	$parts++;
+	if(is_numeric($row['qty']) and $row['qty']>0)
+	  $has_stock='Yes';
+      }
+     
+
+      $this->data['Location Distinct Parts']=$parts;
+      $this->data['Location has Stock']=$has_stock;
+      $sql=sprintf("update `Location Dimension` set `Location Distinct Parts`=%d,`Location Has Stock`=%s where `Location Key`=%d"
+		   ,$this->data['Location Distinct Parts']
+		   ,prepare_mysql($this->data['Location has Stock'])
+		   ,$this->id
+		   );
+      // print "$sql\n";
+      mysql_query($sql);
+       break;
+
+ }
       
 
   }
