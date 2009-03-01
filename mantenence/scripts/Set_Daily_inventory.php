@@ -28,7 +28,7 @@ $not_found=00;
 
 $first_day_with_data=strtotime("2007-03-24");
 
-$sql="select `Part Status`,`Part SKU`,`Part Valid From`,`Part Valid To`,`Part XHTML Currently Used In` from `Part Dimension` where `Part SKU`=643 order by `Part Total Sold` desc  ";
+$sql="select `Part Status`,`Part SKU`,`Part Valid From`,`Part Valid To`,`Part XHTML Currently Used In` from `Part Dimension`  order by `Part Total Sold` limit 1 ";
 $resultx=mysql_query($sql);
 $counter=1;
 while($rowx=mysql_fetch_array($resultx, MYSQL_ASSOC)   ){

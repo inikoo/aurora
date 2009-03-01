@@ -412,8 +412,9 @@ class Customer{
 	$this->add_ship_to('other','Yes');
       }
 
-    }
-
+      }
+      //      $this->data['Customer Last Ship To Key']=$this->data['Customer Main Ship To Key']
+      
     }else{
       print "Error, customer con not be created\n";exit;
       
@@ -496,7 +497,8 @@ class Customer{
      mysql_query($sql);
      $address=new Address($address_key);
 
-     $sql=sprintf("update `Customer Dimension` set `Customer Main Ship To Key`=%s,`Customer Main Ship To Header`=%s,`Customer Main Ship To Town`=%s,`Customer Main Ship To Postal Code`=%s,`Customer Main Ship To Country Region`=%s,`Customer Main Ship To Country`=%s,`Customer Main Ship To Country Key`=%s,`Customer Active Ship To Records`=%d,`Customer Total Ship To Records`=%d where `Customer Key`=%d"
+     $sql=sprintf("update `Customer Dimension` set `Customer Last Ship To Key`=%s,`Customer Main Ship To Key`=%s,`Customer Main Ship To Header`=%s,`Customer Main Ship To Town`=%s,`Customer Main Ship To Postal Code`=%s,`Customer Main Ship To Country Region`=%s,`Customer Main Ship To Country`=%s,`Customer Main Ship To Country Key`=%s,`Customer Active Ship To Records`=%d,`Customer Total Ship To Records`=%d where `Customer Key`=%d"
+		   ,prepare_mysql($ship_to_key)
 		  ,prepare_mysql($ship_to_key)
 		  ,prepare_mysql($address->display('header'))
 		  ,prepare_mysql($address->get('address town'))

@@ -1,5 +1,53 @@
 <?
 
+
+
+
+function mb_unserialize($serial_str) {
+$out = preg_replace('!s:(\d+):"(.*?)";!se', "'s:'.strlen('$2').':\"$2\";'", $serial_str );
+return unserialize($out);
+} 
+
+
+
+function parse_payment_method($method){
+
+
+  $method=_trim($method);
+  //  print "$method\n";
+  if($method=='' or $method=='0')
+    return 0;
+  if(preg_match('/^(Card Credit|credit  card|Debit card|Crredit Card|Credit Card|Solo|Cr Card|Switch|visa|electron|mastercard|card|credit Card0|Visa Electron|Credi Card|Credit crad)$/i',$method))
+    return 'Credit Card';
+
+  //  print "$method\n";
+  if(preg_match('/^(Cheque receiv.|APC|\*Cheque on Delivery\s*|Cheque|APC to Collect|chq|PD CHQ|APC collect CHQ|APC to coll CHQ|APC collect cheque)$/i',$method))
+    return 'Check';
+  if(preg_match('/^(Account|7 Day A.C|Pay into a.c|pay into account)$/i',$method))
+    return 'Other';
+  if(preg_match('/^(cash|casg|casn)$/i',$method))
+    return 'Cash';
+  if(preg_match('/^(Paypal|paypall|pay pal)$/i',$method))
+    return 'Paypal';
+  if(preg_match('/^(bacs|Bank Transfer|Bank Transfert|Direct Bank)$/i',$method))
+    return 'Bank Transfer';
+  if(preg_match('/^(draft|bank draft|bankers draft)$/i',$method))
+    return 'Other';
+  if(preg_match('/^(postal order)$/i',$method))
+    return 'Other';
+  if(preg_match('/^(Moneybookers)$/i',$method))
+    return 'Other';
+
+
+  return 'Unknown';
+
+}
+
+
+
+
+
+
 function filter_header($data){
   foreach($data as $key=>$value){
     $data[$key]=_trim($value);
@@ -3899,10 +3947,10 @@ function setup_contact($act_data,$header_data,$date_index){
 
       $staff_name=$act_data['contact'];
 
-      $staff=new Staff('alias',$staff_name);
-      $staff_id=$staff->id;
-      //      $staff_id=get_user_id($staff_name,'' , '',false);
-      if($staff->id){
+      //$staff=new Staff('alias',$staff_name);
+      //$staff_id=$staff->id;
+      $staff_id=get_user_id($staff_name,'' , '',false);
+      if(count($staff_id)==1 and $staff_id[0]!=0 ){
 	print "Staff $staff_name  sale\n";
 	$header_data['address1']=$act_data['contact'];
       }
@@ -3912,12 +3960,12 @@ function setup_contact($act_data,$header_data,$date_index){
     
 
     $staff_name=$header_data['address1'];
-    //$staff_id=get_user_id($staff_name,'' , '',false);
+    $staff_id=get_user_id($staff_name);
     
-    $staff=new Staff('alias',$staff_name);
-    $staff_id=$staff->id;
+    //    $staff=new Staff('alias',$staff_name);
+    //$staff_id=$staff->id;
 
-    if($staff->id){
+     if(count($staff_id)==1 and $staff_id[0]!=0 ){
       print "Staff sale\n";
       unset($act_data);
     }
@@ -4020,20 +4068,23 @@ function setup_contact($act_data,$header_data,$date_index){
       if($header_data['address1']!=''){
 	$staff_name=$header_data['address1'];
 
-	//	$staff_id=get_user_id($staff_name,'' , '',false);
+	$staff_id=get_user_id($staff_name);
 	
-	$staff=new Staff('alias',$staff_name);
+	//	$staff=new Staff('alias',$staff_name);
 
-	//	    print "$staff_name";
+	//	print "$staff_name\n";
 	//	  print_r($staff_id);
 	//	  exit;
+	if(count($staff_id)==1 and $staff_id[0]!=0 ){
 
-	if($staff->id){
 	    
-	//   $staff_id=$staff_id[0];
+	   $staff_id=$staff_id[0];
+	   $staff=new Staff('id',$staff_id);
 // 	  $staff_data=get_staff_data($staff_id);
 // 	  //print_r($staff_data);
-// 	  $contact_id=$staff_data['contact_id'];
+
+	   $act_data['name']='Ancient Winsdom Staff';
+	   $act_data['contact']=$staff->data['Staff Name'];
 // 	  // print_r(get_contact_data($contact_id));
 // 	  // exit;
 // 	  if(!$staff_data['customer_id']){
@@ -8944,6 +8995,141 @@ function read_records($handle_csv,$y_map,$number_header_rows){
 // }
 
 
+function get_user_id($oname){
+
+  //print "$record\n";
+
+  $ids=array();
+  if($oname=='' or is_numeric($oname))
+    return array();
+
+
+  $_names=array();
+  
+  $_names=preg_split('/\s*(\+|\&|,+|\/|\-)\s*/',strtolower($oname));
+   foreach($_names as $_name){    
+     $_name=_trim(strtolower($_name));
+    if($_name=='')
+      continue;
+    $original_name=$_name;
+    //    print $_name;
+    $_name=preg_replace('/^\s*/','',$_name);
+    $_name=preg_replace('/\s*$/','',$_name);
+    if(preg_match('/michele|michell/i',$_name)   )
+      $_name='michelle';
+    else if( $_name=='salvka' or    preg_match('/^slavka/i',$_name) or $_name=='slavke' or $_name=='slavla' )
+      $_name='slavka';
+ else if(preg_match('/^malcom$/i',$_name)  )
+      $_name='malcolm';
+
+    else if(preg_match('/katerina/i',$_name) or $_name=='katka]' or   $_name=='katk'   )
+      $_name='katka';
+ else if(preg_match('/richard w/i',$_name) or $_name=='rich')
+      $_name='richard';
+    else if(preg_match('/david\s?(hardy)?/i',$_name))
+      $_name='david';
+    else if(preg_match('/philip|phil/i',$_name))
+      $_name='philippe';
+     else if(preg_match('/amanada|amand\s*$/i',$_name))
+      $_name='amanda';
+     else if(preg_match('/janette/i',$_name) or $_name=='jqnet' )
+      $_name='janet';
+  else if(preg_match('/pete/i',$_name))
+      $_name='peter';
+ else if(preg_match('/debra/i',$_name))
+      $_name='debbie';
+ else if(preg_match('/sam/i',$_name))
+      $_name='samantha';
+     else if($_name=='philip' or $_name=='ph' or $_name=='phi' )
+       $_name='philippe';
+     else if(  $_name=='aqb' or $_name=='kj' or  $_name=='act' or $_name=='tr'  or    $_name=='other' or $_name=='?' or $_name=='bb')
+         return array();
+     else if($_name=='thomas' or $_name=='tb' or preg_match('/^\s*tomas\s*$/i',$_name) or $_name=='tom' )
+       $_name='tomas';
+     else if($_name=='alam' or $_name=='aw' or   $_name=='al' or   $_name=='al.'  or  $_name=='ala' )
+       $_name='alan';
+ else if($_name=='carol')
+       $_name='carole';
+
+     else if($_name=='dushan' or $_name=='duscan' or $_name=='dus')
+       $_name='dusan';
+     else if($_name=='eli' or $_name=='eilska' or $_name=='eilsk' or $_name=='elsika' or $_name=='elishka')
+       $_name='eliska';
+     else if($_name=='jiom' or $_name=='tim'  or $_name=='jimbob'    or  $_name=='jikm')
+       $_name='jim';
+     else if($_name=='beverley' or $_name=='ber'  or $_name=='bav')
+       $_name='bev';
+     else if(   $_name=='albett' or  $_name=='alnert'  or    $_name=='alberft' or   $_name=='alberyt' or    $_name=='alabert'  or   $_name=='albet' or $_name=='albert ' or $_name=='albet ' or$_name=='alberto'  or $_name=='alb'  or $_name=='albery' or $_name=='alberty' or $_name=='ac'  or $_name=='albeert'  )
+       $_name='albert';
+     else if($_name=='ab' or $_name=='adr')
+       $_name='adriana';
+     else if($_name=='jamet' or $_name=='jante' or $_name=='jant' or $_name=='jnet' or $_name=='j' or $_name=='jenet'  or $_name=='jsnet'  )
+       $_name='janet';
+     else if($_name=='slvaka')
+       $_name='slavka';
+     else if($_name=='ct')
+       $_name='craig';
+     else if($_name=='k ' or $_name=='k' or $_name=='katerina2')
+       $_name='katka';
+     else if($_name=='daniella' or $_name=='daniella' )
+       $_name='daniela';
+     else if($_name=='cc' or $_name==' cc')
+      $_name='chris';
+    else if($_name=='bret')
+      $_name='brett';
+    else if($_name=='lucia' or $_name=='luc')
+      $_name='lucie';
+    else if($_name=='mat')
+      $_name='matus';
+    else if($_name=='ob' or $_name=='o.b.')
+      $_name='olga';
+    else if($_name=='stacy')
+      $_name='stacey';
+     else if($_name=='kkzoe' or $_name=='kzoe')
+      $_name='zoe';
+  else if($_name=='cph')
+      $_name='caleb';
+ else if($_name=='jenka')
+      $_name='lenka';
+ else if($_name=='jjanka')
+      $_name='janka';
+else if($_name=='jarina')
+      $_name='jirina';
+
+    $sql=sprintf("select `Staff Key` from `Staff Dimension` where `Staff Alias`=%s",prepare_mysql($_name));
+    //print "$sql\n";
+    $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
+    if ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+      $id=$row['Staff Key'];
+      $ids[$id]=$id;
+    }else if($record){
+      //      $sql=sprintf("insert into todo_users (name,order_id,tipo) values ('%s','%s','%s')",addslashes($original_name),$order_id,$tipo);
+      //    print "$sql\n";
+      //mysql_query($sql);
+      print "Staff name not found $oname \n";
+      $id=0;
+      $ids[$id]=$id;
+    }
+  }
+   $_ids=array();
+   foreach($ids as $values){
+     $_ids[]=$values;
+   }
+
+  return $_ids;
+}
+
+
+
+
+
+
+
+
+
+
+
+
 // function delete_transactions($order_id){
 
 //   $sql=sprintf("delete from bonus where order_id=%d",$order_id); mysql_query($sql);
@@ -8952,6 +9138,11 @@ function read_records($handle_csv,$y_map,$number_header_rows){
 //   $sql=sprintf("delete from outofstock where order_id=%d",$order_id); mysql_query($sql);
 //   $sql=sprintf("delete from debit where tipo=2 and order_affected_id=%d",$order_id); mysql_query($sql);
 // }
+
+
+
+
+
 
 
 ?>

@@ -42,15 +42,15 @@ class Staff{
   function get_data($key,$id){
     
     if($key=='alias')
-      $sql=sprintf("select * from `Employee Dimension` where `Employee Alias`=%s",prepare_mysql($id));
+      $sql=sprintf("select * from `Staff Dimension` where `Staff Alias`=%s",prepare_mysql($id));
     elseif($key=='id')
-            $sql=sprintf("select * from  `Employee Dimension`     where `Employee Key`=%d",$id);
+            $sql=sprintf("select * from  `Staff Dimension`     where `Staff Key`=%d",$id);
     else
       return;
 
    $result=mysql_query($sql);
    if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   )
-     $this->id=$this->data['Employee Key'];
+     $this->id=$this->data['Staff Key'];
     
 
   }

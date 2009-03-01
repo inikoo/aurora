@@ -32,11 +32,11 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
   $product=new Product($row['Product Key']);
 
-  //$product->load('sales');
+
 
   $product->load('days');
-    //$product->load('stock');
-    //$product->load('parts');
+  $product->load('stock');
+
 
 
 

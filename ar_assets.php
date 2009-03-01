@@ -4171,7 +4171,7 @@ from `Product Dimension` P   $where $wheref $group order by $order $order_direct
   
    $res = mysql_query($sql);
   $adata=array();
-  //  print "$sql";
+    print "$sql";
   while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
     $code=sprintf('<a href="product.php?id=%d">%s</a>',$row['Product Key'],$row['Product Code']);
     if($percentages){

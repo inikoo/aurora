@@ -49,7 +49,7 @@ class Order{
 
       $customer=new Customer($customer_id);
       
-      
+
       $this->data['Order Main Ship To Key']=$customer->get('Customer Last Ship To Key');
       $ship_to_key=$this->data['Order Main Ship To Key'];
       
@@ -63,6 +63,9 @@ class Order{
 	$store=new Store('unknown');
       $this->data['Order Date']=$data['order date'];
       $this->data['Order Public ID']=$data['order id'];
+      $this->data['Order File As']=$data['order id'];
+      $this->data['Order Type']=$data['Order Type'];
+
       $this->data['Order Customer Key']=$customer->id;
       $this->data['Order Customer Name']=$customer->get('Customer Name');
       $this->data['Order Current Dispatch State']='In Process';
@@ -92,9 +95,10 @@ class Order{
 
 
       $this->create_order_header();
-	
+
       $line_number=1;
       foreach($data['products'] as $product_data){
+
 	$product_data['date']=$this->data['Order Date'];
 	$product_data['line_number']=$line_number;
 	$product_data['metadata']=$data['metadata_id'];
@@ -714,16 +718,35 @@ class Order{
     
     $invoice_txt="Invoice";
 
-    $sql=sprintf("update `Order Dimension` set `Order Current Dispatch State`='%s' ,`Order Current Payment State`='%s',`Order Current XHTML State`='%s <a href=invoice.php?id=%d>%s</a>' where `Order Key`=%d"
+    $sql=sprintf("update `Order Dimension` set `Order Current Dispatch State`='%s' ,`Order Current Payment State`='%s',`Order Current XHTML State`='%s <a href=invoice.php?id=%d>%s</a>' ,`Order XHTML Invoices`='%s <a href=invoice.php?id=%d>%s</a>'   where `Order Key`=%d"
 		 ,'Dispached'
 		 ,'Paid'
 		 ,$invoice_txt
 		 ,$this->data['Invoice Key']
-
 		 ,addslashes($this->data['Invoice Public ID'])
-		 ,$this->data['Order Key']);
+		 ,$invoice_txt
+		 ,$this->data['Invoice Key']
+		 ,addslashes($this->data['Invoice Public ID'])
+		 ,$this->data['Order Key']
+		 
+		 
+);
     if(!mysql_query($sql))
       exit("can not update order dimension after inv\n");
+
+
+  $invoice_txt="Invoice";
+
+    $sql=sprintf("update `Delivery Note Dimension` set `Delivery Note XHTML Invoices`='%s <a href=invoice.php?id=%d>%s</a>'   where `Delivery Note Key`=%d"
+		 ,$invoice_txt
+		 ,$this->data['Invoice Key']
+		 ,addslashes($this->data['Invoice Public ID'])
+		 ,$this->data['Delivery Note Key']
+		 
+		 
+);
+    if(!mysql_query($sql))
+      exit("$sql\n can not update dn  dimension after inv\n");
 
 
 
@@ -741,8 +764,11 @@ class Order{
     $this->data['Delivery Note XHTML Ship To']=$this->data['Order XHTML Ship Tos'];
     $this->data['Delivery Note Ship To Key']=$this->data['Order Main Ship To Key'];
     $this->data['Delivery Note Metadata']=$this->data['Order Original Metadata'];
-  $this->create_dn_header();
+    $this->create_dn_header();
     
+    
+
+
     $line_number=1;
     $amount=0;
     $discounts=0;
@@ -779,18 +805,27 @@ class Order{
 	  $cost=$row2['Supplier Product Cost']*$sp_units_per_part*$parts_per_product*$data['Shipped Quantity'];
 
 	  $cost_supplier+=$cost;
-	   $sql=sprintf("insert into `Inventory Transition Fact`  (`Date`,`Part SKU`,`Supplier Product ID`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`) values (%s,%s,%s,NULL,1,'Sale',%.2f,%f,%f,%.2f,%s) "
+	  
+	  $product=new product($data['product_id']);
+	  $a=sprintf('<a href="product.php?id=%d">%s</a>',$product->id,$product->data['Product Code']);
+	  unset($product);
+	  $note=$a.', '.$this->data['Order Current XHTML State'];
+	  
+	   $sql=sprintf("insert into `Inventory Transition Fact`  (`Date`,`Part SKU`,`Supplier Product ID`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`,`Note`) values (%s,%s,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s) "
 		       ,prepare_mysql($this->data['Delivery Note Date'])
 		       ,prepare_mysql($part_sku)
 		       ,prepare_mysql($supplier_product_id)
+			,1
 		       ,prepare_mysql(-$parts_per_product*$data['Shipped Quantity'])
-		       ,-$cost
-		     ,$data['required']*$parts_per_product
+			,"'Sale'"
+			,-$cost
+			,number($data['required']*$parts_per_product)
 		       ,$data['given']*$parts_per_product
 		       ,$data['amount in']
 		       ,prepare_mysql($this->data['Delivery Note Metadata'])
-		       );
-	  //   print "$sql\n";
+			,prepare_mysql($note)
+			);
+	   //  print "$sql\n";
 	  if(!mysql_query($sql))
 	    exit("can not create Warehouse * 888 $sql   Inventory Transition Fact\n");
 	}else
@@ -798,169 +833,170 @@ class Order{
 	  
 	
 
-      }if($data['pick_method']=='historic2'){
+      }
+// if($data['pick_method']=='historic2'){
 
-      $cost_supplier=0;
-      $cost_manu='';
-      $cost_storing='';
-      $cost_hand='';
-      $cost_shipping='';
+//       $cost_supplier=0;
+//       $cost_manu='';
+//       $cost_storing='';
+//       $cost_hand='';
+//       $cost_shipping='';
 
-      //       print "nre --------------\n";
+//       //       print "nre --------------\n";
       
       
 
 
-      $sql=sprintf("select `Parts Per Product`,`Product Part Key`,`Part SKU` from `Product Part List` where `Product ID`=%s ",prepare_mysql($data['Product ID']));
-      $result=mysql_query($sql);
-      $part_sku=array();$qty=array();
+//       $sql=sprintf("select `Parts Per Product`,`Product Part Key`,`Part SKU` from `Product Part List` where `Product ID`=%s ",prepare_mysql($data['Product ID']));
+//       $result=mysql_query($sql);
+//       $part_sku=array();$qty=array();
       
-      $index=0;
-      //  print "$sql\n";
-      //     $supplier_cost=0;
-      while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-	$part_sku=$row['Part SKU'];
-	$parts_per_product=$row['Parts Per Product'];
-	//get supplier product id
+//       $index=0;
+//       //  print "$sql\n";
+//       //     $supplier_cost=0;
+//       while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+// 	$part_sku=$row['Part SKU'];
+// 	$parts_per_product=$row['Parts Per Product'];
+// 	//get supplier product id
 	
 
       
 
 
-	$sql=sprintf(" select `Supplier Product Code`,`Supplier Product Valid From`,`Supplier Product Valid To`,`Supplier Product Key`,SPD.`Supplier Product ID`,`Supplier Product Units Per Part`,`Supplier Product Cost` from  `Supplier Product Dimension`   SPD left join `Supplier Product Part List` SPPL  on (SPD.`Supplier Product ID`=SPPL.`Supplier Product ID`) where `Part SKU`=%s  and `Supplier Product Valid From`<=%s and `Supplier Product Valid To`>=%s",prepare_mysql($row['Part SKU'])
-		     ,prepare_mysql($this->data['Delivery Note Date'])
-		     ,prepare_mysql($this->data['Delivery Note Date'])
-);
+// 	$sql=sprintf(" select `Supplier Product Code`,`Supplier Product Valid From`,`Supplier Product Valid To`,`Supplier Product Key`,SPD.`Supplier Product ID`,`Supplier Product Units Per Part`,`Supplier Product Cost` from  `Supplier Product Dimension`   SPD left join `Supplier Product Part List` SPPL  on (SPD.`Supplier Product ID`=SPPL.`Supplier Product ID`) where `Part SKU`=%s  and `Supplier Product Valid From`<=%s and `Supplier Product Valid To`>=%s",prepare_mysql($row['Part SKU'])
+// 		     ,prepare_mysql($this->data['Delivery Note Date'])
+// 		     ,prepare_mysql($this->data['Delivery Note Date'])
+// );
 
-	 $result2=mysql_query($sql);
+// 	 $result2=mysql_query($sql);
 
-	 $num_sp=mysql_num_rows($result2);
-	 if($num_sp==0){
-	   exit("$sql\n error in order class 0we49qwqeqwe\n");
-	 }if($num_sp==1){
-	   //print "AQYIIIII";
+// 	 $num_sp=mysql_num_rows($result2);
+// 	 if($num_sp==0){
+// 	   exit("$sql\n error in order class 0we49qwqeqwe\n");
+// 	 }if($num_sp==1){
+// 	   //print "AQYIIIII";
 	   
-	   $row2=mysql_fetch_array($result2, MYSQL_ASSOC);
-	   $supplier_product_id=$row2['Supplier Product ID'];
-	   $sp_units_per_part=$row2['Supplier Product Units Per Part'];
-	   $cost=$row2['Supplier Product Cost']*$sp_units_per_part*$parts_per_product*$data['Shipped Quantity'];
-	   $cost_supplier+=$cost;
-	   //print_r($row2);
-	   // print "$cost_supplier * $cost * $sp_units_per_part  $parts_per_product  \n";
-	   //if($cost=='')
-	   //  print_r($data);
+// 	   $row2=mysql_fetch_array($result2, MYSQL_ASSOC);
+// 	   $supplier_product_id=$row2['Supplier Product ID'];
+// 	   $sp_units_per_part=$row2['Supplier Product Units Per Part'];
+// 	   $cost=$row2['Supplier Product Cost']*$sp_units_per_part*$parts_per_product*$data['Shipped Quantity'];
+// 	   $cost_supplier+=$cost;
+// 	   //print_r($row2);
+// 	   // print "$cost_supplier * $cost * $sp_units_per_part  $parts_per_product  \n";
+// 	   //if($cost=='')
+// 	   //  print_r($data);
 	   
-	   $sql=sprintf("insert into `Inventory Transition Fact`  (`Date`,`Part SKU`,`Supplier Product ID`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`) values (%s,%s,%s,1,%s,'Sale',%.2f,%f,%f,%.2f,%s) "
-			,prepare_mysql($this->data['Delivery Note Date'])
-			,prepare_mysql($part_sku)
-			,prepare_mysql($supplier_product_id)
-			,prepare_mysql(-$parts_per_product*$data['Shipped Quantity'])
-			,-$cost
-			,$data['required']*$parts_per_product
-			,$data['given']*$parts_per_product
-			,$data['amount in']
-			,prepare_mysql($this->data['Delivery Note Metadata'])
-		     );
-	   //   print "$sql\n";
-	   if(!mysql_query($sql))
-	     exit("can not create Warehouse * 888 $sql   Inventory Transition Fact\n");
+// 	   $sql=sprintf("insert into `Inventory Transition Fact`  (`Date`,`Part SKU`,`Supplier Product ID`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`) values (%s,%s,%s,1,%s,'Sale',%.2f,%f,%f,%.2f,%s) "
+// 			,prepare_mysql($this->data['Delivery Note Date'])
+// 			,prepare_mysql($part_sku)
+// 			,prepare_mysql($supplier_product_id)
+// 			,prepare_mysql(-$parts_per_product*$data['Shipped Quantity'])
+// 			,-$cost
+// 			,$data['required']*$parts_per_product
+// 			,$data['given']*$parts_per_product
+// 			,$data['amount in']
+// 			,prepare_mysql($this->data['Delivery Note Metadata'])
+// 		     );
+// 	   //   print "$sql\n";
+// 	   if(!mysql_query($sql))
+// 	     exit("can not create Warehouse * 888 $sql   Inventory Transition Fact\n");
 	   
 
 	   
-	 }else{// More than one suplier product providing this part get at random (approx)
+// 	 }else{// More than one suplier product providing this part get at random (approx)
 	   
-	   print "$sql\n";
-	   print "more than 2 prod to choose\n";
-	   //   exit;
+// 	   print "$sql\n";
+// 	   print "more than 2 prod to choose\n";
+// 	   //   exit;
 
-	   $tmp=array();
-	   while($row2=mysql_fetch_array($result2, MYSQL_ASSOC)){
+// 	   $tmp=array();
+// 	   while($row2=mysql_fetch_array($result2, MYSQL_ASSOC)){
 	     
 	     
 
 	     
-	     $tmp[$row2['Supplier Product Key']]=array(
-						      'supplier product id'=>$row2['Supplier Product ID']
-						      ,'supplier product units per part'=>$row2['Supplier Product Units Per Part']
-						      ,'supplier product cost'=>$row2['Supplier Product Cost']
-						      ,'taken'=>0
-						      );
-	   }
+// 	     $tmp[$row2['Supplier Product Key']]=array(
+// 						      'supplier product id'=>$row2['Supplier Product ID']
+// 						      ,'supplier product units per part'=>$row2['Supplier Product Units Per Part']
+// 						      ,'supplier product cost'=>$row2['Supplier Product Cost']
+// 						      ,'taken'=>0
+// 						      );
+// 	   }
 	   
-	   //print_r($tmp);
-	   $total_sps=$sp_units_per_part*$parts_per_product*$data['Shipped Quantity'];
-	   //print "$total_sps -------------\n";
-	   for($i=1;$i<=floor($total_sps);$i++){
-	     $rand_keys = array_rand($tmp,1);
-	     $tmp[$rand_keys]['taken']++;
-	   }
+// 	   //print_r($tmp);
+// 	   $total_sps=$sp_units_per_part*$parts_per_product*$data['Shipped Quantity'];
+// 	   //print "$total_sps -------------\n";
+// 	   for($i=1;$i<=floor($total_sps);$i++){
+// 	     $rand_keys = array_rand($tmp,1);
+// 	     $tmp[$rand_keys]['taken']++;
+// 	   }
 	   
-	   if(floor($total_sps)!=$total_sps ){
-	     $rand_keys=array_rand($tmp,1);
-	     $tmp[$rand_keys]['taken']+=$total_sps-floor($total_sps);
-	   }
+// 	   if(floor($total_sps)!=$total_sps ){
+// 	     $rand_keys=array_rand($tmp,1);
+// 	     $tmp[$rand_keys]['taken']+=$total_sps-floor($total_sps);
+// 	   }
 	   
 	   
 	 
 
 
-	   //print_r($tmp);
-	   foreach($tmp as $key=>$values){
+// 	   //print_r($tmp);
+// 	   foreach($tmp as $key=>$values){
 	     
-	     if($values['taken']>0){
+// 	     if($values['taken']>0){
 
-	       $cost=$values['taken']*$values['supplier product cost'];
-	       $cost_supplier+=$cost;
-	       $sql=sprintf("insert into `Inventory Transition Fact`  (`Date`,`Part SKU`,`Supplier Product ID`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`)
- values (%s,%s,%s,1,%f,'Sale',%f,%f,%f,%f,%s) "
-			    ,prepare_mysql($this->data['Delivery Note Date'])
-			    ,prepare_mysql($part_sku)
-			    ,prepare_mysql($values['supplier product id'])
-			    
-			    ,-$parts_per_product*$values['taken']
-			    
-			    ,-$cost
-			    
-			    ,($data['required']*$parts_per_product)*($values['taken']/$total_sps)
- 			    ,$data['given']*$parts_per_product*($values['taken']/$total_sps)
-			    ,$data['amount in']*($values['taken']/$total_sps)
-			    
-			    ,prepare_mysql($this->data['Delivery Note Metadata'])
-			    );
-	       // print "$sql\n\n\n\n";
-		       
-		       if(!mysql_query($sql))
-			 exit("can not create Warehouse * 888 $sql   Inventory Transition Fact\n");
-	     }
-	   }
-	   exit;
-	   
-	 }
-	 
-      }
-      
- //      $sql=sprintf("insert into `Inventory Transition Fact`  (`Date`,`Part SKU`,`Supplier Product ID`,`Warehouse Key`,`Warehouse Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`)
-//  values (%s,%s,%s,1,1,%s,'Sale'     ,%.2f   ,%f,%f,%.2f,    %s
-
-// ) "
+// 	       $cost=$values['taken']*$values['supplier product cost'];
+// 	       $cost_supplier+=$cost;
+// 	       $sql=sprintf("insert into `Inventory Transition Fact`  (`Date`,`Part SKU`,`Supplier Product ID`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`)
+//  values (%s,%s,%s,1,%f,'Sale',%f,%f,%f,%f,%s) "
 // 			    ,prepare_mysql($this->data['Delivery Note Date'])
 // 			    ,prepare_mysql($part_sku)
 // 			    ,prepare_mysql($values['supplier product id'])
 			    
-// 			    ,prepare_mysql(-$parts_per_product*$values['taken'])
+// 			    ,-$parts_per_product*$values['taken']
 			    
-// 			    -$cost
+// 			    ,-$cost
 			    
-// 			    ,$data['required']*$parts_per_product
-// 			    ,$data['given']*$parts_per_product
-// 			    //,$data['amount in']
+// 			    ,($data['required']*$parts_per_product)*($values['taken']/$total_sps)
+//  			    ,$data['given']*$parts_per_product*($values['taken']/$total_sps)
+// 			    ,$data['amount in']*($values['taken']/$total_sps)
 			    
-// 			    //,prepare_mysql($this->data['Delivery Note Metadata'])
+// 			    ,prepare_mysql($this->data['Delivery Note Metadata'])
 // 			    );
+// 	       // print "$sql\n\n\n\n";
+		       
+// 		       if(!mysql_query($sql))
+// 			 exit("can not create Warehouse * 888 $sql   Inventory Transition Fact\n");
+// 	     }
+// 	   }
+// 	   exit;
+	   
+// 	 }
+	 
+//       }
+      
+//  //      $sql=sprintf("insert into `Inventory Transition Fact`  (`Date`,`Part SKU`,`Supplier Product ID`,`Warehouse Key`,`Warehouse Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`)
+// //  values (%s,%s,%s,1,1,%s,'Sale'     ,%.2f   ,%f,%f,%.2f,    %s
+
+// // ) "
+// // 			    ,prepare_mysql($this->data['Delivery Note Date'])
+// // 			    ,prepare_mysql($part_sku)
+// // 			    ,prepare_mysql($values['supplier product id'])
+			    
+// // 			    ,prepare_mysql(-$parts_per_product*$values['taken'])
+			    
+// // 			    -$cost
+			    
+// // 			    ,$data['required']*$parts_per_product
+// // 			    ,$data['given']*$parts_per_product
+// // 			    //,$data['amount in']
+			    
+// // 			    //,prepare_mysql($this->data['Delivery Note Metadata'])
+// // 			    );
 
 
 
-      }
+//  }
 
 
 
@@ -1006,6 +1042,28 @@ class Order{
       
 
     }
+    $dn_txt="Delivery Note";
+    $sql=sprintf("update `Order Dimension` set `Order Current Dispatch State`='%s' ,`Order Current XHTML State`='%s <a href=dn.php?id=%d>%s</a>'    where `Order Key`=%d"
+		 ,'Ready to Pick'
+		 ,'Paid'
+		 ,$dn_txt
+		 ,$this->data['Delivery Note Key']
+		 ,addslashes($this->data['Delivery Note ID'])
+		 ,$this->data['Order Key']
+		 
+		 
+		 );
+    if(!mysql_query($sql))
+      exit("can not update order dimension after dn\n");
+    $order_txt='Order';
+    $orders=sprintf('%s <a href="order.php?id=%d">%s</a>',$order_txt,$this->id,$this->data['Order Public ID']);
+    $sql=sprintf("update `Delivery Note Dimension` set `Delivery Note XHTML Orders`=%s     where `Delivery Note Key`=%d"
+		  ,prepare_mysql($orders)
+		 ,$this->data['Delivery Note Key']
+		 );
+    if(!mysql_query($sql))
+      exit("$sql\n can not update order dimension after dn\n");
+
 
  }
 
@@ -1191,7 +1249,8 @@ class Order{
 //     $sql="select sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) from `Order Transaction Fact` where "
 
 
-    $sql=sprintf("insert into `Order Dimension` (`Order Date`,`Order Last Updated Date`,`Order Public ID`,`Order Main Store Key`,`Order Main Store Code`,`Order Main Store Type`,`Order Customer Key`,`Order Customer Name`,`Order Current Dispatch State`,`Order Current Payment State`,`Order Current XHTML State`,`Order Customer Message`,`Order Original Data MIME Type`,`Order Original Data`,`Order XHTML Ship Tos`,`Order Gross Amount`,`Order Discount Amount`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%.2f,%.2f)"
+    $sql=sprintf("insert into `Order Dimension` (`Order File As`,`Order Date`,`Order Last Updated Date`,`Order Public ID`,`Order Main Store Key`,`Order Main Store Code`,`Order Main Store Type`,`Order Customer Key`,`Order Customer Name`,`Order Current Dispatch State`,`Order Current Payment State`,`Order Current XHTML State`,`Order Customer Message`,`Order Original Data MIME Type`,`Order Original Data`,`Order XHTML Ship Tos`,`Order Gross Amount`,`Order Discount Amount`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%.2f,%.2f)"
+		 ,prepare_mysql($this->data['Order File As'])
 		 ,prepare_mysql($this->data['Order Date'])
 		 ,prepare_mysql($this->data['Order Date'])
 		 ,prepare_mysql($this->data['Order Public ID'])
@@ -1265,10 +1324,10 @@ class Order{
     if(mysql_query($sql)){
        $this->id = mysql_insert_id();
        $this->data['Invoice Key']=$this->id ;
-     }else{
-
-       print "Error can not create order header";exit;
-     }
+    }else{
+      
+      print "Error can not create order header";exit;
+    }
 
   }
 
@@ -1277,30 +1336,29 @@ class Order{
 
 
 
-
-    $sql=sprintf("insert into `Delivery Note Dimension` (`Delivery Note Date`,`Delivery Note ID`,`Delivery Note File As`,`Delivery Note Customer Key`,`Delivery Note Customer Name`,`Delivery Note XHTML Ship To`,`Delivery Note Ship To Key`,`Delivery Note Metadata`) values (%s,%s,%s,%s,%s,%s,%s,%s)"
-		 ,prepare_mysql($this->data['Delivery Note Date'])
-		 ,prepare_mysql($this->data['Delivery Note ID'])
+   $sql=sprintf("insert into `Delivery Note Dimension` (`Delivery Note Date`,`Delivery Note ID`,`Delivery Note File As`,`Delivery Note Customer Key`,`Delivery Note Customer Name`,`Delivery Note XHTML Ship To`,`Delivery Note Ship To Key`,`Delivery Note Metadata`) values (%s,%s,%s,%s,%s,%s,%s,%s)"
+		,prepare_mysql($this->data['Delivery Note Date'])
+		,prepare_mysql($this->data['Delivery Note ID'])
 		 ,prepare_mysql($this->data['Delivery Note File As'])
-		 ,prepare_mysql($this->data['Delivery Note Customer Key'])
-		 ,prepare_mysql($this->data['Delivery Note Customer Name'])
-		 ,prepare_mysql($this->data['Delivery Note XHTML Ship To'])
+		,prepare_mysql($this->data['Delivery Note Customer Key'])
+		,prepare_mysql($this->data['Delivery Note Customer Name'])
+		,prepare_mysql($this->data['Delivery Note XHTML Ship To'])
 		 ,prepare_mysql($this->data['Delivery Note Ship To Key'])
-		 ,prepare_mysql($this->data['Delivery Note Metadata'])
+		,prepare_mysql($this->data['Delivery Note Metadata'])
 		 );
-    
-
+   
+  
     if(mysql_query($sql)){
-       $this->id = mysql_insert_id();
-       $this->data['Delivery Note Key']=$this->id ;
-     }else{
+      $this->id = mysql_insert_id();
+      $this->data['Delivery Note Key']=$this->id ;
+    }else{
        print "Error can not create dn header";exit;
-     }
-
-  }
-
-
-
+    }
+    
+ }
+ 
+ 
+ 
 
 
 

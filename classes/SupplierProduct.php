@@ -32,6 +32,12 @@ class supplierproduct{
       if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   )
 	$this->id=$this->data['Supplier Product Key'];
       return;
+    }if($tipo=='public id'){
+      $sql=sprintf("select * from `Supplier Product Dimension` where `Supplier Product ID`=%d ",$tag);
+      $result=mysql_query($sql);
+      if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   )
+	$this->id=$this->data['Supplier Product Key'];
+      return;
     }else if($tipo=='supplier-code'){
        $sql=sprintf("select * from `Supplier Product Dimension` where `Supplier Product Code`=%s and   `Supplier Product Supplier Key`=%s "
 		   ,prepare_mysql($tag['supplier product code'])
@@ -48,19 +54,22 @@ class supplierproduct{
     }elseif($tipo=='supplier-code-cost'){
       
       $auto_add=$tag['auto_add'];
-      $sql=sprintf("select * from `Supplier Product Dimension` where `Supplier Product Code`=%s  and  `Supplier Product Cost`=%s and `Supplier Product Supplier Key`=%s "
+
+	
+      $sql=sprintf("select * from `Supplier Product Dimension` where `Supplier Product Code`=%s  and  `Supplier Product Cost`=%.4f and `Supplier Product Supplier Key`=%s "
 		   ,prepare_mysql($tag['supplier product code'])
 
-		   ,prepare_mysql($tag['supplier product cost'])
+		   ,$tag['supplier product cost']
 		   ,prepare_mysql($tag['supplier product supplier key'])
 		   
 		   );
-
+      //    if(preg_match('/\?BW-10/i',$tag['supplier product code']))
+      //	print "$sql\n";
       $result=mysql_query($sql);
       if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 	$this->id=$this->data['Supplier Product Key'];
 	
-
+	
 
 	if(strtotime($this->data['Supplier Product Valid To'])<strtotime($tag['supplier product valid to'])  ){
 	  $sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Valid To`=%s where `Supplier Product Key`=%d",prepare_mysql($tag['supplier product valid to']),$this->id);

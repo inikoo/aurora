@@ -62,12 +62,12 @@ class product{
   //     if($tag['product code']=='wsl-123')
 //  	print_r($tag);
 
-      $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s and `Product Name`=%s and `Product Units Per Case`=%s and `Product Unit Type`=%s  and `Product Price`=%s  "
+      $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s and `Product Name`=%s and `Product Units Per Case`=%f and `Product Unit Type`=%s  and `Product Price`=%.2f  "
 		   ,prepare_mysql($tag['product code'])
 		   ,prepare_mysql($tag['product name'])
-		   ,prepare_mysql($tag['product units per case'])
+		   ,$tag['product units per case']
 		   ,prepare_mysql($tag['product unit type'])
-		   ,prepare_mysql($tag['product price'])
+		   ,$tag['product price']
 		   ); 
       $result=mysql_query($sql);
       if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)){
@@ -341,9 +341,9 @@ class product{
 	return;
       }else{
 	//old code
-	$sql=sprintf("select * from `Product Dimension` where `Product Code`=%s and  `Product Units Per Case`=%s"
+	$sql=sprintf("select * from `Product Dimension` where `Product Code`=%s and  `Product Units Per Case`=%f"
 		     ,prepare_mysql($tag['product code'])
-		     ,prepare_mysql($tag['product units per case'])
+		     ,$tag['product units per case']
 		     );
 	//print "$sql\n";
 	$result2=mysql_query($sql);

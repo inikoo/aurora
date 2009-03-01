@@ -171,7 +171,7 @@ class part{
        $avalue=0;
        
        $sql=sprintf("select ifnull(avg(`Quantity On Hand`),'ERROR') as stock,avg(`Value At Cost`) as value from `Inventory Spanshot Fact` where   `Part SKU`=%d and `Date`>=%s and `Date`<=%s  and `Date`>=%s    group by `Date`",$this->data['Part SKU'],prepare_mysql(date("Y-m-d",strtotime($this->data['Part Valid From']))),prepare_mysql(date("Y-m-d",strtotime($this->data['Part Valid To']))  )  ,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -1 year")))  );
-       print "$sql\n";
+       //print "$sql\n";
       $result=mysql_query($sql);
       $days=0;
       $errors=0;
@@ -213,7 +213,7 @@ class part{
 		    ,$unknown
 		    ,$gmroi
 		    ,$this->id);
-          print "$sql\n";
+       // print "$sql\n";
        if(!mysql_query($sql))
 	 exit("$sql errot con not update part stock history yr aa");
 

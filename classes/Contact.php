@@ -110,15 +110,21 @@ class Contact{
 		      );
     
 
-    
+    foreach($data as $key=>$value){
+      if(isset($this->data[$key]))
+	$this->data[$key]=$value;
+    }
 
     if(isset($data['name_data'])){
       $this->parse_name_data($data['name_data']);
     }elseif(isset($data['name'])  and $data['name']!=$this->unknown_name){
       $this->parse($data['name']);
-    }else
-       $this->data['Contact Name']='';
+    }
 
+    
+    
+    // print_r($this->data);
+    
     if($this->data['Contact Name']==''){
       $this->data['Contact Name']=$this->unknown_name;
       $this->data['Contact File As']=$this->unknown_name;
@@ -128,8 +134,8 @@ class Contact{
       
     
     $contact_id=$this->get_id();
-
-
+    //print_r($this->data);
+    //exit;
     $sql=sprintf("insert into `Contact Dimension` (`Contact ID`,`Contact Name`,`Contact File as`,`Contact Salutation`,`Contact First Name`,`Contact Surname`,`Contact Suffix`,`Contact Gender`,`Contact Informal Greeting`,`Contact Formal Greeting`) values (%d,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
 		 $contact_id,
 		 prepare_mysql($this->data['Contact Name']),
@@ -634,7 +640,7 @@ class Contact{
 
     if(isset($data['salutation']))
       $this->data['Contact Salutation']=mb_ucwords(_trim($data['salutation']));
-    if(isset($data['first']) or $data['middle'])
+    if(isset($data['first']) or isset($data['middle']))
       $this->data['Contact First Name']=mb_ucwords(_trim($data['first'].' '.$data['middle']));
     if(isset($data['surname']))
       $this->data['Contact Surname']=mb_ucwords(_trim($data['surname']));

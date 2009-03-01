@@ -79,29 +79,6 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $product=new Product($row['Product Key']);
 
   // print $product->id." ".$product->data['Product Same Code Most Recent']."\n";
-  
-  if($product->data['Product Same Code Most Recent']=='Yes'){
-    $state='For sale';
-    if($product->data['Product 1 Year Acc Quantity Ordered']==0)
-    $state='Discontinued';
-
-    $sql=sprintf("select id,code  from aw_old.product  where product.code=%s and  condicion=2 and stock=0  ",prepare_mysql($product->data['Product Code']));
-     $result2a=mysql_query($sql);
-     if($row2a=mysql_fetch_array($result2a, MYSQL_ASSOC)   ){
-       $state='Discontinued';
-     }
-       
-  }else
-    $state='History';
-
-
-
-
-
-  $sql=sprintf("update `Product Dimension` set  `Product Sales State`=%s where `Product Key`=%s",prepare_mysql($state),$product->id);
-  // print "$sql\n\n";
-  if(!mysql_query($sql))
-    exit("can not upodate state of the product");
 
   //check iif it is in a department;
 

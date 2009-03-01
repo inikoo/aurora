@@ -109,10 +109,10 @@ foreach($good_files_number as $order_index=>$order){
   $just_file=preg_replace('/.*\//i','',$filename);
   $directory=preg_replace("/$just_file$/",'',$filename);
   
-  $sql=sprintf("select * from orders_data.order_data where  `filename`=%s",prepare_mysql($filename));
+  $sql=sprintf("select * from orders_data.orders where  `filename`=%s",prepare_mysql($filename));
   $res = $db->query($sql); 
   if ($row=$res->fetchRow()) {
-    $sql=sprintf("update orders_data.order_data set last_checked=NOW(),date=%s,timestamp=%d where id=%d",
+    $sql=sprintf("update orders_data.orders set last_checked=NOW(),date=%s,timestamp=%d where id=%d",
 		 prepare_mysql($filedatetime)
 		 ,$filedate
 		 ,$row['id']);
@@ -133,7 +133,7 @@ foreach($good_files_number as $order_index=>$order){
 	copy($csv_file,$row['filename_cvs'] );
 	$handle_csv = fopen($csv_file, "r");
 	unlink($csv_file);
-	$sql=sprintf("update orders_data.order_data set last_read=NOW() where id=%d",$row['id']);
+	$sql=sprintf("update orders_data.orders set last_read=NOW() where id=%d",$row['id']);
 	$db->exec($sql);
 	$updated=true;
 	$id =$row['id'];
@@ -152,7 +152,7 @@ foreach($good_files_number as $order_index=>$order){
     $handle_csv = fopen($csv_file, "r");
     unlink($tmp_file);
     
-    $sql=sprintf("insert into orders_data.order_data (directory,filename,checksum,date,timestamp,last_checked,last_read) values (%s,%s,%s,%s,%s,NOW(),NOW())"
+    $sql=sprintf("insert into orders_data.orders (directory,filename,checksum,date,timestamp,last_checked,last_read) values (%s,%s,%s,%s,%s,NOW(),NOW())"
 		 ,prepare_mysql($directory)
 		 ,prepare_mysql($filename)
 		 ,prepare_mysql($checksum)
@@ -162,18 +162,26 @@ foreach($good_files_number as $order_index=>$order){
     $db->exec($sql);
     $id = $db->lastInsertID();
     
+
+     $sql=sprintf("insert into orders_data.data (id) values (%d)"
+		  ,$id
+		 );
+    $db->exec($sql);
+
+
+
     $cvs_filename=sprintf("%06d.csv",$id);
     copy($csv_file,$cvs_repo.$cvs_filename );
     $handle_csv = fopen($csv_file, "r");
     unlink($csv_file);
     
-    $sql=sprintf("update orders_data.order_data set filename_cvs=%s where id=%d",prepare_mysql($cvs_repo.$cvs_filename),$id);
+    $sql=sprintf("update orders_data.orders set filename_cvs=%s where id=%d",prepare_mysql($cvs_repo.$cvs_filename),$id);
     $db->exec($sql);
     $updated=true;
     
   }
 
-
+  
   if($updated){
 
     $map_act=$_map_act;
@@ -197,16 +205,20 @@ foreach($good_files_number as $order_index=>$order){
       $checksum_header= md5($_header);
       $checksum_products= md5($_products);
       
-      $sql=sprintf("update orders_data.order_data set header=%s ,checksum_header=%s,products=%s,checksum_prod=%s where id=%d"
-
-		   ,prepare_mysql(mb_convert_encoding($_header, "UTF-8", "ISO-8859-1,UTF-8"))
-
+      $sql=sprintf("update orders_data.order_data set checksum_header=%s,checksum_prod=%s where id=%d"
 		   ,prepare_mysql($checksum_header)
-		   ,prepare_mysql(mb_convert_encoding($_products, "UTF-8", "ISO-8859-1,UTF-8"))
 		   ,prepare_mysql($checksum_products)
 		   ,$id);
-      // print $sql;
-    $db->exec($sql);
+      $db->exec($sql);
+      $sql=sprintf("update orders_data.data set header=%s ,products=%s  where id=%d"
+		   
+		   ,prepare_mysql(mb_convert_encoding($_header, "UTF-8", "ISO-8859-1,UTF-8"))
+		   ,prepare_mysql(mb_convert_encoding($_products, "UTF-8", "ISO-8859-1,UTF-8"))
+		   ,$id);
+      $db->exec($sql);
+      
+
+
 
 
   }
