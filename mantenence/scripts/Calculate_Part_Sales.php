@@ -33,6 +33,8 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   
   //Get  status
 
+  $part_valid_from=$part->data['Part Valid From'];
+  $part_valid_to=$part->data['Part Valid To'];
   $in_use='Not In Use';
   $sql=sprintf(" select `Product Sales State`,`Product Code` from `Product Dimension` PD left join `Product Part List` PPL on (PD.`Product ID`=PPL.`Product ID`)  where `Part SKU`=%d   ",$part->data['Part SKU']);
   // print "$sql\n";
@@ -45,8 +47,13 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
       
       $sql=sprintf("select `Date` from `Inventory Transaction Fact` where  `Part SKU`=%d and `Inventory Transaction Type`='Sale' and `Inventory Transaction Quantity`!=0    order by `Date` desc limit 1 ",$part->data['Part SKU']);
       $resultxx=mysql_query($sql);
-      // print $sql;
+     ;
       if($rowxx=mysql_fetch_array($resultxx, MYSQL_ASSOC)   ){
+
+	if(strtotime($rowxx['Date'])< strtotime( $part->data['Part Valid From'])){
+	  $part_valid_from=$rowxx['Date'];
+	  //	  	print "$sql\n".$rowxx['Date']." ".$part->data['Part Valid From']." ".$part->data['Part Valid To']."\n";
+	}
 	$part_valid_to= $rowxx['Date'];
       }else{
 	$part_valid_to=$part->data['Part Valid From'];
@@ -58,14 +65,16 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   }
 
 
-    $sql=sprintf("update `Part Dimension` set `Part Status`=%s ,`Part Valid To`=%s where `Part SKU`=%d   ",prepare_mysql($in_use),prepare_mysql($part_valid_to),$part->data['Part SKU']);
+    $sql=sprintf("update `Part Dimension` set `Part Status`=%s ,`Part Valid From`=%s ,`Part Valid To`=%s where `Part SKU`=%d   ",prepare_mysql($in_use)
+		 ,prepare_mysql($part_valid_from)
+		 ,prepare_mysql($part_valid_to),$part->data['Part SKU']);
   // print "$sql\n";
-  if(!mysql_query($sql))
-    exit("ERROR $sql\n");
+  //if(!mysql_query($sql))
+  //  exit("ERROR $sql\n");
   
-    $part->load('sales');
-    $part->load('used in');
-    $part->load('supplied by');
+    //$part->load('sales');
+    //$part->load('used in');
+    //$part->load('supplied by');
 
     // $part->load('stock');
     // $part->load('stock_history');
