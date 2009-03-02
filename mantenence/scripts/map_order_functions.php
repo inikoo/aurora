@@ -9102,7 +9102,7 @@ else if($_name=='jarina')
     if ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
       $id=$row['Staff Key'];
       $ids[$id]=$id;
-    }else if($record){
+    }else{
       //      $sql=sprintf("insert into todo_users (name,order_id,tipo) values ('%s','%s','%s')",addslashes($original_name),$order_id,$tipo);
       //    print "$sql\n";
       //mysql_query($sql);
