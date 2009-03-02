@@ -30,8 +30,9 @@ class PartLocation{
  }
 
  function first_inventory_transacion(){
- $sql=sprintf("select DATE(`Date`) from `Inventory Transaction Fact` where  `Part Sku`=%d and (`Inventory Transaction Type`='Adjust' or `Inventory Transaction Type`='Not Found')  order by `Date`",$this->part_sku);
+ $sql=sprintf("select DATE(`Date`) as Date from `Inventory Transaction Fact` where  `Part Sku`=%d and (`Inventory Transaction Type`='Audit' or `Inventory Transaction Type`='Not Found')  order by `Date`",$this->part_sku);
  $result=mysql_query($sql);
+ // print $sql;
  if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
    return $row['Date'];
  }else
@@ -65,7 +66,6 @@ class PartLocation{
 
      $_date=date("Y-m-d",strtotime($date));
      $sql=sprintf("select `Value At Cost`,`Quantity On Hand` from `Inventory Spanshot Fact` where  `Part SKU`=%d  and `Location Key`=%d  and `Date`=%s ",$this->part_sku,$this->location_key,prepare_mysql($_date));
-
      $result=mysql_query($sql);
      if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
        $old_value=$row['Value At Cost'];
@@ -97,7 +97,7 @@ class PartLocation{
 
      if(!is_numeric($user_id) or $user_id<0)
        $user_id='NULL';
-     $sql=sprintf("insert into `Inventory Transition Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`) values (%d,%d,%s,%f,%.2f,%s,%s)"
+     $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`) values (%d,%d,%s,%f,%.2f,%s,%s)"
 		  ,$this->part_sku
 		  ,$this->location_key
 		  ,"'Audit'"
@@ -116,15 +116,18 @@ class PartLocation{
 
 
  function redo_daily_inventory($from,$to=''){
-   $uptodate=false;
+   $daysin=0;
+
+  $uptodate=false;
    $from=strtotime($from);
    if($to==''){
      $to=strtotime('now');
      $uptodate=true;
    }else
-     $to=srttotime($to);
+     $to=strtotime($to);
 
    $start_date = date("Y-m-d",$from);
+   $day_before_date = date ("Y-m-d", strtotime ("-1 day", strtotime($from)));
    $check_date = $start_date;
    $end_date =date("Y-m-d",$to);
    $i = 0;
@@ -132,47 +135,75 @@ class PartLocation{
    $qty_inicio='NULL';
    $value_inicio=0;
    
-   $sql=sprintf("select `Inventory Transaction Quantity`,`Inventory Transaction Amount` from `Inventory Transition Fact` where  `Part Sku`=%d  and DATE(`Date`)<%s and `Inventory Transaction Type` in ('Audit','Not Found')  order by `Date` desc limit 1"
+   $sql=sprintf("delete from `Inventory Spanshot Fact` where `Part SKU`=%d and `Location Key`=%d and (`Date`>=%s or `Date`<=%s) "
+		,$this->part_sku
+		,$this->location_key
+		,prepare_mysql($start_date)
+		,prepare_mysql($end_date)
+		);
+   //   print $sql;
+   mysql_query($sql);
 
-		,$this->part_sku,prepare_mysql($start_date));
-
-   $result2=mysql_query($sql);
-    if($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ){
-      $qty_inicio=$row2['Inventory Transaction Quantity'];  
-      $value_inicio=$row2['Inventory Transaction Amount'];
-    }
+ $sql=sprintf("select `Value At Cost`,`Quantity On Hand` from `Inventory Spanshot Fact` where  `Part SKU`=%d  and `Location Key`=%d  and `Date`=%s ",$this->part_sku,$this->location_key,prepare_mysql($day_before_date));
+     $result=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+       $value_inicio=$row['Value At Cost'];
+       $qty_inicio=$row['Quantity On Hand'];
+     }
+     if(!is_numeric($qty_inicio)){
+       $sql=sprintf("select `Inventory Transaction Quantity`,`Inventory Transaction Amount` from `Inventory Transaction Fact` where  `Part Sku`=%d and  `Location Key`=%d  and DATE(`Date`)<%s and `Inventory Transaction Type` in ('Audit','Not Found')  order by `Date` desc limit 1"
+		    
+		    ,$this->part_sku
+		    ,$this->location_key
+		    ,prepare_mysql($start_date));
+       
+       $result2=mysql_query($sql);
+       if($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ){
+	 $qty_inicio=$row2['Inventory Transaction Quantity'];  
+	 $value_inicio=$row2['Inventory Transaction Amount'];
+       }
+     }
  while ($check_date != $end_date) {
    $check_date = date ("Y-m-d", strtotime ("+1 day", strtotime($check_date)));
-   $sql=sprintf("delete from  `Inventory Transition Fact` where  `Inventory Transaction Type`='Adjust' and `Part Sku`=%s  and DATE(`Date`)=%s ",prepare_mysql($part_sku),prepare_mysql($check_date));
+   $sql=sprintf("delete from  `Inventory Transaction Fact` where  `Inventory Transaction Type`='Adjust' and `Part Sku`=%d   and  `Location Key`=%d and DATE(`Date`)=%s "
+		,$this->part_sku
+		,$this->location_key
+		,prepare_mysql($check_date));
    mysql_query($sql);
      $amount_sold=0;
     $qty_sold=0;
     $qty_in=0;
-    $sql=sprintf("select * from `Inventory Transition Fact` where  `Part Sku`=%s  and DATE(`Date`)=%s order by `Date`",prepare_mysql($part_sku),prepare_mysql($check_date));
+    $sql=sprintf("select * from `Inventory Transaction Fact` where  `Part Sku`=%d   and  `Location Key`=%d  and DATE(`Date`)=%s order by `Date`"
+		 ,$this->part_sku
+		 ,$this->location_key
+		 ,prepare_mysql($check_date));
     $result3=mysql_query($sql);
-    //   print "$sql\n";
+    //print "$check_date\n";
      while($row2=mysql_fetch_array($result3, MYSQL_ASSOC)   ){
       $qty=$row2['Inventory Transaction Quantity'];
       if($row2['Inventory Transaction Type']=='Audit' or $row2['Inventory Transaction Type']=='Not Found' ){
 	//print "AUDITTT!!!! ";
-	
+		
 	if(is_numeric($qty_inicio)){
 	  if($qty_inicio==0)
-	    $cost=get_cost($part_sku,$check_date);
+	    $cost=$this->get_cost($this->part_sku,$check_date);
 	  else
 	    $cost=$value_inicio/$qty_inicio;
 
 	  $adjust_qty=$qty-$qty_inicio;
 	  $adjust_amount=$adjust_qty*$cost;
-	  $sql=sprintf("insert into `Inventory Transition Fact` (`Date`,`Part SKU`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`) values (%s,%s,'Adjust',%s,%s)",prepare_mysql($row2['Date']),prepare_mysql($part_sku),prepare_mysql($adjust_qty),prepare_mysql($adjust_amount));
+	  $sql=sprintf("insert into `Inventory Transaction Fact` (`Date`,`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`) values (%s,%d,%d,'Adjust',%s,%s)",prepare_mysql($row2['Date'])
+		       ,$this->part_sku
+		       ,$this->location_key
+		       ,prepare_mysql($adjust_qty),prepare_mysql($adjust_amount));
 	  // print "$sql\n";
 	  if(!mysql_query($sql))
-	    exit("$sql can into insert Inventory Transition Fact ");
+	    exit("$sql can into insert Inventory Transaction Fact ");
 	  $qty_inicio=$qty;
 	  $value_inicio+=$adjust_amount;
 
 	}else{
-	  $cost=get_cost($part_sku,$check_date);
+	  $cost=$this->get_cost($this->part_sku,$check_date);
 	  $qty_inicio=$qty;
 	  $value_inicio=$qty*$cost;
 
@@ -182,7 +213,7 @@ class PartLocation{
 
 	//	print " *********SALE** ".." *****\n";
 
-	if(is_numeric($value_inicio) and is_numeric($qty_inicio) and $qty_inicio>$row2['Inventory Transaction Quantity']){
+	if(is_numeric($value_inicio) and is_numeric($qty_inicio) and $qty_inicio>$row2['Inventory Transaction Quantity'] and $qty_inicio>0){
 	  $cost=$value_inicio/$qty_inicio;
 
 
@@ -209,7 +240,7 @@ class PartLocation{
 //
 
      if(is_numeric($qty_inicio))
-        $last_selling_price=$qty_inicio*get_selling_price($part_sku,$check_date);
+        $last_selling_price=$qty_inicio*$this->get_selling_price($this->part_sku,$check_date);
       else
        $last_selling_price='NULL';
      
@@ -223,12 +254,12 @@ class PartLocation{
      }
      $amount_sold=-1*$amount_sold;
 	
-       //   echo "$part_sku  $check_date $qty_inicio $value_inicio $amount_sold $last_selling_price  \n";
+       //   echo "$this->part_sku  $check_date $qty_inicio $value_inicio $amount_sold $last_selling_price  \n";
 
-     $sql=sprintf("insert into `Inventory Spanshot Fact` (`Date`,`Part SKU`,`Location Key`,`Quantity on Hand`,`Value at Cost`,`Sold Amount`,`Value at Latest Selling Price`,`Storing Cost`,`Quantity Sold`,`Quantity In`) values (%s,%s,%s,%s,%.2f,%.6f,%.2f,%s,%f,%f)"
+     $sql=sprintf("insert into `Inventory Spanshot Fact` (`Date`,`Part SKU`,`Location Key`,`Quantity on Hand`,`Value at Cost`,`Sold Amount`,`Value at Latest Selling Price`,`Storing Cost`,`Quantity Sold`,`Quantity In`) values (%s,%d,%d,%s,%.2f,%.6f,%.2f,%s,%f,%f)"
 		  ,prepare_mysql($check_date)
-		  ,$part_sku
-		  ,1
+		  ,$this->part_sku
+		  ,$this->location_key
 		  ,$qty_inicio
 		  ,$value_inicio
 		  ,$amount_sold
@@ -254,6 +285,81 @@ class PartLocation{
  }
 
  }
+
+
+
+
+function get_cost($part_sku,$date){
+
+
+  $sql=sprintf(" select AVG(SPD.`Supplier Product Cost` * SPPL.`Supplier Product Units Per Part`) as cost from `Supplier Product Dimension` SPD left join `Supplier Product Part List` SPPL on (SPD.`Supplier Product ID`=SPPL.`Supplier Product ID`)  where `Part SKU`=%s  and `Supplier Product Valid To`>=%s and  `Supplier Product Valid From`<=%s    ",prepare_mysql($part_sku),prepare_mysql($date),prepare_mysql($date));
+  //  print "\n\n\n\n$sql\n";
+  $result=mysql_query($sql);
+  if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+    if(is_numeric($row['cost']))
+      return $row['cost'];
+  }
+
+
+  $sql=sprintf(" select AVG(SPD.`Supplier Product Cost` * SPPL.`Supplier Product Units Per Part`) as cost from `Supplier Product Dimension` SPD left join `Supplier Product Part List` SPPL on (SPD.`Supplier Product ID`=SPPL.`Supplier Product ID`)  where `Part SKU`=%s  and `Supplier Product Valid To`<=%s limit 1 ",prepare_mysql($part_sku),prepare_mysql($date));
+
+  $result=mysql_query($sql);
+  if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+    if(is_numeric($row['cost']))
+      return $row['cost'];
+  }
+
+  $sql=sprintf(" select AVG(SPD.`Supplier Product Cost` * SPPL.`Supplier Product Units Per Part`) as cost from `Supplier Product Dimension` SPD left join `Supplier Product Part List` SPPL on (SPD.`Supplier Product ID`=SPPL.`Supplier Product ID`)  where `Part SKU`=%s  order by  `Supplier Product Valid To` desc ",prepare_mysql($part_sku),prepare_mysql($date));
+  // print "\n\n\n\n$sql\n";
+  $result=mysql_query($sql);
+  if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+    if(is_numeric($row['cost']))
+      return $row['cost'];
+  }
+
+
+  exit("error can no found supp ciost\n");
+
+
+}
+
+ 
+
+function get_selling_price($part_sku,$date){
+
+
+  $sql=sprintf(" select AVG(PD.`Product Price` * PPL.`Parts Per Product`) as cost from `Product Dimension` PD left join `Product Part List` PPL on (PD.`Product ID`=PPL.`Product ID`)  where `Part SKU`=%s  and `Product Valid To`>=%s and  `Product Valid From`<=%s    ",prepare_mysql($part_sku),prepare_mysql($date),prepare_mysql($date));
+  // print "\n\n\n\n$sql\n";
+  $result=mysql_query($sql);
+  if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+    if(is_numeric($row['cost']))
+      return $row['cost'];
+  }
+
+
+  $sql=sprintf(" select AVG(PD.`Product Price` * PPL.`Parts Per Product`) as cost from `Product Dimension` PD left join `Product Part List` PPL on (PD.`Product ID`=PPL.`Product ID`)  where `Part SKU`=%s  and `Product Valid To`<=%s limit 1 ",prepare_mysql($part_sku),prepare_mysql($date));
+
+  $result=mysql_query($sql);
+  if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+    if(is_numeric($row['cost']))
+      return $row['cost'];
+  }
+
+  $sql=sprintf(" select AVG(PD.`Product Price` * PPL.`Parts Per Product`) as cost from `Product Dimension` PD left join `Product Part List` PPL on (PD.`Product ID`=PPL.`Product ID`)  where `Part SKU`=%s  order by  `Product Valid To` desc ",prepare_mysql($part_sku),prepare_mysql($date));
+  //   print "\n\n\n\n$sql\n";
+  $result=mysql_query($sql);
+  if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+    if(is_numeric($row['cost']))
+      return $row['cost'];
+  }
+
+
+  exit("error can no found product last selling  ciost\n");
+
+
+}
+
+
 
 
 }

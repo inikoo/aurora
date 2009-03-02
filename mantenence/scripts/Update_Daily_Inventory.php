@@ -92,7 +92,7 @@ if($rowx['Part Status']=='In Use'){
     $check_date = date ("Y-m-d", strtotime ("+1 day", strtotime($check_date)));
 
     if(!is_numeric($qty_inicio)){
-      $sql=sprintf("select count(*) as num  from `Inventory Transition Fact` where  `Part Sku`=%s  and DATE(`Date`)=%s and `Inventory Transaction Type`='Audit' ",prepare_mysql($part_sku),prepare_mysql($check_date));
+      $sql=sprintf("select count(*) as num  from `Inventory Transaction Fact` where  `Part Sku`=%s  and DATE(`Date`)=%s and `Inventory Transaction Type`='Audit' ",prepare_mysql($part_sku),prepare_mysql($check_date));
     $result3=mysql_query($sql);
     //  print "$sql\n";
     $row2=mysql_fetch_array($result3, MYSQL_ASSOC);
@@ -107,11 +107,11 @@ if($rowx['Part Status']=='In Use'){
     
 
     
-    $sql=sprintf("delete from  `Inventory Transition Fact` where  `Inventory Transaction Type`='Adjust' and `Part Sku`=%s  and DATE(`Date`)=%s ",prepare_mysql($part_sku),prepare_mysql($check_date));
+    $sql=sprintf("delete from  `Inventory Transaction Fact` where  `Inventory Transaction Type`='Adjust' and `Part Sku`=%s  and DATE(`Date`)=%s ",prepare_mysql($part_sku),prepare_mysql($check_date));
     mysql_query($sql);
 
     $amount_sold=0;
-    $sql=sprintf("select * from `Inventory Transition Fact` where  `Part Sku`=%s  and DATE(`Date`)=%s order by `Date`",prepare_mysql($part_sku),prepare_mysql($check_date));
+    $sql=sprintf("select * from `Inventory Transaction Fact` where  `Part Sku`=%s  and DATE(`Date`)=%s order by `Date`",prepare_mysql($part_sku),prepare_mysql($check_date));
     $result3=mysql_query($sql);
     //   print "$sql\n";
      while($row2=mysql_fetch_array($result3, MYSQL_ASSOC)   ){
@@ -122,10 +122,10 @@ if($rowx['Part Status']=='In Use'){
 	if(is_numeric($qty_inicio)){
 	  $adjust_qty=$qty-$qty_inicio;
 	  $adjust_amount=$adjust_qty*$cost;
-	  $sql=sprintf("insert into `Inventory Transition Fact` (`Date`,`Part SKU`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`) values (%s,%s,'Adjust',%s,%s)",prepare_mysql($row2['Date']),prepare_mysql($part_sku),prepare_mysql($adjust_qty),prepare_mysql($adjust_amount));
+	  $sql=sprintf("insert into `Inventory Transaction Fact` (`Date`,`Part SKU`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`) values (%s,%s,'Adjust',%s,%s)",prepare_mysql($row2['Date']),prepare_mysql($part_sku),prepare_mysql($adjust_qty),prepare_mysql($adjust_amount));
 	  // print "$sql\n";
 	  if(!mysql_query($sql))
-	    exit("$sql can into insert Inventory Transition Fact ");
+	    exit("$sql can into insert Inventory Transaction Fact ");
 	  $qty_inicio=$qty;
 	  $value_inicio+=$adjust_amount;
 
@@ -222,11 +222,11 @@ if($rowx['Part Status']=='In Use'){
 //       $value_inicio=$row2['vac'];
 //     }
 //     //print " INIL $qty_inicio ";
-//     $sql=sprintf("delete from  `Inventory Transition Fact` where  `Inventory Transaction Type`='Adjust' and `Part Sku`=%s  and DATE(`Date`)=%s ",prepare_mysql($row['Part SKU']),prepare_mysql(date("Y-m-d",$today)));
+//     $sql=sprintf("delete from  `Inventory Transaction Fact` where  `Inventory Transaction Type`='Adjust' and `Part Sku`=%s  and DATE(`Date`)=%s ",prepare_mysql($row['Part SKU']),prepare_mysql(date("Y-m-d",$today)));
 //     mysql_query($sql);
 
 
-//     $sql=sprintf("select * from `Inventory Transition Fact` where  `Part Sku`=%s  and DATE(`Date`)=%s order by `Date`",prepare_mysql($row['Part SKU']),prepare_mysql(date("Y-m-d",$today)));
+//     $sql=sprintf("select * from `Inventory Transaction Fact` where  `Part Sku`=%s  and DATE(`Date`)=%s order by `Date`",prepare_mysql($row['Part SKU']),prepare_mysql(date("Y-m-d",$today)));
 //     $result3=mysql_query($sql);
 //     //   print "$sql\n";
 
@@ -245,10 +245,10 @@ if($rowx['Part Status']=='In Use'){
 // 	  $adjust_amount=$adjust_qty*$cost;
 // 	  $part_sku=$row['Part SKU'];
 
-// 	  $sql=sprintf("insert into `Inventory Transition Fact` (`Date`,`Part SKU`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`) values (%s,%s,'Adjust',%s,%s)",prepare_mysql($row2['Date']),prepare_mysql($part_sku),prepare_mysql($adjust_qty),prepare_mysql($adjust_amount));
+// 	  $sql=sprintf("insert into `Inventory Transaction Fact` (`Date`,`Part SKU`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`) values (%s,%s,'Adjust',%s,%s)",prepare_mysql($row2['Date']),prepare_mysql($part_sku),prepare_mysql($adjust_qty),prepare_mysql($adjust_amount));
 // 	  // print "$sql\n";
 // 	  if(!mysql_query($sql))
-// 	    exit("$sql can into insert Inventory Transition Fact ");
+// 	    exit("$sql can into insert Inventory Transaction Fact ");
 // 	   $qty_inicio=$qty;
 // 	   $value_inicio+=$adjust_amount;
 

@@ -811,10 +811,9 @@ class Order{
 	  unset($product);
 	  $note=$a.', '.$this->data['Order Current XHTML State'];
 	  
-	   $sql=sprintf("insert into `Inventory Transition Fact`  (`Date`,`Part SKU`,`Supplier Product ID`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`,`Note`) values (%s,%s,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s) "
+	   $sql=sprintf("insert into `Inventory Transaction Fact`  (`Date`,`Part SKU`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`,`Note`) values (%s,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s) "
 		       ,prepare_mysql($this->data['Delivery Note Date'])
 		       ,prepare_mysql($part_sku)
-		       ,prepare_mysql($supplier_product_id)
 			,1
 		       ,prepare_mysql(-$parts_per_product*$data['Shipped Quantity'])
 			,"'Sale'"
@@ -827,7 +826,7 @@ class Order{
 			);
 	   //  print "$sql\n";
 	  if(!mysql_query($sql))
-	    exit("can not create Warehouse * 888 $sql   Inventory Transition Fact\n");
+	    exit("can not create Warehouse * 888 $sql   Inventory Transaction Fact\n");
 	}else
 	  exit("error no sku found order php l 792\n");
 	  
@@ -886,7 +885,7 @@ class Order{
 // 	   //if($cost=='')
 // 	   //  print_r($data);
 	   
-// 	   $sql=sprintf("insert into `Inventory Transition Fact`  (`Date`,`Part SKU`,`Supplier Product ID`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`) values (%s,%s,%s,1,%s,'Sale',%.2f,%f,%f,%.2f,%s) "
+// 	   $sql=sprintf("insert into `Inventory Transaction Fact`  (`Date`,`Part SKU`,`Supplier Product ID`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`) values (%s,%s,%s,1,%s,'Sale',%.2f,%f,%f,%.2f,%s) "
 // 			,prepare_mysql($this->data['Delivery Note Date'])
 // 			,prepare_mysql($part_sku)
 // 			,prepare_mysql($supplier_product_id)
@@ -899,7 +898,7 @@ class Order{
 // 		     );
 // 	   //   print "$sql\n";
 // 	   if(!mysql_query($sql))
-// 	     exit("can not create Warehouse * 888 $sql   Inventory Transition Fact\n");
+// 	     exit("can not create Warehouse * 888 $sql   Inventory Transaction Fact\n");
 	   
 
 	   
@@ -947,7 +946,7 @@ class Order{
 
 // 	       $cost=$values['taken']*$values['supplier product cost'];
 // 	       $cost_supplier+=$cost;
-// 	       $sql=sprintf("insert into `Inventory Transition Fact`  (`Date`,`Part SKU`,`Supplier Product ID`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`)
+// 	       $sql=sprintf("insert into `Inventory Transaction Fact`  (`Date`,`Part SKU`,`Supplier Product ID`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`)
 //  values (%s,%s,%s,1,%f,'Sale',%f,%f,%f,%f,%s) "
 // 			    ,prepare_mysql($this->data['Delivery Note Date'])
 // 			    ,prepare_mysql($part_sku)
@@ -966,7 +965,7 @@ class Order{
 // 	       // print "$sql\n\n\n\n";
 		       
 // 		       if(!mysql_query($sql))
-// 			 exit("can not create Warehouse * 888 $sql   Inventory Transition Fact\n");
+// 			 exit("can not create Warehouse * 888 $sql   Inventory Transaction Fact\n");
 // 	     }
 // 	   }
 // 	   exit;
@@ -975,7 +974,7 @@ class Order{
 	 
 //       }
       
-//  //      $sql=sprintf("insert into `Inventory Transition Fact`  (`Date`,`Part SKU`,`Supplier Product ID`,`Warehouse Key`,`Warehouse Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`)
+//  //      $sql=sprintf("insert into `Inventory Transaction Fact`  (`Date`,`Part SKU`,`Supplier Product ID`,`Warehouse Key`,`Warehouse Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`)
 // //  values (%s,%s,%s,1,1,%s,'Sale'     ,%.2f   ,%f,%f,%.2f,    %s
 
 // // ) "

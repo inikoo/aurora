@@ -19,17 +19,26 @@ require_once '../../myconf/conf.php';
 date_default_timezone_set('Europe/London');
 
 
+
+
 //$sql="select * from `Product Dimension` where `Product Code`='FO-A1'";
 $sql="select * from `Product Dimension`  ";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
-  $product=new Product($row['Product Key']);
+  
+  
+  
 
+  
+  $product=new Product($row['Product Key']);
+  
   $product->load('sales');
   $product->load('parts');
 
-  
+  if(isset($argv[1]) and $argv[1]=='first'){
+
+
   if($product->data['Product Same Code Most Recent']=='Yes'){
     $state='For sale';
     if($product->data['Product 1 Year Acc Quantity Ordered']==0)
@@ -48,7 +57,7 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   // print "$sql\n\n";
   if(!mysql_query($sql))
     exit("can not upodate state of the product");
-
+  }
 
 
   print $row['Product Key']."\r";

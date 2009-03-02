@@ -25,7 +25,7 @@ require_once '../../myconf/conf.php';
 date_default_timezone_set('Europe/London');
 $not_found=00;
 
-$sql="delete from  `Inventory Transition Fact` where (`Inventory Transaction Type`='Audit' or `Inventory Transaction Type`='In' ) ";
+$sql="delete from  `Inventory Transaction Fact` where (`Inventory Transaction Type`='Audit' or `Inventory Transaction Type`='In' ) ";
 mysql_query($sql);
 
 $sql="select code,product_id,aw_old.in_out.date,aw_old.in_out.tipo,aw_old.in_out.quantity ,aw_old.in_out.notes from aw_old.in_out left join aw_old.product on (product.id=product_id) where product.code is not null and (aw_old.in_out.tipo=2 or aw_old.in_out.tipo=1)   order by product.id,date ";
@@ -57,23 +57,23 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
     
     
     $cost_per_part=get_cost($part_sku,$date);
-    $sp_id=get_sp_id($part_sku,$date);
-    $sp=new SupplierProduct('')
+    //$sp_id=get_sp_id($part_sku,$date);
+    //$sp=new SupplierProduct('')
     //print "$code $date $part_sku\n "; 
     
     if($tipo==2){
 
-      $sql=sprintf("insert into `Inventory Transition Fact` (`Supplier Product ID`,`Date`,`Part SKU`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Transaction Metadata`) values (%d,%s,%s,'Audit',%s,%s,%s)",$sp_id,prepare_mysql($date),prepare_mysql($part_sku),prepare_mysql($qty*$parts_per_product),prepare_mysql($cost_per_part*$qty*$parts_per_product),prepare_mysql($notes));
+      $sql=sprintf("insert into `Inventory Transaction Fact` (`Date`,`Part SKU`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Note`,`Metadata`) values (%s,%s,'Audit',%s,%s,%s,'')",prepare_mysql($date),prepare_mysql($part_sku),prepare_mysql($qty*$parts_per_product),prepare_mysql($cost_per_part*$qty*$parts_per_product),prepare_mysql($notes));
       // print "$sql\n";
       if(!mysql_query($sql))
-	exit("$sql can into insert Inventory Transition Fact ");
+	exit("$sql can into insert Inventory Transaction Fact ");
     }else{
       
       
-      $sql=sprintf("insert into `Inventory Transition Fact` (`Supplier Product ID`,`Date`,`Part SKU`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Transaction Metadata`) values (%d,%s,%s,'In',%s,%s,%s)",$sp_id,prepare_mysql($date),prepare_mysql($part_sku),prepare_mysql($qty*$parts_per_product),prepare_mysql($cost_per_part*$qty*$parts_per_product),prepare_mysql($notes));
+      $sql=sprintf("insert into `Inventory Transaction Fact` (`Date`,`Part SKU`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Note`,`Metadata`) values (%s,%s,'In',%s,%s,%s,'')",prepare_mysql($date),prepare_mysql($part_sku),prepare_mysql($qty*$parts_per_product),prepare_mysql($cost_per_part*$qty*$parts_per_product),prepare_mysql($notes));
       // print "$sql\n";
       if(!mysql_query($sql))
-	exit("$sql can into insert Inventory Transition Fact ");
+	exit("$sql can into insert Inventory Transaction Fact ");
 
 
     }
@@ -105,22 +105,22 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
     
     
     $cost_per_part=get_cost($part_sku,$date);
-    $sp_id=get_sp_id($part_sku,$date);
+    //$sp_id=get_sp_id($part_sku,$date);
    
 
     if($tipo==2){
 
-      $sql=sprintf("insert into `Inventory Transition Fact` (`Supplier Product ID`,`Date`,`Part SKU`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Transaction Metadata`) values (%d,%s,%s,'Audit',%s,%s,%s)",$sp_id,,prepare_mysql($date),prepare_mysql($part_sku),prepare_mysql($qty*$parts_per_product),prepare_mysql($cost_per_part*$qty*$parts_per_product),prepare_mysql($notes));
+      $sql=sprintf("insert into `Inventory Transaction Fact` (`Date`,`Part SKU`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Note`,`Metadata`) values (%s,%s,'Audit',%s,%s,%s,'')",prepare_mysql($date),prepare_mysql($part_sku),prepare_mysql($qty*$parts_per_product),prepare_mysql($cost_per_part*$qty*$parts_per_product),prepare_mysql($notes));
       // print "$sql\n";
       if(!mysql_query($sql))
-	exit("$sql can into insert Inventory Transition Fact ");
+	exit("$sql can into insert Inventory Transaction Fact ");
     }else{
       
       
-      $sql=sprintf("insert into `Inventory Transition Fact` (`Supplier Product ID`,`Date`,`Part SKU`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Transaction Metadata`) values (%d,%s,%s,'In',%s,%s,%s)",$sp_id,,prepare_mysql($date),prepare_mysql($part_sku),prepare_mysql($qty*$parts_per_product),prepare_mysql($cost_per_part*$qty*$parts_per_product),prepare_mysql($notes));
+      $sql=sprintf("insert into `Inventory Transaction Fact` (`Date`,`Part SKU`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`note`,`Metadata`) values (%s,%s,'In',%s,%s,%s,'')",prepare_mysql($date),prepare_mysql($part_sku),prepare_mysql($qty*$parts_per_product),prepare_mysql($cost_per_part*$qty*$parts_per_product),prepare_mysql($notes));
       // print "$sql\n";
       if(!mysql_query($sql))
-	exit("$sql can into insert Inventory Transition Fact ");
+	exit("$sql can into insert Inventory Transaction Fact ");
 
 
     }
@@ -134,7 +134,7 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
 
 
-$sql="delete  from `Inventory Transition Fact`  where `Inventory Transaction Type`='Not Found' ";
+$sql="delete  from `Inventory Transaction Fact`  where `Inventory Transaction Type`='Not Found' ";
 mysql_query($sql);
 
 
@@ -147,10 +147,10 @@ while($rowx=mysql_fetch_array($resultx, MYSQL_ASSOC)   ){
   $sql=sprintf(" select `Part SKU` from  `Product Part List`  where `Product ID`=%d and `Product Part Valid From`<%s  and `Product Part Valid To`>%s ",$product_id,prepare_mysql($rowx['Invoice Date']),prepare_mysql($rowx['Invoice Date']));
   $result=mysql_query($sql);
   while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-    $sql=sprintf("insert into `Inventory Transition Fact` (`Date`,`Part SKU`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Transaction Metadata`) values (%s,%s,'Not Found',%s,%s,%s)",prepare_mysql($rowx['Invoice Date']),prepare_mysql($row['Part SKU']),0,0,prepare_mysql($notes));
+    $sql=sprintf("insert into `Inventory Transaction Fact` (`Date`,`Part SKU`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Note`,`Metadata`) values (%s,%s,'Not Found',%s,%s,%s,'')",prepare_mysql($rowx['Invoice Date']),prepare_mysql($row['Part SKU']),0,0,prepare_mysql($notes));
     // print "$sql\n";
       if(!mysql_query($sql))
-	exit("$sql can into insert Inventory Transition Fact ");
+	exit("$sql can into insert Inventory Transaction Fact ");
 
   }
 
