@@ -63,51 +63,54 @@ if(isset($_REQUEST['view'])){
 
 $family=new Family($family_id);
 
-
-if(isset($_REQUEST['dpl']) and is_numeric($_REQUEST['dpl'])){
-$order=$_SESSION['state']['department']['table']['order'];
- if($order=='per_tsall' or $order=='tsall')
-   $order='total_sales';
- if($order=='per_tsm' or $order=='tms')
-   $order='month_sales';
-if($order=='code')
-   $order='Product Family Code';
- if($order=='name')
-   $order='Product Family Name';
- if($order=='active')
-   $order='Product Family On Sale Products';
- if($order=='outofstock')
-   $order='Product Family Out Of Stock Products';
- if($order=='stockerror')
+if(isset($_REQUEST['department_id']) and $_REQUEST['department_id']>0){
+  $department_id=$_REQUEST['department_id'];
+  $order=$_SESSION['state']['department']['table']['order'];
+  if($order=='per_tsall' or $order=='tsall')
+    $order='total_sales';
+  if($order=='per_tsm' or $order=='tms')
+    $order='month_sales';
+  if($order=='code')
+    $order='Product Family Code';
+  if($order=='name')
+    $order='Product Family Name';
+  if($order=='active')
+    $order='Product Family For Sale Products';
+  if($order=='outofstock')
+    $order='Product Family Out Of Stock Products';
+  if($order=='stockerror')
     $order='Product Family Unknown Stock Products';
+  
 
 
 
 
-$sql=sprintf("select  *,`Product Family Total Acc Invoiced Gross Amount`+`Product Family Total Acc Invoiced Discount Amount` as `product family total acc invoiced amount` ,`Product Family 1 Month Acc Invoiced Gross Amount`+`Product Family 1 Month Acc Invoiced Discount Amount` as `product family 1 month acc invoiced amount`   from `Product Family Dimension`   F left join `Product Family Department Bridge` FD on (FD.`Product Family Key`=F.`Product Family Key`) where  `%s`<'%s' and `Product Department Key`=%d  order by `%s` desc  ",$order,$family->get($order),$_REQUEST['dpl'],$order);
-//print $sql;
-$result =& $db->query($sql);
+$sql=sprintf("select  F.`Product Family Key` as id, `Product Family Code` as code  from `Product Family Dimension`   F left join `Product Family Department Bridge` FD on (FD.`Product Family Key`=F.`Product Family Key`) where  `%s`<'%s' and `Product Department Key`=%d  order by `%s` desc  ",$order,$family->get($order),$department_id,$order);
 
-if(!$prev=$result->fetchRow())
+
+$res = mysql_query($sql);
+if(!$prev=mysql_fetch_array($res, MYSQL_ASSOC))
   $prev=array('id'=>0,'code'=>'');
-$sql=sprintf("select  *,`Product Family Total Acc Invoiced Gross Amount`+`Product Family Total Acc Invoiced Discount Amount` as `product family total acc invoiced amount` ,`Product Family 1 Month Acc Invoiced Gross Amount`+`Product Family 1 Month Acc Invoiced Discount Amount` as `product family 1 month acc invoiced amount` from `Product Family Dimension`   F left join `Product Family Department Bridge` FD on (FD.`Product Family Key`=F.`Product Family Key`)  where  `%s`>'%s' and `Product Department Key`=%d order by `%s`   ",$order,$family->get($order),$_REQUEST['dpl'],$order);
 
-$result =& $db->query($sql);
-if(!$next=$result->fetchRow())
+$sql=sprintf("select F.`Product Family Key` as id, `Product Family Code` as code   from `Product Family Dimension`   F left join `Product Family Department Bridge`  FD on (FD.`Product Family Key`=F.`Product Family Key`)  where  `%s`>'%s' and `Product Department Key`=%d order by `%s`   ",$order,$family->get($order),$department_id,$order);
+
+$res = mysql_query($sql);
+
+if(!$next=mysql_fetch_array($res, MYSQL_ASSOC))
   $next=array('id'=>0,'code'=>'');
 
 
 
- }
+ 
 
 
 $smarty->assign('prev',$prev);
 $smarty->assign('next',$next);
 
-
+ }
 
 $smarty->assign('parent','departments.php');
-$smarty->assign('title',$family->get('product family code').' - '.$family->get('product family name'));
+$smarty->assign('title',$family->get('Product Family Code').' - '.$family->get('Product Family Name'));
 
 
 $product_home="Products Home";
@@ -120,7 +123,7 @@ $smarty->assign('home',$product_home);
 
 
 
-// $smarty->assign('family',$family->data['name']);
+ $smarty->assign('family',$family);
 // $smarty->assign('family_id',$family->id);
 
 // $smarty->assign('family_description',$family->data['description']);

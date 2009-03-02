@@ -12,7 +12,7 @@
      <span  class="search_msg"   id="product_search_msg"    ></span> <span  class="search_sugestion"   id="product_search_sugestion"    ></span>
      <br/>
       <span  class="state_details" state="{$show_details}"  id="show_details"  atitle="{if $show_details}{t}show details{/t}{else}{t}hide details{/t}{/if}"  >{if $show_details}{t}hide details{/t}{else}{t}show details{/t}{/if}</span>
-
+      <br><a href="departments.php?edit=1"  class="state_details" id="edit"  >{t}edit{/t}</a>
  </div>
   
   <div id="top" class="top_bar">

@@ -15,7 +15,9 @@ class product{
   var $notes=array();
   var $images=false;
   var $weblink=false;
-
+  var $parts=false;
+  var $parts_skus=false;
+   var $parts_location=false;
   var $new=false;
   var $new_id=false;
   var $location_to_update=false;
@@ -578,6 +580,11 @@ class product{
        $parts[]=$row['Part SKU'];
      }
      return $parts;
+      break;
+    case('Number of Parts'):
+      if(!$this->parts)
+	$this->load('part_list');
+      return count($this->parts);
       break;
     case('Product Total Invoiced Net Amount'):
       return $this->data['Product Total Invoiced Gross Amount']-$this->data['Product Total Invoiced Discount Amount'];
@@ -1164,6 +1171,35 @@ function normalize_code($code){
  
      }
 
+     break;
+
+   case('part_location_list'):
+     
+     $date=date("Y-m-d");
+     $sql=sprintf("select PPL.`Part SKU`,ISF.`Location Key`,`Quantity On Hand`,`Parts Per Product`,`Location Code`   from `Product Part List` PPL left join `Inventory Spanshot Fact` ISF on (ISF.`Part SKU`=PPL.`Part SKU`) left join `Location Dimension` LD on (LD.`Location Key`=ISF.`Location Key`)  where `Product ID`=%d and `Date`=%s and `Product Part Most Recent`='Yes';",$this->data['Product ID'],prepare_mysql($date));
+     // print $sql;
+     $result=mysql_query($sql);
+     $this->parts_location=array();
+     while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+       $this->parts_location[$row['Part SKU']]=array(
+					    'sku'=>$row['Part SKU']
+					    ,'location_key'=>$row['Location Key']
+					    ,'location_code'=>$row['Location Code']
+					    ,'stock'=>$row['Quantity On Hand']
+					    ,'parts_per_peroduct'=>$row['Parts Per Product']
+					    );
+     }
+     break; 
+   case('part_list'):
+     $sql=sprintf("select PPL.`Part SKU`,`Part XHTML Description` from `Product Part List` PPL left join `Part Dimension` PD on (PD.`Part SKU`=PPL.`Part SKU`) where `Product ID`=%d and `Product Part Most Recent`='Yes';",$this->data['Product ID']);
+     $result=mysql_query($sql);
+     $this->parts=array();
+     while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+       $this->parts[$row['Part SKU']]=array(
+					    'sku'=>$row['Part SKU']
+					    ,'description'=>$row['Part XHTML Description']
+					    );
+     }
      break;
    case('parts'):
      $parts='';

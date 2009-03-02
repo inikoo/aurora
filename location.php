@@ -59,6 +59,7 @@ $_SESSION['state']['location']['id']=$location_id;
 
 $location= new location($location_id);
 $order=$_SESSION['state']['warehouse']['locations']['order'];
+
 if($order=='code'){
   $order='`Location Code`';
  }
@@ -97,7 +98,10 @@ $location->load('product');
 $smarty->assign('parent','warehouse.php');
 $smarty->assign('title',_('Location ').$location->data['Location Code']);
 
+$smarty->assign('has_stock',$location->get('Location Has Stock'));
 
+$smarty->assign('parts',$location->parts);
+$smarty->assign('num_parts',count($location->parts));
 
 
 $js_files[]='js/location.js.php';

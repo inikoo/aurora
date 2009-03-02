@@ -120,21 +120,18 @@
 
 		<table   class="show_info_product" >
 		  <tr>
-		    <td>{t}Stock{/t}:<br>{$stock_units}</td><td class="stock aright" id="stock">{$data.stock}</td>
+		    <td>{t}Available{/t}:<td class="stock aright" id="stock">{$product->get('Product Availability')}</td>
 		  </tr>
-		     <tr>
-		      <td>{t}Available{/t}:</td><td class="aright">{$available}</td>
-		    </tr>
-		    {if $locations}
-		    <tr><td>{t}Location{/t}:</td><td class="aright">
-			<table class="locations " style="float:right"  >
-			{foreach from=$locations item=location name=foo }
-			<tr><td>{$location.icon} </td><td> {$location.name}</td><td style="padding-left:10px"> ({$location.stock})</td></tr>
+		  <table class="locations " style="float:right"  >
+		    {if $product->get('Number of Parts')>0}
+		    <tr><td>{t}Parts{/t}:</td><td class="aleft">
+			{foreach from=$product->parts item=part name=foo }
+			<tr><td>{t}SKU{/t} {$part.sku}</td><td style="padding-left:10px"> ()</td></tr>
 			{/foreach}
-			</table>
-		      <td>
-		    {/if}
-		    {if $nextbuy>0   }<tr><td rowspan="2">{t}Next shipment{/t}:</td><td>{$data.next_buy}</td></tr><tr><td class="noborder">{$data.nextbuy_when}</td>{/if}
+		      </table>
+		    <td>
+		      {/if}
+		      {if $nextbuy>0   }<tr><td rowspan="2">{t}Next shipment{/t}:</td><td>{$data.next_buy}</td></tr><tr><td class="noborder">{$data.nextbuy_when}</td>{/if}
 		    </tr>
 		  </table>
 		  

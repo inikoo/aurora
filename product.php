@@ -69,14 +69,8 @@ $_SESSION['state']['product']['id']=$product_id;
 
 $product= new product($product_id);
 $product->group_by('code');
-$product->load(array(
-		     'suppliers'
-		     ,'product_tree'
-		     ,'images'
-		     ,'locations'
-		     ,'weblinks'
-		     )
-	       );
+$product->load('part_location_list');
+
 
 $smarty->assign('product',$product);
 $num_links=$product->get('num_links');

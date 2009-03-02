@@ -16,6 +16,15 @@ $smarty->assign('view_sales',$view_sales);
 $smarty->assign('view_stock',$view_stock);
 $smarty->assign('create',$create);
 $smarty->assign('modify',$modify);
+
+
+if(isset($_REQUEST['edit']))
+  $edit=$_REQUEST['edit'];
+else
+  $edit=$_SESSION['state']['departments']['edit'];
+
+
+
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
@@ -39,12 +48,18 @@ $js_files=array(
 		$yui_path.'menu/menu-min.js',
 		'js/common.js.php',
 		'js/table_common.js.php',
-		'js/search.js',
-		'js/departments.js.php',
 		);
+
+if($edit)
+  $js_files[]='js/edit_departments.js.php';
+ else{
+   $js_files[]='js/search.js';
+   $js_files[]='js/departments.js.php';
+ }
+
+
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
-
 
 
 
@@ -103,6 +118,9 @@ $smarty->assign('title', _('Product Departments'));
 //$smarty->assign('total_departments',$departments['numberof']);
 $smarty->assign('table_title',$table_title);
 
+if($edit)
+$smarty->display('edit_departments.tpl');
+else
 $smarty->display('departments.tpl');
 
 ?>

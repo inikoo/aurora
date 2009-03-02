@@ -11,7 +11,7 @@
   <span class="search_title" style="padding-right:15px">{t}Location{/t}:</span> <br><input size="8" class="text search" id="location_search" value="" name="search"/><img align="absbottom" id="location_submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>
   <span  class="search_msg"   id="location_search_msg"    ></span> <span  class="search_sugestion"   id="location_search_sugestion"    ></span>
   <br/>
-  <a style="font-weight:800;color:#777;cursor:pointer" href="edit_location.php?id={$id}">{t}Edit Location{/t}</a>
+  <a style="font-weight:800;color:#777;cursor:pointer" href="edit_location.php?id={$location->get('Location Key')}">{t}Edit Location{/t}</a>
 </div>
 
 <div style="padding:20px">
@@ -32,14 +32,14 @@
 
 
 <div id="the_table1" class="data_table" style="margin:20px 20px 0px 20px; clear:both;padding-top:10px">
-  
+
   <div style="">
     <div style="float:right;padding:0;margin:0">
       <table class="options" style="float:right;padding:0;margin:0">
 	<tr>
-	  <td  style="{if $num_products<1 or !$has_stock}visibility:hidden;{/if}" id="move_stock">Move Stock</td>
+	  <td  style="{if $num_parts<1 or !$has_stock}visibility:hidden;{/if}" id="move_stock">Move Stock</td>
 	  <td  style="{if !$has_stock}visibility:hidden;{/if}" id="damaged_stock">Set Stock as Damaged</td>
-	  <td  style="{if $num_products==0}visibility:hidden;{/if}" id="change_stock">Audit</td>
+	  <td  style="{if $num_parts==0}visibility:hidden;{/if}" id="change_stock">Audit</td>
 	  <td  id="add_product">Add Part</td>
 	  
 	</tr>
