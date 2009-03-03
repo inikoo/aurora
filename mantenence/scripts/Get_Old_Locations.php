@@ -46,46 +46,58 @@ $sql=sprintf("select * from aw_old.product ");
 $result=mysql_query($sql);
 while($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $product_code=$row2['code'];
-  $sql="select * from aw_old.location  where product_id=".$row2['id']." order by tipo" ;
+  $sql="select * from aw_old.location  where product_id=".$row2['id']."  and code like '111-01'   order by tipo" ;
   $result2xxx=mysql_query($sql);
   $primary=true;
+
+  
+
 
   while($row=mysql_fetch_array($result2xxx, MYSQL_ASSOC)   ){
     
      $location_code=$row['code'];
-     //  print $row['code']."\n";
+
+
+     $used_for='Picking';
+     if(preg_match('/\d\-\d+\-\d/',$location_code))
+       $used_for='Storing';
      $location=new Location('code',$location_code);
      if(!$location->id){
-       $used_for='Picking';
-       if(preg_match('/\d\-\d+\-\d/',$location_code))
-	 $used_for='Storing';
-
+       
        $location=new Location('create',array(
-				    'Location Warehouse Key'=>1
-				    ,'Location Area'=>''
+					     'Location Warehouse Key'=>1
+					     ,'Location Area'=>''
 				    ,'Location Code'=>$location_code
-				    ,'Location Mainly Used For'=>$used_for
-				    ));
+					     ,'Location Mainly Used For'=>$used_for
+					     ));
      }
-//     // only work if is one to one relation
-    
-    $product=new Product('code',$product_code);
+     //     // only work if is one to one relation
+     
+
+
+     $product=new Product('code',$product_code);
      if($product->id and $location->id){
-       // print "hola\n";
+
        $part_skus=$product->get('Parts SKU');
        if(count($part_skus)!=1){
 	 print_r($product->data);
 	 exit();
        }
+
+
       
        $sku=$part_skus[0];
+
+       print $row['code']." $product_code  $sku \n";
+
        if($primary){
  	$sql=sprintf("update `Inventory Spanshot Fact` set `Location Key`=%d where `Date`=%s and `Part SKU`=%d "
  		     ,$location->id
  		     ,prepare_mysql(date("Y-m-d"))
  		   ,$sku
  		     );
- 	if(!mysql_query($sql))
+ 	//print "$sql\n";
+	if(!mysql_query($sql))
  	  exit("$sql\n Error con no update pick location\n");
 	//	print "$sql\n";
 	$location->load('parts_data');
@@ -99,6 +111,7 @@ while($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
  }
 
-
+$location=new Location('id',1);
+$location->load('parts_data');
 
 ?>

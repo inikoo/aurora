@@ -644,10 +644,10 @@ switch($tipo){
      $msg=($_REQUEST['msg1']!=''?'; '.$_REQUEST['msg1']:'').($_REQUEST['msg2']!=''?'; '.$_REQUEST['msg2']:'').($value['msg']!=''?'; '.$value['msg']:'');
      $msg=preg_replace('/^\;\s*/','',$msg);
      $data=array(
-  	       'qty'=>$value['qty'],
-  	       'note'=>$msg,
- 	       'user key'=>$LU->getProperty('auth_user_id'),
- 	       'date'=>''
+  	       'qty'=>$value['qty']
+  	       ,'note'=>$msg
+ 	       ,'user key'=>$LU->getProperty('auth_user_id')
+ 	       ,'date'=>''
 	       ,'options'=>''
   	       );
      $part_location->audit($data);
@@ -670,18 +670,16 @@ switch($tipo){
 //    }
    
    }
-   exit("caca");
-   
-   if($ok)
+   // if($ok)
      $response= array(
 		      'state'=>200,
 		      'data'=>''
 		      );
-   else
-     $response= array(
-		      'state'=>400,
-		      'msg'=>_('Some errors ocurred')
-		      );
+ //   else
+//      $response= array(
+// 		      'state'=>400,
+// 		      'msg'=>_('Some errors ocurred')
+// 		      );
 
 
    

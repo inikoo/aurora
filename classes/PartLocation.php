@@ -63,7 +63,7 @@ class PartLocation{
        }
        
      }
-
+     $unitary_price='';
      $_date=date("Y-m-d",strtotime($date));
      $sql=sprintf("select `Value At Cost`,`Quantity On Hand` from `Inventory Spanshot Fact` where  `Part SKU`=%d  and `Location Key`=%d  and `Date`=%s ",$this->part_sku,$this->location_key,prepare_mysql($_date));
      $result=mysql_query($sql);
@@ -85,7 +85,7 @@ class PartLocation{
      }
      
      if(!is_numeric($unitary_price)){
-       $sql=sprintf(" select AVG(SPD.`Supplier Product Cost` * SPPL.`Supplier Product Units Per Part`) as cost from `Supplier Product Dimension` SPD left join `Supplier Product Part List` SPPL on (SPD.`Supplier Product ID`=SPPL.`Supplier Product ID`)  where `Part SKU`=%d  and `Supplier Product Part Most Recent`='Yes'    ",$part_sku);
+       $sql=sprintf(" select AVG(SPD.`Supplier Product Cost` * SPPL.`Supplier Product Units Per Part`) as cost from `Supplier Product Dimension` SPD left join `Supplier Product Part List` SPPL on (SPD.`Supplier Product ID`=SPPL.`Supplier Product ID`)  where `Part SKU`=%d  and `Supplier Product Part Most Recent`='Yes'    ",$this->part_sku);
        $result=mysql_query($sql);
        if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 	 $unitary_price=$row['cost'];
@@ -97,17 +97,19 @@ class PartLocation{
 
      if(!is_numeric($user_id) or $user_id<0)
        $user_id='NULL';
-     $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`) values (%d,%d,%s,%f,%.2f,%s,%s)"
+     $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`) values (%d,%d,%s,%f,%.2f,%s,%s,%s)"
 		  ,$this->part_sku
 		  ,$this->location_key
 		  ,"'Audit'"
 		  ,$qty
 		  ,$qty*$unitary_price
 		  ,$user_id
-		  ,$note
+		  ,prepare_mysql($note)
+		  ,prepare_mysql($date)
 		  );
-     //prepare_mysql($sql);
-     print "$sql\n";
+     if(!mysql_query($sql))
+       print "Error can not audit liocatun";
+     // print "$sql\n";
 
      }
    $this->redo_daily_inventory($_date,'');
@@ -132,8 +134,11 @@ class PartLocation{
    $end_date =date("Y-m-d",$to);
    $i = 0;
    
+
+   // print "$start_date $end_date \n"; 
+
    $qty_inicio='NULL';
-   $value_inicio=0;
+   $value_inicio='NULL';
    
    $sql=sprintf("delete from `Inventory Spanshot Fact` where `Part SKU`=%d and `Location Key`=%d and (`Date`>=%s or `Date`<=%s) "
 		,$this->part_sku
@@ -141,8 +146,10 @@ class PartLocation{
 		,prepare_mysql($start_date)
 		,prepare_mysql($end_date)
 		);
-   //   print $sql;
+
    mysql_query($sql);
+   //print $sql;
+
 
  $sql=sprintf("select `Value At Cost`,`Quantity On Hand` from `Inventory Spanshot Fact` where  `Part SKU`=%d  and `Location Key`=%d  and `Date`=%s ",$this->part_sku,$this->location_key,prepare_mysql($day_before_date));
      $result=mysql_query($sql);
@@ -163,8 +170,11 @@ class PartLocation{
 	 $value_inicio=$row2['Inventory Transaction Amount'];
        }
      }
- while ($check_date != $end_date) {
-   $check_date = date ("Y-m-d", strtotime ("+1 day", strtotime($check_date)));
+
+     //print " $check_date $end_date  $qty_inicio  $value_inicio  ";
+
+     while (strtotime($check_date) <=strtotime( $end_date) ) {
+
    $sql=sprintf("delete from  `Inventory Transaction Fact` where  `Inventory Transaction Type`='Adjust' and `Part Sku`=%d   and  `Location Key`=%d and DATE(`Date`)=%s "
 		,$this->part_sku
 		,$this->location_key
@@ -177,7 +187,9 @@ class PartLocation{
 		 ,$this->part_sku
 		 ,$this->location_key
 		 ,prepare_mysql($check_date));
+    
     $result3=mysql_query($sql);
+    // print "$sql\n";
     //print "$check_date\n";
      while($row2=mysql_fetch_array($result3, MYSQL_ASSOC)   ){
       $qty=$row2['Inventory Transaction Quantity'];
@@ -272,12 +284,18 @@ class PartLocation{
        exit( "$sql\n\n Can no create Inventory Spanshot Fact\n ");
        
      
-     
+     //print "$sql\n";
 
 
     $i++;
-    if ($i > 50000) { die ('Error!'); } 
+    if ($i > 1825) { die ('Error!'); } 
+
+
+    $check_date = date ("Y-m-d", strtotime ("+1 day", strtotime($check_date)));
+
  }
+
+
 
  if($uptodate){
    $part=new Part('sku',$this->part_sku);
@@ -361,12 +379,12 @@ function get_selling_price($part_sku,$date){
 
 
  function create($data){
-   
+   $user_id=$data['user key'];
    if(isset($data['date']))
      $date=$data['date'];
    else
-     $date=date("Y-m-d");
-
+     $date=date("Y-m-d H:i:s");
+   $note=$data['note'];
    $sql=sprintf("select * from `Inventory Spanshot Fact` where `Part SKU`=%d and `Location Key`=%d and `Date`=%s ",
 		$this->part_sku
 		,$this->location_key
@@ -376,14 +394,133 @@ function get_selling_price($part_sku,$date){
    $num_rows = mysql_num_rows($result);
    
    if($num_rows==0){
-     $sql=sprintf("insert into `Inventory Spanshot Fact` (`Part SKU`,`Location Key`,`Quantity On Hand`,`Value At Cost`,`Date`) value (%d,%d,%d,0,0,%s)"
-		  ,$this->part_sku
-		  ,$this->location_key
-		  ,prepare_date($date)
-		);
-     mysql_query($sql);
+
+      if(!is_numeric($user_id) or $user_id<0)
+	$user_id='NULL';
+      
+      $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`) values (%d,%d,%s,%f,%.2f,%s,%s,%s)"
+		   ,$this->part_sku
+		   ,$this->location_key
+		   ,"'Audit'"
+		   ,0
+		   ,0
+		   ,$user_id
+		   ,$note
+		   ,prepare_mysql($date)
+		  );
+      prepare_mysql($sql);
+      print "$sql\n";
+      $this->redo_daily_inventory($_date,'');
+
+
+
+
    }
  }
+
+
+ function destroy($data){
+
+   $user_id=$data['user key'];
+   $note=$data['note'];
+   $options=$data['options'];
+
+   
+
+   if(!is_numeric($user_id) or $user_id<0)
+       $user_id='NULL';
+
+   if(isset($data['date']))
+     $date=$data['date'];
+   else
+     $date=date("Y-m-d H:i:s");
+
+   $_date=date("Y-m-d",strtotime($date));
+
+   $sql=sprintf("select * from `Inventory Spanshot Fact` where `Part SKU`=%d and `Location Key`=%d and `Date`=%s ",
+		$this->part_sku
+		,$this->location_key
+		,prepare_date($_date)
+		);
+   $result=mysql_query($sql);
+   $num_rows = mysql_num_rows($result);
+   
+   if($num_rows==1){
+     $result=mysql_query($sql);
+     $row=mysql_fetch_array($result, MYSQL_ASSOC);
+     $qty=$row['Quantity On Hand'];
+     $value=$row['Location Stock Value'];
+
+     
+     $sql=sprintf("select * from `Inventory Spanshot Fact` where `Part SKU`=%d and `Location Key`=1 and `Date`=%s ",
+		$this->part_sku
+		  ,prepare_date($date)
+		  );
+     $result2=mysql_query($sql);
+     $num_rows = mysql_num_rows($result2);
+     
+     if($num_rows==1){
+       $row2=mysql_fetch_array($result2, MYSQL_ASSOC);
+       $_qty=$row2['Quantity On Hand'];
+       $_value=$row2['Value At Cost'];
+     
+       $__qty='NULL';
+       $__value='NULL';
+       if(is_numeric($_qty) and is_numeric($qty)){
+	 $__qty=$_qty+$qty;
+	 if(is_numeric($_value) and is_numeric($value)){
+	   $__value=$_value+$value;
+	 }
+       }
+       
+        $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`) values (%d,%d,%s,%s,%s,%s,%s,%s)"
+		  ,$this->part_sku
+		  ,0
+		  ,"'Audit'"
+		  ,$__qty
+		  ,$__value
+		  ,$user_id
+		  ,$note
+		  ,prepare_mysql($date)
+		  );
+	prepare_mysql($sql);
+        $this->redo_daily_inventory($_date,'');
+
+
+       
+     }else{
+
+       $__qty='NULL';
+       $__value='NULL';
+       if(is_numeric($qty)){
+	 $__qty=$qty;
+	 if(is_numeric($value)){
+	   $__value=$value;
+	 }
+       }
+
+         $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`) values (%d,%d,%s,%s,%s,%s,%s,%s)"
+		  ,$this->part_sku
+		  ,0
+		  ,"'Audit'"
+		  ,$__qty
+		  ,$__value
+		  ,$user_id
+		  ,$note
+		  ,prepare_mysql($date)
+		  );
+	prepare_mysql($sql);
+        $this->redo_daily_inventory($_date,''); 
+
+
+
+     }
+
+
+   }
+ }
+
+
 
 
 }

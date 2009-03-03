@@ -41,7 +41,7 @@ class location{
 		 ,$warehouse_id
 		 ,prepare_mysql($area)
 		 );
-    print "$sql\n";
+    //    print "$sql\n";
     if(mysql_query($sql)){
       $id =  mysql_insert_id();
       $this->get_data('id',$id);
@@ -348,7 +348,7 @@ case('tipo'):
 		   ,prepare_mysql($this->data['Location has Stock'])
 		   ,$this->id
 		   );
-      // print "$sql\n";
+      //print "$sql\n";
       mysql_query($sql);
        break;
 
