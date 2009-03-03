@@ -432,29 +432,21 @@ switch($tipo){
      break;
  case('pml_desassociate_location'):
 
-   if(!isset($_REQUEST['product_id']))
-     $product_id=$_SESSION['state']['product']['id'];
-   else
-     $product_id=$_REQUEST['product_id'];
+   
+   $id=$_REQUEST['id'];
+   $part_location=new PartLocation(array('LocationPart'=>$id));
    $data=array(
-	       'product_id'=>$product_id,
-	       'p2l_id'=>$_REQUEST['id'],
+	       'date'=>''
 	       'user_id'=>$LU->getProperty('auth_user_id'),
-	       'tipo'=>'desassociate_location',
-	       'msg'=>$_REQUEST['msg']
+	       'note'=>$_REQUEST['msg']
 	       );
-     $product=new product($product_id);
-     $res=$product->update_location($data);
-     if($res[0])
-       $response= array(
+   
+   $response= array(
 			'state'=>200,
-			'data'=>$res[1]
+			'data'=>''
 			);
-     else
-       $response= array(
-			'state'=>400,
-			'msg'=>$res[1]
-		      );
+   
+   
      echo json_encode($response);  
      break;
      

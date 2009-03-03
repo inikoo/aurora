@@ -39,9 +39,21 @@ while($rowx=mysql_fetch_array($resultx, MYSQL_ASSOC)   ){
   $part_sku=$rowx['Part SKU'];
   $location_key=1;
   $pl=new PartLocation(array('LocationPart'=>$location_key."_".$part_sku));
-  $from=strtotime($pl->first_inventory_transacion());
+  
+$_from=$pl->first_inventory_transacion();
+   if(!$_from){
+    print("$part_sku  $used_in   No transactions\n ");
+     continue;
+    
+  }
+$from=strtotime($_from);
+
 
   $min=strtotime("2003-06-01 09:00:00");
+  if($from<$min)
+   $from=$min;
+  
+
 
   if($rowx['Part Status']=='In Use'){
      $to=strtotime('today');
@@ -54,8 +66,9 @@ while($rowx=mysql_fetch_array($resultx, MYSQL_ASSOC)   ){
      continue;
  }
  
- if($from<$min)
-   $from=$min;
+
+
+
  $from=date("Y-m-d",$from);
  $to=date("Y-m-d",$to);
 

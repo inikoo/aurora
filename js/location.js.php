@@ -12,7 +12,7 @@ var remove_prod=function (pl_id,part_sku){
     var request='ar_assets.php?tipo=pml_desassociate_location&id='+ escape(pl_id)+'&msg=&part_sku='+ escape(part_sku);
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-		//		alert(o.responseText)
+		alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 
 		if (r.state == 200) {

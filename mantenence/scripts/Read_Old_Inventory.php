@@ -25,7 +25,7 @@ require_once '../../myconf/conf.php';
 date_default_timezone_set('Europe/London');
 $not_found=00;
 
-$sql="delete from  `Inventory Transaction Fact` where (`Inventory Transaction Type`='Audit' or `Inventory Transaction Type`='In' ) ";
+$sql="delete from  `Inventory Transaction Fact` where `Inventory Transaction Type` in ('Audit','In','Associate','Disassociate','Move In','Move Out','Adjust','Not Found','Lost','Broken') ";
 mysql_query($sql);
 
 $sql="select code,product_id,aw_old.in_out.date,aw_old.in_out.tipo,aw_old.in_out.quantity ,aw_old.in_out.notes from aw_old.in_out left join aw_old.product on (product.id=product_id) where product.code is not null and (aw_old.in_out.tipo=2 or aw_old.in_out.tipo=1)   order by product.id,date ";
@@ -84,6 +84,8 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
 
 
+
+
   $sql=sprintf("select `Product ID` from `Product Dimension` P where   `Product Code`=%s and `Product Same ID Valid To`<=%s order by `Product Same ID Valid To` desc ",prepare_mysql($code),prepare_mysql($date),prepare_mysql($date));
   $result2=mysql_query($sql);
   // print "$sql\n";
@@ -134,8 +136,8 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
 
 
-$sql="delete  from `Inventory Transaction Fact`  where `Inventory Transaction Type`='Not Found' ";
-mysql_query($sql);
+//$sql="delete  from `Inventory Transaction Fact`  where `Inventory Transaction Type`='Not Found' ";
+//mysql_query($sql);
 
 
 $sql="select `No Shipped Due Out of Stock`,`Invoice Date`,`Product ID` from `Order Transaction Fact` OTF left join `Product Dimension` PD  on  (PD.`Product Key`=OTF.`Product Key`)  where `No Shipped Due Out of Stock`>0;";
@@ -157,10 +159,16 @@ while($rowx=mysql_fetch_array($resultx, MYSQL_ASSOC)   ){
  }
 
 
+// Wrap the transactions
 
 
 
+$sql=sprintf("select `Part Sku` from `Inventory Transaction Type` group by `Part Sku`");
+$result=mysql_query($sql);
+while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+  $sku=$row['Part SKU']
 
+ }
   
 function get_sp_id($part_sku,$date){
   $sql=sprintf(" select `Supplier Product ID` from  `Supplier Product Part List`   where `Part SKU`=%s  and `Supplier Product Part Valid To`>=%s and  `Supplier Product Part Valid From`<=%s    ",prepare_mysql($part_sku),prepare_mysql($date),prepare_mysql($date));
