@@ -132,12 +132,8 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
 
 }
-
-
-
-
-//$sql="delete  from `Inventory Transaction Fact`  where `Inventory Transaction Type`='Not Found' ";
-//mysql_query($sql);
+$sql="delete  from `Inventory Transaction Fact`  where `Inventory Transaction Type`='Not Found' ";
+mysql_query($sql);
 
 
 $sql="select `No Shipped Due Out of Stock`,`Invoice Date`,`Product ID` from `Order Transaction Fact` OTF left join `Product Dimension` PD  on  (PD.`Product Key`=OTF.`Product Key`)  where `No Shipped Due Out of Stock`>0;";
@@ -160,14 +156,59 @@ while($rowx=mysql_fetch_array($resultx, MYSQL_ASSOC)   ){
 
 
 // Wrap the transactions
+ $sql="delete from  `Inventory Transaction Fact` where `Inventory Transaction Type` in ('Associate','Disassociate') ";
+ mysql_query($sql);
 
 
 
-$sql=sprintf("select `Part Sku` from `Inventory Transaction Type` group by `Part Sku`");
+$sql=sprintf("select `Part SKU` from `Inventory Transaction Fact` group by `Part SkU` ");
 $result=mysql_query($sql);
+//print $sql;
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-  $sku=$row['Part SKU']
+  $sku=$row['Part SKU'];
 
+  $sql=sprintf("select `Date` from `Inventory Transaction Fact` where  `Part SKU`=%d  and `Inventory Transaction Type` in ('Audit','Not Found') order by `Date`  ",$sku);
+  $result2=mysql_query($sql);
+  // print "$sql\n";
+  if($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ){
+    
+    $date=date("Y-m-d H:i:s",strtotime($row2['Date']." -1 second"));
+    $sql=sprintf("insert into `Inventory Transaction Fact` (`Date`,`Part SKU`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Note`,`Metadata`) values (%s,%d,'Associate',%s,%s,%s,'')"
+		 ,prepare_mysql($date)
+		  ,$sku
+		 ,0
+		 ,0
+		 ,"''");
+    // print "$sql\n";
+    if(!mysql_query($sql))
+      exit("$sql can into insert Inventory Transaction Fact star");
+  }
+
+
+  $part=new Part('sku',$sku);
+  if($part->data['Part Status']=='Not In Use'){
+    
+    
+    $sql=sprintf("select `Date` from `Inventory Transaction Fact` where  `Part Sku`=%d  and `Inventory Transaction Type` in ('Audit','Not Found')  order by `Date` desc  ",$sku);
+    $result2=mysql_query($sql);
+    if($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ){
+      $date=date("Y-m-d H:i:s",strtotime($row2['Date']." +1 second"));
+      $sql=sprintf("insert into `Inventory Transaction Fact` (`Date`,`Part SKU`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Note`,`Metadata`) values (%s,%d,'Disassociate',%s,%s,%s,'')"
+		   ,prepare_mysql($date)
+		  ,$sku
+		   ,0
+		   ,0
+		   ,"''");
+    // print "$sql\n";
+      if(!mysql_query($sql))
+	exit("$sql can into insert Inventory Transaction Fact star");
+    }
+    
+    
+  }
+  
+
+  
  }
   
 function get_sp_id($part_sku,$date){

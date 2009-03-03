@@ -42,7 +42,7 @@ while($rowx=mysql_fetch_array($resultx, MYSQL_ASSOC)   ){
   
 $_from=$pl->first_inventory_transacion();
    if(!$_from){
-    print("$part_sku  $used_in   No transactions\n ");
+    print("$part_sku     No transactions\n ");
      continue;
     
   }
