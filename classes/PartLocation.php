@@ -360,6 +360,30 @@ function get_selling_price($part_sku,$date){
 }
 
 
+ function create($data){
+   
+   if(isset($data['date']))
+     $date=$data['date'];
+   else
+     $date=date("Y-m-d");
+
+   $sql=sprintf("select * from `Inventory Spanshot Fact` where `Part SKU`=%d and `Location Key`=%d and `Date`=%s ",
+		$this->part_sku
+		,$this->location_key
+		,prepare_date($date)
+		);
+   $result=mysql_query($sql);
+   $num_rows = mysql_num_rows($result);
+   
+   if($num_rows==0){
+     $sql=sprintf("insert into `Inventory Spanshot Fact` (`Part SKU`,`Location Key`,`Quantity On Hand`,`Value At Cost`,`Date`) value (%d,%d,%d,0,0,%s)"
+		  ,$this->part_sku
+		  ,$this->location_key
+		  ,prepare_date($date)
+		);
+     mysql_query($sql);
+   }
+ }
 
 
 }

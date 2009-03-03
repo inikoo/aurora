@@ -47,7 +47,8 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
       
       $sql=sprintf("select `Date` from `Inventory Transaction Fact` where  `Part SKU`=%d and `Inventory Transaction Type`='Sale' and `Inventory Transaction Quantity`!=0    order by `Date` desc limit 1 ",$part->data['Part SKU']);
       $resultxx=mysql_query($sql);
-     ;
+      
+      print "$sql\n";
       if($rowxx=mysql_fetch_array($resultxx, MYSQL_ASSOC)   ){
 
 	if(strtotime($rowxx['Date'])< strtotime( $part->data['Part Valid From'])){
@@ -73,7 +74,7 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   //  exit("ERROR $sql\n");
   
     //$part->load('sales');
-    //$part->load('used in');
+    $part->load('used in');
     //$part->load('supplied by');
 
     // $part->load('stock');

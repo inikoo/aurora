@@ -195,7 +195,8 @@ YAHOO.util.Event.onContentReady("manage_stock_products", function () {
  	};
  	var oAC = new YAHOO.widget.AutoComplete("new_product_input", "new_product_container", oDS);
  	oAC.generateRequest = function(sQuery) {
- 	    return "?tipo=products_name&except=location&except_id=<?=$_SESSION['state']['location']['id']?>&query=" + sQuery ;
+
+ 	    return "?tipo=part_search&except=location&except_id=<?=$_SESSION['state']['location']['id']?>&query=" + sQuery ;
  	};
 
 	var myHandler = function(sType, aArgs) {
@@ -215,7 +216,7 @@ YAHOO.util.Event.onContentReady("manage_stock_products", function () {
 var product_selected=function(){
 
     var data = {
-	"code":newProductData[1]
+	"sku":newProductData[1]
 	,"description":newProductData[2]
 	,"current_qty":newProductData[3]
 	,"changed_qty":newProductData[4]
@@ -333,8 +334,8 @@ var qty_changed=function(pl_id,part_sku){
 };
 
 var change_reset=function(pl_id,part_sku){
-
-    Dom.get('cs'+pl_id).innerHTML=0;
+    
+    Dom.get('cs'+pl_id).innerHTML=0
     Dom.get('qc'+pl_id).value=Dom.get('s'+pl_id).getAttribute('value');
 
     qty_changed(pl_id,part_sku);
@@ -501,7 +502,7 @@ var change_stock=function(){
     table.showColumn('note');
     Dom.get('manage_stock').style.display='';
     Dom.get('manage_stock_products').style.display='';
-    Dom.get('manage_stock_messages').innerHTML='<table style="margin:0"><tr><td><?=_('Audit Name & Notes')?>:</td></tr><tr><td><input id="audit_name" onchange="check_audit_form()" type="text" style="background:#fff889" /> <input id="audit_note" onchange="check_audit_form()" type="text" style="background:#fff889" /></td></tr><tr><td>New product found</td></tr></table>';
+    Dom.get('manage_stock_messages').innerHTML='<table style="margin:0"><tr><td><?=_('Audit Name & Notes')?>:</td></tr><tr><td><input id="audit_name" onchange="check_audit_form()" type="text" style="background:#fff889" /> <input id="audit_note" onchange="check_audit_form()" type="text" style="background:#fff889" /></td></tr><tr><td>New part found</td></tr></table>';
     Dom.get('manage_stock_engine').style.visibility='hidden';
     Dom.get('manage_stock_engine').innerHTML='<span onclick="change_stock_save()" style="cursor:pointer"><?=_('Save changes')?> <img src="art/icons/disk.png"/></span>';
     this.className='selected';

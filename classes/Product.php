@@ -573,7 +573,7 @@ class product{
 
     switch($key){
     case('Parts SKU'):
-      $sql=sprintf("select `Part SKU` from `Product Part List` where `Product ID`=%d and `Product Part Most Recent`='Yes';",$this->data['Product ID']);
+      $sql=sprintf("select `Part SKU` from `Product Part List` where `Product ID`=%d ;",$this->data['Product ID']);
       $result=mysql_query($sql);
       $parts=array();
      while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){

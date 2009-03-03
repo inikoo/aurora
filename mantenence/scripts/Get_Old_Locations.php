@@ -53,16 +53,29 @@ while($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   while($row=mysql_fetch_array($result2xxx, MYSQL_ASSOC)   ){
     
      $location_code=$row['code'];
-    $location=new Location('code',$location_code);
+     //  print $row['code']."\n";
+     $location=new Location('code',$location_code);
+     if(!$location->id){
+       $used_for='Picking';
+       if(preg_match('/\d\-\d+\-\d/',$location_code))
+	 $used_for='Storing';
+
+       $location=new Location('create',array(
+				    'Location Warehouse Key'=>1
+				    ,'Location Area'=>''
+				    ,'Location Code'=>$location_code
+				    ,'Location Mainly Used For'=>$used_for
+				    ));
+     }
 //     // only work if is one to one relation
     
     $product=new Product('code',$product_code);
      if($product->id and $location->id){
-       print "hola\n";
+       // print "hola\n";
        $part_skus=$product->get('Parts SKU');
        if(count($part_skus)!=1){
- 	print_r($product->data);
- 	exit();
+	 print_r($product->data);
+	 exit();
        }
       
        $sku=$part_skus[0];
@@ -74,7 +87,7 @@ while($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ){
  		     );
  	if(!mysql_query($sql))
  	  exit("$sql\n Error con no update pick location\n");
-	print "$sql\n";
+	//	print "$sql\n";
 	$location->load('parts_data');
 //       //print_r($location->data);
  	$primary=false;

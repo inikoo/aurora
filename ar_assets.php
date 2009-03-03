@@ -809,6 +809,86 @@ switch($tipo){
    break;
 
 
+case('part_search'):
+
+   if(!isset($_REQUEST['query']) or $_REQUEST['query']==''){
+     $response= array(
+		      'state'=>400,
+		      'data'=>array()
+		      );
+     echo json_encode($response);
+     return;
+   }
+     
+
+   if(isset($_REQUEST['except']) and  isset($_REQUEST['except_id'])  and   is_numeric($_REQUEST['except_id'])){
+     
+     if($_REQUEST['except']=='location'){
+
+       $sql=sprintf("select `Part SKU`,`Part XHTML Description` from `Part Dimension` where  (`Part SKU`=%d or `Part XHTML Currently Used In` like '%%%s%%' )",$_REQUEST['query'],addslashes($_REQUEST['query']));
+       print $sql;
+       //     $sql=sprintf("select product.id as product_id,description,product.code,product2location.id as id,0 as qty from product left join product2location on (product.id=product_id) where product.code like   '%s%%'   and (select count(*) from product2location as p2l  where location_id=%s and p2l.product_id=product.id)=0   order by ncode ",addslashes($_REQUEST['query']),$_REQUEST['except_id']);
+       $_data=array();
+       $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+       
+       $qty_on_hand=0;
+       $location_key=$_REQUEST['except_id'];
+       
+       while($data=$res->fetchRow()) {
+	 $loc_sku=$location_key.'_'.$data['Part SKU'];
+	 
+
+	 $_data[]= array(
+			 'sku'=>sprintf('<a href="part_manage_stock.php?id=%d">%s</a>',$data['Part SKU'],$data['Part SKU'])
+			 ,'description'=>$data['Part XHTML Description']
+			 ,'current_qty'=>sprintf('<span  used="0"  value="%s" id="s%s"  onclick="fill_value(%s,%d,%d)">%s</span>',$qty_on_hand,$loc_sku,$qty_on_hand,$location_key,$data['Part SKU'],number($qty_on_hand))
+			 ,'changed_qty'=>sprintf('<span   used="0" id="cs%s"  onclick="change_reset(\'%s\',%d)"   ">0</span>',$loc_sku,$loc_sku,$data['Part SKU'])
+			 ,'new_qty'=>sprintf('<span  used="0"  value="%s" id="ns%s"  onclick="fill_value(%s,%d,%d)">%s</span>',$qty_on_hand,$loc_sku,$qty_on_hand,$location_key,$data['Part SKU'],number($qty_on_hand))
+			 ,'_qty_move'=>'<input id="qm'.$loc_sku.'" onchange="qty_changed(\''.$loc_sku.'\','.$data['Part SKU'].')" type="text" value="" size=3>'
+			 ,'_qty_change'=>'<input id="qc'.$loc_sku.'" onchange="qty_changed(\''.$loc_sku.'\','.$data['Part SKU'].')" type="text" value="" size=3>'
+			 ,'_qty_damaged'=>'<input id="qd'.$loc_sku.'" onchange="qty_changed(\''.$loc_sku.'\','.$data['Part SKU'].')" type="text" value="" size=3>'
+			 ,'note'=>'<input  id="n'.$loc_sku.'" type="text" value="" style="width:100px">'
+			 ,'delete'=>($qty_on_hand==0?'<img onclick="remove_prod('.$location_key.','.$data['Part SKU'].')" style="cursor:pointer" title="'._('Remove').' '.$data['Part SKU'].'" alt="'._('Desassociate Product').'" src="art/icons/cross.png".>':'')
+			 ,'part_sku'=>$data['Part SKU']
+			 
+			);
+       }
+       $response= array(
+			'state'=>200,
+			'data'=>$_data
+			);
+       echo json_encode($response);
+       
+       
+       break;
+	
+
+
+     }
+     
+   }
+// else{
+     
+     
+//      $sql=sprintf("select code from product where code like   '%s%%'  order by ncode ",$_REQUEST['query']);
+//    }
+//    //   print $sql;
+//    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+//    while($row=$res->fetchRow()) {
+//      $data[]=array('code'=>$row['code']);
+//    }
+   
+
+//    $response= array(
+// 		    'state'=>200,
+// 		    'data'=>$data
+// 		    );
+//    echo json_encode($response);
+
+
+   break;
+
+
  case('locations_name'):
 
    if(!isset($_REQUEST['query']) or $_REQUEST['query']==''){
@@ -8103,9 +8183,9 @@ if(isset( $_REQUEST['tableid']))
 		   ,'current_qty'=>sprintf('<span  used="0"  value="%s" id="s%s"  onclick="fill_value(%s,%d,%d)">%s</span>',$data['Quantity On Hand'],$loc_sku,$data['Quantity On Hand'],$data['Location Key'],$data['Part SKU'],number($data['Quantity On Hand']))
 		   ,'changed_qty'=>sprintf('<span   used="0" id="cs%s"  onclick="change_reset(\'%s\',%d)"   ">0</span>',$loc_sku,$loc_sku,$data['Part SKU'])
 		   ,'new_qty'=>sprintf('<span  used="0"  value="%s" id="ns%s"  onclick="fill_value(%s,%d,%d)">%s</span>',$data['Quantity On Hand'],$loc_sku,$data['Quantity On Hand'],$data['Location Key'],$data['Part SKU'],number($data['Quantity On Hand']))
-		   ,'_qty_move'=>'<input id="qm'.$loc_sku.'" onchange="qty_changed('.$data['Location Key'].','.$data['Part SKU'].')" type="text" value="" size=3>'
-		   ,'_qty_change'=>'<input id="qc'.$loc_sku.'" onchange="qty_changed('.$data['Location Key'].','.$data['Part SKU'].')" type="text" value="" size=3>'
-		   ,'_qty_damaged'=>'<input id="qd'.$loc_sku.'" onchange="qty_changed('.$data['Location Key'].','.$data['Part SKU'].')" type="text" value="" size=3>'
+		   ,'_qty_move'=>'<input id="qm'.$loc_sku.'" onchange="qty_changed(\''.$loc_sku.'\','.$data['Part SKU'].')" type="text" value="" size=3>'
+		   ,'_qty_change'=>'<input id="qc'.$loc_sku.'" onchange="qty_changed(\''.$loc_sku.'\','.$data['Part SKU'].')" type="text" value="" size=3>'
+		   ,'_qty_damaged'=>'<input id="qd'.$loc_sku.'" onchange="qty_changed(\''.$loc_sku.'\','.$data['Part SKU'].')" type="text" value="" size=3>'
 		   ,'note'=>'<input  id="n'.$loc_sku.'" type="text" value="" style="width:100px">'
 		   ,'delete'=>($data['Quantity On Hand']==0?'<img onclick="remove_prod('.$data['Location Key'].','.$data['Part SKU'].')" style="cursor:pointer" title="'._('Remove').' '.$data['Part SKU'].'" alt="'._('Desassociate Product').'" src="art/icons/cross.png".>':'')
 		   );

@@ -28,11 +28,12 @@ class location{
     $area=$data['Location Area'];
     $name=$data['Location Code'];
     $tipo=$data['Location Mainly Used For'];
-
+    
     if($name=='')
       return array('ok'=>false,'msg'=>_('Wrong location name').'.');
     
-    if(!($tipo=='picking' or $tipo=='storing' or $tipo=='loading' or $tipo=='display'))
+
+    if(!($tipo=='Picking' or $tipo=='Storing' or $tipo=='Loading' or $tipo=='Displaying'))
        return array('ok'=>false,'msg'=>_('Wrong location tipo').'.');
     $sql=sprintf('insert into `Location Dimension` (`Location Code`,`Location Mainly Used For`,`Location Warehouse Key`,`Location Area`) values(%s,%s,%d,%s)'
 		 ,prepare_mysql($name)
@@ -40,6 +41,7 @@ class location{
 		 ,$warehouse_id
 		 ,prepare_mysql($area)
 		 );
+    print "$sql\n";
     if(mysql_query($sql)){
       $id =  mysql_insert_id();
       $this->get_data('id',$id);
