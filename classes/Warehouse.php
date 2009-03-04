@@ -1,15 +1,13 @@
 <?
 
 class warehouse{
-  var $db;
+  
   var $data=array();
   var $areas=false;
   var $id=false;
 
 
   function __construct($arg1=false,$arg2=false) {
-     $this->db =MDB2::singleton();
-     
 
      if($arg1=='new' and is_array($arg2)){
        $this->create($arg2);
@@ -27,42 +25,42 @@ class warehouse{
   }
 
 
-  function create ($data){
-    $name=$data['name'];
+ //  function create ($data){
+//     $name=$data['name'];
     
   
-     if($name=='')
-       return array('ok'=>false,'msg'=>_('Wrong warehouse name').'.');
+//      if($name=='')
+//        return array('ok'=>false,'msg'=>_('Wrong warehouse name').'.');
     
 
-    $sql=sprintf('insert into location (name) values(%s)',prepare_mysql($name));
-    print "$sql\n";
-    $affected=& $this->db->exec($sql);
-    if (PEAR::isError($affected)) {
-      if(preg_match('/^MDB2 Error: constraint violation$/',$affected->getMessage()))
-	return array('ok'=>false,'msg'=>_('Error: Another warehouse has the same name').'.');
-	 else
-	   return array('ok'=>false,'msg'=>_('Unknwon Error').'.');
-    }
-    $id = $this->db->lastInsertID();
-    $this->get_data('id',$id);
-  }
+//     $sql=sprintf('insert into location (name) values(%s)',prepare_mysql($name));
+//     // print "$sql\n";
+//     $affected=& $this->db->exec($sql);
+//     if (PEAR::isError($affected)) {
+//       if(preg_match('/^MDB2 Error: constraint violation$/',$affected->getMessage()))
+// 	return array('ok'=>false,'msg'=>_('Error: Another warehouse has the same name').'.');
+// 	 else
+// 	   return array('ok'=>false,'msg'=>_('Unknwon Error').'.');
+//     }
+//     $id = $this->db->lastInsertID();
+//     $this->get_data('id',$id);
+//   }
 
   function get_data($key,$tag){
     
     if($key=='id')
-      $sql=sprintf("select * from `Warehouse Dimension` where `Warehouse Key`=%d",$tag);
+      $sql=sprintf("select `Warehouse Key`,`Warehouse Name` from `Warehouse Dimension` where `Warehouse Key`=%d",$tag);
     else if($key=='name')
-      $sql=sprintf("select * from `Warehouse Dimension` where `Warehouse Name`=%s ",prepare_mysql($tag));
+      $sql=sprintf("select  `Warehouse Key`,`Warehouse Name`  from `Warehouse Dimension` where `Warehouse Name`=%s ",prepare_mysql($tag));
     else
       return;
-    //print $sql;    
-    $result =& $this->db->query($sql);
-    if($row=$result->fetchRow()){
-      $this->id=$row['Warehouse Key'];
-      $this->data=$row;
-    }      
-    $this->msg=_('Warehouse not found');
+
+    $result=mysql_query($sql);
+    if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)){
+      $this->id=$this->data['Warehouse Key'];
+    }
+      
+
 
 
   }

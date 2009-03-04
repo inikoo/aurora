@@ -27,6 +27,11 @@ switch(strtolower($order->get('Order Current Dispatch State'))){
   $js_file='order_in_process.js.php';
   $template='order_in_process.tpl';
   break;
+  case('Dispached'):
+  $js_file='order_invoived.js.php';
+  $template='order_invoiced.tpl';
+  break; 
+
  default:
    $js_file='order_in_process.js.php';
   $template='order_in_process.tpl';

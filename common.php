@@ -330,7 +330,7 @@ if(!isset($_SESSION['state']))
 
 
 
-$smarty->assign('user',($LU->getProperty('auth_user_id')==1?_('Superuser'):$LU->getProperty('name')));
+$smarty->assign('user',($LU->getProperty('auth_user_id')==1?_('Superuser'):$LU->getProperty('handle')));
 $smarty->assign('lang_code',$lang_code);
 $smarty->assign('lang_country_code',strtolower($lang_country_code));
 

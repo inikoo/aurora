@@ -32,7 +32,7 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $part=new Part($row['Part Key']);
   
   //Get  status
-
+  if(isset($argv[1]) and $argv[1]=='status'){
   $part_valid_from=$part->data['Part Valid From'];
   $part_valid_to=$part->data['Part Valid To'];
   $in_use='Not In Use';
@@ -72,13 +72,13 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   // print "$sql\n";
   //if(!mysql_query($sql))
   //  exit("ERROR $sql\n");
-  
-    //$part->load('sales');
+  }
+    $part->load('sales');
     $part->load('used in');
-    //$part->load('supplied by');
+    $part->load('supplied by');
 
-    // $part->load('stock');
-    // $part->load('stock_history');
+     $part->load('stock');
+     $part->load('stock_history');
     print $row['Part Key']."\r";
 
  }

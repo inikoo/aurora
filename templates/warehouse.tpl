@@ -12,8 +12,8 @@
 
 </div>
 
-      <div  class="yui-b" style="border:1px solid #ccc;text-align:left;margin:0px;padding:10px;height:300px;width:600px;margin: 0 0 10px 0;float:left">
-	<embed  style="display:none" src="warehouse.svg" name="printable_map" type="image/svg+xml" />
+      <div  class="yui-b" style="border:1px solid #ccc;text-align:left;margin:0px;padding:10px;height:270px;width:600px;margin: 0 0 10px 0;float:left">
+	<img   src="_warehouse.png" name="printable_map" />
       </div>
       
 <div class="list_of_buttons">

@@ -31,7 +31,7 @@ $not_found=00;
 $first_day_with_data=strtotime("2007-03-24");
 
 
-$sql="select `Part Status`,`Part SKU`,`Part Valid From`,`Part Valid To`,`Part XHTML Currently Used In` from `Part Dimension`  ";
+$sql="select `Part Status`,`Part SKU`,`Part Valid From`,`Part Valid To`,`Part XHTML Currently Used In` from `Part Dimension` where `Part SKU`=8859";
 
 $resultx=mysql_query($sql);
 $counter=1;
@@ -40,16 +40,21 @@ while($rowx=mysql_fetch_array($resultx, MYSQL_ASSOC)   ){
   $location_key=1;
   $pl=new PartLocation(array('LocationPart'=>$location_key."_".$part_sku));
   
-$_from=$pl->first_inventory_transacion();
-   if(!$_from){
+  $_from=$pl->first_inventory_transacion();
+  if(!$_from){
     print("$part_sku     No transactions\n ");
-     continue;
+    continue;
     
   }
-$from=strtotime($_from);
+  $from=strtotime($_from);
 
+  if(isset($argv[1]) and $argv[1]=='today')
+    $min=strtotime('today');
+ else
+   $min=strtotime("2003-06-01 09:00:00");
 
-  $min=strtotime("2003-06-01 09:00:00");
+  // print $min;
+
   if($from<$min)
    $from=$min;
   
@@ -62,7 +67,7 @@ $from=strtotime($_from);
   }
 
  if($from>$to){
-     print("error  $part_sku ".$rowx['Part Valid From']." ".$rowx['Part Valid To']."   \n   ");
+     print("error $from $to  $part_sku ".$rowx['Part Valid From']." ".$rowx['Part Valid To']."   \n   ");
      continue;
  }
  

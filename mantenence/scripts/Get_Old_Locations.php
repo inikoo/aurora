@@ -47,7 +47,7 @@ $sql=sprintf("select * from aw_old.product ");
 $result=mysql_query($sql);
 while($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $product_code=$row2['code'];
-  $sql="select * from aw_old.location  where product_id=".$row2['id']."  and code like '111-01'   order by tipo" ;
+  $sql="select * from aw_old.location  where product_id=".$row2['id']."  and code like '111-02'   order by tipo" ;
   $result2xxx=mysql_query($sql);
   $primary=true;
 
@@ -89,20 +89,32 @@ while($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ){
       
        $sku=$part_skus[0];
 
-       print $row['code']." $product_code  $sku \n";
+       print $row['code']." $product_code  ".$location->id." $sku \n";
 
        if($primary){
- 	$sql=sprintf("update `Inventory Spanshot Fact` set `Location Key`=%d where `Date`=%s and `Part SKU`=%d "
- 		     ,$location->id
- 		     ,prepare_mysql(date("Y-m-d"))
- 		   ,$sku
- 		     );
- 	//print "$sql\n";
-	if(!mysql_query($sql))
- 	  exit("$sql\n Error con no update pick location\n");
-	//	print "$sql\n";
+
+	 $pl=new PartLocation('1_'.$sku);
+	 
+	 $data=array(
+		     'user key'=>0
+		     ,'note'=>_('First record of location')
+		     ,'move_to'=>$location->id
+		     ,'qty'=>'all'
+		     ,'date'=>''
+		     );
+	 $pl->move_to($data);
+	 $data=array(
+		     'user key'=>0
+		     ,'note'=>_('Location now known')
+		     
+		     );
+	 
+	 $pl->destroy($data);
+	 
+	 exit;
+
 	$location->load('parts_data');
-//       //print_r($location->data);
+	
  	$primary=false;
        }
       
