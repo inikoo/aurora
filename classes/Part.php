@@ -91,6 +91,77 @@ class part{
 
   function load($data_to_be_read,$args=''){
     switch($data_to_be_read){
+
+    case('calculate_stock_history'):
+      global $myconf;
+      $force_first_day=true;
+      
+      $part_sku=$this->data['Part SKU'];
+
+      if(isset($args) and $args=='today')
+	$min=strtotime('today');
+      else
+	$min=strtotime($myconf["data_from"]);
+      
+      
+      $sql=sprintf("select `Location Key` from `Inventory Transaction Fact` where `Part SKU`=%d group by `Location Key` ",$part_sku);
+      $resultxxx=mysql_query($sql);
+      while($rowxxx=mysql_fetch_array($resultxxx, MYSQL_ASSOC)   ){
+	$skip=false;
+	$location_key=$rowxxx['Location Key'];
+	
+	if($location_key==1){
+	  if($force_first_day){
+	    
+	    $from=strtotime($this->data['Part Valid From']);
+	  }else{
+	    $_from=$pl->first_inventory_transacion();
+	    if(!$_from)
+	      $skip=true;
+	    $from=strtotime($_from);
+     }
+
+
+   }else{
+     $_from=$pl->first_inventory_transacion();
+     if(!$_from)
+       $skip=true;
+     $from=strtotime($_from);
+   }
+
+   if($from<$min)
+     $from=$min;
+
+   if($this->data['Part Status']=='In Use'){
+     $to=strtotime('today');
+   }else{
+     $to=strtotime($this->data['Part Valid To']);
+   }
+  
+   
+   if($from>$to){
+     //   print("error    $part_sku $location_key  ".$rowx['Part Valid From']." ".$rowx['Part Valid To']."   \n   ");
+     continue;
+   }
+ 
+
+   if($skip){
+     //print "No trasactions $part_sku $location_key "; 
+     continue;
+   }
+
+   $from=date("Y-m-d",$from);
+   $to=date("Y-m-d",$to);
+   // print "$part_sku $location_key  $from $to\n";
+   $pl=new PartLocation(array('LocationPart'=>$location_key."_".$part_sku));
+   $pl->redo_daily_inventory($from,$to);
+
+
+ }
+    
+
+      break;
+
     case('stock'):
       $stock='';
       $value='';

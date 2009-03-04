@@ -31,113 +31,119 @@ $force_first_day=true;
 $first_day_with_data=strtotime("2007-03-24");
 
 
-$sql="select `Part Status`,`Part SKU`,`Part Valid From`,`Part Valid To`,`Part XHTML Currently Used In` from `Part Dimension` where `Part SKU`=9049";
+$where='';
+if(isset($argv[1]) and is_numeric($argv[1])  )
+  $where=" where  `Part SKU`=". $argv[1];
+
+$sql="select `Part Status`,`Part SKU`,`Part Valid From`,`Part Valid To`,`Part XHTML Currently Used In` from `Part Dimension` $where  ";
 
 $resultx=mysql_query($sql);
 $counter=1;
 while($rowx=mysql_fetch_array($resultx, MYSQL_ASSOC)   ){
-  $part_sku=$rowx['Part SKU'];
-  // $location_key=1;
-  //$pl=new PartLocation(array('LocationPart'=>$location_key."_".$part_sku));
+  $part= new Part($rowx['Part SKU']);
+  $part->load('calculate_stock_history');
+ }
+//   // $location_key=1;
+//   //$pl=new PartLocation(array('LocationPart'=>$location_key."_".$part_sku));
   
- //  $_from=$pl->first_inventory_transacion();
-//   if(!$_from){
-//     print("$part_sku     No transactions\n ");
-//     continue;
+//  //  $_from=$pl->first_inventory_transacion();
+// //   if(!$_from){
+// //     print("$part_sku     No transactions\n ");
+// //     continue;
     
-//   }
-//   $from=strtotime($_from);
+// //   }
+// //   $from=strtotime($_from);
 
-  if(isset($argv[1]) and $argv[1]=='today')
-    $min=strtotime('today');
- else
-   $min=strtotime("2003-06-01 09:00:00");
+//   if(isset($argv[2]) and $argv[2]=='today')
+//     $min=strtotime('today');
+//  else
+//    $min=strtotime("2003-06-01 09:00:00");
 
-//   // print $min;
+// //   // print $min;
 
-//   if($from<$min)
-//    $from=$min;
+// //   if($from<$min)
+// //    $from=$min;
   
 
 
-//   if($rowx['Part Status']=='In Use'){
-//     $to=strtotime('today');
-//   }else{
-//     $to=strtotime($rowx['Part Valid To']);
-//   }
+// //   if($rowx['Part Status']=='In Use'){
+// //     $to=strtotime('today');
+// //   }else{
+// //     $to=strtotime($rowx['Part Valid To']);
+// //   }
   
   
 
 
-//  if($from>$to){
-//      print("error $from $to  $part_sku ".$rowx['Part Valid From']." ".$rowx['Part Valid To']."   \n   ");
-//      continue;
-//  }
+// //  if($from>$to){
+// //      print("error $from $to  $part_sku ".$rowx['Part Valid From']." ".$rowx['Part Valid To']."   \n   ");
+// //      continue;
+// //  }
  
 
 
 
-//  $from=date("Y-m-d",$from);
-//  $to=date("Y-m-d",$to);
+// //  $from=date("Y-m-d",$from);
+// //  $to=date("Y-m-d",$to);
 
 
- $sql=sprintf("select `Location Key` from `Inventory Transaction Fact` where `Part SKU`=%d group by `Location Key` ",$part_sku);
- $resultxxx=mysql_query($sql);
- while($rowxxx=mysql_fetch_array($resultxxx, MYSQL_ASSOC)   ){
-   $skip=false;
-   $location_key=$rowxxx['Location Key'];
+//  $sql=sprintf("select `Location Key` from `Inventory Transaction Fact` where `Part SKU`=%d group by `Location Key` ",$part_sku);
+//  $resultxxx=mysql_query($sql);
+//  while($rowxxx=mysql_fetch_array($resultxxx, MYSQL_ASSOC)   ){
+//    $skip=false;
+//    $location_key=$rowxxx['Location Key'];
 
-   if($location_key==1){
-     if($force_first_day){
+//    if($location_key==1){
+//      if($force_first_day){
        
-       $from=strtotime($rowx['Part Valid From']);
-     }else{
-       $_from=$pl->first_inventory_transacion();
-       if(!$_from)
-	 $skip=true;
-       $from=strtotime($_from);
-     }
+//        $from=strtotime($rowx['Part Valid From']);
+//      }else{
+//        $_from=$pl->first_inventory_transacion();
+//        if(!$_from)
+// 	 $skip=true;
+//        $from=strtotime($_from);
+//      }
 
 
-   }else{
-     $_from=$pl->first_inventory_transacion();
-     if(!$_from)
-       $skip=true;
-     $from=strtotime($_from);
-   }
+//    }else{
+//      $_from=$pl->first_inventory_transacion();
+//      if(!$_from)
+//        $skip=true;
+//      $from=strtotime($_from);
+//    }
 
-   if($from<$min)
-     $from=$min;
+//    if($from<$min)
+//      $from=$min;
 
-   if($rowx['Part Status']=='In Use'){
-     $to=strtotime('today');
-   }else{
-     $to=strtotime($rowx['Part Valid To']);
-   }
+//    if($rowx['Part Status']=='In Use'){
+//      $to=strtotime('today');
+//    }else{
+//      $to=strtotime($rowx['Part Valid To']);
+//    }
   
    
-   if($from>$to){
-     print("error    $part_sku $location_key  ".$rowx['Part Valid From']." ".$rowx['Part Valid To']."   \n   ");
-     continue;
-   }
+//    if($from>$to){
+//      print("error    $part_sku $location_key  ".$rowx['Part Valid From']." ".$rowx['Part Valid To']."   \n   ");
+//      continue;
+//    }
  
 
-   if($skip){
-     print "No trasactions $part_sku $location_key "; 
-     continue;
-   }
+//    if($skip){
+//      print "No trasactions $part_sku $location_key "; 
+//      continue;
+//    }
 
-   $from=date("Y-m-d",$from);
-   $to=date("Y-m-d",$to);
-   print "$part_sku $location_key  $from $to\n";
-   $pl=new PartLocation(array('LocationPart'=>$location_key."_".$part_sku));
-   $pl->redo_daily_inventory($from,$to);
-
-
- }
+//    $from=date("Y-m-d",$from);
+//    $to=date("Y-m-d",$to);
+//    print "$part_sku $location_key  $from $to\n";
+//    $pl=new PartLocation(array('LocationPart'=>$location_key."_".$part_sku));
+//    $pl->redo_daily_inventory($from,$to);
 
 
- }
+//  }
+
+
+//  }
 
 
 //   $from=strtotime($rowx['Part Valid From']);

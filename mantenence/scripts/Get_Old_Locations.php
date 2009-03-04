@@ -47,7 +47,7 @@ $sql=sprintf("select * from aw_old.product ");
 $result=mysql_query($sql);
 while($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $product_code=$row2['code'];
-  $sql="select * from aw_old.location  where product_id=".$row2['id']."  and code like '111-07'   order by tipo" ;
+  $sql="select * from aw_old.location  where product_id=".$row2['id']."  limit 500   " ;
   $result2xxx=mysql_query($sql);
   $primary=true;
 
@@ -92,8 +92,13 @@ while($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
        
        if($primary){
-	 print $row['code']." $product_code  ".$location->id." $sku \n";
-	
+	 print $row['code']." $product_code  LOC: ".$location->id." SKU: $sku \n";
+
+	  $part= new Part($sku);
+//  	 $part->load('calculate_stock_history');
+
+	 
+
 	 $pl=new PartLocation('1_'.$sku);
 	 
 	 $data=array(
@@ -104,7 +109,7 @@ while($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
 		     );
 	 $pl->move_to($data);
-	 exit;
+       
 	 $data=array(
 		     'user key'=>0
 		     ,'note'=>_('Location now known')
@@ -113,10 +118,10 @@ while($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 	 
 	 $pl->destroy($data);
 	 
-	 exit;
+	 
 
 	$location->load('parts_data');
-	
+	exit;
  	$primary=false;
        }
       

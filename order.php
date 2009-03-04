@@ -24,12 +24,14 @@ $customer=new Customer($order->get('order customer key'));
 switch(strtolower($order->get('Order Current Dispatch State'))){
   
  case('in process'):
-  $js_file='order_in_process.js.php';
-  $template='order_in_process.tpl';
-  break;
+   $js_file='order_in_process.js.php';
+   $template='order_in_process.tpl';
+   break;
   case('Dispached'):
-  $js_file='order_invoived.js.php';
-  $template='order_invoiced.tpl';
+    
+    
+    $js_file='order_invoived.js.php';
+    $template='order_invoiced.tpl';
   break; 
 
  default:
