@@ -47,7 +47,7 @@ $sql=sprintf("select * from aw_old.product ");
 $result=mysql_query($sql);
 while($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $product_code=$row2['code'];
-  $sql="select * from aw_old.location  where product_id=".$row2['id']."  and code like '111-02'   order by tipo" ;
+  $sql="select * from aw_old.location  where product_id=".$row2['id']."  and code like '111-07'   order by tipo" ;
   $result2xxx=mysql_query($sql);
   $primary=true;
 
@@ -89,10 +89,11 @@ while($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ){
       
        $sku=$part_skus[0];
 
-       print $row['code']." $product_code  ".$location->id." $sku \n";
 
+       
        if($primary){
-
+	 print $row['code']." $product_code  ".$location->id." $sku \n";
+	
 	 $pl=new PartLocation('1_'.$sku);
 	 
 	 $data=array(
@@ -100,9 +101,10 @@ while($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 		     ,'note'=>_('First record of location')
 		     ,'move_to'=>$location->id
 		     ,'qty'=>'all'
-		     ,'date'=>''
+
 		     );
 	 $pl->move_to($data);
+	 exit;
 	 $data=array(
 		     'user key'=>0
 		     ,'note'=>_('Location now known')
