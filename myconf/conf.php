@@ -265,7 +265,7 @@ $default_state=array(
 						   'sf'=>0,
 						   'nr'=>25,
 						   'where'=>'where true',
-						   'f_field'=>'name',
+						   'f_field'=>'customer name',
 						   'f_value'=>''
 						       ),
 					'advanced_search'=>array(

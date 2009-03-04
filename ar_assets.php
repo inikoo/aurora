@@ -436,7 +436,7 @@ switch($tipo){
    $id=$_REQUEST['id'];
    $part_location=new PartLocation(array('LocationPart'=>$id));
    $data=array(
-	       'date'=>''
+	       'date'=>'',
 	       'user_id'=>$LU->getProperty('auth_user_id'),
 	       'note'=>$_REQUEST['msg']
 	       );

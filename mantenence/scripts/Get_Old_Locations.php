@@ -7,6 +7,7 @@ include_once('../../classes/Supplier.php');
 include_once('../../classes/Part.php');
 include_once('../../classes/SupplierProduct.php');
 include_once('../../classes/Location.php');
+include_once('../../classes/PartLocation.php');
 
 error_reporting(E_ALL);
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );

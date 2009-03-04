@@ -67,7 +67,7 @@ while($row=$res->fetchRow()) {
 $smarty->assign('newuser_groups',$newuser_groups);
 
 //create user list
-$sql=sprintf("select `Employee ID` as id,`Employee Alias` as alias,(select count(*) from liveuser_users where tipo=1 and id_in_table=`Employee Dimension`.`Employee Key`) as is_user from `Employee Dimension` where `Employee Status`='Working' and `Employee Most Recent`='Yes' order by `Employee Alias`");
+$sql=sprintf("select `Staff ID` as id,`Staff Alias` as alias,(select count(*) from liveuser_users where tipo=1 and id_in_table=`Staff Dimension`.`Staff Key`) as is_user from `Staff Dimension` where `Staff Currently Working`='Yes' and `Staff Most Recent`='Yes' order by `Staff Alias`");
 
 //print $sql;
  $result=mysql_query($sql);

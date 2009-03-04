@@ -1346,6 +1346,7 @@ if(isset( $_REQUEST['where']))
 
 		   'code'=>$row['Product Code']
 		   ,'description'=>$row['Product XHTML Short Description']
+		   ,'tariff_code'=>$row['Product Tariff Code']
 		   ,'quantity'=>number($row['Order Quantity'])
 		   ,'gross'=>money($row['Order Transaction Gross Amount'])
 		   ,'discount'=>money($row['Order Transaction Total Discount Amount'])

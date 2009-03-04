@@ -6,7 +6,7 @@ if(isset($_REQUEST['search']) and $_REQUEST['search']!=''  ){
   // SEARCH!!!!!!!!!!!!
   $q=$_REQUEST['search'];
   //  print "$q";
-  $sql=sprintf("select id from orden where public_id='%s' ",addslashes($q));
+  $sql=sprintf("select `Order Key` as id from `Order Dimension` where `Order Public ID`='%s' ",addslashes($q));
   $result =& $db->query($sql);
   if($found=$result->fetchRow()){
     header('Location: order.php?id='. $found['id']);
