@@ -39,7 +39,7 @@ class PartLocation{
   }
 
   function first_inventory_transacion(){
-    $sql=sprintf("select DATE(`Date`) as Date from `Inventory Transaction Fact` where  `Part Sku`=%d and (`Inventory Transaction Type`='Audit' or `Inventory Transaction Type`='Not Found')  order by `Date`",$this->part_sku);
+    $sql=sprintf("select DATE(`Date`) as Date from `Inventory Transaction Fact` where  `Part Sku`=%d and (`Inventory Transaction Type`='Associate' )  order by `Date`",$this->part_sku);
     $result=mysql_query($sql);
     // print $sql;
     if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
@@ -477,16 +477,32 @@ class PartLocation{
 
 
   function create($data){
-    $user_id=$data['user key'];
-    if(isset($data['date']))
+    
+    if(!isset($data['user key']))
+      $user_id='NULL';
+    else
+      $user_id=$data['user key'];
+    if(!is_numeric($user_id) or $user_id<0)
+      $user_id='NULL';
+
+
+    if(isset($data['date']) and $data['date']!='')
       $date=$data['date'];
     else
       $date=date("Y-m-d H:i:s");
-    $note=$data['note'];
+
+    if(isset($data['note']))
+      $note=$data['note'];
+    else
+      $note='NULL';
+
+    if(isset($data['options']))
+      $options=$data['options'];
+    
     $sql=sprintf("select * from `Inventory Spanshot Fact` where `Part SKU`=%d and `Location Key`=%d and `Date`=%s ",
 		 $this->part_sku
 		 ,$this->location_key
-		 ,prepare_date($date)
+		 ,prepare_mysql($date)
 		 );
     $result=mysql_query($sql);
     $num_rows = mysql_num_rows($result);
@@ -496,18 +512,19 @@ class PartLocation{
       if(!is_numeric($user_id) or $user_id<0)
 	$user_id='NULL';
       
-       $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`) values (%d,%d,%s,%f,%.2f,%s,%s,%s)"
+      $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`) values (%d,%d,%s,%f,%.2f,%s,%s,%s)"
 		   ,$this->part_sku
 		   ,$this->location_key
 		   ,"'Associate'"
 		   ,0
 		   ,0
 		   ,$user_id
-		   ,$note
+		    ,addslashes($note)
 		   ,prepare_mysql($date)
 		   );
-      prepare_mysql($sql);
+      mysql_query($sql);
       
+      if(!preg_match('/unknown/i',$options)){
       $date=date("Y-m-d H:i:s",strtotime($date." +1 second"));
       $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`) values (%d,%d,%s,%f,%.2f,%s,%s,%s)"
 		   ,$this->part_sku
@@ -516,11 +533,13 @@ class PartLocation{
 		   ,0
 		   ,0
 		   ,$user_id
-		   ,$note
+		   ,addslashes($note)
 		   ,prepare_mysql($date)
 		   );
-      prepare_mysql($sql);
+      mysql_query($sql);
+      }
       //print "$sql\n";
+      $_date=date("Y-m-d",strtotime($date));
       $this->redo_daily_inventory($_date,'');
 
 
@@ -770,13 +789,15 @@ if($qty>0 and is_numeric($qty) ){
 	if(!mysql_query($sql))
 	  print "Error $sql\n";
  }	
-	$this->redo_daily_inventory($date,'');
-	$other=new PartLocation($move_to.'_'.$this->part_sku);
-	$this->redo_daily_inventory($date,'');
+
 
     }
-
     
+    $this->redo_daily_inventory($date,'');
+    $other=new PartLocation($move_to.'_'.$this->part_sku);
+    $other->redo_daily_inventory($date,'');
+   
+ 
   }
 
 

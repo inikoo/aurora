@@ -43,11 +43,12 @@ date_default_timezone_set('Europe/London');
    
 
 //  }
-$sql=sprintf("select * from aw_old.product ");
+$sql=sprintf("select * from aw_old.product   ");
 $result=mysql_query($sql);
 while($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $product_code=$row2['code'];
-  $sql="select * from aw_old.location  where product_id=".$row2['id']."  limit 500   " ;
+  print $row2['id']." $product_code \n";
+  $sql="select * from aw_old.location  where product_id=".$row2['id']."    " ;
   $result2xxx=mysql_query($sql);
   $primary=true;
 
@@ -92,10 +93,11 @@ while($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
        
        if($primary){
-	 print $row['code']." $product_code  LOC: ".$location->id." SKU: $sku \n";
+	 print "PRIMARY ".$row['code']." $product_code  LOC: ".$location->id." SKU: $sku \n";
 
 	  $part= new Part($sku);
-//  	 $part->load('calculate_stock_history');
+	  $part->load('calculate_stock_history');
+
 
 	 
 
@@ -119,19 +121,37 @@ while($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 	 $pl->destroy($data);
 	 
 	 
+	 $part->load('stock');
+	 $part->load('stock_history');
 
-	$location->load('parts_data');
-	exit;
- 	$primary=false;
+	 $location->load('parts_data');
+	 $unk=new Location(1);
+	 $unk->load('parts_data');
+	 
+	 $primary=false;
+	
+       }else{
+	 print "STORING ".$row['code']." $product_code  LOC: ".$location->id." SKU: $sku \n";
+
+	 $pl=new PartLocation($location->id.'_'.$sku);
+	 $data=array(
+		     'user key'=>0
+		     ,'note'=>''
+		     ,'options'=>'unknown'
+		     ,'date'=>''
+		     );
+	 $pl->create($data);
+	 $location->load('parts_data');
        }
+
+       
       
      }
-    
+     
   }
 
  }
 
-$location=new Location('id',1);
-$location->load('parts_data');
+
 
 ?>
