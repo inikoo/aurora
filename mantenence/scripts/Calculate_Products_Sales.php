@@ -9,7 +9,7 @@ include_once('../../classes/SupplierProduct.php');
 error_reporting(E_ALL);
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 if(!$con){print "Error can not connect with database server\n";exit;}
-$dns_db='dw';
+$dns_db='dw2';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
 require_once '../../common_functions.php';
@@ -54,7 +54,7 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
     $state='History';
 
    $sql=sprintf("update `Product Dimension` set  `Product Sales State`=%s where `Product Key`=%s",prepare_mysql($state),$product->id);
-  // print "$sql\n\n";
+   // print "$sql\n\n";
   if(!mysql_query($sql))
     exit("can not upodate state of the product");
   }

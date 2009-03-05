@@ -31,8 +31,8 @@ $version='V 1.0';
 $Data_Audit_ETL_Software="$software $version";
 srand(12344);
 
-$sql="select * from  orders_data.orders  where (last_transcribed is NULL  or last_read>last_transcribed)  order by id ";
-
+$sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed)  order by id desc ";
+$contador=0;
 $res=mysql_query($sql);
 while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
@@ -42,7 +42,20 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
     $order_data_id=$row2['id'];
     $filename=$row2['filename'];
-    print "$order_data_id $filename\r";
+    $contador++;
+
+
+    // check if it is already readed
+    $update=false;$old_order_key=0;
+    $sql=sprintf("select * from `Order Dimension`  where `Order Original Metadata`=%d  ",$order_data_id);
+    $result_test=mysql_query($sql);
+    if($row_test=mysql_fetch_array($result, MYSQL_ASSOC)){
+	$update=true;
+	$old_order_key=$row_test['Order Key'];
+	print "UPD $contador $order_data_id $filename\r";
+      }else
+       print "NEW $contador $order_data_id $filename\r";
+
     $header=mb_unserialize($row['header']);
     $products=mb_unserialize($row['products']);
      
@@ -602,6 +615,36 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     // 10 credit
     // 11 quote
   
+  
+       if($update){
+	 print "Updated ";
+
+	 //delete things
+	 $sql=sprintf("delete from `Order Dimension` where `Order Original Metadata`=%d",$order_data_id);
+	 if(!mysql_query($sql))
+	   print "$sql Warning can no delete old order";
+	 $sql=sprintf("delete from `Invoice Dimension` where `Invoice Metadata`=%d",$order_data_id);
+	 if(!mysql_query($sql))
+	   print "$sql Warning can no delete old inv";
+	 $sql=sprintf("delete from `Delivery Note Dimension` where `Delivery Note Metadata`=%d",$order_data_id);
+	 if(!mysql_query($sql))
+	   print "$sql Warning can no delete old dn";
+	 $sql=sprintf("delete from `Order Transaction Fact` where `Metadata`=%d",$order_data_id);
+	 if(!mysql_query($sql))
+	   print "$sql Warning can no delete tf";
+ $sql=sprintf("delete from `Inventory Transaction Fact` where `Metadata`=%d and `Inventory Transaction Type`='Sale'   ",$order_data_id);
+	 if(!mysql_query($sql))
+	   print "$sql Warning can no delete old inv";
+	 
+	 $sql=sprintf("delete from `History Dimension` where `Direct Object Key`=%d and `Direct Object`='Sale'   ",$old_order_key);
+	 if(!mysql_query($sql))
+	   print "$sql Warning can no delete oldhidt";
+	 
+	 
+	
+       }
+
+
     if($tipo_order==2 or $tipo_order==1){
       //print_r($data);
     
@@ -618,11 +661,23 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	$data['Order Type']='Donation';
 
       $order= new Order('new',$data);
-     
-       if($tipo_order==4 or $tipo_order==5 or $tipo_order==3  )
-	exit;
 
-      if($tipo_order==2){
+     
+      if($tipo_order==4 or $tipo_order==5  ){
+	
+       
+	
+	$data_dn=array(
+		       'Delivery Note Date'=>$date_inv
+		       ,'Delivery Note ID'=>$header_data['order_num']
+		       ,'Delivery Note File As'=>$header_data['order_num']
+			  
+		       );
+	
+	
+	$order->create_dn_simple($data_dn,$data_dn_transactions);
+
+      }if($tipo_order==2){
 
 
 	$payment_method=parse_payment_method($header_data['pay_method']);

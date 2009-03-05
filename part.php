@@ -60,15 +60,24 @@ $smarty->assign('display',$_SESSION['state']['part']['display']);
 
 // $smarty->assign('view_plot',$_SESSION['views']['part_plot']);
 
-if(!isset($_REQUEST['id']) and is_numeric($_REQUEST['id']))
-  $part_id=1;
-else
+if(isset($_REQUEST['id']) and is_numeric($_REQUEST['id'])){
   $part_id=$_REQUEST['id'];
-$_SESSION['state']['part']['id']=$part_id;
+  $_SESSION['state']['part']['id']=$part_id;
+  $part= new part($part_id);
+  $_SESSION['state']['part']['sku']=$part->data['Part SKU'];
+ }else if(isset($_REQUEST['sku']) and is_numeric($_REQUEST['sku'])){
+  $part= new part('sku',$_REQUEST['sku']);
+  $part_id=$part->id;
+  $_SESSION['state']['part']['id']=$part_id;
+  $_SESSION['state']['part']['sku']=$part->data['Part SKU'];
+ }else{
+  $part_id=$_SESSION['state']['part']['id'];
+  $_SESSION['state']['part']['id']=$part_id;
+  $part= new part($part_id);
+  $_SESSION['state']['part']['sku']=$part->data['Part SKU'];
+  
+ }
 
-
-$part= new part($part_id);
-$_SESSION['state']['part']['sku']=$part->data['Part SKU'];
 
 
 $smarty->assign('part',$part);

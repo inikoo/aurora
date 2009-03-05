@@ -13,7 +13,7 @@ error_reporting(E_ALL);
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 
 if(!$con){print "Error can not connect with database server\n";exit;}
-$dns_db='dw';
+$dns_db='dw2';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
   
@@ -48,7 +48,7 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
       $sql=sprintf("select `Date` from `Inventory Transaction Fact` where  `Part SKU`=%d and `Inventory Transaction Type`='Sale' and `Inventory Transaction Quantity`!=0    order by `Date` desc limit 1 ",$part->data['Part SKU']);
       $resultxx=mysql_query($sql);
       
-      print "$sql\n";
+      //   print "$sql\n";
       if($rowxx=mysql_fetch_array($resultxx, MYSQL_ASSOC)   ){
 
 	if(strtotime($rowxx['Date'])< strtotime( $part->data['Part Valid From'])){
@@ -69,13 +69,26 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
     $sql=sprintf("update `Part Dimension` set `Part Status`=%s ,`Part Valid From`=%s ,`Part Valid To`=%s where `Part SKU`=%d   ",prepare_mysql($in_use)
 		 ,prepare_mysql($part_valid_from)
 		 ,prepare_mysql($part_valid_to),$part->data['Part SKU']);
+
+    //print "$sql\n";
+  if(!mysql_query($sql))
+    exit("ERROR $sql\n");
+  
+
+    $part->load('sales');
+
   // print "$sql\n";
   //if(!mysql_query($sql))
   //  exit("ERROR $sql\n");
   }
-    $part->load('sales');
+  
+  $part->load('sales');
+  
     $part->load('used in');
+
     $part->load('supplied by');
+
+
 
      $part->load('stock');
      $part->load('stock_history');

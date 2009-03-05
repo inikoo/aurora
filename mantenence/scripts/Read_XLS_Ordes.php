@@ -45,7 +45,7 @@ $correct_partner=true;
 $force_update=false;
 
 
-$orders_array_full_path = glob("/mnt/*/Orders/*.xls");
+$orders_array_full_path = glob("/mnt/*/Orders/8*.xls");
 $orders_array_full_path=array_reverse($orders_array_full_path);
 
 
@@ -102,7 +102,7 @@ foreach($good_files_number as $order_index=>$order){
     $is_refund=true;
   }
   $filename=$good_files[$order_index];
-  print "$filename\n";
+  //  print "$filename\n";
 
   $filedate=filemtime($filename);
   $filedatetime=date("Y-m-d H:i:s",strtotime('@'.$filedate));

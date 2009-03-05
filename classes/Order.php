@@ -1248,7 +1248,7 @@ class Order{
 //     $sql="select sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) from `Order Transaction Fact` where "
 
 
-    $sql=sprintf("insert into `Order Dimension` (`Order File As`,`Order Date`,`Order Last Updated Date`,`Order Public ID`,`Order Main Store Key`,`Order Main Store Code`,`Order Main Store Type`,`Order Customer Key`,`Order Customer Name`,`Order Current Dispatch State`,`Order Current Payment State`,`Order Current XHTML State`,`Order Customer Message`,`Order Original Data MIME Type`,`Order Original Data`,`Order XHTML Ship Tos`,`Order Gross Amount`,`Order Discount Amount`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%.2f,%.2f)"
+    $sql=sprintf("insert into `Order Dimension` (`Order File As`,`Order Date`,`Order Last Updated Date`,`Order Public ID`,`Order Main Store Key`,`Order Main Store Code`,`Order Main Store Type`,`Order Customer Key`,`Order Customer Name`,`Order Current Dispatch State`,`Order Current Payment State`,`Order Current XHTML State`,`Order Customer Message`,`Order Original Data MIME Type`,`Order Original Data`,`Order XHTML Ship Tos`,`Order Gross Amount`,`Order Discount Amount`,`Order Original Metadata`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%.2f,%.2f,%s)"
 		 ,prepare_mysql($this->data['Order File As'])
 		 ,prepare_mysql($this->data['Order Date'])
 		 ,prepare_mysql($this->data['Order Date'])
@@ -1268,7 +1268,7 @@ class Order{
 		 
 		 ,$this->data['Order Gross Amount']
 		 ,$this->data['Order Discount Amount']
-		
+		 ,prepare_mysql($this->data['Order Original Metadata'])
 		 );
 
      If(mysql_query($sql)){
@@ -1300,14 +1300,13 @@ class Order{
 //     $sql="select sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) from `Order Transaction Fact` where "
 
 
-    $sql=sprintf("insert into `Invoice Dimension` (`Invoice Date`,`Invoice Public ID`,`Invoice File As`,`Invoice Main Store Key`,`Invoice Main Store Code`,`Invoice Main Store Type`,`Invoice Multiple Stores`,`Invoice Customer Key`,`Invoice Customer Name`,`Invoice XHTML Ship Tos`,`Invoice Multiple Ship Tos`,`Invoice Gross Amount`,`Invoice Discount Amount`,`Invoice Gross Shipping Amount`,`Invoice Gross Charges Amount`,`Invoice Metadata`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%d,%.2f,%.2f,%.2f,%.2f,%s)"
+    $sql=sprintf("insert into `Invoice Dimension` (`Invoice Date`,`Invoice Public ID`,`Invoice File As`,`Invoice Main Store Key`,`Invoice Main Store Code`,`Invoice Main Store Type`,`Invoice Customer Key`,`Invoice Customer Name`,`Invoice XHTML Ship Tos`,`Invoice Multiple Ship Tos`,`Invoice Gross Amount`,`Invoice Discount Amount`,`Invoice Gross Shipping Amount`,`Invoice Gross Charges Amount`,`Invoice Metadata`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%d,%.2f,%.2f,%.2f,%.2f,%s)"
 		 ,prepare_mysql($this->data['Invoice Date'])
 		 ,prepare_mysql($this->data['Invoice Public ID'])
 		 ,prepare_mysql($this->data['Invoice File As'])
 		 ,prepare_mysql($this->data['Invoice Main Store Key'])
 		 ,prepare_mysql($this->data['Invoice Main Store Code'])
 		 ,prepare_mysql($this->data['Invoice Main Store Type'])
-		 ,prepare_mysql($this->data['Invoice Multiple Stores'])
 		 ,prepare_mysql($this->data['Invoice Customer Key'])
 		 ,prepare_mysql($this->data['Invoice Customer Name'])
 		 ,prepare_mysql($this->data['Invoice XHTML Ship Tos'])
@@ -1325,7 +1324,7 @@ class Order{
        $this->data['Invoice Key']=$this->id ;
     }else{
       
-      print "Error can not create order header";exit;
+      print "$sql Error can not create order header";exit;
     }
 
   }
