@@ -51,15 +51,12 @@ class Order{
       $customer=new Customer($customer_id);
       
 
-      $this->data['Order Main Ship To Key']=$customer->get('Customer Last Ship To Key');
-      $ship_to_key=$this->data['Order Main Ship To Key'];
-      
-      
-      $ship_to=$customer->get('xhtml ship to',$ship_to_key);
+      $this->ship_to_key=$customer->get('Customer Last Ship To Key');
+      $this->xhtml_ship_to=$customer->get('xhtml ship to',$this->ship_to_key);
 
       if(!isset($data['store_code']))
-	$data['store_code']='Unknown';
-      $store=new Store('code',$data['store_code']);
+     
+      $store=new Store('id',$data['store_code']);
       if(!$store->id)
 	$store=new Store('unknown');
       $this->data['Order Date']=$data['order date'];
@@ -77,21 +74,16 @@ class Order{
       $this->data['Order Original Data']=$data['order original data'];
       $this->data['Order Original Data Source']=$data['order original data source'];
 
-
-      $this->data['Order Original Metadata']=$data['order original metadata'];
+      if(isset($data['order original metadata']))
+	$this->data['Order Original Metadata']=$data['order original metadata'];
+      else
+	$this->data['Order Original Metadata']='';
       $this->data['Order Main Store Key']=$store->id;
       $this->data['Order Main Store Code']=$store->get('code');
-      $this->data['Order Main Store Type']=$store->get('type');
-      $this->data['Order Multiple Stores']=0;
+      $this->data['Order Main Source Type']=$data['Order Main Source Type'];
+      $this->data['Order XHTML Ship Tos']=$this->xhtml_ship_to;
 
-      $this->data['Order XHTML Ship Tos']=$ship_to;
-      //$this->data['Order Main Ship To Key']=$ship_to_key;
-      $this->data['Order Multiple Ship Tos']=0;
       
-      if(isset($data['metadata_id']))
-	$this->data['Order Metadata']=$data['metadata_id'];
-      else
-	$this->data['Order Metadata']='';
 
 
 
@@ -102,21 +94,13 @@ class Order{
 
 	$product_data['date']=$this->data['Order Date'];
 	$product_data['line_number']=$line_number;
-	$product_data['metadata']=$data['metadata_id'];
+	$product_data['metadata']=$this->data['Order Original Metadata'];
 	$product_data['ship to key']=$ship_to_key;
 	$this->add_order_transaction($product_data);
 	$line_number++;
       }
-      $sql="select sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) as discount from `Order Transaction Fact` where `Order Key`=".$this->data['Order Key'];
-      $result=mysql_query($sql);
-      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-	$sql=sprintf("update `Order Dimension` set `Order Gross Amount`=%.2f, `Order Discount Amount`=%.2f where  `Order Key`=%d ",$row['gross'],$row['discount'],$this->data['Order Key']);
-
-	mysql_query($sql);
-      }
       
-      
-
+      $this->load('totals');
 
       $customer->update('orders');       
       $customer->update('no normal data');
@@ -714,6 +698,17 @@ function cancel(){
 
     $this->create_invoice_header();
     
+    // link to order
+    $sql=sprintf("insert into `Order Invoice Bridge` values (%d,%d)",$this->data['Order Key'],$this->data['Invoice Key']);
+    if(!mysql_query($sql))
+      exit("Errro can no insert order inv bridge");
+
+    if(is_numeric($this->data['Delivery Note Key'])){
+      $sql=sprintf("insert into `Invoice Delivery Note Bridge` values (%d,%d)",$this->data['Invoice Key'],$this->data['Delivery Note Key']);
+    if(!mysql_query($sql))
+      exit("Errro can no insert inv  dn  bridge");
+    }
+
     $line_number=1;
     $amount=0;
     $discounts=0;
@@ -798,7 +793,9 @@ function cancel(){
     $this->data['Delivery Note Metadata']=$this->data['Order Original Metadata'];
     $this->create_dn_header();
     
-    
+     $sql=sprintf("insert into `Order Delivery Note Bridge` values (%d,%d)",$this->data['Order Key'],$this->data['Delivery Note Key']);
+    if(!mysql_query($sql))
+      exit("Errro can no insert order dn  bridge");
 
 
     $line_number=1;
@@ -1458,14 +1455,14 @@ function cancel(){
 //     $sql="select sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) from `Order Transaction Fact` where "
 
 
-    $sql=sprintf("insert into `Order Dimension` (`Order File As`,`Order Date`,`Order Last Updated Date`,`Order Public ID`,`Order Main Store Key`,`Order Main Store Code`,`Order Main Store Type`,`Order Customer Key`,`Order Customer Name`,`Order Current Dispatch State`,`Order Current Payment State`,`Order Current XHTML State`,`Order Customer Message`,`Order Original Data MIME Type`,`Order Original Data`,`Order XHTML Ship Tos`,`Order Gross Amount`,`Order Discount Amount`,`Order Original Metadata`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%.2f,%.2f,%s)"
+    $sql=sprintf("insert into `Order Dimension` (`Order File As`,`Order Date`,`Order Last Updated Date`,`Order Public ID`,`Order Main Store Key`,`Order Main Store Code`,`Order Main Source Type`,`Order Customer Key`,`Order Customer Name`,`Order Current Dispatch State`,`Order Current Payment State`,`Order Current XHTML State`,`Order Customer Message`,`Order Original Data MIME Type`,`Order Original Data`,`Order XHTML Ship Tos`,`Order Gross Amount`,`Order Discount Amount`,`Order Original Metadata`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%.2f,%.2f,%s)"
 		 ,prepare_mysql($this->data['Order File As'])
 		 ,prepare_mysql($this->data['Order Date'])
 		 ,prepare_mysql($this->data['Order Date'])
 		 ,prepare_mysql($this->data['Order Public ID'])
 		 ,prepare_mysql($this->data['Order Main Store Key'])
 		 ,prepare_mysql($this->data['Order Main Store Code'])
-		 ,prepare_mysql($this->data['Order Main Store Type'])
+		 ,prepare_mysql($this->data['Order Main Source Type'])
 		 ,prepare_mysql($this->data['Order Customer Key'])
 		 ,prepare_mysql($this->data['Order Customer Name'])
 		 ,prepare_mysql($this->data['Order Current Dispatch State'])
@@ -1670,6 +1667,37 @@ function cancel(){
 
   function load($key=''){
     switch($key){
+    case('totals'):
+ $sql="select sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) as discount, sum(`Invoice Transaction Shipping Amount`) as shipping,sum(`Invoice Transaction Charges Amount`) as charges ,sum(`Invoice Transaction Total Tax Amount`) as tax ,sum(`Invoice Transaction Refund Amount`) as refund  from `Order Transaction Fact` where `Order Key`=".$this->data['Order Key'];
+      $result=mysql_query($sql);
+      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+	$total=$row['gross']+$row['tax']+$row['shipping']+$row['charges']-$row['discount'];
+	
+	
+	$this->data['Order Gross Amount']=$row['gross'];
+	$this->data['Order Discount Amount']=$row['discount'];
+	$this->data['Order Total Tax Amount']=$row['tax'];
+	$this->data['Order Shipping Amount']=$row['shipping'];
+	$this->data['Order Charges Amount']=$row['charges'];
+	$this->data['Order Total Amount']=$total;
+	$this->data['Order Total To Pay Amount']=$total;
+	$this->data['Order Refund Amount']=$row['refunds'];
+
+
+	$sql=sprintf("update `Order Dimension` set `Order Gross Amount`=%.2f, `Order Discount Amount`=%.2f ,`Order Total Tax Amount`=%.2f ,`Order Shipping Amount`=%.2f ,`Order Charges Amount`=%.2f ,`Order Total Amount`=%.2f, `Order Total To Pay Amount`=%.2f,`Order Refund Amount`=%.2f , `Order Balance Amount`  where  `Order Key`=%d "
+		     ,$row['gross']
+		     ,$row['discount']
+		     ,$row['tax']
+		     ,$row['shipping']
+		     ,$row['charges']
+		     ,$total
+		     ,$total
+		     ,$row['refunds']
+		     ,$total-$row['refunds']
+		     ,$this->data['Order Key']);
+
+	mysql_query($sql);
+      }
     case('items'):
       $sql=sprintf("select * from `Order Transaction Fact` where `Order Key`=%d",$this->id);
       $res=mysql_query($sql);

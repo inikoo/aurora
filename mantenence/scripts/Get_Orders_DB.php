@@ -10,7 +10,7 @@ include_once('../../classes/Order.php');
 error_reporting(E_ALL);
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 if(!$con){print "Error can not connect with database server\n";exit;}
-$dns_db='dw';
+$dns_db='dw2';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
 
@@ -31,7 +31,7 @@ $version='V 1.0';
 $Data_Audit_ETL_Software="$software $version";
 srand(12344);
 
-$sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed)  order by id desc ";
+$sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed)  order by filename ";
 $contador=0;
 $res=mysql_query($sql);
 while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
@@ -94,6 +94,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     if(preg_match('/^\d{5}rpl$/i',$filename_number)){
       $tipo_order=6;
       $parent_order_id=preg_replace('/rpl/i','',$filename_number);
+
     }
     if(preg_match('/^\d{4,5}r$|^\d{4,5}ref$|^\d{4,5}\s?refund$|^\d{4,5}rr$|^\d{4,5}ra$|^\d{4,5}r2$|^\d{4,5}\-2ref$|^\d{5}rfn$/i',$filename_number)){
       $tipo_order=9;
@@ -138,7 +139,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     $data['order original data']=$row2['filename'];
     $data['order original data source']='DB:orders_data.order.data';
     $data['order original metadata']=$row2['id'];
-  
+    $data['Order Main Source Type']='Unknown';
     //print_r($header_data);
 
     $products_data=array();
@@ -146,10 +147,21 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     $data_dn_transactions=array();
     $data_bonus_transactions=array();
 
+    $credit=array();
+    
 
     foreach($transactions as $transaction){
       $transaction['code']=_trim($transaction['code']);
-      if(preg_match('/^credit|Freight|^frc-|^cxd-|^wsl$|refund|Postage|^eye$|^\d$|2009promo/i',$transaction['code']))
+      
+      if(preg_match('/credit|refund/i',$transaction['code'])){
+
+	print_r($transaction);
+	exit;
+	//	$credit[]=array()
+	continue;
+      }
+
+      if(preg_match('/Freight|^frc-|^cxd-|^wsl$|Postage|^eye$|^\d$|2009promo/i',$transaction['code']))
 	continue;
       if(preg_match('/difference in prices|Diff.in price for|difference in prices/i',$transaction['description']))
 	continue;
@@ -164,6 +176,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       
       }
     
+
 
 
 
@@ -596,7 +609,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     $data['type']='direct_data_injection';
     $data['products']=$products_data;
     $data['cdata']=$customer_data;
-    $data['metadata_id']=$order_data_id;
+    // $data['metadata_id']=$order_data_id;
 
 
     // print_r($products_data);
@@ -661,7 +674,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	$data['Order Type']='Donation';
 
      
-
+      $data['store_code']=1;
 
       $order= new Order('new',$data);
 

@@ -16,19 +16,17 @@ class store{
     else if(($a1=='new' or $a1=='create') and is_array($a2) ){
       $this->msg=$this->create($a2);
       
-    }elseif($a1=='unknown') 
-       $this->get_unknown();
-    else
+    }else
       $this->get_data($a1,$a2);
 
   }
   
-function get_unknown(){
-  $sql=sprintf("select * from `Store Dimension` where `Store Type`='unknown'");
-  $result=mysql_query($sql);
-  if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   )
-    $this->id=$this->data['Store Key'];
-}
+// function get_unknown(){
+//   $sql=sprintf("select * from `Store Dimension` where `Store Type`='unknown'");
+//   $result=mysql_query($sql);
+//   if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   )
+//     $this->id=$this->data['Store Key'];
+// }
 
 
   function get_data($tipo,$tag){
@@ -37,8 +35,10 @@ function get_unknown(){
       $sql=sprintf("select * from `Store Dimension` where `Store Key`=%d",$tag);
     elseif($tipo=='code')
       $sql=sprintf("select * from `Store Dimension` where `Store Code`=%s",prepare_mysql($tag));
-    // print $sql;
+    else
+      return;
 
+    print $sql;
     $result=mysql_query($sql);
     if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   )
       $this->id=$this->data['Product Key'];

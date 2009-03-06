@@ -126,6 +126,7 @@ foreach($good_files_number as $order_index=>$order){
       $checksum=md5_file($tmp_file);
       
       if($checksum!=$row['checksum'] or $force_update){
+	print "Updating $filename\n";
 	$csv_file=$tmp_directory.$order."_$random.csv";
 	exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$tmp_file.' > '.$csv_file);
 	$handle_csv = fopen($csv_file, "r");
@@ -151,7 +152,7 @@ foreach($good_files_number as $order_index=>$order){
     exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$tmp_file.' > '.$csv_file);
     $handle_csv = fopen($csv_file, "r");
     unlink($tmp_file);
-    
+    print "Creating $filename\n";
     $sql=sprintf("insert into orders_data.orders (directory,filename,checksum,date,timestamp,last_checked,last_read) values (%s,%s,%s,%s,%s,NOW(),NOW())"
 		 ,prepare_mysql($directory)
 		 ,prepare_mysql($filename)
@@ -204,7 +205,7 @@ foreach($good_files_number as $order_index=>$order){
       $_products=serialize($products);
       $checksum_header= md5($_header);
       $checksum_products= md5($_products);
-      
+      // print "Updating  $filename\n";
       $sql=sprintf("update orders_data.order_data set checksum_header=%s,checksum_prod=%s where id=%d"
 		   ,prepare_mysql($checksum_header)
 		   ,prepare_mysql($checksum_products)
