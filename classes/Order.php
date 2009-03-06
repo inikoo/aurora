@@ -54,11 +54,18 @@ class Order{
       $this->ship_to_key=$customer->get('Customer Last Ship To Key');
       $this->xhtml_ship_to=$customer->get('xhtml ship to',$this->ship_to_key);
 
-      if(!isset($data['store_code']))
+      if(!isset($data['store_id']))
+	$data['store_id']=0;
      
-      $store=new Store('id',$data['store_code']);
-      if(!$store->id)
-	$store=new Store('unknown');
+      $store=new Store('id',$data['store_id']);
+      if($store->id){
+	$this->data['Order Main Store Key']=$store->id;
+	$this->data['Order Main Store Code']=$store->get('code');
+      }else{
+	$this->data['Order Main Store Key']='';
+	$this->data['Order Main Store Code']='';
+      }
+
       $this->data['Order Date']=$data['order date'];
       $this->data['Order Public ID']=$data['order id'];
       $this->data['Order File As']=$data['order id'];
@@ -94,6 +101,7 @@ class Order{
 
 	$product_data['date']=$this->data['Order Date'];
 	$product_data['line_number']=$line_number;
+
 	$product_data['metadata']=$this->data['Order Original Metadata'];
 	$product_data['ship to key']=$ship_to_key;
 	$this->add_order_transaction($product_data);
@@ -684,9 +692,9 @@ function cancel(){
     $this->data['Invoice Date']=$invoice_data['Invoice Date'];
     $this->data['Invoice Public ID']=$invoice_data['Invoice Public ID'];
     $this->data['Invoice File As']=$invoice_data['Invoice File As'];
-    $this->data['Invoice Main Store Key']=$this->data['Order Main Store Key'];
-    $this->data['Invoice Main Store Code']=$this->data['Order Main Store Code'];
-    $this->data['Invoice Main Store Type']=$this->data['Order Main Store Type'];
+    $this->data['Invoice Store Key']=$this->data['Order Store Key'];
+    $this->data['Invoice Store Code']=$this->data['Order Store Code'];
+    $this->data['Invoice Main Source Type']=$this->data['Order Main Source Type'];
     $this->data['Invoice Multiple Stores']=$this->data['Order Multiple Stores'];
     $this->data['Invoice Customer Key']=$this->data['Order Customer Key'];
     $this->data['Invoice Customer Name']=$this->data['Order Customer Name'];
@@ -722,7 +730,7 @@ function cancel(){
 		   ,$line_number
 		   ,prepare_mysql($data['current payment state'])
 		   ,prepare_mysql($data['invoice qty'])
-		   ,prepare_mysql($this->data['Order Main Ship To Key'])
+		   ,prepare_mysql($this->ship_to_key)
 		   ,$data['gross amount']
 		   ,$data['discount amount']
 		   ,$this->data['Order Key']
@@ -1455,7 +1463,7 @@ function cancel(){
 //     $sql="select sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) from `Order Transaction Fact` where "
 
 
-    $sql=sprintf("insert into `Order Dimension` (`Order File As`,`Order Date`,`Order Last Updated Date`,`Order Public ID`,`Order Main Store Key`,`Order Main Store Code`,`Order Main Source Type`,`Order Customer Key`,`Order Customer Name`,`Order Current Dispatch State`,`Order Current Payment State`,`Order Current XHTML State`,`Order Customer Message`,`Order Original Data MIME Type`,`Order Original Data`,`Order XHTML Ship Tos`,`Order Gross Amount`,`Order Discount Amount`,`Order Original Metadata`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%.2f,%.2f,%s)"
+    $sql=sprintf("insert into `Order Dimension` (`Order File As`,`Order Date`,`Order Last Updated Date`,`Order Public ID`,`Order Store Key`,`Order Store Code`,`Order Main Source Type`,`Order Customer Key`,`Order Customer Name`,`Order Current Dispatch State`,`Order Current Payment State`,`Order Current XHTML State`,`Order Customer Message`,`Order Original Data MIME Type`,`Order Original Data`,`Order XHTML Ship Tos`,`Order Gross Amount`,`Order Discount Amount`,`Order Original Metadata`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%.2f,%.2f,%s)"
 		 ,prepare_mysql($this->data['Order File As'])
 		 ,prepare_mysql($this->data['Order Date'])
 		 ,prepare_mysql($this->data['Order Date'])
@@ -1482,7 +1490,7 @@ function cancel(){
        $this->id = mysql_insert_id();
        $this->data['Order Key']=$this->id ;
      }else{
-       print "Error coan not create order header";exit;
+       print "$sql  Error coan not create order header";exit;
      }
 
   }
@@ -1507,13 +1515,13 @@ function cancel(){
 //     $sql="select sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) from `Order Transaction Fact` where "
 
 
-    $sql=sprintf("insert into `Invoice Dimension` (`Invoice Date`,`Invoice Public ID`,`Invoice File As`,`Invoice Main Store Key`,`Invoice Main Store Code`,`Invoice Main Store Type`,`Invoice Customer Key`,`Invoice Customer Name`,`Invoice XHTML Ship Tos`,`Invoice Multiple Ship Tos`,`Invoice Gross Amount`,`Invoice Discount Amount`,`Invoice Gross Shipping Amount`,`Invoice Gross Charges Amount`,`Invoice Metadata`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%d,%.2f,%.2f,%.2f,%.2f,%s)"
+    $sql=sprintf("insert into `Invoice Dimension` (`Invoice Date`,`Invoice Public ID`,`Invoice File As`,`Invoice Store Key`,`Invoice Store Code`,`Invoice Main Source Type`,`Invoice Customer Key`,`Invoice Customer Name`,`Invoice XHTML Ship Tos`,`Invoice Multiple Ship Tos`,`Invoice Gross Amount`,`Invoice Discount Amount`,`Invoice Gross Shipping Amount`,`Invoice Gross Charges Amount`,`Invoice Metadata`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%d,%.2f,%.2f,%.2f,%.2f,%s)"
 		 ,prepare_mysql($this->data['Invoice Date'])
 		 ,prepare_mysql($this->data['Invoice Public ID'])
 		 ,prepare_mysql($this->data['Invoice File As'])
-		 ,prepare_mysql($this->data['Invoice Main Store Key'])
-		 ,prepare_mysql($this->data['Invoice Main Store Code'])
-		 ,prepare_mysql($this->data['Invoice Main Store Type'])
+		 ,prepare_mysql($this->data['Invoice Store Key'])
+		 ,prepare_mysql($this->data['Invoice Store Code'])
+		 ,prepare_mysql($this->data['Invoice Main Source Type'])
 		 ,prepare_mysql($this->data['Invoice Customer Key'])
 		 ,prepare_mysql($this->data['Invoice Customer Name'])
 		 ,prepare_mysql($this->data['Invoice XHTML Ship Tos'])

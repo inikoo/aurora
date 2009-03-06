@@ -38,10 +38,10 @@ class store{
     else
       return;
 
-    print $sql;
+    // print $sql;
     $result=mysql_query($sql);
     if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   )
-      $this->id=$this->data['Product Key'];
+      $this->id=$this->data['Store Key'];
     
 
   }

@@ -674,7 +674,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	$data['Order Type']='Donation';
 
      
-      $data['store_code']=1;
+      $data['store_id']=1;
 
       $order= new Order('new',$data);
 
