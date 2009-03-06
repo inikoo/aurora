@@ -16,15 +16,16 @@ class Order{
   function __construct($arg1=false,$arg2=false) {
 
     $this->status_names=array(0=>'new');
-     
-    if(is_numeric($arg1)){
-      $this->get_data('id',$arg1);
-      return false;
-    }
-     
     if(preg_match('/new/i',$arg1)){
       $this->create_order($arg2);
+      return;
     }
+    if(is_numeric($arg1)){
+      $this->get_data('id',$arg1);
+      return;
+    }
+    $this->get_data($arg1,$arg2);
+
   }
 
   function create_order($data){
@@ -102,6 +103,7 @@ class Order{
 	$product_data['date']=$this->data['Order Date'];
 	$product_data['line_number']=$line_number;
 	$product_data['metadata']=$data['metadata_id'];
+	$product_data['ship to key']=$ship_to_key;
 	$this->add_order_transaction($product_data);
 	$line_number++;
       }
@@ -570,7 +572,37 @@ class Order{
     }
   }
   
+function cancel(){
 
+
+
+  
+  $this->data['Order Current Payment State']='Cancelled';
+  $this->data['Order Current Dispatch State']='Cancelled';
+  $this->data['Order Current XHTML State']=_('Cancelled, Never Paid');
+  $this->data['Order XHTML Invoices']='';
+  $this->data['Order XHTML Delivery Notes']='';
+  $sql=sprintf("update `Order Dimension` set `Order Current Payment State`=%s,`Order Current Dispatch State`=%s,`Order Current XHTML State`=%s,`Order XHTML Invoices`='',`Order XHTML Delivery Notes`='' where `Order Key`=%d"
+	       ,prepare_mysql($this->data['Order Current Payment State'])
+	       ,prepare_mysql($this->data['Order Current Dispatch State'])
+	       ,prepare_mysql($this->data['Order Current XHTML State'])
+	       ,$this->id
+	       );
+  if(!mysql_query($sql))
+    exit("arror can not update cancel\n");
+  }
+
+
+  function no_payment_applicable(){
+
+    $this->data['Order Current Payment State']='No Applicable';
+    $sql=sprintf("update `Order Dimension` set `Order Current Payment State`=%s where `Order Key`=%d"
+		 ,prepare_mysql($this->data['Order Current Payment State'])
+		 ,$this->id
+		 );
+    if(!mysql_query($sql))
+      exit("arror can not update no_payment_applicable\n");
+  }
 
   function find_customer($method,$data){
 
@@ -649,7 +681,7 @@ class Order{
 		 ,prepare_mysql($this->get('Order Public ID'))
 		 ,$data['line_number']
 		 ,prepare_mysql($data['qty'])
-		 ,prepare_mysql($this->data['Order Main Ship To Key'])
+		 ,prepare_mysql($data['ship to key'])
 		 ,$data['gross_amount']
 		 ,$data['discount_amount']
 		 ,prepare_mysql($data['metadata'])
@@ -761,7 +793,7 @@ class Order{
     $this->data['Delivery Note File As']=$invoice_data['Delivery Note File As'];
     $this->data['Delivery Note Customer Key']=$this->data['Order Customer Key'];
     $this->data['Delivery Note Customer Name']=$this->data['Order Customer Name'];
-    $this->data['Delivery Note XHTML Ship To']=$this->data['Order XHTML Ship Tos'];
+    $this->data['Delivery Note XHTML Ship Tos']=$this->data['Order XHTML Ship Tos'];
     $this->data['Delivery Note Ship To Key']=$this->data['Order Main Ship To Key'];
     $this->data['Delivery Note Metadata']=$this->data['Order Original Metadata'];
     $this->create_dn_header();
@@ -1067,6 +1099,184 @@ class Order{
  }
 
 
+
+ function create_replacement_dn_simple($replacement_data,$transacions_data,$products){
+
+   $ship_to_key=$this->get('Order Main Ship To Key');
+   
+    $line_number=1;
+      foreach($products as $product_data){
+	//	$product_data['qty']=$product_data['Delivery Note Quantity'];
+	$product_data['date']=$replacement_data['Delivery Note Date'];
+	$product_data['line_number']=$line_number;
+	$product_data['metadata']=$replacement_data['Delivery Note Metadata'];
+	$product_data['discount_amount']=$product_data['gross_amount'];
+	$product_data['ship to key']=$ship_to_key;
+
+	$this->add_order_transaction($product_data);
+	$line_number++;
+      }
+
+
+
+
+
+    $this->data['Delivery Note Date']=$replacement_data['Delivery Note Date'];
+    $this->data['Delivery Note ID']=$replacement_data['Delivery Note ID'];
+    $this->data['Delivery Note File As']=$replacement_data['Delivery Note File As'];
+    $this->data['Delivery Note Customer Key']=$this->data['Order Customer Key'];
+    $this->data['Delivery Note Customer Name']=$this->data['Order Customer Name'];
+    $this->data['Delivery Note XHTML Ship Tos']=$this->data['Order XHTML Ship Tos'];
+    $this->data['Delivery Note Ship To Key']=$ship_to_key;
+    $this->data['Delivery Note Metadata']=$replacement_data['Delivery Note Metadata'];
+    $this->create_dn_header();
+    
+
+
+    
+
+
+    $line_number=1;
+    $amount=0;
+    $discounts=0;
+    foreach($transacions_data as $data){
+
+      if($data['pick_method']=='historic'){
+	$cost_supplier=0;
+	 $cost_manu='';
+      $cost_storing='';
+      $cost_hand='';
+      $cost_shipping='';
+      $sql=sprintf("select `Parts Per Product`,`Product Part Key`,`Part SKU` from `Product Part List` where `Product Part ID`=%d and `Part SKU`=%d",$data['pick_method_data']['product part id'],$data['pick_method_data']['part sku']);
+	$result=mysql_query($sql);
+	$part_sku=array();$qty=array();
+	if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+	  $parts_per_product=$row['Parts Per Product'];
+	  $part_sku=$row['Part SKU'];
+
+	  $sql=sprintf(" select `Supplier Product Code`,`Supplier Product Valid From`,`Supplier Product Valid To`,`Supplier Product Key`,SPD.`Supplier Product ID`,`Supplier Product Units Per Part`,`Supplier Product Cost` from  `Supplier Product Dimension`   SPD left join `Supplier Product Part List` SPPL  on (SPD.`Supplier Product ID`=SPPL.`Supplier Product ID`) where `Part SKU`=%s  and `Supplier Product Valid From`<=%s and `Supplier Product Valid To`>=%s  and `Supplier Product Key`=%s",prepare_mysql($row['Part SKU'])
+		     ,prepare_mysql($this->data['Delivery Note Date'])
+		     ,prepare_mysql($this->data['Delivery Note Date'])
+		       ,$data['pick_method_data']['supplier product key']
+);
+	  
+	  $result2=mysql_query($sql);
+
+	  $num_sp=mysql_num_rows($result2);
+	  if($num_sp!=1)
+	   exit("$sql\n error in order class 0we49qwqeqwe history 1\n");
+	  
+	  $row2=mysql_fetch_array($result2, MYSQL_ASSOC);
+	  $supplier_product_id=$row2['Supplier Product ID'];
+	  $sp_units_per_part=$row2['Supplier Product Units Per Part'];
+	  $cost=$row2['Supplier Product Cost']*$sp_units_per_part*$parts_per_product*$data['Shipped Quantity'];
+
+	  $cost_supplier+=$cost;
+	  
+	  $product=new product($data['product_id']);
+	  $a=sprintf('<a href="product.php?id=%d">%s</a>',$product->id,$product->data['Product Code']);
+	  unset($product);
+	  $note=$a.', '.$this->data['Order Current XHTML State'];
+	  
+	   $sql=sprintf("insert into `Inventory Transaction Fact`  (`Date`,`Part SKU`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`,`Note`) values (%s,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s) "
+		       ,prepare_mysql($this->data['Delivery Note Date'])
+		       ,prepare_mysql($part_sku)
+			,1
+		       ,prepare_mysql(-$parts_per_product*$data['Shipped Quantity'])
+			,"'Sale'"
+			,-$cost
+			,number($data['required']*$parts_per_product)
+		       ,$data['given']*$parts_per_product
+		       ,$data['amount in']
+		       ,prepare_mysql($this->data['Delivery Note Metadata'])
+			,prepare_mysql($note)
+			);
+	   //  print "$sql\n";
+	  if(!mysql_query($sql))
+	    exit("can not create Warehouse * 888 $sql   Inventory Transaction Fact\n");
+	}else
+	  exit("error no sku found order php l 792\n");
+	  
+	
+
+      }
+
+      
+      $sql=sprintf("update  `Order Transaction Fact` set `Estimated Weight`=%s,`Actual Shipping Date`=%s,`Order Last Updated Date`=%s, `Delivery Note ID`=%s,`Delivery Note Line`=%d,`Current Autorized to Sell Quantity`=%s ,`Delivery Note Quantity`=%s ,`Shipped Quantity`=%s ,`No Shipped Due Out of Stock`=%s ,`No Shipped Due No Authorized`=%s ,`No Shipped Due Not Found`=%s ,`No Shipped Due Other`=%s ,`Cost Supplier`=%s,`Cost Manufacure`=%s,`Cost Storing`=%s,`Cost Handing`=%s,`Cost Shipping`=%s,`Picking Advance`=100 ,`Picking Advance`=100 where `Order Key`=%d and  `Order Line`=%d"
+		   ,prepare_mysql($data['Estimated Weight'])
+		   ,prepare_mysql($this->data['Delivery Note Date'])
+		   ,prepare_mysql($this->data['Delivery Note Date'])
+		   ,prepare_mysql($this->data['Delivery Note ID'])
+		   ,$line_number
+		   ,$data['Current Autorized to Sell Quantity']
+		   ,$data['Delivery Note Quantity']
+		   ,prepare_mysql($data['Shipped Quantity'])
+		   ,prepare_mysql($data['No Shipped Due Out of Stock'])
+		   ,prepare_mysql($data['No Shipped Due No Authorized'])
+		   ,prepare_mysql($data['No Shipped Due Not Found'])
+		   ,prepare_mysql($data['No Shipped Due Other'])
+		   ,prepare_mysql($cost_supplier)
+		   ,prepare_mysql($cost_manu)
+		   ,prepare_mysql($cost_storing)
+		   ,prepare_mysql($cost_hand)
+		   ,prepare_mysql($cost_shipping)
+
+
+		   ,$this->data['Order Key']
+		   ,$line_number
+		   );
+   //    if($cost_supplier==''){
+// 	print "$sql\n $cost_supplier\n";
+// 	print 
+// 	exit;
+//       }
+      
+      // $prod=new Product($data['product_id']);
+
+      //      print "\n ".$prod->data['Product Code']." $cost_supplier \n\n\n\n********************\n\n";
+
+//       if($prod->data['Product Code']=='Joie-01')
+// 	exit;
+      $line_number++;
+      if(!mysql_query($sql))
+	exit("$sql\n can not update order transacrion aferter dn 313123");
+      
+
+    }
+    $dn_txt="Delivery Note";
+
+    $replacement_txt='Rpl.';
+    
+    $this->data['Order Customer Feedback']='Unknown';
+    $this->data['Order Actions Taken']='Replacement';
+    $this->data['Order Current XHTML State'].=' +'.sprintf('<a href="dn.php?id=%d">%s %s</a>',$this->data['Delivery Note Key'],$replacement_txt,$this->data['Delivery Note ID']) ;
+      $sql=sprintf("update `Order Dimension` set `Order Customer Feedback`=%s ,`Order Actions Taken`=%s ,`Order Current XHTML State`=%s  where `Order Key`=%d"
+		   ,prepare_mysql($this->data['Order Actions Taken'])
+		   ,prepare_mysql($this->data['Order Actions Taken'])
+		   ,prepare_mysql($this->data['Order Current XHTML State'])
+		   ,$this->data['Order Key']
+		   
+		   
+		   );
+    if(!mysql_query($sql))
+      exit("$sql\n can not update order dimension after rpl dn\n");
+    $order_txt='Replacements from Order';
+    $orders=sprintf('%s <a href="order.php?id=%d">%s</a>',$order_txt,$this->id,$this->data['Order Public ID']);
+    $sql=sprintf("update `Delivery Note Dimension` set `Delivery Note XHTML Orders`=%s     where `Delivery Note Key`=%d"
+		  ,prepare_mysql($orders)
+		 ,$this->data['Delivery Note Key']
+		 );
+    if(!mysql_query($sql))
+      exit("$sql\n can not update order dimension after dn\n");
+
+
+ }
+
+
+
+
+
+
   function get_discounts($data,$customer_id,$date){
      
     $family=array();
@@ -1334,13 +1544,13 @@ class Order{
 
 
 
-   $sql=sprintf("insert into `Delivery Note Dimension` (`Delivery Note Date`,`Delivery Note ID`,`Delivery Note File As`,`Delivery Note Customer Key`,`Delivery Note Customer Name`,`Delivery Note XHTML Ship To`,`Delivery Note Ship To Key`,`Delivery Note Metadata`) values (%s,%s,%s,%s,%s,%s,%s,%s)"
+   $sql=sprintf("insert into `Delivery Note Dimension` (`Delivery Note Date`,`Delivery Note ID`,`Delivery Note File As`,`Delivery Note Customer Key`,`Delivery Note Customer Name`,`Delivery Note XHTML Ship Tos`,`Delivery Note Ship To Key`,`Delivery Note Metadata`) values (%s,%s,%s,%s,%s,%s,%s,%s)"
 		,prepare_mysql($this->data['Delivery Note Date'])
 		,prepare_mysql($this->data['Delivery Note ID'])
 		 ,prepare_mysql($this->data['Delivery Note File As'])
 		,prepare_mysql($this->data['Delivery Note Customer Key'])
 		,prepare_mysql($this->data['Delivery Note Customer Name'])
-		,prepare_mysql($this->data['Delivery Note XHTML Ship To'])
+		,prepare_mysql($this->data['Delivery Note XHTML Ship Tos'])
 		 ,prepare_mysql($this->data['Delivery Note Ship To Key'])
 		,prepare_mysql($this->data['Delivery Note Metadata'])
 		 );
@@ -1350,7 +1560,7 @@ class Order{
       $this->id = mysql_insert_id();
       $this->data['Delivery Note Key']=$this->id ;
     }else{
-       print "Error can not create dn header";exit;
+       print "$sql \n Error can not create dn header";exit;
     }
     
  }
@@ -1367,9 +1577,20 @@ class Order{
       if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)){
 	$this->id=$this->data['Order Key'];
       }
+    }elseif($key=='public id' or $key=='public_id'){
+      $sql=sprintf("select * from `Order Dimension` where `Order Public ID`=%s",prepare_mysql($id));
+      $result=mysql_query($sql);
+      //      print $sql;
+      if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)){
+	$this->id=$this->data['Order Key'];
+      }
+
+
 
 
     }
+
+
   }
 
 
@@ -1380,7 +1601,18 @@ class Order{
     
     
 
-    switch($key){
+      switch($key){
+
+      case('Order Main Ship To Key'):
+        $sql=sprintf("select `Ship To Key`,count(*) as  num from `Order Transaction Fact` where `Order Key`=%d group by `Ship To Key` order by num desc limit 1",$this->id);
+	$res=mysql_query($sql);
+	if($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
+	  return $row2['Ship To Key'];
+	}else
+	  return '';
+	
+
+	break;
     case('estimated_weight'):
       if($this->tipo=='order'){
 	$w=0;
@@ -1438,38 +1670,18 @@ class Order{
 
   function load($key=''){
     switch($key){
-    
-
-    case('supplier'):
-      $this->supplier=new supplier($this->data['supplier_id']);
-      break;
     case('items'):
-      switch($this->tipo){
-      case('po'):
-	$sql=sprintf("select * from porden_item where porden_id=%d",$this->id);
-	$result =& $this->db->query($sql);
-	$items=0;
-	$expected_goods=0;
-	$goods=0;
-	while($row=$result->fetchRow()){
-	  $items++;
-	  $expected_goods+=($row['expected_price']);
-	  $goods+=($row['price']*$row['qty']);
-	}
-	$this->data['items']=$items;
-	$this->data['goods']=$expected_goods;
-	$this->data['total']=$this->data['goods']+$this->data['vat']+$this->data['shipping']+$this->data['charges']+$this->data['diff'];
-	$this->data['money']['goods']=money($this->data['goods']);
-	$this->data['money']['total']=money($this->data['total']);
-
-
-	
-
+      $sql=sprintf("select * from `Order Transaction Fact` where `Order Key`=%d",$this->id);
+      $res=mysql_query($sql);
+      $this->items=array();
+      while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
+	$this->items[]=$row2;
       }
+      
       break;
     }
-      
-
+    
+    
   }
   
   function get_date($key='',$tipo='dt'){

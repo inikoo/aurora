@@ -10,7 +10,7 @@ include_once('../../classes/Order.php');
 error_reporting(E_ALL);
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 if(!$con){print "Error can not connect with database server\n";exit;}
-$dns_db='dw2';
+$dns_db='dw';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
 
@@ -52,9 +52,9 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     if($row_test=mysql_fetch_array($result, MYSQL_ASSOC)){
 	$update=true;
 	$old_order_key=$row_test['Order Key'];
-	print "UPD $contador $order_data_id $filename\r";
+	print "UPD $contador $order_data_id $filename\n";
       }else
-       print "NEW $contador $order_data_id $filename\r";
+       print "NEW $contador $order_data_id $filename\n";
 
     $header=mb_unserialize($row['header']);
     $products=mb_unserialize($row['products']);
@@ -643,15 +643,15 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	 
 	
        }
+       
+       print "$tipo_order\n";
 
-
-    if($tipo_order==2 or $tipo_order==1){
+    if($tipo_order==2 or $tipo_order==1  or $tipo_order==4 or $tipo_order==5 or   $tipo_order==3   )  {
       //print_r($data);
     
-      $sql="update orders_data.orders set last_transcribed=NOW() where id=".$order_data_id;
 
-      if(!mysql_query($sql))
-	exit(" $sql  error uopdatin data date las trancibes");
+
+
       
       if($tipo_order==1 or $tipo_order==2 or  $tipo_order==3)
 	$data['Order Type']='Order';
@@ -660,28 +660,17 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       else if($tipo_order==5)
 	$data['Order Type']='Donation';
 
+     
+
+
       $order= new Order('new',$data);
 
-     
-      if($tipo_order==4 or $tipo_order==5  ){
-	
-       
-	
-	$data_dn=array(
-		       'Delivery Note Date'=>$date_inv
-		       ,'Delivery Note ID'=>$header_data['order_num']
-		       ,'Delivery Note File As'=>$header_data['order_num']
-			  
-		       );
-	
-	
-	$order->create_dn_simple($data_dn,$data_dn_transactions);
 
-      }if($tipo_order==2){
-
-
+      if($tipo_order==2){
+	
+	
 	$payment_method=parse_payment_method($header_data['pay_method']);
-
+	
 	$data_invoice=array(
 			    'Invoice Date'=>$date_inv
 			    ,'Invoice Public ID'=>$header_data['order_num']
@@ -692,7 +681,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 			    ,'Invoice Gross Charges Amount'=>$header_data['charges']
 			    );
       
-
+	
 	$data_dn=array(
 		       'Delivery Note Date'=>$date_inv
 		       ,'Delivery Note ID'=>$header_data['order_num']
@@ -709,36 +698,77 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       }else if($tipo_order==4 or $tipo_order==5 ){
 	
 	
-	if($header_data['total_topay']>0){
+	  
+	  $data_dn=array(
+			 'Delivery Note Date'=>$date2
+			 ,'Delivery Note ID'=>$header_data['order_num']
+			 ,'Delivery Note File As'=>$header_data['order_num']
+			 
+			 );
+	  $order->create_dn_simple($data_dn,$data_dn_transactions);
+	  
+	  if($header_data['total_topay']>0){
 	  $payment_method=parse_payment_method($header_data['pay_method']);
 	  
 	  $data_invoice=array(
-			    'Invoice Date'=>$date_inv
-			    ,'Invoice Public ID'=>$header_data['order_num']
-			    ,'Invoice File As'=>$header_data['order_num']
-			    ,'Invoice Main Payment Method'=>$payment_method
-			    ,'Invoice Multiple Payment Methods'=>0
-			    ,'Invoice Gross Shipping Amount'=>$header_data['shipping']
-			    ,'Invoice Gross Charges Amount'=>$header_data['charges']
+			      'Invoice Date'=>$date2
+			      ,'Invoice Public ID'=>$header_data['order_num']
+			      ,'Invoice File As'=>$header_data['order_num']
+			      ,'Invoice Main Payment Method'=>$payment_method
+			      ,'Invoice Multiple Payment Methods'=>0
+			      ,'Invoice Gross Shipping Amount'=>$header_data['shipping']
+			      ,'Invoice Gross Charges Amount'=>$header_data['charges']
 			      );
 	  $order->create_invoice_simple($data_invoice,$data_invoice_transactions);
-	}
-	
-	$data_dn=array(
-		       'Delivery Note Date'=>$date_inv
-		       ,'Delivery Note ID'=>$header_data['order_num']
-		       ,'Delivery Note File As'=>$header_data['order_num']
-			  
-		       );
-	
-	
-	$order->create_dn_simple($data_dn,$data_dn_transactions);
+	  }else{
+
+	    $order->no_payment_applicable();
+	  }
+
+
+
+      }else if($tipo_order==3){
+	  $order->cancel();
 
       }
 
 
+      $sql="update orders_data.orders set last_transcribed=NOW() where id=".$order_data_id;
+      mysql_query($sql);
+    }elseif($tipo_order==6 ){
 
+      // print "Parent $parent_order_id\n";
+      $parent_order=new Order('public_id',$parent_order_id);
+      if($parent_order->id){
+	//	print_r($data_dn_transactions);
+	$parent_order->load('items');
+
+
+
+	$data_dn=array(
+		       'Delivery Note Date'=>$date2
+		       ,'Delivery Note ID'=>$header_data['order_num']
+		       ,'Delivery Note File As'=>$header_data['order_num']
+		       ,'Delivery Note Metadata' =>$order_data_id
+			 );
+	$parent_order->create_replacement_dn_simple($data_dn,$data_dn_transactions,$products_data);
+
+
+
+
+	//	print_r($parent_order->items);
+      }else{
+	//	print_r($header);
+	exit("no parent id");
+      
+      }
+    
+      
+      $sql="update orders_data.orders set last_transcribed=NOW() where id=".$order_data_id;
+       mysql_query($sql);
     }
+
+
   }
  }
 

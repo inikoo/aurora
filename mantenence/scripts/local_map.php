@@ -212,10 +212,17 @@ function get_tipo_order($ltipo,$header){
     exit("tipo not found\n");
   }
   
-  if($tmp=preg_match('/\d{5}/i',$ltipo))
-    $parent_id=$tmp;
-  elseif($tmp=preg_match('/\d{4}/i',$ltipo))
-    $parent_id=$tmp;
+
+  
+  $tmp='';
+
+  if(preg_match('/\d{5}/i',$ltipo,$tmp)){
+    $parent_id=$tmp[0];
+  }elseif(preg_match('/\d{4}/i',$ltipo[0]))
+     $parent_id=$tmp;
+  
+  
+  //print "****** $ltipo *** $tmp ***\n";
   
   if($header['total_topay']==0){
     if(preg_match('/Repalacements|Replcement|^reemplazo por roturas|^replacement|REPLACMENT|DELIVERY COLLECTION|repplacements|repalcements/i',$header['notes2'])){
