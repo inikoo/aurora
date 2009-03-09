@@ -3880,9 +3880,10 @@ function get_dates($filedate,$header_data,$tipo_order,$new_file=true){
 
   list($date_updated,$time_updated)=split(' ',$datetime_updated);
   if($new_file){
-    if($tipo_order==2  or $tipo_order==6 or $tipo_order==7   ){
+    if($tipo_order==2  or $tipo_order==6 or $tipo_order==7 or $tipo_order==9   ){
       
-      if($header_data['date_inv']=='')
+      //print_r($header_data);
+      if($header_data['date_inv']=='' or $header_data['date_inv']=='1970-01-01')
 	$header_data['date_inv']=$header_data['date_order'];
       
       if($date_updated ==$header_data['date_inv']){
@@ -9005,8 +9006,8 @@ function read_records($handle_csv,$y_map,$number_header_rows){
 
 function get_user_id($oname,$return_xhtml=false,$tag=''){
 
-  //print "$record\n";
 
+  
   $ids=array();
   if($oname=='' or is_numeric($oname)){
     if($return_xhtml)
@@ -9029,7 +9030,7 @@ function get_user_id($oname,$return_xhtml=false,$tag=''){
     if($_name=='')
       continue;
     $original_name=$_name;
-    //    print $_name;
+    
     $_name=preg_replace('/^\s*/','',$_name);
     $_name=preg_replace('/\s*$/','',$_name);
     if(preg_match('/michele|michell/i',$_name)   )
@@ -9059,8 +9060,13 @@ function get_user_id($oname,$return_xhtml=false,$tag=''){
       $_name='samantha';
      else if($_name=='philip' or $_name=='ph' or $_name=='phi' )
        $_name='philippe';
-     else if(  $_name=='aqb' or $_name=='kj' or  $_name=='act' or $_name=='tr'  or    $_name=='other' or $_name=='?' or $_name=='bb')
-         return array();
+     else if(  $_name=='aqb' or $_name=='kj' or  $_name=='act' or $_name=='tr'  or    $_name=='other' or $_name=='?' or $_name=='bb'){
+       if($return_xhtml)
+	 return array('id'=>array(0),'xhtml'=>_('Unknown'));
+       else
+	 return array(0);
+
+     }
      else if($_name=='thomas' or $_name=='tb' or preg_match('/^\s*tomas\s*$/i',$_name) or $_name=='tom' )
        $_name='tomas';
      else if($_name=='alam' or $_name=='aw' or   $_name=='al' or   $_name=='al.'  or  $_name=='ala' )
@@ -9116,7 +9122,7 @@ else if($_name=='jarina')
     
 
     $sql=sprintf("select `Staff Key`,`Staff Alias` from `Staff Dimension` where `Staff Alias`=%s",prepare_mysql($_name));
-    //print "$sql\n";
+    //   print "$sql\n";
     $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
     if ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
       $id=$row['Staff Key'];

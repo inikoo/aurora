@@ -32,7 +32,7 @@ $Data_Audit_ETL_Software="$software $version";
 srand(12344);
 
 $sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed)  order by filename limit 1";
-$sql="select * from  orders_data.orders where true  order by filename ";
+$sql="select * from  orders_data.orders where true  order by filename  ";
 $contador=0;
 $res=mysql_query($sql);
 while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
@@ -88,6 +88,8 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     $header_data=filter_header($header_data);
     list($tipo_order,$parent_order_id)=get_tipo_order($header_data['ltipo'],$header_data);
   
+    
+
     if(preg_match('/^\d{5}sh$/i',$filename_number)){
       $tipo_order=7;
       $parent_order_id=preg_replace('/sh/i','',$filename_number);
@@ -105,15 +107,17 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     }
 
 
-  
-  
+    //if($tipo_order==2 or $tipo_order==1){
+    //  print "\n";
+    //  continue;
+    // }
 
     list($date_index,$date_order,$date_inv)=get_dates($row2['timestamp'],$header_data,$tipo_order,true);
     if($date_order=='')$date_index2=$date_index;else$date_index2=$date_order;
 
-    if($tipo_order==2   )
+    if($tipo_order==2  or $tipo_order==6 or $tipo_order==7 or $tipo_order==9 ){
       $date2=$date_inv;
-    elseif($tipo_order==4  or   $tipo_order==5 or   $tipo_order==6 or  $tipo_order==7 or  $tipo_order==8  or  $tipo_order==9)
+    }elseif($tipo_order==4  or   $tipo_order==5 or    $tipo_order==8  )
       $date2=$date_index;
     else
       $date2=$date_order;
@@ -167,6 +171,19 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	  $credit_value=$transaction['credit'];
 	  $credit_descriotion=$transaction['description'];
 	  $total_credit_value+=$credit_value;
+	}elseif(preg_match('/^(Credit owed for order no\.\:|Credit for damage item|Refund for postage .paid by customer)$/i',$transaction['description'])){
+	  $credit_parent_public_id='';
+	  $credit_value=$transaction['credit'];
+	  $credit_descriotion=$transaction['description'];
+	  $total_credit_value+=$credit_value;
+
+	}else{
+	  $credit_parent_public_id='';
+	  $credit_value=$transaction['credit'];
+	  $credit_descriotion=$transaction['description'];
+	  $total_credit_value+=$credit_value;
+
+
 	}
 
 	$credit_parent=new Order('public id',$credit_parent_public_id);
@@ -661,7 +678,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     // 7 MISSING
     // 8 follow
     // 9 refund
-    // 10 credit
+    // 10 crdit
     // 11 quote
   
   
@@ -693,8 +710,11 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	
        }
        
-       print "$tipo_order\r";
+       print "$tipo_order\n";
 
+       $sales_rep_data=get_user_id($header_data['takenby'],true,'&view=processed');
+       $data['Order XHTML Sale Reps']=$sales_rep_data['xhtml'];
+       $data['Order Sale Reps IDs']=$sales_rep_data['id'];
     if($tipo_order==2 or $tipo_order==1  or $tipo_order==4 or $tipo_order==5 or   $tipo_order==3   )  {
       //print_r($data);
     
@@ -738,9 +758,13 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 			    ,'tax_rate'=>$tax_rate
 			    ,'Invoice Has Been Paid In Full'=>'Yes'
 			    ,'Invoice Net Amount'=>$header_data['total_items_charge_value']-$total_credit_value
+			    ,'Invoice XHTML Processed By'=>_('Unknown')
+			    ,'Invoice XHTML Charged By'=>_('Unknown')
+			    ,'Invoice Processed By Key'=>''
+			    ,'Invoice Charged By Key'=>''
 			    );
 	
-
+	//	print_r($data_invoice);
 
 	if(!is_numeric($header_data['weight']))
 	  $weight=$estimated_w;
@@ -776,7 +800,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	  if($parent->id){
 	    $order_date=prepare_mysql($parent->date['Order Date']);
 	    $order_key=$parent->id;
-	    //exit;
+	    exit("ok we hace to sustract te totol of this order :)");
 	  }else{
 	    $order_date='NULL';
 	    $order_key='NULL';
@@ -802,16 +826,47 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
 
 
-      }else if($tipo_order==4 or $tipo_order==5 ){
+      }else if($tipo_order==8 ){
+
+	$data['Order Type']='Order';
+	$data['store_id']=1;
 	
-	
+	exit;
+
+
+
+    }else if($tipo_order==4 or $tipo_order==5 ){
+		if($header_data['total_net']!=0)
+	  $tax_rate=$header_data['tax1']/$header_data['total_net'];
+	else
+	  $tax_rate=$data['tax_rate'];
+		if(!is_numeric($header_data['weight']))
+	  $weight=$estimated_w;
+	else
+	  $weight=$header_data['weight'];
+
+
+	$picker_data=get_user_id($header_data['pickedby'],true,'&view=picks');
+	$packer_data=get_user_id($header_data['packedby'],true,'&view=packs');
+
+	$data_dn=array(
+		       'Delivery Note Date'=>$date2
+		       ,'Delivery Note ID'=>$header_data['order_num']
+		       ,'Delivery Note File As'=>$header_data['order_num']
+		       ,'Delivery Note Weight'=>$weight
+		       ,'Delivery Note XHTML Pickers'=>$picker_data['xhtml']
+		       ,'Delivery Note Number Pickers'=>count($picker_data['id'])
+		       ,'Delivery Note Pickers IDs'=>$picker_data['id']
+		       ,'Delivery Note XHTML Packers'=>$packer_data['xhtml']
+		       ,'Delivery Note Number Packers'=>count($packer_data['id'])
+		       ,'Delivery Note Packers IDs'=>$packer_data['id']
+		       ,'tax_rate'=>$tax_rate
+		       ,'Invoice Has Been Paid In Full'=>'Yes'
+		       ,'Invoice Net Amount'=>$header_data['total_items_charge_value']-$total_credit_value
+
+		       );
 	  
-	  $data_dn=array(
-			 'Delivery Note Date'=>$date2
-			 ,'Delivery Note ID'=>$header_data['order_num']
-			 ,'Delivery Note File As'=>$header_data['order_num']
-			 
-			 );
+
 	  $order->create_dn_simple($data_dn,$data_dn_transactions);
 	  
 	  if($header_data['total_topay']>0){
@@ -825,6 +880,18 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 			      ,'Invoice Multiple Payment Methods'=>0
 			      ,'Invoice Gross Shipping Amount'=>$header_data['shipping']
 			      ,'Invoice Gross Charges Amount'=>$header_data['charges']
+			      ,'tax_rate'=>$tax_rate
+			      ,'tax_rate'=>$tax_rate
+			      ,'Invoice Has Been Paid In Full'=>'Yes'
+			      ,'Invoice Net Amount'=>$header_data['total_items_charge_value']-$total_credit_value
+,'Invoice Total Tax Amount'=>$header_data['tax1']
+			    ,'Invoice Refund Amount'=>$total_credit_value
+			    ,'Invoice Total Tax Refund Amount'=>$tax_rate*$total_credit_value
+			      ,'Invoice Total Amount'=>$header_data['total_topay']
+			       ,'Invoice XHTML Processed By'=>_('Unknown')
+			    ,'Invoice XHTML Charged By'=>_('Unknown')
+			    ,'Invoice Processed By Key'=>0
+			    ,'Invoice Charged By Key'=>0
 			      );
 	  $order->create_invoice_simple($data_invoice,$data_invoice_transactions);
 	  }else{
@@ -842,9 +909,161 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
       $sql="update orders_data.orders set last_transcribed=NOW() where id=".$order_data_id;
       mysql_query($sql);
+    }elseif($tipo_order==9 ){
+
+
+
+
+      $parent_order=new Order('public_id',$parent_order_id);
+      if($parent_order->id){
+	//	print "Known parent";
+
+      }else{
+	//	print "Unknown parent";
+	// create new invoice (negative)(no deliver note changes noting)
+	
+	$data['ghost_order']=true;
+	$data['Order Type']='Order';
+	$data['store_id']=1;
+	$order= new Order('new',$data);
+
+$payment_method=parse_payment_method($header_data['pay_method']);
+	
+	if($header_data['total_net']!=0)
+	  $tax_rate=$header_data['tax1']/$header_data['total_net'];
+	else
+	  $tax_rate=$data['tax_rate'];
+	    
+	$factor=1.0;
+	if($header_data['total_topay']>0)
+	  $factor=-1.0;
+	//print_r($header_data);
+	$data_invoice=array(
+			    'Invoice Date'=>$date_inv
+			    ,'Invoice Public ID'=>$header_data['order_num']
+			    ,'Invoice File As'=>$header_data['order_num']
+			    ,'Invoice Main Payment Method'=>$payment_method
+			    ,'Invoice Multiple Payment Methods'=>0
+			    ,'Invoice Gross Shipping Amount'=>0
+			    ,'Invoice Gross Charges Amount'=>0
+			    ,'Invoice Total Tax Amount'=>$header_data['tax1']*$factor
+			    ,'Invoice Refund Amount'=>$header_data['total_net']*$factor
+			    ,'Invoice Total Tax Refund Amount'=>$header_data['tax1']*$factor
+			    ,'Invoice Total Amount'=>$header_data['total_topay']*$factor
+			    ,'tax_rate'=>$tax_rate
+			    ,'Invoice Has Been Paid In Full'=>'Yes'
+			    ,'Invoice Net Amount'=>0
+			     ,'Invoice XHTML Processed By'=>_('Unknown')
+			    ,'Invoice XHTML Charged By'=>_('Unknown')
+			    ,'Invoice Processed By Key'=>0
+			    ,'Invoice Charged By Key'=>0
+			    );
+	//print_r($data_invoice);
+
+	$data_refund_transactions=array();
+	$sum_net=0;
+	$sum_tax=0;
+
+	if(is_numeric($header_data['shipping']) and $header_data['shipping']!=0){
+	$data_refund_transactions[]=array(
+					    'Transaction Net Amount'=>$header_data['shipping']*$factor,
+					    'Description'=>_('Refund for Shipping')
+					    ,'Transaction Tax Amount'=>$header_data['shipping']*$factor*$tax_rate
+					    
+					    );
+
+	 $sum_net+=$header_data['shipping']*$factor;
+	 $sum_tax+=$header_data['shipping']*$factor*$tax_rate;
+
+	}
+	if(is_numeric($header_data['charges']) and $header_data['charges']!=0){
+	$data_refund_transactions[]=array(
+					    'Transaction Net Amount'=>$header_data['charges']*$factor,
+					    'Description'=>_('Refund for Charges')
+					    ,'Transaction Tax Amount'=>$header_data['charges']*$factor*$tax_rate
+					    
+					    );
+	
+	$sum_net+=$header_data['charges']*$factor;
+	$sum_tax+=$header_data['charges']*$factor*$tax_rate;
+	}
+	
+
+
+	foreach($data_invoice_transactions as $key=>$data){
+	  $product=new Product($data_invoice_transactions[$key]['product_id']);
+	  if($product->id){
+	    $description=_('Refund for')." ".$data_invoice_transactions[$key]['invoice qty']." ".$product->data['Product Code'] ;
+	  }else
+	    $description=_('Other Redunds');
+	  
+	  $net=($data_invoice_transactions[$key]['gross amount']-$data_invoice_transactions[$key]['discount amount'])*$factor;
+	  $tax=($data_invoice_transactions[$key]['gross amount']-$data_invoice_transactions[$key]['discount amount'])*$factor*$tax_rate;
+	  $data_refund_transactions[]=array(
+					    'Transaction Net Amount'=>$net
+					    ,'Description'=>$description
+					    ,'Transaction Tax Amount'=>$tax
+					    
+					    );
+	  
+	  $sum_net+=$net;
+	  $sum_tax+=$tax;
+	}
+
+	foreach($credits as $credit){
+
+	  $net=$credit['value']*$factor;
+	  $tax=$credit['value']*$factor*$tax_rate;
+
+	   $data_refund_transactions[]=array(
+					    'Transaction Net Amount'=>$net
+					    ,'Description'=>$credit['description']
+					    ,'Transaction Tax Amount'=>$tax
+					    
+					    );
+
+	  $sum_net+=$net;
+	  $sum_tax+=$tax;
+	}
+
+	//	print $header_data['total_net']." ".$sum_net;
+	
+	$diff_net=($factor*$header_data['total_net'])-$sum_net;
+	if(abs($diff_net)>0.01){
+	  $data_refund_transactions[]=array(
+					    'Transaction Net Amount'=>$diff_net,
+					    'Description'=>_('Other Refunds')
+					    ,'Transaction Tax Amount'=>$diff_net*$tax_rate
+					    
+					    );
+	}
+	
+	
+	$diff_tax=($factor*$header_data['tax1'])-$sum_tax-$diff_net*$tax_rate;
+	if(abs($diff_tax)>0.01){
+	  $data_refund_transactions[]=array(
+					    'Transaction Net Amount'=>0,
+					    'Description'=>_('Other Tax Refunds')
+					    ,'Transaction Tax Amount'=>$diff_tax
+					    
+					    );
+	}
+
+
+	//		print_r($data_refund_transactions);
+	$order->create_refund_simple($data_invoice,$data_refund_transactions);
+
+	
+
+
+
+      }
+
+      //      exit("refund");
+
     }elseif($tipo_order==6 ){
 
-      
+
       	if(!is_numeric($header_data['weight']))
 	  $weight=$estimated_w;
 	else
@@ -853,6 +1072,8 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
 	$picker_data=get_user_id($header_data['pickedby'],true,'&view=picks');
 	$packer_data=get_user_id($header_data['packedby'],true,'&view=packs');
+
+// 	print_r($picker_data);
 
 	$data_dn=array(
 		       'Delivery Note Date'=>$date_inv
@@ -871,7 +1092,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
 
 
-      print "Parent $parent_order_id\n";
+
       $parent_order=new Order('public_id',$parent_order_id);
       if($parent_order->id){
 	//	print_r($data_dn_transactions);
@@ -879,10 +1100,11 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	$parent_order->create_replacement_dn_simple($data_dn,$data_dn_transactions,$products_data);
 
 
-	//exit("prevs order found");
+	exit("prevs order found");
 
 	//	print_r($parent_order->items);
       }else{
+       
 	$data['ghost_order']=true;
 	$data['Order Type']='';
 	$data['store_id']=1;
@@ -891,7 +1113,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	
 	
 	$order->create_replacement_dn_simple($data_dn,$data_dn_transactions,$products_data);
-	//	exit("no parent id");
+	
       
       }
     

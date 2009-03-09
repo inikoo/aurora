@@ -46,7 +46,7 @@
 
 <div style="border:0px solid #ddd;width:250px;float:right">
 <table border=0  style="width:100%;border-top:1px solid #333;border-bottom:1px solid #333;width:100%,padding:0;margin:0;float:right;margin-left:120px" >
-	  <tr><td  class="aright" >{t}Items Cost{/t}</td><td width=100 class="aright">{$order->get('order gross amount')}</td></tr>
+	  <tr><td  class="aright" >{t}Items Cost{/t}</td><td width=100 class="aright">{$order->get('Order Items Gross Amount')}</td></tr>
 	  {if $credits_vateable  }<tr><td  class="aright" >{t}Credits{/t}</td><td width=100 class="aright">{$credits_vateable}</td></tr>{/if}
 	  {if $other_charges_vateable  }<tr><td  class="aright" >{t}Charges{/t}</td><td width=100 class="aright">{$other_charges_vateable}</td></tr>{/if}
 	  <tr style="border-bottom:1px solid #777"><td  class="aright" >{t}Shipping{/t}</td><td width=100 class="aright">{$shipping_vateable}</td></tr>

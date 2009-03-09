@@ -686,7 +686,7 @@ if(isset( $_REQUEST['where']))
 
    
   $sql="select count(*) as total from `Order Dimension`   $where $wheref ";
-  // print $sql ;
+   print $sql ;
    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
   if($row=$res->fetchRow()) {
     $total=$row['total'];
@@ -757,21 +757,27 @@ if(isset( $_REQUEST['where']))
      $order='`Order File As`';
    else if($order=='state')
      $order='`Order Current Dispatch State`,`Order Current Payment State`';
+   else if($order=='total_amount')
+     $order='`Order Total Amount`';
+else if($order=='customer')
+     $order='`Order Customer Name`';
 
-  $sql="select `Order key`,`Order Public ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Date`,(`Order Gross Amount`+`Order Discount Amount`+`Order Shipping Amount`+`Order Total Tax Amount`) as total_amount ,`Order Current XHTML State` from `Order Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+  $sql="select `Order Key`,`Order Public ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Date`,`Order Total Amount` ,`Order Current XHTML State` from `Order Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
   //  print $sql;
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+
    $data=array();
-   while($row=$res->fetchRow()) {
-     $order_id=sprintf('<a href="order.php?id=%d">%s</a>',$row['order key'],$row['order public id']);
-     $customer=sprintf('<a href="order.php?id=%d">%s</a>',$row['order customer key'],$row['order customer name']);
+
+   $res = mysql_query($sql);
+   while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+     $order_id=sprintf('<a href="order.php?id=%d">%s</a>',$row['Order Key'],$row['Order Public ID']);
+     $customer=sprintf('<a href="order.php?id=%d">%s</a>',$row['Order Customer Key'],$row['Order Customer Name']);
      $data[]=array(
 		   'id'=>$order_id,
 		   'customer'=>$customer,
-		   'date'=>strftime("%e %b %y %H:%M", strtotime($row['order date'])),
-		   'last_date'=>strftime("%e %b %y %H:%M", strtotime($row['order last updated date'])),
-		   'total_amount'=>money($row['total_amount']),
-		   'state'=>$row['order current xhtml state']
+		   'date'=>strftime("%e %b %y %H:%M", strtotime($row['Order Date'])),
+		   'last_date'=>strftime("%e %b %y %H:%M", strtotime($row['Order Last Updated Date'])),
+		   'total_amount'=>money($row['Order Total Amount']),
+		   'state'=>$row['Order Current XHTML State']
 		   );
    }
 
@@ -785,7 +791,7 @@ if(isset( $_REQUEST['where']))
 			 'filter_msg'=>$filter_msg,
 			 'total_records'=>$total,
 			 'records_offset'=>$start_from,
-			 'records_returned'=>$start_from+$res->numRows(),
+			 'records_returned'=>$start_from+$total,
 			 'records_perpage'=>$number_results,
 			 'records_text'=>$rtext,
 			 'records_order'=>$order,
@@ -795,6 +801,259 @@ if(isset( $_REQUEST['where']))
 		   );
    echo json_encode($response);
    break;
+
+
+ case('invoices'):
+    if(!$LU->checkRight(ORDER_VIEW))
+    exit;
+    if(isset($_REQUEST['saveto']) and $_REQUEST['saveto']=='report_sales')
+      $conf=$_SESSION['state']['report']['sales'];
+    else
+      $conf=$_SESSION['state']['orders']['table'];
+  if(isset( $_REQUEST['sf']))
+     $start_from=$_REQUEST['sf'];
+   else
+     $start_from=$conf['sf'];
+   if(isset( $_REQUEST['nr']))
+     $number_results=$_REQUEST['nr'];
+   else
+     $number_results=$conf['nr'];
+  if(isset( $_REQUEST['o']))
+    $order=$_REQUEST['o'];
+  else
+    $order=$conf['order'];
+  if(isset( $_REQUEST['od']))
+    $order_dir=$_REQUEST['od'];
+  else
+    $order_dir=$conf['order_dir'];
+    if(isset( $_REQUEST['f_field']))
+     $f_field=$_REQUEST['f_field'];
+   else
+     $f_field=$conf['f_field'];
+
+  if(isset( $_REQUEST['f_value']))
+     $f_value=$_REQUEST['f_value'];
+   else
+     $f_value=$conf['f_value'];
+if(isset( $_REQUEST['where']))
+     $where=$_REQUEST['where'];
+   else
+     $where=$conf['where'];
+  
+ if(isset( $_REQUEST['from']))
+    $from=$_REQUEST['from'];
+ else{
+   if(isset($_REQUEST['saveto']) and $_REQUEST['saveto']=='report_sales')
+     $from=$conf['from'];
+   else
+     $from=$_SESSION['state']['orders']['from'];
+ }
+
+  if(isset( $_REQUEST['to']))
+    $to=$_REQUEST['to'];
+  else{
+    if(isset($_REQUEST['saveto']) and $_REQUEST['saveto']=='report_sales')
+      $to=$conf['to'];
+    else
+      $to=$_SESSION['state']['orders']['to'];
+  }
+
+   if(isset( $_REQUEST['view']))
+    $view=$_REQUEST['view'];
+   else{
+     if(isset($_REQUEST['saveto']) and $_REQUEST['saveto']=='report_sales')
+       $view=$conf['view'];
+     else
+       $view=$_SESSION['state']['orders']['view'];
+
+   }
+   if(isset( $_REQUEST['tableid']))
+    $tableid=$_REQUEST['tableid'];
+  else
+    $tableid=0;
+
+
+   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+        
+   if(isset($_REQUEST['saveto']) and $_REQUEST['saveto']=='report_sales'){
+     
+     $_SESSION['state']['report']['sales']['order']=$order;
+     $_SESSION['state']['report']['sales']['order_dir']=$order_direction;
+     $_SESSION['state']['report']['sales']['nr']=$number_results;
+     $_SESSION['state']['report']['sales']['sf']=$start_from;
+     $_SESSION['state']['report']['sales']['where']=$where;
+     $_SESSION['state']['report']['sales']['f_field']=$f_field;
+     $_SESSION['state']['report']['sales']['f_value']=$f_value;
+     $_SESSION['state']['report']['sales']['to']=$to;
+     $_SESSION['state']['report']['sales']['from']=$from;
+     $date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
+     
+   }else{
+
+     $_SESSION['state']['orders']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+     $_SESSION['state']['orders']['view']=$view;
+     $date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
+     if($date_interval['error']){
+       $date_interval=prepare_mysql_dates($_SESSION['state']['orders']['from'],$_SESSION['state']['orders']['to']);
+     }else{
+       $_SESSION['state']['orders']['from']=$date_interval['from'];
+       $_SESSION['state']['orders']['to']=$date_interval['to'];
+     }
+   }
+   switch($view){
+   case('all'):
+     break;
+   case('invoices'):
+     $where.=' and orden.tipo=2 ';
+     break;
+   case('in_process'):
+     $where.=' and orden.tipo=1 ';
+     break;
+   case('cancelled'):
+     $where.=' and orden.tipo=3 ';
+     break;
+   default:
+     
+     
+   }
+   $where.=$date_interval['mysql'];
+   
+   $wheref='';
+
+  if($f_field=='max' and is_numeric($f_value) )
+    $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(date_index))<=".$f_value."    ";
+  else if($f_field=='min' and is_numeric($f_value) )
+    $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(date_index))>=".$f_value."    ";
+   elseif(($f_field=='customer_name' or $f_field=='public_id') and $f_value!='')
+    $wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
+  else if($f_field=='maxvalue' and is_numeric($f_value) )
+    $wheref.=" and  total<=".$f_value."    ";
+  else if($f_field=='minvalue' and is_numeric($f_value) )
+    $wheref.=" and  total>=".$f_value."    ";
+   
+
+
+   
+
+   
+  $sql="select count(*) as total from `Order Dimension`   $where $wheref ";
+   print $sql ;
+   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+  if($row=$res->fetchRow()) {
+    $total=$row['total'];
+  }
+  if($where==''){
+    $filtered=0;
+     $total_records=$total;
+  }else{
+    
+      $sql="select count(*) as total from `Order Dimension`  $where";
+      $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+      if($row=$res->fetchRow()) {
+	$total_records=$row['total'];
+	$filtered=$total_records-$total;
+      }
+      
+  }
+  $rtext=$total_records." ".ngettext('order','orders',$total_records);
+  if($total_records>$number_results)
+    $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
+  $filter_msg='';
+
+     switch($f_field){
+     case('public_id'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any order with number")." <b>".$f_value."*</b> ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('orders starting with')." <b>$f_value</b>) <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;
+     case('customer_name'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any order with customer")." <b>".$f_value."*</b> ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('orders with customer')." <b>".$f_value."*</b>) <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;  
+     case('minvalue'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any order minimum value of")." <b>".money($f_value)."</b> ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('orders with min value of')." <b>".money($f_value)."*</b>) <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;  
+   case('maxvalue'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any order maximum value of")." <b>".money($f_value)."</b> ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('orders with max value of')." <b>".money($f_value)."*</b>) <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;  
+ case('max'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any order older than")." <b>".number($f_value)."</b> "._('days');
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('last')." <b>".number($f_value)."</b> "._('days orders').") <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;  
+     }
+
+
+
+   
+   $_order=$order;
+   $_dir=$order_direction;
+
+   
+   if($order=='date')
+     $order='`Order Date`';
+   else if($order=='last_date')
+     $order='`Order Last Updated Date`';
+   else if($order=='id')
+     $order='`Order File As`';
+   else if($order=='state')
+     $order='`Order Current Dispatch State`,`Order Current Payment State`';
+   else if($order=='total_amount')
+     $order='`Order Total Amount`';
+else if($order=='customer')
+     $order='`Order Customer Name`';
+
+  $sql="select `Order Key`,`Order Public ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Date`,`Order Total Amount` ,`Order Current XHTML State` from `Order Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+  //  print $sql;
+
+   $data=array();
+
+   $res = mysql_query($sql);
+   while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+     $order_id=sprintf('<a href="order.php?id=%d">%s</a>',$row['Order Key'],$row['Order Public ID']);
+     $customer=sprintf('<a href="order.php?id=%d">%s</a>',$row['Order Customer Key'],$row['Order Customer Name']);
+     $data[]=array(
+		   'id'=>$order_id,
+		   'customer'=>$customer,
+		   'date'=>strftime("%e %b %y %H:%M", strtotime($row['Order Date'])),
+		   'last_date'=>strftime("%e %b %y %H:%M", strtotime($row['Order Last Updated Date'])),
+		   'total_amount'=>money($row['Order Total Amount']),
+		   'state'=>$row['Order Current XHTML State']
+		   );
+   }
+
+   $response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$data,
+			 'rtext'=>$rtext,
+			 'sort_key'=>$_order,
+			 'sort_dir'=>$_dir,
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
+			 'total_records'=>$total,
+			 'records_offset'=>$start_from,
+			 'records_returned'=>$start_from+$total,
+			 'records_perpage'=>$number_results,
+			 'records_text'=>$rtext,
+			 'records_order'=>$order,
+			 'records_order_dir'=>$order_dir,
+			 'filtered'=>$filtered
+			 )
+		   );
+   echo json_encode($response);
+   break;
+
  case('po_supplier'):
     if(!$LU->checkRight(ORDER_VIEW))
     exit;
