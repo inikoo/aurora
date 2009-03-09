@@ -10,7 +10,7 @@ include_once('../../classes/Order.php');
 error_reporting(E_ALL);
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 if(!$con){print "Error can not connect with database server\n";exit;}
-$dns_db='dw2';
+$dns_db='dw';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
 
@@ -31,7 +31,8 @@ $version='V 1.0';
 $Data_Audit_ETL_Software="$software $version";
 srand(12344);
 
-$sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed)  order by filename ";
+$sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed)  order by filename limit 1";
+$sql="select * from  orders_data.orders where true  order by filename ";
 $contador=0;
 $res=mysql_query($sql);
 while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
@@ -43,7 +44,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     $order_data_id=$row2['id'];
     $filename=$row2['filename'];
     $contador++;
-
+    $total_credit_value=0;
 
     // check if it is already readed
     $update=false;$old_order_key=0;
@@ -52,9 +53,9 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     if($row_test=mysql_fetch_array($result, MYSQL_ASSOC)){
 	$update=true;
 	$old_order_key=$row_test['Order Key'];
-	print "UPD $contador $order_data_id $filename\n";
+	print "UPD $contador $order_data_id $filename ";
       }else
-       print "NEW $contador $order_data_id $filename\n";
+       print "NEW $contador $order_data_id $filename ";
 
     $header=mb_unserialize($row['header']);
     $products=mb_unserialize($row['products']);
@@ -135,6 +136,9 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     $data['order date']=$date_order;
     $data['order id']=$header_data['order_num'];
     $data['order customer message']=$header_data['notes2'];
+    if($data['order customer message']==0)
+      $data['order customer message']='';
+
     $data['order original data mime type']='application/vnd.ms-excel';
     $data['order original data']=$row2['filename'];
     $data['order original data source']='DB:orders_data.order.data';
@@ -147,16 +151,36 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     $data_dn_transactions=array();
     $data_bonus_transactions=array();
 
-    $credit=array();
+    $credits=array();
     
+    $total_credit_value=0;
+    $estimated_w=0;
 
     foreach($transactions as $transaction){
       $transaction['code']=_trim($transaction['code']);
       
       if(preg_match('/credit|refund/i',$transaction['code'])){
 
-	print_r($transaction);
-	exit;
+
+	if(preg_match('/^Credit owed for order no\.\:\d{4,5}$/',$transaction['description'])){
+	  $credit_parent_public_id=preg_replace('/[^\d]/','',$transaction['description']);
+	  $credit_value=$transaction['credit'];
+	  $credit_descriotion=$transaction['description'];
+	  $total_credit_value+=$credit_value;
+	}
+
+	$credit_parent=new Order('public id',$credit_parent_public_id);
+
+
+	$credits[]=array(
+			'parent_key'=>$credit_parent->id
+			,'value'=>$credit_value
+			,'description'=>$credit_descriotion
+			);
+	
+	//print_r($transaction);
+	//print_r($credits);
+	//exit;
 	//	$credit[]=array()
 	continue;
       }
@@ -435,6 +459,10 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       if(preg_match('/Joie/i',$description) and preg_match('/abpx-01/i',$transaction['code']))
 	$description='2 boxes joie (replacement due out of stock)';
     
+
+      
+      //print_r($transaction);
+
       if(is_numeric($transaction['w'])){
 
 	if($transaction['w']<0.001 and $transaction['w']>0)
@@ -517,12 +545,17 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	print "Ahh canto male pedict\n";
 	exit;
       }
+
+
+
+
       $products_data[]=array(
 			     'product_id'=>$product->id
 			     ,'Estimated Weight'=>$product->data['Product Gross Weight']*$transaction['order']
 			     ,'qty'=>$transaction['order']
 			     ,'gross_amount'=>$transaction['order']*$transaction['price']
 			     ,'discount_amount'=>$transaction['order']*$transaction['price']*$transaction['discount']
+			     ,'units_per_case'=>$product->data['Product Units Per Case']
 			     );
       $data_invoice_transactions[]=array(
 					 'product_id'=>$product->id
@@ -535,7 +568,8 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
 					 );		   
     
-    
+      $estimated_w+=$product->data['Product Gross Weight']*($transaction['order']-$transaction['reorder']);
+      //print "$estimated_w ".$product->data['Product Gross Weight']." ".($transaction['order']-$transaction['reorder'])."\n";
       $data_dn_transactions[]=array(
 				    'product_id'=>$product->id
 				    ,'Estimated Weight'=>$product->data['Product Gross Weight']*($transaction['order']-$transaction['reorder'])
@@ -565,6 +599,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 			       ,'gross_amount'=>0
 			       ,'discount_amount'=>0
 			       ,'Estimated Weight'=>0
+			       ,'units_per_case'=>$product->data['Product Units Per Case']
 			       );
 	$data_invoice_transactions[]=array(
 					   'product_id'=>$product->id
@@ -574,7 +609,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 					   ,'current payment state'=>'No Applicable'
 					   );		   
     
-    
+    $estimated_w+=$product->data['Product Gross Weight']*$transaction['bonus'];
 	$data_dn_transactions[]=array(
 				      'product_id'=>$product->id
 				      ,'Product ID'=>$product->data['Product ID']
@@ -610,8 +645,9 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     $data['products']=$products_data;
     $data['cdata']=$customer_data;
     // $data['metadata_id']=$order_data_id;
-
-
+    $data['tax_rate']=.15;
+    if(strtotime($date_order)<strtotime('2008-11-01'))
+      $data['tax_rate']=.175;
     // print_r($products_data);
     // exit;
 
@@ -657,7 +693,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	
        }
        
-       print "$tipo_order\n";
+       print "$tipo_order\r";
 
     if($tipo_order==2 or $tipo_order==1  or $tipo_order==4 or $tipo_order==5 or   $tipo_order==3   )  {
       //print_r($data);
@@ -680,10 +716,13 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
 
       if($tipo_order==2){
-	
-	
 	$payment_method=parse_payment_method($header_data['pay_method']);
 	
+	if($header_data['total_net']!=0)
+	  $tax_rate=$header_data['tax1']/$header_data['total_net'];
+	else
+	  $tax_rate=$data['tax_rate'];
+	    
 	$data_invoice=array(
 			    'Invoice Date'=>$date_inv
 			    ,'Invoice Public ID'=>$header_data['order_num']
@@ -692,22 +731,77 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 			    ,'Invoice Multiple Payment Methods'=>0
 			    ,'Invoice Gross Shipping Amount'=>$header_data['shipping']
 			    ,'Invoice Gross Charges Amount'=>$header_data['charges']
+			    ,'Invoice Total Tax Amount'=>$header_data['tax1']
+			    ,'Invoice Refund Amount'=>$total_credit_value
+			    ,'Invoice Total Tax Refund Amount'=>$tax_rate*$total_credit_value
+			    ,'Invoice Total Amount'=>$header_data['total_topay']
+			    ,'tax_rate'=>$tax_rate
+			    ,'Invoice Has Been Paid In Full'=>'Yes'
+			    ,'Invoice Net Amount'=>$header_data['total_items_charge_value']-$total_credit_value
 			    );
-      
 	
+
+
+	if(!is_numeric($header_data['weight']))
+	  $weight=$estimated_w;
+	else
+	  $weight=$header_data['weight'];
+
+
+	$picker_data=get_user_id($header_data['pickedby'],true,'&view=picks');
+	$packer_data=get_user_id($header_data['packedby'],true,'&view=packs');
+
 	$data_dn=array(
 		       'Delivery Note Date'=>$date_inv
 		       ,'Delivery Note ID'=>$header_data['order_num']
 		       ,'Delivery Note File As'=>$header_data['order_num']
-			  
+		       ,'Delivery Note Weight'=>$weight
+		       ,'Delivery Note XHTML Pickers'=>$picker_data['xhtml']
+		       ,'Delivery Note Number Pickers'=>count($picker_data['id'])
+		       ,'Delivery Note Pickers IDs'=>$picker_data['id']
+		       ,'Delivery Note XHTML Packers'=>$packer_data['xhtml']
+		       ,'Delivery Note Number Packers'=>count($packer_data['id'])
+		       ,'Delivery Note Packers IDs'=>$packer_data['id']
+
+
 		       );
 	
-	
 	$order->create_dn_simple($data_dn,$data_dn_transactions);
-	
-	
 	$order->create_invoice_simple($data_invoice,$data_invoice_transactions);
-    
+	
+
+	foreach($credits as $credit){
+	  
+	  $parent=new Order ('public id',$credit['parent_key']);
+	  if($parent->id){
+	    $order_date=prepare_mysql($parent->date['Order Date']);
+	    $order_key=$parent->id;
+	    //exit;
+	  }else{
+	    $order_date='NULL';
+	    $order_key='NULL';
+	  }
+
+
+
+	  //	  print_r($header_data);
+	  $sql=sprintf("insert into `Order No Product Transaction Fact` values  (%s,%s,%s,%s,'Credit',%s,%.2f,%.2f)"
+		       ,$order_date
+		       ,prepare_mysql($order->data['Invoice Date'])
+		       ,$order_key
+		       ,prepare_mysql($order->data['Invoice Key'])
+		       ,prepare_mysql($credit['description'])
+		       ,$credit['value']
+		       ,$tax_rate*$credit['value']
+		       
+		       );
+	  //print $sql;
+	  if(!mysql_query($sql))
+	    exit("$sql\n error can not inser orde rno pro trns");
+	}
+
+
+
       }else if($tipo_order==4 or $tipo_order==5 ){
 	
 	
@@ -750,29 +844,54 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       mysql_query($sql);
     }elseif($tipo_order==6 ){
 
-      // print "Parent $parent_order_id\n";
+      
+      	if(!is_numeric($header_data['weight']))
+	  $weight=$estimated_w;
+	else
+	  $weight=$header_data['weight'];
+
+
+	$picker_data=get_user_id($header_data['pickedby'],true,'&view=picks');
+	$packer_data=get_user_id($header_data['packedby'],true,'&view=packs');
+
+	$data_dn=array(
+		       'Delivery Note Date'=>$date_inv
+		       ,'Delivery Note ID'=>$header_data['order_num']
+		       ,'Delivery Note File As'=>$header_data['order_num']
+		       ,'Delivery Note Weight'=>$weight
+		       ,'Delivery Note XHTML Pickers'=>$picker_data['xhtml']
+		       ,'Delivery Note Number Pickers'=>count($picker_data['id'])
+		       ,'Delivery Note Pickers IDs'=>$picker_data['id']
+		       ,'Delivery Note XHTML Packers'=>$packer_data['xhtml']
+		       ,'Delivery Note Number Packers'=>count($packer_data['id'])
+		       ,'Delivery Note Packers IDs'=>$packer_data['id']
+		       ,'Delivery Note Metadata'=>$order_data_id
+		       );
+	
+
+
+
+      print "Parent $parent_order_id\n";
       $parent_order=new Order('public_id',$parent_order_id);
       if($parent_order->id){
 	//	print_r($data_dn_transactions);
 	$parent_order->load('items');
-
-
-
-	$data_dn=array(
-		       'Delivery Note Date'=>$date2
-		       ,'Delivery Note ID'=>$header_data['order_num']
-		       ,'Delivery Note File As'=>$header_data['order_num']
-		       ,'Delivery Note Metadata' =>$order_data_id
-			 );
 	$parent_order->create_replacement_dn_simple($data_dn,$data_dn_transactions,$products_data);
 
 
-
+	//exit("prevs order found");
 
 	//	print_r($parent_order->items);
       }else{
-	//	print_r($header);
-	exit("no parent id");
+	$data['ghost_order']=true;
+	$data['Order Type']='';
+	$data['store_id']=1;
+ 
+	$order= new Order('new',$data);
+	
+	
+	$order->create_replacement_dn_simple($data_dn,$data_dn_transactions,$products_data);
+	//	exit("no parent id");
       
       }
     

@@ -3880,14 +3880,19 @@ function get_dates($filedate,$header_data,$tipo_order,$new_file=true){
 
   list($date_updated,$time_updated)=split(' ',$datetime_updated);
   if($new_file){
-    if($tipo_order==2){
-      // print "$date_updated ".$header_data['date_inv']."  \n";
+    if($tipo_order==2  or $tipo_order==6 or $tipo_order==7   ){
+      
       if($date_updated ==$header_data['date_inv']){
+	
 	$date_charged=$date_updated." ".$time_updated;
-	if($header_data['date_inv']==$header_data['date_order'])
+// 	if($header_data['date_inv']==$header_data['date_order']){
+// 	  $date_processed=$header_data['date_order']." ".$time_updated_menos30min;
+// 	  print "caca";
+// 	}else
+	$date_processed=$header_data['date_order']." 09:30:00";
+	if(strtotime($date_processed)>strtotime($date_charged))
 	  $date_processed=$header_data['date_order']." ".$time_updated_menos30min;
-	else
-	  $date_processed=$header_data['date_order']." 09:30:00";
+
       }else{
 	$date_charged=$header_data['date_inv']." 16:30:00";
 	$date_processed=$header_data['date_order']." 09:30:00";
@@ -8995,19 +9000,28 @@ function read_records($handle_csv,$y_map,$number_header_rows){
 // }
 
 
-function get_user_id($oname){
+function get_user_id($oname,$return_xhtml=false,$tag=''){
 
   //print "$record\n";
 
   $ids=array();
-  if($oname=='' or is_numeric($oname))
-    return array();
+  if($oname=='' or is_numeric($oname)){
+    if($return_xhtml)
+      return array('id'=>array(0),'xhtml'=>_('Unknown'));
+    else
+      return array(0);
+    
+  }
 
 
   $_names=array();
   
-  $_names=preg_split('/\s*(\+|\&|,+|\/|\-)\s*/',strtolower($oname));
+  $_names=preg_split('/\s*(\+|\&|,+|\/|\-)\s*/',$oname);
+
+  $xhtml='';
+
    foreach($_names as $_name){    
+     $original_part=$_name;
      $_name=_trim(strtolower($_name));
     if($_name=='')
       continue;
@@ -9096,12 +9110,17 @@ function get_user_id($oname){
 else if($_name=='jarina')
       $_name='jirina';
 
-    $sql=sprintf("select `Staff Key` from `Staff Dimension` where `Staff Alias`=%s",prepare_mysql($_name));
+    
+
+    $sql=sprintf("select `Staff Key`,`Staff Alias` from `Staff Dimension` where `Staff Alias`=%s",prepare_mysql($_name));
     //print "$sql\n";
     $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
     if ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
       $id=$row['Staff Key'];
       $ids[$id]=$id;
+
+      $xhtml.=sprintf(', <a href="staff.php?id=%d%s">%s</a>',$id,$tag,mb_ucwords($row['Staff Alias']));
+
     }else{
       //      $sql=sprintf("insert into todo_users (name,order_id,tipo) values ('%s','%s','%s')",addslashes($original_name),$order_id,$tipo);
       //    print "$sql\n";
@@ -9109,6 +9128,10 @@ else if($_name=='jarina')
       print "Staff name not found $oname \n";
       $id=0;
       $ids[$id]=$id;
+
+      $xhtml.=sprintf(', %s',$original_name);
+
+
     }
   }
    $_ids=array();
@@ -9116,7 +9139,12 @@ else if($_name=='jarina')
      $_ids[]=$values;
    }
 
-  return $_ids;
+   $xhtml=preg_replace("/^\,\s*/","",$xhtml);
+
+   if($return_xhtml)
+     return array('id'=>$_ids,'xhtml'=>$xhtml);
+   else
+     return $_ids;
 }
 
 

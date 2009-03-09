@@ -71,7 +71,7 @@ $_y_map_old['units']=4;
 $_y_map_old['supplier_code']=20;
 $_y_map_old['supplier_product_code']=19;
 $_y_map_old['supplier_product_cost']=24;
-$_y_map_old['w']=27;
+$_y_map_old['w']=26;
 
 $_map['stipo']=array('row'=>2,'col'=>0);
 $_map['ltipo']=array('row'=>2,'col'=>6);
@@ -146,6 +146,7 @@ $_map_old['customer_contact']=array('row'=>13,'col'=>5,'tipo'=>'name');
 $_map_old['phone']=array('row'=>14,'col'=>5,'tipo'=>'string');
 
 
+
 $_map_old['total_order']=array('row'=>14,'col'=>$_y_map_old['order']);
 $_map_old['total_reorder']=array('row'=>14,'col'=>$_y_map_old['reorder']);
 $_map_old['total_bonus']=array('row'=>14,'col'=>$_y_map_old['bonus']);
@@ -174,6 +175,7 @@ $_map_act['tax_number']=87;
 $_tipo_order=array('Unknown','Pro-invoice','Invoice','Canceled','Sample','Donation,','Replacements','Shortages','To Follow','Refund','Credit Note','Canceled After');
 
 function get_tipo_order($ltipo,$header){
+ 
 
   $parent_id='';
   $tipo=0;
