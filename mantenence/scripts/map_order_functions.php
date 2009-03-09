@@ -3882,6 +3882,9 @@ function get_dates($filedate,$header_data,$tipo_order,$new_file=true){
   if($new_file){
     if($tipo_order==2  or $tipo_order==6 or $tipo_order==7   ){
       
+      if($header_data['date_inv']=='')
+	$header_data['date_inv']=$header_data['date_order'];
+      
       if($date_updated ==$header_data['date_inv']){
 	
 	$date_charged=$date_updated." ".$time_updated;
