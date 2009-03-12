@@ -24,7 +24,12 @@ class product{
   var $id=false;
   var $unknown_txt='Unknown';
 
+
   function __construct($a1,$a2=false,$a3=false) {
+
+
+    
+    
     //    $this->db =MDB2::singleton();
     if(is_numeric($a1) and !$a2){
       $this->get_data('id',$a1);
@@ -44,18 +49,30 @@ class product{
 
       $result=mysql_query($sql);
 
-      if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   )
-
-
+      if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+	$this->locale=$this->data['Product Locale'];
 	$this->id=$this->data['Product Key'];
+      }
       return;
     }elseif($tipo=='code'){
       $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s and `Product Most Recent`='Yes' ",prepare_mysql($tag));
       $result=mysql_query($sql);
       if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)){
 	$this->id=$this->data['Product Key'];
+	$this->locale=$this->data['Product Locale'];
       }
       return;
+      
+    } if($tipo=='code_store'){
+     
+      $sql=sprintf("select * from `Product Dimension` where `Product Most Recent`='Yes' and `Product Code`=%s and `Product Store Key`=%d",prepare_mysql($tag),$extra);
+
+      $result=mysql_query($sql);
+      if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+	$this->id=$this->data['Product Key'];
+	$this->locale=$this->data['Product Locale'];
+      }
+	return;
       
     }elseif($tipo=='code-name-units-price'){
       $auto_add=$tag['auto_add'];
@@ -566,12 +583,112 @@ class product{
 
 
   function get($key='',$data=false){
-    
+
+
     if(array_key_exists($key,$this->data))
       return $this->data[$key];
     
 
     switch($key){
+
+
+
+
+
+
+
+    case('Order Form'):
+      global $site_checkout_address,$site_checkout_id;
+	$form=sprintf('<div class="ind_form"><span class="code">%s</span><br/><span class="name">%sx %s</span><br/><span class="price">%s</span><br/><span class="rrp">%s</span><br/>
+<form action="%s" method="post">
+<input type="hidden" name="userid" value="%s">
+<input type="hidden" name="product" value="%s %sx %s">
+<input type="hidden" name="return" value="%s">
+<input type="hidden" name="price" value="%.2f">
+<input class="order" type="text" size="1" class="qty" name="qty" value="1">
+<input class="submit" type="Submit" value="%s"></form>
+</div>'
+		      ,$this->data['Product Code']
+		      ,$this->data['Product Units Per Case']
+		      ,$this->data['Product Name'],$this->get('Price Formated'),$this->get('RRP Formated')
+		      ,addslashes($site_checkout_address)
+		      ,addslashes($site_checkout_id)
+		      ,addslashes($this->data['Product Code'])
+		      ,addslashes($this->data['Product Units Per Case'])
+		      ,addslashes($this->data['Product Name'])
+		      ,$_SERVER['PHP_SELF']
+		      ,$this->data['Product Price']
+		      ,$this->get('Order Msg')
+		      
+);
+	
+
+	return $form;
+      
+
+	break;
+    case('Order Msg'):
+      if($this->locale=='de_DE')
+	return 'Bestellen';
+      elseif($this->locale=='fr_FR')
+	return 'Commander';
+      else
+	return 'Order';
+	
+      case('Price'):
+	return $this->money($this->data['Product Price']);
+      break;
+    case('Price Formated'):
+      if($this->locale=='de_DE'){
+      
+	if(isset($data['per'])){
+	return 'Preis: '.$data['per'].' '.$this->money($this->data['Product Price']);
+	}else{
+	  if($this->data['Product Units Per Case']>1)
+	    return 'Preis: '.$this->money($this->data['Product Price']).'/'.$this->data['Product Units Per Case'].' ('.$this->money($this->data['Product Price']/$this->data['Product Units Per Case'])." pro Stück)";
+	  else
+	    return 'Preis: '.$this->money($this->data['Product Price'].' pro Stück');
+
+	}
+
+      }elseif($this->locale=='fr_FR'){
+      
+	if(isset($data['per'])){
+	return 'Prix: '.$data['per'].' '.$this->money($this->data['Product Price']);
+	}else{
+	  if($this->data['Product Units Per Case']>1)
+	    return 'Prix: '.$this->money($this->data['Product Price']).'/'.$this->data['Product Units Per Case'].' ('.$this->money($this->data['Product Price']/$this->data['Product Units Per Case'])." par unité)";
+	  else
+	    return 'Prix: '.$this->money($this->data['Product Price'].' par unité');
+
+	}
+
+      }
+      break;
+
+    case('Price per unit'):
+      return $this->money($this->data['Product Price']/$this->data['Product Units Per Case']);
+      break; 
+    case('Price per other'):
+      if(is_numeric($arg) and $arg>0)
+	return $this->money($this->data['Product Price']/$arg2);
+      
+      break; 
+
+
+    case('RRP Formated'):
+      if($this->locale=='de_DE')
+	return 'UVP: '.$this->money($this->data['Product RRP']/$this->data['Product Units Per Case']).' pro Stück';
+      elseif($this->locale=='fr_FR')
+	return $this->money($this->data['Product RRP']/$this->data['Product Units Per Case']).'/unité PVC';
+      else
+	return _('RRP').': '.$this->money($this->data['Product RRP']/$this->data['Product Units Per Case']).' '._('each');
+      break;
+
+    
+    case('Profit'):
+      return $this->money($this->data['Product RRP']-$this->data['Product Price']);
+      break;
     case('Parts SKU'):
       $sql=sprintf("select `Part SKU` from `Product Part List` where `Product ID`=%d ;",$this->data['Product ID']);
       $result=mysql_query($sql);
@@ -795,7 +912,15 @@ class product{
  
 
 
+function money($number){
 
+  if($this->locale=='en_GB')
+    return $this->data['Product Price Currency Symbol'].number_format($number,2,'.',',');
+  elseif($this->locale=='de_DE')
+    return number_format($number,2,',','.').'€';
+  elseif($this->locale=='fr_FR')
+    return number_format($number,2,'.',',').'€';
+}
 
 function new_id(){
   $sql="select max(`Product id`) as id from `Product Dimension`";
