@@ -47,9 +47,8 @@ asdasdasdasdas
   <tr><td  class="aright" >{t}Items Net Amount{/t}</td><td width=100 class="aright">{$order->get('Order Items Net Amount')}</td></tr>
 	  <tr><td  class="aright" >{t}Credits{/t}</td><td width=100 class="aright">{$order->get('Order Items Net Amount')}</td></tr>
 	  {if $other_charges_vateable  }<tr><td  class="aright" >{t}Charges{/t}</td><td width=100 class="aright">{$order->get('Order Total Tax Amount')}}</td></tr>{/if}
- <tr style="border-bottom:1px solid #777><td  class="aright" >{t}Shipping{/t}</td><td width=100 class="aright">{$order->get('Order Shipping Net Amount')}</td></tr>	
-  <tr style="border-bottom:1px solid #777"><td  class="aright" >{t}Refunds{/t}</td><td width=100 class="aright">{$order->get('Order Shipping Net Amount')}</td></tr>
-	  <tr><td  class="aright" >{t}Net{/t}</td><td width=100 class="aright">{$order->get('Order Total Net Amount')}</td></tr>
+	  <tr style="border-bottom:1px solid #777"><td  class="aright" >{t}Shipping{/t}</td><td width=100 class="aright">{$shipping_vateable}</td></tr>
+	  <tr><td  class="aright" >{t}Net{/t}</td><td width=100 class="aright">{$net}</td></tr>
 
 
 	  <tr style="border-bottom:1px solid #777"><td  class="aright" >{t}VAT{/t}</td><td width=100 class="aright">{$order->get('Order Total Tax Amount')}</td></tr>

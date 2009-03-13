@@ -16,7 +16,7 @@
 </div>
 <div id="doc3" style="clear:both;" class="yui-g yui-t4" >
 <div id="yui-main"> 
-<h1>{$data.code} {$units}x {$data.description}</h1>
+<h1>{$product->get('Product Code')} {$product->get('Product Short Description')}</h1>
 <div class="chooser" >
   <ul >
     <li id="config" {if $edit=='config'}class="selected"{/if} ><img src="art/icons/cog.png"> {t}Product Configuration{/t}</li>
@@ -188,12 +188,12 @@
 
 <div  {if $edit!="prices"}style="display:none"{/if}  class="edit_block" id="d_prices">
   <table class="edit" >
-    <tr class="title"><td></td><td style="text-align:right">{t}Price per Outer{/t} ({$units}{$data.units_tipo_shortname})</td><td style="text-align:right">{t}Price per{/t} {$data.units_tipo_name}</tr>
+    <tr class="title"><td></td><td style="text-align:right">{t}Price per Outer{/t} ({$units}{$data.units_tipo_shortname})</td><td style="text-align:right">{t}Price per{/t} {$product->get('Unit Type')}</tr>
 	
     <tr>
       <td class="label">{t}Sale Price{/t}:</td>
-      <td>{$currency}<input  onkeydown="to_save_on_enter(event,this)"  onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thosusand_sep}',2);price_changed(this)" style="text-align:right;width:10em"  factor="{$factor_inv_units}" name="price" id="v_price" value="{$data.price}"  ovalue="{$data.price}" ></td>
-      <td id="price_ou">{$price_perunit}</td>
+      <td>{$currency}<input  onkeydown="to_save_on_enter(event,this)"  onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thosusand_sep}',2);price_changed(this)" style="text-align:right;width:10em"  factor="{$factor_inv_units}" name="price" id="v_price" value="{$product->get('Product Price')}"  ovalue="{$product->get('Product Price')}" ></td>
+      <td id="price_ou">{$product->get('Price Per Unit')}</td>
       <td id="price_change"></td>
       <td><span onClick="save_price('price')" name="price" style="cursor:pointer;visibility:hidden" id="price_save">{t}Save{/t} <img src="art/icons/disk.png"/></span></td></tr>
     <tr>

@@ -34,13 +34,13 @@ $_SESSION['state']['product']['id']=$product_id;
 
 if(!$product= new product($product_id))
   exit('Error product not found');
-$product->load(array(
-		     'categories'
-		     ,'suppliers'
-		     ,'product_tree'
-		     ,'images'
-		     )
-	       );
+// $product->load(array(
+// 		     'categories'
+// 		     ,'suppliers'
+// 		     ,'product_tree'
+// 		     ,'images'
+// 		     )
+// 	       );
 //print_r( $product->get('images'));
 //exit;
 
@@ -51,55 +51,55 @@ $product->load(array(
 //   $category_list[]=$row[]
 // }
 
-$fam_order=$_SESSION['state']['family']['table']['order'];
-$sql=sprintf("select id,code from product where  %s<'%s' and  group_id=%d order by %s desc  ",$fam_order,$product->get($fam_order),$product->get('group_id'),$fam_order);
-$result =& $db->query($sql);
-if(!$prev=$result->fetchRow())
-  $prev=array('id'=>0,'code'=>'');
-$sql=sprintf("select id,code from product where  %s>'%s' and group_id=%d order by %s   ",$fam_order,$product->get($fam_order),$product->get('group_id'),$fam_order);
-$result =& $db->query($sql);
-if(!$next=$result->fetchRow())
-  $next=array('id'=>0,'code'=>'');
+// $fam_order=$_SESSION['state']['family']['table']['order'];
+// $sql=sprintf("select id,code from product where  %s<'%s' and  group_id=%d order by %s desc  ",$fam_order,$product->get($fam_order),$product->get('group_id'),$fam_order);
+// $result =& $db->query($sql);
+// if(!$prev=$result->fetchRow())
+//   $prev=array('id'=>0,'code'=>'');
+// $sql=sprintf("select id,code from product where  %s>'%s' and group_id=%d order by %s   ",$fam_order,$product->get($fam_order),$product->get('group_id'),$fam_order);
+// $result =& $db->query($sql);
+// if(!$next=$result->fetchRow())
+//   $next=array('id'=>0,'code'=>'');
 
-$smarty->assign('prev',$prev);
-$smarty->assign('next',$next);
+// $smarty->assign('prev',$prev);
+// $smarty->assign('next',$next);
 
+$smarty->assign('product',$product);
 
-
-list($cat_list,$deep)=get_cat_base(2,'sname');
-
-
+//list($cat_list,$deep)=get_cat_base(2,'sname');
 
 
 
-$cat_parents=array();
-$v_cat='';
-foreach($product->categories['list'] as $key => $value){
-  $_cat_parents=split(',',$cat_list[$key]['parents']);
-  $cat_parents=array_merge($cat_parents,$_cat_parents);
-  $cat_parents[]=$key;
-  $v_cat.=','.$key;
-}
-$v_cat=preg_replace('/^,/','',$v_cat);
-$cat_parents=array_unique($cat_parents);
-foreach($cat_parents as $cat_parent){
-  $cat_list[$cat_parent]['show']=0;
-}
 
-$smarty->assign('cat_list',$cat_list);
-$smarty->assign('v_cat',$v_cat);
 
-$smarty->assign('num_cat_list',count($cat_list));
+// $cat_parents=array();
+// $v_cat='';
+// foreach($product->categories['list'] as $key => $value){
+//   $_cat_parents=split(',',$cat_list[$key]['parents']);
+//   $cat_parents=array_merge($cat_parents,$_cat_parents);
+//   $cat_parents[]=$key;
+//   $v_cat.=','.$key;
+// }
+// $v_cat=preg_replace('/^,/','',$v_cat);
+// $cat_parents=array_unique($cat_parents);
+// foreach($cat_parents as $cat_parent){
+//   $cat_list[$cat_parent]['show']=0;
+// }
 
-$smarty->assign('cat',$product->categories['list']);
-$smarty->assign('num_cat',$product->categories['number']);
+// $smarty->assign('cat_list',$cat_list);
+// $smarty->assign('v_cat',$v_cat);
 
-$smarty->assign('suppliers',$product->get('number_of_suppliers'));
-$smarty->assign('supplier',$product->supplier);
+// $smarty->assign('num_cat_list',count($cat_list));
+
+// $smarty->assign('cat',$product->categories['list']);
+// $smarty->assign('num_cat',$product->categories['number']);
+
+// $smarty->assign('suppliers',$product->get('number_of_suppliers'));
+// $smarty->assign('supplier',$product->supplier);
 
 
 //print_r($product->images);
-$smarty->assign('images',$product->images);
+//$smarty->assign('images',$product->images);
 
 
 $smarty->assign('box_layout','yui-t0');
@@ -147,7 +147,7 @@ $js_files=array(
 
 
 $smarty->assign('parent','assets_tree.php');
-$smarty->assign('title',$product->get('code'));
+$smarty->assign('title',$product->get('Product Code'));
 
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
@@ -175,88 +175,89 @@ $_SESSION['state']['product']['shapes']=json_encode($_shape);
 $smarty->assign('currency',$myconf['currency_symbol']);
 $smarty->assign('data',$product->data);
 
-$sql=sprintf("select id,sname,tipo,name,description from cat where tipo=1 order by sname ");
-$res = $db->query($sql);
-$num_cols=6;
-$cat=array();
-$i=1;
-while($row=$res->fetchrow()){
-  $cat[]=array('sname'=>$row['sname'],'name'=>$row['name'].": ".$row['description'],'id'=>$row['id'],'tipo'=>$row['tipo']);
-  $i++;
- }
-list($cat,$num_cols)= array_transverse($cat,$num_cols);
-foreach($cat as $key=>$_cat){
-  $cat[$key]['mod']=fmod($key,$num_cols);
-}
-$smarty->assign('material_cat',$cat);
-$smarty->assign('cat_cols',$num_cols-1);
+// $sql=sprintf("select id,sname,tipo,name,description from cat where tipo=1 order by sname ");
+// $res = $db->query($sql);
+// $num_cols=6;
+// $cat=array();
+// $i=1;
+// while($row=$res->fetchrow()){
+//   $cat[]=array('sname'=>$row['sname'],'name'=>$row['name'].": ".$row['description'],'id'=>$row['id'],'tipo'=>$row['tipo']);
+//   $i++;
+//  }
+// list($cat,$num_cols)= array_transverse($cat,$num_cols);
+// foreach($cat as $key=>$_cat){
+//   $cat[$key]['mod']=fmod($key,$num_cols);
+// }
+// $smarty->assign('material_cat',$cat);
+// $smarty->assign('cat_cols',$num_cols-1);
 
-$sql=sprintf("select id,sname,tipo,name,description from cat where tipo=2 order by sname ");
-$res = $db->query($sql);
-$num_cols=6;
-$cat=array();
-$i=1;
-while($row=$res->fetchrow()){
-  $cat[]=array('sname'=>$row['sname'],'name'=>$row['name'].": ".$row['description'],'id'=>$row['id'],'tipo'=>$row['tipo']);
-  $i++;
- }
-list($cat,$num_cols)= array_transverse($cat,$num_cols);
-foreach($cat as $key=>$_cat){
-  $cat[$key]['mod']=fmod($key,$num_cols);
-}
-$smarty->assign('use_cat',$cat);
-$smarty->assign('cat_cols',$num_cols-1);
+// $sql=sprintf("select id,sname,tipo,name,description from cat where tipo=2 order by sname ");
+// $res = $db->query($sql);
+// $num_cols=6;
+// $cat=array();
+// $i=1;
+// while($row=$res->fetchrow()){
+//   $cat[]=array('sname'=>$row['sname'],'name'=>$row['name'].": ".$row['description'],'id'=>$row['id'],'tipo'=>$row['tipo']);
+//   $i++;
+//  }
+// list($cat,$num_cols)= array_transverse($cat,$num_cols);
+// foreach($cat as $key=>$_cat){
+//   $cat[$key]['mod']=fmod($key,$num_cols);
+// }
+// $smarty->assign('use_cat',$cat);
+// $smarty->assign('cat_cols',$num_cols-1);
 
 
 
-$sql=sprintf("select id,sname,tipo,name,description from cat where tipo=3 order by sname ");
-$res = $db->query($sql);
-$num_cols=6;
-$cat=array();
-$i=1;
-while($row=$res->fetchrow()){
-  $cat[]=array('sname'=>$row['sname'],'name'=>$row['name'].": ".$row['description'],'id'=>$row['id'],'tipo'=>$row['tipo']);
-  $i++;
- }
-list($cat,$num_cols)= array_transverse($cat,$num_cols);
-foreach($cat as $key=>$_cat){
-  $cat[$key]['mod']=fmod($key,$num_cols);
-}
-$smarty->assign('mods_cat',$cat);
-$smarty->assign('cat_cols',$num_cols-1);
+// $sql=sprintf("select id,sname,tipo,name,description from cat where tipo=3 order by sname ");
+// $res = $db->query($sql);
+// $num_cols=6;
+// $cat=array();
+// $i=1;
+// while($row=$res->fetchrow()){
+//   $cat[]=array('sname'=>$row['sname'],'name'=>$row['name'].": ".$row['description'],'id'=>$row['id'],'tipo'=>$row['tipo']);
+//   $i++;
+//  }
+// list($cat,$num_cols)= array_transverse($cat,$num_cols);
+// foreach($cat as $key=>$_cat){
+//   $cat[$key]['mod']=fmod($key,$num_cols);
+// }
+// $smarty->assign('mods_cat',$cat);
+// $smarty->assign('cat_cols',$num_cols-1);
 
-$sql=sprintf("select id,sname,tipo,name,description from cat where tipo=4 order by sname ");
-$res = $db->query($sql);
-$num_cols=6;
-$cat=array();
-$i=1;
-while($row=$res->fetchrow()){
-  $cat[]=array('sname'=>$row['sname'],'name'=>$row['name'].": ".$row['description'],'id'=>$row['id'],'tipo'=>$row['tipo']);
-  $i++;
- }
-list($cat,$num_cols)= array_transverse($cat,$num_cols);
-foreach($cat as $key=>$_cat){
-  $cat[$key]['mod']=fmod($key,$num_cols);
-}
-$smarty->assign('state_cat',$cat);
-$smarty->assign('cat_cols',$num_cols-1);
-$smarty->assign('units',number($product->get('units')));
-$smarty->assign('factor_units',number_format($product->get('units'),6));
-$smarty->assign('factor_inv_units',number_format(1/$product->get('units'),6)  );
+// $sql=sprintf("select id,sname,tipo,name,description from cat where tipo=4 order by sname ");
+// $res = $db->query($sql);
+// $num_cols=6;
+// $cat=array();
+// $i=1;
+// while($row=$res->fetchrow()){
+//   $cat[]=array('sname'=>$row['sname'],'name'=>$row['name'].": ".$row['description'],'id'=>$row['id'],'tipo'=>$row['tipo']);
+//   $i++;
+//  }
+// list($cat,$num_cols)= array_transverse($cat,$num_cols);
+// foreach($cat as $key=>$_cat){
+//   $cat[$key]['mod']=fmod($key,$num_cols);
+// }
+// $smarty->assign('state_cat',$cat);
+// $smarty->assign('cat_cols',$num_cols-1);
+$units=$product->get('Product Units Per Case');
+$smarty->assign('units',number($units));
+$smarty->assign('factor_units',number_format($units,6));
+$smarty->assign('factor_inv_units',number_format(1/$units,6)  );
 
-$smarty->assign('price_perunit',money($product->get('price')/$product->get('units')));
-if($product->data['rrp']=='')
-  $smarty->assign('rrp_perouter','');
-else
-  $smarty->assign('rrp_perouter',money($product->get('rrp')*$product->get('units')));
-$smarty->assign('decimal_point',$myconf['decimal_point']);
-$smarty->assign('thosusand_sep',$myconf['thosusand_sep']);
+// $smarty->assign('price_perunit',money($product->get('price')/$product->get('units')));
+// if($product->data['rrp']=='')
+//   $smarty->assign('rrp_perouter','');
+// else
+//   $smarty->assign('rrp_perouter',money($product->get('rrp')*$product->get('units')));
+// $smarty->assign('decimal_point',$myconf['decimal_point']);
+// $smarty->assign('thosusand_sep',$myconf['thosusand_sep']);
 
-foreach($_units_tipo as $key=>$value){
-  $units_tipo[$key]=array('id'=>$key,'name'=>$value,'sname'=>$_units_tipo_plural[$key]);
-}
+// foreach($_units_tipo as $key=>$value){
+//   $units_tipo[$key]=array('id'=>$key,'name'=>$value,'sname'=>$_units_tipo_plural[$key]);
+// }
 
-$smarty->assign('units_tipo_list',$units_tipo);
+//$smarty->assign('units_tipo_list',$units_tipo);
 
 $smarty->display('edit_product.tpl');
 ?>

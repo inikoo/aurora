@@ -2909,7 +2909,7 @@ $sum_active=0;
   $adata=array();
   //print "$period";
   while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-    $name=sprintf('<a href="department?id=%d">%s</a>',$row['Product Department Key'],$row['Product Department Name']);
+    $name=sprintf('<a href="department.php?id=%d">%s</a>',$row['Product Department Key'],$row['Product Department Name']);
     if($percentages){
       if($period=='all'){
       $tsall=percentage($row['Product Department Total Invoiced Amount'],$sum_total_sales,2);
@@ -4070,7 +4070,7 @@ from `Product Dimension` P   $where $wheref $group order by $order $order_direct
   $adata=array();
   // print "$sql";
   while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-    $code=sprintf('<a href="product.php?id=%d">%s</a>',$row['Product Key'],$row['Product Code']);
+    $code=sprintf('<a href="product.php?id=%d">s%s</a>',$row['Product Key'],$row['Product Code']);
     if($percentages){
       if($period=='all'){
       $tsall=percentage($row['Product Total Invoiced Amount'],$sum_total_sales,2);
@@ -6946,12 +6946,12 @@ if(isset( $_REQUEST['all_products'])){
 
 
    if($all_products_supplier)
-     $where=$where.' and ps.supplier_id='.$supplier_id;
+     $where=$where.' and `Supplier Key`='.$supplier_id;
    elseif($all_products)
      $all_products_supplier=true;
    else{
      $f_value='';
-     $where=$where.' and porden_id='.$po_id;
+     $where=$where.' and `Purchase Order Key`='.$po_id;
 
    }
 
@@ -6967,13 +6967,17 @@ if(isset( $_REQUEST['all_products'])){
 
 
   if($all_products_supplier)
-  $sql="select count(*) as total from product  as p  left join product2supplier as ps on (product_id=p.id) $where $wheref ";
+    $sql="select count(*) as total from `Supplier Product Dimension` $where $wheref ";
   else
-    $sql="select count(*) as total from porden_item left join product2supplier as ps on ( p2s_id=ps.id)  left join product as p on (product_id=p.id)    $where $wheref ";
+    $sql="select count(*) as total from `Purchase Order Transaction Fact` $where $wheref ";
 
-  // print $sql;
-  $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-  if($row=$res->fetchRow()) {
+
+  //   print $sql;
+
+ $res = mysql_query($sql);
+      if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+
     $total=$row['total'];
   }
     if($wheref==''){
@@ -6981,11 +6985,12 @@ if(isset( $_REQUEST['all_products'])){
        $total_records=$total;
     }else{
       if($all_products_supplier)
-      $sql="select count(*) as total from product2supplier  $where  ";
+      $sql="select count(*) as total from `Supplier Product Dimension`  $where  ";
       else
-	$sql="select count(*) as total from porden_item  $where $wheref ";
-      $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-      if($row=$res->fetchRow()) {
+	$sql="select count(*) as total from `Purchase Order Transaction Fact`  $where $wheref ";
+      $res = mysql_query($sql);
+      if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+	
 	$total_records=$row['total'];
 	$filtered=$total_records-$total;
       }
@@ -7019,18 +7024,23 @@ if(isset( $_REQUEST['all_products'])){
 
 
     if($all_products_supplier){
-   $sql="select p.units as punits,(select concat_ws('|',IFNULL(expected_price,''),IFNULL(expected_qty,''),IFNULL(price,''),IFNULL(qty,''),IFNULL(damaged,''),IFNULL(qty-damaged,'')) from porden_item where porden_id=$po_id and porden_item.p2s_id=ps.id) as po_data,   sup_code,ps.id as p2s_id,(p.units*ps.price) as price_outer,ps.price as price_unit,stock,p.condicion as condicion, p.code as code, p.id as id,p.description as description , group_id,department_id,g.name as fam, d.code as department 
-from product as p left join product_group as g on (g.id=group_id) left join product_department as d on (d.id=department_id) left join product2supplier as ps on (product_id=p.id)  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+      	$sql="select count(*) as total from `Supplier Product Dimension`  $where $wheref ";
+
+      // $sql="select p.units as punits,(select concat_ws('|',IFNULL(expected_price,''),IFNULL(expected_qty,''),IFNULL(price,''),IFNULL(qty,''),IFNULL(damaged,''),IFNULL(qty-damaged,'')) from porden_item where porden_id=$po_id and porden_item.p2s_id=ps.id) as po_data,   sup_code,ps.id as p2s_id,(p.units*ps.price) as price_outer,ps.price as price_unit,stock,p.condicion as condicion, p.code as code, p.id as id,p.description as description , group_id,department_id,g.name as fam, d.code as department 
+	//from product as p left join product_group as g on (g.id=group_id) left join product_department as d on (d.id=department_id) left join product2supplier as ps on (product_id=p.id)  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
 
     }else{
-      $sql=sprintf("select   (qty-damaged) as useful,  damaged,p.units as punits, expected_qty,expected_price, porden_item.price,qty  ,   sup_code,ps.id as p2s_id,(p.units*ps.price) as price_outer,ps.price as price_unit,stock,p.condicion as condicion, p.code as code, p.id as id,p.description as description , group_id,department_id,g.name as fam, d.code as department 
-from porden_item left join product2supplier as ps on ( p2s_id=ps.id)  left join product as p on (product_id=p.id)  left join product_group as g on (g.id=group_id) left join product_department as d on (d.id=department_id)  $where $wheref  order by $order $order_direction                   ");
+
+	$sql="select *  from `Purchase Order Transaction Fact` POTF left join `Supplier Product Dimension` SPD on (SPD.`Supplier Product Key`=POTF.`Supplier Product Key`)   $where $wheref ";
+
+	// $sql=sprintf("select   (qty-damaged) as useful,  damaged,p.units as punits, expected_qty,expected_price, porden_item.price,qty  ,   sup_code,ps.id as p2s_id,(p.units*ps.price) as price_outer,ps.price as price_unit,stock,p.condicion as condicion, p.code as code, p.id as id,p.description as description , group_id,department_id,g.name as fam, d.code as department 
+	//from porden_item left join product2supplier as ps on ( p2s_id=ps.id)  left join product as p on (product_id=p.id)  left join product_group as g on (g.id=group_id) left join product_department as d on (d.id=department_id)  $where $wheref  order by $order $order_direction                   ");
 
     }
   
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+$res = mysql_query($sql);
    $data=array();
-   while($row=$res->fetchRow()) {
+   while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
      if($all_products_supplier){
        if($row['po_data']!=''){
@@ -7046,8 +7056,8 @@ from porden_item left join product2supplier as ps on ( p2s_id=ps.id)  left join 
        }
 	 
      }else{
-       $expected_price=$row['expected_price'];
-       $expected_qty=$row['expected_qty'];
+       $expected_price=$row['Purchase Order Amount'];
+       $expected_qty=$row['Purchase Order Quantity'];
        $price=$row['price'];
        $qty=$row['qty'];
        $damaged=$row['damaged'];
@@ -7104,7 +7114,7 @@ from porden_item left join product2supplier as ps on ( p2s_id=ps.id)  left join 
 			 'filter_msg'=>$filter_msg,
 			 'total_records'=>$total,
 			 'records_offset'=>$start_from,
-			 'records_returned'=>$start_from+$res->numRows(),
+			 'records_returned'=>$start_from+$total,
 			 'records_perpage'=>$number_results,
 			 'records_text'=>$rtext,
 			 'records_order'=>$order,
@@ -7114,6 +7124,7 @@ from porden_item left join product2supplier as ps on ( p2s_id=ps.id)  left join 
 		   );
    echo json_encode($response);
    break;
+
    case('list_pareto_products'):
    $first_day=addslashes($myconf['data_since']);
    $data_name='tsy';

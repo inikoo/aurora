@@ -21,17 +21,18 @@ if(!$order=new Order($order_id))
 $customer=new Customer($order->get('order customer key'));
 
 //print_r($order->data);
-switch(strtolower($order->get('Order Current Dispatch State'))){
+
+switch($order->get('Order Current Dispatch State')){
   
  case('in process'):
    $js_file='order_in_process.js.php';
    $template='order_in_process.tpl';
    break;
   case('Dispached'):
+
     
-    
-    $js_file='order_invoived.js.php';
-    $template='order_invoiced.tpl';
+    $js_file='order_dispached.js.php';
+    $template='order_dispached.tpl';
   break; 
 
  default:

@@ -649,36 +649,40 @@ if(isset( $_REQUEST['where']))
        $_SESSION['state']['orders']['to']=$date_interval['to'];
      }
    }
-   switch($view){
-   case('all'):
-     break;
-   case('invoices'):
-     $where.=' and orden.tipo=2 ';
-     break;
-   case('in_process'):
-     $where.=' and orden.tipo=1 ';
-     break;
-   case('cancelled'):
-     $where.=' and orden.tipo=3 ';
-     break;
-   default:
+ //   switch($view){
+//    case('all'):
+//      break;
+//    case('invoices'):
+//      $where.=' and orden.tipo=2 ';
+//      break;
+//    case('in_process'):
+//      $where.=' and orden.tipo=1 ';
+//      break;
+//    case('cancelled'):
+//      $where.=' and orden.tipo=3 ';
+//      break;
+//    default:
      
      
-   }
+//    }
    $where.=$date_interval['mysql'];
    
    $wheref='';
 
   if($f_field=='max' and is_numeric($f_value) )
-    $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(date_index))<=".$f_value."    ";
+    $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Order Last Updated Date`))<=".$f_value."    ";
   else if($f_field=='min' and is_numeric($f_value) )
-    $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(date_index))>=".$f_value."    ";
-   elseif(($f_field=='customer_name' or $f_field=='public_id') and $f_value!='')
-    $wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
+    $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Order Last Updated Date`))>=".$f_value."    ";
+   elseif($f_field=='customer_name' and $f_value!='')
+    $wheref.=" and  `Order Customer Name` like '".addslashes($f_value)."%'";
+   elseif($f_field=='public_id' and $f_value!='')
+    $wheref.=" and  `Order Public ID` like '".addslashes($f_value)."%'";
+
+
   else if($f_field=='maxvalue' and is_numeric($f_value) )
-    $wheref.=" and  total<=".$f_value."    ";
+    $wheref.=" and  `Order Total Amount`<=".$f_value."    ";
   else if($f_field=='minvalue' and is_numeric($f_value) )
-    $wheref.=" and  total>=".$f_value."    ";
+    $wheref.=" and  `Order Total Amount`>=".$f_value."    ";
    
 
 
@@ -686,7 +690,7 @@ if(isset( $_REQUEST['where']))
 
    
   $sql="select count(*) as total from `Order Dimension`   $where $wheref ";
-   print $sql ;
+  //     print $sql ;
    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
   if($row=$res->fetchRow()) {
     $total=$row['total'];
@@ -806,10 +810,8 @@ else if($order=='customer')
  case('invoices'):
     if(!$LU->checkRight(ORDER_VIEW))
     exit;
-    if(isset($_REQUEST['saveto']) and $_REQUEST['saveto']=='report_sales')
-      $conf=$_SESSION['state']['report']['sales'];
-    else
-      $conf=$_SESSION['state']['orders']['table'];
+    
+    $conf=$_SESSION['state']['orders']['invoices'];
   if(isset( $_REQUEST['sf']))
      $start_from=$_REQUEST['sf'];
    else
@@ -891,7 +893,7 @@ if(isset( $_REQUEST['where']))
      
    }else{
 
-     $_SESSION['state']['orders']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+     $_SESSION['state']['orders']['invoices']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
      $_SESSION['state']['orders']['view']=$view;
      $date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
      if($date_interval['error']){
@@ -901,22 +903,7 @@ if(isset( $_REQUEST['where']))
        $_SESSION['state']['orders']['to']=$date_interval['to'];
      }
    }
-   switch($view){
-   case('all'):
-     break;
-   case('invoices'):
-     $where.=' and orden.tipo=2 ';
-     break;
-   case('in_process'):
-     $where.=' and orden.tipo=1 ';
-     break;
-   case('cancelled'):
-     $where.=' and orden.tipo=3 ';
-     break;
-   default:
-     
-     
-   }
+
    $where.=$date_interval['mysql'];
    
    $wheref='';
@@ -937,8 +924,8 @@ if(isset( $_REQUEST['where']))
    
 
    
-  $sql="select count(*) as total from `Order Dimension`   $where $wheref ";
-   print $sql ;
+  $sql="select count(*) as total from `Invoice Dimension`   $where $wheref ";
+  // print $sql ;
    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
   if($row=$res->fetchRow()) {
     $total=$row['total'];
@@ -1002,34 +989,40 @@ if(isset( $_REQUEST['where']))
 
    
    if($order=='date')
-     $order='`Order Date`';
+     $order='`Invoice Date`';
    else if($order=='last_date')
-     $order='`Order Last Updated Date`';
+     $order='`Invoice Last Updated Date`';
    else if($order=='id')
-     $order='`Order File As`';
+     $order='`Invoice File As`';
    else if($order=='state')
-     $order='`Order Current Dispatch State`,`Order Current Payment State`';
+     $order='`Invoice Current Dispatch State`,`Invoice Current Payment State`';
    else if($order=='total_amount')
-     $order='`Order Total Amount`';
+     $order='`Invoice Total Amount`';
 else if($order=='customer')
-     $order='`Order Customer Name`';
+     $order='`Invoice Customer Name`';
 
-  $sql="select `Order Key`,`Order Public ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Date`,`Order Total Amount` ,`Order Current XHTML State` from `Order Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
-  //  print $sql;
+  $sql="select `Invoice Has Been Paid In Full`,`Invoice Key`,`Invoice XHTML Orders`,`Invoice XHTML Delivery Notes`,`Invoice Public ID`,`Invoice Customer Key`,`Invoice Customer Name`,`Invoice Date`,`Invoice Total Amount`  from `Invoice Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+  // print $sql;
 
    $data=array();
 
    $res = mysql_query($sql);
    while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-     $order_id=sprintf('<a href="order.php?id=%d">%s</a>',$row['Order Key'],$row['Order Public ID']);
-     $customer=sprintf('<a href="order.php?id=%d">%s</a>',$row['Order Customer Key'],$row['Order Customer Name']);
+     $order_id=sprintf('<a href="invoice.php?id=%d">%s</a>',$row['Invoice Key'],$row['Invoice Public ID']);
+     $customer=sprintf('<a href="customer.php?id=%d">%s</a>',$row['Invoice Customer Key'],$row['Invoice Customer Name']);
+     if($row['Invoice Has Been Paid In Full'])
+       $state=_('Paid');
+     else
+       $state=_('No Paid');
+
      $data[]=array(
-		   'id'=>$order_id,
-		   'customer'=>$customer,
-		   'date'=>strftime("%e %b %y %H:%M", strtotime($row['Order Date'])),
-		   'last_date'=>strftime("%e %b %y %H:%M", strtotime($row['Order Last Updated Date'])),
-		   'total_amount'=>money($row['Order Total Amount']),
-		   'state'=>$row['Order Current XHTML State']
+		   'id'=>$order_id
+		   ,'customer'=>$customer
+		   ,'date'=>strftime("%e %b %y", strtotime($row['Invoice Date']))
+		   ,'total_amount'=>money($row['Invoice Total Amount'])
+		   ,'state'=>$state
+		   ,'orders'=>$row['Invoice XHTML Orders']
+		   ,'dns'=>$row['Invoice XHTML Delivery Notes']
 		   );
    }
 
@@ -1126,24 +1119,24 @@ if(isset( $_REQUEST['where']))
    }
 
 
-   $where.=sprintf(' and supplier_id=%d',$supplier_id);
+    $where.=sprintf(' and `Purchase Order Supplier Key`=%d',$supplier_id);
 
-   switch($view){
-   case('all'):
-     break;
-   case('submited'):
-     $where.=' and porden.status_id==10 ';
-     break;
-   case('new'):
-     $where.=' and porden.status_id<10 ';
-     break;
-   case('received'):
-     $where.=' and porden.status_id>80 ';
-     break;
-   default:
+//    switch($view){
+//    case('all'):
+//      break;
+//    case('submited'):
+//      $where.=' and porden.status_id==10 ';
+//      break;
+//    case('new'):
+//      $where.=' and porden.status_id<10 ';
+//      break;
+//    case('received'):
+//      $where.=' and porden.status_id>80 ';
+//      break;
+//    default:
      
      
-   }
+//    }
    $where.=$date_interval['mysql'];
    
    $wheref='';
@@ -1161,21 +1154,21 @@ if(isset( $_REQUEST['where']))
    
 
 
-   
+
 
    
-   $sql="select count(*) as total from porden   $where $wheref ";
-
+   $sql="select count(*) as total from `Purchase Order Dimension`   $where $wheref ";
+  
    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-  if($row=$res->fetchRow()) {
-    $total=$row['total'];
+   if($row=$res->fetchRow()) {
+     $total=$row['total'];
   }
   if($where==''){
     $filtered=0;
      $total_records=$total;
   }else{
     
-      $sql="select count(*) as total from porden  $where";
+      $sql="select count(*) as total from `Purchase Order Dimension`   $where";
       $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
       if($row=$res->fetchRow()) {
 	$total_records=$row['total'];
@@ -1221,9 +1214,11 @@ if(isset( $_REQUEST['where']))
    $_order=$order;
    $_dir=$order_direction;
 
+   if($order=='date_index')
+     $order='`Purchase Order Date`';
 
-
-  $sql="select id,UNIX_TIMESTAMP(date_index) as date_index,total,items,tipo,status_id from porden  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+  $sql="select  * from  `Purchase Order Dimension`   $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+  //print $sql;
   //  print $sql;
    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
    $data=array();
