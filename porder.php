@@ -1,44 +1,56 @@
 <?
 include_once('common.php');
-include_once('classes/Order.php');
 include_once('classes/Supplier.php');
+include_once('classes/PurchaseOrder.php');
 
 
 
-if(isset($_REQUEST['id']) and is_numeric($_REQUEST['id'])){
+if(isset($_REQUEST['new']) 
+   and isset($_REQUEST['supplier_id']) 
+   and is_numeric($_REQUEST['supplier_id'])
+   and $_REQUEST['supplier_id']>0
+   ){
+  $supplier=new Supplier('id',$_REQUEST['supplier_id']);
+  $data=array(
+	      'Purchase Order Supplier Key'=>$supplier->id
+	      ,'Purchase Order Supplier Name'=>$supplier->data['Supplier Name']
+	      
+	      );
+
+  $po=new PurchaseOrder('new',$data);
+  
+
+ }else if(isset($_REQUEST['id'])){
+     $po=new PurchaseOrder($_REQUEST['id']);
+     if(!$po->id)
+       exit("Error po can no be found");
+     $supplier=new Supplier('id',$po->data['Purchase Order Supplier Key']);
+   }
    
-   $po=new Order('po',$_REQUEST['id']);
-   $po->load('supplier');
 
-}else
-   exit(_('Error the Purchese Order do not exist'));
-
-
-
-
-$po_id = $po->id;
-$_SESSION['state']['po']['id']=$po->id;
-$_SESSION['state']['supplier']['id']=$po->data['supplier_id'];
-//print_r($po->data);
-$smarty->assign('po',$po->data);
+   $po_id = $po->id;
+   $_SESSION['state']['po']['id']=$po->id;
+   $_SESSION['state']['supplier']['id']=$supplier->id;
+   //print_r($po->data);
+   $smarty->assign('po',$po);
+   
+   
+   $smarty->assign('supplier',$supplier);
 
 
-$smarty->assign('supplier',$po->supplier->data);
+   $smarty->assign('title',$supplier->data['Supplier Code']."<br/>"._('Purchase Order').' '.$po->data['Purchase Order Key']." (".$po->data['Purchase Order Current XHTML State'].")");
+   
+   
+//    $_SESSION['state']['po']['items']['all_products']=false;
+
+// if($po->data['items']==0)
+//   $_SESSION['state']['po']['items']['all_products_supplier']=true;
+//  else
+//    $_SESSION['state']['po']['items']['all_products_supplier']=false;
 
 
-$smarty->assign('title',$po->supplier->data['code']."<br/>"._('Purchase Order').' '.$po->data['id']." (".$po->data['status'].")");
-
-
-$_SESSION['state']['po']['items']['all_products']=false;
-
-if($po->data['items']==0)
-  $_SESSION['state']['po']['items']['all_products_supplier']=true;
- else
-   $_SESSION['state']['po']['items']['all_products_supplier']=false;
-
-
-$_SESSION['state']['po']['status']=floor($po->data['status_id']*.1);
-$smarty->assign('status',$_SESSION['state']['po']['status']);
+// $_SESSION['state']['po']['status']=floor($po->data['status_id']*.1);
+// $smarty->assign('status',$_SESSION['state']['po']['status']);
 
 
 if($_SESSION['state']['po']['items']['all_products'] or $_SESSION['state']['po']['items']['all_products_supplier'])
@@ -71,7 +83,7 @@ $smarty->assign('time',date("H:i"));
 
 
 //create user list
-$sql=sprintf("select id,alias,position_id from staff where active=1 order by alias ");
+$sql=sprintf("select `Staff Key`id,`Staff Alias` as alias ,`Staff Position Key` as position_id from `Staff Dimension` where `Staff Currently Working`='Yes' order by alias ");
 $res = $db->query($sql);
 $num_cols=5;
 $staff=array();

@@ -56,7 +56,7 @@ $js_files=array(
 		$yui_path.'dragdrop/dragdrop-min.js',
 		$yui_path.'datasource/datasource-min.js',
 		$yui_path.'autocomplete/autocomplete-min.js',
-		$yui_path.'datatable/datatable-min.js',
+		$yui_path.'datatable/datatable.js',
 		$yui_path.'container/container_core-min.js',
 		$yui_path.'menu/menu-min.js',
 		$yui_path.'calendar/calendar-min.js',
@@ -77,8 +77,8 @@ $smarty->assign('table_title',_('Order List'));
 
 
 $tipo_filter=($q==''?$_SESSION['state']['orders']['table']['f_field']:'public_id');
-$smarty->assign('filter',$tipo_filter);
-$smarty->assign('filter_value',($q==''?$_SESSION['state']['orders']['table']['f_value']:addslashes($q)));
+$smarty->assign('filter0',$tipo_filter);
+$smarty->assign('filter_value0',($q==''?$_SESSION['state']['orders']['table']['f_value']:addslashes($q)));
 
 
 $filter_menu=array(
@@ -88,12 +88,12 @@ $filter_menu=array(
 		   'maxvalue'=>array('db_key'=>'maxvalue','menu_label'=>'Orders with a maximum value of <i>'.$myconf['currency_symbol'].'n</i>','label'=>'Max Value ('.$myconf['currency_symbol'].')'),
 		   'max'=>array('db_key'=>'max','menu_label'=>'Orders from the last <i>n</i> days','label'=>'Last (days)')
 		   );
-$smarty->assign('filter_menu',$filter_menu);
+$smarty->assign('filter_menu0',$filter_menu);
 
-$smarty->assign('filter_name',$filter_menu[$tipo_filter]['label']);
+$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 
 
 $paginator_menu=array(10,25,50,100,500);
-$smarty->assign('paginator_menu',$paginator_menu);
+$smarty->assign('paginator_menu0',$paginator_menu);
 $smarty->display('orders.tpl');
 ?>

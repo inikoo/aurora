@@ -34,7 +34,7 @@
 	</table>
 	<table >
 	  <tr><td  style="text-align:right"><a href="edit_supplier.php?id={$supplier_id}">Edit Supplier</a></td></tr>
-	  <tr><td  style="text-align:right"><span class="but" onclick="create_new_po()" >New Purchase Order</span></td></tr>
+	  <tr><td  style="text-align:right"><a class="but" href="porder.php?new=1&supplier_id={$supplier_id}" >New Purchase Order</a></td></tr>
 	  
 	</table>
       </div>

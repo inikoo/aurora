@@ -520,32 +520,7 @@ var status=o.getAttribute('status');
 	datasource.sendRequest(request,table.onDataReturnInitializeTable, table);    
     }
 
-  //   o.className='selected but';
-//     var table=tables['table0'];
-//     if(show_all){
-// 	Dom.get('clean_table_filter0').style.visibility='visible';
-// 	Dom.get('clean_table_controls0').style.visibility='visible';
-// 	Dom.get('table_po_products').className='but ';
-	
-// 	<?=($_SESSION['state']['po']['status']==1?"table.showColumn('expected_qty');table.hideColumn('expected_qty_ne');":'')?>
 
-
-//     }else{
-// 	Dom.get('table_all_products').className='but ';
-// 	Dom.get('clean_table_filter0').style.visibility='hidden';
-// 	Dom.get('clean_table_controls0').style.visibility='hidden';
-	
-// 	<?=($_SESSION['state']['po']['status']==1?"table.hideColumn('expected_qty');table.showColumn('expected_qty_ne');":'')?>
-
-
-//     }tableid=0;
-//     var table=tables['table'+tableid];
-//     var datasource=tables['dataSource'+tableid];
-//     var request='&show_all=' +show_all;
-
-    
-
-//     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);    
     
 };
     
@@ -624,20 +599,20 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		var tableDivEL="table"+tableid;
 		var ColumnDefs = [
 				  {key:"code", label:"<?=_('Code')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				  ,{key:"sup_code", label:"<?=_('S Code')?>", width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}<?=(($_SESSION['state']['po']['status']==1 or $_SESSION['state']['po']['status']==8)?'':',hidden:true')?>}
-				  ,{key:"description", label:"<?=_('Description')?>",width:285, sortable:false,className:"aleft"<?=(($_SESSION['state']['po']['status']==0 or $_SESSION['state']['po']['status']==1 or $_SESSION['state']['po']['status']==8)?'':',hidden:true')?>}
-				  ,{key:"stock", label:"<?=_('Stock O(U)')?>",width:90,className:"aright"<?=($_SESSION['state']['po']['status']!=0?',hidden:true':'')?>}
-				  ,{key:"stock_time", label:"<?=_('Stock Time')?>",width:75,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}<?=($_SESSION['state']['po']['status']==0?'':',hidden:true')?>}
-				  ,{key:"expected_qty_edit", label:"<?=_('Qty O[U]')?>",width:70,className:"aright"<?=($_SESSION['state']['po']['status']==0?'':',hidden:true')?>}
-				  ,{key:"expected_qty", label:"<?=_('Qty O[U]')?>",width:100,className:"aright"<?=(($_SESSION['state']['po']['status']==1 or $_SESSION['state']['po']['status']==8 )?'':',hidden:true')?>}
-				  ,{key:"price_unit", label:"<?=_('Price (U)')?>",width:65,className:"aright"<?=($_SESSION['state']['po']['status']==0?'':',hidden:true')?>}
-				  ,{key:"expected_price", label:"<?=_('E Cost')?>",width:70,className:"aright"<?=($_SESSION['state']['po']['status']==0?'':',hidden:true')?>}
+				  ,{key:"sup_code", label:"<?=_('S Code')?>", width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				  ,{key:"description", label:"<?=_('Description')?>",width:285, sortable:false,className:"aleft"}
+				  ,{key:"stock", label:"<?=_('Stock O(U)')?>",width:90,className:"aright"}
+				  ,{key:"stock_time", label:"<?=_('Stock Time')?>",width:75,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				  ,{key:"expected_qty_edit", label:"<?=_('Qty O[U]')?>",width:70,className:"aright"}
+				  ,{key:"expected_qty", label:"<?=_('Qty O[U]')?>",width:100,className:"aright"}
+				  ,{key:"price_unit", label:"<?=_('Price (U)')?>",width:65,className:"aright"}
+				  ,{key:"expected_price", label:"<?=_('E Cost')?>",width:70,className:"aright"}
 				  ,{key:"qty_edit", label:"<?=_('Qty [U]')?>",width:50,className:"aright",hidden:true}
 				  ,{key:"diff", label:"<?=_('&Delta;U')?>",width:40,className:"aright",hidden:true}
 				  ,{key:"damaged_edit", label:"<?=_('Damaged')?>",width:60,className:"aright",hidden:true}
 
-				  ,{key:"damaged", label:"<?=_('Damaged')?>",width:60,className:"aright"<?=(($_SESSION['state']['po']['status']==10)?'':',hidden:true')?>}
-				  ,{key:"usable", label:"<?=_('In O[U]')?>",width:55,className:"aright"<?=(($_SESSION['state']['po']['status']==10)?'':',hidden:true')?>}
+				  ,{key:"damaged", label:"<?=_('Damaged')?>",width:60,className:"aright"}
+				  ,{key:"usable", label:"<?=_('In O[U]')?>",width:55,className:"aright"}
 
 
 				  ];

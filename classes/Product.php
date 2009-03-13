@@ -666,10 +666,12 @@ class product{
       }
       break;
 
-    case('Price per unit'):
+    case('Price Per Unit'):
       return $this->money($this->data['Product Price']/$this->data['Product Units Per Case']);
       break; 
-    case('Price per other'):
+
+
+    case('Price Per Other'):
       if(is_numeric($arg) and $arg>0)
 	return $this->money($this->data['Product Price']/$arg2);
       
@@ -689,6 +691,21 @@ class product{
     case('Profit'):
       return $this->money($this->data['Product RRP']-$this->data['Product Price']);
       break;
+
+    case('Currency Symbol'):
+      function money($number){
+
+	if($this->locale=='en_GB')
+	  return '£';
+	elseif($this->locale=='de_DE' or $this->locale=='fr_FR')
+	  return '€';
+	else
+	  return '$';
+
+}
+
+
+      break;
     case('Parts SKU'):
       $sql=sprintf("select `Part SKU` from `Product Part List` where `Product ID`=%d ;",$this->data['Product ID']);
       $result=mysql_query($sql);
@@ -698,6 +715,19 @@ class product{
      }
      return $parts;
       break;
+
+    case('Unit Type'):
+      return $this->data['Product Unit Type'];
+    case('Unit Type Abbreviation'):
+      if($this->data['Product Unit Type']=='Piece')
+	return _('Pc');
+      if($this->data['Product Unit Type']=='Grams')
+	return _('g');
+      if($this->data['Product Unit Type']=='Meter')
+	return _('m');
+      
+      return $this->data['Product Unit Type'];
+
     case('Number of Parts'):
       if(!$this->parts)
 	$this->load('part_list');
@@ -915,7 +945,7 @@ class product{
 function money($number){
 
   if($this->locale=='en_GB')
-    return $this->data['Product Price Currency Symbol'].number_format($number,2,'.',',');
+    return '£'.number_format($number,2,'.',',');
   elseif($this->locale=='de_DE')
     return number_format($number,2,',','.').'€';
   elseif($this->locale=='fr_FR')

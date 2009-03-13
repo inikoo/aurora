@@ -8,18 +8,18 @@
 <span class="nav2"><a href="suppliers.php">{t}Suppliers Index{/t}</a></span>
 <span class="nav2"><a href="porders.php">{t}Orders Index{/t}</a></span>
 
-<span class="nav2 onright" ><a href="supplier.php?id={$po.supplier_id}">&uarr; {$supplier.code}</a></span>
+<span class="nav2 onright" ><a href="supplier.php?id={$supplier->get('Supplier Key')}">&uarr; {$supplier->get('Supplier Code')}</a></span>
 
 
 <div >
 
 <div style="padding:0px;float:right;width:350px;margin:0px 20px;text-align:right;xborder: 1px solid black">
   <table class="submit_order"  border=0>
-    <tr><td>{$po.dates.created}</td><td style="text-align:right">{t}Created{/t}</td></tr>
+    <tr><td>{$po->get('Purchase Order Creation Date')}</td><td style="text-align:right">{t}Created{/t}</td></tr>
 
-    <tr id="submit_ready" {if $po.date_submited==''}style="display:none"{/if}  ><td id="submit_date">{$po.dates.submited}</td><td class="aright">{t}Submited{/t}</td></tr>
+    <tr id="submit_ready" {if $po->get('Purchase Order Submited Date')==''}style="display:none"{/if}  ><td id="submit_date">{$po->get('Purchase Order Submited Date')}</td><td class="aright">{t}Submited{/t}</td></tr>
     
-    <tr id="submit_noready" {if !$po.date_submited=='' or $po.status_id>=80}style="display:none"{/if} ><td></td><td id="submit_po" onClick="submit_order(this)" class="but">{t}Submit{/t}</td></tr>
+    <tr id="submit_noready" {if  !$po->get('Purchase Order Submited Date')}style="display:none"{/if} ><td></td><td id="submit_po" onClick="submit_order(this)" class="but">{t}Submit{/t}</td></tr>
    
     <tr id="submit_dialog" style="display:none"><td colspan=2>
 	<table >
@@ -30,11 +30,11 @@
 	</table>
     </td></tr>
 
-    <tr id="expected_ready" {if $po.date_expected=='' or $po.date_received!=''  }style="display:none"{/if}   ><td id="expected_date" >{$po.dates.expected}</td><td  style="text-align:right">{t}Expected{/t}</td></tr>
+    <tr id="expected_ready" {if $po->get('Purchase Order Estimated Receiving Date')=='' }style="display:none"{/if}   ><td id="expected_date" >{$po->get('Purchase Order Estimated Receiving Date')}</td><td  style="text-align:right">{t}Expected{/t}</td></tr>
    
 
-    <tr  id="expected_noready"     {if $po.date_submited=='' or $po.date_expected!='' or $po.status_id>=80}style="display:none"{/if}    ><td></td><td id="set_estimated_po" class="but" onClick="change_et_order(this)">{t}Set ET{/t}</td></tr>
-    <tr  id="expected_change"     {if $po.date_submited==''  or $po.date_expected=='' or $po.status_id>=80}style="display:none"{/if}    ><td></td><td id="change_edtimated_po" class="but" onClick="change_et_order(this)">{t}Change ET{/t}</td></tr>
+    <tr  id="expected_noready"     {if $po->get('Purchase Order Submited Date')=='' or $po->get('Purchase Order Estimated Receiving Date')!=''}style="display:none"{/if}    ><td></td><td id="set_estimated_po" class="but" onClick="change_et_order(this)">{t}Set ET{/t}</td></tr>
+    <tr  id="expected_change"     {if  $po->get('Purchase Order Submited Date')=='' or $po->get('Purchase Order Estimated Receiving Date')==''}style="display:none"{/if}    ><td></td><td id="change_edtimated_po" class="but" onClick="change_et_order(this)">{t}Change ET{/t}</td></tr>
      <tr id="expected_dialog" style="display:none;text-align:right"><td colspan=2>
 	<table  style="float:right">
 	  <tr><td>{t}Expected Date{/t}:</td><td><input id="v_calpop7" style="text-align:right;"  class="text" name="expected_date" type="text"  size="10" maxlength="10"     /><img   id="calpop7" style="cursor:pointer" src="art/icons/calendar_view_month.png" align="top" alt=""   /> <div id="cal7Container" style="display:none; z-index:2;position:absolute"></div>	</td></tr>
@@ -43,9 +43,9 @@
     </td></tr>
 
 
-    <tr  id="receive_ready"  {if $po.date_received==''}style="display:none"{/if}    ><td   id="receive_date"   >{$po.dates.received}</td><td style="text-align:right">{t}Received{/t}</td></tr>
+    <tr  id="receive_ready"  {if $po->get('Purchase Order Received Date')==''}style="display:none"{/if}    ><td   id="receive_date"   >{$po->get('Purchase Order Received Date')}</td><td style="text-align:right">{t}Received{/t}</td></tr>
 
-    <tr  id="receive_noready"  {if $po.date_received!=''}style="display:none"{/if}     ><td></td><td id="receive_po" class="but" onClick="receive_order(this)"  >{t}Receive{/t}</td></tr>
+    <tr  id="receive_noready"  {if $po->get('Purchase Order Received Date')!=''}style="display:none"{/if}     ><td></td><td id="receive_po" class="but" onClick="receive_order(this)"  >{t}Receive{/t}</td></tr>
 
 
      <tr id="receive_dialog" style="display:none;text-align:right"><td colspan=2>
@@ -58,9 +58,9 @@
 	</table>
     </td></tr>
 
-    <tr id="check_ready"  {if $po.date_checked==''}style="display:none"{/if}      ><td id="check_date"  >{$po.dates.checked}</td><td      style="text-align:right" >{t}Checked{/t}</td></tr>
+    <tr id="check_ready"  {if $po->get('Purchese Order Checked Date')==''}style="display:none"{/if}      ><td id="check_date"  >{$po->get('Purchese Order Checked Date')}</td><td      style="text-align:right" >{t}Checked{/t}</td></tr>
 
-    <tr id="check_noready"  {if $po.date_checked!='' or $po.status_id<80}style="display:none"{/if}    ><td></td><td id="receive_po" class="but"   onClick="check_order(this)"   >{t}Check{/t}</td></tr>
+    <tr id="check_noready"  {if $po->get('Purchese Order Checked Date')!='' }style="display:none"{/if}    ><td></td><td id="receive_po" class="but"   onClick="check_order(this)"   >{t}Check{/t}</td></tr>
 
      <tr id="check_dialog" style="display:none;text-align:right"><td colspan=2>
 	<table  style="float:right">
@@ -73,9 +73,9 @@
     </td></tr>
 
 
-    <tr id="consolidate_ready"  {if $po.date_consolidated==''}style="display:none"{/if}  ><td id="consolidate_date"  >{$po_dates.consolidated}</td><td>{t}Consolidated{/t}</td></tr>
+    <tr id="consolidate_ready"  {if $po->get('Purchese Order Consolidated Date')==''}style="display:none"{/if}  ><td id="consolidate_date"  >{$po->get('Purchese Order Consolidated Date')}</td><td>{t}Consolidated{/t}</td></tr>
 
-    <tr id="consolidate_noready"  {if $po.date_consolidated!='' or $po.status_id<90 }style="display:none"{/if}   ><td></td><td id="receive_po" class="but" onClick="consolidate_order(this)"   >{t}Consolidate{/t}</td></tr>
+    <tr id="consolidate_noready"  {if $po->get('Purchese Order Consolidated Date')!='' }style="display:none"{/if}   ><td></td><td id="receive_po" class="but" onClick="consolidate_order(this)"   >{t}Consolidate{/t}</td></tr>
 
      <tr id="consolidate_dialog" style="display:none;text-align:right"><td colspan=2>
 	<table  style="float:right">
@@ -85,10 +85,10 @@
 	    <tr><td colspan=2 class="aright"><span style="cursor:pointer;margin-right:2px"  onClick="consolidate_order_save(this)"  >{t}Save{/t} <img   src="art/icons/disk.png" align="top" alt=""   /></span></td></tr>
 	</table>
     </td></tr>
-    {if $po.cancelled!=''}
-    <tr><td>{$po_dates.cancelled}</td><td>{t}Cancelled{/t}</td></tr>
+    {if $po->get('Purchase Order Current Dispatch State')=='Cancelled'}
+    <tr><td>{$po->get('Purchese Order Consolidated Date')}</td><td>{t}Cancelled{/t}</td></tr>
     {else}
-    <tr {if $po.status_id>=80}style="display:none"{/if}  id="cancel_noready" ><td></td><td id="cancel_po" class="but" onClick="cancel_order(this)"   >{t}Cancel{/t}</td></tr>
+    <tr {if true}style="display:none"{/if}  id="cancel_noready" ><td></td><td id="cancel_po" class="but" onClick="cancel_order(this)"   >{t}Cancel{/t}</td></tr>
     {/if}
       <tr id="cancel_dialog" style="display:none;text-align:right"><td colspan=2>
 	<table  style="float:right">
@@ -106,28 +106,28 @@
 
 <div class="prodinfo" style="margin-left:20px;width:550px;margin-top:25px;xborder:1px solid black;font-size:85%">
  <table  border=1 style="float:right">
-    <tr><td>{t}Goods{/t}:</td><td id="goods" class="aright">{$po.money.goods}</td></tr>
-    <tr><td>{t}Shipping{/t}:</td><td class="aright" id="shipping"  >{$po.money.shipping}</td></tr>
-    <tr> <tr><td>{t}Vat{/t}:</td><td id="vat" class="aright"   >{$po.money.vat}</td></tr>
+    <tr><td>{t}Goods{/t}:</td><td id="goods" class="aright">{$po->get('Purchase Order Net Items Amount')}</td></tr>
+    <tr><td>{t}Shipping{/t}:</td><td class="aright" id="shipping"  >{$po->get('Purchase Order Net Shipping Amount')}</td></tr>
+    <tr> <tr><td>{t}Vat{/t}:</td><td id="vat" class="aright"   >{$po->get('Purchase Order Total Tax Amount')}</td></tr>
     <tr id="other_charge"  {if $n_value_other==0}style="display:none"{/if} ><td >{t}Other{/t}:</td><td class="aright"  id="other"  >{$value_other}</td>
     </tr>
     <tr  {if $n_value_dif==0}style="display:none"{/if}  ><td>{t}Diff{/t}:</td><td class="stock aright" style="background:red">{$value_dif}</td></tr>
     <tr>
-      <td>{t}Total{/t}</td><td id="total" class="stock aright ">{$po.money.total}</td>
+      <td>{t}Total{/t}</td><td id="total" class="stock aright ">{$po->get('Purchase Order Total Amount')}</td>
     </tr>
     
   </table>
 
   <h1 style="padding:0px 0 10px 0;width:300px;xborder:1px solid red" id="po_title">{$title}</h1>
   <table border=1 style="float:left">
-    <tr><td>{t}Purchase Order Id{/t}:</td><td class="aright">{$po.id}</td></tr>
+    <tr><td>{t}Purchase Order Id{/t}:</td><td class="aright">{$po->get('Purchase Order Public ID')}</td></tr>
     <tr {if $dn_number==''}style="display:none"{/if} id="row_public_id" ><td>{t}Invoice Number{/t}:</td><td id="public_id" class="aright">{$dn_number}</td><td class="aright" id="edit_public_id" style="display:none" ><input style="text-align:right" class="text" size="7"  id="v_invoice_number"  name="invoice_number" value="{$dn_number}"  /></td></tr>
     <tr {if $tipo lt 1}style="display:none"{/if}  id="row_invoice_date"><td>{t}Invoice Date{/t}:</td><td id="invoice_date" >{$po_date_invoice}</td>
       <td class="aright" id="edit_invoice_date" style="display:none" >
 	<input style="text-align:right" class="date_input" size="8" type="text"  id="v_invoice_date"  value="{$v_po_date_invoice}" name="invoice_date" />
     </td></tr>
     <tr {if $tipo!=2}style="display:none"{/if} id="row_date_received" >
-      <td>{t}Time Received{/t}:</td><td id="date_received" >{$po_datetime_received}</td>
+      <td>{t}Time Received{/t}:</td><td id="date_received" >{$po->get('Purchase Order Received Date')}</td>
       <td class="aright" id="edit_date_received" style="display:none" >
 	<input  type="text" class="date_input" size="8"  id="v_date_received"  value="{$v_po_date_received}"  name="date_received"  />
 	<input  type="text" class="time_input" size="3"  name="time_received" id="v_time_received"  value="{$v_po_time_received}"  />
@@ -156,39 +156,41 @@
 	</select>
       </td>
     </tr>
-    
-    <tr><td>{t}Items{/t}:</td><td class="aright" id="distinct_products">{$po.items}</td></tr>
+
+    <tr><td>{t}Items{/t}:</td><td class="aright" id="distinct_products">{$po->get('Purchase Order Distinct Items')}</td></tr>
   </table>
+
   <div style="clear:left" id="match_invoice">
     <span class="but" style="margin-left:10px" onClick="match_invoice_open()">{t}Match to Invoice{/t}</span>
   </div>
+
   <table  class="edit"   style="clear:left;display:none" id="match_invoice_dialog">
     <tr ><td style="text-align:left"><span class="but" style="text-align:left" onClick="match_invoice_close()">Close</span></td>
       <td><span  id="match_invoice_save"  style="cursor:pointer;display:none" onClick="match_invoice_save()">Save <img src="art/icons/disk.png" /></span></td></tr>
     <tr class="top">
       <td><span id="changed_invoice_number" class="changed" style="visibility:hidden;">*</span><img id="error_invoice_number" title="" style="visibility:hidden" src="art/icons/exclamation.png"/> {t}Invoice Number{/t}</td>
-      <td><input onChange="changed(this)" style="width:7em" id="v_invoice_number" name="invoice_number" ovalue="{$po.public_id}" value="{$po.public_id}"></td></tr>
+      <td><input onChange="changed(this)" style="width:7em" id="v_invoice_number" name="invoice_number" ovalue="{$po->get('Purchase Order Public ID')}" value="{$po->get('Purchase Order Public ID')}"></td></tr>
     <tr>
       <td><span id="changed_order_reference"  class="changed" style="visibility:hidden;">*</span><img id="error_order_reference" title="" style="visibility:hidden" src="art/icons/exclamation.png"/>{t}Order Reference{/t}</td>
-      <td><input onChange="changed(this)" style="width:7em"  name="order_reference" id="v_order_reference" ovalue="{$po.reference}" value="{$po.reference}"></td>
+      <td><input onChange="changed(this)" style="width:7em"  name="order_reference" id="v_order_reference" ovalue="{$po->get('Purchase Order Reference')}" value="{$po->get('Purchase Order Reference')}"></td>
     </tr>
-    <tr><td>{t}Invoice Date{/t}</td><td><input id="v_invoice_date" style="width:6.5em" value="{$po.date_invoice}"  size="10" maxlength="10" > <img   id="calpop6" style="cursor:pointer" src="art/icons/calendar_view_month.png" align="top" alt="" /><div id="cal6Container" style="position:absolute;display:none; z-index:2"></td></tr>
+    <tr><td>{t}Invoice Date{/t}</td><td><input id="v_invoice_date" style="width:6.5em" value="{$po->get('Purchase Order Invoice Date')}"  size="10" maxlength="10" > <img   id="calpop6" style="cursor:pointer" src="art/icons/calendar_view_month.png" align="top" alt="" /><div id="cal6Container" style="position:absolute;display:none; z-index:2"></td></tr>
 
     <tr class="top">
       <td>{t}Goods Value{/t}</td>
-      <td>{$currency}<span id="v_goods">{$po.number.goods}</span></td>
+      <td>{$currency}<span id="v_goods">{$po->get('Purchase Order Net Items Amount')}</span></td>
     </tr>
     <tr>
       <td><span id="changed_shipping" class="changed" style="visibility:hidden;">*</span><img id="error_shipping" title="" style="visibility:hidden" src="art/icons/exclamation.png"/> {t}Shipping Value{/t}</td>
-      <td>{$currency}<input style="width:6em" onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thosusand_sep}',2);changed(this)"  id="v_shipping" name="shipping" value="{$po.number.shipping}" ovalue="{$po.number.shipping}">
+      <td>{$currency}<input style="width:6em" onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thosusand_sep}',2);changed(this)"  id="v_shipping" name="shipping" value="{$po->get('Purchase Order Shipping Amount')}" ovalue="{$po->get('Purchase Order Shipping Amount')}">
     </td>
     </tr>
     <tr><td><span id="changed_charges" class="changed" style="visibility:hidden;">*</span><img id="error_charges" title="" style="visibility:hidden" src="art/icons/exclamation.png"/> {t}Charges Value{/t}</td>
-      <td>{$currency}<input  style="width:6em" onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thosusand_sep}',2);changed(this)" id="v_charges" name="charges"  ovalue="{$po.number.charges}"  value="{$po.number.charges}"></td></tr>
-    <tr><td><span id="changed_diff" class="changed" style="visibility:hidden;">*</span><img id="error_diff" title="" style="visibility:hidden" src="art/icons/exclamation.png"/> {t}Balance{/t}</td><td>{$currency}<input  style="width:6em" onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thosusand_sep}',2);changed(this)" id="v_diff" name="diff" ovalue="{$po.number.diff}" value="{$po.number.diff}"></td></tr>
+      <td>{$currency}<input  style="width:6em" onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thosusand_sep}',2);changed(this)" id="v_charges" name="charges"  ovalue="{$po->get('Purchase Order Charges Amount')}"  value="{$po->get('Purchase Order Net Charges Amount')}"></td></tr>
+    <tr><td><span id="changed_diff" class="changed" style="visibility:hidden;">*</span><img id="error_diff" title="" style="visibility:hidden" src="art/icons/exclamation.png"/> {t}Balance{/t}</td><td>{$currency}<input  style="width:6em" onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thosusand_sep}',2);changed(this)" id="v_diff" name="diff" ovalue="{$po->get('Purchase Order Net Adjust Amount')}" value="{$po->get('Purchase Order Net Adjust Amount')}"></td></tr>
 
-    <tr><td><span id="changed_vat" class="changed" style="visibility:hidden;">*</span><img id="error_vat" title="" style="visibility:hidden" src="art/icons/exclamation.png"/> {t}Vat Value{/t}</td><td>{$currency}<input  style="width:6em" onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thosusand_sep}',2);changed(this)"  id="v_vat" name="vat" ovalue="{$po.number.vat}" value="{$po.number.vat}"></td></tr>
-    <tr><td>{t}Total{/t}</td><td>{$currency}<span id="v_total">{$po.number.total}</span></td></tr>
+    <tr><td><span id="changed_vat" class="changed" style="visibility:hidden;">*</span><img id="error_vat" title="" style="visibility:hidden" src="art/icons/exclamation.png"/> {t}Vat Value{/t}</td><td>{$currency}<input  style="width:6em" onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thosusand_sep}',2);changed(this)"  id="v_vat" name="vat" ovalue="{$po->get('Purchase Order Total Amount')}" value="{$po->get('Purchase Order Total Tax Amount')}"></td></tr>
+    <tr><td>{t}Total{/t}</td><td>{$currency}<span id="v_total">{$po->get('Purchase Order Total Amount')}</span></td></tr>
 
 
   </table>
@@ -203,6 +205,7 @@
 
 </div>
 <div style="clear:both"></div>
+
 </div>
 
 
@@ -215,7 +218,7 @@
   <span onClick="swap_item_found(this)" style="display:none" id="show_found"  class="but">Add Product Found in Delivery</span>
   <span onClick="swap_new_item_found(this)" style="display:none" id="show_new_found"  class="but">Undentificated Product Found in Delivery</span>
 
-  
+
   <div  class="clean_table_caption"  style="clear:both;">
     <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
     <div class="clean_table_filter" {if !$show_all}style="visibility:hidden"{/if} id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0">{t}Product Code{/t}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value}" size=10/><div id='f_container'></div></div></div>

@@ -1,5 +1,9 @@
 <?
+set_include_path(get_include_path() . PATH_SEPARATOR . $path);
 
+$path_to_liveuser_dir = '/usr/share/php/'.PATH_SEPARATOR;
+
+ini_set('include_path', $path_to_liveuser_dir.ini_get('include_path'));
 
 error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
 include_once('../../app_files/db/dns.php');
@@ -45,7 +49,7 @@ $correct_partner=true;
 $force_update=false;
 
 
-$orders_array_full_path = glob("/mnt/*/Orders/7*.xls");
+$orders_array_full_path = glob("/mnt/*/Orders/8*.xls");
 $orders_array_full_path=array_reverse($orders_array_full_path);
 
 
@@ -76,7 +80,7 @@ foreach($orders_array as $order_index=>$order){
 
 
 foreach($orders_array as $order_index=>$order){
-  if(preg_match('/^\d{4,5}r$|^\d{4,5}ref$|^\d{4,5}\s?refund$|^\d{4,5}rr$|^\d{4,5}ra$|^\d{4,5}r2$|^\d{4,5}\-2ref$|^\d{5}rpl$|^\d{5}sh$|^\d{5}rfn$/i',$order)){
+  if(preg_match('/^\d{4,5}r$|^\d{4,5}ref$|^\d{4,5}\s?refund$|^\d{4,5}rr$|^\d{4,5}ra$|^\d{4,5}r2$|^\d{4,5}\-2ref$|^\d{5}rpl$|^\d{5}sht?$|^\d{5}rfn$/i',$order)){
      $good_files[]=$orders_array_full_path[$order_index];
     $good_files_number[]=$order;
   }

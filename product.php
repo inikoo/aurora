@@ -73,9 +73,11 @@ $product->load('part_location_list');
 
 
 $smarty->assign('product',$product);
-$num_links=$product->get('num_links');
-$smarty->assign('num_links',$num_links);
-$smarty->assign('fnum_links',number($num_links).' '.ngettext($num_links,'link','links'));
+$smarty->assign('product_id',$product->get('Product Most Recent Key'));
+
+//$num_links=$product->get('num_links');
+//$smarty->assign('num_links',$num_links);
+//$smarty->assign('fnum_links',number($num_links).' '.ngettext($num_links,'link','links'));
 //print_r($product->data);
 $smarty->assign('data',$product->data);
 

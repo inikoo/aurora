@@ -165,7 +165,8 @@ $default_state=array(
 		     
 		      'orders'=>array(
 				      'details'=>false,
-				      'view'=>'all',
+				      'view'=>'orders',
+				      'only'=>'',
 				      'from'=>'',
 				      'to'=>'',	  
 				      'table'=>array(
@@ -179,8 +180,36 @@ $default_state=array(
 						     'from'=>'',
 						     'to'=>'',
 						     'elements'=>array()
-						   )
+						     ),
+				      'invoices'=>array(
+						     'order'=>'date',
+						     'order_dir'=>'',
+						     'sf'=>0,
+						     'nr'=>25,
+						     'where'=>'where true',
+						     'f_field'=>'order',
+						     'f_value'=>'',
+						     'from'=>'',
+						     'to'=>'',
+						     'elements'=>array()
+							),
+				      'dns'=>array(
+						     'order'=>'date',
+						     'order_dir'=>'',
+						     'sf'=>0,
+						     'nr'=>25,
+						     'where'=>'where true',
+						     'f_field'=>'order',
+						     'f_value'=>'',
+						     'from'=>'',
+						     'to'=>'',
+						     'elements'=>array()
+						     )
+
 				    ),
+
+
+
 		     'products'=>array(
 				       'details'=>false,
 				       'percentages'=>false,

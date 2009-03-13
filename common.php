@@ -3,6 +3,10 @@ define('DEBUG', 1);
 $path = 'common';
 set_include_path(get_include_path() . PATH_SEPARATOR . $path);
 
+$path_to_liveuser_dir = '/usr/share/php/'.PATH_SEPARATOR;
+
+ini_set('include_path', $path_to_liveuser_dir.ini_get('include_path'));
+
 
 require_once 'app_files/db/dns.php';         // DB connecton configuration file
 require_once 'MDB2.php';            // PEAR Database Abstraction Layer
@@ -47,7 +51,7 @@ require_once 'myconf/conf.php';            // Configuration file _______________
 $session = new dbsession($myconf['max_session_time'],1,100);
 
 
-require('/usr/share/php/smarty/Smarty.class.php');
+require('external_libs/Smarty/Smarty.class.php');
 $smarty = new Smarty();
 
 $smarty->template_dir = $myconf['template_dir'];

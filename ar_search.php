@@ -27,7 +27,7 @@ switch($tipo){
    $target='product.php';
 
   $q=$_REQUEST['q'];
-   $sql=sprintf("select id from product where code='%s' ",addslashes($q));
+   $sql=sprintf("select `Product Most Recent Key` as id from `Product Dimension` where `Product Code`='%s' ",addslashes($q));
    $result =& $db->query($sql);
    if($found=$result->fetchRow()){
      $url=$target.'?id='. $found['id'];
@@ -36,7 +36,7 @@ switch($tipo){
    }
    
    if($tipo=='product'){
-   $sql=sprintf("select id from product_group where name='%s' ",addslashes($q));
+   $sql=sprintf("select `Product Family Key` as id  from `Product Family Dimension` where `Product Family Code`='%s' ",addslashes($q));
    $result =& $db->query($sql);
    if($found=$result->fetchRow()){
      $url='family.php?id='. $found['id'];
@@ -47,7 +47,7 @@ switch($tipo){
    // try to get similar results 
    //   if($myconf['product_code_separator']!=''){
    if(  ($myconf['product_code_separator']!='' and   preg_match('/'.$myconf['product_code_separator'].'/',$q)) or  $myconf['product_code_separator']==''  ){
-     $sql=sprintf("select levenshtein(UPPER(%s),UPPER(code)) as dist1,    levenshtein(UPPER(SOUNDEX(%s)),UPPER(SOUNDEX(code))) as dist2,        code,id from product  order by dist1,dist2 limit 1;",prepare_mysql($q),prepare_mysql($q));
+     $sql=sprintf("select levenshtein(UPPER(%s),UPPER(`Product Code`)) as dist1,    levenshtein(UPPER(SOUNDEX(%s)),UPPER(SOUNDEX(`Product Code`))) as dist2,        `Product Code` as code,`Product Most Recent Key` as id from `Product Dimension`  order by dist1,dist2 limit 1;",prepare_mysql($q),prepare_mysql($q));
      $result =& $db->query($sql);
      if($found=$result->fetchRow()){
        if($found['dist1']<3){
@@ -59,7 +59,7 @@ switch($tipo){
      
    }elseif($tipo=='product'){
      // look on the family list
-     $sql=sprintf("select levenshtein(UPPER(%s),UPPER(name)) as dist1,    levenshtein(UPPER(SOUNDEX(%s)),UPPER(SOUNDEX(name))) as dist2, name ,id from product_group  order by dist1,dist2 limit 1;",prepare_mysql($q),prepare_mysql($q));
+     $sql=sprintf("select levenshtein(UPPER(%s),UPPER(`Product Family Code`)) as dist1,    levenshtein(UPPER(SOUNDEX(%s)),UPPER(SOUNDEX(`Product Family Code`))) as dist2, `Product Family Code` as name ,`Product Family Key` id from `Product Family Dimension`  order by dist1,dist2 limit 1;",prepare_mysql($q),prepare_mysql($q));
      $result =& $db->query($sql);
      if($found=$result->fetchRow()){
        if($found['dist1']<3){
