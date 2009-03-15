@@ -486,12 +486,13 @@ $default_state=array(
 							  'max_sigma'=>false
 							  
 							  ),
-				       'id'=>1,
+				       'mode'=>'key',
+				       'tag'=>1,
 				       'edit'=>'description',
 				       'display'=>array('details'=>0,'plot'=>1,'orders'=>0,'customers'=>0,'stock_history'=>0),
 
 				       'orders'=>array(
-						       'order'=>'last_date',
+						       'order'=>'date',
 						       'order_dir'=>'',
 						       'sf'=>0,
 						       'nr'=>15,
@@ -502,8 +503,8 @@ $default_state=array(
 						       'to'=>''
 						       ),
 				       'customers'=>array(
-							  'order'=>'customer_name',
-							  'order_dir'=>'',
+							  'order'=>'dispached',
+							  'order_dir'=>'desc',
 							  'sf'=>0,
 							  'nr'=>15,
 							  'where'=>'where true',
@@ -537,7 +538,19 @@ $default_state=array(
 
 				       'stock_history'=>array(
 							      'order'=>'date',
-							      'order_dir'=>'',
+							      'order_dir'=>'desc',
+							      'sf'=>0,
+							      'nr'=>15,
+							      'where'=>'where true',
+							      'f_field'=>'id',
+							      'f_value'=>'',
+							      'from'=>'',
+							      'to'=>'',
+							      'elements'=>array()
+							      ),
+				       'stock_transaction'=>array(
+							      'order'=>'date',
+							      'order_dir'=>'desc',
 							      'sf'=>0,
 							      'nr'=>15,
 							      'where'=>'where true',
@@ -547,6 +560,7 @@ $default_state=array(
 							      'to'=>'',
 							      'elements'=>array()
 							      )
+
 				       ),
 
 

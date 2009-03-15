@@ -1855,7 +1855,23 @@ if(isset( $_REQUEST['where']))
  case('withproduct'):
 
    $conf=$_SESSION['state']['product']['orders'];
-   $product_id=$_SESSION['state']['product']['id'];
+
+
+ if(isset( $_REQUEST['code'])){
+     $tag=$_REQUEST['code'];
+     $mode='code';
+   }else if(isset( $_REQUEST['id'])){
+     $tag=$_REQUEST['id'];
+     $mode='id';
+   }else if(isset( $_REQUEST['key'])){
+     $tag=$_REQUEST['key'];
+     $mode='key';
+   }else{
+     $tag=$_SESSION['state']['product']['tag'];
+     $mode=$_SESSION['state']['product']['mode'];
+   }
+
+
 
  if(isset( $_REQUEST['sf']))
      $start_from=$_REQUEST['sf'];
@@ -1898,13 +1914,21 @@ if(isset( $_REQUEST['tableid']))
    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
    
 
-   $_SESSION['state']['product']['orders']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+   $_SESSION['state']['product']['orders']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value,'tag'=>$tag,'mode'=>$mode);
    $_order=$order;
    $_dir=$order_direction;
    $filter_msg='';
 
 
-   $where=sprintf(" where product_id=%d ",$product_id);
+  if($mode=='code')
+     $where=$where.sprintf(" and `Product Code`=%s ",prepare_mysql($tag));
+   elseif($mode=='id')
+     $where=$where.sprintf(" and `Product ID`=%d ",$tag);
+   elseif($mode=='key')
+     $where=$where.sprintf(" and PD.`Product Key`=%d ",$tag);
+
+
+
    $wheref="";
    if(isset($_REQUEST['f_field']) and isset($_REQUEST['f_value'])){
      if($_REQUEST['f_field']=='public_id' or $_REQUEST['f_field']=='customer'){
@@ -1916,63 +1940,77 @@ if(isset( $_REQUEST['tableid']))
   
 
 
-   $sql="select count(*) as total from transaction    $where $wheref";
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-   if($row=$res->fetchRow()) {
-     $total=$row['total'];
+   $sql="select count(*) as total from `Order Transaction Fact`   $where $wheref";
+   $res = mysql_query($sql);
+   if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+  $total=$row['total'];
    }
    if($wheref==''){
-     $filtered=0;
+     $filtered=0;  $total_records=$total;
    }else{
-     $sql="select count(*) as total from transaction $where      ";
-     $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-     if($row=$res->fetchRow()) {
-       $filtered=$row['total']-$total;
-     }
-     
+     $sql="select count(*) as total from `Order Transaction Fact`  $where      ";
+       $res = mysql_query($sql);
+       if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+	$total_records=$row['total'];
+	$filtered=$total_records-$total;
+       }
+       
    }
-   
 
-   $sql=sprintf("select o.id as id,public_id,dispached,UNIX_TIMESTAMP(o.date_index) as date_index,dispached-ordered as undispached,customer_id,customer_name,o.tipo from transaction as t left join orden as o on (order_id=o.id)  %s %s    order by $order $order_direction  limit $start_from,$number_results"
+ $rtext=$total_records." ".ngettext('order','orders',$total_records);
+  if($total_records>$number_results)
+    $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
+  $filter_msg='';
+
+
+   if($order=='date'){
+      $order='`Actual Shipping Date`';
+
+   }elseif($order=='dispached')
+      $order='`Shipped Quantity`';
+   elseif($order=='order'){
+     $order='';
+     $order_direction ='';
+
+  }
+   $sql=sprintf("select `Delivery Note XHTML Orders`,`Customer Name`,CD.`Customer Key`,`Delivery Note Date`,sum(`Shipped Quantity`) as dispached,sum(`No Shipped Due Out of Stock`+`No Shipped Due No Authorized`+`No Shipped Due Not Found`+`No Shipped Due Other`) as undispached  from     `Order Transaction Fact` OTF  left join   `Delivery Note Dimension` DND on (OTF.`Delivery Note Key`=DND.`Delivery Note Key`) left join `Customer Dimension` CD on (OTF.`Customer Key`=CD.`Customer Key`)   left join `Product Dimension` PD on (PD.`Product Key`=OTF.`Product Key`)     %s %s  and OTF.`Delivery Note Key`>0  group by OTF.`Delivery Note Key`  order by  $order $order_direction  limit $start_from,$number_results"
 		,$where
 		,$wheref
 		);
-   // print $sql;
 
-      $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   //    print "$sql";
+   $res=mysql_query($sql);
    $data=array();
-   while($row=$res->fetchRow()) {
+   while($row= mysql_fetch_array($res, MYSQL_ASSOC) ) {
      if($LU->checkRight(CUST_VIEW))
-       $customer='<a href="customer.php?id='.$row['customer_id'].'">'.$row['customer_name'].'</a>';
+       $customer='<a href="customer.php?id='.$row['Customer Key'].'">'.$row['Customer Name'].'</a>';
      else
-       $customer=$myconf['customer_id_prefix'].sprintf("%05d",$row['customer_id']);
+       $customer=$myconf['customer_id_prefix'].sprintf("%05d",$row['Customer Key']);
+     
+
+
      $data[]=array(
-		   'id'=>$row['id'],
-		   'public_id'=>$row['public_id'],
+		   'order'=>$row['Delivery Note XHTML Orders'],
 		   'customer_name'=>$customer,
-		   'date_index'=>$row['date_index'],
-		   'date'=> strftime("%A %e %B %Y", strtotime('@'.$row['date_index'])),
+		   'date'=> strftime("%e %b %y", strtotime($row['Delivery Note Date'])),
 		   'dispached'=>number($row['dispached']),
-		   'undispached'=>number($row['undispached']),
-		   'tipo'=>$_order_tipo[$row['tipo']]
+		   'undispached'=>number($row['undispached'])
+
 		   );
    }
-   if($total==0)
-     $rtext="This products has not been ordered yet";
-   elseif($total<$number_results)
-     $rtext=$total.' '.ngettext('record returned','records returned',$total);
-   else
-     $rtext='';
+
    $response=array('resultset'=>
 		   array('state'=>200,
+			 
 			 'data'=>$data,
+			 'rtext'=>$rtext,
 			 'sort_key'=>$_order,
 			 'sort_dir'=>$_dir,
 			 'tableid'=>$tableid,
 			 'filter_msg'=>$filter_msg,
 			 'total_records'=>$total,
 			 'records_offset'=>$start_from,
-			 'records_returned'=>$start_from+$res->numRows(),
+			 'records_returned'=>$start_from+$total,
 			 'records_perpage'=>$number_results,
 			 'records_text'=>$rtext,
 			 'records_order'=>$order,
@@ -1986,14 +2024,21 @@ if(isset( $_REQUEST['tableid']))
  case('withcustomerproduct'):
    if(!$LU->checkRight(CUST_VIEW))
      exit;
-
    $conf=$_SESSION['state']['product']['customers'];
-   $product_id=$_SESSION['state']['product']['id'];
-   
-   if(isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id']))
-     $product_id=$_REQUEST['id'];
-   else
-     $product_id=$_SESSION['state']['product']['id'];
+
+   if(isset( $_REQUEST['code'])){
+     $tag=$_REQUEST['code'];
+     $mode='code';
+   }else if(isset( $_REQUEST['id'])){
+     $tag=$_REQUEST['id'];
+     $mode='id';
+   }else if(isset( $_REQUEST['key'])){
+     $tag=$_REQUEST['key'];
+     $mode='key';
+   }else{
+     $tag=$_SESSION['state']['product']['tag'];
+     $mode=$_SESSION['state']['product']['mode'];
+   }
 
    if(isset( $_REQUEST['sf']))
      $start_from=$_REQUEST['sf'];
@@ -2030,19 +2075,20 @@ if(isset( $_REQUEST['tableid']))
     $tableid=$_REQUEST['tableid'];
   else
     $tableid=0;
-
-
-
-
    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-   
-
-  $_SESSION['state']['product']['custumers']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+   $_SESSION['state']['product']['custumers']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value,'tag'=>$tag,'mode'=>$mode);
    $_order=$order;
    $_dir=$order_direction;
    $filter_msg='';
 
-   $where=$where.sprintf(" and product_id=%d ",$product_id);
+   if($mode=='code')
+     $where=$where.sprintf(" and PD.`Product Code`=%s ",prepare_mysql($tag));
+   elseif($mode=='id')
+     $where=$where.sprintf(" and PD.`Product ID`=%d ",$tag);
+   elseif($mode=='key')
+     $where=$where.sprintf(" and PD.`Product Key`=%d ",$tag);
+
+
    $wheref="";
    
   if($f_field=='max' and is_numeric($f_value) )
@@ -2053,22 +2099,29 @@ if(isset( $_REQUEST['tableid']))
     $wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
 
 
-   $sql="select count(distinct customer_id) as total from  orden left join transaction on (order_id=orden.id)  $where $wheref";
-   //      print "$sql";
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-   if($row=$res->fetchRow()) {
-     $total=$row['total'];
+   $sql="select count(distinct `Customer Key`) as total from  `Order Transaction Fact` OTF left join `Product Dimension` PD on (PD.`Product Key`=OTF.`Product Key`)  $where $wheref";
+   //print $sql;
+   $res = mysql_query($sql);
+   if($row=mysql_fetch_array($res)) {
+       $total=$row['total'];
    }
    if($wheref==''){
      $filtered=0;
+      $total_records=$total;
    }else{
-     $sql="select count(distinct customer_id) as total from orden left join transaction on (order_id=orden.id) $where      ";
-     $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-     if($row=$res->fetchRow()) {
-       $filtered=$row['total']-$total;
+     $sql="select count(distinct `Customer Key`) as total from  `Order Transaction Fact` OTF left join `Product Dimension` PD on (PD.`Product Key`=OTF.`Product Key`)  $where      ";
+     $res = mysql_query($sql);
+     if($row=mysql_fetch_array($res)) {
+	$total_records=$row['total'];
+	$filtered=$total_records-$total;
      }
      
    }
+   $rtext=$total_records." ".ngettext('customer','customers',$total_records);
+   if($total_records>$number_results)
+     $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
+   
+
    $filter_msg='';
    if($total==0 and $filtered>0){
      switch($f_field){
@@ -2089,19 +2142,22 @@ if(isset( $_REQUEST['tableid']))
    $_order=$order;
    $_dir=$order_direction;
 
+   if($order=='customer')
+     $order='`Customer Name`';
 
 
-
-   $sql=sprintf("select count(distinct o.id) as orders ,customer.name as customer_name,o.tipo,customer_id, sum(if(o.tipo=2,charge,0)) as charged, sum(if(o.tipo=2,dispached,0)) as dispached, sum(if(o.tipo=2,(ordered-dispached),0)) as nodispached , sum(if(o.tipo=1,(ordered-dispached),0))  as todispach from orden as o  left join transaction on (order_id=o.id) left join customer on (customer.id=customer_id) $where $wheref  group by customer_id    order by $order $order_direction  limit $start_from,$number_results "
+   $sql=sprintf("select   CD.`Customer Key` as customer_id,`Customer Name`,`Customer Main Location`,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`-`Invoice Transaction Net Refund Amount`) as charged ,count(distinct `Order Key`) as orders ,sum(`Shipped Quantity`) as dispached,sum(`Current Manufacturing Quantity`+`Current On Shelf Quantity`+`Current On Box Quantity`) as todispach,sum(`No Shipped Due Out of Stock`+`No Shipped Due No Authorized`+`No Shipped Due Not Found`) as nodispached from     `Order Transaction Fact` OTF left join `Customer Dimension` CD on (OTF.`Customer Key`=CD.`Customer Key`)  left join `Product Dimension` PD on (PD.`Product Key`=OTF.`Product Key`)      $where $wheref  group by CD.`Customer Key`    order by $order $order_direction  limit $start_from,$number_results "
 		);
 
-   //     print "$sql\n";
-      $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   //      print "$sql\n";
    $data=array();
-   while($row=$res->fetchRow()) {
+   
+  $res = mysql_query($sql);
+   while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+
      $data[]=array(
-		   'customer_id'=>$row['customer_id'],
-		   'customer_name'=>$row['customer_name'],
+		   'customer'=>sprintf('<a href="customer.php?id=%d"><b>%s</b></a>, %s',$row['customer_id'],$row['Customer Name'],$row['Customer Main Location']),
 		   'charged'=>money($row['charged']),
 		   'orders'=>number($row['orders']),
 		   'todispach'=>number($row['todispach']),
@@ -2111,22 +2167,18 @@ if(isset( $_REQUEST['tableid']))
 		   );
    }
    
-   if($total==0)
-     $rtext=_('Nobody has ordered this product').'.';
-   elseif($total<$number_results)
-     $rtext=$total.' '.ngettext('customer','customers',$total);
-   else
-     $rtext='';
+
    $response=array('resultset'=>
 		   array('state'=>200,
 			 'data'=>$data,
 			 'sort_key'=>$_order,
+			 'rtext'=>$rtext,
 			 'sort_dir'=>$_dir,
 			 'tableid'=>$tableid,
 			 'filter_msg'=>$filter_msg,
 			 'total_records'=>$total,
 			 'records_offset'=>$start_from,
-			 'records_returned'=>$start_from+$res->numRows(),
+			 'records_returned'=>$start_from+$total,
 			 'records_perpage'=>$number_results,
 			 'records_text'=>$rtext,
 			 'records_order'=>$order,

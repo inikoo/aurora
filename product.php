@@ -60,15 +60,25 @@ $smarty->assign('display',$_SESSION['state']['product']['display']);
 
 // $smarty->assign('view_plot',$_SESSION['views']['product_plot']);
 
-if(!isset($_REQUEST['id']) and is_numeric($_REQUEST['id']))
-  $product_id=1;
-else
-  $product_id=$_REQUEST['id'];
-$_SESSION['state']['product']['id']=$product_id;
+if(isset($_REQUEST['code'])){
+  $mode='code';
+  $tag=$_REQUEST['code'];
+ }elseif(isset($_REQUEST['id'])){
+  $mode='id';
+  $tag=$_REQUEST['id'];
+ }elseif(isset($_REQUEST['key'])){
+  $mode='key';
+  $tag=$_REQUEST['key'];
+  }else{
+  $tag=$_SESSION['state']['product']['tag'];
+  $mode=$_SESSION['state']['product']['mode'];
 
+ }
+$_SESSION['state']['product']['tag']=$tag;
+$mode=$_SESSION['state']['product']['mode']=$mode;
 
-$product= new product($product_id);
-$product->group_by('code');
+$product= new product($mode,$tag);
+//$product->group_by('code');
 $product->load('part_location_list');
 
 
