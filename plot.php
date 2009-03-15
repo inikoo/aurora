@@ -20,35 +20,47 @@ $options='';
 switch($tipo){
  case('product_week_sales'):
 
- $product=new Product($_SESSION['state']['product']['id']);
- $product_id=$product->id;
- 
- if(isset($_REQUEST['months'])){
-   $months=$_REQUEST['months'];
-   $_SESSION['state']['product']['plot_data']['months']=$months;
+   $mode=$_SESSION['state']['product']['mode'];
+   $tag=$_SESSION['state']['product']['tag'];
+   $product=new Product($mode,$tag);
+   if(isset($_REQUEST['months'])){
+     $months=$_REQUEST['months'];
+     $_SESSION['state']['product']['plot_data']['months']=$months;
+     
+   }else
+     $months=$_SESSION['state']['product']['plot_data']['months'];
    
- }else
-   $months=$_SESSION['state']['product']['plot_data']['months'];
    
- 
- if(isset($_REQUEST['max_sigma'])){
-   $max_sigma=$_REQUEST['max_sigma'];
-   $_SESSION['state']['product']['plot_data']['max_sigma']=$max_sigma;
- }else
-   $max_sigma=$_SESSION['state']['product']['plot_data']['max_sigma'];
-       
- 
- if(is_numeric($months) and $months>0)
-   $first_day=date("Y-m-d",strtotime("- $months  month"));
- else
-     $first_day=$product->get('mysql_first_date');
+   if(isset($_REQUEST['max_sigma'])){
+     $max_sigma=$_REQUEST['max_sigma'];
+     $_SESSION['state']['product']['plot_data']['max_sigma']=$max_sigma;
+   }else
+     $max_sigma=$_SESSION['state']['product']['plot_data']['max_sigma'];
    
+   
+   if(is_numeric($months) and $months>0)
+     $first_day=date("Y-m-d",strtotime("- $months  month"));
+   else{
+     if($mode=='code')
+       $first_day=$product->get('Product Same Code Valid From');
+     elseif($mode=='id')
+       $first_day=$product->get('Product Same ID Valid From');
+     elseif($mode=='key')
+       $first_day=$product->get('Product Valid From');
+   }
+   $_SESSION['state']['product']['plot_data']['first_day'];
 
-   if($max_sigma)
-     $max=4*$product->get('awtsoall');
+   if($max_sigma){
+      if($mode=='code')
+	$max=4*$product->get('Product 1 Year Acc Invoiced Amount')/52;
+      elseif($mode=='id')
+	$max=4*$product->get('Product 1 Year Acc Invoiced Amount')/52;
+      elseif($mode=='key')
+	$max=4*$product->get('Product 1 Year Acc Invoiced Amount')/52;
 
+   }
 
-   $ar_address='ar_assets.php?tipo=plot_product_week_sales&product_id='.$product_id.'&first_day='.$first_day;
+   $ar_address='ar_plot.php?tipo=product_week_sales';
 
    $fields='"tip_asales","asales","date","profit","tip_profit"';
    $yfields=array(
@@ -61,7 +73,7 @@ switch($tipo){
    break;
  case('product_week_outers'):
    
-   $product=new Product($_SESSION['state']['product']['id']);
+   $product=new Product($_SESSION['state']['product']['mode'],$_SESSION['state']['product']['tag']);
    $product_id=$product->id;
 
    if(isset($_REQUEST['months'])){

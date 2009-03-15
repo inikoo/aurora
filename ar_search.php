@@ -27,10 +27,10 @@ switch($tipo){
    $target='product.php';
 
   $q=$_REQUEST['q'];
-   $sql=sprintf("select `Product Most Recent Key` as id from `Product Dimension` where `Product Code`='%s' ",addslashes($q));
-   $result =& $db->query($sql);
-   if($found=$result->fetchRow()){
-     $url=$target.'?id='. $found['id'];
+   $sql=sprintf("select `Product Code`  from `Product Dimension` where `Product Code`='%s' ",addslashes($q));
+    $res = mysql_query($sql);
+    if($found=mysql_fetch_array($res)) {
+     $url=$target.'?code='. $found['Product Code'];
      echo json_encode(array('state'=>200,'url'=>$url));
      break;
    }

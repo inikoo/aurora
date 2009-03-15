@@ -1774,14 +1774,11 @@ $y_days=count($y_days);
  break;
    case('sales'):
      $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Consolidated`='Yes' and `Product Key`=%d",$this->id);
-   
      $result=mysql_query($sql);
      if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-     
        $this->data['Product Total Invoiced Gross Amount']=$row['gross'];
        $this->data['Product Total Invoiced Discount Amount']=$row['disc'];
        $this->data['Product Total Invoiced Amount']=$row['gross']-$row['disc'];
-	      
        $this->data['Product Total Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
        $this->data['Product Total Quantity Ordered']=$row['ordered'];
        $this->data['Product Total Quantity Invoiced']=$row['invoiced'];
@@ -1794,14 +1791,8 @@ $y_days=count($y_days);
        $this->data['Product Total Quantity Ordered']=0;
        $this->data['Product Total Quantity Invoiced']=0;
        $this->data['Product Total Quantity Delivered']=0;
-
-
      }
-     // print "$sql\n";
-
-       // print $row['cost_sup']." ".$this->id."  \n";
-  
-     $sql=sprintf("update `Product Dimension` set `Product Total Invoiced Gross Amount`=%.2f,`Product Total Invoiced Discount Amount`=%.2f,`Product Total Invoiced Amount`=%.2f,`Product Total Profit`=%.2f, `Product Total Quantity Ordered`=%s , `Product Total Quantity Invoiced`=%s,`Product Total Quantity Delivered`=%s  where `Product Key`=%d "
+      $sql=sprintf("update `Product Dimension` set `Product Total Invoiced Gross Amount`=%.2f,`Product Total Invoiced Discount Amount`=%.2f,`Product Total Invoiced Amount`=%.2f,`Product Total Profit`=%.2f, `Product Total Quantity Ordered`=%s , `Product Total Quantity Invoiced`=%s,`Product Total Quantity Delivered`=%s  where `Product Key`=%d "
 		  ,$this->data['Product Total Invoiced Gross Amount']
 		  ,$this->data['Product Total Invoiced Discount Amount']
 		  ,$this->data['Product Total Invoiced Amount']
@@ -1812,10 +1803,86 @@ $y_days=count($y_days);
 		  ,prepare_mysql($this->data['Product Total Quantity Delivered'])
 		  ,$this->id
 		  );
-   
-     
      if(!mysql_query($sql))
        exit("$sql\ncan not update product sales\n");
+
+     
+       $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Consolidated`='Yes' and `Product ID`=%d",$this->data['Product ID']);
+     $result=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+       $this->data['Product Same ID Total Invoiced Gross Amount']=$row['gross'];
+       $this->data['Product Same ID Total Invoiced Discount Amount']=$row['disc'];
+       $this->data['Product Same ID Total Invoiced Amount']=$row['gross']-$row['disc'];
+       $this->data['Product Same ID Total Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
+       $this->data['Product Same ID Total Quantity Ordered']=$row['ordered'];
+       $this->data['Product Same ID Total Quantity Invoiced']=$row['invoiced'];
+       $this->data['Product Same ID Total Quantity Delivered']=$row['delivered'];
+     }else{
+       $this->data['Product Same ID Total Invoiced Gross Amount']=0;
+       $this->data['Product Same ID Total Invoiced Discount Amount']=0;
+       $this->data['Product Same ID Total Invoiced Amount']=0;
+       $this->data['Product Same ID Total Profit']=0;
+       $this->data['Product Same ID Total Quantity Ordered']=0;
+       $this->data['Product Same ID Total Quantity Invoiced']=0;
+       $this->data['Product Same ID Total Quantity Delivered']=0;
+     }
+
+ $sql=sprintf("update `Product Dimension` set `Product Same ID Total Invoiced Gross Amount`=%.2f,`Product Same ID Total Invoiced Discount Amount`=%.2f,`Product Same ID Total Invoiced Amount`=%.2f,`Product Same ID Total Profit`=%.2f, `Product Same ID Total Quantity Ordered`=%s , `Product Same ID Total Quantity Invoiced`=%s,`Product Same ID Total Quantity Delivered`=%s  where `Product Key`=%d "
+		  ,$this->data['Product Same ID Total Invoiced Gross Amount']
+		  ,$this->data['Product Same ID Total Invoiced Discount Amount']
+		  ,$this->data['Product Same ID Total Invoiced Amount']
+
+		  ,$this->data['Product Same ID Total Profit']
+		  ,prepare_mysql($this->data['Product Same ID Total Quantity Ordered'])
+		  ,prepare_mysql($this->data['Product Same ID Total Quantity Invoiced'])
+		  ,prepare_mysql($this->data['Product Same ID Total Quantity Delivered'])
+		  ,$this->id
+		  );
+     if(!mysql_query($sql))
+       exit("$sql\ncan not update product sales same id \n");
+
+
+
+     $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Consolidated`='Yes' and `Product ID`=%s",prepare_mysql($this->data['Product Code']));
+     $result=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+       $this->data['Product Same Code Total Invoiced Gross Amount']=$row['gross'];
+       $this->data['Product Same Code Total Invoiced Discount Amount']=$row['disc'];
+       $this->data['Product Same Code Total Invoiced Amount']=$row['gross']-$row['disc'];
+       $this->data['Product Same Code Total Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
+       $this->data['Product Same Code Total Quantity Ordered']=$row['ordered'];
+       $this->data['Product Same Code Total Quantity Invoiced']=$row['invoiced'];
+       $this->data['Product Same Code Total Quantity Delivered']=$row['delivered'];
+     }else{
+       $this->data['Product Same Code Total Invoiced Gross Amount']=0;
+       $this->data['Product Same Code Total Invoiced Discount Amount']=0;
+       $this->data['Product Same Code Total Invoiced Amount']=0;
+       $this->data['Product Same Code Total Profit']=0;
+       $this->data['Product Same Code Total Quantity Ordered']=0;
+       $this->data['Product Same Code Total Quantity Invoiced']=0;
+       $this->data['Product Same Code Total Quantity Delivered']=0;
+     }
+     
+  
+     $sql=sprintf("update `Product Dimension` set `Product Same Code Total Invoiced Gross Amount`=%.2f,`Product Same Code Total Invoiced Discount Amount`=%.2f,`Product Same Code Total Invoiced Amount`=%.2f,`Product Same Code Total Profit`=%.2f, `Product Same Code Total Quantity Ordered`=%s , `Product Same Code Total Quantity Invoiced`=%s,`Product Same Code Total Quantity Delivered`=%s  where `Product Key`=%d "
+		  ,$this->data['Product Same Code Total Invoiced Gross Amount']
+		  ,$this->data['Product Same Code Total Invoiced Discount Amount']
+		  ,$this->data['Product Same Code Total Invoiced Amount']
+
+		  ,$this->data['Product Same Code Total Profit']
+		  ,prepare_mysql($this->data['Product Same Code Total Quantity Ordered'])
+		  ,prepare_mysql($this->data['Product Same Code Total Quantity Invoiced'])
+		  ,prepare_mysql($this->data['Product Same Code Total Quantity Delivered'])
+		  ,$this->id
+		  );
+     if(!mysql_query($sql))
+       exit("$sql\ncan not update product sales same code\n");
+
+
+
+
+
+
      
      $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Key`=%d and `Invoice Date`>=%s ",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 1 year"))));
      //  print "$sql\n\n";
@@ -1851,6 +1918,94 @@ $y_days=count($y_days);
 		    );
        if(!mysql_query($sql))
 	 exit("$sql\ncan not update product sales 1 yr acc\n");
+
+
+
+  $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product ID`=%d and `Invoice Date`>=%s ",$this->data['Product ID'],prepare_mysql(date("Y-m-d",strtotime("- 1 year"))));
+     //  print "$sql\n\n";
+     $result=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+       
+       $this->data['Product Same ID 1 Year Acc Invoiced Gross Amount']=$row['gross'];
+       $this->data['Product Same ID 1 Year Acc Invoiced Discount Amount']=$row['disc'];
+       $this->data['Product Same ID 1 Year Acc Invoiced Amount']=$row['gross']-$row['disc'];
+
+       $this->data['Product Same ID 1 Year Acc Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
+       $this->data['Product Same ID 1 Year Acc Quantity Ordered']=$row['ordered'];
+       $this->data['Product Same ID 1 Year Acc Quantity Invoiced']=$row['invoiced'];
+       $this->data['Product Same ID 1 Year Acc Quantity Delivered']=$row['delivered'];
+     }else{
+	 $this->data['Product Same ID 1 Year Acc Invoiced Gross Amount']=0;
+	 $this->data['Product Same ID 1 Year Acc Invoiced Discount Amount']=0;
+	 $this->data['Product Same ID 1 Year Acc Profit']=0;$this->data['Product Same ID 1 Year Acc Invoiced Amount']=0;
+	 $this->data['Product Same ID 1 Year Acc Quantity Ordered']=0;
+	 $this->data['Product Same ID 1 Year Acc Quantity Invoiced']=0;
+	 $this->data['Product Same ID 1 Year Acc Quantity Delivered']=0;
+       }
+       
+       $sql=sprintf("update `Product Dimension` set `Product Same ID 1 Year Acc Invoiced Gross Amount`=%.2f,`Product Same ID 1 Year Acc Invoiced Discount Amount`=%.2f,`Product Same ID 1 Year Acc Invoiced Amount`=%.2f,`Product Same ID 1 Year Acc Profit`=%.2f, `Product Same ID 1 Year Acc Quantity Ordered`=%s , `Product Same ID 1 Year Acc Quantity Invoiced`=%s,`Product Same ID 1 Year Acc Quantity Delivered`=%s  where `Product Key`=%d "
+		    ,$this->data['Product Same ID 1 Year Acc Invoiced Gross Amount']
+		    ,$this->data['Product Same ID 1 Year Acc Invoiced Discount Amount']
+		    ,$this->data['Product Same ID 1 Year Acc Invoiced Amount']
+		    ,$this->data['Product Same ID 1 Year Acc Profit']
+		    ,prepare_mysql($this->data['Product Same ID 1 Year Acc Quantity Ordered'])
+		    ,prepare_mysql($this->data['Product Same ID 1 Year Acc Quantity Invoiced'])
+		  ,prepare_mysql($this->data['Product Same ID 1 Year Acc Quantity Delivered'])
+		    ,$this->id
+		    );
+       if(!mysql_query($sql))
+	 exit("$sql\ncan not update product sales 1 yr acc same id\n");
+
+
+
+
+       $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Code`=%s and `Invoice Date`>=%s ",prepare_mysql($this->data['Product ID']),prepare_mysql(date("Y-m-d",strtotime("- 1 year"))));
+     //  print "$sql\n\n";
+     $result=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+       
+       $this->data['Product Same Code 1 Year Acc Invoiced Gross Amount']=$row['gross'];
+       $this->data['Product Same Code 1 Year Acc Invoiced Discount Amount']=$row['disc'];
+       $this->data['Product Same Code 1 Year Acc Invoiced Amount']=$row['gross']-$row['disc'];
+
+       $this->data['Product Same Code 1 Year Acc Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
+       $this->data['Product Same Code 1 Year Acc Quantity Ordered']=$row['ordered'];
+       $this->data['Product Same Code 1 Year Acc Quantity Invoiced']=$row['invoiced'];
+       $this->data['Product Same Code 1 Year Acc Quantity Delivered']=$row['delivered'];
+     }else{
+	 $this->data['Product Same Code 1 Year Acc Invoiced Gross Amount']=0;
+	 $this->data['Product Same Code 1 Year Acc Invoiced Discount Amount']=0;
+	 $this->data['Product Same Code 1 Year Acc Profit']=0;$this->data['Product Same Code 1 Year Acc Invoiced Amount']=0;
+	 $this->data['Product Same Code 1 Year Acc Quantity Ordered']=0;
+	 $this->data['Product Same Code 1 Year Acc Quantity Invoiced']=0;
+	 $this->data['Product Same Code 1 Year Acc Quantity Delivered']=0;
+       }
+       
+       $sql=sprintf("update `Product Dimension` set `Product Same Code 1 Year Acc Invoiced Gross Amount`=%.2f,`Product Same Code 1 Year Acc Invoiced Discount Amount`=%.2f,`Product Same Code 1 Year Acc Invoiced Amount`=%.2f,`Product Same Code 1 Year Acc Profit`=%.2f, `Product Same Code 1 Year Acc Quantity Ordered`=%s , `Product Same Code 1 Year Acc Quantity Invoiced`=%s,`Product Same Code 1 Year Acc Quantity Delivered`=%s  where `Product Key`=%d "
+		    ,$this->data['Product Same Code 1 Year Acc Invoiced Gross Amount']
+		    ,$this->data['Product Same Code 1 Year Acc Invoiced Discount Amount']
+		    ,$this->data['Product Same Code 1 Year Acc Invoiced Amount']
+		    ,$this->data['Product Same Code 1 Year Acc Profit']
+		    ,prepare_mysql($this->data['Product Same Code 1 Year Acc Quantity Ordered'])
+		    ,prepare_mysql($this->data['Product Same Code 1 Year Acc Quantity Invoiced'])
+		  ,prepare_mysql($this->data['Product Same Code 1 Year Acc Quantity Delivered'])
+		    ,$this->id
+		    );
+       if(!mysql_query($sql))
+	 exit("$sql\ncan not update product sales 1 yr acc same code id\n");
+
+
+
+
+
+
+
+
+
+
+
+
+
        
        $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Key`=%d and `Invoice Date`>=%s ",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 3 month"))));
  //print "$sql\n\n";
@@ -1887,6 +2042,93 @@ $y_days=count($y_days);
        exit("$sql\ncan not update product sales 1 qtr acc\n");
      
 
+
+
+
+
+
+ $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product ID`=%d and `Invoice Date`>=%s ",$this->data['Product ID'],prepare_mysql(date("Y-m-d",strtotime("- 3 month"))));
+     //  print "$sql\n\n";
+     $result=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+       
+       $this->data['Product Same ID 1 Quarter Acc Invoiced Gross Amount']=$row['gross'];
+       $this->data['Product Same ID 1 Quarter Acc Invoiced Discount Amount']=$row['disc'];
+       $this->data['Product Same ID 1 Quarter Acc Invoiced Amount']=$row['gross']-$row['disc'];
+
+       $this->data['Product Same ID 1 Quarter Acc Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
+       $this->data['Product Same ID 1 Quarter Acc Quantity Ordered']=$row['ordered'];
+       $this->data['Product Same ID 1 Quarter Acc Quantity Invoiced']=$row['invoiced'];
+       $this->data['Product Same ID 1 Quarter Acc Quantity Delivered']=$row['delivered'];
+     }else{
+	 $this->data['Product Same ID 1 Quarter Acc Invoiced Gross Amount']=0;
+	 $this->data['Product Same ID 1 Quarter Acc Invoiced Discount Amount']=0;
+	 $this->data['Product Same ID 1 Quarter Acc Profit']=0;$this->data['Product Same ID 1 Quarter Acc Invoiced Amount']=0;
+	 $this->data['Product Same ID 1 Quarter Acc Quantity Ordered']=0;
+	 $this->data['Product Same ID 1 Quarter Acc Quantity Invoiced']=0;
+	 $this->data['Product Same ID 1 Quarter Acc Quantity Delivered']=0;
+       }
+       
+       $sql=sprintf("update `Product Dimension` set `Product Same ID 1 Quarter Acc Invoiced Gross Amount`=%.2f,`Product Same ID 1 Quarter Acc Invoiced Discount Amount`=%.2f,`Product Same ID 1 Quarter Acc Invoiced Amount`=%.2f,`Product Same ID 1 Quarter Acc Profit`=%.2f, `Product Same ID 1 Quarter Acc Quantity Ordered`=%s , `Product Same ID 1 Quarter Acc Quantity Invoiced`=%s,`Product Same ID 1 Quarter Acc Quantity Delivered`=%s  where `Product Key`=%d "
+		    ,$this->data['Product Same ID 1 Quarter Acc Invoiced Gross Amount']
+		    ,$this->data['Product Same ID 1 Quarter Acc Invoiced Discount Amount']
+		    ,$this->data['Product Same ID 1 Quarter Acc Invoiced Amount']
+		    ,$this->data['Product Same ID 1 Quarter Acc Profit']
+		    ,prepare_mysql($this->data['Product Same ID 1 Quarter Acc Quantity Ordered'])
+		    ,prepare_mysql($this->data['Product Same ID 1 Quarter Acc Quantity Invoiced'])
+		  ,prepare_mysql($this->data['Product Same ID 1 Quarter Acc Quantity Delivered'])
+		    ,$this->id
+		    );
+       if(!mysql_query($sql))
+	 exit("$sql\ncan not update product sales 1 yr acc same id\n");
+
+
+
+
+       $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Code`=%s and `Invoice Date`>=%s ",prepare_mysql($this->data['Product ID']),prepare_mysql(date("Y-m-d",strtotime("- 3 month"))));
+     //  print "$sql\n\n";
+     $result=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+       
+       $this->data['Product Same Code 1 Quarter Acc Invoiced Gross Amount']=$row['gross'];
+       $this->data['Product Same Code 1 Quarter Acc Invoiced Discount Amount']=$row['disc'];
+       $this->data['Product Same Code 1 Quarter Acc Invoiced Amount']=$row['gross']-$row['disc'];
+
+       $this->data['Product Same Code 1 Quarter Acc Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
+       $this->data['Product Same Code 1 Quarter Acc Quantity Ordered']=$row['ordered'];
+       $this->data['Product Same Code 1 Quarter Acc Quantity Invoiced']=$row['invoiced'];
+       $this->data['Product Same Code 1 Quarter Acc Quantity Delivered']=$row['delivered'];
+     }else{
+	 $this->data['Product Same Code 1 Quarter Acc Invoiced Gross Amount']=0;
+	 $this->data['Product Same Code 1 Quarter Acc Invoiced Discount Amount']=0;
+	 $this->data['Product Same Code 1 Quarter Acc Profit']=0;$this->data['Product Same Code 1 Quarter Acc Invoiced Amount']=0;
+	 $this->data['Product Same Code 1 Quarter Acc Quantity Ordered']=0;
+	 $this->data['Product Same Code 1 Quarter Acc Quantity Invoiced']=0;
+	 $this->data['Product Same Code 1 Quarter Acc Quantity Delivered']=0;
+       }
+       
+       $sql=sprintf("update `Product Dimension` set `Product Same Code 1 Quarter Acc Invoiced Gross Amount`=%.2f,`Product Same Code 1 Quarter Acc Invoiced Discount Amount`=%.2f,`Product Same Code 1 Quarter Acc Invoiced Amount`=%.2f,`Product Same Code 1 Quarter Acc Profit`=%.2f, `Product Same Code 1 Quarter Acc Quantity Ordered`=%s , `Product Same Code 1 Quarter Acc Quantity Invoiced`=%s,`Product Same Code 1 Quarter Acc Quantity Delivered`=%s  where `Product Key`=%d "
+		    ,$this->data['Product Same Code 1 Quarter Acc Invoiced Gross Amount']
+		    ,$this->data['Product Same Code 1 Quarter Acc Invoiced Discount Amount']
+		    ,$this->data['Product Same Code 1 Quarter Acc Invoiced Amount']
+		    ,$this->data['Product Same Code 1 Quarter Acc Profit']
+		    ,prepare_mysql($this->data['Product Same Code 1 Quarter Acc Quantity Ordered'])
+		    ,prepare_mysql($this->data['Product Same Code 1 Quarter Acc Quantity Invoiced'])
+		  ,prepare_mysql($this->data['Product Same Code 1 Quarter Acc Quantity Delivered'])
+		    ,$this->id
+		    );
+       if(!mysql_query($sql))
+	 exit("$sql\ncan not update product sales 1 yr acc same code id\n");
+
+
+
+
+
+
+
+
+
+
  $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Key`=%d and `Invoice Date`>=%s ",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 1 month"))));
  //    print "$sql\n\n";
      $result=mysql_query($sql);
@@ -1919,6 +2161,92 @@ $y_days=count($y_days);
      if(!mysql_query($sql))
        exit("$sql\ncan not update product sales 1 qtr acc\n");
      
+
+
+
+
+
+ $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product ID`=%d and `Invoice Date`>=%s ",$this->data['Product ID'],prepare_mysql(date("Y-m-d",strtotime("- 1 month"))));
+     //  print "$sql\n\n";
+     $result=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+       
+       $this->data['Product Same ID 1 Month Acc Invoiced Gross Amount']=$row['gross'];
+       $this->data['Product Same ID 1 Month Acc Invoiced Discount Amount']=$row['disc'];
+       $this->data['Product Same ID 1 Month Acc Invoiced Amount']=$row['gross']-$row['disc'];
+
+       $this->data['Product Same ID 1 Month Acc Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
+       $this->data['Product Same ID 1 Month Acc Quantity Ordered']=$row['ordered'];
+       $this->data['Product Same ID 1 Month Acc Quantity Invoiced']=$row['invoiced'];
+       $this->data['Product Same ID 1 Month Acc Quantity Delivered']=$row['delivered'];
+     }else{
+	 $this->data['Product Same ID 1 Month Acc Invoiced Gross Amount']=0;
+	 $this->data['Product Same ID 1 Month Acc Invoiced Discount Amount']=0;
+	 $this->data['Product Same ID 1 Month Acc Profit']=0;$this->data['Product Same ID 1 Month Acc Invoiced Amount']=0;
+	 $this->data['Product Same ID 1 Month Acc Quantity Ordered']=0;
+	 $this->data['Product Same ID 1 Month Acc Quantity Invoiced']=0;
+	 $this->data['Product Same ID 1 Month Acc Quantity Delivered']=0;
+       }
+       
+       $sql=sprintf("update `Product Dimension` set `Product Same ID 1 Month Acc Invoiced Gross Amount`=%.2f,`Product Same ID 1 Month Acc Invoiced Discount Amount`=%.2f,`Product Same ID 1 Month Acc Invoiced Amount`=%.2f,`Product Same ID 1 Month Acc Profit`=%.2f, `Product Same ID 1 Month Acc Quantity Ordered`=%s , `Product Same ID 1 Month Acc Quantity Invoiced`=%s,`Product Same ID 1 Month Acc Quantity Delivered`=%s  where `Product Key`=%d "
+		    ,$this->data['Product Same ID 1 Month Acc Invoiced Gross Amount']
+		    ,$this->data['Product Same ID 1 Month Acc Invoiced Discount Amount']
+		    ,$this->data['Product Same ID 1 Month Acc Invoiced Amount']
+		    ,$this->data['Product Same ID 1 Month Acc Profit']
+		    ,prepare_mysql($this->data['Product Same ID 1 Month Acc Quantity Ordered'])
+		    ,prepare_mysql($this->data['Product Same ID 1 Month Acc Quantity Invoiced'])
+		  ,prepare_mysql($this->data['Product Same ID 1 Month Acc Quantity Delivered'])
+		    ,$this->id
+		    );
+       if(!mysql_query($sql))
+	 exit("$sql\ncan not update product sales 1 yr acc same id\n");
+
+
+
+
+       $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Code`=%s and `Invoice Date`>=%s ",prepare_mysql($this->data['Product ID']),prepare_mysql(date("Y-m-d",strtotime("- 1 month"))));
+     //  print "$sql\n\n";
+     $result=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+       
+       $this->data['Product Same Code 1 Month Acc Invoiced Gross Amount']=$row['gross'];
+       $this->data['Product Same Code 1 Month Acc Invoiced Discount Amount']=$row['disc'];
+       $this->data['Product Same Code 1 Month Acc Invoiced Amount']=$row['gross']-$row['disc'];
+
+       $this->data['Product Same Code 1 Month Acc Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
+       $this->data['Product Same Code 1 Month Acc Quantity Ordered']=$row['ordered'];
+       $this->data['Product Same Code 1 Month Acc Quantity Invoiced']=$row['invoiced'];
+       $this->data['Product Same Code 1 Month Acc Quantity Delivered']=$row['delivered'];
+     }else{
+	 $this->data['Product Same Code 1 Month Acc Invoiced Gross Amount']=0;
+	 $this->data['Product Same Code 1 Month Acc Invoiced Discount Amount']=0;
+	 $this->data['Product Same Code 1 Month Acc Profit']=0;$this->data['Product Same Code 1 Month Acc Invoiced Amount']=0;
+	 $this->data['Product Same Code 1 Month Acc Quantity Ordered']=0;
+	 $this->data['Product Same Code 1 Month Acc Quantity Invoiced']=0;
+	 $this->data['Product Same Code 1 Month Acc Quantity Delivered']=0;
+       }
+       
+       $sql=sprintf("update `Product Dimension` set `Product Same Code 1 Month Acc Invoiced Gross Amount`=%.2f,`Product Same Code 1 Month Acc Invoiced Discount Amount`=%.2f,`Product Same Code 1 Month Acc Invoiced Amount`=%.2f,`Product Same Code 1 Month Acc Profit`=%.2f, `Product Same Code 1 Month Acc Quantity Ordered`=%s , `Product Same Code 1 Month Acc Quantity Invoiced`=%s,`Product Same Code 1 Month Acc Quantity Delivered`=%s  where `Product Key`=%d "
+		    ,$this->data['Product Same Code 1 Month Acc Invoiced Gross Amount']
+		    ,$this->data['Product Same Code 1 Month Acc Invoiced Discount Amount']
+		    ,$this->data['Product Same Code 1 Month Acc Invoiced Amount']
+		    ,$this->data['Product Same Code 1 Month Acc Profit']
+		    ,prepare_mysql($this->data['Product Same Code 1 Month Acc Quantity Ordered'])
+		    ,prepare_mysql($this->data['Product Same Code 1 Month Acc Quantity Invoiced'])
+		  ,prepare_mysql($this->data['Product Same Code 1 Month Acc Quantity Delivered'])
+		    ,$this->id
+		    );
+       if(!mysql_query($sql))
+	 exit("$sql\ncan not update product sales 1 yr acc same code id\n");
+
+
+
+
+
+
+
+
+
 
 
      $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Key`=%d and `Invoice Date`>=%s ",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 1 week"))));
@@ -1954,6 +2282,93 @@ $y_days=count($y_days);
      if(!mysql_query($sql))
        exit("$sql\ncan not update product sales 1 week acc\n");
      
+
+
+
+
+
+ $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product ID`=%d and `Invoice Date`>=%s ",$this->data['Product ID'],prepare_mysql(date("Y-m-d",strtotime("- 1 week"))));
+     //  print "$sql\n\n";
+     $result=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+       
+       $this->data['Product Same ID 1 Week Acc Invoiced Gross Amount']=$row['gross'];
+       $this->data['Product Same ID 1 Week Acc Invoiced Discount Amount']=$row['disc'];
+       $this->data['Product Same ID 1 Week Acc Invoiced Amount']=$row['gross']-$row['disc'];
+
+       $this->data['Product Same ID 1 Week Acc Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
+       $this->data['Product Same ID 1 Week Acc Quantity Ordered']=$row['ordered'];
+       $this->data['Product Same ID 1 Week Acc Quantity Invoiced']=$row['invoiced'];
+       $this->data['Product Same ID 1 Week Acc Quantity Delivered']=$row['delivered'];
+     }else{
+	 $this->data['Product Same ID 1 Week Acc Invoiced Gross Amount']=0;
+	 $this->data['Product Same ID 1 Week Acc Invoiced Discount Amount']=0;
+	 $this->data['Product Same ID 1 Week Acc Profit']=0;$this->data['Product Same ID 1 Week Acc Invoiced Amount']=0;
+	 $this->data['Product Same ID 1 Week Acc Quantity Ordered']=0;
+	 $this->data['Product Same ID 1 Week Acc Quantity Invoiced']=0;
+	 $this->data['Product Same ID 1 Week Acc Quantity Delivered']=0;
+       }
+       
+       $sql=sprintf("update `Product Dimension` set `Product Same ID 1 Week Acc Invoiced Gross Amount`=%.2f,`Product Same ID 1 Week Acc Invoiced Discount Amount`=%.2f,`Product Same ID 1 Week Acc Invoiced Amount`=%.2f,`Product Same ID 1 Week Acc Profit`=%.2f, `Product Same ID 1 Week Acc Quantity Ordered`=%s , `Product Same ID 1 Week Acc Quantity Invoiced`=%s,`Product Same ID 1 Week Acc Quantity Delivered`=%s  where `Product Key`=%d "
+		    ,$this->data['Product Same ID 1 Week Acc Invoiced Gross Amount']
+		    ,$this->data['Product Same ID 1 Week Acc Invoiced Discount Amount']
+		    ,$this->data['Product Same ID 1 Week Acc Invoiced Amount']
+		    ,$this->data['Product Same ID 1 Week Acc Profit']
+		    ,prepare_mysql($this->data['Product Same ID 1 Week Acc Quantity Ordered'])
+		    ,prepare_mysql($this->data['Product Same ID 1 Week Acc Quantity Invoiced'])
+		  ,prepare_mysql($this->data['Product Same ID 1 Week Acc Quantity Delivered'])
+		    ,$this->id
+		    );
+       if(!mysql_query($sql))
+	 exit("$sql\ncan not update product sales 1 yr acc same id\n");
+
+
+
+
+       $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Code`=%s and `Invoice Date`>=%s ",prepare_mysql($this->data['Product ID']),prepare_mysql(date("Y-m-d",strtotime("- 1 week"))));
+     //  print "$sql\n\n";
+     $result=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+       
+       $this->data['Product Same Code 1 Week Acc Invoiced Gross Amount']=$row['gross'];
+       $this->data['Product Same Code 1 Week Acc Invoiced Discount Amount']=$row['disc'];
+       $this->data['Product Same Code 1 Week Acc Invoiced Amount']=$row['gross']-$row['disc'];
+
+       $this->data['Product Same Code 1 Week Acc Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
+       $this->data['Product Same Code 1 Week Acc Quantity Ordered']=$row['ordered'];
+       $this->data['Product Same Code 1 Week Acc Quantity Invoiced']=$row['invoiced'];
+       $this->data['Product Same Code 1 Week Acc Quantity Delivered']=$row['delivered'];
+     }else{
+	 $this->data['Product Same Code 1 Week Acc Invoiced Gross Amount']=0;
+	 $this->data['Product Same Code 1 Week Acc Invoiced Discount Amount']=0;
+	 $this->data['Product Same Code 1 Week Acc Profit']=0;$this->data['Product Same Code 1 Week Acc Invoiced Amount']=0;
+	 $this->data['Product Same Code 1 Week Acc Quantity Ordered']=0;
+	 $this->data['Product Same Code 1 Week Acc Quantity Invoiced']=0;
+	 $this->data['Product Same Code 1 Week Acc Quantity Delivered']=0;
+       }
+       
+       $sql=sprintf("update `Product Dimension` set `Product Same Code 1 Week Acc Invoiced Gross Amount`=%.2f,`Product Same Code 1 Week Acc Invoiced Discount Amount`=%.2f,`Product Same Code 1 Week Acc Invoiced Amount`=%.2f,`Product Same Code 1 Week Acc Profit`=%.2f, `Product Same Code 1 Week Acc Quantity Ordered`=%s , `Product Same Code 1 Week Acc Quantity Invoiced`=%s,`Product Same Code 1 Week Acc Quantity Delivered`=%s  where `Product Key`=%d "
+		    ,$this->data['Product Same Code 1 Week Acc Invoiced Gross Amount']
+		    ,$this->data['Product Same Code 1 Week Acc Invoiced Discount Amount']
+		    ,$this->data['Product Same Code 1 Week Acc Invoiced Amount']
+		    ,$this->data['Product Same Code 1 Week Acc Profit']
+		    ,prepare_mysql($this->data['Product Same Code 1 Week Acc Quantity Ordered'])
+		    ,prepare_mysql($this->data['Product Same Code 1 Week Acc Quantity Invoiced'])
+		  ,prepare_mysql($this->data['Product Same Code 1 Week Acc Quantity Delivered'])
+		    ,$this->id
+		    );
+       if(!mysql_query($sql))
+	 exit("$sql\ncan not update product sales 1 yr acc same code id\n");
+
+
+
+
+
+
+
+
+
+
      
      break;
 

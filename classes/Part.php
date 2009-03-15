@@ -666,7 +666,7 @@ class part{
       $value_free=0;
       $margin=0;
       $sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(-`Inventory Transaction Quantity`),0) as qty, ifnull(sum(-`Inventory Transaction Amount`),0) as value from  `Inventory Transaction Fact` where `Part SKU`=%s and `Inventory Transaction Type`='Sale' and `Date`>=%s  and `Date`<=%s  and `Date`>=%s     ",prepare_mysql($this->data['Part SKU']),prepare_mysql($this->data['Part Valid From']),prepare_mysql($this->data['Part Valid To']) ,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -1 week")))  );
-      //      print "$sql\n";
+      //        print "$sql\n";
       $result=mysql_query($sql);
       if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 	$required=$row['required'];
@@ -676,6 +676,7 @@ class part{
 	$value=$row['value'];
 	$value_free=$row['value_free'];$sold=$row['qty']-$row['given'];
       }
+
       $abs_profit=$amount_in-$value;
       $profit_sold=$amount_in-$value+$value_free;
       if($amount_in==0)
