@@ -1921,9 +1921,9 @@ if(isset( $_REQUEST['tableid']))
 
 
   if($mode=='code')
-     $where=$where.sprintf(" and `Product Code`=%s ",prepare_mysql($tag));
+     $where=$where.sprintf(" and PD.`Product Code`=%s ",prepare_mysql($tag));
    elseif($mode=='id')
-     $where=$where.sprintf(" and `Product ID`=%d ",$tag);
+     $where=$where.sprintf(" and PD.`Product ID`=%d ",$tag);
    elseif($mode=='key')
      $where=$where.sprintf(" and PD.`Product Key`=%d ",$tag);
 
@@ -1940,15 +1940,16 @@ if(isset( $_REQUEST['tableid']))
   
 
 
-   $sql="select count(*) as total from `Order Transaction Fact`   $where $wheref";
-   $res = mysql_query($sql);
+   $sql="select count(*) as total from `Order Transaction Fact` OTF  left join `Product Dimension` PD on (PD.`Product Key`=OTF.`Product Key`) $where $wheref";
+   //print $sql;   
+$res = mysql_query($sql);
    if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
   $total=$row['total'];
    }
    if($wheref==''){
      $filtered=0;  $total_records=$total;
    }else{
-     $sql="select count(*) as total from `Order Transaction Fact`  $where      ";
+     $sql="select count(*) as total from `Order Transaction Fact` OTF left join `Product Dimension` PD on (PD.`Product Key`=OTF.`Product Key`) $where      ";
        $res = mysql_query($sql);
        if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 	$total_records=$row['total'];

@@ -482,8 +482,26 @@ $default_state=array(
 				       'details'=>false,
 				       'plot'=>'product_week_outers',
 				       'plot_data'=>array(
-							  'months'=>12,
-							  'max_sigma'=>false
+							  'week'=>array(
+									'months'=>12,
+									'max_sigma'=>false,
+									'first_day'=>date("Y-m-d H:i:s",strtotime("today - 1 year"))
+									),
+							  'month'=>array(
+									 'months'=>24,
+									 'max_sigma'=>false,
+									 'first_day'=>date("Y-m-d H:i:s",strtotime("today - 2 year"))
+									 ),
+							  'quarter'=>array(
+									 'months'=>36,
+									 'max_sigma'=>false,
+									 'first_day'=>date("Y-m-d H:i:s",strtotime("today - 3 year"))
+									 ),
+							  'year'=>array(
+									'months'=>60,
+									'max_sigma'=>false,
+									'first_day'=>date("Y-m-d H:i:s",strtotime("today - 5 year"))
+									)
 							  
 							  ),
 				       'mode'=>'key',
@@ -528,9 +546,16 @@ $default_state=array(
 				       'details'=>false,
 				       'plot'=>'part_stock_history',
 				       'plot_data'=>array(
-							  'months'=>12,
-							  'max_sigma'=>false
-							  
+							  'week'=>array(
+									'months'=>12,
+									'max_sigma'=>false,
+									'first_day'=>date("Y-m-d H:i:s",strtotime("today - 1 year"))
+									),
+							  'month'=>array(
+										      'months'=>24,
+										      'max_sigma'=>false,
+										      'first_day'=>date("Y-m-d H:i:s",strtotime("today - 2 year"))
+										      )
 							  ),
 				       'id'=>1,
 				       'edit'=>'description',
@@ -699,7 +724,7 @@ $default_state=array(
 
 
 $yui_path="external_libs/yui/".$myconf['yui_version']."/build/";
-
+$tmp_images_dir='app_files/pics/';
 
 $customers_ids[0]=_('Id');
 $customers_ids[1]=_('Act Id');

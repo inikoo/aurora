@@ -169,7 +169,17 @@ $smarty->assign('family_id',$product->get('Product Family Key'));
 
 //$plot_tipo='product_'.$time_plot.'_'.$tipo_plot;
 $plot_tipo=$_SESSION['state']['product']['plot'];
-$plot_data=$_SESSION['state']['product']['plot_data'];
+
+if(preg_match('/week/',$plot_tipo))
+  $plot_interval='week';
+if(preg_match('/month/',$plot_tipo))
+  $plot_interval='month';
+if(preg_match('/quarter/',$plot_tipo))
+  $plot_interval='quarter';
+if(preg_match('/year/',$plot_tipo))
+  $plot_interval='year';
+
+$plot_data=$_SESSION['state']['product']['plot_data'][$plot_interval];
 
 //print print_r($_SESSION['state']['product']);
 $smarty->assign('plot_tipo',$plot_tipo);
