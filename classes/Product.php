@@ -2371,12 +2371,125 @@ $y_days=count($y_days);
 
      
      break;
+   case('images'):
+     
+     $sql=sprintf("select ID.`Image Key`,`Image Caption`,`Image URL`,`Image Filename`,`Image Type`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Product Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Product Key`=%d",$this->id);
+     //  print $sql;
+     $res=mysql_query($sql);
+     $this->images_small=array();
+     $this->images_thumb=array();
+     $this->images_original=array();
+
+
+     while($row=mysql_fetch_array($res)){
+       if($row['Image Type']=='Small')
+	 $this->images_small[$row['Image Key']]=$row;
+       elseif($row['Image Type']=='Thumb')
+	 $this->images_thumb[$row['Image Key']]=$row;
+       elseif($row['Image Type']=='Original')
+	 $this->images_original[$row['Image Key']]=$row;
+
+     }
+       
+
 
    }
    
 
  }
 
+
+ function load_original_image($file){
+   global $tmp_images_dir;
+   if(!$this->images)
+     $this->load('images');
+   
+   $checksum=md5_file($file);
+   $same_as_other=false;
+   
+   print_r($this->images);
+   
+   foreach($this->images_original as $_key=>$_value){
+     if($_value['Image File Checksum']==$checksum){
+       $same_as_other=true;
+       $same_as=$_value['Image Filename'];
+       break;
+     }
+     
+   }
+   
+   if($same_as_other){
+     //     $res[$key]['msg']=_('Image already uploaded')." (".$same_as.")";
+     //$res[$key]['ok']=false;
+     unlink($file);
+     exit;
+     //   continue;
+     
+   }
+   
+   $code=$this->get('Product Code');
+   $target_path = $tmp_images_dir;
+   
+   $im = @imagecreatefromjpeg($file);
+   if ($im) {  
+     
+     $format='jpg';
+     //print $tmp_images_dir.strtolower($this->data['Product Family Code']);
+     if (!file_exists('../../'.$tmp_images_dir.strtolower($this->data['Product Family Code'])))
+       mkdir('../../'.$tmp_images_dir.strtolower($this->data['Product Family Code']), 0700);
+  $name=$tmp_images_dir.strtolower($this->data['Product Family Code']).'/'.strtolower('Original_'.$code.'_'.$this->id.'.'.$format);
+
+     
+     $news_imgfile = addslashes(fread(fopen($file, "r"), filesize($file)));
+
+
+     $image_data=array(
+		       'Image Width' => imagesx($im),
+		       'Image Height' => imagesy($im),
+		       'Image File Size'=>$s=filesize($file),
+		       'Image File Checksum'=>$checksum,
+		       'Image Caption'=>$this->data['Product Name'],
+		       'Image Filename'=>$name,
+		       'Image URL'=>'',
+		       'Image File Format'=>$format,
+		       'Image Type'=>'Original'
+		       );
+     // print_r($image_data);
+     imagejpeg($im,'../../'.$name );
+     $image_data['Image Data']=$news_imgfile;
+
+   $keys='(';
+   $values='values(';
+   foreach($image_data as $key=>$value){
+     $keys.="`$key`,";
+     if(preg_match('/url/i',$key))
+       $values.="'".addslashes($value)."',";
+     else
+       $values.=prepare_mysql($value).",";
+   }
+   $keys=preg_replace('/,$/',')',$keys);
+   $values=preg_replace('/,$/',')',$values);
+   $sql=sprintf("insert into `Image Dimension` %s %s",$keys,$values);
+   //   print $sql;
+   if(mysql_query($sql)){
+     $image_key=mysql_insert_id();
+     $sql=sprintf("insert into `Product Image Bridge` values (%d,%d)",$this->id,$image_key);
+     //print $sql;
+     mysql_query($sql);
+     $url=sprintf('image.php?id=%d',$image_key);
+     
+     $sql=sprintf("update `Product Image` set `Image URL`=%s  where `Image Key`=%d",prepare_mysql($url),$image_key);
+     //print $sql;
+     mysql_query($sql);
+   }
+
+     
+   }
+      unlink($file);
+   
+
+
+ }
 
 }
 ?>

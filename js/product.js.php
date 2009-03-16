@@ -258,10 +258,26 @@ function init(){
 
   var change_plot = function (e){
 
-      //      alert(plot)
-      Dom.get("the_plot").src='plot.php?tipo='+this.id;
-      YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=product-plot&value='+this.id );
 
+      Dom.get("the_plot").src='plot.php?tipo='+this.id;
+      YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update_plot_product&value='+this.id,{
+	      success:function(o) {
+		  // alert(o.responseText)
+		      var r =  YAHOO.lang.JSON.parse(o.responseText);
+		  if (r.state == 200) {
+		      Dom.get('plot_months').value=r.months;
+		      if(r.sigma)
+			  Dom.get('plot_radio_1').checked;
+		      else
+			  Dom.get('plot_radio_2').checked;
+		    
+		}
+	      
+	      }
+	      
+	  }
+	  );
+      
       this.className='selected';
       Dom.get(plot).className='opaque';
       plot=this.id;
@@ -269,7 +285,7 @@ function init(){
 
      var ids = ["change_view_details","change_view_plot","change_view_orders","change_view_customers","change_view_stock_history"]; 
      Event.addListener(ids,"click",change_view);
-     var ids = ["product_week_sales","product_month_sales","product_quarter_sales","product_year_sales","product_week_outers","product_week_outers" ,"product_week_outers","product_week_outers","product_stock_history"]; 
+     var ids = ["product_week_sales","product_month_sales","product_quarter_sales","product_year_sales","product_week_outers","product_month_outers" ,"product_quarter_outers","product_year_outers","product_stock_history"]; 
      Event.addListener(ids,"click",change_plot);
 
      Event.addListener('product_submit_search', "click",submit_search,'product');

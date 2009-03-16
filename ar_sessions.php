@@ -33,7 +33,24 @@ switch($tipo){
      break;
    }
    break;
-
+ case('update_plot_product'):
+   $value=$_REQUEST['value'];
+   if(preg_match('/^product\_(week|month|quarter|year)\_(sales|outers)$/',$value)){
+     $_SESSION['state']['product']['product']=$value;
+     if(preg_match('/week/',$value))
+       $plot_interval='week';
+     elseif(preg_match('/month/',$value))
+       $plot_interval='month';
+     elseif(preg_match('/quarter/',$value))
+       $plot_interval='quarter';
+     elseif(preg_match('/year/',$value))
+       $plot_interval='year';
+     $data=$_SESSION['state']['product']['plot_data'][$plot_interval];
+     $data['state']=200;
+     echo json_encode($data);
+     exit;
+   }
+   break;
  }
 
 

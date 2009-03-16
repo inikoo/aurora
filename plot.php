@@ -19,23 +19,36 @@ $title='';
 $options='';
 switch($tipo){
  case('product_week_sales'):
+ case('product_month_sales'):
+ case('product_quarter_sales'):
+ case('product_year_sales'):
+   
+   if($tipo=='product_week_sales')
+     $interval='week';
+   elseif($tipo=='product_month_sales')
+     $interval='month';
+   elseif($tipo=='product_quarter_sales')
+     $interval='quarter';
+   elseif($tipo=='product_year_sales')
+     $interval='year';
 
+   $_SESSION['state']['product']['plot']=$tipo;
    $mode=$_SESSION['state']['product']['mode'];
    $tag=$_SESSION['state']['product']['tag'];
    $product=new Product($mode,$tag);
    if(isset($_REQUEST['months'])){
      $months=$_REQUEST['months'];
-     $_SESSION['state']['product']['plot_data']['months']=$months;
+     $_SESSION['state']['product']['plot_data'][$interval]['months']=$months;
      
    }else
-     $months=$_SESSION['state']['product']['plot_data']['months'];
+     $months=$_SESSION['state']['product']['plot_data'][$interval]['months'];
    
    
    if(isset($_REQUEST['max_sigma'])){
      $max_sigma=$_REQUEST['max_sigma'];
-     $_SESSION['state']['product']['plot_data']['max_sigma']=$max_sigma;
+     $_SESSION['state']['product']['plot_data'][$interval]['max_sigma']=$max_sigma;
    }else
-     $max_sigma=$_SESSION['state']['product']['plot_data']['max_sigma'];
+     $max_sigma=$_SESSION['state']['product']['plot_data'][$interval]['max_sigma'];
    
    
    if(is_numeric($months) and $months>0)
@@ -48,19 +61,20 @@ switch($tipo){
      elseif($mode=='key')
        $first_day=$product->get('Product Valid From');
    }
-   $_SESSION['state']['product']['plot_data']['first_day'];
+   $_SESSION['state']['product']['plot_data']['week']['first_day']=$first_day;
 
    if($max_sigma){
       if($mode=='code')
-	$max=4*$product->get('Product 1 Year Acc Invoiced Amount')/52;
+	$max=4*$product->get('Product Same Code 1 Year Acc Invoiced Amount')/52;
       elseif($mode=='id')
-	$max=4*$product->get('Product 1 Year Acc Invoiced Amount')/52;
+	$max=4*$product->get('Product Same ID 1 Year Acc Invoiced Amount')/52;
       elseif($mode=='key')
 	$max=4*$product->get('Product 1 Year Acc Invoiced Amount')/52;
 
    }
+   //   $_SESSION['state']['product']['plot_data'][$tipo]['max']=$max;
 
-   $ar_address='ar_plot.php?tipo=product_week_sales';
+   $ar_address='ar_plot.php?tipo='.$tipo;
 
    $fields='"tip_asales","asales","date","profit","tip_profit"';
    $yfields=array(
@@ -72,37 +86,60 @@ switch($tipo){
    $tipo_chart='LineChart';
    break;
  case('product_week_outers'):
-   
-   $product=new Product($_SESSION['state']['product']['mode'],$_SESSION['state']['product']['tag']);
-   $product_id=$product->id;
+ case('product_month_outers'):
+ case('product_quarter_outers'):
+ case('product_year_outers'):
+ $_SESSION['state']['product']['plot']=$tipo;
+   if($tipo=='product_week_outers')
+     $interval='week';
+   elseif($tipo=='product_month_outers')
+     $interval='month';
+   elseif($tipo=='product_quarter_outers')
+     $interval='quarter';
+   elseif($tipo=='product_year_outers')
+     $interval='year';
 
+   
+   $mode=$_SESSION['state']['product']['mode'];
+   $tag=$_SESSION['state']['product']['tag'];
+   $product=new Product($mode,$tag);
+
+   $product_id=$product->id;
+   
    if(isset($_REQUEST['months'])){
      $months=$_REQUEST['months'];
-     $_SESSION['state']['product']['plot_data']['months']=$months;
+     $_SESSION['state']['product']['plot_data'][$interval]['months']=$months;
 
    }else
-     $months=$_SESSION['state']['product']['plot_data']['months'];
+     $months=$_SESSION['state']['product']['plot_data'][$interval]['months'];
    
-
-   if(isset($_REQUEST['max_sigma'])){
+    if(isset($_REQUEST['max_sigma'])){
      $max_sigma=$_REQUEST['max_sigma'];
-     $_SESSION['state']['product']['plot_data']['max_sigma']=$max_sigma;
+     $_SESSION['state']['product']['plot_data'][$interval]['max_sigma']=$max_sigma;
    }else
-     $max_sigma=$_SESSION['state']['product']['plot_data']['max_sigma'];
+     $max_sigma=$_SESSION['state']['product']['plot_data'][$interval]['max_sigma'];
+
+   if($max_sigma){
+      if($mode=='code')
+	$max=4*$product->get('Product Same Code 1 Year Acc Quantity Ordered')/52;
+      elseif($mode=='id')
+	$max=4*$product->get('Product Same ID 1 Year Acc Quantity Ordered')/52;
+      elseif($mode=='key')
+	$max=4*$product->get('Product 1 Year Acc Quantity Ordered')/52;
+
+   }
+   //   $_SESSION['state']['product']['plot_data'][$tipo]['max']=$max;
        
    
    if(is_numeric($months) and $months>0)
      $first_day=date("Y-m-d",strtotime("- $months  month"));
    else
      $first_day=$product->get('mysql_first_date');
-   
-
-   if($max_sigma)
-     $max=4*$product->get('awtsoall');
+   $_SESSION['state']['product']['plot_data'][$interval]['first_day']=$first_day;
 
    
    $title=_("Outers dispached per Week");
-   $ar_address='ar_assets.php?tipo=plot_product_week_outers&product_id='.$product_id.'&first_day='.$first_day;
+   $ar_address='ar_plot.php?tipo='.$tipo;
    // print_r($_REQUEST);
    // print $ar_address;
    $fields='"tip_out","out","date","bonus","tip_bonus"';
@@ -115,70 +152,6 @@ switch($tipo){
    $style='size:10';
    $tipo_chart='ColumnChart';
    break;
-
- case('product_quarter_sales'):
-   $ar_address='ar_assets.php?tipo=plot_quartersales';
-   $fields='"tip","asales","date"';
-   $yfields=array(array('label'=>_('Sales'),'name'=>'asales','axis'=>'formatCurrencyAxisLabel','style'=>''));
-   $xfield=array('label'=>_('Date'),'name'=>'date');
-   $style='size:20,lineSize:1';
- $tipo_chart='ColumnChart';
-   break;
- case('product_month_sales'):
-   $title=_("Sales per Month");
-   $ar_address='ar_assets.php?tipo=plot_monthsales';
-   $fields='"asales","date","tip_asales"';
-   $yfields=array(array('label'=>_('Sales'),'name'=>'asales','axis'=>'formatCurrencyAxisLabel','style'=>'size:10'));
-   $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category','axis'=>'justyears');
-   $style='size:5,lineSize:1';
- $tipo_chart='ColumnChart';
-    break;
- case('department_month_sales'):
-   $title=_("Sales per Month");
-   $ar_address='ar_assets.php?tipo=plot_department_monthsales';
-   $fields='"asales","date","tip_asales"';
-   $yfields=array(array('label'=>_('Sales'),'name'=>'asales','axis'=>'formatCurrencyAxisLabel','style'=>'size:10'));
-   $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category','axis'=>'justyears');
-   $style='size:5,lineSize:1';
- $tipo_chart='ColumnChart';
-    break;
-
-
- case('product_year_sales'):
-   $ar_address='ar_assets.php?tipo=plot_yearsales';
-   $fields='"asales","date","tip"';
-   $yfields=array(array('label'=>_('Sales'),'name'=>'asales','axis'=>'formatCurrencyAxisLabel','style'=>''));
-   $xfield=array('label'=>_('Date'),'name'=>'date');
-   $style='size:10,lineSize:1';
- $tipo_chart='LineChart';
-    break;
- case('product_week_outers'):
-    $title=_("Outers sold per Week");
-   $ar_address='ar_assets.php?tipo=plot_product_week_outers';
-   $fields='"tip","out","date"';
-   $yfields=array(array('label'=>_('Outers'),'name'=>'out','axis'=>'formatNumberAxisLabel','style'=>''));
-   $xfield=array('label'=>_('Date'),'name'=>'date');
-   $style='size:4,lineSize:1';
-   $tipo_chart='LineChart';
-   break;
- case('product_quarter_outers'):
-    $title=_("Outers sold per Quarter");
-   $ar_address='ar_assets.php?tipo=plot_quarterout';
-   $fields='"tip_out","out","date"';
-   $yfields=array(array('label'=>_('Outers'),'name'=>'out','axis'=>'formatNumberAxisLabel','style'=>''));
-   $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category','axis'=>'fdate');
-   $style='size:20,lineSize:1';
- $tipo_chart='ColumnChart';
-   break;
- case('product_month_outers'):
-   $title=_("Outers sold per Month");
-   $ar_address='ar_assets.php?tipo=plot_monthout';
-   $fields='"out","date","tip"';
-   $yfields=array(array('label'=>_('Outers'),'name'=>'out','axis'=>'formatNumberAxisLabel'));
-   $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category','axis'=>'fdate');
-   $style='size:10,lineSize:1';
- $tipo_chart='ColumnChart';
-    break;
  case('product_month_year'):
    $ar_address='ar_assets.php?tipo=plot_yearout';
    $fields='"out","date","tip"';

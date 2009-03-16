@@ -235,8 +235,8 @@
 	    <tr>
 	      <td class="left"><img src="art/icons/money.png" title="{t}Net Sales{/t}"/></td>
 	      <td><img id="product_week_sales"   class="{if $plot_tipo=='product_week_sales'}selected{else}opaque{/if}" src="art/icons/chart_line.png" title="{t}Sales per week{/t}"/></td>
-	      <td><img id="product_month_sales" class="{if $plot_tipo=='product_month_sales'}selected{else}opaque{/if}" src="art/icons/chart_bar.png" title="{t}Sales per month{/t}"/></td>
-	      <td><img id="product_quarter_sales"   class="{if $plot_tipo=='product_quarter_sales'}selected{else}opaque{/if}" src="art/icons/chart_bar.png" title="{t}Sales per quarter{/t}"/></td>
+	      <td><img id="product_month_sales" class="{if $plot_tipo=='product_month_sales'}selected{else}opaque{/if}" src="art/icons/chart_line.png" title="{t}Sales per month{/t}"/></td>
+	      <td><img id="product_quarter_sales"   class="{if $plot_tipo=='product_quarter_sales'}selected{else}opaque{/if}" src="art/icons/chart_line.png" title="{t}Sales per quarter{/t}"/></td>
 	      <td><img id="product_year_sales"   class="{if $plot_tipo=='product_year_sales'}selected{else}opaque{/if}" src="art/icons/chart_line.png" title="{t}Sales per year{/t}"/></td>
 	      
 	      <td></td>
@@ -244,12 +244,12 @@
 	<tr>
 	  <td class="left"><img src="art/icons/basket.png" title="{t}Outers Sold{/t}"/></td>
 	  <td><img  id="product_week_outers"  class="{if $plot_tipo=='product_week_outers'}selected{else}opaque{/if}"  src="art/icons/chart_line.png" title="{t}Outers sold per month{/t}"/></td>
-	  <td><img  id="product_week_outers"  class="{if $plot_tipo=='product_month_outers'}selected{else}opaque{/if}"  src="art/icons/chart_bar.png" title="{t}Outers sold per month{/t}"/></td>
-	  <td><img  id="product_week_outers"  class="{if $plot_tipo=='product_quarter_outers'}selected{else}opaque{/if}"  src="art/icons/chart_bar.png" title="{t}Outers sold  per quarter{/t}"/></td>
-	  <td><img   id="product_week_outers" class="{if $plot_tipo=='product_year_outers'}selected{else}opaque{/if}"  src="art/icons/chart_line.png" title="{t}Outers sold  per year{/t}"/></td>
+	  <td><img  id="product_month_outers"  class="{if $plot_tipo=='product_month_outers'}selected{else}opaque{/if}"  src="art/icons/chart_line.png" title="{t}Outers sold per month{/t}"/></td>
+	  <td><img  id="product_quarter_outers"  class="{if $plot_tipo=='product_quarter_outers'}selected{else}opaque{/if}"  src="art/icons/chart_line.png" title="{t}Outers sold  per quarter{/t}"/></td>
+	  <td><img   id="product_year_outers" class="{if $plot_tipo=='product_year_outers'}selected{else}opaque{/if}"  src="art/icons/chart_line.png" title="{t}Outers sold  per year{/t}"/></td>
 	  <td></td>
 	</tr>
-	    <tr>
+	    <tr style="display:none">
 	      <td class="left"><img src="art/icons/package.png" title="{t}Stock{/t}"/></td>
 	      <td><img id="product_stock_history"  class="{if $plot_tipo=='product_stock_history'}selected{else}opaque{/if}"      src="art/icons/chart_line.png" title="{t}Stock History{/t}"/></td>
 	      <td></td>
@@ -263,8 +263,8 @@
 	  <tr><td >Show last</td><tr> 
 	  <tr><td>  <input type="text" size="2" style="vertical-align:bottom;text-align:right" id="plot_months" value="{$plot_data.months}"/> <span style="cursor:pointer" onclick="change_plot_months(this)">months</span></td><tr> 
 	  <tr class="title"><td>Y-Axis Range</td><tr> 
-	  <tr><td>All <input type="radio" onchange="change_plot_sigma(this)" name="y_range" {if !$plot_data.max_sigma}checked="cheked"{/if} value="0"></td><tr> 
-	  <tr><td>&sigma; <input type="radio" name="y_range"  onchange="change_plot_sigma(this)"  {if $plot_data.max_sigma}checked="cheked"{/if} value="1"></td><tr> 
+	  <tr><td>All <input id="plot_radio_1"  type="radio" onchange="change_plot_sigma(this)" name="y_range" {if !$plot_data.max_sigma}checked="cheked"{/if} value="0"></td><tr> 
+	  <tr><td>&sigma; <input id="plot_radio_2" type="radio" name="y_range"  onchange="change_plot_sigma(this)"  {if $plot_data.max_sigma}checked="cheked"{/if} value="1"></td><tr> 
 
 	</table>
       </div>
