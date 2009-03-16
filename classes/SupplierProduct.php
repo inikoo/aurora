@@ -279,7 +279,20 @@ class supplierproduct{
       //exit;
       
       break;
+    case('parts'):
+      
+      $sql=sprintf("select `Part Key`,PD.`Part SKU` as sku from `Supplier Product Dimension` SPD left join `Supplier Product Part List` SPPL on (SPD.`Supplier Product ID`=SPPL.`Supplier Product ID`)  left join `Part Dimension` PD on (SPPL.`Part SKU`=PD.`Part SKU`) where `Supplier Product Key`=%d group by PD.`Part SKU`;",$this->data['Supplier Product Key']);
+      $result=mysql_query($sql);
+      $num_parts=0;
+      $this->parts_sku=array();
+      while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+	$this->parts_sku[]=$row['sku'];
+      }
+      
+      break;
     case('sales'):
+      $this->load('parts');
+      
       $sold=0;
       $required=0;
       $provided=0;
@@ -288,8 +301,18 @@ class supplierproduct{
       $value=0;
       $value_free=0;
       $margin=0;
-      $sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(`Inventory Transaction Quantity`),0) as qty, ifnull(sum(`Inventory Transaction Amount`),0) as value from  `Inventory Transaction Fact` where `Supplier Product ID`=%s and `Inventory Transaction Type`='Sale' and `Date`>=%s  and `Date`<=%s   ",prepare_mysql($this->data['Supplier Product ID']),prepare_mysql($this->data['Supplier Product Valid From']),prepare_mysql($this->data['Supplier Product Valid To'])  );
-      //      print "$sql\n";
+
+      $parts=' and `Part SKU` in (';
+	
+      foreach($this->parts_sku as $sku)
+	$parts.=$sku.",";
+      $parts=preg_replace("/,$/","",$parts);
+      $parts.=') ';
+
+      $sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(`Inventory Transaction Quantity`),0) as qty, ifnull(sum(`Inventory Transaction Amount`),0) as value from  `Inventory Transaction Fact` where   `Inventory Transaction Type`='Sale' and `Date`>=%s  and `Date`<=%s $parts  ",prepare_mysql($this->data['Supplier Product Valid From']),prepare_mysql($this->data['Supplier Product Valid To'])  );
+      //print_r($this->parts_sku);
+      // print "$sql\n";
+      //exit;
       $result=mysql_query($sql);
       if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 	$required=$row['required'];
@@ -327,7 +350,7 @@ class supplierproduct{
       $value=0;
       $value_free=0;
       $margin=0;
-      $sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(`Inventory Transaction Quantity`),0) as qty, ifnull(sum(`Inventory Transaction Amount`),0) as value from  `Inventory Transaction Fact` where `Supplier Product ID`=%s and `Inventory Transaction Type`='Sale' and `Date`>=%s  and `Date`<=%s and `Date`>=%s    ",prepare_mysql($this->data['Supplier Product ID']),prepare_mysql($this->data['Supplier Product Valid From']),prepare_mysql($this->data['Supplier Product Valid To']) ,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -1 year")))  );
+      $sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(`Inventory Transaction Quantity`),0) as qty, ifnull(sum(`Inventory Transaction Amount`),0) as value from  `Inventory Transaction Fact` where  `Inventory Transaction Type`='Sale' and `Date`>=%s  and `Date`<=%s and `Date`>=%s  $parts  ",prepare_mysql($this->data['Supplier Product Valid From']),prepare_mysql($this->data['Supplier Product Valid To']) ,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -1 year")))  );
       // print "$sql\n";
       $result=mysql_query($sql);
       if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
@@ -365,7 +388,7 @@ class supplierproduct{
       $value=0;
       $value_free=0;
       $margin=0;
-      $sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(`Inventory Transaction Quantity`),0) as qty, ifnull(sum(`Inventory Transaction Amount`),0) as value from  `Inventory Transaction Fact` where `Supplier Product ID`=%s and `Inventory Transaction Type`='Sale' and `Date`>=%s  and `Date`<=%s and `Date`>=%s    ",prepare_mysql($this->data['Supplier Product ID']),prepare_mysql($this->data['Supplier Product Valid From']),prepare_mysql($this->data['Supplier Product Valid To']) ,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -3 month")))  );
+      $sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(`Inventory Transaction Quantity`),0) as qty, ifnull(sum(`Inventory Transaction Amount`),0) as value from  `Inventory Transaction Fact` where  `Inventory Transaction Type`='Sale' and `Date`>=%s  and `Date`<=%s and `Date`>=%s   $parts  ",prepare_mysql($this->data['Supplier Product Valid From']),prepare_mysql($this->data['Supplier Product Valid To']) ,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -3 month")))  );
       //      print "$sql\n";
       $result=mysql_query($sql);
       if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
@@ -404,7 +427,7 @@ class supplierproduct{
       $value=0;
       $value_free=0;
       $margin=0;
-      $sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(`Inventory Transaction Quantity`),0) as qty, ifnull(sum(`Inventory Transaction Amount`),0) as value from  `Inventory Transaction Fact` where `Supplier Product ID`=%s and `Inventory Transaction Type`='Sale' and `Date`>=%s  and `Date`<=%s and `Date`>=%s    ",prepare_mysql($this->data['Supplier Product ID']),prepare_mysql($this->data['Supplier Product Valid From']),prepare_mysql($this->data['Supplier Product Valid To']) ,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -1 month")))  );
+      $sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(`Inventory Transaction Quantity`),0) as qty, ifnull(sum(`Inventory Transaction Amount`),0) as value from  `Inventory Transaction Fact` where `Inventory Transaction Type`='Sale' and `Date`>=%s  and `Date`<=%s and `Date`>=%s  $parts  ",prepare_mysql($this->data['Supplier Product ID']),prepare_mysql($this->data['Supplier Product Valid To']) ,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -1 month")))  );
       //      print "$sql\n";
       $result=mysql_query($sql);
       if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
@@ -442,7 +465,7 @@ class supplierproduct{
       $value=0;
       $value_free=0;
       $margin=0;
-      $sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(`Inventory Transaction Quantity`),0) as qty, ifnull(sum(`Inventory Transaction Amount`),0) as value from  `Inventory Transaction Fact` where `Supplier Product ID`=%s and `Inventory Transaction Type`='Sale' and `Date`>=%s  and `Date`<=%s and `Date`>=%s    ",prepare_mysql($this->data['Supplier Product ID']),prepare_mysql($this->data['Supplier Product Valid From']),prepare_mysql($this->data['Supplier Product Valid To']) ,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -1 week")))  );
+      $sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(`Inventory Transaction Quantity`),0) as qty, ifnull(sum(`Inventory Transaction Amount`),0) as value from  `Inventory Transaction Fact` where `Inventory Transaction Type`='Sale' and `Date`>=%s  and `Date`<=%s and `Date`>=%s  $parts  ",prepare_mysql($this->data['Supplier Product Valid From']),prepare_mysql($this->data['Supplier Product Valid To']) ,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -1 week")))  );
       //      print "$sql\n";
       $result=mysql_query($sql);
       if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
@@ -575,6 +598,8 @@ class supplierproduct{
       }
   
     }
+
+
 
 
 

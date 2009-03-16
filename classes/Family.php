@@ -107,6 +107,18 @@ class family{
        $this->products[$row['product key']]=$row;
      }
      break;
+   case('products_store'):
+     $sql=sprintf("select * from `Product Dimension` where `Product Sales State`='For Sale' and `Product Most Recent`='Yes' and `Product Family Key`=%d and `Product Store Key`=%d",$this->id,$args);
+     //  print $sql;
+     
+     $this->products=array();
+     $result=mysql_query($sql);
+     while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+       $this->products[$row['Product Key']]=$row;
+     }
+     break;
+
+
  //   case('first_date'):
 //      $first_date=date('U');
 //      $changed=false;
@@ -362,7 +374,7 @@ class family{
  }
 
 
- function get($key){
+ function get($key,$options=false){
 
 
 
@@ -373,6 +385,82 @@ class family{
 
 
    switch($key){
+   case('Full Order Form'):
+     global $site_checkout_address,$site_checkout_id,$site_url;
+
+ if($this->locale=='de_DE'){
+   $order_txt='Bestellen';
+   $reset_txt='Löschen';
+ }elseif($this->locale=='fr_FR'){
+   $order_txt='Commander';
+   $reset_txt='Annuler';
+ }else{
+   $order_txt='Order';
+   $reset_txt='Reset';
+   
+ }
+
+
+ 
+ $max_code_len=0;
+ $max_desc_len=0;
+ $info='';
+ foreach($this->products as $key => $value){
+
+
+
+
+   $code_len=strlen($value['Product Code']);
+   if($code_len>$max_code_len)
+   $max_code_len=$code_len;
+   $desc_len=strlen($value['Product Special Characteristic']);
+   if($desc_len>$max_desc_len)
+     $max_desc_len=$desc_len;
+ }
+ 
+//  print $max_desc_len;
+//  $first=$max_code_len;
+ 
+ 
+
+ $style=sprintf('<link rel="stylesheet" type="text/css" href="../order.css" /><link rel="stylesheet" type="text/css" href="order.css" /><style type="text/css">table.order {width:%sem}td.first{width:%fem}table.order {font-size:11px;font-family:arial;}span.price{float:right;margin-right:5px}span.desc{margin-left:5px}span.outofstock{color:red;font-weight:800;float:right;margin-right:5px;}input.qty{width:100%%}td.qty{width:3em}</style>
+<style type="text/css">.prod_info{text-align:left;} .prod_info span{magin:0;color:red;font-family:arial;;font-weight:800;font-size:12px}</style>',$max_desc_len,$max_code_len);
+
+ //$style=sprintf('<style type="text/css"> span.info_price{font-size:20px}</style>');
+ // $style='';
+ $form=sprintf('%s<table class="Order"><FORM METHOD="POST" ACTION="%s"><INPUT TYPE="HIDDEN" NAME="userid" VALUE="%s"><input type="hidden" name="return" value="%s">'
+	       ,$style
+	       ,addslashes($site_checkout_address)
+	       ,addslashes($site_checkout_id)
+	       ,$site_url.$_SERVER['PHP_SELF']
+	       );
+ 
+ $form.="\n";
+     $i=1;
+     foreach($this->products as $key => $value){
+
+
+
+       $product=new Product($key);
+       $product->locale=$this->locale;
+
+       if($i==1){
+	 // print_r($options);
+	 $info=$product->get('Price Anonymous Info',$options);
+
+       }
+
+       
+
+       $form.=$product->get('Order List Form',$i);
+
+       $i++;
+     }
+     $form.=sprintf('<tr id="submit_tr"><td id="submit_td" colspan="3" ><input name="Submit" type="submit" class="text" value="%s"> <input name="Reset" type="reset" class="text"  id="Reset" value="%s"></td></tr></form></table>',$order_txt,$reset_txt);
+
+     return $info.$form;
+
+     break;
    case('products'):
      if(!$this->products)
        $this->load('products');
