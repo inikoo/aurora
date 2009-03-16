@@ -594,7 +594,29 @@ class product{
 
 
 
+case('Price Info'):
+  	$info=sprintf('<div class="ind_form"><span class="code">%s</span><br/><span class="name">%sx %s</span><br/><span class="price">%s</span><br/><span class="rrp">%s</span><br/>
+</div>'
+		      ,$this->data['Product Code']
+		      ,$this->data['Product Units Per Case']
+		      ,$this->data['Product Name'],$this->get('Price Formated'),$this->get('RRP Formated')
 
+		      
+);
+	return $info;
+  break;
+
+case('Price Anonymous Info'):
+  
+
+  $info=sprintf('<div class="prod_info"><span >%s</span><br><span >%s</span></div>'
+		,$this->get('Price Formated',$data)
+		,$this->get('RRP Formated',$data)
+		
+		      
+);
+	return $info;
+  break;
 
 
     case('Order Form'):
@@ -627,6 +649,30 @@ class product{
       
 
 	break;
+    case('Order List Form'):
+      
+      $form=sprintf('<tr><td class="first"><span class="price">%s</span>%s</td><td class="qty"><input type="text"  class="qty" name="qty%d"  id="qty%d"    /><td><span class="desc">%s</span></td></tr><input type="hidden"  name="price%d"  value="%.2f"  ><input type="hidden"  name="product%d"  value="%s %dx %s" ></td></tr>'
+		      ,$this->get('Price')
+		      ,$this->data['Product Code']
+		      ,$data
+		      ,$data
+		      ,$this->data['Product Special Characteristic']
+		      ,$data
+		      ,$this->data['Product Price']
+		      ,$data
+		      ,$this->data['Product Code']
+		      ,$this->data['Product Units Per Case']
+		      ,$this->data['Product Name']
+		      
+		      
+);
+	
+
+	return $form."\n";
+      
+
+	break;	
+
     case('Order Msg'):
       if($this->locale=='de_DE')
 	return 'Bestellen';
@@ -640,9 +686,9 @@ class product{
       break;
     case('Price Formated'):
       if($this->locale=='de_DE'){
-      
-	if(isset($data['per'])){
-	return 'Preis: '.$data['per'].' '.$this->money($this->data['Product Price']);
+
+	if(isset($data['price per unit text'])){
+	return 'Preis: '.$data['price per unit text'].' '.$this->money($this->data['Product Price']);
 	}else{
 	  if($this->data['Product Units Per Case']>1)
 	    return 'Preis: '.$this->money($this->data['Product Price']).'/'.$this->data['Product Units Per Case'].' ('.$this->money($this->data['Product Price']/$this->data['Product Units Per Case'])." pro Stück)";
@@ -653,13 +699,13 @@ class product{
 
       }elseif($this->locale=='fr_FR'){
       
-	if(isset($data['per'])){
-	return 'Prix: '.$data['per'].' '.$this->money($this->data['Product Price']);
+	if(isset($data['price per unit text'])){
+	return 'Prix: '.$this->money($this->data['Product Price']).' '.$data['price per unit text'];
 	}else{
 	  if($this->data['Product Units Per Case']>1)
 	    return 'Prix: '.$this->money($this->data['Product Price']).'/'.$this->data['Product Units Per Case'].' ('.$this->money($this->data['Product Price']/$this->data['Product Units Per Case'])." par unité)";
 	  else
-	    return 'Prix: '.$this->money($this->data['Product Price'].' par unité');
+	    return 'Prix: '.$this->money($this->data['Product Price']).' par unité';
 
 	}
 
@@ -681,8 +727,12 @@ class product{
     case('RRP Formated'):
       if($this->locale=='de_DE')
 	return 'UVP: '.$this->money($this->data['Product RRP']/$this->data['Product Units Per Case']).' pro Stück';
-      elseif($this->locale=='fr_FR')
-	return $this->money($this->data['Product RRP']/$this->data['Product Units Per Case']).'/unité PVC';
+      elseif($this->locale=='fr_FR'){
+	if(isset($data['rrp per unit text']))
+	  return $this->money($this->data['Product RRP']/$this->data['Product Units Per Case']).' PVC '.$data['rrp per unit text'];
+	else
+	  return $this->money($this->data['Product RRP']/$this->data['Product Units Per Case']).'/unité PVC';
+      }
       else
 	return _('RRP').': '.$this->money($this->data['Product RRP']/$this->data['Product Units Per Case']).' '._('each');
       break;
@@ -989,6 +1039,9 @@ function valid_id($id){
 
     $base_data=array(
 		     'product sales state'=>'Unknown',
+		     'product web state'=>'Unknown',
+		     'product store key'=>1,
+		     'product locale'=>'en_GB',
 		     'product id'=>'',
 		     'product code file as'=>'',
 		     'product code'=>'',
@@ -1089,7 +1142,8 @@ function valid_id($id){
     // print "$sql\n\n";    
 
      //   if(preg_match('/abp-01/i',$base_data['product code'])){
-// 	 print "$sql\n\n"; 
+    //	 print "$sql\n\n"; 
+    //	 exit;
 //        }
     if(mysql_query($sql)){
       $this->id = mysql_insert_id();
@@ -1807,7 +1861,7 @@ $y_days=count($y_days);
        exit("$sql\ncan not update product sales\n");
 
      
-       $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Consolidated`='Yes' and `Product ID`=%d",$this->data['Product ID']);
+       $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact`  OTF left join  `Product Dimension` PD on (OTF.`Product Key`=PD.`Product Key`) where `Consolidated`='Yes' and `Product ID`=%d",$this->data['Product ID']);
      $result=mysql_query($sql);
      if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
        $this->data['Product Same ID Total Invoiced Gross Amount']=$row['gross'];
@@ -1843,7 +1897,7 @@ $y_days=count($y_days);
 
 
 
-     $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Consolidated`='Yes' and `Product ID`=%s",prepare_mysql($this->data['Product Code']));
+     $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact`  OTF left join  `Product Dimension` PD on (OTF.`Product Key`=PD.`Product Key`) where `Consolidated`='Yes' and `Product Code`=%s",prepare_mysql($this->data['Product Code']));
      $result=mysql_query($sql);
      if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
        $this->data['Product Same Code Total Invoiced Gross Amount']=$row['gross'];
@@ -1921,7 +1975,7 @@ $y_days=count($y_days);
 
 
 
-  $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product ID`=%d and `Invoice Date`>=%s ",$this->data['Product ID'],prepare_mysql(date("Y-m-d",strtotime("- 1 year"))));
+  $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact`  OTF left join  `Product Dimension` PD on (OTF.`Product Key`=PD.`Product Key`) where `Product ID`=%d and `Invoice Date`>=%s ",$this->data['Product ID'],prepare_mysql(date("Y-m-d",strtotime("- 1 year"))));
      //  print "$sql\n\n";
      $result=mysql_query($sql);
      if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
@@ -1959,7 +2013,7 @@ $y_days=count($y_days);
 
 
 
-       $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Code`=%s and `Invoice Date`>=%s ",prepare_mysql($this->data['Product ID']),prepare_mysql(date("Y-m-d",strtotime("- 1 year"))));
+       $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact`  OTF left join  `Product Dimension` PD on (OTF.`Product Key`=PD.`Product Key`) where `Product Code`=%s and `Invoice Date`>=%s ",prepare_mysql($this->data['Product Code']),prepare_mysql(date("Y-m-d",strtotime("- 1 year"))));
      //  print "$sql\n\n";
      $result=mysql_query($sql);
      if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
@@ -2047,7 +2101,7 @@ $y_days=count($y_days);
 
 
 
- $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product ID`=%d and `Invoice Date`>=%s ",$this->data['Product ID'],prepare_mysql(date("Y-m-d",strtotime("- 3 month"))));
+ $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact`  OTF left join  `Product Dimension` PD on (OTF.`Product Key`=PD.`Product Key`) where `Product ID`=%d and `Invoice Date`>=%s ",$this->data['Product ID'],prepare_mysql(date("Y-m-d",strtotime("- 3 month"))));
      //  print "$sql\n\n";
      $result=mysql_query($sql);
      if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
@@ -2085,8 +2139,8 @@ $y_days=count($y_days);
 
 
 
-       $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Code`=%s and `Invoice Date`>=%s ",prepare_mysql($this->data['Product ID']),prepare_mysql(date("Y-m-d",strtotime("- 3 month"))));
-     //  print "$sql\n\n";
+       $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` OTF left join  `Product Dimension` PD on (OTF.`Product Key`=PD.`Product Key`) where `Product Code`=%s and `Invoice Date`>=%s ",prepare_mysql($this->data['Product Code']),prepare_mysql(date("Y-m-d",strtotime("- 3 month"))));
+       // print "$sql\n\n";
      $result=mysql_query($sql);
      if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
        
@@ -2166,7 +2220,7 @@ $y_days=count($y_days);
 
 
 
- $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product ID`=%d and `Invoice Date`>=%s ",$this->data['Product ID'],prepare_mysql(date("Y-m-d",strtotime("- 1 month"))));
+ $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact`  OTF left join  `Product Dimension` PD on (OTF.`Product Key`=PD.`Product Key`) where `Product ID`=%d and `Invoice Date`>=%s ",$this->data['Product ID'],prepare_mysql(date("Y-m-d",strtotime("- 1 month"))));
      //  print "$sql\n\n";
      $result=mysql_query($sql);
      if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
@@ -2204,7 +2258,7 @@ $y_days=count($y_days);
 
 
 
-       $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Code`=%s and `Invoice Date`>=%s ",prepare_mysql($this->data['Product ID']),prepare_mysql(date("Y-m-d",strtotime("- 1 month"))));
+       $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact`  OTF left join  `Product Dimension` PD on (OTF.`Product Key`=PD.`Product Key`) where `Product Code`=%s and `Invoice Date`>=%s ",prepare_mysql($this->data['Product Code']),prepare_mysql(date("Y-m-d",strtotime("- 1 month"))));
      //  print "$sql\n\n";
      $result=mysql_query($sql);
      if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
@@ -2287,7 +2341,7 @@ $y_days=count($y_days);
 
 
 
- $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product ID`=%d and `Invoice Date`>=%s ",$this->data['Product ID'],prepare_mysql(date("Y-m-d",strtotime("- 1 week"))));
+ $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact`  OTF left join  `Product Dimension` PD on (OTF.`Product Key`=PD.`Product Key`) where `Product ID`=%d and `Invoice Date`>=%s ",$this->data['Product ID'],prepare_mysql(date("Y-m-d",strtotime("- 1 week"))));
      //  print "$sql\n\n";
      $result=mysql_query($sql);
      if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
@@ -2325,7 +2379,7 @@ $y_days=count($y_days);
 
 
 
-       $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Code`=%s and `Invoice Date`>=%s ",prepare_mysql($this->data['Product ID']),prepare_mysql(date("Y-m-d",strtotime("- 1 week"))));
+       $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact`  OTF left join  `Product Dimension` PD on (OTF.`Product Key`=PD.`Product Key`) where `Product Code`=%s and `Invoice Date`>=%s ",prepare_mysql($this->data['Product Code']),prepare_mysql(date("Y-m-d",strtotime("- 1 week"))));
      //  print "$sql\n\n";
      $result=mysql_query($sql);
      if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
@@ -2374,7 +2428,7 @@ $y_days=count($y_days);
    case('images'):
      
      $sql=sprintf("select ID.`Image Key`,`Image Caption`,`Image URL`,`Image Filename`,`Image Type`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Product Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Product Key`=%d",$this->id);
-     //  print $sql;
+
      $res=mysql_query($sql);
      $this->images_small=array();
      $this->images_thumb=array();
@@ -2392,7 +2446,7 @@ $y_days=count($y_days);
      }
        
 
-
+     break;
    }
    
 
@@ -2406,43 +2460,50 @@ $y_days=count($y_days);
    
    $checksum=md5_file($file);
    $same_as_other=false;
-   
-   print_r($this->images);
+
+   //print_r($this->images);
    
    foreach($this->images_original as $_key=>$_value){
      if($_value['Image File Checksum']==$checksum){
        $same_as_other=true;
        $same_as=$_value['Image Filename'];
-       break;
+       return;
      }
      
    }
    
+
+
    if($same_as_other){
      //     $res[$key]['msg']=_('Image already uploaded')." (".$same_as.")";
      //$res[$key]['ok']=false;
      unlink($file);
-     exit;
+     //     exit;
      //   continue;
      
    }
+
+   
    
    $code=$this->get('Product Code');
    $target_path = $tmp_images_dir;
-   
+   //print filesize($file)."-----Z\n";
+
    $im = @imagecreatefromjpeg($file);
+   
+   // print "-----------------";
    if ($im) {  
      
      $format='jpg';
      //print $tmp_images_dir.strtolower($this->data['Product Family Code']);
      if (!file_exists('../../'.$tmp_images_dir.strtolower($this->data['Product Family Code'])))
        mkdir('../../'.$tmp_images_dir.strtolower($this->data['Product Family Code']), 0700);
-  $name=$tmp_images_dir.strtolower($this->data['Product Family Code']).'/'.strtolower('Original_'.$code.'_'.$this->id.'.'.$format);
-
+     $name=$tmp_images_dir.strtolower($this->data['Product Family Code']).'/'.strtolower('Original_'.$code.'_'.$this->id.'.'.$format);
+     
      
      $news_imgfile = addslashes(fread(fopen($file, "r"), filesize($file)));
-
-
+     
+     
      $image_data=array(
 		       'Image Width' => imagesx($im),
 		       'Image Height' => imagesy($im),
@@ -2454,7 +2515,7 @@ $y_days=count($y_days);
 		       'Image File Format'=>$format,
 		       'Image Type'=>'Original'
 		       );
-     // print_r($image_data);
+     //print_r($image_data);
      imagejpeg($im,'../../'.$name );
      $image_data['Image Data']=$news_imgfile;
 
@@ -2470,7 +2531,7 @@ $y_days=count($y_days);
    $keys=preg_replace('/,$/',')',$keys);
    $values=preg_replace('/,$/',')',$values);
    $sql=sprintf("insert into `Image Dimension` %s %s",$keys,$values);
-   //   print $sql;
+   //print $sql;
    if(mysql_query($sql)){
      $image_key=mysql_insert_id();
      $sql=sprintf("insert into `Product Image Bridge` values (%d,%d)",$this->id,$image_key);
@@ -2485,8 +2546,8 @@ $y_days=count($y_days);
 
      
    }
-      unlink($file);
-   
+   unlink($file);
+
 
 
  }

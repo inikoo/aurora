@@ -4966,7 +4966,7 @@ from `Product Dimension` P   $where $wheref $group order by $order $order_direct
   $adata=array();
   // print "$sql";
   while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-    $code=sprintf('<a href="product.php?id=%d">%s</a>',$row['Product Key'],$row['Product Code']);
+    $code=sprintf('<a href="product.php?code=%s">%s</a>',$row['Product Code'],$row['Product Code']);
     if($percentages){
       if($period=='all'){
       $tsall=percentage($row['Product Total Invoiced Amount'],$sum_total_sales,2);

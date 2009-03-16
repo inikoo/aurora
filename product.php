@@ -143,9 +143,13 @@ $smarty->assign('department',$product->get('Product Main Department Name'));
 $smarty->assign('department_id',$product->get('Product Main Department Key'));
 $smarty->assign('family',$product->get('Product Family Code'));
 $smarty->assign('family_id',$product->get('Product Family Key'));
-//$smarty->assign('images',$product->get('images'));
+
+$product->load('images');
+$images=$product->images_original;
+$smarty->assign('images',$images);
+print_r($images);
 //$smarty->assign('image_dir',$myconf['images_dir']);
-//$smarty->assign('num_images',$product->get('num_images'));
+//$smarty->assign('num_images',count($images));
 
 
 
