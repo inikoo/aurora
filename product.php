@@ -144,12 +144,19 @@ $smarty->assign('department_id',$product->get('Product Main Department Key'));
 $smarty->assign('family',$product->get('Product Family Code'));
 $smarty->assign('family_id',$product->get('Product Family Key'));
 
-$product->load('images');
-$images=$product->images_original;
+$product->load('images_slideshow');
+$images=$product->images_slideshow;
+
+$smarty->assign('div_img_width',190);
+
+$smarty->assign('img_width',190);
+
+
+//print_r($images[0]);
 $smarty->assign('images',$images);
-print_r($images);
+
 //$smarty->assign('image_dir',$myconf['images_dir']);
-//$smarty->assign('num_images',count($images));
+$smarty->assign('num_images',count($images));
 
 
 

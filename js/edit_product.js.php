@@ -9,6 +9,120 @@ var    num_changed = 0;
 var    num_errors = 0;
 var editor;
 var editing='<?=$_SESSION['state']['product']['edit']?>';
+
+
+
+var description_num_changed=0;
+var description_warnings= new Object();
+var description_errors= new Object();
+
+function reset(tipo){
+
+    if(tipo=='description'){
+	Dom.get('name').value=Dom.get('name').getAttribute('ovalue');
+	Dom.get('special_char').value=Dom.get('special_char').getAttribute('ovalue');
+
+	//	alert(Dom.getChildren("cat_use"));
+	children=Dom.getChildren("cat_use");
+	for(i=0;i<children.length;i++){
+	    item=children[i];
+	    ovalue=item.getAttribute('ovalue');
+	    item.setAttribute('value',ovalue);
+	    if(ovalue==1)
+		item.className='selected';
+	    else
+		item.className='';
+	}
+	children=Dom.getChildren("cat_theme");
+	for(i=0;i<children.length;i++){
+	    item=children[i];
+	    ovalue=item.getAttribute('ovalue');
+	    item.setAttribute('value',ovalue);
+	    if(ovalue==1)
+		item.className='selected';
+	    else
+		item.className='';
+	}
+	children=Dom.getChildren("cat_material");
+	for(i=0;i<children.length;i++){
+	    item=children[i];
+	    ovalue=item.getAttribute('ovalue');
+	    item.setAttribute('value',ovalue);
+	    if(ovalue==1)
+		item.className='selected';
+	    else
+		item.className='';
+	}
+
+
+	description_num_changed=0;
+	Dom.get(editing+'_save').style.display='none';
+	Dom.get(editing+'_reset').style.display='none';
+
+	Dom.get(editing+'_num_changes').innerHTML=description_num_changed;
+	description_warnings= new Object();
+	description_errors= new Object();
+	
+    }
+    save_menu();
+}
+
+
+function checkbox_changed(o){
+
+    value=o.getAttribute('value');
+    if(value==1){
+	o.className=''
+	o.setAttribute('value',0);
+    }else{
+	o.className="selected";
+	o.setAttribute('value',1);
+	
+    }
+    if(o.getAttribute('ovalue')==value)
+	description_num_changed++;
+    else
+	description_num_changed--;
+    
+    save_menu();
+}
+
+
+function save_menu(){
+    if(editing=='description'){
+	this_errors=description_errors;
+	this_num_changed=description_num_changed
+
+    }
+
+    if(this_num_changed>0){
+	Dom.get(editing+'_save').style.display='';
+	Dom.get(editing+'_reset').style.display='';
+
+    }else{
+	Dom.get(editing+'_save').style.display='none';
+	Dom.get(editing+'_reset').style.display='none';
+
+    }
+    Dom.get(editing+'_num_changes').innerHTML=this_num_changed;
+
+    // Dom.get(editing+'_save_div').style.display='';
+    errors_div=Dom.get(editing+'_errors');
+    // alert(errors);
+    errors_div.innerHTML='';
+
+
+    for (x in this_errors)
+	{
+	    // alert(errors[x]);
+	    Dom.get(editing+'_save').style.display='none';
+	    errors_div.innerHTML=errors_div.innerHTML+' '+this_errors[x];
+	}
+    
+
+}
+
+
 var cat_list;
 jsonString='<?=$_SESSION['state']['product']['shapes'];?>';
 try {
@@ -76,6 +190,10 @@ var is_diferent = function(v1,v2,tipo){
 
 }
 
+
+
+
+
     var change_units=function(){
 	Dom.get("units_cancel").style.visibility='visible';
 	Dom.get("change_units_but").style.display='none';
@@ -128,8 +246,8 @@ var change_element= function(o){
 
 	}
 
-	if(editing=='suppliers'){
-	    interpet_changes(o.getAttribute('supplier_id'));
+	if(editing=='parts'){
+	    interpet_changes(o.getAttribute('part_id'));
 	}else
 	    interpet_changes(o.id);
 	
@@ -137,14 +255,14 @@ var change_element= function(o){
 
     }
 
-    function supplier_changed(o,id){
-     var code=Dom.get('v_supplier_code'+id);
-     var cost=Dom.get('v_supplier_cost'+id);
+    function part_changed(o,id){
+     var code=Dom.get('v_part_code'+id);
+     var cost=Dom.get('v_part_cost'+id);
      name=o.name;
      if(cost.value!=cost.getAttribute('ovalue') || code.value!=code.getAttribute('ovalue')){
-	 Dom.get('save_supplier_'+id).style.visibility='visible';
+	 Dom.get('save_part_'+id).style.visibility='visible';
      }else
-	 Dom.get('save_supplier_'+id).style.visibility='hidden';
+	 Dom.get('save_part_'+id).style.visibility='hidden';
      
  }
     function price_change(old_value,new_value){
@@ -235,11 +353,11 @@ function units_save(){
 
 }
 
-function delete_supplier(id,name){
-    var answer = confirm("<?=_('Are you sure you want to desassociate this supplier')?> ("+name+")");
+function delete_part(id,name){
+    var answer = confirm("<?=_('Are you sure you want to desassociate this part')?> ("+name+")");
     if (answer){
 
-	var request='ar_assets.php?tipo=ep_update&key=supplier_delete'+'&value='+escape(id);
+	var request='ar_assets.php?tipo=ep_update&key=part_delete'+'&value='+escape(id);
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
 		    //alert(o.responseText);
@@ -347,43 +465,54 @@ function caption_changed(o){
 	if(ovalue!=o.value){
 	    if(name=='description'){
 		if(o.value==''){
-		    Dom.get("edit_messages").innerHTML="<?=_("The product description can not be empty")?>";
-		    Dom.get(name+"_save").style.visibility='hidden';
-		    return;
+		    //    Dom.get("warnings").innerHTML="<?=_("The product name can not be empty")?>";
+		    //Dom.get(name+"_save").style.visibility='hidden';
+
+		    description_errors.description="<?=_("The product name can not be empty")?>";
+		  //   save_menu();
+// 		    return;
 		}
-		if(o.value.lenght>75){
-		    Dom.get("edit_messages").innerHTML="<?=_("The product description can not be longer the 75 characters")?>";
-		    Dom.get(name+"_save").style.visibility='hidden';
-		    return;
-		}
+		else if(o.value.lenght>75){
+		    description_errors.description="<?=_("The product name can not be empty")?>";
+		 //    save_menu();
+// 		    return;
+		}else
+		    delete description_errors.description
+
+
 	    }else if(name=='sdescription'){
 		if(o.value==''){
-		    Dom.get("edit_messages").innerHTML="<?=_("The product short description can not be empty")?>";
-		    Dom.get(name+"_save").style.visibility='hidden';
-		    return;
+		    description_errors.sdescription="<?=_("The product short description can not be empty")?>";
+		  //   save_menu();
+// 		    return;
 		}
 		if(o.value.lenght>75){
-		    Dom.get("edit_messages").innerHTML="<?=_("The product short description can not be longer the 40 characters")?>";
-		    Dom.get(name+"_save").style.visibility='hidden';
-		    return;
-		}
+		    description_errors.sdescription="<?=_("The product short description can not be longer the 40 characters")?>";
+		 //    save_menu();
+// 		    return;
+		}else
+		    delete description_errors.sdescription;
+					
 	    }
 
+	    if(o.getAttribute('changed')==0){
+		description_num_changed++;
+		o.setAttribute('changed',1)
+	    }
 
-	    
-
-	    Dom.get("edit_messages").innerHTML='';
-	    Dom.get(name+"_save").style.visibility='visible';
-	    //Dom.get(name+"_icon").style.visibility='visible';
 	    
 	}
 	else{
-	    Dom.get("edit_messages").innerHTML='';
-	    Dom.get(name+"_save").style.visibility='hidden';
-	    //Dom.get(name+"_icon").style.visibility='hidden';
+
+	    
+	    if(o.getAttribute('changed')==1){
+		description_num_changed--;
+		o.setAttribute('changed',0)
+	    }
+
 	}
     
-	
+	 save_menu();
 	
     }
 
@@ -581,11 +710,11 @@ function save_form(){
 
 var interpet_changes = function(id){
     
-    if(editing=='suppliers'){
+    if(editing=='parts'){
 	if(num_changed>0 && num_errors==0){
-	    Dom.get('save_supplier_'+id).style.display='';
+	    Dom.get('save_part_'+id).style.display='';
 	}else
-	    Dom.get('save_supplier_'+id).style.display='none';
+	    Dom.get('save_part_'+id).style.display='none';
 
 	
     }else{
@@ -775,11 +904,29 @@ function delete_list_item (e,id){
 	return true;
     }
     var change_textarea=function(e,name){
-	//editor.saveHTML(); 
-	//html = editor.get('element').value; 
 
-	Dom.get('details_save').style.display='';
+	editor.saveHTML(); 
+	html = editor.get('element').value; 
 
+	
+	md5=hex_md5(html)
+
+	o=Dom.get(name);
+	ovalue=o.getAttribute('ovalue');
+
+	if(ovalue!=md5){
+	    if(o.getAttribute('changed')==0){
+		description_num_changed++;
+		o.setAttribute('changed',1)
+	    }
+	}else{
+	    if(o.getAttribute('changed')==1){
+		description_num_changed--;
+		o.setAttribute('changed',0)
+	    }
+	}
+
+save_menu();
     }
 
 
@@ -1014,9 +1161,9 @@ function save_image(key,image_id){
 var change_block = function(e){
     
 
-    Dom.get('d_suppliers').style.display='none';
+    Dom.get('d_parts').style.display='none';
     Dom.get('d_pictures').style.display='none';
-    Dom.get('d_suppliers').style.display='none';
+    Dom.get('d_parts').style.display='none';
     Dom.get('d_prices').style.display='none';
     Dom.get('d_dimat').style.display='none';
     Dom.get('d_config').style.display='none';
@@ -1027,9 +1174,9 @@ var change_block = function(e){
 
     Dom.get('config').className='';
 
-    Dom.get('suppliers').className='';
+    Dom.get('parts').className='';
     Dom.get('pictures').className='';
-    Dom.get('suppliers').className='';
+    Dom.get('parts').className='';
     Dom.get('prices').className='';
     Dom.get('dimat').className='';
     Dom.get('description').className='';
@@ -1050,13 +1197,13 @@ function init(){
 
 	var ids = ["cat_select"]; 
 	YAHOO.util.Event.addListener(ids, "change", change_list_element);
-	var ids = ["description","pictures","prices","suppliers","dimat","config"]; 
+	var ids = ["description","pictures","prices","parts","dimat","config"]; 
 	YAHOO.util.Event.addListener(ids, "click", change_block);
 	
 	//	YAHOO.util.Event.addListener(ids, "click", prepare_list_element);
 
 
-	//	var ids = ["v_details"]; 
+	//	var ids = ["details"]; 
 	//YAHOO.util.Event.addListener(ids, "keyup", change_textarea);
 
 
@@ -1074,7 +1221,7 @@ function init(){
 	    focusAtStart: true
 	};     
 
- 	editor = new YAHOO.widget.Editor('v_details', texteditorConfig);
+ 	editor = new YAHOO.widget.Editor('details', texteditorConfig);
 
 	editor._defaultToolbar.buttonType = 'basic';
  	editor.render();
@@ -1225,34 +1372,34 @@ YAHOO.util.Event.onContentReady("shapes", function () {
     YAHOO.util.Event.onDOMReady(init);
 
 
-var supplier_selected=function(sType, aArgs){
+var part_selected=function(sType, aArgs){
     var myAC = aArgs[0]; // reference back to the AC instance
     var elLI = aArgs[1]; // reference to the selected LI element
     var oData = aArgs[2]; // object literal of selected item's result data
 
-    Dom.get('new_supplier_form').style.display='';
+    Dom.get('new_part_form').style.display='';
 
-    Dom.setStyle('current_suppliers_form', 'opacity', .25); 
+    Dom.setStyle('current_parts_form', 'opacity', .25); 
 
-    Dom.get('new_supplier_name').innerHTML=oData.names;
-    Dom.get('new_supplier_form').setAttribute('supplier_id',oData.id);
-    Dom.get('new_supplier_input').value='';
-    Dom.get('new_supplier_cost').value='';
-    Dom.get('new_supplier_code').value='';
+    Dom.get('new_part_name').innerHTML=oData.names;
+    Dom.get('new_part_form').setAttribute('part_id',oData.id);
+    Dom.get('new_part_input').value='';
+    Dom.get('new_part_cost').value='';
+    Dom.get('new_part_code').value='';
 
 
 };
 
-var save_supplier=function(supplier_id){
-    var cost=Dom.get('v_supplier_cost'+supplier_id).value;
-    var code=Dom.get('v_supplier_code'+supplier_id).value;
-    var request='ar_assets.php?tipo=ep_update&key=supplier&value='+ escape(supplier_id)+'&sup_cost='+ escape(cost)+'&sup_code='+ escape(code);
+var save_part=function(part_id){
+    var cost=Dom.get('v_part_cost'+part_id).value;
+    var code=Dom.get('v_part_code'+part_id).value;
+    var request='ar_assets.php?tipo=ep_update&key=part&value='+ escape(part_id)+'&sup_cost='+ escape(cost)+'&sup_code='+ escape(code);
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
 			alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if (r.ok) {
-		    Dom.get('save_supplier_'+supplier_id).style.visibility='hidden';
+		    Dom.get('save_part_'+part_id).style.visibility='hidden';
 		}else
 		    Dom.get('edit_messages').innerHTML='<span class="error">'+r.msg+'</span>';
 	    }
@@ -1261,11 +1408,11 @@ var save_supplier=function(supplier_id){
 
 
 
-var save_new_supplier=function(){
-    var cost=Dom.get('new_supplier_cost').value;
-    var code=Dom.get('new_supplier_code').value;
-    var supplier_id=Dom.get('new_supplier_form').getAttribute('supplier_id');
-    var request='ar_assets.php?tipo=ep_update&key=supplier_new&value='+ escape(supplier_id)+'&sup_cost='+ escape(cost)+'&sup_code='+ escape(code);
+var save_new_part=function(){
+    var cost=Dom.get('new_part_cost').value;
+    var code=Dom.get('new_part_code').value;
+    var part_id=Dom.get('new_part_form').getAttribute('part_id');
+    var request='ar_assets.php?tipo=ep_update&key=part_new&value='+ escape(part_id)+'&sup_cost='+ escape(cost)+'&sup_code='+ escape(code);
 
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
@@ -1274,24 +1421,24 @@ var save_new_supplier=function(){
 
 		if (r.ok) {
 
-		    tbody=Dom.get("current_suppliers_form");
+		    tbody=Dom.get("current_parts_form");
 		    
 		    var tr = document.createElement("tr");
-		    tr.setAttribute("id",'sup_tr1_'+supplier_id );
+		    tr.setAttribute("id",'sup_tr1_'+part_id );
 		    tr.setAttribute("class","top title" );
 		    var td = document.createElement("td");
 		    td.setAttribute("class","label" );
 		    td.setAttribute("colspan","2" );
 		    var img = document.createElement("img");
 		    img.setAttribute("class","icon" );
-		    img.setAttribute("id","delete_supplier_"+supplier_id );
-		    img.setAttribute("onClick","delete_supplier("+supplier_id+",'"+r.data.code+"')");
+		    img.setAttribute("id","delete_part_"+part_id );
+		    img.setAttribute("onClick","delete_part("+part_id+",'"+r.data.code+"')");
 		    img.setAttribute("src","art/icons/cross.png");
 		    td.appendChild(img);
 		    var img = document.createElement("img");
 		    img.setAttribute("class","icon" );
-		    img.setAttribute("id","save_supplier_"+supplier_id );
-		    img.setAttribute("onClick","save_supplier("+supplier_id+")");
+		    img.setAttribute("id","save_part_"+part_id );
+		    img.setAttribute("onClick","save_part("+part_id+")");
 		    img.setAttribute("src","art/icons/disk.png");
 		    img.setAttribute("style","visibility:hidden");
 		    td.appendChild(img);
@@ -1303,27 +1450,27 @@ var save_new_supplier=function(){
 
 
 		    var tr = document.createElement("tr");
-		    tr.setAttribute("id",'sup_tr2_'+supplier_id );
+		    tr.setAttribute("id",'sup_tr2_'+part_id );
 		    var td = document.createElement("td");
 		    td.setAttribute("class","label" );
 		    td.setAttribute("style","width:15em" );
-		    td.innerHTML='<?=_('Suppliers product code')?>:';
+		    td.innerHTML='<?=_('Parts product code')?>:';
 		    tr.appendChild(td);
 		    var td = document.createElement("td");
 		    td.setAttribute("style","text-align:left;" );
 		    var input = document.createElement("input");
-		    input.setAttribute("id","v_supplier_code"+supplier_id );
+		    input.setAttribute("id","v_part_code"+part_id );
 		    input.setAttribute("style","padding-left:2px;text-align:left;width:10em" );
-		    input.setAttribute("ovalue",r.data.supplier_product_code );
+		    input.setAttribute("ovalue",r.data.part_product_code );
 		    input.setAttribute("name",'code' );
-		    input.setAttribute("onkeyup","supplier_changed(this,"+supplier_id+")" );
-		    input.value=r.data.supplier_product_code;
+		    input.setAttribute("onkeyup","part_changed(this,"+part_id+")" );
+		    input.value=r.data.part_product_code;
 		    td.appendChild(input);
 		    tr.appendChild(td);
 		    tbody.appendChild(tr);
 
 		    var tr = document.createElement("tr");
-		    tr.setAttribute("id",'sup_tr3_'+supplier_id );
+		    tr.setAttribute("id",'sup_tr3_'+part_id );
 		    var td = document.createElement("td");
 		    td.setAttribute("class","label" );
 		    td.innerHTML='<?=_('Cost per')?> '+r.units_tipo_name+':';
@@ -1336,11 +1483,11 @@ var save_new_supplier=function(){
 		    txt.innerHTML=r.currency;
 
 		    var input = document.createElement("input");
-		    input.setAttribute("id","v_supplier_cost"+supplier_id );
+		    input.setAttribute("id","v_part_cost"+part_id );
 		    input.setAttribute("style","text-align:right;width:6em" );
 		    input.setAttribute("ovalue",r.data.price );
 		    input.setAttribute("name",'price' );
-		    input.setAttribute("onblur","this.value=FormatNumber(this.value,'"+r.decimal_point+"','"+r.thosusand_sep+"',4);supplier_changed(this,"+supplier_id+")" );
+		    input.setAttribute("onblur","this.value=FormatNumber(this.value,'"+r.decimal_point+"','"+r.thosusand_sep+"',4);part_changed(this,"+part_id+")" );
 		    input.value=r.data.price;
 		    
 		    td.appendChild(txt);
@@ -1348,23 +1495,23 @@ var save_new_supplier=function(){
 		    tr.appendChild(td);
 		    tbody.appendChild(tr);
 		    var tr = document.createElement("tr");
-		    tr.setAttribute("id",'sup_tr4_'+supplier_id );
+		    tr.setAttribute("id",'sup_tr4_'+part_id );
 		    var td = document.createElement("td");
 		    td.setAttribute("colspan","2" );
 		    tr.appendChild(td);
 		    tbody.appendChild(tr);
-		    Dom.get('new_supplier_form').style.display='none';
-		    Dom.setStyle('current_suppliers_form', 'opacity', 1); 
+		    Dom.get('new_part_form').style.display='none';
+		    Dom.setStyle('current_parts_form', 'opacity', 1); 
 		}else
 		    Dom.get('edit_messages').innerHTML='<span class="error">'+r.msg+'</span>';
 	    }
 	});
 };
-var cancel_new_supplier=function(){
-    Dom.setStyle('current_suppliers_form', 'opacity', 1.0); 
-    Dom.get('new_supplier_form').style.display='none';
-    Dom.get('new_supplier_name').innerHTML='';
-    Dom.get('new_supplier_form').setAttribute('supplier_id','');
+var cancel_new_part=function(){
+    Dom.setStyle('current_parts_form', 'opacity', 1.0); 
+    Dom.get('new_part_form').style.display='none';
+    Dom.get('new_part_name').innerHTML='';
+    Dom.get('new_part_form').setAttribute('part_id','');
 
 
 }	
@@ -1373,22 +1520,22 @@ var cancel_new_supplier=function(){
 
 
 
-YAHOO.util.Event.onContentReady("adding_new_supplier", function () {
-	var oDS = new YAHOO.util.XHRDataSource("ar_suppliers.php");
+YAHOO.util.Event.onContentReady("adding_new_part", function () {
+	var oDS = new YAHOO.util.XHRDataSource("ar_parts.php");
  	oDS.responseType = YAHOO.util.XHRDataSource.TYPE_JSON;
  	oDS.responseSchema = {
  	    resultsList : "data",
  	    fields : ["name","code","id","names"]
  	};
 
- 	var oAC = new YAHOO.widget.AutoComplete("new_supplier_input", "new_supplier_container", oDS);
+ 	var oAC = new YAHOO.widget.AutoComplete("new_part_input", "new_part_container", oDS);
  	oAC.resultTypeList = false; 
 	oAC.generateRequest = function(sQuery) {
-	    // alert("?tipo=suppliers_name&except_product=<?=$_SESSION['state']['product']['id']?>&query=" + sQuery)
- 	    return "?tipo=suppliers_name&except_product=<?=$_SESSION['state']['product']['id']?>&query=" + sQuery ;
+	    // alert("?tipo=parts_name&except_product=<?=$_SESSION['state']['product']['id']?>&query=" + sQuery)
+ 	    return "?tipo=parts_name&except_product=<?=$_SESSION['state']['product']['id']?>&query=" + sQuery ;
  	};
 	oAC.forceSelection = true; 
-	oAC.itemSelectEvent.subscribe(supplier_selected); 
+	oAC.itemSelectEvent.subscribe(part_selected); 
     });
 
 

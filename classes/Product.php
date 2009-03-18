@@ -722,6 +722,16 @@ case('Price Anonymous Info'):
 	return $this->money($this->data['Product Price']/$arg2);
       
       break; 
+    case('RRP Per Outer'):
+	return $this->money($this->data['Product RRP']);
+	break; 
+    case('RRP Per Unit'):
+	return $this->money($this->data['Product RRP']/$this->data['Product Units Per Case']);
+	break; 	
+    case('Product RRP Per Unit'):
+      return sprintf("%.2f",$this->data['Product RRP']/$this->data['Product Units Per Case']);
+      break; 	
+      
 
 
     case('RRP Formated'):
@@ -755,6 +765,13 @@ case('Price Anonymous Info'):
 }
 
 
+      break;
+    case('Product Net Weight Per Unit'):
+      return $this->data['Product Net Weight']/$this->data['Product Units Per Case'];
+      break;
+      
+  case('Product Description MD5 Hash'):
+    return md5($this->data['Product Description MD5 Hash']);
       break;
     case('Parts SKU'):
       $sql=sprintf("select `Part SKU` from `Product Part List` where `Product ID`=%d ;",$this->data['Product ID']);
@@ -1386,7 +1403,7 @@ function normalize_code($code){
      
      $date=date("Y-m-d");
      $sql=sprintf("select PPL.`Part SKU`,ISF.`Location Key`,`Quantity On Hand`,`Parts Per Product`,`Location Code`   from `Product Part List` PPL left join `Inventory Spanshot Fact` ISF on (ISF.`Part SKU`=PPL.`Part SKU`) left join `Location Dimension` LD on (LD.`Location Key`=ISF.`Location Key`)  where `Product ID`=%d and `Date`=%s and `Product Part Most Recent`='Yes';",$this->data['Product ID'],prepare_mysql($date));
-     // print $sql;
+      print $sql;
      $result=mysql_query($sql);
      $this->parts_location=array();
      while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
@@ -1398,15 +1415,18 @@ function normalize_code($code){
 					    ,'parts_per_peroduct'=>$row['Parts Per Product']
 					    );
      }
+
      break; 
    case('part_list'):
-     $sql=sprintf("select PPL.`Part SKU`,`Part XHTML Description` from `Product Part List` PPL left join `Part Dimension` PD on (PD.`Part SKU`=PPL.`Part SKU`) where `Product ID`=%d and `Product Part Most Recent`='Yes';",$this->data['Product ID']);
+     $sql=sprintf("select `Parts Per Product`,`Product Part Note`,PPL.`Part SKU`,`Part XHTML Description` from `Product Part List` PPL left join `Part Dimension` PD on (PD.`Part SKU`=PPL.`Part SKU`) where `Product ID`=%d and `Product Part Most Recent`='Yes';",$this->data['Product ID']);
      $result=mysql_query($sql);
      $this->parts=array();
      while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
        $this->parts[$row['Part SKU']]=array(
 					    'sku'=>$row['Part SKU']
 					    ,'description'=>$row['Part XHTML Description']
+					    ,'note'=>$row['Product Part Note']
+					    ,'parts_per_product'=>$row['Parts Per Product']
 					    );
      }
      break;
@@ -2447,6 +2467,32 @@ $y_days=count($y_days);
        
 
      break;
+
+
+
+case('images_slideshow'):
+       $sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image URL`,`Image Filename`,`Image Type`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Product Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Product Key`=%d",$this->id);
+
+     $res=mysql_query($sql);
+     $this->images_slideshow=array();
+
+
+     while($row=mysql_fetch_array($res)){
+       if($row['Image Type']=='Original')
+	 if($row['Image Height']!=0)
+	   $ratio=$row['Image Width']/$row['Image Height'];
+	 else
+	   $ratio=1;
+       $this->images_slideshow[]=array('filename'=>$row['Image Filename'],'ratio'=>$ratio,'caption'=>$row['Image Caption'],'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key']);
+
+     }
+       
+
+
+       
+
+     break;
+
    }
    
 

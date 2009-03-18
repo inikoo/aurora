@@ -28,10 +28,11 @@
 	  <div id="photo_container" style="margin-top:10px">
 	    <div style="border:1px solid #ddd;padding-top:0;width:220px;xheight:230px;text-align:center;margin:0 10px 0 0px">
 	      <span style="font-size:150%;font-weight:800">{$product->get('Product Code')}</span>
-	      <div id="imagediv"   style="border:1px solid #ddd;width:200px;height:140px;padding:0px 0;xborder:none;cursor:pointer;xbackground:red;margin: 0 0 10px 9px">
-		<img src="{ if $num_images>0}{$images[$data.principal_image].med}{else}art/nopic.png{/if}"     id="image"   alt="{t}Image{/t}"/>
+	      <div id="imagediv"   style="border:1px solid #ddd;width:{$div_img_width}px;hceight:{$div_img_height}px;padding:5px 5px;xborder:none;cursor:pointer;xbackground:red;margin: 0 0 10px 9px;vertical-align:middle">
+		<img src="{ if $num_images>0}{$images[0].filename}{else}art/nopic.png{/if}"  style="vertical-align:middle;display:block;" width="{$img_width}px" valign="center" border=1  id="image"   alt="{t}Image{/t}"/>
 	      </div>
 	    </div>
+	    { if $num_images>1}
 	    <div style="width:160px;margin:auto;padding-top:5px"  >
 	      {foreach from=$images item=image  name=foo}
 	      {if $image.principal==0}
@@ -39,7 +40,7 @@
 {/if}
 {/foreach}
 </div>
-	  
+	  {/if}
             
 	    
 	  </div>
@@ -122,18 +123,20 @@
 		  <tr>
 		    <td>{t}Available{/t}:<td class="stock aright" id="stock">{$product->get('Product Availability')}</td>
 		  </tr>
-		  <table class="locations " style="float:right"  >
-		    {if $product->get('Number of Parts')>0}
-		    <tr><td>{t}Parts{/t}:</td><td class="aleft">
-			{foreach from=$product->parts item=part name=foo }
-			<tr><td>{t}SKU{/t} {$part.sku}</td><td style="padding-left:10px"> ()</td></tr>
-			{/foreach}
-		      </table>
-		    <td>
-		      {/if}
-		      {if $nextbuy>0   }<tr><td rowspan="2">{t}Next shipment{/t}:</td><td>{$data.next_buy}</td></tr><tr><td class="noborder">{$data.nextbuy_when}</td>{/if}
+		  <tr>
+		    {if $nextbuy>0   }<tr><td rowspan="2">{t}Next shipment{/t}:</td><td>{$data.next_buy}</td></tr><tr><td class="noborder">{$data.nextbuy_when}</td>{/if}
 		    </tr>
-		  </table>
+		</table>
+		{if $product->get('Number of Parts')>0}
+		<table class="show_info_product" style="float:right;width:100%"  >
+		  <tr>
+		    <td>{t}Parts{/t}:</td><td class="aleft">
+		      {foreach from=$product->parts_location item=part name=foo }
+		      <tr><td>{t}SKU{/t} <a href="part.php?sku={$part.sku}">{$part.sku}</a></td><td style="padding-left:10px"> {$part.location_code}({$part.stock})</td></tr>
+		      {/foreach}
+		</table>
+		{/if}
+
 		  
 		  <table  class="show_info_product">
 		    <tr ><td>{t}Unit Weight{/t}:</td><td class="aright">{$product->get('Formated Weight')}</td></tr>

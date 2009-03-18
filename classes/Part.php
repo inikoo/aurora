@@ -94,8 +94,12 @@ class part{
 
     case('calculate_stock_history'):
       global $myconf;
-      $force_first_day=true;
-      
+      $force='';
+      if(preg_match('/all/',$args))
+	$force='all';
+      if(preg_match('/last/',$args))
+	$force='last';
+
       $part_sku=$this->data['Part SKU'];
 
       if(isset($args) and $args=='today')
@@ -109,31 +113,37 @@ class part{
       while($rowxxx=mysql_fetch_array($resultxxx, MYSQL_ASSOC)   ){
 	$skip=false;
 	$location_key=$rowxxx['Location Key'];
-	
+	$pl=new PartLocation($location_key.'_'.$this->data['Part SKU']);
 	if($location_key==1){
-	  if($force_first_day){
-	    
-	    $from=strtotime($this->data['Part Valid From']);
+	  if($force=='all'){
+	    $_from=$this->data['Part Valid From'];
+	  }elseif($force=='last'){
+	    $_from=$pl->last_inventory_audit();
 	  }else{
 	    $_from=$pl->first_inventory_transacion();
-	    if(!$_from)
-	      $skip=true;
-	    $from=strtotime($_from);
-     }
-
-
-   }else{
-     $_from=$pl->first_inventory_transacion();
-     if(!$_from)
-       $skip=true;
-     $from=strtotime($_from);
-   }
-
-   if($from<$min)
-     $from=$min;
-
-   if($this->data['Part Status']=='In Use'){
-     $to=strtotime('today');
+	  }
+	  if(!$_from)
+	    $skip=true;
+	  $from=strtotime($_from);
+	  
+	  
+	  
+	}else{
+	  if($force=='first')
+	    $_from=$pl->last_inventory_audit();
+	  else
+	    $_from=$pl->first_inventory_transacion();
+	  
+	  if(!$_from)
+	    $skip=true;
+	  $from=strtotime($_from);
+	}
+	
+	if($from<$min)
+	  $from=$min;
+	
+	if($this->data['Part Status']=='In Use'){
+	  $to=strtotime('today');
    }else{
      $to=strtotime($this->data['Part Valid To']);
    }
@@ -152,12 +162,12 @@ class part{
 
    $from=date("Y-m-d",$from);
    $to=date("Y-m-d",$to);
-   // print "$part_sku $location_key  $from $to\n";
-   $pl=new PartLocation(array('LocationPart'=>$location_key."_".$part_sku));
+    print "$part_sku $location_key  $from $to\n";
+   //  $pl=new PartLocation(array('LocationPart'=>$location_key."_".$part_sku));
    $pl->redo_daily_inventory($from,$to);
 
 
- }
+      }
     
 
       break;

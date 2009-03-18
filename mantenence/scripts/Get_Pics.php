@@ -125,12 +125,37 @@ $exec=sprintf("wget www.ancientwisdom.biz/pics/%s",strtolower($product->data['Pr
     unlink("../../app_files/pics/tmp$rand.jpg");
 
 
+$rand=rand().rand();
+$exec=sprintf("wget www.ancientwisdom.biz/pics/%s",strtolower($product->data['Product Code']))."_box.jpg -q -O ../../app_files/pics/tmp$rand.jpg" ;
+  exec($exec );
+  //print '../../app_files/pics/tmp$rand.jpg'."\n";
+  if(file_exists("../../app_files/pics/tmp$rand.jpg") and filesize("../../app_files/pics/tmp$rand.jpg")>0){
+    //  print "caca";
+    $product->load_original_image("../../app_files/pics/tmp$rand.jpg");
+    
+  }
+ if(file_exists("../../app_files/pics/tmp$rand.jpg") )
+    unlink("../../app_files/pics/tmp$rand.jpg");
+
+
+$rand=rand().rand();
+$exec=sprintf("wget www.ancientwisdom.biz/pics/%s",strtolower($product->data['Product Code']))."_display.jpg -q -O ../../app_files/pics/tmp$rand.jpg" ;
+  exec($exec );
+  //print '../../app_files/pics/tmp$rand.jpg'."\n";
+  if(file_exists("../../app_files/pics/tmp$rand.jpg") and filesize("../../app_files/pics/tmp$rand.jpg")>0){
+    //  print "caca";
+    $product->load_original_image("../../app_files/pics/tmp$rand.jpg");
+    
+  }
+ if(file_exists("../../app_files/pics/tmp$rand.jpg") )
+    unlink("../../app_files/pics/tmp$rand.jpg");
+
 
   $product->load('images');
   // print_r($product->images_original);
   foreach($product->images_original as $key=>$_values){
 
-  $sql="select * from `Product Dimension` where `Product Code`='eid-04' and `Product Key`!=".$product->id;
+    $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s and `Product Key`!=%s",prepare_mysql($product->data['Product Code']),$product->id);
   $resultx=mysql_query($sql);
   while($rowx=mysql_fetch_array($resultx)   ){
 
