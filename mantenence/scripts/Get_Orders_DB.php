@@ -10,7 +10,7 @@ include_once('../../classes/Order.php');
 error_reporting(E_ALL);
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 if(!$con){print "Error can not connect with database server\n";exit;}
-$dns_db='dw';
+$dns_db='dw2';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
 
@@ -58,7 +58,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
     $result_test=mysql_query($sql);
     if($row_test=mysql_fetch_array($result_test, MYSQL_ASSOC)){
-      if($row_test==0)
+      if($row_test['num']==0)
 	print "NEW $contador $order_data_id $filename ";
       else{
 	$update=true;
@@ -781,7 +781,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	
        }
        
-       print "$tipo_order\n";
+       print "$tipo_order\r";
 
        $sales_rep_data=get_user_id($header_data['takenby'],true,'&view=processed');
        $data['Order XHTML Sale Reps']=$sales_rep_data['xhtml'];

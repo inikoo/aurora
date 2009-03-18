@@ -23,14 +23,26 @@
     <li id="description" {if $edit=='description'}class="selected"{/if} > <img src="art/icons/information.png"> {t}Description{/t}</li>
     <li id="pictures" {if $edit=='pictures'}class="selected"{/if} > <img src="art/icons/photos.png"> {t}Pictures{/t}</li>
     <li id="prices" {if $edit=='prices'}class="selected"{/if} ><img src="art/icons/money_add.png"> {t}Price, Discounts{/t}</li>
-    <li id="suppliers" {if $edit=='suppliers'}class="selected"{/if} ><img src="art/icons/cog_add.png"> {t}Suppiers{/t}</li>
+    <li id="parts" {if $edit=='parts'}class="selected"{/if} ><img src="art/icons/cog_add.png"> {t}Parts{/t}</li>
     <li id="dimat" {if $edit=='dimat'}class="selected"{/if} ><img src="art/icons/shape_ungroup.png"> {t}Dimensions{/t}</li>
     <li id="dimat" {if $edit=='web'}class="selected"{/if} ><img src="art/icons/page_world.png"> {t}Web Pages{/t}</li>
 
 
   </ul>
 
-<div style="clear:both;height:3em;padding:10px 20px;;margin:20px 80px 20px 20px;border: 1px solid #ccc;" id="edit_messages"></div>
+<div style="clear:both;height:3em;padding:10px 20px;;margin:20px 80px 20px 20px;border: 1px solid #ccc;" id="edit_messages">
+
+<div  style="float:right">
+<span class="save" style="display:none" id="description_save" onclick="save('description')">Save</span><span id="description_reset"  style="display:none"   class="reset" onclick="reset('description')">Reset</span>
+</div>
+<span>Number of changes:<span id="description_num_changes">0</span></span>
+</table>
+<div id="description_errors">
+</div>
+<div id="description_warnings">
+</div>
+
+</div>
 </div> 
 
 
@@ -40,48 +52,79 @@
 
 <div  {if $edit!="config"}style="display:none"{/if}  class="edit_block" id="d_config">
   
-  <table class="tipo" has_stock=''>
-    <tr>
-      <td class="selected">{t}Normal{/t}</td>
-      <td style="width:17em" class="options">
-	<table border=0 style="height:6em" class="options">
-	     <tr><td style="height:2em">{t}Shortcut{/t}</td><tr>
-	     <tr><td style="height:2em">{t}Mixture{/t}</td><tr>
-	</table>
-      </td>
-      <td class="explanation">
-	<div style="display:none" id="product_tipo_normal"></div>
-	{if $data.stock==0 or $data.stock==''}
-	<div style="display:none" id="product_tipo_dependant">
-	  {t}Choose the parent product{/t}
-	  <br>
-	  <input id="new_product_input" type="text">
-	  <div id="new_product_container">
-	</div>
-	{else}
-	<div style="display:none" id="product_tipo_dependant">
-	  {t}This product has already stock in a specific location{/t}<br/><a href="product_manage_stock.php?id={$data.id}">{t}Stock Managment{/t}</a>
-	</div>
-	{/if}
-	<div style="display:none" id="product_tipo_normal"></div>
 
-      </td>
-    </tr>
+ <table style="margin:0;"  class="edit">
+<tr>
+  <td class="label">{t}Type of Product{/t}:</td>
+   
+      <td >
+<div class="options" style="margin:5px 0">
+<span {if $product->get('Product Type')=="Normal"}class="selected"{/if} id="type_prod_normal">{t}Normal{/t}</span>
+<span {if $product->get('Product Type')=="Shortcut"}class="selected"{/if} id="type_prod_shortcut">{t}Shortcut{/t}</span>
+<span {if $product->get('Product Type')=="Mix"} class="selected"{/if} id="type_prod_mix">{t}Mixture{/t}</span>
+</div>
+</td>
+
+</tr>
+
+
   </table>
   
+
+
+<div style="margin:10px">
+{if $num_parts==0}
+ {t}Choose the part{/t} 
+  <div id="adding_new_part" style="width:200px;margin-bottom:45px"><input id="new_part_input" type="text"><div id="new_part_container"></div></div>
+
+{else}
+<table class="edit" style="width:33em" >
+<tbody id="current_parts_form">
+
+      {foreach from=$parts item=part key=part_id }
+      <tr  id="sup_tr1_{$part_id}" class="top title">
+	<td  class="label" colspan=2>
+{$part.description}
+	</td>
+      </tr>
+      <tr id="sup_tr2_{$part_id}">
+	<td class="label" style="width:15em">{t}Parts Per Product{/t}:</td>
+	<td style="text-align:left;">
+	  <input style="padding-left:2px;text-align:left;width:3em" value="{$part.parts_per_product}" name="parts_per_product"  changed=0           onkeyup="part_changed(this,{$part_id})" ovalue="{$part.parts_per_product}" id="v_part_code{$part_id}"></td>
+      </tr>
+      <tr id="sup_tr3_{$part_id}" class="last">
+	<td class="label">{t}Note For Pickers{/t}:</td>
+	<td style="text-align:left"><input id="v_part_cost{$part_id}" style="text-align:right;width:16em"  name="notes" onblur="part_changed(this,{$part_id})"  value="{$part.note}" ovalue="{$part.note}" ></td>
+      </tr>
+      {/foreach}
+    </tbody>
+    
+  </table>	  
+
+ {t}Change Part{/t} 
+  <div id="adding_new_part" style="width:200px;margin-bottom:45px"><input id="new_part_input" type="text"><div id="new_part_container"></div></div>
+
+
+{/if}
+</div>
+
   <div {if $data.product_tipo!='dependant'}display="none"{/if} >
     <table class="edit" border=0>
       <tr>
 	<td  class="label" style="width:10em">{t}Units Definition{/t}:</td>
-	<td style="width:10em" id="v_units_tipo" ovalue="$data.units_tipo" value="$data.units_tipo">{$data.units_tipo_name}</td>
-	<td><span onclick="change_units_tipo()" id="change_units_tipo_but" style="display:none;cursor:pointer;text-decoration:underline;color:#777">{t}Change{/t}</span>
-	  <span id="change_units_tipo_diff" style="display:none"></span></td>
-	<td><span id="units_tipo_save"  style="cursor:pointer;visibility:hidden" onclick="units_tipo_save()">{t}Save{/t} <img src="art/icons/disk.png"/></span></td>
+   <td colspan=2>
+<div class="options" style="margin:5px 0">
+  {foreach from=$units_tipo item=unit_tipo key=part_id }
+<span {if $unit_tipo.selected}class="selected"{/if} id="unit_tipo_{$unit_tipo.name}">{$unit_tipo.fname}</span>
+{/foreach}
+</div>
+</td>
+
 	
       </tr>
 
       <tr>
-	<td class="label"><span id="units_tipo_plural">{$data.units_tipo_plural}</span> {t}per outer{/t}:</td>
+	<td class="label">{t}Units Per Outer{/t}:</td>
 	<td><span id="units">{$units}</span>
 	  <input 
 	     id="v_units" 
@@ -198,9 +241,9 @@
       <td><span onClick="save_price('price')" name="price" style="cursor:pointer;visibility:hidden" id="price_save">{t}Save{/t} <img src="art/icons/disk.png"/></span></td></tr>
     <tr>
       <td class="label">{t}Recomended Retail Price{/t}:</td>
-      <td id="rrp_ou">{$rrp_perouter}</td>
-      <td>{$currency}<input onkeydown="to_save_on_enter(event,this)" onblur="format_rrp(this)" style="text-align:right;width:10em"   factor="{$factor_units}"   name="rrp" id="v_rrp" ovalue="{$data.rrp}" value="{$data.rrp}" ></td> 
-      <td id="rrp_change">{if $data.rrp==''}{t}RRP not set{/t}{/if}</td>
+      <td id="rrp_ou">{$product->get('RRP Per Outer')}</td>
+      <td>{$currency}<input onkeydown="to_save_on_enter(event,this)" onblur="format_rrp(this)" style="text-align:right;width:10em"   factor="{$factor_units}"   name="rrp" id="v_rrp" ovalue="{$product->get('Product RRP Per Unit')}" value="{$product->get('Product RRP Per Unit')}" ></td> 
+      <td id="rrp_change">{if $product->get('Product RRP Per Unit')==''}{t}RRP not set{/t}{/if}</td>
       
       <td><span onClick="save_price('rrp')" name="rrp" style="cursor:pointer;visibility:hidden" id="rrp_save">{t}Save{/t} <img src="art/icons/disk.png"/></span></td>
     </tr>
@@ -213,22 +256,39 @@
 <table class="edit" >
   <tr class="title"><td colspan=6>{t}Weight{/t}</td></tr>
   <tr>
-    <td class="label" style="width:12em">{t}Per{/t} {$data.units_tipo_name}:</td>
+    <td class="label" style="width:12em">{t}Per{/t} {$product->get('Product Unit Type')}:</td>
     <td style="width:4em" class="text-align:left">{t}Kg{/t}</td>
-    <td><input style="text-align:right;width:5em"  onkeydown="to_save_on_enter(event,this)" name="weight"   id="v_weight" tipo="number" value="{$data.weight}"   onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thosusand_sep}',3);weight_changed(this)"     ovalue="{$data.weight}"></td>
+    <td><input style="text-align:right;width:5em"  onkeydown="to_save_on_enter(event,this)" name="weight"   id="v_weight" tipo="number" value="{$product->get('Product Net Weight Per Unit')}"   onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thosusand_sep}',3);weight_changed(this)"     ovalue="{$product->get('Product Net Weight Per Unit')}"></td>
     <td class="icon" style="width:20px"><img id="weight_save" style="cursor:pointer;visibility:hidden" onClick="simple_save('weight')" src="art/icons/disk.png"></td>
   </tr>
   <tr>
     <td class="label">{t}Per outer{/t}:<br>{t}including packing{/t}</td>
     <td>{t}Kg{/t}</td>
-    <td><input style="text-align:right;width:5em"  onkeydown="to_save_on_enter(event,this)" id="v_oweight"  tipo="number" value="{$data.oweight}"  name="oweight"  ovalue="{$data.oweight}"  onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thosusand_sep}',3);weight_changed(this)"  ></td>
+    <td><input style="text-align:right;width:5em"  onkeydown="to_save_on_enter(event,this)" id="v_oweight"  tipo="number" value="{$product->get('Product Gross Weight')}"  name="oweight"  ovalue="{$product->get('Product Gross Weight')}"  onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thosusand_sep}',3);weight_changed(this)"  ></td>
     <td class="icon"><img id="oweight_save" style="cursor:pointer;visibility:hidden" onClick="simple_save('oweight')" src="art/icons/disk.png"></td>
   </tr>
 </table>
  <table class="edit" >
     <tr class="title"><td colspan=5>{t}Dimensions{/t}</td></tr>
  <tr>
-   <td class="label" style="width:12em">{$data.units_tipo_name|capitalize}:</td>
+   <td class="label" style="width:12em">{t}Product gross volume{/t}:<br>{t}including packing{/t}</td><td>{t}Liters{/t}<br>1000{t}cc{/t}</td>
+<td><input style="text-align:right;width:5em"  onkeydown="to_save_on_enter(event,this)"  onblur="vol_changed(this)" name="vol" id="v_vol" value="{$product->get('Product Gross Volume')}" ovalue="$product->get('Product Gross Volume')"   ></td>
+<td><span>{t}Calculate{/t}</span></td>
+</tr>
+<tr>
+   <td class="label" style="width:12em">{t}Product MOV{/t}:<br>{t}including packing{/t}</td><td>{t}Liters{/t}<br>1000{t}cc{/t}</td>
+<td><input style="text-align:right;width:5em"  onkeydown="to_save_on_enter(event,this)"  onblur="movol_changed(this)" name="movol" id="v_movol" value="{$product->get('Product Minimun Orthogonal Gross Volume')}" ovalue="$product->get('Product Minimun Orthogonal Gross Volume')"   ></td>
+<td></td>
+</tr>
+
+
+</table>
+
+<div style="display:none">
+<table class="edit" border=1>
+    <tr class="title"><td colspan=5>{t}Dimensions{/t}</td></tr>
+ <tr>
+   <td class="label" style="width:12em">{t}Product gross volume{/t}:<br>{t}including packing{/t}</td><td>{t}Liters{/t}<br>1000{t}cc{/t}</td>
    <td style="width:4em"><span  style="cursor:pointer" id="dim_shape">{$data.dim_tipo_name}</span></td>
    <td><input style="text-align:right;width:10em"  onkeydown="to_save_on_enter(event,this)"  onblur="dim_changed(this)" tipo="shape{$data.dim_tipo}" name="dim" id="v_dim" value="{$data.dim}" ovalue="{$data.dim}"   ></td>
    <td style="width:24em" style="font-size:90%;color:#777" ><img id="dim_alert" src="art/icons/exclamation.png" title="{t}Wrong Format{/t}"  style="cursor:pointer;;visibility:hidden;float:left" /> <span id="dim_shape_example">{$shape_example[$data.dim_tipo]}<span></td>
@@ -241,55 +301,56 @@
       <td><img id="odim_save" style="cursor:pointer;visibility:hidden" onClick="simple_save('odim')" src="art/icons/disk.png"></td></tr>
 </tr>
 </table>
-
+</div>
 
 
 </div>
-<div  {if $edit!="suppliers"}style="display:none"{/if}  class="edit_block" id="d_suppliers">
-  {t}Add new supplier{/t} 
-  <div id="adding_new_supplier" style="width:200px;margin-bottom:45px"><input id="new_supplier_input" type="text"><div id="new_supplier_container"></div></div>
+<div  {if $edit!="parts"}style="display:none"{/if}  class="edit_block" id="d_parts">
+  {t}Add new part{/t} 
+  <div id="adding_new_part" style="width:200px;margin-bottom:45px"><input id="new_part_input" type="text"><div id="new_part_container"></div></div>
 
   
   <table  class="edit" style="width:33em"  >
-    <tbody id="new_supplier_form" style="display:none;background:#f1fdf2"  supplier_id="" >
+    <tbody id="new_part_form" style="display:none;background:#f1fdf2"  part_id="" >
       <tr class="top title">
 	<td style="width:18em" class="label" colspan=2>
-	  <img id="cancel_new"         class="icon" onClick="cancel_new_supplier()" src="art/icons/cross.png">
-	  <img id="save_supplier_new"  class="icon" onClick="save_new_supplier()" src="art/icons/disk.png">
-	  <span id="new_supplier_name"></span> <img id="save_supplier_{$supplier_id}" src="art/icons/new.png">
+	  <img id="cancel_new"         class="icon" onClick="cancel_new_part()" src="art/icons/cross.png">
+	  <img id="save_part_new"  class="icon" onClick="save_new_part()" src="art/icons/disk.png">
+	  <span id="new_part_name"></span> <img id="save_part_{$part_id}" src="art/icons/new.png">
 	</td>
       </tr>
       <tr>
-	<td class="label">{t}Suppliers product code{/t}:</td>
-	<td style="text-align:left;width:11em"><input style="text-align:right;width:10em" value="" id="new_supplier_code" value="" ></td>
+	<td class="label">{t}Parts product code{/t}:</td>
+	<td style="text-align:left;width:11em"><input style="text-align:right;width:10em" value="" id="new_part_code" value="" ></td>
       </tr>
       <tr class="last">
 	<td class="label">{t}Estimated price per{/t} {$data.units_tipo_name}:</td>
-	<td style="text-align:left">{$currency}<input style="text-align:right;width:6em" value="" id="new_supplier_cost" id=""></td>
+	<td style="text-align:left">{$currency}<input style="text-align:right;width:6em" value="" id="new_part_cost" id=""></td>
       </tr>
       <tr>
 	<td style="background:white" colspan="4"></td>
       </tr>
     </tbody>
-    <tbody id="current_suppliers_form">
-      {foreach from=$supplier item=supplier key=supplier_id }
-      <tr  id="sup_tr1_{$supplier_id}" class="top title">
+    <tbody id="current_parts_form">
+
+      {foreach from=$parts item=part key=part_id }
+      <tr  id="sup_tr1_{$part_id}" class="top title">
 	<td  class="label" colspan=2>
-	  <img id="delete_supplier_{$supplier_id}" class="icon" onclick="delete_supplier({$supplier_id},'{$supplier}')"  src="art/icons/cross.png">
-	  <img id="save_supplier_{$supplier_id}" class="icon" style="visibility:hidden" onClick="save_supplier({$supplier_id})" src="art/icons/disk.png">
-	  <a href="supplier.php?id={$supplier_id}">{$supplier.code}</a>
+	  <img id="delete_part_{$part_id}" class="icon" onclick="delete_part({$part_id},'{$part}')"  src="art/icons/cross.png">
+	  <img id="save_part_{$part_id}" class="icon" style="visibility:hidden" onClick="save_part({$part_id})" src="art/icons/disk.png">
+	  <a href="part.php?id={$part_id}">{$part.code}</a>
 	</td>
       </tr>
-      <tr id="sup_tr2_{$supplier_id}">
-	<td class="label" style="width:15em">{t}Suppliers product code{/t}:</td>
+      <tr id="sup_tr2_{$part_id}">
+	<td class="label" style="width:15em">{t}Parts product code{/t}:</td>
 	<td style="text-align:left;">
-	  <input style="padding-left:2px;text-align:left;width:10em" value="{$supplier.supplier_product_code}" name="code"   onkeyup="supplier_changed(this,{$supplier_id})" ovalue="{$supplier.supplier_product_code}" id="v_supplier_code{$supplier_id}"></td>
+	  <input style="padding-left:2px;text-align:left;width:10em" value="{$part.part_product_code}" name="code"   onkeyup="part_changed(this,{$part_id})" ovalue="{$part.part_product_code}" id="v_part_code{$part_id}"></td>
       </tr>
-      <tr id="sup_tr3_{$supplier_id}" class="last">
+      <tr id="sup_tr3_{$part_id}" class="last">
 	<td class="label">{t}Cost per{/t} {$data.units_tipo_name}:</td>
-	<td style="text-align:left">{$currency}<input id="v_supplier_cost{$supplier_id}" style="text-align:right;width:6em"  name="price " onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thosusand_sep}',4);supplier_changed(this,{$supplier_id})"  value="{$supplier.price}" ovalue="{$supplier.price}" ></td>
+	<td style="text-align:left">{$currency}<input id="v_part_cost{$part_id}" style="text-align:right;width:6em"  name="price " onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thosusand_sep}',4);part_changed(this,{$part_id})"  value="{$part.price}" ovalue="{$part.price}" ></td>
       </tr>
-      <tr id="sup_tr4_{$supplier_id}">
+      <tr id="sup_tr4_{$part_id}">
 	<td colspan="2"></td>
       </tr>
       {/foreach}
@@ -309,9 +370,9 @@
     {foreach from=$images item=image  name=foo}
     <div id="image{$image.id}" class="image" >
       <div>{$image.name}</div>
-      <img class="picture"  src="{$image.med}"/> 
+      <img class="picture"  src="{$image.filename}" width=150  /> 
       <div class="operations">
-	{if $image.principal==1}
+	{if $image.is_principal=='Yes'}
 	<span class="img_set_principal" ><img id="img_set_principal{$image.id}" onClick="set_image_as_principal(this)" title="{t}Main Image{/t}" image_id="{$image.id}" principal="1" src="art/icons/asterisk_orange.png"></span>
 	{else}
 	<span  class="img_set_principal" style="cursor:pointer"  >
@@ -339,19 +400,57 @@
     
     
 
-    <table style="margin:0;" border=1 class="edit">
+
+    <table style="margin:0;"  class="edit">
       <tr class="title"><td colspan="2">{t}Categories{/t}:</td></tr>
+ <tr>
+<td class="label">{t}Use{/t}:</td>
+<td>
+<div id="cat_use" class="options" style="margin:5px 0">
+{foreach from=$cat_use item=cat key=cat_id name=foo}
+<span {if $cat.selected}class="selected"{/if} value="{$cat.selected}" ovalue="{$cat.selected}" onclick="checkbox_changed(this)" id="cat_use{$cat_id}">{$cat.name}</span>
+{/foreach}
+</div>
+</td>
+</tr>
+<tr>
+<td class="label">{t}Theme{/t}:</td>
+<td>
+<div id="cat_theme" class="options" style="margin:5px 0">
+{foreach from=$cat_theme item=cat key=cat_id name=foo}
+<span {if $cat.selected}class="selected"{/if} value="{$cat.selected}" ovalue="{$cat.selected}" onclick="checkbox_changed(this)"  id="cat_theme{$cat_id}">{$cat.name}</span>
+
+{/foreach}
+</div>
+</td>
+
+</tr>
+<tr>
+<td class="label">{t}Materials{/t}:</td>
+<td>
+<div id="cat_material" class="options" style="margin:5px 0">
+{foreach from=$cat_material item=cat key=cat_id name=foo}
+<span {if $cat.selected}class="selected"{/if} value="{$cat.selected}" ovalue="{$cat.selected}" onclick="checkbox_changed(this)"  id="cat_material{$cat_id}">{$cat.name}</span>
+
+{/foreach}
+</div>
+</td>
+</tr>
+
+
+
+
       <tr class="title"><td colspan=2>{t}Product Info{/t}:</td></tr>
       <tr>
-	<td class="label">{t}Description{/t}:</td>
+	<td class="label">{t}Name{/t}:</td>
 	<td class="left">
-	  <input class='left' ovalue="{$data.description}"   name="description"   onKeyUp="description_changed(this)"   value="{$data.description}"  id="v_description" size="40"  MAXLENGTH="75" />
-	  <span onClick="save_description('description')"  name="description" style="cursor:pointer;visibility:hidden" id="description_save"><img  title="{t}Save description{/t}" src="art/icons/disk.png"/></span>
+	  <input class='left' ovalue="{$product->get('Product Name')}"  onMouseUp="description_changed(this)"  onChange="description_changed(this)"   name="description" changed=0  onKeyUp="description_changed(this)"   value="{$product->get('Product Name')}"  id="name" size="40"  MAXLENGTH="75" />
+
 	</td>
       </tr>
       <tr>
-	<td class="label">{t}Short Description{/t}:</td>
-	<td class="left" ><input   onKeyUp="description_changed(this)" class='left'  ovalue="{$data.sdescription}"  name="sdescription"  value="{$data.sdescription}" id="v_sdescription"  size="40"  MAXLENGTH="40"   />
+	<td class="label">{t}Special Characteristic{/t}:</td>
+	<td class="left" ><input   onKeyUp="description_changed(this)"    onMouseUp="description_changed(this)"  onChange="description_changed(this)"    class='left'  changed=0 ovalue="{$product->get('Product Special Characteristic')}"  name="sdescription"  value="{$product->get('Product Special Characteristic')}" id="special_char"  size="40"  MAXLENGTH="40"   />
 	
 	  <span onClick="save_description('sdescription')"  name="sdescription" style="cursor:pointer;visibility:hidden" id="sdescription_save"><img src="art/icons/disk.png" title="{t}Save short description{/t}"/></span>
 
@@ -360,10 +459,10 @@
       
       <tr>
 	<td class="label">{t}Detailed Description{/t}:</td>
-	<td><span onClick="save_description('details')"  name="details" style="cursor:pointer;display:none" id="details_save">{t}Save{/t} <img src="art/icons/disk.png"/> <span id="details_change"></td>
+	<td></td>
 
       </tr>
-      <tr><td colspan="2"><textarea id="v_details" name="v_details" rows="20" cols="100">{$data.details}</textarea>
+      <tr><td colspan="2"><textarea id="details" name="v_details" changed=0 ovalue="{$product->get('Product Description MD5 Hash')}" rows="20" cols="100">{$product->get('Product Description')}</textarea>
       </td></tr>
       
     </table>

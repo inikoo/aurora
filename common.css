@@ -315,13 +315,19 @@ table.but_edit{clear:both;float:right}
 table.options{margin:0 ;float:right;border-collapse: separate;;border-spacing:3px  3px;font-size:100%;font-weight:600;}
 
 
-.options td{border:1px solid #aaa;color:#aaa;text-align:center;padding:2px 3px 2px 3px;cursor:pointer}
-.options td:hover{border:1px solid #777;color:#777}
-.options td.selected{background:#7296e1;border:1px solid #466ab5;color:#f6f6f6}
+.options td,.options span{border:1px solid #aaa;color:#aaa;text-align:center;padding:2px 3px 2px 3px;cursor:pointer}
+.options td:hover,.options span:hover{border:1px solid #777;color:#777}
+.options td.selected,.options span.selected{background:#7296e1;border:1px solid #466ab5;color:#f6f6f6}
 .options td.disabled{background:#fff;border:1px solid #eee;color:#ddd;cursor:default}
 .options tr.title{}
 .options tr.title td{background:#fff;border:none;cursor:default;color:#555;text-align:left}
 .options tr.title td:hover{color:#555}
+span.save,span.reset {margin-left:10px;border:1px solid #aaa;color:#aaa;text-align:center;padding:2px 3px 2px 3px;cursor:pointer;font-weight:800}
+
+
+
+
+
 
 table.options_mini{margin:0 ;float:right;border-collapse: separate;;border-spacing:3px  3px;font-size:80%;font-weight:400;}
 

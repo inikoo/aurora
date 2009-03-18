@@ -48,7 +48,16 @@ class PartLocation{
       return false;
 
   }
+function last_inventory_audit(){
+    $sql=sprintf("select DATE(`Date`) as Date from `Inventory Transaction Fact` where  `Part Sku`=%d and (`Inventory Transaction Type`='Action' or `Inventory Transaction Type`='Not Found' )  order by `Date` desc",$this->part_sku);
+    $result=mysql_query($sql);
+    // print $sql;
+    if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+      return $row['Date'];
+    }else
+      return false;
 
+  }
 
 
   function audit($data){
