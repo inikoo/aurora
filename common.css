@@ -182,7 +182,8 @@ input.normal_right{color:#000;text-align:right}
 .text_ok{color:#4aa42b}
 
 img{vertical-align:bottom}
-table.edit td{ text-align:right;padding-left:10px;padding-right:10px }
+table.edit{width:100%}
+table.edit td{ xwidth:100%;text-align:right;padding-left:10px;padding-right:10px }
 table.edit input{ padding-right:4px;text-align:right; }
 table.edit input.left{ padding-left:4px;text-align:left; }
 
@@ -192,12 +193,13 @@ table.edit td.left{ text-align:left }
 
 table.edit td.icon{ padding:0 5px;width:16px}
 table.edit tr.top{ border-top:1px solid #1d4e85}
-table.edit tr.title{text-align:left; border-bottom:1px solid #a5b6c8}
-table.edit tr.title td{font-weight:800;text-align:left;}
+table.edit tr.title{xheight:30px;text-align:left; border-bottom:1px solid #a5b6c8}
+table.edit tr.title td{vertical-align:bottom;font-weight:800;text-align:left;}
 table.edit img.icon{margin-left:10px;float:right;cursor:pointer}
 table.edit tr.last{ border-bottom:1px solid #a5b6c8}
-.chooser {width:780px;}
-.chooser {padding:15px 0px 0 0px;}
+.chooser {width:670px;bxorder:1px solid black;margin:0px auto}
+.chooser ul {;margin:0px auto;xborder:1px solid red;}
+.chooser{padding:15px 0px 0 0px;}
 .chooser li {float:left;padding:3px 5px 5px 5px ;margin: 0 5px 10px 0;border: 1px solid #ccc;cursor:pointer;;opacity: .5;filter: alpha(opacity=40);}
 .chooser li:hover {opacity: .8;filter: alpha(opacity=80);}
 .chooser img {position:relative;top:2px;}
@@ -352,7 +354,7 @@ table.options_mini{margin:0 ;float:right;border-collapse: separate;;border-spaci
 .show_options span.selected:hover {color:#ebe69f;}
 
 
-.edit_block{clear:both;margin:0px 0 0 0;width:800px;padding:0px 20px}
+.edit_block{clear:both;margin:0 auto;width:800px;padding:0px 20px;xborder: 1px solid black}
 .calendar_year { margin: 10px 0 0 0  }
 .calendar_year  td{text-align:center;font-size:10px;font-weight:800;width:16px;border:1px solid #82aadf;cursor:pointer;border-top:3px solid #ff9958;color:#777}
 .calendar_year td a{color:#777}

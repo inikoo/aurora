@@ -1216,7 +1216,7 @@ function init(){
 	//Details textarea editor ---------------------------------------------------------------------
 	var texteditorConfig = {
 	    height: '300px',
-	    width: '730px',
+	    width: '780px',
 	    dompath: true,
 	    focusAtStart: true
 	};     
