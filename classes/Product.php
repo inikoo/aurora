@@ -2472,7 +2472,7 @@ $y_days=count($y_days);
 
 case('images_slideshow'):
        $sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image URL`,`Image Filename`,`Image Type`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Product Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Product Key`=%d",$this->id);
-
+       //       print $sql;
      $res=mysql_query($sql);
      $this->images_slideshow=array();
 

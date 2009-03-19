@@ -19,31 +19,33 @@
 <h1>{$product->get('Product Code')} {$product->get('Product Short Description')}</h1>
 <div class="chooser" >
   <ul >
-    <li id="config" {if $edit=='config'}class="selected"{/if} ><img src="art/icons/cog.png"> {t}Product Configuration{/t}</li>
+    <li id="config" {if $edit=='config'}class="selected"{/if} ><img src="art/icons/cog.png"> {t}Parts{/t}</li>
     <li id="description" {if $edit=='description'}class="selected"{/if} > <img src="art/icons/information.png"> {t}Description{/t}</li>
     <li id="pictures" {if $edit=='pictures'}class="selected"{/if} > <img src="art/icons/photos.png"> {t}Pictures{/t}</li>
     <li id="prices" {if $edit=='prices'}class="selected"{/if} ><img src="art/icons/money_add.png"> {t}Price, Discounts{/t}</li>
-    <li id="parts" {if $edit=='parts'}class="selected"{/if} ><img src="art/icons/cog_add.png"> {t}Parts{/t}</li>
     <li id="dimat" {if $edit=='dimat'}class="selected"{/if} ><img src="art/icons/shape_ungroup.png"> {t}Dimensions{/t}</li>
     <li id="dimat" {if $edit=='web'}class="selected"{/if} ><img src="art/icons/page_world.png"> {t}Web Pages{/t}</li>
-
+    
 
   </ul>
 
-<div style="clear:both;height:3em;padding:10px 20px;;margin:20px 80px 20px 20px;border: 1px solid #ccc;" id="edit_messages">
-
-<div  style="float:right">
-<span class="save" style="display:none" id="description_save" onclick="save('description')">Save</span><span id="description_reset"  style="display:none"   class="reset" onclick="reset('description')">Reset</span>
-</div>
-<span>Number of changes:<span id="description_num_changes">0</span></span>
-</table>
-<div id="description_errors">
-</div>
-<div id="description_warnings">
 </div>
 
+<div style="clear:both;height:3em;padding:10px 20px;;margin:20px auto;border-top: 1px solid #cbb;;border-bottom: 1px solid #caa;width:770px;" id="description_messages">
+
+  <div style="float:right">
+  <span class="save" style="display:none" id="description_save" onclick="save('description')">Save</span><span id="description_reset"  style="display:none"   class="reset" onclick="reset('description')">Reset</span>
+  </div>
+  <span>Number of changes:<span id="description_num_changes">0</span></span>
+
+  <div id="description_errors">
+  </div>
+  <div id="description_warnings">
+  </div>
 </div>
-</div> 
+
+
+
 
 
 
@@ -396,29 +398,29 @@
 
 </div>
 <div  {if $edit!="description"}style="display:none"{/if} class="edit_block" id="d_description">
-  <form id="f_description">
+
     
     
-
-
-    <table style="margin:0;"  class="edit">
+  
+  
+  <table style="margin:0;"  class="edit">
       <tr class="title"><td colspan="2">{t}Categories{/t}:</td></tr>
- <tr>
-<td class="label">{t}Use{/t}:</td>
-<td>
-<div id="cat_use" class="options" style="margin:5px 0">
-{foreach from=$cat_use item=cat key=cat_id name=foo}
-<span {if $cat.selected}class="selected"{/if} value="{$cat.selected}" ovalue="{$cat.selected}" onclick="checkbox_changed(this)" id="cat_use{$cat_id}">{$cat.name}</span>
-{/foreach}
-</div>
-</td>
-</tr>
-<tr>
-<td class="label">{t}Theme{/t}:</td>
-<td>
-<div id="cat_theme" class="options" style="margin:5px 0">
-{foreach from=$cat_theme item=cat key=cat_id name=foo}
-<span {if $cat.selected}class="selected"{/if} value="{$cat.selected}" ovalue="{$cat.selected}" onclick="checkbox_changed(this)"  id="cat_theme{$cat_id}">{$cat.name}</span>
+      <tr>
+	<td class="label">{t}Use{/t}:</td>
+	<td>
+	  <div id="cat_use" class="options" style="margin:5px 0">
+	    {foreach from=$cat_use item=cat key=cat_id name=foo}
+	    <span {if $cat.selected}class="selected"{/if} value="{$cat.selected}" ovalue="{$cat.selected}" onclick="checkbox_changed(this)" id="cat_use{$cat_id}">{$cat.name}</span>
+	    {/foreach}
+	  </div>
+	</td>
+      </tr>
+      <tr>
+	<td class="label">{t}Theme{/t}:</td>
+	<td>
+	  <div id="cat_theme" class="options" style="margin:5px 0">
+	    {foreach from=$cat_theme item=cat key=cat_id name=foo}
+	    <span {if $cat.selected}class="selected"{/if} value="{$cat.selected}" ovalue="{$cat.selected}" onclick="checkbox_changed(this)"  id="cat_theme{$cat_id}">{$cat.name}</span>
 
 {/foreach}
 </div>
@@ -456,31 +458,25 @@
 
 	</td>
       </tr>
-      
-      <tr>
-	<td class="label">{t}Detailed Description{/t}:</td>
-	<td></td>
+      <tr class="title"><td colspan=2>{t}Detailed Description{/t}:</td></tr>
 
-      </tr>
       <tr><td colspan="2"><textarea id="details" name="v_details" changed=0 ovalue="{$product->get('Product Description MD5 Hash')}" rows="20" cols="100">{$product->get('Product Description')}</textarea>
       </td></tr>
       
     </table>
-  </form>
+
 </div>
 
 
 </div>
-<div class="yui-b">
-<div  style="float:right;margin-top:10px;text-align:right">
- <span class="search_title" style="padding-right:15px">{t}Product Code{/t}:</span> <br><input size="8" class="text search" id="prod_search" value="" name="search"/><img align="absbottom" id="submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>
+<div class="yui-b"     >
+<div  style="float:right;text-align:right;;width:40em">
+ <span class="search_title" style="position:relative;left:15px">{t}Product Code{/t}:</span> <input size="8" class="text search" id="prod_search" value="" name="search"/><img align="absbottom" id="submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>
        <span  class="search_msg"   id="search_msg"    ></span> <span  class="search_sugestion"   id="search_sugestion"    ></span>
        <br/>
 </div>	 
 
-<table  style="width:5em" class="but edit" >
-<tr><td ><a href="product.php?id={$data.id}">Exit</a></td></tr>
-</table>
+
 
 
 </div>
