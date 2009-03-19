@@ -1,6 +1,8 @@
 <?
+
 include_once('common.php');
 include_once('stock_functions.php');
+include_once('classes/Store.php');
 
 $view_sales=$LU->checkRight(PROD_SALES_VIEW);
 $view_stock=$LU->checkRight(PROD_STK_VIEW);
@@ -18,7 +20,7 @@ $smarty->assign('modify',$modify);
 if(isset($_REQUEST['edit']))
   $edit=$_REQUEST['edit'];
 else
-  $edit=$_SESSION['state']['departments']['edit'];
+  $edit=$_SESSION['state']['store']['edit'];
 
 
 
@@ -48,30 +50,35 @@ $js_files=array(
 		);
 
 if($edit)
-  $js_files[]='js/edit_departments.js.php';
+  $js_files[]='js/edit_store.js.php';
  else{
    $js_files[]='js/search.js';
-   $js_files[]='js/departments.js.php';
+   $js_files[]='js/store.js.php';
  }
 
 
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
+if(isset($_REQUEST['id'])){
+  $_SESSION['state']['store']['store_id']=$_REQUEST['id'];
+ }
 
+$store=new Store($_SESSION['state']['store']['store_id']);
+  
 
-$_SESSION['state']['assets']['page']='departments';
+$_SESSION['state']['assets']['page']='store';
 if(isset($_REQUEST['view'])){
   $valid_views=array('sales','general','stoke');
   if (in_array($_REQUEST['view'], $valid_views)) 
-    $_SESSION['state']['departments']['view']=$_REQUEST['view'];
+    $_SESSION['state']['store']['view']=$_REQUEST['view'];
 
  }
-$smarty->assign('view',$_SESSION['state']['departments']['view']);
-$smarty->assign('show_details',$_SESSION['state']['departments']['details']);
-$smarty->assign('show_percentages',$_SESSION['state']['departments']['percentages']);
-$smarty->assign('avg',$_SESSION['state']['departments']['avg']);
-$smarty->assign('period',$_SESSION['state']['departments']['period']);
+$smarty->assign('view',$_SESSION['state']['store']['view']);
+$smarty->assign('show_details',$_SESSION['state']['store']['details']);
+$smarty->assign('show_percentages',$_SESSION['state']['store']['percentages']);
+$smarty->assign('avg',$_SESSION['state']['store']['avg']);
+$smarty->assign('period',$_SESSION['state']['store']['period']);
 
 
 //$sql="select id from product";
@@ -84,15 +91,9 @@ $smarty->assign('period',$_SESSION['state']['departments']['period']);
 // }
 
 
- $table_title=_('Department List');
-  $sql="select count(*) as numberof ,sum(`Product Department Total Invoiced Gross Amount`-`Product Department Total Invoiced Discount Amount`) as total_sales  from `Product Department Dimension`  ";
-$result =mysql_query($sql);
-if(!$departments=mysql_fetch_array($result, MYSQL_ASSOC))
-  exit("Internal Error DEPS");
 
 
-
-// //$smarty->assign('table_info',$departments['numberof'].' '.ngettext('Department','Departments',$departments['numberof']));
+// //$smarty->assign('table_info',$store['numberof'].' '.ngettext('Department','Store',$store['numberof']));
 // $sql="select count(*) as numberof from product_group";
 // $result =& $db->query($sql);
 // $families=$result->fetchRow();
@@ -104,20 +105,40 @@ if(!$departments=mysql_fetch_array($result, MYSQL_ASSOC))
 
 
 
-// $smarty->assign('stock_value',money($departments['stock_value']));
-$smarty->assign('total_sales',money($departments['total_sales']));
-$smarty->assign('departments',number($departments['numberof']));
+// $smarty->assign('stock_value',money($store['stock_value']));
+//$smarty->assign('total_sales',money($store['total_sales']));
+$smarty->assign('store',$store);
 // $smarty->assign('families',number($families['numberof']));
 // $smarty->assign('products',number($products['numberof']));
 
-$smarty->assign('parent','departments.php');
-$smarty->assign('title', _('Product Departments'));
-//$smarty->assign('total_departments',$departments['numberof']);
-$smarty->assign('table_title',$table_title);
+$smarty->assign('parent','store.php');
+$smarty->assign('title', $store->data['Store Name']);
+//$smarty->assign('total_store',$store['numberof']);
+//$smarty->assign('table_title',$table_title);
 
-if($edit)
-$smarty->display('edit_departments.tpl');
-else
-$smarty->display('departments.tpl');
+if($edit){
+
+$stores=array();
+$sql=sprintf("select * from `Store Dimension` CD order by `Store Key`");
+
+$res=mysql_query($sql);
+ $first=true;
+while($row=mysql_fetch_array($res)){
+    $stores[$row['Store Key']]=array('code'=>$row['Store Code'],'selected'=>0);
+    if($first){
+      $stores[$row['Store Key']]['selected']=1;
+      $first=FALSE;
+    }
+}
+ 
+$smarty->assign('stores',$stores);
+
+
+
+
+
+$smarty->display('edit_store.tpl');
+ }else
+$smarty->display('store.tpl');
 
 ?>

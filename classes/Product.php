@@ -584,6 +584,8 @@ class product{
 
   function get($key='',$data=false){
 
+    if(!$this->id)
+      return;
 
     if(array_key_exists($key,$this->data))
       return $this->data[$key];
@@ -619,7 +621,7 @@ case('Price Anonymous Info'):
   break;
 
 
-    case('Order Form'):
+    case('Full Order Form'):
       global $site_checkout_address,$site_checkout_id;
 	$form=sprintf('<div class="ind_form"><span class="code">%s</span><br/><span class="name">%sx %s</span><br/><span class="price">%s</span><br/><span class="rrp">%s</span><br/>
 <form action="%s" method="post">

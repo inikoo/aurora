@@ -6,7 +6,7 @@ include_once('Family.php');
 class department{
  var $id=false;
 
- function __construct($a1=false,$a2=false) {
+ function __construct($a1=false,$a2=false,$a3=false) {
    //    $this->db =MDB2::singleton();
     
     if(is_numeric($a1) and !$a2  )
@@ -14,36 +14,90 @@ class department{
     else if( preg_match('/new|create/i',$a1)){
       $this->create($a2);
     }elseif($a2!='')
-      $this->getdata($a1,$a2);
+       $this->getdata($a1,$a2,$a3);
     
  }
 
  function create($data){
 
-   
 
-   if($data['code']=='' ){
-     
-     return array('ok'=>false,'msg'=>_("Wrong department code"));
+   if(isset($data['name']))
+     $data['Product Department Name']=$data['name'];
+    if(isset($data['code']))
+     $data['Product Department Code']=$data['code'];
+    if(isset($data['store_key']))
+     $data['Product Department Store Key']=$data['store_key'];
+
+
+   $this->new=false;
+   if(!isset($data['Product Department Code'])){
+     $this->msg=_("Error: No department code provided");
+     return;
    }
-   $sql=sprintf("insert into `Product Department Dimension` (`Product Department Code`,`Product Department Name`) values (%s,%s)"
-		,prepare_mysql($data['code'])
-		,prepare_mysql($data['name'])
+
+   if($data['Product Department Code']=='' ){
+     $this->msg=_("Error: Wrong department code");
+     return;
+   }
+
+   if(!isset($data['Product Department Name'])){
+     $data['Product Department Name']=$data['Product Department Code'];
+      $this->msg=_("Warning: No department name");
+   }
+
+   if(!isset($data['Product Department Store Key']) or !is_numeric($data['Product Department Store Key']) or $data['Product Department Store Key']<=0 ){
+     $data['Product Department Store Key']=1;
+     $this->msg=_("Warning: Incorrect Store Key");
+
+   }
+   $sql=sprintf("select count(*) as num from `Product Department Dimension` where `Product Department Store Key`=%d and `Product Department Code`=%s "
+		,$data['Product Department Store Key']
+		,prepare_mysql($data['Product Department Code'])
+		);
+   $res=mysql_query($sql);
+   $row=mysql_fetch_array($res);
+   if($row['num']>0){
+     $this->msg=_("Error: Another department with the same code");
+     return;
+     
+   }
+   
+   $sql=sprintf("select count(*) as num from `Product Department Dimension` where `Product Department Store Key`=%d and `Product Department Name`=%s "
+		,$data['Product Department Store Key']
+		,prepare_mysql($data['Product Department Name'])
+		);
+   $res=mysql_query($sql);
+   $row=mysql_fetch_array($res);
+   if($row['num']>0){
+     $this->msg=_("Warning: Wrong another department with the same name");
+
+     
+   }
+
+
+
+   $sql=sprintf("insert into `Product Department Dimension` (`Product Department Code`,`Product Department Name`,`Product Department Store Key`) values (%s,%s,%d)"
+		,prepare_mysql($data['Product Department Code'])
+		,prepare_mysql($data['Product Department Name'])
+		,$data['Product Department Store Key']
 		);
 
-   
+
 
  if(mysql_query($sql)){
    $this->id = mysql_insert_id();
+   $this->msg=_("Department Added");
    $this->getdata('id',$this->id);
-   return array('ok'=>true);
+   $this->new=true;
+   return;
  }else{
-   print "Error can not create department\n";exit;
+   $this->msg=_("Error can not create department");
+
  }
 
  }
  
- function getdata($tipo,$tag){
+ function getdata($tipo,$tag,$tag2=false){
    
    switch($tipo){
    case('id'):
@@ -65,6 +119,95 @@ class department{
    
  }
 
+
+ function update($key,$a1=false,$a2=false){
+   $this->updated=false;
+   $this->msg='Nothing to change';
+   
+   switch($key){
+   case('code'):
+
+     if($a1==$this->data['Product Department Code']){
+       $this->updated=true;
+       $this->newvalue=$a1;
+       return;
+       
+     }
+
+     if($a1==''){
+       $this->msg=_('Error: Wrong code (empty)');
+       return;
+     }
+     $sql=sprintf("select count(*) as num from `Product Department Dimension` where `Product Department Store Key`=%d and `Product Department Code`=%s "
+		,$this->data['Product Department Store Key']
+		,prepare_mysql($a1)
+		);
+     $res=mysql_query($sql);
+     $row=mysql_fetch_array($res);
+     if($row['num']>0){
+       $this->msg=_("Error: Another department with the same code");
+       return;
+     }
+     
+      $sql=sprintf("update `Product Department Dimension` set `Product Department Code`=%s where `Product Department Key`=%d "
+		   ,prepare_mysql($a1)
+		   ,$this->id
+		);
+      if(mysql_query($sql)){
+	$this->msg=_('Department code updated');
+	$this->updated=true;$this->newvalue=$a1;
+      }else{
+	$this->msg=_("Error: Department code could not be updated");
+
+	$this->updated=false;
+	
+      }
+      break;	
+      
+case('name'):
+
+     if($a1==$this->data['Product Department Name']){
+       $this->updated=true;
+       $this->newvalue=$a1;
+       return;
+       
+     }
+
+     if($a1==''){
+       $this->msg=_('Error: Wrong name (empty)');
+       return;
+     }
+     $sql=sprintf("select count(*) as num from `Product Department Dimension` where `Product Department Store Key`=%d and `Product Department Name`=%s "
+		,$this->data['Product Department Store Key']
+		,prepare_mysql($a1)
+		);
+     $res=mysql_query($sql);
+     $row=mysql_fetch_array($res);
+     if($row['num']>0){
+       $this->msg=_("Error: Another department with the same name");
+       return;
+     }
+     
+      $sql=sprintf("update `Product Department Dimension` set `Product Department Name`=%s where `Product Department Key`=%d "
+		   ,prepare_mysql($a1)
+		   ,$this->id
+		);
+      if(mysql_query($sql)){
+	$this->msg=_('Department name updated');
+	$this->updated=true;$this->newvalue=$a1;
+      }else{
+	$this->msg=_("Error: Department name could not be updated");
+
+	$this->updated=false;
+	
+      }
+      break;	
+
+
+   }
+
+
+ }
 
 
  

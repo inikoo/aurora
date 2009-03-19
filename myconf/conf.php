@@ -376,7 +376,7 @@ $default_state=array(
 				    
 				    ),
 
-		     'departments'=>array(
+		     'store'=>array(
 					  'details'=>false,
 					  'percentages'=>true,
 					  'view'=>'general',
@@ -385,6 +385,7 @@ $default_state=array(
 					  'mode'=>'all',
 					  'avg'=>'totals',
 					  'edit'=>false,
+					  'store_id'=>1,
 					  'table'=>array(
 							 'where'=>'where true',
 							 'f_field'=>'code',
@@ -670,6 +671,25 @@ $default_state=array(
 						 )
 
 				     ),
+		       'stores'=>array(
+					  'details'=>false,
+					  'percentages'=>true,
+					  'view'=>'general',
+					  'period'=>'year',
+					  'percentage'=>0,
+					  'mode'=>'all',
+					  'avg'=>'totals',
+					  'edit'=>false,
+					  'table'=>array(
+							 'where'=>'where true',
+							 'f_field'=>'code',
+							 'f_value'=>'',
+							 'order'=>'name',
+							 'order_dir'=>'',
+							 'sf'=>0,
+							 'nr'=>25,
+							 )
+					  ),
 
 		     'supplier'=>array(
 				       'details'=>false,

@@ -22,6 +22,18 @@ if(!Array.indexOf){
     
     });
 
+var myBuildUrl = function(datatable,record) {
+    var url = '';
+    var cols = datatable.getColumnSet().keys;
+    for (var i = 0; i < cols.length; i++) {
+        if (cols[i].isPrimaryKey) {
+            url += '&' + cols[i].key + '=' + escape(record.getData(cols[i].key));
+        }
+    }
+    return url;
+};
+
+
 function is_numeric( mixed_var ) {
     // http://kevin.vanzonneveld.net
     // +   original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
