@@ -364,7 +364,7 @@ if($LU->checkRight(CUST_VIEW))
   $nav_menu[] = array(_('Customers'), 'customers.php');
 $nav_menu[] = array(_('Warehouse'), 'warehouse.php');
 
-$nav_menu[] = array(_('Products'), 'departments.php');
+$nav_menu[] = array(_('Products'), 'stores.php');
 $nav_menu[] = array(_('Home'), 'index.php');
 
 $smarty->assign('nav_menu',$nav_menu);

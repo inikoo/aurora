@@ -1,5 +1,14 @@
 <?include_once('../common.php');?>
+var Event = YAHOO.util.Event;
+var Dom   = YAHOO.util.Dom;
+function new_dept_changed(o){
+    if(Dom.get("new_code").value!='' and Dom.get("new_code").value!='')
+	Dom.get("add_new_dept").style.display='';
+    else
+	Dom.get("add_new_dept").style.display='';
 
+
+}
 
 
 

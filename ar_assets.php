@@ -2,6 +2,9 @@
 require_once 'common.php';
 require_once 'stock_functions.php';
 require_once 'classes/Product.php';
+require_once 'classes/Department.php';
+require_once 'classes/Family.php';
+
 require_once 'classes/Order.php';
 require_once 'classes/Location.php';
 require_once 'classes/PartLocation.php';
@@ -25,6 +28,21 @@ if(!isset($_REQUEST['tipo']))
 
 $tipo=$_REQUEST['tipo'];
 switch($tipo){
+ case('edit_department'):
+   $department=new Department($_REQUEST['id']);
+   $department->update(urldecode($_REQUEST['key']),stripslashes(urldecode($_REQUEST['newvalue'])),stripslashes(urldecode($_REQUEST['oldvalue'])));
+     
+   if($department->updated){
+     $response= array('state'=>200,'data'=>$department->newvalue,'c'=>'dd');
+	  
+   }else{
+     $response= array('state'=>400,'msg'=>$department->msg,'c'=>'dd');
+   }
+   echo json_encode($response);  
+   exit;
+   break;
+
+
  case('order_received'):
  case('order_expected'):
  case('order_checked'): 
@@ -2526,7 +2544,7 @@ $sum_active=0;
   echo json_encode($response);
   break;
   
- case('edit_departments'):
+ case('oledit_departments'):
    
    $conf=$_SESSION['state']['departments']['table'];
 
@@ -2668,9 +2686,9 @@ $where=" ";
 		   );
    echo json_encode($response);
    break;
- case('departments'):
+ case('stores'):
    
-   $conf=$_SESSION['state']['departments']['table'];
+   $conf=$_SESSION['state']['stores']['table'];
 
    if(isset( $_REQUEST['sf']))
      $start_from=$_REQUEST['sf'];
@@ -2714,25 +2732,25 @@ $where=" ";
 
   if(isset( $_REQUEST['percentages'])){
     $percentages=$_REQUEST['percentages'];
-    $_SESSION['state']['departments']['percentages']=$percentages;
+    $_SESSION['state']['stores']['percentages']=$percentages;
   }else
-    $percentages=$_SESSION['state']['departments']['percentages'];
+    $percentages=$_SESSION['state']['stores']['percentages'];
   
   
 
    if(isset( $_REQUEST['period'])){
     $period=$_REQUEST['period'];
-    $_SESSION['state']['departments']['period']=$period;
+    $_SESSION['state']['stores']['period']=$period;
   }else
-    $period=$_SESSION['state']['departments']['period'];
+    $period=$_SESSION['state']['stores']['period'];
 
  if(isset( $_REQUEST['avg'])){
     $avg=$_REQUEST['avg'];
-    $_SESSION['state']['departments']['avg']=$avg;
+    $_SESSION['state']['stores']['avg']=$avg;
   }else
-    $avg=$_SESSION['state']['departments']['avg'];
+    $avg=$_SESSION['state']['stores']['avg'];
 
-    $_SESSION['state']['departments']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+    $_SESSION['state']['stores']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
   // print_r($_SESSION['tables']['families_list']);
 
   //  print_r($_SESSION['tables']['families_list']);
@@ -2748,7 +2766,7 @@ $where=" ";
 
 
 
-   $sql="select count(*) as total from `Product Department Dimension`   $where $wheref";
+   $sql="select count(*) as total from `Store Dimension`   $where $wheref";
 
    $res = $db->query($sql); 
    if($row=$res->fetchRow()) {
@@ -2757,7 +2775,7 @@ $where=" ";
    if($wheref=='')
        $filtered=0;
    else{
-     $sql="select count(*) as total `Product Department Dimension`   $where ";
+     $sql="select count(*) as total `Store Dimension`   $where ";
 
      $res = $db->query($sql); 
      if($row=$res->fetchRow()) {
@@ -2765,6 +2783,552 @@ $where=" ";
      }
 
    }
+
+   $_dir=$order_direction;
+   $_order=$order;
+   
+     if($order=='families')
+       $order='`Store Families`';
+
+    if($order=='profit'){
+    if($period=='all')
+      $order='`Store Total Profit`';
+    elseif($period=='year')
+      $order='`Store 1 Year Acc Profit`';
+    elseif($period=='quarter')
+      $order='`Store 1 Quarter Acc Profit`';
+    elseif($period=='month')
+      $order='`Store 1 Month Acc Profit`';
+    elseif($period=='week')
+      $order='`Store 1 Week Acc Profit`';
+  }elseif($order=='sales'){
+    if($period=='all')
+      $order='`Store Total Invoiced Amount`';
+    elseif($period=='year')
+      $order='`Store 1 Year Acc Invoiced Amount`';
+    elseif($period=='quarter')
+      $order='`Store 1 Quarter Acc Invoiced Amount`';
+    elseif($period=='month')
+      $order='`Store 1 Month Acc Invoiced Amount`';
+    elseif($period=='week')
+      $order='`Store 1 Week Acc Invoiced Amount`';
+
+  }
+  elseif($order=='name')
+    $order='`Store Name`';
+  elseif($order=='active')
+    $order='`Store For Sale Products`';
+  elseif($order=='outofstock')
+    $order='`Store Out Of Stock Products`';
+  elseif($order=='stock_error')
+    $order='`Store Unknown Stock Products`';
+ elseif($order=='surplus')
+    $order='`Store Surplus Availability Products`';
+ elseif($order=='optimal')
+    $order='`Store Optimal Availability Products`';
+ elseif($order=='low')
+   $order='`Store Low Availability Products`';
+ elseif($order=='critical')
+   $order='`Store Critical Availability Products`';
+
+
+$sum_families=0;
+$sum_active=0;
+ $sql="select sum(`Store For Sale Products`) as sum_active,sum(`Store Families`) as sum_families  from `Store Dimension`    ";
+ $res = $db->query($sql); 
+ if($row=$res->fetchRow()) {
+   $sum_families=$row['sum_families'];
+   $sum_active=$row['sum_active'];
+ }
+ 
+  if($period=='all'){
+
+
+    $sum_total_sales=0;
+    $sum_month_sales=0;
+    $sql="select sum(if(`Store Total Profit`<0,`Store Total Profit`,0)) as total_profit_minus,sum(if(`Store Total Profit`>=0,`Store Total Profit`,0)) as total_profit_plus,sum(`Store Total Invoiced Amount`) as sum_total_sales  from `Store Dimension`    ";
+    
+    $res = $db->query($sql); 
+    if($row=$res->fetchRow()) {
+
+      $sum_total_sales=$row['sum_total_sales'];
+
+      $sum_total_profit_plus=$row['total_profit_plus'];
+      $sum_total_profit_minus=$row['total_profit_minus'];
+      $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
+    }
+  }elseif($period=='year'){
+
+    $sum_total_sales=0;
+    $sum_month_sales=0;
+    $sql="select sum(if(`Store 1 Year Acc Profit`<0,`Store 1 Year Acc Profit`,0)) as total_profit_minus,sum(if(`Store 1 Year Acc Profit`>=0,`Store 1 Year Acc Profit`,0)) as total_profit_plus,sum(`Store For Sale Products`) as sum_active,sum(`Store 1 Year Acc Invoiced Amount`) as sum_total_sales  from `Store Dimension`    ";
+    
+    $res = $db->query($sql); 
+    if($row=$res->fetchRow()) {
+
+      $sum_total_sales=$row['sum_total_sales'];
+
+      $sum_total_profit_plus=$row['total_profit_plus'];
+      $sum_total_profit_minus=$row['total_profit_minus'];
+      $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
+    }
+  }elseif($period=='quarter'){
+
+    $sum_total_sales=0;
+    $sum_month_sales=0;
+    $sql="select sum(if(`Store 1 Quarter Acc Profit`<0,`Store 1 Quarter Acc Profit`,0)) as total_profit_minus,sum(if(`Store 1 Quarter Acc Profit`>=0,`Store 1 Quarter Acc Profit`,0)) as total_profit_plus,sum(`Store For Sale Products`) as sum_active,sum(`Store 1 Quarter Acc Invoiced Amount`) as sum_total_sales   from `Store Dimension`    ";
+    
+    $res = $db->query($sql); 
+    if($row=$res->fetchRow()) {
+
+      $sum_total_sales=$row['sum_total_sales'];
+
+      $sum_total_profit_plus=$row['total_profit_plus'];
+      $sum_total_profit_minus=$row['total_profit_minus'];
+      $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
+    }
+  }elseif($period=='month'){
+
+    $sum_total_sales=0;
+    $sum_month_sales=0;
+    $sql="select sum(if(`Store 1 Month Acc Profit`<0,`Store 1 Month Acc Profit`,0)) as total_profit_minus,sum(if(`Store 1 Month Acc Profit`>=0,`Store 1 Month Acc Profit`,0)) as total_profit_plus,sum(`Store For Sale Products`) as sum_active,sum(`Store 1 Month Acc Invoiced Amount`) as sum_total_sales   from `Store Dimension`    ";
+    
+    $res = $db->query($sql); 
+    if($row=$res->fetchRow()) {
+
+      $sum_total_sales=$row['sum_total_sales'];
+    
+      $sum_total_profit_plus=$row['total_profit_plus'];
+      $sum_total_profit_minus=$row['total_profit_minus'];
+      $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
+    }
+  }elseif($period=='week'){
+
+    $sum_total_sales=0;
+    $sum_month_sales=0;
+    $sql="select sum(if(`Store 1 Week Acc Profit`<0,`Store 1 Week Acc Profit`,0)) as total_profit_minus,sum(if(`Store 1 Week Acc Profit`>=0,`Store 1 Week Acc Profit`,0)) as total_profit_plus,sum(`Store For Sale Products`) as sum_active,sum(`Store 1 Week Acc Invoiced Amount`) as sum_total_sales   from `Store Dimension`    ";
+    
+    $res = $db->query($sql); 
+    if($row=$res->fetchRow()) {
+
+      $sum_total_sales=$row['sum_total_sales'];
+     
+      $sum_total_profit_plus=$row['total_profit_plus'];
+      $sum_total_profit_minus=$row['total_profit_minus'];
+      $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
+    }
+  }
+
+
+ 
+   $sql="select *  from `Store Dimension`  order by $order $order_direction limit $start_from,$number_results    ";
+
+   $res = mysql_query($sql);
+  $adata=array();
+  //  print "$sql";
+  while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+    $name=sprintf('<a href="store.php?id=%d">%s</a>',$row['Store Key'],$row['Store Name']);
+    $code=sprintf('<a href="store.php?id=%d">%s</a>',$row['Store Key'],$row['Store Code']);
+
+    if($percentages){
+      if($period=='all'){
+      $tsall=percentage($row['Store Total Invoiced Amount'],$sum_total_sales,2);
+      if($row['Store Total Profit']>=0)
+	$tprofit=percentage($row['Store Total Profit'],$sum_total_profit_plus,2);
+      else
+	$tprofit=percentage($row['Store Total Profit'],$sum_total_profit_minus,2);
+      } elseif($period=='year'){
+      $tsall=percentage($row['Store 1 Year Acc Invoiced Amount'],$sum_total_sales,2);
+      if($row['Store 1 Year Acc Profit']>=0)
+	$tprofit=percentage($row['Store 1 Year Acc Profit'],$sum_total_profit_plus,2);
+      else
+	$tprofit=percentage($row['Store 1 Year Acc Profit'],$sum_total_profit_minus,2);
+      } elseif($period=='quarter'){
+      $tsall=percentage($row['Store 1 Quarter Acc Invoiced Amount'],$sum_total_sales,2);
+      if($row['Store 1 Quarter Acc Profit']>=0)
+	$tprofit=percentage($row['Store 1 Quarter Acc Profit'],$sum_total_profit_plus,2);
+      else
+	$tprofit=percentage($row['Store 1 Quarter Acc Profit'],$sum_total_profit_minus,2);
+      } elseif($period=='month'){
+      $tsall=percentage($row['Store 1 Month Acc Invoiced Amount'],$sum_total_sales,2);
+      if($row['Store 1 Month Acc Profit']>=0)
+	$tprofit=percentage($row['Store 1 Month Acc Profit'],$sum_total_profit_plus,2);
+      else
+	$tprofit=percentage($row['Store 1 Month Acc Profit'],$sum_total_profit_minus,2);
+      } elseif($period=='week'){
+      $tsall=percentage($row['Store 1 Week Acc Invoiced Amount'],$sum_total_sales,2);
+      if($row['Store 1 Week Acc Profit']>=0)
+	$tprofit=percentage($row['Store 1 Week Acc Profit'],$sum_total_profit_plus,2);
+      else
+	$tprofit=percentage($row['Store 1 Week Acc Profit'],$sum_total_profit_minus,2);
+      }
+
+
+    }else{
+      
+      
+
+
+
+
+      if($period=='all'){
+	
+	
+	if($avg=='totals')
+	  $factor=1;
+	elseif($avg=='month'){
+	  if($row['Store Total Days On Sale']>0)
+	    $factor=30.4368499/$row['Store Total Days On Sale'];
+	  else
+	    $factor=0;
+	}elseif($avg=='week'){
+	  if($row['Store Total Days On Sale']>0)
+	    $factor=7/$row['Store Total Days On Sale'];
+	  else
+	    $factor=0;
+	}elseif($avg=='month_eff'){
+	  if($row['Store Total Days Available']>0)
+	    $factor=30.4368499/$row['Store Total Days Available'];
+	  else
+	    $factor=0;
+	}elseif($avg=='week_eff'){
+	  if($row['Store Total Days Available']>0)
+	    $factor=7/$row['Store Total Days Available'];
+	  else
+	    $factor=0;
+	}
+
+	$tsall=money($row['Store Total Invoiced Amount']*$factor);
+	$tprofit=money($row['Store Total Profit']*$factor);
+   
+
+
+
+   }elseif($period=='year'){
+
+
+	if($avg=='totals')
+	  $factor=1;
+	elseif($avg=='month'){
+	  if($row['Store 1 Year Acc Days On Sale']>0)
+	    $factor=30.4368499/$row['Store 1 Year Acc Days On Sale'];
+	  else
+	    $factor=0;
+	}elseif($avg=='month'){
+	  if($row['Store 1 Year Acc Days On Sale']>0)
+	    $factor=30.4368499/$row['Store 1 Year Acc Days On Sale'];
+	  else
+	    $factor=0;
+	}elseif($avg=='week'){
+	  if($row['Store 1 Year Acc Days On Sale']>0)
+	    $factor=7/$row['Store 1 Year Acc Days On Sale'];
+	  else
+	    $factor=0;
+	}elseif($avg=='month_eff'){
+	  if($row['Store 1 Year Acc Days Available']>0)
+	    $factor=30.4368499/$row['Store 1 Year Acc Days Available'];
+	  else
+	    $factor=0;
+	}elseif($avg=='week_eff'){
+	  if($row['Store 1 Year Acc Days Available']>0)
+	    $factor=7/$row['Store 1 Year Acc Days Available'];
+	  else
+	    $factor=0;
+	}
+	
+
+
+
+
+
+
+
+
+	$tsall=money($row['Store 1 Year Acc Invoiced Amount']*$factor);
+	$tprofit=money($row['Store 1 Year Acc Profit']*$factor);
+      }elseif($period=='quarter'){
+	if($avg=='totals')
+	  $factor=1;
+	elseif($avg=='month'){
+	  if($row['Store 1 Quarter Acc Days On Sale']>0)
+	    $factor=30.4368499/$row['Store 1 Quarter Acc Days On Sale'];
+	  else
+	    $factor=0;
+	}elseif($avg=='month'){
+	  if($row['Store 1 Quarter Acc Days On Sale']>0)
+	    $factor=30.4368499/$row['Store 1 Quarter Acc Days On Sale'];
+	  else
+	    $factor=0;
+	}elseif($avg=='week'){
+	  if($row['Store 1 Quarter Acc Days On Sale']>0)
+	    $factor=7/$row['Store 1 Quarter Acc Days On Sale'];
+	  else
+	    $factor=0;
+	}elseif($avg=='month_eff'){
+	  if($row['Store 1 Quarter Acc Days Available']>0)
+	    $factor=30.4368499/$row['Store 1 Quarter Acc Days Available'];
+	  else
+	    $factor=0;
+	}elseif($avg=='week_eff'){
+	  if($row['Store 1 Quarter Acc Days Available']>0)
+	    $factor=7/$row['Store 1 Quarter Acc Days Available'];
+	  else
+	    $factor=0;
+	}
+
+
+	$tsall=money($row['Store 1 Quarter Acc Invoiced Amount']*$factor);
+	$tprofit=money($row['Store 1 Quarter Acc Profit']*$factor);
+      }elseif($period=='month'){
+		if($avg=='totals')
+	  $factor=1;
+	elseif($avg=='month'){
+	  if($row['Store 1 Month Acc Days On Sale']>0)
+	    $factor=30.4368499/$row['Store 1 Month Acc Days On Sale'];
+	  else
+	    $factor=0;
+	}elseif($avg=='month'){
+	  if($row['Store 1 Month Acc Days On Sale']>0)
+	    $factor=30.4368499/$row['Store 1 Month Acc Days On Sale'];
+	  else
+	    $factor=0;
+	}elseif($avg=='week'){
+	  if($row['Store 1 Month Acc Days On Sale']>0)
+	    $factor=7/$row['Store 1 Month Acc Days On Sale'];
+	  else
+	    $factor=0;
+	}elseif($avg=='month_eff'){
+	  if($row['Store 1 Month Acc Days Available']>0)
+	    $factor=30.4368499/$row['Store 1 Month Acc Days Available'];
+	  else
+	    $factor=0;
+	}elseif($avg=='week_eff'){
+	  if($row['Store 1 Month Acc Days Available']>0)
+	    $factor=7/$row['Store 1 Month Acc Days Available'];
+	  else
+	    $factor=0;
+	}
+
+
+	$tsall=money($row['Store 1 Month Acc Invoiced Amount']*$factor);
+	$tprofit=money($row['Store 1 Month Acc Profit']*$factor);
+      }elseif($period=='week'){
+		if($avg=='totals')
+	  $factor=1;
+	elseif($avg=='month'){
+	  if($row['Store 1 Week Acc Days On Sale']>0)
+	    $factor=30.4368499/$row['Store 1 Week Acc Days On Sale'];
+	  else
+	    $factor=0;
+	}elseif($avg=='month'){
+	  if($row['Store 1 Week Acc Days On Sale']>0)
+	    $factor=30.4368499/$row['Store 1 Week Acc Days On Sale'];
+	  else
+	    $factor=0;
+	}elseif($avg=='week'){
+	  if($row['Store 1 Week Acc Days On Sale']>0)
+	    $factor=7/$row['Store 1 Week Acc Days On Sale'];
+	  else
+	    $factor=0;
+	}elseif($avg=='month_eff'){
+	  if($row['Store 1 Week Acc Days Available']>0)
+	    $factor=30.4368499/$row['Store 1 Week Acc Days Available'];
+	  else
+	    $factor=0;
+	}elseif($avg=='week_eff'){
+	  if($row['Store 1 Week Acc Days Available']>0)
+	    $factor=7/$row['Store 1 Week Acc Days Available'];
+	  else
+	    $factor=0;
+	}
+
+
+	$tsall=money($row['Store 1 Week Acc Invoiced Amount']*$factor);
+	$tprofit=money($row['Store 1 Week Acc Profit']*$factor);
+      }
+
+
+
+    }
+   $adata[]=array(
+		  'code'=>$code,
+		   'name'=>$name,
+		   'families'=>number($row['Store Families']),
+		   'active'=>number($row['Store For Sale Products']),
+		   'outofstock'=>number($row['Store Out Of Stock Products']),
+		   'stock_error'=>number($row['Store Unknown Stock Products']),
+		   'stock_value'=>money($row['Store Stock Value']),
+		   'surplus'=>number($row['Store Surplus Availability Products']),
+		   'optimal'=>number($row['Store Optimal Availability Products']),
+		   'low'=>number($row['Store Low Availability Products']),
+		   'critical'=>number($row['Store Critical Availability Products']),
+
+
+		   'sales'=>$tsall,
+		   'profit'=>$tprofit
+		   
+		   );
+  }
+
+   if($percentages){
+      $tsall='100.00%';
+      $tprofit='100.00%';
+    }else{
+     $tsall=money($sum_total_sales);
+     $tprofit=money($sum_total_profit);
+   }
+
+  // $adata[]=array(
+
+// 		 'name'=>_('Total'),
+
+// 		 'active'=>number($sum_active),
+// 		 'outofstock'=>number($row['product store out of stock products']),
+// 		 'stockerror'=>number($row['product store unknown stock products']),
+// 		 'stock_value'=>money($row['product store stock value']),
+// 		 'tsall'=>$tsall,'tprofit'=>$tprofit,
+// 		 'per_tsall'=>percentage($row['product store total invoiced amount'],$sum_total_sales,2),
+// 		 'tsm'=>money($row['product store 1 month acc invoiced amount']),
+// 		 'per_tsm'=>percentage($row['product store 1 month acc invoiced amount'],$sum_month_sales,2),
+// 		 );
+
+
+   $total=mysql_num_rows($res);
+  // if($total<$number_results)
+  //  $rtext=$total.' '.ngettext('store','stores',$total);
+  //else
+  //  $rtext='';
+
+
+
+   $response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$adata,
+			 'sort_key'=>$_order,
+			 'sort_dir'=>$_dir,
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
+			 
+			 'total_records'=>$total,
+			 'records_offset'=>$start_from,
+			 'records_returned'=>$start_from+$total,
+			 'records_perpage'=>$number_results,
+			 
+			'records_order'=>$order,
+			'records_order_dir'=>$order_dir,
+			'filtered'=>$filtered
+			 )
+		   );
+   echo json_encode($response);
+   break;
+
+case('store'):
+   
+   $conf=$_SESSION['state']['store']['table'];
+
+   if(isset( $_REQUEST['sf']))
+     $start_from=$_REQUEST['sf'];
+   else
+     $start_from=$conf['sf'];
+   if(isset( $_REQUEST['nr']))
+     $number_results=$_REQUEST['nr'];
+   else
+     $number_results=$conf['nr'];
+   if(isset( $_REQUEST['o']))
+     $order=$_REQUEST['o'];
+   else
+    $order=$conf['order'];
+   if(isset( $_REQUEST['od']))
+     $order_dir=$_REQUEST['od'];
+   else
+     $order_dir=$conf['order_dir'];
+   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+   if(isset( $_REQUEST['where']))
+     $where=addslashes($_REQUEST['where']);
+   else
+     $where=$conf['where'];
+
+    
+   if(isset( $_REQUEST['f_field']))
+     $f_field=$_REQUEST['f_field'];
+   else
+     $f_field=$conf['f_field'];
+   
+   if(isset( $_REQUEST['f_value']))
+     $f_value=$_REQUEST['f_value'];
+   else
+     $f_value=$conf['f_value'];
+
+   
+   if(isset( $_REQUEST['tableid']))
+     $tableid=$_REQUEST['tableid'];
+   else
+    $tableid=0;
+   
+
+  if(isset( $_REQUEST['percentages'])){
+    $percentages=$_REQUEST['percentages'];
+    $_SESSION['state']['store']['percentages']=$percentages;
+  }else
+    $percentages=$_SESSION['state']['store']['percentages'];
+  
+  
+
+   if(isset( $_REQUEST['period'])){
+    $period=$_REQUEST['period'];
+    $_SESSION['state']['store']['period']=$period;
+  }else
+    $period=$_SESSION['state']['store']['period'];
+
+ if(isset( $_REQUEST['avg'])){
+    $avg=$_REQUEST['avg'];
+    $_SESSION['state']['store']['avg']=$avg;
+  }else
+    $avg=$_SESSION['state']['store']['avg'];
+
+
+$store_id=$_SESSION['state']['store']['store_id'];
+
+
+
+    $_SESSION['state']['store']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+  // print_r($_SESSION['tables']['families_list']);
+
+  //  print_r($_SESSION['tables']['families_list']);
+    $where=$where.' '.sprintf(" and `Product Department Store Key`=%d",$store_id);
+   
+ $filter_msg='';
+  $wheref='';
+  if($f_field=='name' and $f_value!='')
+    $wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
+
+
+  
+
+
+
+   $sql="select count(*) as total from `Product Department Dimension`   $where $wheref";
+   // print $sql;
+   $res = mysql_query($sql); 
+   if($row=mysql_fetch_array($res)) {
+     $total=$row['total'];
+   }
+   if($wheref==''){
+       $filtered=0; $total_records=$total;
+   }else{
+     $sql="select count(*) as total `Product Department Dimension`   $where ";
+
+     $res = $db->query($sql); 
+     if($row=$res->fetchRow()) {
+      	$total_records=$row['total'];
+	$filtered=$total_records-$total;
+     }
+
+   }
+
+ $rtext=$total_records." ".ngettext('department','departments',$total_records);
+  if($total_records>$number_results)
+    $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
 
    $_dir=$order_direction;
    $_order=$order;
@@ -2816,7 +3380,7 @@ $where=" ";
 
 $sum_families=0;
 $sum_active=0;
- $sql="select sum(`Product Department For Sale Products`) as sum_active,sum(`Product Department Families`) as sum_families  from `Product Department Dimension`    ";
+ $sql="select sum(`Product Department For Sale Products`) as sum_active,sum(`Product Department Families`) as sum_families  from `Product Department Dimension` $where   ";
  $res = $db->query($sql); 
  if($row=$res->fetchRow()) {
    $sum_families=$row['sum_families'];
@@ -2828,7 +3392,7 @@ $sum_active=0;
 
     $sum_total_sales=0;
     $sum_month_sales=0;
-    $sql="select sum(if(`Product Department Total Profit`<0,`Product Department Total Profit`,0)) as total_profit_minus,sum(if(`Product Department Total Profit`>=0,`Product Department Total Profit`,0)) as total_profit_plus,sum(`Product Department Total Invoiced Amount`) as sum_total_sales  from `Product Department Dimension`    ";
+    $sql="select sum(if(`Product Department Total Profit`<0,`Product Department Total Profit`,0)) as total_profit_minus,sum(if(`Product Department Total Profit`>=0,`Product Department Total Profit`,0)) as total_profit_plus,sum(`Product Department Total Invoiced Amount`) as sum_total_sales  from `Product Department Dimension` $where   ";
     
     $res = $db->query($sql); 
     if($row=$res->fetchRow()) {
@@ -2843,7 +3407,7 @@ $sum_active=0;
 
     $sum_total_sales=0;
     $sum_month_sales=0;
-    $sql="select sum(if(`Product Department 1 Year Acc Profit`<0,`Product Department 1 Year Acc Profit`,0)) as total_profit_minus,sum(if(`Product Department 1 Year Acc Profit`>=0,`Product Department 1 Year Acc Profit`,0)) as total_profit_plus,sum(`Product Department For Sale Products`) as sum_active,sum(`Product Department 1 Year Acc Invoiced Amount`) as sum_total_sales  from `Product Department Dimension`    ";
+    $sql="select sum(if(`Product Department 1 Year Acc Profit`<0,`Product Department 1 Year Acc Profit`,0)) as total_profit_minus,sum(if(`Product Department 1 Year Acc Profit`>=0,`Product Department 1 Year Acc Profit`,0)) as total_profit_plus,sum(`Product Department For Sale Products`) as sum_active,sum(`Product Department 1 Year Acc Invoiced Amount`) as sum_total_sales  from `Product Department Dimension`  $where  ";
     
     $res = $db->query($sql); 
     if($row=$res->fetchRow()) {
@@ -2858,7 +3422,7 @@ $sum_active=0;
 
     $sum_total_sales=0;
     $sum_month_sales=0;
-    $sql="select sum(if(`Product Department 1 Quarter Acc Profit`<0,`Product Department 1 Quarter Acc Profit`,0)) as total_profit_minus,sum(if(`Product Department 1 Quarter Acc Profit`>=0,`Product Department 1 Quarter Acc Profit`,0)) as total_profit_plus,sum(`Product Department For Sale Products`) as sum_active,sum(`Product Department 1 Quarter Acc Invoiced Amount`) as sum_total_sales   from `Product Department Dimension`    ";
+    $sql="select sum(if(`Product Department 1 Quarter Acc Profit`<0,`Product Department 1 Quarter Acc Profit`,0)) as total_profit_minus,sum(if(`Product Department 1 Quarter Acc Profit`>=0,`Product Department 1 Quarter Acc Profit`,0)) as total_profit_plus,sum(`Product Department For Sale Products`) as sum_active,sum(`Product Department 1 Quarter Acc Invoiced Amount`) as sum_total_sales   from `Product Department Dimension`  $where  ";
     
     $res = $db->query($sql); 
     if($row=$res->fetchRow()) {
@@ -2873,7 +3437,7 @@ $sum_active=0;
 
     $sum_total_sales=0;
     $sum_month_sales=0;
-    $sql="select sum(if(`Product Department 1 Month Acc Profit`<0,`Product Department 1 Month Acc Profit`,0)) as total_profit_minus,sum(if(`Product Department 1 Month Acc Profit`>=0,`Product Department 1 Month Acc Profit`,0)) as total_profit_plus,sum(`Product Department For Sale Products`) as sum_active,sum(`Product Department 1 Month Acc Invoiced Amount`) as sum_total_sales   from `Product Department Dimension`    ";
+    $sql="select sum(if(`Product Department 1 Month Acc Profit`<0,`Product Department 1 Month Acc Profit`,0)) as total_profit_minus,sum(if(`Product Department 1 Month Acc Profit`>=0,`Product Department 1 Month Acc Profit`,0)) as total_profit_plus,sum(`Product Department For Sale Products`) as sum_active,sum(`Product Department 1 Month Acc Invoiced Amount`) as sum_total_sales   from `Product Department Dimension`   $where ";
     
     $res = $db->query($sql); 
     if($row=$res->fetchRow()) {
@@ -2888,7 +3452,7 @@ $sum_active=0;
 
     $sum_total_sales=0;
     $sum_month_sales=0;
-    $sql="select sum(if(`Product Department 1 Week Acc Profit`<0,`Product Department 1 Week Acc Profit`,0)) as total_profit_minus,sum(if(`Product Department 1 Week Acc Profit`>=0,`Product Department 1 Week Acc Profit`,0)) as total_profit_plus,sum(`Product Department For Sale Products`) as sum_active,sum(`Product Department 1 Week Acc Invoiced Amount`) as sum_total_sales   from `Product Department Dimension`    ";
+    $sql="select sum(if(`Product Department 1 Week Acc Profit`<0,`Product Department 1 Week Acc Profit`,0)) as total_profit_minus,sum(if(`Product Department 1 Week Acc Profit`>=0,`Product Department 1 Week Acc Profit`,0)) as total_profit_plus,sum(`Product Department For Sale Products`) as sum_active,sum(`Product Department 1 Week Acc Invoiced Amount`) as sum_total_sales   from `Product Department Dimension`  $where  ";
     
     $res = $db->query($sql); 
     if($row=$res->fetchRow()) {
@@ -2903,7 +3467,7 @@ $sum_active=0;
 
 
  
-   $sql="select *  from `Product Department Dimension`  order by $order $order_direction limit $start_from,$number_results    ";
+   $sql="select *  from `Product Department Dimension` $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
 
    $res = mysql_query($sql);
   $adata=array();
@@ -3188,7 +3752,169 @@ $sum_active=0;
 			 'sort_dir'=>$_dir,
 			 'tableid'=>$tableid,
 			 'filter_msg'=>$filter_msg,
+			 'rtext'=>$rtext,
+			 'total_records'=>$total,
+			 'records_offset'=>$start_from,
+			 'records_returned'=>$start_from+$total,
+			 'records_perpage'=>$number_results,
 			 
+			'records_order'=>$order,
+			'records_order_dir'=>$order_dir,
+			'filtered'=>$filtered
+			 )
+		   );
+   echo json_encode($response);
+   break;
+ case('edit_departments'):
+   
+   if(!isset($_REQUEST['parent']))
+     $parent='store';
+   else
+     $parent=$_REQUEST['parent'];
+
+   if($parent=='store'){
+
+   $conf=$_SESSION['state']['store']['table'];
+
+   if(isset( $_REQUEST['sf']))
+     $start_from=$_REQUEST['sf'];
+   else
+     $start_from=$conf['sf'];
+   if(isset( $_REQUEST['nr']))
+     $number_results=$_REQUEST['nr'];
+   else
+     $number_results=$conf['nr'];
+   if(isset( $_REQUEST['o']))
+     $order=$_REQUEST['o'];
+   else
+    $order=$conf['order'];
+   if(isset( $_REQUEST['od']))
+     $order_dir=$_REQUEST['od'];
+   else
+     $order_dir=$conf['order_dir'];
+   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+   if(isset( $_REQUEST['where']))
+     $where=addslashes($_REQUEST['where']);
+   else
+     $where=$conf['where'];
+
+    
+   if(isset( $_REQUEST['f_field']))
+     $f_field=$_REQUEST['f_field'];
+   else
+     $f_field=$conf['f_field'];
+   
+   if(isset( $_REQUEST['f_value']))
+     $f_value=$_REQUEST['f_value'];
+   else
+     $f_value=$conf['f_value'];
+
+   
+   if(isset( $_REQUEST['tableid']))
+     $tableid=$_REQUEST['tableid'];
+   else
+    $tableid=0;
+   
+
+  if(isset( $_REQUEST['percentages'])){
+    $percentages=$_REQUEST['percentages'];
+    $_SESSION['state']['store']['percentages']=$percentages;
+  }else
+    $percentages=$_SESSION['state']['store']['percentages'];
+  
+  
+
+   if(isset( $_REQUEST['period'])){
+    $period=$_REQUEST['period'];
+    $_SESSION['state']['store']['period']=$period;
+  }else
+    $period=$_SESSION['state']['store']['period'];
+
+ if(isset( $_REQUEST['avg'])){
+    $avg=$_REQUEST['avg'];
+    $_SESSION['state']['store']['avg']=$avg;
+  }else
+    $avg=$_SESSION['state']['store']['avg'];
+
+
+$store_id=$_SESSION['state']['store']['store_id'];
+
+
+
+    $_SESSION['state']['store']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+  // print_r($_SESSION['tables']['families_list']);
+
+  //  print_r($_SESSION['tables']['families_list']);
+    $where=$where.' '.sprintf(" and `Product Department Store Key`=%d",$store_id);
+   
+ $filter_msg='';
+  $wheref='';
+  if($f_field=='name' and $f_value!='')
+    $wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
+
+
+   }else{
+     return;
+   }
+
+
+
+   $sql="select count(*) as total from `Product Department Dimension`   $where $wheref";
+   // print $sql;
+   $res = mysql_query($sql); 
+   if($row=mysql_fetch_array($res)) {
+     $total=$row['total'];
+   }
+   if($wheref==''){
+       $filtered=0; $total_records=$total;
+   }else{
+     $sql="select count(*) as total `Product Department Dimension`   $where ";
+
+     $res = $db->query($sql); 
+     if($row=$res->fetchRow()) {
+      	$total_records=$row['total'];
+	$filtered=$total_records-$total;
+     }
+
+   }
+
+ $rtext=$total_records." ".ngettext('department','departments',$total_records);
+  if($total_records>$number_results)
+    $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
+
+   $_dir=$order_direction;
+   $_order=$order;
+   
+  if($order=='name')
+    $order='`Product Department Name`';
+   elseif($order=='code')
+    $order='`Product Department Code`';
+  
+   $sql="select *  from `Product Department Dimension` $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
+   
+   $res = mysql_query($sql);
+   $adata=array();
+   //print "$period";
+   while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+     $adata[]=array(
+		    'id'=>$row['Product Department Key'],
+		   'name'=>$row['Product Department Name'],
+		   'code'=>$row['Product Department Code'],
+		   'delete'=>'<img src="art/icons/cross.png" /> <span onclick="delete_dept('.$row['Product Department Key'].')"  id="del_'.$row['Product Department Key'].'" style="cursor:pointer">'._('Delete').'<span>'
+
+		   
+		   );
+   }
+ 
+
+   $response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$adata,
+			 'sort_key'=>$_order,
+			 'sort_dir'=>$_dir,
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
+			 'rtext'=>$rtext,
 			 'total_records'=>$total,
 			 'records_offset'=>$start_from,
 			 'records_returned'=>$start_from+$total,
@@ -5981,36 +6707,22 @@ case('parts'):
 
  case('new_department'):
    
-   if(isset($_REQUEST['name'])  and  isset($_REQUEST['code'])    and $_REQUEST['code']!='' and $_REQUEST['name']!=''){
-     $name=addslashes($_REQUEST['name']);
-     $code=addslashes($_REQUEST['code']);
+   if(isset($_REQUEST['name'])  and  isset($_REQUEST['code'])   ){
 
-     $sql=sprintf("insert into  product_department (code,name) values ('%s','%s')",$code,$name);
-     $affected=& $db->exec($sql);
+     $store_key=$_SESSION['state']['store']['store_id'];
 
-     if (PEAR::isError($affected)) {
-       if(preg_match('/^MDB2 Error: constraint violation$/',$affected->getMessage()))
-	 $resp=_('Error: Another department has the same code/name').'.';
-       else
-	 $resp=_('Unknown Error').'.';
+     $department=new Department('create',array(
+					      'Product Department Code'=>$_REQUEST['code']
+					      ,'Product Department Name'=>$_REQUEST['name']
+					      ,'Product Department Store Key'=>$store_key
+					      ));
+     if(!$department->new){
        $state='400';
-       $data=array();
      }else{
-       $department_id = $db->lastInsertID();
-       $resp='ok';
-       $data= array(
-	  'id'=>$department_id,
-	  'code'=>$code,
-	  'name'=>$name,
-	  'families'=>0,
-	  'products'=>0,
-	  'active'=>0,
-	  'outofstock'=>0,
-	  'stockerror'=>0	    
-		    );
+       
        $state='200';
      }
-     $response=array('state'=>$state,'resp'=>_($resp),'data'=>$data);
+     $response=array('state'=>$state,'msg'=>$department->msg);
    }
 
    else
