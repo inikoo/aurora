@@ -8,7 +8,7 @@
 
 
  <div class="search_box" style="clear:both;margin-right:20px" >
-     <a href="departments.php?edit=0"  class="state_details" id="edit"  >{t}exit edit{/t}</a>
+    <span class='reset' onclick='window.location="store.php?edit=0"'   >{t}Exit{/t}</span>
  </div>
   
 

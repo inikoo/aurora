@@ -29,7 +29,7 @@ function save_new_dept(){
 // 	}
 //     } 
     
-    var request='ar_assets.php?tipo=new_department&code='+escape(code)+'&name='+escape(name);
+    var request='ar_assets.php?tipo=new_department&code='+encodeURIComponent(code)+'&name='+encodeURIComponent(name);
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
 	       
@@ -67,12 +67,16 @@ YAHOO.util.Event.addListener(window, "load", function() {
 						 column = this.getColumn(),
 						 oldValue = this.value,
 						 datatable = this.getDataTable();
-
+						 //						 alert('tipo=edit_department&key=' + column.key + '&newvalue=' + 
+						 //			 encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ 
+						 //			 myBuildUrl(datatable,record) );
+						 
 						 YAHOO.util.Connect.asyncRequest(
 										 'POST',
 										 'ar_assets.php', {
 										     success:function(o) {
-											 // alert(o.responseText);
+											//  alert(o.responseText);
+// 											 return;
 											 var r = YAHOO.lang.JSON.parse(o.responseText);
 											 if (r.state == 200) {
 
@@ -89,7 +93,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 											 scope:this
 											 },
 										 'tipo=edit_department&key=' + column.key + '&newvalue=' + 
-										 escape(newValue) + '&oldvalue=' + escape(oldValue)+ 
+										 encodeURIComponent(newValue) + '&oldvalue=' + oldValue+ 
 										 myBuildUrl(datatable,record)
 
 										 );  
@@ -131,7 +135,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 											 scope:this
 											 },
 										 'tipo=edit_department&key=' + column.key + '&newvalue=' + 
-										 escape(newValue) + '&oldvalue=' + escape(oldValue)+ 
+										 encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ 
 										 myBuildUrl(datatable,record)
 
 										 );  

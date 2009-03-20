@@ -30,13 +30,16 @@ $tipo=$_REQUEST['tipo'];
 switch($tipo){
  case('edit_department'):
    $department=new Department($_REQUEST['id']);
-   $department->update(urldecode($_REQUEST['key']),stripslashes(urldecode($_REQUEST['newvalue'])),stripslashes(urldecode($_REQUEST['oldvalue'])));
-     
+   $department->update($_REQUEST['key'],stripslashes(urldecode($_REQUEST['newvalue'])),stripslashes(urldecode($_REQUEST['oldvalue'])));
+   
+   //   $response= array('state'=>400,'msg'=>print_r($_REQUEST);
+   //echo json_encode($response);  
+   // exit;
    if($department->updated){
-     $response= array('state'=>200,'data'=>$department->newvalue);
+     $response= array('state'=>200,'newvalue'=>$department->newvalue,'key'=>$_REQUEST['key']);
 	  
    }else{
-     $response= array('state'=>400,'msg'=>$department->msg);
+     $response= array('state'=>400,'msg'=>$department->msg,'key'=>$_REQUEST['key']);
    }
    echo json_encode($response);  
    exit;
@@ -2799,10 +2802,14 @@ $where=" ";
    $_dir=$order_direction;
    $_order=$order;
    
-     if($order=='families')
-       $order='`Store Families`';
+   if($order=='families')
+     $order='`Store Families`';
+   elseif($order=='departments')
+     $order='`Store Departments`';
+ elseif($order=='code')
+     $order='`Store Code`';
 
-    if($order=='profit'){
+   else if($order=='profit'){
     if($period=='all')
       $order='`Store Total Profit`';
     elseif($period=='year')
@@ -3165,6 +3172,8 @@ $sum_active=0;
    $adata[]=array(
 		  'code'=>$code,
 		   'name'=>$name,
+		  'departments'=>number($row['Store Departments']),
+
 		   'families'=>number($row['Store Families']),
 		   'active'=>number($row['Store For Sale Products']),
 		   'outofstock'=>number($row['Store Out Of Stock Products']),
@@ -3338,8 +3347,9 @@ $where=" ";
    if($order=='name')
      $order='`Store Name`';
    else if($order=='code')
-     $order='`Store code`';
-
+     $order='`Store Code`';
+   else
+     $order='`Store Code`';
 
 
 
@@ -3348,7 +3358,7 @@ $where=" ";
    
    $res = mysql_query($sql);
    $adata=array();
-  //  print "$sql";
+   //  print "$sql";
    while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
      if($row['Store For Sale Products']>0)
        $delete='<img src="art/icons/cross.png" /> <span onclick="close_store('.$row['Store Key'].')"  id="del_'.$row['Store Key'].'" style="cursor:pointer">'._('Close').'<span>';

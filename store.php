@@ -130,13 +130,7 @@ while($row=mysql_fetch_array($res)){
       $first=FALSE;
     }
 }
- 
-$smarty->assign('stores',$stores);
-
-
-
-
-
+ $smarty->assign('stores',$stores);
 $smarty->display('edit_store.tpl');
  }else
 $smarty->display('store.tpl');
