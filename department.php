@@ -7,6 +7,12 @@ $view_stock=$LU->checkRight(PROD_STK_VIEW);
 $create=$LU->checkRight(PROD_CREATE);
 $modify=$LU->checkRight(PROD_MODIFY);
 
+if(isset($_REQUEST['edit']))
+  $edit=$_REQUEST['edit'];
+else
+  $edit=$_SESSION['state']['department']['edit'];
+
+
 
 $smarty->assign('view_sales',$view_sales);
 $smarty->assign('view_stock',$view_stock);
@@ -36,8 +42,16 @@ $js_files=array(
 		'js/common.js.php',
 		'js/table_common.js.php',
 		'js/search.js',
-		'js/department.js.php'
+
 		);
+
+if($edit)
+  $js_files[]='js/edit_department.js.php';
+ else
+   $js_files[]='js/department.js.php';
+
+
+
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
@@ -57,8 +71,8 @@ $_SESSION['state']['department']['id']=$_REQUEST['id'];
 $department=new Department($department_id);
 
 
-$order=$_SESSION['state']['departments']['table']['order'];
-$period=$_SESSION['state']['departments']['period'];
+$order=$_SESSION['state']['store']['table']['order'];
+$period=$_SESSION['state']['store']['period'];
  if($order=='profit'){
     if($period=='all')
       $order='`Product Department Total Profit`';
@@ -96,12 +110,12 @@ $period=$_SESSION['state']['departments']['period'];
 
 
 
-$sql=sprintf("select `Product Department Key` as id,`Product Department Name` as code  from `Product Department Dimension` where  %s<'%s' order by %s desc  ",$order,$department->get(str_replace('`','',$order)),$order);
-
+$sql=sprintf("select `Product Department Key` as id,`Product Department Code` as code  from `Product Department Dimension` where `Product Department Store Key`=%d and   %s<%s order by %s desc  ",$department->data['Product Department Store Key'],$order,prepare_mysql($department->get(str_replace('`','',$order))),$order);
+//print $sql;
 $result=mysql_query($sql);
 if(!$prev=mysql_fetch_array($result, MYSQL_ASSOC)   )
   $prev=array('id'=>0,'code'=>'');
-$sql=sprintf("select `Product Department Key` as id,`Product Department Name` as code  from `Product Department Dimension`   where    %s>'%s' order by %s   ",$order,$department->get(str_replace('`','',$order)),$order);
+$sql=sprintf("select `Product Department Key` as id,`Product Department Code` as code  from `Product Department Dimension`   where  `Product Department Store Key`=%d and   %s>%s order by %s   ",$department->data['Product Department Store Key'],$order,prepare_mysql($department->get(str_replace('`','',$order))),$order);
 
 //print $sql;
 $result=mysql_query($sql);
@@ -113,7 +127,7 @@ $smarty->assign('next',$next);
 
 
 
-$smarty->assign('parent','departments.php');
+$smarty->assign('parent','stores.php');
 $smarty->assign('title', _('Families in').' '.$department->get('Product Department Name'));
 $product_home="Products Home";
 $smarty->assign('home',$product_home);
@@ -135,6 +149,12 @@ $smarty->assign('period',$_SESSION['state']['department']['period']);
 //$table_title=_('Family List');
 //$smarty->assign('table_title',$table_title);
 //$smarty->assign('table_info',$families['families'].' '.ngettext('Families','Families',$families['families']).' '._('in').' '.$families['department']);
+if($edit){
+$smarty->display('edit_department.tpl');
 
-$smarty->display('department.tpl');
+ }else
+  $smarty->display('department.tpl');
+
+
+
 ?>

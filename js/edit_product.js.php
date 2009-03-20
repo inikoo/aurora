@@ -465,17 +465,10 @@ function caption_changed(o){
 	if(ovalue!=o.value){
 	    if(name=='description'){
 		if(o.value==''){
-		    //    Dom.get("warnings").innerHTML="<?=_("The product name can not be empty")?>";
-		    //Dom.get(name+"_save").style.visibility='hidden';
-
 		    description_errors.description="<?=_("The product name can not be empty")?>";
-		  //   save_menu();
-// 		    return;
 		}
 		else if(o.value.lenght>75){
 		    description_errors.description="<?=_("The product name can not be empty")?>";
-		 //    save_menu();
-// 		    return;
 		}else
 		    delete description_errors.description
 

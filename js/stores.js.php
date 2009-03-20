@@ -14,6 +14,8 @@ var Dom   = YAHOO.util.Dom;
 	if(table.view!=tipo){
 	    table.hideColumn('active');
 	    table.hideColumn('families');
+	    table.hideColumn('departments');
+
 	    table.hideColumn('sales');
 	    table.hideColumn('profit');
 	    //    table.hideColumn('stock_value');
@@ -35,6 +37,8 @@ var Dom   = YAHOO.util.Dom;
 		Dom.get('avg_options').style.display='none';
 		table.showColumn('active');
 		table.showColumn('families');
+		table.showColumn('departments');
+
 	    }
 	    if(tipo=='stock'){
 		Dom.get('period_options').style.display='none';
@@ -70,6 +74,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    {key:"code", label:"<?=_('Code')?>", width:50,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
 				    ,{key:"name", label:"<?=_('Name')?>", width:350,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				
+				    ,{key:"departments", label:"<?=_('Departments')?>", width:100,sortable:true,className:"aright",<?=($_SESSION['state']['stores']['view']=='general'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    
 				    ,{key:"families", label:"<?=_('Families')?>", width:100,sortable:true,className:"aright",<?=($_SESSION['state']['stores']['view']=='general'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    ,{key:"active", label:"<?=_('Products')?>",  width:100,sortable:true,className:"aright",<?=($_SESSION['state']['stores']['view']=='general'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    ,{key:"sales", label:"<?=_('Sales')?>", width:90,sortable:true,className:"aright",<?=($_SESSION['state']['stores']['view']=='sales'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
@@ -112,7 +119,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		fields: [
 			 'id',
 			 "name",
-			 'families',
+			 'families','departments',
 			 'active',"sales","stock_error","stock_value","outofstock","profit","surplus","optimal","low","critical","code"
 			 ]};
 	    
