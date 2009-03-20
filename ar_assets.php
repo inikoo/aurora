@@ -33,15 +33,27 @@ switch($tipo){
    $department->update(urldecode($_REQUEST['key']),stripslashes(urldecode($_REQUEST['newvalue'])),stripslashes(urldecode($_REQUEST['oldvalue'])));
      
    if($department->updated){
-     $response= array('state'=>200,'data'=>$department->newvalue,'c'=>'dd');
+     $response= array('state'=>200,'data'=>$department->newvalue);
 	  
    }else{
-     $response= array('state'=>400,'msg'=>$department->msg,'c'=>'dd');
+     $response= array('state'=>400,'msg'=>$department->msg);
    }
    echo json_encode($response);  
    exit;
    break;
-
+ case('edit_store'):
+   $store=new Store($_REQUEST['id']);
+   $store->update(urldecode($_REQUEST['key']),stripslashes(urldecode($_REQUEST['newvalue'])),stripslashes(urldecode($_REQUEST['oldvalue'])));
+     
+   if($store->updated){
+     $response= array('state'=>200,'data'=>$store->newvalue);
+	  
+   }else{
+     $response= array('state'=>400,'msg'=>$store->msg);
+   }
+   echo json_encode($response);  
+   exit;
+   break;
 
  case('order_received'):
  case('order_expected'):
@@ -3221,7 +3233,187 @@ $sum_active=0;
 		   );
    echo json_encode($response);
    break;
+ case('edit_stores'):
+   
+   $conf=$_SESSION['state']['stores']['table'];
 
+   if(isset( $_REQUEST['sf']))
+     $start_from=$_REQUEST['sf'];
+   else
+     $start_from=$conf['sf'];
+   if(isset( $_REQUEST['nr']))
+     $number_results=$_REQUEST['nr'];
+   else
+     $number_results=$conf['nr'];
+   if(isset( $_REQUEST['o']))
+     $order=$_REQUEST['o'];
+   else
+    $order=$conf['order'];
+   if(isset( $_REQUEST['od']))
+     $order_dir=$_REQUEST['od'];
+   else
+     $order_dir=$conf['order_dir'];
+   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+   if(isset( $_REQUEST['where']))
+     $where=addslashes($_REQUEST['where']);
+   else
+     $where=$conf['where'];
+
+    
+   if(isset( $_REQUEST['f_field']))
+     $f_field=$_REQUEST['f_field'];
+   else
+     $f_field=$conf['f_field'];
+   
+   if(isset( $_REQUEST['f_value']))
+     $f_value=$_REQUEST['f_value'];
+   else
+     $f_value=$conf['f_value'];
+
+   
+   if(isset( $_REQUEST['tableid']))
+     $tableid=$_REQUEST['tableid'];
+   else
+    $tableid=0;
+   
+
+  if(isset( $_REQUEST['percentages'])){
+    $percentages=$_REQUEST['percentages'];
+    $_SESSION['state']['stores']['percentages']=$percentages;
+  }else
+    $percentages=$_SESSION['state']['stores']['percentages'];
+  
+  
+
+   if(isset( $_REQUEST['period'])){
+    $period=$_REQUEST['period'];
+    $_SESSION['state']['stores']['period']=$period;
+  }else
+    $period=$_SESSION['state']['stores']['period'];
+
+ if(isset( $_REQUEST['avg'])){
+    $avg=$_REQUEST['avg'];
+    $_SESSION['state']['stores']['avg']=$avg;
+  }else
+    $avg=$_SESSION['state']['stores']['avg'];
+
+    $_SESSION['state']['stores']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+  // print_r($_SESSION['tables']['families_list']);
+
+  //  print_r($_SESSION['tables']['families_list']);
+$where=" ";
+   
+ $filter_msg='';
+  $wheref='';
+  if($f_field=='name' and $f_value!='')
+    $wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
+
+
+  
+
+
+
+   $sql="select count(*) as total from `Store Dimension`   $where $wheref";
+
+   $res = $db->query($sql); 
+   if($row=$res->fetchRow()) {
+     $total=$row['total'];
+   }
+   if($wheref=='')
+       $filtered=0;
+   else{
+     $sql="select count(*) as total `Store Dimension`   $where ";
+
+     $res = $db->query($sql); 
+     if($row=$res->fetchRow()) {
+       $filtered=$row['total']-$total;
+     }
+
+   }
+
+   $_dir=$order_direction;
+   $_order=$order;
+   
+
+   if($order=='name')
+     $order='`Store Name`';
+   else if($order=='code')
+     $order='`Store code`';
+
+
+
+
+ 
+   $sql="select *  from `Store Dimension`  order by $order $order_direction limit $start_from,$number_results    ";
+   
+   $res = mysql_query($sql);
+   $adata=array();
+  //  print "$sql";
+   while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+     if($row['Store For Sale Products']>0)
+       $delete='<img src="art/icons/cross.png" /> <span onclick="close_store('.$row['Store Key'].')"  id="del_'.$row['Store Key'].'" style="cursor:pointer">'._('Close').'<span>';
+     else
+       $delete='<img src="art/icons/cross.png" /> <span onclick="delete_store('.$row['Store Key'].')"  id="del_'.$row['Store Key'].'" style="cursor:pointer">'._('Delete').'<span>';
+     $adata[]=array(
+		    'id'=>$row['Store Key']
+		    ,'code'=>$row['Store Code']
+		    ,'name'=>$row['Store Name']
+		    ,'delete'=>$delete
+		    
+		  );
+  }
+
+   if($percentages){
+      $tsall='100.00%';
+      $tprofit='100.00%';
+    }else{
+     $tsall=money($sum_total_sales);
+     $tprofit=money($sum_total_profit);
+   }
+
+  // $adata[]=array(
+
+// 		 'name'=>_('Total'),
+
+// 		 'active'=>number($sum_active),
+// 		 'outofstock'=>number($row['product store out of stock products']),
+// 		 'stockerror'=>number($row['product store unknown stock products']),
+// 		 'stock_value'=>money($row['product store stock value']),
+// 		 'tsall'=>$tsall,'tprofit'=>$tprofit,
+// 		 'per_tsall'=>percentage($row['product store total invoiced amount'],$sum_total_sales,2),
+// 		 'tsm'=>money($row['product store 1 month acc invoiced amount']),
+// 		 'per_tsm'=>percentage($row['product store 1 month acc invoiced amount'],$sum_month_sales,2),
+// 		 );
+
+
+   $total=mysql_num_rows($res);
+  // if($total<$number_results)
+  //  $rtext=$total.' '.ngettext('store','stores',$total);
+  //else
+  //  $rtext='';
+
+
+
+   $response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$adata,
+			 'sort_key'=>$_order,
+			 'sort_dir'=>$_dir,
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
+			 
+			 'total_records'=>$total,
+			 'records_offset'=>$start_from,
+			 'records_returned'=>$start_from+$total,
+			 'records_perpage'=>$number_results,
+			 
+			'records_order'=>$order,
+			'records_order_dir'=>$order_dir,
+			'filtered'=>$filtered
+			 )
+		   );
+   echo json_encode($response);
+   break;
 case('store'):
    
    $conf=$_SESSION['state']['store']['table'];
@@ -6705,6 +6897,30 @@ case('parts'):
 
 
 
+ case('new_store'):
+   
+   if(isset($_REQUEST['name'])  and  isset($_REQUEST['code'])   ){
+
+
+
+     $store=new Store('create',array(
+					      'Store Code'=>$_REQUEST['code']
+					      ,'Store Name'=>$_REQUEST['name']
+
+					      ));
+     if(!$store->new){
+       $state='400';
+     }else{
+       
+       $state='200';
+     }
+     $response=array('state'=>$state,'msg'=>$store->msg);
+   }
+
+   else
+      $response=array('state'=>400,'resp'=>_('Error'));
+   echo json_encode($response);
+   break;
  case('new_department'):
    
    if(isset($_REQUEST['name'])  and  isset($_REQUEST['code'])   ){
@@ -6729,7 +6945,6 @@ case('parts'):
       $response=array('state'=>400,'resp'=>_('Error'));
    echo json_encode($response);
    break;
-
    
  case('new_family'):
    
