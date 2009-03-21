@@ -531,3 +531,12 @@ function change_avg(e,table_id){
     var request='&avg=' + this.getAttribute('avg');
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
 }
+
+function trim(str)
+{
+     s = str.replace(/^(\s)*/, '');
+    s = s.replace(/(\s)*$/, '');
+     s = s.replace(/\s{2,}/, ' ');
+    return s;
+}
+

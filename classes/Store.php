@@ -468,7 +468,7 @@ $sql="select sum(`Product 1 Week Acc Invoiced Amount`) as net,sum(`Product 1 Wee
    switch($key){
    case('code'):
 
-     if($a1==$this->data['Store Code']){
+     if(_trim($a1)==$this->data['Store Code']){
        $this->updated=true;
        $this->newvalue=$a1;
        return;
@@ -485,7 +485,7 @@ $sql="select sum(`Product 1 Week Acc Invoiced Amount`) as net,sum(`Product 1 Wee
      $res=mysql_query($sql);
      $row=mysql_fetch_array($res);
      if($row['num']>0){
-       $this->msg=_("Error: Another store with the same code");
+       $this->msg=_("Error: There is another store with the same code");
        return;
      }
      
@@ -504,15 +504,15 @@ $sql="select sum(`Product 1 Week Acc Invoiced Amount`) as net,sum(`Product 1 Wee
       }
       break;	
       
-case('name'):
-
-     if($a1==$this->data['Store Name']){
+   case('name'):
+     
+     if(_trim($a1)==$this->data['Store Name']){
        $this->updated=true;
        $this->newvalue=$a1;
        return;
        
      }
-
+     
      if($a1==''){
        $this->msg=_('Error: Wrong name (empty)');
        return;

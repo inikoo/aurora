@@ -40,8 +40,8 @@ function save_new_store(){
 		    var request='';
 		    datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
 		    Dom.get('edit_messages').innerHTML='';
-		    
-		    
+		    Dom.get('new_code').value='';
+		    Dom.get('new_name').value='';Dom.get("add_new_store").style.display='none';
 		}else
 		    Dom.get('edit_messages').innerHTML='<span class="error">'+r.msg+'</span>';
 	    }
@@ -76,7 +76,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 											 var r = YAHOO.lang.JSON.parse(o.responseText);
 											 if (r.state == 200) {
 
-											     callback(true, r.data);
+											     callback(true, r.newvalue);
 											 } else {
 											     alert(r.msg);
 											     callback();

@@ -136,14 +136,11 @@ $css_files=array(
 		 'table.css'
 		 );
 $js_files=array(
-		$yui_path.'yahoo-dom-event/yahoo-dom-event.js',
-		$yui_path.'calendar/calendar-min.js',
-		$yui_path.'element/element-beta-min.js',
 		$yui_path.'utilities/utilities.js',
+		$yui_path.'calendar/calendar-min.js',
 		$yui_path.'container/container.js',
 		$yui_path.'menu/menu-min.js',
 		$yui_path.'button/button.js',
-
 		$yui_path.'datasource/datasource-min.js',
 		$yui_path.'autocomplete/autocomplete.js',
 		$yui_path.'charts/charts-experimental-min.js',

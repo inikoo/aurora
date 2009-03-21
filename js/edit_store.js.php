@@ -2,11 +2,175 @@
 include_once('../common.php');
 ?>
 
-
+var description_num_changed=0;
+var description_warnings= new Object();
+var description_errors= new Object();
+var id=<?=$_SESSION['state']['store']['store_id']?>;
+var editing='description';
 
 
 var Event = YAHOO.util.Event;
 var Dom   = YAHOO.util.Dom;
+
+
+function update_form(){
+    if(editing=='description'){
+	this_errors=description_errors;
+	this_num_changed=description_num_changed
+
+    }
+  
+    if(this_num_changed>0){
+	Dom.get(editing+'_save').style.display='';
+	Dom.get(editing+'_reset').style.display='';
+
+    }else{
+	Dom.get(editing+'_save').style.display='none';
+	Dom.get(editing+'_reset').style.display='none';
+
+    }
+    Dom.get(editing+'_num_changes').innerHTML=this_num_changed;
+
+   
+    errors_div=Dom.get(editing+'_errors');
+    
+    errors_div.innerHTML='';
+
+
+    for (x in this_errors)
+	{
+	    // alert(errors[x]);
+	    Dom.get(editing+'_save').style.display='none';
+	    errors_div.innerHTML=errors_div.innerHTML+' '+this_errors[x];
+	}
+
+
+
+
+}
+
+
+function changed(o){
+    var ovalue=o.getAttribute('ovalue');
+    var name=o.name;
+    if(ovalue!=trim(o.value)){
+	if(name=='code'){
+	    if(o.value==''){
+		description_errors.code="<?=_("The department code can not be empty")?>";
+	    }else if(o.value.lenght>16){
+		description_errors.code="<?=_("The product code can not have more than 16 characters")?>";
+	    }else
+		delete description_errors.code;
+	}
+	if(name=='name'){
+	    if(o.value==''){
+		description_errors.name="<?=_("The department name  can not be empty")?>";
+	    }else if(o.value.lenght>255){
+		description_errors.name="<?=_("The product code can not have more than 255  characters")?>";
+	    }else
+		delete description_errors.name;
+	}
+	
+
+
+	if(o.getAttribute('changed')==0){
+	    update_changes('+');
+	    o.setAttribute('changed',1);
+	}
+    }else{
+	if(o.getAttribute('changed')==1){
+	    update_changes('-');
+	    o.setAttribute('changed',0);
+	}
+    }
+    update_form();
+}
+
+function update_changes(changed){
+    if(editing=='description'){
+	if(changed=='+')
+	    description_num_changed++;
+	else
+	    description_num_changed--;
+ 
+    }	
+}
+
+
+function reset(tipo){
+
+    if(tipo=='description'){
+	tag='name';
+	Dom.get(tag).value=Dom.get(tag).getAttribute('ovalue');
+	Dom.get(tag).setAttribute('changed',0);
+	tag='code';
+	Dom.get(tag).value=Dom.get(tag).getAttribute('ovalue');
+	Dom.get(tag).setAttribute('changed',0);
+
+	description_num_changed=0;
+	Dom.get(editing+'_save').style.display='none';
+	Dom.get(editing+'_reset').style.display='none';
+
+	Dom.get(editing+'_num_changes').innerHTML=description_num_changed;
+	description_warnings= new Object();
+	description_errors= new Object();
+	
+    }
+    update_form();
+}
+
+function save(tipo){
+
+    if(tipo=='description'){
+	var keys=new Array("code","name");
+	for (x in keys)
+	    {
+		 key=keys[x];
+		 element=Dom.get(key);
+		if(element.getAttribute('changed')==1){
+
+		    newValue=element.value;
+		    oldValue=element.getAttribute('ovalue');
+		  
+		    var request='ar_assets.php?tipo=edit_store&key=' + key+ '&newvalue=' + 
+			encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ 
+			'&id='+id;
+
+		    YAHOO.util.Connect.asyncRequest('POST',request ,{
+			    success:function(o) {
+				//				alert(o.responseText);
+				var r =  YAHOO.lang.JSON.parse(o.responseText);
+				if(r.state==200){
+				    var element=Dom.get(r.key);
+				    element.getAttribute('ovalue',r.newvalue);
+				    element.value=r.newvalue;
+				    element.setAttribute('changed',0);
+				    description_num_changed--;
+				 
+				}else{
+				    //Dom.get('description_errors').innerHTML='<span class="error">'+r.msg+'</span>';
+				    description_errors[r.key]=r.msg;
+				}
+				update_form();	
+			    }
+			    
+			});
+		}
+	    }
+	
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
 function new_dept_changed(o){
     if(Dom.get("new_code").value!='' && Dom.get("new_name").value!=''){
 
@@ -80,7 +244,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 											 var r = YAHOO.lang.JSON.parse(o.responseText);
 											 if (r.state == 200) {
 
-											     callback(true, r.data);
+											     callback(true, r.newvalue);
 											 } else {
 											     alert(r.msg);
 											     callback();
@@ -122,7 +286,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 											 var r = YAHOO.lang.JSON.parse(o.responseText);
 											 if (r.state == 200) {
 
-											     callback(true, r.data);
+											     callback(true, r.newvalue);
 											 } else {
 											     alert(r.msg);
 											     callback();

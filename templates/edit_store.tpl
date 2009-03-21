@@ -1,19 +1,29 @@
 {include file='header.tpl'}
 <div id="bd" >
-  <span class="nav2 onleft"><a class="selected" href="departments.php">{t}Departments{/t}</a></span>
-  <span class="nav2 onleft"><a href="families.php">{t}Families{/t}</a></span>
-  <span class="nav2 onleft"><a href="products.php">{t}Products{/t}</a></span>
-  <span class="nav2 onleft"><a href="categories.php">{t}Categories{/t}</a></span>
-  <span class="nav2 onleft"><a href="parts.php">{t}Parts{/t}</a></span>
 
 
- <div class="search_box" style="clear:both;margin-right:20px" >
+
+ <div class="search_box" style="clear:both;margin-right:20px;margin-top:10px" >
     <span class='reset' onclick='window.location="store.php?edit=0"'   >{t}Exit{/t}</span>
  </div>
   
 
 <div style="clear:left;margin-left:20px;width:700px"id="details" class="details" >
 <h1><span style="color:red">{t}Editing{/t}</span> {$store->get('Store Name')} ({$store->get('Store Code')})</h1>
+
+<h2>{t}Store data{/t}</h2>
+  <div id="edit_store_form">
+    <span style="display:none" id="description_num_changes"></span>
+    <div id="description_errors"></div>
+    <table >
+      <tr><td>{t}Code{/t}:</td><td><input  id="code" onKeyUp="changed(this)"    onMouseUp="changed(this)"  onChange="changed(this)"  name="code" changed=0 type='text' class='text' style="width:15em" MAXLENGTH="16" value="{$store->get('Store Code')}" ovalue="{$store->get('Store Code')}"  /></td></tr>
+      <tr><td>{t}Name{/t}:</td><td><input   id="name" onKeyUp="changed(this)"    onMouseUp="changed(this)"  onChange="changed(this)"  name="name" changed=0 type='text'  MAXLENGTH="255" style="width:30em"  class='text' value="{$store->get('Store Name')}"  ovalue="{$store->get('Store Name')}"  /></td>
+	<td>
+	  <span class="save" id="description_save" onclick="save('description')" style="display:none">{t}Update{/t}</span><span class="reset" id="description_reset" onclick="reset('description')" style="display:none">{t}Reset{/t}</span>
+      </td></tr>
+    </table>
+  </div>
+
 <h2>{t}Add new department{/t}</h2>
 <div id="add_department_form">
 <div id="edit_messages"></div>
