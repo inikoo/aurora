@@ -17,8 +17,6 @@ $css_files=array(
 $js_files=array(
 		'js/passwordmeter.js.php',
 		'js/sha256.js.php',
-		$yui_path.'yahoo-dom-event/yahoo-dom-event.js',
-		$yui_path.'element/element-beta-min.js',
 		$yui_path.'utilities/utilities.js',
 		$yui_path.'container/container.js',
 		$yui_path.'menu/menu-min.js',

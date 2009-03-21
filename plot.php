@@ -302,13 +302,10 @@ $out='<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN""http://www.
 
 
 
-
-       <script type="text/javascript" src="'.$yui_path.'yahoo-dom-event/yahoo-dom-event.js"></script>
+ <script type="text/javascript" src="'.$yui_path.'utilities/utilities.js"></script>
        <script type="text/javascript" src="'.$yui_path.'json/json-min.js"></script>
-       <script type="text/javascript" src="'.$yui_path.'element/element-beta-min.js"></script>
-       <script type="text/javascript" src="'.$yui_path.'connection/connection-min.js"></script>
        <script type="text/javascript" src="'.$yui_path.'datasource/datasource-min.js"></script>
-       <script type="text/javascript" src="'.$yui_path.'charts/charts-experimental-min.js"></script>
+       <script type="text/javascript" src="'.$yui_path.'charts/charts-min.js"></script>
 
 </head> <body><div style="font-size:8pt;height:300px" id=plot>'.$alt.'</div><div style="font-family:Verdana, Arial, sans-serif;text-align:center;font-size:10pt;position:relative;bottom:300px;">'.$title.'</div></body>
  <script type="text/javascript">

@@ -46,13 +46,13 @@ switch($tipo){
    break;
  case('edit_store'):
    $store=new Store($_REQUEST['id']);
-   $store->update(urldecode($_REQUEST['key']),stripslashes(urldecode($_REQUEST['newvalue'])),stripslashes(urldecode($_REQUEST['oldvalue'])));
+   $store->update($_REQUEST['key'],stripslashes(urldecode($_REQUEST['newvalue'])),stripslashes(urldecode($_REQUEST['oldvalue'])));
      
    if($store->updated){
-     $response= array('state'=>200,'data'=>$store->newvalue);
+     $response= array('state'=>200,'newvalue'=>$store->newvalue,'key'=>$_REQUEST['key']);
 	  
    }else{
-     $response= array('state'=>400,'msg'=>$store->msg);
+     $response= array('state'=>400,'msg'=>$store->msg,'key'=>$_REQUEST['key']);
    }
    echo json_encode($response);  
    exit;
@@ -3510,7 +3510,7 @@ $store_id=$_SESSION['state']['store']['store_id'];
 
 
    $sql="select count(*) as total from `Product Department Dimension`   $where $wheref";
-   // print $sql;
+   //print $sql;
    $res = mysql_query($sql); 
    if($row=mysql_fetch_array($res)) {
      $total=$row['total'];

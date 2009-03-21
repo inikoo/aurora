@@ -12,16 +12,12 @@ $css_files=array(
 		 'table.css'
 		 );
 $js_files=array(
-		$yui_path.'yahoo-dom-event/yahoo-dom-event.js',
-		$yui_path.'connection/connection-min.js',
+		$yui_path.'utilities/utilities.js',
 		$yui_path.'json/json-min.js',
-		
-		$yui_path.'element/element-beta-min.js',
 		$yui_path.'paginator/paginator-min.js',
 		$yui_path.'datasource/datasource-min.js',
 		$yui_path.'autocomplete/autocomplete-min.js',
 		$yui_path.'datatable/datatable.js',
-		$yui_path.'utilities/utilities.js',
 		$yui_path.'container/container-min.js',
 		$yui_path.'button/button-min.js',
 		$yui_path.'menu/menu-min.js',

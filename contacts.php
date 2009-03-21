@@ -27,8 +27,7 @@ $css_files=array(
 		 
 		 );
 $js_files=array(
-		$yui_path.'yahoo-dom-event/yahoo-dom-event.js',
-		$yui_path.'element/element-beta-min.js',
+
 		$yui_path.'utilities/utilities.js',
 		$yui_path.'tabview/tabview-min.js',
 		$yui_path.'container/container.js',
