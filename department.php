@@ -1,5 +1,6 @@
 <?
 include_once('common.php');
+include_once('classes/Store.php');
 include_once('classes/Department.php');
 
 $view_sales=$LU->checkRight(PROD_SALES_VIEW);
@@ -62,11 +63,13 @@ if(isset($_REQUEST['view'])){
  }
 
 if(!isset($_REQUEST['id']) or !is_numeric($_REQUEST['id']) )
-  $_REQUEST['id']=1;
-$department_id=$_REQUEST['id'];
-$_SESSION['state']['department']['id']=$_REQUEST['id'];
-
+  $department_id=$_SESSION['state']['department']['id'];
+ else{
+   $department_id=$_REQUEST['id'];
+   $_SESSION['state']['department']['id']=$department_id;
+  }
 $department=new Department($department_id);
+$store=new Store($department->get('Product Department Store Key'));
 
 
 $order=$_SESSION['state']['store']['table']['order'];
@@ -126,10 +129,12 @@ $smarty->assign('next',$next);
 
 
 $smarty->assign('parent','stores.php');
-$smarty->assign('title', _('Families in').' '.$department->get('Product Department Name'));
+
 $product_home="Products Home";
 $smarty->assign('home',$product_home);
 $smarty->assign('department',$department);
+$smarty->assign('store',$store);
+
 // $smarty->assign('department_id',$_REQUEST['id']);
 // $smarty->assign('products',$families['products']);
 
@@ -148,11 +153,13 @@ $smarty->assign('period',$_SESSION['state']['department']['period']);
 //$smarty->assign('table_title',$table_title);
 //$smarty->assign('table_info',$families['families'].' '.ngettext('Families','Families',$families['families']).' '._('in').' '.$families['department']);
 if($edit){
-$smarty->display('edit_department.tpl');
 
- }else
+  $smarty->assign('title', _('Editing').': '.$department->get('Product Department Code'));
+  $smarty->display('edit_department.tpl');
+ }else{
+  $smarty->assign('title',$department->get('Product Department Name'));
   $smarty->display('department.tpl');
-
+ }
 
 
 ?>

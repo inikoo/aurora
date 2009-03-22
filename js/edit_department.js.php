@@ -16,7 +16,7 @@ var description_num_changed=0;
 var description_warnings= new Object();
 var description_errors= new Object();
 
-function save_menu(){
+function update_form(){
     if(editing=='description'){
 	this_errors=description_errors;
 	this_num_changed=description_num_changed
@@ -86,7 +86,7 @@ function edit_dept_changed(o){
 	    o.setAttribute('changed',0);
 	}
     }
-    save_menu();
+    update_form();
 }
 
 function reset(tipo){
@@ -108,7 +108,7 @@ function reset(tipo){
 	description_errors= new Object();
 	
     }
-    save_menu();
+    update_form();
 }
 
 function save(tipo){
@@ -143,7 +143,7 @@ function save(tipo){
 				    Dom.get('description_errors').innerHTML='<span class="error">'+r.msg+'</span>';
 				    
 				}
-				save_menu();	
+				update_form();	
 			    }
 			    
 			});
@@ -155,6 +155,159 @@ function save(tipo){
 }
 
 
+function new_family_changed(o){
+    if(Dom.get("new_code").value!='' && Dom.get("new_name").value!=''){
+	Dom.get("add_new_family").style.display='';
+    }else
+	Dom.get("add_new_family").style.display='none';
+}
+
+function save_new_family(){
+
+    var msg_div='add_family_messages';
+
+    var code=Dom.get('new_code').value;
+    var name=Dom.get('new_name').value;
+    var description=Dom.get('new_description').innerHTML;
+    var request='ar_assets.php?tipo=new_family&code='+encodeURIComponent(code)+'&name='+encodeURIComponent(name)+'&description='+encodeURIComponent(name);
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    success:function(o) {
+		alert(o.responseText)
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if(r.state==200){
+		    var table=tables['table0'];
+		    var datasource=tables['dataSource0'];
+		    var request='';
+		    datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
+		    Dom.get(msg_div).innerHTML='';
+		}else
+		    Dom.get(msg_div).innerHTML='<span class="error">'+r.msg+'</span>';
+	    }
+	    
+	    });
+
+}
+
+
+
+
+
+
+
+
+YAHOO.util.Event.addListener(window, "load", function() {
+    tables = new function() {
+
+
+	    var onCellClick = function(oArgs) {
+		var target = oArgs.target,
+		column = this.getColumn(target),
+		record = this.getRecord(target);
+		switch (column.action) {
+		case 'delete':
+		    if (confirm('Are you sure?')) {
+
+			YAHOO.util.Connect.asyncRequest(
+                    'GET',
+                    'ar_assets?tipo=delete_family' + myBuildUrl(this,record),
+                    {
+                        success: function (o) {
+
+                            if (o.responseText == 'Ok') {
+                                this.deleteRow(target);
+                            } else {
+                                alert(o.responseText);
+                            }
+                        },
+			    failure: function (o) {
+                            alert(o.statusText);
+                        },
+			    scope:this
+			    }
+							);
+		    }
+		    break;
+		default:
+		    this.onEventShowCellEditor(oArgs);
+		    break;
+		}
+	    };
+	    
+
+
+
+	    var tableid=0; // Change if you have more the 1 table
+	    var tableDivEL="table"+tableid;
+	    var OrdersColumnDefs = [ 
+				    {key:"id", label:"", hidden:true,action:"none",isPrimaryKey:true}
+				    ,{key:"code", label:"<?=_('Code')?>", width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"name", label:"<?=_('Name')?>",width:300, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"delete", label:"",width:100,className:"aleft",action:"delete"}
+				    ,{key:"delete_type", label:"",hidden:true,isTypeKey:true}
+
+				     ];
+
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_assets.php?tipo=edit_families&parent=department");
+	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource0.connXhrMode = "queueRequests";
+	    this.dataSource0.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		    rowsPerPage:"resultset.records_perpage",
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
+		},
+		
+		fields: [
+			 "code",
+			 "name",
+			 'delete','delete_type','id'
+			 ]};
+	    
+	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
+						     this.dataSource0, {
+							 //draggableColumns:true,
+							   renderLoopSize: 50,generateRequest : myRequestBuilder
+								       ,paginator : new YAHOO.widget.Paginator({
+									      rowsPerPage:<?=$_SESSION['tables']['departments_list'][2]?>,containers : 'paginator', 
+ 									      pageReportTemplate : '(<?=_('Page')?> {currentPage} <?=_('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+									  })
+								     
+								     ,sortedBy : {
+									 key: "<?=$_SESSION['tables']['departments_list'][0]?>",
+									 dir: "<?=$_SESSION['tables']['departments_list'][1]?>"
+								     }
+							   ,dynamicData : true
+
+						     }
+						     );
+	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
+
+	    this.table0.subscribe('cellClickEvent',onCellClick);
+
+	    
+	    this.table0.view='<?=$_SESSION['state']['department']['view']?>';
+
+		
+
+
+
+
+
+	};
+    });
 
 function init(){
  var Event = YAHOO.util.Event;

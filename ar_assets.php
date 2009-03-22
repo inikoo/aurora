@@ -28,6 +28,33 @@ if(!isset($_REQUEST['tipo']))
 
 $tipo=$_REQUEST['tipo'];
 switch($tipo){
+
+ case('delete_family'):
+
+   if(!isset($_REQUEST['id']))
+     return _('Error: no family specificated');
+   if(!is_numeric($_REQUEST['id']) or $_REQUEST['id']<=0 )
+     return _('Error: wriong family id');
+   if(!isset($_REQUEST['delete_type'])  or !($_REQUEST['delete_type']=='delete' or $_REQUEST['delete_type']=='discontinue'  )  )
+     return _('Error: delete type no supplied');
+
+   $id=$_REQUEST['id'];
+   $family=new Family($id);
+
+   if($_REQUEST['delete_type']=='delete'){
+
+     $family->delete();
+   }else if($_REQUEST['delete_type']=='discontinue'){
+     $family->discontinue();
+   }
+   if($family->deleted){
+     print 'Ok';
+   }else{
+     print $family->msg;
+   }
+   
+   
+   break;
  case('edit_department'):
    $department=new Department($_REQUEST['id']);
    $department->update($_REQUEST['key'],stripslashes(urldecode($_REQUEST['newvalue'])),stripslashes(urldecode($_REQUEST['oldvalue'])));
@@ -2558,7 +2585,175 @@ $sum_active=0;
 
   echo json_encode($response);
   break;
+ case('edit_families'):
+   $conf=$_SESSION['state']['families']['table'];
+   if(isset( $_REQUEST['sf']))
+     $start_from=$_REQUEST['sf'];
+   else
+     $start_from=$conf['sf'];
+   if(isset( $_REQUEST['nr']))
+     $number_results=$_REQUEST['nr'];
+   else
+     $number_results=$conf['nr'];
+  if(isset( $_REQUEST['o']))
+    $order=$_REQUEST['o'];
+  else
+    $order=$conf['order'];
+  if(isset( $_REQUEST['od']))
+    $order_dir=$_REQUEST['od'];
+  else
+    $order_dir=$conf['order_dir'];
   
+  if(isset( $_REQUEST['where']))
+    $where=$_REQUEST['where'];
+  else
+    $where=$conf['where'];
+
+ if(isset( $_REQUEST['f_field']))
+     $f_field=$_REQUEST['f_field'];
+   else
+     $f_field=$conf['f_field'];
+   
+   if(isset( $_REQUEST['f_value']))
+     $f_value=$_REQUEST['f_value'];
+   else
+     $f_value=$conf['f_value'];
+
+
+
+  if(isset( $_REQUEST['percentages'])){
+    $percentages=$_REQUEST['percentages'];
+    $_SESSION['state']['families']['percentages']=$percentages;
+  }else
+    $percentages=$_SESSION['state']['families']['percentages'];
+  
+  
+
+   if(isset( $_REQUEST['period'])){
+    $period=$_REQUEST['period'];
+    $_SESSION['state']['families']['period']=$period;
+  }else
+    $period=$_SESSION['state']['families']['period'];
+
+ if(isset( $_REQUEST['avg'])){
+    $avg=$_REQUEST['avg'];
+    $_SESSION['state']['families']['avg']=$avg;
+  }else
+    $avg=$_SESSION['state']['families']['avg'];
+
+  
+   if(isset( $_REQUEST['tableid']))
+    $tableid=$_REQUEST['tableid'];
+  else
+    $tableid=0;
+
+   if(isset( $_REQUEST['parent'])){
+     switch($_REQUEST['parent']){
+     case('store'):
+       $where=sprintf(' where `Product Family Store Key`=%d',$_SESSION['state']['store']['id']);
+       break;
+     case('department'):
+       $where=sprintf(' left join `Product Family Department Bridge` B on (F.`Product Family Key`=B.`Product Family Key`) where `Product Department Key`=%d',$_SESSION['state']['department']['id']);
+       break;
+     case('all'):
+         $where=sprintf(' where true ');
+       break;
+     }
+   }
+   
+
+
+   $filter_msg='';
+
+
+
+  $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+  
+  
+  $_SESSION['state']['families']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+  
+  
+  //  $where.=" and `Product Department Key`=".$id;
+
+  
+  
+  $filter_msg='';
+  $wheref='';
+  if($f_field=='name' and $f_value!='')
+    $wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
+  
+    $sql="select count(*) as total from `Product Family Dimension`   F   $where $wheref";
+
+   $res = $db->query($sql); 
+   if($row=$res->fetchRow()) {
+     $total=$row['total'];
+   }
+   if($wheref==''){
+       $filtered=0; $total_records=$total;
+   }else{
+     $sql="select count(*) as total  from `Product Family Dimension`  F  $where ";
+
+     $res = $db->query($sql); 
+     if($row=$res->fetchRow()) {
+       $filtered=$row['total']-$total; $total_records=$row['total'];
+     }
+
+   }
+ $rtext=$total_records." ".ngettext('family','families',$total_records);
+     if($total_records>$number_results)
+       $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+     else
+       $rtext_rpp='';
+  
+  $_order=$order;
+  $_dir=$order_direction;
+  
+  if($order=='code')
+    $order='`Product Family Code`';
+  elseif($order=='name')
+    $order='`Product Family Name`';
+  
+  $sql="select F.`Product Family Key`,`Product Family Code`,`Product Family Name`,`Product Family For Sale Products`+`Product Family In Process Products`+`Product Family Not For Sale Products`+`Product Family Discontinued Products`+`Product Family Unknown Sales State Products` as Products  from `Product Family Dimension` F  $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
+  
+  $res = mysql_query($sql);
+  $adata=array();
+  while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+    if($row['Products']>0){
+      $delete='<img src="art/icons/cross.png" /> <span xonclick="discontinue_family('.$row['Product Family Key'].')"  id="del_'.$row['Product Family Key'].'" style="cursor:pointer">'._('Discontinue').'<span>';
+      $delete_type='discontinue';
+    }else{
+      $delete='<img src="art/icons/cross.png" /> <span xonclick="delete_family('.$row['Product Family Key'].')"  id="del_'.$row['Product Family Key'].'" style="cursor:pointer">'._('Delete').'<span>';
+      $delete_type='delete';
+    }
+$adata[]=array(
+	       'id'=>$row['Product Family Key'],
+	       'code'=>$row['Product Family Code'],
+	       'name'=>$row['Product Family Name'],
+	       'delete'=>$delete,
+	       'delete_type'=>$delete_type
+
+		   );
+  }
+
+  $response=array('resultset'=>
+		  array('state'=>200,
+			'data'=>$adata,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			 'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'total_records'=>$total,
+			'records_offset'=>$start_from,
+			'records_returned'=>$start_from+$total,
+			'records_perpage'=>$number_results,
+			'records_order'=>$order,
+			'records_order_dir'=>$order_dir,
+			'filtered'=>$filtered
+			)
+		  );
+
+  echo json_encode($response);
+  break;
  case('oledit_departments'):
    
    $conf=$_SESSION['state']['departments']['table'];
@@ -3564,6 +3759,8 @@ $store_id=$_SESSION['state']['store']['store_id'];
   }
   elseif($order=='name')
     $order='`Product Department Name`';
+ elseif($order=='code')
+    $order='`Product Department Code`';
   elseif($order=='active')
     $order='`Product Department For Sale Products`';
   elseif($order=='outofstock')
@@ -3675,7 +3872,9 @@ $sum_active=0;
   $adata=array();
   //print "$period";
   while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-    $name=sprintf('<a href="department.php?id=%d">%s</a>',$row['Product Department Key'],$row['Product Department Name']);
+    $code=sprintf('<a href="department.php?id=%d">%s</a>',$row['Product Department Key'],$row['Product Department Code']);
+     $name=sprintf('<a href="department.php?id=%d">%s</a>',$row['Product Department Key'],$row['Product Department Name']);
+
     if($percentages){
       if($period=='all'){
       $tsall=percentage($row['Product Department Total Invoiced Amount'],$sum_total_sales,2);
@@ -3897,7 +4096,7 @@ $sum_active=0;
 
     }
    $adata[]=array(
-
+		  'code'=>$code,
 		   'name'=>$name,
 		   'families'=>number($row['Product Department Families']),
 		   'active'=>number($row['Product Department For Sale Products']),
@@ -6932,65 +7131,51 @@ case('parts'):
    echo json_encode($response);
    break;
  case('new_department'):
-   
    if(isset($_REQUEST['name'])  and  isset($_REQUEST['code'])   ){
-
      $store_key=$_SESSION['state']['store']['store_id'];
-
      $department=new Department('create',array(
 					      'Product Department Code'=>$_REQUEST['code']
 					      ,'Product Department Name'=>$_REQUEST['name']
 					      ,'Product Department Store Key'=>$store_key
-					      ));
+					       ));
      if(!$department->new){
        $state='400';
      }else{
-       
        $state='200';
      }
      $response=array('state'=>$state,'msg'=>$department->msg);
    }
-
    else
-      $response=array('state'=>400,'resp'=>_('Error'));
+     $response=array('state'=>400,'resp'=>_('Error'));
    echo json_encode($response);
    break;
-   
  case('new_family'):
-   
-   if(isset($_REQUEST['name'])  and  isset($_REQUEST['description'])  and  isset($_REQUEST['id'])    and $_REQUEST['description']!='' and $_REQUEST['name']!=''    and is_numeric($_REQUEST['id'])  ){
-     $name=addslashes($_REQUEST['name']);
-     $description=addslashes($_REQUEST['description']);
+ if(isset($_REQUEST['name'])  and  isset($_REQUEST['code'])   ){
+     $department_key=$_SESSION['state']['department']['id'];
+     
+     $family=new Family('create',array(
+					      
+				       'Product Family Code'=>$_REQUEST['code']
+				       ,'Product Family Name'=>$_REQUEST['name']
+				       ,'Product Family Description'=>$_REQUEST['description']
+				       ,'Product Family Main Department Key'=>$department_key
 
-     $sql=sprintf("insert into  product_group (description,name,department_id) values ('%s','%s',%d)",$description,$name,$_REQUEST['id']);
-     $affected=& $db->exec($sql);
 
-     if (PEAR::isError($affected)) {
-       if(preg_match('/^MDB2 Error: constraint violation$/',$affected->getMessage()))
-	 $resp=_('Error: Another department has the same name-description').'.';
-       else
-	 $resp=_('Unknown Error').'.';
-       $state='400';
-       $data=array();
+
+      
+				       ));
+     if(!$family->new){
+       $state='401';
      }else{
-       $family_id = $db->lastInsertID();
-       $resp='ok';
-       $data= array(
-	  'id'=>$family_id,
-	  'description'=>$description,
-	  'name'=>$name,
-	  'products'=>0,
-	  'active'=>0,
-	  'outofstock'=>0,
-	  'stockerror'=>0	    
-		    );
        $state='200';
      }
-     $response=array('state'=>$state,'resp'=>_($resp),'data'=>$data);
-   }
 
+     $response=array('state'=>$state,'msg'=>$family->msg);
+
+
+ }
    else
-      $response=array('state'=>400,'resp'=>_('Error'));
+     $response=array('state'=>400,'msg'=>_('Error'));
    echo json_encode($response);
    break;
 

@@ -28,10 +28,16 @@ var myBuildUrl = function(datatable,record) {
     for (var i = 0; i < cols.length; i++) {
         if (cols[i].isPrimaryKey) {
             url += '&' + cols[i].key + '=' + escape(record.getData(cols[i].key));
+        }else if (cols[i].isTypeKey) {
+            url += '&' + cols[i].key + '=' + escape(record.getData(cols[i].key));
         }
+	
+
     }
     return url;
 };
+
+
 
 
 function is_numeric( mixed_var ) {

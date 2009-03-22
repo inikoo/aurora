@@ -59,10 +59,10 @@ $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
 if(isset($_REQUEST['id'])){
-  $_SESSION['state']['store']['store_id']=$_REQUEST['id'];
+  $_SESSION['state']['store']['id']=$_REQUEST['id'];
  }
 
-$store=new Store($_SESSION['state']['store']['store_id']);
+$store=new Store($_SESSION['state']['store']['id']);
   
 
 $_SESSION['state']['assets']['page']='store';

@@ -12,31 +12,108 @@ class family{
     if(is_numeric($a1) and !$a2  )
       $this->getdata('id',$a1);
     else if(preg_match('/new|create/',$a1) ){
-      $this->msg=$this->create($a2);
+      $this->create($a2);
     }elseif($a2!='')
        $this->getdata($a1,$a2);
     
  }
 
  function create($data){
+   $this->new=false;
+
+
+   if(isset($data['name'])){
+     $data['Product Family Name']=$data['name'];
+     unset($data['name']);
+   }
+  if(isset($data['code'])){
+     $data['Product Family Code']=$data['code'];
+     unset($data['code']);
+   }
+
+  if(!isset($data['Product Family Code'])){
+    $this->msg=_("Error: No family code provided");
+    return;
+  }
+  if(!isset($data['Product Family Name'])){
+    $this->msg=_("Error: No family name provided");
+    return;
+  }
+  
+
+
+
+
+
+   if(!isset($data['Product Family Main Department Key'])){
+     $department=new Department(0);
+   }else
+     $department=new Department($data['Product Family Main Department Key']);
+
+   if(!$department->id){
+     $this->msg=_("Error: Can not find department");
+     return;
+   }
+   $store=new Store($department->data['Product Department Store Key']);
    
    
 
-   $sql=sprintf("insert into `Product Family Dimension` (`Product Family Code`,`Product Family Name`) values (%s,%s)"
-		,prepare_mysql($data['code'])
-		,prepare_mysql($data['name'])
-		);
+
+
+   $data['Product Family Main Department Key']=$department->id;
+   $data['Product Family Main Department Code']=$department->get('Product Department Code');
+   $data['Product Family Main Department Name']=$department->get('Product Department Name');
+   $data['Product Family Store Key']=$store->id;
+   $data['Product Family Store Code']=$store->get('Store Code');
+
+   $base_data=array(
+		    'Product Family Code'=>'',
+		    'Product Family Name'=>'',
+		    'Product Family Description'=>'',
+		    'Product Family Store Key'=>'',
+		    'Product Family Store Code'=>'',
+		    'Product Family Main Department Key'=>'',
+		    'Product Family Main Department Code'=>'',
+		    'Product Family Main Department Name'=>'',
+		     );
+
+
+   foreach($data as $key=>$value){
+      if(isset($base_data[$key]))
+	$base_data[$key]=_trim($value);
+    }
+   
+   $keys='(';$values='values(';
+   foreach($base_data as $key=>$value){
+     $keys.="`$key`,";
+     if(preg_match('/Product Family Description/',$key))
+       $values.="'".addslashes($value)."',";
+     else
+       $values.=prepare_mysql($value).",";
+   }
+   $keys=preg_replace('/,$/',')',$keys);
+   $values=preg_replace('/,$/',')',$values);
+   $sql=sprintf("insert into `Product Family Dimension` %s %s",$keys,$values);
    
    // print_r($data);
-   //print "$sql\n";
- if(mysql_query($sql)){
-   $this->id = mysql_insert_id();
-   $this->getdata('id',$this->id);
-   return array('ok'=>true);
- }else{
-   print "Error can not create family\n";exit;
+   //d print "$sql\n";
+   if(mysql_query($sql)){
+     $this->id = mysql_insert_id();
+     $this->getdata('id',$this->id);
+     $this->msg=_("Family Added");
+     
+     $sql=sprintf("insert into `Product Family Department Bridge` values (%d,%d)",$this->id,$department->id);
+     print $sql;
+     mysql_query($sql);
+     $department->load('products_info');
+     $store->load('products_info');
+
+
+   }else{
+     $this->msg=_("Error can not create the family");
+     $this->xxx='xxd';
    
- }   
+   }   
 
 
  }
@@ -60,6 +137,40 @@ class family{
  }
 
 
+
+ function delete(){
+   $this->deleted=false;
+   $this->load('products_info');
+
+   if($this->get('Total Products')==0){
+     $store=new Store($this->data['Product Family Store Key']);
+     $this->load('Department Key List');
+     $sql=sprintf("delete from `Product Family Dimension` where `Product Family Key`=%d",$this->id);
+
+     if(mysql_query($sql)){
+
+       $sql=sprintf("delete from `Product Family Department Bridge` where `Product Family Key`=%d",$this->id);
+       mysql_query($sql);
+       foreach($this->department_keys as $dept_key){
+
+	 $department=new Department($dept_key);
+	 $department->load('products_info');
+       }
+       $store->load('products_info');
+       $this->deleted=true;
+	  
+     }else{
+
+       $this->msg=_('Error: can not delete family');
+       return;
+     }     
+
+     $this->deleted=true;
+   }else{
+     $this->msg=_('Family can not be deleted because it has some products');
+
+   }
+ }
 
 
  function load($tipo,$args=false){
@@ -97,6 +208,14 @@ class family{
      $this->getdata('id',$this->id);
 
      break;
+   case('Department Key List');
+   $this->department_keys=array();
+   $sql=sprintf("Select `Product Department Key` from `Product Family Department Bridge` where `Product Family Key`=%d",$this->id);
+   $res=mysql_query($sql);
+   while($row=mysql_fetch_array($res)){
+     $this->department_keys[]=$row['Product Department Key'];
+   }
+   break;
    case('products'):
      $sql=sprintf("select * from `Product Dimension` where `Product Family Key`=%d ",$this->id);
      //    print $sql;
@@ -107,6 +226,8 @@ class family{
        $this->products[$row['product key']]=$row;
      }
      break;
+
+
    case('products_store'):
      $sql=sprintf("select * from `Product Dimension` where `Product Sales State`='For Sale' and `Product Most Recent`='Yes' and `Product Family Key`=%d and `Product Store Key`=%d",$this->id,$args);
      //  print $sql;
@@ -461,6 +582,10 @@ class family{
      return $info.$form;
 
      break;
+   case('Total Products'):
+     return $this->data['Product Family For Sale Products']+$this->data['Product Family In Process Products']+$this->data['Product Family Not For Sale Products']+$this->data['Product Family Discontinued Products']+$this->data['Product Family Unknown Sales State Products'];
+     break;
+
    case('products'):
      if(!$this->products)
        $this->load('products');
