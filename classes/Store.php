@@ -103,6 +103,7 @@ class store{
      }
 
   $sql=sprintf("select count(*) as num from `Product Family Dimension`  where  `Product Family Store Key`=%d",$this->id);
+  //print $sql;
   $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
     $this->data['Store Families']=$row['num'];

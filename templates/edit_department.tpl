@@ -9,7 +9,7 @@
   
 
 <div style="clear:left;margin-left:20px;width:700px"id="details" class="details" >
-  <h1><span style="color:red">{t}Editing{/t}</span> {$department->get('Product Department Name')} ({$department->get('Product Department Code')})</h1>
+  <h1><span style="color:red">{t}Editing{/t}:</span> <span id="department_name">{$department->get('Product Department Name')}</span> (<span id="department_code">{$department->get('Product Department Code')}</span>)</h1>
   
   <h2>{t}Department data{/t}</h2>
   <div id="edit_department_form">
@@ -25,11 +25,12 @@
   </div>
   
   <h2>{t}Add new family{/t}</h2>
-  <div id="add_family_form">
-    <div id="add_family__messages"></div>
+  <div id="add_family_form" style="padding:0;margin:0">
+    <div id="add_family_messages"></div>
     <table >
-      <tr><td>{t}Code{/t}:</td><td><input  id="new_code" onKeyUp="new_family_changed(this)"    onMouseUp="new_family_changed(this)"  onChange="new_family_changed(this)"  name="code" changed=0 type='text' class='text' style="width:15em" MAXLENGTH="16" value="" /></td></tr>
-      <tr><td>{t}Full Name{/t}:</td><td><input   id="new_name" onKeyUp="new_family_changed(this)"    onMouseUp="new_family_changed(this)"  onChange="new_family_changed(this)"  name="name" changed=0 type='text'  MAXLENGTH="255" style="width:30em"  class='text' value="" /></td>
+      <tr><td>{t}Family Code{/t}:</td><td><input  id="new_code" onKeyUp="new_family_changed(this)"    onMouseUp="new_family_changed(this)"  onChange="new_family_changed(this)"  name="code" changed=0 type='text' class='text' style="width:15em" MAXLENGTH="16" value="" /></td></tr>
+      <tr><td>{t}Family Name{/t}:</td><td><input   id="new_name" onKeyUp="new_family_changed(this)"    onMouseUp="new_family_changed(this)"  onChange="new_family_changed(this)"  name="name" changed=0 type='text'  MAXLENGTH="255" style="width:30em"  class='text' value="" /></td></tr>
+ <tr><td>{t}Family Description{/t}:</td><td><textarea   id="new_description" onKeyUp="new_family_changed(this)"    onMouseUp="new_family_changed(this)"  onChange="new_family_changed(this)"  name="description" changed=0 type='text'  MAXLENGTH="255" style="width:30em"  ></textarea> </td></tr>
 	<td>
 	  <span class="save" id="add_new_family" onclick="save_new_family()" style="display:none">Add</span>
       </td></tr>
@@ -39,7 +40,7 @@
 </div>
 
 
-  <div   class="data_table" style="margin:25px 20px">
+  <div   class="data_table" style="margin:0px 20px">
     <span class="clean_table_title">{t}Families{/t}</span>
     <div  class="clean_table_caption"  style="clear:both;">
       <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>

@@ -2,12 +2,15 @@
 <div id="bd" >
 
 {if $next.id>0}<span class="nav2 onright"><a href="department.php?id={$next.id}">{$next.code} &rarr; </a></span>{/if}
+
 {if $prev.id>0}<span class="nav2 onright" ><a href="department.php?id={$prev.id}">&larr; {$prev.code}</a></span>{/if}
-<span class="nav2 onleft"><a href="departments.php">{t}Departments{/t}</a></span>
-  <span class="nav2 onleft"><a href="families.php">{t}Families{/t}</a></span>
-  <span class="nav2 onleft"><a href="products.php">{t}Products{/t}</a></span>
-  <span class="nav2 onleft"><a href="categories.php">{t}Categories{/t}</a></span>
-  <span class="nav2 onleft"><a href="parts.php">{t}Parts{/t}</a></span>
+
+
+  <span class="nav2 onleft"><a class="selected" href="store.php">{$store->get('Store Code')}</a></span>
+  <span class="nav2 onleft"><a href="families.php?store_key={$store->id}">{$store->get('Store Code')} {t}Families{/t}</a></span>
+  <span class="nav2 onleft"><a href="products.php?store_key={$store->id}">{$store->get('Store Code')} {t}Products{/t}</a></span>
+  <span class="nav2 onleft"><a href="categories.php?store_key={$store->id}">{$store->get('Store Code')} {t}Categories{/t}</a></span>
+  <span class="nav2 onleft"><a href="parts.php?store_key={$store->id}">{$store->get('Store Code')} {t}Parts{/t}</a></span>
 
 
 
@@ -16,7 +19,7 @@
      <span  class="search_msg"   id="product_search_msg"    ></span> <span  class="search_sugestion"   id="product_search_sugestion"    ></span>
      <br/>
    <span  class="state_details" state="{$show_details}"  id="show_details"  atitle="{if $show_details}{t}show details{/t}{else}{t}hide details{/t}{/if}"  >{if $show_details}{t}hide details{/t}{else}{t}show details{/t}{/if}</span>
-   <br><a href="department.php?id={$id}&edit=1"  class="state_details" id="edit"  >{t}edit{/t}</a>
+   <br><a href="department.php?edit=1"  class="state_details" id="edit"  >{t}edit{/t}</a>
   </div>
   
   

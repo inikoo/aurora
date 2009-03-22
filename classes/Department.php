@@ -9,7 +9,7 @@ class department{
  function __construct($a1=false,$a2=false,$a3=false) {
    //    $this->db =MDB2::singleton();
     
-    if(is_numeric($a1) and !$a2  )
+    if(is_numeric($a1) and !$a2  and $a1>0 )
       $this->getdata('id',$a1);
     else if( preg_match('/new|create/i',$a1)){
       $this->create($a2);
@@ -48,7 +48,7 @@ class department{
    if(!isset($data['Product Department Store Key']) or !is_numeric($data['Product Department Store Key']) or $data['Product Department Store Key']<=0 ){
      $data['Product Department Store Key']=1;
      $this->msg=_("Warning: Incorrect Store Key");
-
+     $store=new Store($data['Product Department Store Key']);
    }
    $sql=sprintf("select count(*) as num from `Product Department Dimension` where `Product Department Store Key`=%d and `Product Department Code`=%s "
 		,$data['Product Department Store Key']
@@ -89,6 +89,7 @@ class department{
    $this->msg=_("Department Added");
    $this->getdata('id',$this->id);
    $this->new=true;
+   $store->load('product_info');
    return;
  }else{
    $this->msg=_("Error can not create department");
@@ -106,9 +107,11 @@ class department{
    case('code'):
      $sql=sprintf("select * from `Product Department Dimension` where `Product Department Code`=%s and `Product Department Most Recent`='Yes'",prepare_mysql($tag));
      break;
-     //  default:
-//      print "error wring tipo $tipo\n";
-//      return;
+    default:
+      $sql=sprintf("select * from `Product Department Dimension` where `Product Department Type`='Unknown' ");
+
+
+
    }
    //  print "$sql\n";
    
@@ -164,7 +167,7 @@ class department{
       }
       break;	
       
-case('name'):
+   case('name'):
 
      if($a1==$this->data['Product Department Name']){
        $this->updated=true;
@@ -235,12 +238,33 @@ case('name'):
        //  print "$sql\n";exit;
        mysql_query($sql);
 
-    
-     }
 
-     $this->getdata('id',$this->id);
-     break;
- //   case('products'):
+    
+  }
+  
+  $sql=sprintf("select count(*) as num from `Product Family Dimension` PFD  left join `Product Family Department Bridge` as B on (B.`Product Family Key`=PFD.`Product Family Key`) where `Product Department Key`=%d",$this->id);
+  //print $sql;
+  $result=mysql_query($sql);
+  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+    $this->datas['Product Department Families']=$row['num'];
+    $sql=sprintf("update `Product Department Dimension` set `Product Department Families`=%d  where `Product Department Key`=%d  ",
+		 $this->datas['Product Department Families'],
+		 $this->id
+		 );
+    //  print "$sql\n";
+    mysql_query($sql);
+
+
+  }
+  
+
+
+
+
+
+  $this->getdata('id',$this->id);
+  break;
+  //   case('products'):
 //      $sql=sprintf("select * from `Product Dimension` where `Product Department Key`=%d",$this->id);
 //      // print $sql;
 //      $this->products=array();
@@ -263,13 +287,13 @@ case('name'):
 
 //      break;
    case('families'):
-     $sql=sprintf("select * from `Product Family Dimension`  where  `Product Family Department Key`=%d",$this->id);
+     $sql=sprintf("select * from `Product Family Dimension` PFD  left join `Product Family Department Bridge` as B on (B.`Product Family Key`=PFD.`Product Family Key`) where `Product Deparment Key`=%d",$this->id);
      //  print $sql;
 
      $this->families=array();
      $result=mysql_query($sql);
      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-       $this->families[$row['family key']]=$row;
+       $this->families[$row['Product Family Key']]=$row;
      }
      break;
   

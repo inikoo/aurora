@@ -520,20 +520,20 @@ from contact     $where $wheref order by $order $order_direction limit $start_fr
    case('all'):
      break;
    case('staff'):
-     $where.=' and active=1  ';
+     $where.=" and `Staff Currently Working`='Yes'  ";
      break;
    case('exstaff'):
-     $where.=' and active=0 ';
+     $where.=" and `Staff Currently Working`='No' ";
      break;
   }
 
-   $sql="select count(*) as total from staff left join contact on (contact_id=contact.id) $where $wheref";
-   //   print "$sql";
+   $sql="select count(*) as total from `Staff Dimension` SD left join `Contact Dimension` CD on (`Contact Key`=`Staff Contact Key`) $where $wheref";
+
    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
    if($row=$res->fetchRow()) {
      $total=$row['total'];
    }if($wheref!=''){
-     $sql="select count(*) as total from staff   $where ";
+     $sql="select count(*) as total from `Staff Dimension` SD left join `Contact Dimension` CD on (`Contact Key`=`Staff Contact Key`)   $where ";
      $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
      if($row=$res->fetchRow()) {
        $total_records=$row['total'];
@@ -573,27 +573,25 @@ from contact     $where $wheref order by $order $order_direction limit $start_fr
 
     }
 
+if($order=='name')
+  $order='`Staff Name`';
 
+   $sql="select * from `Staff Dimension` SD left join `Contact Dimension` CD on (`Contact Key`=`Staff Contact Key`)  $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
-   $sql="select staff.id , position_id as position ,staff.alias,name,area_id as area,department_id as department from staff left join contact on (contact_id=contact.id)  $where $wheref order by $order $order_direction limit $start_from,$number_results";
-
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
    $adata=array();
-   while($data=$res->fetchRow()) {
-     if(is_numeric($data['position']))
-       $pos=$_position_tipo[$data['position']];
-     else
-       $pos='';
+   $res=mysql_query($sql);
+   while($data=mysql_fetch_array($res)){
 
-     $_id=$myconf['staff_prefix'].sprintf('%03d',$data['id']);
-     $id=sprintf('<a href="staff.php?id=%d">%s</a>',$data['id'],$_id);
+
+     $_id=$myconf['staff_prefix'].sprintf('%03d',$data['Staff Key']);
+     $id=sprintf('<a href="staff.php?id=%d">%s</a>',$data['Staff Key'],$_id);
      $adata[]=array(
 		    'id'=>$id,
-		    'alias'=>$data['alias'],
-		    'name'=>$data['name'],
-		    'department'=>$_company_department_tipo[$data['department']],
-		    'area'=>$_company_area_tipo[$data['area']],
-		    'position'=>$pos
+		    'alias'=>$data['Staff Alias'],
+		    'name'=>$data['Staff Name'],
+		    'department'=>$data['Staff Department Key'],
+		    'area'=>$data['Staff Area Key'],
+		    'position'=>$data['Staff Position Key']
 		    
 		    );
   }
@@ -606,7 +604,7 @@ from contact     $where $wheref order by $order $order_direction limit $start_fr
 			 'filter_msg'=>$filter_msg,
 			 'total_records'=>$total,
 			 'records_offset'=>$start_from,
-			 'records_returned'=>$start_from+$res->numRows(),
+			 'records_returned'=>$start_from+$total,
 			 'records_perpage'=>$number_results,
 			 'rtext'=>$rtext,
 			 'records_order'=>$order,

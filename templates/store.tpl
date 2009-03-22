@@ -1,6 +1,7 @@
 {include file='header.tpl'}
 <div id="bd" >
-  <span class="nav2 onleft"><a class="selected" href="store.php">{$store->get('Store Code')} {t}Departments{/t}</a></span>
+<span class="nav2 onright"><a href="stores.php">&uarr; {t}Up{/t}</a></span>
+  <span class="nav2 onleft"><a class="selected" href="store.php">{$store->get('Store Code')}</a></span>
   <span class="nav2 onleft"><a href="families.php?store_key={$store->id}">{$store->get('Store Code')} {t}Families{/t}</a></span>
   <span class="nav2 onleft"><a href="products.php?store_key={$store->id}">{$store->get('Store Code')} {t}Products{/t}</a></span>
   <span class="nav2 onleft"><a href="categories.php?store_key={$store->id}">{$store->get('Store Code')} {t}Categories{/t}</a></span>
