@@ -124,7 +124,7 @@ function save(tipo){
 		    newValue=element.value;
 		    oldValue=element.getAttribute('ovalue');
 		    
-		    var request='ar_assets.php?tipo=edit_department&key=' + key+ '&newvalue=' + 
+		    var request='ar_edit.php?tipo=edit_department&key=' + key+ '&newvalue=' + 
 			encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ 
 			'&id='+department_id;
 
@@ -169,7 +169,7 @@ function save_new_family(){
     var code=Dom.get('new_code').value;
     var name=Dom.get('new_name').value;
     var description=Dom.get('new_description').innerHTML;
-    var request='ar_assets.php?tipo=new_family&code='+encodeURIComponent(code)+'&name='+encodeURIComponent(name)+'&description='+encodeURIComponent(name);
+    var request='ar_edit.php?tipo=new_family&code='+encodeURIComponent(code)+'&name='+encodeURIComponent(name)+'&description='+encodeURIComponent(name);
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
 		alert(o.responseText)
@@ -209,7 +209,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 			YAHOO.util.Connect.asyncRequest(
                     'GET',
-                    'ar_assets?tipo=delete_family' + myBuildUrl(this,record),
+                    'ar_edit?tipo=delete_family' + myBuildUrl(this,record),
                     {
                         success: function (o) {
 
@@ -247,7 +247,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 				     ];
 
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_assets.php?tipo=edit_families&parent=department");
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit.php?tipo=edit_families&parent=department");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {

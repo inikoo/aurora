@@ -213,6 +213,32 @@ class department{
  }
 
 
+ function delete(){
+   $this->deleted=false;
+   $this->load('products_info');
+
+   if($this->get('Total Products')==0){
+     $store=new Store($this->data['Product Department Store Key']);
+     $sql=sprintf("delete from `Product Department Dimension` where `Product Department Key`=%d",$this->id);
+     if(mysql_query($sql)){
+
+       $this->deleted=true;
+	  
+     }else{
+
+       $this->msg=_('Error: can not delete department');
+       return;
+     }     
+
+     $this->deleted=true;
+   }else{
+     $this->msg=_('Department can not be deleted because it has assosiated some products');
+
+   }
+ }
+
+
+
  
  function load($tipo,$args=false){
    switch($tipo){
@@ -677,6 +703,10 @@ $sql="select sum(`Product 1 Week Acc Invoiced Amount`) as net,sum(`Product 1 Wee
 
 
    switch($key){
+
+   case('Total Products'):
+     return $this->data['Product Department For Sale Products']+$this->data['Product Department In Process Products']+$this->data['Product Department Not For Sale Products']+$this->data['Product Department Discontinued Products']+$this->data['Product Department Unknown Sales State Products'];
+     break;
 
  //   case('weeks'):
 //      $_diff_seconds=date('U')-$this->data['first_date'];

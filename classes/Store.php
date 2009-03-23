@@ -14,7 +14,7 @@ class store{
       $this->get_data('id',$a1);
     }
     else if(($a1=='new' or $a1=='create') and is_array($a2) ){
-      $this->msg=$this->create($a2);
+      $this->create($a2);
       
     }else
       $this->get_data($a1,$a2);
@@ -63,7 +63,11 @@ class store{
     case('type'):
       return $this->data['Store Type'];
       break;
-      
+    case('Total Products'):
+     return $this->data['Store For Sale Products']+$this->data['Store In Process Products']+$this->data['Store Not For Sale Products']+$this->data['Store Discontinued Products']+$this->data['Store Unknown Sales State Products'];
+     break;
+
+
     }
     $_key=ucfirst($key);
     if(isset($this->data[$_key]))
@@ -72,6 +76,31 @@ class store{
     return false; 
 
   }
+
+
+ function delete(){
+   $this->deleted=false;
+   $this->load('products_info');
+
+   if($this->get('Total Products')==0){
+     $sql=sprintf("delete from `Store Dimension` where `Store Key`=%d",$this->id);
+     if(mysql_query($sql)){
+
+       $this->deleted=true;
+	  
+     }else{
+
+       $this->msg=_('Error: can not delete store');
+       return;
+     }     
+
+     $this->deleted=true;
+   }else{
+     $this->msg=_('Store can not be deleted because it has some products');
+
+   }
+ }
+
 
 
 
@@ -480,7 +509,7 @@ $sql="select sum(`Product 1 Week Acc Invoiced Amount`) as net,sum(`Product 1 Wee
        $this->msg=_('Error: Wrong code (empty)');
        return;
      }
-     $sql=sprintf("select count(*) as num from `Store Dimension` where  `Store Code`=%s "
+     $sql=sprintf("select count(*) as num from `Store Dimension` where  `Store Code`=%s COLLATE utf8_general_cs  "
 		,prepare_mysql($a1)
 		);
      $res=mysql_query($sql);
@@ -490,7 +519,7 @@ $sql="select sum(`Product 1 Week Acc Invoiced Amount`) as net,sum(`Product 1 Wee
        return;
      }
      
-      $sql=sprintf("update `Store Dimension` set `Store Code`=%s where `Store Key`=%d "
+      $sql=sprintf("update `Store Dimension` set `Store Code`=%s where `Store Key`=%d  "
 		   ,prepare_mysql($a1)
 		   ,$this->id
 		);
@@ -518,7 +547,7 @@ $sql="select sum(`Product 1 Week Acc Invoiced Amount`) as net,sum(`Product 1 Wee
        $this->msg=_('Error: Wrong name (empty)');
        return;
      }
-     $sql=sprintf("select count(*) as num from `Store Dimension` where `Store Name`=%s "
+     $sql=sprintf("select count(*) as num from `Store Dimension` where `Store Name`=%s COLLATE utf8_general_cs"
 		,prepare_mysql($a1)
 		);
      $res=mysql_query($sql);

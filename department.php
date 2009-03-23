@@ -44,9 +44,10 @@ $js_files=array(
 
 		);
 
-if($edit)
+if($edit){
+  $js_files[]='js/edit_common.js';
   $js_files[]='js/edit_department.js.php';
- else
+ }else
    $js_files[]='js/department.js.php';
 
 
