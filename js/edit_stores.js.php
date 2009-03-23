@@ -29,10 +29,9 @@ function save_new_store(){
 // 	}
 //     } 
     
-    var request='ar_assets.php?tipo=new_store&code='+escape(code)+'&name='+escape(name);
+    var request='ar_edit.php?tipo=new_store&code='+encodeURIComponent(code)+'&name='+encodeURIComponent(name);
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-	       
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if(r.state==200){
 		    var table=tables['table0'];
@@ -54,97 +53,19 @@ YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
 
 
+
 	    var tableid=0; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 	    var OrdersColumnDefs = [ 
 				    {key:"id", label:"<?=_('Key')?>", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
 
-				    ,{key:"code", label:"<?=_('Code')?>", width:230,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, 
-				     
-				     editor: new YAHOO.widget.TextboxCellEditor({
-					     asyncSubmitter: function (callback, newValue) {
-						 var record = this.getRecord(),
-						 column = this.getColumn(),
-						 oldValue = this.value,
-						 datatable = this.getDataTable();
-
-						 YAHOO.util.Connect.asyncRequest(
-										 'POST',
-										 'ar_assets.php', {
-										     success:function(o) {
-											 // alert(o.responseText);
-											 var r = YAHOO.lang.JSON.parse(o.responseText);
-											 if (r.state == 200) {
-
-											     callback(true, r.newvalue);
-											 } else {
-											     alert(r.msg);
-											     callback();
-											 }
-										     },
-											 failure:function(o) {
-											 alert(o.statusText);
-											 callback();
-										     },
-											 scope:this
-											 },
-										 'tipo=edit_store&key=' + column.key + '&newvalue=' + 
-										 escape(newValue) + '&oldvalue=' + escape(oldValue)+ 
-										 myBuildUrl(datatable,record)
-
-										 );  
-						 
-						 
-					     }
-					 })
-				     
-				     
-				     
-				    }
-				    
-
-				    ,{key:"name", label:"<?=_('Name')?>", width:350,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},   editor: new YAHOO.widget.TextboxCellEditor({
-					     asyncSubmitter: function (callback, newValue) {
-						 var record = this.getRecord(),
-						 column = this.getColumn(),
-						 oldValue = this.value,
-						 datatable = this.getDataTable();
-
-						 YAHOO.util.Connect.asyncRequest(
-										 'POST',
-										 'ar_assets.php', {
-										     success:function(o) {
-											 // alert(o.responseText);
-											 var r = YAHOO.lang.JSON.parse(o.responseText);
-											 if (r.state == 200) {
-
-											     callback(true, r.data);
-											 } else {
-											     alert(r.msg);
-											     callback();
-											 }
-										     },
-											 failure:function(o) {
-											 alert(o.statusText);
-											 callback();
-										     },
-											 scope:this
-											 },
-										 'tipo=edit_store&key=' + column.key + '&newvalue=' + 
-										 escape(newValue) + '&oldvalue=' + escape(oldValue)+ 
-										 myBuildUrl(datatable,record)
-
-										 );  
-						 
-						 
-					     }
-					 })
-
-}
-				    			    ,{key:"delete", label:"", width:70,sortable:false,className:"aleft"}
+				    ,{key:"code", label:"<?=_('Code')?>", width:230,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'store'}
+				    ,{key:"name", label:"<?=_('Name')?>", width:350,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},   editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'store'}
+				    ,{key:"delete", label:"", width:70,sortable:false,className:"aleft",action:'delete',object:'store'}
+				    ,{key:"delete_type", label:"",hidden:true,isTypeKey:true}
 				     ];
 
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_assets.php?tipo=edit_stores");
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit.php?tipo=edit_stores");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -159,7 +80,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		},
 		
 		fields: [
-			 'id','code','name','delete'
+			 'id','code','name','delete',"delete_type"
 			 ]};
 	    
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
@@ -199,7 +120,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    };
 	    this.table0.subscribe("cellMouseoverEvent", highlightEditableCell);
 	    this.table0.subscribe("cellMouseoutEvent", this.table0.onEventUnhighlightCell);
-	    this.table0.subscribe("cellClickEvent", this.table0.onEventShowCellEditor);
+	    this.table0.subscribe("cellClickEvent", onCellClick);
 
 
 		

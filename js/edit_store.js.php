@@ -5,7 +5,7 @@ include_once('../common.php');
 var description_num_changed=0;
 var description_warnings= new Object();
 var description_errors= new Object();
-var id=<?=$_SESSION['state']['store']['store_id']?>;
+var id=<?=$_SESSION['state']['store']['id']?>;
 var editing='description';
 
 
@@ -132,7 +132,7 @@ function save(tipo){
 		    newValue=element.value;
 		    oldValue=element.getAttribute('ovalue');
 		  
-		    var request='ar_assets.php?tipo=edit_store&key=' + key+ '&newvalue=' + 
+		    var request='ar_edit.php?tipo=edit_store&key=' + key+ '&newvalue=' + 
 			encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ 
 			'&id='+id;
 
@@ -193,7 +193,7 @@ function save_new_dept(){
 // 	}
 //     } 
     
-    var request='ar_assets.php?tipo=new_department&code='+encodeURIComponent(code)+'&name='+encodeURIComponent(name);
+    var request='ar_edit.php?tipo=new_department&code='+encodeURIComponent(code)+'&name='+encodeURIComponent(name);
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
 	       
@@ -222,97 +222,13 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableDivEL="table"+tableid;
 	    var OrdersColumnDefs = [ 
 				    {key:"id", label:"<?=_('Key')?>", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
-
-				    ,{key:"code", label:"<?=_('Code')?>", width:230,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, 
-				     
-				     editor: new YAHOO.widget.TextboxCellEditor({
-					     asyncSubmitter: function (callback, newValue) {
-						 var record = this.getRecord(),
-						 column = this.getColumn(),
-						 oldValue = this.value,
-						 datatable = this.getDataTable();
-						 //						 alert('tipo=edit_department&key=' + column.key + '&newvalue=' + 
-						 //			 encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ 
-						 //			 myBuildUrl(datatable,record) );
-						 
-						 YAHOO.util.Connect.asyncRequest(
-										 'POST',
-										 'ar_assets.php', {
-										     success:function(o) {
-											//  alert(o.responseText);
-// 											 return;
-											 var r = YAHOO.lang.JSON.parse(o.responseText);
-											 if (r.state == 200) {
-
-											     callback(true, r.newvalue);
-											 } else {
-											     alert(r.msg);
-											     callback();
-											 }
-										     },
-											 failure:function(o) {
-											 alert(o.statusText);
-											 callback();
-										     },
-											 scope:this
-											 },
-										 'tipo=edit_department&key=' + column.key + '&newvalue=' + 
-										 encodeURIComponent(newValue) + '&oldvalue=' + oldValue+ 
-										 myBuildUrl(datatable,record)
-
-										 );  
-						 
-						 
-					     }
-					 })
-				     
-				     
-				     
-				    }
-				    
-
-				    ,{key:"name", label:"<?=_('Name')?>", width:350,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},   editor: new YAHOO.widget.TextboxCellEditor({
-					     asyncSubmitter: function (callback, newValue) {
-						 var record = this.getRecord(),
-						 column = this.getColumn(),
-						 oldValue = this.value,
-						 datatable = this.getDataTable();
-
-						 YAHOO.util.Connect.asyncRequest(
-										 'POST',
-										 'ar_assets.php', {
-										     success:function(o) {
-											 // alert(o.responseText);
-											 var r = YAHOO.lang.JSON.parse(o.responseText);
-											 if (r.state == 200) {
-
-											     callback(true, r.newvalue);
-											 } else {
-											     alert(r.msg);
-											     callback();
-											 }
-										     },
-											 failure:function(o) {
-											 alert(o.statusText);
-											 callback();
-										     },
-											 scope:this
-											 },
-										 'tipo=edit_department&key=' + column.key + '&newvalue=' + 
-										 encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ 
-										 myBuildUrl(datatable,record)
-
-										 );  
-						 
-						 
-					     }
-					 })
-
-}
-				    			    ,{key:"delete", label:"", width:70,sortable:false,className:"aleft"}
+				    ,{key:"code", label:"<?=_('Code')?>", width:230,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'department'}
+				    ,{key:"name", label:"<?=_('Name')?>", width:350,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'department' }
+				    ,{key:"delete", label:"", width:70,sortable:false,className:"aleft",action:'delete',object:'department'}
+				    ,{key:"delete_type", label:"",hidden:true,isTypeKey:true}
 				     ];
 
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_assets.php?tipo=edit_departments&parent=store");
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit.php?tipo=edit_departments&parent=store");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -327,7 +243,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		},
 		
 		fields: [
-			 'id','code','name','delete'
+			 'id','code','name','delete','delete_type'
 			 ]};
 	    
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,

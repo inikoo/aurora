@@ -46,9 +46,10 @@ $js_files=array(
 		'js/table_common.js.php',
 		);
 
-if($edit)
+if($edit){
+  $js_files[]='js/edit_common.js';
   $js_files[]='js/edit_stores.js.php';
- else{
+ } else{
    $js_files[]='js/search.js';
    $js_files[]='js/stores.js.php';
  }
