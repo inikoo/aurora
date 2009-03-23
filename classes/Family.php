@@ -20,30 +20,34 @@ class family{
 
  function create($data){
    $this->new=false;
-
-
+   
+   
    if(isset($data['name'])){
      $data['Product Family Name']=$data['name'];
      unset($data['name']);
    }
-  if(isset($data['code'])){
+   if(isset($data['code'])){
      $data['Product Family Code']=$data['code'];
      unset($data['code']);
    }
 
-  if(!isset($data['Product Family Code'])){
-    $this->msg=_("Error: No family code provided");
-    return;
+   if(!isset($data['Product Family Code'])){
+     $this->msg=_("Error: No family code provided");
+     return;
+   }
+   if(!isset($data['Product Family Name'])){
+     $this->msg=_("Error: No family name provided");
+     return;
   }
-  if(!isset($data['Product Family Name'])){
-    $this->msg=_("Error: No family name provided");
-    return;
-  }
-  
-
-
-
-
+   
+   if($data['Product Family Code']==''){
+     $this->msg=_("Error: Wrong family code");
+     return;
+   }
+   if($data['Product Family Name']==''){
+     $this->msg=_("Error: Wrong family name");
+     return;
+   }
 
    if(!isset($data['Product Family Main Department Key'])){
      $department=new Department(0);
@@ -57,6 +61,20 @@ class family{
    $store=new Store($department->data['Product Department Store Key']);
    
    
+
+   $sql=sprintf("select count(*) as num from `Product Family Dimension` where `Product Family Store Key`=%s  and `Product Family Code`=%s COLLATE utf8_general_ci "
+		,$store->id
+		,prepare_mysql($data['Product Family Code'])
+		);
+   //   print $sql;
+   $res=mysql_query($sql);
+   $row=mysql_fetch_array($res);
+   if($row['num']>0){
+     $this->msg=_("Error: Another family with the same code");
+     return;
+     
+   }
+
 
 
 
@@ -96,22 +114,22 @@ class family{
    $sql=sprintf("insert into `Product Family Dimension` %s %s",$keys,$values);
    
    // print_r($data);
-   //d print "$sql\n";
+
    if(mysql_query($sql)){
      $this->id = mysql_insert_id();
      $this->getdata('id',$this->id);
      $this->msg=_("Family Added");
      
      $sql=sprintf("insert into `Product Family Department Bridge` values (%d,%d)",$this->id,$department->id);
-     print $sql;
+
      mysql_query($sql);
      $department->load('products_info');
      $store->load('products_info');
-
+     $this->new=true;
 
    }else{
      $this->msg=_("Error can not create the family");
-     $this->xxx='xxd';
+
    
    }   
 
@@ -136,6 +154,94 @@ class family{
 
  }
 
+function update($key,$a1=false,$a2=false){
+   $this->updated=false;
+   $this->msg='Nothing to change';
+   
+   switch($key){
+   case('code'):
+
+     if($a1==$this->data['Product Family Code']){
+       $this->updated=true;
+       $this->newvalue=$a1;
+       return;
+       
+     }
+
+     if($a1==''){
+       $this->msg=_('Error: Wrong code (empty)');
+       return;
+     }
+     $sql=sprintf("select count(*) as num from `Product Family Dimension` where `Product Family Store Key`=%d and `Product Family Code`=%s  COLLATE utf8_general_ci "
+		,$this->data['Product Family Store Key']
+		,prepare_mysql($a1)
+		);
+     $res=mysql_query($sql);
+     $row=mysql_fetch_array($res);
+     if($row['num']>0){
+       $this->msg=_("Error: Another family with the same code");
+       return;
+     }
+     
+      $sql=sprintf("update `Product Family Dimension` set `Product Family Code`=%s where `Product Family Key`=%d "
+		   ,prepare_mysql($a1)
+		   ,$this->id
+		);
+      if(mysql_query($sql)){
+	$this->msg=_('Family code updated');
+	$this->updated=true;$this->newvalue=$a1;
+      }else{
+	$this->msg=_("Error: Family code could not be updated");
+
+	$this->updated=false;
+	
+      }
+      break;	
+      
+   case('name'):
+
+     if($a1==$this->data['Product Family Name']){
+       $this->updated=true;
+       $this->newvalue=$a1;
+       return;
+       
+     }
+
+     if($a1==''){
+       $this->msg=_('Error: Wrong name (empty)');
+       return;
+     }
+     $sql=sprintf("select count(*) as num from `Product Family Dimension` where `Product Family Store Key`=%d and `Product Family Name`=%s  COLLATE utf8_general_ci"
+		,$this->data['Product Family Store Key']
+		,prepare_mysql($a1)
+		);
+     $res=mysql_query($sql);
+     $row=mysql_fetch_array($res);
+     if($row['num']>0){
+       $this->msg=_("Error: Another family with the same name");
+       return;
+     }
+     
+      $sql=sprintf("update `Product Family Dimension` set `Product Family Name`=%s where `Product Family Key`=%d "
+		   ,prepare_mysql($a1)
+		   ,$this->id
+		);
+      if(mysql_query($sql)){
+	$this->msg=_('Family name updated');
+	$this->updated=true;$this->newvalue=$a1;
+      }else{
+	$this->msg=_("Error: Family name could not be updated");
+
+	$this->updated=false;
+	
+      }
+      break;	
+
+
+   }
+
+
+ }
 
 
  function delete(){

@@ -428,6 +428,7 @@ $default_state=array(
 				       'percentage'=>0,
 				       'mode'=>'all',
 				       'avg'=>'totals',
+				       'edit'=>0,
 				       'table'=>array(
 						      'order'=>'code',
 						      'order_dir'=>'',

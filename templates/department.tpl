@@ -2,6 +2,7 @@
 <div id="bd" >
 
 {if $next.id>0}<span class="nav2 onright"><a href="department.php?id={$next.id}">{$next.code} &rarr; </a></span>{/if}
+<span class="nav2 onright" ><a href="store.php?id={$store->id}">&uarr; {t}Up{/t}</a></span>
 
 {if $prev.id>0}<span class="nav2 onright" ><a href="department.php?id={$prev.id}">&larr; {$prev.code}</a></span>{/if}
 
@@ -10,7 +11,7 @@
   <span class="nav2 onleft"><a href="families.php?store_key={$store->id}">{$store->get('Store Code')} {t}Families{/t}</a></span>
   <span class="nav2 onleft"><a href="products.php?store_key={$store->id}">{$store->get('Store Code')} {t}Products{/t}</a></span>
   <span class="nav2 onleft"><a href="categories.php?store_key={$store->id}">{$store->get('Store Code')} {t}Categories{/t}</a></span>
-  <span class="nav2 onleft"><a href="parts.php?store_key={$store->id}">{$store->get('Store Code')} {t}Parts{/t}</a></span>
+
 
 
 

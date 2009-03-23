@@ -89,6 +89,7 @@ class department{
    $this->msg=_("Department Added");
    $this->getdata('id',$this->id);
    $this->new=true;
+   $store=new Store($data['Product Department Store Key']);
    $store->load('product_info');
    return;
  }else{
@@ -141,7 +142,7 @@ class department{
        $this->msg=_('Error: Wrong code (empty)');
        return;
      }
-     $sql=sprintf("select count(*) as num from `Product Department Dimension` where `Product Department Store Key`=%d and `Product Department Code`=%s "
+     $sql=sprintf("select count(*) as num from `Product Department Dimension` where `Product Department Store Key`=%d and `Product Department Code`=%s  COLLATE utf8_general_ci"
 		,$this->data['Product Department Store Key']
 		,prepare_mysql($a1)
 		);
@@ -180,7 +181,7 @@ class department{
        $this->msg=_('Error: Wrong name (empty)');
        return;
      }
-     $sql=sprintf("select count(*) as num from `Product Department Dimension` where `Product Department Store Key`=%d and `Product Department Name`=%s "
+     $sql=sprintf("select count(*) as num from `Product Department Dimension` where `Product Department Store Key`=%d and `Product Department Name`=%s  COLLATE utf8_general_ci"
 		,$this->data['Product Department Store Key']
 		,prepare_mysql($a1)
 		);

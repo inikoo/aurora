@@ -79,7 +79,58 @@ case('delete_store'):
    
    
    break;
+case('delete_department'):
 
+   if(!isset($_REQUEST['id']))
+     return _('Error: no department specificated');
+   if(!is_numeric($_REQUEST['id']) or $_REQUEST['id']<=0 )
+     return _('Error: wrong department id');
+   if(!isset($_REQUEST['delete_type'])  or !($_REQUEST['delete_type']=='delete' or $_REQUEST['delete_type']=='discontinue'  )  )
+     return _('Error: delete type no supplied');
+
+   $id=$_REQUEST['id'];
+   $department=new Department($id);
+
+   if($_REQUEST['delete_type']=='delete'){
+
+     $department->delete();
+   }else if($_REQUEST['delete_type']=='discontinue'){
+     $department->close();
+   }
+   if($department->deleted){
+     print 'Ok';
+   }else{
+     print $department->msg;
+   }
+   
+   
+   break;
+ case('edit_family'):
+   $family=new family($_REQUEST['id']);
+   $family->update($_REQUEST['key'],stripslashes(urldecode($_REQUEST['newvalue'])),stripslashes(urldecode($_REQUEST['oldvalue'])));
+   
+
+   if($family->updated){
+     $response= array('state'=>200,'newvalue'=>$family->newvalue,'key'=>$_REQUEST['key']);
+	  
+   }else{
+     $response= array('state'=>400,'msg'=>$family->msg,'key'=>$_REQUEST['key']);
+   }
+   echo json_encode($response);  
+
+   break;
+case('edit_product'):
+   $product=new product($_REQUEST['id']);
+   $product->update($_REQUEST['key'],stripslashes(urldecode($_REQUEST['newvalue'])),stripslashes(urldecode($_REQUEST['oldvalue'])));
+   if($product->updated){
+     $response= array('state'=>200,'newvalue'=>$product->newvalue,'key'=>$_REQUEST['key']);
+	  
+   }else{
+     $response= array('state'=>400,'msg'=>$product->msg,'key'=>$_REQUEST['key']);
+   }
+   echo json_encode($response);  
+
+   break;
  case('edit_department'):
    $department=new Department($_REQUEST['id']);
    $department->update($_REQUEST['key'],stripslashes(urldecode($_REQUEST['newvalue'])),stripslashes(urldecode($_REQUEST['oldvalue'])));
@@ -94,7 +145,7 @@ case('delete_store'):
      $response= array('state'=>400,'msg'=>$department->msg,'key'=>$_REQUEST['key']);
    }
    echo json_encode($response);  
-   exit;
+
    break;
  case('edit_store'):
    $store=new Store($_REQUEST['id']);
@@ -292,10 +343,13 @@ $store_id=$_SESSION['state']['store']['id'];
 
    }
 
- $rtext=$total_records." ".ngettext('department','departments',$total_records);
-  if($total_records>$number_results)
-    $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
-
+   $rtext=$total_records." ".ngettext('department','departments',$total_records);
+   if($total_records>$number_results)
+     $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+   else
+     $rtext_rpp='';
+   
+   
    $_dir=$order_direction;
    $_order=$order;
    
@@ -342,15 +396,15 @@ $store_id=$_SESSION['state']['store']['id'];
 			 'sort_dir'=>$_dir,
 			 'tableid'=>$tableid,
 			 'filter_msg'=>$filter_msg,
-			 'rtext'=>$rtext,
 			 'total_records'=>$total,
 			 'records_offset'=>$start_from,
 			 'records_returned'=>$start_from+$total,
 			 'records_perpage'=>$number_results,
-			 
-			'records_order'=>$order,
-			'records_order_dir'=>$order_dir,
-			'filtered'=>$filtered
+			 'rtext'=>$rtext,
+			 'rtext_rpp'=>$rtext_rpp,
+			 'records_order'=>$order,
+			 'records_order_dir'=>$order_dir,
+			 'filtered'=>$filtered
 			 )
 		   );
    echo json_encode($response);
@@ -442,17 +496,24 @@ $where=" ";
    if($row=$res->fetchRow()) {
      $total=$row['total'];
    }
-   if($wheref=='')
-       $filtered=0;
-   else{
+   if($wheref==''){
+       $filtered=0; $total_records=$total;
+   }else{
      $sql="select count(*) as total `Store Dimension`   $where ";
 
      $res = $db->query($sql); 
      if($row=$res->fetchRow()) {
-       $filtered=$row['total']-$total;
+       $filtered=$row['total']-$total;$total_records=$row['total'];
      }
 
    }
+
+    $rtext=$total_records." ".ngettext('store','stores',$total_records);
+   if($total_records>$number_results)
+     $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+   else
+     $rtext_rpp='';
+
 
    $_dir=$order_direction;
    $_order=$order;
@@ -499,7 +560,8 @@ $where=" ";
 			 'sort_dir'=>$_dir,
 			 'tableid'=>$tableid,
 			 'filter_msg'=>$filter_msg,
-			 
+			 'rtext'=>$rtext,
+			 'rtext_rpp'=>$rtext_rpp,
 			 'total_records'=>$total,
 			 'records_offset'=>$start_from,
 			 'records_returned'=>$start_from+$total,
@@ -626,15 +688,15 @@ case('edit_families'):
      }
 
    }
- $rtext=$total_records." ".ngettext('family','families',$total_records);
-     if($total_records>$number_results)
-       $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-     else
-       $rtext_rpp='';
-  
-  $_order=$order;
-  $_dir=$order_direction;
-  
+   $rtext=$total_records." ".ngettext('family','families',$total_records);
+   if($total_records>$number_results)
+     $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+   else
+     $rtext_rpp='';
+   
+   $_order=$order;
+   $_dir=$order_direction;
+   
   if($order=='code')
     $order='`Product Family Code`';
   elseif($order=='name')
@@ -675,6 +737,8 @@ $adata[]=array(
 			'records_perpage'=>$number_results,
 			'records_order'=>$order,
 			'records_order_dir'=>$order_dir,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
 			'filtered'=>$filtered
 			)
 		  );

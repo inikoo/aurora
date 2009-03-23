@@ -1,13 +1,18 @@
 <?
 include_once('common.php');
 include_once('classes/Family.php');
+include_once('classes/Store.php');
+include_once('classes/Department.php');
 
 $view_sales=$LU->checkRight(PROD_SALES_VIEW);
 $view_stock=$LU->checkRight(PROD_STK_VIEW);
 $create=$LU->checkRight(PROD_CREATE);
 $modify=$LU->checkRight(PROD_MODIFY);
 
-
+if(isset($_REQUEST['edit']))
+  $edit=$_REQUEST['edit'];
+else
+  $edit=$_SESSION['state']['family']['edit'];
 $smarty->assign('view_sales',$view_sales);
 $smarty->assign('view_stock',$view_stock);
 $smarty->assign('create',$create);
@@ -16,6 +21,7 @@ $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
 		 $yui_path.'button/assets/skins/sam/button.css',
+		 $yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
 		 'common.css',
 		 'container.css',
 		 'button.css',
@@ -32,18 +38,26 @@ $js_files=array(
 		$yui_path.'menu/menu-min.js',
 		'js/common.js.php',
 		'js/table_common.js.php',
-		'js/search.js',
-		'js/family.js.php'
 		);
+
+if($edit){
+  $js_files[]='js/edit_common.js';
+  $js_files[]='js/edit_family.js.php';
+ }else{
+  $js_files[]='js/family.js.php';
+  $js_files[]='js/search.js.php';
+
+ }
+
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
 
 if(!isset($_REQUEST['id']) or !is_numeric($_REQUEST['id']))
-  $family_id=1;
+  $family_id=$_SESSION['state']['family']['id'];
  else
    $family_id=$_REQUEST['id'];
-$_SESSION['state']['family']['id']=$_REQUEST['id'];
+$_SESSION['state']['family']['id']=$family_id;
 
 $_SESSION['state']['assets']['page']='department';
 if(isset($_REQUEST['view'])){
@@ -56,6 +70,9 @@ if(isset($_REQUEST['view'])){
 
 
 $family=new Family($family_id);
+$store=new Store($family->get('Product Family Store Key'));
+$department=new Department($family->get('Product Family Main Department Key'));
+
 
 if(isset($_REQUEST['department_id']) and $_REQUEST['department_id']>0){
   $department_id=$_REQUEST['department_id'];
@@ -118,6 +135,9 @@ $smarty->assign('home',$product_home);
 
 
  $smarty->assign('family',$family);
+ $smarty->assign('store',$store);
+ $smarty->assign('department',$department);
+
 // $smarty->assign('family_id',$family->id);
 
 // $smarty->assign('family_description',$family->data['description']);
@@ -138,5 +158,15 @@ $smarty->assign('table_title',$table_title);
 
 
 
-$smarty->display('family.tpl');
+
+
+
+if($edit){
+  $smarty->assign('title', _('Editing Family').': '.$family->get('Product Family Code'));
+  $smarty->display('edit_family.tpl');
+ }else{
+  $smarty->assign('title',_('Family').': '.$family->get('Product Family Name'));
+  $smarty->display('family.tpl');
+ }
+
 ?>
