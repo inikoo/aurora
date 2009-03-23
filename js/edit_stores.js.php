@@ -29,7 +29,7 @@ function save_new_store(){
 // 	}
 //     } 
     
-    var request='ar_edit.php?tipo=new_store&code='+encodeURIComponent(code)+'&name='+encodeURIComponent(name);
+    var request='ar_edit_assets.php?tipo=new_store&code='+encodeURIComponent(code)+'&name='+encodeURIComponent(name);
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
@@ -65,7 +65,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    ,{key:"delete_type", label:"",hidden:true,isTypeKey:true}
 				     ];
 
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit.php?tipo=edit_stores");
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit_assets.php?tipo=edit_stores");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {

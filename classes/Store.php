@@ -509,7 +509,7 @@ $sql="select sum(`Product 1 Week Acc Invoiced Amount`) as net,sum(`Product 1 Wee
        $this->msg=_('Error: Wrong code (empty)');
        return;
      }
-     $sql=sprintf("select count(*) as num from `Store Dimension` where  `Store Code`=%s COLLATE utf8_general_cs  "
+     $sql=sprintf("select count(*) as num from `Store Dimension` where  `Store Code`=%s COLLATE utf8_general_ci  "
 		,prepare_mysql($a1)
 		);
      $res=mysql_query($sql);
@@ -547,9 +547,10 @@ $sql="select sum(`Product 1 Week Acc Invoiced Amount`) as net,sum(`Product 1 Wee
        $this->msg=_('Error: Wrong name (empty)');
        return;
      }
-     $sql=sprintf("select count(*) as num from `Store Dimension` where `Store Name`=%s COLLATE utf8_general_cs"
+     $sql=sprintf("select count(*) as num from `Store Dimension` where `Store Name`=%s COLLATE utf8_general_ci"
 		,prepare_mysql($a1)
 		);
+
      $res=mysql_query($sql);
      $row=mysql_fetch_array($res);
      if($row['num']>0){

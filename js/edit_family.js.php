@@ -1,218 +1,425 @@
-this.mySaveEditor = function (){
-		if(this._oCellEditor.isActive) {
- 		    var newData = this._oCellEditor.value;
- 		    var oldData = YAHOO.widget.DataTable._cloneObject(this._oCellEditor.record.getData(this._oCellEditor.column.key));
-		}
-		
-		if(this._oCellEditor.column.getKey()=='code')
-		    var request='ar_assets.php?tipo=update_product_name&value=' + escape(newData) + '&id=' + escape(this._oCellEditor.record.getData("id"));
-		else if (this._oCellEditor.column.getKey()=='description')
-		    var request='ar_assets.php?tipo=update_product_description&value=' + escape(newData) + '&id=' + escape(this._oCellEditor.record.getData("id"));
-		else
-		    return;
-		
-		YAHOO.util.Connect.asyncRequest(
-						'POST',
-						request,{
-						    success: function (o) {
+<?include_once('../common.php');?>
+var Event = YAHOO.util.Event;
+var Dom   = YAHOO.util.Dom;
+var family_id=<?=$_SESSION['state']['family']['id']?>;
+editing='description';
 
-							var r =  YAHOO.lang.JSON.parse(o.responseText);
-							if (r.state == 200) {
-							     this._oRecordSet.updateRecordValue(this._oCellEditor.record, this._oCellEditor.column.key, this._oCellEditor.value);
-							     this.formatCell(this._oCellEditor.cell.firstChild);
-							     this._syncColWidths(false);
-							     this.resetCellEditor();
-							}else{
-							    alert(r.resp);
-							}
-							
-						    },
-							failure: function(o) {alert("Error")},
-							scope: this
-						}
-						);
-	    }
+function new_product_changed(o){
+    if(Dom.get("new_code").value!='' && Dom.get("new_code").value!='')
+	Dom.get("add_new_product").style.display='';
+    else
+	Dom.get("add_new_product").style.display='';
 
 
-    
-    
-    YAHOO.products.changeview = function(e,new_view) {
-	
-	var old_view=YAHOO.products.view;
+}
+var description_num_changed=0;
+var description_warnings= new Object();
+var description_errors= new Object();
 
+function update_form(){
+    if(editing=='description'){
+	this_errors=description_errors;
+	this_num_changed=description_num_changed
 
-	if(old_view==new_view)
-	    return;
-	var Dom   = YAHOO.util.Dom;
-
-
-
-
-	Dom.get("but_view"+old_view).className='';
-	Dom.get("but_view"+new_view).className='selected';
-	YAHOO.products.view=new_view;
-	    
-	
-
-	Dom.get("table"+old_view).style.display='none';
-	Dom.get("table"+new_view).style.display='';
-
-	YAHOO.util.Connect.asyncRequest('POST','ar_assets.php?tipo=changetableview&level=2&value=' + escape(new_view) ); 
-	
     }
 
+    if(this_num_changed>0){
+	Dom.get(editing+'_save').style.display='';
+	Dom.get(editing+'_reset').style.display='';
 
- YAHOO.products.changeedit = function() {
+    }else{
+	Dom.get(editing+'_save').style.display='none';
+	Dom.get(editing+'_reset').style.display='none';
 
-	    if(YAHOO.products.editmode){
+    }
+    Dom.get(editing+'_num_changes').innerHTML=this_num_changed;
 
-
-		YAHOO.products.editmode=false;
-
-		YAHOO.products.XHR_JSON.ProductsDataTable.getColumn('code').formatter=YAHOO.products.XHR_JSON.productLink;
-		YAHOO.products.XHR_JSON.ProductsDataTable.getColumn('code').editor="";
-		YAHOO.products.XHR_JSON.ProductsDataTable.getColumn('description').editor="";
-
-		Dom.get('edit_menu').style.display='none';
-		Dom.get('but_view3').className='';
-
-		Event.addListener(Dom.get('but_view0'),"click",YAHOO.products.changeview,0)
-		Event.addListener(Dom.get('but_view1'),"click",YAHOO.products.changeview,1)
-		Event.addListener(Dom.get('but_view2'),"click",YAHOO.products.changeview,2)
-		
-		Dom.get('but_view0').className='';
-		Dom.get('but_view1').className='';
-		Dom.get('but_view2').className='';
-		Dom.get('but_view'+YAHOO.products.view).className='selected';
-
-		old_view=YAHOO.products.view;
-		Dom.get("table0").style.display='none';
-		Dom.get("table"+old_view).style.display='';
-
-	    }else{
-
-		YAHOO.products.editmode=true;
-
-		YAHOO.products.XHR_JSON.ProductsDataTable.getColumn('code').formatter="";
-
-		YAHOO.products.XHR_JSON.ProductsDataTable.getColumn('code').editor="textbox";
-		YAHOO.products.XHR_JSON.ProductsDataTable.getColumn('description').editor="textbox";
-
-		Dom.get('edit_menu').style.display='';
-		Dom.get('but_view3').className='edit';
-
-		old_view=YAHOO.products.view;
-	       
+    // Dom.get(editing+'_save_div').style.display='';
+    errors_div=Dom.get(editing+'_errors');
+    // alert(errors);
+    errors_div.innerHTML='';
 
 
-		Dom.get("table"+old_view).style.display='none';
-		Dom.get("table0").style.display='';
-
-
-		Dom.get('but_view0').className='disabled';
-		Dom.get('but_view1').className='disabled';
-		Dom.get('but_view2').className='disabled';
-
-		Event.removeListener("but_view0", "click");
-		Event.removeListener("but_view1", "click");
-		Event.removeListener("but_view2", "click");
-
-		
-
-
-	    }
-	    YAHOO.products.XHR_JSON.ProductsDataTable.render();
-
-	};
-
-
-    
-
-
-  var handleSubmit = function() {
-		this.submit();
-	};
-	var handleCancel = function() {
-		this.cancel();
-	};
-	var handleSuccess = function(o) {
-	    //alert(o.responseText);
-	    var response = YAHOO.lang.JSON.parse(o.responseText);
-	     if(response.state==200){
-		 //alert(response.data);
-		 YAHOO.products.XHR_JSON.ProductsDataTable.addRow(response.data,0);
-		 YAHOO.products.dialog1.hide();
-	     }else{
-		 alert(response.resp);
-	     }
-	    
-	};
-	var handleFailure = function(o) {
-		alert("Submission failed: " + o.status);
-	};
-	
-
-	YAHOO.products.dialog1  = new YAHOO.widget.Dialog("add_product_form",
-							     { width : "30em",
-							  fixedcenter : true,
-							  visible : false, 
-							  constraintoviewport : true,
-							  buttons : [ { text:"<?=_('Submit')?>", handler:handleSubmit, isDefault:true },
-								      { text:"<?=_('Cancel')?>", handler:handleCancel } ]
-							});
-
-	YAHOO.products.dialog1.callback = { success: handleSuccess,failure: handleFailure };
-	YAHOO.products.dialog1.render();
-
-
-
-	YAHOO.products.dialog2  = new YAHOO.widget.Dialog("upload_product_form",
-							     { width : "30em",
-							  fixedcenter : true,
-							  visible : false, 
-							  constraintoviewport : true,
-							       postmethod:"form",
-							  buttons : [ { text:"<?=_('Upload')?>", handler:handleSubmit, isDefault:true },
-								      { text:"<?=_('Cancel')?>", handler:handleCancel } ]
-							});
-
-	YAHOO.products.dialog2.callback = { success: handleSuccess,failure: handleFailure };
-	YAHOO.products.dialog2.render();
-
-
-	
-	
-	Event.addListener(Dom.get('but_view0'),"click",YAHOO.products.changeview,0);
-	Event.addListener(Dom.get('but_view1'),"click",YAHOO.products.changeview,1);
-	Event.addListener(Dom.get('but_view2'),"click",YAHOO.products.changeview,2);
-	Event.addListener(Dom.get('but_view3'),"click",YAHOO.products.changeedit);
-
-
-
-	var editProductButton= new YAHOO.widget.Button("edit_products",{ 
-		type:"checkbox", 
-		value:"1", 
-		checked:false });
-	YAHOO.util.Event.addListener("edit_products", "click", YAHOO.products.editproductstable);	
-	
-
-	//	var addProductButton= new YAHOO.widget.Button("add_product",{ type:"push" });
-       Event.addListener("add_product", "click",  YAHOO.products.dialog1.show, YAHOO.products.dialog1, true );
+    for (x in this_errors)
+	{
+	    // alert(errors[x]);
+	    Dom.get(editing+'_save').style.display='none';
+	    errors_div.innerHTML=errors_div.innerHTML+' '+this_errors[x];
+	}
 
 
 
 
 }
 
+
+function create_part(){
+    var part_description=Dom.get('new_name').value;
+    if(part_description=='')
+	part_description='??';
+    var part_used_in=Dom.get('new_code').value;
+    if(part_used_in=='')
+	part_used_in='??';
+
+
+    var data={sku:'TBC',description:part_description,usedin:part_used_in,partsperpick:1,notes:'',delete:'<img src="art/icons/cross.png">'}
+    tables.table1.addRow(data, 0);
+}
+
+function edit_family_changed(o){
+    var ovalue=o.getAttribute('ovalue');
+    var name=o.name;
+    if(ovalue!=o.value){
+	if(name=='code'){
+	    if(o.value==''){
+		description_errors.code="<?=_("The family code can not be empty")?>";
+	    }else if(o.value.lenght>16){
+		description_errors.code="<?=_("The product code can not have more than 16 characters")?>";
+	    }else
+		delete description_errors.code;
+	}
+	if(name=='name'){
+	    if(o.value==''){
+		description_errors.name="<?=_("The family name  can not be empty")?>";
+	    }else if(o.value.lenght>255){
+		description_errors.name="<?=_("The product code can not have more than 255  characters")?>";
+	    }else
+		delete description_errors.name;
+	}
+	
+
+
+	if(o.getAttribute('changed')==0){
+	    description_num_changed++;
+	    o.setAttribute('changed',1);
+	}
+    }else{
+	if(o.getAttribute('changed')==1){
+	    description_num_changed--;
+	    o.setAttribute('changed',0);
+	}
+    }
+    update_form();
+}
+
+function reset(tipo){
+
+    if(tipo=='description'){
+	tag='name';
+	Dom.get(tag).value=Dom.get(tag).getAttribute('ovalue');
+	Dom.get(tag).setAttribute('changed',0);
+	tag='code';
+	Dom.get(tag).value=Dom.get(tag).getAttribute('ovalue');
+	Dom.get(tag).setAttribute('changed',0);
+
+	description_num_changed=0;
+	Dom.get(editing+'_save').style.display='none';
+	Dom.get(editing+'_reset').style.display='none';
+
+	Dom.get(editing+'_num_changes').innerHTML=description_num_changed;
+	description_warnings= new Object();
+	description_errors= new Object();
+	
+    }
+    update_form();
+}
+
+function save(tipo){
+
+    if(tipo=='description'){
+	var keys=new Array("code","name");
+	for (x in keys)
+	    {
+		 key=keys[x];
+		 element=Dom.get(key);
+		if(element.getAttribute('changed')==1){
+
+		    newValue=element.value;
+		    oldValue=element.getAttribute('ovalue');
+		    
+		    var request='ar_edit_assets.php?tipo=edit_family&key=' + key+ '&newvalue=' + 
+			encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ 
+			'&id='+family_id;
+
+		    YAHOO.util.Connect.asyncRequest('POST',request ,{
+			    success:function(o) {
+				//alert(o.responseText);
+				var r =  YAHOO.lang.JSON.parse(o.responseText);
+				if(r.state==200){
+				    var element=Dom.get(r.key);
+				    element.getAttribute('ovalue',r.newvalue);
+				    element.value=r.newvalue;
+				    element.setAttribute('changed',0);
+				    description_num_changed--;
+				 
+				}else{
+				    Dom.get('description_errors').innerHTML='<span class="error">'+r.msg+'</span>';
+				    
+				}
+				update_form();	
+			    }
+			    
+			});
+		}
+	    }
+	
+    }
+
+}
+
+
+function new_family_changed(o){
+    if(Dom.get("new_code").value!='' && Dom.get("new_name").value!=''){
+	Dom.get("add_new_family").style.display='';
+    }else
+	Dom.get("add_new_family").style.display='none';
+}
+
+
+function save_new_family(){
+
+    var msg_div='add_family_messages';
+
+    var code=Dom.get('new_code').value;
+    var name=Dom.get('new_name').value;
+    var description=Dom.get('new_description').innerHTML;
+    var request='ar_edit_assets.php?tipo=new_family&code='+encodeURIComponent(code)+'&name='+encodeURIComponent(name)+'&description='+encodeURIComponent(name);
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    success:function(o) {
+
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if(r.state==200){
+		    var table=tables['table0'];
+		    var datasource=tables['dataSource0'];
+		    var request='';
+		    datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
+		    Dom.get(msg_div).innerHTML='';
+		}else
+		    Dom.get(msg_div).innerHTML='<span class="error">'+r.msg+'</span>';
+	    }
+	    
+	    });
+
+}
+
+
+
+var tmponCellClick = function(oArgs) {
+		var target = oArgs.target,
+		column = this.getColumn(target),
+		record = this.getRecord(target);
+		switch (column.action) {
+		case 'delete':
+		    this.deleteRow(target);
+		    break;
+		default:
+
+		    this.onEventShowCellEditor(oArgs);
+		    break;
+		}
+	    };    var highlightEditableCell = function(oArgs) {
+		var target = oArgs.target;
+		column = this.getColumn(target);
+
+		switch (column.action) {
+		case 'delete':
+		    this.highlightRow(target);
+		default:
+		    if(YAHOO.util.Dom.hasClass(target, "yui-dt-editable")) {
+			this.highlightCell(target);
+		    }
+		}
+	    };
+
+	      var unhighlightEditableCell = function(oArgs) {
+		var target = oArgs.target;
+		column = this.getColumn(target);
+
+		switch (column.action) {
+		case 'delete':
+		    this.unhighlightRow(target);
+		default:
+		    if(YAHOO.util.Dom.hasClass(target, "yui-dt-editable")) {
+			this.unhighlightCell(target);
+		    }
+		}
+	    };
+
+
+
+
+YAHOO.util.Event.addListener(window, "load", function() {
+    tables = new function() {
+
+
+
+
+	    var tableid=0; // Change if you have more the 1 table
+	    var tableDivEL="table"+tableid;
+	    var OrdersColumnDefs = [ 
+				    {key:"id", label:"", hidden:true,action:"none",isPrimaryKey:true}
+				    ,{key:"code", label:"<?=_('Code')?>", width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'family'}
+				    ,{key:"name", label:"<?=_('Name')?>",width:300, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'family'}
+				    ,{key:"delete", label:"",width:100,className:"aleft",action:"delete",object:'family'}
+				    ,{key:"delete_type", label:"",hidden:true,isTypeKey:true}
+
+				     ];
+
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit_assets.php?tipo=edit_product&parent=family");
+	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource0.connXhrMode = "queueRequests";
+	    this.dataSource0.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		    rowsPerPage:"resultset.records_perpage",
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
+		},
+		
+		fields: [
+			 "code",
+			 "name",
+			 'delete','delete_type','id'
+			 ]};
+	    
+	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
+						     this.dataSource0, {
+							 //draggableColumns:true,
+							   renderLoopSize: 50,generateRequest : myRequestBuilder
+								       ,paginator : new YAHOO.widget.Paginator({
+									      rowsPerPage:<?=$_SESSION['state']['family']['table']['nr']?>,containers : 'paginator', 
+ 									      pageReportTemplate : '(<?=_('Page')?> {currentPage} <?=_('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+									  })
+								     
+								     ,sortedBy : {
+									 key: "<?=$_SESSION['state']['family']['table']['order']?>",
+									 dir: "<?=$_SESSION['state']['family']['table']['order_dir']?>"
+								     }
+							   ,dynamicData : true
+
+						     }
+						     );
+	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
+
+
+
+
+
+	    this.table0.subscribe("cellMouseoverEvent", highlightEditableCell);
+	    this.table0.subscribe("cellMouseoutEvent", unhighlightEditableCell);
+	    this.table0.subscribe("cellClickEvent", onCellClick);
+	    
+	    this.table0.view='<?=$_SESSION['state']['family']['view']?>';
+
+		
+
+	    var tableid=1; // Change if you have more the 1 table
+	    var tableDivEL="table"+tableid;
+	    var OrdersColumnDefs = [ 
+				    {key:"sku", label:"SKU", width:100, action:"none",isPrimaryKey:true}
+				    ,{key:"description", label:"<?=_('Description')?>", width:220,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"usedin", label:"<?=_('Used in')?>",width:100, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"partsperpick", label:"<?=_('Parts/Pick')?>",width:70,className:"aleft"}
+				    ,{key:"notes", label:"<?=_('Notes to Pickers')?>",width:180,className:"aleft"}
+				    ,{key:"delete", label:"",width:20,className:"aleft",action:"delete",object:'tmp_partlist'}
+
+
+
+				     ];
+
+	    this.dataSource1 = new YAHOO.util.DataSource(YAHOO.util.Dom.get("table_parts_list")); 
+	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_HTMLTABLE; 
+	    this.dataSource1.responseSchema = {
+		fields: [
+			 "sku",
+			 "description",
+			 'usedin','partsperpick','notes','delete'
+			 ]};
+	    
+	    this.table1 = new YAHOO.widget.DataTable("parts_list_container", OrdersColumnDefs,
+						     this.dataSource1, {
+								     sortedBy : {
+									 key: "sku",
+									 dir: "desc"
+								     }
+
+						     }
+						     );
+
+
+
+	    this.table1.subscribe("cellMouseoverEvent", highlightEditableCell);
+	    this.table1.subscribe("cellMouseoutEvent", unhighlightEditableCell);
+	    this.table1.subscribe("cellClickEvent", tmponCellClick);
+	    
+
+
+
+
+	};
+    });
+
+function init(){
+ var Event = YAHOO.util.Event;
+    var Dom   = YAHOO.util.Dom;
+    
+    function mygetTerms(query) {multireload();};
+    var oACDS = new YAHOO.widget.DS_JSFunction(mygetTerms);
+    oACDS.queryMatchContains = true;
+    var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","filtercontainer0", oACDS);
+    oAutoComp.minQueryLength = 0; 
+    
+
+
+    
+
+
+}
+
 YAHOO.util.Event.onDOMReady(init);
 
-     {key:"code", label:"<?=_('Name')?>", width:80,sortable:true,formatter:this.productLink,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"description", label:"<?=_('Description')?>", width:400,formatter:this.description,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       
-				       ,{key:"stock_value", label:"<?=$myconf['currency_symbol'].' '._('Stock')?>",width:80, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				      ,{key:"stock", label:"<?=_('Stock')?>", width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}  {key:"code", label:"<?=_('Name')?>", width:80,sortable:true,formatter:this.productLink,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				      ,{key:"tsall", label:"<?=_('Total Sales')?>", width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				      ,{key:"tsy", label:"<?=_('Sales (1y)')?>",width:80, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				      ,{key:"tsq", label:"<?=_('Sales (1q)')?>", width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				      ,{key:"tsm", label:"<?=_('Sales (1m)')?>", width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				      ,{key:"awtsq", label:"<?=_('Avg Sales (w)')?>", width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+
+YAHOO.util.Event.onContentReady("dmenu_input", function () {
+
+
+	var oDS = new YAHOO.util.XHRDataSource("ar_assets.php");
+ 	oDS.responseType = YAHOO.util.XHRDataSource.TYPE_JSON;
+ 	oDS.responseSchema = {
+ 	    resultsList : "data",
+ 	    fields : ["code","description"]
+ 	};
+ 	var oAC = new YAHOO.widget.AutoComplete("dmenu_input", "dmenu_container", oDS);
+ 	oAC.generateRequest = function(sQuery) {
+
+ 	    return "?tipo=part_search&query=" + sQuery ;
+ 	};
+
+ 	var myHandler = function(sType, aArgs) {
+
+ 	    newProductData = aArgs[2];
+
+ 	};
+ 	oAC.itemSelectEvent.subscribe(myHandler);
+
+
+
+
+ 	oAC.forceSelection = true; 
+ 	oAC.itemSelectEvent.subscribe(dmenu_selected); 
+    });
+
+var dmenu_selected=function(){
+    alert("caca");
+}

@@ -108,15 +108,15 @@ if(!$LU->isLoggedIn() || ($handle && $LU->getProperty('handle') != $handle)){
        include_once('aes.php');
        include_once('app_files/db/key.php');
        $sql=sprintf("select passwd from liveuser_users where handle='%s'",addslashes($handle));
-
        
+
        $result=mysql_query($sql);
        if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
 	$pwd=$row['passwd'];
  	$st=AESDecryptCtr(AESDecryptCtr($sk,$pwd,256),SKEY,256);
 
-	   if(preg_match('/^skstart\|\d+\|[0-9\.]+\|.+\|/',$st)){
+	if(preg_match('/^skstart\|\d+\|[0-9\.]+\|.+\|/',$st)){
  	  $data=preg_split('/\|/',$st);
 	  $time=$data[1];
  	  $ip=$data[2];

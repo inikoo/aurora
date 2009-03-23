@@ -5,6 +5,7 @@ include_once('aes.php');
 
 
 $Sk="skstart|".(date('U')+300)."|".ip()."|".IKEY."|".sha1(mt_rand()).sha1(mt_rand());
+
 $St=AESEncryptCtr($Sk,SKEY, 256);
 
 //print AESDecryptCtr($St,SKEY,256);

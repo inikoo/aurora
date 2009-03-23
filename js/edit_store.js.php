@@ -132,13 +132,13 @@ function save(tipo){
 		    newValue=element.value;
 		    oldValue=element.getAttribute('ovalue');
 		  
-		    var request='ar_edit.php?tipo=edit_store&key=' + key+ '&newvalue=' + 
+		    var request='ar_edit_assets.php?tipo=edit_store&key=' + key+ '&newvalue=' + 
 			encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ 
 			'&id='+id;
 
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
 			    success:function(o) {
-				//				alert(o.responseText);
+				//								alert(o.responseText);
 				var r =  YAHOO.lang.JSON.parse(o.responseText);
 				if(r.state==200){
 				    var element=Dom.get(r.key);
@@ -193,10 +193,10 @@ function save_new_dept(){
 // 	}
 //     } 
     
-    var request='ar_edit.php?tipo=new_department&code='+encodeURIComponent(code)+'&name='+encodeURIComponent(name);
+    var request='ar_edit_assets.php?tipo=new_department&code='+encodeURIComponent(code)+'&name='+encodeURIComponent(name);
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-	       
+
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if(r.state==200){
 		    var table=tables['table0'];
@@ -228,7 +228,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    ,{key:"delete_type", label:"",hidden:true,isTypeKey:true}
 				     ];
 
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit.php?tipo=edit_departments&parent=store");
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit_assets.php?tipo=edit_departments&parent=store");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -283,7 +283,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    };
 	    this.table0.subscribe("cellMouseoverEvent", highlightEditableCell);
 	    this.table0.subscribe("cellMouseoutEvent", this.table0.onEventUnhighlightCell);
-	    this.table0.subscribe("cellClickEvent", this.table0.onEventShowCellEditor);
+	    this.table0.subscribe("cellClickEvent", onCellClick);
 
 
 		

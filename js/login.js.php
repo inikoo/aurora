@@ -18,7 +18,6 @@ function init() {
 
 	//	var pwd='hola';
 	var epwd=AESEncryptCtr(input_epwd.value,pwd,256);
-
 	input_pwd.value='secret';
 	input_epwd.value=epwd;
 
