@@ -33,8 +33,7 @@
 	<tr><td>{t}Name{/t}:</td><td><input name="name"  id="new_name"  onKeyUp="new_product_changed(this)"    onMouseUp="new_product_changed(this)"  onChange="new_product_changed(this)"  name="code" changed=0  type='text'  SIZE="35" MAXLENGTH="80" class='text' value=""   /></td></tr>
 	<tr><td>{t}Short descriprtion{/t}:</td><td><input name="sdescription"  id="new_sdescription"  onKeyUp="new_product_changed(this)"    onMouseUp="new_product_changed(this)"  onChange="new_product_changed(this)"  name="code" changed=0  type='text'  SIZE="35" MAXLENGTH="32" class='text' /></td></tr>
 
-	<tr><td>{t}Units per Case{/t}:</td><td><input name="units" id="new_units"  onKeyUp="new_product_changed(this)"    onMouseUp="new_product_changed(this)"  onChange="new_product_changed(this)" SIZE="4" type='text'  MAXLENGTH="20" class='text' /></td></tr>
-	<tr><td>{t}Type of Unit{/t}:</td><td>	
+	<tr><td>{t}Units/Case{/t}:</td><td><input name="units" id="new_units"  onKeyUp="new_product_changed(this)"    onMouseUp="new_product_changed(this)"  onChange="new_product_changed(this)" SIZE="4" type='text'  MAXLENGTH="20" class='text' /><span style="margin-left:20px;">{t}Type of Unit{/t}:</span>	
 	    <select name="units_tipo"  id="units_tipo" >
 	      {foreach from=$units_tipo item=tipo key=tipo_id }
 	      <option value="{$tipo_id}">{$tipo}</option>
@@ -43,11 +42,17 @@
 	<tr><td>{t}Price{/t}:</td><td>Per Outer: <input name="price" type='text'  SIZE="6" MAXLENGTH="20" class='text' /><span id="label_price_per_unit" style="margin-left:15px">Per Unit:</span> <input name="price_unit" id="nwe_price_unit"  type='text'  SIZE="6" MAXLENGTH="20" class='text' /></td></tr>
 	<tr><td>{t}Retail Price{/t}:</td><td>Per Outer:  <input name="rrp" type='text'  SIZE="6" MAXLENGTH="20" class='text' /><span id="label_price_per_unit" style="margin-left:15px">Per Unit:</span> <input name="rrp_unit" id="new_rrp_unit" type='text'  SIZE="6" MAXLENGTH="20" class='text' /></td></tr>
 
-	<tr style="height:30px"><td style="vertical-align:bottom">{t}Parts{/t}:</td><td style="vertical-align:bottom"><span class="option" onclick="create_part()">Create Part</span> <span class="option">Assign Part</span></td></tr>
+	<tr style="height:40px"><td style="vertical-align:middle">{t}Parts{/t}:</td><td style="vertical-align:middle"><span class="option" onclick="create_part()">Create Part</span> <span class="option">Assign Part</span>
 
-	<tr><td>{t}Choose Part{/t}:</td><td>(SKU/Description):  <div style="width:25em; "><input name="dmenu_input" id="dmenu_input" type='text'  SIZE="32" MAXLENGTH="20" class='text' />
-	    <div id="dmenu_container"></div></div>
-	</td></tr>
+	    <span style="margin-left:10px;display:none" id="dmenu_label">{t}SKU/description{/t}:</span><span id="dmenu_position"></span>
+	    <div  id="dmenu" style="width:30em;position:relative;left:22.6em;bottom:17px;display:none ">
+	      <input name="dmenu_input" id="dmenu_input" type='text'  SIZE="32" MAXLENGTH="20" class='text' />
+	      <div id="dmenu_container"></div></div>
+
+
+</td></tr>
+
+
 
 	<tr><td></td><td>
 	    <div id="parts_list_container"  class="data_table_container dtable btable " >

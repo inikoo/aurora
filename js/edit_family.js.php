@@ -390,7 +390,7 @@ function init(){
 
 YAHOO.util.Event.onDOMReady(init);
 
-
+var dmenu_data;
 YAHOO.util.Event.onContentReady("dmenu_input", function () {
 
 
@@ -398,7 +398,7 @@ YAHOO.util.Event.onContentReady("dmenu_input", function () {
  	oDS.responseType = YAHOO.util.XHRDataSource.TYPE_JSON;
  	oDS.responseSchema = {
  	    resultsList : "data",
- 	    fields : ["code","description"]
+ 	    fields : ["info","sku","description","usedin"]
  	};
  	var oAC = new YAHOO.widget.AutoComplete("dmenu_input", "dmenu_container", oDS);
  	oAC.generateRequest = function(sQuery) {
@@ -406,12 +406,12 @@ YAHOO.util.Event.onContentReady("dmenu_input", function () {
  	    return "?tipo=part_search&query=" + sQuery ;
  	};
 
- 	var myHandler = function(sType, aArgs) {
+  	var myHandler = function(sType, aArgs) {
 
- 	    newProductData = aArgs[2];
+  	    dmenu_data = aArgs[2];
 
- 	};
- 	oAC.itemSelectEvent.subscribe(myHandler);
+  	};
+  	oAC.itemSelectEvent.subscribe(myHandler);
 
 
 
@@ -421,5 +421,15 @@ YAHOO.util.Event.onContentReady("dmenu_input", function () {
     });
 
 var dmenu_selected=function(){
-    alert("caca");
+     var data = {
+	"sku":dmenu_data[1]
+	,"description":dmenu_data[2]
+	,"usedin":dmenu_data[3]
+    }; 
+          Dom.get("dmenu_input").value='';
+
+     var row={sku:data.sku,description:data.description,usedin:data.usedin,partsperpick:1,notes:'',delete:'<img src="art/icons/cross.png">'}
+     tables.table1.addRow(row, 0);
+
+     alert(tables.table1);
 }
