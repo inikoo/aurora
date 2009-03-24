@@ -317,9 +317,11 @@ table.but_edit{clear:both;float:right}
 table.options{margin:0 ;float:right;border-collapse: separate;;border-spacing:3px  3px;font-size:100%;font-weight:600;}
 
 
-.options td,.options span,span.option{border:1px solid #aaa;color:#aaa;text-align:center;padding:2px 3px 2px 3px;cursor:pointer}
-.options td:hover,.options span:hover,span.option:hover{{border:1px solid #777;color:#777}
-.options td.selected,.options span.selected,span.selected{background:#7296e1;border:1px solid #466ab5;color:#f6f6f6}
+.options td,.options span{border:1px solid #aaa;color:#aaa;text-align:center;padding:2px 3px 2px 3px;cursor:pointer}
+
+.options td:hover,  .options span:hover{border:1px solid #777;color:#777}
+
+.options td.selected,.options span.selected{background:#7296e1;border:1px solid #466ab5;color:#f6f6f6}
 .options td.disabled{background:#fff;border:1px solid #eee;color:#ddd;cursor:default}
 .options tr.title{}
 .options tr.title td{background:#fff;border:none;cursor:default;color:#555;text-align:left}
@@ -412,7 +414,8 @@ color: #316D89;
 .top_bar .details{clear:both;padding:10px 20px ;border:1px solid #ddd;margin:0 20px;}
 
 /*Common search div*/
-.search_box{clear:both;float:right;border: 0px solid #ddd;text-align:right;padding:0 10px 10px 10px}
+
+.search_box{clear:both;float:right;border: 0px solid #ddd;text-align:right;padding:0 10px 10px 10px;}
 .search_box form{ margin-bottom:5px }
 .search_box .search_title{ position:relative;left:16px}
 
@@ -518,3 +521,8 @@ span.small{font-size:80%}
 .prod_sdesc{ font-weight:800;}
 
 .rtext_rpp{cursor:pointer}
+
+
+
+/*Common search div*/
+

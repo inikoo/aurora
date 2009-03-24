@@ -7,8 +7,7 @@
   <span class="nav2 onleft"><a href="categories.php">{t}Categories{/t}</a></span>
   <span class="nav2 onleft"><a href="parts.php">{t}Parts{/t}</a></span>
 
-
-  <div class="search_box" >
+  <div class="search_box">
     <span class="search_title">{t}Product Code{/t}:</span> <input size="8" class="text search" id="product_search" value="" name="search"/><img align="absbottom" id="product_submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>
      <span  class="search_msg"   id="product_search_msg"    ></span> <span  class="search_sugestion"   id="product_search_sugestion"    ></span>
      <br/>
@@ -16,6 +15,7 @@
       <br><a href="stores.php?edit=1"  class="state_details" id="edit"  >{t}edit{/t}</a>
  </div>
   
+
   <div id="top" class="top_bar">
     <div id="short_menu" class="nodetails" style="{if $show_details}display:none;{/if}width:100%;margin-bottom:0px;padding-left:20px">
       <div    {if $stores==0    }style="display:none"{/if}  >
