@@ -821,7 +821,7 @@ case('part_search'):
        $sql=sprintf("select `Part SKU`,`Part XHTML Description` from `Part Dimension` where  (`Part SKU`=%d or `Part XHTML Currently Used In` like '%%%s%%' ) limit 20 ",$_REQUEST['query'],addslashes($_REQUEST['query']));
 
    }else{
-      $sql=sprintf("select `Part SKU`,`Part XHTML Description` from `Part Dimension` where  (`Part SKU`=%d or `Part XHTML Currently Used In` like '%%%s%%' ) limit 20",$_REQUEST['query'],addslashes($_REQUEST['query']));
+      $sql=sprintf("select `Part SKU`,`Part XHTML Description`,`Part Currently Used In` from `Part Dimension` where  (`Part SKU`=%d or `Part XHTML Currently Used In` like '%%%s%%' ) limit 20",$_REQUEST['query'],addslashes($_REQUEST['query']));
 
    }
        //print $sql;
@@ -837,8 +837,13 @@ case('part_search'):
 	 
 
 	 $_data[]= array(
-			 'sku'=>sprintf('<a href="part.php?sku=%d">%s</a>',$data['Part SKU'],$data['Part SKU'])
+			 'info'=>sprintf("%s:%05d - %s",_('SKU'),$data['Part SKU'],$data['Part XHTML Description'])
+			 ,'sku'=>$data['Part SKU']
 			 ,'description'=>$data['Part XHTML Description']
+			 ,'usedin'=>$data['Part Currently Used In']
+
+			 //	 'sku'=>sprintf('<a href="part.php?sku=%d">%s</a>',$data['Part SKU'],$data['Part SKU'])
+			 // ,'description'=>$data['Part XHTML Description']
 			//  ,'current_qty'=>sprintf('<span  used="0"  value="%s" id="s%s"  onclick="fill_value(%s,%d,%d)">%s</span>',$qty_on_hand,$loc_sku,$qty_on_hand,$location_key,$data['Part SKU'],number($qty_on_hand))
 // 			 ,'changed_qty'=>sprintf('<span   used="0" id="cs%s"  onclick="change_reset(\'%s\',%d)"   ">0</span>',$loc_sku,$loc_sku,$data['Part SKU'])
 // 			 ,'new_qty'=>sprintf('<span  used="0"  value="%s" id="ns%s"  onclick="fill_value(%s,%d,%d)">%s</span>',$qty_on_hand,$loc_sku,$qty_on_hand,$location_key,$data['Part SKU'],number($qty_on_hand))
