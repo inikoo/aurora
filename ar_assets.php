@@ -6860,7 +6860,7 @@ break;
 
    $sql="select * from `Supplier Product Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
    $data=array();
-
+   // print $sql;
    $result=mysql_query($sql);
    while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
@@ -6874,6 +6874,7 @@ break;
        $provided=number($row['Supplier Product Total Parts Provided']);
        $lost=number($row['Supplier Product Total Parts Lost']);
        $broken=$row['Supplier Product Total Parts Broken'];
+       $sold=money($row['Supplier Product Total Sold Amount']);
      }else if($product_period=='year'){
        $profit=money($row['Supplier Product 1 Year Acc Parts Profit']);
        $profit2=money($row['Supplier Product 1 Year Acc Parts Profit After Storing']);
@@ -6883,6 +6884,7 @@ break;
        $provided=number($row['Supplier Product 1 Year Acc Parts Provided']);
        $lost=number($row['Supplier Product 1 Year Acc Parts Lost']);
        $broken=number($row['Supplier Product 1 Year Acc Parts Broken']);
+       $sold=money($row['Supplier Product 1 Year Acc Sold Amount']);
      }else if($product_period=='quarter'){
        $profit=money($row['Supplier Product 1 Quarter Acc Parts Profit']);
        $profit2=money($row['Supplier Product 1 Quarter Acc Parts Profit After Storing']);
@@ -6892,6 +6894,7 @@ break;
        $provided=number($row['Supplier Product 1 Quarter Acc Parts Provided']);
        $lost=number($row['Supplier Product 1 Quarter Acc Parts Lost']);
        $broken=number($row['Supplier Product 1 Quarter Acc Parts Broken']);
+       $sold=money($row['Supplier Product 1 Quarter Acc Sold Amount']);
      }else if($product_period=='month'){
        $profit=money($row['Supplier Product 1 Month Acc Parts Profit']);
        $profit2=money($row['Supplier Product 1 Month Acc Parts Profit After Storing']);
@@ -6910,6 +6913,8 @@ break;
        $provided=number($row['Supplier Product 1 Week Acc Parts Provided']);
        $lost=number($row['Supplier Product 1 Week Acc Parts Lost']);
        $broken=number($row['Supplier Product 1 Week Acc Parts Broken']);
+       $sold=money($row['Supplier Product 1 Week Acc Sold Amount']);
+
      }
      
 
@@ -6926,6 +6931,7 @@ break;
 		   ,'provided'=>$provided
 		   ,'lost'=>$lost
 		   ,'broken'=>$broken
+		   ,'sales'=>$sold
 		   );
    }
 
