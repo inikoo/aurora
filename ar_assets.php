@@ -6858,7 +6858,7 @@ break;
  elseif($order='usedin')
    $order='`Supplier Product XHTML Used In`';
 
-   $sql="select * from `Supplier Product Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+   $sql="select *, from `Supplier Product Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
    $data=array();
    // print $sql;
    $result=mysql_query($sql);
@@ -6932,6 +6932,7 @@ break;
 		   ,'lost'=>$lost
 		   ,'broken'=>$broken
 		   ,'sales'=>$sold
+		   
 		   );
    }
 
@@ -6939,7 +6940,7 @@ break;
    $response=array('resultset'=>
 		   array('state'=>200,
 			 'data'=>$data,
- 'sort_key'=>$_order,
+			 'sort_key'=>$_order,
 			 'sort_dir'=>$_dir,
 			 'tableid'=>$tableid,
 			 'filter_msg'=>$filter_msg,
