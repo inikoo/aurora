@@ -48,7 +48,7 @@ if(!isset($_REQUEST['id']) and is_numeric($_REQUEST['id']))
 else
   $supplier_id=$_REQUEST['id'];
 
-
+//print $supplier_id;
 $_SESSION['state']['supplier']['id']=$supplier_id;
 $smarty->assign('supplier_id',$supplier_id);
 

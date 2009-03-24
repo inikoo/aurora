@@ -56,14 +56,29 @@ class supplier{
      if(array_key_exists($key,$this->data))
        return $this->data[$key];
      
-     $_key=preg_replace('/^Supplier /','',$key);
-     if(isset($this->data[$_key]))
-       return $this->data[$key];
+     switch($key){
+     case('Total Parts Sold Amount'):
+       return money($this->data['Supplier Total Parts Sold Amount']);
+       break;
+     case('Total Parts Profit'):
+       return money($this->data['Supplier Total Parts Profit After Storing']);
+       break;
+     case('Stock Value'):
 
-     $_key=ucfirst($key);
-     if(isset($this->data[$_key]))
-       return $this->data[$_key];
-     print "Error $key not found in get from address\n";
+       if(!is_numeric($this->data['Supplier Stock Value']))
+	 return _('Unknown');
+       else
+       return money($this->data['Supplier Stock Value']);
+       break;
+
+     }
+
+
+
+
+     
+
+     print "Error $key not found in get from supplier\n";
      return false;
 
   }
@@ -176,8 +191,74 @@ class supplier{
 	//$this->contact->load('telecoms');
 	//$this->contact->load('contacts');
       }
+      
+    case('products_info'):
+      $this->data['Supplier Active Supplier Products']=0;
+      $this->data['Supplier Discontinued Supplier Products']=0;
+      $sql=sprintf("select sum(if(`Supplier Product Buy State`='Ok',1,0)) as buy_ok, sum(if(`Supplier Product Buy State`='Discontinued',1,0)) as discontinued from `Supplier Product Dimension` where  `Supplier Product Supplier Key`=%d",$this->id);
+      
+      $result=mysql_query($sql);
+      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+	$this->data['Supplier Active Supplier Products']=$row['buy_ok'];
+	$this->data['Supplier Discontinued Supplier Products']=$row['discontinued'];
+	
+	$sql=sprintf("update `Supplier Dimension` set `Supplier Active Supplier Products`=%d ,`Supplier Discontinued Supplier Products`=%d where `Supplier Key`=%d  ",
+		     $row['buy_ok'],
+		     $row['discontinued'],
+		     $this->id
+		     );
+	mysql_query($sql);
+      }
+      
+      $sql=sprintf("select  sum(if(`Product Sales State`='Unknown',1,0)) as sale_unknown, sum(if(`Product Sales State`='Discontinued',1,0)) as discontinued,sum(if(`Product Sales State`='Not for sale',1,0)) as not_for_sale,sum(if(`Product Sales State`='For sale',1,0)) as for_sale,sum(if(`Product Sales State`='In Process',1,0)) as in_process,sum(if(`Product Availability State`='Unknown',1,0)) as availability_unknown,sum(if(`Product Availability State`='Optimal',1,0)) as availability_optimal,sum(if(`Product Availability State`='Low',1,0)) as availability_low,sum(if(`Product Availability State`='Critical',1,0)) as availability_critical,sum(if(`Product Availability State`='Surplus',1,0)) as availability_surplus,sum(if(`Product Availability State`='Out Of Stock',1,0)) as availability_outofstock from `Supplier Product Dimension` SPD left join `Supplier Product Part List` SPPL on (SPD.`Supplier Product ID`=SPPL.`Supplier Product ID`) left join `Product Part List` PPL on (SPPL.`Part SKU`=PPL.`Part SKU`) left join `Product Dimension` PD on (PPL.`Product ID`=PD.`Product ID`) where `Supplier Product Supplier Key`=%d ;",$this->id);
+      // print "$sql\n";
+    $result=mysql_query($sql);
+  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
+       $sql=sprintf("update `Supplier Dimension` set `Supplier For Sale Products`=%d ,`Supplier Discontinued Products`=%d ,`Supplier Not For Sale Products`=%d ,`Supplier Unknown Sales State Products`=%d, `Supplier Optimal Availability Products`=%d , `Supplier Low Availability Products`=%d ,`Supplier Critical Availability Products`=%d ,`Supplier Out Of Stock Products`=%d,`Supplier Unknown Stock Products`=%d ,`Supplier Surplus Availability Products`=%d where `Supplier Key`=%d  ",
+		    $row['for_sale'],
+		    $row['discontinued'],
+		    $row['not_for_sale'],
+		    $row['sale_unknown'],
+		    $row['availability_optimal'],
+		    $row['availability_low'],
+		    $row['availability_critical'],
+		    $row['availability_outofstock'],
+		    $row['availability_unknown'],
+		    $row['availability_surplus'],
+		    $this->id
+	    );
+       //print "$sql\n";exit;
+       mysql_query($sql);
+  }
+  $this->get_data('id',$this->id);
+  
+     break;
+  
+  case('sales'):
+    $sql=sprintf("select sum(`Supplier Product Total Parts Profit`) as profit,sum(`Supplier Product Total Parts Profit After Storing`) as profit_astoring,sum(`Supplier Product Total Cost`) as cost  from `Supplier Product Dimension`  where `Supplier Product Supplier Key`=%d",$this->id);
+    //    print $sql;
+    $result=mysql_query($sql);
+    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+      $this->data['Supplier Total Parts Profit']=$row['profit'];
+      $this->data['Supplier Total Parts Profit After Storing']=$row['profit_astoring'];
+      $this->data['Supplier Total Cost']=$row['cost'];
+     $sql=sprintf("update `Supplier Dimension` set  `Supplier Total Parts Profit`=%.2f,`Supplier Total Parts Profit After Storing`=%.2f,`Supplier Total Cost`=%.2f where `Supplier Key`=%d "
+		  ,$this->data['Supplier Total Parts Profit']
+		  ,$this->data['Supplier Total Parts Profit After Storing']
+		  ,$this->data['Supplier Total Cost']
+		  ,$this->id
+		  );
+      print "$sql\n";
+     if(!mysql_query($sql))
+       exit("$sql\ncan not update sup\n");
     }
+      
+    
+    
+
+    break;
+  }
     
   }
   

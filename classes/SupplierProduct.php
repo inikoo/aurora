@@ -301,7 +301,7 @@ class supplierproduct{
       $value=0;
       $value_free=0;
       $margin=0;
-
+      $storing=0;
       $parts=' and `Part SKU` in (';
 	
       foreach($this->parts_sku as $sku)
@@ -309,9 +309,9 @@ class supplierproduct{
       $parts=preg_replace("/,$/","",$parts);
       $parts.=') ';
 
-      $sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(`Inventory Transaction Quantity`),0) as qty, ifnull(sum(`Inventory Transaction Amount`),0) as value from  `Inventory Transaction Fact` where   `Inventory Transaction Type`='Sale' and `Date`>=%s  and `Date`<=%s $parts  ",prepare_mysql($this->data['Supplier Product Valid From']),prepare_mysql($this->data['Supplier Product Valid To'])  );
+      $sql=sprintf("select   sum(`Inventory Transaction Storing Charge Amount`) as storing,   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(`Inventory Transaction Quantity`),0) as qty, ifnull(sum(`Inventory Transaction Amount`),0) as value from  `Inventory Transaction Fact` where   `Inventory Transaction Type`='Sale' and `Supplier Product Key`=%d  ",$this->id);
       //print_r($this->parts_sku);
-      // print "$sql\n";
+      //   print "$sql\n";
       //exit;
       $result=mysql_query($sql);
       if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
@@ -322,6 +322,7 @@ class supplierproduct{
 	$value=$row['value'];
 	$value_free=$row['value_free'];
 	$sold=-$row['qty']-$row['given'];
+	$storing=$row['storing'];
       }
       $abs_profit=$amount_in+$value;
       $profit_sold=$amount_in+$value-$value_free;
@@ -329,16 +330,19 @@ class supplierproduct{
 	$margin=0;
       else
 	$margin=($value-$value_free)/$amount_in;
+      $profit_sold_after_storing=$profit_sold-$storing;
 
-
-      $sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Total Parts Required`=%f ,`Supplier Product Total Parts Provided`=%f,`Supplier Product Total Parts Used`=%f ,`Supplier Product Total Sold Amount`=%f ,`Supplier Product Total Parts Profit`=%f  where `Supplier Product Key`=%d "
+      $cost=0;
+      $sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Total Cost`=%.2f,`Supplier Product Total Parts Required`=%f ,`Supplier Product Total Parts Provided`=%f,`Supplier Product Total Parts Used`=%f ,`Supplier Product Total Sold Amount`=%f ,`Supplier Product Total Parts Profit`=%f ,`Supplier Product Total Parts Profit After Storing`=%f  where `Supplier Product Key`=%d "
+		   ,$cost
 		   ,$required
 		   ,$provided
 		   ,$given+$provided
 		   ,$amount_in
 		   ,$profit_sold
+		   ,$profit_sold_after_storing
 		   ,$this->id);
-      //          print "$sql\n";
+      // print "$sql\n";
       if(!mysql_query($sql))
 	exit("error con not uopdate product part when loading sales");
 
@@ -350,7 +354,7 @@ class supplierproduct{
       $value=0;
       $value_free=0;
       $margin=0;
-      $sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(`Inventory Transaction Quantity`),0) as qty, ifnull(sum(`Inventory Transaction Amount`),0) as value from  `Inventory Transaction Fact` where  `Inventory Transaction Type`='Sale' and `Date`>=%s  and `Date`<=%s and `Date`>=%s  $parts  ",prepare_mysql($this->data['Supplier Product Valid From']),prepare_mysql($this->data['Supplier Product Valid To']) ,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -1 year")))  );
+      $sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(`Inventory Transaction Quantity`),0) as qty, ifnull(sum(`Inventory Transaction Amount`),0) as value from  `Inventory Transaction Fact` where  `Inventory Transaction Type`='Sale' and `Supplier Product Key`=%d and `Date`<=%s and `Date`>=%s  $parts  ",$this->id,prepare_mysql($this->data['Supplier Product Valid To']) ,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -1 year")))  );
       // print "$sql\n";
       $result=mysql_query($sql);
       if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
@@ -368,9 +372,12 @@ class supplierproduct{
 	$margin=0;
       else
 	$margin=($value-$value_free)/$amount_in;
+      $profit_sold_after_storing=$profit_sold;
 
+      $cost=0;
 
-      $sql=sprintf("update `Supplier Product Dimension` set `Supplier Product 1 Year Acc Parts Required`=%f ,`Supplier Product 1 Year Acc Parts Provided`=%f,`Supplier Product 1 Year Acc Parts Used`=%f ,`Supplier Product 1 Year Acc Sold Amount`=%f ,`Supplier Product 1 Year Acc Parts Profit`=%f  where `Supplier Product Key`=%d "
+      $sql=sprintf("update `Supplier Product Dimension` set `Supplier Product 1 Year Acc Cost`=%.2f,`Supplier Product 1 Year Acc Parts Required`=%f ,`Supplier Product 1 Year Acc Parts Provided`=%f,`Supplier Product 1 Year Acc Parts Used`=%f ,`Supplier Product 1 Year Acc Sold Amount`=%f ,`Supplier Product 1 Year Acc Parts Profit`=%f  where `Supplier Product Key`=%d "
+		   ,$cost=0
 		   ,$required
 		   ,$provided
 		   ,$given+$provided
@@ -388,7 +395,7 @@ class supplierproduct{
       $value=0;
       $value_free=0;
       $margin=0;
-      $sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(`Inventory Transaction Quantity`),0) as qty, ifnull(sum(`Inventory Transaction Amount`),0) as value from  `Inventory Transaction Fact` where  `Inventory Transaction Type`='Sale' and `Date`>=%s  and `Date`<=%s and `Date`>=%s   $parts  ",prepare_mysql($this->data['Supplier Product Valid From']),prepare_mysql($this->data['Supplier Product Valid To']) ,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -3 month")))  );
+      $sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(`Inventory Transaction Quantity`),0) as qty, ifnull(sum(`Inventory Transaction Amount`),0) as value from  `Inventory Transaction Fact` where  `Inventory Transaction Type`='Sale' and `Supplier Product Key`=%d   and `Date`<=%s and `Date`>=%s   $parts  ",$this->id,prepare_mysql($this->data['Supplier Product Valid To']) ,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -3 month")))  );
       //      print "$sql\n";
       $result=mysql_query($sql);
       if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
@@ -407,8 +414,9 @@ class supplierproduct{
       else
 	$margin=($value-$value_free)/$amount_in;
 
-
-      $sql=sprintf("update `Supplier Product Dimension` set `Supplier Product 1 Quarter Acc Parts Required`=%f ,`Supplier Product 1 Quarter Acc Parts Provided`=%f,`Supplier Product 1 Quarter Acc Parts Used`=%f ,`Supplier Product 1 Quarter Acc Sold Amount`=%f ,`Supplier Product 1 Quarter Acc Parts Profit`=%f  where `Supplier Product Key`=%d "
+      $cost=0;
+      $sql=sprintf("update `Supplier Product Dimension` set `Supplier Product 1 Quarter Acc Cost`=%.2f,`Supplier Product 1 Quarter Acc Parts Required`=%f ,`Supplier Product 1 Quarter Acc Parts Provided`=%f,`Supplier Product 1 Quarter Acc Parts Used`=%f ,`Supplier Product 1 Quarter Acc Sold Amount`=%f ,`Supplier Product 1 Quarter Acc Parts Profit`=%f  where `Supplier Product Key`=%d "
+		   ,$cost
 		   ,$required
 		   ,$provided
 		   ,$given+$provided
@@ -427,7 +435,7 @@ class supplierproduct{
       $value=0;
       $value_free=0;
       $margin=0;
-      $sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(`Inventory Transaction Quantity`),0) as qty, ifnull(sum(`Inventory Transaction Amount`),0) as value from  `Inventory Transaction Fact` where `Inventory Transaction Type`='Sale' and `Date`>=%s  and `Date`<=%s and `Date`>=%s  $parts  ",prepare_mysql($this->data['Supplier Product ID']),prepare_mysql($this->data['Supplier Product Valid To']) ,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -1 month")))  );
+      $sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(`Inventory Transaction Quantity`),0) as qty, ifnull(sum(`Inventory Transaction Amount`),0) as value from  `Inventory Transaction Fact` where `Inventory Transaction Type`='Sale'  and `Supplier Product Key`=%d and `Date`<=%s and `Date`>=%s  $parts  ",$this->id,prepare_mysql($this->data['Supplier Product Valid To']) ,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -1 month")))  );
       //      print "$sql\n";
       $result=mysql_query($sql);
       if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
@@ -446,8 +454,9 @@ class supplierproduct{
       else
 	$margin=($value-$value_free)/$amount_in;
 
-
-      $sql=sprintf("update `Supplier Product Dimension` set `Supplier Product 1 Month Acc Parts Required`=%f ,`Supplier Product 1 Month Acc Parts Provided`=%f,`Supplier Product 1 Month Acc Parts Used`=%f ,`Supplier Product 1 Month Acc Sold Amount`=%f ,`Supplier Product 1 Month Acc Parts Profit`=%f  where `Supplier Product Key`=%d "
+      $cost=0;
+      $sql=sprintf("update `Supplier Product Dimension` set `Supplier Product 1 Month Acc Cost`=%.2f, `Supplier Product 1 Month Acc Parts Required`=%f ,`Supplier Product 1 Month Acc Parts Provided`=%f,`Supplier Product 1 Month Acc Parts Used`=%f ,`Supplier Product 1 Month Acc Sold Amount`=%f ,`Supplier Product 1 Month Acc Parts Profit`=%f  where `Supplier Product Key`=%d "
+		   ,$cost
 		   ,$required
 		   ,$provided
 		   ,$given+$provided
@@ -465,7 +474,7 @@ class supplierproduct{
       $value=0;
       $value_free=0;
       $margin=0;
-      $sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(`Inventory Transaction Quantity`),0) as qty, ifnull(sum(`Inventory Transaction Amount`),0) as value from  `Inventory Transaction Fact` where `Inventory Transaction Type`='Sale' and `Date`>=%s  and `Date`<=%s and `Date`>=%s  $parts  ",prepare_mysql($this->data['Supplier Product Valid From']),prepare_mysql($this->data['Supplier Product Valid To']) ,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -1 week")))  );
+      $sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(`Inventory Transaction Quantity`),0) as qty, ifnull(sum(`Inventory Transaction Amount`),0) as value from  `Inventory Transaction Fact` where `Inventory Transaction Type`='Sale'  and `Supplier Product Key`=%d  and `Date`<=%s and `Date`>=%s  $parts  ",$this->id,prepare_mysql($this->data['Supplier Product Valid To']) ,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -1 week")))  );
       //      print "$sql\n";
       $result=mysql_query($sql);
       if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
@@ -484,8 +493,9 @@ class supplierproduct{
       else
 	$margin=($value-$value_free)/$amount_in;
 
-
-      $sql=sprintf("update `Supplier Product Dimension` set `Supplier Product 1 Week Acc Parts Required`=%f ,`Supplier Product 1 Week Acc Parts Provided`=%f,`Supplier Product 1 Week Acc Parts Used`=%f ,`Supplier Product 1 Week Acc Sold Amount`=%f ,`Supplier Product 1 Week Acc Parts Profit`=%f  where `Supplier Product Key`=%d "
+      $cost=0;
+      $sql=sprintf("update `Supplier Product Dimension` set `Supplier Product 1 Week Acc Cost`=%.2f,`Supplier Product 1 Week Acc Parts Required`=%f ,`Supplier Product 1 Week Acc Parts Provided`=%f,`Supplier Product 1 Week Acc Parts Used`=%f ,`Supplier Product 1 Week Acc Sold Amount`=%f ,`Supplier Product 1 Week Acc Parts Profit`=%f  where `Supplier Product Key`=%d "
+		   ,$cost
 		   ,$required
 		   ,$provided
 		   ,$given+$provided

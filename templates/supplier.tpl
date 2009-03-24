@@ -78,6 +78,30 @@
 	     </td>
 	   </tr>
 	 </table>
+	 	<table    class="show_info_product" style="width:500px"  >
+		  <tr>
+		    <td>{t}Items availeable{/t}:</td><td class="aright">{$supplier->get('Supplier Active Supplier Products')} </td>
+		  </tr>
+		  <tr>
+		    <td>{t}Items no longer availeable{/t}:</td><td class="aright">{$supplier->get('Supplier Discontinued Supplier Products')} </td>
+
+		  </tr>
+		</table>
+
+		<table    class="show_info_product" style="width:500px"  >
+		  <tr>
+		    <td>{t}Total Sales{/t}:</td><td class="aright">{$supplier->get('Total Parts Sold Amount')} </td>
+		  </tr>
+		  <tr>
+		    <td>{t}Total Profit{/t}:</td><td class="aright">{$supplier->get('Total Parts Profit')} </td>
+		  </tr>
+		  <tr>
+		    <td>{t}Stock Value{/t}:</td><td class="aright">{$supplier->get('Stock Value')} </td>
+		  </tr>
+		  
+		</table>
+
+
        </div>
 
 
@@ -93,7 +117,7 @@
 	       <td {if $products_view=='product_forecast'}class="selected"{/if}  id="product_forecasr"  >{t}Forecast{/t}</td>
 	     </tr>
 	   </table>
-	   <table style="position:relative;bottom:4px;clear:none;float:left;margin:0 0 0 20px ;padding:0"  class="options" {if $parts==0 }style="display:none"{/if}>
+	   <table style="position:relative;bottom:4px;clear:none;float:left;margin:0 0 0 20px ;padding:0"  class="options_mini" {if $parts==0 }style="display:none"{/if}>
 	     <tr>
 	       <td {if $products_period=='all'}class="selected"{/if} id="product_period_all" >{t}All{/t}</td>
 	       <td {if $products_period=='year'}class="selected"{/if}  id="product_period_year"  >{t}1Yr{/t}</td>

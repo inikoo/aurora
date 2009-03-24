@@ -10,9 +10,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var SuppliersColumnDefs = [
 				         {key:"id", label:"<?=_('Id')?>",  width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 					 ,{key:"code", label:"<?=_('Code')?>",width:100, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"name", label:"<?=_('Name')?>", width:190,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"location", label:"<?=_('Location')?>", width:190,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"email", label:"<?=_('Email')?>", width:190,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"name", label:"<?=_('Name')?>",<?=($_SESSION['state']['suppliers']['view']!='general'?'hidden:true,':'')?> width:190,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"location", label:"<?=_('Location')?>",<?=($_SESSION['state']['suppliers']['view']!='contact'?'hidden:true,':'')?> width:190,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"email", label:"<?=_('Email')?>",<?=($_SESSION['state']['suppliers']['view']!='contact'?'hidden:true,':'')?> width:190,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"tel",<?=($_SESSION['state']['suppliers']['view']!='contact'?'hidden:true,':'')?> label:"<?=_('Tel')?>", width:190,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"for_sale", <?=($_SESSION['state']['suppliers']['view']!='products'?'hidden:true,':'')?> label:"<?=_('For sale')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				       ,{key:"tobedicontinued", <?=($_SESSION['state']['suppliers']['view']!='products'?'hidden:true,':'')?> label:"<?=_('To be disc')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
@@ -24,8 +24,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       ,{key:"low", <?=($_SESSION['state']['suppliers']['view']!='product_availability'?'hidden:true,':'')?> label:"<?=_('Low')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				       ,{key:"crical", <?=($_SESSION['state']['suppliers']['view']!='product_availability'?'hidden:true,':'')?> label:"<?=_('Critical')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				       ,{key:"outofstock", <?=($_SESSION['state']['suppliers']['view']!='product_availability'?'hidden:true,':'')?> label:"<?=_('Out of Stock')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-
-				       
+					 ,{key:"profit", <?=($_SESSION['state']['suppliers']['view']!='sales'?'hidden:true,':'')?> label:"<?=_('Profit')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       	 ,{key:"profit_after_storing", <?=($_SESSION['state']['suppliers']['view']!='sales'?'hidden:true,':'')?> label:"<?=_('PaS')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					 ,{key:"cost", <?=($_SESSION['state']['suppliers']['view']!='sales'?'hidden:true,':'')?> label:"<?=_('Cost')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				       
 				       ];
 
@@ -36,6 +37,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		resultsList: "resultset.data", 
 		metaFields: {
 		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+
 		    rowsPerPage:"resultset.records_perpage",
 		    sort_key:"resultset.sort_key",
 		    sort_dir:"resultset.sort_dir",
@@ -50,7 +53,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 ,"code"
 			 ,"forsale"
 			 ,"outofstock"
-			 ,"low","location","email"
+			 ,"low","location","email","profit",'profit_after_storing','cost'
 	 ]};
 
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, SuppliersColumnDefs,
@@ -102,6 +105,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	table.hideColumn('low');
 	table.hideColumn('critical');
 	table.hideColumn('outofstock');
+	table.hideColumn('profit');
+	table.hideColumn('profit_after_storing');
+	table.hideColumn('cost');
 	if(tipo=='general'){
 	    table.showColumn('name');
 	    table.showColumn('location');
@@ -114,8 +120,11 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    table.showColumn('outofstock');
 
 
-	}else if(tipo=='sale'){
-	    
+	}else if(tipo=='sales'){
+	    table.showColumn('profit');
+	    table.showColumn('profit_after_storing');
+	    table.showColumn('cost');
+
 	}else if(tipo=='products'){
 	    table.showColumn('for_sale');
 	    table.showColumn('tobediscontinued');
