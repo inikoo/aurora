@@ -24,7 +24,7 @@
   
   <div id="top" class="top_bar">
 																											      
-																											      <h1>{$family->get('Product Family Code')} - {$family->get('Product Family Name')}</h1>
+																											      <h1><a  href="store.php?id={$store->id}">{$store->get('Store Code')}</a> &rarr; <a  href="department.php?id={$department->id}">{$department->get('Product Department Code')}</a> &rarr; {$family->get('Product Family Name')}  ({$family->get('Product Family Code')})</h1>
  <div id="short_menu" class="nodetails" style="{if $show_details}display:none;{/if}width:100%;margin-bottom:0px">
 																																	    <div    {if $family->get('Product Family For Sale Products')==0    }style="display:none"{/if}  >
       <table style="float:left;margin:0 0 0 20px ;padding:0"  class="options" >

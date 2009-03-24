@@ -25,7 +25,7 @@
   
   
   <div id="top" class="top_bar">
-    <h1>{$department->get('Product Department Name')}</h1>
+    <h1><a  href="store.php?id={$store->id}">{$store->get('Store Code')}</a> &rarr; {$department->get('Product Department Name')}</h1>
     <div id="short_menu" class="nodetails"  style="{if $show_details}display:none;{/if}width:100%;margin-bottom:0px;padding-left:20px">
        <div    {if $department->get('Product Department Families')==0    }style="display:none"{/if}  >
       <table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" >
