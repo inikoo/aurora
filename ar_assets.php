@@ -6918,6 +6918,7 @@ break;
      }
      
 
+
      $data[]=array(
 		   'id'=>sprintf('<a href="supplier_product.php?id=%d">%06d</a>',$row['Supplier Product Key'],$row['Supplier Product ID'])
 		   ,'code'=>sprintf('<a href="supplier_product.php?id=%d">%s</a>',$row['Supplier Product Key'],$row['Supplier Product Code'])
