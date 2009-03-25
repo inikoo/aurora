@@ -26,7 +26,7 @@ date_default_timezone_set('Europe/London');
 
 
 //$sql="select * from `Product Dimension` where `Product Code`='FO-A1'";
-$sql="select * from `Part Dimension` ";
+$sql="select * from `Part Dimension`";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $part=new Part($row['Part Key']);
@@ -47,10 +47,11 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
       $sql=sprintf("update `Inventory Transaction Fact` set `Supplier Product Key`=%d where `Inventory Transaction Type`='Sale' and `Part SKU`=%d and `Date`=%s",$keys[0]['key'], $part->data['Part SKU'],prepare_mysql($row2['Date']));
       //print "$sql\n";
       mysql_query($sql);
-    }
+    }else{
+      print_r($row2);
+      print count($keys)."\n";
+    }    
 
-    // print count($keys)."\n";
-    
   }
 
 
