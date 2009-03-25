@@ -6858,9 +6858,9 @@ break;
  elseif($order='usedin')
    $order='`Supplier Product XHTML Used In`';
 
-   $sql="select *, from `Supplier Product Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+   $sql="select * from `Supplier Product Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
    $data=array();
-   // print $sql;
+   
    $result=mysql_query($sql);
    while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 

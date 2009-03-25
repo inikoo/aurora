@@ -2,6 +2,7 @@
 include_once('Deal.php');
 include_once('SupplierProduct.php');
 include_once('Part.php');
+include_once('Store.php');
 
 class product{
  
@@ -1107,24 +1108,7 @@ function valid_id($id){
     if(!is_numeric($base_data['product units per case']) or $base_data['product units per case']<1)
       $base_data['product units per case']=1;
 
-    $family=false;$new_family=false;
-
-    if($base_data['product family code']!='' and $base_data['product family key']==''){
-      $family=new Family('code',$base_data['product family code']);
-      if(!$family->id){
-	$fam_data=array(
-			'code'=>$base_data['product family code'],
-			'name'=>$base_data['product family name'],
-			);
-	$family=new Family('create',$fam_data);
-	$new_family=true;
-      }
-      $base_data['product family key']=$family->id;
-      $base_data['product family code']=$family->data['Product Family Code'];
-      $base_data['product family name']=$family->data['Product Family Name'];
-    }
     $department=false;$new_department=false;
-    // print $base_data['product main department code']."\n";
     if($base_data['product main department code']!='' and $base_data['product main department key']==''){
       $department=new Department('code',$base_data['product main department code']);
       if(!$department->id){
@@ -1139,9 +1123,28 @@ function valid_id($id){
       $base_data['product main department key']=$department->id;
       $base_data['product main department code']=$department->data['Product Department Code'];
       $base_data['product main department name']=$department->data['Product Department Name'];
-
-      
     }
+  
+
+
+    $family=false;$new_family=false;
+
+    if($base_data['product family code']!='' and $base_data['product family key']==''){
+      $family=new Family('code',$base_data['product family code']);
+      if(!$family->id){
+	$fam_data=array(
+			'code'=>$base_data['product family code'],
+			'name'=>$base_data['product family name'],
+			'Product Family Main Department Key'=>$department->id
+			);
+	$family=new Family('create',$fam_data);
+	$new_family=true;
+      }
+      $base_data['product family key']=$family->id;
+      $base_data['product family code']=$family->data['Product Family Code'];
+      $base_data['product family name']=$family->data['Product Family Name'];
+    }
+
 
     
     
@@ -1205,11 +1208,11 @@ function valid_id($id){
       if($new_family){
 	$family->add_product($this->id,'principal');
 	
-	if(is_object($department) and $department->id)
+	if(isset($department) and is_object($department) and $department->id)
 	  $department->add_family($family->id,'principal noproducts');
       }
       
-      if(is_object($department) and $department->id){
+      if(isset($department) and  is_object($department) and $department->id){
 	$department->add_product($this->id,'principal');
       }
       
