@@ -45,6 +45,7 @@
       </table>
      </div>
       <div style="clear:left;margin:5px 0 5px 0 ;float:left">
+{$show_percentages}
       <span   class="state_details" state="{$show_percentages}"  id="show_percentages"  atitle="{if $show_percentages}{t}Normal Mode{/t}{else}{t}Comparison Mode{/t}{/if}"  >{if $show_percentages}{t}Comparison Mode{/t}{else}{t}Normal Mode{/t}{/if}</span>
       </div>
     </div>

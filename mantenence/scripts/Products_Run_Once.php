@@ -15,7 +15,7 @@ error_reporting(E_ALL);
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 
 if(!$con){print "Error can not connect with database server\n";exit;}
-$dns_db='dw2';
+//$dns_db='dw2';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
   
@@ -83,21 +83,23 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   // print $product->id." ".$product->data['Product Same Code Most Recent']."\n";
 
   //check iif it is in a department;
-
-  $dept_no_dept=new Department('code','No department');
+  $store_key=$product->data['Product Store Key'];
+  $dept_no_dept=new Department('code_store','No department',$store_key);
   if(!$dept_no_dept->id){
     $dept_data=array(
 		     'code'=>'No Department',
 		     'name'=>'Products Without Department',
+		     'store_key'=>$store_key
 		     );
     $dept_no_dept=new Department('create',$dept_data);
   }
 
-   $promo=new Department('code','Promotional Items');
+  $promo=new Department('code_store','Promotional Items',$store_key);
   if(!$promo->id){
     $dept_data=array(
 		     'code'=>'Promotional Items',
 		     'name'=>'Promotional Items',
+		     'store_key'=>$store_key
 		     );
     $promo=new Department('create',$dept_data);
   }
