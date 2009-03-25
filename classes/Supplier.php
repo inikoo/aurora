@@ -249,7 +249,7 @@ class supplier{
 		  ,$this->data['Supplier Total Cost']
 		  ,$this->id
 		  );
-      print "$sql\n";
+     //      print "$sql\n";
      if(!mysql_query($sql))
        exit("$sql\ncan not update sup\n");
     }

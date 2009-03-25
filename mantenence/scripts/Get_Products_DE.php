@@ -16,7 +16,7 @@ error_reporting(E_ALL);
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 
 if(!$con){print "Error can not connect with database server\n";exit;}
-$dns_db='dw2';
+$dns_db='dw';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
   
@@ -36,7 +36,7 @@ $version='V 1.0';
 
 $Data_Audit_ETL_Software="$software $version";
 
-$file_name='AWorder2009Germany.xls';
+$file_name='AWorder2009DE.xls';
 $csv_file='tmp.csv';
 exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
 

@@ -9,7 +9,7 @@ include_once('../../classes/SupplierProduct.php');
 error_reporting(E_ALL);
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 if(!$con){print "Error can not connect with database server\n";exit;}
-$dns_db='dw2';
+$dns_db='dw';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
 require_once '../../common_functions.php';
@@ -22,7 +22,7 @@ date_default_timezone_set('Europe/London');
 
 
 //$sql="select * from `Product Dimension` where `Product Code`='FO-A1'";
-$sql="select * from `Product Dimension`  ";
+$sql="select * from `Product Dimension` order by `Product Key` desc ";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result)   ){
 
@@ -41,7 +41,7 @@ while($row=mysql_fetch_array($result)   ){
 
   if($product->data['Product Same Code Most Recent']=='Yes'){
     $state='For sale';
-    if($product->data['Product 1 Year Acc Quantity Ordered']==0)
+    if($product->data['Product 1 Year Acc Quantity Ordered']==0 and (strtotime($product->data['Product Valid From'])<strtotime('today -1 year')    ))
       $state='Discontinued';
     
     $sql=sprintf("select id,code  from aw_old.product  where product.code=%s and  condicion=2 and stock=0  ",prepare_mysql($product->data['Product Code']));

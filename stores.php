@@ -67,11 +67,11 @@ $_SESSION['state']['assets']['page']='stores';
 //    $_SESSION['state']['stores']['view']=$_REQUEST['view'];
 //
 // }
-//$smarty->assign('view',$_SESSION['state']['stores']['view']);
-//$smarty->assign('show_details',$_SESSION['state']['stores']['details']);
-//$smarty->assign('show_percentages',$_SESSION['state']['stores']['percentages']);
-//$smarty->assign('avg',$_SESSION['state']['stores']['avg']);
-//smarty->assign('period',$_SESSION['state']['stores']['period']);
+$smarty->assign('view',$_SESSION['state']['stores']['view']);
+$smarty->assign('show_details',$_SESSION['state']['stores']['details']);
+$smarty->assign('show_percentages',$_SESSION['state']['stores']['percentages']);
+$smarty->assign('avg',$_SESSION['state']['stores']['avg']);
+$smarty->assign('period',$_SESSION['state']['stores']['period']);
 
 
 //$sql="select id from product";

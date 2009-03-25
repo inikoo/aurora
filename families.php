@@ -1,7 +1,7 @@
 <?
 include_once('common.php');
 include_once('stock_functions.php');
-
+print_r($_SESSION['state']['families']);
 $view_sales=$LU->checkRight(PROD_SALES_VIEW);
 $view_stock=$LU->checkRight(PROD_STK_VIEW);
 $create=$LU->checkRight(PROD_CREATE);
@@ -50,6 +50,8 @@ if(isset($_REQUEST['view'])){
     $_SESSION['state']['families']['view']=$_REQUEST['view'];
 
  }
+
+
 $smarty->assign('view',$_SESSION['state']['families']['view']);
 $smarty->assign('show_details',$_SESSION['state']['families']['details']);
 $smarty->assign('show_percentages',$_SESSION['state']['families']['percentages']);
