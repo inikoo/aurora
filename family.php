@@ -162,6 +162,16 @@ $smarty->assign('table_title',$table_title);
 
 
 if($edit){
+$units_tipo=array(
+		  'Piece'=>array('fname'=>_('Piece'),'name'=>'Piece','selected'=>false),
+		  'Grams'=>array('fname'=>_('Grams'),'name'=>'Grams','selected'=>false),
+		  'Liters'=>array('fname'=>_('Liters'),'name'=>'Liters','selected'=>false),
+		  'Meters'=>array('fname'=>_('Meters'),'name'=>'Meters','selected'=>false),
+		  'Other'=>array('fname'=>_('Other'),'name'=>'Other','selected'=>false),
+);
+ $units_tipo['Piece']['selected']=true;
+
+$smarty->assign('units_tipo',$units_tipo);
   $smarty->assign('title', _('Editing Family').': '.$family->get('Product Family Code'));
   $smarty->display('edit_family.tpl');
  }else{

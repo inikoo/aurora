@@ -26,9 +26,9 @@
 																											      
 																											      <h1><a  href="store.php?id={$store->id}">{$store->get('Store Code')}</a> &rarr; <a  href="department.php?id={$department->id}">{$department->get('Product Department Code')}</a> &rarr; {$family->get('Product Family Name')}  ({$family->get('Product Family Code')})</h1>
  <div id="short_menu" class="nodetails" style="{if $show_details}display:none;{/if}width:100%;margin-bottom:0px">
-																																	    <div    {if $family->get('Product Family For Sale Products')==0    }style="display:none"{/if}  >
-      <table style="float:left;margin:0 0 0 20px ;padding:0"  class="options" >
-	<tr><td  {if $view=='general'}class="selected"{/if} id="general" >{t}General{/t}</td>
+   <div    {if $family->get('Product Family For Sale Products')==0    }style="display:none"{/if}  >
+     <table style="float:left;margin:0 0 0 20px ;padding:0"  class="options" >
+       <tr><td  {if $view=='general'}class="selected"{/if} id="general" >{t}General{/t}</td>
 	  {if $view_stock}<td {if $view=='stock'}class="selected"{/if}  id="stock"  >{t}Stock{/t}</td>{/if}
 	  {if $view_sales}<td  {if $view=='sales'}class="selected"{/if}  id="sales"  >{t}Sales{/t}</td>{/if}
 	  <td  {if $view=='parts'}class="selected"{/if}  id="parts"  >{t}Parts{/t}</td>

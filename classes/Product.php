@@ -780,10 +780,10 @@ case('Price Anonymous Info'):
       $sql=sprintf("select `Part SKU` from `Product Part List` where `Product ID`=%d ;",$this->data['Product ID']);
       $result=mysql_query($sql);
       $parts=array();
-     while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-       $parts[]=$row['Part SKU'];
-     }
-     return $parts;
+      while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+	$parts[]=$row['Part SKU'];
+      }
+      return $parts;
       break;
 
     case('Unit Type'):
@@ -1091,7 +1091,11 @@ function valid_id($id){
 		     'product valid from'=>date("Y-m-d H:i:s"),
 		     'product valid to'=>date("Y-m-d H:i:s"),
 		     'product most recent'=>'Yes',
-		     'product most recent key'=>''
+		     'product most recent key'=>'',
+		     'product same code most recent'=>'Yes',
+		     'product same code most recent key'=>'',
+		     'product same id most recent'=>'Yes',
+		     'product same id most recent key'=>''
 		     );
     
     foreach($data as $key=>$value){
@@ -1110,14 +1114,16 @@ function valid_id($id){
 
     $department=false;$new_department=false;
     if($base_data['product main department code']!='' and $base_data['product main department key']==''){
-      $department=new Department('code',$base_data['product main department code']);
+      $department=new Department('code_store',$base_data['product main department code'],$base_data['product store key']);
       if(!$department->id){
 	$dept_data=array(
 			'code'=>$base_data['product main department code'],
 			'name'=>$base_data['product main department name'],
-			);
+			'store_key'=>$base_data['product store key'],
+			 );
 	$department=new Department('create',$dept_data);
-
+	if(!$department->new)
+	  exit($department->msg);
 	$new_department=true;
       }
       $base_data['product main department key']=$department->id;
@@ -1130,7 +1136,7 @@ function valid_id($id){
     $family=false;$new_family=false;
 
     if($base_data['product family code']!='' and $base_data['product family key']==''){
-      $family=new Family('code',$base_data['product family code']);
+      $family=new Family('code_store',$base_data['product family code'],$base_data['product store key']);
       if(!$family->id){
 	$fam_data=array(
 			'code'=>$base_data['product family code'],
@@ -1138,6 +1144,8 @@ function valid_id($id){
 			'Product Family Main Department Key'=>$department->id
 			);
 	$family=new Family('create',$fam_data);
+	if(!$family->new)
+	  exit($family->msg);
 	$new_family=true;
       }
       $base_data['product family key']=$family->id;
@@ -1161,7 +1169,7 @@ function valid_id($id){
     $sql=sprintf("insert into `Product Dimension` %s %s",$keys,$values);
 
 
-    // print "$sql\n\n";    
+    //  print "$sql\n\n";    
 
      //   if(preg_match('/abp-01/i',$base_data['product code'])){
     //	 print "$sql\n\n"; 
@@ -1176,7 +1184,7 @@ function valid_id($id){
 	$sql=sprintf("update `Product Dimension` set `Product Most Recent`='No' where `Product ID`=%d  and `Product Key`!=%d",$base_data['product id'],$this->id);
 	mysql_query($sql);
 	
-	$sql=sprintf("update  `Product Dimension` set `Product Most Recent`='Yes',`Product Most Recent Key`=%d where `Product Key`=%d",$this->id,$this->id);
+	$sql=sprintf("update  `Product Dimension` set `Product Most Recent`='Yes',`Product Most Recent Key`=%d ,`Product Same Code Most Recent Key`=%d,`Product Same ID Most Recent Key`=%d  where `Product Key`=%d",$this->id,$this->id,$this->id,$this->id);
 	mysql_query($sql);
       }
       $this->get_data('id',$this->id);
@@ -1228,7 +1236,7 @@ function valid_id($id){
 
       
     }else{
-      print "Error Product cannot be created\n";
+      print "$sql Error Product cannot be created\n";
       exit;
     }
 
@@ -1285,7 +1293,7 @@ function valid_id($id){
       $keys=preg_replace('/,$/',')',$keys);
       $values=preg_replace('/,$/',')',$values);
       $sql=sprintf("insert into `Product Part List` %s %s",$keys,$values);
-      //   print "$sql\n";exit;
+      // print "$sql\n";exit;
 
       if(mysql_query($sql)){
 
@@ -1450,8 +1458,7 @@ function normalize_code($code){
        $supplied_by='';
        $sql=sprintf("select  (select `Supplier Product Code` from `Supplier Product Dimension` where `Supplier Product ID`=SPPL.`Supplier Product ID` and `Supplier Product Most Recent` limit 1) as `Supplier Product Code`,(select `Supplier Product Key` from `Supplier Product Dimension` where `Supplier Product ID`=SPPL.`Supplier Product ID` and `Supplier Product Most Recent` limit 1) as `Supplier Product Key` ,  SD.`Supplier Key`,`Supplier Code` from `Supplier Product Part List` SPPL   left join `Supplier Dimension` SD on (SD.`Supplier Key`=SPPL.`Supplier Key`)   where `Part SKU` in (%s) order by `Supplier Key`;",$mysql_where);
       $result=mysql_query($sql);
-      //      print "$sql\n";
-      // exit;
+    
       $supplier=array();
       $current_supplier='_';
       while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
@@ -2599,6 +2606,138 @@ case('images_slideshow'):
    }
    unlink($file);
 
+
+
+ }
+
+
+function update($key,$a1=false,$a2=false){
+   $this->updated=false;
+   $this->msg="Nothing to change $key ";
+   
+   switch($key){
+   case('code'):
+     
+     if($this->data['Product Sales State']!='In process'){
+       $this->msg='This product can not changed';
+       return;
+     }
+
+     if($a1==$this->data['Product Code']){
+       $this->updated=true;
+       $this->newvalue=$a1;
+       return;
+       
+     }
+
+     if($a1==''){
+       $this->msg=_('Error: Wrong code (empty)');
+       return;
+     }
+     $sql=sprintf("select count(*) as num from `Product Dimension` where `Product Store Key`=%d and `Product Code`=%s  COLLATE utf8_general_ci "
+		,$this->data['Product Store Key']
+		,prepare_mysql($a1)
+		);
+     $res=mysql_query($sql);
+     $row=mysql_fetch_array($res);
+     if($row['num']>0){
+       $this->msg=_("Error: Another product with the same code");
+       return;
+     }
+     
+      $sql=sprintf("update `Product Dimension` set `Product Code`=%s where `Product Key`=%d "
+		   ,prepare_mysql($a1)
+		   ,$this->id
+		);
+      if(mysql_query($sql)){
+	$this->msg=_('Product code updated');
+	$this->updated=true;$this->newvalue=$a1;
+      }else{
+	$this->msg=_("Error: Product code could not be updated");
+
+	$this->updated=false;
+	
+      }
+      break;	
+      
+   case('name'):
+
+     if($a1==$this->data['Product Name']){
+       $this->updated=true;
+       $this->newvalue=$a1;
+       return;
+       
+     }
+
+     if($a1==''){
+       $this->msg=_('Error: Wrong name (empty)');
+       return;
+     }
+     $sql=sprintf("select count(*) as num from `Product Dimension` where `Product Store Key`=%d and `Product Name`=%s  COLLATE utf8_general_ci"
+		,$this->data['Product Store Key']
+		,prepare_mysql($a1)
+		);
+     $res=mysql_query($sql);
+     $row=mysql_fetch_array($res);
+     if($row['num']>0){
+       $this->msg=_("Error: Another product with the same name");
+       return;
+     }
+     
+      $sql=sprintf("update `Product Dimension` set `Product Name`=%s where `Product Key`=%d "
+		   ,prepare_mysql($a1)
+		   ,$this->id
+		);
+      if(mysql_query($sql)){
+	$this->msg=_('Product name updated');
+	$this->updated=true;$this->newvalue=$a1;
+      }else{
+	$this->msg=_("Error: Product name could not be updated");
+
+	$this->updated=false;
+	
+      }
+      break;	
+  case('sdescription'):
+
+     if($a1==$this->data['Product Special Characteristic']){
+       $this->updated=true;
+       $this->newvalue=$a1;
+       return;
+       
+     }
+
+     if($a1==''){
+       $this->msg=_('Error: Wrong Product Special Characteristic (empty)');
+       return;
+     }
+     $sql=sprintf("select count(*) as num from `Product Dimension` where `Product Family Key`=%d and `Product Special Characteristic`=%s  COLLATE utf8_general_ci"
+		,$this->data['Product Family Key']
+		,prepare_mysql($a1)
+		);
+     $res=mysql_query($sql);
+     $row=mysql_fetch_array($res);
+     if($row['num']>0){
+       $this->msg=_("Error: Another product with the same Product Special Characteristic in this family");
+       return;
+     }
+     
+      $sql=sprintf("update `Product Dimension` set `Product Special Characteristic`=%s where `Product Key`=%d "
+		   ,prepare_mysql($a1)
+		   ,$this->id
+		);
+      if(mysql_query($sql)){
+	$this->msg=_('Product Special Characteristic');
+	$this->updated=true;$this->newvalue=$a1;
+      }else{
+	$this->msg=_("Error: Product Special Characteristic could not be updated");
+
+	$this->updated=false;
+	
+      }
+      break;	
+
+   }
 
 
  }

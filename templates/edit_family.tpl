@@ -4,7 +4,7 @@
 
 
  <div class="search_box" style="clear:both;margin-right:20px;margin-top:10px" >
-    <span class='reset' onclick='window.location="department.php?edit=0"'   >{t}Exit{/t}</span>
+    <span class='reset' onclick='window.location="family.php?edit=0"'   >{t}Exit{/t}</span>
  </div>
   
 
@@ -23,9 +23,11 @@
       </td></tr>
     </table>
   </div>
-  
-  <h2>{t}Add new product{/t}</h2>
-  <div id="add_family_form" style="padding:0;margin:0">
+
+
+
+  <div id="add_product_form" style="padding:0;margin:0;display:none">
+    <h2>{t}Adding new product{/t}</h2>
     <div id="add_family_messages"></div>
     <table >
 
@@ -34,7 +36,14 @@
 	<tr><td>{t}Short descriprtion{/t}:</td><td><input name="sdescription"  id="new_sdescription"  onKeyUp="new_product_changed(this)"    onMouseUp="new_product_changed(this)"  onChange="new_product_changed(this)"  name="code" changed=0  type='text'  SIZE="35" MAXLENGTH="32" class='text' /></td></tr>
 
 	<tr><td>{t}Units/Case{/t}:</td><td><input name="units" id="new_units"  onKeyUp="new_product_changed(this)"    onMouseUp="new_product_changed(this)"  onChange="new_product_changed(this)" SIZE="4" type='text'  MAXLENGTH="20" class='text' /><span style="margin-left:20px;">{t}Type of Unit{/t}:</span>	
-	    <select name="units_tipo"  id="units_tipo" >
+	 
+<div class="options" style="margin:5px 0;display:inline">
+  {foreach from=$units_tipo item=unit_tipo key=part_id }
+<span {if $unit_tipo.selected}class="selected"{/if} id="unit_tipo_{$unit_tipo.name}">{$unit_tipo.fname}</span>
+{/foreach}
+</div>
+
+   <select style="display:none" name="units_tipo"  id="units_tipo" >
 	      {foreach from=$units_tipo item=tipo key=tipo_id }
 	      <option value="{$tipo_id}">{$tipo}</option>
 	      {/foreach}
@@ -42,7 +51,10 @@
 	<tr><td>{t}Price{/t}:</td><td>Per Outer: <input name="price" type='text'  SIZE="6" MAXLENGTH="20" class='text' /><span id="label_price_per_unit" style="margin-left:15px">Per Unit:</span> <input name="price_unit" id="nwe_price_unit"  type='text'  SIZE="6" MAXLENGTH="20" class='text' /></td></tr>
 	<tr><td>{t}Retail Price{/t}:</td><td>Per Outer:  <input name="rrp" type='text'  SIZE="6" MAXLENGTH="20" class='text' /><span id="label_price_per_unit" style="margin-left:15px">Per Unit:</span> <input name="rrp_unit" id="new_rrp_unit" type='text'  SIZE="6" MAXLENGTH="20" class='text' /></td></tr>
 
-	<tr style="height:40px"><td style="vertical-align:middle">{t}Parts{/t}:</td><td style="vertical-align:middle"><span class="option" onclick="create_part()">Create Part</span> <span class="option">Assign Part</span>
+	<tr style="height:40px"><td style="vertical-align:middle">{t}Parts{/t}:</td><td style="vertical-align:middle">
+	    <span class="save" onclick="create_part()">Create Part</span>
+	    <span class="save" onclick="guess_part()">Guess Part</span>
+	    <span class="save"  onclick="assing_part()">Assign Part</span>
 
 	    <span style="margin-left:10px;display:none" id="dmenu_label">{t}SKU/description{/t}:</span><span id="dmenu_position"></span>
 	    <div  id="dmenu" style="width:30em;position:relative;left:22.6em;bottom:17px;display:none ">
@@ -80,7 +92,7 @@
 
 
   <div   class="data_table" style="margin:0px 20px">
-    <span class="clean_table_title">{t}Families{/t}</span>
+    <span class="clean_table_title">{t}Products{/t}</span> <span class="new" style="font-size:90%" id="add_new_product">{t}Add Product{/t}</span> <span class="multiple" style="font-size:90%" id="restrictions" value="for_sale" on click="change_multiple(this)"  >{t}For Sale{/t}</span>
     <div  class="clean_table_caption"  style="clear:both;">
       <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
       <div class="clean_table_filter" style="display:none" id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0">{$filter_name0}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value0}" size=10/><div id='f_container0'></div></div></div>

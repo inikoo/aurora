@@ -6,15 +6,15 @@ class family{
  var $products=false;
  var $id=false;
 
- function __construct($a1=false,$a2=false) {
+ function __construct($a1=false,$a2=false,$a3=false) {
 
     
     if(is_numeric($a1) and !$a2  )
-      $this->getdata('id',$a1);
+      $this->getdata('id',$a1,false);
     else if(preg_match('/new|create/',$a1) ){
       $this->create($a2);
     }elseif($a2!='')
-       $this->getdata($a1,$a2);
+       $this->getdata($a1,$a2,$a3);
     
  }
 
@@ -117,7 +117,7 @@ class family{
 
    if(mysql_query($sql)){
      $this->id = mysql_insert_id();
-     $this->getdata('id',$this->id);
+     $this->getdata('id',$this->id,false);
      $this->msg=_("Family Added");
      
      $sql=sprintf("insert into `Product Family Department Bridge` values (%d,%d)",$this->id,$department->id);
@@ -136,7 +136,7 @@ class family{
 
  }
  
- function getdata($tipo,$tag){
+ function getdata($tipo,$tag,$tag2){
 
    switch($tipo){
    case('id'):
@@ -144,6 +144,9 @@ class family{
      break;
    case('code'):
      $sql=sprintf("select *  from `Product Family Dimension` where `Product Family Code`=%s and `Product Family Most Recent`='Yes'",prepare_mysql($tag));
+   case('code_store'):
+     $sql=sprintf("select *  from `Product Family Dimension` where `Product Family Code`=%s and `Product Family Store Key`=%d ",prepare_mysql($tag),$tag2);
+
      break;
    }
    //   print "S:$tipo $sql\n";
@@ -311,7 +314,7 @@ function update($key,$a1=false,$a2=false){
     
      }
 
-     $this->getdata('id',$this->id);
+  $this->getdata('id',$this->id,false);
 
      break;
    case('Department Key List');

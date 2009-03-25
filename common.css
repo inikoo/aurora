@@ -326,8 +326,9 @@ table.options{margin:0 ;float:right;border-collapse: separate;;border-spacing:3p
 .options tr.title{}
 .options tr.title td{background:#fff;border:none;cursor:default;color:#555;text-align:left}
 .options tr.title td:hover{color:#555}
-span.save,span.reset {margin-left:10px;border:1px solid #aaa;color:#aaa;text-align:center;padding:2px 3px 2px 3px;cursor:pointer;font-weight:800}
-
+span.save,span.reset,span.multiple,span.new {margin-left:10px;border:1px solid #aaa;color:#aaa;text-align:center;padding:2px 3px 2px 3px;cursor:pointer;font-weight:800}
+span.multiple {padding-left:25px;background:  url("art/icons/application_cascade.png") no-repeat;background-position:2px 1.5px }
+span.new {padding-left:20px;background:  url("art/icons/new.png") no-repeat;background-position:2px 1.5px }
 
 
 
