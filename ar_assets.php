@@ -5080,10 +5080,73 @@ case('products'):
     $avg=$_SESSION['state']['products']['avg'];
 
 
-      $_SESSION['state']['products']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+ if(isset( $_REQUEST['parent']))
+     $parent=$_REQUEST['parent'];
+   else
+     $parent=$conf['parent'];
 
+   if(isset( $_REQUEST['mode']))
+     $mode=$_REQUEST['mode'];
+   else
+     $mode=$conf['mode'];
+   
+    if(isset( $_REQUEST['restrictions']))
+     $restrictions=$_REQUEST['restrictions'];
+   else
+     $restrictions=$conf['restrictions'];
 
-        $group='group by `Product Code`';
+    
+    
+    
+    $_SESSION['state']['products']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value
+						  ,'mode'=>$mode,'restrictions'=>'','parent'=>$parent
+						  );
+      
+      
+      
+        switch($parent){
+     case('store'):
+       $where=sprintf(' where `Product Family Store Key`=%d',$_SESSION['state']['store']['id']);
+       break;
+     case('department'):
+       $where=sprintf(' left join `Product Department Bridge` B on (P.`Product Key`=B.`Product Key`) where `Product Department Key`=%d',$_SESSION['state']['department']['id']);
+       break;
+     case('family'):
+       $where=sprintf(' where `Product Family Key`=%d',$_SESSION['state']['family']['id']);
+       break;
+     case('none'):
+       $where=sprintf(' where true ');
+       break;
+     }
+     $group='';
+     switch($mode){
+     case('same_code'):
+       $where.=sprintf(" and `Product Same Code Most Recent`='Yes' ");
+       break;
+     case('same_id'):
+       $where.=sprintf(" and `Product Same ID Most Recent`='Yes' ");
+	      
+       break;
+     }
+   
+     switch($restrictions){
+     case('forsale'):
+       $where.=sprintf(" and `Product Sales State`='For Sale'  ");
+       break;
+     case('editable'):
+       $where.=sprintf(" and `Product Sales State` in ('For Sale','In process','Unknown')  ");
+       break;
+     case('notforsale'):
+       $where.=sprintf(" and `Product Sales State` in ('Not For Sale')  ");
+       break;
+     case('discontinued'):
+       $where.=sprintf(" and `Product Sales State` in ('Discontinued')  ");
+       break;
+     case('all'):
+
+       break;
+     }
+
       
      $filter_msg='';
      
@@ -5104,8 +5167,8 @@ case('products'):
      elseif($f_field=='name' and $f_value!='')
        $wheref.=" and  `Product Name` like '%".addslashes($f_value)."%'";
      
-     $sql="select count(*) as total from `Product Dimension`  $where $wheref and `Product Same Code Most Recent`='Yes'  ";
-     //  print $sql;
+     $sql="select count(*) as total from `Product Dimension`  $where $wheref   ";
+
      $res=mysql_query($sql);
      if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
        $total=$row['total'];
@@ -5114,7 +5177,7 @@ case('products'):
        $filtered=0;
        $total_records=$total;
      } else{
-       $sql="select count(*) as total from `Product Dimension`  $where and `Product Same Code Most Recent`='Yes'  ";
+       $sql="select count(*) as total from `Product Dimension`  $where and   ";
        $res=mysql_query($sql);
        if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 	 $total_records=$row['total'];
@@ -5318,57 +5381,15 @@ case('products'):
 
  }
 
-  $sql="select 
-`Product Code`
-,`Product Same Code Most Recent Key` as `Product Key`
-,sum(`Product Total Invoiced Amount`) as `Product Total Invoiced Amount`
-,sum(`Product 1 Year Acc Invoiced Amount`) as `Product 1 Year Acc Invoiced Amount`
-,sum(`Product 1 Quarter Acc Invoiced Amount`) as `Product 1 Quarter Acc Invoiced Amount`
-,sum(`Product 1 Month Acc Invoiced Amount`) as `Product 1 Month Acc Invoiced Amount`
-,sum(`Product 1 Week Acc Invoiced Amount`) as `Product 1 Week Acc Invoiced Amount`
-,sum(`Product Total Profit`) as `Product Total Profit`
-,sum(`Product 1 Year Acc Profit`) as `Product 1 Year Acc Profit`
-,sum(`Product 1 Quarter Acc Profit`) as `Product 1 Quarter Acc Profit`
-,sum(`Product 1 Month Acc Profit`) as `Product 1 Month Acc Profit`
-,sum(`Product 1 Week Acc Profit`) as `Product 1 Week Acc Profit`
-,sum(`Product Total Quantity Invoiced`) as `Product Total Quantity Invoiced`
-,sum(`Product 1 Year Acc Quantity Invoiced`) as `Product 1 Year Acc Quantity Invoiced`
-,sum(`Product 1 Quarter Acc Quantity Invoiced`) as `Product 1 Quarter Acc Quantity Invoiced`
-,sum(`Product 1 Month Acc Quantity Invoiced`) as `Product 1 Month Acc Quantity Invoiced`
-,sum(`Product 1 Week Acc Quantity Invoiced`) as `Product 1 Week Acc Quantity Invoiced`
-,100*sum(`Product Total Profit`)/sum(`Product Total Invoiced Amount`) as `Product Total Margin`
-,100*sum(`Product 1 Year Acc Profit`)/sum(`Product 1 Year Acc Invoiced Amount`) as `Product 1 Year Acc Margin`
-,100*sum(`Product 1 Quarter Acc Profit`)/sum(`Product 1 Quarter Acc Invoiced Amount`) as `Product 1 Quarter Acc Margin`
-,100*sum(`Product 1 Month Acc Profit`)/sum(`Product 1 Month Acc Invoiced Amount`) as `Product 1 Month Acc Margin`
-,100*sum(`Product 1 Week Acc Profit`)/sum(`Product 1 Week Acc Invoiced Amount`) as `Product 1 Week Acc Margin`
-,sum(`Product Availability`) as `Product Availability`
-,sum(`Product Stock Value`) as `Product Stock Value`
-,max(`Product Total Days On Sale`) as `Product Total Days On Sale`
-,`Product Same Code Total Days On Sale` as `Product Total Days On Sale`
-,`Product Same Code 1 Year Acc Days On Sale` as `Product 1 Year Acc Days On Sale`
-,`Product Same Code 1 Quarter Acc Days On Sale` as `Product 1 Quarter Acc Days On Sale`
-,`Product Same Code 1 Month Acc Days On Sale` as `Product 1 Month Acc Days On Sale`
-,`Product Same Code 1 Week Acc Days On Sale` as `Product 1 Week Acc Days On Sale` 
-,`Product Same Code GMROI` as `Product GMROI`
-,`Product Same Code XHTML Family` as `Product XHTML Family` 
-,`Product Same Code Family Code` as `Product Family Code`
-,`Product Same Code XHTML Main Department` as `Product XHTML Main Department`
-,`Product Same Code Main Department Code` as `Product Main Department Code`
-,`Product Same Code Tariff Code` as `Product Tariff Code`
-,`Product Same Code XHTML Short Description`  as `Product XHTML Short Description`
-,`Product Same Code XHTML Picking`  as `Product XHTML Picking`
-,`Product Same Code Main Picking Location`  as `Product Main Picking Location`
-
-,`Product Same Code XHTML Parts`  as `Product XHTML Parts`
-,`Product Same Code XHTML Supplied By`  as `Product XHTML Supplied By`
-
-from `Product Dimension` P   $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
+  $sql="select  * from `Product Dimension` P   $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
   
    $res = mysql_query($sql);
   $adata=array();
-  // print "$sql";
+  //   print "$sql";
   while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
     $code=sprintf('<a href="product.php?code=%s">%s</a>',$row['Product Code'],$row['Product Code']);
+   
+
     if($percentages){
       if($period=='all'){
       $tsall=percentage($row['Product Total Invoiced Amount'],$sum_total_sales,2);
@@ -5629,9 +5650,9 @@ from `Product Dimension` P   $where $wheref $group order by $order $order_direct
    $adata[]=array(
 		  
 		   'code'=>$code,
-		   'name'=>$row['Product XHTML Short Description'],
-		   'family'=>$row['Product XHTML Family'],
-		   'dept'=>$row['Product XHTML Main Department'],
+		   'name'=>$row['Product Name'],
+		   'family'=>$row['Product Family Name'],
+		   'dept'=>$row['Product Main Department Name'],
 		   'expcode'=>$row['Product Tariff Code'],
 		   'parts'=>$row['Product XHTML Parts'],
 		   'supplied'=>$row['Product XHTML Supplied By'],

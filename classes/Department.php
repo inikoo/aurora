@@ -10,7 +10,7 @@ class department{
    //    $this->db =MDB2::singleton();
     
     if(is_numeric($a1) and !$a2  and $a1>0 )
-      $this->getdata('id',$a1);
+      $this->getdata('id',$a1,false);
     else if( preg_match('/new|create/i',$a1)){
       $this->create($a2);
     }elseif($a2!='')
@@ -87,7 +87,7 @@ class department{
  if(mysql_query($sql)){
    $this->id = mysql_insert_id();
    $this->msg=_("Department Added");
-   $this->getdata('id',$this->id);
+   $this->getdata('id',$this->id,false);
    $this->new=true;
    $store=new Store($data['Product Department Store Key']);
    $store->load('product_info');
@@ -107,6 +107,9 @@ class department{
      break;
    case('code'):
      $sql=sprintf("select * from `Product Department Dimension` where `Product Department Code`=%s and `Product Department Most Recent`='Yes'",prepare_mysql($tag));
+     case('code_store'):
+       $sql=sprintf("select * from `Product Department Dimension` where `Product Department Code`=%s and `Product Department Most Recent`='Yes' and `Product Department Store Key`=%d",prepare_mysql($tag),$tag2);
+
      break;
     default:
       $sql=sprintf("select * from `Product Department Dimension` where `Product Department Type`='Unknown' ");
@@ -289,7 +292,7 @@ class department{
 
 
 
-  $this->getdata('id',$this->id);
+  $this->getdata('id',$this->id,false);
   break;
   //   case('products'):
 //      $sql=sprintf("select * from `Product Dimension` where `Product Department Key`=%d",$this->id);

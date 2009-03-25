@@ -745,7 +745,227 @@ $adata[]=array(
 
   echo json_encode($response);
   break;
+case('edit_products'):
+   $conf=$_SESSION['state']['products']['table'];
+   if(isset( $_REQUEST['sf']))
+     $start_from=$_REQUEST['sf'];
+   else
+     $start_from=$conf['sf'];
+   if(isset( $_REQUEST['nr']))
+     $number_results=$_REQUEST['nr'];
+   else
+     $number_results=$conf['nr'];
+  if(isset( $_REQUEST['o']))
+    $order=$_REQUEST['o'];
+  else
+    $order=$conf['order'];
+  if(isset( $_REQUEST['od']))
+    $order_dir=$_REQUEST['od'];
+  else
+    $order_dir=$conf['order_dir'];
+  
+  if(isset( $_REQUEST['where']))
+    $where=$_REQUEST['where'];
+  else
+    $where=$conf['where'];
 
+ if(isset( $_REQUEST['f_field']))
+     $f_field=$_REQUEST['f_field'];
+   else
+     $f_field=$conf['f_field'];
+   
+   if(isset( $_REQUEST['f_value']))
+     $f_value=$_REQUEST['f_value'];
+   else
+     $f_value=$conf['f_value'];
+
+
+
+  if(isset( $_REQUEST['percentages'])){
+    $percentages=$_REQUEST['percentages'];
+    $_SESSION['state']['products']['percentages']=$percentages;
+  }else
+    $percentages=$_SESSION['state']['products']['percentages'];
+  
+  
+
+   if(isset( $_REQUEST['period'])){
+    $period=$_REQUEST['period'];
+    $_SESSION['state']['products']['period']=$period;
+  }else
+    $period=$_SESSION['state']['products']['period'];
+
+ if(isset( $_REQUEST['avg'])){
+    $avg=$_REQUEST['avg'];
+    $_SESSION['state']['products']['avg']=$avg;
+  }else
+    $avg=$_SESSION['state']['products']['avg'];
+
+  
+   if(isset( $_REQUEST['tableid']))
+    $tableid=$_REQUEST['tableid'];
+  else
+    $tableid=0;
+
+
+   if(isset( $_REQUEST['parent']))
+     $parent=$_REQUEST['parent'];
+   else
+     $parent=$conf['parent'];
+
+   if(isset( $_REQUEST['mode']))
+     $mode=$_REQUEST['mode'];
+   else
+     $mode=$conf['mode'];
+   
+    if(isset( $_REQUEST['restrictions']))
+     $restrictions=$_REQUEST['restrictions'];
+   else
+     $restrictions=$conf['restrictions'];
+
+
+
+     switch($parent){
+     case('store'):
+       $where=sprintf(' where `Product Family Store Key`=%d',$_SESSION['state']['store']['id']);
+       break;
+     case('department'):
+       $where=sprintf(' left join `Product Department Bridge` B on (P.`Product Key`=B.`Product Key`) where `Product Department Key`=%d',$_SESSION['state']['department']['id']);
+       break;
+     case('family'):
+       $where=sprintf(' where `Product Family Key`=%d',$_SESSION['state']['family']['id']);
+       break;
+     case('none'):
+       $where=sprintf(' where true ');
+       break;
+     }
+     $group='';
+     switch($mode){
+     case('same_code'):
+       $where.=sprintf(" and `Product Most Recent`='Yes' ");
+       break;
+     case('same_id'):
+       $group=' group by `Product ID`';
+       break;
+     }
+   
+     switch($restrictions){
+     case('forsale'):
+       $where.=sprintf(" and `Product Sales State`='For Sale'  ");
+       break;
+     case('editable'):
+       $where.=sprintf(" and `Product Sales State` in ('For Sale','In process','Unknown')  ");
+       break;
+     case('notforsale'):
+       $where.=sprintf(" and `Product Sales State` in ('Not For Sale')  ");
+       break;
+     case('discontinued'):
+       $where.=sprintf(" and `Product Sales State` in ('Discontinued')  ");
+       break;
+     case('all'):
+
+       break;
+     }
+
+
+   $filter_msg='';
+
+
+
+  $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+  
+  
+  $_SESSION['state']['products']['table']=array(
+						'order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value,'mode'=>$mode,'restrictions'=>'','parent'=>$parent
+);
+  
+  
+  //  $where.=" and `Product Department Key`=".$id;
+
+  
+  
+  $filter_msg='';
+  $wheref='';
+  if($f_field=='name' and $f_value!='')
+    $wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
+  
+    $sql="select count(*) as total from `Product Dimension`   P   $where $wheref";
+
+   $res = $db->query($sql); 
+   if($row=$res->fetchRow()) {
+     $total=$row['total'];
+   }
+   if($wheref==''){
+       $filtered=0; $total_records=$total;
+   }else{
+     $sql="select count(*) as total  from `Product Dimension`  P  $where ";
+
+     $res = $db->query($sql); 
+     if($row=$res->fetchRow()) {
+       $filtered=$row['total']-$total; $total_records=$row['total'];
+     }
+
+   }
+   $rtext=$total_records." ".ngettext('product','products',$total_records);
+   if($total_records>$number_results)
+     $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+   else
+     $rtext_rpp='';
+   
+   $_order=$order;
+   $_dir=$order_direction;
+   
+  if($order=='code')
+    $order='`Product Code`';
+  elseif($order=='name')
+    $order='`Product Name`';
+  else
+    $order='`Product Code`';
+
+  $sql="select *  from `Product Dimension` P  $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
+  
+  $res = mysql_query($sql);
+  $adata=array();
+  while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+    if($row['Product Total Quantity Ordered']==0 and  $row['Product Total Quantity Invoiced']==0 and  $row['Product Total Quantity Delivered']==0  ){
+      $delete='<img src="art/icons/cross.png" /> <span xonclick="delete_family('.$row['Product Key'].')"  id="del_'.$row['Product Key'].'" style="cursor:pointer">'._('Delete').'<span>';
+      $delete_type='delete';
+    }else{
+  $delete='<img src="art/icons/cross.png" /> <span xonclick="discontinue_family('.$row['Product Key'].')"  id="del_'.$row['Product Key'].'" style="cursor:pointer">'._('Discontinue').'<span>';
+      $delete_type='discontinue';
+    }
+$adata[]=array(
+	       'id'=>$row['Product Key'],
+	       'code'=>$row['Product Code'],
+	       'name'=>$row['Product Name'],
+	       'sdescription'=>$row['Product Special Characteristic'],
+	       'delete'=>$delete,
+	       'delete_type'=>$delete_type
+
+		   );
+  }
+
+  $response=array('resultset'=>
+		  array('state'=>200,
+			'data'=>$adata,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			 'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'total_records'=>$total,
+			'records_offset'=>$start_from,
+			'records_returned'=>$start_from+$total,
+			'records_perpage'=>$number_results,
+			'records_order'=>$order,
+			'records_order_dir'=>$order_dir,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'filtered'=>$filtered
+			)
+		  );
+
+  echo json_encode($response);
+  break;
  default:
 
    $response=array('state'=>404,'resp'=>_('Operation not found'));
