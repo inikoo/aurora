@@ -1,4 +1,6 @@
 <?
+//@author Raul Perusquia <rulovico@gmail.com>
+//Copyright (c) 2009 LW
 include_once('common.php');
 include_once ('header.php');
 if(!(isset($_REQUEST['id']) and is_numeric($_REQUEST['id']))){exit();}

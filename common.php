@@ -14,9 +14,7 @@ require_once 'common_functions.php';
 require_once "classes/DBsession.php";
 
 
-
-
-
+ 
 // DEBUG STUFF --------------------------------------|
 if(DEBUG){
   error_reporting(E_ALL);// For developing
@@ -39,6 +37,12 @@ $db =& MDB2::singleton($dsn);
 if (PEAR::isError($db)){echo $db->getMessage() . ' ' . $db->getUserInfo();}
 if(DEBUG)PEAR::setErrorHandling(PEAR_ERROR_RETURN);
 // To have nice arrays when we make some selects :)
+
+$default_DB_link=mysql_connect($dns_host,$dns_user,$dns_pwd );
+if(!$default_DB_link){print "Error can not connect with database server\n";exit;}
+$db_selected=mysql_select_db($dns_db, $default_DB_link);
+if (!$db_selected){print "Error can not access the database\n";exit;}
+
 $db->setFetchMode(MDB2_FETCHMODE_ASSOC);  
 $db->query("SET time_zone ='UTC'");
 $db->query("SET NAMES 'utf8'");

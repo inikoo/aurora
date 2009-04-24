@@ -939,6 +939,10 @@ $adata[]=array(
 	       'code'=>$row['Product Code'],
 	       'name'=>$row['Product Name'],
 	       'sdescription'=>$row['Product Special Characteristic'],
+	       'units'=>
+	       'units_type'=>
+	       'price'=>
+	       'rrp'=>
 	       'delete'=>$delete,
 	       'delete_type'=>$delete_type
 

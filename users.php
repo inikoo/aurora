@@ -80,10 +80,23 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 foreach($staff as $key=>$_staff){
   $staff[$key]['mod']=fmod($key,$num_cols);
 }
-
-
 $smarty->assign('staff',$staff);
 $smarty->assign('staff_cols',$num_cols);
+
+
+
+$tipo_filter=$_SESSION['state']['users']['user_list']['f_field'];
+
+$smarty->assign('filter0',$tipo_filter);
+$smarty->assign('filter_value0',$_SESSION['state']['users']['user_list']['f_value']);
+$filter_menu=array(
+		   'handle'=>array('db_key'=>'handle','menu_label'=>'Handle like  <i>x</i>','label'=>'Handle'),
+		   'name'=>array('db_key'=>'name','menu_label'=>'Name Like <i>x</i>','label'=>'Name'),
+		   );
+$smarty->assign('filter_menu0',$filter_menu);
+$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu0',$paginator_menu);
 
 $smarty->display('users.tpl');
 ?>

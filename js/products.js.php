@@ -1,4 +1,6 @@
 <?
+//@author Raul Perusquia <rulovico@gmail.com>
+//Copyright (c) 2009 LW
 include_once('../common.php');
 ?>
  var period='period_<?=$_SESSION['state']['products']['period']?>';
@@ -159,7 +161,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
  var Dom   = YAHOO.util.Dom;
  var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
  oACDS.queryMatchContains = true;
- var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container", oACDS);
+ var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
  oAutoComp.minQueryLength = 0; 
 
 

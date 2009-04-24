@@ -1,5 +1,6 @@
 <?
-
+//@author Raul Perusquia <rulovico@gmail.com>
+//Copyright (c) 2009 LW
 $colors=array(
 	      '0x62a74b',
 	      '0xc665a7',

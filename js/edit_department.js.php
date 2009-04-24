@@ -1,4 +1,6 @@
 <?include_once('../common.php');?>
+//@author Raul Perusquia <rulovico@gmail.com>
+//Copyright (c) 2009 LW
 var Event = YAHOO.util.Event;
 var Dom   = YAHOO.util.Dom;
 var department_id=<?=$_SESSION['state']['department']['id']?>;

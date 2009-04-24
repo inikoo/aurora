@@ -68,8 +68,8 @@
 	{if $customer->get('customer orders')==1}
 	{$customer->get('customer name')} {t}has place one order{/t}.  
 	{elseif $customer->get('customer orders')>1 } 
-	{$customer->get('customer name')} {t}has placed{/t} <b>{$customer->get('customer orders')}</b> {t}orders so far{/t}, {t}which amounts to a total of{/t} <b>{$total_net}</b> {t}plus tax{/t} ({t}an average of{/t} {$total_net_average} {t}per order{/t}).
-	{if $orders_interval}<br/>{t}This customer usually places an order every{/t} {$orders_interval}.{/if}
+	{$customer->get('customer name')} {t}has placed{/t} <b>{$customer->get('Customer Orders')}</b> {t}orders so far{/t}, {t}which amounts to a total of{/t} <b>{$customer->get('Total Balance')}</b> {t}plus tax{/t} ({t}an average of{/t} {$customer->get('Total Net Per Order')} {t}per order{/t}).
+	{if $customer->get('Customer Orders Invoiced')}<br/>{t}This customer usually places an order every{/t} {$customer->get('Order Interval')}.{/if}
 	{/if}
 	
     </td></tr>

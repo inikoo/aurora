@@ -13,6 +13,8 @@ var Dom   = YAHOO.util.Dom;
 	//	alert(table.view+' '+tipo)
 	if(table.view!=tipo){
 	    table.hideColumn('active');
+	    table.hideColumn('todo');
+		    
 	    table.hideColumn('families');
 	    table.hideColumn('sales');
 	    table.hideColumn('profit');
@@ -34,6 +36,7 @@ var Dom   = YAHOO.util.Dom;
 		Dom.get('period_options').style.display='none';
 		Dom.get('avg_options').style.display='none';
 		table.showColumn('active');
+		table.showColumn('todo');
 		table.showColumn('families');
 	    }
 	    if(tipo=='stock'){
@@ -71,6 +74,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    ,{key:"name", label:"<?=_('Name')?>", width:300,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    ,{key:"families", label:"<?=_('Families')?>", width:100,sortable:true,className:"aright",<?=($_SESSION['state']['store']['view']=='general'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    ,{key:"active", label:"<?=_('Products')?>",  width:100,sortable:true,className:"aright",<?=($_SESSION['state']['store']['view']=='general'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"todo", label:"<?=_('To do')?>",  width:100,sortable:true,className:"aright",<?=($_SESSION['state']['store']['view']=='general'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+
 				    ,{key:"sales", label:"<?=_('Sales')?>", width:90,sortable:true,className:"aright",<?=($_SESSION['state']['store']['view']=='sales'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    ,{key:"profit", label:"<?=_('Profit')?>", width:90,sortable:true,className:"aright",<?=($_SESSION['state']['store']['view']=='sales'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
@@ -113,7 +118,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 'id',
 			 "name","code",
 			 'families',
-			 'active',"sales","stock_error","stock_value","outofstock","profit","surplus","optimal","low","critical"
+			 'active',"sales","stock_error","stock_value","outofstock","profit","surplus","optimal","low","critical","todo"
 			 ]};
 	    
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,

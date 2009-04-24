@@ -149,7 +149,7 @@ class family{
 
      break;
    }
-   //   print "S:$tipo $sql\n";
+
 
    $result=mysql_query($sql);
    if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   )
@@ -287,7 +287,7 @@ function update($key,$a1=false,$a2=false){
    case('products_data'):
    case('products_info'):
      
-  $sql=sprintf("select sum(if(`Product Sales State`='Unknown',1,0)) as sale_unknown, sum(if(`Product Sales State`='Discontinued',1,0)) as discontinued,sum(if(`Product Sales State`='Not for sale',1,0)) as not_for_sale,sum(if(`Product Sales State`='For sale',1,0)) as for_sale,sum(if(`Product Sales State`='In Process',1,0)) as in_process,sum(if(`Product Availability State`='Unknown',1,0)) as availability_unknown,sum(if(`Product Availability State`='Optimal',1,0)) as availability_optimal
+  $sql=sprintf("select sum(if(`Product Sales State`='In process',1,0)) as in_process,sum(if(`Product Sales State`='Unknown',1,0)) as sale_unknown, sum(if(`Product Sales State`='Discontinued',1,0)) as discontinued,sum(if(`Product Sales State`='Not for sale',1,0)) as not_for_sale,sum(if(`Product Sales State`='For sale',1,0)) as for_sale,sum(if(`Product Sales State`='In Process',1,0)) as in_process,sum(if(`Product Availability State`='Unknown',1,0)) as availability_unknown,sum(if(`Product Availability State`='Optimal',1,0)) as availability_optimal
 ,sum(if(`Product Availability State`='Low',1,0)) as availability_low
 ,sum(if(`Product Availability State`='Surplus',1,0)) as availability_surplus
 
@@ -295,7 +295,8 @@ function update($key,$a1=false,$a2=false){
      //  print $sql;
   $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-       $sql=sprintf("update `Product Family Dimension` set `Product Family For Sale Products`=%d ,`Product Family Discontinued Products`=%d ,`Product Family Not For Sale Products`=%d ,`Product Family Unknown Sales State Products`=%d, `Product Family Optimal Availability Products`=%d , `Product Family Low Availability Products`=%d ,`Product Family Critical Availability Products`=%d ,`Product Family Out Of Stock Products`=%d,`Product Family Unknown Stock Products`=%d ,`Product Family Surplus Availability Products`=%d where `Product Family Key`=%d  ",
+       $sql=sprintf("update `Product Family Dimension` set `Product Family In Process Products`=%d,`Product Family For Sale Products`=%d ,`Product Family Discontinued Products`=%d ,`Product Family Not For Sale Products`=%d ,`Product Family Unknown Sales State Products`=%d, `Product Family Optimal Availability Products`=%d , `Product Family Low Availability Products`=%d ,`Product Family Critical Availability Products`=%d ,`Product Family Out Of Stock Products`=%d,`Product Family Unknown Stock Products`=%d ,`Product Family Surplus Availability Products`=%d where `Product Family Key`=%d  ",
+		    $row['in_process'],
 		    $row['for_sale'],
 		    $row['discontinued'],
 		    $row['not_for_sale'],
@@ -326,13 +327,44 @@ function update($key,$a1=false,$a2=false){
    }
    break;
    case('products'):
-     $sql=sprintf("select * from `Product Dimension` where `Product Family Key`=%d ",$this->id);
-     //    print $sql;
+
 
      $this->products=array();
+     if(!$this->id)
+       return;
+     $order='`Product Code`';
+     if(preg_match('/order by sales/i',$args))
+       $order='`Product Same Code 1 Year Acc Invoiced Amount`,`Product Code`';
+     if(preg_match('/order by name/i',$args))
+       $order='`Product Name`';
+
+
+      $limit='';
+      if(preg_match('/limit\s+\d+/i',$args,$match)){
+	$limit_qty=preg_replace('/(^\d)/','',$match[0]);
+	$limit='limit '.$limit_qty;
+       
+      }
+      $between='';
+
+      if(preg_match('/between\s+\(.*\)/i',$args,$match)){
+
+	$between_tmp=preg_replace('/.*\(/','',$match[0]);
+	$between_tmp=preg_replace('/\).*/','',$between_tmp);
+	$between_tmp=split(',',$between_tmp);
+	if(count($between_tmp)==2 and $between_tmp[0]!='' and $between_tmp[1]!='')
+	  $between='and `Product Name` between '.prepare_mysql($between_tmp[0]).' and '.prepare_mysql($between_tmp[1].'zzzzzz');
+       
+      }
+
+	
+       $family_key=$this->id;
+       $sql=sprintf("select * from `Product Dimension` where `Product Family Key`=%d %s order by %s %s",$family_key,$between,$order,$limit);
+       // print $sql;
+       
      $result=mysql_query($sql);
      while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-       $this->products[$row['product key']]=$row;
+       $this->products[]=$row;
      }
      break;
 
@@ -606,8 +638,8 @@ function update($key,$a1=false,$a2=false){
 
  function get($key,$options=false){
 
-
-
+   if(!$this->id)
+     return '';
 
    if(array_key_exists($key,$this->data))
      return $this->data[$key];
@@ -635,8 +667,9 @@ function update($key,$a1=false,$a2=false){
  $max_code_len=0;
  $max_desc_len=0;
  $info='';
- foreach($this->products as $key => $value){
 
+ foreach($this->products as $key => $value){
+   
 
 
 
@@ -647,7 +680,14 @@ function update($key,$a1=false,$a2=false){
    if($desc_len>$max_desc_len)
      $max_desc_len=$desc_len;
  }
- 
+  $max_desc_len=$max_desc_len*1.5;
+  $max_code_len=$max_code_len*1.1;
+  
+  if($max_desc_len<12)
+    $max_desc_len=12;
+  if($max_code_len<8)
+    $max_code_len=8;
+
 //  print $max_desc_len;
 //  $first=$max_code_len;
  
@@ -666,12 +706,27 @@ function update($key,$a1=false,$a2=false){
 	       );
  
  $form.="\n";
+
+
      $i=1;
+
+     $filter=false;
+     if(isset($options['filter']))
+       $filter=true;
+
+     $until=false;
+     if(isset($options['until']) and is_numeric($options['until']))
+       $until=true;
+
+       
      foreach($this->products as $key => $value){
 
-
-
-       $product=new Product($key);
+       if($filter and !preg_match('/'.$options['filter'].'/i',$value['Product Name']))
+	 continue;
+       if($until and $i>$options['until'])
+	 break;
+       
+       $product=new Product($value['Product Key']);
        $product->locale=$this->locale;
 
        if($i==1){
@@ -680,7 +735,7 @@ function update($key,$a1=false,$a2=false){
 
        }
 
-       
+
 
        $form.=$product->get('Order List Form',$i);
 

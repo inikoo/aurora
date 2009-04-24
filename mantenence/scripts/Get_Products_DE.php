@@ -36,7 +36,7 @@ $version='V 1.0';
 
 $Data_Audit_ETL_Software="$software $version";
 
-$file_name='AWorder2009DE.xls';
+$file_name='AWorder2009Germany.xls';
 $csv_file='tmp.csv';
 exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
 
@@ -327,10 +327,12 @@ foreach($__cols as $cols){
 	$_w='';
       
       $data=array(
-		  'product sale state'=>'For Sale',
 		  'product code'=>$code,
 		  'product store key'=>2,
 		  'product locale'=>'de_DE',
+		  'product sales state'=>'In process',
+		  'product web state'=>'No Applicable',
+		  
 		  'product price'=>sprintf("%.2f",$price),
 		  'product rrp'=>$rrp,
 		  'product units per case'=>$units,
@@ -338,7 +340,7 @@ foreach($__cols as $cols){
 		  'product family code'=>$current_fam_code,
 		  'product family name'=>$current_fam_name,
 		  'product main department name'=>$department_name,
-		  'product main department code'=>$department_name,
+		  'product main department code'=>$department_code,
 		  'product special characteristic'=>$special_char,
 		  'product net weight'=>$_w,
 		  'product gross weight'=>$_w,
@@ -396,7 +398,7 @@ foreach($__cols as $cols){
     
     // print "Col $column\n";
     //print_r($cols);
-    if($cols[3]!='' and $cols[6]!=''){
+    if(  preg_match('/donef/i',$cols[0])       ){
       $fam_code=$cols[3];
       $fam_name=_trim( mb_convert_encoding($cols[6], "UTF-8", "ISO-8859-1,UTF-8"));
       $fam_position=$column;
@@ -421,13 +423,13 @@ foreach($__cols as $cols){
       $blank_position=$column;
     }
 
-    if($cols[6]!='' and preg_match('/Sub Total/i',$cols[11])){
-      $department_name=$cols[6];
+      if(preg_match('/doned/i',$cols[0])){
+      $department_name=_trim( mb_convert_encoding($cols[6], "UTF-8", "ISO-8859-1,UTF-8"));
+      $department_code=_trim( mb_convert_encoding($cols[3], "UTF-8", "ISO-8859-1,UTF-8"));
       $department_position=$column;
     }
     
-    $posible_fam_code=$cols[3];
-    $posible_fam_name=$cols[6];
+ 
   }
   
 

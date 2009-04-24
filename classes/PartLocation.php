@@ -29,7 +29,8 @@ class PartLocation{
   }
 
   function last_inventory_date(){
-    $sql=sprintf("select `Date` from `Inventory Spanshot Fact` where  `Part Sku`=%d   order by `Date` desc ",$this->part_sku);
+    $sql=sprintf("select `Date` from `Inventory Spanshot Fact` where  `Part Sku`=%d   order by `Date` desc limit 1",$this->part_sku);
+    //  print $sql;
     $result=mysql_query($sql);
     if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
       return $row['Date'];
@@ -37,6 +38,10 @@ class PartLocation{
       return false;
 
   }
+
+
+
+
 
   function first_inventory_transacion(){
     $sql=sprintf("select DATE(`Date`) as Date from `Inventory Transaction Fact` where  `Part Sku`=%d and (`Inventory Transaction Type`='Associate' )  order by `Date`",$this->part_sku);
@@ -49,7 +54,7 @@ class PartLocation{
 
   }
 function last_inventory_audit(){
-    $sql=sprintf("select DATE(`Date`) as Date from `Inventory Transaction Fact` where  `Part Sku`=%d and (`Inventory Transaction Type`='Action' or `Inventory Transaction Type`='Not Found' )  order by `Date` desc",$this->part_sku);
+    $sql=sprintf("select DATE(`Date`) as Date from `Inventory Transaction Fact` where  `Part Sku`=%d and (`Inventory Transaction Type`='Audit' or `Inventory Transaction Type`='Not Found' )  order by `Date` desc",$this->part_sku);
     $result=mysql_query($sql);
     // print $sql;
     if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
@@ -690,8 +695,9 @@ function last_inventory_audit(){
     $user_id=$data['user key'];
     $note=$data['note'];
     $qty=$data['qty'];
-    
-    if((!is_numeric($qty) or $qty==0) and $qty!='all'   )
+
+
+    if((!is_numeric($qty) ) and $qty!='all'   )
 	return;
 
 
@@ -711,6 +717,7 @@ function last_inventory_audit(){
 		 ,prepare_mysql($_date)
 		 );
 
+    
     $result=mysql_query($sql);
     if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
    
@@ -725,7 +732,7 @@ function last_inventory_audit(){
        if(!is_numeric($qty)  )
 	 $qty='NULL';
 
-       
+
 
       if(!is_numeric($row['Value At Cost'])  or !is_numeric($qty)  )
 	$value='NULL';
@@ -736,7 +743,8 @@ function last_inventory_audit(){
 	    $value=sprintf("%.2f",$row['Value At Cost']*$qty/$row['Quantity On Hand']);
 
 	}
-    
+
+
     if($qty>0 and is_numeric($qty) ){
     
       	$sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`) values (%d,%d,%s,%s,%s,%s,%s,%s)"
@@ -752,6 +760,7 @@ function last_inventory_audit(){
 	if(!mysql_query($sql))
 	  print "Error   $sql\n";
     }
+
     $__date=date("Y-m-d H:i:s",strtotime($date." -1 second"));
     $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`) values (%d,%d,%s,%s,%s,%s,%s,%s)"
 		 ,$this->part_sku
@@ -763,11 +772,13 @@ function last_inventory_audit(){
 		     ,prepare_mysql($note)
 		 ,prepare_mysql($__date)
 		 );
+
+
     if(!mysql_query($sql))
       print "Error $sql\n";
     
     
-if($qty>0 and is_numeric($qty) ){
+
 
 	$__date=date("Y-m-d H:i:s",strtotime($date." +0 second"));
 	$sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`) values (%d,%d,%s,%s,%s,%s,%s,%s)"
@@ -782,7 +793,7 @@ if($qty>0 and is_numeric($qty) ){
 		     );
 	if(!mysql_query($sql))
 	  print "Error $sql\n";
- }
+ 
 if($qty>0 and is_numeric($qty) ){
 	$__date=date("Y-m-d H:i:s",strtotime($date." +1 second"));
 	$sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`) values (%d,%d,%s,%s,%s,%s,%s,%s)"
@@ -795,6 +806,7 @@ if($qty>0 and is_numeric($qty) ){
 		     ,prepare_mysql($note)
 		     ,prepare_mysql($__date)
 		     );
+
 	if(!mysql_query($sql))
 	  print "Error $sql\n";
  }	

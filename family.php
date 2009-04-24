@@ -63,7 +63,7 @@ $_SESSION['state']['assets']['page']='department';
 if(isset($_REQUEST['view'])){
   $valid_views=array('sales','general','stoke');
   if (in_array($_REQUEST['view'], $valid_views)) 
-    $_SESSION['state']['family']['view']=$_REQUEST['view'];
+    $_SESSION['state']['product']['view']=$_REQUEST['view'];
 
  }
 
@@ -149,10 +149,15 @@ $smarty->assign('filter','code');
 $smarty->assign('filter_name',_('Product code'));
 $smarty->assign('filter_value',$_SESSION['tables']['products_list'][7]);
 
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu',$paginator_menu);
+
+$smarty->assign('view',$_SESSION['state']['products']['view']);
+$smarty->assign('show_details',$_SESSION['state']['products']['details']);
+$smarty->assign('period',$_SESSION['state']['products']['period']);
+$smarty->assign('avg',$_SESSION['state']['products']['avg']);
 
 
-$smarty->assign('view',$_SESSION['state']['family']['view']);
-$smarty->assign('show_details',$_SESSION['state']['family']['details']);
 $table_title=_('Product List');
 $smarty->assign('table_title',$table_title);
 

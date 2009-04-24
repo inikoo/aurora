@@ -133,10 +133,10 @@ print $g;
 			         {key:"delete",label:"" ,width:16 ,hidden:true},
 				 {key:"password",label:"" ,width:16 },
 				 //	 {key:"passwordmail",label:"" ,width:16 },
-				 {key:"isactive",formatter:active,label:"Active" ,width:30 ,editor: new YAHOO.widget.RadioCellEditor({radioOptions:[{label:"yes", value:"1"}, {label:"no", value:"0"}],defaultValue:"0",asyncSubmitter:edit_active })  },
+				 {key:"isactive",formatter:active,label:"" ,width:16 ,editor: new YAHOO.widget.RadioCellEditor({radioOptions:[{label:"yes", value:"1"}, {label:"no", value:"0"}],defaultValue:"0",asyncSubmitter:edit_active })  },
 				 
 
-				 {key:"tipo", label:"<?=_('Type')?>",width:30,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				 {key:"tipo", label:"<?=_('Type')?>",width:35,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
 				 {key:"handle", label:"<?=_('Handle')?>",width:60,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
 				 {key:"name", label:"<?=_('Name')?>",sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
 				 {key:"email", label:"<?=_('Email')?>",sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
@@ -161,6 +161,8 @@ print $g;
 	    this.dataSource0.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
 		    rowsPerPage:"resultset.records_perpage",
 		    sort_key:"resultset.sort_key",
 		    sort_dir:"resultset.sort_dir",
@@ -177,17 +179,16 @@ print $g;
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
 								   this.dataSource0
 								 , {
-								     // sortedBy: {key:"<?=$_SESSION['tables']['customers_list'][0]?>", dir:"<?=$_SESSION['tables']['customers_list'][1]?>"},
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
-								    //    ,paginator : new YAHOO.widget.Paginator({
-// 									      rowsPerPage    : <?=$_SESSION['state']['users']['user_list']['nr']?>,containers : 'paginator', 
-//  									      pageReportTemplate : '(<?=_('Page')?> {currentPage} <?=_('of')?> {totalPages})',
-// 									      previousPageLinkLabel : "<",
-//  									      nextPageLinkLabel : ">",
-//  									      firstPageLinkLabel :"<<",
-//  									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
-// 									      ,template : "{FirstPageLink}{PreviousPageLink}<strong>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
-// 									  })
+								      ,paginator : new YAHOO.widget.Paginator({
+									      rowsPerPage:<?=$_SESSION['state']['users']['user_list']['nr']?>,containers : 'paginator0', 
+ 									      pageReportTemplate : '(<?=_('Page')?> {currentPage} <?=_('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+									  })
 								     
 								     ,sortedBy : {
 									 key: "<?=$_SESSION['state']['users']['user_list']['order']?>",
@@ -204,14 +205,13 @@ print $g;
 	    this.table0.subscribe("cellClickEvent", this.table0.onEventShowCellEditor);
 
 
-	    //this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	    //this.table0.filter={key:'<?=$_SESSION['state']['users']['user_list']['f_field']?>',value:'<?=$_SESSION['state']['users']['user_list']['f_value']?>'};
+	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	    this.table0.filter={key:'<?=$_SESSION['state']['users']['user_list']['f_field']?>',value:'<?=$_SESSION['state']['users']['user_list']['f_value']?>'};
 	    //YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown);
 	
 
-
-
 	    
+
 	    var tableid=1; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 	    var ColumnDefs = [
@@ -278,7 +278,13 @@ print $g;
 
 
 
-//  function init(){
+ function init(){
+ var Dom   = YAHOO.util.Dom;
+ var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
+ oACDS.queryMatchContains = true;
+ var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
+ oAutoComp.minQueryLength = 0; 
+
 
 //       add_user_dialog = new YAHOO.widget.Menu("add_user_dialog", {context:["add_user","tr", "br","beforeShow"]  });
 //       add_user_dialog.render();
@@ -292,6 +298,19 @@ print $g;
 //       add_user_dialog_staff.render();
 //       add_user_dialog_staff.subscribe("show", add_user_dialog_staff.focus);
       
-// }
+ }
 
-// YAHOO.util.Event.onDOMReady(init);
+ YAHOO.util.Event.onDOMReady(init);
+YAHOO.util.Event.onContentReady("rppmenu0", function () {
+	 var oMenu = new YAHOO.widget.Menu("rppmenu0", { context:["rtext_rpp0","tl", "tr"]  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+	 YAHOO.util.Event.addListener("rtext_rpp0", "click", oMenu.show, null, oMenu);
+    });
+
+YAHOO.util.Event.onContentReady("filtermenu0", function () {
+	 var oMenu = new YAHOO.widget.Menu("filtermenu0", { context:["filter_name0","tr", "br"]  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+	 YAHOO.util.Event.addListener("filter_name0", "click", oMenu.show, null, oMenu);
+    });

@@ -167,7 +167,7 @@ $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $sku=$row['Part SKU'];
 
-  $sql=sprintf("select `Date` from `Inventory Transaction Fact` where  `Part SKU`=%d  and `Inventory Transaction Type` in ('Audit','Not Found') order by `Date`  ",$sku);
+  $sql=sprintf("select `Date` from `Inventory Transaction Fact` where  `Part SKU`=%d  and `Inventory Transaction Type` in ('Audit','Not Found','Sale') order by `Date`  ",$sku);
   $result2=mysql_query($sql);
   // print "$sql\n";
   if($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ){

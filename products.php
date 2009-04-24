@@ -28,7 +28,7 @@ if(isset($_REQUEST['search']) and $_REQUEST['search']!=''  ){
     header('Location: family.php?id='. $found['product family key']);
     exit;
   }
-
+ 
 
   //do you mean
   $from_url=$_REQUEST['from_url'];
@@ -39,6 +39,12 @@ if(isset($_REQUEST['search']) and $_REQUEST['search']!=''  ){
   
  }
 
+
+if(isset($_REQUEST['parent'])   ){
+  // print_r($_REQUEST);
+  $_SESSION['state']['products']['table']['parent']=$_REQUEST['parent'];
+  
+ }
 
 
 

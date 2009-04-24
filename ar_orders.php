@@ -1,4 +1,6 @@
 <?
+//@author Raul Perusquia <rulovico@gmail.com>
+//Copyright (c) 2009 LW
 require_once 'common.php';
 require_once 'classes/Order.php';
 
@@ -204,8 +206,8 @@ case('plot_monthsales'):
      $from=date("Y-",$time).(date("m",$time)+1).'-01';
    }
 
-  $sql="SELECT count(*) as invoices,month(`Invoice Date`) as month, UNIX_TIMESTAMP(`Invoice Date`) as date ,substring(`Invoice Date`, 1,7) AS dd ,sum(`Invoice Gross Amount`-`Invoice Discount Amount`) as sales FROM `Invoice Dimension` where `Invoice Date`>'$from'  GROUP BY dd";
-  
+  $sql="SELECT count(*) as invoices,month(`Invoice Date`) as month, UNIX_TIMESTAMP(`Invoice Date`) as date ,substring(`Invoice Date`, 1,7) AS dd ,sum(`Invoice Total Net Amount`) as sales FROM `Invoice Dimension` where `Invoice Date`>'$from'  GROUP BY dd";
+  // print $sql; 
 
  $prev_month='';
  $prev_year=array();

@@ -1,3 +1,11 @@
+//@author Raul Perusquia <rulovico@gmail.com>
+//Copyright (c) 2009 LW
+
+
+
+
+
+
 
 
 var remove_filter= function (tableid){
@@ -59,9 +67,17 @@ var myhandleDataReturnPayload= function(oRequest, oResponse, oPayload) {
 
     }
 	
-    
+    //var data={code:'<?=_('Totals')?>'};
+    //tables.table0.addRow(data);
     return oPayload;
 };
+
+
+
+
+
+
+
 
 var myRequestBuilder = function(oState, oSelf) {
     // Get states or use defaults
@@ -85,6 +101,32 @@ var myRequestBuilder = function(oState, oSelf) {
 
     return request;
 };
+
+
+var myRequestBuilderwithTotals = function(oState, oSelf) {
+    // Get states or use defaults
+
+    
+    oState = oState || {pagination:null, sortedBy:null};
+
+    var sort = (oState.sortedBy) ? oState.sortedBy.key : "myDefaultColumnKey";
+
+    var dir = (oState.sortedBy && oState.sortedBy.dir === YAHOO.widget.DataTable.CLASS_ASC) ? "" : "desc";
+
+   var startIndex = (oState.pagination) ? oState.pagination.recordOffset : 0;
+    var results = (oState.pagination) ? oState.pagination.rowsPerPage-1 : 5;
+
+    // Build custom request
+    var request= "&o=" + sort +
+    "&od=" + dir +
+    "&sf=" + startIndex +
+    "&nr=" + results;
+
+
+    return request;
+};
+
+
 
 
 var mygetTerms =function (query) {
@@ -124,7 +166,7 @@ var change_rpp=function (rpp,tableid){
     var Dom   = YAHOO.util.Dom;
     var table=tables['table'+tableid];
     
-    table.get('paginator').setRowsPerPage(rpp)
+    table.get('paginator').setRowsPerPage(rpp+1)
 
 }
 
