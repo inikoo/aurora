@@ -35,7 +35,7 @@ $where='';
 if(isset($argv[1]) and is_numeric($argv[1])  )
   $where=" where  `Part SKU`=". $argv[1];
 
-$sql="select `Part Status`,`Part SKU`,`Part Valid From`,`Part Valid To`,`Part XHTML Currently Used In` from `Part Dimension` $where  ";
+$sql="select `Part Status`,`Part SKU`,`Part Valid From`,`Part Valid To`,`Part XHTML Currently Used In` from `Part Dimension` $where  order by `Part SKU` desc";
 
 $resultx=mysql_query($sql);
 $counter=1;

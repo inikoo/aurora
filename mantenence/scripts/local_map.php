@@ -203,8 +203,9 @@ function get_tipo_order($ltipo,$header){
     $tipo=10;
   }elseif(preg_match('/^quote/i',$ltipo)){
     $tipo=11;
-
-
+}elseif(preg_match('/^return to supplier/i',$ltipo)){
+        $tipo=12;
+    
 
 
 

@@ -1,4 +1,6 @@
 <?
+//@author Raul Perusquia <rulovico@gmail.com>
+//Copyright (c) 2009 LW
 include_once('common.php');
 include_once('classes/Customer.php');
 if(!$LU->checkRight(CUST_VIEW))
@@ -52,11 +54,11 @@ $smarty->assign('customer',$customer);
 $order=$_SESSION['state']['customers']['table']['order'];
 
 if($order=='name')
-  $order='customer file as';
+  $order='Customer File As';
 elseif($order=='id')
 $order='customer id';
 elseif($order=='location')
-$order='customer main location';
+$order='Customer Main Location';
 elseif($order=='orders')
      $order='customer orders';
 elseif($order=='email')

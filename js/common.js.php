@@ -1,4 +1,5 @@
-
+//@author Raul Perusquia <rulovico@gmail.com>
+//Copyright (c) 2009 LW
 var Dom   = YAHOO.util.Dom;
 if(!Array.indexOf){
 	    Array.prototype.indexOf = function(obj){
@@ -94,7 +95,14 @@ function isValidURL(url){
         return false;
     } 
 }
-
+   
+   //    function isValidEmail(email)
+   
+//       {
+// 	  alert(email);
+// 	    return /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test(email);
+   
+//       }
 
 function isValidEmail(email){
     var RegExp = /^((([a-z]|[0-9]|!|#|$|%|&|'|\*|\+|\-|\/|=|\?|\^|_|`|\{|\||\}|~)+(\.([a-z]|[0-9]|!|#|$|%|&|'|\*|\+|\-|\/|=|\?|\^|_|`|\{|\||\}|~)+)*)@((((([a-z]|[0-9])([a-z]|[0-9]|\-){0,61}([a-z]|[0-9])\.))*([a-z]|[0-9])([a-z]|[0-9]|\-){0,61}([a-z]|[0-9])\.)[\w]{2,4}|(((([0-9]){1,3}\.){3}([0-9]){1,3}))|(\[((([0-9]){1,3}\.){3}([0-9]){1,3})\])))$/

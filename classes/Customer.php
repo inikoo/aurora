@@ -1,4 +1,6 @@
 <?
+//@author Raul Perusquia <rulovico@gmail.com>
+//Copyright (c) 2009 LW
 include_once('Contact.php');
 include_once('Order.php');
 include_once('Address.php');
@@ -902,6 +904,9 @@ class Customer{
 
 
  function get($key,$arg1=false){
+
+
+
    if(array_key_exists($key,$this->data)){
      return $this->data[$key]; 
    }
@@ -930,6 +935,31 @@ class Customer{
 
 
    switch($key){
+   case('Total Balance'):
+     return money($this->data['Customer Total Balance']);
+     break;
+   case('Total Net Per Order'):
+     if($this->data['Customer Orders Invoiced']>0)
+       return money($this->data['Customer Total Balance']/$this->data['Customer Orders Invoiced']);
+     else
+       return _('ND');
+     break;
+   case('Order Interval'):
+     $order_interval=$this->get('Customer Order Interval');
+     
+     if($order_interval>10){
+       $order_interval=round($order_interval/7);
+       if( $order_interval==1)
+	 $order_interval=_('week');
+       else
+	 $order_interval=$order_interval.' '._('weeks');
+       
+     }else if($order_interval=='')
+  $order_interval='';
+     else
+       $order_interval=round($order_interval).' '._('days');
+     return $order_interval;
+     break;
    case('order within'):
      
      if(!$args)

@@ -1,5 +1,6 @@
 <?
-
+//@author Raul Perusquia <rulovico@gmail.com>
+//Copyright (c) 2009 LW
 class store{
 
 
@@ -107,17 +108,18 @@ class store{
  function load($tipo,$args=false){
    switch($tipo){
    case('products_info'):
-      $sql=sprintf("select sum(if(`Product Sales State`='Unknown',1,0)) as sale_unknown, sum(if(`Product Sales State`='Discontinued',1,0)) as discontinued,sum(if(`Product Sales State`='Not for sale',1,0)) as not_for_sale,sum(if(`Product Sales State`='For sale',1,0)) as for_sale,sum(if(`Product Sales State`='In Process',1,0)) as in_process,sum(if(`Product Availability State`='Unknown',1,0)) as availability_unknown,sum(if(`Product Availability State`='Optimal',1,0)) as availability_optimal,sum(if(`Product Availability State`='Low',1,0)) as availability_low,sum(if(`Product Availability State`='Critical',1,0)) as availability_critical,sum(if(`Product Availability State`='Surplus',1,0)) as availability_surplus,sum(if(`Product Availability State`='Out Of Stock',1,0)) as availability_outofstock from `Product Dimension` where  `Product Store Key`=%d",$this->id);
+      $sql=sprintf("select sum(if(`Product Sales State`='In process',1,0)) as in_process,sum(if(`Product Sales State`='Unknown',1,0)) as sale_unknown, sum(if(`Product Sales State`='Discontinued',1,0)) as discontinued,sum(if(`Product Sales State`='Not for sale',1,0)) as not_for_sale,sum(if(`Product Sales State`='For sale',1,0)) as for_sale,sum(if(`Product Sales State`='In Process',1,0)) as in_process,sum(if(`Product Availability State`='Unknown',1,0)) as availability_unknown,sum(if(`Product Availability State`='Optimal',1,0)) as availability_optimal,sum(if(`Product Availability State`='Low',1,0)) as availability_low,sum(if(`Product Availability State`='Critical',1,0)) as availability_critical,sum(if(`Product Availability State`='Surplus',1,0)) as availability_surplus,sum(if(`Product Availability State`='Out Of Stock',1,0)) as availability_outofstock from `Product Dimension` where  `Product Store Key`=%d",$this->id);
       // print "$sql\n\n\n";
  $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
-       $sql=sprintf("update `Store Dimension` set `Store For Sale Products`=%d ,`Store Discontinued Products`=%d ,`Store Not For Sale Products`=%d ,`Store Unknown Sales State Products`=%d, `Store Optimal Availability Products`=%d , `Store Low Availability Products`=%d ,`Store Critical Availability Products`=%d ,`Store Out Of Stock Products`=%d,`Store Unknown Stock Products`=%d ,`Store Surplus Availability Products`=%d where `Store Key`=%d  ",
-		    $row['for_sale'],
-		    $row['discontinued'],
-		    $row['not_for_sale'],
-		    $row['sale_unknown'],
-		    $row['availability_optimal'],
+    $sql=sprintf("update `Store Dimension` set `Store In Process Products`=%d,`Store For Sale Products`=%d ,`Store Discontinued Products`=%d ,`Store Not For Sale Products`=%d ,`Store Unknown Sales State Products`=%d, `Store Optimal Availability Products`=%d , `Store Low Availability Products`=%d ,`Store Critical Availability Products`=%d ,`Store Out Of Stock Products`=%d,`Store Unknown Stock Products`=%d ,`Store Surplus Availability Products`=%d where `Store Key`=%d  ",
+		 $row['in_process'],
+		 $row['for_sale'],
+		 $row['discontinued'],
+		 $row['not_for_sale'],
+		 $row['sale_unknown'],
+		 $row['availability_optimal'],
 		    $row['availability_low'],
 		    $row['availability_critical'],
 		    $row['availability_outofstock'],

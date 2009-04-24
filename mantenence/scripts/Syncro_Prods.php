@@ -10,11 +10,11 @@ error_reporting(E_ALL);
 
 
 
-$con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
+$default_DB_link=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 
-if(!$con){print "Error can not connect with database server\n";exit;}
+if(!$default_DB_link){print "Error can not connect with database server\n";exit;}
 $dns_db='dw';
-$db=@mysql_select_db($dns_db, $con);
+$db=@mysql_select_db($dns_db, $default_DB_link);
 if (!$db){print "Error can not access the database\n";exit;}
   
 
@@ -32,10 +32,7 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
   $product=new Product($row['Product Key']);
 
-
-
-  $product->load('days');
-  $product->load('stock');
+  $product->selfsave();
 
 
 
@@ -43,7 +40,7 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
   print $row['Product Key']."\r";
 
-  exit;
+
 
 
  }

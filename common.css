@@ -326,7 +326,7 @@ table.options{margin:0 ;float:right;border-collapse: separate;;border-spacing:3p
 .options tr.title{}
 .options tr.title td{background:#fff;border:none;cursor:default;color:#555;text-align:left}
 .options tr.title td:hover{color:#555}
-span.save,span.reset,span.multiple,span.new {margin-left:10px;border:1px solid #aaa;color:#aaa;text-align:center;padding:2px 3px 2px 3px;cursor:pointer;font-weight:800}
+span.save,span.reset,span.multiple,span.new,span.button {margin-left:10px;border:1px solid #aaa;color:#aaa;text-align:center;padding:2px 3px 2px 3px;cursor:pointer;font-weight:800}
 span.multiple {padding-left:25px;background:  url("art/icons/application_cascade.png") no-repeat;background-position:2px 1.5px }
 span.new {padding-left:20px;background:  url("art/icons/new.png") no-repeat;background-position:2px 1.5px }
 
@@ -481,18 +481,18 @@ span.small{font-size:80%}
    user-select: none;
 }
 
-.inbox {padding:0;margin:0 }
+.inbox ,.inbox_form{padding:0;margin:0 auto}
 .inbox tr {border-left:1px solid #777;border-right:1px solid #777; }
 .inbox tr.bottom {border-bottom:1px solid #777;height:40px;}
 .inbox tr.bottom  td { vertical-align:top; }
 .inbox tr.tabs { border:none ;border-bottom:1px solid #777;height:30px;vertical-align:bottom}
 .inbox tr.tabs td { vertical-align:bottom;padding:0 10px;margin:0 }
-.inbox tr.buttons,.edit tr.buttons { border:none ;height:30px}
-.inbox tr.buttons td, .edit tr.buttons td{ vertical-align:bottom }
+.inbox_form tr.buttons,.inbox tr.buttons,.edit tr.buttons { border:none ;height:30px}
+.inbox_form tr.buttons,.inbox tr.buttons td, .edit tr.buttons td{ vertical-align:bottom }
 
-.inbox td span.tab     { border:1px solid #aaa;border-bottom:1px solid #777;color:#ccc ;vertical-align: bottom;;padding:4px 4px 0 4px;margin:0;cursor:pointer}
-.inbox td span.selected{ border:1px solid #777;color:#000;border-bottom:1px solid white;}
-.inbox span.button,.edit span.button{border:1px solid #777;padding:4px 4px;cursor:pointer; }
+.inbox td span.tab     { border:1px solid #aaa;border-bottom:1px solid #777;color:#aaa ;vertical-align: bottom;;padding:4px 4px 0 4px;margin:0;cursor:pointer;position:relative;top:1px}
+.inbox td span.selected{ border:1px solid #777;color:#000;border-bottom:1px solid white;position:relative;top:1px}
+.inbox_form  span.button,.inbox span.button,.edit span.button{border:1px solid #777;padding:4px 4px;cursor:pointer; }
 
 .edit_images{ margin:20px 0;width:800px; }
 .edit_images div.image{float:left;width:180px;margin:10px  20px 10px 0; }
@@ -522,6 +522,20 @@ span.small{font-size:80%}
 .prod_sdesc{ font-weight:800;}
 
 .rtext_rpp{cursor:pointer}
+
+.no_valid{color:#999}
+
+.addressform { font-size:9pt}
+  .addressform .field { font-size:9pt}
+  .addressform .label { font-size:9pt; text-align:right}
+  .autocomplete {border-bottom:solid 1px #aaaaaa; border-left:solid 1px #aaaaaa; border-right:solid 1px #aaaaaa; background-color:#fafafa}
+  .autocomplete A {text-decoration:none; color:#000000}
+  .autocomplete .item {padding:5px; border-bottom:solid 1px #aaaaaa; background-color:#fafafa}
+  .autocomplete .itemhover {padding:5px; border-bottom:solid 1px #aaaaaa; background-color:#f0f0f0}
+  .autocomplete .itemlast {border-top:solid 1px #aaaaaa; background-color:#ffffff}
+
+
+
 
 
 

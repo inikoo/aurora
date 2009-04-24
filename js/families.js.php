@@ -1,4 +1,6 @@
 <?
+//@author Raul Perusquia <rulovico@gmail.com>
+//Copyright (c) 2009 LW
 include_once('../common.php');
 ?>
 var Dom   = YAHOO.util.Dom;
@@ -19,19 +21,22 @@ var change_view=function(e){
 	     table.hideColumn('active');
 	     table.hideColumn('sales');
 	     table.hideColumn('profit');
-	         table.hideColumn('surplus');
-	    table.hideColumn('optimal');
-	    table.hideColumn('low');
-	    table.hideColumn('critcal');
-
+	     table.hideColumn('surplus');
+	     table.hideColumn('optimal');
+	     table.hideColumn('low');
+	     table.hideColumn('critcal');
+	     table.hideColumn('name');
 
 	    if(tipo=='sales'){
 		table.showColumn('profit');
 		table.showColumn('sales');
-			Dom.get('period_options').style.display='';
+		table.showColumn('name');
+
+		Dom.get('period_options').style.display='';
 		Dom.get('avg_options').style.display='';
 
 	    }else if(tipo=='general'){
+		table.showColumn('name');
 		  table.showColumn('active');
 		  Dom.get('period_options').style.display='none';
 		Dom.get('avg_options').style.display='none';
@@ -69,7 +74,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var OrdersColumnDefs = [ 
 				    {key:"code", label:"<?=_('Code')?>", width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    ,{key:"store", label:"<?=_('Store')?>", width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"name", label:"<?=_('Name')?>", width:280,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"name", label:"<?=_('Name')?>",<?=($_SESSION['state']['families']['view']=='stock'?'hidden:true,':'')?> width:280,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    ,{key:"active", label:"<?=_('Products')?>",  width:100,sortable:true,className:"aright",<?=($_SESSION['state']['families']['view']=='general'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    ,{key:"sales", label:"<?=_('Sales')?>", width:90,sortable:true,className:"aright",<?=($_SESSION['state']['families']['view']!='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    ,{key:"profit", label:"<?=_('Profit')?>", width:90,sortable:true,className:"aright",<?=($_SESSION['state']['families']['view']!='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
@@ -89,7 +94,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
 		resultsList: "resultset.data", 
-		metaFields: {
+		metaFields: { 
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
 		    rowsPerPage:"resultset.records_perpage",
 		    sort_key:"resultset.sort_key",
 		    sort_dir:"resultset.sort_dir",
@@ -102,7 +109,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 'id',
 			 "code",
 			 "name",
-			 'active',"stock_error","stock_value","outofstock","sales","profit","surplus","optimal","low","critical"
+			 'active',"stock_error","stock_value","outofstock","sales","profit","surplus","optimal","low","critical","store"
 			 ]};
 	    
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
@@ -110,7 +117,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							 //draggableColumns:true,
 							   renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage:<?=$_SESSION['state']['families']['table']['nr']?>,containers : 'paginator', 
+									      rowsPerPage:<?=$_SESSION['state']['families']['table']['nr']?>,containers : 'paginator0', 
  									      pageReportTemplate : '(<?=_('Page')?> {currentPage} <?=_('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -134,7 +141,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 	    
 	    this.table0.view='<?=$_SESSION['state']['families']['view']?>';
-
+	    this.table0.filter={key:'<?=$_SESSION['state']['families']['table']['f_field']?>',value:'<?=$_SESSION['state']['families']['table']['f_value']?>'};
 		
 
 
@@ -173,7 +180,11 @@ function change_avg(e,table_id){
 
  function init(){
  var Dom   = YAHOO.util.Dom;
-
+var Dom   = YAHOO.util.Dom;
+ var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
+ oACDS.queryMatchContains = true;
+ var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
+ oAutoComp.minQueryLength = 0; 
 
  ids=['general','sales','stock'];
  YAHOO.util.Event.addListener(ids, "click",change_view)
@@ -200,3 +211,16 @@ function change_avg(e,table_id){
 
 YAHOO.util.Event.onDOMReady(init);
 
+YAHOO.util.Event.onContentReady("rppmenu", function () {
+	 var oMenu = new YAHOO.widget.Menu("rppmenu", { context:["rtext_rpp0","tl", "tr"]  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+	 YAHOO.util.Event.addListener("rtext_rpp0", "click", oMenu.show, null, oMenu);
+    });
+
+YAHOO.util.Event.onContentReady("filtermenu", function () {
+	 var oMenu = new YAHOO.widget.Menu("filtermenu", { context:["filter_name0","tr", "br"]  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+	 YAHOO.util.Event.addListener("filter_name0", "click", oMenu.show, null, oMenu);
+    });

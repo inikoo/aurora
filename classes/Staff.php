@@ -1,4 +1,6 @@
 <?
+//@author Raul Perusquia <rulovico@gmail.com>
+//Copyright (c) 2009 LW
 require_once 'Name.php';
 require_once 'Email.php';
 
@@ -9,7 +11,7 @@ class Staff{
   var $status_names=array();
   var $id;
   var $tipo;
-
+  var $contact=false;
 
 
 
@@ -53,6 +55,43 @@ class Staff{
      $this->id=$this->data['Staff Key'];
     
 
+  }
+
+  function get($key){
+    if(!$this->id)
+      return;
+     if(array_key_exists($key,$this->data))
+      return $this->data[$key];
+     switch($key){
+     case('First Name'):
+       if(!is_object($this->contact))
+	 $this->contact=new Contact($this->data['Staff Contact Key']);
+       if($this->contact->id)
+	 return $this->contact->data['Contact First Name'];
+       else
+	 return '';
+       break;
+     case('Surname'):
+       if(!is_object($this->contact))
+	 $this->contact=new Contact($this->data['Staff Contact Key']);
+       if($this->contact->id)
+	 return $this->contact->data['Contact Surname'];
+       else
+	 return '';
+       break;
+     case('Email'):
+       if(!is_object($this->contact))
+	 $this->contact=new Contact($this->data['Staff Contact Key']);
+       if($this->contact->id)
+	 return strip_tags($this->contact->data['Contact Main XHTML Email']);
+       else
+	 return '';
+       break;
+
+
+     }
+
+    
   }
 
 

@@ -43,7 +43,7 @@ date_default_timezone_set('Europe/London');
    
 
 //  }
-$sql=sprintf("select * from aw_old.product   ");
+$sql=sprintf("select * from aw_old.product    ");
 $result=mysql_query($sql);
 while($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $product_code=$row2['code'];
@@ -96,41 +96,55 @@ while($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 	 print "PRIMARY ".$row['code']." $product_code  LOC: ".$location->id." SKU: $sku \n";
 
 	  $part= new Part($sku);
-	  $part->load('calculate_stock_history');
+	  $part->load('calculate_stock_history','audit');
 
 
-	 
+	  $associated=$part->get('Associated Locations');
+	  //	  print_r($associated);
 
-	 $pl=new PartLocation('1_'.$sku);
-	 
-	 $data=array(
-		     'user key'=>0
-		     ,'note'=>_('First record of location')
-		     ,'move_to'=>$location->id
-		     ,'qty'=>'all'
-
-		     );
-	 $pl->move_to($data);
-       
-	 $data=array(
-		     'user key'=>0
-		     ,'note'=>_('Location now known')
+	  
+	  $num_associated=count($associated);
+	  switch($num_associated){
+	  case 1:
+	    if($associated[0]==1){
+	      $pl=new PartLocation('1_'.$sku);
+	      $data=array(
+			  'user key'=>0
+			  ,'note'=>_('First record of location')
+			  ,'move_to'=>$location->id
+			  ,'qty'=>'all'
+			  
+			  );
+	      
+	      $pl->move_to($data);
+	     
+	      $data=array(
+			  'user key'=>0
+			  ,'note'=>_('Location now known')
 		     
-		     );
-	 
-	 $pl->destroy($data);
-	 
-	 
-	 $part->load('stock');
-	 $part->load('stock_history');
+			  );
+	      $pl->destroy($data);
 
-	 $location->load('parts_data');
-	 $unk=new Location(1);
-	 $unk->load('parts_data');
+	      $part->load('stock');
+	      $part->load('stock_history');
+	      
+	      
+	      $location->load('parts_data');
+	      $unk=new Location(1);
+	      $unk->load('parts_data');
 	 
-	 $primary=false;
-	
-       }else{
+	      $primary=false;
+	    }elseif($associated[0]==$location->id){
+	      break;
+	    }else
+	      exit("todo a");
+	    break;
+	  default:
+	    print_r($associated);
+	    exit("todo b");
+	  }
+
+	    }else{
 	 print "STORING ".$row['code']." $product_code  LOC: ".$location->id." SKU: $sku \n";
 
 	 $pl=new PartLocation($location->id.'_'.$sku);

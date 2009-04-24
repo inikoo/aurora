@@ -40,8 +40,12 @@ $sql="select `Part Status`,`Part SKU`,`Part Valid From`,`Part Valid To`,`Part XH
 $resultx=mysql_query($sql);
 $counter=1;
 while($rowx=mysql_fetch_array($resultx, MYSQL_ASSOC)   ){
+ 
   $part= new Part($rowx['Part SKU']);
+ 
+  //print $part->data['Part SKU']."\n";
   $part->load('calculate_stock_history','last');
+ 
  }
 //   // $location_key=1;
 //   //$pl=new PartLocation(array('LocationPart'=>$location_key."_".$part_sku));

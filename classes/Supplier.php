@@ -236,17 +236,20 @@ class supplier{
      break;
   
   case('sales'):
-    $sql=sprintf("select sum(`Supplier Product Total Parts Profit`) as profit,sum(`Supplier Product Total Parts Profit After Storing`) as profit_astoring,sum(`Supplier Product Total Cost`) as cost  from `Supplier Product Dimension`  where `Supplier Product Supplier Key`=%d",$this->id);
+    $sql=sprintf("select sum(`Supplier Product Total Sold Amount`) as sold,sum(`Supplier Product Total Parts Profit`) as profit,sum(`Supplier Product Total Parts Profit After Storing`) as profit_astoring,sum(`Supplier Product Total Cost`) as cost  from `Supplier Product Dimension`  where `Supplier Product Supplier Key`=%d",$this->id);
     //    print $sql;
     $result=mysql_query($sql);
     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
       $this->data['Supplier Total Parts Profit']=$row['profit'];
       $this->data['Supplier Total Parts Profit After Storing']=$row['profit_astoring'];
       $this->data['Supplier Total Cost']=$row['cost'];
-     $sql=sprintf("update `Supplier Dimension` set  `Supplier Total Parts Profit`=%.2f,`Supplier Total Parts Profit After Storing`=%.2f,`Supplier Total Cost`=%.2f where `Supplier Key`=%d "
+      $this->data['Supplier Total Parts Sold Amount']=$row['sold'];
+
+     $sql=sprintf("update `Supplier Dimension` set  `Supplier Total Parts Profit`=%.2f,`Supplier Total Parts Profit After Storing`=%.2f,`Supplier Total Cost`=%.2f ,`Supplier Total Parts Sold Amount`=%.2f  where `Supplier Key`=%d "
 		  ,$this->data['Supplier Total Parts Profit']
 		  ,$this->data['Supplier Total Parts Profit After Storing']
 		  ,$this->data['Supplier Total Cost']
+		  ,$this->data['Supplier Total Parts Sold Amount']
 		  ,$this->id
 		  );
      //      print "$sql\n";

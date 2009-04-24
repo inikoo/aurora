@@ -232,7 +232,10 @@ $default_state=array(
 						      'f_value'=>'',
 						      'from'=>'',
 						      'to'=>'',
-						      'elements'=>array()
+						      'elements'=>array(),
+						      'mode'=>'same_code',//same_code,same_id,all
+						      'parent'=>'none',//store,department,family,none
+						      'restrictions'=>'forsale'
 						      )
 				       ),
 		      'supplier_products'=>array(
@@ -380,7 +383,7 @@ $default_state=array(
 
 		     'store'=>array(
 					  'details'=>false,
-					  'percentages'=>true,
+					  'percentages'=>false,
 					  'view'=>'general',
 					  'period'=>'year',
 					  'percentage'=>0,
@@ -398,11 +401,30 @@ $default_state=array(
 							 'nr'=>25,
 							 )
 					  ),
-
+		     'departments'=>array(
+					  'details'=>false,
+					  'percentages'=>false,
+					  'view'=>'general',
+					  'period'=>'year',
+					  'percentage'=>0,
+					  'mode'=>'all',
+					  'avg'=>'totals',
+					  'edit'=>false,
+					  'id'=>1,
+					  'table'=>array(
+							 'where'=>'where true',
+							 'f_field'=>'code',
+							 'f_value'=>'',
+							 'order'=>'name',
+							 'order_dir'=>'',
+							 'sf'=>0,
+							 'nr'=>25,
+							 )
+					  ),
 		     
 		     'department'=>array(
 				       'details'=>false,
-				       'percentages'=>true,
+				       'percentages'=>false,
 				       'view'=>'general',
 				       'id'=>1,
 				       'period'=>'year',
@@ -466,7 +488,7 @@ $default_state=array(
 		     'families'=>array(
 				       'details'=>false,
 				       'view'=>'general',
-				       'percentages'=>true,
+				       'percentages'=>false,
 				       'period'=>'year',
 				       'percentage'=>0,
 				       'mode'=>'all',
@@ -481,8 +503,10 @@ $default_state=array(
 						      'nr'=>20,
 						      'where'=>'where true',
 						      'f_field'=>'code',
-						      'f_value'=>''
-
+						      'f_value'=>'',
+						      'mode'=>'same_code',//same_code,same_id,all
+						      'parent'=>'none',//store,department,family,none
+						      'restrictions'=>'forsale',
 						      )
 				     ),
 
@@ -680,7 +704,7 @@ $default_state=array(
 				     ),
 		       'stores'=>array(
 					  'details'=>false,
-					  'percentages'=>true,
+					  'percentages'=>false,
 					  'view'=>'general',
 					  'period'=>'year',
 					  'percentage'=>0,

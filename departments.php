@@ -1,4 +1,5 @@
 <?
+//@Created 20-04-2009 17:38
 //@author Raul Perusquia <rulovico@gmail.com>
 //Copyright (c) 2009 LW
 include_once('common.php');
@@ -20,7 +21,7 @@ $smarty->assign('modify',$modify);
 if(isset($_REQUEST['edit']))
   $edit=$_REQUEST['edit'];
 else
-  $edit=$_SESSION['state']['stores']['edit'];
+  $edit=$_SESSION['state']['departments']['edit'];
 
 
 
@@ -50,10 +51,10 @@ $js_files=array(
 
 if($edit){
   $js_files[]='js/edit_common.js';
-  $js_files[]='js/edit_stores.js.php';
+  $js_files[]='js/edit_departments.js.php';
  } else{
    $js_files[]='js/search.js';
-   $js_files[]='js/stores.js.php';
+   $js_files[]='js/departments.js.php';
  }
 
 
@@ -62,18 +63,18 @@ $smarty->assign('js_files',$js_files);
 
 
 
-$_SESSION['state']['assets']['page']='stores';
+$_SESSION['state']['assets']['page']='departments';
 //if(isset($_REQUEST['view'])){
 //  $valid_views=array('sales','general','stoke');
 //  if (in_array($_REQUEST['view'], $valid_views)) 
-//    $_SESSION['state']['stores']['view']=$_REQUEST['view'];
+//    $_SESSION['state']['departments']['view']=$_REQUEST['view'];
 //
 // }
-$smarty->assign('view',$_SESSION['state']['stores']['view']);
-$smarty->assign('show_details',$_SESSION['state']['stores']['details']);
-$smarty->assign('show_percentages',$_SESSION['state']['stores']['percentages']);
-$smarty->assign('avg',$_SESSION['state']['stores']['avg']);
-$smarty->assign('period',$_SESSION['state']['stores']['period']);
+$smarty->assign('view',$_SESSION['state']['departments']['view']);
+$smarty->assign('show_details',$_SESSION['state']['departments']['details']);
+$smarty->assign('show_percentages',$_SESSION['state']['departments']['percentages']);
+$smarty->assign('avg',$_SESSION['state']['departments']['avg']);
+$smarty->assign('period',$_SESSION['state']['departments']['period']);
 
 
 //$sql="select id from product";
@@ -89,26 +90,26 @@ $smarty->assign('period',$_SESSION['state']['stores']['period']);
 
 
 $smarty->assign('parent','stores.php');
-$smarty->assign('title', _('Stores'));
+$smarty->assign('title', _('Departments'));
 //$smarty->assign('total_stores',$stores['numberof']);
 //$smarty->assign('table_title',$table_title);
 
 
 
-$stores=array();
-$sql=sprintf("select count(*) as num from `Store Dimension` CD order by `Store Key`");
+$departments=array();
+$sql=sprintf("select count(*) as num from `Product Department Dimension` ");
 
 $res=mysql_query($sql);
 if($row=mysql_fetch_array($res)){
-  $stores=$row['num'];
+  $departments=$row['num'];
  }
  
-$smarty->assign('stores',$stores);
+$smarty->assign('departments',$departments);
 
 $q='';
-$tipo_filter=($q==''?$_SESSION['state']['stores']['table']['f_field']:'code');
+$tipo_filter=($q==''?$_SESSION['state']['departments']['table']['f_field']:'code');
 $smarty->assign('filter',$tipo_filter);
-$smarty->assign('filter_value',($q==''?$_SESSION['state']['stores']['table']['f_value']:addslashes($q)));
+$smarty->assign('filter_value',($q==''?$_SESSION['state']['departments']['table']['f_value']:addslashes($q)));
 $filter_menu=array(
 		   'code'=>array('db_key'=>'code','menu_label'=>'Store starting with  <i>x</i>','label'=>'Code'),
 		   'description'=>array('db_key'=>'description','menu_label'=>'Store Description with <i>x</i>','label'=>'Description'),
@@ -122,8 +123,8 @@ $smarty->assign('paginator_menu',$paginator_menu);
 
 
 if($edit){
-$smarty->display('edit_stores.tpl');
+$smarty->display('edit_departments.tpl');
  }else
-$smarty->display('stores.tpl');
+$smarty->display('departments.tpl');
 
 ?>

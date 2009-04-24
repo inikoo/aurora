@@ -1,7 +1,9 @@
 <?
+//@author Raul Perusquia <rulovico@gmail.com>
+//Copyright (c) 2009 LW
 include_once('common.php');
 include_once('stock_functions.php');
-print_r($_SESSION['state']['families']);
+
 $view_sales=$LU->checkRight(PROD_SALES_VIEW);
 $view_stock=$LU->checkRight(PROD_STK_VIEW);
 $create=$LU->checkRight(PROD_CREATE);
@@ -96,7 +98,24 @@ $smarty->assign('families',number($families['numberof']));
 $smarty->assign('parent','families.php');
 $smarty->assign('title', _('Product Families'));
 //$smarty->assign('total_families',$families['numberof']);
-$smarty->assign('table_title',$table_title);
+
+
+$q='';
+$tipo_filter=($q==''?$_SESSION['state']['families']['table']['f_field']:'code');
+$smarty->assign('filter',$tipo_filter);
+$smarty->assign('filter_value',($q==''?$_SESSION['state']['families']['table']['f_value']:addslashes($q)));
+$filter_menu=array(
+		   'code'=>array('db_key'=>'code','menu_label'=>'Family starting with  <i>x</i>','label'=>'Code'),
+		   'description'=>array('db_key'=>'description','menu_label'=>'Family Description with <i>x</i>','label'=>'Description'),
+		   );
+$smarty->assign('filter_menu',$filter_menu);
+
+$smarty->assign('filter_name',$filter_menu[$tipo_filter]['label']);
+
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu',$paginator_menu);
+
+
 
 $smarty->display('families.tpl');
 

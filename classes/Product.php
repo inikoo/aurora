@@ -1,4 +1,6 @@
 <?
+//@author Raul Perusquia <rulovico@gmail.com>
+//Copyright (c) 2009 LW
 include_once('Deal.php');
 include_once('SupplierProduct.php');
 include_once('Part.php');
@@ -623,25 +625,26 @@ case('Price Anonymous Info'):
 
 
     case('Full Order Form'):
-      global $site_checkout_address,$site_checkout_id;
-	$form=sprintf('<div class="ind_form"><span class="code">%s</span><br/><span class="name">%sx %s</span><br/><span class="price">%s</span><br/><span class="rrp">%s</span><br/>
+      global $site_checkout_address_indv,$site_checkout_id,$site_url;
+	$form=sprintf('<div style="font-size:11px;font-family:arial;" class="ind_form"><span class="code">%s</span><br/><span class="name">%sx %s</span><br/><span class="price">%s</span><br/><span class="rrp">%s</span><br/>
 <form action="%s" method="post">
 <input type="hidden" name="userid" value="%s">
 <input type="hidden" name="product" value="%s %sx %s">
 <input type="hidden" name="return" value="%s">
 <input type="hidden" name="price" value="%.2f">
 <input class="order" type="text" size="1" class="qty" name="qty" value="1">
-<input class="submit" type="Submit" value="%s"></form>
+<input class="submit" type="Submit" value="%s" style="cursor:pointer; font-size:12px;font-family:arial;" ></form>
 </div>'
 		      ,$this->data['Product Code']
 		      ,$this->data['Product Units Per Case']
-		      ,$this->data['Product Name'],$this->get('Price Formated'),$this->get('RRP Formated')
-		      ,addslashes($site_checkout_address)
+		      ,$this->data['Product Name']
+		      ,$this->get('Price Formated'),$this->get('RRP Formated')
+		      ,addslashes($site_checkout_address_indv)
 		      ,addslashes($site_checkout_id)
 		      ,addslashes($this->data['Product Code'])
 		      ,addslashes($this->data['Product Units Per Case'])
-		      ,addslashes($this->data['Product Name'])
-		      ,$_SERVER['PHP_SELF']
+		      ,clean_accents(addslashes($this->data['Product Name']))
+		      ,$site_url.$_SERVER['PHP_SELF']
 		      ,$this->data['Product Price']
 		      ,$this->get('Order Msg')
 		      
@@ -654,18 +657,26 @@ case('Price Anonymous Info'):
 	break;
     case('Order List Form'):
       
+      $counter=$data['counter'];
+      $options=$data['options'];
+       $rrp='';
+       if(isset($options['show individual rrp']) and $options['show individual rrp'] )
+	$rrp=" <span class='rrp_in_list'>(".$this->get('RRP Formated').')</span>';
+      
+      
+
       $form=sprintf('<tr><td class="first"><span class="price">%s</span>%s</td><td class="qty"><input type="text"  class="qty" name="qty%d"  id="qty%d"    /><td><span class="desc">%s</span></td></tr><input type="hidden"  name="price%d"  value="%.2f"  ><input type="hidden"  name="product%d"  value="%s %dx %s" ></td></tr>'
 		      ,$this->get('Price')
 		      ,$this->data['Product Code']
-		      ,$data
-		      ,$data
-		      ,$this->data['Product Special Characteristic']
-		      ,$data
+		      ,$counter
+		      ,$counter
+		      ,$this->data['Product Special Characteristic'].$rrp
+		      ,$counter
 		      ,$this->data['Product Price']
-		      ,$data
+		      ,$counter
 		      ,$this->data['Product Code']
 		      ,$this->data['Product Units Per Case']
-		      ,$this->data['Product Name']
+		    ,clean_accents($this->data['Product Name'])
 		      
 		      
 );
@@ -1058,8 +1069,8 @@ function valid_id($id){
   function create($data){
 
     $base_data=array(
-		     'product sales state'=>'Unknown',
-		     'product web state'=>'Unknown',
+		     'product sales state'=>'In process',
+		     'product web state'=>'No Applicable',
 		     'product store key'=>1,
 		     'product locale'=>'en_GB',
 		     'product id'=>'',
@@ -1112,7 +1123,8 @@ function valid_id($id){
     if(!is_numeric($base_data['product units per case']) or $base_data['product units per case']<1)
       $base_data['product units per case']=1;
 
-    $department=false;$new_department=false;
+    $department=false;
+    $new_department=false;
     if($base_data['product main department code']!='' and $base_data['product main department key']==''){
       $department=new Department('code_store',$base_data['product main department code'],$base_data['product store key']);
       if(!$department->id){
@@ -1860,12 +1872,17 @@ $y_days=count($y_days);
  break;
    case('sales'):
      $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Consolidated`='Yes' and `Product Key`=%d",$this->id);
+     //  print "$sql\n";
      $result=mysql_query($sql);
      if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
        $this->data['Product Total Invoiced Gross Amount']=$row['gross'];
        $this->data['Product Total Invoiced Discount Amount']=$row['disc'];
        $this->data['Product Total Invoiced Amount']=$row['gross']-$row['disc'];
        $this->data['Product Total Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
+       if($this->data['Product Total Invoiced Amount']!=0)
+	 $this->data['Product Total Margin']=100*$this->data['Product Total Profit']/$this->data['Product Total Invoiced Amount'];
+       else
+	 $this->data['Product Total Margin']='NULL';
        $this->data['Product Total Quantity Ordered']=$row['ordered'];
        $this->data['Product Total Quantity Invoiced']=$row['invoiced'];
        $this->data['Product Total Quantity Delivered']=$row['delivered'];
@@ -1874,16 +1891,20 @@ $y_days=count($y_days);
        $this->data['Product Total Invoiced Discount Amount']=0;
        $this->data['Product Total Invoiced Amount']=0;
        $this->data['Product Total Profit']=0;
+       $this->data['Product Total Margin']='NULL';
+
        $this->data['Product Total Quantity Ordered']=0;
        $this->data['Product Total Quantity Invoiced']=0;
        $this->data['Product Total Quantity Delivered']=0;
      }
-      $sql=sprintf("update `Product Dimension` set `Product Total Invoiced Gross Amount`=%.2f,`Product Total Invoiced Discount Amount`=%.2f,`Product Total Invoiced Amount`=%.2f,`Product Total Profit`=%.2f, `Product Total Quantity Ordered`=%s , `Product Total Quantity Invoiced`=%s,`Product Total Quantity Delivered`=%s  where `Product Key`=%d "
+     $sql=sprintf("update `Product Dimension` set `Product Total Invoiced Gross Amount`=%.2f,`Product Total Invoiced Discount Amount`=%.2f,`Product Total Invoiced Amount`=%.2f,`Product Total Profit`=%.2f,`Product Total Margin`=%s, `Product Total Quantity Ordered`=%s , `Product Total Quantity Invoiced`=%s,`Product Total Quantity Delivered`=%s  where `Product Key`=%d "
 		  ,$this->data['Product Total Invoiced Gross Amount']
 		  ,$this->data['Product Total Invoiced Discount Amount']
 		  ,$this->data['Product Total Invoiced Amount']
 
 		  ,$this->data['Product Total Profit']
+		   ,$this->data['Product Total Margin']
+
 		  ,prepare_mysql($this->data['Product Total Quantity Ordered'])
 		  ,prepare_mysql($this->data['Product Total Quantity Invoiced'])
 		  ,prepare_mysql($this->data['Product Total Quantity Delivered'])
@@ -1900,6 +1921,7 @@ $y_days=count($y_days);
        $this->data['Product Same ID Total Invoiced Discount Amount']=$row['disc'];
        $this->data['Product Same ID Total Invoiced Amount']=$row['gross']-$row['disc'];
        $this->data['Product Same ID Total Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
+       
        $this->data['Product Same ID Total Quantity Ordered']=$row['ordered'];
        $this->data['Product Same ID Total Quantity Invoiced']=$row['invoiced'];
        $this->data['Product Same ID Total Quantity Delivered']=$row['delivered'];
@@ -1908,6 +1930,8 @@ $y_days=count($y_days);
        $this->data['Product Same ID Total Invoiced Discount Amount']=0;
        $this->data['Product Same ID Total Invoiced Amount']=0;
        $this->data['Product Same ID Total Profit']=0;
+       $this->data['Product Same ID Total Margin']=0;
+
        $this->data['Product Same ID Total Quantity Ordered']=0;
        $this->data['Product Same ID Total Quantity Invoiced']=0;
        $this->data['Product Same ID Total Quantity Delivered']=0;
@@ -2741,6 +2765,44 @@ function update($key,$a1=false,$a2=false){
 
 
  }
+
+
+ function selfsave(){
+   $values='';
+   foreach($this->data as $key=>$value){
+     if(preg_match('/name|price|rrp|description|special|case|unit|^product code$|file as|store|family|department|state|tariff|package|volume|weight|availa|stock|recent|updated/i',$key))
+       $values.="`$key`=".prepare_mysql($value).",";
+
+   }
+   //$keys=preg_replace('/,$/',')',$keys);
+   $values=preg_replace('/,$/','',$values);
+   $sql=sprintf("update `Product Dimension` set %s where `Product Key`=%d",$values,$this->id);
+    if(!mysql_query($sql)){
+      exit("error can not self save $sql\n");
+    }
+ }
+
+
+ function syncronize(){
+
+   global $external_dns_host,$external_dns_user,$external_dns_pwd,$default_DB_link;
+   $ext_link = mysql_connect($external_dns_host,$external_dns_user,$external_dns_pwd);
+   
+   $this->get('id',$this->id,false);
+   mysql_select_db($external_dns_db, $ex_link);
+   $sql="update";
+   
+   mysql_select_db($external_dns_db, $default_DB_link);
+
+ }
+
+
+function removeaccents($string)
+{
+  return strtr($string,"é","e");
+} 
+
+
 
 }
 ?>

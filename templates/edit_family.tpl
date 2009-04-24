@@ -23,9 +23,6 @@
       </td></tr>
     </table>
   </div>
-
-
-
   <div id="add_product_form" style="padding:0;margin:0;display:none">
     <h2>{t}Adding new product{/t}</h2>
     <div id="add_family_messages"></div>
@@ -89,10 +86,15 @@
   </div>
 
 </div>
+<span class="new" style="font-size:90%;margin:20px" id="add_new_product">{t}Add Product{/t}</span>
+<br>
+  <div   class="data_table" style="margin:30px 20px 20px 20px">
 
-
-  <div   class="data_table" style="margin:0px 20px">
-    <span class="clean_table_title">{t}Products{/t}</span> <span class="new" style="font-size:90%" id="add_new_product">{t}Add Product{/t}</span> <span class="multiple" style="font-size:90%" id="restrictions" value="for_sale" on click="change_multiple(this)"  >{t}For Sale{/t}</span>
+    <span class="clean_table_title">{t}Products{/t}</span> 
+    <span class="button" style="margin:0px;margin-left:35px">Name</span>  
+    <span class="button"style="margin:0px" >Price</span>  
+    
+    <span style="float:right" class="state_details"  id="restrictions" value="for_sale" on click="change_multiple(this)"  >{t}displaying: products for sale{/t}</span>
     <div  class="clean_table_caption"  style="clear:both;">
       <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
       <div class="clean_table_filter" style="display:none" id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0">{$filter_name0}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value0}" size=10/><div id='f_container0'></div></div></div>
