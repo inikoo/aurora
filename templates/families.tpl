@@ -1,5 +1,6 @@
 {include file='header.tpl'}
 <div id="bd" >
+  <span class="nav2 onleft"><a  href="stores.php">{t}Stores{/t}</a></span>
   <span class="nav2 onleft"><a href="departments.php">{t}Departments{/t}</a></span>
   <span class="nav2 onleft"><a class="selected" href="families.php">{t}Families{/t}</a></span>
   <span class="nav2 onleft"><a href="products.php">{t}Products{/t}</a></span>

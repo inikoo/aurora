@@ -61,6 +61,7 @@ var addtotals =function (){
 	    table.showColumn('stock_value');
 	    Dom.get('period_options').style.display='none';
 	    Dom.get('avg_options').style.display='none';
+	    table.showColumn('shortname');
 	}else if(tipo=='parts'){
 	    table.showColumn('parts');
 	    table.showColumn('supplied');

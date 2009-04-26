@@ -419,6 +419,7 @@ $default_state=array(
 							 'order_dir'=>'',
 							 'sf'=>0,
 							 'nr'=>25,
+							 'parent'=>''
 							 )
 					  ),
 		     
@@ -490,7 +491,6 @@ $default_state=array(
 				       'view'=>'general',
 				       'percentages'=>false,
 				       'period'=>'year',
-				       'percentage'=>0,
 				       'mode'=>'all',
 				       'avg'=>'totals',
 				       'mode'=>'same_code',//same_code,same_id,all
@@ -707,7 +707,6 @@ $default_state=array(
 					  'percentages'=>false,
 					  'view'=>'general',
 					  'period'=>'year',
-					  'percentage'=>0,
 					  'mode'=>'all',
 					  'avg'=>'totals',
 					  'edit'=>false,

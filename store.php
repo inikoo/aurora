@@ -129,9 +129,30 @@ while($row=mysql_fetch_array($res)){
       $first=FALSE;
     }
 }
+
+
+
+
+
+
  $smarty->assign('stores',$stores);
 $smarty->display('edit_store.tpl');
- }else
-$smarty->display('store.tpl');
+ }else{
 
+
+
+  $q='';
+  $tipo_filter=($q==''?$_SESSION['state']['store']['table']['f_field']:'code');
+  $smarty->assign('filter',$tipo_filter);
+  $smarty->assign('filter_value',($q==''?$_SESSION['state']['store']['table']['f_value']:addslashes($q)));
+  $filter_menu=array(
+		   'code'=>array('db_key'=>'code','menu_label'=>'Store starting with  <i>x</i>','label'=>'Code')
+		     );
+  $smarty->assign('filter_menu',$filter_menu);
+  
+  $smarty->assign('filter_name',$filter_menu[$tipo_filter]['label']);
+  $paginator_menu=array(10,25,50,100,500);
+  $smarty->assign('paginator_menu',$paginator_menu);
+  $smarty->display('store.tpl');
+ }
 ?>

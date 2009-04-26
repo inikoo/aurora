@@ -1,4 +1,6 @@
 <?
+//@author Raul Perusquia <rulovico@gmail.com>
+//Copyright (c) 2009 LW
 include_once('../../app_files/db/dns.php');
 include_once('../../classes/Department.php');
 include_once('../../classes/Family.php');
@@ -18,7 +20,7 @@ if (!$db){print "Error can not access the database\n";exit;}
 require_once '../../common_functions.php';
 mysql_query("SET time_zone ='UTC'");
 mysql_query("SET NAMES 'utf8'");
-require_once '../../myconf/conf.php';           
+require_once '../../conf/conf.php';           
 date_default_timezone_set('Europe/London');
 
 // $sql="select * from aw_old.location  group by code" ;
@@ -43,7 +45,7 @@ date_default_timezone_set('Europe/London');
    
 
 //  }
-$sql=sprintf("select * from aw_old.product    ");
+$sql=sprintf("select * from aw_old.product where code='LBI-03'    ");
 $result=mysql_query($sql);
 while($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $product_code=$row2['code'];
@@ -56,7 +58,7 @@ while($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
 
   while($row=mysql_fetch_array($result2xxx, MYSQL_ASSOC)   ){
-    
+    print "--------------\n";
      $location_code=$row['code'];
 
 
@@ -94,19 +96,13 @@ while($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ){
        
        if($primary){
 	 print "PRIMARY ".$row['code']." $product_code  LOC: ".$location->id." SKU: $sku \n";
-
-	  $part= new Part($sku);
-	  $part->load('calculate_stock_history','audit');
-
-
-	  $associated=$part->get('Associated Locations');
-	  //	  print_r($associated);
-
-	  
-	  $num_associated=count($associated);
-	  switch($num_associated){
-	  case 1:
-	    if($associated[0]==1){
+	 $part= new Part($sku);
+	 $part->load('calculate_stock_history','continue');
+	 $associated=$part->get('Associated Locations');
+	 $num_associated=count($associated);
+	 switch($num_associated){
+	 case 1:
+	   if($associated[0]==1){
 	      $pl=new PartLocation('1_'.$sku);
 	      $data=array(
 			  'user key'=>0
@@ -121,10 +117,10 @@ while($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 	      $data=array(
 			  'user key'=>0
 			  ,'note'=>_('Location now known')
-		     
+			  
 			  );
 	      $pl->destroy($data);
-
+	      
 	      $part->load('stock');
 	      $part->load('stock_history');
 	      
@@ -133,20 +129,23 @@ while($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 	      $unk=new Location(1);
 	      $unk->load('parts_data');
 	 
-	      $primary=false;
+
 	    }elseif($associated[0]==$location->id){
 	      break;
-	    }else
-	      exit("todo a");
-	    break;
-	  default:
-	    print_r($associated);
-	    exit("todo b");
-	  }
-
 	    }else{
+	      print_r( $location->data);
+	      print_r($associated);
+	      exit("todo a");
+	    }
+	      break;
+	 default:
+	   print_r($associated);
+	   exit("todo b");
+	 }
+	 
+       }else{
 	 print "STORING ".$row['code']." $product_code  LOC: ".$location->id." SKU: $sku \n";
-
+	 
 	 $pl=new PartLocation($location->id.'_'.$sku);
 	 $data=array(
 		     'user key'=>0
@@ -157,7 +156,7 @@ while($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 	 $pl->create($data);
 	 $location->load('parts_data');
        }
-
+       $primary=false;
        
       
      }
