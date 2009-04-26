@@ -1,5 +1,6 @@
 <?
-
+//@author Raul Perusquia <rulovico@gmail.com>
+//Copyright (c) 2009 LW
 class part{
   
 
@@ -99,8 +100,8 @@ class part{
 	$force='all';
       if(preg_match('/last|audit/',$args))
 	$force='last';
-      if(preg_match('/complete/',$args))
-	$force='complete';
+      if(preg_match('/continue/',$args))
+	$force='continue';
 
 
       $part_sku=$this->data['Part SKU'];
@@ -122,7 +123,7 @@ class part{
 	    $_from=$this->data['Part Valid From'];
 	  }elseif($force=='last'){
 	    $_from=$pl->last_inventory_audit();
-	  }elseif($force=='complete'){
+	  }elseif($force=='continue'){
 	    $_from=$pl->last_inventory_date();
 	  }else{
 	    $_from=$pl->first_inventory_transacion();
@@ -175,6 +176,9 @@ class part{
       break;
 
     case('stock'):
+
+      $this->load('locations');
+
       $stock='';
       $value='';
       $sql=sprintf("select sum(`Quantity On Hand`) as stock,sum(`Value At Cost`) as value from `Inventory Spanshot Fact` where  `Part SKU`=%d and `Date`=%s",$this->data['Part SKU'],prepare_mysql(date("Y-m-d",strtotime('today'))));

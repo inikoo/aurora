@@ -1,9 +1,13 @@
 <?
+//@author Raul Perusquia <rulovico@gmail.com>
+//Copyright (c) 2009 LW
 include_once('Part.php');
 include_once('Location.php');
 
 class PartLocation{
   
+  var $data=array();
+
   function __construct($data=false) {
     
     if(is_array($data)){
@@ -24,8 +28,18 @@ class PartLocation{
       $this->part_sku=$tmp[1];
       
     }
+    $this->get_data();
+
+  }
 
 
+  function get_data(){
+    $this->current=false;
+    $sql=sprintf("select * from `Part Location Dimension` where `Part SKU`=%d and `Location Key`=%d",$this->part_sku,$this->location_key);
+    $result=mysql_query($sql);
+    if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)){
+      $this->current=true;
+    }
   }
 
   function last_inventory_date(){
@@ -155,6 +169,8 @@ function last_inventory_audit(){
     $day_before_date = date ("Y-m-d", strtotime ($start_date."-1 day", strtotime($from)));
     $check_date = $start_date;
     $end_date =date("Y-m-d",$to);
+    if($end_date=date("Y-m-d"))
+      $uptodate=true;
     $i = 0;
    
    
@@ -409,11 +425,29 @@ function last_inventory_audit(){
 
 
 
-    if($uptodate){
-      $part=new Part('sku',$this->part_sku);
-      $part->load('stock');
+    if($uptodate and $associated){
+      
+      if($this->current){
+	$sql=sprintf("update `Part Location Dimension` set `Quantity on Hand`=%s ,`Stock Value`=%s `Last Updated`=NOW() where `Part SKU`=%d and `Location Key`=%d ",$qty_inicio,$value_inicio,$this->part_sku,$this->location_key);
+	mysql_query($sql);
+      }else{
+	$location=new Location($this->location_key);
+	if($location->data['Location Mainly Used For']=='Picking')
+	  $can_pick='Yes';
+	else
+	  $can_pick='No';
+	$sql=sprintf("insert into `Part Location Dimension` (`Quantity on Hand`,`Stock Value`,`Last Updated`,`Part SKU`,`Location Key`,`Can Pick`) values (%s,%s,NOW(),%d,%d,%s)",$qty_inicio,$value_inicio,$this->part_sku,$this->location_key,prepare_mysql($sql));
+	//	print "$sql\n";
+	mysql_query($sql);
+      }
+      //$part=new Part('sku',$this->part_sku);
+      //$part->load('stock');
+    }else{
+      if($this->current){
+	$sql=sprintf("delete from  `Part Location Dimension` where `Part SKU`=%d and `Location Key`=%d ",$qty_inicio,$value_inicio,$this->part_sku,$this->location_key);
+	mysql_query($sql);
+      }
     }
-
   }
 
 

@@ -18,6 +18,7 @@ var Dom   = YAHOO.util.Dom;
 	    table.hideColumn('families');
 	    table.hideColumn('departments');
 	    table.hideColumn('todo');
+	    table.hideColumn('discontinued');
 
 	    table.hideColumn('sales');
 	    table.hideColumn('profit');
@@ -42,6 +43,7 @@ var Dom   = YAHOO.util.Dom;
 		table.showColumn('families');
 		table.showColumn('departments');
 		table.showColumn('todo');
+		table.showColumn('discontinued');
 
 	    }
 	    if(tipo=='stock'){
@@ -79,12 +81,13 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 				    ,{key:"name", label:"<?=_('Name')?>", width:280,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				
-				    ,{key:"departments", label:"<?=_('Departments')?>", width:100,sortable:true,className:"aright",<?=($_SESSION['state']['stores']['view']=='general'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"departments", label:"<?=_('Departments')?>", width:90,sortable:true,className:"aright",<?=($_SESSION['state']['stores']['view']=='general'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    
-				    ,{key:"families", label:"<?=_('Families')?>", width:100,sortable:true,className:"aright",<?=($_SESSION['state']['stores']['view']=='general'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"active", label:"<?=_('Products')?>",  width:100,sortable:true,className:"aright",<?=($_SESSION['state']['stores']['view']=='general'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"todo", label:"<?=_('To do')?>",  width:100,sortable:true,className:"aright",<?=($_SESSION['state']['stores']['view']=='general'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-
+				    ,{key:"families", label:"<?=_('Families')?>", width:90,sortable:true,className:"aright",<?=($_SESSION['state']['stores']['view']=='general'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"active", label:"<?=_('Products')?>",  width:90,sortable:true,className:"aright",<?=($_SESSION['state']['stores']['view']=='general'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"discontinued", label:"<?=_('Discontinued')?>",  width:90,sortable:true,className:"aright",<?=($_SESSION['state']['stores']['view']=='general'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"todo", label:"<?=_('To do')?>",  width:90,sortable:true,className:"aright",<?=($_SESSION['state']['stores']['view']=='general'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    
 				    ,{key:"sales", label:"<?=_('Sales')?>", width:90,sortable:true,className:"aright",<?=($_SESSION['state']['stores']['view']=='sales'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    ,{key:"profit", label:"<?=_('Profit')?>", width:90,sortable:true,className:"aright",<?=($_SESSION['state']['stores']['view']=='sales'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
@@ -128,7 +131,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 'id',
 			 "name",
 			 'families','departments',
-			 'active',"sales","stock_error","stock_value","outofstock","profit","surplus","optimal","low","critical","code","todo"
+			 'active',"sales","stock_error","stock_value","outofstock","profit","surplus","optimal","low","critical","code","todo","discontinued"
 			 ]};
 	    
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,

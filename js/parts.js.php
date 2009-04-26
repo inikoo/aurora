@@ -1,4 +1,6 @@
 <?
+//@author Raul Perusquia <rulovico@gmail.com>
+//Copyright (c) 2009 LW
 include_once('../common.php');
 ?>
 
@@ -105,6 +107,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		resultsList: "resultset.data", 
 		metaFields: {
 		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
 		    rowsPerPage:"resultset.records_perpage",
 		    sort_key:"resultset.sort_key",
 		    sort_dir:"resultset.sort_dir",
@@ -122,15 +125,15 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
 						     this.dataSource0, {
 							 //draggableColumns:true,
-							   renderLoopSize: 50,generateRequest : myRequestBuilder
+							   renderLoopSize: 50,generateRequest : myRequestBuilderwithTotals
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage:<?=$_SESSION['state']['parts']['table']['nr']?>,containers : 'paginator0', 
+									      rowsPerPage:<?=$_SESSION['state']['parts']['table']['nr']+1?>,containers : 'paginator0', 
  									      pageReportTemplate : '(<?=_('Page')?> {currentPage} <?=_('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
  									      firstPageLinkLabel :"<<",
  									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
-									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+									      ,template : "{PreviousPageLink}<span id='paginator_info0'>{CurrentPageReport}</span>{NextPageLink}"
 									  })
 								     
 								     ,sortedBy : {
@@ -188,7 +191,7 @@ function change_avg(e,table_id){
  var Dom   = YAHOO.util.Dom;
  var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
  oACDS.queryMatchContains = true;
- var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container", oACDS);
+ var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
  oAutoComp.minQueryLength = 0; 
 
 
@@ -216,10 +219,10 @@ YAHOO.util.Event.onDOMReady(init);
 
 
 YAHOO.util.Event.onContentReady("rppmenu", function () {
-	 var oMenu = new YAHOO.widget.Menu("rppmenu", { context:["paginator0","tr", "bl"]  });
+	 var oMenu = new YAHOO.widget.Menu("rppmenu", { context:["rtext_rpp0","tr", "bl"]  });
 	 oMenu.render();
 	 oMenu.subscribe("show", oMenu.focus);
-	 YAHOO.util.Event.addListener("paginator_info0", "click", oMenu.show, null, oMenu);
+	 YAHOO.util.Event.addListener("rtext_rpp0", "click", oMenu.show, null, oMenu);
     });
 
 YAHOO.util.Event.onContentReady("filtermenu", function () {

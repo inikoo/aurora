@@ -977,3 +977,421 @@ $adata[]=array(
    
  }
 ?>
+
+
+
+
+// case('update_department_name'):
+   
+//    if(isset($_REQUEST['id'])  and  isset($_REQUEST['value'])  and is_numeric($_REQUEST['id']) and $_REQUEST['value']!=''){
+//      $name=addslashes($_REQUEST['value']);
+//      $id=$_REQUEST['id'];
+//      $sql=sprintf("update product_department set name='%s' where id=%d ",$name,$id);
+//      $affected=& $db->exec($sql);
+//      if (PEAR::isError($affected)) {
+//        if(preg_match('/^MDB2 Error: constraint violation$/',$affected->getMessage()))
+// 	 $resp=_('Error: Another department has the same name').'.';
+//        else
+// 	 $resp=_('Unknown Error').'.';
+//        $state='400';
+//      }else{
+//        $resp= $affected;
+//        $state='200';
+//      }
+//      $response=array('state'=>$state,'resp'=>_($resp));
+//    }
+
+//    else
+//       $response=array('state'=>400,'resp'=>_('Error'));
+//    echo json_encode($response);
+//    break;
+
+//  case('update_family_name'):
+   
+//    if(isset($_REQUEST['id'])  and  isset($_REQUEST['value'])  and is_numeric($_REQUEST['id']) and $_REQUEST['value']!=''){
+//      $name=addslashes($_REQUEST['value']);
+//      $id=$_REQUEST['id'];
+//      $sql=sprintf("update product_group set name='%s' where id=%d ",$name,$id);
+//      $affected=& $db->exec($sql);
+//      if (PEAR::isError($affected)) {
+//        if(preg_match('/^MDB2 Error: constraint violation$/',$affected->getMessage()))
+// 	 $resp=_('Error: Another family has the same name').'.';
+//        else
+// 	 $resp=_('Unknown Error').'.';
+//        $state='400';
+//      }else{
+//        $resp= $affected;
+//        $state='200';
+//      }
+//      $response=array('state'=>$state,'resp'=>_($resp));
+//    }
+
+//    else
+//       $response=array('state'=>400,'resp'=>_('Error'));
+//    echo json_encode($response);
+//    break;
+//  case('update_family_description'):
+   
+//    if(isset($_REQUEST['id'])  and  isset($_REQUEST['value'])  and is_numeric($_REQUEST['id']) and $_REQUEST['value']!=''){
+//      $name=addslashes($_REQUEST['value']);
+//      $id=$_REQUEST['id'];
+//      $sql=sprintf("update product_group set description='%s' where id=%d ",$name,$id);
+//      $affected=& $db->exec($sql);
+//      if (PEAR::isError($affected)) {
+//        if(preg_match('/^MDB2 Error: constraint violation$/',$affected->getMessage()))
+// 	 $resp=_('Error: Another family has the same name and description').'.';
+//        else
+// 	 $resp=_('Unknown Error').'.';
+//        $state='400';
+//      }else{
+//        $resp= $affected;
+//        $state='200';
+//      }
+//      $response=array('state'=>$state,'resp'=>_($resp));
+//    }
+
+//    else
+//       $response=array('state'=>400,'resp'=>_('Error'));
+//    echo json_encode($response);
+//    break;
+
+
+
+
+
+//  case('add_tosupplier'):
+   
+//    if( isset($_REQUEST['supplier_id'])    and is_numeric($_REQUEST['supplier_id']) and      isset($_REQUEST['product_id'])    and is_numeric($_REQUEST['product_id'])    ){
+
+//      $product_id=$_REQUEST['product_id'];
+//      $suppiler_id=$_REQUEST['supplier_id'];
+
+
+//      if(isset($_REQUEST['code']) and  $_REQUEST['code']!='')
+//        $code="'".$_REQUEST['code']."'";
+//      else
+//        $code='NULL';
+     
+//      if(isset($_REQUEST['price']) and  $_REQUEST['price']!='')
+//        $price="'".$_REQUEST['price']."'";
+//      else
+//        $price='NULL';
+
+     
+//      $p2s_id=addtosupplier($product_id,$suppiler_id);
+
+//      if($p2s_id>0){
+       
+//        $sql=sprintf("update  product2supplier set sup_code=%s , price=%s where id=%d",$code,$price,$p2s_id);
+//        //       print "$sql";
+//        $affected=& $db->exec($sql);
+//      }
+//      $state='200';
+//      $resp='OK';
+     
+//      $response=array('state'=>$state,'resp'=>_($resp),'product_id'=>$product_id);
+//    }
+
+//    else
+//       $response=array('state'=>400,'resp'=>_('Error'));
+//    echo json_encode($response);
+//    break;
+
+//  case('set_stock'):
+   
+//    if( isset($_REQUEST['product_id'])    and is_numeric($_REQUEST['product_id']) and      isset($_REQUEST['qty'])    and is_numeric($_REQUEST['qty'])   and      isset($_REQUEST['author'])  ){
+
+     
+
+//      $product_id=$_REQUEST['product_id'];
+//      $qty=$_REQUEST['qty'];
+     
+//      $date=split('-',$_REQUEST['date']);
+//      if(count($date)==3 and is_numeric($date[0]) and is_numeric($date[0]) and is_numeric($date[0]) ){
+//       $f_date=sprintf("%02d-%02d-%d",$date[0],$date[1],$date[2]);
+//       $date=join ('-',array_reverse($date));
+//      }else{
+//        $response=array('state'=>400,'resp'=>_('Error: in date format, should be (DD-MM-YYYY)'));
+//        echo json_encode($response);
+//        break;
+//      }
+     
+
+//      $time=split(':',$_REQUEST['time']);
+
+//      if( count($time)!=2 or  !is_numeric($time[0]) or !is_numeric($time[1]) or $time[0]>23 or  $time[0]<0  or $time[1]>59 or  $time[1]<0    ){
+//        $response=array('state'=>400,'resp'=>_('Error: in time format, should be (HH:MM)'));
+//        echo json_encode($response);
+//        break;
+//      }
+//      $time=join (':',$time);
+//      $datetime=$date.' '.$time.':00';
+
+
+//      $author=$_REQUEST['author'];
+//      if(!is_numeric($author) or $author<0){
+//        $response=array('state'=>400,'resp'=>'Error; bad author_id');
+//        echo json_encode($response);
+//        break;
+//      }
+
+//      if($qty<0){
+//        $state='400';
+//        $resp='Error, you can not set negative stock.';
+//      }else{
+//        $sql=sprintf("insert into in_out(tipo,date_creation,quantity,product_id,date,author) values (2,NOW(),'%s',%d,'%s',%d)",$qty,$product_id,$datetime,$author);
+//        $db->exec($sql);
+//        $stock=set_stock($product_id);
+//        $state='200';
+//        $resp='OK';
+//      }
+//      $response=array('state'=>$state,'resp'=>_($resp),'stock'=>$stock);
+//    }
+
+//    else
+//      $response=array('state'=>400,'resp'=>_('Error'));
+// echo json_encode($response);
+// break;
+//  case('new_product'):
+   
+//    if(
+//        isset($_REQUEST['description'])  
+//       and  isset($_REQUEST['family_id'])    
+//        and  isset($_REQUEST['code'])  
+//        and  isset($_REQUEST['units'])  
+//        and  isset($_REQUEST['units_tipo'])  
+//        and  isset($_REQUEST['price'])  
+
+//        and $_REQUEST['description']!='' 
+//        and $_REQUEST['code']!=''    
+
+//        and is_numeric($_REQUEST['price'])  
+//        //and is_numeric($_REQUEST['units_tipo'])  
+
+//        and is_numeric($_REQUEST['units'])  
+//        and is_numeric($_REQUEST['family_id'])  
+
+
+//       ){
+//      $code=addslashes($_REQUEST['code']);
+//      $description=addslashes($_REQUEST['description']);
+//      $family_id=$_REQUEST['family_id'];
+//      if(isset($_REQUEST['rrp']) and is_numeric($_REQUEST['rrp']))
+//        $rrp=$_REQUEST['rrp'];
+//      else
+//        $rrp='NULL';
+     
+//      if(isset($_REQUEST['units_carton']) and is_numeric($_REQUEST['units_carton']))
+//        $units_carton=$_REQUEST['units_carton'];
+//      else
+//         $units_carton='NULL';
+     
+//      $ncode=$code;
+//      $c=split('-',$code);
+//      if(count($c)==2){
+//        if(is_numeric($c[1]))
+// 	 $ncode=sprintf("%s-%05d",strtolower($c[0]),$c[1]);
+//        else
+// 	 $ncode=sprintf("%s-%s",strtolower($c[0]),strtolower($c[1]));
+//      }     
+
+//      $sql=sprintf("insert into  product (ncode,rrp,units_carton,units,units_tipo,price,description,code,group_id,first_date) values ('%s',%s,%s,'%s',%d,'%s','%s','%s',%d,NOW())",$ncode,$rrp,$units_carton,$_REQUEST['units'],$_REQUEST['units_tipo'],$_REQUEST['price'],$description,$code,$_REQUEST['family_id']);
+//      $affected=& $db->exec($sql);
+//      //     print "$sql\n";
+//      if (PEAR::isError($affected)) {
+//        if(preg_match('/^MDB2 Error: constraint violation$/',$affected->getMessage()))
+// 	 $resp=_('Error: Another product has the same code').'.';
+//        else
+// 	 $resp=_('Unknown Error').'.';
+//        $state='400';
+//        $data=array();
+//      }else{
+       
+//        $product_id = $db->lastInsertID();
+
+//        $sql=sprintf("insert into inventory(fuzzy,date_start,date_end,name) values (1,NOW,NOW,'%s',)",_('New product'));
+//        $db->exec($sql);
+//        $inv_id = $db->lastInsertID();
+//        $sql=sprintf("insert into inventory_item (product_id,inventory_id,fecha) values (%d,,%d,NOW)",$product_id,$inv_id);
+//        $db->exec($sql);
+
+//        fix_todotransaction($product_id);
+//        set_stock($product_id);
+//        set_available($product_id);
+	      
+//        // --------Supplier --------------
+
+//        if( isset($_REQUEST['supplier_id'])    and is_numeric($_REQUEST['supplier_id']) and      is_numeric($product_id)    ){
+	 
+
+// 	 $suppiler_id=$_REQUEST['supplier_id'];
+
+	 
+// 	 if(isset($_REQUEST['scode']) and  $_REQUEST['scode']!='')
+// 	   $code="'".$_REQUEST['scode']."'";
+// 	 else
+// 	   $code='NULL';
+     
+// 	 if(isset($_REQUEST['sprice']) and  $_REQUEST['sprice']!='')
+// 	   $price="'".$_REQUEST['sprice']."'";
+// 	 else
+// 	   $price='NULL';
+	 
+	 
+// 	 $p2s_id=addtosupplier($product_id,$suppiler_id);
+	 
+// 	 if($p2s_id>0){
+	   
+// 	   $sql=sprintf("update  product2supplier set sup_code=%s , price=%s where id=%d",$code,$price,$p2s_id);
+	   
+// 	   $affected=& $db->exec($sql);
+// 	 }
+//        }
+
+
+
+//        // ============================
+
+
+//        //normalize product
+//        set_sales($product_id);
+//        //normalize family
+
+//        //normalize supplier
+
+       
+
+
+//        $resp='ok';
+//        $data= array(
+		    
+// 		    'id'=>$product_id
+// 		    ,'code'=>$_REQUEST['code']
+// 		    ,'description'=>$_REQUEST['description']
+// 		    ,'units'=>$_REQUEST['units']
+// 		    ,'price'=>$_REQUEST['price']
+// 		    ,'units_tipo'=>$_REQUEST['units_tipo']
+// 		    ,'stock'=>0
+// 		    ,'available'=>0
+// 		    ,'stock_value'=>0
+// 		    ,'tsall'=>0
+// 		    ,'tsy'=>0
+// 		    ,'tsq'=>0
+// 		    ,'tsm'=>0
+// 		    );
+//        $state='200';
+//      }
+//      $response=array('state'=>$state,'resp'=>_($resp),'data'=>$data);
+//    }
+
+//    else
+//       $response=array('state'=>400,'resp'=>_('Error, please check that all the fields are filled'));
+//    echo json_encode($response);
+//    break;
+
+//  case('edit_product'):
+   
+//    if(
+//        isset($_REQUEST['description'])  
+//        and  isset($_REQUEST['id'])    
+//        and  isset($_REQUEST['code'])  
+//        and  isset($_REQUEST['units'])  
+//       and  isset($_REQUEST['units_tipo'])  
+//        and  isset($_REQUEST['price'])  
+       
+//        and $_REQUEST['description']!='' 
+//        and $_REQUEST['code']!=''    
+       
+//        and is_numeric($_REQUEST['price'])  
+//        and is_numeric($_REQUEST['units_tipo'])  
+       
+//        and is_numeric($_REQUEST['units'])  
+//        and is_numeric($_REQUEST['id'])  
+
+       
+//       ){
+//      // Get previous values
+     
+//      $id=$_REQUEST['id'];
+//      $sql=sprintf("select code,description  from product where id=%d",$id);
+
+//      $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+//      if(!$olddata=$res->fetchRow()) {
+//        $response=array('state'=>400,'resp'=>_("Error, product don't found"));
+//        echo json_encode($response);
+//        break;
+//      }
+     
+     
+//      if($olddata['code']!=$_REQUEST['code'] or $olddata['description']!=$_REQUEST['description'] ){
+//        $code=addslashes($_REQUEST['code']);
+//        $description=addslashes($_REQUEST['description']);
+
+//        $ncode=$code;
+//        $c=split('-',$code);
+//        if(count($c)==2){
+// 	 if(is_numeric($c[1]))
+// 	   $ncode=sprintf("%s-%05d",strtolower($c[0]),$c[1]);
+// 	 else
+// 	   $ncode=sprintf("%s-%s",strtolower($c[0]),strtolower($c[1]));
+//        }     
+    
+
+//        $sql=sprintf("update product set ncode='%s', code='%s' ,description='%s'  where id=%d",$ncode,$code,$description,$id);
+//        $affected=& $db->exec($sql);
+//        // print "$sql\n";
+//        if (PEAR::isError($affected)) {
+// 	 if(preg_match('/^MDB2 Error: constraint violation$/',$affected->getMessage()))
+// 	   $resp=_('Error: Another product has the same code').'.';
+// 	 else
+// 	   $resp=_('Unknown Error').'.';
+// 	 $state='400';
+// 	 $data=array();
+// 	 $response=array('state'=>400,'resp'=>$resp);
+// 	 echo json_encode($response);
+// 	 break;
+	 
+//        }
+       
+//      }
+     
+//      // update requiered fields
+//      $sql=sprintf("update product set units='%s' ,price='%s',units_tipo=%d  where id=%d",$_REQUEST['units'],$_REQUEST['price'],$_REQUEST['units_tipo'],$id);
+//      $db->exec($sql);
+       
+     
+     
+//      if(isset($_REQUEST['rrp']) and is_numeric($_REQUEST['rrp']))
+//        $rrp=$_REQUEST['rrp'];
+//      else
+//        $rrp='NULL';
+     
+//      if(isset($_REQUEST['units_carton']) and is_numeric($_REQUEST['units_carton']))
+//        $units_carton=$_REQUEST['units_carton'];
+//      else
+//        $units_carton='NULL';
+
+     
+    
+
+     
+//     // update requiered fields
+//     $sql=sprintf("update product set units='%s' ,price='%s',units_tipo=%d ,rrp=%s,units_carton where id=%d",$_REQUEST['units'],$_REQUEST['price'],$_REQUEST['units_tipo'],$rrp,$units_carton,$id);
+//     $db->exec($sql);
+    
+
+    
+
+    
+    
+//     $resp='ok';
+//     $data= array(
+// 		  'id'=>$id
+// 		 );
+//     $state='200';
+   
+//    $response=array('state'=>$state,'resp'=>_($resp),'data'=>$data);
+//    }else
+//      $response=array('state'=>400,'resp'=>_('Error, please check that all the fields are filled'));
+//    echo json_encode($response);
+//    breack;

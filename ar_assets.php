@@ -1445,546 +1445,7 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
 		   );
    echo json_encode($response);
    break;
- case('department'):
-
-  $conf=$_SESSION['state']['department']['table'];
-  if(isset( $_REQUEST['id']) and is_numeric($_REQUEST['id'])){
-    $id=$_REQUEST['id'];
-    $_SESSION['state']['department']['id']=$id;
-  }   else
-    $id=$_SESSION['state']['department']['id'];
-  
-  
-
-   if(isset( $_REQUEST['sf']))
-     $start_from=$_REQUEST['sf'];
-   else
-     $start_from=$conf['sf'];
-   if(isset( $_REQUEST['nr']))
-     $number_results=$_REQUEST['nr'];
-   else
-     $number_results=$conf['nr'];
-  if(isset( $_REQUEST['o']))
-    $order=$_REQUEST['o'];
-  else
-    $order=$conf['order'];
-  if(isset( $_REQUEST['od']))
-    $order_dir=$_REQUEST['od'];
-  else
-    $order_dir=$conf['order_dir'];
-  
- if(isset( $_REQUEST['where']))
-    $where=$_REQUEST['where'];
-  else
-    $where=$conf['where'];
-
- if(isset( $_REQUEST['f_field']))
-     $f_field=$_REQUEST['f_field'];
-   else
-     $f_field=$conf['f_field'];
-   
-   if(isset( $_REQUEST['f_value']))
-     $f_value=$_REQUEST['f_value'];
-   else
-     $f_value=$conf['f_value'];
-
-
-
-  if(isset( $_REQUEST['percentages'])){
-    $percentages=$_REQUEST['percentages'];
-    $_SESSION['state']['department']['percentages']=$percentages;
-  }else
-    $percentages=$_SESSION['state']['department']['percentages'];
-  
-  
-
-   if(isset( $_REQUEST['period'])){
-    $period=$_REQUEST['period'];
-    $_SESSION['state']['department']['period']=$period;
-  }else
-    $period=$_SESSION['state']['department']['period'];
-
- if(isset( $_REQUEST['avg'])){
-    $avg=$_REQUEST['avg'];
-    $_SESSION['state']['department']['avg']=$avg;
-  }else
-    $avg=$_SESSION['state']['department']['avg'];
-
-  
-   if(isset( $_REQUEST['tableid']))
-    $tableid=$_REQUEST['tableid'];
-  else
-    $tableid=0;
-
-
-
-   $filter_msg='';
-
-
-
-  $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-  
-  
-  $_SESSION['state']['department']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
-  
-  
-  $where.=" and `Product Department Key`=".$id;
-
-  
-  
-  $filter_msg='';
-  $wheref='';
-  if($f_field=='name' and $f_value!='')
-    $wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
-  
-    $sql="select count(*) as total from `Product Family Dimension`  F left join `Product Family Department Bridge` FD on (FD.`Product Family Key`=F.`Product Family Key`)    $where $wheref";
-
-   $res = $db->query($sql); 
-   if($row=$res->fetchRow()) {
-     $total=$row['total'];
-   }
-   if($wheref==''){
-      $total_records=$total;
-     $filtered=0;
-   }else{
-     $sql="select count(*) as total `Product Family Dimension`   F left join `Product Family Department Bridge` FD on (FD.`Product Family Key`=F.`Product Family Key`) $where ";
-
-     $res = $db->query($sql); 
-     if($row=$res->fetchRow()) {
-       $filtered=$row['total']-$total;
-       $total_records=$row['total'];
-     }
-
-   }
-
-   $rtext=$total_records." ".ngettext('family','families',$total_records);
-     if($total_records>$number_results)
-       $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-     else
-       $rtext_rpp='';
-
-
-  
-  $_order=$order;
-  $_dir=$order_direction;
-  
-  if($order=='profit'){
-    if($period=='all')
-      $order='`Product Family Total Profit`';
-    elseif($period=='year')
-      $order='`Product Family 1 Year Acc Profit`';
-    elseif($period=='quarter')
-      $order='`Product Family 1 Quarter Acc Profit`';
-    elseif($period=='month')
-      $order='`Product Family 1 Month Acc Profit`';
-    elseif($period=='week')
-      $order='`Product Family 1 Week Acc Profit`';
-  }elseif($order=='sales'){
-    if($period=='all')
-      $order='`Product Family Total Invoiced Amount`';
-    elseif($period=='year')
-      $order='`Product Family 1 Year Acc Invoiced Amount`';
-    elseif($period=='quarter')
-      $order='`Product Family 1 Quarter Acc Invoiced Amount`';
-    elseif($period=='month')
-      $order='`Product Family 1 Month Acc Invoiced Amount`';
-    elseif($period=='week')
-      $order='`Product Family 1 Week Acc Invoiced Amount`';
-
-  }
-   elseif($order=='code')
-    $order='`Product Family Code`';
-  elseif($order=='name')
-    $order='`Product Family Name`';
-  elseif($order=='families')
-    $order='`Product Family Families`';
-  elseif($order=='active')
-    $order='`Product Family For Sale Products`';
-  elseif($order=='outofstock')
-    $order='`Product Family Out Of Stock Products`';
-  elseif($order=='stockerror')
-    $order='`Product Family Unknown Stock Products`';
-
-
-
-$sum_active=0;
- $sql="select sum(`Product Family For Sale Products`) as sum_active  from `Product Family Dimension`    ";
- $res = $db->query($sql); 
- if($row=$res->fetchRow()) {
-
-   $sum_active=$row['sum_active'];
- }
-
-
-
-  if($period=='all'){
-
-
-    $sum_total_sales=0;
-    $sum_month_sales=0;
-    $sql="select sum(if(`Product Family Total Profit`<0,`Product Family Total Profit`,0)) as total_profit_minus,sum(if(`Product Family Total Profit`>=0,`Product Family Total Profit`,0)) as total_profit_plus,sum(`Product Family Total Invoiced Amount`) as sum_total_sales   from `Product Family Dimension`    ";
-    
-    $res = $db->query($sql); 
-    if($row=$res->fetchRow()) {
-
-      $sum_total_sales=$row['sum_total_sales'];
-
-      $sum_total_profit_plus=$row['total_profit_plus'];
-      $sum_total_profit_minus=$row['total_profit_minus'];
-      $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
-    }
-  }elseif($period=='year'){
-
-    $sum_total_sales=0;
-    $sum_month_sales=0;
-    $sql="select sum(if(`Product Family 1 Year Acc Profit`<0,`Product Family 1 Year Acc Profit`,0)) as total_profit_minus,sum(if(`Product Family 1 Year Acc Profit`>=0,`Product Family 1 Year Acc Profit`,0)) as total_profit_plus,sum(`Product Family 1 Year Acc Invoiced Amount`) as sum_total_sales  from `Product Family Dimension`    ";
-    
-    $res = $db->query($sql); 
-    if($row=$res->fetchRow()) {
-
-      $sum_total_sales=$row['sum_total_sales'];
-
-      $sum_total_profit_plus=$row['total_profit_plus'];
-      $sum_total_profit_minus=$row['total_profit_minus'];
-      $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
-    }
-  }elseif($period=='quarter'){
-
-    $sum_total_sales=0;
-    $sum_month_sales=0;
-    $sql="select sum(if(`Product Family 1 Quarter Acc Profit`<0,`Product Family 1 Quarter Acc Profit`,0)) as total_profit_minus,sum(if(`Product Family 1 Quarter Acc Profit`>=0,`Product Family 1 Quarter Acc Profit`,0)) as total_profit_plus,sum(`Product Family 1 Quarter Acc Invoiced Amount`) as sum_total_sales   from `Product Family Dimension`    ";
-    
-    $res = $db->query($sql); 
-    if($row=$res->fetchRow()) {
-
-      $sum_total_sales=$row['sum_total_sales'];
-
-      $sum_total_profit_plus=$row['total_profit_plus'];
-      $sum_total_profit_minus=$row['total_profit_minus'];
-      $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
-    }
-  }elseif($period=='month'){
-
-    $sum_total_sales=0;
-    $sum_month_sales=0;
-    $sql="select sum(if(`Product Family 1 Month Acc Profit`<0,`Product Family 1 Month Acc Profit`,0)) as total_profit_minus,sum(if(`Product Family 1 Month Acc Profit`>=0,`Product Family 1 Month Acc Profit`,0)) as total_profit_plus,sum(`Product Family 1 Month Acc Invoiced Amount`) as sum_total_sales   from `Product Family Dimension`    ";
-    
-    $res = $db->query($sql); 
-    if($row=$res->fetchRow()) {
-
-      $sum_total_sales=$row['sum_total_sales'];
-
-      $sum_total_profit_plus=$row['total_profit_plus'];
-      $sum_total_profit_minus=$row['total_profit_minus'];
-      $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
-    }
-  }elseif($period=='week'){
-  $sum_families=0;
-    $sum_total_sales=0;
-    $sum_month_sales=0;
-    $sql="select sum(if(`Product Family 1 Week Acc Profit`<0,`Product Family 1 Week Acc Profit`,0)) as total_profit_minus,sum(if(`Product Family 1 Week Acc Profit`>=0,`Product Family 1 Week Acc Profit`,0)) as total_profit_plus,sum(`Product Family 1 Week Acc Invoiced Amount`) as sum_total_sales   from `Product Family Dimension`    ";
-    
-    $res = $db->query($sql); 
-    if($row=$res->fetchRow()) {
-
-      $sum_total_sales=$row['sum_total_sales'];
-
-      $sum_total_profit_plus=$row['total_profit_plus'];
-      $sum_total_profit_minus=$row['total_profit_minus'];
-      $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
-    }
-  }
-
-
- 
-   $sql="select *  from `Product Family Dimension`  F left join `Product Family Department Bridge` FD on (FD.`Product Family Key`=F.`Product Family Key`) $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
-   
-   $res = mysql_query($sql);
-  $adata=array();
-  //  print "$sql";
-  while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-    $code=sprintf('<a href="family.php?id=%d&department_id=%d">%s</a>',$row['Product Family Key'],$id,$row['Product Family Code']);
-    if($percentages){
-      if($period=='all'){
-      $tsall=percentage($row['Product Family Total Invoiced Amount'],$sum_total_sales,2);
-      if($row['Product Family Total Profit']>=0)
-	$tprofit=percentage($row['Product Family Total Profit'],$sum_total_profit_plus,2);
-      else
-	$tprofit=percentage($row['Product Family Total Profit'],$sum_total_profit_minus,2);
-      } elseif($period=='year'){
-      $tsall=percentage($row['Product Family 1 Year Acc Invoiced Amount'],$sum_total_sales,2);
-      if($row['Product Family 1 Year Acc Profit']>=0)
-	$tprofit=percentage($row['Product Family 1 Year Acc Profit'],$sum_total_profit_plus,2);
-      else
-	$tprofit=percentage($row['Product Family 1 Year Acc Profit'],$sum_total_profit_minus,2);
-      } elseif($period=='quarter'){
-      $tsall=percentage($row['Product Family 1 Quarter Acc Invoiced Amount'],$sum_total_sales,2);
-      if($row['Product Family 1 Quarter Acc Profit']>=0)
-	$tprofit=percentage($row['Product Family 1 Quarter Acc Profit'],$sum_total_profit_plus,2);
-      else
-	$tprofit=percentage($row['Product Family 1 Quarter Acc Profit'],$sum_total_profit_minus,2);
-      } elseif($period=='month'){
-      $tsall=percentage($row['Product Family 1 Month Acc Invoiced Amount'],$sum_total_sales,2);
-      if($row['Product Family 1 Month Acc Profit']>=0)
-	$tprofit=percentage($row['Product Family 1 Month Acc Profit'],$sum_total_profit_plus,2);
-      else
-	$tprofit=percentage($row['Product Family 1 Month Acc Profit'],$sum_total_profit_minus,2);
-      } elseif($period=='week'){
-      $tsall=percentage($row['Product Family 1 Week Acc Invoiced Amount'],$sum_total_sales,2);
-      if($row['Product Family 1 Week Acc Profit']>=0)
-	$tprofit=percentage($row['Product Family 1 Week Acc Profit'],$sum_total_profit_plus,2);
-      else
-	$tprofit=percentage($row['Product Family 1 Week Acc Profit'],$sum_total_profit_minus,2);
-      }
-
-
-    }else{
-      
-      
-
-
-
-
-      if($period=='all'){
-	
-	
-	if($avg=='totals')
-	  $factor=1;
-	elseif($avg=='month'){
-	  if($row['Product Family Total Days On Sale']>0)
-	    $factor=30.4368499/$row['Product Family Total Days On Sale'];
-	  else
-	    $factor=0;
-	}elseif($avg=='week'){
-	  if($row['Product Family Total Days On Sale']>0)
-	    $factor=7/$row['Product Family Total Days On Sale'];
-	  else
-	    $factor=0;
-	}elseif($avg=='month_eff'){
-	  if($row['Product Family Total Days Available']>0)
-	    $factor=30.4368499/$row['Product Family Total Days Available'];
-	  else
-	    $factor=0;
-	}elseif($avg=='week_eff'){
-	  if($row['Product Family Total Days Available']>0)
-	    $factor=7/$row['Product Family Total Days Available'];
-	  else
-	    $factor=0;
-	}
-
-	$tsall=money($row['Product Family Total Invoiced Amount']*$factor);
-	$tprofit=money($row['Product Family Total Profit']*$factor);
-   
-
-
-
-   }elseif($period=='year'){
-
-
-	if($avg=='totals')
-	  $factor=1;
-	elseif($avg=='month'){
-	  if($row['Product Family 1 Year Acc Days On Sale']>0)
-	    $factor=30.4368499/$row['Product Family 1 Year Acc Days On Sale'];
-	  else
-	    $factor=0;
-	}elseif($avg=='month'){
-	  if($row['Product Family 1 Year Acc Days On Sale']>0)
-	    $factor=30.4368499/$row['Product Family 1 Year Acc Days On Sale'];
-	  else
-	    $factor=0;
-	}elseif($avg=='week'){
-	  if($row['Product Family 1 Year Acc Days On Sale']>0)
-	    $factor=7/$row['Product Family 1 Year Acc Days On Sale'];
-	  else
-	    $factor=0;
-	}elseif($avg=='month_eff'){
-	  if($row['Product Family 1 Year Acc Days Available']>0)
-	    $factor=30.4368499/$row['Product Family 1 Year Acc Days Available'];
-	  else
-	    $factor=0;
-	}elseif($avg=='week_eff'){
-	  if($row['Product Family 1 Year Acc Days Available']>0)
-	    $factor=7/$row['Product Family 1 Year Acc Days Available'];
-	  else
-	    $factor=0;
-	}
-	
-
-
-
-
-
-
-
-
-	$tsall=money($row['Product Family 1 Year Acc Invoiced Amount']*$factor);
-	$tprofit=money($row['Product Family 1 Year Acc Profit']*$factor);
-      }elseif($period=='quarter'){
-	if($avg=='totals')
-	  $factor=1;
-	elseif($avg=='month'){
-	  if($row['Product Family 1 Quarter Acc Days On Sale']>0)
-	    $factor=30.4368499/$row['Product Family 1 Quarter Acc Days On Sale'];
-	  else
-	    $factor=0;
-	}elseif($avg=='month'){
-	  if($row['Product Family 1 Quarter Acc Days On Sale']>0)
-	    $factor=30.4368499/$row['Product Family 1 Quarter Acc Days On Sale'];
-	  else
-	    $factor=0;
-	}elseif($avg=='week'){
-	  if($row['Product Family 1 Quarter Acc Days On Sale']>0)
-	    $factor=7/$row['Product Family 1 Quarter Acc Days On Sale'];
-	  else
-	    $factor=0;
-	}elseif($avg=='month_eff'){
-	  if($row['Product Family 1 Quarter Acc Days Available']>0)
-	    $factor=30.4368499/$row['Product Family 1 Quarter Acc Days Available'];
-	  else
-	    $factor=0;
-	}elseif($avg=='week_eff'){
-	  if($row['Product Family 1 Quarter Acc Days Available']>0)
-	    $factor=7/$row['Product Family 1 Quarter Acc Days Available'];
-	  else
-	    $factor=0;
-	}
-
-
-	$tsall=money($row['Product Family 1 Quarter Acc Invoiced Amount']*$factor);
-	$tprofit=money($row['Product Family 1 Quarter Acc Profit']*$factor);
-      }elseif($period=='month'){
-		if($avg=='totals')
-	  $factor=1;
-	elseif($avg=='month'){
-	  if($row['Product Family 1 Month Acc Days On Sale']>0)
-	    $factor=30.4368499/$row['Product Family 1 Month Acc Days On Sale'];
-	  else
-	    $factor=0;
-	}elseif($avg=='month'){
-	  if($row['Product Family 1 Month Acc Days On Sale']>0)
-	    $factor=30.4368499/$row['Product Family 1 Month Acc Days On Sale'];
-	  else
-	    $factor=0;
-	}elseif($avg=='week'){
-	  if($row['Product Family 1 Month Acc Days On Sale']>0)
-	    $factor=7/$row['Product Family 1 Month Acc Days On Sale'];
-	  else
-	    $factor=0;
-	}elseif($avg=='month_eff'){
-	  if($row['Product Family 1 Month Acc Days Available']>0)
-	    $factor=30.4368499/$row['Product Family 1 Month Acc Days Available'];
-	  else
-	    $factor=0;
-	}elseif($avg=='week_eff'){
-	  if($row['Product Family 1 Month Acc Days Available']>0)
-	    $factor=7/$row['Product Family 1 Month Acc Days Available'];
-	  else
-	    $factor=0;
-	}
-
-
-	$tsall=money($row['Product Family 1 Month Acc Invoiced Amount']*$factor);
-	$tprofit=money($row['Product Family 1 Month Acc Profit']*$factor);
-      }elseif($period=='week'){
-		if($avg=='totals')
-	  $factor=1;
-	elseif($avg=='month'){
-	  if($row['Product Family 1 Week Acc Days On Sale']>0)
-	    $factor=30.4368499/$row['Product Family 1 Week Acc Days On Sale'];
-	  else
-	    $factor=0;
-	}elseif($avg=='month'){
-	  if($row['Product Family 1 Week Acc Days On Sale']>0)
-	    $factor=30.4368499/$row['Product Family 1 Week Acc Days On Sale'];
-	  else
-	    $factor=0;
-	}elseif($avg=='week'){
-	  if($row['Product Family 1 Week Acc Days On Sale']>0)
-	    $factor=7/$row['Product Family 1 Week Acc Days On Sale'];
-	  else
-	    $factor=0;
-	}elseif($avg=='month_eff'){
-	  if($row['Product Family 1 Week Acc Days Available']>0)
-	    $factor=30.4368499/$row['Product Family 1 Week Acc Days Available'];
-	  else
-	    $factor=0;
-	}elseif($avg=='week_eff'){
-	  if($row['Product Family 1 Week Acc Days Available']>0)
-	    $factor=7/$row['Product Family 1 Week Acc Days Available'];
-	  else
-	    $factor=0;
-	}
-
-
-	$tsall=money($row['Product Family 1 Week Acc Invoiced Amount']*$factor);
-	$tprofit=money($row['Product Family 1 Week Acc Profit']*$factor);
-      }
-
-
-
-    }
-   $adata[]=array(
-
-		   'code'=>$code,
-		   'name'=>$row['Product Family Name'],
-		   'active'=>number($row['Product Family For Sale Products']),
-		   'outofstock'=>number($row['Product Family Out Of Stock Products']),
-		   'stockerror'=>number($row['Product Family Unknown Stock Products']),
-		   'stock_value'=>money($row['Product Family Stock Value']),
-		   'sales'=>$tsall,
-		   'profit'=>$tprofit
-		   
-		   );
-  }
-
- //   if($percentages){
-//       $tsall='100.00%';
-//       $tprofit='100.00%';
-//     }else{
-//      $tsall=money($sum_total_sales);
-//      $tprofit=money($sum_total_profit);
-//    }
-
-//   $adata[]=array(
-
-// 		 'code'=>_('Total'),
-// 		 'name'=>'',
-// 		 'active'=>number($sum_active),
-// 		 'outofstock'=>number($row['product family out of stock products']),
-// 		 'stockerror'=>number($row['product family unknown stock products']),
-// 		 'stock_value'=>money($row['product family stock value']),
-// 		 'sales'=>$tsall,
-// 		 'profit'=>$tprofit
-
-// 		 );
-
-
-//   $total=mysql_num_rows($res);
-//   if($total<$number_results)
-//     $rtext=$total.' '.ngettext('department','departments',$total);
-//   else
-//     $rtext='';
-  
-  $response=array('resultset'=>
-		  array('state'=>200,
-			'data'=>$adata,
-			'rtext'=>$rtext,
-			'sort_key'=>$_order,
-			 'sort_dir'=>$_dir,
-			 'tableid'=>$tableid,
-			 'filter_msg'=>$filter_msg,
-			'total_records'=>$total,
-			'records_offset'=>$start_from,
-			'records_returned'=>$start_from+$total,
-			'records_perpage'=>$number_results,
-			'records_order'=>$order,
-			'records_order_dir'=>$order_dir,
-			'filtered'=>$filtered
-			)
-		  );
-  echo json_encode($response);
-  break;
+   //==============================================================================================
  case('families'):
    $conf=$_SESSION['state']['families']['table'];
    if(isset( $_REQUEST['sf']))
@@ -2559,42 +2020,39 @@ if(isset( $_REQUEST['restrictions']))
      $tprofit=money($sum_total_profit);
    }
 
-  // $adata[]=array(
+   $adata[]=array(
 
-// 		 'code'=>_('Total'),
-// 		 'name'=>'',
-// 		 'active'=>number($sum_active),
+ 		 'code'=>_('Total'),
+ 		 'name'=>'',
+ 		 'active'=>number($sum_active),
 // 		 'outofstock'=>number($row['product family out of stock products']),
 // 		 'stockerror'=>number($row['product family unknown stock products']),
 // 		 'stock_value'=>money($row['product family stock value']),
 // 		 'sales'=>$tsall,
 // 		 'profit'=>$tprofit
 
-// 		 );
+ 		 );
 
-
+ $total_records=ceil($total_records/$number_results)+$total_records;
   
   $response=array('resultset'=>
 		  array('state'=>200,
 			'data'=>$adata,
-			'sort_key'=>$_order,
+			 'sort_key'=>$_order,
 			 'sort_dir'=>$_dir,
 			 'tableid'=>$tableid,
 			 'filter_msg'=>$filter_msg,
-			'total_records'=>$total,
-			'records_offset'=>$start_from,
-			'records_returned'=>$start_from+$total,
-			'records_perpage'=>$number_results,
-			'records_order'=>$order,
-			'records_order_dir'=>$order_dir,
-			'filtered'=>$filtered,
-			'rtext'=>$rtext,
-			 'rtext_rpp'=>$rtext_rpp
+			 'rtext'=>$rtext,
+			 'rtext_rpp'=>$rtext_rpp,
+			 'total_records'=>$total_records,
+			 'records_offset'=>$start_from,
+			 'records_perpage'=>$number_results,
 			)
 		  );
 
   echo json_encode($response);
   break;
+  //========================================================================================
  case('stores'):
    
    $conf=$_SESSION['state']['stores']['table'];
@@ -2714,7 +2172,7 @@ $where=" ";
      if($total_records>$number_results)
        $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
      else
-       $rtext_rpp='';
+       $rtext_rpp=' ('._('Showing all').')';
 
   if($total==0 and $filtered>0){
        switch($f_field){
@@ -2745,9 +2203,11 @@ $where=" ";
      $order='`Store Families`';
    elseif($order=='departments')
      $order='`Store Departments`';
- elseif($order=='code')
+   elseif($order=='code')
      $order='`Store Code`';
- elseif($order=='todo')
+   elseif($order=='todo')
+     $order='`Store In Process Products`';
+   elseif($order=='discontinued')
      $order='`Store In Process Products`';
    else if($order=='profit'){
     if($period=='all')
@@ -2791,8 +2251,7 @@ $where=" ";
    $order='`Store Critical Availability Products`';
 
 
-$sum_families=0;
-$sum_active=0;
+
  $sql="select sum(`Store For Sale Products`) as sum_active,sum(`Store Families`) as sum_families  from `Store Dimension`    ";
  $res = $db->query($sql); 
  if($row=$res->fetchRow()) {
@@ -2894,7 +2353,8 @@ $sum_active=0;
    $sum_unknown=0;
    $sum_departments=0;
    $sum_families=0;
-
+   $sum_todo=0;
+   $sum_discontinued=0;
 
   //  print "$sql";
   while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
@@ -3133,6 +2593,8 @@ $sum_active=0;
   $sum_unknown+=$row['Store Unknown Stock Products'];
   $sum_departments+=$row['Store Departments'];
   $sum_families+=$row['Store Families'];
+ $sum_todo+=$row['Store In Process Products'];
+ $sum_discontinued+=$row['Store Discontinued Products'];
 
    $adata[]=array(
 		  'code'=>$code,
@@ -3141,7 +2603,7 @@ $sum_active=0;
 		  'families'=>number($row['Store Families']),
 		  'active'=>number($row['Store For Sale Products']),
 		  'todo'=>number($row['Store In Process Products']),
-
+		  'discontinued'=>number($row['Store Discontinued Products']),
 		  'outofstock'=>number($row['Store Out Of Stock Products']),
 		  'stock_error'=>number($row['Store Unknown Stock Products']),
 		  'stock_value'=>money($row['Store Stock Value']),
@@ -3176,13 +2638,16 @@ $sum_outofstock=number($sum_outofstock);
    $sum_unknown=number($sum_unknown);
    $sum_departments=number($sum_departments);
    $sum_families=number($sum_families);
-
+$sum_todo=number($sum_todo);
+$sum_discontinued=number($sum_discontinued);
   $adata[]=array(
 		 'name'=>'',
 		 'code'=>_('Total'),
 		 'active'=>number($sum_active),
 		 'sales'=>$sum_sales,
 		 'profit'=>$sum_profit,
+		 'todo'=>$sum_todo,
+		 'discontinued'=>$sum_discontinued,
 		 'low'=>$sum_low,
 		 'critical'=>$sum_critical,
 		 'surplus'=>$sum_surplus,
@@ -3200,7 +2665,7 @@ $sum_outofstock=number($sum_outofstock);
   //else
   //  $rtext='';
 
-
+    $total_records=ceil($total_records/$number_results)+$total_records;
 
    $response=array('resultset'=>
 		   array('state'=>200,
@@ -3209,124 +2674,142 @@ $sum_outofstock=number($sum_outofstock);
 			 'sort_dir'=>$_dir,
 			 'tableid'=>$tableid,
 			 'filter_msg'=>$filter_msg,
-			 
-			 'total_records'=>$total,
-			 'records_offset'=>$start_from,
-			 'records_returned'=>$start_from+$total,
-			 'records_perpage'=>$number_results,
-			 	'rtext'=>$rtext,
+			 'rtext'=>$rtext,
 			 'rtext_rpp'=>$rtext_rpp,
-			'records_order'=>$order,
-			'records_order_dir'=>$order_dir,
-			'filtered'=>$filtered
+			 'total_records'=>$total_records,
+			 'records_offset'=>$start_from,
+			 'records_perpage'=>$number_results,
 			 )
 		   );
    echo json_encode($response);
    break;
- case('store'):
+   //=====================================================================================
+ case('departments'):
    
-   if(isset( $_REQUEST['store'])){
-     if(is_numeric( $_REQUEST['store']))
-       $store_id=$_REQUEST['store'];
-     else
-       $store_id='all';
-   }else
+  //     $conf_table='store';
+//       $conf=$_SESSION['state']['store']['table'];
+//       $conf2=$_SESSION['state']['store'];
+
+
+      if(isset( $_REQUEST['store']) and  is_numeric( $_REQUEST['store']))
+	$store_id=$_REQUEST['store'];
+      else
 	$store_id=$_SESSION['state']['store']['id'];
    
-   if($store_id=='all'){
-     $conf=$_SESSION['state']['departments']['table'];
-     $conf2=$_SESSION['state']['departments'];
-     $conf_table='departments';
-   }
-   else{
-     $conf_table='store';
-     $conf=$_SESSION['state']['store']['table'];
-     $conf2=$_SESSION['state']['store'];
+//    if($store_id=='all'){
+      $conf=$_SESSION['state']['departments']['table'];
+      $conf2=$_SESSION['state']['departments'];
+      $conf_table='departments';
+//    }
+//    else{
+//      $conf_table='store';
+//      $conf=$_SESSION['state']['store']['table'];
+//      $conf2=$_SESSION['state']['store'];
      
-   }
-   if(isset( $_REQUEST['sf']))
-     $start_from=$_REQUEST['sf'];
-   else
-     $start_from=$conf['sf'];
-   if(isset( $_REQUEST['nr']))
-     $number_results=$_REQUEST['nr'];
-   else
-     $number_results=$conf['nr'];
-   if(isset( $_REQUEST['o']))
-     $order=$_REQUEST['o'];
-   else
-    $order=$conf['order'];
-   if(isset( $_REQUEST['od']))
-     $order_dir=$_REQUEST['od'];
-   else
-     $order_dir=$conf['order_dir'];
-   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-   if(isset( $_REQUEST['where']))
-     $where=addslashes($_REQUEST['where']);
-   else
+//    }
+
+      if(isset( $_REQUEST['parent']))
+	$parent=$_REQUEST['parent'];
+      else
+	$parent=$conf['parent'];
+
+
+      if(isset( $_REQUEST['sf'])){
+	$start_from=$_REQUEST['sf'];
+	
+	
+      }else
+	$start_from=$conf['sf'];
+      if(isset( $_REQUEST['nr'])){
+	$number_results=$_REQUEST['nr'];
+	if($start_from>0){
+	  $page=floor($start_from/$number_results);
+	  $start_from=$start_from-$page;
+	}
+	
+      }else
+	$number_results=$conf['nr'];
+      if(isset( $_REQUEST['o']))
+	$order=$_REQUEST['o'];
+      else
+	$order=$conf['order'];
+      if(isset( $_REQUEST['od']))
+	$order_dir=$_REQUEST['od'];
+      else
+	$order_dir=$conf['order_dir'];
+      $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+      if(isset( $_REQUEST['where']))
+	$where=addslashes($_REQUEST['where']);
+      else
      $where=$conf['where'];
-
+      
     
-   if(isset( $_REQUEST['f_field']))
-     $f_field=$_REQUEST['f_field'];
-   else
-     $f_field=$conf['f_field'];
-   
-   if(isset( $_REQUEST['f_value']))
-     $f_value=$_REQUEST['f_value'];
-   else
-     $f_value=$conf['f_value'];
-
-   
-   if(isset( $_REQUEST['tableid']))
-     $tableid=$_REQUEST['tableid'];
-   else
+      if(isset( $_REQUEST['f_field']))
+	$f_field=$_REQUEST['f_field'];
+      else
+	$f_field=$conf['f_field'];
+      
+      if(isset( $_REQUEST['f_value']))
+	$f_value=$_REQUEST['f_value'];
+      else
+	$f_value=$conf['f_value'];
+      
+      
+      if(isset( $_REQUEST['tableid']))
+	$tableid=$_REQUEST['tableid'];
+      else
     $tableid=0;
-   
-
-  if(isset( $_REQUEST['percentages'])){
-    $percentages=$_REQUEST['percentages'];
-  }else
-    $percentages=$conf2['percentages'];
+      
+      
+      if(isset( $_REQUEST['percentages'])){
+	$percentages=$_REQUEST['percentages'];
+      }else
+	$percentages=$conf2['percentages'];
+      
   
-  
-
-   if(isset( $_REQUEST['period'])){
-    $period=$_REQUEST['period'];
-  }else
-    $period=$conf2['period'];
-
-   if(isset( $_REQUEST['avg'])){
-     $avg=$_REQUEST['avg'];
-   }else
-     $avg=$conf2['avg'];
-
-   
+      
+      if(isset( $_REQUEST['period'])){
+	$period=$_REQUEST['period'];
+      }else
+	$period=$conf2['period'];
+      
+      if(isset( $_REQUEST['avg'])){
+	$avg=$_REQUEST['avg'];
+      }else
+	$avg=$conf2['avg'];
 
    
-   
-   $_SESSION['state'][$conf_table]['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
-   $_SESSION['state'][$conf_table]['percentages']=$percentages;
-   $_SESSION['state'][$conf_table]['period']=$period;
-   $_SESSION['state'][$conf_table]['avg']=$avg;
 
-   
-   if(is_numeric($store_id))
-     $where=$where.' '.sprintf(" and `Product Department Store Key`=%d",$store_id);
-   
-   $filter_msg='';
-   $wheref='';
-   if($f_field=='name' and $f_value!='')
-     $wheref.=" and  `Product Department Name` like '".addslashes($f_value)."%'";
-   if($f_field=='code' and $f_value!='')
-     $wheref.=" and  `Product Department Code` like '".addslashes($f_value)."%'";
+      
+      
+      $_SESSION['state'][$conf_table]['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value,'parent'=>$parent);
+      $_SESSION['state'][$conf_table]['percentages']=$percentages;
+      $_SESSION['state'][$conf_table]['period']=$period;
+      $_SESSION['state'][$conf_table]['avg']=$avg;
+      
+      
+      switch($parent){
+      case('store'):
+	$where=sprintf("where  `Product Department Store Key`=%d",$store_id);
+	break;
+      default:
+	$where='where true';
+	  
+	  }   
+
+      $filter_msg='';
+      $wheref='';
+      if($f_field=='name' and $f_value!='')
+	$wheref.=" and  `Product Department Name` like '".addslashes($f_value)."%'";
+      if($f_field=='code' and $f_value!='')
+	$wheref.=" and  `Product Department Code` like '".addslashes($f_value)."%'";
    
    
 
    
    
    $sql="select count(*) as total from `Product Department Dimension`   $where $wheref";
-   //print $sql;
+
    $res = mysql_query($sql); 
    if($row=mysql_fetch_array($res)) {
      $total=$row['total'];
@@ -3346,8 +2829,9 @@ $sum_outofstock=number($sum_outofstock);
 
  $rtext=$total_records." ".ngettext('department','departments',$total_records);
   if($total_records>$number_results)
-    $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
-
+    $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+  else
+    $rtext_rpp=' ('._('Showing all').')';
    $_dir=$order_direction;
    $_order=$order;
    
@@ -3493,6 +2977,8 @@ $sum_active=0;
    $res = mysql_query($sql);
   $adata=array();
   //print "$period";
+
+  $sum_active=0;
   while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
     $code=sprintf('<a href="department.php?id=%d">%s</a>',$row['Product Department Key'],$row['Product Department Code']);
      $name=sprintf('<a href="department.php?id=%d">%s</a>',$row['Product Department Key'],$row['Product Department Name']);
@@ -3717,7 +3203,8 @@ $sum_active=0;
 
 
     }
-   $adata[]=array(
+    $sum_active+=$row['Product Department For Sale Products'];
+    $adata[]=array(
 		  'code'=>$code,
 		   'name'=>$name,
 		   'families'=>number($row['Product Department Families']),
@@ -3747,11 +3234,11 @@ $sum_active=0;
      $tprofit=money($sum_total_profit);
    }
 
-  // $adata[]=array(
+  $adata[]=array(
 
-// 		 'name'=>_('Total'),
+		 'code'=>_('Total'),
 
-// 		 'active'=>number($sum_active),
+ 		 'active'=>number($sum_active),
 // 		 'outofstock'=>number($row['product department out of stock products']),
 // 		 'stockerror'=>number($row['product department unknown stock products']),
 // 		 'stock_value'=>money($row['product department stock value']),
@@ -3759,16 +3246,12 @@ $sum_active=0;
 // 		 'per_tsall'=>percentage($row['product department total invoiced amount'],$sum_total_sales,2),
 // 		 'tsm'=>money($row['product department 1 month acc invoiced amount']),
 // 		 'per_tsm'=>percentage($row['product department 1 month acc invoiced amount'],$sum_month_sales,2),
-// 		 );
+ 		 );
 
 
-   $total=mysql_num_rows($res);
-  // if($total<$number_results)
-  //  $rtext=$total.' '.ngettext('department','departments',$total);
-  //else
-  //  $rtext='';
 
 
+   $total_records=ceil($total_records/$number_results)+$total_records;
 
    $response=array('resultset'=>
 		   array('state'=>200,
@@ -3778,19 +3261,16 @@ $sum_active=0;
 			 'tableid'=>$tableid,
 			 'filter_msg'=>$filter_msg,
 			 'rtext'=>$rtext,
-			 'total_records'=>$total,
+			 'rtext_rpp'=>$rtext_rpp,
+			 'total_records'=>$total_records,
 			 'records_offset'=>$start_from,
-			 'records_returned'=>$start_from+$total,
 			 'records_perpage'=>$number_results,
-			 
-			'records_order'=>$order,
-			'records_order_dir'=>$order_dir,
-			'filtered'=>$filtered
 			 )
 		   );
    echo json_encode($response);
    break;
- case('locations'):
+   //======================================================================================== 
+case('locations'):
    
    $conf=$_SESSION['state']['warehouse']['locations'];
    
@@ -3958,1237 +3438,7 @@ $sum_active=0;
    echo json_encode($response);
    break;
 
-
-  case('outofstock'):
-     $conf=$_SESSION['state']['report_outofstock']['table'];
-
-
-     
-      if(isset( $_REQUEST['sf']))
-     $start_from=$_REQUEST['sf'];
-   else
-    $start_from=$conf['sf'];
-   if(!is_numeric($start_from))
-     $start_from=0;
-
-  if(isset( $_REQUEST['nr']))
-    $number_results=$_REQUEST['nr'];
-  else
-    $number_results=$conf['nr'];
- //  if(!is_numeric($number_results)){
-//     print $number_results."**";
-//     $number_results=25;
-
-//   }
-
-  if(isset( $_REQUEST['o']))
-    $order=$_REQUEST['o'];
-  else
-    $order=$conf['order'];
-  
-  if(isset( $_REQUEST['od']))
-    $order_dir=$_REQUEST['od'];
-  else
-    $order_dir=$conf['order_dir'];
-  $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-
-
- if(isset( $_REQUEST['from']))
-   $from=$_REQUEST['from'];
-   else
-     $from=$_SESSION['state']['report_outofstock']['from'];
-  if(isset( $_REQUEST['to']))
-     $to=$_REQUEST['to'];
-   else
-     $to=$_SESSION['state']['report_outofstock']['to'];
-  
-  
-     if(isset( $_REQUEST['where']))
-     $where=addslashes($_REQUEST['where']);
-   else
-     $where=$conf['where'];
-
-    
-   if(isset( $_REQUEST['f_field']))
-     $f_field=$_REQUEST['f_field'];
-   else
-     $f_field=$conf['f_field'];
-
-  if(isset( $_REQUEST['f_value']))
-     $f_value=$_REQUEST['f_value'];
-   else
-     $f_value=$conf['f_value'];
- if(isset( $_REQUEST['tableid']))
-    $tableid=$_REQUEST['tableid'];
-  else
-    $tableid=0;
- // print "xx $from $to";
- $date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
- // print_r($date_interval);
-   if($date_interval['error']){
-      $date_interval=prepare_mysql_dates($_SESSION['state']['report_outofstock']['from'],$_SESSION['state']['report_outofstock']['to']);
-   }else{
-     $_SESSION['state']['report_outofstock']['from']=$date_interval['from'];
-     $_SESSION['state']['report_outofstock']['to']=$date_interval['to'];
-   }
-
-    $_SESSION['state']['report_outofstock']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
-
-  $where.=$date_interval['mysql'];
-     $filter_msg='';
-     
-     $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-     
-     if(!is_numeric($start_from))
-       $start_from=0;
-     if(!is_numeric($number_results))
-       $number_results=25;
-
-
- $_order=$order;
- $_dir=$order_direction;
-  $filter_msg='';
-  $wheref='';
-  if($f_field=='code' and $f_value!='')
-    $wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
-
-
-  
-   
-
-
-
-   $sql="select product_id from outofstock left join orden on (orden.id=order_id)  $where $wheref  and orden.tipo=2  group by product_id";
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-   if($row=$res->fetchRow())
-     $total=$res->numRows();
-   else
-     $total=0;
-   if($wheref=='')
-       $filtered=0;
-   else{
-     $sql="select product_id  as total   from outofstock left join orden on (orden.id=order_id)  $where ";
-     $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-     if($row=$res->fetchRow())
-       $_total=$res->numRows();
-     else
-       $_total=0;
-     $filtered=$_total-$total;
-   }
-
-
-
-
-   
-
-  $norder=($order=='code'?'ncode':$order);
-  
-  $sql="select  count(distinct picker_id) as pickers, group_concat(distinct staff.alias) as pickers_name,count(distinct orden.id) as orders,product.id,product.code,product.description,product.stock from outofstock left join orden on (orden.id=order_id) left join product on (product.id=product_id) left join pick on (pick.order_id=orden.id) left join staff on (picker_id=staff.id)   $where $wheref and orden.tipo=2 group by product_id  order by $norder $order_direction limit $start_from,$number_results     ";
-  //    print "$sql";
-  $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-  
-  $adata=array();
-  
-  while($data=$res->fetchRow()) {
-    $adata[]=array(
-		   'id'=>$data['id']
-		   ,'pickers'=>$data['pickers'].'('.$data['pickers_name'].')'
-		   ,'orders'=>$data['orders']
-		   ,'code'=>$data['code']
-		   ,'description'=>$data['description']
-		   ,'stock'=>number($data['stock'])
-
-		   );
-  }
-  $response=array('resultset'=>
-		   array('state'=>200,
-			 'data'=>$adata,
-			 'sort_key'=>$_order,
-			 'sort_dir'=>$_dir,
-			 'tableid'=>$tableid,
-			 'filter_msg'=>$filter_msg,
-			 'total_records'=>$total,
-			 'records_offset'=>$start_from,
-			 'records_returned'=>$start_from+$res->numRows(),
-			 'records_perpage'=>$number_results,
-			 'records_order'=>$order,
-			 'records_order_dir'=>$order_dir,
-			 'filtered'=>$filtered
-			 )
-		   );
-   echo json_encode($response);
-   break;
-
-
-
- case('outofstock_all'):
-     $conf=$_SESSION['state']['report_outofstock']['table'];
-
-     if(isset( $_REQUEST['view']))
-       $view=$_REQUEST['view'];
-     else
-       $view=$_SESSION['state']['family']['view'];
-     
-      if(isset( $_REQUEST['sf']))
-     $start_from=$_REQUEST['sf'];
-   else
-    $start_from=$conf['sf'];
-   if(!is_numeric($start_from))
-     $start_from=0;
-
-  if(isset( $_REQUEST['nr']))
-    $number_results=$_REQUEST['nr'];
-  else
-    $number_results=$conf['nr'];
-   if(!is_numeric($number_results))
-     $number_results=25;
-
-  if(isset( $_REQUEST['o']))
-    $order=$_REQUEST['o'];
-  else
-    $order=$conf['order'];
-  
-  if(isset( $_REQUEST['od']))
-    $order_dir=$_REQUEST['od'];
-  else
-    $order_dir=$conf['order_dir'];
-  $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-
-
- if(isset( $_REQUEST['from']))
-   $from=$_REQUEST['from'];
-   else
-     $from=$_SESSION['state']['report_outofstock']['from'];
-  if(isset( $_REQUEST['to']))
-     $to=$_REQUEST['to'];
-   else
-     $to=$_SESSION['state']['report_outofstock']['to'];
-  
-  
-     if(isset( $_REQUEST['where']))
-     $where=addslashes($_REQUEST['where']);
-   else
-     $where=$conf['where'];
-
-    
-   if(isset( $_REQUEST['f_field']))
-     $f_field=$_REQUEST['f_field'];
-   else
-     $f_field=$conf['f_field'];
-
-  if(isset( $_REQUEST['f_value']))
-     $f_value=$_REQUEST['f_value'];
-   else
-     $f_value=$conf['f_value'];
- if(isset( $_REQUEST['tableid']))
-    $tableid=$_REQUEST['tableid'];
-  else
-    $tableid=0;
- // print "xx $from $to";
- $date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
- // print_r($date_interval);
-   if($date_interval['error']){
-      $date_interval=prepare_mysql_dates($_SESSION['state']['report_outofstock']['from'],$_SESSION['state']['report_outofstock']['to']);
-   }else{
-     $_SESSION['state']['report_outofstock']['from']=$date_interval['from'];
-     $_SESSION['state']['report_outofstock']['to']=$date_interval['to'];
-   }
-
-    $_SESSION['state']['report_outofstock']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
-
-  $where.=$date_interval['mysql'];
-     $filter_msg='';
-     
-     $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-     
-     if(!is_numeric($start_from))
-       $start_from=0;
-     if(!is_numeric($number_results))
-       $number_results=25;
-
-
- $_order=$order;
- $_dir=$order_direction;
-  $filter_msg='';
-  $wheref='';
-  if($f_field=='code' and $f_value!='')
-    $wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
-
-
-  
-   
-
-
-
-   $sql="select product_id from outofstock left join orden on (orden.id=order_id)  $where $wheref  and orden.tipo=2  ";
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-   if($row=$res->fetchRow())
-     $total=$res->numRows();
-   else
-     $total=0;
-   if($wheref=='')
-       $filtered=0;
-   else{
-     $sql="select product_id  as total   from outofstock left join orden on (orden.id=order_id)  $where ";
-     $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-     if($row=$res->fetchRow())
-       $_total=$res->numRows();
-     else
-       $_total=0;
-     $filtered=$_total-$total;
-   }
-
-
-
-
-
-   
-
-  $norder=($order=='code'?'ncode':$order);
-  $norder=($order=='orders'?'public_id':$order);
-  $norder=($order=='pickers'?'pickers':$order);
-  // $norder='code, '.$norder;
-  $sql="select product_id,outofstock.id,orden.public_id,staff.alias as pickers,product.code as code,product.stock,UNIX_TIMESTAMP(date_index) as udate_index,date_index from outofstock left join orden on (orden.id=order_id) left join product on (product.id=product_id) left join pick on (pick.order_id=orden.id) left join staff on (picker_id=staff.id)   $where $wheref and orden.tipo=2   order by $norder $order_direction limit $start_from,$number_results     ";
-  //    print "$sql";
-  $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-  
-  $adata=array();
-  
-  while($data=$res->fetchRow()) {
-    $adata[]=array(
-		   'id'=>$data['id']
-		   ,'pickers'=>$data['pickers']
-		   ,'orders'=>$data['public_id']
-		   ,'code'=>$data['code']
-		   ,'stock'=> number(stock_date($data['product_id'],$data['date_index'])).'  <b>'.number($data['stock']).'</b>'
-		   ,'date'=>strftime("%e %b %Y %H:%M", strtotime('@'.$data['udate_index']))
-		   
-		   );
-  }
-  $response=array('resultset'=>
-		   array('state'=>200,
-			 'data'=>$adata,
-			 'sort_key'=>$_order,
-			 'sort_dir'=>$_dir,
-			 'tableid'=>$tableid,
-			 'filter_msg'=>$filter_msg,
-			 'total_records'=>$total,
-			 'records_offset'=>$start_from,
-			 'records_returned'=>$start_from+$res->numRows(),
-			 'records_perpage'=>$number_results,
-			 'records_order'=>$order,
-			 'records_order_dir'=>$order_dir,
-			 'filtered'=>$filtered
-			 )
-		   );
-   echo json_encode($response);
-   break;
-
-
-
-
- case('family'):
-   $conf=$_SESSION['state']['family']['table'];
-   if(isset( $_REQUEST['id']) and is_numeric($_REQUEST['id'])){
-     $id=$_REQUEST['id'];
-     $_SESSION['state']['family']['id']=$id;
-   }   else
-     $id=$_SESSION['state']['family']['id'];
-   
-   if(isset( $_REQUEST['view']))
-     $view=$_REQUEST['view'];
-   else
-     $view=$_SESSION['state']['family']['view'];
-   
-   if(isset( $_REQUEST['sf']))
-     $start_from=$_REQUEST['sf'];
-   else
-     $start_from=$conf['sf'];
-   if(!is_numeric($start_from))
-     $start_from=0;
-   
-  if(isset( $_REQUEST['nr']))
-    $number_results=$_REQUEST['nr'];
-  else
-    $number_results=$conf['nr'];
-   if(!is_numeric($number_results))
-     $number_results=25;
-   
-   if(isset( $_REQUEST['o']))
-    $order=$_REQUEST['o'];
-   else
-     $order=$conf['order'];
-  
-   if(isset( $_REQUEST['od']))
-     $order_dir=$_REQUEST['od'];
-   else
-     $order_dir=$conf['order_dir'];
-   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-   
-   
-   
-   if(isset( $_REQUEST['where']))
-     $where=addslashes($_REQUEST['where']);
-   else
-     $where=$conf['where'];
-
-    
-   if(isset( $_REQUEST['f_field']))
-     $f_field=$_REQUEST['f_field'];
-   else
-     $f_field=$conf['f_field'];
-
-  if(isset( $_REQUEST['f_value']))
-     $f_value=$_REQUEST['f_value'];
-   else
-     $f_value=$conf['f_value'];
-
-
- if(isset( $_REQUEST['tableid']))
-    $tableid=$_REQUEST['tableid'];
-  else
-    $tableid=0;
-
-    if(isset( $_REQUEST['percentages'])){
-	$percentages=$_REQUEST['percentages'];
-	$_SESSION['state']['family']['percentages']=$percentages;
-      }else
-	$percentages=$_SESSION['state']['family']['percentages'];
-      
-  
-
-   if(isset( $_REQUEST['period'])){
-    $period=$_REQUEST['period'];
-    $_SESSION['state']['family']['period']=$period;
-  }else
-    $period=$_SESSION['state']['family']['period'];
-
- if(isset( $_REQUEST['avg'])){
-    $avg=$_REQUEST['avg'];
-    $_SESSION['state']['family']['avg']=$avg;
-  }else
-    $avg=$_SESSION['state']['family']['avg'];
-
-
-         $_SESSION['state']['family']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
-
-      $group='group by `Product Code`';
-     $filter_msg='';
-     
-     $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-     
-     if(!is_numeric($start_from))
-       $start_from=0;
-     if(!is_numeric($number_results))
-       $number_results=25;
-
-
- $_order=$order;
- $_dir=$order_direction;
-  $filter_msg='';
-  $wheref='';
-  if($f_field=='code' and $f_value!='')
-    $wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
-
-
-
-   
-   $where =$where.sprintf(' and `Product Most Recent`="Yes"  and  `Product Family Key`=%d',$id);
-
-
-   $sql="select count(*) as total from `Product Dimension`  $where $wheref";
-
-   $res=mysql_query($sql);
-     if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-     $total=$row['total'];
-   }
-     if($wheref==''){
-       $filtered=0; $total_records=$total;
-     }else{
-     $sql="select count(*) as total from `Product Dimension`  $where ";
-     $res=mysql_query($sql);
-     if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-
-       $filtered=$row['total']-$total;
-       $total_records=$row['total'];
-     }
-
-   }
-
-
-    $rtext=$total_records." ".ngettext('product','products',$total_records);
-     if($total_records>$number_results)
-       $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-     else
-       $rtext_rpp='';
-     
-     if($total==0 and $filtered>0){
-       switch($f_field){
-     case('code'):
-       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any product with code like ")." <b>".$f_value."*</b> ";
-       break;
-     case('name'):
-       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any product with name like ")." <b>".$f_value."*</b> ";
-       break;
-     }
-   }
-   elseif($filtered>0){
-     switch($f_field){
-     case('code'):
-       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('products with code like')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
-       break;
-     case('name'):
-       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('products with name like')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
-       break; 
-     }
-   }else
-      $filter_msg='';
-       
-     $_order=$order;
-     $_order_dir=$order_dir;
-     
-        if($order=='stock')
-       $order='`Product Availability`';
-     if($order=='code')
-	 $order='`Product Code File As`';
-     else if($order=='name')
-       $order='`Product Name`';
-     else if($order=='available_for')
-       $order='`Product Available Days Forecast`';
-
-     if($order=='profit'){
-       if($period=='all')
-	 $order='`Product Total Profit`';
-       elseif($period=='year')
-	 $order='`Product 1 Year Acc Profit`';
-       elseif($period=='quarter')
-	 $order='`Product 1 Quarter Acc Profit`';
-    elseif($period=='month')
-      $order='`Product 1 Month Acc Profit`';
-    elseif($period=='week')
-      $order='`Product 1 Week Acc Profit`';
-     }elseif($order=='sales'){
-    if($period=='all')
-      $order='`Product Total Invoiced Amount`';
-    elseif($period=='year')
-      $order='`Product 1 Year Acc Invoiced Amount`';
-    elseif($period=='quarter')
-      $order='`Product 1 Quarter Acc Invoiced Amount`';
-    elseif($period=='month')
-      $order='`Product 1 Month Acc Invoiced Amount`';
-    elseif($period=='week')
-      $order='`Product 1 Week Acc Invoiced Amount`';
-
-  }elseif($order=='margin'){
-    if($period=='all')
-      $order='`Product Total Margin`';
-    elseif($period=='year')
-      $order='`Product 1 Year Acc Margin`';
-    elseif($period=='quarter')
-      $order='`Product 1 Quarter Acc Margin`';
-    elseif($period=='month')
-      $order='`Product 1 Month Acc Margin`';
-    elseif($period=='week')
-      $order='`Product 1 Week Acc Margin`';
-
-  }elseif($order=='sold'){
-    if($period=='all')
-      $order='`Product Total Quantity Invoiced`';
-    elseif($period=='year')
-      $order='`Product 1 Year Acc Quantity Invoiced`';
-    elseif($period=='quarter')
-      $order='`Product 1 Quarter Acc Quantity Invoiced`';
-    elseif($period=='month')
-      $order='`Product 1 Month Acc Quantity Invoiced`';
-    elseif($period=='week')
-      $order='`Product 1 Week Acc Quantity Invoiced`';
-
-     }elseif($order=='family'){
-	$order='`Product Family`Code';
-     }elseif($order=='dept'){
-	$order='`Product Main Department Code`';
-     }elseif($order=='expcode'){
-	$order='`Product Tariff Code`';
-     }elseif($order=='parts'){
-	$order='`Product XHTML Parts`';
-     }elseif($order=='supplied'){
-	$order='`Product XHTML Supplied By`';
-     }elseif($order=='gmroi'){
-	$order='`Product GMROI`';
-     }
-
- if($percentages){
- 
- $sum_total_stock_value=0;
-   $sql="select sum(`Product Stock Value`) as sum_stock_value  from `Product Dimension` $where $wheref     ";
-    
-    $res = $db->query($sql); 
-    if($row=$res->fetchRow()) {
-      $sum_total_stock_value=$row['sum_stock_value'];
-    }
-
-  if($period=='all'){
-
-
-    $sum_total_sales=0;
-    $sum_month_sales=0;
-    $sql="select sum(if(`Product Total Profit`<0,`Product Total Profit`,0)) as total_profit_minus,sum(if(`Product Total Profit`>=0,`Product Total Profit`,0)) as total_profit_plus,sum(`Product Total Invoiced Amount`) as sum_total_sales ,sum(`Product Stock Value`) as sum_stock_value  from `Product Dimension` $where $wheref     ";
-    
-    $res = $db->query($sql); 
-    if($row=$res->fetchRow()) {
-
-      $sum_total_sales=$row['sum_total_sales'];
-
-      $sum_total_profit_plus=$row['total_profit_plus'];
-      $sum_total_profit_minus=$row['total_profit_minus'];
-      $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
-
-    }
-  }elseif($period=='year'){
-
-    $sum_total_sales=0;
-    $sum_month_sales=0;
-    $sql="select sum(if(`Product 1 Year Acc Profit`<0,`Product 1 Year Acc Profit`,0)) as total_profit_minus,sum(if(`Product 1 Year Acc Profit`>=0,`Product 1 Year Acc Profit`,0)) as total_profit_plus,sum(`Product 1 Year Acc Invoiced Amount`) as sum_total_sales  from `Product Dimension` $where $wheref   ";
-    
-    $res = $db->query($sql); 
-    if($row=$res->fetchRow()) {
-
-      $sum_total_sales=$row['sum_total_sales'];
-
-      $sum_total_profit_plus=$row['total_profit_plus'];
-      $sum_total_profit_minus=$row['total_profit_minus'];
-      $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
-    }
-  }elseif($period=='quarter'){
-
-    $sum_total_sales=0;
-    $sum_month_sales=0;
-    $sql="select sum(if(`Product 1 Quarter Acc Profit`<0,`Product 1 Quarter Acc Profit`,0)) as total_profit_minus,sum(if(`Product 1 Quarter Acc Profit`>=0,`Product 1 Quarter Acc Profit`,0)) as total_profit_plus,sum(`Product 1 Quarter Acc Invoiced Amount`) as sum_total_sales   from `Product Dimension`   $where $wheref   ";
-    
-    $res = $db->query($sql); 
-    if($row=$res->fetchRow()) {
-
-      $sum_total_sales=$row['sum_total_sales'];
-
-      $sum_total_profit_plus=$row['total_profit_plus'];
-      $sum_total_profit_minus=$row['total_profit_minus'];
-      $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
-    }
-  }elseif($period=='month'){
-
-    $sum_total_sales=0;
-    $sum_month_sales=0;
-    $sql="select sum(if(`Product 1 Month Acc Profit`<0,`Product 1 Month Acc Profit`,0)) as total_profit_minus,sum(if(`Product 1 Month Acc Profit`>=0,`Product 1 Month Acc Profit`,0)) as total_profit_plus,sum(`Product 1 Month Acc Invoiced Amount`) as sum_total_sales   from `Product Dimension`  $where $wheref    ";
-    
-    $res = $db->query($sql); 
-    if($row=$res->fetchRow()) {
-
-      $sum_total_sales=$row['sum_total_sales'];
-
-      $sum_total_profit_plus=$row['total_profit_plus'];
-      $sum_total_profit_minus=$row['total_profit_minus'];
-      $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
-    }
-  }elseif($period=='week'){
-  $sum_families=0;
-    $sum_total_sales=0;
-    $sum_month_sales=0;
-    $sql="select sum(if(`Product 1 Week Acc Profit`<0,`Product 1 Week Acc Profit`,0)) as total_profit_minus,sum(if(`Product 1 Week Acc Profit`>=0,`Product 1 Week Acc Profit`,0)) as total_profit_plus,sum(`Product 1 Week Acc Invoiced Amount`) as sum_total_sales   from `Product Dimension`  $where $wheref    ";
-    
-    $res = $db->query($sql); 
-    if($row=$res->fetchRow()) {
-
-      $sum_total_sales=$row['sum_total_sales'];
-
-      $sum_total_profit_plus=$row['total_profit_plus'];
-
-      $sum_total_profit_minus=$row['total_profit_minus'];
-      $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
-    }
-  }
-
- }
-
-
- $sql="select 
-`Product Code`
-,`Product Same Code Most Recent Key` as `Product Key`
-,sum(`Product Total Invoiced Amount`) as `Product Total Invoiced Amount`
-,sum(`Product 1 Year Acc Invoiced Amount`) as `Product 1 Year Acc Invoiced Amount`
-,sum(`Product 1 Quarter Acc Invoiced Amount`) as `Product 1 Quarter Acc Invoiced Amount`
-,sum(`Product 1 Month Acc Invoiced Amount`) as `Product 1 Month Acc Invoiced Amount`
-,sum(`Product 1 Week Acc Invoiced Amount`) as `Product 1 Week Acc Invoiced Amount`
-,sum(`Product Total Profit`) as `Product Total Profit`
-,sum(`Product 1 Year Acc Profit`) as `Product 1 Year Acc Profit`
-,sum(`Product 1 Quarter Acc Profit`) as `Product 1 Quarter Acc Profit`
-,sum(`Product 1 Month Acc Profit`) as `Product 1 Month Acc Profit`
-,sum(`Product 1 Week Acc Profit`) as `Product 1 Week Acc Profit`
-,sum(`Product Total Quantity Invoiced`) as `Product Total Quantity Invoiced`
-,sum(`Product 1 Year Acc Quantity Invoiced`) as `Product 1 Year Acc Quantity Invoiced`
-,sum(`Product 1 Quarter Acc Quantity Invoiced`) as `Product 1 Quarter Acc Quantity Invoiced`
-,sum(`Product 1 Month Acc Quantity Invoiced`) as `Product 1 Month Acc Quantity Invoiced`
-,sum(`Product 1 Week Acc Quantity Invoiced`) as `Product 1 Week Acc Quantity Invoiced`
-,100*sum(`Product Total Profit`)/sum(`Product Total Invoiced Amount`) as `Product Total Margin`
-,100*sum(`Product 1 Year Acc Profit`)/sum(`Product 1 Year Acc Invoiced Amount`) as `Product 1 Year Acc Margin`
-,100*sum(`Product 1 Quarter Acc Profit`)/sum(`Product 1 Quarter Acc Invoiced Amount`) as `Product 1 Quarter Acc Margin`
-,100*sum(`Product 1 Month Acc Profit`)/sum(`Product 1 Month Acc Invoiced Amount`) as `Product 1 Month Acc Margin`
-,100*sum(`Product 1 Week Acc Profit`)/sum(`Product 1 Week Acc Invoiced Amount`) as `Product 1 Week Acc Margin`
-,sum(`Product Availability`) as `Product Availability`
-,sum(`Product Stock Value`) as `Product Stock Value`
-,max(`Product Total Days On Sale`) as `Product Total Days On Sale`
-,`Product Same Code Total Days On Sale` as `Product Total Days On Sale`
-,`Product Same Code 1 Year Acc Days On Sale` as `Product 1 Year Acc Days On Sale`
-,`Product Same Code 1 Quarter Acc Days On Sale` as `Product 1 Quarter Acc Days On Sale`
-,`Product Same Code 1 Month Acc Days On Sale` as `Product 1 Month Acc Days On Sale`
-,`Product Same Code 1 Week Acc Days On Sale` as `Product 1 Week Acc Days On Sale` 
-,`Product Same Code GMROI` as `Product GMROI`
-,`Product Same Code XHTML Family` as `Product XHTML Family` 
-,`Product Same Code Family Code` as `Product Family Code`
-,`Product Same Code XHTML Main Department` as `Product XHTML Main Department`
-,`Product Same Code Main Department Code` as `Product Main Department Code`
-,`Product Same Code Tariff Code` as `Product Tariff Code`
-,`Product Same Code XHTML Short Description`  as `Product XHTML Short Description`
-,`Product Same Code XHTML Picking`  as `Product XHTML Picking`
-,`Product Same Code Main Picking Location`  as `Product Main Picking Location`
-
-,`Product Same Code XHTML Parts`  as `Product XHTML Parts`
-,`Product Same Code XHTML Supplied By`  as `Product XHTML Supplied By`
-
-from `Product Dimension` P   $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
-  
-   $res = mysql_query($sql);
-  $adata=array();
-  // print "$sql";
-  while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-    $code=sprintf('<a href="product.php?id=%d">s%s</a>',$row['Product Key'],$row['Product Code']);
-    if($percentages){
-      if($period=='all'){
-      $tsall=percentage($row['Product Total Invoiced Amount'],$sum_total_sales,2);
-      if($row['Product Total Profit']>=0)
-	$tprofit=percentage($row['Product Total Profit'],$sum_total_profit_plus,2);
-      else
-	$tprofit=percentage($row['Product Total Profit'],$sum_total_profit_minus,2);
-      } elseif($period=='year'){
-      $tsall=percentage($row['Product 1 Year Acc Invoiced Amount'],$sum_total_sales,2);
-      if($row['Product 1 Year Acc Profit']>=0)
-	$tprofit=percentage($row['Product 1 Year Acc Profit'],$sum_total_profit_plus,2);
-      else
-	$tprofit=percentage($row['Product 1 Year Acc Profit'],$sum_total_profit_minus,2);
-      } elseif($period=='quarter'){
-      $tsall=percentage($row['Product 1 Quarter Acc Invoiced Amount'],$sum_total_sales,2);
-      if($row['Product 1 Quarter Acc Profit']>=0)
-	$tprofit=percentage($row['Product 1 Quarter Acc Profit'],$sum_total_profit_plus,2);
-      else
-	$tprofit=percentage($row['Product 1 Quarter Acc Profit'],$sum_total_profit_minus,2);
-      } elseif($period=='month'){
-      $tsall=percentage($row['Product 1 Month Acc Invoiced Amount'],$sum_total_sales,2);
-      if($row['Product 1 Month Acc Profit']>=0)
-	$tprofit=percentage($row['Product 1 Month Acc Profit'],$sum_total_profit_plus,2);
-      else
-	$tprofit=percentage($row['Product 1 Month Acc Profit'],$sum_total_profit_minus,2);
-      } elseif($period=='week'){
-      $tsall=percentage($row['Product 1 Week Acc Invoiced Amount'],$sum_total_sales,2);
-      if($row['Product 1 Week Acc Profit']>=0)
-	$tprofit=percentage($row['Product 1 Week Acc Profit'],$sum_total_profit_plus,2);
-      else
-	$tprofit=percentage($row['Product 1 Week Acc Profit'],$sum_total_profit_minus,2);
-      }
-
-
-    }else{
-      
-      
-
-
-
-
-      if($period=='all'){
-	
-	
-	if($avg=='totals')
-	  $factor=1;
-	elseif($avg=='month'){
-	  if($row['Product Total Days On Sale']>0)
-	    $factor=30.4368499/$row['Product Total Days On Sale'];
-	  else
-	    $factor='ND';
-	}elseif($avg=='week'){
-	  if($row['Product Total Days On Sale']>0)
-	    $factor=7/$row['Product Total Days On Sale'];
-	  else
-	    $factor='ND';
-	}elseif($avg=='month_eff'){
-	  if($row['Product Total Days Available']>0)
-	    $factor=30.4368499/$row['Product Total Days Available'];
-	  else
-	    $factor='ND';
-	}elseif($avg=='week_eff'){
-	  if($row['Product Total Days Available']>0)
-	    $factor=7/$row['Product Total Days Available'];
-	  else
-	    $factor='ND';
-	}
-	if($factor=='ND'){
-	  $tsall=_('ND');
-	  $tprofit=_('ND');
-	  $sold=_('ND');
-	}else{
-	
-	$tsall=money($row['Product Total Invoiced Amount']*$factor);
-	$tprofit=money($row['Product Total Profit']*$factor);
-	$sold=number($row['Product Total Quantity Invoiced']*$factor,1,true);
-	}
-
-
-	$margin=number($row['Product Total Margin'],1)."%";
-	  
-
-
-   }elseif($period=='year'){
-
-
-	if($avg=='totals')
-	  $factor=1;
-	elseif($avg=='month'){
-	  if($row['Product 1 Year Acc Days On Sale']>0)
-	    $factor=30.4368499/$row['Product 1 Year Acc Days On Sale'];
-	  else
-	    $factor='ND';
-	}elseif($avg=='month'){
-	  if($row['Product 1 Year Acc Days On Sale']>0)
-	    $factor=30.4368499/$row['Product 1 Year Acc Days On Sale'];
-	  else
-	    $factor='ND';
-	}elseif($avg=='week'){
-	  if($row['Product 1 Year Acc Days On Sale']>0)
-	    $factor=7/$row['Product 1 Year Acc Days On Sale'];
-	  else
-	    $factor='ND';
-	}elseif($avg=='month_eff'){
-	  if($row['Product 1 Year Acc Days Available']>0)
-	    $factor=30.4368499/$row['Product 1 Year Acc Days Available'];
-	  else
-	    $factor='ND';
-	}elseif($avg=='week_eff'){
-	  if($row['Product 1 Year Acc Days Available']>0)
-	    $factor=7/$row['Product 1 Year Acc Days Available'];
-	  else
-	    $factor='ND';
-	}
-	if($factor=='ND'){
-	  $tsall=_('ND');
-	  $tprofit=_('ND');
-	  $sold=_('ND');
-	}else{
-	$sold=number($row['Product 1 Year Acc Quantity Invoiced']*$factor);
-	$tsall=money($row['Product 1 Year Acc Invoiced Amount']*$factor);
-	$tprofit=money($row['Product 1 Year Acc Profit']*$factor);
-	}
-	$margin=number($row['Product 1 Year Acc Margin'],1)."%";
-      }elseif($period=='quarter'){
-	if($avg=='totals')
-	  $factor=1;
-	elseif($avg=='month'){
-	  if($row['Product 1 Quarter Acc Days On Sale']>0)
-	    $factor=30.4368499/$row['Product 1 Quarter Acc Days On Sale'];
-	  else
-	    $factor='ND';
-	}elseif($avg=='month'){
-	  if($row['Product 1 Quarter Acc Days On Sale']>0)
-	    $factor=30.4368499/$row['Product 1 Quarter Acc Days On Sale'];
-	  else
-	    $factor='ND';
-	}elseif($avg=='week'){
-	  if($row['Product 1 Quarter Acc Days On Sale']>0)
-	    $factor=7/$row['Product 1 Quarter Acc Days On Sale'];
-	  else
-	    $factor='ND';
-	}elseif($avg=='month_eff'){
-	  if($row['Product 1 Quarter Acc Days Available']>0)
-	    $factor=30.4368499/$row['Product 1 Quarter Acc Days Available'];
-	  else
-	    $factor='ND';
-	}elseif($avg=='week_eff'){
-	  if($row['Product 1 Quarter Acc Days Available']>0)
-	    $factor=7/$row['Product 1 Quarter Acc Days Available'];
-	  else
-	    $factor='ND';
-	}
-
-		if($factor=='ND'){
-	  $tsall=_('ND');
-	  $tprofit=_('ND');
-	  $sold=_('ND');
-	}else{
-	$sold=number($row['Product 1 Quarter Acc Quantity Invoiced']*$factor);
-	$tsall=money($row['Product 1 Quarter Acc Invoiced Amount']*$factor);
-	$tprofit=money($row['Product 1 Quarter Acc Profit']*$factor);
-		}
-	$margin=number($row['Product 1 Quarter Acc Margin'],1)."%";
-
-      }elseif($period=='month'){
-		if($avg=='totals')
-	  $factor=1;
-	elseif($avg=='month'){
-	  if($row['Product 1 Month Acc Days On Sale']>0)
-	    $factor=30.4368499/$row['Product 1 Month Acc Days On Sale'];
-	  else
-	    $factor='ND';
-	}elseif($avg=='month'){
-	  if($row['Product 1 Month Acc Days On Sale']>0)
-	    $factor=30.4368499/$row['Product 1 Month Acc Days On Sale'];
-	  else
-	    $factor='ND';
-	}elseif($avg=='week'){
-	  if($row['Product 1 Month Acc Days On Sale']>0)
-	    $factor=7/$row['Product 1 Month Acc Days On Sale'];
-	  else
-	    $factor='ND';
-	}elseif($avg=='month_eff'){
-	  if($row['Product 1 Month Acc Days Available']>0)
-	    $factor=30.4368499/$row['Product 1 Month Acc Days Available'];
-	  else
-	    $factor='ND';
-	}elseif($avg=='week_eff'){
-	  if($row['Product 1 Month Acc Days Available']>0)
-	    $factor=7/$row['Product 1 Month Acc Days Available'];
-	  else
-	    $factor='ND';
-	}
-
-	if($factor=='ND'){
-	  $tsall=_('ND');
-	  $tprofit=_('ND');
-	  $sold=_('ND');
-	}else{
-	  $tsall=money($row['Product 1 Month Acc Invoiced Amount']*$factor);
-	  $tprofit=money($row['Product 1 Month Acc Profit']*$factor);
-	  $sold=number($row['Product 1 Month Acc Quantity Invoiced']*$factor);
-	}
-	$margin=number($row['Product 1 Month Acc Margin'],1)."%";
-      }elseif($period=='week'){
-		if($avg=='totals')
-	  $factor=1;
-	elseif($avg=='month'){
-	  if($row['Product 1 Week Acc Days On Sale']>0)
-	    $factor=30.4368499/$row['Product 1 Week Acc Days On Sale'];
-	  else
-	    $factor='ND';
-	}elseif($avg=='month'){
-	  if($row['Product 1 Week Acc Days On Sale']>0)
-	    $factor=30.4368499/$row['Product 1 Week Acc Days On Sale'];
-	  else
-	    $factor='ND';
-	}elseif($avg=='week'){
-	  if($row['Product 1 Week Acc Days On Sale']>0)
-	    $factor=7/$row['Product 1 Week Acc Days On Sale'];
-	  else
-	    $factor='ND';
-	}elseif($avg=='month_eff'){
-	  if($row['Product 1 Week Acc Days Available']>0)
-	    $factor=30.4368499/$row['Product 1 Week Acc Days Available'];
-	  else
-	    $factor='ND';
-	}elseif($avg=='week_eff'){
-	  if($row['Product 1 Week Acc Days Available']>0)
-	    $factor=7/$row['Product 1 Week Acc Days Available'];
-	  else
-	    $factor='ND';
-	}
-	if($factor=='ND'){
-	  $tsall=_('ND');
-	  $tprofit=_('ND');
-	  $sold=_('ND');
-	}else{
-	  $sold=number($row['Product 1 Week Acc Quantity Invoiced']*$factor);
-	  $tsall=money($row['Product 1 Week Acc Invoiced Amount']*$factor);
-	  $tprofit=money($row['Product 1 Week Acc Profit']*$factor);
-	}
-	$margin=number($row['Product 1 Week Acc Margin'],1)."%";
-
-      }
-
-
-
-    }
-
-    if(is_numeric($row['Product Availability']))
-      $stock=number($row['Product Availability']);
-    else
-      $stock='?';
-
-
-   $adata[]=array(
-		  
-		   'code'=>$code,
-		   'name'=>$row['Product XHTML Short Description'],
-		   'family'=>$row['Product XHTML Family'],
-		   'dept'=>$row['Product XHTML Main Department'],
-		   'expcode'=>$row['Product Tariff Code'],
-		   'parts'=>$row['Product XHTML Parts'],
-		   'supplied'=>$row['Product XHTML Supplied By'],
-		   'gmroi'=>$row['Product GMROI'],
-		   'stock_value'=>money($row['Product Stock Value']),
-		   'stock'=>$stock,
-		   'sales'=>$tsall,
-		   'profit'=>$tprofit,
-		   'margin'=>$margin,
-		   'sold'=>$sold
-		   );
-  }
-
- //   if($percentages){
-//       $tsall='100.00%';
-//       $tprofit='100.00%';
-//       $tstock_value='100.00%';
-//     }else{
-//      $tsall=money($sum_total_sales);
-//      $tprofit=money($sum_total_profit);
-//      $tstock_value=money($sum_total_stock_value);
-
-//    }
-
-
-//    $total_title='';
-//    if($view=='sales') 
-//      $total_title=_('Total');
-
-//    $adata[]=array(
-		  
-// 		  'code'=>$total_title,
-// 		  'name'=>'',
-// 		  'stock_value'=>$tstock_value,
-// 		  'sales'=>$tsall,
-// 		  'profit'=>$tprofit
-		  
-// 		 );
-
-
-  //$total=mysql_num_rows($res);
- //  if($total<$number_results)
-//     $rtext=$total.' '.ngettext('department','departments',$total);
-//   else
-//     $rtext='';
-
-
-  $response=array('resultset'=>
-		  array('state'=>200,
-			'data'=>$adata,
-			'sort_key'=>$_order,
-			 'sort_dir'=>$_dir,
-			 'tableid'=>$tableid,
-			 'filter_msg'=>$filter_msg,
-			'total_records'=>$total,
-			//'records_offset'=>$start_from,
-			//'records_returned'=>$start_from+$total,
-			'records_perpage'=>$number_results,//$number_results,
-			'records_order'=>$order,
-			'records_order_dir'=>$order_dir,
-			//'filtered'=>$filtered,
-			'rtext'=>$rtext,
-			'rtext_rpp'=>$rtext_rpp
-			)
-		  );
-
-       
-
- 
-   echo json_encode($response);
-   break;
- case('families'):
-     $conf=$_SESSION['state']['families']['table'];
-     if(isset( $_REQUEST['view']))
-       $view=$_REQUEST['view'];
-     else
-       $view=$_SESSION['state']['families']['view'];
-     
-      if(isset( $_REQUEST['sf']))
-	$start_from=$_REQUEST['sf'];
-      else
-    $start_from=$conf['sf'];
-      if(!is_numeric($start_from))
-	$start_from=0;
-      
-      if(isset( $_REQUEST['nr']))
-    $number_results=$_REQUEST['nr'];
-      else
-	$number_results=$conf['nr'];
-      if(!is_numeric($number_results))
-	$number_results=25;
-      
-      if(isset( $_REQUEST['o']))
-	$order=$_REQUEST['o'];
-      else
-	$order=$conf['order'];
-      
-      if(isset( $_REQUEST['od']))
-	$order_dir=$_REQUEST['od'];
-      else
-	$order_dir=$conf['order_dir'];
-      $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-      
-      
-  
-      if(isset( $_REQUEST['where']))
-	$where=addslashes($_REQUEST['where']);
-      else
-	$where=$conf['where'];
-      
-      
-      if(isset( $_REQUEST['f_field']))
-	$f_field=$_REQUEST['f_field'];
-      else
-	$f_field=$conf['f_field'];
-      
-      if(isset( $_REQUEST['f_value']))
-	$f_value=$_REQUEST['f_value'];
-      else
-	$f_value=$conf['f_value'];
-      
-      
-      if(isset( $_REQUEST['tableid']))
-	$tableid=$_REQUEST['tableid'];
-      else
-	$tableid=0;
-      $_SESSION['state']['families']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
-      
-      
-
-
-
-     $filter_msg='';
-     
-     $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-     
-     if(!is_numeric($start_from))
-       $start_from=0;
-     if(!is_numeric($number_results))
-       $number_results=25;
-     
-     
-     $_order=$order;
-     $_dir=$order_direction;
-     $filter_msg='';
-     $wheref='';
-     if($f_field=='code' and $f_value!='')
-       $wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
-     elseif($f_field=='description' and $f_value!='')
-       $wheref.=" and  ".$f_field." like '%".addslashes($f_value)."%'";
-
-
-   
-
-
-     
-     $sql="select count(*) as total from product_group  $where $wheref";
-     //     print "$sql";
-     $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-     if($row=$res->fetchRow()) {
-       $total=$row['total'];
-     }
-     if($wheref==''){
-       $filtered=0;
-       $total_records=$total;
-     } else{
-       $sql="select count(*) as total from product_group  $where ";
-
-     $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-     if($row=$res->fetchRow()) {
-       $total_records=$row['total'];
-       $filtered=$total_records-$total;
-     }
-
-   }
-
-     $rtext=$total_records." ".ngettext('family','families',$total_records);
-     if($total_records>$number_results)
-       $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
-     
-       if($total==0 and $filtered>0){
-     switch($f_field){
-     case('code'):
-       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any family  like ")." <b>".$f_value."*</b> ";
-       break;
-     case('description'):
-       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any family with description like ")." <b>".$f_value."*</b> ";
-       break;
-     }
-   }
-   elseif($filtered>0){
-     switch($f_field){
-     case('code'):
-       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('family like')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
-       break;
-     case('description'):
-       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('family with description like')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
-       break; 
-     }
-   }else
-      $filter_msg='';
-
-   
-
-
-  
-  $sql="select stock_value,ns_outofstock as outofstock,ns_unknown as stockerror, ns_high,ns_normal,ns_low,ns_critical, product_group.id,name,description,tsall,tsy,tsq,tsm,tsw,awtsall,awtsy,awtsm,tsoall,tsoy,tsoq,tsom, tsow,awtsoall,awtsoy,awtsom from product_group  join sales on (product_group.id=tipo_id)   $where $wheref and tipo='fam'  order by $order $order_direction limit $start_from,$number_results    ";
-  //        print "$sql";
-  $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-  
-  $adata=array();
-  
-  while($data=$res->fetchRow()) {
-    $adata[]=array(
-		   'id'=>$data['id']
-		   ,'name'=>sprintf('<a href="family.php?id=%d">%s</a>',$data['id'],$data['name'])
-		   ,'description'=>$data['description']
-
-		   ,'outofstock'=>number($data['outofstock'])
-		   ,'stockerror'=>number($data['stockerror'])
-		   ,'ns_high'=>number($data['ns_high'])
-		   ,'ns_normal'=>number($data['ns_normal'])
-		   ,'ns_low'=>number($data['ns_low'])
-		   ,'ns_critical'=>number($data['ns_critical'])
-		   ,'stock_value'=>money($data['stock_value'])
-		   ,'tsall'=>money($data['tsall'])
-		   ,'tsy'=>($data['tsy']?money($data['tsy']):'')
-		   ,'tsq'=>($data['tsq']?money($data['tsq']):'')
-		   ,'tsm'=>($data['tsm']?money($data['tsm']):'')
-		   ,'tsw'=>($data['tsw']?money($data['tsw']):'')
-		   ,'awtsall'=>money($data['awtsall'])
-		   ,'awtsy'=>($data['awtsy']?money($data['awtsy']):'')
-		   ,'awtsm'=>($data['awtsm']?money($data['awtsm']):'')
-		   ,'tsoall'=>number($data['tsoall'])
-		   ,'tsoy'=>number($data['tsoy'])
-		   ,'tsoq'=>number($data['tsoq'])
-		   ,'tsom'=>number($data['tsom'])
-		   ,'tsow'=>number($data['tsow'])
-		   ,'awtsoall'=>number($data['awtsoall'])
-		   ,'awtsoy'=>number($data['awtsoy'])
-		   ,'awtsom'=>number($data['awtsom'])
-		   
-
-		   );
-  }
-
-  $response=array('resultset'=>
-		   array('state'=>200,
-			 'data'=>$adata,
-			 'sort_key'=>$_order,
-			 'rtext'=>$rtext,
-			 'sort_dir'=>$_dir,
-			 'tableid'=>$tableid,
-			 'filter_msg'=>$filter_msg,
-			 'total_records'=>$total,
-			 'records_offset'=>$start_from,
-			 'records_returned'=>$start_from+$res->numRows(),
-			 'records_perpage'=>$number_results,
-			 'records_order'=>$order,
-			 'records_order_dir'=>$order_dir,
-			 'filtered'=>$filtered
-			 )
-		   );
-   echo json_encode($response);
-   break;
+   //===========================================================================
  case('products'):
 
    $conf=$_SESSION['state']['products']['table'];
@@ -5206,12 +3456,12 @@ from `Product Dimension` P   $where $wheref $group order by $order $order_direct
 
    if(isset( $_REQUEST['nr'])){
      $number_results=$_REQUEST['nr'];
-
+     
      if($start_from>0){
        $page=floor($start_from/$number_results);
        $start_from=$start_from-$page;
      }
-
+     
    }      else
      $number_results=$conf['nr'];
 
@@ -5920,6 +4170,7 @@ from `Product Dimension` P   $where $wheref $group order by $order $order_direct
 
     $type=$row['Product Sales State'];
     $wwwtype=$row['Product Web State'];
+
     $adata[]=array(
 		  
 		   'code'=>$code,
@@ -5979,29 +4230,20 @@ from `Product Dimension` P   $where $wheref $group order by $order $order_direct
  		 );
 
 
-  //$total=mysql_num_rows($res);
- //  if($total<$number_results)
-//     $rtext=$total.' '.ngettext('department','departments',$total);
-//   else
-//     $rtext='';
+    $total_records=ceil($total_records/$number_results)+$total_records;
 
-//  PRINT "$number_results $start_from";
   $response=array('resultset'=>
 		  array('state'=>200,
 			'data'=>$adata,
 			'sort_key'=>$_order,
-			 'sort_dir'=>$_dir,
-			 'tableid'=>$tableid,
-			 'filter_msg'=>$filter_msg,
-			'total_records'=>$total,
-			//'records_offset'=>$start_from,
-			//'records_returned'=>$start_from+$total,
-			'records_perpage'=>$number_results,//$number_results,
-			'records_order'=>$order,
-			'records_order_dir'=>$order_dir,
-			//'filtered'=>$filtered,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
 			'rtext'=>$rtext,
-			'rtext_rpp'=>$rtext_rpp
+			'rtext_rpp'=>$rtext_rpp,
+			'total_records'=>$total_records,
+			'records_offset'=>$start_from,
+			'records_perpage'=>$number_results,
 			)
 		  );
 
@@ -6010,6 +4252,7 @@ from `Product Dimension` P   $where $wheref $group order by $order $order_direct
 
    echo json_encode($response);
    break;
+   //========================================================================
 case('parts'):
      $conf=$_SESSION['state']['parts']['table'];
      if(isset( $_REQUEST['view']))
@@ -6024,9 +4267,14 @@ case('parts'):
       if(!is_numeric($start_from))
 	$start_from=0;
       
-      if(isset( $_REQUEST['nr']))
-    $number_results=$_REQUEST['nr'];
-      else
+      if(isset( $_REQUEST['nr'])){
+	$number_results=$_REQUEST['nr'];
+	if($start_from>0){
+	  $page=floor($start_from/$number_results);
+	  $start_from=$start_from-$page;
+	}
+	
+      }else
 	$number_results=$conf['nr'];
       if(!is_numeric($number_results))
 	$number_results=25;
@@ -6141,9 +4389,10 @@ case('parts'):
 
      $rtext=$total_records." ".ngettext('part','parts',$total_records);
      if($total_records>$number_results)
-       $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
-     
-       if($total==0 and $filtered>0){
+       $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+     else
+       $rtext_rpp=' '._('(Showing all)');
+     if($total==0 and $filtered>0){
      switch($f_field){
      case('used_in'):
        $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any part used in ")." <b>".$f_value."*</b> ";
@@ -6591,441 +4840,34 @@ case('parts'):
 		   ,'unknown_days'=>$unknown_days
 		   ,'gmroi'=>$gmroi
 		   );
-  }
+      }
+
+ $total_title=_('Total');
+
+ $adata[]=array(
+		  
+ 		  'sku'=>$total_title,
+ 		 );
+
+$total_records=ceil($total_records/$number_results)+$total_records;
+
   $response=array('resultset'=>
 		   array('state'=>200,
-			 'data'=>$adata,
-			 'sort_key'=>$_order,
-			 'rtext'=>$rtext,
-			 'sort_dir'=>$_dir,
-			 'tableid'=>$tableid,
-			 'filter_msg'=>$filter_msg,
-			 'total_records'=>$total,
-			 'records_offset'=>$start_from,
-			 'records_returned'=>$start_from+$total,
-			 'records_perpage'=>$number_results,
-			 'records_order'=>$_order,
-			 'records_order_dir'=>$_order_dir,
-			 'filtered'=>$filtered
+			 	'data'=>$adata,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'total_records'=>$total_records,
+			'records_offset'=>$start_from,
+			'records_perpage'=>$number_results,
 			 )
 		   );
    echo json_encode($response);
    break;
- case('update_department_name'):
-   
-   if(isset($_REQUEST['id'])  and  isset($_REQUEST['value'])  and is_numeric($_REQUEST['id']) and $_REQUEST['value']!=''){
-     $name=addslashes($_REQUEST['value']);
-     $id=$_REQUEST['id'];
-     $sql=sprintf("update product_department set name='%s' where id=%d ",$name,$id);
-     $affected=& $db->exec($sql);
-     if (PEAR::isError($affected)) {
-       if(preg_match('/^MDB2 Error: constraint violation$/',$affected->getMessage()))
-	 $resp=_('Error: Another department has the same name').'.';
-       else
-	 $resp=_('Unknown Error').'.';
-       $state='400';
-     }else{
-       $resp= $affected;
-       $state='200';
-     }
-     $response=array('state'=>$state,'resp'=>_($resp));
-   }
-
-   else
-      $response=array('state'=>400,'resp'=>_('Error'));
-   echo json_encode($response);
-   break;
-
- case('update_family_name'):
-   
-   if(isset($_REQUEST['id'])  and  isset($_REQUEST['value'])  and is_numeric($_REQUEST['id']) and $_REQUEST['value']!=''){
-     $name=addslashes($_REQUEST['value']);
-     $id=$_REQUEST['id'];
-     $sql=sprintf("update product_group set name='%s' where id=%d ",$name,$id);
-     $affected=& $db->exec($sql);
-     if (PEAR::isError($affected)) {
-       if(preg_match('/^MDB2 Error: constraint violation$/',$affected->getMessage()))
-	 $resp=_('Error: Another family has the same name').'.';
-       else
-	 $resp=_('Unknown Error').'.';
-       $state='400';
-     }else{
-       $resp= $affected;
-       $state='200';
-     }
-     $response=array('state'=>$state,'resp'=>_($resp));
-   }
-
-   else
-      $response=array('state'=>400,'resp'=>_('Error'));
-   echo json_encode($response);
-   break;
- case('update_family_description'):
-   
-   if(isset($_REQUEST['id'])  and  isset($_REQUEST['value'])  and is_numeric($_REQUEST['id']) and $_REQUEST['value']!=''){
-     $name=addslashes($_REQUEST['value']);
-     $id=$_REQUEST['id'];
-     $sql=sprintf("update product_group set description='%s' where id=%d ",$name,$id);
-     $affected=& $db->exec($sql);
-     if (PEAR::isError($affected)) {
-       if(preg_match('/^MDB2 Error: constraint violation$/',$affected->getMessage()))
-	 $resp=_('Error: Another family has the same name and description').'.';
-       else
-	 $resp=_('Unknown Error').'.';
-       $state='400';
-     }else{
-       $resp= $affected;
-       $state='200';
-     }
-     $response=array('state'=>$state,'resp'=>_($resp));
-   }
-
-   else
-      $response=array('state'=>400,'resp'=>_('Error'));
-   echo json_encode($response);
-   break;
-
-
-
-
-
- case('add_tosupplier'):
-   
-   if( isset($_REQUEST['supplier_id'])    and is_numeric($_REQUEST['supplier_id']) and      isset($_REQUEST['product_id'])    and is_numeric($_REQUEST['product_id'])    ){
-
-     $product_id=$_REQUEST['product_id'];
-     $suppiler_id=$_REQUEST['supplier_id'];
-
-
-     if(isset($_REQUEST['code']) and  $_REQUEST['code']!='')
-       $code="'".$_REQUEST['code']."'";
-     else
-       $code='NULL';
-     
-     if(isset($_REQUEST['price']) and  $_REQUEST['price']!='')
-       $price="'".$_REQUEST['price']."'";
-     else
-       $price='NULL';
-
-     
-     $p2s_id=addtosupplier($product_id,$suppiler_id);
-
-     if($p2s_id>0){
-       
-       $sql=sprintf("update  product2supplier set sup_code=%s , price=%s where id=%d",$code,$price,$p2s_id);
-       //       print "$sql";
-       $affected=& $db->exec($sql);
-     }
-     $state='200';
-     $resp='OK';
-     
-     $response=array('state'=>$state,'resp'=>_($resp),'product_id'=>$product_id);
-   }
-
-   else
-      $response=array('state'=>400,'resp'=>_('Error'));
-   echo json_encode($response);
-   break;
-
- case('set_stock'):
-   
-   if( isset($_REQUEST['product_id'])    and is_numeric($_REQUEST['product_id']) and      isset($_REQUEST['qty'])    and is_numeric($_REQUEST['qty'])   and      isset($_REQUEST['author'])  ){
-
-     
-
-     $product_id=$_REQUEST['product_id'];
-     $qty=$_REQUEST['qty'];
-     
-     $date=split('-',$_REQUEST['date']);
-     if(count($date)==3 and is_numeric($date[0]) and is_numeric($date[0]) and is_numeric($date[0]) ){
-      $f_date=sprintf("%02d-%02d-%d",$date[0],$date[1],$date[2]);
-      $date=join ('-',array_reverse($date));
-     }else{
-       $response=array('state'=>400,'resp'=>_('Error: in date format, should be (DD-MM-YYYY)'));
-       echo json_encode($response);
-       break;
-     }
-     
-
-     $time=split(':',$_REQUEST['time']);
-
-     if( count($time)!=2 or  !is_numeric($time[0]) or !is_numeric($time[1]) or $time[0]>23 or  $time[0]<0  or $time[1]>59 or  $time[1]<0    ){
-       $response=array('state'=>400,'resp'=>_('Error: in time format, should be (HH:MM)'));
-       echo json_encode($response);
-       break;
-     }
-     $time=join (':',$time);
-     $datetime=$date.' '.$time.':00';
-
-
-     $author=$_REQUEST['author'];
-     if(!is_numeric($author) or $author<0){
-       $response=array('state'=>400,'resp'=>'Error; bad author_id');
-       echo json_encode($response);
-       break;
-     }
-
-     if($qty<0){
-       $state='400';
-       $resp='Error, you can not set negative stock.';
-     }else{
-       $sql=sprintf("insert into in_out(tipo,date_creation,quantity,product_id,date,author) values (2,NOW(),'%s',%d,'%s',%d)",$qty,$product_id,$datetime,$author);
-       $db->exec($sql);
-       $stock=set_stock($product_id);
-       $state='200';
-       $resp='OK';
-     }
-     $response=array('state'=>$state,'resp'=>_($resp),'stock'=>$stock);
-   }
-
-   else
-     $response=array('state'=>400,'resp'=>_('Error'));
-echo json_encode($response);
-break;
- case('new_product'):
-   
-   if(
-       isset($_REQUEST['description'])  
-      and  isset($_REQUEST['family_id'])    
-       and  isset($_REQUEST['code'])  
-       and  isset($_REQUEST['units'])  
-       and  isset($_REQUEST['units_tipo'])  
-       and  isset($_REQUEST['price'])  
-
-       and $_REQUEST['description']!='' 
-       and $_REQUEST['code']!=''    
-
-       and is_numeric($_REQUEST['price'])  
-       //and is_numeric($_REQUEST['units_tipo'])  
-
-       and is_numeric($_REQUEST['units'])  
-       and is_numeric($_REQUEST['family_id'])  
-
-
-      ){
-     $code=addslashes($_REQUEST['code']);
-     $description=addslashes($_REQUEST['description']);
-     $family_id=$_REQUEST['family_id'];
-     if(isset($_REQUEST['rrp']) and is_numeric($_REQUEST['rrp']))
-       $rrp=$_REQUEST['rrp'];
-     else
-       $rrp='NULL';
-     
-     if(isset($_REQUEST['units_carton']) and is_numeric($_REQUEST['units_carton']))
-       $units_carton=$_REQUEST['units_carton'];
-     else
-        $units_carton='NULL';
-     
-     $ncode=$code;
-     $c=split('-',$code);
-     if(count($c)==2){
-       if(is_numeric($c[1]))
-	 $ncode=sprintf("%s-%05d",strtolower($c[0]),$c[1]);
-       else
-	 $ncode=sprintf("%s-%s",strtolower($c[0]),strtolower($c[1]));
-     }     
-
-     $sql=sprintf("insert into  product (ncode,rrp,units_carton,units,units_tipo,price,description,code,group_id,first_date) values ('%s',%s,%s,'%s',%d,'%s','%s','%s',%d,NOW())",$ncode,$rrp,$units_carton,$_REQUEST['units'],$_REQUEST['units_tipo'],$_REQUEST['price'],$description,$code,$_REQUEST['family_id']);
-     $affected=& $db->exec($sql);
-     //     print "$sql\n";
-     if (PEAR::isError($affected)) {
-       if(preg_match('/^MDB2 Error: constraint violation$/',$affected->getMessage()))
-	 $resp=_('Error: Another product has the same code').'.';
-       else
-	 $resp=_('Unknown Error').'.';
-       $state='400';
-       $data=array();
-     }else{
-       
-       $product_id = $db->lastInsertID();
-
-       $sql=sprintf("insert into inventory(fuzzy,date_start,date_end,name) values (1,NOW,NOW,'%s',)",_('New product'));
-       $db->exec($sql);
-       $inv_id = $db->lastInsertID();
-       $sql=sprintf("insert into inventory_item (product_id,inventory_id,fecha) values (%d,,%d,NOW)",$product_id,$inv_id);
-       $db->exec($sql);
-
-       fix_todotransaction($product_id);
-       set_stock($product_id);
-       set_available($product_id);
-	      
-       // --------Supplier --------------
-
-       if( isset($_REQUEST['supplier_id'])    and is_numeric($_REQUEST['supplier_id']) and      is_numeric($product_id)    ){
-	 
-
-	 $suppiler_id=$_REQUEST['supplier_id'];
-
-	 
-	 if(isset($_REQUEST['scode']) and  $_REQUEST['scode']!='')
-	   $code="'".$_REQUEST['scode']."'";
-	 else
-	   $code='NULL';
-     
-	 if(isset($_REQUEST['sprice']) and  $_REQUEST['sprice']!='')
-	   $price="'".$_REQUEST['sprice']."'";
-	 else
-	   $price='NULL';
-	 
-	 
-	 $p2s_id=addtosupplier($product_id,$suppiler_id);
-	 
-	 if($p2s_id>0){
-	   
-	   $sql=sprintf("update  product2supplier set sup_code=%s , price=%s where id=%d",$code,$price,$p2s_id);
-	   
-	   $affected=& $db->exec($sql);
-	 }
-       }
-
-
-
-       // ============================
-
-
-       //normalize product
-       set_sales($product_id);
-       //normalize family
-
-       //normalize supplier
-
-       
-
-
-       $resp='ok';
-       $data= array(
-		    
-		    'id'=>$product_id
-		    ,'code'=>$_REQUEST['code']
-		    ,'description'=>$_REQUEST['description']
-		    ,'units'=>$_REQUEST['units']
-		    ,'price'=>$_REQUEST['price']
-		    ,'units_tipo'=>$_REQUEST['units_tipo']
-		    ,'stock'=>0
-		    ,'available'=>0
-		    ,'stock_value'=>0
-		    ,'tsall'=>0
-		    ,'tsy'=>0
-		    ,'tsq'=>0
-		    ,'tsm'=>0
-		    );
-       $state='200';
-     }
-     $response=array('state'=>$state,'resp'=>_($resp),'data'=>$data);
-   }
-
-   else
-      $response=array('state'=>400,'resp'=>_('Error, please check that all the fields are filled'));
-   echo json_encode($response);
-   break;
-
- case('edit_product'):
-   
-   if(
-       isset($_REQUEST['description'])  
-       and  isset($_REQUEST['id'])    
-       and  isset($_REQUEST['code'])  
-       and  isset($_REQUEST['units'])  
-      and  isset($_REQUEST['units_tipo'])  
-       and  isset($_REQUEST['price'])  
-       
-       and $_REQUEST['description']!='' 
-       and $_REQUEST['code']!=''    
-       
-       and is_numeric($_REQUEST['price'])  
-       and is_numeric($_REQUEST['units_tipo'])  
-       
-       and is_numeric($_REQUEST['units'])  
-       and is_numeric($_REQUEST['id'])  
-
-       
-      ){
-     // Get previous values
-     
-     $id=$_REQUEST['id'];
-     $sql=sprintf("select code,description  from product where id=%d",$id);
-
-     $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-     if(!$olddata=$res->fetchRow()) {
-       $response=array('state'=>400,'resp'=>_("Error, product don't found"));
-       echo json_encode($response);
-       break;
-     }
-     
-     
-     if($olddata['code']!=$_REQUEST['code'] or $olddata['description']!=$_REQUEST['description'] ){
-       $code=addslashes($_REQUEST['code']);
-       $description=addslashes($_REQUEST['description']);
-
-       $ncode=$code;
-       $c=split('-',$code);
-       if(count($c)==2){
-	 if(is_numeric($c[1]))
-	   $ncode=sprintf("%s-%05d",strtolower($c[0]),$c[1]);
-	 else
-	   $ncode=sprintf("%s-%s",strtolower($c[0]),strtolower($c[1]));
-       }     
-    
-
-       $sql=sprintf("update product set ncode='%s', code='%s' ,description='%s'  where id=%d",$ncode,$code,$description,$id);
-       $affected=& $db->exec($sql);
-       // print "$sql\n";
-       if (PEAR::isError($affected)) {
-	 if(preg_match('/^MDB2 Error: constraint violation$/',$affected->getMessage()))
-	   $resp=_('Error: Another product has the same code').'.';
-	 else
-	   $resp=_('Unknown Error').'.';
-	 $state='400';
-	 $data=array();
-	 $response=array('state'=>400,'resp'=>$resp);
-	 echo json_encode($response);
-	 break;
-	 
-       }
-       
-     }
-     
-     // update requiered fields
-     $sql=sprintf("update product set units='%s' ,price='%s',units_tipo=%d  where id=%d",$_REQUEST['units'],$_REQUEST['price'],$_REQUEST['units_tipo'],$id);
-     $db->exec($sql);
-       
-     
-     
-     if(isset($_REQUEST['rrp']) and is_numeric($_REQUEST['rrp']))
-       $rrp=$_REQUEST['rrp'];
-     else
-       $rrp='NULL';
-     
-     if(isset($_REQUEST['units_carton']) and is_numeric($_REQUEST['units_carton']))
-       $units_carton=$_REQUEST['units_carton'];
-     else
-       $units_carton='NULL';
-
-     
-    
-
-     
-    // update requiered fields
-    $sql=sprintf("update product set units='%s' ,price='%s',units_tipo=%d ,rrp=%s,units_carton where id=%d",$_REQUEST['units'],$_REQUEST['price'],$_REQUEST['units_tipo'],$rrp,$units_carton,$id);
-    $db->exec($sql);
-    
-
-    
-
-    
-    
-    $resp='ok';
-    $data= array(
-		  'id'=>$id
-		 );
-    $state='200';
-   
-   $response=array('state'=>$state,'resp'=>_($resp),'data'=>$data);
-   }else
-     $response=array('state'=>400,'resp'=>_('Error, please check that all the fields are filled'));
-   echo json_encode($response);
-   break;
-   
+   //=============================================================================  
  case('supplier_products'):
    if(!$LU->checkRight(SUP_VIEW))
     exit;
@@ -7266,238 +5108,238 @@ break;
    echo json_encode($response);
    break;
 
- case('all_supplier_products'):
-   if(!$LU->checkRight(SUP_VIEW))
-    exit;
+ // case('all_supplier_products'):
+//    if(!$LU->checkRight(SUP_VIEW))
+//     exit;
    
-   $conf=$_SESSION['state']['supplier_products']['table'];
-  if(isset( $_REQUEST['sf']))
-    $start_from=$_REQUEST['sf'];
-  else
-    $start_from=$conf['sf'];
-  if(isset( $_REQUEST['nr']))
-    $number_results=$_REQUEST['nr'];
-   else
-     $number_results=$conf['nr'];
-  if(isset( $_REQUEST['o']))
-    $order=$_REQUEST['o'];
-  else
-    $order=$conf['order'];
-  if(isset( $_REQUEST['od']))
-    $order_dir=$_REQUEST['od'];
-  else
-    $order_dir=$conf['order_dir'];
-  if(isset( $_REQUEST['f_field']))
-    $f_field=$_REQUEST['f_field'];
-   else
-     $f_field=$conf['f_field'];
+//    $conf=$_SESSION['state']['supplier_products']['table'];
+//   if(isset( $_REQUEST['sf']))
+//     $start_from=$_REQUEST['sf'];
+//   else
+//     $start_from=$conf['sf'];
+//   if(isset( $_REQUEST['nr']))
+//     $number_results=$_REQUEST['nr'];
+//    else
+//      $number_results=$conf['nr'];
+//   if(isset( $_REQUEST['o']))
+//     $order=$_REQUEST['o'];
+//   else
+//     $order=$conf['order'];
+//   if(isset( $_REQUEST['od']))
+//     $order_dir=$_REQUEST['od'];
+//   else
+//     $order_dir=$conf['order_dir'];
+//   if(isset( $_REQUEST['f_field']))
+//     $f_field=$_REQUEST['f_field'];
+//    else
+//      $f_field=$conf['f_field'];
   
-  if(isset( $_REQUEST['f_value']))
-    $f_value=$_REQUEST['f_value'];
-  else
-    $f_value=$conf['f_value'];
-  if(isset( $_REQUEST['where']))
-    $where=$_REQUEST['where'];
-   else
-     $where=$conf['where'];
-  
-  
+//   if(isset( $_REQUEST['f_value']))
+//     $f_value=$_REQUEST['f_value'];
+//   else
+//     $f_value=$conf['f_value'];
+//   if(isset( $_REQUEST['where']))
+//     $where=$_REQUEST['where'];
+//    else
+//      $where=$conf['where'];
   
   
-   if(isset( $_REQUEST['tableid']))
-     $tableid=$_REQUEST['tableid'];
-   else
-    $tableid=0;
+  
+  
+//    if(isset( $_REQUEST['tableid']))
+//      $tableid=$_REQUEST['tableid'];
+//    else
+//     $tableid=0;
    
-   if(isset( $_REQUEST['view'])){
-     $view=$_REQUEST['view'];
-     $_SESSION['state']['supplier_products']['view']=$view;
-   }else
-     $view=$_SESSION['state']['supplier_products']['view'];
+//    if(isset( $_REQUEST['view'])){
+//      $view=$_REQUEST['view'];
+//      $_SESSION['state']['supplier_products']['view']=$view;
+//    }else
+//      $view=$_SESSION['state']['supplier_products']['view'];
 
-   if(isset( $_REQUEST['period'])){
-     $period=$_REQUEST['period'];
-     $_SESSION['state']['supplier_products']['period']=$period;
-   }else
-     $period=$_SESSION['state']['supplier_products']['period'];
+//    if(isset( $_REQUEST['period'])){
+//      $period=$_REQUEST['period'];
+//      $_SESSION['state']['supplier_products']['period']=$period;
+//    }else
+//      $period=$_SESSION['state']['supplier_products']['period'];
    
-   if(isset( $_REQUEST['percentage'])){
-     $percentage=$_REQUEST['percentage'];
-     $_SESSION['state']['supplier_products']['percentage']=$percentage;
-   }else
-     $percentage=$_SESSION['state']['supplier_products']['percentage'];
+//    if(isset( $_REQUEST['percentage'])){
+//      $percentage=$_REQUEST['percentage'];
+//      $_SESSION['state']['supplier_products']['percentage']=$percentage;
+//    }else
+//      $percentage=$_SESSION['state']['supplier_products']['percentage'];
 
-   $filter_msg='';
-   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-   $_order=$order;
-   $_dir=$order_direction;
+//    $filter_msg='';
+//    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+//    $_order=$order;
+//    $_dir=$order_direction;
 
-   $product_percentage=$percentage;
-   $product_view=$view;
-   $product_period=$period;
+//    $product_percentage=$percentage;
+//    $product_view=$view;
+//    $product_period=$period;
 
-   $_SESSION['state']['supplier_products']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value
+//    $_SESSION['state']['supplier_products']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value
 
-						    );
-
-
+// 						    );
 
 
 
-  $wheref='';
-  if(($f_field=='code' ) and $f_value!='')
-    $wheref.=" and  `Supplier Product XHTML Used In` like '%".addslashes($f_value)."%'";
-if($f_field=='sup_code' and $f_value!='')
-    $wheref.=" and  `Supplier Product Code` like '".addslashes($f_value)."%'";
+
+
+//   $wheref='';
+//   if(($f_field=='code' ) and $f_value!='')
+//     $wheref.=" and  `Supplier Product XHTML Used In` like '%".addslashes($f_value)."%'";
+// if($f_field=='sup_code' and $f_value!='')
+//     $wheref.=" and  `Supplier Product Code` like '".addslashes($f_value)."%'";
   
 
 
 
  
 
-  $sql="select count(*) as total from `Supplier Product Dimension`  $where $wheref ";
+//   $sql="select count(*) as total from `Supplier Product Dimension`  $where $wheref ";
 
-  $result=mysql_query($sql);
-  if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){ 
+//   $result=mysql_query($sql);
+//   if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){ 
 
-   $total=$row['total'];
-  }
-    if($wheref==''){
-      $filtered=0; $total_records=$total;
-    }else{
+//    $total=$row['total'];
+//   }
+//     if($wheref==''){
+//       $filtered=0; $total_records=$total;
+//     }else{
       
-      $sql="select count(*) as total from `Supplier Product Dimension`  $where  ";
-      $result=mysql_query($sql);
-      if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){ 
-	$total_records=$row['total'];
-	$filtered=$row['total']-$total;
-      }
+//       $sql="select count(*) as total from `Supplier Product Dimension`  $where  ";
+//       $result=mysql_query($sql);
+//       if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){ 
+// 	$total_records=$row['total'];
+// 	$filtered=$row['total']-$total;
+//       }
       
-    }
+//     }
 
     
     
-    $rtext=$total_records." ".ngettext('pruduct','products',$total_records);
-    if($total_records>$number_results)
-      $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
-    $filter_msg='';
+//     $rtext=$total_records." ".ngettext('pruduct','products',$total_records);
+//     if($total_records>$number_results)
+//       $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
+//     $filter_msg='';
     
- switch($f_field){
- case('code'):
-       if($total==0 and $filtered>0)
-	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any product with code")." <b>".$f_value."*</b>  <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Clear Filter')."</span>";
-       elseif($filtered>0)
-	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('products with code')." <b>".$f_value."*</b>) <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
-       break;
- case('sup_code'):
-       if($total==0 and $filtered>0)
-	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any product with supplier code")." <b>".$f_value."*</b> ";
-       elseif($filtered>0)
-	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('products with supplier code')." <b>".$f_value."*</b>) <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
-       break;
+//  switch($f_field){
+//  case('code'):
+//        if($total==0 and $filtered>0)
+// 	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any product with code")." <b>".$f_value."*</b>  <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Clear Filter')."</span>";
+//        elseif($filtered>0)
+// 	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('products with code')." <b>".$f_value."*</b>) <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+//        break;
+//  case('sup_code'):
+//        if($total==0 and $filtered>0)
+// 	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any product with supplier code")." <b>".$f_value."*</b> ";
+//        elseif($filtered>0)
+// 	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('products with supplier code')." <b>".$f_value."*</b>) <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+//        break;
 
- }
- if($order=='id')
-   $order='`Supplier Product ID`';
- elseif($order=='code')
-   $order='`Supplier Product Code`';
- elseif($order='usedin')
-   $order='`Supplier Product XHTML Used In`';
+//  }
+//  if($order=='id')
+//    $order='`Supplier Product ID`';
+//  elseif($order=='code')
+//    $order='`Supplier Product Code`';
+//  elseif($order='usedin')
+//    $order='`Supplier Product XHTML Used In`';
 
-   $sql="select * from `Supplier Product Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+//    $sql="select * from `Supplier Product Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
 
-   $data=array();
+//    $data=array();
 
-   $result=mysql_query($sql);
-   while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+//    $result=mysql_query($sql);
+//    while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
 
-     if($product_period=='all'){
-       $profit=money($row['Supplier Product Total Parts Profit']);
-       $profit2=money($row['Supplier Product Total Parts Profit After Storing']);
-       $allcost=money($row['Supplier Product Total Cost']);
-       $used=number($row['Supplier Product Total Parts Used']);
-       $required=number($row['Supplier Product Total Parts Required']);
-       $provided=number($row['Supplier Product Total Parts Provided']);
-       $lost=number($row['Supplier Product Total Parts Lost']);
-       $broken=$row['Supplier Product Total Parts Broken'];
-     }else if($product_period=='year'){
-       $profit=money($row['Supplier Product 1 Year Acc Parts Profit']);
-       $profit2=money($row['Supplier Product 1 Year Acc Parts Profit After Storing']);
-       $allcost=money($row['Supplier Product 1 Year Acc Cost']);
-       $used=number($row['Supplier Product 1 Year Acc Parts Used']);
-       $required=number($row['Supplier Product 1 Year Acc Parts Required']);
-       $provided=number($row['Supplier Product 1 Year Acc Parts Provided']);
-       $lost=number($row['Supplier Product 1 Year Acc Parts Lost']);
-       $broken=number($row['Supplier Product 1 Year Acc Parts Broken']);
-     }else if($product_period=='quarter'){
-       $profit=money($row['Supplier Product 1 Quarter Acc Parts Profit']);
-       $profit2=money($row['Supplier Product 1 Quarter Acc Parts Profit After Storing']);
-       $allcost=money($row['Supplier Product 1 Quarter Acc Cost']);
-       $used=number($row['Supplier Product 1 Quarter Acc Parts Used']);
-       $required=number($row['Supplier Product 1 Quarter Acc Parts Required']);
-       $provided=number($row['Supplier Product 1 Quarter Acc Parts Provided']);
-       $lost=number($row['Supplier Product 1 Quarter Acc Parts Lost']);
-       $broken=number($row['Supplier Product 1 Quarter Acc Parts Broken']);
-     }else if($product_period=='month'){
-       $profit=money($row['Supplier Product 1 Month Acc Parts Profit']);
-       $profit2=money($row['Supplier Product 1 Month Acc Parts Profit After Storing']);
-       $allcost=money($row['Supplier Product 1 Month Acc Cost']);
-       $used=number($row['Supplier Product 1 Month Acc Parts Used']);
-       $required=number($row['Supplier Product 1 Month Acc Parts Required']);
-       $provided=number($row['Supplier Product 1 Month Acc Parts Provided']);
-       $lost=number($row['Supplier Product 1 Month Acc Parts Lost']);
-       $broken=number($row['Supplier Product 1 Month Acc Parts Broken']);
-     }else if($product_period=='week'){
-       $profit=money($row['Supplier Product 1 Week Acc Parts Profit']);
-       $profit2=money($row['Supplier Product 1 Week Acc Parts Profit After Storing']);
-       $allcost=money($row['Supplier Product 1 Week Acc Cost']);
-       $used=number($row['Supplier Product 1 Week Acc Parts Used']);
-       $required=number($row['Supplier Product 1 Week Acc Parts Required']);
-       $provided=number($row['Supplier Product 1 Week Acc Parts Provided']);
-       $lost=number($row['Supplier Product 1 Week Acc Parts Lost']);
-       $broken=number($row['Supplier Product 1 Week Acc Parts Broken']);
-     }
+//      if($product_period=='all'){
+//        $profit=money($row['Supplier Product Total Parts Profit']);
+//        $profit2=money($row['Supplier Product Total Parts Profit After Storing']);
+//        $allcost=money($row['Supplier Product Total Cost']);
+//        $used=number($row['Supplier Product Total Parts Used']);
+//        $required=number($row['Supplier Product Total Parts Required']);
+//        $provided=number($row['Supplier Product Total Parts Provided']);
+//        $lost=number($row['Supplier Product Total Parts Lost']);
+//        $broken=$row['Supplier Product Total Parts Broken'];
+//      }else if($product_period=='year'){
+//        $profit=money($row['Supplier Product 1 Year Acc Parts Profit']);
+//        $profit2=money($row['Supplier Product 1 Year Acc Parts Profit After Storing']);
+//        $allcost=money($row['Supplier Product 1 Year Acc Cost']);
+//        $used=number($row['Supplier Product 1 Year Acc Parts Used']);
+//        $required=number($row['Supplier Product 1 Year Acc Parts Required']);
+//        $provided=number($row['Supplier Product 1 Year Acc Parts Provided']);
+//        $lost=number($row['Supplier Product 1 Year Acc Parts Lost']);
+//        $broken=number($row['Supplier Product 1 Year Acc Parts Broken']);
+//      }else if($product_period=='quarter'){
+//        $profit=money($row['Supplier Product 1 Quarter Acc Parts Profit']);
+//        $profit2=money($row['Supplier Product 1 Quarter Acc Parts Profit After Storing']);
+//        $allcost=money($row['Supplier Product 1 Quarter Acc Cost']);
+//        $used=number($row['Supplier Product 1 Quarter Acc Parts Used']);
+//        $required=number($row['Supplier Product 1 Quarter Acc Parts Required']);
+//        $provided=number($row['Supplier Product 1 Quarter Acc Parts Provided']);
+//        $lost=number($row['Supplier Product 1 Quarter Acc Parts Lost']);
+//        $broken=number($row['Supplier Product 1 Quarter Acc Parts Broken']);
+//      }else if($product_period=='month'){
+//        $profit=money($row['Supplier Product 1 Month Acc Parts Profit']);
+//        $profit2=money($row['Supplier Product 1 Month Acc Parts Profit After Storing']);
+//        $allcost=money($row['Supplier Product 1 Month Acc Cost']);
+//        $used=number($row['Supplier Product 1 Month Acc Parts Used']);
+//        $required=number($row['Supplier Product 1 Month Acc Parts Required']);
+//        $provided=number($row['Supplier Product 1 Month Acc Parts Provided']);
+//        $lost=number($row['Supplier Product 1 Month Acc Parts Lost']);
+//        $broken=number($row['Supplier Product 1 Month Acc Parts Broken']);
+//      }else if($product_period=='week'){
+//        $profit=money($row['Supplier Product 1 Week Acc Parts Profit']);
+//        $profit2=money($row['Supplier Product 1 Week Acc Parts Profit After Storing']);
+//        $allcost=money($row['Supplier Product 1 Week Acc Cost']);
+//        $used=number($row['Supplier Product 1 Week Acc Parts Used']);
+//        $required=number($row['Supplier Product 1 Week Acc Parts Required']);
+//        $provided=number($row['Supplier Product 1 Week Acc Parts Provided']);
+//        $lost=number($row['Supplier Product 1 Week Acc Parts Lost']);
+//        $broken=number($row['Supplier Product 1 Week Acc Parts Broken']);
+//      }
      
-     $supplier=sprintf('<a href="supplier.php?id=%d">%s</a>',$row['Supplier Product Supplier Key'],$row['Supplier Product Supplier Code']);
-     $data[]=array(
-		   'id'=>sprintf('<a href="supplier_product.php?id=%d">%06d</a>',$row['Supplier Product Key'],$row['Supplier Product ID'])
-		   ,'code'=>sprintf('<a href="supplier_product.php?id=%d">%s</a>',$row['Supplier Product Key'],$row['Supplier Product Code'])
-		   ,'name'=>$row['Supplier Product Name']
-		   ,'cost'=>money($row['Supplier Product Cost'])
-		   ,'usedin'=>$row['Supplier Product XHTML Used In']
-		   ,'profit'=>$profit
-		   ,'allcost'=>$allcost
-		   ,'used'=>$used
-		   ,'required'=>$required
-		   ,'provided'=>$provided
-		   ,'lost'=>$lost
-		   ,'broken'=>$broken
-		   ,'supplier'=>$supplier
-		   );
-   }
+//      $supplier=sprintf('<a href="supplier.php?id=%d">%s</a>',$row['Supplier Product Supplier Key'],$row['Supplier Product Supplier Code']);
+//      $data[]=array(
+// 		   'id'=>sprintf('<a href="supplier_product.php?id=%d">%06d</a>',$row['Supplier Product Key'],$row['Supplier Product ID'])
+// 		   ,'code'=>sprintf('<a href="supplier_product.php?id=%d">%s</a>',$row['Supplier Product Key'],$row['Supplier Product Code'])
+// 		   ,'name'=>$row['Supplier Product Name']
+// 		   ,'cost'=>money($row['Supplier Product Cost'])
+// 		   ,'usedin'=>$row['Supplier Product XHTML Used In']
+// 		   ,'profit'=>$profit
+// 		   ,'allcost'=>$allcost
+// 		   ,'used'=>$used
+// 		   ,'required'=>$required
+// 		   ,'provided'=>$provided
+// 		   ,'lost'=>$lost
+// 		   ,'broken'=>$broken
+// 		   ,'supplier'=>$supplier
+// 		   );
+//    }
 
 
-   $response=array('resultset'=>
-		   array('state'=>200,
-			 'data'=>$data,
-			 'sort_key'=>$_order,
-			 'sort_dir'=>$_dir,
-			 'tableid'=>$tableid,
-			 'filter_msg'=>$filter_msg,
-			 'rtext'=>$rtext,
-			 'total_records'=>$total,
-			 'records_offset'=>$start_from,
-			 'records_returned'=>$start_from+$total,
-			 'records_perpage'=>$number_results,
-			 'records_text'=>$rtext,
-			 'records_order'=>$order,
-			 'records_order_dir'=>$order_dir,
-			 'filtered'=>$filtered
-			 )
-		   );
-   echo json_encode($response);
-   break;
+//    $response=array('resultset'=>
+// 		   array('state'=>200,
+// 			 'data'=>$data,
+// 			 'sort_key'=>$_order,
+// 			 'sort_dir'=>$_dir,
+// 			 'tableid'=>$tableid,
+// 			 'filter_msg'=>$filter_msg,
+// 			 'rtext'=>$rtext,
+// 			 'total_records'=>$total,
+// 			 'records_offset'=>$start_from,
+// 			 'records_returned'=>$start_from+$total,
+// 			 'records_perpage'=>$number_results,
+// 			 'records_text'=>$rtext,
+// 			 'records_order'=>$order,
+// 			 'records_order_dir'=>$order_dir,
+// 			 'filtered'=>$filtered
+// 			 )
+// 		   );
+//    echo json_encode($response);
+//    break;
 
 
  case('withsupplier_po'):

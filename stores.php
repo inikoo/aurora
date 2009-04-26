@@ -4,6 +4,7 @@
 include_once('common.php');
 include_once('stock_functions.php');
 
+
 $view_sales=$LU->checkRight(PROD_SALES_VIEW);
 $view_stock=$LU->checkRight(PROD_STK_VIEW);
 $create=$LU->checkRight(PROD_CREATE);

@@ -50,7 +50,7 @@ $db->query("SET NAMES 'utf8'");
 
 //__________________________________________________________________________________________________|
 
-require_once 'myconf/conf.php';            // Configuration file __________________________________________|
+require_once 'conf/conf.php';            // Configuration file __________________________________________|
 
 $session = new dbsession($myconf['max_session_time'],1,100);
 
