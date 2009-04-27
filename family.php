@@ -163,10 +163,11 @@ $smarty->assign('table_title',$table_title);
 
 
 
-
+//print show_currency_conversion('USD','GBP');
 
 
 if($edit){
+$smarty->assign('view',$_SESSION['state']['family']['edit_view']);
 $units_tipo=array(
 		  'Piece'=>array('fname'=>_('Piece'),'name'=>'Piece','selected'=>false),
 		  'Grams'=>array('fname'=>_('Grams'),'name'=>'Grams','selected'=>false),

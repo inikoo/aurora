@@ -24,6 +24,8 @@ if(!isset($_REQUEST['tipo']))
     exit;
   }
 
+
+
 $tipo=$_REQUEST['tipo'];
 switch($tipo){
 
@@ -934,15 +936,49 @@ case('edit_products'):
   $delete='<img src="art/icons/cross.png" /> <span xonclick="discontinue_family('.$row['Product Key'].')"  id="del_'.$row['Product Key'].'" style="cursor:pointer">'._('Discontinue').'<span>';
       $delete_type='discontinue';
     }
+
+    if($row['Product RRP']!=0 and is_numeric($row['Product RRP']))
+      $customer_margin=_('CM').' '.number(100*($row['Product RRP']-$row['Product Price'])/$row['Product RRP'],1).'%';
+    else
+      $customer_margin='';
+    
+    if($row['Product Price']!=0 and is_numeric($row['Product Cost']))
+      $margin=number(100*($row['Product Price']-$row['Product Cost'])/$row['Product Price'],1).'%';
+    else
+      $margin=_('ND');
+
+    $in_common_currency='GBP';
+    $in_common_currency_price='';
+    if($row['Product Currency']!= $in_common_currency){
+      if(!isset($exchange[$row['Product Currency']])){
+	$exchange[$row['Product Currency']]=currency_conversion($row['Product Currency'],$in_common_currency);
+
+      }
+      $in_common_currency_price='('.money($exchange[$row['Product Currency']]*$row['Product Price']).') ';
+      
+    }
+
+
+
 $adata[]=array(
 	       'id'=>$row['Product Key'],
 	       'code'=>$row['Product Code'],
 	       'name'=>$row['Product Name'],
 	       'sdescription'=>$row['Product Special Characteristic'],
-	       'units'=>
-	       'units_type'=>
-	       'price'=>
-	       'rrp'=>
+	       'famsdescription'=>$row['Product Family Special Characteristic'],
+	       'units'=>$row['Product Units Per Case'],
+	       'units_info'=>$row['Product Units Per Case'],
+
+	       'unit_type'=>$row['Product Unit Type'],
+	       'price'=>money($row['Product Price'],$row['Product Currency']),
+	       'unit_price'=>money($row['Product Price']/$row['Product Units Per Case'],$row['Product Currency']),
+	       'margin'=>$margin,
+
+	       'price_info'=>$in_common_currency_price,
+
+	       'unit_rrp'=>money(($row['Product RRP']/$row['Product Units Per Case']),$row['Product Currency']),
+	       'rrp_info'=>$customer_margin,
+
 	       'delete'=>$delete,
 	       'delete_type'=>$delete_type
 
@@ -976,7 +1012,7 @@ $adata[]=array(
    echo json_encode($response);
    
  }
-?>
+
 
 
 
@@ -1395,3 +1431,4 @@ $adata[]=array(
 //      $response=array('state'=>400,'resp'=>_('Error, please check that all the fields are filled'));
 //    echo json_encode($response);
 //    breack;
+?>

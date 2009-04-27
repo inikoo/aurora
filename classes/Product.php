@@ -622,7 +622,22 @@ case('Price Anonymous Info'):
 );
 	return $info;
   break;
-
+case('Price Subfamily Info'):
+  if(isset($data['inside form']) and $data['inside form']){
+    $info=sprintf('<tr class="prod_info"><td colspan=4><span >%s</span><br><span >%s</span><br><span >%s</span></td></tr>'
+		,$this->data['Product Family Special Characteristic']
+		,$this->get('Price Formated',$data)
+		,$this->get('RRP Formated',$data)
+		);
+  }else{
+  $info=sprintf('<div class="prod_info"><span >%s</span><br><span >%s</span><br><span >%s</span></div>'
+		,$this->data['Product Family Special Characteristic']
+		,$this->get('Price Formated',$data)
+		,$this->get('RRP Formated',$data)
+		);
+  }
+  return $info;
+  break;
 
     case('Full Order Form'):
       global $site_checkout_address_indv,$site_checkout_id,$site_url;
@@ -1082,6 +1097,7 @@ function valid_id($id){
 		     'product short description'=>'',
 		     'product xhtml short description'=>'',
 		     'product special characteristic'=>'',
+		     'product family special characteristic'=>'',
 		     'product description'=>'',
 		     'product brand name'=>'',
 		     'product family key'=>'',
@@ -1114,7 +1130,8 @@ function valid_id($id){
       if(isset($base_data[strtolower($key)]))
 	$base_data[strtolower($key)]=_trim($value);
     }
-
+    
+    // print_r($base_data);
     if(!$this->valid_id($base_data['product id'])  ){
        $base_data['product id']=$this->new_id();
      }
@@ -1181,8 +1198,8 @@ function valid_id($id){
     $sql=sprintf("insert into `Product Dimension` %s %s",$keys,$values);
 
 
-    //  print "$sql\n\n";    
-
+   //  print "$sql\n\n";    
+//     exit;
      //   if(preg_match('/abp-01/i',$base_data['product code'])){
     //	 print "$sql\n\n"; 
     //	 exit;
@@ -1870,6 +1887,55 @@ $y_days=count($y_days);
 
  
  break;
+   case('cost'):
+     $cost=0;
+     $unk=false;
+     $change=false;
+     $sql=sprintf(" select PD.`Part SKU`,`Part Current Stock Cost`,`Part Current Stock`,`Parts Per Product` from `Part Dimension` PD left join `Product Part List` PPL on (PD.`Part SKU`=PPL.`Part SKU`)  where `Product ID`=%s  and `Product Part Most Recent`='Yes' group by PD.`Part SKU`  ",prepare_mysql($this->data['Product ID']));
+     print "$sql\n";
+     $result=mysql_query($sql);
+     while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+       $change=true;
+       if(
+	  is_numeric($row['Part Current Stock']) 
+	  and is_numeric($row['Parts Per Product'])  
+	  and $row['Parts Per Product']>0 
+	  and is_numeric($row['Part Current Stock'])  
+	  and $row['Part Current Stock']>0 
+	  ) {
+	 print $row['Part Current Stock Cost']."******";
+	 $cost+=$row['Part Current Stock Cost']/$row['Parts Per Product']/$row['Part Current Stock'];
+       }elseif(is_numeric($row['Parts Per Product'])  and $row['Parts Per Product']>0){
+	 $part=new Part($row['Part SKU']);
+	 $estimated_cost=$part->data['Part Average Future Cost'];
+	 if(is_numeric($estimated_cost))
+	   $cost+=$part->get('Part Estimated Cost')/$row['Parts Per Product'];
+	 else
+	   $unk=true;
+       }else
+	  $unk=true;
+       
+     }
+
+     if(!$change or $unk or !is_numeric($cost)){
+       $_cost='NULL';
+       $this->data['Product Cost']='';
+     }else{
+       $this->data['Product Cost']=$cost;
+       $_cost=$cost;
+     }
+
+     print "$_cost\n";
+     $sql=sprintf("update `Product Dimension` set `Product Cost`=%s  where `Product Key`=%d "
+		  ,$_cost
+		  ,$this->id
+		  );
+     if(!mysql_query($sql))
+       exit("$sql\ncan not update product sales\n");
+     
+     
+
+     break;
    case('sales'):
      $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Consolidated`='Yes' and `Product Key`=%d",$this->id);
      //  print "$sql\n";
@@ -2735,14 +2801,15 @@ function update($key,$a1=false,$a2=false){
        $this->msg=_('Error: Wrong Product Special Characteristic (empty)');
        return;
      }
-     $sql=sprintf("select count(*) as num from `Product Dimension` where `Product Family Key`=%d and `Product Special Characteristic`=%s  COLLATE utf8_general_ci"
-		,$this->data['Product Family Key']
-		,prepare_mysql($a1)
+     $sql=sprintf("select count(*) as num from `Product Dimension` where `Product Family Key`=%d and `Product Special Characteristic`=%s  COLLATE utf8_general_ci  and `Product Family Special Characteristic`=%s "
+		  ,$this->data['Product Family Key']
+		  ,prepare_mysql($a1)
+		  ,prepare_mysql($this->data['Product Special Characteristic'])
 		);
      $res=mysql_query($sql);
      $row=mysql_fetch_array($res);
      if($row['num']>0){
-       $this->msg=_("Error: Another product with the same Product Special Characteristic in this family");
+       $this->msg=_("Error: Another product with the same Product/Family Special Characteristic in this family");
        return;
      }
      
@@ -2760,7 +2827,45 @@ function update($key,$a1=false,$a2=false){
 	
       }
       break;	
+case('famsdescription'):
 
+     if($a1==$this->data['Product Family Special Characteristic']){
+       $this->updated=true;
+       $this->newvalue=$a1;
+       return;
+       
+     }
+
+     if($a1==''){
+       $this->msg=_('Error: Wrong Product Family Special Characteristic (empty)');
+       return;
+     }
+     $sql=sprintf("select count(*) as num from `Product Dimension` where `Product Family Key`=%d and `Product Family Special Characteristic`=%s COLLATE utf8_general_ci and `Product Special Characteristic`=%s "
+		  ,$this->data['Product Family Key']
+		  ,prepare_mysql($a1)
+		  ,prepare_mysql($this->data['Product Special Characteristic'])
+		);
+     $res=mysql_query($sql);
+     $row=mysql_fetch_array($res);
+     if($row['num']>0){
+       $this->msg=_("Error: Another product with the same Product/Family Special Characteristic in this family");
+       return;
+     }
+     
+      $sql=sprintf("update `Product Dimension` set `Product Family Special Characteristic`=%s where `Product Key`=%d "
+		   ,prepare_mysql($a1)
+		   ,$this->id
+		);
+      if(mysql_query($sql)){
+	$this->msg=_('Product Family Special Characteristic');
+	$this->updated=true;$this->newvalue=$a1;
+      }else{
+	$this->msg=_("Error: Product Family Special Characteristic could not be updated");
+
+	$this->updated=false;
+	
+      }
+      break;	
    }
 
 

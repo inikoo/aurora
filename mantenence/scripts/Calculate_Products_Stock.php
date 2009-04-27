@@ -1,4 +1,6 @@
 <?
+//@author Raul Perusquia <rulovico@gmail.com>
+//Copyright (c) 2009 LW
 include_once('../../app_files/db/dns.php');
 include_once('../../classes/Department.php');
 include_once('../../classes/Family.php');
@@ -21,7 +23,7 @@ if (!$db){print "Error can not access the database\n";exit;}
 require_once '../../common_functions.php';
 mysql_query("SET time_zone ='UTC'");
 mysql_query("SET NAMES 'utf8'");
-require_once '../../myconf/conf.php';           
+require_once '../../conf/conf.php';           
 date_default_timezone_set('Europe/London');
 
 
@@ -36,14 +38,14 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
   $product->load('days');
   $product->load('stock');
+  $product->load('cost');
 
 
 
 
+  print "Product ".$row['Product Key']."\n";
 
-  print $row['Product Key']."\r";
 
-  exit;
 
 
  }

@@ -332,11 +332,11 @@ function update($key,$a1=false,$a2=false){
      $this->products=array();
      if(!$this->id)
        return;
-     $order='`Product Code`';
+     $order='`Product Family Special Characteristic` ,`Product Code`';
      if(preg_match('/order by sales/i',$args))
-       $order='`Product Same Code 1 Year Acc Invoiced Amount`,`Product Code`';
+       $order='`Product Family Special Characteristic`,`Product Same Code 1 Year Acc Invoiced Amount`,`Product Code`';
      if(preg_match('/order by name/i',$args))
-       $order='`Product Name`';
+       $order='`Product Family Special Characteristic`,`Product Name`';
 
 
       $limit='';
@@ -728,16 +728,36 @@ function update($key,$a1=false,$a2=false){
        
        $product=new Product($value['Product Key']);
        $product->locale=$this->locale;
-
-       if($i==1){
-	 // print_r($options);
-	 $info=$product->get('Price Anonymous Info',$options);
+       
+       
+       $header='normal';
+       if(isset($options['header'])){
+	 switch($options['header']){
+	 case 'none':
+	   $header='none';
+	   break;
+	 case ('subfamilies'):
+	 case ('groups'):
+	   $header='subfamilies';
+	   break;
+	 }
 
        }
 
+       if($i==1 ){
 
-
-       $form.=$product->get('Order List Form',$i);
+	 if($header=='normal')
+	   $info=$product->get('Price Anonymous Info',$options);
+	 else if($header=='subfamilies')
+	   $info=$product->get('Price Subfamily Info',$options);
+       }else if($header=='subfamilies' and $current_famsdescription!=$product->data['Product Family Special Characteristic']){
+	 $options['inside form']=true;
+	 $form.=$product->get('Price Subfamily Info',$options);
+       }
+       
+       $current_famsdescription=$product->data['Product Family Special Characteristic'];
+       
+       $form.=$product->get('Order List Form',array('counter'=>$i,'options'=>$options));
 
        $i++;
      }

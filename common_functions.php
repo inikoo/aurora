@@ -244,18 +244,39 @@ function percentage($a,$b,$fixed=1,$error_txt='NA',$psign='%',$plus_sing=false){
   return $per;
 }
 
-function money($a,$symbol=true){
+function money($a,$locale=false){
   global $myconf;
   if($a<0)
     $neg=true;
   else
     $neg=false;
   $a=abs($a);
+  
+  if(!$locale){
+    $a=number_format($a,2,$myconf['decimal_point'],$myconf['thosusand_sep']);
+    $symbol=$myconf['currency_symbol'];
+    $a=($neg?'-':'').$symbol.$a;
+    return $a;
+  }else{
+    switch($locale){
+    case('EUR'):
+      $a=number_format($a,2,$myconf['decimal_point'],$myconf['thosusand_sep']);
+      $symbol='€';
+      $a=($neg?'-':'').$symbol.$a;
+      return $a;
+      break;
+    case('GBP'):
+      $a=number_format($a,2,$myconf['decimal_point'],$myconf['thosusand_sep']);
+      $symbol='£';
+      $a=($neg?'-':'').$symbol.$a;
+      return $a;
+      break;
 
-  $a=number_format($a,2,$myconf['decimal_point'],$myconf['thosusand_sep']);
-  if($symbol)
-    $a=($neg?'-':'').$myconf['currency_symbol'].$a;
-  return $a;
+
+    }
+
+  }
+
 }
 
 function money_cents($a){
@@ -1061,6 +1082,45 @@ function deviation ($array){
 
 
 
+function currency_conversion ($currency_from, $currency_to) {
+  $reload=false;
+  $in_db=false;
+  $exchange_rate=1;
+  //get info from database;
+  $sql=sprintf("select * from `Currency Exchange Dimension` where `Currency Pair`=%s",prepare_mysql($currency_from.$currency_to));
+
+  $res = mysql_query($sql);
+  if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+    if(strtotime($row['Currency Exchange Last Updated'])<date("Y-m-d H:i:s",strtotime('today -1 hour')))
+      $reload=true;
+    $exchange_rate=$row['Exchange'];
+  }else{
+    $reload=true;
+    $in_db=false;
+  }
+  if($reload){
+  $url = "http://quote.yahoo.com/d/quotes.csv?s=". $currency_from . $currency_to . "=X". "&f=l1&e=.csv";
+  $handle = fopen($url, "r");
+  $contents = fread($handle,2000);
+  fclose($handle);
+  if(is_numeric($contents) and $contents>0){
+    $exchange_rate=$contents;
+    if($in_db){
+      $sql=sprintf("update `Currency Exchange Dimension` set `Exchange`=%f,`Currency Exchange Last Updated`=NOW() where `Currency Pair`=%s",$exchange_rate,prepare_mysql($currency_from.$currency_to));
+      $res = mysql_query($sql);
+    }else{
+      $sql=sprintf("intert into `Currency Exchange Dimension`  (`Currency Pair`,`Exchange`,`Currency Exchange Last Updated`,`Currency Exchange Source`) values (%s,%f,NOW(),'Yahoo')",prepare_mysql($currency_from.$currency_to),$exchange_rate);
+      $res = mysql_query($sql);
+    }
+      
+
+  }
+  
+
+  }
+
+  return $exchange_rate;
+}
 
 
 
