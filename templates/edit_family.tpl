@@ -91,9 +91,10 @@
   <div   class="data_table" style="margin:30px 20px 20px 20px">
 
     <span class="clean_table_title">{t}Products{/t}</span> 
-    <span class="button" style="margin:0px;margin-left:35px">Name</span>  
-    <span class="button"style="margin:0px" >Price</span>  
-    
+    <div class="options">
+    <span class="button{if $view=='view_name'} selected{/if}" id="view_name" style="margin:0px;margin-left:35px">Name</span>  
+    <span class="button{if $view=='view_price'} selected{/if}" id="view_price" style="margin:0px" >Price</span>  
+    </div>
     <span style="float:right" class="state_details"  id="restrictions" value="for_sale" on click="change_multiple(this)"  >{t}displaying: products for sale{/t}</span>
     <div  class="clean_table_caption"  style="clear:both;">
       <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>

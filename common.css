@@ -352,8 +352,8 @@ table.options_mini{margin:0 ;float:right;border-collapse: separate;;border-spaci
 .show_options{color:#aaa;padding:0 5px 0 0;position:relative;bottom:0px;font-weight:800}
 .show_options span{background:#33518d;margin-right:7px;cursor:pointer;border:1px solid #758fc4;padding:0px 3px;font-weight:800}
 .show_options span:hover {color:#fff;}
-
-.show_options span.selected {color:#f4e846;}
+span.selected { background:#7296e1;color:white }
+.xshow_options span.selected {color:#f4e846;}
 .show_options span.selected:hover {color:#ebe69f;}
 
 

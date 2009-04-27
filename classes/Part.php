@@ -10,8 +10,7 @@ class part{
 
 
 
-    if(is_numeric($a1) and !$a2){
-      $this->get_data('id',$a1);
+    if(is_numeric($a1) and !$a2){      $this->get_data('id',$a1);
     }
     else if(($a1=='new' or $a1=='create') and is_array($a2) ){
       $this->msg=$this->create($a2);
@@ -201,8 +200,13 @@ $result=mysql_query($sql);
 
        // update products that depends of this part
        $this->load('used in list');
+       
        foreach($this->used_in_list as $product_key){
 	 $product=new Product($product_key);
+	 if(!$product->id){
+	   print_r($this->used_in_list);
+	   exit("Error can not load prodct $product_key\n");
+	 }
 	 $product->load('stock');
        }
 
@@ -466,12 +470,15 @@ $result=mysql_query($sql);
 
       break;
     case('used in list'):
-        $sql=sprintf("select `Product Key` from `Product Part List` PPL left join `Product Dimension` PD on (PD.`Product ID`=PPL.`Product ID`)  where `Part SKU`=%d group by `Product Key`",$this->data['Part SKU']);
+      
+      $sql=sprintf("select `Product Key` from `Product Part List` PPL left join `Product Dimension` PD on (PD.`Product ID`=PPL.`Product ID`)  where `Part SKU`=%d group by `Product Key`",$this->data['Part SKU']);
+      // print $sql;
       $result=mysql_query($sql);
       $this->used_in_list=array();
       while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 	$this->used_in_list[]=$row['Product Key'];
       }
+    //   print_r($this->used_in_list);
       break;
     case("used in"):
       $used_in_products='';
@@ -727,9 +734,39 @@ $result=mysql_query($sql);
       if(!mysql_query($sql))
 	exit(" $sql\n error con not uopdate product part when loading sales");
 
-
-
+      break;
+    case('future costs'):
+    case('estimated cost'):
+     $sql=sprintf("select min(`Supplier Product Cost`*`Supplier Product Units Per Part`) as min_cost ,avg(`Supplier Product Cost`*`Supplier Product Units Per Part`) as avg_cost from `Supplier Product Dimension` SPD left join  `Supplier Product Part List` SPPL on (SPD.`Supplier Product ID`=SPPL.`Supplier Product ID`)  left join `Supplier Dimension` SD on (SD.`Supplier Key`=SPPL.`Supplier Key`)   where `Part SKU`=%d and `Supplier Product Part Most Recent`='Yes'",$this->data['Part SKU']);
+     //   print "$sql\n";
+      $result=mysql_query($sql);
+      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+        if(is_numeric($row['avg_cost']))
+	  $avg_cost=$row['avg_cost'];
+	else
+	  $avg_cost='NULL';
+	if(is_numeric($row['min_cost']))
+	  $min_cost=$row['min_cost'];
+	else
+	  $min_cost='NULL';
+	
+      }else{
+	$avg_cost='NULL';
+	$min_cost='NULL';
       }
+
+      $sql=sprintf("update `Part Dimension` set `Part Average Future Cost`=%s,`Part Minimum Future Cost`=%s where `Part Key`=%d "
+		   ,$avg_cost
+		   ,$min_cost
+		   ,$this->id);
+      //            print "$sql\n";
+      if(!mysql_query($sql))
+	exit(" $sql\n error con not uopdate part futire costss");
+
+      break;
+    }
+
+
   }
   
   function get($key='',$args=false){
@@ -743,7 +780,7 @@ $result=mysql_query($sql);
 
     
     switch($key){
-
+   
     case('Associated Locations'):
       $associate=array();
       $associated=array();

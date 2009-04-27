@@ -448,6 +448,7 @@ $default_state=array(
 				       'details'=>false,
 				       'percentages'=>false,
 				       'view'=>'general',
+				       'edit_view'=>'view_name',
 				       'id'=>1,
 				       'period'=>'year',
 				       'percentage'=>0,
