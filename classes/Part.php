@@ -180,9 +180,9 @@ class part{
 
       $stock='';
       $value='';
-      $sql=sprintf("select sum(`Quantity On Hand`) as stock,sum(`Value At Cost`) as value from `Inventory Spanshot Fact` where  `Part SKU`=%d and `Date`=%s",$this->data['Part SKU'],prepare_mysql(date("Y-m-d",strtotime('today'))));
+      $sql=sprintf("select sum(`Quantity On Hand`) as stock,sum(`Stock Value`) as value from `Part Location Dimension` where  `Part SKU`=%d ",$this->data['Part SKU']);
 
-$result=mysql_query($sql);
+      $result=mysql_query($sql);
       if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 	$stock=$row['stock'];
 	$value=$row['value'];
@@ -198,6 +198,7 @@ $result=mysql_query($sql);
 		    ,$value
 		   ,$this->id);
 
+       print "$stock $value  \n";
        // update products that depends of this part
        $this->load('used in list');
        
