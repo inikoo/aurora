@@ -1,3 +1,4 @@
+
 <?
 //@author Raul Perusquia <rulovico@gmail.com>
 //Copyright (c) 2009 LW
@@ -27,15 +28,13 @@ require_once '../../conf/conf.php';
 date_default_timezone_set('Europe/London');
 
 
-$sql="select * from `Product Family Dimension`";
+$sql=' delete  from `Product Department Dimension` where `Product Department Store Key`=2;delete  from `Product Department Dimension` where `Product Department Store Key`=3;delete  from `Product Family Dimension` where `Product Family Store Key`=2;delete  from `Product Family Dimension` where `Product Family Store Key`=3;delete   from `Product Dimension` where `Product Store Key`=3;delete from `Product Dimension` where `Product Store Key`=2;delete  from `Product Department Bridge` where `Product Department Key`>21;';
+ mysql_query($sql);
+
+$sql='select `Product Part Key` as todelete  from `Product Part List` PPL left join `Product Dimension` PD on (PD.`Product ID`=PPL.`Product ID`)  where PD.`Product Key` is null ';
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-  $product=new Family($row['Product Family Key']);
-  $product->load('products_info');
-  $product->load('sales');
-  print $row['Product Family Code']."\r";
+  $sql="delete from `Product Part List` where `Product Part Key`=".$row['todelete'];
+  print "$sql\n";
+  mysql_query($sql);
  }
-
-
-
-?>

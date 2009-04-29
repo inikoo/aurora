@@ -1082,12 +1082,15 @@ function valid_id($id){
 
 
   function create($data){
-
+    global $myconf;
     $base_data=array(
-		     'product sales state'=>'In process',
-		     'product web state'=>'No Applicable',
+		     'product sales state'=>'For sale',
+		     'product type'=>'Normal',
+		     'product record type'=>'In process',
+		     'product web state'=>'Offline',
 		     'product store key'=>1,
-		     'product locale'=>'en_GB',
+		     'product locale'=>$myconf['lang'].'_'.$myconf['country'],
+		     'product currency'=>$myconf['currency_code'],
 		     'product id'=>'',
 		     'product code file as'=>'',
 		     'product code'=>'',
@@ -1198,8 +1201,8 @@ function valid_id($id){
     $sql=sprintf("insert into `Product Dimension` %s %s",$keys,$values);
 
 
-   //  print "$sql\n\n";    
-//     exit;
+    //print "$sql\n\n";    
+    //exit;
      //   if(preg_match('/abp-01/i',$base_data['product code'])){
     //	 print "$sql\n\n"; 
     //	 exit;
@@ -2701,14 +2704,195 @@ case('images_slideshow'):
  }
 
 
-function update($key,$a1=false,$a2=false){
+ function update($key,$a1=false,$a2=false){
    $this->updated=false;
    $this->msg="Nothing to change $key ";
-   
+
    switch($key){
+   case('price'):
+   case('unit_price'):
+   case('margin'):
+     global $myconf;
+     
+     
+     
+     if($key=='margin'){
+       if(!is_numeric($this->data['Product Cost'])){
+	 $this->msg=_("Error: The product cost is unknown");
+	 $this->updated=false;
+       }
+	 
+
+       $margin=floatval(ereg_replace("[^-0-9\.]","",$a1));
+       if(!is_numeric($margin)){
+	  $this->msg=_("Error: Product margin should be a numeric value");
+	  $this->updated=false;
+       }elseif($margin==-100){
+	 $this->msg=_("Error: Product margin can not have this value");
+	  $this->updated=false;
+
+       }
+       $amount=100*$this->data['Product Cost']/($margin+100);
+
+
+
+     }else{
+       list($currency,$amount)=parse_money($a1,$this->data['Product Currency']);
+       
+       if(!is_numeric($amount)){
+	 $this->msg=_("Error: Product price should be a numeric value");
+       $this->updated=false;
+       }
+       
+       
+     if($key=='unit_price')
+       $amount=$amount*$this->data['Product Units Per Case'];
+     
+     
+     
+     //convert to the proper currency;
+     if($this->data['Product Currency']!=$currency){
+       // print "$currency ".currency_conversion($currency,$this->data['Product Currency']);
+       $amount=$amount*currency_conversion($currency,$this->data['Product Currency']);
+     }
+     
+     }
+
+
+      if($amount==$this->data['Product Price']){
+       $this->updated=true;
+       $this->newvalue=money($amount,$this->data['Product Currency']);
+       return;
+       
+     }
+
+
+
+    
+
+
+
+      if($this->data['Product Record Type']=='In process'){
+	
+	$sql=sprintf("update `Product Dimension` set `Product Price`=%f where `Product Key`=%d "
+		     ,$amount
+		     ,$this->id
+		     );
+	if(mysql_query($sql)){
+	  $this->msg=_('Product price updated');
+	  $this->updated=true;
+
+	  $this->data['Product Price']=$amount;
+	  
+	  if($this->data['Product Price']!=0 and is_numeric($this->data['Product Cost']))
+	    $margin=number(100*($this->data['Product Price']-$this->data['Product Cost'])/$this->data['Product Price'],1).'%';
+	  else
+	    $margin=_('ND');
+
+	  $this->newvalue=array(
+				 'price'=>money($amount,$this->data['Product Currency']),
+				 'unit_price'=>money($amount/$this->data['Product Units Per Case'],$this->data['Product Currency']),
+				 'margin'=>$margin
+				);
+	  
+	  
+	  
+	}else{
+	  $this->msg=_("Error: Product price could not be updated");
+	  
+	  $this->updated=false;
+	  
+	}
+
+         return;
+
+       }else{
+
+
+       }
+
+
+    break;
+   case('rrp'):
+   case('unit_rrp'):
+     global $myconf;
+     
+
+     if($a1=='' or preg_match('/^(no|none|na|no for|nada)$/',$a1)){
+       $amount='NULL';
+     }else{
+       list($currency,$amount)=parse_money($a1,$this->data['Product Currency']);
+     
+       if(!is_numeric($amount)){
+	 $this->msg=_("Error: Product RRP should be a numeric value");
+	 $this->updated=false;
+       }
+       
+       
+       if($key=='unit_rrp')
+	 $amount=$amount*$this->data['Product Units Per Case'];
+       
+     
+       
+       //convert to the proper currency;
+       if($this->data['Product Currency']!=$currency){
+	 // print "$currency ".currency_conversion($currency,$this->data['Product Currency']);
+	 $amount=$amount*currency_conversion($currency,$this->data['Product Currency']);
+       }
+     
+     }
+
+     
+     if($amount==$this->data['Product RRP']){
+       $this->updated=true;
+       $this->newvalue=money($amount,$this->data['Product Currency']);
+       return;
+       
+     }
+
+     
+     
+     $sql=sprintf("update `Product Dimension` set `Product RRP`=%s where `Product Key`=%d "
+		  ,$amount
+		  ,$this->id
+		  );
+     if(mysql_query($sql)){
+       $this->msg=_('Product RRP updated');
+       $this->updated=true;
+       
+       if($amount=='NULL'){
+	 $this->data['Product RRP']='';
+	 $customer_margin='';
+       }else{
+	 $this->data['Product RRP']=$amount;
+	 if($this->data['Product RRP']!=0 and is_numeric($this->data['Product RRP']))
+	   $customer_margin=_('CM').' '.number(100*($this->data['Product RRP']-$this->data['Product Price'])/$this->data['Product RRP'],1).'%';
+	 else
+	   $customer_margin='';
+       }
+       $rrp_notes=$customer_margin;
+       
+       $this->newvalue=array(
+				 'rrp'=>money($amount,$this->data['Product Currency']),
+				 'unit_rrp'=>money($amount/$this->data['Product Units Per Case'],$this->data['Product Currency']),
+				 'rrp_info'=>$rrp_notes
+				);
+	  
+	  
+	  
+     }else{
+       $this->msg=_("Error: Product price could not be updated");
+       $this->updated=false;
+     }
+
+    
+
+    break;
+
+
    case('code'):
      
-     if($this->data['Product Sales State']!='In process'){
+     if($this->data['Product Record Type']!='In process'){
        $this->msg='This product can not changed';
        return;
      }

@@ -940,14 +940,14 @@ case('edit_products'):
     if($row['Product RRP']!=0 and is_numeric($row['Product RRP']))
       $customer_margin=_('CM').' '.number(100*($row['Product RRP']-$row['Product Price'])/$row['Product RRP'],1).'%';
     else
-      $customer_margin='';
+      $customer_margin=_('Not for resale');
     
     if($row['Product Price']!=0 and is_numeric($row['Product Cost']))
       $margin=number(100*($row['Product Price']-$row['Product Cost'])/$row['Product Price'],1).'%';
     else
       $margin=_('ND');
-
-    $in_common_currency='GBP';
+    global $myconf;
+    $in_common_currency=$myconf['currency_code'];
     $in_common_currency_price='';
     if($row['Product Currency']!= $in_common_currency){
       if(!isset($exchange[$row['Product Currency']])){

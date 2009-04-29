@@ -28,7 +28,7 @@ $db->setFetchMode(MDB2_FETCHMODE_ASSOC);
 $db->query("SET time_zone ='UTC'");
 $db->query("SET NAMES 'utf8'");
 $PEAR_Error_skiptrace = &PEAR::getStaticProperty('PEAR_Error','skiptrace');$PEAR_Error_skiptrace = true;// Fix memory leak
-require_once '../../myconf/conf.php';           
+require_once '../../conf/conf.php';           
 date_default_timezone_set('Europe/London');
 
 $tmp_directory='/tmp/';

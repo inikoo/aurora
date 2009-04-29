@@ -49,6 +49,9 @@ if($edit){
 
  }
 
+ // print_r(parse_money('€2.50'));
+// exit;
+
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 

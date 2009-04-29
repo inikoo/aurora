@@ -180,12 +180,16 @@ class part{
 
       $stock='';
       $value='';
-      $sql=sprintf("select sum(`Quantity On Hand`) as stock,sum(`Stock Value`) as value from `Part Location Dimension` where  `Part SKU`=%d ",$this->data['Part SKU']);
-
+      $neg_discrepancy_value='';
+      $neg_discrepancy='';
+      $sql=sprintf("select sum(`Quantity On Hand`) as stock,sum(`Stock Value`) as value, sum(`Negative Discrepancy`) as neg_discrepancy, sum(`Negative Discrepancy Value`) as neg_discrepancy_value from `Part Location Dimension` where  `Part SKU`=%d ",$this->data['Part SKU']);
+      //print $sql;
       $result=mysql_query($sql);
       if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 	$stock=$row['stock'];
 	$value=$row['value'];
+	$neg_discrepancy_value=$row['neg_discrepancy_value'];
+	$neg_discrepancy=$row['neg_discrepancy'];
       }
 
       if(!is_numeric($stock))
@@ -193,12 +197,14 @@ class part{
        if(!is_numeric($value))
 	$value='NULL';
 
-       $sql=sprintf("update `Part Dimension` set `Part Current Stock`=%s ,`Part Current Stock Cost`=%s  where `Part Key`=%d "
+       $sql=sprintf("update `Part Dimension` set `Part Current Stock`=%s ,`Part Current Stock Cost`=%s ,`Part Current Stock Negative Discrepancy`=%f ,`Part Current Stock Negative Discrepancy Value`=%f  where `Part Key`=%d "
 		    ,$stock
 		    ,$value
+		    ,$neg_discrepancy
+		    ,$neg_discrepancy_value
 		   ,$this->id);
 
-       print "$stock $value  \n";
+       print "$stock $value $neg_discrepancy $neg_discrepancy_value \n";
        // update products that depends of this part
        $this->load('used in list');
        

@@ -7,6 +7,69 @@ var Dom   = YAHOO.util.Dom;
 var family_id=<?=$_SESSION['state']['family']['id']?>;
 editing='description';
 
+
+
+
+ var CellEdit = function (callback, newValue) {
+
+
+		var record = this.getRecord(),
+		column = this.getColumn(),
+		oldValue = this.value,
+		datatable = this.getDataTable(),
+		recordIndex = datatable.getRecordIndex(record);
+
+		YAHOO.util.Connect.asyncRequest(
+						'POST',
+						'ar_edit_assets.php', {
+						    success:function(o) {
+							//	alert(o.responseText);
+							var r = YAHOO.lang.JSON.parse(o.responseText);
+							if (r.state == 200) {
+
+							    if(column.key=='price' || column.key=='unit_price' || column.key=='margin' ){
+								var data = record.getData();
+								
+								data['price']=r.newvalue.price;
+								data['unit_price']=r.newvalue.unit_price;
+								data['margin']=r.newvalue.margin;
+								datatable.updateRow(recordIndex,data);
+								callback(true);
+								
+							    }else if(column.key=='unit_rrp'  ){
+								var data = record.getData();
+								
+								data['unit_rrp']=r.newvalue.unit_rrp;
+								data['rrp_info']=r.newvalue.rrp_info;
+								datatable.updateRow(recordIndex,data);
+								callback(true);
+								
+							    }else
+								callback(true, r.newvalue);
+							} else {
+							    alert(r.msg);
+							    callback();
+							}
+						    },
+							failure:function(o) {
+							alert(o.statusText);
+							callback();
+						    },
+							scope:this
+							},
+						'tipo=edit_'+column.object+'&key=' + column.key + '&newvalue=' + 
+						encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ 
+						myBuildUrl(datatable,record)
+						
+						);  
+ };
+
+
+
+
+
+
+
 function new_product_changed(o){
     if(Dom.get("new_code").value!='' && Dom.get("new_code").value!='')
 	Dom.get("add_new_product").style.display='';
@@ -32,12 +95,21 @@ var description_errors= new Object();
 	    table.hideColumn('sdescription');
 	    table.hideColumn('units');
 	    table.hideColumn('units_info');
-
+	    table.hideColumn('price_info');
 	    table.hideColumn('price');
 	    table.hideColumn('unit_rrp');
+	    table.hideColumn('rrp_info');
+
 	    table.hideColumn('unit_type');
 	    table.hideColumn('unit_price');
 	    table.hideColumn('margin');
+
+	    table.hideColumn('processing');
+	    table.hideColumn('sales_state');
+	    table.hideColumn('web state');
+	    table.hideColumn('state_info');
+
+
 	    if(tipo=='view_name'){
 		
 		table.showColumn('name');
@@ -51,6 +123,16 @@ var description_errors= new Object();
 		table.showColumn('unit_type');
 
 	    }
+	     else if(tipo=='view_state'){
+		
+		table.showColumn('processing');
+		table.showColumn('sales_state');
+		table.showColumn('web state');
+		table.showColumn('state_info');
+
+
+	    }
+	    
 	    else if(tipo=='view_price'){
 
 		table.showColumn('unit_price');

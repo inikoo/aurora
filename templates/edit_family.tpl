@@ -1,8 +1,5 @@
 {include file='header.tpl'}
 <div id="bd" >
-
-
-
  <div class="search_box" style="clear:both;margin-right:20px;margin-top:10px" >
     <span class='reset' onclick='window.location="family.php?edit=0"'   >{t}Exit{/t}</span>
  </div>
@@ -92,8 +89,9 @@
 
     <span class="clean_table_title">{t}Products{/t}</span> 
     <div class="options">
-    <span class="button{if $view=='view_name'} selected{/if}" id="view_name" style="margin:0px;margin-left:35px">Name</span>  
-    <span class="button{if $view=='view_price'} selected{/if}" id="view_price" style="margin:0px" >Price</span>  
+      <span class="button{if $view=='view_state'} selected{/if}" id="view_state" style="margin:0px;margin-left:35px">State</span>  
+      <span class="button{if $view=='view_name'} selected{/if}" id="view_name" style="margin:0px;">Name</span>  
+      <span class="button{if $view=='view_price'} selected{/if}" id="view_price" style="margin:0px" >Price</span>  
     </div>
     <span style="float:right" class="state_details"  id="restrictions" value="for_sale" on click="change_multiple(this)"  >{t}displaying: products for sale{/t}</span>
     <div  class="clean_table_caption"  style="clear:both;">

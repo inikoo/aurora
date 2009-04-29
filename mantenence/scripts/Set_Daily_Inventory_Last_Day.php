@@ -41,7 +41,8 @@ $resultx=mysql_query($sql);
 $counter=1;
 while($rowx=mysql_fetch_array($resultx, MYSQL_ASSOC)   ){
   $part= new Part($rowx['Part SKU']);
-  $part->load('calculate_stock_history','continue');
+  $part->load('calculate_stock_history','last');
+  print $part->data['Part SKU'].' '.$part->data['Part Currently Used In'].' Stock:'.$part->data['Part Current Stock']." (".$part->data['Part Current Stock Negative Discrepancy'].")\n";
  }
 
 

@@ -150,7 +150,7 @@ class family{
      break;
    }
 
-
+   // print $sql;
    $result=mysql_query($sql);
    if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   )
      $this->id=$this->data['Product Family Key'];
@@ -287,7 +287,7 @@ function update($key,$a1=false,$a2=false){
    case('products_data'):
    case('products_info'):
      
-  $sql=sprintf("select sum(if(`Product Sales State`='In process',1,0)) as in_process,sum(if(`Product Sales State`='Unknown',1,0)) as sale_unknown, sum(if(`Product Sales State`='Discontinued',1,0)) as discontinued,sum(if(`Product Sales State`='Not for sale',1,0)) as not_for_sale,sum(if(`Product Sales State`='For sale',1,0)) as for_sale,sum(if(`Product Sales State`='In Process',1,0)) as in_process,sum(if(`Product Availability State`='Unknown',1,0)) as availability_unknown,sum(if(`Product Availability State`='Optimal',1,0)) as availability_optimal
+  $sql=sprintf("select sum(if(`Product Record Type`='In process',1,0)) as in_process,sum(if(`Product Sales State`='Unknown',1,0)) as sale_unknown, sum(if(`Product Sales State`='Discontinued',1,0)) as discontinued,sum(if(`Product Sales State`='Not for sale',1,0)) as not_for_sale,sum(if(`Product Sales State`='For sale',1,0)) as for_sale,sum(if(`Product Availability State`='Unknown',1,0)) as availability_unknown,sum(if(`Product Availability State`='Optimal',1,0)) as availability_optimal
 ,sum(if(`Product Availability State`='Low',1,0)) as availability_low
 ,sum(if(`Product Availability State`='Surplus',1,0)) as availability_surplus
 
@@ -336,12 +336,12 @@ function update($key,$a1=false,$a2=false){
      if(preg_match('/order by sales/i',$args))
        $order='`Product Family Special Characteristic`,`Product Same Code 1 Year Acc Invoiced Amount`,`Product Code`';
      if(preg_match('/order by name/i',$args))
-       $order='`Product Family Special Characteristic`,`Product Name`';
-
-
+       $order='`Product Family Special Characteristic`,`Product Special Characteristic`';
+  
       $limit='';
       if(preg_match('/limit\s+\d+/i',$args,$match)){
-	$limit_qty=preg_replace('/(^\d)/','',$match[0]);
+
+	$limit_qty=preg_replace('/[^\d]/','',$match[0]);
 	$limit='limit '.$limit_qty;
        
       }
@@ -351,21 +351,24 @@ function update($key,$a1=false,$a2=false){
 
 	$between_tmp=preg_replace('/.*\(/','',$match[0]);
 	$between_tmp=preg_replace('/\).*/','',$between_tmp);
-	$between_tmp=split(',',$between_tmp);
+
+	$between_tmp=preg_split('/,|-/',$between_tmp);
+
 	if(count($between_tmp)==2 and $between_tmp[0]!='' and $between_tmp[1]!='')
-	  $between='and `Product Name` between '.prepare_mysql($between_tmp[0]).' and '.prepare_mysql($between_tmp[1].'zzzzzz');
+	  $between='and `Product Special Characteristic` between '.prepare_mysql($between_tmp[0]).' and '.prepare_mysql($between_tmp[1].'zzzzzz');
        
       }
 
-	
+
        $family_key=$this->id;
        $sql=sprintf("select * from `Product Dimension` where `Product Family Key`=%d %s order by %s %s",$family_key,$between,$order,$limit);
-       // print $sql;
-       
+       //print $sql;
+       $this->products=array();
      $result=mysql_query($sql);
      while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
        $this->products[]=$row;
      }
+     // print "ca";
      break;
 
 
@@ -649,26 +652,29 @@ function update($key,$a1=false,$a2=false){
    switch($key){
    case('Full Order Form'):
      global $site_checkout_address,$site_checkout_id,$site_url;
+     
+     if($this->locale=='de_DE'){
+       $order_txt='Bestellen';
+       $reset_txt='Löschen';
+       $lenght_factor=1.5;
+     }elseif($this->locale=='fr_FR'){
+       $order_txt='Commander';
+       $reset_txt='Annuler';
+       $lenght_factor=1.0;
+     }else{
+       $order_txt='Order';
+       $reset_txt='Reset';
+       $lenght_factor=1.0;
+     }
+     
+     
+     
+     $max_code_len=0;
+     $max_desc_len=0;
+     $info='';
 
- if($this->locale=='de_DE'){
-   $order_txt='Bestellen';
-   $reset_txt='Löschen';
- }elseif($this->locale=='fr_FR'){
-   $order_txt='Commander';
-   $reset_txt='Annuler';
- }else{
-   $order_txt='Order';
-   $reset_txt='Reset';
-   
- }
-
-
- 
- $max_code_len=0;
- $max_desc_len=0;
- $info='';
-
- foreach($this->products as $key => $value){
+     
+     foreach($this->products as $key => $value){
    
 
 
@@ -680,8 +686,8 @@ function update($key,$a1=false,$a2=false){
    if($desc_len>$max_desc_len)
      $max_desc_len=$desc_len;
  }
-  $max_desc_len=$max_desc_len*1.5;
-  $max_code_len=$max_code_len*1.1;
+  $max_desc_len=$max_desc_len*1.5*$lenght_factor;
+  $max_code_len=$max_code_len*1.1*$lenght_factor;
   
   if($max_desc_len<12)
     $max_desc_len=12;
@@ -718,6 +724,26 @@ function update($key,$a1=false,$a2=false){
      if(isset($options['until']) and is_numeric($options['until']))
        $until=true;
 
+
+       $header='normal';
+       if(isset($options['header'])){
+	 //	 print $options['header'];
+	 switch($options['header']){
+	 case 'none':
+	   //case 0:
+	   case false:
+	   case '':
+	   $header='nonec';
+	   break;
+	 case ('subfamilies'):
+	 case ('groups'):
+	   $header='subfamilies';
+	   break;
+	 }
+
+       }
+
+       // print $header;
        
      foreach($this->products as $key => $value){
 
@@ -729,20 +755,9 @@ function update($key,$a1=false,$a2=false){
        $product=new Product($value['Product Key']);
        $product->locale=$this->locale;
        
-       
-       $header='normal';
-       if(isset($options['header'])){
-	 switch($options['header']){
-	 case 'none':
-	   $header='none';
-	   break;
-	 case ('subfamilies'):
-	 case ('groups'):
-	   $header='subfamilies';
-	   break;
-	 }
 
-       }
+     
+
 
        if($i==1 ){
 

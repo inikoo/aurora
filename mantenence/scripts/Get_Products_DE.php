@@ -24,7 +24,7 @@ if (!$db){print "Error can not access the database\n";exit;}
 require_once '../../common_functions.php';
 mysql_query("SET time_zone ='UTC'");
 mysql_query("SET NAMES 'utf8'");
-require_once '../../myconf/conf.php';           
+require_once '../../conf/conf.php';           
 date_default_timezone_set('Europe/London');
 
 
@@ -95,13 +95,18 @@ foreach($__cols as $cols){
   $is_product=true;
   
   $code=_trim($cols[3]);
+  $price=$cols[9];
+  $supplier_code=_trim($cols[23]);
+  $part_code=_trim($cols[24]);
+  $supplier_cost=$cols[27];
+  $units=$cols[5];
+  $rrp=$cols[18];
+  $supplier_code=_trim($cols[23]);
+  $w=$cols[31];
+  $description=_trim( mb_convert_encoding($cols[6], "UTF-8", "ISO-8859-1,UTF-8"));
+  $fam_special_char=_trim( mb_convert_encoding($cols[7], "UTF-8", "ISO-8859-1,UTF-8"));
+  $special_char=_trim( mb_convert_encoding($cols[8], "UTF-8", "ISO-8859-1,UTF-8"));
 
-
-  $price=$cols[7];
-  $supplier_code=_trim($cols[21]);
-  $part_code=_trim($cols[22]);
-  $supplier_cost=$cols[25];
-  
 
 
   if(!preg_match('/^DONE$/',$cols[0]))
@@ -247,11 +252,11 @@ foreach($__cols as $cols){
     }else
        $deals=array();
     
-    $units=$cols[5];
+
     if($units=='' OR $units<=0)
       $units=1;
 
-    $description=_trim( mb_convert_encoding($cols[6], "UTF-8", "ISO-8859-1,UTF-8"));
+
 
 
  //    if(preg_match('/wsl-535/i',$code)){
@@ -260,11 +265,7 @@ foreach($__cols as $cols){
 
 //     }
 
-    $rrp=$cols[16];
-    $supplier_code=_trim($cols[21]);
 
-
-    $w=$cols[29];
     
 
 
@@ -310,10 +311,18 @@ foreach($__cols as $cols){
 	$rrp='';
       
       
-      $_f=preg_replace('/s$/i','',$current_fam_name);
-      //print "$_f\n";
-      $special_char=preg_replace('/'.str_replace('/','\/',$_f).'$/i','',$description);
-      $special_char=preg_replace('/'.str_replace('/','\/',$current_fam_name).'$/i','',$special_char);
+      if($fam_special_char=='' or $special_char==''){
+	
+	$_f=preg_replace('/s$/i','',$current_fam_name);
+	$special_char=preg_replace('/'.str_replace('/','\/',$_f).'$/i','',$description);
+	$special_char=preg_replace('/'.str_replace('/','\/',$current_fam_name).'$/i','',$special_char);
+	$special_char=_trim($special_char);
+	if($special_char==$description){
+	  $description=$current_fam_name.' '.$special_char;
+	$fam_special_char=$current_fam_name;
+	}else
+	  $fam_special_char=preg_replace('/'.str_replace('/','\/',$special_char).'$/i','',$description);
+      }
 	    
 	
 
@@ -330,8 +339,13 @@ foreach($__cols as $cols){
 		  'product code'=>$code,
 		  'product store key'=>2,
 		  'product locale'=>'de_DE',
-		  'product sales state'=>'In process',
-		  'product web state'=>'No Applicable',
+		  'product currency'=>'EUR',
+
+		  'product sales state'=>'For Sale',
+		  'product type'=>'Normal',
+		  'product record type'=>'In Process',
+		  'product web state'=>'Offline',
+
 		  
 		  'product price'=>sprintf("%.2f",$price),
 		  'product rrp'=>$rrp,
@@ -342,13 +356,13 @@ foreach($__cols as $cols){
 		  'product main department name'=>$department_name,
 		  'product main department code'=>$department_code,
 		  'product special characteristic'=>$special_char,
+		  'product family special characteristic'=>$fam_special_char,
 		  'product net weight'=>$_w,
 		  'product gross weight'=>$_w,
 		  'deals'=>$deals
 		    );
       //     print_r($cols);
-      //print_r($data);
-      
+
       $parts=$uk_product->get('Parts SKU');
      
 
