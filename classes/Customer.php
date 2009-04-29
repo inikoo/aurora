@@ -46,52 +46,6 @@ class Customer{
    
       $this->id=$this->data['Customer Key'];
       
- //      $o_main_bill_address=new address($this->data['main_bill_address']);
-//       if($o_main_bill_address->id){
-// 	$this->data['main_bill_address_id']=$o_main_bill_address->id;
-// 	$this->data['main_bill_address']=$o_main_bill_address->display('html');
-	
-//       }else{
-// 	  $this->data['main_bill_address_id']=false;
-// 	  $this->data['main_bill_address']='';
-//       }
-//       unset($o_main_bill_address);
-
-//       $o_main_contact_name=new name($this->data['main_contact_name']);
-//       if($o_main_contact_name->id){
-// 	$this->data['main_contact_name_id']=$o_main_contact_name->id;
-// 	$this->data['main_contact_name']=$o_main_contact_name->display('html');
-//       }else{
-// 	//try to auto fix it
-// 	$this->data['main_contact_name_id']=false;
-// 	$this->data['main_contact_name']='';
-//       }
-//       unset($o_main_contact_name);
-
-//       $o_main_email=new email($this->data['main_email']);
-//       if($o_main_email->id){
-	
-// 	$this->data['main_email_id']=$o_main_email->id;
-// 	$this->data['main']['email']=$o_main_email->display();
-// 	$this->data['main']['formated_email']=$o_main_email->display('link');
-//       }else{
-// 	//try to auto fix it
-// 	$this->data['main_email_id']=false;
-// 	$this->data['main']['email']='';
-// 	$this->data['main']['formated_email']='';
-//       }
-//       unset($o_main_email);
-
-//       $o_main_tel=new telecom($this->data['main_tel']);
-//       if($o_main_tel->id){
-// 	$this->data['main_tel_id']=$o_main_tel->id;
-// 	$this->data['main_tel']=$o_main_tel->display('link');
-//       }else{
-// 	//try to auto fix it
-// 	$this->data['main_tel_id']=false;
-// 	$this->data['main_tel']='';
-//       }
-//       unset($o_main_tel);
 
      }
 
@@ -533,6 +487,8 @@ class Customer{
  function update($key,$data=false,$args='false'){
 
    switch($key){
+
+     
    case('no normal data'):
    case('no_normal_data'):
       $sql="select min(`Order Date`) as date   from `Order Dimension` where `Order Customer Key`=".$this->id;

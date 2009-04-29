@@ -1,5 +1,6 @@
 <?
-
+//@author Raul Perusquia <rulovico@gmail.com>
+//Copyright (c) 2009 LW
 // function prepare_mysql_date($date){
 
 //   if($date=='')
@@ -242,6 +243,54 @@ function percentage($a,$b,$fixed=1,$error_txt='NA',$psign='%',$plus_sing=false){
   else
     $per=$error_txt;
   return $per;
+}
+
+function parse_money($a,$default_currency=false){
+  global $myconf;
+  if(!$default_currency)
+    $currency=$myconf['currency_code'];
+  else
+    $currency=$default_currency;
+  if(preg_match('/$|£|¥|€/i',$a,$match)){
+    if($match[0]=='$')
+      $currency='USD';
+    elseif($match[0]=='€')
+      $currency='EUR';
+    elseif($match[0]=='£')
+      $currency='GBP';
+    elseif($match[0]=='¥')
+      $currency='JPY';
+    
+  }elseif(preg_match('/[a-z]{3}/i',$a,$match)){
+    //todo integrate do country db
+    if(preg_match('/usd|eur|gbp|jpy|cad|aud|inr|pkr|mxn|nok/i',$match[0])){
+      $currency=strtoupper($match[0]);
+    }
+  }
+ 
+  $qty=preg_split('/\\'.$myconf['decimal_point'].'/',$a);
+  $qty_parts=count($qty);
+  //    print_r($qty);
+  if($qty_parts==1)
+    $number=floatval(ereg_replace("[^-0-9\.]","",$qty[0]));
+  if($qty_parts==2){
+    $number=floatval(ereg_replace("[^-0-9\.]","",$qty[0])).$myconf['decimal_point'].floatval(ereg_replace("[^-0-9\.]","",$qty[1]));
+  }else{
+    $i=0;
+    $number='0';
+    foreach($qty as $_qty){
+      if($i==$qty_parts)
+	$number.=$myconf['decimal_point'].floatval(ereg_replace("[^-0-9\.]","",$qty[$i]));
+      else
+	$number.=floatval(ereg_replace("[^-0-9\.]","",$qty[$i]));
+      $i++;
+    }
+    
+  }
+  $number=preg_replace('/^0*/','',$number);
+  
+  return array($currency,$number);
+
 }
 
 function money($a,$locale=false){
@@ -1100,6 +1149,7 @@ function currency_conversion ($currency_from, $currency_to) {
   }
   if($reload){
   $url = "http://quote.yahoo.com/d/quotes.csv?s=". $currency_from . $currency_to . "=X". "&f=l1&e=.csv";
+  // print $url;
   $handle = fopen($url, "r");
   $contents = fread($handle,2000);
   fclose($handle);

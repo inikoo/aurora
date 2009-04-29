@@ -3589,7 +3589,7 @@ case('locations'):
      $where.=sprintf(" and `Product Sales State`='For Sale'  ");
      break;
    case('editable'):
-     $where.=sprintf(" and `Product Sales State` in ('For Sale','In process','Unknown')  ");
+     $where.=sprintf(" and `Product Sales State` in ('For Sale','In Process','Unknown')  ");
      break;
    case('notforsale'):
      $where.=sprintf(" and `Product Sales State` in ('Not For Sale')  ");
@@ -4169,6 +4169,8 @@ case('locations'):
     }
 
     $type=$row['Product Sales State'];
+    if($row['Product Record Type']=='In Process')
+      $type.='<span style="color:red">*</span>';
     $wwwtype=$row['Product Web State'];
 
     $adata[]=array(

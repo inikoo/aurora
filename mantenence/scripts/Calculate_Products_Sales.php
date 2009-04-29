@@ -51,9 +51,31 @@ while($row=mysql_fetch_array($result)   ){
     }
     
   }else
-    $state='History';
+    $state='Historic';
 
-   $sql=sprintf("update `Product Dimension` set  `Product Sales State`=%s where `Product Key`=%s",prepare_mysql($state),$product->id);
+  if($state=='Historic'){
+    $record_state='Historic';
+    $state='Not for sale';
+    $web_state='Offline'
+  }
+ if($state=='Discontinued'){
+    $record_state='Normal';
+    $state='Discontinued';
+    $web_state='Online'
+  }
+ if($state=='For sale'){
+    $record_state='Normal';
+    $state='For sale';
+    $web_state='Online'
+  }
+  
+
+   $sql=sprintf("update `Product Dimension` set  `Product Sales State`=%s,`Product Record Type`=%s,`Product Web State`=%s  where `Product Key`=%s",
+		prepare_mysql($state)
+		,prepare_mysql($record_state)
+		,prepare_mysql($web_state)
+
+		,$product->id);
    // print "$sql\n\n";
   if(!mysql_query($sql))
     exit("can not upodate state of the product");
