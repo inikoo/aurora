@@ -68,7 +68,7 @@ class PartLocation{
 
   }
 function last_inventory_audit(){
-    $sql=sprintf("select DATE(`Date`) as Date from `Inventory Transaction Fact` where  `Part Sku`=%d and (`Inventory Transaction Type`='Audit' or `Inventory Transaction Type`='Not Found' )  order by `Date` desc",$this->part_sku);
+  $sql=sprintf("select DATE(`Date`) as Date from `Inventory Transaction Fact` where  `Part Sku`=%d and  `Location Key`=%d and (`Inventory Transaction Type`='Audit' or `Inventory Transaction Type`='Not Found' )  order by `Date` desc",$this->part_sku,$this->location_key);
     $result=mysql_query($sql);
     // print $sql;
     if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
@@ -174,7 +174,7 @@ function last_inventory_audit(){
     $i = 0;
    
    
-    // print "$start_date $end_date \n"; 
+    print sprintf("Calculating invebtory for part %s in location %s from %s to %s\n",$this->part_sku,$this->location_key,$start_date,$end_date);
 
     $qty_inicio='NULL';
     $value_inicio='NULL';
@@ -261,6 +261,8 @@ function last_inventory_audit(){
 	if($row2['Inventory Transaction Type']=='Associate' ){
 	  $associated=true;
 	}elseif($row2['Inventory Transaction Type']=='Disassociate' ){
+
+	  //	  print "*********** Disasciote\n";
 	  $associated=false;
 
 	   
@@ -450,7 +452,10 @@ function last_inventory_audit(){
 
 
     if($uptodate and $associated){
-      // PRINT "************************ $neg_discrepancy\n";
+
+     
+
+       PRINT "Negative discrepancey: $neg_discrepancy\n";
       if($neg_discrepancy!=0)
 	$neg_discrepancy_value= $neg_discrepancy*$this->get_cost($this->part_sku);
       else
@@ -468,7 +473,11 @@ function last_inventory_audit(){
 	  $can_pick='Yes';
 	else
 	  $can_pick='No';
-	$sql=sprintf("insert into `Part Location Dimension` (`Quantity on Hand`,`Stock Value`,`Last Updated`,`Part SKU`,`Location Key`,`Can Pick`,`Negative Discrepancy`,`Negative Discrepancy Value`) values (%s,%s,NOW(),%d,%d,%s,%f,%f)",$qty_inicio,$value_inicio,$this->part_sku,$this->location_key,prepare_mysql($sql),$neg_discrepancy,$neg_discrepancy_value);
+
+	if($location->id==1)
+	  $can_pick='Yes';
+
+	$sql=sprintf("insert into `Part Location Dimension` (`Quantity on Hand`,`Stock Value`,`Last Updated`,`Part SKU`,`Location Key`,`Can Pick`,`Negative Discrepancy`,`Negative Discrepancy Value`) values (%s,%s,NOW(),%d,%d,%s,%f,%f)",$qty_inicio,$value_inicio,$this->part_sku,$this->location_key,prepare_mysql($can_pick),$neg_discrepancy,$neg_discrepancy_value);
 	//	print "$sql\n";
        	if(!mysql_query($sql))
 	  print "error can no insert part location dimensiom $sql";
@@ -476,8 +485,11 @@ function last_inventory_audit(){
       //$part=new Part('sku',$this->part_sku);
       //$part->load('stock');
     }else{
+      
+      //  print "------------".$this->current."---------------------------";
       if($this->current){
-	$sql=sprintf("delete from  `Part Location Dimension` where `Part SKU`=%d and `Location Key`=%d ",$qty_inicio,$value_inicio,$this->part_sku,$this->location_key);
+	$sql=sprintf("delete from  `Part Location Dimension` where `Part SKU`=%d and `Location Key`=%d ",$this->part_sku,$this->location_key);
+	//print $sql;
 	mysql_query($sql);
       }
     }
@@ -661,7 +673,7 @@ function last_inventory_audit(){
 		 );
     $result=mysql_query($sql);
     $num_rows = mysql_num_rows($result);
-   
+    //print "$sql $num_rows\n" ;
     if($num_rows==1){
       $result=mysql_query($sql);
       $row=mysql_fetch_array($result, MYSQL_ASSOC);
@@ -682,7 +694,11 @@ function last_inventory_audit(){
 		     ,prepare_mysql($date)
 		     );
 	mysql_query($sql);
-        $this->redo_daily_inventory($_date,'');
+	//	print $sql;
+	$part=new Part($this->part_sku);
+       
+	$part->load('calculate_stock_history','last');
+	$part->load('stock');
 	return;
 
 
@@ -711,8 +727,7 @@ function last_inventory_audit(){
 		     ,prepare_mysql($__date)
 		     );
 	mysql_query($sql);
-	$this->redo_daily_inventory($_date,'');
-
+	
 
 	 
 
@@ -729,8 +744,10 @@ function last_inventory_audit(){
 		     );
 	mysql_query($sql);
 
-	$unk=new PartLocation('1_'.$this->part_sku);
-	$this->redo_daily_inventory($_date,'');
+	//	$unk=new PartLocation('1_'.$this->part_sku);
+       	$part=new Part($this->part_sku);
+	$part->load('calculate_stock_history','last');
+	$part->load('stock');
 
       }
     }else{
@@ -746,17 +763,19 @@ function last_inventory_audit(){
 		     ,prepare_mysql($date)
 		     );
 	mysql_query($sql);
-        $this->redo_daily_inventory($_date,'');
+	$part=new Part($this->part_sku);
+	$part->load('calculate_stock_history','last');
+	$part->load('stock');
 	return;
 
 
 
       }
 
-     
-
+   
+    
        
-    }
+  }
 
 
   function move_to($data){
@@ -768,7 +787,7 @@ function last_inventory_audit(){
 
 
     if((!is_numeric($qty) ) and $qty!='all'   )
-	return;
+      return;
 
 
     if(!is_numeric($user_id) or $user_id<0)
@@ -794,28 +813,28 @@ function last_inventory_audit(){
       //       if(!is_numeric($row['Quantity On Hand']) or $row['Quantity On Hand']==0   )
       //	return;
 
-       if($qty=='all'){
-	 $qty=$row['Quantity On Hand'];
-       }elseif($row['Quantity On Hand']>$qty)
+      if($qty=='all'){
 	$qty=$row['Quantity On Hand'];
+      }elseif($row['Quantity On Hand']>$qty)
+	 $qty=$row['Quantity On Hand'];
       
-       if(!is_numeric($qty)  )
-	 $qty='NULL';
+      if(!is_numeric($qty)  )
+	$qty='NULL';
 
 
 
       if(!is_numeric($row['Value At Cost'])  or !is_numeric($qty)  )
 	$value='NULL';
-	else{
-	  if($qty==0)
-	    $value=0;
-	  else
-	    $value=sprintf("%.2f",$row['Value At Cost']*$qty/$row['Quantity On Hand']);
+      else{
+	if($qty==0)
+	  $value=0;
+	else
+	  $value=sprintf("%.2f",$row['Value At Cost']*$qty/$row['Quantity On Hand']);
 
-	}
+      }
 
 
-    if($qty>0 and is_numeric($qty) ){
+      if($qty>0 and is_numeric($qty) ){
     
       	$sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`) values (%d,%d,%s,%s,%s,%s,%s,%s)"
 		     ,$this->part_sku
@@ -829,42 +848,42 @@ function last_inventory_audit(){
 		     );
 	if(!mysql_query($sql))
 	  print "Error   $sql\n";
-    }
+      }
 
-    $__date=date("Y-m-d H:i:s",strtotime($date." -1 second"));
-    $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`) values (%d,%d,%s,%s,%s,%s,%s,%s)"
-		 ,$this->part_sku
-		 ,$move_to
-		 ,"'Associate'"
-		 ,0
-		 ,0
-		 ,$user_id
-		     ,prepare_mysql($note)
-		 ,prepare_mysql($__date)
-		 );
+      $__date=date("Y-m-d H:i:s",strtotime($date." -1 second"));
+      $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`) values (%d,%d,%s,%s,%s,%s,%s,%s)"
+		   ,$this->part_sku
+		   ,$move_to
+		   ,"'Associate'"
+		   ,0
+		   ,0
+		   ,$user_id
+		   ,prepare_mysql($note)
+		   ,prepare_mysql($__date)
+		   );
 
 
-    if(!mysql_query($sql))
-      print "Error $sql\n";
+      if(!mysql_query($sql))
+	print "Error $sql\n";
     
     
 
 
-	$__date=date("Y-m-d H:i:s",strtotime($date." +0 second"));
-	$sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`) values (%d,%d,%s,%s,%s,%s,%s,%s)"
-		     ,$this->part_sku
-		     ,$move_to
-		     ,"'Audit'"
-		     ,0
-		     ,0
-		     ,$user_id
-		     ,prepare_mysql($note)
-		     ,prepare_mysql($__date)
-		     );
-	if(!mysql_query($sql))
-	  print "Error $sql\n";
+      $__date=date("Y-m-d H:i:s",strtotime($date." +0 second"));
+      $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`) values (%d,%d,%s,%s,%s,%s,%s,%s)"
+		   ,$this->part_sku
+		   ,$move_to
+		   ,"'Audit'"
+		   ,0
+		   ,0
+		   ,$user_id
+		   ,prepare_mysql($note)
+		   ,prepare_mysql($__date)
+		   );
+      if(!mysql_query($sql))
+	print "Error $sql\n";
  
-if($qty>0 and is_numeric($qty) ){
+      if($qty>0 and is_numeric($qty) ){
 	$__date=date("Y-m-d H:i:s",strtotime($date." +1 second"));
 	$sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`) values (%d,%d,%s,%s,%s,%s,%s,%s)"
 		     ,$this->part_sku
@@ -879,20 +898,37 @@ if($qty>0 and is_numeric($qty) ){
 
 	if(!mysql_query($sql))
 	  print "Error $sql\n";
- }	
+      }	
 
 
     }
     
-    $this->redo_daily_inventory($date,'');
-    $other=new PartLocation($move_to.'_'.$this->part_sku);
-    $other->redo_daily_inventory($date,'');
+    $part=new Part($this->part_sku);
+    $part->load('calculate_stock_history','last');
    
  
   }
 
 
-
+  function associate($data=false){
+    
+    $base_data=array('date'=>date('Y-m-d H:i:s'),'note'=>'','metadata'=>'');
+    if(is_array($data)){
+      foreach($data as $key=>$val){
+	$base_data[$key]=$val;
+      }
+    }
+    $sql=sprintf("insert into `Inventory Transaction Fact` (`Date`,`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Note`,`Metadata`) values (%s,%d,%d,'Associate',0,0,'','')"
+		 ,prepare_mysql($base_data['date'])
+		 ,$this->part_sku
+		 ,$this->location_key
+		 ,prepare_mysql($base_data['note'])
+		 ,prepare_mysql($base_data['metadata'])	
+		 );
+     print "$sql\n";
+    if(!mysql_query($sql))
+      exit("$sql can into insert Inventory Transaction Fact star");
+  }
 
   }
   ?>

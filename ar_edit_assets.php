@@ -959,19 +959,127 @@ case('edit_products'):
     }
 
 
+    if($row['Product Record Type']=='In Process'){
+
+      if($row['Product Editing Price']!=0 and is_numeric($row['Product Cost']))
+	$margin=number(100*($row['Product Editing Price']-$row['Product Cost'])/$row['Product Editing Price'],1).'%';
+      else
+	$margin=_('ND');
+      global $myconf;
+      $in_common_currency=$myconf['currency_code'];
+      $in_common_currency_price='';
+      if($row['Product Currency']!= $in_common_currency){
+	if(!isset($exchange[$row['Product Currency']])){
+	  $exchange[$row['Product Currency']]=currency_conversion($row['Product Currency'],$in_common_currency);
+	  
+	}
+	$in_common_currency_price='('.money($exchange[$row['Product Currency']]*$row['Product Editing Price']).') ';
+	
+      }
+      
+
+
+      $processing=_('Editing');
+      $name=$row['Product Editing Name'];
+      $sdescription=$row['Product Editing Special Characteristic'];
+      $famsdescription=$row['Product Editing Family Special Characteristic'];
+      $price=money($row['Product Editing Price'],$row['Product Currency']);
+      $unit_price=money($row['Product Editing Price']/$row['Product Editing Units Per Case'],$row['Product Currency']);
+      $units=$row['Product Editing Units Per Case'];
+      $unit_type=$row['Product Editing Unit Type'];
+      $units_info='';
+    }else{
+
+       if($row['Product Price']!=0 and is_numeric($row['Product Cost']))
+      $margin=number(100*($row['Product Price']-$row['Product Cost'])/$row['Product Price'],1).'%';
+    else
+      $margin=_('ND');
+    global $myconf;
+    $in_common_currency=$myconf['currency_code'];
+    $in_common_currency_price='';
+    if($row['Product Currency']!= $in_common_currency){
+      if(!isset($exchange[$row['Product Currency']])){
+	$exchange[$row['Product Currency']]=currency_conversion($row['Product Currency'],$in_common_currency);
+
+      }
+      $in_common_currency_price='('.money($exchange[$row['Product Currency']]*$row['Product Price']).') ';
+      
+    }
+
+
+      $processing=_('Live');
+      $name=$row['Product Name'];
+      $sdescription=$row['Product Special Characteristic'];
+      $famsdescription=$row['Product Family Special Characteristic'];
+      $price=money($row['Product Price'],$row['Product Currency']);
+      $unit_price=money($row['Product Price']/$row['Product Units Per Case'],$row['Product Currency']);
+      $units=$row['Product Units Per Case'];
+      $unit_type=$row['Product Unit Type'];
+      $units_info='';
+    }
+
+
+    if($row['Product Record Type']=='New')
+      $processing=_('Editing');
+
+    switch($row['Product Sales State']){
+    case('For sale'):
+      case('Out of Stock'):
+	$sales_state=_('For Sale');
+	break;
+    case('Discontinued'):
+      $sales_state=_('Discontinue');
+      break;
+    case('Unknown'):
+      $sales_state=_('Unknown');
+      break;
+    case('No Applicable'):
+    case('Not for Sale'):
+      $sales_state=_('Not For Sale');	
+      break;
+    }
+    switch($row['Product Web State']){
+    case('Online Force Out of Stock'):
+      $web_state=_('Out of Stock');
+	break;
+    case('Online Auto'):
+      $web_state=_('Auto');
+      break;
+    case('Unknown'):
+      $web_state=_('Unknown');
+    case('Offline'):
+      $web_state=_('Offline');
+      break;
+    case('Online Force Hide'):
+      $web_state=_('Hide');	
+      break;
+    case('Online Force For Sale'):
+      $web_state=_('Sale');	
+      break;
+
+    }
+
+
+    
+
+    $state_info='';
 
 $adata[]=array(
 	       'id'=>$row['Product Key'],
 	       'code'=>$row['Product Code'],
 	       'name'=>$row['Product Name'],
-	       'sdescription'=>$row['Product Special Characteristic'],
-	       'famsdescription'=>$row['Product Family Special Characteristic'],
-	       'units'=>$row['Product Units Per Case'],
-	       'units_info'=>$row['Product Units Per Case'],
+	       'processing'=>$processing,
+	       'sales_state'=>$sales_state,
+	       'web_state'=>$web_state,
+	       'state_info'=>$state_info,
+	       'sdescription'=>$sdescription,
+	       'famsdescription'=>$famsdescription,
+	       'units'=>$units,
+	       'units_info'=>$units_info,
 
-	       'unit_type'=>$row['Product Unit Type'],
-	       'price'=>money($row['Product Price'],$row['Product Currency']),
-	       'unit_price'=>money($row['Product Price']/$row['Product Units Per Case'],$row['Product Currency']),
+	       'unit_type'=>$unit_type,
+	       'price'=>$price,
+	       'unit_price'=>$unit_price,
 	       'margin'=>$margin,
 
 	       'price_info'=>$in_common_currency_price,

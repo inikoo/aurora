@@ -337,11 +337,15 @@ function update($key,$a1=false,$a2=false){
        $order='`Product Family Special Characteristic`,`Product Same Code 1 Year Acc Invoiced Amount`,`Product Code`';
      if(preg_match('/order by name/i',$args))
        $order='`Product Family Special Characteristic`,`Product Special Characteristic`';
-  
-      $limit='';
-      if(preg_match('/limit\s+\d+/i',$args,$match)){
+     if(preg_match('/order by code/i',$args))
+       $order='`Product Code File As`';
+     
 
-	$limit_qty=preg_replace('/[^\d]/','',$match[0]);
+     //     print $args;
+      $limit='';
+      if(preg_match('/limit\s+\d*\s*\,*\s*\d*/i',$args,$match)){
+	//print $match[0];
+	$limit_qty=preg_replace('/[^(\d|\,)]/','',$match[0]);
 	$limit='limit '.$limit_qty;
        
       }
@@ -362,15 +366,15 @@ function update($key,$a1=false,$a2=false){
 
        $family_key=$this->id;
        $sql=sprintf("select * from `Product Dimension` where `Product Family Key`=%d %s order by %s %s",$family_key,$between,$order,$limit);
-       //print $sql;
+       // print "$sql\n";
        $this->products=array();
-     $result=mysql_query($sql);
-     while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-       $this->products[]=$row;
-     }
-     // print "ca";
-     break;
-
+       $result=mysql_query($sql);
+       while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+	 $this->products[]=$row;
+       }
+       // print "ca";
+       break;
+       
 
    case('products_store'):
      $sql=sprintf("select * from `Product Dimension` where `Product Sales State`='For Sale' and `Product Most Recent`='Yes' and `Product Family Key`=%d and `Product Store Key`=%d",$this->id,$args);
@@ -650,21 +654,46 @@ function update($key,$a1=false,$a2=false){
 
 
    switch($key){
+   case('Price From Info'):
+     $min=99999999;
+     $product_id='';
+     $changed=false;
+     foreach($this->products as $key => $value){
+       if($value['Product Price']<$min and $value['Product Price']>0){
+	 $min=$value['Product Price'];
+	 $product_id=$value['Product Key'];
+	 $changed=true;
+       }
+      }
+
+     if($changed){
+       $product=new Product($product_id);
+       return '<div class="prod_info">'.$product->get('Price Formated','from').'</div>';
+     }else
+       return '';
+
+
+     break;
    case('Full Order Form'):
      global $site_checkout_address,$site_checkout_id,$site_url;
      
      if($this->locale=='de_DE'){
        $order_txt='Bestellen';
        $reset_txt='Löschen';
+       $price_from='ab';
        $lenght_factor=1.5;
      }elseif($this->locale=='fr_FR'){
        $order_txt='Commander';
        $reset_txt='Annuler';
+       $price_from='à partir de';
        $lenght_factor=1.0;
+       
      }else{
        $order_txt='Order';
        $reset_txt='Reset';
-       $lenght_factor=1.0;
+       $price_from='Prices from';
+
+       $lenght_factor=1.5;
      }
      
      
@@ -673,6 +702,8 @@ function update($key,$a1=false,$a2=false){
      $max_desc_len=0;
      $info='';
 
+     $min_desc_len=15;
+     $min_code_len=8;
      
      foreach($this->products as $key => $value){
    
@@ -686,13 +717,17 @@ function update($key,$a1=false,$a2=false){
    if($desc_len>$max_desc_len)
      $max_desc_len=$desc_len;
  }
-  $max_desc_len=$max_desc_len*1.5*$lenght_factor;
-  $max_code_len=$max_code_len*1.1*$lenght_factor;
+  $desc_len=$max_desc_len*1.5*$lenght_factor;
+  $code_len=$max_code_len*1.1*$lenght_factor;
   
-  if($max_desc_len<12)
-    $max_desc_len=12;
-  if($max_code_len<8)
-    $max_code_len=8;
+  if($desc_len<$min_desc_len)
+    $desc_len=$min_desc_len;
+  if($code_len<$min_code_len)
+    $code_len=$min_code_len;
+
+
+
+
 
 //  print $max_desc_len;
 //  $first=$max_code_len;
@@ -700,7 +735,7 @@ function update($key,$a1=false,$a2=false){
  
 
  $style=sprintf('<link rel="stylesheet" type="text/css" href="../order.css" /><link rel="stylesheet" type="text/css" href="order.css" /><style type="text/css">table.order {width:%sem}td.first{width:%fem}table.order {font-size:11px;font-family:arial;}span.price{float:right;margin-right:5px}span.desc{margin-left:5px}span.outofstock{color:red;font-weight:800;float:right;margin-right:5px;}input.qty{width:100%%}td.qty{width:3em}</style>
-<style type="text/css">.prod_info{text-align:left;} .prod_info span{magin:0;color:red;font-family:arial;;font-weight:800;font-size:12px}</style>',$max_desc_len,$max_code_len);
+<style type="text/css">.prod_info{text-align:left;} .prod_info span{magin:0;color:red;font-family:arial;;font-weight:800;font-size:12px}</style>',$desc_len,$code_len);
 
  //$style=sprintf('<style type="text/css"> span.info_price{font-size:20px}</style>');
  // $style='';
@@ -739,6 +774,10 @@ function update($key,$a1=false,$a2=false){
 	 case ('groups'):
 	   $header='subfamilies';
 	   break;
+	 case('price from'):
+	 case('prices from'):
+	   $header='price from';
+	   break;
 	 }
 
        }
@@ -763,6 +802,8 @@ function update($key,$a1=false,$a2=false){
 
 	 if($header=='normal')
 	   $info=$product->get('Price Anonymous Info',$options);
+	 elseif($header=='price from')
+	   $info=$this->get('Price From Info');
 	 else if($header=='subfamilies')
 	   $info=$product->get('Price Subfamily Info',$options);
        }else if($header=='subfamilies' and $current_famsdescription!=$product->data['Product Family Special Characteristic']){

@@ -343,8 +343,8 @@ foreach($__cols as $cols){
 
 		  'product sales state'=>'For Sale',
 		  'product type'=>'Normal',
-		  'product record type'=>'In Process',
-		  'product web state'=>'Offline',
+		  'product record type'=>'New',
+		  'product web state'=>'Online Auto',
 
 		  
 		  'product price'=>sprintf("%.2f",$price),

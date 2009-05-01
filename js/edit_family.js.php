@@ -106,7 +106,7 @@ var description_errors= new Object();
 
 	    table.hideColumn('processing');
 	    table.hideColumn('sales_state');
-	    table.hideColumn('web state');
+	    table.hideColumn('web_state');
 	    table.hideColumn('state_info');
 
 
@@ -406,6 +406,12 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    ,{key:"units_info",<?=($_SESSION['state']['family']['edit_view']=='view_price'?'':'hidden:true,')?> label:"<?=_('Units')?>", width:60,className:"aleft"}
 				    
 				    ,{key:"name", label:"<?=_('Name')?>",<?=($_SESSION['state']['family']['edit_view']=='view_name'?'':'hidden:true,')?>width:220, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'product'}
+				    ,{key:"processing", label:"<?=_('Editing State')?>",<?=($_SESSION['state']['family']['edit_view']=='view_state'?'':'hidden:true,')?>width:220, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},object:'product',editor: new YAHOO.widget.RadioCellEditor({asyncSubmitter: CellEdit,radioOptions:["<?=_('Editing')?>","<?=_('Live')?>"],disableBtns:true})}
+				    ,{key:"sales_state", label:"<?=_('Sale State')?>",<?=($_SESSION['state']['family']['edit_view']=='view_state'?'':'hidden:true,')?>width:220, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},object:'product',editor: new YAHOO.widget.RadioCellEditor({asyncSubmitter: CellEdit,radioOptions:["<?=_('For Sale')?>","<?=_('Discontinue')?>","<?=_('Not For Sale')?>"],disableBtns:true})}
+				    ,{key:"web_state", label:"<?=_('Web State')?>",<?=($_SESSION['state']['family']['edit_view']=='view_state'?'':'hidden:true,')?>width:220, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},object:'product',editor: new YAHOO.widget.RadioCellEditor({asyncSubmitter: CellEdit,radioOptions:["<?=_('Auto')?>","<?=_('Sale')?>","<?=_('Out of Stock')?>","<?=_('Hide')?>","<?=_('Offline')?>"],disableBtns:true})}
+
+
+
 				    ,{key:"famsdescription", label:"<?=_('Fam Short Desc')?>",<?=($_SESSION['state']['family']['edit_view']=='view_name'?'':'hidden:true,')?>width:190, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'product'}
 				    ,{key:"sdescription", label:"<?=_('Short Desc')?>",<?=($_SESSION['state']['family']['edit_view']=='view_name'?'':'hidden:true,')?>width:190, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'product'}
 				    ,{key:"units", label:"<?=_('Units')?>",<?=($_SESSION['state']['family']['edit_view']=='view_units'?'':'hidden:true,')?>width:40, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'product'}
@@ -441,7 +447,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		fields: [
 			 "code","units_info",
 			 "name",
-			 'delete','delete_type','id','sdescription','famsdescription','price','unit_rrp','units','unit_type','rrp_info','price_info','unit_price','margin'
+			 'delete','delete_type','id','sdescription','famsdescription','price','unit_rrp','units','unit_type','rrp_info','price_info','unit_price','margin','processing','sales_state','sales_state','web_state'
 			 ]};
 	    
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
@@ -547,7 +553,7 @@ function init(){
 
 YAHOO.util.Event.onDOMReady(init);
 
- ids=['view_name','view_price','view_operations'];
+ ids=['view_name','view_price','view_state'];
  YAHOO.util.Event.addListener(ids, "click",change_view)
 
 
