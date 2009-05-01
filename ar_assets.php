@@ -4171,7 +4171,27 @@ case('locations'):
     $type=$row['Product Sales State'];
     if($row['Product Record Type']=='In Process')
       $type.='<span style="color:red">*</span>';
-    $wwwtype=$row['Product Web State'];
+     
+  switch($row['Product Web State']){
+    case('Online Force Out of Stock'):
+      $web_state=_('Out of Stock');
+	break;
+    case('Online Auto'):
+      $web_state=_('Auto');
+      break;
+    case('Unknown'):
+      $web_state=_('Unknown');
+    case('Offline'):
+      $web_state=_('Offline');
+      break;
+    case('Online Force Hide'):
+      $web_state=_('Hide');	
+      break;
+    case('Online Force For Sale'):
+      $web_state=_('Sale');	
+      break;
+
+    }
 
     $adata[]=array(
 		  
@@ -4191,7 +4211,7 @@ case('locations'):
 		   'margin'=>$margin,
 		   'sold'=>number($sold),
 		   'state'=>$type,
-		   'web'=>$wwwtype
+		   'web'=>$web_state
 		   );
   }
 

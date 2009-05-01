@@ -21,12 +21,14 @@ if (!$db){print "Error can not access the database\n";exit;}
 require_once '../../common_functions.php';
 mysql_query("SET time_zone ='UTC'");
 mysql_query("SET NAMES 'utf8'");
-require_once '../../myconf/conf.php';           
+require_once '../../conf/conf.php';           
 date_default_timezone_set('Europe/London');
 $not_found=00;
 
 $sql="delete from  `Inventory Transaction Fact` where `Inventory Transaction Type` in ('Audit','In','Associate','Disassociate','Move In','Move Out','Adjust','Not Found','Lost','Broken') ";
 mysql_query($sql);
+
+print "Getting data from the oold database\n";
 
 $sql="select code,product_id,aw_old.in_out.date,aw_old.in_out.tipo,aw_old.in_out.quantity ,aw_old.in_out.notes from aw_old.in_out left join aw_old.product on (product.id=product_id) where product.code is not null and (aw_old.in_out.tipo=2 or aw_old.in_out.tipo=1)   order by product.id,date ";
 $result=mysql_query($sql);
@@ -34,6 +36,8 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   
   $date=$row['date'];
   $code=$row['code'];
+  //  print $sql;
+  print $row['product_id']." $code                \r";
   $tipo=$row['tipo'];
   $qty=$row['quantity'];
   $notes=$row['notes'];
@@ -42,7 +46,8 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   // print "$sql\n";
   if($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ){
     $product_ID=$row2['Product ID'];
-
+    
+    
     $sql=sprintf("select `Part SKU`,`Parts Per Product` from `Product Part List` where `Product ID`=%s  ",prepare_mysql($product_ID));
     // print "$sql\n";
     $result3=mysql_query($sql);
@@ -88,7 +93,7 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
   $sql=sprintf("select `Product ID` from `Product Dimension` P where   `Product Code`=%s and `Product Same ID Valid To`<=%s order by `Product Same ID Valid To` desc ",prepare_mysql($code),prepare_mysql($date),prepare_mysql($date));
   $result2=mysql_query($sql);
-  // print "$sql\n";
+
   if($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ){
 
     $product_ID=$row2['Product ID'];
@@ -129,32 +134,38 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
     
     continue;
   }
+  
 
 
-}
+ }
+
+print "                \rCleaning old data\n";
+
 $sql="delete  from `Inventory Transaction Fact`  where `Inventory Transaction Type`='Not Found' ";
 mysql_query($sql);
 
 
-$sql="select `No Shipped Due Out of Stock`,`Invoice Date`,`Product ID` from `Order Transaction Fact` OTF left join `Product Dimension` PD  on  (PD.`Product Key`=OTF.`Product Key`)  where `No Shipped Due Out of Stock`>0;";
-$resultx=mysql_query($sql);
-while($rowx=mysql_fetch_array($resultx, MYSQL_ASSOC)   ){
-  $product_id=$rowx['Product ID'];
-  $notes='';
 
-  $sql=sprintf(" select `Part SKU` from  `Product Part List`  where `Product ID`=%d and `Product Part Valid From`<%s  and `Product Part Valid To`>%s ",$product_id,prepare_mysql($rowx['Invoice Date']),prepare_mysql($rowx['Invoice Date']));
-  $result=mysql_query($sql);
-  while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-    $sql=sprintf("insert into `Inventory Transaction Fact` (`Date`,`Part SKU`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Note`,`Metadata`) values (%s,%s,'Not Found',%s,%s,%s,'')",prepare_mysql($rowx['Invoice Date']),prepare_mysql($row['Part SKU']),0,0,prepare_mysql($notes));
-    // print "$sql\n";
-      if(!mysql_query($sql))
-	exit("$sql can into insert Inventory Transaction Fact ");
+// $sql="select `No Shipped Due Out of Stock`,`Invoice Date`,`Product ID` from `Order Transaction Fact` OTF left join `Product Dimension` PD  on  (PD.`Product Key`=OTF.`Product Key`)  where `No Shipped Due Out of Stock`>0;";
+// $resultx=mysql_query($sql);
 
-  }
+// while($rowx=mysql_fetch_array($resultx, MYSQL_ASSOC)   ){
+//   $product_id=$rowx['Product ID'];
+//   $notes='';
 
- }
+//   $sql=sprintf(" select `Part SKU` from  `Product Part List`  where `Product ID`=%d and `Product Part Valid From`<%s  and `Product Part Valid To`>%s ",$product_id,prepare_mysql($rowx['Invoice Date']),prepare_mysql($rowx['Invoice Date']));
+//   $result=mysql_query($sql);
+//   while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+//     $sql=sprintf("insert into `Inventory Transaction Fact` (`Date`,`Part SKU`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Note`,`Metadata`) values (%s,%s,'Not Found',%s,%s,%s,'')",prepare_mysql($rowx['Invoice Date']),prepare_mysql($row['Part SKU']),0,0,prepare_mysql($notes));
+//     // print "$sql\n";
+//    //    if(!mysql_query($sql))
+// // 	exit("$sql can into insert Inventory Transaction Fact ");
 
+//   }
 
+//  }
+
+print "Wrpaping\n";
 // Wrap the transactions
  $sql="delete from  `Inventory Transaction Fact` where `Inventory Transaction Type` in ('Associate','Disassociate') ";
  mysql_query($sql);
@@ -166,7 +177,8 @@ $result=mysql_query($sql);
 //print $sql;
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $sku=$row['Part SKU'];
-
+  print "$sku       \r";
+  
   $sql=sprintf("select `Date` from `Inventory Transaction Fact` where  `Part SKU`=%d  and `Inventory Transaction Type` in ('Audit','Not Found','Sale') order by `Date`  ",$sku);
   $result2=mysql_query($sql);
   // print "$sql\n";

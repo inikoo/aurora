@@ -18,7 +18,7 @@ require_once '../../common_functions.php';
 mysql_query("SET time_zone ='UTC'");
 mysql_query("SET NAMES 'utf8'");
 
-require_once '../../myconf/conf.php';           
+require_once '../../conf/conf.php';           
 date_default_timezone_set('Europe/London');
 $_SESSION['lang']=1;
 

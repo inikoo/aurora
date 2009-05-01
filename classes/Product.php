@@ -185,7 +185,7 @@ class product{
 	$supplier_product=new SupplierProduct('supplier-code-cost',$sp_data);
 	
 	if(!$supplier_product->id)
-	  exit("error culnt create supplier producr Product.php 185\n");
+	  exit("error culnt create supplier product Product.php 185\n");
 	$this->supplier_product_key=$supplier_product->id;
 	
 	if($supplier_product->new_id ){
@@ -300,6 +300,8 @@ class product{
 	$tag['product valid from']=$tag['date'];
 	$tag['part valid to']=$tag['date2'];
 	$tag['part valid from']=$tag['date'];
+	$tag['product record type']='Normal';
+	$tag['product web state']='Online Auto';
 	$this->create($tag);
 	$tag['Part XHTML Currently Used In']=sprintf('<a href="product.php?%d">%s</a>',$this->id,$this->data['Product Code']);
 	$tag['Part XHTML Description']=preg_replace('/\(.*\)\s*$/i','',$this->get('Product XHTML Short Description'));
@@ -395,6 +397,9 @@ class product{
 	  }
 	  $tag['product valid to']=$tag['date2'];
 	  $tag['product valid from']=$tag['date'];
+	  $tag['product record type']='Normal';
+	  $tag['product web state']='Online Auto';
+
 	  $this->create($tag);
 
 
@@ -436,7 +441,8 @@ class product{
 	  }
 	  $tag['product valid to']=$tag['date2'];
 	  $tag['product valid from']=$tag['date'];
-	  
+	  $tag['product record type']='Normal';
+	  $tag['product web state']='Online Auto';
 	  $this->create($tag);
  	  $tag['Part Most Recent']='Yes';
  	  $tag['Part Valid From']=$tag['date'];
@@ -717,28 +723,40 @@ case('Price Subfamily Info'):
       if($this->locale=='de_DE'){
 
 	if(isset($data['price per unit text'])){
-	return 'Preis: '.$data['price per unit text'].' '.$this->money($this->data['Product Price']);
+	$str=$data['price per unit text'].' '.$this->money($this->data['Product Price']);
 	}else{
 	  if($this->data['Product Units Per Case']>1)
-	    return 'Preis: '.$this->money($this->data['Product Price']).'/'.$this->data['Product Units Per Case'].' ('.$this->money($this->data['Product Price']/$this->data['Product Units Per Case'])." pro Stück)";
+	   $str=$this->money($this->data['Product Price']).'/'.$this->data['Product Units Per Case'].' ('.$this->money($this->data['Product Price']/$this->data['Product Units Per Case'])." pro Stück)";
 	  else
-	    return 'Preis: '.$this->money($this->data['Product Price'].' pro Stück');
+	    $str=$this->money($this->data['Product Price'].' pro Stück');
 
 	}
+
+	if($data=='from')
+	  return 'Preis ab '.$str;
+	else
+	  return 'Preis: '.$str;
+
 
       }elseif($this->locale=='fr_FR'){
-      
-	if(isset($data['price per unit text'])){
-	return 'Prix: '.$this->money($this->data['Product Price']).' '.$data['price per unit text'];
+   
+	if( is_array($data) and isset($data['price per unit text'])  ){
+	$str= $this->money($this->data['Product Price']).' '.$data['price per unit text'];
 	}else{
 	  if($this->data['Product Units Per Case']>1)
-	    return 'Prix: '.$this->money($this->data['Product Price']).'/'.$this->data['Product Units Per Case'].' ('.$this->money($this->data['Product Price']/$this->data['Product Units Per Case'])." par unité)";
+	    $str= $this->money($this->data['Product Price']).'/'.$this->data['Product Units Per Case'].' ('.$this->money($this->data['Product Price']/$this->data['Product Units Per Case'])." par unité)";
 	  else
-	    return 'Prix: '.$this->money($this->data['Product Price']).' par unité';
+	    $str= $this->money($this->data['Product Price']).' par unité';
 
 	}
-
+	if($data=='from')
+	  return 'Prix à partir de '.$str;
+	else
+	  return 'Prix: '.$str;
+	
       }
+    
+   
       break;
 
     case('Price Per Unit'):
@@ -1080,10 +1098,9 @@ function valid_id($id){
 }
 
 
-
-  function create($data){
-    global $myconf;
-    $base_data=array(
+ function get_base_data(){
+ global $myconf;
+$base_data=array(
 		     'product sales state'=>'For sale',
 		     'product type'=>'Normal',
 		     'product record type'=>'In process',
@@ -1127,7 +1144,14 @@ function valid_id($id){
 		     'product same id most recent'=>'Yes',
 		     'product same id most recent key'=>''
 		     );
-    
+
+ return $base_data;
+ }
+
+
+  function create($data){
+    global $myconf;
+    $base_data=$this->get_base_data();
     foreach($data as $key=>$value){
 
       if(isset($base_data[strtolower($key)]))
@@ -1201,8 +1225,8 @@ function valid_id($id){
     $sql=sprintf("insert into `Product Dimension` %s %s",$keys,$values);
 
 
-    //print "$sql\n\n";    
-    //exit;
+   //  print "$sql\n\n";    
+//     exit;
      //   if(preg_match('/abp-01/i',$base_data['product code'])){
     //	 print "$sql\n\n"; 
     //	 exit;
@@ -1281,6 +1305,86 @@ function valid_id($id){
     //$this->set_sales(true);
   }
   
+  function create_sibling($new_id,$data){
+    global $myconf;
+    $base_data=$this->get_base_data();
+
+    
+    foreach($this->data as $key=>$value){
+
+      if(isset($base_data[strtolower($key)]))
+	$base_data[strtolower($key)]=_trim($value);
+    }
+    
+    foreach($this->data as $key=>$value){
+      if(isset($base_data[strtolower($key)]))
+	$base_data[strtolower($key)]=_trim($value);
+    }
+    
+    if($new_id)
+      $base_data['product id']=$this->new_id();
+    $base_data['product most recent']='Yes';
+
+
+    
+
+
+    
+    $keys='(';$values='values(';
+    foreach($base_data as $key=>$value){
+      $keys.="`$key`,";
+      $values.=prepare_mysql($value).",";
+    }
+    $keys=preg_replace('/,$/',')',$keys);
+    $values=preg_replace('/,$/',')',$values);
+    $sql=sprintf("insert into `Product Dimension` %s %s",$keys,$values);
+
+    //        }
+    if(mysql_query($sql)){
+      $this->new_id = mysql_insert_id();
+      $this->new=true;
+
+      $sql=sprintf("update `Product Dimension` set `Product Most Recent`='No' where `Product ID`=%d  and `Product Key`!=%d",$base_data['product id'],$this->id);
+      mysql_query($sql);
+      
+      $sql=sprintf("update  `Product Dimension` set `Product Most Recent`='Yes',`Product Most Recent Key`=%d ,`Product Same ID Most Recent Key`=%d  where `Product Key`=%d"
+		   ,$this->new_id
+		   ,$this->new_id
+		   ,$this->new_id)
+	;
+      mysql_query($sql);
+      
+      $this->load('redundant data');
+    
+      
+      // Departments
+      $sql="select * from `Product Department Bridge` where `Product Key`=%d`".$this->id;
+      $result=mysql_query($sql);
+      while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+	$sql=sprintf("insert into `Product Department Bridge` (`Product Key`,`Product Department Key`) values (%d,%d)",$this->new_id,$row['Product Department Key']);
+ 	$department=new Department($row['Product Department Key']);
+ 	$department->load('products_info');
+      }
+      
+      $family=new Family($this->data['Product Family Key']);
+      $family->load('products_info');
+      $store=new Store($this->data['Product Store Key']);
+      $store->load('products_info');
+      // Category
+
+
+      
+    }else{
+      $this->new=false;
+      print "$sql Error Product cannot be created\n";
+      exit;
+    }
+
+
+
+  }
+  
+
 
 
 
@@ -1414,6 +1518,11 @@ function normalize_code($code){
  function load($key){
 
    switch($key){
+   case('redundant data'):
+     $sql=sprintf("update  `Product Dimension` set `Product Short Description`=%s ,`Product XHTML Short Description`=%s where `Product Key`=%d",prepare_mysql($this->get('short description')),prepare_mysql($this->get('xhtml short description')),$this->id);
+     mysql_query($sql);
+     
+     break;
    case('same code data'):
      $sql=sprintf("select * from `Product Dimension` where  `Product Key`=%d",$this->data['Product Same Code Most Recent Key']);
      //  print "$sql\n";
@@ -1895,7 +2004,7 @@ $y_days=count($y_days);
      $unk=false;
      $change=false;
      $sql=sprintf(" select PD.`Part SKU`,`Part Current Stock Cost`,`Part Current Stock`,`Parts Per Product` from `Part Dimension` PD left join `Product Part List` PPL on (PD.`Part SKU`=PPL.`Part SKU`)  where `Product ID`=%s  and `Product Part Most Recent`='Yes' group by PD.`Part SKU`  ",prepare_mysql($this->data['Product ID']));
-     print "$sql\n";
+   
      $result=mysql_query($sql);
      while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
        $change=true;
@@ -1906,21 +2015,25 @@ $y_days=count($y_days);
 	  and is_numeric($row['Part Current Stock'])  
 	  and $row['Part Current Stock']>0 
 	  ) {
-	 print $row['Part Current Stock Cost']."******";
+
 	 $cost+=$row['Part Current Stock Cost']/$row['Parts Per Product']/$row['Part Current Stock'];
        }elseif(is_numeric($row['Parts Per Product'])  and $row['Parts Per Product']>0){
+
 	 $part=new Part($row['Part SKU']);
 	 $estimated_cost=$part->data['Part Average Future Cost'];
-	 if(is_numeric($estimated_cost))
-	   $cost+=$part->get('Part Estimated Cost')/$row['Parts Per Product'];
-	 else
+	 //  print "-  $estimated_cost ------";
+	  if(is_numeric($estimated_cost)){
+	   $cost+=$estimated_cost/$row['Parts Per Product'];
+	   //print "cost  $cost ------\n";
+
+	  }else
 	   $unk=true;
        }else
 	  $unk=true;
        
      }
 
-     if(!$change or $unk or !is_numeric($cost)){
+     if(!$change or $unk or !is_numeric($cost) ){
        $_cost='NULL';
        $this->data['Product Cost']='';
      }else{
@@ -1928,7 +2041,7 @@ $y_days=count($y_days);
        $_cost=$cost;
      }
 
-     print "$_cost\n";
+     //print "****** $unk   $_cost\n";
      $sql=sprintf("update `Product Dimension` set `Product Cost`=%s  where `Product Key`=%d "
 		  ,$_cost
 		  ,$this->id
@@ -2707,30 +2820,257 @@ case('images_slideshow'):
  function update($key,$a1=false,$a2=false){
    $this->updated=false;
    $this->msg="Nothing to change $key ";
-
+   global $myconf;
    switch($key){
+      case('web_state'):
+     
+     if(
+	$a1==_('Out of Stock') 
+	or $a1==_('Auto')
+	or $a1==_('Offline')
+	or $a1==_('Hide')
+	or $a1==_('Sale')
+	){
+
+
+        switch($a1){
+	case(_('Out of Stock')):
+	  $web_state='Online Force Out of Stock';
+	  break;
+	case(_('Auto')):
+	  $web_state='Online Auto';
+	  break;
+	case(_('Offline')):
+	  $web_state=_('Offline');
+	  break;
+	case(_('Hide')):
+	  $web_state='Online Force Hide';	
+	  break;
+	case(_('Sale')):
+	  $web_state='Online Force For Sale';	
+	  break;
+	  
+	}
+	
+       $sql=sprintf("update `Product Dimension` set `Product Web State`=%s  where  `Product Key`=%d "
+		    ,prepare_mysql($web_state)
+		    ,$this->id
+		    );
+       if($this->DBquery($sql)){
+	 $this->msg=_('Product Web State updated');
+	 $this->updated=true;
+	 
+     $this->newvalue=$a1;
+     return;
+       }else{
+       $this->msg=_("Error: Product web state could not be updated ");
+       $this->updated=false;
+       return;
+       }
+     }else
+       $this->msg=_("Error: wrong value")." [Web State] ($a1)";
+       $this->updated=false;
+   break;
+
+   case('sales_state'):
+     
+     if(
+	$a1==_('For Sale') 
+	or $a1==_('Discontinue')
+	or $a1==_('Not For Sale')
+	){
+
+
+        switch($a1){
+	case(_('For Sale')):
+	  $web_state='For Sale';
+	  break;
+	case(_('Discontinue')):
+	  $web_state='Discontinued';
+	  break;
+	case(_('Not For Sale')):
+	  $web_state=_('Not for Sale');
+	  break;
+	}
+	
+       $sql=sprintf("update `Product Dimension` set `Product Sales State`=%s  where  `Product Key`=%d "
+		    ,prepare_mysql($web_state)
+		    ,$this->id
+		    );
+       if(mysql_query($sql)){
+	 $this->msg=_('Product Sales State updated');
+	 $this->updated=true;
+	 
+     $this->newvalue=$a1;
+     return;
+       }else{
+       $this->msg=_("Error: Product sales state could not be updated ");
+       $this->updated=false;
+       return;
+       }
+     }else
+       $this->msg=_("Error: wrong value")." [Sales State] ($a1)";
+       $this->updated=false;
+   break;
+   case('processing'):
+
+    if( $this->data['Product Record Type']=='Historic'  ){
+	 $this->msg=_("Error: You can edit historic records");
+	 $this->updated=false;
+	 return;
+   }
+
+   if( $a1!=_('Editing') and $a1!=_('Live')  ){
+	 $this->msg=_("Error: Wrong values ($a1)");
+	 $this->updated=false;
+
+	 return;
+
+
+	 
+
+
+
+   }
+
+   if( $a1==_('Editing')  ){
+     //changing to editing mode
+     if(  $this->data['Product Record Type']=='In Process'  or  $this->data['Product Record Type']=='New'){
+       $this->updated=true;
+       $this->newvalue=_('Editing');
+       return;
+     }
+     
+      $sql=sprintf("update `Product Dimension` set `Product Record Type`=%s  ,`Product Editing Price`=%f,`Product Editing RRP`=%s,`Product Editing Name`=%s,`Product Editing Special Characteristic`=%s ,`Product Editing Family Special Characteristic`=%s,`Product Editing Units Per Case`=%f ,`Product Editing Unit Type`=%s  where `Product Key`=%d "
+		   ,prepare_mysql('In Process')
+		    ,$this->data['Product Price']
+		   ,($this->data['Product RRP']==''?'NULL':$this->data['Product RRP'])
+		   ,prepare_mysql($this->data['Product Name'])
+		   ,prepare_mysql($this->data['Product Special Characteristic'])
+		   ,prepare_mysql($this->data['Product Family Special Characteristic'])
+		    ,$this->data['Product Units Per Case']
+		   ,prepare_mysql($this->data['Product Unit Type'])
+		  ,$this->id
+		  );
+     if(mysql_query($sql)){
+       $this->msg=_('Product Record Type updated');
+       $this->updated=true;
+       
+       $this->newvalue=_('Editing');
+       return;
+     }else{
+       $this->msg=_("Error: Product record type could not be updated"." $sql");
+       $this->updated=false;
+       return;
+     }
+
+   }else{
+     // Change from editing to normal
+     if( $this->data['Product Record Type']=='Normal' ){
+       $this->updated=true;
+       $this->newvalue=_('Live');
+       return;
+     }
+
+
+     if($this->data['Product Record Type']=='New' ){
+
+       $sql=sprintf("update `Product Dimension` set `Product Record Type`=%s  where `Product Key`=%d "
+		    ,prepare_mysql('Normal')
+		    ,$this->id
+		    );
+       if(mysql_query($sql)){
+	 $this->msg=_('Product Record Type updated');
+	 $this->updated=true;
+	 
+	 $this->newvalue=_('Live');
+	 return;
+     }else{
+       $this->msg=_("Error: Product record state could not be updated");
+       $this->updated=false;
+       return;
+     }
+
+     }
+
+
+     if($this->data['Product Editing Price']!=$this->data['Product Price'] or $this->data['Product Editing Units Per Case']!=$this->data['Product Units Per Case']  or $this->data['Product Editing Unit Type']!=$this->data['Product Unit Type'] ){
+       // Have to create new ID for the product
+       $this->create_new_id();
+       if(!$this->new){
+	  $this->msg=_("Error: Product record state could not be updated").' (no new)';
+	 $this->updated=false;
+       }
+       
+       $sql=sprintf("update `Product Dimension` set `Product Record Type`=%s, `Product Most Recent`='No' where `Product Key`=%d "
+		    ,prepare_mysql('Historic')
+		    ,$this->id
+		    );
+       
+       if(mysql_query($sql)){
+	 $this->msg=_('Product Record Type updated');
+	 $this->updated=true;
+	 $this->newvalue=_('Live');
+       }else{
+	  $this->msg=_("Error: Product record state could not be updated");
+	  $this->updated=false;
+       }
+       return;
+
+
+
+     }else{
+       // No change in procce, or unis no necesiti of make a new product with different ID
+
+       $sql=sprintf("update `Product Dimension` set `Product Record Type`=%s, `Product RRP`=%s,`Product Name`=%s,`Product Special Characteristic`=%s ,`Product Family Special Characteristic`=%s"
+		    ,prepare_mysql('Normal')
+		    ,($this->data['Product Editing RRP']==''?'NULL':$this->data['Product Editing RRP'])
+		    ,prepare_mysql($this->data['Product Editing Name'])
+		    ,prepare_mysql($this->data['Product Editing Special Characteristic'])
+		    ,prepare_mysql($this->data['Product Editing Family Special Characteristic'])
+
+		    ,$this->id
+		    );
+       if(mysql_query($sql)){
+	 $this->msg=_('Product Record Type updated');
+	 $this->updated=true;
+	 $this->newvalue=_('Live');
+       }else{
+	 $this->msg=_("Error: Product record state could not be updated");
+	 $this->updated=false;
+       }
+       return;
+       
+     }
+
+
+   }
+
+
+
+   break;
    case('price'):
    case('unit_price'):
    case('margin'):
-     global $myconf;
+
      
      
      
      if($key=='margin'){
        if(!is_numeric($this->data['Product Cost'])){
 	 $this->msg=_("Error: The product cost is unknown");
-	 $this->updated=false;
+	 $this->updated=false;return;
        }
 	 
 
        $margin=floatval(ereg_replace("[^-0-9\.]","",$a1));
        if(!is_numeric($margin)){
 	  $this->msg=_("Error: Product margin should be a numeric value");
-	  $this->updated=false;
+	  $this->updated=false;return;
        }elseif($margin==-100){
 	 $this->msg=_("Error: Product margin can not have this value");
 	  $this->updated=false;
-
+	  return;
        }
        $amount=100*$this->data['Product Cost']/($margin+100);
 
@@ -2745,26 +3085,17 @@ case('images_slideshow'):
        }
        
        
-     if($key=='unit_price')
-       $amount=$amount*$this->data['Product Units Per Case'];
+   
      
      
-     
-     //convert to the proper currency;
      if($this->data['Product Currency']!=$currency){
-       // print "$currency ".currency_conversion($currency,$this->data['Product Currency']);
        $amount=$amount*currency_conversion($currency,$this->data['Product Currency']);
      }
      
      }
 
 
-      if($amount==$this->data['Product Price']){
-       $this->updated=true;
-       $this->newvalue=money($amount,$this->data['Product Currency']);
-       return;
-       
-     }
+    
 
 
 
@@ -2773,8 +3104,21 @@ case('images_slideshow'):
 
 
       if($this->data['Product Record Type']=='In process'){
+
+	if($key=='unit_price')
+	  $amount=$amount*$this->data['Product Editing Units Per Case'];
 	
-	$sql=sprintf("update `Product Dimension` set `Product Price`=%f where `Product Key`=%d "
+	
+	if($amount==$this->data['Product Editing Price']){
+	  $this->updated=true;
+	  $this->newvalue=money($amount,$this->data['Product Currency']);
+	  return;
+	  
+	}
+	
+
+	
+	$sql=sprintf("update `Product Dimension` set `Product Editing Price`=%f where `Product Key`=%d "
 		     ,$amount
 		     ,$this->id
 		     );
@@ -2782,16 +3126,16 @@ case('images_slideshow'):
 	  $this->msg=_('Product price updated');
 	  $this->updated=true;
 
-	  $this->data['Product Price']=$amount;
+	  $this->data['Product Editing Price']=$amount;
 	  
-	  if($this->data['Product Price']!=0 and is_numeric($this->data['Product Cost']))
-	    $margin=number(100*($this->data['Product Price']-$this->data['Product Cost'])/$this->data['Product Price'],1).'%';
+	  if($this->data['Product Editing Price']!=0 and is_numeric($this->data['Product Cost']))
+	    $margin=number(100*($this->data['Product Editing Price']-$this->data['Product Cost'])/$this->data['Product Editing Price'],1).'%';
 	  else
 	    $margin=_('ND');
 
 	  $this->newvalue=array(
 				 'price'=>money($amount,$this->data['Product Currency']),
-				 'unit_price'=>money($amount/$this->data['Product Units Per Case'],$this->data['Product Currency']),
+				 'unit_price'=>money($amount/$this->data['Product Editing Units Per Case'],$this->data['Product Currency']),
 				 'margin'=>$margin
 				);
 	  
@@ -2807,6 +3151,48 @@ case('images_slideshow'):
          return;
 
        }else{
+	// Live product wse should create new product with different ID
+	
+	if($key=='unit_price')
+	  $amount=$amount*$this->data['Product Units Per Case'];
+	
+	
+	if($amount==$this->data['Product Price']){
+	  $this->updated=true;
+	  $this->newvalue=money($amount,$this->data['Product Currency']);
+	  return;
+	  
+	}
+
+
+	$new_id=false;
+	$this->create_sibling($new_id,array('Product Price'=>$amount));
+	if(!$this->new){
+	  $this->msg=_("Error: Product record state could not be updated").' (no new)';
+	  $this->updated=false;
+	}
+	
+	$sql=sprintf("update `Product Dimension` set `Product Record Type`=%s, `Product Most Recent`='No' where `Product Key`=%d "
+		     ,prepare_mysql('Historic')
+		     ,$this->id
+		     );
+	
+	if(mysql_query($sql)){
+	  $this->msg=_('Product Record Type updated');
+	  $this->updated=true;
+	  $this->newvalue=_('Live');
+	}else{
+	  $this->msg=_("Error: Product record state could not be updated");
+	  $this->updated=false;
+	}
+	return;
+	
+	
+
+
+
+
+
 
 
        }
@@ -2936,18 +3322,26 @@ case('images_slideshow'):
       
    case('name'):
 
-     if($a1==$this->data['Product Name']){
-       $this->updated=true;
-       $this->newvalue=$a1;
-       return;
-       
+     if($this->data['Product Record Type']=='In Process'){
+       if($a1==$this->data['Product Editing Name']){
+	 $this->updated=true;
+	 $this->newvalue=$a1;
+	 return;
+       }
+     }else{
+       if($a1==$this->data['Product Name']){
+	 $this->updated=true;
+	 $this->newvalue=$a1;
+	 return;
+       }
      }
 
      if($a1==''){
        $this->msg=_('Error: Wrong name (empty)');
        return;
      }
-     $sql=sprintf("select count(*) as num from `Product Dimension` where `Product Store Key`=%d and `Product Name`=%s  COLLATE utf8_general_ci"
+
+     $sql=sprintf("select count(*) as num from `Product Dimension` where `Product Store Key`=%d and  ( `Product Name`=%s  COLLATE utf8_general_ci  or  `Product Editing Name`=%s  COLLATE utf8_general_ci   ) "
 		,$this->data['Product Store Key']
 		,prepare_mysql($a1)
 		);
@@ -2958,77 +3352,137 @@ case('images_slideshow'):
        return;
      }
      
-      $sql=sprintf("update `Product Dimension` set `Product Name`=%s where `Product Key`=%d "
-		   ,prepare_mysql($a1)
-		   ,$this->id
-		);
-      if(mysql_query($sql)){
-	$this->msg=_('Product name updated');
-	$this->updated=true;$this->newvalue=$a1;
-      }else{
-	$this->msg=_("Error: Product name could not be updated");
-
-	$this->updated=false;
+     if($this->data['Product Record Type']=='In Process')
+       $edit_column='Product Editing Name';
+     else
+       $edit_column='Product Name';
+     
+     $sql=sprintf("update `Product Dimension` set `%s`=%s where `Product Key`=%d "
+		  ,$edit_column
+		  ,prepare_mysql($a1)
+		  ,$this->id
+		  );
+     if(mysql_query($sql)){
+       $this->msg=_('Product name updated');
+       $this->updated=true;$this->newvalue=$a1;
+     }else{
+       $this->msg=_("Error: Product name could not be updated");
+       
+       $this->updated=false;
 	
       }
       break;	
   case('sdescription'):
 
-     if($a1==$this->data['Product Special Characteristic']){
-       $this->updated=true;
-       $this->newvalue=$a1;
-       return;
-       
-     }
+    if($this->data['Product Record Type']=='In Process'){
+      if($a1==$this->data['Product Editing Special Characteristic']){
+	$this->updated=true;
+	$this->newvalue=$a1;
+	return;
+      }
+      }else{
+      
+      if($a1==$this->data['Product Special Characteristic']){
+	$this->updated=true;
+	$this->newvalue=$a1;
+	return;
+      }
+    }
 
      if($a1==''){
        $this->msg=_('Error: Wrong Product Special Characteristic (empty)');
        return;
      }
-     $sql=sprintf("select count(*) as num from `Product Dimension` where `Product Family Key`=%d and `Product Special Characteristic`=%s  COLLATE utf8_general_ci  and `Product Family Special Characteristic`=%s "
-		  ,$this->data['Product Family Key']
-		  ,prepare_mysql($a1)
-		  ,prepare_mysql($this->data['Product Special Characteristic'])
+
+
+
+     if($this->data['Product Record Type']=='In Process')
+       $sql=sprintf("select count(*) as num from `Product Dimension` where `Product Family Key`=%d and ( (`Product Editing Special Characteristic`=%s  COLLATE utf8_general_ci  and `Product Editing Family Special Characteristic`=%s) or (`Product Special Characteristic`=%s  COLLATE utf8_general_ci  and `Product Family Special Characteristic`=%s)  )  and `Product Key`!=%d"
+		    ,$this->data['Product Family Key']
+		    ,prepare_mysql($a1)
+		    ,prepare_mysql($this->data['Product Editing Special Characteristic'])
+		    ,prepare_mysql($a1)
+		    ,prepare_mysql($this->data['Product Editing Special Characteristic'])
+		    ,$this->id
 		);
+     else
+          $sql=sprintf("select count(*) as num from `Product Dimension` where `Product Family Key`=%d and ( (`Product Editing Special Characteristic`=%s  COLLATE utf8_general_ci  and `Product Editing Family Special Characteristic`=%s) or (`Product Special Characteristic`=%s  COLLATE utf8_general_ci  and `Product Family Special Characteristic`=%s)  )  and `Product Key`!=%d"
+		    ,$this->data['Product Family Key']
+		    ,prepare_mysql($a1)
+		    ,prepare_mysql($this->data['Product Special Characteristic'])
+		    ,prepare_mysql($a1)
+		    ,prepare_mysql($this->data['Product Special Characteristic'])
+		    ,$this->id
+		);
+
+
+
      $res=mysql_query($sql);
      $row=mysql_fetch_array($res);
      if($row['num']>0){
        $this->msg=_("Error: Another product with the same Product/Family Special Characteristic in this family");
        return;
      }
-     
-      $sql=sprintf("update `Product Dimension` set `Product Special Characteristic`=%s where `Product Key`=%d "
-		   ,prepare_mysql($a1)
-		   ,$this->id
-		);
-      if(mysql_query($sql)){
-	$this->msg=_('Product Special Characteristic');
-	$this->updated=true;$this->newvalue=$a1;
-      }else{
-	$this->msg=_("Error: Product Special Characteristic could not be updated");
-
-	$this->updated=false;
+     if($this->data['Product Record Type']=='In Process')
+       $editing_column='Product Editing Special Characteristic';
+     else
+       $editing_column='Product Special Characteristic';
+       $sql=sprintf("update `Product Dimension` set `%s`=%s where `Product Key`=%d "
+		    ,$editing_column
+		    ,prepare_mysql($a1)
+		    ,$this->id
+		    );
+       if(mysql_query($sql)){
+	 $this->msg=_('Product Special Characteristic');
+	 $this->updated=true;$this->newvalue=$a1;
+       }else{
+	 $this->msg=_("Error: Product Special Characteristic could not be updated");
+	 
+	 $this->updated=false;
 	
       }
       break;	
-case('famsdescription'):
-
-     if($a1==$this->data['Product Family Special Characteristic']){
-       $this->updated=true;
-       $this->newvalue=$a1;
-       return;
-       
-     }
+   case('famsdescription'):
+     
+     if($this->data['Product Record Type']=='In Process'){
+      if($a1==$this->data['Product Editing Family Special Characteristic']){
+	$this->updated=true;
+	$this->newvalue=$a1;
+	return;
+      }
+      }else{
+      
+      if($a1==$this->data['Product Family Special Characteristic']){
+	$this->updated=true;
+	$this->newvalue=$a1;
+	return;
+      }
+    }
 
      if($a1==''){
        $this->msg=_('Error: Wrong Product Family Special Characteristic (empty)');
        return;
      }
-     $sql=sprintf("select count(*) as num from `Product Dimension` where `Product Family Key`=%d and `Product Family Special Characteristic`=%s COLLATE utf8_general_ci and `Product Special Characteristic`=%s "
-		  ,$this->data['Product Family Key']
-		  ,prepare_mysql($a1)
-		  ,prepare_mysql($this->data['Product Special Characteristic'])
+
+   if($this->data['Product Record Type']=='In Process')
+       $sql=sprintf("select count(*) as num from `Product Dimension` where `Product Family Key`=%d and ( (`Product Editing Special Characteristic`=%s  COLLATE utf8_general_ci  and `Product Editing Family Special Characteristic`=%s) or (`Product Special Characteristic`=%s  COLLATE utf8_general_ci  and `Product Family Special Characteristic`=%s)  )  and `Product Key`!=%d"
+		    ,$this->data['Product Family Key']
+		    ,prepare_mysql($a1)
+		    ,prepare_mysql($this->data['Product Editing Special Characteristic'])
+		    ,prepare_mysql($a1)
+		    ,prepare_mysql($this->data['Product Editing Special Characteristic'])
+		    ,$this->id
 		);
+     else
+          $sql=sprintf("select count(*) as num from `Product Dimension` where `Product Family Key`=%d and ( (`Product Editing Special Characteristic`=%s  COLLATE utf8_general_ci  and `Product Editing Family Special Characteristic`=%s) or (`Product Special Characteristic`=%s  COLLATE utf8_general_ci  and `Product Family Special Characteristic`=%s)  )  and `Product Key`!=%d"
+		       ,$this->data['Product Family Key']
+		       ,prepare_mysql($this->data['Product Special Characteristic'])
+		       ,prepare_mysql($a1)
+		       ,prepare_mysql($this->data['Product Special Characteristic'])
+		       ,prepare_mysql($a1)
+		       ,$this->id
+		);
+
      $res=mysql_query($sql);
      $row=mysql_fetch_array($res);
      if($row['num']>0){
@@ -3036,10 +3490,17 @@ case('famsdescription'):
        return;
      }
      
-      $sql=sprintf("update `Product Dimension` set `Product Family Special Characteristic`=%s where `Product Key`=%d "
-		   ,prepare_mysql($a1)
-		   ,$this->id
-		);
+      if($this->data['Product Record Type']=='In Process')
+       $editing_column='Product Editing Family Special Characteristic';
+     else
+       $editing_column='Product Family Special Characteristic';
+       $sql=sprintf("update `Product Dimension` set `%s`=%s where `Product Key`=%d "
+		    ,$editing_column
+		    ,prepare_mysql($a1)
+		    ,$this->id
+		    );
+
+
       if(mysql_query($sql)){
 	$this->msg=_('Product Family Special Characteristic');
 	$this->updated=true;$this->newvalue=$a1;
@@ -3083,6 +3544,13 @@ case('famsdescription'):
    
    mysql_select_db($external_dns_db, $default_DB_link);
 
+ }
+
+
+ function save_to_db($sql){
+
+   mysql_query($sql);
+   
  }
 
 

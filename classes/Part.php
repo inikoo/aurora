@@ -91,7 +91,7 @@ class part{
 
   function load($data_to_be_read,$args=''){
     switch($data_to_be_read){
-
+    case('stock_history'):
     case('calculate_stock_history'):
       global $myconf;
       $force='';
@@ -149,7 +149,7 @@ class part{
 	}else{
 	  $to=strtotime($this->data['Part Valid To']);
 	}
-	
+
 	
 	if($from>$to){
 	  //   print("error    $part_sku $location_key  ".$rowx['Part Valid From']." ".$rowx['Part Valid To']."   \n   ");
@@ -158,13 +158,13 @@ class part{
 	
 	
 	if($skip){
-	  //print "No trasactions $part_sku $location_key "; 
+	  print "No trasactions $part_sku $location_key "; 
 	  continue;
 	}
 	
 	$from=date("Y-m-d",$from);
 	$to=date("Y-m-d",$to);
-	print "$part_sku $location_key  $from $to\n";
+	print "** $part_sku $location_key  $from $to\n";
 	//  $pl=new PartLocation(array('LocationPart'=>$location_key."_".$part_sku));
 	$pl->redo_daily_inventory($from,$to);
 	
@@ -221,7 +221,7 @@ class part{
        	exit("  errorcant not uopdate parts stock");
 
       break;
-    case('stock_history'):
+    case('stock_data'):
       $astock=0;
       $avalue=0;
       
@@ -787,7 +787,23 @@ class part{
 
     
     switch($key){
+    case('Picking Location Key'):
+      break;
+ case('Current Associated Locations'):
+
+      $associated=array();
+      
+      $sql=sprintf("select `Location Key` from `Part Location Dimension` where  `Part SKU`=%d   ",$this->data['Part SKU']);
+      //  print $sql;
+      $res=mysql_query($sql);
+      while($row=mysql_fetch_array($res)){
+	$associated[]=$row['Location Key'];
+      }
    
+      
+      return $associated;
+   break;
+
     case('Associated Locations'):
       $associate=array();
       $associated=array();

@@ -1279,6 +1279,10 @@ function cancel(){
 	  unset($product);
 	  $note=$a.', '.$this->data['Order Current XHTML State'];
 	  
+	  $part=new Part('sku',$part_sku);
+	  $location_id=$part->get('Picking Location Key');
+	  
+
 	  if($data['Shipped Quantity']==0)
 	    $_typo="'No Dispached'";
 	  else
@@ -1286,7 +1290,7 @@ function cancel(){
 	   $sql=sprintf("insert into `Inventory Transaction Fact`  (`Date`,`Part SKU`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`,`Note`,`Supplier Product Key`) values (%s,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%s) "
 			,prepare_mysql($this->data['Delivery Note Date'])
 			,prepare_mysql($part_sku)
-			,1
+			,$location_id
 			,prepare_mysql(-$parts_per_product*$data['Shipped Quantity'])
 			,"'Sale'"
 			,-$cost

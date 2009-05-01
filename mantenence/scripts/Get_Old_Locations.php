@@ -45,7 +45,33 @@ date_default_timezone_set('Europe/London');
    
 
 //  }
-$sql=sprintf("select * from aw_old.product where code='LBI-03'    ");
+
+
+$sql=
+"INSERT INTO `dw`.`Location Dimension` (
+`Location Key` ,
+`Location Warehouse Key` ,
+`Location Code` ,
+`Location Area` ,
+`Location Mainly Used For` ,
+`Location Max Weight` ,
+`Location Max Volume` ,
+`Location Max Slots` ,
+`Location Distinct Parts` ,
+`Location Has Stock` ,
+`Location Stock Value`
+)
+VALUES (
+'1', '1', 'Unknown', 'Unknown', 'Picking', NULL , NULL , NULL , '0', 'Unknown', '0.00'
+);";
+
+
+$loc= new Location(1);
+if(!$loc->id)
+  mysql_query($sql);
+
+
+$sql=sprintf("select * from aw_old.product  order by code   ");
 $result=mysql_query($sql);
 while($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $product_code=$row2['code'];
@@ -71,7 +97,7 @@ while($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ){
        $location=new Location('create',array(
 					     'Location Warehouse Key'=>1
 					     ,'Location Area'=>''
-				    ,'Location Code'=>$location_code
+					     ,'Location Code'=>$location_code
 					     ,'Location Mainly Used For'=>$used_for
 					     ));
      }
@@ -97,12 +123,16 @@ while($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ){
        if($primary){
 	 print "PRIMARY ".$row['code']." $product_code  LOC: ".$location->id." SKU: $sku \n";
 	 $part= new Part($sku);
-	 $part->load('calculate_stock_history','continue');
-	 $associated=$part->get('Associated Locations');
+	 $part->load('calculate_stock_history','last');
+	 // exit;
+	 $associated=$part->get('Current Associated Locations');
 	 $num_associated=count($associated);
+	 print "Num associated $num_associated\n";
+	 // exit;
 	 switch($num_associated){
 	 case 1:
 	   if($associated[0]==1){
+	      print "+++++++++\n";
 	      $pl=new PartLocation('1_'.$sku);
 	      $data=array(
 			  'user key'=>0
@@ -111,33 +141,40 @@ while($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 			  ,'qty'=>'all'
 			  
 			  );
-	      
+	      // EXIT;
 	      $pl->move_to($data);
-	     
+	      //  exit;
+	      
 	      $data=array(
 			  'user key'=>0
 			  ,'note'=>_('Location now known')
-			  
 			  );
+	      // print "Destroing \n";
 	      $pl->destroy($data);
 	      
-	      $part->load('stock');
-	      $part->load('stock_history');
 	      
-	      
-	      $location->load('parts_data');
-	      $unk=new Location(1);
-	      $unk->load('parts_data');
+
+	      //$part->load('stock_history','last');
+	      //$part->load('stock');
+	      //$location->load('parts_data');
+	      //$unk=new Location(1);
+	      //$unk->load('parts_data');
 	 
 
 	    }elseif($associated[0]==$location->id){
-	      break;
+	     print "************\n";
+	     break;
 	    }else{
 	      print_r( $location->data);
 	      print_r($associated);
 	      exit("todo a");
 	    }
 	      break;
+	 case 0:
+	   $part_location=new PartLocation(array('Part SKU'=>$sku,'Location Key'=>$location->id));
+	   $part_location->associate();
+	   $part->load('calculate_stock_history','last');
+	   break;
 	 default:
 	   print_r($associated);
 	   exit("todo b");

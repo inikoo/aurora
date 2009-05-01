@@ -24,7 +24,7 @@ if (!$db){print "Error can not access the database\n";exit;}
 require_once '../../common_functions.php';
 mysql_query("SET time_zone ='UTC'");
 mysql_query("SET NAMES 'utf8'");
-require_once '../../myconf/conf.php';           
+require_once '../../conf/conf.php';           
 date_default_timezone_set('Europe/London');
 
 
@@ -308,12 +308,12 @@ foreach($__cols as $cols){
 	$rrp='';
       
       
-      $_f=preg_replace('/s$/i','',$current_fam_name);
-      //print "$_f\n";
-      $special_char=preg_replace('/'.str_replace('/','\/',$_f).'$/i','',$description);
-      $special_char=preg_replace('/'.str_replace('/','\/',$current_fam_name).'$/i','',$special_char);
-	    
-	
+    //   $_f=preg_replace('/s$/i','',$current_fam_name);
+//       //print "$_f\n";
+//       $special_char=preg_replace('/'.str_replace('/','\/',$_f).'$/i','',$description);
+//       $special_char=preg_replace('/'.str_replace('/','\/',$current_fam_name).'$/i','',$special_char);
+      $fam_special_char=$current_fam_name;
+      $special_char=$description;
 
       if(is_numeric($w)){
 	$w=$w*$units;
@@ -325,7 +325,11 @@ foreach($__cols as $cols){
 	$_w='';
       
       $data=array(
-		  'product sale state'=>'For sale',
+		  'product sales state'=>'For sale',
+		  'product type'=>'Normal',
+		  'product record type'=>'Normal',
+		  'product web state'=>'Online Auto',
+
 		  'product code'=>$code,
 		  'product price'=>sprintf("%.2f",$price),
 		  'product rrp'=>$rrp,
@@ -336,6 +340,7 @@ foreach($__cols as $cols){
 		  'product main department name'=>$department_name,
 		  'product main department code'=>$department_name,
 		  'product special characteristic'=>$special_char,
+		  'product family special characteristic'=>$fam_special_char,
 		  'product net weight'=>$_w,
 		  'product gross weight'=>$_w,
 		  'deals'=>$deals
