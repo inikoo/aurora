@@ -7,33 +7,28 @@ include_once('Part.php');
 include_once('Store.php');
 
 class product{
- 
-  var $product=array();
-  var $categories=array();
-
-  var $parents=array();
-  var $childs=array();
-  var $supplier=false;
-  var $locations=false;
-  var $notes=array();
-  var $images=false;
-  var $weblink=false;
-  var $parts=false;
-  var $parts_skus=false;
-   var $parts_location=false;
-  var $new=false;
-  var $new_id=false;
-  var $location_to_update=false;
-  var $id=false;
-  var $unknown_txt='Unknown';
+ 		
+  public $product=array();
+  public $categories=array();
+  public $parents=array();
+  public $childs=array();
+  public $supplier=false;
+  public $locations=false;
+  public $notes=array();
+  public $images=false;
+  public $weblink=false;
+  public $parts=false;
+  public $parts_skus=false;
+  public $parts_location=false;
+  public $new=false;
+  public $new_id=false;
+  public $location_to_update=false;
+  public $id=false;
+  public $unknown_txt='Unknown';
 
 
   function __construct($a1,$a2=false,$a3=false) {
 
-
-    
-    
-    //    $this->db =MDB2::singleton();
     if(is_numeric($a1) and !$a2){
       $this->get_data('id',$a1);
     }
@@ -46,13 +41,13 @@ class product{
 
 
   function get_data($tipo,$tag,$extra=false){
-    global $_shape,$_units_tipo,$_units_tipo_abr,$_units_tipo_plural;
+   
     if($tipo=='id'){
       $sql=sprintf("select * from `Product Dimension` where `Product Key`=%d ",$tag);
 
       $result=mysql_query($sql);
 
-      if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+      if( ($this->data=mysql_fetch_array($result, MYSQL_ASSOC))){
 	$this->locale=$this->data['Product Locale'];
 	$this->id=$this->data['Product Key'];
       }
