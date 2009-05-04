@@ -4,13 +4,13 @@
 class part{
   
 
-  var $id=false;
+  Public $id=false;
 
   function __construct($a1,$a2=false) {
 
 
 
-    if(is_numeric($a1) and !$a2){      $this->get_data('id',$a1);
+      if(is_numeric($a1) and !$a2){      $this->get_data('id',$a1);
     }
     else if(($a1=='new' or $a1=='create') and is_array($a2) ){
       $this->msg=$this->create($a2);
@@ -33,7 +33,7 @@ class part{
       return;
 
     $result=mysql_query($sql);
-    if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)){
+    if(($this->data=mysql_fetch_array($result, MYSQL_ASSOC))){
       $this->id=$this->data['Part Key'];
     }
     
@@ -113,7 +113,7 @@ class part{
       
       $sql=sprintf("select `Location Key` from `Inventory Transaction Fact` where `Part SKU`=%d group by `Location Key` ",$part_sku);
       $resultxxx=mysql_query($sql);
-      while($rowxxx=mysql_fetch_array($resultxxx, MYSQL_ASSOC)   ){
+      while(($rowxxx=mysql_fetch_array($resultxxx, MYSQL_ASSOC))){
 	$skip=false;
 	$location_key=$rowxxx['Location Key'];
 	$pl=new PartLocation($location_key.'_'.$this->data['Part SKU']);
@@ -140,6 +140,8 @@ class part{
 	    $skip=true;
 	  $from=strtotime($_from);
 	}
+
+       
 	
 	if($from<$min)
 	  $from=$min;
@@ -185,7 +187,7 @@ class part{
       $sql=sprintf("select sum(`Quantity On Hand`) as stock,sum(`Stock Value`) as value, sum(`Negative Discrepancy`) as neg_discrepancy, sum(`Negative Discrepancy Value`) as neg_discrepancy_value from `Part Location Dimension` where  `Part SKU`=%d ",$this->data['Part SKU']);
       //print $sql;
       $result=mysql_query($sql);
-      if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+      if(($row=mysql_fetch_array($result, MYSQL_ASSOC))){
 	$stock=$row['stock'];
 	$value=$row['value'];
 	$neg_discrepancy_value=$row['neg_discrepancy_value'];

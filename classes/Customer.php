@@ -38,19 +38,95 @@ class Customer{
       $sql=sprintf("select * from `Customer Dimension` where `Customer Key`=%s",prepare_mysql($id));
     elseif($tag=='email')
       $sql=sprintf("select * from `Customer Dimension` where `Customer Email`=%s",prepare_mysql($id));
-    else
-      return false;
-    
+    elseif($tag='all'){
+      $this->complex_get_data($id);
+      return true;
+    }else
+       return false;
     $result=mysql_query($sql);
     if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-   
       $this->id=$this->data['Customer Key'];
+    }
+  }
+  
+  function compley_get_data($data){
+    $vectors=array(
+		   'Email'=>array(
+				  'field'=>'Customer Email'
+				  ,'Match Probability'=>1
+				  ,'Levenshtein Probability'=>array(1=>.2,2=>.05)
+				  
+				  )
+		   ,'Customer Main Contact Name','Customer Name','Customer Main Telephone',
+		   'Customer Other ID'=>array(
+				  'field'=>'Customer Other ID'
+				  ,'Match Probability'=>.98
+				  
+				  )
+
+		   )
+
       
+      if($data['Customer Email']!=''){
+	$sql=sprintf("select `Email Key` from `Email Dimension` where `Email`=%s",prepare_mysql($data['Customer Email']));
+	$result=mysql_query($sql);
+	if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+	  $email_key=$row['Email Key'];
+	  $sql=sprintf("select `Subject Key` from `Email Bridge` where `Email Key`=%s and `Subject Type`='Customer'",prepare_mysql($email_key));
+	  $result2=mysql_query($sql);
+	  if($row2=mysql_fetch_array($result2, MYSQL_ASSOC)){
+	    $candiadate['Email']=array(
+				       'Key'=>$row2['Subject Key']
+				       ,'Probability'=>$vectors['Email']['Match Probability'];
+				       );
+	  }else{
+	    $candiadate['Email']=array(
+				       'Key'=>0
+				       ,'Probability'=>$vectors['Email']['Match Probability'];
+				       );
+	  
+	    
+	    $sql=sprintf("select levenshtein(UPPER(%s),UPPER(`Email`)) as dist1,levenshtein(UPPER(SOUNDEX(%s)),UPPER(SOUNDEX(`Email`))) as dist2, `Subject Key`  from `Email Dimension` left join `Email Bridge` on (`Email Bridge`.`Email Key`=`Email Dimension`.`Email Key`)  where dist1<=2 and  `Subject Type`='Customer'   order by dist1,dist2 limit 10"
+			 ,prepare_mysql($data['Customer Email'])
+			 ,prepare_mysql($data['Customer Email'])
+			 );
+	    $result=mysql_query($sql);
+	    while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+	      $candiadate['Email']=array(
+					 'Key'=>$row['Subject Key']
+					 ,'Probability'=>$vectors['Email']['Levenshtein Probability'][$row['dist1']];
+					 );
+	      
+	    }
+	    
+	  }
+	}
 
-     }
+	print_r($candiadate);
+       
 
+      }
+    if($data['Customer Other ID']!=''){
+	$sql=sprintf("select `Customer Key` from `Customer Dimension` where `Customer Other ID`=%s",prepare_mysql($data['Customer Other ID']));
+	$result=mysql_query($sql);
+	$num_rows = mysql_num_rows($result);
+	while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+	   $candiadate['Other ID']=array(
+					 'Key'=>$row['Customer Key']
+					 ,'Probability'=>$vectors['Customer Other ID']['Match Probability'];
+					 );
+
+	}
+	if($num_rows)
+	
+
+    }
 
   }
+
+
+
+
    function load($key='',$arg1=false){
      switch($key){
     case('contact_data'):
@@ -96,7 +172,6 @@ class Customer{
    $this->unknown_contact=$myconf['unknown_contact'];
    $this->unknown_company=$myconf['unknown_company'];
    $this->unknown_customer=$myconf['unknown_customer'];
-   //print_r($data);
    $contact_name=$this->unknown_contact;
    $company_name=$this->unknown_company;
    $unique_id=$this->get_id();
@@ -169,7 +244,7 @@ class Customer{
 
    $main_contact=new contact('new',$data_contact);
    
-
+   $this->base_data();
  // print_r($main_contact->data);
 
    if($type=='Company'){
@@ -483,12 +558,33 @@ class Customer{
 
  }
 
+ function base_data(){
+   $this->base_data=array();
+
+   $ignore_fields=array('Customer Key');
+
+   $result = mysql_query("SHOW COLUMNS FROM `Customer Dimension`");
+   if (!$result) {
+     echo 'Could not run query: ' . mysql_error();
+     exit;
+   }
+   if (mysql_num_rows($result) > 0) {
+     while ($row = mysql_fetch_assoc($result)) {
+       if(!in_array($row['Field'],$ignore_fields))
+	 $this->base_data[$row['Field']]=$row['Default'];
+     }
+   }
+   
+
+ }
+
 
  function update($key,$data=false,$args='false'){
-
+   
    switch($key){
-
-     
+   case('multiple'):
+     $this->base_data();
+     break;
    case('no normal data'):
    case('no_normal_data'):
       $sql="select min(`Order Date`) as date   from `Order Dimension` where `Order Customer Key`=".$this->id;

@@ -58,7 +58,8 @@ class PartLocation{
 
 
   function first_inventory_transacion(){
-    $sql=sprintf("select DATE(`Date`) as Date from `Inventory Transaction Fact` where  `Part Sku`=%d and (`Inventory Transaction Type`='Associate' )  order by `Date`",$this->part_sku);
+    $sql=sprintf("select DATE(`Date`) as Date from `Inventory Transaction Fact` 
+    		where  `Part Sku`=%d and (`Inventory Transaction Type`='Associate' )  order by `Date`",$this->part_sku);
     $result=mysql_query($sql);
     // print $sql;
     if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
@@ -84,7 +85,7 @@ function last_inventory_audit(){
     $qty=$data['qty'];
     $user_id=$data['user key'];
     $note=$data['note'];
-    $options=$data['options'];
+ //   $options=$data['options'];
     $date=$data['date'];
 
     if($date==''){
