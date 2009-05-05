@@ -1174,6 +1174,65 @@ function currency_conversion ($currency_from, $currency_to) {
 
 
 
+  /**
+     *  compares two strings and returns longest common substring
+     *
+     *  Compares the two source strings character by character, captures every common substring
+     *  between them, and returns the longest common substring found. Substrings of less than
+     *  two characters long are ignored, and if there are multiple longest common substrings,
+     *  the one that appears first in the first source string is returned.
+     *
+     *  @author Charlie Greenbacker charlie@artificialminds.net
+     *
+     *  @param $str1 - String - first source string for comparison
+     *  @param $str2 - String - second source string for comparison
+     *
+     *  @return String - longest common substring of the two source strings
+     */
+    function strlcs($str1, $str2)
+    {
+        $arySubstrings = array(); //stores all common substrings
+        //iterate one-by-one through every character in both strings
+        for ($i = 0; $i < strlen($str1); $i++) {
+            for ($j = 0; $j < strlen($str2); $j++) {
+                /* common substrings of less than 2 characters are inconsequential, so a match is
+                 * initiated only when a common substring with a length of 2 is found
+                 */
+                if (substr($str1, $i, 2) == substr($str2, $j, 2)) { //initial match found
+                    $substring = substr($str1, $i, 2); //start with first 2 matching characters
+                    /* $i_temp is used to move character-by-character in $str1 while keeping track
+                     * of the starting position of the substring with $i
+                     */
+                    $i_temp = $i + 2;
+                    $j = $j + 2; //move to the next character after the initial match in $str2
+                    /* continue while subsequent character pairs match and the ends of both strings
+                     * have not been reached
+                     */
+                    while (($str1{$i_temp} == $str2{$j}) && ($i_temp < strlen($str1)) && ($j < strlen($str2))) {
+                        //append this matched character to the end of the substring
+                        $substring .= $str1{$i_temp};
+                        $i_temp++; //move to the next character pair
+                        $j++;
+                    }
+                    $arySubstrings[] = trim($substring); //remove excess whitespace and add to array
+                }
+            }
+        }
+        $arySubstrings = array_unique($arySubstrings); //remove duplicate common substrings
+        /* return the longest substring in the array; if more than one are longest,
+         * the first of them is returned
+         */
+        $strLCS = $arySubstrings[0];
+        foreach ($arySubstrings as $strCurrent) {
+            if (strlen($strCurrent) > strlen($strLCS)) {
+                $strLCS = $strCurrent;
+            }
+        }
+        return $strLCS;
+    }
+
+
+
 
 
 

@@ -1,20 +1,45 @@
 <?
+/**
+* This file contains the Contact Class
+* @author Raul Perusquia <rulovico@gmail.com>
+* @copyright Copyright (c) 2009, Kaktus 
+* @version 2.0
+* @package Kaktus
+*/
 
 include_once('Contact.php');
 include_once('Telecom.php');
 include_once('Email.php');
 include_once('Address.php');
 include_once('Name.php');
-
-class company{
-
+/**
+* Company Class
+*
+* Class mapping <b>Company Dimension</b> table
+* 
+* @package Kaktus
+* @subpackage Contacts 
+*/
+class Company{
+  /**
+   * Mirror of the database data
+   * @var array
+   */
   var $data=array();
   var $items=array();
-
   var $id=false;
 
-
-  function __construct($arg1=false,$arg2=false) {
+   /**
+     *  Constructor of ContactCompanu
+     *
+     *  Initializes the class, Search/Load or Create for the data set 
+     *
+     * 
+     *  @param  mixed     $arg1     (optional) Could be the tag for the Search Options or the Contact Key for a simple object key search
+     *  @param  mixed     $arg2     (optional) Data used to search or create the object
+     *  @return void
+     */
+  function Company($arg1=false,$arg2=false) {
 
      
 
@@ -242,6 +267,54 @@ class company{
    print "Error\n";
   }
 
+
+function add_contact($data,$args='principal'){
+  
+  if(is_numeric($data))
+    $contact=new Contact('id',$data);
+  else
+    $contact=new Contact('new',$data);
+  
+  if(!$contact->id)
+    exit("can not find contact");
+
+    $sql=sprintf("insert into  `Contact Bridge` (`Contact Key`, `Subject Key`,`Subject Type`,`Is Main`) values (%d,%d,'Company',%s,%s)  "
+		   ,$contact->id
+		   ,$this->id
+		   ,prepare_mysql($telecom_tipo)
+		   ,prepare_mysql(preg_match('/principal/i',$args)?'Yes':'No')
+		   );
+      mysql_query($sql);
+      
+      if(preg_match('/principal/i',$args)){
+	$sql=sprintf("update `Contact Dimension` set `Company Main Contact`=%s and  `Company Main Contact Key`=%s,`Company Main Address Key`=%d,`Company Main XHTML Address`=%s,`Company Main Plain Address`=%s,`Company Main Country Key`=%d,`Company Main Country`=%s ,`Company Main Location`=%s,`Company Main Telephone`=%s,`Company Main Plain Telephone`=%,`Company Main Telephone Key`=%d,`Company Main FAX`=%s , `Company Main Plain FAX`=%s,`Company Main FAX Key`=%s ,`Company Main XHTML Email`=%s,`Company Main Plain Email`=%s, `Company Main Email Key`=%d  where `Company Key`=%d"
+		     ,$contact->display('name')
+		     ,$contact->id
+		     ,$contact->data['Contact Main Address Key']
+		     ,prepare_mysql($contact->data['Contact Main XHTML Address'])
+		     ,prepare_mysql($contact->data['Contact Main Plain Address'])
+		     ,$contact->data['Contact Main Country Key']
+		     ,prepare_mysql($contact->data['Contact Main Country'])
+		     ,prepare_mysql($contact->data['Contact Main Location'])
+		     ,prepare_mysql($contact->data['Contact Main Telephone'])
+		     ,prepare_mysql($contact->data['Contact Main Plain Telephone'])
+		     ,$contact->data['Contact Main Telephone Key']
+		     ,prepare_mysql($contact->data['Contact Main FAX'])
+		     ,prepare_mysql($contact->data['Contact Main Plain FAX'])
+		     ,$contact->data['Contact Main FAX Key']
+		     ,prepare_mysql($contact->data['Contact Main XHTML Email'])
+		     ,prepare_mysql($contact->data['Contact Main Plain Email'])
+		     ,$contact->data['Contact Main Email Key']
+		     ,$this->id
+		     );
+	mysql_query($sql);
+	
+	
+      }
+      
+
+
+}
 
   function create_code($name){
     preg_replace('/[!a-z]/i','',$name);
