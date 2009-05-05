@@ -1,10 +1,27 @@
 <?
-//@author Raul Perusquia <rulovico@gmail.com>
-//Copyright (c) 2009 LW
+/**
+* This file contains the Contact Class
+* @author Raul Perusquia <rulovico@gmail.com>
+* @copyright Copyright (c) 2009, Kaktus 
+* @version 2.0
+* @package Kaktus
+*/
+
+/**
+ * Include Deal Class
+ */
 include_once('Deal.php');
 include_once('SupplierProduct.php');
 include_once('Part.php');
 include_once('Store.php');
+
+/**
+* Product Class
+* 
+* @package Kaktus
+* @subpackage Assets 
+*/
+
 
 class product{
  		

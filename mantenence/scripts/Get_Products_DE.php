@@ -294,7 +294,7 @@ foreach($__cols as $cols){
       
     }
 
-
+    
     $uk_product=new Product('code_store',$code,1);
     $product=new Product('code_store',$code,2);
     // print "** ".$product->data['Product Code']."\n";

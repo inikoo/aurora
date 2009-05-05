@@ -55,8 +55,7 @@ class Email{
      $data['email contact name']='';
    if(!isset($data['email type']))
      $data['email type']='Unknown';
-    if(!isset($data['email description']))
-     $data['email description']='';
+ 
     if(!isset($data['email validated']))
       $data['email validated']=0;
   if(!isset($data['email verified']))
@@ -64,11 +63,10 @@ class Email{
 
    if($this->is_valid($data['email']))
      $data['email validated']=1;
-   $sql=sprintf("insert into `Email Dimension`  (`Email`,`Email Contact Name`,`Email Type`,`Email Description`,`Email Validated`,`Email Verified`) values (%s,%s,%s,%s,%d,%d)"
+   $sql=sprintf("insert into `Email Dimension`  (`Email`,`Email Contact Name`,`Email Type`,`Email Validated`,`Email Verified`) values (%s,%s,%s,%s,%d,%d)"
 		,prepare_mysql($data['email'])
 		,prepare_mysql($data['email contact name'])
 		,prepare_mysql($data['email type'])
-		,prepare_mysql($data['email description'])
 		,$data['email validated']
 		,$data['email verified']
 		);

@@ -50,24 +50,16 @@ class Customer{
   }
   
   function compley_get_data($data){
-    $vectors=array(
-		   'Email'=>array(
-				  'field'=>'Customer Email'
-				  ,'Match Probability'=>1
-				  ,'Levenshtein Probability'=>array(1=>.2,2=>.05)
-				  
-				  )
-		   ,'Customer Main Contact Name','Customer Name','Customer Main Telephone',
-		   'Customer Other ID'=>array(
-				  'field'=>'Customer Other ID'
-				  ,'Match Probability'=>.98
-				  
-				  )
+    $weight=array(
+		   'Same Other ID'=>100
+		   ,'Same Email'=>100
+		   ,'Similar Email'=>20
 
-		   )
+		   );
 
       
       if($data['Customer Email']!=''){
+	$has_email=true;
 	$sql=sprintf("select `Email Key` from `Email Dimension` where `Email`=%s",prepare_mysql($data['Customer Email']));
 	$result=mysql_query($sql);
 	if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
@@ -75,54 +67,102 @@ class Customer{
 	  $sql=sprintf("select `Subject Key` from `Email Bridge` where `Email Key`=%s and `Subject Type`='Customer'",prepare_mysql($email_key));
 	  $result2=mysql_query($sql);
 	  if($row2=mysql_fetch_array($result2, MYSQL_ASSOC)){
-	    $candiadate['Email']=array(
-				       'Key'=>$row2['Subject Key']
-				       ,'Probability'=>$vectors['Email']['Match Probability'];
-				       );
-	  }else{
-	    $candiadate['Email']=array(
-				       'Key'=>0
-				       ,'Probability'=>$vectors['Email']['Match Probability'];
-				       );
-	  
+	    // Email found assuming this is th customer
 	    
-	    $sql=sprintf("select levenshtein(UPPER(%s),UPPER(`Email`)) as dist1,levenshtein(UPPER(SOUNDEX(%s)),UPPER(SOUNDEX(`Email`))) as dist2, `Subject Key`  from `Email Dimension` left join `Email Bridge` on (`Email Bridge`.`Email Key`=`Email Dimension`.`Email Key`)  where dist1<=2 and  `Subject Type`='Customer'   order by dist1,dist2 limit 10"
-			 ,prepare_mysql($data['Customer Email'])
-			 ,prepare_mysql($data['Customer Email'])
-			 );
-	    $result=mysql_query($sql);
-	    while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-	      $candiadate['Email']=array(
-					 'Key'=>$row['Subject Key']
-					 ,'Probability'=>$vectors['Email']['Levenshtein Probability'][$row['dist1']];
-					 );
-	      
-	    }
-	    
+	    return $row2['Subject Key'];
 	  }
 	}
+      }else
+	$has_email=false;
 
-	print_r($candiadate);
-       
-
-      }
-    if($data['Customer Other ID']!=''){
-	$sql=sprintf("select `Customer Key` from `Customer Dimension` where `Customer Other ID`=%s",prepare_mysql($data['Customer Other ID']));
+     $telephone=Telephone::display(Telephone::parse_telecom(array('Telecom Original Number'=>$data['Telephone']),$data['Country Key']));
+    // Email not found check if we have a mantch in other id
+     if($data['Customer Other ID']!=''){
+       $no_other_id=false;
+	$sql=sprintf("select `Customer Key`,`Customer Name`,`Customer Main Telephone` from `Customer Dimension` where `Customer Other ID`=%s",prepare_mysql($data['Customer Other ID']));
 	$result=mysql_query($sql);
 	$num_rows = mysql_num_rows($result);
-	while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-	   $candiadate['Other ID']=array(
-					 'Key'=>$row['Customer Key']
-					 ,'Probability'=>$vectors['Customer Other ID']['Match Probability'];
-					 );
+	if($num_rows==1){
+	  $row=mysql_fetch_array($result, MYSQL_ASSOC);
+	  return $row['Customer Key'];
+	}elseif($num_rows>1){
+	  // Get the candidates
+	  
+	  while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+	    $candidate[$row['Customer Key']]['field']=array('Customer Other ID');
+	    $candidate[$row['Customer Key']]['points']=$weight['Same Other ID'];
+	    // from this candoateed of one has the same name we wouls assume that this is the one
+	    if($data['Customer Name']!='' and $data['Customer Name']==$row['Customer Name'])
+	      return $row2['Customer Key'];
+	    if($telephone!='' and $telephone==$row['Customer Main Telephone'])
+	      return $row2['Customer Key'];
+
+	    
+	  }
+	  
+
+
 
 	}
-	if($num_rows)
-	
+     }else
+       $no_other_id=true;
+    
 
-    }
 
-  }
+
+     //If customer has the same name ond same address
+     //$addres_finger_print=preg_replace('/[^\d]/','',$data['Full Address']).$data['Address Town'].$data['Postal Code'];
+
+
+     //if thas the same name,telephone and address get it
+    
+
+
+
+
+     if($has_email){
+     //Get similar candidates from email
+       
+       $sql=sprintf("select levenshtein(UPPER(%s),UPPER(`Email`)) as dist1,levenshtein(UPPER(SOUNDEX(%s)),UPPER(SOUNDEX(`Email`))) as dist2, `Subject Key`  from `Email Dimension` left join `Email Bridge` on (`Email Bridge`.`Email Key`=`Email Dimension`.`Email Key`)  where dist1<=2 and  `Subject Type`='Customer'   order by dist1,dist2 limit 20"
+		    ,prepare_mysql($data['Customer Email'])
+		    ,prepare_mysql($data['Customer Email'])
+		    );
+       $result=mysql_query($sql);
+       while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+	  $candidate[$row['Subject Key']]['field'][]='Customer Other ID';
+	  $dist=0.5*$row['dist1']+$row['dist2'];
+	  if($dist==0)
+	    $candidate[$row['Subject Key']]['points']+=$weight['Same Other ID'];
+	  else
+	    $candidate[$row['Subject Key']]['points']=$weight['Similar Email']/$dist;
+       
+       }
+     }
+ 
+
+     //Get similar candidates from emailby name
+     if($data['Customer Name']!=''){
+     $sql=sprintf("select levenshtein(UPPER(%s),UPPER(`Customer Name`)) as dist1,levenshtein(UPPER(SOUNDEX(%s)),UPPER(SOUNDEX(`Customer Name`))) as dist2, `Customer Key`  from `Customer Dimension`   where dist1<=3 and  `Subject Type`='Customer'   order by dist1,dist2 limit 20"
+		  ,prepare_mysql($data['Customer Name'])
+		  ,prepare_mysql($data['Customer Name'])
+		  );
+     $result=mysql_query($sql);
+     while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+       $candidate[$row['Subject Key']]['field'][]='Customer Name';
+       $dist=0.5*$row['dist1']+$row['dist2'];
+       if($dist==0)
+	 $candidate[$row['Subject Key']]['points']+=$weight['Same Customer Name'];
+       else
+	 $candidate[$row['Subject Key']]['points']=$weight['Similar Customer Name']/$dist;
+       
+     }
+     }
+     // Address finger print
+     
+
+
+
+ }
 
 
 
@@ -157,18 +197,7 @@ class Customer{
 
 
  function create($data=false){
-   // type:  Company|Person|Unknown
-   // contact_name:
-   // company_name:
-   // address_data[]
-   // email:
-   // 'email tyoe': Work
-
    global $myconf;
-
-   // print_r($data);
-   // exit;
-    
    $this->unknown_contact=$myconf['unknown_contact'];
    $this->unknown_company=$myconf['unknown_company'];
    $this->unknown_customer=$myconf['unknown_customer'];

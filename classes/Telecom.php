@@ -42,11 +42,11 @@ class Telecom{
     }
 }
 
- function display($tipo=''){
+  function display($tipo='',$data=$this->data){
 
    switch($tipo){
    default:
-     $tmp=($this->data['Telecom Country Code']!=''?'+'.$this->data['Telecom Country Code'].' ':'').($this->data['Telecom Area Code']!=''?$this->data['Telecom Area Code'].' ':'').$this->get('spaced_number').($this->data['Telecom Extension']!=''?' '._('ext').' '.$this->data['Telecom Extension']:'');
+     $tmp=($data['Telecom Country Code']!=''?'+'.$data['Telecom Country Code'].' ':'').($data['Telecom Area Code']!=''?$data['Telecom Area Code'].' ':'').$get('spaced_number').($data['Telecom Extension']!=''?' '._('ext').' '.$data['Telecom Extension']:'');
      return $tmp;
    }
  }
@@ -83,69 +83,15 @@ class Telecom{
  function create($data){
 
 
-
- 
-//    $country=new country('code','UNK');
-//    $this->unknown_country_id=$country->id;
-//    if(isset($data['country key']) and $data['country key']!='')
-//      $this->data['Telecom Country Key']=$data['country key'];
-//    else
-//      $this->data['Telecom Country Key']=$this->unknown_country_id;
-   
-   
-//    $this->data['Telecom Original Number']='';
-//    $this->data['Telecom Original Extension']='';
-//    $this->data['Telecom Original Area Code']='';
-//    $this->data['Telecom Original Country Code']='';
-//    $this->data['Telecom Original Type']='';
-   
-//    $this->data['Telecom Original Restricted Country Key']='';
-   
-//    $this->data['Telecom Number']='';
-//    $this->data['Telecom Extension']='';
-//    $this->data['Telecom Area Code']='';
-//    $this->data['Telecom Country Code']='';
-//    $this->data['Telecom Type']='';
-//    $this->data['Telecom Restricted Country Key']='';
-   
-//    $this->data['Telecom National Access Code']='';
-   
-//    if(isset($data['Telecom Number']))
-//      $this->data['Telecom Original Number']=$data['Telecom Number'];
-//    if(isset($data['Telecom Extension']))
-//      $this->data['Telecom Original Extension']=$data['Telecom Extension'];
-//    if(isset($data['Telecom Area Code']))
-//      $this->data['Telecom Original Area Code']=$data['Telecom Area Code'];
-//    if(isset($data['Telecom Country Code']))
-//      $this->data['Telecom Original Country Code']=$data['Telecom Country Code'];
-//    if(isset($data['Telecom Type']))
-//      $this->data['Telecom Original Type']=$data['Telecom Type'];
-//    if(isset($data['Telecom Restricted Country Key']))
-//      $this->data['Telecom Original Restricted Country Key']=$data['Telecom Restricted Country Key'];
-   
-//    $this->parse_telecom(
-// 			$this->data['Telecom Original Number']
-// 			,$this->data['Telecom Country Key']
-// 			,$this->data['Telecom Original Type']
-// 			,$this->data['Telecom Original Country Code']
-// 			,$this->data['Telecom Original Area Code']
-// 			,$this->data['Telecom Original Extension']
-// 			);
-    
-   //  print_r( $this->data);
-   //  print_r( $data);
    $this->data=$this->parse_telecom($data);
+   if($this->data['Telecom Number']==''){
+     $this->new=false;
+     return;
+   }
+   
 
-//    exit;
-
-    if($this->data['Telecom Number']==''){
-      $this->new=false;
-      return;
-    }
-    
-
-
-
+   
+   
     $sql=sprintf("insert into `Telecom Dimension` (`Telecom Type`,`Telecom Country Code`,`Telecom National Access Code`,`Telecom Area Code`,`Telecom Number`,`Telecom Extension`,`Telecom Country Key`) values (%s,%s,%s,%s,%s,%s,%s)",
 		 prepare_mysql($this->data['Telecom Type']),
 		 prepare_mysql($this->data['Telecom Country Code']),

@@ -33,7 +33,7 @@
  *  @version    1.0.5 (last revision: September 15, 2007)
  *  @copyright  (c) 2006 - 2007 Stefan Gabos
  *  @package    dbSession
- *  @example    example.php
+
 */
 
 error_reporting(E_ALL);
