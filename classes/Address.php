@@ -1,12 +1,56 @@
 <?
+/*
+ File: Address.php 
+
+ This file contains the Address Class
+
+ About: 
+ Autor: Raul Perusquia <rulovico@gmail.com>
+ 
+ Copyright (c) 2009, Kaktus 
+ 
+ Version 2.0
+*/
 include_once('Country.php');
+/* class: Address
+ Class to manage the *Address Dimension* table
+*/
 class Address{
 
   var $data=array();
   var $id=false;
 
-  
-  function __construct($arg1=false,$arg2=false) {
+  /*
+   Constructor: Address
+   Initializes the class, trigger  Search/Load/Create for the data set
+
+   If first argument is find it will try to match the data or create if not found 
+     
+   Parameters:
+   arg1 -    Tag for the Search/Load/Create Options *or* the Contact Key for a simple object key search
+   arg2 -    (optional) Data used to search or create the object
+
+   Returns:
+   void
+       
+   Example:
+   (start example)
+   // Load data from `Address Dimension` table where  `Address Key`=3
+   $key=3;
+   $address = New Address($key); 
+       
+   // Load data from `Address Dimension` table where  `Address`='raul@gmail.com'
+   $address = New Address('raul@gmail.com'); 
+       
+   // Insert row to `Address Dimension` table
+   $data=array();
+   $address = New Address('new',$data); 
+       
+
+   (end example)
+
+  */
+  function Address($arg1=false,$arg2=false) {
 
 
      if(is_numeric($arg1)){
@@ -39,7 +83,11 @@ class Address{
      }
   }
 
+ /*
+   Method: get_data
+   Load the data from the database
 
+  */
   function get_data($tipo,$id=false){
     
     if($tipo=='id')
@@ -61,13 +109,16 @@ class Address{
       // exit(" $sql\n can not open address");
 
     }
-    
+  }
 
-
-
-}
+  /*Method: create
+   Creates a new address record
+   
+  */
 
   function create($data){
+
+    
 
     if(isset($data['type']) and $data['type']=='3line'){
 
