@@ -1,16 +1,20 @@
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
-/*  AES implementation in JavaScript (c) Chris Veness 2005-2008                                   */
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
-
 /*
- * AES Cipher function: encrypt 'input' with Rijndael algorithm
- *
- *   takes   byte-array 'input' (16 bytes)
- *           2D byte-array key schedule 'w' (Nr+1 x Nb bytes)
- *
- *   applies Nr rounds (10/12/14) using key schedule w for 'add round key' stage
- *
- *   returns byte-array encrypted value (16 bytes)
+  Script: aes.js 
+
+  Function: Cipher
+  AES Cipher, encrypt 'input' with Rijndael algorithm
+  
+  Parameters:
+  input -   byte-array  (16 bytes)
+  w -         2D byte-array key schedule  (Nr+1 x Nb bytes)
+  
+  applies Nr rounds (10/12/14) using key schedule w for 'add round key' stage
+  
+  returns: byte-array encrypted value (16 bytes)
+
+  About:
+  AES implementation in JavaScript (c) Chris Veness 2005-2008      
+
  */
 function Cipher(input, w) {    // main Cipher function [§5.1]
   var Nb = 4;               // block size (in words): no of columns in state (fixed at 4 for AES)
@@ -317,7 +321,7 @@ String.prototype.encodeBase64 = function(utf8encode) {  // http://tools.ietf.org
   
   c = plain.length % 3;  // pad string to length of multiple of 3
   if (c > 0) { while (c++ < 3) { pad += '='; plain += '\0'; } }
-  // note: doing padding here saves us doing special-case packing for trailing 1 or 2 chars
+  // note_: doing padding here saves us doing special-case packing for trailing 1 or 2 chars
   
   for (c=0; c<plain.length; c+=3) {  // pack three octets into four hexets
     o1 = plain.charCodeAt(c);
