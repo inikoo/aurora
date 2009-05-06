@@ -1,6 +1,9 @@
 <?
 /**
+* File: Contact.php 
+*
 * This file contains the Contact Class
+*
 * @author Raul Perusquia <rulovico@gmail.com>
 * @copyright Copyright (c) 2009, Kaktus 
 * @version 2.0
@@ -18,38 +21,47 @@ include_once('Name.php');
 
 
 
-/**
-* Contact Class
-* 
-* @package Kaktus
-* @subpackage Contacts 
+/* class: Contact
+ Class to manage the *Contact Dimension* table
+
 */
 
 class Contact{
-  /**
-   * Mirror of the database data
-   * @var array
-   */
+  
+  // Array: data
+  // Class data
+  
   public $data=array();
-  /**
-   * Array of emails associated with the contact
-   */
   public  $emails=false;
-  /**
-   * Database Promary Key
-   * @var integer
-   */
+  // Integer: id
+  // Database Primary Key
   public  $id;
 
-   /**
-     *  Constructor of Contact
-     *
-     *  Initializes the class, Search/Load or Create for the data set 
-     *
-     * 
-     *  @param  mixed     $arg1     (optional) Could be the tag for the Search Options or the Contact Key for a simple object key search
-     *  @param  mixed     $arg2     (optional) Data used to search or create the object
-     *  @return void
+   /*
+       Constructor: Contact
+     
+       Initializes the class, Search/Load or Create for the data set 
+     
+      Parameters:
+       arg1 -    (optional) Could be the tag for the Search Options or the Contact Key for a simple object key search
+       arg2 -    (optional) Data used to search or create the object
+
+       Returns:
+       void
+       
+       Example:
+       (start example)
+       // Load data from `Contact Dimension` table where  `Contact Key`=3
+       $key=3;
+       $contact = New Contact($key); 
+
+        // Insert row to `Contact Dimension` table
+       $data=array();
+       $contact = New Contact('new',$data); 
+       
+
+       (end example)
+
      */
   function Contact($arg1=false,$arg2=false) {
     

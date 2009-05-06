@@ -16,6 +16,22 @@
 //   return array($mysql_date,0);
 // }
 
+/* Function: clean_accents
+ 
+Replace Non-English characters to its ANSI equivalent.
+
+ Parameter:
+ str - String
+ 
+ Return:
+ String without accents
+ 
+ Example:
+ >  echo clean_accents('Hola Raúl);
+ >   Hola Raul
+
+ */
+
 function clean_accents($str){
 
 
@@ -245,13 +261,37 @@ function percentage($a,$b,$fixed=1,$error_txt='NA',$psign='%',$plus_sing=false){
   return $per;
 }
 
-function parse_money($a,$default_currency=false){
+
+/* Function: parse_money
+ 
+ Parse a string extracting an numeric value
+
+ Parameter:
+ amount - *string* String to be parsed
+ currency - *string* Currency  [£|¥|€|(3 Letter Currency Code)|false=$myconf['currency_code'] ]
+
+ 
+ Return:
+ Array (Currency Code, Number)
+ 
+ Example:
+ (start code)
+ print_r ( parse_money('Price: 99.99 euros','€'));
+  Array
+  (
+  [0] => 'EUR'
+  [1] => 99.99
+  )
+(end code)
+
+ */  
+function parse_money($amount,$currency=false){
   global $myconf;
-  if(!$default_currency)
+  if(!$currency)
     $currency=$myconf['currency_code'];
   else
-    $currency=$default_currency;
-  if(preg_match('/$|£|¥|€/i',$a,$match)){
+    $currency=$currency;
+  if(preg_match('/$|£|¥|€/i',$amount,$match)){
     if($match[0]=='$')
       $currency='USD';
     elseif($match[0]=='€')
@@ -261,14 +301,14 @@ function parse_money($a,$default_currency=false){
     elseif($match[0]=='¥')
       $currency='JPY';
     
-  }elseif(preg_match('/[a-z]{3}/i',$a,$match)){
+  }elseif(preg_match('/[a-z]{3}/i',$amount,$match)){
     //todo integrate do country db
     if(preg_match('/usd|eur|gbp|jpy|cad|aud|inr|pkr|mxn|nok/i',$match[0])){
       $currency=strtoupper($match[0]);
     }
   }
  
-  $qty=preg_split('/\\'.$myconf['decimal_point'].'/',$a);
+  $qty=preg_split('/\\'.$myconf['decimal_point'].'/',$amount);
   $qty_parts=count($qty);
   //    print_r($qty);
   if($qty_parts==1)
@@ -293,32 +333,32 @@ function parse_money($a,$default_currency=false){
 
 }
 
-function money($a,$locale=false){
+function money($amount,$locale=false){
   global $myconf;
-  if($a<0)
+  if($amount<0)
     $neg=true;
   else
     $neg=false;
-  $a=abs($a);
+  $amount=abs($amount);
   
   if(!$locale){
-    $a=number_format($a,2,$myconf['decimal_point'],$myconf['thosusand_sep']);
+    $amount=number_format($amount,2,$myconf['decimal_point'],$myconf['thosusand_sep']);
     $symbol=$myconf['currency_symbol'];
-    $a=($neg?'-':'').$symbol.$a;
-    return $a;
+    $amount=($neg?'-':'').$symbol.$amount;
+    return $amount;
   }else{
     switch($locale){
     case('EUR'):
-      $a=number_format($a,2,$myconf['decimal_point'],$myconf['thosusand_sep']);
+      $amount=number_format($amount,2,$myconf['decimal_point'],$myconf['thosusand_sep']);
       $symbol='€';
-      $a=($neg?'-':'').$symbol.$a;
-      return $a;
+      $amount=($neg?'-':'').$symbol.$amount;
+      return $amount;
       break;
     case('GBP'):
-      $a=number_format($a,2,$myconf['decimal_point'],$myconf['thosusand_sep']);
+      $amount=number_format($amount,2,$myconf['decimal_point'],$myconf['thosusand_sep']);
       $symbol='£';
-      $a=($neg?'-':'').$symbol.$a;
-      return $a;
+      $amount=($neg?'-':'').$symbol.$amount;
+      return $amount;
       break;
 
 
@@ -328,9 +368,9 @@ function money($a,$locale=false){
 
 }
 
-function money_cents($a){
-  $a=sprintf("%02d",100*($a-floor($a)));
-  return $a;
+function money_cents($amount){
+  $amount=sprintf("%02d",100*($amount-floor($amount)));
+  return $amount;
 }
 
 function number($a,$fixed=1,$force_fix=false){

@@ -15,13 +15,11 @@ include_once('SupplierProduct.php');
 include_once('Part.php');
 include_once('Store.php');
 
-/**
-* Product Class
-* 
-* @package Kaktus
-* @subpackage Assets 
+/* class: Product
+ Class to manage the Product Dimension table
+ 
+ about: author Raul Perusquia
 */
-
 
 class product{
  		
@@ -37,13 +35,23 @@ class product{
   public $parts=false;
   public $parts_skus=false;
   public $parts_location=false;
+  // Variable: new
+  // Indicate if a new product was created
   public $new=false;
   public $new_id=false;
   public $location_to_update=false;
+   // Variable: id
+  // Reference tothe Product Key
   public $id=false;
   public $unknown_txt='Unknown';
 
-
+  /* 
+   Constructor: Product
+   Initializes the object.
+ 
+   Parameters:
+   a1 - Tag or Product Key
+  */
   function __construct($a1,$a2=false,$a3=false) {
 
     if(is_numeric($a1) and !$a2){
