@@ -42,9 +42,17 @@ $Data_Audit_ETL_Software="$software $version";
 
 $data=array(
 	    'Company Name'=>'Ancient Wisdom'
-	    'Company Fiscal Name'=>'Ancient Wisdom Marketing Ltd'
-	    'Company Tax Number'=>'764298589'
-	    'Company Tax Number'=>'764298589'
+	    ,'Company Fiscal Name'=>'Ancient Wisdom Marketing Ltd'
+	    ,'Company Tax Number'=>'764298589'
+	    ,'Company Registration Number'=>'4108870'
+	    ,'Company Main Telephone'=>'+44 (0) 114 2729165'
+	    ,'Company Main FAX'=>'+44 (0) 114 2706571'
+	    ,'Company Main Email'=>'mail@ancientwisdom.biz'
+	    ,'Address Line 1'=>'BLOCK B, Parkwood Business Park, Parkwood Road'
+	    ,'Address Town'=>'Sheffield'
+	    ,'Postal Code'=>'S3 8AL '
+	    ,'Address Country Name'=>'UK'
+	    ,'Company Main Contact'=>'Mr David Hardy'
 );
 
 
@@ -54,12 +62,20 @@ $sql="select * from  `Staff Dimension` ";
 $res=mysql_query($sql);
 while($row=mysql_fetch_array($res, MYSQL_ASSOC)){
   
+  $name='Contact Name'=>ucwords($row['Staff Name']);
+  
   $data_contact=array(
 		      'Contact Name'=>ucwords($row['Staff Name'])
-		      ,'Contact File As'=>ucwords($row['Staff Name'])
-		      ,'Contact First Name'=>ucwords($row['Staff Name'])
-		     
 		      );
+  if($row['Staff Alias']=='raul'){
+    $data_contact=array(
+			'Contact Name'=>'Mr Raul Alejandro Perusquia Flores'
+			,'Contact Main Mobile'=>''
+			);
+    
+  }
+  
+
   $contact=new contact('new',$data_contact);
   $sql=sprintf("update `Staff Dimension` set `Staff Alias`=%s,`Staff Name`=%s,`Staff Contact Key`=%d where `Staff Key`=%d"
 	       ,prepare_mysql(strtolower($row['Staff Alias']))

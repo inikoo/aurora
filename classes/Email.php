@@ -16,6 +16,9 @@ include_once('Contact.php');
 /* class: Email
  Class to manage the *Email Dimension* table
 */
+
+
+
 class Email{
 
   var $data=array();
@@ -148,6 +151,7 @@ class Email{
       $in_contact=preg_replace('/[^\d]/','',$match[0]);
     else
       $in_contact=0;
+    
     
 
     $sql=sprintf("select `Email Key`,`Contact Key`  from `Email Dimension` left join `Email Bridge` on (`Email Bridge`.`Email Key`=`Email Dimension`.`Email Key`)  where  `Subject Type`='Contact'  and   `Email`=%s",prepare_mysql($tag));
