@@ -1,4 +1,4 @@
-Format: Development Release 12-07-2007 (1.35 base)
+Format: 1.4
 
 
 Title: Kaktus
@@ -51,8 +51,14 @@ Group: Files  {
 
    Group: PHP Classes  {
 
+      File: Company.php  (classes/Company.php)
       File: Contact.php  (classes/Contact.php)
-      File: Product  (classes/Product.php)
+      File: Customer.php  (classes/Customer.php)
+      File: Department.php  (classes/Department.php)
+      File: Email.php  (classes/Email.php)
+      File: Part.php  (classes/Part.php)
+      File: Product.php  (classes/Product.php)
+      File: Supplier.php  (classes/Supplier.php)
       }  # Group: PHP Classes
 
    Group: PHP Other  {

@@ -1,4 +1,15 @@
 <?
+/*
+ Script: Set_Staff_Contacts.php
+ This script creates contacts associated with staff table.
+
+ About: 
+ Autor: Raul Perusquia <rulovico@gmail.com>
+ 
+ Copyright (c) 2009, Kaktus 
+ 
+ Version 2.0
+*/
 //include("../../external_libs/adminpro/adminpro_config.php");
 
 include_once('../../app_files/db/dns.php');
@@ -27,8 +38,19 @@ $version='V 1.0';
 
 $Data_Audit_ETL_Software="$software $version";
 
-$sql="select * from  `Staff Dimension` ";
+//Create company
 
+$data=array(
+	    'Company Name'=>'Ancient Wisdom'
+	    'Company Fiscal Name'=>'Ancient Wisdom Marketing Ltd'
+	    'Company Tax Number'=>'764298589'
+	    'Company Tax Number'=>'764298589'
+);
+
+
+
+
+$sql="select * from  `Staff Dimension` ";
 $res=mysql_query($sql);
 while($row=mysql_fetch_array($res, MYSQL_ASSOC)){
   

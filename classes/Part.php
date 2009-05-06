@@ -1,6 +1,16 @@
 <?
-//@author Raul Perusquia <rulovico@gmail.com>
-//Copyright (c) 2009 LW
+/*
+ File: Part.php 
+
+ This file contains the Part Class
+
+ About: 
+ Autor: Raul Perusquia <rulovico@gmail.com>
+ 
+ Copyright (c) 2009, Kaktus 
+ 
+ Version 2.0
+*/
 class part{
   
 

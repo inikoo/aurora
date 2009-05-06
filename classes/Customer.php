@@ -1,6 +1,16 @@
 <?
-//@author Raul Perusquia <rulovico@gmail.com>
-//Copyright (c) 2009 LW
+/*
+ File: Customer.php 
+
+ This file contains the Customer Class
+
+ About: 
+ Autor: Raul Perusquia <rulovico@gmail.com>
+ 
+ Copyright (c) 2009, Kaktus 
+ 
+ Version 2.0
+*/
 include_once('Contact.php');
 include_once('Order.php');
 include_once('Address.php');
@@ -586,7 +596,10 @@ class Customer{
 
 
  }
-
+  /*
+   Function: get_base_data
+   Returns an array with the default field values
+   */
  function base_data(){
    $this->base_data=array();
 

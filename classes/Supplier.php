@@ -1,11 +1,25 @@
 <?
+/*
+ File: Supplier.php 
+
+ This file contains the Supplier Class
+
+ About: 
+ Autor: Raul Perusquia <rulovico@gmail.com>
+ 
+ Copyright (c) 2009, Kaktus 
+ 
+ Version 2.0
+*/
 include_once('Company.php');
 include_once('Contact.php');
 include_once('Telecom.php');
 include_once('Email.php');
 include_once('Address.php');
 include_once('Name.php');
-
+/* class: Supplier
+ Class to manage the *Supplier Dimension* table
+*/
 class supplier{
   var $db;
   var $data=array();
@@ -14,10 +28,7 @@ class supplier{
   var $id=false;
 
 
-  function __construct($arg1=false,$arg2=false) {
-    //   $this->db =MDB2::singleton();
-     
-
+  function Supplier($arg1=false,$arg2=false) {
      if(is_numeric($arg1)){
        $this->get_data('id',$arg1);
        return ;
@@ -29,10 +40,16 @@ class supplier{
      $this->get_data($arg1,$arg2);
      
  }
-
+ /*
+   Method: get_data
+   Load the data from the database
+   
+   $tipo can be key,id,code
+  
+   */
 
   function get_data($tipo,$id){
-    if($tipo=='id')
+    if($tipo=='id' or $tipo=='key')
       $sql=sprintf("select * from `Supplier Dimension` where `Supplier Key`=%d",$id);
     elseif ($tipo=='code'){
       if($id=='')
@@ -82,26 +99,68 @@ class supplier{
      return false;
 
   }
+ /*
+   Function: base_data
+   Inizializate $data array with the default field values
+   */
+  function base_data(){
+    $base_data=array(
+		     'Supplier Code'=>''
+		     ,'Supplier Name'=>''
+		     ,'Supplier Fiscal Name'=>''
+		     ,'Supplier Company Key'=>''
+		     ,'Supplier Main Plain Telephone'=>''
+		     ,'Supplier Main Telephone'=>''
+		     ,'Supplier Main Contact Name'=>''
+		     ,'Supplier Main Contact Key'=>''
+		     ,'Supplier Accounts Payable Contact Key'=>''
+		     ,'Supplier Sales Contact Key'=>''
+		     ,'Supplier Valid From'=>''
+		     ,'Supplier Valid To'=>''
+		     ,'Supplier Active'=>'Yes'
+		     ,'Supplier ID'=>''
+		     ,'Supplier Location'=>''
+		     ,'Supplier Main XHTML Email'=>''
+		     ,'Supplier Main Plain Email'=>''
+		       );
 
+  }
+
+/*Method: create
+   Creates a new supplier record
+
+   Parameter:
+   array with the following items:
+
+
+   code - (optional) Suppiler code
+   supplier_id - (optional)
+   contact_name - (optional) 
+
+   if $data is empty Unknown supplier is created
+   
+   */
   function create($data){
     // print_r($data);
     
-    if(!is_array($data))
-      $data=array('name'=>_('Unknown Supplier'));
+   $this->base_data();
+    foreach($data as $key=>$value){
+      if(isset($this->data[strtolower($key)]))
+	$this->data[strtolower($key)]=_trim($value);
+    }
 
-    if($data['name']!='')
-      $name=$data['name'];
-    else
-      $name=_('Unknown Supplier');
-    if(!isset($data['code']) or $data['code']=='')
-      $_code=$this->create_code($name);
-    else
-      $_code=$data['code'];
-    
-    $code=$this->check_code($_code);
+    if(!$this->data['Supplier Name']){
+      $this->data['Supplier Name']=_('Unknown Supplier');
+      $this->data['Supplier Code']=$this->create_code(_('Unknown Supplier'));
+    }
+    if(!$this->data['Supplier Code']){
+      $this->data['Supplier Code']=$this->create_code($this->data['Supplier Code']);
+    }
+    $this->data['Supplier ID']=$this->new_id();
+    $this->data['Supplier Code']=$this->check_code($this->data['Supplier Code']);
 
-    if(!isset($data['supplier id']) or !is_valid_id($data['supplier id'])  )
-      $data['supplier id']=$this->new_id();
+
+    $contact=new contact('new',$data);
 
     if(isset($data['contact_name']))
       $data_contact=array('name'=>$data['contact_name']);

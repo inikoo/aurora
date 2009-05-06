@@ -917,34 +917,28 @@ elseif(preg_match('/^[^\s]+\.(com|uk|info|biz|org)$/i',$val)){
   return $return;
 }
 
-//print prepare_mysql(0)."\n";
+/*
+ Function: prepare_mysql
+Prepare string to be useed in the Database
 
-function prepare_mysql($string){
-  
- //  if(is_array($string))
- // print "---->$string<----";
+If string is empty returs NULL unless $null_if_empty is false
+
+Parameter:
+$string - *string* to be prepared
+$null_if_empty - *bolean* config flag
+ */
+
+function prepare_mysql($string,$null_if_empty=true){
+
   if(is_numeric($string)){
-    // print "numeric\n";
     return "'".$string."'";
-  }elseif($string==''){
-    //print "NULL\n";
+  }elseif($string=='' and $null_if_empty){
     return 'NULL';
   }else{
-    // print "normal\n";
      return "'".addslashes($string)."'";
   
 
   }
- //  if($no_null)
-//     return "'".addslashes($string)."'";
-//   // print "->".$string."<-";
-//   if(strlen($string)==0){
-    
-//     // print "-------->".$string."<-----";
-//     return 'null';
-//   }else
-//     return "'".addslashes($string)."'";
-
 }
 
 

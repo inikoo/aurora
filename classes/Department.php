@@ -1,9 +1,21 @@
 <?
+/*
+ File: Department.php 
+
+ This file contains the Department Class
+
+ About: 
+ Autor: Raul Perusquia <rulovico@gmail.com>
+ 
+ Copyright (c) 2009, Kaktus 
+ 
+ Version 2.0
+*/
 include_once('Family.php');
 
 
 
-class department{
+class Department{
  var $id=false;
 
  function __construct($a1=false,$a2=false,$a3=false) {

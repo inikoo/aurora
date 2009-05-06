@@ -1,10 +1,15 @@
 <?
-/**
-* This file contains the Contact Class
-* @author Raul Perusquia <rulovico@gmail.com>
-* @copyright Copyright (c) 2009, Kaktus 
-* @version 2.0
-* @package Kaktus
+/*
+ File: Company.php 
+
+ This file contains the Company Class
+
+ About: 
+ Autor: Raul Perusquia <rulovico@gmail.com>
+ 
+ Copyright (c) 2009, Kaktus 
+ 
+ Version 2.0
 */
 
 include_once('Contact.php');
@@ -12,32 +17,43 @@ include_once('Telecom.php');
 include_once('Email.php');
 include_once('Address.php');
 include_once('Name.php');
-/**
-* Company Class
-*
-* Class mapping <b>Company Dimension</b> table
-* 
-* @package Kaktus
-* @subpackage Contacts 
+/* class: Company
+ Class to manage the *Company Dimension* table
 */
 class Company{
-  /**
-   * Mirror of the database data
-   * @var array
-   */
+  // Array: data
+  // Class data
   var $data=array();
   var $items=array();
+  // Integer: id
+  // Database Primary Key
   var $id=false;
 
-   /**
-     *  Constructor of ContactCompanu
-     *
-     *  Initializes the class, Search/Load or Create for the data set 
-     *
-     * 
-     *  @param  mixed     $arg1     (optional) Could be the tag for the Search Options or the Contact Key for a simple object key search
-     *  @param  mixed     $arg2     (optional) Data used to search or create the object
-     *  @return void
+     /*
+       Constructor: Company
+     
+       Initializes the class, Search/Load or Create for the data set 
+     
+      Parameters:
+       arg1 -    (optional) Could be the tag for the Search Options or the Company Key for a simple object key search
+       arg2 -    (optional) Data used to search or create the object
+
+       Returns:
+       void
+       
+       Example:
+       (start example)
+       // Load data from `Company Dimension` table where  `Company Key`=3
+       $key=3;
+       $company = New Company($key); 
+
+        // Insert row to `Company Dimension` table
+       $data=array();
+       $company = New Company('new',$data); 
+       
+
+       (end example)
+
      */
   function Company($arg1=false,$arg2=false) {
 
@@ -108,6 +124,27 @@ class Company{
       $this->id=$this->data['Company Key'];
     }
   }
+/*
+   Function: base_data
+   Initialize data  array with the default field values
+   */
+private function base_data(){
+   $this->data=array();
+
+   $ignore_fields=array('Company Key');
+
+   $result = mysql_query("SHOW COLUMNS FROM `Company Dimension`");
+   if (!$result) {
+     echo 'Could not run query: ' . mysql_error();
+     exit;
+   }
+   if (mysql_num_rows($result) > 0) {
+     while ($row = mysql_fetch_assoc($result)) {
+       if(!in_array($row['Field'],$ignore_fields))
+	 $this->data[$row['Field']]=$row['Default'];
+     }
+   }
+ }
 
   
   function create($data){
