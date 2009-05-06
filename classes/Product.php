@@ -1,25 +1,21 @@
 <?
-/**
-* This file contains the Contact Class
-* @author Raul Perusquia <rulovico@gmail.com>
-* @copyright Copyright (c) 2009, Kaktus 
-* @version 2.0
-* @package Kaktus
-*/
+/*
+ File: Product.php 
 
-/**
- * Include Deal Class
- */
+ This file contains the Product Class
+
+ About: 
+ Autor: Raul Perusquia <rulovico@gmail.com>
+ 
+ Copyright (c) 2009, Kaktus 
+ 
+ Version 2.0
+*/
 include_once('Deal.php');
 include_once('SupplierProduct.php');
 include_once('Part.php');
 include_once('Store.php');
 
-/* class: Product
- Class to manage the Product Dimension table
- 
- about: author Raul Perusquia
-*/
 
 class product{
  		
@@ -52,7 +48,7 @@ class product{
    Parameters:
    a1 - Tag or Product Key
   */
-  function __construct($a1,$a2=false,$a3=false) {
+  function Product($a1,$a2=false,$a3=false) {
 
     if(is_numeric($a1) and !$a2){
       $this->get_data('id',$a1);
@@ -1173,7 +1169,6 @@ $base_data=array(
     global $myconf;
     $base_data=$this->get_base_data();
     foreach($data as $key=>$value){
-
       if(isset($base_data[strtolower($key)]))
 	$base_data[strtolower($key)]=_trim($value);
     }

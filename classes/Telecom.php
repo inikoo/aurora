@@ -1,4 +1,16 @@
 <?
+/*
+ File: Telecom.php 
+
+ This file contains the Telecom Class
+
+ About: 
+ Autor: Raul Perusquia <rulovico@gmail.com>
+ 
+ Copyright (c) 2009, Kaktus 
+ 
+ Version 2.0
+*/
 include_once('Country.php');
 
 class Telecom{
@@ -42,8 +54,10 @@ class Telecom{
     }
 }
 
-  function display($tipo='',$data=$this->data){
+  function display($tipo='',$data=false){
 
+    if(!$data)
+      $data=$this->data;
    switch($tipo){
    default:
      $tmp=($data['Telecom Country Code']!=''?'+'.$data['Telecom Country Code'].' ':'').($data['Telecom Area Code']!=''?$data['Telecom Area Code'].' ':'').$get('spaced_number').($data['Telecom Extension']!=''?' '._('ext').' '.$data['Telecom Extension']:'');

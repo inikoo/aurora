@@ -1,4 +1,16 @@
 <?
+/*
+ Script: Fill_Unknown_Address.php
+ This script creates the dummy unknown address needed when fuzzy data is inputed 
+
+ About: 
+ Autor: Raul Perusquia <rulovico@gmail.com>
+ 
+ Copyright (c) 2009, Kaktus 
+ 
+ Version 2.0
+*/
+
 //include("../../external_libs/adminpro/adminpro_config.php");
 include_once('../../app_files/db/dns.php');
 include_once('../../classes/Department.php');

@@ -1,36 +1,31 @@
 <?
-/**
-* File: Contact.php 
-*
-* This file contains the Contact Class
-*
-* @author Raul Perusquia <rulovico@gmail.com>
-* @copyright Copyright (c) 2009, Kaktus 
-* @version 2.0
-* @package Kaktus
+/*
+ File: Contact.php 
+
+ This file contains the Contact Class
+
+ About: 
+ Autor: Raul Perusquia <rulovico@gmail.com>
+ 
+ Copyright (c) 2009, Kaktus 
+ 
+ Version 2.0
 */
 
-/**
- * Include Telecom Class
- */
+
 include_once('Telecom.php');
 include_once('Email.php');
 include_once('Address.php');
 include_once('Name.php');
 
-
-
-
 /* class: Contact
  Class to manage the *Contact Dimension* table
-
 */
 
 class Contact{
   
   // Array: data
   // Class data
-  
   public $data=array();
   public  $emails=false;
   // Integer: id
@@ -84,13 +79,13 @@ class Contact{
 
 
   }
-  /**
-     *  Load the data from de Database
-     *
-     *
-     *  @param  string    $key   Search Field
-     *  @param  mixed     $id    Search Argument
-     *  @return void
+  /* Function: get_data
+       Load the data from de Database
+     
+     Parameters:
+         $key  -  string Search Field
+         $id  -  mixed Search Argument
+      Return: void
      */
 
   Protected  function get_data($key,$id){
@@ -108,13 +103,17 @@ class Contact{
 
   }
 
- /**
-     * Look for similar contacts in the Database
-     * 
-     *  Try to match a contact with the data provided if not found any candidate return 0
-     *  @param  array    $data              Data to be compared with the contacts in the database
-     *  @return integer  $contact_key       Contact Key of the most probable match or 0 if no match found
-     */
+ /* Method: check_others
+  Look for similar contacts in the Database
+  
+  Try to match a contact with the data provided if not found any candidate return 0
+
+  Parameter:
+  $data  -     array        Data to be compared with the contacts in the database
+  
+  Return: 
+  integer  - $contact_key   integer     Contact Key of the most probable match or 0 if no match found
+ */
 
   function check_others($data){
     
@@ -143,7 +142,7 @@ class Contact{
 	$has_email=false;
 
      $telephone=Telephone::display(Telephone::parse_telecom(array('Telecom Original Number'=>$data['Telephone']),$data['Country Key']));
-     $contact_name= $this->parse_name_data($data['Name']);
+     $contact_name= $this->parse_name($data['Name']);
     // Email not found check if we have a mantch in other id
      if($data['Customer Other ID']!=''){
        $no_other_id=false;
@@ -231,39 +230,86 @@ class Contact{
 
   }
 
+ /*
+   Function: base_data
+   Initialize data  array with the default field values
+   */
+private function base_data($args='replace'){
 
-  function create ($data){
+  $data=array();
+   $ignore_fields=array('Contact Key');
 
-     $this->data=array(
-		      'Contact Salutation'=>'',
-		      'Contact Name'=>'',
-		      'Contact File As'=>'',
-		      'Contact First Name'=>'',
-		      'Contact Surname'=>'',
-		      'Contact Suffix'=>'',
-		      'Contact Gender'=>'Unknown',
-		      'Contact Informal Greeting'=>'',
-		      'Contact Formal Greeting'=>''
-		      );
-
-     foreach($data as $key=>$value){
-       if(isset($this->data[$key]))
-	 $this->data[$key]=$value;
+   $result = mysql_query("SHOW COLUMNS FROM `Contact Dimension`");
+   if (!$result) {
+     echo 'Could not run query: ' . mysql_error();
+     exit;
+   }
+   if (mysql_num_rows($result) > 0) {
+     while ($row = mysql_fetch_assoc($result)) {
+       if(!in_array($row['Field'],$ignore_fields))
+	 $data[$row['Field']]=$row['Default'];
      }
-     
+   }
 
+   if(preg_match('/not? replace/',$args))
+     return $data;
+   if(preg_match('/replace/',$args))
+     $this->data=$data;
+  
+
+   return $data;
+   
+
+ }
+
+/* Method: create
+ Create a new Contact record
+ 
+ Parameter:
+ $data -     array   Contact data 
+ $optuioms - 
+ Return: 
+ mixed a object property
+ 
+ Example:
+ (example start)
+ 
+ (example end)
+ 
+*/
+ function create ($data,$options=''){
+   
+   
+   if(is_string($data))
+     $data['Contact Name']=$data;
+   
+   $this->base_data();
+
+   
+   foreach($data as $key=>$value){
+     if(isset($this->data[$key]))
+       $this->data[$key]=_trim($value);
+   }
+      
+
+   if(!preg_match('/components ok|components confirmed/i',$options))
+     $this->parse_name($this->data['Contact Name']);
+   
+     $this->prepare_name_data($this->data);
     
+     $this->data['Contact Name']=$this->display('name');
 
 
+     if(!preg_match('/gender confirmed|gender ok/i',$options))
+       
+       $this->data['Contact Gender']=$this->gender($this->data);
+     if(!preg_match('/grettings confirmed|grettings ok/i',$options)){
 
-    if(isset($data['name_data'])){
-      $this->parse_name_data($data['name_data']);
-    }elseif(isset($data['name'])  and $data['name']!=$this->unknown_name){
-      $this->parse($data['name']);
-    }
+       $this->data['Contact Informal Greeting']=$this->display('informal gretting');
+       $this->data['Contact Formal Greeting']=$this->display('formal gretting');
+     }
 
-    
-    
+
     // print_r($this->data);
     
     if($this->data['Contact Name']==''){
@@ -272,27 +318,28 @@ class Contact{
       $this->data['Contact Informal Greeting']=$this->unknown_informal_greeting;
       $this->data['Contact Formal Greeting']=$this->unknown_formal_greeting;
     }
-      
+    
 
+
+    $this->data['Contact File As']=$this->display('file_as');
   
     
-    $contact_id=$this->get_id();
-    //print_r($this->data);
-    //exit;
-    $sql=sprintf("insert into `Contact Dimension` (`Contact ID`,`Contact Name`,`Contact File as`,`Contact Salutation`,`Contact First Name`,`Contact Surname`,`Contact Suffix`,`Contact Gender`,`Contact Informal Greeting`,`Contact Formal Greeting`) values (%d,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
-		 $contact_id,
-		 prepare_mysql($this->data['Contact Name']),
-		 prepare_mysql($this->data['Contact File As']),
-		 prepare_mysql($this->data['Contact Salutation']),
-		 prepare_mysql($this->data['Contact First Name']),
-		 prepare_mysql($this->data['Contact Surname']),
-		 prepare_mysql($this->data['Contact Suffix']),
-		 prepare_mysql($this->data['Contact Gender']),
-		 prepare_mysql($this->data['Contact Informal Greeting']),
-		 prepare_mysql($this->data['Contact Formal Greeting'])
+    $this->data['Contact ID']=$this->get_id();
+   
+    $keys='(';$values='values(';
+    foreach($this->data as $key=>$value){
+      $keys.="`$key`,";
+      if(preg_match('/plain /i',$key))
+	$print_null=false;
+      else
+	$print_null=true;
+      $values.=prepare_mysql($value,$print_null).",";
+    }
+    $keys=preg_replace('/,$/',')',$keys);
+    $values=preg_replace('/,$/',')',$values);
 
-
-		 );
+    $sql=sprintf("insert into `Contact Dimension` %s %s",$keys,$values);
+   
     
     if(mysql_query($sql)){
       $this->id= mysql_insert_id();
@@ -304,7 +351,17 @@ class Contact{
 
   }
     
+   /* Method: get
+  Used to get properties of the class
   
+  Try to match a contact with the data provided if not found any candidate return 0
+
+  Parameter:
+  $key  -     string        tag key of property to be returned 
+  $data -     mixed  extra data or output custimize options
+  Return: 
+  mixed a object property
+ */
   
   
   function get($key='',$data=false){
@@ -329,6 +386,19 @@ class Contact{
     exit("$key can not be found in contact class\n");
 
   }
+
+  /* Method: add_email
+  Add/Update an email to the Contact
+  
+  Search for an email record maching the email data *$data* if not found create a ne email record then add this record to the Contact
+
+
+  Parameter:
+  $data  -    array   email data
+  $args -     string  options
+  Return: 
+  integer email key of the added/updated email
+ */
 
   function add_email($data,$args='principal'){
 
@@ -383,7 +453,18 @@ class Contact{
     
 
   }
+ /* Method: add_address
+  Add/Update an address to the Contact
+  
+  Search for an address record maching the address data *$data* if not found create a ne address record then add this record to the Contact
 
+
+  Parameter:
+  $data  -    array   address data
+  $args -     string  options
+  Return: 
+  integer address key of the added/updated address
+ */
 
 function add_address($data,$args='principal'){
 
@@ -415,7 +496,7 @@ function add_address($data,$args='principal'){
 
  if(preg_match('/principal/i',$args)){
  
-     $plain_address=_trim($address->['Street Number'].' '.$address->['Street Name'].' '.$address->['Address Town'].' '.$address->['Postal Code'].' '.$address->['Address Country Code']);
+     $plain_address=_trim($address->data['Street Number'].' '.$address->data['Street Name'].' '.$address->data['Address Town'].' '.$address->data['Postal Code'].' '.$address->data['Address Country Code']);
      $sql=sprintf("update `Contact Dimension`  set `Contact Main Plain Address`=%s,`Contact Main Address Key`=%s ,`Contact main Location`=%s ,`Contact Main XHTML Address`=%s , `Contact Main Country Key`=%d,`Contact Main Country`=%s,`Contact Main Country Code`=%s where `Contact Key`=%d ",
 		  prepare_mysql($plain_address),
 		  prepare_mysql($address_id),
@@ -429,70 +510,82 @@ function add_address($data,$args='principal'){
  }
 }
 
+/* Method: add_telecom
+  Add/Update an telecom to the Contact
+  
+  Search for an telecom record maching the telecom data *$data* if not found create a ne telecom record then add this record to the Contact
 
-  function add_tel($data,$args='principal'){
 
-    if(!isset($data['Telecom Original Country Key']) or !$data['Telecom Original Country Key'])
-      $data['Telecom Original Country Key']=$this->data['Contact Main Country Key'];
-    $telecom=new telecom('new',$data);
-    if($telecom->id){
+  Parameter:
+  $data  -    array   telecom data
+  $args -     string  options
+  Return: 
+  integer telecom key of the added/updated telecom
+ */
+ function add_tel($data,$args='principal'){
+
+   if(!isset($data['Telecom Original Country Key']) or !$data['Telecom Original Country Key'])
+     $data['Telecom Original Country Key']=$this->data['Contact Main Country Key'];
+   $telecom=new telecom('new',$data);
+   if($telecom->id){
       
-      if($telecom->get('Telecom Technology Type')=='Mobile')
-	  $telecom_tipo='Mobile';
-      else{
-	  $telecom_tipo=$data['Telecom Type']
-	    
-      $sql=sprintf("insert into  `Telecom Bridge` (`Telecom Key`, `Subject Key`,`Subject Type`,`Telecom Type`,`Is Main`) values (%d,%d,'Contact',%s,%s)  "
-		   ,$telecom->id
-		   ,$this->id
-		   ,prepare_mysql($telecom_tipo)
-		   ,prepare_mysql(preg_match('/principal/i',$args)?'Yes':'No')
-		   );
-      mysql_query($sql);
-      //   print "$sql\n";
-
-      if(preg_match('/principal/i',$args)){
-	
-	if($telecom->get('Telecom Type')=='Mobile'){
-	  $telecom_tipo='Contact Main Mobile';
-	  $telecom_tipo_plain='Contact Main Plain Mobile';
-	}else{
-	  elseif(preg_match('/fax/i',$data['Telecom Yype'])){
-	    $telecom_tipo='Contact Main FAX';
-	    $telecom_tipo_plain='Contact Main Plain FAX';
-
-	  }else{
-	    $telecom_tipo='Contact Main Telephone';
-	    $telecom_tipo_plain='Contact Main Plain Telephone';
-	  }
-	}
-	
-	$plain_number=preg_replace('/[^\d]/','',$telecom->display('html'));
-	
-	$sql=sprintf("update `Contact Dimension` set `%s`=%s and `%s`=%s and   where `Contact Key`=%d"
-		     ,$telecom_tipo
-		     ,prepare_mysql($telecom->display('html'))
-		     $telecom_tipo_plain
-		     ,$plain_number
-		     ,$this->id
-		     );
-	//  print "$sql\n";
-	mysql_query($sql);
-      }
-      
-
-      
-      $this->add_telecom=$telecom->id;
-
-
-    }else{
-      $this->add_telecom=0;
+     if($telecom->get('Telecom Technology Type')=='Mobile')
+       $telecom_tipo='Mobile';
+     else
+       $telecom_tipo=$data['Telecom Type'];
      
-    }
+       $sql=sprintf("insert into  `Telecom Bridge` (`Telecom Key`, `Subject Key`,`Subject Type`,`Telecom Type`,`Is Main`) values (%d,%d,'Contact',%s,%s)  "
+		    ,$telecom->id
+		    ,$this->id
+		    ,prepare_mysql($telecom_tipo)
+		    ,prepare_mysql(preg_match('/principal/i',$args)?'Yes':'No')
+		    );
+       mysql_query($sql);
+       //   print "$sql\n";
+
+       if(preg_match('/principal/i',$args)){
+	
+	 if($telecom->get('Telecom Type')=='Mobile'){
+	   $telecom_tipo='Contact Main Mobile';
+	   $telecom_tipo_plain='Contact Main Plain Mobile';
+	 }else{
+	   if(preg_match('/fax/i',$data['Telecom Type'])){
+	     $telecom_tipo='Contact Main FAX';
+	     $telecom_tipo_plain='Contact Main Plain FAX';
+
+	   }else{
+	     $telecom_tipo='Contact Main Telephone';
+	     $telecom_tipo_plain='Contact Main Plain Telephone';
+	   }
+	 }
+	
+	 $plain_number=preg_replace('/[^\d]/','',$telecom->display('html'));
+	
+	 $sql=sprintf("update `Contact Dimension` set `%s`=%s and `%s`=%s and   where `Contact Key`=%d"
+		      ,$telecom_tipo
+		      ,prepare_mysql($telecom->display('html'))
+		      ,$telecom_tipo_plain
+		      ,$plain_number
+		      ,$this->id
+		      );
+	 //  print "$sql\n";
+	 mysql_query($sql);
+       }
+       
+       
+       
+       $this->add_telecom=$telecom->id;
+
+       
+     }else{
+       $this->add_telecom=0;
+	
+     }
 
     
 
-  }
+   }
+ 
 
 
   
@@ -660,6 +753,7 @@ function add_address($data,$args='principal'){
   }
 
 
+
   function parse_address($data){
     $address_data=array(
 			'Street Number'=>'',
@@ -690,43 +784,47 @@ function add_address($data,$args='principal'){
     
     return $address_data;
   }
-   
+    /* Method: prepare_name_data
+  Clean the Name data array
+ */ 
 
-  function parse_name_data($data){
+  function prepare_name_data($data){
 
-    if(isset($data['salutation']))
-      $this->data['Contact Salutation']=mb_ucwords(_trim($data['salutation']));
-    if(isset($data['first']) or isset($data['middle']))
-      $this->data['Contact First Name']=mb_ucwords(_trim($data['first'].' '.$data['middle']));
-    if(isset($data['surname']))
-      $this->data['Contact Surname']=mb_ucwords(_trim($data['surname']));
-    if(isset($data['suffix']))
-      $this->data['Contact Suffix']=mb_ucwords(_trim($data['suffix']));
-    if(isset($data['gender']) and ($data['gender']=='Male' or $data['gender']=='Female'))
-      $this->data['Contact Gender']=_trim($data['gender']);
+    if(isset($data['Contact Salutation']))
+      $this->data['Contact Salutation']=mb_ucwords(_trim($data['Contact Salutation']));
+    if(isset($data['Contact First Name']) or isset($data['Contact Middle Name']))
+      $this->data['Contact First Name']=mb_ucwords(_trim($data['Contact First Name'].' '.$data['Contact Middle Name']));
+    if(isset($data['Contact Surname']))
+      $this->data['Contact Surname']=mb_ucwords(_trim($data['Contact Surname']));
+    if(isset($data['Contact Suffix']))
+      $this->data['Contact Suffix']=mb_ucwords(_trim($data['Contact Suffix']));
+    if(isset($data['Contact Gender']) and ($data['Contact Gender']=='Male' or $data['Contact Gender']=='Female'))
+      $this->data['Contact Gender']=_trim($data['Contact Gender']);
    
     if($this->data['Contact Gender']=='Unknown')
-      $this->data['Contact Gender']=$this->gender();
+      $this->data['Contact Gender']=$this->gender($data);
 
    
 
  
 
-    $this->data=array(
-		      'contact name'=>$this->display('name'),
-		      'contact file as'=>$this->display('file_as'),
-		      'contact informal greeting'=>$this->display('informal gretting'),
-		      'contact formal greeting'=>$this->display('formal gretting')
-		      );
-
-
+ 
   
 
 
   }
 
+ /* Method: parse_name
+  Parse a name detecting its components
+  
+Parameter:
+string with the name to be parsed
 
-  function parse($raw_name){
+ Returns:
+ Array with the name componets: Contact Salutation, Contact First Name, Contact Surname, Contact Suffix
+
+ */ 
+  public static function parse_name($raw_name){
 
 
 
@@ -747,11 +845,11 @@ function add_address($data,$args='principal'){
 
     switch($parts){
     case(1):
-      if($this->is_surname($names[0]))
+      if(Contact::is_surname($names[0]))
 	$name['last']=$names[0];
-      else if($this->is_givenname($names[0]))
+      else if(Contact::is_givenname($names[0]))
 	$name['first']=$names[0];
-      else if($this->is_prefix($names[0]))
+      else if(Contact::is_prefix($names[0]))
 	$name['prefix']=$names[0];
       else
 	$name['first']=$names[0];
@@ -759,22 +857,22 @@ function add_address($data,$args='principal'){
     case(2):
       // firt the most obious choise
     
-      if( $this->is_givenname($names[0])){
+      if(Contact::is_givenname($names[0])){
 	$name['first']=$names[0];
 	$name['last']=$names[1];
       
 
-      }else if( $this->is_givenname($names[0]) and   $this->is_surname($names[1])){
+      }else if(Contact::is_givenname($names[0]) and   Contact::is_surname($names[1])){
 	$name['first']=$names[0];
 	$name['last']=$names[1];
 
-      }else if( $this->is_prefix($names[0]) and   $this->is_surname($names[1])){
+      }else if( Contact::is_prefix($names[0]) and   Contact::is_surname($names[1])){
 	$name['prefix']=$names[0];
 	$name['last']=$names[1];
-      }else if( $this->is_prefix($names[0]) and   $this->is_givenname($names[1])){
+      }else if( Contact::is_prefix($names[0]) and   Contact::is_givenname($names[1])){
 	$name['prefix']=$names[0];
 	$name['first']=$names[1];
-      }else if( $this->is_surname($names[0]) and   $this->is_surname($names[1])){
+      }else if( Contact::is_surname($names[0]) and   Contact::is_surname($names[1])){
 	$name['last']=$names[0].' '.$names[1];
       }else{
 	$name['first']=$names[0];
@@ -786,28 +884,28 @@ function add_address($data,$args='principal'){
       // firt the most obious choise
       
       
-      if(!$this->is_prefix($names[0]) and  strlen($names[1])==1   and   strlen($names[2])>1  ){
+      if(!Contact::is_prefix($names[0]) and  strlen($names[1])==1   and   strlen($names[2])>1  ){
 	$name['first']=$names[0];
 	$name['middle']=$names[1];
 	$name['last']=$names[2];
-      }elseif( $this->is_prefix($names[0])) {
+      }elseif( Contact::is_prefix($names[0])) {
 	$name['prefix']=$names[0];
 	$name['first']=$names[1];
 	$name['last']=$names[2];
 
 	
-	// 	if(   $this->is_givenname($names[1]) and   $this->is_surname($names[2])){
+	// 	if(   Contact::is_givenname($names[1]) and   Contact::is_surname($names[2])){
 
 	// 	  $name['first']=$names[1];
 	// 	  $name['last']=$names[2];
-	// 	}else if(    strlen($names[1])==1 and   $this->is_surname($names[2])){
+	// 	}else if(    strlen($names[1])==1 and   Contact::is_surname($names[2])){
 	  
 	// 	  $name['first']=$names[1];
 	// 	  $name['last']=$names[2];
-	// 	}else if(   $this->is_givenname($names[1])    and   $this->is_givenname($names[2])){
+	// 	}else if(   Contact::is_givenname($names[1])    and   Contact::is_givenname($names[2])){
 	  
 	// 	  $name['first']=$names[1].' '.$names[2];
-	// 	}else if(  $this->is_surname($names[1])    and   $this->is_surname($names[2])){
+	// 	}else if(  Contact::is_surname($names[1])    and   Contact::is_surname($names[2])){
 	  
 	// 	  $name['last']=$names[1].' '.$names[2];
 	// 	}else{
@@ -817,13 +915,13 @@ function add_address($data,$args='principal'){
 	// 	}
 	
 
-      }else if(  $this->is_givenname($names[0])   and   $this->is_givenname($names[1])  and   $this->is_surname($names[2])){
+      }else if(  Contact::is_givenname($names[0])   and   Contact::is_givenname($names[1])  and   Contact::is_surname($names[2])){
 	$name['first']=$names[0].' '.$names[1];
 	$name['last']=$names[2];
-      }else if(  $this->is_givenname($names[0])   and   $this->is_surname($names[1])  and   $this->is_surname($names[2])){
+      }else if(  Contact::is_givenname($names[0])   and   Contact::is_surname($names[1])  and   Contact::is_surname($names[2])){
 	$name['first']=$names[0];
 	$name['last']=$names[1].' '.$names[2];
-      }else if( $this->is_givenname($names[0]) and     strlen($names[1])==1 and   $this->is_surname($names[2])){
+      }else if( Contact::is_givenname($names[0]) and     strlen($names[1])==1 and   Contact::is_surname($names[2])){
 	$name['first']=$names[0];
 	$name['middle']=$names[1];
 	$name['last']=$names[2];
@@ -836,19 +934,19 @@ function add_address($data,$args='principal'){
 
 
       
-      if( $this->is_prefix($names[0])) {
+      if( Contact::is_prefix($names[0])) {
 	$name['prefix']=$names[0];
 	
-	if(  $this->is_givenname($names[1]) and    strlen($names[2])==1 and  $this->is_surname($names[3])){
+	if(  Contact::is_givenname($names[1]) and    strlen($names[2])==1 and  Contact::is_surname($names[3])){
 
 	  $name['first']=$names[1];
 	  $name['middle']=$names[2];
 	  $name['last']=$names[3];
-	}else if(  $this->is_givenname($names[1]) and   $this->is_givenname($names[2])  and  $this->is_surname($names[3])){
+	}else if(  Contact::is_givenname($names[1]) and   Contact::is_givenname($names[2])  and  Contact::is_surname($names[3])){
 
 	  $name['first']=$names[1].' '.$names[2];
 	  $name['last']=$names[3];
-	}else if( $this->is_prefix($names[0]) and     $this->is_givenname($names[1]) and   $this->is_surname($names[2])  and  $this->is_surname($names[3])){
+	}else if( Contact::is_prefix($names[0]) and     Contact::is_givenname($names[1]) and   Contact::is_surname($names[2])  and  Contact::is_surname($names[3])){
 	  
 	  $name['first']=$names[1];
 	  $name['last']=$names[2].' '.$names[3];
@@ -859,11 +957,11 @@ function add_address($data,$args='principal'){
 	
 
 	// firt the most obious choise
-      }else if(      $this->is_givenname($names[0]) and $this->is_givenname($names[1]) and    $this->is_surname($names[2])  and  $this->is_surname($names[3])     ){
+      }else if(      Contact::is_givenname($names[0]) and Contact::is_givenname($names[1]) and    Contact::is_surname($names[2])  and  Contact::is_surname($names[3])     ){
 
 	$name['first']=$names[0].' '.$names[1];
 	$name['last']=$names[2].' '.$names[3];
-      }else  if(      $this->is_givenname($names[0]) and $this->is_givenname($names[1]) and    $this->is_givenname($names[2])  and  $this->is_surname($names[3])     ){
+      }else  if(      Contact::is_givenname($names[0]) and Contact::is_givenname($names[1]) and    Contact::is_givenname($names[2])  and  Contact::is_surname($names[3])     ){
 
 	$name['first']=$names[0].' '.$names[1].' '.$names[2];
 	$name['last']=$names[3];
@@ -873,7 +971,7 @@ function add_address($data,$args='principal'){
       }
       break;
     case(5):
-      if( $this->is_prefix($names[0]) and     $this->is_givenname($names[1]) and   $this->is_givenname($names[2])   and  $this->is_surname($names[3]) and $this->is_surname($names[4])  ){
+      if( Contact::is_prefix($names[0]) and     Contact::is_givenname($names[1]) and   Contact::is_givenname($names[2])   and  Contact::is_surname($names[3]) and Contact::is_surname($names[4])  ){
 	$name['prefix']=$names[0];
 	$name['first']=$names[1].' '.$names[2];
 	$name['first']=$names[3].' '.$names[4];
@@ -896,16 +994,13 @@ function add_address($data,$args='principal'){
 
 
  
-    $this->data['Contact Salutation']=_trim($name['prefix']);
-    $this->data['Contact First Name']=_trim($name['first'].' '.$name['middle']);
-    $this->data['Contact Surname']=_trim($name['last']);
-    $this->data['Contact Suffix']=_trim($name['suffix']);
-    $this->data['Contact Name']=$this->display('name');
-    $this->data['Contact File As']=$this->display('file_as');
-    $this->data['Contact Gender']=$this->gender();
-    $this->data['Contact Informal Greeting']=$this->display('informal gretting');
-    $this->data['Contact Formal Greeting']=$this->display('formal gretting');
-		    
+    $data['Contact Salutation']=_trim($name['prefix']);
+    $data['Contact First Name']=_trim($name['first'].' '.$name['middle']);
+    $data['Contact Surname']=_trim($name['last']);
+    $data['Contact Suffix']=_trim($name['suffix']);
+    
+    return $data;
+    
 
 
   }
@@ -968,32 +1063,36 @@ function add_address($data,$args='principal'){
     return false;
     
   }
+  /*
+   Method: gender
+   Guess the gender from the name components
 
+   Parameter:
+   array with keys *Contact Salutation* and *Contact First Name*
+
+   Return:
+   Male,Felame,Unknown
+
+   */
   
-  function gender(){
+  public static function gender($data){
   
-    $prefix=$this->data['Contact Salutation'];
-    $first_name=$this->data['Contact First Name'];
+    $prefix=$data['Contact Salutation'];
+    $first_name=$data['Contact First Name'];
     $sql=sprintf("select `Gender` from  `Salutation Dimension`  where `Salutation`=%s ",prepare_mysql($prefix));
-    // print "$sql\n"; 
-
-
- $result=mysql_query($sql);
-  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-
+    $result=mysql_query($sql);
+    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+      
       if($row['Gender']=='Male' or $row['Gender']=='Female')
 	return $row['Gender'];
     }
-  
-
+    
+    
     $male=0;
     $felame=0;
     $names=preg_split('/\s+/',$first_name);
     foreach($names as $name){
       $sql=sprintf("select `Gender` as genero from  `First Name Dimension` where `First Name`=%s",prepare_mysql($name));
-      //    print "$sql\n";
-    
-      
       $result=mysql_query($sql);
       if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 	
@@ -1011,7 +1110,17 @@ function add_address($data,$args='principal'){
       return 'Unknown';
   
   }
+ /*
+   Method: is_givenname
+   Look for the First Name in the DB
 
+   Parameter:
+   string First Name
+
+   Return:
+   First Name Key of the First Name Dimension  DB record or 0 if not found
+
+   */
   function is_givenname($name){
     $sql=sprintf("select `First Name Key` as id from  `First Name Dimension` where `First Name`=%s",prepare_mysql($name));
     $result=mysql_query($sql);
@@ -1020,6 +1129,18 @@ function add_address($data,$args='principal'){
     }else
       return 0;
   }
+ /*
+   Method: is_surname
+   Look for the Surname in the DB
+
+   Parameter:
+   string Surname
+
+   Return:
+   Key of the Surname Dimension  DB record or 0 if not found
+
+   */
+
 
   function is_surname($name){
 
@@ -1031,7 +1152,19 @@ function add_address($data,$args='principal'){
       return 0;
   }
 
-  function is_prefix($name){
+ /*
+   Method: is_prefix
+   Look for the saludation in the DB
+
+   Parameter:
+   string Saludation
+
+   Return:
+   Key of the Saludation Dimension  DB record or 0 if not found
+
+   */
+
+  public static function is_prefix($name){
     $sql=sprintf("select `Salutation` as id from `Salutation Dimension`  where `Salutation`=%s",prepare_mysql($name));
     $result=mysql_query($sql);
     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
