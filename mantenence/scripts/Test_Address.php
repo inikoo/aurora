@@ -42,10 +42,13 @@ while (($csv_data = fgetcsv($handle, 1000, "\t")) !== FALSE) {
 fclose($handle);
 
 foreach ($address_data as $key=>$data){
-  $address=Address::prepare_3line($data);
-  print_r($data);
-  print_r($address);
-  exit;
+
+  if($key>=0){
+    $address=Address::prepare_3line($data);
+    print "$key ********\n";
+    print_r($data);
+    print_r($address);
+  }
 }
 
 
