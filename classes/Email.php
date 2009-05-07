@@ -108,9 +108,9 @@ class Email{
 		,'Email Correct'=>'Unknown'
 		);
 
-    if(preg_match('/not? replace/',$args))
+    if(preg_match('/not? replace/i',$args))
       return $data;
-    if(preg_match('/replace/',$args))
+    if(preg_match('/replace/i',$args))
       $this->data=$data;
     return $data;
   }

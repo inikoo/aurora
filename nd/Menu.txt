@@ -51,6 +51,7 @@ Group: Files  {
 
    Group: PHP Classes  {
 
+      File: Address.php  (classes/Address.php)
       File: Company.php  (classes/Company.php)
       File: Contact.php  (classes/Contact.php)
       File: Customer.php  (classes/Customer.php)
@@ -59,11 +60,14 @@ Group: Files  {
       File: Part.php  (classes/Part.php)
       File: Product.php  (classes/Product.php)
       File: Supplier.php  (classes/Supplier.php)
+      File: Telecom.php  (classes/Telecom.php)
       }  # Group: PHP Classes
 
    Group: PHP Other  {
 
       File: common_functions.php  (common_functions.php)
+      File: Fill_Unknown_Address.php  (mantenence/scripts/Fill_Unknown_Address.php)
+      File: Set_Staff_Contacts.php  (mantenence/scripts/Set_Staff_Contacts.php)
       }  # Group: PHP Other
 
    Group: Javascript  {
