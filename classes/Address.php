@@ -229,7 +229,7 @@ class Address{
 
     $this->data['Address Internal']=$prepared_data['internal_address'];
     $this->data['Address Building']=$prepared_data['building_address'];
-    $this->parse_street($prepared_data['street_address']);
+    Address::parse_street($prepared_data['street_address']);
     $this->data['Address Town Secondary Division']=$prepared_data['town_d2'];
 
     $this->data['Address Town Primary Division']=$prepared_data['town_d1'];
@@ -727,8 +727,11 @@ class Address{
   */
   function parse_postcode($postcode,$country_code=''){
     global $myconf;
-    if(preg_match('/^[a-z]{3}$/i',$country_code))
+
+    if(!preg_match('/^[a-z]{3}$/i',$country_code)){
       $country_code=$myconf['country_code'];
+
+    }
     $postcode=_trim($postcode);
     $data['Address Postal Code']=$postcode;
     $data['Address Primary Postal Code']='';
@@ -738,10 +741,24 @@ class Address{
     $country_code=strtoupper($country_code);
     switch($country_code){
     case 'GBR':
-    
+      $data['Address Postal Code Separator']=' ';
+      $data['Address Postal Code']=preg_replace('/,?\s*scotland\s*$|united kingdom/i','',$data['Address Postal Code']);
+      $data['Address Postal Code']=preg_replace('/\s/','',$data['Address Postal Code']);
+      if(preg_match('/^bfpo\s*\d/i',$data['Address Postal Code']) ){
+	$data['Address Postal Code']=preg_replace('/bfpo/i','BFPO ',$data['Address Postal Code']);
+	$data['Address Primary Postal Code']='BFPO';
+	$data['Address Secondary Postal Code']=preg_replace('/bfpo /i','',$data['Address Postal Code']);
+      }
+      else{
+	$data['Address Postal Code']=substr($data['Address Postal Code'],0,strlen($data['Address Postal Code'])-3).' '.substr($data['Address Postal Code'],-3,3);
+	$postcode_parts=preg_split('/ /',$data['Address Postal Code']);
+	$data['Address Primary Postal Code']=$postcode_parts[0];
+	$data['Address Secondary Postal Code']=$postcode_parts[1];
+      }
+
       break;
     }
-    return false;
+    return $data;
    
   }
   /*
@@ -775,6 +792,8 @@ class Address{
 
   */
   public static function prepare_country_data($data){
+    global $myconf;
+
       if($data['Address Country Key']=='' and
        $data['Address Country Code']=='' and
        $data['Address Country 2 Alpha Code']=='' and
@@ -789,14 +808,14 @@ class Address{
     
     if(Address::is_country_key($data['Address Country Key'])){
 
-      $countr=new Country('id',$data['Address Country Key']);
+      $country=new Country('id',$data['Address Country Key']);
     }elseif(Address::is_country_code($data['Address Country Code'])){
       
       $country=new Country('code',$data['Address Country Code']);
     }elseif(Address::is_country_2alpha_code($data['Address Country 2 Alpha Code'])){
       $country=new Country('2 alpha code',$data['Address Country 2 Alpha Code']);
     }else{      
-      print $data['Address Country Name'];
+
       $country=new Country('find',$data['Address Country Name']);
     }
     
@@ -834,11 +853,11 @@ class Address{
 
     //extract number
     $line=_trim($line);
-    if(preg_match('/^\#?\s*\d+(\,\d+\-\d+|\\\d+|\/\d+)?\s*/i',$line,$match)){
+    if(preg_match('/^\#?\s*\d+(\,\d+\-\d+|\\\d+|\/\d+)?(bis)?[a-z]?\s*/i',$line,$match)){
       $number=$match[0];
       $len=strlen($number);
       $name=substr($line,$len);
-    }elseif(preg_match('/(\#|no\.?)?\s*\d.*$/i',$line,$match)){
+    }elseif(preg_match('/(\#|no\.?)?\s*\d+(bis)?[a-z]?\s*$/i',$line,$match)){
       $number=$match[0];
       $len=strlen($number)+1;
       $name=substr($line,strlen($line)-$len);
@@ -850,31 +869,33 @@ class Address{
 
     $name=_trim($name);
     $number=_trim($number);
-   
-    if(preg_match('/\s(street|st\.?)$/i',$name,$match)){
+    $regex='/\s(street|st\.?)$/i';
+    if(preg_match($regex,$name,$match)){
       $type="Street";
-      $len=strlen($match[0]);
-      $name=substr($name,0,strlen($name)-$len);
+      $name=preg_replace($regex,'',$name);
     }
+    
     if(preg_match('/\s(road|rd\.?)$/i',$name,$match)){
       $type="Road";
-      $len=strlen($match[0])+1;
-      $name=substr($name,0,strlen($name)-$len);
+      $name=preg_replace('/\s(road|rd\.?)$/i','',$name);
     }
     if(preg_match('/\s(close)$/i',$name,$match)){
       $type="Close";
-      $len=strlen($match[0])+1;
-      $name=substr($name,0,strlen($name)-$len);
+      $name=preg_replace('/\s(close)$/i','',$name);
     }
-    if(preg_match('/\s(Av\.?|avenue|ave\.?)$/i',$name,$match)){
+    $regex='/\s(Av\.?|avenue|ave\.?)$/i';
+    if(preg_match($regex,$name,$match)){
       $type="Avenue";
-      $len=strlen($match[0])+1;
-      $name=substr($name,0,strlen($name)-$len);
+      $name=preg_replace($regex,'',$name);
     }
    
 
     $name=mb_ucwords(_trim($name));
-    return array($number,$name,$type,$direction);
+    return array(
+		 'Address Street Number'=>$number
+		 ,'Address Street Name'=>$name
+		 ,'Address Street Type'=>$type
+		 ,'Address Street Direction'=>$direction);
    
   }
 
@@ -890,6 +911,16 @@ class Address{
   public static function prepare_3line($raw_data,$args='untrusted'){
     global $myconf;
 
+    $empty=true;
+    foreach($raw_data as $val){
+      if($val!=''){
+	$empty=false;
+	break;
+      }
+    }
+
+      
+
     $untrusted=(preg_match('/untrusted/',$args)?true:false);
     $debug=(preg_match('/debug/',$args)?true:false);
 
@@ -900,8 +931,13 @@ class Address{
 	$data[$key]=_trim($value);
       }
     }
-
-
+    
+    if($empty){
+      $country=new Country('code','UNK');
+      $data['Address Country Key']=$country->id;
+      $data['Address Fuzzy']='Yes';
+      $data['Address Fuzzy Type']='All';
+    }
     //--------------------------------------------------------------------------
     // Common errors related to the country
      if(preg_match('/^St. Thomas.*Virgin Islands$/i',$data['Address Town'])){
@@ -999,8 +1035,70 @@ class Address{
     // pushh all address up
 
     if($untrusted){
+      // if only one line put it in the first one
+      $number_lines=0;
+      if($raw_data['Address Line 1']!='')
+	$number_lines++;
+      if($raw_data['Address Line 2']!='')
+	$number_lines++;
+      if($raw_data['Address Line 3']!='')
+	$number_lines++;
+
+      switch($number_lines){
+      case(1):
+	if($raw_data['Address Line 2']!=''){
+	  $raw_data['Address Line 1']=$raw_data['Address Line 2'];
+	  $raw_data['Address Line 2']='';
+	}elseif($raw_data['Address Line 3']!=''){
+	  $raw_data['Address Line 1']=$raw_data['Address Line 3'];
+	  $raw_data['Address Line 3']='';
+	}
+	break;
+      }
 
       
+      // Special case only one line no twown no division
+      
+      if(
+	 $number_lines==1 and 
+	 $data['Address Town']=='' and 
+	 $data['Address Country Primary Division']=='' and
+	 $data['Address Country Secondary Division']==''
+	 ){
+	// try to sepatate
+	//split by worlds
+	$words=preg_split('/\s+/',$raw_data['Address Line 1']);
+
+	$num_words=count($words);
+
+	if(Address::is_country_d1(
+				  $words[$num_words-1],
+				  $data['Address Country Key']
+				  )){
+	  $data['Address Country Primary Division']=array_pop($words);
+	  $num_words=count($words);
+	}
+	if(Address::is_country_d2(
+				  $words[$num_words-1],
+				  $data['Address Country Key']
+				  )){
+	  $data['Address Country Secondary Division']=array_pop($words);
+	  $num_words=count($words);
+	}
+	if(Address::is_town(
+				  $words[$num_words-1],
+				  $data['Address Country Key']
+				  )){
+	  $data['Address Town']=array_pop($words);
+	  $num_words=count($words);
+	}
+	$raw_data['Address Line 1']=join(' ',$words);
+
+
+      }
+
+
+
       //Change town if misplaced
       
       if($data['Address Town']=='') {
@@ -1284,8 +1382,8 @@ class Address{
 
   
 /*     print_r($raw_data); */
-/*     print_r($data); */
-/*     exit; */
+//     print_r($data); 
+//     exit; 
     
     
 
@@ -1303,7 +1401,7 @@ class Address{
 
 
 
-  
+
 
     switch($data['Address Country Key']){
     case(30)://UK
@@ -1348,12 +1446,6 @@ class Address{
 
 
 
-      $data['Address Postal Code']=preg_replace('/,?\s*scotland\s*$|united kingdom/i','',$data['Address Postal Code']);
-      $data['Address Postal Code']=preg_replace('/\s/','',$data['Address Postal Code']);
-      if(preg_match('/^bfpo\s*\d/i',$data['Address Postal Code']) )
-	$data['Address Postal Code']=preg_replace('/bfpo/i','BFPO ',$data['Address Postal Code']);
-      else
-	$data['Address Postal Code']=substr($data['Address Postal Code'],0,strlen($data['Address Postal Code'])-3).' '.substr($data['Address Postal Code'],-3,3);
 
     
       break;
@@ -2739,16 +2831,31 @@ class Address{
   
 
     foreach($data as $key=>$val){
-      $data[$key]=mb_ucwords(_trim($val));
+      if($key=='Address Postal Code')
+	$data[$key]=_trim($val);
+      else
+	$data[$key]=mb_ucwords(_trim($val));
     }
 
-    list(
-	 $data['Address Street Number']
-	 ,$data['Address Street Name']
-	 ,$data['Address Street Type']
-	 ,$data['Address Street Direction']
-	 )=Address::parse_street(mb_ucwords(_trim($raw_data['Address Line 3'])));
- 
+
+    $street_data=Address::parse_street(mb_ucwords(_trim($raw_data['Address Line 3'])));
+    foreach($street_data as $key=>$value){
+       if(array_key_exists($key,$data)){
+	 $data[$key]=_trim($value);
+       }
+    }
+    
+    $postcode_data=Address::parse_postcode(
+					   $data['Address Postal Code']
+					   ,$data['Address Country Code']
+					   );
+
+    foreach($postcode_data as $key=>$value){
+      if(array_key_exists($key,$data)){
+	$data[$key]=_trim($value);
+      }
+    }
+
  
     return $data;
   }
