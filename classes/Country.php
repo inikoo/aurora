@@ -1,9 +1,45 @@
 <?
+/*
+ File: Country.php 
+
+ This file contains the Country Class
+
+ About: 
+ Autor: Raul Perusquia <rulovico@gmail.com>
+ 
+ Copyright (c) 2009, Kaktus 
+ 
+ Version 2.0
+*/
+
+  /*
+   Constructor: Country
+   Initializes the class, trigger  Search/Load for the data set
+
+   If first argument is find it will try to match the data or create if not found 
+     
+   Parameters:
+   arg1 -    Tag for the Search/Load/Create Options *or* the Contact Key for a simple object key search
+   arg2 -    (optional) Data used to search or create the object
+
+   Returns:
+   void
+       
+   Example:
+   (start example)
+   $country_unknown=new Country('code','UNK');
+
+
+   (end example)
+
+  */
 
 class Country{
 
   var $data=array();
   var $id=false;
+
+
 
   function __construct($arg1=false,$arg2=false) {
 
@@ -14,6 +50,9 @@ class Country{
        return;
      }elseif($arg1=='code'){
        $this->get_data('code',$arg2);
+       return;
+     }elseif($arg1=='find'){
+       $this->get_data('find',$arg2);
        return;
      }elseif(preg_match('/^(minicode|2alpha|2 alpha code)$/i',$arg1)){
        $this->get_data('2 alpha code',$arg2);
@@ -37,7 +76,24 @@ class Country{
 
 
   function get_data($key,$id){
-    
+
+     if($key=='find'){
+      $sql=sprintf("select `Country Key`  from `Country Dimension` left join `Country Alias Dimension` on  (`Country Alias Code`=`Country Code`) where `Country Alias`=%s or `Country Name`=%s or  `Country Official Name`=%s or `Country Native Name`=%s  "
+		   ,prepare_mysql($id)
+		   ,prepare_mysql($id)
+		   ,prepare_mysql($id)
+		   ,prepare_mysql($id)
+		   );
+      $result=mysql_query($sql);
+      
+      if($row=mysql_fetch_array($result, MYSQL_ASSOC))
+	$this->get_data('id',$row['Country Key']);
+      else{
+	$this->get_data('code','UNK');
+
+      }
+      return;
+    }
     if($key=='id'){
       $sql=sprintf("SELECT * FROM `Country Dimension` C where `Country Key`=%d",$id); 
       $result=mysql_query($sql);

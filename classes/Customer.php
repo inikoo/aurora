@@ -597,11 +597,11 @@ class Customer{
 
  }
   /*
-   Function: get_base_data
-   Returns an array with the default field values
+   Function: base_data
+   Initializes an array with the default field values
    */
  function base_data(){
-   $this->base_data=array();
+   $data=array();
 
    $ignore_fields=array('Customer Key');
 
@@ -613,10 +613,13 @@ class Customer{
    if (mysql_num_rows($result) > 0) {
      while ($row = mysql_fetch_assoc($result)) {
        if(!in_array($row['Field'],$ignore_fields))
-	 $this->base_data[$row['Field']]=$row['Default'];
+	 $data[$row['Field']]=$row['Default'];
      }
    }
-   
+   if(preg_match('/not? replace/i',$args))
+     return $data;
+   if(preg_match('/replace/i',$args))
+     $this->data=$data;
 
  }
 
