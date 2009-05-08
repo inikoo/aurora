@@ -168,133 +168,25 @@ class Address{
     }
     switch($data['Address Input Format']){
     case('3 Line'):
-      $data=$this->prepare_3line($data);
+      $this->data=$this->prepare_3line($data);
       break;
-      
+    case('DB Fields'):
+      $this->data=$this->prepare_DBfields($data);
+      break;
     }
     
 
-    if(isset($data['type']) and $data['type']=='3line'){
-
-      
-      $prepared_data=$this->prepare_3line($data);
-
-    }elseif(isset($data['type']) and $data['type']=='aw'){
-      $prepared_data=$data;
-
-
-      $prepared_data['country_d1_id']='';
-      $prepared_data['country_d1_id']='';
-      $prepared_data['town_id']='';
-      $country=new country('name',$prepared_data['country']);
-      $prepared_data['country_id']=$country->id;
-      //     print_r($prepared_data);exit;
-    }else
-       return;
-
-    $fuzzy='No';
-    $fuzzy_type='';
-
-    // print_r($prepared_data);
-    // exit;
-    if($prepared_data['internal_address']=='' 
-       and $prepared_data['building_address']==''
-       and $prepared_data['street_address']==''){
-      $fuzzy='Yes';
-      $fuzzy_type='City';
-    }
-
-    
-    if($prepared_data['town']=='' and  $prepared_data['military_base']=='No'){
-      $fuzzy='Yes';
-      $fuzzy_type='Country';
-    } 
-
-
-
-    $country_unknown=new Country('code','UNK');
-
-    if($prepared_data['country_id']==$country_unknown->id){
-      $fuzzy='Yes';
-      $fuzzy_type='All';
-    } 
-
-
-
-
-    if($prepared_data['country_d1_id']==0)$prepared_data['country_d1_id']='';
-    if($prepared_data['country_d1_id']==0)$prepared_data['country_d1_id']='';
-
-
-
-    $this->data['Address Internal']=$prepared_data['internal_address'];
-    $this->data['Address Building']=$prepared_data['building_address'];
-    Address::parse_street($prepared_data['street_address']);
-    $this->data['Address Town Secondary Division']=$prepared_data['town_d2'];
-
-    $this->data['Address Town Primary Division']=$prepared_data['town_d1'];
-
-    $this->data['Address Town']=$prepared_data['town'];
-    $this->data['Address Town Key']=$prepared_data['town_id'];
-    $this->data['Address Postal Code']=$prepared_data['postcode'];
-
-    $this->data['Address Country Secondary Division Key']=$prepared_data['country_d2_id'];
-    $d2=$this->get_country_d2_name($this->data['Address Country Secondary Division Key']);
-    if($d2!='')
-      $this->data['Address Country Secondary Division']=$d2;
-    else
-      $this->data['Address Country Secondary Division']=$prepared_data['country_d2'];
-
-    $this->data['Address Country Primary Division Key']=$prepared_data['country_d1_id'];
-      
-    $d1=$this->get_country_d1_name($this->data['Address Country Primary Division Key']);
-    if($d1!='')
-      $this->data['Address Country Primary Division']=$d1;
-    else
-      $this->data['Address Country Primary Division']=$prepared_data['country_d1'];
-
-    $country=new country($prepared_data['country_id']);
-
-    $this->data['Address Fuzzy']=$fuzzy;
-    $this->data['Address Fuzzy Type']=$fuzzy_type;
-    $this->data['Address Country Code']=$country->get('Country Code');
-    $this->data['Address Country 2 Alpha Code']=$country->get('Country 2 Alpha Code');
-    $this->data['Address Country Key']=$country->get('Country Key');
-    $this->data['Address Country Name']=$country->get('Country Name');
-    $this->data['Address World Region']=$country->get('World Region');
-    $this->data['Address Continent']=$country->get('Continent');
-    $this->data['Military Address']=$prepared_data['military_base'];
-    $this->data['Military Installation Address']=_trim($this->data['Address Internal'].' '.$this->data['Address Building']);
-    $this->data['Military Installation Name']=$prepared_data['military_installation_data']['military base name'];
-    $this->data['Military Installation Country Key']=$prepared_data['military_installation_data']['military base country key'];
-    $this->data['Military Installation Type']=$prepared_data['military_installation_data']['military base type'];
-
-
-
-    $this->data['Address Location']=$this->display('location');
-
-      
-    //  print"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
-    //prepare_mysql(0);
-    //exit;
-    //print_r($this->data);
 
     $keys='`Address Data Creation`';
     $values='Now()';
     foreach($this->data as $key=>$value){
       $keys.=",`".$key."`";
-      $values.=','.prepare_mysql($value);
-      //	print "$key $value ".prepare_mysql($value)."  **********************    \n";
+      $values.=','.prepare_mysql($value,false);
     }
     $values=preg_replace('/^,/','',$values);
     $keys=preg_replace('/^,/','',$keys);
 
     $sql="insert into `Address Dimension` ($keys) values ($values)";
-    //      print_r($this->data);
-    //print "$sql\n";      exit;
-    //if($this->get('address country code')=='UNK')
-    //	exit('address code is UNKNOWN');
-
     if(mysql_query($sql)){
       $this->id = mysql_insert_id();
       $this->data['Address Key']= $this->id;
@@ -344,33 +236,7 @@ class Address{
     $separator="\n";
     switch($tipo){
     case('location'):
-      //  print_r($this->data);
-
-      if($this->get('Military Address')=='Yes'){
-	$location=sprintf('<img src="art/flags/%s.gif" title="%s"> %s',strtolower($this->data['Address Country 2 Alpha Code']),$this->data['Address Country Code'],$this->data['Military Installation Type']);
-      }else{
-
-	if($this->get('Address Fuzzy')=='Yes'){
-	  //       print $this->get('address fuzzy type')."zzzzz\n";
-	  switch($this->get('address fuzzy type')){
-	  case('Country'):
-	    $location=sprintf('<img src="art/flags/%s.gif" title="%s"> %s',strtolower($this->data['Address Country 2 Alpha Code']),$this->data['Address Country Code'],_('Somewhere in').' '.$this->data['Address Country Name']);
-	    break;
-	  case('All'):
-	    $location=sprintf('<img src="art/flags/%s.gif" title="%s"> %s',strtolower($this->data['Address Country 2 Alpha Code']),$this->data['Address Country Code'],_('Somewhere in the world'));
-	    break;	 
-	  case('City'):
-	    $location=sprintf('<img src="art/flags/%s.gif" title="%s"> %s',strtolower($this->data['Address Country 2 Alpha Code']),$this->data['Address Country Code'],_('Somewhere in').' '.$this->data['Address Town']);
-	    break;
-	  default:
-	    $location=sprintf('<img src="art/flags/%s.gif" title="%s"> %s',strtolower($this->data['Address Country 2 Alpha Code']),$this->data['Address Country Code'],_('Unknown'));
-	  }
-
-	}else{
-	  $location=sprintf('<img src="art/flags/%s.gif" title="%s"> %s',strtolower($this->data['Address Country 2 Alpha Code']),$this->data['Address Country Code'],$this->data['Address Town']);
-	}
-      }
-      return _trim($location);
+      return $this->location($this->data);
       break;
     case('xhtml'):
     case('html'):
@@ -496,6 +362,40 @@ class Address{
     }
     return $data;
   }
+
+
+ /*
+    Function: location
+    Get the address location
+
+    Parameter:
+    $str -  _array_ location data
+  */
+
+  public static function location($data){
+    
+    if($data['Military Address']=='Yes'){
+      $location=sprintf('<img src="art/flags/%s.gif" title="%s"> %s',strtolower($data['Address Country 2 Alpha Code']),$data['Address Country Code'],$data['Military Installation Type']);
+    }else{
+      
+      if($data['Address Fuzzy']=='Yes'){
+	if(preg_match('/country/i',$data['Address Fuzzy Type'])){
+	  $location=sprintf('<img src="art/flags/%s.gif" title="%s"> %s',strtolower($data['Address Country 2 Alpha Code']),$data['Address Country Code'],_('Unknown'));
+	  return _trim($location);
+	  }elseif(preg_match('/town/i',$data['Address Fuzzy Type'])){
+	  $location=sprintf('<img src="art/flags/%s.gif" title="%s"> %s',strtolower($data['Address Country 2 Alpha Code']),$data['Address Country Code'],_('Somewhere in').' '.$data['Address Country Name']);
+	  return _trim($location);
+	}
+      }
+      $location=sprintf('<img src="art/flags/%s.gif" title="%s"> %s',strtolower($data['Address Country 2 Alpha Code']),$data['Address Country Code'],$data['Address Town']);
+      
+    }
+  
+    return _trim($location);
+}
+
+
+
 
   /*
     Function: is_street
@@ -918,7 +818,7 @@ class Address{
 	break;
       }
     }
-
+    
       
 
     $untrusted=(preg_match('/untrusted/',$args)?true:false);
@@ -2831,7 +2731,7 @@ class Address{
   
 
     foreach($data as $key=>$val){
-      if($key=='Address Postal Code')
+      if($key=='Address Postal Code' or $key=='Address Country Code' or $key=='Address Country 2 Alpha Code')
 	$data[$key]=_trim($val);
       else
 	$data[$key]=mb_ucwords(_trim($val));
@@ -2856,7 +2756,26 @@ class Address{
       }
     }
 
- 
+    $data['Address Fuzzy']='No';
+    $data['Address Fuzzy Type']='';
+    if($data['Address Town']==''){
+      $data['Address Fuzzy Type'].=',Town';
+      $data['Address Fuzzy']='Yes';
+    }
+    if($data['Address Country Code']=='UNK'){
+       $data['Address Fuzzy Type'].=',Country,Region,Continent';
+       $data['Address Fuzzy']='Yes';
+    }
+     if($raw_data['Address Line 1']=='' 
+	and $raw_data['Address Line 2']=='' 
+	and $raw_data['Address Line 3']=='' ){
+       $data['Address Fuzzy Type'].=',Street';
+       $data['Address Fuzzy']='Yes';
+    }
+     
+     $data['Address Fuzzy Type']=preg_replace('/^,\s*/','',$data['Address Fuzzy Type']);
+
+     $data['Address Location']=Address::location($data);
     return $data;
   }
 
