@@ -67,8 +67,8 @@ class Email{
       $this->create($arg2);
       return;
     }
-    if ($arg1='find'){
-      $this->find_replace($arg2);
+    if (preg_match('/find/',$arg1)){
+      $this->find_replace($arg2,'noreplace');
       return;
     }
 

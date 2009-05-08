@@ -28,6 +28,22 @@ class Company{
   // Integer: id
   // Database Primary Key
   var $id=false;
+  // Boolean: warning
+  // True if a warning
+  var $warning=false;
+  // Boolean: error
+  // True if error occuers
+  var $error=false;
+  // String: msg
+  // Messages
+  var $msg='';
+  // Boolean: new
+  // True if company has been created
+  var $new=false;
+ // Boolean: updated
+  // True if company has been updated
+  var $updated=false;
+
 
      /*
        Constructor: Company
@@ -129,7 +145,7 @@ class Company{
    Initialize data  array with the default field values
    */
 private function base_data(){
-   $this->data=array();
+   $data=array();
 
    $ignore_fields=array('Company Key');
 
@@ -141,51 +157,124 @@ private function base_data(){
    if (mysql_num_rows($result) > 0) {
      while ($row = mysql_fetch_assoc($result)) {
        if(!in_array($row['Field'],$ignore_fields))
-	 $this->data[$row['Field']]=$row['Default'];
+	 $data[$row['Field']]=$row['Default'];
      }
    }
+   return $data;
  }
 
+
+
   
-  function create($data){
-    if(!is_array($data))
-      $data=array('name'=>_('Unknown Name'));
+  function create($raw_data){
 
 
-    // print_r($data);
-
-    $name=$data['name'];
-    $file_as=$this->file_as($data['name']);
-    $company_id=$this->get_id();
+    $this->data=base_data();
+    foreach($raw_data as $key=>$value){
+      if(array_key_exists($key,$this->data)){
+	$this->data[$key]=_trim($value);
+      }
+    }
     
-    if(!isset($data['contact key']) or !is_numeric($data['contact key'])){
-      $contact=new contact($new);
-    }else{
-    $contact_id=$data['contact key'];
-    $contact=new contact($contact_id);
+    
+    if($this->data['Company Name']==''){
+      $this->data['Company Name']=_('Unknown Name');
     }
 
-    
-    //print_r($contact->data);
-    $sql=sprintf("insert into `Company Dimension` (`Company ID`,`Company Name`,`Company File as`,`Company Main Address Key`,`Company Main XHTML Address`,`Company Main Country Key`,`Company Main Country`,`Company Main Location`,`Company Main Contact`,`Company Main Contact Key`,`Company Main Telephone`,`Company Main FAX`,`Company Main XHTML Email`,`Company Main Telephone Key`,`Company Main FAX Key`,`Company Main Email Key`) values (%d,%s,%s,%s,%s,%s,%s,%s,%s,%d,%s,%s,%s,%s,%s,%s)",
-		 $company_id,
-		 prepare_mysql($name),
-		 prepare_mysql($file_as),
-		 prepare_mysql($contact->get('Contact Main Address Key')),
-		 prepare_mysql($contact->get('Contact Main XHTML Address')),
-		 prepare_mysql($contact->get('Contact Main Country Key')),
-		 prepare_mysql($contact->get('Contact Main Country')),
-		 prepare_mysql($contact->get('Contact Main Location')),
-		 prepare_mysql($contact->get('Contact Name')),
-		 $contact->id,
-		 prepare_mysql($contact->get('Contact Main Telephone')),
-		 prepare_mysql($contact->get('Contact Main FAX')),
-		 prepare_mysql($contact->get('Contact Main XHTML Email')),
-		 prepare_mysql($contact->get('Contact Main Telephone Key')),
-		 prepare_mysql($contact->get('Contact Main Fax Key')),
-		 prepare_mysql($contact->get('Contact Main Email Key'))
+    $file_as=$this->file_as($this->data['Company Name']);
+    $this->data['Company ID']=$this->get_id();
+  
+  
+  //Create contact
+  $known_contact=true;
+  $main_contact=new Contact('Find in Company',$this->data);
+  if(!$main_contact->id){
+    //Create contact
+    $contact_data['Contact Name']=$this->data['Company Main Contact'];
+    $main_contact=new Contact('new',$contact_data);
+    $this->data['Company Main Contact Name']=$main_contact->display('name');
+    $this->data['Company Main Contact Key']=$main_contact->id;
+    if($main_contact->data['Contact Fuzzy']=='Yes')
+      $known_contact=false;
+  }else{
+    exit("contact already in database");
+  }
+  
+  //Create email
+  if($this->data['Company Main Plain Email']!=''){
+    $mail_associted_with_contact=false;
+    $main_email=new Email('Find in Company',$this->data['Company Main Plain Email']);
+    if(!$main_email->$id){
+    //Create contact
+      $email_data['Email']=$this->data['Company Main Plain Email'];
+      if(isset($raw_data['Email Contact Name']))
+	$email_data['Email Contact Name']=$raw_data['Main Contact Name'];
+    elseif($known_contact){
+      $email_data['Email Contact Name']=$this->data['Main Contact Name'];
+      $mail_associted_with_contact=true;
+    }
+    $main_email=new Email('new',$email_data);
+    $this->data['Company Main XHTML Email']=$main_contact->display('xhtml');
+    $this->data['Company Main Plain Email']=$main_contact->data['Email'];
+    $this->data['Company Main Email Key']=$main_contact->id;
+    }else{
+      exit("email already in database");
+	}
+  }
 
-		 );
+  //Create Address
+  $known_address=true;
+  $main_address=new Address('Find in company',$this->data);
+  if(!$main_address->id){
+    //Create address
+    foreach($raw_data as $key=>$value){
+      if(preg_match('/address/i',$key)){
+	$key=preg_replace('/^company\s*/i','',$key);
+	$address_data[$key]=_trim($value);
+      }
+    }
+    $main_address=new Address('new',$address_data);
+    if(!$main_address->new){
+      exit('Can not add addres in company '.$main_address->msg);
+    }
+    $this->data['Company Main Address Key']=$main_address->id;
+    $this->data['Company Main Plain Address']=$main_address->display('plain');
+    $this->data['Company Main XHTML Address']=$main_address->display('xhtml');
+    $this->data['Company Main XHTML Address']=$main_address->display('location');
+
+
+    if($main_address->data['Contact Fuzzy']=='Yes')
+      $known_contact=false;
+  }else{
+    exit("contact already in database");
+  }
+  
+  
+   //Create telephone
+  if($this->data['Company Main Telephone']!='' and Telecom::is_valid($this->data['Company Main Telephone'])){
+    $telephone_associted_with_contact=false;
+    $main_telephone=new Telecom('Find in Company',$this->data['Company Main Telecom']);
+    if(!$main_telephone->$id){
+    //Create contact
+      $telephone_data['Telephone']=$this->data['Company Main Telephone'];
+      if(isset($raw_data['Telephone Contact Name']))
+	$telephone_data['Telephone Contact Name']=$raw_data['Main Contact Name'];
+    elseif($known_contact){
+      $telephone_data['Telephone Contact Name']=$this->data['Main Contact Name'];
+      $telephone_associted_with_contact=true;
+    }
+    $main_telephone=new Telephone('new',$telephone_data);
+    $this->data['Company Main XHTML Telephone']=$main_contact->display('xhtml');
+    $this->data['Company Main Plain Telephone']=$main_contact->data['Telephone'];
+    $this->data['Company Main Telephone Key']=$main_contact->id;
+    }else{
+      exit("telephone already in database");
+	}
+  }
+
+
+
+
 
      if(mysql_query($sql)){
       $this->id = mysql_insert_id();

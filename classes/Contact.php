@@ -30,8 +30,22 @@ class Contact{
   public  $emails=false;
   // Integer: id
   // Database Primary Key
-  public  $id;
-
+  public  $id=0;
+ // Boolean: warning
+  // True if a warning
+  var $warning=false;
+  // Boolean: error
+  // True if error occuers
+  var $error=false;
+  // String: msg
+  // Messages
+  var $msg='';
+  // Boolean: new
+  // True if company has been created
+  var $new=false;
+ // Boolean: updated
+  // True if company has been updated
+  var $updated=false;
    /*
        Constructor: Contact
      

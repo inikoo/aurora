@@ -48,15 +48,16 @@ $data=array(
 	    ,'Company Main Telephone'=>'+44 (0) 114 2729165'
 	    ,'Company Main FAX'=>'+44 (0) 114 2706571'
 	    ,'Company Main Email'=>'mail@ancientwisdom.biz'
-	    ,'Address Line 1'=>'BLOCK B, Parkwood Business Park, Parkwood Road'
-	    ,'Address Town'=>'Sheffield'
-	    ,'Postal Code'=>'S3 8AL '
-	    ,'Address Country Name'=>'UK'
+	    ,'Company Address Line 1'=>'BLOCK B, Parkwood Business Park, Parkwood Road'
+	    ,'Company Address Town'=>'Sheffield'
+	    ,'Company Address Postal Code'=>'S3 8AL '
+	    ,'Company Address Country Name'=>'UK'
 	    ,'Company Main Contact'=>'Mr David Hardy'
 );
 
 
-
+$company=new Company('new',$data);
+exit;
 
 $sql="select * from  `Staff Dimension` ";
 $res=mysql_query($sql);
