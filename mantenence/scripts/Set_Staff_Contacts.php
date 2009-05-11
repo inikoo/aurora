@@ -45,7 +45,7 @@ $data=array(
 	    ,'Company Fiscal Name'=>'Ancient Wisdom Marketing Ltd'
 	    ,'Company Tax Number'=>'764298589'
 	    ,'Company Registration Number'=>'4108870'
-	    ,'Company Main Telephone'=>'+44 (0) 114 2729165'
+	    ,'Company Main Telephone'=>'+44 1142729165'
 	    ,'Company Main FAX'=>'+44 (0) 114 2706571'
 	    ,'Company Main Email'=>'mail@ancientwisdom.biz'
 	    ,'Company Address Line 1'=>'BLOCK B, Parkwood Business Park, Parkwood Road'
@@ -56,14 +56,14 @@ $data=array(
 );
 
 
-$company=new Company('new',$data);
+$company=new Company('find',$data);
 exit;
 
 $sql="select * from  `Staff Dimension` ";
 $res=mysql_query($sql);
 while($row=mysql_fetch_array($res, MYSQL_ASSOC)){
   
-  $name='Contact Name'=>ucwords($row['Staff Name']);
+  // $name='Contact Name'=>ucwords($row['Staff Name']);
   
   $data_contact=array(
 		      'Contact Name'=>ucwords($row['Staff Name'])
