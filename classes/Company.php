@@ -82,6 +82,9 @@ class Company{
      if(preg_match('/create|new/i',$arg1)){
        $this->create($arg2);
        return;
+     } if(preg_match('/find/i',$arg1)){
+       $this->find($arg2,$arg1);
+       return;
      }       
       $this->get_data($arg1,$arg2);
        return ;
@@ -89,7 +92,95 @@ class Company{
  }
 
 
-  
+  /*
+    Method: find
+    Find Company with similar data
+   
+    Returns:
+    Key of the Compnay found, if create is found in the options string  returns the new key
+   */  
+  function find($raw_data,$options){
+    $create=false;
+
+    if(preg_match('/create/i',$options)){
+      $create=true;
+    }
+    if(preg_match('/update/i',$options)){
+      $update=true;
+    }
+
+
+    if(preg_match('/from supplier/',$options)){
+      foreach($raw_data as $key=>$val){
+	$_key=preg_replace('/Supplier /','Company ',$key);
+	$raw_data[$_key]=$val;
+      }
+      $mode='supplier';
+    }elseif(preg_match('/from customer/',$options)){
+      foreach($raw_data as $key=>$val){
+	$_key=preg_replace('/Customer /','Company ',$key);
+	$raw_data[$_key]=$val;
+      }
+      $mode='customer';
+    }else{
+
+      $mode='all';
+    }
+
+    $data=$this->base_data();
+    foreach($raw_data as $key=>$value){
+      if(array_key_exists($key,$data)){
+	$data[$key]=_trim($value);
+      }
+    }
+
+    //print_r($raw_data);
+    //print_r($data);
+    // Search for companies with the same email
+    if($data['Company Main Plain Email']!=''){
+      $sql=sprintf("select E.`Email Key` from `Email Telecom` E left join `Email Bridge` EB on (E.`Email Key`=EB.`Email Key`) where `Email`=%s and `Subject Type`='Company'",prepare_mysql($data['Company Main Plain Email']));
+      $result=mysql_query($sql);
+      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+	$this->found=true;
+	if($create){
+	  if($update){
+	    $this->update('all',$data);
+	  }else{
+	    $this->error=true;
+	    $this->msg=_('Email found in other company');
+	  }
+	}
+	return;
+      }
+    }
+
+  if($data['Company Main Telephone']!=''){
+    $telephone_data=Telecom::parse_number($data['Company Main Telephone']);
+    print_r($telephone_data);
+    exit;
+    $plain_telephone=$telephone_data['Telephone Plain Number'];
+      $sql=sprintf("select T.`Telecom Key` from `Telecom Dimension` T left join `Telecom Bridge` TB on (T.`Telecom Key`=TB.`Telecom Key`) where `Telecom Plain Number`=%s and `Subject Type`='Company'",prepare_mysql($plain_telephone));
+      $result=mysql_query($sql);
+      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+	$this->found=true;
+	if($create){
+	  if($update){
+	    $this->update('all',$data);
+	  }else{
+	    $this->error=true;
+	    $this->msg=_('Telephone found in other company');
+	  }
+	}
+	return;
+      }
+    }
+    
+
+    exit;
+
+
+  }
+
   function get($key,$arg1=false){
     //  print $key."xxxxxxxx";
     
@@ -169,13 +260,13 @@ private function base_data(){
   function create($raw_data){
 
 
-    $this->data=base_data();
+    $this->data=$this->base_data();
     foreach($raw_data as $key=>$value){
       if(array_key_exists($key,$this->data)){
 	$this->data[$key]=_trim($value);
       }
     }
-    
+
     
     if($this->data['Company Name']==''){
       $this->data['Company Name']=_('Unknown Name');

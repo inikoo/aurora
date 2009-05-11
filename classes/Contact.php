@@ -27,6 +27,8 @@ class Contact{
   // Array: data
   // Class data
   public $data=array();
+ // Array: emails
+  // Contact emails data
   public  $emails=false;
   // Integer: id
   // Database Primary Key
@@ -79,9 +81,11 @@ class Contact{
     $this->unknown_informal_greeting=$myconf['unknown_informal_greting'];
     $this->unknown_formal_greeting=$myconf['unknown_formal_greting'];
 
-    if(preg_match('/^new$/',$arg1)){
-
+    if(preg_match('/^(new|create)$/i',$arg1)){
       $this->create($arg2);
+      return;
+    }if(preg_match('/find/i',$arg1)){
+      $this->find($arg2,$arg1);
       return;
     }
 
@@ -117,6 +121,44 @@ class Contact{
 
   }
 
+  /*
+    Method: find
+    Find Company with similar data
+   
+    Returns:
+    Key of the Compnay found, if create is found in the options string  returns the new key
+   */  
+  function find($data,$options){
+    
+    $mode='all';
+    if(preg_match('/from supplier/',$options)){
+      foreach($data as $key=>$val){
+	$_key=preg_replace('/Supplier /','Contact ',$key);
+	$data[$_key]=$val;
+      }
+      $mode='supplier';
+    }elseif(preg_match('/from customer/',$options)){
+      foreach($data as $key=>$val){
+	$_key=preg_replace('/Customer /','Contact ',$key);
+	$data[$_key]=$val;
+      }
+      $mode='customer';
+    }elseif(preg_match('/from Company/',$options)){
+      foreach($data as $key=>$val){
+	$_key=preg_replace('/Company /','Contact ',$key);
+	$data[$_key]=$val;
+      }
+      $mode='customer';
+    }
+
+    
+    print_r($data);
+    exit;
+
+
+  }
+
+
  /* Method: check_others
   Look for similar contacts in the Database
   
@@ -128,7 +170,6 @@ class Contact{
   Return: 
   integer  - $contact_key   integer     Contact Key of the most probable match or 0 if no match found
  */
-
   function check_others($data){
     
       $weight=array(
