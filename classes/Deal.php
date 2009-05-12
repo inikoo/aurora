@@ -1,5 +1,16 @@
 <?
+/*
+ File: Deal.php 
 
+ This file contains the Deal Class
+
+ About: 
+ Autor: Raul Perusquia <rulovico@gmail.com>
+ 
+ Copyright (c) 2009, Kaktus 
+ 
+ Version 2.0
+*/
 class deal{
 
   var $db;

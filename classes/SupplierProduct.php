@@ -1,5 +1,16 @@
 <?
+/*
+ File: SupplierProduct.php 
 
+ This file contains the SupplierProduct Class
+
+ About: 
+ Autor: Raul Perusquia <rulovico@gmail.com>
+ 
+ Copyright (c) 2009, Kaktus 
+ 
+ Version 2.0
+*/
 class supplierproduct{
   
   var $db;

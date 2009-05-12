@@ -1,5 +1,16 @@
 <?
+/*
+ File: Page.php 
 
+ This file contains the Page Class
+
+ About: 
+ Autor: Raul Perusquia <rulovico@gmail.com>
+ 
+ Copyright (c) 2009, Kaktus 
+ 
+ Version 2.0
+*/
 class Page{
   var $db;
   var $data=array();

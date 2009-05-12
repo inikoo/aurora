@@ -142,7 +142,11 @@ class Company{
 
     }
 
-    
+    if($data['Company Name']==''){
+      $data['Company Name']=_('Unknown Name');
+    }
+
+
     $contact=new Contact("find in company",$raw_data);
 
     $email=new Email("find in company",$data['Company Main Plain Email']);
@@ -155,57 +159,6 @@ class Company{
       exit("found company data in another company\n");
     }
     
-
-
-  
-    if($data['Company Main Plain Email']!=''){
-      
-      $email=new Email("find in company $create $update",$data['Company Main Plain Email']);
-
-      if($email->error){
-	//Collect data about email found
-	print $email->msg."\n";
-	exit("find_company: email found\n");
-      }
-      if($email->found){
-
-	exit('email already in');
-      }
-
-
-    }
-    
-    if($data['Company Main Telephone']!=''){
-      $telephone=new Telecom("find in company $create $update",$data['Company Main Telephone']);
-       if($telephone->error){
-	//Collect data about telecom found
-	exit("find_company: telephone found");
-      }
-    }
-
-    
-    $address=new Address("find in company $create $update",$address_data);
-    if($address->error){
-      exit("find_company: address found");
-    }
-
-    $data['Company Main Address Key']=$address->id;
-    $data['Company Main XHTML Address']=$address->display('xhtml');
-    $data['Company Main Plain Address']=$address->display('plain');
-    $data['Company Main Country Key']=$address->data['Address Country Key'];
-    $data['Company Main Country']=$address->data['Address Country Name'];
-    $data['Company Main Location']=$address->display('location');
-    
-    if(isset($email) and $email->new){
-      $data['Company Main Plain Email']=$email->display('plain');
-      $data['Company Main XHTML Email']=$email->display('xhtml');
-      $data['Company Main Email Key']=$email->id;
-    }
-    if(isset($telephone) and $telephone->new){
-      $data['Company Main Plain Telephone']=$telephone->display('plain');
-      $data['Company Main Telephone']=$telephone->display('number');
-      $data['Company Main Telephone Key']=$telephone->id;
-    }
    
    
     $this->create($data);
@@ -304,22 +257,21 @@ private function base_data(){
     }
 
     
-    if($this->data['Company Name']==''){
-      $this->data['Company Name']=_('Unknown Name');
-    }
+
 
     $file_as=$this->file_as($this->data['Company Name']);
     $this->data['Company ID']=$this->get_id();
   
-  
+    
     $contact=new Contact("find in company create",$raw_data);
     if($contact->error){
       exit("find_company: contact error\n");
     }
-    
+    EXIT;
     $this->data['Company Main Contact Name']=$contact->display('name');
     $this->data['Company Main Contact Key']=$contact->id;
-
+    
+    
     if($data['Company Main Plain Email']!=''){
        
        $email_data['Email']=$this->data['Company Main Plain Email'];
@@ -338,62 +290,54 @@ private function base_data(){
 
      }
 
+    
 
-  //Create Address
-  $known_address=true;
-  $main_address=new Address('Find in company',$this->data);
-  if(!$main_address->id){
-    //Create address
-    foreach($raw_data as $key=>$value){
-      if(preg_match('/address/i',$key)){
-	$key=preg_replace('/^company\s*/i','',$key);
-	$address_data[$key]=_trim($value);
+
+  if($data['Company Main Telephone']!=''){
+      $telephone=new Telecom("find in company $create $update",$data['Company Main Telephone']);
+       if($telephone->error){
+	//Collect data about telecom found
+	exit("find_company: telephone found");
       }
     }
-    $main_address=new Address('new',$address_data);
-    if(!$main_address->new){
-      exit('Can not add addres in company '.$main_address->msg);
+
+    
+    $address=new Address("find in company $create $update",$address_data);
+    if($address->error){
+      exit("find_company: address found");
     }
-    $this->data['Company Main Address Key']=$main_address->id;
-    $this->data['Company Main Plain Address']=$main_address->display('plain');
-    $this->data['Company Main XHTML Address']=$main_address->display('xhtml');
-    $this->data['Company Main XHTML Address']=$main_address->display('location');
 
-
-    if($main_address->data['Contact Fuzzy']=='Yes')
-      $known_contact=false;
-  }else{
-    exit("contact already in database");
-  }
-  
-  
-   //Create telephone
-  if($this->data['Company Main Telephone']!='' and Telecom::is_valid($this->data['Company Main Telephone'])){
-    $telephone_associted_with_contact=false;
-    $main_telephone=new Telecom('Find in Company',$this->data['Company Main Telecom']);
-    if(!$main_telephone->$id){
-    //Create contact
-      $telephone_data['Telephone']=$this->data['Company Main Telephone'];
-      if(isset($raw_data['Telephone Contact Name']))
-	$telephone_data['Telephone Contact Name']=$raw_data['Main Contact Name'];
-    elseif($known_contact){
-      $telephone_data['Telephone Contact Name']=$this->data['Main Contact Name'];
-      $telephone_associted_with_contact=true;
+    $data['Company Main Address Key']=$address->id;
+    $data['Company Main XHTML Address']=$address->display('xhtml');
+    $data['Company Main Plain Address']=$address->display('plain');
+    $data['Company Main Country Key']=$address->data['Address Country Key'];
+    $data['Company Main Country']=$address->data['Address Country Name'];
+    $data['Company Main Location']=$address->display('location');
+    
+    if(isset($email) and $email->new){
+      $data['Company Main Plain Email']=$email->display('plain');
+      $data['Company Main XHTML Email']=$email->display('xhtml');
+      $data['Company Main Email Key']=$email->id;
     }
-    $main_telephone=new Telephone('new',$telephone_data);
-    $this->data['Company Main XHTML Telephone']=$main_contact->display('xhtml');
-    $this->data['Company Main Plain Telephone']=$main_contact->data['Telephone'];
-    $this->data['Company Main Telephone Key']=$main_contact->id;
-    }else{
-      exit("telephone already in database");
-	}
-  }
+    if(isset($telephone) and $telephone->new){
+      $data['Company Main Plain Telephone']=$telephone->display('plain');
+      $data['Company Main Telephone']=$telephone->display('number');
+      $data['Company Main Telephone Key']=$telephone->id;
+    }
 
+    $keys='';
+    $values='';
+    foreach($this->data as $key=>$value){
+      $keys.=",`".$key."`";
+      $values.=','.prepare_mysql($value,false);
+    }
+    $values=preg_replace('/^,/','',$values);
+    $keys=preg_replace('/^,/','',$keys);
 
-
-
-
-     if(mysql_query($sql)){
+    $sql="insert into `Company Dimension` ($keys) values ($values)";
+        print "$sql\n";
+    
+    if(mysql_query($sql)){
       $this->id = mysql_insert_id();
       $this->get_data('id',$this->id);
      }else{

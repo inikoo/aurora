@@ -1,5 +1,16 @@
 <?
+/*
+ File: Warehouse.php 
 
+ This file contains the Warehouse Class
+
+ About: 
+ Autor: Raul Perusquia <rulovico@gmail.com>
+ 
+ Copyright (c) 2009, Kaktus 
+ 
+ Version 2.0
+*/
 class warehouse{
   
   var $data=array();

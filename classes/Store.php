@@ -1,13 +1,53 @@
 <?
-//@author Raul Perusquia <rulovico@gmail.com>
-//Copyright (c) 2009 LW
-class store{
+/*
+ File: Company.php 
 
+ This file contains the Company Class
 
+ About: 
+ Autor: Raul Perusquia <rulovico@gmail.com>
+ 
+ Copyright (c) 2009, Kaktus 
+ 
+ Version 2.0
+*/
+
+/* class: Store
+   Class to manage the *Company Dimension* table
+*/
+class Store{
+
+  // Integer: id
+  // Record Id
   var $id=false;
+  /*
+       Constructor: Store
+     
+       Initializes the class, Search/Load or Create for the data set 
+     
+      Parameters:
+       arg1 -    (optional) Could be the tag for the Search Options or the Store Key for a simple object key search
+       arg2 -    (optional) Data used to search or create the object
 
+       Returns:
+       void
+       
+       Example:
+       (start example)
+       // Load data from `Store Dimension` table where  `Store Key`=3
+       $key=3;
+       $company = New Store($key); 
 
-  function __construct($a1,$a2=false) {
+        // Insert row to `Store Dimension` table
+       $data=array();
+       $company = New Store('new',$data); 
+       
+
+       (end example)
+
+     */
+
+  function Store($a1,$a2=false) {
 
 
 

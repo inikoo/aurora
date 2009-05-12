@@ -1,4 +1,16 @@
 <?
+/*
+ File: Location.php 
+
+ This file contains the Location Class
+
+ About: 
+ Autor: Raul Perusquia <rulovico@gmail.com>
+ 
+ Copyright (c) 2009, Kaktus 
+ 
+ Version 2.0
+*/
 include_once('Part.php');
 class location{
 

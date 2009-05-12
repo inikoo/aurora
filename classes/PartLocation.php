@@ -1,6 +1,17 @@
 <?
-//@author Raul Perusquia <rulovico@gmail.com>
-//Copyright (c) 2009 LW
+/*
+ File: PartLocation.php 
+
+ This file contains the PartLocation Class
+
+ About: 
+ Autor: Raul Perusquia <rulovico@gmail.com>
+ 
+ Copyright (c) 2009, Kaktus 
+ 
+ Version 2.0
+*/
+
 include_once('Part.php');
 include_once('Location.php');
 

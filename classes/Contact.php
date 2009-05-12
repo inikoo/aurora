@@ -162,6 +162,13 @@ class Contact{
       //   print_r($raw_data);
       foreach($raw_data as $key=>$val){
 	
+
+
+
+	if($create and preg_match('/address|email|telephone|fax|company name/i',$key)){
+	  continue;
+	}
+
 	if($key=='Company Name'){
 	  $_key='Contact Company Name';
 	}elseif($key=='Company Main Contact')
@@ -173,7 +180,7 @@ class Contact{
 	if(array_key_exists($_key,$data))
 	  $data[$_key]=$val;
 	
-	if(array_key_exists($_key,$address_data))
+	if(array_key_exists($_key,$address_data) and !$create)
 	  $address_data[$_key]=$val;
 	
 
@@ -193,10 +200,12 @@ class Contact{
 
  
 
-    if($email->found)
+    if(isset($email) and $email->found)
       $this->found=true;
     
-
+    
+    if($create)
+      $this->create($data);
 
 
   }
@@ -373,37 +382,32 @@ private function base_data($args='replace'){
 */
  function create ($data,$options=''){
    
+
    
    if(is_string($data))
      $data['Contact Name']=$data;
    
-   $this->base_data();
+   $this->data=$this->base_data();
 
    
    foreach($data as $key=>$value){
-     if(isset($this->data[$key]))
+     if(array_key_exists($key,$this->data))
        $this->data[$key]=_trim($value);
    }
-      
-
+   
+   
    if(!preg_match('/components ok|components confirmed/i',$options))
      $this->parse_name($this->data['Contact Name']);
-   
      $this->prepare_name_data($this->data);
-    
      $this->data['Contact Name']=$this->display('name');
-
-
      if(!preg_match('/gender confirmed|gender ok/i',$options))
-       
        $this->data['Contact Gender']=$this->gender($this->data);
      if(!preg_match('/grettings confirmed|grettings ok/i',$options)){
-
        $this->data['Contact Informal Greeting']=$this->display('informal gretting');
        $this->data['Contact Formal Greeting']=$this->display('formal gretting');
      }
 
-
+     
     // print_r($this->data);
     
     if($this->data['Contact Name']==''){
@@ -433,7 +437,7 @@ private function base_data($args='replace'){
     $values=preg_replace('/,$/',')',$values);
 
     $sql=sprintf("insert into `Contact Dimension` %s %s",$keys,$values);
-   
+
     
     if(mysql_query($sql)){
       $this->id= mysql_insert_id();

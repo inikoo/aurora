@@ -1,4 +1,4 @@
-Format: 1.4
+Format: Development Release 12-07-2007 (1.35 base)
 
 
 Title: Kaktus
@@ -53,21 +53,34 @@ Group: Files  {
 
       File: Address.php  (classes/Address.php)
       File: Company.php  (classes/Company.php)
+      File: Company.php  (classes/Store.php)
       File: Contact.php  (classes/Contact.php)
       File: Country.php  (classes/Country.php)
       File: Customer.php  (classes/Customer.php)
+      File: Deal.php  (classes/Deal.php)
       File: Department.php  (classes/Department.php)
       File: Email.php  (classes/Email.php)
+      File: Family.php  (classes/Family.php)
+      File: Location.php  (classes/Location.php)
+      File: Ordes.php  (classes/Order.php)
+      File: Page.php  (classes/Page.php)
       File: Part.php  (classes/Part.php)
+      File: PartLocation.php  (classes/PartLocation.php)
       File: Product.php  (no auto-title, classes/Product.php)
+      File: Staff.php  (classes/Staff.php)
       File: Supplier.php  (classes/Supplier.php)
+      File: SupplierProduct.php  (classes/SupplierProduct.php)
       File: Telecom.php  (classes/Telecom.php)
+      File: User.php  (classes/User.php)
+      File: Warehouse.php  (classes/Warehouse.php)
       }  # Group: PHP Classes
 
    Group: PHP Other  {
 
+      File: ar_assets.php  (ar_assets.php)
       File: common_functions.php  (common_functions.php)
       File: Fill_Unknown_Address.php  (mantenence/scripts/Fill_Unknown_Address.php)
+      File: Get_Tel_Local_Codes  (mantenence/scripts/Get_Tel_Local_Codes.php)
       File: Set_Staff_Contacts.php  (mantenence/scripts/Set_Staff_Contacts.php)
       }  # Group: PHP Other
 
