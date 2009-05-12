@@ -1,6 +1,9 @@
 <?php
 
 /**
+   File: DBsession.php 
+   
+
  *  A class to handle sessions by using a mySQL database for session related data storage providing better
  *  security then the default session handler used by PHP.
  *
@@ -29,10 +32,10 @@
  *
  *  For more resources visit {@link http://stefangabos.blogspot.com}
  *
- *  @author     Stefan Gabos <ix@nivelzero.ro>
- *  @version    1.0.5 (last revision: September 15, 2007)
- *  @copyright  (c) 2006 - 2007 Stefan Gabos
- *  @package    dbSession
+ *  Author:     Stefan Gabos <ix@nivelzero.ro>
+ *  Version:    1.0.5 (last revision: September 15, 2007)
+ *  Copyright:  (c) 2006 - 2007 Stefan Gabos
+ *  Package:    dbSession
 
 */
 

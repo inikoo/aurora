@@ -1,5 +1,16 @@
 <?
+/*
+ File: Ordes.php 
 
+ This file contains the Order Class
+
+ About: 
+ Autor: Raul Perusquia <rulovico@gmail.com>
+ 
+ Copyright (c) 2009, Kaktus 
+ 
+ Version 2.0
+*/
 include_once ('Staff.php');
 include_once ('Supplier.php');
 include_once ('Customer.php');

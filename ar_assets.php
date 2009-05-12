@@ -1,6 +1,17 @@
 <?
-//@author Raul Perusquia <rulovico@gmail.com>
-//Copyright (c) 2009 LW
+/*
+ File: ar_assets.php 
+
+ Ajax Server Anchor for the Product,Family,Department and Part Clases
+
+ About: 
+ Autor: Raul Perusquia <rulovico@gmail.com>
+ 
+ Copyright (c) 2009, Kaktus 
+ 
+ Version 2.0
+*/
+
 require_once 'common.php';
 require_once 'stock_functions.php';
 require_once 'classes/Product.php';

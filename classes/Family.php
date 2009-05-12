@@ -1,7 +1,19 @@
 <?
+/*
+ File: Family.php 
+
+ This file contains the Contact Class
+
+ About: 
+ Autor: Raul Perusquia <rulovico@gmail.com>
+ 
+ Copyright (c) 2009, Kaktus 
+ 
+ Version 2.0
+*/
 include_once('Product.php');
 
-class family{
+class Family{
 
  var $products=false;
  var $id=false;

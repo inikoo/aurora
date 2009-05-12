@@ -1,6 +1,17 @@
 <?
-//@author Raul Perusquia <rulovico@gmail.com>
-//Copyright (c) 2009 LW
+/*
+ File: Staff.php 
+
+ This file contains the Staff Class
+
+ About: 
+ Autor: Raul Perusquia <rulovico@gmail.com>
+ 
+ Copyright (c) 2009, Kaktus 
+ 
+ Version 2.0
+*/
+
 require_once 'Name.php';
 require_once 'Email.php';
 
