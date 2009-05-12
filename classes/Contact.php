@@ -48,6 +48,9 @@ class Contact{
  // Boolean: updated
   // True if company has been updated
   var $updated=false;
+ // Boolean: found
+  // True if company founded
+  var $found=false;
    /*
        Constructor: Contact
      
@@ -121,6 +124,7 @@ class Contact{
 
   }
 
+
   /*
     Method: find
     Find Company with similar data
@@ -128,32 +132,71 @@ class Contact{
     Returns:
     Key of the Compnay found, if create is found in the options string  returns the new key
    */  
-  function find($data,$options){
-    
+  function find($raw_data,$options){
+      $create='';
+    $update='';
+    if(preg_match('/create/i',$options)){
+      $create='create';
+    }
+    if(preg_match('/update/i',$options)){
+      $update='update';
+    }
+
+    $data=$this->base_data();
+    $address_data=array('Contact Address Line 1'=>'','Contact Address Town'=>'','Contact Address Line 2'=>'','Contact Address Line 3'=>'','Contact Address Postal Code'=>'','Contact Address Country Name'=>'','Contact Address Country Primary Division'=>'','Contact Address Country Secondary Division'=>'');
     $mode='all';
     if(preg_match('/from supplier/',$options)){
-      foreach($data as $key=>$val){
-	$_key=preg_replace('/Supplier /','Contact ',$key);
+      foreach($raw_data as $key=>$val){
+	$_key=preg_replace('/Supplier /i','Contact ',$key);
 	$data[$_key]=$val;
       }
       $mode='supplier';
-    }elseif(preg_match('/from customer/',$options)){
+    }elseif(preg_match('/from customer/i',$options)){
       foreach($data as $key=>$val){
 	$_key=preg_replace('/Customer /','Contact ',$key);
 	$data[$_key]=$val;
       }
       $mode='customer';
-    }elseif(preg_match('/from Company/',$options)){
-      foreach($data as $key=>$val){
-	$_key=preg_replace('/Company /','Contact ',$key);
-	$data[$_key]=$val;
+    }elseif(preg_match('/from Company|in company/i',$options)){
+      
+      //   print_r($raw_data);
+      foreach($raw_data as $key=>$val){
+	
+	if($key=='Company Name'){
+	  $_key='Contact Company Name';
+	}elseif($key=='Company Main Contact')
+	    $_key='Contact Name';
+	else
+	  $_key=preg_replace('/Company /','Contact ',$key);
+	
+
+	if(array_key_exists($_key,$data))
+	  $data[$_key]=$val;
+	
+	if(array_key_exists($_key,$address_data))
+	  $address_data[$_key]=$val;
+	
+
       }
       $mode='customer';
     }
 
+   
+
+    if($data['Contact Main Plain Email']!=''){
+      $email=new Email("find in contact $create $update",$data['Contact Main Plain Email']);
+      if($email->error){
+	print $email->msg."\n";
+	exit("find_contact: email found\n");
+      }	
+    }
+
+ 
+
+    if($email->found)
+      $this->found=true;
     
-    print_r($data);
-    exit;
+
 
 
   }
@@ -306,11 +349,7 @@ private function base_data($args='replace'){
      }
    }
 
-   if(preg_match('/not? replace/',$args))
-     return $data;
-   if(preg_match('/replace/',$args))
-     $this->data=$data;
-  
+   
 
    return $data;
    

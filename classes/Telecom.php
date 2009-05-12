@@ -20,6 +20,10 @@ class Telecom{
   // Integer: id
   // Database Primary Key
   var $id=false;
+  var $found=false;
+  var $new=false;
+  var $error=false;
+  var $msg='';
 
      /*
        Constructor: Telecom
@@ -28,19 +32,24 @@ class Telecom{
 
      */
   function Telecom($arg1=false,$arg2=false) {
-
-    //print "$arg1 ********".is_numeric($arg1)."*******\n";
-     if(is_numeric($arg1)){
-       //  print "yess\n";
-       $this->get_data('id',$arg1);
-
-     }
-
-   if(is_array($arg2) and $arg1='new'){
-       $this->create($arg2);
-       return;
-     }
-  $this->get_data($arg1,$arg2);
+   if(!$arg1 and !$arg2){
+      $this->error=true;
+      $this->msg='No data provided';
+      return;
+    }
+    if(is_numeric($arg1)){
+      $this->get_data('id',$arg1);
+      return;
+    }
+    if ($arg1=='new'){
+      $this->create($arg2);
+      return;
+    }
+    if(preg_match('/find/i',$arg1)){
+      $this->find($arg2,$arg1);
+      return;
+    }
+    $this->get_data($arg1,$arg2);
   }
 
 
@@ -64,11 +73,13 @@ class Telecom{
 
   function display($tipo=''){
 
-    if(!$data)
-      $data=$this->data;
+
    switch($tipo){
    case('plain'):
-     return $this->plain_number($this->data);
+     return $this->data['Telecom Plain Number'];
+   
+    
+   case('xhtml'):
    case('number'):
    default:
      return $this->formated_number($this->data);
@@ -128,12 +139,128 @@ function base_data(){
    return $data;
  }
 /*
-  Function: create
-  Insert new number to the database
+  Function: find
+  Look for similar records and take actions dependiing of the options
 */
-function find($data,$options){
+function find($raw_data,$options){
   
-  $sql=sprintf("select `Telephone Key`,`Subject Key`  from `Telecom Dimension` where `Telecom Plain Number`=%s and `Telecom`")
+
+   if(!$raw_data){
+      $this->new=false;
+      $this->msg=_('Error no telecom data');
+      if(preg_match('/exit on errors/',$options))
+	exit($this->msg);
+      return false;
+    }
+
+   if(preg_match('/country code [a-z]{3}/',$options,$match)){
+      $country_code=preg_replace('/[^\d]/','',$match[0]);
+   }else
+     $country_code='UNK';
+
+   if(is_string($raw_data))
+     $raw_data=$this->parse_number($raw_data,$country_code);
+
+   $data=$this->base_data();
+    foreach($raw_data as $key=>$value){
+      if(array_key_exists($key,$data))
+	$data[$key]=$value;
+    }
+
+    $data=$this->clean_data($data);
+    
+   
+
+    if($data['Telecom Number']==''){
+      $this->msg=_('Wrong telephone number');
+      return false;
+    }
+
+    $subject_key=0;
+    $subject_type='Contact';
+
+    if(preg_match('/in contact \d+/',$options,$match)){
+      $subject_key=preg_replace('/[^\d]/','',$match[0]);
+      $subject_type='Contact';
+    }
+    if(preg_match('/in company \d+/',$options,$match)){
+      $subject_key=preg_replace('/[^\d]/','',$match[0]);
+      $subject_type='Company';
+    }elseif(preg_match('/company/',$options,$match)){
+      $subject_type='Company';
+    }
+
+
+    
+    $sql=sprintf("select T.`Telecom Key`,`Subject Key` from `Telecom Dimension` T left join `Telecom Bridge` TB  on (TB.`Telecom Key`=T.`Telecom Key`) where `Telecom Plain Number`=%s and `Subject Type`=%s  "
+		 ,prepare_mysql($data['Telecom Plain Number'])
+		 ,prepare_mysql($subject_type)
+		 );
+    $result=mysql_query($sql);
+    $num_results=mysql_num_rows($result);
+    
+      if($num_results==0){
+	$this->found=false;
+       	
+      }else if($num_results==1){
+	$row=mysql_fetch_array($result, MYSQL_ASSOC);
+	
+	if($row['Subject Key']==$subject_key){
+	  $this->get_data('id',$row['Telecom Key']);
+	  $this->update($data);
+	  return $this->id;
+	}else{
+	  if($subject_type=='Contact'){
+	    $contact=new Contact($row['Subject Key']);
+	  $this->msg=_('Telephone found in another contact').sprintf('. %s (%d)',$contact->display('name'),$contact->id);
+	  }else{
+	    $company=new Company($row['Subject Key']);
+	  $this->msg=_('Telephone found in another company').sprintf('. %s (%d)',$company->display('name'),$company->id);
+	  
+	  }
+	  return 0;
+	}
+      }else{
+	while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+	  if($row['Subject Key']==$in_contact){
+	    $this->get_data('id',$row['Telecom Key']);
+	    $this->update($data);
+	    return $this->id;
+	  }
+	}
+	$this->msg=_('Telephone found in')." $num_results ".ngettext($num_results,'record','records');
+	return 0;
+	
+      }
+      
+    
+    if($subject_type=='Company'){
+      // Look if another contact has this telecom
+      $sql=sprintf("select T.`Telecom Key`,`Subject Key` from `Telecom Dimension` T left join `Telecom Bridge` TB  on (TB.`Telecom Key`=T.`Telecom Key`) where `Telecom Plain Number`=%s and `Subject Type`='Contact'  "
+		   ,prepare_mysql($data['Telecom Plain Number'])
+		 );
+
+	$result=mysql_query($sql);
+	$num_results=mysql_num_rows($result);
+
+	if($num_results==0){
+
+	  if(preg_match('/create/i',$options)){
+	    $this->data=$data;
+	    $this->create();
+	  }
+	  return;
+
+	}else{
+	  // we can insert the contact to the comapny or hikat of necesary
+	  exit("todo in telecom");
+
+	}
+      }
+
+
+
+
 
 }
 
@@ -145,54 +272,60 @@ Insert new number to the database
 
 
  */
- function create($data){
+ function create(){
    
-   if(is_string($data)){
-     $this->data=$this->parse_number($data);
-   }elseif(is_array($data)){
-     $this->data=$this->clean_data($data);
-   }
+
+  
+   
    
    if($this->data['Telecom Number']==''){
      $this->new=false;
      $this->error=true;
      $this->msg=_('Wrong telephone number');
    }
-
-   $sql=sprintf("insert into `Telecom Dimension` (`Telecom Type`,`Telecom Country Telephone Code`,`Telecom National Access Code`,`Telecom Area Code`,`Telecom Number`,`Telecom Extension`,`Telecom Plain Number`) values (%s,%s,%s,%s,%s,%s,%s)",
-		prepare_mysql($this->data['Telecom Type']),
+   
+   $sql=sprintf("insert into `Telecom Dimension` (`Telecom Technology Type`,`Telecom Country Telephone Code`,`Telecom National Access Code`,`Telecom Area Code`,`Telecom Number`,`Telecom Extension`,`Telecom Plain Number`) values (%s,%s,%s,%s,%s,%s,%s)",
+		prepare_mysql($this->data['Telecom Technology Type']),
 		prepare_mysql($this->data['Telecom Country Telephone Code']),
-		prepare_mysql($this->data['Telecom National Access Code']),
+		prepare_mysql($this->data['Telecom National Access Code'],false),
 		prepare_mysql($this->data['Telecom Area Code']),
 		prepare_mysql($this->data['Telecom Number']),
-		prepare_mysql($this->data['Telecom Extension']),
-		prepare_mysql($this->display('plain'))
+		prepare_mysql($this->data['Telecom Extension'],false),
+		prepare_mysql($this->data['Telecom Plain Number'])
 		);
-    if(mysql_query($sql)){
-      $this->id = mysql_insert_id();
-      $this->get_data('id',$this->id);
-      $this->new=true;
-      return true;
-    }else{
-      $this->msg="Error can not create telecom\n";
-      $this->new=false;
-    }
 
+   if(mysql_query($sql)){
+     $this->id = mysql_insert_id();
+     $this->get_data('id',$this->id);
+     $this->new=true;
+     return true;
+   }else{
+     $this->msg="Error can not create telecom\n";
+     $this->new=false;
+   }
+   
  }
 
  /*Function: clean_data
    Parse the number in its componets
-
+   
+   Parameter:
+   $raw_data array with telecom fields
+   
+   Returns:
+   $data  array with cleaned telecom field
    
   */
  function clean_data($raw_data){
+   
    $data=Telecom::base_data();
    foreach($raw_data as $key=>$val){
      if(array_key_exists($key,$data)){
-       $data=$val;
+       
+       $data[$key]=$val;
      }
    }
-   
+
    return $data;
    
  }
@@ -280,6 +413,10 @@ Insert new number to the database
      
    }
 
+
+   $data['Telecom Number']=$number;
+   
+
   /*  $raw_tel=$data['Telecom Original Number']; */
 /*    // print "org1 $data ".$raw_tel."\n"; */
 /*    $raw_tel=preg_replace('/\(/',' (',$raw_tel); */
@@ -343,23 +480,33 @@ Insert new number to the database
 
 
 
-/*   switch($data['Telecom Country Code']){ */
+   switch($country_code){
     
-/*   case('GBR')://UK */
-/*     if(preg_match('/^0845/',$data['Telecom Number'])){ */
-/*       $data['National Only Telecom']=1; */
-/*       $data['Telecom Country Telephone Code']=''; */
-/*       $data['Telecom Area Code']='0845'; */
-/*       $data['Telecom National Access Code']=''; */
-/*       $data['Telecom Number']=preg_replace('/^0845/','',$data['Telecom Number']); */
-/*     } */
-/*     $data['Telecom Number']=preg_replace('/^0/','',$data['Telecom Number']); */
-/*      $data['Telecom National Access Code']='0'; */
-/*     if(preg_match('/^7/',$data['Telecom Number'])) */
-/*       $data['is_mobile']=1; */
-/*     else */
-/*       $data['is_mobile']=0; */
-/*     break; */
+  case('GBR')://UK
+
+    if($data['Telecom Area Code']==''){
+      $data['Telecom Number']=preg_replace('/^0/','',$data['Telecom Number']);
+      $area_code=Address::find_area_code($data['Telecom Number'],'GBR');
+      if($area_code!=''){
+	$data['Telecom Area Code']=$area_code;
+	$data['Telecom Number']=preg_replace("/^".$data['Telecom Area Code']."/",'',$data['Telecom Number']);
+      }
+    }
+
+    if(preg_match('/^0845/',$data['Telecom Number'])){
+      $data['National Only Telecom']=1;
+      $data['Telecom Country Telephone Code']='';
+      $data['Telecom Area Code']='0845';
+      $data['Telecom National Access Code']='';
+      $data['Telecom Number']=preg_replace('/^0845/','',$data['Telecom Number']);
+    }
+
+     $data['Telecom National Access Code']='0';
+    if(preg_match('/^7/',$data['Telecom Number']))
+      $data['is_mobile']=1;
+    else
+      $data['is_mobile']=0;
+    break;
 /*   case('IRL')://Ireland */
 /*     if(preg_match('/^0?8(2|3|5|6|7|8|9)/',$data['Telecom Number'])) */
 /*       $data['is_mobile']=1; */
@@ -373,7 +520,7 @@ Insert new number to the database
 /*     else */
 /*       $data['is_mobile']=0; */
 /*     break; */
-/*   } */
+   } 
   
 /*   if($data['is_mobile']==1) */
 /*     $data['Telecom Type']='Mobile'; */
@@ -381,11 +528,11 @@ Insert new number to the database
 /*     $data['Telecom Type']='Unknown'; */
 /*   else  */
 /*     $data['Telecom Type']=$data['Telecom Original Type']; */
-  
-
-   $data['Telecom Number']=$number;
-   $data['Telecom Plain Number']=Telecom::plain_number($data);
    
+
+
+   $data['Telecom Plain Number']=Telecom::plain_number($data);
+
 
   return $data;
 
@@ -403,7 +550,7 @@ Insert new number to the database
    Returns the formated  telephone number
   */
  public static function formated_number($data){
-   $tmp=($data['Telecom Country Telephone Code']!=''?'+'.$data['Telecom Country Telephone Code'].' ':'').($data['Telecom Area Code']!=''?$data['Telecom Area Code'].' ':'').$get('spaced_number').($data['Telecom Extension']!=''?' '._('ext').' '.$data['Telecom Extension']:'');
+   $tmp=($data['Telecom Country Telephone Code']!=''?'+'.$data['Telecom Country Telephone Code'].' ':'').($data['Telecom Area Code']!=''?$data['Telecom Area Code'].' ':'')._trim(strrev(chunk_split(strrev($data['Telecom Number']),4," "))).($data['Telecom Extension']!=''?' '._('ext').' '.$data['Telecom Extension']:'');
    return $tmp;
  }
 
@@ -436,8 +583,25 @@ Insert new number to the database
    }
    return 'UNK';
  }
-
-
+ /*
+   Function: find_area_code
+   Find for the telephone access code in a number
+  */
+ 
+ function find_area_code($number,$country_code='UNK'){
+   
+   
+   for($i=5;$i>1;$i--){
+     $proposed_code=substr("abcdef", $i); 
+     $sql=sprintf("select `Telephone Local Code Key` from `Telephone Local Code` where LENGTH(`Telephone Local Code`)=%d and `Telephone Local Code Country Code`=%s ",$i,prepare_mysql($proposed_code));
+     $result=mysql_query($sql);
+     $num_results=mysql_num_rows($result);
+     if($num_results>0)
+       return $proposed_code;
+   }
+   
+   return '';
+}
 
 }
 ?>

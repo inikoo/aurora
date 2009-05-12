@@ -23,7 +23,9 @@ class Email{
 
   var $data=array();
   var $id=false;
-
+  var $new=false;
+  var $error=false;
+  var $msg='';
   /*
    Constructor: Email
    Initializes the class, trigger  Search/Load/Create for the data set
@@ -55,33 +57,31 @@ class Email{
 
   */
   function Email($arg1=false,$arg2=false) {
-
-     
-    if(!$arg1 and !$arg2)
+    if(!$arg1 and !$arg2){
+      $this->error=true;
+      $this->msg='No data provided';
       return;
+    }
     if(is_numeric($arg1)){
       $this->get_data('id',$arg1);
       return;
     }
-    if ($arg1='new'){
+    if ($arg1=='new'){
       $this->create($arg2);
       return;
     }
-    if (preg_match('/find/',$arg1)){
-      $this->find_replace($arg2,'noreplace');
+    if(preg_match('/find/i',$arg1)){
+      $this->find($arg2,$arg1);
       return;
     }
-
-
     $this->get_data($arg1,$arg2);
-
   }
   /*
    Method: get_data
    Load the data from the database
 
    See Also:
-   <find_replace>
+   <find>
   */
   function get_data($tipo,$tag){
     if($tipo=='id')
@@ -98,7 +98,7 @@ class Email{
    Function: base_data
    Initializes array with the default field values
   */
-  function base_data($args='replace'){
+  public static function base_data(){
 
 
     $data=array(
@@ -107,151 +107,180 @@ class Email{
 		,'Email Validated'=>'No'
 		,'Email Correct'=>'Unknown'
 		);
-
-    if(preg_match('/not? replace/i',$args))
-      return $data;
-    if(preg_match('/replace/i',$args))
-      $this->data=$data;
+    
+    
     return $data;
   }
 
 
   /*
-   Method: find_replace
+   Method: find
    Given a set of email components try to find it on the database updating properties, if not found creates a new record
 
    The default is to update/create 
 
   */
 
-  Public function find_replace($data,$options=''){
+  private function find($data,$options=''){
+
+
+    
     if(!$data){
       $this->new=false;
-      $this->msg=_('Error no email data ');
-      if(preg_match('/exit on errors/',$args))
+      $this->msg=_('Error no email data');
+      if(preg_match('/exit on errors/',$options))
 	exit($this->msg);
       return false;
     }
     
-    if(is_string($data))
-      $data['Email']=$data;
-    
-    $base_data=$this->base_data;
+    if(is_string($data)){
+      $tmp=$data;
+      unset($data);
+      $data['Email']=$tmp;
+    }
+  
+    $base_data=$this->base_data();
     foreach($data as $key=>$value){
-      if(is_key($key,$base_data))
+      if(array_key_exists($key,$base_data))
 	$base_data[$key]=$value;
     }
 
     if($base_data['Email']==''){
-      $this->msg=_('no email provided');
+      $this->msg=_('No email provided');
       return false;
     }
 
-    if(preg_match('/in contact \d+/',$options,$match))
-      $in_contact=preg_replace('/[^\d]/','',$match[0]);
-    else
-      $in_contact=0;
-    
-    
+   
+    $subject_key=0;
+    $subject_type='Contact';
 
-    $sql=sprintf("select `Email Key`,`Contact Key`  from `Email Dimension` left join `Email Bridge` on (`Email Bridge`.`Email Key`=`Email Dimension`.`Email Key`)  where  `Subject Type`='Contact'  and   `Email`=%s",prepare_mysql($tag));
+    if(preg_match('/in contact \d+/',$options,$match)){
+      $subject_key=preg_replace('/[^\d]/','',$match[0]);
+      $subject_type='Contact';
+    }
+    if(preg_match('/in company \d+/',$options,$match)){
+      $subject_key=preg_replace('/[^\d]/','',$match[0]);
+      $subject_type='Company';
+    }elseif(preg_match('/company/',$options,$match)){
+      $subject_type='Company';
+    }
+
+
+   
+    
+    $sql=sprintf("select T.`Email Key`,`Subject Key` from `Email Dimension` T left join `Email Bridge` TB  on (TB.`Email Key`=T.`Email Key`) where `Email`=%s and `Subject Type`=%s  "
+		 ,prepare_mysql($data['Email'])
+		 ,prepare_mysql($subject_type)
+		   );
+
     $result=mysql_query($sql);
-    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-      if($in_contact){
-	if($in_contact==$row['Contact Key']){
+    $num_results=mysql_num_rows($result);
+    
+      if($num_results==0){
+	$this->found=false;
+	
+	if(preg_match('/similar/i',$options)){
+	  // try to find possible matches (assuming the the client comit a mistakt)
+	  $sql=sprintf("select `Email Key`,`Email Contact Name`,levenshtein(UPPER(%s),UPPER(`Email`)) as dist1,levenshtein(UPPER(SOUNDEX(%s)),UPPER(SOUNDEX(`Email`))) as dist2, `Subject Key`  from `Email Dimension` left join `Email Bridge` on (`Email Bridge`.`Email Key`=`Email Dimension`.`Email Key`)  where dist1<=2 and  `Subject Type`=%s `Subject Key`=%d and  order by dist1,dist2 limit 20"
+		       ,prepare_mysql($data['Email'])
+			,prepare_mysql($data['Email'])
+		       ,prepare_mysql($subject_type)
+		       ,$subject_key
+		       );
+	   $result=mysql_query($sql);
+	   
+	   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+	     $dist=0.5*$row['dist1']+$row['dist2'];
+	     if($dist==0)
+	       $candidate[$row['Email Key']]['score']=1000;
+	     else
+	       $candidate[$row['Email Key']]['score']=100/$dist;
+	     
+	     if($data['Email Contact Name']!=''){
+	       $contact_distance=levenshtein(strtolower($data['Email Contact Name']),strtolower($row['Email Contact Name']));
+	       if($contact_distance==0){
+		 if($data['Email Contact Name']=='')
+		   $candidate[$row['Email Key']]['score']+=50;
+		 else
+		   $candidate[$row['Email Key']]['score']+=300;
+	       }
+	       
+	       
+	       $candidate[$row['Email Key']]['score']+=(200/$contact_distance);
+	       
+	       
+	     }
+	     
+	   }
+	   $number_candidates=count($candidate);
+	   if($number_candidates>0){
+	     asort($candidate);
+	     foreach ($candidate as $key => $val) {
+	       $email_key=$key;
+	       break;
+	     }
+	     $this->get_data('id',$email_key);
+	     $this->update($data);
+	     return $this->id;
+	     
+	   }
+	   
+	   
+       	}
+      }else if($num_results==1){
+	$row=mysql_fetch_array($result, MYSQL_ASSOC);
+	
+	if($row['Subject Key']==$subject_key){
 	  $this->get_data('id',$row['Email Key']);
 	  $this->update($data);
 	  return $this->id;
 	}else{
-	  $contact=new Contact($row['Contact Key']);
+	  if($subject_type=='Contact'){
+	    $contact=new Contact($row['Subject Key']);
 	  $this->msg=_('Email found in another contact').sprintf('. %s (%d)',$contact->display('name'),$contact->id);
+	  }else{
+	    $company=new Company($row['Subject Key']);
+	  $this->msg=_('Email found in another company').sprintf('. %s (%d)',$company->display('name'),$company->id);
+	  
+	  }
 	  return 0;
 	}
-
-
-    }else{
-      $this->get_data('id',$row['Email Key']);
-      return $this->id;
-    }
-    }
-
-  
-
-    
-  // Email not found
-  // Search for possible matches
-  $candidate=array();
-  If($in_contact){
-    $sql=sprintf("select `Email Key`,`Email Contact Name`,levenshtein(UPPER(%s),UPPER(`Email`)) as dist1,levenshtein(UPPER(SOUNDEX(%s)),UPPER(SOUNDEX(`Email`))) as dist2, `Subject Key`  from `Email Dimension` left join `Email Bridge` on (`Email Bridge`.`Email Key`=`Email Dimension`.`Email Key`)  where dist1<=2 and  `Subject Type`='Contact' `Subject Key`=%d and  order by dist1,dist2 limit 20"
-		 ,prepare_mysql($data['Email'])
-		 ,prepare_mysql($data['Email'])
-		 ,$in_contact
-		 );
-    $result=mysql_query($sql);
-    
-    while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-      $dist=0.5*$row['dist1']+$row['dist2'];
-      if($dist==0)
-	$candidate[$row['Email Key']]['score']=1000;
-      else
-	$candidate[$row['Email Key']]['score']=100/$dist;
-      
-      if($data['Email Contact Name']!=''){
-	$contact_distance=levenshtein(strtolower($data['Email Contact Name']),strtolower($row['Email Contact Name']));
-	if($contact_distance==0){
-	  if($data['Email Contact Name']=='')
-	    $candidate[$row['Email Key']]['score']+=50;
-	  else
-	    $candidate[$row['Email Key']]['score']+=300;
+      }else{
+	while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+	  if($row['Subject Key']==$in_contact){
+	    $this->get_data('id',$row['Email Key']);
+	    $this->update($data);
+	    return $this->id;
+	  }
 	}
-
-
-	$candidate[$row['Email Key']]['score']+=(200/$contact_distance);
-	
+	$this->msg=_('Email found in')." $num_results ".ngettext($num_results,'record','records');
+	return 0;
 	
       }
       
-    }
-    
+      
+      if($subject_type=='Company'){
+	// Look if another contact has this email
+	$sql=sprintf("select T.`Email Key`,`Subject Key` from `Email Dimension` T left join `Email Bridge` TB  on (TB.`Email Key`=T.`Email Key`) where `Email`=%s  and `Subject Type`='Contact'"
+		     ,prepare_mysql($data['Email'])
+		     );
+	$result=mysql_query($sql);
+	$num_results=mysql_num_rows($result);
 
-    
-  }else{
-    
-    $sql=sprintf("select `Email Key`,`Email Contact Name`,levenshtein(UPPER(%s),UPPER(`Email`)) as dist1,levenshtein(UPPER(SOUNDEX(%s)),UPPER(SOUNDEX(`Email`))) as dist2, `Subject Key`  from `Email Dimension` where dist1<=2  order by dist1,dist2 limit 20"
-		 ,prepare_mysql($data['Email'])
-		 ,prepare_mysql($data['Email'])
-		 );
-    $result=mysql_query($sql);
-    while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-      $dist=0.5*$row['dist1']+$row['dist2'];
-      if($dist==0)
-	$candidate[$row['Email Key']]['score']=1000;
-      else
-	$candidate[$row['Email Key']]['score']=100/$dist;
-    }
+	if($num_results==0){
 
-  }
-  
-  $num_candidates=count($candidate);
-  
-  if($num_candidates==0){
-    // no maches create new
-    $this->create($data);
-    if($this->new)
-      return $this->id;
-    else
-      return false;
+	  if(preg_match('/create/i',$options)){
+	    $this->create($data);
+	  }
+	  return;
 
-  }
+	}else{
+	  // we can insert the contact to the comapny or hikat of necesary
+	  exit("todo in email");
 
-  asort($candidate);
-  foreach ($candidate as $key => $val) {
-    $email_key=$key;
-    break;
-  }
-  $this->get_data('id',$email_key);
-  $this->update($data);
-  return $this->id;
+	}
+      }
+
 
   
   
@@ -264,12 +293,12 @@ class Email{
  Creates a new email record
 
 */
-protected function create($data,$args=''){
-    
+protected function create($data,$options=''){
+
   if(!$data){
     $this->new=false;
     $this->msg=_('Error no email data ');
-    if(preg_match('/exit on errors/',$args))
+    if(preg_match('/exit on errors/',$options))
       exit($this->msg);
     return false;
   }
@@ -279,31 +308,31 @@ protected function create($data,$args=''){
 
   global $myconf;
     
-  $this->base_data();
+  $this->data=$this->base_data();
   foreach($data as $key=>$value){
-    if(is_key($key,$this->data))
+    if(array_key_exists($key,$this->data))
       $this->data[$key]=$value;
   }
     
 
 
-  if($this->data['email']==''){
+  if($this->data['Email']==''){
     $this->new=false;
     $this->msg=_('No email provided');
     return false;
   }
     
-  if(!preg_match('/do not validate|validated ok/',$args))
+  if(!preg_match('/do not validate|validated ok/',$options))
     if($this->is_valid($this->data['Email']))
       $this->data['Email Validated']='Yes';
-    
-  $sql=sprintf("insert into `Email Dimension`  (`Email`,`Email Contact Name`,`Email Validated`,`Email Correct`) values (%s,%s,%s,%s,%d,%d)"
+  
+  $sql=sprintf("insert into `Email Dimension`  (`Email`,`Email Contact Name`,`Email Validated`,`Email Correct`) values (%s,%s,%s,%s)"
 	       ,prepare_mysql($this->data['Email'])
 	       ,prepare_mysql($this->data['Email Contact Name'])
-	       ,$this->data['Email Validated']
-	       ,$this->data['Email Correct']
+	       ,prepare_mysql($this->data['Email Validated'])
+	       ,prepare_mysql($this->data['Email Correct'])
 	       );
-   
+  
   if(mysql_query($sql)){
     $this->id = mysql_insert_id();
     $this->get_data('id',$this->id);
@@ -313,8 +342,9 @@ protected function create($data,$args=''){
     return true;
   }else{
     $this->new=false;
+    $this->error=true;
     $this->msg=_('Error can not create email');
-    if(preg_match('/exit on errors/',$args)){
+    if(preg_match('/exit on errors/',$options)){
       print "Error can not create email;\n";exit;
     }
   }
@@ -351,12 +381,12 @@ function set($key,$value){
  
 */
 
-function update($data,$args=''){
+function update($data,$options=''){
   $base_data=$this->base_data('no replace');
   foreach($data as $key=>$value){
     if(is_key($key,$base_data)){
       $function_name=preg_replace('\s','',ucwords($key));
-      call_user_func(array($this, 'update_'.$function_name),$value,$args);
+      call_user_func(array($this, 'update_'.$function_name),$value,$options);
     }
       
   }
@@ -368,10 +398,10 @@ function update($data,$args=''){
  
  Return error if no email is provided or if there is another record with the same email address, a warning is returned if email not valid
 
- When $args is strict return error if the email is not valid
+ When $options is strict return error if the email is not valid
 */
 
-function update_Email($data,$args=''){
+function update_Email($data,$options=''){
   $this->error=false;
   $this->warning=false;
   $this->updated=false;
@@ -384,7 +414,7 @@ function update_Email($data,$args=''){
   $is_valid=$this->is_valid($data);
   if(!$is_valid){
     $this->msg=_('Email is not valid')." ($data)";
-    if(preg_match('/email strict/i',$args) ){
+    if(preg_match('/email strict/i',$options) ){
       $this->error=true;
       return;
     }
@@ -414,7 +444,7 @@ function update_Email($data,$args=''){
 /*Method: update_EmailValidated
  Update email address Is Valid field
 */
-function update_EmailValidated($data,$args=''){
+function update_EmailValidated($data,$options=''){
   $this->error=false;
   $this->warning=false;
   $this->updated=false;
@@ -443,9 +473,10 @@ function update_EmailValidated($data,$args=''){
 
 }
 /*Method: update_EmailCorrect
- Update *Email Correct* field
+  Update Email Correct field
+
 */
-function update_EmailCorrect($data,$args=''){
+function update_EmailCorrect($data,$options=''){
   $this->error=false;
   $this->warning=false;
   $this->updated=false;
@@ -480,7 +511,7 @@ function update_EmailCorrect($data,$args=''){
 /*Method: update_EmailContactName
  Update email contact name  field
 */
-private function update_EmailContactName($data,$args=''){
+private function update_EmailContactName($data,$options=''){
   $this->error=false;
   $this->warning=false;
   $this->updated=false;
@@ -596,6 +627,9 @@ function save_history($key,$history_data){
 function display($tipo='link'){
 
   switch($tipo){
+  case('plain'):
+    return $this->data['Email'];
+
   case('html'):
   case('xhtml'):
   case('link'):

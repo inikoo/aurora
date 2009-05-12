@@ -662,62 +662,98 @@ case('Price Subfamily Info'):
   break;
 
     case('Full Order Form'):
+
+
+      if($this->locale=='de_DE'){
+	$out_of_stock='nicht vorrätig';
+	$discontinued='ausgelaufen';
+      }elseif($this->locale=='fr_FR'){
+	$out_of_stock='Rupture de stock';
+	$discontinued='Rupture de stock';
+      }else{
+	$out_of_stock='Out of Stock';
+	$discontinued='Discontinued';
+      }
+
+      if($this->data['Product Web State']=='Online Force Out of Stock'){
+	$_form='<span style="color:red;font-weight:800">'.$out_of_stock.'</span>';
+      }else{
       global $site_checkout_address_indv,$site_checkout_id,$site_url;
-	$form=sprintf('<div style="font-size:11px;font-family:arial;" class="ind_form"><span class="code">%s</span><br/><span class="name">%sx %s</span><br/><span class="price">%s</span><br/><span class="rrp">%s</span><br/>
-<form action="%s" method="post">
+      $_form=sprintf('<form action="%s" method="post">
 <input type="hidden" name="userid" value="%s">
 <input type="hidden" name="product" value="%s %sx %s">
 <input type="hidden" name="return" value="%s">
 <input type="hidden" name="price" value="%.2f">
 <input class="order" type="text" size="1" class="qty" name="qty" value="1">
-<input class="submit" type="Submit" value="%s" style="cursor:pointer; font-size:12px;font-family:arial;" ></form>
-</div>'
-		      ,$this->data['Product Code']
-		      ,$this->data['Product Units Per Case']
+<input class="submit" type="Submit" value="%s" style="cursor:pointer; font-size:12px;font-family:arial;" ></form>',
+		     addslashes($site_checkout_address_indv)
+		     ,addslashes($site_checkout_id)
+		     ,addslashes($this->data['Product Code'])
+		     ,addslashes($this->data['Product Units Per Case'])
+		     ,clean_accents(addslashes($this->data['Product Name']))
+		     ,$site_url.$_SERVER['PHP_SELF']
+		    ,$this->data['Product Price']
+		     ,$this->get('Order Msg')
+		     );
+      }
+	
+
+      $form=sprintf('<div style="font-size:11px;font-family:arial;" class="ind_form"><span class="code">%s</span><br/><span class="name">%sx %s</span><br/><span class="price">%s</span><br/><span class="rrp">%s</span><br/>%s</div>'
+		    ,$this->data['Product Code']
+		    ,$this->data['Product Units Per Case']
 		      ,$this->data['Product Name']
-		      ,$this->get('Price Formated'),$this->get('RRP Formated')
-		      ,addslashes($site_checkout_address_indv)
-		      ,addslashes($site_checkout_id)
-		      ,addslashes($this->data['Product Code'])
-		      ,addslashes($this->data['Product Units Per Case'])
-		      ,clean_accents(addslashes($this->data['Product Name']))
-		      ,$site_url.$_SERVER['PHP_SELF']
-		      ,$this->data['Product Price']
-		      ,$this->get('Order Msg')
+		    ,$this->get('Price Formated'),$this->get('RRP Formated')
+		    ,$_form
+
 		      
 );
 	
-
+      
 	return $form;
       
 
 	break;
     case('Order List Form'):
-      
+       if($this->locale=='de_DE'){
+	$out_of_stock='nicht vorrätig';
+	$discontinued='ausgelaufen';
+      }elseif($this->locale=='fr_FR'){
+	$out_of_stock='Rupture de stock';
+	$discontinued='Rupture de stock';
+      }else{
+	$out_of_stock='Out of Stock';
+	$discontinued='Discontinued';
+      }
+
       $counter=$data['counter'];
       $options=$data['options'];
        $rrp='';
        if(isset($options['show individual rrp']) and $options['show individual rrp'] )
 	$rrp=" <span class='rrp_in_list'>(".$this->get('RRP Formated').')</span>';
-      
-      
+       
 
-      $form=sprintf('<tr><td class="first"><span class="price">%s</span>%s</td><td class="qty"><input type="text"  class="qty" name="qty%d"  id="qty%d"    /><td><span class="desc">%s</span></td></tr><input type="hidden"  name="price%d"  value="%.2f"  ><input type="hidden"  name="product%d"  value="%s %dx %s" ></td></tr>'
-		      ,$this->get('Price')
-		      ,$this->data['Product Code']
-		      ,$counter
-		      ,$counter
-		      ,$this->data['Product Special Characteristic'].$rrp
-		      ,$counter
-		      ,$this->data['Product Price']
-		      ,$counter
-		      ,$this->data['Product Code']
-		      ,$this->data['Product Units Per Case']
-		    ,clean_accents($this->data['Product Name'])
-		      
-		      
-);
-	
+         if($this->data['Product Web State']=='Online Force Out of Stock'){
+	   $form=sprintf('<tr><td class="first"><span class="price">%s</span>%s</td><td class="qty" colspan=2><span  style="color:red;font-weight:800">%s</span></td></tr>'
+			 ,$this->get('Price')
+			 ,$this->data['Product Code']
+			 ,$out_of_stock
+			 );
+	 }
+	 else{
+	   $form=sprintf('<tr><td class="first"><span class="price">%s</span>%s</td><td class="qty"><input type="text"  class="qty" name="qty%d"  id="qty%d"    /><td><span class="desc">%s</span></td></tr><input type="hidden"  name="price%d"  value="%.2f"  ><input type="hidden"  name="product%d"  value="%s %dx %s" >'
+			 ,$this->get('Price')
+			 ,$this->data['Product Code']
+			 ,$counter
+			 ,$counter
+			 ,$this->data['Product Special Characteristic'].$rrp
+			 ,$counter
+			 ,$this->data['Product Price']
+			 ,$counter
+			 ,$this->data['Product Code']
+			 ,$this->data['Product Units Per Case']
+			 ,clean_accents($this->data['Product Name'])
+			 );
+	 }
 
 	return $form."\n";
       

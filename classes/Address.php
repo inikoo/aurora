@@ -17,8 +17,33 @@ include_once('Country.php');
 */
 class Address{
 
-  var $data=array();
-  var $id=false;
+   // Array: data
+  // Class data
+  public $data=array();
+ // Array: emails
+  // Contact emails data
+  public  $emails=false;
+  // Integer: id
+  // Database Primary Key
+  public  $id=0;
+ // Boolean: warning
+  // True if a warning
+  var $warning=false;
+  // Boolean: error
+  // True if error occuers
+  var $error=false;
+  // String: msg
+  // Messages
+  var $msg='';
+  // Boolean: new
+  // True if company has been created
+  var $new=false;
+ // Boolean: updated
+  // True if company has been updated
+  var $updated=false;
+ // Boolean: found
+  // True if company founded
+  var $found=false;
 
   /*
     Constructor: Address
@@ -52,11 +77,20 @@ class Address{
   */
   function Address($arg1=false,$arg2=false) {
 
-
+    if(!$arg1 and !$arg2){
+      $this->error=true;
+      $this->msg='No data provided';
+      return;
+    }
     if(is_numeric($arg1)){
       $this->get_data('id',$arg1);
       return;
     }
+    if(preg_match('/find/i',$arg1)){
+      $this->find($arg2,$arg1);
+      return;
+    }
+
     if($arg1=='new'){
       $this->create($arg2);
       return;
@@ -89,7 +123,7 @@ class Address{
 
   */
   function get_data($tipo,$id=false){
-    
+
     if($tipo=='id')
       $sql=sprintf("select * from `Address Dimension` where  `Address Key`=%d",$id);
     elseif('tipo'=='fuzzy country')
@@ -110,6 +144,202 @@ class Address{
 
     }
   }
+  /*
+   Method: find
+   Given a set of address components try to find it on the database updating properties, if not found creates a new record
+  */
+  
+ private function find($raw_data,$options=''){
+
+   print "$options\n";
+
+   if(!$raw_data){
+     $this->new=false;
+     $this->msg=_('Error no address data');
+     if(preg_match('/exit on errors/',$options))
+       exit($this->msg);
+     return false;
+   }
+
+
+     $create='';
+    $update='';
+    if(preg_match('/create/i',$options)){
+      $create='create';
+    }
+    if(preg_match('/update/i',$options)){
+      $update='update';
+    }
+
+    print "$update $create \n";
+
+   $data=$this->base_data();
+   
+   if(preg_match('/from Company|in company/i',$options)){
+     foreach($raw_data as $key=>$val){
+       $_key=preg_replace('/Company /','',$key);
+       if(array_key_exists($_key,$data))
+	  $data[$_key]=$val;
+       if($_key=='Address Line 1' or $_key=='Address Line 2' or  $_key=='Address Line 3' or $_key=='Address Input Format')
+	 $data[$_key]=$val;
+      }
+   }elseif(preg_match('/from contact|in contact/i',$options)){
+     foreach($raw_data as $key=>$val){
+       $_key=preg_replace('/Contact /','',$key);
+       if(array_key_exists($_key,$data))
+	  $data[$_key]=$val;
+       if($_key=='Address Line 1' or $_key=='Address Line 2' or  $_key=='Address Line 3' or $_key=='Address Input Format')
+	 $data[$_key]=$val;
+      }
+   }
+   
+
+   if(!isset($data['Address Input Format'])){
+     $data['Address Input Format']='DB Fields';
+     if(isset($data['Address Line 1']))
+       $data['Address Input Format']='3 Line';
+     else
+       $data['Address Input Format']='DB Fields';
+    }
+
+   
+    switch($data['Address Input Format']){
+    case('3 Line'):
+      $data=$this->prepare_3line($data);
+      $data['Address Input Format']='DB Fields';
+      break;
+    case('DB Fields'):
+      $data=$this->prepare_DBfields($data);
+      break;
+    }
+
+
+    $subject_key=0;
+    $subject_type='Contact';
+    
+    if(preg_match('/in contact \d+/',$options,$match)){
+      $subject_key=preg_replace('/[^\d]/','',$match[0]);
+      $subject_type='Contact';
+    }
+    if(preg_match('/in company \d+/',$options,$match)){
+      $subject_key=preg_replace('/[^\d]/','',$match[0]);
+      $subject_type='Company';
+    }elseif(preg_match('/company/',$options,$match)){
+      $subject_type='Company';
+    }
+
+
+    if($data['Address Fuzzy']=='Yes'){
+      //if fuzzy only check in parent fuzzy sub space 
+
+      $fields=array('Address Fuzzy','Address Street Number','Address Building','Address Street Name','Address Street Type','Address Town Secondary Division','Address Town Primary Division','Address Town','Address Country Primary Division','Address Country Secondary Division','Address Country Key','Address Postal Code','Military Address','Military Installation Address','Military Installation Name');
+
+      $sql=sprintf("select A.`Address Key`,`Subject Key` from `Address Dimension` A  left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`)  where `Address Fuzzy`='Yes' and `Subject Type`=%s ",prepare_mysql($subject_type));
+      foreach($fields as $field){
+	$sql.=sprintf(' and `%s`=%s',$field,prepare_mysql($data[$field],false));
+      }
+      $result=mysql_query($sql);
+      $num_results=mysql_num_rows($result);
+      if($num_results==0){
+	$this->found=false;
+       	
+      }else if($num_results==1){
+	$row=mysql_fetch_array($result, MYSQL_ASSOC);
+	
+	if($row['Subject Key']==$subject_key){
+	  $this->get_data('id',$row['Address Key']);
+	  if($update)
+	    $this->update($data);
+	  return $this->id;
+	}else{
+	  if($subject_type=='Contact'){
+	    $contact=new Contact($row['Subject Key']);
+	    $this->msg=_('Address found in another contact').sprintf('. %s (%d)',$contact->display('name'),$contact->id);
+	  }else{
+	    $company=new Company($row['Subject Key']);
+	    $this->msg=_('Address found in another company').sprintf('. %s (%d)',$company->display('name'),$company->id);
+	    
+	  }
+	  return 0;
+	}
+      }else{
+	while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+	  if($row['Subject Key']==$in_contact){
+	    $this->get_data('id',$row['Address Key']);
+	    if($update)
+	      $this->update($data);
+
+	    return $this->id;
+	  }
+	}
+	$this->msg=_('Similar address found in')." $num_results ".ngettext($num_results,'record','records');
+	return 0;
+	
+      }
+      
+
+    }else{
+      // Address not fuzzy
+      // Try to find an exect match
+
+        $fields=array('Address Fuzzy','Address Street Number','Address Building','Address Street Name','Address Street Type','Address Town Secondary Division','Address Town Primary Division','Address Town','Address Country Primary Division','Address Country Secondary Division','Address Country Key','Address Postal Code','Military Address','Military Installation Address','Military Installation Name');
+
+      $sql="select A.`Address Key`,`Subject Key` from `Address Dimension`  A  left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`) where true ";
+      foreach($fields as $field){
+	$sql.=sprintf(' and `%s`=%s',$field,prepare_mysql($data[$field],false));
+      }
+      $result=mysql_query($sql);
+      // print $sql;
+      $num_results=mysql_num_rows($result);
+      if($num_results==0){
+	$this->found=false;
+       	
+      }else if($num_results==1){
+	$row=mysql_fetch_array($result, MYSQL_ASSOC);
+	
+	if($row['Subject Key']==$subject_key){
+	  $this->get_data('id',$row['Address Key']);
+	  if($update)
+	    $this->update($data);
+	  $this->found=true;
+	  return $this->id;
+	}else{
+	  if($subject_type=='Contact'){
+	    $contact=new Contact($row['Subject Key']);
+	    $this->msg=_('Address found in another contact').sprintf('. %s (%d)',$contact->display('name'),$contact->id);
+	  }else{
+	    $company=new Company($row['Subject Key']);
+	    $this->msg=_('Address found in another company').sprintf('. %s (%d)',$company->display('name'),$company->id);
+	    
+	  }
+	  return 0;
+	}
+      }else{
+	while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+	  if($row['Subject Key']==$in_contact){
+	    $this->get_data('id',$row['Address Key']);
+	    if($update)
+	      $this->update($data);
+	    $this->found=true;
+	    return $this->id;
+	  }
+	}
+	$this->msg=_('Similar address found in')." $num_results ".ngettext($num_results,'record','records');
+	return 0;
+	
+      }
+
+    }
+
+
+
+    $this->found=false;
+    if($create)
+      $this->create($data);
+     elseif($update)
+      $this->update($data);
+
+ }
 
 
   /*Method: create
@@ -158,7 +388,7 @@ class Address{
    
   */
   protected function create($data){
-    
+
     if(!isset($data['Address Input Format'])){
       $data['Address Input Format']='DB Fields';
       if(isset($data['Address Address Line 1']))
@@ -174,19 +404,26 @@ class Address{
       $this->data=$this->prepare_DBfields($data);
       break;
     }
-    
 
-
-    $keys='`Address Data Creation`';
-    $values='Now()';
+    $keys='';
+    $values='';
     foreach($this->data as $key=>$value){
-      $keys.=",`".$key."`";
-      $values.=','.prepare_mysql($value,false);
+      
+      if(!preg_match('/line \d|Address Input Format/i',$key) ){
+	if(preg_match('/Address Data Creation/i',$key) ){
+	   $keys.=",`".$key."`";
+	  $values.=', Now()';
+	}else{
+	  $keys.=",`".$key."`";
+	  $values.=','.prepare_mysql($value,false);
+	}
+      }
     }
     $values=preg_replace('/^,/','',$values);
     $keys=preg_replace('/^,/','',$keys);
 
     $sql="insert into `Address Dimension` ($keys) values ($values)";
+    //print $sql;
     if(mysql_query($sql)){
       $this->id = mysql_insert_id();
       $this->data['Address Key']= $this->id;
@@ -194,14 +431,17 @@ class Address{
       print "Error can not create address\n";exit;
 	
     }
-	
-      
-
-    
-
-
   }
 
+  /*
+    Function:update
+    Update the Record
+   */
+  function update($data){
+
+    exit("address update not implemented yet\n");
+  }
+  
 
   function get($key){
 
@@ -354,11 +594,7 @@ class Address{
 	    $data[$row['Field']]=$row['Default'];
 	}
       }
-    /*   if(preg_match('/not? replace/i',$args)) */
-/* 	return $data; */
-/*       if(preg_match('/replace/i',$args)) */
-/* 	A$this->data=$data; */
-
+ 
     }
     return $data;
   }
@@ -800,6 +1036,12 @@ class Address{
   }
 
 
+  /*Function:prepare_DBfields
+    Cleans address data, look for common errors
+   */
+  public static function prepare_DBfields($raw_data){
+    return $raw_data;
+  }
   /*Function: prepare_3line
     Cleans address data, look for common errors
 
@@ -2779,7 +3021,18 @@ class Address{
     return $data;
   }
 
+  /*
+    Function: similarity
+    Calculate the probability of been the same address 
+    Returns:
+    Probability of been the same address _float_ (0-1) 
+   */
+
+  function similarity($data,$address_key){
+
   
   }
+
+}
 
   ?>
