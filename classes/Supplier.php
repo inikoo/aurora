@@ -49,6 +49,12 @@ class supplier{
    */
 
   function get_data($tipo,$id){
+
+    $this->data=$this->base_data();
+   $this->id=0;
+
+   return;
+
     if($tipo=='id' or $tipo=='key')
       $sql=sprintf("select * from `Supplier Dimension` where `Supplier Key`=%d",$id);
     elseif ($tipo=='code'){
@@ -69,6 +75,8 @@ class supplier{
   }
 
    function get($key){
+
+     return 0;
 
      if(array_key_exists($key,$this->data))
        return $this->data[$key];
@@ -144,9 +152,12 @@ class supplier{
    */
   function create($data){
     // print_r($data);
-  
+
 
    $this->data=$this->base_data();
+   $this->id=0;
+
+   return;
     foreach($data as $key=>$value){
       if(isset($this->data[strtolower($key)]))
 	$this->data[strtolower($key)]=_trim($value);

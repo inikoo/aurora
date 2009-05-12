@@ -79,7 +79,7 @@ class Company{
        $this->get_data('id',$arg1);
        return ;
      }
-     if(preg_match('/create|new/i',$arg1)){
+     if(preg_match('/^(create|new)/i',$arg1)){
        $this->create($arg2);
        return;
      } if(preg_match('/find/i',$arg1)){
@@ -100,14 +100,17 @@ class Company{
     Key of the Compnay found, if create is found in the options string  returns the new key
    */  
   function find($raw_data,$options){
-    $create=false;
-
+    $create='';
+    $update='';
     if(preg_match('/create/i',$options)){
-      $create=true;
+      $create='create';
     }
     if(preg_match('/update/i',$options)){
-      $update=true;
+      $update='update';
     }
+
+    $address_data=array('Company Address Line 1'=>'','Company Address Town'=>'','Company Address Line 2'=>'','Company Address Line 3'=>'','Company Address Postal Code'=>'','Company Address Country Name'=>'','Company Address Country Primary Division'=>'','Company Address Country Secondary Division'=>'');
+    
 
 
     if(preg_match('/from supplier/',$options)){
@@ -129,55 +132,87 @@ class Company{
 
     $data=$this->base_data();
     foreach($raw_data as $key=>$value){
+      //   print "$key\n";
       if(array_key_exists($key,$data)){
 	$data[$key]=_trim($value);
       }
+
+      if(array_key_exists($key,$address_data))
+	$address_data[$key]=$value; 
+
     }
 
-    //print_r($raw_data);
-    //print_r($data);
-    // Search for companies with the same email
-    if($data['Company Main Plain Email']!=''){
-      $sql=sprintf("select E.`Email Key` from `Email Telecom` E left join `Email Bridge` EB on (E.`Email Key`=EB.`Email Key`) where `Email`=%s and `Subject Type`='Company'",prepare_mysql($data['Company Main Plain Email']));
-      $result=mysql_query($sql);
-      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-	$this->found=true;
-	if($create){
-	  if($update){
-	    $this->update('all',$data);
-	  }else{
-	    $this->error=true;
-	    $this->msg=_('Email found in other company');
-	  }
-	}
-	return;
-      }
-    }
+    
+    $contact=new Contact("find in company",$raw_data);
 
-  if($data['Company Main Telephone']!=''){
-    $telephone_data=Telecom::parse_number($data['Company Main Telephone']);
-    print_r($telephone_data);
-    exit;
-    $plain_telephone=$telephone_data['Telephone Plain Number'];
-      $sql=sprintf("select T.`Telecom Key` from `Telecom Dimension` T left join `Telecom Bridge` TB on (T.`Telecom Key`=TB.`Telecom Key`) where `Telecom Plain Number`=%s and `Subject Type`='Company'",prepare_mysql($plain_telephone));
-      $result=mysql_query($sql);
-      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-	$this->found=true;
-	if($create){
-	  if($update){
-	    $this->update('all',$data);
-	  }else{
-	    $this->error=true;
-	    $this->msg=_('Telephone found in other company');
-	  }
-	}
-	return;
-      }
+    $email=new Email("find in company",$data['Company Main Plain Email']);
+    $address=new Address("find in company ",$address_data);
+    $telephone=new Telecom("find in company",$data['Company Main Telephone']);
+    
+
+    if($contact->found or $email->found or $address->found   or $telephone->found){
+      //ups found in another
+      exit("found company data in another company\n");
     }
     
 
-    exit;
 
+  
+    if($data['Company Main Plain Email']!=''){
+      
+      $email=new Email("find in company $create $update",$data['Company Main Plain Email']);
+
+      if($email->error){
+	//Collect data about email found
+	print $email->msg."\n";
+	exit("find_company: email found\n");
+      }
+      if($email->found){
+
+	exit('email already in');
+      }
+
+
+    }
+    
+    if($data['Company Main Telephone']!=''){
+      $telephone=new Telecom("find in company $create $update",$data['Company Main Telephone']);
+       if($telephone->error){
+	//Collect data about telecom found
+	exit("find_company: telephone found");
+      }
+    }
+
+    
+    $address=new Address("find in company $create $update",$address_data);
+    if($address->error){
+      exit("find_company: address found");
+    }
+
+    $data['Company Main Address Key']=$address->id;
+    $data['Company Main XHTML Address']=$address->display('xhtml');
+    $data['Company Main Plain Address']=$address->display('plain');
+    $data['Company Main Country Key']=$address->data['Address Country Key'];
+    $data['Company Main Country']=$address->data['Address Country Name'];
+    $data['Company Main Location']=$address->display('location');
+    
+    if(isset($email) and $email->new){
+      $data['Company Main Plain Email']=$email->display('plain');
+      $data['Company Main XHTML Email']=$email->display('xhtml');
+      $data['Company Main Email Key']=$email->id;
+    }
+    if(isset($telephone) and $telephone->new){
+      $data['Company Main Plain Telephone']=$telephone->display('plain');
+      $data['Company Main Telephone']=$telephone->display('number');
+      $data['Company Main Telephone Key']=$telephone->id;
+    }
+   
+   
+    $this->create($data);
+
+    
+
+    
 
   }
 
@@ -258,7 +293,8 @@ private function base_data(){
 
   
   function create($raw_data){
-
+    
+   
 
     $this->data=$this->base_data();
     foreach($raw_data as $key=>$value){
@@ -276,42 +312,32 @@ private function base_data(){
     $this->data['Company ID']=$this->get_id();
   
   
-  //Create contact
-  $known_contact=true;
-  $main_contact=new Contact('Find in Company',$this->data);
-  if(!$main_contact->id){
-    //Create contact
-    $contact_data['Contact Name']=$this->data['Company Main Contact'];
-    $main_contact=new Contact('new',$contact_data);
-    $this->data['Company Main Contact Name']=$main_contact->display('name');
-    $this->data['Company Main Contact Key']=$main_contact->id;
-    if($main_contact->data['Contact Fuzzy']=='Yes')
-      $known_contact=false;
-  }else{
-    exit("contact already in database");
-  }
-  
-  //Create email
-  if($this->data['Company Main Plain Email']!=''){
-    $mail_associted_with_contact=false;
-    $main_email=new Email('Find in Company',$this->data['Company Main Plain Email']);
-    if(!$main_email->$id){
-    //Create contact
-      $email_data['Email']=$this->data['Company Main Plain Email'];
-      if(isset($raw_data['Email Contact Name']))
-	$email_data['Email Contact Name']=$raw_data['Main Contact Name'];
-    elseif($known_contact){
-      $email_data['Email Contact Name']=$this->data['Main Contact Name'];
-      $mail_associted_with_contact=true;
+    $contact=new Contact("find in company create",$raw_data);
+    if($contact->error){
+      exit("find_company: contact error\n");
     }
-    $main_email=new Email('new',$email_data);
-    $this->data['Company Main XHTML Email']=$main_contact->display('xhtml');
-    $this->data['Company Main Plain Email']=$main_contact->data['Email'];
-    $this->data['Company Main Email Key']=$main_contact->id;
-    }else{
-      exit("email already in database");
-	}
-  }
+    
+    $this->data['Company Main Contact Name']=$contact->display('name');
+    $this->data['Company Main Contact Key']=$contact->id;
+
+    if($data['Company Main Plain Email']!=''){
+       
+       $email_data['Email']=$this->data['Company Main Plain Email'];
+       $email_data['Email Contact Name']=$this->data['Main Contact Name'];
+       $email=new Email("find in company create",$email_data);
+       if($email->error){
+	 //Collect data about email found
+	 print $email->msg."\n";
+	 exit("find_company: email found\n");
+       }
+       
+       $data['Company Main Plain Email']=$email->display('plain');
+       $data['Company Main XHTML Email']=$email->display('xhtml');
+       $data['Company Main Email Key']=$email->id;
+       
+
+     }
+
 
   //Create Address
   $known_address=true;

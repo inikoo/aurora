@@ -47,7 +47,7 @@ $data=array(
 	    ,'Company Registration Number'=>'4108870'
 	    ,'Company Main Telephone'=>'+44 1142729165'
 	    ,'Company Main FAX'=>'+44 (0) 114 2706571'
-	    ,'Company Main Email'=>'mail@ancientwisdom.biz'
+	    ,'Company Main Plain Email'=>'mail@ancientwisdom.biz'
 	    ,'Company Address Line 1'=>'BLOCK B, Parkwood Business Park, Parkwood Road'
 	    ,'Company Address Town'=>'Sheffield'
 	    ,'Company Address Postal Code'=>'S3 8AL '
@@ -56,7 +56,7 @@ $data=array(
 );
 
 
-$company=new Company('find',$data);
+$company=new Company('find create auto',$data);
 exit;
 
 $sql="select * from  `Staff Dimension` ";
