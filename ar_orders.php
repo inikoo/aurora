@@ -1,6 +1,16 @@
 <?
-//@author Raul Perusquia <rulovico@gmail.com>
-//Copyright (c) 2009 LW
+/*
+ File: ar_orders.php 
+
+ Ajax Server Anchor for the Order Class
+
+ About: 
+ Autor: Raul Perusquia <rulovico@gmail.com>
+ 
+ Copyright (c) 2009, Kaktus 
+ 
+ Version 2.0
+*/
 require_once 'common.php';
 require_once 'classes/Order.php';
 

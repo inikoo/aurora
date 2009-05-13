@@ -133,6 +133,8 @@ class Contact{
     Key of the Compnay found, if create is found in the options string  returns the new key
    */  
   function find($raw_data,$options){
+
+
       $create='';
     $update='';
     if(preg_match('/create/i',$options)){
@@ -171,7 +173,7 @@ class Contact{
 
 	if($key=='Company Name'){
 	  $_key='Contact Company Name';
-	}elseif($key=='Company Main Contact')
+	}elseif($key=='Company Main Contact Name')
 	    $_key='Contact Name';
 	else
 	  $_key=preg_replace('/Company /','Contact ',$key);
@@ -202,7 +204,7 @@ class Contact{
 
     if(isset($email) and $email->found)
       $this->found=true;
-    
+
     
     if($create)
       $this->create($data);
@@ -395,21 +397,31 @@ private function base_data($args='replace'){
        $this->data[$key]=_trim($value);
    }
    
-   
-   if(!preg_match('/components ok|components confirmed/i',$options))
-     $this->parse_name($this->data['Contact Name']);
-     $this->prepare_name_data($this->data);
-     $this->data['Contact Name']=$this->display('name');
-     if(!preg_match('/gender confirmed|gender ok/i',$options))
-       $this->data['Contact Gender']=$this->gender($this->data);
-     if(!preg_match('/grettings confirmed|grettings ok/i',$options)){
-       $this->data['Contact Informal Greeting']=$this->display('informal gretting');
-       $this->data['Contact Formal Greeting']=$this->display('formal gretting');
-     }
 
-     
-    // print_r($this->data);
-    
+   if(!preg_match('/components ok|components confirmed/i',$options)){
+     $parsed_data=$this->parse_name($this->data['Contact Name']);
+     foreach($parsed_data as $key=>$val){
+       if(array_key_exists($key,$this->data))
+	 $this->data[$key]=$val;
+     }
+   }   
+
+   $prepared_data=$this->prepare_name_data($this->data);
+   foreach($prepared_data as $key=>$val){
+       if(array_key_exists($key,$this->data))
+	 $this->data[$key]=$val;
+     }
+   $this->data['Contact Name']=$this->display('name');
+   if(!preg_match('/gender confirmed|gender ok/i',$options))
+     $this->data['Contact Gender']=$this->gender($this->data);
+   if(!preg_match('/grettings confirmed|grettings ok/i',$options)){
+     $this->data['Contact Informal Greeting']=$this->display('informal gretting');
+     $this->data['Contact Formal Greeting']=$this->display('formal gretting');
+   }
+
+   
+
+   
     if($this->data['Contact Name']==''){
       $this->data['Contact Name']=$this->unknown_name;
       $this->data['Contact File As']=$this->unknown_name;
@@ -423,22 +435,29 @@ private function base_data($args='replace'){
   
     
     $this->data['Contact ID']=$this->get_id();
+
+
+
    
     $keys='(';$values='values(';
     foreach($this->data as $key=>$value){
-      $keys.="`$key`,";
-      if(preg_match('/plain /i',$key))
-	$print_null=false;
-      else
-	$print_null=true;
-      $values.=prepare_mysql($value,$print_null).",";
+      // Just insert name fields, company,email,tel,ax,address should be inserted later
+      if(preg_match('/ id| Salutation|Contact Name|file as|First Name|Surname|Suffix|Gender|Greeting|Profession|Title| plain/i',$key)){
+
+	$keys.="`$key`,";
+	if(preg_match('/suffix|plain/i',$key))
+	  $print_null=false;
+	else
+	  $print_null=true;
+	$values.=prepare_mysql($value,$print_null).",";
+      }
     }
     $keys=preg_replace('/,$/',')',$keys);
     $values=preg_replace('/,$/',')',$values);
 
     $sql=sprintf("insert into `Contact Dimension` %s %s",$keys,$values);
 
-    
+
     if(mysql_query($sql)){
       $this->id= mysql_insert_id();
       $this->new=true;
@@ -485,6 +504,47 @@ private function base_data($args='replace'){
 
   }
 
+ /* Method: add_company
+  Assign company to to the Contact
+  
+  Search for an email record maching the email data *$data* if not found create a ne email record then add this record to the Contact
+
+
+  Parameter:
+  $data  -    array   contact data
+  $args -     string  options
+
+ 
+ */
+
+  function add_company($data,$args='principal'){
+    if(isset($data['Company Key'])){
+      $company=new Company('id',$data['Company Key']);
+    }else{
+      return;
+    }
+    if($company->id){
+      $sql=sprintf("insert into  `Contact Bridge` (`Contact Key`,`Subject Type`, `Subject Key`,`Is Main`) values (%d,'Company',%d,%s)  "
+		   ,$company->id
+		   ,$this->id
+		   ,prepare_mysql(preg_match('/principal/i',$args)?'Yes':'No')
+		   );
+      print "$sql\n";
+      mysql_query($sql);
+      if(preg_match('/principal/i',$args)){
+	$sql=sprintf("update `Contact Dimension` set `Contact Company Name`=%s ,`Contact Company Key`=%s where `Contact Key`=%d"
+		     ,prepare_mysql($company->data['Company Name'])
+		     ,prepare_mysql($company->id)
+		     ,$this->id);
+	$this->data['Contact Company Name']=$company->data['Company Name'];
+	$this->data['Contact Company Key']=$company->id;
+	
+	mysql_query($sql);
+      } 
+    }
+  }
+
+
   /* Method: add_email
   Add/Update an email to the Contact
   
@@ -496,42 +556,58 @@ private function base_data($args='replace'){
   $args -     string  options
   Return: 
   integer email key of the added/updated email
+
+  Todo: use base_data for defaults/missing parameters
  */
 
   function add_email($data,$args='principal'){
 
-    $email=$data['email'];
-    if(isset($data['email_type']))
-      $email_type=$data['email_type'];
-    else
-      $email_type='';
-    $email_data=array(
-		      'email description'=>'',
-		      'email'=>$email,
-		      'email type'=>'Unknown',
-		      'email contact name'=>'',
-		      'email validated'=>0,
-		      'email verified'=>0,
-		      );
+    if(isset($data['Email Key'])){
+
+      $email=new Email('id',$data['Email Key']);
+      
+    }else{
+      
+      $email=$data['Email'];
+      if(isset($data['email_type']))
+	$email_type=$data['Email Type'];
+      else
+	$email_type='';
+      $email_data=array(
+			'Email Description'=>'',
+			'Email'=>$email,
+			'Email Type'=>'Unknown',
+			'Email Contact Name'=>'',
+			'Email Validated'=>'No',
+			'Email Verified'=>'No',
+			);
 
 
     if($this->data['Contact Name']!=$this->unknown_name)
-      $email_data['email Contact Name']=$this->data['contact name'];
-    if(preg_match('/work/i',$email_type))
-      $email_data['email type']='Work';
-    if(preg_match('/personal/i',$email_type))
-      $email_data['email type']='personal';
-    if(preg_match('/other/i',$email_type))
-      $email_data['email type']='other';
+      $email_data['Email Contact Name']=$this->data['Contact Name'];
+  
 
-    $email=new email('new',$email_data);
+    $email=new email('find in contact create',$email_data);
+    }
     if($email->id){
-     
+
+      if(isset($data['Email Type']))
+	$email_type=$data['Email Type'];
+      else
+	$email_type='';
+      if(preg_match('/work/i',$email_type))
+	$email_data['Email Type']='Work';
+      if(preg_match('/personal/i',$email_type))
+	$email_data['Email Type']='Personal';
+      if(preg_match('/other/i',$email_type))
+	$email_data['Email Type']='Other';
+      
+
       $sql=sprintf("insert into  `Email Bridge` (`Email Key`,`Subject Type`, `Subject Key`,`Is Main`,`Email Description`) values (%d,'Contact',%d,%s,%s)  "
 		   ,$email->id
 		   ,$this->id
 		   ,prepare_mysql(preg_match('/principal/i',$args)?'Yes':'No')
-		   ,prepare_mysql($email_data)
+		   ,prepare_mysql($email_data['Email Type'])
 		   );
       mysql_query($sql);
       if(preg_match('/principal/i',$args)){
@@ -542,14 +618,14 @@ private function base_data($args='replace'){
 	$this->data['Contact Main XHTML Email']=$email->display('html');
 	mysql_query($sql);
       }
-     
+
       $this->add_email=$email->id;
     }else{
-	$this->add_email=0;
+      $this->add_email=0;
     }
-
     
-
+    
+    
   }
  /* Method: add_address
   Add/Update an address to the Contact
@@ -570,45 +646,52 @@ function add_address($data,$args='principal'){
     $address=new address('fuzzy all');
   elseif(is_numeric($data) )
     $address=new address('fuzzy country',$data);
-  elseif(is_array($data))
-    $address=new address('new',$data);
-  
- 
- if(!$address->id){
-   print "Error can not create address";
-   
- }
- 
- $address_id=$address->id;
- 
- $sql=sprintf("insert into `Address Bridge` (`Subject Type`,`Subject Key`,`Address Key`,`Address Type`,`Address Function`,`Address Description`) values ('Contact',%d,%d,%s,%s,%s)",
-	      $this->id,
-	      $address_id
-	      ,prepare_mysql($data['Address Type'])
-	      ,prepare_mysql($data['Address Function'])
-	      ,prepare_mysql($data['Address Description'])
-	      );
- 
- if(!mysql_query($sql))
-   exit("$sql\n error can no create contact address bridge");
+  elseif(is_array($data)){
 
+    if(isset($data['Address Key'])){
+
+      $address=new address('id',$data['Address Key']);
+    }    else
+      $address=new address('find in contact create',$data);
+
+  }else
+    $address=new address('fuzzy all');
+
+  if(!$address->id){
+    
+    return;
+    
+  }
+  
+  $address_id=$address->id;
+  $sql=sprintf("insert into `Address Bridge` (`Subject Type`,`Subject Key`,`Address Key`,`Address Type`,`Address Function`,`Address Description`) values ('Contact',%d,%d,%s,%s,%s)",
+	       $this->id,
+	       $address_id
+	       ,prepare_mysql($data['Address Type'])
+	       ,prepare_mysql($data['Address Function'])
+	       ,prepare_mysql($data['Address Description'])
+	       );
+ 
+  if(!mysql_query($sql))
+    exit("$sql\n error can no create contact address bridge");
+  
  if(preg_match('/principal/i',$args)){
  
-     $plain_address=_trim($address->data['Street Number'].' '.$address->data['Street Name'].' '.$address->data['Address Town'].' '.$address->data['Postal Code'].' '.$address->data['Address Country Code']);
+   //    $plain_address=_trim($address->data['Street Number'].' '.$address->data['Street Name'].' '.$address->data['Address Town'].' '.$address->data['Postal Code'].' '.$address->data['Address Country Code']);
      $sql=sprintf("update `Contact Dimension`  set `Contact Main Plain Address`=%s,`Contact Main Address Key`=%s ,`Contact main Location`=%s ,`Contact Main XHTML Address`=%s , `Contact Main Country Key`=%d,`Contact Main Country`=%s,`Contact Main Country Code`=%s where `Contact Key`=%d ",
-		  prepare_mysql($plain_address),
+		  prepare_mysql($address->display('plain')),
 		  prepare_mysql($address_id),
-		  prepare_mysql($address->get('Address Location')),
-		  prepare_mysql($address->get('XHTML Address')),
-		  $address->get('Address Country Key'),
-		   prepare_mysql($address->get('Address Country Name')),
-		  prepare_mysql($address->get('Address Country Code')),
+		  prepare_mysql($address->data['Address Location']),
+		  prepare_mysql($address->display('html')),
+		  $address->data['Address Country Key'],
+		  prepare_mysql($address->data['Address Country Name']),
+		  prepare_mysql($address->data['Address Country Code']),
 		  $this->id
 		  );
  }
 }
 
-/* Method: add_telecom
+/* Method: add_tel
   Add/Update an telecom to the Contact
   
   Search for an telecom record maching the telecom data *$data* if not found create a ne telecom record then add this record to the Contact
@@ -622,48 +705,63 @@ function add_address($data,$args='principal'){
  */
  function add_tel($data,$args='principal'){
 
-   if(!isset($data['Telecom Original Country Key']) or !$data['Telecom Original Country Key'])
-     $data['Telecom Original Country Key']=$this->data['Contact Main Country Key'];
-   $telecom=new telecom('new',$data);
+   if(isset($data['Telecom Key'])){
+     $telecom=new Telecom('id',$data['Telecom Key']);
+   }else{
+     if(!isset($data['Telecom Original Country Key']) or !$data['Telecom Original Country Key'])
+       $data['Telecom Original Country Key']=$this->data['Contact Main Country Key'];
+     $telecom=new telecom('find in contact create',$data);
+     
+   }
+
    if($telecom->id){
       
-     if($telecom->get('Telecom Technology Type')=='Mobile')
-       $telecom_tipo='Mobile';
-     else
-       $telecom_tipo=$data['Telecom Type'];
+
      
-       $sql=sprintf("insert into  `Telecom Bridge` (`Telecom Key`, `Subject Key`,`Subject Type`,`Telecom Type`,`Is Main`) values (%d,%d,'Contact',%s,%s)  "
-		    ,$telecom->id
-		    ,$this->id
-		    ,prepare_mysql($telecom_tipo)
-		    ,prepare_mysql(preg_match('/principal/i',$args)?'Yes':'No')
-		    );
-       mysql_query($sql);
-       //   print "$sql\n";
+     if($telecom->data['Telecom Technology Type']=='Mobile'){
+	 $telecom_tipo='Contact Main Mobile';
+	 $telecom_tipo_plain='Contact Main Plain Mobile';
+	 $data['Telecom Type']='Mobile';
+     }else{
+	 if(preg_match('/fax/i',$data['Telecom Type'])){
+	   $telecom_tipo='Contact Main FAX';
+	   $telecom_tipo_plain='Contact Main Plain FAX';
 
-       if(preg_match('/principal/i',$args)){
-	
-	 if($telecom->get('Telecom Type')=='Mobile'){
-	   $telecom_tipo='Contact Main Mobile';
-	   $telecom_tipo_plain='Contact Main Plain Mobile';
+
 	 }else{
-	   if(preg_match('/fax/i',$data['Telecom Type'])){
-	     $telecom_tipo='Contact Main FAX';
-	     $telecom_tipo_plain='Contact Main Plain FAX';
-
-	   }else{
-	     $telecom_tipo='Contact Main Telephone';
-	     $telecom_tipo_plain='Contact Main Plain Telephone';
-	   }
+	   $telecom_tipo='Contact Main Telephone';
+	   $telecom_tipo_plain='Contact Main Plain Telephone';
+	   
 	 }
-	
-	 $plain_number=preg_replace('/[^\d]/','',$telecom->display('html'));
+       }
+     
+     
+
+     if(!isset($data['Telecom Description']))
+       $data['Telecom Description']=$telecom_tipo;
+
+
+     $sql=sprintf("insert into  `Telecom Bridge` (`Telecom Key`, `Subject Key`,`Subject Type`,`Telecom Type`,`Is Main`,`Telecom Description`) values (%d,%d,'Contact',%s,%s,%s)  "
+		  ,$telecom->id
+		  ,$this->id
+		  ,prepare_mysql($data['Telecom Type'])
+		  ,prepare_mysql(preg_match('/principal/i',$args)?'Yes':'No')
+		  ,prepare_mysql($data['Telecom Description'],false)
+		  );
+     mysql_query($sql);
+    
+     
+     if(preg_match('/principal/i',$args)){
+       
+      
+       
+       // $plain_number=preg_replace('/[^\d]/','',$telecom->display('html'));
 	
 	 $sql=sprintf("update `Contact Dimension` set `%s`=%s and `%s`=%s and   where `Contact Key`=%d"
 		      ,$telecom_tipo
 		      ,prepare_mysql($telecom->display('html'))
 		      ,$telecom_tipo_plain
-		      ,$plain_number
+		      ,$telecom->display('plain')
 		      ,$this->id
 		      );
 	 //  print "$sql\n";
@@ -675,7 +773,7 @@ function add_address($data,$args='principal'){
        $this->add_telecom=$telecom->id;
 
        
-     }else{
+   }else{
        $this->add_telecom=0;
 	
      }
@@ -886,29 +984,31 @@ function add_address($data,$args='principal'){
   Clean the Name data array
  */ 
 
-  function prepare_name_data($data){
+  public static function prepare_name_data($raw_data){
 
-    if(isset($data['Contact Salutation']))
-      $this->data['Contact Salutation']=mb_ucwords(_trim($data['Contact Salutation']));
-    if(isset($data['Contact First Name']) or isset($data['Contact Middle Name']))
-      $this->data['Contact First Name']=mb_ucwords(_trim($data['Contact First Name'].' '.$data['Contact Middle Name']));
-    if(isset($data['Contact Surname']))
-      $this->data['Contact Surname']=mb_ucwords(_trim($data['Contact Surname']));
-    if(isset($data['Contact Suffix']))
-      $this->data['Contact Suffix']=mb_ucwords(_trim($data['Contact Suffix']));
-    if(isset($data['Contact Gender']) and ($data['Contact Gender']=='Male' or $data['Contact Gender']=='Female'))
-      $this->data['Contact Gender']=_trim($data['Contact Gender']);
+    if(isset($raw_data['Contact Salutation']))
+      $data['Contact Salutation']=mb_ucwords(_trim($raw_data['Contact Salutation']));
+    if(isset($raw_data['Contact First Name']))
+      $data['Contact First Name']=mb_ucwords(_trim($raw_data['Contact First Name']));
+    else
+      $data['Contact First Name']='';
+    if( isset($raw_data['Contact Middle Name']))
+      $data['Contact First Name'].=mb_ucwords(_trim(' '.$raw_data['Contact Middle Name']));
+
+    if(isset($raw_data['Contact Surname']))
+      $data['Contact Surname']=mb_ucwords(_trim($raw_data['Contact Surname']));
+    if(isset($raw_data['Contact Suffix']))
+      $data['Contact Suffix']=mb_ucwords(_trim($raw_data['Contact Suffix']));
+
+    $data['Contact Gender']='Unknown';
+    if(isset($raw_data['Contact Gender']) and ($raw_data['Contact Gender']=='Male' or $raw_data['Contact Gender']=='Female'))
+      $data['Contact Gender']=_trim($raw_data['Contact Gender']);
    
-    if($this->data['Contact Gender']=='Unknown')
-      $this->data['Contact Gender']=$this->gender($data);
+    if($data['Contact Gender']=='Unknown')
+      $data['Contact Gender']=Contact::gender($raw_data);
 
    
-
- 
-
- 
-  
-
+    return $data;
 
   }
 
@@ -1097,6 +1197,7 @@ string with the name to be parsed
     $data['Contact Surname']=_trim($name['last']);
     $data['Contact Suffix']=_trim($name['suffix']);
     
+
     return $data;
     
 
@@ -1104,7 +1205,12 @@ string with the name to be parsed
   }
   
 
- 
+
+
+  /*Function:display
+
+   */
+
   function display($tipo='name'){
     
   

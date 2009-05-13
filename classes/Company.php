@@ -160,8 +160,8 @@ class Company{
     }
     
    
-   
-    $this->create($data);
+
+    $this->create($data,$address_data);
 
     
 
@@ -245,20 +245,18 @@ private function base_data(){
 
 
   
-  function create($raw_data){
+function create($raw_data,$raw_address_data=array()){
     
-   
-
-    $this->data=$this->base_data();
-    foreach($raw_data as $key=>$value){
+  
+  
+  $this->data=$this->base_data();
+  foreach($raw_data as $key=>$value){
       if(array_key_exists($key,$this->data)){
 	$this->data[$key]=_trim($value);
       }
-    }
-
-    
-
-
+  }
+  
+  
     $file_as=$this->file_as($this->data['Company Name']);
     $this->data['Company ID']=$this->get_id();
   
@@ -267,15 +265,15 @@ private function base_data(){
     if($contact->error){
       exit("find_company: contact error\n");
     }
-    EXIT;
+    
     $this->data['Company Main Contact Name']=$contact->display('name');
     $this->data['Company Main Contact Key']=$contact->id;
     
     
-    if($data['Company Main Plain Email']!=''){
+    if($this->data['Company Main Plain Email']!=''){
        
        $email_data['Email']=$this->data['Company Main Plain Email'];
-       $email_data['Email Contact Name']=$this->data['Main Contact Name'];
+       $email_data['Email Contact Name']=$this->data['Company Main Contact Name'];
        $email=new Email("find in company create",$email_data);
        if($email->error){
 	 //Collect data about email found
@@ -283,9 +281,9 @@ private function base_data(){
 	 exit("find_company: email found\n");
        }
        
-       $data['Company Main Plain Email']=$email->display('plain');
-       $data['Company Main XHTML Email']=$email->display('xhtml');
-       $data['Company Main Email Key']=$email->id;
+       $this->data['Company Main Plain Email']=$email->display('plain');
+       $this->data['Company Main XHTML Email']=$email->display('xhtml');
+       $this->data['Company Main Email Key']=$email->id;
        
 
      }
@@ -293,37 +291,42 @@ private function base_data(){
     
 
 
-  if($data['Company Main Telephone']!=''){
-      $telephone=new Telecom("find in company $create $update",$data['Company Main Telephone']);
-       if($telephone->error){
+    if($this->data['Company Main Telephone']!=''){
+      $telephone=new Telecom("find in company create",$this->data['Company Main Telephone']);
+      if($telephone->error){
 	//Collect data about telecom found
 	exit("find_company: telephone found");
       }
+
+      $this->data['Company Main Plain Telephone']=$telephone->display('plain');
+      $this->data['Company Main Telephone']=$telephone->display('number');
+      $this->data['Company Main Telephone Key']=$telephone->id; 
+       
     }
 
-    
-    $address=new Address("find in company $create $update",$address_data);
-    if($address->error){
-      exit("find_company: address found");
-    }
+     $address_data=array('Company Address Line 1'=>'','Company Address Town'=>'','Company Address Line 2'=>'','Company Address Line 3'=>'','Company Address Postal Code'=>'','Company Address Country Name'=>'','Company Address Country Primary Division'=>'','Company Address Country Secondary Division'=>'');
+     foreach($raw_address_data as $key=>$value){
+       if(array_key_exists($key,$address_data))
+	 $address_data[$key]=$value; 
+     }
+     
+         
 
-    $data['Company Main Address Key']=$address->id;
-    $data['Company Main XHTML Address']=$address->display('xhtml');
-    $data['Company Main Plain Address']=$address->display('plain');
-    $data['Company Main Country Key']=$address->data['Address Country Key'];
-    $data['Company Main Country']=$address->data['Address Country Name'];
-    $data['Company Main Location']=$address->display('location');
+
+
+     $address=new Address("find in company create",$address_data);
+     if($address->error){
+       exit("find_company: address found");
+     }
+
+    $this->data['Company Main Address Key']=$address->id;
+    $this->data['Company Main XHTML Address']=$address->display('xhtml');
+    $this->data['Company Main Plain Address']=$address->display('plain');
+    $this->data['Company Main Country Key']=$address->data['Address Country Key'];
+    $this->data['Company Main Country']=$address->data['Address Country Name'];
+    $this->data['Company Main Location']=$address->display('location');
     
-    if(isset($email) and $email->new){
-      $data['Company Main Plain Email']=$email->display('plain');
-      $data['Company Main XHTML Email']=$email->display('xhtml');
-      $data['Company Main Email Key']=$email->id;
-    }
-    if(isset($telephone) and $telephone->new){
-      $data['Company Main Plain Telephone']=$telephone->display('plain');
-      $data['Company Main Telephone']=$telephone->display('number');
-      $data['Company Main Telephone Key']=$telephone->id;
-    }
+  
 
     $keys='';
     $values='';
@@ -335,10 +338,76 @@ private function base_data(){
     $keys=preg_replace('/^,/','',$keys);
 
     $sql="insert into `Company Dimension` ($keys) values ($values)";
-        print "$sql\n";
+    //  print "$sql\n";
     
     if(mysql_query($sql)){
       $this->id = mysql_insert_id();
+
+      
+      $contact->add_company(array(
+				  'Company Key'=>$this->id
+				  ));
+      
+           
+      $contact->add_email(array(
+				'Email Key'=>$this->data['Company Main Email Key']
+				,'Email Type'=>'Work'
+				));
+
+
+      //  print_r($this->data);
+
+      $contact->add_tel(array(
+			      'Telecom Key'=>$this->data['Company Main Telephone Key']
+			      ,'Telecom Type'=>'Work Telephone'
+			      ));
+                 
+      $contact->add_tel(array(
+			      'Telecom Key'=>$this->data['Company Main FAX Key']
+			      ,'Telecom Type'=>'Office Fax'
+			      ));
+
+
+
+
+      $contact->add_address(array(
+				  'Address Key'=>$this->data['Company Main Address Key']
+				  ,'Address Type'=>'Work'
+				  ,'Address Function'=>'Contact'
+				  ,'Address Description'=>'Work Contact Address'
+				  ));
+
+     
+
+      //create the DB bridges
+      $this->add_email($this->data['Company Main Email Key']);
+      $this->add_tel(array(
+			   'Telecom Key'=>$this->data['Company Main Telephone Key']
+			   ,'Telecom Type'=>'Office Telephone'
+			   ));
+      
+      $this->add_tel(array(
+			   'Telecom Key'=>$this->data['Company Main FAX Key']
+			   ,'Telecom Type'=>'Office Fax'
+			   ));
+      $this->add_address(array(
+			       'Address Key'=>$this->data['Company Main Address Key']
+			       ,'Address Type'=>'Office'
+			       ,'Address Function'=>'Contact'
+			       ,'Address Description'=>'Company Address'
+			       ));
+
+/*       if($this->data['Company Main Telephone Key']){ */
+/* 	$sql=sprintf("insert into `Telecom Bridge` (`Telecom Key`,`Subject Type`,`Subject Key`,`Telecom Description`,`Is Main`,`Is Active`,`Telecom Type`) values (%d,'Company',%d,%s,'Yes','Yes')" */
+/* 		     ,$this->data['Company Main Telephone Key'] */
+/* 		     ,$this->id */
+/* 		     ,prepare_mysql('Company Telephone') */
+/* 		     ,prepare_mysql('Office') */
+/* 		     ); */
+/* 	mysql_query($sql); */
+/*       } */
+      
+
       $this->get_data('id',$this->id);
      }else{
        print "Error, company can not be created";exit;
@@ -413,46 +482,197 @@ private function base_data(){
   }
 
   function add_email($email_data,$args='principal'){
-    //  $emails=$this->get('emails');
-    //  print_r($this->data);
-
-    $contact=new contact($this->get('company main contact key'));
-    if($contact->id){
     
-      $contact->add_email($email_data,$args);
+    if(is_numeric($email_data)){
+      $tmp=$email_data;
+      unset($email_data);
+      $email_data['Email Key']=$tmp;
+    }
       
-      if($contact->add_email){
-	$this->msg['email added'];
-	if(preg_match('/principal/i',$args)){
-	  $sql=sprintf("update `Company Dimension` set `Company Main XHTML Email`=%s where `Company Key`=%d",prepare_mysql($contact->get('Contact Main XHTML Email')),$this->id);
-	  mysql_query($sql);
-	}
+
+    if(preg_match('/from main contact/',$args)){
+       $contact=new contact($this->data['Company Main Contact Key']);
+       $email=new Email($contact->data['Contact Main Email Key']);
+    }elseif(isset($email_data['Email Key'])){
+      $email=new Email($email_data['Email Key']);
+    }elseif(is_array($email_data)){
+      $email=new Email('find in company create',$email_data['Email Key']);
+      
+    }else
+       return;
+    
+    if($email->id){
+      
+      	$sql=sprintf("insert into `Email Bridge` (`Email Key`,`Subject Type`,`Subject Key`,`Email Description`,`Is Main`,`Is Active`) values (%d,'Company',%d,%s,'Yes','Yes')"
+		     ,$email->id
+		     ,$this->id
+		     ,prepare_mysql('Company Email')
+		     );
+	mysql_query($sql);
+
+
+    }
+    
+    
+  /*   $contact=new contact($this->get('company main contact key')); */
+/*     if($contact->id){ */
+      
+/*       $contact->add_email($email_data,$args); */
+      
+/*       if($contact->add_email){ */
+/* 	$this->msg['email added']; */
+/* 	if(preg_match('/principal/i',$args)){ */
+/* 	  $sql=sprintf("update `Company Dimension` set `Company Main XHTML Email`=%s where `Company Key`=%d",prepare_mysql($contact->get('Contact Main XHTML Email')),$this->id); */
+/* 	  mysql_query($sql); */
+/* 	} */
 	
-      }
-    }
+/*       } */
+/*     } */
+    
+    
+    
   }
 
- function add_tel($tel_data,$args='principal'){
 
-   $tel_data['country key']=$this->get('Company main Country Key');
-   $contact=new contact($this->get('company main contact key'));
-   //print_r($this->data);
-   if($contact->id){
-   $contact->add_tel($tel_data,$args);
+/* Method: add_tel
+  Add/Update an telecom to the Company
+  
+  Search for an telecom record maching the telecom data *$data* if not found create a ne telecom record then add this record to the Contact
+
+
+  Parameter:
+  $data  -    array   telecom data
+  $args -     string  options
+  Return: 
+  integer telecom key of the added/updated telecom
+ */
+
+
+ function add_tel($data,$args='principal'){
+
+   if(is_numeric($data)){
+     $tmp=$data;
+     unset($data);
+     $data['Email Key']=$tmp;
+   }
    
-   if($contact->add_tel){
-      $this->msg['telecom added'];
-        if(preg_match('/principal/i',$args)){
-	  $sql=sprintf("update `Company Dimension` set `Company Main Telephone`=%s where `Company Key`=%d",prepare_mysql($contact->get('Contact Main Telephone')),$this->id);
-	  $this->db->exec($sql);
-	  $sql=sprintf("update `Company Dimension` set `Company Main FAX`=%s where `Company Key`=%d",prepare_mysql($contact->get('Contact Main Fax')),$this->id);
-	  mysql_query($sql);
-	}
+   if(isset($data['Telecom Key'])){
+     $telecom=new Telecom('id',$data['Telecom Key']);
+   }else{
+     if(!isset($data['Telecom Original Country Key']) or !$data['Telecom Original Country Key'])
+       $data['Telecom Original Country Key']=$this->data['Contact Main Country Key'];
+     $telecom=new telecom('find in company create',$data);
+   }
+   if($telecom->id){
+     if($telecom->data['Telecom Technology Type']=='Mobile'){
+	 $telecom_tipo='Company Main Telephone';
+	 $telecom_tipo_plain='Company Main Plain Telephone';
+       }else{
+	 if(preg_match('/fax/i',$data['Telecom Type'])){
+	 $telecom_tipo='Company Main FAX';
+	 $telecom_tipo_plain='Company Main Plain FAX';
+	 
+	 }else{
+	   $telecom_tipo='Company Main Telephone';
+	   $telecom_tipo_plain='Company Main Plain Telephone';
+	 }
+       }
 
-    }
- }else
-   print "Error\n";
+ if(!isset($data['Telecom Description']))
+       $data['Telecom Description']=$telecom_tipo;
+
+     // add bridge
+  
+     
+     $sql=sprintf("insert into  `Telecom Bridge` (`Telecom Key`, `Subject Key`,`Subject Type`,`Telecom Type`,`Is Main`,`Telecom Description`) values (%d,%d,'Company',%s,%s,%s)  "
+		  ,$telecom->id
+		  ,$this->id
+		  ,prepare_mysql($data['Telecom Type'])
+		  ,prepare_mysql(preg_match('/principal/i',$args)?'Yes':'No')
+		  ,prepare_mysql($data['Telecom Description'],false)
+		  );
+     mysql_query($sql);
+     print "$sql\n";
+     if(preg_match('/principal/i',$args)){
+     
+       
+       	 $sql=sprintf("update `Company Dimension` set `%s`=%s and `%s`=%s and   where `Company Key`=%d"
+		      ,$telecom_tipo
+		      ,prepare_mysql($telecom->display('html'))
+		      ,$telecom_tipo_plain
+		      ,$telecom->display('plain')
+		      ,$this->id
+		      );
+	 mysql_query($sql);
+       
+     }
+   }
+
+ }
+    
+/* Method: add_address
+  Add/Update an address to the Contact
+  
+  Search for an address record maching the address data *$data* if not found create a ne address record then add this record to the Contact
+
+
+  Parameter:
+  $data  -    array   address data
+  $args -     string  options
+  Return: 
+  integer address key of the added/updated address
+ */
+
+function add_address($data,$args='principal'){
+
+  if(!$data)
+    $address=new address('fuzzy all');
+  elseif(is_numeric($data) )
+    $address=new address('fuzzy country',$data);
+  elseif(is_array($data)){
+
+    if(isset($data['Address Key'])){
+
+      $address=new address('id',$data['Address Key']);
+    }    else
+      $address=new address('find in company create',$data);
+
+  }else
+    $address=new address('fuzzy all');
+
+  if(!$address->id){
+    
+    return;
+    
   }
+  
+  $address_id=$address->id;
+  $sql=sprintf("insert into `Address Bridge` (`Subject Type`,`Subject Key`,`Address Key`,`Address Type`,`Address Function`,`Address Description`) values ('Company',%d,%d,%s,%s,%s)",
+	       $this->id,
+	       $address_id
+	       ,prepare_mysql($data['Address Type'])
+	       ,prepare_mysql($data['Address Function'])
+	       ,prepare_mysql($data['Address Description'])
+	       );
+ 
+  if(!mysql_query($sql)){
+    exit("$sql\n error can no create company address bridge");
+  }
+ if(preg_match('/principal/i',$args)){
+ 
+   //    $plain_address=_trim($address->data['Street Number'].' '.$address->data['Street Name'].' '.$address->data['Address Town'].' '.$address->data['Postal Code'].' '.$address->data['Address Country Code']);
+     $sql=sprintf("update `Company Dimension`  set `Com[Any Main Plain Address`=%s,`Com[Any Main Address Key`=%s ,`Com[Any main Location`=%s ,`Com[Any Main XHTML Address`=%s , `Com[Any Main Country Key`=%d,`Com[Any Main Country`=%s,`Com[Any Main Country Code`=%s where `Com[Any Key`=%d ",
+		  prepare_mysql($address->display('plain')),
+		  prepare_mysql($address_id),
+		  prepare_mysql($address->data['Address Location']),
+		  prepare_mysql($address->display('html')),
+		  $address->data['Address Country Key'],
+		  prepare_mysql($address->data['Address Country Name']),
+		  prepare_mysql($address->data['Address Country Code']),
+		  $this->id
+		  );
+ }
+}
 
 
 function add_contact($data,$args='principal'){
