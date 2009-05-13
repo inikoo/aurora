@@ -529,7 +529,7 @@ private function base_data($args='replace'){
 		   ,$this->id
 		   ,prepare_mysql(preg_match('/principal/i',$args)?'Yes':'No')
 		   );
-      print "$sql\n";
+
       mysql_query($sql);
       if(preg_match('/principal/i',$args)){
 	$sql=sprintf("update `Contact Dimension` set `Contact Company Name`=%s ,`Contact Company Key`=%s where `Contact Key`=%d"

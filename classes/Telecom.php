@@ -176,6 +176,9 @@ function find($raw_data,$options){
       return false;
     }
 
+
+    $data['Telecom Plain Number']=Telecom::plain_number($data);
+
     $subject_key=0;
     $subject_type='Contact';
 
@@ -294,12 +297,14 @@ Insert new number to the database
 		prepare_mysql($this->data['Telecom Plain Number'])
 		);
 
+
    if(mysql_query($sql)){
      $this->id = mysql_insert_id();
      $this->get_data('id',$this->id);
      $this->new=true;
      return true;
    }else{
+     $this->error=true;
      $this->msg="Error can not create telecom\n";
      $this->new=false;
    }

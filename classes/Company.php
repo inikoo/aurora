@@ -257,7 +257,7 @@ function create($raw_data,$raw_address_data=array()){
   }
   
   
-    $file_as=$this->file_as($this->data['Company Name']);
+    $this->data['Company File As']=$this->file_as($this->data['Company Name']);
     $this->data['Company ID']=$this->get_id();
   
     
@@ -303,6 +303,21 @@ function create($raw_data,$raw_address_data=array()){
       $this->data['Company Main Telephone Key']=$telephone->id; 
        
     }
+
+    if($this->data['Company Main FAX']!=''){
+      $telephone=new Telecom("find in company create",$this->data['Company Main FAX']);
+      if($telephone->error){
+	//Collect data about telecom found
+	exit("find_company: fax error");
+      }
+
+      $this->data['Company Main Plain FAX']=$telephone->display('plain');
+      $this->data['Company Main FAX']=$telephone->display('number');
+      $this->data['Company Main FAX Key']=$telephone->id; 
+       
+    }
+
+
 
      $address_data=array('Company Address Line 1'=>'','Company Address Town'=>'','Company Address Line 2'=>'','Company Address Line 3'=>'','Company Address Postal Code'=>'','Company Address Country Name'=>'','Company Address Country Primary Division'=>'','Company Address Country Secondary Division'=>'');
      foreach($raw_address_data as $key=>$value){
@@ -592,7 +607,7 @@ function create($raw_data,$raw_address_data=array()){
 		  ,prepare_mysql($data['Telecom Description'],false)
 		  );
      mysql_query($sql);
-     print "$sql\n";
+
      if(preg_match('/principal/i',$args)){
      
        
@@ -734,8 +749,27 @@ function add_contact($data,$args='principal'){
    function check_code($name){
     return $name;
   }
+  
+   /*
+     Function: file_as
+     Parse company name to be order nicely
+     
+
+    */
+
+
    function file_as($name){
-    return $name;
+     $articles_regex='/^(the|el|la|les|los|a)\s+/i';
+     if(preg_match($articles_regex,$name,$match)){
+       $name=preg_replace($articles_regex,'',$name);
+       $article=_trim($match[0]);
+       $name.=' '.$article;
+     }
+     $no_standar_characters_regex='/^[a-z0-9]*/';
+     $name=preg_replace($no_standar_characters_regex,'',$name);
+     
+     
+     return $name;
   }
 
 }
