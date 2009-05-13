@@ -77,6 +77,8 @@ class Address{
   */
   function Address($arg1=false,$arg2=false) {
 
+
+
     if(!$arg1 and !$arg2){
       $this->error=true;
       $this->msg='No data provided';
@@ -115,6 +117,9 @@ class Address{
 	 
 	 
     }
+    
+    $this->get_data($arg1,$arg2);
+    
   }
 
   /*
@@ -132,7 +137,7 @@ class Address{
       $sql=sprintf("select * from `Address Dimension` where  `Address Fuzzy`='Yes' and `Address Fuzzy Type`='all' ",$id);
 
 
-
+    
 
     $result=mysql_query($sql);
     if($this->data=mysql_fetch_array($result, MYSQL_ASSOC))
@@ -151,7 +156,7 @@ class Address{
   
  private function find($raw_data,$options=''){
 
-   print "$options\n";
+ 
 
    if(!$raw_data){
      $this->new=false;
@@ -171,7 +176,7 @@ class Address{
       $update='update';
     }
 
-    print "$update $create \n";
+
 
    $data=$this->base_data();
    
@@ -203,9 +208,11 @@ class Address{
     }
 
    
+   
     switch($data['Address Input Format']){
     case('3 Line'):
       $data=$this->prepare_3line($data);
+
       $data['Address Input Format']='DB Fields';
       break;
     case('DB Fields'):
@@ -213,6 +220,9 @@ class Address{
       break;
     }
 
+
+
+    //  print_r($raw_data);
 
     $subject_key=0;
     $subject_type='Contact';
@@ -331,12 +341,13 @@ class Address{
 
     }
 
-
+    
 
     $this->found=false;
-    if($create)
+    if($create){
+
       $this->create($data);
-     elseif($update)
+    }elseif($update)
       $this->update($data);
 
  }
@@ -389,6 +400,8 @@ class Address{
   */
   protected function create($data){
 
+    //  print_r($data);
+
     if(!isset($data['Address Input Format'])){
       $data['Address Input Format']='DB Fields';
       if(isset($data['Address Address Line 1']))
@@ -396,6 +409,10 @@ class Address{
       else
 	$data['Address Input Format']='DB Fields';
     }
+
+
+    //print_r($data);
+
     switch($data['Address Input Format']){
     case('3 Line'):
       $this->data=$this->prepare_3line($data);
@@ -404,6 +421,8 @@ class Address{
       $this->data=$this->prepare_DBfields($data);
       break;
     }
+
+
 
     $keys='';
     $values='';
@@ -998,6 +1017,9 @@ class Address{
       $len=strlen($number)+1;
       $name=substr($line,strlen($line)-$len);
 
+    }else{
+      $name=$line;
+      
     }
 
     
@@ -2981,12 +3003,15 @@ class Address{
 
 
     $street_data=Address::parse_street(mb_ucwords(_trim($raw_data['Address Line 3'])));
+
     foreach($street_data as $key=>$value){
        if(array_key_exists($key,$data)){
 	 $data[$key]=_trim($value);
        }
     }
-    
+    $data['Address Building']=$raw_data['Address Line 2'];
+    $data['Address Internal']=$raw_data['Address Line 1'];
+
     $postcode_data=Address::parse_postcode(
 					   $data['Address Postal Code']
 					   ,$data['Address Country Code']
@@ -2997,6 +3022,9 @@ class Address{
 	$data[$key]=_trim($value);
       }
     }
+
+
+   
 
     $data['Address Fuzzy']='No';
     $data['Address Fuzzy Type']='';

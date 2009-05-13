@@ -58,8 +58,8 @@ class Telecom{
     if($tipo=='id'){
      
       if($id==0){
-	print "error telecom key can not be zero T:$tipo ID:$id\n";
-	exit;
+	$this->msg="error telecom key can not be zero T:$tipo ID:$id\n";
+	return;
       }
       $sql=sprintf("select * from `Telecom Dimension` where  `Telecom Key`=%d",$id);
       $result=mysql_query($sql);

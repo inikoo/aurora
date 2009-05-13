@@ -52,7 +52,7 @@ $data=array(
 	    ,'Company Address Town'=>'Sheffield'
 	    ,'Company Address Postal Code'=>'S3 8AL '
 	    ,'Company Address Country Name'=>'UK'
-	    ,'Company Main Contact'=>'Mr David Hardy'
+	    ,'Company Main Contact Name'=>'Mr David Hardy'
 );
 
 

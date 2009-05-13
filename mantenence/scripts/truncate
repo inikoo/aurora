@@ -6,3 +6,4 @@ TRUNCATE `Product Family Bridge`;
 TRUNCATE `Purchase Order Dimension`;
 TRUNCATE `Location Dimension`;
 TRUNCATE `Part Location Dimension`;
+TRUNCATE `Contact Bridge`;
