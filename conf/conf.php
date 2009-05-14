@@ -86,7 +86,7 @@ $myconf=array(
 	      'order_id_type'=>'Order Header Numeric ID',
 	      
 	      'max_session_time'=>36000,
-	      'name'=>'Ancient Wisdom',
+	      'name'=>'Kaktus',
 	      'sname'=>'AW',
 	      'country'=>'GB',
 	      'country_code'=>'GBR',
