@@ -1,4 +1,16 @@
 <?
+/*
+ File: login.php 
+
+ UI login page
+
+ About: 
+ Autor: Raul Perusquia <rulovico@gmail.com>
+ 
+ Copyright (c) 2009, Kaktus 
+ 
+ Version 2.0
+*/
 include_once('app_files/db/key.php');
 
 include_once('aes.php');

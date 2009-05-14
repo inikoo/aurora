@@ -1,7 +1,19 @@
 <?
-//@Created 20-04-2009 17:38
-//@author Raul Perusquia <rulovico@gmail.com>
-//Copyright (c) 2009 LW
+/*
+ File: departments.php 
+
+ UI department page
+
+ About: 
+ Autor: Raul Perusquia <rulovico@gmail.com>
+ 
+ Copyright (c) 2009, Kaktus 
+ 
+ Version 2.0
+
+ Created: 20-04-2009 17:38
+
+*/
 include_once('common.php');
 include_once('stock_functions.php');
 

@@ -1,4 +1,16 @@
 <?
+/*
+ File: suppliers.php 
+
+ UI suppliers page
+
+ About: 
+ Autor: Raul Perusquia <rulovico@gmail.com>
+ 
+ Copyright (c) 2009, Kaktus 
+ 
+ Version 2.0
+*/
 include_once('common.php');
 
 // if(!$LU->checkRight(SUP_VIEW) or !$LU->checkRight(SUP_ALL_VIEW))

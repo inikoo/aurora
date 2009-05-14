@@ -1,6 +1,16 @@
 <?
-//@author Raul Perusquia <rulovico@gmail.com>
-//Copyright (c) 2009 LW
+/*
+ File: customers.php 
+
+ UI customers page
+
+ About: 
+ Autor: Raul Perusquia <rulovico@gmail.com>
+ 
+ Copyright (c) 2009, Kaktus 
+ 
+ Version 2.0
+*/
 include_once('common.php');
 if(!$LU->checkRight(CUST_VIEW))
   exit;
