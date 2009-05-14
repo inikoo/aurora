@@ -1,4 +1,16 @@
 <?
+/*
+ File: products.php 
+
+ UI products page
+
+ About: 
+ Autor: Raul Perusquia <rulovico@gmail.com>
+ 
+ Copyright (c) 2009, Kaktus 
+ 
+ Version 2.0
+*/
 include_once('common.php');
 $view_sales=$LU->checkRight(PROD_SALES_VIEW);
 $view_stock=$LU->checkRight(PROD_STK_VIEW);
