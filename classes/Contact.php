@@ -1250,8 +1250,12 @@ string with the name to be parsed
 
     switch($tipo){
     case('name'):
-      $name=_trim($this->data['Contact Salutation'].' '.$this->data['Contact First Name'].' '.$this->data['Contact Surname']);
+      if($this->data['Contact Fuzzy'])
+	$name=$this->data['Contact Name'];
+      else{
+	$name=_trim($this->data['Contact Salutation'].' '.$this->data['Contact First Name'].' '.$this->data['Contact Surname']);
       $name=preg_replace('/\s+/',' ',$name);
+      }
       return $name;
     case('file as'):
       $name=_trim($this->data['Contact Surname'].' '.$this->data['Contact First Name']);
