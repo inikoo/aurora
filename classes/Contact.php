@@ -84,6 +84,10 @@ class Contact{
     $this->unknown_informal_greeting=$myconf['unknown_informal_greting'];
     $this->unknown_formal_greeting=$myconf['unknown_formal_greting'];
 
+    if(preg_match('/create anonymous|create anonimous$/i',$arg1)){
+      $this->create_anonymous();
+      return;
+    }
     if(preg_match('/^(new|create)$/i',$arg1)){
       $this->create($arg2);
       return;
@@ -91,6 +95,8 @@ class Contact{
       $this->find($arg2,$arg1);
       return;
     }
+
+    
 
     if(is_numeric($arg1) and !$arg2){
       $this->get_data('id',$arg1);
@@ -595,13 +601,15 @@ private function base_data($args='replace'){
 	$email_type=$data['Email Type'];
       else
 	$email_type='';
+      
       if(preg_match('/work/i',$email_type))
 	$email_data['Email Type']='Work';
-      if(preg_match('/personal/i',$email_type))
+      elseif(preg_match('/personal/i',$email_type))
 	$email_data['Email Type']='Personal';
-      if(preg_match('/other/i',$email_type))
+      elseif(preg_match('/other/i',$email_type))
 	$email_data['Email Type']='Other';
-      
+      else
+	$email_data['Email Type']='Unknown';
 
       $sql=sprintf("insert into  `Email Bridge` (`Email Key`,`Subject Type`, `Subject Key`,`Is Main`,`Email Description`) values (%d,'Contact',%d,%s,%s)  "
 		   ,$email->id
@@ -627,6 +635,31 @@ private function base_data($args='replace'){
     
     
   }
+  /*
+    Function: create_anonymous
+    Create an anonymous contact
+   */
+  private function create_anonymous(){
+     $this->data['Contact Name']=$this->unknown_name;
+      $this->data['Contact File As']=$this->unknown_name;
+      $this->data['Contact Informal Greeting']=$this->unknown_informal_greeting;
+      $this->data['Contact Formal Greeting']=$this->unknown_formal_greeting;
+      $this->data['Contact File As']=$this->display('file_as');
+      $this->data['Contact ID']=$this->get_id();
+      $sql="INSERT INTO `dw`.`Contact Dimension` (`Contact ID`, `Contact Salutation`, `Contact Name`, `Contact File As`, `Contact First Name`, `Contact Surname`, `Contact Suffix`, `Contact Gender`, `Contact Informal Greeting`, `Contact Formal Greeting`, `Contact Profession`, `Contact Title`, `Contact Company Name`, `Contact Company Key`, `Contact Company Department`, `Contact Company Department Key`, `Contact Manager Name`, `Contact Manager Key`, `Contact Assistant Name`, `Contact Assistant Key`, `Contact Main Address Key`, `Contact Main Location`, `Contact Main XHTML Address`, `Contact Main Plain Address`, `Contact Main Country Key`, `Contact Main Country`, `Contact Main Country Code`, `Contact Main Telephone`, `Contact Main Plain Telephone`, `Contact Main Telephone Key`, `Contact Main Mobile`, `Contact Main Plain Mobile`, `Contact Main Mobile Key`, `Contact Main FAX`, `Contact Main Plain FAX`, `Contact Main Fax Key`, `Contact Main XHTML Email`, `Contact Main Plain Email`, `Contact Main Email Key`, `Contact Fuzzy`) VALUES (".$this->data['Contact ID'].", 'NULL', ".prepare_mysql($this->data['Contact Name']).",".prepare_mysql($this->data['Contact File As']).", 'NULL',NULL, NULL, 'Unknown',".prepare_mysql($this->data['Contact Informal Greeting']).",".prepare_mysql($this->data['Contact Formal Greeting']).", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, '', NULL, NULL, '', NULL, NULL, '', NULL, NULL, '', NULL, 'Yes');";
+    
+    if(mysql_query($sql)){
+      $this->id= mysql_insert_id();
+      $this->new=true;
+      $this->get_data('id',$this->id);
+    }else{
+      $this->msg="Error can not create anonymous contact";
+      $this->new=false;
+    }
+
+  }
+
+
  /* Method: add_address
   Add/Update an address to the Contact
   
@@ -983,7 +1016,7 @@ function add_address($data,$args='principal'){
     /* Method: prepare_name_data
   Clean the Name data array
  */ 
-
+  
   public static function prepare_name_data($raw_data){
 
     if(isset($raw_data['Contact Salutation']))

@@ -4,6 +4,9 @@
 
  This file contains the Email Class
 
+ Each email has to be associated with a contact if no contac data is provided when the Email is created an anonimous contact will be created as well. 
+ 
+
  About: 
  Autor: Raul Perusquia <rulovico@gmail.com>
  
@@ -123,7 +126,14 @@ class Email{
 
   private function find($data,$options=''){
 
-
+$create='';
+    $update='';
+    if(preg_match('/create/i',$options)){
+      $create='create';
+    }
+    if(preg_match('/update/i',$options)){
+      $update='update';
+    }
     
     if(!$data){
       $this->new=false;
@@ -165,8 +175,10 @@ class Email{
       $subject_type='Company';
     }
 
-
-   
+    if(!$subject_key){
+      $options.=' anonymous';
+    }
+      
     
     $sql=sprintf("select T.`Email Key`,`Subject Key` from `Email Dimension` T left join `Email Bridge` TB  on (TB.`Email Key`=T.`Email Key`) where `Email`=%s and `Subject Type`=%s  "
 		 ,prepare_mysql($data['Email'])
@@ -175,7 +187,7 @@ class Email{
 
     $result=mysql_query($sql);
     $num_results=mysql_num_rows($result);
-    
+    print "$sql Num resuklts $num_results\n";
       if($num_results==0){
 	$this->found=false;
 	
@@ -183,7 +195,7 @@ class Email{
 	  // try to find possible matches (assuming the the client comit a mistakt)
 	  $sql=sprintf("select `Email Key`,`Email Contact Name`,levenshtein(UPPER(%s),UPPER(`Email`)) as dist1,levenshtein(UPPER(SOUNDEX(%s)),UPPER(SOUNDEX(`Email`))) as dist2, `Subject Key`  from `Email Dimension` left join `Email Bridge` on (`Email Bridge`.`Email Key`=`Email Dimension`.`Email Key`)  where dist1<=2 and  `Subject Type`=%s `Subject Key`=%d and  order by dist1,dist2 limit 20"
 		       ,prepare_mysql($data['Email'])
-			,prepare_mysql($data['Email'])
+		       ,prepare_mysql($data['Email'])
 		       ,prepare_mysql($subject_type)
 		       ,$subject_key
 		       );
@@ -213,6 +225,7 @@ class Email{
 	     
 	   }
 	   $number_candidates=count($candidate);
+	   print "number candidates $number_candidates\n";
 	   if($number_candidates>0){
 	     asort($candidate);
 	     foreach ($candidate as $key => $val) {
@@ -223,29 +236,52 @@ class Email{
 	     $this->update($data);
 	     return $this->id;
 	     
+	   }else{
+	     // email not found
+	     if($create){
+	       $this->create($data,$options);
+	       return;
+	     }
 	   }
 	   
 	   
        	}
+	if($create){
+	  $this->create($data,$options);
+	  return;
+	}
+
       }else if($num_results==1){
+	$this->found=true;
 	$row=mysql_fetch_array($result, MYSQL_ASSOC);
-	
-	if($row['Subject Key']==$subject_key){
-	  $this->get_data('id',$row['Email Key']);
-	  $this->update($data);
-	  return $this->id;
+
+	$this->get_data('id',$row['Email Key']);
+	if(!$subject_key or $row['Subject Key']==$subject_key){
+	  if($create and !$update){
+	    if($subject_type=='Contact'){
+	      $contact=new Contact($row['Subject Key']);
+	      $this->msg=_('Email found in contact').sprintf('. %s (%d)',$contact->display('name'),$contact->id);
+	    }else{
+	      $company=new Company($row['Subject Key']);
+	      $this->msg=_('Email found in company').sprintf('. %s (%d)',$company->display('name'),$company->id);
+	  }
+
+	    $this->error=true;
+	  }elseif($create){
+	    $this->update($data);
+	  }
+	  return;
 	}else{
 	  if($subject_type=='Contact'){
 	    $contact=new Contact($row['Subject Key']);
-	  $this->msg=_('Email found in another contact').sprintf('. %s (%d)',$contact->display('name'),$contact->id);
+	    $this->msg=_('Email found in another contact').sprintf('. %s (%d)',$contact->display('name'),$contact->id);
 	  }else{
 	    $company=new Company($row['Subject Key']);
-	  $this->msg=_('Email found in another company').sprintf('. %s (%d)',$company->display('name'),$company->id);
-	  
+	    $this->msg=_('Email found in another company').sprintf('. %s (%d)',$company->display('name'),$company->id);
 	  }
-	  return 0;
+	
 	}
-      }else{
+      }else{// Found in more than one contact (that means tha two contacts share the same email) this shoaul not happen
 	while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 	  if($row['Subject Key']==$in_contact){
 	    $this->get_data('id',$row['Email Key']);
@@ -270,7 +306,7 @@ class Email{
 	if($num_results==0){
 
 	  if(preg_match('/create/i',$options)){
-	    $this->create($data);
+	    $this->create($data,$options);
 	  }
 	  return;
 
@@ -339,6 +375,17 @@ protected function create($data,$options=''){
     $this->new=true;
       
     $this->msg=_('New Email');
+
+
+    if(preg_match('/anonimous|anonymous/',$options)){
+      $contact=new Contact('create anonimous');
+      $contact->add_email(array(
+				'Email Key'=>$this->id
+				,'Email Type'=>'Unknown'
+				));
+    }
+
+
     return true;
   }else{
     $this->new=false;
@@ -378,15 +425,22 @@ function set($key,$value){
 }
 /*Method: update
  Switcher calling the apropiate update method
+
+ Parameters:
+ $data - associated array with Email Dimension fields
  
 */
 
 function update($data,$options=''){
-  $base_data=$this->base_data('no replace');
+  $base_data=$this->base_data();
   foreach($data as $key=>$value){
-    if(is_key($key,$base_data)){
-      $function_name=preg_replace('\s','',ucwords($key));
-      call_user_func(array($this, 'update_'.$function_name),$value,$options);
+    if(array_key_exists($key,$base_data)){
+      
+      if($value!=$this->data[$key]){
+	$function_name=preg_replace('\s','',ucwords($key));
+	call_user_func(array($this, 'update_'.$function_name),$value,$options);
+      }
+
     }
       
   }

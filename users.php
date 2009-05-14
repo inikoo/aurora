@@ -1,4 +1,16 @@
 <?
+/*
+ File: users.php 
+
+ UI user managment page
+
+ About: 
+ Autor: Raul Perusquia <rulovico@gmail.com>
+ 
+ Copyright (c) 2009, Kaktus 
+ 
+ Version 2.0
+*/
 include_once('common.php');
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',

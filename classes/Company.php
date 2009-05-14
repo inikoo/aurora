@@ -430,6 +430,27 @@ function create($raw_data,$raw_address_data=array()){
 
   }
 
+
+/*Method: update
+ Switcher calling the apropiate update method
+
+ Parameters:
+ $data - associated array with Email Dimension fields
+ 
+*/
+
+function update($data,$options=''){
+  $base_data=$this->base_data();
+  foreach($data as $key=>$value){
+    if(is_key($key,$base_data)){
+      $function_name=preg_replace('\s','',ucwords($key));
+      call_user_func(array($this, 'update_'.$function_name),$value,$options);
+    }
+      
+  }
+
+}
+
   function get_id(){
     
     $sql="select max(`Company ID`)  as company_id from `Company Dimension`";
