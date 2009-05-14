@@ -1,4 +1,4 @@
-Format: 1.4
+Format: Development Release 12-07-2007 (1.35 base)
 
 
 Title: Kaktus
@@ -75,13 +75,41 @@ Group: Files  {
       File: Warehouse.php  (classes/Warehouse.php)
       }  # Group: PHP Classes
 
-   Group: PHP Other  {
+   Group: PHP UI  {
+
+      File: customer.php  (customer.php)
+      File: customers.php  (customers.php)
+      File: department.php  (department.php)
+      File: departments.php  (departments.php)
+      File: family.php  (family.php)
+      File: index.php  (index.php)
+      File: location.php  (location.php)
+      File: login.php  (login.php)
+      File: product.php  (product.php)
+      File: store.php  (store.php)
+      File: stores.php  (stores.php)
+      File: supplier.php  (supplier.php)
+      File: suppliers.php  (suppliers.php)
+      }  # Group: PHP UI
+
+   Group: PHP AR  {
 
       File: ar_assets.php  (ar_assets.php)
+      File: ar_orders.php  (ar_orders.php)
+      File: ar_users.php  (ar_users.php)
+      }  # Group: PHP AR
+
+   Group: PHP Other  {
+
       File: common_functions.php  (common_functions.php)
-      File: Fill_Unknown_Address.php  (mantenence/scripts/Fill_Unknown_Address.php)
-      File: Get_Tel_Local_Codes  (mantenence/scripts/Get_Tel_Local_Codes.php)
-      File: Set_Staff_Contacts.php  (mantenence/scripts/Set_Staff_Contacts.php)
+
+      Group: Mantenence  {
+
+         File: Fill_Unknown_Address.php  (mantenence/scripts/Fill_Unknown_Address.php)
+         File: Get_Tel_Local_Codes  (mantenence/scripts/Get_Tel_Local_Codes.php)
+         File: Set_Staff_Contacts.php  (mantenence/scripts/Set_Staff_Contacts.php)
+         }  # Group: Mantenence
+
       }  # Group: PHP Other
 
    Group: Javascript  {

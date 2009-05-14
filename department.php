@@ -1,4 +1,16 @@
 <?
+/*
+ File: department.php 
+
+ UI department page
+
+ About: 
+ Autor: Raul Perusquia <rulovico@gmail.com>
+ 
+ Copyright (c) 2009, Kaktus 
+ 
+ Version 2.0
+*/
 include_once('common.php');
 include_once('classes/Store.php');
 include_once('classes/Department.php');

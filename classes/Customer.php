@@ -10,6 +10,10 @@
  Copyright (c) 2009, Kaktus 
  
  Version 2.0
+
+
+ The customer dimension is the  critical element for a CRM, a customer can be a Company or a Contact.
+
 */
 include_once('Contact.php');
 include_once('Order.php');
