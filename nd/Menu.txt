@@ -71,6 +71,15 @@ Group: Files  {
       File: Supplier.php  (classes/Supplier.php)
       File: SupplierProduct.php  (classes/SupplierProduct.php)
       File: Telecom.php  (classes/Telecom.php)
+
+      Group: Tests  {
+
+         File: test_contact.php  (classes/tests/test_contact.php)
+         File: test_contacts.php  (classes/tests/test_company.php)
+         File: test_contacts.php  (classes/tests/test_address.php)
+         File: test_email.php  (classes/tests/test_email.php)
+         }  # Group: Tests
+
       File: User.php  (classes/User.php)
       File: Warehouse.php  (classes/Warehouse.php)
       }  # Group: PHP Classes
@@ -86,10 +95,13 @@ Group: Files  {
       File: location.php  (location.php)
       File: login.php  (login.php)
       File: product.php  (product.php)
+      File: products.php  (products.php)
+      File: reports.php  (reports.php)
       File: store.php  (store.php)
       File: stores.php  (stores.php)
       File: supplier.php  (supplier.php)
       File: suppliers.php  (suppliers.php)
+      File: users.php  (users.php)
       }  # Group: PHP UI
 
    Group: PHP AR  {
