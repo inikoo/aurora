@@ -365,6 +365,11 @@ function create($data,$optios=''){
      $this->id = mysql_insert_id();
      $this->get_data('id',$this->id);
      $this->new=true;
+     
+     // Some times some post production should be made. 
+     $this->postproduction();
+
+
      return true;
    }else{
      $this->error=true;
@@ -480,10 +485,17 @@ function create($data,$optios=''){
 
      
    }
-
+   $number=preg_replace('/[^\d]/','',$number);
+   $number=_trim($number);
 
    $data['Telecom Number']=$number;
    
+
+   if($country_code='UNK' and isset($data['Telecom Country Telephone Code'])){
+     $country_code=Telecom::get_country_code($data['Telecom Country Telephone Code']);
+     
+   }
+
 
   /*  $raw_tel=$data['Telecom Original Number']; */
 /*    // print "org1 $data ".$raw_tel."\n"; */
@@ -552,28 +564,28 @@ function create($data,$optios=''){
     
   case('GBR')://UK
 
+    $data['Telecom Number']=preg_replace('/^0/','',$data['Telecom Number']);
+    $data['Telecom National Access Code']='0';
     if($data['Telecom Area Code']==''){
       $data['Telecom Number']=preg_replace('/^0/','',$data['Telecom Number']);
-      $area_code=Address::find_area_code($data['Telecom Number'],'GBR');
+      $area_code=Telecom::find_area_code($data['Telecom Number'],'GBR');
       if($area_code!=''){
 	$data['Telecom Area Code']=$area_code;
 	$data['Telecom Number']=preg_replace("/^".$data['Telecom Area Code']."/",'',$data['Telecom Number']);
       }
     }
-
-    if(preg_match('/^0845/',$data['Telecom Number'])){
-      $data['National Only Telecom']=1;
+    $data['Telecom National Access Code']='0';
+    if(preg_match('/^8\d\d/',$data['Telecom Number'])){
+      $data['National Only Telecom']='Yes';
       $data['Telecom Country Telephone Code']='';
-      $data['Telecom Area Code']='0845';
-      $data['Telecom National Access Code']='';
-      $data['Telecom Number']=preg_replace('/^0845/','',$data['Telecom Number']);
-    }
-
-     $data['Telecom National Access Code']='0';
-    if(preg_match('/^7/',$data['Telecom Number']))
-      $data['is_mobile']=1;
+      $data['Telecom Area Code']=$match[0];
+      $data['Telecom Number']=preg_replace('/^'.$data['Telecom Area Code'].'/','',$data['Telecom Number']);
+      $data['Telecom Technology Type']='Non-geographic';
+    }elseif(preg_match('/^7/',$data['Telecom Number']))
+	$data['Telecom Technology Type']='Mobile';
     else
-      $data['is_mobile']=0;
+      $data['Telecom Technology Type']='Landline';
+    
     break;
 /*   case('IRL')://Ireland */
 /*     if(preg_match('/^0?8(2|3|5|6|7|8|9)/',$data['Telecom Number'])) */
@@ -638,11 +650,18 @@ function create($data,$optios=''){
  }
  /*Function: get_country_code
    Returns the country code of this telephone
+
+   Parameter:
+   $tel_code - Intertnational telephone code
+   
+   Return:
+   3 letter country code
+
   */
 
- private function get_country_code(){
-   if($this->data['Telecom Country Telephone Code']){
-     $sql="select * from `Country Dimension` where `Country Telephone Code`=".prepare_mysql($this->data['Telecom Country Telephone Code']);
+ public static  function get_country_code($tel_code=''){
+   if($tel_code){
+     $sql="select * from `Country Dimension` where `Country Telephone Code`=".prepare_mysql($tel_code);
      $result=mysql_query($sql);
      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
        return $row['Country Code'];
@@ -657,19 +676,40 @@ function create($data,$optios=''){
   */
  
  function find_area_code($number,$country_code='UNK'){
+   print "$number,$country_code\n  ";
    
-   
-   for($i=5;$i>1;$i--){
-     $proposed_code=substr("abcdef", $i); 
-     $sql=sprintf("select `Telephone Local Code Key` from `Telephone Local Code` where LENGTH(`Telephone Local Code`)=%d and `Telephone Local Code Country Code`=%s ",$i,prepare_mysql($proposed_code));
-     $result=mysql_query($sql);
-     $num_results=mysql_num_rows($result);
-     if($num_results>0)
-       return $proposed_code;
+   if(strlen($number>5)){
+     for($i=5;$i>1;$i--){
+       $proposed_code=substr($number, 0,$i); 
+       
+       $sql=sprintf("select `Telephone Local Code Key` from `Telephone Local Code` where LENGTH(`Telephone Local Code`)=%d and `Telephone Local Code`=%s and `Telephone Local Code Country Code`=%s ",$i,prepare_mysql($proposed_code),prepare_mysql($country_code));
+       print "$sql\n";
+       $result=mysql_query($sql);
+       $num_results=mysql_num_rows($result);
+       if($num_results>0)
+	 return $proposed_code;
+     }
    }
-   
    return '';
 }
+
+
+ private function postproduction(){
+   $country_code=$this->get_country_code($this->data['Telecom Country Telephone Code']);
+     switch($country_code){
+    
+     case('GBR')://UK
+
+       // By defaul when creating the tlecom Telecom Area Code is set to null if '' fix it for mobile 
+       if($this->data['Telecom Technology Type']=='Mobile' and $this->data['Telecom Area Code']==''){
+	 $sql=sprintf("update `Telecom Dimension` set `Telecom Area Code`='' where `Telecom Key`=%d",$this->id);
+	 mysql_query($sql);
+       }
+       break;
+     }
+   
+ }
+
 
 }
 ?>
