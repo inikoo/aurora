@@ -1,4 +1,7 @@
-<?include_once('../common.php');?>
+<?
+include_once('../common.php');
+
+?>
 
 
 YAHOO.util.Event.addListener(window, "load", function() {
