@@ -45,6 +45,7 @@ $data=array(
 	    ,'Contact Main Plain Email'=>'rulovico@gmail.com'
 	    ,'Contact Main Telephone'=>'+44 114 277731'
 	    ,'Contact Main FAX'=>'+44 114 277732'
+	    ,'Contact Main Mobile'=>'+44 7111 112233'
 	    );
 $contact=new Contact('find create',$data);
 print_r($contact);

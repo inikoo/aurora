@@ -519,7 +519,21 @@ private function base_data($args='replace'){
 	
 	}
 
+	if($this->data['Contact Main Mobile']!=''){
+	  print "addin fax\n";
+	  $telephone_data=$this->data['Contact Main Mobile'];
+	  $telephone=new Telecom("find in contact ".$this->id." create",$telephone_data);
+	  if($telephone->error){
+	    print $email->msg."\n";
+	    exit("find_contact: mobile found\n");
+	  }
 
+	  $this->add_tel(array(
+			      'Telecom Key'=>$telephone->id
+			      ,'Telecom Type'=>'Mobile'
+			      ));
+	
+	}
       }
       
       $this->get_data('id',$this->id);
