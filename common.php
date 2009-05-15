@@ -3,13 +3,16 @@ define('DEBUG', 1);
 $path = 'common';
 set_include_path(get_include_path() . PATH_SEPARATOR . $path);
 
-$path_to_liveuser_dir = '/usr/share/php/'.PATH_SEPARATOR;
+$dir=getcwd();
+$dir=preg_replace('/js$/','',$dir);
+$path_to_liveuser_dir = $dir.'/external_libs/PEAR/'.PATH_SEPARATOR;
+
 
 ini_set('include_path', $path_to_liveuser_dir.ini_get('include_path'));
 
 
 require_once 'app_files/db/dns.php';         // DB connecton configuration file
-require_once 'MDB2.php';            // PEAR Database Abstraction Layer
+require_once 'external_libs/PEAR/MDB2.php';            // PEAR Database Abstraction Layer
 require_once 'common_functions.php';
 require_once "classes/DBsession.php";
 

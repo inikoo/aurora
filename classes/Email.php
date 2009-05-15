@@ -341,6 +341,7 @@ protected function create($data,$options=''){
   if(!$data){
     $this->new=false;
     $this->msg.=" Error no email data";
+    $this->error=true;
     if(preg_match('/exit on errors/',$options))
       exit($this->msg);
     return false;
