@@ -733,7 +733,7 @@ case('Price Subfamily Info'):
        
 
          if($this->data['Product Web State']=='Online Force Out of Stock'){
-	   $form=sprintf('<tr><td class="first"><span class="price">%s</span>%s</td><td class="qty" colspan=2><span  style="color:red;font-weight:800">%s</span></td></tr>'
+	   $form=sprintf('<tr><td class="first"><span class="price">%s</span>%s</td><td  colspan=2><span  style="color:red;font-weight:800">%s</span></td></tr>'
 			 ,$this->get('Price')
 			 ,$this->data['Product Code']
 			 ,$out_of_stock

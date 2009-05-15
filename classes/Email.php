@@ -125,9 +125,9 @@ class Email{
 
   */
 
-  private function find($data,$options=''){
-
-$create='';
+  private function find($raw_data,$options=''){
+    //print_r($raw_data);
+    $create='';
     $update='';
     if(preg_match('/create/i',$options)){
       $create='create';
@@ -136,7 +136,7 @@ $create='';
       $update='update';
     }
     
-    if(!$data){
+    if(!$raw_data){
       $this->new=false;
       $this->msg=_('Error no email data');
       if(preg_match('/exit on errors/',$options))
@@ -144,14 +144,14 @@ $create='';
       return false;
     }
     
-    if(is_string($data)){
-      $tmp=$data;
-      unset($data);
-      $data['Email']=$tmp;
+    if(is_string($raw_data)){
+      $tmp=$raw_data;
+      unset($raw_data);
+      $raw_data['Email']=$tmp;
     }
   
     $base_data=$this->base_data();
-    foreach($data as $key=>$value){
+    foreach($raw_data as $key=>$value){
       if(array_key_exists($key,$base_data))
 	$base_data[$key]=$value;
     }
@@ -186,9 +186,12 @@ $create='';
 	}
     }
     
+
+
+
     
     $sql=sprintf("select T.`Email Key`,`Subject Key` from `Email Dimension` T left join `Email Bridge` TB  on (TB.`Email Key`=T.`Email Key`) where `Email`=%s and `Subject Type`=%s  "
-		 ,prepare_mysql($data['Email'])
+		 ,prepare_mysql($raw_data['Email'])
 		 ,prepare_mysql($subject_type)
 		   );
 
@@ -201,8 +204,8 @@ $create='';
 	if(preg_match('/similar/i',$options)){
 	  // try to find possible matches (assuming the the client comit a mistakt)
 	  $sql=sprintf("select `Email Key`,`Email Contact Name`,levenshtein(UPPER(%s),UPPER(`Email`)) as dist1,levenshtein(UPPER(SOUNDEX(%s)),UPPER(SOUNDEX(`Email`))) as dist2, `Subject Key`  from `Email Dimension` left join `Email Bridge` on (`Email Bridge`.`Email Key`=`Email Dimension`.`Email Key`)  where dist1<=2 and  `Subject Type`=%s `Subject Key`=%d and  order by dist1,dist2 limit 20"
-		       ,prepare_mysql($data['Email'])
-		       ,prepare_mysql($data['Email'])
+		       ,prepare_mysql($raw_data['Email'])
+		       ,prepare_mysql($raw_data['Email'])
 		       ,prepare_mysql($subject_type)
 		       ,$subject_key
 		       );
@@ -215,10 +218,10 @@ $create='';
 	     else
 	       $candidate[$row['Email Key']]['score']=100/$dist;
 	     
-	     if($data['Email Contact Name']!=''){
-	       $contact_distance=levenshtein(strtolower($data['Email Contact Name']),strtolower($row['Email Contact Name']));
+	     if($raw_data['Email Contact Name']!=''){
+	       $contact_distance=levenshtein(strtolower($raw_data['Email Contact Name']),strtolower($row['Email Contact Name']));
 	       if($contact_distance==0){
-		 if($data['Email Contact Name']=='')
+		 if($raw_data['Email Contact Name']=='')
 		   $candidate[$row['Email Key']]['score']+=50;
 		 else
 		   $candidate[$row['Email Key']]['score']+=300;
@@ -240,13 +243,13 @@ $create='';
 	       break;
 	     }
 	     $this->get_data('id',$email_key);
-	     $this->update($data);
+	     $this->update($raw_data);
 	     return $this->id;
 	     
 	   }else{
 	     // email not found
 	     if($create){
-	       $this->create($data,$options);
+	       $this->create($base_data,$options);
 	       return;
 	     }
 	   }
@@ -254,7 +257,9 @@ $create='';
 	   
        	}
 	if($create){
-	  $this->create($data,$options);
+
+		       
+	  $this->create($base_data,$options);
 	  return;
 	}
 
@@ -275,7 +280,7 @@ $create='';
 	    $this->msg=_('Email found in').sprintf(' %s. %s (%d)',$subject_type,$subject->display('name'),$subject->id);
 	    $this->error=true;
 	  }elseif($create){
-	    $this->update($data);
+	    $this->update($base_data);
 	  }
 	  return;
 	}else{
@@ -286,7 +291,7 @@ $create='';
 	while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 	  if($row['Subject Key']==$in_contact){
 	    $this->get_data('id',$row['Email Key']);
-	    $this->update($data);
+	    $this->update($base_data);
 	    return $this->id;
 	  }
 	}
@@ -299,7 +304,7 @@ $create='';
       if($subject_type=='Company'){
 	// Look if another contact has this email
 	$sql=sprintf("select T.`Email Key`,`Subject Key` from `Email Dimension` T left join `Email Bridge` TB  on (TB.`Email Key`=T.`Email Key`) where `Email`=%s  and `Subject Type`='Contact'"
-		     ,prepare_mysql($data['Email'])
+		     ,prepare_mysql($raw_data['Email'])
 		     );
 	$result=mysql_query($sql);
 	$num_results=mysql_num_rows($result);
@@ -307,7 +312,7 @@ $create='';
 	if($num_results==0){
 
 	  if(preg_match('/create/i',$options)){
-	    $this->create($data,$options);
+	    $this->create($base_data,$options);
 	  }
 	  return;
 
@@ -331,10 +336,11 @@ $create='';
 
 */
 protected function create($data,$options=''){
+  
 
   if(!$data){
     $this->new=false;
-    $this->msg=_('Error no email data ');
+    $this->msg.=" Error no email data";
     if(preg_match('/exit on errors/',$options))
       exit($this->msg);
     return false;
@@ -440,7 +446,6 @@ function update($data,$options=''){
       
       if($value!=$this->data[$key]){
 	$function_name='update_'.preg_replace('/\s/','',ucwords($key));
-	print "$function_name $value\n";
 	call_user_func(array($this,$function_name),$value,$options);
       }
 
@@ -449,7 +454,7 @@ function update($data,$options=''){
   }
   
   if(!$this->updated)
-    $this->msg.=' '._('Nothing to be updated');
+    $this->msg.=' '._('Nothing to be updated')."\n";
   
 }
 
@@ -466,7 +471,7 @@ function update_Email($data,$options=''){
   //$this->warning=false;
   //$this->updated=false;
   if($data==''){
-    $this->msg=_('Email address can not be blank');
+    $this->msg=_('Email address can not be blank')."\n";
     $this->error=true;
     return;
   }
@@ -486,7 +491,7 @@ function update_Email($data,$options=''){
   $affected=mysql_affected_rows();
   
   if($affected==-1){
-    $this->msg=_('Email address can not be updated');
+    $this->msg=_('Email address can not be updated')."\n";
     $this->error=true;
     return;
   }elseif($affected==0){
@@ -518,14 +523,14 @@ function update_EmailValidated($options=''){
   $affected=mysql_affected_rows();
   
   if($affected==-1){
-    $this->msg.=' '._('Email Validated can not be updated');
+    $this->msg.=' '._('Email Validated can not be updated')."\n";
     $this->error=true;
     return;
   }elseif($affected==0){
     //$this->msg.=' '._('Same value as the old record');
     
   }else{
-    $this->msg.=' '._('Record updated');
+    $this->msg.=' '._('Record updated')."\n";
     $this->updated=true;
 
   }
@@ -552,7 +557,7 @@ function update_EmailCorrect($data,$options=''){
   $affected=mysql_affected_rows();
   
   if($affected==-1){
-    $this->msg.=' '._('Record can not be updated');
+    $this->msg.=' '._('Record can not be updated')."\n";
     $this->error=true;
     return;
   }elseif($affected==0){
@@ -561,9 +566,9 @@ function update_EmailCorrect($data,$options=''){
   }else{
     $this->data['Email Correct']=$data;
     if($this->data['Email Correct']=='Yes')
-      $this->msg.=' '._('Email confirmed as correct');
+      $this->msg.=' '._('Email confirmed as correct')."\n";
     else
-      $this->msg.=' '._('Email confirmed as incorrect');
+      $this->msg.=' '._('Email confirmed as incorrect')."\n";
 
     
     $this->updated=true;
@@ -581,19 +586,20 @@ private function update_EmailContactName($data,$options=''){
   $this->warning=false;
   $this->updated=false;
 
-  $sql=sprintf("update Email Dimension` set `Email Contact Name`=%s where `Email Key`=%d ",prepare_data($data,false),$this->id);
+  $sql=sprintf("update `Email Dimension` set `Email Contact Name`=%s where `Email Key`=%d ",prepare_mysql($data,false),$this->id);
   mysql_query($sql);
   $affected=mysql_affected_rows();
   
   if($affected==-1){
-    $this->msg=_('Record can not be updated');
+    $this->msg.=' '._('Record can not be updated')."\n";
     $this->error=true;
     return;
   }elseif($affected==0){
-    $this->msg=_('Same value as the old record');
+    
     
   }else{
-    $this->msg=_('Record updated');
+    $this->msg.=' '._('Record updated')."\n";
+    $this->data['Email Contact Name']=$data;
     $this->updated=true;
   }
 }

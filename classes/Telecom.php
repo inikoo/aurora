@@ -143,7 +143,14 @@ function base_data(){
   Look for similar records and take actions dependiing of the options
 */
 function find($raw_data,$options){
-  
+    $create='';
+    $update='';
+    if(preg_match('/create/i',$options)){
+      $create='create';
+    }
+    if(preg_match('/update/i',$options)){
+      $update='update';
+    }
 
    if(!$raw_data){
       $this->new=false;
@@ -178,11 +185,11 @@ function find($raw_data,$options){
 
 
     $data['Telecom Plain Number']=Telecom::plain_number($data);
-
+    $subject=false;
     $subject_key=0;
     $subject_type='Contact';
 
-    if(preg_match('/in contact \d+/',$options,$match)){
+   if(preg_match('/in contact \d+/',$options,$match)){
       $subject_key=preg_replace('/[^\d]/','',$match[0]);
       $subject_type='Contact';
     }
@@ -193,8 +200,19 @@ function find($raw_data,$options){
       $subject_type='Company';
     }
 
+    if(!$subject_key){
+      $options.=' anonymous';
+    }else{
+        if($subject_type=='Contact'){
+	  $subject=new Contact($subject_key);
+	}else{
+	  $subject=new Company($subject_key);
+	}
+    }
 
     
+    print_r($data);
+
     $sql=sprintf("select T.`Telecom Key`,`Subject Key` from `Telecom Dimension` T left join `Telecom Bridge` TB  on (TB.`Telecom Key`=T.`Telecom Key`) where `Telecom Plain Number`=%s and `Subject Type`=%s  "
 		 ,prepare_mysql($data['Telecom Plain Number'])
 		 ,prepare_mysql($subject_type)
@@ -204,30 +222,63 @@ function find($raw_data,$options){
     
       if($num_results==0){
 	$this->found=false;
-       	
-      }else if($num_results==1){
-	$row=mysql_fetch_array($result, MYSQL_ASSOC);
-	
-	if($row['Subject Key']==$subject_key){
-	  $this->get_data('id',$row['Telecom Key']);
-	  $this->update($data);
-	  return $this->id;
-	}else{
-	  if($subject_type=='Contact'){
-	    $contact=new Contact($row['Subject Key']);
-	  $this->msg=_('Telephone found in another contact').sprintf('. %s (%d)',$contact->display('name'),$contact->id);
-	  }else{
-	    $company=new Company($row['Subject Key']);
-	  $this->msg=_('Telephone found in another company').sprintf('. %s (%d)',$company->display('name'),$company->id);
+
+	if($subject_type=='Company'){
+	  // Look if another contact has this telecom
+	  $sql=sprintf("select T.`Telecom Key`,`Subject Key` from `Telecom Dimension` T left join `Telecom Bridge` TB  on (TB.`Telecom Key`=T.`Telecom Key`) where `Telecom Plain Number`=%s and `Subject Type`='Contact'  "
+		   ,prepare_mysql($data['Telecom Plain Number'])
+		       );
 	  
+	$result=mysql_query($sql);
+	$num_results=mysql_num_rows($result);
+	
+	if($num_results==0){
+	  if($create){
+	    $this->create($data,$options);
 	  }
-	  return 0;
+	  return;
+
+	}else{
+	  // we can insert the contact to the comapny or hikat of necesary
+	  exit("todo in telecom,hiajacking the contact\n");
+
 	}
-      }else{
+      }
+
+
+
+       	if($create)
+	  $this->create($data,$options);
+      }else if($num_results==1){
+	$this->found=true;
+	$row=mysql_fetch_array($result, MYSQL_ASSOC);
+		if($subject_type=='Contact'){
+	  $subject=new Contact($row['Subject Key']);
+	}else{
+	  $subject=new Company($row['Subject Key']);
+	}
+	$this->get_data('id',$row['Email Key']);
+	if(!$subject_key or $row['Subject Key']==$subject_key){
+	  if($create and !$update){
+
+
+
+	    $this->msg=_('Telecom found in').sprintf(' %s. %s (%d)',$subject_type,$subject->display('name'),$subject->id);
+	    $this->error=true;
+	  }elseif($create){
+	    $this->update($data,$options);
+	  }
+	  return;
+	}else{
+	   $this->msg=_('Telecom found in another').sprintf(' %s. %s (%d)',$subject_type,$subject->display('name'),$subject->id);
+	
+	}
+
+      }else{// Found in more than one contact, 
 	while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 	  if($row['Subject Key']==$in_contact){
 	    $this->get_data('id',$row['Telecom Key']);
-	    $this->update($data);
+	    $this->update($data,$options);
 	    return $this->id;
 	  }
 	}
@@ -275,18 +326,30 @@ Insert new number to the database
 
 
  */
- function create(){
+function create($data,$optios=''){
    
-
+ if(!$data){
+    $this->new=false;
+    $this->error=true;
+    $this->msg.=" Error no telecom data";
+    if(preg_match('/exit on errors/',$options))
+      exit($this->msg);
+    return false;
+  }
   
-   
+       
+  $this->data=$this->base_data();
+  foreach($data as $key=>$value){
+    if(array_key_exists($key,$this->data))
+      $this->data[$key]=$value;
+  }
    
    if($this->data['Telecom Number']==''){
      $this->new=false;
      $this->error=true;
      $this->msg=_('Wrong telephone number');
    }
-   
+   // print $sql;
    $sql=sprintf("insert into `Telecom Dimension` (`Telecom Technology Type`,`Telecom Country Telephone Code`,`Telecom National Access Code`,`Telecom Area Code`,`Telecom Number`,`Telecom Extension`,`Telecom Plain Number`) values (%s,%s,%s,%s,%s,%s,%s)",
 		prepare_mysql($this->data['Telecom Technology Type']),
 		prepare_mysql($this->data['Telecom Country Telephone Code']),
