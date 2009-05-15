@@ -57,11 +57,15 @@ $email->update($data);
 
 print_r($email);
 
-// Should be return error because the email is already there
 $data=array('Email Correct'=>'No');
 $email=new Email(1);
 $email->update($data);
+print_r($email);
 
+$data=array('Email Correct'=>'Yes');
+$email->update($data);
+$data=array('Email Contact Name'=>'Raul Perusquia');
+$email->update($data);
 print_r($email);
 
 

@@ -751,7 +751,7 @@ function update($key,$a1=false,$a2=false){
 
  //$style=sprintf('<style type="text/css"> span.info_price{font-size:20px}</style>');
  // $style='';
- $form=sprintf('%s<table class="Order"><FORM METHOD="POST" ACTION="%s"><INPUT TYPE="HIDDEN" NAME="userid" VALUE="%s"><input type="hidden" name="return" value="%s">'
+ $form=sprintf('%s<table class="Order" border=0><FORM METHOD="POST" ACTION="%s"><INPUT TYPE="HIDDEN" NAME="userid" VALUE="%s"><input type="hidden" name="return" value="%s">'
 	       ,$style
 	       ,addslashes($site_checkout_address)
 	       ,addslashes($site_checkout_id)

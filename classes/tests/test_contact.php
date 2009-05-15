@@ -33,7 +33,20 @@ require_once '../../conf/conf.php';
 date_default_timezone_set('Europe/London');
 $_SESSION['lang']=1;
 
+// Create a contact
+//$data=array('Contact Name'=>'Raul Perusquia');
+//$contact=new Contact('find create',$data);
+//print_r($contact);
 
 
+// Create a contact with email
+$data=array(
+	    'Contact Name'=>'Raul Perusquia'
+	    ,'Contact Main Plain Email'=>'rulovico@gmail.com'
+	    ,'Contact Main Telephone'=>'+44 114 277731'
+	    ,'Contact Main FAX'=>'+44 114 277732'
+	    );
+$contact=new Contact('find create',$data);
+print_r($contact);
 
 ?>

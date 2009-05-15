@@ -152,31 +152,26 @@ class Contact{
 
     $data=$this->base_data();
     $address_data=array('Contact Address Line 1'=>'','Contact Address Town'=>'','Contact Address Line 2'=>'','Contact Address Line 3'=>'','Contact Address Postal Code'=>'','Contact Address Country Name'=>'','Contact Address Country Primary Division'=>'','Contact Address Country Secondary Division'=>'');
-    $mode='all';
+
+    
     if(preg_match('/from supplier/',$options)){
       foreach($raw_data as $key=>$val){
 	$_key=preg_replace('/Supplier /i','Contact ',$key);
 	$data[$_key]=$val;
       }
-      $mode='supplier';
+      $parent='supplier';
     }elseif(preg_match('/from customer/i',$options)){
       foreach($data as $key=>$val){
 	$_key=preg_replace('/Customer /','Contact ',$key);
 	$data[$_key]=$val;
       }
-      $mode='customer';
+      $parent='customer';
     }elseif(preg_match('/from Company|in company/i',$options)){
-      
-      //   print_r($raw_data);
       foreach($raw_data as $key=>$val){
-	
-
-
-
 	if($create and preg_match('/address|email|telephone|fax|company name/i',$key)){
 	  continue;
 	}
-
+	
 	if($key=='Company Name'){
 	  $_key='Contact Company Name';
 	}elseif($key=='Company Main Contact Name')
@@ -193,13 +188,22 @@ class Contact{
 	
 
       }
-      $mode='customer';
-    }
+      $parent='company';
+    }else{
+      $parent='none';
+      foreach($raw_data as $key=>$val){
+	if(array_key_exists($key,$data))
+	  $data[$key]=$val;
+      }
+      
 
+    }
    
+    // optos parent:xxx sera utilizado en $this->create 
+    $options.=' parent:'.$parent;
 
     if($data['Contact Main Plain Email']!=''){
-      $email=new Email("find in contact $create $update",$data['Contact Main Plain Email']);
+      $email=new Email("find in contact",$data['Contact Main Plain Email']);
       if($email->error){
 	print $email->msg."\n";
 	exit("find_contact: email found\n");
@@ -213,7 +217,7 @@ class Contact{
 
     
     if($create)
-      $this->create($data);
+      $this->create($data,$options);
 
 
   }
@@ -390,7 +394,7 @@ private function base_data($args='replace'){
 */
  function create ($data,$options=''){
    
-
+   
    
    if(is_string($data))
      $data['Contact Name']=$data;
@@ -438,8 +442,6 @@ private function base_data($args='replace'){
 
 
     $this->data['Contact File As']=$this->display('file_as');
-  
-    
     $this->data['Contact ID']=$this->get_id();
 
 
@@ -462,11 +464,65 @@ private function base_data($args='replace'){
     $values=preg_replace('/,$/',')',$values);
 
     $sql=sprintf("insert into `Contact Dimension` %s %s",$keys,$values);
-
+    print "creating contact\n";
 
     if(mysql_query($sql)){
       $this->id= mysql_insert_id();
       $this->new=true;
+      //$this->get_data('id',$this->id);
+
+      if(preg_match('/parent\:none/',$options)){
+	// Has no parent add emails,tels ect to the contact
+	if($this->data['Contact Main Plain Email']!=''){
+	  $email_data['Email']=$this->data['Contact Main Plain Email'];
+	  $email_data['Email Contact Name']=$this->display('name');
+	  $email=new Email("find in contact ".$this->id." create",$email_data);
+	  if($email->error){
+	    //Collect data about email found
+	    print $email->msg."\n";
+	    exit("find_companycontact: email found\n");
+	  }
+	  
+	  $this->add_email(array(
+				 'Email Key'=>$email->id
+				 ,'Email Type'=>'Personal'
+				 ));
+	}
+	if($this->data['Contact Main Telephone']!=''){
+	  // print "addin telephone\n";
+	  $telephone_data=$this->data['Contact Main Telephone'];
+	  $telephone=new Telecom("find in contact ".$this->id." create",$telephone_data);
+	  if($telephone->error){
+	    print $email->msg."\n";
+	    exit("find_contact: tel found\n");
+	  }
+
+	  $this->add_tel(array(
+			      'Telecom Key'=>$telephone->id
+			      ,'Telecom Type'=>'Telephone'
+			      ));
+	
+	}
+	if($this->data['Contact Main FAX']!=''){
+	  print "addin fax\n";
+	  $telephone_data=$this->data['Contact Main FAX'];
+	  $telephone=new Telecom("find in contact ".$this->id." create",$telephone_data);
+	  if($telephone->error){
+	    print $email->msg."\n";
+	    exit("find_contact: fax found\n");
+	  }
+
+	  $this->add_tel(array(
+			      'Telecom Key'=>$telephone->id
+			      ,'Telecom Type'=>'Fax'
+			      ));
+	
+	}
+
+
+      }
+      
+      $this->get_data('id',$this->id);
     }else{
       $this->msg=_("Error can not create contact");
       $this->new=false;
@@ -619,9 +675,10 @@ private function base_data($args='replace'){
 		   );
       mysql_query($sql);
       if(preg_match('/principal/i',$args)){
-	$sql=sprintf("update `Contact Dimension` set `Contact Main XHTML Email`=%s ,`Contact Main Plain Email`=%s where `Contact Key`=%d"
+	$sql=sprintf("update `Contact Dimension` set `Contact Main XHTML Email`=%s ,`Contact Main Plain Email`=%s,`Contact Main Email Key`=%d where `Contact Key`=%d"
 		     ,prepare_mysql($email->display('html'))
 		     ,prepare_mysql($email->data['Email'])
+		     ,$email->id
 		     ,$this->id);
 	$this->data['Contact Main XHTML Email']=$email->display('html');
 	mysql_query($sql);
@@ -753,16 +810,19 @@ function add_address($data,$args='principal'){
      
      if($telecom->data['Telecom Technology Type']=='Mobile'){
 	 $telecom_tipo='Contact Main Mobile';
+	 $telecom_tipo_key='Contact Main Mobile Key';
 	 $telecom_tipo_plain='Contact Main Plain Mobile';
 	 $data['Telecom Type']='Mobile';
      }else{
 	 if(preg_match('/fax/i',$data['Telecom Type'])){
 	   $telecom_tipo='Contact Main FAX';
+	   $telecom_tipo_key='Contact Main FAX Key';
 	   $telecom_tipo_plain='Contact Main Plain FAX';
 
 
 	 }else{
 	   $telecom_tipo='Contact Main Telephone';
+	    $telecom_tipo_key='Contact Main Telephone Key';
 	   $telecom_tipo_plain='Contact Main Plain Telephone';
 	   
 	 }
@@ -790,14 +850,17 @@ function add_address($data,$args='principal'){
        
        // $plain_number=preg_replace('/[^\d]/','',$telecom->display('html'));
 	
-	 $sql=sprintf("update `Contact Dimension` set `%s`=%s and `%s`=%s and   where `Contact Key`=%d"
+	 $sql=sprintf("update `Contact Dimension` set `%s`=%s , `%s`=%s , `%s`=%s  where `Contact Key`=%d"
 		      ,$telecom_tipo
 		      ,prepare_mysql($telecom->display('html'))
 		      ,$telecom_tipo_plain
-		      ,$telecom->display('plain')
+		      ,prepare_mysql($telecom->display('plain'))
+		      ,$telecom_tipo_key
+		      ,prepare_mysql($telecom->id)
+
 		      ,$this->id
 		      );
-	 //  print "$sql\n";
+	 print "$sql\n";
 	 mysql_query($sql);
        }
        
