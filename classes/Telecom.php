@@ -676,14 +676,14 @@ function create($data,$optios=''){
   */
  
  function find_area_code($number,$country_code='UNK'){
-   print "$number,$country_code\n  ";
+   // print "$number,$country_code\n  ";
    
    if(strlen($number>5)){
      for($i=5;$i>1;$i--){
        $proposed_code=substr($number, 0,$i); 
        
        $sql=sprintf("select `Telephone Local Code Key` from `Telephone Local Code` where LENGTH(`Telephone Local Code`)=%d and `Telephone Local Code`=%s and `Telephone Local Code Country Code`=%s ",$i,prepare_mysql($proposed_code),prepare_mysql($country_code));
-       print "$sql\n";
+       //  print "$sql\n";
        $result=mysql_query($sql);
        $num_results=mysql_num_rows($result);
        if($num_results>0)

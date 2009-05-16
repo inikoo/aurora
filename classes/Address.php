@@ -194,7 +194,7 @@ class Address{
       }
    }elseif(preg_match('/from contact|in contact/i',$options)){
      foreach($raw_data as $key=>$val){
-       $_key=preg_replace('/Contact /','',$key);
+       $_key=preg_replace('/^Contact( Home| Work)? /i','',$key);
        if(array_key_exists($_key,$data))
 	  $data[$_key]=$val;
        if($_key=='Address Line 1' or $_key=='Address Line 2' or  $_key=='Address Line 3' or $_key=='Address Input Format')

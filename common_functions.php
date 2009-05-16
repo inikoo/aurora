@@ -1265,9 +1265,26 @@ function currency_conversion ($currency_from, $currency_to) {
         return $strLCS;
     }
 
+/*
+Function array_empty
+Check if all elemaents of the array are empty
 
+Parameter: an associative array
 
+Return:
+true - if all elemtents are empty or zero
+false -if one or more elements have a non-empty or non-zero value
 
+ */
 
-
+function array_empty($array){
+  if(is_array($array)){
+    foreach($array as $value){
+      if(!empty($value))
+	return false;
+    }
+    return true;
+  }else
+    return empty($array);
+}
 ?>
