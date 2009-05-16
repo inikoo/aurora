@@ -141,7 +141,7 @@ class Contact{
   function find($raw_data,$options){
 
 
-      $create='';
+    $create='';
     $update='';
     if(preg_match('/create/i',$options)){
       $create='create';
@@ -151,8 +151,8 @@ class Contact{
     }
 
     $data=$this->base_data();
-    $address_data=array('Contact Address Line 1'=>'','Contact Address Town'=>'','Contact Address Line 2'=>'','Contact Address Line 3'=>'','Contact Address Postal Code'=>'','Contact Address Country Name'=>'','Contact Address Country Primary Division'=>'','Contact Address Country Secondary Division'=>'');
-
+    $address_home_data=array('Contact Home Address Line 1'=>'','Contact Home Address Town'=>'','Contact Home Address Line 2'=>'','Contact Home Address Line 3'=>'','Contact Home Address Postal Code'=>'','Contact Home Address Country Name'=>'','Contact Home Address Country Primary Division'=>'','Contact Home Address Country Secondary Division'=>'');
+    $address_work_data=array('Contact Work Address Line 1'=>'','Contact Work Address Town'=>'','Contact Work Address Line 2'=>'','Contact Work Address Line 3'=>'','Contact Work Address Postal Code'=>'','Contact Work Address Country Name'=>'','Contact Work Address Country Primary Division'=>'','Contact Work Address Country Secondary Division'=>'');
     
     if(preg_match('/from supplier/',$options)){
       foreach($raw_data as $key=>$val){
@@ -196,6 +196,15 @@ class Contact{
 	  $data[$key]=$val;
       }
       
+      foreach($raw_data as $key=>$val){
+	if(array_key_exists($key,$address_home_data))
+	  $address_home_data[$key]=$val;
+      }
+      foreach($raw_data as $key=>$val){
+	if(array_key_exists($key,$address_work_data))
+	  $address_work_data[$key]=$val;
+      }
+
 
     }
    
@@ -217,7 +226,7 @@ class Contact{
 
     
     if($create)
-      $this->create($data,$options);
+      $this->create($data,$options,$address_home_data,$address_work_data);
 
 
   }
@@ -392,7 +401,7 @@ private function base_data($args='replace'){
  (example end)
  
 */
- function create ($data,$options=''){
+private function create ($data,$options='',$address_home_data=false,$address_work_data=false){
    
    
    
@@ -400,8 +409,6 @@ private function base_data($args='replace'){
      $data['Contact Name']=$data;
    
    $this->data=$this->base_data();
-
-   
    foreach($data as $key=>$value){
      if(array_key_exists($key,$this->data))
        $this->data[$key]=_trim($value);
@@ -493,7 +500,7 @@ private function base_data($args='replace'){
 	  $telephone_data=$this->data['Contact Main Telephone'];
 	  $telephone=new Telecom("find in contact ".$this->id." create",$telephone_data);
 	  if($telephone->error){
-	    print $email->msg."\n";
+	    print $telephone->msg."\n";
 	    exit("find_contact: tel found\n");
 	  }
 
@@ -508,7 +515,7 @@ private function base_data($args='replace'){
 	  $telephone_data=$this->data['Contact Main FAX'];
 	  $telephone=new Telecom("find in contact ".$this->id." create",$telephone_data);
 	  if($telephone->error){
-	    print $email->msg."\n";
+	    print $telephone->msg."\n";
 	    exit("find_contact: fax found\n");
 	  }
 
@@ -524,7 +531,7 @@ private function base_data($args='replace'){
 	  $telephone_data=$this->data['Contact Main Mobile'];
 	  $telephone=new Telecom("find in contact ".$this->id." create",$telephone_data);
 	  if($telephone->error){
-	    print $email->msg."\n";
+	    print $telephone->msg."\n";
 	    exit("find_contact: mobile found\n");
 	  }
 
@@ -534,8 +541,42 @@ private function base_data($args='replace'){
 			      ));
 	
 	}
-      }
+
+	if(!array_empty($address_home_data)){
+	  $home_address=new Address("find in contact ".$this->id." create",$address_home_data);
+	  if($home_address->error){
+	    print $home_address->msg."\n";
+	    exit("find_contact: home address found\n");
+	  }
+	
+	$this->add_address(array(
+				    'Address Key'=>$home_address->id
+				    ,'Address Type'=>'Home'
+				    ,'Address Function'=>'Contact'
+				    ,'Address Description'=>'Home Contact Address'
+				    ));
+	}
+	if(!array_empty($address_work_data)){
+	  $work_address=new Address("find in contact ".$this->id." create",$address_work_data);
+	  if($work_address->error){
+	    print $work_address->msg."\n";
+	    exit("find_contact: work address found\n");
+	  }
+	
+	$this->add_address(array(
+				    'Address Key'=>$work_address->id
+				    ,'Address Type'=>'Work'
+				    ,'Address Function'=>'Contact'
+				    ,'Address Description'=>'Work Contact Address'
+				    ));
+	}
+	
+
+      }//End of anonymous IF
       
+
+
+
       $this->get_data('id',$this->id);
     }else{
       $this->msg=_("Error can not create contact");
