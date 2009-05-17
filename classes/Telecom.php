@@ -11,19 +11,11 @@
  
  Version 2.0
 */
+include_once('DB_Table.php');
 include_once('Country.php');
 
-class Telecom{
-  // Array: data
-  // Class data
-  var $data=array();
-  // Integer: id
-  // Database Primary Key
-  var $id=false;
-  var $found=false;
-  var $new=false;
-  var $error=false;
-  var $msg='';
+class Telecom extends DB_Table {
+
 
      /*
        Constructor: Telecom
@@ -32,6 +24,11 @@ class Telecom{
 
      */
   function Telecom($arg1=false,$arg2=false) {
+
+     $this->table_name='Telecom';
+    $this->ignore_fields=array('Telecom Key');
+
+
    if(!$arg1 and !$arg2){
       $this->error=true;
       $this->msg='No data provided';
@@ -118,28 +115,7 @@ Function:display
    return false;
  }
 
-/*
-   Function: base_data
-   Initialize data  array with the default field values
-   */
-function base_data(){
-   $data=array();
 
-   $ignore_fields=array($this->table.' Key');
-
-   $result = mysql_query("SHOW COLUMNS FROM `".$this->table." Dimension`");
-   if (!$result) {
-     echo 'Could not run query: ' . mysql_error();
-     exit;
-   }
-   if (mysql_num_rows($result) > 0) {
-     while ($row = mysql_fetch_assoc($result)) {
-       if(!in_array($row['Field'],$ignore_fields))
-	 $data[$row['Field']]=$row['Default'];
-     }
-   }
-   return $data;
- }
 /*
   Function: find
   Look for similar records and take actions dependiing of the options
@@ -328,7 +304,7 @@ Insert new number to the database
 
 
  */
-function create($data,$optios=''){
+protected function create($data,$optios=''){
    
  if(!$data){
     $this->new=false;

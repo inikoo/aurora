@@ -12,6 +12,7 @@
  Version 2.0
 */
 
+include_once('DB_Table.php');
 
 include_once('Telecom.php');
 include_once('Email.php');
@@ -22,35 +23,8 @@ include_once('Name.php');
  Class to manage the *Contact Dimension* table
 */
 
-class Contact{
+class Contact extends DB_Table{
   
-  // Array: data
-  // Class data
-  public $data=array();
- // Array: emails
-  // Contact emails data
-  public  $emails=false;
-  // Integer: id
-  // Database Primary Key
-  public  $id=0;
- // Boolean: warning
-  // True if a warning
-  var $warning=false;
-  // Boolean: error
-  // True if error occuers
-  var $error=false;
-  // String: msg
-  // Messages
-  var $msg='';
-  // Boolean: new
-  // True if company has been created
-  var $new=false;
- // Boolean: updated
-  // True if company has been updated
-  var $updated=false;
- // Boolean: found
-  // True if company founded
-  var $found=false;
    /*
        Constructor: Contact
      
@@ -80,6 +54,11 @@ class Contact{
   function Contact($arg1=false,$arg2=false) {
     
     global $myconf;
+    
+    $this->table_name='Contact';
+    $this->ignore_fields=array('Contact Key');
+
+
     $this->unknown_name=$myconf['unknown_contact'];
     $this->unknown_informal_greeting=$myconf['unknown_informal_greting'];
     $this->unknown_formal_greeting=$myconf['unknown_formal_greting'];
@@ -183,7 +162,7 @@ class Contact{
 	if(array_key_exists($_key,$data))
 	  $data[$_key]=$val;
 	
-	if(array_key_exists($_key,$address_data) and !$create)
+	if(array_key_exists($_key,$address_work_data) and !$create)
 	  $address_data[$_key]=$val;
 	
 
@@ -358,33 +337,7 @@ class Contact{
 
   }
 
- /*
-   Function: base_data
-   Initialize data  array with the default field values
-   */
-private function base_data($args='replace'){
 
-  $data=array();
-   $ignore_fields=array('Contact Key');
-
-   $result = mysql_query("SHOW COLUMNS FROM `Contact Dimension`");
-   if (!$result) {
-     echo 'Could not run query: ' . mysql_error();
-     exit;
-   }
-   if (mysql_num_rows($result) > 0) {
-     while ($row = mysql_fetch_assoc($result)) {
-       if(!in_array($row['Field'],$ignore_fields))
-	 $data[$row['Field']]=$row['Default'];
-     }
-   }
-
-   
-
-   return $data;
-   
-
- }
 
 /* Method: create
  Create a new Contact record
