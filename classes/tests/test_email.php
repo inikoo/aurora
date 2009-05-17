@@ -42,12 +42,12 @@ $_SESSION['lang']=1;
 // Create email & anonymous contact
 $data=array('Email'=>'rulovico@gmail.com');
 $email=new Email('find create',$data);
-print_r($email);
+//print_r($email);
 
 // Should be return error because the email is already there
-$data=array('Email'=>'rulovico@gmail.com');
-$email=new Email('find create update',$data);
-print_r($email);
+//$data=array('Email'=>'rulovico@gmail.com');
+//$email=new Email('find create update',$data);
+//print_r($email);
 
 
 // Should be return error because the email is already there
@@ -56,7 +56,7 @@ $email=new Email(1);
 $email->update($data);
 
 print_r($email);
-
+exit;
 $data=array('Email Correct'=>'No');
 $email=new Email(1);
 $email->update($data);

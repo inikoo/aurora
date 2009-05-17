@@ -70,7 +70,9 @@ class Telecom{
     
     }
 }
-
+  /*
+Function:display
+   */
   function display($tipo=''){
 
 
@@ -123,9 +125,9 @@ class Telecom{
 function base_data(){
    $data=array();
 
-   $ignore_fields=array('Telecom Key');
+   $ignore_fields=array($this->table.' Key');
 
-   $result = mysql_query("SHOW COLUMNS FROM `Telecom Dimension`");
+   $result = mysql_query("SHOW COLUMNS FROM `".$this->table." Dimension`");
    if (!$result) {
      echo 'Could not run query: ' . mysql_error();
      exit;
@@ -692,7 +694,9 @@ function create($data,$optios=''){
    }
    return '';
 }
-
+ /*
+   Function:postproduction
+  */
 
  private function postproduction(){
    $country_code=$this->get_country_code($this->data['Telecom Country Telephone Code']);
@@ -709,6 +713,8 @@ function create($data,$optios=''){
      }
    
  }
+
+
 
 
 }
