@@ -14,6 +14,8 @@
  
  Version 2.0
 */
+include_once('DB_Table.php');
+
 include_once('Contact.php');
 
 /* class: Email
@@ -22,14 +24,18 @@ include_once('Contact.php');
 
 
 
-class Email{
+class Email extends DB_Table {
 
-  public  $data=array();
-  public $id=false;
-  public  $new=false;
-  public $error=false;
-  public $updated=false;
-  public $msg='';
+ /*  public  $data=array(); */
+/*   public $id=false; */
+/*   public  $new=false; */
+/*   public $error=false; */
+/*   public $updated=false; */
+/*   public $msg=''; */
+
+  
+
+
   /*
    Constructor: Email
    Initializes the class, trigger  Search/Load/Create for the data set
@@ -61,6 +67,11 @@ class Email{
 
   */
   function Email($arg1=false,$arg2=false) {
+    
+    $this->table_name='Email';
+    $this->ignore_fields=array('Email Key');
+
+
     if(!$arg1 and !$arg2){
       $this->error=true;
       $this->msg='No data provided';
@@ -98,24 +109,7 @@ class Email{
     if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   )
       $this->id=$this->data['Email Key'];
   }
-  /*
-   Function: base_data
-   Initializes array with the default field values
-  */
-  public static function base_data(){
-
-
-    $data=array(
-		'Email'=>''
-		,'Email Contact Name'=>''
-		,'Email Validated'=>'No'
-		,'Email Correct'=>'Unknown'
-		);
-    
-    
-    return $data;
-  }
-
+ 
 
   /*
    Method: find
@@ -424,40 +418,34 @@ function get($key){
    
 }
 
-function set($key,$value){
-  switch($key){
+
+
+ /*Function: update_field
+  */
+
+protected function update_field_switcher($field,$value,$options=''){
+
+  switch($field){
+  case('Emfail'):
+    $this->update_Email($value,$options);
+    break;
+  case('Email Validated'):
+    $this->update_EmailValidated($value,$options);
+    break;
+  case('Email Correct'):
+    $this->update_EmailCorrect($value,$options);
+    break;
+  case('Email Contact Name'):
+    $this->update_EmailContactName($value,$options);
+    break;
   default:
-    $this->data[$key]=$value;
-  }
-
-}
-/*Method: update
- Switcher calling the apropiate update method
-
- Parameters:
- $data - associated array with Email Dimension fields
- 
-*/
-
-function update($data,$options=''){
-  $base_data=$this->base_data();
-
-  foreach($data as $key=>$value){
-    if(array_key_exists($key,$base_data)){
-      
-      if($value!=$this->data[$key]){
-	$function_name='update_'.preg_replace('/\s/','',ucwords($key));
-	call_user_func(array($this,$function_name),$value,$options);
-      }
-
-    }
-      
+    $this->update_field($field,$value,$options);
   }
   
-  if(!$this->updated)
-    $this->msg.=' '._('Nothing to be updated')."\n";
-  
 }
+
+
+
 
 /*Method: update_Email
  Update email address
