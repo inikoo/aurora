@@ -8,9 +8,6 @@ abstract class DB_Table
     // Array: data
   // Class data
   public $data=array();
- // Array: emails
-  // Contact emails data
-  public  $emails=false;
   // Integer: id
   // Database Primary Key
   public  $id=0;
@@ -33,29 +30,28 @@ abstract class DB_Table
   // True if company founded
   var $found=false;
 
+
+
+
+
   /*
     Function: base_data
     Initialize data  array with the default field values
    */
   function base_data(){
-
-
     $data=array();
-    
-    
-    
-   $result = mysql_query("SHOW COLUMNS FROM `".$this->table_name." Dimension`");
-   if (!$result) {
-     echo 'Could not run query: ' . mysql_error();
+    $result = mysql_query("SHOW COLUMNS FROM `".$this->table_name." Dimension`");
+    if (!$result) {
+      echo 'Could not run query: ' . mysql_error();
      exit;
-   }
-   if (mysql_num_rows($result) > 0) {
+    }
+    if (mysql_num_rows($result) > 0) {
      while ($row = mysql_fetch_assoc($result)) {
        if(!in_array($row['Field'],$this->ignore_fields))
 	 $data[$row['Field']]=$row['Default'];
      }
    }
-   return $data;
+    return $data;
   }
 
   /*Method: update
@@ -97,7 +93,7 @@ protected function update_field($field,$value,$options=''){
   $value=prepare_mysql($value);
   
   $sql="update `".$this->table_name." Dimension` set `".$field."`=".$value." where `".$this->table_name." Key`=".$this->id;
-  print $sql;
+  // print $sql;
   mysql_query($sql);
   $affected=mysql_affected_rows();
   if($affected==-1){

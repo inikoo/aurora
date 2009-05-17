@@ -11,7 +11,7 @@
  
  Version 2.0
 */
-
+include_once('DB_Table.php');
 include_once('Contact.php');
 include_once('Telecom.php');
 include_once('Email.php');
@@ -20,40 +20,16 @@ include_once('Name.php');
 /* class: Company
  Class to manage the *Company Dimension* table
 */
-class Company{
-  // Array: data
-  // Class data
-  var $data=array();
-  var $items=array();
-  // Integer: id
-  // Database Primary Key
-  var $id=false;
-  // Boolean: warning
-  // True if a warning
-  var $warning=false;
-  // Boolean: error
-  // True if error occuers
-  var $error=false;
-  // String: msg
-  // Messages
-  var $msg='';
-  // Boolean: new
-  // True if company has been created
-  var $new=false;
- // Boolean: updated
-  // True if company has been updated
-  var $updated=false;
-
-
-     /*
-       Constructor: Company
-     
-       Initializes the class, Search/Load or Create for the data set 
-     
-      Parameters:
-       arg1 -    (optional) Could be the tag for the Search Options or the Company Key for a simple object key search
-       arg2 -    (optional) Data used to search or create the object
-
+class Company extends DB_Table {
+  /*
+    Constructor: Company
+    
+    Initializes the class, Search/Load or Create for the data set 
+    
+    Parameters:
+    arg1 -    (optional) Could be the tag for the Search Options or the Company Key for a simple object key search
+    arg2 -    (optional) Data used to search or create the object
+    
        Returns:
        void
        
@@ -73,7 +49,8 @@ class Company{
      */
   function Company($arg1=false,$arg2=false) {
 
-     
+    $this->table_name='Company';
+    $this->ignore_fields=array('Company Key');
 
      if(is_numeric($arg1)){
        $this->get_data('id',$arg1);
@@ -219,30 +196,6 @@ class Company{
       $this->id=$this->data['Company Key'];
     }
   }
-/*
-   Function: base_data
-   Initialize data  array with the default field values
-   */
-private function base_data(){
-   $data=array();
-
-   $ignore_fields=array('Company Key');
-
-   $result = mysql_query("SHOW COLUMNS FROM `Company Dimension`");
-   if (!$result) {
-     echo 'Could not run query: ' . mysql_error();
-     exit;
-   }
-   if (mysql_num_rows($result) > 0) {
-     while ($row = mysql_fetch_assoc($result)) {
-       if(!in_array($row['Field'],$ignore_fields))
-	 $data[$row['Field']]=$row['Default'];
-     }
-   }
-   return $data;
- }
-
-
 
   
 function create($raw_data,$raw_address_data=array()){
