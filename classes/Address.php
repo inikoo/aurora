@@ -15,39 +15,13 @@
 
 
 */
+include_once('DB_Table.php');
 include_once('Country.php');
 /* class: Address
    Class to manage the *Address Dimension* table
 */
-class Address{
+class Address extends DB_Table{
 
-   // Array: data
-  // Class data
-  public $data=array();
- // Array: emails
-  // Contact emails data
-  public  $emails=false;
-  // Integer: id
-  // Database Primary Key
-  public  $id=0;
- // Boolean: warning
-  // True if a warning
-  var $warning=false;
-  // Boolean: error
-  // True if error occuers
-  var $error=false;
-  // String: msg
-  // Messages
-  var $msg='';
-  // Boolean: new
-  // True if company has been created
-  var $new=false;
- // Boolean: updated
-  // True if company has been updated
-  var $updated=false;
- // Boolean: found
-  // True if company founded
-  var $found=false;
 
   /*
     Constructor: Address
@@ -81,7 +55,9 @@ class Address{
   */
   function Address($arg1=false,$arg2=false) {
 
-
+ 
+    $this->table_name='Address';
+    $this->ignore_fields=array('Address Key','Address Data Last Update','Address Data Creation');
 
     if(!$arg1 and !$arg2){
       $this->error=true;
@@ -268,6 +244,7 @@ class Address{
 	}else{
 	  if($subject_type=='Contact'){
 	    $contact=new Contact($row['Subject Key']);
+	    
 	    $this->msg=_('Address found in another contact').sprintf('. %s (%d)',$contact->display('name'),$contact->id);
 	  }else{
 	    $company=new Company($row['Subject Key']);
@@ -294,7 +271,7 @@ class Address{
 
     }else{
       // Address not fuzzy
-      // Try to find an exect match
+      // Try to find an exact match
 
         $fields=array('Address Fuzzy','Address Street Number','Address Building','Address Street Name','Address Street Type','Address Town Secondary Division','Address Town Primary Division','Address Town','Address Country Primary Division','Address Country Secondary Division','Address Country Key','Address Postal Code','Military Address','Military Installation Address','Military Installation Name');
 
@@ -320,6 +297,7 @@ class Address{
 	}else{
 	  if($subject_type=='Contact'){
 	    $contact=new Contact($row['Subject Key']);
+	    // print_r($contact);exit;
 	    $this->msg=_('Address found in another contact').sprintf('. %s (%d)',$contact->display('name'),$contact->id);
 	  }else{
 	    $company=new Company($row['Subject Key']);
@@ -426,8 +404,8 @@ class Address{
       break;
     }
 
-
-
+    
+    $this->data['Address Plain']=$this->plain($this->data);
     $keys='';
     $values='';
     foreach($this->data as $key=>$value){
@@ -501,6 +479,10 @@ class Address{
     case('location'):
       return $this->location($this->data);
       break;
+    case('plain'):
+      return $this->plain($this->data);
+      break;
+
     case('xhtml'):
     case('html'):
       $separator="<br/>";
@@ -534,8 +516,9 @@ class Address{
 	$subtown_address=_trim($subtown_address);
 	if($subtown_address!='')
 	  $address.=$subtown_address.$separator;
-
-
+	
+	
+	
      
 	$town_address=_trim($this->data['Address Town']);
 	if($town_address!='')
@@ -1079,6 +1062,12 @@ class Address{
   public static function prepare_3line($raw_data,$args='untrusted'){
     global $myconf;
 
+    if(!isset($raw_data['Address Line 1']))
+      $raw_data['Address Line 1']='';
+    if(!isset($raw_data['Address Line 2']))
+      $raw_data['Address Line 2']='';
+    if(!isset($raw_data['Address Line 3']))
+      $raw_data['Address Line 3']='';
     $empty=true;
     foreach($raw_data as $val){
       if($val!=''){
@@ -1093,7 +1082,23 @@ class Address{
     $debug=(preg_match('/debug/',$args)?true:false);
 
 
-    $data=Address::base_data();
+    $data=array();
+    // Equivalente to base data --------------------------------------
+    $data=array();
+    $ignore_fields=array('Address Key','Address Data Last Update','Address Data Creation');
+    $result = mysql_query("SHOW COLUMNS FROM `Address Dimension`");
+    if (!$result) {
+      echo 'Could not run query: ' . mysql_error();
+     exit;
+    }
+    if (mysql_num_rows($result) > 0) {
+     while ($row = mysql_fetch_assoc($result)) {
+       if(!in_array($row['Field'],$ignore_fields))
+	 $data[$row['Field']]=$row['Default'];
+     }
+   }
+    //-------------------------------------------------------------------
+
     foreach($raw_data as $key=>$value){
       if(array_key_exists($key,$data)){
 	$data[$key]=_trim($value);
@@ -3052,6 +3057,80 @@ class Address{
      $data['Address Location']=Address::location($data);
     return $data;
   }
+
+ /*
+    Function:  plain
+    OPlain addres ised as finger print and serach purpose 
+   */
+
+  function plain($data){
+
+
+     
+
+
+    $separator=' ';
+      if($data['Military Address']=='Yes'){
+	$address=$data['Military Installation Address'];
+	$address_type=_trim($data['Military Installation Type']);
+	if($address_type!='')
+	  $address.=$separator.$address_type;
+	$address_type=_trim($data['Address Postal Code']);
+	if($address_type!='')
+	  $address.=$separator.$address_type;
+	$address.=$separator.$data['Address Country Code'];
+
+      }else{
+	//print_r($data);
+	$address='';
+	$header_address=_trim($data['Address Internal'].' '.$data['Address Building']);
+	if($header_address!='')
+	  $address.=$header_address.$separator;
+	
+	$street_address=_trim($data['Address Street Number'].' '.$data['Address Street Name'].' '.$data['Address Street Type']);
+	if($street_address!='')
+	  $address.=$street_address.$separator;
+
+     
+	$subtown_address=$data['Address Town Secondary Division'];
+	if($data['Address Town Primary Division'])
+	  $subtown_address.=' ,'.$data['Address Town Primary Division'];
+	$subtown_address=_trim($subtown_address);
+	if($subtown_address!='')
+	  $address.=$subtown_address.$separator;
+
+
+     
+	$town_address=_trim($data['Address Town']);
+	if($town_address!='')
+	  $address.=$town_address.$separator;
+
+	$ps_address=_trim($data['Address Postal Code']);
+	if($ps_address!='')
+	  $address.=$ps_address.$separator;
+     
+	$subcountry_address=$data['Address Country Secondary Division'];
+	if($data['Address Country Primary Division'])
+	  $subcountry_address.=' '.$data['Address Country Primary Division'];
+	$subcountry_address=_trim($subcountry_address);
+	if($subcountry_address!='')
+	  $address.=$subcountry_address.$separator;
+	
+	
+	$address.=$data['Address Country Code'];
+      }
+
+      if($data['Address Fuzzy']=='Yes'){
+	$address='[FZ] '.$address;
+	
+      }
+	
+
+      return _trim($address);
+      
+      
+  }
+  
 
   /*
     Function: similarity
