@@ -70,7 +70,7 @@ abstract class DB_Table
 	if(array_key_exists($key,$base_data)){
 	  
 	  if($value!=$this->data[$key]){
-	    //print "$key,old value: ".$this->data[$key]." New value:  $value,$options\n";
+	    print "$key,old value: ".$this->data[$key]." New value:  $value,$options\n";
 	    $this->update_field_switcher($key,$value,$options);
 	    
 	    //    $function_name='update_'.preg_replace('/\s/','',ucwords($key));
@@ -111,7 +111,6 @@ protected function update_field($field,$value,$options=''){
     $this->data[$field]=$value;
      $this->msg.=" $field "._('Record updated').", \n";
     $this->updated=true;
-    
   }
   
 }

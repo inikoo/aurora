@@ -205,13 +205,13 @@ function find($raw_data,$options){
     }
 
 
-    // print_r($data);
 
+    
     $sql=sprintf("select T.`Telecom Key`,`Subject Key` from `Telecom Dimension` T left join `Telecom Bridge` TB  on (TB.`Telecom Key`=T.`Telecom Key`) where `Telecom Plain Number`=%s and `Subject Type`=%s  "
 		 ,prepare_mysql($data['Telecom Plain Number'])
 		 ,prepare_mysql($subject_type)
 		 );
-    // print "$sql\n";
+    //  print "$sql\n";
     $result=mysql_query($sql);
     $num_results=mysql_num_rows($result);
     
