@@ -190,8 +190,9 @@ class Contact extends DB_Table{
 
     }
    
-    // optos parent:xxx sera utilizado en $this->create 
     $options.=' parent:'.$parent;
+
+    $candidate=array();
 
     if($data['Contact Main Plain Email']!=''){
       $email=new Email("find in contact",$data['Contact Main Plain Email']);
@@ -200,11 +201,87 @@ class Contact extends DB_Table{
 	exit("find_contact: email found\n");
       }	
     }
-
- 
-
     if(isset($email) and $email->found)
       $this->found=true;
+    
+  
+
+      
+    if($data['Contact Main Telephone']!='' and !$this->found ){
+      $tel=new Telecom("find in contact",$data['Contact Main Telephone']);
+      if($tel->found){
+	if(isset($candidate[$tel->found]))
+	  $candidate[$tel->found]+=100;
+	  else
+	    $candidate[$tel->found]=100;
+      }
+	
+    }
+    print "candidates ofter telephone:\n";
+    print_r($candidate);
+
+    if($data['Contact Main FAX']!='' and !$this->found ){
+      $tel=new Telecom("find in contact",$data['Contact Main FAX']);
+      if($tel->found){
+	if(isset($candidate[$tel->found]))
+	  $candidate[$tel->found]+=100;
+	  else
+	    $candidate[$tel->found]=100;
+      }
+	
+    }
+    print "candidates ofter fax:\n";
+    print_r($candidate);
+
+
+    if($data['Contact Main Mobile']!='' and !$this->found ){
+      $tel=new Telecom("find in contact",$data['Contact Main Mobile']);
+      if($tel->found){
+	if(isset($candidate[$tel->found]))
+	  $candidate[$tel->found]+=190;
+	  else
+	    $candidate[$tel->found]=190;
+      }
+	
+    }
+    print "candidates ofter mobile:\n";
+    print_r($candidate);
+
+
+
+    if(!$this->found){
+      // find same name
+      $name_data=$this->parse_name($data['Contact Name']);
+      $name=$this->name($name_data);
+      $sql=sprintf("select `Contact Key` from `Contact Dimension` where `Contact Name`=%s",prepare_mysql($name));
+      $result=mysql_query($sql);
+      
+      while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+	 if(isset($candidate[$row['Contact Key']]))
+	    $candidate[$row['Contact Key']]+=100;
+	  else
+	    $candidate[$row['Contact Key']]=100;
+      }
+ 
+    }
+    print "candidates after name:\n";
+    print_r($candidate);
+
+
+
+    asort($candidate);
+    
+    foreach($candidate as $key => $value){
+      if($value>=200){
+	$this->found=$key;
+	
+      }
+      break;
+    }
+      
+
+
+
 
     if($this->found)
       $this->get_data('id',$this->found);
@@ -673,7 +750,7 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
     if($this->data['Contact Name']!=$myconf['unknown_contact'])
       $email_data['Email Contact Name']=$this->data['Contact Name'];
   
-
+    print "-------------******* $args  *****\n find in contact ".$this->id." create\n";
     $email=new email('find in contact '.$this->id.' create',$email_data);
 
 
@@ -712,7 +789,7 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
 		  $this->id
 		 ,$email->id
 		  );
-     mysql_query($sql);
+   mysql_query($sql);
      $sql=sprintf("update `Email Bridge`  set `Is Main`='Yes' where `Subject Type`='Contact' and  `Subject Key`=%d  and `Email Key`=%d",
 		  $this->id
 		  ,$email->id
@@ -728,7 +805,7 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
 	$this->data['Contact Main XHTML Email']=$email->display('html');
 	$this->data['Contact Main Plain Email']=$email->display('plain');
 	$this->data['Contact Main Email Key']=$email->id;
-	
+	print "$sql\n";
 	mysql_query($sql);
       }
       
@@ -1544,23 +1621,17 @@ string with the name to be parsed
 
    */
 
-  function display($tipo='name'){
+  public function display($tipo='name'){
     
   global $myconf;
 
     switch($tipo){
     case('name'):
-      if($this->data['Contact Fuzzy']=='Yes')
-	$name=$this->data['Contact Name'];
-      else{
-	$name=_trim($this->data['Contact Salutation'].' '.$this->data['Contact First Name'].' '.$this->data['Contact Surname']);
-      $name=preg_replace('/\s+/',' ',$name);
-      }
+      $name=$this->name($this->data);
       return $name;
     case('file_as'):
     case('file as'):
       $name=_trim($this->data['Contact Surname'].' '.$this->data['Contact First Name']);
-      $name=preg_replace('/\s+/',' ',$name);
       return $name;
   
 
@@ -1606,6 +1677,19 @@ string with the name to be parsed
     return false;
     
   }
+  /*function: name
+
+   */
+  public static function name($data){
+    global $myconf;
+    if(array_empty($data))
+      return $myconf['unknown_contact'];
+    
+    $name=_trim($data['Contact Salutation'].' '.$data['Contact First Name'].' '.$data['Contact Surname'].' '.$data['Contact Suffix']);
+    return $name;
+      
+  }
+
   /*
    Method: gender
    Guess the gender from the name components
