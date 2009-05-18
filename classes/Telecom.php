@@ -121,6 +121,10 @@ Function:display
   Look for similar records and take actions dependiing of the options
 */
 function find($raw_data,$options){
+
+
+  //print_r($raw_data);
+
     $create='';
     $update='';
     if(preg_match('/create/i',$options)){
@@ -142,9 +146,21 @@ function find($raw_data,$options){
       $country_code=preg_replace('/[^\d]/','',$match[0]);
    }else
      $country_code='UNK';
+   
+   
+   
+   $raw_number=false;
+   if(isset($raw_data['Telecom Raw Number'])){
+     $raw_number=$raw_data['Telecom Raw Number'];
+   }
+   if(is_string($raw_data)){
+     $raw_number=$raw_data;
+   }
+   if($raw_number)
+     $raw_data=$this->parse_number($raw_number,$country_code);
 
-   if(is_string($raw_data))
-     $raw_data=$this->parse_number($raw_data,$country_code);
+ 
+   
 
    $data=$this->base_data();
     foreach($raw_data as $key=>$value){
@@ -188,13 +204,14 @@ function find($raw_data,$options){
 	}
     }
 
-    
-    print_r($data);
+
+    // print_r($data);
 
     $sql=sprintf("select T.`Telecom Key`,`Subject Key` from `Telecom Dimension` T left join `Telecom Bridge` TB  on (TB.`Telecom Key`=T.`Telecom Key`) where `Telecom Plain Number`=%s and `Subject Type`=%s  "
 		 ,prepare_mysql($data['Telecom Plain Number'])
 		 ,prepare_mysql($subject_type)
 		 );
+    // print "$sql\n";
     $result=mysql_query($sql);
     $num_results=mysql_num_rows($result);
     
@@ -222,20 +239,20 @@ function find($raw_data,$options){
 
 	}
       }
+	
 
-
-
+	
        	if($create)
 	  $this->create($data,$options);
       }else if($num_results==1){
 	$this->found=true;
 	$row=mysql_fetch_array($result, MYSQL_ASSOC);
-		if($subject_type=='Contact'){
+	if($subject_type=='Contact'){
 	  $subject=new Contact($row['Subject Key']);
 	}else{
 	  $subject=new Company($row['Subject Key']);
 	}
-	$this->get_data('id',$row['Email Key']);
+	$this->get_data('id',$row['Telecom Key']);
 	if(!$subject_key or $row['Subject Key']==$subject_key){
 	  if($create and !$update){
 
@@ -381,6 +398,9 @@ protected function create($data,$optios=''){
    
  }
 
+
+
+
  /*Function: parse_number
    Parse the number in its componets
 
@@ -390,7 +410,15 @@ protected function create($data,$optios=''){
    
   */
  function parse_number($number,$country_code='UNK'){
-   $data=Telecom::base_data();
+   $data=array('Telecom Technology Type'=>''
+	       ,'Telecom Country Telephone Code'=>''
+	       ,'Telecom National Access Code'=>''
+	       ,'Telecom Area Code'=>''
+	       ,'Telecom Number'=>''
+	       ,'Telecom Extension'=>''
+	       ,'National Only Telecom'=>''
+	       ,'Telecom Plain Number'=>''
+	       );
 
    $number=_trim($number);
    if(preg_match('/e/i',$number)){

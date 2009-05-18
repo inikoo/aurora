@@ -420,13 +420,13 @@ function get($key){
 
 
 
- /*Function: update_field
+ /*Function: update_field_switcher
   */
 
 protected function update_field_switcher($field,$value,$options=''){
 
   switch($field){
-  case('Emfail'):
+  case('Email'):
     $this->update_Email($value,$options);
     break;
   case('Email Validated'):
@@ -460,14 +460,14 @@ function update_Email($data,$options=''){
   //$this->warning=false;
   //$this->updated=false;
   if($data==''){
-    $this->msg=_('Email address can not be blank')."\n";
+    $this->msg.=_('Email address can not be blank')."\n";
     $this->error=true;
     return;
   }
   
   $is_valid=$this->is_valid($data);
   if(!$is_valid){
-    $this->msg=_('Email is not valid')." ($data)";
+    $this->msg.=_('Email is not valid')." ($data)\n";
     if(preg_match('/email strict/i',$options) ){
       $this->error=true;
       return;
@@ -480,14 +480,14 @@ function update_Email($data,$options=''){
   $affected=mysql_affected_rows();
   
   if($affected==-1){
-    $this->msg=_('Email address can not be updated')."\n";
+    $this->msg.=_('Email address can not be updated')."\n";
     $this->error=true;
     return;
   }elseif($affected==0){
     //$this->msg=_('Same value as the old record');
     
   }else{
-    $this->msg=_('Email updated');
+    $this->msg.=_('Email updated')."\n";
     $this->data['Email']=$data;
     $this->updated=true;
     $this->update_EmailValidated($options);

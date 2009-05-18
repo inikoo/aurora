@@ -3,6 +3,8 @@ define('DEBUG', 1);
 $path = 'common';
 set_include_path(get_include_path() . PATH_SEPARATOR . $path);
 
+
+
 $dir=getcwd();
 $dir=preg_replace('/js$/','',$dir);
 $path_to_liveuser_dir = $dir.'/external_libs/PEAR/'.PATH_SEPARATOR;

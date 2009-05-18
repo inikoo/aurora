@@ -61,12 +61,13 @@ abstract class DB_Table
     */
   public function update($data,$options=''){
     $base_data=$this->base_data();
-    
+    //   print "-----------------------\n";
+    // print_r($base_data);
       foreach($data as $key=>$value){
 	if(array_key_exists($key,$base_data)){
 	  
 	  if($value!=$this->data[$key]){
-	    print "$key,$value,$options\n";
+	    print "$key,old value: ".$this->data[$key]." New value:  $value,$options\n";
 	    $this->update_field_switcher($key,$value,$options);
 	    
 	    //    $function_name='update_'.preg_replace('/\s/','',ucwords($key));
@@ -105,7 +106,7 @@ protected function update_field($field,$value,$options=''){
     
   }else{
     $this->data[$field]=$value;
-     $this->msg.=' '._('Record updated')."\n";
+     $this->msg.=" $field "._('Record updated').", \n";
     $this->updated=true;
     
   }

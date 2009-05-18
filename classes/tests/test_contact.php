@@ -59,6 +59,10 @@ $data=array(
 	    
 	    );
 $contact=new Contact('find create',$data);
+
+//$data=array('Contact Name'=>'Raul Perusquia Flores');
+//$contact->update($data);
+
 print_r($contact);
 
 ?>
