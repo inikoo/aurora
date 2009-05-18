@@ -13,22 +13,22 @@ abstract class DB_Table
   public  $id=0;
  // Boolean: warning
   // True if a warning
-  var $warning=false;
+  public $warning=false;
   // Boolean: error
   // True if error occuers
-  var $error=false;
+  public $error=false;
   // String: msg
   // Messages
-  var $msg='';
+  public $msg='';
   // Boolean: new
   // True if company has been created
-  var $new=false;
+  public $new=false;
  // Boolean: updated
   // True if company has been updated
-  var $updated=false;
+  public $updated=false;
  // Boolean: found
   // True if company founded
-  var $found=false;
+  public $found=false;
 
 
 
@@ -60,6 +60,9 @@ abstract class DB_Table
     $data - associated array with Email Dimension fields
     */
   public function update($data,$options=''){
+
+    $this->msg='';  
+
     $base_data=$this->base_data();
     //   print "-----------------------\n";
     // print_r($base_data);
@@ -67,7 +70,7 @@ abstract class DB_Table
 	if(array_key_exists($key,$base_data)){
 	  
 	  if($value!=$this->data[$key]){
-	    print "$key,old value: ".$this->data[$key]." New value:  $value,$options\n";
+	    //print "$key,old value: ".$this->data[$key]." New value:  $value,$options\n";
 	    $this->update_field_switcher($key,$value,$options);
 	    
 	    //    $function_name='update_'.preg_replace('/\s/','',ucwords($key));

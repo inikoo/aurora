@@ -674,9 +674,16 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
       $email_data['Email Contact Name']=$this->data['Contact Name'];
   
 
-    $email=new email('find in contact create',$email_data);
+    $email=new email('find in contact '.$this->id.' create',$email_data);
+
+
+     $this->msg.=' '.$email->msg;
+
     }
     if($email->id){
+
+      if($email->updated or $email->new)
+	$this->updated=true;
 
       if(isset($data['Email Type']))
 	$email_type=$data['Email Type'];
@@ -700,14 +707,32 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
 		   );
       mysql_query($sql);
       if(preg_match('/principal/i',$args)){
+
+   $sql=sprintf("update `Email Bridge`  set `Is Main`='No' where `Subject Type`='Contact' and  `Subject Key`=%d  and `Email Key`!=%d",
+		  $this->id
+		 ,$email->id
+		  );
+     mysql_query($sql);
+     $sql=sprintf("update `Email Bridge`  set `Is Main`='Yes' where `Subject Type`='Contact' and  `Subject Key`=%d  and `Email Key`=%d",
+		  $this->id
+		  ,$email->id
+		  );
+
+     mysql_query($sql);
+
 	$sql=sprintf("update `Contact Dimension` set `Contact Main XHTML Email`=%s ,`Contact Main Plain Email`=%s,`Contact Main Email Key`=%d where `Contact Key`=%d"
 		     ,prepare_mysql($email->display('html'))
-		     ,prepare_mysql($email->data['Email'])
+		     ,prepare_mysql($email->display('plain'))
 		     ,$email->id
 		     ,$this->id);
 	$this->data['Contact Main XHTML Email']=$email->display('html');
+	$this->data['Contact Main Plain Email']=$email->display('plain');
+	$this->data['Contact Main Email Key']=$email->id;
+	
 	mysql_query($sql);
       }
+      
+      
 
       $this->add_email=$email->id;
     }else{
@@ -970,6 +995,8 @@ protected function update_field_switcher($field,$value,$options=''){
     $this->update_Contact_Name($value,$options);
     break;
   case('Contact Main Plain Email'):
+    
+
     $email_data=array('Email'=>$value);
     $this->add_email($email_data,$options.' principal');
     break;  

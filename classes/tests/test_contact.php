@@ -33,6 +33,9 @@ require_once '../../conf/conf.php';
 date_default_timezone_set('Europe/London');
 $_SESSION['lang']=1;
 
+
+global $contact;
+
 // Create a contact
 //$data=array('Contact Name'=>'Raul Perusquia');
 //$contact=new Contact('find create',$data);
@@ -40,29 +43,55 @@ $_SESSION['lang']=1;
 
 
 // Create a contact with email
-$data=array(
-	    'Contact Name'=>'Raul Perusquia'
-	    ,'Contact Main Plain Email'=>'rulovico@gmail.com'
-	    ,'Contact Main Telephone'=>'+44 114 277731'
-	    ,'Contact Main FAX'=>'+44 114 277732'
-	    ,'Contact Main Mobile'=>'+44 7111 112233'
-	    ,'Contact Work Address Line 1'=>'BLOCK A, Parkwood Business Park, Parkwood Road'
-	    ,'Contact Work Address Town'=>'Sheffield'
-	    ,'Contact Work Address Postal Code'=>'S11 8AL '
-	    ,'Contact Work Address Country Name'=>'UK'
-	    ,'Contact Home Address Line 1'=>'Flat 43'
-	    ,'Contact Home Address Line 2'=>'Jet Building'
-	    ,'Contact Home Address Line 3'=>'35 St Marys Rd'
-	    ,'Contact Home Address Town'=>'Sheffield'
-	    ,'Contact Home Address Postal Code'=>'S2 4AH'
-	    ,'Contact Home Address Country Name'=>'UK'
-	    
-	    );
-$contact=new Contact('find create',$data);
 
+test(2);
+
+
+function  test($id){
+  global $contact;
+
+switch($id){
+case 2:
+  // try to update/create  email
+  
+  test(1);
+ 
+  $data=array('Contact Main Plain Email'=>'rulovico2@gmail.com');
+  $contact->update($data);
+  print_r($contact);
+  break;
+case 1:
+default:
+  $data=array(
+	      'Contact Name'=>'Raul Perusquia'
+	      ,'Contact Main Plain Email'=>'rulovico@gmail.com'
+	      ,'Contact Main Telephone'=>'+44 114 277731'
+	      ,'Contact Main FAX'=>'+44 114 277732'
+	      ,'Contact Main Mobile'=>'+44 7111 112233'
+	      ,'Contact Work Address Line 1'=>'BLOCK A, Parkwood Business Park, Parkwood Road'
+	      ,'Contact Work Address Town'=>'Sheffield'
+	      ,'Contact Work Address Postal Code'=>'S11 8AL '
+	      ,'Contact Work Address Country Name'=>'UK'
+	      ,'Contact Home Address Line 1'=>'Flat 43'
+	      ,'Contact Home Address Line 2'=>'Jet Building'
+	      ,'Contact Home Address Line 3'=>'35 St Marys Rd'
+	      ,'Contact Home Address Town'=>'Sheffield'
+	      ,'Contact Home Address Postal Code'=>'S2 4AH'
+	      ,'Contact Home Address Country Name'=>'UK'
+	      
+	      );
+  $contact=new Contact('find create',$data);
+  
 //$data=array('Contact Name'=>'Raul Perusquia Flores');
 //$contact->update($data);
 
-print_r($contact);
+
+
+}
+
+
+
+
+}
 
 ?>
