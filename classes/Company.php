@@ -125,25 +125,71 @@ class Company extends DB_Table {
 
 
     $contact=new Contact("find in company",$raw_data);
-   
+    foreach($contact->candidate as $key=>$val){
+      if(isset($this->candidate[$key]))
+	$this->candidate[$key]+=$val;
+      else
+	$this->candidate[$key]=$val;
+    }
+
     $email=new Email("find in company",$data['Company Main Plain Email']);
-   
-
-
- $address=new Address("find in company ",$address_data);
-    $telephone=new Telecom("find in company",$data['Company Main Telephone']);
-    
-
-    if($contact->found or $email->found or $address->found   or $telephone->found){
-      print "candidates\n";
-      print_r($contact->candidate);
-      
-      print_r($email->candidate);
-      exit;
-      //ups found in another
-      
+    foreach($email->candidate as $key=>$val){
+      if(isset($this->candidate[$key]))
+	$this->candidate[$key]+=$val;
+      else
+	$this->candidate[$key]=$val;
     }
     
+    $address=new Address("find in company ",$address_data);
+    
+    foreach($address->candidate as $key=>$val){
+      if(isset($this->candidate[$key]))
+	$this->candidate[$key]+=$val;
+      else
+	$this->candidate[$key]=$val;
+    }
+    
+    $telephone=new Telecom("find in company",$data['Company Main Telephone']);
+    foreach($telephone->candidate as $key=>$val){
+      if(isset($this->candidate[$key]))
+	$this->candidate[$key]+=$val;
+      else
+	$this->candidate[$key]=$val;
+    }
+    
+    //addnow we have a list of  candidates, from this list make another list of companies
+    $candidate_companies=array();
+    foreach($this->candidate as $contact_key=>$score){
+      $_contact=new Contact($contact_key);
+      $company_key=$_contact->data['Contact Company Key'];
+      print "---- $company_key\n";
+      if(isset($candidate_companies[$company_key]))
+	$candidate_companies[$company_key]+=$score;
+      else
+	$candidate_companies[$company_key]=$score;
+
+    }
+    //print_r($candidate_companies);
+    if(!empty($candidate_companies)){
+      sort($candidate_companies);
+      foreach($candidate_companies as $key=>$val){
+	print "*$key $val\n";
+	if($val>=200){
+	  $this->found=true;
+	  break;
+	}
+      }
+      
+    }
+    print "Contact candidates\n";
+    print_r($this->candidate);
+    print "Company candidates\n";
+    print_r($candidate_companies);
+
+    
+
+    print_r($this);
+    exit;
     if($create){
 
     // there are 4 cases
