@@ -30,7 +30,9 @@ abstract class DB_Table
   // True if company founded
   public $found=false;
 
-
+  // Array: candidate
+  // array with the posible matches
+  public $candidate=array();
 
 
 
@@ -61,24 +63,26 @@ abstract class DB_Table
     */
   public function update($data,$options=''){
 
-    $this->msg='';  
+    //    $this->msg='';  
 
     $base_data=$this->base_data();
     //   print "-----------------------\n";
     // print_r($base_data);
-      foreach($data as $key=>$value){
+    print "Updating ".$this->table_name." ============\n";
+    foreach($data as $key=>$value){
 	if(array_key_exists($key,$base_data)){
 	  
 	  if($value!=$this->data[$key]){
-	    print "$key,old value: ".$this->data[$key]." New value:  $value,$options\n";
+	    print "Field: $key \nOld value: ".$this->data[$key]." \nNew value:  $value \nOpciones: $options\n";
 	    $this->update_field_switcher($key,$value,$options);
 	    
 	    //    $function_name='update_'.preg_replace('/\s/','',ucwords($key));
 	    // call_user_func(array($this,$function_name),$value,$options);
 	  }
 	}
-      }
-      
+    }
+    print "============\n";
+    
       if(!$this->updated)
 	$this->msg.=' '._('Nothing to be updated')."\n";
       

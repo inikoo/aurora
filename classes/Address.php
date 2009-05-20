@@ -136,7 +136,23 @@ class Address extends DB_Table{
   
  private function find($raw_data,$options=''){
 
- 
+   
+ $this->found=false;
+   $this->found_in=false;
+   $this->found_out=false;
+   $this->candiadate=array();
+   $in_contacts=array();
+   $mode='Contact';
+   $parent='Contact';
+   $create=false;
+   if(preg_match('/create|update/i',$options)){
+     $create=true;
+   }
+    $auto=false;
+    if(preg_match('/auto/i',$options)){
+      $auto=true;
+    }
+    
 
    if(!$raw_data){
      $this->new=false;
@@ -200,82 +216,88 @@ class Address extends DB_Table{
       break;
     }
 
-
-
-    //  print_r($raw_data);
-
-    $subject_key=0;
+   $subject_key=0;
     $subject_type='Contact';
-    
-    if(preg_match('/in contact \d+/',$options,$match)){
+
+      if(preg_match('/in contact \d+/',$options,$match)){
       $subject_key=preg_replace('/[^\d]/','',$match[0]);
       $subject_type='Contact';
+
+      $mode='Contact in';
+      $in_contacts=array($subject_key);
+
+
     }
     if(preg_match('/in company \d+/',$options,$match)){
       $subject_key=preg_replace('/[^\d]/','',$match[0]);
       $subject_type='Company';
+      $company=new Company($subject_key);
+      $in_contact=$company->get_contact_keys();
+      $mode='Company in';
+
     }elseif(preg_match('/company/',$options,$match)){
       $subject_type='Company';
+      $mode='Company';
     }
 
+    if($mode=='Contact')
+      $options.=' anonymous';
+
+  
 
     if($data['Address Fuzzy']=='Yes'){
       //if fuzzy only check in parent fuzzy sub space 
 
       $fields=array('Address Fuzzy','Address Street Number','Address Building','Address Street Name','Address Street Type','Address Town Secondary Division','Address Town Primary Division','Address Town','Address Country Primary Division','Address Country Secondary Division','Address Country Key','Address Postal Code','Military Address','Military Installation Address','Military Installation Name');
 
-      $sql=sprintf("select A.`Address Key`,`Subject Key` from `Address Dimension` A  left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`)  where `Address Fuzzy`='Yes' and `Subject Type`=%s ",prepare_mysql($subject_type));
+      $sql=sprintf("select A.`Address Key`,`Subject Key` from `Address Dimension` A  left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`)  where `Address Fuzzy`='Yes' and `Subject Type`='Contact' ");
       foreach($fields as $field){
 	$sql.=sprintf(' and `%s`=%s',$field,prepare_mysql($data[$field],false));
       }
       $result=mysql_query($sql);
       $num_results=mysql_num_rows($result);
       if($num_results==0){
+	// address not found
 	$this->found=false;
        	
+
       }else if($num_results==1){
 	$row=mysql_fetch_array($result, MYSQL_ASSOC);
-	
-	if($row['Subject Key']==$subject_key){
-	  $this->get_data('id',$row['Address Key']);
-	  if($update)
-	    $this->update($data);
-	  return $this->id;
-	}else{
-	  if($subject_type=='Contact'){
-	    $contact=new Contact($row['Subject Key']);
-	    
-	    $this->msg=_('Address found in another contact').sprintf('. %s (%d)',$contact->display('name'),$contact->id);
+	$this->candidate[$row['Subject Key']]=100;
+	$this->get_data('id',$row['Address Key']);
+	if($mode=='Contact in' or $mode=='Company in'){
+	  if(in_array($row['Subject Key'],$in_contacts)){
+	    $this->found_in=true;
+	    $this->found_out=false;
 	  }else{
-	    $company=new Company($row['Subject Key']);
-	    $this->msg=_('Address found in another company').sprintf('. %s (%d)',$company->display('name'),$company->id);
-	    
+	    $this->found_in=false;
+	    $this->found_out=true;
 	  }
-	  return 0;
 	}
-      }else{
-	while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-	  if($row['Subject Key']==$in_contact){
-	    $this->get_data('id',$row['Address Key']);
-	    if($update)
-	      $this->update($data);
 
-	    return $this->id;
+      }else{// Found in mora than one
+	if($mode=='Contact in' or $mode=='Company in'){
+	  
+	  while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+	    if(in_array($row['Subject Key'],$in_contact)){
+	      $this->candidate[$row['Subject Key']]=90;
+	    }else{
+	      $this->candidate[$row['Subject Key']]=50;
+	    }
 	  }
 	}
-	$this->msg=_('Similar address found in')." $num_results ".ngettext($num_results,'record','records');
-	return 0;
+	$this->msg.=_('Address found in')." $num_results ".ngettext($num_results,'contact','contacts');
 	
       }
       
-
+      
     }else{
       // Address not fuzzy
       // Try to find an exact match
 
         $fields=array('Address Fuzzy','Address Street Number','Address Building','Address Street Name','Address Street Type','Address Town Secondary Division','Address Town Primary Division','Address Town','Address Country Primary Division','Address Country Secondary Division','Address Country Key','Address Postal Code','Military Address','Military Installation Address','Military Installation Name');
 
-      $sql="select A.`Address Key`,`Subject Key` from `Address Dimension`  A  left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`) where true ";
+      $sql="select A.`Address Key`,`Subject Key` from `Address Dimension`  A  left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`) where `Subject Type`='Contact' ";
       foreach($fields as $field){
 	$sql.=sprintf(' and `%s`=%s',$field,prepare_mysql($data[$field],false));
       }
@@ -287,50 +309,65 @@ class Address extends DB_Table{
        	
       }else if($num_results==1){
 	$row=mysql_fetch_array($result, MYSQL_ASSOC);
-	
-	if($row['Subject Key']==$subject_key){
-	  $this->get_data('id',$row['Address Key']);
-	  if($update)
-	    $this->update($data);
-	  $this->found=true;
-	  return $this->id;
-	}else{
-	  if($subject_type=='Contact'){
-	    $contact=new Contact($row['Subject Key']);
-	    // print_r($contact);exit;
-	    $this->msg=_('Address found in another contact').sprintf('. %s (%d)',$contact->display('name'),$contact->id);
+	$this->candidate[$row['Subject Key']]=100;
+	$this->get_data('id',$row['Address Key']);
+	if($mode=='Contact in' or $mode=='Company in'){
+	  if(in_array($row['Subject Key'],$in_contacts)){
+	    $this->found_in=true;
+	    $this->found_out=false;
 	  }else{
-	    $company=new Company($row['Subject Key']);
-	    $this->msg=_('Address found in another company').sprintf('. %s (%d)',$company->display('name'),$company->id);
-	    
-	  }
-	  return 0;
-	}
-      }else{
-	while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-	  if($row['Subject Key']==$in_contact){
-	    $this->get_data('id',$row['Address Key']);
-	    if($update)
-	      $this->update($data);
-	    $this->found=true;
-	    return $this->id;
+	    $this->found_in=false;
+	    $this->found_out=true;
 	  }
 	}
-	$this->msg=_('Similar address found in')." $num_results ".ngettext($num_results,'record','records');
-	return 0;
+
+      }else{// address found in many contact
+	if($mode=='Contact in' or $mode=='Company in'){
+	  
+	  while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+	    if(in_array($row['Subject Key'],$in_contact)){
+	      $this->candidate[$row['Subject Key']]=90;
+	    }else{
+	      $this->candidate[$row['Subject Key']]=50;
+	    }
+	  }
+	}
+	$this->msg.=_('Address found in')." $num_results ".ngettext($num_results,'contact','contacts');
 	
       }
 
     }
 
-    
+   if($create){
+      if($this->found)
+	$this->update($data,$options);
+      else{
+	// not found
+	if($auto){
+	  usort($this->candidate);
+	  foreach($this->candidate as $key =>$val){
+	    if($val>=90){
+	      $this->found=true;
+	      if(in_array($key,$in_contact))
+		$this->found_in=true;
+	      else
+		$this->found_out=true;
 
-    $this->found=false;
-    if($create){
+	      $this->get_data('id',$key);
+	      $this->update($data,$options);
+	      return;
+	    }
+	  }
 
-      $this->create($data);
-    }elseif($update)
-      $this->update($data);
+	}
+
+	$this->create($data,$options);
+
+      }
+
+    }   
+
+ 
 
  }
 
@@ -1113,21 +1150,12 @@ class Address extends DB_Table{
     }
     //--------------------------------------------------------------------------
     // Common errors related to the country
-     if(preg_match('/^St. Thomas.*Virgin Islands$/i',$data['Address Town'])){
+    if(preg_match('/^St. Thomas.*Virgin Islands$/i',$data['Address Town'])){
       $data['Address Country Name']='Virgin Islands, U.S.';
       $data['Address Town']='St. Thomas';
     }
-
-      if($myconf['country_id']==30){
-      if(Address::is_valid_postcode($data['Address Postal Code'],30)){
-	$data['Address Country Primary Division']=_trim($data['Address Country Primary Division'].' '.$data['Address Country Name']);
-	$data['Address Country Name']='United Kingdom';
-      }elseif(Address::is_valid_postcode($data['Address Country Name'],30)){
-	$data['Address Country Primary Division']=_trim($data['Address Country Primary Division'].' '.$data['Address Postal Code']);
-	$data['Address Postal Code']=$data['Address Country Name'];
-	$data['Address Country Name']='United Kingdom';
-      }
-    }
+    
+  
     
     if(preg_match('/SCOTLAND|wales/i',$data['Address Country Name']))
       $data['Address Country Name']='United Kingdom';
@@ -1184,9 +1212,33 @@ class Address extends DB_Table{
       }
     }
 
+    if($data['Address Country Code']=='UNK'){
+      if($myconf['country_id']==30){
+	if(Address::is_valid_postcode($data['Address Postal Code'],30)){
+	  $data['Address Country Primary Division']=_trim($data['Address Country Primary Division'].' '.$data['Address Country Name']);
+	  $data['Address Country Name']='United Kingdom';
+	  
+	}elseif(Address::is_valid_postcode($data['Address Country Name'],30)){
+	  $data['Address Country Primary Division']=_trim($data['Address Country Primary Division'].' '.$data['Address Postal Code']);
+	  $data['Address Postal Code']=$data['Address Country Name'];
+	  $data['Address Country Name']='United Kingdom';
+	}
+      }
+       $country_data=Address::prepare_country_data($data);
+       foreach($country_data as $key=>$value){
+	 if(array_key_exists($key,$data)){
+	   $data[$key]=_trim($value);
+	 }
+       }
+       
+    }
+
+
     // Country assigned;
 
-  
+ 
+
+
     $_p=$data['Address Postal Code'];
 
     if(preg_match('/^\s*BFPO\s*\d{1,}\s*$/i',$_p))
@@ -1573,7 +1625,7 @@ class Address extends DB_Table{
     }
 
 
-
+  
 
 
     switch($data['Address Country Key']){
