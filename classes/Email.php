@@ -115,20 +115,36 @@ class Email extends DB_Table {
    Method: find
    Given a set of email components try to find it on the database updating properties, if not found creates a new record
 
-   The default is to update/create 
+   Parmaters:
+   $raw_data - associative array with the email data (DB fields as keys)
+   $options - string 
+   
+   auto - the method will update/create the email with out asking for instructions 
+   create|update - methos will create or update the email with the data provided
+   
 
   */
 
   private function find($raw_data,$options=''){
-    //print_r($raw_data);
-    $create='';
-    $update='';
-    if(preg_match('/create/i',$options)){
-      $create='create';
+
+    $this->found=false;
+    $this->found_in=false;
+    $this->found_out=false;
+    $this->candiadate=array();
+    $in_contacts=array();
+    $mode='Contact';
+    $parent='Contact';
+
+
+    $create=false;
+    if(preg_match('/create|update/i',$options)){
+      $create=true;
     }
-    if(preg_match('/update/i',$options)){
-      $update='update';
+    $auto=false;
+    if(preg_match('/auto/i',$options)){
+      $auto=true;
     }
+
     
     if(!$raw_data){
       $this->new=false;
@@ -144,16 +160,18 @@ class Email extends DB_Table {
       $raw_data['Email']=$tmp;
     }
   
-    $base_data=$this->base_data();
+    $data=$this->base_data();
     foreach($raw_data as $key=>$value){
-      if(array_key_exists($key,$base_data))
-	$base_data[$key]=$value;
+      if(array_key_exists($key,$data))
+	$data[$key]=$value;
     }
 
-    if($base_data['Email']==''){
+    if($data['Email']==''){
       $this->msg=_('No email provided');
       return false;
-    }
+    }else
+      $data['Email Validated']=($this->is_valid($data['Email'])?'Yes':'No');
+
 
     $subject=false;
     $subject_key=0;
@@ -162,163 +180,120 @@ class Email extends DB_Table {
     if(preg_match('/in contact \d+/',$options,$match)){
       $subject_key=preg_replace('/[^\d]/','',$match[0]);
       $subject_type='Contact';
+      
+      $mode='Contact in';
+      $in_contacts=array($subject_key);
+
+
     }
     if(preg_match('/in company \d+/',$options,$match)){
       $subject_key=preg_replace('/[^\d]/','',$match[0]);
       $subject_type='Company';
+      $company=new Company($subject_key);
+      $in_contact=$company->get_contact_keys();
+      $mode='Company in';
+
     }elseif(preg_match('/company/',$options,$match)){
       $subject_type='Company';
+      $mode='Company';
     }
 
-    if(!$subject_key){
+    if($mode=='Contact')
       $options.=' anonymous';
-    }else{
-        if($subject_type=='Contact'){
-	  $subject=new Contact($subject_key);
-	}else{
-	  $subject=new Company($subject_key);
-	}
-    }
+    
     
 
-
-
-    
-    $sql=sprintf("select T.`Email Key`,`Subject Key` from `Email Dimension` T left join `Email Bridge` TB  on (TB.`Email Key`=T.`Email Key`) where `Email`=%s and `Subject Type`=%s  "
+    $sql=sprintf("select T.`Email Key`,`Subject Key` from `Email Dimension` T left join `Email Bridge` TB  on (TB.`Email Key`=T.`Email Key`) where `Email`=%s and `Subject Type`='Contact'  "
 		 ,prepare_mysql($raw_data['Email'])
-		 ,prepare_mysql($subject_type)
 		   );
-
+    
     $result=mysql_query($sql);
     $num_results=mysql_num_rows($result);
-    //print "$sql Num resuklts $num_results\n";
-      if($num_results==0){
-	$this->found=false;
-	
-	if(preg_match('/similar/i',$options)){
-	  // try to find possible matches (assuming the the client comit a mistakt)
-	  $sql=sprintf("select `Email Key`,`Email Contact Name`,levenshtein(UPPER(%s),UPPER(`Email`)) as dist1,levenshtein(UPPER(SOUNDEX(%s)),UPPER(SOUNDEX(`Email`))) as dist2, `Subject Key`  from `Email Dimension` left join `Email Bridge` on (`Email Bridge`.`Email Key`=`Email Dimension`.`Email Key`)  where dist1<=2 and  `Subject Type`=%s `Subject Key`=%d and  order by dist1,dist2 limit 20"
-		       ,prepare_mysql($raw_data['Email'])
-		       ,prepare_mysql($raw_data['Email'])
-		       ,prepare_mysql($subject_type)
-		       ,$subject_key
-		       );
-	   $result=mysql_query($sql);
-	   
-	   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-	     $dist=0.5*$row['dist1']+$row['dist2'];
-	     if($dist==0)
-	       $candidate[$row['Email Key']]['score']=1000;
-	     else
-	       $candidate[$row['Email Key']]['score']=100/$dist;
-	     
-	     if($raw_data['Email Contact Name']!=''){
-	       $contact_distance=levenshtein(strtolower($raw_data['Email Contact Name']),strtolower($row['Email Contact Name']));
-	       if($contact_distance==0){
-		 if($raw_data['Email Contact Name']=='')
-		   $candidate[$row['Email Key']]['score']+=50;
-		 else
-		   $candidate[$row['Email Key']]['score']+=300;
-	       }
-	       
-	       
-	       $candidate[$row['Email Key']]['score']+=(200/$contact_distance);
-	       
-	       
-	     }
-	     
-	   }
-	   $number_candidates=count($candidate);
-	   //   print "number candidates $number_candidates\n";
-	   if($number_candidates>0){
-	     asort($candidate);
-	     foreach ($candidate as $key => $val) {
-	       $email_key=$key;
-	       break;
-	     }
-	     $this->get_data('id',$email_key);
-	     $this->update($raw_data);
-	     return $this->id;
-	     
-	   }else{
-	     // email not found
-	     if($create){
-	       $this->create($base_data,$options);
-	       return;
-	     }
-	   }
-	   
-	   
-       	}
-	if($create){
-
-		       
-	  $this->create($base_data,$options);
-	  return;
-	}
-
-      }else if($num_results==1){
-	$this->found=true;
-	$row=mysql_fetch_array($result, MYSQL_ASSOC);
-	if($subject_type=='Contact'){
-	  $subject=new Contact($row['Subject Key']);
-	}else{
-	  $subject=new Company($row['Subject Key']);
-	}
-	$this->get_data('id',$row['Email Key']);
-	if(!$subject_key or $row['Subject Key']==$subject_key){
-	  if($create and !$update){
-
-
-
-	    $this->msg=_('Email found in').sprintf(' %s. %s (%d)',$subject_type,$subject->display('name'),$subject->id);
-	    $this->error=true;
-	  }elseif($create){
-	    $this->update($base_data);
-	  }
-	  return;
-	}else{
-	   $this->msg=_('Email found in another').sprintf(' %s. %s (%d)',$subject_type,$subject->display('name'),$subject->id);
-	
-	}
-      }else{// Found in more than one contact (that means tha two contacts share the same email) this shoaul not happen
-	while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-	  if($row['Subject Key']==$in_contact){
-	    $this->get_data('id',$row['Email Key']);
-	    $this->update($base_data);
-	    return $this->id;
-	  }
-	}
-	$this->msg=_('Email found in')." $num_results ".ngettext($num_results,'record','records');
-	return 0;
-	
-      }
-      
-      
-      if($subject_type=='Company'){
-	// Look if another contact has this email
-	$sql=sprintf("select T.`Email Key`,`Subject Key` from `Email Dimension` T left join `Email Bridge` TB  on (TB.`Email Key`=T.`Email Key`) where `Email`=%s  and `Subject Type`='Contact'"
+    if($num_results==0){
+      $this->found=false;
+      if(preg_match('/auto/i',$options)){
+	// try to find possible matches (assuming the the client comit a mistake)
+	$sql=sprintf("select `Subject Key`,`Email Key`,`Email Contact Name`,levenshtein(UPPER(%s),UPPER(`Email`)) as dist1,levenshtein(UPPER(SOUNDEX(%s)),UPPER(SOUNDEX(`Email`))) as dist2, `Subject Key`  from `Email Dimension` left join `Email Bridge` on (`Email Bridge`.`Email Key`=`Email Dimension`.`Email Key`)  where dist1<=2 and  `Subject Type`='Contact'  order by dist1,dist2 limit 20"
+		     ,prepare_mysql($raw_data['Email'])
 		     ,prepare_mysql($raw_data['Email'])
 		     );
 	$result=mysql_query($sql);
-	$num_results=mysql_num_rows($result);
-
-	if($num_results==0){
-
-	  if(preg_match('/create/i',$options)){
-	    $this->create($base_data,$options);
-	  }
-	  return;
-
-	}else{
-	  // we can insert the contact to the comapny or hikat of necesary
-	  exit("todo in email");
-
+	
+	while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+	  $dist=0.5*$row['dist1']+$row['dist2'];
+	  if($dist==0)
+	    $candidate[$row['Subject Key']]=1000;
+	  else
+	    $candidate[$row['Subject Key']]=100/$dist;
+	  
+	  if($raw_data['Email Contact Name']!=''){
+	       $contact_distance=levenshtein(strtolower($raw_data['Email Contact Name']),strtolower($row['Email Contact Name']));
+	       if($contact_distance==0){
+		 if($raw_data['Email Contact Name']=='')
+		   $candidate[$row['Subject Key']]+=50;
+		 else
+		   $candidate[$row['Subject Key']]+=300;
+	       }
+	       
+	       
+	       $candidate[$row['Subject Key']]+=(200/$contact_distance);
+	       
+	       
+	     }
+	  
 	}
       }
 
+      
+    }else if($num_results==1){
+	$this->found=true;
+	
+	$row=mysql_fetch_array($result, MYSQL_ASSOC);
+	
+	$this->candidate[$row['Subject Key']]=1000;
+	$this->get_data('id',$row['Email Key']);
+	
 
+      }else{// Found in more than one contact (that means tha two contacts share the same email) this shoaul not happen
+      
+      $this->error=true;
+      // correct the data (delete duplicates)
+      exit("todo fix database for email duplicates");
+    }
+      
   
+
+    if($create){
+      if($this->found)
+	$this->update($data,$options);
+      else{
+	// not found
+	if($auto){
+	  usort($this->candidate);
+	  foreach($this->candidate as $key =>$val){
+	    if($val>=250){
+	      $this->found=true;
+	      $this->found=true;
+	      if(in_array($key,$in_contact))
+		$this->found_in=true;
+	      else
+		$this->found_out=true;
+
+	      $this->get_data('id',$key);
+	      $this->update($data,$options);
+	      return;
+	    }
+	  }
+
+	}
+
+	$this->create($data,$options);
+
+      }
+
+    }
+
+    
   
 }
 
@@ -360,6 +335,7 @@ protected function create($data,$options=''){
     return false;
   }
     
+    
   if(!preg_match('/do not validate|validated ok/',$options))
     if($this->is_valid($this->data['Email']))
       $this->data['Email Validated']='Yes';
@@ -370,7 +346,7 @@ protected function create($data,$options=''){
 	       ,prepare_mysql($this->data['Email Validated'])
 	       ,prepare_mysql($this->data['Email Correct'])
 	       );
-  
+
   if(mysql_query($sql)){
     $this->id = mysql_insert_id();
     $this->get_data('id',$this->id);
@@ -379,7 +355,7 @@ protected function create($data,$options=''){
     $this->msg=_('New Email');
 
 
-    if(preg_match('/anonimous|anonymous/',$options)){
+    if(preg_match('/anonimous|anonymous/',$options) ){
       $contact=new Contact('create anonimous');
       $contact->add_email(array(
 				'Email Key'=>$this->id

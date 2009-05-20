@@ -118,22 +118,34 @@ Function:display
 
 /*
   Function: find
-  Look for similar records and take actions dependiing of the options
+  Given a set of telephone number components try to find it on the database updating properties, if not found creates a new record
+
+   Parmaters:
+   $raw_data - associative array with the telephone number data (DB fields as keys)
+   $options - string 
+   
+   auto - the method will update/create the telephone number with out asking for instructions 
+   create|update - methos will create or update the telephone number with the data provided
 */
 function find($raw_data,$options){
 
 
-  //print_r($raw_data);
-
-    $create='';
-    $update='';
-    if(preg_match('/create/i',$options)){
-      $create='create';
+   $this->found=false;
+   $this->found_in=false;
+   $this->found_out=false;
+   $this->candiadate=array();
+   $in_contacts=array();
+   $mode='Contact';
+   $parent='Contact';
+   $create=false;
+   if(preg_match('/create|update/i',$options)){
+     $create=true;
+   }
+    $auto=false;
+    if(preg_match('/auto/i',$options)){
+      $auto=true;
     }
-    if(preg_match('/update/i',$options)){
-      $update='update';
-    }
-
+    
    if(!$raw_data){
       $this->new=false;
       $this->msg=_('Error no telecom data');
@@ -179,37 +191,40 @@ function find($raw_data,$options){
 
 
     $data['Telecom Plain Number']=Telecom::plain_number($data);
+   
     $subject=false;
     $subject_key=0;
     $subject_type='Contact';
 
-   if(preg_match('/in contact \d+/',$options,$match)){
+      if(preg_match('/in contact \d+/',$options,$match)){
       $subject_key=preg_replace('/[^\d]/','',$match[0]);
       $subject_type='Contact';
+
+      $mode='Contact in';
+      $in_contacts=array($subject_key);
+
+
     }
     if(preg_match('/in company \d+/',$options,$match)){
       $subject_key=preg_replace('/[^\d]/','',$match[0]);
       $subject_type='Company';
+      $company=new Company($subject_key);
+      $in_contact=$company->get_contact_keys();
+      $mode='Company in';
+
     }elseif(preg_match('/company/',$options,$match)){
       $subject_type='Company';
+      $mode='Company';
     }
 
-    if(!$subject_key){
+    if($mode=='Contact')
       $options.=' anonymous';
-    }else{
-        if($subject_type=='Contact'){
-	  $subject=new Contact($subject_key);
-	}else{
-	  $subject=new Company($subject_key);
-	}
-    }
-
-
-
     
-    $sql=sprintf("select T.`Telecom Key`,`Subject Key` from `Telecom Dimension` T left join `Telecom Bridge` TB  on (TB.`Telecom Key`=T.`Telecom Key`) where `Telecom Plain Number`=%s and `Subject Type`=%s  "
+
+
+    $sql=sprintf("select T.`Telecom Key`,`Subject Key` from `Telecom Dimension` T left join `Telecom Bridge` TB  on (TB.`Telecom Key`=T.`Telecom Key`) where `Telecom Plain Number`=%s and `Subject Type`='Contact'  "
 		 ,prepare_mysql($data['Telecom Plain Number'])
-		 ,prepare_mysql($subject_type)
+		
 		 );
     //  print "$sql\n";
     $result=mysql_query($sql);
@@ -218,95 +233,74 @@ function find($raw_data,$options){
       if($num_results==0){
 	$this->found=false;
 
-	if($subject_type=='Company'){
-	  // Look if another contact has this telecom
-	  $sql=sprintf("select T.`Telecom Key`,`Subject Key` from `Telecom Dimension` T left join `Telecom Bridge` TB  on (TB.`Telecom Key`=T.`Telecom Key`) where `Telecom Plain Number`=%s and `Subject Type`='Contact'  "
-		   ,prepare_mysql($data['Telecom Plain Number'])
-		       );
-	  
-	$result=mysql_query($sql);
-	$num_results=mysql_num_rows($result);
-	
-	if($num_results==0){
-	  if($create){
-	    $this->create($data,$options);
-	  }
-	  return;
 
-	}else{
-	  // we can insert the contact to the comapny or hikat of necesary
-	  exit("todo in telecom,hiajacking the contact\n");
-
-	}
-      }
-	
-
-	
-       	if($create)
-	  $this->create($data,$options);
       }else if($num_results==1){
 	$this->found=true;
 	$row=mysql_fetch_array($result, MYSQL_ASSOC);
-	if($subject_type=='Contact'){
-	  $subject=new Contact($row['Subject Key']);
-	}else{
-	  $subject=new Company($row['Subject Key']);
-	}
+	$this->candidate[$row['Subject Key']]=100;
+	//$subject=new Contact($row['Subject Key']);
 	$this->get_data('id',$row['Telecom Key']);
-	if(!$subject_key or $row['Subject Key']==$subject_key){
-	  if($create and !$update){
-
-
-
-	    $this->msg=_('Telecom found in').sprintf(' %s. %s (%d)',$subject_type,$subject->display('name'),$subject->id);
-	    $this->error=true;
-	  }elseif($create){
-	    $this->update($data,$options);
+	if($mode=='Contact in' or $mode=='Company in'){
+	  if(in_array($row['Subject Key'],$in_contacts)){
+	    $this->found_in=true;
+	    $this->found_out=false;
+	  }else{
+	    $this->found_in=false;
+	    $this->found_out=true;
 	  }
-	  return;
-	}else{
-	   $this->msg=_('Telecom found in another').sprintf(' %s. %s (%d)',$subject_type,$subject->display('name'),$subject->id);
-	
 	}
 
-      }else{// Found in more than one contact, 
-	while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-	  if($row['Subject Key']==$in_contact){
-	    $this->get_data('id',$row['Telecom Key']);
-	    $this->update($data,$options);
-	    return $this->id;
+      }else{
+	// Found in more than one contact, 
+
+	if($mode=='Contact in' or $mode=='Company in'){
+	  
+	  while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+	    if(in_array($row['Subject Key'],$in_contact)){
+	      $this->candidate[$row['Subject Key']]=90;
+	    }else{
+	      $this->candidate[$row['Subject Key']]=50;
+	    }
 	  }
 	}
 	$this->msg=_('Telephone found in')." $num_results ".ngettext($num_results,'record','records');
-	return 0;
+	
 	
       }
       
-    
-    if($subject_type=='Company'){
-      // Look if another contact has this telecom
-      $sql=sprintf("select T.`Telecom Key`,`Subject Key` from `Telecom Dimension` T left join `Telecom Bridge` TB  on (TB.`Telecom Key`=T.`Telecom Key`) where `Telecom Plain Number`=%s and `Subject Type`='Contact'  "
-		   ,prepare_mysql($data['Telecom Plain Number'])
-		 );
+      
 
-	$result=mysql_query($sql);
-	$num_results=mysql_num_rows($result);
+     
 
-	if($num_results==0){
+   
+  if($create){
+      if($this->found)
+	$this->update($data,$options);
+      else{
+	// not found
+	if($auto){
+	  usort($this->candidate);
+	  foreach($this->candidate as $key =>$val){
+	    if($val>=90){
+	      $this->found=true;
+	      if(in_array($key,$in_contact))
+		$this->found_in=true;
+	      else
+		$this->found_out=true;
 
-	  if(preg_match('/create/i',$options)){
-	    $this->data=$data;
-	    $this->create();
+	      $this->get_data('id',$key);
+	      $this->update($data,$options);
+	      return;
+	    }
 	  }
-	  return;
-
-	}else{
-	  // we can insert the contact to the comapny or hikat of necesary
-	  exit("todo in telecom");
 
 	}
+
+	$this->create($data,$options);
+
       }
 
+    }
 
 
 
@@ -344,6 +338,11 @@ protected function create($data,$optios=''){
      $this->error=true;
      $this->msg=_('Wrong telephone number');
    }
+
+   if($this->data['Telecom Technology Type']==''){
+     $this->data['Telecom Technology Type']='Unknown';
+   }
+
    // print $sql;
    $sql=sprintf("insert into `Telecom Dimension` (`Telecom Technology Type`,`Telecom Country Telephone Code`,`Telecom National Access Code`,`Telecom Area Code`,`Telecom Number`,`Telecom Extension`,`Telecom Plain Number`) values (%s,%s,%s,%s,%s,%s,%s)",
 		prepare_mysql($this->data['Telecom Technology Type']),
@@ -368,6 +367,7 @@ protected function create($data,$optios=''){
      return true;
    }else{
      $this->error=true;
+   
      $this->msg="Error can not create telecom\n";
      $this->new=false;
    }
@@ -410,7 +410,9 @@ protected function create($data,$optios=''){
    
   */
  function parse_number($number,$country_code='UNK'){
-   $data=array('Telecom Technology Type'=>''
+   // print "parsing number $number\n";
+
+   $data=array('Telecom Technology Type'=>'Unknown'
 	       ,'Telecom Country Telephone Code'=>''
 	       ,'Telecom National Access Code'=>''
 	       ,'Telecom Area Code'=>''
@@ -457,7 +459,7 @@ protected function create($data,$optios=''){
      $number=preg_replace('/^\d{1,3}\s*/','',$number);
      $data['Telecom Area Code']=preg_replace('/[^\d]/','',$match[0]);
      $data['Telecom Number']=preg_replace('/[^\d]/','',$number);
-     return $data;
+    
    }
    //  +44 (0) 1142729165
    else if(preg_match('/^\+\d+ \(\d+\) \d/',$number)){
@@ -481,7 +483,7 @@ protected function create($data,$optios=''){
      $number=preg_replace('/^\d{1,3}\s*/','',$number);
      $data['Telecom Area Code']=preg_replace('/[^\d]/','',$match[0]);
      $data['Telecom Number']=preg_replace('/[^\d]/','',$number);
-     return $data;
+   
    }
    // +44 1142729165
    elseif(preg_match('/^\+\d+ \d/',$number)){
@@ -502,6 +504,8 @@ protected function create($data,$optios=''){
      
    }
 
+ /*   print "$country_code\n"; */
+/*    print_r($data); */
 
   /*  $raw_tel=$data['Telecom Original Number']; */
 /*    // print "org1 $data ".$raw_tel."\n"; */
@@ -581,6 +585,7 @@ protected function create($data,$optios=''){
       }
     }
     $data['Telecom National Access Code']='0';
+
     if(preg_match('/^8\d\d/',$data['Telecom Number'])){
       $data['National Only Telecom']='Yes';
       $data['Telecom Country Telephone Code']='';

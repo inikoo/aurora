@@ -95,16 +95,16 @@ class Company extends DB_Table {
 	$_key=preg_replace('/Supplier /','Company ',$key);
 	$raw_data[$_key]=$val;
       }
-      $mode='supplier';
+      $parent='supplier';
     }elseif(preg_match('/from customer/',$options)){
       foreach($raw_data as $key=>$val){
 	$_key=preg_replace('/Customer /','Company ',$key);
 	$raw_data[$_key]=$val;
       }
-      $mode='customer';
+      $parent='customer';
     }else{
 
-      $mode='all';
+      $parent='none';
     }
 
     $data=$this->base_data();
@@ -125,20 +125,46 @@ class Company extends DB_Table {
 
 
     $contact=new Contact("find in company",$raw_data);
-
+   
     $email=new Email("find in company",$data['Company Main Plain Email']);
-    $address=new Address("find in company ",$address_data);
+   
+
+
+ $address=new Address("find in company ",$address_data);
     $telephone=new Telecom("find in company",$data['Company Main Telephone']);
     
 
     if($contact->found or $email->found or $address->found   or $telephone->found){
+      print "candidates\n";
+      print_r($contact->candidate);
+      
+      print_r($email->candidate);
+      exit;
       //ups found in another
-      exit("found company data in another company\n");
+      
     }
     
+    if($create){
+
+    // there are 4 cases
+    if(!$contact->found and !$this->found){
+    
+      $this->create($data,$address_data);
+
+    }elseif(!$contact->found and $this->found){
+      $this->create($data,$address_data);
+
+    }elseif($contact->found and !$this->found){
+      $this->create($data,$address_data);
+
+    }else{
+      $this->update_address($address_data);
+      $this->update($data,$address_data);
+
+    }
    
 
-    $this->create($data,$address_data);
+    }
 
     
 
@@ -198,7 +224,7 @@ class Company extends DB_Table {
   }
 
   
-function create($raw_data,$raw_address_data=array()){
+  function create($raw_data,$raw_address_data=array(),$options=''){
     
   
   
@@ -219,9 +245,11 @@ function create($raw_data,$raw_address_data=array()){
       exit("find_company: contact error\n");
     }
     
+
     $this->data['Company Main Contact Name']=$contact->display('name');
+
     $this->data['Company Main Contact Key']=$contact->id;
-    
+   
     
     if($this->data['Company Main Plain Email']!=''){
        
@@ -241,7 +269,7 @@ function create($raw_data,$raw_address_data=array()){
 
      }
 
-    
+      
 
 
     if($this->data['Company Main Telephone']!=''){
@@ -258,9 +286,11 @@ function create($raw_data,$raw_address_data=array()){
     }
 
     if($this->data['Company Main FAX']!=''){
+      //      print "creating the fax\n";
       $telephone=new Telecom("find in company create",$this->data['Company Main FAX']);
       if($telephone->error){
 	//Collect data about telecom found
+	print_r($telephone);
 	exit("find_company: fax error");
       }
 
@@ -306,7 +336,7 @@ function create($raw_data,$raw_address_data=array()){
     $keys=preg_replace('/^,/','',$keys);
 
     $sql="insert into `Company Dimension` ($keys) values ($values)";
-    //  print "$sql\n";
+    // print "$sql\n";
     
     if(mysql_query($sql)){
       $this->id = mysql_insert_id();

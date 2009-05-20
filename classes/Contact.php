@@ -25,31 +25,31 @@ include_once('Name.php');
 class Contact extends DB_Table{
   
    /*
-       Constructor: Contact
+     Constructor: Contact
      
-       Initializes the class, Search/Load or Create for the data set 
+     Initializes the class, Search/Load or Create for the data set 
      
-      Parameters:
-       arg1 -    (optional) Could be the tag for the Search Options or the Contact Key for a simple object key search
-       arg2 -    (optional) Data used to search or create the object
+     Parameters:
+     arg1 -    (optional) Could be the tag for the Search Options or the Contact Key for a simple object key search
+     arg2 -    (optional) Data used to search or create the object
 
-       Returns:
-       void
-       
-       Example:
-       (start example)
-       // Load data from `Contact Dimension` table where  `Contact Key`=3
-       $key=3;
-       $contact = New Contact($key); 
-
-        // Insert row to `Contact Dimension` table
-       $data=array();
-       $contact = New Contact('new',$data); 
-       
-
-       (end example)
-
-     */
+     Returns:
+     void
+     
+     Example:
+     (start example)
+     // Load data from `Contact Dimension` table where  `Contact Key`=3
+     $key=3;
+     $contact = New Contact($key); 
+     
+     // Insert row to `Contact Dimension` table
+     $data=array();
+     $contact = New Contact('new',$data); 
+     
+     
+     (end example)
+     
+   */
   function Contact($arg1=false,$arg2=false) {
     
     global $myconf;
@@ -116,7 +116,7 @@ class Contact extends DB_Table{
    */  
   function find($raw_data,$options){
 
-
+    $this->candidate=array();
     $create='';
     $update='';
     if(preg_match('/create/i',$options)){
@@ -192,7 +192,7 @@ class Contact extends DB_Table{
    
     $options.=' parent:'.$parent;
 
-    $candidate=array();
+    $this->candidate=array();
 
     if($data['Contact Main Plain Email']!=''){
       $email=new Email("find in contact",$data['Contact Main Plain Email']);
@@ -200,80 +200,97 @@ class Contact extends DB_Table{
 	print $email->msg."\n";
 	exit("find_contact: email found\n");
       }	
-    }
-    if(isset($email) and $email->found)
-      $this->found=true;
     
-  
+      if( $email->found)
+	$this->found=true;
+	
+      foreach($email->candidate as $key=>$val){
+	if(isset($this->candidate[$key]))
+	  $this->candidate[$key]+=$val;
+	else
+	  $this->candidate[$key]=$val;
+      }
+	 
 
       
-    if($data['Contact Main Telephone']!='' and !$this->found ){
+    }
+    if(count($this->candidate)>0){
+      print "candidates ofter email:\n";
+      print_r($this->candidate);
+    }
+    if($data['Contact Main Telephone']!=''  ){
       $tel=new Telecom("find in contact",$data['Contact Main Telephone']);
-      if($tel->found){
-	if(isset($candidate[$tel->found]))
-	  $candidate[$tel->found]+=100;
-	  else
-	    $candidate[$tel->found]=100;
+      
+      foreach($tel->candidate as $key=>$val){
+	if(isset($this->candidate[$key]))
+	  $this->candidate[$key]+=$val;
+	else
+	  $this->candidate[$key]=$val;
       }
-	
     }
+    if(count($this->candidate)>0){
     print "candidates ofter telephone:\n";
-    print_r($candidate);
-
-    if($data['Contact Main FAX']!='' and !$this->found ){
+    print_r($this->candidate);
+     }
+    if($data['Contact Main FAX']!='' ){
       $tel=new Telecom("find in contact",$data['Contact Main FAX']);
-      if($tel->found){
-	if(isset($candidate[$tel->found]))
-	  $candidate[$tel->found]+=100;
+      foreach($tel->candidate as $key=>$val){
+	  if(isset($this->candidate[$key]))
+	    $this->candidate[$key]+=$val;
 	  else
-	    $candidate[$tel->found]=100;
+	    $this->candidate[$key]=$val;
       }
-	
+      
     }
-    print "candidates ofter fax:\n";
-    print_r($candidate);
-
+	
+    if(count($this->candidate)>0){
+    print "candidates after fax:\n";
+    print_r($this->candidate);
+   }
 
     if($data['Contact Main Mobile']!='' and !$this->found ){
       $tel=new Telecom("find in contact",$data['Contact Main Mobile']);
-      if($tel->found){
-	if(isset($candidate[$tel->found]))
-	  $candidate[$tel->found]+=190;
-	  else
-	    $candidate[$tel->found]=190;
+      
+      foreach($tel->candidate as $key=>$val){
+	if(isset($this->candidate[$key]))
+	  $this->candidate[$key]+=$val;
+	else
+	  $this->candidate[$key]=$val;
       }
-	
+
     }
-    print "candidates ofter mobile:\n";
-    print_r($candidate);
+	
+    if(count($this->candidate)>0){
+    print "candidates after mobile:\n";
+    print_r($this->candidate);
 
+    }
 
-
-    if(!$this->found){
-      // find same name
-      $name_data=$this->parse_name($data['Contact Name']);
-      $name=$this->name($name_data);
-      $sql=sprintf("select `Contact Key` from `Contact Dimension` where `Contact Name`=%s",prepare_mysql($name));
+    // find same name
+    $name_data=$this->parse_name($data['Contact Name']);
+    $name=$this->name($name_data);
+    $sql=sprintf("select `Contact Key` from `Contact Dimension` where `Contact Name`=%s",prepare_mysql($name));
+    
       $result=mysql_query($sql);
       
       while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-	 if(isset($candidate[$row['Contact Key']]))
-	    $candidate[$row['Contact Key']]+=100;
-	  else
-	    $candidate[$row['Contact Key']]=100;
+	if(isset($this->candidate[$row['Contact Key']]))
+	    $this->candidate[$row['Contact Key']]+=100;
+	else
+	  $this->candidate[$row['Contact Key']]=100;
       }
  
-    }
+      if(count($this->candidate)>0){ 
     print "candidates after name:\n";
-    print_r($candidate);
+    print_r($this->candidate);
+     }
 
 
-
-    asort($candidate);
+    asort($this->candidate);
     
-    foreach($candidate as $key => $value){
+    foreach($this->candidate as $key => $value){
       if($value>=200){
-	$this->found=$key;
+	$this->found=true;
 	
       }
       break;
@@ -283,8 +300,10 @@ class Contact extends DB_Table{
 
 
 
-    if($this->found)
+    if($this->found){
       $this->get_data('id',$this->found);
+      
+    }
 
     if($create){
       if($this->found){
@@ -293,7 +312,7 @@ class Contact extends DB_Table{
 /* 	$data['Work Address']=$address_work_data; */
 
 	$this->update($raw_data,$options);
-
+	
 	$this->update_address($address_data['Home'],'Home');
 	$this->update_address($address_data['Work'],'Work');
 
@@ -359,8 +378,8 @@ class Contact extends DB_Table{
 	  // Get the candidates
 	  
 	  while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-	    $candidate[$row['Contact Key']]['field']=array('Contact Other ID');
-	    $candidate[$row['Contact Key']]['points']=$weight['Same Other ID'];
+	    $this->candidate[$row['Contact Key']]['field']=array('Contact Other ID');
+	    $this->candidate[$row['Contact Key']]['points']=$weight['Same Other ID'];
 	    // from this candoateed of one has the same name we wouls assume that this is the one
 	    if($contact_name!='' and $contact_name==$row['Contact Name'])
 	      return $row2['Contact Key'];
@@ -399,12 +418,12 @@ class Contact extends DB_Table{
 		    );
        $result=mysql_query($sql);
        while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-	  $candidate[$row['Subject Key']]['field'][]='Contact Other ID';
+	  $this->candidate[$row['Subject Key']]['field'][]='Contact Other ID';
 	  $dist=0.5*$row['dist1']+$row['dist2'];
 	  if($dist==0)
-	    $candidate[$row['Subject Key']]['points']+=$weight['Same Other ID'];
+	    $this->candidate[$row['Subject Key']]['points']+=$weight['Same Other ID'];
 	  else
-	    $candidate[$row['Subject Key']]['points']=$weight['Similar Email']/$dist;
+	    $this->candidate[$row['Subject Key']]['points']=$weight['Similar Email']/$dist;
        
        }
      }
@@ -418,12 +437,12 @@ class Contact extends DB_Table{
 		  );
      $result=mysql_query($sql);
      while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-       $candidate[$row['Subject Key']]['field'][]='Contact Name';
+       $this->candidate[$row['Subject Key']]['field'][]='Contact Name';
        $dist=0.5*$row['dist1']+$row['dist2'];
        if($dist==0)
-	 $candidate[$row['Subject Key']]['points']+=$weight['Same Contact Name'];
+	 $this->candidate[$row['Subject Key']]['points']+=$weight['Same Contact Name'];
        else
-	 $candidate[$row['Subject Key']]['points']=$weight['Similar Contact Name']/$dist;
+	 $this->candidate[$row['Subject Key']]['points']=$weight['Similar Contact Name']/$dist;
        
      }
      }
@@ -805,7 +824,7 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
 	$this->data['Contact Main XHTML Email']=$email->display('html');
 	$this->data['Contact Main Plain Email']=$email->display('plain');
 	$this->data['Contact Main Email Key']=$email->id;
-	print "$sql\n";
+	//	print "$sql\n";
 	mysql_query($sql);
       }
       
@@ -863,11 +882,12 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
    */
   private function create_anonymous(){
     global $myconf;
-     $this->data['Contact Name']=$myconf['unknown_contact'];
-     $this->data['Contact Informal Greeting']=$myconf['unknown_informal_greting'];
-     $this->data['Contact Formal Greeting']=$myconf['unknown_formal_greting'];
-     $this->data['Contact File As']=$this->display('file_as');
-     $this->data['Contact ID']=$this->get_id();
+    $this->data['Contact Fuzzy']='Yes';
+    $this->data['Contact Name']=$myconf['unknown_contact'];
+    $this->data['Contact Informal Greeting']=$myconf['unknown_informal_greting'];
+    $this->data['Contact Formal Greeting']=$myconf['unknown_formal_greting'];
+    $this->data['Contact File As']=$this->display('file_as');
+    $this->data['Contact ID']=$this->get_id();
       $sql="INSERT INTO `dw`.`Contact Dimension` (`Contact ID`, `Contact Salutation`, `Contact Name`, `Contact File As`, `Contact First Name`, `Contact Surname`, `Contact Suffix`, `Contact Gender`, `Contact Informal Greeting`, `Contact Formal Greeting`, `Contact Profession`, `Contact Title`, `Contact Company Name`, `Contact Company Key`, `Contact Company Department`, `Contact Company Department Key`, `Contact Manager Name`, `Contact Manager Key`, `Contact Assistant Name`, `Contact Assistant Key`, `Contact Main Address Key`, `Contact Main Location`, `Contact Main XHTML Address`, `Contact Main Plain Address`, `Contact Main Country Key`, `Contact Main Country`, `Contact Main Country Code`, `Contact Main Telephone`, `Contact Main Plain Telephone`, `Contact Main Telephone Key`, `Contact Main Mobile`, `Contact Main Plain Mobile`, `Contact Main Mobile Key`, `Contact Main FAX`, `Contact Main Plain FAX`, `Contact Main Fax Key`, `Contact Main XHTML Email`, `Contact Main Plain Email`, `Contact Main Email Key`, `Contact Fuzzy`) VALUES (".$this->data['Contact ID'].", 'NULL', ".prepare_mysql($this->data['Contact Name']).",".prepare_mysql($this->data['Contact File As']).", 'NULL',NULL, NULL, 'Unknown',".prepare_mysql($this->data['Contact Informal Greeting']).",".prepare_mysql($this->data['Contact Formal Greeting']).", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, '', NULL, NULL, '', NULL, NULL, '', NULL, NULL, '', NULL, 'Yes');";
     
     if(mysql_query($sql)){
@@ -1629,9 +1649,13 @@ string with the name to be parsed
     case('name'):
       $name=$this->name($this->data);
       return $name;
+      break;
     case('file_as'):
     case('file as'):
-      $name=_trim($this->data['Contact Surname'].' '.$this->data['Contact First Name']);
+      if($this->data['Contact Fuzzy']=='Yes')
+	$name=_trim($this->data['Contact Name']);
+      else
+	$name=_trim($this->data['Contact Surname'].' '.$this->data['Contact First Name']);
       return $name;
   
 

@@ -1,4 +1,4 @@
-Format: Development Release 12-07-2007 (1.35 base)
+Format: 1.4
 
 
 Title: Kaktus
@@ -57,6 +57,7 @@ Group: Files  {
       File: Contact.php  (classes/Contact.php)
       File: Country.php  (classes/Country.php)
       File: Customer.php  (classes/Customer.php)
+      File: DB_Table.php  (classes/DB_Table.php)
       File: Deal.php  (classes/Deal.php)
       File: Department.php  (classes/Department.php)
       File: Email.php  (classes/Email.php)
