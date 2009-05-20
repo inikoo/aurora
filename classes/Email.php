@@ -206,7 +206,7 @@ class Email extends DB_Table {
     $sql=sprintf("select T.`Email Key`,`Subject Key` from `Email Dimension` T left join `Email Bridge` TB  on (TB.`Email Key`=T.`Email Key`) where `Email`=%s and `Subject Type`='Contact'  "
 		 ,prepare_mysql($raw_data['Email'])
 		   );
-    
+    //print "$sql";    
     $result=mysql_query($sql);
     $num_results=mysql_num_rows($result);
     if($num_results==0){
@@ -218,7 +218,7 @@ class Email extends DB_Table {
 		     ,prepare_mysql($raw_data['Email'])
 		     );
 	$result=mysql_query($sql);
-	
+
 	while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 	  $dist=0.5*$row['dist1']+$row['dist2'];
 	  if($dist==0)
