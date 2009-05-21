@@ -281,8 +281,8 @@ class Contact extends DB_Table{
       }
  
       if(count($this->candidate)>0){ 
-    print "candidates after name:\n";
-    print_r($this->candidate);
+	print "candidates after name:\n";
+	print_r($this->candidate);
      }
 
 
@@ -726,6 +726,22 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
       } 
     }
   }
+  /* Method: update_main_data
+     Update the redundant data
+
+     From data directly from the bridge tables and update the apropiate fields
+
+   */
+  public function update_redundant_data($fields='all'){
+    // get emails
+    if(preg_match('/e?mails?/',$fields) or $fields=='all'){
+      // get emails
+      $sql=sprintf("select * from `Email Bridge` where `Subject Key`=%d and `Subject Type`='Contact' ",$this->id);
+      
+    }
+
+
+  }
 
 
   /* Method: add_email
@@ -769,7 +785,7 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
     if($this->data['Contact Name']!=$myconf['unknown_contact'])
       $email_data['Email Contact Name']=$this->data['Contact Name'];
   
-    print "-------------******* $args  *****\n find in contact ".$this->id." create\n";
+    //  print "-------------******* $args  *****\n find in contact ".$this->id." create\n";
     $email=new email('find in contact '.$this->id.' create',$email_data);
 
 
@@ -827,8 +843,12 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
 	//	print "$sql\n";
 	mysql_query($sql);
       }
+      // cascade to the other email parents
+      if($company_key=$this->company_key('princial')){
+	$company=new Company('id',$company_key);
+	$company->update(array(''));
       
-      
+	}
 
       $this->add_email=$email->id;
     }else{
@@ -1083,6 +1103,7 @@ function add_address($data,$args='principal'){
  
 
  /*Function: update_field_switcher
+   Custom update switcher
   */
 
 protected function update_field_switcher($field,$value,$options=''){

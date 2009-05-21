@@ -188,8 +188,7 @@ class Company extends DB_Table {
 
     
 
-    print_r($this);
-    exit;
+   
     if($create){
 
     // there are 4 cases
@@ -204,8 +203,11 @@ class Company extends DB_Table {
       $this->create($data,$address_data);
 
     }else{
+      // update 
+      print "update!!!\n";
+      exit;
       $this->update_address($address_data);
-      $this->update($data,$address_data);
+      $this->update($data);
 
     }
    
@@ -511,6 +513,75 @@ function update($data,$options=''){
     }
     
   }
+
+
+
+
+/*Function: update_field_switcher
+  */
+
+protected function update_field_switcher($field,$value,$options=''){
+
+  switch($field){
+  case('Company Name'):
+    $this->update_Company_Name($value,$options);
+    break;
+  case('Company Main Plain Email'):
+    
+
+    $email_data=array('Email'=>$value);
+    //update the email directly and let the email class cascade the changes (eg calling add_email)
+    $email=new E
+    
+
+    //$this->add_email($email_data,$options.' principal');
+    break;  
+  case('Company Main Telephone'):
+    // check if plain numbers are the same
+    $tel_data=Telecom::parse_number($value);
+    $plain_tel=Telecom::plain_number($tel_data);
+    if($plain_tel!=$this->data['Company Main Plain Telephone']){
+
+      $tel_data=array(
+		      'Telecom Raw Number'=>$value
+		      ,'Telecom Type'=>'Telephone'
+		      );
+      $this->add_tel($tel_data,$options.' principal');
+    }
+    break;  
+  case('Company Main FAX'):
+    $tel_data=Telecom::parse_number($value);
+    $plain_tel=Telecom::plain_number($tel_data);
+    if($plain_tel!=$this->data['Company Main Plain FAX']){
+   
+
+    $tel_data=array(
+		    'Telecom Raw Number'=>$value
+		    ,'Telecom Type'=>'Fax'
+		    );
+    $this->add_tel($tel_data,$options.' principal');
+    }
+    break;  
+    
+  case('Home Address'):
+
+    break;
+
+  default:
+    $this->update_field($field,$value,$options);
+  }
+  
+}
+
+
+
+
+
+
+
+
+
+
   function add_page($page_data,$args='principal'){
     $url=$data['page url'];
     if(isset($data['page_type']) and preg_match('/internal/i',$data['page_type']))
