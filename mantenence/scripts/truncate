@@ -2,7 +2,6 @@ TRUNCATE `Address Bridge`;TRUNCATE `Address Dimension`;TRUNCATE `Company Departm
 TRUNCATE `Order Delivery Note Bridge`;
 TRUNCATE `Order Invoice Bridge`;
 TRUNCATE `Order No Product Transaction Fact`;
-TRUNCATE `Product Family Bridge`;
 TRUNCATE `Purchase Order Dimension`;
 TRUNCATE `Location Dimension`;
 TRUNCATE `Part Location Dimension`;

@@ -846,9 +846,8 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
       // cascade to the other email parents
       if($company_key=$this->company_key('princial')){
 	$company=new Company('id',$company_key);
-	$company->update(array(''));
-      
-	}
+	$company->update(array('Compmay Email Key'=>$email->id));
+      }
 
       $this->add_email=$email->id;
     }else{
@@ -863,17 +862,10 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
     Update/Create address
    */
   private function update_address($data,$type='Work'){
-    
-
-
     if(!array_empty($data)){
-      
       $address=new address('find in contact '.$this->id.' '.$type.' ',$data);
-
       if($address->id){
-
 	if($type=='Home'){
-
 	  $address_data=array(
 			      'Address Key'=>$address->id
 			      ,'Address Type'=>'Home'
@@ -1087,7 +1079,16 @@ function add_address($data,$args='principal'){
 	 mysql_query($sql);
        }
        
-       
+     
+
+      if($company_key=$this->company_key('princial')){
+
+	$company_telecom_tipo_key=preg_match('/Contact/','Company',$telecom_tipo_key);
+
+	$company=new Company('id',$company_key);
+	$company->update(array($company_telecom_tipo_key=>$telecom->id));
+      }
+
        
        $this->add_telecom=$telecom->id;
 
@@ -1108,7 +1109,12 @@ function add_address($data,$args='principal'){
 
 protected function update_field_switcher($field,$value,$options=''){
 
+
+  
+
   switch($field){
+
+
   case('Contact Name'):
     $this->update_Contact_Name($value,$options);
     break;
@@ -1161,6 +1167,7 @@ protected function update_field_switcher($field,$value,$options=''){
     break;
 
   default:
+    print "--------------------";
     $this->update_field($field,$value,$options);
   }
   
@@ -1216,7 +1223,7 @@ function update_Contact_Name($data,$options=''){
   $values=preg_replace('/,$/',' ',$values);
 
   $sql=sprintf("update `Contact Dimension` set %s where `Contact Key`=%d",$values,$this->id);
-  print $sql;
+  //print $sql;
   mysql_query($sql);
   $affected=mysql_affected_rows();
   if($affected==-1){
@@ -1844,6 +1851,34 @@ string with the name to be parsed
     }else
       return 0;
   }
+
+  /*
+    Function: company_key
+    Returns the key of the contact company
+
+    Parameter:
+    options - string, principal return company key only if this is  the principal cpntact
+
+    Returns:
+    the key of the contact company or false if contact has not company associates
+    
+   */
+   public  function company_key($options=''){
+     if(preg_match('/principal/',$options)){
+       $sql=sprintf("select `Subject Key` from `Conatct Bridge` where `Subject Key`='Company' and `Is Main`='Yes' and `Contact Key`=%d",$this->id);
+       $result=mysql_query($sql); 
+       if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+	 return $row['Subject Key'];
+
+       }
+     }else{
+       return $this->data['Contact Company Key'];
+
+     }
+     return false;
+     
+  }
+
 
 
 } 
