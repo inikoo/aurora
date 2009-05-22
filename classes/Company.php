@@ -21,6 +21,10 @@ include_once('Name.php');
  Class to manage the *Company Dimension* table
 */
 class Company extends DB_Table {
+
+
+
+
   /*
     Constructor: Company
     
@@ -48,7 +52,7 @@ class Company extends DB_Table {
 
      */
   function Company($arg1=false,$arg2=false) {
-
+ 
     $this->table_name='Company';
     $this->ignore_fields=array('Company Key');
 
@@ -169,13 +173,15 @@ class Company extends DB_Table {
 	$candidate_companies[$company_key]=$score;
 
     }
-    //print_r($candidate_companies);
+
+    
     if(!empty($candidate_companies)){
-      sort($candidate_companies);
+      asort($candidate_companies);
       foreach($candidate_companies as $key=>$val){
-	print "*$key $val\n";
+	//print "*$key $val\n";
 	if($val>=200){
 	  $this->found=true;
+	  $this->found_key=$key;
 	  break;
 	}
       }
@@ -193,7 +199,7 @@ class Company extends DB_Table {
 
     // there are 4 cases
     if(!$contact->found and !$this->found){
-    
+      $this->new_contact=true;
       $this->create($data,$address_data);
 
     }elseif(!$contact->found and $this->found){
@@ -204,10 +210,10 @@ class Company extends DB_Table {
 
     }else{
       // update 
-      print "update!!!\n";
-      exit;
+      $this->get_data('id',$this->found_key);
+
       $this->update_address($address_data);
-      $this->update($data);
+      $this->update($raw_data);
 
     }
    
@@ -295,7 +301,6 @@ class Company extends DB_Table {
     
 
     $this->data['Company Main Contact Name']=$contact->display('name');
-
     $this->data['Company Main Contact Key']=$contact->id;
    
     
@@ -462,25 +467,7 @@ class Company extends DB_Table {
   }
 
 
-/*Method: update
- Switcher calling the apropiate update method
 
- Parameters:
- $data - associated array with Email Dimension fields
- 
-*/
-
-function update($data,$options=''){
-  $base_data=$this->base_data();
-  foreach($data as $key=>$value){
-    if(is_key($key,$base_data)){
-      $function_name=preg_replace('\s','',ucwords($key));
-      call_user_func(array($this, 'update_'.$function_name),$value,$options);
-    }
-      
-  }
-
-}
 
   function get_id(){
     
@@ -522,6 +509,9 @@ function update($data,$options=''){
 
 protected function update_field_switcher($field,$value,$options=''){
 
+
+ 
+
   switch($field){
   case('Company Name'):
     $this->update_Company_Name($value,$options);
@@ -529,10 +519,11 @@ protected function update_field_switcher($field,$value,$options=''){
   case('Company Main Plain Email'):
     
 
-    $email_data=array('Email'=>$value);
-    //update the email directly and let the email class cascade the changes (eg calling add_email)
-    $email=new E
     
+    $contact=new Contact($this->data['Company Main Contact Key']);
+    $email_data=array('Contact Email'=>$value);
+    $contact->update($email_data);
+
 
     //$this->add_email($email_data,$options.' principal');
     break;  
@@ -550,6 +541,9 @@ protected function update_field_switcher($field,$value,$options=''){
     }
     break;  
   case('Company Main FAX'):
+    
+
+
     $tel_data=Telecom::parse_number($value);
     $plain_tel=Telecom::plain_number($tel_data);
     if($plain_tel!=$this->data['Company Main Plain FAX']){
@@ -573,10 +567,73 @@ protected function update_field_switcher($field,$value,$options=''){
   
 }
 
+ /*
+    Function: update_address
+    Update/Create address
+   */
+  private function update_address($data,$type='Work'){
+    $address_data=false;
+    if(array_empty($data))
+      return;
+    
+    $address=new address('find in contact '.$this->data['Company Main Contact Key'].' '.$type.' ',$data);
+    if($address->id){
+      $address_data=array(
+			  'Address Key'=>$address->id
+			  ,'Address Type'=>'Work'
+			  ,'Address Function'=>'Contact'
+			  ,'Address Description'=>'Work Contact Address'
+			  );
+      $contact=new Contact($this->data['Company Main Contact Key']);
+      $contact->add_address($address_data,"principal");
+    }
+
+  }
 
 
+/* Function:update_Company_Name
+   Updates the company name
 
+ */
+private function update_Company_Name($value,$options){
+  if($value==''){
+  $this->new=false;
+    $this->msg.=" Company name should have a vbalue";
+    $this->error=true;
+    if(preg_match('/exit on errors/',$options))
+      exit($this->msg);
+    return false;
+  }
+  $this->data['Company Name']=$value;
+  $this->data['Company File As']=$this->file_as($this->data['Company Name']);
+  $sql=sprintf("update `Company Dimension` set `Company name`=%s,`Company File As`=%s where `Company Key`=%d "
+	       ,prepare_mysql($this->data['Company Name'])
+	       ,prepare_mysql($this->data['Company File As'])
+	       ,$this->id);
+  mysql_query($sql);
+  $affected=mysql_affected_rows();
+  
+  if($affected==-1){
+    $this->msg.=' '._('Company Name can not be updated')."\n";
+    $this->error=true;
+    return;
+  }elseif($affected==0){
+    //$this->msg.=' '._('Same value as the old record');
+    
+  }else{
+    $this->msg.=' '._('Record updated')."\n";
+    $this->updated=true;
 
+    // update childen and parents
+
+    $sql=sprintf("update `Contact Dimension` set `Contact Company Name`=%s where `Company Key`=%d  "
+		 ,prepare_mysql($this->data['Company Name'])
+		 ,$this->id);
+    mysql_query($sql);
+    
+  }  
+  
+}
 
 
 

@@ -374,11 +374,24 @@ function update($key,$a1=false,$a2=false){
 	  $between='and `Product Special Characteristic` between '.prepare_mysql($between_tmp[0]).' and '.prepare_mysql($between_tmp[1].'zzzzzz');
        
       }
+      $with='';
+       if(preg_match('/with codes\s+\(.*\)/i',$args,$match)){
+
+	$between_tmp=preg_replace('/.*\(/','',$match[0]);
+	$between_tmp=preg_replace('/\).*/','',$between_tmp);
+
+
+
+	$with=' and `Product Code` in ('.$between_tmp.') ';
+       
+      }
+      
+
 
 
        $family_key=$this->id;
-       $sql=sprintf("select * from `Product Dimension` where `Product Family Key`=%d %s order by %s %s",$family_key,$between,$order,$limit);
-       // print "$sql\n";
+       $sql=sprintf("select * from `Product Dimension` where `Product Family Key`=%d %s %s order by %s %s",$family_key,$between,$with,$order,$limit);
+       //  print "$sql\n";
        $this->products=array();
        $result=mysql_query($sql);
        while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
