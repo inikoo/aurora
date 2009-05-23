@@ -13,27 +13,47 @@
 */
 include_once('Product.php');
 
-class Family{
+/* class: Family
+   Class to manage the *Product Family Dimension* table
+*/
+// JFA
 
+class Family{
+ 
+ // Boolean: products
  var $products=false;
+ // Boolean: id
+ // Record Id
  var $id=false;
 
- function __construct($a1=false,$a2=false,$a3=false) {
+  /*
+    Constructor: Family
+    Initializes the class, trigger  Search/Load/Create for the data set
 
-    
+    Returns:
+    void
+ */
+ // JFA
+
+ function Family($a1=false,$a2=false,$a3=false) {
     if(is_numeric($a1) and !$a2  )
       $this->getdata('id',$a1,false);
     else if(preg_match('/new|create/',$a1) ){
       $this->create($a2);
     }elseif($a2!='')
        $this->getdata($a1,$a2,$a3);
-    
  }
 
+  /*
+    Function: create
+    Crea nuevos registros en las tablas Product Family Dimension, Product Family Department Bridge, evitando duplicidad de registros.
+  */
+  // JFA
+
+ 
  function create($data){
    $this->new=false;
-   
-   
+    
    if(isset($data['name'])){
      $data['Product Family Name']=$data['name'];
      unset($data['name']);
@@ -87,9 +107,6 @@ class Family{
      
    }
 
-
-
-
    $data['Product Family Main Department Key']=$department->id;
    $data['Product Family Main Department Code']=$department->get('Product Department Code');
    $data['Product Family Main Department Name']=$department->get('Product Department Name');
@@ -106,7 +123,6 @@ class Family{
 		    'Product Family Main Department Code'=>'',
 		    'Product Family Main Department Name'=>'',
 		     );
-
 
    foreach($data as $key=>$value){
       if(isset($base_data[$key]))
@@ -141,13 +157,13 @@ class Family{
 
    }else{
      $this->msg=_("Error can not create the family");
-
-   
    }   
-
-
  }
- 
+  /*
+    Method: getdata
+    Obtiene los datos de la tabla Product Family Dimension de acuerdo al Id, al codigo o al code_store.
+*/
+// JFA
  function getdata($tipo,$tag,$tag2){
 
    switch($tipo){
@@ -168,7 +184,11 @@ class Family{
      $this->id=$this->data['Product Family Key'];
 
  }
-
+/*
+    Function: update
+    Funcion que permite actualizar el nombre o el codigo en la tabla Product Family Dimension, evitando registros duplicados.
+*/
+// JFA
 function update($key,$a1=false,$a2=false){
    $this->updated=false;
    $this->msg='Nothing to change';
@@ -251,14 +271,14 @@ function update($key,$a1=false,$a2=false){
 	
       }
       break;	
-
-
    }
 
-
  }
-
-
+/*
+    Function: delete
+    Funcion que permite eliminar registros en la tabla Product Family Dimension,Product Family Department Bridge, cuidando la integridad referencial con los productos.
+*/
+// JFA
  function delete(){
    $this->deleted=false;
    $this->load('products_info');
@@ -293,6 +313,11 @@ function update($key,$a1=false,$a2=false){
    }
  }
 
+/*
+    Method: load
+    Carga datos de la base de datos Product Dimension, Product Family Department Bridge, actualizando registros en la tabla Product Family Dimension 
+*/
+// JFA 
 
  function load($tipo,$args=false){
    switch($tipo){
@@ -622,7 +647,11 @@ function update($key,$a1=false,$a2=false){
    }
  }
      
-
+ /*
+    Method: save
+    Actualiza registros de la tabla product_group, graba y actualiza datos en la tabla sales
+ */
+ // JFA
  function save($tipo){
    switch($tipo){
    case('first_date'):
@@ -667,6 +696,11 @@ function update($key,$a1=false,$a2=false){
    
  }
 
+ /*
+    Function: get
+    Obtiene informacion de los diferentes precios de los productos
+ */
+ // JFA
 
  function get($key,$options=false){
 
@@ -818,10 +852,6 @@ function update($key,$a1=false,$a2=false){
        
        $product=new Product($value['Product Key']);
        $product->locale=$this->locale;
-       
-
-     
-
 
        if($i==1 ){
 
@@ -871,6 +901,12 @@ function update($key,$a1=false,$a2=false){
 
  }
  
+ /*
+    Method: add_product
+    Actualiza la tabla Product Dimension
+ */
+ // JFA 
+
  function add_product($product_id,$args=false){
    
    $product=New Product($product_id);
