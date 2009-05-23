@@ -13,12 +13,28 @@
 */
 include_once('Family.php');
 
-
+/* class: Department
+   Class to manage the *Product Department Dimension* table
+*/
+// JFA
 
 class Department{
+
+ // Boolean: id
+ // Record Id
+// JFA
+
  var $id=false;
 
- function __construct($a1=false,$a2=false,$a3=false) {
+  /*
+    Constructor: Department
+    Initializes the class, trigger  Search/Load/Create for the data set
+
+    Returns:
+    void
+ */
+// JFA
+ function Department ($a1=false,$a2=false,$a3=false) {
    //    $this->db =MDB2::singleton();
     
     if(is_numeric($a1) and !$a2  and $a1>0 )
@@ -30,8 +46,13 @@ class Department{
     
  }
 
- function create($data){
+  /*
+    Function: create
+    Crea nuevos registros en la tabla product department dimension, evitando duplicidad de registros.
+  */
+  // JFA
 
+ function create($data){
 
    if(isset($data['name']))
      $data['Product Department Name']=$data['name'];
@@ -82,19 +103,14 @@ class Department{
    $row=mysql_fetch_array($res);
    if($row['num']>0){
      $this->msg=_("Warning: Wrong another department with the same name");
-
-     
+    
    }
-
-
 
    $sql=sprintf("insert into `Product Department Dimension` (`Product Department Code`,`Product Department Name`,`Product Department Store Key`) values (%s,%s,%d)"
 		,prepare_mysql($data['Product Department Code'])
 		,prepare_mysql($data['Product Department Name'])
 		,$data['Product Department Store Key']
 		);
-
-
 
  if(mysql_query($sql)){
    $this->id = mysql_insert_id();
@@ -111,6 +127,12 @@ class Department{
 
  }
  
+ /*
+    Method: getdata
+    Obtiene los datos de la tabla Product Department Dimension de acuerdo al Id, al codigo o al code_store.
+*/
+// JFA
+
  function getdata($tipo,$tag,$tag2=false){
    
    switch($tipo){
@@ -125,9 +147,6 @@ class Department{
      break;
     default:
       $sql=sprintf("select * from `Product Department Dimension` where `Product Department Type`='Unknown' ");
-
-
-
    }
    //  print "$sql\n";
    
@@ -135,10 +154,13 @@ class Department{
    if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   )
      $this->id=$this->data['Product Department Key'];
    
-   
  }
 
-
+/*
+    Function: update
+    Funcion que permite actualizar el nombre o el codigo en la tabla Product Department Dimension, evitando registros duplicados.
+*/
+// JFA
  function update($key,$a1=false,$a2=false){
    $this->updated=false;
    $this->msg='Nothing to change';
@@ -221,14 +243,14 @@ class Department{
 	
       }
       break;	
-
-
    }
-
-
  }
 
-
+/*
+    Function: delete
+    Funcion que permite eliminar registros en la tabla Product Department Dimension, cuidando la integridad referencial con los productos.
+*/
+// JFA
  function delete(){
    $this->deleted=false;
    $this->load('products_info');
@@ -253,9 +275,12 @@ class Department{
    }
  }
 
+/*
+    Method: load
+    Carga datos de la base de datos Product Dimension, Product Department Bridge, Product Family Dimension, Product Family Department Bridge, actualizando registros en la tabla Product Department Dimension
+*/
+// JFA 
 
-
- 
  function load($tipo,$args=false){
    switch($tipo){
    case('products_info'):
@@ -296,13 +321,7 @@ class Department{
 		 );
     //  print "$sql\n";
     mysql_query($sql);
-
-
   }
-  
-
-
-
 
 
   $this->getdata('id',$this->id,false);
@@ -662,6 +681,12 @@ $sql="select sum(`Product 1 Week Acc Invoiced Amount`) as net,sum(`Product 1 Wee
    
  }
 
+ /*
+    Method: save
+    Actualiza registros de la tablas product_department, product_group, graba y actualiza datos en la tabla sales
+ */
+ // JFA
+
  function save($tipo){
    switch($tipo){
    case('first_date'):
@@ -706,12 +731,16 @@ $sql="select sum(`Product 1 Week Acc Invoiced Amount`) as net,sum(`Product 1 Wee
 	
       }
 
-
      break;
    }
    
  }
 
+ /*
+    Function: get
+    Obtiene informacion de los diferentes estados de los productos en el departamento
+ */
+ // JFA
 
  function get($key){
 
@@ -733,7 +762,11 @@ $sql="select sum(`Product 1 Week Acc Invoiced Amount`) as net,sum(`Product 1 Wee
     }
 
  }
- 
+ /*
+    Method: add_product
+    Agrega registros a la tabla Product Department Bridge, actualiza la tabla Product Dimension
+ */
+ // JFA 
 function add_product($product_id,$args=false){
 
 
@@ -766,8 +799,6 @@ function add_product($product_id,$args=false){
 
     
 //      }
-
-
      
      if(preg_match('/principal/',$args)){
        $sql=sprintf("update  `Product Dimension` set `Product Main Department Key`=%d ,`Product Main Department Code`=%s,`Product Main Department Name`=%s where `Product Key`=%s    "
@@ -781,12 +812,17 @@ function add_product($product_id,$args=false){
    }
  }
 
+ /*
+    Method: add_family
+    Agrega registros a la tabla Product Family Department Bridge, actualiza la tabla Product Department Dimension, Product Family Dimension
+ */
+ // JFA 
+
 function add_family($family_id,$args=false){
    $family=New Family($family_id);
    if($family->id){
      $sql=sprintf("insert into `Product Family Department Bridge` (`Product Family Key`,`Product Department Key`) values (%d,%d)",$family->id,$this->id);
      mysql_query($sql);
-
 
      $sql=sprintf("select count(*) as num from `Product Family Department Bridge`  where `Product Department Key`=%d",$this->id);
      $result=mysql_query($sql);
@@ -803,7 +839,6 @@ function add_family($family_id,$args=false){
 	 $this->add_product($key,$args);
        }
      }
-   
 
      if(preg_match('/principal/',$args)){
        $sql=sprintf("update  `Product Family Dimension` set `Product Family Main Department Key`=%d ,`Product Family Main Department Code`=%s,`Product Family Main Department Name`=%s where `Product Family Key`=%s    "
@@ -815,7 +850,6 @@ function add_family($family_id,$args=false){
      }
    }
  }
-
 
  }
 
