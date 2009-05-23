@@ -49,8 +49,6 @@ class Store{
 
   function Store($a1,$a2=false) {
 
-
-
     if(is_numeric($a1) and !$a2){
       $this->get_data('id',$a1);
     }
@@ -69,6 +67,11 @@ class Store{
 //     $this->id=$this->data['Store Key'];
 // }
 
+/*
+    Function: get_data
+    Obtiene los datos de la tabla Store Dimension de acuerdo al Id o al codigo de registro.
+*/
+// JFA
 
   function get_data($tipo,$tag){
 
@@ -87,11 +90,12 @@ class Store{
 
   }
 
-
-  
-
-  
-
+/*
+    Function: get
+    Obtiene datos del producto de acuerdo al codigo de producto, al tipo de producto o la totalidad de productos (esto en base al criterio de seleccion)
+*/
+// JFA
+ 
   function get($key=''){
 
     if(isset($this->data[$key]))
@@ -118,6 +122,11 @@ class Store{
 
   }
 
+/*
+    Function: delete
+    Elimina registros de la tabla Store Dimension en base al valor del campo store key, siempre y cuando no haya productos
+*/
+// JFA
 
  function delete(){
    $this->deleted=false;
@@ -143,6 +152,11 @@ class Store{
  }
 
 
+/*
+    Method: load
+    Obtiene registros de las tablas Product Dimension, Product Family Dimension, Product Department Dimension, y actualiza datos de Store Dimension, de acuerdo a la categoria indicada.
+*/
+// JFA
 
 
  function load($tipo,$args=false){
@@ -490,11 +504,8 @@ $sql="select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(
 	}
       }
 
-
-  
+ 
 $sql="select sum(`Product 1 Week Acc Invoiced Amount`) as net,sum(`Product 1 Week Acc Invoiced Gross Amount`) as gross,sum(`Product 1 Week Acc Invoiced Discount Amount`) as disc, sum(`Product 1 Week Acc Profit`)as profit ,sum(`Product 1 Week Acc Quantity Delivered`) as delivered,sum(`Product 1 Week Acc Quantity Ordered`) as ordered,sum(`Product 1 Week Acc Quantity Invoiced`) as invoiced  from `Product Dimension` as P   where `Product Store Key`=".$this->id;
-
-
 
    $result=mysql_query($sql);
 
@@ -532,6 +543,11 @@ $sql="select sum(`Product 1 Week Acc Invoiced Amount`) as net,sum(`Product 1 Wee
    
  }
 
+/*
+    Function: update
+    Funcion que permite actualizar el nombre o el codigo en la tabla store dimension, cuidando que no se duplique el valor del codigo o el nombre en dicha tabla
+*/
+// JFA
 
  function update($key,$a1=false,$a2=false){
    $this->updated=false;
@@ -621,6 +637,11 @@ $sql="select sum(`Product 1 Week Acc Invoiced Amount`) as net,sum(`Product 1 Wee
 
  }
 
+/*
+    Function: create
+    Funcion que permite grabar el nombre y codigo en la tabla store dimension, evitando duplicar el valor de codigo y el nombre en dicha tabla
+*/
+// JFA
  function create($data){
 
 
