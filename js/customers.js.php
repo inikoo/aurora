@@ -6,34 +6,6 @@ YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
 
 
-// 	    this.customerLink=  function(el, oRecord, oColumn, oData) {
-// 		    var url="customer.php?id="+oRecord.getData("id");
-// 		    el.innerHTML = oData.link(url);
-
-// 	    };
-
-// 	    this.customer_name=  function(el, oRecord, oColumn, oData) {
-// 		if(oData!= null){
-// 		    el.style.color='#000';
-// 		    el.innerHTML = oData;
-// 		}else{
-// 		    el.style.color='#ccc';
-// 		    el.innerHTML = "<?=_('Unknown')?>";
-// 		}
-
-// 		};
-
-
-// 	    this.date=  function(el, oRecord, oColumn, oData) {
-// 		el.innerHTML =oRecord.getData("flast_order") ;
-// 	    };
-// 	    this.total=  function(el, oRecord, oColumn, oData) {
-// 		el.innerHTML =oRecord.getData("ftotal") ;
-// 	    };	
-// 	    this.location=  function(el, oRecord, oColumn, oData) {
-// 		el.innerHTML =oRecord.getData("flocation") ;
-// 	    };	
-
 
 	     //START OF THE TABLE=========================================================================================================================
 
@@ -75,11 +47,6 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       ,{key:"top_profits", label:"<?=_('Rank Profits')?>",<?=($_SESSION['state']['customers']['view']=='rank'?'':'hidden:true,')?>sortable:true,className:"aright"}
 
 				       
-
-
-//					 {key:"families", label:"<?=_('Customers')?>", sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
-				       //{key:"active", label:"<?=_('Customers')?>", sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				      
 
 					 ];
 	    //?tipo=customers&tid=0"

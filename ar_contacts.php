@@ -357,103 +357,549 @@ case('address'):
 
    break;
 
-
+   //----------------------------------------------------------------------------------------------
  case('contacts'):
+ $conf=$_SESSION['state']['contacts']['table'];
+   if(isset( $_REQUEST['view']))
+     $view=$_REQUEST['view'];
+   else
+     $view=$_SESSION['state']['contacts']['view'];
+     
+   if(isset( $_REQUEST['sf']))
+     $start_from=$_REQUEST['sf'];
+   else
+     $start_from=$conf['sf'];
+   if(!is_numeric($start_from))
+     $start_from=0;
 
-  if(isset( $_REQUEST['sf']))
-    $start_from=$_REQUEST['sf'];
-  else
-    $start_from=$_SESSION['tables']['contacts_list'][3];
-  if(isset( $_REQUEST['nr']))
-    $number_results=$_REQUEST['nr'];
-  else
-    $number_results=$_SESSION['tables']['contacts_list'][2];
-  if(isset( $_REQUEST['o']))
-    $order=$_REQUEST['o'];
-  else
-    $order=$_SESSION['tables']['contacts_list'][0];
-  if(isset( $_REQUEST['od']))
-    $order_dir=$_REQUEST['od'];
-  else
-    $order_dir=$_SESSION['tables']['contacts_list'][1];
-  $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+   if(isset( $_REQUEST['nr'])){
+     $number_results=$_REQUEST['nr'];
+   }else
+     $number_results=$conf['nr'];
 
-  //  print_r($_SESSION['tables']['contacts_list']);
-  $where='where true ';
-  $wheref='';
-   if(isset($_REQUEST['f_field']) and isset($_REQUEST['f_value'])){
-     if($_REQUEST['f_field']=='cu.name' ){
-       if($_REQUEST['f_value']!='')
-	 $wheref="  and  ".$_REQUEST['f_field']." like '".addslashes($_REQUEST['f_value'])."%'";
+      
+   if(isset( $_REQUEST['o']))
+     $order=$_REQUEST['o'];
+   else
+     $order=$conf['order'];
+      
+   if(isset( $_REQUEST['od']))
+     $order_dir=$_REQUEST['od'];
+   else
+     $order_dir=$conf['order_dir'];
+   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+      
+      
+  
+   if(isset( $_REQUEST['where']))
+     $where=addslashes($_REQUEST['where']);
+   else
+     $where=$conf['where'];
+      
+      
+   if(isset( $_REQUEST['f_field']))
+     $f_field=$_REQUEST['f_field'];
+   else
+     $f_field=$conf['f_field'];
+      
+   if(isset( $_REQUEST['f_value']))
+     $f_value=$_REQUEST['f_value'];
+   else
+     $f_value=$conf['f_value'];
+      
+      
+   if(isset( $_REQUEST['tableid']))
+     $tableid=$_REQUEST['tableid'];
+   else
+     $tableid=0;
+
+
+
+
+   if(isset( $_REQUEST['parent']))
+     $parent=$_REQUEST['parent'];
+   else
+     $parent=$conf['parent'];
+
+   if(isset( $_REQUEST['mode']))
+     $mode=$_REQUEST['mode'];
+   else
+     $mode=$conf['mode'];
+   
+   if(isset( $_REQUEST['restrictions']))
+     $restrictions=$_REQUEST['restrictions'];
+   else
+     $restrictions=$conf['restrictions'];
+
+    
+    
+    
+   $_SESSION['state']['contacts']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value
+						 ,'mode'=>$mode,'restrictions'=>'','parent'=>$parent
+						 );
+      
+      
+    
+   switch($parent){
+   case('company'):
+     $where=sprintf(' where `Contact Company Key`=%d',$_SESSION['state']['company']['id']);
+     break;
+   case('supplier'):
+     $where=sprintf(' left join `Contact Bridge` B on (P.`Contact Key`=B.`Contact Key`) where `Subject Type`="Supplier" and `Subject Key`=%d',$_SESSION['state']['supplier']['id']);
+     break;
+   case('customer'):
+       $where=sprintf(' left join `Contact Bridge` B on (P.`Contact Key`=B.`Contact Key`) where `Subject Type`="Customer" and `Subject Key`=%d',$_SESSION['state']['customer']['id']);
+     break;
+   default:
+     $where=sprintf(' where true ');
+      
+   }
+   $group='';
+/*    switch($mode){ */
+/*    case('same_code'): */
+/*      $where.=sprintf(" and `Product Same Code Most Recent`='Yes' "); */
+/*      break; */
+/*    case('same_id'): */
+/*      $where.=sprintf(" and `Product Same ID Most Recent`='Yes' "); */
+	      
+/*      break; */
+/*    } */
+   
+   switch($restrictions){
+   case('forsale'):
+     $where.=sprintf(" and `Product Sales State`='For Sale'  ");
+     break;
+   case('editable'):
+     $where.=sprintf(" and `Product Sales State` in ('For Sale','In Process','Unknown')  ");
+     break;
+   case('notforsale'):
+     $where.=sprintf(" and `Product Sales State` in ('Not For Sale')  ");
+     break;
+   case('discontinued'):
+     $where.=sprintf(" and `Product Sales State` in ('Discontinued')  ");
+     break;
+   case('none'):
+
+     break;
+   }
+
+      
+   $filter_msg='';
+     
+   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+     
+   //  if(!is_numeric($start_from))
+   //        $start_from=0;
+   //      if(!is_numeric($number_results))
+   //        $number_results=25;
+     
+
+   $_order=$order;
+   $_dir=$order_direction;
+   $filter_msg='';
+   $wheref='';
+   if($f_field=='name' and $f_value!='')
+     $wheref.=" and  `Contact Name` like '%".addslashes($f_value)."%'";
+   elseif($f_field=='email' and $f_value!='')
+     $wheref.=" and  `Contact Main Plain Email` like '".addslashes($f_value)."%'";
+     
+   $sql="select count(*) as total from `Contact Dimension`  $where $wheref   ";
+
+   $res=mysql_query($sql);
+   if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+     $total=$row['total'];
+   }
+   if($wheref==''){
+     $filtered=0;
+     $total_records=$total;
+   } else{
+     $sql="select count(*) as total from `Contact Dimension`  $where   ";
+     $res=mysql_query($sql);
+     if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+       $total_records=$row['total'];
+       $filtered=$total_records-$total;
+     }
+
+   }
+
+     
+   $rtext=$total_records." ".ngettext('contact','contacts',$total_records);
+   if($total_records>$number_results)
+     $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+   else
+     $rtext_rpp=' '._('(Showing all)');
+     
+   if($total==0 and $filtered>0){
+     switch($f_field){
+     case('name'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any contact with name like ")." <b>".$f_value."*</b> ";
+       break;
+     case('email'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any contact with email like ")." <b>".$f_value."*</b> ";
+       break;
      }
    }
-   
-   $_SESSION['tables']['contacts_list']=array($order,$order_direction,$number_results,$start_from);
-
-
-   $sql="select count(*) as total from contact  $where $wheref";
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-   if($row=$res->fetchRow()) {
-     $total=$row['total'];
-   }if($wheref!=''){
-     $sql="select count(*) as total from contact  $where ";
-     $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-     if($row=$res->fetchRow()) {
-       $filtered=$row['total']-$total;
+   elseif($filtered>0){
+     switch($f_field){
+     case('name'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('contacts with name like')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;
+     case('email'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('contacts with email like')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break; 
      }
-
    }else
-     $filtered=0;
+      $filter_msg='';
+       
+   $_order=$order;
+   $_order_dir=$order_dir;
+     
+   if($order=='name')
+     $order='`Contact File As`';
+   elseif($order=='location')
+     $order='`Contact Main Location`';
+    elseif($order=='email')
+     $order='`Contact Main Plain Email`';
+    elseif($order=='telephone')
+     $order='`Contact Main Plain Telephone`';
+    elseif($order=='mobile')
+      $order='`Contact Main Plain Mobile`';
+    elseif($order=='fax')
+      $order='`Contact Main Plain FAX`';
+    elseif($order=='town')
+      $order='`Address Town`';
+    elseif($order=='company')
+      $order='`Contact Company Name`';
+    elseif($order=='address')
+      $order='`Contact Main Plain Address`';
+    elseif($order=='postcode')
+      $order='`Address Postal Code`';
+    elseif($order=='region')
+      $order='`Address Country Primary Division`';
+    elseif($order=='country')
+      $order='`Address Country Code`';
 
 
-   if($total==0)
-     $rtext=_('No contacts registered yet').'.';
-   else if($total<$number_results)
-    $rtext=$total.' '.ngettext('contact','contacts',$total);
-  else
-     $rtext='';
-
-  $sql="select tipo,id,name as fname, order_name as name ,
-(select email from email where contact_id=contact.id limit 1) as email ,
-(select number from telecom where contact_id=contact.id limit 1) as tel,  
-(select name  from contact_relations left join contact as c on (parent_id=c.id)  where child_id=contact.id limit 1) as company,  
-(select parent_id from contact_relations where child_id=contact.id limit 1) as company_id
-from contact     $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
-  //         print "$sql";
-  $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-
-  $adata=array();
+   $sql="select  * from `Contact Dimension` P left join `Address Dimension` on (`Contact Main Address Key`=`Address Key`)  $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
   
-  while($data=$res->fetchRow()) {
+   $res = mysql_query($sql);
+   $adata=array();
 
+   // print "$sql";
+   while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+    
+     
+     $id=sprintf('<a href="contact.php?id=%d">%04d</a>',$row['Contact Key'],$row['Contact Key']);
+     if($row['Contact Company Key'])
+       $company=sprintf('<a href="company.php?id=%d">%s</a>',$row['Contact Company Key'],$row['Contact Company Name']);
+     else
+       $company='';
     $adata[]=array(
-		   'id'=>$data['id'],
-		   'name'=>$data['fname'],
-		   'email'=>$data['email'],
-		   'tipo'=>$data['tipo'],
-		   'tel'=>$data['tel'],
-		   'company'=>$data['company'],
-		   'company_id'=>$data['company_id']
-
-		   
+		  
+		   'id'=>$id
+		   ,'name'=>$row['Contact Name']
+		   ,'location'=>$row['Contact Main Location']
+		   ,'email'=>$row['Contact Main XHTML Email']
+		   ,'telephone'=>$row['Contact Main Telephone']
+		   ,'mobile'=>$row['Contact Main Mobile']
+		   ,'fax'=>$row['Contact Main FAX']
+		   ,'company'=>$company
+		   ,'town'=>$row['Address Town']
+		   ,'postcode'=>$row['Address Postal Code']
+		   ,'region'=>$row['Address Country Primary Division']
+		   ,'country'=>$row['Address Country Code']
+		   ,'address'=>$row['Contact Main XHTML Address']
 		   );
   }
+
+
+   // $total_records=ceil($total_records/$number_results)+$total_records;
+
   $response=array('resultset'=>
-		   array('state'=>200,
-			 'data'=>$adata,
-			 'total_records'=>$total,
-			 'records_offset'=>$start_from,
-			 'records_returned'=>$start_from+$res->numRows(),
-			 'records_perpage'=>$number_results,
-			 'records_text'=>$rtext,
-			 'records_order'=>$order,
-			 'records_order_dir'=>$order_dir,
-			 'filtered'=>$filtered
-			 )
-		   );
+		  array('state'=>200,
+			'data'=>$adata,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'total_records'=>$total_records,
+			'records_offset'=>$start_from,
+			'records_perpage'=>$number_results,
+			)
+		  );
+
+       
+
+
    echo json_encode($response);
    break;
+  
    // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+  //----------------------------------------------------------------------------------------------
+ case('companies'):
+ $conf=$_SESSION['state']['companies']['table'];
+   if(isset( $_REQUEST['view']))
+     $view=$_REQUEST['view'];
+   else
+     $view=$_SESSION['state']['companies']['view'];
+     
+   if(isset( $_REQUEST['sf']))
+     $start_from=$_REQUEST['sf'];
+   else
+     $start_from=$conf['sf'];
+   if(!is_numeric($start_from))
+     $start_from=0;
+
+   if(isset( $_REQUEST['nr'])){
+     $number_results=$_REQUEST['nr'];
+   }else
+     $number_results=$conf['nr'];
+
+      
+   if(isset( $_REQUEST['o']))
+     $order=$_REQUEST['o'];
+   else
+     $order=$conf['order'];
+      
+   if(isset( $_REQUEST['od']))
+     $order_dir=$_REQUEST['od'];
+   else
+     $order_dir=$conf['order_dir'];
+   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+      
+      
+  
+   if(isset( $_REQUEST['where']))
+     $where=addslashes($_REQUEST['where']);
+   else
+     $where=$conf['where'];
+      
+      
+   if(isset( $_REQUEST['f_field']))
+     $f_field=$_REQUEST['f_field'];
+   else
+     $f_field=$conf['f_field'];
+      
+   if(isset( $_REQUEST['f_value']))
+     $f_value=$_REQUEST['f_value'];
+   else
+     $f_value=$conf['f_value'];
+      
+      
+   if(isset( $_REQUEST['tableid']))
+     $tableid=$_REQUEST['tableid'];
+   else
+     $tableid=0;
+
+
+
+
+   if(isset( $_REQUEST['parent']))
+     $parent=$_REQUEST['parent'];
+   else
+     $parent=$conf['parent'];
+
+   if(isset( $_REQUEST['mode']))
+     $mode=$_REQUEST['mode'];
+   else
+     $mode=$conf['mode'];
+   
+   if(isset( $_REQUEST['restrictions']))
+     $restrictions=$_REQUEST['restrictions'];
+   else
+     $restrictions=$conf['restrictions'];
+
+    
+    
+    
+   $_SESSION['state']['companies']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value
+						 ,'mode'=>$mode,'restrictions'=>'','parent'=>$parent
+						 );
+      
+      
+    
+  
+   $group='';
+
+   
+   switch($restrictions){
+   case('forsale'):
+     $where.=sprintf(" and `Product Sales State`='For Sale'  ");
+     break;
+   case('editable'):
+     $where.=sprintf(" and `Product Sales State` in ('For Sale','In Process','Unknown')  ");
+     break;
+   case('notforsale'):
+     $where.=sprintf(" and `Product Sales State` in ('Not For Sale')  ");
+     break;
+   case('discontinued'):
+     $where.=sprintf(" and `Product Sales State` in ('Discontinued')  ");
+     break;
+   case('none'):
+
+     break;
+   }
+
+      
+   $filter_msg='';
+     
+   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+     
+   //  if(!is_numeric($start_from))
+   //        $start_from=0;
+   //      if(!is_numeric($number_results))
+   //        $number_results=25;
+     
+
+   $_order=$order;
+   $_dir=$order_direction;
+   $filter_msg='';
+   $wheref='';
+   if($f_field=='name' and $f_value!='')
+     $wheref.=" and  `Company Name` like '%".addslashes($f_value)."%'";
+   elseif($f_field=='email' and $f_value!='')
+     $wheref.=" and  `Company Main Plain Email` like '".addslashes($f_value)."%'";
+     
+   $sql="select count(*) as total from `Company Dimension`  $where $wheref   ";
+
+   $res=mysql_query($sql);
+   if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+     $total=$row['total'];
+   }
+   if($wheref==''){
+     $filtered=0;
+     $total_records=$total;
+   } else{
+     $sql="select count(*) as total from `Product Dimension`  $where   ";
+     $res=mysql_query($sql);
+     if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+       $total_records=$row['total'];
+       $filtered=$total_records-$total;
+     }
+
+   }
+
+     
+   $rtext=$total_records." ".ngettext('contact','companies',$total_records);
+   if($total_records>$number_results)
+     $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+   else
+     $rtext_rpp=' '._('(Showing all)');
+     
+   if($total==0 and $filtered>0){
+     switch($f_field){
+     case('name'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any contact with name like ")." <b>".$f_value."*</b> ";
+       break;
+     case('email'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any contact with email like ")." <b>".$f_value."*</b> ";
+       break;
+     }
+   }
+   elseif($filtered>0){
+     switch($f_field){
+     case('name'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('companies with name like')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;
+     case('email'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('companies with email like')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break; 
+     }
+   }else
+      $filter_msg='';
+       
+   $_order=$order;
+   $_order_dir=$order_dir;
+     
+   if($order=='name')
+     $order='`Company File As`';
+   elseif($order=='location')
+     $order='`Company Main Location`';
+    elseif($order=='email')
+     $order='`Company Main Plain Email`';
+    elseif($order=='telephone')
+     $order='`Company Main Plain Telephone`';
+    elseif($order=='mobile')
+      $order='`Company Main Plain Mobile`';
+    elseif($order=='fax')
+      $order='`Company Main Plain FAX`';
+    elseif($order=='town')
+      $order='`Address Town`';
+    elseif($order=='contact')
+      $order='`Company Main Contact Name`';
+    elseif($order=='address')
+      $order='`Company Main Plain Address`';
+    elseif($order=='postcode')
+      $order='`Address Postal Code`';
+    elseif($order=='region')
+      $order='`Address Country Primary Division`';
+    elseif($order=='country')
+      $order='`Address Country Code`';
+
+
+   $sql="select  * from `Company Dimension` P left join `Address Dimension` on (`Company Main Address Key`=`Address Key`)  $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
+  
+   $res = mysql_query($sql);
+   $adata=array();
+
+   // print "$sql";
+   while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+    
+     
+     $id=sprintf('<a href="contact.php?id=%d">%04d</a>',$row['Company Key'],$row['Company Key']);
+     if($row['Company Main Contact Key'])
+       $contact=sprintf('<a href="company.php?id=%d">%s</a>',$row['Company Main Contact Key'],$row['Company Main Contact Name']);
+     else
+       $contact='';
+    $adata[]=array(
+		  
+		   'id'=>$id
+		   ,'name'=>$row['Company Name']
+		   ,'location'=>$row['Company Main Location']
+		   ,'email'=>$row['Company Main XHTML Email']
+		   ,'telephone'=>$row['Company Main Telephone']
+		   ,'fax'=>$row['Company Main FAX']
+		   ,'contact'=>$contact
+		   ,'town'=>$row['Address Town']
+		   ,'postcode'=>$row['Address Postal Code']
+		   ,'region'=>$row['Address Country Primary Division']
+		   ,'country'=>$row['Address Country Code']
+		   ,'address'=>$row['Company Main XHTML Address']
+		   );
+  }
+
+
+   // $total_records=ceil($total_records/$number_results)+$total_records;
+
+  $response=array('resultset'=>
+		  array('state'=>200,
+			'data'=>$adata,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'total_records'=>$total_records,
+			'records_offset'=>$start_from,
+			'records_perpage'=>$number_results,
+			)
+		  );
+
+       
+
+
+   echo json_encode($response);
+   break;
+  
+   // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+
  case('staff'):
 
    

@@ -68,7 +68,7 @@ abstract class DB_Table
     $base_data=$this->base_data();
     //   print "-----------------------\n";
     // print_r($base_data);
-    print "Updating ".$this->table_name." ============\n";
+
     foreach($data as $key=>$value){
 	if(array_key_exists($key,$base_data)){
 	  
@@ -81,11 +81,13 @@ abstract class DB_Table
 	  }
 	}
     }
-    print "============\n";
+
     
       if(!$this->updated)
 	$this->msg.=' '._('Nothing to be updated')."\n";
-      
+      else
+	 print $this->table_name." Updated ============\n";
+
     }
   /*Function: update_field
    */

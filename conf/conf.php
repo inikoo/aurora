@@ -316,6 +316,61 @@ $default_state=array(
 
 
 				    ),
+ 'contacts'=>array(
+					'view'=>'general',
+					'details'=>0,
+					'table'=>array(
+						   'order'=>'name',
+						   'order_dir'=>'',
+						   'sf'=>0,
+						   'nr'=>25,
+						   'where'=>'where true',
+						   'f_field'=>'contact name',
+						   'f_value'=>'',
+						   'mode'=>'',
+						   'restrictions'=>'none',
+						   'parent'=>''
+						       ),
+					'advanced_search'=>array(
+						   'order'=>'name',
+						   'order_dir'=>'',
+						   'sf'=>0,
+						   'nr'=>25,
+						   'where'=>'',
+						   'f_field'=>'',
+						   'f_value'=>''
+						   )
+
+
+				    ),
+'companies'=>array(
+					'view'=>'general',
+					'details'=>0,
+					'table'=>array(
+						   'order'=>'name',
+						   'order_dir'=>'',
+						   'sf'=>0,
+						   'nr'=>25,
+						   'where'=>'where true',
+						   'f_field'=>'company name',
+						   'f_value'=>'',
+						    'mode'=>'',
+						   'restrictions'=>'none',
+						   'parent'=>''
+						       ),
+					'advanced_search'=>array(
+						   'order'=>'name',
+						   'order_dir'=>'',
+						   'sf'=>0,
+						   'nr'=>25,
+						   'where'=>'',
+						   'f_field'=>'',
+						   'f_value'=>''
+						   )
+
+
+				    ),
+
 		      'customer'=>array(
 					'id'=>1,
 				       

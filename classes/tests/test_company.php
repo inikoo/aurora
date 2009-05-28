@@ -48,7 +48,7 @@ function  test($id){
 		,'Company Fiscal Name'=>'Ancient Wisdom Marketing Ltd'
 		,'Company Tax Number'=>'764298589'
 		,'Company Registration Number'=>'4108870'
-		,'Company Main Telephone'=>'+44 1142729165'
+		,'Company Main Telephone'=>'ex dir'
 		,'Company Main FAX'=>'+44 (0) 114 2706571'
 		,'Company Main Plain Email'=>'mail@ancientwisdom.biz'
 		,'Company Address Line 1'=>'BLOCK B, Parkwood Business Park, Parkwood Road'
