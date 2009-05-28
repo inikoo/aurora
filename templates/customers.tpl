@@ -1,7 +1,9 @@
 {include file='header.tpl'}
 <div id="bd" >
-  <span class="nav2 onleft"><a href="contacts.php">{t}Contact's List{/t}</a></span>
-  <span class="nav2 onleft"><a href="search_customers.php">{t}Advanced Search{/t}</a></span>
+  <span class="nav2 onleft"><a  class="selected"  href="customers.php">{t}Customers{/t}</a></span>
+<span class="nav2 onleft"><a href="companies.php">{t}Companies{/t}</a></span>
+<span class="nav2 onleft"><a   href="contacts.php">{t}Personal Contacts{/t}</a></span>
+  <span class="nav2 onright"><a href="search_customers.php">{t}Advanced Search{/t}</a></span>
     
   <div >
     
@@ -16,11 +18,9 @@
   </div>
     
 
-
-    
  <div id="top" class="top_bar">
     <div id="short_menu" class="nodetails" style="width:100%;margin-bottom:0px">
-      <table style="float:left;margin:0 0 0 20px ;padding:0"  class="options" {if $products==0 }style="display:none"{/if}>
+      <table style="float:left;margin:0 0 0 20px ;padding:0"  class="options" {if $customers==0 }style="display:none"{/if}>
 	<tr>
 	  <td  {if $view=='general'}class="selected"{/if} id="general" >{t}General{/t}</td>
 	  <td {if $view=='contact'}class="selected"{/if}  id="contact"  >{t}Contact{/t}</td>
@@ -32,6 +32,7 @@
 	</tr>
       </table>
     </div>
+    
 
 
     <div id="details"  style="margin-top:10px;padding:0 20px;width:770px;{if $details==0}display:none{/if}">

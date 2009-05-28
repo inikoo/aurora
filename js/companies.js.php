@@ -3,7 +3,7 @@ include_once('../common.php');
 ?>
 
 
-YAHOO.namespace ("contacts"); 
+YAHOO.namespace ("companies"); 
 
    var change_view=function(e){
 	var table=tables['table0'];
@@ -22,7 +22,7 @@ YAHOO.namespace ("contacts");
 	    table.hideColumn('telephone');
 	    table.hideColumn('mobile');
 	    table.hideColumn('fax');
-	    table.hideColumn('company');
+	    table.hideColumn('contact');
 	    if(tipo=='address'){
 		table.showColumn('id');
 		  table.showColumn('address');
@@ -39,7 +39,7 @@ YAHOO.namespace ("contacts");
 		table.showColumn('name');
 		table.showColumn('email');
 		table.showColumn('location');
-
+		Dom.get('general').className='selected';
 
 	    }
 	     if(tipo=='telephone'){
@@ -48,21 +48,17 @@ YAHOO.namespace ("contacts");
 		table.showColumn('telephone');
 		table.showColumn('mobile');
 		table.showColumn('fax');
-
+		Dom.get('telephone').className='selected';
+		
 	    }
-	    if(tipo=='company'){
-		table.showColumn('id');
-		table.showColumn('name');
-		table.showColumn('company');
-	    }
-
+	 
 	    
 
 	
 	Dom.get(table.view).className="";
 	Dom.get(tipo).className="selected";
 	table.view=tipo
-	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=contacts-view&value=' + escape(tipo) );
+	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=companies-view&value=' + escape(tipo) );
 	}
   }
 
@@ -79,29 +75,29 @@ YAHOO.namespace ("contacts");
 
 
 
-	    var ContactsColumnDefs = [
+	    var CompaniesColumnDefs = [
 				       {key:"id", label:"<?=_('ID')?>",width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"name", label:"<?=_('Contact Name')?>",<?=( ( $_SESSION['state']['contacts']['view']=='general' or  $_SESSION['state']['contacts']['view']=='contact' ) ?'':'hidden:true,')?> width:250,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"location", label:"<?=_('Location')?>",<?=($_SESSION['state']['contacts']['view']=='general'?'':'hidden:true,')?> width:230,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"name", label:"<?=_('Company Name')?>",<?=( ( $_SESSION['state']['companies']['view']=='general' or  $_SESSION['state']['companies']['view']=='contact' ) ?'':'hidden:true,')?> width:250,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"location", label:"<?=_('Location')?>",<?=($_SESSION['state']['companies']['view']=='general'?'':'hidden:true,')?> width:230,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       
-				       ,{key:"email", label:"<?=_('Email')?>",<?=(($_SESSION['state']['contacts']['view']=='general' )?'':'hidden:true,')?>sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       ,{key:"telephone", label:"<?=_('Telephone')?>",<?=($_SESSION['state']['contacts']['view']=='telephone'?'':'hidden:true,')?>sortable:false,className:"aright"}
-				       ,{key:"mobile", label:"<?=_('Mobile')?>",<?=($_SESSION['state']['contacts']['view']=='telephone'?'':'hidden:true,')?>sortable:false,className:"aright"}
-				       ,{key:"fax", label:"<?=_('Fax')?>",<?=($_SESSION['state']['contacts']['view']=='telephone'?'':'hidden:true,')?>sortable:false,className:"aright"}
+				       ,{key:"email", label:"<?=_('Email')?>",<?=(($_SESSION['state']['companies']['view']=='general' )?'':'hidden:true,')?>sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"telephone", label:"<?=_('Telephone')?>",<?=($_SESSION['state']['companies']['view']=='telephone'?'':'hidden:true,')?>sortable:false,className:"aright"}
+				       ,{key:"mobile", label:"<?=_('Mobile')?>",<?=($_SESSION['state']['companies']['view']=='telephone'?'':'hidden:true,')?>sortable:false,className:"aright"}
+				       ,{key:"fax", label:"<?=_('Fax')?>",<?=($_SESSION['state']['companies']['view']=='telephone'?'':'hidden:true,')?>sortable:false,className:"aright"}
 
-				       ,{key:"address", label:"<?=_('Main Address')?>",<?=($_SESSION['state']['contacts']['view']=='address'?'':'hidden:true,')?>sortable:true,className:"aright"}
-				       ,{key:"town", label:"<?=_('Town')?>",<?=($_SESSION['state']['contacts']['view']=='address'?'':'hidden:true,')?>sortable:true,className:"aright"}
-				       ,{key:"postcode", label:"<?=_('Postal Code')?>",<?=($_SESSION['state']['contacts']['view']=='address'?'':'hidden:true,')?>sortable:true,className:"aright"}
-				       ,{key:"region", label:"<?=_('Region')?>",<?=($_SESSION['state']['contacts']['view']=='address'?'':'hidden:true,')?>sortable:true,className:"aright"}
-				       ,{key:"country", label:"<?=_('Country')?>",<?=($_SESSION['state']['contacts']['view']=='address'?'':'hidden:true,')?>sortable:true,className:"aright"}
-				       ,{key:"company", label:"<?=_('Company')?>",<?=($_SESSION['state']['contacts']['view']=='company'?'':'hidden:true,')?>sortable:true,className:"aright"}
+				       ,{key:"address", label:"<?=_('Main Address')?>",<?=($_SESSION['state']['companies']['view']=='address'?'':'hidden:true,')?>sortable:true,className:"aright"}
+				       ,{key:"town", label:"<?=_('Town')?>",<?=($_SESSION['state']['companies']['view']=='address'?'':'hidden:true,')?>sortable:true,className:"aright"}
+				       ,{key:"postcode", label:"<?=_('Postal Code')?>",<?=($_SESSION['state']['companies']['view']=='address'?'':'hidden:true,')?>sortable:true,className:"aright"}
+				       ,{key:"region", label:"<?=_('Region')?>",<?=($_SESSION['state']['companies']['view']=='address'?'':'hidden:true,')?>sortable:true,className:"aright"}
+				       ,{key:"country", label:"<?=_('Country')?>",<?=($_SESSION['state']['companies']['view']=='address'?'':'hidden:true,')?>sortable:true,className:"aright"}
+				       ,{key:"company", label:"<?=_('Contact')?>",<?=($_SESSION['state']['companies']['view']=='contact'?'':'hidden:true,')?>sortable:true,className:"aright"}
 
 				     
 				       
 
 					 ];
-	    //?tipo=contacts&tid=0"
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_contacts.php?tipo=contacts");
+	    //?tipo=companies&tid=0"
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_contacts.php?tipo=companies");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -129,13 +125,13 @@ YAHOO.namespace ("contacts");
 
 
 
-	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ContactsColumnDefs,
+	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, CompaniesColumnDefs,
 								   this.dataSource0
 								 , {
-								     // sortedBy: {key:"<?=$_SESSION['tables']['contacts_list'][0]?>", dir:"<?=$_SESSION['tables']['contacts_list'][1]?>"},
+
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage    : <?=$_SESSION['state']['contacts']['table']['nr']?>,containers : 'paginator0', 
+									      rowsPerPage    : <?=$_SESSION['state']['companies']['table']['nr']?>,containers : 'paginator0', 
  									      pageReportTemplate : '(<?=_('Page')?> {currentPage} <?=_('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -148,8 +144,8 @@ YAHOO.namespace ("contacts");
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?=$_SESSION['state']['contacts']['table']['order']?>",
-									 dir: "<?=$_SESSION['state']['contacts']['table']['order_dir']?>"
+									 key: "<?=$_SESSION['state']['companies']['table']['order']?>",
+									 dir: "<?=$_SESSION['state']['companies']['table']['order_dir']?>"
 								     },
 								     dynamicData : true
 
@@ -163,9 +159,9 @@ YAHOO.namespace ("contacts");
 
 		    
 		    
-	    this.table0.view='<?=$_SESSION['state']['contacts']['view']?>';
+	    this.table0.view='<?=$_SESSION['state']['companies']['view']?>';
 
-	    this.table0.filter={key:'<?=$_SESSION['state']['contacts']['table']['f_field']?>',value:'<?=$_SESSION['state']['contacts']['table']['f_value']?>'};
+	    this.table0.filter={key:'<?=$_SESSION['state']['companies']['table']['f_field']?>',value:'<?=$_SESSION['state']['companies']['table']['f_value']?>'};
 
 	    //   YAHOO.util.Event.addListener('f_input', "keyup",myFilterChangeValue,{table:this.table0,datasource:this.dataSource})
 			 
@@ -184,14 +180,14 @@ YAHOO.namespace ("contacts");
     var Dom = YAHOO.util.Dom;
     var Event = YAHOO.util.Event; 
 
-var ids=['general','company','address','telephone'];
-YAHOO.util.Event.addListener(ids, "click",change_view);
-
- var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS.queryMatchContains = true;
- var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container", oACDS);
- oAutoComp.minQueryLength = 0; 
-
+    var ids=['general','contact','address','telephone'];
+    YAHOO.util.Event.addListener(ids, "click",change_view);
+    
+    var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS.queryMatchContains = true;
+    var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
+    oAutoComp.minQueryLength = 0; 
+    
 
 
 

@@ -33,7 +33,7 @@ $js_files=array(
 		'js/common.js.php',
 		'js/table_common.js.php',
 		'js/search.js',
-		'js/contacts.js.php'
+		'js/companies.js.php'
 		);
 
 
@@ -50,20 +50,10 @@ $js_files=array(
 
 
 
-//$smarty->assign('default_country',$default_country);
-//$smarty->assign('default_country_encoded',urlencode($default_country));
 
-
-//$smarty->assign('default_country_id',$default_country_id);
-$smarty->assign('email_tipo',$_tipo_email);
-$smarty->assign('address_tipo',$_tipo_address);
-$smarty->assign('tel_tipo',$_tipo_tel);
-$smarty->assign('prefix',$_prefix);
-
-//$smarty->assign('country',$country);
 
 $smarty->assign('parent','customers.php');
-$smarty->assign('title', _('Contacts'));
+$smarty->assign('title', _('Companies'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
@@ -72,21 +62,23 @@ $smarty->assign('js_files',$js_files);
 
 
   $q='';
-  $tipo_filter=($q==''?$_SESSION['state']['contacts']['table']['f_field']:'name');
+  $tipo_filter=($q==''?$_SESSION['state']['companies']['table']['f_field']:'name');
   $smarty->assign('filter',$tipo_filter);
-  $smarty->assign('filter_value',($q==''?$_SESSION['state']['contacts']['table']['f_value']:addslashes($q)));
+  $smarty->assign('filter_value',($q==''?$_SESSION['state']['companies']['table']['f_value']:addslashes($q)));
   $filter_menu=array(
-		   'contact name'=>array('db_key'=>'name','menu_label'=>'Name starting with  <i>x</i>','label'=>'Name')
-		     );
+		   'company name'=>array('db_key'=>'name','menu_label'=>'Name starting with  <i>x</i>','label'=>'Name')
+		   ,'email'=>array('db_key'=>'email','menu_label'=>'Email starting with  <i>x</i>','label'=>'Email')
+		   
+);
   $smarty->assign('filter_menu',$filter_menu);
   
   $smarty->assign('filter_name',$filter_menu[$tipo_filter]['label']);
   $paginator_menu=array(10,25,50,100,500);
   $smarty->assign('paginator_menu',$paginator_menu);
 
- $smarty->assign('view',$_SESSION['state']['contacts']['view']);
+ $smarty->assign('view',$_SESSION['state']['companies']['view']);
 
-$smarty->display('contacts.tpl');
+$smarty->display('companies.tpl');
 
 
 

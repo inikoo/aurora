@@ -153,9 +153,10 @@ function find($raw_data,$options){
 	exit($this->msg);
       return false;
     }
+   print "$options\n";
 
-   if(preg_match('/country code [a-z]{3}/',$options,$match)){
-      $country_code=preg_replace('/[^\d]/','',$match[0]);
+   if(preg_match('/country code [a-z]{3}/i',$options,$match)){
+     $country_code=preg_replace('/country code /','',$match[0]);
    }else
      $country_code='UNK';
    
@@ -170,8 +171,16 @@ function find($raw_data,$options){
    }
    if($raw_number)
      $raw_data=$this->parse_number($raw_number,$country_code);
+   
+   if($raw_data['Telecom Number']==''){
+     $this->error=true;
+     $this->msg=_('Error no telecom number data');
+      if(preg_match('/exit on errors/',$options))
+	exit($this->msg);
+      return false;
+   }
+     
 
- 
    
 
    $data=$this->base_data();
@@ -201,7 +210,7 @@ function find($raw_data,$options){
       $subject_type='Contact';
 
       $mode='Contact in';
-      $in_contacts=array($subject_key);
+      $in_contact=array($subject_key);
 
 
     }
@@ -241,7 +250,7 @@ function find($raw_data,$options){
 	//$subject=new Contact($row['Subject Key']);
 	$this->get_data('id',$row['Telecom Key']);
 	if($mode=='Contact in' or $mode=='Company in'){
-	  if(in_array($row['Subject Key'],$in_contacts)){
+	  if(in_array($row['Subject Key'],$in_contact)){
 	    $this->found_in=true;
 	    $this->found_out=false;
 	  }else{
@@ -263,7 +272,7 @@ function find($raw_data,$options){
 	    }
 	  }
 	}
-	$this->msg=_('Telephone found in')." $num_results ".ngettext($num_results,'record','records');
+	$this->msg=_('Telephone found in')." $num_results ".ngettext('record','records',$num_results);
 	
 	
       }
@@ -326,6 +335,8 @@ protected function create($data,$optios=''){
     return false;
   }
   
+
+
        
   $this->data=$this->base_data();
   foreach($data as $key=>$value){
@@ -410,7 +421,7 @@ protected function create($data,$optios=''){
    
   */
  function parse_number($number,$country_code='UNK'){
-   // print "parsing number $number\n";
+    print "parsing number $number $country_code\n";
 
    $data=array('Telecom Technology Type'=>'Unknown'
 	       ,'Telecom Country Telephone Code'=>''
@@ -641,6 +652,8 @@ protected function create($data,$optios=''){
    Returns the formated  telephone number
   */
  public static function formated_number($data){
+
+
    $tmp=($data['Telecom Country Telephone Code']!=''?'+'.$data['Telecom Country Telephone Code'].' ':'').($data['Telecom Area Code']!=''?$data['Telecom Area Code'].' ':'')._trim(strrev(chunk_split(strrev($data['Telecom Number']),4," "))).($data['Telecom Extension']!=''?' '._('ext').' '.$data['Telecom Extension']:'');
    return $tmp;
  }

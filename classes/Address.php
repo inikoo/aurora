@@ -130,40 +130,40 @@ class Address extends DB_Table{
     }
   }
   /*
-   Method: find
-   Given a set of address components try to find it on the database updating properties, if not found creates a new record
+    Method: find
+    Given a set of address components try to find it on the database updating properties, if not found creates a new record
   */
   
- private function find($raw_data,$options=''){
+  private function find($raw_data,$options=''){
 
    
- $this->found=false;
-   $this->found_in=false;
-   $this->found_out=false;
-   $this->candiadate=array();
-   $in_contacts=array();
-   $mode='Contact';
-   $parent='Contact';
-   $create=false;
-   if(preg_match('/create|update/i',$options)){
-     $create=true;
-   }
+    $this->found=false;
+    $this->found_in=false;
+    $this->found_out=false;
+    $this->candiadate=array();
+    $in_contact=array();
+    $mode='Contact';
+    $parent='Contact';
+    $create=false;
+    if(preg_match('/create|update/i',$options)){
+      $create=true;
+    }
     $auto=false;
     if(preg_match('/auto/i',$options)){
       $auto=true;
     }
     
 
-   if(!$raw_data){
-     $this->new=false;
-     $this->msg=_('Error no address data');
-     if(preg_match('/exit on errors/',$options))
-       exit($this->msg);
-     return false;
-   }
+    if(!$raw_data){
+      $this->new=false;
+      $this->msg=_('Error no address data');
+      if(preg_match('/exit on errors/',$options))
+	exit($this->msg);
+      return false;
+    }
 
 
-     $create='';
+    $create='';
     $update='';
     if(preg_match('/create/i',$options)){
       $create='create';
@@ -171,36 +171,37 @@ class Address extends DB_Table{
     if(preg_match('/update/i',$options)){
       $update='update';
     }
-
-
-
-   $data=$this->base_data();
-   
-   if(preg_match('/from Company|in company/i',$options)){
-     foreach($raw_data as $key=>$val){
-       $_key=preg_replace('/Company /','',$key);
-       if(array_key_exists($_key,$data))
-	  $data[$_key]=$val;
-       if($_key=='Address Line 1' or $_key=='Address Line 2' or  $_key=='Address Line 3' or $_key=='Address Input Format')
-	 $data[$_key]=$val;
-      }
-   }elseif(preg_match('/from contact|in contact/i',$options)){
-     foreach($raw_data as $key=>$val){
-       $_key=preg_replace('/^Contact( Home| Work)? /i','',$key);
-       if(array_key_exists($_key,$data))
-	  $data[$_key]=$val;
-       if($_key=='Address Line 1' or $_key=='Address Line 2' or  $_key=='Address Line 3' or $_key=='Address Input Format')
-	 $data[$_key]=$val;
-      }
-   }
+    
    
 
-   if(!isset($data['Address Input Format'])){
-     $data['Address Input Format']='DB Fields';
-     if(isset($data['Address Line 1']))
-       $data['Address Input Format']='3 Line';
-     else
-       $data['Address Input Format']='DB Fields';
+
+    $data=$this->base_data();
+   
+    if(preg_match('/from Company|in company/i',$options)){
+      foreach($raw_data as $key=>$val){
+	$_key=preg_replace('/Company /','',$key);
+	if(array_key_exists($_key,$data))
+	  $data[$_key]=$val;
+	if($_key=='Address Line 1' or $_key=='Address Line 2' or  $_key=='Address Line 3' or $_key=='Address Input Format')
+	  $data[$_key]=$val;
+      }
+    }elseif(preg_match('/from contact|in contact/i',$options)){
+      foreach($raw_data as $key=>$val){
+	$_key=preg_replace('/^Contact( Home| Work)? /i','',$key);
+	if(array_key_exists($_key,$data))
+	  $data[$_key]=$val;
+	if($_key=='Address Line 1' or $_key=='Address Line 2' or  $_key=='Address Line 3' or $_key=='Address Input Format')
+	  $data[$_key]=$val;
+      }
+    }
+   
+
+    if(!isset($data['Address Input Format'])){
+      $data['Address Input Format']='DB Fields';
+      if(isset($data['Address Line 1']))
+	$data['Address Input Format']='3 Line';
+      else
+	$data['Address Input Format']='DB Fields';
     }
 
    
@@ -216,15 +217,15 @@ class Address extends DB_Table{
       break;
     }
 
-   $subject_key=0;
+    $subject_key=0;
     $subject_type='Contact';
 
-      if(preg_match('/in contact \d+/',$options,$match)){
+    if(preg_match('/in contact \d+/',$options,$match)){
       $subject_key=preg_replace('/[^\d]/','',$match[0]);
       $subject_type='Contact';
 
       $mode='Contact in';
-      $in_contacts=array($subject_key);
+      $in_contact=array($subject_key);
 
 
     }
@@ -266,7 +267,7 @@ class Address extends DB_Table{
 	$this->candidate[$row['Subject Key']]=100;
 	$this->get_data('id',$row['Address Key']);
 	if($mode=='Contact in' or $mode=='Company in'){
-	  if(in_array($row['Subject Key'],$in_contacts)){
+	  if(in_array($row['Subject Key'],$in_contact)){
 	    $this->found_in=true;
 	    $this->found_out=false;
 	  }else{
@@ -286,7 +287,7 @@ class Address extends DB_Table{
 	    }
 	  }
 	}
-	$this->msg.=_('Address found in')." $num_results ".ngettext($num_results,'contact','contacts');
+	$this->msg.=_('Address found in')." $num_results ".ngettext('contact','contacts',$num_results);
 	
       }
       
@@ -295,7 +296,7 @@ class Address extends DB_Table{
       // Address not fuzzy
       // Try to find an exact match
 
-        $fields=array('Address Fuzzy','Address Street Number','Address Building','Address Street Name','Address Street Type','Address Town Secondary Division','Address Town Primary Division','Address Town','Address Country Primary Division','Address Country Secondary Division','Address Country Key','Address Postal Code','Military Address','Military Installation Address','Military Installation Name');
+      $fields=array('Address Fuzzy','Address Street Number','Address Building','Address Street Name','Address Street Type','Address Town Secondary Division','Address Town Primary Division','Address Town','Address Country Primary Division','Address Country Secondary Division','Address Country Key','Address Postal Code','Military Address','Military Installation Address','Military Installation Name');
 
       $sql="select A.`Address Key`,`Subject Key` from `Address Dimension`  A  left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`) where `Subject Type`='Contact' ";
       foreach($fields as $field){
@@ -312,7 +313,7 @@ class Address extends DB_Table{
 	$this->candidate[$row['Subject Key']]=100;
 	$this->get_data('id',$row['Address Key']);
 	if($mode=='Contact in' or $mode=='Company in'){
-	  if(in_array($row['Subject Key'],$in_contacts)){
+	  if(in_array($row['Subject Key'],$in_contact)){
 	    $this->found_in=true;
 	    $this->found_out=false;
 	  }else{
@@ -332,13 +333,13 @@ class Address extends DB_Table{
 	    }
 	  }
 	}
-	$this->msg.=_('Address found in')." $num_results ".ngettext($num_results,'contact','contacts');
+	$this->msg.=_('Address found in')." $num_results ".ngettext('contact','contacts',$num_results);
 	
       }
 
     }
 
-   if($create){
+    if($create){
       if($this->found)
 	$this->update($data,$options);
       else{
@@ -369,7 +370,7 @@ class Address extends DB_Table{
 
  
 
- }
+  }
 
 
   /*Method: create
@@ -449,7 +450,7 @@ class Address extends DB_Table{
       
       if(!preg_match('/line \d|Address Input Format/i',$key) ){
 	if(preg_match('/Address Data Creation/i',$key) ){
-	   $keys.=",`".$key."`";
+	  $keys.=",`".$key."`";
 	  $values.=', Now()';
 	}else{
 	  $keys.=",`".$key."`";
@@ -474,7 +475,7 @@ class Address extends DB_Table{
   /*
     Function:update
     Update the Record
-   */
+  */
   function update($data){
 
     exit("address update not implemented yet\n");
@@ -643,7 +644,7 @@ class Address extends DB_Table{
   }
 
 
- /*
+  /*
     Function: location
     Get the address location
 
@@ -661,7 +662,7 @@ class Address extends DB_Table{
 	if(preg_match('/country/i',$data['Address Fuzzy Type'])){
 	  $location=sprintf('<img src="art/flags/%s.gif" title="%s"> %s',strtolower($data['Address Country 2 Alpha Code']),$data['Address Country Code'],_('Unknown'));
 	  return _trim($location);
-	  }elseif(preg_match('/town/i',$data['Address Fuzzy Type'])){
+	}elseif(preg_match('/town/i',$data['Address Fuzzy Type'])){
 	  $location=sprintf('<img src="art/flags/%s.gif" title="%s"> %s',strtolower($data['Address Country 2 Alpha Code']),$data['Address Country Code'],_('Somewhere in').' '.$data['Address Country Name']);
 	  return _trim($location);
 	}
@@ -671,7 +672,7 @@ class Address extends DB_Table{
     }
   
     return _trim($location);
-}
+  }
 
 
 
@@ -964,7 +965,7 @@ class Address extends DB_Table{
     return false;
    
   }
-/*
+  /*
     Function: 
     Prepare the Country Data
 
@@ -973,7 +974,7 @@ class Address extends DB_Table{
   public static function prepare_country_data($data){
     global $myconf;
 
-      if($data['Address Country Key']=='' and
+    if($data['Address Country Key']=='' and
        $data['Address Country Code']=='' and
        $data['Address Country 2 Alpha Code']=='' and
        $data['Address Country Name']==''
@@ -1084,7 +1085,7 @@ class Address extends DB_Table{
 
   /*Function:prepare_DBfields
     Cleans address data, look for common errors
-   */
+  */
   public static function prepare_DBfields($raw_data){
     return $raw_data;
   }
@@ -1126,14 +1127,14 @@ class Address extends DB_Table{
     $result = mysql_query("SHOW COLUMNS FROM `Address Dimension`");
     if (!$result) {
       echo 'Could not run query: ' . mysql_error();
-     exit;
+      exit;
     }
     if (mysql_num_rows($result) > 0) {
-     while ($row = mysql_fetch_assoc($result)) {
-       if(!in_array($row['Field'],$ignore_fields))
-	 $data[$row['Field']]=$row['Default'];
-     }
-   }
+      while ($row = mysql_fetch_assoc($result)) {
+	if(!in_array($row['Field'],$ignore_fields))
+	  $data[$row['Field']]=$row['Default'];
+      }
+    }
     //-------------------------------------------------------------------
 
     foreach($raw_data as $key=>$value){
@@ -1224,12 +1225,12 @@ class Address extends DB_Table{
 	  $data['Address Country Name']='United Kingdom';
 	}
       }
-       $country_data=Address::prepare_country_data($data);
-       foreach($country_data as $key=>$value){
-	 if(array_key_exists($key,$data)){
-	   $data[$key]=_trim($value);
-	 }
-       }
+      $country_data=Address::prepare_country_data($data);
+      foreach($country_data as $key=>$value){
+	if(array_key_exists($key,$data)){
+	  $data[$key]=_trim($value);
+	}
+      }
        
     }
 
@@ -1255,7 +1256,12 @@ class Address extends DB_Table{
     // Ok the country is already guessed, wat else ok depending of the country letys gloing to try to get the orthers bits of the address
 
 
-
+    
+    /*      print "________----------_________---------\n"; */
+    /*     print_r($data); */
+    /*     print_r($raw_data); */
+    /*      print "___________________________________\n"; */
+    
 
     // pushh all address up
 
@@ -1311,9 +1317,9 @@ class Address extends DB_Table{
 	  $num_words=count($words);
 	}
 	if(Address::is_town(
-				  $words[$num_words-1],
-				  $data['Address Country Key']
-				  )){
+			    $words[$num_words-1],
+			    $data['Address Country Key']
+			    )){
 	  $data['Address Town']=array_pop($words);
 	  $num_words=count($words);
 	}
@@ -1406,18 +1412,20 @@ class Address extends DB_Table{
       }
 
 
+   
+
+
       //then volter alas address
 
-      // print_r($data);
-      // exit;
 
       //lets do it as an experiment if the only line is 1 has data
       // split the data in that line  to see what happens
-      if($raw_data['Address Line 1']!='' and $raw_data['Address Line 2']=='' and $raw_data['Address Line 3']==''){
+      if($raw_data['Address Line 1']!='' and $raw_data['Address Line 2']=='' and $raw_data['Address Line 3']==''){// one line
 	$splited_address=preg_split('/\s*,\s*/i',$raw_data['Address Line 1']);
 	
 	if(count($splited_address)==1){
 	  $raw_data['Address Line 3']=$splited_address[0];
+	  $raw_data['Address Line 1']='';
 	}else if(count($splited_address)==2){
 	  // ok separeta bu on li if the sub partes are not like numbers
 	  $parte_0=_trim($splited_address[0]);
@@ -1432,8 +1440,8 @@ class Address extends DB_Table{
 	    $raw_data['Address Line 1']=$parte_0;
 	    $raw_data['Address Line 3']=$parte_1;
 	  }elseif(Address::is_internal($parte_1) and Address::is_street($parte_0)){
-	     $raw_data['Address Line 1']=$parte_1;
-	     $raw_data['Address Line 3']=$parte_0;
+	    $raw_data['Address Line 1']=$parte_1;
+	    $raw_data['Address Line 3']=$parte_0;
 	  }elseif(Address::is_street($parte_1) and Address::is_street($parte_0)){
 	    $raw_data['Address Line 3']=$parte_0.', '.$parte_1;
 	  }elseif(Address::is_street($parte_0) and !Address::is_street($parte_1)){
@@ -1444,7 +1452,7 @@ class Address extends DB_Table{
 	     $raw_data['Address Line 1']=$parte_0.', '.$parte_1;
 	  
 
-	  
+	
 
 	  // exit ("$raw_data['Address Line 3']\n");
 	}else if(count($splited_address)==3){
@@ -1453,10 +1461,10 @@ class Address extends DB_Table{
 	  $raw_data['Address Line 3']=$splited_address[2];
 	}
       
-      }else if( $raw_data['Address Line 3']==''){
-	$raw_data['Address Line 2']=$raw_data['Address Line 1'];
+      }else if($raw_data['Address Line 1']!='' and $raw_data['Address Line 2']!='' and  $raw_data['Address Line 3']==''){
 	$raw_data['Address Line 3']=$raw_data['Address Line 2'];
-
+	$raw_data['Address Line 2']=$raw_data['Address Line 1'];
+	$raw_data['Address Line 1']='';
       }else{
 
 	// print_r($data);
@@ -1468,6 +1476,9 @@ class Address extends DB_Table{
 
       // print("a1 $raw_data['Address Line 1'] a2 $raw_data['Address Line 2'] a3 $raw_data['Address Line 3'] \n");
 
+
+ 
+    
 
       $data['Address Town']=$data['Address Town'];
       $data['Address Town Secondary Division']=$data['Address Town Secondary Division'];
@@ -1485,6 +1496,12 @@ class Address extends DB_Table{
       $f_ta=($data['Address Town Secondary Division']==''?false:true);
       $f_td=($data['Address Town Primary Division']==''?false:true);
 
+      $f_c1=($data['Address Country Primary Division']==''?false:true);
+      $f_c2=($data['Address Country Secondary Division']==''?false:true);
+      $t_t=Address::is_town($data['Address Town']);
+      $t_c1=Address::is_town($data['Address Country Primary Division']);
+      $t_c2=Address::is_town($data['Address Country Secondary Division']);
+
       $s_a1=Address::is_street($raw_data['Address Line 1']);
       $s_a2=Address::is_street($raw_data['Address Line 2']);
       $s_a3=Address::is_street($raw_data['Address Line 3']);
@@ -1492,6 +1509,32 @@ class Address extends DB_Table{
       $i_a2=Address::is_internal($raw_data['Address Line 2']);
       $i_a3=Address::is_internal($raw_data['Address Line 3']);
 
+
+      // especial case when to town is presente but the first division seems to be a town
+      if(!$f_t){
+	if($t_c1 and !$f_c2) {
+	  // town is in primary division
+	  $data['Address Town']=$data['Address Country Primary Division'];
+	  $data['Address Country Primary Division']='';
+	  $t_c1=false;
+	  $f_c1=false;
+	  $f_t=true;
+	  $t_t=true;
+	}elseif($t_c2 and !$f_c1){
+	  $data['Address Town']=$data['Address Country Secondary Division'];
+	  $data['Address Country Secondary Division']='';
+	  $t_c2=false;
+	  $f_c2=false;
+	  $f_t=true;
+	  $t_t=true;
+	  
+
+	}
+	
+
+	  
+
+      }
 
 
       // print "Street grade 1-$s_a1 2-$s_a2 3-$s_a3 \n";
@@ -1509,7 +1552,7 @@ class Address extends DB_Table{
        
       }
 
-   
+
       //   exit;
 
       // super special case
@@ -1605,12 +1648,12 @@ class Address extends DB_Table{
 
     }
 
-  
-/*     print_r($raw_data); */
-//     print_r($data); 
-//     exit; 
+    //  print_r($raw_data); 
+
+    // print_r($data); 
+    //     exit; 
     
-    
+   
 
     if(preg_match('/^P\.o\.box\s+\d+$|^po\s+\d+$|^p\.o\.\s+\d+$/i',$data['Address Town Secondary Division'])){
       
@@ -3066,9 +3109,9 @@ class Address extends DB_Table{
     $street_data=Address::parse_street(mb_ucwords(_trim($raw_data['Address Line 3'])));
 
     foreach($street_data as $key=>$value){
-       if(array_key_exists($key,$data)){
-	 $data[$key]=_trim($value);
-       }
+      if(array_key_exists($key,$data)){
+	$data[$key]=_trim($value);
+      }
     }
     $data['Address Building']=$raw_data['Address Line 2'];
     $data['Address Internal']=$raw_data['Address Line 1'];
@@ -3094,26 +3137,26 @@ class Address extends DB_Table{
       $data['Address Fuzzy']='Yes';
     }
     if($data['Address Country Code']=='UNK'){
-       $data['Address Fuzzy Type'].=',Country,Region,Continent';
-       $data['Address Fuzzy']='Yes';
+      $data['Address Fuzzy Type'].=',Country,Region,Continent';
+      $data['Address Fuzzy']='Yes';
     }
-     if($raw_data['Address Line 1']=='' 
-	and $raw_data['Address Line 2']=='' 
-	and $raw_data['Address Line 3']=='' ){
-       $data['Address Fuzzy Type'].=',Street';
-       $data['Address Fuzzy']='Yes';
+    if($raw_data['Address Line 1']=='' 
+       and $raw_data['Address Line 2']=='' 
+       and $raw_data['Address Line 3']=='' ){
+      $data['Address Fuzzy Type'].=',Street';
+      $data['Address Fuzzy']='Yes';
     }
      
-     $data['Address Fuzzy Type']=preg_replace('/^,\s*/','',$data['Address Fuzzy Type']);
+    $data['Address Fuzzy Type']=preg_replace('/^,\s*/','',$data['Address Fuzzy Type']);
 
-     $data['Address Location']=Address::location($data);
+    $data['Address Location']=Address::location($data);
     return $data;
   }
 
- /*
+  /*
     Function:  plain
     OPlain addres ised as finger print and serach purpose 
-   */
+  */
 
   function plain($data){
 
@@ -3122,63 +3165,63 @@ class Address extends DB_Table{
 
 
     $separator=' ';
-      if($data['Military Address']=='Yes'){
-	$address=$data['Military Installation Address'];
-	$address_type=_trim($data['Military Installation Type']);
-	if($address_type!='')
-	  $address.=$separator.$address_type;
-	$address_type=_trim($data['Address Postal Code']);
-	if($address_type!='')
-	  $address.=$separator.$address_type;
-	$address.=$separator.$data['Address Country Code'];
+    if($data['Military Address']=='Yes'){
+      $address=$data['Military Installation Address'];
+      $address_type=_trim($data['Military Installation Type']);
+      if($address_type!='')
+	$address.=$separator.$address_type;
+      $address_type=_trim($data['Address Postal Code']);
+      if($address_type!='')
+	$address.=$separator.$address_type;
+      $address.=$separator.$data['Address Country Code'];
 
-      }else{
-	//print_r($data);
-	$address='';
-	$header_address=_trim($data['Address Internal'].' '.$data['Address Building']);
-	if($header_address!='')
-	  $address.=$header_address.$separator;
+    }else{
+      //print_r($data);
+      $address='';
+      $header_address=_trim($data['Address Internal'].' '.$data['Address Building']);
+      if($header_address!='')
+	$address.=$header_address.$separator;
 	
-	$street_address=_trim($data['Address Street Number'].' '.$data['Address Street Name'].' '.$data['Address Street Type']);
-	if($street_address!='')
-	  $address.=$street_address.$separator;
+      $street_address=_trim($data['Address Street Number'].' '.$data['Address Street Name'].' '.$data['Address Street Type']);
+      if($street_address!='')
+	$address.=$street_address.$separator;
 
      
-	$subtown_address=$data['Address Town Secondary Division'];
-	if($data['Address Town Primary Division'])
-	  $subtown_address.=' ,'.$data['Address Town Primary Division'];
-	$subtown_address=_trim($subtown_address);
-	if($subtown_address!='')
-	  $address.=$subtown_address.$separator;
+      $subtown_address=$data['Address Town Secondary Division'];
+      if($data['Address Town Primary Division'])
+	$subtown_address.=' ,'.$data['Address Town Primary Division'];
+      $subtown_address=_trim($subtown_address);
+      if($subtown_address!='')
+	$address.=$subtown_address.$separator;
 
 
      
-	$town_address=_trim($data['Address Town']);
-	if($town_address!='')
-	  $address.=$town_address.$separator;
+      $town_address=_trim($data['Address Town']);
+      if($town_address!='')
+	$address.=$town_address.$separator;
 
-	$ps_address=_trim($data['Address Postal Code']);
-	if($ps_address!='')
-	  $address.=$ps_address.$separator;
+      $ps_address=_trim($data['Address Postal Code']);
+      if($ps_address!='')
+	$address.=$ps_address.$separator;
      
-	$subcountry_address=$data['Address Country Secondary Division'];
-	if($data['Address Country Primary Division'])
-	  $subcountry_address.=' '.$data['Address Country Primary Division'];
-	$subcountry_address=_trim($subcountry_address);
-	if($subcountry_address!='')
-	  $address.=$subcountry_address.$separator;
+      $subcountry_address=$data['Address Country Secondary Division'];
+      if($data['Address Country Primary Division'])
+	$subcountry_address.=' '.$data['Address Country Primary Division'];
+      $subcountry_address=_trim($subcountry_address);
+      if($subcountry_address!='')
+	$address.=$subcountry_address.$separator;
 	
 	
-	$address.=$data['Address Country Code'];
-      }
+      $address.=$data['Address Country Code'];
+    }
 
-      if($data['Address Fuzzy']=='Yes'){
-	$address='[FZ] '.$address;
+    if($data['Address Fuzzy']=='Yes'){
+      $address='[FZ] '.$address;
 	
-      }
+    }
 	
 
-      return _trim($address);
+    return _trim($address);
       
       
   }
@@ -3189,7 +3232,7 @@ class Address extends DB_Table{
     Calculate the probability of been the same address 
     Returns:
     Probability of been the same address _float_ (0-1) 
-   */
+  */
 
   function similarity($data,$address_key){
 
@@ -3198,4 +3241,4 @@ class Address extends DB_Table{
 
 }
 
-  ?>
+?>
