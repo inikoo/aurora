@@ -174,15 +174,11 @@ class supplier{
     $this->data['Supplier Code']=$this->check_repair_code($this->data['Supplier Code']);
 
     //Create or appende to company
-    $company=new company('find in supplier',$this->data);
+    $company=new company('find in company create',$this->data);
     if($company->warning){
       exit("company warnings");
     }
-     //Create or appende to contact
-    $contact=new contact('find in supplier',$this->data);
-    if($contact->warning){
-      exit("contact warnings");
-    }
+
     
     $this->data['Supplier Company Key']=$company->id;
     if($company->data['Company Main Address Key']){

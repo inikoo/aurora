@@ -147,13 +147,18 @@ function find($raw_data,$options){
     }
     
    if(!$raw_data){
-      $this->new=false;
+      $this->error=true;
       $this->msg=_('Error no telecom data');
       if(preg_match('/exit on errors/',$options))
 	exit($this->msg);
       return false;
     }
-   print "$options\n";
+
+
+
+
+   
+   //   print "$options\n";
 
    if(preg_match('/country code [a-z]{3}/i',$options,$match)){
      $country_code=preg_replace('/country code /','',$match[0]);
@@ -169,9 +174,24 @@ function find($raw_data,$options){
    if(is_string($raw_data)){
      $raw_number=$raw_data;
    }
-   if($raw_number)
+
+
+
+
+   if($raw_number){
+     $_data=preg_replace('/[^\d]/','',$raw_number);
+     if(strlen($_data)<3){
+       $this->error=true;
+       $this->msg=_('Error no telecom data');
+       if(preg_match('/exit on errors/',$options))
+	 exit($this->msg);
+       return false;
+       
+     }
      $raw_data=$this->parse_number($raw_number,$country_code);
    
+   }
+
    if($raw_data['Telecom Number']==''){
      $this->error=true;
      $this->msg=_('Error no telecom number data');
@@ -421,7 +441,7 @@ protected function create($data,$optios=''){
    
   */
  function parse_number($number,$country_code='UNK'){
-    print "parsing number $number $country_code\n";
+   // print "parsing number $number $country_code\n";
 
    $data=array('Telecom Technology Type'=>'Unknown'
 	       ,'Telecom Country Telephone Code'=>''
@@ -510,7 +530,7 @@ protected function create($data,$optios=''){
    $data['Telecom Number']=$number;
    
 
-   if($country_code='UNK' and isset($data['Telecom Country Telephone Code'])){
+   if($country_code=='UNK' and isset($data['Telecom Country Telephone Code'])){
      $country_code=Telecom::get_country_code($data['Telecom Country Telephone Code']);
      
    }
@@ -579,35 +599,50 @@ protected function create($data,$optios=''){
 
 /*   $data['is_mobile']=''; */
 
-
+   //  print "parsing number $number $country_code\n";
 
    switch($country_code){
     
   case('GBR')://UK
-
+    // print "---------------uk\n";
+    //    print_r($data);
     $data['Telecom Number']=preg_replace('/^0/','',$data['Telecom Number']);
-    $data['Telecom National Access Code']='0';
-    if($data['Telecom Area Code']==''){
-      $data['Telecom Number']=preg_replace('/^0/','',$data['Telecom Number']);
-      $area_code=Telecom::find_area_code($data['Telecom Number'],'GBR');
-      if($area_code!=''){
-	$data['Telecom Area Code']=$area_code;
-	$data['Telecom Number']=preg_replace("/^".$data['Telecom Area Code']."/",'',$data['Telecom Number']);
-      }
-    }
-    $data['Telecom National Access Code']='0';
 
-    if(preg_match('/^8\d\d/',$data['Telecom Number'])){
+    if(preg_match('/^8(00\d{6,7}|08\d7|20\d{3}|45\d{3})/',$data['Telecom Number'],$match)){
       $data['National Only Telecom']='Yes';
       $data['Telecom Country Telephone Code']='';
+
+      preg_match('/^\d{3}3/',$data['Telecom Number'],$match);
       $data['Telecom Area Code']=$match[0];
       $data['Telecom Number']=preg_replace('/^'.$data['Telecom Area Code'].'/','',$data['Telecom Number']);
       $data['Telecom Technology Type']='Non-geographic';
-    }elseif(preg_match('/^7/',$data['Telecom Number']))
+    }else{
+
+
+      
+      $data['Telecom Country Telephone Code']='44';
+      $data['Telecom Number']=preg_replace('/^44/','',$data['Telecom Number']);
+      
+      
+      $data['Telecom National Access Code']='0';
+      if($data['Telecom Area Code']==''){
+	$data['Telecom Number']=preg_replace('/^0/','',$data['Telecom Number']);
+	$area_code=Telecom::find_area_code($data['Telecom Number'],'GBR');
+	if($area_code!=''){
+	  $data['Telecom Area Code']=$area_code;
+	  $data['Telecom Number']=preg_replace("/^".$data['Telecom Area Code']."/",'',$data['Telecom Number']);
+	}
+      }
+      
+      
+      if(preg_match('/^7/',$data['Telecom Number']))
 	$data['Telecom Technology Type']='Mobile';
-    else
-      $data['Telecom Technology Type']='Landline';
+      else
+	$data['Telecom Technology Type']='Landline';
+      
     
+    }
+
     break;
 /*   case('IRL')://Ireland */
 /*     if(preg_match('/^0?8(2|3|5|6|7|8|9)/',$data['Telecom Number'])) */
@@ -635,7 +670,7 @@ protected function create($data,$optios=''){
 
    $data['Telecom Plain Number']=Telecom::plain_number($data);
 
-
+   //   print_r($data);
   return $data;
 
   // print_r($this->data);
