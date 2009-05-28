@@ -389,14 +389,15 @@ class Company extends DB_Table {
     }
 
     if($this->data['Company Main FAX']!=''){
-      //      print "creating the fax\n";
       $telephone=new Telecom("find in company create country code ".$address->data['Address Country Code'],$this->data['Company Main FAX']);
-    
+      
       if(!$telephone->error){
-      $this->data['Company Main Plain FAX']=$telephone->display('plain');
-      $this->data['Company Main FAX']=$telephone->display('number');
-      $this->data['Company Main FAX Key']=$telephone->id; 
-       }
+	$this->data['Company Main Plain FAX']=$telephone->display('plain');
+	$this->data['Company Main FAX']=$telephone->display('number');
+	$this->data['Company Main FAX Key']=$telephone->id; 
+      }
+      //  print_r($this->data);
+      // print_r($telephone);exit;
     }
 
 

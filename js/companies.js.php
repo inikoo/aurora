@@ -20,7 +20,7 @@ YAHOO.namespace ("companies");
 	    table.hideColumn('region');
 	    table.hideColumn('country');
 	    table.hideColumn('telephone');
-	    table.hideColumn('mobile');
+
 	    table.hideColumn('fax');
 	    table.hideColumn('contact');
 	    if(tipo=='address'){
@@ -46,7 +46,7 @@ YAHOO.namespace ("companies");
 		table.showColumn('id');
 		table.showColumn('name');
 		table.showColumn('telephone');
-		table.showColumn('mobile');
+
 		table.showColumn('fax');
 		Dom.get('telephone').className='selected';
 		
@@ -81,9 +81,9 @@ YAHOO.namespace ("companies");
 				       ,{key:"location", label:"<?=_('Location')?>",<?=($_SESSION['state']['companies']['view']=='general'?'':'hidden:true,')?> width:230,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       
 				       ,{key:"email", label:"<?=_('Email')?>",<?=(($_SESSION['state']['companies']['view']=='general' )?'':'hidden:true,')?>sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       ,{key:"telephone", label:"<?=_('Telephone')?>",<?=($_SESSION['state']['companies']['view']=='telephone'?'':'hidden:true,')?>sortable:false,className:"aright"}
-				       ,{key:"mobile", label:"<?=_('Mobile')?>",<?=($_SESSION['state']['companies']['view']=='telephone'?'':'hidden:true,')?>sortable:false,className:"aright"}
-				       ,{key:"fax", label:"<?=_('Fax')?>",<?=($_SESSION['state']['companies']['view']=='telephone'?'':'hidden:true,')?>sortable:false,className:"aright"}
+				       ,{key:"telephone", label:"<?=_('Telephone')?>",<?=($_SESSION['state']['companies']['view']=='telephone'?'':'hidden:true,')?>sortable:true,className:"aright"}
+
+				       ,{key:"fax", label:"<?=_('Fax')?>",<?=($_SESSION['state']['companies']['view']=='telephone'?'':'hidden:true,')?>sortable:true,className:"aright"}
 
 				       ,{key:"address", label:"<?=_('Main Address')?>",<?=($_SESSION['state']['companies']['view']=='address'?'':'hidden:true,')?>sortable:true,className:"aright"}
 				       ,{key:"town", label:"<?=_('Town')?>",<?=($_SESSION['state']['companies']['view']=='address'?'':'hidden:true,')?>sortable:true,className:"aright"}

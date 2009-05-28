@@ -37,7 +37,7 @@ $contact_data=array();
 $company_data=array();
 $row = 0;
 $handle = fopen("somecontacts.txt", "r");
-$handle = fopen("data.txt", "r");
+//$handle = fopen("data.txt", "r");
 
 while (($data = fgetcsv($handle, 2000, "\t")) !== FALSE) {
   
@@ -71,7 +71,7 @@ while (($data = fgetcsv($handle, 2000, "\t")) !== FALSE) {
       $x__data['Contact Work Postal Code']=$data[9];
       $x__data['Contact Work Country Name']=$data[10];
       $x__data['Contact Main Telephone']=$data[12];
-      $x__data['Contact Main Fax']=$data[13];
+      $x__data['Contact Main FAX']=$data[13];
       $x__data['Contact Main Mobile']=$data[15];
       $x__data['Contact Main Plain Email']=$data[92];
     
@@ -95,7 +95,7 @@ while (($data = fgetcsv($handle, 2000, "\t")) !== FALSE) {
       $x__data['Company Address Postal Code']=$data[9];
       $x__data['Company Address Country Name']=$data[10];
       $x__data['Company Main Telephone']=$data[12];
-      $x__data['Company Main Fax']=$data[13];
+      $x__data['Company Main FAX']=$data[13];
       $x__data['Company Main Mobile']=$data[15];
       $x__data['Company Main Plain Email']=$data[92];
       $x__data['Company Main Contact Name']=$data[3];
@@ -135,13 +135,14 @@ asort($_date);
 
 foreach ($_date as $key=>$val) {
   //print "====================================\n";
-  print_r($_data[$key]);
+  //  print_r($_data[$key]);
   if(isset($_data[$key]['Company Name'])){
     //    print "caca";
-     $company=new Company('find create auto',$_data[$key]);
+    if(preg_match('/karen|cornes/i',$_data[$key]['Company Main Contact Name']))
+    $company=new Company('find create auto',$_data[$key]);
   }elseif(isset($_data[$key]['Contact Name'])){
-    print_r($_data[$key]);
-    $contact=new Contact('find create',$_data[$key]);
+    if(preg_match('/karen|cornes/i',$_data[$key]['Contact Name']))
+      $contact=new Contact('find create',$_data[$key]);
 
   }
  
