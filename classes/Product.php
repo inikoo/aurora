@@ -16,6 +16,11 @@ include_once('SupplierProduct.php');
 include_once('Part.php');
 include_once('Store.php');
 
+/* class: product
+   Class to manage the *Product Family Dimension* table
+*/
+// JFA
+
 
 class product{
  		
@@ -60,6 +65,11 @@ class product{
   }
 
 
+  /*
+    Function: get_data
+    Obtiene los datos de la tabla Product Dimension de acuerdo al Id o al codigo del producto, y de la tabla Product Part List, además actualiza valores de las tablas: Supplier Product Dimension, Product Part List y Part Dimension.
+*/
+// JFA
 
   function get_data($tipo,$tag,$extra=false){
    
@@ -267,11 +277,7 @@ class product{
 		       );
 	mysql_query($sqlaa);
 	
-	
 
-	
-	
-	
 	return;
       }
 
@@ -602,11 +608,12 @@ class product{
   }
   }
 
-
-
+ /*
+    Function: get
+    Obtiene informacion de los diferentes precios de productos
+ */
+ // JFA
   
-
-
   function get($key='',$data=false){
 
     if(!$this->id)
@@ -617,8 +624,6 @@ class product{
     
 
     switch($key){
-
-
 
 
 case('Price Info'):
@@ -1106,6 +1111,11 @@ case('Price Subfamily Info'):
   }
 
  
+ /*
+    Function: money
+    Proporciona la moneda dependiendo el pais
+ */
+ // JFA
 
 
 function money($number){
@@ -1118,6 +1128,13 @@ function money($number){
     return number_format($number,2,'.',',').'€';
 }
 
+
+ /*
+    Function: new_id
+    Asigna un nuevo ID al registro de la tabla Product Dimension.
+ */
+ // JFA
+
 function new_id(){
   $sql="select max(`Product id`) as id from `Product Dimension`";
   $result=mysql_query($sql);
@@ -1128,6 +1145,12 @@ function new_id(){
   }  
   return $id;
 }
+
+ /*
+    Function: new_part_list_id
+    Asigna un nuevo ID al registro de la tabla Product Part List.
+ */
+ // JFA
 
 function new_part_list_id(){
   $sql="select max(`Product Part ID`) as id from `Product Part List`";
@@ -1140,6 +1163,11 @@ function new_part_list_id(){
   return $id;
 }
 
+ /*
+    Function: valid_id
+    Valida que el ID sea numerico y que este en el rango 0 - 9223372036854775807
+ */
+ // JFA
 
 
 function valid_id($id){
@@ -1148,6 +1176,12 @@ function valid_id($id){
   else
     return false;
 }
+
+ /*
+    Function: get_base_data
+    Obtiene los diferentes valores de los atributos del producto
+ */
+ // JFA
 
 
  function get_base_data(){
@@ -1199,6 +1233,12 @@ $base_data=array(
 
  return $base_data;
  }
+
+ /*
+    Method: create
+    Crea o actualiza valores de la tabla Product Dimension
+ */
+ // JFA
 
 
   function create($data){
@@ -1259,12 +1299,6 @@ $base_data=array(
       $base_data['product family code']=$family->data['Product Family Code'];
       $base_data['product family name']=$family->data['Product Family Name'];
     }
-
-
-    
-    
-    
-
     
     $keys='(';$values='values(';
     foreach($base_data as $key=>$value){
@@ -1274,7 +1308,6 @@ $base_data=array(
     $keys=preg_replace('/,$/',')',$keys);
     $values=preg_replace('/,$/',')',$values);
     $sql=sprintf("insert into `Product Dimension` %s %s",$keys,$values);
-
 
    //  print "$sql\n\n";    
 //     exit;
@@ -1355,6 +1388,13 @@ $base_data=array(
     //$this->set_stock(true);
     //$this->set_sales(true);
   }
+
+ /*
+    Method: create_sibling
+    Crea o actualiza valores de la tabla Product Department Bridge, Product Dimension
+ */
+ // JFA
+
   
   function create_sibling($new_id,$data){
     global $myconf;
@@ -1376,11 +1416,6 @@ $base_data=array(
       $base_data['product id']=$this->new_id();
     $base_data['product most recent']='Yes';
 
-
-    
-
-
-    
     $keys='(';$values='values(';
     foreach($base_data as $key=>$value){
       $keys.="`$key`,";
@@ -1436,6 +1471,11 @@ $base_data=array(
   }
   
 
+ /*
+    Function: new_part_list
+    Crea o actualiza valores de la tabla Product Part List
+ */
+ // JFA
 
 
 
@@ -1503,6 +1543,11 @@ $base_data=array(
     }
   }
 
+ /*
+    Function: normalize_code
+    Da el formato correcto al codigo indicado.
+ */
+ // JFA
 
 
 function normalize_code($code){
@@ -1551,6 +1596,14 @@ function normalize_code($code){
     return $ncode;
   }
   
+
+ /*
+    Method: group_by
+    Despliega informacion de la tabla Product Dimnsion de forma agrupada
+ */
+ // JFA
+
+
  function group_by($key){
    switch($key){
    case('code'):
@@ -1565,6 +1618,10 @@ function normalize_code($code){
 
  }
 
+/*
+    Method: load
+    Carga y actualiza datos de la tabla Product Dimension, extrae información de Product Part List,Supplier Product Dimension,Part Dimension
+*/
 
  function load($key){
 
@@ -2338,18 +2395,6 @@ $y_days=count($y_days);
 	 exit("$sql\ncan not update product sales 1 yr acc same code id\n");
 
 
-
-
-
-
-
-
-
-
-
-
-
-       
        $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Key`=%d and `Invoice Date`>=%s ",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 3 month"))));
  //print "$sql\n\n";
      $result=mysql_query($sql);
@@ -2383,12 +2428,6 @@ $y_days=count($y_days);
 		  );
      if(!mysql_query($sql))
        exit("$sql\ncan not update product sales 1 qtr acc\n");
-     
-
-
-
-
-
 
  $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact`  OTF left join  `Product Dimension` PD on (OTF.`Product Key`=PD.`Product Key`) where `Product ID`=%d and `Invoice Date`>=%s ",$this->data['Product ID'],prepare_mysql(date("Y-m-d",strtotime("- 3 month"))));
      //  print "$sql\n\n";
@@ -2463,15 +2502,6 @@ $y_days=count($y_days);
        if(!mysql_query($sql))
 	 exit("$sql\ncan not update product sales 1 yr acc same code id\n");
 
-
-
-
-
-
-
-
-
-
  $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Key`=%d and `Invoice Date`>=%s ",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 1 month"))));
  //    print "$sql\n\n";
      $result=mysql_query($sql);
@@ -2503,11 +2533,6 @@ $y_days=count($y_days);
 		  );
      if(!mysql_query($sql))
        exit("$sql\ncan not update product sales 1 qtr acc\n");
-     
-
-
-
-
 
  $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact`  OTF left join  `Product Dimension` PD on (OTF.`Product Key`=PD.`Product Key`) where `Product ID`=%d and `Invoice Date`>=%s ",$this->data['Product ID'],prepare_mysql(date("Y-m-d",strtotime("- 1 month"))));
      //  print "$sql\n\n";
@@ -2583,15 +2608,6 @@ $y_days=count($y_days);
 	 exit("$sql\ncan not update product sales 1 yr acc same code id\n");
 
 
-
-
-
-
-
-
-
-
-
      $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Key`=%d and `Invoice Date`>=%s ",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 1 week"))));
  //    print "$sql\n\n";
      $result=mysql_query($sql);
@@ -2624,11 +2640,6 @@ $y_days=count($y_days);
 		  );
      if(!mysql_query($sql))
        exit("$sql\ncan not update product sales 1 week acc\n");
-     
-
-
-
-
 
  $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact`  OTF left join  `Product Dimension` PD on (OTF.`Product Key`=PD.`Product Key`) where `Product ID`=%d and `Invoice Date`>=%s ",$this->data['Product ID'],prepare_mysql(date("Y-m-d",strtotime("- 1 week"))));
      //  print "$sql\n\n";
@@ -2666,8 +2677,6 @@ $y_days=count($y_days);
 	 exit("$sql\ncan not update product sales 1 yr acc same id\n");
 
 
-
-
        $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact`  OTF left join  `Product Dimension` PD on (OTF.`Product Key`=PD.`Product Key`) where `Product Code`=%s and `Invoice Date`>=%s ",prepare_mysql($this->data['Product Code']),prepare_mysql(date("Y-m-d",strtotime("- 1 week"))));
      //  print "$sql\n\n";
      $result=mysql_query($sql);
@@ -2703,16 +2712,6 @@ $y_days=count($y_days);
        if(!mysql_query($sql))
 	 exit("$sql\ncan not update product sales 1 yr acc same code id\n");
 
-
-
-
-
-
-
-
-
-
-     
      break;
    case('images'):
      
@@ -2767,6 +2766,12 @@ case('images_slideshow'):
 
  }
 
+/*
+    Function: load_original_image
+    Carga diferentes tipos de imagenes, Crea y actualiza datos de las tablas Product Image Bridge, Product Image, Image Dimension
+*/
+// JFA 
+
 
  function load_original_image($file){
    global $tmp_images_dir;
@@ -2786,8 +2791,6 @@ case('images_slideshow'):
      }
      
    }
-   
-
 
    if($same_as_other){
      //     $res[$key]['msg']=_('Image already uploaded')." (".$same_as.")";
@@ -2798,8 +2801,6 @@ case('images_slideshow'):
      
    }
 
-   
-   
    $code=$this->get('Product Code');
    $target_path = $tmp_images_dir;
    //print filesize($file)."-----Z\n";
@@ -2863,10 +2864,13 @@ case('images_slideshow'):
    }
    unlink($file);
 
-
-
  }
 
+/*
+    Function: update
+    Permite actualizar valores en los registros de la tabla: Product Dimension, evitando duplicar valores.
+*/
+// JFA
 
  function update($key,$a1=false,$a2=false){
    $this->updated=false;
@@ -2976,10 +2980,6 @@ case('images_slideshow'):
 	 $this->updated=false;
 
 	 return;
-
-
-	 
-
 
 
    }
@@ -3146,14 +3146,6 @@ case('images_slideshow'):
      }
 
 
-    
-
-
-
-    
-
-
-
       if($this->data['Product Record Type']=='In process'){
 
 	if($key=='unit_price')
@@ -3237,14 +3229,6 @@ case('images_slideshow'):
 	  $this->updated=false;
 	}
 	return;
-	
-	
-
-
-
-
-
-
 
        }
 
@@ -3567,6 +3551,12 @@ case('images_slideshow'):
 
  }
 
+/*
+    Function: selfsave
+    Actualiza valores de la tabla Product Dimension.
+*/
+// JFA
+
 
  function selfsave(){
    $values='';
@@ -3583,6 +3573,11 @@ case('images_slideshow'):
     }
  }
 
+/*
+    Method: syncronize
+    Sincroniza actualizaciones en las base de datos.
+*/
+// JFA
 
  function syncronize(){
 
@@ -3597,6 +3592,11 @@ case('images_slideshow'):
 
  }
 
+/*
+    Method: save_to_db
+    Guarda cambios en la base de datos.
+*/
+// JFA
 
  function save_to_db($sql){
 
@@ -3604,13 +3604,16 @@ case('images_slideshow'):
    
  }
 
+/*
+    Function: removeaccents
+    Remueve el acento de las vocales marcadas.
+*/
+// JFA
 
 function removeaccents($string)
 {
   return strtr($string,"é","e");
 } 
-
-
 
 }
 ?>
