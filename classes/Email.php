@@ -169,10 +169,14 @@ class Email extends DB_Table {
     if($data['Email']==''){
       $this->msg=_('No email provided');
       return false;
+    }elseif($this->wrong_email($data['Email'])){
+      $this->msg=_('Wrong email').": ".$data['Email'];
+      $this->error=true;
+      return false;
     }else
       $data['Email Validated']=($this->is_valid($data['Email'])?'Yes':'No');
 
-
+    $data['Email']=$this->prepare_email($data['Email']);
     $subject=false;
     $subject_key=0;
     $subject_type='Contact';
@@ -206,7 +210,7 @@ class Email extends DB_Table {
     $sql=sprintf("select T.`Email Key`,`Subject Key` from `Email Dimension` T left join `Email Bridge` TB  on (TB.`Email Key`=T.`Email Key`) where `Email`=%s and `Subject Type`='Contact'  "
 		 ,prepare_mysql($raw_data['Email'])
 		   );
-    //print "$sql";    
+    //  print "$sql\n";    
     $result=mysql_query($sql);
     $num_results=mysql_num_rows($result);
     if($num_results==0){
@@ -247,9 +251,9 @@ class Email extends DB_Table {
       
     }else if($num_results==1){
 	$this->found=true;
-	
+
 	$row=mysql_fetch_array($result, MYSQL_ASSOC);
-	
+	$this->found_key=$row['Subject Key'];
 	$this->candidate[$row['Subject Key']]=1000;
 	$this->get_data('id',$row['Email Key']);
 	
@@ -340,6 +344,9 @@ protected function create($data,$options=''){
     if($this->is_valid($this->data['Email']))
       $this->data['Email Validated']='Yes';
   
+
+
+
   $sql=sprintf("insert into `Email Dimension`  (`Email`,`Email Contact Name`,`Email Validated`,`Email Correct`) values (%s,%s,%s,%s)"
 	       ,prepare_mysql($this->data['Email'])
 	       ,prepare_mysql($this->data['Email Contact Name'])
@@ -665,6 +672,12 @@ function save_history($key,$history_data){
 
 function display($tipo='link'){
 
+
+  if(!isset($this->data['Email'])){
+    print_r($this);
+    exit;
+  }
+
   switch($tipo){
   case('plain'):
     return $this->data['Email'];
@@ -717,6 +730,30 @@ public static function is_valid($email){
   }
   return true;
 }
+
+public static function  prepare_email($email){
+  
+  $email_parts=split('@',$email);
+  if(count($email_parts)==2){
+    return $email_parts[0].'@'.strtolower($email_parts[1]);
+  }else
+    return $email;
+
+}
+
+public static function  wrong_email($email){
+  
+  if(!preg_match('/\@/',$email))
+    return true;
+  if(preg_match('/^\@|\@$/',$email))
+    return true;
+  $email_parts=split('@',$email);
+  if(count($email_parts)!=2)
+    return true;
+  return false;
+
+    }
+
 
 
 }

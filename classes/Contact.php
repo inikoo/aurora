@@ -203,13 +203,14 @@ class Contact extends DB_Table{
     if($data['Contact Main Plain Email']!=''){
       $email=new Email("find in contact",$data['Contact Main Plain Email']);
       if($email->error){
-	print $email->msg."\n";
-	exit("find_contact: email found\n");
+	$data['Contact Main Plain Email']='';
+
       }	
-    
-      if( $email->found)
+      
+      if( $email->found){
 	$this->found=true;
-	
+	$this->found_key=$email->found_key;
+      }
       foreach($email->candidate as $key=>$val){
 	if(isset($this->candidate[$key]))
 	  $this->candidate[$key]+=$val;
@@ -221,8 +222,8 @@ class Contact extends DB_Table{
       
     }
     if(count($this->candidate)>0){
-      print "candidates ofter email:\n";
-      print_r($this->candidate);
+     // print "candidates ofter email:\n";
+      //print_r($this->candidate);
     }
     if($data['Contact Main Telephone']!=''  ){
       $tel=new Telecom("find in contact",$data['Contact Main Telephone']);
@@ -235,8 +236,8 @@ class Contact extends DB_Table{
       }
     }
     if(count($this->candidate)>0){
-    print "candidates ofter telephone:\n";
-    print_r($this->candidate);
+      //print "candidates ofter telephone:\n";
+      //print_r($this->candidate);
      }
     if($data['Contact Main FAX']!='' ){
       $tel=new Telecom("find in contact",$data['Contact Main FAX']);
@@ -250,8 +251,8 @@ class Contact extends DB_Table{
     }
 	
     if(count($this->candidate)>0){
-    print "candidates after fax:\n";
-    print_r($this->candidate);
+      //print "candidates after fax:\n";
+      //print_r($this->candidate);
    }
 
     if($data['Contact Main Mobile']!='' and !$this->found ){
@@ -267,8 +268,8 @@ class Contact extends DB_Table{
     }
 	
     if(count($this->candidate)>0){
-    print "candidates after mobile:\n";
-    print_r($this->candidate);
+      // print "candidates after mobile:\n";
+      //print_r($this->candidate);
 
     }
 
@@ -286,7 +287,7 @@ class Contact extends DB_Table{
     }
     
     if(count($this->candidate)>0){ 
-      print "candidates after name:$name"."<-  ".count($this->candidate)." \n";
+      // print "candidates after name:$name"."<-  ".count($this->candidate)." \n";
       //	print_r($this->candidate);
     }
 
@@ -297,7 +298,7 @@ class Contact extends DB_Table{
       
       $sql=sprintf("select  `Contact Dimension`.`Contact Key`,`Contact Salutation`,`Contact First Name`,`Contact Surname`,`Contact Suffix` from `Contact Dimension` left join `Contact Bridge` on (`Contact Dimension`.`Contact Key`=`Contact Bridge`.`Contact Key`) where `Subject Key`=%d and `Subject Type`='Company'",$parent_key);
       //  print $sql;
-      print_r($name_data);
+      //print_r($name_data);
       $result=mysql_query($sql);
       $_candidate=array();
       while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
@@ -332,12 +333,12 @@ class Contact extends DB_Table{
 
 
     asort($this->candidate);
-    print "#######################\n";
-    print_r($this->candidate);
+    //print "#######################\n";
+    // print_r($this->candidate);
     foreach($this->candidate as $key => $value){
       if($value>=200){
 	$this->found=true;
-	
+	$this->found_key=$key;
       }
       break;
     }
@@ -347,7 +348,7 @@ class Contact extends DB_Table{
 
 
     if($this->found){
-      $this->get_data('id',$this->found);
+      $this->get_data('id',$this->found_key);
       
     }
 
@@ -518,6 +519,10 @@ class Contact extends DB_Table{
 private function create ($data,$options='',$address_home_data=false,$address_work_data=false){
    
   
+
+  //print_r($data);
+
+
   global $myconf;
    if(is_string($data))
      $data['Contact Name']=$data;
@@ -593,20 +598,24 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
 
       if(preg_match('/parent\:none/',$options)){
 	// Has no parent add emails,tels ect to the contact
+	//	print_r($this->data);
+
 	if($this->data['Contact Main Plain Email']!=''){
 	  $email_data['Email']=$this->data['Contact Main Plain Email'];
 	  $email_data['Email Contact Name']=$this->display('name');
 	  $email=new Email("find in contact ".$this->id." create",$email_data);
-	  if($email->error){
+	  if(!$email->error){
 	    //Collect data about email found
-	    print $email->msg."\n";
-	    exit("find_companycontact: email found\n");
-	  }
+	    //print $email->msg."\n";
+	    // exit("find_companycontact: email found\n");
+	  
 	  
 	  $this->add_email(array(
 				 'Email Key'=>$email->id
 				 ,'Email Type'=>'Personal'
 				 ));
+	  }
+
 	}
 	if($this->data['Contact Main Telephone']!=''){
 	  // print "addin telephone\n";
@@ -621,7 +630,7 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
  }
 	}
 	if($this->data['Contact Main FAX']!=''){
-	  print "addin fax\n";
+	  //print "addin fax\n";
 	  $telephone_data=$this->data['Contact Main FAX'];
 	  $telephone=new Telecom("find in contact ".$this->id." create",$telephone_data);
 	 
@@ -634,7 +643,7 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
 	}
 
 	if($this->data['Contact Main Mobile']!=''){
-	  print "addin fax\n";
+	  //print "addin fax\n";
 	  $telephone_data=$this->data['Contact Main Mobile'];
 	  $telephone=new Telecom("find in contact ".$this->id." create",$telephone_data);
  if(!$telephone->error){
@@ -895,6 +904,50 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
     
     
   }
+
+
+ /* Method: del_email
+  Delete the email from Contact
+  
+  Delete telecom record  this record to the Contact
+
+
+  Parameter:
+  $args -     string  options
+ */
+ function del_email($args='principal'){
+
+   if(preg_match('/principal/i',$args) ){
+       
+     
+
+       $sql=sprintf("delete `Email Bridge`  where `Subject Type`='Contact' and  `Subject Key`=%d  and `Telecom Key`=%d",
+		    $this->id
+		    ,$this->data['Contact Main Email Key']
+		    );
+       mysql_query($sql);
+       $sql=sprintf("update `Contact Dimension` set `Contact Main XHTML Email`='' `Contact Main Plain Email`='' , `Contact Main Email Key`=''  where `Contact Key`=%d"
+		    ,$this->id
+		    );
+       //print "$sql\n";
+       mysql_query($sql);
+
+       
+	 if($company_key=$this->company_key('princial')){
+	   $company=new Company('id',$company_key);
+	   $company->del_tel($args);
+	 }
+
+     }
+
+ }
+
+
+
+
+
+
+
  /*
     Function: update_address
     Update/Create address
@@ -1173,7 +1226,67 @@ function add_address($data,$args='principal'){
     
 
    }
- 
+ /* Method: del_tel
+  Delete an telecom  in Contact
+  
+  Delete telecom record  this record to the Contact
+
+
+  Parameter:
+  $args -     string  options
+ */
+ function del_tel($args='principal'){
+
+   if(preg_match('/principal/i',$args)){
+       
+       if(preg_match('/fax/i',$args)){
+	 $tel_key=$this->data['Contact Main FAX Key'];
+	   $telecom_tipo='Contact Main FAX';
+	   $telecom_tipo_key='Contact Main FAX Key';
+	   $telecom_tipo_plain='Contact Main Plain FAX';
+       }if(preg_match('/mobile/i',$args)){
+	 $tel_key=$this->data['Contact Main Mobile Key'];
+ $telecom_tipo='Contact Main Mobile';
+	 $telecom_tipo_key='Contact Main Mobile Key';
+	 $telecom_tipo_plain='Contact Main Plain Mobile';
+       }else{
+	 $tel_key=$this->data['Contact Main Telephone Key'];
+ $telecom_tipo='Contact Main Telephone';
+	    $telecom_tipo_key='Contact Main Telephone Key';
+	   $telecom_tipo_plain='Contact Main Plain Telephone';
+       }
+
+       $sql=sprintf("delete `Telecom Bridge`  where `Subject Type`='Contact' and  `Subject Key`=%d  and `Telecom Key`=%d",
+		    $this->id
+		    ,$tel_key
+		    );
+       mysql_query($sql);
+       $sql=sprintf("update `Contact Dimension` set `%s`='' `%s`='' , `%s`=''  where `Contact Key`=%d"
+		      ,$telecom_tipo
+		      ,$telecom_tipo_plain
+		      ,$telecom_tipo_key
+		      ,$this->id
+		      );
+	 //print "$sql\n";
+	 mysql_query($sql);
+
+       
+	 if($company_key=$this->company_key('princial')){
+	   
+	   $company_telecom_tipo_key=preg_match('/Contact/','Company',$telecom_tipo_key);
+	   
+	   $company=new Company('id',$company_key);
+	   $company->del_tel($args);
+	 }
+
+
+
+
+     }
+
+ }
+
+           
 
  /*Function: update_field_switcher
    Custom update switcher
@@ -1191,22 +1304,30 @@ protected function update_field_switcher($field,$value,$options=''){
     $this->update_Contact_Name($value,$options);
     break;
   case('Contact Main Plain Email'):
-    
 
-    $email_data=array('Email'=>$value);
-    $this->add_email($email_data,$options.' principal');
+    if($value==''){
+      $this->del_email('principal');
+    }elseif(!email::wrong_email($value)){
+      $value=email::prepare_email($value);
+      $email_data=array('Email'=>$value);
+      $this->add_email($email_data,$options.' principal');
+    }
     break;  
   case('Contact Main Telephone'):
     // check if plain numbers are the same
     $tel_data=Telecom::parse_number($value);
     $plain_tel=Telecom::plain_number($tel_data);
     if($plain_tel!=$this->data['Contact Main Plain Telephone']){
-
-      $tel_data=array(
-		      'Telecom Raw Number'=>$value
+      if($plain_tel==''){
+	// Remove main telephone
+	$this->del_tel('principal');
+      }else{
+	$tel_data=array(
+			'Telecom Raw Number'=>$value
 		      ,'Telecom Type'=>'Telephone'
-		      );
-      $this->add_tel($tel_data,$options.' principal');
+			);
+	$this->add_tel($tel_data,$options.' principal');
+      }
     }
     break;  
  case('Contact Main FAX'):
@@ -1214,26 +1335,38 @@ protected function update_field_switcher($field,$value,$options=''){
     $plain_tel=Telecom::plain_number($tel_data);
     if($plain_tel!=$this->data['Contact Main Plain FAX']){
    
-
-    $tel_data=array(
-		    'Telecom Raw Number'=>$value
-		    ,'Telecom Type'=>'Fax'
-		    );
-    $this->add_tel($tel_data,$options.' principal');
+      if($plain_tel==''){
+	// Remove main telephone
+	$this->del_tel('principal fax');
+      }else{
+	$tel_data=array(
+			'Telecom Raw Number'=>$value
+			,'Telecom Type'=>'Fax'
+			);
+	$this->add_tel($tel_data,$options.' principal');
+      }
     }
     break;  
- case('Contact Main Mobile'):
-   $tel_data=Telecom::parse_number($value);
-   $plain_tel=Telecom::plain_number($tel_data);
+  case('Contact Main Mobile'):
+    $tel_data=Telecom::parse_number($value);
+    $plain_tel=Telecom::plain_number($tel_data);
+    
+
 
     if($plain_tel!=$this->data['Contact Main Plain Mobile']){
-    $tel_data=array(
-		    'Telecom Raw Number'=>$value
-		    ,'Telecom Type'=>'Mobile'
-		    );
-    $this->add_tel($tel_data,$options.' principal');
+      if($plain_tel==''){
+	// Remove main telephone
+	$this->del_tel('principal mobile');
+      }else{
+      
+      $tel_data=array(
+		      'Telecom Raw Number'=>$value
+		      ,'Telecom Type'=>'Mobile'
+		      );
+      $this->add_tel($tel_data,$options.' principal');
+      }
     }   
- break;  
+    break;  
   case('Home Address'):
 
     break;

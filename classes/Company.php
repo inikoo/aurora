@@ -37,7 +37,7 @@ class Company extends DB_Table {
        Returns:
        void
        
-       Example:
+        Example:
        (start example)
        // Load data from `Company Dimension` table where  `Company Key`=3
        $key=3;
@@ -166,7 +166,7 @@ class Company extends DB_Table {
     foreach($this->candidate as $contact_key=>$score){
       $_contact=new Contact($contact_key);
       $company_key=$_contact->data['Contact Company Key'];
-      print "---- $company_key\n";
+      // print "---- $company_key\n";
       if(isset($candidate_companies[$company_key]))
 	$candidate_companies[$company_key]+=$score;
       else
@@ -202,15 +202,15 @@ class Company extends DB_Table {
 
       if($this->found and false){
 	$old=new company($this->found_key);
-	print_r($old->data);
-	print_r($raw_data);
+	//print_r($old->data);
+	//print_r($raw_data);
 	exit;
 
       }
 
       
 
-      print "Company Found:".$this->found."\nContact Found:".$contact->found."\n";
+      //print "Company Found:".$this->found."\nContact Found:".$contact->found."\n";
       if(!$contact->found and $this->found){
 	// try to find again the contact now that we now the company
 	$contact=new Contact("find in company ".$this->found_key,$raw_data);
@@ -239,7 +239,7 @@ class Company extends DB_Table {
 
     }else{
       // update 
-      print "Updatinf company and contact\n";
+      //print "Updatinf company and contact\n";
       $this->get_data('id',$this->found_key);
 
       $this->update_address($address_data);
@@ -333,22 +333,23 @@ class Company extends DB_Table {
     $this->data['Company Main Contact Name']=$contact->display('name');
     $this->data['Company Main Contact Key']=$contact->id;
    
+
+    if(email::wrong_email($this->data['Company Main Plain Email']))
+      $this->data['Company Main Plain Email']='';
+    
     
     if($this->data['Company Main Plain Email']!=''){
        
        $email_data['Email']=$this->data['Company Main Plain Email'];
        $email_data['Email Contact Name']=$this->data['Company Main Contact Name'];
        $email=new Email("find in company create",$email_data);
-       if($email->error){
-	 //Collect data about email found
-	 print $email->msg."\n";
-	 exit("find_company: email found\n");
+       if(!$email->error){
+	 
+	 
+	 $this->data['Company Main Plain Email']=$email->display('plain');
+	 $this->data['Company Main XHTML Email']=$email->display('xhtml');
+	 $this->data['Company Main Email Key']=$email->id;
        }
-       
-       $this->data['Company Main Plain Email']=$email->display('plain');
-       $this->data['Company Main XHTML Email']=$email->display('xhtml');
-       $this->data['Company Main Email Key']=$email->id;
-       
 
      }
 
@@ -545,30 +546,43 @@ protected function update_field_switcher($field,$value,$options=''){
     break;
   case('Company Main Plain Email'):
     
+    if($value==''){
+      $contact=new Contact($this->data['Company Main Contact Key']);
+      $contact->del_email('principal');
 
+    }elseif(!email::wrong_email($value)){
+      $contact=new Contact($this->data['Company Main Contact Key']);
+      $email_data=array('Contact Email'=>$value);
+      $contact->add_email($email_data);// <- will update company
+    }
     
-    $contact=new Contact($this->data['Company Main Contact Key']);
-    $email_data=array('Contact Email'=>$value);
-    $contact->update($email_data);// <- will update company
-
-
-    //$this->add_email($email_data,$options.' principal');
     break;  
   case('Company Main Telephone'):
     // check if plain numbers are the same
+
+    //print "Updation company telecom\n NEW value $value\n";
+      
     $contact=new Contact($this->data['Company Main Contact Key']);
     $tel_data=Telecom::parse_number($value);
-    // print "tel data\n";
+    //print "tel data\n";
     //print_r($tel_data);
-
     $plain_tel=Telecom::plain_number($tel_data);
-    if($plain_tel!=$this->data['Company Main Plain Telephone']){
+   
+    //    print "plain: $plain_tel\n";
 
-      $tel_data=array(
-		      'Telecom Raw Number'=>$value
-		      ,'Telecom Type'=>'Telephone'
-		      );
-      $contact->add_tel($tel_data,$options.' principal');
+    if($plain_tel!=$this->data['Company Main Plain Telephone']){
+      
+      if($plain_tel==''){
+	// Remove main telephone
+	$contact->del_tel('principal');
+      }else{
+	$tel_data=array(
+			'Telecom Raw Number'=>$value
+			,'Telecom Type'=>'Telephone'
+			);
+	$contact->add_tel($tel_data,$options.' principal');
+      }
+
     }
     break;  
   case('Company Main FAX'):
@@ -578,13 +592,17 @@ protected function update_field_switcher($field,$value,$options=''){
     $tel_data=Telecom::parse_number($value);
     $plain_tel=Telecom::plain_number($tel_data);
     if($plain_tel!=$this->data['Company Main Plain FAX']){
-   
+    if($plain_tel==''){
+	// Remove main telephone
+	$contact->del_tel('principal fax');
+      }else{
 
     $tel_data=array(
 		    'Telecom Raw Number'=>$value
 		    ,'Telecom Type'=>'Fax'
 		    );
     $contact->add_tel($tel_data,$options.' principal');
+    }
     }
     break;  
   
@@ -690,7 +708,7 @@ private function update_Company_Name($value,$options){
 		     'page type'=>$email_type,
 		     'page validated'=>0,
 		     'page verified'=>0,
-		     );
+		    );
     
     if(isset($data['page description']) and $data['page description']!='')
       $url_data['page description']=$data['page description'];
@@ -777,7 +795,38 @@ private function update_Company_Name($value,$options){
     
   }
 
+/* Method: del_email
+  Delete the email from Company
+  
+  Delete telecom record  this record to the Contact
 
+
+  Parameter:
+  $args -     string  options
+ */
+ function del_email($args='principal'){
+
+   if(preg_match('/principal/i',$args)){
+       
+     
+
+       $sql=sprintf("delete `Email Bridge`  where `Subject Type`='Company' and  `Subject Key`=%d  and `Telecom Key`=%d",
+		    $this->id
+		    ,$this->data['Company Main Email Key']
+		    );
+       mysql_query($sql);
+       $sql=sprintf("update `Company Dimension` set `Company Main XHTML Email`='' `Company Main Plain Email`='' , `Company Main Email Key`=''  where `Company Key`=%d"
+		    ,$this->id
+		    );
+
+       mysql_query($sql);
+
+       
+	
+
+   }
+
+ }
 /* Method: add_tel
   Add/Update an telecom to the Company
   
@@ -867,9 +916,55 @@ private function update_Company_Name($value,$options){
    }
 
  }
+ /* Method: del_tel
+  Delete an telecom  in Contact
+  
+  Delete telecom record  this record to the Contact
+
+
+  Parameter:
+  $args -     string  options
+ */
+ function del_tel($args='principal'){
+
+   if(preg_match('/principal/i',$args)){
+       
+       if(preg_match('/fax/i',$args)){
+	 $tel_key=$this->data['Company Main FAX Key'];
+	 $telecom_tipo='Company Main FAX';
+	 $telecom_tipo_key='Company Main FAX Key';
+	 $telecom_tipo_plain='Company Main Plain FAX';
+       }else{
+	 $tel_key=$this->data['Company Main Telephone Key'];
+	 $telecom_tipo='Company Main Telephone';
+	 $telecom_tipo_key='Company Main Telephone Key';
+	 $telecom_tipo_plain='Company Main Plain Telephone';
+       }
+
+       $sql=sprintf("delete `Telecom Bridge`  where `Subject Type`='Company' and  `Subject Key`=%d  and `Telecom Key`=%d",
+		    $this->id
+		    ,$tel_key
+		    );
+       mysql_query($sql);
+       $sql=sprintf("update `Company Dimension` set `%s`='' `%s`='' , `%s`=''  where `Company Key`=%d"
+		      ,$telecom_tipo
+		      ,$telecom_tipo_plain
+		      ,$telecom_tipo_key
+		      ,$this->id
+		      );
+	 //print "$sql\n";
+	 mysql_query($sql);
+
+      
+
+
+
+
+   }
+ }
     
 /* Method: add_address
-  Add/Update an address to the Contact
+  Add/Update an address to the Company
   
   Search for an address record maching the address data *$data* if not found create a ne address record then add this record to the Contact
 
