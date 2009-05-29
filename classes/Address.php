@@ -2734,8 +2734,8 @@ class Address extends DB_Table{
       $data['Address Postal Code']=preg_replace('/Netherlands|holland/i','',$data['Address Postal Code']);
 
       if($data['Address Postal Code']==''){
-	preg_match('/\s*\d{4,6}\s*[a-z]{2}\s*/i',$data['Address Town'],$match2);
-	$data['Address Postal Code']=_trim($match2[0]);
+	if(preg_match('/\s*\d{4,6}\s*[a-z]{2}\s*/i',$data['Address Town'],$match2))
+	  $data['Address Postal Code']=_trim($match2[0]);
       }
       $data['Address Postal Code']=strtoupper($data['Address Postal Code']);
       $data['Address Postal Code']=preg_replace('/\s/','',$data['Address Postal Code']);

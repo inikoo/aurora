@@ -39,6 +39,9 @@ $row = 0;
 $handle = fopen("somecontacts.txt", "r");
 //$handle = fopen("data.txt", "r");
 
+$with_email=0;
+
+
 while (($data = fgetcsv($handle, 2000, "\t")) !== FALSE) {
   
   // print count($data)."\n";
@@ -59,6 +62,8 @@ while (($data = fgetcsv($handle, 2000, "\t")) !== FALSE) {
   $data[15]=preg_replace('/^\[1\]/','',$data[15]);
 
 
+  if($data[92]!='')
+    $with_email++;
   if(($data[2]=='' or $data[2]==$data[3]) and $data[3]!=''  ){
       //Personal Contact
     //  print "$row Person ============================\n";
@@ -74,7 +79,7 @@ while (($data = fgetcsv($handle, 2000, "\t")) !== FALSE) {
       $x__data['Contact Main FAX']=$data[13];
       $x__data['Contact Main Mobile']=$data[15];
       $x__data['Contact Main Plain Email']=$data[92];
-    
+      
 
     }elseif($data[2]!='' and $data[2]!=$data[3] and $data[3]!=''){
       //Company
@@ -121,36 +126,41 @@ while (($data = fgetcsv($handle, 2000, "\t")) !== FALSE) {
        $_date[]=$date;
        // print_r($x__data);
 	 //     print $data[89]." $date\n";
-	 //$row++;
+	 $row++;
+	
 }
+fclose($handle);
 
-
-
+//print "$row $with_email\n";exit;
 asort($_date);
 
 
 
 
-
+$count=1;
 
 foreach ($_date as $key=>$val) {
   //print "====================================\n";
-  //  print_r($_data[$key]);
+  // print_r($_data[$key]);
   if(isset($_data[$key]['Company Name'])){
     //    print "caca";
-    if(preg_match('/karen|cornes/i',$_data[$key]['Company Main Contact Name']))
+    //   if(preg_match('/karen|cornes/i',$_data[$key]['Company Main Contact Name']))
+
+    //print "Email ".$_data[$key]['Company Main Plain Email']."\n";
     $company=new Company('find create auto',$_data[$key]);
   }elseif(isset($_data[$key]['Contact Name'])){
-    if(preg_match('/karen|cornes/i',$_data[$key]['Contact Name']))
-      $contact=new Contact('find create',$_data[$key]);
+    //   if(preg_match('/karen|cornes/i',$_data[$key]['Contact Name']))
+    // print "Email ".$_data[$key]['Contact Main Plain Email']."\n";
+    $contact=new Contact('find create',$_data[$key]);
 
   }
  
   
-
-   
+  $count++;
+  //if($count>100)
+  //  exit;
 }
-fclose($handle);
+
 
 
 

@@ -810,6 +810,13 @@ function _trim($string){
 
 function mb_ucwords($str) {
   $str=_trim($str);
+
+  if(strlen($str==1)){
+    return strtoupper($str);
+
+  }
+
+
   if(preg_match('/^PO BOX\s+/i',$str))
      return strtoupper($str);
 
@@ -841,16 +848,18 @@ function mb_ucwords($str) {
   $exceptions['Or'] = 'or';
   $exceptions['At'] = 'at';
   $exceptions['Des'] = 'des';
-$exceptions['Fao'] = 'FAO';
+  $exceptions['Fao'] = 'FAO';
   $exceptions['MRS'] = 'Mrs';
   $exceptions['MR'] = 'Mr';
   $exceptions['SR'] = 'Sr';
   $exceptions['RD'] = 'Rd';
-
+  $exceptions['MS'] = 'Ms';
     
-  if($str=='' or $str==',' or  $str=='+')
+  if($str=='' or $str==',' or  $str=='+' or  $str=='-')
     return $str;
   //  print "$str\n";
+
+  
 
 
   $separator = array("-","+",","," ");

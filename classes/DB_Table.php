@@ -73,7 +73,7 @@ abstract class DB_Table
 	if(array_key_exists($key,$base_data)){
 	  
 	  if($value!=$this->data[$key]){
-	    print "Field: $key \nOld value: ".$this->data[$key]." \nNew value:  $value \nOpciones: $options\n";
+	    //  print "Field: $key \nOld value: ".$this->data[$key]." \nNew value:  $value \nOpciones: $options\n";
 	    $this->update_field_switcher($key,$value,$options);
 	    
 	    //    $function_name='update_'.preg_replace('/\s/','',ucwords($key));
@@ -85,8 +85,8 @@ abstract class DB_Table
     
       if(!$this->updated)
 	$this->msg.=' '._('Nothing to be updated')."\n";
-      else
-	 print $this->table_name." Updated ============\n";
+      //   else
+      //	 print $this->table_name." Updated ============\n";
 
     }
   /*Function: update_field

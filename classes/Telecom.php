@@ -612,7 +612,7 @@ protected function create($data,$optios=''){
       $data['National Only Telecom']='Yes';
       $data['Telecom Country Telephone Code']='';
 
-      preg_match('/^\d{3}3/',$data['Telecom Number'],$match);
+      preg_match('/^\d{3}/',$data['Telecom Number'],$match);
       $data['Telecom Area Code']=$match[0];
       $data['Telecom Number']=preg_replace('/^'.$data['Telecom Area Code'].'/','',$data['Telecom Number']);
       $data['Telecom Technology Type']='Non-geographic';
