@@ -133,7 +133,7 @@ function find($raw_data,$options){
    $this->found=false;
    $this->found_in=false;
    $this->found_out=false;
-   $this->candiadate=array();
+
    $in_contacts=array();
    $mode='Contact';
    $parent='Contact';
@@ -255,7 +255,7 @@ function find($raw_data,$options){
 		 ,prepare_mysql($data['Telecom Plain Number'])
 		
 		 );
-    //  print "$sql\n";
+    //    print "$sql\n";
     $result=mysql_query($sql);
     $num_results=mysql_num_rows($result);
     
@@ -282,16 +282,24 @@ function find($raw_data,$options){
       }else{
 	// Found in more than one contact, 
 
-	if($mode=='Contact in' or $mode=='Company in'){
+	
 	  
 	  while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-	    if(in_array($row['Subject Key'],$in_contact)){
-	      $this->candidate[$row['Subject Key']]=90;
-	    }else{
-	      $this->candidate[$row['Subject Key']]=50;
-	    }
+	    
+	    if($mode=='Contact in' or $mode=='Company in'){
+	      if(in_array($row['Subject Key'],$in_contact)){
+		$this->candidate[$row['Subject Key']]=90;
+	      }else{
+		$this->candidate[$row['Subject Key']]=50;
+	      }
+	    }else
+	      $this->candidate[$row['Subject Key']]=100;
+	    
 	  }
-	}
+      
+	  
+
+
 	$this->msg=_('Telephone found in')." $num_results ".ngettext('record','records',$num_results);
 	
 	

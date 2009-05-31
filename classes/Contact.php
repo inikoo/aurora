@@ -117,6 +117,7 @@ class Contact extends DB_Table{
   function find($raw_data,$options){
 
     $this->candidate=array();
+    $this->found=false;
     $create='';
     $update='';
     if(preg_match('/create/i',$options)){
@@ -227,7 +228,7 @@ class Contact extends DB_Table{
     }
     if($data['Contact Main Telephone']!=''  ){
       $tel=new Telecom("find in contact",$data['Contact Main Telephone']);
-      
+      // print_r($tel);
       foreach($tel->candidate as $key=>$val){
 	if(isset($this->candidate[$key]))
 	  $this->candidate[$key]+=$val;
@@ -235,10 +236,11 @@ class Contact extends DB_Table{
 	  $this->candidate[$key]=$val;
       }
     }
-    if(count($this->candidate)>0){
-      //print "candidates ofter telephone:\n";
-      //print_r($this->candidate);
-     }
+
+    // if(count($this->candidate)>0){
+    //  print "candidates ofter telephone:\n";
+    //  print_r($this->candidate);
+    // }
     if($data['Contact Main FAX']!='' ){
       $tel=new Telecom("find in contact",$data['Contact Main FAX']);
       foreach($tel->candidate as $key=>$val){
@@ -250,10 +252,10 @@ class Contact extends DB_Table{
       
     }
 	
-    if(count($this->candidate)>0){
+    //if(count($this->candidate)>0){
       //print "candidates after fax:\n";
       //print_r($this->candidate);
-   }
+      //}
 
     if($data['Contact Main Mobile']!='' and !$this->found ){
       $tel=new Telecom("find in contact",$data['Contact Main Mobile']);
@@ -266,13 +268,27 @@ class Contact extends DB_Table{
       }
 
     }
-	
-    if(count($this->candidate)>0){
-      // print "candidates after mobile:\n";
-      //print_r($this->candidate);
 
+
+
+    if(!array_empty( $address_work_data)){
+       $address=new Address("find in contact",$address_work_data);
+       foreach($address->candidate as $key=>$val){
+	 if(isset($this->candidate[$key]))
+	   $this->candidate[$key]+=$val;
+	 else
+	   $this->candidate[$key]=$val;
+       }
+       
+       
     }
+   
+   /*  if(count($this->candidate)>0){ */
+/*        print "candidates after mobile:\n"; */
+/*       print_r($this->candidate); */
 
+/*     } */
+    //  exit;
     // find same name
     $name_data=$this->parse_name($data['Contact Name']);
     $name=$this->name($name_data);
@@ -287,10 +303,10 @@ class Contact extends DB_Table{
     }
     
     if(count($this->candidate)>0){ 
-      // print "candidates after name:$name"."<-  ".count($this->candidate)." \n";
-      //	print_r($this->candidate);
+      //  print "candidates after name:$name"."<-  ".count($this->candidate)." \n";
+      // 	print_r($this->candidate);
     }
-
+    // exit;
     // try to find contacts in the same company with missing parts
     
     if($parent=='company' and $parent_key){
@@ -331,26 +347,46 @@ class Contact extends DB_Table{
     
     
 
-
-    asort($this->candidate);
+    //print_r($this->candidate);
+    arsort($this->candidate);
     //print "#######################\n";
     // print_r($this->candidate);
     foreach($this->candidate as $key => $value){
       if($value>=200){
 	$this->found=true;
 	$this->found_key=$key;
+	break;
       }
-      break;
-    }
       
+      
+    }
+    
+    $tmp=$data;
+    unset($tmp['Contact Name']);
+    if(array_empty($tmp)){
+      foreach($this->candidate as $key => $value){
+      if($value>=100){
+	$this->found=true;
+	$this->found_key=$key;
+	break;
+      }
+
+      }
+    }
 
 
 
+    //print "-Contact Candidates\n";
+    //print_r($this->candidate);
 
     if($this->found){
       $this->get_data('id',$this->found_key);
       
+      //  print "Contact found  ".$this->found_key." \n";
+      //print_r($this->card());
     }
+    //  else
+    // exit;
 
     if($create){
       if($this->found){
@@ -953,6 +989,8 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
     Update/Create address
    */
   private function update_address($data,$type='Work'){
+
+   
     if(!array_empty($data)){
       $address=new address('find in contact '.$this->id.' '.$type.' ',$data);
       if($address->id){
@@ -1240,10 +1278,12 @@ function add_address($data,$args='principal'){
    if(preg_match('/principal/i',$args)){
        
        if(preg_match('/fax/i',$args)){
+	 
+
 	 $tel_key=$this->data['Contact Main FAX Key'];
-	   $telecom_tipo='Contact Main FAX';
-	   $telecom_tipo_key='Contact Main FAX Key';
-	   $telecom_tipo_plain='Contact Main Plain FAX';
+	 $telecom_tipo='Contact Main FAX';
+	 $telecom_tipo_key='Contact Main FAX Key';
+	 $telecom_tipo_plain='Contact Main Plain FAX';
        }if(preg_match('/mobile/i',$args)){
 	 $tel_key=$this->data['Contact Main Mobile Key'];
  $telecom_tipo='Contact Main Mobile';
@@ -2083,6 +2123,11 @@ string with the name to be parsed
 
        }
      }else{
+       //     if(!isset($this->data['Contact Company Key'])){
+       //	 print_r($this);
+       //	 exit;
+       // }
+       
        return $this->data['Contact Company Key'];
 
      }
@@ -2090,7 +2135,56 @@ string with the name to be parsed
      
   }
 
+ /*
+     function: card
+     Returns an array with the contact details
+    */
+   function card(){
 
+
+     $card=array(
+		 'Contact Name'=>$this->data['Contct Name']
+		 ,'Emails'=>array()
+		 ,'Telephones'=>array()
+		 ,'Addresses'=>array()
+		 );
+     
+     $sql=sprintf("select   ED.`Email`,ED.`Email Key`,EB.`Is Main`,EB.`Email Description`  from `Email Bridge` EB left join `Email Dimension` on (EB.`Email Key`=ED.`Email Key`) where `Subject Type`='Contact' and `Subject Key`=%d and `Is Active`='Yes' order by `Is Main` desc",$this->id);
+     $result=mysql_query($sql);
+     while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+       $card['Emails'][$row['Email Key']]=array(
+						'Address'=>$row['Email']
+						,'Description'=>$row['Email Description']
+						,'Principal'=>$row['Is Main']
+						);
+     }
+     $sql=sprintf("select TB.`Telecom Key`,TB.`Is Main`,TB.`Telecom Description`  from `Telecom Bridge`  where `Subject Type`='Contact' and `Subject Key`=%d and `Is Active`='Yes' order by `Is Main` desc",$this->id);
+      $result=mysql_query($sql);
+      while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+	$telecom=new Telecom($row['Telecom Key']);
+	$card['Emails'][$row['Telecom Key']]=array(
+						   'Number'=>$telecom->display()
+						   ,'Description'=>$row['Telecom Description']
+						   ,'Principal'=>$row['Is Main']
+						 );
+      }
+
+      $sql=sprintf("select AB.`Address Key`,AB.`Is Main`,AB.`Address Description`  from `Address Bridge`  where `Subject Type`='Contact' and `Subject Key`=%d and `Is Active`='Yes' order by `Is Main` desc",$this->id);
+      $result=mysql_query($sql);
+      while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+	$telecom=new Address($row['Address Key']);
+	$card['Addresses'][$row['Address Key']]=array(
+						   'Address'=>$address->display()
+						   ,'Description'=>$row['Address Description']
+						   ,'Principal'=>$row['Is Main']
+						 );
+      }
+
+
+
+      return $card;
+
+   }
 
 } 
  ?>

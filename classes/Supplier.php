@@ -11,6 +11,8 @@
  
  Version 2.0
 */
+include_once('DB_Table.php');
+
 include_once('Company.php');
 include_once('Contact.php');
 include_once('Telecom.php');
@@ -20,21 +22,37 @@ include_once('Name.php');
 /* class: Supplier
  Class to manage the *Supplier Dimension* table
 */
-class supplier{
-  var $db;
-  var $data=array();
-  var $items=array();
+class supplier extends DB_Table{
 
-  var $id=false;
 
+/*
+    Constructor: Supplier
+    
+    Initializes the class, Search/Load or Create for the data set 
+    
+    Parameters:
+    arg1 -    (optional) Could be the tag for the Search Options or the Company Key for a simple object key search
+    arg2 -    (optional) Data used to search or create the object
+    
+       Returns:
+       void
+       
+
+
+     */
 
   function Supplier($arg1=false,$arg2=false) {
+
+    $this->table_name='Supplier';
+    $this->ignore_fields=array('Supplier Key');
+
+
      if(is_numeric($arg1)){
        $this->get_data('id',$arg1);
        return ;
      }
      if(preg_match('/create|new/i',$arg1)){
-       $this->create($arg2);
+       $this->find($arg2,'create');
        return;
      }       
      $this->get_data($arg1,$arg2);
@@ -74,6 +92,36 @@ class supplier{
      
   }
 
+ /*
+    Method: find
+    Find Supplier with similar data
+   
+    Returns:
+    Key of the Compnay found, if create is found in the options string  returns the new key
+   */  
+ function find($raw_data,$options){
+   $create='';
+   $update='';
+   if(preg_match('/create/i',$options)){
+     $create='create';
+   }
+    if(preg_match('/update/i',$options)){
+      $update='update';
+    }
+    
+    $data=$this->base_data();
+    foreach($raw_data as $key=>$value){
+      if(array_key_exists($key,$data)){
+	$data[$key]=_trim($value);
+      }
+    } 
+    
+ }
+
+ /*
+   Function: get
+   Get data from the class
+ */
    function get($key){
 
      return 0;

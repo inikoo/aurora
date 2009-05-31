@@ -29,7 +29,7 @@ abstract class DB_Table
  // Boolean: found
   // True if company founded
   public $found=false;
-
+ public $found_key=false;
   // Array: candidate
   // array with the posible matches
   public $candidate=array();
@@ -72,6 +72,11 @@ abstract class DB_Table
     foreach($data as $key=>$value){
 	if(array_key_exists($key,$base_data)){
 	  
+	  // if(!isset($this->data[$key])){
+	  //  print_r($this);
+	  //  exit;
+	  //}
+
 	  if($value!=$this->data[$key]){
 	    //  print "Field: $key \nOld value: ".$this->data[$key]." \nNew value:  $value \nOpciones: $options\n";
 	    $this->update_field_switcher($key,$value,$options);

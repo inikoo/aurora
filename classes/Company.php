@@ -61,7 +61,7 @@ class Company extends DB_Table {
        return ;
      }
      if(preg_match('/^(create|new)/i',$arg1)){
-       $this->create($arg2);
+       $this->find($arg2,'create');
        return;
      } if(preg_match('/find/i',$arg1)){
        $this->find($arg2,$arg1);
@@ -81,6 +81,10 @@ class Company extends DB_Table {
     Key of the Compnay found, if create is found in the options string  returns the new key
    */  
   function find($raw_data,$options){
+    
+  $this->candidate=array();
+  $this->found=false;
+
     $create='';
     $update='';
     if(preg_match('/create/i',$options)){
@@ -163,18 +167,24 @@ class Company extends DB_Table {
     
     //addnow we have a list of  candidates, from this list make another list of companies
     $candidate_companies=array();
+    // print "Contact Candidates:";
+    //print_r($this->candidate);
+   
+    
     foreach($this->candidate as $contact_key=>$score){
       $_contact=new Contact($contact_key);
       $company_key=$_contact->data['Contact Company Key'];
+      if($company_key){
       // print "---- $company_key\n";
       if(isset($candidate_companies[$company_key]))
 	$candidate_companies[$company_key]+=$score;
       else
 	$candidate_companies[$company_key]=$score;
-
+      }
     }
 
-    
+    //print "Company Candidates:";
+    //print_r($candidate_companies);
     if(!empty($candidate_companies)){
       asort($candidate_companies);
       foreach($candidate_companies as $key=>$val){
@@ -187,14 +197,14 @@ class Company extends DB_Table {
       }
       
     }
-    if(count($this->candidate)>0){
-      //  print "Contact candidates\n";
-      // print_r($this->candidate);
-    }
-    if(count($candidate_companies)>0){
-      //print "Company candidates\n";
-      //print_r($candidate_companies);
-    }
+/*     if(count($this->candidate)>0){ */
+/*       //  print "Contact candidates\n"; */
+/*       // print_r($this->candidate); */
+/*     } */
+/*     if(count($candidate_companies)>0){ */
+/*       //print "Company candidates\n"; */
+/*       //print_r($candidate_companies); */
+/*     } */
     
 
    
@@ -226,22 +236,51 @@ class Company extends DB_Table {
 
       }
 
+      // if($this->found)
+      //	print "Company founded ".$this->found_key."  \n";
+
+
     // there are 4 cases
     if(!$contact->found and !$this->found){
       $this->new_contact=true;
       $this->create($data,$address_data);
 
     }elseif(!$contact->found and $this->found){
-      $this->create($data,$address_data);
+      $this->get_data('id',$this->found_key);
+      //print_r($this->card());
+      // Create contact
+      $contact=new Contact("find create",$raw_data);
+      $this->data['Company Main Contact Name']=$contact->display('name');
+      $this->data['Company Main Contact Key']=$contact->id;
+      $contact->add_company(array(
+				  'Company Key'=>$this->id
+				  ));
+      
+
+      $this->update_address($address_data);
+      $this->update($raw_data);
 
     }elseif($contact->found and !$this->found){
-      $this->create($data,$address_data);
+
+      if($contact->data['Contact Company Key']){
+	 $this->get_data('id',$contact->data['Contact Company Key']);
+	 // print_r($this->card());
+	 $this->update_address($address_data);
+	 $this->update($raw_data);
+      }else{
+	
+	$this->create($data,$address_data,'use contact '.$contact->id);
+	
+      }
+       
 
     }else{
       // update 
       //print "Updatinf company and contact\n";
+      
+      
       $this->get_data('id',$this->found_key);
-
+      //print_r($this->card());
       $this->update_address($address_data);
       $this->update($raw_data);
 
@@ -306,31 +345,35 @@ class Company extends DB_Table {
       $this->id=$this->data['Company Key'];
     }
   }
-
+  
   
   function create($raw_data,$raw_address_data=array(),$options=''){
     
-
-  
-  $this->data=$this->base_data();
-  foreach($raw_data as $key=>$value){
+    $this->data=$this->base_data();
+    foreach($raw_data as $key=>$value){
       if(array_key_exists($key,$this->data)){
 	$this->data[$key]=_trim($value);
       }
-  }
-  
-  
-    $this->data['Company File As']=$this->file_as($this->data['Company Name']);
-    $this->data['Company ID']=$this->get_id();
-  
-    
-    $contact=new Contact("find in company create",$raw_data);
-    if($contact->error){
-      exit("find_company: contact error\n");
     }
     
+    
+    $this->data['Company File As']=$this->file_as($this->data['Company Name']);
+    $this->data['Company ID']=$this->get_id();
+    
+    $use_contact=0;
+    if(preg_match('/use contact \d+/',$options)){
+      $use_contact=preg_replace('/use contact /','',$options);
+    }
+      
+    if($use_contact){
+      $contact=new contact($use_contact);
+      $contact->update(array('Contact Name'=>$this->data['Company Main Contact Name']));
+    }else{
+      $contact=new Contact("find in company create",$raw_data);
+     
+    }
 
-    $this->data['Company Main Contact Name']=$contact->display('name');
+      $this->data['Company Main Contact Name']=$contact->display('name');
     $this->data['Company Main Contact Key']=$contact->id;
    
 
@@ -552,7 +595,7 @@ protected function update_field_switcher($field,$value,$options=''){
 
     }elseif(!email::wrong_email($value)){
       $contact=new Contact($this->data['Company Main Contact Key']);
-      $email_data=array('Contact Email'=>$value);
+      $email_data=array('Email'=>$value);
       $contact->add_email($email_data);// <- will update company
     }
     
@@ -1142,6 +1185,28 @@ function add_contact($data,$args='principal'){
      
      return $name;
   }
+
+   /*
+     function: card
+     Returns an array with the contact details
+    */
+   function card(){
+
+
+     $card=array(
+		 'Company Name'=>$this->data['Company Name']
+		 ,'Contacts'=>array()
+		 );
+     
+     $sql=sprintf("select`Contact Key`,`Is Main`  from `Contact Bridge` DB where `Subject Type`='Contact' and `Subject Key`=%d order by `Is Main` desc",$this->id);
+      $result=mysql_query($sql);
+      while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+	$contact=new Contact($row['Contact Key']);
+	$card['Contacts'][$row['Contact Key']]=$contact->card();
+      }
+      return $card;
+   }
+
 
 }
 
