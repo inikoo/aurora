@@ -71,10 +71,10 @@ while (($data = fgetcsv($handle, 2000, "\t")) !== FALSE) {
       $x__data['Contact Work Address Line 1']=$data[4];
       $x__data['Contact Work Address Line 2']=$data[5];
       $x__data['Contact Work Address Line 3']=$data[6];
-      $x__data['Contact Work Town']=$data[7];
-      $x__data['Contact Work Country Primary Division']=$data[8];
-      $x__data['Contact Work Postal Code']=$data[9];
-      $x__data['Contact Work Country Name']=$data[10];
+      $x__data['Contact Work Address Town']=$data[7];
+      $x__data['Contact Work Address Country Primary Division']=$data[8];
+      $x__data['Contact Work Address Postal Code']=$data[9];
+      $x__data['Contact Work Address Country Name']=$data[10];
       $x__data['Contact Main Telephone']=$data[12];
       $x__data['Contact Main FAX']=$data[13];
       $x__data['Contact Main Mobile']=$data[15];
@@ -127,20 +127,25 @@ while (($data = fgetcsv($handle, 2000, "\t")) !== FALSE) {
        // print_r($x__data);
 	 //     print $data[89]." $date\n";
 	 $row++;
+
+	 //	 if($row>3)
+	 //  break;
 	
 }
 fclose($handle);
 
 //print "$row $with_email\n";exit;
-asort($_date);
+arsort($_date);
 
 
 
 
 $count=1;
 
+
+$count=1;
 foreach ($_date as $key=>$val) {
-  //print "====================================\n";
+  //     print "$count ====================================\n";
   // print_r($_data[$key]);
   if(isset($_data[$key]['Company Name'])){
     //    print "caca";
@@ -149,6 +154,12 @@ foreach ($_date as $key=>$val) {
     //print "Email ".$_data[$key]['Company Main Plain Email']."\n";
     $company=new Company('find create auto',$_data[$key]);
   }elseif(isset($_data[$key]['Contact Name'])){
+
+
+    $_tmp=$_data[$key];
+    unset($_tmp['Contact Name']);
+    if(array_empty($_tmp))
+      continue;
     //   if(preg_match('/karen|cornes/i',$_data[$key]['Contact Name']))
     // print "Email ".$_data[$key]['Contact Main Plain Email']."\n";
     $contact=new Contact('find create',$_data[$key]);
@@ -157,8 +168,8 @@ foreach ($_date as $key=>$val) {
  
   
   $count++;
-  //if($count>100)
-  //  exit;
+  if($count>250)
+    exit;
 }
 
 

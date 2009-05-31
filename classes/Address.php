@@ -140,7 +140,7 @@ class Address extends DB_Table{
     $this->found=false;
     $this->found_in=false;
     $this->found_out=false;
-    $this->candiadate=array();
+    $this->candidate=array();
     $in_contact=array();
     $mode='Contact';
     $parent='Contact';
@@ -187,14 +187,17 @@ class Address extends DB_Table{
       }
     }elseif(preg_match('/from contact|in contact/i',$options)){
       foreach($raw_data as $key=>$val){
+	
 	$_key=preg_replace('/^Contact( Home| Work)? /i','',$key);
+	//	print "******** $key          ->  $_key\n";
 	if(array_key_exists($_key,$data))
 	  $data[$_key]=$val;
 	if($_key=='Address Line 1' or $_key=='Address Line 2' or  $_key=='Address Line 3' or $_key=='Address Input Format')
 	  $data[$_key]=$val;
       }
-    }
    
+
+    }
 
     if(!isset($data['Address Input Format'])){
       $data['Address Input Format']='DB Fields';
@@ -204,7 +207,7 @@ class Address extends DB_Table{
 	$data['Address Input Format']='DB Fields';
     }
 
-   
+
    
     switch($data['Address Input Format']){
     case('3 Line'):
@@ -244,7 +247,7 @@ class Address extends DB_Table{
     if($mode=='Contact')
       $options.=' anonymous';
 
-  
+
 
     if($data['Address Fuzzy']=='Yes'){
       //if fuzzy only check in parent fuzzy sub space 
@@ -303,7 +306,7 @@ class Address extends DB_Table{
 	$sql.=sprintf(' and `%s`=%s',$field,prepare_mysql($data[$field],false));
       }
       $result=mysql_query($sql);
-      // print $sql;
+      //       print "$sql\n";
       $num_results=mysql_num_rows($result);
       if($num_results==0){
 	$this->found=false;
@@ -323,7 +326,6 @@ class Address extends DB_Table{
 	}
 
       }else{// address found in many contact
-	if($mode=='Contact in' or $mode=='Company in'){
 	  
 	  while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 	    if(in_array($row['Subject Key'],$in_contact)){
@@ -332,7 +334,7 @@ class Address extends DB_Table{
 	      $this->candidate[$row['Subject Key']]=50;
 	    }
 	  }
-	}
+	
 	$this->msg.=_('Address found in')." $num_results ".ngettext('contact','contacts',$num_results);
 	
       }
