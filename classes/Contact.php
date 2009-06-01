@@ -145,23 +145,28 @@ class Contact extends DB_Table{
       $parent='customer';
     }elseif(preg_match('/from Company|in company/i',$options)){
       foreach($raw_data as $key=>$val){
-	if($create and preg_match('/address|email|telephone|fax|company name/i',$key)){
-	  continue;
-	}
+/* 	if($create and preg_match('/address|email|telephone|fax|company name/i',$key)){ */
+/* 	  continue; */
+/* 	} */
 	
+//	print "XXXXXXXXXXXXXXXX THE KEY $key\n";
+
 	if($key=='Company Name'){
 	  $_key='Contact Company Name';
 	}elseif($key=='Company Main Contact Name')
 	    $_key='Contact Name';
-	else
+	elseif(preg_match('/Company Address/i',$key)){
+	  $_key=preg_replace('/Company Address/i','Contact Work Address',$key);
+	  //print "__________  $_key  _______________\n";
+	}else
 	  $_key=preg_replace('/Company /','Contact ',$key);
 	
-
+	//	print "XXXXXXXXXXXXXXXX THE _KEY $_key\n";
 	if(array_key_exists($_key,$data))
 	  $data[$_key]=$val;
 	
-	if(array_key_exists($_key,$address_work_data) and !$create)
-	  $address_data[$_key]=$val;
+	if(array_key_exists($_key,$address_work_data))
+	  $address_work_data[$_key]=$val;
       }
       $parent='company';
       $parent_key=0;
@@ -226,8 +231,33 @@ class Contact extends DB_Table{
      // print "candidates ofter email:\n";
       //print_r($this->candidate);
     }
-    if($data['Contact Main Telephone']!=''  ){
-      $tel=new Telecom("find in contact",$data['Contact Main Telephone']);
+
+   print "******************************************************\n$options\n";
+   
+   print_r($address_work_data);
+   print_r($raw_data);
+   print_r($data);
+   if(!array_empty( $address_work_data)){
+     $address=new Address("find in contact",$address_work_data);
+
+     $country_code=$address->raw_data['Address Country Code'];
+     print "AC\n";
+       print_r($address->candidate);
+       foreach($address->candidate as $key=>$val){
+	 if(isset($this->candidate[$key]))
+	   $this->candidate[$key]+=$val;
+	 else
+	   $this->candidate[$key]=$val;
+       }
+       
+       
+   }else
+     $country_code='UNK';
+   
+
+
+  if($data['Contact Main Telephone']!=''  ){
+      $tel=new Telecom("find in contact country code $country_code",$data['Contact Main Telephone']);
       // print_r($tel);
       foreach($tel->candidate as $key=>$val){
 	if(isset($this->candidate[$key]))
@@ -242,7 +272,7 @@ class Contact extends DB_Table{
     //  print_r($this->candidate);
     // }
     if($data['Contact Main FAX']!='' ){
-      $tel=new Telecom("find in contact",$data['Contact Main FAX']);
+      $tel=new Telecom("find in contact country code $country_code",$data['Contact Main FAX']);
       foreach($tel->candidate as $key=>$val){
 	  if(isset($this->candidate[$key]))
 	    $this->candidate[$key]+=$val;
@@ -258,7 +288,7 @@ class Contact extends DB_Table{
       //}
 
     if($data['Contact Main Mobile']!='' and !$this->found ){
-      $tel=new Telecom("find in contact",$data['Contact Main Mobile']);
+      $tel=new Telecom("find in contact  country code $country_code",$data['Contact Main Mobile']);
       
       foreach($tel->candidate as $key=>$val){
 	if(isset($this->candidate[$key]))
@@ -269,20 +299,18 @@ class Contact extends DB_Table{
 
     }
 
+   if(count($this->candidate)>0){
+       print "candidates after mobile:\n";
+      print_r($this->candidate);
 
-
-    if(!array_empty( $address_work_data)){
-       $address=new Address("find in contact",$address_work_data);
-       foreach($address->candidate as $key=>$val){
-	 if(isset($this->candidate[$key]))
-	   $this->candidate[$key]+=$val;
-	 else
-	   $this->candidate[$key]=$val;
-       }
-       
-       
     }
-   
+
+
+
+
+
+
+
    /*  if(count($this->candidate)>0){ */
 /*        print "candidates after mobile:\n"; */
 /*       print_r($this->candidate); */
@@ -350,9 +378,11 @@ class Contact extends DB_Table{
     //print_r($this->candidate);
     arsort($this->candidate);
     //print "#######################\n";
-    // print_r($this->candidate);
+    //  print_r($this->candidate);
     foreach($this->candidate as $key => $value){
+
       if($value>=200){
+	//	print "$value $key ################x#######\n";
 	$this->found=true;
 	$this->found_key=$key;
 	break;
@@ -360,24 +390,24 @@ class Contact extends DB_Table{
       
       
     }
-    
-    $tmp=$data;
-    unset($tmp['Contact Name']);
-    if(array_empty($tmp)){
-      foreach($this->candidate as $key => $value){
-      if($value>=100){
+    if(!$this->found){
+      $tmp=$data;
+      unset($tmp['Contact Name']);
+      if(array_empty($tmp)){
+	foreach($this->candidate as $key => $value){
+	  if($value>=100){
 	$this->found=true;
 	$this->found_key=$key;
 	break;
-      }
-
+	  }
+	  
+	}
       }
     }
 
 
-
-    //print "-Contact Candidates\n";
-    //print_r($this->candidate);
+      print "-Contact Candidates\n";
+       print_r($this->candidate);
 
     if($this->found){
       $this->get_data('id',$this->found_key);
@@ -385,12 +415,11 @@ class Contact extends DB_Table{
       //  print "Contact found  ".$this->found_key." \n";
       //print_r($this->card());
     }
-    //  else
-    // exit;
-
+     
     if($create){
       if($this->found){
-
+	
+	
 /* 	$data['Home Address']=$address_home_data; */
 /* 	$data['Work Address']=$address_work_data; */
 
@@ -401,8 +430,11 @@ class Contact extends DB_Table{
 	$this->update_address($address_data['Work'],'Work');
 
 
-      }else
+      }else{
+	//	exit("o no duplicate!!\n");
 	$this->create($data,$options,$address_home_data,$address_work_data);
+      }
+
     }
       
 

@@ -287,6 +287,11 @@ foreach($__cols as $cols){
       if($code=='Tib-20')
 	$supplier_cost=0.2;
 
+      if($code=='L&P-ST'){
+	$supplier_cost=36.30;
+	$price=86.40;
+      }
+
     if(!is_numeric($supplier_cost)  or $supplier_cost<=0 ){
       //   print_r($cols);
       print "$code   assumind supplier cost of 40%  \n";
@@ -324,6 +329,9 @@ foreach($__cols as $cols){
       }else
 	$_w='';
       
+
+      
+
       $data=array(
 		  'product sales state'=>'For sale',
 		  'product type'=>'Normal',
@@ -375,8 +383,8 @@ foreach($__cols as $cols){
 	if(preg_match('/Ackerman|Ackerrman|Akerman/i',$supplier_code)){
 	  $supplier_code='Ackerman';
 	  $the_supplier_data=array(
-				   'name'=>'Ackerman Group',
-				   'code'=>$supplier_code,
+				   'Supplier Name'=>'Ackerman Group',
+				   'Supplier Code'=>$supplier_code,
 				   'address_data'=>array(
 							 'type'=>'3line'
 							 ,'address1'=>'Unit 15/16'
@@ -398,8 +406,8 @@ foreach($__cols as $cols){
 if(preg_match('/^puck$/i',$supplier_code)){
 	  $supplier_code='Puck';
 	  $the_supplier_data=array(
-				   'name'=>'Puckator',
-				   'code'=>$supplier_code,
+				   'Supplier Name'=>'Puckator',
+				   'Supplier Code'=>$supplier_code,
 				   'address_data'=>array(
 							 'type'=>'3line'
 							 ,'address1'=>'Lowman Works'
@@ -423,8 +431,8 @@ if(preg_match('/^puck$/i',$supplier_code)){
  if(preg_match('/^decent gem$/i',$supplier_code)){
    $supplier_code='DecGem';
    $the_supplier_data=array(
-			    'name'=>'Decent Gemstone Exports',
-			    'code'=>$supplier_code,
+			    'Supplier Name'=>'Decent Gemstone Exports',
+			    'Supplier Code'=>$supplier_code,
 			    'address_data'=>array(
 						  'type'=>'3line'
 						  ,'address1'=>"Besides Balaji's Mandir"
@@ -447,8 +455,8 @@ if(preg_match('/^puck$/i',$supplier_code)){
   if(preg_match('/^kiran$/i',$supplier_code)){
 
    $the_supplier_data=array(
-			    'name'=>'Kiran Agencies',
-			    'code'=>$supplier_code,
+			    'Supplier Name'=>'Kiran Agencies',
+			    'Supplier Code'=>$supplier_code,
 			    'address_data'=>array(
 						  'type'=>'3line'
 						  ,'address1'=>"4D Garstin Place"
@@ -472,8 +480,8 @@ if(preg_match('/^puck$/i',$supplier_code)){
 if(preg_match('/^watkins$/i',$supplier_code)){
 
    $the_supplier_data=array(
-			    'name'=>'Watkins Soap Co Ltd',
-			    'code'=>$supplier_code,
+			    'Supplier Name'=>'Watkins Soap Co Ltd',
+			    'Supplier Code'=>$supplier_code,
 			    'address_data'=>array(
 						  'type'=>'3line'
 						  ,'address1'=>"Reed Willos Trading Est"
@@ -499,8 +507,8 @@ if(preg_match('/^watkins$/i',$supplier_code)){
 if(preg_match('/^decree$/i',$supplier_code)){
 
    $the_supplier_data=array(
-			    'name'=>'Decree Thermo Limited',
-			    'code'=>$supplier_code,
+			    'Supplier Name'=>'Decree Thermo Limited',
+			    'Supplier Code'=>$supplier_code,
 			    'address_data'=>array(
 						  'type'=>'3line'
 						  ,'address1'=>"300 Shalemoor"
@@ -525,8 +533,8 @@ if(preg_match('/^decree$/i',$supplier_code)){
 if(preg_match('/^cbs$/i',$supplier_code)){
 
    $the_supplier_data=array(
-			    'name'=>'Carrierbagshop',
-			    'code'=>$supplier_code,
+			    'Supplier Name'=>'Carrierbagshop',
+			    'Supplier Code'=>$supplier_code,
 			    'address_data'=>array(
 						  'type'=>'3line'
 						  ,'address1'=>"Unit C18/21"
@@ -552,8 +560,8 @@ if(preg_match('/^cbs$/i',$supplier_code)){
 if(preg_match('/^giftw$/i',$supplier_code)){
 
    $the_supplier_data=array(
-			    'name'=>'Giftworks Ltd',
-			    'code'=>$supplier_code,
+			    'Supplier Name'=>'Giftworks Ltd',
+			    'Supplier Code'=>$supplier_code,
 			    'address_data'=>array(
 						  'type'=>'3line'
 						  ,'address1'=>"Unit 14"
@@ -579,8 +587,8 @@ if(preg_match('/^giftw$/i',$supplier_code)){
  if(preg_match('/^Sheikh$/i',$supplier_code)){
 	  $supplier_code='Sheikh';
 	  $the_supplier_data=array(
-				   'name'=>'Sheikh Enterprises',
-				   'code'=>$supplier_code,
+				   'Supplier Name'=>'Sheikh Enterprises',
+				   'Supplier Code'=>$supplier_code,
 				   'address_data'=>array(
 							 'type'=>'3line'
 							 ,'address1'=>"Eidgah Road"
@@ -601,8 +609,8 @@ if(preg_match('/^giftw$/i',$supplier_code)){
 if(preg_match('/^Gopal$/i',$supplier_code)){
 	  $supplier_code='Gopal';
 	  $the_supplier_data=array(
-				   'name'=>'Gopal Corporation Limited',
-				   'code'=>$supplier_code,
+				   'Supplier Name'=>'Gopal Corporation Limited',
+				   'Supplier Code'=>$supplier_code,
 				   'address_data'=>array(
 							 'type'=>'3line'
 							 ,'address1'=>"240 Okhla Industrial Estate"
@@ -624,8 +632,8 @@ if(preg_match('/^Gopal$/i',$supplier_code)){
   if(preg_match('/^CraftS$/i',$supplier_code)){
 	  $supplier_code='CraftS';
 	  $the_supplier_data=array(
-				   'name'=>'Craftstones Europe Ltd',
-				   'code'=>$supplier_code,
+				   'Supplier Name'=>'Craftstones Europe Ltd',
+				   'Supplier Code'=>$supplier_code,
 				   'address_data'=>array(
 							 'type'=>'3line'
 							 ,'address1'=>"52/54 Homethorphe Avenue"
@@ -650,8 +658,8 @@ if(preg_match('/^Gopal$/i',$supplier_code)){
  if(preg_match('/^Simpson$/i',$supplier_code)){
 	  $supplier_code='CraftS';
 	  $the_supplier_data=array(
-				   'name'=>'Simpson Packaging',
-				   'code'=>$supplier_code,
+				   'Supplier Name'=>'Simpson Packaging',
+				   'Supplier Code'=>$supplier_code,
 				   'address_data'=>array(
 							 'type'=>'3line'
 							 ,'address1'=>"Unit 1"
@@ -679,8 +687,8 @@ if(preg_match('/^Gopal$/i',$supplier_code)){
  if(preg_match('/^amanis$/i',$supplier_code)){
 	  $supplier_code='AmAnis';
 	  $the_supplier_data=array(
-				   'name'=>'Amanis',
-				   'code'=>$supplier_code,
+				   'Supplier Name'=>'Amanis',
+				   'Supplier Code'=>$supplier_code,
 				   'address_data'=>array(
 							 'type'=>'3line'
 							 ,'address1'=>"Unit 6"
@@ -707,8 +715,8 @@ if(preg_match('/^Gopal$/i',$supplier_code)){
 if(preg_match('/^amanis$/i',$supplier_code)){
 	  $supplier_code='AmAnis';
 	  $the_supplier_data=array(
-				   'name'=>'Amanis',
-				   'code'=>$supplier_code,
+				   'Supplier Name'=>'Amanis',
+				   'Supplier Code'=>$supplier_code,
 				   'address_data'=>array(
 							 'type'=>'3line'
 							 ,'address1'=>"Unit 6"
@@ -735,8 +743,8 @@ if(preg_match('/^amanis$/i',$supplier_code)){
 if(preg_match('/^Wenzels$/i',$supplier_code)){
 	  $supplier_code='Wenzels';
 	  $the_supplier_data=array(
-				   'name'=>'Richard Wenzel GMBH & CO KG',
-				   'code'=>$supplier_code,
+				   'Supplier Name'=>'Richard Wenzel GMBH & CO KG',
+				   'Supplier Code'=>$supplier_code,
 				   'address_data'=>array(
 							 'type'=>'3line'
 							 ,'address1'=>"Benzstraße 5"
@@ -763,8 +771,8 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 	if(preg_match('/^AW$/i',$supplier_code)){
 	  $supplier_code='AW';
 	  $the_supplier_data=array(
-				   'name'=>'Ancient Wisdom Marketing',
-				   'code'=>$supplier_code,
+				   'Supplier Name'=>'Ancient Wisdom Marketing',
+				   'Supplier Code'=>$supplier_code,
 				   'address_data'=>array(
 							 'type'=>'3line'
 							 ,'address1'=>'Block B'
@@ -789,8 +797,8 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 	if(preg_match('/^EB$/i',$supplier_code)){
 	  $supplier_code='EB';
 	  $the_supplier_data=array(
-				   'name'=>'Elements Bodycare Ltd'
-				   ,'code'=>$supplier_code
+				   'Supplier Name'=>'Elements Bodycare Ltd'
+				   ,'Supplier Code'=>$supplier_code
 				   ,'address_data'=>array(
 							 'type'=>'3line'
 							 ,'address1'=>'Unit 2'
@@ -816,8 +824,8 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 	if(preg_match('/^Paradise$/i',$supplier_code)){
 	  $supplier_code='Paradise';
 	  $the_supplier_data=array(
-				   'name'=>'Paradise Music Ltd'
-				   ,'code'=>$supplier_code
+				   'Supplier Name'=>'Paradise Music Ltd'
+				   ,'Supplier Code'=>$supplier_code
 				   ,'address_data'=>array(
 							 'type'=>'3line'
 							 ,'address1'=>'PO BOX 998'
@@ -841,8 +849,8 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 	if(preg_match('/^MCC$/i',$supplier_code)){
 	  $supplier_code='MCC';
 	  $the_supplier_data=array(
-				   'name'=>'Manchester Candle Company'
-				   ,'code'=>$supplier_code
+				   'Supplier Name'=>'Manchester Candle Company'
+				   ,'Supplier Code'=>$supplier_code
 				   ,'address_data'=>array(
 							 'type'=>'3line'
 							 ,'address1'=>'The Manchester Group'
@@ -867,8 +875,8 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 	if(preg_match('/^Aquavision$/i',$supplier_code)){
 	  $supplier_code='Aquavision';
 	  $the_supplier_data=array(
-				   'name'=>'Aquavision Music Ltd'
-				   ,'code'=>$supplier_code
+				   'Supplier Name'=>'Aquavision Music Ltd'
+				   ,'Supplier Code'=>$supplier_code
 				   ,'address_data'=>array(
 							 'type'=>'3line'
 							 ,'address1'=>'PO BOX 2796'
@@ -894,8 +902,8 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 	if(preg_match('/^CXD$/i',$supplier_code)){
 	  $supplier_code='CXD';
 	  $the_supplier_data=array(
-				   'name'=>'CXD Designs Ltd'
-				   ,'code'=>$supplier_code
+				   'Supplier Name'=>'CXD Designs Ltd'
+				   ,'Supplier Code'=>$supplier_code
 				   ,'address_data'=>array(
 							 'type'=>'3line'
 							 ,'address1'=>'Unit 2'
@@ -919,8 +927,8 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 	if(preg_match('/^(AWR|costa)$/i',$supplier_code)){
 	  $supplier_code='AWR';
 	  $the_supplier_data=array(
-				   'name'=>'Costa Imports'
-				   ,'code'=>$supplier_code
+				   'Supplier Name'=>'Costa Imports'
+				   ,'Supplier Code'=>$supplier_code
 				   ,'address_data'=>array(
 							 'type'=>'3line'
 							 ,'address1'=>'Nave 8'
@@ -944,8 +952,8 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 	if(preg_match('/^(salco)$/i',$supplier_code)){
 	  $supplier_code='Salco';
 	  $the_supplier_data=array(
-				   'name'=>'Salco Group'
-				   ,'code'=>$supplier_code
+				   'Supplier Name'=>'Salco Group'
+				   ,'Supplier Code'=>$supplier_code
 				   ,'address_data'=>array(
 							 'type'=>'3line'
 							 ,'address1'=>'Salco House'
@@ -968,8 +976,8 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 	if(preg_match('/^(apac)$/i',$supplier_code)){
 	  $supplier_code='Salco';
 	  $the_supplier_data=array(
-				   'name'=>'APAC Packaging Ltd'
-				   ,'code'=>$supplier_code
+				   'Supplier Name'=>'APAC Packaging Ltd'
+				   ,'Supplier Code'=>$supplier_code
 				   ,'address_data'=>array(
 							 'type'=>'3line'
 							 ,'address1'=>'Loughborough Road'
@@ -994,8 +1002,8 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 	if(preg_match('/^(andy.*?)$/i',$supplier_code)){
 	  $supplier_code='Andy';
 	  $the_supplier_data=array(
-				   'name'=>'Andy'
-				   ,'code'=>$supplier_code
+				   'Supplier Name'=>'Andy'
+				   ,'Supplier Code'=>$supplier_code
 				   );
 	}
 
@@ -1003,14 +1011,19 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 	if($supplier_code=='' or $supplier_code=='0'){
 	  $supplier_code='Unknown';
 	  $the_supplier_data=array(
-				   'name'=>'Unknown Supplier'
-				   ,'code'=>$supplier_code
+				   'Supplier Name'=>'Unknown Supplier'
+				   ,'Supplier Code'=>$supplier_code
 				   );
 	}
 	$supplier=new Supplier('code',$supplier_code);
 	if(!$supplier->id){
+	  print "neew: $supplier_code";
 	  $supplier=new Supplier('new',$the_supplier_data);
 	}
+	print "$supplier_code";
+
+
+
 	$scode=_trim($scode);
 	$scode=preg_replace('/^\"\s*/','',$scode);
 	$scode=preg_replace('/\s*\"$/','',$scode);
@@ -1029,13 +1042,13 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 	if($scode=='' or $scode=='0')
 	  $scode='?'.$code;
 	$sp_data=array(
-		       'supplier product supplier key'=>$supplier->id,
-		       'supplier product supplier code'=>$supplier->data['Supplier Code'],
-		       'supplier product supplier name'=>$supplier->data['Supplier Name'],
-		       'supplier product code'=>$scode,
-		       'supplier product cost'=>sprintf("%.4f",$supplier_cost),
-		       'supplier product name'=>$description,
-		       'supplier product description'=>$description
+		       'Supplier Product Supplier Key'=>$supplier->id,
+		       'Supplier Product Supplier Code'=>$supplier->data['Supplier Code'],
+		       'Supplier Product Supplier Name'=>$supplier->data['Supplier Name'],
+		       'Supplier Product Code'=>$scode,
+		       'Supplier Product Cost'=>sprintf("%.4f",$supplier_cost),
+		       'Supplier Product Name'=>$description,
+		       'Supplier Product Description'=>$description
 		       );
 	$new_supplier_product=false;
 	$supplier_product=new SupplierProduct('supplier-code',$sp_data);

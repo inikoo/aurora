@@ -220,6 +220,8 @@ class Address extends DB_Table{
       break;
     }
 
+    $this->raw_data=$data;
+
     $subject_key=0;
     $subject_type='Contact';
 
@@ -258,6 +260,7 @@ class Address extends DB_Table{
       foreach($fields as $field){
 	$sql.=sprintf(' and `%s`=%s',$field,prepare_mysql($data[$field],false));
       }
+      print "FUZZY $sql\n";
       $result=mysql_query($sql);
       $num_results=mysql_num_rows($result);
       if($num_results==0){
@@ -267,29 +270,35 @@ class Address extends DB_Table{
 
       }else if($num_results==1){
 	$row=mysql_fetch_array($result, MYSQL_ASSOC);
-	$this->candidate[$row['Subject Key']]=100;
+
 	$this->get_data('id',$row['Address Key']);
 	if($mode=='Contact in' or $mode=='Company in'){
 	  if(in_array($row['Subject Key'],$in_contact)){
+	    $this->candidate[$row['Subject Key']]=110;
 	    $this->found_in=true;
 	    $this->found_out=false;
 	  }else{
+	    $this->candidate[$row['Subject Key']]=100;
 	    $this->found_in=false;
 	    $this->found_out=true;
 	  }
-	}
+	}else
+	  $this->candidate[$row['Subject Key']]=100;
 
       }else{// Found in mora than one
-	if($mode=='Contact in' or $mode=='Company in'){
+
 	  
 	  while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-	    if(in_array($row['Subject Key'],$in_contact)){
-	      $this->candidate[$row['Subject Key']]=90;
-	    }else{
-	      $this->candidate[$row['Subject Key']]=50;
-	    }
+	    	if($mode=='Contact in' or $mode=='Company in'){
+
+		  if(in_array($row['Subject Key'],$in_contact)){
+		    $this->candidate[$row['Subject Key']]=110;
+		  }else{
+		    $this->candidate[$row['Subject Key']]=100;
+		  }
+		}else
+		  $this->candidate[$row['Subject Key']]=100;
 	  }
-	}
 	$this->msg.=_('Address found in')." $num_results ".ngettext('contact','contacts',$num_results);
 	
       }
@@ -301,42 +310,48 @@ class Address extends DB_Table{
 
       $fields=array('Address Fuzzy','Address Street Number','Address Building','Address Street Name','Address Street Type','Address Town Secondary Division','Address Town Primary Division','Address Town','Address Country Primary Division','Address Country Secondary Division','Address Country Key','Address Postal Code','Military Address','Military Installation Address','Military Installation Name');
 
-      $sql="select A.`Address Key`,`Subject Key` from `Address Dimension`  A  left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`) where `Subject Type`='Contact' ";
+      $sql="select A.`Address Key`,`Subject Key`,`Subject Type` from `Address Dimension`  A  left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`) where `Subject Type`='Contact' ";
       foreach($fields as $field){
 	$sql.=sprintf(' and `%s`=%s',$field,prepare_mysql($data[$field],false));
       }
       $result=mysql_query($sql);
-      //       print "$sql\n";
+       print "No fuzzy $sql\n";
       $num_results=mysql_num_rows($result);
       if($num_results==0){
 	$this->found=false;
        	
       }else if($num_results==1){
 	$row=mysql_fetch_array($result, MYSQL_ASSOC);
-	$this->candidate[$row['Subject Key']]=100;
+
 	$this->get_data('id',$row['Address Key']);
 	if($mode=='Contact in' or $mode=='Company in'){
 	  if(in_array($row['Subject Key'],$in_contact)){
+	    $this->candidate[$row['Subject Key']]=110;
 	    $this->found_in=true;
 	    $this->found_out=false;
 	  }else{
+	    $this->candidate[$row['Subject Key']]=100;
 	    $this->found_in=false;
 	    $this->found_out=true;
 	  }
-	}
+	}else
+	  $this->candidate[$row['Subject Key']]=100;
 
       }else{// address found in many contact
 	  
 	  while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-	    if(in_array($row['Subject Key'],$in_contact)){
-	      $this->candidate[$row['Subject Key']]=90;
-	    }else{
-	      $this->candidate[$row['Subject Key']]=50;
-	    }
+	    if($mode=='Contact in' or $mode=='Company in'){
+	      if(in_array($row['Subject Key'],$in_contact)){
+		$this->candidate[$row['Subject Key']]=110;
+	      }else{
+		$this->candidate[$row['Subject Key']]=100;
+	      }
+	    }else
+	      $this->candidate[$row['Subject Key']]=100;
+	    
 	  }
-	
-	$this->msg.=_('Address found in')." $num_results ".ngettext('contact','contacts',$num_results);
-	
+	  $this->msg.=_('Address found in')." $num_results ".ngettext('contact','contacts',$num_results);
+	    
       }
 
     }
@@ -1102,6 +1117,10 @@ class Address extends DB_Table{
   public static function prepare_3line($raw_data,$args='untrusted'){
     global $myconf;
 
+    //    print "========== ADDEWESS PARSING ================\n";
+    //print_r($raw_data);
+
+
     if(!isset($raw_data['Address Line 1']))
       $raw_data['Address Line 1']='';
     if(!isset($raw_data['Address Line 2']))
@@ -1109,8 +1128,9 @@ class Address extends DB_Table{
     if(!isset($raw_data['Address Line 3']))
       $raw_data['Address Line 3']='';
     $empty=true;
-    foreach($raw_data as $val){
-      if($val!=''){
+    foreach($raw_data as $key=>$val){
+      if($val!='' and ($key!='Address Fuzzy' and $key!='Address Data Last Update'and $key!='Address Input Format' and $key!='Military Address'  )){
+	//	print "NO EMTOY KEY $key\n";
 	$empty=false;
 	break;
       }
@@ -1158,7 +1178,7 @@ class Address extends DB_Table{
       $data['Address Town']='St. Thomas';
     }
     
-  
+    //print_r( $data);
     
     if(preg_match('/SCOTLAND|wales/i',$data['Address Country Name']))
       $data['Address Country Name']='United Kingdom';
