@@ -110,11 +110,23 @@ class supplier extends DB_Table{
     }
     
     $data=$this->base_data();
+  /*   print "sup\n"; */
+/*     print_r($data); */
+/*     print "\n"; */
+/*     exit; */
     foreach($raw_data as $key=>$value){
       if(array_key_exists($key,$data)){
 	$data[$key]=_trim($value);
       }
     } 
+
+
+
+    if($create){
+      $this->create($data);
+    }
+    
+
     
  }
 
@@ -147,40 +159,13 @@ class supplier extends DB_Table{
      }
 
 
-
-
      
 
      print "Error $key not found in get from supplier\n";
      return false;
 
   }
- /*
-   Function: base_data
-   Inizializate $data array with the default field values
-   */
-  function base_data(){
-    $base_data=array(
-		     'Supplier Code'=>''
-		     ,'Supplier Name'=>''
-		     ,'Supplier Fiscal Name'=>''
-		     ,'Supplier Company Key'=>''
-		     ,'Supplier Main Plain Telephone'=>''
-		     ,'Supplier Main Telephone'=>''
-		     ,'Supplier Main Contact Name'=>''
-		     ,'Supplier Main Contact Key'=>''
-		     ,'Supplier Accounts Payable Contact Key'=>''
-		     ,'Supplier Sales Contact Key'=>''
-		     ,'Supplier Valid From'=>''
-		     ,'Supplier Valid To'=>''
-		     ,'Supplier Active'=>'Yes'
-		     ,'Supplier ID'=>''
-		     ,'Supplier Location'=>''
-		     ,'Supplier Main XHTML Email'=>''
-		     ,'Supplier Main Plain Email'=>''
-		       );
 
-  }
 
 /*Method: create
    Creates a new supplier record
@@ -199,17 +184,10 @@ class supplier extends DB_Table{
    
    */
   function create($data){
-    // print_r($data);
+  
+ 
 
-
-   $this->data=$this->base_data();
-   $this->id=0;
-
-   return;
-    foreach($data as $key=>$value){
-      if(isset($this->data[strtolower($key)]))
-	$this->data[strtolower($key)]=_trim($value);
-    }
+  
 
     if($this->data['Supplier Name']==''){
       $this->data['Supplier Name']=_('Unknown Supplier');
@@ -221,31 +199,31 @@ class supplier extends DB_Table{
     $this->data['Supplier ID']=$this->new_id();
     $this->data['Supplier Code']=$this->check_repair_code($this->data['Supplier Code']);
 
-    //Create or appende to company
-    $company=new company('find in company create',$this->data);
-    if($company->warning){
-      exit("company warnings");
-    }
+/*     //Create or appende to company */
+/*     $company=new company('find in company create',$this->data); */
+/*     if($company->warning){ */
+/*       exit("company warnings"); */
+/*     } */
 
     
-    $this->data['Supplier Company Key']=$company->id;
-    if($company->data['Company Main Address Key']){
-      $this->data['Supplier Location']=$company->data['Company Location'];
-    }
-    if($company->data['Company Main Email Key']){
-      $this->data['Supplier Main Email Key']=$company->data['Company Main Email Key'];
-      $this->data['Supplier Main XHTML Email']=$company->data['Company Main XHTML Email'];
-      $this->data['Supplier Main Plain Email']=$company->data['Company Main Plain Email'];
-    }
-    if($company->data['Company Main Telephone Key']){
-      $this->data['Supplier Main Telephone Key']=$company->data['Company Main Email Telephone'];
-      $this->data['Supplier Main XHTML Telephone']=$company->data['Company Main XHTML Telephone'];
-      $this->data['Supplier Main Plain Telephone']=$company->data['Company Main Plain Telephone'];
-    }
+/*     $this->data['Supplier Company Key']=$company->id; */
+/*     if($company->data['Company Main Address Key']){ */
+/*       $this->data['Supplier Location']=$company->data['Company Location']; */
+/*     } */
+/*     if($company->data['Company Main Email Key']){ */
+/*       $this->data['Supplier Main Email Key']=$company->data['Company Main Email Key']; */
+/*       $this->data['Supplier Main XHTML Email']=$company->data['Company Main XHTML Email']; */
+/*       $this->data['Supplier Main Plain Email']=$company->data['Company Main Plain Email']; */
+/*     } */
+/*     if($company->data['Company Main Telephone Key']){ */
+/*       $this->data['Supplier Main Telephone Key']=$company->data['Company Main Email Telephone']; */
+/*       $this->data['Supplier Main XHTML Telephone']=$company->data['Company Main XHTML Telephone']; */
+/*       $this->data['Supplier Main Plain Telephone']=$company->data['Company Main Plain Telephone']; */
+/*     } */
     
-    $this->data['Supplier Main Contact Key']=$company->data['Company Main Contact Key'];
-    $this->data['Supplier Main Contact Name']=$company->data['Company Main Contact Name'];
-    $this->data['Supplier Fiscal Name']=$company->data['Company Fiscal Name'];
+/*     $this->data['Supplier Main Contact Key']=$company->data['Company Main Contact Key']; */
+/*     $this->data['Supplier Main Contact Name']=$company->data['Company Main Contact Name']; */
+/*     $this->data['Supplier Fiscal Name']=$company->data['Company Fiscal Name']; */
 
     $keys='';
     $values='';
@@ -264,7 +242,7 @@ class supplier extends DB_Table{
       
       
     }else{
-      print "Error can not create supplier $sql\n";exit;
+      // print "Error can not create supplier $sql\n";
     }
 
 

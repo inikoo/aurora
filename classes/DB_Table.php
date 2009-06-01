@@ -43,6 +43,7 @@ abstract class DB_Table
   function base_data(){
     $data=array();
     $result = mysql_query("SHOW COLUMNS FROM `".$this->table_name." Dimension`");
+    //  print "SHOW COLUMNS FROM `".$this->table_name." Dimension`\n\n\n\n\n";
     if (!$result) {
       echo 'Could not run query: ' . mysql_error();
      exit;

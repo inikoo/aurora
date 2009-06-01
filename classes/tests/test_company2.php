@@ -135,7 +135,7 @@ while (($data = fgetcsv($handle, 2000, "\t")) !== FALSE) {
 fclose($handle);
 
 //print "$row $with_email\n";exit;
-arsort($_date);
+asort($_date);
 
 
 
@@ -145,8 +145,8 @@ $count=1;
 
 $count=1;
 foreach ($_date as $key=>$val) {
-  //     print "$count ====================================\n";
-  // print_r($_data[$key]);
+  print "$count ====================================\n";
+  print_r($_data[$key]);
   if(isset($_data[$key]['Company Name'])){
     //    print "caca";
     //   if(preg_match('/karen|cornes/i',$_data[$key]['Company Main Contact Name']))
@@ -168,8 +168,8 @@ foreach ($_date as $key=>$val) {
  
   
   $count++;
-  if($count>250)
-    exit;
+  //  if($count>250)
+  //  exit;
 }
 
 

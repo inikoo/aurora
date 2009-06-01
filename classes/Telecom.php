@@ -158,7 +158,7 @@ function find($raw_data,$options){
 
 
    
-   //   print "$options\n";
+   print "OPTIONS $options\n";
 
    if(preg_match('/country code [a-z]{3}/i',$options,$match)){
      $country_code=preg_replace('/country code /','',$match[0]);
@@ -255,7 +255,7 @@ function find($raw_data,$options){
 		 ,prepare_mysql($data['Telecom Plain Number'])
 		
 		 );
-    //    print "$sql\n";
+       print "$sql\n";
     $result=mysql_query($sql);
     $num_results=mysql_num_rows($result);
     
@@ -266,18 +266,21 @@ function find($raw_data,$options){
       }else if($num_results==1){
 	$this->found=true;
 	$row=mysql_fetch_array($result, MYSQL_ASSOC);
-	$this->candidate[$row['Subject Key']]=100;
+
 	//$subject=new Contact($row['Subject Key']);
 	$this->get_data('id',$row['Telecom Key']);
 	if($mode=='Contact in' or $mode=='Company in'){
 	  if(in_array($row['Subject Key'],$in_contact)){
+	    $this->candidate[$row['Subject Key']]=110;
 	    $this->found_in=true;
 	    $this->found_out=false;
 	  }else{
+	    $this->candidate[$row['Subject Key']]=100;
 	    $this->found_in=false;
 	    $this->found_out=true;
 	  }
-	}
+	}else
+	  $this->candidate[$row['Subject Key']]=100;
 
       }else{
 	// Found in more than one contact, 
@@ -288,9 +291,9 @@ function find($raw_data,$options){
 	    
 	    if($mode=='Contact in' or $mode=='Company in'){
 	      if(in_array($row['Subject Key'],$in_contact)){
-		$this->candidate[$row['Subject Key']]=90;
+		$this->candidate[$row['Subject Key']]=110;
 	      }else{
-		$this->candidate[$row['Subject Key']]=50;
+		$this->candidate[$row['Subject Key']]=100;
 	      }
 	    }else
 	      $this->candidate[$row['Subject Key']]=100;
@@ -687,7 +690,10 @@ protected function create($data,$optios=''){
    Returns the telephone number with out format or international codes
   */
  public static function plain_number($data){
-   $number=preg_replace('/[^\d]/','',$data['Telecom Area Code'].$data['Telecom Number']);
+   $number=preg_replace('/[^\d]/','',$data['Telecom Country Telephone Code'].$data['Telecom National Access Code'].$data['Telecom Area Code'].$data['Telecom Number']);
+   $ext=preg_replace('/[^\d]/','',$data['Telecom Extension']);
+   if($ext!='')
+     $number.='e'.$ext;
    return $number;
  }
 
