@@ -1,0 +1,149 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+ "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+   <title></title>
+   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+   <link rel="stylesheet" href="../lib/yui/reset-fonts-grids/reset-fonts-grids.css" type="text/css">
+   <link rel="stylesheet" href="../lib/yui/base/base.css" type="text/css">
+
+	<!-- InputEx CSS -->
+	<link type='text/css' rel='stylesheet' href='../css/inputEx.css' />
+	
+<style>
+#hd { padding: 5px; background-color: #CCCCCC; color: white; }
+#hd h1 { font-size: 32pt; }
+#bd { border:1px solid #CCCCCC; }
+#ft { padding: 10px 10px 0; background-color: #CCCCCC; color: black; -moz-border-radius-bottomleft: 10px; -moz-border-radius-bottomright:10px;}
+.box {padding: 5px;}
+#treeContainer { overflow: scroll; height: 400px;}
+</style>
+</head>
+<body>
+	
+<div id="doc" class="yui-t7">
+  
+	<div id="hd" role="banner">
+		<h1>yql-trimpath-page Example</h1>
+		<div>Back to the <a href="../">inputEx library</a></div>
+	</div>
+	
+	<div id="bd" role="main">
+		
+		<!-- First Row -->
+		<div class="yui-g">
+			
+	    <div class="yui-u first">	
+					<div class="box" id="log">
+						<h1>Photos</h1>
+						<script type="text/trimpath" src="#0">
+							{for p in query.results.results.photo}
+							  <a href="http://farm${p.farm}.static.flickr.com/${p.server}/${p.id}_${p.secret}_b.jpg">
+									<img src="http://farm${p.farm}.static.flickr.com/${p.server}/${p.id}_${p.secret}_s.jpg">
+								</a>
+							{/for}
+						</script>
+					</div>
+		  </div>
+		
+	    <div class="yui-u">
+				<div class="box" id="diagnostic">
+					<h1>Diagnostics</h1>
+					<script type="text/trimpath" src="#0">
+						<p>Build Version: ${query.diagnostics['build-version']}</p>
+						<p>Instructions used: ${query.diagnostics.javascript['instructions-used']}</p>
+						<p>Publicly callable: ${query.diagnostics['publiclyCallable']}</p>
+						<p>Service time: ${query.diagnostics['service-time']}</p>
+						<p>User time: ${query.diagnostics['user-time']}</p>
+					</script>
+				</div>
+		  </div>
+		
+		</div>
+	
+	<!-- Second row -->
+	<div class="yui-g">
+		
+	    <div class="yui-u first">
+				<div class="box" id="log">
+					<h1>Log</h1>
+					<ul>
+					<script type="text/trimpath" src="#0">
+						{for l in query.diagnostics.log}
+							<li>${l}</li>
+						{/for}
+					</script>
+					</ul>
+				</div>
+		  </div>
+	    
+			<div class="yui-u">
+				<div class="box" id="url">
+					<h1>Urls and queries</h1>
+					<ul>
+					<script type="text/trimpath" src="#0">
+						{for u in query.diagnostics.url}
+							{if u.content.substr(0,7) == "http://"}
+							<li><a href="${u.content}" target="_new">${u.content.substr(0,45)}...</a></li>
+							{else}
+							<li>${u.content}</li>
+							{/if}
+						{/for}
+					</script>
+					</ul>
+				</div>
+		  </div>
+		
+	</div>
+	
+	<!-- Third row -->
+	<div class="yui-g">
+		
+				<div class="box" id="tree">
+					<h1>Response Tree</h1>
+					<div id="treeContainer"></div>
+				</div>
+		
+	</div>
+
+	</div>
+	
+	
+  <div id="ft" role="contentinfo"><p>Footer</p></div>
+</div>
+
+
+<script type="text/yql">
+
+	y.log("Hello World");
+
+	var q = "select * from flickr.photos.search where text=\"juggler\"";
+	var query = y.query(q);
+	var json = y.xmlToJson(query.results);
+
+	y.log("Everything's fine");
+
+	response.object = json;
+</script> 
+
+<script type="text/javascript" src="../lib/yui/utilities/utilities.js"></script> 
+<script type="text/javascript" src="../lib/yui/json/json-min.js"></script>
+<script type="text/javascript" src="../lib/trimpath-template-1.0.38.js"></script>
+<script type="text/javascript" src="../js/inputEx.js"></script>
+<script type="text/javascript" src="../js/rpc/yql.js"></script>
+<script type="text/javascript" src="../js/tools/yql-trimpath-page.js"></script>
+<script type="text/javascript" src="../js/widgets/json-tree-inspector.js"></script>
+
+<script>
+YAHOO.util.Event.onDOMReady(function() {
+	
+	var callback0 = function(results) {
+		new inputEx.widget.JsonTreeInspector('treeContainer', {query: results.query});
+	};
+	
+   inputEx.YQL.initTrimpathPage([[callback0]]);
+});
+</script>
+
+</body>
+</html>
