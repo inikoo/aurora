@@ -19,6 +19,7 @@
        <span id="but_show_details" state="{$details}" atitle="{if $details==0}{t}Hide Details{/t}{else}{t}Show Details{/t}{/if}" class="state_details"   >{if $details==1}{t}Hide Details{/t}{else}{t}Show Details{/t}{/if}</span>
        <br/><a  href="contact.php?edit=1"  id="but_edit" title="{t}Edit Contact Data{/t}" class="state_details"   >{t}Edit Contact{/t}</a>
 
+
        <table style="float:right;margin-top:20px">
 	 <tr><td class="but" id="note">{t}Quick Note{/t}</td></tr>
 	 <tr style="display:none"><td class="but" id="long_note">{t}Long Note{/t}</td></tr>

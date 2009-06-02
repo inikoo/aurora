@@ -9,9 +9,8 @@
  <div class="search_box">
     <span class="search_title">{t}Contact Name{/t}:</span> <input size="8" class="text search" id="contact_search" value="" name="search"/><img align="absbottom" id="contact_submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>
      <span  class="search_msg"   id="contact_search_msg"    ></span> <span  class="search_sugestion"   id="contact_search_sugestion"    ></span>
-     <br/>
-   
       <br><a href="contacts.php?edit=1"  class="state_details" id="edit"  >{t}edit{/t}</a>
+       <br/><a  href="new_contact.php"  id="but_edit" title="{t}Add New Contact{/t}" class="state_details"   >{t}new{/t}</a>
  </div>
 
  
