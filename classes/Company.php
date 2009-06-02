@@ -130,7 +130,7 @@ class Company extends DB_Table {
     if($data['Company Name']==''){
       $data['Company Name']=_('Unknown Name');
     }
-
+              print_r($this->candidate);
 
     $contact=new Contact("find in company",$raw_data);
     foreach($contact->candidate as $key=>$val){
@@ -140,37 +140,43 @@ class Company extends DB_Table {
 	$this->candidate[$key]=$val;
     }
 
-    $email=new Email("find in company",$data['Company Main Plain Email']);
-    foreach($email->candidate as $key=>$val){
-      if(isset($this->candidate[$key]))
-	$this->candidate[$key]+=$val;
-      else
-	$this->candidate[$key]=$val;
-    }
     
-    $address=new Address("find in company ",$address_data);
+
+/*     $email=new Email("find in company",$data['Company Main Plain Email']); */
+/*     foreach($email->candidate as $key=>$val){ */
+/*       if(isset($this->candidate[$key])) */
+/* 	$this->candidate[$key]+=$val; */
+/*       else */
+/* 	$this->candidate[$key]=$val; */
+/*     } */
     
-    foreach($address->candidate as $key=>$val){
-      if(isset($this->candidate[$key]))
-	$this->candidate[$key]+=$val;
-      else
-	$this->candidate[$key]=$val;
-    }
+/*     $address=new Address("find in company ",$address_data); */
     
-    $telephone=new Telecom("find in company",$data['Company Main Telephone']);
-    foreach($telephone->candidate as $key=>$val){
-      if(isset($this->candidate[$key]))
-	$this->candidate[$key]+=$val;
-      else
-	$this->candidate[$key]=$val;
-    }
+/*     foreach($address->candidate as $key=>$val){ */
+/*       if(isset($this->candidate[$key])) */
+/* 	$this->candidate[$key]+=$val; */
+/*       else */
+/* 	$this->candidate[$key]=$val; */
+/*     } */
+
     
+/*     $telephone=new Telecom("find in company",$data['Company Main Telephone']); */
+/*     foreach($telephone->candidate as $key=>$val){ */
+/*       if(isset($this->candidate[$key])) */
+/* 	$this->candidate[$key]+=$val; */
+/*       else */
+/* 	$this->candidate[$key]=$val; */
+/*     } */
+
+
+
+
     //addnow we have a list of  candidates, from this list make another list of companies
     $candidate_companies=array();
-    // print "Contact Candidates:";
-    //print_r($this->candidate);
+     print "Contact Candidates:";
+   print_r($this->candidate);
    
-    
+
     foreach($this->candidate as $contact_key=>$score){
       $_contact=new Contact($contact_key);
       $company_key=$_contact->data['Contact Company Key'];
@@ -183,10 +189,10 @@ class Company extends DB_Table {
       }
     }
 
-    //print "Company Candidates:";
-    //print_r($candidate_companies);
+    print "Company Candidates:";
+    print_r($candidate_companies);
     if(!empty($candidate_companies)){
-      asort($candidate_companies);
+      arsort($candidate_companies);
       foreach($candidate_companies as $key=>$val){
 	//print "*$key $val\n";
 	if($val>=200){
@@ -220,7 +226,7 @@ class Company extends DB_Table {
 
       
 
-      //print "Company Found:".$this->found."\nContact Found:".$contact->found."\n";
+      print "Company Found:".$this->found." ".$this->found_key."   \nContact Found:".$contact->found." ".$contact->found_key."  \n";
       if(!$contact->found and $this->found){
 	// try to find again the contact now that we now the company
 	$contact=new Contact("find in company ".$this->found_key,$raw_data);
@@ -246,10 +252,12 @@ class Company extends DB_Table {
       $this->create($data,$address_data);
 
     }elseif(!$contact->found and $this->found){
+
+
       $this->get_data('id',$this->found_key);
       //print_r($this->card());
       // Create contact
-      $contact=new Contact("find create",$raw_data);
+      $contact=new Contact("find in company create",$raw_data);
       $this->data['Company Main Contact Name']=$contact->display('name');
       $this->data['Company Main Contact Key']=$contact->id;
       $contact->add_company(array(
