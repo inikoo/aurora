@@ -135,6 +135,8 @@ $myconf=array(
 	      'supplier_id_prefix'=>'S',
 	      'po_id_prefix'=>'PO',
 	      'customer_id_prefix'=>'C',
+	      'contact_id_prefix'=>'p',
+	      'company_id_prefix'=>'B',
 	      'order_id_prefix'=>'',
 	      'data_since'=>'14-06-2004',
 	      'product_code_separator'=>'-',
@@ -388,8 +390,40 @@ $default_state=array(
 						       'elements'=>array('orden'=>1,'h_cust'=>1,'h_cont'=>1,'note'=>1)
 						   )
 				    ),
-
-
+		     'company'=>array(
+					'id'=>1,
+				       
+					'table'=>array(
+						       'order'=>'date',
+						       'order_dir'=>'desc',
+						       'sf'=>0,
+						       'nr'=>10,
+						       'where'=>'where true',
+						       'f_field'=>'notes',
+						       'f_value'=>'',
+						       'from'=>'',
+						       'to'=>'',
+						       'details'=>0,
+						       'elements'=>array('h_comp'=>1,'h_cont'=>1,'note'=>1)
+						   )
+				    ),
+		     'contact'=>array(
+				      'id'=>1,
+				      
+				      'table'=>array(
+						       'order'=>'date',
+						       'order_dir'=>'desc',
+						       'sf'=>0,
+						       'nr'=>10,
+				       	       'where'=>'where true',
+						       'f_field'=>'notes',
+						       'f_value'=>'',
+						       'from'=>'',
+						       'to'=>'',
+						       'details'=>0,
+						       'elements'=>array('h_cont'=>1,'note'=>1)
+						   )
+				    ),
 		      'suppliers'=>array(
 					 'details'=>false,
 					 'view'=>'general',

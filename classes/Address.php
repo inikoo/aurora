@@ -260,7 +260,7 @@ class Address extends DB_Table{
       foreach($fields as $field){
 	$sql.=sprintf(' and `%s`=%s',$field,prepare_mysql($data[$field],false));
       }
-      print "FUZZY $sql\n";
+      //  print "FUZZY $sql\n";
       $result=mysql_query($sql);
       $num_results=mysql_num_rows($result);
       if($num_results==0){
@@ -315,7 +315,7 @@ class Address extends DB_Table{
 	$sql.=sprintf(' and `%s`=%s',$field,prepare_mysql($data[$field],false));
       }
       $result=mysql_query($sql);
-       print "No fuzzy $sql\n";
+      // print "No fuzzy $sql\n";
       $num_results=mysql_num_rows($result);
       if($num_results==0){
 	$this->found=false;

@@ -232,17 +232,17 @@ class Contact extends DB_Table{
       //print_r($this->candidate);
     }
 
-   print "******************************************************\n$options\n";
+    //print "******************************************************\n$options\n";
    
-   print_r($address_work_data);
-   print_r($raw_data);
-   print_r($data);
+    //print_r($address_work_data);
+    //print_r($raw_data);
+    //print_r($data);
    if(!array_empty( $address_work_data)){
      $address=new Address("find in contact",$address_work_data);
 
      $country_code=$address->raw_data['Address Country Code'];
-     print "AC\n";
-       print_r($address->candidate);
+     //print "AC\n";
+     //print_r($address->candidate);
        foreach($address->candidate as $key=>$val){
 	 if(isset($this->candidate[$key]))
 	   $this->candidate[$key]+=$val;
@@ -300,8 +300,8 @@ class Contact extends DB_Table{
     }
 
    if(count($this->candidate)>0){
-       print "candidates after mobile:\n";
-      print_r($this->candidate);
+     //    print "candidates after mobile:\n";
+     // print_r($this->candidate);
 
     }
 
@@ -406,8 +406,8 @@ class Contact extends DB_Table{
     }
 
 
-      print "-Contact Candidates\n";
-       print_r($this->candidate);
+    //print "-Contact Candidates\n";
+    //  print_r($this->candidate);
 
     if($this->found){
       $this->get_data('id',$this->found_key);
