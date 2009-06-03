@@ -76,18 +76,23 @@ CountryDS.maxCacheEntries = 100;
 
 YAHOO.util.Event.addListener(window, "load", function(){
 
-	new YAHOO.inputEx.Form( { 
+	var form=new YAHOO.inputEx.Form( { 
 		fields: [ 
 
-			 {type:'group',inputParams:{legend:'Email',name:'group1',fields:[ 
-											 {type:'email', inputParams: {label: 'Email', name: 'email',description: 'Email address',typeInvite: 'email',value:'<?=$contact->data['Contact Main Plain Email']?>',showMsg: true,regexp: inputEx.regexps.email}}, 
-										
+			 {type:'group',inputParams:{legend:'Email',name:'email_group',fields:[ 
+											 {type:'combine',inputParams: {label: 'Email',
+												     fields:[
+													     {type:'email', inputParams: { name: 'email',description: 'Email address',value:'<?=$contact->data['Contact Main Plain Email']?>',showMsg: true,regexp: inputEx.regexps.email}}, 
+													     {type:'uneditable', inputParams: {value:'Delete',name: 'delete_email'}}
+													     ],separators: [false," "]
+												     }}
+
 											 ]}} ,
 
 			 {type:'group',inputParams:{legend:'Name',name:'group2',fields:[ 
 											
-											{type: 'select', inputParams: {label: 'Title', name: 'title', selectValues: [<?=$salutation?>] } , value:'Mr',xvalue:'<?=$contact->data['Contact Salutation']?>'},
-											{inputParams: {label: 'Firstname', name: 'firstname',  value:'<?=$contact->data['Contact First Name']?>',typeInvite: 'eg John' } }, 
+											{type: 'select', inputParams: {label: 'Title', name: 'title', selectValues: [<?=$salutation?>]  , value:'<?=$contact->data['Contact Salutation']?>'}},
+											{inputParams: {label: 'Firstname', name: 'firstname',  value:'<?=$contact->data['Contact First Name']?>',typeInvite: '' } }, 
 											{inputParams: {label: 'Lastname', name: 'lastname', value:'<?=$contact->data['Contact Surname']?>' ,typeInvite: '',} }, 
 											 ]}} ,
 
@@ -115,7 +120,7 @@ YAHOO.util.Event.addListener(window, "load", function(){
 															 { inputParams: {name: 'wtel_icode', typeInvite: 'intl',size: 3, value: '<?=$main_telephone['Telecom Country Telephone Code']?>'} },
 															 { inputParams: {name: 'wtel_acode', typeInvite: '0',size: 1 ,value: '<?=$main_telephone['Telecom National Access Code']?>'} },
 															 { inputParams: {name: 'wtel_ncode', typeInvite: 'local',size: 4 ,value: '<?=$main_telephone['Telecom Area Code']?>'} },
-															 { inputParams: {name: 'wtel_number', typeInvite: 'number', value: '<?=$main_telephone['Telecom Number']?>'} },
+															 { inputParams: {name: 'wtel_number', typeInvite: 'number',size:6, value: '<?=$main_telephone['Telecom Number']?>'} },
 															 { inputParams: {name: 'wtel_ext', typeInvite: '',size: 2 ,value: '<?=$main_telephone['Telecom Extension']?>'} },
 				],
 														separators: ["+"," (",")","-"," Ext "]} },
@@ -147,7 +152,12 @@ YAHOO.util.Event.addListener(window, "load", function(){
 		    parentEl: 'container1' 
 		    });
 	
-	
+	xform=form.getFieldByName('email_group').getFieldByName('email.group');
+	alert(xform);
+	    
+
+
+
 	
     });
 			
