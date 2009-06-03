@@ -537,7 +537,9 @@ class Address extends DB_Table{
     case('plain'):
       return $this->plain($this->data);
       break;
-
+    case('street'):
+      return _trim($this->data['Address Street Number'].' '.$this->data['Address Street Name'].' '.$this->data['Address Street Type']);
+      break;
     case('xhtml'):
     case('html'):
       $separator="<br/>";
@@ -560,7 +562,7 @@ class Address extends DB_Table{
 	if($header_address!='')
 	  $address.=$header_address.$separator;
 	
-	$street_address=_trim($this->data['Address Street Number'].' '.$this->data['Address Street Name'].' '.$this->data['Address Street Type']);
+	$street_address=$this->display('street');
 	if($street_address!='')
 	  $address.=$street_address.$separator;
 

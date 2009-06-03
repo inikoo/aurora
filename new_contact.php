@@ -19,16 +19,12 @@ if(!$LU->checkRight(CUST_VIEW))
 
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-		 $yui_path.'menu/assets/skins/sam/menu.css',
-		 $yui_path.'calendar/assets/skins/sam/calendar.css',
-		 $yui_path.'button/assets/skins/sam/button.css',
-		  $yui_path.'editor/assets/skins/sam/editor.css',
-		 'external_libs/inputex/build/inputex-min.css',		  
-		 'text_editor.css',
-		 'common.css',
-		 'button.css',
-		 'container.css',
-		 'table.css'
+		 $yui_path.'assets/skins/sam/container.css',
+		 $yui_path.'assets/skins/sam/button.css',
+		 $yui_path.'assets/skins/sam/skin.css',
+		 'external_libs/inputex/css/inputEx.css',		  
+		 'common.css'
+		
 		 );
 $js_files=array(
 		$yui_path.'utilities/utilities.js',
