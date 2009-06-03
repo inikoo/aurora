@@ -54,7 +54,22 @@ $js_files=array(
 if($edit){
 
   $css_files[]='external_libs/inputex/build/inputex-min.css';
-  $js_files[]='external_libs/inputex/build/inputex-min.js';
+  $js_files[]='external_libs/inputex/js/inputex.js';
+  $js_files[]='external_libs/inputex/js/Field.js';
+  $js_files[]='external_libs/inputex/js/Group.js';
+  $js_files[]='external_libs/inputex/js/Form.js';
+  $js_files[]='external_libs/inputex/js/Visus.js';
+
+  $js_files[]='external_libs/inputex/js/fields/CombineField.js';
+  $js_files[]='external_libs/inputex/js/fields/StringField.js';
+  $js_files[]='external_libs/inputex/js/fields/SelectField.js';
+  $js_files[]='external_libs/inputex/js/fields/AutoComplete.js';
+  $js_files[]='external_libs/inputex/js/fields/EmailField.js';
+  $js_files[]='external_libs/inputex/js/fields/UneditableField.js';
+
+
+
+
   $js_files[]='js/edit_contact.js.php';
   
 
