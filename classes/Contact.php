@@ -2217,6 +2217,77 @@ string with the name to be parsed
       return $card;
 
    }
+   /*
+     function:get_main_telephone_data
+     Array with the data components of the main telephone
+    */
+   function get_main_telephone_data(){
+     $telephone=array('Telecom Country Telephone Code'=>'','Telecom Area Code'=>'','Telecom Number'=>'','Telecom Extension'=>'');
+     if($this->data['Contact Main Telephone Key']){
+       $telecom=new Telecom($this->data['Contact Main Telephone Key']);
+       $telephone['Telecom Country Telephone Code']=$telecom->data['Telecom Country Telephone Code'];
+       $telephone['Telecom National Access Code']=$telecom->data['Telecom Area Code'];
+       $telephone['Telecom Area Code']=$telecom->data['Telecom Area Code'];
+       $telephone['Telecom Number']=$telecom->data['Telecom Number'];
+       $telephone['Telecom Extension']=$telecom->data['Telecom Extension'];
+     }
+     return $telephone;
+   }
+
+/*
+     function:get_main_fax_data
+     Array with the data components of the main fax
+    */
+   function get_main_fax_data(){
+     $fax=array('Telecom Country Fax Code'=>'','Telecom Area Code'=>'','Telecom Number'=>'','Telecom Extension'=>'');
+     if($this->data['Contact Main FAX Key']){
+       $telecom=new Telecom($this->data['Contact Main FAX Key']);
+       $fax['Telecom Country Telephone Code']=$telecom->data['Telecom Country Telephone Code'];
+       $fax['Telecom National Access Code']=$telecom->data['Telecom Area Code'];
+       $fax['Telecom Area Code']=$telecom->data['Telecom Area Code'];
+       $fax['Telecom Number']=$telecom->data['Telecom Number'];
+
+     }
+     return $fax;
+   }
+   
+/*
+     function:get_main_mobile_data
+     Array with the data components of the main mobile
+    */
+   function get_main_mobile_data(){
+     $mobile=array('Telecom Country Mobile Code'=>'','Telecom Area Code'=>'','Telecom Number'=>'','Telecom Extension'=>'');
+     if($this->data['Contact Main Mobile Key']){
+       $telecom=new Telecom($this->data['Contact Main Mobile Key']);
+       $mobile['Telecom Country Telephone Code']=$telecom->data['Telecom Country Telephone Code'];
+       $mobile['Telecom National Access Code']=$telecom->data['Telecom Area Code'];
+       $mobile['Telecom Area Code']=$telecom->data['Telecom Area Code'];
+       $mobile['Telecom Number']=$telecom->data['Telecom Number'];
+
+     }
+     return $mobile;
+   }
+
+/*
+     function:get_main_address_data
+     Array with the data components of the main address
+    */
+   function get_main_address_data(){
+     $address_data=array('Country Name'=>'','Town'=>'','Internal'=>'','Bulding'=>'','Street'=>'','Country First Division'=>'','Country Secondary Division'=>'');
+     if($this->data['Contact Main Address Key']){
+       $address=new Address($this->data['Contact Main Address Key']);
+       $address_data['Town']=$address->data['Address Town'];
+       $address_data['Postal Code']=$address->data['Address Postal Code'];
+       $address_data['Country Name']=$address->data['Address Country Name'];
+       $address_data['Internal']=$address->data['Address Internal'];
+       $address_data['Building']=$address->data['Address Building'];
+       $address_data['Street']=$address->display('street');
+
+
+     }
+     return $address_data;
+   }
+
 
 } 
  ?>

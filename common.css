@@ -295,7 +295,7 @@ table.plot_menu img.selected {opacity: 1.0;filter: alpha(opacity=100);}
 	filter: alpha(opacity=20);
 }
 
-input {border: 1px solid #777}
+input {border: 1px solid #777;position:relative;bottom:-2px}
 .changed{color:red}
 .error{xbackground:#fdafaf;color:red}
 

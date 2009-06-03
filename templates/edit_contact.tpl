@@ -1,4 +1,6 @@
 {include file='header.tpl'}
+
+
 <div id="bd" style="padding:0 20px">
 <span class="nav2 onleft"><a  href="customers.php">{t}Customers{/t}</a></span>
 <span class="nav2 onleft"><a href="companies.php">{t}Companies{/t}</a></span>
@@ -18,7 +20,7 @@
   </div>
 
 
-<div id="edit_form" style="background:#f3f3f3;width:800px">
+<div id="container1" style="background:#f3f3f3;width:800px">
 
 </div>
 
