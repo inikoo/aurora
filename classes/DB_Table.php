@@ -64,36 +64,22 @@ abstract class DB_Table
     */
   public function update($data,$options=''){
 
-    //    $this->msg='';  
+
 
     $base_data=$this->base_data();
-    //   print "-----------------------\n";
-    // print_r($base_data);
-
     foreach($data as $key=>$value){
-	if(array_key_exists($key,$base_data)){
-	  
-	  // if(!isset($this->data[$key])){
-	  //  print_r($this);
-	  //  exit;
-	  //}
-
-	  if($value!=$this->data[$key]){
-	    //  print "Field: $key \nOld value: ".$this->data[$key]." \nNew value:  $value \nOpciones: $options\n";
-	    $this->update_field_switcher($key,$value,$options);
-	    
-	    //    $function_name='update_'.preg_replace('/\s/','',ucwords($key));
-	    // call_user_func(array($this,$function_name),$value,$options);
-	  }
+      if(preg_match('/^Address.*Data$/',$key))
+	$this->update_field_switcher($key,$value,$options);
+      elseif(array_key_exists($key,$base_data)){
+	if($value!=$this->data[$key]){
+	  $this->update_field_switcher($key,$value,$options);
 	}
+      }
     }
 
     
-      if(!$this->updated)
-	$this->msg.=' '._('Nothing to be updated')."\n";
-      //   else
-      //	 print $this->table_name." Updated ============\n";
-
+    if(!$this->updated)
+      $this->msg.=' '._('Nothing to be updated')."\n";
     }
   /*Function: update_field
    */
@@ -102,7 +88,27 @@ abstract class DB_Table
    
  }
 
+ protected function translate_data($data,$options=''){
+   $_data=array();
+   foreach($data as $key => $value){
+     
+     if(preg_match('/supplier/i',$options))
+       $regex='/^Supplier /i';
+     elseif(preg_match('/customer/i',$options))
+       $regex='/^Customer /i';
+     elseif(preg_match('/company/i',$options))
+       $regex='/^Company /i';
+     elseif(preg_match('/contact/i',$options))
+       $regex='/^Contact /i';
 
+     $rpl=$this->table_name.' ';
+
+
+     $_key=preg_replace($regex,$rpl,$key);
+     $_data[$_key]=$value;
+   }
+   
+ }
 
 protected function update_field($field,$value,$options=''){
    

@@ -9,8 +9,7 @@
  
  Copyright (c) 2009, Kaktus 
  
- Version 2.0
-*/
+ Version 2.0*/
 include_once('DB_Table.php');
 include_once('Contact.php');
 include_once('Telecom.php');
@@ -98,13 +97,13 @@ class Company extends DB_Table {
     
 
 
-    if(preg_match('/from supplier/',$options)){
+    if(preg_match('/(from|on|in|at) supplier/',$options)){
       foreach($raw_data as $key=>$val){
 	$_key=preg_replace('/Supplier /','Company ',$key);
 	$raw_data[$_key]=$val;
       }
       $parent='supplier';
-    }elseif(preg_match('/from customer/',$options)){
+    }elseif(preg_match('/(from|on|in|at) customer/',$options)){
       foreach($raw_data as $key=>$val){
 	$_key=preg_replace('/Customer /','Company ',$key);
 	$raw_data[$_key]=$val;
@@ -115,22 +114,19 @@ class Company extends DB_Table {
       $parent='none';
     }
 
-    $data=$this->base_data();
+
+    
+
     foreach($raw_data as $key=>$value){
-      //   print "$key\n";
-      if(array_key_exists($key,$data)){
-	$data[$key]=_trim($value);
-      }
 
       if(array_key_exists($key,$address_data))
 	$address_data[$key]=$value; 
-
     }
 
-    if($data['Company Name']==''){
-      $data['Company Name']=_('Unknown Name');
+    if($raw_data['Company Name']==''){
+      $raw_data['Company Name']=_('Unknown Name');
     }
-              print_r($this->candidate);
+
 
     $contact=new Contact("find in company",$raw_data);
     foreach($contact->candidate as $key=>$val){
@@ -173,8 +169,8 @@ class Company extends DB_Table {
 
     //addnow we have a list of  candidates, from this list make another list of companies
     $candidate_companies=array();
-     print "Contact Candidates:";
-   print_r($this->candidate);
+    //     print "Contact Candidates:";
+    //  print_r($this->candidate);
    
 
     foreach($this->candidate as $contact_key=>$score){
@@ -189,8 +185,8 @@ class Company extends DB_Table {
       }
     }
 
-    print "Company Candidates:";
-    print_r($candidate_companies);
+    //    print "Company Candidates:";
+    //print_r($candidate_companies);
     if(!empty($candidate_companies)){
       arsort($candidate_companies);
       foreach($candidate_companies as $key=>$val){
@@ -226,7 +222,7 @@ class Company extends DB_Table {
 
       
 
-      print "Company Found:".$this->found." ".$this->found_key."   \nContact Found:".$contact->found." ".$contact->found_key."  \n";
+      //      print "Company Found:".$this->found." ".$this->found_key."   \nContact Found:".$contact->found." ".$contact->found_key."  \n";
       if(!$contact->found and $this->found){
 	// try to find again the contact now that we now the company
 	$contact=new Contact("find in company ".$this->found_key,$raw_data);
@@ -248,8 +244,9 @@ class Company extends DB_Table {
 
     // there are 4 cases
     if(!$contact->found and !$this->found){
+
       $this->new_contact=true;
-      $this->create($data,$address_data);
+      $this->create($raw_data,$address_data);
 
     }elseif(!$contact->found and $this->found){
 
@@ -277,7 +274,7 @@ class Company extends DB_Table {
 	 $this->update($raw_data);
       }else{
 	
-	$this->create($data,$address_data,'use contact '.$contact->id);
+	$this->create($raw_data,$address_data,'use contact '.$contact->id);
 	
       }
        
@@ -357,6 +354,8 @@ class Company extends DB_Table {
   
   function create($raw_data,$raw_address_data=array(),$options=''){
     
+
+    
     $this->data=$this->base_data();
     foreach($raw_data as $key=>$value){
       if(array_key_exists($key,$this->data)){
@@ -395,14 +394,20 @@ class Company extends DB_Table {
        $email_data['Email Contact Name']=$this->data['Company Main Contact Name'];
        $email=new Email("find in company create",$email_data);
        if(!$email->error){
-	 
-	 
 	 $this->data['Company Main Plain Email']=$email->display('plain');
 	 $this->data['Company Main XHTML Email']=$email->display('xhtml');
 	 $this->data['Company Main Email Key']=$email->id;
+       }else{
+	 $this->data['Company Main Plain Email']='';
+	 $this->data['Company Main XHTML Email']='';
+	 $this->data['Company Main Email Key']='';
        }
-
-     }
+    }else{
+      $this->data['Company Main Plain Email']='';
+      $this->data['Company Main XHTML Email']='';
+      $this->data['Company Main Email Key']='';
+      
+    }
 
         $address_data=array('Company Address Line 1'=>'','Company Address Town'=>'','Company Address Line 2'=>'','Company Address Line 3'=>'','Company Address Postal Code'=>'','Company Address Country Name'=>'','Company Address Country Primary Division'=>'','Company Address Country Secondary Division'=>'');
      foreach($raw_address_data as $key=>$value){
@@ -437,7 +442,16 @@ class Company extends DB_Table {
 	$this->data['Company Main Plain Telephone']=$telephone->display('plain');
 	$this->data['Company Main Telephone']=$telephone->display('number');
 	$this->data['Company Main Telephone Key']=$telephone->id; 
+      }else{
+	$this->data['Company Main Plain Telephone']='';
+	$this->data['Company Main Telephone']='';
+	$this->data['Company Main Telephone Key']=''; 
       }
+    }else{
+      	$this->data['Company Main Plain Telephone']='';
+	$this->data['Company Main Telephone']='';
+	$this->data['Company Main Telephone Key']=''; 
+
     }
 
     if($this->data['Company Main FAX']!=''){
@@ -447,16 +461,19 @@ class Company extends DB_Table {
 	$this->data['Company Main Plain FAX']=$telephone->display('plain');
 	$this->data['Company Main FAX']=$telephone->display('number');
 	$this->data['Company Main FAX Key']=$telephone->id; 
+      }else{
+	$this->data['Company Main Plain FAX']='';
+	$this->data['Company Main FAX']='';
+	$this->data['Company Main FAX Key']=''; 
       }
-      //  print_r($this->data);
+	//  print_r($this->data);
       // print_r($telephone);exit;
+    }else{
+      	$this->data['Company Main Plain FAX']='';
+	$this->data['Company Main FAX']='';
+	$this->data['Company Main FAX Key']=''; 
+      
     }
-
-
-
-    
-    
-  
 
     $keys='';
     $values='';
@@ -592,6 +609,15 @@ protected function update_field_switcher($field,$value,$options=''){
  
 
   switch($field){
+  case('Company Main Contact Name'):
+    $contact=new Contact($this->data['Company Main Contact Key']);
+    $contact=update('Contact Name',$value);
+    $this->data['Company Main Contact Name']=$contact->display('Name');
+    $sql=sprintf("update `Company Main Contact Name`=%s where `Company Key`=%d",prepare_mysql($this->data['Company Main Contact Name']),$this->id);
+    mysql_query($sql);
+    break;
+
+
   case('Company Name'):
     $this->update_Company_Name($value,$options);
     break;
@@ -904,7 +930,7 @@ private function update_Company_Name($value,$options){
      $telecom=new Telecom('id',$data['Telecom Key']);
    }else{
      if(!isset($data['Telecom Original Country Key']) or !$data['Telecom Original Country Key'])
-       $data['Telecom Original Country Key']=$this->data['Contact Main Country Key'];
+       $data['Telecom Original Country Key']=$this->data['Company Main Country Key'];
      $telecom=new telecom('find in company create',$data);
    }
    if($telecom->id){
@@ -1215,7 +1241,18 @@ function add_contact($data,$args='principal'){
       return $card;
    }
 
-
+  /*
+     function: get_customer_key
+     Returns the Customer Key if the company is one
+    */
+   function get_customer_key(){
+     $sql=sprintf("select `Customer Key` from `Customer Dimension` where `Customer Type`='Company' and `Customer Company Key`=%d  ",$this->id);
+     $result=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+       return $row['Customer Key'];
+     }
+     return false;
+   }
 }
 
 ?>

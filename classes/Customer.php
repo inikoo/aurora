@@ -15,17 +15,45 @@
  The customer dimension is the  critical element for a CRM, a customer can be a Company or a Contact.
 
 */
+include_once('DB_Table.php');
 include_once('Contact.php');
 include_once('Order.php');
 include_once('Address.php');
 
-class Customer{
+class Customer extends DB_Table{
 
-  var $id=false;
+
+ 
+
   var $contact_data=false;
   var $ship_to=array();
 
   function __construct($arg1=false,$arg2=false) {
+
+    $this->table_name='Customer';
+    $this->ignore_fields=array(
+			       'Customer Key'
+			       ,'Customer Has More Orders Than'
+			       ,'Customer Has More  Invoices Than'
+			       ,'Customer Has Better Balance Than'
+			       ,'Customer Is More Profiteable Than'
+			       ,'Customer Order More Frecuently Than'
+			       ,'Customer Older Than'
+			       ,'Customer Orders Position'
+			       ,'Customer Invoices Position'
+			       ,'Customer Balance Position'
+			       ,'Customer Profit Position'
+			       ,'Customer Order Interval'
+			       ,'Customer Order Interval STD'
+			       ,'Customer Orders Top Percentage'
+			       ,'Customer Invoices Top Percentage'
+			       ,'Customer Balance Top Percentage'
+			       ,'Customer Profits Top Percentage'
+			       ,'Customer First Order Date'
+			       ,'Customer Last Order Date'
+			       ,'Customer Last Ship To Key'
+			       );
+
 
     $this->status_names=array(0=>'new');
     
@@ -35,8 +63,11 @@ class Customer{
     }
     
     if($arg1=='new'){
-       $this->create($arg2);
+      $this->find($arg2,'create');
        return;
+    }elseif(preg_match('/^find/',$arg1)){
+	$this->find($arg2,$arg1);
+	return;
     }
 
     $this->get_data($arg1,$arg2);
@@ -44,7 +75,97 @@ class Customer{
     
   }
 
+ /*
+    Method: find
+    Find Customer with similar data
+   
+   
+   */  
+  function find($raw_data,$options=''){
 
+
+    // print_r( $raw_data);
+
+    $this->found_child=false;
+    $this->found_child_key=0;
+    $this->found=false;
+    $this->found_key=0;
+
+
+   $create='';
+   $update='';
+   if(preg_match('/create/i',$options)){
+     $create='create';
+   }
+    if(preg_match('/update/i',$options)){
+      $update='update';
+    }
+    
+    //  print_r($raw_data);
+    if(!isset($raw_data['Customer Type']) or !preg_match('/^(Company|Person)$/i',$raw_data['Customer Type']) ){
+      
+
+      // Try to detect if is a company or a person
+      if(
+	 (isset($raw_data['Customer Company Name']) and  $raw_data['Customer Company Name']!='' )
+	 or (isset($raw_data['Customer Company Key']) and  $raw_data['Customer Company Key'] )
+	 )$raw_data['Customer Type']='Company';
+      else
+	$raw_data['Customer Type']='Person';
+      
+	    
+    }
+    $raw_data['Customer Type']=ucwords($raw_data['Customer Type']);
+    
+    if($raw_data['Customer Type']=='Person'){
+      $child=new contact ('find in customer',$raw_data);
+    }else{
+      $child=new Company ('find in customer',$raw_data);
+    }
+
+    if($child->found){
+      $this->found_child=true;
+      $this->found_child_key=$child->found_key;
+      
+      if($customer_found_key=$child->get_customer_key()){
+	$this->found=true;
+	$this->found_key=$customer_found_key;
+      }
+	
+
+    }else{
+      $this->candidate=$child->candidate;
+
+    }
+    
+    
+    // print "$options";
+
+
+    if($create){
+      
+      if($this->found){
+	$this->update($raw_data);
+
+      }else{
+
+	if($this->found_child){
+	  if($raw_data['Customer Type']=='Person'){
+	    $child->update($child->translate_data($raw_data,'from supplier'));
+	    $raw_data['Customer Main Contact Key']=$this->found_child_key;
+	  }	  
+
+	  
+	}else
+	  $this->create($raw_data);
+
+      }
+
+    }
+    
+
+    
+ }
 
 
   function get_data($tag,$id){
@@ -53,7 +174,7 @@ class Customer{
     elseif($tag=='email')
       $sql=sprintf("select * from `Customer Dimension` where `Customer Email`=%s",prepare_mysql($id));
     elseif($tag='all'){
-      $this->complex_get_data($id);
+      $this->find($id);
       return true;
     }else
        return false;
@@ -63,120 +184,120 @@ class Customer{
     }
   }
   
-  function compley_get_data($data){
-    $weight=array(
-		   'Same Other ID'=>100
-		   ,'Same Email'=>100
-		   ,'Similar Email'=>20
+/*   function compley_get_data($data){ */
+/*     $weight=array( */
+/* 		   'Same Other ID'=>100 */
+/* 		   ,'Same Email'=>100 */
+/* 		   ,'Similar Email'=>20 */
 
-		   );
+/* 		   ); */
 
       
-      if($data['Customer Email']!=''){
-	$has_email=true;
-	$sql=sprintf("select `Email Key` from `Email Dimension` where `Email`=%s",prepare_mysql($data['Customer Email']));
-	$result=mysql_query($sql);
-	if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-	  $email_key=$row['Email Key'];
-	  $sql=sprintf("select `Subject Key` from `Email Bridge` where `Email Key`=%s and `Subject Type`='Customer'",prepare_mysql($email_key));
-	  $result2=mysql_query($sql);
-	  if($row2=mysql_fetch_array($result2, MYSQL_ASSOC)){
-	    // Email found assuming this is th customer
+/*       if($data['Customer Email']!=''){ */
+/* 	$has_email=true; */
+/* 	$sql=sprintf("select `Email Key` from `Email Dimension` where `Email`=%s",prepare_mysql($data['Customer Email'])); */
+/* 	$result=mysql_query($sql); */
+/* 	if($row=mysql_fetch_array($result, MYSQL_ASSOC)){ */
+/* 	  $email_key=$row['Email Key']; */
+/* 	  $sql=sprintf("select `Subject Key` from `Email Bridge` where `Email Key`=%s and `Subject Type`='Customer'",prepare_mysql($email_key)); */
+/* 	  $result2=mysql_query($sql); */
+/* 	  if($row2=mysql_fetch_array($result2, MYSQL_ASSOC)){ */
+/* 	    // Email found assuming this is th customer */
 	    
-	    return $row2['Subject Key'];
-	  }
-	}
-      }else
-	$has_email=false;
+/* 	    return $row2['Subject Key']; */
+/* 	  } */
+/* 	} */
+/*       }else */
+/* 	$has_email=false; */
 
-     $telephone=Telephone::display(Telephone::parse_telecom(array('Telecom Original Number'=>$data['Telephone']),$data['Country Key']));
-    // Email not found check if we have a mantch in other id
-     if($data['Customer Other ID']!=''){
-       $no_other_id=false;
-	$sql=sprintf("select `Customer Key`,`Customer Name`,`Customer Main Telephone` from `Customer Dimension` where `Customer Other ID`=%s",prepare_mysql($data['Customer Other ID']));
-	$result=mysql_query($sql);
-	$num_rows = mysql_num_rows($result);
-	if($num_rows==1){
-	  $row=mysql_fetch_array($result, MYSQL_ASSOC);
-	  return $row['Customer Key'];
-	}elseif($num_rows>1){
-	  // Get the candidates
+/*      $telephone=Telephone::display(Telephone::parse_telecom(array('Telecom Original Number'=>$data['Telephone']),$data['Country Key'])); */
+/*     // Email not found check if we have a mantch in other id */
+/*      if($data['Customer Other ID']!=''){ */
+/*        $no_other_id=false; */
+/* 	$sql=sprintf("select `Customer Key`,`Customer Name`,`Customer Main Telephone` from `Customer Dimension` where `Customer Other ID`=%s",prepare_mysql($data['Customer Other ID'])); */
+/* 	$result=mysql_query($sql); */
+/* 	$num_rows = mysql_num_rows($result); */
+/* 	if($num_rows==1){ */
+/* 	  $row=mysql_fetch_array($result, MYSQL_ASSOC); */
+/* 	  return $row['Customer Key']; */
+/* 	}elseif($num_rows>1){ */
+/* 	  // Get the candidates */
 	  
-	  while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-	    $candidate[$row['Customer Key']]['field']=array('Customer Other ID');
-	    $candidate[$row['Customer Key']]['points']=$weight['Same Other ID'];
-	    // from this candoateed of one has the same name we wouls assume that this is the one
-	    if($data['Customer Name']!='' and $data['Customer Name']==$row['Customer Name'])
-	      return $row2['Customer Key'];
-	    if($telephone!='' and $telephone==$row['Customer Main Telephone'])
-	      return $row2['Customer Key'];
+/* 	  while($row=mysql_fetch_array($result, MYSQL_ASSOC)){ */
+/* 	    $candidate[$row['Customer Key']]['field']=array('Customer Other ID'); */
+/* 	    $candidate[$row['Customer Key']]['points']=$weight['Same Other ID']; */
+/* 	    // from this candoateed of one has the same name we wouls assume that this is the one */
+/* 	    if($data['Customer Name']!='' and $data['Customer Name']==$row['Customer Name']) */
+/* 	      return $row2['Customer Key']; */
+/* 	    if($telephone!='' and $telephone==$row['Customer Main Telephone']) */
+/* 	      return $row2['Customer Key']; */
 
 	    
-	  }
+/* 	  } */
 	  
 
 
 
-	}
-     }else
-       $no_other_id=true;
+/* 	} */
+/*      }else */
+/*        $no_other_id=true; */
     
 
 
 
-     //If customer has the same name ond same address
-     //$addres_finger_print=preg_replace('/[^\d]/','',$data['Full Address']).$data['Address Town'].$data['Postal Code'];
+/*      //If customer has the same name ond same address */
+/*      //$addres_finger_print=preg_replace('/[^\d]/','',$data['Full Address']).$data['Address Town'].$data['Postal Code']; */
 
 
-     //if thas the same name,telephone and address get it
+/*      //if thas the same name,telephone and address get it */
     
 
 
 
 
-     if($has_email){
-     //Get similar candidates from email
+/*      if($has_email){ */
+/*      //Get similar candidates from email */
        
-       $sql=sprintf("select levenshtein(UPPER(%s),UPPER(`Email`)) as dist1,levenshtein(UPPER(SOUNDEX(%s)),UPPER(SOUNDEX(`Email`))) as dist2, `Subject Key`  from `Email Dimension` left join `Email Bridge` on (`Email Bridge`.`Email Key`=`Email Dimension`.`Email Key`)  where dist1<=2 and  `Subject Type`='Customer'   order by dist1,dist2 limit 20"
-		    ,prepare_mysql($data['Customer Email'])
-		    ,prepare_mysql($data['Customer Email'])
-		    );
-       $result=mysql_query($sql);
-       while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-	  $candidate[$row['Subject Key']]['field'][]='Customer Other ID';
-	  $dist=0.5*$row['dist1']+$row['dist2'];
-	  if($dist==0)
-	    $candidate[$row['Subject Key']]['points']+=$weight['Same Other ID'];
-	  else
-	    $candidate[$row['Subject Key']]['points']=$weight['Similar Email']/$dist;
+/*        $sql=sprintf("select levenshtein(UPPER(%s),UPPER(`Email`)) as dist1,levenshtein(UPPER(SOUNDEX(%s)),UPPER(SOUNDEX(`Email`))) as dist2, `Subject Key`  from `Email Dimension` left join `Email Bridge` on (`Email Bridge`.`Email Key`=`Email Dimension`.`Email Key`)  where dist1<=2 and  `Subject Type`='Customer'   order by dist1,dist2 limit 20" */
+/* 		    ,prepare_mysql($data['Customer Email']) */
+/* 		    ,prepare_mysql($data['Customer Email']) */
+/* 		    ); */
+/*        $result=mysql_query($sql); */
+/*        while($row=mysql_fetch_array($result, MYSQL_ASSOC)){ */
+/* 	  $candidate[$row['Subject Key']]['field'][]='Customer Other ID'; */
+/* 	  $dist=0.5*$row['dist1']+$row['dist2']; */
+/* 	  if($dist==0) */
+/* 	    $candidate[$row['Subject Key']]['points']+=$weight['Same Other ID']; */
+/* 	  else */
+/* 	    $candidate[$row['Subject Key']]['points']=$weight['Similar Email']/$dist; */
        
-       }
-     }
+/*        } */
+/*      } */
  
 
-     //Get similar candidates from emailby name
-     if($data['Customer Name']!=''){
-     $sql=sprintf("select levenshtein(UPPER(%s),UPPER(`Customer Name`)) as dist1,levenshtein(UPPER(SOUNDEX(%s)),UPPER(SOUNDEX(`Customer Name`))) as dist2, `Customer Key`  from `Customer Dimension`   where dist1<=3 and  `Subject Type`='Customer'   order by dist1,dist2 limit 20"
-		  ,prepare_mysql($data['Customer Name'])
-		  ,prepare_mysql($data['Customer Name'])
-		  );
-     $result=mysql_query($sql);
-     while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-       $candidate[$row['Subject Key']]['field'][]='Customer Name';
-       $dist=0.5*$row['dist1']+$row['dist2'];
-       if($dist==0)
-	 $candidate[$row['Subject Key']]['points']+=$weight['Same Customer Name'];
-       else
-	 $candidate[$row['Subject Key']]['points']=$weight['Similar Customer Name']/$dist;
+/*      //Get similar candidates from emailby name */
+/*      if($data['Customer Name']!=''){ */
+/*      $sql=sprintf("select levenshtein(UPPER(%s),UPPER(`Customer Name`)) as dist1,levenshtein(UPPER(SOUNDEX(%s)),UPPER(SOUNDEX(`Customer Name`))) as dist2, `Customer Key`  from `Customer Dimension`   where dist1<=3 and  `Subject Type`='Customer'   order by dist1,dist2 limit 20" */
+/* 		  ,prepare_mysql($data['Customer Name']) */
+/* 		  ,prepare_mysql($data['Customer Name']) */
+/* 		  ); */
+/*      $result=mysql_query($sql); */
+/*      while($row=mysql_fetch_array($result, MYSQL_ASSOC)){ */
+/*        $candidate[$row['Subject Key']]['field'][]='Customer Name'; */
+/*        $dist=0.5*$row['dist1']+$row['dist2']; */
+/*        if($dist==0) */
+/* 	 $candidate[$row['Subject Key']]['points']+=$weight['Same Customer Name']; */
+/*        else */
+/* 	 $candidate[$row['Subject Key']]['points']=$weight['Similar Customer Name']/$dist; */
        
-     }
-     }
-     // Address finger print
+/*      } */
+/*      } */
+/*      // Address finger print */
      
 
 
 
- }
+/*  } */
 
 
 
@@ -210,16 +331,190 @@ class Customer{
   }
 
 
- function create($data=false){
+   function create($raw_data,$args=''){
+
+
+
+
+
+     $this->data=$this->base_data();
+     foreach($raw_data as $key=>$value){
+       if(array_key_exists($key,$this->data)){
+	 $this->data[$key]=_trim($value);
+       }
+    }
+
+
+    $this->data['Customer ID']=$this->new_id();
+    if($this->data['Customer Type']=='Company'){
+      $this->data['Customer Main Email Key']=0;
+      $this->data['Customer Main XHTML Email']='';
+      $this->data['Customer Main Plain Email']='';
+      $this->data['Customer Main Telephone Key']=0;
+      $this->data['Customer Main Telephone']='';
+      $this->data['Customer Main Plain Telephone']='';
+      $this->data['Customer Main FAX Key']=0;
+      $this->data['Customer Main FAX']='';
+      $this->data['Customer Main Plain FAX']='';
+      
+
+      if(!$this->data['Customer Company Key']){
+	$company=new company('find in customer create',$raw_data);
+	$this->data['Customer Company Key']=$company->id;
+	$this->data['Customer Company Name']=$company->data['Company Name'];
+      }
+      if($company->data['Company Main Email Key']){
+	$this->data['Customer Main Email Key']=$company->data['Company Main Email Key'];
+	$this->data['Customer Main XHTML Email']=$company->data['Company Main XHTML Email'];
+	$this->data['Customer Main Plain Email']=$company->data['Company Main Plain Email'];
+      }
+      if($company->data['Company Main Telephone Key']){
+	$this->data['Customer Main Telephone Key']=$company->data['Company Main Telephone Key'];
+	$this->data['Customer Main Telephone']=$company->data['Company Main Telephone'];
+	$this->data['Customer Main Plain Telephone']=$company->data['Company Main Plain Telephone'];
+      }
+      if($company->data['Company Main FAX Key']){
+	$this->data['Customer Main FAX Key']=$company->data['Company Main FAX Key'];
+	$this->data['Customer Main FAX']=$company->data['Company Main FAX'];
+	$this->data['Customer Main Plain FAX']=$company->data['Company Main Plain FAX'];
+      }
+      $this->data['Customer Main Contact Key']=$company->data['Company Main Contact Key'];
+      $this->data['Customer Main Contact Name']=$company->data['Company Main Contact Name'];
+
+    
+      
+    }elseif($this->data['Customer Type']=='Person'){
+      $this->data['Customer Main Email Key']=0;
+      $this->data['Customer Main XHTML Email']='';
+      $this->data['Customer Main Plain Email']='';
+      $this->data['Customer Main Telephone Key']=0;
+      $this->data['Customer Main Telephone']='';
+      $this->data['Customer Main Plain Telephone']='';
+      $this->data['Customer Main FAX Key']=0;
+      $this->data['Customer Main FAX']='';
+      $this->data['Customer Main Plain FAX']='';
+      if(!$this->data['Customer Main Contact Key']){
+	$contact=new contact('find in customer create',$raw_data);
+	$this->data['Customer Main Contact Key']=$contact->id;
+	$this->data['Customer Main Contact Name']=$contact->data['Contact Name'];
+      }
+      if($contact->data['Contact Main Email Key']){
+	$this->data['Customer Main Email Key']=$contact->data['Contact Main Email Key'];
+	$this->data['Customer Main XHTML Email']=$contact->data['Contact Main XHTML Email'];
+	$this->data['Customer Main Plain Email']=$contact->data['Contact Main Plain Email'];
+      }
+      if($contact->data['Contact Main Telephone Key']){
+	$this->data['Customer Main Telephone Key']=$contact->data['Contact Main Telephone Key'];
+	$this->data['Customer Main Telephone']=$contact->data['Contact Main Telephone'];
+	$this->data['Customer Main Plain Telephone']=$contact->data['Contact Main Plain Telephone'];
+      }
+      if($contact->data['Contact Main FAX Key']){
+	$this->data['Customer Main FAX Key']=$contact->data['Contact Main FAX Key'];
+	$this->data['Customer Main FAX']=$contact->data['Contact Main FAX'];
+	$this->data['Customer Main Plain FAX']=$contact->data['Contact Main Plain FAX'];
+      }
+      $this->data['Customer Company Key']=0;
+
+
+    }else{
+      $this->error=true;
+      $this->msg.=' Error, Wrong Customer Tyep ->'.$this->data['Customer Type'];
+    }
+
+    if($this->data['Customer First Contacted Date']==''){
+      $this->data['Customer First Contacted Date']=date('Y-m-d H:i:s');
+    }
+
+    $this->data['Customer Active Ship To Records']=0;
+    $this->data['Customer Total Ship To Records']=0;
+
+
+    // Ok see if we have a billing address!!!
+
+    if(isset($raw_data['Customer Billing Address'])){
+      $billing_address=new address('find create',$raw_data['Customer Billing Address']);
+      $this->data['Customer Main Address Key']=$billing_address->id;
+      $this->data['Customer Main Address Country Code']=$billing_address->data['Address Country Code'];
+      $this->data['Customer Main Location']=$billing_address->data['Address Location'];
+      $this->data['Customer Main Address Town']=$billing_address->data['Address Town'];
+      $this->data['Customer Main Address Postal Code']=$billing_address->data['Address'];
+      $this->data['Customer Main Address Country Primary Division']=$billing_address->data['Address Country Primary Division'];
+      $this->data['Customer Main XHTML Address']=$billing_address->display('html'); 
+
+    }else{
+     if($this->data['Customer Type']=='Company'){
+       
+       $billing_address_key=$company->data['Company Main Address Key'];
+     }else{
+       $billing_address_key=$contact->data['Contact Main Address Key'];
+     }
+
+     if($billing_address_key){
+       $billing_address=new address($billing_address_key);
+       $this->data['Customer Main Address Key']=$billing_address->id;
+       $this->data['Customer Main Address Country Code']=$billing_address->data['Address Country Code'];
+       $this->data['Customer Main Location']=$billing_address->data['Address Location'];
+       $this->data['Customer Main Address Town']=$billing_address->data['Address Town'];
+       $this->data['Customer Main Address Postal Code']=$billing_address->data['Address Postal Code'];
+       $this->data['Customer Main Address Country Primary Division']=$billing_address->data['Address Country Primary Division'];
+        $this->data['Customer Main XHTML Address']=$billing_address->display('html'); 
+     }
+
+    }
+      
+
+    
+
+
+
+
+    $keys='';
+    $values='';
+    foreach($this->data as $key=>$value){
+      $keys.=",`".$key."`";
+
+      if(preg_match('/Key$/',$key))
+	$values.=','.prepare_mysql($value);
+      else
+	$values.=','.prepare_mysql($value,false);
+    }
+    $values=preg_replace('/^,/','',$values);
+    $keys=preg_replace('/^,/','',$keys);
+
+    $sql="insert into `Customer Dimension` ($keys) values ($values)";
+  
+    if(mysql_query($sql)){
+
+      $this->id=mysql_insert_id();
+      $this->get_data('id',$this->id);
+      
+      
+    }else{
+      // print "Error can not create supplier $sql\n";
+    }
+
+
+
+
+
+
+   }
+
+
+   function create_old($data=false,$args){
+
+
+   print_r($data);
+
    global $myconf;
-   $this->unknown_contact=$myconf['unknown_contact'];
-   $this->unknown_company=$myconf['unknown_company'];
-   $this->unknown_customer=$myconf['unknown_customer'];
-   $contact_name=$this->unknown_contact;
-   $company_name=$this->unknown_company;
+   //   $this->unknown_contact=$myconf['unknown_contact'];
+   //$this->unknown_company=$myconf['unknown_company'];
+   //$this->unknown_customer=$myconf['unknown_customer'];
+   //$contact_name=$this->unknown_contact;
+   //$company_name=$this->unknown_company;
    $unique_id=$this->get_id();
    
-   $type='Unknown';
+   //$type='Unknown';
 
    if(isset($data['type']) and ($data['type']=='Company' or $data['type']=='Person'))
      $type=$data['type'];
@@ -600,35 +895,40 @@ class Customer{
 
 
  }
-  /*
-   Function: base_data
-   Initializes an array with the default field values
-   */
- function base_data(){
-   $data=array();
-
-   $ignore_fields=array('Customer Key');
-
-   $result = mysql_query("SHOW COLUMNS FROM `Customer Dimension`");
-   if (!$result) {
-     echo 'Could not run query: ' . mysql_error();
-     exit;
-   }
-   if (mysql_num_rows($result) > 0) {
-     while ($row = mysql_fetch_assoc($result)) {
-       if(!in_array($row['Field'],$ignore_fields))
-	 $data[$row['Field']]=$row['Default'];
-     }
-   }
-   if(preg_match('/not? replace/i',$args))
-     return $data;
-   if(preg_match('/replace/i',$args))
-     $this->data=$data;
-
- }
 
 
- function update($key,$data=false,$args='false'){
+
+
+
+/*   /\* */
+/*    Function: base_data */
+/*    Initializes an array with the default field values */
+/*    *\/ */
+/*  function base_data(){ */
+/*    $data=array(); */
+
+/*    $ignore_fields=array('Customer Key'); */
+
+/*    $result = mysql_query("SHOW COLUMNS FROM `Customer Dimension`"); */
+/*    if (!$result) { */
+/*      echo 'Could not run query: ' . mysql_error(); */
+/*      exit; */
+/*    } */
+/*    if (mysql_num_rows($result) > 0) { */
+/*      while ($row = mysql_fetch_assoc($result)) { */
+/*        if(!in_array($row['Field'],$ignore_fields)) */
+/* 	 $data[$row['Field']]=$row['Default']; */
+/*      } */
+/*    } */
+/*    if(preg_match('/not? replace/i',$args)) */
+/*      return $data; */
+/*    if(preg_match('/replace/i',$args)) */
+/*      $this->data=$data; */
+
+/*  } */
+
+
+ function update_2($key,$data=false,$args='false'){
    
    switch($key){
    case('multiple'):
@@ -1154,7 +1454,7 @@ class Customer{
  }
 
 
-  function get_id(){
+  function new_id(){
     
     $sql="select max(`Customer ID`)  as customer_id from `Customer Dimension`";
     $result=mysql_query($sql);

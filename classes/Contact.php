@@ -2287,7 +2287,18 @@ string with the name to be parsed
      }
      return $address_data;
    }
-
+/*
+     function: get_customer_key
+     Returns the Customer Key if the contact is one
+    */
+   function get_customer_key(){
+     $sql=sprintf("select `Customer Key` from `Customer Dimension` where `Customer Type`='Person' and `Customer Main Contact Key`=%d  ",$this->id);
+     $result=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+       return $row['Customer Key'];
+     }
+     return false;
+   }
 
 } 
  ?>

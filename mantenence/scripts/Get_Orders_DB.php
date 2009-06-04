@@ -158,7 +158,58 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     unset($products);
   //   echo "Memory: ".memory_get_usage(true) . "x\n";
 //     echo "Memory: ".memory_get_usage() . "x\n";
-    $customer_data=setup_contact($act_data,$header_data,$date_index2);
+    $_customer_data=setup_contact($act_data,$header_data,$date_index2);
+
+    //    print_r($_customer_data);
+    foreach($_customer_data as $_key =>$value){
+      $key=$_key;
+      if($_key=='type')
+      $key=preg_replace('/^type$/','Customer Type',$_key);
+      if($_key=='contact_name')
+      $key=preg_replace('/^contact_name$/','Customer Main Contact Name',$_key);
+      if($_key=='company_name')
+      $key=preg_replace('/^company_name$/','Customer Company Name',$_key);
+      if($_key=='email')
+      $key=preg_replace('/^email$/','Customer Main Plain Email',$_key);
+      if($_key=='telephone')
+      $key=preg_replace('/^telephone$/','Customer Main Telephone',$_key);
+      if($_key=='fax')
+      $key=preg_replace('/^fax$/','Customer Main FAX',$_key);
+      if($_key=='mobile')
+	$key=preg_replace('/^mobile$/','Customer Mobile',$_key);
+
+      $customer_data[$key]=$value;
+
+    }
+    if($customer_data['Customer Type']=='Company')
+      $customer_data['Customer Name']=$customer_data['Customer Company Name'];
+    else
+      $customer_data['Customer Name']=$customer_data['Customer Main Contact Name'];
+    if(isset($_customer_data['address_data'])){
+      $customer_data['Customer Address Line 1']=$_customer_data['address_data']['address1'];
+      $customer_data['Customer Address Line 2']=$_customer_data['address_data']['address2'];
+      $customer_data['Customer Address Line 3']=$_customer_data['address_data']['address3'];
+      $customer_data['Customer Address Town']=$_customer_data['address_data']['town'];
+      $customer_data['Customer Address Postal Code']=$_customer_data['address_data']['postcode'];
+      $customer_data['Customer Address Country Name']=$_customer_data['address_data']['country'];
+      $customer_data['Customer Address Country Primary Division']=$_customer_data['address_data']['country_d1'];
+      $customer_data['Customer Address Country Secondary Division']=$_customer_data['address_data']['country_d2'];
+      unset($customer_data['address_data']);
+    }
+    if(isset($_customer_data['address_data']) and $_customer_data['has_shipping']){
+      $customer_data['Customer Shipping Address']['Address Line 1']=$_customer_data['shipping_data']['address1'];
+      $customer_data['Customer Shipping Address']['Address Line 2']=$_customer_data['shipping_data']['address2'];
+      $customer_data['Customer Shipping Address']['Address Line 3']=$_customer_data['shipping_data']['address3'];
+      $customer_data['Customer Shipping Address']['Address Town']=$_customer_data['shipping_data']['town'];
+      $customer_data['Customer Shipping Address']['Address Postal Code']=$_customer_data['shipping_data']['postcode'];
+      $customer_data['Customer Shipping Address']['Address Country Name']=$_customer_data['shipping_data']['country'];
+      $customer_data['Customer Shipping Address']['Address Country Primary Division']=$_customer_data['shipping_data']['country_d1'];
+      $customer_data['Customer Shipping Address']['Address Country Secondary Division']=$_customer_data['shipping_data']['country_d2'];
+      unset($customer_data['shipping_data']);
+    }
+
+   
+
 
     //  print_r($transactions);
   
@@ -596,7 +647,9 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 			  );
    
       // print_r($product_data);
+     
       $product=new Product('code-name-units-price',$product_data);
+
       //     "Ahh canto male pedict\n";
       if(!$product->id){
 	print_r($product_data);
@@ -782,7 +835,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
        }
        
        print "$tipo_order\r";
-
+       
        $sales_rep_data=get_user_id($header_data['takenby'],true,'&view=processed');
        $data['Order XHTML Sale Reps']=$sales_rep_data['xhtml'];
        $data['Order Sale Reps IDs']=$sales_rep_data['id'];

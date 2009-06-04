@@ -52,6 +52,7 @@ class supplier extends DB_Table{
        return ;
      }
      if(preg_match('/create|new/i',$arg1)){
+     
        $this->find($arg2,'create');
        return;
      }       
@@ -69,9 +70,9 @@ class supplier extends DB_Table{
   function get_data($tipo,$id){
 
     $this->data=$this->base_data();
-   $this->id=0;
-
-   return;
+    $this->id=0;
+    
+ 
 
     if($tipo=='id' or $tipo=='key')
       $sql=sprintf("select * from `Supplier Dimension` where `Supplier Key`=%d",$id);
@@ -84,7 +85,7 @@ class supplier extends DB_Table{
     }
 
     
-    //  print "$sql\n";
+    //print $sql;
     $result=mysql_query($sql);
     if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   )
       $this->id=$this->data['Supplier Key'];
@@ -96,10 +97,11 @@ class supplier extends DB_Table{
     Method: find
     Find Supplier with similar data
    
-    Returns:
-    Key of the Compnay found, if create is found in the options string  returns the new key
+   
    */  
  function find($raw_data,$options){
+   
+
    $create='';
    $update='';
    if(preg_match('/create/i',$options)){
@@ -109,21 +111,21 @@ class supplier extends DB_Table{
       $update='update';
     }
     
-    $data=$this->base_data();
-  /*   print "sup\n"; */
-/*     print_r($data); */
-/*     print "\n"; */
-/*     exit; */
-    foreach($raw_data as $key=>$value){
-      if(array_key_exists($key,$data)){
-	$data[$key]=_trim($value);
-      }
-    } 
+   
+    if(!isset($raw_data['Supplier Name'])){
+      if(isset($raw_data['name']))
+	$raw_data['Supplier Name']=$raw_data['name'];
+    }
+    if(!isset($raw_data['Supplier Code'])){
+      if(isset($raw_data['code']))
+	$raw_data['Supplier Code']=$raw_data['code'];
+    }
+    
 
 
 
     if($create){
-      $this->create($data);
+      $this->create($raw_data);
     }
     
 
@@ -183,9 +185,14 @@ class supplier extends DB_Table{
    if $data is empty Unknown supplier is created
    
    */
-  function create($data){
-  
- 
+  function create($raw_data){
+
+    $this->data=$this->base_data();
+    foreach($raw_data as $key=>$value){
+      if(array_key_exists($key,$this->data)){
+	$this->data[$key]=_trim($value);
+      }
+    }
 
   
 
@@ -196,34 +203,38 @@ class supplier extends DB_Table{
     if($this->data['Supplier Code']==''){
       $this->data['Supplier Code']=$this->create_code($this->data['Supplier Code']);
     }
+
+    
     $this->data['Supplier ID']=$this->new_id();
     $this->data['Supplier Code']=$this->check_repair_code($this->data['Supplier Code']);
 
-/*     //Create or appende to company */
-/*     $company=new company('find in company create',$this->data); */
-/*     if($company->warning){ */
-/*       exit("company warnings"); */
-/*     } */
 
+    if(!$this->data['Supplier Company Key']){
+      $company=new company('find in supplier create',$raw_data);
+      $this->data['Supplier Company Key']=$company->id;
+      
+    }
     
-/*     $this->data['Supplier Company Key']=$company->id; */
-/*     if($company->data['Company Main Address Key']){ */
-/*       $this->data['Supplier Location']=$company->data['Company Location']; */
-/*     } */
-/*     if($company->data['Company Main Email Key']){ */
-/*       $this->data['Supplier Main Email Key']=$company->data['Company Main Email Key']; */
-/*       $this->data['Supplier Main XHTML Email']=$company->data['Company Main XHTML Email']; */
-/*       $this->data['Supplier Main Plain Email']=$company->data['Company Main Plain Email']; */
-/*     } */
-/*     if($company->data['Company Main Telephone Key']){ */
-/*       $this->data['Supplier Main Telephone Key']=$company->data['Company Main Email Telephone']; */
-/*       $this->data['Supplier Main XHTML Telephone']=$company->data['Company Main XHTML Telephone']; */
-/*       $this->data['Supplier Main Plain Telephone']=$company->data['Company Main Plain Telephone']; */
-/*     } */
+
+    if($company->data['Company Main Email Key']){
+      $this->data['Supplier Main Email Key']=$company->data['Company Main Email Key'];
+      $this->data['Supplier Main XHTML Email']=$company->data['Company Main XHTML Email'];
+      $this->data['Supplier Main Plain Email']=$company->data['Company Main Plain Email'];
+    }
+    if($company->data['Company Main Telephone Key']){
+      $this->data['Supplier Main Telephone Key']=$company->data['Company Main Telephone Key'];
+      $this->data['Supplier Main XHTML Telephone']=$company->data['Company Main Telephone'];
+      $this->data['Supplier Main Plain Telephone']=$company->data['Company Main Plain Telephone'];
+    }
+    if($company->data['Company Main FAX Key']){
+      $this->data['Supplier Main FAX Key']=$company->data['Company Main FAX Key'];
+      $this->data['Supplier Main XHTML FAX']=$company->data['Company Main FAX'];
+      $this->data['Supplier Main Plain FAX']=$company->data['Company Main Plain FAX'];
+    }
     
-/*     $this->data['Supplier Main Contact Key']=$company->data['Company Main Contact Key']; */
-/*     $this->data['Supplier Main Contact Name']=$company->data['Company Main Contact Name']; */
-/*     $this->data['Supplier Fiscal Name']=$company->data['Company Fiscal Name']; */
+    $this->data['Supplier Main Contact Key']=$company->data['Company Main Contact Key'];
+    $this->data['Supplier Main Contact Name']=$company->data['Company Main Contact Name'];
+    $this->data['Supplier Fiscal Name']=$company->data['Company Fiscal Name'];
 
     $keys='';
     $values='';
@@ -233,8 +244,10 @@ class supplier extends DB_Table{
     }
     $values=preg_replace('/^,/','',$values);
     $keys=preg_replace('/^,/','',$keys);
-
+    //print_r( $raw_data);
     $sql="insert into `Supplier Dimension` ($keys) values ($values)";
+    //    print $sql;
+ 
     if(mysql_query($sql)){
 
       $this->id=mysql_insert_id();

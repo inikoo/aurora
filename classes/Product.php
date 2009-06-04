@@ -189,8 +189,8 @@ class product{
 	$supplier=new Supplier('code',$tag['supplier code']);
 	if(!$supplier->id){
 	  $data=array(
-		      'name'=>$tag['supplier name'],
-		      'code'=>$tag['supplier code'],
+		      'Supplier Name'=>$tag['supplier name'],
+		      'Supplier Code'=>$tag['supplier code'],
 		      'from'=>$tag['date'],
 		      'to'=>$tag['date2']
 		      );
@@ -313,7 +313,8 @@ class product{
       // print "$number_sp\n";
       if($number_sp==0){
 	// ****************************************  NEW CODE ************************************************
-	//	print "NEW Cpde\n";
+	//print "NEW Cpde\n";
+
 	$this->new_code=true;
 	$tag['product id']=$this->new_id();
 	$tag['product most recent']='Yes';
@@ -345,7 +346,9 @@ class product{
 
 	$part->load('used in');
 	$this->load('parts');
+
 	$supplier=new Supplier('code',$tag['supplier code']);
+	//exit("cassc");
 	if(!$supplier->id){
 	  $data=array(
 		      'name'=>$tag['supplier name'],
