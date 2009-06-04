@@ -27,6 +27,9 @@ class Order {
 	Public $staus = 'new';
 	function __construct($arg1 = false, $arg2 = false) {
 		
+
+
+
 		$this->status_names = array (0 => 'new' );
 		if (preg_match ( '/new/i', $arg1 )) {
 			$this->create_order ( $arg2 );
@@ -46,7 +49,7 @@ class Order {
 		$type = $data ['type'];
 		switch ($type) {
 			case ('direct_data_injection') :
-				
+			  
 				$this->data ['Delivery Note Key'] = '';
 				
 				if (isset ( $data ['ghost_order'] ))
@@ -66,7 +69,10 @@ class Order {
 				  $customer = new Customer ( $customer_id );
 				  $customer->update('multiple',$cdata);
 				}else{
-				  $customer = new Customer ( 'new', $data );
+				  
+
+				  $customer = new Customer ( 'find create', $data );
+				  
 				  $customer_id=$customer->id;
 				}
 				

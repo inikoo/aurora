@@ -133,7 +133,7 @@ function find($raw_data,$options){
    $this->found=false;
    $this->found_in=false;
    $this->found_out=false;
-
+   
    $in_contacts=array();
    $mode='Contact';
    $parent='Contact';
@@ -141,7 +141,7 @@ function find($raw_data,$options){
    if(preg_match('/create|update/i',$options)){
      $create=true;
    }
-    $auto=false;
+   $auto=false;
     if(preg_match('/auto/i',$options)){
       $auto=true;
     }
@@ -154,8 +154,8 @@ function find($raw_data,$options){
       return false;
     }
 
-
-
+  
+   
 
    
    //print "OPTIONS $options\n";
@@ -178,11 +178,13 @@ function find($raw_data,$options){
 
 
 
-   if($raw_number){
+   if($raw_number!=''){
      $_data=preg_replace('/[^\d]/','',$raw_number);
+
      if(strlen($_data)<3){
+
        $this->error=true;
-       $this->msg=_('Error no telecom data');
+       $this->msg=_('Error, invalid telecom data');
        if(preg_match('/exit on errors/',$options))
 	 exit($this->msg);
        return false;
@@ -190,6 +192,13 @@ function find($raw_data,$options){
      }
      $raw_data=$this->parse_number($raw_number,$country_code);
    
+   }else{
+     $this->error=true;
+       $this->msg=_('Error, no telecom data');
+       if(preg_match('/exit on errors/',$options))
+	 exit($this->msg);
+       return false;
+     
    }
 
    if($raw_data['Telecom Number']==''){
