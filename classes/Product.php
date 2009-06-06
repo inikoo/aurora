@@ -85,11 +85,15 @@ class product{
       return;
     }elseif($tipo=='code'){
       $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s and `Product Most Recent`='Yes' ",prepare_mysql($tag));
+      // print "$sql  xxx\n";
       $result=mysql_query($sql);
+      //print "pre\n";
       if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)){
+	//	 print "searching\n";
 	$this->id=$this->data['Product Key'];
 	$this->locale=$this->data['Product Locale'];
       }
+      //print "found\n";
       return;
       
     } if($tipo=='code_store'){
@@ -1668,7 +1672,7 @@ function normalize_code($code){
      
      $date=date("Y-m-d");
      $sql=sprintf("select PPL.`Part SKU`,ISF.`Location Key`,`Quantity On Hand`,`Parts Per Product`,`Location Code`   from `Product Part List` PPL left join `Inventory Spanshot Fact` ISF on (ISF.`Part SKU`=PPL.`Part SKU`) left join `Location Dimension` LD on (LD.`Location Key`=ISF.`Location Key`)  where `Product ID`=%d and `Date`=%s and `Product Part Most Recent`='Yes';",$this->data['Product ID'],prepare_mysql($date));
-      print $sql;
+     //      print $sql;
      $result=mysql_query($sql);
      $this->parts_location=array();
      while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
@@ -1707,12 +1711,15 @@ function normalize_code($code){
      $parts=preg_replace('/^, /','',$parts);
      $mysql_where=preg_replace('/^, /','',$mysql_where);
 
+     if($mysql_where=='')
+       $mysql_where=0;
        $supplied_by='';
        $sql=sprintf("select  (select `Supplier Product Code` from `Supplier Product Dimension` where `Supplier Product ID`=SPPL.`Supplier Product ID` and `Supplier Product Most Recent` limit 1) as `Supplier Product Code`,(select `Supplier Product Key` from `Supplier Product Dimension` where `Supplier Product ID`=SPPL.`Supplier Product ID` and `Supplier Product Most Recent` limit 1) as `Supplier Product Key` ,  SD.`Supplier Key`,`Supplier Code` from `Supplier Product Part List` SPPL   left join `Supplier Dimension` SD on (SD.`Supplier Key`=SPPL.`Supplier Key`)   where `Part SKU` in (%s) order by `Supplier Key`;",$mysql_where);
       $result=mysql_query($sql);
     
       $supplier=array();
       $current_supplier='_';
+     
       while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 	$_current_supplier=$row['Supplier Key'];
 	if($_current_supplier!=$current_supplier){
@@ -2165,8 +2172,8 @@ $y_days=count($y_days);
      break;
    case('sales'):
      $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Consolidated`='Yes' and `Product Key`=%d",$this->id);
-     //  print "$sql\n";
-     $result=mysql_query($sql);
+     
+       $result=mysql_query($sql);
      if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
        $this->data['Product Total Invoiced Gross Amount']=$row['gross'];
        $this->data['Product Total Invoiced Discount Amount']=$row['disc'];
@@ -2288,8 +2295,8 @@ $y_days=count($y_days);
 
      
      $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Key`=%d and `Invoice Date`>=%s ",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 1 year"))));
-     //  print "$sql\n\n";
-     $result=mysql_query($sql);
+     
+       $result=mysql_query($sql);
      if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
        
        $this->data['Product 1 Year Acc Invoiced Gross Amount']=$row['gross'];

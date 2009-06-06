@@ -15,7 +15,7 @@ error_reporting(E_ALL);
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 
 if(!$con){print "Error can not connect with database server\n";exit;}
-$dns_db='dw';
+//$dns_db='dw';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
   
@@ -33,7 +33,7 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $product=new Family($row['Product Family Key']);
   $product->load('products_info');
   $product->load('sales');
-  print $row['Product Family Code']."\r";
+  print $row['Product Family Code']."\n";
  }
 
 
