@@ -18,6 +18,8 @@ if(isset($_REQUEST['tipo']))
 $title='';
 
 $options='';
+
+
 switch($tipo){
  case('product_week_sales'):
  case('product_month_sales'):
@@ -74,7 +76,7 @@ switch($tipo){
 
    }
    //   $_SESSION['state']['product']['plot_data'][$tipo]['max']=$max;
-
+   
    $ar_address='ar_plot.php?tipo='.$tipo;
 
    $fields='"tip_asales","asales","date","profit","tip_profit"';

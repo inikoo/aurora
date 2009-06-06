@@ -187,6 +187,8 @@ class supplier extends DB_Table{
    */
   function create($raw_data){
 
+    //  print_r($raw_data);
+
     $this->data=$this->base_data();
     foreach($raw_data as $key=>$value){
       if(array_key_exists($key,$this->data)){
@@ -235,7 +237,6 @@ class supplier extends DB_Table{
     $this->data['Supplier Main Contact Key']=$company->data['Company Main Contact Key'];
     $this->data['Supplier Main Contact Name']=$company->data['Company Main Contact Name'];
     $this->data['Supplier Fiscal Name']=$company->data['Company Fiscal Name'];
-
     $keys='';
     $values='';
     foreach($this->data as $key=>$value){
@@ -244,7 +245,7 @@ class supplier extends DB_Table{
     }
     $values=preg_replace('/^,/','',$values);
     $keys=preg_replace('/^,/','',$keys);
-    //print_r( $raw_data);
+    print_r( $raw_data);
     $sql="insert into `Supplier Dimension` ($keys) values ($values)";
     //    print $sql;
  
@@ -372,6 +373,9 @@ class supplier extends DB_Table{
 
    */
   protected function check_repair_code($code){
+
+
+
     $code=_trim($code);
     if(!$this->is_valid_code($code)){
       if($code==''){
@@ -406,6 +410,7 @@ class supplier extends DB_Table{
     True,False
    */
   public static function is_valid_code($code){
+    //  print "------------ $code\n";
     $code=_trim($code);
     if($code=='')
       return false;

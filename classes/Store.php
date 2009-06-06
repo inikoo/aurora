@@ -250,7 +250,7 @@ class Store{
 $sql="select sum(`Product Total Invoiced Amount`) as net,sum(`Product Total Invoiced Gross Amount`) as gross,sum(`Product Total Invoiced Discount Amount`) as disc, sum(`Product Total Profit`)as profit ,sum(`Product Total Quantity Delivered`) as delivered,sum(`Product Total Quantity Ordered`) as ordered,sum(`Product Total Quantity Invoiced`) as invoiced  from `Product Dimension` as P where `Product Store Key`=".$this->id;
 
 
-// print "$sql\n\n";
+//print "$sql\n\n";
 // exit;
  $result=mysql_query($sql);
  
@@ -280,8 +280,7 @@ $sql="select sum(`Product Total Invoiced Amount`) as net,sum(`Product Total Invo
 		    ,prepare_mysql($this->data['Store Valid To'])
 		    ,$this->id
 		    );
-     //  print "$sql\n";
-     //  exit;
+     
      if(!mysql_query($sql))
        exit("$sql\ncan not update dept sales\n");
      }
@@ -325,7 +324,7 @@ $sql="select sum(`Product Total Invoiced Amount`) as net,sum(`Product Total Invo
 
 
  $sql="select sum(`Product 1 Year Acc Invoiced Gross Amount`) as net,sum(`Product 1 Year Acc Invoiced Gross Amount`) as gross,sum(`Product 1 Year Acc Invoiced Discount Amount`) as disc, sum(`Product 1 Year Acc Profit`)as profit ,sum(`Product 1 Year Acc Quantity Delivered`) as delivered,sum(`Product 1 Year Acc Quantity Ordered`) as ordered,sum(`Product 1 Year Acc Quantity Invoiced`) as invoiced  from `Product Dimension` as P  where `Product Store Key`=".$this->id;
-     
+ 
  $result=mysql_query($sql);
 
      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
@@ -352,6 +351,8 @@ $sql="select sum(`Product Total Invoiced Amount`) as net,sum(`Product Total Invo
 		  ,$this->id
 		  );
      //  print "$sql\n";
+ 
+
      if(!mysql_query($sql))
        exit("$sql\ncan not update dept sales\n");
      }

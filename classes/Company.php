@@ -208,8 +208,8 @@ class Company extends DB_Table {
 /*       //print_r($candidate_companies); */
 /*     } */
     
-
-   
+    if($this->found )
+      $this->get_data('id',$this->found_key);
     if($create){
 
       if($this->found and false){
