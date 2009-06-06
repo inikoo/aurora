@@ -116,7 +116,7 @@ class Customer extends DB_Table{
 	    
     }
     $raw_data['Customer Type']=ucwords($raw_data['Customer Type']);
-    
+    //print $raw_data['Customer Type']."\n";
     if($raw_data['Customer Type']=='Person'){
       $child=new contact ('find in customer',$raw_data);
     }else{
@@ -124,6 +124,8 @@ class Customer extends DB_Table{
     }
 
     if($child->found){
+      
+      //print_r($child);
       $this->found_child=true;
       $this->found_child_key=$child->found_key;
       
@@ -140,8 +142,10 @@ class Customer extends DB_Table{
     
     
     // print "$options";
-
-
+    if($this->found){
+      $this->get_data('id',$this->found_key);
+    }
+    
     if($create){
       
       if($this->found){
@@ -358,11 +362,11 @@ class Customer extends DB_Table{
       $this->data['Customer Main Plain FAX']='';
       
 
-      if(!$this->data['Customer Company Key']){
-	$company=new company('find in customer create',$raw_data);
-	$this->data['Customer Company Key']=$company->id;
-	$this->data['Customer Company Name']=$company->data['Company Name'];
-      }
+      //if(!$this->data['Customer Company Key']){
+      $company=new company('find in customer create',$raw_data);
+      $this->data['Customer Company Key']=$company->id;
+      $this->data['Customer Company Name']=$company->data['Company Name'];
+	//}
       if($company->data['Company Main Email Key']){
 	$this->data['Customer Main Email Key']=$company->data['Company Main Email Key'];
 	$this->data['Customer Main XHTML Email']=$company->data['Company Main XHTML Email'];
@@ -393,11 +397,14 @@ class Customer extends DB_Table{
       $this->data['Customer Main FAX Key']=0;
       $this->data['Customer Main FAX']='';
       $this->data['Customer Main Plain FAX']='';
-      if(!$this->data['Customer Main Contact Key']){
-	$contact=new contact('find in customer create',$raw_data);
-	$this->data['Customer Main Contact Key']=$contact->id;
-	$this->data['Customer Main Contact Name']=$contact->data['Contact Name'];
-      }
+      
+      $contact=new contact('find in customer create',$raw_data);
+      
+
+      $this->data['Customer Main Contact Key']=$contact->id;
+      $this->data['Customer Main Contact Name']=$contact->data['Contact Name'];
+      $this->data['Customer Name']=$contact->data['Contact Name'];
+
       if($contact->data['Contact Main Email Key']){
 	$this->data['Customer Main Email Key']=$contact->data['Contact Main Email Key'];
 	$this->data['Customer Main XHTML Email']=$contact->data['Contact Main XHTML Email'];
@@ -466,8 +473,9 @@ class Customer extends DB_Table{
     
 
 
-
-
+    //print_r($this->data);
+    //print "xxxxxxxxxxxxxxxxxxxxxxxxxxxx\n";
+    //exit;
     $keys='';
     $values='';
     foreach($this->data as $key=>$value){

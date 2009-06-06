@@ -5,4 +5,4 @@ TRUNCATE `Order No Product Transaction Fact`;
 TRUNCATE `Purchase Order Dimension`;
 TRUNCATE `Location Dimension`;
 TRUNCATE `Part Location Dimension`;
-TRUNCATE `Contact Bridge`;TRUNCATE `Telecom Bridge`;TRUNCATE `Telecom Dimension`;TRUNCATE `Store Dimension`;
+TRUNCATE `Contact Bridge`;TRUNCATE `Telecom Bridge`;TRUNCATE `Telecom Dimension`;

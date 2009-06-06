@@ -208,17 +208,11 @@ class Company extends DB_Table {
 /*       //print_r($candidate_companies); */
 /*     } */
     
+
     if($this->found )
       $this->get_data('id',$this->found_key);
+
     if($create){
-
-      if($this->found and false){
-	$old=new company($this->found_key);
-	//print_r($old->data);
-	//print_r($raw_data);
-	exit;
-
-      }
 
       
 
@@ -1247,6 +1241,7 @@ function add_contact($data,$args='principal'){
     */
    function get_customer_key(){
      $sql=sprintf("select `Customer Key` from `Customer Dimension` where `Customer Type`='Company' and `Customer Company Key`=%d  ",$this->id);
+     //   print "$sql\n";
      $result=mysql_query($sql);
      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
        return $row['Customer Key'];

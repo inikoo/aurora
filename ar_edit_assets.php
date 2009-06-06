@@ -235,96 +235,103 @@ case('edit_product'):
      $response=array('state'=>400,'msg'=>_('Error'));
    echo json_encode($response);
    break;
-    case('edit_departments'):
-   
-   if(!isset($_REQUEST['parent']))
+case('edit_departments'):
+  
+  if(!isset($_REQUEST['parent']))
      $parent='store';
-   else
-     $parent=$_REQUEST['parent'];
+  else
+    $parent=$_REQUEST['parent'];
 
-   if($parent=='store'){
 
-   $conf=$_SESSION['state']['store']['table'];
-
-   if(isset( $_REQUEST['sf']))
-     $start_from=$_REQUEST['sf'];
-   else
-     $start_from=$conf['sf'];
-   if(isset( $_REQUEST['nr']))
-     $number_results=$_REQUEST['nr'];
-   else
-     $number_results=$conf['nr'];
-   if(isset( $_REQUEST['o']))
-     $order=$_REQUEST['o'];
-   else
+  if($parent=='store')  
+    $conf=$_SESSION['state']['store']['table'];
+  else
+    $conf=$_SESSION['state']['departments']['table'];
+  
+  if(isset( $_REQUEST['sf']))
+    $start_from=$_REQUEST['sf'];
+  else
+    $start_from=$conf['sf'];
+  if(isset( $_REQUEST['nr']))
+    $number_results=$_REQUEST['nr'];
+  else
+    $number_results=$conf['nr'];
+  if(isset( $_REQUEST['o']))
+    $order=$_REQUEST['o'];
+  else
     $order=$conf['order'];
-   if(isset( $_REQUEST['od']))
-     $order_dir=$_REQUEST['od'];
-   else
-     $order_dir=$conf['order_dir'];
-   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-   if(isset( $_REQUEST['where']))
-     $where=addslashes($_REQUEST['where']);
-   else
-     $where=$conf['where'];
-
+  if(isset( $_REQUEST['od']))
+      $order_dir=$_REQUEST['od'];
+    else
+      $order_dir=$conf['order_dir'];
+    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+    if(isset( $_REQUEST['where']))
+      $where=addslashes($_REQUEST['where']);
+    else
+      $where=$conf['where'];
     
-   if(isset( $_REQUEST['f_field']))
-     $f_field=$_REQUEST['f_field'];
-   else
-     $f_field=$conf['f_field'];
-   
-   if(isset( $_REQUEST['f_value']))
-     $f_value=$_REQUEST['f_value'];
-   else
-     $f_value=$conf['f_value'];
+    
+    if(isset( $_REQUEST['f_field']))
+      $f_field=$_REQUEST['f_field'];
+    else
+      $f_field=$conf['f_field'];
+    
+    if(isset( $_REQUEST['f_value']))
+      $f_value=$_REQUEST['f_value'];
+    else
+      $f_value=$conf['f_value'];
 
    
    if(isset( $_REQUEST['tableid']))
      $tableid=$_REQUEST['tableid'];
    else
-    $tableid=0;
+     $tableid=0;
    
 
-  if(isset( $_REQUEST['percentages'])){
-    $percentages=$_REQUEST['percentages'];
-    $_SESSION['state']['store']['percentages']=$percentages;
-  }else
-    $percentages=$_SESSION['state']['store']['percentages'];
-  
+   if(isset( $_REQUEST['percentages'])){
+     $percentages=$_REQUEST['percentages'];
+     $_SESSION['state']['store']['percentages']=$percentages;
+   }else
+     $percentages=$_SESSION['state']['store']['percentages'];
+   
   
 
    if(isset( $_REQUEST['period'])){
-    $period=$_REQUEST['period'];
-    $_SESSION['state']['store']['period']=$period;
-  }else
-    $period=$_SESSION['state']['store']['period'];
+     $period=$_REQUEST['period'];
+     $_SESSION['state']['store']['period']=$period;
+   }else
+     $period=$_SESSION['state']['store']['period'];
 
- if(isset( $_REQUEST['avg'])){
-    $avg=$_REQUEST['avg'];
-    $_SESSION['state']['store']['avg']=$avg;
-  }else
-    $avg=$_SESSION['state']['store']['avg'];
-
-
-$store_id=$_SESSION['state']['store']['id'];
-
-
-
-    $_SESSION['state']['store']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
-    $where=$where.' '.sprintf(" and `Product Department Store Key`=%d",$store_id);
+   if(isset( $_REQUEST['avg'])){
+     $avg=$_REQUEST['avg'];
+     $_SESSION['state']['store']['avg']=$avg;
+   }else
+     $avg=$_SESSION['state']['store']['avg'];
    
- $filter_msg='';
-  $wheref='';
-  if($f_field=='name' and $f_value!='')
-    $wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
+   
+   $store_id=$_SESSION['state']['store']['id'];
 
 
-   }else{
-     return;
+
+   $_SESSION['state']['store']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+   
+   //$where=$where.' '.sprintf(" and `Product Department Store Key`=%d",$store_id);
+   
+   $filter_msg='';
+   $wheref='';
+   if($f_field=='name' and $f_value!='')
+     $wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
+   
+   
+   switch($parent){
+   case('store'):
+     $where=sprintf(' where `Product Department Store Key`=%d',$_SESSION['state']['store']['id']);
+     break;
+   case('none'):
+     $where=sprintf(' where true ');
+     break;
    }
-
-
+  
 
    $sql="select count(*) as total from `Product Department Dimension`   $where $wheref";
    // print $sql;
@@ -364,7 +371,7 @@ $store_id=$_SESSION['state']['store']['id'];
     $sql="select D.`Product Department Key`,`Product Department Code`,`Product Department Name`,`Product Department For Sale Products`+`Product Department In Process Products`+`Product Department Not For Sale Products`+`Product Department Discontinued Products`+`Product Department Unknown Sales State Products` as Products  from `Product Department Dimension` D  $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
     $res = mysql_query($sql);
     $adata=array();
-    //print "$period";
+    //print "$sql";
     while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
       if($row['Products']>0){
 	$delete='<img src="art/icons/cross.png" /> <span  style="cursor:pointer">'._('Discontinue').'<span>';
@@ -646,7 +653,7 @@ case('edit_families'):
      case('department'):
        $where=sprintf(' left join `Product Family Department Bridge` B on (F.`Product Family Key`=B.`Product Family Key`) where `Product Department Key`=%d',$_SESSION['state']['department']['id']);
        break;
-     case('all'):
+     case('none'):
          $where=sprintf(' where true ');
        break;
      }
@@ -705,7 +712,7 @@ case('edit_families'):
     $order='`Product Family Name`';
   
   $sql="select F.`Product Family Key`,`Product Family Code`,`Product Family Name`,`Product Family For Sale Products`+`Product Family In Process Products`+`Product Family Not For Sale Products`+`Product Family Discontinued Products`+`Product Family Unknown Sales State Products` as Products  from `Product Family Dimension` F  $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
-  
+
   $res = mysql_query($sql);
   $adata=array();
   while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {

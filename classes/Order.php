@@ -57,40 +57,46 @@ class Order {
 				else
 					$this->ghost_order = false;
 				
-				$this->compare_addresses ( $data ['cdata'] );
-				$data ['cdata'] ['same_address'] = $this->same_address;
-				$data ['cdata'] ['same_contact'] = $this->same_contact;
-				$data ['cdata'] ['same_company'] = $this->same_company;
-				$data ['cdata'] ['same_telephone'] = $this->same_telephone;
+/* 				$this->compare_addresses ( $data ['cdata'] ); */
+/* 				$data ['cdata'] ['same_address'] = $this->same_address; */
+/* 				$data ['cdata'] ['same_contact'] = $this->same_contact; */
+/* 				$data ['cdata'] ['same_company'] = $this->same_company; */
+/* 				$data ['cdata'] ['same_telephone'] = $this->same_telephone; */
 				
-				$customer_identification_method = 'other id';
-				$customer_id = find_customer ( $customer_identification_method, $data ['cdata'] );
-				if($customer_id){
-				  $customer = new Customer ( $customer_id );
-				  $customer->update('multiple',$cdata);
-				}else{
+/* 				$customer_identification_method = 'other id'; */
+/* 				$customer_id = find_customer ( $customer_identification_method, $data ['cdata'] ); */
+/* 				if($customer_id){ */
+/* 				  $customer = new Customer ( $customer_id ); */
+/* 				  $customer->update('multiple',$cdata); */
+/* 				}else{ */
 				  
 
-				  $customer = new Customer ( 'find create', $data );
+/* 				  $customer = new Customer ( 'find create', $data ); */
 				  
-				  $customer_id=$customer->id;
+/* 				  $customer_id=$customer->id; */
+/* 				} */
+				
+			       
+				$customer = new Customer ( 'find create', $data['Customer Data'] ); 
+				
+				if(!$customer->id or $customer->data[ 'Customer Name' ]==''){
+				  print "caca";
+				  print_r($data['Customer Data'] );
+				  print_r($customer);
+				  exit;
 				}
-				
 
 				
-				$this->xhtml_billing_address = $customer->get ( 'Customer Main XHTML Address' );
-				$this->ship_to_key = $customer->get ( 'Customer Last Ship To Key' );
-				$this->xhtml_ship_to = $customer->get ( 'xhtml ship to', $this->ship_to_key );
-				
+
 				if (! isset ( $data ['store_id'] ))
 					$data ['store_id'] = 0;
 				
 				$store = new Store ( 'id', $data ['store_id'] );
 				if ($store->id) {
 					$this->data ['Order Store Key'] = $store->id;
-					$this->data ['Order Store Code'] = $store->get ( 'code' );
+					$this->data ['Order Store Code'] = $store->data[ 'Store Code' ];
 					
-					$this->data ['Order XHTML Store'] = sprintf ( '<a href="store.php?id=%d">%s</a>', $store->id, $store->get ( 'code' ) );
+					$this->data ['Order XHTML Store'] = sprintf ( '<a href="store.php?id=%d">%s</a>', $store->id, $store->data[ 'Store Code' ] );
 				} else {
 					$this->data ['Order Store Key'] = '';
 					$this->data ['Order Store Code'] = '';
@@ -106,7 +112,7 @@ class Order {
 				$this->data ['Order Type'] = $data ['Order Type'];
 				
 				$this->data ['Order Customer Key'] = $customer->id;
-				$this->data ['Order Customer Name'] = $customer->get ( 'Customer Name' );
+				$this->data ['Order Customer Name'] = $customer->data[ 'Customer Name' ];
 				$this->data ['Order Current Dispatch State'] = 'In Process';
 				$this->data ['Order Current Payment State'] = 'Waiting Payment';
 				$this->data ['Order Current XHTML State'] = 'In Process';
@@ -127,14 +133,15 @@ class Order {
 				$this->data ['Order Original Data'] = $data ['order original data'];
 				$this->data ['Order Original Data Source'] = $data ['order original data source'];
 				
-				if (isset ( $data ['order original metadata'] ))
-					$this->data ['Order Original Metadata'] = $data ['order original metadata'];
+				if (isset ( $data ['Order Original Metadata'] ))
+				  $this->data ['Order Original Metadata'] = $data ['order original metadata'];
 				else
-					$this->data ['Order Original Metadata'] = '';
+				  $this->data ['Order Original Metadata'] = '';
 				
 				$this->data ['Order Main Source Type'] = $data ['Order Main Source Type'];
 				
-				$this->data ['Order XHTML Ship Tos'] = $this->xhtml_ship_to;
+				$this->data ['Order XHTML Ship Tos'] = '';
+
 				
 				$this->data ['Order Items Adjust Amount'] = 0;
 				
@@ -148,28 +155,30 @@ class Order {
 					
 					$line_number = 0;
 					foreach ( $data ['products'] as $product_data ) {
-						$line_number ++;
-						$product_data ['date'] = $this->data ['Order Date'];
-						$product_data ['line_number'] = $line_number;
-						
-						$product_data ['metadata'] = $this->data ['Order Original Metadata'];
-						$product_data ['ship to key'] = $this->ship_to_key;
-						$product_data ['Current Dispatching State'] = $this->data ['Order Current Dispatch State'];
-						$product_data ['Current Payment State'] = $this->data ['Order Current Payment State'];
-						
-						$this->add_order_transaction ( $product_data );
-					
+					  //TODO
+					  $ship_to_key=0;
+					  $line_number ++;
+					  $product_data ['date'] = $this->data ['Order Date'];
+					  $product_data ['line_number'] = $line_number;
+					  
+					  $product_data ['metadata'] = $this->data ['Order Original Metadata'];
+					  $product_data ['ship to key'] = $ship_to_key;
+					  $product_data ['Current Dispatching State'] = $this->data ['Order Current Dispatch State'];
+					  $product_data ['Current Payment State'] = $this->data ['Order Current Payment State'];
+					  
+					  $this->add_order_transaction ( $product_data );
+					  
 					}
 					
 					$sql = sprintf ( "update `Order Dimension` set `Order Original Lines`=%d,`Order Current Lines`=%d  where  `Order Key`=%d ", $line_number, $line_number, $this->data ['Order Key'] );
 					
 					if (! mysql_query ( $sql ))
-						exit ( "eroro con no update total items " );
+					  exit ( "eroro con no update total items " );
 					
 					$this->load ( 'totals' );
-					
-					$customer->update ( 'orders' );
-					$customer->update ( 'no normal data' );
+					//TODO
+					//$customer->update ( 'orders' );
+					//$customer->update ( 'no normal data' );
 					
 					//       $this->cutomer_rankings();
 					
@@ -418,8 +427,8 @@ class Order {
 					$customer_identification_method = 'email';
 					$customer_id = find_customer ( $customer_identification_method, $cdata );
 					$customer = new Customer ( $customer_id );
-					$ship_to_key = $customer->data ['Customer Last Ship To Key'];
-					$ship_to = $customer->get ( 'xhtml ship to', $ship_to_key );
+					//$ship_to_key = $customer->data ['Customer Last Ship To Key'];
+					//$ship_to = $customer->get ( 'xhtml ship to', $ship_to_key );
 					
 					$store = new Store ( 'code', 'AW.web' );
 					if (! $store->id)
@@ -617,7 +626,8 @@ class Order {
 		$this->data ['Invoice Main Source Type'] = $this->data ['Order Main Source Type'];
 		$this->data ['Invoice Customer Key'] = $this->data ['Order Customer Key'];
 		$this->data ['Invoice Customer Name'] = $this->data ['Order Customer Name'];
-		$this->data ['Invoice XHTML Address'] = $this->xhtml_billing_address;
+		//TODO
+		$this->data ['Invoice XHTML Address'] = 0;
 		$this->data ['Invoice XHTML Ship Tos'] = $this->data ['Order XHTML Ship Tos'];
 		$this->data ['Invoice Shipping Net Amount'] = $invoice_data ['Invoice Gross Shipping Amount'];
 		$this->data ['Invoice Charges Net Amount'] = $invoice_data ['Invoice Gross Charges Amount'];
@@ -663,10 +673,15 @@ class Order {
 		$line_number = 0;
 		$amount = 0;
 		$discounts = 0;
+
+		//TODO
+		//Ship t key
+		$ship_to_key=0;
+
 		foreach ( $transacions_data as $data ) {
 			$line_number ++;
 			
-			$sql = sprintf ( "update  `Order Transaction Fact`  set `Current Payment State`=%s,`Current Dispatching State`=%s,`Invoice Date`=%s,`Order Last Updated Date`=%s, `Invoice Public ID`=%s,`Invoice Line`=%d,`Current Payment State`=%s ,`Invoice Quantity`=%s ,`Ship To Key`=%s ,`Invoice Transaction Gross Amount`=%.2f,`Invoice Transaction Total Discount Amount`=%.2f ,`Consolidated`='Yes',`Invoice Key`=%d where `Order Key`=%d and  `Order Line`=%d", prepare_mysql ( 'Paid' ), prepare_mysql ( 'Dispached' ), prepare_mysql ( $invoice_data ['Invoice Date'] ), prepare_mysql ( $invoice_data ['Invoice Date'] ), prepare_mysql ( $this->data ['Invoice Public ID'] ), $line_number, prepare_mysql ( $data ['current payment state'] ), prepare_mysql ( $data ['invoice qty'] ), prepare_mysql ( $this->ship_to_key ), $data ['gross amount'], $data ['discount amount'], $this->data ['Invoice Key'], $this->data ['Order Key'], $line_number );
+			$sql = sprintf ( "update  `Order Transaction Fact`  set `Current Payment State`=%s,`Current Dispatching State`=%s,`Invoice Date`=%s,`Order Last Updated Date`=%s, `Invoice Public ID`=%s,`Invoice Line`=%d,`Current Payment State`=%s ,`Invoice Quantity`=%s ,`Ship To Key`=%s ,`Invoice Transaction Gross Amount`=%.2f,`Invoice Transaction Total Discount Amount`=%.2f ,`Consolidated`='Yes',`Invoice Key`=%d where `Order Key`=%d and  `Order Line`=%d", prepare_mysql ( 'Paid' ), prepare_mysql ( 'Dispached' ), prepare_mysql ( $invoice_data ['Invoice Date'] ), prepare_mysql ( $invoice_data ['Invoice Date'] ), prepare_mysql ( $this->data ['Invoice Public ID'] ), $line_number, prepare_mysql ( $data ['current payment state'] ), prepare_mysql ( $data ['invoice qty'] ), prepare_mysql ( $ship_to_key ), $data ['gross amount'], $data ['discount amount'], $this->data ['Invoice Key'], $this->data ['Order Key'], $line_number );
 			$amount += $data ['gross amount'];
 			$discounts += $data ['discount amount'];
 			
@@ -749,7 +764,8 @@ class Order {
 		$this->data ['Invoice Main Source Type'] = $this->data ['Order Main Source Type'];
 		$this->data ['Invoice Customer Key'] = $this->data ['Order Customer Key'];
 		$this->data ['Invoice Customer Name'] = $this->data ['Order Customer Name'];
-		$this->data ['Invoice XHTML Address'] = $this->xhtml_billing_address;
+		//TODO
+		$this->data ['Invoice XHTML Address'] = 0;
 		$this->data ['Invoice XHTML Ship Tos'] = '';
 		$this->data ['Invoice Shipping Net Amount'] = $invoice_data ['Invoice Gross Shipping Amount'];
 		$this->data ['Invoice Charges Net Amount'] = $invoice_data ['Invoice Gross Charges Amount'];
@@ -884,7 +900,8 @@ class Order {
 		$this->data ['Delivery Note Customer Key'] = $this->data ['Order Customer Key'];
 		$this->data ['Delivery Note Customer Name'] = $this->data ['Order Customer Name'];
 		$this->data ['Delivery Note XHTML Ship Tos'] = $this->data ['Order XHTML Ship Tos'];
-		$this->data ['Delivery Note Ship To Key'] = $this->ship_to_key;
+		//TODO
+		$this->data ['Delivery Note Ship To Key'] = 0;
 		$this->data ['Delivery Note Metadata'] = $this->data ['Order Original Metadata'];
 		$this->data ['Delivery Note Weight'] = $dn_data ['Delivery Note Weight'];
 		$this->data ['Delivery Note XHTML Pickers'] = $dn_data ['Delivery Note XHTML Pickers'];
@@ -903,7 +920,7 @@ class Order {
 		if ($row2 = mysql_fetch_array ( $res, MYSQL_ASSOC )) {
 			$this->destination_country_key = $row2 ['Ship To Country Key'];
 		} else
-			$this->destination_country_key = '';
+			$this->destination_country_key = '0';
 		
 		$sql = sprintf ( "insert into `Order Delivery Note Bridge` values (%d,%d)", $this->data ['Order Key'], $this->data ['Delivery Note Key'] );
 		if (! mysql_query ( $sql ))
@@ -1206,8 +1223,8 @@ class Order {
 	}
 	
 	function create_replacement_dn_simple($replacement_data, $transacions_data, $products) {
-		
-		$ship_to_key = $this->ship_to_key;
+	  //TODO
+	  $ship_to_key = 0;
 		
 		$this->data ['Delivery Note Date'] = $replacement_data ['Delivery Note Date'];
 		$this->data ['Delivery Note ID'] = $replacement_data ['Delivery Note ID'];
@@ -1235,7 +1252,7 @@ class Order {
 		if ($row2 = mysql_fetch_array ( $res, MYSQL_ASSOC )) {
 			$this->destination_country_key = $row2 ['Ship To Country Key'];
 		} else
-			$this->destination_country_key = '';
+			$this->destination_country_key = '0';
 		
 		$this->create_dn_header ();
 		
@@ -1340,7 +1357,7 @@ class Order {
 			
 
 			if (! mysql_query ( $sql ))
-				exit ( "$sql\n can not update order transacrion aferter dn 313123" );
+				exit ( "$sql\n can not update order transacrion aferter dn 313123cccccc" );
 		
 		}
 		if ($this->id) {
