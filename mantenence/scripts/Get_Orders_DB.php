@@ -33,6 +33,8 @@ srand(12344);
 
 $sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed)  order by filename ";
 //$sql="select * from  orders_data.orders where filename like '%refund.xls'   order by filename";
+$sql="select * from  orders_data.orders  where filename like '/mnt/y/%'  order by filename";
+
 $contador=0;
 //print $sql;
 $res=mysql_query($sql);
@@ -196,15 +198,16 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       $customer_data['Customer Address Country Secondary Division']=$_customer_data['address_data']['country_d2'];
       unset($customer_data['address_data']);
     }
+    $shipping_addresses=array();
     if(isset($_customer_data['address_data']) and $_customer_data['has_shipping']){
-      $customer_data['Customer Shipping Address']['Address Line 1']=$_customer_data['shipping_data']['address1'];
-      $customer_data['Customer Shipping Address']['Address Line 2']=$_customer_data['shipping_data']['address2'];
-      $customer_data['Customer Shipping Address']['Address Line 3']=$_customer_data['shipping_data']['address3'];
-      $customer_data['Customer Shipping Address']['Address Town']=$_customer_data['shipping_data']['town'];
-      $customer_data['Customer Shipping Address']['Address Postal Code']=$_customer_data['shipping_data']['postcode'];
-      $customer_data['Customer Shipping Address']['Address Country Name']=$_customer_data['shipping_data']['country'];
-      $customer_data['Customer Shipping Address']['Address Country Primary Division']=$_customer_data['shipping_data']['country_d1'];
-      $customer_data['Customer Shipping Address']['Address Country Secondary Division']=$_customer_data['shipping_data']['country_d2'];
+      $shipping_addresses[0]['Address Line 1']=$_customer_data['shipping_data']['address1'];
+      $shipping_addresses[0]['Address Line 2']=$_customer_data['shipping_data']['address2'];
+      $shipping_addresses[0]['Address Line 3']=$_customer_data['shipping_data']['address3'];
+      $shipping_addresses[0]['Address Town']=$_customer_data['shipping_data']['town'];
+      $shipping_addresses[0]['Address Postal Code']=$_customer_data['shipping_data']['postcode'];
+      $shipping_addresses[0]['Address Country Name']=$_customer_data['shipping_data']['country'];
+      $shipping_addresses[0]['Address Country Primary Division']=$_customer_data['shipping_data']['country_d1'];
+      $shipping_addresses[0]['Address Country Secondary Division']=$_customer_data['shipping_data']['country_d2'];
       unset($customer_data['shipping_data']);
     }
 
@@ -764,7 +767,8 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
     $data['type']='direct_data_injection';
     $data['products']=$products_data;
-    $data['cdata']=$customer_data;
+    $data['Customer Data']=$customer_data;
+    $data['Shipping Addresses']=$shipping_addresses;
     // $data['metadata_id']=$order_data_id;
     $data['tax_rate']=.15;
     if(strtotime($date_order)<strtotime('2008-11-01'))
@@ -834,7 +838,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	
        }
        
-       print "$tipo_order\r";
+       print "$tipo_order \n";
        
        $sales_rep_data=get_user_id($header_data['takenby'],true,'&view=processed');
        $data['Order XHTML Sale Reps']=$sales_rep_data['xhtml'];
