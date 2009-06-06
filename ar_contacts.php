@@ -1383,13 +1383,13 @@ else if($f_field=='id'  )
    elseif($order=='contact_name')
      $order='customer main contact_name';
    elseif($order=='address')
-     $order='customer main address header';
+     $order='Customer Main Location';
    elseif($order=='town')
      $order='customer main address town';
    elseif($order=='postcode')
      $order='customer main address postal code';
    elseif($order=='region')
-     $order='customer main address country region';
+     $order='Customer Main Address Country Primary Division';
    elseif($order=='country')
      $order='customer main address country';
   elseif($order=='ship_address')
@@ -1487,10 +1487,10 @@ else if($f_field=='id'  )
 		   'top_balance'=>number($data['customer balance top percentage']).'%',
 		   'top_profits'=>number($data['customer profits top percentage']).'%',
 		   'contact_name'=>$data['customer main contact name'],
-		   'address'=>$data['customer main address header'],
+		   'address'=>$data['customer main location'],
 		   'town'=>$data['customer main address town'],
 		   'postcode'=>$data['customer main address postal code'],
-		   'region'=>$data['customer main address country region'],
+		   'region'=>$data['customer main address country primary division'],
 		   'country'=>$data['customer main address country'],
 		   'ship_address'=>$data['customer main ship to header'],
 		   'ship_town'=>$data['customer main ship to town'],

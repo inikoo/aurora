@@ -62,7 +62,7 @@ switch($tipo){
    
 
    $sql=sprintf("select YEARWEEK(`Order Last Updated Date`) as yearweek,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)as asales,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`-`Cost Supplier`)as profit,sum(`Shipped Quantity`)as _out from `Order Transaction Fact` OTF left join `Product Dimension` PD on (PD.`Product Key`=OTF.`Product Key`)   %s   group by YEARWEEK(`Order Last Updated Date`)",$where);
-   //   print $sql;
+   // print $sql;
    $res=mysql_query($sql);
    while($row=mysql_fetch_array($res)){
       if(isset($index[$row['yearweek']])){
@@ -137,7 +137,7 @@ switch($tipo){
 
 
    $sql=sprintf("select  date_format(`Order Last Updated Date`,'%%Y%%m')  as yearmonth,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)as asales,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`-`Cost Supplier`)as profit,sum(`Shipped Quantity`)as _out from `Order Transaction Fact` OTF left join `Product Dimension` PD on (PD.`Product Key`=OTF.`Product Key`)   %s   group by  date_format(`Order Last Updated Date`,'%%Y%%m') ",$where);
-   //     print $sql;
+   // print $sql;
    $res=mysql_query($sql);
    while($row=mysql_fetch_array($res)){
      //     print $row['yearmonth']."\n";

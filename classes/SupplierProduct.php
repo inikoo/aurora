@@ -51,8 +51,8 @@ class supplierproduct{
       return;
     }else if($tipo=='supplier-code'){
        $sql=sprintf("select * from `Supplier Product Dimension` where `Supplier Product Code`=%s and   `Supplier Product Supplier Key`=%s "
-		   ,prepare_mysql($tag['supplier product code'])
-		   ,prepare_mysql($tag['supplier product supplier key'])
+		   ,prepare_mysql($tag['Supplier Product Code'])
+		   ,prepare_mysql($tag['Supplier Product Supplier Key'])
 		   
 		   );
 
