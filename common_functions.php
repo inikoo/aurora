@@ -1296,4 +1296,23 @@ function array_empty($array){
   }else
     return empty($array);
 }
+/*
+function:yearweek
+returns: equivalent of YEARWEEK mysql function
+ */
+function yearweek($str){
+  $date=strtotime($str);
+  $w=date('W',$date);
+  $y=date("Y",$date);
+  $m=date("m",$date);
+
+  if($w=1 and $m==12){
+    $y=$y+1;
+  }
+ if($w>52 and $m==1){
+    $y=$y-1;
+  }
+ return sprintf("%d%02d",$y,$w);
+}
+
 ?>
