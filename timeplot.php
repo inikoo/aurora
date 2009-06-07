@@ -1,3 +1,27 @@
+<?
+$frequency='day';
+if(isset($_REQUEST['f'])){
+$_f=$_REQUEST['f'];
+if($_f=='day' or $_f=='d'){
+$frequency='daily';
+}elseif($_f=='weekly' or $_f=='w'){
+$frequency='weekly';
+}elseif($_f=='month' or $_f=='m'){
+$frequency='monthly';
+}
+
+}
+
+
+$url="timeplot_data.php?tipo=".$frequency."_net_sales";
+if(isset($_REQUEST['from']))
+   $url.='&from='.$_REQUEST['from'];
+if(isset($_REQUEST['until']))
+   $url.='&until='.$_REQUEST['until'];
+
+
+?>
+
 <html>
   <head>
 
@@ -20,8 +44,9 @@ dataSource: new Timeplot.ColumnSource(eventSource,1),
       }),
 
 valueGeometry: new Timeplot.DefaultValueGeometry({
-min: 000,
-max: 1000
+ gridColor: "#000000",
+        axisLabelsPlacement: "left",
+
 }),
 
 showValues: true
@@ -31,7 +56,7 @@ showValues: true
 ];
             
   timeplot = Timeplot.create(document.getElementById("my-timeplot"), plotInfo);
-timeplot.loadText("timeplot_data.php?tipo=daily_net_sales", ",", eventSource);
+timeplot.loadText("<?=$url?>", ",", eventSource);
 
 }
 
