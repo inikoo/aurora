@@ -99,7 +99,7 @@ if($from)
     $sql=sprintf("select `Year Month` as date,`Last Day` from `Month Dimension` D where `Year Month`>='%s' and `Year Month`<='%s'",date("Ym",$from),date("Ym",$until));
   else
   $sql=sprintf("select `Year Month` as date,`Last Day` from `Month Dimension` D where `Year Month`>=(select  DATE_FORMAT(MIN(`Invoice Date`),'%%Y%%m') from `Invoice Dimension`) and `Year Month`<='%s'",date("Ym",$until));
-  //print $sql;
+//print $sql;
   $res = mysql_query($sql); 
   while($row=mysql_fetch_array($res)) {
     $data[$row['date']]=0;
@@ -121,7 +121,7 @@ else
     if($just_values)
       print "$value\n";
     else
-    print $_date[$key].",$value\n";
+      print $_date[$key].",$value\n";
   }
   break;
 case('weekly_net_sales'):

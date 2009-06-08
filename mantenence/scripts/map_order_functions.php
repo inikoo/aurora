@@ -8925,14 +8925,20 @@ function read_records($handle_csv,$y_map,$number_header_rows){
 //       }
       // print count($cols)."\n";
 
+
+
+
       if(count($cols)<$y_map['discount'])
 	continue;
 
-      if(preg_match('/First Order Bonus - Welcome/i',$cols[$y_map['description']]))
+
+
+      if(preg_match('/regalo de bienvenida/i',$cols[$y_map['description']]))
 	$first_order_bonus=true;
 
       //  if($cols[$y_map['code']]=='Pack-29')
       //	print $y_map['bonus'];
+     
       if(
 	 (
 	    
