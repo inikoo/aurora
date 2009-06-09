@@ -310,8 +310,153 @@ switch($tipo){
 
       echo json_encode($response);
    break;
+case('montly_sales_group_by_month'):
+$number_years=4;
+  $from='2004-07-00';
+  $current_year=date('Y');
+  $data=array(
+	      1=>''
+	      ,2=>''
+	      ,3=>''
+	      ,4=>'',5=>'',6=>'',7=>'',8=>'',9=>'',10=>'',11=>'',12=>'');
 
 
+  foreach($data as $key=>$value){
+    $data[$key]['date']=strftime("%b", strtotime('2000-01-01 + '.($key-1).' month'));
+    for($i=date('Y');$i>=date('Y')-5;$i--){
+      $data[$key]['sales'.$i]=0;
+      $data[$key]['tip_sales'.$i]=_('No Sales');
+    }
+  }
+
+  
+
+  foreach (range( $current_year-$number_years,  $current_year) as $year) {
+$sql="SELECT year(`Invoice Date`)as year, count(*) as invoices,month(`Invoice Date`) as month, UNIX_TIMESTAMP(`Invoice Date`) as date ,sum(`Invoice Total Net Amount`) as sales FROM `Invoice Dimension` where year(`Invoice Date`)=$year  GROUP BY month  order by month(`Invoice Date`)";
+//print "$sql<br>";
+
+ $prev_month='';
+ $prev_year=array();
+ $res = mysql_query($sql); 
+  while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+     if(is_numeric($prev_month)){
+       $diff=$row['sales']-$prev_month;
+       $diff_prev_month=percentage($diff,$prev_month,1,'NA','%',true)." "._('change (last month)')."\n";
+       //       print $row['sales']."---------  $prev_month ----------    $diff_prev_month   <br >";
+     }else
+       $diff_prev_month='';
+     
+      if(isset($data['sales'.$year-1][$row['month']])){
+	$prev_year=$data['sales'.$year-1][$row['month']];
+	$diff=$row['sales']-$prev_year;
+	$diff_prev_year=percentage($diff,$prev_year,1,'NA','%',true)." "._('change (last year)')."\n";
+	//	 print $row['sales']."------ ---  ".$prev_year[$row['month']]." ----- $diff  -----    $diff_prev_year   <br >";
+      }else{
+	//	print $row['sales']."  <br >";
+	$diff_prev_year='';
+      }
+
+      $credits=0;//$row['credits'];
+      $outstoke_value=0;//=$row['outstock'];
+      $losses=$credits+$outstoke_value;
+      $percentage_losses=percentage($losses,$row['sales']);
+
+      $tip=_('Sales')." ".strftime("%B %Y", strtotime('@'.$row['date']))."\n".money($row['sales'])."\n".$diff_prev_month.$diff_prev_year."(".$row['invoices']." "._('Orders').")";
+      $tip_losses=_('Lost Sales')." ".strftime("%B %Y", strtotime('@'.$row['date']))."\n".money($losses)." ($percentage_losses)".($credits>0?"\n".money($credits)." "._('due to refund/credits'):"").($outstoke_value>0?"\n".money($outstoke_value)." "._('due to out of stock'):"");
+      
+      $data[$row['month']]['sales'.$row['year']]=(float)$row['sales'];
+      $data[$row['month']]['tip_sales'.$row['year']]=$tip;
+      $data[$row['month']]['date']=strftime("%b", strtotime('@'.$row['date']));
+      
+
+     $prev_month=$row['sales'];
+     $prev_year[$row['month']]=$row['sales'];
+   }
+ }
+  $_data=array();
+
+
+  foreach($data as $key=>$dt){
+    
+    $_data[]=$dt;
+  }
+
+  //print_r($_data);
+  $response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$_data,
+			 )
+		   );
+
+   echo json_encode($response);
+   break;
+case('net_diff1y_sales_month'):
+
+  $time=strtotime($myconf['data_since']);
+  if(date("d",$time)==1)
+    $from=date("Y-m-d",$time);
+  else{
+    $from=date("Y-",$time).(date("m",$time)+1).'-01';
+  }
+  $sql="SELECT count(*) as invoices,month(`Invoice Date`) as month, UNIX_TIMESTAMP(`Invoice Date`) as date ,substring(`Invoice Date`, 1,7) AS dd, COUNT(`Invoice Key`)as orders ,sum(`Invoice Total Net Amount`) as sales FROM `Invoice Dimension` where `Invoice Date`>'$from'  GROUP BY dd";
+  //print $sql;  
+ $data=array();
+  $prev_month='';
+ $prev_year=array();
+ $res = mysql_query($sql); 
+while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+  
+     if(is_numeric($prev_month)){
+       $diff=$row['sales']-$prev_month;
+       $diff_prev_month=percentage($diff,$prev_month,1,'NA','%',true)." "._('change (last month)')."\n";
+       //       print $row['sales']."---------  $prev_month ----------    $diff_prev_month   <br >";
+     }else
+       $diff_prev_month='';
+     
+      if(isset($prev_year[$row['month']])){
+	$diff=$row['sales']-$prev_year[$row['month']];
+	$diff_prev_year=percentage($diff,$prev_year[$row['month']],1,'NA','%',true)." "._('change (last year)')."\n";
+	//	 print $row['sales']."------ ---  ".$prev_year[$row['month']]." ----- $diff  -----    $diff_prev_year   <br >";
+      }else{
+	//	print $row['sales']."  <br >";
+	$diff_prev_year='';
+      }
+
+      $credits=0;//$row['credits'];
+      $outstoke_value=0;//=$row['outstock'];
+      $losses=$credits+$outstoke_value;
+      $percentage_losses=percentage($losses,$row['sales']);
+      
+      $tip=_('Sales')." ".strftime("%B %Y", strtotime('@'.$row['date']))."\n".money($row['sales'])."\n".$diff_prev_month.$diff_prev_year."(".$row['invoices']." "._('Orders').")";
+      $tip_losses=_('Lost Sales')." ".strftime("%B %Y", strtotime('@'.$row['date']))."\n".money($losses)." ($percentage_losses)".($credits>0?"\n".money($credits)." "._('due to refund/credits'):"").($outstoke_value>0?"\n".money($outstoke_value)." "._('due to out of stock'):"");
+      
+      if(isset($prev_year[$row['month']])){
+	$data[]=array(
+		      'tip_sales_diff'=>$tip,
+		      'tip_sales_diff_per'=>$tip,
+		      'sales_diff'=>(float) $row['sales']-$prev_year[$row['month']],
+		      'sales_diff_per'=>(float) 100*($row['sales']-$prev_year[$row['month']])/$prev_year[$row['month']],
+		      'losses'=>$losses,
+		      'date'=>strftime("%m/%y", strtotime('@'.$row['date']))
+		      );
+      }
+      $prev_month=$row['sales'];
+     $prev_year[$row['month']]=$row['sales'];
+   }
+  
+
+ $response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$data,
+			 )
+		   );
+
+
+
+    echo json_encode($response);
+// echo '{"resultset":{"state":200,"data":{"tip":"Sales October 2008\n\u00a329,085.85\n-87.4% change (last month)\n-89.5% change (last year)\n(240 Orders)","tip_losses":"Lost Sales October 2008\n\u00a30.00 (0.0%)","sales":"34429","losses":0,"date":"10-2008"}}}';
+
+ break;
  default:
    
    $response=array('state'=>404,'resp'=>_('Operation not found'));

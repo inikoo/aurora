@@ -1,9 +1,16 @@
 {include file='header.tpl'}
 <div id="bd" >
-  <div class="chooser" >
+
+  <div class="top_navigation">
+  <span class="nav2 onleft link {if $tipo=='sales'}selected{/if}" id="sales">{t}Sales by date{/t}</span>
+  <span class="nav2 onleft link {if $tipo=='geosales'}selected{/if}" id="geosales" >{t}Sales by location{/t}</span>
+  </div>
+
+
+  <div class="chooser" style="display:none">
     <ul>
-      <li {if $tipo=='sales'}class="selected"{/if} id="sales"><img src="art/icons/money.png"> Sales</li>
-      <li style="display:none"{if $tipo=='geosales'}class="selected"{/if} id="geosales" ><img src="art/icons/world.png"> Geo-Sales</li>
+      <li {if $tipo=='sales'}class="selected"{/if} id="salesx"><img src="art/icons/money.png"> Sales</li>
+      <li style="display:none"{if $tipo=='geosales'}class="selected"{/if} id="geosalesx" ><img src="art/icons/world.png"> Geo-Sales</li>
       <li style="display:none"{if $tipo=='customers'}class="selected"{/if} id="customers"><img src="art/icons/user.png"> Customers</li>
       <li style="display:none"{if $tipo=='products'}class="selected"{/if} id="products"><img src="art/icons/brick.png"> Products</li>
       <li style="display:none"{if $tipo=='times'}class="selected"{/if} id="times"><img src="art/icons/clock.png"> Dispaching Times</li>
@@ -79,14 +86,20 @@
   
   <div {if $tipo=='prod'}style="display:none"{/if}  id="front_plot" style="clear:both;">
     
-    <div {if $tipo!='sales'}style="display:none"{/if} id="plot_options_sales" class="plot_options">
+    <div {if $tipo!='sales' or $plot_tipo=='timeplot_sales'}style="display:none"{/if} id="plot_options_sales" class="plot_options">
       
-      <table style="margin-top:30px;font-size:87%">
-	<tr><td><span  id="net_sales_month"  class="but">Net Sales</span></td></tr>
-	<tr><td>Group by month <input style="position:relative;top:2px" {if $plot_tipo=='net_sales_gmonth'}checked="checked"{/if}type="checkbox" id="net_sales_gmonth" name="net_sales_gmonth" value="net_sales_gmonth"><td></tr>
-	<tr><td><span id="net_diff1y_sales_month"  class="but">Growth</span></td></tr>
-	<tr><td>{t}Net difference{/t} <input style="position:relative;top:2px" {if $plot_tipo=='net_diff1y_sales_month'}checked="checked"{/if} type="radio" id="net_diff1y_sales_month_net" name="net_diff1y_sales_month" value="net_sales_gmonth"><td></tr>
-	<tr><td>{t}Percentage{/t} <input style="position:relative;top:2px" {if $plot_tipo=='net_diff1y_sales_month_per'}checked="checked"{/if} type="radio" id="net_diff1y_sales_month_per" name="net_diff1y_sales_month" value="net_sales_gmonth"><td></tr>
+      <table style="margin-top:30px;font-size:87%" border=0>
+	<tr style="height:2em"><td><span  id="net_sales_month"  class="but {if $plot_tipo=='total_sales_groupby_month' or $plot_tipo=='total_sales_month'}selected{/if}">Net Sales</span></td></tr>
+
+	<tr style="height:2em"><td style="margin:10px 0"><span id="net_diff1y_sales_month" class="but {if $plot_tipo=='net_diff1y_sales_month' or $plot_tipo=='net_diff1y_sales_month_per'}selected{/if}" >Growth</span></td></tr>
+	<tr style="height:2em"><td style="margin:10px 0"><span id="timeplot_sales" class="but {if $plot_tipo=='timeplot_sales'}selected{/if}" >Time Series</span></td></tr>
+	<tr style="height:2em"><td></td></tr>
+	<tr id="tr_net_sales_gmonth" style="display:{if $plot_tipo=='total_sales_groupby_month' or $plot_tipo=='total_sales_month'}block{else}none{/if}"><td>Group by month <input style="position:relative;top:2px" {if $plot_tipo=='total_sales_groupby_month'}checked="checked"{/if}type="checkbox" id="net_sales_gmonth" name="net_sales_gmonth" value="net_sales_gmonth"><td></tr>
+	
+
+
+	<tr style="display:{if $plot_tipo=='net_diff1y_sales_month' or $plot_tipo=='net_diff1y_sales_month_per'}{else}none{/if}" id="tr_net_diff1y_sales_month"><td>{t}Net difference{/t} <input style="position:relative;top:2px" {if $plot_tipo=='net_diff1y_sales_month'}checked="checked"{/if} type="radio" id="net_diff1y_sales_month_net" name="net_diff1y_sales_month" value="net_sales_gmonth"><td></tr>
+	<tr style="display:{if $plot_tipo=='net_diff1y_sales_month' or $plot_tipo=='net_diff1y_sales_month_per'}{else}none{/if}" id="tr_net_diff1y_sales_month_per"><td>{t}Percentage{/t} <input style="position:relative;top:2px" {if $plot_tipo=='net_diff1y_sales_month_per'}checked="checked"{/if} type="radio" id="net_diff1y_sales_month_per" name="net_diff1y_sales_month" value="net_sales_gmonth"><td></tr>
       </table>
     </div>
     <div {if $tipo!='stock'}style="display:none"{/if} id="plot_options_stock" class="plot_options">
@@ -104,12 +117,32 @@
     <div {if $tipo!='prod'}style="display:none"{/if} id="plot_options_prod" class="plot_options">
     </div>
     
-    
-    <div  id="plot_div" class="product_plot"  style="width:810px;height:300px;">
+    {if $tipo=='sales'}
+
+    <div  id="plot_div" class="product_plot"  style="width:810px;height:310px;">
       <iframe id="the_plot" src ="plot.php?tipo={$plot_tipo}" frameborder=0 height="100%" scrolling="no" width="100%"></iframe>
+      <span style="position:relative;left:70px;">{$plot_title[$plot_tipo]}</span>
+      <div id="plot_options_sales_bis" style="margin-left:30px;{if $plot_tipo!='timeplot_sales'}display:none{/if}">
+	<table>
+	  <tr>
+	    <td><span  id="net_sales_month_bis"  class="but">Net Sales</span></td>
+	    <td><span  id="net_diff1y_sales_month_bis"  class="but">Growth</span></td>
+
+	    <td style="margin:10px 0"><span  class="but selected" >Time Series</span></td>
+	  </tr>
+	</table>
+      </div>
       <div style="clear:both"></div>
     </div>
-    
+    {/if}    
+
+
+      {if $tipo=='geosales'}
+
+    <img src="http://chart.apis.google.com/chart?chs=440x220&chd=t:60&cht=t&chtm=world&chld=GB&chco=FFFFFF,FF0000,FFFF00,00FF00">
+    {/if}    
+
+
   </div>
   
 </div>

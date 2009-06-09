@@ -116,73 +116,7 @@ $response=array('resultset'=>
    
    break;
 
-case('plot_net_diff1y_sales_month'):
 
-  $time=strtotime($myconf['data_since']);
-  if(date("d",$time)==1)
-    $from=date("Y-m-d",$time);
-  else{
-    $from=date("Y-",$time).(date("m",$time)+1).'-01';
-  }
-  $sql="SELECT count(*) as invoices,month(date_index) as month, UNIX_TIMESTAMP(date_index) as date ,substring(date_index, 1,7) AS dd, COUNT(id)as orders ,sum(net) as sales FROM orden where tipo=2 and date_index>'$from'  GROUP BY dd";
-  //    print $sql;  
- $data=array();
-  $prev_month='';
- $prev_year=array();
-  $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-
-   while($row=$res->fetchRow()) {
-     if(is_numeric($prev_month)){
-       $diff=$row['sales']-$prev_month;
-       $diff_prev_month=percentage($diff,$prev_month,1,'NA','%',true)." "._('change (last month)')."\n";
-       //       print $row['sales']."---------  $prev_month ----------    $diff_prev_month   <br >";
-     }else
-       $diff_prev_month='';
-     
-      if(isset($prev_year[$row['month']])){
-	$diff=$row['sales']-$prev_year[$row['month']];
-	$diff_prev_year=percentage($diff,$prev_year[$row['month']],1,'NA','%',true)." "._('change (last year)')."\n";
-	//	 print $row['sales']."------ ---  ".$prev_year[$row['month']]." ----- $diff  -----    $diff_prev_year   <br >";
-      }else{
-	//	print $row['sales']."  <br >";
-	$diff_prev_year='';
-      }
-
-      $credits=0;//$row['credits'];
-      $outstoke_value=0;//=$row['outstock'];
-      $losses=$credits+$outstoke_value;
-      $percentage_losses=percentage($losses,$row['sales']);
-      
-      $tip=_('Sales')." ".strftime("%B %Y", strtotime('@'.$row['date']))."\n".money($row['sales'])."\n".$diff_prev_month.$diff_prev_year."(".$row['invoices']." "._('Orders').")";
-      $tip_losses=_('Lost Sales')." ".strftime("%B %Y", strtotime('@'.$row['date']))."\n".money($losses)." ($percentage_losses)".($credits>0?"\n".money($credits)." "._('due to refund/credits'):"").($outstoke_value>0?"\n".money($outstoke_value)." "._('due to out of stock'):"");
-      
-      if(isset($prev_year[$row['month']])){
-	$data[]=array(
-		      'tip_sales_diff'=>$tip,
-		      'tip_sales_diff_per'=>$tip,
-		      'sales_diff'=>(float) $row['sales']-$prev_year[$row['month']],
-		      'sales_diff_per'=>(float) 100*($row['sales']-$prev_year[$row['month']])/$prev_year[$row['month']],
-		      'losses'=>$losses,
-		      'date'=>strftime("%m/%y", strtotime('@'.$row['date']))
-		      );
-      }
-      $prev_month=$row['sales'];
-     $prev_year[$row['month']]=$row['sales'];
-   }
-  
-
- $response=array('resultset'=>
-		   array('state'=>200,
-			 'data'=>$data,
-			 )
-		   );
-
-
-
-    echo json_encode($response);
-// echo '{"resultset":{"state":200,"data":{"tip":"Sales October 2008\n\u00a329,085.85\n-87.4% change (last month)\n-89.5% change (last year)\n(240 Orders)","tip_losses":"Lost Sales October 2008\n\u00a30.00 (0.0%)","sales":"34429","losses":0,"date":"10-2008"}}}';
-
- break;
 case('plot_monthsales'):
  $time=strtotime($myconf['data_since']);
  

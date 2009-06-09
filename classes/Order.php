@@ -648,7 +648,11 @@ class Order {
 		$this->data ['Invoice XHTML Charged By'] = $invoice_data ['Invoice XHTML Charged By'];
 		$this->data ['Invoice Processed By Key'] = $invoice_data ['Invoice Processed By Key'];
 		$this->data ['Invoice Charged By Key'] = $invoice_data ['Invoice Charged By Key'];
+		$this->data ['Invoice Billing Country 2 Alpha Code']='XX';
+		$this->data ['Invoice Delivery Country 2 Alpha Code']='XX';
+
 		
+
 		$this->data ['Invoice XHTML Orders'] = sprintf ( '%s <a href="order.php?id=%d">%s</a>', _ ( 'Order' ), $this->id, $this->data ['Order Public ID'] );
 		
 		if (is_numeric ( $this->data ['Delivery Note Key'] )) {
@@ -1582,8 +1586,13 @@ class Order {
 ,`Invoice XHTML Charged By`
 ,`Invoice Processed By Key`
 ,`Invoice Charged By Key`
-
-) values (%s,%s,%s,%s,%s,%s,%s,%s,  %s,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,   %s,%s,%s,'%s',%s,%s,%s,%.2f,%.2f,%s,%s,%s,%s)", prepare_mysql ( $this->data ['Invoice Date'] ), prepare_mysql ( $this->data ['Invoice Public ID'] ), prepare_mysql ( $this->data ['Invoice File As'] ), prepare_mysql ( $this->data ['Invoice Store Key'] ), prepare_mysql ( $this->data ['Invoice Store Code'] ), prepare_mysql ( $this->data ['Invoice Main Source Type'] ), prepare_mysql ( $this->data ['Invoice Customer Key'] ), prepare_mysql ( $this->data ['Invoice Customer Name'] ), prepare_mysql ( $this->data ['Invoice XHTML Ship Tos'] ), $this->data ['Invoice Gross Amount'], $this->data ['Invoice Discount Amount'], $this->data ['Invoice Shipping Net Amount'], $this->data ['Invoice Charges Net Amount'], $this->data ['Invoice Total Tax Amount'], $this->data ['Invoice Refund Amount'], $this->data ['Invoice Total Tax Refund Amount'], $this->data ['Invoice Total Amount'], prepare_mysql ( $this->data ['Invoice Metadata'] ), prepare_mysql ( $this->data ['Invoice XHTML Address'] ), prepare_mysql ( $this->data ['Invoice XHTML Orders'] ), addslashes ( $this->data ['Invoice XHTML Delivery Notes'] ), prepare_mysql ( $this->data ['Invoice XHTML Store'] ), prepare_mysql ( $this->data ['Invoice Has Been Paid In Full'] ), prepare_mysql ( $this->data ['Invoice Main Payment Method'] ), $this->data ['Invoice Shipping Tax Amount'], $this->data ['Invoice Charges Tax Amount'], prepare_mysql ( $this->data ['Invoice XHTML Processed By'] ), prepare_mysql ( $this->data ['Invoice XHTML Charged By'] ), prepare_mysql ( $this->data ['Invoice Processed By Key'] ), prepare_mysql ( $this->data ['Invoice Charged By Key'] ) );
+,`Invoice Billing Country 2 Alpha Code`
+,`Invoice Delivery Country 2 Alpha Code`
+) values (%s,%s,%s,%s,%s,%s,%s,%s,  %s,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,   %s,%s,%s,'%s',%s,%s,%s,%.2f,%.2f,%s,%s,%s,%s,%s,%s)", prepare_mysql ( $this->data ['Invoice Date'] ), prepare_mysql ( $this->data ['Invoice Public ID'] ), prepare_mysql ( $this->data ['Invoice File As'] ), prepare_mysql ( $this->data ['Invoice Store Key'] ), prepare_mysql ( $this->data ['Invoice Store Code'] ), prepare_mysql ( $this->data ['Invoice Main Source Type'] ), prepare_mysql ( $this->data ['Invoice Customer Key'] ), prepare_mysql ( $this->data ['Invoice Customer Name'] ), prepare_mysql ( $this->data ['Invoice XHTML Ship Tos'] ), $this->data ['Invoice Gross Amount'], $this->data ['Invoice Discount Amount'], $this->data ['Invoice Shipping Net Amount'], $this->data ['Invoice Charges Net Amount'], $this->data ['Invoice Total Tax Amount'], $this->data ['Invoice Refund Amount'], $this->data ['Invoice Total Tax Refund Amount'], $this->data ['Invoice Total Amount'], prepare_mysql ( $this->data ['Invoice Metadata'] ), prepare_mysql ( $this->data ['Invoice XHTML Address'] ), prepare_mysql ( $this->data ['Invoice XHTML Orders'] ), addslashes ( $this->data ['Invoice XHTML Delivery Notes'] ), prepare_mysql ( $this->data ['Invoice XHTML Store'] ), prepare_mysql ( $this->data ['Invoice Has Been Paid In Full'] ), prepare_mysql ( $this->data ['Invoice Main Payment Method'] ), $this->data ['Invoice Shipping Tax Amount'], $this->data ['Invoice Charges Tax Amount'], prepare_mysql ( $this->data ['Invoice XHTML Processed By'] ), prepare_mysql ( $this->data ['Invoice XHTML Charged By'] ), prepare_mysql ( $this->data ['Invoice Processed By Key'] )
+				 , prepare_mysql ( $this->data ['Invoice Charged By Key'] ) 
+				 , prepare_mysql ( $this->data ['Invoice Billing Country 2 Alpha Code'] ) 
+				 , prepare_mysql ( $this->data ['Invoice Delivery Country 2 Alpha Code'] ) 
+				 );
 		
 		//    print $sql;
 		if (mysql_query ( $sql )) {
