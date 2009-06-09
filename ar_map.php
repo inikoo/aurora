@@ -1,6 +1,7 @@
 <?
 /*
-file: map.php
+file: map_url.php
+returns the url of the map
  */
 $colors=array(
 	      '0x62a74b',
@@ -19,11 +20,11 @@ if(isset($_REQUEST['tipo']))
 $title='';
 
 $options='';
+$url='';
+$url=get_map_url($tipo);
+$response= array('state'=>200,'url'=>$url);
+
+echo json_encode($response);  
 
 
-switch($tipo){
-case('world_sales'):
-  $url="http://chart.apis.google.com/chart?cht=p3&chd=t:60,40&chs=250x100&chl=Hello|World"
-  break;
-
-}
+?>

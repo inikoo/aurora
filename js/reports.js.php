@@ -27,8 +27,46 @@ function init(){
 	
 
 	var change_plot = function(e){
+	    if(this.id=='timeplot_sales'){
+		Dom.get('plot_options_sales').style.display='none';
+		Dom.get('plot_options_sales_bis').style.display='';
+		Dom.get('plot_div').style.width='950px';
+		Dom.get('the_plot').src = 'timeplot.php?f=d';
 		
-	    if(this.id=='net_sales_gmonth'){
+		
+
+	    }else if(this.id=='net_sales_month' || this.id=='net_sales_month_bis'){
+		Dom.get('plot_div').style.width='810px';
+		Dom.get('plot_options_sales').style.display='';
+		Dom.get('plot_options_sales_bis').style.display='none';
+
+
+		Dom.get('net_sales_month').className='but selected';
+		Dom.get('net_diff1y_sales_month').className='but';
+		Dom.get('timeplot_sales').className='but';
+		Dom.get('tr_net_diff1y_sales_month').style.display='none';
+		Dom.get('tr_net_diff1y_sales_month_per').style.display='none';
+			Dom.get('tr_net_sales_gmonth').style.display='';
+
+		if(Dom.get('net_sales_gmonth').checked){
+		    Dom.get('the_plot').src = 'plot.php?tipo=total_sales_groupby_month';
+		    YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=reports-sales-plot&value=total_sales_groupby_month' );
+		    plot_sales='net_sales_gmonth';
+		}else{
+		    Dom.get('the_plot').src = 'plot.php?tipo=total_sales_month';
+		    YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=reports-sales-plot&value=total_sales_month' );
+		    plot_sales='net_sales_month';
+		}
+		
+		
+		
+		
+	    }else if(this.id=='net_sales_gmonth'){
+		
+Dom.get('plot_div').style.width='810px';
+		Dom.get('plot_options_sales').style.display='';
+		Dom.get('plot_options_sales_bis').style.display='none';
+
 		if(this.checked){
 		    Dom.get('the_plot').src = 'plot.php?tipo=total_sales_groupby_month';
 		    YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=reports-sales-plot&value=total_sales_groupby_month' );
@@ -39,7 +77,18 @@ function init(){
 		    plot_sales='net_sales_month';
 		}
 
-	    }else if(this.id=='net_diff1y_sales_month' || this.id=='net_diff1y_sales_month_net'){
+	    }else if(this.id=='net_diff1y_sales_month' || this.id=='net_diff1y_sales_month_net' || this.id=='net_diff1y_sales_month_bis'){
+Dom.get('plot_div').style.width='810px';
+		Dom.get('plot_options_sales').style.display='';
+		Dom.get('plot_options_sales_bis').style.display='none';
+
+		Dom.get('net_sales_month').className='but';
+		Dom.get('net_diff1y_sales_month').className='but selected';
+		Dom.get('timeplot_sales').className='but';
+		Dom.get('tr_net_diff1y_sales_month').style.display='';
+		Dom.get('tr_net_diff1y_sales_month_per').style.display='';
+			Dom.get('tr_net_sales_gmonth').style.display='none';
+
 
 		Dom.get('net_diff1y_sales_month_net').checked=true;
 		Dom.get('the_plot').src = 'plot.php?tipo=net_diff1y_sales_month';
@@ -47,6 +96,11 @@ function init(){
 		plot_sales='net_diff1y_sales_month';
 
 	    }if(this.id=='net_diff1y_sales_month_per'){
+Dom.get('plot_div').style.width='810px';
+		Dom.get('plot_options_sales').style.display='';
+		Dom.get('plot_options_sales_bis').style.display='none';
+
+
 		Dom.get('the_plot').src = 'plot.php?tipo=net_diff1y_sales_month_per';
 		YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=reports-sales-plot&value=net_diff1y_sales_month_per' );
 		plot_sales='net_diff1y_sales_month_per';
@@ -56,12 +110,11 @@ function init(){
 
 
 	}
-	var ids = ["net_diff1y_sales_month"]; 
+	var ids = ["net_diff1y_sales_month","timeplot_sales","net_sales_month","net_diff1y_sales_month_bis","net_sales_month_bis"]; 
  	Event.addListener(ids, "click", change_plot);
 	var ids = ["net_sales_gmonth","net_diff1y_sales_month_per","net_diff1y_sales_month_net"]; 
  	Event.addListener(ids, "change", change_plot);
-	var ids = ["net_sales_month"]; 
- 	Event.addListener(ids, "click", change_plot);
+
 
 
 	var go_free = function(e){
@@ -98,8 +151,8 @@ function init(){
 
 		YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=reports-'+tipo+'-plot&value=' + escape(plot[tipo]) );
 
-		Dom.get(tipo).className='selected';
-		Dom.get(current_view).className='';
+		Dom.get(tipo).className='nav2 onleft link selected';
+		Dom.get(current_view).className='nav2 onleft link';
 
 		YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=reports-view&value=' + escape(tipo) );
 

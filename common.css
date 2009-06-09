@@ -205,7 +205,7 @@ table.edit tr.last{ border-bottom:1px solid #a5b6c8}
 .chooser img {position:relative;top:2px;}
 .chooser li.selected {cursor:default;border-color:#aaa;;opacity: 1;filter: alpha(opacity=100);font-weight:800;color:#555}
 
-.report_header {padding:15px 20px 0 20px;clear:both;margin-top:20px;}
+.report_header {padding:15px 20px 0 20px;clear:both;margin-top:0px;}
 .report_header li {float:left;padding: 5px;margin: 0 5px 0px 0;cursor:pointer}
 .report_header a { text-decoration:none }
 
@@ -303,9 +303,9 @@ table.sbut {margin:5px;border-spacing:10px  10px;border-collapse: separate;width
 table.but{margin:5px 0 ;width:140px;border:none;clear:right;float:right;border-collapse: separate;;border-spacing:3px  3px;}
 table.but_edit{clear:both;float:right}
 
+
+
 .but td{font-weight:600;font-size:85%;text-align:center;padding:3px 3px;cursor:pointer}
-
-
 .but td.ok{background:#81c44b;border:1px solid #67ae2e;color:#f6f6f6}
 .but td.ok:hover{background:#98ea56;color:#444}
 .but td.disabled{background:#fff;border:1px solid #eee;color:#ddd;cursor:default}
@@ -352,7 +352,7 @@ table.options_mini{margin:0 ;float:right;border-collapse: separate;;border-spaci
 .show_options{color:#aaa;padding:0 5px 0 0;position:relative;bottom:0px;font-weight:800}
 .show_options span{background:#33518d;margin-right:7px;cursor:pointer;border:1px solid #758fc4;padding:0px 3px;font-weight:800}
 .show_options span:hover {color:#fff;}
-span.selected { background:#7296e1;color:white }
+
 .xshow_options span.selected {color:#f4e846;}
 .show_options span.selected:hover {color:#ebe69f;}
 
@@ -470,7 +470,11 @@ table.submit_order td.but{ background:#238546;color:#fff;cursor:pointer;padding:
 .staff_list td{ text-align:center;cursor:pointer  }
 .staff_list td.selected{ background:#7296e1;color:white   }
 
-span.but{ background:#238546;color:#fff;cursor:pointer;padding:2px 3px;text-align:center ;border:1px solid #999}
+span.but{ xbackground:#238546;color:#bbb;cursor:pointer;padding:2px 3px;text-align:center ;border:1px solid #ccc}
+span.selected { background:#7296e1;color:#fff ;border:1px solid navy}
+span.but:hover {border:1px solid #aaa; color:#999;}
+span.selected:hover { background:#7296e1;color:#fff ;border:1px solid navy}
+
 span.but_disabled{cursor:normal;background:#fff;color:#777}
 span.but_unselected{cursor:normal;background:#fff;color:#777}
 span.small{font-size:80%}
@@ -536,8 +540,8 @@ span.small{font-size:80%}
 
 
 
-
-
+span.link{cursor:pointer}
+.top_navigation span.selected{color:yellow;border:none;background:#6d84b4}
 
 /*Common search div*/
 

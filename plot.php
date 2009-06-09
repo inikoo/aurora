@@ -181,8 +181,9 @@ switch($tipo){
    $tipo_chart='LineChart';
    break;
  case('net_diff1y_sales_month'):
+   
    $title=_("Monthy net sales change compared with previos year");
-   $ar_address='ar_orders.php?tipo=plot_net_diff1y_sales_month';
+   $ar_address='ar_plot.php?tipo=net_diff1y_sales_month';
    $fields='"sales_diff","tip_sales_diff","date"';
    $yfields=array(
 		  array('label'=>_('Month Net Sales'),'name'=>'sales_diff','axis'=>'formatCurrencyAxisLabel','style'=>'size:10,color: 0x62a74b')
@@ -192,7 +193,7 @@ switch($tipo){
    break;
  case('net_diff1y_sales_month_per'):
    $title=_("Monthy net sales change compared with previos year");
-   $ar_address='ar_orders.php?tipo=plot_net_diff1y_sales_month';
+   $ar_address='ar_plot.php?tipo=net_diff1y_sales_month';
    $fields='"sales_diff_per","tip_sales_diff_per","date"';
    $yfields=array(
 		  array('label'=>_('Month Net Sales'),'name'=>'sales_diff_per','axis'=>'formatPercentageAxisLabel','style'=>'size:10,color: 0x62a74b')
@@ -214,7 +215,7 @@ switch($tipo){
    
 
    $title=_("Total Net Sales per Month (Group by month)");
-   $ar_address='ar_orders.php?tipo=plot_gmonthsales';
+   $ar_address='ar_plot.php?tipo=montly_sales_group_by_month';
    $fields='"date"';
     for($i=date('Y');$i>=date('Y')-5;$i--){
       $fields.=",'sales$i','tip_sales$i'";
