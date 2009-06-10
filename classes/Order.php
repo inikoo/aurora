@@ -1590,6 +1590,12 @@ class Order {
 		$this->data ['Invoice Gross Amount'] = 0;
 		$this->data ['Invoice Discount Amount'] = 0;
 		
+
+		if(!isset($this->data ['Invoice Billing Country 2 Alpha Code']))
+		  $this->data ['Invoice Billing Country 2 Alpha Code']='XX';
+			if(!isset($this->data ['Invoice Delivery Country 2 Alpha Code']))
+		  $this->data ['Invoice Delivery Country 2 Alpha Code']='XX';
+
 		//    $this->data['Invoice Date']=
 		//        $this->data['Invoice File As']
 		//        $this->data['Invoice Main Store Key']

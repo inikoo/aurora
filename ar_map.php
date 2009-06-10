@@ -13,6 +13,7 @@ $colors=array(
 
 require_once 'common.php';
 require_once 'classes/Product.php';
+require_once 'map_url.php';
 
 $tipo='';
 if(isset($_REQUEST['tipo']))

@@ -148,6 +148,9 @@ $myconf=array(
 	      'unknown_formal_greting'=>'Dear Sir or Madam'
 	      );
 
+
+
+
 $default_state=array(
 		     'order'=>array(
 				    'id'=>''
@@ -871,6 +874,27 @@ $tmp_images_dir='app_files/pics/';
 $customers_ids[0]=_('Id');
 $customers_ids[1]=_('Act Id');
 $customers_ids[2]=_('Post Code');
+
+//overwrite configuration
+
+
+$keys = array(
+    "PATH_INFO",
+    "PATH_TRANSLATED",
+    "PHP_SELF",
+    "REQUEST_URI",
+    "SCRIPT_FILENAME",
+    "SCRIPT_NAME",
+    "QUERY_STRING"
+);
+
+// Works in linux
+$file=preg_replace('/conf.php/','myconf.php',__FILE__); 
+
+if (file_exists($file)) {
+  include_once('myconf.php');
+}
+
 
 
   ?>
