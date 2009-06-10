@@ -148,7 +148,7 @@ class product{
 	if($row2=mysql_fetch_array($result2, MYSQL_ASSOC)){
 	  $num_lists=$row2['lists'];
 	  if($num_lists!=1)
-	    exit("$sql  error wrong numer if lists\n");
+	    print("$sql  Warning wrong numer if lists\n");
 	}
 
  	$sql=sprintf("select  `Part SKU`, `Product Part ID`  from `Product Part List`  where  `Product ID`=%s  " ,$this->data['Product ID']);
@@ -317,8 +317,7 @@ class product{
       // print "$number_sp\n";
       if($number_sp==0){
 	// ****************************************  NEW CODE ************************************************
-	//print "NEW Cpde\n";
-
+	
 	$this->new_code=true;
 	$tag['product id']=$this->new_id();
 	$tag['product most recent']='Yes';
@@ -329,6 +328,8 @@ class product{
 	$tag['part valid from']=$tag['date'];
 	$tag['product record type']='Normal';
 	$tag['product web state']='Online Auto';
+	
+	
 	$this->create($tag);
 	$tag['Part XHTML Currently Used In']=sprintf('<a href="product.php?%d">%s</a>',$this->id,$this->data['Product Code']);
 	$tag['Part XHTML Description']=preg_replace('/\(.*\)\s*$/i','',$this->get('Product XHTML Short Description'));
@@ -1249,6 +1250,9 @@ $base_data=array(
 
 
   function create($data){
+
+    //print_r($data);exit;
+
     global $myconf;
     $base_data=$this->get_base_data();
     foreach($data as $key=>$value){
@@ -1288,7 +1292,7 @@ $base_data=array(
 
 
     $family=false;$new_family=false;
-
+   
     if($base_data['product family code']!='' and $base_data['product family key']==''){
       $family=new Family('code_store',$base_data['product family code'],$base_data['product store key']);
       if(!$family->id){

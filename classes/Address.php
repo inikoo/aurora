@@ -1043,7 +1043,7 @@ class Address extends DB_Table{
   */
   public static function parse_street($line,$country_id=0){
 
-    //print "********** $line\n";
+    // print "********** $line\n";
 
     $number='';
     $name='';
@@ -1052,21 +1052,23 @@ class Address extends DB_Table{
 
     //extract number
     $line=_trim($line);
+    
     if(preg_match('/^\#?\s*\d+(\,\d+\-\d+|\\\d+|\/\d+)?(bis)?[a-z]?\s*/i',$line,$match)){
+
       $number=$match[0];
       $len=strlen($number);
       $name=substr($line,$len);
     }elseif(preg_match('/(\#|no\.?)?\s*\d+(bis)?[a-z]?\s*$/i',$line,$match)){
+     // print "--------".$match[0]."-------------";
       $number=$match[0];
       $len=strlen($number)+1;
-      $name=substr($line,strlen($line)-$len);
+      $name=substr($line,0,strlen($line)-$len);
 
     }else{
       $name=$line;
       
     }
-
-    
+   
     $name=preg_replace('/^\s*,\s*/','',$name);
 
     $name=_trim($name);
@@ -1093,11 +1095,13 @@ class Address extends DB_Table{
    
 
     $name=mb_ucwords(_trim($name));
-    return array(
+    $return_data=array(
 		 'Address Street Number'=>$number
 		 ,'Address Street Name'=>$name
 		 ,'Address Street Type'=>$type
 		 ,'Address Street Direction'=>$direction);
+    //    print_r($return_data);
+    return $return_data;
    
   }
 
@@ -1636,18 +1640,19 @@ class Address extends DB_Table{
 	}
 
       }elseif(!$f_a1 and $f_a2 and $f_a3){ // case xoo
-
+	
 	//   print "1 $raw_data['Address Line 1'] 2 $raw_data['Address Line 2'] 3 $raw_data['Address Line 3'] \n";
 	if($s_a2 and   !$i_a3 and !$s_a3  ){
-	  //   print "caca";
+
+	  
 	  if(!$f_ta and !$f_td and !$f_t){ // caso ooo (towns)
-       
+
 	    $data['Address Town']=$raw_data['Address Line 3'];
 	    $raw_data['Address Line 3']=$raw_data['Address Line 2'];
 	    $raw_data['Address Line 2']=$raw_data['Address Line 1'];
 	    $raw_data['Address Line 1']='';
 	  }else if(!$f_ta and !$f_td and $f_t){// caso oot
-       
+
 	    $data['Address Town Secondary Division']=$raw_data['Address Line 3'];
 	    $raw_data['Address Line 3']=$raw_data['Address Line 2'];
 	    $raw_data['Address Line 2']=$raw_data['Address Line 1'];
@@ -1660,7 +1665,7 @@ class Address extends DB_Table{
 	    $raw_data['Address Line 1']='';
 	  }
 
-
+	  
 	}
 
 
@@ -1677,7 +1682,7 @@ class Address extends DB_Table{
     // print_r($data); 
     //     exit; 
     
-   
+
 
     if(preg_match('/^P\.o\.box\s+\d+$|^po\s+\d+$|^p\.o\.\s+\d+$/i',$data['Address Town Secondary Division'])){
       
@@ -1692,8 +1697,8 @@ class Address extends DB_Table{
     }
 
 
-  
 
+    
 
     switch($data['Address Country Key']){
     case(30)://UK
@@ -1737,7 +1742,7 @@ class Address extends DB_Table{
 
 
 
-
+      
 
     
       break;
