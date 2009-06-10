@@ -98,7 +98,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     if($filename_number<18803){// Change map if the orders are old
       $y_map=$_y_map_old;
       foreach($_map_old as $key=>$value)
-	$map[$key]=$value;
+ 	$map[$key]=$value;
     }
     $prod_map=$y_map;
     if($filename_number==53378){
