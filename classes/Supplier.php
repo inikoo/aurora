@@ -245,7 +245,7 @@ class supplier extends DB_Table{
     }
     $values=preg_replace('/^,/','',$values);
     $keys=preg_replace('/^,/','',$keys);
-    print_r( $raw_data);
+    //  print_r( $raw_data);
     $sql="insert into `Supplier Dimension` ($keys) values ($values)";
     //    print $sql;
  

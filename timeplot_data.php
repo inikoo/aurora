@@ -158,6 +158,60 @@ case('weekly_net_sales'):
       print $_date[$key].",$value\n";
   }
   break;
+case('daily_net_fam_sales'):
+
+  //pharse fam
+  if(isset($_REQUEST['fam'])){
+
+
+  }else{
+    // the 5 families qith more sales
+    $family_keys=array(1,2,3,4,5);
+  }
+  
+
+  if($from)
+    $sql=sprintf("select D.`Date` as date from `Date Dimension` D where Date>'%s' and Date<='%s'",date("Y-m-d",$from),date("Y-m-d",$until));
+  else
+    $sql=sprintf("select D.`Date` as date from `Date Dimension` D where Date>(select min(`Invoice Date`) from `Invoice Dimension`) and Date<=%s",date("Y-m-d",$until));
+  
+    $sql=sprintf("select D.`Date` as date from `Date Dimension` D where Date>'%s' and Date<='%s'",date("Y-m-d",$from),date("Y-m-d",$until));
+  
+    //  print $sql;
+    $res = mysql_query($sql); 
+    
+     foreach($family_keys as $family_key){
+       while($row=mysql_fetch_array($res)) {
+	 $data[$row['date']][$family_key]=0;
+       }
+     }
+  
+
+  foreach($family_keys as $family_key){
+
+ if($from)
+   $sql=sprintf("select DATE(`Invoice Date`)   as date, sum(`Invoice Total Net Amount`) as net  from  `Orden Transaction Fact` T left join `Product Dimension`  where `Product Family Key`=%d  `Invoice Date`>='%s' and `Invoice Date`<='%s'   group by DATE(`Invoice Date`) ",$family_key,date("Y-m-d",$from),date("Y-m-d",$until));
+  else
+
+    $sql=sprintf("select DATE(`Invoice Date`)   as date, sum(`Invoice Total Net Amount`) as net  from `Orden Transaction Fact` T left join `Product Dimension` where `Product Family Key`=%d  and `Invoice Date`<='%s'   group by DATE(`Invoice Date`) ",$family_key,$date("Y-m-d",$until));
+  $res = mysql_query($sql); 
+  while($row=mysql_fetch_array($res)) {
+    $data[$row['date']][$family_key]=$row['net'];
+  }
+
+  }
+  foreach($data as $key => $values){
+    $line='';
+    if(!$just_values)
+      $line= "$key,";
+    
+    foreach($values as $family_key =>$value )
+      $line.= "$value,";
+    $line=preg_replace('/\,$/','',$line);
+    print "$line\n";
+      
+  }
+  break;
 
 
 }

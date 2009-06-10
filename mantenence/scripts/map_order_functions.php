@@ -8782,8 +8782,10 @@ if($act_data['town']=='Hornbæk - Sjælland'){
 
 
 
-function read_header($raw_header_data,$map_act,$y_map,$map){
+function read_header($raw_header_data,$map_act,$y_map,$map,$convert_encoding=true){
 
+
+ 
   //$new_mem=memory_get_usage(true);
   //    print"x$new_mem x ";
      
@@ -8796,9 +8798,12 @@ function read_header($raw_header_data,$map_act,$y_map,$map){
   if($raw_act_data){
 
     foreach($raw_act_data as $key=>$col){
-      $cols[$key]=mb_convert_encoding($col, "UTF-8", "ISO-8859-1");
-
+      if($convert_encoding)
+	$cols[$key]=mb_convert_encoding($col, "UTF-8", "ISO-8859-1");
+      else
+	$cols[$key]=$col;
     }
+ 
     //     print_r($cols);
     //exit;
     $act_data['name']=mb_ucwords($cols[$map_act['name']]);
@@ -8812,6 +8817,7 @@ function read_header($raw_header_data,$map_act,$y_map,$map){
     $act_data['town']=mb_ucwords($cols[$map_act['town']]);
     $act_data['country_d2']=mb_ucwords($cols[$map_act['country_d2']]);
     $act_data['postcode']=$cols[$map_act['postcode']];
+   
     $act_data['country']=mb_ucwords($cols[$map_act['country']]);
     $act_data['tel']=$cols[$map_act['tel']];
     $act_data['fax']=$cols[$map_act['fax']];
@@ -8844,8 +8850,8 @@ function read_header($raw_header_data,$map_act,$y_map,$map){
       //      print_r($map_data);
       //print "**** $key ".$map_data['row']." ".$map_data['col']."\n";
       $_data=$raw_header_data[$map_data['row']][$map_data['col']];
-
-      $_data=mb_convert_encoding($_data, "UTF-8", "ISO-8859-1");
+      if($convert_encoding)
+	$_data=mb_convert_encoding($_data, "UTF-8", "ISO-8859-1");
 
       
       if(isset($map_data['tipo']))
@@ -9140,7 +9146,7 @@ else if($_name=='jarina')
       //      $sql=sprintf("insert into todo_users (name,order_id,tipo) values ('%s','%s','%s')",addslashes($original_name),$order_id,$tipo);
       //    print "$sql\n";
       //mysql_query($sql);
-      print "Staff name not found $oname \n";
+      //print "Staff name not found $oname \n";
       $id=0;
       $ids[$id]=$id;
 

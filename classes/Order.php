@@ -15,6 +15,8 @@ include_once ('Staff.php');
 include_once ('Supplier.php');
 include_once ('Customer.php');
 include_once ('Store.php');
+include_once ('Ship_To.php');
+
 include_once ('search_customer.php');
 
 
@@ -76,8 +78,22 @@ class Order {
 /* 				  $customer_id=$customer->id; */
 /* 				} */
 				
-			       
+
 				$customer = new Customer ( 'find create', $data['Customer Data'] ); 
+				$this->ship_to_addresses=array();
+				foreach($data['Shipping Addresses'] as $shipping_address_data){
+				  $_ship_to= new Ship_to('find create',$shipping_address_data);
+				  if($_ship_to->id)
+				    $this->ship_to[$_ship_to->id]=$_ship_to;
+				  
+				}
+
+				foreach($this->ship_to as $ship_to){
+				  $this->data ['Order XHTML Ship Tos']=$ship_to->data['Ship To XHTML Address'];
+				}
+				
+				
+				$this->billing_address=new Address($customer->data['Customer Main Address Key']);
 				
 				if(!$customer->id or $customer->data[ 'Customer Name' ]==''){
 				  print "caca";
@@ -627,8 +643,8 @@ class Order {
 		$this->data ['Invoice Customer Key'] = $this->data ['Order Customer Key'];
 		$this->data ['Invoice Customer Name'] = $this->data ['Order Customer Name'];
 		//TODO
-		$this->data ['Invoice XHTML Address'] = 0;
-		$this->data ['Invoice XHTML Ship Tos'] = $this->data ['Order XHTML Ship Tos'];
+		$this->data ['Invoice XHTML Address'] = '';
+		$this->data ['Invoice XHTML Ship Tos'] = '';
 		$this->data ['Invoice Shipping Net Amount'] = $invoice_data ['Invoice Gross Shipping Amount'];
 		$this->data ['Invoice Charges Net Amount'] = $invoice_data ['Invoice Gross Charges Amount'];
 		$this->data ['Invoice Shipping Tax Amount'] = $invoice_data ['Invoice Gross Shipping Amount'] * $invoice_data ['tax_rate'];
@@ -649,8 +665,18 @@ class Order {
 		$this->data ['Invoice Processed By Key'] = $invoice_data ['Invoice Processed By Key'];
 		$this->data ['Invoice Charged By Key'] = $invoice_data ['Invoice Charged By Key'];
 		$this->data ['Invoice Billing Country 2 Alpha Code']='XX';
-		$this->data ['Invoice Delivery Country 2 Alpha Code']='XX';
+		
+		if($this->billing_address->id){
+		  $this->data ['Invoice Billing Country 2 Alpha Code']=$this->billing_address->data['Address Country 2 Alpha Code'];
+		  $this->data ['Invoice XHTML Address']=$this->billing_address->display('xhtml');
+		}
 
+		$this->data ['Invoice Delivery Country 2 Alpha Code']='XX';
+		foreach($this->ship_to as $ship_to){
+		  $this->data ['Invoice Delivery Country 2 Alpha Code']=$ship_to->data['Ship To Country 2 Alpha Code'];
+		  break;
+		}
+				
 		
 
 		$this->data ['Invoice XHTML Orders'] = sprintf ( '%s <a href="order.php?id=%d">%s</a>', _ ( 'Order' ), $this->id, $this->data ['Order Public ID'] );
@@ -1538,7 +1564,9 @@ class Order {
 		//     $sql="select sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) from `Order Transaction Fact` where "
 		
 
-		$sql = sprintf ( "insert into `Order Dimension` (`Order File As`,`Order Date`,`Order Last Updated Date`,`Order Public ID`,`Order Store Key`,`Order Store Code`,`Order Main Source Type`,`Order Customer Key`,`Order Customer Name`,`Order Current Dispatch State`,`Order Current Payment State`,`Order Current XHTML State`,`Order Customer Message`,`Order Original Data MIME Type`,`Order Original Data`,`Order XHTML Ship Tos`,`Order Items Gross Amount`,`Order Items Discount Amount`,`Order Original Metadata`,`Order XHTML Store`,`Order Type`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,'%s',%s,%s,%s,%.2f,%.2f,%s,%s,%s)", prepare_mysql ( $this->data ['Order File As'] ), prepare_mysql ( $this->data ['Order Date'] ), prepare_mysql ( $this->data ['Order Date'] ), prepare_mysql ( $this->data ['Order Public ID'] ), prepare_mysql ( $this->data ['Order Store Key'] ), prepare_mysql ( $this->data ['Order Store Code'] ), 
+		$sql = sprintf ( "insert into `Order Dimension` (`Order File As`,`Order Date`,`Order Last Updated Date`,`Order Public ID`,`Order Store Key`,`Order Store Code`,`Order Main Source Type`,`Order Customer Key`,`Order Customer Name`,`Order Current Dispatch State`,`Order Current Payment State`,`Order Current XHTML State`,`Order Customer Message`,`Order Original Data MIME Type`,`Order Original Data`,`Order XHTML Ship Tos`,`Order Items Gross Amount`,`Order Items Discount Amount`,`Order Original Metadata`,`Order XHTML Store`,`Order Type`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,'%s',%s,%s,%s,%.2f,%.2f,%s,%s,%s)"
+				 , prepare_mysql ( $this->data ['Order File As'] )
+				 , prepare_mysql ( $this->data ['Order Date'] ), prepare_mysql ( $this->data ['Order Date'] ), prepare_mysql ( $this->data ['Order Public ID'] ), prepare_mysql ( $this->data ['Order Store Key'] ), prepare_mysql ( $this->data ['Order Store Code'] ), 
 
 		prepare_mysql ( $this->data ['Order Main Source Type'] ), prepare_mysql ( $this->data ['Order Customer Key'] ), prepare_mysql ( $this->data ['Order Customer Name'] ), prepare_mysql ( $this->data ['Order Current Dispatch State'] ), prepare_mysql ( $this->data ['Order Current Payment State'] ), prepare_mysql ( $this->data ['Order Current XHTML State'] ), addslashes ( $this->data ['Order Customer Message'] ), prepare_mysql ( $this->data ['Order Original Data MIME Type'] ), prepare_mysql ( $this->data ['Order Original Data'] ), prepare_mysql ( $this->data ['Order XHTML Ship Tos'] ), 
 
