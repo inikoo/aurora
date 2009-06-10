@@ -138,8 +138,14 @@
 
 
       {if $tipo=='geosales'}
+    <div style="padding: 0px 20px">
 
-    <img src="http://chart.apis.google.com/chart?chs=440x220&chd=t:60&cht=t&chtm=world&chld=GB&chco=FFFFFF,FF0000,FFFF00,00FF00">
+      <table border=1 style="float:right">
+	<tr><td><span class="but">{t}America{/t}<td><td>{t}Europe{/t}<td><td>{t}Asia{/t}<td><td>{t}Oceania{/t}<td><td>{t}Africa{/t}<td></tr>
+	
+      </table>
+      <img src="{$map_url}">
+    </div>
     {/if}    
 
 

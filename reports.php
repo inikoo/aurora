@@ -12,6 +12,7 @@
  Version 2.0
 */
 include_once('common.php');
+include_once('map_url.php');
 
 
 $tipo=$_SESSION['state']['reports']['view'];
@@ -20,6 +21,9 @@ if(isset($_SESSION['state']['reports'][$tipo]['plot']))
 else
   $tipo_plot=false;
   
+print $tipo;
+
+
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
@@ -55,9 +59,17 @@ $plot_title=array(
 		  ,'total_sales_month'=>_('Monthly net sales')."."
 
 );
-$smarty->assign('plot_title',$plot_title);
 
+$smarty->assign('plot_title',$plot_title);
 $smarty->assign('plot_tipo',$tipo_plot);
+
+$map_url=get_map_url();
+$smarty->assign('map_url',$map_url);
+
+
+
+
+
 $smarty->assign('tipo',$tipo);
 
 $smarty->assign('parent','reports.php');
