@@ -25,7 +25,9 @@ switch($tipo){
      break;
    case 2:
      $value=$_REQUEST['value'];
+
      $_SESSION['state'][$keys[0]][$keys[1]]=$value;
+     // print $_SESSION['state']['reports']['view'];
      break;
    case 3:
      $value=$_REQUEST['value'];

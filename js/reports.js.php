@@ -155,7 +155,7 @@ Dom.get('plot_div').style.width='810px';
 		Dom.get(current_view).className='nav2 onleft link';
 
 		YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=reports-view&value=' + escape(tipo) );
-
+		alert('ar_sessions.php?tipo=update&keys=reports-view&value=' + escape(tipo) );
 
 		current_view=tipo;
 		
