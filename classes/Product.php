@@ -121,7 +121,9 @@ class product{
 		   ,prepare_mysql($tag['product unit type'])
 		   ,$tag['product price']
 		   ); 
+      // print "$sql\n";
       $result=mysql_query($sql);
+      // print "----------------DONE\n";
       if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)){
 
 	//	print $tag['product code']." FOUND OLS\n";

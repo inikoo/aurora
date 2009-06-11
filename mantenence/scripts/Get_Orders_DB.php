@@ -653,7 +653,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       // print_r($product_data);
      
       $product=new Product('code-name-units-price',$product_data);
-
+      //      print "Done\n";
       //     "Ahh canto male pedict\n";
       if(!$product->id){
 	print_r($product_data);

@@ -26,6 +26,24 @@ function init(){
 	YAHOO.util.Event.addListener("calpop2", "click", cal2.show, cal2, true);
 	
 
+	var change_map = function(e){
+	    var region=this.id;
+	    var request='ar_map.php?tipo='+ escape(region);
+	    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    success:function(o) {
+		
+			var r =  YAHOO.lang.JSON.parse(o.responseText);
+			
+			if (r.state == 200) {
+
+			    Dom.get('map_image').src=r.url;
+			    
+		}
+		
+	    }
+	});
+	    
+	}
 	var change_plot = function(e){
 	    if(this.id=='timeplot_sales'){
 		Dom.get('plot_options_sales').style.display='none';
@@ -127,49 +145,57 @@ Dom.get('plot_div').style.width='810px';
 
 	var change_front_page = function(e){
 	    tipo=this.id;
+	    
+	    
+
+
 
 	    if(tipo!=current_view){
-		if(tipo=='prod')
-		    Dom.get('front_plot').style.display='none';
-		else{
-		    Dom.get('front_plot').style.display='';
-		    
-		}
-
 		
-		Dom.get('plot_div').style.opacity=0;
-		Dom.get('the_plot').src = 'plot.php?tipo='+plot[tipo];
-		Dom.get('plot_options_'+current_view).style.display='none';
-		
-		if(Dom.get('plot_options_'+tipo))
-		    Dom.get('plot_options_'+tipo).style.display='';
-
-
 		Dom.get('header_'+current_view).style.display='none';
 		Dom.get('header_'+tipo).style.display='';
-		Dom.get('plot_options_'+current_view).style.display='none';
-
-		YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=reports-'+tipo+'-plot&value=' + escape(plot[tipo]) );
-
+		YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=reports-view&value=' + escape(tipo) );
 		Dom.get(tipo).className='nav2 onleft link selected';
 		Dom.get(current_view).className='nav2 onleft link';
 
-		YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=reports-view&value=' + escape(tipo) );
-		alert('ar_sessions.php?tipo=update&keys=reports-view&value=' + escape(tipo) );
-
-		current_view=tipo;
+		if(current_view=='sales'){
+		    Dom.get('plot_options_'+current_view).style.display='none';
+		    Dom.get('plot_options_'+current_view).style.display='none';
+		}else if (current_view=='geosales'){
+		 Dom.get('map').style.display='none';
+		}
 		
-		myAnim.animate();
-		//setTimeout("myAnim.animate()",2000);
-		//		setTimeout(myAnim.animate(), 1000000);
+
+		if(tipo=='geosales'){
+		    Dom.get('front_plot').style.display='none';
+		    Dom.get('map').style.display='';
+		}else if(tipo=='prod')
+		    Dom.get('front_plot').style.display='none';
+		else if(tipo=='sales'){
+		    Dom.get('front_plot').style.display='';
+		    Dom.get('plot_div').style.opacity=0;
+		    Dom.get('the_plot').src = 'plot.php?tipo='+plot[tipo];
+		    Dom.get('plot_options_'+tipo).style.display='';
+		    YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=reports-'+tipo+'-plot&value=' + escape(plot[tipo]) );
+
+		}
+
+		
+		current_view=tipo;
+	
 
 
+	
 
 	    }
 	}
 
 	var ids = ["sales","geosales","customers","times","prod","stock","products"]; 
 	Event.addListener(ids, "click", change_front_page);
+
+	var ids = ["world","asia","africa","europe","middle_east","north_america","south_america"]; 
+	Event.addListener(ids, "click", change_map);
+
 
 }
 

@@ -84,20 +84,21 @@
 </div>
   
   
-  <div {if $tipo=='prod'}style="display:none"{/if}  id="front_plot" style="clear:both;">
+  
+  <div {if $tipo=='prod' or $tipo=='geosales' }style="display:none"{/if}  id="front_plot" style="clear:both;xborder:1px solid green;xbackground:red" >
     
     <div {if $tipo!='sales' or $plot_tipo=='timeplot_sales'}style="display:none"{/if} id="plot_options_sales" class="plot_options">
       
       <table style="margin-top:30px;font-size:87%" border=0>
 	<tr style="height:2em"><td><span  id="net_sales_month"  class="but {if $plot_tipo=='total_sales_groupby_month' or $plot_tipo=='total_sales_month'}selected{/if}">Net Sales</span></td></tr>
-
+	
 	<tr style="height:2em"><td style="margin:10px 0"><span id="net_diff1y_sales_month" class="but {if $plot_tipo=='net_diff1y_sales_month' or $plot_tipo=='net_diff1y_sales_month_per'}selected{/if}" >Growth</span></td></tr>
 	<tr style="height:2em"><td style="margin:10px 0"><span id="timeplot_sales" class="but {if $plot_tipo=='timeplot_sales'}selected{/if}" >Time Series</span></td></tr>
 	<tr style="height:2em"><td></td></tr>
 	<tr id="tr_net_sales_gmonth" style="display:{if $plot_tipo=='total_sales_groupby_month' or $plot_tipo=='total_sales_month'}block{else}none{/if}"><td>Group by month <input style="position:relative;top:2px" {if $plot_tipo=='total_sales_groupby_month'}checked="checked"{/if}type="checkbox" id="net_sales_gmonth" name="net_sales_gmonth" value="net_sales_gmonth"><td></tr>
 	
-
-
+	
+	
 	<tr style="display:{if $plot_tipo=='net_diff1y_sales_month' or $plot_tipo=='net_diff1y_sales_month_per'}{else}none{/if}" id="tr_net_diff1y_sales_month"><td>{t}Net difference{/t} <input style="position:relative;top:2px" {if $plot_tipo=='net_diff1y_sales_month'}checked="checked"{/if} type="radio" id="net_diff1y_sales_month_net" name="net_diff1y_sales_month" value="net_sales_gmonth"><td></tr>
 	<tr style="display:{if $plot_tipo=='net_diff1y_sales_month' or $plot_tipo=='net_diff1y_sales_month_per'}{else}none{/if}" id="tr_net_diff1y_sales_month_per"><td>{t}Percentage{/t} <input style="position:relative;top:2px" {if $plot_tipo=='net_diff1y_sales_month_per'}checked="checked"{/if} type="radio" id="net_diff1y_sales_month_per" name="net_diff1y_sales_month" value="net_sales_gmonth"><td></tr>
       </table>
@@ -117,39 +118,43 @@
     <div {if $tipo!='prod'}style="display:none"{/if} id="plot_options_prod" class="plot_options">
     </div>
     
-    {if $tipo=='sales'}
-
-    <div  id="plot_div" class="product_plot"  style="width:810px;height:310px;">
-      <iframe id="the_plot" src ="plot.php?tipo={$plot_tipo}" frameborder=0 height="100%" scrolling="no" width="100%"></iframe>
+    
+    <div  id="plot_div" class="product_plot"  style="width:810px;xheight:325px;">
+      <iframe id="the_plot" src ="plot.php?tipo={$plot_tipo}" frameborder=0 height="310" scrolling="no" width="100%"></iframe>
       <span style="position:relative;left:70px;">{$plot_title[$plot_tipo]}</span>
       <div id="plot_options_sales_bis" style="margin-left:30px;{if $plot_tipo!='timeplot_sales'}display:none{/if}">
 	<table>
 	  <tr>
 	    <td><span  id="net_sales_month_bis"  class="but">Net Sales</span></td>
 	    <td><span  id="net_diff1y_sales_month_bis"  class="but">Growth</span></td>
-
+	    
 	    <td style="margin:10px 0"><span  class="but selected" >Time Series</span></td>
 	  </tr>
 	</table>
       </div>
       <div style="clear:both"></div>
     </div>
-    {/if}    
+    
+  </div>
 
+  <div id="map" style="padding: 0px 20px;display:{if $tipo!='geosales'}none{/if};">
 
-      {if $tipo=='geosales'}
-    <div style="padding: 0px 20px">
-
-      <table border=1 style="float:right">
-	<tr><td><span class="but">{t}America{/t}<td><td>{t}Europe{/t}<td><td>{t}Asia{/t}<td><td>{t}Oceania{/t}<td><td>{t}Africa{/t}<td></tr>
+      <table border=0 style="float:right">
+	<tr>
+	  <td><span id="world" class="but {if $region=='world'}selected{/if}">{t}World{/t}</span></td>
+	  <td><span id="north_america" class="but {if $region=='north_america'}selected{/if}">{t}N America{/t}</span></td>
+	  <td><span id="south_america" class="but {if $region=='south_america'}selected{/if}">{t}S America{/t}</span></td>
+	  <td><span id="europe" class="but {if $region=='europe'}selected{/if}">{t}Europe{/t}</span></td>
+	  <td><span id="asia" class="but {if $region=='asia'}selected{/if}">{t}Asia{/t}</span></td>
+	  <td><span id="africa" class="but {if $region=='africa'}selected{/if}">{t}Africa{/t}</span></td>
+	  <td><span id="oceania" class="but {if $region=='africa'}selected{/if}">{t}Oceania{/t}</span></td>
+	</tr>
 	
       </table>
-      <img src="{$map_url}">
-    </div>
-    {/if}    
-
-
+      <img id="map_image" src="{$map_url}">
   </div>
+
+
   
 </div>
 
