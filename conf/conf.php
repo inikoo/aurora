@@ -162,11 +162,27 @@ $default_state=array(
 				      'view'=>'sales',
 				      'sales'=>array(
 						     'plot'=>'total_sales_month'
-						     ),
-				      'stock'=>array(
+						     )
+				      ,'stock'=>array(
 						     'plot'=>'total_outofstock_month'
 						     )
+				      ,'geosales'=>array(
+							 'level'=>'region'
+							 ,'region'=>'world'
+							 ,'map_exclude'=>''
+							 ,'table'=>array(
+									 'order'=>'country_code',
+									 'order_dir'=>'',
+									 'sf'=>0,
+									 'nr'=>25,
+									 'where'=>'where true',
+									 'f_field'=>'country',
+									 'f_value'=>'',
+									 'from'=>'',
+									 'to'=>''
 
+									 ),
+							 )
 
 				      ),
 		     
