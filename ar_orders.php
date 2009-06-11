@@ -655,8 +655,12 @@ if(isset( $_REQUEST['where']))
       
   }
   $rtext=$total_records." ".ngettext('order','orders',$total_records);
+
   if($total_records>$number_results)
-    $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
+    $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+  else
+    $rtext_rpp=sprintf("Showing all orders");
+
   $filter_msg='';
 
      switch($f_field){
@@ -735,6 +739,7 @@ else if($order=='customer')
 		   array('state'=>200,
 			 'data'=>$data,
 			 'rtext'=>$rtext,
+			 'rtext_rpp'=>$rtext_rpp,
 			 'sort_key'=>$_order,
 			 'sort_dir'=>$_dir,
 			 'tableid'=>$tableid,
@@ -743,7 +748,7 @@ else if($order=='customer')
 			 'records_offset'=>$start_from,
 			 'records_returned'=>$start_from+$total,
 			 'records_perpage'=>$number_results,
-			 'records_text'=>$rtext,
+
 			 'records_order'=>$order,
 			 'records_order_dir'=>$order_dir,
 			 'filtered'=>$filtered
@@ -881,7 +886,7 @@ if(isset( $_REQUEST['where']))
      $total_records=$total;
   }else{
     
-      $sql="select count(*) as total from `Order Dimension`  $where";
+      $sql="select count(*) as total from `Invoice Dimension`  $where";
       $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
       if($row=$res->fetchRow()) {
 	$total_records=$row['total'];
@@ -889,9 +894,12 @@ if(isset( $_REQUEST['where']))
       }
       
   }
-  $rtext=$total_records." ".ngettext('order','orders',$total_records);
+  $rtext=$total_records." ".ngettext('invoice','invoices',$total_records);
   if($total_records>$number_results)
-    $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
+    $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+   else
+    $rtext_rpp=sprintf("Showing all invoices");
+
   $filter_msg='';
 
      switch($f_field){
@@ -976,6 +984,7 @@ else if($order=='customer')
 		   array('state'=>200,
 			 'data'=>$data,
 			 'rtext'=>$rtext,
+			 'rtext_rpp'=>$rtext_rpp,
 			 'sort_key'=>$_order,
 			 'sort_dir'=>$_dir,
 			 'tableid'=>$tableid,
@@ -992,7 +1001,247 @@ else if($order=='customer')
 		   );
    echo json_encode($response);
    break;
+ case('dn'):
+    if(!$LU->checkRight(ORDER_VIEW))
+    exit;
+    
+    $conf=$_SESSION['state']['orders']['dn'];
+  if(isset( $_REQUEST['sf']))
+     $start_from=$_REQUEST['sf'];
+   else
+     $start_from=$conf['sf'];
+   if(isset( $_REQUEST['nr']))
+     $number_results=$_REQUEST['nr'];
+   else
+     $number_results=$conf['nr'];
+  if(isset( $_REQUEST['o']))
+    $order=$_REQUEST['o'];
+  else
+    $order=$conf['order'];
+  if(isset( $_REQUEST['od']))
+    $order_dir=$_REQUEST['od'];
+  else
+    $order_dir=$conf['order_dir'];
+    if(isset( $_REQUEST['f_field']))
+     $f_field=$_REQUEST['f_field'];
+   else
+     $f_field=$conf['f_field'];
 
+  if(isset( $_REQUEST['f_value']))
+     $f_value=$_REQUEST['f_value'];
+   else
+     $f_value=$conf['f_value'];
+if(isset( $_REQUEST['where']))
+     $where=$_REQUEST['where'];
+   else
+     $where=$conf['where'];
+  
+ if(isset( $_REQUEST['from']))
+    $from=$_REQUEST['from'];
+ else{
+   if(isset($_REQUEST['saveto']) and $_REQUEST['saveto']=='report_sales')
+     $from=$conf['from'];
+   else
+     $from=$_SESSION['state']['orders']['from'];
+ }
+
+  if(isset( $_REQUEST['to']))
+    $to=$_REQUEST['to'];
+  else{
+    if(isset($_REQUEST['saveto']) and $_REQUEST['saveto']=='report_sales')
+      $to=$conf['to'];
+    else
+      $to=$_SESSION['state']['orders']['to'];
+  }
+
+   if(isset( $_REQUEST['view']))
+    $view=$_REQUEST['view'];
+   else{
+     if(isset($_REQUEST['saveto']) and $_REQUEST['saveto']=='report_sales')
+       $view=$conf['view'];
+     else
+       $view=$_SESSION['state']['orders']['view'];
+
+   }
+   if(isset( $_REQUEST['tableid']))
+    $tableid=$_REQUEST['tableid'];
+  else
+    $tableid=0;
+
+
+   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+        
+   if(isset($_REQUEST['saveto']) and $_REQUEST['saveto']=='report_sales'){
+     
+     $_SESSION['state']['report']['sales']['order']=$order;
+     $_SESSION['state']['report']['sales']['order_dir']=$order_direction;
+     $_SESSION['state']['report']['sales']['nr']=$number_results;
+     $_SESSION['state']['report']['sales']['sf']=$start_from;
+     $_SESSION['state']['report']['sales']['where']=$where;
+     $_SESSION['state']['report']['sales']['f_field']=$f_field;
+     $_SESSION['state']['report']['sales']['f_value']=$f_value;
+     $_SESSION['state']['report']['sales']['to']=$to;
+     $_SESSION['state']['report']['sales']['from']=$from;
+     $date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
+     
+   }else{
+
+     $_SESSION['state']['orders']['dn']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+     $_SESSION['state']['orders']['view']=$view;
+     $date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
+     if($date_interval['error']){
+       $date_interval=prepare_mysql_dates($_SESSION['state']['orders']['from'],$_SESSION['state']['orders']['to']);
+     }else{
+       $_SESSION['state']['orders']['from']=$date_interval['from'];
+       $_SESSION['state']['orders']['to']=$date_interval['to'];
+     }
+   }
+
+   $where.=$date_interval['mysql'];
+   
+   $wheref='';
+
+  if($f_field=='max' and is_numeric($f_value) )
+    $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(date_index))<=".$f_value."    ";
+  else if($f_field=='min' and is_numeric($f_value) )
+    $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(date_index))>=".$f_value."    ";
+  elseif($f_field=='id' and $f_value!='')
+    $wheref.=" and  `Delivery Note ID` like '".addslashes($f_value)."%'";
+  elseif($f_field=='invoice' and $f_value!='')
+    $wheref.=" and  `Delivery Note Invoices` like '".addslashes($f_value)."%'";
+ elseif($f_field=='order' and $f_value!='')
+    $wheref.=" and  `Delivery Note Order` like '".addslashes($f_value)."%'";
+  else if($f_field=='maxvalue' and is_numeric($f_value) )
+    $wheref.=" and  total<=".$f_value."    ";
+  else if($f_field=='minvalue' and is_numeric($f_value) )
+    $wheref.=" and  total>=".$f_value."    ";
+   
+
+
+   
+
+   
+  $sql="select count(*) as total from `Delivery Note Dimension`   $where $wheref ";
+  // print $sql ;
+   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+  if($row=$res->fetchRow()) {
+    $total=$row['total'];
+  }
+  if($where==''){
+    $filtered=0;
+     $total_records=$total;
+  }else{
+    
+      $sql="select count(*) as total from `Delivery Note Dimension`  $where";
+      $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+      if($row=$res->fetchRow()) {
+	$total_records=$row['total'];
+	$filtered=$total_records-$total;
+      }
+      
+  }
+  $rtext=$total_records." ".ngettext('delivery note','delivery notes',$total_records);
+  if($total_records>$number_results)
+    $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+   else
+    $rtext_rpp=sprintf("Showing all delivery notes");
+
+  $filter_msg='';
+
+     switch($f_field){
+     case('public_id'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any order with number")." <b>".$f_value."*</b> ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('delivery notes starting with')." <b>$f_value</b>) <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;
+     case('customer_name'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any order with customer")." <b>".$f_value."*</b> ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('delivery notes with customer')." <b>".$f_value."*</b>) <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;  
+     case('minvalue'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any order minimum value of")." <b>".money($f_value)."</b> ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('delivery notes with min value of')." <b>".money($f_value)."*</b>) <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;  
+   case('maxvalue'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any order maximum value of")." <b>".money($f_value)."</b> ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('delivery notes with max value of')." <b>".money($f_value)."*</b>) <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;  
+ case('max'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any order older than")." <b>".number($f_value)."</b> "._('days');
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('last')." <b>".number($f_value)."</b> "._('days DN').") <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;  
+     }
+
+
+
+   
+   $_order=$order;
+   $_dir=$order_direction;
+
+   
+   if($order=='date')
+     $order='`Delivery Note Date`';
+   else if($order=='id')
+     $order='`Delivery Note File As`';
+   else if($order=='customer')
+     $order='`Delivery Note Customer Name`';
+   else if($order=='type')
+     $order='`Delivery Note Type`';
+   
+  $sql="select *  from `Delivery Note Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+  // print $sql;
+
+   $data=array();
+
+   $res = mysql_query($sql);
+   while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+     $order_id=sprintf('<a href="dn.php?id=%d">%s</a>',$row['Delivery Note Key'],$row['Delivery Note ID']);
+     $customer=sprintf('<a href="customer.php?id=%d">%s</a>',$row['Delivery Note Customer Key'],$row['Delivery Note Customer Name']);
+
+
+     $type=$row['Delivery Note Type'];
+
+     $data[]=array(
+		   'id'=>$order_id
+		   ,'customer'=>$customer
+		   ,'date'=>strftime("%e %b %y", strtotime($row['Delivery Note Date']))
+		   ,'type'=>$type
+		   ,'orders'=>$row['Delivery Note XHTML Orders']
+		   ,'invoices'=>$row['Delivery Note XHTML Invoices']
+		   );
+   }
+
+   $response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$data,
+			 'rtext'=>$rtext,
+			 'rtext_rpp'=>$rtext_rpp,
+			 'sort_key'=>$_order,
+			 'sort_dir'=>$_dir,
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
+			 'total_records'=>$total,
+			 'records_offset'=>$start_from,
+			 'records_returned'=>$start_from+$total,
+			 'records_perpage'=>$number_results,
+			 'records_text'=>$rtext,
+			 'records_order'=>$order,
+			 'records_order_dir'=>$order_dir,
+			 'filtered'=>$filtered
+			 )
+		   );
+   echo json_encode($response);
+   break;
  case('po_supplier'):
     if(!$LU->checkRight(ORDER_VIEW))
     exit;

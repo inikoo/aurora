@@ -70,27 +70,53 @@ $smarty->assign('title', _('Orders'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
-$smarty->assign('table_title',_('Order List'));
-
-
-$tipo_filter=($q==''?$_SESSION['state']['orders']['table']['f_field']:'public_id');
-$smarty->assign('filter0',$tipo_filter);
+$tipo_filter0=($q==''?$_SESSION['state']['orders']['table']['f_field']:'public_id');
+$smarty->assign('filter0',$tipo_filter0);
 $smarty->assign('filter_value0',($q==''?$_SESSION['state']['orders']['table']['f_value']:addslashes($q)));
-
-
-$filter_menu=array(
+$filter_menu0=array(
 		   'public_id'=>array('db_key'=>'public_id','menu_label'=>'Order Number starting with  <i>x</i>','label'=>'Order Number'),
 		   'customer_name'=>array('db_key'=>'customer_name','menu_label'=>'Customer Name starting with <i>x</i>','label'=>'Customer'),
 		   'minvalue'=>array('db_key'=>'minvalue','menu_label'=>'Orders with a minimum value of <i>'.$myconf['currency_symbol'].'n</i>','label'=>'Min Value ('.$myconf['currency_symbol'].')'),
 		   'maxvalue'=>array('db_key'=>'maxvalue','menu_label'=>'Orders with a maximum value of <i>'.$myconf['currency_symbol'].'n</i>','label'=>'Max Value ('.$myconf['currency_symbol'].')'),
 		   'max'=>array('db_key'=>'max','menu_label'=>'Orders from the last <i>n</i> days','label'=>'Last (days)')
 		   );
-$smarty->assign('filter_menu0',$filter_menu);
+$smarty->assign('filter_menu0',$filter_menu0);
+$smarty->assign('filter_name0',$filter_menu0[$tipo_filter0]['label']);
+$paginator_menu0=array(10,25,50,100,500);
+$smarty->assign('paginator_menu0',$paginator_menu0);
 
-$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
+$tipo_filter1=$_SESSION['state']['orders']['invoices']['f_field'];
+$smarty->assign('filter1',$tipo_filter1);
+$smarty->assign('filter_value1',($_SESSION['state']['orders']['table']['f_value']));
+$filter_menu1=array(
+		   'public_id'=>array('db_key'=>'public_id','menu_label'=>'Order Number starting with  <i>x</i>','label'=>'Order Number'),
+		   'customer_name'=>array('db_key'=>'customer_name','menu_label'=>'Customer Name starting with <i>x</i>','label'=>'Customer'),
+		   'minvalue'=>array('db_key'=>'minvalue','menu_label'=>'Orders with a minimum value of <i>'.$myconf['currency_symbol'].'n</i>','label'=>'Min Value ('.$myconf['currency_symbol'].')'),
+		   'maxvalue'=>array('db_key'=>'maxvalue','menu_label'=>'Orders with a maximum value of <i>'.$myconf['currency_symbol'].'n</i>','label'=>'Max Value ('.$myconf['currency_symbol'].')'),
+		   'max'=>array('db_key'=>'max','menu_label'=>'Orders from the last <i>n</i> days','label'=>'Last (days)')
+		   );
+$smarty->assign('filter_menu1',$filter_menu1);
+$smarty->assign('filter_name1',$filter_menu1[$tipo_filter1]['label']);
+$paginator_menu1=array(10,25,50,100,500);
+$smarty->assign('paginator_menu1',$paginator_menu1);
+
+$tipo_filter2=$_SESSION['state']['orders']['invoices']['f_field'];
+$smarty->assign('filter2',$tipo_filter2);
+$smarty->assign('filter_value2',($_SESSION['state']['orders']['table']['f_value']));
+$filter_menu2=array(
+		   'public_id'=>array('db_key'=>'public_id','menu_label'=>'Order Number starting with  <i>x</i>','label'=>'Order Number'),
+		   'customer_name'=>array('db_key'=>'customer_name','menu_label'=>'Customer Name starting with <i>x</i>','label'=>'Customer'),
+		   'minvalue'=>array('db_key'=>'minvalue','menu_label'=>'Orders with a minimum value of <i>'.$myconf['currency_symbol'].'n</i>','label'=>'Min Value ('.$myconf['currency_symbol'].')'),
+		   'maxvalue'=>array('db_key'=>'maxvalue','menu_label'=>'Orders with a maximum value of <i>'.$myconf['currency_symbol'].'n</i>','label'=>'Max Value ('.$myconf['currency_symbol'].')'),
+		   'max'=>array('db_key'=>'max','menu_label'=>'Orders from the last <i>n</i> days','label'=>'Last (days)')
+		   );
+$smarty->assign('filter_menu2',$filter_menu2);
+$smarty->assign('filter_name2',$filter_menu2[$tipo_filter2]['label']);
+$paginator_menu2=array(10,25,50,100,500);
+$smarty->assign('paginator_menu2',$paginator_menu2);
 
 
-$paginator_menu=array(10,25,50,100,500);
-$smarty->assign('paginator_menu0',$paginator_menu);
+
+
 $smarty->display('orders.tpl');
 ?>
