@@ -371,11 +371,11 @@ function sales_in_interval($from,$to,$valid_tax_rates_data=false){
 
  // exit;
  //  print_r($taxable);
-  $sql=sprintf("select sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax , count(*) as invoices,avg(datediff(date_index,date_creation)) as dispatch_days from `Invoice Dimension` where `Invoice Title`='Invoice' and `Invoice For Partner`='No'   %s ",$int[0]);
+  $sql=sprintf("select sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax , count(*) as invoices,avg(`Invoice Dispatching Lag`) as dispatch_days from `Invoice Dimension` where `Invoice Title`='Invoice' and `Invoice For Partner`='No'   %s ",$int[0]);
 
-
-  $res = $db->query($sql);
-  if($row=$res->fetchRow()) {
+  $result=mysql_query($sql);
+  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+ 
     $dispatch_days=$row['dispatch_days'];
     $net=$row['net']+$refund_net;
     $tax=$row['tax']+$refund_tax;
@@ -384,11 +384,11 @@ function sales_in_interval($from,$to,$valid_tax_rates_data=false){
 
 
 
-  $sql=sprintf("select sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax , count(*) as invoices,avg(datediff(date_index,date_creation)) as dispatch_days from orden   where  orden.tipo=2 and partner=0 and del_country_id=%d %s ",$myconf['country_id'],$int[0]);
+  $sql=sprintf("select sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax , count(*) as invoices,avg(`Invoice Dispatching Lag`) as dispatch_days from `Invoice Dimension`   where  `Invoice Title`='Invoice' and `Invoice For Partner`='No' and `Invoice Billing Country 2 Alpha Code`=%s %s ",prepare_mysql($myconf['country_code']),$int[0]);
 
 
-  $res = $db->query($sql);
-  if($row=$res->fetchRow()) {
+    $result=mysql_query($sql);
+  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
     $dispatch_days_home=$row['dispatch_days'];
     $net_home=$row['net']+$refund_net_home;
     $tax_home=$row['tax']+$refund_tax_home;;
@@ -396,11 +396,11 @@ function sales_in_interval($from,$to,$valid_tax_rates_data=false){
   }
 
 
- $sql=sprintf("select sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax , count(*) as invoices,avg(datediff(date_index,date_creation)) as dispatch_days from orden   where  orden.tipo=2 and partner=0 and del_country_id!=%d %s ",$myconf['country_id'],$int[0]);
+  $sql=sprintf("select sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax , count(*) as invoices,avg(`Invoice Dispatching Lag`) as dispatch_days from `Invoice Dimension`   where  `Invoice Title`='Invoice' and `Invoice For Partner`='No'  and `Invoice Billing Country 2 Alpha Code`!=%s   %s ",prepare_mysql($myconf['country_id']),$int[0]);
 
-
-  $res = $db->query($sql);
-  if($row=$res->fetchRow()) {
+  $result=mysql_query($sql);
+  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+ 
     $dispatch_days_nohome=$row['dispatch_days'];
     $net_nohome=$row['net']+$refund_net_nohome;
     $tax_nohome=$row['tax']+$refund_tax_nohome;;
@@ -410,50 +410,52 @@ function sales_in_interval($from,$to,$valid_tax_rates_data=false){
   //  print "$net $net_home $net_nohome ".($net-$net_home-$net_nohome)."\n";
   //print "$invoices $invoices_home $invoices_nohome ".($invoices-$invoices_home-$invoices_nohome)."\n";
   //exit;
-  $countries='(';
-  foreach($myconf['extended_home_id'] as $county_id){
-    $countries.='del_country_id='.$county_id.' or ';
+  $countries='and `Invoice Billing Country 2 Alpha Code` in (';
+  foreach($myconf['extended_home_2acode'] as $county_id){
+    $countries.="'".$county_id."',";
   }
-  $countries=preg_replace('/or $/',')',$countries);
- $sql=sprintf("select sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax , count(*) as invoices from orden     where  orden.tipo=2 and partner=0 and %s %s ",$countries,$int[0]);
-  $res = $db->query($sql);
-  if($row=$res->fetchRow()) {
+  $countries=preg_replace('/\,$/',')',$countries);
+ $sql=sprintf("select sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax , count(*) as invoices from `Invoice Dimension`     where `Invoice For Partner`='No' and `Invoice Title`='Invoice'   %s %s ",$countries,$int[0]);
+ 
+  $result=mysql_query($sql);
+  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+
     $net_extended_home=$row['net']+$refund_net_extended_home;
     $tax_extended_home=$row['tax']+$refund_tax_extended_home;
     $invoices_extended_home=$row['invoices'];
   }
-  $countries='(';
-  foreach($myconf['region_id'] as $county_id){
-    $countries.='del_country_id='.$county_id.' or ';
+  $countries='and `Invoice Billing Country 2 Alpha Code` in (';
+  foreach($myconf['region_2acode'] as $county_id){
+    $countries.="'".$county_id."',";
   }
-  $countries=preg_replace('/or $/',')',$countries);
- $sql=sprintf("select sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax , count(*) as invoices from orden     where  orden.tipo=2 and partner=0 and %s %s ",$countries,$int[0]);
-  $res = $db->query($sql);
-  if($row=$res->fetchRow()) {
+  $countries=preg_replace('/\,$/',')',$countries);
+ $sql=sprintf("select sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax , count(*) as invoices from `Invoice Dimension` where  `Invoice For Partner`='No' and `Invoice Title`='Invoice'  %s %s ",$countries,$int[0]);
+    $result=mysql_query($sql);
+  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
     $net_region=$row['net']+$refund_net_region;
     $tax_region=$row['tax']+$refund_tax_region;
     $invoices_region=$row['invoices'];
   }
- $countries='(';
-  foreach($myconf['continent_id'] as $county_id){
-    $countries.='del_country_id='.$county_id.' or ';
+ $countries='and `Invoice Billing Country 2 Alpha Code` in(';
+  foreach($myconf['continent_2acode'] as $county_id){
+    $countries.="'".$county_id."',";
   }
-  $countries=preg_replace('/or $/',')',$countries);
- $sql=sprintf("select sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax , count(*) as invoices from orden     where  orden.tipo=2 and partner=0 and %s %s ",$countries,$int[0]);
-  $res = $db->query($sql);
-  if($row=$res->fetchRow()) {
+  $countries=preg_replace('/\,$/',')',$countries);
+ $sql=sprintf("select sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax , count(*) as invoices from  `Invoice Dimension` where  `Invoice For Partner`='No' and `Invoice Title`='Invoice' %s %s ",$countries,$int[0]);
+  $result=mysql_query($sql);
+  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
     $net_region2=$row['net']+$refund_net_region;
     $tax_region2=$row['tax']+$refund_tax_region;
     $invoices_region2=$row['invoices'];
   }
-$countries='(';
-  foreach($myconf['org_id'] as $county_id){
-    $countries.='del_country_id='.$county_id.' or ';
+$countries='and `Invoice Billing Country 2 Alpha Code` in (';
+  foreach($myconf['org_2acode'] as $county_id){
+    $countries.="'".$county_id."',";
   }
-  $countries=preg_replace('/or $/',')',$countries);
- $sql=sprintf("select sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax , count(*) as invoices from orden     where  orden.tipo=2  and %s %s ",$countries,$int[0]);
-  $res = $db->query($sql);
-  if($row=$res->fetchRow()) {
+  $countries=preg_replace('/\,$/',')',$countries);
+ $sql=sprintf("select sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax , count(*) as invoices from `Invoice Dimension` where  `Invoice For Partner`='No' and `Invoice Title`='Invoice'     %s %s ",$countries,$int[0]);
+    $result=mysql_query($sql);
+  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
     $net_org=$row['net']+$refund_net_org;
     $tax_org=$row['tax']+$refund_tax_org;
     $invoices_org=$row['invoices'];
@@ -480,13 +482,13 @@ $countries='(';
   $invoices_org_nohome=$invoices_org-$invoices_home;
 
 
-  $sql=sprintf("select sum(net) as net , count(*) as orders from orden where  tipo=1 %s ",$int[0]);
- //  print "$sql";
-    $res = $db->query($sql);
-   if($row=$res->fetchRow()) {
-     $net_tobedone=$row['net'];
-     $tobedone=$row['orders'];
-   }
+ /*  $sql=sprintf("select sum(net) as net , count(*) as orders from orden where  tipo=1 %s ",$int[0]); */
+/*  //  print "$sql"; */
+/*       $result=mysql_query($sql); */
+/*   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){ */
+/*      $net_tobedone=$row['net']; */
+/*      $tobedone=$row['orders']; */
+/*    } */
 
 
 
@@ -494,28 +496,30 @@ $countries='(';
 
    // export destinations
    $num_countries=0;
-   $sql=sprintf("select count(*) as num from orden left join list_country as country on (del_country_id=country.id) where del_country_id!=30 and partner=0  %s group by del_country_id ",$int[0]);
-   $res = $db->query($sql);
-   while($row=$res->fetchRow()) {
+   $sql=sprintf("select count(*) as num from `Invoice Dimension` where  `Invoice For Partner`='No' and `Invoice Title`='Invoice' %s  group by `Invoice Billing Country 2 Alpha Code`   ",$int[0]);
+
+   $result=mysql_query($sql);
+  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+
      $num_countries=$row['num'];
    }
 
    $top3=array();
-   $sql=sprintf("select country.name, sum(`Invoice Total Net Amount`) as net ,sum(`Invoice Total Tax Amount`) as tax from orden left join list_country as country on (del_country_id=country.id) where del_country_id!=30 and partner=0  %s group by del_country_id order by net desc limit 3",$int[0]);
-   //   print "$sql";
-   $res = $db->query($sql);
-   while($row=$res->fetchRow()) {
+   $sql=sprintf("select `Country Name`  as name, sum(`Invoice Total Net Amount`) as net ,sum(`Invoice Total Tax Amount`) as tax   from `Invoice Dimension` left join `Country Dimension` on (`Invoice Billing Country 2 Alpha Code`=`Country 2 Alpha Code`) where  `Invoice Billing Country 2 Alpha Code`!=%s  and `Invoice For Partner`='No' and `Invoice Title`='Invoice' %s group by `Invoice Billing Country 2 Alpha Code`  order by net     desc limit 3",prepare_mysql($myconf['country_code']),$int[0]);
+
+     $result=mysql_query($sql);
+  while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      $top3[]=array('country'=>$row['name'],'net'=>$row['net'],'tax'=>$row['tax']);
    }
    $countries=array();
-   $sql=sprintf("select country.id,country.code2,country.name, sum(`Invoice Total Net Amount`) as net ,sum(`Invoice Total Tax Amount`) as tax,count(*) as orders from orden left join list_country as country on (del_country_id=country.id) where del_country_id!=30 and partner=0  and tipo=2 %s group by del_country_id order by net desc ",$int[0]);
+   $sql=sprintf("select `Country Key` as id,`Invoice Billing Country 2 Alpha Code` as  code2,`Country Name` as name, sum(`Invoice Total Net Amount`) as net ,sum(`Invoice Total Tax Amount`) as tax,count(*) as orders from `Invoice Dimension` left join `Country Dimension` on (`Invoice Billing Country 2 Alpha Code`=`Country 2 Alpha Code`) where  `Invoice Billing Country 2 Alpha Code`!=%s  and `Invoice For Partner`='No' and `Invoice Title`='Invoice' %s group by `Invoice Billing Country 2 Alpha Code`  order by net desc ",prepare_mysql($myconf['country_code']),$int[0]);
    //print $sql;
-   $res = $db->query($sql);
-   while($row=$res->fetchRow()) {
+     $result=mysql_query($sql);
+  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
      // todo change to a info inside list_cumties
      
-     if( in_array($row['id'],$myconf['org_id']))
+     if( in_array($row['code2'],$myconf['org_2acode']))
        $eu=1;
      else
        $eu=0;
@@ -538,44 +542,46 @@ $countries='(';
  $orders_donations_net=0;
  $orders_others=0;
  $orders_others_net=0;
-$sql=sprintf("select count(*) as num ,sum(net) as net  from orden where true %s ",$int[0]);
- $res = $db->query($sql);
- if($row=$res->fetchRow()){
+
+ $_int=preg_replace('/Invoice Date/','Order Date',$int[0]); 
+$sql=sprintf("select count(*) as num ,sum(`Order Total Net Amount`) as net  from `Order Dimension` where true %s ",$_int);
+   $result=mysql_query($sql);
+  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
     $orders_total_net=$row['net'];
      $orders_total=$row['num'];
  }
- $_int=preg_replace('/date_index/','date_creation',$int[0]);
- $sql=sprintf("select tipo,count(*) as num ,sum(net) as net  from orden where true %s group by tipo ",$_int);
- $res = $db->query($sql);
- while($row=$res->fetchRow()) {
-   $tipo=$row['tipo'];
-   switch($tipo){
-   case 1:
-     $orders_todo_net=$row['net'];
-     $orders_todo=$row['num'];
-     break;
-   case 2:
-     $orders_invoices_net=$row['net'];
-     $orders_invoices=$row['num'];
-     break;
-   case 3:
-     $orders_cancelled_net=$row['net'];
-     $orders_cancelled=$row['num'];
-     break;
-   case 6:
-   case 7:
-     $orders_follows_net+=$row['net'];
-     $orders_follows+=$row['num'];
-     break;
-  case 5:
-     $orders_donations_net=$row['net'];
-     $orders_donations=$row['num'];
-     break;
-   default:
-     $orders_others_net=$row['net'];
-     $orders_others=$row['num'];
-   }
- }
+/*  $_int=preg_replace('/Invoice Date/','Order Date',$int[0]); */
+/*  $sql=sprintf("select tipo,count(*) as num ,sum(net) as net  from orden where true %s group by tipo ",$_int); */
+/*    $result=mysql_query($sql); */
+/*   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){ */
+/*    $tipo=$row['tipo']; */
+/*    switch($tipo){ */
+/*    case 1: */
+/*      $orders_todo_net=$row['net']; */
+/*      $orders_todo=$row['num']; */
+/*      break; */
+/*    case 2: */
+/*      $orders_invoices_net=$row['net']; */
+/*      $orders_invoices=$row['num']; */
+/*      break; */
+/*    case 3: */
+/*      $orders_cancelled_net=$row['net']; */
+/*      $orders_cancelled=$row['num']; */
+/*      break; */
+/*    case 6: */
+/*    case 7: */
+/*      $orders_follows_net+=$row['net']; */
+/*      $orders_follows+=$row['num']; */
+/*      break; */
+/*   case 5: */
+/*      $orders_donations_net=$row['net']; */
+/*      $orders_donations=$row['num']; */
+/*      break; */
+/*    default: */
+/*      $orders_others_net=$row['net']; */
+/*      $orders_others=$row['num']; */
+/*    } */
+/*  } */
 
 
  $balance['total']['net']=0;
@@ -699,147 +705,147 @@ $balance['samples']['products']=0;
     $balance['refund_error']['orders']=0;
 
 
- $_int=preg_replace('/date_index/','date_done',$int[0]);
- $sql=sprintf("select count(*) as orders,sum(value_net) as net, sum(value_net*ifnull(rate,0)) as tax  from debit left join tax_code on (debit.tax_code=tax_code.code)    where tipo=4 and order_affected_id is not null %s  ",$_int);
- // print $sql;
-$res = $db->query($sql);
- if($row=$res->fetchRow()) {
-    $balance['refund']['credit_net']=$row['net'];
-    $balance['refund']['credit_tax']=$row['tax'];
-        $balance['refund']['total']=$row['tax']+$row['net'];
+ /* $_int=preg_replace('/date_index/','date_done',$int[0]); */
+/*  $sql=sprintf("select count(*) as orders,sum(value_net) as net, sum(value_net*ifnull(rate,0)) as tax  from debit left join tax_code on (debit.tax_code=tax_code.code)    where tipo=4 and order_affected_id is not null %s  ",$_int); */
+/*  // print $sql; */
+/*   $result=mysql_query($sql); */
+/*   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){ */
+/*     $balance['refund']['credit_net']=$row['net']; */
+/*     $balance['refund']['credit_tax']=$row['tax']; */
+/*         $balance['refund']['total']=$row['tax']+$row['net']; */
 
-    $balance['refund']['orders']=$row['orders'];
- }
+/*     $balance['refund']['orders']=$row['orders']; */
+/*  } */
 
-$sql=sprintf("select count(*) as orders,sum(value_net) as net, sum(value_net*ifnull(rate,0)) as tax  from debit left join tax_code on (debit.tax_code=tax_code.code)    where tipo=4 and order_affected_id is null %s  ",$_int);
- //  print $sql;
-$res = $db->query($sql);
- if($row=$res->fetchRow()) {
-    $balance['refund_error']['credit_net']=$row['net'];
-    $balance['refund_error']['credit_tax']=$row['tax'];
-    $balance['refund_error']['total']=$row['tax']+$row['net'];
+/* $sql=sprintf("select count(*) as orders,sum(value_net) as net, sum(value_net*ifnull(rate,0)) as tax  from debit left join tax_code on (debit.tax_code=tax_code.code)    where tipo=4 and order_affected_id is null %s  ",$_int); */
+/*  //  print $sql; */
+/* $res = $db->query($sql); */
+/*  if($row=$res->fetchRow()) { */
+/*     $balance['refund_error']['credit_net']=$row['net']; */
+/*     $balance['refund_error']['credit_tax']=$row['tax']; */
+/*     $balance['refund_error']['total']=$row['tax']+$row['net']; */
 
-    $balance['refund_error']['orders']=$row['orders'];
- }
-
-
- $sql=sprintf("select orden.tipo,total,net,tax ,(select sum(value_net) from debit where  tipo=2 and order_affected_id=orden.id )as credit_net,(select sum(value_net*ifnull(rate,0)) from debit left join tax_code on (debit.tax_code=tax_code.code) where  tipo=2 and order_affected_id=orden.id )as credit_tax ,(select sum(charge) from transaction where order_id=orden.id )as products,(select sum(value) from charge where order_id=orden.id) as charges,(select sum(value) from shipping where order_id=orden.id ) as shipping from orden where true %s  ",$int[0]);
- //  print $sql;
-$res = $db->query($sql);
- while($row=$res->fetchRow()) {
-   $tipo=$row['tipo'];
-   switch($tipo){
-   case 2:
-     if($row['total']>0){
-       $balance['invoices']['net']+=$row['net']-$row['credit_net'];
-       $balance['invoices']['net_charged']+=$row['net'];
-       $balance['invoices']['tax_charged']+=$row['tax'];
-
-       $balance['invoices']['tax']+=($row['tax']-$row['credit_tax']);
-       $balance['invoices']['shipping']+=$row['shipping'];
-       $balance['invoices']['charges']+=$row['charges'];
-
-       $balance['invoices']['orders']+=1;
-       $balance['invoices']['total']+=$row['total'];
-       $balance['invoices']['products']+=$row['products'];
-
-       $balance['invoices']['credit_net']+=$row['credit_net'];
-       $balance['invoices']['credit_tax']+=$row['credit_tax'];
+/*     $balance['refund_error']['orders']=$row['orders']; */
+/*  } */
 
 
-     }elseif($row['total']==0){
-       $balance['invoices_zero']['net']+=$row['net']-$row['credit_net'];
-       $balance['invoices_zero']['net_charged']+=$row['net'];
-       $balance['invoices_zero']['tax_charged']+=$row['tax'];
+/*  $sql=sprintf("select orden.tipo,total,net,tax ,(select sum(value_net) from debit where  tipo=2 and order_affected_id=orden.id )as credit_net,(select sum(value_net*ifnull(rate,0)) from debit left join tax_code on (debit.tax_code=tax_code.code) where  tipo=2 and order_affected_id=orden.id )as credit_tax ,(select sum(charge) from transaction where order_id=orden.id )as products,(select sum(value) from charge where order_id=orden.id) as charges,(select sum(value) from shipping where order_id=orden.id ) as shipping from orden where true %s  ",$int[0]); */
+/*  //  print $sql; */
+/* $res = $db->query($sql); */
+/*  while($row=$res->fetchRow()) { */
+/*    $tipo=$row['tipo']; */
+/*    switch($tipo){ */
+/*    case 2: */
+/*      if($row['total']>0){ */
+/*        $balance['invoices']['net']+=$row['net']-$row['credit_net']; */
+/*        $balance['invoices']['net_charged']+=$row['net']; */
+/*        $balance['invoices']['tax_charged']+=$row['tax']; */
 
-       $balance['invoices_zero']['tax']+=($row['tax']-$row['credit_tax']);
-       $balance['invoices_zero']['shipping']+=$row['shipping'];
-       $balance['invoices_zero']['charges']+=$row['charges'];
+/*        $balance['invoices']['tax']+=($row['tax']-$row['credit_tax']); */
+/*        $balance['invoices']['shipping']+=$row['shipping']; */
+/*        $balance['invoices']['charges']+=$row['charges']; */
 
-       $balance['invoices_zero']['orders']+=1;
-       $balance['invoices_zero']['total']+=$row['total'];
-       $balance['invoices_zero']['products']+=$row['products'];
+/*        $balance['invoices']['orders']+=1; */
+/*        $balance['invoices']['total']+=$row['total']; */
+/*        $balance['invoices']['products']+=$row['products']; */
 
-       $balance['invoices_zero']['credit_net']+=$row['credit_net'];
-       $balance['invoices_zero']['credit_tax']+=$row['credit_tax'];
+/*        $balance['invoices']['credit_net']+=$row['credit_net']; */
+/*        $balance['invoices']['credit_tax']+=$row['credit_tax']; */
 
 
-     }else{
-       $balance['invoices_negative']['net']+=$row['net']-$row['credit_net'];
-       $balance['invoices_negative']['net_charged']+=$row['net'];
-       $balance['invoices_negative']['tax_charged']+=$row['tax'];
+/*      }elseif($row['total']==0){ */
+/*        $balance['invoices_zero']['net']+=$row['net']-$row['credit_net']; */
+/*        $balance['invoices_zero']['net_charged']+=$row['net']; */
+/*        $balance['invoices_zero']['tax_charged']+=$row['tax']; */
 
-       $balance['invoices_negative']['tax']+=($row['tax']-$row['credit_tax']);
-       $balance['invoices_negative']['shipping']+=$row['shipping'];
-       $balance['invoices_negative']['charges']+=$row['charges'];
+/*        $balance['invoices_zero']['tax']+=($row['tax']-$row['credit_tax']); */
+/*        $balance['invoices_zero']['shipping']+=$row['shipping']; */
+/*        $balance['invoices_zero']['charges']+=$row['charges']; */
 
-       $balance['invoices_negative']['orders']+=1;
-       $balance['invoices_negative']['total']+=$row['total'];
-       $balance['invoices_negative']['products']+=$row['products'];
+/*        $balance['invoices_zero']['orders']+=1; */
+/*        $balance['invoices_zero']['total']+=$row['total']; */
+/*        $balance['invoices_zero']['products']+=$row['products']; */
 
-       $balance['invoices_negative']['credit_net']+=$row['credit_net'];
-       $balance['invoices_negative']['credit_tax']+=$row['credit_tax'];
+/*        $balance['invoices_zero']['credit_net']+=$row['credit_net']; */
+/*        $balance['invoices_zero']['credit_tax']+=$row['credit_tax']; */
 
-     }
 
-     break;
-   case(6):
+/*      }else{ */
+/*        $balance['invoices_negative']['net']+=$row['net']-$row['credit_net']; */
+/*        $balance['invoices_negative']['net_charged']+=$row['net']; */
+/*        $balance['invoices_negative']['tax_charged']+=$row['tax']; */
+
+/*        $balance['invoices_negative']['tax']+=($row['tax']-$row['credit_tax']); */
+/*        $balance['invoices_negative']['shipping']+=$row['shipping']; */
+/*        $balance['invoices_negative']['charges']+=$row['charges']; */
+
+/*        $balance['invoices_negative']['orders']+=1; */
+/*        $balance['invoices_negative']['total']+=$row['total']; */
+/*        $balance['invoices_negative']['products']+=$row['products']; */
+
+/*        $balance['invoices_negative']['credit_net']+=$row['credit_net']; */
+/*        $balance['invoices_negative']['credit_tax']+=$row['credit_tax']; */
+
+/*      } */
+
+/*      break; */
+/*    case(6): */
      
-     $balance['replacements']['net']+=$row['net']-$row['credit_net'];
-      $balance['replacements']['net_charged']+=$row['net'];
-      $balance['replacements']['tax_charged']+=$row['tax'];
-      $balance['replacements']['shipping']+=$row['shipping'];
-      $balance['replacements']['charges']+=$row['charges'];
-      $balance['replacements']['orders']+=1;
-      $balance['replacements']['total']+=$row['total'];
-      $balance['replacements']['products']+=$row['products'];
-      break;
-  case(7):
-    $balance['shortage']['net']+=$row['net']-$row['credit_net'];
-    $balance['shortage']['net_charged']+=$row['net'];
-    $balance['shortage']['tax_charged']+=$row['tax'];
-    $balance['shortage']['shipping']+=$row['shipping'];
-      $balance['shortage']['charges']+=$row['charges'];
-      $balance['shortage']['orders']+=1;
-      $balance['shortage']['total']+=$row['total'];
-      $balance['shortage']['products']+=$row['products'];
-      break;
- case(8):
+/*      $balance['replacements']['net']+=$row['net']-$row['credit_net']; */
+/*       $balance['replacements']['net_charged']+=$row['net']; */
+/*       $balance['replacements']['tax_charged']+=$row['tax']; */
+/*       $balance['replacements']['shipping']+=$row['shipping']; */
+/*       $balance['replacements']['charges']+=$row['charges']; */
+/*       $balance['replacements']['orders']+=1; */
+/*       $balance['replacements']['total']+=$row['total']; */
+/*       $balance['replacements']['products']+=$row['products']; */
+/*       break; */
+/*   case(7): */
+/*     $balance['shortage']['net']+=$row['net']-$row['credit_net']; */
+/*     $balance['shortage']['net_charged']+=$row['net']; */
+/*     $balance['shortage']['tax_charged']+=$row['tax']; */
+/*     $balance['shortage']['shipping']+=$row['shipping']; */
+/*       $balance['shortage']['charges']+=$row['charges']; */
+/*       $balance['shortage']['orders']+=1; */
+/*       $balance['shortage']['total']+=$row['total']; */
+/*       $balance['shortage']['products']+=$row['products']; */
+/*       break; */
+/*  case(8): */
        
-    $balance['followup']['net']+=$row['net']-$row['credit_net'];
+/*     $balance['followup']['net']+=$row['net']-$row['credit_net']; */
 
-   $balance['followup']['net_charged']+=$row['net'];
-      $balance['followup']['tax_charged']+=$row['tax'];
-      $balance['followup']['shipping']+=$row['shipping'];
-      $balance['followup']['charges']+=$row['charges'];
-      $balance['followup']['orders']+=1;
-      $balance['followup']['total']+=$row['total'];
-      $balance['followup']['products']+=$row['products'];
-      break;
- case(5):
-       $balance['donation']['net']+=$row['net']-$row['credit_net'];
+/*    $balance['followup']['net_charged']+=$row['net']; */
+/*       $balance['followup']['tax_charged']+=$row['tax']; */
+/*       $balance['followup']['shipping']+=$row['shipping']; */
+/*       $balance['followup']['charges']+=$row['charges']; */
+/*       $balance['followup']['orders']+=1; */
+/*       $balance['followup']['total']+=$row['total']; */
+/*       $balance['followup']['products']+=$row['products']; */
+/*       break; */
+/*  case(5): */
+/*        $balance['donation']['net']+=$row['net']-$row['credit_net']; */
 
-      $balance['donation']['net_charged']+=$row['net'];
-      $balance['donation']['tax_charged']+=$row['tax'];
-      $balance['donation']['shipping']+=$row['shipping'];
-      $balance['donation']['charges']+=$row['charges'];
-      $balance['donation']['orders']+=1;
-      $balance['donation']['total']+=$row['total'];
-      $balance['donation']['products']+=$row['products'];
-      break;
- case(4):
-          $balance['samples']['net']+=$row['net']-$row['credit_net'];
+/*       $balance['donation']['net_charged']+=$row['net']; */
+/*       $balance['donation']['tax_charged']+=$row['tax']; */
+/*       $balance['donation']['shipping']+=$row['shipping']; */
+/*       $balance['donation']['charges']+=$row['charges']; */
+/*       $balance['donation']['orders']+=1; */
+/*       $balance['donation']['total']+=$row['total']; */
+/*       $balance['donation']['products']+=$row['products']; */
+/*       break; */
+/*  case(4): */
+/*           $balance['samples']['net']+=$row['net']-$row['credit_net']; */
 
-      $balance['samples']['net_charged']+=$row['net'];
-      $balance['samples']['tax_charged']+=$row['tax'];
-      $balance['samples']['shipping']+=$row['shipping'];
-      $balance['samples']['charges']+=$row['charges'];
-      $balance['samples']['orders']+=1;
-      $balance['samples']['total']+=$row['total'];
-      $balance['samples']['products']+=$row['products'];
-      break;
-   }
- }
+/*       $balance['samples']['net_charged']+=$row['net']; */
+/*       $balance['samples']['tax_charged']+=$row['tax']; */
+/*       $balance['samples']['shipping']+=$row['shipping']; */
+/*       $balance['samples']['charges']+=$row['charges']; */
+/*       $balance['samples']['orders']+=1; */
+/*       $balance['samples']['total']+=$row['total']; */
+/*       $balance['samples']['products']+=$row['products']; */
+/*       break; */
+/*    } */
+/*  } */
  $tags=array('orders','total','credit_net','credit_tax');
  foreach($tags as $key){
    $balance['total'][$key]= 

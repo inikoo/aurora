@@ -163,6 +163,9 @@ $day_interval=get_time_interval(strtotime($from),(strtotime($to)))+1;
 
      $interval_data_last_year=sales_in_interval($_from,$_to,$valid_rates);
 
+     print_r()
+
+
      $invoices=$interval_data['invoices']['total_invoices'];
      $invoices_ly=$interval_data_last_year['invoices']['total_invoices'];
      $net=$interval_data['sales']['total_net'];
