@@ -78,7 +78,7 @@ class Order {
 /* 				  $customer_id=$customer->id; */
 /* 				} */
 				
-
+				print_r($data['Customer Data'] );
 				$customer = new Customer ( 'find create', $data['Customer Data'] ); 
 				$this->ship_to_addresses=array();
 				foreach($data['Shipping Addresses'] as $shipping_address_data){
@@ -95,6 +95,9 @@ class Order {
 				
 				$this->billing_address=new Address($customer->data['Customer Main Address Key']);
 				
+
+
+
 				if(!$customer->id or $customer->data[ 'Customer Name' ]==''){
 				  print "caca";
 				  print_r($data['Customer Data'] );
@@ -633,22 +636,35 @@ class Order {
 	}
 	
 	function create_invoice_simple($invoice_data, $transacions_data) {
-		$this->data ['Invoice Date'] = $invoice_data ['Invoice Date'];
-		$this->data ['Invoice Public ID'] = $invoice_data ['Invoice Public ID'];
-		$this->data ['Invoice File As'] = $invoice_data ['Invoice File As'];
-		$this->data ['Invoice Store Key'] = $this->data ['Order Store Key'];
-		$this->data ['Invoice Store Code'] = $this->data ['Order Store Code'];
-		$this->data ['Invoice XHTML Store'] = $this->data ['Order XHTML Store'];
-		$this->data ['Invoice Main Source Type'] = $this->data ['Order Main Source Type'];
-		$this->data ['Invoice Customer Key'] = $this->data ['Order Customer Key'];
-		$this->data ['Invoice Customer Name'] = $this->data ['Order Customer Name'];
+	  global $myconf;
+	  
+	  $this->data ['Invoice Items Gross Amount'] =0;
+ $this->data ['Invoice Items Discount Amount'] =0;
+
+	  $this->data ['Invoice Date'] = $invoice_data ['Invoice Date'];
+	  $this->data ['Invoice Public ID'] = $invoice_data ['Invoice Public ID'];
+	  $this->data ['Invoice File As'] = $invoice_data ['Invoice File As'];
+	  $this->data ['Invoice Store Key'] = $this->data ['Order Store Key'];
+	  $this->data ['Invoice Store Code'] = $this->data ['Order Store Code'];
+	  $this->data ['Invoice XHTML Store'] = $this->data ['Order XHTML Store'];
+	  $this->data ['Invoice Main Source Type'] = $this->data ['Order Main Source Type'];
+	  $this->data ['Invoice Customer Key'] = $this->data ['Order Customer Key'];
+	  $this->data ['Invoice Customer Name'] = $this->data ['Order Customer Name'];
 		//TODO
 		$this->data ['Invoice XHTML Address'] = '';
 		$this->data ['Invoice XHTML Ship Tos'] = '';
-		$this->data ['Invoice Shipping Net Amount'] = $invoice_data ['Invoice Gross Shipping Amount'];
-		$this->data ['Invoice Charges Net Amount'] = $invoice_data ['Invoice Gross Charges Amount'];
-		$this->data ['Invoice Shipping Tax Amount'] = $invoice_data ['Invoice Gross Shipping Amount'] * $invoice_data ['tax_rate'];
-		$this->data ['Invoice Charges Tax Amount'] = $invoice_data ['Invoice Gross Charges Amount'] * $invoice_data ['tax_rate'];
+		$this->data ['Invoice Shipping Net Amount'] = $invoice_data ['Invoice Shipping Net Amount'];
+		$this->data ['Invoice Charges Net Amount'] = $invoice_data ['Invoice Charges Net Amount'];
+
+
+		if(isset($myconf['tax_rates'][$invoice_data ['Invoice Tax Code']]))
+		  $tax_rate=$myconf['tax_rates'][$invoice_data ['Invoice Tax Code']];
+		else
+		  $tax_rate= $invoice_data ['tax_rate'];
+
+		$this->data ['Invoice Shipping Tax Amount'] = $invoice_data ['Invoice Shipping Net Amount'] * (1+$tax_rate);
+		$this->data ['Invoice Charges Tax Amount'] = $invoice_data ['Invoice Charges Net Amount'] * (1+$tax_rate);
+	
 		
 		$this->data ['Invoice Metadata'] = $this->data ['Order Original Metadata'];
 		$this->data ['Invoice Has Been Paid In Full'] = $invoice_data ['Invoice Has Been Paid In Full'];
@@ -658,8 +674,10 @@ class Order {
 		
 		$this->data ['Invoice Total Tax Refund Amount'] = $invoice_data ['Invoice Total Tax Refund Amount'];
 		$this->data ['Invoice Total Amount'] = $invoice_data ['Invoice Total Amount'];
-		$this->data ['Invoice Items Net Amount'] = $invoice_data ['Invoice Net Amount'];
-		
+		$this->data ['Invoice Items Net Amount'] = $invoice_data ['Invoice Items Net Amount'];
+		$this->data ['Invoice Dispatching Lag'] = $invoice_data ['Invoice Dispatching Lag'];
+		$this->data ['Invoice Tax Code'] = $invoice_data['Invoice Tax Code'];
+		$this->data ['Invoice Taxable'] = $invoice_data['Invoice Taxable'];
 		$this->data ['Invoice XHTML Processed By'] = $invoice_data ['Invoice XHTML Processed By'];
 		$this->data ['Invoice XHTML Charged By'] = $invoice_data ['Invoice XHTML Charged By'];
 		$this->data ['Invoice Processed By Key'] = $invoice_data ['Invoice Processed By Key'];
@@ -677,6 +695,7 @@ class Order {
 		  break;
 		}
 				
+		
 		
 
 		$this->data ['Invoice XHTML Orders'] = sprintf ( '%s <a href="order.php?id=%d">%s</a>', _ ( 'Order' ), $this->id, $this->data ['Order Public ID'] );
@@ -726,7 +745,7 @@ class Order {
 		$this->data ['Invoice Discount Amount'] = $discounts;
 		$net = $amount - $discounts;
 		$this->data ['Invoice Adjust Amount'] = $this->data ['Invoice Items Net Amount'] - $net;
-		$this->data ['Invoice Total Net Amount'] = $this->data ['Invoice Gross Amount'] - $this->data ['Invoice Discount Amount'] + $this->data ['Invoice Adjust Amount'];
+		$this->data ['Invoice Total Net Amount'] = $this->data ['Invoice Gross Amount'] - $this->data ['Invoice Discount Amount'] + $this->data ['Invoice Adjust Amount']+$this->data ['Invoice Charges Net Amount']+$this->data ['Invoice Shipping Net Amount'];
 		$this->data ['Invoice Items Tax Amount'] = $this->data ['Invoice Total Net Amount'] * $invoice_data ['tax_rate'];
 		$this->distribute_costs ();
 		
@@ -794,13 +813,24 @@ class Order {
 		$this->data ['Invoice Main Source Type'] = $this->data ['Order Main Source Type'];
 		$this->data ['Invoice Customer Key'] = $this->data ['Order Customer Key'];
 		$this->data ['Invoice Customer Name'] = $this->data ['Order Customer Name'];
+		$this->data ['Invoice Dispatching Lag'] = $this->data ['Invoice Dispatching Lag'];
+		$this->data ['Invouce Tax Code'] = $this->data ['Invouce Tax Code'];
+		$this->data ['Invoice Taxable'] = $this->data ['Invoice Taxable'];
+		$this->data ['Invoice Items Gross Amount'] = 0;
+		$this->data ['Invoice Items Discount Amount'] = 0;
 		//TODO
 		$this->data ['Invoice XHTML Address'] = 0;
 		$this->data ['Invoice XHTML Ship Tos'] = '';
-		$this->data ['Invoice Shipping Net Amount'] = $invoice_data ['Invoice Gross Shipping Amount'];
-		$this->data ['Invoice Charges Net Amount'] = $invoice_data ['Invoice Gross Charges Amount'];
-		$this->data ['Invoice Shipping Tax Amount'] = $invoice_data ['Invoice Gross Shipping Amount'] * $invoice_data ['tax_rate'];
-		$this->data ['Invoice Charges Tax Amount'] = $invoice_data ['Invoice Gross Charges Amount'] * $invoice_data ['tax_rate'];
+		$this->data ['Invoice Shipping Net Amount'] = $invoice_data ['Invoice Shipping Net Amount'];
+		$this->data ['Invoice Charges Net Amount'] = $invoice_data ['Invoice Net Charges Amount'];
+
+		if(isset($myconf['tax_rates'][$invoice_data ['Invoice Tax Code']]))
+		  $tax_rate=$myconf['tax_rates'][$invoice_data ['Invoice Tax Code']];
+		else
+		  $tax_rate= $invoice_data ['tax_rate'];
+
+		$this->data ['Invoice Shipping Tax Amount'] = $invoice_data ['Invoice Net Shipping Amount'] * (1+$tax_rate);
+		$this->data ['Invoice Charges Tax Amount'] = $invoice_data ['Invoice Net Charges Amount'] * (1+$tax_rate);
 		
 		$this->data ['Invoice Metadata'] = $this->data ['Order Original Metadata'];
 		$this->data ['Invoice Has Been Paid In Full'] = $invoice_data ['Invoice Has Been Paid In Full'];
@@ -856,7 +886,15 @@ class Order {
 				$order_date = prepare_mysql ( $this->data ['Order Date'] );
 			else
 				$order_date = 'NULL';
-			$sql = sprintf ( "insert into `Order No Product Transaction Fact` values  (%s,%s,%s,%s,'Refund',%s,%.2f,%.2f,%s)", $order_date, prepare_mysql ( $this->data ['Invoice Date'] ), prepare_mysql ( $this->id ), prepare_mysql ( $this->data ['Invoice Key'] ), prepare_mysql ( $data ['Description'] ), $data ['Transaction Net Amount'], $data ['Transaction Tax Amount'], prepare_mysql ( $this->data ['Invoice Metadata'] ) );
+			$sql = sprintf ( "insert into `Order No Product Transaction Fact` values  (%s,%s,%s,%s,'Refund',%s,%.2f,%.2f,%s)"
+					 , $order_date
+					 , prepare_mysql ( $this->data ['Invoice Date'] )
+					 , prepare_mysql ( $this->id )
+					 , prepare_mysql ( $this->data ['Invoice Key'] )
+					 , prepare_mysql ( $data ['Description'] )
+					 , $data ['Transaction Net Amount']
+					 , $data ['Transaction Tax Amount']
+					 , prepare_mysql ( $this->data ['Invoice Metadata'] ) );
 			
 			// print $sql;
 			
@@ -875,13 +913,23 @@ class Order {
 		// $this->distribute_costs();
 		
 
-		$this->data ['Invoice Gross Amount'] = $amount;
-		$this->data ['Invoice Discount Amount'] = $discounts;
+		$this->data ['Invoice Items Gross Amount'] = $amount;
+		$this->data ['Invoice Items Discount Amount'] = $discounts;
 		$net = $amount - $discounts;
 		$this->data ['Invoice Adjust Amount'] = $net - $this->data ['Invoice Items Net Amount'];
 		$this->data ['Invoice Total Net Amount'] = $this->data ['Invoice Gross Amount'] - $this->data ['Invoice Discount Amount'] + $this->data ['Invoice Adjust Amount'] + $refund_amount;
-		$this->data ['Invoice Items Tax Amount'] = $this->data ['Invoice Total Net Amount'] * $invoice_data ['tax_rate'];
-		$sql = sprintf ( "update `Invoice Dimension` set `Invoice Title`='Refund',  `Invoice Items Net Amount`=%.2f ,`Invoice Items Adjust Amount`=%.2f , `Invoice Items Gross Amount`=%.2f ,`Invoice Items Discount Amount`=%.2f  ,`Invoice Total Net Amount`=%.2f,`Invoice Items Tax Amount`=%.2f where `Invoice Key`=%d", $this->data ['Invoice Items Net Amount'], $this->data ['Invoice Adjust Amount'], $amount, $discounts, $this->data ['Invoice Total Net Amount'], $this->data ['Invoice Items Tax Amount'], $this->data ['Invoice Key'] );
+		$this->data ['Invoice Items Tax Amount'] = $this->data ['Invoice Total Net Amount'] * (1+$tax_rate);
+		$sql = sprintf ( "update `Invoice Dimension` set `Invoice Title`='Refund',  `Invoice Items Net Amount`=%.2f ,`Invoice Items Adjust Amount`=%.2f , `Invoice Items Gross Amount`=%.2f ,`Invoice Items Discount Amount`=%.2f  ,`Invoice Total Net Amount`=%.2f,`Invoice Items Tax Amount`=%.2f where `Invoice Key`=%d"
+				 , $this->data ['Invoice Items Net Amount']
+				 , $this->data ['Invoice Adjust Amount']
+				 , $amount
+				 , $discounts
+				 , $this->data ['Invoice Total Net Amount']
+				 , $this->data ['Invoice Items Tax Amount']
+				
+				 , $this->data ['Invoice Key'] 
+				 
+				 );
 		
 		//  print $sql;
 		if (! mysql_query ( $sql ))
@@ -1609,23 +1657,14 @@ class Order {
 		//     $sql="select sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) from `Order Transaction Fact` where "
 		
 
-		//      print_r($this->data);
-		$sql = sprintf ( "insert into `Invoice Dimension` (`Invoice Date`,`Invoice Public ID`,`Invoice File As`,`Invoice Store Key`,`Invoice Store Code`,`Invoice Main Source Type`,`Invoice Customer Key`,`Invoice Customer Name`,`Invoice XHTML Ship Tos`,`Invoice Items Gross Amount`,`Invoice Items Discount Amount`,`Invoice Shipping Net Amount`,`Invoice Charges Net Amount`
-,`Invoice Total Tax Amount`
-,`Invoice Refund Net Amount`
-,`Invoice Refund Tax Amount`
-,`Invoice Total Amount`
-,`Invoice Metadata`,`Invoice XHTML Address`,`Invoice XHTML Orders`,`Invoice XHTML Delivery Notes`,`Invoice XHTML Store`,`Invoice Has Been Paid In Full`,`Invoice Main Payment Method`,`Invoice Shipping Tax Amount`,`Invoice Charges Tax Amount`
-,`Invoice XHTML Processed By`
-,`Invoice XHTML Charged By`
-,`Invoice Processed By Key`
-,`Invoice Charged By Key`
-,`Invoice Billing Country 2 Alpha Code`
-,`Invoice Delivery Country 2 Alpha Code`
-) values (%s,%s,%s,%s,%s,%s,%s,%s,  %s,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,   %s,%s,%s,'%s',%s,%s,%s,%.2f,%.2f,%s,%s,%s,%s,%s,%s)", prepare_mysql ( $this->data ['Invoice Date'] ), prepare_mysql ( $this->data ['Invoice Public ID'] ), prepare_mysql ( $this->data ['Invoice File As'] ), prepare_mysql ( $this->data ['Invoice Store Key'] ), prepare_mysql ( $this->data ['Invoice Store Code'] ), prepare_mysql ( $this->data ['Invoice Main Source Type'] ), prepare_mysql ( $this->data ['Invoice Customer Key'] ), prepare_mysql ( $this->data ['Invoice Customer Name'] ), prepare_mysql ( $this->data ['Invoice XHTML Ship Tos'] ), $this->data ['Invoice Gross Amount'], $this->data ['Invoice Discount Amount'], $this->data ['Invoice Shipping Net Amount'], $this->data ['Invoice Charges Net Amount'], $this->data ['Invoice Total Tax Amount'], $this->data ['Invoice Refund Amount'], $this->data ['Invoice Total Tax Refund Amount'], $this->data ['Invoice Total Amount'], prepare_mysql ( $this->data ['Invoice Metadata'] ), prepare_mysql ( $this->data ['Invoice XHTML Address'] ), prepare_mysql ( $this->data ['Invoice XHTML Orders'] ), addslashes ( $this->data ['Invoice XHTML Delivery Notes'] ), prepare_mysql ( $this->data ['Invoice XHTML Store'] ), prepare_mysql ( $this->data ['Invoice Has Been Paid In Full'] ), prepare_mysql ( $this->data ['Invoice Main Payment Method'] ), $this->data ['Invoice Shipping Tax Amount'], $this->data ['Invoice Charges Tax Amount'], prepare_mysql ( $this->data ['Invoice XHTML Processed By'] ), prepare_mysql ( $this->data ['Invoice XHTML Charged By'] ), prepare_mysql ( $this->data ['Invoice Processed By Key'] )
+			//		exit;
+		$sql = sprintf ( "insert into `Invoice Dimension` (`Invoice Date`,`Invoice Public ID`,`Invoice File As`,`Invoice Store Key`,`Invoice Store Code`,`Invoice Main Source Type`,`Invoice Customer Key`,`Invoice Customer Name`,`Invoice XHTML Ship Tos`,`Invoice Items Gross Amount`,`Invoice Items Discount Amount`,`Invoice Shipping Net Amount`,`Invoice Charges Net Amount`,`Invoice Total Tax Amount`,`Invoice Refund Net Amount`,`Invoice Refund Tax Amount`,`Invoice Total Amount`,`Invoice Metadata`,`Invoice XHTML Address`,`Invoice XHTML Orders`,`Invoice XHTML Delivery Notes`,`Invoice XHTML Store`,`Invoice Has Been Paid In Full`,`Invoice Main Payment Method`,`Invoice Shipping Tax Amount`,`Invoice Charges Tax Amount`,`Invoice XHTML Processed By`,`Invoice XHTML Charged By`,`Invoice Processed By Key`,`Invoice Charged By Key`,`Invoice Billing Country 2 Alpha Code`,`Invoice Delivery Country 2 Alpha Code`,`Invoice Dispatching Lag`,`Invoice Taxable`,`Invoice Tax Code`) values (%s,%s,%s,%s,%s,%s,%s,%s,  %s,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,   %s,%s,%s,'%s',%s,%s,%s,%.2f,%.2f,%s,%s,%s,%s,%s,%s,%s,%s,%s)", prepare_mysql ( $this->data ['Invoice Date'] ), prepare_mysql ( $this->data ['Invoice Public ID'] ), prepare_mysql ( $this->data ['Invoice File As'] ), prepare_mysql ( $this->data ['Invoice Store Key'] ), prepare_mysql ( $this->data ['Invoice Store Code'] ), prepare_mysql ( $this->data ['Invoice Main Source Type'] ), prepare_mysql ( $this->data ['Invoice Customer Key'] ), prepare_mysql ( $this->data ['Invoice Customer Name'] ), prepare_mysql ( $this->data ['Invoice XHTML Ship Tos'] ), $this->data ['Invoice Items Gross Amount'], $this->data ['Invoice Items Discount Amount'], $this->data ['Invoice Shipping Net Amount'], $this->data ['Invoice Charges Net Amount'], $this->data ['Invoice Total Tax Amount'], $this->data ['Invoice Refund Amount'], $this->data ['Invoice Total Tax Refund Amount'], $this->data ['Invoice Total Amount'], prepare_mysql ( $this->data ['Invoice Metadata'] ), prepare_mysql ( $this->data ['Invoice XHTML Address'] ), prepare_mysql ( $this->data ['Invoice XHTML Orders'] ), addslashes ( $this->data ['Invoice XHTML Delivery Notes'] ), prepare_mysql ( $this->data ['Invoice XHTML Store'] ), prepare_mysql ( $this->data ['Invoice Has Been Paid In Full'] ), prepare_mysql ( $this->data ['Invoice Main Payment Method'] ), $this->data ['Invoice Shipping Tax Amount'], $this->data ['Invoice Charges Tax Amount'], prepare_mysql ( $this->data ['Invoice XHTML Processed By'] ), prepare_mysql ( $this->data ['Invoice XHTML Charged By'] ), prepare_mysql ( $this->data ['Invoice Processed By Key'] )
 				 , prepare_mysql ( $this->data ['Invoice Charged By Key'] ) 
 				 , prepare_mysql ( $this->data ['Invoice Billing Country 2 Alpha Code'] ) 
 				 , prepare_mysql ( $this->data ['Invoice Delivery Country 2 Alpha Code'] ) 
+				 , prepare_mysql ( $this->data ['Invoice Dispatching Lag'] ) 
+				 , prepare_mysql ( $this->data ['Invoice Taxable'] ) 
+				 , prepare_mysql ( $this->data ['Invoice Tax Code'] ) 
 				 );
 		
 		//    print $sql;

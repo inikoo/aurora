@@ -127,7 +127,7 @@ $valid_rates=array(
 		   );
 
 $interval_data=sales_in_interval($from,$to,$valid_rates);
-
+//print_r($interval_data);
 $smarty->assign('novalue_invoices',$interval_data['errors']['novalue_invoices']);
 $smarty->assign('f_novalue_invoices',number($interval_data['errors']['novalue_invoices']));
 
@@ -163,7 +163,7 @@ $day_interval=get_time_interval(strtotime($from),(strtotime($to)))+1;
 
      $interval_data_last_year=sales_in_interval($_from,$_to,$valid_rates);
 
-     print_r()
+    
 
 
      $invoices=$interval_data['invoices']['total_invoices'];
