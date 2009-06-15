@@ -220,7 +220,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     if(strtotime($date_order)>strtotime($date2)){
       
       print "ERROR ON DATES\n >    ".$header_data['date_order']."  ".$header_data['date_inv']."  ".$header_data['order_num']."  $date_order  $date2   $order_data_id   $filename  \n ";
-      
+      exit;
        
     }
  
