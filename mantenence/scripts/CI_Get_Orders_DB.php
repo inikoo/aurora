@@ -23,7 +23,7 @@ date_default_timezone_set('Europe/London');
 $_SESSION['lang']=1;
 include_once('ci_local_map.php');
 
-include_once('map_order_functions.php');
+include_once('ci_map_order_functions.php');
 
 $software='Get_Orders_DB.php';
 $version='V 1.0';//75693
@@ -37,7 +37,7 @@ srand(1744);
 $sql="select * from  ci_orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed)  order by filename ";
 //$sql="select * from  ci_orders_data.orders where filename like '%refund.xls'   order by filename";
 //$sql="select * from  ci_orders_data.orders  where (filename like '%Orders2005%' or  filename like '%PEDIDOS%.xls') and (last_transcribed is NULL  or last_read>last_transcribed) and filename!='/media/sda3/share/PEDIDOS 08/60005902.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60008607.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60009626.xls' or filename='%60003600.xls'   order by date";
-$sql="select * from  ci_orders_data.orders where  filename like '%60001200.xls'  order by filename";
+//$sql="select * from  ci_orders_data.orders where  filename like '%60001200.xls'  order by filename";
 $contador=0;
 //print $sql;
 $res=mysql_query($sql);
@@ -63,10 +63,10 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
     $result_test=mysql_query($sql);
     if($row_test=mysql_fetch_array($result_test, MYSQL_ASSOC)){
-      if($row_test['num']==0)
-	print "NEW $contador $order_data_id $filename \n";
+      if($row_test['num']==0){
+	//print "NEW $contador $order_data_id $filename \n";
 
-      else{
+      }else{
 	$update=true;
 	print "UPD $contador $order_data_id $filename \n";
       }
@@ -163,8 +163,24 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 //     echo "Memory: ".memory_get_usage() . "x\n";
     $_customer_data=setup_contact($act_data,$header_data,$date_index2);
 
-    //        print_r($_customer_data);
-    foreach($_customer_data as $_key =>$value){
+    //print_r($_customer_data);
+    if($_customer_data['company_name']==$_customer_data['contact_name']){
+      if(preg_match('/jabones|S\.L\.$|Ldª$| SL$|Herboristeria|Asoc\. |^Asociaci.n |^Centro |^FPH C\.B\.$|Fisioglobal|^Amigos de | S\.A\.$|Associació Cultural|Associaci.n Cultural| C\.B$|^Asociación [a-z]+$| S\.A\.$| S\.C\.?$|Sucrolotes SLL - La Guinda| C\.B\.?$|lenilunio S\.c\.a$|^Laboratorios |Burbujas Castellón|^Rama SC$| S\.L\.?$| S\.l\.n\.e\.?$| s\.c\.a\.?$|Tecnologias|^Papeleria |Algoazul - L.da/i',$_customer_data['contact_name'])){
+	$_customer_data['contact_name']='';
+	$_customer_data['type']='Company';
+      }
+      
+    }
+    
+    if($_customer_data['company_name']==$_customer_data['contact_name'])
+      print "Same CC name: ".$_customer_data['company_name']."\n";
+    
+    
+
+
+    // print_r($_customer_data);
+     
+     foreach($_customer_data as $_key =>$value){
       $key=$_key;
       if($_key=='type')
       $key=preg_replace('/^type$/','Customer Type',$_key);

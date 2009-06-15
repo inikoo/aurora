@@ -129,7 +129,7 @@ class product{
 	//	print $tag['product code']." FOUND OLS\n";
 
 	$this->id=$this->data['Product Key'];
-
+	//print_r($this->data);
 	if(strtotime($this->data['Product Valid To'])<strtotime($tag['date2'])  ){
 	  $sql=sprintf("update `Product Dimension` set `Product Valid To`=%s where `Product Key`=%d",prepare_mysql($tag['date2']),$this->id);
 	  $this->data['product valid to']=$tag['date2'];
@@ -150,7 +150,7 @@ class product{
 	if($row2=mysql_fetch_array($result2, MYSQL_ASSOC)){
 	  $num_lists=$row2['lists'];
 	  if($num_lists!=1)
-	    print("$sql  Warning wrong numer if lists\n");
+	    print("$sql  Warning wrong number if lists\n");
 	}
 
  	$sql=sprintf("select  `Part SKU`, `Product Part ID`  from `Product Part List`  where  `Product ID`=%s  " ,$this->data['Product ID']);

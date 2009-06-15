@@ -83,7 +83,7 @@ class Customer extends DB_Table{
    */  
   function find($raw_data,$options=''){
 
-
+    //print "===================================\n";
     // print_r( $raw_data);
 
     $this->found_child=false;
@@ -144,24 +144,35 @@ class Customer extends DB_Table{
     // print "$options";
     if($this->found){
       $this->get_data('id',$this->found_key);
+      //  print "customer Found: ".$this->found_key."  \n";
     }
     
     if($create){
-      
+    
       if($this->found){
 	$this->update($raw_data);
 
       }else{
 
 	if($this->found_child){
-	  if($raw_data['Customer Type']=='Person'){
-	    $child->update($child->translate_data($raw_data,'from supplier'));
-	    $raw_data['Customer Main Contact Key']=$this->found_child_key;
-	  }	  
+	  //	    print "----------------------------------******************\n";
+	  //print_r($raw_data);
+	  //print_r( $child->translate_data($raw_data,'from customer')  );
+	  //print "-----------------------------------------------\n";
 
+	  if($raw_data['Customer Type']=='Person'){
+
+	    $contact=new contact('find in customer create',$raw_data);
+	    $raw_data['Customer Main Contact Key']=$contact->id;
+	    
+	  }else{
+	    $company=new company('find in customer create',$raw_data);
+	    $raw_data['Customer Company Key']=$company->id;
+	  }	  
 	  
-	}else
-	  $this->create($raw_data);
+	  
+	}
+	$this->create($raw_data);
 
       }
 

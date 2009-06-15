@@ -67,6 +67,8 @@ abstract class DB_Table
 
 
     $base_data=$this->base_data();
+    //print "data to update in ".$this->table_name.":\n";
+    //print_r($data);
     foreach($data as $key=>$value){
       if(preg_match('/^Address.*Data$/',$key))
 	$this->update_field_switcher($key,$value,$options);
@@ -108,6 +110,10 @@ abstract class DB_Table
      $_data[$_key]=$value;
    }
    
+  
+
+
+   return $_data;
  }
 
 protected function update_field($field,$value,$options=''){

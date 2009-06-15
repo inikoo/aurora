@@ -46,6 +46,7 @@ class Order {
 	}
 	
 	function create_order($data) {
+
 		if (! isset ( $data ['type'] ))
 			return;
 		$type = $data ['type'];
@@ -78,7 +79,7 @@ class Order {
 /* 				  $customer_id=$customer->id; */
 /* 				} */
 				
-				print_r($data['Customer Data'] );
+				//	print_r($data['Customer Data'] );
 				$customer = new Customer ( 'find create', $data['Customer Data'] ); 
 				$this->ship_to_addresses=array();
 				foreach($data['Shipping Addresses'] as $shipping_address_data){
@@ -99,7 +100,7 @@ class Order {
 
 
 				if(!$customer->id or $customer->data[ 'Customer Name' ]==''){
-				  print "caca";
+				  print "caca\n";
 				  print_r($data['Customer Data'] );
 				  print_r($customer);
 				  exit;
