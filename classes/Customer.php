@@ -349,13 +349,13 @@ class Customer extends DB_Table{
     }
 
 
-    $this->data['Customer ID']=$this->new_id();
-    if($this->data['Customer Type']=='Company'){
-      $this->data['Customer Main Email Key']=0;
-      $this->data['Customer Main XHTML Email']='';
-      $this->data['Customer Main Plain Email']='';
-      $this->data['Customer Main Telephone Key']=0;
-      $this->data['Customer Main Telephone']='';
+     $this->data['Customer ID']=$this->new_id();
+     if($this->data['Customer Type']=='Company'){
+       $this->data['Customer Main Email Key']=0;
+       $this->data['Customer Main XHTML Email']='';
+       $this->data['Customer Main Plain Email']='';
+       $this->data['Customer Main Telephone Key']=0;
+       $this->data['Customer Main Telephone']='';
       $this->data['Customer Main Plain Telephone']='';
       $this->data['Customer Main FAX Key']=0;
       $this->data['Customer Main FAX']='';
@@ -404,6 +404,12 @@ class Customer extends DB_Table{
       $this->data['Customer Main Contact Key']=$contact->id;
       $this->data['Customer Main Contact Name']=$contact->data['Contact Name'];
       $this->data['Customer Name']=$contact->data['Contact Name'];
+
+      //address!!!!!!!!!!!!!
+
+
+      
+
 
       if($contact->data['Contact Main Email Key']){
 	$this->data['Customer Main Email Key']=$contact->data['Contact Main Email Key'];
@@ -512,7 +518,7 @@ class Customer extends DB_Table{
    function create_old($data=false,$args){
 
 
-   print_r($data);
+     //print_r($data);
 
    global $myconf;
    //   $this->unknown_contact=$myconf['unknown_contact'];

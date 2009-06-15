@@ -115,6 +115,8 @@ class Contact extends DB_Table{
     Key of the Compnay found, if create is found in the options string  returns the new key
    */  
   function find($raw_data,$options){
+    //    print $options."\n";
+    //print_r($raw_data);
 
     $this->candidate=array();
     $this->found=false;
@@ -137,12 +139,30 @@ class Contact extends DB_Table{
 	$data[$_key]=$val;
       }
       $parent='supplier';
-    }elseif(preg_match('/from customer/i',$options)){
-      foreach($data as $key=>$val){
-	$_key=preg_replace('/Customer /','Contact ',$key);
+    }elseif(preg_match('/from customer|in customer/i',$options)){
+      foreach($raw_data as $key=>$val){
+	if(preg_match('/Customer Address/i',$key)){
+	  $_key=preg_replace('/Customer Address/i','Contact Work Address',$key);
+	}else
+	  $_key=preg_replace('/Customer /','Contact ',$key);
 	$data[$_key]=$val;
+
+	if(preg_match('/Customer Address/i',$key))
+	  $_key=preg_replace('/Customer Address/i','Contact Work Address',$key);
+	if(array_key_exists($_key,$address_work_data))
+	  $address_work_data[$_key]=$val;
+	
+	//	print " $key -> $_key = $val \n";
+
       }
       $parent='customer';
+
+      //  print_r($data);
+      //  print_r($address_work_data);
+      //  exit;
+
+
+
     }elseif(preg_match('/from Company|in company/i',$options)){
       foreach($raw_data as $key=>$val){
 /* 	if($create and preg_match('/address|email|telephone|fax|company name/i',$key)){ */
@@ -153,18 +173,19 @@ class Contact extends DB_Table{
 
 	if($key=='Company Name'){
 	  $_key='Contact Company Name';
-	}elseif($key=='Company Main Contact Name')
-	    $_key='Contact Name';
-	elseif(preg_match('/Company Address/i',$key)){
+	}elseif($key=='Company Main Contact Name'){
+	  $_key='Contact Name';
+	}elseif(preg_match('/Company Address/i',$key)){
 	  $_key=preg_replace('/Company Address/i','Contact Work Address',$key);
-	  //print "__________  $_key  _______________\n";
 	}else
 	  $_key=preg_replace('/Company /','Contact ',$key);
 	
-	//	print "XXXXXXXXXXXXXXXX THE _KEY $_key\n";
+
 	if(array_key_exists($_key,$data))
 	  $data[$_key]=$val;
 	
+
+
 	if(array_key_exists($_key,$address_work_data))
 	  $address_work_data[$_key]=$val;
       }
@@ -201,7 +222,9 @@ class Contact extends DB_Table{
 
 
     }
-   
+
+
+
     $options.=' parent:'.$parent;
 
     $this->candidate=array();
@@ -432,6 +455,7 @@ class Contact extends DB_Table{
 
       }else{
 	//	exit("o no duplicate!!\n");
+	
 	$this->create($data,$options,$address_home_data,$address_work_data);
       }
 
@@ -590,28 +614,28 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
 
   //print_r($data);
 
-
+  
   global $myconf;
-   if(is_string($data))
+  if(is_string($data))
      $data['Contact Name']=$data;
-   
-   $this->data=$this->base_data();
-   foreach($data as $key=>$value){
+  
+  $this->data=$this->base_data();
+  foreach($data as $key=>$value){
      if(array_key_exists($key,$this->data))
        $this->data[$key]=_trim($value);
-   }
-   
+  }
+  
 
-   if(!preg_match('/components ok|components confirmed/i',$options)){
-     $parsed_data=$this->parse_name($this->data['Contact Name']);
-     foreach($parsed_data as $key=>$val){
-       if(array_key_exists($key,$this->data))
+  if(!preg_match('/components ok|components confirmed/i',$options)){
+    $parsed_data=$this->parse_name($this->data['Contact Name']);
+    foreach($parsed_data as $key=>$val){
+      if(array_key_exists($key,$this->data))
 	 $this->data[$key]=$val;
-     }
-   }   
-
-   $prepared_data=$this->prepare_name_data($this->data);
-   foreach($prepared_data as $key=>$val){
+    }
+  }   
+  
+  $prepared_data=$this->prepare_name_data($this->data);
+  foreach($prepared_data as $key=>$val){
        if(array_key_exists($key,$this->data))
 	 $this->data[$key]=$val;
      }
@@ -663,8 +687,10 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
       $this->id= mysql_insert_id();
       $this->new=true;
       //$this->get_data('id',$this->id);
+      
 
-      if(preg_match('/parent\:none/',$options)){
+      
+      if(preg_match('/parent\:none|parent\:customer/',$options)){
 	// Has no parent add emails,tels ect to the contact
 	//	print_r($this->data);
 
@@ -737,7 +763,10 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
 				    ,'Address Description'=>'Home Contact Address'
 				    ));
 	}
+
 	if(!array_empty($address_work_data)){
+
+
 	  $work_address=new Address("find in contact ".$this->id." create",$address_work_data);
 	  if($work_address->error){
 	    print $work_address->msg."\n";

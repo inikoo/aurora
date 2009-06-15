@@ -3179,6 +3179,8 @@ class Address extends DB_Table{
     $data['Address Fuzzy Type']=preg_replace('/^,\s*/','',$data['Address Fuzzy Type']);
 
     $data['Address Location']=Address::location($data);
+    //  print_r($data['Address Country 2 Alpha Code']);
+
     return $data;
   }
 
