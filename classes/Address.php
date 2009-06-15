@@ -837,10 +837,12 @@ class Address extends DB_Table{
     $key -  _integer_ Country Key in DB
   */
   public static  function is_country_key($key){
-
-    if(!is_int($key) or $key<=0)
+    //    print "----------- $key -------\n";
+    if(!is_numeric($key) or $key<=0){
       return false;
+    }
     $sql=sprintf("select `Country Key` from `Country Dimension`  where `Country Key`=%d",$key);
+    //    PRINT $sql;
     $result = mysql_query($sql);
     if($row = mysql_fetch_array($result, MYSQL_ASSOC)) 
       return true;
@@ -998,7 +1000,31 @@ class Address extends DB_Table{
        $data['Address Country 2 Alpha Code']=='' and
        $data['Address Country Name']==''
        ){
-      $data['Address Country Key']=$myconf['country_id'];
+    
+      // try to get the counbtry form the town
+      if($data['Address Country Primary Division']!=''){
+	$country_in_other=new Country('find',$data['Address Country Primary Division']);
+	if($country_in_other->id!=244){
+	  $data['Address Country Key']=$country_in_other->id;
+	  $data['Address Country Primary Division']='';
+	}
+      }  elseif($data['Address Country Secondary Division']!=''){
+	$country_in_other=new Country('find',$data['Address Country Secondary Division']);
+	if($country_in_other->id!=244){
+	  $data['Address Country Key']=$country_in_other->id;
+	  $data['Address Country Secondary Division']='';
+	}
+      }
+      else if($data['Address Town']!=''){
+	$country_in_other=new Country('find',$data['Address Town']);
+	if($country_in_other->id!=244){
+	  $data['Address Country Key']=$country_in_other->id;
+	  $data['Address Town']='';
+	}
+      }
+
+      if($data['Address Country Key']=='')
+	$data['Address Country Key']=$myconf['country_id'];
       
     }
 
@@ -1006,7 +1032,7 @@ class Address extends DB_Table{
 
     
     if(Address::is_country_key($data['Address Country Key'])){
-
+      
       $country=new Country('id',$data['Address Country Key']);
     }elseif(Address::is_country_code($data['Address Country Code'])){
       
@@ -1018,16 +1044,16 @@ class Address extends DB_Table{
       $country=new Country('find',$data['Address Country Name']);
     }
     
-    
+    //  print_r($country);
 
-    $_data['Address Country Key']=$country->id;
-    $_data['Address Country Code']=$country->data['Country Code']; 
-    $_data['Address Country 2 Alpha Code']=$country->data['Country 2 Alpha Code'];
-    $_data['Address Country Name']=$country->data['Country Name'];
-    $_data['Address World Region']=$country->data['World Region'];
-    $_data['Address Continent']=$country->data['Continent'];
-    
-    return $_data;
+    $data['Address Country Key']=$country->id;
+    $data['Address Country Code']=$country->data['Country Code']; 
+    $data['Address Country 2 Alpha Code']=$country->data['Country 2 Alpha Code'];
+    $data['Address Country Name']=$country->data['Country Name'];
+    $data['Address World Region']=$country->data['World Region'];
+    $data['Address Continent']=$country->data['Continent'];
+    // print_r($data);exit;
+    return $data;
   }
 
   /*
@@ -1171,6 +1197,9 @@ class Address extends DB_Table{
       }
     }
     
+
+
+
     if($empty){
       $country=new Country('code','UNK');
       $data['Address Country Key']=$country->id;
@@ -1184,7 +1213,7 @@ class Address extends DB_Table{
       $data['Address Town']='St. Thomas';
     }
     
-    //print_r( $data);
+
     
     if(preg_match('/SCOTLAND|wales/i',$data['Address Country Name']))
       $data['Address Country Name']='United Kingdom';
@@ -1233,15 +1262,19 @@ class Address extends DB_Table{
       
     }
     //-------------------------------------------------------------------------
+ 
 
-    $country_data=Address::prepare_country_data($data);
-    foreach($country_data as $key=>$value){
-      if(array_key_exists($key,$data)){
-	$data[$key]=_trim($value);
-      }
-    }
+    $data=Address::prepare_country_data($data);
+
+    // foreach($country as $key=>$value){
+    //  if(array_key_exists($key,$data)){
+    //	$data[$key]=_trim($value);
+    //  }
+    // }
+
 
     if($data['Address Country Code']=='UNK'){
+      
       if($myconf['country_id']==30){
 	if(Address::is_valid_postcode($data['Address Postal Code'],30)){
 	  $data['Address Country Primary Division']=_trim($data['Address Country Primary Division'].' '.$data['Address Country Name']);
@@ -1253,19 +1286,19 @@ class Address extends DB_Table{
 	  $data['Address Country Name']='United Kingdom';
 	}
       }
-      $country_data=Address::prepare_country_data($data);
-      foreach($country_data as $key=>$value){
-	if(array_key_exists($key,$data)){
-	  $data[$key]=_trim($value);
-	}
-      }
+      $data=Address::prepare_country_data($data);
+      //foreach($data as $key=>$value){
+      //	if(array_key_exists($key,$data)){
+      //	  $data[$key]=_trim($value);
+      //	}
+      // }
        
     }
 
 
     // Country assigned;
 
- 
+    
 
 
     $_p=$data['Address Postal Code'];

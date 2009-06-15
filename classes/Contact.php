@@ -115,7 +115,7 @@ class Contact extends DB_Table{
     Key of the Compnay found, if create is found in the options string  returns the new key
    */  
   function find($raw_data,$options){
-    //    print $options."\n";
+       //    print $options."\n";
     //print_r($raw_data);
 
     $this->candidate=array();
@@ -435,7 +435,7 @@ class Contact extends DB_Table{
     if($this->found){
       $this->get_data('id',$this->found_key);
       
-      //  print "Contact found  ".$this->found_key." \n";
+      //print "Contact found  ".$this->found_key." --->$create-----\n";
       //print_r($this->card());
     }
      
@@ -445,7 +445,9 @@ class Contact extends DB_Table{
 	
 /* 	$data['Home Address']=$address_home_data; */
 /* 	$data['Work Address']=$address_work_data; */
-
+	//print "raw data:\n";
+	//print_r($raw_data);
+	
 	$this->update($raw_data,$options);
 	if(isset($address_data['Home']))
 	  $this->update_address($address_data['Home'],'Home');
@@ -1049,7 +1051,7 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
     Function: update_address
     Update/Create address
    */
-  private function update_address($data,$type='Work'){
+   function update_address($data,$type='Work'){
 
    
     if(!array_empty($data)){
