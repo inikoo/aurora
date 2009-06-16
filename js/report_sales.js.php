@@ -6,7 +6,7 @@ include_once('../common.php');
 
  var show_invoices=function(){
      Dom.get('clean_table_title0').innerHTML='<?=_('Orders invoiced').' '.$_SESSION['state']['report']['sales']['period']?>.';
-     request="ar_orders.php?tipo=orders_report&saveto=report_sales&where="+escape('where true')+"&view=invoices&sf=0&nr=10&from=<?=$_SESSION['state']['report']['sales']['from']?>&to=<?=$_SESSION['state']['report']['sales']['to']?>"
+     request="ar_orders.php?tipo=report_invoices&saveto=report_sales&where="+escape('where true')+"&view=invoices&sf=0&nr=10&from=<?=$_SESSION['state']['report']['sales']['from']?>&to=<?=$_SESSION['state']['report']['sales']['to']?>"
      //  alert(request);
      var table=tables.table0;
      var datasource=tables.dataSource0;
@@ -16,8 +16,8 @@ include_once('../common.php');
  }
  var show_invoices_home=function(){
      Dom.get('clean_table_title0').innerHTML='<?=$myconf['_home']." "._('orders invoiced (excluding partners)').' '.$_SESSION['state']['report']['sales']['period']?>.';
-     request="ar_orders.php?tipo=orders_report&saveto=report_sales&where="+escape('where  partner=0 and del_country_id=<?=$myconf['country_id']?>')+"&view=invoices&sf=0&nr=10&from=<?=$_SESSION['state']['report']['sales']['from']?>&to=<?=$_SESSION['state']['report']['sales']['to']?>"
-
+     request="ar_orders.php?tipo=report_invoices&saveto=report_sales&where="+escape('where  `Invoice For Partner`="No" and `Invoice Billing Country 2 Alpha Code`="<?=$myconf['country_2acode']?>"')+"&view=invoices&sf=0&nr=10&from=<?=$_SESSION['state']['report']['sales']['from']?>&to=<?=$_SESSION['state']['report']['sales']['to']?>"
+     // alert(request);
      var table=tables.table0;
      var datasource=tables.dataSource0;
      datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
@@ -27,7 +27,7 @@ include_once('../common.php');
 
 var show_invoices_nohome=function(){
      Dom.get('clean_table_title0').innerHTML='<?=_('Export orders invoiced (excluding partners)').' '.$_SESSION['state']['report']['sales']['period']?>';
-     request="ar_orders.php?tipo=orders_report&saveto=report_sales&where="+escape('where  partner=0 and del_country_id!=<?=$myconf['country_id']?>')+"&view=invoices&sf=0&nr=10&from=<?=$_SESSION['state']['report']['sales']['from']?>&to=<?=$_SESSION['state']['report']['sales']['to']?>"
+     request="ar_orders.php?tipo=report_invoices&saveto=report_sales&where="+escape('where  `Invoice For Partner`="No"  and del_country_id!=<?=$myconf['country_id']?>')+"&view=invoices&sf=0&nr=10&from=<?=$_SESSION['state']['report']['sales']['from']?>&to=<?=$_SESSION['state']['report']['sales']['to']?>"
 
      var table=tables.table0;
      var datasource=tables.dataSource0;
@@ -38,7 +38,7 @@ var show_invoices_nohome=function(){
    
 var show_invoices_partner=function(){
      Dom.get('clean_table_title0').innerHTML='<?=_('Partners orders invoiced').' '.$_SESSION['state']['report']['sales']['period']?>';
-     request="ar_orders.php?tipo=orders_report&saveto=report_sales&where="+escape('where  partner!=0 ')+"&view=invoices&sf=0&nr=10&from=<?=$_SESSION['state']['report']['sales']['from']?>&to=<?=$_SESSION['state']['report']['sales']['to']?>"
+     request="ar_orders.php?tipo=report_invoices&saveto=report_sales&where="+escape('where  `Invoice For Partner`="Yes" ')+"&view=invoices&sf=0&nr=10&from=<?=$_SESSION['state']['report']['sales']['from']?>&to=<?=$_SESSION['state']['report']['sales']['to']?>"
 
      var table=tables.table0;
      var datasource=tables.dataSource0;
@@ -47,9 +47,10 @@ var show_invoices_partner=function(){
 
  }
 
-    var show_invoices_country=function(country_id,name){
+    var show_invoices_country=function(country_code,name){
+
      Dom.get('clean_table_title0').innerHTML=name+' <?=_('orders invoiced').' '.$_SESSION['state']['report']['sales']['period']?>';
-     request="ar_orders.php?tipo=orders_report&saveto=report_sales&where="+escape('where  partner=0 and del_country_id=')+country_id+"&view=invoices&sf=0&nr=10&from=<?=$_SESSION['state']['report']['sales']['from']?>&to=<?=$_SESSION['state']['report']['sales']['to']?>"
+     request="ar_orders.php?tipo=report_invoices&saveto=report_sales&where="+escape('where  `Invoice For Partner`="No"    and `Invoice Billing Country 2 Alpha Code`="'+country_code+'"')+"&view=invoices&sf=0&nr=10&from=<?=$_SESSION['state']['report']['sales']['from']?>&to=<?=$_SESSION['state']['report']['sales']['to']?>"
 
      var table=tables.table0;
      var datasource=tables.dataSource0;
@@ -64,18 +65,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
 
 
-	    this.orderLink=  function(el, oRecord, oColumn, oData) {
-		var url="order.php?id="+oRecord.getData("id");
-		el.innerHTML = oData.link(url);
-	    }
-	    
-	    this.customerLink=  function(el, oRecord, oColumn, oData) {
-		if(oData==null)
-		    oData='<?=_('Error, no customer name')?>';
-
-		var url="customer.php?id="+oRecord.getData("customer_id");
-		el.innerHTML = oData.link(url);
-	    };
+	 
 	    
 	    
 	    
@@ -85,12 +75,12 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 	    var OrdersColumnDefs = [
-				       {key:"public_id", label:"<?=_('Number')?>", width:80,formatter:this.orderLink,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-				       {key:"titulo", label:"<?=_('Type')?>", width:115,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-				       {key:"customer_name",label:"<?=_('Customer')?>",formatter:this.customerLink, width:280,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-				       {key:"date_index", label:"<?=_('Date')?>", width:145,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
+				       {key:"id", label:"<?=_('Number')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				       //  {key:"titulo", label:"<?=_('Type')?>", width:115,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				       {key:"customer",label:"<?=_('Customer')?>", width:280,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				       {key:"date", label:"<?=_('Date')?>", width:145,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
 
-				       {key:"total", label:"<?=_('Total')?>", width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       {key:"total_amount", label:"<?=_('Total')?>", width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				      
 				      //					 {key:"families", label:"<?=_('Customers')?>", sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
 				      //{key:"active", label:"<?=_('Customers')?>", sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
@@ -98,7 +88,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 					 ];
 	    
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_orders.php?tipo=orders_report&view="+view+"&nr=10&from=<?=$_SESSION['state']['report']['sales']['from']?>&to=<?=$_SESSION['state']['report']['sales']['to']?>");
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_orders.php?tipo=report_invoices&view="+view+"&nr=10&from=<?=$_SESSION['state']['report']['sales']['from']?>&to=<?=$_SESSION['state']['report']['sales']['to']?>");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -115,13 +105,12 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		
 		fields: [
 			 "id",
-			 "public_id",
-			 "customer_name",
-			 "customer_id",
-			 "date_index",
-			 "total",
-			 "titulo",
-			 "tipo"
+			 "customer",
+			 "date",
+			 "total_amount",
+			 "state",
+			 "orders",
+			 "dns"
 			 ]};
 
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,

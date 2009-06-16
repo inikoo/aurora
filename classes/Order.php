@@ -814,24 +814,24 @@ class Order {
 		$this->data ['Invoice Main Source Type'] = $this->data ['Order Main Source Type'];
 		$this->data ['Invoice Customer Key'] = $this->data ['Order Customer Key'];
 		$this->data ['Invoice Customer Name'] = $this->data ['Order Customer Name'];
-		$this->data ['Invoice Dispatching Lag'] = $this->data ['Invoice Dispatching Lag'];
-		$this->data ['Invouce Tax Code'] = $this->data ['Invouce Tax Code'];
-		$this->data ['Invoice Taxable'] = $this->data ['Invoice Taxable'];
+		$this->data ['Invoice Dispatching Lag'] = $invoice_data['Invoice Dispatching Lag'];
+		$this->data ['Invoice Tax Code'] = $invoice_data['Invoice Tax Code'];
+		$this->data ['Invoice Taxable'] = $invoice_data['Invoice Taxable'];
 		$this->data ['Invoice Items Gross Amount'] = 0;
 		$this->data ['Invoice Items Discount Amount'] = 0;
 		//TODO
 		$this->data ['Invoice XHTML Address'] = 0;
 		$this->data ['Invoice XHTML Ship Tos'] = '';
 		$this->data ['Invoice Shipping Net Amount'] = $invoice_data ['Invoice Shipping Net Amount'];
-		$this->data ['Invoice Charges Net Amount'] = $invoice_data ['Invoice Net Charges Amount'];
+		$this->data ['Invoice Charges Net Amount'] = $invoice_data ['Invoice Charges Net Amount'];
 
 		if(isset($myconf['tax_rates'][$invoice_data ['Invoice Tax Code']]))
 		  $tax_rate=$myconf['tax_rates'][$invoice_data ['Invoice Tax Code']];
 		else
 		  $tax_rate= $invoice_data ['tax_rate'];
 
-		$this->data ['Invoice Shipping Tax Amount'] = $invoice_data ['Invoice Net Shipping Amount'] * (1+$tax_rate);
-		$this->data ['Invoice Charges Tax Amount'] = $invoice_data ['Invoice Net Charges Amount'] * (1+$tax_rate);
+		$this->data ['Invoice Shipping Tax Amount'] = $invoice_data ['Invoice Shipping Net Amount'] * (1+$tax_rate);
+		$this->data ['Invoice Charges Tax Amount'] = $invoice_data ['Invoice Charges Net Amount'] * (1+$tax_rate);
 		
 		$this->data ['Invoice Metadata'] = $this->data ['Order Original Metadata'];
 		$this->data ['Invoice Has Been Paid In Full'] = $invoice_data ['Invoice Has Been Paid In Full'];
@@ -841,7 +841,7 @@ class Order {
 		
 		$this->data ['Invoice Total Tax Refund Amount'] = $invoice_data ['Invoice Total Tax Refund Amount'];
 		$this->data ['Invoice Total Amount'] = $invoice_data ['Invoice Total Amount'];
-		$this->data ['Invoice Items Net Amount'] = $invoice_data ['Invoice Net Amount'];
+		$this->data ['Invoice Items Net Amount'] = $invoice_data ['Invoice Items Net Amount'];
 		
 		$this->data ['Invoice XHTML Processed By'] = $invoice_data ['Invoice XHTML Processed By'];
 		$this->data ['Invoice XHTML Charged By'] = $invoice_data ['Invoice XHTML Charged By'];

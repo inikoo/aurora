@@ -22,7 +22,7 @@ if (!$LU or !$LU->isLoggedIn()) {
   echo json_encode($response);
   exit;
  }
-
+ 
 
 if(!isset($_REQUEST['tipo']))
   {
@@ -495,7 +495,7 @@ case('changesalesplot'):
 		   );
    echo json_encode($response);
    break;
- case('orders_report'):
+ case('report_orders'):
    $_REQUEST['saveto']='report_sales';
  case('orders'):
     if(!$LU->checkRight(ORDER_VIEW))
@@ -758,17 +758,23 @@ else if($order=='customer')
    break;
 
 
+case('report_invoices'):
+  $_REQUEST['saveto']='report_sales';
+
  case('invoices'):
     if(!$LU->checkRight(ORDER_VIEW))
     exit;
     
-    $conf=$_SESSION['state']['orders']['invoices'];
-  if(isset( $_REQUEST['sf']))
-     $start_from=$_REQUEST['sf'];
-   else
-     $start_from=$conf['sf'];
-   if(isset( $_REQUEST['nr']))
-     $number_results=$_REQUEST['nr'];
+    if(isset($_REQUEST['saveto']) and $_REQUEST['saveto']=='report_sales')
+      $conf=$_SESSION['state']['report']['sales'];
+    else
+      $conf=$_SESSION['state']['orders']['invoices'];
+    if(isset( $_REQUEST['sf']))
+      $start_from=$_REQUEST['sf'];
+    else
+      $start_from=$conf['sf'];
+    if(isset( $_REQUEST['nr']))
+      $number_results=$_REQUEST['nr'];
    else
      $number_results=$conf['nr'];
   if(isset( $_REQUEST['o']))
@@ -789,7 +795,7 @@ else if($order=='customer')
    else
      $f_value=$conf['f_value'];
 if(isset( $_REQUEST['where']))
-     $where=$_REQUEST['where'];
+  $where=stripslashes($_REQUEST['where']);
    else
      $where=$conf['where'];
   
@@ -840,7 +846,7 @@ if(isset( $_REQUEST['where']))
      $_SESSION['state']['report']['sales']['f_value']=$f_value;
      $_SESSION['state']['report']['sales']['to']=$to;
      $_SESSION['state']['report']['sales']['from']=$from;
-     $date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
+     $date_interval=prepare_mysql_dates($from,$to,'`Invoice Date`','only_dates');
      
    }else{
 
@@ -860,15 +866,18 @@ if(isset( $_REQUEST['where']))
    $wheref='';
 
   if($f_field=='max' and is_numeric($f_value) )
-    $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(date_index))<=".$f_value."    ";
+    $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Invoice Date`))<=".$f_value."    ";
   else if($f_field=='min' and is_numeric($f_value) )
-    $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(date_index))>=".$f_value."    ";
-   elseif(($f_field=='customer_name' or $f_field=='public_id') and $f_value!='')
-    $wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
-  else if($f_field=='maxvalue' and is_numeric($f_value) )
-    $wheref.=" and  total<=".$f_value."    ";
+    $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Invoice Date`))>=".$f_value."    ";
+   elseif($f_field=='customer_name' and $f_value!='')
+    $wheref.=" and  `Invoice Customer Name` like   '".addslashes($f_value)."%'";
+  elseif( $f_field=='public_id' and $f_value!='')
+    $wheref.=" and  `Invoice Public ID` like '".addslashes($f_value)."%'";
+   
+else if($f_field=='maxvalue' and is_numeric($f_value) )
+    $wheref.=" and  `Invoice Total Amount`<=".$f_value."    ";
   else if($f_field=='minvalue' and is_numeric($f_value) )
-    $wheref.=" and  total>=".$f_value."    ";
+    $wheref.=" and  `Invoice Total Amount`>=".$f_value."    ";
    
 
 
@@ -877,8 +886,8 @@ if(isset( $_REQUEST['where']))
    
   $sql="select count(*) as total from `Invoice Dimension`   $where $wheref ";
   // print $sql ;
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-  if($row=$res->fetchRow()) {
+  $res=mysql_query($sql);
+  if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
     $total=$row['total'];
   }
   if($where==''){
@@ -887,8 +896,8 @@ if(isset( $_REQUEST['where']))
   }else{
     
       $sql="select count(*) as total from `Invoice Dimension`  $where";
-      $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-      if($row=$res->fetchRow()) {
+       $res=mysql_query($sql);
+  if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 	$total_records=$row['total'];
 	$filtered=$total_records-$total;
       }
@@ -960,8 +969,10 @@ else if($order=='customer')
 
    $data=array();
 
-   $res = mysql_query($sql);
+   
+   $res=mysql_query($sql);
    while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
      $order_id=sprintf('<a href="invoice.php?id=%d">%s</a>',$row['Invoice Key'],$row['Invoice Public ID']);
      $customer=sprintf('<a href="customer.php?id=%d">%s</a>',$row['Invoice Customer Key'],$row['Invoice Customer Name']);
      if($row['Invoice Has Been Paid In Full'])
