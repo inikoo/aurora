@@ -7,6 +7,8 @@ include_once('../../classes/Family.php');
 include_once('../../classes/Product.php');
 include_once('../../classes/Supplier.php');
 include_once('../../classes/Order.php');
+include_once('../../classes/Invoice.php');
+include_once('../../classes/DeliveryNote.php');
 error_reporting(E_ALL);
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 if(!$con){print "Error can not connect with database server\n";exit;}
@@ -796,25 +798,26 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
 		       );
 	
-	$order->create_dn_simple($data_dn,$data_dn_transactions);
-	
+	//$order->create_dn_simple($data_dn,$data_dn_transactions);
+	$dn=new DeliveryNote('create',$data_dn,$data_dn_transactions,$order->id);
+
 	if($total_credit_value==0 and $header_data['total_topay']==0){
 
 	  //print "Zero value order ".$header_data['order_num']." \n";
 	  $order->no_payment_applicable();
 	  $order->load('totals');
 	}else{
-	  $order->create_invoice_simple($data_invoice,$data_invoice_transactions);
-	
+	  //$order->create_invoice_simple($data_invoice,$data_invoice_transactions);
+	  $invoice=new Invoice ('create',$data_invoice,$data_invoice_transactions,$order->id); 
 	  
 	foreach($credits as $credit){
 	  
 	  //	  print_r($header_data);
 	  $sql=sprintf("insert into `Order No Product Transaction Fact` values  (%s,%s,%s,%s,'Credit',%s,%.2f,%.2f,%s)"
 		       ,prepare_mysql($credit['parent_date'])
-		       ,prepare_mysql($order->data['Invoice Date'])
+		       ,prepare_mysql($invoice->data['Invoice Date'])
 		       ,$credit['parent_key']
-		       ,prepare_mysql($order->data['Invoice Key'])
+		       ,prepare_mysql($invoice->data['Invoice Key'])
 		       ,prepare_mysql($credit['description'])
 		       ,$credit['value']
 		       ,$tax_rate*$credit['value']
