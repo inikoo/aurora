@@ -20,7 +20,7 @@ $js_files=array(
 		$yui_path.'paginator/paginator-min.js',
 		$yui_path.'datasource/datasource-min.js',
 		$yui_path.'autocomplete/autocomplete-min.js',
-		$yui_path.'datatable/datatable-min.js',
+		$yui_path.'datatable/datatable.js',
 		$yui_path.'container/container-min.js',
 		$yui_path.'menu/menu-min.js',
 		$yui_path.'calendar/calendar-min.js',
@@ -146,6 +146,7 @@ foreach($interval_data['notaxable'] as $key=>$value){
 $smarty->assign('taxable',$interval_data['taxable']);
 $smarty->assign('notaxable',$interval_data['notaxable']);
 $smarty->assign('balance',$interval_data['balance']);
+
 
 
 $day_interval=get_time_interval(strtotime($from),(strtotime($to)))+1;

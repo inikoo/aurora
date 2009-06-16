@@ -48,11 +48,14 @@
 </p>
 <table class="report_sales1">
 <tr><td></td><td>{t}Invoices{/t}</td><td>{t}Net Sales{/t}</td><td>{t}Tax{/t}</td><td>{t}Refunds{/t}</td><td>{t}Refund Value{/t}</td></tr>
-<tr class="first"><td class="label">{$home}</td><td>{$invoices_home} <img id="invoices_home" style="vertical-align:middle;cursor:pointer" title="{t}Display home orders invoiced in this period{/t}"src="art/icons/magnify-clip.png"/></td><td>{$net_home}</td><td>{$tax_home}</td><td>{$orders_refund_home}</td><td>{$refund_home}</td></tr>
-<tr class="first"><td class="label">{t}Exports{/t}</td><td>{$invoices_nohome} <img id="invoices_nohome" style="vertical-align:middle;cursor:pointer" title="{t}Display export orders invoiced in this period{/t}"src="art/icons/magnify-clip.png"/></td><td>{$net_nohome}</td><td>{$tax_nohome}</td><td>{$refund_nohome}</td></tr>
+<tr class="first"><td class="label">{$home}</td><td>{$invoices_home} <img id="invoices_home" style="vertical-align:middle;cursor:pointer" title="{t}Display home orders invoiced in this period{/t}"src="art/icons/magnify-clip.png" /></td><td>{$net_home}</td><td>{$tax_home}</td><td>{$refund_invoices_home}</td><td>{$refund_home}</td></tr>
 
-<tr class="partners"><td>Partners</td><td class="label">{$invoices_p} <img id="invoices_partner" style="vertical-align:middle;cursor:pointer" title="{t}Display pertner's orders invoiced in this period{/t}"src="art/icons/magnify-clip.png"/></td><td>{$net_p}</td><td>{$tax_p}</td><td>{$refund_p}</td></tr>
-<tr class="total" ><td>Total</td><td>{$total_invoices} <img id="invoices_total" style="vertical-align:middle;cursor:pointer" title="{t}Display orders invoiced in this period{/t}"src="art/icons/magnify-clip.png"/></td><td>{$total_net}</td><td>{$total_tax}</td><td>{$refund}</td></tr>
+<tr class="first"><td class="label">{t}Exports{/t}</td><td>{$invoices_nohome} <img id="invoices_nohome" style="vertical-align:middle;cursor:pointer" title="{t}Display export orders invoiced in this period{/t}"src="art/icons/magnify-clip.png"/></td><td>{$net_nohome}</td><td>{$tax_nohome}</td><td>{$refund_invoices_nohome}</td><td>{$refund_nohome}</td></tr>
+
+<tr class="partners"><td>Partners</td><td class="label">{$invoices_p} <img id="invoices_partner" style="vertical-align:middle;cursor:pointer" title="{t}Display pertner's orders invoiced in this period{/t}"src="art/icons/magnify-clip.png"/></td><td>{$net_p}</td><td>{$tax_p}</td><td>{$refund_invoices_p}</td><td>{$refund_p}</td></tr>
+<tr class="first"><td class="label">{t}Unknown{/t}</td><td>{$invoices_unk} <img id="invoices_nohome" style="vertical-align:middle;cursor:pointer" title="{t}Display export orders invoiced in this period{/t}"src="art/icons/magnify-clip.png"/></td><td>{$net_unk}</td><td>{$tax_unk}</td><td>{$refund_invoices_unk}</td><td>{$refund_unk}</td></tr>
+
+<tr class="total" ><td>Total</td><td>{$total_invoices} <img id="invoices_total" style="vertical-align:middle;cursor:pointer" title="{t}Display orders invoiced in this period{/t}"src="art/icons/magnify-clip.png"/></td><td>{$total_net}</td><td>{$total_tax}</td><td>{$refund_invoices}</td><td>{$refund}</td></tr>
 <tr class="title"><td class="label">{t}Taxable Invoices{/t}</td></tr>
 {foreach from=$taxable   item=data key=rate}
 <tr class="geo"><td class="label">{$rate} {t}rate{/t}</td><td>{$data.invoices}</td><td>{$data.sales}</td><td>{$data.tax}</td></tr>
@@ -73,8 +76,10 @@
 
 </table>
 <h2>Money Balance</h2>
+<p>{t}Itemised net sales balances{/t}:</p>
+
 <table class="report_sales1 compact">
-<tr><td></td><td>{t}Orders{/t}</td><td>{t}Products{/t}</td><td>{t}Shipping{/t}</td><td>{t}Charges{/t}</td><td>{t}Subtotal{/t}</td></tr>
+<tr><td></td><td>{t}Orders{/t}</td><td>{t}Products{/t}</td><td>{t}Shipping{/t}</td><td>{t}Charges{/t}</td><td>{t}Unknown{/t}</td><td>{t}Total Net{/t}</td></tr>
 
 
 <tr class="first">
@@ -83,6 +88,7 @@
   <td>{$balance.invoices.products}</td>
   <td>{$balance.invoices.shipping}</td>
   <td>{$balance.invoices.charges}</td>
+  <td>{$balance.invoices.unk}</td>
   <td>{$balance.invoices.net}</td>
 </tr>
 {if $balance.replacements.orders!=0}
@@ -93,6 +99,8 @@
   <td>{$balance.replacements.products}</td>
   <td>{$balance.replacements.shipping}</td>
   <td>{$balance.replacements.charges}</td>
+<td></td>
+
   <td>{$balance.replacements.net}</td>
 </tr>
 {/if}
@@ -104,6 +112,7 @@
   <td>{$balance.shortage.products}</td>
   <td>{$balance.shortage.shipping}</td>
   <td>{$balance.shortage.charges}</td>
+<td></td>
   <td>{$balance.shortage.net}</td>
 </tr>
 {/if}
@@ -114,6 +123,7 @@
   <td>{$balance.followup.products}</td>
   <td>{$balance.followup.shipping}</td>
   <td>{$balance.followup.charges}</td>
+<td></td>
   <td>{$balance.followup.net}</td>
 </tr>
 {/if}
@@ -124,6 +134,7 @@
   <td>{$balance.samples.products}</td>
   <td>{$balance.samples.shipping}</td>
   <td>{$balance.samples.charges}</td>
+<td></td>
   <td>{$balance.samples.net}</td>
 </tr>
 {/if}
@@ -145,6 +156,7 @@
   <td>{$balance.invoices_negative.products}</td>
   <td>{$balance.invoices_negative.shipping}</td>
   <td>{$balance.invoices_negative.charges}</td>
+<td>{$balance.invoices_negative.unk}</td>
   <td>{$balance.invoices_negative.net}</td>
 </tr>
 {/if}
@@ -158,16 +170,47 @@
  <td>{$balance.invoices_zero.net}</td>
 </tr>{/if}
 <tr class="">
+ <td class="label">{t}Subtotal{/t}</td>
+  <td>{$balance.subtotal.orders}</td>
+  <td>{$balance.subtotal.products}</td>
+  <td>{$balance.subtotal.shipping}</td>
+  <td>{$balance.subtotal.charges}</td>
+<td>{$balance.subtotal.unk}</td>
+  <td>{$balance.total.net}</td>
+</tr>
+{if $balance.refund.orders!=0}
+<tr class="geo">
+ <td class="label">{t}Refunds{/t}</td>
+  <td>{$balance.refund.orders}</td>
+  <td>{$balance.refund.products}</td>
+  <td>{$balance.refund.shipping}</td>
+  <td>{$balance.refund.charges}</td>
+<td>{$balance.refund.unk}</td>
+ <td>{$balance.refund.net}</td>
+</tr>
+{/if}
+<tr class="">
+ <td class="label">{t}Credits{/t}</td>
+  <td>{$balance.credits.orders}</td>
+  <td>{$balance.credits.products}</td>
+  <td>{$balance.credits.shipping}</td>
+  <td>{$balance.credits.charges}</td>
+<td>{$balance.credits.unk}</td>
+  <td>{$balance.credits.net}</td>
+</tr>
+<tr class="">
  <td class="label">{t}Total{/t}</td>
   <td>{$balance.total.orders}</td>
   <td>{$balance.total.products}</td>
   <td>{$balance.total.shipping}</td>
   <td>{$balance.total.charges}</td>
-  <td>{$balance.total.net}</td>
+<td>{$balance.total.unk}</td>
+  <td>{$balance.total.net_balance}</td>
+</tr>
 
 
 </table>
-
+<p>{t}Itemised total balances{/t}:</p>
 <table class="report_sales1 compact">
 <tr><td></td><td>{t}Orders{/t}</td><td>{t}Net{/t}</td><td>{t}Tax{/t}</td><td>{t}Net (c){/t}</td><td>{t}Tax (c){/t}</td><td>{t}Total{/t}</td></tr>
 
@@ -176,11 +219,9 @@
   <td class="label">{t}Invoices{/t}</td>
   <td>{$balance.invoices.orders}</td>
   <td>{$balance.invoices.net}</td>
-  <td>{$balance.invoices.credit_net}</td>
-  <td>{$balance.invoices.net_balance}</td>
   <td>{$balance.invoices.tax}</td>
+  <td>{$balance.invoices.credit_net}</td>
   <td>{$balance.invoices.credit_tax}</td>
-  <td>{$balance.invoices.tax_balance}</td>
   <td>{$balance.invoices.total}</td>
 </tr>
 {if $balance.replacements.orders!=0}
@@ -288,14 +329,11 @@
 <tr>
 <td  class="label">Refunds</td>
   <td>{$balance.refund.orders}</td>
-  <td></td>
-  <td></td>
-  <td></td>
  <td></td>
  <td></td>
- <td>{$balance.refund.credit_net}</td>
-  <td>{$balance.refund.credit_tax}</td>
-  <td>{$balance.refund.total}</td>
+<td>{$balance.refund.credit_net}</td>
+<td>{$balance.refund.credit_tax}</td>
+<td>{$balance.refund.total}</td>
 </tr>
 {/if}
 {if $balance.refund_error.orders!=0}
@@ -314,9 +352,6 @@
 <tr class="">
  <td class="label">{t}Total{/t}</td>
   <td>{$balance.total.orders}</td>
-  <td>{$balance.total.products}</td>
-  <td>{$balance.total.shipping}</td>
-  <td>{$balance.total.charges}</td>
   <td>{$balance.total.net}</td>
   <td>{$balance.total.tax}</td>
   <td>{$balance.total.credit_net}</td>
@@ -383,7 +418,7 @@ The {$per_partner_sales} of the sales are due to our partners
 <tr class="tlabels"><td class="country">Country</td><td>Orders</td><td>Sales</td><td>Taxes</td><td></td></tr>
 {foreach name=outer item=countries from=$export_countries}
   <tr>
- <td class="country">{$countries.country}</td><td>{$countries.orders} <img onClick="show_invoices_country({$countries.id},'{$countries.name}')" style="vertical-align:middle;cursor:pointer" title="{t}Display {$countries.name} orders{/t}"src="art/icons/magnify-clip.png"/></td><td>{$countries.net}</td><td>{$countries.tax}</td><td>{$countries.share}</td><td>{if $countries.eu}<img src="art/flags/eu.gif">{/if}</td>
+ <td class="country">{$countries.country}</td><td>{$countries.orders} <img onClick="show_invoices_country('{$countries.2acode}','{$countries.name}')" style="vertical-align:middle;cursor:pointer" title="{t}Display {$countries.name} orders{/t}"src="art/icons/magnify-clip.png"/></td><td>{$countries.net}</td><td>{$countries.tax}</td><td>{$countries.share}</td><td>{if $countries.eu}<img src="art/flags/eu.gif">{/if}</td>
 
 </tr>
 {/foreach}

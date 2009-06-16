@@ -34,7 +34,7 @@ srand(1744);
 
 
 
-$sql="select * from  ci_orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed)  order by filename ";
+$sql="select * from  ci_orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and filename!='/media/sda3/share/PEDIDOS 08/60005902.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60008607.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60009626.xls' order by filename ";
 //$sql="select * from  ci_orders_data.orders where filename like '%refund.xls'   order by filename";
 //$sql="select * from  ci_orders_data.orders  where (filename like '%Orders2005%' or  filename like '%PEDIDOS%.xls') and (last_transcribed is NULL  or last_read>last_transcribed) and filename!='/media/sda3/share/PEDIDOS 08/60005902.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60008607.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60009626.xls' or filename='%60003600.xls'   order by date";
 //$sql="select * from  ci_orders_data.orders where  filename like '%60001200.xls'  order by filename";
@@ -64,7 +64,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     $result_test=mysql_query($sql);
     if($row_test=mysql_fetch_array($result_test, MYSQL_ASSOC)){
       if($row_test['num']==0){
-	//print "NEW $contador $order_data_id $filename \n";
+	print "NEW $contador $order_data_id $filename \n";
 
       }else{
 	$update=true;
@@ -180,6 +180,8 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
     // print_r($_customer_data);
      
+    print "tipo order: $tipo_order\n";
+
      foreach($_customer_data as $_key =>$value){
       $key=$_key;
       if($_key=='type')
@@ -888,6 +890,35 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	  if($header_data['total_topay']>0){
 	  $payment_method=parse_payment_method($header_data['pay_method']);
 	  
+	  
+	  $taxable='Yes';
+	  $tax_code='UNK';
+	  
+	  if($header_data['total_net']!=0){
+	    
+	    if($header_data['tax1']+$header_data['tax2']==0){
+	      $tax_code='EX0';
+	    }
+	    $tax_rate=($header_data['tax1']+$header_data['tax2'])/$header_data['total_net'];
+	    foreach($myconf['tax_rates'] as $_tax_code=>$_tax_rate){
+	      // print "$_tax_code => $_tax_rate $tax_rate\n ";
+	      $upper=1.1*$_tax_rate;
+	      $lower=0.9*$_tax_rate;
+	      if($tax_rate>=$lower and $tax_rate<=$upper){
+		$tax_code=$_tax_code;
+		break;
+	      }
+	    }
+	  }else{
+	  $tax_code='ZV';
+	  
+	  }
+	    
+	  $lag=(strtotime($date_inv)-strtotime($date_order))/24/3600;
+	  if($lag==0 or $lag<0)
+	    $lag='';
+
+
 	  $data_invoice=array(
 			      'Invoice Date'=>$date2
 			      ,'Invoice Public ID'=>$header_data['order_num']
@@ -907,7 +938,10 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 			       ,'Invoice XHTML Processed By'=>_('Unknown')
 			    ,'Invoice XHTML Charged By'=>_('Unknown')
 			    ,'Invoice Processed By Key'=>0
-			    ,'Invoice Charged By Key'=>0
+			      ,'Invoice Charged By Key'=>0
+			      ,'Invoice Tax Code'=>$tax_code
+			      ,'Invoice Taxable'=>$taxable
+			    ,'Invoice Dispatching Lag'=>$lag
 			      );
 	  $order->create_invoice_simple($data_invoice,$data_invoice_transactions);
 	  }else{
@@ -959,6 +993,36 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	if($header_data['total_topay']>0)
 	  $factor=-1.0;
 	//print_r($header_data);
+
+	$lag='';
+	$taxable='Yes';
+	$tax_code='UNK';
+	
+	if($header_data['total_net']!=0){
+	  
+	  if($header_data['tax1']+$header_data['tax2']==0){
+	    $tax_code='EX0';
+	  }
+	  
+	  $tax_rate=($header_data['tax1']+$header_data['tax2'])/$header_data['total_net'];
+	  foreach($myconf['tax_rates'] as $_tax_code=>$_tax_rate){
+	    // print "$_tax_code => $_tax_rate $tax_rate\n ";
+	    $upper=1.1*$_tax_rate;
+	    $lower=0.9*$_tax_rate;
+	    if($tax_rate>=$lower and $tax_rate<=$upper){
+	      $tax_code=$_tax_code;
+	      break;
+	    }
+	  }
+	  
+	  
+	  
+	}else{
+	  $tax_code='ZV';
+	  
+	}
+	
+
 	$data_invoice=array(
 			    'Invoice Date'=>$date_inv
 			    ,'Invoice Public ID'=>$header_data['order_num']
@@ -978,6 +1042,9 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 			    ,'Invoice XHTML Charged By'=>_('Unknown')
 			    ,'Invoice Processed By Key'=>0
 			    ,'Invoice Charged By Key'=>0
+			    ,'Invoice Tax Code'=>$tax_code
+			    ,'Invoice Taxable'=>$taxable
+			    ,'Invoice Dispatching Lag'=>$lag
 			    );
 	//print_r($data_invoice);
 
@@ -1083,7 +1150,12 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
       //      exit("refund");
 
-    }elseif($tipo_order==6 or $tipo_order==7){
+    }else if($tipo_order==11){
+       //TODO make quites and insert them in the customer space
+       $sql="update ci_orders_data.orders set last_transcribed=NOW() where id=".$order_data_id;
+    mysql_query($sql);
+    
+  }elseif($tipo_order==6 or $tipo_order==7){
       if($tipo_order==6)
 	$order_type='Replacement';
       else

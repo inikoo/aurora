@@ -2,7 +2,7 @@
 <div id="bd" >
   <div id="yui-main">
     <div class="yui-b">
-asdasdasdasdas
+
       <div class="yui-b" style="border:1px solid #ccc;text-align:left;padding:10px;margin: 30px 0 10px 0">
 
        <div style="xborder:1px solid #ddd;width:350px;float:left"> 

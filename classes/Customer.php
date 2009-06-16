@@ -1331,7 +1331,7 @@ class Customer extends DB_Table{
 
  function get($key,$arg1=false){
 
-
+   
 
    if(array_key_exists($key,$this->data)){
      return $this->data[$key]; 
@@ -1442,9 +1442,7 @@ class Customer extends DB_Table{
 	return $ship_to;
       }
     
-      print "Warning no ship to key $ship_to_key un customer*** .php\n";
-     
-       exit;
+      return false;
      break;
 
      //   case('customer main address key')
@@ -1472,8 +1470,8 @@ class Customer extends DB_Table{
    if(isset($this->data[$_key]))
      return $this->data[$_key];
 
-   print "Error ->$key not found in get,* from Customer\n";
-   exit;
+   //print "Error ->$key not found in get,* from Customer\n";
+   //exit;
    return false;
 
  }
