@@ -601,11 +601,14 @@ class Order {
 	
 	function no_payment_applicable() {
 		
+
+	 
+
 		$this->data ['Order Current Payment State'] = 'No Applicable';
 		$this->data ['Order Current Dispatch State'] = 'Dispached';
 		if ($this->data ['Order Type'] == 'Order') {
 			$dn_txt = "No value order, Send";
-			$xhtml = sprintf ( '%s <a href="dn.php?id=%d">%s</a>', $dn_txt, $this->data ['Delivery Note Key'], $this->data ['Delivery Note ID'] );
+			$xhtml =$this->load('xhtml delibery notes',$dn_txt);
 			$sql = sprintf ( "update `Order Dimension` set `Order Current XHTML State`=%s where `Order Key`=%d", prepare_mysql ( $xhtml ), $this->id );
 			if (! mysql_query ( $sql ))
 				exit ( "arror can not update no_payment_applicable\n" );
@@ -640,8 +643,8 @@ class Order {
 	  global $myconf;
 	  
 	  $this->data ['Invoice Items Gross Amount'] =0;
- $this->data ['Invoice Items Discount Amount'] =0;
-
+	  $this->data ['Invoice Items Discount Amount'] =0;
+	  
 	  $this->data ['Invoice Date'] = $invoice_data ['Invoice Date'];
 	  $this->data ['Invoice Public ID'] = $invoice_data ['Invoice Public ID'];
 	  $this->data ['Invoice File As'] = $invoice_data ['Invoice File As'];
@@ -651,21 +654,21 @@ class Order {
 	  $this->data ['Invoice Main Source Type'] = $this->data ['Order Main Source Type'];
 	  $this->data ['Invoice Customer Key'] = $this->data ['Order Customer Key'];
 	  $this->data ['Invoice Customer Name'] = $this->data ['Order Customer Name'];
-		//TODO
-		$this->data ['Invoice XHTML Address'] = '';
-		$this->data ['Invoice XHTML Ship Tos'] = '';
-		$this->data ['Invoice Shipping Net Amount'] = $invoice_data ['Invoice Shipping Net Amount'];
-		$this->data ['Invoice Charges Net Amount'] = $invoice_data ['Invoice Charges Net Amount'];
-
-
-		if(isset($myconf['tax_rates'][$invoice_data ['Invoice Tax Code']]))
-		  $tax_rate=$myconf['tax_rates'][$invoice_data ['Invoice Tax Code']];
-		else
-		  $tax_rate= $invoice_data ['tax_rate'];
-
-		$this->data ['Invoice Shipping Tax Amount'] = $invoice_data ['Invoice Shipping Net Amount'] * (1+$tax_rate);
+	  //TODO
+	  $this->data ['Invoice XHTML Address'] = '';
+	  $this->data ['Invoice XHTML Ship Tos'] = '';
+	  $this->data ['Invoice Shipping Net Amount'] = $invoice_data ['Invoice Shipping Net Amount'];
+	  $this->data ['Invoice Charges Net Amount'] = $invoice_data ['Invoice Charges Net Amount'];
+	  
+	  
+	  if(isset($myconf['tax_rates'][$invoice_data ['Invoice Tax Code']]))
+	    $tax_rate=$myconf['tax_rates'][$invoice_data ['Invoice Tax Code']];
+	  else
+	    $tax_rate= $invoice_data ['tax_rate'];
+	  
+	  $this->data ['Invoice Shipping Tax Amount'] = $invoice_data ['Invoice Shipping Net Amount'] * (1+$tax_rate);
 		$this->data ['Invoice Charges Tax Amount'] = $invoice_data ['Invoice Charges Net Amount'] * (1+$tax_rate);
-	
+		
 		
 		$this->data ['Invoice Metadata'] = $this->data ['Order Original Metadata'];
 		$this->data ['Invoice Has Been Paid In Full'] = $invoice_data ['Invoice Has Been Paid In Full'];
@@ -1842,22 +1845,35 @@ class Order {
 	}
 	
 	function load($key = '', $args = '') {
-		switch ($key) {
-			case ('totals') :
-				
-				if ($this->data ['Order Current Payment State'] == 'Waiting Payment') {
-					
-					$sql = "select sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) as discount, sum(`Invoice Transaction Shipping Amount`) as shipping,sum(`Invoice Transaction Charges Amount`) as charges ,sum(`Invoice Transaction Total Tax Amount`) as tax   from `Order Transaction Fact` where `Order Key`=" . $this->data ['Order Key'];
-					//	print "$sql\n";
-					$result = mysql_query ( $sql );
-					if ($row = mysql_fetch_array ( $result, MYSQL_ASSOC )) {
-						$total = $row ['gross'] + $row ['tax'] + $row ['shipping'] + $row ['charges'] - $row ['discount'] + $this->data ['Order Items Adjust Amount'];
+	  switch ($key) {
+	  case('xhtml delibery notes'):
+
+	    $sql=sprintf("select `Delivery Note Key` from `Order Delivery Note Bridge` where `Order Key`=%d",$this->id);
+	    $result = mysql_query ( $sql );
+	    $xhtml=$args;
+	    while ($row = mysql_fetch_array ( $result, MYSQL_ASSOC )) {
+	      $dn=new DeliveryNote($row['Delivery Note Key']);
+	      $xhtml .= sprintf ( ' <a href="dn.php?id=%d">%s</a>,', $args, $dn->data ['Delivery Note Key'], $dn->data ['Delivery Note ID'] );
+
+	      }
+	    $xhtml=preg_replace('/\,$/','',$xhtml);
+	    $xhtml=_trim($xhtml);
+	    return $xhtml;
+	  case ('totals') :
+	    
+	    if ($this->data ['Order Current Payment State'] == 'Waiting Payment') {
+	      
+	      $sql = "select sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) as discount, sum(`Invoice Transaction Shipping Amount`) as shipping,sum(`Invoice Transaction Charges Amount`) as charges ,sum(`Invoice Transaction Total Tax Amount`) as tax   from `Order Transaction Fact` where `Order Key`=" . $this->data ['Order Key'];
+	      //	print "$sql\n";
+	      $result = mysql_query ( $sql );
+	      if ($row = mysql_fetch_array ( $result, MYSQL_ASSOC )) {
+		$total = $row ['gross'] + $row ['tax'] + $row ['shipping'] + $row ['charges'] - $row ['discount'] + $this->data ['Order Items Adjust Amount'];
 						
-						$this->data ['Order Gross Amount'] = $row ['gross'];
-						$this->data ['Order Discount Amount'] = $row ['discount'];
-						$this->data ['Order Net Amount'] = $row ['gross'] - $row ['discount'] + $this->data ['Order Items Adjust Amount'];
-						$this->data ['Order Total Tax Amount'] = $this->data ['Order Net Amount'] * $this->tax_rate;
-						$this->data ['Order Shipping Amount'] = $row ['shipping'];
+		$this->data ['Order Gross Amount'] = $row ['gross'];
+		$this->data ['Order Discount Amount'] = $row ['discount'];
+		$this->data ['Order Net Amount'] = $row ['gross'] - $row ['discount'] + $this->data ['Order Items Adjust Amount'];
+		$this->data ['Order Total Tax Amount'] = $this->data ['Order Net Amount'] * $this->tax_rate;
+		$this->data ['Order Shipping Amount'] = $row ['shipping'];
 						$this->data ['Order Charges Amount'] = $row ['charges'];
 						$this->data ['Order Total Amount'] = $this->data ['Order Total Tax Amount'] + $this->data ['Order Net Amount'];
 						$this->data ['Order Total To Pay Amount'] = $this->data ['Order Total Amount'];
