@@ -1,4 +1,4 @@
-#<?
+<?
 /*
  File: Invoice.php 
 
@@ -17,12 +17,12 @@
 include_once('DB_Table.php');
 
 include_once('Order.php');
+
 include_once('DeliveryNote.php');
 
 /* class: Invoice
  Class to manage the *Invoice Dimension* table
 */
-
 
 
 class Invoice extends DB_Table {
@@ -286,21 +286,22 @@ class Invoice extends DB_Table {
     $this->data ['Invoice Items Tax Amount'] = $this->data ['Invoice Total Net Amount'] * $invoice_data ['tax_rate'];
     $this->distribute_costs ();
     
-    $sql = sprintf ( "update `Invoice Dimension` set `Invoice Items Net Amount`=%.2f ,`Invoice Items Adjust Amount`=%.2f , `Invoice Items Gross Amount`=%.2f ,`Invoice Items Discount Amount`=%.2f  ,`Invoice Total Net Amount`=%.2f,`Invoice Items Tax Amount`=%.2f where `Invoice Key`=%d"
+    $sql = sprintf ( "update `Invoice Dimension` set `Invoice Items Net Amount`=%.2f ,`Invoice Items Adjust Amount`=%.2f , `Invoice Items Gross Amount`=%.2f ,`Invoice Items Discount Amount`=%.2f  ,`Invoice Total Net Amount`=%.2f,`Invoice Items Tax Amount`=%.2f ,`Invoice XHTML Delivery Notes`=%s,`Invoice XHTML Ship Tos`=%s,`Invoice XHTML Orders`=%s where `Invoice Key`=%d"
 		     , $this->data ['Invoice Items Net Amount']
 		     , $this->data ['Invoice Adjust Amount']
 		     , $amount
 		     , $discounts
 		     , $this->data ['Invoice Total Net Amount']
 		     , $this->data ['Invoice Items Tax Amount']
-		     , $this->data ['Invoice XHTML Delivery Notes']
-		     , $this->data ['Invoice XHTML Ship Tos']
-		     , $this->data ['Invoice XHTML Orders']
+		     , prepare_mysql($this->data ['Invoice XHTML Delivery Notes'])
+		     , prepare_mysql($this->data ['Invoice XHTML Ship Tos'])
+		     , prepare_mysql($this->data ['Invoice XHTML Orders'])
 
 		     , $this->data ['Invoice Key'] 
 		     );
     
     // print $sql;
+    // exit;
     if (! mysql_query ( $sql ))
       exit ( "$sql\n xcan not update invoice dimension after inv\n" );
     

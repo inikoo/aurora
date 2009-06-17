@@ -1,4 +1,4 @@
-#<?
+<?
 /*
  File: Delivery Note.php 
 
@@ -17,6 +17,7 @@
 include_once('DB_Table.php');
 
 include_once('Order.php');
+
 include_once('Product.php');
 
 /* class: DeliveryNote
@@ -136,13 +137,12 @@ class DeliveryNote extends DB_Table {
     if($dn_data['Delivery Note Has Shipping']){
 
       $customer=new Customer($this->data ['Delivery Note Customer Key']);
-      print_r($customer);
-      exit;
+
       $this->data ['Delivery Note Ship To Key'] =$customer->data['Customer Main Ship To Key'];
       
       if($this->data ['Delivery Note Ship To Key']){
-	$ship_to=new ShipTo($this->data ['Delivery Note Ship To Key']);
-	$this->data ['Delivery Note XHTML Ship To'] = $ship_to->display('xhtml');
+	$ship_to=new Ship_To($this->data ['Delivery Note Ship To Key']);
+	$this->data ['Delivery Note XHTML Ship To'] = $ship_to->data['Ship To XHTML Address'];
       }
     }
 

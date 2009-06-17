@@ -23,7 +23,7 @@ include_once('Store.php');
 
 
 class product{
- 		
+
   public $product=array();
   public $categories=array();
   public $parents=array();
@@ -54,7 +54,7 @@ class product{
    a1 - Tag or Product Key
   */
   function Product($a1,$a2=false,$a3=false) {
-
+    
     if(is_numeric($a1) and !$a2){
       $this->get_data('id',$a1);
     }
@@ -2707,6 +2707,7 @@ $y_days=count($y_days);
        $this->data['Product Same Code 1 Week Acc Quantity Invoiced']=$row['invoiced'];
        $this->data['Product Same Code 1 Week Acc Quantity Delivered']=$row['delivered'];
      }else{
+
 	 $this->data['Product Same Code 1 Week Acc Invoiced Gross Amount']=0;
 	 $this->data['Product Same Code 1 Week Acc Invoiced Discount Amount']=0;
 	 $this->data['Product Same Code 1 Week Acc Profit']=0;$this->data['Product Same Code 1 Week Acc Invoiced Amount']=0;

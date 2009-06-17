@@ -14,6 +14,7 @@
 
 
 
+
 */
 include_once('DB_Table.php');
 include_once('Country.php');
@@ -1362,29 +1363,35 @@ class Address extends DB_Table{
 	$words=preg_split('/\s+/',$raw_data['Address Line 1']);
 
 	$num_words=count($words);
-
-	if(Address::is_country_d1(
-				  $words[$num_words-1],
-				  $data['Address Country Key']
-				  )){
-	  $data['Address Country Primary Division']=array_pop($words);
-	  $num_words=count($words);
+	if($num_words>1){
+	  if(Address::is_country_d1(
+				    $words[$num_words-1],
+				    $data['Address Country Key']
+				    )){
+	    $data['Address Country Primary Division']=array_pop($words);
+	    $num_words=count($words);
+	  }
 	}
-	if(Address::is_country_d2(
-				  $words[$num_words-1],
-				  $data['Address Country Key']
-				  )){
-	  $data['Address Country Secondary Division']=array_pop($words);
-	  $num_words=count($words);
+	if($num_words>1){
+	  if(Address::is_country_d2(
+				    $words[$num_words-1],
+				    $data['Address Country Key']
+				    )){
+	    $data['Address Country Secondary Division']=array_pop($words);
+	    $num_words=count($words);
+	  }
 	}
-	if(Address::is_town(
-			    $words[$num_words-1],
-			    $data['Address Country Key']
-			    )){
-	  $data['Address Town']=array_pop($words);
-	  $num_words=count($words);
+	if($num_words>1){
+	  if(Address::is_town(
+			      $words[$num_words-1],
+			      $data['Address Country Key']
+			      )){
+	    $data['Address Town']=array_pop($words);
+	    $num_words=count($words);
+	  }
 	}
 	$raw_data['Address Line 1']=join(' ',$words);
+
 
 
       }

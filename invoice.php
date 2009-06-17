@@ -18,6 +18,7 @@ if(!$invoice=new Invoice($invoice_id))
   exit(_('Error, invoice not found'));
 
 
+
 $customer=new Customer($invoice->data['Invoice Customer Key']);
 
 //print_r($invoice->data);

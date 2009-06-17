@@ -39,7 +39,7 @@ srand(1744);
 $sql="select * from  ci_orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and filename!='/media/sda3/share/PEDIDOS 08/60005902.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60008607.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60009626.xls' order by filename ";
 //$sql="select * from  ci_orders_data.orders where filename like '%refund.xls'   order by filename";
 //$sql="select * from  ci_orders_data.orders  where (filename like '%Orders2005%' or  filename like '%PEDIDOS%.xls') and (last_transcribed is NULL  or last_read>last_transcribed) and filename!='/media/sda3/share/PEDIDOS 08/60005902.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60008607.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60009626.xls' or filename='%60003600.xls'   order by date";
-//$sql="select * from  ci_orders_data.orders where  filename like '%60001200.xls'  order by filename";
+//$sql="select * from  ci_orders_data.orders where  filename like '%60009728.xls'  order by filename";
 $contador=0;
 //print $sql;
 $res=mysql_query($sql);
@@ -66,7 +66,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     $result_test=mysql_query($sql);
     if($row_test=mysql_fetch_array($result_test, MYSQL_ASSOC)){
       if($row_test['num']==0){
-	print "NEW $contador $order_data_id $filename \n";
+	//print "NEW $contador $order_data_id $filename \n";
 
       }else{
 	$update=true;
@@ -80,7 +80,10 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     
 
     $header=mb_unserialize($row['header']);
-    // $header=preg_replace('/\xC3\xA3\xC2\xB1/',"\xc3\xB1",$header);
+ 
+    // print_r($header);
+
+   // $header=preg_replace('/\xC3\xA3\xC2\xB1/',"\xc3\xB1",$header);
     //foreach($header as $key=>$val){
       // foreach($val as $key2 =>$value){
 	//$new_val=preg_replace('/\xC3\xA3\xC2\xB1/',"\xc3\xB1",$value);
@@ -149,8 +152,27 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     // }
 
     list($date_index,$date_order,$date_inv)=get_dates($row2['timestamp'],$header_data,$tipo_order,true);
-    if($date_order=='')$date_index2=$date_index;else$date_index2=$date_order;
+    
 
+    if(strtotime($date_order)>strtotime($date_inv)){
+      
+      
+      //$date2=date("Y-m-d H:i:s",strtotime($date_order.' +1 hour'));
+      //print "Warning (Fecha Factura anterior Fecha Orden) $filename $date_order  $date2 \n";
+      $date_inv=date("Y-m-d H:i:s",strtotime($date_order.' +1 hour'));
+      
+      // print "new date: ".$date2."\n";
+      
+    }
+
+
+
+
+    if($date_order=='')
+      $date_index2=$date_index;
+    else
+      $date_index2=$date_order;
+    
     if($tipo_order==2  or $tipo_order==6 or $tipo_order==7 or $tipo_order==9 ){
       $date2=$date_inv;
     }elseif($tipo_order==4  or   $tipo_order==5 or    $tipo_order==8  )
@@ -174,15 +196,15 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       
     }
     
-    if($_customer_data['company_name']==$_customer_data['contact_name'])
-      print "Same CC name: ".$_customer_data['company_name']."\n";
+    //if($_customer_data['company_name']==$_customer_data['contact_name'])
+    // print "Same CC name: ".$_customer_data['company_name']."\n";
     
     
 
 
     // print_r($_customer_data);
      
-    print "tipo order: $tipo_order\n";
+    //    print "tipo order: $tipo_order\n";
 
      foreach($_customer_data as $_key =>$value){
       $key=$_key;
@@ -242,8 +264,11 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       
 
       //$date2=date("Y-m-d H:i:s",strtotime($date_order.' +1 hour'));
-      print "Warning (Fecha Factura anterior Fecha Orden) $filename $date_order  $date2 ";
-      continue;
+      print "Warning (Fecha Factura anterior Fecha Orden) $filename $date_order  $date2 \n";
+      $date2=date("Y-m-d H:i:s",strtotime($date_order.' +8 hour'));
+      
+      print "new date: ".$date2."\n";
+      
     }
      if(strtotime($date_order)>strtotime('today')   ){
       
@@ -508,7 +533,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 			     ,'discount_amount'=>$transaction['order']*$transaction['price']*$transaction['discount']
 			     ,'units_per_case'=>$product->data['Product Units Per Case']
 			     );
-
+      
       //      print_r($transaction);
 
       $net_amount=round(($transaction['order']-$transaction['reorder'])*$transaction['price']*(1-$transaction['discount']),2 );
@@ -808,8 +833,9 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	  $order->load('totals');
 	}else{
 	  //$order->create_invoice_simple($data_invoice,$data_invoice_transactions);
+	       
 	  $invoice=new Invoice ('create',$data_invoice,$data_invoice_transactions,$order->id); 
-	  
+
 	foreach($credits as $credit){
 	  
 	  //	  print_r($header_data);
@@ -888,8 +914,8 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 		       );
 	  
 
-	  $order->create_dn_simple($data_dn,$data_dn_transactions);
-	  
+	//  $order->create_dn_simple($data_dn,$data_dn_transactions);
+	  $dn=new DeliveryNote('create',$data_dn,$data_dn_transactions,$order->id);
 	  if($header_data['total_topay']>0){
 	  $payment_method=parse_payment_method($header_data['pay_method']);
 	  
@@ -946,7 +972,9 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 			      ,'Invoice Taxable'=>$taxable
 			    ,'Invoice Dispatching Lag'=>$lag
 			      );
-	  $order->create_invoice_simple($data_invoice,$data_invoice_transactions);
+	  //$order->create_invoice_simple($data_invoice,$data_invoice_transactions);
+	    $invoice=new Invoice ('create',$data_invoice,$data_invoice_transactions,$order->id); 
+
 	  }else{
 
 	    $order->no_payment_applicable();
