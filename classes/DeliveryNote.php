@@ -112,9 +112,9 @@ class DeliveryNote extends DB_Table {
     $this->data ['Delivery Note File As'] = $dn_data ['Delivery Note File As'];
     $this->data ['Delivery Note Customer Key'] = $order->data ['Order Customer Key'];
     $this->data ['Delivery Note Customer Name'] = $order->data ['Order Customer Name'];
-    $this->data ['Delivery Note XHTML Ship Tos'] = $order->data ['Order XHTML Ship Tos'];
-    //TODO
-    $this->data ['Delivery Note Ship To Key'] = 0;
+
+   
+
     $this->data ['Delivery Note Metadata'] = $order->data ['Order Original Metadata'];
     $this->data ['Delivery Note Weight'] = $dn_data ['Delivery Note Weight'];
     $this->data ['Delivery Note XHTML Pickers'] = $dn_data ['Delivery Note XHTML Pickers'];
@@ -126,18 +126,42 @@ class DeliveryNote extends DB_Table {
     $this->data ['Delivery Note Type'] = $dn_data ['Delivery Note Type'];
     $this->data ['Delivery Note Title'] = $dn_data ['Delivery Note Title'];
 		
+
+
+    //get tyhe customer mos rtecent ship to 
+ 
+    $this->data ['Delivery Note XHTML Ship To'] = '';
+    $this->data ['Delivery Note Ship To Key'] = 0;
+
+    if($dn_data['Delivery Note Has Shipping']){
+
+      $customer=new Customer($this->data ['Delivery Note Customer Key']);
+      print_r($customer);
+      exit;
+      $this->data ['Delivery Note Ship To Key'] =$customer->data['Customer Main Ship To Key'];
+      
+      if($this->data ['Delivery Note Ship To Key']){
+	$ship_to=new ShipTo($this->data ['Delivery Note Ship To Key']);
+	$this->data ['Delivery Note XHTML Ship To'] = $ship_to->display('xhtml');
+      }
+    }
+
     $this->create_header ();
-		
-    $sql = sprintf ( "select `Ship To Country Key` from  `Ship To Dimension` where `Ship To Key`=%d", $this->data ['Delivery Note Ship To Key'] );
-    $res = mysql_query ( $sql );
-    if ($row2 = mysql_fetch_array ( $res, MYSQL_ASSOC )) {
-      $this->destination_country_key = $row2 ['Ship To Country Key'];
-    } else
-      $this->destination_country_key = '0';
-		
-    $sql = sprintf ( "insert into `Order Delivery Note Bridge` values (%d,%d)", $order->data ['Order Key'], $this->data ['Delivery Note Key'] );
-    if (! mysql_query ( $sql ))
-      exit ( "$sql  Errro can no insert order dn  bridge" );
+    $this->destination_country_key = '0';
+    if($this->data ['Delivery Note Ship To Key']){
+      $sql = sprintf ( "select `Ship To Country Key` from  `Ship To Dimension` where `Ship To Key`=%d", $this->data ['Delivery Note Ship To Key'] );
+      $res = mysql_query ( $sql );
+      if ($row2 = mysql_fetch_array ( $res, MYSQL_ASSOC )) {
+	$this->destination_country_key = $row2 ['Ship To Country Key'];
+      } else
+	$this->destination_country_key = '0';
+    }		
+
+
+
+    // $sql = sprintf ( "insert into `Order Delivery Note Bridge` values (%d,%d)", $order->data ['Order Key'], $this->data ['Delivery Note Key'] );
+    //if (! mysql_query ( $sql ))
+    // exit ( "$sql  Errro can no insert order dn  bridge" );
 		
     $line_number = 0;
     $amount = 0;
@@ -385,6 +409,9 @@ class DeliveryNote extends DB_Table {
       //  }
 			
 
+
+
+
       $lag = (strtotime ( $this->data ['Delivery Note Date'] ) - strtotime ( $order->data ['Order Date'] )) / 3600 / 24;
       $sql = sprintf ( "update  `Order Transaction Fact` set `Estimated Weight`=%s,`Actual Shipping Date`=%s,`Order Last Updated Date`=%s, `Delivery Note ID`=%s,`Delivery Note Line`=%d,`Current Autorized to Sell Quantity`=%s ,`Delivery Note Quantity`=%s ,`Shipped Quantity`=%s ,`No Shipped Due Out of Stock`=%s ,`No Shipped Due No Authorized`=%s ,`No Shipped Due Not Found`=%s ,`No Shipped Due Other`=%s ,`Cost Supplier`=%s,`Cost Manufacure`=%s,`Cost Storing`=%s,`Cost Handing`=%s,`Cost Shipping`=%s,`Picking Advance`=100 ,`Packing Advance`=100 ,`Picker Key`=%d,`Packer Key`=%d ,`Delivery Note Key`=%d ,`Destination Country Key`=%s,`Backlog to Shipping Lag`=%f where `Order Key`=%d and  `Order Line`=%d", prepare_mysql ( $data ['Estimated Weight'] ), prepare_mysql ( $this->data ['Delivery Note Date'] ), prepare_mysql ( $this->data ['Delivery Note Date'] ), prepare_mysql ( $this->data ['Delivery Note ID'] ), $line_number, $data ['Current Autorized to Sell Quantity'], $data ['Delivery Note Quantity'], prepare_mysql ( $data ['Shipped Quantity'] ), prepare_mysql ( $data ['No Shipped Due Out of Stock'] ), prepare_mysql ( $data ['No Shipped Due No Authorized'] ), prepare_mysql ( $data ['No Shipped Due Not Found'] ), prepare_mysql ( $data ['No Shipped Due Other'] ), prepare_mysql ( $cost_supplier ), prepare_mysql ( $cost_manu ), prepare_mysql ( $cost_storing ), prepare_mysql ( $cost_hand ), prepare_mysql ( $cost_shipping ), $picking_key, $packing_key, $this->data ['Delivery Note Key'], $this->destination_country_key, $lag, $order->data ['Order Key'], $line_number );
       //    if($cost_supplier==''){
@@ -421,17 +448,25 @@ class DeliveryNote extends DB_Table {
 		
     $xhtml = sprintf ( '%s, %s <a href="dn.php?id=%d">%s</a>', $order->data ['Order Type'], $dn_txt, $this->data ['Delivery Note Key'], $this->data ['Delivery Note ID'] );
 		
-    $sql = sprintf ( "update `Order Dimension` set `Order Current Dispatch State`='%s' ,`Order Current XHTML State`=%s ,`Order XHTML Delivery Notes`=%s   where `Order Key`=%d", 'Ready to Pick', prepare_mysql ( $xhtml ), prepare_mysql ( $xhtml ), $order->data ['Order Key'] )
+    $sql = sprintf ( "update `Order Dimension` set `Order Current Dispatch State`='%s' ,`Order Current XHTML State`=%s ,`Order XHTML Delivery Notes`=%s   where `Order Key`=%d", 'Ready to Pick', prepare_mysql ( $xhtml ), prepare_mysql ( $xhtml ), $order->data ['Order Key'] );
+    mysql_query ( $sql );
 
-      ;
-		
+    // exit ( "$sql\n  can not update order dimension after dn\n" );	
+    $this->load('orders');
+    $sql = sprintf ( "delete from  `Order Delivery Note  Bridge` where `Delivery Note Key`=%d",$this->id);
+    mysql_query ( $sql );
+    foreach($this->orders as $key=>$ord){
+      $sql = sprintf ( "insert into `Order Delivery Note Bridge` values (%d,%d)", $this->id, $key );
+      mysql_query ( $sql );
+    }
+
+
+	
+  
+
+    $sql = sprintf ( "update `Delivery Note Dimension` set `Delivery Note XHTML Orders`=%s ,`Delivery Note Distinct Items`=%d    where `Delivery Note Key`=%d", prepare_mysql ( $this->data ['Delivery Note XHTML Orders'] ), $line_number, $this->data ['Delivery Note Key'] );
     if (! mysql_query ( $sql ))
-      exit ( "can not update order dimension after dn\n" );
-    $order_txt = 'Order';
-    $orders = sprintf ( '%s <a href="order.php?id=%d">%s</a>', $order_txt, $this->id, $order->data ['Order Public ID'] );
-    $sql = sprintf ( "update `Delivery Note Dimension` set `Delivery Note XHTML Orders`=%s ,`Delivery Note Distinct Items`=%d    where `Delivery Note Key`=%d", prepare_mysql ( $orders ), $line_number, $this->data ['Delivery Note Key'] );
-    if (! mysql_query ( $sql ))
-      exit ( "$sql\n can not update order dimension after dn\n" );
+      exit ( "$sql\n can not update dn\n" );
    
   }
      
@@ -441,13 +476,14 @@ class DeliveryNote extends DB_Table {
 
   function create_header() {
 		
-    $sql = sprintf ( "insert into `Delivery Note Dimension` (`Delivery Note XHTML Orders`,`Delivery Note XHTML Invoices`,`Delivery Note Date`,`Delivery Note ID`,`Delivery Note File As`,`Delivery Note Customer Key`,`Delivery Note Customer Name`,`Delivery Note XHTML Ship Tos`,`Delivery Note Ship To Key`,`Delivery Note Metadata`,`Delivery Note Weight`,`Delivery Note XHTML Pickers`,`Delivery Note Number Pickers`,`Delivery Note XHTML Packers`,`Delivery Note Number Packers`,`Delivery Note Type`,`Delivery Note Title`) values ('','',%s,%s,%s,%s,%s,%s,%s,%s,%f,%s,%d,%s,%d,%s,%s)", prepare_mysql ( $this->data ['Delivery Note Date'] ), prepare_mysql ( $this->data ['Delivery Note ID'] ), prepare_mysql ( $this->data ['Delivery Note File As'] ), prepare_mysql ( $this->data ['Delivery Note Customer Key'] ), prepare_mysql ( $this->data ['Delivery Note Customer Name'] ), prepare_mysql ( $this->data ['Delivery Note XHTML Ship Tos'] ), prepare_mysql ( $this->data ['Delivery Note Ship To Key'] ), prepare_mysql ( $this->data ['Delivery Note Metadata'] ), $this->data ['Delivery Note Weight'], prepare_mysql ( $this->data ['Delivery Note XHTML Pickers'] ), $this->data ['Delivery Note Number Pickers'], prepare_mysql ( $this->data ['Delivery Note XHTML Packers'] ), $this->data ['Delivery Note Number Packers'], prepare_mysql ( $this->data ['Delivery Note Type'] ), prepare_mysql ( $this->data ['Delivery Note Title'] ) )
+    $sql = sprintf ( "insert into `Delivery Note Dimension` (`Delivery Note XHTML Orders`,`Delivery Note XHTML Invoices`,`Delivery Note Date`,`Delivery Note ID`,`Delivery Note File As`,`Delivery Note Customer Key`,`Delivery Note Customer Name`,`Delivery Note XHTML Ship To`,`Delivery Note Ship To Key`,`Delivery Note Metadata`,`Delivery Note Weight`,`Delivery Note XHTML Pickers`,`Delivery Note Number Pickers`,`Delivery Note XHTML Packers`,`Delivery Note Number Packers`,`Delivery Note Type`,`Delivery Note Title`) values ('','',%s,%s,%s,%s,%s,%s,%s,%s,%f,%s,%d,%s,%d,%s,%s)", prepare_mysql ( $this->data ['Delivery Note Date'] ), prepare_mysql ( $this->data ['Delivery Note ID'] ), prepare_mysql ( $this->data ['Delivery Note File As'] ), prepare_mysql ( $this->data ['Delivery Note Customer Key'] ), prepare_mysql ( $this->data ['Delivery Note Customer Name'] ), prepare_mysql ( $this->data ['Delivery Note XHTML Ship To'] ), prepare_mysql ( $this->data ['Delivery Note Ship To Key'] ), prepare_mysql ( $this->data ['Delivery Note Metadata'] ), $this->data ['Delivery Note Weight'], prepare_mysql ( $this->data ['Delivery Note XHTML Pickers'] ), $this->data ['Delivery Note Number Pickers'], prepare_mysql ( $this->data ['Delivery Note XHTML Packers'] ), $this->data ['Delivery Note Number Packers'], prepare_mysql ( $this->data ['Delivery Note Type'] ), prepare_mysql ( $this->data ['Delivery Note Title'] ) )
 
       ;
 		
     if (mysql_query ( $sql )) {
 			
       $this->data ['Delivery Note Key'] = mysql_insert_id ();
+      $this->id=$this->data ['Delivery Note Key'];
     } else {
       print "$sql \n Error can not create dn header";
       exit ();
@@ -512,6 +548,65 @@ class DeliveryNote extends DB_Table {
 
 
 
+
+  function load($key,$args=false){
+    global $myconf;
+    switch($key){
+    case('orders'):
+      
+      $sql=sprintf("select `Order Key` from `Order Transaction Fact` where `Delivery Note Key`=%d group by `Order Key`",$this->id);
+      //print $sql;
+      $res = mysql_query ( $sql );
+     $this->orders=array();
+     while ($row = mysql_fetch_array ( $res, MYSQL_ASSOC )) {
+       if($row['Order Key']){
+	 $this->orders[$row['Order Key']]=new Order($row['Order Key']);
+       }
+       
+     }
+     $this->data ['Delivery Note XHTML Orders'] ='';
+     foreach($this->orders as $order){
+       $this->data ['Delivery Note XHTML Orders'] .= sprintf ( '%s <a href="order.php?id=%d">%s</a>, ', $myconf['order_id_prefix'], $order->data ['Order Key'], $order->data ['Order Public ID'] );
+     }     
+     $this->data ['Delivery Note XHTML Orders'] =_trim(preg_replace('/\, $/','',$this->data ['Delivery Note XHTML Orders']));
+     break;  
+      case('invoices'):
+      
+      $sql=sprintf("select `Invoice Key` from `Order Transaction Fact` where `Delivery Note Key`=%d group by `Invoice Key`",$this->id);
+      //print $sql;
+
+      $res = mysql_query ( $sql );
+     $this->invoices=array();
+     while ($row = mysql_fetch_array ( $res, MYSQL_ASSOC )) {
+       if($row['Invoice Key']){
+	 $this->invoices[$row['Invoice Key']]=new Invoice($row['Invoice Key']);
+       }
+       
+     }
+     $this->data ['Delivery Note XHTML Invoices'] ='';
+     foreach($this->invoices as $invoice){
+       $this->data ['Delivery Note XHTML Invoices'] .= sprintf ( '%s <a href="invoice.php?id=%d">%s</a>, ', $myconf['invoice_id_prefix'], $invoice->data ['Invoice Key'], $invoice->data ['Invoice Public ID'] );
+     }     
+     $this->data ['Delivery Note XHTML Invoices'] =_trim(preg_replace('/\, $/','',$this->data ['Delivery Note XHTML Invoices']));
+     break;  
+     
+
+ }
+      }
+
+  function update($key,$data=false,$args=false){
+    switch($key){
+    case('Delivery Note XHTML Invoices'):
+      $this->load('invoices');
+      $sql=sprintf("update `Delivery Note Dimension` set `Delivery Note XHTML Invoices`=%s where `Delivery Note Key`=%d "
+		   ,prepare_mysql($this->data['Delivery Note XHTML Invoices'])
+		   ,$this->id
+		   );
+      mysql_query($sql);
+      break;
+    }
+
+  }
 
 
 }

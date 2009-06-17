@@ -81,18 +81,22 @@ class Order {
 				
 				//	print_r($data['Customer Data'] );
 				$customer = new Customer ( 'find create', $data['Customer Data'] ); 
-				$this->ship_to_addresses=array();
-				foreach($data['Shipping Addresses'] as $shipping_address_data){
-				  $_ship_to= new Ship_to('find create',$shipping_address_data);
-				  if($_ship_to->id)
-				    $this->ship_to[$_ship_to->id]=$_ship_to;
-				  
-				}
+			
 
-				foreach($this->ship_to as $ship_to){
-				  $this->data ['Order XHTML Ship Tos']=$ship_to->data['Ship To XHTML Address'];
+				if(isset($data['Shipping Address']) and is_array($data['Shipping Address'])){
+				  //print_r($data['Shipping Address']);
+				  $ship_to= new Ship_To('find create',$data['Shipping Address']);
+				   $this->data ['Order XHTML Ship Tos']=$ship_to->data['Ship To XHTML Address'];
+				   // update customer
+				   //   print "SHIP IS ".$ship_to->id." \n";
+				   $customer->add_ship_to($ship_to->id,'Yes');
+				   // print_r($customer);
+				   //   exit;
 				}
 				
+
+			     
+			
 				
 				$this->billing_address=new Address($customer->data['Customer Main Address Key']);
 				
@@ -160,7 +164,7 @@ class Order {
 				
 				$this->data ['Order Main Source Type'] = $data ['Order Main Source Type'];
 				
-				$this->data ['Order XHTML Ship Tos'] = '';
+
 
 				
 				$this->data ['Order Items Adjust Amount'] = 0;
