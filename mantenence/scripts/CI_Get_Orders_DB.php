@@ -222,14 +222,14 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     $shipping_addresses=array();
     if(isset($_customer_data['address_data']) and $_customer_data['has_shipping']){
       
-      $shipping_addresses[0]['Address Line 1']=$_customer_data['shipping_data']['address1'];
-      $shipping_addresses[0]['Address Line 2']=$_customer_data['shipping_data']['address2'];
-      $shipping_addresses[0]['Address Line 3']=$_customer_data['shipping_data']['address3'];
-      $shipping_addresses[0]['Address Town']=$_customer_data['shipping_data']['town'];
-      $shipping_addresses[0]['Address Postal Code']=$_customer_data['shipping_data']['postcode'];
-      $shipping_addresses[0]['Address Country Name']=$_customer_data['shipping_data']['country'];
-      $shipping_addresses[0]['Address Country Primary Division']=$_customer_data['shipping_data']['country_d1'];
-      $shipping_addresses[0]['Address Country Secondary Division']=$_customer_data['shipping_data']['country_d2'];
+      $shipping_addresses['Address Line 1']=$_customer_data['shipping_data']['address1'];
+      $shipping_addresses['Address Line 2']=$_customer_data['shipping_data']['address2'];
+      $shipping_addresses['Address Line 3']=$_customer_data['shipping_data']['address3'];
+      $shipping_addresses['Address Town']=$_customer_data['shipping_data']['town'];
+      $shipping_addresses['Address Postal Code']=$_customer_data['shipping_data']['postcode'];
+      $shipping_addresses['Address Country Name']=$_customer_data['shipping_data']['country'];
+      $shipping_addresses['Address Country Primary Division']=$_customer_data['shipping_data']['country_d1'];
+      $shipping_addresses['Address Country Secondary Division']=$_customer_data['shipping_data']['country_d2'];
       unset($customer_data['shipping_data']);
     }
 
@@ -608,7 +608,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     $data['type']='direct_data_injection';
     $data['products']=$products_data;
     $data['Customer Data']=$customer_data;
-    $data['Shipping Addresses']=$shipping_addresses;
+    $data['Shipping Address']=$shipping_addresses;
     // $data['metadata_id']=$order_data_id;
     $data['tax_rate']=.16;
     $data['tax_rate2']=.2;
@@ -795,7 +795,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 		       ,'Delivery Note Packers IDs'=>$packer_data['id']
 		       ,'Delivery Note Type'=>$order_type
 		       ,'Delivery Note Title'=>_('Delivery Note for').' '.$order_type.' '.$header_data['order_num']
-
+		       ,'Delivery Note Has Shipping'=>$_customer_data['has_shipping']
 		       );
 	
 	//$order->create_dn_simple($data_dn,$data_dn_transactions);
@@ -884,7 +884,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 		       ,'Invoice Items Net Amount'=>$header_data['total_items_charge_value']-$total_credit_value
 		       ,'Delivery Note Type'=>$order_type
 		       ,'Delivery Note Title'=>_('Delivery Note for').' '.$order_type.' '.$header_data['order_num']
-
+		       ,'Delivery Note Has Shipping'=>$_customer_data['has_shipping']
 		       );
 	  
 
@@ -1190,6 +1190,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 		       ,'Delivery Note Number Packers'=>count($packer_data['id'])
 		       ,'Delivery Note Packers IDs'=>$packer_data['id']
 		       ,'Delivery Note Metadata'=>$order_data_id
+		       ,'Delivery Note Has Shipping'=>$_customer_data['has_shipping']
 		       );
 	
 

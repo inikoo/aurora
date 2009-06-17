@@ -459,6 +459,8 @@ class Customer extends DB_Table{
       $billing_address=new address('find create',$raw_data['Customer Billing Address']);
       $this->data['Customer Main Address Key']=$billing_address->id;
       $this->data['Customer Main Address Country Code']=$billing_address->data['Address Country Code'];
+      $this->data['Customer Main Address 2 Alpha Country Code']=$billing_address->data['Address Country 2 Alpha Code'];
+
       $this->data['Customer Main Location']=$billing_address->data['Address Location'];
       $this->data['Customer Main Address Town']=$billing_address->data['Address Town'];
       $this->data['Customer Main Address Postal Code']=$billing_address->data['Address'];
@@ -477,11 +479,12 @@ class Customer extends DB_Table{
        $billing_address=new address($billing_address_key);
        $this->data['Customer Main Address Key']=$billing_address->id;
        $this->data['Customer Main Address Country Code']=$billing_address->data['Address Country Code'];
+       $this->data['Customer Main Address Country 2 Alpha Code']=$billing_address->data['Address Country 2 Alpha Code'];
        $this->data['Customer Main Location']=$billing_address->data['Address Location'];
        $this->data['Customer Main Address Town']=$billing_address->data['Address Town'];
        $this->data['Customer Main Address Postal Code']=$billing_address->data['Address Postal Code'];
        $this->data['Customer Main Address Country Primary Division']=$billing_address->data['Address Country Primary Division'];
-        $this->data['Customer Main XHTML Address']=$billing_address->display('html'); 
+       $this->data['Customer Main XHTML Address']=$billing_address->display('html'); 
      }
 
     }
@@ -685,128 +688,128 @@ class Customer extends DB_Table{
       }
       
 
-      if(isset($data['has_shipping']) and $data['has_shipping'] and  isset($data['shipping_data']) and is_array($data['shipping_data'])){
+/*       if(isset($data['has_shipping']) and $data['has_shipping'] and  isset($data['shipping_data']) and is_array($data['shipping_data'])){ */
 	
-	if($data['same_address'] and $data['same_contact'] and $data['same_company'] and $data['same_telephone']){
-	  $this->add_ship_to('shipping_same_as_main','Yes');
-      }else{
+/* 	if($data['same_address'] and $data['same_contact'] and $data['same_company'] and $data['same_telephone']){ */
+/* 	  $this->add_ship_to('shipping_same_as_main','Yes'); */
+/*       }else{ */
 	  
-	  $this->shipping['contact_key']='';
-	  $this->shipping['contact']='';
-	  $this->shipping['company_key']='';
-	  $this->shipping['company']='';
-	  $this->shipping['telephone']='';
-	  $this->shipping['telephone_key']='';
-	  $this->shipping['email']='';
-	  $this->shipping['email_key']='';
-	  $this->shipping['address']='';
-	  $this->shipping['address_key']='';
-	  $this->shipping['address_country_key']='';
+/* 	  $this->shipping['contact_key']=''; */
+/* 	  $this->shipping['contact']=''; */
+/* 	  $this->shipping['company_key']=''; */
+/* 	  $this->shipping['company']=''; */
+/* 	  $this->shipping['telephone']=''; */
+/* 	  $this->shipping['telephone_key']=''; */
+/* 	  $this->shipping['email']=''; */
+/* 	  $this->shipping['email_key']=''; */
+/* 	  $this->shipping['address']=''; */
+/* 	  $this->shipping['address_key']=''; */
+/* 	  $this->shipping['address_country_key']=''; */
 	  
 
 
-	if(!$data['same_address']){
-	  $shipping_address=new Address('new',$data['shipping_data']);
-	  $this->shipping['address_key']=$shipping_address->id;
-	  $this->shipping['address']=$shipping_address->get('XHTML Address');
-	  $this->shipping['address_country_key']=$shipping_address->get('Address Country Key');
-	}else{
-	  $this->shipping['address_key']=$this->get('Customer Main Address Key');
-	  $this->shipping['address']=$this->get('Customer Main XHTML Address');
-	  $this->shipping['address_country_key']=$this->get('Customer Main Address Country Key');
-	}
+/* 	if(!$data['same_address']){ */
+/* 	  $shipping_address=new Address('new',$data['shipping_data']); */
+/* 	  $this->shipping['address_key']=$shipping_address->id; */
+/* 	  $this->shipping['address']=$shipping_address->get('XHTML Address'); */
+/* 	  $this->shipping['address_country_key']=$shipping_address->get('Address Country Key'); */
+/* 	}else{ */
+/* 	  $this->shipping['address_key']=$this->get('Customer Main Address Key'); */
+/* 	  $this->shipping['address']=$this->get('Customer Main XHTML Address'); */
+/* 	  $this->shipping['address_country_key']=$this->get('Customer Main Address Country Key'); */
+/* 	} */
 
-	if(!$data['same_company']){
-	  $this->shipping['company_key']=false;
-	  $this->shipping['company']=$data['shipping_data']['company'];
-	}else{
-	  $this->shipping['company_key']=$this->get('Customer Company Key');
-	  $this->shipping['company']=$this->get('Customer Company Name');
+/* 	if(!$data['same_company']){ */
+/* 	  $this->shipping['company_key']=false; */
+/* 	  $this->shipping['company']=$data['shipping_data']['company']; */
+/* 	}else{ */
+/* 	  $this->shipping['company_key']=$this->get('Customer Company Key'); */
+/* 	  $this->shipping['company']=$this->get('Customer Company Name'); */
 
-	}
+/* 	} */
 
-	if(!$data['same_contact']){
+/* 	if(!$data['same_contact']){ */
 
-	  if(!$this->shipping['company_key']){
-	    $this->shipping['contact_key']=false;
-	    $this->shipping['contact']=$data['shipping_data']['name'];
-	  }else{
-	    //add a new contact
-	    $_data=array(
-			 'name'=>$data['shipping_data']['name'],
-			 'email'=>$data['shipping_data']['email'],
-			 'telephone'=>$data['shipping_data']['telephone'],
-			 'address_key'=>$this->shipping['address_key']
+/* 	  if(!$this->shipping['company_key']){ */
+/* 	    $this->shipping['contact_key']=false; */
+/* 	    $this->shipping['contact']=$data['shipping_data']['name']; */
+/* 	  }else{ */
+/* 	    //add a new contact */
+/* 	    $_data=array( */
+/* 			 'name'=>$data['shipping_data']['name'], */
+/* 			 'email'=>$data['shipping_data']['email'], */
+/* 			 'telephone'=>$data['shipping_data']['telephone'], */
+/* 			 'address_key'=>$this->shipping['address_key'] */
 
-			 );
-	    $shipping_contact=new Contact('new',$_data);
-	    $this->shipping['contact_key']=$shipping_contact->id;
-	    $this->shipping['contact']=$shipping_contact->get('Contact Name');
-	  }
+/* 			 ); */
+/* 	    $shipping_contact=new Contact('new',$_data); */
+/* 	    $this->shipping['contact_key']=$shipping_contact->id; */
+/* 	    $this->shipping['contact']=$shipping_contact->get('Contact Name'); */
+/* 	  } */
 
 
-	}else{
-	  $shipping['contact']=$this->get('Customer Main Contact Name');
-	  $shipping['contact_key']=$this->get('Customer Main Contact Key');
+/* 	}else{ */
+/* 	  $shipping['contact']=$this->get('Customer Main Contact Name'); */
+/* 	  $shipping['contact_key']=$this->get('Customer Main Contact Key'); */
 	  
-	}
-	$shipping_contact_key=$shipping['contact_key'];
+/* 	} */
+/* 	$shipping_contact_key=$shipping['contact_key']; */
 
 
-// 	if(!$data['same_email']){
-// 	  $shipping_contact=new Contact($shipping_contact_key);
-// 	  if($shipping_contact->id){
-// 	    $shipping_contact->add_email(array('email'=>$data['shipping_data']['email']));
-// 	    $this->shipping['email_key']=$shipping_contact->add_email;
-// 	    if($this->shipping['email_key']){
-// 	    $email=new Email($this->shipping['email_key']);
-// 	    $this->shipping['email_key']=$email->display('html');
-// 	    }else
-// 	      $this->shipping['email_key']='';
-// 	  }else{
-// 	    $this->shipping['email_key']='';
-// 	    $this->shipping['email']='<a href="mailto:'.$data['shipping_data']['email'].'">'.$data['shipping_data']['email'].'</a>';
-// 	  }
-// 	}else{
-// 	   $this->shipping['email_key']=$this->get('Customer Main Email Key');
-// 	   $this->shipping['email']=$this->get('Customer Main XHTML Email');
-// 	}
+/* // 	if(!$data['same_email']){ */
+/* // 	  $shipping_contact=new Contact($shipping_contact_key); */
+/* // 	  if($shipping_contact->id){ */
+/* // 	    $shipping_contact->add_email(array('email'=>$data['shipping_data']['email'])); */
+/* // 	    $this->shipping['email_key']=$shipping_contact->add_email; */
+/* // 	    if($this->shipping['email_key']){ */
+/* // 	    $email=new Email($this->shipping['email_key']); */
+/* // 	    $this->shipping['email_key']=$email->display('html'); */
+/* // 	    }else */
+/* // 	      $this->shipping['email_key']=''; */
+/* // 	  }else{ */
+/* // 	    $this->shipping['email_key']=''; */
+/* // 	    $this->shipping['email']='<a href="mailto:'.$data['shipping_data']['email'].'">'.$data['shipping_data']['email'].'</a>'; */
+/* // 	  } */
+/* // 	}else{ */
+/* // 	   $this->shipping['email_key']=$this->get('Customer Main Email Key'); */
+/* // 	   $this->shipping['email']=$this->get('Customer Main XHTML Email'); */
+/* // 	} */
 
-	if(!$data['same_telephone']){
-	  $shipping_contact=new Contact($shipping_contact_key);
-	  if($shipping_contact->id){
-	    $shipping_contact->add_tel(array(
-					     'Telecom Original Number'=>$data['shipping_data']['telephone']
-					     )
-				       );
+/* 	if(!$data['same_telephone']){ */
+/* 	  $shipping_contact=new Contact($shipping_contact_key); */
+/* 	  if($shipping_contact->id){ */
+/* 	    $shipping_contact->add_tel(array( */
+/* 					     'Telecom Original Number'=>$data['shipping_data']['telephone'] */
+/* 					     ) */
+/* 				       ); */
 	    
-	    if($shipping_contact->add_telecom){
-	      //  print "hola\n";
-	      $shipping_tel=new Telecom($shipping_contact->add_telecom);
+/* 	    if($shipping_contact->add_telecom){ */
+/* 	      //  print "hola\n"; */
+/* 	      $shipping_tel=new Telecom($shipping_contact->add_telecom); */
 
-	      $this->shipping['telephone_key']=$shipping_tel->id;
-	      $this->shipping['telephone']=$shipping_tel->display('html');
-	    }
-	    else{
-	      $this->shipping['telephone_key']='';
-	      $this->shipping['telephone']=$data['shipping_data']['telephone'];
-	    }
-	  }else{
-	    $this->shipping['telephone_key']='';
-	    $this->shipping['telephone']=$data['shipping_data']['telephone'];
-	  }
-	}else{
-	   $this->shipping['telephone_key']=$this->get('Customer Main Telephone Key');
-	   $this->shipping['telephone']=$this->get('Customer Main Telephone');
+/* 	      $this->shipping['telephone_key']=$shipping_tel->id; */
+/* 	      $this->shipping['telephone']=$shipping_tel->display('html'); */
+/* 	    } */
+/* 	    else{ */
+/* 	      $this->shipping['telephone_key']=''; */
+/* 	      $this->shipping['telephone']=$data['shipping_data']['telephone']; */
+/* 	    } */
+/* 	  }else{ */
+/* 	    $this->shipping['telephone_key']=''; */
+/* 	    $this->shipping['telephone']=$data['shipping_data']['telephone']; */
+/* 	  } */
+/* 	}else{ */
+/* 	   $this->shipping['telephone_key']=$this->get('Customer Main Telephone Key'); */
+/* 	   $this->shipping['telephone']=$this->get('Customer Main Telephone'); */
 
-	}
+/* 	} */
 	
-	//print_r($this->shipping);
+/* 	//print_r($this->shipping); */
 	
-	$this->add_ship_to('other','Yes');
-      }
+/* 	$this->add_ship_to('other','Yes'); */
+/*       } */
 
-      }
+/*       } */
       //      $this->data['Customer Last Ship To Key']=$this->data['Customer Main Ship To Key']
       
     }else{
@@ -817,89 +820,52 @@ class Customer extends DB_Table{
 
  }
 
- function add_ship_to($tipo='shipping_same_as_main',$is_principal='No'){
+ function add_ship_to($args='shipping_same_as_main',$is_principal='Yes'){
    
    $is_active='Yes';
    
 
 
-   if($tipo='shipping_same_as_main'){
+   if($args=='shipping_same_as_main'){
+     //TODO
+     
+   }elseif(is_numeric($args) and $args>0){
+     $ship_to=new Ship_To('id',$args);
+   }   
 
-     $contact_key=$this->get('Customer Main Contact Key');
-     $contact_name=$this->get('Customer Main Contact Name');
-     $company_key=$this->get('Customer Company Key');
-     $company_name=$this->get('Customer Company Name');
-     $tel=$this->get('Customer Main Telephone');
-     $tel_key=$this->get('Customer Main Telephone Key');
-     $email=$this->get('Customer Main XHTML Email');
-     $email_key=$this->get('Customer Main Email Key');
-     $address=$this->get('Customer Main XHTML Address');
-     $address_key=$this->get('Customer Main Address Key');
-     $country_key=$this->get('Customer Main Address Country Key');
-     // print_r($this->data);
-  }else{
-
-     $contact_key=$this->shipping['contact_key'];
-     $contact_name=$this->shipping['contact'];
-     $company_key=$this->shipping['company_key'];
-     $company_name=$this->shipping['company'];
-     $tel=$this->shipping['telephone'];
-     $tel_key=$this->shipping['telephone_key'];
-     $email=$this->shipping['email'];
-     $email_key=$this->shipping['email_key'];
-     $address=$this->shipping['address'];
-     $address_key=$this->shipping['address_key'];
-     $country_key=$this->shipping['address_country_key'];
-     //     print "_cacacaca";
-     // print"$address xx\n";exit;
-   }
-
-   $sql=sprintf("insert into `Ship To Dimension` (`Ship To Customer Key`,`Ship To Contact Name`,`Ship To Company Name`,`Ship To XHTML Address`,`Ship To Telephone`,`Ship To XHTML Email`,`Ship To Contact Key`,`Ship To Address Key`,`Ship To Country Key`,`Ship To Company Key`,`Ship To Email Key`,`Ship To Telecom Key`,`Ship To Is Active`,`Ship To Is Principal`) values (%d,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-		,$this->id
-		,prepare_mysql($contact_name)
-		,prepare_mysql($company_name)
-		,prepare_mysql($address)
-		,prepare_mysql($tel)
-		,prepare_mysql($email)
-		,prepare_mysql($contact_key)
-		,prepare_mysql($address_key)
-		,prepare_mysql($country_key)
-		,prepare_mysql($company_key)
-		,prepare_mysql($email_key)
-		,prepare_mysql($tel_key)
-		,prepare_mysql($is_active)
-		,prepare_mysql($is_principal)
-		);
+   if($is_principal!='Yes')
+     $is_principal='No';
    
    
-   if(mysql_query($sql)){
-
-   $ship_to_key = mysql_insert_id();
-   
-   
-   $sql=sprintf("select count(*) as total,sum(if(`Ship To Is Active`='Yes',1,0)) as active from `Ship To Dimension` where `Ship To Customer Key`=%d ",$this->id);
+   $sql=sprintf("insert into (`Customer Ship To Bridge`) values (%d,%d,'%s','Yes',NOW()) on duplicate key update `Is Principal`='%s' ,`Is Active`='Yes'  ",$this->id,$ship_to->id,$is_principal,$is_principal);
    // print $sql;
- $result=mysql_query($sql);
-  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+   mysql_query($sql);
+   
+   
+   
+   
+   
+   $sql=sprintf("select count(*) as total,sum(if(`Is Active`='Yes',1,0)) as active from `Customer Ship To Bridge` where `Customer Key`=%d ",$this->id);
+   // print $sql;
+   $result=mysql_query($sql);
+   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      $active=$row['active'];
      $total=$row['total'];
    }
    
    if($is_principal='Yes'){
      
-     $sql=sprintf("update `Ship To Dimension` set `Ship To Is Principal`='No' where `Ship To Customer Key`=%d ",$this->id);
-     mysql_query($sql);
-     $address=new Address($address_key);
 
-     $sql=sprintf("update `Customer Dimension` set `Customer Last Ship To Key`=%s,`Customer Main Ship To Key`=%s,`Customer Main Ship To Header`=%s,`Customer Main Ship To Town`=%s,`Customer Main Ship To Postal Code`=%s,`Customer Main Ship To Country Region`=%s,`Customer Main Ship To Country`=%s,`Customer Main Ship To Country Key`=%s,`Customer Active Ship To Records`=%d,`Customer Total Ship To Records`=%d where `Customer Key`=%d"
-		   ,prepare_mysql($ship_to_key)
-		  ,prepare_mysql($ship_to_key)
-		  ,prepare_mysql($address->display('header'))
-		  ,prepare_mysql($address->get('address town'))
-		  ,prepare_mysql($address->get('postal code'))
-		  ,prepare_mysql($address->get('country region'))
-		  ,prepare_mysql($address->get('address country name'))
-		  ,prepare_mysql($address->get('address country key'))
+
+
+     $sql=sprintf("update `Customer Dimension` set `Customer Main Ship To Key`=%s,`Customer Main Ship To Town`=%s,`Customer Main Ship To Postal Code`=%s,`Customer Main Ship To Country`=%s,`Customer Main Ship To Country Key`=%s,`Customer Main Ship To Country Code`=%s,`Customer Main Ship To Country 2 Alpha Code`=%s,`Customer Active Ship To Records`=%d,`Customer Total Ship To Records`=%d where `Customer Key`=%d"
+		  ,prepare_mysql($ship_to->id)
+		  ,prepare_mysql($ship_to->data['Ship To Town'])
+		  ,prepare_mysql($ship_to->data['Ship To Postal Code'])
+		  ,prepare_mysql($ship_to->data['Ship To Country'])
+		  ,prepare_mysql($ship_to->data['Ship To Country Key'])
+		  ,prepare_mysql($ship_to->data['Ship To Country Code'])
+		  ,prepare_mysql($ship_to->data['Ship To Country 2 Alpha Code'])
 		  ,$active
 		  ,$total
 		  ,$this->id
@@ -914,12 +880,11 @@ class Customer extends DB_Table{
 		  );
      mysql_query($sql);
    }
- }else{
-   print "Error , can not create Ship to\n";exit;
  }
 
 
- }
+
+ 
 
 
 

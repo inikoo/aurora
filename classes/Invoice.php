@@ -136,11 +136,33 @@ class Invoice extends DB_Table {
     $this->data ['Invoice Store Code'] = $order->data ['Order Store Code'];
     $this->data ['Invoice XHTML Store'] = $order->data ['Order XHTML Store'];
     $this->data ['Invoice Main Source Type'] = $order->data ['Order Main Source Type'];
+    $this->data ['Invoice XHTML Address'] = '';
+    $this->data ['Invoice Customer Contact Name'] = '';
+    $this->data ['Invoice Billing Country 2 Alpha Code']='XX';
     $this->data ['Invoice Customer Key'] = $order->data ['Order Customer Key'];
     $this->data ['Invoice Customer Name'] = $order->data ['Order Customer Name'];
-    //TODO
-    $this->data ['Invoice XHTML Address'] = '';
+    
+    $customer=new customer('id',$this->data ['Invoice Customer Key']);
+    if($customer->id){
+      if($customer->data['Customer Type']=='Company'){
+	//TODO  not include if is a fuzzy contact name
+	$this->data ['Invoice Customer Contact Name'] =$customer -> data['Customer Main Contact Name'];
+
+      }
+      $this->data ['Invoice XHTML Address'] = $customer -> data['Customer Main XHTML Address'];
+      $this->data ['Invoice Billing Country 2 Alpha Code']=$customer -> data['Customer Main Address Country 2 Alpha Code'];
+      
+    }
+
+
+
+
+    
+
     $this->data ['Invoice XHTML Ship Tos'] = '';
+
+
+
     $this->data ['Invoice Shipping Net Amount'] = $invoice_data ['Invoice Shipping Net Amount'];
     $this->data ['Invoice Charges Net Amount'] = $invoice_data ['Invoice Charges Net Amount'];
     
@@ -170,9 +192,11 @@ class Invoice extends DB_Table {
     $this->data ['Invoice XHTML Charged By'] = $invoice_data ['Invoice XHTML Charged By'];
     $this->data ['Invoice Processed By Key'] = $invoice_data ['Invoice Processed By Key'];
     $this->data ['Invoice Charged By Key'] = $invoice_data ['Invoice Charged By Key'];
-    $this->data ['Invoice Billing Country 2 Alpha Code']='XX';
-    $this->data ['Invoice XHTML Address']='';
     
+
+    $this->data ['Invoice XHTML Address']='';
+    $this->data ['Invoice XHTML Orders'] ='';
+    $this->data ['Invoice XHTML Delivery Notes'] = '';
 
    
     $this->data ['Invoice Delivery Country 2 Alpha Code']='XX';
@@ -181,22 +205,16 @@ class Invoice extends DB_Table {
     //  break;
     // }
     
-    $this->data ['Invoice XHTML Orders'] = sprintf ( '%s <a href="order.php?id=%d">%s</a>', _ ( 'Order' ), $order->id, $order->data ['Order Public ID'] );
-    
-    //  if (is_numeric ( $order->data ['Delivery Note Key'] )) {
-    //  $dn=new DeliveryNote($order->data ['Delivery Note Key']);
-    //  $this->data ['Invoice XHTML Delivery Notes'] = sprintf ( '%s <a href="dn.php?id=%d">%s</a>', _ ( 'DN' ), $dn->data ['Delivery Note Key'], $dn->data ['Delivery Note ID'] );
-      
-    // } else {
-      $this->data ['Invoice XHTML Delivery Notes'] = '';
-      // }
+    $this->data ['Invoice XHTML Orders'] ='';
+    $this->data ['Invoice XHTML Delivery Notes'] = '';
+
     
     $this->create_header ();
     
     // link to order
-    $sql = sprintf ( "insert into `Order Invoice Bridge` values (%d,%d)", $order->data ['Order Key'], $this->data ['Invoice Key'] );
-    if (! mysql_query ( $sql ))
-      exit ( "Errro can no insert order inv bridge" );
+   /*  $sql = sprintf ( "insert into `Order Invoice Bridge` values (%d,%d)", $order->data ['Order Key'], $this->data ['Invoice Key'] ); */
+/*     if (! mysql_query ( $sql )) */
+/*       exit ( "Errro can no insert order inv bridge" ); */
     
     // if (is_numeric ( $order->data ['Delivery Note Key'] )) {
     //  $sql = sprintf ( "insert into `Invoice Delivery Note Bridge` values (%d,%d)", $this->data ['Invoice Key'], $dn->data ['Delivery Note Key'] );
@@ -241,6 +259,25 @@ class Invoice extends DB_Table {
     //addign indovdual product costs
     
     
+    $this->load('dns');
+    $this->load('orders');
+    // Make bridges
+
+    $sql = sprintf ( "delete from  `Invoice Delivery Note Bridge` where `Invoice Key`=%d",$this->id);
+    mysql_query ( $sql );
+    foreach($this->delivery_notes as $key=>$dn){
+      $sql = sprintf ( "insert into `Invoice Delivery Note Bridge` values (%d,%d)", $this->data ['Invoice Key'], $key );
+      mysql_query ( $sql );
+      $dn->update('Delivery Note XHTML Invoices');
+    }
+    $sql = sprintf ( "delete from  `Order Invoice Bridge` where `Invoice Key`=%d",$this->id);
+    mysql_query ( $sql );
+    foreach($this->orders as $key=>$ord){
+      $sql = sprintf ( "insert into `Order Invoice Bridge` values (%d,%d)", $this->data ['Invoice Key'], $key );
+      mysql_query ( $sql );
+    }
+
+
     $this->data ['Invoice Gross Amount'] = $amount;
     $this->data ['Invoice Discount Amount'] = $discounts;
     $net = $amount - $discounts;
@@ -249,7 +286,19 @@ class Invoice extends DB_Table {
     $this->data ['Invoice Items Tax Amount'] = $this->data ['Invoice Total Net Amount'] * $invoice_data ['tax_rate'];
     $this->distribute_costs ();
     
-    $sql = sprintf ( "update `Invoice Dimension` set `Invoice Items Net Amount`=%.2f ,`Invoice Items Adjust Amount`=%.2f , `Invoice Items Gross Amount`=%.2f ,`Invoice Items Discount Amount`=%.2f  ,`Invoice Total Net Amount`=%.2f,`Invoice Items Tax Amount`=%.2f where `Invoice Key`=%d", $this->data ['Invoice Items Net Amount'], $this->data ['Invoice Adjust Amount'], $amount, $discounts, $this->data ['Invoice Total Net Amount'], $this->data ['Invoice Items Tax Amount'], $this->data ['Invoice Key'] );
+    $sql = sprintf ( "update `Invoice Dimension` set `Invoice Items Net Amount`=%.2f ,`Invoice Items Adjust Amount`=%.2f , `Invoice Items Gross Amount`=%.2f ,`Invoice Items Discount Amount`=%.2f  ,`Invoice Total Net Amount`=%.2f,`Invoice Items Tax Amount`=%.2f where `Invoice Key`=%d"
+		     , $this->data ['Invoice Items Net Amount']
+		     , $this->data ['Invoice Adjust Amount']
+		     , $amount
+		     , $discounts
+		     , $this->data ['Invoice Total Net Amount']
+		     , $this->data ['Invoice Items Tax Amount']
+		     , $this->data ['Invoice XHTML Delivery Notes']
+		     , $this->data ['Invoice XHTML Ship Tos']
+		     , $this->data ['Invoice XHTML Orders']
+
+		     , $this->data ['Invoice Key'] 
+		     );
     
     // print $sql;
     if (! mysql_query ( $sql ))
@@ -334,6 +383,7 @@ function create_header() {
   if (mysql_query ( $sql )) {
     
     $this->data ['Invoice Key'] = mysql_insert_id ();
+    $this->id=$this->data ['Invoice Key'];
   } else {
     
     print "$sql Error can not create order header";
@@ -453,6 +503,65 @@ function display($tipo='xml'){
    
  }
 
+ function load($key,$args=false){
+global $myconf;
+   switch($key){
+   case('delivery_notes'):
+   case('dns'):
+     $sql=sprintf("select `Delivery Note Key` from `Order Transaction Fact` where `Invoice Key`=%d group by `Delivery Note Key`",$this->id);
+     $res = mysql_query ( $sql );
+     $this->delivery_notes=array();
+     while ($row = mysql_fetch_array ( $res, MYSQL_ASSOC )) {
+       if($row['Delivery Note Key']){
+	 $dn=new DeliveryNote($row['Delivery Note Key']);
+	 $this->delivery_notes[$row['Delivery Note Key']]=$dn;
+       }
+
+     }
+          //update no normal fields
+     $this->data ['Invoice XHTML Delivery Notes'] ='';
+     $this->data ['Invoice XHTML Ship Tos'] = '';
+     $this->ship_tos=array();
+     foreach($this->delivery_notes as $dn){
+       $this->data ['Invoice XHTML Delivery Notes'] .= sprintf ( '%s <a href="dn.php?id=%d">%s</a>, ', $myconf['dn_id_prefix'], $dn->data ['Delivery Note Key'], $dn->data ['Delivery Note ID'] );
+       $this->ship_tos[ $dn->data ['Delivery Note Ship To Key']]=$dn->data ['Delivery Note XHTML Ship To'];
+       
+     }       
+     $this->data ['Invoice XHTML Delivery Notes'] =_trim(preg_replace('/\, $/','',$this->data ['Invoice XHTML Delivery Notes']));
+     //$where_dns=preg_replace('/\,$/',')',$where_dns);
+     
+     foreach($this->ship_tos as $ship_to){
+       $this->data ['Invoice XHTML Ship Tos'] .=$ship_to."<br/>";
+     }
+      $this->data ['Invoice XHTML Ship Tos'] =_trim(preg_replace('/\<br\/\>$/','',$this->data ['Invoice XHTML Ship Tos']));
+      
+
+      //get ship tos
+      break;
+   case('orders'):
+
+     $sql=sprintf("select `Order Key` from `Order Transaction Fact` where `Invoice Key`=%d group by `Order Key`",$this->id);
+     $res = mysql_query ( $sql );
+     $this->orders=array();
+     while ($row = mysql_fetch_array ( $res, MYSQL_ASSOC )) {
+       if($row['Order Key']){
+	 $this->orders[$row['Order Key']]=new Order($row['Order Key']);
+       }
+       
+     }
+     $this->data ['Invoice XHTML Orders'] ='';
+      foreach($this->orders as $order){
+       $this->data ['Invoice XHTML Orders'] .= sprintf ( '%s <a href="order.php?id=%d">%s</a>, ', $myconf['order_id_prefix'], $order->data ['Order Key'], $order->data ['Order Public ID'] );
+     }     
+      $this->data ['Invoice XHTML Orders'] =_trim(preg_replace('/\, $/','',$this->data ['Invoice XHTML Orders']));
+
+     break;  
+
+ }
+     
+
+
+ }
  
  
 }

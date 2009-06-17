@@ -140,9 +140,12 @@ $myconf=array(
 	      'staff_prefix'=>'SF',
 	      'supplier_id_prefix'=>'S',
 	      'po_id_prefix'=>'PO',
+	      'invoice_id_prefix'=>'I',
+
 	      'customer_id_prefix'=>'C',
 	      'contact_id_prefix'=>'p',
 	      'company_id_prefix'=>'B',
+	      'dn_id_prefix'=>'NE',
 	      'order_id_prefix'=>'',
 	      'data_since'=>'14-06-2004',
 	      'product_code_separator'=>'-',
