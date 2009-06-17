@@ -170,24 +170,24 @@ class Order {
 				$this->data ['Order Items Adjust Amount'] = 0;
 				
 				if (! $this->ghost_order) {
-					$this->create_order_header ();
-					
-					foreach ( $this->data ['Order Sale Reps IDs'] as $sale_rep_id ) {
-						$sql = sprintf ( "insert into `Order Sales Rep Bridge`  (%d,%d)", $this->id, $sale_rep_id );
-					
-					}
-					
-					$line_number = 0;
-					foreach ( $data ['products'] as $product_data ) {
+				  $this->create_order_header ();
+				  
+				  foreach ( $this->data ['Order Sale Reps IDs'] as $sale_rep_id ) {
+				    $sql = sprintf ( "insert into `Order Sales Rep Bridge`  (%d,%d)", $this->id, $sale_rep_id );
+				    
+				  }
+				  
+				  $line_number = 0;
+				  foreach ( $data ['products'] as $product_data ) {
 					  //TODO
-					  $ship_to_key=0;
-					  $line_number ++;
-					  $product_data ['date'] = $this->data ['Order Date'];
-					  $product_data ['line_number'] = $line_number;
-					  
-					  $product_data ['metadata'] = $this->data ['Order Original Metadata'];
-					  $product_data ['ship to key'] = $ship_to_key;
-					  $product_data ['Current Dispatching State'] = $this->data ['Order Current Dispatch State'];
+				    $ship_to_key=0;
+				    $line_number ++;
+				    $product_data ['date'] = $this->data ['Order Date'];
+				    $product_data ['line_number'] = $line_number;
+				    
+				    $product_data ['metadata'] = $this->data ['Order Original Metadata'];
+				    $product_data ['ship to key'] = $ship_to_key;
+				    $product_data ['Current Dispatching State'] = $this->data ['Order Current Dispatch State'];
 					  $product_data ['Current Payment State'] = $this->data ['Order Current Payment State'];
 					  
 					  $this->add_order_transaction ( $product_data );
@@ -698,10 +698,10 @@ class Order {
 		}
 
 		$this->data ['Invoice Delivery Country 2 Alpha Code']='XX';
-		foreach($this->ship_to as $ship_to){
-		  $this->data ['Invoice Delivery Country 2 Alpha Code']=$ship_to->data['Ship To Country 2 Alpha Code'];
-		  break;
-		}
+		//foreach($this->ship_to as $ship_to){
+		//  $this->data ['Invoice Delivery Country 2 Alpha Code']=$ship_to->data['Ship To Country 2 Alpha Code'];
+		//  break;
+		//	}
 				
 		
 		
@@ -985,7 +985,7 @@ class Order {
 		$this->data ['Delivery Note File As'] = $dn_data ['Delivery Note File As'];
 		$this->data ['Delivery Note Customer Key'] = $this->data ['Order Customer Key'];
 		$this->data ['Delivery Note Customer Name'] = $this->data ['Order Customer Name'];
-		$this->data ['Delivery Note XHTML Ship Tos'] = $this->data ['Order XHTML Ship Tos'];
+		$this->data ['Delivery Note XHTML Ship To'] = $this->data ['Order XHTML Ship Tos'];
 		//TODO
 		$this->data ['Delivery Note Ship To Key'] = 0;
 		$this->data ['Delivery Note Metadata'] = $this->data ['Order Original Metadata'];
@@ -1317,7 +1317,7 @@ class Order {
 		$this->data ['Delivery Note File As'] = $replacement_data ['Delivery Note File As'];
 		$this->data ['Delivery Note Customer Key'] = $this->data ['Order Customer Key'];
 		$this->data ['Delivery Note Customer Name'] = $this->data ['Order Customer Name'];
-		$this->data ['Delivery Note XHTML Ship Tos'] = $this->data ['Order XHTML Ship Tos'];
+		$this->data ['Delivery Note XHTML Ship To'] = $this->data ['Order XHTML Ship Tos'];
 		$this->data ['Delivery Note Ship To Key'] = $ship_to_key;
 		$this->data ['Delivery Note Metadata'] = $replacement_data ['Delivery Note Metadata'];
 		$this->data ['Delivery Note Weight'] = $replacement_data ['Delivery Note Weight'];
@@ -1689,7 +1689,7 @@ class Order {
 	
 	function create_dn_header() {
 		
-		$sql = sprintf ( "insert into `Delivery Note Dimension` (`Delivery Note XHTML Orders`,`Delivery Note XHTML Invoices`,`Delivery Note Date`,`Delivery Note ID`,`Delivery Note File As`,`Delivery Note Customer Key`,`Delivery Note Customer Name`,`Delivery Note XHTML Ship Tos`,`Delivery Note Ship To Key`,`Delivery Note Metadata`,`Delivery Note Weight`,`Delivery Note XHTML Pickers`,`Delivery Note Number Pickers`,`Delivery Note XHTML Packers`,`Delivery Note Number Packers`,`Delivery Note Type`,`Delivery Note Title`) values ('','',%s,%s,%s,%s,%s,%s,%s,%s,%f,%s,%d,%s,%d,%s,%s)", prepare_mysql ( $this->data ['Delivery Note Date'] ), prepare_mysql ( $this->data ['Delivery Note ID'] ), prepare_mysql ( $this->data ['Delivery Note File As'] ), prepare_mysql ( $this->data ['Delivery Note Customer Key'] ), prepare_mysql ( $this->data ['Delivery Note Customer Name'] ), prepare_mysql ( $this->data ['Delivery Note XHTML Ship Tos'] ), prepare_mysql ( $this->data ['Delivery Note Ship To Key'] ), prepare_mysql ( $this->data ['Delivery Note Metadata'] ), $this->data ['Delivery Note Weight'], prepare_mysql ( $this->data ['Delivery Note XHTML Pickers'] ), $this->data ['Delivery Note Number Pickers'], prepare_mysql ( $this->data ['Delivery Note XHTML Packers'] ), $this->data ['Delivery Note Number Packers'], prepare_mysql ( $this->data ['Delivery Note Type'] ), prepare_mysql ( $this->data ['Delivery Note Title'] ) )
+		$sql = sprintf ( "insert into `Delivery Note Dimension` (`Delivery Note XHTML Orders`,`Delivery Note XHTML Invoices`,`Delivery Note Date`,`Delivery Note ID`,`Delivery Note File As`,`Delivery Note Customer Key`,`Delivery Note Customer Name`,`Delivery Note XHTML Ship To`,`Delivery Note Ship To Key`,`Delivery Note Metadata`,`Delivery Note Weight`,`Delivery Note XHTML Pickers`,`Delivery Note Number Pickers`,`Delivery Note XHTML Packers`,`Delivery Note Number Packers`,`Delivery Note Type`,`Delivery Note Title`) values ('','',%s,%s,%s,%s,%s,%s,%s,%s,%f,%s,%d,%s,%d,%s,%s)", prepare_mysql ( $this->data ['Delivery Note Date'] ), prepare_mysql ( $this->data ['Delivery Note ID'] ), prepare_mysql ( $this->data ['Delivery Note File As'] ), prepare_mysql ( $this->data ['Delivery Note Customer Key'] ), prepare_mysql ( $this->data ['Delivery Note Customer Name'] ), prepare_mysql ( $this->data ['Delivery Note XHTML Ship To'] ), prepare_mysql ( $this->data ['Delivery Note Ship To Key'] ), prepare_mysql ( $this->data ['Delivery Note Metadata'] ), $this->data ['Delivery Note Weight'], prepare_mysql ( $this->data ['Delivery Note XHTML Pickers'] ), $this->data ['Delivery Note Number Pickers'], prepare_mysql ( $this->data ['Delivery Note XHTML Packers'] ), $this->data ['Delivery Note Number Packers'], prepare_mysql ( $this->data ['Delivery Note Type'] ), prepare_mysql ( $this->data ['Delivery Note Title'] ) )
 
 		;
 		

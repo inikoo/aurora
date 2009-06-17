@@ -11,7 +11,7 @@
  
  Version 2.0
 */
-include_once('ConexionJFA.php');
+//include_once('ConexionJFA.php');
 include_once('DB_Table.php');
 
 /* class: Mensajes
@@ -50,8 +50,8 @@ class Mensajes extends DB_Table {
   function Mensajes($arg1=false,$arg2=false) {
 
     // checar estos dos miembros
-    $this->table_name='Mensajes';
-    $this->ignore_fields=array('id_noticia');
+    $this->table_name='Menssage Dimension';
+    $this->ignore_fields=array('Message Key');
 
 
     if(!$arg1 and !$arg2){
@@ -67,10 +67,12 @@ class Mensajes extends DB_Table {
       $this->create($arg2);
       return;
     }
-    if(preg_match('/find/i',$arg1)){
-      $this->find($arg2,$arg1);
-      return;
-    }
+
+    //No es necesario find method
+    //if(preg_match('/find/i',$arg1)){
+    // $this->find($arg2,$arg1);
+    //  return;
+    //}
     $this->get_data($arg1,$arg2);
   }
   /*
@@ -81,126 +83,16 @@ class Mensajes extends DB_Table {
    <find>
   */
   function get_data($tipo,$tag){
-    if($tipo=='id')
-      $sql=sprintf("select * from 'Mensajes Dimension' where  'id_noticia'=%d",$tag);
-    elseif($tipo=='categoria')
-      $sql=sprintf("select * from 'Mensajes Dimension' where  'categoria'=%s",prepare_mysql($tag));
-    else
-      return;
-    $result=mysql_query($sql);
-    if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   )
-      $this->id=$this->data['id_noticia'];
-  }
-  /*
-   Method: find
-   Given a set of messages components try to find it on the database updating properties, if not found creates a new record
-
-   Parameters:
-   $raw_data - associative array with the messages data (DB fields as keys)
-   $options - string 
-   
-   auto - the method will update/create the messages with out asking for instructions
-   create|update - methos will create or update the messages with the data provided
-  */
-
-  private function find($raw_data,$options=''){
-
-    $this->found=false;
-    $this->found_in=false; //jfa checar no estan definidas
-    $this->found_out=false; //jfa checar no estan definidas
-    $this->candidate=array();
-    $in_contacts=array();
-    $mode='Contact';
-    $parent='Contact';
-
-
-    $create=false;
-    if(preg_match('/create|update/i',$options)){
-      $create=true;
-    }
-    $auto=false;
-    if(preg_match('/auto/i',$options)){
-      $auto=true;
-    }
-
-    
-    if(!$raw_data){
-      $this->new=false;
-      $this->msg=_('Error no messages data');
-      if(preg_match('/exit on errors/',$options))
-	exit($this->msg);
-      return false;
-    }
-    
-    if(is_string($raw_data)){
-      $tmp=$raw_data;
-      unset($raw_data);
-      $raw_data['mensaje']=$tmp;
-    }
-  
-    $data=$this->base_data();
-    foreach($raw_data as $key=>$value){
-      if(array_key_exists($key,$data))
-	$data[$key]=$value;
-    }
-
-    if($data['mensaje']==''){
-      $this->msg=_('No messages provided');
-      return false;
-    }
-    
-    $sql=sprintf("select mensaje from 'Mensajes Dimension' where 'categoria'=%s"
-		 ,prepare_mysql($raw_data['mensaje'])
-		   );
-    //  print "$sql\n";    
-    $result=mysql_query($sql);
-    $num_results=mysql_num_rows($result);
-    if($num_results==0){
-      $this->found=false;
-      if(preg_match('/auto/i',$options)){
-	// try to find possible matches (assuming the the client comit a mistake)
-	$sql=sprintf("select `Subject Key`,`Email Key`,`Email Contact Name`,levenshtein(UPPER(%s),UPPER(`Email`)) as dist1,levenshtein(UPPER(SOUNDEX(%s)),UPPER(SOUNDEX(`Email`))) as dist2, `Subject Key`  from `Email Dimension` left join `Email Bridge` on (`Email Bridge`.`Email Key`=`Email Dimension`.`Email Key`)  where dist1<=2 and  `Subject Type`='Contact'  order by dist1,dist2 limit 20"
-		     ,prepare_mysql($raw_data['Email'])
-		     ,prepare_mysql($raw_data['Email'])
-		     );
-	$result=mysql_query($sql);
-      }
-
+    if($tipo=='id'){
+      $sql=sprintf("select * from 'Mensajes Dimension' where  `Message Key`=%d",$tag);
       
-    }else if($num_results==1){
-	$this->found=true;
-
-	$row=mysql_fetch_array($result, MYSQL_ASSOC);
-	$this->get_data('id',$row['id_noticia']);
-	
-
-      }else{// Found in more than one contact (that means tha two contacts share the same email) this shoaul not happen
-      
-      $this->error=true;
-      // correct the data (delete duplicates)
-      exit("todo fix database for mensajes duplicates");
-    }
-      
-    if($create){
-      if($this->found)
-	$this->update($data,$options);
-      else{
-	// not found
-
-	$this->create($data,$options);
-
-      }
-
-    }
-
     
-  
-}
+      
+      $result=mysql_query($sql);
+      if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   )
+	$this->id=$this->data['Message Key'];
+    }
 
-/*Method: create
- Creates a new message record
-
-*/
 protected function create($data,$options=''){
   if(!$data){
     $this->new=false;
@@ -227,7 +119,7 @@ protected function create($data,$options=''){
     $this->msg=_('No message provided');
     return false;
   }
-
+  //TODO CAMBIAR
   $sql=sprintf("insert into 'mensajes dimension' ('autor','titulo','categoria','fecha','mensaje') values (%s,%s,%s,%s,%s)"
 	       ,prepare_mysql($this->data['autor'])
 	       ,prepare_mysql($this->data['titulo'])
