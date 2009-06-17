@@ -3,6 +3,6 @@
  * and save as key.php 
  * 
 */
-define("IKEY",1234567);
-define("SKEY",12347447774);
+define("IKEY",12345);
+define("SKEY",7774);
 ?>
