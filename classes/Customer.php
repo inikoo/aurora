@@ -1085,6 +1085,138 @@ class Customer extends DB_Table{
 
  }
 
+
+ /*
+   function: update_orders
+   Update order stats
+  */
+
+ public function update_orders(){
+    $sigma_factor=3.2906;//99.9% value assuming normal distribution
+
+     $sql="select sum(`Order Balance Net Amount`) as balance, min(`Order Date`) as first_order_date ,max(`Order Date`) as last_order_date,count(*)as orders, sum(if(`Order Current Payment State` like '%Cancelled',1,0)) as cancelled,  sum( if(`Order Current Payment State` like '%Paid%'    ,1,0)) as invoiced,sum( if(`Order Current Payment State` like '%Refund%'    ,1,0)) as refunded,sum(if(`Order Current Dispatch State`='Unknown',1,0)) as unknown   from `Order Dimension` where `Order Customer Key`=".$this->id;
+
+     $this->data['Customer Orders']=0;
+     $this->data['Customer Orders Cancelled']=0;
+     $this->data['Customer Orders Invoiced']=0;
+     $this->data['Customer First Order Date']='';
+     $this->data['Customer Last Order Date']='';
+     $this->data['Customer Order Interval']='';
+     $this->data['Customer Order Interval STD']='';
+     $this->data['Actual Customer']='No';
+     $this->data['New Served Customer']='No';
+     $this->data['Active Customer']='Unkwnown';
+     $this->data['Customer Net Balance']=0;
+   
+     $result=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+       
+       $this->data['Customer Orders']=$row['orders'];
+       $this->data['Customer Orders Cancelled']=$row['cancelled'];
+       $this->data['Customer Orders Invoiced']=$row['invoiced'];
+       
+       $this->data['Customer Net Balance']=$row['balance'];
+       if($this->data['Customer Orders']>0){
+	 $this->data['Customer First Order Date']=$row['first_order_date'];
+	 $this->data['Customer Last Order Date']=$row['last_order_date'] ;
+	 $this->data['Actual Customer']='Yes';
+       }else{
+	 $this->data['Actual Customer']='No';
+	 $this->data['Customer Type By Activity']='Prospect';
+	 
+       }
+       
+       if($this->data['Customer Orders']==1){
+	 $sql="select avg((`Customer Order Interval`)+($sigma_factor*`Customer Order Interval STD`)) as a from `Customer Dimension`";
+	 
+	 $result2=mysql_query($sql);
+	 if($row2=mysql_fetch_array($result2, MYSQL_ASSOC)){
+	   $average_max_interval=$row2['a'];
+	   if(is_numeric($average_max_interval)){
+	     if(   (strtotime('now')-strtotime($this->data['Customer Last Order Date']))/(3600*24)  <  $average_max_interval){
+	       $this->data['Active Customer']='Maybe';
+	       $this->data['Customer Type by Activity']='New';
+	       
+	     }else{
+	       $this->data['Active Customer']='No';
+	       $this->data['Customer Type by Activity']='Inactive';
+	       
+	     }
+	   }else
+	     $this->data['Active Customer']='Unknown';
+	   $this->data['Customer Type by Activity']='Unknown';
+	   
+	   
+	 }	
+	 
+       }
+       
+       if($this->data['Customer Orders']>1){
+	 $sql="select `Order Date` as date from `Order Dimension` where `Order Customer Key`=".$this->id." order by `Order Date`";
+	 $last_order=false;
+	 $intervals=array();
+	 $result2=mysql_query($sql);
+	 while($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ){
+	   $this_date=date('U',strtotime($row2['date']));
+	   if($last_order){
+	     $intervals[]=($this_date-$last_date)/3600/24;
+	   }
+	   
+	   $last_date=$this_date;
+	   $last_order=true;
+	   
+	 }
+	 //	 print $sql;
+	 //print_r($intervals);
+	 
+	 
+	 $this->data['Customer Order Interval']=average($intervals);
+	 $this->data['Customer Order Interval STD']=deviation($intervals);
+	 
+	 //print  $this->data['customer order interval']." ".$this->data['customer order interval std']."\n";
+	 
+	 if((date('U')-$last_date)<($this->data['Customer Order Interval']+($sigma_factor*$this->data['Customer Order Interval STD']))){
+	   $this->data['Active Customer']='Yes';
+	   $this->data['Customer Type by Activity']='Active';
+	 }else{
+	   $this->data['Active Customer']='No';
+	   $this->data['Customer Type by Activity']='Inactive';
+
+	 }
+       }
+       
+      
+       
+       $sql=sprintf("update `Customer Dimension` set `Customer Net Balance`=%.2f,`Customer Orders`=%d,`Customer Orders Cancelled`=%d,`Customer Orders Invoiced`=%d,`Customer First Order Date`=%s,`Customer Last Order Date`=%s,`Customer Order Interval`=%s,`Customer Order Interval STD`=%s,`Active Customer`=%s,`Actual Customer`=%s,`Customer Type by Activity`=%s where `Customer Key`=%d",
+		    $this->data['Customer Net Balance']
+		    ,$this->data['Customer Orders']
+		    ,$this->data['Customer Orders Cancelled']
+		    ,$this->data['Customer Orders Invoiced']
+		    ,prepare_mysql($this->data['Customer First Order Date'])
+		    ,prepare_mysql($this->data['Customer Last Order Date'])
+		    ,prepare_mysql($this->data['Customer Order Interval'])
+		    ,prepare_mysql($this->data['Customer Order Interval STD'])
+		    ,prepare_mysql($this->data['Active Customer'])
+		    ,prepare_mysql($this->data['Actual Customer'])
+		    ,prepare_mysql($this->data['Customer Type by Activity'])
+		    ,$this->id
+		    );
+       //print "$sql\n";
+       
+       mysql_query($sql);
+     }
+
+
+      //      $sql=sprintf("select `Customer Orders` from `Customer Dimension` order by `Customer Order`");
+
+
+
+ }
+
+
+
+
+
  function updatex($values,$args=''){
     $res=array();
     foreach($values as $data){
@@ -1326,12 +1458,12 @@ class Customer extends DB_Table{
 
 
    switch($key){
-   case('Total Balance'):
-     return money($this->data['Customer Total Balance']);
+   case('Net Balance'):
+     return money($this->data['Customer Net Balance']);
      break;
    case('Total Net Per Order'):
      if($this->data['Customer Orders Invoiced']>0)
-       return money($this->data['Customer Total Balance']/$this->data['Customer Orders Invoiced']);
+       return money($this->data['Customer Net Balance']/$this->data['Customer Orders Invoiced']);
      else
        return _('ND');
      break;

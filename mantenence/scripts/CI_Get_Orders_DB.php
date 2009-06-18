@@ -272,7 +272,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     }
      if(strtotime($date_order)>strtotime('today')   ){
       
-      print "ERROR (Fecha en el futuro) $filename  \n ";
+      print "ERROR (Fecha en el futuro) $filename  $date_order   \n ";
       
       continue;
     }

@@ -40,7 +40,7 @@
 <td  valign="top">
 <table border=0 style="padding:0">
 {if $customer->get('Customer Main Contact Key')}<tr><td colspan=2  class="aright">{$customer->get('Customer Main Contact Name')}</td ></tr>{/if}
-{if $customer->get('Customer Main Email Key')}<tr><td colspan=2  class="aright">{$customer->get('customer main XHTML email')}</td ></tr>{/if}
+{if $customer->get('Customer Main Email Key')}<tr><td colspan=2  class="aright">{$customer->get('customer main XHTML email')}</td ><td><img src="art/icons/email.png"/></td></tr>{/if}
 {if $customer->get('Customer Main Telephone Key')}<tr><td colspan=2 class="aright">{$customer->get('customer main telephone')}</td ><td><img src="art/icons/telephone.png"/></td></tr>{/if}
 
 
@@ -65,11 +65,13 @@
   <h2 style="font-size:150%">{t}Orders Overview{/t}</h2>
   <table style="padding:0;margin:0;border-top:1px solid black;;border-bottom:1px solid black;width:500px">
     <tr><td>
-	{if $customer->get('customer orders')==1}
-	{$customer->get('customer name')} {t}has place one order{/t}.  
-	{elseif $customer->get('customer orders')>1 } 
-	{$customer->get('customer name')} {t}has placed{/t} <b>{$customer->get('Customer Orders')}</b> {t}orders so far{/t}, {t}which amounts to a total of{/t} <b>{$customer->get('Total Balance')}</b> {t}plus tax{/t} ({t}an average of{/t} {$customer->get('Total Net Per Order')} {t}per order{/t}).
+	{if $customer->get('Customer Orders')==1}
+	{$customer->get('Customer Name')} {t}has place one order{/t}.  
+	{elseif $customer->get('Customer Orders')>1 } 
+	{$customer->get('customer name')} {t}has placed{/t} <b>{$customer->get('Customer Orders')}</b> {t}orders so far{/t}, {t}which amounts to a total of{/t} <b>{$customer->get('Net Balance')}</b> {t}plus tax{/t} ({t}an average of{/t} {$customer->get('Total Net Per Order')} {t}per order{/t}).
 	{if $customer->get('Customer Orders Invoiced')}<br/>{t}This customer usually places an order every{/t} {$customer->get('Order Interval')}.{/if}
+	{else}
+	Customer has not place any order yet.
 	{/if}
 	
     </td></tr>

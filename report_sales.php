@@ -188,7 +188,8 @@ $day_interval=get_time_interval(strtotime($from),(strtotime($to)))+1;
      $smarty->assign('diff_invoices',$diff_invoices_change.number($diff_invoices));
      $smarty->assign('diff_invoices_per',percentage($diff_invoices,$invoices_ly,2));
 
-     
+     $smarty->assign('orders_state',$interval_data['orders_state']);
+	  
      
      $diff_invoices_home=$interval_data['invoices']['invoices_home']-$interval_data_last_year['invoices']['invoices_home'];
      $diff_invoices_home_change=($diff_invoices_home>0?'+':'');

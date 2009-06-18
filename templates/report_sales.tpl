@@ -30,7 +30,7 @@
 <td><a href="report_sales.php?tipo=m&y={$period}&m=8">{$m[7]}</a></td>
 <td><a href="report_sales.php?tipo=m&y={$period}&m=9">{$m[8]}</a></td>
 </tr><tr>
-<td><a href="report_sales.php?tipo=m&y={$period}&m=10">{$m[9]}</a></td>
+<td>< href="report_sales.php?tipo=m&y={$period}&m=10">{$m[9]}</a></td>
 <td><a href="report_sales.php?tipo=m&y={$period}&m=11">{$m[10]}</a></td>
 <td><a href="report_sales.php?tipo=m&y={$period}&m=12">{$m[11]}</a></td>
 </tr>
@@ -366,25 +366,23 @@
 <p style="width:375px">
 We received <b>{$orders_total}</b> orders on {if $tipo=='m'}{$period}{/if},   <b>{$per_orders_invoices}</b> has been invoiced. The average process time was <b>{$dispatch_days}</b> days, (<b>{$dispatch_days_home}</b> days for {$_home} orders, <b>{$dispatch_days_nohome}</b> days for export ones). 
 </p>
-<table class="report_sales1">
-<tr><td></td><td>Number</td><td>Net Value</td><td></tr>
-<tr class="first"><td class="label">{t}Invoices{/t}</td><td>{$orders_invoices}</td><td>{$orders_invoices_net}</td></tr>
-<tr class="geo"><td class="label">{t}Follows{/t}</td><td>{$orders_follows}</td><td>{$orders_follows_net}</td></tr>
-<tr class="geo"><td class="label">{t}Cancellations{/t}</td><td>{$orders_cancelled}</td><td>{$orders_cancelled_net}</td></tr>
-{if $orders_donations>0}<tr class="geo  {if  $orders_others==0}last{/if}"><td class="label">{t}Donations{/t}</td><td>{$orders_donations}</td><td>{$orders_donation_net}</td></tr>{/if}
-{if $orders_others>0}<tr class="geo  last"><td class="label last">{t}Others{/t}</td><td>{$orders_others}</td><td>{$orders_others_net}</td></tr>{/if}
-
-<tr class="geo"><td class="label">{t}To do{/t}</td><td>{$orders_todo}</td><td>{$orders_todo_net}</td></tr>
 
 
-<tr class="total" ><td>Total</td><td>{$orders_total}</td><td>{$orders_total_net}</td></tr>
+<table   class="report_sales1">
+<tr><td></td><td style="text-align:right;padding:0">Number</td><td></td><td>Net Value</td><td></tr>
+{foreach from=$orders_state key=k item=v name=foo}
+<tr class="{if $smarty.foreach.foo.first}first{else}geo{/if}">
+  <td>{$k}</td>
+  <td  style="padding:0 4px 0 0;" >{$v.orders}</td>
+  <td style="text-align:left;padding:0 0 0 0;">({$v.orders_percentage})</td>
+  <td>{$v.net}</td>
 
-
-
-
+</tr>
+{/foreach}
+<tr class="total" ><td>Total</td><td style="text-align:right;padding:0 4px 0 0;">{$orders_total}</td><td></td><td>{$orders_total_net}</td></tr>
 </table>
 
-<h2>Comparision Prevous Year</h2>
+<h2>Comparison  Previous Year</h2>
 <table border=0>
 <tr>
 <td><img src="{if $diff_sales_change!="+"}art/down.png{else}art/up.png{/if}"/></td>
@@ -441,9 +439,7 @@ The export sales represent   {$per_export} ({$per_export_nop} without partners) 
 
 
 
-<p style="width:500px;clear:both">
-With respect last year there is <b>{$text_diff_sales}</b> on the sales {$text_diff_orders_link} <b>{$text_diff_orders}</b> orders.
-</p>
+
 
 
 {else}
