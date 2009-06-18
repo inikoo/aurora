@@ -618,13 +618,7 @@ $countries='and `Invoice Billing Country 2 Alpha Code` in (';
  $orders_others=0;
  $orders_others_net=0;
 
- $_int=preg_replace('/Invoice Date/','Order Date',$int[0]); 
-$sql=sprintf("select count(*) as num ,sum(`Order Total Net Amount`) as net  from `Order Dimension` where true %s ",$_int);
-   $result=mysql_query($sql);
-  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-    $orders_total_net=$row['net'];
-     $orders_total=$row['num'];
- }
+
 /*  $_int=preg_replace('/Invoice Date/','Order Date',$int[0]); */
 /*  $sql=sprintf("select tipo,count(*) as num ,sum(net) as net  from orden where true %s group by tipo ",$_int); */
 /*    $result=mysql_query($sql); */
@@ -921,6 +915,39 @@ $balance['credits']['tax']=0;
      }
    }
  }
+
+  
+
+  $_int=preg_replace('/Invoice Date/','Order Date',$int[0]); 
+  
+  
+  
+  $sql=sprintf("select count(*) as num ,sum(`Order Total Net Amount`) as net  from `Order Dimension` where true %s ",$_int);
+  $result=mysql_query($sql);
+  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+    $orders_total_net=$row['net'];
+    $orders_total=$row['num'];
+  }
+
+  $orders_state=array();
+  $sql=sprintf("Select count(*) as orders ,`Order Current Dispatch State` as state,sum(`Order Total Net Amount`) as net ,sum(`Order Total Net Potential Amount`) as net_potential,sum(`Order Net Balance Amount`) as net_balance from `Order Dimension` where true  %s group by state",$_int);
+  //print $sql;
+  $result=mysql_query($sql);
+  while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+    $orders_state[$row['state']]=array(
+				       'orders'=>number($row['orders'])
+				       ,'orders_percentage'=>percentage($row['orders'],$orders_total)
+				       ,'net_chargable'=>money($row['net'])
+				       ,'net_potential'=>money($row['net_potential'])
+				       ,'net_paid'=>money($row['net']-$row['net_balance'])
+				       ,'net_topay'=>money($row['net_balance'])
+				       ,'net_lost'=>money($row['net']-$row['net_potential'])
+				       
+				       );
+  };
+  
+
+  
 
 
 /*      break; */
@@ -1316,7 +1343,8 @@ $balance['samples']['net_charged']=money($balance['samples']['net_charged']);
 		'notaxable'=>$notaxable_error,
 		'novalue_invoices'=>$novalue_invoices
 		);
-  return array('invoices'=>$invoices,'sales'=>$sales,'refunds'=>$refunds,'orders'=>$orders,'exports'=>$exports,'other_data'=>$other_data,'errors'=>$errors,'taxable'=>$taxable,'notaxable'=>$notaxable,'balance'=>$balance);
+  return array('invoices'=>$invoices,'sales'=>$sales,'refunds'=>$refunds,'orders'=>$orders,'exports'=>$exports,'other_data'=>$other_data,'errors'=>$errors,'taxable'=>$taxable,'notaxable'=>$notaxable,'balance'=>$balance,'orders_state'=>$orders_state);
+
 
 }
 

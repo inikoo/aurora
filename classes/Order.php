@@ -179,7 +179,7 @@ class Order {
 				  
 				  $line_number = 0;
 				  foreach ( $data ['products'] as $product_data ) {
-					  //TODO
+				    //TODO
 				    $ship_to_key=0;
 				    $line_number ++;
 				    $product_data ['date'] = $this->data ['Order Date'];
@@ -188,42 +188,45 @@ class Order {
 				    $product_data ['metadata'] = $this->data ['Order Original Metadata'];
 				    $product_data ['ship to key'] = $ship_to_key;
 				    $product_data ['Current Dispatching State'] = $this->data ['Order Current Dispatch State'];
-					  $product_data ['Current Payment State'] = $this->data ['Order Current Payment State'];
-					  
-					  $this->add_order_transaction ( $product_data );
-					  
-					}
-					
-					$sql = sprintf ( "update `Order Dimension` set `Order Original Lines`=%d,`Order Current Lines`=%d  where  `Order Key`=%d ", $line_number, $line_number, $this->data ['Order Key'] );
-					
-					if (! mysql_query ( $sql ))
-					  exit ( "eroro con no update total items " );
-					
-					$this->load ( 'totals' );
+				    $product_data ['Current Payment State'] = $this->data ['Order Current Payment State'];
+				    
+				    $this->add_order_transaction ( $product_data );
+				    
+				  }
+				  //Set potential 
+				  
+				  $this->data['Order Total Net Potential Amount']=$this->load('Order Total Net Potential Amount');
+
+				  $sql = sprintf ( "update `Order Dimension` set `Order Total Net Potential Amount`=%.2f,`Order Original Lines`=%d,`Order Current Lines`=%d  where  `Order Key`=%d ",  $this->data['Order Total Net Potential Amount'],$line_number, $line_number, $this->data ['Order Key'] );
+				  
+				  if (! mysql_query ( $sql ))
+				    exit ( "$sql eroro con no update total items " );
+				  
+				  $this->load ( 'totals' );
 					//TODO
 					//$customer->update ( 'orders' );
 					//$customer->update ( 'no normal data' );
-					
+				  
 					//       $this->cutomer_rankings();
-					
-
-					switch ($_SESSION ['lang']) {
-						default :
-							$abstract = sprintf ( 'Order <a href="order.php?id=%d">%s</a>', $this->data ['Order Key'], $this->data ['Order Public ID'] );
-							$note = sprintf ( '%s (<a href="customer.php?id=%d">%s) place an order at %s', $customer->get ( 'Customer Name' ), $customer->id, $customer->get ( 'Customer ID' ), strftime ( "%e %b %Y %H:%M", strtotime ( $this->data ['Order Date'] ) ) );
+				  
+				  
+				  switch ($_SESSION ['lang']) {
+				  default :
+				    $abstract = sprintf ( 'Order <a href="order.php?id=%d">%s</a>', $this->data ['Order Key'], $this->data ['Order Public ID'] );
+				    $note = sprintf ( '%s (<a href="customer.php?id=%d">%s) place an order at %s', $customer->get ( 'Customer Name' ), $customer->id, $customer->get ( 'Customer ID' ), strftime ( "%e %b %Y %H:%M", strtotime ( $this->data ['Order Date'] ) ) );
 					}
-					
-					$sql = sprintf ( "insert into `History Dimension` (`History Date`,`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`History Details`,`Author Key`,`Author Name`) values(%s,'Customer','%s','Placed','Order',%d,%s,0,%s)", prepare_mysql ( $this->data ['Order Date'] ), $customer->id, $this->data ['Order Key'], prepare_mysql ( $note ), prepare_mysql ( _ ( 'System' ) ) );
-					mysql_query ( $sql );
-					$history_id = mysql_insert_id ();
-					$abstract .= ' (<span class="like_a" onclick="showdetails(this)" d="0" id="ch' . $history_id . '"  hid="' . $history_id . '">' . _ ( 'view details' ) . '</span>)';
-					$sql = sprintf ( "update `History Dimension` set `History Abstract`=%s where `History Key`=%d", prepare_mysql ( $abstract ), $history_id );
-					//	print "$sql\n";
-					mysql_query ( $sql );
+				  
+				  $sql = sprintf ( "insert into `History Dimension` (`History Date`,`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`History Details`,`Author Key`,`Author Name`) values(%s,'Customer','%s','Placed','Order',%d,%s,0,%s)", prepare_mysql ( $this->data ['Order Date'] ), $customer->id, $this->data ['Order Key'], prepare_mysql ( $note ), prepare_mysql ( _ ( 'System' ) ) );
+				  mysql_query ( $sql );
+				  $history_id = mysql_insert_id ();
+				  $abstract .= ' (<span class="like_a" onclick="showdetails(this)" d="0" id="ch' . $history_id . '"  hid="' . $history_id . '">' . _ ( 'view details' ) . '</span>)';
+				  $sql = sprintf ( "update `History Dimension` set `History Abstract`=%s where `History Key`=%d", prepare_mysql ( $abstract ), $history_id );
+				  //	print "$sql\n";
+				  mysql_query ( $sql );
 				} else {
-					$this->data ['Order Key'] = 0;
-					$this->data ['Order Public ID'] = '';
-				
+				  $this->data ['Order Key'] = 0;
+				  $this->data ['Order Public ID'] = '';
+				  
 				}
 				
 				break;
@@ -555,7 +558,7 @@ class Order {
 					
 
 					$customer = new Customer ( $customer_id );
-					$customer->update ( 'orders' );
+					$customer->update_orders;
 					$customer->update ( 'no normal data' );
 					
 					//$this->cutomer_rankings();
@@ -582,6 +585,10 @@ class Order {
 		
 		}
 	
+
+
+
+
 	}
 	
 	function cancel() {
@@ -591,7 +598,14 @@ class Order {
 		$this->data ['Order Current XHTML State'] = _ ( 'Order Cancelled' );
 		$this->data ['Order XHTML Invoices'] = '';
 		$this->data ['Order XHTML Delivery Notes'] = '';
-		$sql = sprintf ( "update `Order Dimension` set `Order Current Payment State`=%s,`Order Current Dispatch State`=%s,`Order Current XHTML State`=%s,`Order XHTML Invoices`='',`Order XHTML Delivery Notes`='' where `Order Key`=%d", prepare_mysql ( $this->data ['Order Current Payment State'] ), prepare_mysql ( $this->data ['Order Current Dispatch State'] ), prepare_mysql ( $this->data ['Order Current XHTML State'] ), $this->id );
+		$this->data ['Order Balance Total Amount'] = 0;
+		$this->data ['Order Balance Net Amount'] = 0;
+		$this->data ['Order Balance Tax Amount'] = 0;
+		$sql = sprintf ( "update `Order Dimension` set `Order Current Payment State`=%s,`Order Current Dispatch State`=%s,`Order Current XHTML State`=%s,`Order XHTML Invoices`='',`Order XHTML Delivery Notes`='' ,`Order Balance Net Amount`=0,`Order Balance Tax Amount`=0,`Order Balance Total Amount`=0 where `Order Key`=%d"
+				 , prepare_mysql ( $this->data ['Order Current Payment State'] )
+				 , prepare_mysql ( $this->data ['Order Current Dispatch State'] )
+				 , prepare_mysql ( $this->data ['Order Current XHTML State'] )
+				 , $this->id );
 		if (! mysql_query ( $sql ))
 			exit ( "arror can not update cancel\n" );
 		
@@ -743,7 +757,7 @@ class Order {
 			$discounts += $data ['discount amount'];
 			
 			if (! mysql_query ( $sql ))
-				exit ( "can not update order trwansiocion facrt after invoice" );
+				exit ( "$sql can not update order trwansiocion facrt after invoice" );
 		}
 		
 		//addign indovdual product costs
@@ -790,16 +804,16 @@ class Order {
 		$this->data ['Order Total Tax Amount'] = $this->data ['Order Total Net Amount'] * $invoice_data ['tax_rate'];
 		
 		$this->data ['Order Total Amount'] = $this->data ['Order Total Tax Amount'] + $this->data ['Order Total Net Amount'];
-		$this->data ['Order Balance Amount'] = 0;
+		$this->data ['Order Balance Total Amount'] = 0;
 		
-		$sql = sprintf ( "update `Order Dimension` set `Order Current Dispatch State`='Dispached' ,`Order Current Payment State`='Paid',`Order Current XHTML State`=%s ,`Order XHTML Invoices`=%s,`Order Items Gross Amount`=%.2f ,`Order Items Discount Amount`=%.2f ,`Order Shipping Net Amount`=%.2f,`Order Charges Net Amount`=%.2f ,`Order Total Tax Amount`=%.2f ,`Order Total Amount`=%.2f,`Order Balance Amount`=%.2f,`Order Total Net Amount`=%.2f,`Order Items Adjust Amount`=%.2f, `Order Items Net Amount`=%.2f where `Order Key`=%d", prepare_mysql ( $state ), prepare_mysql ( $state ), $this->data ['Order Gross Amount'], $this->data ['Order Discount Amount'], $this->data ['Order Shipping Amount'], $this->data ['Order Charges Amount'], $this->data ['Order Total Tax Amount'], $this->data ['Order Total Amount'], $this->data ['Order Balance Amount'], $this->data ['Order Total Net Amount'], $this->data ['Order Adjust Amount'], $this->data ['Order Items Net Amount'], 
+		$sql = sprintf ( "update `Order Dimension` set `Order Current Dispatch State`='Dispached' ,`Order Current Payment State`='Paid',`Order Current XHTML State`=%s ,`Order XHTML Invoices`=%s,`Order Items Gross Amount`=%.2f ,`Order Items Discount Amount`=%.2f ,`Order Shipping Net Amount`=%.2f,`Order Charges Net Amount`=%.2f ,`Order Total Tax Amount`=%.2f ,`Order Total Amount`=%.2f,`Order Balance Total Amount`=%.2f,`Order Total Net Amount`=%.2f,`Order Items Adjust Amount`=%.2f, `Order Items Net Amount`=%.2f where `Order Key`=%d", prepare_mysql ( $state ), prepare_mysql ( $state ), $this->data ['Order Gross Amount'], $this->data ['Order Discount Amount'], $this->data ['Order Shipping Amount'], $this->data ['Order Charges Amount'], $this->data ['Order Total Tax Amount'], $this->data ['Order Total Amount'], $this->data ['Order Balance Total Amount'], $this->data ['Order Total Net Amount'], $this->data ['Order Adjust Amount'], $this->data ['Order Items Net Amount'], 
 
 		$this->data ['Order Key'] )
 
 		;
 		//        print $sql;
 		if (! mysql_query ( $sql ))
-			exit ( "can not update order dimension after inv\n" );
+			exit ( "$sql can not update order dimension after inv\n" );
 		
 		$invoice_txt = "INV";
 		
@@ -961,7 +975,7 @@ class Order {
 		$this->data ['Order Total Tax Amount'] = $this->data ['Order Total Net Amount'] * $invoice_data ['tax_rate'];
 		
 		$this->data ['Order Total Amount'] = $this->data ['Order Total Tax Amount'] + $this->data ['Order Total Net Amount'];
-		$this->data ['Order Balance Amount'] = 0;
+		$this->data ['Order Balance Total Amount'] = 0;
 		
 		if ($this->id) {
 			$replacement_txt = 'Ref.';
@@ -974,7 +988,7 @@ class Order {
 			;
 			
 			if (! mysql_query ( $sql ))
-				exit ( "can not update order dimension after inv\n" );
+				exit ( "$sql can not update order dimension after inv\n" );
 		}
 	
 	}
@@ -1850,7 +1864,17 @@ class Order {
 	
 	function load($key = '', $args = '') {
 	  switch ($key) {
-	  case('xhtml delibery notes'):
+	  case('Order Potential Net Amount'):
+	    $sql = "select sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) as discount, sum(`Invoice Transaction Shipping Amount`) as shipping,sum(`Invoice Transaction Charges Amount`) as charges ,sum(`Invoice Transaction Total Tax Amount`) as tax   from `Order Transaction Fact` where  `Order Key`=" . $this->data ['Order Key'];
+	    $result = mysql_query ( $sql );
+	    if ($row = mysql_fetch_array ( $result, MYSQL_ASSOC )) {
+	      $total = $row ['gross'] + $row ['shipping'] + $row ['charges'] - $row ['discount'];
+	    }else
+	      $total=0;
+	    
+	    return $total;
+	    break;
+	  case('xhtml delivery notes'):
 
 	    $sql=sprintf("select `Delivery Note Key` from `Order Delivery Note Bridge` where `Order Key`=%d",$this->id);
 	    $result = mysql_query ( $sql );
@@ -1882,14 +1906,14 @@ class Order {
 						$this->data ['Order Total Amount'] = $this->data ['Order Total Tax Amount'] + $this->data ['Order Net Amount'];
 						$this->data ['Order Total To Pay Amount'] = $this->data ['Order Total Amount'];
 						
-						$sql = sprintf ( "update `Order Dimension` set `Order Items Gross Amount`=%.2f, `Order Items Discount Amount`=%.2f, `Order Items Net Amount`=%.2f ,`Order Total Tax Amount`=%.2f ,`Order Shipping Net Amount`=%.2f ,`Order Charges Net Amount`=%.2f ,`Order Total Amount`=%.2f , `Order Balance Amount`=%.2f  where  `Order Key`=%d ", $this->data ['Order Gross Amount'], $this->data ['Order Discount Amount'], $this->data ['Order Net Amount'], $this->data ['Order Total Tax Amount'], $this->data ['Order Shipping Amount'], $this->data ['Order Charges Amount'], $this->data ['Order Total Amount'], $this->data ['Order Total To Pay Amount'], $this->data ['Order Key'] );
+						$sql = sprintf ( "update `Order Dimension` set `Order Items Gross Amount`=%.2f, `Order Items Discount Amount`=%.2f, `Order Items Net Amount`=%.2f ,`Order Total Tax Amount`=%.2f ,`Order Shipping Net Amount`=%.2f ,`Order Charges Net Amount`=%.2f ,`Order Total Amount`=%.2f , `Order Balance Total Amount`=%.2f  where  `Order Key`=%d ", $this->data ['Order Gross Amount'], $this->data ['Order Discount Amount'], $this->data ['Order Net Amount'], $this->data ['Order Total Tax Amount'], $this->data ['Order Shipping Amount'], $this->data ['Order Charges Amount'], $this->data ['Order Total Amount'], $this->data ['Order Total To Pay Amount'], $this->data ['Order Key'] );
 						
 						//	print $sql;
 						//	exit;
 						
 
 						if (! mysql_query ( $sql ))
-							exit ( "eroro con no update totals" );
+							exit ( "$sql eroro2 con no update totals" );
 					}
 				} else {
 					
@@ -1945,7 +1969,7 @@ class Order {
 					else if ($this->data ['Order Current Payment State'] == 'Waiting Payment')
 						$balance = $total;
 					else if ($this->data ['Order Current Payment State'] == 'Parcially Paid')
-						$balance = $this->data ['Order Balance Amount'];
+						$balance = $this->data ['Order Balance Total Amount'];
 					else
 						$balance = 0;
 						
@@ -1964,14 +1988,14 @@ class Order {
 					
 
 					$this->data ['Order Total Amount'] = $this->data ['Order Total Net Amount'] + $this->data ['Order Total Tax Amount'];
-					$sql = sprintf ( "update `Order Dimension` set `Order Items Gross Amount`=%.2f, `Order Items Discount Amount`=%.2f, `Order Items Net Amount`=%.2f ,`Order Total Tax Amount`=%.2f ,`Order Shipping Net Amount`=%.2f ,`Order Charges Net Amount`=%.2f ,`Order Total Net Amount`=%.2f ,`Order Total Amount`=%.2f , `Order Balance Amount`=%.2f  where  `Order Key`=%d ", $this->data ['Order Gross Amount'], $this->data ['Order Discount Amount'], $this->data ['Order Items Net Amount'], $this->data ['Order Total Tax Amount'], $this->data ['Order Shipping Amount'], $this->data ['Order Charges Amount'], $this->data ['Order Total Net Amount'], $this->data ['Order Total Amount'], $balance, $this->data ['Order Key'] );
+					$sql = sprintf ( "update `Order Dimension` set `Order Items Gross Amount`=%.2f, `Order Items Discount Amount`=%.2f, `Order Items Net Amount`=%.2f ,`Order Total Tax Amount`=%.2f ,`Order Shipping Net Amount`=%.2f ,`Order Charges Net Amount`=%.2f ,`Order Total Net Amount`=%.2f ,`Order Total Amount`=%.2f , `Order Balance Total Amount`=%.2f  where  `Order Key`=%d ", $this->data ['Order Gross Amount'], $this->data ['Order Discount Amount'], $this->data ['Order Items Net Amount'], $this->data ['Order Total Tax Amount'], $this->data ['Order Shipping Amount'], $this->data ['Order Charges Amount'], $this->data ['Order Total Net Amount'], $this->data ['Order Total Amount'], $balance, $this->data ['Order Key'] );
 					
 					//print "$sql\n";
 					//	exit;
 					
 
 					if (! mysql_query ( $sql ))
-						exit ( "eroro con no update totals" );
+						exit ( "$sql eroro3 con no update totals" );
 				
 				}
 				break;
@@ -2507,6 +2531,30 @@ class Order {
 		}
 	
 	}
+	/*
+	  function: update_balance
+	  Update Order Balance
+	 */
+	
+	function update_balance(){
+	  $chargeable=0;
+	  // go tthugh all the transaction facts and calculate balances
+	   $sql = "select sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)*`Paid Factor`) as paid , sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)*(1-`Paid Factor`)) as to_pay,sum(`Invoice Transaction Net Refund Amount`) as refunded    from `Order Transaction Fact` where `Order Key`=" . $this->data ['Order Key'];
+	   $result = mysql_query ( $sql );
+	   if ($row = mysql_fetch_array ( $result, MYSQL_ASSOC )) {
+	     $chargeable=$row['paid']+$row['to_pay']+$row['refunded'];
+	     
+	   }
+	   
+	   $this->data['Order Balance Net Amount']=$chargeable;
+
+
+	   $sql=sprintf("update `Order Dimension` set `Order Balance Net Amount`=%.2f where `Order Key`=%d",$this->data['Order Balance Net Amount'],$this->id);
+	   mysql_query($sql);
+	   //  print "$sql\n";
+	   //exit;
+	}
+
 
 }
 
