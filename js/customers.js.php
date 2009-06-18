@@ -31,14 +31,14 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       ,{key:"postcode", label:"<?=_('Postal Code')?>",<?=($_SESSION['state']['customers']['view']=='address'?'':'hidden:true,')?>sortable:true,className:"aright"}
 				       ,{key:"region", label:"<?=_('Region')?>",<?=($_SESSION['state']['customers']['view']=='address'?'':'hidden:true,')?>sortable:true,className:"aright"}
 				       ,{key:"country", label:"<?=_('Country')?>",<?=($_SESSION['state']['customers']['view']=='address'?'':'hidden:true,')?>sortable:true,className:"aright"}
-				       ,{key:"ship_address", label:"<?=_('Ship to Address')?>",<?=($_SESSION['state']['customers']['view']=='ship_to_address'?'':'hidden:true,')?>sortable:true,className:"aright"}
+				       //				       ,{key:"ship_address", label:"<?=_('Ship to Address')?>",<?=($_SESSION['state']['customers']['view']=='ship_to_address'?'':'hidden:true,')?>sortable:true,className:"aright"}
 				       ,{key:"ship_town", label:"<?=_('Town')?>",<?=($_SESSION['state']['customers']['view']=='ship_to_address'?'':'hidden:true,')?>sortable:true,className:"aright"}
 				       ,{key:"ship_postcode", label:"<?=_('Postal Code')?>",<?=($_SESSION['state']['customers']['view']=='ship_to_address'?'':'hidden:true,')?>sortable:true,className:"aright"}
 				       ,{key:"ship_region", label:"<?=_('Region')?>",<?=($_SESSION['state']['customers']['view']=='ship_to_address'?'':'hidden:true,')?>sortable:true,className:"aright"}
 				       ,{key:"ship_country", label:"<?=_('Country')?>",<?=($_SESSION['state']['customers']['view']=='ship_to_address'?'':'hidden:true,')?>sortable:true,className:"aright"}
 				       ,{key:"total_payments", label:"<?=_('Payments')?>",<?=($_SESSION['state']['customers']['view']=='balance'?'':'hidden:true,')?>sortable:true,className:"aright"}
 				       ,{key:"total_refunds", label:"<?=_('Refunds')?>",<?=($_SESSION['state']['customers']['view']=='balance'?'':'hidden:true,')?>sortable:true,className:"aright"}
-				       ,{key:"total_balance", label:"<?=_('Balance')?>",<?=($_SESSION['state']['customers']['view']=='balance'?'':'hidden:true,')?>sortable:true,className:"aright"}
+				       ,{key:"net_balance", label:"<?=_('Balance')?>",<?=($_SESSION['state']['customers']['view']=='balance'?'':'hidden:true,')?>sortable:true,className:"aright"}
 				       ,{key:"balance", label:"<?=_('Outstanding')?>",<?=($_SESSION['state']['customers']['view']=='balance'?'':'hidden:true,')?>sortable:true,className:"aright"}
 				       ,{key:"total_profit", label:"<?=_('Profit')?>",<?=($_SESSION['state']['customers']['view']=='balance'?'':'hidden:true,')?>sortable:true,className:"aright"}
 				       ,{key:"top_orders", label:"<?=_('Rank Orders')?>",<?=($_SESSION['state']['customers']['view']=='rank'?'':'hidden:true,')?>sortable:true,className:"aright"}
@@ -77,7 +77,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 'total_payments','contact_name'
 			 ,"address","town","postcode","region","country"
 			 ,"ship_address","ship_town","ship_postcode","ship_region","ship_country"
-			 ,"total_paymants","total_refunds","total_balance","total_profit","balance"
+			 ,"total_paymants","total_refunds","net_balance","total_profit","balance"
 			 ,"top_orders","top_invoices","top_balance","top_profits"
 			 ]};
 	    //__You shouls not change anything from here
@@ -194,13 +194,13 @@ YAHOO.util.Event.onContentReady("rppmenu", function () {
       table.hideColumn('postcode');
       table.hideColumn('region');
       table.hideColumn('country');
-      table.hideColumn('ship_address');
+      //      table.hideColumn('ship_address');
       table.hideColumn('ship_town');
       table.hideColumn('ship_postcode');
       table.hideColumn('ship_region');
       table.hideColumn('ship_country');
       table.hideColumn('total_payments');
-      table.hideColumn('total_balance');
+      table.hideColumn('net_balance');
       table.hideColumn('total_refunds');
       table.hideColumn('total_profit');
 
@@ -233,7 +233,7 @@ YAHOO.util.Event.onContentReady("rppmenu", function () {
 	  table.showColumn('country');
 	  Dom.get('address').className='selected';
       }else if(tipo=='ship_to_address'){
-	  table.showColumn('ship_address');
+	//	  table.showColumn('ship_address');
 	  table.showColumn('ship_town');
 	  table.showColumn('ship_postcode');
 	  table.showColumn('ship_region');
@@ -241,7 +241,7 @@ YAHOO.util.Event.onContentReady("rppmenu", function () {
 
       }else if(tipo=='balance'){
 	     table.showColumn('name');
-	  table.showColumn('total_balance');
+	  table.showColumn('net_balance');
 	  table.showColumn('total_refunds');
 	  table.showColumn('total_payments');
 	  table.showColumn('total_profit');

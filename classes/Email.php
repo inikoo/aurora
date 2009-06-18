@@ -460,6 +460,10 @@ function update_Email($data,$options=''){
     }
     $this->warning=true;
   }
+
+
+
+
   $sql=sprintf("update `Email Dimension` set `Email`=%s where `Email Key`=%d ",prepare_mysql($data),$this->id);
   mysql_query($sql);
   // print "$sql\n";
@@ -477,6 +481,9 @@ function update_Email($data,$options=''){
     $this->data['Email']=$data;
     $this->updated=true;
     $this->update_EmailValidated($options);
+ 
+  
+
   }
   
 
@@ -587,86 +594,7 @@ private function update_EmailContactName($data,$options=''){
 
 
 
-function save_history($key,$history_data){
 
-  $old=$this->old_value;
-  if($key=='new'){
-    $old='';
-    $new=$this->get('email');
-  }else{
-    $new=$this->get($key);
-    $old=$this->old_value;
-  }
-  if(isset($history_data['msg'])){
-    $note=$history_data['msg'];
-  }else
-    $note=$this->update_msg;
-
-  if(
-     isset($history_data['sujeto']) and 
-     isset($history_data['sujeto_id'])and 
-     isset($history_data['objeto']) and 
-     isset($history_data['objeto_id'])
-     ){
-     
-    $sujeto=$history_data['sujeto'];
-    $sujeto_id=$history_data['sujeto_id'];
-    $objeto=$history_data['objeto'];
-    $objeto_id=$history_data['objeto_id'];
-    if($key=='new')
-      $tipo='NEW';
-    else
-      $tipo='CHGEML';
-
-
-  }else{
-    $sujeto='EMAIL';
-    $sujeto_id=$this->$id;
-    $objeto=$key;
-    $objeto_id='';
-    if($key=='new')
-      $tipo='NEW';
-    else
-      $tipo='CHG';
-    switch($key){
-    case('email'):
-      $objeto='EMAIL';
-      break;
-    case('contact'):
-      $objeto='EMAILC';
-      break;
-    case('verified'):
-      $objeto='EMAILV';
-      break;
-    case('tipo'):
-      $objeto='EMAILT';
-      break;
-    case('contact_id'):
-      $objeto='EMAILC';
-      break;
-    case('new'):
-      $objeto='';
-      break;
-    }
-
-  }
-
-  $sql=sprintf("insert into history (date,sujeto,sujeto_id,objeto,objeto_id,tipo,staff_id,old_value,new_value,note) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-	       ,$date
-	       ,prepare_mysql($sujeto)
-	       ,prepare_mysql($sujeto_id)
-	       ,prepare_mysql($objeto)
-	       ,prepare_mysql($objeto_id)
-	       ,prepare_mysql($action)
-	       ,prepare_mysql($user_id)
-	       ,prepare_mysql($old)	 
-	       ,prepare_mysql($new)	 
-	       ,prepare_mysql($note)); 
-
-  mysql_query($sql);
-
-
-}
  
 
 
