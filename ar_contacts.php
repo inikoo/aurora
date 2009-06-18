@@ -1282,24 +1282,21 @@ if(isset( $_REQUEST['where']))
 
   if(($f_field=='customer name'     )  and $f_value!=''){
       $wheref="  and  `Customer Name` like '%".addslashes($f_value)."%'";
-  }else if($f_field=='id3'  )
-    $wheref.=" and  extra_id2 like '".addslashes(preg_replace('/\s*|\,|\./','',$f_value))."%' ";
-  else if($f_field=='id2'  )
-    $wheref.=" and  extra_id1 like '".addslashes(preg_replace('/\s*|\,|\./','',$f_value))."%' ";
-else if($f_field=='id'  )
-    $wheref.=" and  cu.id like '".addslashes(preg_replace('/\s*|\,|\./','',$f_value))."%' ";
+ 
+  }else if($f_field=='id'  )
+    $wheref.=" and  `Customer ID` like '".addslashes(preg_replace('/\s*|\,|\./','',$f_value))."%' ";
   else if($f_field=='maxdesde' and is_numeric($f_value) )
-    $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(last_order))<=".$f_value."    ";
+    $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Customer Last Order Date`))<=".$f_value."    ";
   else if($f_field=='mindesde' and is_numeric($f_value) )
-    $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(last_order))>=".$f_value."    ";
+    $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Customer Last Order Date`))>=".$f_value."    ";
   else if($f_field=='max' and is_numeric($f_value) )
-    $wheref.=" and  orders<=".$f_value."    ";
+    $wheref.=" and  `Customer Orders`<=".$f_value."    ";
   else if($f_field=='min' and is_numeric($f_value) )
-    $wheref.=" and  orders>=".$f_value."    ";
+    $wheref.=" and  `Customer Orders`>=".$f_value."    ";
   else if($f_field=='maxvalue' and is_numeric($f_value) )
-    $wheref.=" and  total<=".$f_value."    ";
+    $wheref.=" and  `Customer Net Balance`<=".$f_value."    ";
   else if($f_field=='minvalue' and is_numeric($f_value) )
-    $wheref.=" and  total>=".$f_value."    ";
+    $wheref.=" and  `Customer Net Balance`>=".$f_value."    ";
 
 
 
@@ -1367,67 +1364,71 @@ else if($f_field=='id'  )
     
 
    if($order=='name')
-     $order='customer file as';
+     $order='`Customer File As`';
    elseif($order=='id')
-     $order='customer id';
+     $order='`Customer ID`';
    elseif($order=='location')
-     $order='customer main location';
+     $order='`Customer Main Location`';
    elseif($order=='orders')
-     $order='customer orders';
+     $order='`Customer Orders`';
    elseif($order=='email')
-     $order='customer email';
+     $order='`Customer Email`';
    elseif($order=='telephone')
-     $order='customer main telehone';
+     $order='`Customer Main Telehone`';
    elseif($order=='last_order')
-     $order='customer last order date';
+     $order='`Customer Last Order Date`';
    elseif($order=='contact_name')
-     $order='customer main contact_name';
+     $order='`Customer Main Contact Name`';
    elseif($order=='address')
-     $order='Customer Main Location';
+     $order='`Customer Main Location`';
    elseif($order=='town')
-     $order='customer main address town';
+     $order='`Customer Main Address Town`';
    elseif($order=='postcode')
-     $order='customer main address postal code';
+     $order='`Customer Main Address Postal Code`';
    elseif($order=='region')
-     $order='Customer Main Address Country Primary Division';
+     $order='`Customer Main Address Country Primary Division`';
    elseif($order=='country')
-     $order='customer main address country';
-  elseif($order=='ship_address')
-     $order='customer main ship to header';
+     $order='`Customer Main Address Country`';
+   //  elseif($order=='ship_address')
+   //  $order='`customer main ship to header`';
    elseif($order=='ship_town')
-     $order='customer main ship to town';
+     $order='`Customer Main Ship To Town`';
    elseif($order=='ship_postcode')
-     $order='customer main ship to postal code';
+     $order='`Customer Main Ship To Postal Code`';
    elseif($order=='ship_region')
-     $order='customer main ship to country region';
+     $order='`Customer Main Ship To Country Region`';
    elseif($order=='ship_country')
-     $order='customer main ship to country';
-   elseif($order=='total_balance')
-     $order='customer total balance';
+     $order='`Customer Main Ship To Country`';
+   elseif($order=='net_balance')
+     $order='`Customer Net Balance`';
    elseif($order=='balance')
-     $order='customer outstanding balance';
+     $order='`Customer Outstanding Balance`';
    elseif($order=='total_profit')
-     $order='customer total profit';
+     $order='`Customer Total Profit`';
    elseif($order=='total_payments')
-     $order='customer total payments';
+     $order='`Customer Total Payments`';
    elseif($order=='top_profits')
-     $order='customer profits top percentage';
+     $order='`Customer Profits Top Percentage`';
    elseif($order=='top_balance')
-     $order='customer balance top percentage';
+     $order='`Customer Balance Top Percentage`';
    elseif($order=='top_orders')
-     $order='customer orders top percentage';
+     $order='``Customer Orders Top Percentage`';
    elseif($order=='top_invoices')
-     $order='customer invoices top percentage';
-   $sql="select   * from `Customer Dimension`  $where $wheref  order by `$order` $order_direction limit $start_from,$number_results";
-   //      print $sql;
-   
-  $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+     $order='``Customer Invoices Top Percentage`';
+    elseif($order=='total_refunds')
+     $order='`Customer Total Refunds`';
 
-  $adata=array();
+   $sql="select   * from `Customer Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results";
+   //         print $sql;
+   $adata=array();
   
-  while($data=$res->fetchRow()) {
+  
+  
+  $result=mysql_query($sql);
+  while($data=mysql_fetch_array($result, MYSQL_ASSOC)){
 
-    $id="<a href='customer.php?id=".$data['customer id']."'>".$myconf['customer_id_prefix'].sprintf("%05d",$data['customer id']).'</a>';
+
+    $id="<a href='customer.php?id=".$data['Customer ID']."'>".$myconf['customer_id_prefix'].sprintf("%05d",$data['Customer ID']).'</a>';
   
     
   
@@ -1468,35 +1469,35 @@ else if($f_field=='id'  )
 //        $tel=($data['icode']!=''?'+'.$data['icode'].' ':'').$data['number'];
     $adata[]=array(
 		   'id'=>$id,
-		   'name'=>$data['customer name'],
-		   'location'=>$data['customer main location'],
-		   'orders'=>$data['customer orders'],
-		   'invoices'=>$data['customer orders invoiced'],
-		   'email'=>$data['customer main xhtml email'],
-		   'telephone'=>$data['customer main telephone'],
-		   'last_order'=>strftime("%e %b %Y", strtotime($data['customer last order date'])),
-		   'total_payments'=>$data['customer total payments'],
-		   'total_balance'=>$data['customer total balance'],
-		   'total_refunds'=>$data['customer total refunds'],
-		   'total_profit'=>$data['customer total profit'],
-		   'balance'=>$data['customer outstandig balance'],
+		   'name'=>$data['Customer Name'],
+		   'location'=>$data['Customer Main Location'],
+		   'orders'=>$data['Customer Orders'],
+		   'invoices'=>$data['Customer Orders Invoiced'],
+		   'email'=>$data['Customer Main XHTML Email'],
+		   'telephone'=>$data['Customer Main Telephone'],
+		   'last_order'=>strftime("%e %b %Y", strtotime($data['Customer Last Order Date'])),
+		   'total_payments'=>$data['Customer Total Payments'],
+		   'net_balance'=>$data['Customer Net Balance'],
+		   'total_refunds'=>$data['Customer Total Refunds'],
+		   'total_profit'=>$data['Customer Total Profit'],
+		   'balance'=>$data['Customer Outstandig Balance'],
 
 
-		   'top_orders'=>number($data['customer orders top percentage']).'%',
-		   'top_invoices'=>number($data['customer invoices top percentage']).'%',
-		   'top_balance'=>number($data['customer balance top percentage']).'%',
-		   'top_profits'=>number($data['customer profits top percentage']).'%',
-		   'contact_name'=>$data['customer main contact name'],
-		   'address'=>$data['customer main location'],
-		   'town'=>$data['customer main address town'],
-		   'postcode'=>$data['customer main address postal code'],
-		   'region'=>$data['customer main address country primary division'],
-		   'country'=>$data['customer main address country'],
-		   'ship_address'=>$data['customer main ship to header'],
-		   'ship_town'=>$data['customer main ship to town'],
-		   'ship_postcode'>$data['customer main ship to postal code'],
-		   'ship_region'=>$data['customer main ship to country region'],
-		   'ship_country'=>$data['customer main ship to country'],
+		   'top_orders'=>number($data['Customer Orders Top Percentage']).'%',
+		   'top_invoices'=>number($data['Customer Invoices Top Percentage']).'%',
+		   'top_balance'=>number($data['Customer Balance Top Percentage']).'%',
+		   'top_profits'=>number($data['Customer Profits Top Percentage']).'%',
+		   'contact_name'=>$data['Customer Main Contact Name'],
+		   'address'=>$data['Customer Main Location'],
+		   'town'=>$data['Customer Main Address Town'],
+		   'postcode'=>$data['Customer Main Address Postal Code'],
+		   'region'=>$data['Customer Main Address Country Primary Division'],
+		   'country'=>$data['Customer Main Address Country'],
+		   //		   'ship_address'=>$data['customer main ship to header'],
+		   'ship_town'=>$data['Customer Main Ship To Town'],
+		   'ship_postcode'>$data['Customer Main Ship To Postal Code'],
+		   'ship_region'=>$data['Customer Main Ship To Country Region'],
+		   'ship_country'=>$data['Customer Main Ship To Country'],
 		   
 		   );
   }
@@ -1514,7 +1515,7 @@ else if($f_field=='id'  )
 			 'filter_msg'=>$filter_msg,
 			 'total_records'=>$total,
 			 'records_offset'=>$start_from,
-			 'records_returned'=>$start_from+$res->numRows(),
+
 			 'records_perpage'=>$number_results,
 			 'records_order'=>$order,
 			 'records_order_dir'=>$order_dir,

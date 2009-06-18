@@ -84,13 +84,21 @@ class Customer extends DB_Table{
   function find($raw_data,$options=''){
 
     //print "===================================\n";
-    // print_r( $raw_data);
 
     $this->found_child=false;
     $this->found_child_key=0;
     $this->found=false;
     $this->found_key=0;
 
+
+    if(isset($raw_data['editor'])){
+      foreach($raw_data['editor'] as $key=>$value){
+
+	if(array_key_exists($key,$this->editor))
+	  $this->editor[$key]=$value;
+		    
+      }
+    }
 
    $create='';
    $update='';
@@ -516,6 +524,44 @@ class Customer extends DB_Table{
       $this->id=mysql_insert_id();
       $this->get_data('id',$this->id);
       
+
+
+
+      $note=_('Customer Created');
+      $details=_('Customer Created');
+    if($this->editor['Author Name'])
+      $author=$this->editor['Author Name'];
+    else
+      $author=_('System');
+    
+ if($this->editor['Date'])
+   $date=$this->editor['Date'];
+ else
+   $date=date("Y-m-d H:i:s");
+ 
+ $sql=sprintf("insert into `History Dimension` (`History Date`,`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`Author Name`,`Author Key`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+	      ,prepare_mysql($date)
+	      ,prepare_mysql('user')
+	      ,prepare_mysql($this->editor['User Key'])
+	      ,prepare_mysql('created')
+	      ,prepare_mysql($this->table_name)
+	      ,prepare_mysql($this->id)
+	      ,"''"
+	      ,"''"
+	      ,0
+	      ,prepare_mysql($note)
+	      ,prepare_mysql($details)
+	      ,prepare_mysql($author)
+	      ,prepare_mysql($this->editor['Author Key'])
+		  );
+ // print $sql;
+ // exit;
+   mysql_query($sql);
+
+
+
+
+
       
     }else{
       // print "Error can not create supplier $sql\n";
@@ -918,15 +964,11 @@ class Customer extends DB_Table{
 /*  } */
 
 
- function update_2($key,$data=false,$args='false'){
-   
-   switch($key){
-   case('multiple'):
-     $this->base_data();
-     break;
-   case('no normal data'):
-   case('no_normal_data'):
-      $sql="select min(`Order Date`) as date   from `Order Dimension` where `Order Customer Key`=".$this->id;
+
+ public function update_no_normal_data(){
+
+
+  $sql="select min(`Order Date`) as date   from `Order Dimension` where `Order Customer Key`=".$this->id;
       $result=mysql_query($sql);
       if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
@@ -944,146 +986,20 @@ class Customer extends DB_Table{
 	  mysql_query($sql);
 	}	 
       }
-      $address_fuzzy=false;
-      $email_fuzzy=false;
-      $tel_fuzzy=false;
-      $contact_fuzzy=false;
+      // $address_fuzzy=false;
+      // $email_fuzzy=false;
+      // $tel_fuzzy=false;
+      // $contact_fuzzy=false;
 
 
-      $address=new Address($this->get('customer main address key'));
-      if($address->get('Fuzzy Address'))
-	$address_fuzzy=true;
+      // $address=new Address($this->get('Customer Main Address Key'));
+      // if($address->get('Fuzzy Address'))
+      // 	$address_fuzzy=true;
       
 
-
-
-     break;
-   case('orders'):
-   case('orders_data'):
-     
-
-     $sigma_factor=3.2906;//99.9% value assuming normal distribution
-
-     $sql="select min(`Order Date`) as first_order_date ,max(`Order Date`) as last_order_date,count(*)as orders, sum(if(`Order Current Payment State` like '%Cancelled',1,0)) as cancelled,  sum( if(`Order Current Payment State` like '%Paid%'    ,1,0)) as invoiced,sum( if(`Order Current Payment State` like '%Refund%'    ,1,0)) as refunded,sum(if(`Order Current Dispatch State`='Unknown',1,0)) as unknown   from `Order Dimension` where `Order Customer Key`=".$this->id;
-
-     $this->data['customer orders']=0;
-     $this->data['customer orders cancelled']=0;
-     $this->data['customer orders invoiced']=0;
-     $this->data['customer first order date']='';
-     $this->data['customer last order date']='';
-     $this->data['customer order interval']='';
-     $this->data['customer order interval std']='';
-     $this->data['actual customer']='No';
-     $this->data['new served customer']='No';
-     $this->data['active customer']='Unkwnown';
-     
-     //print "$sql\n";     
-     $result=mysql_query($sql);
-     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-       
-       $this->data['customer orders']=$row['orders'];
-       $this->data['customer orders cancelled']=$row['cancelled'];
-       $this->data['customer orders invoiced']=$row['invoiced'];
-       
-       
-       if($this->data['customer orders']>0){
-	 $this->data['customer first order date']=$row['first_order_date'];
-	 $this->data['customer last order date']=$row['last_order_date'] ;
-	 $this->data['actual customer']='Yes';
-       }else{
-	 $this->data['actual customer']='No';
-	 $this->data['customer type by activity']='Prospect';
-	 
-       }
-       
-       if($this->data['customer orders']==1){
-	 $sql="select avg((`Customer Order Interval`)+($sigma_factor*`Customer Order Interval STD`)) as a from `Customer Dimension`";
-	 
-	 $result2=mysql_query($sql);
-	 if($row2=mysql_fetch_array($result2, MYSQL_ASSOC)){
-	   $average_max_interval=$row2['a'];
-	   if(is_numeric($average_max_interval)){
-	     if(   (strtotime('now')-strtotime($this->data['customer last order date']))/(3600*24)  <  $average_max_interval){
-	       $this->data['active customer']='Maybe';
-	       $this->data['customer type by activity']='New';
-	       
-	     }else{
-	       $this->data['active customer']='No';
-	       $this->data['customer type by activity']='Inactive';
-	       
-	     }
-	   }else
-	     $this->data['active customer']='Unknown';
-	   $this->data['customer type by activity']='Unknown';
-	   
-	   
-	 }	
-	 
-       }
-       
-       if($this->data['customer orders']>1){
-	 $sql="select `Order Date` as date from `Order Dimension` where `Order Customer Key`=".$this->id." order by `Order Date`";
-	 $last_order=false;
-	 $intervals=array();
-	 $result2=mysql_query($sql);
-	 while($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ){
-	   $this_date=date('U',strtotime($row2['date']));
-	   if($last_order){
-	     $intervals[]=($this_date-$last_date)/3600/24;
-	   }
-	   
-	   $last_date=$this_date;
-	   $last_order=true;
-	   
-	 }
-	 //	 print $sql;
-	 //print_r($intervals);
-	 
-	 
-	 $this->data['customer order interval']=average($intervals);
-	 $this->data['customer order interval std']=deviation($intervals);
-	 
-	 //print  $this->data['customer order interval']." ".$this->data['customer order interval std']."\n";
-	 
-	 if((date('U')-$last_date)<($this->data['customer order interval']+($sigma_factor*$this->data['customer order interval std']))){
-	   $this->data['active customer']='Yes';
-	   $this->data['customer type by activity']='Active';
-	 }else{
-	   $this->data['active customer']='No';
-	   $this->data['customer type by activity']='Inactive';
-
-	 }
-       }
-       
-      
-       
-       $sql=sprintf("update `Customer Dimension` set `Customer Orders`=%d,`Customer Orders Cancelled`=%d,`Customer Orders Invoiced`=%d,`Customer First Order Date`=%s,`Customer Last Order Date`=%s,`Customer Order Interval`=%s,`Customer Order Interval STD`=%s,`Active Customer`=%s,`Actual Customer`=%s,`Customer Type by Activity`=%s where `Customer Key`=%d",
-		    $this->data['customer orders']
-		    ,$this->data['customer orders cancelled']
-		    ,$this->data['customer orders invoiced']
-		    ,prepare_mysql($this->data['customer first order date'])
-		    ,prepare_mysql($this->data['customer last order date'])
-		    ,prepare_mysql($this->data['customer order interval'])
-		    ,prepare_mysql($this->data['customer order interval std'])
-		    ,prepare_mysql($this->data['active customer'])
-		    ,prepare_mysql($this->data['actual customer'])
-		    ,prepare_mysql($this->data['customer type by activity'])
-		    ,$this->id
-		    );
-       // print "$sql\n";
-       //exit;
-       mysql_query($sql);
-     }
-
-
-      //      $sql=sprintf("select `Customer Orders` from `Customer Dimension` order by `Customer Order`");
-
-
-
-      break;
-   }
 
  }
+
 
 
  /*
@@ -1201,8 +1117,7 @@ class Customer extends DB_Table{
 		    ,prepare_mysql($this->data['Customer Type by Activity'])
 		    ,$this->id
 		    );
-       //print "$sql\n";
-       
+
        mysql_query($sql);
      }
 

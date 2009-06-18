@@ -11,6 +11,8 @@
  
  Version 2.0
 */
+include_once('DB_Table.php');
+
 include_once ('Staff.php');
 include_once ('Supplier.php');
 include_once ('Customer.php');
@@ -20,16 +22,17 @@ include_once ('Ship_To.php');
 include_once ('search_customer.php');
 
 
-class Order {
-	Public $data = array ();
-	Public $items = array ();
-	Public $status_names = array ();
-	Public $id = false;
-	Public $tipo;
-	Public $staus = 'new';
+class Order extends DB_Table{
+  //Public $data = array ();
+  //	Public $items = array ();
+  //	Public $status_names = array ();
+  //	Public $id = false;
+  //	Public $tipo;
+  //	Public $staus = 'new';
 	function __construct($arg1 = false, $arg2 = false) {
 		
-
+	  $this->table_name='Order';
+	  $this->ignore_fields=array('Order Key');
 
 
 		$this->status_names = array (0 => 'new' );
@@ -49,6 +52,17 @@ class Order {
 
 		if (! isset ( $data ['type'] ))
 			return;
+		
+		if(isset($data['editor'])){
+		  foreach($data['editor'] as $key=>$value){
+		    if(array_key_exists($key,$this->editor))
+		      $this->editor[$key]=$value;
+		    
+		  }
+		}
+
+
+
 		$type = $data ['type'];
 		switch ($type) {
 			case ('direct_data_injection') :
@@ -80,6 +94,8 @@ class Order {
 /* 				} */
 				
 				//	print_r($data['Customer Data'] );
+				$data['Customer Data']['editor']=$this->editor;
+				$data['Customer Data']['editor']['Date']=date("Y-m-d H:i:s",strtotime($data['Customer Data']['editor']['Date']." -1 second"));
 				$customer = new Customer ( 'find create', $data['Customer Data'] ); 
 			
 
@@ -204,8 +220,8 @@ class Order {
 				  
 				  $this->load ( 'totals' );
 					//TODO
-					//$customer->update ( 'orders' );
-					//$customer->update ( 'no normal data' );
+				  $customer->update_orders();
+				  $customer->update_no_normal_data();
 				  
 					//       $this->cutomer_rankings();
 				  
@@ -216,7 +232,7 @@ class Order {
 				    $note = sprintf ( '%s (<a href="customer.php?id=%d">%s) place an order at %s', $customer->get ( 'Customer Name' ), $customer->id, $customer->get ( 'Customer ID' ), strftime ( "%e %b %Y %H:%M", strtotime ( $this->data ['Order Date'] ) ) );
 					}
 				  
-				  $sql = sprintf ( "insert into `History Dimension` (`History Date`,`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`History Details`,`Author Key`,`Author Name`) values(%s,'Customer','%s','Placed','Order',%d,%s,0,%s)", prepare_mysql ( $this->data ['Order Date'] ), $customer->id, $this->data ['Order Key'], prepare_mysql ( $note ), prepare_mysql ( _ ( 'System' ) ) );
+				  $sql = sprintf ( "insert into `History Dimension` (`History Date`,`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`History Details`,`Author Key`,`Author Name`,`Indirect Object`,`Indirect Object Key`,`Preposition`) values(%s,'Customer','%s','Placed','Order',%d,%s,0,%s,'',0,'')", prepare_mysql ( $this->data ['Order Date'] ), $customer->id, $this->data ['Order Key'], prepare_mysql ( $note ), prepare_mysql ( _ ( 'System' ) ) );
 				  mysql_query ( $sql );
 				  $history_id = mysql_insert_id ();
 				  $abstract .= ' (<span class="like_a" onclick="showdetails(this)" d="0" id="ch' . $history_id . '"  hid="' . $history_id . '">' . _ ( 'view details' ) . '</span>)';
@@ -558,8 +574,9 @@ class Order {
 					
 
 					$customer = new Customer ( $customer_id );
-					$customer->update_orders;
-					$customer->update ( 'no normal data' );
+
+					$customer->update_orders();
+					$customer->update_non_nomal_data();
 					
 					//$this->cutomer_rankings();
 					

@@ -287,6 +287,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
 
     $data=array();
+    $data['editor']=array('Date'=>$date_order);
     $data['order date']=$date_order;
     $data['order id']=$header_data['order_num'];
     $data['order customer message']=$header_data['notes2'];

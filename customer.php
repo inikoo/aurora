@@ -64,67 +64,69 @@ $smarty->assign('customer',$customer);
 
 $order=$_SESSION['state']['customers']['table']['order'];
 
-if($order=='name')
-  $order='Customer File As';
-elseif($order=='id')
-$order='customer id';
-elseif($order=='location')
-$order='Customer Main Location';
-elseif($order=='orders')
-     $order='customer orders';
-elseif($order=='email')
-$order='customer email';
-elseif($order=='telephone')
-$order='customer main telehone';
-elseif($order=='last_order')
-$order='customer last order date';
-elseif($order=='contact_name')
-$order='customer main contact_name';
-elseif($order=='address')
-$order='customer main address header';
-elseif($order=='town')
-$order='customer main address town';
-elseif($order=='postcode')
-$order='customer main address postal code';
-elseif($order=='region')
-$order='customer main address country region';
-elseif($order=='country')
-$order='customer main address country';
-elseif($order=='ship_address')
-$order='customer main ship to header';
+
+  if($order=='name')
+     $order='`Customer File As`';
+   elseif($order=='id')
+     $order='`Customer ID`';
+   elseif($order=='location')
+     $order='`Customer Main Location`';
+   elseif($order=='orders')
+     $order='`Customer Orders`';
+   elseif($order=='email')
+     $order='`Customer Email`';
+   elseif($order=='telephone')
+     $order='`Customer Main Telehone`';
+   elseif($order=='last_order')
+     $order='`Customer Last Order Date`';
+   elseif($order=='contact_name')
+     $order='`Customer Main Contact Name`';
+   elseif($order=='address')
+     $order='`Customer Main Location`';
+   elseif($order=='town')
+     $order='`Customer Main Address Town`';
+   elseif($order=='postcode')
+     $order='`Customer Main Address Postal Code`';
+   elseif($order=='region')
+     $order='`Customer Main Address Country Primary Division`';
+   elseif($order=='country')
+     $order='`Customer Main Address Country`';
+   //  elseif($order=='ship_address')
+   //  $order='`customer main ship to header`';
    elseif($order=='ship_town')
-   $order='customer main ship to town';
-elseif($order=='ship_postcode')
-$order='customer main ship to postal code';
-elseif($order=='ship_region')
-$order='customer main ship to country region';
+     $order='`Customer Main Ship To Town`';
+   elseif($order=='ship_postcode')
+     $order='`Customer Main Ship To Postal Code`';
+   elseif($order=='ship_region')
+     $order='`Customer Main Ship To Country Region`';
    elseif($order=='ship_country')
-     $order='customer main ship to country';
-   elseif($order=='total_balance')
-     $order='customer total balance';
+     $order='`Customer Main Ship To Country`';
+   elseif($order=='net_balance')
+     $order='`Customer Net Balance`';
    elseif($order=='balance')
-     $order='customer outstanding balance';
+     $order='`Customer Outstanding Balance`';
    elseif($order=='total_profit')
-     $order='customer total profit';
+     $order='`Customer Total Profit`';
    elseif($order=='total_payments')
-     $order='customer total payments';
+     $order='`Customer Total Payments`';
    elseif($order=='top_profits')
-     $order='customer profits top percentage';
+     $order='`Customer Profits Top Percentage`';
    elseif($order=='top_balance')
-     $order='customer balance top percentage';
+     $order='`Customer Balance Top Percentage`';
    elseif($order=='top_orders')
-     $order='customer orders top percentage';
+     $order='``Customer Orders Top Percentage`';
    elseif($order=='top_invoices')
-     $order='customer invoices top percentage';
+     $order='``Customer Invoices Top Percentage`';
+    elseif($order=='total_refunds')
+     $order='`Customer Total Refunds`';
 
-
-$sql=sprintf("select `Customer Name` as name from `Customer Dimension`   where  `%s` < %s  order by `%s` desc  limit 1",$order,prepare_mysql($customer->get($order)),$order);
+$sql=sprintf("select `Customer Name` as name from `Customer Dimension`   where  %s < %s  order by %s desc  limit 1",$order,prepare_mysql($customer->get($order)),$order);
 //print $sql;
 $result =& $db->query($sql);
 if(!$prev=$result->fetchRow())
   $prev=array('id'=>0,'code'=>'');
 $smarty->assign('prev',$prev);
-$sql=sprintf("select  `Customer Name` as name from `Customer Dimension`     where  `%s`>%s  order by `%s`   ",$order,prepare_mysql($customer->get($order)),$order);
+$sql=sprintf("select  `Customer Name` as name from `Customer Dimension`     where  %s>%s  order by %s   ",$order,prepare_mysql($customer->get($order)),$order);
 $result =& $db->query($sql);
 if(!$next=$result->fetchRow())
   $next=array('id'=>0,'code'=>'');

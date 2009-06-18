@@ -34,7 +34,12 @@ abstract class DB_Table
   // array with the posible matches
   public $candidate=array();
 
-
+  public $editor=array(
+		       'Author Name'=>false,
+		       'Author Key'=>0,
+		       'User Key'=>0,
+		       'Date'=>false 
+		       );
 
   /*
     Function: base_data
@@ -117,10 +122,16 @@ abstract class DB_Table
  }
 
 protected function update_field($field,$value,$options=''){
+
+  $old_value=_('Unknown');
+  $sql="select `".$field."` as value from  `".$this->table_name." Dimension`  where `".$this->table_name." Key`=".$this->id;
+  $result=mysql_query($sql);
+  if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+    $old_value=$row['value'];
+  }
    
-  $value=prepare_mysql($value);
-  
-  $sql="update `".$this->table_name." Dimension` set `".$field."`=".$value." where `".$this->table_name." Key`=".$this->id;
+
+  $sql="update `".$this->table_name." Dimension` set `".$field."`=".prepare_mysql($value)." where `".$this->table_name." Key`=".$this->id;
   // print $sql;
   mysql_query($sql);
   $affected=mysql_affected_rows();
@@ -133,10 +144,51 @@ protected function update_field($field,$value,$options=''){
     
   }else{
     $this->data[$field]=$value;
-     $this->msg.=" $field "._('Record updated').", \n";
+    $this->msg.=" $field "._('Record updated').", \n";
     $this->updated=true;
+  
+
+    if(preg_match('/customer|contact|company|order|staff|supplier/i',$this->table_name)){
+
+  // Save to history
+
+    // $sql=sprintf("insert into `History Dimension` (`Subject`)   ");
+    $note=$field.' '._('changed');
+    $details=$field.' '._('changed from')." \"$old_value\" "._('to')." \"$value\"";
+    if($this->editor['Author Name'])
+      $author=$this->editor['Author Name'];
+    else
+      $author=_('System');
+    
+ if($this->editor['Date'])
+   $date=$this->editor['Date'];
+ else
+   $date=date("Y-m-d H:i:s");
+ 
+ $sql=sprintf("insert into `History Dimension` (`History Date`,`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`Author Name`,`Author Key`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+	      ,prepare_mysql($date)
+	      ,prepare_mysql('user')
+	      ,prepare_mysql($this->editor['User Key'])
+	      ,prepare_mysql('edited')
+	      ,prepare_mysql($this->table_name)
+	      ,prepare_mysql($this->id)
+	      ,prepare_mysql('to')
+	      ,prepare_mysql($field)
+	      ,0
+	      ,prepare_mysql($note)
+	      ,prepare_mysql($details)
+	      ,prepare_mysql($author)
+	      ,prepare_mysql($this->editor['Author Key'])
+		  );
+
+   mysql_query($sql);
+    }
+
   }
   
+ 
+
+
 }
 
 
