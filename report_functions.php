@@ -930,7 +930,7 @@ $balance['credits']['tax']=0;
   }
 
   $orders_state=array();
-  $sql=sprintf("Select count(*) as orders ,`Order Current Dispatch State` as state,sum(`Order Total Net Amount`) as net ,sum(`Order Total Net Potential Amount`) as net_potential,sum(`Order Net Balance Amount`) as net_balance from `Order Dimension` where true  %s group by state",$_int);
+  $sql=sprintf("Select count(*) as orders ,`Order Current Dispatch State` as state,sum(`Order Total Net Amount`) as net ,sum(`Order Total Net Potential Amount`) as net_potential,sum(`Order Balance Net Amount`) as net_balance from `Order Dimension` where true  %s group by state",$_int);
   //print $sql;
   $result=mysql_query($sql);
   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){

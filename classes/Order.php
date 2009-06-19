@@ -49,7 +49,7 @@ class Order extends DB_Table{
 	}
 	
 	function create_order($data) {
-
+	  				  global $myconf;
 		if (! isset ( $data ['type'] ))
 			return;
 		
@@ -225,11 +225,11 @@ class Order extends DB_Table{
 				  
 					//       $this->cutomer_rankings();
 				  
-				  
+
 				  switch ($_SESSION ['lang']) {
 				  default :
-				    $abstract = sprintf ( 'Order <a href="order.php?id=%d">%s</a>', $this->data ['Order Key'], $this->data ['Order Public ID'] );
-				    $note = sprintf ( '%s (<a href="customer.php?id=%d">%s) place an order at %s', $customer->get ( 'Customer Name' ), $customer->id, $customer->get ( 'Customer ID' ), strftime ( "%e %b %Y %H:%M", strtotime ( $this->data ['Order Date'] ) ) );
+				    $abstract = sprintf ( '% <a href="order.php?id=%d">%s</a>', _('Order'),$this->data ['Order Key'], $this->data ['Order Public ID'] );
+				    $note = sprintf ( '%s (<a href="customer.php?id=%d">%s%s</a>) place an order at %s', $customer->get ( 'Customer Name' ), $customer->id,$myconf['customer_id_prefix'], $customer->get ( 'Customer ID' ), strftime ( "%e %b %Y %H:%M", strtotime ( $this->data ['Order Date'] ) ) );
 					}
 				  
 				  $sql = sprintf ( "insert into `History Dimension` (`History Date`,`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`History Details`,`Author Key`,`Author Name`,`Indirect Object`,`Indirect Object Key`,`Preposition`) values(%s,'Customer','%s','Placed','Order',%d,%s,0,%s,'',0,'')", prepare_mysql ( $this->data ['Order Date'] ), $customer->id, $this->data ['Order Key'], prepare_mysql ( $note ), prepare_mysql ( _ ( 'System' ) ) );

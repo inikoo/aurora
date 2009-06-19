@@ -30,7 +30,7 @@
 <td><a href="report_sales.php?tipo=m&y={$period}&m=8">{$m[7]}</a></td>
 <td><a href="report_sales.php?tipo=m&y={$period}&m=9">{$m[8]}</a></td>
 </tr><tr>
-<td>< href="report_sales.php?tipo=m&y={$period}&m=10">{$m[9]}</a></td>
+<td><a href="report_sales.php?tipo=m&y={$period}&m=10">{$m[9]}</a></td>
 <td><a href="report_sales.php?tipo=m&y={$period}&m=11">{$m[10]}</a></td>
 <td><a href="report_sales.php?tipo=m&y={$period}&m=12">{$m[11]}</a></td>
 </tr>

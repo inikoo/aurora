@@ -66,9 +66,9 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
     $result_test=mysql_query($sql);
     if($row_test=mysql_fetch_array($result_test, MYSQL_ASSOC)){
-      if($row_test['num']==0)
-	print "NEW $contador $order_data_id $filename ";
-      else{
+      if($row_test['num']==0){
+	//print "NEW $contador $order_data_id $filename ";
+      }else{
 	$update=true;
 	print "UPD $contador $order_data_id $filename ";
       }
@@ -152,20 +152,26 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     // }
 
     list($date_index,$date_order,$date_inv)=get_dates($row2['timestamp'],$header_data,$tipo_order,true);
-   
-     if(strtotime($date_order)>strtotime($date_inv)){
+  
+    
+
+ 
+     if( $date_inv!='NULL' and  strtotime($date_order)>strtotime($date_inv)){
       
       
       //$date2=date("Y-m-d H:i:s",strtotime($date_order.' +1 hour'));
-      print "Warning (Fecha Factura anterior Fecha Orden) $filename $date_order  $date2 \n";
-      $date_inv=date("Y-m-d H:i:s",strtotime($date_order.' +1 hour'));
+       print "Warning (Fecha Factura anterior Fecha Orden) $filename $date_order  $date_inv\n  ".strtotime($date_order).' > '.strtotime($date_inv)."\n";
+       $date_inv=date("Y-m-d H:i:s",strtotime($date_order.' +1 hour'));
       
       // print "new date: ".$date2."\n";
       
     }
 
 
-    if($date_order=='')$date_index2=$date_index;else$date_index2=$date_order;
+    if($date_order=='')
+      $date_index2=$date_index;
+    else
+      $date_index2=$date_order;
 
     if($tipo_order==2  or $tipo_order==6 or $tipo_order==7 or $tipo_order==9 ){
       $date2=$date_inv;
@@ -250,7 +256,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       continue;
     }
 
-       if(strtotime($date_order)<strtotime('2004-01-01')  ){
+  if(strtotime($date_order)<strtotime($myconf['data_from'])  ){
       
       print "ERROR (Fecha sospechosamente muy  antigua) $filename $date_order \n";
       
@@ -875,7 +881,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	
        }
        
-       print "$tipo_order \n";
+       //print "$tipo_order \n";
        
        $sales_rep_data=get_user_id($header_data['takenby'],true,'&view=processed');
        $data['Order XHTML Sale Reps']=$sales_rep_data['xhtml'];
