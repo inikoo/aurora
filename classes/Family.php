@@ -54,6 +54,8 @@ class Family{
  function create($data){
    $this->new=false;
     
+
+
    if(isset($data['name'])){
      $data['Product Family Name']=$data['name'];
      unset($data['name']);
@@ -86,10 +88,15 @@ class Family{
    }else
      $department=new Department($data['Product Family Main Department Key']);
 
+
+
    if(!$department->id){
      $this->msg=_("Error: Can not find department");
      return;
    }
+
+   //   print_r($department);
+
    $store=new Store($department->data['Product Department Store Key']);
    
    
@@ -98,11 +105,11 @@ class Family{
 		,$store->id
 		,prepare_mysql($data['Product Family Code'])
 		);
-   //   print $sql;
+   //  print $sql;
    $res=mysql_query($sql);
    $row=mysql_fetch_array($res);
    if($row['num']>0){
-     $this->msg=_("Error: Another family with the same code");
+     $this->msg=_("$sql Error: Another family with the same code");
      return;
      
    }
