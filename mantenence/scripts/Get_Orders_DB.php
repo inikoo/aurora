@@ -152,6 +152,19 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     // }
 
     list($date_index,$date_order,$date_inv)=get_dates($row2['timestamp'],$header_data,$tipo_order,true);
+   
+     if(strtotime($date_order)>strtotime($date_inv)){
+      
+      
+      //$date2=date("Y-m-d H:i:s",strtotime($date_order.' +1 hour'));
+      print "Warning (Fecha Factura anterior Fecha Orden) $filename $date_order  $date2 \n";
+      $date_inv=date("Y-m-d H:i:s",strtotime($date_order.' +1 hour'));
+      
+      // print "new date: ".$date2."\n";
+      
+    }
+
+
     if($date_order=='')$date_index2=$date_index;else$date_index2=$date_order;
 
     if($tipo_order==2  or $tipo_order==6 or $tipo_order==7 or $tipo_order==9 ){
@@ -217,20 +230,38 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       unset($customer_data['shipping_data']);
     }
 
-   
-
-
     //  print_r($transactions);
   
     if(strtotime($date_order)>strtotime($date2)){
       
-      print "ERROR ON DATES\n >    ".$header_data['date_order']."  ".$header_data['date_inv']."  ".$header_data['order_num']."  $date_order  $date2   $order_data_id   $filename  \n ";
-      exit;
-       
+
+      //$date2=date("Y-m-d H:i:s",strtotime($date_order.' +1 hour'));
+      print "Warning (Fecha Factura anterior Fecha Orden) $filename $date_order  $date2 \n";
+      $date2=date("Y-m-d H:i:s",strtotime($date_order.' +8 hour'));
+      
+      print "new date: ".$date2."\n";
+      
     }
+
+  if(strtotime($date_order)>strtotime('today')   ){
+      
+      print "ERROR (Fecha en el futuro) $filename  $date_order   \n ";
+      
+      continue;
+    }
+
+       if(strtotime($date_order)<strtotime('2004-01-01')  ){
+      
+      print "ERROR (Fecha sospechosamente muy  antigua) $filename $date_order \n";
+      
+      continue;
+    }
+   
  
 
     $data=array();
+    $data['editor']=array('Date'=>$date_order);
+	
     $data['order date']=$date_order;
     $data['order id']=$header_data['order_num'];
     $data['order customer message']=$header_data['notes2'];
@@ -872,11 +903,48 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       if($tipo_order==2){
 	$payment_method=parse_payment_method($header_data['pay_method']);
 	
-	if($header_data['total_net']!=0)
-	  $tax_rate=$header_data['tax1']/$header_data['total_net'];
-	else
-	  $tax_rate=$data['tax_rate'];
+/* 	if($header_data['total_net']!=0) */
+/* 	  $tax_rate=$header_data['tax1']/$header_data['total_net']; */
+/* 	else */
+/* 	  $tax_rate=$data['tax_rate']; */
 	    
+
+	$lag=(strtotime($date_inv)-strtotime($date_order))/24/3600;
+	if($lag==0 or $lag<0)
+	  $lag='';
+
+	
+	$taxable='Yes';
+	$tax_code='UNK';
+
+	if($header_data['total_net']!=0){
+	  
+	  if($header_data['tax1']+$header_data['tax2']==0){
+	    $tax_code='EX0';
+	  }
+	  
+	  $tax_rate=($header_data['tax1']+$header_data['tax2'])/$header_data['total_net'];
+	  foreach($myconf['tax_rates'] as $_tax_code=>$_tax_rate){
+	    // print "$_tax_code => $_tax_rate $tax_rate\n ";
+	    $upper=1.1*$_tax_rate;
+	    $lower=0.9*$_tax_rate;
+	    if($tax_rate>=$lower and $tax_rate<=$upper){
+	      $tax_code=$_tax_code;
+	      break;
+	    }
+	  }
+	  
+	  
+
+	}else{
+	  $tax_code='ZV';
+	  
+	}
+     
+
+
+
+
 	$data_invoice=array(
 			    'Invoice Date'=>$date_inv
 			    ,'Invoice Public ID'=>$header_data['order_num']
@@ -897,6 +965,10 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 			    ,'Invoice Processed By Key'=>''
 			    ,'Invoice Charged By Key'=>''
 			    ,'Invoice Total Adjust Amount'=>round($header_data['total_topay'],2)-round($header_data['tax1'],2)-round($header_data['total_net'],2)
+			    ,'Invoice Tax Code'=>$tax_code
+			    ,'Invoice Taxable'=>$taxable
+			    ,'Invoice Dispatching Lag'=>$lag
+
 			    );
 	
 	//print_r($header_data);
@@ -1018,11 +1090,41 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 		       );
 	  
 
-	  $order->create_dn_simple($data_dn,$data_dn_transactions);
-	  
+	//$order->create_dn_simple($data_dn,$data_dn_transactions);
+	$dn=new DeliveryNote('create',$data_dn,$data_dn_transactions,$order->id);
+
 	  if($header_data['total_topay']>0){
 	  $payment_method=parse_payment_method($header_data['pay_method']);
 	  
+	  
+ $taxable='Yes';
+	  $tax_code='UNK';
+	  
+	  if($header_data['total_net']!=0){
+	    
+	    if($header_data['tax1']+$header_data['tax2']==0){
+	      $tax_code='EX0';
+	    }
+	    $tax_rate=($header_data['tax1']+$header_data['tax2'])/$header_data['total_net'];
+	    foreach($myconf['tax_rates'] as $_tax_code=>$_tax_rate){
+	      // print "$_tax_code => $_tax_rate $tax_rate\n ";
+	      $upper=1.1*$_tax_rate;
+	      $lower=0.9*$_tax_rate;
+	      if($tax_rate>=$lower and $tax_rate<=$upper){
+		$tax_code=$_tax_code;
+		break;
+	      }
+	    }
+	  }else{
+	  $tax_code='ZV';
+	  
+	  }
+	    
+	  $lag=(strtotime($date_inv)-strtotime($date_order))/24/3600;
+	  if($lag==0 or $lag<0)
+	    $lag='';
+
+
 	  $data_invoice=array(
 			      'Invoice Date'=>$date2
 			      ,'Invoice Public ID'=>$header_data['order_num']
@@ -1035,16 +1137,20 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 			      ,'tax_rate'=>$tax_rate
 			      ,'Invoice Has Been Paid In Full'=>'Yes'
 			      ,'Invoice Items Net Amount'=>round($header_data['total_items_charge_value'],2)-$total_credit_value
-,'Invoice Total Tax Amount'=>$header_data['tax1']
-			    ,'Invoice Refund Amount'=>$total_credit_value
-			    ,'Invoice Total Tax Refund Amount'=>$tax_rate*$total_credit_value
+			      ,'Invoice Total Tax Amount'=>$header_data['tax1']
+			      ,'Invoice Refund Amount'=>$total_credit_value
+			      ,'Invoice Total Tax Refund Amount'=>$tax_rate*$total_credit_value
 			      ,'Invoice Total Amount'=>$header_data['total_topay']
 			       ,'Invoice XHTML Processed By'=>_('Unknown')
-			    ,'Invoice XHTML Charged By'=>_('Unknown')
-			    ,'Invoice Processed By Key'=>0
-			    ,'Invoice Charged By Key'=>0
+			      ,'Invoice XHTML Charged By'=>_('Unknown')
+			      ,'Invoice Processed By Key'=>0
+			      ,'Invoice Charged By Key'=>0
+			      ,'Invoice Tax Code'=>$tax_code
+			    ,'Invoice Taxable'=>$taxable
+			    ,'Invoice Dispatching Lag'=>$lag
 			      );
-	  $order->create_invoice_simple($data_invoice,$data_invoice_transactions);
+	  // $order->create_invoice_simple($data_invoice,$data_invoice_transactions);
+	  $invoice=new Invoice ('create',$data_invoice,$data_invoice_transactions,$order->id); 
 	  }else{
 
 	    $order->no_payment_applicable();
@@ -1092,6 +1198,43 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	if($header_data['total_topay']>0)
 	  $factor=-1.0;
 	//print_r($header_data);
+
+
+
+
+
+
+	$lag='';
+	$taxable='Yes';
+	$tax_code='UNK';
+	
+	if($header_data['total_net']!=0){
+	  
+	  if($header_data['tax1']+$header_data['tax2']==0){
+	    $tax_code='EX0';
+	  }
+	  
+	  $tax_rate=($header_data['tax1']+$header_data['tax2'])/$header_data['total_net'];
+	  foreach($myconf['tax_rates'] as $_tax_code=>$_tax_rate){
+	    // print "$_tax_code => $_tax_rate $tax_rate\n ";
+	    $upper=1.1*$_tax_rate;
+	    $lower=0.9*$_tax_rate;
+	    if($tax_rate>=$lower and $tax_rate<=$upper){
+	      $tax_code=$_tax_code;
+	      break;
+	    }
+	  }
+	  
+	  
+	  
+	}else{
+	  $tax_code='ZV';
+	  
+	}
+	
+
+
+
 	$data_invoice=array(
 			    'Invoice Date'=>$date_inv
 			    ,'Invoice Public ID'=>$header_data['order_num']
@@ -1111,6 +1254,9 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 			    ,'Invoice XHTML Charged By'=>_('Unknown')
 			    ,'Invoice Processed By Key'=>0
 			    ,'Invoice Charged By Key'=>0
+			    ,'Invoice Tax Code'=>$tax_code
+			    ,'Invoice Taxable'=>$taxable
+			    ,'Invoice Dispatching Lag'=>$lag
 			    );
 	//print_r($data_invoice);
 
@@ -1215,7 +1361,11 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       
 
       //      exit("refund");
-
+ }else if($tipo_order==11){
+       //TODO make quites and insert them in the customer space
+       $sql="update orders_data.orders set last_transcribed=NOW() where id=".$order_data_id;
+    mysql_query($sql);
+    
     }elseif($tipo_order==6 or $tipo_order==7){
       if($tipo_order==6)
 	$order_type='Replacement';

@@ -317,12 +317,12 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       if(preg_match('/credit|refund/i',$transaction['code'])){
 
 
-	if(preg_match('/^Credit owed for order no\.\:\d{4,5}$/',$transaction['description'])){
+	if(preg_match('/^abono debido por factura no\.\:\d{8}$/i',$transaction['description'])){
 	  $credit_parent_public_id=preg_replace('/[^\d]/','',$transaction['description']);
 	  $credit_value=$transaction['credit'];
 	  $credit_description=$transaction['description'];
 	  $total_credit_value+=$credit_value;
-	}elseif(preg_match('/^(Credit owed for order no\.\:|Credit for damage item|Refund for postage .paid by customer)$/i',$transaction['description'])){
+	}elseif(preg_match('/^abono debido por factura no\.\:\s*$/i',$transaction['description'])){
 	  $credit_parent_public_id='';
 	  $credit_value=$transaction['credit'];
 	  $credit_description=$transaction['description'];
