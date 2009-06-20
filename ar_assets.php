@@ -996,7 +996,7 @@ case('part_search'):
      $other_img_src=array('','','','','');
      $other_img_id=array(0,0,0,0,0);
      $num_others=0;
-     while($row2=mysql_fetch_array($res2, MYSQL_ASSOC))) {
+     while($row2=mysql_fetch_array($res2, MYSQL_ASSOC)) {
        $other_img_src[$num_others]='images/tb/'.$row2['filename'].'_tb.'.$row2['format'];
        $other_img_id[$num_others]=$row2['id'];
        $num_others++;

@@ -1803,9 +1803,10 @@ if(isset( $_REQUEST['where']))
    //   $total_charged+=$row['charge'];
 //      $total_discounts+=$ndiscount;
 //      $total_picks+=$row['dispached'];
+     $code=sprintf('<a href="product.php?code=%s">%s</a>',$row['Product Code'],$row['Product Code']);
      $data[]=array(
 
-		   'code'=>$row['Product Code']
+		   'code'=>$code
 		   ,'description'=>$row['Product XHTML Short Description']
 		   ,'tariff_code'=>$row['Product Tariff Code']
 		   ,'quantity'=>number($row['Order Quantity'])
@@ -1865,9 +1866,10 @@ if(isset( $_REQUEST['where']))
 //      $total_picks+=$row['dispached'];
      $total_discount+=$row['Invoice Transaction Total Discount Amount'];
      $total_gross+=$row['Invoice Transaction Gross Amount'];
+     $code=sprintf('<a href="product.php?code=%s">%s</a>',$row['Product Code'],$row['Product Code']);
      $data[]=array(
 
-		   'code'=>$row['Product Code']
+		   'code'=>$code
 		   ,'description'=>$row['Product XHTML Short Description']
 		   ,'tariff_code'=>$row['Product Tariff Code']
 		   ,'quantity'=>number($row['Invoice Quantity'])

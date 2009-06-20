@@ -143,12 +143,15 @@ class Invoice extends DB_Table {
     $this->data ['Invoice Customer Name'] = $order->data ['Order Customer Name'];
     
     $customer=new customer('id',$this->data ['Invoice Customer Key']);
+    
+
     if($customer->id){
       if($customer->data['Customer Type']=='Company'){
 	//TODO  not include if is a fuzzy contact name
 	$this->data ['Invoice Customer Contact Name'] =$customer -> data['Customer Main Contact Name'];
 
       }
+
       $this->data ['Invoice XHTML Address'] = $customer -> data['Customer Main XHTML Address'];
       $this->data ['Invoice Billing Country 2 Alpha Code']=$customer -> data['Customer Main Address Country 2 Alpha Code'];
       
@@ -194,7 +197,7 @@ class Invoice extends DB_Table {
     $this->data ['Invoice Charged By Key'] = $invoice_data ['Invoice Charged By Key'];
     
 
-    $this->data ['Invoice XHTML Address']='';
+
     $this->data ['Invoice XHTML Orders'] ='';
     $this->data ['Invoice XHTML Delivery Notes'] = '';
 
@@ -287,7 +290,7 @@ class Invoice extends DB_Table {
     $this->data ['Invoice Items Tax Amount'] = $this->data ['Invoice Total Net Amount'] * $invoice_data ['tax_rate'];
     $this->distribute_costs ();
     
-    $sql = sprintf ( "update `Invoice Dimension` set `Invoice Items Net Amount`=%.2f ,`Invoice Items Adjust Amount`=%.2f , `Invoice Items Gross Amount`=%.2f ,`Invoice Items Discount Amount`=%.2f  ,`Invoice Total Net Amount`=%.2f,`Invoice Items Tax Amount`=%.2f ,`Invoice XHTML Delivery Notes`=%s,`Invoice XHTML Ship Tos`=%s,`Invoice XHTML Orders`=%s where `Invoice Key`=%d"
+    $sql = sprintf ( "update `Invoice Dimension` set `Invoice Items Net Amount`=%.2f ,`Invoice Items Adjust Amount`=%.2f , `Invoice Items Gross Amount`=%.2f ,`Invoice Items Discount Amount`=%.2f  ,`Invoice Total Net Amount`=%.2f,`Invoice Items Tax Amount`=%.2f ,`Invoice XHTML Delivery Notes`=%s,`Invoice XHTML Ship Tos`=%s,`Invoice XHTML Orders`=%s,`Invoice Delivery Country 2 Alpha Code`=%s where `Invoice Key`=%d"
 		     , $this->data ['Invoice Items Net Amount']
 		     , $this->data ['Invoice Adjust Amount']
 		     , $amount
@@ -297,6 +300,7 @@ class Invoice extends DB_Table {
 		     , prepare_mysql($this->data ['Invoice XHTML Delivery Notes'])
 		     , prepare_mysql($this->data ['Invoice XHTML Ship Tos'])
 		     , prepare_mysql($this->data ['Invoice XHTML Orders'])
+		     , prepare_mysql($this->data ['Invoice Delivery Country 2 Alpha Code'])
 
 		     , $this->data ['Invoice Key'] 
 		     );
@@ -352,10 +356,17 @@ class Invoice extends DB_Table {
       exit ( "$sql can not update order dimension after inv xx\n" );
 
     //Update product sales
+
     foreach($this->orders as $key=>$order){
       $order->update_product_sales();
-    }
+      $order->update_balance();
+      $customer=new Customer($order->data['Order Customer Key']);
+      $customer->update_orders();
+      $customer->update_no_normal_data();
 
+    }
+    
+    
 		
   }    
   
@@ -388,7 +399,8 @@ function create_header() {
 		   , prepare_mysql ( $this->data ['Invoice Tax Code'] ) 
 		   );
   
-  //    print $sql;
+
+
   if (mysql_query ( $sql )) {
     
     $this->data ['Invoice Key'] = mysql_insert_id ();
@@ -531,15 +543,21 @@ global $myconf;
      $this->data ['Invoice XHTML Delivery Notes'] ='';
      $this->data ['Invoice XHTML Ship Tos'] = '';
      $this->ship_tos=array();
+     $w=0;
+     $this->data ['Invoice Delivery Country 2 Alpha Code']=false;
      foreach($this->delivery_notes as $dn){
        $this->data ['Invoice XHTML Delivery Notes'] .= sprintf ( '%s <a href="dn.php?id=%d">%s</a>, ', $myconf['dn_id_prefix'], $dn->data ['Delivery Note Key'], $dn->data ['Delivery Note ID'] );
        $this->ship_tos[ $dn->data ['Delivery Note Ship To Key']]=$dn->data ['Delivery Note XHTML Ship To'];
-       
-     }       
+       if(!$this->data ['Invoice Delivery Country 2 Alpha Code'] or $dn->data ['Delivery Note Weight']>$w ){
+	 $this->data ['Invoice Delivery Country 2 Alpha Code']=$dn->data ['Delivery Note Country 2 Alpha Code'];;
+	 $w=$dn->data ['Delivery Note Weight'];
+       }
+       }       
      $this->data ['Invoice XHTML Delivery Notes'] =_trim(preg_replace('/\, $/','',$this->data ['Invoice XHTML Delivery Notes']));
      //$where_dns=preg_replace('/\,$/',')',$where_dns);
      
      foreach($this->ship_tos as $ship_to){
+       
        $this->data ['Invoice XHTML Ship Tos'] .=$ship_to."<br/>";
      }
       $this->data ['Invoice XHTML Ship Tos'] =_trim(preg_replace('/\<br\/\>$/','',$this->data ['Invoice XHTML Ship Tos']));
