@@ -175,11 +175,12 @@ $_map_act['tax_number']=87;
 $_tipo_order=array('Unknown','Pro-invoice','Invoice','Canceled','Sample','Donation,','Replacements','Shortages','To Follow','Refund','Credit Note','Canceled After');
 
 function get_tipo_order($ltipo,$header){
- 
+
 
   $parent_id='';
   $tipo=0;
   if(preg_match('/DELIVERY NOTE|nota de envio|proforma invoice/i',$ltipo)){
+
     $tipo=1;
   }elseif(preg_match('/INVOICE. sample order|invoice|facutura/i',$ltipo)){
     $tipo=2;
@@ -192,6 +193,7 @@ function get_tipo_order($ltipo,$header){
   }elseif(preg_match('/^\s*REPLACEMENT|Replcement|^reemplazo por roturas|^replacement|Damaged item|REPLACMENT|DELIVERY COLLECTION|repplacements|repalcements|Repalcement|Replaceement/i',$ltipo)){
     $tipo=6;
 }elseif(preg_match('/Damaged Parcel|shotages|MISSING|Missing Parcel|missing\s+\d|^reemplazo por falta|SHORTAHGE|shortages|Missing From Order|missing form order|Mising from|^Missing Item|Missing - Replacement|^Shortage|Lost Parcel/i',$ltipo)){
+
     $tipo=7;
   }elseif(preg_match('/^to follow|Follow.On Order/i',$ltipo)){
     $tipo=8;
@@ -225,7 +227,7 @@ function get_tipo_order($ltipo,$header){
      $parent_id=$tmp;
   
   
-  //print "****** $ltipo *** $tmp ***\n";
+  // print "****** $ltipo *** $tmp ***\n";
   
   if($header['total_topay']==0){
     if(preg_match('/Repalacements|Replcement|^reemplazo por roturas|^replacement|REPLACMENT|DELIVERY COLLECTION|repplacements|repalcements/i',$header['notes2'])){

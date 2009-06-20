@@ -2,15 +2,15 @@
 <div id="bd" >
   <div id="yui-main">
     <div class="yui-b">
-asdasdasdasdas
       <div class="yui-b" style="border:1px solid #ccc;text-align:left;padding:10px;margin: 30px 0 10px 0">
 
-       <div style="xborder:1px solid #ddd;width:350px;float:left"> 
+       <div style="xborder:1px solid #ddd;width:410px;float:left"> 
         <h1 style="padding:0 0 10px 0">{t}Order{/t} {$order->get('Order Public ID')}</h1>
-        <h2 style="padding:0"><a href="customer.php?id={$order->get('order customer key')}">{$order->get('order customer name')} (ID:{$customer->get('Customer ID')})</a></h2>
+
+        <h2 style="padding:0">{$order->get('Order Customer Name')} (<a href="customer.php?id={$order->get("Order Customer Key")}">{$customer->get('Customer ID')}</a>)</h2>
         {$contact}<br/>
            {if $tel!=''}{t}Tel{/t}: {$tel}<br/>{/if}
-	<div style="float:left;line-height: 1.0em;margin:5px 0px;color:#444"><span style="font-weight:500;color:#000">{t}Paid by{/t}</span>:<br/><b>{$customer->get('Customer Main Contact Name')}</b><br/>{$customer->get('Customer Main XHTML Address')}</div>
+	<div style="float:left;line-height: 1.0em;margin:5px 0px;color:#444"><span style="font-weight:500;color:#000"><b>{$order->get('Order Customer Contact Name')}</b><br/>{$customer->get('Customer Main XHTML Address')}</div>
 	<div style="float:left;line-height: 1.0em;margin:5px 0 0 30px;color:#444"><span style="font-weight:500;color:#000">{t}Shipped to{/t}</span>:<br/>{$order->get('Order XHTML Ship Tos')}</div>
 	{if $address_delbill!=''}<div style="float:left;line-height: 1.0em;margin:5px 0px;color:#444"><span style="font-weight:500;color:#000">{t}B&D Address{/t}</span>:<br/>{$address_delbill}</div>{/if}
 
@@ -19,7 +19,7 @@ asdasdasdasdas
 <div style="clear:both"></div>
        </div>
 
-       <div style="border:0px solid #ddd;width:300px;float:left">
+       <div style="border:0px solid #ddd;width:320px;float:left">
        {if $note}<div class="notes">{$note}</div>{/if}
 
 
@@ -37,14 +37,14 @@ asdasdasdasdas
 
 
 
-<div style="border:0px solid #ddd;width:250px;float:right">
+<div style="border:0px solid #ddd;width:200px;float:right">
 <table border=0  style="width:100%;border-top:1px solid #333;border-bottom:1px solid #333;width:100%,padding:0;margin:0;float:right;margin-left:120px" >
   {if $order->get('Order Items Discount Amount')!=0 }
-  <tr><td  class="aright" >{t}Items Gross Amount{/t}</td><td width=100 class="aright">{$order->get('Order Items Gross Amount')}</td></tr>
-  <tr><td  class="aright" >{t}Discounts Amount{/t}</td><td width=100 class="aright">-{$order->get('Order Items Discount Amount')}</td></tr>
+  <tr><td  class="aright" >{t}Items Gross{/t}</td><td width=100 class="aright">{$order->get('Order Items Gross Amount')}</td></tr>
+  <tr><td  class="aright" >{t}Discounts{/t}</td><td width=100 class="aright">-{$order->get('Order Items Discount Amount')}</td></tr>
 
 {/if}
-  <tr><td  class="aright" >{t}Items Net Amount{/t}</td><td width=100 class="aright">{$order->get('Order Items Net Amount')}</td></tr>
+  <tr><td  class="aright" >{t}Items Net{/t}</td><td width=100 class="aright">{$order->get('Order Items Net Amount')}</td></tr>
 	  <tr><td  class="aright" >{t}Credits{/t}</td><td width=100 class="aright">{$order->get('Order Items Net Amount')}</td></tr>
 	  {if $other_charges_vateable  }<tr><td  class="aright" >{t}Charges{/t}</td><td width=100 class="aright">{$order->get('Order Total Tax Amount')}}</td></tr>{/if}
 	  <tr style="border-bottom:1px solid #777"><td  class="aright" >{t}Shipping{/t}</td><td width=100 class="aright">{$shipping_vateable}</td></tr>

@@ -37,14 +37,15 @@
 
 
 
+
 <div style="border:0px solid #ddd;width:250px;float:right">
 <table border=0  style="width:100%;border-top:1px solid #333;border-bottom:1px solid #333;width:100%,padding:0;margin:0;float:right;margin-left:120px" >
   {if $order->get('Order Items Discount Amount')!=0 }
-  <tr><td  class="aright" >{t}Items Gross Amount{/t}</td><td width=100 class="aright">{$order->get('Order Items Gross Amount')}</td></tr>
-  <tr><td  class="aright" >{t}Discounts Amount{/t}</td><td width=100 class="aright">-{$order->get('Order Items Discount Amount')}</td></tr>
+  <tr><td  class="aright" >{t}Items Gross{/t}</td><td width=100 class="aright">{$order->get('Order Items Gross Amount')}</td></tr>
+  <tr><td  class="aright" >{t}Discounts{/t}</td><td width=100 class="aright">-{$order->get('Order Items Discount Amount')}</td></tr>
 
 {/if}
-  <tr><td  class="aright" >{t}Items Net Amount{/t}</td><td width=100 class="aright">{$order->get('Order Items Net Amount')}</td></tr>
+  <tr><td  class="aright" >{t}Items Net{/t}</td><td width=100 class="aright">{$order->get('Order Items Net Amount')}</td></tr>
 	  <tr><td  class="aright" >{t}Credits{/t}</td><td width=100 class="aright">{$order->get('Order Items Net Amount')}</td></tr>
 	  {if $other_charges_vateable  }<tr><td  class="aright" >{t}Charges{/t}</td><td width=100 class="aright">{$order->get('Order Total Tax Amount')}}</td></tr>{/if}
  <tr style="border-bottom:1px solid #777><td  class="aright" >{t}Shipping{/t}</td><td width=100 class="aright">{$order->get('Order Shipping Net Amount')}</td></tr>	
