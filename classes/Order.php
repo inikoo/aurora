@@ -228,7 +228,7 @@ class Order extends DB_Table{
 
 				  switch ($_SESSION ['lang']) {
 				  default :
-				    $abstract = sprintf ( '% <a href="order.php?id=%d">%s</a>', _('Order'),$this->data ['Order Key'], $this->data ['Order Public ID'] );
+				    $abstract = sprintf ( '%s <a href="order.php?id=%d">%s</a>', _('Order'),$this->data ['Order Key'], $this->data ['Order Public ID'] );
 				    $note = sprintf ( '%s (<a href="customer.php?id=%d">%s%s</a>) place an order on %s', $customer->get ( 'Customer Name' ), $customer->id,$myconf['customer_id_prefix'], $customer->get ( 'Customer ID' ), strftime ( "%e %b %Y %H:%M", strtotime ( $this->data ['Order Date'] ) ) );
 				  }
 				  
@@ -237,7 +237,7 @@ class Order extends DB_Table{
 				  $history_id = mysql_insert_id ();
 				  $abstract .= ' (<span class="like_a" onclick="showdetails(this)" d="0" id="ch' . $history_id . '"  hid="' . $history_id . '">' . _ ( 'view details' ) . '</span>)';
 				  $sql = sprintf ( "update `History Dimension` set `History Abstract`=%s where `History Key`=%d", prepare_mysql ( $abstract ), $history_id );
-				  	print "$sql\n";
+				  //	print "$sql\n";
 				  mysql_query ( $sql );
 				} else {
 				  $this->data ['Order Key'] = 0;
@@ -245,6 +245,9 @@ class Order extends DB_Table{
 				  
 				}
 				
+
+				$this->update_balance();
+
 				break;
 			case ('imap_email_mals-e') :
 				$ip = gethostbyname ( 'imap.gmail.com' );
