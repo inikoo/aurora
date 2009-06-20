@@ -47,6 +47,8 @@ $count=0;
 
 
 
+
+
 $__cols=array();
 $inicio=false;
 while(($_cols = fgetcsv($handle_csv))!== false){

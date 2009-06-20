@@ -49,8 +49,8 @@ if($tipo=='f'){
    
    $sql=sprintf("select UNIX_TIMESTAMP(first_day)as first_day  from list_week where yearweek=%d%01d",$year,$week);
 
-   $result =& $db->query($sql);
-   if($row=$result->fetchRow()){
+   $result=mysql_query($sql);
+   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      $_time=strtotime("@".$row['first_day']);
      $_time_n=strtotime("@".($row['first_day']+604800));
      $_time_p=strtotime("@".($row['first_day']-604800));

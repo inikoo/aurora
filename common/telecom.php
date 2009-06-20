@@ -120,7 +120,7 @@ function guess_tel($raw_tel,$country_id='',$city_id=''){
 function get_icode($country_id){
   $db =& MDB2::singleton();
   $sql=sprintf("select tel_code from list_country  where id=%d",$country_id);
-  $res = $db->query($sql);  
+  $res=mysql_query($sql); 
   if ($row=$res->fetchRow()){
     if($row['tel_code']!='')
       return $row['tel_code'];
@@ -133,7 +133,7 @@ function get_icode($country_id){
 function display_tel($telecom_id){
   $db =& MDB2::singleton();
   $sql=sprintf("select id,icode,ncode,number,ext from telecom where id=%d",$telecom_id);
-  $res = $db->query($sql);  
+  $res=mysql_query($sql); 
   if ($row=$res->fetchRow()){
     $tmp=($row['icode']!=''?'+'.$row['icode'].' ':'').($row['ncode']!=''?$row['ncode'].' ':'').format_tel($row['number']).($row['ext']!=''?_(' ext').' '.$row['ext']:'');
     return $tmp;
@@ -145,7 +145,7 @@ function display_tel($telecom_id){
 function get_tel_data($telecom_id){
   $db =& MDB2::singleton();
   $sql=sprintf("select icode,ncode,number,ext from telecom where id=%d",$telecom_id);
-  $res = $db->query($sql);  
+  $res=mysql_query($sql); 
   if ($row=$res->fetchRow()){
     return $row;
   }else
@@ -158,7 +158,7 @@ function get_tel_metadata($telecom_id){
   global $_tel_tipo;
   $sql=sprintf("select contact_id,contact.tipo as c_tipo,telecom2contact.tipo as tel_tipo  from telecom2contact left join contact on (contact_id=contact.id) where telecom_id=%d",$telecom_id);
   //  print "$sql\n";
-  $res = $db->query($sql);  
+  $res=mysql_query($sql); 
   $metadata=array();
   while ($row=$res->fetchRow()){
     
@@ -194,7 +194,7 @@ function insert_telecom($telecom_data){
 	       ,prepare_mysql($telecom_data['ncode'])
 	       ,prepare_mysql($telecom_data['number'])
 	       ,prepare_mysql($telecom_data['ext']));
-  //$db->exec($sql);
+  //mysql_query($sql);
   //$telecom_id= $db->lastInsertID();
   
   mysql_query($sql);
@@ -238,13 +238,13 @@ function update_telecom($telecom_id,$telecom_data,$date_index=''){
   if(count($values)>0){
     $sql=sprintf("update telecom  set %s where id=%d",$update_sql,$telecom_id);
     //print "$sql\n";
-    //$db->exec($sql);
+    //mysql_query($sql);
     mysql_query($sql);
     foreach($array_metadata as $metadata){
       
       $sql=sprintf("insert into history (tipo,sujeto,sujeto_id,objeto,date) values ('UPD','%s',%d,'%s',%s)",$metadata['contact_tipo'],$metadata['contact_id'],$metadata['tel_tipo'],prepare_mysql_date($date_index));
       // print "$sql\n";
-       //$db->exec($sql);
+       //mysql_query($sql);
        //$history_id=$db->lastInsertID();
       mysql_query($sql);
       $history_id=mysql_insert_id();
@@ -257,7 +257,7 @@ function update_telecom($telecom_id,$telecom_data,$date_index=''){
 	  $sql=sprintf($history_sql,$history_id,prepare_mysql($values[$key]['old']),prepare_mysql($values[$key]['new']));
 	  //  print "$sql\n";
 	   mysql_query($sql);
-	  //$db->exec($sql);
+	  //mysql_query($sql);
 	}
       }
     }
@@ -275,7 +275,7 @@ function associate_telecom($telecom_id,$contact_id,$tipo,$description='',$date_i
   $db =& MDB2::singleton();
 
   $sql=sprintf("insert into telecom2contact  (telecom_id,contact_id,tipo,description) values (%d,%d,%d,%s)",$telecom_id,$contact_id,$tipo,prepare_mysql($description));
-  // $db->exec($sql);
+  // mysql_query($sql);
   // print "$sql\n";
     mysql_query($sql);
 
@@ -287,7 +287,7 @@ function associate_telecom($telecom_id,$contact_id,$tipo,$description='',$date_i
   
   $sql=sprintf("insert into history (tipo,sujeto,sujeto_id,objeto,objeto_id,date) values (1,'%s',%d,'%s',%d,%s)",$contact_tipo,$contact_id,$_tel_tipo[$tipo],$telecom_id,prepare_mysql_date($date_index));
   //print "$sql\n";
-  //$db->exec($sql);
+  //mysql_query($sql);
   //$history_id=$db->lastInsertID();
   mysql_query($sql);
   $history_id=mysql_insert_id();
@@ -296,7 +296,7 @@ function associate_telecom($telecom_id,$contact_id,$tipo,$description='',$date_i
   $telephone=display_tel($telecom_id);
   $sql=sprintf("insert into history_item (history_id,columna,old_value,new_value) values (%d,'%s',NULL,%s)",$history_id,$_tel_tipo[$tipo],prepare_mysql($telephone));
   //print "$sql\n";
-  //$db->exec($sql);
+  //mysql_query($sql);
   mysql_query($sql);
 
   //exit("adding tel\n");

@@ -121,7 +121,7 @@ p.description_med as description_med
 from product as p  left join product_group as g on (g.id=group_id) left join product_department as d on (d.id=department_id)  
 where p.id=%d ",$product_id);
 
-$result =& $db->query($sql);
+$result=mysql_query($sql);
 if(!$product=$result->fetchRow())
   exit;
 
@@ -129,12 +129,12 @@ if(!$product=$result->fetchRow())
 $fam_order=$_SESSION['tables']['products_list'][0];
 
 $sql=sprintf("select id,code from product where  %s<'%s' and  group_id=%d order by %s desc  ",$fam_order,$product[$fam_order],$product['fam_id'],$fam_order);
-$result =& $db->query($sql);
+$result=mysql_query($sql);
 
 if(!$prev=$result->fetchRow())
   $prev=array('id'=>0,'code'=>'');
 $sql=sprintf("select id,code from product where  %s>'%s' and group_id=%d order by %s   ",$fam_order,$product[$fam_order],$product['fam_id'],$fam_order);
-$result =& $db->query($sql);
+$result=mysql_query($sql);
 if(!$next=$result->fetchRow())
   $next=array('id'=>0,'code'=>'');
 
@@ -142,7 +142,7 @@ $smarty->assign('prev',$prev);
 $smarty->assign('next',$next);
 
 $sql=sprintf("select filename,format,principal,caption,id from image where  product_id=%d ",$product_id);
-$result =& $db->query($sql);
+$result=mysql_query($sql);
 $image='';
 $num_images=0;
 $image='art/nopic.png';
@@ -171,7 +171,7 @@ while($images=$result->fetchRow()){
 
 $sql=sprintf("select p2s.supplier_id, p2s.price,p2s.sup_code as code,s.name as name from product2supplier as p2s left join supplier as s on (p2s.supplier_id=s.id) where p2s.product_id=%d",$product_id);
 
-$result =& $db->query($sql);
+$result=mysql_query($sql);
 $supplier=array();
 $supplier_name=array();
 $supplier_price=array();
@@ -290,7 +290,7 @@ $smarty->assign('image',$image);
 $smarty->assign('num_images',$num_images);
 
 $sql="select id,alias from staff where active=1 order by alias";
-$result =& $db->query($sql);
+$result=mysql_query($sql);
 
 $associates=array('0'=>_('Other'));
 while($row=$result->fetchRow()){
@@ -301,7 +301,7 @@ while($row=$result->fetchRow()){
 $smarty->assign('acheckedby',$associates);
 
 $sql="select id,code from supplier  order by code";
-$result =& $db->query($sql);
+$result=mysql_query($sql);
 
 $asuppliers=array('0'=>_('Choose a supplier'));
 while($row=$result->fetchRow()){

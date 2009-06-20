@@ -25,8 +25,8 @@ switch($_REQUEST['in']){
    $department_id=$_REQUEST['id'];
    
    $sql=sprintf("select id,code,name from  product_department where id=%d",$department_id);
-   $result =& $db->query($sql);
-   if(!$data=$result->fetchRow())
+   $result=mysql_query($sql);
+   if(!$data=mysql_fetch_array($result, MYSQL_ASSOC))
      exit(_('Error, family id not found').'.');
 
    $department=$department_id;
@@ -44,8 +44,8 @@ switch($_REQUEST['in']){
    
    $family_id=$_REQUEST['id'];
    $sql=sprintf("select department_id,d.name as department_name,d.code as department_code,g.name,description from product_group as g left join product_department as d on (department_id=d.id) where g.id=%d",$family_id);
-   $result =& $db->query($sql);
-   if(!$data=$result->fetchRow())
+   $result=mysql_query($sql);
+   if(!$data=mysql_fetch_array($result, MYSQL_ASSOC))
      exit(_('Error, family id not found').'.');
    
    $department=$data['department_id'];

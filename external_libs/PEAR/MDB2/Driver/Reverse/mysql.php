@@ -181,7 +181,7 @@ class MDB2_Driver_Reverse_mysql extends MDB2_Driver_Reverse_Common
             // fallback to the given $index_name, without transformation
             $constraint_name = $constraint_name_mdb2;
         }
-        $result = $db->query(sprintf($query, $db->quote($constraint_name)));
+        $result = mysql_query(sprintf($query, $db->quote($constraint_name)));
         if (PEAR::isError($result)) {
             return $result;
         }
@@ -256,7 +256,7 @@ class MDB2_Driver_Reverse_mysql extends MDB2_Driver_Reverse_Common
                 $index_name = $index_name_mdb2;
             }
         }
-        $result = $db->query(sprintf($query, $db->quote($index_name)));
+        $result = mysql_query(sprintf($query, $db->quote($index_name)));
         if (PEAR::isError($result)) {
             return $result;
         }

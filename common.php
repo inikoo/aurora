@@ -48,9 +48,9 @@ if(!$default_DB_link){print "Error can not connect with database server\n";exit;
 $db_selected=mysql_select_db($dns_db, $default_DB_link);
 if (!$db_selected){print "Error can not access the database\n";exit;}
 
-$db->setFetchMode(MDB2_FETCHMODE_ASSOC);  
-$db->query("SET time_zone ='UTC'");
-$db->query("SET NAMES 'utf8'");
+  
+mysql_query("SET time_zone ='UTC'");
+mysql_query("SET NAMES 'utf8'");
 
 
 //__________________________________________________________________________________________________|
@@ -158,8 +158,8 @@ if(!$LU->isLoggedIn()){
 //   include_once('aes.php');
 //   include_once('app_files/db/key.php');
 //   $sql=sprintf("select passwd from liveuser_users where handle='%s'",addslashes($handle));
-//   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-//   if($row=$res->fetchRow()) {
+//   $res=mysql_query($sql);
+//   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 //     $pwd=$row['passwd'];
     
 //     $st=AESDecryptCtr(AESDecryptCtr($sk,$pwd,256),SKEY,256);

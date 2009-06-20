@@ -39,7 +39,7 @@ if(preg_match('/fedex/i',$name))
   $supplier_id='';
   $sql=sprintf("select id from supplier where code like '%s' ",$name);
   //print "$sql\n";
-  $res = $db->query($sql);  
+  $res=mysql_query($sql); 
   if ($row=$res->fetchRow()){
     $supplier_id=$row['id'];
     

@@ -20,9 +20,9 @@ require_once '../../common_functions.php';
 $db =& MDB2::factory($dsn);       
 if (PEAR::isError($db)){echo $db->getMessage() . ' ' . $db->getUserInfo();}
 
-$db->setFetchMode(MDB2_FETCHMODE_ASSOC);  
-$db->query("SET time_zone ='UTC'");
-$db->query("SET NAMES 'utf8'");
+  
+mysql_query("SET time_zone ='UTC'");
+mysql_query("SET NAMES 'utf8'");
 $PEAR_Error_skiptrace = &PEAR::getStaticProperty('PEAR_Error','skiptrace');$PEAR_Error_skiptrace = true;// Fix memory leak
 require_once '../../myconf/conf.php';           
 date_default_timezone_set('Europe/London');
@@ -34,8 +34,8 @@ $old_mem=0;
 
 
 $sql=sprintf("select * from orders_data.order_data ");
-$res = $db->query($sql); 
-while ($row=$res->fetchRow()) {
+$res=mysql_query($sql);
+while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
   
   if(mb_unserialize($row['header'])  and  mb_unserialize($row['products'])){
     print $row['id']."\r";
@@ -45,7 +45,7 @@ while ($row=$res->fetchRow()) {
   $handle_csv = fopen($row['filename_cvs'], "r");
   
   $sql=sprintf("update orders_data.order_data set last_read=NOW() where id=%d",$row['id']);
-  $db->exec($sql);
+  mysql_query($sql);
   
   $map_act=$_map_act;
   $map=$_map;
@@ -80,7 +80,7 @@ while ($row=$res->fetchRow()) {
 ,prepare_mysql(mb_convert_encoding($_products, "UTF-8", "ISO-8859-1,UTF-8"))
 	       ,prepare_mysql($checksum_products)
 	       ,$row['id']);
-    $db->exec($sql);
+    mysql_query($sql);
     //print $sql;
       
 

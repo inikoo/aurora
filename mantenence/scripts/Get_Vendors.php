@@ -10,8 +10,8 @@ require_once '../../common_functions.php';
 $db =& MDB2::factory($dsn);       
 if (PEAR::isError($db)){echo $db->getMessage() . ' ' . $db->getUserInfo();}
 if(DEBUG)PEAR::setErrorHandling(PEAR_ERROR_RETURN);
-$db->setFetchMode(MDB2_FETCHMODE_ASSOC);  
-$db->query("SET time_zone ='UTC'");
+  
+mysql_query("SET time_zone ='UTC'");
 require_once '../../myconf/conf.php';           
 date_default_timezone_set('Europe/London');
 
@@ -25,8 +25,8 @@ $version='V 1.0';
 $Data_Audit_ETL_Software="$software $version";
 
 $sql=" select * from aw_old.supplier left join aw_old.address on address_id=address.id ";
-  $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-    while($row=$res->fetchRow()) {
+  $res=mysql_query($sql);if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+    while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
       $data=array();
 
       

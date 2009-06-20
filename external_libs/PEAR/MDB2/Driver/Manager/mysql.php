@@ -76,7 +76,7 @@ class MDB2_Driver_Manager_mysql extends MDB2_Driver_Manager_Common
 
         $name = $db->quoteIdentifier($name, true);
         $query = "CREATE DATABASE $name";
-        $result = $db->exec($query);
+        $result = mysql_query($query);
         if (PEAR::isError($result)) {
             return $result;
         }
@@ -102,7 +102,7 @@ class MDB2_Driver_Manager_mysql extends MDB2_Driver_Manager_Common
 
         $name = $db->quoteIdentifier($name, true);
         $query = "DROP DATABASE $name";
-        $result = $db->exec($query);
+        $result = mysql_query($query);
         if (PEAR::isError($result)) {
             return $result;
         }
@@ -185,7 +185,7 @@ class MDB2_Driver_Manager_mysql extends MDB2_Driver_Manager_Common
         if (!empty($options_strings)) {
             $query .= ' '.implode(' ', $options_strings);
         }
-        return $db->exec($query);
+        return mysql_query($query);
     }
 
     // }}}
@@ -370,7 +370,7 @@ class MDB2_Driver_Manager_mysql extends MDB2_Driver_Manager_Common
         }
 
         $name = $db->quoteIdentifier($name, true);
-        return $db->exec("ALTER TABLE $name $query");
+        return mysql_query("ALTER TABLE $name $query");
     }
 
     // }}}
@@ -640,7 +640,7 @@ class MDB2_Driver_Manager_mysql extends MDB2_Driver_Manager_Common
             }
         }
         $query .= ' ('. implode(', ', $fields) . ')';
-        return $db->exec($query);
+        return mysql_query($query);
     }
 
     // }}}
@@ -663,7 +663,7 @@ class MDB2_Driver_Manager_mysql extends MDB2_Driver_Manager_Common
 
         $table = $db->quoteIdentifier($table, true);
         $name = $db->quoteIdentifier($db->getIndexName($name), true);
-        return $db->exec("DROP INDEX $name ON $table");
+        return mysql_query("DROP INDEX $name ON $table");
     }
 
     // }}}
@@ -767,7 +767,7 @@ class MDB2_Driver_Manager_mysql extends MDB2_Driver_Manager_Common
             $fields[] = $db->quoteIdentifier($field, true);
         }
         $query .= ' ('. implode(', ', $fields) . ')';
-        return $db->exec($query);
+        return mysql_query($query);
     }
 
     // }}}
@@ -796,7 +796,7 @@ class MDB2_Driver_Manager_mysql extends MDB2_Driver_Manager_Common
             $name = $db->quoteIdentifier($db->getIndexName($name), true);
             $query = "ALTER TABLE $table DROP INDEX $name";
         }
-        return $db->exec($query);
+        return mysql_query($query);
     }
 
     // }}}
@@ -910,7 +910,7 @@ class MDB2_Driver_Manager_mysql extends MDB2_Driver_Manager_Common
         if (!empty($options_strings)) {
             $query .= ' '.implode(' ', $options_strings);
         }
-        $res = $db->exec($query);
+        $res = mysql_query($query);
 
         if (PEAR::isError($res)) {
             return $res;
@@ -921,13 +921,13 @@ class MDB2_Driver_Manager_mysql extends MDB2_Driver_Manager_Common
         }
 
         $query = "INSERT INTO $sequence_name ($seqcol_name) VALUES (".($start-1).')';
-        $res = $db->exec($query);
+        $res = mysql_query($query);
         if (!PEAR::isError($res)) {
             return MDB2_OK;
         }
 
         // Handle error
-        $result = $db->exec("DROP TABLE $sequence_name");
+        $result = mysql_query("DROP TABLE $sequence_name");
         if (PEAR::isError($result)) {
             return $db->raiseError($result, null, null,
                 'could not drop inconsistent sequence table', __FUNCTION__);
@@ -955,7 +955,7 @@ class MDB2_Driver_Manager_mysql extends MDB2_Driver_Manager_Common
         }
 
         $sequence_name = $db->quoteIdentifier($db->getSequenceName($seq_name), true);
-        return $db->exec("DROP TABLE $sequence_name");
+        return mysql_query("DROP TABLE $sequence_name");
     }
 
     // }}}

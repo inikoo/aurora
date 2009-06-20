@@ -37,8 +37,8 @@ switch($tipo){
    
    if($tipo=='product'){
    $sql=sprintf("select `Product Family Key` as id  from `Product Family Dimension` where `Product Family Code`='%s' ",addslashes($q));
-   $result =& $db->query($sql);
-   if($found=$result->fetchRow()){
+   $result=mysql_query($sql);
+   if($found=mysql_fetch_array($result, MYSQL_ASSOC)){
      $url='family.php?id='. $found['id'];
      echo json_encode(array('state'=>200,'url'=>$url));
      break;
@@ -48,8 +48,8 @@ switch($tipo){
    //   if($myconf['product_code_separator']!=''){
    if(  ($myconf['product_code_separator']!='' and   preg_match('/'.$myconf['product_code_separator'].'/',$q)) or  $myconf['product_code_separator']==''  ){
      $sql=sprintf("select levenshtein(UPPER(%s),UPPER(`Product Code`)) as dist1,    levenshtein(UPPER(SOUNDEX(%s)),UPPER(SOUNDEX(`Product Code`))) as dist2,        `Product Code` as code,`Product Most Recent Key` as id from `Product Dimension`  order by dist1,dist2 limit 1;",prepare_mysql($q),prepare_mysql($q));
-     $result =& $db->query($sql);
-     if($found=$result->fetchRow()){
+     $result=mysql_query($sql);
+     if($found=mysql_fetch_array($result, MYSQL_ASSOC)){
        if($found['dist1']<3){
 	 echo json_encode(array('state'=>400,'msg1'=>_('Did you mean'),'msg2'=>'<a href="'.$target.'?id='.$found['id'].'">'.$found['code'].'</a>'));
 	 break;
@@ -60,8 +60,8 @@ switch($tipo){
    }elseif($tipo=='product'){
      // look on the family list
      $sql=sprintf("select levenshtein(UPPER(%s),UPPER(`Product Family Code`)) as dist1,    levenshtein(UPPER(SOUNDEX(%s)),UPPER(SOUNDEX(`Product Family Code`))) as dist2, `Product Family Code` as name ,`Product Family Key` id from `Product Family Dimension`  order by dist1,dist2 limit 1;",prepare_mysql($q),prepare_mysql($q));
-     $result =& $db->query($sql);
-     if($found=$result->fetchRow()){
+     $result=mysql_query($sql);
+     if($found=mysql_fetch_array($result, MYSQL_ASSOC)){
        if($found['dist1']<3){
 	 echo json_encode(array('state'=>400,'msg1'=>_('Did you mean'),'msg2'=>'<a href="family.php?id='.$found['id'].'">'.$found['name'].'</a> '._('family') ));
 	 break;
@@ -74,16 +74,16 @@ switch($tipo){
 case('location'):
    $q=$_REQUEST['q'];
    $sql=sprintf("select id from location where name='%s' ",addslashes($q));
-   $result =& $db->query($sql);
-   if($found=$result->fetchRow()){
+   $result=mysql_query($sql);
+   if($found=mysql_fetch_array($result, MYSQL_ASSOC)){
      $url='location.php?id='. $found['id'];
      echo json_encode(array('state'=>200,'url'=>$url));
      break;
    }
 
    $sql=sprintf("select levenshtein(UPPER(%s),UPPER(name)) as dist1,    levenshtein(UPPER(SOUNDEX(%s)),UPPER(SOUNDEX(name))) as dist2,name,id from location  order by dist1,dist2 limit 1;",prepare_mysql($q),prepare_mysql($q));
-   $result =& $db->query($sql);
-   if($found=$result->fetchRow()){
+   $result=mysql_query($sql);
+   if($found=mysql_fetch_array($result, MYSQL_ASSOC)){
      if($found['dist1']<3){
        echo json_encode(array('state'=>400,'msg1'=>_('Did you mean'),'msg2'=>'<a href="location.php?id='.$found['id'].'">'.$found['name'].'</a>'));
        break;
@@ -95,18 +95,18 @@ case('location'):
    $target='customer.php';
    $q=$_REQUEST['q'];
    $sql=sprintf("select id,name from customer where name=%s ",prepare_mysql($q));
-   $result =& $db->query($sql);
+   $result=mysql_query($sql);
    
  $number_results=$result->numRows();
  if($number_results==1){
-     if($found=$result->fetchRow()){
+     if($found=mysql_fetch_array($result, MYSQL_ASSOC)){
        $url=$target.'?id='. $found['id'];
        echo json_encode(array('state'=>200,'url'=>$url));
        break;
      }
    }elseif($number_results>1){
      $url='';
-     while($found=$result->fetchRow()){
+     while($found=mysql_fetch_array($result, MYSQL_ASSOC)){
        $url.=sprintf('<href="%s?id=%d">%s (%d)</a><br>',$target,$found['name'],$found['id'],$found['id']);
        
      }
@@ -125,10 +125,10 @@ case('location'):
    // try to find aprox names
    
    $sql=sprintf("select levenshtein(UPPER(%s),UPPER(name))/LENGTH(name) as dist1,    levenshtein(UPPER(SOUNDEX(%s)),UPPER(SOUNDEX(name))) as dist2,name,id from customer  order by dist1,dist2 limit 5;",prepare_mysql($q),prepare_mysql($q));
-   $result =& $db->query($sql);
+   $result=mysql_query($sql);
    // print $sql;
    $msg2='';
-   while($found=$result->fetchRow()){
+   while($found=mysql_fetch_array($result, MYSQL_ASSOC)){
      if($found['dist1']<.5){
        $msg2.=sprintf(', <a href="%s?id=%d">%s</a>',$target,$found['id'],$found['name']);
      }

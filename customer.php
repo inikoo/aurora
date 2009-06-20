@@ -122,13 +122,13 @@ $order=$_SESSION['state']['customers']['table']['order'];
 
 $sql=sprintf("select `Customer Name` as name from `Customer Dimension`   where  %s < %s  order by %s desc  limit 1",$order,prepare_mysql($customer->get($order)),$order);
 //print $sql;
-$result =& $db->query($sql);
-if(!$prev=$result->fetchRow())
+$result=mysql_query($sql);
+if(!$prev=mysql_fetch_array($result, MYSQL_ASSOC))
   $prev=array('id'=>0,'code'=>'');
 $smarty->assign('prev',$prev);
 $sql=sprintf("select  `Customer Name` as name from `Customer Dimension`     where  %s>%s  order by %s   ",$order,prepare_mysql($customer->get($order)),$order);
-$result =& $db->query($sql);
-if(!$next=$result->fetchRow())
+$result=mysql_query($sql);
+if(!$next=mysql_fetch_array($result, MYSQL_ASSOC))
   $next=array('id'=>0,'code'=>'');
 $smarty->assign('prev',$prev);
 $smarty->assign('next',$next);
@@ -145,16 +145,16 @@ $smarty->assign('next',$next);
 //print $sql;
 
 
-//$result =& $db->query($sql);
+//$result=mysql_query($sql);
 
-//$customer=$result->fetchRow();
+//$customer=mysql_fetch_array($result, MYSQL_ASSOC);
 
 
 
 //$sql=sprintf("select main_address from contact where id=%d  ",$customer['contact_id']);
 
-//$result =& $db->query($sql);
-//$address=$result->fetchRow();
+//$result=mysql_query($sql);
+//$address=mysql_fetch_array($result, MYSQL_ASSOC);
 // include('string.php');
 // include('_contact.php');
 // include('telecom.php');
@@ -201,18 +201,18 @@ $smarty->assign('next',$next);
 
 
 // $sql=sprintf("select tipo,name,code,number,ext from telecom where contact_id=".$customer_contact_id);
-// $result = $db->query($sql);
+// $result = mysql_query($sql);
 
-// while($tmp=$result->fetchRow()){
+// while($tmp=mysql_fetch_array($result, MYSQL_ASSOC)){
 //   if($tmp['tipo']==1)
 //       $tel[]=($tmp['name']!=''?$tmp['name'].' ':'').($tmp['code']!=''?'+'.$tmp['code'].' ':'').$tmp['number'].($tmp['ext']!=''?' '._('Ext').'. '.$tmp['ext']:'');
 //   if($tmp['tipo']==4)
 //     $fax[]=($tmp['name']!=''?$tmp['name'].' ':'').($tmp['code']!=''?'+'.$tmp['code'].' ':'').$tmp['number'];
 //  }
 // $sql=sprintf("select contact,email from email where contact_id=".$customer_contact_id);
-// $result = $db->query($sql);
+// $result = mysql_query($sql);
 // $k=0;
-// while($tmp=$result->fetchRow()){
+// while($tmp=mysql_fetch_array($result, MYSQL_ASSOC)){
 //   if($tmp['contact']!='')
 //       $email[]=sprintf('<a href="mailto:%s">%s</a>',$row['email'],$row['contact']);
 //   else
@@ -220,7 +220,7 @@ $smarty->assign('next',$next);
 //  }
 // // Contactos
 // $sql=sprintf("select child_id,contact.name from contact_relations left join contact on (child_id=contact.id)where parent_id=".$customer_contact_id);
-// $result = $db->query($sql);
+// $result = mysql_query($sql);
 // $contact_name=array();
 // $contact_tel=array();
 // $contact_fax=array();
@@ -234,7 +234,7 @@ $smarty->assign('next',$next);
 
 
 
-// while($tmp=$result->fetchRow()){
+// while($tmp=mysql_fetch_array($result, MYSQL_ASSOC)){
 //   $contact_id=$tmp['child_id'];
 //   $contact_name[$contact_id]=$tmp['name'];
 //   $contact_tel[$contact_id]=array();
@@ -244,7 +244,7 @@ $smarty->assign('next',$next);
 
 
 //   $sql=sprintf("select contact,email from email where contact_id=".$contact_id);
-//   $resulte = $db->query($sql);
+//   $resulte = mysql_query($sql);
 //   while($rowe=$resulte->fetchRow()){
 //   if($rowe['contact']!=$tmp['name'] and $rowe['contact']!='')
 //     $contact_email[$contact_id][]=sprintf('<a href="mailto:%s">%s</a>',$rowe['email'],$rowe['contact']);
@@ -254,19 +254,19 @@ $smarty->assign('next',$next);
 //   $contact_emails[$contact_id]=count($contact_email[$contact_id]);
   
 //   $sql=sprintf("select tipo,name,code,number,ext from telecom where (tipo=1 or tipo=0) and contact_id=".$contact_id);
-//   $resultt = $db->query($sql);
+//   $resultt = mysql_query($sql);
 //   while($row=$resultt->fetchRow())
 //       $contact_tel[$contact_id]=($row['name']!=''?$row['name'].' ':'').($row['code']!=''?'+'.$row['code'].' ':'').$row['number'].($row['ext']!=''?' '._('Ext').'. '.$row['ext']:'');
 //   $contact_tels[$contact_id]=count($contact_tel[$contact_id]);
  
 //   $sql=sprintf("select tipo,name,code,number,ext from telecom where tipo=4 and contact_id=".$contact_id);
-//   $resultt = $db->query($sql);
+//   $resultt = mysql_query($sql);
 //   while($row=$resultt->fetchRow())
 //     $contact_fax[$contact_id]=($row['code']!=''?'+'.$row['code'].' ':'').$row['number'];
 //   $contact_faxes[$contact_id]=count($contact_fax[$contact_id]);
  
 //   $sql=sprintf("select tipo,name,code,number,ext from telecom where tipo=2 and contact_id=".$contact_id);
-//   $resultt = $db->query($sql);
+//   $resultt = mysql_query($sql);
 //   while($row=$resultt->fetchRow())
 //     $contact_mobile[$contact_id]=($row['code']!=''?'+'.$row['code'].' ':'').$row['number'];
 //   $contact_mobiles[$contact_id]=count($contact_mobile[$contact_id]);

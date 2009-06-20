@@ -229,15 +229,15 @@ class Order extends DB_Table{
 				  switch ($_SESSION ['lang']) {
 				  default :
 				    $abstract = sprintf ( '% <a href="order.php?id=%d">%s</a>', _('Order'),$this->data ['Order Key'], $this->data ['Order Public ID'] );
-				    $note = sprintf ( '%s (<a href="customer.php?id=%d">%s%s</a>) place an order at %s', $customer->get ( 'Customer Name' ), $customer->id,$myconf['customer_id_prefix'], $customer->get ( 'Customer ID' ), strftime ( "%e %b %Y %H:%M", strtotime ( $this->data ['Order Date'] ) ) );
-					}
+				    $note = sprintf ( '%s (<a href="customer.php?id=%d">%s%s</a>) place an order on %s', $customer->get ( 'Customer Name' ), $customer->id,$myconf['customer_id_prefix'], $customer->get ( 'Customer ID' ), strftime ( "%e %b %Y %H:%M", strtotime ( $this->data ['Order Date'] ) ) );
+				  }
 				  
 				  $sql = sprintf ( "insert into `History Dimension` (`History Date`,`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`History Details`,`Author Key`,`Author Name`,`Indirect Object`,`Indirect Object Key`,`Preposition`) values(%s,'Customer','%s','Placed','Order',%d,%s,0,%s,'',0,'')", prepare_mysql ( $this->data ['Order Date'] ), $customer->id, $this->data ['Order Key'], prepare_mysql ( $note ), prepare_mysql ( _ ( 'System' ) ) );
 				  mysql_query ( $sql );
 				  $history_id = mysql_insert_id ();
 				  $abstract .= ' (<span class="like_a" onclick="showdetails(this)" d="0" id="ch' . $history_id . '"  hid="' . $history_id . '">' . _ ( 'view details' ) . '</span>)';
 				  $sql = sprintf ( "update `History Dimension` set `History Abstract`=%s where `History Key`=%d", prepare_mysql ( $abstract ), $history_id );
-				  //	print "$sql\n";
+				  	print "$sql\n";
 				  mysql_query ( $sql );
 				} else {
 				  $this->data ['Order Key'] = 0;
@@ -583,7 +583,7 @@ class Order extends DB_Table{
 
 					switch ($_SESSION ['lang']) {
 						default :
-							$abstract = sprintf ( 'Internet Order <a href="order.php?id=%d">%s</a>', $this->get ( 'order key' ), $this->get ( 'order public id' ) );
+							$abstract = sprintf ( 'Internet Order <a href="order.php?id=%d">%s</a>', $this->data['Order Key'], $this->data['Order Public ID'] );
 							$note = sprintf ( '%s (<a href="customer.php?id=%d">%s) place an order by internet using IP:%d at %s', $customer->get ( 'customer name' ), $customer->id, $customer->get ( 'customer id' ), $edata ['ip_number'], strftime ( "%e %b %Y %H:%M", strtotime ( $this->data ['order date'] ) ) );
 					}
 					
@@ -2571,6 +2571,23 @@ class Order extends DB_Table{
 	   //  print "$sql\n";
 	   //exit;
 	}
+
+	/*
+	  function: update_product_sales
+	  Update Product sales
+	 */
+	
+	function update_product_sales(){
+	    $sql = "select `Product Key`  from `Order Transaction Fact` where `Order Key`=" . $this->data ['Order Key']." group by `Product Key`";
+	    $result = mysql_query ( $sql );
+	    if ($row = mysql_fetch_array ( $result, MYSQL_ASSOC )) {
+	      $product=new Product($row['Product Key']);
+	      $product->load('sales');
+	   }
+	}
+
+
+
 
 
 }

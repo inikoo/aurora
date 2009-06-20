@@ -28,15 +28,15 @@ if(isset($_REQUEST['search']) and $_REQUEST['search']!=''  ){
   $q=$_REQUEST['search'];
   //  print "$q";
   $sql=sprintf("select `Product Key` from `Product Dimension` where `Product Code`=%s ",prepare_mysql($q));
-  $result =& $db->query($sql);
-  if($found=$result->fetchRow()){
+  $result=mysql_query($sql);
+  if($found=mysql_fetch_array($result, MYSQL_ASSOC)){
     header('Location: product.php?id='. $found['product key']);
     exit;
   }
   
   $sql=sprintf("select `Product Family Key`  from `Product family Dimension`  where `Product Family Code`='%s' ",prepare_mysql($q));
-  $result =& $db->query($sql);
-  if($found=$result->fetchRow()){
+  $result=mysql_query($sql);
+  if($found=mysql_fetch_array($result, MYSQL_ASSOC)){
     header('Location: family.php?id='. $found['product family key']);
     exit;
   }
@@ -61,8 +61,8 @@ if(isset($_REQUEST['parent'])   ){
 
 
 $sql="select count(*) as total_products,sum(if(`Product Sales State`='For sale',1,0)) as for_sale  from `Product Dimension` where `Product Most Recent`='Yes'";
-$result =& $db->query($sql);
-if(!$products=$result->fetchRow())
+$result=mysql_query($sql);
+if(!$products=mysql_fetch_array($result, MYSQL_ASSOC))
   exit;
 
 

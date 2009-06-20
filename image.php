@@ -5,8 +5,8 @@ $id=$_REQUEST['id'];
 
 
 $sql=sprintf("select filename,format from image where id=%d",$id);
-$res = $db->query($sql);
-if($row=$res->fetchRow()) {
+$res = mysql_query($sql);
+if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
   $format=$row['format'];
   $filename=$row['filename'];
   $filename=$myconf['images_dir'].'original/'.$filename.'_orig.'.$format;

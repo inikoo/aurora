@@ -46,19 +46,19 @@ if(!$product= new product($product_id))
 
 // $category_list=array();
 // $sql="select name from cat where tipo=2 order by name";
-// $result =& $db->query($sql);
-// while($category_list=$result->fetchRow()){
+// $result=mysql_query($sql);
+// while($category_list=mysql_fetch_array($result, MYSQL_ASSOC)){
 //   $category_list[]=$row[]
 // }
 
 // $fam_order=$_SESSION['state']['family']['table']['order'];
 // $sql=sprintf("select id,code from product where  %s<'%s' and  group_id=%d order by %s desc  ",$fam_order,$product->get($fam_order),$product->get('group_id'),$fam_order);
-// $result =& $db->query($sql);
-// if(!$prev=$result->fetchRow())
+// $result=mysql_query($sql);
+// if(!$prev=mysql_fetch_array($result, MYSQL_ASSOC))
 //   $prev=array('id'=>0,'code'=>'');
 // $sql=sprintf("select id,code from product where  %s>'%s' and group_id=%d order by %s   ",$fam_order,$product->get($fam_order),$product->get('group_id'),$fam_order);
-// $result =& $db->query($sql);
-// if(!$next=$result->fetchRow())
+// $result=mysql_query($sql);
+// if(!$next=mysql_fetch_array($result, MYSQL_ASSOC))
 //   $next=array('id'=>0,'code'=>'');
 
 // $smarty->assign('prev',$prev);
@@ -191,11 +191,11 @@ $smarty->assign('currency',$myconf['currency_symbol']);
 $smarty->assign('data',$product->data);
 
 // $sql=sprintf("select id,sname,tipo,name,description from cat where tipo=1 order by sname ");
-// $res = $db->query($sql);
+// $res = mysql_query($sql);
 // $num_cols=6;
 // $cat=array();
 // $i=1;
-// while($row=$res->fetchrow()){
+// while($row=mysql_fetch_array($res, MYSQL_ASSOC)){
 //   $cat[]=array('sname'=>$row['sname'],'name'=>$row['name'].": ".$row['description'],'id'=>$row['id'],'tipo'=>$row['tipo']);
 //   $i++;
 //  }
@@ -207,11 +207,11 @@ $smarty->assign('data',$product->data);
 // $smarty->assign('cat_cols',$num_cols-1);
 
 // $sql=sprintf("select id,sname,tipo,name,description from cat where tipo=2 order by sname ");
-// $res = $db->query($sql);
+// $res = mysql_query($sql);
 // $num_cols=6;
 // $cat=array();
 // $i=1;
-// while($row=$res->fetchrow()){
+// while($row=mysql_fetch_array($res, MYSQL_ASSOC)){
 //   $cat[]=array('sname'=>$row['sname'],'name'=>$row['name'].": ".$row['description'],'id'=>$row['id'],'tipo'=>$row['tipo']);
 //   $i++;
 //  }
@@ -225,11 +225,11 @@ $smarty->assign('data',$product->data);
 
 
 // $sql=sprintf("select id,sname,tipo,name,description from cat where tipo=3 order by sname ");
-// $res = $db->query($sql);
+// $res = mysql_query($sql);
 // $num_cols=6;
 // $cat=array();
 // $i=1;
-// while($row=$res->fetchrow()){
+// while($row=mysql_fetch_array($res, MYSQL_ASSOC)){
 //   $cat[]=array('sname'=>$row['sname'],'name'=>$row['name'].": ".$row['description'],'id'=>$row['id'],'tipo'=>$row['tipo']);
 //   $i++;
 //  }
@@ -241,11 +241,11 @@ $smarty->assign('data',$product->data);
 // $smarty->assign('cat_cols',$num_cols-1);
 
 // $sql=sprintf("select id,sname,tipo,name,description from cat where tipo=4 order by sname ");
-// $res = $db->query($sql);
+// $res = mysql_query($sql);
 // $num_cols=6;
 // $cat=array();
 // $i=1;
-// while($row=$res->fetchrow()){
+// while($row=mysql_fetch_array($res, MYSQL_ASSOC)){
 //   $cat[]=array('sname'=>$row['sname'],'name'=>$row['name'].": ".$row['description'],'id'=>$row['id'],'tipo'=>$row['tipo']);
 //   $i++;
 //  }

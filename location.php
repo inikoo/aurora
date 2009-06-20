@@ -85,13 +85,13 @@ $_order=str_replace('`','',$order);
 
 $sql=sprintf("select `Location Key` as id,`Location Code` as code from `Location Dimension` where  %s<'%s'  order by %s desc  ",$order,$location->data[$_order],$order);
 
-$result =& $db->query($sql);
-if(!$prev=$result->fetchRow())
+$result=mysql_query($sql);
+if(!$prev=mysql_fetch_array($result, MYSQL_ASSOC))
   $prev=array('id'=>0,'code'=>'');
 $sql=sprintf("select `Location Key` as id,`Location Code` as code  from `Location Dimension` where  %s>'%s'   order by %s   ",$order,$location->data[$_order],$order);
 //print "$sql";
-$result =& $db->query($sql);
-if(!$next=$result->fetchRow())
+$result=mysql_query($sql);
+if(!$next=mysql_fetch_array($result, MYSQL_ASSOC))
   $next=array('id'=>0,'code'=>'');
 
 $smarty->assign('prev',$prev);

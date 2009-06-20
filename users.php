@@ -68,8 +68,8 @@ $smarty->assign('newuser_langs',$newuser_langs);
 
 $sql="select group_id as id from liveuser_groups";
 $newuser_groups=array();
-$res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-while($row=$res->fetchRow()) {
+$res=mysql_query($sql);
+while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
   $newuser_groups[$row['id']]=$_group[$row['id']];
  }
 $smarty->assign('newuser_groups',$newuser_groups);

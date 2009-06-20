@@ -344,8 +344,8 @@ case('edit_departments'):
    }else{
      $sql="select count(*) as total `Product Department Dimension`   $where ";
 
-     $res = $db->query($sql); 
-     if($row=$res->fetchRow()) {
+     $res=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
       	$total_records=$row['total'];
 	$filtered=$total_records-$total;
      }
@@ -501,8 +501,8 @@ $where=" ";
 
    $sql="select count(*) as total from `Store Dimension`   $where $wheref";
 
-   $res = $db->query($sql); 
-   if($row=$res->fetchRow()) {
+   $res=mysql_query($sql);
+   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      $total=$row['total'];
    }
    if($wheref==''){
@@ -510,8 +510,8 @@ $where=" ";
    }else{
      $sql="select count(*) as total `Store Dimension`   $where ";
 
-     $res = $db->query($sql); 
-     if($row=$res->fetchRow()) {
+     $res=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
        $filtered=$row['total']-$total;$total_records=$row['total'];
      }
 
@@ -682,8 +682,8 @@ case('edit_families'):
   
     $sql="select count(*) as total from `Product Family Dimension`   F   $where $wheref";
 
-   $res = $db->query($sql); 
-   if($row=$res->fetchRow()) {
+   $res=mysql_query($sql);
+   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      $total=$row['total'];
    }
    if($wheref==''){
@@ -691,8 +691,8 @@ case('edit_families'):
    }else{
      $sql="select count(*) as total  from `Product Family Dimension`  F  $where ";
 
-     $res = $db->query($sql); 
-     if($row=$res->fetchRow()) {
+     $res=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
        $filtered=$row['total']-$total; $total_records=$row['total'];
      }
 
@@ -900,8 +900,8 @@ case('edit_products'):
   
     $sql="select count(*) as total from `Product Dimension`   P   $where $wheref";
 
-   $res = $db->query($sql); 
-   if($row=$res->fetchRow()) {
+   $res=mysql_query($sql);
+   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      $total=$row['total'];
    }
    if($wheref==''){
@@ -909,8 +909,8 @@ case('edit_products'):
    }else{
      $sql="select count(*) as total  from `Product Dimension`  P  $where ";
 
-     $res = $db->query($sql); 
-     if($row=$res->fetchRow()) {
+     $res=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
        $filtered=$row['total']-$total; $total_records=$row['total'];
      }
 
@@ -1138,7 +1138,7 @@ $adata[]=array(
 //      $name=addslashes($_REQUEST['value']);
 //      $id=$_REQUEST['id'];
 //      $sql=sprintf("update product_department set name='%s' where id=%d ",$name,$id);
-//      $affected=& $db->exec($sql);
+//      $affected=& mysql_query($sql);
 //      if (PEAR::isError($affected)) {
 //        if(preg_match('/^MDB2 Error: constraint violation$/',$affected->getMessage()))
 // 	 $resp=_('Error: Another department has the same name').'.';
@@ -1163,7 +1163,7 @@ $adata[]=array(
 //      $name=addslashes($_REQUEST['value']);
 //      $id=$_REQUEST['id'];
 //      $sql=sprintf("update product_group set name='%s' where id=%d ",$name,$id);
-//      $affected=& $db->exec($sql);
+//      $affected=& mysql_query($sql);
 //      if (PEAR::isError($affected)) {
 //        if(preg_match('/^MDB2 Error: constraint violation$/',$affected->getMessage()))
 // 	 $resp=_('Error: Another family has the same name').'.';
@@ -1187,7 +1187,7 @@ $adata[]=array(
 //      $name=addslashes($_REQUEST['value']);
 //      $id=$_REQUEST['id'];
 //      $sql=sprintf("update product_group set description='%s' where id=%d ",$name,$id);
-//      $affected=& $db->exec($sql);
+//      $affected=& mysql_query($sql);
 //      if (PEAR::isError($affected)) {
 //        if(preg_match('/^MDB2 Error: constraint violation$/',$affected->getMessage()))
 // 	 $resp=_('Error: Another family has the same name and description').'.';
@@ -1235,7 +1235,7 @@ $adata[]=array(
        
 //        $sql=sprintf("update  product2supplier set sup_code=%s , price=%s where id=%d",$code,$price,$p2s_id);
 //        //       print "$sql";
-//        $affected=& $db->exec($sql);
+//        $affected=& mysql_query($sql);
 //      }
 //      $state='200';
 //      $resp='OK';
@@ -1291,7 +1291,7 @@ $adata[]=array(
 //        $resp='Error, you can not set negative stock.';
 //      }else{
 //        $sql=sprintf("insert into in_out(tipo,date_creation,quantity,product_id,date,author) values (2,NOW(),'%s',%d,'%s',%d)",$qty,$product_id,$datetime,$author);
-//        $db->exec($sql);
+//        mysql_query($sql);
 //        $stock=set_stock($product_id);
 //        $state='200';
 //        $resp='OK';
@@ -1347,7 +1347,7 @@ $adata[]=array(
 //      }     
 
 //      $sql=sprintf("insert into  product (ncode,rrp,units_carton,units,units_tipo,price,description,code,group_id,first_date) values ('%s',%s,%s,'%s',%d,'%s','%s','%s',%d,NOW())",$ncode,$rrp,$units_carton,$_REQUEST['units'],$_REQUEST['units_tipo'],$_REQUEST['price'],$description,$code,$_REQUEST['family_id']);
-//      $affected=& $db->exec($sql);
+//      $affected=& mysql_query($sql);
 //      //     print "$sql\n";
 //      if (PEAR::isError($affected)) {
 //        if(preg_match('/^MDB2 Error: constraint violation$/',$affected->getMessage()))
@@ -1358,13 +1358,13 @@ $adata[]=array(
 //        $data=array();
 //      }else{
        
-//        $product_id = $db->lastInsertID();
+//        $product_id =  mysql_insert_id();
 
 //        $sql=sprintf("insert into inventory(fuzzy,date_start,date_end,name) values (1,NOW,NOW,'%s',)",_('New product'));
-//        $db->exec($sql);
-//        $inv_id = $db->lastInsertID();
+//        mysql_query($sql);
+//        $inv_id =  mysql_insert_id();
 //        $sql=sprintf("insert into inventory_item (product_id,inventory_id,fecha) values (%d,,%d,NOW)",$product_id,$inv_id);
-//        $db->exec($sql);
+//        mysql_query($sql);
 
 //        fix_todotransaction($product_id);
 //        set_stock($product_id);
@@ -1395,7 +1395,7 @@ $adata[]=array(
 	   
 // 	   $sql=sprintf("update  product2supplier set sup_code=%s , price=%s where id=%d",$code,$price,$p2s_id);
 	   
-// 	   $affected=& $db->exec($sql);
+// 	   $affected=& mysql_query($sql);
 // 	 }
 //        }
 
@@ -1466,8 +1466,8 @@ $adata[]=array(
 //      $id=$_REQUEST['id'];
 //      $sql=sprintf("select code,description  from product where id=%d",$id);
 
-//      $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-//      if(!$olddata=$res->fetchRow()) {
+//      $res=mysql_query($sql);
+//      if(!$olddata=mysql_fetch_array($res, MYSQL_ASSOC))) {
 //        $response=array('state'=>400,'resp'=>_("Error, product don't found"));
 //        echo json_encode($response);
 //        break;
@@ -1489,7 +1489,7 @@ $adata[]=array(
     
 
 //        $sql=sprintf("update product set ncode='%s', code='%s' ,description='%s'  where id=%d",$ncode,$code,$description,$id);
-//        $affected=& $db->exec($sql);
+//        $affected=& mysql_query($sql);
 //        // print "$sql\n";
 //        if (PEAR::isError($affected)) {
 // 	 if(preg_match('/^MDB2 Error: constraint violation$/',$affected->getMessage()))
@@ -1508,7 +1508,7 @@ $adata[]=array(
      
 //      // update requiered fields
 //      $sql=sprintf("update product set units='%s' ,price='%s',units_tipo=%d  where id=%d",$_REQUEST['units'],$_REQUEST['price'],$_REQUEST['units_tipo'],$id);
-//      $db->exec($sql);
+//      mysql_query($sql);
        
      
      
@@ -1528,7 +1528,7 @@ $adata[]=array(
      
 //     // update requiered fields
 //     $sql=sprintf("update product set units='%s' ,price='%s',units_tipo=%d ,rrp=%s,units_carton where id=%d",$_REQUEST['units'],$_REQUEST['price'],$_REQUEST['units_tipo'],$rrp,$units_carton,$id);
-//     $db->exec($sql);
+//     mysql_query($sql);
     
 
     

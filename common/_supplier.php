@@ -4,7 +4,7 @@ function get_supplier_code($supplier_id){
   $db =& MDB2::singleton();
 
   $sql=sprintf("select code from supplier where id=%d",$supplier_id);
-  $res = $db->query($sql);  
+  $res=mysql_query($sql); 
   if ($row=$res->fetchRow()){
     return $row['code'];
   }else
@@ -17,7 +17,7 @@ function get_supplier_data($supplier_id){
 
   $sql=sprintf("select * from supplier where id=%d",$supplier_id);
 
-  $res = $db->query($sql);  
+  $res=mysql_query($sql); 
   $data=array();
   if ($row=$res->fetchRow()){
     $data= $row;

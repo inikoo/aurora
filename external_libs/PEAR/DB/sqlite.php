@@ -896,7 +896,7 @@ class DB_sqlite extends DB_common
             case 'schema_x':
                 /*
                  * Use like:
-                 * $res = $db->query($db->getSpecialQuery('schema_x',
+                 * $res = mysql_query($db->getSpecialQuery('schema_x',
                  *                   array('table' => 'table3')));
                  */
                 return 'SELECT sql FROM (SELECT * FROM sqlite_master '
@@ -917,7 +917,7 @@ class DB_sqlite extends DB_common
                  *     'rows'  => "id INTEGER PRIMARY KEY, firstname TEXT, surname TEXT, datetime TEXT",
                  *     'save'  => "NULL, titel, content, datetime"
                  * );
-                 * $res = $db->query( $db->getSpecialQuery('alter', $args));
+                 * $res = mysql_query( $db->getSpecialQuery('alter', $args));
                  */
                 $rows = strtr($args['rows'], $this->keywords);
 

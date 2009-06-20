@@ -84,10 +84,10 @@ $smarty->assign('time',date("H:i"));
 
 //create user list
 $sql=sprintf("select `Staff Key`id,`Staff Alias` as alias ,`Staff Position Key` as position_id from `Staff Dimension` where `Staff Currently Working`='Yes' order by alias ");
-$res = $db->query($sql);
+$res = mysql_query($sql);
 $num_cols=5;
 $staff=array();
-while($row=$res->fetchrow()){
+while($row=mysql_fetch_array($res, MYSQL_ASSOC))){
   $staff[]=array('alias'=>$row['alias'],'id'=>$row['id'],'position_id'=>$row['position_id']);
  }
 

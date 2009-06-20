@@ -27,16 +27,16 @@ switch($tipo){
    
    if(isset($_REQUEST['id']) and is_numeric($_REQUEST['id'])){
      $sql=sprintf("select `History Details` as details from `History Dimension` where `History Key`=%d",$_REQUEST['id']);
-   $res = $db->query($sql);
-   if($data=$res->fetchRow()) {
+     $res = mysql_query($sql);
+     if($data=mysql_fetch_array($res, MYSQL_ASSOC)) {
        $response=array('state'=>200,'details'=>$data['details']);
-     echo json_encode($response);
-     return;
+       echo json_encode($response);
+       return;
+     }
    }
-   }
-    $response=array('state'=>400,'msg'=>_("Can not get hisory details"));
-     echo json_encode($response);
-     return;
+   $response=array('state'=>400,'msg'=>_("Can not get history details"));
+   echo json_encode($response);
+   return;
    
    
    break;
@@ -86,25 +86,25 @@ case('update_contact'):
    case('del_tel'):
      $telecom_id=$_REQUEST['id'];
      $sql=sprintf('delete from telecom where id=%d',$telecom_id);
-     $db->exec($sql);
+     mysql_query($sql);
      $response=array('state'=>200,'element_id'=>$telecom_id);echo json_encode($response);return;
      break;
    case('del_email'):
      $email_id=$_REQUEST['id'];
      $sql=sprintf('delete from email where id=%d',$email_id);
-     $db->exec($sql);
+     mysql_query($sql);
      $response=array('state'=>200,'element_id'=>$email_id);echo json_encode($response);return;
      break;
    case('del_www'):
      $www_id=$_REQUEST['id'];
      $sql=sprintf('delete from www where id=%d',$www_id);
-     $db->exec($sql);
+     mysql_query($sql);
      $response=array('state'=>200,'element_id'=>$www_id);echo json_encode($response);return;
      break;
    case('del_a'):
      $address_id=$_REQUEST['id'];
      $sql=sprintf('delete from address where id=%d',$address_id);
-     $db->exec($sql);
+     mysql_query($sql);
      $response=array('state'=>200,'element_id'=>$address_id);echo json_encode($response);return;
      break;
      
@@ -139,12 +139,12 @@ case('update_contact'):
        if(isset($_REQUEST['telecom_id']) and is_numeric($_REQUEST['telecom_id'])     ){
 	 $telecom_id=$_REQUEST['telecom_id'];
 	 $sql=sprintf("update telecom set name=%s,code=%s,number=%s,ext=%s where id=%d",$sql_name,$sql_code,$number,$sql_ext,$telecom_id);
-	 $db->exec($sql);
+	 mysql_query($sql);
        }elseif(isset($_REQUEST['contact_id']) and is_numeric($_REQUEST['contact_id'])){
 	 $contact_id=$_REQUEST['contact_id'];
 	 $sql=sprintf("insert into telecom (name,code,number,ext,tipo,contact_id) values  (%s,%s,'%s',%s,%d,%d)",$sql_name,$sql_code,$number,$sql_ext,$tipo,$contact_id);
-	 $db->exec($sql);
-	 $telecom_id = $db->lastInsertID();
+	 mysql_query($sql);
+	 $telecom_id =  mysql_insert_id();
 	 $new=1;
        }else{
 	  $response=array('state'=>400,'resp'=>_('Fatal Error'));echo json_encode($response);return;
@@ -177,12 +177,12 @@ case('update_contact'):
        if(isset($_REQUEST['element_id']) and is_numeric($_REQUEST['element_id'])     ){
 	 $email_id=$_REQUEST['element_id'];
 	 $sql=sprintf("update email set contact=%s,email='%s' where id=%d",$sql_contact,$sql_address,$email_id);
-	 $db->exec($sql);
+	 mysql_query($sql);
        }elseif(isset($_REQUEST['contact_id']) and is_numeric($_REQUEST['contact_id'])){
 	 $contact_id=$_REQUEST['contact_id'];
 	 $sql=sprintf("insert into email (contact,email,contact_id) values  (%s,'%s',%d)",$sql_contact,$sql_address,$contact_id);
-	 $db->exec($sql);
-	 $email_id = $db->lastInsertID();
+	 mysql_query($sql);
+	 $email_id =  mysql_insert_id();
 	 $new=1;
        }else{
 	  $response=array('state'=>400,'resp'=>_('Fatal Error'));echo json_encode($response);return;
@@ -215,13 +215,13 @@ case('update_contact'):
        if(isset($_REQUEST['element_id']) and is_numeric($_REQUEST['element_id'])     ){
 	 $address_id=$_REQUEST['element_id'];
 	 $sql=sprintf("update www set title=%s,www='%s' where id=%d",$sql_title,$sql_address,$address_id);
-	 $db->exec($sql);
+	 mysql_query($sql);
        }elseif(isset($_REQUEST['contact_id']) and is_numeric($_REQUEST['contact_id'])){
 	 $contact_id=$_REQUEST['contact_id'];
 	 $sql=sprintf("insert into www (title,www,contact_id) values  (%s,'%s',%d)",$sql_title,$sql_address,$contact_id);
 
-	 $db->exec($sql);
-	 $address_id = $db->lastInsertID();
+	 mysql_query($sql);
+	 $address_id =  mysql_insert_id();
 	 $new=1;
        }else{
 	  $response=array('state'=>400,'resp'=>_('Fatal Error'));echo json_encode($response);return;
@@ -299,7 +299,7 @@ case('address'):
 		      ,$principal
 		      ,addslashes($country)
 		      ,$address_id);
-	 $db->exec($sql);
+	 mysql_query($sql);
        }elseif(isset($_REQUEST['contact_id']) and is_numeric($_REQUEST['contact_id'])){
 	 $contact_id=$_REQUEST['contact_id'];
 	 $sql=sprintf("insert into telecom (full_address,description,a1,a2,a3,d1,d2,d3,town,postcode,fixed,principal,country,contact_id) values  ('%s',%s,%s,%s,%s,%s,%s,%s,%s,%s,%d,%d,'%s',%d)"
@@ -312,9 +312,9 @@ case('address'):
 		      ,$principal
 		      ,addslashes($country)
 		      ,$contact_id);
-	 $address_id = $db->lastInsertID();
-	 $db->exec($sql);
-	 $address_id = $db->lastInsertID();
+	 $address_id =  mysql_insert_id();
+	 mysql_query($sql);
+	 $address_id =  mysql_insert_id();
 	 $new=1;
        }else{
 	  $response=array('state'=>400,'resp'=>_('Fatal Error'));echo json_encode($response);return;
@@ -977,13 +977,13 @@ case('address'):
 
    $sql="select count(*) as total from `Staff Dimension` SD left join `Contact Dimension` CD on (`Contact Key`=`Staff Contact Key`) $where $wheref";
 
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-   if($row=$res->fetchRow()) {
+   $res=mysql_query($sql);
+   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      $total=$row['total'];
    }if($wheref!=''){
      $sql="select count(*) as total from `Staff Dimension` SD left join `Contact Dimension` CD on (`Contact Key`=`Staff Contact Key`)   $where ";
-     $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-     if($row=$res->fetchRow()) {
+     $res=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
        $total_records=$row['total'];
        $filtered=$row['total']-$total;
      }
@@ -1179,8 +1179,8 @@ case('customers_advanced_search'):
   $sql="select count(distinct customer_id) as total  from customer left join orden on (customer_id=customer.id) left join transaction on (order_id=orden.id) left join product on (product_id=product.id) left join product_group on (group_id=product_group.id) left join product_department on (product_group.department_id=product_department.id)    left join address on (main_bill_address=address.id) left join list_country on (country=list_country.name)   $where  ";
  //print $sql;
 
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-   if($row=$res->fetchRow()) {
+   $res=mysql_query($sql);
+   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      $total=$row['total'];
    }else
      $total=0;
@@ -1190,9 +1190,9 @@ case('customers_advanced_search'):
    
   $sql=" select telecom.number,telecom.icode,telecom.ncode,telecom.ext, postcode,town,list_country.code as country_code,code2 as country_code2,list_country.name as country_name, email ,email.contact as email_contact, UNIX_TIMESTAMP(max(date_index)) as last_order ,count(distinct orden.id) as orders, customer.id,customer.name from customer left join orden on (customer_id=customer.id) left join transaction on (order_id=orden.id) left join product on (product_id=product.id)  left join product_group on (group_id=product_group.id)  left join product_department on (product_group.department_id=product_department.id)      left join email on (main_email=email.id) left join telecom on (main_tel=telecom.id) left join address on (main_bill_address=address.id) left join list_country on (country=list_country.name) $where  group by customer_id order by $order $order_direction limit $start_from,$number_results";
  // print $sql;
- $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+ $res=mysql_query($sql);
   $adata=array();
-  while($data=$res->fetchRow()) {
+  while($data=mysql_fetch_array($result, MYSQL_ASSOC)){
      $id="<a href='customer.php?id=".$data['id']."'>".$myconf['customer_id_prefix'].sprintf("%05d",$data['id']).'</a>';
      $location='<img title="'.$data['country_name'].'"  src="art/flags/'.strtolower($data['country_code2']).'.gif" alt="'.$data['country_code'].'"> '.$data['town'].' '.preg_replace('/\s/','',$data['postcode']);
      $email='';
@@ -1703,19 +1703,19 @@ if(isset( $_REQUEST['where']))
 //    $order=addslashes($_SESSION['new_contact']['name'][5]);
 
 //    $sql=sprintf("insert into contact (name,order_name,tipo,date_creation,date_updated) values ('%s','%s',%d,NOW(),NOW())",$name,$order,$tipo);
-//    $db->exec($sql);
-//    $contact_id = $db->lastInsertID();
+//    mysql_query($sql);
+//    $contact_id =  mysql_insert_id();
    
 //    if(isset($_SESSION['new_contact']['contact'])){
 //      $tipo=$_SESSION['new_contact']['contact'][0];
 //      $name=addslashes($_SESSION['new_contact']['contact'][5]);
 //      $order=addslashes($_SESSION['new_contact']['contact'][6]);
 //      $sql=sprintf("insert into contact (name,order_name,tipo,date_creation,date_updated) values ('%s','%s',%d,NOW(),NOW())",$name,$order,$tipo);
-//      $db->exec($sql);
-//      $contactincompany_id = $db->lastInsertID();
+//      mysql_query($sql);
+//      $contactincompany_id =  mysql_insert_id();
 
 //      $sql=sprintf("insert into contact_relations (child_id,parent_id) values (%d,%d)",$contactincompany_id,$contact_id);
-//      $db->exec($sql);
+//      mysql_query($sql);
      
 //    }
 
@@ -1731,7 +1731,7 @@ if(isset( $_REQUEST['where']))
 //        $name=addslashes($aemail[1]);
 //        $email=addslashes($aemail[2]);
 //        $sql=sprintf("insert into email (contact,email,tipo,contact_id) values ('%s','%s',%d,%d)",$name,$email,$tipo,$contact_id);
-// 	   $db->exec($sql);
+// 	   mysql_query($sql);
 //      }
 //    if(isset($_SESSION['new_contact']['tel']))
 //      foreach($_SESSION['new_contact']['tel'] as $atel){
@@ -1746,12 +1746,12 @@ if(isset( $_REQUEST['where']))
 //        $ext=(is_numeric($atel[4])?$atel[4]:'null');
        
 //        $sql=sprintf("insert into telecom (name,code,number,ext,tipo,contact_id) values (%s,%s,%s,%s,%d,%d)",$name,$code,$number,$ext,$tipotel,$contact_id);
-//        $db->exec($sql);
+//        mysql_query($sql);
 //        if($tipotel==1 and isset($contactincompany_id))
 // 	 {
    
 // 	   $sql=sprintf("insert into telecom (name,code,number,ext,tipo,contact_id) values (%s,%s,%s,%s,%d,%d)",$name,$code,$number,$ext,$tipotel,$contactincompany_id);
-// 	   $db->exec($sql);
+// 	   mysql_query($sql);
 	   
 // 	 }
 
@@ -1767,7 +1767,7 @@ if(isset( $_REQUEST['where']))
 // 	 $www=addslashes($awww[1]);
 	 
 // 	 $sql=sprintf("insert into www (title,www,contact_id) values (%s,%s,%d)",$title,$www,$contact_id);
-// 	 $db->exec($sql);
+// 	 mysql_query($sql);
 // 	 }
 //    if(isset($_SESSION['new_contact']['address']))
 //      foreach($_SESSION['new_contact']['address'] as $aadd){
@@ -1787,7 +1787,7 @@ if(isset( $_REQUEST['where']))
 // 		    $tipo,$address1,$address2,$address3,$town,$subdistrict,$postcode,$country,$country_id,$contact_id
 // 		    );
 //        print $sql;
-//        $db->exec($sql);
+//        mysql_query($sql);
 	 
 
 
@@ -1933,8 +1933,8 @@ if(isset( $_REQUEST['where']))
    
    $sql="select count(*) as total from  `History Dimension`   $where $wheref ";
  // print $sql;
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-   if($row=$res->fetchRow()) {
+   $result=mysql_query($sql);
+   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      $total=$row['total'];
    }
    if($where==''){
@@ -1945,8 +1945,8 @@ if(isset( $_REQUEST['where']))
      
      $sql="select count(*) as total from  `History Dimension`  $where";
     // print $sql;
-     $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-     if($row=$res->fetchRow()) {
+     $result=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 	$filtered=$row['total']-$total;
 	$total_records=$row['total'];
      }
@@ -2004,18 +2004,18 @@ if(isset( $_REQUEST['where']))
 
    $sql="select * from `History Dimension`   $where $wheref  order by `$order` $order_direction limit $start_from,$number_results ";
    //  print $sql;
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   $result=mysql_query($sql);
    $data=array();
-   while($row=$res->fetchRow()) {
+   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      
 
      $data[]=array(
-		   'id'=>$row['history key'],
-		   'date'=>strftime("%a %e %b %Y", strtotime($row['history date'])),
-		   'time'=>strftime("%H:%M", strtotime($row['history date'])),
-		   'objeto'=>$row['direct object'],
-		   'note'=>$row['history abstract'],
-		   'handle'=>$row['author name']
+		   'id'=>$row['History Key'],
+		   'date'=>strftime("%a %e %b %Y", strtotime($row['History Date'])),
+		   'time'=>strftime("%H:%M", strtotime($row['History Date'])),
+		   'objeto'=>$row['Direct Object'],
+		   'note'=>$row['History Abstract'],
+		   'handle'=>$row['Author Name']
 		   );
    }
    
@@ -2028,7 +2028,7 @@ if(isset( $_REQUEST['where']))
 			 'filter_msg'=>$filter_msg,
 			 'total_records'=>$total,
 			 'records_offset'=>$start_from,
-			 'records_returned'=>$start_from+$res->numRows(),
+			 //	 'records_returned'=>$start_from+$res->numRows(),
 			 'records_perpage'=>$number_results,
 			 'rtext'=>$rtext,
 			 'rtext_rpp'=>$rtext_rpp,
@@ -2155,8 +2155,8 @@ if(isset( $_REQUEST['where']))
    
    $sql="select count(*) as total from customer_history   $where $wheref ";
 
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-  if($row=$res->fetchRow()) {
+   $result=mysql_query($sql);
+  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
     $total=$row['total'];
   }
   if($where==''){
@@ -2164,8 +2164,8 @@ if(isset( $_REQUEST['where']))
   }else{
     
       $sql="select count(*) as total from customer_history  $where";
-      $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-      if($row=$res->fetchRow()) {
+      $result=mysql_query($sql);
+      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 	$filtered=$row['total']-$total;
       }
       
@@ -2197,11 +2197,11 @@ if(isset( $_REQUEST['where']))
 
    $sql="select id,op,op_id,date_index,UNIX_TIMESTAMP(date_index) as udate, if(op='orden', (select concat_ws('|',id,tipo,public_id,net) from orden where id=op_id) , if(op='note',(select concat_ws('|',id,texto,author_id) from note where     note.id=customer_history.op_id    ), (select concat_ws('|',tipo,sujeto,sujeto_id,objeto,objeto_id,staff_id,old_value,new_value) from history   where history.id=op_id limit 1)   )   ) as description from customer_history  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
      // print "$sql";
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   $result=mysql_query($sql);
    $data=array();
 
    $_tipo=array('note'=>_('Note'),'h_cust'=>_('Change'),'h_cont'=>_('Change'),'orden'=>'Order');
-   while($row=$res->fetchRow()) {
+   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      
      $description='';
      $_desc=preg_split('/\|/',$row['description']);
@@ -2305,16 +2305,16 @@ if(isset( $_REQUEST['where']))
 
    $sql="select count(*) as total from orden    $where_orders $wheref_orders";
 
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-   if($row=$res->fetchRow()) {
+   $result=mysql_query($sql);
+   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      $total=$row['total'];
    }
    if($wheref_orders==''){
      $filtered=0;
    }else{
      $sql="select count(*) as total from orden $where_orders      ";
-     $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-     if($row=$res->fetchRow()) {
+     $result=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
        $filtered=$row['total']-$total;
      }
      
@@ -2326,9 +2326,9 @@ if(isset( $_REQUEST['where']))
 
    $sql=sprintf("select old_value,new_value, objeto_id,date,tipo,objeto,UNIX_TIMESTAMP(date) as date_index  from customer left join history  on (sujeto_id=contact_id) left join history_item on (history_id=history.id)   where sujeto='Contact' and customer.id=$customer_id  and (tipo='NEW' or tipo='UPD')  order by $order $order_direction  limit $start_from,$number_results");
 //   print $sql;
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   $result=mysql_query($sql);
    
-   while($row=$res->fetchRow()) {
+   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      
      $description='';
      switch($row['tipo']){
@@ -2398,9 +2398,9 @@ if(isset( $_REQUEST['where']))
 
 
     $sql=sprintf("select date,tipo,objeto,UNIX_TIMESTAMP(date) as date_index  from history  where sujeto='Customer' and sujeto_id=$customer_id and tipo='NEW'  order by $order $order_direction  limit $start_from,$number_results");
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   $result=mysql_query($sql);
    // print $sql;
-   while($row=$res->fetchRow()) {
+   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
      $description='';
      switch($row['tipo']){
@@ -2438,9 +2438,9 @@ if(isset( $_REQUEST['where']))
 
 
    $sql=sprintf("select net,parent_id,tipo,id,public_id ,UNIX_TIMESTAMP(date_index) as date_index from orden  $where_orders $wheref_orders order by $order $order_direction  limit $start_from,$number_results");
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   $result=mysql_query($sql);
 
-   while($row=$res->fetchRow()) {
+   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
 
      if($row['tipo']==6 or $row['tipo']==7 ){
@@ -2475,10 +2475,10 @@ if(isset( $_REQUEST['where']))
 
    $sql=sprintf("select texto ,UNIX_TIMESTAMP(date_index) as date_index from note  $where_note $wheref_note order by $order $order_direction  limit $start_from,$number_results");
   // print "$sql";
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   $result=mysql_query($sql);
 //&#160;
 
-   while($row=$res->fetchRow()) {
+   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      $description=$row['texto'];
      $tipo='Note';
      $datetime= strtotime('@'.$row['date_index']);
@@ -2532,16 +2532,16 @@ case('plot_order_interval'):
 
   $sql="select count(*) as total from customer where order_interval>0    and  (order_interval*3)>DATEDIFF($now,last_order)   ";
 
-  $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-  if($row=$res->fetchRow()) {
+  $result=mysql_query($sql);
+  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
     $total_sample=$row['total'];
   }
   $sql="select  CEIL(order_interval) as x ,count(*) as y from customer where order_interval>0 and order_interval<300    and  (order_interval*3)>DATEDIFF($now,last_order)     group by CEIL(order_interval)";
   //   print $sql;  
   $data=array();
 
-  $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-  while($row=$res->fetchRow()) {
+  $result=mysql_query($sql);
+  while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
   $data[]=array(
 		'x'=>$row['x'],
 		'y'=>$row['y']/$total_sample

@@ -49,8 +49,8 @@ if($tipo=='f'){
    
    $sql=sprintf("select UNIX_TIMESTAMP(first_day) as date from list_week where yearweek=%s",prepare_mysql($year.$week));
 
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-   if($row=$res->fetchRow()) {
+   $res=mysql_query($sql);
+   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      //     print $row['date'];
      $_time=strtotime('@'.$row['date']);
      $_time_n=strtotime('@'.($row['date']+604799));
