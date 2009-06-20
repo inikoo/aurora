@@ -18,12 +18,12 @@ include_once('classes/Order.php');
 
 
 // $sql=sprintf("select id,public_id from orden where pick_factor is null or weight is null order by public_id desc limit 10000");
-//   $result =& $db->query($sql);
+//   $result=mysql_query($sql);
 // print "<table border=1>";
 // $pack=0;
 // $pick=0;
 // $i=0;
-//   while($row=$result->fetchRow()){
+//   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 // if(!$order=new Order('order_public_id',$row['public_id']))
 //   print "Errror";
 //  $_pick=$order->data['pick_factor'];
@@ -44,8 +44,8 @@ include_once('classes/Order.php');
 // exit;
 
 //  $sql=sprintf("select id,order_id from todo_users where tipo='taken' ");
-//  $result =& $db->query($sql);
-//  while($row=$result->fetchRow()){
+//  $result=mysql_query($sql);
+//  while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 // //   $product=new Product($row['id']);
 // //   $product->read('first_date');
 // //   $product->read('sales_metadata');
@@ -56,7 +56,7 @@ include_once('classes/Order.php');
 //    //$tipo=$row['tipo'];
 //    $id=$row['id'];
 //    $sql="select id from orden where public_id='$order_id'";
-//    $resultx =& $db->query($sql);
+//    $resultx =& mysql_query($sql);
 //    if($rowx=$resultx->fetchRow()){
 //      $sql="update todo_users set order_id=".$rowx['id']." where id=$id";
 //      mysql_query($sql);

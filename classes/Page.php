@@ -230,7 +230,7 @@ class Page{
 
     default:
       $sql=sprintf("update page set %s=%s where id=%d",$key,$this->get($key),$this->id);
-      $this->db->exec($sql);
+      mysql_query($sql);
       if(is_array($history_data)){
 	$this->save_history($key,$history_data);
       }
@@ -314,7 +314,7 @@ class Page{
 		 ,prepare_mysql($new)	 
 		 ,prepare_mysql($note)); 
     // print $sql;
-    $this->db->exec($sql);
+    mysql_query($sql);
 
 
  }

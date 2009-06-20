@@ -19,8 +19,8 @@ include_once('common.php');
 
 $q='';
 $sql="select count(*) as numberof from `Supplier Dimension`";
-$result =& $db->query($sql);
-if(!$suppliers=$result->fetchRow())
+$result=mysql_query($sql);
+if(!$suppliers=mysql_fetch_array($result, MYSQL_ASSOC))
   exit;
 
 $view_sales=$LU->checkRight(PROD_SALES_VIEW);

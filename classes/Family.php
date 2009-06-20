@@ -673,12 +673,12 @@ function update($key,$a1=false,$a2=false){
      break;
    case('sales'):
      $sql=sprintf("select id from sales where tipo='fam' and tipo_id=%d",$this->id);
-      $res = $this->db->query($sql); 
-      if ($row=$res->fetchRow()) {
+      $res=mysql_query($sql);
+      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 	$sales_id=$row['id'];
       }else{
 	$sql=sprintf("insert into sales (tipo,tipo_id) values ('fam',%d)",$this->id);
-	$this->db->exec($sql);
+	mysql_query($sql);
 	$sales_id=$this->db->lastInsertID();
 	
       }
@@ -688,13 +688,13 @@ function update($key,$a1=false,$a2=false){
 	    $sql=sprintf("update sales set %s=%f where id=%d",$key,$value,$sales_id);
 	  else
 	    $sql=sprintf("update sales set %s=NULL where id=%d",$key,$sales_id);
-	  $this->db->exec($sql);
+	  mysql_query($sql);
 
 	}
 	if(preg_match('/^ts/',$key)){
 	  $sql=sprintf("update sales set %s=%.2f where id=%d",$key,$value,$sales_id);
 	  // print "$sql\n";
-	  $this->db->exec($sql);
+	  mysql_query($sql);
 	}  
 	
       }

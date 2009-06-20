@@ -24,9 +24,9 @@ require_once '../../common_functions.php';
 $db =& MDB2::factory($dsn);       
 if (PEAR::isError($db)){echo $db->getMessage() . ' ' . $db->getUserInfo();}
 
-$db->setFetchMode(MDB2_FETCHMODE_ASSOC);  
-$db->query("SET time_zone ='UTC'");
-$db->query("SET NAMES 'utf8'");
+  
+mysql_query("SET time_zone ='UTC'");
+mysql_query("SET NAMES 'utf8'");
 $PEAR_Error_skiptrace = &PEAR::getStaticProperty('PEAR_Error','skiptrace');$PEAR_Error_skiptrace = true;// Fix memory leak
 require_once '../../conf/conf.php';           
 date_default_timezone_set('Europe/London');
@@ -114,13 +114,13 @@ foreach($good_files_number as $order_index=>$order){
   $directory=preg_replace("/$just_file$/",'',$filename);
   
   $sql=sprintf("select * from orders_data.orders where  `filename`=%s",prepare_mysql($filename));
-  $res = $db->query($sql); 
-  if ($row=$res->fetchRow()) {
+  $res=mysql_query($sql);
+  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
     $sql=sprintf("update orders_data.orders set last_checked=NOW(),date=%s,timestamp=%d where id=%d",
 		 prepare_mysql($filedatetime)
 		 ,$filedate
 		 ,$row['id']);
-    $db->exec($sql);
+    mysql_query($sql);
     
     $date_read=$row['timestamp'];
     if($filedate>$date_read or $force_update){
@@ -139,7 +139,7 @@ foreach($good_files_number as $order_index=>$order){
 	$handle_csv = fopen($csv_file, "r");
 	unlink($csv_file);
 	$sql=sprintf("update orders_data.orders set last_read=NOW() where id=%d",$row['id']);
-	$db->exec($sql);
+	mysql_query($sql);
 	$updated=true;
 	$id =$row['id'];
       }
@@ -164,14 +164,14 @@ foreach($good_files_number as $order_index=>$order){
 		 ,prepare_mysql($filedatetime)
 		 ,prepare_mysql($filedate)
 		 );
-    $db->exec($sql);
+    mysql_query($sql);
     $id = $db->lastInsertID();
     
 
      $sql=sprintf("insert into orders_data.data (id) values (%d)"
 		  ,$id
 		 );
-    $db->exec($sql);
+    mysql_query($sql);
 
 
 
@@ -181,7 +181,7 @@ foreach($good_files_number as $order_index=>$order){
     unlink($csv_file);
     
     $sql=sprintf("update orders_data.orders set filename_cvs=%s where id=%d",prepare_mysql($cvs_repo.$cvs_filename),$id);
-    $db->exec($sql);
+    mysql_query($sql);
     $updated=true;
     
   }
@@ -214,13 +214,13 @@ foreach($good_files_number as $order_index=>$order){
 		   ,prepare_mysql($checksum_header)
 		   ,prepare_mysql($checksum_products)
 		   ,$id);
-      $db->exec($sql);
+      mysql_query($sql);
       $sql=sprintf("update orders_data.data set header=%s ,products=%s  where id=%d"
 		   
 		   ,prepare_mysql(mb_convert_encoding($_header, "UTF-8", "ISO-8859-1,UTF-8"))
 		   ,prepare_mysql(mb_convert_encoding($_products, "UTF-8", "ISO-8859-1,UTF-8"))
 		   ,$id);
-      $db->exec($sql);
+      mysql_query($sql);
       
 
 

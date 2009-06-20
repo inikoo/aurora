@@ -4,7 +4,7 @@ function get_orderfile_data($id){
   $db =& MDB2::singleton();
   $sql=sprintf("select *  from orden_file where order_id=%d",$id);
   // print "$sql";
-  $res = $db->query($sql);  
+  $res=mysql_query($sql); 
   if ($row=$res->fetchRow())
     return $row;
   else
@@ -15,7 +15,7 @@ function get_orderfile_data($id){
 function get_order_data_from_name($name){
   $db =& MDB2::singleton();
   $sql=sprintf("select id  from orden where public_id=%s",prepare_mysql($name));
-  $res = $db->query($sql);  
+  $res=mysql_query($sql); 
   if ($row=$res->fetchRow())
     return get_order_data($row['id']);
   else
@@ -28,7 +28,7 @@ function get_order_data($order_id){
   $sql=sprintf("select *,UNIX_TIMESTAMP(date_invoiced) as date_invoiced ,UNIX_TIMESTAMP(date_creation) as date_creation  from orden where id=%d",$order_id);
 
 
-  $res = $db->query($sql);  
+  $res=mysql_query($sql); 
   if ($row=$res->fetchRow()){
     $order_data=$row;
     
@@ -44,7 +44,7 @@ function get_order_data($order_id){
 
     $deliver_by='';
     $sql=sprintf("select supplier_id  from shipping where  order_id=%d",$order_id);
-    $res2 = $db->query($sql);  
+    $res2 = mysql_query($sql);  
     if ($row2=$res2->fetchRow()){
       if($row2['supplier_id']>0){
 	// get the anme
@@ -61,7 +61,7 @@ function get_order_data($order_id){
 
     $picked_by='';
     $sql=sprintf("select picker_id  from pick  where  order_id=%d",$order_id);
-    $res2 = $db->query($sql);  
+    $res2 = mysql_query($sql);  
     if ($row2=$res2->fetchRow()){
       if($row2['picker_id']>0){
 	// get the anme
@@ -76,7 +76,7 @@ function get_order_data($order_id){
 
   $packed_by='';
     $sql=sprintf("select packer_id  from pack  where  order_id=%d",$order_id);
-    $res2 = $db->query($sql);  
+    $res2 = mysql_query($sql);  
     if ($row2=$res2->fetchRow()){
       if($row2['packer_id']>0){
 	// get the anme
@@ -95,12 +95,12 @@ function get_order_data($order_id){
 
     $sql=sprintf("select sum(value) as value from shipping where tax_code='S' and  order_id=%d",$order_id);
 
-    $res2 = $db->query($sql);  
+    $res2 = mysql_query($sql);  
     if ($row2=$res2->fetchRow())
       $shipping_vateable=$row2['value'];
-    $res2 = $db->query($sql);  
+    $res2 = mysql_query($sql);  
     $sql=sprintf("select sum(value) as value from shipping where tax_code='' and order_id=%d",$order_id);
-    $res2 = $db->query($sql);  
+    $res2 = mysql_query($sql);  
     if ($row2=$res2->fetchRow())
       $shipping_no_vateable=$row2['value'];
 
@@ -109,12 +109,12 @@ function get_order_data($order_id){
 
     $sql=sprintf("select sum(value) as value from charge where tax_code='S' and  order_id=%d",$order_id);
 
-    $res2 = $db->query($sql);  
+    $res2 = mysql_query($sql);  
     if ($row2=$res2->fetchRow())
       $charges_vateable=$row2['value'];
-    $res2 = $db->query($sql);  
+    $res2 = mysql_query($sql);  
     $sql=sprintf("select sum(value) as value from charge where tax_code='' and order_id=%d",$order_id);
-    $res2 = $db->query($sql);  
+    $res2 = mysql_query($sql);  
     if ($row2=$res2->fetchRow())
       $charges_no_vateable=$row2['value'];
 
@@ -122,42 +122,42 @@ function get_order_data($order_id){
 
     $sql=sprintf("select sum(charge) as value from transaction where tax_code='S' and  order_id=%d",$order_id);
     
-    $res2 = $db->query($sql);  
+    $res2 = mysql_query($sql);  
     if ($row2=$res2->fetchRow())
       $items_vateable=$row2['value'];
-    $res2 = $db->query($sql);  
+    $res2 = mysql_query($sql);  
     $sql=sprintf("select sum(charge) as value from transaction where tax_code='' and order_id=%d",$order_id);
-    $res2 = $db->query($sql);  
+    $res2 = mysql_query($sql);  
     if ($row2=$res2->fetchRow())
       $items_no_vateable=$row2['value'];
      
     $sql=sprintf("select sum(price*(1-discount)*(ordered-reorder)) as value from todo_transaction where tax_code='S' and  order_id=%d",$order_id);
 
-    $res2 = $db->query($sql);  
+    $res2 = mysql_query($sql);  
     if ($row2=$res2->fetchRow())
       $items_vateable=$items_vateable+$row2['value'];
-    $res2 = $db->query($sql);  
+    $res2 = mysql_query($sql);  
     $sql=sprintf("select sum(price*(1-discount)*(ordered-reorder))  as value from todo_transaction where tax_code='' and order_id=%d",$order_id);
-    $res2 = $db->query($sql);  
+    $res2 = mysql_query($sql);  
     if ($row2=$res2->fetchRow())
       $items_no_vateable=$items_no_vateable+$row2['value'];
      
 
     $sql=sprintf("select sum(value_net) as value from debit where tax_code='S' and  order_affected_id=%d",$order_id);
  
-    $res2 = $db->query($sql);  
+    $res2 = mysql_query($sql);  
     if ($row2=$res2->fetchRow())
       $credits_vateable=$row2['value'];
-    $res2 = $db->query($sql);  
+    $res2 = mysql_query($sql);  
     $sql=sprintf("select sum(value_net) as value from debit where tax_code='' and order_affected_id=%d",$order_id);
-    $res2 = $db->query($sql);  
+    $res2 = mysql_query($sql);  
     if ($row2=$res2->fetchRow())
       $credits_no_vateable=$row2['value'];
 
     // number of items out of stock
     $items_out_of_stock=0;
     $sql=sprintf("select count(*) as num from outofstock where order_id=%d",$order_id);
-    $res2 = $db->query($sql);  
+    $res2 = mysql_query($sql);  
     if ($row2=$res2->fetchRow())
       $items_out_of_stock=$row2['num'];
   
@@ -190,11 +190,11 @@ function get_order_data($order_id){
 function get_parent_order_public_id($order_id){
   $db =& MDB2::singleton();
   $sql=sprintf("select parent_id from orden where id=%d",$order_id);
-  $res = $db->query($sql);  
+  $res=mysql_query($sql); 
   if ($row=$res->fetchRow()){
     if(is_numeric($row['parent_id'])){
       $sql=sprintf("select public_id from orden where id=%d",$row['parent_id']);
-      $res2 = $db->query($sql);  
+      $res2 = mysql_query($sql);  
       if ($row2=$res2->fetchRow()){
 	return $row2['public_id'];
       }

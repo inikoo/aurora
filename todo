@@ -1,0 +1,5 @@
+Order Customer File as not working properly
+http://localhost/dw/store.php?id=1 can not see sales,etc
+http://localhost/dw/product.php?code=CC-09 when clicks in show datails nothiong happenz
+http://localhost/dw/product.php?code=CC-09 Orders con no be ordered by number or customer
+http://localhost/dw/customer.php?id=7838 history save as: propblern saving history

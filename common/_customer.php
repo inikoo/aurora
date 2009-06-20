@@ -44,7 +44,7 @@ function get_customer_country_id($customer_id){
   $db =& MDB2::singleton();
   $sql=sprintf("select list_country.id as x from customer left join contact on (contact_id=contact.id) left join address on (main_address=address.id) left join list_country on (country=list_country.name) where customer.id=%d",$customer_id);
   //print $sql;
-   $res = $db->query($sql);  
+   $res=mysql_query($sql); 
   if ($row=$res->fetchRow()){
     return $row['x'];
   }else
@@ -57,7 +57,7 @@ function get_customer_country_id($customer_id){
 function get_customer_from_contact($contact_id){
 $db =& MDB2::singleton();
   $sql=sprintf("select id from customer where contact_id=%d",$contact_id);
-  $res = $db->query($sql);  
+  $res=mysql_query($sql); 
   if ($row=$res->fetchRow()){
     return $row['id'];
   }else
@@ -99,14 +99,14 @@ $sql=sprintf("insert into customer (contact_id,name,file_as) values (%d,%s,%s)",
   
  $sql=sprintf("insert into history (tipo,sujeto,sujeto_id,objeto,objeto_id,date) values ('NEW','Customers',null,'%s',%d,%s)",$tipo,$customer_id,$date_index);
  // print "$sql\n";
-  //  $db->exec($sql);
+  //  mysql_query($sql);
   // $history_id=$db->lastInsertID();
     mysql_query($sql);
       $history_id=mysql_insert_id();
 
   $sql=sprintf("insert into history_item (history_id,columna,old_value,new_value) values (%d,'%s',NULL,%s)",$history_id,$tipo,prepare_mysql($contact_data['name']));
   //print "$sql\n";
-   //$db->exec($sql);
+   //mysql_query($sql);
     mysql_query($sql);
 // exit;
     //  print_r($groups);
@@ -123,11 +123,11 @@ $sql=sprintf("insert into customer (contact_id,name,file_as) values (%d,%s,%s)",
 function get_customer_data($customer_id){
  $db =& MDB2::singleton();
   $sql=sprintf("select * from customer where id=%d",$customer_id);
-  $res = $db->query($sql);  
+  $res=mysql_query($sql); 
   if ($row=$res->fetchRow()){
 
     $sql=sprintf("select group_id from customer2group  where customer_id=%d",$customer_id);
-    $res2 = $db->query($sql);  
+    $res2 = mysql_query($sql);  
     $row['group']=array();
     while ($row2=$res2->fetchRow()){
       $row['group'][]=$row2['group_id'];
@@ -149,7 +149,7 @@ function update_customer_name($customer_id,$new_name,$date_index=''){
     return false;
   
   $sql=sprintf("update customer set name=%s where id=%d",prepare_mysql($new_name),$customer_id);
-  //$db->exec($sql);
+  //mysql_query($sql);
    mysql_query($sql);
   $tipo='customer';$tipo=mb_ucwords($tipo);
 $obj='name';$obj=mb_ucwords($obj);
@@ -157,7 +157,7 @@ $obj='name';$obj=mb_ucwords($obj);
  
  $sql=sprintf("insert into history (tipo,sujeto,sujeto_id,objeto,objeto_id,date) values (1,null,null,'%s',%d,%s)",prepare_mysql($tipo),prepare_mysql_date($date_index));
  //print "$sql\n";
- // $db->exec($sql);
+ // mysql_query($sql);
  //$history_id=$db->lastInsertID();
  mysql_query($sql);
       $history_id=mysql_insert_id();
@@ -165,7 +165,7 @@ $obj='name';$obj=mb_ucwords($obj);
 
   $sql=sprintf("insert into history_item (history_id,columna,old_value,new_value) values (%d,'%s',NULL,%s)",$history_id,prepare_mysql($obj),prepare_mysql($old_name),prepare_mysql($new_name));
   //print "$sql\n";
-  //$db->exec($sql);
+  //mysql_query($sql);
      mysql_query($sql);
 }
 
@@ -173,8 +173,8 @@ $obj='name';$obj=mb_ucwords($obj);
 function update_all_customers($since='0000-00-00'){
    $db =& MDB2::singleton();
   $sql="select id from customer where main_email is null order by id desc;";
-  $res = $db->query($sql);
-  while ($row = $res->fetchRow() ) {
+  $res = mysql_query($sql);
+  while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
     update_customer($row['id'],$since);
   }
   
@@ -196,8 +196,8 @@ function update_customer($customer_id,$since='0000-00-00'){
    
    $sql=sprintf("select contact.main_tel,contact.main_email,contact.main_address from contact left join customer  on (contact.id=contact_id) where  customer.id=%d ",$customer_id);
 
-  $res = $db->query($sql);
-    if ($row = $res->fetchRow() ) {
+  $res = mysql_query($sql);
+    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
       if(is_numeric($row['main_tel']) and $row['main_tel']>0  ){
 	$sql=sprintf("update customer set main_tel=%d where id=%d",$row['main_tel'],$customer_id);
 	mysql_query($sql);
@@ -221,15 +221,15 @@ function update_customer($customer_id,$since='0000-00-00'){
 
   $sql="select  count(*) as orders from orden where customer_id=".$customer_id;
   //print "$sql\n";
-  $res = $db->query($sql);
-    if ($row = $res->fetchRow() ) {
+  $res = mysql_query($sql);
+    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
       $total_orders=$row['orders'];
   }
       
 $sql="select  sum(total) as total,sum(net) as total_net   from orden where  (tipo=2 ) and customer_id=".$customer_id;
   //print "$sql\n";
-  $res = $db->query($sql);
-    if ($row = $res->fetchRow() ) {
+  $res = mysql_query($sql);
+    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
       $total=$row['total'];
       $total_net=$row['total_net'];
   }
@@ -239,26 +239,26 @@ $sql="select  sum(total) as total,sum(net) as total_net   from orden where  (tip
 
    
   $sql="select  count(*) as num from orden where tipo=2 and  customer_id=".$customer_id;
-  $res = $db->query($sql);
+  $res = mysql_query($sql);
   if ($row = $res->fetchRow() )
     $invoices=$row['num'];
   else
     $invoices=0;
 
  $sql="select  count(*) as num from orden where tipo=1 and  customer_id=".$customer_id;
-  $res = $db->query($sql);
+  $res = mysql_query($sql);
   if ($row = $res->fetchRow() )
     $pro_invoices=$row['num'];
   else
     $pro_invoices=0;
  $sql="select  count(*) as num from orden where tipo=3 and  customer_id=".$customer_id;
-  $res = $db->query($sql);
+  $res = mysql_query($sql);
   if ($row = $res->fetchRow() )
     $cancels=$row['num'];
   else
     $cancels=0;
  $sql="select  count(*) as num from orden where (tipo=6 or tipo=7 or tipo=9 or tipo=8) and  customer_id=".$customer_id;
-  $res = $db->query($sql);
+  $res = mysql_query($sql);
   if ($row = $res->fetchRow() )
     $follows=$row['num'];
   else
@@ -270,14 +270,14 @@ $sql="select  sum(total) as total,sum(net) as total_net   from orden where  (tip
 
   $sql=sprintf("select  date_index as last  from orden where   !(tipo=6 or tipo=7 or tipo=9 or tipo=8) and customer_id=%d order by date_index desc limit 1",$customer_id);
      //print "$sql\n";
-  $res = $db->query($sql);
-  if ($row = $res->fetchRow() ) {
+  $res = mysql_query($sql);
+  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
     $date_last=$row['last'];
   }else{
 
      $sql=sprintf("select  date_index as last  from orden where   customer_id=%d order by date_index desc limit 1",$customer_id);
      //print "$sql\n";
-     $res2 = $db->query($sql);
+     $res2 = mysql_query($sql);
      if ($row2 = $res2->fetchRow() ) {
        $date_last=$row2['last'];
      }else{
@@ -290,14 +290,14 @@ $sql="select  sum(total) as total,sum(net) as total_net   from orden where  (tip
 
  $sql=sprintf("select  date_index as first  from orden where   !(tipo=6 or tipo=7 or tipo=9 or tipo=8) and customer_id=%d order by date_index  limit 1",$customer_id);
      //print "$sql\n";
-  $res = $db->query($sql);
-  if ($row = $res->fetchRow() ) {
+  $res = mysql_query($sql);
+  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
     $date_first=$row['first'];
   }else{
 
     $sql=sprintf("select  date_index as first  from orden where   customer_id=%d order by date_index  limit 1",$customer_id);
      //print "$sql\n";
-     $res2 = $db->query($sql);
+     $res2 = mysql_query($sql);
      if ($row2 = $res2->fetchRow() ) {
        $date_first=$row2['first'];
      }else{
@@ -314,8 +314,8 @@ $sql="select  sum(total) as total,sum(net) as total_net   from orden where  (tip
     
   $sql=sprintf("select  count(*) as num  from orden where  date_index> %s and (tipo=1 or tipo=2) and customer_id=%d",prepare_mysql($since),$customer_id);
   //print "$sql\n";
-    $res = $db->query($sql);
-   if ($row = $res->fetchRow() ) {
+    $res = mysql_query($sql);
+   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      $invoices_in_interval=$row['num'];
    }else
      $invoices_in_interval=0;
@@ -324,15 +324,15 @@ $sql="select  sum(total) as total,sum(net) as total_net   from orden where  (tip
      
      $sql=sprintf("select  UNIX_TIMESTAMP(date_processed) as d2  from orden where  date_index> %s and (tipo=1 or tipo=2) and customer_id=%d order by date_index desc limit 1",prepare_mysql($since),$customer_id);
      //print "$sql\n";
-   $res = $db->query($sql);
-      if ($row = $res->fetchRow() ) {
+   $res = mysql_query($sql);
+      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 	$date2=$row['d2'];
       }
       
       $sql=sprintf("select  date_index,UNIX_TIMESTAMP(date_processed) as d1  from orden where date_index>%s and  (tipo=1 or tipo=2) and customer_id=%d order by date_index  limit 1",prepare_mysql($since),$customer_id);
       //  print "$sql\n";
-      $res = $db->query($sql);
-      if ($row = $res->fetchRow() ) {
+      $res = mysql_query($sql);
+      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 	$date1=$row['d1'];
       }
  
@@ -368,7 +368,7 @@ $sql="select  sum(total) as total,sum(net) as total_net   from orden where  (tip
 
    $sql=sprintf("update customer set  first_order=%s,total_net_nd='%.2f',total_net='%.2f',num_orders=%d,total='%.2f',num_invoices='%d',num_pro_invoices='%d',num_cancels='%d',num_follows='%d',num_others='%d', order_interval=%s, last_order=%s,num_invoices_nd='%d',total_nd='%.2f' where id=%d   ",prepare_mysql_date($date_first),$total_nodata_net,$total_net,$_total_orders,$total,$invoices,$pro_invoices,$cancels,$follows,$others,$interval,prepare_mysql_date($date_last),$invoices_nodata,$total_nodata,$customer_id);
    // print "$sql\n";
-   //  $db->exec($sql);
+   //  mysql_query($sql);
    mysql_query($sql);
   // exit("updating cust\n");
 
@@ -379,9 +379,9 @@ $sql="select  sum(total) as total,sum(net) as total_net   from orden where  (tip
    mysql_query($sql);
    $sql="select date,id  from history where tipo='ISL' and objeto='End' and sujeto_id=".$customer_id;
    //  print "$sql\n";
-  $res = $db->query($sql);
+  $res = mysql_query($sql);
   $island_number=0;
-    while ($row = $res->fetchRow() ) {
+    while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
       $island_number++;
         $sql="update history set objeto_id='".$island_number."' where id=".$row['id'];
 	mysql_query($sql);
@@ -390,7 +390,7 @@ $sql="select  sum(total) as total,sum(net) as total_net   from orden where  (tip
       // get last recorded order;
       $sql=sprintf("select  date_processed  from orden where  customer_id=%d and date_processed<'".$row['date']."' order by date_index desc limit 1",$customer_id);
       //print "$sql\n";
-      $res2 = $db->query($sql);
+      $res2 = mysql_query($sql);
       if ($row2 = $res2->fetchRow() ) {
 	$_date=$row2['date_processed'];
 	$sql=sprintf("insert into history (tipo,sujeto,sujeto_id,objeto,objeto_id,date) values ('ISL','Customer',%d,'Start',%d,%s)",$customer_id,$island_number,prepare_mysql_date($_date));
@@ -405,8 +405,8 @@ $sql="select  sum(total) as total,sum(net) as total_net   from orden where  (tip
  function redo_customer_history_all($customer_id){
     $db =& MDB2::singleton();
    $sql=sprintf("select id from customer");
-   $res = $db->query($sql); 
-   while($row=$res->fetchRow()) {
+   $res=mysql_query($sql);
+   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      redo_customer_history($row['id']);
    }
    
@@ -421,8 +421,8 @@ $sql="select  sum(total) as total,sum(net) as total_net   from orden where  (tip
        
        $sql=sprintf("select history.id as history_id,date as date_index  from customer left join history  on (sujeto_id=contact_id) left join history_item on (history_id=history.id)   where sujeto='Contact'   and (tipo='NEW' or tipo='UPD') and  customer.id=%d ",$customer_id);
 
-       $res = $db->query($sql); 
-       while($row=$res->fetchRow()) {
+       $res=mysql_query($sql);
+       while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 	 $data[]=array(
 		       'date_index'=>$row['date_index'],
 		       'op'=>'h_cont',
@@ -432,8 +432,8 @@ $sql="select  sum(total) as total,sum(net) as total_net   from orden where  (tip
        
        $sql=sprintf("select history.id as history_id,date,tipo,objeto,date as date_index  from history  where sujeto='Customer' and sujeto_id=%d and tipo='NEW'  ",$customer_id);
 
-       $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-       while($row=$res->fetchRow()) {
+       $res=mysql_query($sql);if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+       while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 	 $data[]=array(
 		       'date_index'=>$row['date_index'],
 		   'op'=>'h_cust',
@@ -442,9 +442,9 @@ $sql="select  sum(total) as total,sum(net) as total_net   from orden where  (tip
        }
        $sql=sprintf("select orden.id as order_id,net,parent_id,tipo,id,public_id ,date_index as date_index from orden  where customer_id=%d",$customer_id);
 
-       $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+       $res=mysql_query($sql);if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
        
-       while($row=$res->fetchRow()) {
+       while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 	 $data[]=array(
 		       'date_index'=>$row['date_index'],
 		       'op'=>'orden',
@@ -454,9 +454,9 @@ $sql="select  sum(total) as total,sum(net) as total_net   from orden where  (tip
        
        $sql=sprintf("select id,texto ,date_index as date_index from note where op='customer' and op_id=%d",$customer_id);
 
-       $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+       $res=mysql_query($sql);if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
        
-       while($row=$res->fetchRow()) {
+       while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 	 $data[]=array(
 		       'date_index'=>$row['date_index'],
 		       'op'=>'note',

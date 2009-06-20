@@ -60,10 +60,10 @@ $smarty->assign('show_percentages',$_SESSION['state']['families']['percentages']
 
 
 //$sql="select id from product";
-//$result =& $db->query($sql);
+//$result=mysql_query($sql);
 
 // include_once('classes/product.php');
-// while($row=$result->fetchRow()){
+// while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 //   $product= new product($row['id']);
 //   $product->set_stock();
 // }
@@ -79,11 +79,11 @@ if(!$families=mysql_fetch_array($result, MYSQL_ASSOC))
 
 // //$smarty->assign('table_info',$families['numberof'].' '.ngettext('Family','Families',$families['numberof']));
 // $sql="select count(*) as numberof from product_group";
-// $result =& $db->query($sql);
-// $families=$result->fetchRow();
+// $result=mysql_query($sql);
+// $families=mysql_fetch_array($result, MYSQL_ASSOC);
 // $sql="select count(*) as numberof from product";
-// $result =& $db->query($sql);
-// $products=$result->fetchRow();
+// $result=mysql_query($sql);
+// $products=mysql_fetch_array($result, MYSQL_ASSOC);
 
 
 

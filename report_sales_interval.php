@@ -129,14 +129,14 @@ $_SESSION['tables']['order_list'][4]="where  $time_interval ";
    // tols
    
 $sql=sprintf(" select count(*) as orders ,sum(total)as total,sum(vat) as vat,sum(vat2) as vat2,sum(net) as net ,sum(shipping) as shipping,sum(credits) as credits from orden where tipo=2 and  $time_interval  ");
-$result =& $db->query($sql);
-if(!$invoice_totals=$result->fetchRow())
+$result=mysql_query($sql);
+if(!$invoice_totals=mysql_fetch_array($result, MYSQL_ASSOC))
   exit(_('Error'));
 
 if($tipo!='f'){
   $sql=sprintf(" select count(*) as orders ,sum(total)as total,sum(vat) as vat,sum(vat2) as vat2,sum(net) as net ,sum(shipping) as shipping,sum(credits) as credits from orden where tipo=2 and $time_interval_last_year ");
-  $result =& $db->query($sql);
-  if(!$invoice_totals_lastyear=$result->fetchRow())
+  $result=mysql_query($sql);
+  if(!$invoice_totals_lastyear=mysql_fetch_array($result, MYSQL_ASSOC))
     exit(_('Error'));
   $smarty->assign('orders_ly', $invoice_totals_lastyear['orders']);
 $smarty->assign('total_ly', money($invoice_totals_lastyear['total']));
@@ -146,17 +146,17 @@ $smarty->assign('vat2_ly', money($invoice_totals_lastyear['vat2']));
  }
 
 $sql=sprintf(" select count(*) as orders ,sum(total)as total from orden where tipo=1 and $time_interval ");
-$result =& $db->query($sql);
-if(!$dn_totals=$result->fetchRow())
+$result=mysql_query($sql);
+if(!$dn_totals=mysql_fetch_array($result, MYSQL_ASSOC))
   exit(_('Error'));
 $sql=sprintf(" select count(*) as orders ,sum(total)as total from orden where tipo=4 and $time_interval ");
-   $result =& $db->query($sql);
-if(!$cancelled_totals=$result->fetchRow())
+   $result=mysql_query($sql);
+if(!$cancelled_totals=mysql_fetch_array($result, MYSQL_ASSOC))
   exit(_('Error'));
 
 $sql=sprintf(" select count(*) as orders ,sum(total)as total from orden where tipo=7 and $time_interval ");
-$result =& $db->query($sql);
-if(!$sample_totals=$result->fetchRow())
+$result=mysql_query($sql);
+if(!$sample_totals=mysql_fetch_array($result, MYSQL_ASSOC))
   exit(_('Error'));
 
 

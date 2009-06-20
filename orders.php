@@ -7,8 +7,8 @@ if(isset($_REQUEST['search']) and $_REQUEST['search']!=''  ){
   $q=$_REQUEST['search'];
   //  print "$q";
   $sql=sprintf("select `Order Key` as id from `Order Dimension` where `Order Public ID`='%s' ",addslashes($q));
-  $result =& $db->query($sql);
-  if($found=$result->fetchRow()){
+  $result=mysql_query($sql);
+  if($found=mysql_fetch_array($result, MYSQL_ASSOC)){
     header('Location: order.php?id='. $found['id']);
     exit;
   }
@@ -22,8 +22,8 @@ if(isset($_REQUEST['search']) and $_REQUEST['search']!=''  ){
 
 
 $sql="select count(*) as numberof from `Order Dimension`";
-$result =& $db->query($sql);
-if($row=$result->fetchRow())
+$result=mysql_query($sql);
+if($row=mysql_fetch_array($result, MYSQL_ASSOC))
   $orders=$row['numberof'];
  else 
    exit;

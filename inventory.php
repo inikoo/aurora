@@ -16,9 +16,9 @@ switch($_REQUEST['tipo']){
  case('last'):
    $inventory_id=1;
    $sql="select p.units,p.id,g.name as family,p.code,p.description,(select quantity from in_out where product_id=p.id and  inventory_id=$inventory_id and tipo=2 ) as qty,.6*(price/units) as price,(select date from in_out where product_id=p.id and  inventory_id=$inventory_id and tipo=2 ) as date from product as p left join product_group as g on (group_id=g.id)";
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   $res=mysql_query($sql);
    $cvs="\n\"Inventory\"\t\"$inventory_id\"\n\"id\"\t\"family\"\t\"code\"\t\"units\"\t\"description\"\t\"Outers\"\t\"price per unit\"\t\"date\"\n";
-   while ($row = $res->fetchRow() ) {
+   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      $code=$row['code'];
      $description=$row['description'];
      $family=$row['family'];
@@ -33,9 +33,9 @@ switch($_REQUEST['tipo']){
       break;
  case('new'):
      $sql="select p.units,p.id,g.name as family,p.code,p.description,.6*(price/units) as price from product as p left join product_group as g on (group_id=g.id)";
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   $res=mysql_query($sql);
    $cvs="\n\"Inventory\"\t\"$inventory_id\"\n\"id\"\t\"family\"\t\"code\"\t\"units\"\t\"description\"\t\"Outers\"\t\"price per unit\"\t\"date\"\n";
-   while ($row = $res->fetchRow() ) {
+   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      $code=$row['code'];
      $description=$row['description'];
      $family=$row['family'];

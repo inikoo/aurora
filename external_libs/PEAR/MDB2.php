@@ -416,7 +416,7 @@ class MDB2
      * object instead of a copy (this is a PHP4 quirk).
      *
      * For example:
-     *     $db =& MDB2::connect($dsn);
+     *     
      *          ^^
      * And not:
      *     $db = MDB2::connect($dsn);

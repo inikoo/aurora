@@ -39,8 +39,8 @@ switch($tipo){
      $sql=sprintf("select code,name,id from supplier where code like '%s%%' ",$_REQUEST['query']);
    }
    // print $sql;
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-   while($row=$res->fetchRow()) {
+   $res=mysql_query($sql);
+   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
 
      $data[]=array(
@@ -67,8 +67,8 @@ switch($tipo){
      // get tipo of po
      $sql=sprintf("select id,supplier_id,tipo,(select count(*) from porden_item where porden_id=porden.id) as items from porden where id=%d",$_REQUEST['po_id']);
 
-     $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-     if($row=$res->fetchRow()) {
+     $res=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
        $po_id=$row['id'];
        $supplier_id=$row['supplier_id'];
        $tipo=$row['tipo'];
@@ -82,7 +82,7 @@ switch($tipo){
 	   
 	   $date=$date.date(' H:i:s');
 	   $sql="update  porden set date_submited=NOW(),date_expected='$date' , tipo=1 where id=".$po_id;
-	   $db->exec($sql);
+	   mysql_query($sql);
 	   header('Location: porder.php?id='. $po_id);
 	   exit;
 	 }else{
@@ -92,10 +92,10 @@ switch($tipo){
 	 break;
        case(3):
 	 $sql="delete from porden where id=".$po_id;
-	 $db->exec($sql);
+	 mysql_query($sql);
 
 	  $sql="delete from porden_item where porden_id=".$po_id;
-	 $db->exec($sql);
+	 mysql_query($sql);
 	 header('Location: supplier.php?id='. $supplier_id);
 	 exit;
 	 break;
@@ -104,19 +104,19 @@ switch($tipo){
 
 	  $sql=sprintf("select date_received,id,supplier_id,tipo,(select count(*) from porden_item where porden_id=porden.id) as items from porden where id=%d",$_REQUEST['po_id']);
 
-	  $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-	  if($row=$res->fetchRow()) {
+	  $res=mysql_query($sql);
+	  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 	    $po_id=$row['id'];
 	    $date_received=$row['date_received'];
 	    if($row['tipo']!==1){$response=array('state'=>400,'resp'=>_('You can not do this operation'),);echo json_encode($response);break;}
 
 	    $sql="update  porden set tipo=2 where id=".$po_id;
-	    $db->exec($sql);
+	    mysql_query($sql);
 
 	 
 	    $sql=sprintf("select (qty-damage) as qty   product_id,group_id from porden_item left join product as p (product_id=p.id) where porden_id=%d",$_REQUEST['po_id']);
-	    $res2 = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-	    while($row2=$res2->fetchRow()) {
+	    $res2 = mysql_query($sql); 
+	    while($row2=mysql_fetch_array($res2, MYSQL_ASSOC)) {
 	      $product_id=$row2['product_id'];
 	      $qty=$row2['qty'];
 	      
@@ -131,14 +131,14 @@ switch($tipo){
 
        case(2):
 	 $sql="update  porden set tipo=1 where id=".$po_id;
-	 $db->exec($sql);
+	 mysql_query($sql);
 
 	 $sql="delete from  stock_history  where  op_tipo=2  and op_id=".$po_id;
-	 $db->exec($sql);
+	 mysql_query($sql);
 	   $sql=sprintf("select product_id,group_id from porden_item left join product as p (product_id=p.id) where porden_id=%d",$_REQUEST['po_id']);
-	   $res2 = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+	   $res2 = mysql_query($sql); 
 	   $fams=array();
-	   while($row2=$res2->fetchRow()) {
+	   while($row2=mysql_fetch_array($res2, MYSQL_ASSOC)) {
 	     $fams[]=$row2['group_id'];
 	     update_stockhistoryline($row2['product_id']);
 	   }
@@ -160,8 +160,8 @@ case('po_goback'):
      // get tipo of po
      $sql=sprintf("select id,supplier_id,tipo from porden where id=%d",$_REQUEST['po_id']);
 
-     $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-     if($row=$res->fetchRow()) {
+     $res=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
        $po_id=$row['id'];
        $supplier_id=$row['supplier_id'];
        $tipo=$row['tipo'];
@@ -170,29 +170,29 @@ case('po_goback'):
        case(0):
        case(3):
 	 $sql="delete from porden where id=".$po_id;
-	 $db->exec($sql);
+	 mysql_query($sql);
 
 	  $sql="delete from porden_item where porden_id=".$po_id;
-	 $db->exec($sql);
+	 mysql_query($sql);
 	 header('Location: supplier.php?id='. $supplier_id);
 	 exit;
 	 break;
        case(1):
 	 $sql="update  porden set tipo=3 where id=".$po_id;
-	 $db->exec($sql);
+	 mysql_query($sql);
 	 header('Location: supplier.php?id='. $supplier_id);
 	  exit;
 	 break;
        case(2):
 	 $sql="update  porden set tipo=1 where id=".$po_id;
-	 $db->exec($sql);
+	 mysql_query($sql);
 
 	 $sql="delete from  stock_history  where  op_tipo=2  and op_id=".$po_id;
-	 $db->exec($sql);
+	 mysql_query($sql);
 	   $sql=sprintf("select product_id,group_id from porden_item left join product as gpon (product_id=p.id) where porden_id=%d",$_REQUEST['po_id']);
-	   $res2 = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+	   $res2 = mysql_query($sql); 
 	   $fams=array();
-	   while($row2=$res2->fetchRow()) {
+	   while($row2=mysql_fetch_array($res2, MYSQL_ASSOC)) {
 	     $fams[]=$row2['group_id'];
 	     update_stockhistoryline($row2['product_id']);
 	   }
@@ -287,8 +287,8 @@ case('po'):
 
   $sql="select count(*) as total from product  as p left join product_group as g on (g.id=group_id) left join product_department as d on (d.id=department_id) left join product2supplier as ps on (product_id=p.id) $where $wheref ";
 
-  $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-  if($row=$res->fetchRow()) {
+  $res=mysql_query($sql);
+  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
     $total=$row['total'];
   }
     if($wheref==''){
@@ -296,8 +296,8 @@ case('po'):
     }else{
       
       $sql="select count(*) as total from product  as p left join product_group as g on (g.id=group_id) left join product_department as d on (d.id=department_id) left join product2supplier as ps on (product_id=p.id)  $where  ";
-      $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-      if($row=$res->fetchRow()) {
+      $res=mysql_query($sql);
+      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 	$filtered=$row['total']-$total;
       }
       
@@ -338,8 +338,8 @@ from product as p left join product_group as g on (g.id=group_id)  left join pro
     
     $sql="select count(*) as total from porden_item $where $wheref ";
 
-  $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-  if($row=$res->fetchRow()) {
+  $res=mysql_query($sql);
+  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
     $total=$row['total'];
   }
 
@@ -348,8 +348,8 @@ from product as p left join product_group as g on (g.id=group_id)  left join pro
     }else{
       
       $sql="select count(*) as total from porden_item  $where  ";
-      $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-      if($row=$res->fetchRow()) {
+      $res=mysql_query($sql);
+      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 	$filtered=$row['total']-$total;
       }
       
@@ -360,9 +360,9 @@ from porden_item left join product2supplier as ps on (p2s_id=ps.id)  left join  
 
   }  
  // print $sql;
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   $res=mysql_query($sql);
  $data=array();
-   while($row=$res->fetchRow()) {
+   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
      if($view_all)
        $code=$row['code'].' ('.$row['fam'].')';
@@ -536,8 +536,8 @@ from porden_item left join product2supplier as ps on (p2s_id=ps.id)  left join  
    
    $sql="select count(*) as total from porden   $where $wheref ";
    // print "$sql";
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-  if($row=$res->fetchRow()) {
+   $res=mysql_query($sql);
+  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
     $total=$row['total'];
   }
   if($where==''){
@@ -545,8 +545,8 @@ from porden_item left join product2supplier as ps on (p2s_id=ps.id)  left join  
   }else{
     
       $sql="select count(*) as total from porden  $where";
-      $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-      if($row=$res->fetchRow()) {
+      $res=mysql_query($sql);
+      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 	$filtered=$row['total']-$total;
       }
       
@@ -556,9 +556,9 @@ from porden_item left join product2supplier as ps on (p2s_id=ps.id)  left join  
 
   $sql="select tipo,public_id,UNIX_TIMESTAMP(date_index) as date_index ,id,total from porden  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
   //print $sql;
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   $res=mysql_query($sql);
    $data=array();
-   while($row=$res->fetchRow()) {
+   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      $data[]=array(
 		   'id'=>sprintf("%05d",$row['id']),
 		   'public_id'=>$row['public_id'],
@@ -610,9 +610,9 @@ from porden_item left join product2supplier as ps on (p2s_id=ps.id)  left join  
    $sql=sprintf("select p2s.product_id,p.code,sup_code,p.units,p.description,p.units_tipo,po.qty as qty,po.expected_qty,expected_price,po.price as unit_cost from porden_item as po left join product2supplier as p2s on (p2s.id=p2s_id) left join product as p on  (p.id=p2s.product_id) where po.porden_id=%d",$dn_id);
    
    // print "$sql";
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   $res=mysql_query($sql);
    $data=array();
-   while($row=$res->fetchRow()) {
+   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
      $qty=$row['expected_qty'];
      $product_id=$row['product_id'];
@@ -695,9 +695,9 @@ $supplier_id=$_SESSION['deliver_note']['supplier_id'];
    $sql=sprintf("select p2s.id as p2s_id,p.units_tipo,p2s.price as price,  p.id as product_id,p.code ,p2s.sup_code,p.description as description ,p.units    from product as p left join product2supplier as p2s on (p.id=product_id) where p2s.supplier_id=%d",$supplier_id);
    
    
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   $res=mysql_query($sql);
    $data=array();
-   while($row=$res->fetchRow()) {
+   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      $product_id=$row['product_id'];
      $p2s_id=$row['p2s_id'];
      if(isset($_SESSION['deliver_note']['items'][$p2s_id])  and $_SESSION['deliver_note']['items'][$p2s_id][0]>0  ){
@@ -861,16 +861,16 @@ if(isset( $_REQUEST['where']))
 
 
    $sql="select count(*) as total from `Supplier Dimension`    $where $wheref";
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-   if($row=$res->fetchRow()) {
+   $res=mysql_query($sql);
+   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
     $total=$row['total'];
    }
    if($wheref==''){
      $filtered=0; $total_records=$total;
    }else{
      $sql="select count(*) as total from `Supplier Dimension` $where      ";
-     $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-     if($row=$res->fetchRow()) {
+     $res=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
        	$total_records=$row['total'];
        $filtered=$row['total']-$total;
      }
@@ -1049,11 +1049,11 @@ if(isset( $_REQUEST['where']))
 //      $po_id=$_REQUEST['po_id'];
 //      $qty=$_REQUEST['qty'];
 //      $sql=sprintf("select *  from porden  where id='%d' ",$po_id);
-//      $res = $db->query($sql); 
-//      if($row=$res->fetchRow()) {
+//      $res=mysql_query($sql);
+//      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 //        $total=$qty+$row['goods']+$row['vat']+$row['charges'];
 //        $sql=sprintf("update porden set shipping='%s', total='%s' where id=%d",$qty,$total,$po_id);
-//        $db->exec($sql);
+//        mysql_query($sql);
 //        $total_int=number($total,0);
 //        $total_decimal=money_cents($total);
 //        $response=array('state'=>200,'total_int'=>$total_int,'total_decimal'=>$total_decimal,'total'=>money($total),'value'=>money($qty));
@@ -1064,11 +1064,11 @@ if(isset( $_REQUEST['where']))
 //      $po_id=$_REQUEST['po_id'];
 //      $qty=$_REQUEST['qty'];
 //      $sql=sprintf("select *  from porden  where id='%d' ",$po_id);
-//      $res = $db->query($sql); 
-//      if($row=$res->fetchRow()) {
+//      $res=mysql_query($sql);
+//      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 //        $total=$qty+$row['goods']+$row['shipping']+$row['charges'];
 //        $sql=sprintf("update porden set vat='%s', total='%s' where id=%d",$qty,$total,$po_id);
-//        $db->exec($sql);
+//        mysql_query($sql);
 //        $total_int=number($total,0);
 //        $total_decimal=money_cents($total);
 //        $response=array('state'=>200,'total_int'=>$total_int,'total_decimal'=>$total_decimal,'total'=>money($total),'value'=>money($qty));
@@ -1079,11 +1079,11 @@ if(isset( $_REQUEST['where']))
 //      $po_id=$_REQUEST['po_id'];
 //      $qty=$_REQUEST['qty'];
 //      $sql=sprintf("select *  from porden  where id='%d' ",$po_id);
-//      $res = $db->query($sql); 
-//      if($row=$res->fetchRow()) {
+//      $res=mysql_query($sql);
+//      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 //        $total=$qty+$row['goods']+$row['shipping']+$row['vat'];
 //        $sql=sprintf("update porden set charges='%s', total='%s' where id=%d",$qty,$total,$po_id);
-//        $db->exec($sql);
+//        mysql_query($sql);
 //        $total_int=number($total,0);
 //        $total_decimal=money_cents($total);
 //        $response=array('state'=>200,'total_int'=>$total_int,'total_decimal'=>$total_decimal,'total'=>money($total),'value'=>money($qty));
@@ -1094,11 +1094,11 @@ if(isset( $_REQUEST['where']))
 //      $po_id=$_REQUEST['po_id'];
 //      $qty=$_REQUEST['qty'];
 //      $sql=sprintf("select *  from porden  where id='%d' ",$po_id);
-//      $res = $db->query($sql); 
-//      if($row=$res->fetchRow()) {
+//      $res=mysql_query($sql);
+//      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
 //        $sql=sprintf("update porden set public_id='%s' where id=%d",addslashes($qty),$po_id);
-//        $db->exec($sql);
+//        mysql_query($sql);
 //        $response=array('state'=>200);
 //        echo json_encode($response);
 //    }
@@ -1108,13 +1108,13 @@ if(isset( $_REQUEST['where']))
 //      $qty=$_REQUEST['qty'];
 //      if(!is_numeric($qty)){$response=array('state'=>400);echo json_encode($response);break;}
 //      $sql=sprintf("select *  from porden  where id='%d' ",$po_id);
-//      $res = $db->query($sql); 
-//      if($row=$res->fetchRow()) {
+//      $res=mysql_query($sql);
+//      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
 //        if($qty>0){
 // 	 $sql=sprintf("select alias  from staff  where id='%d' ",$qty);
-// 	 $res2 = $db->query($sql); 
-// 	 if($row2=$res2->fetchRow())
+// 	 $res2 = mysql_query($sql); 
+// 	 if($row2=mysql_fetch_array($res2, MYSQL_ASSOC))
 // 	   $alias=$row2['alias'];
 //        }else if($qty==0)
 // 	 $alias=_('Nobody');
@@ -1122,7 +1122,7 @@ if(isset( $_REQUEST['where']))
 // 	 $alias='NULL';
 	   
 //        $sql=sprintf("update porden set checked_by=%s where id=%d",$qty,$po_id);
-//        $db->exec($sql);
+//        mysql_query($sql);
 //        $response=array('state'=>200,'alias'=>$row2['alias']);
 //        echo json_encode($response);
 //    }
@@ -1132,13 +1132,13 @@ if(isset( $_REQUEST['where']))
 //      $qty=$_REQUEST['qty'];
 //      if(!is_numeric($qty)){$response=array('state'=>400);echo json_encode($response);break;}
 //      $sql=sprintf("select *  from porden  where id='%d' ",$po_id);
-//      $res = $db->query($sql); 
-//      if($row=$res->fetchRow()) {
+//      $res=mysql_query($sql);
+//      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
 //        if($qty>0){
 // 	 $sql=sprintf("select alias  from staff  where id='%d' ",$qty);
-// 	 $res2 = $db->query($sql); 
-// 	 if($row2=$res2->fetchRow())
+// 	 $res2 = mysql_query($sql); 
+// 	 if($row2=mysql_fetch_array($res2, MYSQL_ASSOC))
 // 	   $alias=$row2['alias'];
 //        }else if($qty==0)
 // 	 $alias=_('Nobody');
@@ -1146,7 +1146,7 @@ if(isset( $_REQUEST['where']))
 // 	 $alias='NULL';
 	   
 //        $sql=sprintf("update porden set received_by=%s where id=%d",$qty,$po_id);
-//        $db->exec($sql);
+//        mysql_query($sql);
 //        $response=array('state'=>200,'alias'=>$row2['alias']);
 //        echo json_encode($response);
 //    }
@@ -1156,13 +1156,13 @@ if(isset( $_REQUEST['where']))
 //      $po_id=$_REQUEST['po_id'];
 //      $qty=$_REQUEST['qty'];
 //      $sql=sprintf("select *  from porden  where id='%d' ",$po_id);
-//      $res = $db->query($sql); 
-//      if($row=$res->fetchRow()) {
+//      $res=mysql_query($sql);
+//      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 //        list($date,$error)=prepare_mysql_date($qty);
 //        if($error){$response=array('state'=>400,'resp'=>_('Wrong date format, must be dd-mm-yyyy'));echo json_encode($response);break;}
        
 //        $sql=sprintf("update porden set date_invoice='%s' where id=%d",$date,$po_id);
-//        $db->exec($sql);
+//        mysql_query($sql);
 //        $response=array('state'=>$sql);
 //        echo json_encode($response);
 //    }
@@ -1171,13 +1171,13 @@ if(isset( $_REQUEST['where']))
 //      $po_id=$_REQUEST['po_id'];
 //      $qty=$_REQUEST['qty'];
 //      $sql=sprintf("select *  from porden  where id='%d' ",$po_id);
-//      $res = $db->query($sql); 
-//      if($row=$res->fetchRow()) {
+//      $res=mysql_query($sql);
+//      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 //        list($date,$error)=prepare_mysql_datetime($qty);
 //        if($error){$response=array('state'=>400,'resp'=>_('Wrong date format, must be dd-mm-yyyy'));echo json_encode($response);break;}
        
 //        $sql=sprintf("update porden set date_received='%s' where id=%d",$date,$po_id);
-//        $db->exec($sql);
+//        mysql_query($sql);
 //        $response=array('state'=>200);
 //        echo json_encode($response);
 //    }
@@ -1197,8 +1197,8 @@ if(isset( $_REQUEST['where']))
 //      $p2s_id=$_REQUEST['p2s_id'];
 
 //      $sql=sprintf("select price from product2supplier  where id='%d' ",$p2s_id);
-//      $res = $db->query($sql); 
-//      if($row=$res->fetchRow()) {
+//      $res=mysql_query($sql);
+//      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 //        $price=$row['price'];
        
 //      }
@@ -1208,17 +1208,17 @@ if(isset( $_REQUEST['where']))
 //      $expected_price=$price;
      
 //      $sql=sprintf("select id from porden_item  where porden_id='%d' and  p2s_id='%d' ",$po_id,$p2s_id);
-//      $res = $db->query($sql); 
-//      if($row=$res->fetchRow()) {
+//      $res=mysql_query($sql);
+//      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 //        if($qty==0)
 // 	 $sql=sprintf("delete from porden_item where id=%d",$row['id']);
 //        else
 // 	 $sql=sprintf("update porden_item set expected_qty='%s'   where id=%d",$qty,$row['id']);
-//        $db->exec($sql);
+//        mysql_query($sql);
        
 //      }else{
 //        $sql=sprintf("insert into porden_item (porden_id,p2s_id,expected_qty,units_tipo,expected_price) value (%d,%d,'%s',%d,'%s')",$po_id,$p2s_id,$qty,$units_tipo,$expected_price);
-//        $db->exec($sql);
+//        mysql_query($sql);
 //      }
 
 //      $expected_price=$expected_price*$qty;
@@ -1226,12 +1226,12 @@ if(isset( $_REQUEST['where']))
 //      $total_expected_price=0;
 //      $items=0;
 //      $sql=sprintf("select sum(expected_qty*expected_price) as ep ,count(*) as items from porden_item where  porden_id='%d'  ",$po_id);
-//      $res = $db->query($sql); 
-//       if($row=$res->fetchRow()) {
+//      $res=mysql_query($sql);
+//       if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 // 	$total_expected_price=$row['ep'];
 // 	$items=$row['items'];
 // 	$sql=sprintf("update porden set total='%s',goods='%s' ,items=%d  where id=%d",$row['ep'],$row['ep'],$items,$po_id);
-//        $db->exec($sql);
+//        mysql_query($sql);
 //       }
 
 
@@ -1245,24 +1245,24 @@ if(isset( $_REQUEST['where']))
 //      $p2s_id=$_REQUEST['p2s_id'];
 
 //      $sql=sprintf("select price from product2supplier  where id='%d' ",$p2s_id);
-//      $res = $db->query($sql); 
-//      if($row=$res->fetchRow()) {
+//      $res=mysql_query($sql);
+//      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 //        $price=$row['price'];
        
 //      }
 
 
 //      $sql=sprintf("select id from porden_item  where porden_id='%d' and  p2s_id='%d' ",$po_id,$p2s_id);
-//      $res = $db->query($sql); 
-//      if($row=$res->fetchRow()) {
+//      $res=mysql_query($sql);
+//      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
        
 
 //        $sql=sprintf("update porden_item set qty='%s'  where id=%d",$qty,$row['id']);
-//        $db->exec($sql);
+//        mysql_query($sql);
 //      }else{
        
 //        $sql=sprintf("insert into porden_item (porden_id,p2s_id,expected_qty,qty,units_tipo,expected_price,price) value (%d,%d,0,'%s',%d,'%s','%s')",$po_id,$p2s_id,$qty,$units_tipo,$price,$price);
-//        $db->exec($sql);
+//        mysql_query($sql);
 
 
 //      }
@@ -1270,12 +1270,12 @@ if(isset( $_REQUEST['where']))
 //      $total_expected_price=0;
 //      $items=0;
 //      $sql=sprintf("select sum(qty*price) as ep ,count(*) as items from porden_item where  porden_id='%d'  ",$po_id);
-//      $res = $db->query($sql); 
-//      if($row=$res->fetchRow()) {
+//      $res=mysql_query($sql);
+//      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 //        $total_expected_price=$row['ep'];
 //        $items=$row['items'];
 //        $sql=sprintf("update porden set total='%s',goods='%s' ,items=%d  where id=%d",$row['ep'],$row['ep'],$items,$po_id);
-//        $db->exec($sql);
+//        mysql_query($sql);
 //      }
 
 
@@ -1293,15 +1293,15 @@ if(isset( $_REQUEST['where']))
 //      $po_id=$_SESSION['tables']['po_item'][4][0];
 //      $p2s_id=$_REQUEST['p2s_id'];
 //      $sql=sprintf("select id,qty,expected_qty from porden_item  where porden_id='%d' and  p2s_id='%d' ",$po_id,$p2s_id);
-//      $res = $db->query($sql); 
-//      if($row=$res->fetchRow()) {
+//      $res=mysql_query($sql);
+//      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
        
 //        if($row['qty']=='')
 // 	 $qty=$row['expected_qty'];
 	       
 //        if($qty<=$row['qty']){
 // 	 $sql=sprintf("update porden_item set damage='%s'  where id=%d",$qty,$row['id']);
-// 	 $db->exec($sql);
+// 	 mysql_query($sql);
 //        }else{
 // 	 $response=array('state'=>400,'qty'=>0);echo json_encode($response);break;
 //        }
@@ -1315,14 +1315,14 @@ if(isset( $_REQUEST['where']))
 //      $po_id=$_SESSION['tables']['po_item'][4][0];
 //      $p2s_id=$_REQUEST['p2s_id'];
 //      $sql=sprintf("select id from porden_item  where porden_id='%d' and  p2s_id='%d' ",$po_id,$p2s_id);
-//      $res = $db->query($sql); 
-//      if($row=$res->fetchRow()) {
+//      $res=mysql_query($sql);
+//      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 //        if($row['qty']>0)
 // 	 $qty=$qty/$row['qty'];
 //        else
 // 	 $qty=0;
 //        $sql=sprintf("update porden_item set price='%s'  where id=%d",$qty,$units_tipo,$expected_price,$row['id']);
-//        $db->exec($sql);
+//        mysql_query($sql);
 //      }
 //      $response=array('state'=>200);
 //      echo json_encode($response);
@@ -1344,7 +1344,7 @@ if(isset( $_REQUEST['where']))
 
 
      $sql=sprintf("delete from product2supplier where id=%d",$_REQUEST['id'] );
-     $db->exec($sql);
+     mysql_query($sql);
      $response=array('state'=>200);
      echo json_encode($response);
      break;
@@ -1355,7 +1355,7 @@ if(isset( $_REQUEST['where']))
      $sql=sprintf("update product2supplier set sup_code='%s' where id=%d",$code,$_REQUEST['id'] );
      //     print "$sql";
 
-      $db->exec($sql);
+      mysql_query($sql);
      $response=array('state'=>200);
      echo json_encode($response);
      break;
@@ -1367,7 +1367,7 @@ if(isset( $_REQUEST['where']))
     $price=number_format($price,3,'.','');
     $sql=sprintf("update product2supplier set price='%s' where id=%d",$price,$_REQUEST['id'] );
     //print "$sql";
-    $db->exec($sql);
+    mysql_query($sql);
      $response=array('state'=>200);
      echo json_encode($response);
      break;
@@ -1384,12 +1384,12 @@ if(isset( $_REQUEST['where']))
 
 
      $sql=sprintf("select  count(*) as num from product2supplier where supplier_id=%d",$_REQUEST['id'] );
-     $res = $db->query($sql); 
-     if ($row=$res->fetchRow()) {
+     $res=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
        $num_products=$row['num'];
        if($num_products==0){
 	 $sql=sprintf("delete from supplier where id=%d",$_REQUEST['id'] );
-	 $db->exec($sql);
+	 mysql_query($sql);
 	 $response=array('state'=>200);
        }else{
 	 $response=array('state'=>400);
@@ -1402,7 +1402,7 @@ if(isset( $_REQUEST['where']))
      $code=addslashes($_REQUEST['value']);
 	  
      $sql=sprintf("update supplier set code='%s' where id=%d",$code,$_REQUEST['id'] );
-     $db->exec($sql);
+     mysql_query($sql);
      $response=array('state'=>200);
      echo json_encode($response);
      break;
@@ -1410,7 +1410,7 @@ if(isset( $_REQUEST['where']))
      $name=addslashes($_REQUEST['value']);
 	  
      $sql=sprintf("update supplier set name='%s' where id=%d",$name,$_REQUEST['id'] );
-     $db->exec($sql);
+     mysql_query($sql);
      $response=array('state'=>200);
      echo json_encode($response);
      break;
@@ -1429,11 +1429,11 @@ case('new_supplier'):
 
 
      $sql=sprintf("insert into contact (tipo,order_name,name,date_creation,alias) values (1,'%s','%s',NOW(),'%s')",$name,$name,$code);
-     $db->exec($sql);
-     $contact_id = $db->lastInsertID();
+     mysql_query($sql);
+     $contact_id =  mysql_insert_id();
 
      $sql=sprintf("insert into  supplier (code,name,contact_id) values ('%s','%s',%d)",$code,$name,$contact_id);
-     $affected=& $db->exec($sql);
+     $affected=& mysql_query($sql);
 
      if (PEAR::isError($affected)) {
        if(preg_match('/^MDB2 Error: constraint violation$/',$affected->getMessage())){
@@ -1441,7 +1441,7 @@ case('new_supplier'):
        else{
 	 $response=array('state'=>400,'resp'=>_('Fatal Error'));echo json_encode($response);break;}
      }else{
-       $supplier_id = $db->lastInsertID();
+       $supplier_id =  mysql_insert_id();
        $response=array('state'=>200,'supplier_id'=>$supplier_id);echo json_encode($response);break;
      }
    }

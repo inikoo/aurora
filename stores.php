@@ -88,10 +88,10 @@ $smarty->assign('period',$_SESSION['state']['stores']['period']);
 
 
 //$sql="select id from product";
-//$result =& $db->query($sql);
+//$result=mysql_query($sql);
 
 // include_once('classes/product.php');
-// while($row=$result->fetchRow()){
+// while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 //   $product= new product($row['id']);
 //   $product->set_stock();
 // }

@@ -52,8 +52,8 @@ if(move_uploaded_file($_FILES['uploadedfile']['tmp_name'], $target_path)) {
 
       
       $sql=sprintf("select  id from supplier where code like '%s'",$new_product['supplier']);
-      $res = $db->query($sql); 
-      while ($row=$res->fetchRow()) {
+      $res=mysql_query($sql);
+      while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 	$new_product['supplier_id']=$row['id'];
 
       }
@@ -90,7 +90,7 @@ if(move_uploaded_file($_FILES['uploadedfile']['tmp_name'], $target_path)) {
 	$sql=sprintf("insert into  product (ncode,rrp,units_carton,units,units_tipo,price,description,code,group_id) values ('%s',%s,%s,'%s',%d,'%s','%s','%s',%d)",$ncode,$rrp,$units_carton,$new_product['units'],$new_product['units_tipo'],$new_product['price'],$description,$code,$new_product['family_id']);
 	print "$sql";
 
-	$affected=& $db->exec($sql);
+	$affected=& mysql_query($sql);
 	   print "$sql\n";
 	if (PEAR::isError($affected)) {
 	  if(preg_match('/^MDB2 Error: constraint violation$/',$affected->getMessage()))
@@ -101,7 +101,7 @@ if(move_uploaded_file($_FILES['uploadedfile']['tmp_name'], $target_path)) {
 	  $data=array();
 	}else{
 	     
-	  $product_id = $db->lastInsertID();
+	  $product_id =  mysql_insert_id();
 
 	  fix_todotransaction($product_id);
 
@@ -130,7 +130,7 @@ if(move_uploaded_file($_FILES['uploadedfile']['tmp_name'], $target_path)) {
 	   
 	      $sql=sprintf("update  product2supplier set sup_code=%s , price=%s where id=%d",$code,$price,$p2s_id);
 	   
-	            $affected=& $db->exec($sql);
+	            $affected=& mysql_query($sql);
 	    }
 	  }
 

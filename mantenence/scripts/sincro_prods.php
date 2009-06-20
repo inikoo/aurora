@@ -10,8 +10,8 @@ require_once '../../common_functions.php';
 $db =& MDB2::factory($dsn);       
 if (PEAR::isError($db)){echo $db->getMessage() . ' ' . $db->getUserInfo();}
 if(DEBUG)PEAR::setErrorHandling(PEAR_ERROR_RETURN);
-$db->setFetchMode(MDB2_FETCHMODE_ASSOC);  
-$db->query("SET time_zone ='UTC'");
+  
+mysql_query("SET time_zone ='UTC'");
 require_once '../../myconf/conf.php';           
 date_default_timezone_set('Europe/London');
 
@@ -20,13 +20,13 @@ $update_old_locations=false;
   $add_products=true;
   if($update_product_data){
     $sql="select code,id from aw.product ";
-    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-    while($row=$res->fetchRow()) {
+    $res=mysql_query($sql);if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+    while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
       $code=$row['code'];
       $id=$row['id'];
       // print "updating $code\n";
       $sql=sprintf("select * from aw_old.product where code like '%s'",$code);
-      $res2 = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+      $res2 = mysql_query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
       if($row2=$res2->fetchRow()) {
 	$old_stock=$row2['stock']*$row2['units'];
 	$product=new Product($id);
@@ -45,20 +45,20 @@ $update_old_locations=false;
 
 if($update_old_locations){
     $sql="select code,id from aw.product ";
-    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-    while($row=$res->fetchRow()) {
+    $res=mysql_query($sql);if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+    while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
       $code=$row['code'];
       $id=$row['id'];
       // print "updating $code\n";
       $sql=sprintf("select * from aw_old.product where code like '%s'",$code);
-      $res2 = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+      $res2 = mysql_query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
       if($row2=$res2->fetchRow()) {
 	$old_stock=$row2['stock']*$row2['units'];
 	$product=new Product($id);
 	$product->update_location(array('tipo'=>'delete_all'));
 
      $sql="select * from aw_old.location  where product_id=".$row2['id']." order by tipo" ;
-     $resloc = $db->query($sql); 
+     $resloc = mysql_query($sql); 
      $has_location=false;
      $primary=true;
      while($rowloc=$resloc->fetchRow()) {
@@ -240,25 +240,25 @@ if($update_old_locations){
 
 if( $add_products){
   $sql="select * from aw_old.product ";
-  $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-  while($row=$res->fetchRow()) {
+  $res=mysql_query($sql);if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+  while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
     $code=$row['code'];
     $id=$row['id'];
     $group_id=$row['group_id'];
     $sql="select * from aw_old.product_group where id=$group_id ";
-    $res3 = $db->query($sql); if (PEAR::isError($res3) and DEBUG ){die($res3->getMessage());}
+    $res3 = mysql_query($sql); if (PEAR::isError($res3) and DEBUG ){die($res3->getMessage());}
     $fam_data=$res3->fetchRow();
     
     $deparment_id=$fam_data['department_id'];
     
     $sql="select name as code,id from aw_old.product_department where id=$deparment_id ";
     //print "$sql\n";
-    $res4 = $db->query($sql); if (PEAR::isError($res4) and DEBUG ){die($res4->getMessage());}
+    $res4 = mysql_query($sql); if (PEAR::isError($res4) and DEBUG ){die($res4->getMessage());}
     $dept_data=$res4->fetchRow();
     // print_r($dept_data);
     
     $sql=sprintf("select id  from aw.product where code like '%s'",$code);
-    $res2 = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+    $res2 = mysql_query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
     if($row2=$res2->fetchRow()) {
       // print $row2['id']." $id $code\n";
     }else{

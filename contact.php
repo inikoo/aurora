@@ -116,13 +116,13 @@ $order='Contact Main Plain Address';
 
 
 $sql=sprintf("select `Contact Name` as name from `Contact Dimension`   where  `%s` < %s  order by `%s` desc  limit 1",$order,prepare_mysql($contact->get($order)),$order);
-$result =& $db->query($sql);
-if(!$prev=$result->fetchRow())
+$result=mysql_query($sql);
+if(!$prev=mysql_fetch_array($result, MYSQL_ASSOC))
   $prev=array('id'=>0,'code'=>'');
 $smarty->assign('prev',$prev);
 $sql=sprintf("select  `Contact Name` as name from `Contact Dimension`     where  `%s`>%s  order by `%s`   ",$order,prepare_mysql($contact->get($order)),$order);
-$result =& $db->query($sql);
-if(!$next=$result->fetchRow())
+$result=mysql_query($sql);
+if(!$next=mysql_fetch_array($result, MYSQL_ASSOC))
   $next=array('id'=>0,'code'=>'');
 $smarty->assign('prev',$prev);
 $smarty->assign('next',$next);

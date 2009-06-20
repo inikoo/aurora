@@ -92,10 +92,10 @@ $smarty->assign('period',$_SESSION['state']['store']['period']);
 
 
 //$sql="select id from product";
-//$result =& $db->query($sql);
+//$result=mysql_query($sql);
 
 // include_once('classes/product.php');
-// while($row=$result->fetchRow()){
+// while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 //   $product= new product($row['id']);
 //   $product->set_stock();
 // }
@@ -105,11 +105,11 @@ $smarty->assign('period',$_SESSION['state']['store']['period']);
 
 // //$smarty->assign('table_info',$store['numberof'].' '.ngettext('Department','Store',$store['numberof']));
 // $sql="select count(*) as numberof from product_group";
-// $result =& $db->query($sql);
-// $families=$result->fetchRow();
+// $result=mysql_query($sql);
+// $families=mysql_fetch_array($result, MYSQL_ASSOC);
 // $sql="select count(*) as numberof from product";
-// $result =& $db->query($sql);
-// $products=$result->fetchRow();
+// $result=mysql_query($sql);
+// $products=mysql_fetch_array($result, MYSQL_ASSOC);
 
 
 

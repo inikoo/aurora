@@ -82,10 +82,10 @@ switch($_REQUEST['tipo']){
     // exit;
 
 
- $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+ $res=mysql_query($sql);
  $adata=array();
  $adata[]=array(_('Id'),_('Name'),_('Location'),_('Email'),_('Email contact'),'',_('Telephone'),_('Orders'),_('Last order'));
-  while($data=$res->fetchRow()) {
+  while($data=mysql_fetch_array($result, MYSQL_ASSOC)){
      $id=$myconf['customer_id_prefix'].sprintf("%05d",$data['id']);
      $location=$data['country_name'].($data['town']!=''?', '.$data['town']:'').($data['postcode']!=''?', '.$data['postcode']:'');
      

@@ -17,7 +17,7 @@ require_once 'LiveUser.php';        // PEAR Authentication System
 $db =& MDB2::singleton($dsn);       
 if (PEAR::isError($db)){echo $db->getMessage() . ' ' . $db->getUserInfo();}
 if(DEBUG)PEAR::setErrorHandling(PEAR_ERROR_RETURN);
-$db->setFetchMode(MDB2_FETCHMODE_ASSOC);  
+  
 require_once 'myconf/conf.php';  
 require('/usr/share/php/smarty/Smarty.class.php');
 $smarty = new Smarty();
@@ -44,8 +44,8 @@ $sk = (array_key_exists('ep', $_REQUEST)) ? $_REQUEST['ep'] : null;
 
 
 $sql=sprintf("select passwd from liveuser_users where handle='%s'",addslashes($handle));
-$res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-if($row=$res->fetchRow()) {
+$res=mysql_query($sql);
+if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
   $pwd=$row['passwd'];
   
   $st=AESDecryptCtr(AESDecryptCtr($sk,$pwd,256),SKEY,256);

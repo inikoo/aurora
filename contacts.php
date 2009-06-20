@@ -42,8 +42,8 @@ $js_files=array(
 
 
 /* $sql="select `Country Key` id from `Country Dimension` order by `Country Code`"; */
-/* $result =& $db->query($sql); */
-/* while($row=$result->fetchRow()){ */
+/* $result=mysql_query($sql); */
+/* while($row=mysql_fetch_array($result, MYSQL_ASSOC)){ */
 /*   $country[$row['id']]=$_country[$row['id']]; */
 /*  } */
 

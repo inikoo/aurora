@@ -25,9 +25,9 @@ if(!$LU->checkRight(CUST_VIEW))
 //   $q=$_REQUEST['q_id1'];
 //   $sql=sprintf("select id from customer where id='%s' ",addslashes($q));
 
-//   $result =& $db->query($sql);
+//   $result=mysql_query($sql);
 
-//   if($found=$result->fetchRow()){
+//   if($found=mysql_fetch_array($result, MYSQL_ASSOC)){
 //     header('Location: customer.php?id='. $found['id']);
 //     exit;
 //   }else{
@@ -51,9 +51,9 @@ if(!$LU->checkRight(CUST_VIEW))
 //   $q_id=2;
 //   $sql=sprintf("select id from customer where id2='%s' ",addslashes($q));
 
-//   $result =& $db->query($sql);
+//   $result=mysql_query($sql);
 //   if($result->numRows()==1){
-//     if($found=$result->fetchRow()){
+//     if($found=mysql_fetch_array($result, MYSQL_ASSOC)){
 //       header('Location: customer.php?id='. $found['id']);
 //       exit;
 //     }
@@ -72,9 +72,9 @@ if(!$LU->checkRight(CUST_VIEW))
 //   $q=$_REQUEST['pc'];
 //   $q_id=3;
 //   $sql=sprintf("select id from customer where id3='%s' ",addslashes($q));
-//   $result =& $db->query($sql);
+//   $result=mysql_query($sql);
 //   if($result->numRows()==1){
-//     if($found=$result->fetchRow()){
+//     if($found=mysql_fetch_array($result, MYSQL_ASSOC)){
 //       header('Location: customer.php?id='. $found['id']);
 //       exit;
 //     }

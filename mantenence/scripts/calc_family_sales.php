@@ -7,15 +7,15 @@ require_once '../../common_functions.php';
 $db =& MDB2::singleton($dsn);       
 if (PEAR::isError($db)){echo $db->getMessage() . ' ' . $db->getUserInfo();}
 if(DEBUG)PEAR::setErrorHandling(PEAR_ERROR_RETURN);
-$db->setFetchMode(MDB2_FETCHMODE_ASSOC);  
-$db->query("SET time_zone ='UTC'");
+  
+mysql_query("SET time_zone ='UTC'");
 require_once '../../myconf/conf.php';           
 date_default_timezone_set('Europe/London');
 
 
 $sql="select id from product_group ";
-$res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-  while($row=$res->fetchRow()) {
+$res=mysql_query($sql);if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+  while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
     $id=$row['id'];
     $family=new Family($id);
     $family->load('first_date','save');

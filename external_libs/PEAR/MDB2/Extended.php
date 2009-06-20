@@ -152,9 +152,9 @@ class MDB2_Extended extends MDB2_Module_Common
                 return $db;
             }
             if ($mode == MDB2_AUTOQUERY_SELECT) {
-                $result =& $db->query($query, $result_types, $result_class);
+                $result =& mysql_query($query, $result_types, $result_class);
             } else {
-                $result = $db->exec($query);
+                $result = mysql_query($query);
             }
         } else {
             $stmt = $this->autoPrepare($table, $keys, $mode, $where, $types, $result_types);
@@ -276,7 +276,7 @@ class MDB2_Extended extends MDB2_Module_Common
         if (PEAR::isError($result)) {
             return $result;
         }
-        $result =& $db->query($query, $types, $result_class, $result_wrap_class);
+        $result =& mysql_query($query, $types, $result_class, $result_wrap_class);
         return $result;
     }
     // }}}
@@ -303,7 +303,7 @@ class MDB2_Extended extends MDB2_Module_Common
 
         settype($params, 'array');
         if (empty($params)) {
-            return $db->exec($query);
+            return mysql_query($query);
         }
 
         $stmt = $db->prepare($query, $param_types, MDB2_PREPARE_MANIP);

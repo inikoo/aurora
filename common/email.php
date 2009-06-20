@@ -6,7 +6,7 @@ function display_email_link($email_id){
 $db =& MDB2::singleton();
    $sql=sprintf("select email from email where id=%d",$email_id);
    //   print "$sql\n";
-    $res = $db->query($sql);  
+    $res=mysql_query($sql); 
   if ($row=$res->fetchRow()){
     return '<a href="mailto:'.$row['email'].'">'.$row['email'].'</a>';
   }else
@@ -17,7 +17,7 @@ function display_email($email_id){
 $db =& MDB2::singleton();
    $sql=sprintf("select email from email where id=%d",$email_id);
    //   print "$sql\n";
-    $res = $db->query($sql);  
+    $res=mysql_query($sql); 
   if ($row=$res->fetchRow()){
     return $row['email'];
   }else
@@ -37,7 +37,7 @@ function insert_email($email_data,$contact_id,$date_index='',$history){
   $email=addslashes(strtolower($email_data['email']));
   $sql=sprintf("insert into email  (email,contact,tipo,contact_id) values ('%s',%s,%d,%d)",$email,prepare_mysql($email_data['contact']),$email_data['tipo'],$contact_id);
   // print "$sql\n";
-  //$db->exec($sql);
+  //mysql_query($sql);
   //$email_id= $db->lastInsertID();
 
    mysql_query($sql);
@@ -63,7 +63,7 @@ function insert_email($email_data,$contact_id,$date_index='',$history){
      $email_tipo=$_email_tipo[$email_data['tipo']];
   $sql=sprintf("insert into history (tipo,sujeto,sujeto_id,objeto,objeto_id,date) values ('NEW','%s',%d,'%s',%d,%s)",$sujeto,$recipient_id,$email_tipo,$email_id,prepare_mysql_date($date_index));
   //print "$sql\n";
-  //$db->exec($sql);
+  //mysql_query($sql);
   //$history_id=$db->lastInsertID();
      mysql_query($sql);
       $history_id=mysql_insert_id();
@@ -73,7 +73,7 @@ function insert_email($email_data,$contact_id,$date_index='',$history){
   $email= display_email($email_id);
   $sql=sprintf("insert into history_item (history_id,columna,old_value,new_value) values (%d,'%s',NULL,%s)",$history_id,'email',prepare_mysql($email));
   //print "$sql\n";
-   // $db->exec($sql);
+   // mysql_query($sql);
    //$email_id=$db->lastInsertID();
    mysql_query($sql);
    $email_id=mysql_insert_id();
@@ -90,7 +90,7 @@ function get_email_metadata($email_id){
   global $_email_tipo;
   $sql=sprintf("select contact_id,contact.tipo as c_tipo,email.tipo as email_tipo  from email left join contact on (contact_id=contact.id) where email.id=%d",$email_id);
   // print "$sql\n";
-  $res = $db->query($sql);  
+  $res=mysql_query($sql); 
   $metadata=array();
   while ($row=$res->fetchRow()){
     
@@ -174,14 +174,14 @@ function update_email($email_id,$email_data,$date_index=''){
  if(count($values)>0){
     $sql=sprintf("update email  set %s where id=%d",$update_sql,$email_id);
     //print "$sql\n";
-    //$db->exec($sql);
+    //mysql_query($sql);
     mysql_query($sql);
     foreach($array_metadata as $metadata){
       
       
       $sql=sprintf("insert into history (tipo,sujeto,sujeto_id,objeto,objeto_id,date) values ('UPD','%s',%d,'%s',%d,%s)",$metadata['sujeto'],$metadata['sujeto_id'],$metadata['objeto'],$metadata['objeto_id'],prepare_mysql_date($date_index));
       // print "$sql\n";
-       //$db->exec($sql);
+       //mysql_query($sql);
        //$history_id=$db->lastInsertID();
       mysql_query($sql);
       $history_id=mysql_insert_id();
@@ -196,7 +196,7 @@ function update_email($email_id,$email_data,$date_index=''){
 	  $sql=sprintf($history_sql,$history_id,prepare_mysql($values[$key]['old']),prepare_mysql($values[$key]['new']));
 	  //   print "$sql\n";
 	  mysql_query($sql);
-	//$db->exec($sql);
+	//mysql_query($sql);
 	}
       }
     }
@@ -219,7 +219,7 @@ function set_principal_email($recipient,$recipient_id,$email_id){
      ){
     
     $sql=sprintf("update %s set email=%d where id=%d",$recipient,$email_id,$recipient_id);
-    //$db->exec($sql);
+    //mysql_query($sql);
     mysql_query($sql);
   }
 }
@@ -244,7 +244,7 @@ function guess_email($email,$contact='',$tipo=1){
 function get_email_data($email_id){
   $db =& MDB2::singleton();
   $sql=sprintf("select * from email where id=%d",$email_id);
-  $res = $db->query($sql);  
+  $res=mysql_query($sql); 
   if($row=$res->fetchRow()){
     //    print "hola mundo\n";
     // print_r($row);

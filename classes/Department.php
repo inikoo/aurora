@@ -705,12 +705,12 @@ $sql="select sum(`Product 1 Week Acc Invoiced Amount`) as net,sum(`Product 1 Wee
      break;
    case('sales'):
        $sql=sprintf("select id from sales where tipo='dept' and tipo_id=%d",$this->id);
-      $res = $this->db->query($sql); 
-      if ($row=$res->fetchRow()) {
+      $res=mysql_query($sql);
+      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 	$sales_id=$row['id'];
       }else{
 	$sql=sprintf("insert into sales (tipo,tipo_id) values ('dept',%d)",$this->id);
-	$this->db->exec($sql);
+	mysql_query($sql);
 	$sales_id=$this->db->lastInsertID();
 	
       }
@@ -720,13 +720,13 @@ $sql="select sum(`Product 1 Week Acc Invoiced Amount`) as net,sum(`Product 1 Wee
 	    $sql=sprintf("update sales set %s=%f where id=%d",$key,$value,$sales_id);
 	  else
 	    $sql=sprintf("update sales set %s=NULL where id=%d",$key,$sales_id);
-	  $this->db->exec($sql);
+	  mysql_query($sql);
 
 	}
 	if(preg_match('/^ts/',$key)){
 	  $sql=sprintf("update sales set %s=%.2f where id=%d",$key,$value,$sales_id);
 	  // print "$sql\n";
-	  $this->db->exec($sql);
+	  mysql_query($sql);
 	}  
 	
       }
@@ -779,7 +779,7 @@ function add_product($product_id,$args=false){
     //  $sql=sprintf("select sum(if(`Product Sales State`='Unknown',1,0)) as sale_unknown, sum(if(`Product Sales State`='Discontinued',1,0)) as discontinued,sum(if(`Product Sales State`='Not for sale',1,0)) as not_for_sale,sum(if(`Product Sales State`='For sale',1,0)) as for_sale,sum(if(`Product Sales State`='In Process',1,0)) as in_process,sum(if(`Product Availability State`='Unknown',1,0)) as availability_unknown,sum(if(`Product Availability State`='Optimal',1,0)) as availability_optimal,sum(if(`Product Availability State`='Low',1,0)) as availability_low,sum(if(`Product Availability State`='Critical',1,0)) as availability_critical,sum(if(`Product Availability State`='Out Of Stock',1,0)) as availability_outofstock from `Product Dimension` P left join  `Product Department Bridge` B on (P.`Product Key`=B.`Product Key`) where `Product Department Key`=%d",$this->id);
 //      //  print $sql;
 //      $res = $this->db->query($sql);
-//      if($row = $res->fetchrow()) {
+//      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
 //        $sql=sprintf("update `Product Department Dimension` set `Product Department For Sale Products`=%d ,`Product Department Discontinued Products`=%d ,`Product Department Not For Sale Products`=%d ,`Product Department Unknown Sales State Products`=%d, `Product Department Optimal Availability Products`=%d , `Product Department Low Availability Products`=%d ,`Product Department Critical Availability Products`=%d ,`Product Department Out Of Stock Products`=%d,`Product Department Unknown Stock Products`=%d ,`Product Department Surplus Availability Products`=%d where `Product Department Key`=%d  ",
 // 		    $row['for_sale'],
@@ -795,7 +795,7 @@ function add_product($product_id,$args=false){
 // 		    $this->id
 // 	    );
 //        //  print "$sql\n";exit;
-//        $this->db->exec($sql);
+//        mysql_query($sql);
 
     
 //      }

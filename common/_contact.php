@@ -5,12 +5,12 @@ function get_contact_data($contact_id,$get_children=true){
   $db =& MDB2::singleton();
 
   $sql=sprintf("select * from contact where id=%d",$contact_id);
-  $res = $db->query($sql);  
+  $res=mysql_query($sql); 
   if ($contact=$res->fetchRow()){
     if($get_children){
       // get also the child data
       $sql=sprintf("select child_id from contact_relations where parent_id=%d",$contact_id);
-      $res2 = $db->query($sql);  
+      $res2 = mysql_query($sql);  
       $contact['child']=array();
       while ($row2=$res2->fetchRow()){
 	$child_id=$row2['child_id'];
@@ -39,7 +39,7 @@ function get_name($contact_id){
   $db =& MDB2::singleton();
 
   $sql=sprintf("select name from contact where id=%d",$contact_id);
-  $res = $db->query($sql);  
+  $res=mysql_query($sql); 
   if ($row=$res->fetchRow()){
     return $row['name'];
   }else
@@ -50,7 +50,7 @@ function get_name_data($contact_id){
   $db =& MDB2::singleton();
 
   $sql=sprintf("select genero,prefix,first,middle,last,suffix,alias from name where contact_id=%d",$contact_id);
-  $res = $db->query($sql);  
+  $res=mysql_query($sql); 
   if ($row=$res->fetchRow()){
     return $row;
   }else
@@ -63,7 +63,7 @@ function get_customer_id($contact_id){
   $db =& MDB2::singleton();
 
   $sql=sprintf("select id from customer where contact_id=%d",$contact_id);
-  $res = $db->query($sql);  
+  $res=mysql_query($sql); 
   if ($row=$res->fetchRow()){
     return $row['id'];
   }else
@@ -99,7 +99,7 @@ function get_addresses($contact_id,$_tipo='shop'){
   
   $addresses=array();
   $sql=sprintf("select group_concat(tipo) as tipos ,address_id from address2contact where contact_id=%d %s group by address_id ",$contact_id,$tipo);
-  $res = $db->query($sql);  
+  $res=mysql_query($sql); 
   while($row=$res->fetchRow()){
     $address_data=get_address_data($row['address_id']);
     $address_data['tipos']=$row['tipos'];
@@ -138,7 +138,7 @@ function get_tels($contact_id){
   $db =& MDB2::singleton();
   $tels=array();
   $sql=sprintf("select telecom_id from telecom2contact where (tipo=1 or tipo=4) and contact_id=%d  group by telecom_id",$contact_id);
-  $res = $db->query($sql);  
+  $res=mysql_query($sql); 
 
   
   while($row=$res->fetchRow()){
@@ -148,7 +148,7 @@ function get_tels($contact_id){
   }
 
     $sql=sprintf("select telecom_id from telecom2contact left join contact_relations on (contact_id=child_id) where tipo=4 and parent_id=%d  group by telecom_id",$contact_id);
-  $res = $db->query($sql);  
+  $res=mysql_query($sql); 
   while($row=$res->fetchRow()){
     $tels[$row['telecom_id']]=get_tel_data($row['telecom_id']);
   }
@@ -164,13 +164,13 @@ function get_faxes($contact_id){
   $db =& MDB2::singleton();
   $tels=array();
   $sql=sprintf("select telecom_id from telecom2contact where (tipo=2 or tipo=5) and contact_id=%d  group by telecom_id",$contact_id);
-  $res = $db->query($sql);  
+  $res=mysql_query($sql); 
   while($row=$res->fetchRow()){
     $tels[$row['telecom_id']]=get_tel_data($row['telecom_id']);
   }
 
     $sql=sprintf("select telecom_id from telecom2contact left join contact_relations on (contact_id=child_id) where tipo=5 and parent_id=%d  group by telecom_id",$contact_id);
-  $res = $db->query($sql);  
+  $res=mysql_query($sql); 
   while($row=$res->fetchRow()){
     $tels[$row['telecom_id']]=get_tel_data($row['telecom_id']);
   }
@@ -183,7 +183,7 @@ function get_mobiles($contact_id){
   $db =& MDB2::singleton();
 
   $sql=sprintf("select telecom_id from telecom2contact where (tipo=3) and contact_id=%d  group by telecom_id",$contact_id);
-  $res = $db->query($sql);  
+  $res=mysql_query($sql); 
   $tels=array();
   while($row=$res->fetchRow()){
     $tels[$row['telecom_id']]=get_tel_data($row['telecom_id']);
@@ -191,7 +191,7 @@ function get_mobiles($contact_id){
 
 
    $sql=sprintf("select telecom_id from telecom2contact left join contact_relations on (contact_id=child_id) where tipo=3 and parent_id=%d  group by telecom_id",$contact_id);
-  $res = $db->query($sql);  
+  $res=mysql_query($sql); 
   while($row=$res->fetchRow()){
     $tels[$row['telecom_id']]=get_tel_data($row['telecom_id']);
   }
@@ -205,7 +205,7 @@ function get_child_names($contact_id){
 
   $sql=sprintf("select name,contact.id from contact left join contact_relations on (contact.id=child_id) where parent_id=%d",$contact_id);
   //print "$sql\n";
-  $res = $db->query($sql);  
+  $res=mysql_query($sql); 
   $names=array();
   while($row=$res->fetchRow()){
     $names[$row['id']]=get_name_data($row['id']);
@@ -219,14 +219,14 @@ function get_emails($contact_id,$children=true){
 
   $emails=array();
   $sql=sprintf("select id from email where contact_id=%d",$contact_id);
-  $res = $db->query($sql);  
+  $res=mysql_query($sql); 
   while($row=$res->fetchRow()){
 
     $emails[$row['id']]=get_email_data($row['id']);
   }
   if($children){
   $sql=sprintf("select email.id as id  from email left join contact_relations on (contact_id=child_id) where parent_id=%d",$contact_id);
-  $res = $db->query($sql);  
+  $res=mysql_query($sql); 
   // print "$sql\n";
   while($row=$res->fetchRow()){
     //print "xxcaca";
@@ -240,7 +240,7 @@ function get_children_id($contact_id){
  $db =& MDB2::singleton();
  $child_id=array();
  $sql=sprintf("select child_id from contact_relations where parent_id=%d",$contact_id);
-  $res = $db->query($sql);  
+  $res=mysql_query($sql); 
   while($row=$res->fetchRow()){
     $child_id[]=$row['child_id'];
   }
@@ -406,7 +406,7 @@ function edit_contact($operation,$tipo,$contact_id,$date_index='',$value='',$val
      $old_name=get_name($child_id);
 
      $sql=sprintf("update contact set name=%s , file_as=%s where id=%d" ,prepare_mysql($name),prepare_mysql($file_as),$child_id);
-     //$db->exec($sql);
+     //mysql_query($sql);
       mysql_query($sql);
 
      update_name($child_id,$child_name_data);
@@ -541,7 +541,7 @@ function update_contact_name($contact_id,$name,$old_name,$date_index,$history){
        $file_as=$name;
 
      $sql=sprintf("update contact set name=%s , file_as=%s where id=%d" ,prepare_mysql($contact_name),prepare_mysql($file_as),$contact_id);
-     //$db->exec($sql);
+     //mysql_query($sql);
       mysql_query($sql);
 
      update_name($contact_id,$contact_name_data);
@@ -591,7 +591,7 @@ function insert_contact($name,$tipo,$has_parent,$has_child,$date,$extra_id1='',$
     $sql=sprintf("insert into contact (has_child,has_parent,name,file_as,tipo, extra_id1,extra_id2,main_address) values (%d,%d,'%s','%s',0,%s,%s,%s)",$has_child,$has_parent,addslashes($name),addslashes($file_as),prepare_mysql($extra_id1),prepare_mysql($extra_id2),prepare_mysql($main_address));
 
     //  print "$sql\n";
-    // $db->exec($sql);
+    // mysql_query($sql);
     // $contact_id = $db->lastInsertID();
     mysql_query($sql);
     $contact_id=mysql_insert_id();
@@ -610,14 +610,14 @@ function insert_contact($name,$tipo,$has_parent,$has_child,$date,$extra_id1='',$
    
     //   print "$sql\n";
 
-	//$db->exec($sql);
+	//mysql_query($sql);
 	//$contact_id = $db->lastInsertID();
 	mysql_query($sql);
 	$contact_id=mysql_insert_id();
 	$name_id=insert_name($name_data,$contact_id);
 	$name=display_person_name($name_id);
 	$sql=sprintf("update contact set name='%s' where id=contact_id",addslashes($name),$contact_id);
-	//$db->exec($sql);
+	//mysql_query($sql);
 	mysql_query($sql);
 	break; 
     
@@ -633,7 +633,7 @@ function insert_contact($name,$tipo,$has_parent,$has_child,$date,$extra_id1='',$
   
   $sql=sprintf("insert into history (tipo,sujeto,sujeto_id,objeto,objeto_id,date) values ('NEW','Contacts',null,'%s',%d,%s)",$tipo,$contact_id,$date);
   // print "$sql\n";
-  //$db->exec($sql);
+  //mysql_query($sql);
   //$history_id=$db->lastInsertID();
    mysql_query($sql);
    $history_id=mysql_insert_id();
@@ -643,7 +643,7 @@ function insert_contact($name,$tipo,$has_parent,$has_child,$date,$extra_id1='',$
   $sql=sprintf("insert into history_item (history_id,columna,old_value,new_value) values (%d,'%s',NULL,%s)",$history_id,$tipo,prepare_mysql($name));
   //print "$sql\n";
    
-   //$db->exec($sql);
+   //mysql_query($sql);
  mysql_query($sql);
 
 //exit("new contact");
@@ -655,13 +655,13 @@ function insert_contact($name,$tipo,$has_parent,$has_child,$date,$extra_id1='',$
 function set_contact_relation($parent,$child){
   $db =& MDB2::singleton();
   $sql=sprintf("insert into contact_relations (child_id,parent_id) values (%d,%d)",$child,$parent);
-  //$db->exec($sql);
+  //mysql_query($sql);
   mysql_query($sql);
  $sql=sprintf("update contact  set has_child=1  where id=%d",$parent);
-  //$db->exec($sql);
+  //mysql_query($sql);
   mysql_query($sql);
   $sql=sprintf("update contact  set has_parent=1  where id=%d",$child);
-  //$db->exec($sql);
+  //mysql_query($sql);
   mysql_query($sql);
 
 //  print "$sql\n";
@@ -944,11 +944,11 @@ function found_child($tipo,$contact_id,$val1,$val2=false){
   case('etel'):
     $child_b=0;$child_a=0;
     $sql=sprintf("select child_id  from email  left join contact_relations on (contact_id=child_id)      where parent_id=%d and email='%s' ",$contact_id,$val1);
-    $res = $db->query($sql);  
+    $res=mysql_query($sql); 
     if($row=$res->fetchRow() )
       $child_a=$row['child_id'];
     $sql=sprintf("select child_id  from telecom left join telecom2contact on (telecom.id=telecom_id) left join contact_relations on (contact_id=child_id)      where tipo=3 and  parent_id=%d and number='%s' ",$contact_id,$val2);
-    $res = $db->query($sql);  
+    $res=mysql_query($sql); 
     if($row=$res->fetchRow() )
       $child_b=$row['child_id'];
     if($child_a>0 and $child_a==$child_b)

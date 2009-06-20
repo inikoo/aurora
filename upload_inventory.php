@@ -146,8 +146,8 @@ if(move_uploaded_file($_FILES['uploadedfile']['tmp_name'], $target_path)) {
      $i=0;
      foreach($new_dept as $dept){
        $sql=sprintf("select count(*) as num from product_department where code='%s' or name='%s'",addslashes($dept[2]),addslashes($dept[3]));
-       $res=$db->query($sql);
-       if($data=$res->fetchRow())
+       $res=mysql_query($sql);
+       if($data=mysql_fetch_array($res, MYSQL_ASSOC))
 	 $num=$data['num'];
        else{
 	 $error=true;
@@ -161,8 +161,8 @@ if(move_uploaded_file($_FILES['uploadedfile']['tmp_name'], $target_path)) {
         $i=0;
        foreach($new_fam as $fam ){
        $sql=sprintf("select count(*) as num from product_group where description='%s' and  name='%s'",addslashes($fam[3]),addslashes($fam[4]));
-       $res=$db->query($sql);
-       if($data=$res->fetchRow())
+       $res=mysql_query($sql);
+       if($data=mysql_fetch_array($res, MYSQL_ASSOC))
 	 $num=$data['num'];
        else{
 	 $error=true;
@@ -246,8 +246,8 @@ if(move_uploaded_file($_FILES['uploadedfile']['tmp_name'], $target_path)) {
        $i=0;
        foreach($new_prod_sup as $prod ){
 	 $sql=sprintf("select id,name from supplier where id='%s'",addslashes($prod[4]));
-	 $res=$db->query($sql);
-	 if($data=$res->fetchRow()){
+	 $res=mysql_query($sql);
+	 if($data=mysql_fetch_array($res, MYSQL_ASSOC)){
 	   $new_prod_sup[$i][0]=2;
 	   $new_prod_sup[$i][7]=2;
 	 }
@@ -279,8 +279,8 @@ if(move_uploaded_file($_FILES['uploadedfile']['tmp_name'], $target_path)) {
        $i=0;
        foreach($new_prod_req as $prod ){
        $sql=sprintf("select count(*) as num from product where code='%s'",addslashes($prod[3]));
-       $res=$db->query($sql);
-       if($data=$res->fetchRow())
+       $res=mysql_query($sql);
+       if($data=mysql_fetch_array($res, MYSQL_ASSOC))
 	 $num=$data['num'];
        else{
 	 $error=true;

@@ -65,15 +65,15 @@ switch($tipo){
 
     $sql=sprintf("select count(DISTINCT  product_id) as products_total ,sum(dispached) as dispached, substring(date_index, 1,7) AS dd from transaction left join orden on (order_id=orden.id) where partner=0  %s group by dd;",$int[0]);
 
-    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-    while($row=$res->fetchRow()) {
+    $result=mysql_query($sql);
+    while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
       $data_all[$row['dd']]=array('d_products'=>$row['products_total'],'picks'=>$row['dispached']);
       
     }
    }
     $sql=sprintf("select count(DISTINCT  product_id) as products,sum(qty) as qty, substring(date_index, 1,7) AS dd,sum(qty*price) as e_cost from outofstock left join orden on (order_id=orden.id) left join product on (product_id=product.id) where  partner=0  %s  group by dd   ",$int[0]);
-    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-    while($row=$res->fetchRow()) {
+    $result=mysql_query($sql);
+    while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
       $data_outstock[$row['dd']]=array('d_products'=>$row['products'],'picks'=>$row['qty'],'e_cost'=>$row['e_cost']);
     }
     
@@ -217,8 +217,8 @@ case('plot_weeksales'):
 
   $from='2004-07-01';
   $sql="select  yearweek,first_day from list_week where  first_day>'$from' and first_day<NOW()";
-  $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-   while($row=$res->fetchRow()) {
+  $result=mysql_query($sql);
+   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      $_data[$row['yearweek']]=array('sales'=>0,'tip_sales'=>'','date'=>$row['yearweek']);
    }
 
@@ -227,8 +227,8 @@ case('plot_weeksales'):
  $data=array();
  $prev_week='';
  $prev_year=array();
-  $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-   while($row=$res->fetchRow()) {
+  $result=mysql_query($sql);
+   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      if(is_numeric($prev_week)){
        $diff=$row['sales']-$prev_week;
        $diff_prev_week=percentage($diff,$prev_week,1,'NA','%',true)." "._('change (previous week)')."\n";
@@ -314,8 +314,8 @@ $sql="SELECT year(`Invoice Date`)as year, count(*) as invoices,month(`Invoice Da
 
  $prev_month='';
  $prev_year=array();
-  $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-   while($row=$res->fetchRow()) {
+  $result=mysql_query($sql);
+   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      if(is_numeric($prev_month)){
        $diff=$row['sales']-$prev_month;
        $diff_prev_month=percentage($diff,$prev_month,1,'NA','%',true)." "._('change (last month)')."\n";
@@ -436,8 +436,8 @@ case('changesalesplot'):
    
    $sql="select count(*) as total from orden   $where $wheref ";
    // print "$sql";
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-  if($row=$res->fetchRow()) {
+   $result=mysql_query($sql);
+  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
     $total=$row['total'];
   }
   if($where==''){
@@ -445,8 +445,8 @@ case('changesalesplot'):
   }else{
     
       $sql="select count(*) as total from orden  $where";
-      $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-      if($row=$res->fetchRow()) {
+      $result=mysql_query($sql);
+      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 	$filtered=$row['total']-$total;
       }
       
@@ -456,9 +456,9 @@ case('changesalesplot'):
 
   $sql="select UNIX_TIMESTAMP(date_index) as date_index ,public_id,customer_name,id,customer_id,total,titulo,tipo,TO_DAYS(NOW())-TO_DAYS(date_index) as desde from orden  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
   //  print $sql;
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   $result=mysql_query($sql);
    $data=array();
-   while($row=$res->fetchRow()) {
+   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      $data[]=array(
 		   'id'=>$row['id'],
 		   'public_id'=>$row['public_id'],
@@ -638,8 +638,8 @@ if(isset( $_REQUEST['where']))
    
   $sql="select count(*) as total from `Order Dimension`   $where $wheref ";
   //     print $sql ;
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-  if($row=$res->fetchRow()) {
+   $result=mysql_query($sql);
+  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
     $total=$row['total'];
   }
   if($where==''){
@@ -648,8 +648,8 @@ if(isset( $_REQUEST['where']))
   }else{
     
       $sql="select count(*) as total from `Order Dimension`  $where";
-      $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-      if($row=$res->fetchRow()) {
+      $result=mysql_query($sql);
+      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 	$total_records=$row['total'];
 	$filtered=$total_records-$total;
       }
@@ -1136,8 +1136,8 @@ if(isset( $_REQUEST['where']))
    
   $sql="select count(*) as total from `Delivery Note Dimension`   $where $wheref ";
   // print $sql ;
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-  if($row=$res->fetchRow()) {
+   $result=mysql_query($sql);
+  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
     $total=$row['total'];
   }
   if($where==''){
@@ -1146,8 +1146,8 @@ if(isset( $_REQUEST['where']))
   }else{
     
       $sql="select count(*) as total from `Delivery Note Dimension`  $where";
-      $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-      if($row=$res->fetchRow()) {
+      $result=mysql_query($sql);
+      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 	$total_records=$row['total'];
 	$filtered=$total_records-$total;
       }
@@ -1366,8 +1366,8 @@ if(isset( $_REQUEST['where']))
    
    $sql="select count(*) as total from `Purchase Order Dimension`   $where $wheref ";
   
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-   if($row=$res->fetchRow()) {
+   $result=mysql_query($sql);
+   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      $total=$row['total'];
   }
   if($where==''){
@@ -1376,8 +1376,8 @@ if(isset( $_REQUEST['where']))
   }else{
     
       $sql="select count(*) as total from `Purchase Order Dimension`   $where";
-      $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-      if($row=$res->fetchRow()) {
+      $result=mysql_query($sql);
+      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 	$total_records=$row['total'];
 	$filtered=$row['total']-$total;
       }
@@ -1427,9 +1427,9 @@ if(isset( $_REQUEST['where']))
   $sql="select  * from  `Purchase Order Dimension`   $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
   //print $sql;
   //  print $sql;
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   $result=mysql_query($sql);
    $data=array();
-   while($row=$res->fetchRow()) {
+   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      $data[]=array(
 		   'id'=>'<a href="porder.php?id='.$row['id'].'">'.$row['id']."</a>",
 		   'date_index'=>strftime("%e %b %Y %H:%M", strtotime('@'.$row['date_index'])),
@@ -1532,12 +1532,12 @@ if(isset( $_REQUEST['where']))
 
    
    $sql=sprintf("select picker_id,alias, sum(if(feedback_id=1 or feedback_id=3,1,0))/count(distinct orden.id) as epo , sum(weight) as weight,position_id ,sum(share*pick_factor) as units ,count(distinct orden.id) as orders, sum(if(feedback_id=1 or feedback_id=3,1,0)) as errors     from orden left join pick on (order_id=orden.id) left join staff on (picker_id=staff.id)where tipo=2 %s  group by picker_id   order by %s %s ",$date_interval['mysql'],addslashes($order),addslashes($order_direction));
-   $res = $db->query($sql); 
+   $result=mysql_query($sql);
    $data=array();
    $hours=40;
    $uph=$row['units']/$hours;
    $total=0;
-   while($row=$res->fetchRow()) {
+   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
      if($row['position_id']==1){
        $uph=number($row['units']/$hours);
@@ -1660,12 +1660,12 @@ if(isset( $_REQUEST['where']))
    
    $sql=sprintf("select packer_id,alias, sum(if(feedback_id=2 or feedback_id=3,1,0))/count(distinct orden.id) as epo , sum(weight) as weight,position_id ,sum(share*pack_factor) as units ,count(distinct orden.id) as orders, sum(if(feedback_id=2 or feedback_id=3,1,0)) as errors     from orden left join pack on (order_id=orden.id) left join staff on (packer_id=staff.id)where tipo=2 %s  group by packer_id   order by %s %s ",$date_interval['mysql'],addslashes($order),addslashes($order_direction));
 
-   $res = $db->query($sql); 
+   $result=mysql_query($sql);
    $data=array();
    $hours=40;
    $uph=$row['units']/$hours;
    $total=0;
-   while($row=$res->fetchRow()) {
+   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
      if($row['position_id']==2){
        $uph=number($row['units']/$hours);
@@ -1747,9 +1747,9 @@ if(isset( $_REQUEST['where']))
    
    //  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispached,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
    //      print $sql;
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   $result=mysql_query($sql);
    $data=array();
-   while($row=$res->fetchRow()) {
+   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      
 
 
@@ -1976,9 +1976,9 @@ if(isset( $_REQUEST['where']))
    
    //  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispached,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
    //     print $sql;
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   $result=mysql_query($sql);
    $data=array();
-   while($row=$res->fetchRow()) {
+   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      $discount='';
      $ndiscount=0;
      $cost='';
@@ -2027,9 +2027,9 @@ if(isset( $_REQUEST['where']))
 
    //  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispached,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
  // print $sql;
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   $result=mysql_query($sql);
 
-   while($row=$res->fetchRow()) {
+   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
      $charged=($row['ordered']-$row['reorder']) * $row['price']*(1-$row['discount']);
      $total_charged+=$charged;
@@ -2084,9 +2084,9 @@ if(isset( $_REQUEST['where']))
 
    //  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispached,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
  //  print $sql;
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   $result=mysql_query($sql);
 
-   while($row=$res->fetchRow()) {
+   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      
      $pick=$row['bonus']+$row['ordered']-$row['reorder'];
 
@@ -2118,9 +2118,9 @@ if(isset( $_REQUEST['where']))
 
    //  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispached,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
   //  print $sql;
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   $result=mysql_query($sql);
 
-   while($row=$res->fetchRow()) {
+   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
      $tipo_discount=_('Free Bonus');
      if($row['promotion'])
@@ -2550,16 +2550,16 @@ if(isset( $_REQUEST['tableid']))
 
    $sql="select count(*) as total from orden    $where $wheref";
 
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-   if($row=$res->fetchRow()) {
+   $result=mysql_query($sql);
+   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      $total=$row['total'];
    }
    if($wheref==''){
      $filtered=0;
    }else{
      $sql="select count(*) as total from orden $where      ";
-     $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-     if($row=$res->fetchRow()) {
+     $result=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
        $filtered=$row['total']-$total;
      }
      
@@ -2570,9 +2570,9 @@ if(isset( $_REQUEST['tableid']))
 		);
 
    //print "$sql\n";
-      $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+      $result=mysql_query($sql);
    $data=array();
-   while($row=$res->fetchRow()) {
+   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      $data[]=array(
 		   'id'=>$row['id'],
 		   'public_id'=>$row['public_id'],

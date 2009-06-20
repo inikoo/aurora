@@ -11,8 +11,8 @@ require_once '../../common_functions.php';
 $db =& MDB2::factory($dsn);       
 if (PEAR::isError($db)){echo $db->getMessage() . ' ' . $db->getUserInfo();}
 if(DEBUG)PEAR::setErrorHandling(PEAR_ERROR_RETURN);
-$db->setFetchMode(MDB2_FETCHMODE_ASSOC);  
-$db->query("SET time_zone ='UTC'");
+  
+mysql_query("SET time_zone ='UTC'");
 require_once '../../myconf/conf.php';           
 date_default_timezone_set('Europe/London');
 
@@ -28,8 +28,8 @@ $Data_Audit_ETL_Software="$software $version";
 
 $sql=" select aw.customer.main_tel,aw.customer.main_email,main_del_address,aw.contact.main_contact,aw.customer.main_bill_address,aw.customer.name as name,aw.contact.tipo,aw.contact.name as contact_name from aw.customer left join aw.contact on contact_id=contact.id ";
 //print $sql;
-  $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-    while($row=$res->fetchRow()) {
+  $res=mysql_query($sql);if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+    while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
       $data=array();
       $type='Unknown';
       $contact_name='';
@@ -39,7 +39,7 @@ $sql=" select aw.customer.main_tel,aw.customer.main_email,main_del_address,aw.co
 	$company_name=$row['contact_name'];
 
 	$sql=sprintf("select * from aw.contact where id=%d",$row['main_contact']);
-	$res2 = $db->query($sql);
+	$res2 = mysql_query($sql);
 	if($row2=$res2->fetchRow()) {
 	  //	  $contact_name=_trim($row2['prefix'].' '.$row2['first'].' '.$row2['maddle'].' '.$row2['last']);
 	  $contact_name=$row2['name'];
@@ -60,7 +60,7 @@ $sql=" select aw.customer.main_tel,aw.customer.main_email,main_del_address,aw.co
 
        if($row['main_bill_address']){
 	 	$sql=sprintf("select * from aw.address where id=%d",$row['main_bill_address']);
-		$res2 = $db->query($sql);
+		$res2 = mysql_query($sql);
 		if($row2=$res2->fetchRow()) {
 		  $address_data=$row2;
 		  $address_data['type']='aw';
@@ -71,7 +71,7 @@ $sql=" select aw.customer.main_tel,aw.customer.main_email,main_del_address,aw.co
        if($row['main_email']){
 	 	$sql=sprintf("select * from aw.email where id=%d",$row['main_email']);
 
-		$res2 = $db->query($sql);
+		$res2 = mysql_query($sql);
 		if($row2=$res2->fetchRow()) {
 
 		  $data['email']=$row2['email'];
@@ -82,7 +82,7 @@ $sql=" select aw.customer.main_tel,aw.customer.main_email,main_del_address,aw.co
        if($row['main_tel']){
 	 $sql=sprintf("select * from aw.telecom where id=%d",$row['main_tel']);
 	 // print "$sql\n";
-	 $res2 = $db->query($sql);
+	 $res2 = mysql_query($sql);
 	 if($row2=$res2->fetchRow()) {
 	   $data['telephone']='';
 	   if($row2['icode']!='')

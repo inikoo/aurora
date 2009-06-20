@@ -18,7 +18,7 @@ function display_person_name($name_id){
 
  $db =& MDB2::singleton();
  $sql=sprintf("select prefix,first,middle,last,suffix,alias from name where id=%d",$name_id);
- $res = $db->query($sql);  
+ $res=mysql_query($sql); 
  if ($row=$res->fetchRow()){
    $name=($row['prefix']!=''?$row['prefix'].' ':'').($row['first']!=''?$row['first'].' ':'').($row['middle']!=''?$row['middle'].' ':'').($row['last']!=''?$row['last'].' ':'').($row['suffix']!=''?$row['suffix']:'').($row['alias']!=''?$row['alias']:'');
    return trim($name);
@@ -78,7 +78,7 @@ function insert_name($name_data,$contact_id){
 	      $prefix,$first,$middle,$last,$suffix,$alias,$contact_id,$name_data['genero']
 	      );
  // print "$sql\n";
- //$db->exec($sql);
+ //mysql_query($sql);
  //$name_id=$db->lastInsertID();
 
  mysql_query($sql);
@@ -100,7 +100,7 @@ function update_name($contact_id,$name_data){
 	      );
 
  // print "$sql";
- //$db->exec($sql);
+ //mysql_query($sql);
  mysql_query($sql);
 
 
@@ -115,7 +115,7 @@ function update_name($contact_id,$name_data){
 // $dns_user='root';
 // $dsn = 'mysql://'.$dns_user.':'.$dns_pwd.'@localhost/'.$dns_db;
 // $db =& MDB2::singleton($dsn);  
-// $db->setFetchMode(MDB2_FETCHMODE_ASSOC);  
+//   
 // print_r(guess_name('raul perusquia del cueto'));
 
 
@@ -294,7 +294,7 @@ function get_genero($prefix,$raw_name){
 
   $sql=sprintf("select genero from  list_prefixname where name='%s' ",addslashes(strtolower(trim($prefix))));
   // print "$sql\n"; 
- $res = $db->query($sql); 
+ $res=mysql_query($sql);
   if ($row=$res->fetchRow()){
     if($row['genero']==1)
       return 1;
@@ -309,7 +309,7 @@ function get_genero($prefix,$raw_name){
   foreach($names as $name){
     $sql=sprintf("select genero from  list_firstname where name='%s'",addslashes(strtolower(trim($name))));
     //  print "$sql\n";
-    $res = $db->query($sql); 
+    $res=mysql_query($sql);
     if ($row=$res->fetchRow()){
       if($row['genero']==1)
 	$male++;
@@ -329,7 +329,7 @@ function get_genero($prefix,$raw_name){
 function is_givenname($name){
   $db =& MDB2::singleton();
   $sql=sprintf("select id from  list_firstname where name='%s'",addslashes(strtolower(trim($name))));
-  $res2 = $db->query($sql); 
+  $res2 = mysql_query($sql); 
   if ($row2=$res2->fetchRow()){
     return $row2['id'];
   }else
@@ -339,7 +339,7 @@ function is_givenname($name){
 function is_surname($name){
   $db =& MDB2::singleton();
   $sql=sprintf("select id from  list_lastname where name='%s'",addslashes(strtolower(trim($name))));
-  $res2 = $db->query($sql); 
+  $res2 = mysql_query($sql); 
   if ($row2=$res2->fetchRow()){
     return $row2['id'];
   }else
@@ -349,7 +349,7 @@ function is_prefix($name){
   $db =& MDB2::singleton();
   $sql=sprintf("select id from  list_prefixname where name='%s'",addslashes(strtolower(trim($name))));
 
-  $res2 = $db->query($sql); 
+  $res2 = mysql_query($sql); 
   if ($row2=$res2->fetchRow()){
     return $row2['id'];
   }else

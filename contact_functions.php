@@ -22,8 +22,8 @@ function savecontact(){
 
   $sql=sprintf("insert into contact (name,order_name,tipo,date_creation,date_updated) values ('%s','%s',%d,NOW(),NOW())",$name,$order,$tipo);
   if($debug)print "xx $sql\n";
-  $db->exec($sql);
-  $contact_id = $db->lastInsertID();
+  mysql_query($sql);
+  $contact_id =  mysql_insert_id();
   
 
   if($tipo>0){
@@ -35,7 +35,7 @@ function savecontact(){
     $middle=($aname[6]!=''?'"'.addslashes($aname[6]).'"':'null');
     $alias=($aname[7]!=''?'"'.addslashes($aname[7]).'"':'null');
     $sql=sprintf("insert into name (contact_id,prefix,first,last,suffix,middle,alias) values (%d,%s,%s,%s,%s,%s,%s)",$contact_id,$prefix,$first,$last,$suffix,$middle,$alias);
-    $db->exec($sql);
+    mysql_query($sql);
     if($debug)print "$sql\n";
   }
 
@@ -45,9 +45,9 @@ function savecontact(){
     $name=addslashes($_SESSION['new_contact']['contact'][5]);
     $order=addslashes($_SESSION['new_contact']['contact'][6]);
     $sql=sprintf("insert into contact (name,order_name,tipo,date_creation,date_updated) values ('%s','%s',%d,NOW(),NOW())",$name,$order,$tipo);
-    $db->exec($sql);
+    mysql_query($sql);
     if($debug)print "x $sql\n";
-    $contactincompany_id = $db->lastInsertID();
+    $contactincompany_id =  mysql_insert_id();
     $aname=$_SESSION['new_contact']['contact'];
 
     $prefix=($aname[1]!=''?'"'.addslashes($aname[1]).'"':'null');
@@ -64,7 +64,7 @@ function savecontact(){
     $sql=sprintf("insert into contact_relations (child_id,parent_id) values (%d,%d)",$contactincompany_id,$contact_id);
     if($debug)print "y $sql\n";
 
-    $db->exec($sql);
+    mysql_query($sql);
      
   }
 
@@ -84,7 +84,7 @@ function savecontact(){
 	if($name=='')
 	  $name=$contact_name;
 	$sql=sprintf("insert into email (contact,email,tipo,contact_id) values ('%s','%s',%d,%d)",$name,$email,$tipo,$contactincompany_id);
-	$db->exec($sql);
+	mysql_query($sql);
       }elseif($tipo==2){
 	if($name=='')
 	  $name=$main_name;
@@ -106,12 +106,12 @@ function savecontact(){
       $ext=(is_numeric($atel[4])?$atel[4]:'null');
        
       $sql=sprintf("insert into telecom (name,code,number,ext,tipo,contact_id) values (%s,%s,%s,%s,%d,%d)",$name,$code,$number,$ext,$tipotel,$contact_id);
-      $db->exec($sql);
+      mysql_query($sql);
       if($tipotel==1 and isset($contactincompany_id))
 	{
    
 	  $sql=sprintf("insert into telecom (name,code,number,ext,tipo,contact_id) values (%s,%s,%s,%s,%d,%d)",$name,$code,$number,$ext,$tipotel,$contactincompany_id);
-	  $db->exec($sql);
+	  mysql_query($sql);
 	  // print "$sql\n";
 	   
 	}
@@ -128,7 +128,7 @@ function savecontact(){
       $www=addslashes($awww[1]);
 	 
       $sql=sprintf("insert into www (title,www,contact_id) values (%s,%s,%d)",$title,$www,$contact_id);
-      $db->exec($sql);
+      mysql_query($sql);
     }
   if(isset($_SESSION['new_contact']['address']))
     foreach($_SESSION['new_contact']['address'] as $aadd){
@@ -155,7 +155,7 @@ function savecontact(){
 		   $principal,$tipo,$full_address,$address1,$address2,$address3,$town,$subdistrict,$postcode,$country,$country_id,$contact_id
 		   );
      // if($debug)print "$sql\n";
-      $db->exec($sql);
+      mysql_query($sql);
 
     }
 

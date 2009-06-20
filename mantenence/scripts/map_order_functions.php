@@ -175,7 +175,7 @@ function guess_tel($raw_tel,$country_id='',$city_id=''){
 function get_icode($country_id){
   $db =& MDB2::singleton();
   $sql=sprintf("select `Country Telephone Code` as tel_code from `Country Dimension`  where `Country Key`=%d",$country_id);
-  $res = $db->query($sql);  
+  $res=mysql_query($sql); 
   if ($row=$res->fetchRow()){
     if($row['tel_code']!='')
       return $row['tel_code'];
@@ -896,7 +896,7 @@ function is_internal($string){
 //     if($postcode!=''){
 //     $sql="select name from list_country_d2 where  country_id=75 and name like '%$postcode%'";
 //     //print "$sql\n";
-//     $res = $db->query($sql);  
+//     $res=mysql_query($sql); 
 //     if ($row=$res->fetchRow()){
 //       $postcode='';
 //       $country_d2=$row['name'];
@@ -2053,12 +2053,12 @@ function is_internal($string){
 
 //  $sql=sprintf("select id  from list_country_d1 where (name='%s' or oname='%s') and country_id=%d",addslashes($country_d1),addslashes($country_d1),$country_id);
 //     //  print "$sql\n";
-//     $res = $db->query($sql);  
+//     $res=mysql_query($sql); 
 //     if ($row=$res->fetchRow())
 //       $country_d1_id=$row['id'];
     
 //     $sql=sprintf("select id,country_d1_id from list_country_d2 where (name='%s' or oname='%s') and country_id=%d",addslashes($country_d2),addslashes($country_d2),$country_id);
-//     $res = $db->query($sql);  
+//     $res=mysql_query($sql); 
     
 //     if ($row=$res->fetchRow()){
 // 	$country_d2_id=$row['id'];
@@ -2073,7 +2073,7 @@ function is_internal($string){
 
 //     $sql=sprintf("select id,country_d2_id,country_d1_id from list_town where (name='%s' or oname='%s') and country_id=%d",addslashes($town),addslashes($town),$country_id);
 
-//     $res = $db->query($sql);  
+//     $res=mysql_query($sql); 
 //     if($res->numRows()==1){
       
 //     if ($row=$res->fetchRow()){
@@ -2219,13 +2219,13 @@ function get_address_data($address_id){
  $db =& MDB2::singleton();
   $sql=sprintf("select internal_address,building_address, street_address,town_d2,town_d1 ,country_d2,country_d1,town,postcode,country from address where id=%d",$address_id);
   //print "$sql\n";
-  $res = $db->query($sql);  
+  $res=mysql_query($sql); 
   if (!$address_data=$res->fetchRow())
     return false;
   $sql=sprintf("select address_id,town_d2_id,town_d1_id,country_d2_id,country_d1_id,town_id,country_id from address_atom where address_id=%d",$address_id);
   //print "$sql\n";
 
-  $res = $db->query($sql);  
+  $res=mysql_query($sql); 
   if (!$address_data_atom=$res->fetchRow())
     return false;
   
@@ -2304,7 +2304,7 @@ if($address_data['town_d1']!='')
  $sql=sprintf("insert into address (internal_address,building_address,street_address,town_d2,town_d1,town,country_d2,postcode,country_d1,country) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,'%s')",
 	      $internal_address,$building_address,$street_address,$town_d2,$town_d1,$town,$country_d2,$postcode,$country_d1,$country
 	      );
- //$db->exec($sql);
+ //mysql_query($sql);
  //$address_id = $db->lastInsertID();
 
  mysql_query($sql);
@@ -2314,7 +2314,7 @@ $sql=sprintf("insert into address_atom (address_id,town_d2_id,town_d1_id,town_id
 	     $address_id,$town_d2_id,$town_d1_id,$town_id,$country_d2_id,$country_d1_id,$country_id
 	     );
 //print "$sql\n";
-//$db->exec($sql);
+//mysql_query($sql);
  mysql_query($sql);
 
 
@@ -2330,7 +2330,7 @@ function get_address_metadata($address_id){
   global $_address_tipo;
   $sql=sprintf("select contact_id,contact.tipo as c_tipo,address2contact.tipo as address_tipo  from address2contact left join contact on (contact_id=contact.id) where address_id=%d",$address_id);
   // print "$sql\n";
-  $res = $db->query($sql);  
+  $res=mysql_query($sql); 
   $metadata=array();
   while ($row=$res->fetchRow()){
     
@@ -2384,7 +2384,7 @@ function update_address($address_id,$address_data,$date_index='',$note=''){
    $update_sql=preg_replace('/,$/','',$update_sql);
     $sql=sprintf("update address  set %s where id=%d",$update_sql,$address_id);
     //  print "$sql\n";
-    //$db->exec($sql);
+    //mysql_query($sql);
        mysql_query($sql);
     foreach($array_metadata as $metadata){
 
@@ -2404,7 +2404,7 @@ function update_address($address_id,$address_data,$date_index='',$note=''){
 
       $sql=sprintf("insert into history (tipo,sujeto,sujeto_id,objeto,objeto_id,date) values ('UPD','%s',%d,'%s',%d,%s)",$sujeto,$recipient_id,$metadata['address_tipo'],$address_id,prepare_mysql_date($date_index));
       //       print "$sql\n";
-       // $db->exec($sql);
+       // mysql_query($sql);
        //$history_id=$db->lastInsertID();
         mysql_query($sql);
       $history_id=mysql_insert_id();
@@ -2412,7 +2412,7 @@ function update_address($address_id,$address_data,$date_index='',$note=''){
 	foreach($array_history_sql as $key=>$history_sql){
 	  $sql=sprintf($history_sql,$history_id,prepare_mysql($values[$key]['old']),prepare_mysql($values[$key]['new']));
 	  //print "$sql\n";
-	  // $db->exec($sql);
+	  // mysql_query($sql);
 	  mysql_query($sql);
 	}
       }
@@ -2475,15 +2475,15 @@ function update_address($address_id,$address_data,$date_index='',$note=''){
 //  $sql=sprintf("update  address set internal_address=%s,building_address=%s,street_address=%s,town=%s,town_d2=%s,town_d1=%s,country_d2=%s,country_d1=%s,postcode=%s,country=%d where id=%d",
 // 	      $internal_address,$building_address,$street_address,$town,$town_d2,$town_d1,$country_d2,$country_d1,$postcode,$country,$address_id
 // 	      );
-//  $db->exec($sql);
+//  mysql_query($sql);
 //  $sql=sprintf("update  address_atom set town_id=%s,town_d2_id=%s,town_d1_id=%s,country_d2=%s,country_d1_id=%s,country_id=%d where address_id=%d",$town_id,$town_d2_id,$town_d1_id,$country_d2_id,$country_d1_id,$country_id,$address_id);
-//  $db->exec($sql);
+//  mysql_query($sql);
 
 //  if(count($update)>0){
 //    $note=($note==''?'null':$note);
 //    $sql=sprintf("insert into history (tipo,sujeto,objeto,date,note) values (2,'contact','address','%s',%s)",$date,$ntre);
 //      print "$sql\n";
-//     $db->exec($sql);
+//     mysql_query($sql);
 //     $history_id = $db->lastInsertID();
 //  }
 
@@ -2491,7 +2491,7 @@ function update_address($address_id,$address_data,$date_index='',$note=''){
 //     $sql=sprintf("insert into history_item (history_id,columna,old_value,new_value) values (%d,'%s','%s','%s')"
 // 		 ,$history_id,$old_address_data[$key],$$key);
 //     print "$sql\n";
-//     $db->exec($sql);
+//     mysql_query($sql);
 //  }
 
 // exit("update address\n");
@@ -2507,7 +2507,7 @@ function associate_address($address_id,$contact_id,$tipo,$description='',$date_i
   $db =& MDB2::singleton();
 
   $sql=sprintf("insert into address2contact  (address_id,contact_id,tipo,description) values (%d,%d,%d,%s)",$address_id,$contact_id,$tipo,prepare_mysql($description));
-  // $db->exec($sql);
+  // mysql_query($sql);
   mysql_query($sql);
   
   if($history){
@@ -2536,7 +2536,7 @@ function associate_address($address_id,$contact_id,$tipo,$description='',$date_i
 
   $sql=sprintf("insert into history (tipo,sujeto,sujeto_id,objeto,objeto_id,date) values ('NEW','%s',%d,'%s',%d,%s)",$sujeto,$recipient_id,$_address_tipo[$tipo],$address_id,prepare_mysql_date($date_index));
   // print "$sql\n";
-  //$db->exec($sql);
+  //mysql_query($sql);
   //$history_id=$db->lastInsertID();
    mysql_query($sql);
    $history_id=mysql_insert_id();
@@ -2545,7 +2545,7 @@ function associate_address($address_id,$contact_id,$tipo,$description='',$date_i
   $address=display_full_address($address_id);
   $sql=sprintf("insert into history_item (history_id,columna,old_value,new_value) values (%d,'%s',NULL,%s)",$history_id,$_address_tipo[$tipo],prepare_mysql($address));
   // print "$sql\n";
-  // $db->exec($sql);
+  // mysql_query($sql);
   mysql_query($sql);
   // exit("address add\n");
   }
@@ -2565,13 +2565,13 @@ function get_principal_address($tipo,$contact_id){
     elseif($tipo=='del_address')
       $objeto='main_del_address';
     $sql=sprintf("select %s as principal from customer where id=%d",$objeto,$customer_id);
-    $res = $db->query($sql);  
+    $res=mysql_query($sql); 
     if ($row=$res->fetchRow()){
       return $row['principal'];
     }
   }elseif($tipo=='main_address' or $tipo=='shop_address'){
      $sql=sprintf("select main_address as principal from contact where id=%d",$contact_id);
-    $res = $db->query($sql);  
+    $res=mysql_query($sql); 
     if ($row=$res->fetchRow()){
       return $row['principal'];
     }
@@ -2643,7 +2643,7 @@ function set_principal_address($recipient_id,$tipo,$address_id,$date_index='',$h
 
 	 $sql=sprintf("insert into history_item (history_id,columna,old_value,new_value) values (%d,%s,%s,%s)",$history_id,prepare_mysql($col2),prepare_mysql($old_data),$address_id);
 	 
-	 // $db->exec($sql);
+	 // mysql_query($sql);
 	 mysql_query($sql);
        }
      }
@@ -2656,7 +2656,7 @@ function set_principal_address($recipient_id,$tipo,$address_id,$date_index='',$h
     $old_data=$contact_data[$col];
 
     $sql=sprintf("update contact set %s=%d where id=%d",$col,$address_id,$recipient_id);
-    //  $db->exec($sql);
+    //  mysql_query($sql);
     mysql_query($sql);
     if($history){
 
@@ -2669,7 +2669,7 @@ function set_principal_address($recipient_id,$tipo,$address_id,$date_index='',$h
       
       $sql=sprintf("insert into history (tipo,sujeto,sujeto_id,objeto,objeto_id,date) values (%s,%s,%d,%s,%d,%s)",prepare_mysql($tipo_history),prepare_mysql($sujeto),$recipient_id,prepare_mysql($col2),$address_id,prepare_mysql_date($date_index));
       //  print "qqqqqqqqq $sql\n";
-    //$db->exec($sql);
+    //mysql_query($sql);
     //$history_id=$db->lastInsertID();
      mysql_query($sql);
      $history_id=mysql_insert_id();
@@ -2678,7 +2678,7 @@ function set_principal_address($recipient_id,$tipo,$address_id,$date_index='',$h
      
     $sql=sprintf("insert into history_item (history_id,columna,old_value,new_value) values (%d,%s,%s,%s)",$history_id,prepare_mysql($col2),prepare_mysql($old_data),$address_id);
     //print "qqqqqqqqq $sql\n";
-    //$db->exec($sql);
+    //mysql_query($sql);
       mysql_query($sql);
     }
   }
@@ -2829,7 +2829,7 @@ function insert_orden_files($order_id,$filename,$checksum,$checksum_header,$chec
   $sql=sprintf("insert into orden_file (order_id,filename,checksum,checksum_header,checksum_products,date) values (%d,'%s','%s','%s','%s','%s')",$order_id,$filename,$checksum,$checksum_header,$checksum_products,date("Y-m-d H:i:s",strtotime('@'.$file_date)));
   // print "$sql\n";
 
-  // $db->exec($sql);
+  // mysql_query($sql);
   mysql_query($sql);
 }
 
@@ -2838,7 +2838,7 @@ function update_orden_files($order_id,$filename,$checksum,$checksum_header,$chec
   $sql=sprintf("update orden_file set order_id=%d ,checksum='%s',checksum_header='%s',checksum_products='%s',date='%s' where filename=%s",$order_id,$checksum,$checksum_header,$checksum_products,date("Y-m-d H:i:s",strtotime('@'.$file_date)),prepare_mysql($filename));
   //    print "$sql\n";
 
-  // $db->exec($sql);
+  // mysql_query($sql);
   mysql_query($sql);
 }
 
@@ -3689,7 +3689,7 @@ function set_transactions($transactions,$order_id,$tipo_order,$parent_order_id,$
 		   ,prepare_mysql_date($date_index)
 		   ,prepare_mysql($tax_code));
       // print "$sql\n";
-      mysql_query($sql);// $db->exec($sql);
+      mysql_query($sql);// mysql_query($sql);
 
   
     }
@@ -3697,14 +3697,14 @@ function set_transactions($transactions,$order_id,$tipo_order,$parent_order_id,$
 
 
     //$sql=sprintf("update orden set debits='%.2f' where id=%d",$credit_value,$order_id);
-    //mysql_query($sql);//$db->exec($sql);
+    //mysql_query($sql);//mysql_query($sql);
 
 
       
     // do a todo_debit
     //	$sql=sprintf("insert into todo_debit (tipo,order_affected_id,note,value,date_creation,date_done) value (%d,%d,%s,%.2f,%s)",$tipo,$order_id,prepare_mysql($parent_note),$credit_value,$date_index);
     //	print "$sql\n";
-    //	mysql_query($sql);// $db->exec($sql);
+    //	mysql_query($sql);// mysql_query($sql);
 
 
     //      }
@@ -3725,7 +3725,7 @@ function set_transactions($transactions,$order_id,$tipo_order,$parent_order_id,$
 		   ,prepare_mysql($tax_code));
       //print "$sql\n";
       $is_cash_promo=true;
-      mysql_query($sql);// $db->exec($sql);
+      mysql_query($sql);// mysql_query($sql);
     }
 
   
@@ -3800,7 +3800,7 @@ function set_transactions($transactions,$order_id,$tipo_order,$parent_order_id,$
   }
 
   $sql=sprintf("update orden set outofstock='%.2f' where id=%d",$value_outstoke,$order_id);
-  $db->exec($sql);
+  mysql_query($sql);
 
 
 
@@ -3829,7 +3829,7 @@ function set_transactions($transactions,$order_id,$tipo_order,$parent_order_id,$
       $balance_total=$row['total']+$debit_value_net+$debit_value_tax;
     
       $sql=sprintf("update orden set balance_net='%.2f' , balance_tax='%.2f' , balance_total='%.2f' where id=%d",$balance_net,$balance_tax,$balance_total,$parent_order_id);
-      mysql_query($sql);//$db->exec($sql);
+      mysql_query($sql);//mysql_query($sql);
     }     
   
   }
@@ -3861,7 +3861,7 @@ function set_transactions($transactions,$order_id,$tipo_order,$parent_order_id,$
     $sql=sprintf("update orden set balance_net='%.2f' , balance_tax='%.2f' , balance_total='%.2f' where id=%d",$balance_net,$balance_tax,$balance_total,$order_id);
     
     //    print "$sql\n";
-    mysql_query($sql);//$db->exec($sql);
+    mysql_query($sql);//mysql_query($sql);
   }     
 
 
@@ -8990,25 +8990,25 @@ function read_records($handle_csv,$y_map,$number_header_rows){
 
 //   if(count($picker_ids)==0){
 //     $sql=sprintf('insert into pick (order_id,picker_id,share) values (%d,0,1.00)',$order_id);
-//     //$db->exec($sql);
+//     //mysql_query($sql);
 //     mysql_query($sql);
 //   }
 //   if(count($packer_ids)==0){
 //     $sql=sprintf('insert into pack (order_id,packer_id,share) values (%d,0,1.00)',$order_id);
-//     //$db->exec($sql);
+//     //mysql_query($sql);
 //     mysql_query($sql);
 //   } 
 
 //   foreach($picker_ids as $picker_id){
 //     $share=1/count($picker_ids);
 //     $sql=sprintf('insert into pick (order_id,picker_id,share) values (%d,%d,%.2f)',$order_id,$picker_id,$share);
-//     // $db->exec($sql);
+//     // mysql_query($sql);
 //     mysql_query($sql);
 //   }
 //   foreach($packer_ids as $packer_id){
 //     $share=1/count($packer_ids);
 //     $sql=sprintf('insert into pack (order_id,packer_id,share) values (%d,%d,%.2f)',$order_id,$packer_id,$share);
-//     //$db->exec($sql);
+//     //mysql_query($sql);
 //     mysql_query($sql);
 //   }
   

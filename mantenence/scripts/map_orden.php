@@ -10,7 +10,7 @@ $dsn = 'mysql://'.$dns_user.':'.$dns_pwd.'@localhost/'.$dns_db;
 
 require_once 'MDB2.php';            // PEAR Database Abstraction Layer
 $db =& MDB2::singleton($dsn);  
-$db->setFetchMode(MDB2_FETCHMODE_ASSOC);  
+  
 
 $debug=false;
 
@@ -44,14 +44,14 @@ if ($handle= opendir($xls_dir))
 	// check if we have an invoice with the same name
 	//	print "$file\n";
 	$sql="select  id from orden where original_file='$file'";
-	$res = $db->query($sql); 
-	if ($row=$res->fetchRow()) {
+	$res=mysql_query($sql);
+	if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 	  // We have already read it
 	  $order_id=$row['id'];
 	  // Check if it have beeen saved after last tome we read it
 	  $sql="select  file_checksum as checksum, file_date,UNIX_TIMESTAMP( file_date ) as date from orden where id=".$order_id;
 
-	  $res2 = $db->query($sql); 
+	  $res2 = mysql_query($sql); 
 	  if ($row2=$res2->fetchRow()){
 	    $old_filedate=$row2['file_date'];
 	    $new_filedate=date("Y-m-d H:i:s",strtotime('@'.$_date_file_cre));
@@ -95,8 +95,8 @@ if ($handle= opendir($xls_dir))
 // 	  print date("Y-m-d H:i:s",strtotime('@'.$_date_file_mod)) ."   $new_checksum\n";
 // 	$sql="select  file_checksum from orden where public_id='$ofile'";
 // 	//	$result = mysql_query($sql) or die($sql.' Query failed: ' . mysql_error() ."\n");
-// 	$res = $db->query($sql); 
-// 	if ($row=$res->fetchRow()) {
+// 	$res=mysql_query($sql);
+// 	if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 // 	  $old_checksum=$row['file_checksum'];
 // 	  if($new_checksum!=$old_checksum)
 // 	    readorder($file,$ofile,true,$new_checksum, date("H:i:s",$_date_file_mod),  date("Y-m-d",$_date_file_mod),  date("H:i:s",$_date_file_mod-1800));
@@ -376,7 +376,7 @@ function readorder($file,$ofile,$update,$checksum,$datetime_updated='',$time_upd
 	
     $sql='select tel_code from country where id='.$country_id;
 	
-    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+    $res=mysql_query($sql);if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
     if($data=$res->fetchRow()) {
       $tel_code=$data['tel_code'];
     }else
@@ -715,12 +715,12 @@ function readorder($file,$ofile,$update,$checksum,$datetime_updated='',$time_upd
     if(!$update){
       
       $sql="select id from customer where contact_id=$contact_id";
-      $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+      $res=mysql_query($sql);if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
       if($data=$res->fetchRow()) {
 	$customer_id=$data['id'];
       }else{
 	$sql="insert into customer (contact_id) values ($contact_id)";
-	$db->exec($sql);
+	mysql_query($sql);
 	$customer_id = $db->lastInsertID();
 	
       }
@@ -757,7 +757,7 @@ function readorder($file,$ofile,$update,$checksum,$datetime_updated='',$time_upd
 
 
     $sql="select customer_id from orden where id=$order_id";
-    $res2 = $db->query($sql); if (PEAR::isError($res2) and DEBUG ){die($res2->getMessage());}
+    $res2 = mysql_query($sql); if (PEAR::isError($res2) and DEBUG ){die($res2->getMessage());}
     if ($row2 = $res2->fetchRow() ) {
       update_customer_data($row2['customer_id']);
     }
@@ -1222,7 +1222,7 @@ function savecontact(){
 
   $sql=sprintf("insert into contact (name,order_name,tipo,date_creation,date_updated) values ('%s','%s',%d,NOW(),NOW())",$name,$order,$tipo);
   if($debug)print "xx $sql\n";
-  $db->exec($sql);
+  mysql_query($sql);
   $contact_id = $db->lastInsertID();
   
 
@@ -1235,7 +1235,7 @@ function savecontact(){
     $middle=($aname[6]!=''?'"'.addslashes($aname[6]).'"':'null');
     $alias=($aname[7]!=''?'"'.addslashes($aname[7]).'"':'null');
     $sql=sprintf("insert into name (contact_id,prefix,first,last,suffix,middle,alias) values (%d,%s,%s,%s,%s,%s,%s)",$contact_id,$prefix,$first,$last,$suffix,$middle,$alias);
-    $db->exec($sql);
+    mysql_query($sql);
     if($debug)print "$sql\n";
   }
 
@@ -1245,7 +1245,7 @@ function savecontact(){
     $name=addslashes($_SESSION['new_contact']['contact'][5]);
     $order=addslashes($_SESSION['new_contact']['contact'][6]);
     $sql=sprintf("insert into contact (name,order_name,tipo,date_creation,date_updated) values ('%s','%s',%d,NOW(),NOW())",$name,$order,$tipo);
-    $db->exec($sql);
+    mysql_query($sql);
     if($debug)print "x $sql\n";
     $contactincompany_id = $db->lastInsertID();
     $aname=$_SESSION['new_contact']['contact'];
@@ -1264,7 +1264,7 @@ function savecontact(){
     $sql=sprintf("insert into contact_relations (child_id,parent_id) values (%d,%d)",$contactincompany_id,$contact_id);
     if($debug)print "y $sql\n";
 
-    $db->exec($sql);
+    mysql_query($sql);
      
   }
 
@@ -1284,7 +1284,7 @@ function savecontact(){
 	if($name=='')
 	  $name=$contact_name;
 	$sql=sprintf("insert into email (contact,email,tipo,contact_id) values ('%s','%s',%d,%d)",$name,$email,$tipo,$contactincompany_id);
-	$db->exec($sql);
+	mysql_query($sql);
       }elseif($tipo==2){
 	if($name=='')
 	  $name=$main_name;
@@ -1306,12 +1306,12 @@ function savecontact(){
       $ext=(is_numeric($atel[4])?$atel[4]:'null');
        
       $sql=sprintf("insert into telecom (name,code,number,ext,tipo,contact_id) values (%s,%s,%s,%s,%d,%d)",$name,$code,$number,$ext,$tipotel,$contact_id);
-      $db->exec($sql);
+      mysql_query($sql);
       if($tipotel==1 and isset($contactincompany_id))
 	{
    
 	  $sql=sprintf("insert into telecom (name,code,number,ext,tipo,contact_id) values (%s,%s,%s,%s,%d,%d)",$name,$code,$number,$ext,$tipotel,$contactincompany_id);
-	  $db->exec($sql);
+	  mysql_query($sql);
 	  // print "$sql\n";
 	   
 	}
@@ -1328,7 +1328,7 @@ function savecontact(){
       $www=addslashes($awww[1]);
 	 
       $sql=sprintf("insert into www (title,www,contact_id) values (%s,%s,%d)",$title,$www,$contact_id);
-      $db->exec($sql);
+      mysql_query($sql);
     }
   if(isset($_SESSION['new_contact']['address']))
     foreach($_SESSION['new_contact']['address'] as $aadd){
@@ -1355,7 +1355,7 @@ function savecontact(){
 		   $principal,$tipo,$full_address,$address1,$address2,$address3,$town,$subdistrict,$postcode,$country,$country_id,$contact_id
 		   );
      // if($debug)print "$sql\n";
-      $db->exec($sql);
+      mysql_query($sql);
 
     }
 
@@ -1489,12 +1489,12 @@ function get_matches($email,$mobile,$tel,$fax,$name,$contact,$a1,$a2,$a3,$town,$
 function update_customer_data($customer_id){
   $db =& MDB2::singleton();
   $sql=sprintf("select contact_id,id from customer where id=%d",$customer_id ) ;
-  $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+  $res=mysql_query($sql);if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
   while($row=$res->fetchRow()) 
     {
       $sql="select sum(total) as total , count(*) as orders, date_index from orden where customer_id=".$row['id'].' group by customer_id order by date_index';
     //  print "$sql\n";
-      $res2 = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+      $res2 = mysql_query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
       while ($row2 = $res2->fetchRow() ) {
 	$orders=$row2['orders'];
 	$date=$row2['date_index'];
@@ -1505,7 +1505,7 @@ function update_customer_data($customer_id){
       $name='';
       $loc='';
       $country_id=244;
-      $res2 = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+      $res2 = mysql_query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
       while ($row2 = $res2->fetchRow() ) {
 	$name=$row2['name'];
 	$loc=$row2['loc'];
@@ -1515,7 +1515,7 @@ function update_customer_data($customer_id){
   
   
   $sql=sprintf("update customer set location='%s' ,country_id='%s',total='%.2f',orders='%d',last_order='%s' ,name='%s' where id=%d   ",$loc,$country_id,$total,$orders,$date,addslashes($name),$row['id']);
-  $db->exec($sql);
+  mysql_query($sql);
  }
 }
 

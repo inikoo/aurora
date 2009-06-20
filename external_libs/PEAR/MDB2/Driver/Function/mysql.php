@@ -80,7 +80,7 @@ class MDB2_Driver_Function_mysql extends MDB2_Driver_Function_Common
 
         $query = 'CALL '.$name;
         $query .= $params ? '('.implode(', ', $params).')' : '()';
-        return $db->query($query, $types, $result_class, $result_wrap_class);
+        return mysql_query($query, $types, $result_class, $result_wrap_class);
     }
 
     // }}}

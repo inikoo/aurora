@@ -480,8 +480,8 @@ switch($tipo){
 
    if(isset($_REQUEST['location_id'])){
      $sql=sprintf("select name from location where id=%d",$_REQUEST['location_id']);
-     $result =& $db->query($sql);
-     if($row=$result->fetchRow()){
+     $result=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
        $location_name=$row['name'];
      }
 
@@ -764,8 +764,8 @@ switch($tipo){
 
        $sql=sprintf("select product.id as product_id,description,product.code,product2location.id as id,0 as qty from product left join product2location on (product.id=product_id) where product.code like   '%s%%'   and (select count(*) from product2location as p2l  where location_id=%s and p2l.product_id=product.id)=0   order by ncode ",addslashes($_REQUEST['query']),$_REQUEST['except_id']);
        $_data=array();
-       $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-       while($data=$res->fetchRow()) {
+       $res=mysql_query($sql);
+       while($data=mysql_fetch_array($result, MYSQL_ASSOC)){
 	 $_data[]= array(
 			 'scode'=>$data['code']
 			 ,'code'=>sprintf('<a href="product_manage_stock.php?id=%d">%s</a>',$data['product_id'],$data['code'])
@@ -801,8 +801,8 @@ switch($tipo){
 //      $sql=sprintf("select code from product where code like   '%s%%'  order by ncode ",$_REQUEST['query']);
 //    }
 //    //   print $sql;
-//    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-//    while($row=$res->fetchRow()) {
+//    $res=mysql_query($sql);
+//    while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 //      $data[]=array('code'=>$row['code']);
 //    }
    
@@ -907,8 +907,8 @@ case('part_search'):
      $sql=sprintf("select * from location where name like '%s%%' and (select count(*) from product2location where location_id=location.id and product_id=%d)=0   ",$_REQUEST['query'],$product_id);
    }
    //   print $sql;
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-   while($row=$res->fetchRow()) {
+   $result=mysql_query($sql);
+   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      $data[]=array('name'=>$row['name']);
    }
    
@@ -968,7 +968,7 @@ case('part_search'):
    }
    $sql=sprintf("update product set description_med='%s' where id=%d",$description,$product_id);
 
-   $db->exec($sql);
+   mysql_query($sql);
    //   print $_REQUEST['editor'];
    $response= array(
 		    'state'=>200
@@ -980,23 +980,23 @@ case('part_search'):
 
    
    $sql=sprintf("select filename,format,id,product_id,caption from image where id=%d",$new_id);
-   $res = $db->query($sql);
-   if($row=$res->fetchRow()) {
+   $res = mysql_query($sql);
+   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      $caption=$row['caption'];
      $product_id=$row['product_id'];
      $new_src='images/med/'.$row['filename'].'_med.'.$row['format'];
      $sql=sprintf("update image set principal=0 where product_id=%d",$product_id);
-     $db->exec($sql);
+     mysql_query($sql);
      $sql=sprintf("update image set principal=1 where id=%d",$new_id);
      //     print $sql;
-     $db->exec($sql);
+     mysql_query($sql);
      
      $sql=sprintf("select filename,id,format from image where product_id=%d and principal=0 limit 5",$product_id);
-     $res2 = $db->query($sql);
+     $res2 = mysql_query($sql);
      $other_img_src=array('','','','','');
      $other_img_id=array(0,0,0,0,0);
      $num_others=0;
-     while($row2=$res2->fetchRow()) {
+     while($row2=mysql_fetch_array($res2, MYSQL_ASSOC))) {
        $other_img_src[$num_others]='images/tb/'.$row2['filename'].'_tb.'.$row2['format'];
        $other_img_id[$num_others]=$row2['id'];
        $num_others++;
@@ -1086,8 +1086,8 @@ case('part_search'):
 
 
  //   $sql=sprintf("select code from product where id=%d",$id);
-//    $res = $db->query($sql);
-//    if($row=$res->fetchRow()) {
+//    $res = mysql_query($sql);
+//    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 //      $code=strtolower($row['code']);
 //      $target_path = "uploads/";
 //      $target_path = $target_path . $_REQUEST["PHPSESSID"].date('U');
@@ -1107,8 +1107,8 @@ case('part_search'):
 
 	     
 // 	     $sql=sprintf("select checksum  from image where  product_id=%d",$id);
-// 	     $res2 = $db->query($sql);
-// 	     while($row2=$res2->fetchRow()) {
+// 	     $res2 = mysql_query($sql);
+// 	     while($row2=mysql_fetch_array($res2, MYSQL_ASSOC))) {
 // 	       if($c==$row2['checksum']){
 // 		 $response=array('state'=>400,'resp'=>_('Image already uploaded'));
 // 		 echo json_encode($response);
@@ -1120,8 +1120,8 @@ case('part_search'):
 
 
 // 	     $sql=sprintf("select count(*) as num from image where  product_id=%d",$id);
-// 	     $res2 = $db->query($sql);
-// 	     if($row2=$res2->fetchRow()) {
+// 	     $res2 = mysql_query($sql);
+// 	     if($row2=mysql_fetch_array($res2, MYSQL_ASSOC))) {
 // 	       $images=$row2['num'];
 // 	     }
 	     
@@ -1158,12 +1158,12 @@ case('part_search'):
 	     
 
 // 	     $sql=sprintf("update image set principal=0 where product_id=%d",$id);
-// 	     $db->exec($sql);
+// 	     mysql_query($sql);
 
 // 	     $caption=$_REQUEST['caption'];
 // 	     $sql=sprintf("insert into image (filename,product_id,width,height,size,checksum,caption,principal) values ('%s',%d,%d,%d,%d,'%s','%s',1)",$code.'_'.$images,$id,$w,$h,$s,$c,addslashes($caption));
-// 	     $db->exec($sql);
-// 	     $new_id = $db->lastInsertID();
+// 	     mysql_query($sql);
+// 	     $new_id =  mysql_insert_id();
 // 	     // make the new pric the pricipal
 
 
@@ -1172,11 +1172,11 @@ case('part_search'):
 	     
 // 	     $sql=sprintf("select filename,id,format from image where product_id=%d and principal=0 limit 5",$id);
 
-// 	     $res2 = $db->query($sql);
+// 	     $res2 = mysql_query($sql);
 // 	     $other_img_src=array('','','','','');
 // 	     $other_img_id=array(0,0,0,0,0);
 // 	     $num_others=0;
-// 	     while($row2=$res2->fetchRow()) {
+// 	     while($row2=mysql_fetch_array($res2, MYSQL_ASSOC))) {
 // 	       $other_img_src[$num_others]='images/tb/'.$row2['filename'].'_tb.'.$row2['format'];
 // 	       $other_img_id[$num_others]=$row2['id'];
 // 	       $num_others++;
@@ -1232,15 +1232,15 @@ case('part_search'):
  case('search'):
    $q=$_REQUEST['q'];
    $sql=sprintf("select id from product where code='%s' ",addslashes($q));
-   $result =& $db->query($sql);
-   if($found=$result->fetchRow()){
+   $result=mysql_query($sql);
+   if($found=mysql_fetch_array($result, MYSQL_ASSOC)){
      $url='product.php?id='. $found['id'];
      echo json_encode(array('state'=>200,'url'=>$url));
      break;
    }
    $sql=sprintf("select id from product_group where name='%s' ",addslashes($q));
-   $result =& $db->query($sql);
-   if($found=$result->fetchRow()){
+   $result=mysql_query($sql);
+   if($found=mysql_fetch_array($result, MYSQL_ASSOC)){
      $url='family.php?id='. $found['id'];
      echo json_encode(array('state'=>200,'url'=>$url));
      break;
@@ -1250,8 +1250,8 @@ case('part_search'):
    //   if($myconf['product_code_separator']!=''){
    if(  ($myconf['product_code_separator']!='' and   preg_match('/'.$myconf['product_code_separator'].'/',$q)) or  $myconf['product_code_separator']==''  ){
      $sql=sprintf("select levenshtein(UPPER(%s),UPPER(code)) as dist1,    levenshtein(UPPER(SOUNDEX(%s)),UPPER(SOUNDEX(code))) as dist2,        code,id from product  order by dist1,dist2 limit 1;",prepare_mysql($q),prepare_mysql($q));
-     $result =& $db->query($sql);
-     if($found=$result->fetchRow()){
+     $result=mysql_query($sql);
+     if($found=mysql_fetch_array($result, MYSQL_ASSOC)){
        if($found['dist1']<3){
 	 echo json_encode(array('state'=>400,'msg1'=>_('Did you mean'),'msg2'=>'<a href="product.php?id='.$found['id'].'">'.$found['code'].'</a>'));
 	 break;
@@ -1262,8 +1262,8 @@ case('part_search'):
    }else{
      // look on the family list
      $sql=sprintf("select levenshtein(UPPER(%s),UPPER(name)) as dist1,    levenshtein(UPPER(SOUNDEX(%s)),UPPER(SOUNDEX(name))) as dist2, name ,id from product_group  order by dist1,dist2 limit 1;",prepare_mysql($q),prepare_mysql($q));
-     $result =& $db->query($sql);
-     if($found=$result->fetchRow()){
+     $result=mysql_query($sql);
+     if($found=mysql_fetch_array($result, MYSQL_ASSOC)){
        if($found['dist1']<3){
 	 echo json_encode(array('state'=>400,'msg1'=>_('Did you mean'),'msg2'=>'<a href="family.php?id='.$found['id'].'">'.$found['name'].'</a> '._('family') ));
 	 break;
@@ -1311,9 +1311,9 @@ case('part_search'):
    $q=addslashes($_REQUEST['query']);
    $sql="select product.id,code,description from product left join product2supplier on (product_id=product.id) where product2supplier.supplier_id=2 and code like '$q%' ";
    //     print $sql;
-   $res = $db->query($sql);
+   $res = mysql_query($sql);
    $data=array();
-   while($row=$res->fetchRow()) {
+   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      $data[]=array(
 		   'id'=>$row['id'],
 		   'code'=>$row['code'],
@@ -1397,8 +1397,8 @@ case('part_search'):
 
 
   $sql="select count(*) as total from product  as p left join product_group as g on (g.id=group_id) left join product_department as d on (d.id=department_id) $where $wheref ";
-  $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-  if($row=$res->fetchRow()) {
+  $result=mysql_query($sql);
+  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
     $total=$row['total'];
   }
     if($where==''){
@@ -1406,8 +1406,8 @@ case('part_search'):
     }else{
       
       $sql="select count(*) as total from product  as p left join product_group as g on (g.id=group_id) left join product_department as d on (d.id=department_id)  $where ";
-      $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-      if($row=$res->fetchRow()) {
+      $result=mysql_query($sql);
+      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 	$filtered=$row['total']-$total;
       }
       
@@ -1418,9 +1418,9 @@ case('part_search'):
    $sql="select p.awoutq,p.awtsq,p.price,p.units,ifnull(p.stock,-10000) as stock,p.condicion as condicion, p.code as code, p.id as id,p.description as description , group_id,department_id,g.name as fam, d.code as department 
 from product as p left join product_group as g on (g.id=group_id) left join product_department as d on (d.id=department_id)  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
    //     print $sql;
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   $result=mysql_query($sql);
    $data=array();
-   while($row=$res->fetchRow()) {
+   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      $data[]=array(
 		   'id'=>$row['id'],
 		    'condicion'=>$row['condicion'],
@@ -1446,7 +1446,7 @@ from product as p left join product_group as g on (g.id=group_id) left join prod
 			 'data'=>$data,
 			 'total_records'=>$total,
 			 'records_offset'=>$start_from,
-			 'records_returned'=>$start_from+$res->numRows(),
+			 //			 'records_returned'=>$start_from+$res->numRows(),
 			 'records_perpage'=>$number_results,
 			 'records_text'=>$rtext,
 			 'records_order'=>$order,
@@ -1685,8 +1685,8 @@ if(isset( $_REQUEST['restrictions']))
 
    $sum_active=0;
    $sql="select sum(`Product Family For Sale Products`) as sum_active  from `Product Family Dimension`    ";
-   $res = $db->query($sql); 
-   if($row=$res->fetchRow()) {
+   $result=mysql_query($sql);
+   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
      $sum_active=$row['sum_active'];
    }
@@ -1700,8 +1700,8 @@ if(isset( $_REQUEST['restrictions']))
      $sum_month_sales=0;
      $sql="select sum(if(`Product Family Total Profit`<0,`Product Family Total Profit`,0)) as total_profit_minus,sum(if(`Product Family Total Profit`>=0,`Product Family Total Profit`,0)) as total_profit_plus,sum(`Product Family Total Invoiced Amount`) as sum_total_sales   from `Product Family Dimension`    ";
     
-     $res = $db->query($sql); 
-     if($row=$res->fetchRow()) {
+     $result=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
        $sum_total_sales=$row['sum_total_sales'];
 
@@ -1715,8 +1715,8 @@ if(isset( $_REQUEST['restrictions']))
      $sum_month_sales=0;
      $sql="select sum(if(`Product Family 1 Year Acc Profit`<0,`Product Family 1 Year Acc Profit`,0)) as total_profit_minus,sum(if(`Product Family 1 Year Acc Profit`>=0,`Product Family 1 Year Acc Profit`,0)) as total_profit_plus,sum(`Product Family 1 Year Acc Invoiced Amount`) as sum_total_sales  from `Product Family Dimension`    ";
     
-     $res = $db->query($sql); 
-     if($row=$res->fetchRow()) {
+     $result=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
        $sum_total_sales=$row['sum_total_sales'];
 
@@ -1730,8 +1730,8 @@ if(isset( $_REQUEST['restrictions']))
      $sum_month_sales=0;
      $sql="select sum(if(`Product Family 1 Quarter Acc Profit`<0,`Product Family 1 Quarter Acc Profit`,0)) as total_profit_minus,sum(if(`Product Family 1 Quarter Acc Profit`>=0,`Product Family 1 Quarter Acc Profit`,0)) as total_profit_plus,sum(`Product Family 1 Quarter Acc Invoiced Amount`) as sum_total_sales   from `Product Family Dimension`    ";
     
-     $res = $db->query($sql); 
-     if($row=$res->fetchRow()) {
+     $result=$mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
        $sum_total_sales=$row['sum_total_sales'];
 
@@ -1745,8 +1745,8 @@ if(isset( $_REQUEST['restrictions']))
      $sum_month_sales=0;
      $sql="select sum(if(`Product Family 1 Month Acc Profit`<0,`Product Family 1 Month Acc Profit`,0)) as total_profit_minus,sum(if(`Product Family 1 Month Acc Profit`>=0,`Product Family 1 Month Acc Profit`,0)) as total_profit_plus,sum(`Product Family 1 Month Acc Invoiced Amount`) as sum_total_sales   from `Product Family Dimension`    ";
     
-     $res = $db->query($sql); 
-     if($row=$res->fetchRow()) {
+     $result=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
        $sum_total_sales=$row['sum_total_sales'];
 
@@ -1760,8 +1760,8 @@ if(isset( $_REQUEST['restrictions']))
      $sum_month_sales=0;
      $sql="select sum(if(`Product Family 1 Week Acc Profit`<0,`Product Family 1 Week Acc Profit`,0)) as total_profit_minus,sum(if(`Product Family 1 Week Acc Profit`>=0,`Product Family 1 Week Acc Profit`,0)) as total_profit_plus,sum(`Product Family 1 Week Acc Invoiced Amount`) as sum_total_sales   from `Product Family Dimension`    ";
     
-     $res = $db->query($sql); 
-     if($row=$res->fetchRow()) {
+     $result=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
        $sum_total_sales=$row['sum_total_sales'];
 
@@ -2156,22 +2156,24 @@ $where=" ";
     $wheref.=" and  `Store Code` like '".addslashes($f_value)."%'";
 
   
-
+ 
 
 
    $sql="select count(*) as total from `Store Dimension`   $where $wheref";
 
-   $res = $db->query($sql); 
-   if($row=$res->fetchRow()) {
+   $result=mysql_query($sql);
+   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      $total=$row['total'];
    }
-   if($wheref==''){
+
+     
+     if($wheref==''){
        $filtered=0;$total_records=$total;
    }else{
      $sql="select count(*) as total `Store Dimension`   $where ";
 
-     $res = $db->query($sql); 
-     if($row=$res->fetchRow()) {
+     $result=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
       $total_records=$row['total'];
 	 $filtered=$total_records-$total;
      }
@@ -2264,8 +2266,8 @@ $where=" ";
 
 
  $sql="select sum(`Store For Sale Products`) as sum_active,sum(`Store Families`) as sum_families  from `Store Dimension`    ";
- $res = $db->query($sql); 
- if($row=$res->fetchRow()) {
+ $result=mysql_query($sql);
+ if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
    $sum_families=$row['sum_families'];
    $sum_active=$row['sum_active'];
  }
@@ -2277,8 +2279,8 @@ $where=" ";
     $sum_month_sales=0;
     $sql="select sum(if(`Store Total Profit`<0,`Store Total Profit`,0)) as total_profit_minus,sum(if(`Store Total Profit`>=0,`Store Total Profit`,0)) as total_profit_plus,sum(`Store Total Invoiced Amount`) as sum_total_sales  from `Store Dimension`    ";
     
-    $res = $db->query($sql); 
-    if($row=$res->fetchRow()) {
+    $result=mysql_query($sql);
+    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
       $sum_total_sales=$row['sum_total_sales'];
 
@@ -2292,8 +2294,8 @@ $where=" ";
     $sum_month_sales=0;
     $sql="select sum(if(`Store 1 Year Acc Profit`<0,`Store 1 Year Acc Profit`,0)) as total_profit_minus,sum(if(`Store 1 Year Acc Profit`>=0,`Store 1 Year Acc Profit`,0)) as total_profit_plus,sum(`Store For Sale Products`) as sum_active,sum(`Store 1 Year Acc Invoiced Amount`) as sum_total_sales  from `Store Dimension`    ";
     
-    $res = $db->query($sql); 
-    if($row=$res->fetchRow()) {
+    $result=mysql_query($sql);
+    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
       $sum_total_sales=$row['sum_total_sales'];
 
@@ -2307,8 +2309,8 @@ $where=" ";
     $sum_month_sales=0;
     $sql="select sum(if(`Store 1 Quarter Acc Profit`<0,`Store 1 Quarter Acc Profit`,0)) as total_profit_minus,sum(if(`Store 1 Quarter Acc Profit`>=0,`Store 1 Quarter Acc Profit`,0)) as total_profit_plus,sum(`Store For Sale Products`) as sum_active,sum(`Store 1 Quarter Acc Invoiced Amount`) as sum_total_sales   from `Store Dimension`    ";
     
-    $res = $db->query($sql); 
-    if($row=$res->fetchRow()) {
+    $result=mysql_query($sql);
+    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
       $sum_total_sales=$row['sum_total_sales'];
 
@@ -2322,8 +2324,8 @@ $where=" ";
     $sum_month_sales=0;
     $sql="select sum(if(`Store 1 Month Acc Profit`<0,`Store 1 Month Acc Profit`,0)) as total_profit_minus,sum(if(`Store 1 Month Acc Profit`>=0,`Store 1 Month Acc Profit`,0)) as total_profit_plus,sum(`Store For Sale Products`) as sum_active,sum(`Store 1 Month Acc Invoiced Amount`) as sum_total_sales   from `Store Dimension`    ";
     
-    $res = $db->query($sql); 
-    if($row=$res->fetchRow()) {
+    $result=mysql_query($sql);
+    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
       $sum_total_sales=$row['sum_total_sales'];
     
@@ -2337,8 +2339,8 @@ $where=" ";
     $sum_month_sales=0;
     $sql="select sum(if(`Store 1 Week Acc Profit`<0,`Store 1 Week Acc Profit`,0)) as total_profit_minus,sum(if(`Store 1 Week Acc Profit`>=0,`Store 1 Week Acc Profit`,0)) as total_profit_plus,sum(`Store For Sale Products`) as sum_active,sum(`Store 1 Week Acc Invoiced Amount`) as sum_total_sales   from `Store Dimension`    ";
     
-    $res = $db->query($sql); 
-    if($row=$res->fetchRow()) {
+    $result=mysql_query($sql);
+    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
       $sum_total_sales=$row['sum_total_sales'];
      
@@ -2830,8 +2832,8 @@ $sum_discontinued=number($sum_discontinued);
    }else{
      $sql="select count(*) as total `Product Department Dimension`   $where ";
      
-     $res = $db->query($sql); 
-     if($row=$res->fetchRow()) {
+     $result=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
       	$total_records=$row['total'];
 	$filtered=$total_records-$total;
      }
@@ -2897,8 +2899,8 @@ $sum_discontinued=number($sum_discontinued);
 $sum_families=0;
 $sum_active=0;
  $sql="select sum(`Product Department For Sale Products`) as sum_active,sum(`Product Department Families`) as sum_families  from `Product Department Dimension` $where   ";
- $res = $db->query($sql); 
- if($row=$res->fetchRow()) {
+ $result=mysql_query($sql);
+ if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
    $sum_families=$row['sum_families'];
    $sum_active=$row['sum_active'];
  }
@@ -2910,8 +2912,8 @@ $sum_active=0;
     $sum_month_sales=0;
     $sql="select sum(if(`Product Department Total Profit`<0,`Product Department Total Profit`,0)) as total_profit_minus,sum(if(`Product Department Total Profit`>=0,`Product Department Total Profit`,0)) as total_profit_plus,sum(`Product Department Total Invoiced Amount`) as sum_total_sales  from `Product Department Dimension` $where   ";
     
-    $res = $db->query($sql); 
-    if($row=$res->fetchRow()) {
+    $result=mysql_query($sql);
+    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
       $sum_total_sales=$row['sum_total_sales'];
 
@@ -2925,8 +2927,8 @@ $sum_active=0;
     $sum_month_sales=0;
     $sql="select sum(if(`Product Department 1 Year Acc Profit`<0,`Product Department 1 Year Acc Profit`,0)) as total_profit_minus,sum(if(`Product Department 1 Year Acc Profit`>=0,`Product Department 1 Year Acc Profit`,0)) as total_profit_plus,sum(`Product Department For Sale Products`) as sum_active,sum(`Product Department 1 Year Acc Invoiced Amount`) as sum_total_sales  from `Product Department Dimension`  $where  ";
     
-    $res = $db->query($sql); 
-    if($row=$res->fetchRow()) {
+    $result=mysql_query($sql);
+    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
       $sum_total_sales=$row['sum_total_sales'];
 
@@ -2940,8 +2942,8 @@ $sum_active=0;
     $sum_month_sales=0;
     $sql="select sum(if(`Product Department 1 Quarter Acc Profit`<0,`Product Department 1 Quarter Acc Profit`,0)) as total_profit_minus,sum(if(`Product Department 1 Quarter Acc Profit`>=0,`Product Department 1 Quarter Acc Profit`,0)) as total_profit_plus,sum(`Product Department For Sale Products`) as sum_active,sum(`Product Department 1 Quarter Acc Invoiced Amount`) as sum_total_sales   from `Product Department Dimension`  $where  ";
     
-    $res = $db->query($sql); 
-    if($row=$res->fetchRow()) {
+    $result=mysql_query($sql);
+    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
       $sum_total_sales=$row['sum_total_sales'];
 
@@ -2955,8 +2957,8 @@ $sum_active=0;
     $sum_month_sales=0;
     $sql="select sum(if(`Product Department 1 Month Acc Profit`<0,`Product Department 1 Month Acc Profit`,0)) as total_profit_minus,sum(if(`Product Department 1 Month Acc Profit`>=0,`Product Department 1 Month Acc Profit`,0)) as total_profit_plus,sum(`Product Department For Sale Products`) as sum_active,sum(`Product Department 1 Month Acc Invoiced Amount`) as sum_total_sales   from `Product Department Dimension`   $where ";
     
-    $res = $db->query($sql); 
-    if($row=$res->fetchRow()) {
+    $result=mysql_query($sql);
+    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
       $sum_total_sales=$row['sum_total_sales'];
     
@@ -2970,8 +2972,8 @@ $sum_active=0;
     $sum_month_sales=0;
     $sql="select sum(if(`Product Department 1 Week Acc Profit`<0,`Product Department 1 Week Acc Profit`,0)) as total_profit_minus,sum(if(`Product Department 1 Week Acc Profit`>=0,`Product Department 1 Week Acc Profit`,0)) as total_profit_plus,sum(`Product Department For Sale Products`) as sum_active,sum(`Product Department 1 Week Acc Invoiced Amount`) as sum_total_sales   from `Product Department Dimension`  $where  ";
     
-    $res = $db->query($sql); 
-    if($row=$res->fetchRow()) {
+    $result=mysql_query($sql);
+    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
       $sum_total_sales=$row['sum_total_sales'];
      
@@ -3339,8 +3341,8 @@ case('locations'):
    
    $sql="select count(*) as total from `Location Dimension`    $where $wheref";
    // print $sql;
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-   if($row=$res->fetchRow()) {
+   $result=mysql_query($sql);
+   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      $total=$row['total'];
    }
    if($wheref==''){
@@ -3349,8 +3351,8 @@ case('locations'):
    }else{
      $sql="select count(*) as total from `Location Dimension`  $where ";
 
-     $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-     if($row=$res->fetchRow()) {
+     $result=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
        $total_records=$row['total'];
        $filtered=$row['total']-$total;
      }
@@ -3769,8 +3771,8 @@ case('locations'):
      $sum_total_stock_value=0;
      $sql="select sum(`Product Stock Value`) as sum_stock_value  from `Product Dimension` $where $wheref     ";
     
-     $res = $db->query($sql); 
-     if($row=$res->fetchRow()) {
+     $result=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
        $sum_total_stock_value=$row['sum_stock_value'];
      }
 
@@ -3781,8 +3783,8 @@ case('locations'):
        $sum_month_sales=0;
        $sql="select sum(if(`Product Total Profit`<0,`Product Total Profit`,0)) as total_profit_minus,sum(if(`Product Total Profit`>=0,`Product Total Profit`,0)) as total_profit_plus,sum(`Product Total Invoiced Amount`) as sum_total_sales ,sum(`Product Stock Value`) as sum_stock_value  from `Product Dimension` $where $wheref     ";
     
-       $res = $db->query($sql); 
-       if($row=$res->fetchRow()) {
+       $result=mysql_query($sql);
+       if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
 	 $sum_total_sales=$row['sum_total_sales'];
 
@@ -3797,8 +3799,8 @@ case('locations'):
        $sum_month_sales=0;
        $sql="select sum(if(`Product 1 Year Acc Profit`<0,`Product 1 Year Acc Profit`,0)) as total_profit_minus,sum(if(`Product 1 Year Acc Profit`>=0,`Product 1 Year Acc Profit`,0)) as total_profit_plus,sum(`Product 1 Year Acc Invoiced Amount`) as sum_total_sales  from `Product Dimension` $where $wheref   ";
     
-       $res = $db->query($sql); 
-       if($row=$res->fetchRow()) {
+       $result=mysql_query($sql);
+       if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
 	 $sum_total_sales=$row['sum_total_sales'];
 
@@ -3812,8 +3814,8 @@ case('locations'):
        $sum_month_sales=0;
        $sql="select sum(if(`Product 1 Quarter Acc Profit`<0,`Product 1 Quarter Acc Profit`,0)) as total_profit_minus,sum(if(`Product 1 Quarter Acc Profit`>=0,`Product 1 Quarter Acc Profit`,0)) as total_profit_plus,sum(`Product 1 Quarter Acc Invoiced Amount`) as sum_total_sales   from `Product Dimension`   $where $wheref   ";
     
-       $res = $db->query($sql); 
-       if($row=$res->fetchRow()) {
+       $result=mysql_query($sql);
+       if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
 	 $sum_total_sales=$row['sum_total_sales'];
 
@@ -3827,8 +3829,8 @@ case('locations'):
        $sum_month_sales=0;
        $sql="select sum(if(`Product 1 Month Acc Profit`<0,`Product 1 Month Acc Profit`,0)) as total_profit_minus,sum(if(`Product 1 Month Acc Profit`>=0,`Product 1 Month Acc Profit`,0)) as total_profit_plus,sum(`Product 1 Month Acc Invoiced Amount`) as sum_total_sales   from `Product Dimension`  $where $wheref    ";
     
-       $res = $db->query($sql); 
-       if($row=$res->fetchRow()) {
+       $result=mysql_query($sql);
+       if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
 	 $sum_total_sales=$row['sum_total_sales'];
 
@@ -3842,8 +3844,8 @@ case('locations'):
        $sum_month_sales=0;
        $sql="select sum(if(`Product 1 Week Acc Profit`<0,`Product 1 Week Acc Profit`,0)) as total_profit_minus,sum(if(`Product 1 Week Acc Profit`>=0,`Product 1 Week Acc Profit`,0)) as total_profit_plus,sum(`Product 1 Week Acc Invoiced Amount`) as sum_total_sales   from `Product Dimension`  $where $wheref    ";
     
-       $res = $db->query($sql); 
-       if($row=$res->fetchRow()) {
+       $result=mysql_query($sql);
+       if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
 	 $sum_total_sales=$row['sum_total_sales'];
 
@@ -4996,8 +4998,8 @@ $total_records=ceil($total_records/$number_results)+$total_records;
   $sql="select count(*) as total from `Supplier Product Dimension`  $where $wheref ";
 
 
-  $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-  if($row=$res->fetchRow()) {
+  $result=mysql_query($sql);
+  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
     $total=$row['total'];
   }
     if($wheref==''){
@@ -5005,8 +5007,8 @@ $total_records=ceil($total_records/$number_results)+$total_records;
     }else{
       
       $sql="select count(*) as total `Supplier Product Dimension`  $where  ";
-      $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-      if($row=$res->fetchRow()) {
+      $result=mysql_query($sql);
+      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 	$total_records=$row['total'];
 	$filtered=$row['total']-$total;
       }
@@ -5645,12 +5647,12 @@ $res = mysql_query($sql);
    $data_name='tsy';
    $sql=sprintf("select code,id,$data_name as value from product where $data_name>0 order by $data_name  desc ");
 
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   $result=mysql_query($sql);
    $data=array();
    $i=0;
    $total_value=0;
    $data=array();
-   while($row=$res->fetchRow()) {
+   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      $total_value+=$row['value'];
      $code[]=$row['code'];
      $data[]=$row['value'];
@@ -5676,17 +5678,17 @@ $res = mysql_query($sql);
    $first_day=addslashes($myconf['data_since']);
    $sql=sprintf("select yearweek  from list_week where yearweek not like '%%53' and first_day>%s and first_day < DATE_SUB(date(NOW()), INTERVAL 1 week); ",prepare_mysql($first_day));
 
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   $result=mysql_query($sql);
    $data=array();
-   while($row=$res->fetchRow()) {
+   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      $data[$row['yearweek']]=0;
    }
 
    $sql=sprintf("select sum(net) as net,yearweek(date_index,1) as year_week from orden  left join transaction on (order_id=orden.id) where product_id=11291 and date_index>%s and orden.tipo=2 group by yearweek(date_index) ",prepare_mysql($first_day));
    
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   $result=mysql_query($sql);
    $fix_w53='';
-   while($row=$res->fetchRow()) {
+   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
      if($fix_w53!=''){
        $b=$fix_w53;
@@ -5752,9 +5754,9 @@ break;
    //$product_id=$_SESSION['state']['product']['id'];
 
 //    $sql=sprintf("select (TO_DAYS(NOW())-TO_DAYS(first_date))/7 as weeks_since  from product where id=%d",$product_id);
-//    $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+//    $result=mysql_query($sql);
 
-//    if($row=$res->fetchRow()) {
+//    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 //      $weeks=floor($row['weeks_since']);
 //    }
    // $product=new Product($product_id);
@@ -5766,10 +5768,10 @@ break;
    $sql="select date_format(first_day,'%c') as month, first_day as date, yearweek,date_format(first_day,'%v %x') as week,  UNIX_TIMESTAMP(first_day)+36000 as utime  from list_week where first_day>'$first_day' and first_day < NOW(); ";
 
    $data=array();
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   $result=mysql_query($sql);
    $i=0;
    $last_month='';
-   while($row=$res->fetchRow()) {
+   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      $index[$row['yearweek']]=$i;
      $date=$row['utime'].'x  '.strftime("%b%y",$row['utime']);
      $data[]=array(
@@ -5795,9 +5797,9 @@ break;
    $tipo_orders=' (orden.tipo!=0 or orden.tipo!=3 or  orden.tipo!=9 or orden.tipo!=10) ';
    $sql=sprintf("select YEARWEEK(date_index) as yearweek,sum(charge)as asales,sum(profit)as profit,sum(dispached)as _out from transaction left join orden on (order_id=orden.id) where %s and product_id=%d  group by YEARWEEK(date_index)",$tipo_orders,$product_id);
 
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   $result=mysql_query($sql);
 
-    while($row=$res->fetchRow()) {
+    while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
       if(isset($index[$row['yearweek']])){
 	$_index=$index[$row['yearweek']];
@@ -5816,9 +5818,9 @@ break;
     $tipo_orders=' (orden.tipo!=0 or orden.tipo!=3 or  orden.tipo!=9 or orden.tipo!=10) ';
    $sql=sprintf("select YEARWEEK(date_index) as yearweek,sum(qty)as bono from bonus left join orden on (order_id=orden.id) where %s and product_id=%d  group by YEARWEEK(date_index)",$tipo_orders,$product_id);
 
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   $result=mysql_query($sql);
 
-    while($row=$res->fetchRow()) {
+    while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
       if(isset($index[$row['yearweek']])){
 	$_index=$index[$row['yearweek']];
@@ -5848,9 +5850,9 @@ break;
 
    $sql=sprintf("select month(first_date) as m ,  year(first_date) as y ,period_diff( $today, concat(year(first_date),if(month(first_date)<10,concat('0',month(first_date)) ,month(first_date))   )  )   as since from product_department where id=%d",$department_id);
 
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   $result=mysql_query($sql);
 
-   if($row=$res->fetchRow()) {
+   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      $month=floor($row['m']);
      $year=floor($row['y']);
      $first=sprintf("%d%02d",$year,$month);
@@ -5880,9 +5882,9 @@ break;
    $tipo_orders=' (o.tipo!=0 or o.tipo!=3 or  o.tipo!=9 or o.tipo!=10) ';
    $sql=sprintf("select   -period_diff( $first, concat(year(date_index),if(month(date_index)<10,concat('0',month(date_index)) ,month(date_index))   )  )   as since  ,  sum(charge) as asales ,sum(dispached)as _out ,year(date_index) as y,month(date_index) as m,  concat(year(date_index),100+month(date_index) )  as monthyear    from  transaction as t left join orden as o on (order_id=o.id) left join product on (product_id=product.id) left join product_group as pg on (group_id=pg.id)  where %s and department_id=%d  group by monthyear order by  monthyear ",$tipo_orders,$department_id);
    //      print "$sql";
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   $result=mysql_query($sql);
 
-   while($row=$res->fetchRow()) {
+   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      $data[$row['since']]['out']=(int)$row['_out'];
      $data[$row['since']]['asales']=(float)$row['asales'];
      if($tipo=='plot_monthout')
@@ -5913,9 +5915,9 @@ break;
 
    $sql=sprintf("select month(first_date) as m ,  year(first_date) as y ,period_diff( $today, concat(year(first_date),if(month(first_date)<10,concat('0',month(first_date)) ,month(first_date))   )  )   as since from product where id=%d",$product_id);
 
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   $result=mysql_query($sql);
 
-   if($row=$res->fetchRow()) {
+   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      $month=floor($row['m']);
      $year=floor($row['y']);
      $first=sprintf("%d%02d",$year,$month);
@@ -5944,9 +5946,9 @@ break;
    $tipo_orders=' (o.tipo!=0 or o.tipo!=3 or  o.tipo!=9 or o.tipo!=10) ';
    $sql=sprintf("select   -period_diff( $first, concat(year(date_index),if(month(date_index)<10,concat('0',month(date_index)) ,month(date_index))   )  )   as since  ,  sum(charge) as asales ,sum(dispached)as _out ,year(date_index) as y,month(date_index) as m,  concat(year(date_index),100+month(date_index) )  as monthyear    from  transaction as t left join orden as o on (order_id=o.id) left join product on (product_id=product.id) where %s and product_id=%d  group by monthyear order by  monthyear ",$tipo_orders,$product_id);
    //      print "$sql";
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   $result=mysql_query($sql);
 
-   while($row=$res->fetchRow()) {
+   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      $data[$row['since']]['out']=(int)$row['_out'];
      $data[$row['since']]['asales']=(float)$row['asales'];
      if($tipo=='plot_monthout')
@@ -5972,9 +5974,9 @@ break;
 
    $sql=sprintf("select quarter(first_date) as q ,  year(first_date) as y from product where id=%d",$product_id);
    //print "$sql";
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   $result=mysql_query($sql);
 
-   if($row=$res->fetchRow()) {
+   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      $q=floor($row['q']);
      $y=floor($row['y']);
    }
@@ -6003,9 +6005,9 @@ break;
    $tipo_orders=' (o.tipo!=0 or o.tipo!=3 or  o.tipo!=9 or o.tipo!=10) ';
    $sql=sprintf("select YEAR(date_index) as year,QUARTER(date_index) as quarter, concat(YEAR(date_index),QUARTER(date_index)) as qy,sum(charge)as asales,sum(dispached)as _out from transaction left join orden as o on (order_id=o.id) where %s  and product_id=%d  group by qy ",$tipo_orders,$product_id);
    //      print "$sql";
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   $result=mysql_query($sql);
 
-   while($row=$res->fetchRow()) {
+   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
       $data[$index[$row['qy']]]['asales']=$row['asales'];
       $data[$index[$row['qy']]]['out']=$row['_out'];
       switch($row['quarter']){
@@ -6045,9 +6047,9 @@ break;
 
    $sql=sprintf("select year(first_date) as y from product where id=%d",$product_id);
    //print "$sql";
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   $result=mysql_query($sql);
    
-   if($row=$res->fetchRow()) {
+   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      $y=floor($row['y']);
    }
 
@@ -6068,9 +6070,9 @@ break;
    $tipo_orders=' (o.tipo!=0 or o.tipo!=3 or  o.tipo!=9 or o.tipo!=10) ';
    $sql=sprintf("select YEAR(date_index) as year ,sum(charge)as asales ,sum(dispached)as _out from transaction left join orden as o on (order_id=o.id) where %s  and product_id=%d  group by year ",$tipo_orders,$product_id);
    //      print "$sql";
-$res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+$result=mysql_query($sql);
 
-while($row=$res->fetchRow()) {
+while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
   $data[$index[$row['year']]]['out']=$row['_out'];
   $data[$index[$row['year']]]['asales']=$row['asales'];
   if($tipo=='plot_yearout')
@@ -6091,9 +6093,9 @@ while($row=$res->fetchRow()) {
    $product_id=$_SESSION['tables']['order_withprod'][4];
 
    $sql=sprintf("select (TO_DAYS(NOW())-TO_DAYS(first_date))/7 as weeks_since  from product where id=%d",$product_id);
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   $result=mysql_query($sql);
 
-   if($row=$res->fetchRow()) {
+   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      $weeks=floor($row['weeks_since']);
    }
 
@@ -6112,9 +6114,9 @@ while($row=$res->fetchRow()) {
    
    $sql=sprintf("select  count(DISTINCT o.customer_id) as acustomers,count(DISTINCT o.id) as aorders,yearweek(date_index)  as weekyear, (52*(year(date_index)-year(first_date))+ (week(date_index,3)-week(first_date,3))) as week_num from  transaction as t left join orden as o on (order_id=o.id) left join product on (product_id=product.id) where product_id=%d and o.tipo=2 group by weekyear order by week_num  ",$product_id);
    //     print "$sql";
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   $result=mysql_query($sql);
 
-   while($row=$res->fetchRow()) {
+   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      $data[$row['week_num']]['aorders']=$row['aorders'];
      $data[$row['week_num']]['acustomers']=$row['acustomers'];
 	  
@@ -6136,10 +6138,10 @@ case('plot_daystock'):
    
    $sql=sprintf("select TO_DAYS(op_date) as day,op_qty,op_date as date,stock from stock_history where product_id=%d   order by op_date  limit 2000",$product_id);
    //     print "$sql";
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   $result=mysql_query($sql);
    $_day='xxx';
    $i=0;
-   while($row=$res->fetchRow()) {
+   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      if($_day==$row['day']){
        array_pop($data);
        $data[]=array(
@@ -6196,9 +6198,9 @@ case('plot_daystock'):
   $product_id=$_SESSION['tables']['order_withprod'][4];
 
    $sql=sprintf("select (TO_DAYS(NOW())-TO_DAYS(first_date))/7 as weeks_since  from product where id=%d",$product_id);
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   $result=mysql_query($sql);
 
-   if($row=$res->fetchRow()) {
+   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      $weeks=floor($row['weeks_since']);
    }
 
@@ -6216,9 +6218,9 @@ case('plot_daystock'):
    
    $sql=sprintf("select  sum(charge) as asales,count(DISTINCT o.id) as aorders,yearweek(date_index)  as weekyear, (52*(year(date_index)-year(first_date))+ (week(date_index,3)-week(first_date,3))) as week_num from  transaction as t left join orden as o on (order_id=o.id) left join product on (product_id=product.id) where product_id=%d and o.tipo=2 group by weekyear order by week_num  ",$product_id);
    //   print "$sql";
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+   $result=mysql_query($sql);
 
-   while($row=$res->fetchRow()) {
+   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
      if($row['aorders']>0)
        $salesperorder=number_format($row['asales']/$row['aorders'],1,".","");
@@ -6338,8 +6340,8 @@ case('plot_daystock'):
    
    $sql="select count(*) as total from history    $where $wheref";
    //   print "$sql";
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-   if($row=$res->fetchRow()) {
+   $result=mysql_query($sql);
+   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      $total=$row['total'];
    }
    if($wheref=='')
@@ -6347,8 +6349,8 @@ case('plot_daystock'):
    else{
      $sql="select count(*) as total from history  $where ";
      
-     $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-     if($row=$res->fetchRow()) {
+     $result=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
        $filtered=$row['total']-$total;
      }
 
@@ -6365,9 +6367,9 @@ case('plot_daystock'):
 
   $sql=sprintf("select  UNIX_TIMESTAMP(date) as date,handle as author ,history.note,history.staff_id  from history left join liveuser_users  on (authuserid=history.staff_id) $where $wheref order by $order $order_direction limit $start_from,$number_results ");
   // print $sql;
-  $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+  $result=mysql_query($sql);
   $adata=array();
-  while($data=$res->fetchRow()) {
+  while($data=mysql_fetch_array($result, MYSQL_ASSOC)){
 
 
     $adata[]=array(
@@ -6487,8 +6489,8 @@ if(isset( $_REQUEST['tableid']))
    
    $sql="select count(*) as total from `Location Dimension`   $where $wheref";
    //   print "$sql";
-   $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-   if($row=$res->fetchRow()) {
+   $result=mysql_query($sql);
+   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      $total=$row['total'];
    }
    if($wheref=='')
@@ -6496,8 +6498,8 @@ if(isset( $_REQUEST['tableid']))
    else{
      $sql="select count(*) as total from `Location Dimension`   $where ";
      
-     $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
-     if($row=$res->fetchRow()) {
+     $result=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
        $filtered=$row['total']-$total;
      }
 
@@ -6514,9 +6516,9 @@ if(isset( $_REQUEST['tableid']))
 
    $sql=sprintf("select  *,IFNULL(`User Key`,-1) as user from `Inventory Transition Fact`  $where $wheref order by $order $order_direction limit $start_from,$number_results ");
   print $sql;
-  $res = $db->query($sql); if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
+  $result=mysql_query($sql);
   $adata=array();
-  while($data=$res->fetchRow()) {
+  while($data=mysql_fetch_array($result, MYSQL_ASSOC)){
     
     if($data['user']=-1)
       $author=_('Unknown');

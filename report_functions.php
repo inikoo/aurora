@@ -344,8 +344,8 @@ if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 /* 	  $errors=false; */
 /* 	  $sql=sprintf("select public_id,net ,tax from orden   where  orden.tipo=2 and vateable=1 and ROUND(100*ifnull(tax,0)/net,1)=%.1f   %s  ",$row['vat_rate'],$int[0]); */
 /* 	  //  print $sql." | ".$row['vat_rate']."   <br>"; */
-/* 	  $res2 = $db->query($sql); */
-/* 	  while($row2=$res2->fetchRow()) { */
+/* 	  $res2 = mysql_query($sql); */
+/* 	  while($row2=mysql_fetch_array($res2, MYSQL_ASSOC))) { */
 /* 	    // print abs($avg_rate-$row['vat_rate'])." ".abs(1/$row2['net'])."<br>"; */
 /* 	    $min_diff=0; */
 /* 	    $closest_rate=false; */
@@ -399,8 +399,8 @@ if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
 /*  $sql=sprintf("select sum(net) as net,sum(tax) as tax , count(*) as invoices  from orden   where  orden.tipo=2 and vateable=0 and tax!=0 %s ",$int[0]); */
 /*  // print $sql; */
-/*  $res = $db->query($sql); */
-/*  if($row=$res->fetchRow()) { */
+/*  $res=mysql_query($sql);*/
+/*  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){ */
    
 /*    $net_notaxable_all+=$row['net'];  */
 /*    $tax_notaxable_all+=$row['tax'];  */
@@ -415,8 +415,8 @@ if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 /*  } */
  
 /*  $sql=sprintf("select sum(net) as net,sum(tax) as tax , count(*) as invoices  from orden   where  orden.tipo=2 and vateable=0 and tax=0 %s ",$int[0]); */
-/*  $res = $db->query($sql); */
-/*  if($row=$res->fetchRow()) { */
+/*  $res=mysql_query($sql);*/
+/*  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){ */
 /*      $net_notaxable_all+=$row['net'];  */
 /*    $tax_notaxable_all+=$row['tax'];  */
 /*    $invoices_notaxable_all+=$row['invoices'];  */
@@ -812,8 +812,8 @@ $balance['credits']['tax']=0;
 
 /* $sql=sprintf("select count(*) as orders,sum(value_net) as net, sum(value_net*ifnull(rate,0)) as tax  from debit left join tax_code on (debit.tax_code=tax_code.code)    where tipo=4 and order_affected_id is null %s  ",$_int); */
 /*  //  print $sql; */
-/* $res = $db->query($sql); */
-/*  if($row=$res->fetchRow()) { */
+/* $res=mysql_query($sql);*/
+/*  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){ */
 /*     $balance['refund_error']['credit_net']=$row['net']; */
 /*     $balance['refund_error']['credit_tax']=$row['tax']; */
 /*     $balance['refund_error']['total']=$row['tax']+$row['net']; */

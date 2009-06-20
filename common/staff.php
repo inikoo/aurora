@@ -6,7 +6,7 @@ function get_staff_alias($staff_id){
     return false;
 $db =& MDB2::singleton();
  $sql=sprintf("select alias from staff where id=%d",$staff_id);
- $res = $db->query($sql);  
+ $res=mysql_query($sql); 
  if($row=$res->fetchRow()){
    return $row['alias'];
  }else
@@ -20,10 +20,10 @@ function get_staff_data($staff_id){
 $db =& MDB2::singleton();
  $sql=sprintf("select * from staff where id=%d",$staff_id);
  // print "$sql";
- $res = $db->query($sql);  
+ $res=mysql_query($sql); 
  if($row=$res->fetchRow()){
    $sql=sprintf("select id from customer  where contact_id=%d",$row['contact_id']);
-   $res2 = $db->query($sql);  
+   $res2 = mysql_query($sql);  
    if($row2=$res2->fetchRow())
      $customer_id=$row2['id'];
    else
@@ -39,7 +39,7 @@ $db =& MDB2::singleton();
 function is_staff_customer($staff_id){
 $db =& MDB2::singleton();
  $sql=sprintf("select customer.id from customer  where id=%d",$staff_id);
- $res = $db->query($sql);  
+ $res=mysql_query($sql); 
  if($row=$res->fetchRow())
    return $row;
  else
