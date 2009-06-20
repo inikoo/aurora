@@ -118,6 +118,16 @@ class Contact extends DB_Table{
        //    print $options."\n";
     //print_r($raw_data);
 
+    
+    if(isset($raw_data['editor'])){
+      foreach($raw_data['editor'] as $key=>$value){
+
+	if(array_key_exists($key,$this->editor))
+	  $this->editor[$key]=$value;
+		    
+      }
+    }
+
     $this->candidate=array();
     $this->found=false;
     $create='';
@@ -688,8 +698,43 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
     if(mysql_query($sql)){
       $this->id= mysql_insert_id();
       $this->new=true;
-      //$this->get_data('id',$this->id);
+      $this->get_data('id',$this->id);
       
+
+      $note=_('Contact Created');
+      $details=_('Contact Created');
+    if($this->editor['Author Name'])
+      $author=$this->editor['Author Name'];
+    else
+      $author=_('System');
+    
+ if($this->editor['Date'])
+   $date=$this->editor['Date'];
+ else
+   $date=date("Y-m-d H:i:s");
+ 
+ $sql=sprintf("insert into `History Dimension` (`History Date`,`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`Author Name`,`Author Key`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+	      ,prepare_mysql($date)
+	      ,prepare_mysql('user')
+	      ,prepare_mysql($this->editor['User Key'])
+	      ,prepare_mysql('created')
+	      ,prepare_mysql($this->table_name)
+	      ,prepare_mysql($this->id)
+	      ,"''"
+	      ,"''"
+	      ,0
+	      ,prepare_mysql($note)
+	      ,prepare_mysql($details)
+	      ,prepare_mysql($author)
+	      ,prepare_mysql($this->editor['Author Key'])
+		  );
+ // print $sql;
+ // exit;
+   mysql_query($sql);
+      
+
+
+
 
       
       if(preg_match('/parent\:none|parent\:customer/',$options)){

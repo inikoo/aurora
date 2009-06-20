@@ -38,7 +38,7 @@ srand(12344);
 
 $sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed)  order by filename ";
 //$sql="select * from  orders_data.orders where filename like '%refund.xls'   order by filename";
-//$sql="select * from  orders_data.orders  where filename like '/mnt/y/%'  order by filename";
+//$sql="select * from  orders_data.orders  where filename='/mnt/s/Orders/12455.xls'  order by filename";
 
 
 $contador=0;
@@ -146,6 +146,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     }
 
 
+
     //if($tipo_order==2 or $tipo_order==1){
     //  print "\n";
     //  continue;
@@ -241,6 +242,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     if(strtotime($date_order)>strtotime($date2)){
       
 
+
       //$date2=date("Y-m-d H:i:s",strtotime($date_order.' +1 hour'));
       print "Warning (Fecha Factura anterior Fecha Orden) $filename $date_order  $date2 \n";
       $date2=date("Y-m-d H:i:s",strtotime($date_order.' +8 hour'));
@@ -263,6 +265,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       continue;
     }
    
+
  
 
     $data=array();

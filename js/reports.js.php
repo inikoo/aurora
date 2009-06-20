@@ -45,13 +45,26 @@ function init(){
 	    
 	}
 	var change_plot = function(e){
+
+	    
+	    var callback =
+	    {
+		success: function(o) {
+		    //alert(o.responseText)
+		},
+		failure: function(o) {alert("error")},
+		cache:false 
+	    }
+
+
+
 	    if(this.id=='timeplot_sales'){
 		Dom.get('plot_options_sales').style.display='none';
 		Dom.get('plot_options_sales_bis').style.display='';
 		Dom.get('plot_div').style.width='950px';
 		Dom.get('the_plot').src = 'timeplot.php?f=d';
 		
-		
+		YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=reports-sales-plot&value=timeplot_sales',callback );
 
 	    }else if(this.id=='net_sales_month' || this.id=='net_sales_month_bis'){
 		Dom.get('plot_div').style.width='810px';
@@ -68,11 +81,12 @@ function init(){
 
 		if(Dom.get('net_sales_gmonth').checked){
 		    Dom.get('the_plot').src = 'plot.php?tipo=total_sales_groupby_month';
-		    YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=reports-sales-plot&value=total_sales_groupby_month' );
+		    YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=reports-sales-plot&value=total_sales_groupby_month',callback );
 		    plot_sales='net_sales_gmonth';
 		}else{
+
 		    Dom.get('the_plot').src = 'plot.php?tipo=total_sales_month';
-		    YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=reports-sales-plot&value=total_sales_month' );
+		    YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=reports-sales-plot&value=total_sales_month',callback );
 		    plot_sales='net_sales_month';
 		}
 		
@@ -81,48 +95,53 @@ function init(){
 		
 	    }else if(this.id=='net_sales_gmonth'){
 		
-Dom.get('plot_div').style.width='810px';
+		Dom.get('plot_div').style.width='810px';
 		Dom.get('plot_options_sales').style.display='';
 		Dom.get('plot_options_sales_bis').style.display='none';
-
+		
 		if(this.checked){
 		    Dom.get('the_plot').src = 'plot.php?tipo=total_sales_groupby_month';
-		    YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=reports-sales-plot&value=total_sales_groupby_month' );
+
+		    YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=reports-sales-plot&value=total_sales_groupby_month',callback );
 		    plot_sales='net_sales_gmonth';
 		}else{
 		    Dom.get('the_plot').src = 'plot.php?tipo=total_sales_month';
-		    YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=reports-sales-plot&value=total_sales_month' );
+		    YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=reports-sales-plot&value=total_sales_month' ,callback);
+		    
+
 		    plot_sales='net_sales_month';
 		}
-
+		
 	    }else if(this.id=='net_diff1y_sales_month' || this.id=='net_diff1y_sales_month_net' || this.id=='net_diff1y_sales_month_bis'){
-Dom.get('plot_div').style.width='810px';
+		Dom.get('plot_div').style.width='810px';
 		Dom.get('plot_options_sales').style.display='';
 		Dom.get('plot_options_sales_bis').style.display='none';
-
+		
 		Dom.get('net_sales_month').className='but';
 		Dom.get('net_diff1y_sales_month').className='but selected';
 		Dom.get('timeplot_sales').className='but';
 		Dom.get('tr_net_diff1y_sales_month').style.display='';
 		Dom.get('tr_net_diff1y_sales_month_per').style.display='';
-			Dom.get('tr_net_sales_gmonth').style.display='none';
+		Dom.get('tr_net_sales_gmonth').style.display='none';
 
-
+		
 		Dom.get('net_diff1y_sales_month_net').checked=true;
 		Dom.get('the_plot').src = 'plot.php?tipo=net_diff1y_sales_month';
-		YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=reports-sales-plot&value=net_diff1y_sales_month' );
-		plot_sales='net_diff1y_sales_month';
 
+		YAHOO.util.Connect.asyncRequest('GET','ar_sessions.php?tipo=update&keys=reports-sales-plot&value=net_diff1y_sales_month' ,callback);
+		
+		plot_sales='net_diff1y_sales_month';
+		
 	    }if(this.id=='net_diff1y_sales_month_per'){
-Dom.get('plot_div').style.width='810px';
+		Dom.get('plot_div').style.width='810px';
 		Dom.get('plot_options_sales').style.display='';
 		Dom.get('plot_options_sales_bis').style.display='none';
-
+		
 
 		Dom.get('the_plot').src = 'plot.php?tipo=net_diff1y_sales_month_per';
-		YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=reports-sales-plot&value=net_diff1y_sales_month_per' );
+		YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=reports-sales-plot&value=net_diff1y_sales_month_per' ,callback);
 		plot_sales='net_diff1y_sales_month_per';
-
+		
 
 	    }
 

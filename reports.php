@@ -16,6 +16,9 @@ include_once('map_url.php');
 
 
 $tipo=$_SESSION['state']['reports']['view'];
+
+
+
 if(isset($_SESSION['state']['reports'][$tipo]['plot']))
   $tipo_plot=$_SESSION['state']['reports'][$tipo]['plot'];
 else

@@ -43,7 +43,7 @@ error_reporting(E_ALL);
 
 class dbSession
 {
-  var $db;
+
     /**
      *  Constructor of class
      *
@@ -85,7 +85,7 @@ class dbSession
      */
     function dbSession($gc_maxlifetime = "", $gc_probability = "", $gc_divisor = "", $securityCode = "sfjw8rq3pe28rnqwep8qwn*&P*(P31fne;fa84713847P883pe8qfmwq8efneprm52gxn&^&^&^")
     {
-      $this->db=& MDB2::singleton();
+
       
         // if $gc_maxlifetime is specified and is an integer number
         if ($gc_maxlifetime != "" && is_integer($gc_maxlifetime)) {
@@ -195,6 +195,9 @@ class dbSession
 
         "));
 
+
+	
+
         // return the number of found rows
         return $result["count"];
 
@@ -252,25 +255,15 @@ class dbSession
 
         ";
       
-      $res =& $this->db->query($sql);
-      if (PEAR::isError($res)) {
-	die($res->getMessage());
+      $res = mysql_query($sql);
+       $result=mysql_query($sql);
+
+      if( ($data=mysql_fetch_array($result, MYSQL_ASSOC))){
+	return $data['session_data']; 
       }
-
-      // if anything was found
-      if ($res->numRows() > 0) {
-	
-	// return found data
-	$fields = $res->fetchRow();
-	// don't bother with the unserialization - PHP handles this automatically
-	
-	return $fields["session_data"];
-	    
-        }
-
-        // if there was an error return an empty string - this HAS to be an empty string
-        return "";
-
+      else 
+	return "";
+      
     }
 
     /**
@@ -307,38 +300,31 @@ class dbSession
 
         ";
 
-
-      $result =& $this->db->exec($sql);
-      if (PEAR::isError($result)) {
-	die($result->getMessage());
-      }
-
-        if ($result) {
-        
-            // note that after this type of queries, mysql_affected_rows() returns
-            // - 1 if the row was inserted
-            // - 2 if the row was updated
-        
-            // if the row was updated
-            if ($result > 1) {
-	      
-                // return TRUE
-                return true;
+      //print $sql;
+      if(mysql_query($sql)){
+	  $result=mysql_affected_rows();
+	  if ($result > 1) {
+	    
+	    // return TRUE
+	    return true;
                 
             // if the row was inserted
-            } else {
-
+	  } else {
+	    
                 // return an empty string
-                return "";
-
-            }
-
-        }
-        
-        // if something went wrong, return false
-        return false;
-
+	    return "";
+	    
+	  }
+	  
+	}else{
+	  print "error";
+	  return false;
+      }
+      
     }
+   
+
+      
 
     /**
      *  Custom destroy() function
@@ -357,19 +343,11 @@ class dbSession
                 session_id = '".mysql_real_escape_string($session_id)."'
 
         ";
-      $result =& $this->db->exec($sql);
-      if (PEAR::isError($result)) {
-	die($result->getMessage());
-      }
-      // if anything happened
-      if ($result) {
-            // return true
-            return true;
 
-        }
-
-        // if something went wrong, return false
-        return false;
+      if(mysql_query($sql))
+	return true;
+      else
+	return false;
 
     }
 
@@ -392,10 +370,7 @@ class dbSession
 
         ";
       
-      $result =& $this->db->exec($sql);
-      if (PEAR::isError($result)) {
-	die($result->getMessage());
-      }
+      mysql_query($sql);
 
     }
 
