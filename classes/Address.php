@@ -1030,15 +1030,15 @@ class Address extends DB_Table{
     }
 
     
-
     
-    if(Address::is_country_key($data['Address Country Key'])){
-      
+    
+    if( $data['Address Country Key'] and   Address::is_country_key($data['Address Country Key'])){
+
       $country=new Country('id',$data['Address Country Key']);
-    }elseif(Address::is_country_code($data['Address Country Code'])){
-      
+    }elseif( $data['Address Country Code']!='UNK'  and Address::is_country_code($data['Address Country Code'])){
+
       $country=new Country('code',$data['Address Country Code']);
-    }elseif(Address::is_country_2alpha_code($data['Address Country 2 Alpha Code'])){
+    }elseif($data['Address Country 2 Alpha Code']!='XX' and  Address::is_country_2alpha_code($data['Address Country 2 Alpha Code'])){
       $country=new Country('2 alpha code',$data['Address Country 2 Alpha Code']);
     }else{      
 
@@ -1306,20 +1306,26 @@ class Address extends DB_Table{
 	  $data['Address Country Name']='United Kingdom';
 	}
       }elseif($myconf['country_2acode']=='ES'){
+	
+	//if( preg_match('/^\d{5}$/',_trim($raw_data['Address Country Name'])) and ( _trim($data['Address Postal Code'])=='' or preg_match('/^(spain|Espa.a)$/i',_trim($data['Address Postal Code'])))){
+	if( preg_match('/^\d{5}$/',_trim($raw_data['Address Country Name']))
+	    and ( _trim($data['Address Postal Code'])=='' or preg_match('/^(spain|espa.{0,2}a|ESPA.{0,2}A)$/i',_trim($data['Address Postal Code'])) )
+	    ){
 
-	if( preg_match('/^\d{5}$/',$raw_data['Address Country Name']) and ( $data['Address Postal Code']=='' or preg_match('/^(spain|España)$/i',_trim($data['Address Country Postal Code'])))){
-
-	   
 	  $data['Address Postal Code']=$data['Address Country Name'];
-	  $data['Address Country Name']='Spain';
-
-	  if(preg_match('/^(spain|España)$/i',_trim($data['Address Country Primary Division']))){
+	  $data['Address Country Code']='ESP';
+	  $data['Address Country Key']=false;
+	  if(preg_match('/^(spain|Espa.{0,2}a)$/i',_trim($data['Address Country Primary Division']))){
 	    $data['Address Country Primary Division']='';
 	  }
 	  
-	  if(preg_match('/^(spain|España)$/i',_trim($data['Address Country Secondary Division']))){
+	  if(preg_match('/^(spain|Espa.{0,2}a)$/i',_trim($data['Address Country Secondary Division']))){
 	    $data['Address Country Secondary Division']='';
 	  }
+
+	  
+	  
+
 	  
 	  
 	}
@@ -1327,6 +1333,8 @@ class Address extends DB_Table{
 
 
       $data=Address::prepare_country_data($data);
+      // print_r($data);
+	  
       //foreach($data as $key=>$value){
       //	if(array_key_exists($key,$data)){
       //	  $data[$key]=_trim($value);
@@ -3248,7 +3256,7 @@ class Address extends DB_Table{
     if($data['Address Country Code']=='UNK'){
       if(!$empty){
 	print_r($raw_data);
-	//exit;
+	//	exit;
       }
       $data['Address Fuzzy Type'].=',Country,Region,Continent';
       $data['Address Fuzzy']='Yes';

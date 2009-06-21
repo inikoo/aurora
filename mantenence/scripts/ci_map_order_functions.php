@@ -4164,6 +4164,9 @@ function setup_contact($act_data,$header_data,$date_index){
  //exit;
 
 
+
+
+
   if($act_data['town']=='Korea South' and $act_data['country']=='' ){
     $act_data['country']='Korea South'; 
     $act_data['town']='';
@@ -4187,6 +4190,13 @@ function setup_contact($act_data,$header_data,$date_index){
     $act_data['country']='Ireland'; 
     $act_data['postcode']='';
 
+  }
+  if(preg_match('/^(Las Palmas)$/i',$act_data['town'])){
+    $act_data['country']='Spain'; 
+
+  }
+ if(preg_match('/^(Ciudad Real)$/i',$act_data['town'])  and $act_data['country']=='E'  ){
+    $act_data['country']='Spain'; 
   }
 
  
