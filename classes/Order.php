@@ -209,11 +209,14 @@ class Order extends DB_Table{
 				    $this->add_order_transaction ( $product_data );
 				    
 				  }
-				  //Set potential 
-				  
-				  $this->data['Order Total Net Potential Amount']=$this->load('Order Total Net Potential Amount');
 
-				  $sql = sprintf ( "update `Order Dimension` set `Order Total Net Potential Amount`=%.2f,`Order Original Lines`=%d,`Order Current Lines`=%d  where  `Order Key`=%d ",  $this->data['Order Total Net Potential Amount'],$line_number, $line_number, $this->data ['Order Key'] );
+
+				  $sql = sprintf ( "update `Order Dimension` set `Order Original Lines`=%d,`Order Current Lines`=%d  where  `Order Key`=%d "
+						   
+						   $line_number
+						   , $line_number
+						   , $this->data ['Order Key'] 
+						   );
 				  
 				  if (! mysql_query ( $sql ))
 				    exit ( "$sql eroro con no update total items " );
@@ -1884,7 +1887,7 @@ class Order extends DB_Table{
 	
 	function load($key = '', $args = '') {
 	  switch ($key) {
-	  case('Order Potential Net Amount'):
+	  case('Order Total Net Amount'):
 	    $sql = "select sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) as discount, sum(`Invoice Transaction Shipping Amount`) as shipping,sum(`Invoice Transaction Charges Amount`) as charges ,sum(`Invoice Transaction Total Tax Amount`) as tax   from `Order Transaction Fact` where  `Order Key`=" . $this->data ['Order Key'];
 	    $result = mysql_query ( $sql );
 	    if ($row = mysql_fetch_array ( $result, MYSQL_ASSOC )) {
