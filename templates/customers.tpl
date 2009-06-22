@@ -35,8 +35,8 @@
     
 
 
-    <div id="details"  style="margin-top:10px;padding:0 20px;width:770px;{if $details==0}display:none{/if}">
-      <h2>{t}Our Dear Customers{/t}</h2>
+    <div id="details"  style="clear:left;margin-top:10px;padding:0 20px;width:770px;{if $details==0}display:none{/if}">
+      <h2>{t}Customers Details{/t}</h2>
       <p style="width:475px">{$overview_text}</p>
       <p style="width:475px">{$top_text}</p>
       <p style="width:475px">{$export_text}</p>

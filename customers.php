@@ -151,36 +151,32 @@ $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu',$paginator_menu);
 
 
-// $sql="select count(distinct `Customer ID`) from  ";
-// $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
-// if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-//   $total_customers=$row['customers'];
-//  }
+ $sql="select count(distinct `Customer ID`) as customers from `Customer Dimension` ";
+ $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
+ if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+   $total_customers=$row['customers'];
+  }
 
 
-// $sql="select count(*) as customers from customer where contact_id>0 and (num_invoices+num_invoices_nd)>0  ";
-// $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
-// if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-//   $total_customers=$row['customers'];
-//  }
-// $now="NOW()";
-// $sql="select count(*) as active_customers from customer where contact_id>0 and order_interval>=0 and  (order_interval*3)>DATEDIFF($now,last_order)";
-// $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
-// $active_customers=0;
-// if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-//   $active_customers=$row['active_customers'];
-//  }
 
-// $sql="select count(*) as new_customers from customer  where   contact_id>0 and (num_invoices+num_invoices_nd)>0 and  (91.25)>DATEDIFF($now,first_order)";
-// $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
-// $new_customers=0;
-// if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-//   $new_customers=$row['new_customers'];
-//  }
+ $now="NOW()";
+ $sql="select count(*) as active_customers from `Customer Dimension` where  (`Customer Order Interval`)>DATEDIFF($now,`Customer Last Order Date`)";
+ $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
+ $active_customers=0;
+ if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+   $active_customers=$row['active_customers'];
+  }
+
+ $sql="select count(*) as new_customers from `Customer Dimension` where   (91.25)>DATEDIFF($now,`Customer First Order Date`)";
+ $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
+ $new_customers=0;
+ if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+   $new_customers=$row['new_customers'];
+  }
 
 
-// $overview_text=translate("He have indentified  %1\$s  customers so far, %2\$s of them still active (%3\$s%\). Over the last 3 months we acquired  %4\$s new customers representing  %5\$s of the total customer base.",$total_customers,$active_customers,percentage($active_customers,$total_customers),$new_customers,percentage($new_customers,$total_customers));
-// $smarty->assign('overview_text',$overview_text);
+$overview_text=translate("There are  %1\$s  customers so far, %2\$s of them still active (%3\$s%\). Over the last 3 months we acquired  %4\$s new customers representing  %5\$s of the total customer base.",number($total_customers),$active_customers,percentage($active_customers,$total_customers),$new_customers,percentage($new_customers,$active_customers));
+ $smarty->assign('overview_text',$overview_text);
 
 // $home_country='United Kingdom';
 // $home_informal_name=_('the UK');
