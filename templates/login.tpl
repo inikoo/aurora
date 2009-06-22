@@ -20,6 +20,9 @@
  <div id="loginbd" >
 <h1>{t}Welcome{/t}</h1>
 
+<div id="mensage">
+</div>
+
 <form name="loginform" id="loginform" method="post"   autocomplete="off" action="index.php">
 <table style="margin:60px auto;" >
             <tr>
@@ -48,21 +51,7 @@
 {/foreach}
 </div>
 </div> 
-{*JFA*}
-<div id="mensaje">
-<FORM method=post action="cgi-bin/script.pl">
-<TABLE frame="border">
-<TR>
-	<TD>Mensajes</TD>
-	<TD>
-	<TEXTAREA name="comentarios" cols="50" rows="1">
-Esto es algo no esperado
-Por lo cual se requiere 
-        </TEXTAREA>
-	</TD>
-</TR>
-</TABLE>
-</FORM>
-</div>
+
+
 
 

@@ -39,7 +39,7 @@ srand(1744);
 $sql="select * from  ci_orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and filename not like '%UK%'  and filename not like '%test%'  and filename!='/media/sda3/share/PEDIDOS 08/60005902.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60008607.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60009626.xls' order by filename ";
 //$sql="select * from  ci_orders_data.orders where filename like '%refund.xls'   order by filename";
 //$sql="select * from  ci_orders_data.orders  where (filename like '%Orders2005%' or  filename like '%PEDIDOS%.xls') and (last_transcribed is NULL  or last_read>last_transcribed) and filename!='/media/sda3/share/PEDIDOS 08/60005902.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60008607.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60009626.xls' or filename='%60003600.xls'   order by date";
-$sql="select * from  ci_orders_data.orders where  filename like '%60001586.xls'  order by filename";
+//$sql="select * from  ci_orders_data.orders where  filename like '%60001586.xls'  order by filename";
 $contador=0;
 //print $sql;
 $res=mysql_query($sql);
@@ -545,7 +545,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 					 ,'invoice qty'=>$transaction['order']-$transaction['reorder']
 					 ,'gross amount'=>$gross_amount
 					 ,'discount amount'=>$net_discount
-					 ,'current payment state'=>'Paid'
+
 
 
 
@@ -768,9 +768,14 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	}
      
 
-
-
-
+	foreach($data_invoice_transactions as $key=>$val){
+	  $data_invoice_transactions[$key]['tax rate']=$tax_rate;
+	  $data_invoice_transactions[$key]['tax code']=$tax_code;
+	  // print_r($val);exit;
+	  $data_invoice_transactions[$key]['tax amount']=$tax_rate*($val['gross amount']-($val['discount amount']));
+	}
+	
+	
 	$data_invoice=array(
 			    'Invoice Date'=>$date_inv
 			    ,'Invoice Public ID'=>$header_data['order_num']
@@ -826,7 +831,11 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	
 	//$order->create_dn_simple($data_dn,$data_dn_transactions);
 	$dn=new DeliveryNote('create',$data_dn,$data_dn_transactions,$order->id);
+	$order->update_delivery_notes('save');
+	$order->update_dispatch_state('Ready to Pick');
+	
 
+	
 	if($total_credit_value==0 and $header_data['total_topay']==0){
 
 	  //print "Zero value order ".$header_data['order_num']." \n";
@@ -836,8 +845,11 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	  //$order->create_invoice_simple($data_invoice,$data_invoice_transactions);
 	       
 	  $invoice=new Invoice ('create',$data_invoice,$data_invoice_transactions,$order->id); 
-
-	foreach($credits as $credit){
+	  $order->update_invoices('save');
+	  $invoice->data['Invoice Paid Date']=$date_inv;
+	  $invoice->pay();
+	  $order-> update_payment_state('Paid');
+	  foreach($credits as $credit){
 	  
 	  //	  print_r($header_data);
 	  $sql=sprintf("insert into `Order No Product Transaction Fact` values  (%s,%s,%s,%s,'Credit',%s,%.2f,%.2f,%s)"
@@ -862,14 +874,23 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 // 	    exit;
 	  }
 	  
+	  }
+
+
+
 	}
+	
+	$dn->pick_historic($data_dn_transactions);
+	$order->update_dispatch_state('Ready to Pack');
+	
+	$dn->pack('all');
+	$order->update_dispatch_state('Ready to Ship');
+		
+	$dn->dispatch('all');
+	$order->update_dispatch_state('Dispached');
 
 	$order->load('totals');
-
-	}
-
-
-
+	//	exit("caca\n");
       }else if($tipo_order==8 ){
 
 // 	$data['Order Type']='Order';
@@ -948,6 +969,13 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	  if($lag==0 or $lag<0)
 	    $lag='';
 
+	foreach($data_invoice_transactions as $key=>$val){
+	  $val[$key]['tax rate']=$tax_rate;
+	  $val[$key]['tax code']=$tax_code;
+
+	  $val[$key]['tax amount']=$tax_rate*($val[$key]['gross amount']-($val[$key]['discount amount']));
+	}
+
 
 	  $data_invoice=array(
 			      'Invoice Date'=>$date2
@@ -974,11 +1002,11 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 			    ,'Invoice Dispatching Lag'=>$lag
 			      );
 	  //$order->create_invoice_simple($data_invoice,$data_invoice_transactions);
-	    $invoice=new Invoice ('create',$data_invoice,$data_invoice_transactions,$order->id); 
+	  $invoice=new Invoice ('create',$data_invoice,$data_invoice_transactions,$order->id); 
+	  $invoice->data['Invoice Paid Date']=$date_inv;
+	  $invoice->pay();
 
-	  }else{
 
-	    $order->no_payment_applicable();
 	  }
 
 

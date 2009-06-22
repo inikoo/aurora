@@ -163,7 +163,7 @@ class Family{
      $this->new=true;
 
    }else{
-     $this->msg=_("Error can not create the family");
+     $this->msg=_("$sql  Error can not create the family");
    }   
  }
   /*

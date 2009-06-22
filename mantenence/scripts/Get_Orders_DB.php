@@ -951,7 +951,11 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	}
      
 
-
+		foreach($data_invoice_transactions as $key=>$val){
+	  $val[$key]['tax rate']=$tax_rate;
+	  $val[$key]['tax code']=$tax_code;
+	  $val[$key]['tax amount']=$tax_rate*($val['key']['gross amount']-($val['key']['discount amount']));
+	}
 
 
 	$data_invoice=array(
@@ -1133,6 +1137,12 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	  if($lag==0 or $lag<0)
 	    $lag='';
 
+
+	  foreach($data_invoice_transactions as $key=>$val){
+	  $val[$key]['tax rate']=$tax_rate;
+	  $val[$key]['tax code']=$tax_code;
+	  $val[$key]['tax amount']=$tax_rate*($val['key']['gross amount']-($val['key']['discount amount']));
+	}
 
 	  $data_invoice=array(
 			      'Invoice Date'=>$date2

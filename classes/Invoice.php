@@ -236,27 +236,31 @@ class Invoice extends DB_Table {
     foreach ( $transacions_data as $data ) {
       $line_number ++;
       
-      $sql = sprintf ( "update  `Order Transaction Fact`  set `Current Payment State`=%s,`Current Dispatching State`=%s,`Invoice Date`=%s,`Order Last Updated Date`=%s, `Invoice Public ID`=%s,`Invoice Line`=%d,`Current Payment State`=%s ,`Invoice Quantity`=%s ,`Ship To Key`=%s ,`Invoice Transaction Gross Amount`=%.2f,`Invoice Transaction Total Discount Amount`=%.2f ,`Consolidated`='Yes',`Invoice Key`=%d where `Order Key`=%d and  `Order Line`=%d"
-		       , prepare_mysql ( 'Paid' )
-		       , prepare_mysql ( 'Dispached' )
+      $sql = sprintf ( "update  `Order Transaction Fact`  set `Current Payment State`=%s,`Invoice Date`=%s,`Order Last Updated Date`=%s, `Invoice Public ID`=%s,`Invoice Line`=%d,`Invoice Quantity`=%s ,`Ship To Key`=%s ,`Invoice Transaction Gross Amount`=%.2f,`Invoice Transaction Total Discount Amount`=%.2f ,`Consolidated`='No',`Invoice Transaction Outstanding Net Balance`=%.2f ,`Invoice Transaction Outstanding Tax Balance`=%.2f, `Transaction Tax Rate`=%f ,`Transaction Tax Code`=%s,`Invoice Transaction Outstanding Net Balance`=%.2f,`Invoice Transaction Outstanding Tax Balance`=%.2f ,`Invoice Key`=%d where `Order Key`=%d and  `Order Line`=%d"
+		       , prepare_mysql ( 'Waiting Payment' )
 		       , prepare_mysql ( $this->data ['Invoice Date'] )
 		       , prepare_mysql ( $this->data ['Invoice Date'] )
 		       , prepare_mysql ( $this->data ['Invoice Public ID'] )
 		       , $line_number
-		       , prepare_mysql ( $data ['current payment state'] )
 		       , prepare_mysql ( $data ['invoice qty'] )
 		       , prepare_mysql ( $ship_to_key )
 		       , $data ['gross amount']
 		       , $data ['discount amount']
+		       , $data ['gross amount']-$data ['discount amount']
+		       , $data ['tax amount']
+		       , $data ['tax rate']
+		        , prepare_mysql($data ['tax code'])
+		       , $data ['gross amount']-$data ['discount amount']
+		       , $data ['tax amount']
 		       , $this->data ['Invoice Key']
 		       , $order->data ['Order Key']
 		       , $line_number );
       
       $amount += $data ['gross amount'];
       $discounts += $data ['discount amount'];
-      
+      //      print "$sql";exit;
       if (! mysql_query ( $sql ))
-	exit ( "can not update order trwansiocion facrt after invoice" );
+	exit ( "$sql\n can not update order trwansiocion 11 facrt after invoice" );
     }
     
     //addign indovdual product costs
@@ -282,21 +286,63 @@ class Invoice extends DB_Table {
     }
 
 
-    $this->data ['Invoice Gross Amount'] = $amount;
-    $this->data ['Invoice Discount Amount'] = $discounts;
-    $net = $amount - $discounts;
-    $this->data ['Invoice Adjust Amount'] = $this->data ['Invoice Items Net Amount'] - $net;
-    $this->data ['Invoice Total Net Amount'] = $this->data ['Invoice Gross Amount'] - $this->data ['Invoice Discount Amount'] + $this->data ['Invoice Adjust Amount']+$this->data ['Invoice Charges Net Amount']+$this->data ['Invoice Shipping Net Amount'];
-    $this->data ['Invoice Items Tax Amount'] = $this->data ['Invoice Total Net Amount'] * $invoice_data ['tax_rate'];
-    $this->distribute_costs ();
+
+
+
+
+
+
     
-    $sql = sprintf ( "update `Invoice Dimension` set `Invoice Items Net Amount`=%.2f ,`Invoice Items Adjust Amount`=%.2f , `Invoice Items Gross Amount`=%.2f ,`Invoice Items Discount Amount`=%.2f  ,`Invoice Total Net Amount`=%.2f,`Invoice Items Tax Amount`=%.2f ,`Invoice XHTML Delivery Notes`=%s,`Invoice XHTML Ship Tos`=%s,`Invoice XHTML Orders`=%s,`Invoice Delivery Country 2 Alpha Code`=%s where `Invoice Key`=%d"
-		     , $this->data ['Invoice Items Net Amount']
-		     , $this->data ['Invoice Adjust Amount']
-		     , $amount
-		     , $discounts
-		     , $this->data ['Invoice Total Net Amount']
-		     , $this->data ['Invoice Items Tax Amount']
+/*     $invoice_txt = "Invoiced"; */
+    
+/*     if ($order->data ['Order Type'] == 'Delivery Note') */
+/*       $tipo = _ ( 'DN' ); */
+/*     elseif ($order->data ['Order Type'] == 'Order') */
+/*       $tipo = _ ( 'Order' ); */
+/*     elseif ($order->data ['Order Type'] == 'Sample') */
+/*       $tipo = _ ( 'Sample' ); */
+/*     elseif ($order->data ['Order Type'] == 'Donation') */
+/*       $tipo = _ ( 'Donation' ); */
+    
+/*     $state = sprintf ( '%s, %s <a href="invoice.php?id=%d">%s</a>', $tipo, $invoice_txt, $this->data ['Invoice Key'], addslashes ( $this->data ['Invoice Public ID'] ) ); */
+    
+/*     $order->data ['Order Adjust Amount'] = $this->data ['Invoice Adjust Amount']; */
+/*     $order->data ['Order Gross Amount'] = $this->data ['Invoice Gross Amount']; */
+/*     $order->data ['Order Discount Amount'] = $this->data ['Invoice Discount Amount']; */
+/*     $order->data ['Order Shipping Amount'] = $this->data ['Invoice Shipping Net Amount']; */
+/*     $order->data ['Order Charges Amount'] = $this->data ['Invoice Charges Net Amount']; */
+/*     $order->data ['Order Items Net Amount'] = $order->data ['Order Gross Amount'] - $order->data ['Order Discount Amount'] + $order->data ['Order Adjust Amount']; */
+    
+/*     $order->data ['Order Total Net Amount'] = $order->data ['Order Items Net Amount'] + $order->data ['Order Shipping Amount'] + $order->data ['Order Charges Amount']; */
+    
+/*     $order->data ['Order Total Tax Amount'] = $order->data ['Order Total Net Amount'] * $invoice_data ['tax_rate']; */
+    
+/*     $order->data ['Order Total Amount'] = $order->data ['Order Total Tax Amount'] + $order->data ['Order Total Net Amount']; */
+/*     $order->data ['Order Balance Total Amount'] = 0; */
+    
+/*     $sql = sprintf ( "update `Order Dimension` set `Order Current Dispatch State`='Dispached' ,`Order Current Payment State`='Paid',`Order Current XHTML State`=%s ,`Order XHTML Invoices`=%s,`Order Items Gross Amount`=%.2f ,`Order Items Discount Amount`=%.2f ,`Order Shipping Net Amount`=%.2f,`Order Charges Net Amount`=%.2f ,`Order Total Tax Amount`=%.2f ,`Order Total Amount`=%.2f,`Order Balance Total Amount`=%.2f,`Order Total Net Amount`=%.2f,`Order Items Adjust Amount`=%.2f, `Order Items Net Amount`=%.2f where `Order Key`=%d" */
+/* 		     , prepare_mysql ( $state ) */
+/* 		     , prepare_mysql ( $state ) */
+/* 		     , $order->data ['Order Gross Amount'] */
+/* 		     , $order->data ['Order Discount Amount'] */
+/* 		     , $order->data ['Order Shipping Amount'] */
+/* 		     , $order->data ['Order Charges Amount'] */
+/* 		     , $order->data ['Order Total Tax Amount'] */
+/* 		     , $order->data ['Order Total Amount'] */
+/* 		     , $order->data ['Order Balance Total Amount'] */
+/* 		     , $order->data ['Order Total Net Amount'] */
+/* 		     , $order->data ['Order Adjust Amount'] */
+/* 		     , $order->data ['Order Items Net Amount'] */
+/* 		     , $order->data ['Order Key'] ); */
+    
+/*     if (! mysql_query ( $sql )) */
+/*       exit ( "$sql can not update order dimension after inv xx\n" ); */
+
+    //Update product sales
+
+
+      $sql = sprintf ( "update `Invoice Dimension` set `Invoice XHTML Delivery Notes`=%s,`Invoice XHTML Ship Tos`=%s,`Invoice XHTML Orders`=%s,`Invoice Delivery Country 2 Alpha Code`=%s where `Invoice Key`=%d"
+	
 		     , prepare_mysql($this->data ['Invoice XHTML Delivery Notes'])
 		     , prepare_mysql($this->data ['Invoice XHTML Ship Tos'])
 		     , prepare_mysql($this->data ['Invoice XHTML Orders'])
@@ -304,58 +350,12 @@ class Invoice extends DB_Table {
 
 		     , $this->data ['Invoice Key'] 
 		     );
-    
-    // print $sql;
-    // exit;
-    if (! mysql_query ( $sql ))
-      exit ( "$sql\n xcan not update invoice dimension after inv\n" );
-    
-    $invoice_txt = "Invoiced";
-    
-    if ($order->data ['Order Type'] == 'Delivery Note')
-      $tipo = _ ( 'DN' );
-    elseif ($order->data ['Order Type'] == 'Order')
-      $tipo = _ ( 'Order' );
-    elseif ($order->data ['Order Type'] == 'Sample')
-      $tipo = _ ( 'Sample' );
-    elseif ($order->data ['Order Type'] == 'Donation')
-      $tipo = _ ( 'Donation' );
-    
-    $state = sprintf ( '%s, %s <a href="invoice.php?id=%d">%s</a>', $tipo, $invoice_txt, $this->data ['Invoice Key'], addslashes ( $this->data ['Invoice Public ID'] ) );
-    
-    $order->data ['Order Adjust Amount'] = $this->data ['Invoice Adjust Amount'];
-    $order->data ['Order Gross Amount'] = $this->data ['Invoice Gross Amount'];
-    $order->data ['Order Discount Amount'] = $this->data ['Invoice Discount Amount'];
-    $order->data ['Order Shipping Amount'] = $this->data ['Invoice Shipping Net Amount'];
-    $order->data ['Order Charges Amount'] = $this->data ['Invoice Charges Net Amount'];
-    $order->data ['Order Items Net Amount'] = $order->data ['Order Gross Amount'] - $order->data ['Order Discount Amount'] + $order->data ['Order Adjust Amount'];
-    
-    $order->data ['Order Total Net Amount'] = $order->data ['Order Items Net Amount'] + $order->data ['Order Shipping Amount'] + $order->data ['Order Charges Amount'];
-    
-    $order->data ['Order Total Tax Amount'] = $order->data ['Order Total Net Amount'] * $invoice_data ['tax_rate'];
-    
-    $order->data ['Order Total Amount'] = $order->data ['Order Total Tax Amount'] + $order->data ['Order Total Net Amount'];
-    $order->data ['Order Balance Total Amount'] = 0;
-    
-    $sql = sprintf ( "update `Order Dimension` set `Order Current Dispatch State`='Dispached' ,`Order Current Payment State`='Paid',`Order Current XHTML State`=%s ,`Order XHTML Invoices`=%s,`Order Items Gross Amount`=%.2f ,`Order Items Discount Amount`=%.2f ,`Order Shipping Net Amount`=%.2f,`Order Charges Net Amount`=%.2f ,`Order Total Tax Amount`=%.2f ,`Order Total Amount`=%.2f,`Order Balance Total Amount`=%.2f,`Order Total Net Amount`=%.2f,`Order Items Adjust Amount`=%.2f, `Order Items Net Amount`=%.2f where `Order Key`=%d"
-		     , prepare_mysql ( $state )
-		     , prepare_mysql ( $state )
-		     , $order->data ['Order Gross Amount']
-		     , $order->data ['Order Discount Amount']
-		     , $order->data ['Order Shipping Amount']
-		     , $order->data ['Order Charges Amount']
-		     , $order->data ['Order Total Tax Amount']
-		     , $order->data ['Order Total Amount']
-		     , $order->data ['Order Balance Total Amount']
-		     , $order->data ['Order Total Net Amount']
-		     , $order->data ['Order Adjust Amount']
-		     , $order->data ['Order Items Net Amount']
-		     , $order->data ['Order Key'] );
-    
-    if (! mysql_query ( $sql ))
-      exit ( "$sql can not update order dimension after inv xx\n" );
+      // print $sql;
+      mysql_query($sql);
 
-    //Update product sales
+      
+      $this->get_data('id',$this->data ['Invoice Key'] );
+      // print_r($this);
 
     foreach($this->orders as $key=>$order){
       $order->update_product_sales();
@@ -589,6 +589,74 @@ global $myconf;
 
 
  }
+ /*
+   function: pay
+   Pay invoice
+  */
+
+ function pay($tipo='full'){
+
+   
+   
+   
+   $sql = sprintf ( "update  `Order Transaction Fact`  set `Paid Factor`=1,`Current Payment State`='Paid',`Consolidated`='Yes',`Paid Date`=%s,`Invoice Transaction Outstanding Net Balance`=0,`Invoice Transaction Outstanding Tax Balance`=0 ,`Invoice Transaction Outstanding Tax Balance`=0 where `Invoice Key`=%d and `Consolidated`='No' ",prepare_mysql($this->data['Invoice Paid Date']),$this->id);
+   // print $sql;
+   mysql_query ( $sql );
+   $this->get_totals();
+   $sql=sprintf("update `Invoice Dimension`  set `Invoice Main Payment Method`=%s,`Invoice Paid Date`=%s ,`Invoice Paid`='Yes',`Invoice Has Been Paid In Full`='Yes' where `Invoice Key`=%d"
+		,prepare_mysql($this->data['Invoice Main Payment Method'])
+		,prepare_mysql($this->data['Invoice Paid Date'])
+
+		,$this->id);
+   mysql_query ( $sql );
+   //  print $sql;
+ }
+
+
+ function get_totals($force_values=false){
+
+
+   
+   $sql = "select sum(`Invoice Transaction Gross Amount`) as gross,sum(`Invoice Transaction Total Discount Amount`) as discount  ,sum(`Invoice Transaction Total Tax Amount`) as tax,sum(`Invoice Transaction Net Refund Amount`) as ref_net,sum(`Invoice Transaction Tax Refund Amount`) as ref_tax,sum(`Invoice Transaction Outstanding Net Balance`) as ob_net ,sum(`Invoice Transaction Outstanding Tax Balance`) as ob_tax ,sum(`Invoice Transaction Outstanding Refund Net Balance`) as ref_ob_net ,sum(`Invoice Transaction Outstanding Refund Tax Balance`) as ref_ob_tax  from `Order Transaction Fact`  where  `Invoice Key`=" . $this->data ['Invoice Key'];
+   //print $sql;
+   $result = mysql_query ( $sql );
+   if ($row = mysql_fetch_array ( $result, MYSQL_ASSOC )) {
+     $amount=$row['gross'];
+     $discounts=$row['discount'];
+     $tax=$row['tax'];
+   }
+   
+   
+   
+   $this->data ['Invoice Gross Amount'] = $amount;
+   $this->data ['Invoice Discount Amount'] = $discounts;
+   $net = $amount - $discounts;
+   
+   if(isset($force_values['Invoice Total Net Amount']))
+     $this->data ['Invoice Adjust Amount']=$force_values['Invoice Total Net Amount']-$net;
+   else
+     $this->data ['Invoice Adjust Amount']=0;
+
+   $this->data ['Invoice Total Net Amount'] = $this->data ['Invoice Gross Amount'] - $this->data ['Invoice Discount Amount'] + $this->data ['Invoice Adjust Amount']+$this->data ['Invoice Charges Net Amount']+$this->data ['Invoice Shipping Net Amount'];
+   $this->data ['Invoice Items Tax Amount'] = $tax;
+   $this->distribute_costs ();
+   
+   $sql = sprintf ( "update `Invoice Dimension` set `Invoice Items Net Amount`=%.2f ,`Invoice Items Adjust Amount`=%.2f , `Invoice Items Gross Amount`=%.2f ,`Invoice Items Discount Amount`=%.2f  ,`Invoice Total Net Amount`=%.2f,`Invoice Items Tax Amount`=%.2f where `Invoice Key`=%d"
+		     , $this->data ['Invoice Items Net Amount']
+		     , $this->data ['Invoice Adjust Amount']
+		     , $amount
+		     , $discounts
+		     , $this->data ['Invoice Total Net Amount']
+		     , $this->data ['Invoice Items Tax Amount']
+		   
+
+		     , $this->data ['Invoice Key'] 
+		     );
+   if (! mysql_query ( $sql ))
+      exit ( "$sql\n xcan not update invoice dimension after invccc\n" );
+
+ }
+
  
  
 }
