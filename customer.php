@@ -104,9 +104,9 @@ $order=$_SESSION['state']['customers']['table']['order'];
    elseif($order=='net_balance')
      $order='`Customer Net Balance`';
    elseif($order=='balance')
-     $order='`Customer Outstanding Balance`';
+     $order='`Customer Outstanding Net Balance`';
    elseif($order=='total_profit')
-     $order='`Customer Total Profit`';
+     $order='`Customer Profit`';
    elseif($order=='total_payments')
      $order='`Customer Total Payments`';
    elseif($order=='top_profits')

@@ -359,7 +359,7 @@ class Invoice extends DB_Table {
 
     foreach($this->orders as $key=>$order){
       $order->update_product_sales();
-      $order->update_balance();
+      $order->update_totals('save');
       $customer=new Customer($order->data['Order Customer Key']);
       $customer->update_orders();
       $customer->update_no_normal_data();
@@ -609,7 +609,16 @@ global $myconf;
 
 		,$this->id);
    mysql_query ( $sql );
-   //  print $sql;
+   $this->load('orders');
+   foreach($this->orders as $key=>$order){
+      $order->update_product_sales();
+      $order->update_totals('save');
+      $customer=new Customer($order->data['Order Customer Key']);
+      $customer->update_orders();
+      $customer->update_no_normal_data();
+   }
+   //   exit;
+ //  print $sql;
  }
 
 

@@ -16,6 +16,10 @@
        <span  class="product_search_msg"   id="customer_search_msg"    ></span> <span  class="search_sugestion"   id="customer_search_sugestion"    ></span>
        <br/>
        <span id="but_show_details" state="{$details}" atitle="{if $details==0}{t}Hide Details{/t}{else}{t}Show Details{/t}{/if}" class="state_details"   >{if $details==1}{t}Hide Details{/t}{else}{t}Show Details{/t}{/if}</span>
+
+       
+
+
        <br/><span id="but_edit" title="{t}Edit Customer Data{/t}" class="state_details"   >{t}Edit Customer{/t}</span>
 
        <table style="float:right;margin-top:20px">
@@ -31,6 +35,39 @@
   </div>
 
 
+<table border=0 cellpadding="2" style="float:right;margin-top:5px;" class="view_options">
+      <tr style="border-bottom:1px solid #ddd">
+	
+	<th><img src="art/icons/information.png" title="{t}Product Details{/t}"/></th>
+	<th><img src="art/icons/chart_line.png" title="{t}Charts{/t}"/></th>
+	<th><img  src="art/icons/cart.png" title="{t}Orders{/t}"/></th>
+	<th><img src="art/icons/user_green.png" title="{t}Customers{/t}"/></th>
+	<th><img src="art/icons/package.png" title="{t}Stock{/t}"/></th>
+      </tr>
+      <tr style="height:18px;border-bottom:1px solid #ddd">
+	<td  id="change_view_details" 
+	     {if $display.details==0}title="{t}Show Product Details{/t}" atitle="{t}Hide Product Details{/t}"{else}atitle="Hide Product Details"  title="{t}Hide Product Details{/t}"{/if} >
+	  <img {if $hide.details==0}style="opacity:0.2"{/if} src="art/icons/tick.png"  id="but_logo_details"  /></td>
+	{if $view_orders}
+	<td  id="change_view_plot" state="{$display.plot}" block="plot"  
+	     {if $display.plot==0} title="{t}Show Charts{/t}" atitle="{t}Hide Charts{/t}"{else} atitle="{t}Show Charts{/t}" title="{t}Hide Charts{/t}"{/if} >
+	  <img {if $display.plot==0}style="opacity:0.2"{/if} src="art/icons/tick.png"  id="but_logo_plot"  /></td>
+	
+	<td  state="{$display.orders}" block="orders"  id="change_view_orders" 
+	     {if $display.orders==0}title="{t}Show Orders{/t}" atitle="{t}Hide Orders{/t}" {else} atitle="{t}Show Orders{/t}" title="{t}Hide Orders{/t}" {/if} >
+	  <img {if $display.orders==0}style="opacity:0.2"{/if} src="art/icons/tick.png"    id="but_logo_orders"   /></td>
+	{/if}
+	<td  state="{$display.customers}" block="customers"   id="change_view_customers" {if $display.customers==0}title="{t}Show Customers who have ordered this product{/t}" atitle="{t}Hide Customers who have ordered this product{/t}"{else}atitle="{t}Show Customers who have ordered this product{/t}" title="{t}Hide Customers who have ordered this product{/t}"{/if} ><img {if $display.customers==0}style="opacity:0.2"{/if} src="art/icons/tick.png"    id="but_logo_customers"   /></td>
+	<td   state="{$display.stock_history}" block="stock_history"  id="change_view_stock_history" {if $display.stock_history==0}title="{t}Show Stock History{/t}" atitle="{t}Hide Stock History{/t}"{else}atitle="{t}Show Stock History{/t}" title="{t}Hide Stock History{/t}"{/if} ><img {if $display.stock_history==0}style="opacity:0.2"{/if} src="art/icons/tick.png"    id="but_logo_stock_history"   /></td>
+	
+      </tr>
+
+
+      
+    </table>
+
+
+
     <div class="yui-b" >
        <h1>{$customer->get('Customer Name')} <span style="color:SteelBlue">{$id}</span></h1> 
 <table id="customer_data" style="width:500px" border=0>
@@ -41,7 +78,8 @@
 <table border=0 style="padding:0">
 {if $customer->get('Customer Main Contact Key')}<tr><td colspan=2  class="aright">{$customer->get('Customer Main Contact Name')}</td ></tr>{/if}
 {if $customer->get('Customer Main Email Key')}<tr><td colspan=2  class="aright">{$customer->get('customer main XHTML email')}</td ><td><img src="art/icons/email.png"/></td></tr>{/if}
-{if $customer->get('Customer Main Telephone Key')}<tr><td colspan=2 class="aright">{$customer->get('customer main telephone')}</td ><td><img src="art/icons/telephone.png"/></td></tr>{/if}
+
+{if $customer->get('Customer Main Telephone Key')}<tr><td colspan=2 class="aright">{$customer->get('Customer Main Telephone')}</td ><td><img src="art/icons/telephone.png"/></td></tr>{/if}
 
 
 {foreach from=$telecoms item=telecom}
