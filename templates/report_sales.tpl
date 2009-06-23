@@ -44,6 +44,8 @@
 <td>w</td>
 <td>M</td>
 <td>T</td>
+
+
 <td>W</td>
 <td>T</td>
 <td>F</td>
@@ -51,6 +53,7 @@
 <td>D</td>
 
 </tr>
+
 
 <tr>
 <td><a href="report_sales.php?tipo=d&y={$period}&m=1">{$m[0]}</a></td>
