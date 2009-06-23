@@ -624,13 +624,19 @@ class Order extends DB_Table{
 		$this->data ['Order Balance Total Amount'] = 0;
 		$this->data ['Order Balance Net Amount'] = 0;
 		$this->data ['Order Balance Tax Amount'] = 0;
-		$sql = sprintf ( "update `Order Dimension` set `Order Current Payment State`=%s,`Order Current Dispatch State`=%s,`Order Current XHTML State`=%s,`Order XHTML Invoices`='',`Order XHTML Delivery Notes`='' ,`Order Balance Net Amount`=0,`Order Balance Tax Amount`=0,`Order Balance Total Amount`=0 where `Order Key`=%d"
+		$this->data ['Order Outstanding Balance Total Amount'] = 0;
+		$this->data ['Order Outstanding Balance Net Amount'] = 0;
+		$this->data ['Order Outstanding Balance Tax Amount'] = 0;
+
+		$sql = sprintf ( "update `Order Dimension` set `Order Current Payment State`=%s,`Order Current Dispatch State`=%s,`Order Current XHTML State`=%s,`Order XHTML Invoices`='',`Order XHTML Delivery Notes`='' ,`Order Balance Net Amount`=0,`Order Balance Tax Amount`=0,`Order Balance Total Amount`=0 ,`Order Outstanding Balance Net Amount`=0,`Order Outstanding Balance Tax Amount`=0,`Order Outstanding Balance Total Amount`=0,`Order Profit Amount`=0  where `Order Key`=%d"
 				 , prepare_mysql ( $this->data ['Order Current Payment State'] )
 				 , prepare_mysql ( $this->data ['Order Current Dispatch State'] )
 				 , prepare_mysql ( $this->data ['Order Current XHTML State'] )
+
+				 
 				 , $this->id );
 		if (! mysql_query ( $sql ))
-			exit ( "arror can not update cancel\n" );
+			exit ( "$sql arror can not update cancel\n" );
 		
 		$sql = sprintf ( "update `Order Transaction Fact` set `Consolidated`='Yes',`Current Dispatching State`='Cancelled',`Current Payment State`='Cancelled' where `Order Key`=%d ", $this->id )
 
@@ -1314,8 +1320,8 @@ class Order extends DB_Table{
 			// 	exit;
 			
 
-			if (! mysql_query ( $sql ))
-				exit ( "$sql\n can not update order transacrion aferter dn 313123" );
+			//if (! mysql_query ( $sql ))
+			//exit ( "$sql\n can not update order transacrion aferter dn 313123" );
 		
 		}
 		$dn_txt = "ready to pick";
@@ -1459,7 +1465,7 @@ class Order extends DB_Table{
 				$lag = sprintf ( "%f", (strtotime ( $this->data ['Delivery Note Date'] ) - strtotime ( $this->data ['Order Date'] )) / 3600 / 24 );
 			else
 				$lag = 'NULL';
-			$sql = sprintf ( "update `Order Transaction Fact` set `Invoice Public ID`='',  `Invoice Key`=0,  `Consolidated`='Yes' ,`Current Payment State`='No Applicable',`Current Dispatching State`='Dispached'  ,`Invoice Transaction Gross Amount`=0,`Estimated Weight`=%s,`Actual Shipping Date`=%s,`Order Last Updated Date`=%s, `Delivery Note ID`=%s,`Delivery Note Line`=%d,`Current Autorized to Sell Quantity`=%s ,`Delivery Note Quantity`=%s ,`Shipped Quantity`=%s ,`No Shipped Due Out of Stock`=%s ,`No Shipped Due No Authorized`=%s ,`No Shipped Due Not Found`=%s ,`No Shipped Due Other`=%s ,`Cost Supplier`=%s,`Cost Manufacure`=%s,`Cost Storing`=%s,`Cost Handing`=%s,`Cost Shipping`=%s,`Picking Advance`=100 ,`Packing Advance`=100,`Picker Key`=%d,`Packer Key`=%d ,`Delivery Note Key`=%d ,`Destination Country Key`=%s,`Backlog to Shipping Lag`=%s   where `Delivery Note Key`=%d and  `Order Line`=%d", prepare_mysql ( $data ['Estimated Weight'] ), prepare_mysql ( $this->data ['Delivery Note Date'] ), prepare_mysql ( $this->data ['Delivery Note Date'] ), prepare_mysql ( $this->data ['Delivery Note ID'] ), $line_number, $data ['Current Autorized to Sell Quantity'], $data ['Delivery Note Quantity'], prepare_mysql ( $data ['Shipped Quantity'] ), prepare_mysql ( $data ['No Shipped Due Out of Stock'] ), prepare_mysql ( $data ['No Shipped Due No Authorized'] ), prepare_mysql ( $data ['No Shipped Due Not Found'] ), prepare_mysql ( $data ['No Shipped Due Other'] ), prepare_mysql ( $cost_supplier ), prepare_mysql ( $cost_manu ), prepare_mysql ( $cost_storing ), prepare_mysql ( $cost_hand ), prepare_mysql ( $cost_shipping ), $picking_key, $packing_key, $this->data ['Delivery Note Key'], $this->destination_country_key, $lag, 
+			$sql = sprintf ( "update `Order Transaction Fact` set `Invoice Public ID`='',  `Invoice Key`=0,  `Consolidated`='Yes' ,`Current Payment State`='No Applicable',`Current Dispatching State`='Dispached'  ,`Invoice Transaction Gross Amount`=0,`Estimated Weight`=%s,`Actual Shipping Date`=%s,`Order Last Updated Date`=%s, `Delivery Note ID`=%s,`Delivery Note Line`=%d,`Current Autorized to Sell Quantity`=%s ,`Delivery Note Quantity`=%s ,`Shipped Quantity`=%s ,`No Shipped Due Out of Stock`=%s ,`No Shipped Due No Authorized`=%s ,`No Shipped Due Not Found`=%s ,`No Shipped Due Other`=%s ,`Cost Supplier`=%s,`Cost Manufacure`=%s,`Cost Storing`=%s,`Cost Handing`=%s,`Cost Shipping`=%s,`Picking Factor`=1 ,`Packing Factor`=1,`Picker Key`=%d,`Packer Key`=%d ,`Delivery Note Key`=%d ,`Backlog to Shipping Lag`=%s   where `Delivery Note Key`=%d and  `Order Line`=%d", prepare_mysql ( $data ['Estimated Weight'] ), prepare_mysql ( $this->data ['Delivery Note Date'] ), prepare_mysql ( $this->data ['Delivery Note Date'] ), prepare_mysql ( $this->data ['Delivery Note ID'] ), $line_number, $data ['Current Autorized to Sell Quantity'], $data ['Delivery Note Quantity'], prepare_mysql ( $data ['Shipped Quantity'] ), prepare_mysql ( $data ['No Shipped Due Out of Stock'] ), prepare_mysql ( $data ['No Shipped Due No Authorized'] ), prepare_mysql ( $data ['No Shipped Due Not Found'] ), prepare_mysql ( $data ['No Shipped Due Other'] ), prepare_mysql ( $cost_supplier ), prepare_mysql ( $cost_manu ), prepare_mysql ( $cost_storing ), prepare_mysql ( $cost_hand ), prepare_mysql ( $cost_shipping ), $picking_key, $packing_key, $this->data ['Delivery Note Key'], $lag, 
 
 			$this->data ['Delivery Note Key'], $line_number );
 			//    if($cost_supplier==''){
@@ -2631,7 +2637,7 @@ class Order extends DB_Table{
 	  Update total after invoice is made or paid
 	 */
 
-	function update_totals(){
+	function update_totals($args=''){
 	  global $myconf;
 	  $this->data['Order Balance Net Amount']=0;
 	  $this->data['Order Balance Tax Amount']=0;
@@ -2639,7 +2645,7 @@ class Order extends DB_Table{
 	  $this->data['Order Outstanding Balance Net Amount']=0;
 	  $this->data['Order Outstanding Balance Tax Amount']=0;
 	  $this->data['Order Outstanding Balance Total Amount']=0;
-	  $sql = "select sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`+`Invoice Transaction Shipping Amount`+`Invoice Transaction Charges Amount`) as net  ,sum(`Invoice Transaction Total Tax Amount`) as tax,sum(`Invoice Transaction Net Refund Amount`) as ref_net,sum(`Invoice Transaction Tax Refund Amount`) as ref_tax,sum(`Invoice Transaction Outstanding Net Balance`) as ob_net ,sum(`Invoice Transaction Outstanding Tax Balance`) as ob_tax ,sum(`Invoice Transaction Outstanding Refund Net Balance`) as ref_ob_net ,sum(`Invoice Transaction Outstanding Refund Tax Balance`) as ref_ob_tax   where  `Order Key`=" . $this->data ['Order Key'];
+	  $sql = "select  sum(`Cost Supplier`+`Cost Manufacure`+`Cost Storing`+`Cost Handing`+`Cost Shipping`)as costs,   sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`+`Invoice Transaction Shipping Amount`+`Invoice Transaction Charges Amount`) as net  ,sum(`Invoice Transaction Total Tax Amount`) as tax,sum(`Invoice Transaction Net Refund Amount`) as ref_net,sum(`Invoice Transaction Tax Refund Amount`) as ref_tax,sum(`Invoice Transaction Outstanding Net Balance`) as ob_net ,sum(`Invoice Transaction Outstanding Tax Balance`) as ob_tax ,sum(`Invoice Transaction Outstanding Refund Net Balance`) as ref_ob_net ,sum(`Invoice Transaction Outstanding Refund Tax Balance`) as ref_ob_tax  from `Order Transaction Fact`    where  `Order Key`=" . $this->data ['Order Key'];
 	  $result = mysql_query ( $sql );
 	  if ($row = mysql_fetch_array ( $result, MYSQL_ASSOC )) {
 	    $this->data['Order Balance Net Amount']=$row['net']+$row['ref_net'];
@@ -2648,10 +2654,21 @@ class Order extends DB_Table{
 	    $this->data['Order Outstanding Balance Net Amount']=$row['ob_net']+$row['ref_ob_net'];
 	    $this->data['Order Outstanding Balance Tax Amount']=$row['ob_tax']+$row['ref_ob_tax'];
 	    $this->data['Order Outstanding Balance Total Amount']=$this->data['Order Outstanding Balance Net Amount']+$this->data['Order Outstanding Balance Tax Amount'];
+	    
+	    $this->data['Order Balance Tax Refund']=$row['ref_tax'];
+	    $this->data['Order Balance Net Refund']=$row['ref_net'];
+	    $this->data['Order Balance Total Refund']=$row['net_tax']+$row['ref_net'];
+
+
+	    $this->data['Order Profit Amount']= $this->data['Order Balance Total Amount']-$this->data['Order Outstanding Balance Total Amount']- $row['costs'];
 	  }
 
 
+	  if(preg_match('/save/i',$args)){
 
+	    $sql=sprintf("");
+
+	  }
 
 	  
 	}
