@@ -1010,7 +1010,7 @@ class Customer extends DB_Table{
  public function update_orders(){
     $sigma_factor=3.2906;//99.9% value assuming normal distribution
 
-     $sql="select sum(`Order Balance Net Amount`) as balance, min(`Order Date`) as first_order_date ,max(`Order Date`) as last_order_date,count(*)as orders, sum(if(`Order Current Payment State` like '%Cancelled',1,0)) as cancelled,  sum( if(`Order Current Payment State` like '%Paid%'    ,1,0)) as invoiced,sum( if(`Order Current Payment State` like '%Refund%'    ,1,0)) as refunded,sum(if(`Order Current Dispatch State`='Unknown',1,0)) as unknown   from `Order Dimension` where `Order Customer Key`=".$this->id;
+     $sql="select sum(`Order Profit Amount`) as profit,sum(`Order Net Refund Amount`+`Order Net Credited Amount`) as net_refunds,sum(`Order Outstanding Balance Net Amount`) as net_outstanding, sum(`Order Balance Net Amount`) as net_balance,sum(`Order Tax Refund Amount`+`Order Tax Credited Amount`) as tax_refunds,sum(`Order Outstanding Balance Tax Amount`) as tax_outstanding, sum(`Order Balance Tax Amount`) as tax_balance, min(`Order Date`) as first_order_date ,max(`Order Date`) as last_order_date,count(*)as orders, sum(if(`Order Current Payment State` like '%Cancelled',1,0)) as cancelled,  sum( if(`Order Current Payment State` like '%Paid%'    ,1,0)) as invoiced,sum( if(`Order Current Payment State` like '%Refund%'    ,1,0)) as refunded,sum(if(`Order Current Dispatch State`='Unknown',1,0)) as unknown   from `Order Dimension` where `Order Customer Key`=".$this->id;
 
      $this->data['Customer Orders']=0;
      $this->data['Customer Orders Cancelled']=0;
@@ -1023,7 +1023,14 @@ class Customer extends DB_Table{
      $this->data['New Served Customer']='No';
      $this->data['Active Customer']='Unkwnown';
      $this->data['Customer Net Balance']=0;
-   
+     $this->data['Customer Net Refunds']=0;
+     $this->data['Customer Net Payments']=0;
+     $this->data['Customer Tax Balance']=0;
+     $this->data['Customer Tax Refunds']=0;
+     $this->data['Customer Tax Payments']=0;
+     $this->data['Customer Profit']=0;
+
+     //print $sql;exit;
      $result=mysql_query($sql);
      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
        
@@ -1031,7 +1038,19 @@ class Customer extends DB_Table{
        $this->data['Customer Orders Cancelled']=$row['cancelled'];
        $this->data['Customer Orders Invoiced']=$row['invoiced'];
        
-       $this->data['Customer Net Balance']=$row['balance'];
+       $this->data['Customer Net Balance']=$row['net_balance'];
+       $this->data['Customer Net Refunds']=$row['net_refunds'];
+       $this->data['Customer Net Payments']=$row['net_balance']-$row['net_outstanding'];
+       $this->data['Customer Outstanding Net Balance']=$row['net_outstanding'];
+
+       $this->data['Customer Tax Balance']=$row['tax_balance'];
+       $this->data['Customer Tax Refunds']=$row['tax_refunds'];
+       $this->data['Customer Tax Payments']=$row['tax_balance']-$row['tax_outstanding'];
+       $this->data['Customer Outstanding Tax Balance']=$row['tax_outstanding'];
+
+       $this->data['Customer Profit']=$row['profit'];
+
+
        if($this->data['Customer Orders']>0){
 	 $this->data['Customer First Order Date']=$row['first_order_date'];
 	 $this->data['Customer Last Order Date']=$row['last_order_date'] ;
@@ -1103,7 +1122,7 @@ class Customer extends DB_Table{
        
       
        
-       $sql=sprintf("update `Customer Dimension` set `Customer Net Balance`=%.2f,`Customer Orders`=%d,`Customer Orders Cancelled`=%d,`Customer Orders Invoiced`=%d,`Customer First Order Date`=%s,`Customer Last Order Date`=%s,`Customer Order Interval`=%s,`Customer Order Interval STD`=%s,`Active Customer`=%s,`Actual Customer`=%s,`Customer Type by Activity`=%s where `Customer Key`=%d",
+       $sql=sprintf("update `Customer Dimension` set `Customer Net Balance`=%.2f,`Customer Orders`=%d,`Customer Orders Cancelled`=%d,`Customer Orders Invoiced`=%d,`Customer First Order Date`=%s,`Customer Last Order Date`=%s,`Customer Order Interval`=%s,`Customer Order Interval STD`=%s,`Active Customer`=%s,`Actual Customer`=%s,`Customer Type by Activity`=%s,`Customer Net Refunds`=%.2f,`Customer Net Payments`=%.2f,`Customer Outstanding Net Balance`=%.2f,`Customer Tax Balance`=%.2f,`Customer Tax Refunds`=%.2f,`Customer Tax Payments`=%.2f,`Customer Outstanding Tax Balance`=%.2f,`Customer Profit`=%.2f where `Customer Key`=%d",
 		    $this->data['Customer Net Balance']
 		    ,$this->data['Customer Orders']
 		    ,$this->data['Customer Orders Cancelled']
@@ -1115,10 +1134,30 @@ class Customer extends DB_Table{
 		    ,prepare_mysql($this->data['Active Customer'])
 		    ,prepare_mysql($this->data['Actual Customer'])
 		    ,prepare_mysql($this->data['Customer Type by Activity'])
+
+
+		    
+		    
+		    
+
+		    ,$this->data['Customer Net Refunds']
+		    ,$this->data['Customer Net Payments']
+		    ,$this->data['Customer Outstanding Net Balance']
+		    
+		    ,$this->data['Customer Tax Balance']
+		    ,$this->data['Customer Tax Refunds']
+		    ,$this->data['Customer Tax Payments']
+		    ,$this->data['Customer Outstanding Tax Balance']
+		    
+		    ,$this->data['Customer Profit']
+
+
+
 		    ,$this->id
 		    );
 
-       mysql_query($sql);
+       if(!mysql_query($sql))
+	 exit("$sql error");
      }
 
 

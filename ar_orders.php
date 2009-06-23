@@ -964,6 +964,8 @@ else if($f_field=='maxvalue' and is_numeric($f_value) )
      $order='`Invoice Total Amount`';
 else if($order=='customer')
      $order='`Invoice Customer Name`';
+ else if($order=='state')
+     $order='`Invoice Has Been Paid In Full`';
 
   $sql="select `Invoice Has Been Paid In Full`,`Invoice Key`,`Invoice XHTML Orders`,`Invoice XHTML Delivery Notes`,`Invoice Public ID`,`Invoice Customer Key`,`Invoice Customer Name`,`Invoice Date`,`Invoice Total Amount`  from `Invoice Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
   // print $sql;

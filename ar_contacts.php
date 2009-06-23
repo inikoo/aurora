@@ -1476,11 +1476,11 @@ if(isset( $_REQUEST['where']))
 		   'email'=>$data['Customer Main XHTML Email'],
 		   'telephone'=>$data['Customer Main Telephone'],
 		   'last_order'=>strftime("%e %b %Y", strtotime($data['Customer Last Order Date'])),
-		   'total_payments'=>$data['Customer Total Payments'],
-		   'net_balance'=>$data['Customer Net Balance'],
-		   'total_refunds'=>$data['Customer Total Refunds'],
-		   'total_profit'=>$data['Customer Total Profit'],
-		   'balance'=>$data['Customer Outstandig Balance'],
+		   'total_payments'=>$data['Customer Net Payments'],
+		   'net_balance'=>money($data['Customer Net Balance']),
+		   'total_refunds'=>$data['Customer Net Refunds'],
+		   'total_profit'=>$data['Customer Profit'],
+		   'balance'=>$data['Customer Outstanding Net Balance'],
 
 
 		   'top_orders'=>number($data['Customer Orders Top Percentage']).'%',
