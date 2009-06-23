@@ -27,7 +27,7 @@ include_once('../common.php');
 
 var show_invoices_nohome=function(){
      Dom.get('clean_table_title0').innerHTML='<?=_('Export orders invoiced (excluding partners)').' '.$_SESSION['state']['report']['sales']['period']?>';
-     request="ar_orders.php?tipo=report_invoices&saveto=report_sales&where="+escape('where  `Invoice For Partner`="No"  and del_country_id!=<?=$myconf['country_id']?>')+"&view=invoices&sf=0&nr=10&from=<?=$_SESSION['state']['report']['sales']['from']?>&to=<?=$_SESSION['state']['report']['sales']['to']?>"
+     request="ar_orders.php?tipo=report_invoices&saveto=report_sales&where="+escape('where  `Invoice For Partner`="No" and  `Invoice Billing Country 2 Alpha Code`!="<?=$myconf['country_2acode']?>"')+"&view=invoices&sf=0&nr=10&from=<?=$_SESSION['state']['report']['sales']['from']?>&to=<?=$_SESSION['state']['report']['sales']['to']?>"
 
      var table=tables.table0;
      var datasource=tables.dataSource0;
@@ -79,16 +79,17 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       //  {key:"titulo", label:"<?=_('Type')?>", width:115,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
 				       {key:"customer",label:"<?=_('Customer')?>", width:280,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
 				       {key:"date", label:"<?=_('Date')?>", width:145,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
-
-				       {key:"total_amount", label:"<?=_('Total')?>", width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				      
-				      //					 {key:"families", label:"<?=_('Customers')?>", sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
+				        {key:"net", label:"<?=_('Net')?>", width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"total_amount", label:"<?=_('Total')?>", width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       
+				       //					 {key:"families", label:"<?=_('Customers')?>", sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
 				      //{key:"active", label:"<?=_('Customers')?>", sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				      
 
 					 ];
 	    
 	    this.dataSource0 = new YAHOO.util.DataSource("ar_orders.php?tipo=report_invoices&view="+view+"&nr=10&from=<?=$_SESSION['state']['report']['sales']['from']?>&to=<?=$_SESSION['state']['report']['sales']['to']?>");
+
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -109,7 +110,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 "date",
 			 "total_amount",
 			 "state",
-			 "orders",
+			 "orders","net",
 			 "dns"
 			 ]};
 

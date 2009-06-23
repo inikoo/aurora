@@ -930,18 +930,18 @@ $balance['credits']['tax']=0;
   }
 
   $orders_state=array();
-  $sql=sprintf("Select count(*) as orders ,`Order Current Dispatch State` as state,sum(`Order Total Net Amount`) as net ,sum(`Order Total Net Potential Amount`) as net_potential,sum(`Order Balance Net Amount`) as net_balance from `Order Dimension` where true  %s group by state",$_int);
+  $sql=sprintf("Select count(*) as orders ,`Order Current Dispatch State` as state,sum(`Order Total Net Amount`) as net_potential ,sum(`Order Balance Net Amount`) as net_balance ,sum(`Order Outstanding Balance Net Amount`) as net_balance from `Order Dimension` where true  %s group by state",$_int);
   //print $sql;
   $result=mysql_query($sql);
   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
     $orders_state[$row['state']]=array(
 				       'orders'=>number($row['orders'])
 				       ,'orders_percentage'=>percentage($row['orders'],$orders_total)
-				       ,'net_chargable'=>money($row['net'])
-				       ,'net_potential'=>money($row['net_potential'])
-				       ,'net_paid'=>money($row['net']-$row['net_balance'])
-				       ,'net_topay'=>money($row['net_balance'])
-				       ,'net_lost'=>money($row['net']-$row['net_potential'])
+				       //,'net_chargable'=>money($row['net'])
+				       //  ,'net_potential'=>money($row['net_potential'])
+				       //,'net_paid'=>money($row['net']-$row['net_balance'])
+				       //,'net_topay'=>money($row['net_balance'])
+				       //,'net_lost'=>money($row['net']-$row['net_potential'])
 				       
 				       );
   };

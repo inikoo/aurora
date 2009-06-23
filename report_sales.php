@@ -47,13 +47,13 @@ if($tipo=='f'){
    $year=$_REQUEST['y'];
    $week=$_REQUEST['w'];
    
-   $sql=sprintf("select UNIX_TIMESTAMP(first_day) as date from list_week where yearweek=%s",prepare_mysql($year.$week));
+   $sql=sprintf("select UNIX_TIMESTAMP(`First Day`) as date from `Week Dimension`  where `Year Week`='%04d%02d'",$year,$week);
 
-   $res=mysql_query($sql);
+   $result=mysql_query($sql);
    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      //     print $row['date'];
      $_time=strtotime('@'.$row['date']);
-     $_time_n=strtotime('@'.($row['date']+604799));
+     $_time_n=strtotime('@'.($row['date']+604800));
      //     $_time_n_=strtotime('@'.($row['date']+604799));
      $_time_p=strtotime('@'.($row['date']-604800));
    }else
@@ -65,12 +65,12 @@ if($tipo=='f'){
    $fto=date("d/m", $_time_n);
    $from=date("d-m-Y", $_time);
    $to=date("d-m-Y", $_time_n);
-   $period=date("W Y", $_time);
-   $title=_('Week')." $period ($ffrom-$fto)"._('Sales Report');
+   $period=_('Week').' '.date("W Y", $_time);
+   $title="$period ($ffrom-$fto)"._('Sales Report');
 
    $smarty->assign('up',array('url'=>'tipo=y&y='.date("Y",$_time),'title'=>date("Y",$_time)));
-   $smarty->assign('next',array('url'=>'tipo=w&m='.date("w",$_time_n).'&y='.date("Y",$_time_n),'title'=>_('Week').' '.date("W-Y",$_time_n)));
-   $smarty->assign('prev',array('url'=>'tipo=w&m='.date("w",$_time_p).'&y='.date("Y",$_time_p),'title'=>date("F",$_time_p)));
+   $smarty->assign('next',array('url'=>'tipo=w&w='.date("W",$_time_n).'&y='.date("Y",$_time_n),'title'=>_('Week').' '.date("W-Y",$_time_n)));
+   $smarty->assign('prev',array('url'=>'tipo=w&m='.date("W",$_time_p).'&y='.date("Y",$_time_p),'title'=>_('Week').' '.date("W-Y",$_time_p)));
 
  }elseif($tipo=='m'){
    $year=$_REQUEST['y'];

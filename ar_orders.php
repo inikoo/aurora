@@ -7,7 +7,7 @@
  About: 
  Autor: Raul Perusquia <rulovico@gmail.com>
  
- Copyright (c) 2009, Kaktus 
+ Copyrigh (c) 2009, Kaktus 
  
  Version 2.0
 */
@@ -886,7 +886,7 @@ else if($f_field=='maxvalue' and is_numeric($f_value) )
 
    
   $sql="select count(*) as total from `Invoice Dimension`   $where $wheref ";
-  // print $sql ;
+  //  print $sql ;
   $res=mysql_query($sql);
   if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
     $total=$row['total'];
@@ -965,9 +965,10 @@ else if($f_field=='maxvalue' and is_numeric($f_value) )
 else if($order=='customer')
      $order='`Invoice Customer Name`';
  else if($order=='state')
-     $order='`Invoice Has Been Paid In Full`';
-
-  $sql="select `Invoice Has Been Paid In Full`,`Invoice Key`,`Invoice XHTML Orders`,`Invoice XHTML Delivery Notes`,`Invoice Public ID`,`Invoice Customer Key`,`Invoice Customer Name`,`Invoice Date`,`Invoice Total Amount`  from `Invoice Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+   $order='`Invoice Has Been Paid In Full`';
+else if($order=='net')
+     $order='`Invoice Total Net Amount`';
+  $sql="select `Invoice Total Net Amount`,`Invoice Has Been Paid In Full`,`Invoice Key`,`Invoice XHTML Orders`,`Invoice XHTML Delivery Notes`,`Invoice Public ID`,`Invoice Customer Key`,`Invoice Customer Name`,`Invoice Date`,`Invoice Total Amount`  from `Invoice Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
   // print $sql;
 
    $data=array();
@@ -988,6 +989,8 @@ else if($order=='customer')
 		   ,'customer'=>$customer
 		   ,'date'=>strftime("%e %b %y", strtotime($row['Invoice Date']))
 		   ,'total_amount'=>money($row['Invoice Total Amount'])
+		   ,'net'=>money($row['Invoice Total Net Amount'])
+
 		   ,'state'=>$state
 		   ,'orders'=>$row['Invoice XHTML Orders']
 		   ,'dns'=>$row['Invoice XHTML Delivery Notes']
