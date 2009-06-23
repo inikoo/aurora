@@ -221,7 +221,7 @@ class Order extends DB_Table{
 				  if (! mysql_query ( $sql ))
 				    exit ( "$sql eroro con no update total items " );
 				  
-				  $this->get_totals();
+				  $this->get_original_totals();
 				  
 				  $customer->update_orders();
 				  $customer->update_no_normal_data();
@@ -249,7 +249,7 @@ class Order extends DB_Table{
 				}
 				
 
-				$this->update_balance();
+				$this->update_totals('save');
 
 				break;
 			case ('imap_email_mals-e') :
@@ -2560,29 +2560,29 @@ class Order extends DB_Table{
 		}
 	
 	}
-	/*
-	  function: update_balance
-	  Update Order Balance
-	 */
+/* 	/\* */
+/* 	  function: update_balance */
+/* 	  Update Order Balance */
+/* 	 *\/ */
 	
-	function update_balance(){
-	  $chargeable=0;
-	  // go tthugh all the transaction facts and calculate balances
-	   $sql = "select sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)*`Paid Factor`) as paid , sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)*(1-`Paid Factor`)) as to_pay,sum(`Invoice Transaction Net Refund Amount`) as refunded    from `Order Transaction Fact` where `Order Key`=" . $this->data ['Order Key'];
-	   $result = mysql_query ( $sql );
-	   if ($row = mysql_fetch_array ( $result, MYSQL_ASSOC )) {
-	     $chargeable=$row['paid']+$row['to_pay']+$row['refunded'];
+/* 	function update_balance($args=''){ */
+/* 	  $chargeable=0; */
+/* 	  // go tthugh all the transaction facts and calculate balances */
+/* 	   $sql = "select sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)*`Paid Factor`) as paid , sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)*(1-`Paid Factor`)) as to_pay,sum(`Invoice Transaction Net Refund Amount`) as refunded    from `Order Transaction Fact` where `Order Key`=" . $this->data ['Order Key']; */
+/* 	   $result = mysql_query ( $sql ); */
+/* 	   if ($row = mysql_fetch_array ( $result, MYSQL_ASSOC )) { */
+/* 	     $chargeable=$row['paid']+$row['to_pay']+$row['refunded']; */
 	     
-	   }
+/* 	   } */
 	   
-	   $this->data['Order Balance Net Amount']=$chargeable;
+/* 	   $this->data['Order Balance Net Amount']=$chargeable; */
 
 
-	   $sql=sprintf("update `Order Dimension` set `Order Balance Net Amount`=%.2f where `Order Key`=%d",$this->data['Order Balance Net Amount'],$this->id);
-	   mysql_query($sql);
-	   //  print "$sql\n";
-	   //exit;
-	}
+/* 	   $sql=sprintf("update `Order Dimension` set `Order Balance Net Amount`=%.2f where `Order Key`=%d",$this->data['Order Balance Net Amount'],$this->id); */
+/* 	   mysql_query($sql); */
+/* 	   //  print "$sql\n"; */
+/* 	   //exit; */
+/* 	} */
 
 	/*
 	  function: update_product_sales
@@ -2599,11 +2599,11 @@ class Order extends DB_Table{
 	}
 
 	/*
-	  function: get_totals
-	  Calculate the totals of the original order from the data in Order Transaction Fact
+	  function: get_original_totals
+	  Calculate the totals of the ORIGINAL order from the data in Order Transaction Fact
 	 */
 
-	function get_totals(){
+	function get_original_totals(){
 	  $sql = "select sum(`Transaction Tax Rate`*(`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`)) as tax, sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) as discount, sum(`Invoice Transaction Shipping Amount`) as shipping,sum(`Invoice Transaction Charges Amount`) as charges ,sum(`Invoice Transaction Total Tax Amount`) as tax   from `Order Transaction Fact` where  `Order Key`=" . $this->data ['Order Key'];
 	  $result = mysql_query ( $sql );
 	  if ($row = mysql_fetch_array ( $result, MYSQL_ASSOC )) {
@@ -2645,7 +2645,9 @@ class Order extends DB_Table{
 	  $this->data['Order Outstanding Balance Net Amount']=0;
 	  $this->data['Order Outstanding Balance Tax Amount']=0;
 	  $this->data['Order Outstanding Balance Total Amount']=0;
-	  $sql = "select  sum(`Cost Supplier`+`Cost Manufacure`+`Cost Storing`+`Cost Handing`+`Cost Shipping`)as costs,   sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`+`Invoice Transaction Shipping Amount`+`Invoice Transaction Charges Amount`) as net  ,sum(`Invoice Transaction Total Tax Amount`) as tax,sum(`Invoice Transaction Net Refund Amount`) as ref_net,sum(`Invoice Transaction Tax Refund Amount`) as ref_tax,sum(`Invoice Transaction Outstanding Net Balance`) as ob_net ,sum(`Invoice Transaction Outstanding Tax Balance`) as ob_tax ,sum(`Invoice Transaction Outstanding Refund Net Balance`) as ref_ob_net ,sum(`Invoice Transaction Outstanding Refund Tax Balance`) as ref_ob_tax  from `Order Transaction Fact`    where  `Order Key`=" . $this->data ['Order Key'];
+	  $sql = "select  sum(IFNULL(`Cost Supplier`,0)+IFNULL(`Cost Manufacure`,0)+IFNULL(`Cost Storing`,0)+IFNULL(`Cost Handing`,0)+IFNULL(`Cost Shipping`,0))as costs,   sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`+`Invoice Transaction Shipping Amount`+`Invoice Transaction Charges Amount`) as net  ,sum(`Invoice Transaction Total Tax Amount`) as tax,sum(`Invoice Transaction Net Refund Amount`) as ref_net,sum(`Invoice Transaction Tax Refund Amount`) as ref_tax,sum(`Invoice Transaction Outstanding Net Balance`) as ob_net ,sum(`Invoice Transaction Outstanding Tax Balance`) as ob_tax ,sum(`Invoice Transaction Outstanding Refund Net Balance`) as ref_ob_net ,sum(`Invoice Transaction Outstanding Refund Tax Balance`) as ref_ob_tax  from `Order Transaction Fact`    where  `Order Key`=" . $this->data ['Order Key'];
+	  //    print "$sql\n";
+	  //exit;
 	  $result = mysql_query ( $sql );
 	  if ($row = mysql_fetch_array ( $result, MYSQL_ASSOC )) {
 	    $this->data['Order Balance Net Amount']=$row['net']+$row['ref_net'];
@@ -2655,18 +2657,37 @@ class Order extends DB_Table{
 	    $this->data['Order Outstanding Balance Tax Amount']=$row['ob_tax']+$row['ref_ob_tax'];
 	    $this->data['Order Outstanding Balance Total Amount']=$this->data['Order Outstanding Balance Net Amount']+$this->data['Order Outstanding Balance Tax Amount'];
 	    
-	    $this->data['Order Balance Tax Refund']=$row['ref_tax'];
-	    $this->data['Order Balance Net Refund']=$row['ref_net'];
-	    $this->data['Order Balance Total Refund']=$row['net_tax']+$row['ref_net'];
+	    $this->data['Order Tax Refund Amount']=$row['ref_tax'];
+	    $this->data['Order Net Refund Amount']=$row['ref_net'];
 
 
-	    $this->data['Order Profit Amount']= $this->data['Order Balance Total Amount']-$this->data['Order Outstanding Balance Total Amount']- $row['costs'];
+
+	    $this->data['Order Profit Amount']= $this->data['Order Balance Net Amount']-$this->data['Order Outstanding Balance Net Amount']- $row['costs'];
+	    //print_r($row);
+	    //print "** ".$this->data['Order Balance Net Amount']." ".$this->data['Order Outstanding Balance Net Amount']." cost: x".$row['costs']."   **\n";
+	  
 	  }
 
-
+	  // print_r($this->data);
 	  if(preg_match('/save/i',$args)){
+	    
+	    $sql=sprintf("update `Order Dimension` set `Order Balance Net Amount`=%.2f,`Order Balance Tax Amount`=%.2f,`Order Balance Total Amount`=%.2f,`Order Outstanding Balance Net Amount`=%.2f,`Order Outstanding Balance Tax Amount`=%.2f,`Order Outstanding Balance Total Amount`=%.2f,`Order Tax Refund Amount`=%.2f,`Order Net Refund Amount`=%.2f,`Order Profit Amount`=%.2f  where `Order Key`=%d"
+			 ,$this->data['Order Balance Net Amount']
+			 ,$this->data['Order Balance Tax Amount']
+			 ,$this->data['Order Balance Total Amount']
+			 ,$this->data['Order Outstanding Balance Net Amount']
+			 ,$this->data['Order Outstanding Balance Tax Amount']
+			 ,$this->data['Order Outstanding Balance Total Amount']
+			 ,$this->data['Order Tax Refund Amount']
+			 ,$this->data['Order Net Refund Amount']
 
-	    $sql=sprintf("");
+			 ,$this->data['Order Profit Amount']
+
+			 ,$this->id); 
+	    // print "$sql\n";
+	    
+	    if(!mysql_query($sql))
+	      exit("$sql\n");
 
 	  }
 

@@ -1402,11 +1402,11 @@ if(isset( $_REQUEST['where']))
    elseif($order=='net_balance')
      $order='`Customer Net Balance`';
    elseif($order=='balance')
-     $order='`Customer Outstanding Balance`';
+     $order='`Customer Outstanding Net Balance`';
    elseif($order=='total_profit')
-     $order='`Customer Total Profit`';
+     $order='`Customer Profit`';
    elseif($order=='total_payments')
-     $order='`Customer Total Payments`';
+     $order='`Customer Net Payments`';
    elseif($order=='top_profits')
      $order='`Customer Profits Top Percentage`';
    elseif($order=='top_balance')
@@ -1419,7 +1419,7 @@ if(isset( $_REQUEST['where']))
      $order='`Customer Total Refunds`';
 
    $sql="select   * from `Customer Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results";
-   //         print $sql;
+   //    print $sql;
    $adata=array();
   
   
@@ -1471,16 +1471,16 @@ if(isset( $_REQUEST['where']))
 		   'id'=>$id,
 		   'name'=>$data['Customer Name'],
 		   'location'=>$data['Customer Main Location'],
-		   'orders'=>$data['Customer Orders'],
+		   'orders'=>number($data['Customer Orders']),
 		   'invoices'=>$data['Customer Orders Invoiced'],
 		   'email'=>$data['Customer Main XHTML Email'],
 		   'telephone'=>$data['Customer Main Telephone'],
 		   'last_order'=>strftime("%e %b %Y", strtotime($data['Customer Last Order Date'])),
-		   'total_payments'=>$data['Customer Net Payments'],
+		   'total_payments'=>money($data['Customer Net Payments']),
 		   'net_balance'=>money($data['Customer Net Balance']),
-		   'total_refunds'=>$data['Customer Net Refunds'],
-		   'total_profit'=>$data['Customer Profit'],
-		   'balance'=>$data['Customer Outstanding Net Balance'],
+		   'total_refunds'=>money($data['Customer Net Refunds']),
+		   'total_profit'=>money($data['Customer Profit']),
+		   'balance'=>money($data['Customer Outstanding Net Balance']),
 
 
 		   'top_orders'=>number($data['Customer Orders Top Percentage']).'%',

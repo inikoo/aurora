@@ -1015,7 +1015,9 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	//$order->create_dn_simple($data_dn,$data_dn_transactions);
 	
 	$dn=new DeliveryNote('create',$data_dn,$data_dn_transactions,$order->id);
-
+	$order->update_delivery_notes('save');
+	$order->update_dispatch_state('Ready to Pick');
+	 $order->update_invoices('save');
 	if($total_credit_value==0 and $header_data['total_topay']==0){
 	  print "Zero value order ".$header_data['order_num']." \n";
 	  $order->no_payment_applicable();
@@ -1051,11 +1053,21 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	  
 	}
 
-	$order->load('totals');
+	
 
 	}
+		$dn->pick_historic($data_dn_transactions);
+	$order->update_dispatch_state('Ready to Pack');
+	
+	$dn->pack('all');
+	$order->update_dispatch_state('Ready to Ship');
+	  $invoice->data['Invoice Paid Date']=$date_inv;
+	  $invoice->pay();
+	  $order-> update_payment_state('Paid');	
+	$dn->dispatch('all');
+	$order->update_dispatch_state('Dispached');
 
-
+	$order->load('totals');
 
       }else if($tipo_order==8 ){
 

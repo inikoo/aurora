@@ -15,8 +15,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 	    var CustomersColumnDefs = [
-				       {key:"id", label:"<?=$customers_ids[0]?>",width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"name", label:"<?=_('Customer Name')?>",<?=( ( $_SESSION['state']['customers']['view']=='general' or  $_SESSION['state']['customers']['view']=='contact' ) ?'':'hidden:true,')?> width:250,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       {key:"id", label:"<?=$customers_ids[0]?>",width:60,sortable:true,<?=($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?>className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"name", label:"<?=_('Customer Name')?>", width:250,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"location", label:"<?=_('Location')?>",<?=($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?> width:230,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"last_order", label:"<?=_('Last Order')?>",<?=($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?>width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				       ,{key:"orders", label:"<?=_('Orders')?>",<?=($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
