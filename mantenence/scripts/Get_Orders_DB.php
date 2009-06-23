@@ -36,7 +36,7 @@ $version='V 1.0';//75693
 $Data_Audit_ETL_Software="$software $version";
 srand(12344);
 
-$sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed)  order by filename ";
+$sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed)  order by filename desc";
 //$sql="select * from  orders_data.orders where filename like '%refund.xls'   order by filename";
 //$sql="select * from  orders_data.orders  where filename='/mnt/s/Orders/12455.xls'  order by filename";
 
@@ -251,7 +251,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       
     }
 
-  if(strtotime($date_order)>strtotime('today')   ){
+  if(strtotime($date_order)>strtotime('now')   ){
       
       print "ERROR (Fecha en el futuro) $filename  $date_order   \n ";
       
@@ -950,12 +950,12 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	  
 	}
      
-
-		foreach($data_invoice_transactions as $key=>$val){
-	  $val[$key]['tax rate']=$tax_rate;
-	  $val[$key]['tax code']=$tax_code;
-	  $val[$key]['tax amount']=$tax_rate*($val['key']['gross amount']-($val['key']['discount amount']));
+	foreach($data_invoice_transactions as $key=>$val){
+	  $data_invoice_transactions[$key]['tax rate']=$tax_rate;
+	  $data_invoice_transactions[$key]['tax code']=$tax_code;
+	  $data_invoice_transactions[$key]['tax amount']=$tax_rate*($val['gross amount']-($val['discount amount']));
 	}
+	
 
 
 	$data_invoice=array(
@@ -1150,10 +1150,12 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	    $lag='';
 
 
-	  foreach($data_invoice_transactions as $key=>$val){
-	  $val[$key]['tax rate']=$tax_rate;
-	  $val[$key]['tax code']=$tax_code;
-	  $val[$key]['tax amount']=$tax_rate*($val['key']['gross amount']-($val['key']['discount amount']));
+	  
+	foreach($data_invoice_transactions as $key=>$val){
+	  $data_invoice_transactions[$key]['tax rate']=$tax_rate;
+	  $data_invoice_transactions[$key]['tax code']=$tax_code;
+	  // print_r($val);exit;
+	  $data_invoice_transactions[$key]['tax amount']=$tax_rate*($val['gross amount']-($val['discount amount']));
 	}
 
 	  $data_invoice=array(
