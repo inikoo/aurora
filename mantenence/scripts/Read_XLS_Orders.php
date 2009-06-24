@@ -176,7 +176,7 @@ foreach($good_files_number as $order_index=>$order){
 		 ,prepare_mysql($filedate)
 		 );
     mysql_query($sql);
-    $id = $db->lastInsertID();
+    $id =mysql_insert_id();
     
 
      $sql=sprintf("insert into orders_data.data (id) values (%d)"

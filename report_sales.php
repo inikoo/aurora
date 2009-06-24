@@ -56,6 +56,8 @@ if($tipo=='f'){
      $_time=strtotime('@'.$row['date']);
      $_time_n=strtotime('@'.($row['date']+604800));
      $_time_p=strtotime('@'.($row['date']-604800));
+
+ 
      
      $_time_n_3weeks=date("Y-m-d H:i:s",strtotime('@'.($row['date']+1*604800)));
      $_time_p_3weeks=date("Y-m-d H:i:s",strtotime('@'.($row['date']-3*604800)));
@@ -111,6 +113,7 @@ if($tipo=='f'){
    
 
     $smarty->assign('w',$w);
+
 
 
 
