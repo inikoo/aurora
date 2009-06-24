@@ -36,9 +36,9 @@ $version='V 1.0';//75693
 $Data_Audit_ETL_Software="$software $version";
 srand(12344);
 
-$sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed)  order by filename desc";
+$sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed)  order by filename ";
 //$sql="select * from  orders_data.orders where filename like '%refund.xls'   order by filename";
-//$sql="select * from  orders_data.orders  where filename='/mnt/s/Orders/12455.xls'  order by filename";
+$sql="select * from  orders_data.orders  where filename='/mnt/t/Orders/19478.xls'  order by filename";
 
 
 $contador=0;
@@ -67,7 +67,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     $result_test=mysql_query($sql);
     if($row_test=mysql_fetch_array($result_test, MYSQL_ASSOC)){
       if($row_test['num']==0){
-	//print "NEW $contador $order_data_id $filename ";
+	print "NEW $contador $order_data_id $filename \n";
       }else{
 	$update=true;
 	print "UPD $contador $order_data_id $filename ";
@@ -942,12 +942,8 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	      break;
 	    }
 	  }
-	  
-	  
-
 	}else{
 	  $tax_code='ZV';
-	  
 	}
      
 	foreach($data_invoice_transactions as $key=>$val){
@@ -971,7 +967,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 			    ,'Invoice Total Tax Refund Amount'=>$tax_rate*$total_credit_value
 			    ,'Invoice Total Amount'=>round($header_data['total_topay'],2)
 			    ,'tax_rate'=>$tax_rate
-			    ,'Invoice Has Been Paid In Full'=>'Yes'
+			    ,'Invoice Has Been Paid In Full'=>'No'
 			    ,'Invoice Items Net Amount'=>round($header_data['total_items_charge_value'],2)-$total_credit_value
 			    ,'Invoice XHTML Processed By'=>_('Unknown')
 			    ,'Invoice XHTML Charged By'=>_('Unknown')
@@ -1106,7 +1102,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 		       ,'Delivery Note Number Packers'=>count($packer_data['id'])
 		       ,'Delivery Note Packers IDs'=>$packer_data['id']
 		       ,'tax_rate'=>$tax_rate
-		       ,'Invoice Has Been Paid In Full'=>'Yes'
+		       ,'Invoice Has Been Paid In Full'=>'No'
 		       ,'Invoice Items Net Amount'=>$header_data['total_items_charge_value']-$total_credit_value
 		       ,'Delivery Note Type'=>$order_type
 		       ,'Delivery Note Title'=>_('Delivery Note for').' '.$order_type.' '.$header_data['order_num']
@@ -1168,7 +1164,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 			      ,'Invoice Charges Net Amount'=>round($header_data['charges'],2)
 			      ,'tax_rate'=>$tax_rate
 			      ,'tax_rate'=>$tax_rate
-			      ,'Invoice Has Been Paid In Full'=>'Yes'
+			      ,'Invoice Has Been Paid In Full'=>'No'
 			      ,'Invoice Items Net Amount'=>round($header_data['total_items_charge_value'],2)-$total_credit_value
 			      ,'Invoice Total Tax Amount'=>$header_data['tax1']
 			      ,'Invoice Refund Amount'=>$total_credit_value
@@ -1200,47 +1196,11 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       $sql="update orders_data.orders set last_transcribed=NOW() where id=".$order_data_id;
       mysql_query($sql);
     }elseif($tipo_order==9 ){
+      // refund
 
-
-
-
-      $order=new Order('public_id',$parent_order_id);
-      if(!$order->id){
-
-	//	print "Unknown parent";
-	// create new invoice (negative)(no deliver note changes noting)
-	
-	$data['ghost_order']=true;
-	$data['Order Type']='Order';
-	$data['store_id']=1;
-	$order= new Order('new',$data);
-      }else{
-	$customer=new Customer($order->data['Order Customer Key']);
-	$order->xhtml_billing_address=$customer->get('Customer Main XHTML Address');
-
-      }
-
-      $payment_method=parse_payment_method($header_data['pay_method']);
-      
-      if($header_data['total_net']!=0)
-	  $tax_rate=$header_data['tax1']/$header_data['total_net'];
-	else
-	  $tax_rate=$data['tax_rate'];
-	    
-	$factor=1.0;
-	if($header_data['total_topay']>0)
-	  $factor=-1.0;
-	//print_r($header_data);
-
-
-
-
-
-
-	$lag='';
 	$taxable='Yes';
 	$tax_code='UNK';
-	
+
 	if($header_data['total_net']!=0){
 	  
 	  if($header_data['tax1']+$header_data['tax2']==0){
@@ -1257,16 +1217,54 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	      break;
 	    }
 	  }
-	  
-	  
-	  
 	}else{
 	  $tax_code='ZV';
-	  
 	}
+     
+	foreach($data_invoice_transactions as $key=>$val){
+	  $data_invoice_transactions[$key]['tax rate']=$tax_rate;
+	  $data_invoice_transactions[$key]['tax code']=$tax_code;
+	  $data_invoice_transactions[$key]['tax amount']=$tax_rate*($val['gross amount']-($val['discount amount']));
+	}
+
+      $order=new Order('public_id',$parent_order_id);
+      if(!$order->id){
+
+	print "Unknown parent $parent_order_id\n";
+	// Create an invoice (refund not realted to the customer)
+	
+	//	print_r($data);
+	//exit;
+	//$invoice=new Invoice ('create',$data_invoice,$data_invoice_transactions,false); 
+	
+	// create new invoice (negative)(no deliver note changes noting)
+	//	exit;
+	$data['ghost_order']=true;
+	$data['Order Type']='Order';
+	$data['store_id']=1;
+	$order= new Order('new',$data);
+     
+      
 	
 
+      }else{
+	print "Found parent\n";
+	exit;
+	$customer=new Customer($order->data['Order Customer Key']);
+	$order->xhtml_billing_address=$customer->get('Customer Main XHTML Address');
 
+      }
+
+      $payment_method=parse_payment_method($header_data['pay_method']);
+      
+   
+	    
+	$factor=1.0;
+	if($header_data['total_topay']>0)
+	  $factor=-1.0;
+
+
+	
 
 	$data_invoice=array(
 			    'Invoice Date'=>$date_inv
@@ -1281,7 +1279,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 			    ,'Invoice Total Tax Refund Amount'=>$header_data['tax1']*$factor
 			    ,'Invoice Total Amount'=>$header_data['total_topay']*$factor
 			    ,'tax_rate'=>$tax_rate
-			    ,'Invoice Has Been Paid In Full'=>'Yes'
+			    ,'Invoice Has Been Paid In Full'=>'No'
 			    ,'Invoice Items Net Amount'=>0
 			     ,'Invoice XHTML Processed By'=>_('Unknown')
 			    ,'Invoice XHTML Charged By'=>_('Unknown')
@@ -1289,7 +1287,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 			    ,'Invoice Charged By Key'=>0
 			    ,'Invoice Tax Code'=>$tax_code
 			    ,'Invoice Taxable'=>$taxable
-			    ,'Invoice Dispatching Lag'=>$lag
+			    ,'Invoice Dispatching Lag'=>''
 			    );
 	//print_r($data_invoice);
 
@@ -1384,10 +1382,18 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
 
 	//		print_r($data_refund_transactions);
-	$order->create_refund_simple($data_invoice,$data_refund_transactions);
+	//$order->create_refund_simple($data_invoice,$data_refund_transactions);
+	print $order->id;
+	
+	$refund = new Invoice('create refund',$data_invoice,$data_refund_transactions,$order); 
+	$refund->data['Invoice Paid Date']=$date_inv;
+	$refund->pay();
+	if($order->id)
+	  $order-> update_payment_state('Paid');
 
+	exit;
 	//print "STSRT----------\n\n\n";
-	$order->load('totals');
+	//$order->load('totals');
 	//	print "END------------\n\n\n";
 	$sql="update orders_data.orders set last_transcribed=NOW() where id=".$order_data_id;
 	mysql_query($sql);

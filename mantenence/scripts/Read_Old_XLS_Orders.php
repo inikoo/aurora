@@ -17,19 +17,29 @@ include_once('local_map.php');
 include_once('map_order_functions.php');
 
 
-require_once 'MDB2.php';            // PEAR Database Abstraction Layer
+//require_once 'MDB2.php';            // PEAR Database Abstraction Layer
 require_once '../../common_functions.php';
 
 
-$db =& MDB2::factory($dsn);       
-if (PEAR::isError($db)){echo $db->getMessage() . ' ' . $db->getUserInfo();}
 
-  
+
+//$db =& MDB2::factory($dsn);       
+//if (PEAR::isError($db)){echo $db->getMessage() . ' ' . $db->getUserInfo();}
+
+error_reporting(E_ALL);
+$con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
+if(!$con){print "Error can not connect with database server\n";exit;}
+//$dns_db='dw';
+$db=@mysql_select_db($dns_db, $con);
+if (!$db){print "Error can not access the database\n";exit;}
+require_once '../../common_functions.php';
 mysql_query("SET time_zone ='UTC'");
 mysql_query("SET NAMES 'utf8'");
-$PEAR_Error_skiptrace = &PEAR::getStaticProperty('PEAR_Error','skiptrace');$PEAR_Error_skiptrace = true;// Fix memory leak
 require_once '../../conf/conf.php';           
 date_default_timezone_set('Europe/London');
+
+  
+
 
 $tmp_directory='/tmp/';
 
@@ -114,7 +124,8 @@ foreach($good_files_number as $order_index=>$order){
   $directory=preg_replace("/$just_file$/",'',$filename);
   
   $sql=sprintf("select * from orders_data.orders where  `filename`=%s",prepare_mysql($filename));
-  $res=mysql_query($sql);
+  $result=mysql_query($sql);
+  // print "$sql\n";
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
     $sql=sprintf("update orders_data.orders set last_checked=NOW(),date=%s,timestamp=%d where id=%d",
 		 prepare_mysql($filedatetime)
@@ -165,7 +176,7 @@ foreach($good_files_number as $order_index=>$order){
 		 ,prepare_mysql($filedate)
 		 );
     mysql_query($sql);
-    $id = $db->lastInsertID();
+    $id =mysql_insert_id();
     
 
      $sql=sprintf("insert into orders_data.data (id) values (%d)"
