@@ -36,32 +36,32 @@
 </tr>
 </table>
 {/if}
-{if $tipo=='w'}
+{if $tipo=='w' or $tipo=='m' or $tipo=='d'}
 <table  class="calendar_year">
-
-
 <tr>
 <td>w</td>
 <td>M</td>
 <td>T</td>
-
-
 <td>W</td>
 <td>T</td>
 <td>F</td>
 <td>S</td>
 <td>D</td>
-
 </tr>
-
-
+{foreach from=$w item=week}
 <tr>
-<td><a href="report_sales.php?tipo=d&y={$period}&m=1">{$m[0]}</a></td>
-
+<td><a href="report_sales.php?tipo=w&y={$week.year}&w={$week.number}">{$week.number}</a></td>
+<td><a href="report_sales.php?tipo=d&y={$week.year}&m={$week.m_mon}&d={$week.mon}">{$week.mon}</a></td>
+<td><a href="report_sales.php?tipo=d&y={$week.year}&m={$week.m_tue}&d={$week.tue}">{$week.tue}</a></td>
+<td><a href="report_sales.php?tipo=d&y={$week.year}&m={$week.m_wed}&d={$week.wed}">{$week.wed}</a></td>
+<td><a href="report_sales.php?tipo=d&y={$week.year}&m={$week.m_thu}&d={$week.thu}">{$week.thu}</a></td>
+<td><a href="report_sales.php?tipo=d&y={$week.year}&m={$week.m_fri}&d={$week.fri}">{$week.fri}</a></td>
+<td><a href="report_sales.php?tipo=d&y={$week.year}&m={$week.m_sat}&d={$week.sat}">{$week.sat}</a></td>
+<td><a href="report_sales.php?tipo=d&y={$week.year}&m={$week.m_sun}&d={$week.sun}">{$week.sun}</a></td>
 </tr>
-
-
+{/foreach}
 </table>
+
 {/if}
 
 </div>

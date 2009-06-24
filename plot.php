@@ -394,7 +394,7 @@ var mychart = new YAHOO.widget.'.$tipo_chart.'( '.($tipo_chart=='CartesianChart'
 
  	{
 style:{'.$style.'}          ,
- wmode: "opaque",
+ wmode: "transparent",
           series: seriesDef,
  	 xField: "'.$xfield['name'].'",
  	 yAxis: yAxis,
