@@ -11,7 +11,6 @@
  
  Version 2.0
 */
-//include_once('ConexionJFA.php');
 include_once('DB_Table.php');
 
 /* class: Mensajes
@@ -34,23 +33,23 @@ class Mensajes extends DB_Table {
        
    Example:
    (start example)
-   // Load data from `Mensajes Dimension` table where  `id_noticia`=4
+   // Load data from `Message Dimension` table where `Message Key`=4
    $key=4;
-   $mensaje = New Mensaje($key);
+   $mensaje = New Mensajes($key);
        
-   // Load data from `Mensajes Dimension` table where  `categoria`='Becario PHP'
-   $mensaje = New Mensaje('Becario PHP');
+   // Load data from `Message Dimension` table where  `Message Title`='Becario PHP'
+   $mensaje = New Mensajes('Becario PHP');
        
    // Insert row to `Mensajes Dimension` table
    $data=array();
-   $mensajes = New Mensaje('new',$data);
+   $mensajes = New Mensajes('new',$data);
    (end example)
 
   */
   function Mensajes($arg1=false,$arg2=false) {
 
     // checar estos dos miembros
-    $this->table_name='Menssage Dimension';
+    $this->table_name='Message';
     $this->ignore_fields=array('Message Key');
 
 
@@ -68,12 +67,6 @@ class Mensajes extends DB_Table {
       return;
     }
 
-    //No es necesario find method
-    //if(preg_match('/find/i',$arg1)){
-    // $this->find($arg2,$arg1);
-    //  return;
-    //}
-    $this->get_data($arg1,$arg2);
   }
   /*
    Method: get_data
@@ -84,10 +77,7 @@ class Mensajes extends DB_Table {
   */
   function get_data($tipo,$tag){
     if($tipo=='id'){
-      $sql=sprintf("select * from 'Mensajes Dimension' where  `Message Key`=%d",$tag);
-      
-    
-      
+      $sql=sprintf("select * from 'Message Dimension' where  `Message Key`=%d",$tag);
       $result=mysql_query($sql);
       if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   )
 	$this->id=$this->data['Message Key'];
@@ -104,28 +94,31 @@ protected function create($data,$options=''){
   }
     
   if(is_string($data))
-    $data['mensaje']=$data;
+    $data['Message']=$data;
 
   global $myconf;
-    
+
   $this->data=$this->base_data();
   foreach($data as $key=>$value){
     if(array_key_exists($key,$this->data))
       $this->data[$key]=$value;
   }
-    
-  if($this->data['mensaje']==''){
+
+  if($this->data['Message']==''){
     $this->new=false;
     $this->msg=_('No message provided');
     return false;
   }
-  //TODO CAMBIAR
-  $sql=sprintf("insert into 'mensajes dimension' ('autor','titulo','categoria','fecha','mensaje') values (%s,%s,%s,%s,%s)"
-	       ,prepare_mysql($this->data['autor'])
-	       ,prepare_mysql($this->data['titulo'])
-	       ,prepare_mysql($this->data['categoria'])
-	       ,prepare_mysql($this->data['fecha'])
-	       ,prepare_mysql($this->data['mensaje'])
+
+  $sql=sprintf("insert into 'Message Dimension' ('Message Author','Message Title','Message Location','Message Creation Date','Message', 'Message Show','Message Show From','Message Show To') values (%s,%s,%s,%s,%s,%s,%s,%s)"
+	       ,prepare_mysql($this->data['Message Author'])
+	       ,prepare_mysql($this->data['Message Title'])
+	       ,prepare_mysql($this->data['Message Location'])
+	       ,prepare_mysql($this->data['Message Creation Date'])
+	       ,prepare_mysql($this->data['Message'])
+	       ,prepare_mysql($this->data['Message Show'])
+	       ,prepare_mysql($this->data['Message Show From'])
+	       ,prepare_mysql($this->data['Message Show To'])
 	       );
 
   if(mysql_query($sql)){
@@ -181,9 +174,8 @@ function update_Email($data,$options=''){
     return;
   }
   
-  $sql=sprintf("update `Mensajes Dimension` set `mensaje`=%s where `id_noticia  `=%d ",prepare_mysql($data),$this->id);
+  $sql=sprintf("update `Message Dimension` set `Message`=%s where `Message Key  `=%d ",prepare_mysql($data),$this->id);
   mysql_query($sql);
-  // print "$sql\n";
   $affected=mysql_affected_rows();
   
   if($affected==-1){
@@ -191,36 +183,31 @@ function update_Email($data,$options=''){
     $this->error=true;
     return;
   }elseif($affected==0){
-    //$this->msg=_('Same value as the old record');
+    $this->msg=_('Same value as the old record');
     
   }else{
     $this->msg.=_('Message updated')."\n";
-    $this->data['mensaje']=$data;
+    $this->data['Message']=$data;
     $this->updated=true;
-    $this->update_EmailValidated($options);
   }
   
 
 }
 
-
 function display($tipo='link'){
 
-
-  if(!isset($this->data['mensaje'])){
+  if(!isset($this->data['Message'])){
     print_r($this);
     exit;
   }
 
   switch($tipo){
   case('plain'):
-    return $this->data['mensaje'];
+    return $this->data['Message'];
 
   case('html'):
   case('xhtml'):
   case('link'):
-  default:
-    return '<a href="mailto:'.$this->data['mensaje'].'">'.$this->data['mensaje'].'</a>';
      
   }
    
