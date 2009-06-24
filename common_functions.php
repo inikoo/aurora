@@ -77,7 +77,7 @@ function prepare_mysql_datetime($datetime,$tipo='datetime'){
   if($datetime=='')
     return array('mysql_date'=>'','status'=>'empty','ok'=>false);
   $time='';
-  if($tipo=='datetime'){
+  if(preg_match('/datetime/',$tipo)){
      if(preg_match('/^[0123]\d[\-\/][01]\d[\-\/]\d{4}\s[012]\d:[0123456]\d$/',$datetime))
        $datetime=$datetime.':00';
     if(!preg_match('/^[0123]\d[\-\/][01]\d[\-\/]\d{4}\s[012]\d:[0123456]\d:[0123456]\d$/',$datetime))
@@ -91,19 +91,24 @@ function prepare_mysql_datetime($datetime,$tipo='datetime'){
     $ts=date('U',strtotime($date));
   }
 
-  
+
 
   
   $date=str_replace('/','-',$date);
   $date=split('-',$date);
-  if($tipo=='date'){
 
-    $mysql_datetime= join ('-',array_reverse($date));
-
-
-  }else
-    $mysql_datetime= trim(join ('-',array_reverse($date)).' '.$time);
   
+ if(preg_match('/datetime/',$tipo)){
+   
+   $mysql_datetime= trim(join ('-',array_reverse($date)).' '.$time);
+ }else{
+   $mysql_datetime= join ('-',array_reverse($date));
+    if(preg_match('/start/',$tipo))
+      $mysql_datetime.=' 00:00:00';
+    elseif(preg_match('/end/',$tipo))
+      $mysql_datetime.=' 23:59:59';
+    
+  }
   return array('ts'=>$ts,'mysql_date'=>$mysql_datetime,'status'=>'ok','ok'=>true);
 
 }
@@ -174,21 +179,30 @@ function date_base($from,$to,$step='m',$tipo='complete_both'){
 }
 
 function prepare_mysql_dates($date1='',$date2='',$date_field='date',$options=''){
+  $start='';
+  $end='';
+  if(preg_match('/start.*end/i',$options)){
+    $start=' start';
+    $end=' end';
 
+  }
   if(preg_match('/dates?_only|dates? only|only dates?/i',$options)){
     $d_option='date';
+
+    
+
     $date_only=true;
   }else{
     $d_option='';
     $date_only=false;
   }
-  $tmp=prepare_mysql_datetime($date1,$d_option);
+  $tmp=prepare_mysql_datetime($date1,$d_option.$start);
   $mysql_date1=$tmp['mysql_date'];
   $ok1=$tmp['ok'];
   if($tmp['status']=='empty')
     $ok1=true;
 
-  $tmp=prepare_mysql_datetime($date2,$d_option);
+  $tmp=prepare_mysql_datetime($date2,$d_option.$end);
   $mysql_date2=$tmp['mysql_date'];
   $ok2=$tmp['ok'];
   if($tmp['status']=='empty')

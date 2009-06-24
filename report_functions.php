@@ -29,9 +29,8 @@ function sales_in_interval($from,$to,$valid_tax_rates_data=false){
    }     
    
 
-   $int=prepare_mysql_dates($from,$to,'`Invoice Date`','only_dates');
-
-
+   $int=prepare_mysql_dates($from,$to,'`Invoice Date`','date start end');
+ 
    
 
 
@@ -48,6 +47,7 @@ function sales_in_interval($from,$to,$valid_tax_rates_data=false){
   $refund_invoices_p=0;
   
   $sql=sprintf("select sum(`Invoice Refund Net Amount`) as net,sum(`Invoice Refund Tax Amount`) as tax,count(*) as orders from `Invoice Dimension` where  `Invoice For Partner`='Yes' and `Invoice Title`='Refund' %s ",$int[0]);
+
   $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
@@ -217,7 +217,7 @@ function sales_in_interval($from,$to,$valid_tax_rates_data=false){
   $tax_p_home=0;
   $invoices_p_home=0;
 
-  $int=prepare_mysql_dates($from,$to,'`Invoice Date`','only_dates');
+  $int=prepare_mysql_dates($from,$to,'`Invoice Date`','dates start end');
   $sql=sprintf("select sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax , count(*) as invoices from `Invoice Dimension` where `Invoice For Partner`='Yes' and `Invoice Title`='Invoice' %s ",$int[0]);
 
  $result=mysql_query($sql);
@@ -917,12 +917,15 @@ $balance['credits']['tax']=0;
  }
 
   
+  
 
+  
   $_int=preg_replace('/Invoice Date/','Order Date',$int[0]); 
   
   
   
   $sql=sprintf("select count(*) as num ,sum(`Order Total Net Amount`) as net  from `Order Dimension` where true %s ",$_int);
+
   $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
     $orders_total_net=$row['net'];

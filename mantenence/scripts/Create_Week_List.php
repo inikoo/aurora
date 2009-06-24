@@ -35,11 +35,14 @@ $date=strtotime($start_date);
 while($date<strtotime($end_date)){
   $i++;
   
+
+
+
   if(date('W',$date)==1)
     $__y=date('Y',strtotime(date('Y-m-d',$date).' +6 days'));
   else
     $__y=date('Y',strtotime(date('Y-m-d',$date).' +0 days'));
-  $sql=sprintf("insert into `Week Dimension` values ('%s%s','%s','%s','%s%s','%s','%s','%s')"
+  $sql=sprintf("insert into `Week Dimension` values ('%s%s','%s','%s','%s%s','%s','%s','%s','%s','%s')"
 	       ,$__y
 	       ,date('W',$date)
 	       ,date('Y-m-d',$date)
@@ -49,16 +52,18 @@ while($date<strtotime($end_date)){
 	       ,date('W',$date)
 	       ,date('Y-m-d',strtotime(date('Y-m-d',$date).' +3 days'))
 	       ,date('Y-m-d',strtotime(date('Y-m-d',$date).' +6 days'))
-	       
+	        ,$__y
+	       ,date('W',$date)
 	       );
   mysql_query($sql);
-  //   print "$sql\n";
+    print "$sql\n";
   if(date('W',$date)==53){
     $_year=date('Y',$date);
     if(date('d',$date>=25)){
 
       $sql=sprintf("select  `Last Day` from `Week Dimension` where `Year Week`='%s02'",$_year);
       $res=mysql_query($sql);
+      $__lastday='';
       while($row=mysql_fetch_array($res, MYSQL_ASSOC)){
 	$__lastday=$row['Last Day'];
       }
