@@ -226,7 +226,7 @@ class Invoice extends DB_Table {
 		  $line_number ++;
 			
 		  if ($order->id){
-		    $order_date = prepare_mysql ( $this->data ['Order Date'] );
+		    $order_date = prepare_mysql ( $order->data ['Order Date'] );
 		    $order_key=$order->id;
 		  }else{
 		    $order_date = 'NULL';

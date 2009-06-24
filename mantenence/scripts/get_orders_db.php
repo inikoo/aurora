@@ -38,7 +38,7 @@ srand(12344);
 
 $sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed)  order by filename ";
 //$sql="select * from  orders_data.orders where filename like '%refund.xls'   order by filename";
-$sql="select * from  orders_data.orders  where filename='/mnt/t/Orders/19478.xls'  order by filename";
+//$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/15297.xls'  order by filename";
 
 
 $contador=0;
@@ -155,8 +155,13 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     list($date_index,$date_order,$date_inv)=get_dates($row2['timestamp'],$header_data,$tipo_order,true);
   
     
+    if($tipo_order==9){
+      if( $date_inv=='NULL' or  strtotime($date_order)>strtotime($date_inv)){
+	$date_inv=$date_order;
+	}
+    }
 
- 
+
      if( $date_inv!='NULL' and  strtotime($date_order)>strtotime($date_inv)){
       
       
@@ -1010,7 +1015,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	
 	//$order->create_dn_simple($data_dn,$data_dn_transactions);
 	
-	$dn=new DeliveryNote('create',$data_dn,$data_dn_transactions,$order->id);
+	$dn=new DeliveryNote('create',$data_dn,$data_dn_transactions,$order);
 	$order->update_delivery_notes('save');
 	$order->update_dispatch_state('Ready to Pick');
 	 $order->update_invoices('save');
@@ -1112,7 +1117,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	  
 
 	//$order->create_dn_simple($data_dn,$data_dn_transactions);
-	$dn=new DeliveryNote('create',$data_dn,$data_dn_transactions,$order->id);
+	$dn=new DeliveryNote('create',$data_dn,$data_dn_transactions,$order);
 
 	  if($header_data['total_topay']>0){
 	  $payment_method=parse_payment_method($header_data['pay_method']);
@@ -1246,12 +1251,6 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
      
       
 	
-
-      }else{
-	print "Found parent\n";
-	exit;
-	$customer=new Customer($order->data['Order Customer Key']);
-	$order->xhtml_billing_address=$customer->get('Customer Main XHTML Address');
 
       }
 
@@ -1391,7 +1390,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	if($order->id)
 	  $order-> update_payment_state('Paid');
 
-	exit;
+	
 	//print "STSRT----------\n\n\n";
 	//$order->load('totals');
 	//	print "END------------\n\n\n";
@@ -1411,6 +1410,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       else
 	$order_type='Shortages';
 
+      print("$order_type\n");
 
       	if(!is_numeric($header_data['weight']))
 	  $weight=$estimated_w;
@@ -1437,13 +1437,13 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 		       ,'Delivery Note Number Packers'=>count($packer_data['id'])
 		       ,'Delivery Note Packers IDs'=>$packer_data['id']
 		       ,'Delivery Note Metadata'=>$order_data_id
-		       		       ,'Delivery Note Has Shipping'=>$_customer_data['has_shipping']
+		       ,'Delivery Note Has Shipping'=>$_customer_data['has_shipping']
 
 		       );
 	
 
 
-
+	
 
       $parent_order=new Order('public_id',$parent_order_id);
       if($parent_order->id){
@@ -1454,16 +1454,19 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
 	
 	$customer=new Customer($parent_order->data['Order Customer Key']);
-	$parent_order->xhtml_billing_address=$customer->get('Customer Main XHTML Address');
-	$parent_order->ship_to_key=$customer->get('Customer Last Ship To Key');
+	//$parent_order->xhtml_billing_address=$customer->get('Customer Main XHTML Address');
+	//$parent_order->ship_to_key=$customer->get('Customer Last Ship To Key');
 	$parent_order->data['Backlog Date']=$date_inv;
 	if($tipo_order==6)
 	  $data_dn['Delivery Note Title']=_('Replacents for Order').' '.$parent_order->data['Order Public ID'];
 	else
 	  $data_dn['Delivery Note Title']=_('Shotages for Order').' '.$parent_order->data['Order Public ID'];
 
-	$parent_order->create_replacement_dn_simple($data_dn,$data_dn_transactions,$products_data,$order_type);
 
+	//$parent_order->create_replacement_dn_simple($data_dn,$data_dn_transactions,$products_data,$order_type);
+	$dn=new DEliveryNote('create',$data_dn,$data_dn_transactions,$parent_order);
+	
+	
 	//	print_r($parent_order->items);
       }else{
        
@@ -1472,13 +1475,13 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	$data['store_id']=1;
  
 	$order= new Order('new',$data);
+	$dn=new DEliveryNote('create',$data_dn,$data_dn_transactions,$order);
 	
-	
-	$order->create_replacement_dn_simple($data_dn,$data_dn_transactions,$products_data,$order_type);
+	//$order->create_replacement_dn_simple($data_dn,$data_dn_transactions,$products_data,$order_type);
 	
       
       }
-    
+      // exit;
       
       $sql="update orders_data.orders set last_transcribed=NOW() where id=".$order_data_id;
        mysql_query($sql);
