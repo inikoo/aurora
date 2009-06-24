@@ -66,7 +66,11 @@ class DeliveryNote extends DB_Table {
       $this->get_data('id',$arg1);
       return;
     }
-     if (preg_match('/create|new/i',$arg1)){
+     if (preg_match('/(create|new).*(replacements?|shortages?)/i',$arg1)){
+      $this->create_replacement($arg2,$arg3,$arg4);
+      return;
+    }
+    if (preg_match('/create|new/i',$arg1)){
       $this->create($arg2,$arg3,$arg4);
       return;
     }
@@ -97,16 +101,11 @@ class DeliveryNote extends DB_Table {
  
 
 
-
-
-  /*Method: create
-   Creates a new invoice record
-
-  */
-  protected function create($dn_data, $transacions_data,$order_key) {
+  protected function create($dn_data, $transacions_data,$order) {
     
-    $order=new Order($order_key);
-    
+    // print_r($transacions_data);
+    // print_r($dn_data);
+    //exit;
     
     $this->data ['Delivery Note Date'] = $dn_data ['Delivery Note Date'];
     $this->data ['Delivery Note ID'] = $dn_data ['Delivery Note ID'];
@@ -130,7 +129,7 @@ class DeliveryNote extends DB_Table {
 
 
     //get tyhe customer mos rtecent ship to 
- 
+    //    $this->data ['Delivery Note Country 2 Alpha Code'] = 'XX';
     $this->data ['Delivery Note XHTML Ship To'] = '';
     $this->data ['Delivery Note Ship To Key'] = 0;
 
@@ -191,16 +190,16 @@ class DeliveryNote extends DB_Table {
 	exit ( "$sql\n can not update order transacrion aferter dn 313123" );
 		
     }
-    $dn_txt = "ready to pick";
+    // $dn_txt = "ready to pick";
 		
-    if ($order->data ['Order Type'] == 'Sample') {
-      $dn_txt = "Send";
+    // if ($order->data ['Order Type'] == 'Sample') {
+    //   $dn_txt = "Send";
 		
-    }
-    if ($order->data ['Order Type'] == 'Donation') {
-      $dn_txt = "Send";
+    // }
+    // if ($order->data ['Order Type'] == 'Donation') {
+    //   $dn_txt = "Send";
 		
-    }
+    // }
 		
   /*   $xhtml = sprintf ( '%s, %s <a href="dn.php?id=%d">%s</a>', $order->data ['Order Type'], $dn_txt, $this->data ['Delivery Note Key'], $this->data ['Delivery Note ID'] ); */
 		

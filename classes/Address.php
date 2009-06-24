@@ -975,9 +975,11 @@ class Address extends DB_Table{
     In the moment onlu for GBR
   */
   function is_valid_postcode($postcode,$country_id){
+    // print "------------------";
     $postcode=_trim($postcode);
     switch($country_id){
     case 30:
+
       if(preg_match('/^([A-PR-UWYZ0-9][A-HK-Y0-9][AEHMNPRTVXY0-9]?[ABEHMNPRVWXY0-9]? {0,2}[0-9][ABD-HJLN-UW-Z]{2}|GIR 0AA)$/i',$postcode))
 	return true;
       else
@@ -1265,38 +1267,16 @@ class Address extends DB_Table{
     //-------------------------------------------------------------------------
  
 
-    $data=Address::prepare_country_data($data);
-
-    // foreach($country as $key=>$value){
-    //  if(array_key_exists($key,$data)){
-    //	$data[$key]=_trim($value);
-    //  }
-    // }
-
-    if($data['Address Country Code']=='UNK'){
-      $_tmp=preg_replace('/^,|[,\.]$/','',$raw_data['Address Country Name']);
-      $tmp=new Country('find',$_tmp);
-      if($tmp->data['Country Code']!='UNK'){
-	$data['Address Country Key']=$tmp->id;
-	$data=Address::prepare_country_data($data);
-      }
-    }
     
-
-    if($data['Address Country Code']=='UNK'){
-
-
-
-     //  if(preg_match('/^\d{5}$/'$data['Address Country Name']) and (  preg_match('/^España$/i' $data['Address Country Primary Division'])  ) ){
-// 	$data['Address Country Name']='Spain';
-// 	$data['Address Country Primary Division']='';
-	
-//       }
-
-
-      
+    
+    if($data['Address Country Name']==''){
       if($myconf['country_2acode']=='GB'){
+	
+	//	if(preg_match('/norfork/i,'$data['Address Country Secondary Division]']))
+	//  $data['Address Country Name']='United Kingdom';
+	
 	if(Address::is_valid_postcode($data['Address Postal Code'],30)){
+	  //	  print "cacacaca";
 	  $data['Address Country Primary Division']=_trim($data['Address Country Primary Division'].' '.$data['Address Country Name']);
 	  $data['Address Country Name']='United Kingdom';
 	  
@@ -1322,46 +1302,56 @@ class Address extends DB_Table{
 	  if(preg_match('/^(spain|Espa.{0,2}a)$/i',_trim($data['Address Country Secondary Division']))){
 	    $data['Address Country Secondary Division']='';
 	  }
-
-	  
-	  
-
-	  
-	  
 	}
       }
-
-
-      $data=Address::prepare_country_data($data);
-      // print_r($data);
-	  
-      //foreach($data as $key=>$value){
-      //	if(array_key_exists($key,$data)){
-      //	  $data[$key]=_trim($value);
-      //	}
-      // }
-       
     }
-
-
-    // Country assigned;
-
+	  
     
+ 
+ 
+
+ 
+    
+    $data=Address::prepare_country_data($data);
+    // print_r($data);
+    //exit;
+    // foreach($country as $key=>$value){
+    //  if(array_key_exists($key,$data)){
+    //	$data[$key]=_trim($value);
+    //  }
+    // }
+
+    if($data['Address Country Code']=='UNK'){
+      $_tmp=preg_replace('/^,|[,\.]$/','',$raw_data['Address Country Name']);
+      $tmp=new Country('find',$_tmp);
+      if($tmp->data['Country Code']!='UNK'){
+	$data['Address Country Key']=$tmp->id;
+	$data=Address::prepare_country_data($data);
+      }
+    }
+    
+  
+
+       
+  
 
 
+  
     $_p=$data['Address Postal Code'];
 
     if(preg_match('/^\s*BFPO\s*\d{1,}\s*$/i',$_p)){
       $data['Address Country Name']='UK';
       $data=Address::prepare_country_data($data);
-    }
+    
 
     //$data['Address Country Name']=preg_replace('/^,|[,\.]$/','',$data['Address Country Name']);
     //$tmp=new Country('find',$data['Address Country Name']);
     //$data['Address Country Key']=$tmp->id;
  
+    }
   
-  
+
+
 
     // Ok the country is already guessed, wat else ok depending of the country letys gloing to try to get the orthers bits of the address
 
