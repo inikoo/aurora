@@ -502,8 +502,9 @@ class Invoice extends DB_Table {
       $order->update_totals('save');
       $customer=new Customer($order->data['Order Customer Key']);
       $customer->update_orders();
+      
       $customer->update_no_normal_data();
-
+      $customer->update_activity();
     }
     
     
@@ -786,7 +787,7 @@ global $myconf;
      $this->data ['Invoice Adjust Amount']=$force_values['Invoice Total Net Amount']-$net;
    else
      $this->data ['Invoice Adjust Amount']=0;
-
+   $this->data ['Invoice Items Net Amount']=$this->data ['Invoice Gross Amount'] - $this->data ['Invoice Discount Amount'] + $this->data ['Invoice Adjust Amount'];
    $this->data ['Invoice Total Net Amount'] = $this->data ['Invoice Gross Amount'] - $this->data ['Invoice Discount Amount'] + $this->data ['Invoice Adjust Amount']+$this->data ['Invoice Charges Net Amount']+$this->data ['Invoice Shipping Net Amount'];
    $this->data ['Invoice Items Tax Amount'] = $tax;
    $this->distribute_costs ();

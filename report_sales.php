@@ -520,6 +520,10 @@ foreach($interval_data['orders'] as $key=>$value){
   }
   
 }
+$smarty->assign('dn',$interval_data['dn_data']);
+$smarty->assign('dn_total',number($interval_data['dn']['dn_total']));
+$smarty->assign('dn_total_weight',number($interval_data['dn']['dn_total_weight']).' Kg'  );
+
 $smarty->assign('tipo',$tipo);
 $smarty->assign('period',$period);
 

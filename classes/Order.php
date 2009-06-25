@@ -584,6 +584,11 @@ class Order extends DB_Table{
 					$customer->update_orders();
 					$customer->update_non_nomal_data();
 					
+
+					
+					$customer->update_activity();
+
+
 					//$this->cutomer_rankings();
 					
 

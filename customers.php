@@ -143,7 +143,12 @@ $tipo_filter=$_SESSION['state']['customers']['table']['f_field'];
 $smarty->assign('filter',$tipo_filter);
 $smarty->assign('filter_value',$_SESSION['state']['customers']['table']['f_value']);
 
-$filter_menu=array('customer name'=>array('db_key'=>_('customer name'),'menu_label'=>'Customer Name','label'=>'Name'),
+$filter_menu=array(
+		   'customer name'=>array('db_key'=>_('customer name'),'menu_label'=>'Customer Name','label'=>'Name'),
+		   'postcode'=>array('db_key'=>_('postcode'),'menu_label'=>'Customer Postcode','label'=>'Postcode'),
+		   'min'=>array('db_key'=>_('min'),'menu_label'=>'Mininum Number of Orders','label'=>'Min No Orders'),
+		   'max'=>array('db_key'=>_('min'),'menu_label'=>'Maximum Number of Orders','label'=>'Max No Orders'),
+
 		   );
 $smarty->assign('filter_menu',$filter_menu);
 $smarty->assign('filter_name',$filter_menu[$tipo_filter]['label']);
@@ -151,28 +156,31 @@ $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu',$paginator_menu);
 
 
- $sql="select count(distinct `Customer ID`) as customers from `Customer Dimension` ";
+ $sql="select count(distinct `Customer ID`) as customers,sum(if(`Customer Type by Activity`='New',1,0)) as new,sum(if(`Customer Type by Activity`='Active',1,0)) as active ,sum(if(`Customer Type by Activity`='Inactive',1,0)) as inactive from `Customer Dimension` ";
  $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
  if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
    $total_customers=$row['customers'];
+   $active_customers=$row['active'];
+   $new_customers=$row['new'];
+   $new_customers=$row['inactive'];
   }
 
 
 
- $now="NOW()";
- $sql="select count(*) as active_customers from `Customer Dimension` where  (`Customer Order Interval`)>DATEDIFF($now,`Customer Last Order Date`)";
- $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
- $active_customers=0;
- if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-   $active_customers=$row['active_customers'];
-  }
+ /* $now="NOW()"; */
+/*  $sql="select count(*) as active_customers from `Customer Dimension` where  (`Customer Order Interval`)>DATEDIFF($now,`Customer Last Order Date`)"; */
+/*  $result = mysql_query($sql) or die('Query failed: ' . mysql_error()); */
+/*  $active_customers=0; */
+/*  if($row = mysql_fetch_array($result, MYSQL_ASSOC)) { */
+/*    $active_customers=$row['active_customers']; */
+/*   } */
 
- $sql="select count(*) as new_customers from `Customer Dimension` where   (91.25)>DATEDIFF($now,`Customer First Order Date`)";
- $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
- $new_customers=0;
- if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-   $new_customers=$row['new_customers'];
-  }
+/*  $sql="select count(*) as new_customers from `Customer Dimension` where   (91.25)>DATEDIFF($now,`Customer First Order Date`)"; */
+/*  $result = mysql_query($sql) or die('Query failed: ' . mysql_error()); */
+/*  $new_customers=0; */
+/*  if($row = mysql_fetch_array($result, MYSQL_ASSOC)) { */
+/*    $new_customers=$row['new_customers']; */
+/*   } */
 
 
 $overview_text=translate("There are  %1\$s  customers so far, %2\$s of them still active (%3\$s%\). Over the last 3 months we acquired  %4\$s new customers representing  %5\$s of the total customer base.",number($total_customers),$active_customers,percentage($active_customers,$total_customers),$new_customers,percentage($new_customers,$active_customers));

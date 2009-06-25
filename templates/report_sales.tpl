@@ -195,7 +195,7 @@
   <td>{$balance.invoices_zero.charges}</td>
  <td>{$balance.invoices_zero.net}</td>
 </tr>{/if}
-<tr class="">
+<tr class="" style="display:none"  >
  <td class="label">{t}Subtotal{/t}</td>
   <td>{$balance.subtotal.orders}</td>
   <td>{$balance.subtotal.products}</td>
@@ -390,7 +390,7 @@
 
 <h2>Orders Received</h2>
 <p style="width:375px">
-We received <b>{$orders_total}</b> orders on {if $tipo=='m'}{$period}{/if},   <b>{$per_orders_invoices}</b> has been invoiced. The average process time was <b>{$dispatch_days}</b> days, (<b>{$dispatch_days_home}</b> days for {$_home} orders, <b>{$dispatch_days_nohome}</b> days for export ones). 
+We received <b>{$orders_total}</b> orders on {if $tipo=='m'}{$period}{/if},   <b>{$per_orders_done}</b> has been done. The average process time was <b>{$dispatch_days}</b> days, (<b>{$dispatch_days_home}</b> days for {$_home} orders, <b>{$dispatch_days_nohome}</b> days for export ones). 
 </p>
 
 
@@ -407,6 +407,25 @@ We received <b>{$orders_total}</b> orders on {if $tipo=='m'}{$period}{/if},   <b
 {/foreach}
 <tr class="total" ><td>Total</td><td style="text-align:right;padding:0 4px 0 0;">{$orders_total}</td><td></td><td>{$orders_total_net}</td></tr>
 </table>
+
+<h2>Orders Dispatched</h2>
+
+
+<table   class="report_sales1">
+<tr><td></td><td style="text-align:right;padding:0">Number</td><td></td><td>Weight</td><td></tr>
+{foreach from=$dn key=k item=v name=foo}
+<tr class="{if $smarty.foreach.foo.first}first{else}geo{/if}">
+  <td>{$v.type}</td>
+  <td  style="padding:0 4px 0 0;" >{$v.number}</td>
+  <td style="text-align:left;padding:0 0 0 0;">({$v.number_per})</td>
+  <td>{$v.weight}</td>
+  <td style="text-align:left;padding:0 0 0 0;">({$v.weight_per})</td>
+  
+</tr>
+{/foreach}
+<tr class="total" ><td>Total</td><td style="text-align:right;padding:0 4px 0 0;">{$dn_total}</td><td></td><td>{$dn_total_weight}</td></tr>
+</table>
+
 
 <h2>Comparison  Previous Year</h2>
 <table border=0>
