@@ -9,6 +9,7 @@ include_once('../../classes/Supplier.php');
 include_once('../../classes/Part.php');
 include_once('../../classes/Store.php');
 include_once('../../classes/Customer.php');
+include_once('../../classes/Invoice.php');
 
 error_reporting(E_ALL);
 
@@ -26,6 +27,16 @@ mysql_query("SET time_zone ='UTC'");
 mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';           
 date_default_timezone_set('Europe/London');
+
+$sql="select * from `Invoice Dimension`";
+$result=mysql_query($sql);
+while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+
+
+  $invoice=new Invoice($row['Invoice Key']);
+  $invoice->get_totals();
+  print $invoice->id."\r";
+ }
 
 
 $sql="select * from `Order Dimension`";

@@ -1282,7 +1282,11 @@ if(isset( $_REQUEST['where']))
 
   if(($f_field=='customer name'     )  and $f_value!=''){
       $wheref="  and  `Customer Name` like '%".addslashes($f_value)."%'";
- 
+  }elseif(($f_field=='postcode'     )  and $f_value!=''){
+      $wheref="  and  `Customer Main Address Postal Code` like '%".addslashes($f_value)."%'";
+
+
+
   }else if($f_field=='id'  )
     $wheref.=" and  `Customer ID` like '".addslashes(preg_replace('/\s*|\,|\./','',$f_value))."%' ";
   else if($f_field=='maxdesde' and is_numeric($f_value) )

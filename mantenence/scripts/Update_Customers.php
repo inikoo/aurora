@@ -34,7 +34,9 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
 
   $customer=new Customer($row['Customer Key']);
-  $customer->update_orders();
+  //$customer->update_orders();
+  
+  $customer->update_activity();
   print $customer->id."\r";
  }
 

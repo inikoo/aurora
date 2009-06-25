@@ -1001,6 +1001,63 @@ class Customer extends DB_Table{
  }
 
 
+ public function update_activity($date=''){
+   if($date=='')
+     $date=date("Y-m-d H:i:s");
+     $sigma_factor=3.2906;//99.9% value assuming normal distribution
+
+     $this->data['Actual Customer']='Yes';
+     $orders= $this->data['Customer Orders'];
+     if($orders==0){
+       $this->data['Active Customer']='No';
+       $this->data['Customer Type by Activity']='Prospect';
+       $this->data['Actual Customer']='No';
+     }elseif($orders==1){
+       $sql="select avg((`Customer Order Interval`)+($sigma_factor*`Customer Order Interval STD`)) as a from `Customer Dimension` where `Customer Orders`=2";
+	 
+	 $result2=mysql_query($sql);
+	 if($row2=mysql_fetch_array($result2, MYSQL_ASSOC)){
+	   $average_max_interval=$row2['a'];
+	   //print "$average_max_interval\n";
+	   if(is_numeric($average_max_interval)){
+	     if(   (strtotime('now')-strtotime($this->data['Customer Last Order Date']))/(3600*24)  <  $average_max_interval){
+	       $this->data['Active Customer']='Maybe';
+	       $this->data['Customer Type by Activity']='New';
+	       
+	     }else{
+	       $this->data['Active Customer']='No';
+	       $this->data['Customer Type by Activity']='Inactive';
+	       
+	     }
+	   }else{
+	     $this->data['Active Customer']='Unknown';
+	     $this->data['Customer Type by Activity']='Unknown';
+	   }
+	   
+	 }
+     }else{
+       $last_date=date('U',strtotime($this->data['Customer Last Order Date']));
+       	 if((date('U')-$last_date)<($this->data['Customer Order Interval']+($sigma_factor*$this->data['Customer Order Interval STD']))){
+	   $this->data['Active Customer']='Yes';
+	   $this->data['Customer Type by Activity']='Active';
+	 }else{
+	   $this->data['Active Customer']='No';
+	   $this->data['Customer Type by Activity']='Inactive';
+
+	 }
+     }
+ 
+         $sql=sprintf("update `Customer Dimension` set `Actual Customer`=%s,`Active Customer`=%s,`Customer Type by Activity`=%s where `Customer Key`=%d"
+		      ,prepare_mysql($this->data['Actual Customer'])
+		      ,prepare_mysql($this->data['Active Customer'])
+		      ,prepare_mysql($this->data['Customer Type by Activity'])
+		      ,$this->id
+		    );
+
+       if(!mysql_query($sql))
+	 exit("$sql error");
+     
+ }
 
  /*
    function: update_orders
@@ -1108,21 +1165,14 @@ class Customer extends DB_Table{
 	 $this->data['Customer Order Interval']=average($intervals);
 	 $this->data['Customer Order Interval STD']=deviation($intervals);
 	 
-	 //print  $this->data['customer order interval']." ".$this->data['customer order interval std']."\n";
-	 
-	 if((date('U')-$last_date)<($this->data['Customer Order Interval']+($sigma_factor*$this->data['Customer Order Interval STD']))){
-	   $this->data['Active Customer']='Yes';
-	   $this->data['Customer Type by Activity']='Active';
-	 }else{
-	   $this->data['Active Customer']='No';
-	   $this->data['Customer Type by Activity']='Inactive';
 
-	 }
+	 
+
        }
        
       
        
-       $sql=sprintf("update `Customer Dimension` set `Customer Net Balance`=%.2f,`Customer Orders`=%d,`Customer Orders Cancelled`=%d,`Customer Orders Invoiced`=%d,`Customer First Order Date`=%s,`Customer Last Order Date`=%s,`Customer Order Interval`=%s,`Customer Order Interval STD`=%s,`Active Customer`=%s,`Actual Customer`=%s,`Customer Type by Activity`=%s,`Customer Net Refunds`=%.2f,`Customer Net Payments`=%.2f,`Customer Outstanding Net Balance`=%.2f,`Customer Tax Balance`=%.2f,`Customer Tax Refunds`=%.2f,`Customer Tax Payments`=%.2f,`Customer Outstanding Tax Balance`=%.2f,`Customer Profit`=%.2f where `Customer Key`=%d",
+       $sql=sprintf("update `Customer Dimension` set `Customer Net Balance`=%.2f,`Customer Orders`=%d,`Customer Orders Cancelled`=%d,`Customer Orders Invoiced`=%d,`Customer First Order Date`=%s,`Customer Last Order Date`=%s,`Customer Order Interval`=%s,`Customer Order Interval STD`=%s,`Customer Net Refunds`=%.2f,`Customer Net Payments`=%.2f,`Customer Outstanding Net Balance`=%.2f,`Customer Tax Balance`=%.2f,`Customer Tax Refunds`=%.2f,`Customer Tax Payments`=%.2f,`Customer Outstanding Tax Balance`=%.2f,`Customer Profit`=%.2f where `Customer Key`=%d",
 		    $this->data['Customer Net Balance']
 		    ,$this->data['Customer Orders']
 		    ,$this->data['Customer Orders Cancelled']
@@ -1131,15 +1181,6 @@ class Customer extends DB_Table{
 		    ,prepare_mysql($this->data['Customer Last Order Date'])
 		    ,prepare_mysql($this->data['Customer Order Interval'])
 		    ,prepare_mysql($this->data['Customer Order Interval STD'])
-		    ,prepare_mysql($this->data['Active Customer'])
-		    ,prepare_mysql($this->data['Actual Customer'])
-		    ,prepare_mysql($this->data['Customer Type by Activity'])
-
-
-		    
-		    
-		    
-
 		    ,$this->data['Customer Net Refunds']
 		    ,$this->data['Customer Net Payments']
 		    ,$this->data['Customer Outstanding Net Balance']

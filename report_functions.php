@@ -606,6 +606,8 @@ $countries='and `Invoice Billing Country 2 Alpha Code` in (';
  $orders_net=0;
  $orders_cancelled=0;
  $orders_invoices=0;
+  $orders_done=0;
+
  $orders_follows=0;
  $orders_todo=0;
  $orders_todo_net=0;
@@ -916,20 +918,42 @@ $balance['credits']['tax']=0;
    }
  }
 
+  $dn_data=array();
+  $dn_total=0;
+  $dn_total_weight=0;
+  $_int=preg_replace('/Invoice Date/','Delivery Note Date',$int[0]); 
   
+$sql=sprintf("select count(*) as num ,sum(`Delivery Note Weight`) as w  from `Delivery Note Dimension` where true %s ",$_int);
+  $result=mysql_query($sql);
+  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+    $dn_total=$row['num'];
+    $dn_total_weight=$row['w'];
+	
+  }
   
-
+  $sql=sprintf("select count(*) as num ,sum(`Delivery Note Weight`) as w ,`Delivery Note Type`  from `Delivery Note Dimension` where true %s group by `Delivery Note Type`",$_int);
+  $result=mysql_query($sql);
+  while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+    $dn_data[]=array(
+		     'number'=>number($row['num']),
+		     'weight'=>number($row['w'])." Kg",
+		     'number_per'=>percentage($row['num'],$dn_total),
+		     'weight_per'=>percentage($row['w'],$dn_total_weight),
+		     'type'=>$row['Delivery Note Type']
+		     );
+  }
   
   $_int=preg_replace('/Invoice Date/','Order Date',$int[0]); 
   
   
   
-  $sql=sprintf("select count(*) as num ,sum(`Order Total Net Amount`) as net  from `Order Dimension` where true %s ",$_int);
+  $sql=sprintf("select count(*) as num ,sum(`Order Total Net Amount`) as net ,sum(IF(`Order Current Dispatch State`='Dispached',1,0)) as done  from `Order Dimension` where true %s ",$_int);
 
   $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
     $orders_total_net=$row['net'];
     $orders_total=$row['num'];
+    $orders_done=$row['done'];
   }
 
   $orders_state=array();
@@ -1327,6 +1351,9 @@ $balance['samples']['net_charged']=money($balance['samples']['net_charged']);
 		'orders_total'=>$orders_total,
 		'orders_cancelled'=>$orders_cancelled,
 		'orders_invoices'=>$orders_invoices,
+		'orders_done'=>$orders_done,
+		
+		
 		'orders_follows'=>$orders_follows,
 		'orders_donations'=>$orders_donations,
 		'orders_others'=>$orders_others,
@@ -1339,14 +1366,16 @@ $balance['samples']['net_charged']=money($balance['samples']['net_charged']);
 		'orders_donations_net'=>$orders_donations_net,
 		'orders_others_net'=>$orders_others_net
 		);
-
-
+ $dn=array(
+	   'dn_total'=>$dn_total
+	   ,'dn_total_weight'=>$dn_total_weight
+	   );
   $errors=array(
 		'taxable'=>$taxable_error,
 		'notaxable'=>$notaxable_error,
 		'novalue_invoices'=>$novalue_invoices
 		);
-  return array('invoices'=>$invoices,'sales'=>$sales,'refunds'=>$refunds,'orders'=>$orders,'exports'=>$exports,'other_data'=>$other_data,'errors'=>$errors,'taxable'=>$taxable,'notaxable'=>$notaxable,'balance'=>$balance,'orders_state'=>$orders_state);
+  return array('invoices'=>$invoices,'sales'=>$sales,'refunds'=>$refunds,'orders'=>$orders,'dn_data'=>$dn_data,'exports'=>$exports,'other_data'=>$other_data,'errors'=>$errors,'taxable'=>$taxable,'notaxable'=>$notaxable,'balance'=>$balance,'orders_state'=>$orders_state,'dn'=>$dn);
 
 
 }
