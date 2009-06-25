@@ -1005,56 +1005,83 @@ class Customer extends DB_Table{
    if($date=='')
      $date=date("Y-m-d H:i:s");
      $sigma_factor=3.2906;//99.9% value assuming normal distribution
-
+     $this->data['Customer Lost Date']='';
      $this->data['Actual Customer']='Yes';
      $orders= $this->data['Customer Orders'];
+
+     //print $this->id." $orders  \n";
+
      if($orders==0){
        $this->data['Active Customer']='No';
        $this->data['Customer Type by Activity']='Prospect';
        $this->data['Actual Customer']='No';
      }elseif($orders==1){
-       $sql="select avg((`Customer Order Interval`)+($sigma_factor*`Customer Order Interval STD`)) as a from `Customer Dimension` where `Customer Orders`=2";
+       $sql="select avg((`Customer Order Interval`)+($sigma_factor*`Customer Order Interval STD`)) as a from `Customer Dimension` where `Customer Orders`>1";
 	 
 	 $result2=mysql_query($sql);
 	 if($row2=mysql_fetch_array($result2, MYSQL_ASSOC)){
 	   $average_max_interval=$row2['a'];
 	   //print "$average_max_interval\n";
 	   if(is_numeric($average_max_interval)){
+	     //print "xxxxxxxxxxxxxx\n";
 	     if(   (strtotime('now')-strtotime($this->data['Customer Last Order Date']))/(3600*24)  <  $average_max_interval){
+	       // print "xxxxxxxxxxxxxx1\n";
+		     
 	       $this->data['Active Customer']='Maybe';
 	       $this->data['Customer Type by Activity']='New';
 	       
 	     }else{
+	       
+	       
+	       //print "xxxxxxxxxxxxxx2\n";
+
 	       $this->data['Active Customer']='No';
 	       $this->data['Customer Type by Activity']='Inactive';
-	       
+	       //   print $this->data['Customer Last Order Date']." +$average_max_interval days\n"; 
+	       $this->data['Customer Lost Date']=date("Y-m-d H:i:s",strtotime($this->data['Customer Last Order Date']." +".ceil($average_max_interval)." day" ));
 	     }
+
+	     
+	     //print "+++++++++++++\n";
 	   }else{
 	     $this->data['Active Customer']='Unknown';
 	     $this->data['Customer Type by Activity']='Unknown';
 	   }
 	   
+	 }else{
+	    $this->data['Active Customer']='Unknown';
+	    $this->data['Customer Type by Activity']='Unknown';
 	 }
+	 //print "-----------\n";
+
      }else{
+       //print $this->data['Customer Last Order Date']."\n";
+
        $last_date=date('U',strtotime($this->data['Customer Last Order Date']));
-       	 if((date('U')-$last_date)<($this->data['Customer Order Interval']+($sigma_factor*$this->data['Customer Order Interval STD']))){
+       //print ((date('U')-$last_date)/3600/24)."\n";
+       
+       
+       $interval=ceil($this->data['Customer Order Interval']+($sigma_factor*$this->data['Customer Order Interval STD']));
+       if( (date('U')-$last_date)/24/3600  <$interval){
 	   $this->data['Active Customer']='Yes';
 	   $this->data['Customer Type by Activity']='Active';
 	 }else{
 	   $this->data['Active Customer']='No';
 	   $this->data['Customer Type by Activity']='Inactive';
-
+	   $this->data['Customer Lost Date']=date("Y-m-d H:i:s",strtotime($this->data['Customer Last Order Date']." +".$interval." day" ));
 	 }
      }
  
-         $sql=sprintf("update `Customer Dimension` set `Actual Customer`=%s,`Active Customer`=%s,`Customer Type by Activity`=%s where `Customer Key`=%d"
+         $sql=sprintf("update `Customer Dimension` set `Actual Customer`=%s,`Active Customer`=%s,`Customer Type by Activity`=%s , `Customer Lost Date`=%s where `Customer Key`=%d"
 		      ,prepare_mysql($this->data['Actual Customer'])
 		      ,prepare_mysql($this->data['Active Customer'])
 		      ,prepare_mysql($this->data['Customer Type by Activity'])
+		      ,prepare_mysql($this->data['Customer Lost Date'])
 		      ,$this->id
 		    );
 
-       if(!mysql_query($sql))
+	 // print "$sql\n";
+	 if(!mysql_query($sql))
 	 exit("$sql error");
      
  }

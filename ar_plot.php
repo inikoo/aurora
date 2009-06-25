@@ -456,6 +456,98 @@ while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
     echo json_encode($response);
 // echo '{"resultset":{"state":200,"data":{"tip":"Sales October 2008\n\u00a329,085.85\n-87.4% change (last month)\n-89.5% change (last year)\n(240 Orders)","tip_losses":"Lost Sales October 2008\n\u00a30.00 (0.0%)","sales":"34429","losses":0,"date":"10-2008"}}}';
 
+
+case('customer_month_population'): 
+  
+  global $myconf;
+  $first_day=$myconf['data_since'];
+  // print $first_day;
+  
+
+  $sql="select min(`Customer First Order Date`) first_day from `Customer Dimension`  ; ";
+  $res = mysql_query($sql); 
+  if($row=mysql_fetch_array($res)) {
+     $first_day=$row['first_day'];
+  }
+
+   $sql="select date_format(`First Day`,'%c') as month, `First Day` as date, `Year Month` as yearmonth  from `Month Dimension` where `First Day`>'$first_day' and `First Day` < NOW(); ";
+
+   $data=array();
+   $res = mysql_query($sql);
+   $i=0;
+   $last_month='';
+   $res = mysql_query($sql); 
+   while($row=mysql_fetch_array($res)) {
+     $index[$row['yearmonth']]=$i;
+
+
+     $data[]=array(
+		   'tip_lost'=>_('No customer lost'),
+		   'tip_new'=>_('No new customers'),
+		   'tip_active'=>_('No active customers'),
+		   'month'=>$row['month'],
+		   '_date'=>$row['date'],
+		   'date'=>strftime("%b %y",strtotime($row['date'])),
+
+		   'new'=>0,
+		   'lost'=>0,
+		   'active'=>0,
+		   );
+
+     $i++;
+    }
+
+   
+
+
+
+   $sql="select count(*) as new, DATE_FORMAT(`Customer First Order Date`,'%Y%m') yearmonth from `Customer Dimension`  where `Actual Customer`='Yes'  group by DATE_FORMAT(`Customer First Order Date`,'%m%Y')";
+   // print $sql;
+   $res=mysql_query($sql);
+   while($row=mysql_fetch_array($res)){
+     //     print $row['yearmonth']."\n";
+      if(isset($index[$row['yearmonth']])){
+	$_index=$index[$row['yearmonth']];
+	$data[$_index]['new']=(float)$row['new'];
+	$data[$_index]['tip_new']=_('New Customers')."\n".strftime("%b %y",strtotime($data[$_index]['_date']))."\n".number($row['new']);
+      }
+    }
+
+
+   
+   $sql="select count(*) as  lost  , DATE_FORMAT(`Customer Lost Date`,'%Y%m') yearmonth  from `Customer Dimension` where `Active Customer`='No'  and `Actual Customer`='Yes'   group by DATE_FORMAT(`Customer Lost Date`,'%m%Y');";
+   // print $sql;
+   $res=mysql_query($sql);
+   while($row=mysql_fetch_array($res)){
+     //     print $row['yearmonth']."\n";
+     if(isset($index[$row['yearmonth']])){
+	$_index=$index[$row['yearmonth']];
+	$data[$_index]['lost']=(float)$row['lost'];
+	$data[$_index]['tip_lost']=_('Lost Customers')."\n".strftime("%b %y",strtotime($data[$_index]['_date']))."\n".number($row['lost']);
+      }
+    }
+
+   $active=0;
+   foreach($data as $_index=>$value){
+     $active+=($data[$_index]['new']-$data[$_index]['lost']);
+     $data[$_index]['active']=$active;
+     $data[$_index]['tip_active']=_('Active Customers')."\n".strftime("%b %y",strtotime($data[$_index]['_date']))."\n".number($active);
+   }
+
+   
+   $response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$data,
+			 )
+		   );
+
+      echo json_encode($response);
+   break;
+
+
+
+
+
  break;
  default:
    

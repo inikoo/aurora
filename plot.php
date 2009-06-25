@@ -21,6 +21,21 @@ $options='';
 
 
 switch($tipo){
+case('customer_month_population');
+
+  $ar_address='ar_plot.php?tipo='.$tipo;
+
+   $fields='"tip_lost","lost","date","new","tip_new","active","tip_active"';
+   $yfields=array(
+		  array('label'=>_('Active'),'name'=>'active','axis'=>'formatNumberAxisLabel','style'=>'size:5,lineSize:2'),
+		  array('label'=>_('New'),'name'=>'new','axis'=>'formatNumberAxisLabel','style'=>'size:5,lineSize:2'),
+		  array('label'=>_('Lost'),'name'=>'lost','axis'=>'formatNumberAxisLabel','style'=>'size:5,lineSize:2')
+
+		  );
+   $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category','axis'=>'fdate');
+   $style='size:1';
+   $tipo_chart='LineChart';
+break;
  case('product_week_sales'):
  case('product_month_sales'):
  case('product_quarter_sales'):
