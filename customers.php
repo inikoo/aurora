@@ -155,6 +155,15 @@ $smarty->assign('filter_name',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu',$paginator_menu);
 
+$new_window=30;
+
+$sigma_factor=3.2906;//99.9% value assuming normal distribution
+$sql="select sum(if(`Customer Type by Activity`='New',1,0)) as new from `Customer Dimension` where DATE_SUB(CURDATE(),INTERVAL 1 MONTH) <= `Customer First Order Date`";
+$result = mysql_query($sql) or die('Query failed: ' . mysql_error());
+ if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+   
+   $new_customers_1m=$row['new'];
+ }
 
  $sql="select count(distinct `Customer ID`) as customers,sum(if(`Customer Type by Activity`='New',1,0)) as new,sum(if(`Customer Type by Activity`='Active',1,0)) as active ,sum(if(`Customer Type by Activity`='Inactive',1,0)) as inactive from `Customer Dimension` ";
  $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
@@ -162,7 +171,7 @@ $smarty->assign('paginator_menu',$paginator_menu);
    $total_customers=$row['customers'];
    $active_customers=$row['active'];
    $new_customers=$row['new'];
-   $new_customers=$row['inactive'];
+   // $new_customers=$row['inactive'];
   }
 
 
@@ -183,7 +192,13 @@ $smarty->assign('paginator_menu',$paginator_menu);
 /*   } */
 
 
-$overview_text=translate("There are  %1\$s  customers so far, %2\$s of them still active (%3\$s%\). Over the last 3 months we acquired  %4\$s new customers representing  %5\$s of the total customer base.",number($total_customers),$active_customers,percentage($active_customers,$total_customers),$new_customers,percentage($new_customers,$active_customers));
+$overview_text=translate("We have had  %1\$s  customers so far, %2\$s of them still active (%3\$s%\). Over the last month we acquired  %4\$s new customers representing  %5\$s of the total active customer base."
+			 ,number($total_customers)
+			 ,$active_customers
+			 ,percentage($active_customers,$total_customers)
+
+			 ,$new_customers_1m
+			 ,percentage($new_customers_1m,$active_customers+$new_customers));
  $smarty->assign('overview_text',$overview_text);
 
 // $home_country='United Kingdom';
