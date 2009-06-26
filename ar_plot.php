@@ -456,11 +456,14 @@ while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
     echo json_encode($response);
 // echo '{"resultset":{"state":200,"data":{"tip":"Sales October 2008\n\u00a329,085.85\n-87.4% change (last month)\n-89.5% change (last year)\n(240 Orders)","tip_losses":"Lost Sales October 2008\n\u00a30.00 (0.0%)","sales":"34429","losses":0,"date":"10-2008"}}}';
 
+case('customer_month_growth'): 
 
 case('customer_month_population'): 
   
   global $myconf;
   $first_day=$myconf['data_since'];
+  $first_yearmonth=date("Ym",strtotime($first_day));
+
   // print $first_day;
   
 
@@ -485,13 +488,15 @@ case('customer_month_population'):
 		   'tip_lost'=>_('No customer lost'),
 		   'tip_new'=>_('No new customers'),
 		   'tip_active'=>_('No active customers'),
+		   'tip_diff'=>_('No change in the number of customers'),
 		   'month'=>$row['month'],
 		   '_date'=>$row['date'],
 		   'date'=>strftime("%b %y",strtotime($row['date'])),
-
+		   'yearmonth'=>$row['yearmonth'],
 		   'new'=>0,
 		   'lost'=>0,
 		   'active'=>0,
+		   
 		   );
 
      $i++;
@@ -526,18 +531,47 @@ case('customer_month_population'):
 	$data[$_index]['tip_lost']=_('Lost Customers')."\n".strftime("%b %y",strtotime($data[$_index]['_date']))."\n".number($row['lost']);
       }
     }
-
+   $_data[]=0;
    $active=0;
    foreach($data as $_index=>$value){
      $active+=($data[$_index]['new']-$data[$_index]['lost']);
      $data[$_index]['active']=$active;
      $data[$_index]['tip_active']=_('Active Customers')."\n".strftime("%b %y",strtotime($data[$_index]['_date']))."\n".number($active);
+
+     $data[$_index]['tip_diff']=strftime("%b %y",strtotime($data[$_index]['_date']))." "._('Customer Growth')."\n".number($data[$_index]['new']-$data[$_index]['lost']);
+
+   }
+   $_data=array();
+
+    foreach($data as $_index=>$value){
+   
+      
+      if($first_yearmonth<$data[$_index]['yearmonth']){
+       
+	$_data[]=array(
+		   'tip_lost'=>$value['tip_lost'],
+		   'tip_new'=>$value['tip_new'],
+		   'tip_active'=>$value['tip_active'],
+		   'tip_diff'=>$value['tip_diff'],
+		   'date'=>$value['date'],
+		   'new'=>$value['new'],
+		   'lost'=>-$value['lost'],
+		   'active'=>$value['active'],
+		   'diff'=>$value['new']-$value['lost']
+		   );
+
+	
+      }
+
    }
 
-   
+
+
+   //   exit;
+
    $response=array('resultset'=>
 		   array('state'=>200,
-			 'data'=>$data,
+			 'data'=>$_data,
 			 )
 		   );
 
