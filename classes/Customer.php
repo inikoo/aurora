@@ -1059,9 +1059,29 @@ class Customer extends DB_Table{
 
        $last_date=date('U',strtotime($this->data['Customer Last Order Date']));
        //print ((date('U')-$last_date)/3600/24)."\n";
+       // print_r($this->data);
        
-       
-       $interval=ceil($this->data['Customer Order Interval']+($sigma_factor*$this->data['Customer Order Interval STD']));
+       if($orders==2){
+	  $sql="select avg(`Customer Order Interval`) as i, avg((`Customer Order Interval`)+($sigma_factor*`Customer Order Interval STD`)) as a from `Customer Dimension` where `Customer Orders`>2";
+	 
+	 $result2=mysql_query($sql);
+	 if($row2=mysql_fetch_array($result2, MYSQL_ASSOC)){
+	   $a_inteval=$row2['a'];
+	   $i_inteval=$row2['i'];
+	 }
+	 if($i_inteval==0)
+	   $factor=3;	   
+	 else
+	   $factor=$a_inteval/$i_inteval;
+	     
+	 $interval=ceil($this->data['Customer Order Interval']*$factor);
+	
+       }else
+	 $interval=ceil($this->data['Customer Order Interval']+($sigma_factor*$this->data['Customer Order Interval STD']));
+
+
+
+
        if( (date('U')-$last_date)/24/3600  <$interval){
 	   $this->data['Active Customer']='Yes';
 	   $this->data['Customer Type by Activity']='Active';
@@ -1080,7 +1100,7 @@ class Customer extends DB_Table{
 		      ,$this->id
 		    );
 
-	 // print "$sql\n";
+	 //	  print "$sql\n";
 	 if(!mysql_query($sql))
 	 exit("$sql error");
      

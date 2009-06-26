@@ -38,8 +38,23 @@
     <div id="details"  style="clear:left;margin-top:10px;padding:0 20px;width:770px;{if $details==0}display:none{/if}">
       <h2>{t}Customers Details{/t}</h2>
       <p style="width:475px">{$overview_text}</p>
+      <div id="plot" style="width:940px;border:0px solid black;padding:0">
+	
+	<div style="float:right;font-size:80%;margin:20px  0 0 0;border:0px solid red;position:relative;left:-20px">
+	  <table class="options">
+	    <tr><td id="customer_month_population" onclick="change_plot(this)">Customers</td></tr>
+	    <tr><td id="customer_month_growth" onclick="change_plot(this)">Growth</td></tr>
+
+	  </table>
+	</div>
+	<iframe id="the_plot" src ="plot.php?tipo={$plot_tipo}" style="position:relative;left:-30px" frameborder=0 height="310" scrolling="no" width="850"></iframe>
+      </div>
       <p style="width:475px">{$top_text}</p>
       <p style="width:475px">{$export_text}</p>
+
+
+
+
     </div>
 
     

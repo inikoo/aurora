@@ -1421,6 +1421,9 @@ if(isset( $_REQUEST['where']))
      $order='``Customer Invoices Top Percentage`';
     elseif($order=='total_refunds')
      $order='`Customer Total Refunds`';
+    
+  elseif($order=='activity')
+     $order='`Customer Type by Activity`';
 
    $sql="select   * from `Customer Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results";
    //    print $sql;
@@ -1502,7 +1505,7 @@ if(isset( $_REQUEST['where']))
 		   'ship_postcode'>$data['Customer Main Ship To Postal Code'],
 		   'ship_region'=>$data['Customer Main Ship To Country Region'],
 		   'ship_country'=>$data['Customer Main Ship To Country'],
-		   
+		   'activity'=>$data['Customer Type by Activity'],
 		   );
   }
 

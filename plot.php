@@ -18,23 +18,44 @@ if(isset($_REQUEST['tipo']))
 $title='';
 
 $options='';
-
+$staked=false;
 
 switch($tipo){
 case('customer_month_population');
 
   $ar_address='ar_plot.php?tipo='.$tipo;
-
-   $fields='"tip_lost","lost","date","new","tip_new","active","tip_active"';
+$fields='"date","active","tip_active"';
+  // $fields='"tip_lost","lost","date","new","tip_new","active","tip_active"';
    $yfields=array(
 		  array('label'=>_('Active'),'name'=>'active','axis'=>'formatNumberAxisLabel','style'=>'size:5,lineSize:2'),
-		  array('label'=>_('New'),'name'=>'new','axis'=>'formatNumberAxisLabel','style'=>'size:5,lineSize:2'),
-		  array('label'=>_('Lost'),'name'=>'lost','axis'=>'formatNumberAxisLabel','style'=>'size:5,lineSize:2')
+		  //  array('label'=>_('New'),'name'=>'new','axis'=>'formatNumberAxisLabel','style'=>'size:5,lineSize:2'),
+		  // array('label'=>_('Lost'),'name'=>'lost','axis'=>'formatNumberAxisLabel','style'=>'size:5,lineSize:2')
 
 		  );
    $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category','axis'=>'fdate');
    $style='size:1';
    $tipo_chart='LineChart';
+   break;
+case('customer_month_growth');
+$staked=true;
+  $ar_address='ar_plot.php?tipo='.$tipo;
+$fields='"date","diff","tip_diff","new","tip_new","lost","lost_tip"';
+  // $fields='"tip_lost","lost","date","new","tip_new","active","tip_active"';
+   $yfields=array(
+		  
+
+		  array('label'=>_('New'),'name'=>'new','axis'=>'formatNumberAxisLabel','style'=>'color:0x7076f4,alpha:0.2')
+		  ,array('label'=>_('Lost'),'name'=>'lost','axis'=>'formatNumberAxisLabel','style'=>'color:0x7076f4,alpha:0.2')
+
+		  ,array('label'=>_('Change'),'name'=>'diff','type'=>'line','axis'=>'formatNumberAxisLabel','style'=>'size:5,lineSize:3,color:0x3390e7')
+		  //  array('label'=>_('New'),'name'=>'new','axis'=>'formatNumberAxisLabel','style'=>'size:5,lineSize:2'),
+		  // array('label'=>_('Lost'),'name'=>'lost','axis'=>'formatNumberAxisLabel','style'=>'size:5,lineSize:2')
+
+		  );
+   $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category','axis'=>'fdate');
+   $style='size:1';
+   $tipo_chart='ColumnChart';
+
 break;
  case('product_week_sales'):
  case('product_month_sales'):
@@ -405,7 +426,12 @@ var xAxis = new YAHOO.widget.'.$xfield['tipo_axis'].'Axis();
 
 '.$options.'
 
-var mychart = new YAHOO.widget.'.$tipo_chart.'( '.($tipo_chart=='CartesianChart'?"'line',":'').'  "plot", jsonData,
+
+var styleDef={xAxis:{labelRotation:-90,labelSpacing:0 }};
+
+'.($staked?'yAxis.stackingEnabled = true':'').'
+
+var mychart = new YAHOO.widget.'.($staked?'Stacked':'').$tipo_chart.'( '.($tipo_chart=='CartesianChart'?"'line',":'').'  "plot", jsonData,
 
  	{
 style:{'.$style.'}          ,
@@ -414,8 +440,9 @@ style:{'.$style.'}          ,
  	 xField: "'.$xfield['name'].'",
  	 yAxis: yAxis,
 	 xAxis: xAxis,
-dataTipFunction: "DataTipText",
- 	 expressInstall: "assets/expressinstall.swf"
+         dataTipFunction: "DataTipText",
+ 	 style:styleDef,
+         expressInstall: "assets/expressinstall.swf"
  	});
 
 

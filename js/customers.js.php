@@ -2,6 +2,14 @@
    var Event = YAHOO.util.Event;
      var Dom   = YAHOO.util.Dom;
 
+
+function change_plot(o){
+  
+    
+    Dom.get('the_plot').src = 'plot.php?tipo='+o.id;
+    YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=customers-plot&value='+o.id);
+}
+
 YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
 
@@ -20,6 +28,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       ,{key:"location", label:"<?=_('Location')?>",<?=($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?> width:230,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"last_order", label:"<?=_('Last Order')?>",<?=($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?>width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				       ,{key:"orders", label:"<?=_('Orders')?>",<?=($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"activity", label:"<?=_('Status')?>",<?=($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       
 				       // ,{key:"total_payments", label:"<?=_('Total')?>",<?=($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}} 
 				       ,{key:"contact_name", label:"<?=_('Contact Name')?>",<?=($_SESSION['state']['customers']['view']=='contact'?'':'hidden:true,')?>sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				       
@@ -73,7 +83,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 'orders',
 			 'email',
 			 'telephone',
-			 'last_order',
+			 'last_order','activity',
 			 'total_payments','contact_name'
 			 ,"address","town","postcode","region","country"
 			 ,"ship_address","ship_town","ship_postcode","ship_region","ship_country"

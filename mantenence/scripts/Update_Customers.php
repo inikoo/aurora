@@ -32,7 +32,7 @@ $sql="select * from `Customer Dimension`";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
-
+  print $row['Customer Key']."\n";
   $customer=new Customer($row['Customer Key']);
   //$customer->update_orders();
   

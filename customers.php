@@ -171,7 +171,7 @@ $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
    $total_customers=$row['customers'];
    $active_customers=$row['active'];
    $new_customers=$row['new'];
-   // $new_customers=$row['inactive'];
+   $inactive_customers=$row['inactive'];
   }
 
 
@@ -194,12 +194,14 @@ $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
 
 $overview_text=translate("We have had  %1\$s  customers so far, %2\$s of them still active (%3\$s%\). Over the last month we acquired  %4\$s new customers representing  %5\$s of the total active customer base."
 			 ,number($total_customers)
-			 ,$active_customers
+			 ,number($active_customers+$new_customers)
 			 ,percentage($active_customers,$total_customers)
 
 			 ,$new_customers_1m
 			 ,percentage($new_customers_1m,$active_customers+$new_customers));
  $smarty->assign('overview_text',$overview_text);
+$smarty->assign('plot_tipo',$_SESSION['state']['customers']['plot']);
+
 
 // $home_country='United Kingdom';
 // $home_informal_name=_('the UK');

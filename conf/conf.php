@@ -325,6 +325,7 @@ $default_state=array(
 		     'customers'=>array(
 					'view'=>'general',
 					'details'=>0,
+					'plot'=>'customer_month_population',
 					'table'=>array(
 						   'order'=>'name',
 						   'order_dir'=>'',
