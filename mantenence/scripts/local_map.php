@@ -187,11 +187,16 @@ function get_tipo_order($ltipo,$header){
   }elseif(preg_match('/^CANCEL/i',$ltipo)){
     $tipo=3;
   }elseif(preg_match('/^SAMPLE|muestras/i',$ltipo)){
+    //    print_r($header);
+    $header['notes']=preg_replace('/^samples?$/i','',$header['notes']);
+    $header['notes2']=preg_replace('/^samples?$/i','',$header['notes2']);
     $tipo=4;
     }elseif(preg_match('/donation/i',$ltipo)){
     $tipo=5; 
   }elseif(preg_match('/^\s*REPLACEMENT|Replcement|Replacenment|^reemplazo por roturas|^replacement|Damaged item|REPLACMENT|DELIVERY COLLECTION|repplacements|repalcements|Repalcement|Replaceement/i',$ltipo)){
     $tipo=6;
+  $header['notes']=preg_replace('/^Replacement$/i','',$header['notes']);
+    $header['notes2']=preg_replace('/^Replacement$/i','',$header['notes2']);
 }elseif(preg_match('/Damaged Parcel|shotages|MISSING|Missing Parcel|missing\s+\d|^reemplazo por falta|SHORTAHGE|shortages|Missing From Order|missing form order|Mising from|^Missing Item|Missing - Replacement|^Shortage|Lost Parcel/i',$ltipo)){
 
     $tipo=7;
@@ -201,6 +206,10 @@ function get_tipo_order($ltipo,$header){
 
   }elseif(preg_match('/^devoluci|^refund|VAT REFUND/i',$ltipo)){
     $tipo=9;
+    $header['notes']=preg_replace('/^refund$/i','',$header['notes']);
+    $header['notes2']=preg_replace('/^refund$/i','',$header['notes2']);
+
+
  }elseif(preg_match('/credit|credit note/i',$ltipo)){
     $tipo=10;
   }elseif(preg_match('/^quote/i',$ltipo)){
@@ -230,17 +239,34 @@ function get_tipo_order($ltipo,$header){
   // print "****** $ltipo *** $tmp ***\n";
   
   if($header['total_topay']==0){
-    if(preg_match('/Repalacements|Replcement|^reemplazo por roturas|^replacement|REPLACMENT|DELIVERY COLLECTION|repplacements|repalcements/i',$header['notes2'])){
-      
-      $tipo=6;
-    }
-    if(preg_match('/MISSING|Missing Parcel|missing\s+\d|^reemplazo por falta|shortages|Missing From Order|missing form order|Mising from|^Missing Item|Missing - Replacement|^Shortage|Lost Parcel/i',$header['notes2'])){
-      $tipo=7;
-    }
-      
+    
+ if(preg_match('/Sample|samples.*/i',$header['notes2'])){
+      $header['notes']='';
+      $tipo=4;
     }
 
-  return array($tipo,$parent_id);
+    if(preg_match('/Repalacements|Replcement|^reemplazo por roturas|^replacement|REPLACMENT|DELIVERY COLLECTION|repplacements|repalcements/i',$header['notes2'])){
+      $header['notes2']='';
+      $tipo=6;
+    }
+    else if(preg_match('/MISSING|Missing Parcel|missing\s+\d|^reemplazo por falta|shortages|Missing From Order|missing form order|Mising from|^Missing Item|Missing - Replacement|^Shortage|Lost Parcel/i',$header['notes2'])){
+      $tipo=7;
+      $header['notes2']='';
+    }
+    else if(preg_match('/replacement|Repalacements|Replcement|^reemplazo por roturas|^replacement|REPLACMENT|DELIVERY COLLECTION|repplacements|repalcements/i',$header['notes'])){
+      $header['notes']='';
+      $tipo=6;
+    } else if(preg_match('/MISSING|Missing Parcel|missing\s+\d|^reemplazo por falta|shortages|Missing From Order|missing form order|Mising from|^Missing Item|Missing - Replacement|^Shortage|Lost Parcel/i',$header['notes'])){
+      $tipo=7;
+      $header['notes']='';
+    }
+    
+
+
+  }
+    
+
+  return array($tipo,$parent_id,$header);
 
 }
 
