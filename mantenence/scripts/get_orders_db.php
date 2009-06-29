@@ -38,7 +38,7 @@ srand(12344);
 
 $sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed)  order by filename ";
 //$sql="select * from  orders_data.orders where filename like '%refund.xls'   order by filename";
-//$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/15297.xls'  order by filename";
+$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/89175.xls'  order by filename";
 
 
 $contador=0;
@@ -67,10 +67,10 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     $result_test=mysql_query($sql);
     if($row_test=mysql_fetch_array($result_test, MYSQL_ASSOC)){
       if($row_test['num']==0){
-//	print "NEW $contador $order_data_id $filename \n";
+	print "NEW $contador $order_data_id $filename \n";
       }else{
 	$update=true;
-	print "UPD $contador $order_data_id $filename ";
+	print "UPD $contador $order_data_id $filename \n";
       }
     }
 
@@ -82,7 +82,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     $header=mb_unserialize($row['header']);
     $products=mb_unserialize($row['products']);
 
-    
+    //  print_r($products);
 
     //    echo "Memory: ".memory_get_usage(true) . "\n";
 
@@ -114,6 +114,9 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       $prod_map['no_price_bonus']=true;
       $prod_map['no_reorder']=true;
       $prod_map['bonus']=11;
+    }if($filename_number==89175){
+       $prod_map['no_reorder']=true;
+       $prod_map['no_price_bonus']=true;
     }
      
 
@@ -154,6 +157,8 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
     list($date_index,$date_order,$date_inv)=get_dates($row2['timestamp'],$header_data,$tipo_order,true);
   
+  
+
     
     if($tipo_order==9){
       if( $date_inv=='NULL' or  strtotime($date_order)>strtotime($date_inv)){
@@ -271,11 +276,11 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     }
    
 
- 
+  $extra_shipping=0;
 
     $data=array();
     $data['editor']=array('Date'=>$date_order);
-	
+    
     $data['order date']=$date_order;
     $data['order id']=$header_data['order_num'];
     $data['order customer message']=$header_data['notes2'];
@@ -285,7 +290,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     $data['order original data mime type']='application/vnd.ms-excel';
     $data['order original data']=$row2['filename'];
     $data['order original data source']='DB:orders_data.order.data';
-    $data['order original metadata']=$row2['id'];
+    $data['Order Original Metadata']=$row2['id'];
     $data['Order Main Source Type']='Unknown';
     //print_r($header_data);
 
@@ -348,7 +353,13 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	continue;
       }
 
-      if(preg_match('/Freight|^frc-|^cxd-|^wsl$|Postage|^eye$|^\d$|2009promo/i',$transaction['code']))
+      if(preg_match('/Freight|^frc-|Postage/i',$transaction['code'])){
+
+	$extra_shipping+=$transaction['price'];
+      continue;
+	
+	}
+      if(preg_match('/^cxd-|^wsl$|^eye$|^\d$|2009promo/i',$transaction['code']))
 	continue;
       if(preg_match('/difference in prices|Diff.in price for|difference in prices/i',$transaction['description']))
 	continue;
@@ -814,7 +825,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     //echo "Memory: ".memory_get_usage(true) . "\n";
 
 
-  
+    // print_r($products_data);
 
     $data['type']='direct_data_injection';
     $data['products']=$products_data;
@@ -931,13 +942,19 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	$taxable='Yes';
 	$tax_code='UNK';
 
+
+       
+
+
 	if($header_data['total_net']!=0){
 	  
 	  if($header_data['tax1']+$header_data['tax2']==0){
+	  
 	    $tax_code='EX0';
 	  }
 	  
 	  $tax_rate=($header_data['tax1']+$header_data['tax2'])/$header_data['total_net'];
+
 	  foreach($myconf['tax_rates'] as $_tax_code=>$_tax_rate){
 	    // print "$_tax_code => $_tax_rate $tax_rate\n ";
 	    $upper=1.1*$_tax_rate;
@@ -965,7 +982,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 			    ,'Invoice File As'=>$header_data['order_num']
 			    ,'Invoice Main Payment Method'=>$payment_method
 			    ,'Invoice Multiple Payment Methods'=>0
-			    ,'Invoice Shipping Net Amount'=>round($header_data['shipping'],2)
+			    ,'Invoice Shipping Net Amount'=>round($header_data['shipping']+$extra_shipping,2)
 			    ,'Invoice Charges Net Amount'=>round($header_data['charges'],2)
 			    ,'Invoice Total Tax Amount'=>round($header_data['tax1'],2)
 			    ,'Invoice Refund Amount'=>$total_credit_value
@@ -984,9 +1001,9 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 			    ,'Invoice Dispatching Lag'=>$lag
 
 			    );
-	
+	//print_r($data_invoice);
 	//print_r($header_data);
-
+	
 	if(!is_numeric($header_data['weight']))
 	  $weight=$estimated_w;
 	else
@@ -1063,7 +1080,11 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	$dn->pack('all');
 	$order->update_dispatch_state('Ready to Ship');
 	  $invoice->data['Invoice Paid Date']=$date_inv;
-	  $invoice->pay();
+	  $invoice->pay('full',
+			array(
+			      'Invoice Items Net Amount'=>round($header_data['total_items_charge_value'],2)-$total_credit_value-$extra_shipping
+			      ,'Invoice Total Net Amount'=>round($header_data['total_net'],2)
+			      ));
 	  $order-> update_payment_state('Paid');	
 	$dn->dispatch('all');
 	$order->update_dispatch_state('Dispached');
@@ -1165,7 +1186,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 			      ,'Invoice File As'=>$header_data['order_num']
 			      ,'Invoice Main Payment Method'=>$payment_method
 			      ,'Invoice Multiple Payment Methods'=>0
-			      ,'Invoice Shipping Net Amount'=>round($header_data['shipping'],2)
+			      ,'Invoice Shipping Net Amount'=>round($header_data['shipping']+$extra_shipping,2)
 			      ,'Invoice Charges Net Amount'=>round($header_data['charges'],2)
 			      ,'tax_rate'=>$tax_rate
 			      ,'tax_rate'=>$tax_rate

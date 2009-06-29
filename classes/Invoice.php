@@ -177,8 +177,8 @@ class Invoice extends DB_Table {
     else
       $tax_rate= $invoice_data ['tax_rate'];
     
-    $this->data ['Invoice Shipping Tax Amount'] = $invoice_data ['Invoice Shipping Net Amount'] * (1+$tax_rate);
-    $this->data ['Invoice Charges Tax Amount'] = $invoice_data ['Invoice Charges Net Amount'] * (1+$tax_rate);
+    $this->data ['Invoice Shipping Tax Amount'] = $invoice_data ['Invoice Shipping Net Amount'] * ($tax_rate);
+    $this->data ['Invoice Charges Tax Amount'] = $invoice_data ['Invoice Charges Net Amount'] * ($tax_rate);
     
     
     $this->data ['Invoice Metadata'] = $order->data ['Order Original Metadata'];
@@ -213,7 +213,7 @@ class Invoice extends DB_Table {
     $this->data ['Invoice XHTML Orders'] ='';
     $this->data ['Invoice XHTML Delivery Notes'] = '';
 
-    
+
     $this->create_header ();
 
 
@@ -315,8 +315,8 @@ class Invoice extends DB_Table {
     else
       $tax_rate= $invoice_data ['tax_rate'];
     
-    $this->data ['Invoice Shipping Tax Amount'] = $invoice_data ['Invoice Shipping Net Amount'] * (1+$tax_rate);
-    $this->data ['Invoice Charges Tax Amount'] = $invoice_data ['Invoice Charges Net Amount'] * (1+$tax_rate);
+    $this->data ['Invoice Shipping Tax Amount'] = $invoice_data ['Invoice Shipping Net Amount'] * ($tax_rate);
+    $this->data ['Invoice Charges Tax Amount'] = $invoice_data ['Invoice Charges Net Amount'] * ($tax_rate);
     
     
     $this->data ['Invoice Metadata'] = $order->data ['Order Original Metadata'];
@@ -398,7 +398,7 @@ class Invoice extends DB_Table {
       
       $amount += $data ['gross amount'];
       $discounts += $data ['discount amount'];
-      //      print "$sql";exit;
+      //  print "$sql\n";
       if (! mysql_query ( $sql ))
 	exit ( "$sql\n can not update order trwansiocion 11 facrt after invoice" );
     }
@@ -736,7 +736,7 @@ global $myconf;
    Pay invoice
   */
 
- function pay($tipo='full'){
+ function pay($tipo='full',   $force_values=false){
 
    
    
@@ -744,7 +744,11 @@ global $myconf;
    $sql = sprintf ( "update  `Order Transaction Fact`  set `Paid Factor`=1,`Current Payment State`='Paid',`Consolidated`='Yes',`Paid Date`=%s,`Invoice Transaction Outstanding Net Balance`=0,`Invoice Transaction Outstanding Tax Balance`=0 ,`Invoice Transaction Outstanding Tax Balance`=0 where `Invoice Key`=%d and `Consolidated`='No' ",prepare_mysql($this->data['Invoice Paid Date']),$this->id);
    // print $sql;
    mysql_query ( $sql );
-   $this->get_totals();
+
+   
+
+   print_r($force_values);
+   $this->get_totals($force_values);
    $sql=sprintf("update `Invoice Dimension`  set `Invoice Main Payment Method`=%s,`Invoice Paid Date`=%s ,`Invoice Paid`='Yes',`Invoice Has Been Paid In Full`='Yes' where `Invoice Key`=%d"
 		,prepare_mysql($this->data['Invoice Main Payment Method'])
 		,prepare_mysql($this->data['Invoice Paid Date'])
@@ -783,18 +787,35 @@ global $myconf;
    $this->data ['Invoice Discount Amount'] = $discounts;
    $net = $amount - $discounts;
    
-   if(isset($force_values['Invoice Total Net Amount']))
-     $this->data ['Invoice Adjust Amount']=$force_values['Invoice Total Net Amount']-$net;
+   if(isset($force_values['Invoice Items Net Amount']))
+     $this->data ['Invoice Items Net Adjust Amount']=$force_values['Invoice Items Net Amount']-$net;
    else
-     $this->data ['Invoice Adjust Amount']=0;
-   $this->data ['Invoice Items Net Amount']=$this->data ['Invoice Gross Amount'] - $this->data ['Invoice Discount Amount'] + $this->data ['Invoice Adjust Amount'];
-   $this->data ['Invoice Total Net Amount'] = $this->data ['Invoice Gross Amount'] - $this->data ['Invoice Discount Amount'] + $this->data ['Invoice Adjust Amount']+$this->data ['Invoice Charges Net Amount']+$this->data ['Invoice Shipping Net Amount'];
+     $this->data ['Invoice Items Net Adjust Amount']=0;
+
+
+
+
+
+   $this->data ['Invoice Items Net Amount']=$this->data ['Invoice Gross Amount'] - $this->data ['Invoice Discount Amount'] + $this->data ['Invoice Items Net Adjust Amount'];
+
+   $total_net=$this->data ['Invoice Items Net Amount']+$this->data ['Invoice Shipping Net Amount']+$this->data ['Invoice Charges Net Amount'];
+
+
+   if(isset($force_values['Invoice Total Net Amount']))
+     $this->data ['Invoice Total Net Adjust Amount']=$force_values['Invoice Total Net Amount']-$total_net;
+   else
+     $this->data ['Invoice Total Net Adjust Amount']=0;
+   
+
+   print $this->data ['Invoice Total Net Adjust Amount']."\n";
+   $this->data ['Invoice Total Net Amount'] = $total_net+$this->data ['Invoice Total Net Adjust Amount'];
    $this->data ['Invoice Items Tax Amount'] = $tax;
    $this->distribute_costs ();
-   
-   $sql = sprintf ( "update `Invoice Dimension` set `Invoice Items Net Amount`=%.2f ,`Invoice Items Adjust Amount`=%.2f , `Invoice Items Gross Amount`=%.2f ,`Invoice Items Discount Amount`=%.2f  ,`Invoice Total Net Amount`=%.2f,`Invoice Items Tax Amount`=%.2f where `Invoice Key`=%d"
+   print "$total_net ".$this->data ['Invoice Total Net Adjust Amount']."\n";
+   $sql = sprintf ( "update `Invoice Dimension` set `Invoice Items Net Amount`=%.2f ,`Invoice Items Net Adjust Amount`=%.2f ,`Invoice Total Net Adjust Amount`=%.2f , `Invoice Items Gross Amount`=%.2f ,`Invoice Items Discount Amount`=%.2f  ,`Invoice Total Net Amount`=%.2f,`Invoice Items Tax Amount`=%.2f where `Invoice Key`=%d"
 		     , $this->data ['Invoice Items Net Amount']
-		     , $this->data ['Invoice Adjust Amount']
+		     , $this->data ['Invoice Items Net Adjust Amount']
+		    , $this->data ['Invoice Total Net Adjust Amount']
 		     , $amount
 		     , $discounts
 		     , $this->data ['Invoice Total Net Amount']
