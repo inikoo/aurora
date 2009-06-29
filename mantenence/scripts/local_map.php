@@ -112,7 +112,7 @@ $_map['feedback']=array('row'=>16,'col'=>20);
 $_map['source_tipo']=false;
 $_map['extra_id1']=false;
 $_map['extra_id2']=false;
-
+$_map['dn_country_code']=array('row'=>5,'col'=>9);
 
 $_map_old['ltipo']=array('row'=>2,'col'=>5);
 $_map_old['trade_name']=array('row'=>5,'col'=>5,'tipo'=>'name');

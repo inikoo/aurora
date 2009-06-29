@@ -174,7 +174,7 @@ class Order extends DB_Table{
 				$this->data ['Order Original Data Source'] = $data ['order original data source'];
 				
 				if (isset ( $data ['Order Original Metadata'] ))
-				  $this->data ['Order Original Metadata'] = $data ['order original metadata'];
+				  $this->data ['Order Original Metadata'] = $data ['Order Original Metadata'];
 				else
 				  $this->data ['Order Original Metadata'] = '';
 				

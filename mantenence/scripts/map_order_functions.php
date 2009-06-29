@@ -3241,21 +3241,93 @@ function get_payment_method($method){
 }
 
 
-function get_tax_number($tax_number){
-  
+function get_tax_number($data){
+  global $myconf;
+  $data['tax_number']='';
+  $note='';
+
+  if(!$data['dn_country_code'] or $data['dn_country_code']=='0')
+    $data['dn_country_code']='';
+  //print $data['dn_country_code']."xxx";
+  if(
+     (in_array(strtoupper($data['dn_country_code']),$myconf['tax_conditional0_2acode'])  and ($data['tax1']==0 or $data['tax1']=='' or !$data['tax1'])  and $data['notes2']!='' )
+     or ($data['dn_country_code']=='' and ($data['tax1']==0 or $data['tax1']=='' or !$data['tax1']) and $data['notes2']!=''  )
+     ){
+
+
+
+    if(preg_match('/CUSTOMER VAT 75732 Company : 680602=4840/i',$data['notes2'])){
+
+      $note='';
+	$tax_number='680602-4840';
+
+    }else{
+
+      
+      $tax_number=$data['notes2'];
+      $regex='/ \, 15\/30|if oos inform customer, no incense for alt. gift|, CARRIAGE BETWEEN .* AND 110|If oos, send email\!|deliver after 10:30 am|Contact Customer for payment details \!\!\!|Check order CAREFULLY|CHARGE BEFORE PICKING|Please phone 087 652 5769 before delivery\!|Deliveries accepted Tue - Sat 1000-1700 Contac Nic|Daughter: Cristina Viana|if oos inform customer, no more bath sets|pls contact cust if any probs with paym|no carriage, |Please contact customer for out of stock items.|See customer.s note regarding SSC.|delivery to Ireland - |Deliveries accepted Tue to Sat 10 \- 17\:30|deliver after 10am|Delivery after 10.00 am| P 24\/06 via frans mass|see note of 5th FEB|see note of 09\/06\/20009|always quote customer| --- Shipping FOC promotion|Kaym_Whelan@yahoo.ie| - checked see note of 19\/05\!/i';
+     
+      if(preg_match($regex, $tax_number,$match)){
+	
+	$note=$match[0];
+	$tax_number=preg_replace($regex,'',$tax_number);
+      }
+    }
+    //print "OTN: $tax_number\n";
+  // print "tax number: $tax_number\n";
   $tax_number=_trim($tax_number);
   // print "$tax_number\n";
+ $tax_number=preg_replace('/tax id\s*:?\s*-?\s*/i','',$tax_number);
+ $tax_number=preg_replace('/V\.a\.t\. N.*:\s*-?\s*/i','',$tax_number);
+
+ $tax_number=preg_replace('/VAT NO\s*-\s*/i','',$tax_number);
+  $tax_number=preg_replace('/^VAT No\.\:\s*/i','',$tax_number);
   $tax_number=preg_replace('/^vat no\s*(\.|:)?\s*/i','',$tax_number);
   $tax_number=preg_replace('/^vat\s*(\:|\-)?\s*/i','',$tax_number);
   $tax_number=preg_replace('/^vat\s*reg\*(\:|\-)?\s*/i','',$tax_number);
+ $tax_number=preg_replace('/\-?\s*Checked and Valid$/i','',$tax_number);
+ $tax_number=preg_replace('/\-?\s*valid and checked$/i','',$tax_number);
+ $tax_number=preg_replace('/tax\s*:?\s*/i','',$tax_number);
 
   $tax_number=preg_replace('/\-?\s*ok$/i','',$tax_number);
   $tax_number=preg_replace('/\-?\s*checked$/i','',$tax_number);
   $tax_number=preg_replace('/\s*ckecked$/i','',$tax_number);
   $tax_number=preg_replace('/\-?\s*checked\s+valid\.?$/i','',$tax_number);
+  $tax_number=preg_replace('/\s*\-?\s*valid$/i','',$tax_number);
+  $tax_number=preg_replace('/\s*\-?\s*verified$/i','',$tax_number);
+  $tax_number=preg_replace('/\s*\-?\s*Checked\s*\!{0,5}$/i','',$tax_number);
+  $tax_number=preg_replace('/\-?\s*\(checked\)$/i','',$tax_number);
+  $tax_number=preg_replace('/\-?\s*\(check ok\)$/i','',$tax_number);
+ $tax_number=preg_replace('/\-?\s*valid\s*\(HM\)$/i','',$tax_number);
+$tax_number=preg_replace('/\-?\s*checked by customs$/i','',$tax_number);
+
+  if(preg_match('/EL137399039 checkedEL-137399039/i',$tax_number))
+    $tax_number='EL137399039';
+ if(preg_match('/PT:503958271, validPT-503958271/i',$tax_number))
+    $tax_number='PT-503958271';
+ if(preg_match('/NL060484305B02 validNL060484305B02 valid/i',$tax_number))
+    $tax_number='NL060484305B02';
+
+
   $tax_number=_trim($tax_number);
-  //print "$tax_number\n";
-  if(preg_match('/^[a-z]{1,2}\s*\-?\s*[a-z0-9]{8,12}\s*$/i',$tax_number)){
+  // print "TN: $tax_number\n";
+  if(
+     preg_match('/^[a-z]{1,2}\s*\-?\s*[a-z0-9]{8,12}\s*$/i',$tax_number) 
+     or preg_match('/^[a-z]{0,2}\s*\d{6,16}\s*[a-z]\.?\d{0,10}$/i',$tax_number)
+     or preg_match('/^\d{3} \d{4}\-?\d/i',$tax_number) 
+     or preg_match('/[a-z]-\d{6,10}-[a-z]/i',$tax_number) 
+     or preg_match('/[a-z]{2}\s*\d{3}\.\d{3}\.\d{3}/i',$tax_number) 
+     or preg_match('/\d{3}.\d{3,4}.\d{3,4}/i',$tax_number) 
+     or preg_match('/680602-4840/i',$tax_number) 
+     or preg_match('/[a-z]{2}\s*\d{2,4}\s*\d{2,3}\s*\d{2,4}\s*[a-z]?\d{2,4}/i',$tax_number) 
+     or preg_match('/NL 8132 54 097 B01/i',$tax_number) 
+     or preg_match('/n-\d{8} S/i',$tax_number) 
+     or preg_match('/tf 2134041/i',$tax_number) 
+
+
+
+
+ ){
     $tax_number=preg_replace('/\s/','',$tax_number);
     if(!($tax_number[2]=='-'  or $tax_number[1]=='-')){
 
@@ -3271,16 +3343,43 @@ function get_tax_number($tax_number){
       
 
     }
+    $data['tax_number']=$tax_number;
+    $data['notes2']=$note;
     // print "$tax_number\n";
-    return $tax_number;
+    // return $tax_number;
   }elseif(preg_match('/^\d{7,12}$/i',$tax_number)){
     // print "$tax_number\n";
-    return $tax_number;
-      
+    // return $tax_number;
+      $data['tax_number']=$tax_number;
+       $data['notes2']=$note;
   }
-    
-
-  return false;
+  }elseif(preg_match('/^vat\s\d{11}$/i',_trim($data['notes2']))){
+    $data['tax_number']=$data['notes2'];
+    $data['notes2']='';
+  }elseif(preg_match('/SA VAT NO 9116\/677\/16\/3/i',_trim($data['notes2']))){
+    $data['tax_number']=preg_replace('/^SA VAT NO /','',$data['notes2']);
+    $data['notes2']='';
+  }elseif(preg_match('/^tax : tf \d{7}/i',_trim($data['notes2']))){
+    $data['tax_number']=preg_replace('/^tax : /','',$data['notes2']);
+    $data['notes2']='';
+  }elseif(preg_match('/^tax id \d{5,}/i',_trim($data['notes2']))){
+    $data['tax_number']=preg_replace('/^tax id /','',$data['notes2']);
+    $data['notes2']='';
+  }elseif(preg_match('/^(Customer)?\s*tax id\s*:?\s*[a-z]?\d{5,}[a-z]?/i',_trim($data['notes2']))){
+    $data['tax_number']=preg_replace('/^(Customer)?\s*tax id\s*:?\s*/','',$data['notes2']);
+    $data['notes2']='';
+  }elseif(preg_match('/^tax : tf 2134041?/i',_trim($data['notes2']))){
+    $data['tax_number']='tf 2134041';
+    $data['notes2']='';
+  }elseif(preg_match('/^Tax 85 467 757 063?/i',_trim($data['notes2']))){
+    $data['tax_number']='85467757063';
+    $data['notes2']='';
+  }elseif(preg_match('/^EL 046982660 valid?/i',_trim($data['notes2']))){
+    $data['tax_number']='EL 046982660';
+    $data['notes2']='';
+  }
+      
+  return $data;
 
 }
 
@@ -8846,10 +8945,12 @@ function read_header($raw_header_data,$map_act,$y_map,$map,$convert_encoding=tru
 
   foreach($map as $key=>$map_data){
     if($map_data){
-      ////     print "$key  \n";
-      //      print_r($map_data);
-      //print "**** $key ".$map_data['row']." ".$map_data['col']."\n";
+      //     print "$key  \n";
+      //  print_r($raw_header_data);
+
       $_data=$raw_header_data[$map_data['row']][$map_data['col']];
+      //      print "**** $key ".$map_data['row']." ".$map_data['col']." $_data \n";
+      
       if($convert_encoding)
 	$_data=mb_convert_encoding($_data, "UTF-8", "ISO-8859-1");
 
@@ -9168,7 +9269,20 @@ else if($_name=='jarina')
      return $_ids;
 }
 
+function get_customer_msg($data){
+  $data['customer_msg']='';
+  if(preg_match('/^(Friday \d{1,2}pm|NO WINE\!|Give to Kara|open 10 am to 5 pm|entrance from.*Street|del tue or thu|If Not In Leave In Cupboard By Door Please|if noone in leave with neighbour or in garage|closed on Wednesdays|Shop open 10am-5pm. Closed Wednesdays.|Leave at rear if out|no wine\!?|Look 4 Multi-Storey Carpark|Not open untill? \d{1,2}.\d{1,2}(AM|PM))$/i',_trim($data['notes2']))
+     OR preg_match('/oppocite|opposite|Behind|Must go out on|Deliver before|if not there|nobody|Leave in|Deliver|If no-one|Leave at|Deliver on|closed at|Please ring customer before delivery |Delivery Between|nobody|porch |close |Open |Shop open|Shop closed|if out Deliver|Leave at|if not there|next door|delivery before|deliver to|in shed|leave around|leave with|leave on|garage|shop|if noone|if not|despatch|dispatch/i',$data['notes2'])
+     ){
+    $data['customer_msg']=$data['notes2'];
+    $data['notes2']='';
+    
+  }
 
+
+
+  return $data;
+}
 
 
 function is_shipping_supplier($data){
@@ -9278,6 +9392,21 @@ function is_staff_sale($data){
   return $data;
 
 }
+
+/* function get_tax_number($data){ */
+/*   global $myconf; */
+/*   $data['tax_number']=''; */
+  
+/*   if(in_array(strtoupper($data['dn_country_code']),$myconf['tax_conditional0_2acode'] ) and $data['tax1']==0){ */
+/*     print $data['notes2']."\n"; */
+    
+/*   } */
+  
+/*   return $data; */
+
+/* } */
+
+
 
 
 
