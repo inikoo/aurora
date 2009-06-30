@@ -82,10 +82,11 @@ class supplier extends DB_Table{
       
       $sql=sprintf("select * from `Supplier Dimension` where `Supplier Code`=%s ",prepare_mysql($id));
       
+
     }
 
     
-    //print $sql;
+    // print "$sql\n";
     $result=mysql_query($sql);
     if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   )
       $this->id=$this->data['Supplier Key'];
