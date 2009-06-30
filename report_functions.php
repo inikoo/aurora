@@ -1,15 +1,30 @@
 <?
 
 
+
+
+
+
+
+
 function taxable_sales_in_interval($from,$to){
   
 
 }
 
 
-function sales_in_interval($from,$to,$valid_tax_rates_data=false){
-   $db =& MDB2::singleton();
-   global $myconf;
+function sales_in_interval($from,$to,$valid_tax_rates_data=false,$store_key=1){
+ global $myconf;
+  $home_2alpha_code=$myconf['country_2acode'];
+
+  $sql=sprintf("select * from `Store Dimension` where `Store Key`=%d",$store_key);
+  $result=mysql_query($sql);
+  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+    $currency=$row['Store Currency Code']; 
+    $home_2alpha_code=$row['Store Home Country Code 2 Alpha']; 
+  }
+
+   
   
    $valid_tax_rates=false;
    if($valid_tax_rates_data){
@@ -32,11 +47,8 @@ function sales_in_interval($from,$to,$valid_tax_rates_data=false){
    $int=prepare_mysql_dates($from,$to,'`Invoice Date`','date start end');
  
    
-
-
-  
+   $int[0]='and `Invoice Store Key` in ('.addslashes($store_key).') '.$int[0];
    
-
 
 
   // Get refunds first
@@ -47,7 +59,7 @@ function sales_in_interval($from,$to,$valid_tax_rates_data=false){
   $refund_invoices_p=0;
   
   $sql=sprintf("select sum(`Invoice Refund Net Amount`) as net,sum(`Invoice Refund Tax Amount`) as tax,count(*) as orders from `Invoice Dimension` where  `Invoice For Partner`='Yes' and `Invoice Title`='Refund' %s ",$int[0]);
-
+  //    print $sql;exit;
   $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
@@ -57,7 +69,7 @@ function sales_in_interval($from,$to,$valid_tax_rates_data=false){
   }
   $refund_net_p_home=0;
   $refund_tax_p_home=0;
-  $sql=sprintf("select sum(`Invoice Refund Net Amount`) as net,sum(`Invoice Refund Tax Amount`) as tax,count(*) as orders from `Invoice Dimension` where  `Invoice For Partner`='Yes' and `Invoice Title`='Refund' and `Invoice Billing Country 2 Alpha Code`=%s  %s ",prepare_mysql($myconf['country_2acode']),$int[0]);
+  $sql=sprintf("select sum(`Invoice Refund Net Amount`) as net,sum(`Invoice Refund Tax Amount`) as tax,count(*) as orders from `Invoice Dimension` where  `Invoice For Partner`='Yes' and `Invoice Title`='Refund' and `Invoice Billing Country 2 Alpha Code`=%s  %s ",prepare_mysql($home_2alpha_code),$int[0]);
   $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
     $refund_net_p_home=($row['net']==''?0:$row['net']);
@@ -112,7 +124,7 @@ function sales_in_interval($from,$to,$valid_tax_rates_data=false){
     $refund_invoices=$row['orders'];
     // get other refunds per geographical thing
     
-    $sql=sprintf("select sum(`Invoice Refund Net Amount`) as net,sum(`Invoice Refund Tax Amount`) as tax,count(*) as orders from `Invoice Dimension` where  `Invoice For Partner`='No' and `Invoice Title`='Refund' and `Invoice Billing Country 2 Alpha Code`=%s  %s ",prepare_mysql($myconf['country_2acode']),$int[0]);
+    $sql=sprintf("select sum(`Invoice Refund Net Amount`) as net,sum(`Invoice Refund Tax Amount`) as tax,count(*) as orders from `Invoice Dimension` where  `Invoice For Partner`='No' and `Invoice Title`='Refund' and `Invoice Billing Country 2 Alpha Code`=%s  %s ",prepare_mysql($home_2alpha_code),$int[0]);
     //  print "$sql";
      $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
@@ -217,7 +229,7 @@ function sales_in_interval($from,$to,$valid_tax_rates_data=false){
   $tax_p_home=0;
   $invoices_p_home=0;
 
-  $int=prepare_mysql_dates($from,$to,'`Invoice Date`','dates start end');
+  //$int=prepare_mysql_dates($from,$to,'`Invoice Date`','dates start end');
   $sql=sprintf("select sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax , count(*) as invoices from `Invoice Dimension` where `Invoice For Partner`='Yes' and `Invoice Title`='Invoice' %s ",$int[0]);
 
  $result=mysql_query($sql);
@@ -227,7 +239,7 @@ function sales_in_interval($from,$to,$valid_tax_rates_data=false){
     $invoices_p=$row['invoices'];
   }
 
-  $sql=sprintf("select sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax , count(*) as invoices from `Invoice Dimension` where `Invoice For Partner`='Yes' and `Invoice Title`='Invoice' and `Invoice Billing Country 2 Alpha Code`=%s %s ",prepare_mysql($myconf['country_2acode']),$int[0]);
+  $sql=sprintf("select sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax , count(*) as invoices from `Invoice Dimension` where `Invoice For Partner`='Yes' and `Invoice Title`='Invoice' and `Invoice Billing Country 2 Alpha Code`=%s %s ",prepare_mysql($home_2alpha_code),$int[0]);
   $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
     $net_p_home=$row['net']+$refund_net_p_home;
@@ -443,7 +455,7 @@ if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
 
 
-  $sql=sprintf("select sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax , count(*) as invoices,avg(`Invoice Dispatching Lag`) as dispatch_days from `Invoice Dimension`   where  `Invoice Title`='Invoice' and `Invoice For Partner`='No' and `Invoice Billing Country 2 Alpha Code`=%s %s ",prepare_mysql($myconf['country_2acode']),$int[0]);
+  $sql=sprintf("select sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax , count(*) as invoices,avg(`Invoice Dispatching Lag`) as dispatch_days from `Invoice Dimension`   where  `Invoice Title`='Invoice' and `Invoice For Partner`='No' and `Invoice Billing Country 2 Alpha Code`=%s %s ",prepare_mysql($home_2alpha_code),$int[0]);
   
 
     $result=mysql_query($sql);
@@ -455,7 +467,7 @@ if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
   }
 
 
-  $sql=sprintf("select sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax , count(*) as invoices,avg(`Invoice Dispatching Lag`) as dispatch_days from `Invoice Dimension`   where  `Invoice Title`='Invoice' and `Invoice For Partner`='No'  and `Invoice Billing Country 2 Alpha Code`!=%s   and `Invoice Billing Country 2 Alpha Code`!='XX'   %s ",prepare_mysql($myconf['country_2acode']),$int[0]);
+  $sql=sprintf("select sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax , count(*) as invoices,avg(`Invoice Dispatching Lag`) as dispatch_days from `Invoice Dimension`   where  `Invoice Title`='Invoice' and `Invoice For Partner`='No'  and `Invoice Billing Country 2 Alpha Code`!=%s   and `Invoice Billing Country 2 Alpha Code`!='XX'   %s ",prepare_mysql($home_2alpha_code),$int[0]);
 
   $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
@@ -540,6 +552,9 @@ $countries='and `Invoice Billing Country 2 Alpha Code` in (';
   //  $net_nohome=$net-$net_home;
   //$tax_nohome=$tax-$tax_home;
   //$invoices_nohome=$invoices-$invoices_home;
+  
+
+
 
   $net_extended_home_nohome=$net_extended_home-$net_home;
   $tax_extended_home_nohome=$tax_extended_home-$tax_home;
@@ -580,14 +595,14 @@ $countries='and `Invoice Billing Country 2 Alpha Code` in (';
    }
 
    $top3=array();
-   $sql=sprintf("select `Country Name`  as name, sum(`Invoice Total Net Amount`) as net ,sum(`Invoice Total Tax Amount`) as tax   from `Invoice Dimension` left join `Country Dimension` on (`Invoice Billing Country 2 Alpha Code`=`Country 2 Alpha Code`) where  `Invoice Billing Country 2 Alpha Code`!=%s  and `Invoice For Partner`='No' and `Invoice Title`='Invoice' %s group by `Invoice Billing Country 2 Alpha Code`  order by net     desc limit 3",prepare_mysql($myconf['country_2acode']),$int[0]);
+   $sql=sprintf("select `Country Name`  as name, sum(`Invoice Total Net Amount`) as net ,sum(`Invoice Total Tax Amount`) as tax   from `Invoice Dimension` left join `Country Dimension` on (`Invoice Billing Country 2 Alpha Code`=`Country 2 Alpha Code`) where  `Invoice Billing Country 2 Alpha Code`!=%s  and `Invoice For Partner`='No' and `Invoice Title`='Invoice' %s group by `Invoice Billing Country 2 Alpha Code`  order by net     desc limit 3",prepare_mysql($home_2alpha_code),$int[0]);
 
      $result=mysql_query($sql);
   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      $top3[]=array('country'=>$row['name'],'net'=>$row['net'],'tax'=>$row['tax']);
    }
    $countries=array();
-   $sql=sprintf("select `Country Key` as id,`Invoice Billing Country 2 Alpha Code` as  code2,`Country Name` as name, sum(`Invoice Total Net Amount`) as net ,sum(`Invoice Total Tax Amount`) as tax,count(*) as orders from `Invoice Dimension` left join `Country Dimension` on (`Invoice Billing Country 2 Alpha Code`=`Country 2 Alpha Code`) where  `Invoice Billing Country 2 Alpha Code`!=%s  and `Invoice For Partner`='No' and `Invoice Title`='Invoice' %s group by `Invoice Billing Country 2 Alpha Code`  order by net desc ",prepare_mysql($myconf['country_2acode']),$int[0]);
+   $sql=sprintf("select `Country Key` as id,`Invoice Billing Country 2 Alpha Code` as  code2,`Country Name` as name, sum(`Invoice Total Net Amount`) as net ,sum(`Invoice Total Tax Amount`) as tax,count(*) as orders from `Invoice Dimension` left join `Country Dimension` on (`Invoice Billing Country 2 Alpha Code`=`Country 2 Alpha Code`) where  `Invoice Billing Country 2 Alpha Code`!=%s  and `Invoice For Partner`='No' and `Invoice Title`='Invoice' %s group by `Invoice Billing Country 2 Alpha Code`  order by net desc ",prepare_mysql($home_2alpha_code),$int[0]);
    //print $sql;
      $result=mysql_query($sql);
   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
@@ -598,7 +613,7 @@ $countries='and `Invoice Billing Country 2 Alpha Code` in (';
        $eu=1;
      else
        $eu=0;
-     $countries[]=array('country'=>'<img src="art/flags/'.strtolower($row['code2']).'.gif">'.' '.$row['name'],'net'=>money($row['net']),'tax'=>money($row['tax']),'orders'=>$row['orders'],'share'=>percentage($row['net'],$net_nohome,2),'eu'=>$eu,'id'=>$row['id'],'name'=>$row['name'],'2acode'=>$row['code2']);
+     $countries[]=array('country'=>'<img src="art/flags/'.strtolower($row['code2']).'.gif">'.' '.$row['name'],'net'=>money($row['net'],$currency),'tax'=>money($row['tax'],$currency),'orders'=>$row['orders'],'share'=>percentage($row['net'],$net_nohome,2),'eu'=>$eu,'id'=>$row['id'],'name'=>$row['name'],'2acode'=>$row['code2']);
    }
 
    $exports=array('num_countries'=>$num_countries,'top3'=>$top3,'countries'=>$countries);
@@ -922,6 +937,9 @@ $balance['credits']['tax']=0;
   $dn_total=0;
   $dn_total_weight=0;
   $_int=preg_replace('/Invoice Date/','Delivery Note Date',$int[0]); 
+  $_int=preg_replace('/Invoice Store Key/','Delivery Note Store Key',$_int); 
+
+
   
 $sql=sprintf("select count(*) as num ,sum(`Delivery Note Weight`) as w  from `Delivery Note Dimension` where true %s ",$_int);
   $result=mysql_query($sql);
@@ -944,7 +962,7 @@ $sql=sprintf("select count(*) as num ,sum(`Delivery Note Weight`) as w  from `De
   }
   
   $_int=preg_replace('/Invoice Date/','Order Date',$int[0]); 
-  
+  $_int=preg_replace('/Invoice Store Key/','Order Store Key',$_int); 
   
   
   $sql=sprintf("select count(*) as num ,sum(`Order Total Net Amount`) as net ,sum(IF(`Order Current Dispatch State`='Dispached',1,0)) as done  from `Order Dimension` where true %s ",$_int);
@@ -964,11 +982,11 @@ $sql=sprintf("select count(*) as num ,sum(`Delivery Note Weight`) as w  from `De
     $orders_state[$row['state']]=array(
 				       'orders'=>number($row['orders'])
 				       ,'orders_percentage'=>percentage($row['orders'],$orders_total)
-				       //,'net_chargable'=>money($row['net'])
-				       //  ,'net_potential'=>money($row['net_potential'])
-				       //,'net_paid'=>money($row['net']-$row['net_balance'])
-				       //,'net_topay'=>money($row['net_balance'])
-				       //,'net_lost'=>money($row['net']-$row['net_potential'])
+				       //,'net_chargable'=>money($row['net'],$currency)
+				       //  ,'net_potential'=>money($row['net_potential'],$currency)
+				       //,'net_paid'=>money($row['net']-$row['net_balance'],$currency)
+				       //,'net_topay'=>money($row['net_balance'],$currency)
+				       //,'net_lost'=>money($row['net']-$row['net_potential'],$currency)
 				       
 				       );
   };
@@ -1078,45 +1096,45 @@ foreach($tags as $key){
   }
 
  $balance['refund']['orders']=number($balance['refund']['orders']);
- $balance['refund']['total']=money($balance['refund']['total']);
- $balance['refund']['credit_net']=money( $balance['refund']['credit_net']);
- $balance['refund']['credit_tax']=money($balance['refund']['credit_tax']);
+ $balance['refund']['total']=money($balance['refund']['total'],$currency);
+ $balance['refund']['credit_net']=money( $balance['refund']['credit_net'],$currency);
+ $balance['refund']['credit_tax']=money($balance['refund']['credit_tax'],$currency);
 
 
  $balance['refund_error']['orders']=number($balance['refund_error']['orders']);
- $balance['refund_error']['total']=money($balance['refund_error']['total']);
- $balance['refund_error']['credit_net']=money( $balance['refund_error']['credit_net']);
- $balance['refund_error']['credit_tax']=money($balance['refund_error']['credit_tax']);
+ $balance['refund_error']['total']=money($balance['refund_error']['total'],$currency);
+ $balance['refund_error']['credit_net']=money( $balance['refund_error']['credit_net'],$currency);
+ $balance['refund_error']['credit_tax']=money($balance['refund_error']['credit_tax'],$currency);
 
- $balance['invoices']['net_charged']=money($balance['invoices']['net_charged']);
- $balance['invoices']['net']=money($balance['invoices']['net']);
- $balance['invoices']['tax_charged']= money($balance['invoices']['tax_charged']);
- $balance['invoices']['shipping']=money($balance['invoices']['shipping']);
- $balance['invoices']['products']=money($balance['invoices']['products']);
- $balance['invoices']['charges']=money($balance['invoices']['charges']);
+ $balance['invoices']['net_charged']=money($balance['invoices']['net_charged'],$currency);
+ $balance['invoices']['net']=money($balance['invoices']['net'],$currency);
+ $balance['invoices']['tax_charged']= money($balance['invoices']['tax_charged'],$currency);
+ $balance['invoices']['shipping']=money($balance['invoices']['shipping'],$currency);
+ $balance['invoices']['products']=money($balance['invoices']['products'],$currency);
+ $balance['invoices']['charges']=money($balance['invoices']['charges'],$currency);
  $balance['invoices']['orders']=number($balance['invoices']['orders']);
- $balance['invoices']['total']=money($balance['invoices']['total']);
- $balance['invoices']['credit_net']=money( $balance['invoices']['credit_net']);
- $balance['invoices']['tax']=money($balance['invoices']['tax']);
- $balance['invoices']['credit_tax']=money($balance['invoices']['credit_tax']);
- $balance['invoices']['unk']=money($balance['invoices']['unk']);
+ $balance['invoices']['total']=money($balance['invoices']['total'],$currency);
+ $balance['invoices']['credit_net']=money( $balance['invoices']['credit_net'],$currency);
+ $balance['invoices']['tax']=money($balance['invoices']['tax'],$currency);
+ $balance['invoices']['credit_tax']=money($balance['invoices']['credit_tax'],$currency);
+ $balance['invoices']['unk']=money($balance['invoices']['unk'],$currency);
 
- $balance['credits']['net']=money($balance['credits']['net']);
- $balance['credits']['tax']=money($balance['credits']['tax']);
- $balance['credits']['total']=money($balance['credits']['total']);
- $balance['credits']['shipping']=money($balance['credits']['shipping']);
- $balance['credits']['charges']=money($balance['credits']['charges']);
- $balance['credits']['unk']=money($balance['credits']['unk']);
- $balance['credits']['products']=money($balance['credits']['products']);
+ $balance['credits']['net']=money($balance['credits']['net'],$currency);
+ $balance['credits']['tax']=money($balance['credits']['tax'],$currency);
+ $balance['credits']['total']=money($balance['credits']['total'],$currency);
+ $balance['credits']['shipping']=money($balance['credits']['shipping'],$currency);
+ $balance['credits']['charges']=money($balance['credits']['charges'],$currency);
+ $balance['credits']['unk']=money($balance['credits']['unk'],$currency);
+ $balance['credits']['products']=money($balance['credits']['products'],$currency);
 
- $balance['subtotal']['net']=money($balance['subtotal']['net']);
+ $balance['subtotal']['net']=money($balance['subtotal']['net'],$currency);
 
 
- $balance['subtotal']['shipping']=money($balance['subtotal']['shipping']);
- $balance['subtotal']['charges']=money($balance['subtotal']['charges']);
- $balance['subtotal']['unk']=money($balance['subtotal']['unk']);
- $balance['subtotal']['products']=money($balance['subtotal']['products']);
- $balance['subtotal']['orders']=number($balance['subtotal']['orders']);
+ $balance['subtotal']['shipping']=money($balance['subtotal']['shipping'],$currency);
+ $balance['subtotal']['charges']=money($balance['subtotal']['charges'],$currency);
+ $balance['subtotal']['unk']=money($balance['subtotal']['unk'],$currency);
+ $balance['subtotal']['products']=money($balance['subtotal']['products'],$currency);
+ $balance['subtotal']['orders']=number($balance['subtotal']['orders'],$currency);
 
 
  $balance['invoices_zero']['net_charged']=money($balance['invoices_zero']['net_charged']);
@@ -1132,99 +1150,99 @@ foreach($tags as $key){
  $balance['invoices_zero']['credit_tax']=money($balance['invoices_zero']['credit_tax']);
  $balance['invoices_zero']['unk']=money($balance['invoices_zero']['unk']);
 
- $balance['invoices_negative']['net_charged']=money($balance['invoices_negative']['net_charged']);
- $balance['invoices_negative']['net']=money($balance['invoices_negative']['net']);
- $balance['invoices_negative']['tax_charged']= money($balance['invoices_negative']['tax_charged']);
- $balance['invoices_negative']['shipping']=money($balance['invoices_negative']['shipping']);
- $balance['invoices_negative']['products']=money($balance['invoices_negative']['products']);
- $balance['invoices_negative']['charges']=money($balance['invoices_negative']['charges']);
+ $balance['invoices_negative']['net_charged']=money($balance['invoices_negative']['net_charged'],$currency);
+ $balance['invoices_negative']['net']=money($balance['invoices_negative']['net'],$currency);
+ $balance['invoices_negative']['tax_charged']= money($balance['invoices_negative']['tax_charged'],$currency);
+ $balance['invoices_negative']['shipping']=money($balance['invoices_negative']['shipping'],$currency);
+ $balance['invoices_negative']['products']=money($balance['invoices_negative']['products'],$currency);
+ $balance['invoices_negative']['charges']=money($balance['invoices_negative']['charges'],$currency);
  $balance['invoices_negative']['orders']=number($balance['invoices_negative']['orders']);
- $balance['invoices_negative']['total']=money($balance['invoices_negative']['total']);
- $balance['invoices_negative']['credit_net']=money( $balance['invoices_negative']['credit_net']);
- $balance['invoices_negative']['tax']=money($balance['invoices_negative']['tax']);
- $balance['invoices_negative']['credit_tax']=money($balance['invoices_negative']['credit_tax']);
- $balance['invoices_negative']['unk']=money($balance['invoices_negative']['unk']);
+ $balance['invoices_negative']['total']=money($balance['invoices_negative']['total'],$currency);
+ $balance['invoices_negative']['credit_net']=money( $balance['invoices_negative']['credit_net'],$currency);
+ $balance['invoices_negative']['tax']=money($balance['invoices_negative']['tax'],$currency);
+ $balance['invoices_negative']['credit_tax']=money($balance['invoices_negative']['credit_tax'],$currency);
+ $balance['invoices_negative']['unk']=money($balance['invoices_negative']['unk'],$currency);
 
-$balance['donation']['net_charged']=money($balance['donation']['net_charged']);
- $balance['donation']['net']=money($balance['donation']['net']);
- $balance['donation']['tax_charged']= money($balance['donation']['tax_charged']);
- $balance['donation']['shipping']=money($balance['donation']['shipping']);
- $balance['donation']['products']=money($balance['donation']['products']);
- $balance['donation']['charges']=money($balance['donation']['charges']);
+$balance['donation']['net_charged']=money($balance['donation']['net_charged'],$currency);
+ $balance['donation']['net']=money($balance['donation']['net'],$currency);
+ $balance['donation']['tax_charged']= money($balance['donation']['tax_charged'],$currency);
+ $balance['donation']['shipping']=money($balance['donation']['shipping'],$currency);
+ $balance['donation']['products']=money($balance['donation']['products'],$currency);
+ $balance['donation']['charges']=money($balance['donation']['charges'],$currency);
  $balance['donation']['orders']=number($balance['donation']['orders']);
- $balance['donation']['total']=money($balance['donation']['total']);
- $balance['donation']['credit_net']=money( $balance['donation']['credit_net']);
- $balance['donation']['tax']=money($balance['donation']['tax']);
- $balance['donation']['credit_tax']=money($balance['donation']['credit_tax']);
- $balance['donation']['unk']=money($balance['donation']['unk']);
+ $balance['donation']['total']=money($balance['donation']['total'],$currency);
+ $balance['donation']['credit_net']=money( $balance['donation']['credit_net'],$currency);
+ $balance['donation']['tax']=money($balance['donation']['tax'],$currency);
+ $balance['donation']['credit_tax']=money($balance['donation']['credit_tax'],$currency);
+ $balance['donation']['unk']=money($balance['donation']['unk'],$currency);
 
- $balance['shortage']['net_charged']=money($balance['shortage']['net_charged']);
- $balance['shortage']['net']=money($balance['shortage']['net']);
- $balance['shortage']['tax_charged']= money($balance['shortage']['tax_charged']);
- $balance['shortage']['shipping']=money($balance['shortage']['shipping']);
- $balance['shortage']['products']=money($balance['shortage']['products']);
- $balance['shortage']['charges']=money($balance['shortage']['charges']);
+ $balance['shortage']['net_charged']=money($balance['shortage']['net_charged'],$currency);
+ $balance['shortage']['net']=money($balance['shortage']['net'],$currency);
+ $balance['shortage']['tax_charged']= money($balance['shortage']['tax_charged'],$currency);
+ $balance['shortage']['shipping']=money($balance['shortage']['shipping'],$currency);
+ $balance['shortage']['products']=money($balance['shortage']['products'],$currency);
+ $balance['shortage']['charges']=money($balance['shortage']['charges'],$currency);
  $balance['shortage']['orders']=number($balance['shortage']['orders']);
- $balance['shortage']['total']=money($balance['shortage']['total']);
- $balance['shortage']['credit_net']=money( $balance['shortage']['credit_net']);
- $balance['shortage']['tax']=money($balance['shortage']['tax']);
- $balance['shortage']['credit_tax']=money($balance['shortage']['credit_tax']);
- $balance['shortage']['unk']=money($balance['shortage']['unk']);
+ $balance['shortage']['total']=money($balance['shortage']['total'],$currency);
+ $balance['shortage']['credit_net']=money( $balance['shortage']['credit_net'],$currency);
+ $balance['shortage']['tax']=money($balance['shortage']['tax'],$currency);
+ $balance['shortage']['credit_tax']=money($balance['shortage']['credit_tax'],$currency);
+ $balance['shortage']['unk']=money($balance['shortage']['unk'],$currency);
 
 
-$balance['replacements']['net_charged']=money($balance['replacements']['net_charged']);
- $balance['replacements']['net']=money($balance['replacements']['net']);
- $balance['replacements']['tax_charged']= money($balance['replacements']['tax_charged']);
- $balance['replacements']['shipping']=money($balance['replacements']['shipping']);
- $balance['replacements']['products']=money($balance['replacements']['products']);
- $balance['replacements']['charges']=money($balance['replacements']['charges']);
+$balance['replacements']['net_charged']=money($balance['replacements']['net_charged'],$currency);
+ $balance['replacements']['net']=money($balance['replacements']['net'],$currency);
+ $balance['replacements']['tax_charged']= money($balance['replacements']['tax_charged'],$currency);
+ $balance['replacements']['shipping']=money($balance['replacements']['shipping'],$currency);
+ $balance['replacements']['products']=money($balance['replacements']['products'],$currency);
+ $balance['replacements']['charges']=money($balance['replacements']['charges'],$currency);
  $balance['replacements']['orders']=number($balance['replacements']['orders']);
- $balance['replacements']['total']=money($balance['replacements']['total']);
- $balance['replacements']['credit_net']=money( $balance['replacements']['credit_net']);
- $balance['replacements']['tax']=money($balance['replacements']['tax']);
- $balance['replacements']['credit_tax']=money($balance['replacements']['credit_tax']);
- $balance['replacements']['unk']=money($balance['replacements']['unk']);
+ $balance['replacements']['total']=money($balance['replacements']['total'],$currency);
+ $balance['replacements']['credit_net']=money( $balance['replacements']['credit_net'],$currency);
+ $balance['replacements']['tax']=money($balance['replacements']['tax'],$currency);
+ $balance['replacements']['credit_tax']=money($balance['replacements']['credit_tax'],$currency);
+ $balance['replacements']['unk']=money($balance['replacements']['unk'],$currency);
 
 
- $balance['followup']['net_charged']=money($balance['followup']['net_charged']);
- $balance['followup']['net']=money($balance['followup']['net']);
- $balance['followup']['tax_charged']= money($balance['followup']['tax_charged']);
- $balance['followup']['shipping']=money($balance['followup']['shipping']);
- $balance['followup']['products']=money($balance['followup']['products']);
- $balance['followup']['charges']=money($balance['followup']['charges']);
+ $balance['followup']['net_charged']=money($balance['followup']['net_charged'],$currency);
+ $balance['followup']['net']=money($balance['followup']['net'],$currency);
+ $balance['followup']['tax_charged']= money($balance['followup']['tax_charged'],$currency);
+ $balance['followup']['shipping']=money($balance['followup']['shipping'],$currency);
+ $balance['followup']['products']=money($balance['followup']['products'],$currency);
+ $balance['followup']['charges']=money($balance['followup']['charges'],$currency);
  $balance['followup']['orders']=number($balance['followup']['orders']);
- $balance['followup']['total']=money($balance['followup']['total']);
- $balance['followup']['credit_net']=money( $balance['followup']['credit_net']);
- $balance['followup']['tax']=money($balance['followup']['tax']);
- $balance['followup']['credit_tax']=money($balance['followup']['credit_tax']);
- $balance['followup']['unk']=money($balance['followup']['unk']);
+ $balance['followup']['total']=money($balance['followup']['total'],$currency);
+ $balance['followup']['credit_net']=money( $balance['followup']['credit_net'],$currency);
+ $balance['followup']['tax']=money($balance['followup']['tax'],$currency);
+ $balance['followup']['credit_tax']=money($balance['followup']['credit_tax'],$currency);
+ $balance['followup']['unk']=money($balance['followup']['unk'],$currency);
 
-$balance['total']['net_charged']=money($balance['total']['net_charged']);
- $balance['total']['net']=money($balance['total']['net']);
- $balance['total']['tax_charged']= money($balance['total']['tax_charged']);
- $balance['total']['shipping']=money($balance['total']['shipping']);
- $balance['total']['products']=money($balance['total']['products']);
- $balance['total']['charges']=money($balance['total']['charges']);
+$balance['total']['net_charged']=money($balance['total']['net_charged'],$currency);
+ $balance['total']['net']=money($balance['total']['net'],$currency);
+ $balance['total']['tax_charged']= money($balance['total']['tax_charged'],$currency);
+ $balance['total']['shipping']=money($balance['total']['shipping'],$currency);
+ $balance['total']['products']=money($balance['total']['products'],$currency);
+ $balance['total']['charges']=money($balance['total']['charges'],$currency);
  $balance['total']['orders']=number($balance['total']['orders']);
- $balance['total']['total']=money($balance['total']['total']);
- $balance['total']['credit_net']=money( $balance['total']['credit_net']);
- $balance['total']['tax']=money($balance['total']['tax']);
- $balance['total']['credit_tax']=money($balance['total']['credit_tax']);
- $balance['total']['unk']=money($balance['total']['unk']);
- $balance['total']['net_balance']=money($balance['total']['net_balance']);
+ $balance['total']['total']=money($balance['total']['total'],$currency);
+ $balance['total']['credit_net']=money( $balance['total']['credit_net'],$currency);
+ $balance['total']['tax']=money($balance['total']['tax'],$currency);
+ $balance['total']['credit_tax']=money($balance['total']['credit_tax'],$currency);
+ $balance['total']['unk']=money($balance['total']['unk'],$currency);
+ $balance['total']['net_balance']=money($balance['total']['net_balance'],$currency);
 
-$balance['samples']['net_charged']=money($balance['samples']['net_charged']);
- $balance['samples']['net']=money($balance['samples']['net']);
- $balance['samples']['tax_charged']= money($balance['samples']['tax_charged']);
- $balance['samples']['shipping']=money($balance['samples']['shipping']);
- $balance['samples']['products']=money($balance['samples']['products']);
- $balance['samples']['charges']=money($balance['samples']['charges']);
+$balance['samples']['net_charged']=money($balance['samples']['net_charged'],$currency);
+ $balance['samples']['net']=money($balance['samples']['net'],$currency);
+ $balance['samples']['tax_charged']= money($balance['samples']['tax_charged'],$currency);
+ $balance['samples']['shipping']=money($balance['samples']['shipping'],$currency);
+ $balance['samples']['products']=money($balance['samples']['products'],$currency);
+ $balance['samples']['charges']=money($balance['samples']['charges'],$currency);
  $balance['samples']['orders']=number($balance['samples']['orders']);
- $balance['samples']['total']=money($balance['samples']['total']);
- $balance['samples']['credit_net']=money( $balance['samples']['credit_net']);
- $balance['samples']['tax']=money($balance['samples']['tax']);
- $balance['samples']['credit_tax']=money($balance['samples']['credit_tax']);
- $balance['samples']['unk']=money($balance['samples']['unk']);
+ $balance['samples']['total']=money($balance['samples']['total'],$currency);
+ $balance['samples']['credit_net']=money( $balance['samples']['credit_net'],$currency);
+ $balance['samples']['tax']=money($balance['samples']['tax'],$currency);
+ $balance['samples']['credit_tax']=money($balance['samples']['credit_tax'],$currency);
+ $balance['samples']['unk']=money($balance['samples']['unk'],$currency);
 
 
 

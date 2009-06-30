@@ -997,7 +997,7 @@ class Address extends DB_Table{
   */
   public static function prepare_country_data($data){
     global $myconf;
-
+   
     if($data['Address Country Key']=='' and
        $data['Address Country Code']=='' and
        $data['Address Country 2 Alpha Code']=='' and
@@ -1153,7 +1153,7 @@ class Address extends DB_Table{
     global $myconf;
 
     //    print "========== ADDEWESS PARSING ================\n";
-    //print_r($raw_data);
+    //  print_r($raw_data);
 
 
     if(!isset($raw_data['Address Line 1']))
@@ -1216,8 +1216,11 @@ class Address extends DB_Table{
       $data['Address Town']='St. Thomas';
     }
     
-
-    
+    if(preg_match('/La Reunion/i',$data['Address Country Name'])){
+      $data['Address Country Name']='France';
+      if($data['Address Country Primary Division']=='')
+	$data['Address Country Primary Division']='La Reunion';
+    }
     if(preg_match('/SCOTLAND|wales/i',$data['Address Country Name']))
       $data['Address Country Name']='United Kingdom';
     if(preg_match('/^england$|^inglaterra$/i',$data['Address Country Name'])){
