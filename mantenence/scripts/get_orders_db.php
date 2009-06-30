@@ -38,7 +38,7 @@ srand(12344);
 
 $sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed)  order by filename ";
 //$sql="select * from  orders_data.orders where filename like '%refund.xls'   order by filename";
-$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/89175.xls'  order by filename";
+//$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/8623.xls'  order by filename";
 
 
 $contador=0;
@@ -123,7 +123,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
     list($act_data,$header_data)=read_header($header,$map_act,$y_map,$map);
     $header_data=filter_header($header_data);
-    list($tipo_order,$parent_order_id)=get_tipo_order($header_data['ltipo'],$header_data);
+    list($tipo_order,$parent_order_id,$header_data)=get_tipo_order($header_data['ltipo'],$header_data);
   
     
 
@@ -191,6 +191,62 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     else
       $date2=$date_order;
   
+
+  $header_data['collection']='No';
+   $header_data['shipper_code']='';
+
+
+  if(!$header_data['notes']){
+      $header_data['notes']='';
+    }
+    if(!$header_data['notes2'] or preg_match('/^vat|Special Instructions$/i',_trim($header_data['notes2']))){
+      $header_data['notes2']='';
+    }
+
+  if(preg_match('/^(Int Freight|Intl Freight|Internation Freight|Intl FreightInternation Freight|International Frei.*|International Freigth|Internation Freight|Internatinal Freight|nternation(al)? Frei.*|Internationa freight|International|International freight|by sea)$/i',$header_data['notes']))
+      $header_data['notes']='International Freight';
+
+    //delete no data notes
+ 
+   $header_data=is_to_be_collected($header_data);
+  
+    $header_data=is_shipping_supplier($header_data);
+    $header_data=is_staff_sale($header_data);
+    
+    if(is_showroom($header_data['notes']))
+      $header_data['notes']='';
+    
+    
+    if(preg_match('/^(|International Freight)$/',$header_data['notes'])){
+      $header_data['notes']='';
+
+    }
+      //  print "N1: ".$header_data['notes']."\n";
+    //  print "N2: ".$header_data['notes2']."\n\n";
+    // }
+    // if(!preg_match('/^(|0|\s*)$/',$header_data['notes2']))
+
+    $header_data=get_tax_number($header_data);
+        $header_data=get_customer_msg($header_data);
+    
+    if($header_data['notes']!='' and $header_data['notes2']!=''){
+      $header_data['notes2']=_trim($header_data['notes'].', '.$header_data['notes2']);
+      $header_data['notes']='';
+      }elseif($header_data['notes']!=''){
+	$header_data['notes2']=$header_data['notes'];
+	$header_data['notes']='';
+      }
+
+    $header_data=get_customer_msg($header_data);
+
+    if(preg_match('/^(IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691|IE-7251185|SE556670-257601|x5686842-t)$/',$header_data['notes2'])){
+      $data['tax_number']=$header_data['notes2'];
+      $header_data['notes']='';
+    }
+
+
+
+
 
     $transactions=read_products($products,$prod_map);
     unset($products);
@@ -1027,7 +1083,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 		       ,'Delivery Note Type'=>$order_type
 		       ,'Delivery Note Title'=>_('Delivery Note for').' '.$order_type.' '.$header_data['order_num']
 		       ,'Delivery Note Has Shipping'=>$_customer_data['has_shipping']
-		       
+		       ,'Delivery Note Shipper Code'=>$header_data['shipper_code']  
 		       );
 	
 	//$order->create_dn_simple($data_dn,$data_dn_transactions);
@@ -1133,7 +1189,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 		       ,'Delivery Note Type'=>$order_type
 		       ,'Delivery Note Title'=>_('Delivery Note for').' '.$order_type.' '.$header_data['order_num']
 		       ,'Delivery Note Has Shipping'=>$_customer_data['has_shipping']
-
+		       ,'Delivery Note Shipper Code'=>$header_data['shipper_code']  
 		       );
 	  
 
@@ -1459,7 +1515,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 		       ,'Delivery Note Packers IDs'=>$packer_data['id']
 		       ,'Delivery Note Metadata'=>$order_data_id
 		       ,'Delivery Note Has Shipping'=>$_customer_data['has_shipping']
-
+ ,'Delivery Note Shipper Code'=>$header_data['shipper_code']  
 		       );
 	
 

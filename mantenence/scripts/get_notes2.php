@@ -93,7 +93,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     if(!$header_data['notes']){
       $header_data['notes']='';
     }
-    if(!$header_data['notes2'] or preg_match('/vat/i',$header_data['notes2'])){
+    if(!$header_data['notes2'] or preg_match('/^vat|Special Instructions$/i',_trim($header_data['notes2']))){
       $header_data['notes2']='';
     }
 
@@ -132,11 +132,19 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	$header_data['notes']='';
       }
 
- $header_data=get_customer_msg($header_data);
+    $header_data=get_customer_msg($header_data);
+
+    if(preg_match('/^(IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691|IE-7251185|SE556670-257601|x5686842-t)$/',$header_data['notes2'])){
+      $data['tax_number']=$header_data['notes2'];
+      $header_data['notes']='';
+    }
+
 
     if(!preg_match('/^()$/',$header_data['notes2'])){
       print $row2['filename']." N2: ".$header_data['notes2']."\n";
-
+      if(preg_match('/follow/i',$header_data['notes2']))
+	print_r($header_data);
+	 
 
       //	 if(preg_match('/vat|tax|valid/i',$header_data['notes2']) and !preg_match('/taxis|No One in Leave . Taxi|not valid|no vat valid|conservatory|refund VAT on orders|No Vat Number|don.t charge VAT|Vat not Valid/i',$header_data['notes2'])){
       //	   print_r($header_data);

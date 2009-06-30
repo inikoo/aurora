@@ -747,7 +747,7 @@ global $myconf;
 
    
 
-   print_r($force_values);
+   //print_r($force_values);
    $this->get_totals($force_values);
    $sql=sprintf("update `Invoice Dimension`  set `Invoice Main Payment Method`=%s,`Invoice Paid Date`=%s ,`Invoice Paid`='Yes',`Invoice Has Been Paid In Full`='Yes' where `Invoice Key`=%d"
 		,prepare_mysql($this->data['Invoice Main Payment Method'])
@@ -807,11 +807,11 @@ global $myconf;
      $this->data ['Invoice Total Net Adjust Amount']=0;
    
 
-   print $this->data ['Invoice Total Net Adjust Amount']."\n";
+   // print $this->data ['Invoice Total Net Adjust Amount']."\n";
    $this->data ['Invoice Total Net Amount'] = $total_net+$this->data ['Invoice Total Net Adjust Amount'];
    $this->data ['Invoice Items Tax Amount'] = $tax;
    $this->distribute_costs ();
-   print "$total_net ".$this->data ['Invoice Total Net Adjust Amount']."\n";
+   //print "$total_net ".$this->data ['Invoice Total Net Adjust Amount']."\n";
    $sql = sprintf ( "update `Invoice Dimension` set `Invoice Items Net Amount`=%.2f ,`Invoice Items Net Adjust Amount`=%.2f ,`Invoice Total Net Adjust Amount`=%.2f , `Invoice Items Gross Amount`=%.2f ,`Invoice Items Discount Amount`=%.2f  ,`Invoice Total Net Amount`=%.2f,`Invoice Items Tax Amount`=%.2f where `Invoice Key`=%d"
 		     , $this->data ['Invoice Items Net Amount']
 		     , $this->data ['Invoice Items Net Adjust Amount']

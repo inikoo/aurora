@@ -3265,7 +3265,7 @@ function get_tax_number($data){
 
       
       $tax_number=$data['notes2'];
-      $regex='/ \, 15\/30|if oos inform customer, no incense for alt. gift|, CARRIAGE BETWEEN .* AND 110|If oos, send email\!|deliver after 10:30 am|Contact Customer for payment details \!\!\!|Check order CAREFULLY|CHARGE BEFORE PICKING|Please phone 087 652 5769 before delivery\!|Deliveries accepted Tue - Sat 1000-1700 Contac Nic|Daughter: Cristina Viana|if oos inform customer, no more bath sets|pls contact cust if any probs with paym|no carriage, |Please contact customer for out of stock items.|See customer.s note regarding SSC.|delivery to Ireland - |Deliveries accepted Tue to Sat 10 \- 17\:30|deliver after 10am|Delivery after 10.00 am| P 24\/06 via frans mass|see note of 5th FEB|see note of 09\/06\/20009|always quote customer| --- Shipping FOC promotion|Kaym_Whelan@yahoo.ie| - checked see note of 19\/05\!/i';
+      $regex='/ - do not change shipping cost - fix price.| \, 15\/30|if oos inform customer, no incense for alt. gift|, CARRIAGE BETWEEN .* AND 110|If oos, send email\!|deliver after 10:30 am|Contact Customer for payment details \!\!\!|Check order CAREFULLY|CHARGE BEFORE PICKING|Please phone 087 652 5769 before delivery\!|Deliveries accepted Tue - Sat 1000-1700 Contac Nic|Daughter: Cristina Viana|if oos inform customer, no more bath sets|pls contact cust if any probs with paym|no carriage, |Please contact customer for out of stock items.|See customer.s note regarding SSC.|delivery to Ireland - |Deliveries accepted Tue to Sat 10 \- 17\:30|deliver after 10am|Delivery after 10.00 am| P 24\/06 via frans mass|see note of 5th FEB|see note of 09\/06\/20009|always quote customer| --- Shipping FOC promotion|Kaym_Whelan@yahoo.ie| - checked see note of 19\/05\!/i';
      
       if(preg_match($regex, $tax_number,$match)){
 	
@@ -3307,7 +3307,8 @@ $tax_number=preg_replace('/\-?\s*checked by customs$/i','',$tax_number);
     $tax_number='PT-503958271';
  if(preg_match('/NL060484305B02 validNL060484305B02 valid/i',$tax_number))
     $tax_number='NL060484305B02';
-
+ if(preg_match('/^IE : 3756781C$/i',$tax_number))
+    $tax_number='IE3756781C';
 
   $tax_number=_trim($tax_number);
   // print "TN: $tax_number\n";
@@ -3375,7 +3376,25 @@ $tax_number=preg_replace('/\-?\s*checked by customs$/i','',$tax_number);
     $data['tax_number']='85467757063';
     $data['notes2']='';
   }elseif(preg_match('/^EL 046982660 valid?/i',_trim($data['notes2']))){
-    $data['tax_number']='EL 046982660';
+    $data['tax_number']='EL-046982660';
+    $data['notes2']='';
+  }elseif(preg_match('/^EL-377 187 83?/i',_trim($data['notes2']))){
+    $data['tax_number']='EL-37718783';
+    $data['notes2']='';
+  }elseif(preg_match('/^FI1622254-8 checked by customs?/i',_trim($data['notes2']))){
+    $data['tax_number']='FI-1622254-8';
+    $data['notes2']='';
+  }elseif(preg_match('/^IE-7251185?/i',_trim($data['notes2']))){
+    $data['tax_number']='IE-7251185';
+    $data['notes2']='';
+  }elseif(preg_match('/^SE556670-257601$/i',_trim($data['notes2']))){
+    $data['tax_number']='SE556670-257601';
+    $data['notes2']='';
+  }elseif(preg_match('/^IE5493347N$/i',_trim($data['notes2']))){
+    $data['tax_number']='IE5493347N';
+    $data['notes2']='';
+  }elseif(preg_match('/^ES-B92544691$/i',_trim($data['notes2']))){
+    $data['tax_number']='ES-B92544691';
     $data['notes2']='';
   }
       
@@ -9271,8 +9290,8 @@ else if($_name=='jarina')
 
 function get_customer_msg($data){
   $data['customer_msg']='';
-  if(preg_match('/^(Friday \d{1,2}pm|NO WINE\!|Give to Kara|open 10 am to 5 pm|entrance from.*Street|del tue or thu|If Not In Leave In Cupboard By Door Please|if noone in leave with neighbour or in garage|closed on Wednesdays|Shop open 10am-5pm. Closed Wednesdays.|Leave at rear if out|no wine\!?|Look 4 Multi-Storey Carpark|Not open untill? \d{1,2}.\d{1,2}(AM|PM))$/i',_trim($data['notes2']))
-     OR preg_match('/oppocite|opposite|Behind|Must go out on|Deliver before|if not there|nobody|Leave in|Deliver|If no-one|Leave at|Deliver on|closed at|Please ring customer before delivery |Delivery Between|nobody|porch |close |Open |Shop open|Shop closed|if out Deliver|Leave at|if not there|next door|delivery before|deliver to|in shed|leave around|leave with|leave on|garage|shop|if noone|if not|despatch|dispatch/i',$data['notes2'])
+  if(preg_match('/^(DO NOT SEND WINE-SEND ALTERNATIVE|PLEASE HOLD UNTIL Bag-01 IN STOCK|corner of Marine Parade and Graystone Road|Friday \d{1,2}pm|NO WINE\!|Give to Kara|open 10 am to 5 pm|entrance from.*Street|del tue or thu|If Not In Leave In Cupboard By Door Please|if noone in leave with neighbour or in garage|closed on Wednesdays|Shop open 10am-5pm. Closed Wednesdays.|Leave at rear if out|no wine\!?|Look 4 Multi-Storey Carpark|Not open untill? \d{1,2}.\d{1,2}(AM|PM))$/i',_trim($data['notes2']))
+     OR preg_match('/carefully|pls pack|pls pick|9am sharp|email cust on|if any|if cust|notify if|call |access via|contact cust|give wine|call on |pls pick today|can only del|Check order CAREFULLY|CHECK CARRIAGE|contact cust if out of stock|drink so give something else as bonus|WEDNESDAY|DESP TODAY AND PACK CAREFULLY|please pack bath bombs very|If closed with|call if|IF ITEMS OUT OF STOCK CONTACT CUSTOMER|Tuesday|No Substitution please|Thursday|friday|can be left|deluvery |please |closed on|Subs OK|NO WINE alternative gift please 1 box of SG|if out can be left |Please call if|contact cust if something out of stock|if out put|Alternative gift to WINE|Add Catalogu|Call if out of stock|Call if if out of stock|Leave outside|Closed between|Not before|Let (her|me|him) know|oppocite|opposite|Behind|Must go out on|Deliver before|if not there|nobody|Leave in|Deliver|If no-one|Leave at|Deliver on|closed at|Please ring customer before delivery |Delivery Between|nobody|porch |close |Open |Shop open|Shop closed|if out Deliver|Leave at|if not there|next door|delivery before|deliver to|in shed|leave around|leave with|leave on|garage|shop|if noone|if not|despatch|dispatch/i',$data['notes2'])
      ){
     $data['customer_msg']=$data['notes2'];
     $data['notes2']='';
@@ -9286,6 +9305,8 @@ function get_customer_msg($data){
 
 
 function is_shipping_supplier($data){
+
+  
   //  if(preg_match('/^(per post|Pacel Force|Airmail|Amtrak.*|1st Class Post|Amstrak|via Frans Maas|Fist class post|DBL|apc|post|interlink|parcel\s*force|ups|fedex|royal\s*mail|by post|printmovers|1st class|first class|frans mass|frans maas|apc to collect|post . standart parcel|post . 2 parcels.*|post office|schenker|parcel force worldwide|amtrak|percel porce|parceline|post 1st|dfds transport|dpd|dbl pallet|tnt|interlink\s*express?|amtrack|post 1at class|post \- sing for|dvs|.*royal mail.*|Parce Force|Parcel Force Wordwide|Roayl Mail|Post 1st Class|Parcel Line|dbl|POST SIGNED FOR|Parcelforce.*|AMRAK|Post Sign For|post .*|FedEx .*|dbl|Parcel Force .*|DSV pallet|Hastings Freight|Amtrak|apc .*|dpd .*|dbl|Parcel F orce Sat Del|Mc Grath Freigth|Parcel Porce)$/i',_trim($data['notes'])))
    if(preg_match('/^(Use his own shipper|Cust owns carrier|cust own courier|customer own carrier|customer own carrier|own transport|Own Courrier|own driver)$/i',_trim($data['notes']))){
     $data['notes']='';
@@ -9346,19 +9367,51 @@ function is_shipping_supplier($data){
     $data['shipper_code']='_Other';
   }
   
-  
+   $the_supplier_data=array(
+				   'Supplier Name'=>$data['shipper_code']
+				   ,'Supplier Code'=>$data['shipper_code']
+				   );
+   if($data['shipper_code']!='' and $data['shipper_code']!='_OWN' and $data['shipper_code']!='_Other'){
 
-
+     //print $data['shipper_code']."<---\n";
+     $supplier=new Supplier('code',$data['shipper_code']);
+     if(!$supplier->id){
+       
+       $supplier=new Supplier('new',$the_supplier_data);
+     }
+     //exit;
+   }
   return $data;
 
 
 }
 
-function is_to_be_collected($str){
-  if(preg_match('/^(collecting|To be collect by cust.|To be collect|For Collection|To be collection|COLLECT|Collection|Collect .*|Collection.*|to be collected|to collect|collected|customer to collect|to be collect by cust|to be collected.*|will collec.*|to collect.*|to collect today)$/i',_trim($str)))
-    return true;
-  else 
-    return false;
+function is_to_be_collected($data){
+  if(preg_match('/^(collecting|To be collect by cust.|To be collect|For Collection|To be collection|COLLECT|Collection|Collect .*|Collection.*|to be collected|to collect|collected|customer to collect|to be collect by cust|to be collected.*|will collec.*|to collect.*|to collect today)$/i',_trim($data['notes']))){
+    
+    $data['shipper_code']='NA';
+    $data['collection']='Yes';
+
+      if(preg_match('/^(collecting|To be collect by cust.|To be collect|For Collection|To be collection|COLLECT|Collection|to be collected|to collect|collected|customer to collect|to be collect by cust)$/i',_trim($data['notes']))){
+       $data['notes']='';
+     }
+
+  }
+
+ if(preg_match('/^(collecting|To be collect by cust.|To be collect|For Collection|To be collection|COLLECT|Collection|Collect .*|Collection.*|to be collected|to collect|collected|customer to collect|to be collect by cust|to be collected.*|will collec.*|to collect.*|to collect today)$/i',_trim($data['notes']))){
+    
+    $data['shipper_code']='NA';
+     $data['collection']='Yes';
+   
+     if(preg_match('/^(collecting|To be collect by cust.|To be collect|For Collection|To be collection|COLLECT|Collection|to be collected|to collect|collected|customer to collect|to be collect by cust)$/i',_trim($data['notes2']))){
+       $data['notes2']='';
+     }
+
+
+  }
+
+
+    return $data;
 
 }
 

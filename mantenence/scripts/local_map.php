@@ -186,6 +186,9 @@ function get_tipo_order($ltipo,$header){
     $tipo=2;
   }elseif(preg_match('/^CANCEL/i',$ltipo)){
     $tipo=3;
+    $header['notes2']=preg_replace('/^cancel order?$/i','',$header['notes2']);
+
+
   }elseif(preg_match('/^SAMPLE|muestras/i',$ltipo)){
     //    print_r($header);
     $header['notes']=preg_replace('/^samples?$/i','',$header['notes']);
@@ -196,18 +199,24 @@ function get_tipo_order($ltipo,$header){
   }elseif(preg_match('/^\s*REPLACEMENT|Replcement|Replacenment|^reemplazo por roturas|^replacement|Damaged item|REPLACMENT|DELIVERY COLLECTION|repplacements|repalcements|Repalcement|Replaceement/i',$ltipo)){
     $tipo=6;
   $header['notes']=preg_replace('/^Replacement$/i','',$header['notes']);
-    $header['notes2']=preg_replace('/^Replacement$/i','',$header['notes2']);
+  $header['notes2']=preg_replace('/^Replacement$/i','',$header['notes2']);
+  $header['notes2']=preg_replace('/^replacement$/i','',_trim($header['notes2']));
+
 }elseif(preg_match('/Damaged Parcel|shotages|MISSING|Missing Parcel|missing\s+\d|^reemplazo por falta|SHORTAHGE|shortages|Missing From Order|missing form order|Mising from|^Missing Item|Missing - Replacement|^Shortage|Lost Parcel/i',$ltipo)){
 
     $tipo=7;
   }elseif(preg_match('/^to follow|Follow.On Order/i',$ltipo)){
     $tipo=8;
+    $header['notes']=preg_replace('/^to follow$/i','',$header['notes2']);
+    $header['notes']=preg_replace('/^follow on order$/i','',$header['notes2']);
 
 
   }elseif(preg_match('/^devoluci|^refund|VAT REFUND/i',$ltipo)){
     $tipo=9;
     $header['notes']=preg_replace('/^refund$/i','',$header['notes']);
     $header['notes2']=preg_replace('/^refund$/i','',$header['notes2']);
+    $header['notes2']=preg_replace('/^REFUND FOR RETURNED GOODS$/i','',$header['notes2']);
+    $header['notes2']=preg_replace('/^refund for damaged and missing items$/i','',$header['notes2']);
 
 
  }elseif(preg_match('/credit|credit note/i',$ltipo)){
@@ -235,9 +244,40 @@ function get_tipo_order($ltipo,$header){
   }elseif(preg_match('/\d{4}/i',$ltipo[0]))
      $parent_id=$tmp;
   
+
+  if(($tipo==2 or $tipo==8)  and preg_match('/to follow order no \d{5}/i',$header['notes2'])){
+     $tmp='';
+     $tipo=8;
+     if(preg_match('/\d{5}/i',$header['notes2'],$tmp)){
+       $parent_id=$tmp[0];
+     }
+     $header['notes2']='';
+  }
+
   
+
+  if($tipo==8 and $parent_id=='' and preg_match('/follow on \d{5}/i',$header['notes2'])){
+     $tmp='';
+
+     if(preg_match('/\d{5}/i',$header['notes2'],$tmp)){
+       $parent_id=$tmp[0];
+     }
+     $header['notes2']='';
+  }
+
+
   // print "****** $ltipo *** $tmp ***\n";
-  
+  if($header['total_topay']>0 and ($tipo==8 or $tipo==2)){
+    $tipo=2;
+    if( preg_match('/follow/i',$header['notes2']))
+      $header['notes2']='';
+    if( preg_match('/follow/i',$header['notes']))
+      $header['notes']='';
+  }
+
+
+
+
   if($header['total_topay']==0){
     
  if(preg_match('/Sample|samples.*/i',$header['notes2'])){
