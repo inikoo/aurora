@@ -36,9 +36,9 @@ $version='V 1.0';//75693
 $Data_Audit_ETL_Software="$software $version";
 srand(12344);
 
-$sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed)  order by filename ";
+$sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed)  order by filename desc";
 //$sql="select * from  orders_data.orders where filename like '%refund.xls'   order by filename";
-//$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/82510.xls'  order by filename";
+//$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/92964.xls'  order by filename";
 
 
 $contador=0;

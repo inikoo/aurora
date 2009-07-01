@@ -105,8 +105,10 @@ class Order extends DB_Table{
 				  $this->data ['Order XHTML Ship Tos']=_('Collection');
 				
 				}else{
+
 				  $customer = new Customer ( 'find create', $data['Customer Data'] ); 
-				  if(isset($data['Shipping Address']) and is_array($data['Shipping Address'])){
+				  //	  print_r($data);
+				  if(isset($data['Shipping Address']) and is_array($data['Shipping Address']) and !array_empty($data['Shipping Address'])){
 				    $ship_to= new Ship_To('find create',$data['Shipping Address']);
 				    $this->data ['Order XHTML Ship Tos']=$ship_to->data['Ship To XHTML Address'];
 				    $customer->add_ship_to($ship_to->id,'Yes');
@@ -121,7 +123,7 @@ class Order extends DB_Table{
 				$this->billing_address=new Address($customer->data['Customer Main Address Key']);
 				
 
-
+				
 
 				if(!$customer->id or $customer->data[ 'Customer Name' ]==''){
 				  print "caca\n";
