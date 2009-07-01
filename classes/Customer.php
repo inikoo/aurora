@@ -97,11 +97,24 @@ class Customer extends DB_Table{
      
      $raw_data['Customer Staff']='Yes';
      if($staff->id){
+
+
+
+       $contact=new Contact($staff->data['Staff Contact Key']);
+       $_raw_data=$contact->data;
+       foreach($_raw_data as $key=>$value){
+	 $raw_data[preg_replace('/Contact/','Customer',$key)]=$value;
+       }
+
        $raw_data['Customer Staff Key']=$staff->id;
        $raw_data['Customer Main Contact Key']=$staff->data['Staff Contact Key'];
-       $raw_data['Customer Name']=$staff->data['Staff Contact Name'];
+       $raw_data['Customer Name']=$staff->data['Staff Name'];
      }else{
-       $contact=new Contacr('create anonymous');
+       $contact=new Contact('create anonymous');
+  $_raw_data=$contact->data;
+       foreach($raw_data as $key=>$value){
+	 $raw_data[preg_replace('/Contact/','Customer',$key)]=$value;
+       }
        $raw_data['Customer Staff Key']=0;
        $raw_data['Customer Main Contact Key']=$contact->id;
        $raw_data['Customer Name']=_('Unknown Staff');
@@ -397,8 +410,8 @@ class Customer extends DB_Table{
 
 
 
-
-
+     //print_r($raw_data);
+       //  exit;
      $this->data=$this->base_data();
      foreach($raw_data as $key=>$value){
        if(array_key_exists($key,$this->data)){
@@ -414,9 +427,9 @@ class Customer extends DB_Table{
        $this->data['Customer Main Plain Email']='';
        $this->data['Customer Main Telephone Key']=0;
        $this->data['Customer Main Telephone']='';
-      $this->data['Customer Main Plain Telephone']='';
-      $this->data['Customer Main FAX Key']=0;
-      $this->data['Customer Main FAX']='';
+       $this->data['Customer Main Plain Telephone']='';
+       $this->data['Customer Main FAX Key']=0;
+       $this->data['Customer Main FAX']='';
       $this->data['Customer Main Plain FAX']='';
       
 
@@ -456,8 +469,10 @@ class Customer extends DB_Table{
       $this->data['Customer Main FAX']='';
       $this->data['Customer Main Plain FAX']='';
       
-      $contact=new contact('find in customer create',$raw_data);
-      
+      if(!$this->data['Customer Main Contact Key'])
+	$contact=new contact('find in customer create',$raw_data);
+      else
+	$contact=new contact($this->data['Customer Main Contact Key']);
 
       $this->data['Customer Main Contact Key']=$contact->id;
       $this->data['Customer Main Contact Name']=$contact->data['Contact Name'];

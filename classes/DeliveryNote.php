@@ -102,7 +102,7 @@ class DeliveryNote extends DB_Table {
 
 
   protected function create($dn_data, $transacions_data,$order) {
-    
+    global $myconf;
     // print_r($transacions_data);
     // print_r($dn_data);
     //exit;
@@ -152,6 +152,10 @@ class DeliveryNote extends DB_Table {
 	$this->data ['Delivery Note Country 2 Alpha Code'] = $ship_to->data['Ship To Country 2 Alpha Code'];
 
       }
+    }else{
+      $this->data ['Delivery Note XHTML Ship To'] = _('Collected');
+	$this->data ['Delivery Note Country 2 Alpha Code'] = $myconf['country_2acode'];
+	$this->data ['Delivery Note Ship To Key'] =0;
     }
 
     $this->create_header ();

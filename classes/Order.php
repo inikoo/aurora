@@ -99,9 +99,11 @@ class Order extends DB_Table{
 				
 
 				if($data['staff sale']=='Yes'){
+				  
 				  $staff=new Staff('id',$data['staff sale key']);
 				  $customer = new Customer ( 'find staff create', $staff ); 
-
+				  $this->data ['Order XHTML Ship Tos']=_('Collection');
+				
 				}else{
 				  $customer = new Customer ( 'find create', $data['Customer Data'] ); 
 				  if(isset($data['Shipping Address']) and is_array($data['Shipping Address'])){
@@ -112,7 +114,9 @@ class Order extends DB_Table{
 				}
 				
 			     
-			
+				if($data['Delivery Note Dispatch Method']=='Collected'){
+				  $this->data ['Order XHTML Ship Tos']=_('Collection');
+				}
 				
 				$this->billing_address=new Address($customer->data['Customer Main Address Key']);
 				
