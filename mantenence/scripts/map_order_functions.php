@@ -9362,7 +9362,7 @@ function is_shipping_supplier($data){
   }elseif(preg_match('/^(Schenker)$/i',_trim($data['notes']))){
     $data['notes']='';
     $data['shipper_code']='Schenker';
-  }elseif(preg_match('/^(shang|andy|andy to take( tomorrow)?|local|to be deliv. by Neil)$/i',_trim($data['notes']))){
+  }elseif(preg_match('/^(shang|andy|andy to take( tomorrow)?|to be deliv. by Neil)$/i',_trim($data['notes']))){
    
     $data['shipper_code']='_Other';
   }
@@ -9387,23 +9387,23 @@ function is_shipping_supplier($data){
 }
 
 function is_to_be_collected($data){
-  if(preg_match('/^(collecting|To be collect by cust.|To be collect|For Collection|To be collection|COLLECT|Collection|Collect .*|Collection.*|to be collected|to collect|collected|customer to collect|to be collect by cust|to be collected.*|will collec.*|to collect.*|to collect today)$/i',_trim($data['notes']))){
+  if(preg_match('/^(local *|collecting|To be collect by cust.|To be collect|For Collection|To be collection|COLLECT|Collection|Collect .*|Collection.*|to be collected|to collect|collected|customer to collect|to be collect by cust|to be collected.*|will collec.*|to collect.*|to collect today)$/i',_trim($data['notes']))){
     
     $data['shipper_code']='NA';
     $data['collection']='Yes';
 
-      if(preg_match('/^(collecting|To be collect by cust.|To be collect|For Collection|To be collection|COLLECT|Collection|to be collected|to collect|collected|customer to collect|to be collect by cust)$/i',_trim($data['notes']))){
+      if(preg_match('/^(local|collecting|To be collect by cust.|To be collect|For Collection|To be collection|COLLECT|Collection|to be collected|to collect|collected|customer to collect|to be collect by cust)$/i',_trim($data['notes']))){
        $data['notes']='';
      }
 
   }
 
- if(preg_match('/^(collecting|To be collect by cust.|To be collect|For Collection|To be collection|COLLECT|Collection|Collect .*|Collection.*|to be collected|to collect|collected|customer to collect|to be collect by cust|to be collected.*|will collec.*|to collect.*|to collect today)$/i',_trim($data['notes']))){
+ if(preg_match('/^(local *|collecting|To be collect by cust.|To be collect|For Collection|To be collection|COLLECT|Collection|Collect .*|Collection.*|to be collected|to collect|collected|customer to collect|to be collect by cust|to be collected.*|will collec.*|to collect.*|to collect today)$/i',_trim($data['notes']))){
     
     $data['shipper_code']='NA';
      $data['collection']='Yes';
    
-     if(preg_match('/^(collecting|To be collect by cust.|To be collect|For Collection|To be collection|COLLECT|Collection|to be collected|to collect|collected|customer to collect|to be collect by cust)$/i',_trim($data['notes2']))){
+     if(preg_match('/^(local|collecting|To be collect by cust.|To be collect|For Collection|To be collection|COLLECT|Collection|to be collected|to collect|collected|customer to collect|to be collect by cust)$/i',_trim($data['notes2']))){
        $data['notes2']='';
      }
 
@@ -9415,30 +9415,40 @@ function is_to_be_collected($data){
 
 }
 
-function is_showroom($str){
-  if(preg_match('/^(showrooms?|Showrooom)$/i',_trim($str)))
-    return true;
-  else 
-    return false;
-
+function is_showroom($data){
+  if(preg_match('/^(showrooms?|Showrooom)$/i',_trim($data['notes']))){
+    $data['showroom']='Yes';
+    $data['notes']='';
+ $data['shipper_code']='NA';
+ $data['collection']='Yes';
+    
+  }
+  if(preg_match('/^(showrooms?|Showrooom)$/i',_trim($data['notes2']))){
+    $data['showroom']='Yes';
+ $data['notes2']='';
+  $data['shipper_code']='NA';
+     $data['collection']='Yes';
+  }
+  return $data;
 }
 
 function is_staff_sale($data){
-  $data['staff sale']='no';
-  $data['staff sale name']='';
-
+  
   if(preg_match('/^(staff sale\s+[a-z]+)$/i',_trim($data['notes']))){
 
-    $data['staff sale']='yes';
+    $data['staff sale']='Yes';
     $data['staff sale name']=preg_replace('/staff sale\s+/','',$data['notes']);
     $data['notes']='';
+ $data['shipper_code']='NA';
+     $data['collection']='Yes';
     
   }
 
   if(preg_match('/^(staff sale|staff)$/i',_trim($data['notes']))){
     $data['notes']='';
-    $data['staff sale']='yes';
-  
+    $data['staff sale']='Yes';
+   $data['shipper_code']='NA';
+     $data['collection']='Yes';
   }
     
   

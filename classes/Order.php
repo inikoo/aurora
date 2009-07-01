@@ -179,7 +179,10 @@ class Order extends DB_Table{
 				  $this->data ['Order Original Metadata'] = '';
 				
 				$this->data ['Order Main Source Type'] = $data ['Order Main Source Type'];
-				
+				if(isset($data ['Order For']))
+				  $this->data ['Order For'] = $data ['Order For'];
+				else
+				  $this->data ['Order For'] = 'Customer';
 
 
 				
@@ -691,7 +694,7 @@ class Order extends DB_Table{
 
 	}
 	
-	function create_invoice_simple($invoice_data, $transacions_data) {
+	function create_invoice_simpleold($invoice_data, $transacions_data) {
 	  global $myconf;
 	  
 	  $this->data ['Invoice Items Gross Amount'] =0;
@@ -859,7 +862,7 @@ class Order extends DB_Table{
 	
 	}
 	
-	function create_refund_simple($invoice_data, $transacions_data) {
+	function create_refund_simpleold($invoice_data, $transacions_data) {
 		$this->data ['Invoice Date'] = $invoice_data ['Invoice Date'];
 		$this->data ['Invoice Public ID'] = $invoice_data ['Invoice Public ID'];
 		$this->data ['Invoice File As'] = $invoice_data ['Invoice File As'];
@@ -1027,7 +1030,7 @@ class Order extends DB_Table{
 	
 	}
 	
-	function create_dn_simple($dn_data, $transacions_data) {
+	function create_dn_simple0ld($dn_data, $transacions_data) {
 		$this->data ['Delivery Note Date'] = $dn_data ['Delivery Note Date'];
 		$this->data ['Delivery Note ID'] = $dn_data ['Delivery Note ID'];
 		$this->data ['Delivery Note File As'] = $dn_data ['Delivery Note File As'];
@@ -1668,7 +1671,8 @@ class Order extends DB_Table{
 		//     $sql="select sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) from `Order Transaction Fact` where "
 		
 
-		$sql = sprintf ( "insert into `Order Dimension` (`Order File As`,`Order Date`,`Order Last Updated Date`,`Order Public ID`,`Order Store Key`,`Order Store Code`,`Order Main Source Type`,`Order Customer Key`,`Order Customer Name`,`Order Current Dispatch State`,`Order Current Payment State`,`Order Current XHTML State`,`Order Customer Message`,`Order Original Data MIME Type`,`Order Original Data`,`Order XHTML Ship Tos`,`Order Items Gross Amount`,`Order Items Discount Amount`,`Order Original Metadata`,`Order XHTML Store`,`Order Type`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,'%s',%s,%s,%s,%.2f,%.2f,%s,%s,%s)"
+		$sql = sprintf ( "insert into `Order Dimension` (`Order For`,`Order File As`,`Order Date`,`Order Last Updated Date`,`Order Public ID`,`Order Store Key`,`Order Store Code`,`Order Main Source Type`,`Order Customer Key`,`Order Customer Name`,`Order Current Dispatch State`,`Order Current Payment State`,`Order Current XHTML State`,`Order Customer Message`,`Order Original Data MIME Type`,`Order Original Data`,`Order XHTML Ship Tos`,`Order Items Gross Amount`,`Order Items Discount Amount`,`Order Original Metadata`,`Order XHTML Store`,`Order Type`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,'%s',%s,%s,%s,%.2f,%.2f,%s,%s,%s)"
+				  , prepare_mysql ( $this->data ['Order For'] )
 				 , prepare_mysql ( $this->data ['Order File As'] )
 				 , prepare_mysql ( $this->data ['Order Date'] ), prepare_mysql ( $this->data ['Order Date'] ), prepare_mysql ( $this->data ['Order Public ID'] ), prepare_mysql ( $this->data ['Order Store Key'] ), prepare_mysql ( $this->data ['Order Store Code'] ), 
 
@@ -1688,7 +1692,7 @@ class Order extends DB_Table{
 	
 	}
 	
-	function create_invoice_header() {
+	function create_invoice_headerold() {
 		
 		//calculate the order total
 		$this->data ['Invoice Gross Amount'] = 0;
@@ -1735,7 +1739,7 @@ class Order extends DB_Table{
 	
 	}
 	
-	function create_dn_header() {
+	function create_dn_headerold() {
 		
 		$sql = sprintf ( "insert into `Delivery Note Dimension` (`Delivery Note XHTML Orders`,`Delivery Note XHTML Invoices`,`Delivery Note Date`,`Delivery Note ID`,`Delivery Note File As`,`Delivery Note Customer Key`,`Delivery Note Customer Name`,`Delivery Note XHTML Ship To`,`Delivery Note Ship To Key`,`Delivery Note Metadata`,`Delivery Note Weight`,`Delivery Note XHTML Pickers`,`Delivery Note Number Pickers`,`Delivery Note XHTML Packers`,`Delivery Note Number Packers`,`Delivery Note Type`,`Delivery Note Title`) values ('','',%s,%s,%s,%s,%s,%s,%s,%s,%f,%s,%d,%s,%d,%s,%s)", prepare_mysql ( $this->data ['Delivery Note Date'] ), prepare_mysql ( $this->data ['Delivery Note ID'] ), prepare_mysql ( $this->data ['Delivery Note File As'] ), prepare_mysql ( $this->data ['Delivery Note Customer Key'] ), prepare_mysql ( $this->data ['Delivery Note Customer Name'] ), prepare_mysql ( $this->data ['Delivery Note XHTML Ship To'] ), prepare_mysql ( $this->data ['Delivery Note Ship To Key'] ), prepare_mysql ( $this->data ['Delivery Note Metadata'] ), $this->data ['Delivery Note Weight'], prepare_mysql ( $this->data ['Delivery Note XHTML Pickers'] ), $this->data ['Delivery Note Number Pickers'], prepare_mysql ( $this->data ['Delivery Note XHTML Packers'] ), $this->data ['Delivery Note Number Packers'], prepare_mysql ( $this->data ['Delivery Note Type'] ), prepare_mysql ( $this->data ['Delivery Note Title'] ) )
 

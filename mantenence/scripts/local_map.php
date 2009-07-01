@@ -140,6 +140,7 @@ $_map_old['postcode']=array('row'=>10,'col'=>5);
 $_map_old['notes2']=array('row'=>10,'col'=>7);
 
 
+
 $_map_old['shipping']=array('row'=>11,'col'=>13);
 
 $_map_old['customer_contact']=array('row'=>13,'col'=>5,'tipo'=>'name');
