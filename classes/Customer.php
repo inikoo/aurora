@@ -65,6 +65,9 @@ class Customer extends DB_Table{
     if($arg1=='new'){
       $this->find($arg2,'create');
        return;
+    }elseif(preg_match('/^find staff/',$arg1)){
+	$this->find_staff($arg2,$arg1);
+	return;
     }elseif(preg_match('/^find/',$arg1)){
 	$this->find($arg2,$arg1);
 	return;
@@ -75,7 +78,43 @@ class Customer extends DB_Table{
     
   }
 
- /*
+/*
+    Method: find_staff
+    Find Staff Customer 
+*/
+
+ function find_staff($staff,$options=''){
+   
+   $sql=sprintf("select `Customer Key` from `Customer Dimension` where `Customer Staff`='Yes' and `Customer Staff Key`=%d",$staff->id);
+   $result=mysql_query($sql);
+   if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+     
+     $this->id=$this->data['Customer Key'];
+   }
+
+   if(!$this->id and preg_match('/create|new/',$options)){
+     $raw_data['Customer Type']='Person';
+     
+     $raw_data['Customer Staff']='Yes';
+     if($staff->id){
+       $raw_data['Customer Staff Key']=$staff->id;
+       $raw_data['Customer Main Contact Key']=$staff->data['Staff Contact Key'];
+       $raw_data['Customer Name']=$staff->data['Staff Contact Name'];
+     }else{
+       $contact=new Contacr('create anonymous');
+       $raw_data['Customer Staff Key']=0;
+       $raw_data['Customer Main Contact Key']=$contact->id;
+       $raw_data['Customer Name']=_('Unknown Staff');
+     }
+
+     
+     $this->create($raw_data);
+   }
+
+
+}
+  /*
+
     Method: find
     Find Customer with similar data
    

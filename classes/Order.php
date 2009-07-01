@@ -96,21 +96,21 @@ class Order extends DB_Table{
 				//	print_r($data['Customer Data'] );
 				$data['Customer Data']['editor']=$this->editor;
 				$data['Customer Data']['editor']['Date']=date("Y-m-d H:i:s",strtotime($data['Customer Data']['editor']['Date']." -1 second"));
-				$customer = new Customer ( 'find create', $data['Customer Data'] ); 
-			
-
-				if(isset($data['Shipping Address']) and is_array($data['Shipping Address'])){
-				  //print_r($data['Shipping Address']);
-				  $ship_to= new Ship_To('find create',$data['Shipping Address']);
-				   $this->data ['Order XHTML Ship Tos']=$ship_to->data['Ship To XHTML Address'];
-				   // update customer
-				   //   print "SHIP IS ".$ship_to->id." \n";
-				   $customer->add_ship_to($ship_to->id,'Yes');
-				   // print_r($customer);
-				   //   exit;
-				}
 				
 
+				if($data['staff sale']=='Yes'){
+				  $staff=new Staff('id',$data['staff sale key']);
+				  $customer = new Customer ( 'find staff create', $staff ); 
+
+				}else{
+				  $customer = new Customer ( 'find create', $data['Customer Data'] ); 
+				  if(isset($data['Shipping Address']) and is_array($data['Shipping Address'])){
+				    $ship_to= new Ship_To('find create',$data['Shipping Address']);
+				    $this->data ['Order XHTML Ship Tos']=$ship_to->data['Ship To XHTML Address'];
+				    $customer->add_ship_to($ship_to->id,'Yes');
+				  }
+				}
+				
 			     
 			
 				

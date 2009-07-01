@@ -38,7 +38,7 @@ srand(12344);
 
 $sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed)  order by filename ";
 //$sql="select * from  orders_data.orders where filename like '%refund.xls'   order by filename";
-//$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/8623.xls'  order by filename";
+$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/12960.xls'  order by filename";
 
 
 $contador=0;
@@ -243,11 +243,14 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
     $header_data=get_customer_msg($header_data);
 
-    if(preg_match('/^(IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691|IE-7251185|SE556670-257601|x5686842-t)$/',$header_data['notes2'])){
+    if(preg_match('/^(x5686842-t|IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691|IE-7251185|SE556670-257601|x5686842-t)$/',$header_data['notes2'])){
       $data['tax_number']=$header_data['notes2'];
+      $header_data['notes2']='';
+    }
+if(preg_match('/^(x5686842-t|IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691|IE-7251185|SE556670-257601|x5686842-t)$/',$header_data['notes'])){
+      $data['tax_number']=$header_data['notes'];
       $header_data['notes']='';
     }
-
 
 
 

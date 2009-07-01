@@ -8,6 +8,10 @@ include_once('../../classes/Part.php');
 include_once('../../classes/SupplierProduct.php');
 error_reporting(E_ALL);
 
+$link = mysql_connect('mysql.freeola.net', 'sr1050741', 'starhtweb2');
+if(!$link){print "Error can not connect with database server\n";exit;}
+mysql_select_db('sr1050741', $link);
+
 
 
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
@@ -54,11 +58,11 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 	       ,prepare_mysql($code)
 	       );
   //print $sql;
-  mysql_query($sql);
-  $num_affected=mysql_affected_rows();
-  if($num_affected>0){
+   mysql_query($sql);
+   $num_affected=mysql_affected_rows();
+   if($num_affected>0){
     print "$code updated\n";
-  }
+   }
   
 }
 

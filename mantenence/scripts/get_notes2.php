@@ -38,7 +38,7 @@ srand(12344);
 
 $sql="select * from  orders_data.orders   order by filename  ";
 //$sql="select * from  orders_data.orders where filename like '%refund.xls'   order by filename";
-$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/%.xls'  order by filename";
+$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/87628.xls'  order by filename";
 
 
 $contador=0;
@@ -88,8 +88,8 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     list($act_data,$header_data)=read_header($header,$map_act,$y_map,$map);
     $header_data=filter_header($header_data);
     list($tipo_order,$parent_order_id,$header_data)=get_tipo_order($header_data['ltipo'],$header_data);
-
-  
+    print_r($header_data);
+    $header_data['shipper_code']='';
     if(!$header_data['notes']){
       $header_data['notes']='';
     }
@@ -101,16 +101,14 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       $header_data['notes']='International Freight';
 
     //delete no data notes
-   
-    
-    if(is_to_be_collected($header_data['notes']))
-      $header_data['notes']='';
+   print_r($header_data);
+  // print $row2['filename']."\n";
+  $header_data=is_to_be_collected($header_data);   
     $header_data=is_shipping_supplier($header_data);
-    $header_data=is_staff_sale($header_data);
+    $header_data=is_staff_sale($header_data,$act_data);
     
-    if(is_showroom($header_data['notes']))
-      $header_data['notes']='';
-    
+ print_r($header_data);
+    $header_data=is_showroom($header_data);
     
     if(preg_match('/^(|International Freight)$/',$header_data['notes'])){
       $header_data['notes']='';
@@ -142,8 +140,8 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
     if(!preg_match('/^()$/',$header_data['notes2'])){
       print $row2['filename']." N2: ".$header_data['notes2']."\n";
-      if(preg_match('/follow/i',$header_data['notes2']))
-	print_r($header_data);
+      //  if(preg_match('/follow/i',$header_data['notes2']))
+      //print_r($header_data);
 	 
 
       //	 if(preg_match('/vat|tax|valid/i',$header_data['notes2']) and !preg_match('/taxis|No One in Leave . Taxi|not valid|no vat valid|conservatory|refund VAT on orders|No Vat Number|don.t charge VAT|Vat not Valid/i',$header_data['notes2'])){
