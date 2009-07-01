@@ -1152,7 +1152,7 @@ class Address extends DB_Table{
   public static function prepare_3line($raw_data,$args='untrusted'){
     global $myconf;
 
-    //    print "========== ADDEWESS PARSING ================\n";
+    //       print "========== ADDEWESS PARSING ================\n";
     //  print_r($raw_data);
 
 
@@ -1163,6 +1163,9 @@ class Address extends DB_Table{
     if(!isset($raw_data['Address Line 3']))
       $raw_data['Address Line 3']='';
     $empty=true;
+    
+    if(count($raw_data)>0){
+    
     foreach($raw_data as $key=>$val){
       if($val!='' and ($key!='Address Fuzzy' and $key!='Address Data Last Update'and $key!='Address Input Format' and $key!='Military Address'  )){
 	//	print "NO EMTOY KEY $key\n";
@@ -1170,8 +1173,9 @@ class Address extends DB_Table{
 	break;
       }
     }
+    }
     
-      
+   
 
     $untrusted=(preg_match('/untrusted/',$args)?true:false);
     $debug=(preg_match('/debug/',$args)?true:false);
@@ -1204,7 +1208,12 @@ class Address extends DB_Table{
 
 
     if($empty){
+
+
       $country=new Country('code','UNK');
+      $raw_data['Address Country Name']=$country->data['Country Name'];
+
+      $data['Address Country Name']=$country->data['Country Name'];
       $data['Address Country Key']=$country->id;
       $data['Address Fuzzy']='Yes';
       $data['Address Fuzzy Type']='All';
