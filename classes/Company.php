@@ -1171,10 +1171,9 @@ function add_contact($data,$args='principal'){
   if(!$contact->id)
     exit("can not find contact");
 
-    $sql=sprintf("insert into  `Contact Bridge` (`Contact Key`, `Subject Key`,`Subject Type`,`Is Main`) values (%d,%d,'Company',%s,%s)  "
+    $sql=sprintf("insert into  `Contact Bridge` (`Contact Key`, `Subject Key`,`Is Main`) values (%d,%d,%s)  "
 		   ,$contact->id
 		   ,$this->id
-		   ,prepare_mysql($telecom_tipo)
 		   ,prepare_mysql(preg_match('/principal/i',$args)?'Yes':'No')
 		   );
       mysql_query($sql);
@@ -1196,28 +1195,27 @@ function add_contact($data,$args='principal'){
 
 
 
-	$sql=sprintf("update `Contact Dimension` set `Company Main Contact`=%s and  `Company Main Contact Key`=%s,`Company Main Address Key`=%d,`Company Main XHTML Address`=%s,`Company Main Plain Address`=%s,`Company Main Country Key`=%d,`Company Main Country`=%s ,`Company Main Location`=%s,`Company Main Telephone`=%s,`Company Main Plain Telephone`=%,`Company Main Telephone Key`=%d,`Company Main FAX`=%s , `Company Main Plain FAX`=%s,`Company Main FAX Key`=%s ,`Company Main XHTML Email`=%s,`Company Main Plain Email`=%s, `Company Main Email Key`=%d  where `Company Key`=%d"
-		     ,$contact->display('name')
-		     ,$contact->id
-		     ,$contact->data['Contact Main Address Key']
-		     ,prepare_mysql($contact->data['Contact Main XHTML Address'])
-		     ,prepare_mysql($contact->data['Contact Main Plain Address'])
-		     ,$contact->data['Contact Main Country Key']
-		     ,prepare_mysql($contact->data['Contact Main Country'])
-		     ,prepare_mysql($contact->data['Contact Main Location'])
-		     ,prepare_mysql($contact->data['Contact Main Telephone'])
-		     ,prepare_mysql($contact->data['Contact Main Plain Telephone'])
-		     ,$contact->data['Contact Main Telephone Key']
-		     ,prepare_mysql($contact->data['Contact Main FAX'])
-		     ,prepare_mysql($contact->data['Contact Main Plain FAX'])
-		     ,$contact->data['Contact Main FAX Key']
-		     ,prepare_mysql($contact->data['Contact Main XHTML Email'])
-		     ,prepare_mysql($contact->data['Contact Main Plain Email'])
-		     ,$contact->data['Contact Main Email Key']
+	$sql=sprintf("update `Contact Dimension` set  `Contact Company Name`=%s,`Contact Company Key`=%s,`Contact Main Address Key`=%d,`Contact Main XHTML Address`=%s,`Contact Main Plain Address`=%s,`Contact Main Country Key`=%d,`Contact Main Country`=%s ,`Contact Main Location`=%s,`Contact Main Telephone`=%s,`Contact Main Plain Telephone`=%,`Contact Main Telephone Key`=%d,`Contact Main FAX`=%s , `Contact Main Plain FAX`=%s,`Contact Main FAX Key`=%d  where `Contact Key`=%d"
+		     ,prepare_mysql($this->data['Company Name'])
+
 		     ,$this->id
+		     ,$this->data['Company Main Address Key']
+		     ,prepare_mysql($this->data['Company Main XHTML Address'])
+		     ,prepare_mysql($this->data['Company Main Plain Address'])
+		     ,$this->data['Company Main Country Key']
+		     ,prepare_mysql($this->data['Company Main Country'])
+		     ,prepare_mysql($this->data['Company Main Location'])
+		     ,prepare_mysql($this->data['Company Main Telephone'])
+		     ,prepare_mysql($this->data['Company Main Plain Telephone'])
+		     ,$this->data['Company Main Telephone Key']
+		     ,prepare_mysql($this->data['Company Main FAX'])
+		     ,prepare_mysql($this->data['Company Main Plain FAX'])
+		     ,$this->data['Company Main FAX Key']
+		     ,$contact->id
 		     );
-	mysql_query($sql);
-	
+	//	print $this->data['Company Main Address Key']." $sql\n\n";
+	if(!mysql_query($sql))
+	  exit("$sql\n");
 	
       }
       

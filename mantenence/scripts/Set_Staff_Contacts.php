@@ -67,6 +67,7 @@ while($row=mysql_fetch_array($res, MYSQL_ASSOC)){
   
   $data_contact=array(
 		      'Contact Name'=>ucwords($row['Staff Name'])
+		      //,'Contact Company Key'=>$company->id
 		      );
   if($row['Staff Alias']=='raul'){
     $data_contact=array(
@@ -89,7 +90,7 @@ while($row=mysql_fetch_array($res, MYSQL_ASSOC)){
    
 
   $contact=new contact('find create',$data_contact);
-
+  $company->add_contact($contact->id);
   $sql=sprintf("update `Staff Dimension` set `Staff Alias`=%s,`Staff Name`=%s,`Staff Contact Key`=%d where `Staff Key`=%d"
 	       ,prepare_mysql(strtolower($row['Staff Alias']))
 	       ,prepare_mysql(ucwords($row['Staff Name']))

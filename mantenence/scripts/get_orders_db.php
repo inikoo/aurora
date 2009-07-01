@@ -38,7 +38,7 @@ srand(12344);
 
 $sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed)  order by filename ";
 //$sql="select * from  orders_data.orders where filename like '%refund.xls'   order by filename";
-$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/12960.xls'  order by filename";
+//$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/82510.xls'  order by filename";
 
 
 $contador=0;
@@ -893,21 +893,25 @@ if(preg_match('/^(x5686842-t|IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691
 
     // print_r($products_data);
 
+    // print_r($header_data);
 
 
-    
     $data['Order For']='Customer';
     
     $data['Order Main Source Type']='Unknown';
     if(  $header_data['showroom']=='Yes')
       $data['Order Main Source Type']='Store';
     
-    
-    if($header_data['collection']='Yes'){
+     $data['Delivery Note Dispatch Method']='Shipped';
+
+    if($header_data['collection']=='Yes'){
       $data['Delivery Note Dispatch Method']='Collected';
     }elseif($header_data['shipper_code']!=''){
       $data['Delivery Note Dispatch Method']='Shipped';
+    }elseif($header_data['shipping']>0 or  $header_data['shipping']=='FOC'){
+      $data['Delivery Note Dispatch Method']='Shipped';
     }
+    
 
     if($header_data['shipper_code']=='_OWN')
       $data['Delivery Note Dispatch Method']='Collected';
@@ -918,7 +922,14 @@ if(preg_match('/^(x5686842-t|IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691
 
     }
 
-
+   
+    if($data['Delivery Note Dispatch Method']=='Collected'){
+      $_customer_data['has_shipping']=false;
+	$shipping_addresses=array();
+      }
+    //  print_r($data);
+    $data['staff sale']=$header_data['staff sale'];
+    $data['staff sale key']=$header_data['staff sale key'];
 
     $data['type']='direct_data_injection';
     $data['products']=$products_data;
@@ -1538,7 +1549,7 @@ if(preg_match('/^(x5686842-t|IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691
 	$picker_data=get_user_id($header_data['pickedby'],true,'&view=picks');
 	$packer_data=get_user_id($header_data['packedby'],true,'&view=packs');
 
-// 	print_r($picker_data);
+	//	print_r($data);
 
 	$data_dn=array(
 		       'Delivery Note Date'=>$date_inv
@@ -1555,7 +1566,7 @@ if(preg_match('/^(x5686842-t|IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691
 		       ,'Delivery Note Packers IDs'=>$packer_data['id']
 		       ,'Delivery Note Metadata'=>$order_data_id
 		       ,'Delivery Note Has Shipping'=>$_customer_data['has_shipping']
- ,'Delivery Note Shipper Code'=>$header_data['shipper_code'] 
+		       ,'Delivery Note Shipper Code'=>$header_data['shipper_code'] 
 		        ,'Delivery Note Dispatch Method'=>$data['Delivery Note Dispatch Method']
 		       );
 	

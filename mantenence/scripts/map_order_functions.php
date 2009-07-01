@@ -9255,7 +9255,7 @@ else if(preg_match('/martina otte/i',$_name))
     
 
     $sql=sprintf("select `Staff Key`,`Staff Alias` from `Staff Dimension` where `Staff Alias`=%s",prepare_mysql($_name));
-    print "$sql\n";
+    //    print "$sql\n";
     $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
     if ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
       $id=$row['Staff Key'];
