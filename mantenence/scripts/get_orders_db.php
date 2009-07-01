@@ -36,9 +36,9 @@ $version='V 1.0';//75693
 $Data_Audit_ETL_Software="$software $version";
 srand(12344);
 
-$sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed)  order by filename desc";
+$sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed)  order by filename";
 //$sql="select * from  orders_data.orders where filename like '%refund.xls'   order by filename";
-//$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/92964.xls'  order by filename";
+//$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/15320.xls'  order by filename";
 
 
 $contador=0;
@@ -927,6 +927,15 @@ if(preg_match('/^(x5686842-t|IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691
       $_customer_data['has_shipping']=false;
 	$shipping_addresses=array();
       }
+
+
+    if(array_empty($shipping_addresses)){
+      $data['Delivery Note Dispatch Method']='Collected';
+      $_customer_data['has_shipping']=false;
+      $shipping_addresses=array();
+    }
+
+
     //  print_r($data);
     $data['staff sale']=$header_data['staff sale'];
     $data['staff sale key']=$header_data['staff sale key'];
