@@ -21,7 +21,7 @@ include_once('../../classes/Order.php');
 error_reporting(E_ALL);
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 if(!$con){print "Error can not connect with database server\n";exit;}
-$dns_db='dw';
+//$dns_db='dw';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
 
@@ -57,7 +57,7 @@ $data=array(
 
 
 $company=new Company('find create auto',$data);
-exit;
+
 
 $sql="select * from  `Staff Dimension` ";
 $res=mysql_query($sql);
@@ -73,11 +73,23 @@ while($row=mysql_fetch_array($res, MYSQL_ASSOC)){
 			'Contact Name'=>'Mr Raul Alejandro Perusquia Flores'
 			,'Contact Main Mobile'=>''
 			);
-    
   }
-  
+   if($row['Staff Alias']=='martina'){
+    $data_contact=array(
+			'Contact Name'=>'Martina Otte'
+			,'Contact Main Mobile'=>''
+			);
+  }if($row['Staff Alias']=='kerry'){
+    $data_contact=array(
+			'Contact Name'=>'Kerry Miskelly'
+			,'Contact Main Mobile'=>''
+			);
+  }
 
-  $contact=new contact('new',$data_contact);
+   
+
+  $contact=new contact('find create',$data_contact);
+
   $sql=sprintf("update `Staff Dimension` set `Staff Alias`=%s,`Staff Name`=%s,`Staff Contact Key`=%d where `Staff Key`=%d"
 	       ,prepare_mysql(strtolower($row['Staff Alias']))
 	       ,prepare_mysql(ucwords($row['Staff Name']))

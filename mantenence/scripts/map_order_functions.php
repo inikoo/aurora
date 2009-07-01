@@ -9250,11 +9250,12 @@ function get_user_id($oname,$return_xhtml=false,$tag=''){
       $_name='janka';
 else if($_name=='jarina')
       $_name='jirina';
-
+else if(preg_match('/martina otte/i',$_name))
+      $_name='martina';
     
 
     $sql=sprintf("select `Staff Key`,`Staff Alias` from `Staff Dimension` where `Staff Alias`=%s",prepare_mysql($_name));
-    //   print "$sql\n";
+    print "$sql\n";
     $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
     if ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
       $id=$row['Staff Key'];
@@ -9290,14 +9291,20 @@ else if($_name=='jarina')
 
 function get_customer_msg($data){
   $data['customer_msg']='';
-  if(preg_match('/^(DO NOT SEND WINE-SEND ALTERNATIVE|PLEASE HOLD UNTIL Bag-01 IN STOCK|corner of Marine Parade and Graystone Road|Friday \d{1,2}pm|NO WINE\!|Give to Kara|open 10 am to 5 pm|entrance from.*Street|del tue or thu|If Not In Leave In Cupboard By Door Please|if noone in leave with neighbour or in garage|closed on Wednesdays|Shop open 10am-5pm. Closed Wednesdays.|Leave at rear if out|no wine\!?|Look 4 Multi-Storey Carpark|Not open untill? \d{1,2}.\d{1,2}(AM|PM))$/i',_trim($data['notes2']))
-     OR preg_match('/carefully|pls pack|pls pick|9am sharp|email cust on|if any|if cust|notify if|call |access via|contact cust|give wine|call on |pls pick today|can only del|Check order CAREFULLY|CHECK CARRIAGE|contact cust if out of stock|drink so give something else as bonus|WEDNESDAY|DESP TODAY AND PACK CAREFULLY|please pack bath bombs very|If closed with|call if|IF ITEMS OUT OF STOCK CONTACT CUSTOMER|Tuesday|No Substitution please|Thursday|friday|can be left|deluvery |please |closed on|Subs OK|NO WINE alternative gift please 1 box of SG|if out can be left |Please call if|contact cust if something out of stock|if out put|Alternative gift to WINE|Add Catalogu|Call if out of stock|Call if if out of stock|Leave outside|Closed between|Not before|Let (her|me|him) know|oppocite|opposite|Behind|Must go out on|Deliver before|if not there|nobody|Leave in|Deliver|If no-one|Leave at|Deliver on|closed at|Please ring customer before delivery |Delivery Between|nobody|porch |close |Open |Shop open|Shop closed|if out Deliver|Leave at|if not there|next door|delivery before|deliver to|in shed|leave around|leave with|leave on|garage|shop|if noone|if not|despatch|dispatch/i',$data['notes2'])
+  if(preg_match('/^(EXPORT TO GERMANY|catalogue|DO NOT SEND WINE-SEND ALTERNATIVE|PLEASE HOLD UNTIL Bag-01 IN STOCK|corner of Marine Parade and Graystone Road|Friday \d{1,2}pm|NO WINE\!|Give to Kara|open 10 am to 5 pm|entrance from.*Street|del tue or thu|If Not In Leave In Cupboard By Door Please|if noone in leave with neighbour or in garage|closed on Wednesdays|Shop open 10am-5pm. Closed Wednesdays.|Leave at rear if out|no wine\!?|Look 4 Multi-Storey Carpark|Not open untill? \d{1,2}.\d{1,2}(AM|PM))$/i',_trim($data['notes2']))
+     OR preg_match('/difficult to find|URGENT|if out, leave|catalogue - please|Phone with |pls phone |Ensure |Opp car showroom|save until|Next to Hairdresser|Contract if |del after|Monday . 9am|opening hours|Mon,Weds, Thurs 9am - 2pm; Fri 9am - 4pm;|if out leave by the side of the green recycle bin|Del before 3PM|carefully|pls pack|pls pick|9am sharp|email cust on|if any|if cust|notify if|call |access via|contact cust|give wine|call on |pls pick today|can only del|Check order CAREFULLY|CHECK CARRIAGE|contact cust if out of stock|drink so give something else as bonus|WEDNESDAY|DESP TODAY AND PACK CAREFULLY|please pack bath bombs very|If closed with|call if|IF ITEMS OUT OF STOCK CONTACT CUSTOMER|Tuesday|No Substitution please|Thursday|friday|can be left|deluvery |please |closed on|Subs OK|NO WINE alternative gift please 1 box of SG|if out can be left |Please call if|contact cust if something out of stock|if out put|Alternative gift to WINE|Add Catalogu|Call if out of stock|Call if if out of stock|Leave outside|Closed between|Not before|Let (her|me|him) know|oppocite|opposite|Behind|Must go out on|Deliver before|if not there|nobody|Leave in|Deliver|If no-one|Leave at|Deliver on|closed at|Please ring customer before delivery |Delivery Between|nobody|porch |close |Open |Shop open|Shop closed|if out Deliver|Leave at|if not there|next door|delivery before|deliver to|in shed|leave around|leave with|leave on|garage|shop|if noone|if not|despatch|dispatch/i',$data['notes2'])
      ){
     $data['customer_msg']=$data['notes2'];
     $data['notes2']='';
     
   }
-
+  if(preg_match('/^(EXPORT TO GERMANY|catalogue|DO NOT SEND WINE-SEND ALTERNATIVE|PLEASE HOLD UNTIL Bag-01 IN STOCK|corner of Marine Parade and Graystone Road|Friday \d{1,2}pm|NO WINE\!|Give to Kara|open 10 am to 5 pm|entrance from.*Street|del tue or thu|If Not In Leave In Cupboard By Door Please|if noone in leave with neighbour or in garage|closed on Wednesdays|Shop open 10am-5pm. Closed Wednesdays.|Leave at rear if out|no wine\!?|Look 4 Multi-Storey Carpark|Not open untill? \d{1,2}.\d{1,2}(AM|PM))$/i',_trim($data['notes']))
+     OR preg_match('/difficult to find|URGENT|if out, leave|catalogue - please|Phone with |pls phone |Ensure |save until|Next to Hairdresser|Contract if more than 2 boxes|del after|Monday . 9am|opening hours|Mon,Weds, Thurs 9am - 2pm; Fri 9am - 4pm;|if out leave by the side of the green recycle bin|Del before 3PM|carefully|pls pack|pls pick|9am sharp|email cust on|if any|if cust|notify if|call |access via|contact cust|give wine|call on |pls pick today|can only del|Check order CAREFULLY|CHECK CARRIAGE|contact cust if out of stock|drink so give something else as bonus|WEDNESDAY|DESP TODAY AND PACK CAREFULLY|please pack bath bombs very|If closed with|call if|IF ITEMS OUT OF STOCK CONTACT CUSTOMER|Tuesday|No Substitution please|Thursday|friday|can be left|deluvery |please |closed on|Subs OK|NO WINE alternative gift please 1 box of SG|if out can be left |Please call if|contact cust if something out of stock|if out put|Alternative gift to WINE|Add Catalogu|Call if out of stock|Call if if out of stock|Leave outside|Closed between|Not before|Let (her|me|him) know|oppocite|opposite|Behind|Must go out on|Deliver before|if not there|nobody|Leave in|Deliver|If no-one|Leave at|Deliver on|closed at|Please ring customer before delivery |Delivery Between|nobody|porch |close |Open |Shop open|Shop closed|if out Deliver|Leave at|if not there|next door|delivery before|deliver to|in shed|leave around|leave with|leave on|garage|shop|if noone|if not|despatch|dispatch/i',$data['notes'])
+     ){
+    $data['customer_msg'].=' '.$data['notes'];
+    $data['notes']='';
+    
+  }
 
 
   return $data;
@@ -9306,15 +9313,15 @@ function get_customer_msg($data){
 
 function is_shipping_supplier($data){
 
-  
+
   //  if(preg_match('/^(per post|Pacel Force|Airmail|Amtrak.*|1st Class Post|Amstrak|via Frans Maas|Fist class post|DBL|apc|post|interlink|parcel\s*force|ups|fedex|royal\s*mail|by post|printmovers|1st class|first class|frans mass|frans maas|apc to collect|post . standart parcel|post . 2 parcels.*|post office|schenker|parcel force worldwide|amtrak|percel porce|parceline|post 1st|dfds transport|dpd|dbl pallet|tnt|interlink\s*express?|amtrack|post 1at class|post \- sing for|dvs|.*royal mail.*|Parce Force|Parcel Force Wordwide|Roayl Mail|Post 1st Class|Parcel Line|dbl|POST SIGNED FOR|Parcelforce.*|AMRAK|Post Sign For|post .*|FedEx .*|dbl|Parcel Force .*|DSV pallet|Hastings Freight|Amtrak|apc .*|dpd .*|dbl|Parcel F orce Sat Del|Mc Grath Freigth|Parcel Porce)$/i',_trim($data['notes'])))
    if(preg_match('/^(Use his own shipper|Cust owns carrier|cust own courier|customer own carrier|customer own carrier|own transport|Own Courrier|own driver)$/i',_trim($data['notes']))){
     $data['notes']='';
     $data['shipper_code']='_OWN';
-  }elseif(preg_match('/^(Send By Post|First Class Post|Sent by post|Royalmail.*|per post|Airmail|1st Class Post|Fist class post|post|royal\s*mail|by post|1st class|first class|post . standart parcel|post . 2 parcels.*|post office|post 1st|post 1at class|post \- sing for|.*royal mail.*|Roayl Mail|Post 1st Class|POST SIGNED FOR|Post Sign For|post .*)$/i',_trim($data['notes']))){
+  }elseif(preg_match('/^(Via Post Office|Send By Post|First Class Post|Sent by post|Royalmail.*|per post|Airmail|1st Class Post|Fist class post|post|royal\s*mail|by post|1st class|first class|post . standart parcel|post . 2 parcels.*|post office|post 1st|post 1at class|post \- sing for|.*royal mail.*|Roayl Mail|Post 1st Class|POST SIGNED FOR|Post Sign For|post .*)$/i',_trim($data['notes']))){
     $data['notes']='';
     $data['shipper_code']='RoyalM';
-  } elseif(preg_match('/^(ParcelForcel|Parcelforce.*|PacelForce|Parcel Force.*|Parcel Forcce|Pacel Force|parcel\s*force|parcel force worldwide|percel porce|Parce Force|Parcel Force Wordwide||Parcel F orce Sat Del|Parcel Porce|parcel force.*)$/i',_trim($data['notes']))){
+  } elseif(preg_match('/^(ParcelForcel|Parcelforce.*|PacelForce|Parcel Force.*|Parcel Forcce|Pacel Force|parcel\s*force|parcel force worldwide|percel porce|Parce Force|Parcel Force Wordwide|Parcel F orce Sat Del|Parcel Porce|parcel force.*)$/i',_trim($data['notes']))){
     $data['notes']='';
     $data['shipper_code']='PForce';
   } elseif(preg_match('/^(DSV.*|frans maas|frans mass|via Frans Maas)$/i',_trim($data['notes']))){
@@ -9362,11 +9369,84 @@ function is_shipping_supplier($data){
   }elseif(preg_match('/^(Schenker)$/i',_trim($data['notes']))){
     $data['notes']='';
     $data['shipper_code']='Schenker';
-  }elseif(preg_match('/^(shang|andy|andy to take( tomorrow)?|to be deliv. by Neil)$/i',_trim($data['notes']))){
+  }elseif(preg_match('/^(shang|andy|andy to take( tomorrow)?|to be deliv. by Neil|Give to Malcom)$/i',_trim($data['notes']))){
    
     $data['shipper_code']='_Other';
   }
   
+
+
+ if(preg_match('/^(Use his own shipper|Cust owns carrier|cust own courier|customer own carrier|customer own carrier|own transport|Own Courrier|own driver)$/i',_trim($data['notes2']))){
+    $data['notes2']='';
+    $data['shipper_code']='_OWN';
+  }elseif(preg_match('/^(Via Post Office|Send By Post|First Class Post|Sent by post|Royalmail.*|per post|Airmail|1st Class Post|Fist class post|post|royal\s*mail|by post|1st class|first class|post . standart parcel|post . 2 parcels.*|post office|post 1st|post 1at class|post \- sing for|.*royal mail.*|Roayl Mail|Post 1st Class|POST SIGNED FOR|Post Sign For|post .*)$/i',_trim($data['notes2']))){
+    $data['notes2']='';
+    $data['shipper_code']='RoyalM';
+  } elseif(preg_match('/^(ParcelForcel|Parcelforce.*|PacelForce|Parcel Force.*|Parcel Forcce|Pacel Force|parcel\s*force|parcel force worldwide|percel porce|Parce Force|Parcel Force Wordwide|Parcel F orce Sat Del|Parcel Porce|parcel force.*)$/i',_trim($data['notes2']))){
+   // exit("s".$data['notes2']."xxxxxxx");
+   $data['notes2']='';
+    $data['shipper_code']='PForce';
+  } elseif(preg_match('/^(DSV.*|frans maas|frans mass|via Frans Maas)$/i',_trim($data['notes2']))){
+    $data['notes2']='';
+    $data['shipper_code']='DSV';
+  }elseif(preg_match('/^(Amtrac|Amstrak|Amtrak.*|amtrak|amtrack|AMRAK)$/i',_trim($data['notes2']))){
+    $data['notes2']='';
+    $data['shipper_code']='DSV';
+  }elseif(preg_match('/^(dpd|parcel line|dpd .*|Parceline)$/i',_trim($data['notes2']))){
+    $data['notes2']='';
+    $data['shipper_code']='DPD';
+  }elseif(preg_match('/^(interlink.*)$/i',_trim($data['notes2']))){
+    $data['notes2']='';
+    $data['shipper_code']='ILink';
+  }elseif(preg_match('/^(tnt)$/i',_trim($data['notes2']))){
+    $data['notes2']='';
+    $data['shipper_code']='TNT';
+  }elseif(preg_match('/^(fedex.*)$/i',_trim($data['notes2']))){
+    $data['notes2']='';
+    $data['shipper_code']='Fedex';
+  }elseif(preg_match('/^(ups)$/i',_trim($data['notes2']))){
+    $data['notes2']='';
+    $data['shipper_code']='UPS';
+  }elseif(preg_match('/^(dfds.*)$/i',_trim($data['notes2']))){
+    $data['notes2']='';
+    $data['shipper_code']='DFDS';
+  }elseif(preg_match('/^(Mc Grath Freigth)$/i',_trim($data['notes2']))){
+    $data['notes2']='';
+    $data['shipper_code']='McGF';
+  }elseif(preg_match('/^(Hastings Freight)$/i',_trim($data['notes2']))){
+    $data['notes2']='';
+    $data['shipper_code']='HastFre';
+  }elseif(preg_match('/^(apc|apc .*)$/i',_trim($data['notes2']))){
+    $data['notes2']='';
+    $data['shipper_code']='APC';
+  }elseif(preg_match('/^(dbl|dbl .*)$/i',_trim($data['notes2']))){
+    $data['notes2']='';
+    $data['shipper_code']='APC';
+  }elseif(preg_match('/^(Future Fowarding)$/i',_trim($data['notes2']))){
+    $data['notes2']='';
+    $data['shipper_code']='FutFo';
+  }elseif(preg_match('/^(Printmovers)$/i',_trim($data['notes2']))){
+    $data['notes2']='';
+    $data['shipper_code']='PrintM';
+  }elseif(preg_match('/^(Schenker)$/i',_trim($data['notes2']))){
+    $data['notes2']='';
+    $data['shipper_code']='Schenker';
+  }elseif(preg_match('/^(shang|andy|andy to take( tomorrow)?|to be deliv. by Neil|Give to Malcom)$/i',_trim($data['notes2']))){
+   
+    $data['shipper_code']='_Other';
+  }
+  
+
+
+
+
+
+
+
+
+
+
+
    $the_supplier_data=array(
 				   'Supplier Name'=>$data['shipper_code']
 				   ,'Supplier Code'=>$data['shipper_code']
@@ -9387,8 +9467,10 @@ function is_shipping_supplier($data){
 }
 
 function is_to_be_collected($data){
+
   if(preg_match('/^(local *|collecting|To be collect by cust.|To be collect|For Collection|To be collection|COLLECT|Collection|Collect .*|Collection.*|to be collected|to collect|collected|customer to collect|to be collect by cust|to be collected.*|will collec.*|to collect.*|to collect today)$/i',_trim($data['notes']))){
     
+
     $data['shipper_code']='NA';
     $data['collection']='Yes';
 
@@ -9410,7 +9492,7 @@ function is_to_be_collected($data){
 
   }
 
-
+ // print_r($data);
     return $data;
 
 }
@@ -9433,25 +9515,191 @@ function is_showroom($data){
 }
 
 function is_staff_sale($data){
-  
-  if(preg_match('/^(staff sale\s+[a-z]+)$/i',_trim($data['notes']))){
+  $data['staff sale key']=0;
 
+if(preg_match('/cash sale/i',$data['trade_name'])  or preg_match('/cash sale/i',$data['notes'])){
+  if($data['shipping']==0){
+  $data['shipper_code']='NA';
+  $data['collection']='Yes';
+  }
+  
+
+
+  $tmp=preg_replace('/^Staff Sales?\s*\-?\s*/i','',$data['customer_contact']);
+  // exit("x:".$tmp."\n");
+  $staff_id=get_user_id($tmp);
+  if(count($staff_id)==1 and $staff_id[0]!=0 ){
+    $data['staff sale key']=$staff_id[0];
+    $data['shipper_code']='NA';
+    $data['collection']='Yes';
     $data['staff sale']='Yes';
-    $data['staff sale name']=preg_replace('/staff sale\s+/','',$data['notes']);
-    $data['notes']='';
- $data['shipper_code']='NA';
-     $data['collection']='Yes';
-    
+
+    if(preg_match('/'.$tmp.'/i',$data['notes']))
+      $data['notes']='';
+     if(preg_match('/'.$tmp.'/i',$data['notes2']))
+      $data['notes2']='';
+
+     if(preg_match('/^cash sale$/i',$data['notes2']))
+       $data['notes2']='';
+     if(preg_match('/^cash sale$/i',$data['notes']))
+       $data['notes']='';
+  }
+  
+
+
+  if($data['staff sale key']==0){
+    $tmp=preg_replace('/Staff Sales?\s*\-?\s*/i','',$data['notes']);
+    $staff_id=get_user_id($tmp);
+    if(count($staff_id)==1 and $staff_id[0]!=0 ){
+      $data['staff sale key']=$staff_id[0];
+    $data['shipper_code']='NA';
+    $data['collection']='Yes';
+    $data['staff sale']='Yes';
+     $data['notes']='';
+if(preg_match('/^cash sale$/i',$data['notes2']))
+       $data['notes2']='';
+     if(preg_match('/^cash sale$/i',$data['notes']))
+       $data['notes']='';
+       if(preg_match('/'.$tmp.'/i',$data['notes2']))
+	 $data['notes2']='';
+    }
   }
 
+
+  if($data['staff sale key']==0){
+    $tmp=preg_replace('/Staff Sales?\s*\-?\s*/i','',$data['notes2']);
+    $staff_id=get_user_id($tmp);
+    if(count($staff_id)==1 and $staff_id[0]!=0 ){
+      $data['staff sale key']=$staff_id[0];
+      $data['shipper_code']='NA';
+      $data['collection']='Yes';
+      $data['staff sale']='Yes';
+      $data['notes2']='';
+if(preg_match('/^cash sale$/',$data['notes2']))
+       $data['notes2']='';
+     if(preg_match('/^cash sale$/',$data['notes']))
+       $data['notes']='';
+     
+    }
+  }
+  
+
+}
+
+
+ if(preg_match('/^staff sales?\-?\s+\-?\s*[a-z]*/i',_trim($data['trade_name']))){
+   
+   $data['staff sale']='Yes';
+   $data['staff sale name']=preg_replace('/^staff sales?\-?\s+\-?\s*/i','',$data['trade_name']);
+   $staff_id=get_user_id($data['staff sale name']);
+   $data['staff sale key']=$staff_id[0];
+   
+   $data['shipper_code']='NA';
+   $data['collection']='Yes';
+
+  }
+
+
+
+  if(preg_match('/^staff sales?\-?\s+\-?\s*[a-z]*/i',_trim($data['notes']))){
+
+    $data['staff sale']='Yes';
+    $data['staff sale name']=preg_replace('/^staff sales?\-?\s+\-?\s*/i','',$data['notes']);
+    $staff_id=get_user_id($data['staff sale name']);
+    $data['staff sale key']=$staff_id[0];
+    $data['notes']='';
+    $data['shipper_code']='NA';
+    $data['collection']='Yes';
+    
+  }
+if(preg_match('/^staff sales?\-?\s+\-?\s*[a-z]*/i',_trim($data['notes2']))){
+
+    $data['staff sale']='Yes';
+    $data['staff sale name']=preg_replace('/^staff sales?\-?\s+\-?\s*/i','',$data['notes2']);
+    $staff_id=get_user_id($data['staff sale name']);
+    $data['staff sale key']=$staff_id[0];
+    $data['notes2']='';
+    $data['shipper_code']='NA';
+    $data['collection']='Yes';
+    
+  }
   if(preg_match('/^(staff sale|staff)$/i',_trim($data['notes']))){
     $data['notes']='';
     $data['staff sale']='Yes';
    $data['shipper_code']='NA';
      $data['collection']='Yes';
+
+
+       $staff_id=get_user_id($data['customer_contact']);
+    if(count($staff_id)==1 and $staff_id[0]!=0 ){
+       $data['staff sale key']=$staff_id[0];
+    }
+    
+
   }
     
   
+
+  if(preg_match('/^(staff sale|staff)$/i',_trim($data['notes2']))){
+    $data['notes2']='';
+    $data['staff sale']='Yes';
+   $data['shipper_code']='NA';
+     $data['collection']='Yes';
+      $data['staff sale key']=0;
+
+        $staff_id=get_user_id($data['customer_contact']);
+    if(count($staff_id)==1 and $staff_id[0]!=0 ){
+       $data['staff sale key']=$staff_id[0];
+    }
+    
+
+  }
+
+
+ if(preg_match('/^staff sales?$/i',_trim($data['trade_name']))){
+    $data['staff sale']='Yes';
+    $data['shipper_code']='NA';
+    $data['collection']='Yes';
+
+    
+   $staff_id=get_user_id($data['address1']);
+    if(count($staff_id)==1 and $staff_id[0]!=0 ){
+       $data['staff sale key']=$staff_id[0];
+    }
+
+    $staff_id=get_user_id($data['customer_contact']);
+    if(count($staff_id)==1 and $staff_id[0]!=0 ){
+       $data['staff sale key']=$staff_id[0];
+    }
+
+    
+
+
+  }
+
+
+ if(preg_match('/^staff sales?$/i',_trim($data['customer_contact']))){
+    $data['staff sale']='Yes';
+    $data['shipper_code']='NA';
+    $data['collection']='Yes';
+
+    
+   $staff_id=get_user_id($data['address1']);
+    if(count($staff_id)==1 and $staff_id[0]!=0 ){
+       $data['staff sale key']=$staff_id[0];
+    }
+
+    $staff_id=get_user_id($data['customer_contact']);
+    if(count($staff_id)==1 and $staff_id[0]!=0 ){
+       $data['staff sale key']=$staff_id[0];
+    }
+
+    
+
+
+  }
+
+
   return $data;
 
 }
