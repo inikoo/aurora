@@ -191,10 +191,14 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     else
       $date2=$date_order;
   
+ $header_data['Order Main Source Type']='Unknown';
+ $header_data['Delivery Note Dispatch Method']='Unknown';
 
   $header_data['collection']='No';
-   $header_data['shipper_code']='';
-
+  $header_data['shipper_code']='';
+  $header_data['staff sale']='No';
+   $header_data['showroom']='No';
+  $header_data['staff sale name']='';
 
   if(!$header_data['notes']){
       $header_data['notes']='';
@@ -213,8 +217,8 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     $header_data=is_shipping_supplier($header_data);
     $header_data=is_staff_sale($header_data);
     
-    if(is_showroom($header_data['notes']))
-      $header_data['notes']='';
+    $header_data=is_showroom($header_data);
+     
     
     
     if(preg_match('/^(|International Freight)$/',$header_data['notes'])){
@@ -253,6 +257,9 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
   //   echo "Memory: ".memory_get_usage(true) . "x\n";
 //     echo "Memory: ".memory_get_usage() . "x\n";
     $_customer_data=setup_contact($act_data,$header_data,$date_index2);
+   
+    
+
 
     //    print_r($_customer_data);
     foreach($_customer_data as $_key =>$value){
@@ -347,7 +354,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     $data['order original data']=$row2['filename'];
     $data['order original data source']='DB:orders_data.order.data';
     $data['Order Original Metadata']=$row2['id'];
-    $data['Order Main Source Type']='Unknown';
+
     //print_r($header_data);
 
     $products_data=array();
@@ -883,6 +890,33 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
     // print_r($products_data);
 
+
+
+    
+    $data['Order For']='Customer';
+    
+    $data['Order Main Source Type']='Unknown';
+    if(  $header_data['showroom']=='Yes')
+      $data['Order Main Source Type']='Store';
+    
+    
+    if($header_data['collection']='Yes'){
+      $data['Delivery Note Dispatch Method']='Collected';
+    }elseif($header_data['shipper_code']!=''){
+      $data['Delivery Note Dispatch Method']='Shipped';
+    }
+
+    if($header_data['shipper_code']=='_OWN')
+      $data['Delivery Note Dispatch Method']='Collected';
+
+    if($header_data['staff sale']=='Yes'){
+    
+      $data['Order For']='Staff';
+
+    }
+
+
+
     $data['type']='direct_data_injection';
     $data['products']=$products_data;
     $data['Customer Data']=$customer_data;
@@ -1084,6 +1118,8 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 		       ,'Delivery Note Title'=>_('Delivery Note for').' '.$order_type.' '.$header_data['order_num']
 		       ,'Delivery Note Has Shipping'=>$_customer_data['has_shipping']
 		       ,'Delivery Note Shipper Code'=>$header_data['shipper_code']  
+		       ,'Delivery Note Dispatch Method'=>$data['Delivery Note Dispatch Method']
+
 		       );
 	
 	//$order->create_dn_simple($data_dn,$data_dn_transactions);
@@ -1190,6 +1226,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 		       ,'Delivery Note Title'=>_('Delivery Note for').' '.$order_type.' '.$header_data['order_num']
 		       ,'Delivery Note Has Shipping'=>$_customer_data['has_shipping']
 		       ,'Delivery Note Shipper Code'=>$header_data['shipper_code']  
+		        ,'Delivery Note Dispatch Method'=>$data['Delivery Note Dispatch Method']
 		       );
 	  
 
@@ -1515,7 +1552,8 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 		       ,'Delivery Note Packers IDs'=>$packer_data['id']
 		       ,'Delivery Note Metadata'=>$order_data_id
 		       ,'Delivery Note Has Shipping'=>$_customer_data['has_shipping']
- ,'Delivery Note Shipper Code'=>$header_data['shipper_code']  
+ ,'Delivery Note Shipper Code'=>$header_data['shipper_code'] 
+		        ,'Delivery Note Dispatch Method'=>$data['Delivery Note Dispatch Method']
 		       );
 	
 
