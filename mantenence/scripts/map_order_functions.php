@@ -9723,7 +9723,7 @@ if(preg_match('/^staff sales?\-?\s+\-?\s*[a-z]*/i',_trim($data['postcode']))){
   }
 
 
- print_r($data);exit;
+
 if(preg_match('/^staff sales?|Ancient Winsdom Staff$/i',_trim($data['postcode']))){
     $data['staff sale']='Yes';
     $data['shipper_code']='NA';
