@@ -9638,6 +9638,22 @@ if(preg_match('/^staff sales?\-?\s+\-?\s*[a-z]*/i',_trim($data['notes2']))){
 
   }
     
+if(preg_match('/^staff sales?\-?\s+\-?\s*[a-z]*/i',_trim($data['postcode']))){
+
+    $data['staff sale']='Yes';
+    $data['staff sale name']=preg_replace('/^staff sales?\-?\s+\-?\s*/i','',$data['postcode']);
+    $staff_id=get_user_id($data['staff sale name']);
+    $data['staff sale key']=$staff_id[0];
+
+    $data['shipper_code']='NA';
+    $data['collection']='Yes';
+    
+  }
+ 
+    
+
+
+
   
 
   if(preg_match('/^(staff sale|staff)$/i',_trim($data['notes2']))){
@@ -9651,7 +9667,14 @@ if(preg_match('/^staff sales?\-?\s+\-?\s*[a-z]*/i',_trim($data['notes2']))){
     if(count($staff_id)==1 and $staff_id[0]!=0 ){
        $data['staff sale key']=$staff_id[0];
     }
-    
+     $staff_id=get_user_id($data['address1']);
+    if(count($staff_id)==1 and $staff_id[0]!=0 ){
+       $data['staff sale key']=$staff_id[0];
+    }
+    $staff_id=get_user_id($data['address2']);
+    if(count($staff_id)==1 and $staff_id[0]!=0 ){
+       $data['staff sale key']=$staff_id[0];
+    }
 
   }
 
@@ -9666,7 +9689,10 @@ if(preg_match('/^staff sales?\-?\s+\-?\s*[a-z]*/i',_trim($data['notes2']))){
     if(count($staff_id)==1 and $staff_id[0]!=0 ){
        $data['staff sale key']=$staff_id[0];
     }
-
+    $staff_id=get_user_id($data['address2']);
+    if(count($staff_id)==1 and $staff_id[0]!=0 ){
+       $data['staff sale key']=$staff_id[0];
+    }
     $staff_id=get_user_id($data['customer_contact']);
     if(count($staff_id)==1 and $staff_id[0]!=0 ){
        $data['staff sale key']=$staff_id[0];
@@ -9682,22 +9708,45 @@ if(preg_match('/^staff sales?\-?\s+\-?\s*[a-z]*/i',_trim($data['notes2']))){
     $data['staff sale']='Yes';
     $data['shipper_code']='NA';
     $data['collection']='Yes';
-
-    
    $staff_id=get_user_id($data['address1']);
     if(count($staff_id)==1 and $staff_id[0]!=0 ){
        $data['staff sale key']=$staff_id[0];
     }
-
+     $staff_id=get_user_id($data['address2']);
+    if(count($staff_id)==1 and $staff_id[0]!=0 ){
+       $data['staff sale key']=$staff_id[0];
+    }
     $staff_id=get_user_id($data['customer_contact']);
     if(count($staff_id)==1 and $staff_id[0]!=0 ){
        $data['staff sale key']=$staff_id[0];
     }
-
-    
-
-
   }
+
+
+ print_r($data);exit;
+if(preg_match('/^staff sales?|Ancient Winsdom Staff$/i',_trim($data['postcode']))){
+    $data['staff sale']='Yes';
+    $data['shipper_code']='NA';
+    $data['collection']='Yes';
+   $staff_id=get_user_id($data['address1']);
+    if(count($staff_id)==1 and $staff_id[0]!=0 ){
+       $data['staff sale key']=$staff_id[0];
+    }
+      $staff_id=get_user_id($data['address2']);
+    if(count($staff_id)==1 and $staff_id[0]!=0 ){
+       $data['staff sale key']=$staff_id[0];
+    }
+    $staff_id=get_user_id($data['customer_contact']);
+    if(count($staff_id)==1 and $staff_id[0]!=0 ){
+       $data['staff sale key']=$staff_id[0];
+    }
+  }
+
+
+
+
+
+
 
 
   return $data;
