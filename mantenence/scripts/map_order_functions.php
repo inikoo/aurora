@@ -4135,8 +4135,7 @@ function setup_contact($act_data,$header_data,$date_index){
     $act_data['town_d2']='';
 
 
-    //print_r($header_data);
-    //exit;
+    //print_r($header_data);exit;
 
     if(preg_match('/sale - Philip|staff|staff order|cash sale|staff sale|cash - sale/i',$header_data['trade_name']) or 
        preg_match('/staff|staff sale|cash sale/i',$header_data['city']) or
@@ -9722,7 +9721,7 @@ if(preg_match('/^staff sales?\-?\s+\-?\s*[a-z]*/i',_trim($data['postcode']))){
     }
   }
 
-
+ //print_r($data);exit;
 
 if(preg_match('/^staff sales?|Ancient Winsdom Staff$/i',_trim($data['postcode']))){
     $data['staff sale']='Yes';
@@ -9742,12 +9741,12 @@ if(preg_match('/^staff sales?|Ancient Winsdom Staff$/i',_trim($data['postcode'])
     }
   }
 
+//print_r($data);exit;
 
 
 
 
-
-
+//print_r($data);exit;
 
   return $data;
 
