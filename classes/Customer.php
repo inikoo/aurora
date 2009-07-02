@@ -85,7 +85,8 @@ class Customer extends DB_Table{
 
  function find_staff($staff,$options=''){
    
-   $sql=sprintf("select `Customer Key` from `Customer Dimension` where `Customer Staff`='Yes' and `Customer Staff Key`=%d",$staff->id);
+   $sql=sprintf("select * from `Customer Dimension` where `Customer Staff`='Yes' and `Customer Staff Key`=%d",$staff->id);
+   //print $sql;exit;
    $result=mysql_query($sql);
    if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   ){
      

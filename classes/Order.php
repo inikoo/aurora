@@ -119,7 +119,7 @@ class Order extends DB_Table{
 				if($data['Delivery Note Dispatch Method']=='Collected'){
 				  $this->data ['Order XHTML Ship Tos']=_('Collection');
 				}
-				
+				//	print_r($customer);
 				$this->billing_address=new Address($customer->data['Customer Main Address Key']);
 				
 
