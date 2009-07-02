@@ -172,9 +172,15 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     else
       $date2=$date_order;
   
+$header_data['Order Main Source Type']='Unknown';
+ $header_data['Delivery Note Dispatch Method']='Unknown';
 
   $header_data['collection']='No';
-   $header_data['shipper_code']='';
+  $header_data['shipper_code']='';
+  $header_data['staff sale']='No';
+   $header_data['showroom']='No';
+  $header_data['staff sale name']='';
+
 
 
   if(!$header_data['notes']){
@@ -194,8 +200,6 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     $header_data=is_shipping_supplier($header_data);
     $header_data=is_staff_sale($header_data);
     
-    if(is_showroom($header_data['notes']))
-      $header_data['notes']='';
     
     
     if(preg_match('/^(|International Freight)$/',$header_data['notes'])){
@@ -864,6 +868,54 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
     // print_r($products_data);
 
+
+ $data['Order For']='Customer';
+    
+    $data['Order Main Source Type']='Unknown';
+    if(  $header_data['showroom']=='Yes')
+      $data['Order Main Source Type']='Store';
+    
+     $data['Delivery Note Dispatch Method']='Shipped';
+
+    if($header_data['collection']=='Yes'){
+      $data['Delivery Note Dispatch Method']='Collected';
+    }elseif($header_data['shipper_code']!=''){
+      $data['Delivery Note Dispatch Method']='Shipped';
+    }elseif($header_data['shipping']>0 or  $header_data['shipping']=='FOC'){
+      $data['Delivery Note Dispatch Method']='Shipped';
+    }
+    
+
+    if($header_data['shipper_code']=='_OWN')
+      $data['Delivery Note Dispatch Method']='Collected';
+
+    if($header_data['staff sale']=='Yes'){
+    
+      $data['Order For']='Staff';
+
+    }
+
+   
+    if($data['Delivery Note Dispatch Method']=='Collected'){
+      $_customer_data['has_shipping']=false;
+	$shipping_addresses=array();
+      }
+
+
+    if(array_empty($shipping_addresses)){
+      $data['Delivery Note Dispatch Method']='Collected';
+      $_customer_data['has_shipping']=false;
+      $shipping_addresses=array();
+    }
+
+
+    //  print_r($data);
+    $data['staff sale']=$header_data['staff sale'];
+    $data['staff sale key']=$header_data['staff sale key'];
+
+
+
+
     $data['type']='direct_data_injection';
     $data['products']=$products_data;
     $data['Customer Data']=$customer_data;
@@ -872,6 +924,14 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     $data['tax_rate']=.15;
     if(strtotime($date_order)<strtotime('2008-11-01'))
       $data['tax_rate']=.175;
+
+ $exchange=1;
+    $sql=sprinf("select `Exhange` from `History Currency Exchange Dimension` where `Currency Pair`='GBPEUR' and `Date`=DATE(%s)",prepare_mysql($date_inv));
+    $res=mysql_query($sql);
+    if($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
+      $exchange=$row['Exchange'];
+    }
+
     // print_r($products_data);
     // exit;
 
@@ -1036,7 +1096,8 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 			    ,'Invoice Tax Code'=>$tax_code
 			    ,'Invoice Taxable'=>$taxable
 			    ,'Invoice Dispatching Lag'=>$lag
-
+			    ,'Invoice Currency'=>'EUR'
+			    ,'Invoice Currency Exchange'=>$exchange
 			    );
 	//print_r($data_invoice);
 	//print_r($header_data);
@@ -1065,6 +1126,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 		       ,'Delivery Note Title'=>_('Delivery Note for').' '.$order_type.' '.$header_data['order_num']
 		       ,'Delivery Note Has Shipping'=>$_customer_data['has_shipping']
 		       ,'Delivery Note Shipper Code'=>$header_data['shipper_code']  
+		       ,'Delivery Note Dispatch Method'=>$data['Delivery Note Dispatch Method']
 		       );
 	
 	//$order->create_dn_simple($data_dn,$data_dn_transactions);
@@ -1171,6 +1233,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 		       ,'Delivery Note Title'=>_('Delivery Note for').' '.$order_type.' '.$header_data['order_num']
 		       ,'Delivery Note Has Shipping'=>$_customer_data['has_shipping']
 		       ,'Delivery Note Shipper Code'=>$header_data['shipper_code']  
+ ,'Delivery Note Dispatch Method'=>$data['Delivery Note Dispatch Method']
 		       );
 	  
 
@@ -1240,6 +1303,9 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 			      ,'Invoice Tax Code'=>$tax_code
 			    ,'Invoice Taxable'=>$taxable
 			    ,'Invoice Dispatching Lag'=>$lag
+			      ,'Invoice Currency'=>'EUR'
+			      ,'Invoice Currency Exchange'=>$exchange
+
 			      );
 	  // $order->create_invoice_simple($data_invoice,$data_invoice_transactions);
 	  $invoice=new Invoice ('create',$data_invoice,$data_invoice_transactions,$order->id); 
@@ -1345,6 +1411,8 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 			    ,'Invoice Tax Code'=>$tax_code
 			    ,'Invoice Taxable'=>$taxable
 			    ,'Invoice Dispatching Lag'=>''
+ ,'Invoice Currency'=>'EUR'
+			    ,'Invoice Currency Exchange'=>$exchange
 			    );
 	//print_r($data_invoice);
 
@@ -1497,6 +1565,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 		       ,'Delivery Note Metadata'=>$order_data_id
 		       ,'Delivery Note Has Shipping'=>$_customer_data['has_shipping']
  ,'Delivery Note Shipper Code'=>$header_data['shipper_code']  
+ ,'Delivery Note Dispatch Method'=>$data['Delivery Note Dispatch Method']
 		       );
 	
 
