@@ -650,7 +650,7 @@ protected function update_field_switcher($field,$value,$options=''){
   switch($field){
   case('Company Main Contact Name'):
     $contact=new Contact($this->data['Company Main Contact Key']);
-    $contact=update('Contact Name',$value);
+    $contact->update_Contact_Name($value);
     $this->data['Company Main Contact Name']=$contact->display('Name');
     $sql=sprintf("update `Company Main Contact Name`=%s where `Company Key`=%d",prepare_mysql($this->data['Company Main Contact Name']),$this->id);
     mysql_query($sql);

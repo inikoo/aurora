@@ -40,7 +40,9 @@ srand(12344);
 $sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed)  order by filename  desc";
 
 //$sql="select * from  orders_data.orders where filename like '%refund.xls'   order by filename";
+
 //$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/21907.xls'  order by filename";
+
 
 
 $contador=0;
@@ -950,6 +952,9 @@ if(preg_match('/^(x5686842-t|IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691
     $data['tax_rate']=.15;
     if(strtotime($date_order)<strtotime('2008-11-01'))
       $data['tax_rate']=.175;
+
+    $exchange=1;
+
     // print_r($products_data);
     // exit;
 
@@ -1115,6 +1120,8 @@ if(preg_match('/^(x5686842-t|IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691
 			    ,'Invoice Taxable'=>$taxable
 			    ,'Invoice Dispatching Lag'=>$lag
 
+
+
 			    );
 	//print_r($data_invoice);
 	//print_r($header_data);
@@ -1164,7 +1171,7 @@ if(preg_match('/^(x5686842-t|IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691
 	foreach($credits as $credit){
 	  
 	  //	  print_r($header_data);
-	  $sql=sprintf("insert into `Order No Product Transaction Fact` values  (%s,%s,%s,%s,'Credit',%s,%.2f,%.2f,%s)"
+	  $sql=sprintf("insert into `Order No Product Transaction Fact` values  (%s,%s,%s,%s,'Credit',%s,%.2f,%.2f,%s,%f,%s)"
 		       ,prepare_mysql($credit['parent_date'])
 		       ,prepare_mysql($invoice->data['Invoice Date'])
 		       ,$credit['parent_key']
@@ -1172,6 +1179,8 @@ if(preg_match('/^(x5686842-t|IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691
 		       ,prepare_mysql($credit['description'])
 		       ,$credit['value']
 		       ,$tax_rate*$credit['value']
+		       ,"'GBP'"
+		       ,1
 		       ,$order_data_id
 		       );
 

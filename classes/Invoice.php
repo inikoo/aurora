@@ -137,7 +137,37 @@ class Invoice extends DB_Table {
     $this->data ['Invoice Public ID'] = $invoice_data ['Invoice Public ID'];
     $this->data ['Invoice File As'] = $invoice_data ['Invoice File As'];
     $this->data ['Invoice Store Key'] = $order->data ['Order Store Key'];
-    $this->data ['Invoice Store Code'] = $order->data ['Order Store Code'];
+
+    $store=new Store($this->data ['Invoice Store Key']);
+
+    $this->data ['Invoice Store Code'] = $store->data ['Store Code'];
+    
+    if(isset($invoice_data['Invoice Currency'])){
+      $this->data['Invoice Currency']=$invoice_data['Invoice Currency'];
+    }else{
+      $this->data['Invoice Currency']=$store->data['Store Currency Code'];
+    }
+
+    if($myconf['currency_code']!=$this->data['Invoice Currency']){
+      if(isset($invoice_data['Invoice Currency Exchange'])){
+	$this->data['Invoice Currency Exchange']=$invoice_data['Invoice Currency Exhange'];
+      }else{
+	$exchange=1;
+	$sql=sprinf("select `Exhange` from `History Currency Exchange Dimension` where `Currency Pair`='GBPEUR' and `Date`=DATE(%s)"
+		    ,prepare_mysql($this->data ['Invoice Date'] ));
+	$res=mysql_query($sql);
+	if($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
+	  $exchange=$row['Exchange'];
+	  
+    }
+$this->data['Invoice Currency Exchange']=$exchange;
+
+      }
+
+    }else
+      $this->data['Invoice Currency Exchange']=1;
+
+    
     $this->data ['Invoice XHTML Store'] = $order->data ['Order XHTML Store'];
     $this->data ['Invoice Main Source Type'] = $order->data ['Order Main Source Type'];
     $this->data ['Invoice For'] = $order->data ['Order For'];
@@ -233,15 +263,17 @@ class Invoice extends DB_Table {
 		    $order_date = 'NULL';
 		    $order_key=0;
 		  }
-		    $sql = sprintf ( "insert into `Order No Product Transaction Fact` values  (%s,%s,%s,%s,'Refund',%s,%.2f,%.2f,%s)"
-				   , $order_date
-				   , prepare_mysql ( $this->data ['Invoice Date'] )
-				   , $order_key
-				   , prepare_mysql ( $this->data ['Invoice Key'] )
-				   , prepare_mysql ( $data ['Description'] )
-				   , $data ['Transaction Net Amount']
-				   , $data ['Transaction Tax Amount']
-				   , prepare_mysql ( $this->data ['Invoice Metadata'] ) );
+		    $sql = sprintf ( "insert into `Order No Product Transaction Fact` values  (%s,%s,%s,%s,'Refund',%s,%.2f,%.2f,%s,%f,%s)"
+				     , $order_date
+				     , prepare_mysql ( $this->data ['Invoice Date'] )
+				     , $order_key
+				     , prepare_mysql ( $this->data ['Invoice Key'] )
+				     , prepare_mysql ( $data ['Description'] )
+				     , $data ['Transaction Net Amount']
+				     , $data ['Transaction Tax Amount']
+				     , prepare_mysql ( $this->data ['Invoice Currency'] )
+				     ,$this->data ['Invoice Currency Exchange']
+				     , prepare_mysql ( $this->data ['Invoice Metadata'] ) );
 		  
 		  // print $sql;
 		  
@@ -277,9 +309,39 @@ class Invoice extends DB_Table {
     $this->data ['Invoice Public ID'] = $invoice_data ['Invoice Public ID'];
     $this->data ['Invoice File As'] = $invoice_data ['Invoice File As'];
     $this->data ['Invoice Store Key'] = $order->data ['Order Store Key'];
+    $store=new store($this->data ['Invoice Store Key']);
     $this->data ['Invoice Store Code'] = $order->data ['Order Store Code'];
     $this->data ['Invoice XHTML Store'] = $order->data ['Order XHTML Store'];
+    
+      if(isset($invoice_data['Invoice Currency'])){
+      $this->data['Invoice Currency']=$invoice_data['Invoice Currency'];
+    }else{
+      $this->data['Invoice Currency']=$store->data['Store Currency Code'];
+    }
+
+    if($myconf['currency_code']!=$this->data['Invoice Currency']){
+      if(isset($invoice_data['Invoice Currency Exchange'])){
+	$this->data['Invoice Currency Exchange']=$invoice_data['Invoice Currency Exhange'];
+      }else{
+	$exchange=1;
+	$sql=sprinf("select `Exhange` from `History Currency Exchange Dimension` where `Currency Pair`='GBPEUR' and `Date`=DATE(%s)"
+		    ,prepare_mysql($this->data ['Invoice Date'] ));
+	$res=mysql_query($sql);
+	if($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
+	  $exchange=$row['Exchange'];
+	  
+    }
+$this->data['Invoice Currency Exchange']=$exchange;
+
+      }
+
+    }else
+      $this->data['Invoice Currency Exchange']=1;
+
     $this->data ['Invoice Main Source Type'] = $order->data ['Order Main Source Type'];
+
+
+
     $this->data ['Invoice XHTML Address'] = '';
     $this->data ['Invoice Customer Contact Name'] = '';
     $this->data ['Invoice Billing Country 2 Alpha Code']='XX';
@@ -377,7 +439,7 @@ class Invoice extends DB_Table {
     foreach ( $transacions_data as $data ) {
       $line_number ++;
       
-      $sql = sprintf ( "update  `Order Transaction Fact`  set `Current Payment State`=%s,`Invoice Date`=%s,`Order Last Updated Date`=%s, `Invoice Public ID`=%s,`Invoice Line`=%d,`Invoice Quantity`=%s ,`Ship To Key`=%s ,`Invoice Transaction Gross Amount`=%.2f,`Invoice Transaction Total Discount Amount`=%.2f ,`Consolidated`='No',`Invoice Transaction Outstanding Net Balance`=%.2f ,`Invoice Transaction Outstanding Tax Balance`=%.2f, `Transaction Tax Rate`=%f ,`Transaction Tax Code`=%s,`Invoice Transaction Outstanding Net Balance`=%.2f,`Invoice Transaction Outstanding Tax Balance`=%.2f ,`Invoice Key`=%d where `Order Key`=%d and  `Order Line`=%d"
+      $sql = sprintf ( "update  `Order Transaction Fact`  set `Current Payment State`=%s,`Invoice Date`=%s,`Order Last Updated Date`=%s, `Invoice Public ID`=%s,`Invoice Line`=%d,`Invoice Quantity`=%s ,`Ship To Key`=%s ,`Invoice Transaction Gross Amount`=%.2f,`Invoice Transaction Total Discount Amount`=%.2f ,`Consolidated`='No',`Invoice Transaction Outstanding Net Balance`=%.2f ,`Invoice Transaction Outstanding Tax Balance`=%.2f, `Transaction Tax Rate`=%f ,`Transaction Tax Code`=%s,`Invoice Transaction Outstanding Net Balance`=%.2f,`Invoice Transaction Outstanding Tax Balance`=%.2f ,`Invoice Key`=%d ,`Invoice Currency Code`=%s,`Invoice Currency Exchange Rate`=%f where `Order Key`=%d and  `Order Line`=%d"
 		       , prepare_mysql ( 'Waiting Payment' )
 		       , prepare_mysql ( $this->data ['Invoice Date'] )
 		       , prepare_mysql ( $this->data ['Invoice Date'] )
@@ -394,6 +456,8 @@ class Invoice extends DB_Table {
 		       , $data ['gross amount']-$data ['discount amount']
 		       , $data ['tax amount']
 		       , $this->data ['Invoice Key']
+		       , prepare_mysql ( $this->data ['Invoice Currency'] )
+		       , $this->data ['Invoice Currency Exchange']
 		       , $order->data ['Order Key']
 		       , $line_number );
       

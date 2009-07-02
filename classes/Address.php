@@ -980,7 +980,7 @@ class Address extends DB_Table{
     switch($country_id){
     case 30:
 
-      if(preg_match('/^([A-PR-UWYZ0-9][A-HK-Y0-9][AEHMNPRTVXY0-9]?[ABEHMNPRVWXY0-9]? {0,2}[0-9][ABD-HJLN-UW-Z]{2}|GIR 0AA)$/i',$postcode))
+      if(preg_match('/^([A-PR-UWYZ0-9][A-HK-Y0-9][AEHMNPRTVXY0-9]?[ABEHMNPRVWXY0-9]? {0,2}[0-9][ABD-HJLN-UW-Z]{2}|GIR 0AA|BT\d{2}\s*\d[a-z]2)$/i',$postcode))
 	return true;
       else
 	return false;

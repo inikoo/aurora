@@ -143,11 +143,17 @@ class Order extends DB_Table{
 					$this->data ['Order Store Code'] = $store->data[ 'Store Code' ];
 					
 					$this->data ['Order XHTML Store'] = sprintf ( '<a href="store.php?id=%d">%s</a>', $store->id, $store->data[ 'Store Code' ] );
+					$this->data ['Order Currency Code']=$store->data[ 'Store Currency Code' ];
 				} else {
 					$this->data ['Order Store Key'] = '';
 					$this->data ['Order Store Code'] = '';
 					$this->data ['Order XHTML Store'] = _ ( 'Unknown' );
+					$this->data ['Order Currency Code']=$myconf['currency_code'];
 				}
+				
+
+				if(isset($data['Order Currency Code']))
+				  $this->data ['Order Currency Code']=$data['Order Currency Code'];
 				
 				$this->tax_rate = $data ['tax_rate'];
 				$this->data ['Order Date'] = $data ['order date'];
@@ -688,7 +694,15 @@ class Order extends DB_Table{
 	
 	function add_order_transaction($data) {
 		
-		$sql = sprintf ( "insert into `Order Transaction Fact` (`Estimated Weight`,`Order Date`,`Backlog Date`,`Order Last Updated Date`,`Product Key`,`Current Dispatching State`,`Current Payment State`,`Customer Key`,`Order Key`,`Order Public ID`,`Order Line`,`Order Quantity`,`Ship To Key`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Metadata`,`Store Key`,`Units Per Case`,`Customer Message`,`Delivery Note Key`) values (%s,%s,%s,%s,%d,%s,%s,%s,%s,%s,%d,%s,%s,%.2f,%.2f,%s,%s,%f,'',%s) ", prepare_mysql ( $data ['Estimated Weight'] ), prepare_mysql ( $data ['date'] ), prepare_mysql ( $data ['date'] ), prepare_mysql ( $this->data ['Backlog Date'] ), $data ['product_id'], prepare_mysql ( $data ['Current Dispatching State'] ), prepare_mysql ( $data ['Current Payment State'] ), prepare_mysql ( $this->get ( 'Order Customer Key' ) ), prepare_mysql ( $this->data ['Order Key'] ), prepare_mysql ( $this->data ['Order Public ID'] ), $data ['line_number'], prepare_mysql ( $data ['qty'] ), prepare_mysql ( $data ['ship to key'] ), $data ['gross_amount'], $data ['discount_amount'], prepare_mysql ( $data ['metadata'] ), prepare_mysql ( $this->data ['Order Store Key'] ), $data ['units_per_case'], prepare_mysql ( $this->data ['Delivery Note Key'] ) )
+		$sql = sprintf ( "insert into `Order Transaction Fact` (`Order Currency Code`,`Estimated Weight`,`Order Date`,`Backlog Date`,`Order Last Updated Date`,`Product Key`,`Current Dispatching State`,`Current Payment State`,`Customer Key`,`Order Key`,`Order Public ID`,`Order Line`,`Order Quantity`,`Ship To Key`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Metadata`,`Store Key`,`Units Per Case`,`Customer Message`,`Delivery Note Key`) values (%s,%s,%s,%s,%s,%d,%s,%s,%s,%s,%s,%d,%s,%s,%.2f,%.2f,%s,%s,%f,'',%s) "
+				 , prepare_mysql ( $this->data ['Order Currency Code'] )
+				 , prepare_mysql ( $data ['Estimated Weight'] )
+				 , prepare_mysql ( $data ['date'] )
+				 , prepare_mysql ( $data ['date'] )
+				 , prepare_mysql ( $this->data ['Backlog Date'] )
+				 , $data ['product_id']
+				 , prepare_mysql ( $data ['Current Dispatching State'] )
+				 , prepare_mysql ( $data ['Current Payment State'] ), prepare_mysql ( $this->get ( 'Order Customer Key' ) ), prepare_mysql ( $this->data ['Order Key'] ), prepare_mysql ( $this->data ['Order Public ID'] ), $data ['line_number'], prepare_mysql ( $data ['qty'] ), prepare_mysql ( $data ['ship to key'] ), $data ['gross_amount'], $data ['discount_amount'], prepare_mysql ( $data ['metadata'] ), prepare_mysql ( $this->data ['Order Store Key'] ), $data ['units_per_case'], prepare_mysql ( $this->data ['Delivery Note Key'] ) )
 
 		;
 		
