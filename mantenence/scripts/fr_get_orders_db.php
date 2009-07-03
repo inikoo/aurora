@@ -45,13 +45,15 @@ $sql="select * from  fr_orders_data.orders  where   (last_transcribed is NULL  o
 
 
 $contador=0;
-//print $sql;
+
 $res=mysql_query($sql);
 
 while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
  
   $sql="select * from fr_orders_data.data where id=".$row2['id'];
+  //print "$sql\n";
+  
   $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
@@ -174,7 +176,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
   
 $header_data['Order Main Source Type']='Unknown';
  $header_data['Delivery Note Dispatch Method']='Unknown';
-
+ $header_data['staff sale key']=0;;
   $header_data['collection']='No';
   $header_data['shipper_code']='';
   $header_data['staff sale']='No';
@@ -926,10 +928,11 @@ $header_data['Order Main Source Type']='Unknown';
       $data['tax_rate']=.175;
 
  $exchange=1;
-    $sql=sprinf("select `Exhange` from `History Currency Exchange Dimension` where `Currency Pair`='GBPEUR' and `Date`=DATE(%s)",prepare_mysql($date_inv));
-    $res=mysql_query($sql);
-    if($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
-      $exchange=$row['Exchange'];
+    $sql=sprintf("select `Exchange` from `History Currency Exchange Dimension` where `Currency Pair`='GBPEUR' and `Date`=DATE(%s)",prepare_mysql($date_inv));
+    $res3=mysql_query($sql);
+    // print $sql;
+    if($row3=mysql_fetch_array($res3, MYSQL_ASSOC)){
+      $exchange=$row3['Exchange'];
     }
 
     // print_r($products_data);
@@ -1145,8 +1148,8 @@ $header_data['Order Main Source Type']='Unknown';
 	  
 	foreach($credits as $credit){
 	  
-	  //	  print_r($header_data);
-	  $sql=sprintf("insert into `Order No Product Transaction Fact` values  (%s,%s,%s,%s,'Credit',%s,%.2f,%.2f,%s)"
+	  //	  print_r($header_2data);
+	  $sql=sprintf("insert into `Order No Product Transaction Fact` values  (%s,%s,%s,%s,'Credit',%s,%.2f,%.2f,%s,%f,%s)"
 		       ,prepare_mysql($credit['parent_date'])
 		       ,prepare_mysql($invoice->data['Invoice Date'])
 		       ,$credit['parent_key']
@@ -1154,6 +1157,8 @@ $header_data['Order Main Source Type']='Unknown';
 		       ,prepare_mysql($credit['description'])
 		       ,$credit['value']
 		       ,$tax_rate*$credit['value']
+		       ,"'EUR'"
+		       ,$exchange
 		       ,$order_data_id
 		       );
 
@@ -1614,9 +1619,9 @@ $header_data['Order Main Source Type']='Unknown';
        mysql_query($sql);
     }
 
-
+   
   }
- }
+}
 
   
 //  print_r($data);
