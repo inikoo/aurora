@@ -216,9 +216,9 @@ $this->data['Invoice Currency Exchange']=$exchange;
     $this->data ['Invoice Has Been Paid In Full'] = $invoice_data ['Invoice Has Been Paid In Full'];
     $this->data ['Invoice Main Payment Method'] = $invoice_data ['Invoice Main Payment Method'];
     $this->data ['Invoice Total Tax Amount'] = $invoice_data ['Invoice Total Tax Amount'];
-    $this->data ['Invoice Refund Amount'] = $invoice_data ['Invoice Refund Amount'];
+    $this->data ['Invoice Refund Net Amount'] = $invoice_data ['Invoice Refund Net Amount'];
     
-    $this->data ['Invoice Total Tax Refund Amount'] = $invoice_data ['Invoice Total Tax Refund Amount'];
+    $this->data ['Invoice Refund Tax Amount'] = $invoice_data ['Invoice Refund Tax Amount'];
     $this->data ['Invoice Total Amount'] = $invoice_data ['Invoice Total Amount'];
     $this->data ['Invoice Items Net Amount'] = $invoice_data ['Invoice Items Net Amount'];
     $this->data ['Invoice Dispatching Lag'] = $invoice_data ['Invoice Dispatching Lag'];
@@ -321,13 +321,13 @@ $this->data['Invoice Currency Exchange']=$exchange;
 
     if($myconf['currency_code']!=$this->data['Invoice Currency']){
       if(isset($invoice_data['Invoice Currency Exchange'])){
-	$this->data['Invoice Currency Exchange']=$invoice_data['Invoice Currency Exhange'];
+	$this->data['Invoice Currency Exchange']=$invoice_data['Invoice Currency Exchange'];
       }else{
 	$exchange=1;
-	$sql=sprinf("select `Exhange` from `History Currency Exchange Dimension` where `Currency Pair`='GBPEUR' and `Date`=DATE(%s)"
+	$sql=sprintf("select `Exchange` from `History Currency Exchange Dimension` where `Currency Pair`='GBPEUR' and `Date`=DATE(%s)"
 		    ,prepare_mysql($this->data ['Invoice Date'] ));
 	$res=mysql_query($sql);
-	if($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
+	if($row=mysql_fetch_array($res, MYSQL_ASSOC)){
 	  $exchange=$row['Exchange'];
 	  
     }
@@ -386,9 +386,9 @@ $this->data['Invoice Currency Exchange']=$exchange;
     $this->data ['Invoice Has Been Paid In Full'] = $invoice_data ['Invoice Has Been Paid In Full'];
     $this->data ['Invoice Main Payment Method'] = $invoice_data ['Invoice Main Payment Method'];
     $this->data ['Invoice Total Tax Amount'] = $invoice_data ['Invoice Total Tax Amount'];
-    $this->data ['Invoice Refund Amount'] = $invoice_data ['Invoice Refund Amount'];
+    $this->data ['Invoice Refund Net Amount'] = $invoice_data ['Invoice Refund Net Amount'];
     
-    $this->data ['Invoice Total Tax Refund Amount'] = $invoice_data ['Invoice Total Tax Refund Amount'];
+    $this->data ['Invoice Refund Tax Amount'] = $invoice_data ['Invoice Refund Tax Amount'];
     $this->data ['Invoice Total Amount'] = $invoice_data ['Invoice Total Amount'];
     $this->data ['Invoice Items Net Amount'] = $invoice_data ['Invoice Items Net Amount'];
     $this->data ['Invoice Dispatching Lag'] = $invoice_data ['Invoice Dispatching Lag'];
@@ -600,7 +600,9 @@ function create_header() {
 		   , prepare_mysql ( $this->data ['Invoice For'] )
 
 		   , prepare_mysql ( $this->data ['Invoice Date'] )
-		   , prepare_mysql ( $this->data ['Invoice Public ID'] ), prepare_mysql ( $this->data ['Invoice File As'] ), prepare_mysql ( $this->data ['Invoice Store Key'] ), prepare_mysql ( $this->data ['Invoice Store Code'] ), prepare_mysql ( $this->data ['Invoice Main Source Type'] ), prepare_mysql ( $this->data ['Invoice Customer Key'] ), prepare_mysql ( $this->data ['Invoice Customer Name'] ), prepare_mysql ( $this->data ['Invoice XHTML Ship Tos'] ), $this->data ['Invoice Items Gross Amount'], $this->data ['Invoice Items Discount Amount'], $this->data ['Invoice Shipping Net Amount'], $this->data ['Invoice Charges Net Amount'], $this->data ['Invoice Total Tax Amount'], $this->data ['Invoice Refund Amount'], $this->data ['Invoice Total Tax Refund Amount'], $this->data ['Invoice Total Amount'], prepare_mysql ( $this->data ['Invoice Metadata'] ), prepare_mysql ( $this->data ['Invoice XHTML Address'] ), prepare_mysql ( $this->data ['Invoice XHTML Orders'] ), addslashes ( $this->data ['Invoice XHTML Delivery Notes'] ), prepare_mysql ( $this->data ['Invoice XHTML Store'] ), prepare_mysql ( $this->data ['Invoice Has Been Paid In Full'] ), prepare_mysql ( $this->data ['Invoice Main Payment Method'] ), $this->data ['Invoice Shipping Tax Amount'], $this->data ['Invoice Charges Tax Amount'], prepare_mysql ( $this->data ['Invoice XHTML Processed By'] ), prepare_mysql ( $this->data ['Invoice XHTML Charged By'] ), prepare_mysql ( $this->data ['Invoice Processed By Key'] )
+		   , prepare_mysql ( $this->data ['Invoice Public ID'] ), prepare_mysql ( $this->data ['Invoice File As'] ), prepare_mysql ( $this->data ['Invoice Store Key'] ), prepare_mysql ( $this->data ['Invoice Store Code'] ), prepare_mysql ( $this->data ['Invoice Main Source Type'] ), prepare_mysql ( $this->data ['Invoice Customer Key'] ), prepare_mysql ( $this->data ['Invoice Customer Name'] ), prepare_mysql ( $this->data ['Invoice XHTML Ship Tos'] ), $this->data ['Invoice Items Gross Amount'], $this->data ['Invoice Items Discount Amount'], $this->data ['Invoice Shipping Net Amount'], $this->data ['Invoice Charges Net Amount'], $this->data ['Invoice Total Tax Amount']
+		   , $this->data ['Invoice Refund Net Amount'], $this->data ['Invoice Refund Tax Amount']
+		   , $this->data ['Invoice Total Amount'], prepare_mysql ( $this->data ['Invoice Metadata'] ), prepare_mysql ( $this->data ['Invoice XHTML Address'] ), prepare_mysql ( $this->data ['Invoice XHTML Orders'] ), addslashes ( $this->data ['Invoice XHTML Delivery Notes'] ), prepare_mysql ( $this->data ['Invoice XHTML Store'] ), prepare_mysql ( $this->data ['Invoice Has Been Paid In Full'] ), prepare_mysql ( $this->data ['Invoice Main Payment Method'] ), $this->data ['Invoice Shipping Tax Amount'], $this->data ['Invoice Charges Tax Amount'], prepare_mysql ( $this->data ['Invoice XHTML Processed By'] ), prepare_mysql ( $this->data ['Invoice XHTML Charged By'] ), prepare_mysql ( $this->data ['Invoice Processed By Key'] )
 		   , prepare_mysql ( $this->data ['Invoice Charged By Key'] ) 
 		   , prepare_mysql ( $this->data ['Invoice Billing Country 2 Alpha Code'] ) 
 		   , prepare_mysql ( $this->data ['Invoice Delivery Country 2 Alpha Code'] ) 
@@ -840,6 +842,18 @@ global $myconf;
  function get_totals($force_values=false){
 
 
+
+  // get refunds
+   $ref_net=0;
+   $ref_tax=0;
+   $sql = "select sum(`Transaction Net Amount`) as net,sum(`Transaction Tax Amount`) as  tax  from `Order No Product Transaction Fact`  where  `Invoice Key`=" . $this->data ['Invoice Key'];
+   //print $sql;
+   $result = mysql_query ( $sql );
+   if ($row = mysql_fetch_array ( $result, MYSQL_ASSOC )) {
+     $ref_net=$row['net'];
+     $ref_tax=$row['tax'];
+   }
+
    
    $sql = "select sum(`Invoice Transaction Gross Amount`) as gross,sum(`Invoice Transaction Total Discount Amount`) as discount  ,sum(`Invoice Transaction Total Tax Amount`) as tax,sum(`Invoice Transaction Net Refund Amount`) as ref_net,sum(`Invoice Transaction Tax Refund Amount`) as ref_tax,sum(`Invoice Transaction Outstanding Net Balance`) as ob_net ,sum(`Invoice Transaction Outstanding Tax Balance`) as ob_tax ,sum(`Invoice Transaction Outstanding Refund Net Balance`) as ref_ob_net ,sum(`Invoice Transaction Outstanding Refund Tax Balance`) as ref_ob_tax  from `Order Transaction Fact`  where  `Invoice Key`=" . $this->data ['Invoice Key'];
    //print $sql;
@@ -871,27 +885,51 @@ global $myconf;
 
 
    if(isset($force_values['Invoice Total Net Amount']))
-     $this->data ['Invoice Total Net Adjust Amount']=$force_values['Invoice Total Net Amount']-$total_net;
+     $this->data ['Invoice Total Net Adjust Amount']=$force_values['Invoice Total Net Amount']-$total_net-$ref_net;
    else
      $this->data ['Invoice Total Net Adjust Amount']=0;
-   
+
+    if(isset($force_values['Invoice Total Tax Amount']))
+     $this->data ['Invoice Total Tax Adjust Amount']=$force_values['Invoice Total Tax Amount']-$tax-$ref_tax;
+   else
+     $this->data ['Invoice Total Tax Adjust Amount']=0;
+
+    $this->data ['Invoice Items Tax Amount'] =$tax;
 
    // print $this->data ['Invoice Total Net Adjust Amount']."\n";
-   $this->data ['Invoice Total Net Amount'] = $total_net+$this->data ['Invoice Total Net Adjust Amount'];
-   $this->data ['Invoice Items Tax Amount'] = $tax;
+   $this->data ['Invoice Total Net Amount'] = $total_net+$ref_net+$this->data ['Invoice Total Net Adjust Amount'];
    $this->distribute_costs ();
-   //print "$total_net ".$this->data ['Invoice Total Net Adjust Amount']."\n";
-   $sql = sprintf ( "update `Invoice Dimension` set `Invoice Items Net Amount`=%.2f ,`Invoice Items Net Adjust Amount`=%.2f ,`Invoice Total Net Adjust Amount`=%.2f , `Invoice Items Gross Amount`=%.2f ,`Invoice Items Discount Amount`=%.2f  ,`Invoice Total Net Amount`=%.2f,`Invoice Items Tax Amount`=%.2f where `Invoice Key`=%d"
-		     , $this->data ['Invoice Items Net Amount']
-		     , $this->data ['Invoice Items Net Adjust Amount']
-		    , $this->data ['Invoice Total Net Adjust Amount']
-		     , $amount
-		     , $discounts
-		     , $this->data ['Invoice Total Net Amount']
-		     , $this->data ['Invoice Items Tax Amount']
-		   
+   
+   $this->data ['Invoice Total Tax Amount'] = $tax+$ref_tax+$this->data ['Invoice Total Tax Adjust Amount'];
+   
 
-		     , $this->data ['Invoice Key'] 
+   $this->data ['Invoice Total Amount'] = $this->data ['Invoice Total Tax Amount']+$this->data ['Invoice Total Net Amount'];
+   
+
+  if(isset($force_values['Invoice Total Amount']))
+     $this->data ['Invoice Total Adjust Amount']=$force_values['Invoice Total Amount']-$this->data ['Invoice Total Amount'];
+   else
+     $this->data ['Invoice Total Adjust Amount']=0;
+
+
+
+   //print "$total_net ".$this->data ['Invoice Total Net Adjust Amount']."\n";
+   $sql = sprintf ( "update `Invoice Dimension` set `Invoice Items Net Amount`=%.2f ,`Invoice Items Net Adjust Amount`=%.2f ,`Invoice Total Net Adjust Amount`=%.2f , `Invoice Items Gross Amount`=%.2f ,`Invoice Items Discount Amount`=%.2f  ,`Invoice Total Net Amount`=%.2f,`Invoice Items Tax Amount`=%.2f,`Invoice Refund Net Amount`=%.2f,`Invoice Refund Tax Amount`=%.2f,`Invoice Total Tax Adjust Amount`=%.2f, `Invoice Total Tax Amount`=%.2f,`Invoice Total Amount`=%.2f,`Invoice Total Adjust Amount`=%.2f  where `Invoice Key`=%d"
+		    , $this->data ['Invoice Items Net Amount']
+		    , $this->data ['Invoice Items Net Adjust Amount']
+		    , $this->data ['Invoice Total Net Adjust Amount']
+		    , $amount
+		    , $discounts
+		    , $this->data ['Invoice Total Net Amount']
+		    , $this->data ['Invoice Items Tax Amount']
+		    , $ref_net
+		    , $ref_tax
+		    ,$this->data ['Invoice Total Tax Adjust Amount']
+
+		    ,$this->data ['Invoice Total Tax Amount']
+		    ,$this->data ['Invoice Total Amount']
+		    ,$this->data ['Invoice Total Adjust Amount']
+		    , $this->data ['Invoice Key'] 
 		     );
    if (! mysql_query ( $sql ))
       exit ( "$sql\n xcan not update invoice dimension after invccc\n" );

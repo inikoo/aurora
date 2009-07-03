@@ -13,7 +13,7 @@ function taxable_sales_in_interval($from,$to){
 }
 
 
-function sales_in_interval($from,$to,$valid_tax_rates_data=false,$store_key=1){
+function sales_in_interval($from,$to,$store_key=1){
  global $myconf;
   $home_2alpha_code=$myconf['country_2acode'];
 
@@ -26,22 +26,22 @@ function sales_in_interval($from,$to,$valid_tax_rates_data=false,$store_key=1){
 
    
   
-   $valid_tax_rates=false;
-   if($valid_tax_rates_data){
-   $_from=date('U',strtotime($from));
-   $_to=date('U',strtotime($to));
-   $valid_tax_rates=array();
-   foreach($valid_tax_rates_data as $key=>$data){
-     $_date_inicio=date('U',strtotime($data['date']));
-     if(!isset($valid_tax_rates_data[$key+1]))
-       $_date_fin=$_to+1;
-     else
-       $_date_fin=date('U',strtotime($valid_tax_rates_data[$key+1]['date']));
+/*    $valid_tax_rates=false; */
+/*    if($valid_tax_rates_data){ */
+/*    $_from=date('U',strtotime($from)); */
+/*    $_to=date('U',strtotime($to)); */
+/*    $valid_tax_rates=array(); */
+/*    foreach($valid_tax_rates_data as $key=>$data){ */
+/*      $_date_inicio=date('U',strtotime($data['date'])); */
+/*      if(!isset($valid_tax_rates_data[$key+1])) */
+/*        $_date_fin=$_to+1; */
+/*      else */
+/*        $_date_fin=date('U',strtotime($valid_tax_rates_data[$key+1]['date'])); */
      
-     if($_from>=$_date_inicio and $_to<$_date_fin)
-       $valid_tax_rates[]=$data['rate'];
-   }
-   }     
+/*      if($_from>=$_date_inicio and $_to<$_date_fin) */
+/*        $valid_tax_rates[]=$data['rate']; */
+/*    } */
+/*    }      */
    
 
    $int=prepare_mysql_dates($from,$to,'`Invoice Date`','date start end');

@@ -1105,8 +1105,8 @@ if(preg_match('/^(x5686842-t|IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691
 			    ,'Invoice Shipping Net Amount'=>round($header_data['shipping']+$extra_shipping,2)
 			    ,'Invoice Charges Net Amount'=>round($header_data['charges'],2)
 			    ,'Invoice Total Tax Amount'=>round($header_data['tax1'],2)
-			    ,'Invoice Refund Amount'=>$total_credit_value
-			    ,'Invoice Total Tax Refund Amount'=>$tax_rate*$total_credit_value
+			    ,'Invoice Refund Net Amount'=>$total_credit_value
+			    ,'Invoice Refund Tax Amount'=>$tax_rate*$total_credit_value
 			    ,'Invoice Total Amount'=>round($header_data['total_topay'],2)
 			    ,'tax_rate'=>$tax_rate
 			    ,'Invoice Has Been Paid In Full'=>'No'
@@ -1210,6 +1210,8 @@ if(preg_match('/^(x5686842-t|IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691
 			array(
 			      'Invoice Items Net Amount'=>round($header_data['total_items_charge_value'],2)-$total_credit_value-$extra_shipping
 			      ,'Invoice Total Net Amount'=>round($header_data['total_net'],2)
+			      ,'Invoice Total Tax Amount'=>round($header_data['tax1']+$header_data['tax2'],2)
+			      ,'Invoice Total Amount'=>round($header_data['to_pay'],2)
 			      ));
 	  $order-> update_payment_state('Paid');	
 	$dn->dispatch('all');
@@ -1320,8 +1322,9 @@ if(preg_match('/^(x5686842-t|IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691
 			      ,'Invoice Has Been Paid In Full'=>'No'
 			      ,'Invoice Items Net Amount'=>round($header_data['total_items_charge_value'],2)-$total_credit_value
 			      ,'Invoice Total Tax Amount'=>$header_data['tax1']
-			      ,'Invoice Refund Amount'=>$total_credit_value
-			      ,'Invoice Total Tax Refund Amount'=>$tax_rate*$total_credit_value
+			      
+			        ,'Invoice Refund Net Amount'=>$total_credit_value
+			      ,'Invoice Refund Tax Amount'=>$tax_rate*$total_credit_value
 			      ,'Invoice Total Amount'=>$header_data['total_topay']
 			       ,'Invoice XHTML Processed By'=>_('Unknown')
 			      ,'Invoice XHTML Charged By'=>_('Unknown')
@@ -1422,8 +1425,10 @@ if(preg_match('/^(x5686842-t|IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691
 			    ,'Invoice Shipping Net Amount'=>0
 			    ,'Invoice Charges Net Amount'=>0
 			    ,'Invoice Total Tax Amount'=>$header_data['tax1']*$factor
-			    ,'Invoice Refund Amount'=>$header_data['total_net']*$factor
-			    ,'Invoice Total Tax Refund Amount'=>$header_data['tax1']*$factor
+			    
+			    ,'Invoice Refund Net Amount'=>$total_credit_value
+			    ,'Invoice Refund Tax Amount'=>$tax_rate*$total_credit_value
+
 			    ,'Invoice Total Amount'=>$header_data['total_topay']*$factor
 			    ,'tax_rate'=>$tax_rate
 			    ,'Invoice Has Been Paid In Full'=>'No'
@@ -1534,7 +1539,18 @@ if(preg_match('/^(x5686842-t|IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691
 	
 	$refund = new Invoice('create refund',$data_invoice,$data_refund_transactions,$order); 
 	$refund->data['Invoice Paid Date']=$date_inv;
-	$refund->pay();
+
+
+
+	$invoice->pay('full',
+			array(
+			      
+			      'Invoice Total Net Amount'=>round($header_data['total_net']*$factor,2)
+			      ,'Invoice Total Tax Amount'=>round(($header_data['tax1']+$header_data['tax2'])*$factor,2)
+			      ,'Invoice Total Amount'=>round($header_data['to_pay']*$factor,2)
+			      ));
+
+
 	if($order->id)
 	  $order-> update_payment_state('Paid');
 
