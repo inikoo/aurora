@@ -69,8 +69,8 @@
 <h1 style="clear:left">{$title}</h1>
 <table class="report_sales1">
 <tr><td>{t}Store{/t}</td><td>{t}Invoices{/t}</td><td>{t}Net Sales{/t}</td><td>{t}Tax{/t}</td></tr>
-{foreach from=$stores_data   item=data }
-<tr class="geo"><td class="label"> {$data.store}</td><td>{$data.invoices}</td><td>{$data.net_sales}</td><td>{$data.tax_sales}</td></tr>
+{foreach from=$store_data   item=data }
+<tr class="geo"><td class="label"> {$data.store}</td><td>{$data.invoices}</td><td>{$data.net}</td><td>{$data.tax_sales}</td></tr>
 {/foreach}
 </table>
 

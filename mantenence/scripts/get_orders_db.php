@@ -10,7 +10,7 @@ include_once('../../classes/Order.php');
 include_once('../../classes/Invoice.php');
 include_once('../../classes/DeliveryNote.php');
 
-
+$store_code='U';
 
 error_reporting(E_ALL);
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
@@ -66,7 +66,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
     // check if it is already readed
     $update=false;$old_order_key=0;
-    $sql=sprintf("select count(*) as num  from `Order Dimension`  where `Order Original Metadata`=%d  ",$order_data_id);
+    $sql=sprintf("select count(*) as num  from `Order Dimension`  where `Order Original Metadata`=%s  ",prepare_mysql($store_code.$order_data_id));
 
     $result_test=mysql_query($sql);
     if($row_test=mysql_fetch_array($result_test, MYSQL_ASSOC)){
@@ -360,7 +360,7 @@ if(preg_match('/^(x5686842-t|IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691
     $data['order original data mime type']='application/vnd.ms-excel';
     $data['order original data']=$row2['filename'];
     $data['order original data source']='DB:orders_data.order.data';
-    $data['Order Original Metadata']=$row2['id'];
+    $data['Order Original Metadata']=$store_code.$row2['id'];
 
     //print_r($header_data);
 
@@ -957,7 +957,7 @@ if(preg_match('/^(x5686842-t|IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691
 
     // print_r($products_data);
     // exit;
-
+    // print $tipo_order."\n";
     //Tipo order
     // 1 DELIVERY NOTE
     // 2 INVOICE
@@ -975,7 +975,7 @@ if(preg_match('/^(x5686842-t|IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691
        if($update){
 	 print "Updated ";
 
-	 $sql=sprintf("select `Order Key`  from `Order Dimension`  where `Order Original Metadata`=%d  ",$order_data_id);
+	 $sql=sprintf("select `Order Key`  from `Order Dimension`  where `Order Original Metadata`=%s  ", prepare_mysql($store_code.$order_data_id));
 	 
 	 $result_test=mysql_query($sql);
 	 while($row_test=mysql_fetch_array($result_test, MYSQL_ASSOC)){
@@ -988,33 +988,33 @@ if(preg_match('/^(x5686842-t|IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691
 
 	 
 	 
-	 $sql=sprintf("delete from `Order No Product Transaction Fact` where `Metadata`=%d",$order_data_id);
+	 $sql=sprintf("delete from `Order No Product Transaction Fact` where `Metadata`=%s", prepare_mysql($store_code.$order_data_id));
 	 if(!mysql_query($sql))
 	   print "$sql Warning can no delete old order";
 
 	 //delete things
-	 $sql=sprintf("delete from `Order Dimension` where `Order Original Metadata`=%d",$order_data_id);
+		      $sql=sprintf("delete from `Order Dimension` where `Order Original Metadata`=%s", prepare_mysql($store_code.$order_data_id));
 	 //	 print $sql;
 
 	 if(!mysql_query($sql))
 	   print "$sql Warning can no delete old order";
-	 $sql=sprintf("delete from `Invoice Dimension` where `Invoice Metadata`=%d",$order_data_id);
+		      $sql=sprintf("delete from `Invoice Dimension` where `Invoice Metadata`=%s", prepare_mysql($store_code.$order_data_id));
 	 if(!mysql_query($sql))
 	   print "$sql Warning can no delete old inv";
-	 $sql=sprintf("delete from `Delivery Note Dimension` where `Delivery Note Metadata`=%d",$order_data_id);
+		      $sql=sprintf("delete from `Delivery Note Dimension` where `Delivery Note Metadata`=%s", prepare_mysql($store_code.$order_data_id));
 	 if(!mysql_query($sql))
 	   print "$sql Warning can no delete old dn";
-	 $sql=sprintf("delete from `Order Transaction Fact` where `Metadata`=%d",$order_data_id);
+		      $sql=sprintf("delete from `Order Transaction Fact` where `Metadata`=%s", prepare_mysql($store_code.$order_data_id));
 	 if(!mysql_query($sql))
 	   print "$sql Warning can no delete tf";
- $sql=sprintf("delete from `Inventory Transaction Fact` where `Metadata`=%d and `Inventory Transaction Type`='Sale'   ",$order_data_id);
+		      $sql=sprintf("delete from `Inventory Transaction Fact` where `Metadata`=%s and `Inventory Transaction Type`='Sale'   ", prepare_mysql($store_code.$order_data_id));
 	 if(!mysql_query($sql))
 	   print "$sql Warning can no delete old inv";
 	 
 
 
 	 
-	 $sql=sprintf("delete from `Order No Product Transaction Fact` where `Metadata` ",$order_data_id);
+	      $sql=sprintf("delete from `Order No Product Transaction Fact` where `Metadata`=%s ", prepare_mysql($store_code.$order_data_id));
 	 if(!mysql_query($sql))
 	   print "$sql Warning can no delete oldhidt nio prod";
 	
@@ -1181,7 +1181,7 @@ if(preg_match('/^(x5686842-t|IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691
 		       ,$tax_rate*$credit['value']
 		       ,"'GBP'"
 		       ,1
-		       ,$order_data_id
+		       ,prepare_mysql($store_code.$order_data_id)
 		       );
 
 	  if(!mysql_query($sql))
@@ -1211,7 +1211,7 @@ if(preg_match('/^(x5686842-t|IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691
 			      'Invoice Items Net Amount'=>round($header_data['total_items_charge_value'],2)-$total_credit_value-$extra_shipping
 			      ,'Invoice Total Net Amount'=>round($header_data['total_net'],2)
 			      ,'Invoice Total Tax Amount'=>round($header_data['tax1']+$header_data['tax2'],2)
-			      ,'Invoice Total Amount'=>round($header_data['to_pay'],2)
+			      ,'Invoice Total Amount'=>round($header_data['total_topay'],2)
 			      ));
 	  $order-> update_payment_state('Paid');	
 	$dn->dispatch('all');
@@ -1323,7 +1323,7 @@ if(preg_match('/^(x5686842-t|IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691
 			      ,'Invoice Items Net Amount'=>round($header_data['total_items_charge_value'],2)-$total_credit_value
 			      ,'Invoice Total Tax Amount'=>$header_data['tax1']
 			      
-			        ,'Invoice Refund Net Amount'=>$total_credit_value
+			      ,'Invoice Refund Net Amount'=>$total_credit_value
 			      ,'Invoice Refund Tax Amount'=>$tax_rate*$total_credit_value
 			      ,'Invoice Total Amount'=>$header_data['total_topay']
 			       ,'Invoice XHTML Processed By'=>_('Unknown')
@@ -1433,7 +1433,7 @@ if(preg_match('/^(x5686842-t|IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691
 			    ,'tax_rate'=>$tax_rate
 			    ,'Invoice Has Been Paid In Full'=>'No'
 			    ,'Invoice Items Net Amount'=>0
-			     ,'Invoice XHTML Processed By'=>_('Unknown')
+			    ,'Invoice XHTML Processed By'=>_('Unknown')
 			    ,'Invoice XHTML Charged By'=>_('Unknown')
 			    ,'Invoice Processed By Key'=>0
 			    ,'Invoice Charged By Key'=>0
@@ -1547,7 +1547,7 @@ if(preg_match('/^(x5686842-t|IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691
 			      
 			      'Invoice Total Net Amount'=>round($header_data['total_net']*$factor,2)
 			      ,'Invoice Total Tax Amount'=>round(($header_data['tax1']+$header_data['tax2'])*$factor,2)
-			      ,'Invoice Total Amount'=>round($header_data['to_pay']*$factor,2)
+			      ,'Invoice Total Amount'=>round($header_data['total_topay']*$factor,2)
 			      ));
 
 
@@ -1600,7 +1600,7 @@ if(preg_match('/^(x5686842-t|IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691
 		       ,'Delivery Note XHTML Packers'=>$packer_data['xhtml']
 		       ,'Delivery Note Number Packers'=>count($packer_data['id'])
 		       ,'Delivery Note Packers IDs'=>$packer_data['id']
-		       ,'Delivery Note Metadata'=>$order_data_id
+		       ,'Delivery Note Metadata'=>$store_code.$order_data_id
 		       ,'Delivery Note Has Shipping'=>$_customer_data['has_shipping']
 		       ,'Delivery Note Shipper Code'=>$header_data['shipper_code'] 
 		        ,'Delivery Note Dispatch Method'=>$data['Delivery Note Dispatch Method']
@@ -1619,6 +1619,14 @@ if(preg_match('/^(x5686842-t|IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691
 
 	
 	$customer=new Customer($parent_order->data['Order Customer Key']);
+	// add shipping address if present
+	
+ if($_customer_data['has_shipping']  and isset($data['Shipping Address']) and is_array($data['Shipping Address']) and !array_empty($data['Shipping Address'])){
+				    $ship_to= new Ship_To('find create',$data['Shipping Address']);
+				    $parent_order->data ['Order XHTML Ship Tos'].='<br/>'.$ship_to->data['Ship To XHTML Address'];
+				    $customer->add_ship_to($ship_to->id,'Yes');
+				  }
+
 	//$parent_order->xhtml_billing_address=$customer->get('Customer Main XHTML Address');
 	//$parent_order->ship_to_key=$customer->get('Customer Last Ship To Key');
 	$parent_order->data['Backlog Date']=$date_inv;
@@ -1646,10 +1654,16 @@ if(preg_match('/^(x5686842-t|IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691
 	
       
       }
+
+
+
+
       // exit;
       
       $sql="update orders_data.orders set last_transcribed=NOW() where id=".$order_data_id;
-       mysql_query($sql);
+      mysql_query($sql);
+      //exit("Done\n");
+       
     }
 
 

@@ -139,11 +139,11 @@ class DeliveryNote extends DB_Table {
     //    $this->data ['Delivery Note Country 2 Alpha Code'] = 'XX';
     $this->data ['Delivery Note XHTML Ship To'] = '';
     $this->data ['Delivery Note Ship To Key'] = 0;
-
+    //    print_r($this->data);
     if($dn_data['Delivery Note Has Shipping']){
 
       $customer=new Customer($this->data ['Delivery Note Customer Key']);
-
+      // print_r($customer->data);
       $this->data ['Delivery Note Ship To Key'] =$customer->data['Customer Main Ship To Key'];
       
       if($this->data ['Delivery Note Ship To Key']){

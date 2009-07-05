@@ -161,6 +161,13 @@ class Customer extends DB_Table{
     if(preg_match('/update/i',$options)){
       $update='update';
     }
+
+    if(
+       !isset($raw_data['Customer Store Key']) or 
+       !preg_match('/^\d+$/i',$raw_data['Customer Store Key']) ){
+      $raw_data['Customer Store Key']=1;
+      
+    }
     
     //  print_r($raw_data);
     if(!isset($raw_data['Customer Type']) or !preg_match('/^(Company|Person)$/i',$raw_data['Customer Type']) ){
@@ -189,10 +196,14 @@ class Customer extends DB_Table{
       //print_r($child);
       $this->found_child=true;
       $this->found_child_key=$child->found_key;
-      
-      if($customer_found_key=$child->get_customer_key()){
-	$this->found=true;
-	$this->found_key=$customer_found_key;
+      $customer_found_key=$child->get_customer_key();
+      if($customer_found_key){
+	// to have differt sets oif customers by store
+	$tmp_customer=new Customer($customer_found_key);
+	if($tmp_customer->data['Customer Store Key']==$raw_data['Customer Store Key']){
+	  $this->found=true;
+	  $this->found_key=$customer_found_key;
+	}
       }
 	
 

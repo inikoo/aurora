@@ -56,18 +56,27 @@ $_SESSION['state']['report']['sales']['period']=$period;
 /* 		   array('date'=>'01-01-2000','rate'=>17.5), */
 /* 		   array('date'=>'01-12-2008','rate'=>15) */
 /* 		   ); */
+   $int=prepare_mysql_dates($from,$to,'`Invoice Date`','date start end');
 
-$store_key=3;
+$store_data=array();
+$sql="select `Store Name`,`Store Key`,`Store Currency Code`,sum(if(`Invoice Title`='Invoice',1,0)) as invoices,sum(`Invoice Total Net Amount`) as net from `Invoice Dimension` I left join `Store Dimension` S on (S.`Store Key`=`Invoice Store Key`) where true ".$int[0]." group by `Invoice Store Key`";
+//print $sql;
+$result=mysql_query($sql);
+while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+  $store_data[]=array(
+		    'store'=>$row['Store Name']
+		    ,'invoices'=>number($row['invoices'])
+		    ,'net'=>money($row['net'],$row['Store Currency Code'])
 
 
-$store=new Store($store_key);
+		    );
+  
+ }
+//print_r($store_data);
+$smarty->assign('store_data',$store_data);
 
-$currency=$store->data['Store Currency Code']; 
-$home_name=$store->data['Store Home Country Name'];
-$home_short_name=$store->data['Store Home Country Short Name'];
 
 
-$interval_data=sales_in_interval($from,$to,$store_key);
 $day_interval=get_time_interval(strtotime($from),(strtotime($to)))+1;
 $smarty->assign('tipo',$tipo);
 $smarty->assign('period',$period);
