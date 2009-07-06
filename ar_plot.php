@@ -14,8 +14,87 @@ if(!isset($_REQUEST['tipo']))
     exit;
   }
 
-$tipo=$_REQUEST['tipo'];
-switch($tipo){
+$plot_type=$_REQUEST['tipo'];
+switch($plot_type){
+case('sales_share_by_store'):
+  if($_REQUEST['dtipo']=='y'){
+    //Per month
+
+  // print $first_day;
+    $tipo=$_REQUEST['dtipo'];
+    include_once('report_dates.php');
+    $int=prepare_mysql_dates($from,$to,'`Invoice Date`','date start end');
+    
+    $sql=sprintf("select date_format(`First Day`,'%%c') as month, `First Day` as date, `Year Month` as yearmonth  from `Month Dimension` where `First Day`>%s and `First Day` <%s ; ",prepare_mysql($from),prepare_mysql($to));
+    print $sql;
+    
+    $data=array();
+    $res = mysql_query($sql);
+    $i=0;
+    $last_month='';
+
+
+    $sql=sprintf("select CONCAT(`Store Code`,':',`Invoice Category`) as tag from `Invoice Dimension`  left join `Store Dimension` S on (S.`Store Key`=`Invoice Store Key`) where true %s group by `Invoice Store Key`,`Invoice Category`",$int[0]);
+    $result=mysql_query($sql);
+    $yfields=array();
+    while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+      $yfields[]=$row['tag'];
+    }
+
+
+   while($row=mysql_fetch_array($res)) {
+     $index[$row['yearmonth']]=$i;
+
+     $tmp_data=array(
+		       'month'=>$row['month'],
+		       '_date'=>$row['date'],
+		       'date'=>strftime("%b %y",strtotime($row['date'])),
+		       );
+
+     foreach($yfields as $field){
+       $tmp_data[$field]=0;
+       $tmp_data['tip_'.$field]=$field.': '._('no sales this month').".";
+
+     }
+
+     
+
+     $data[]=$tmp_data;
+
+     $i++;
+    }
+
+
+
+   print_r($data);
+   $sql=sprintf("select  CONCAT(`Store Code`,':',`Invoice Category`) as tag,date_format(`Invoice Date`,'%%Y%%m')  as yearmonth,sum(`Invoice Total Net Amount`)as asales from `Invoice Dimension` left join `Store Dimension` S on (S.`Store Key`=`Invoice Store Key`) where true %s   group by  yearmonth,CONCAT(`Store Code`,':',`Invoice Category`) ",$int[0]);
+   //print $sql;
+   $res=mysql_query($sql);
+   while($row=mysql_fetch_array($res)){
+     //     print $row['yearmonth']."\n";
+      if(isset($index[$row['yearmonth']])){
+	$_index=$index[$row['yearmonth']];
+	$data[$_index][$row['tag']]=(float)$row['asales'];
+
+	$data[$_index]['tip_'.$row['tag']]=_('Sales')."\n".strftime("%b %y",strtotime($data[$_index]['_date']))."\n".money($row['asales']);
+      }
+    }
+   //  print_r($data);
+   
+   $response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$data,
+			 )
+		   );
+
+      echo json_encode($response);
+   break;
+
+  }
+
+
+
+  break;
  case('product_week_outers'): 
  case('product_week_sales'):
    

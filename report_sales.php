@@ -37,27 +37,28 @@ $js_files=array(
 $smarty->assign('parent','reports.php');
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
-
+$tipo=$_REQUEST['tipo'];
 include_once('report_dates.php');
 
 
 
 
 
-
+if(isset($_REQUEST['store_key']) and is_numeric($_REQUEST['store_key']))
+  $_SESSION['state']['report']['sales']['store_key']=$_REQUEST['store_key'];
 
 
 $_SESSION['state']['report']['sales']['to']=$to;
 $_SESSION['state']['report']['sales']['from']=$from;
 $_SESSION['state']['report']['sales']['period']=$period;
-
+$store_key=$_SESSION['state']['report']['sales']['store_key'];
   
 /* $valid_rates=array( */
 /* 		   array('date'=>'01-01-2000','rate'=>17.5), */
 /* 		   array('date'=>'01-12-2008','rate'=>15) */
 /* 		   ); */
 
-$store_key=3;
+
 
 
 $store=new Store($store_key);

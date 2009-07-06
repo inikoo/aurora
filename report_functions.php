@@ -455,14 +455,14 @@ if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
 
 
-  $sql=sprintf("select sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax , count(*) as invoices,avg(`Invoice Dispatching Lag`) as dispatch_days from `Invoice Dimension`   where  `Invoice Title`='Invoice' and `Invoice For Partner`='No' and `Invoice Billing Country 2 Alpha Code`=%s %s ",prepare_mysql($home_2alpha_code),$int[0]);
-  
+  $sql=sprintf("select sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax , sum(if(`Invoice Title`='Invoice',1,0)) as invoices,avg(`Invoice Dispatching Lag`) as dispatch_days from `Invoice Dimension`   where  `Invoice Title`='Invoice'  and `Invoice Billing Country 2 Alpha Code`=%s %s ",prepare_mysql($home_2alpha_code),$int[0]);
+  print $sql;
 
     $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
     $dispatch_days_home=$row['dispatch_days'];
-    $net_home=$row['net']+$refund_net_home;
-    $tax_home=$row['tax']+$refund_tax_home;;
+    $net_home=$row['net'];
+    $tax_home=$row['tax'];
     $invoices_home=$row['invoices'];
   }
 

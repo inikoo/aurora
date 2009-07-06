@@ -141,7 +141,7 @@ class Invoice extends DB_Table {
     $store=new Store($this->data ['Invoice Store Key']);
 
     $this->data ['Invoice Store Code'] = $store->data ['Store Code'];
-    
+    // print_r($invoice_data);
     if(isset($invoice_data['Invoice Currency'])){
       $this->data['Invoice Currency']=$invoice_data['Invoice Currency'];
     }else{
@@ -153,7 +153,7 @@ class Invoice extends DB_Table {
 	$this->data['Invoice Currency Exchange']=$invoice_data['Invoice Currency Exhange'];
       }else{
 	$exchange=1;
-	$sql=sprinf("select `Exhange` from `History Currency Exchange Dimension` where `Currency Pair`='GBPEUR' and `Date`=DATE(%s)"
+	$sql=sprinf("select `Exhange` from `History Currency Exchange Dimension` where `Currency Pair`='EURGBP' and `Date`=DATE(%s)"
 		    ,prepare_mysql($this->data ['Invoice Date'] ));
 	$res=mysql_query($sql);
 	if($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
@@ -312,7 +312,7 @@ $this->data['Invoice Currency Exchange']=$exchange;
     $store=new store($this->data ['Invoice Store Key']);
     $this->data ['Invoice Store Code'] = $order->data ['Order Store Code'];
     $this->data ['Invoice XHTML Store'] = $order->data ['Order XHTML Store'];
-    
+    // print_r($invoice_data);
       if(isset($invoice_data['Invoice Currency'])){
       $this->data['Invoice Currency']=$invoice_data['Invoice Currency'];
     }else{
@@ -324,7 +324,7 @@ $this->data['Invoice Currency Exchange']=$exchange;
 	$this->data['Invoice Currency Exchange']=$invoice_data['Invoice Currency Exchange'];
       }else{
 	$exchange=1;
-	$sql=sprintf("select `Exchange` from `History Currency Exchange Dimension` where `Currency Pair`='GBPEUR' and `Date`=DATE(%s)"
+	$sql=sprintf("select `Exchange` from `History Currency Exchange Dimension` where `Currency Pair`='EURGBP' and `Date`=DATE(%s)"
 		    ,prepare_mysql($this->data ['Invoice Date'] ));
 	$res=mysql_query($sql);
 	if($row=mysql_fetch_array($res, MYSQL_ASSOC)){
@@ -594,9 +594,12 @@ function create_header() {
     $this->data ['Invoice Billing Country 2 Alpha Code']='XX';
   if(!isset($this->data ['Invoice Delivery Country 2 Alpha Code']))
     $this->data ['Invoice Delivery Country 2 Alpha Code']='XX';
-  //    print_r($this->data);
+  // print_r($this->data);
   
-  $sql = sprintf ( "insert into `Invoice Dimension` (`Invoice For`,`Invoice Date`,`Invoice Public ID`,`Invoice File As`,`Invoice Store Key`,`Invoice Store Code`,`Invoice Main Source Type`,`Invoice Customer Key`,`Invoice Customer Name`,`Invoice XHTML Ship Tos`,`Invoice Items Gross Amount`,`Invoice Items Discount Amount`,`Invoice Shipping Net Amount`,`Invoice Charges Net Amount`,`Invoice Total Tax Amount`,`Invoice Refund Net Amount`,`Invoice Refund Tax Amount`,`Invoice Total Amount`,`Invoice Metadata`,`Invoice XHTML Address`,`Invoice XHTML Orders`,`Invoice XHTML Delivery Notes`,`Invoice XHTML Store`,`Invoice Has Been Paid In Full`,`Invoice Main Payment Method`,`Invoice Shipping Tax Amount`,`Invoice Charges Tax Amount`,`Invoice XHTML Processed By`,`Invoice XHTML Charged By`,`Invoice Processed By Key`,`Invoice Charged By Key`,`Invoice Billing Country 2 Alpha Code`,`Invoice Delivery Country 2 Alpha Code`,`Invoice Dispatching Lag`,`Invoice Taxable`,`Invoice Tax Code`,`Invoice Title`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,  %s,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,   %s,%s,%s,'%s',%s,%s,%s,%.2f,%.2f,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+  $sql = sprintf ( "insert into `Invoice Dimension` (`Invoice Currency`,`Invoice Currency Exchange`,`Invoice For`,`Invoice Date`,`Invoice Public ID`,`Invoice File As`,`Invoice Store Key`,`Invoice Store Code`,`Invoice Main Source Type`,`Invoice Customer Key`,`Invoice Customer Name`,`Invoice XHTML Ship Tos`,`Invoice Items Gross Amount`,`Invoice Items Discount Amount`,`Invoice Shipping Net Amount`,`Invoice Charges Net Amount`,`Invoice Total Tax Amount`,`Invoice Refund Net Amount`,`Invoice Refund Tax Amount`,`Invoice Total Amount`,`Invoice Metadata`,`Invoice XHTML Address`,`Invoice XHTML Orders`,`Invoice XHTML Delivery Notes`,`Invoice XHTML Store`,`Invoice Has Been Paid In Full`,`Invoice Main Payment Method`,`Invoice Shipping Tax Amount`,`Invoice Charges Tax Amount`,`Invoice XHTML Processed By`,`Invoice XHTML Charged By`,`Invoice Processed By Key`,`Invoice Charged By Key`,`Invoice Billing Country 2 Alpha Code`,`Invoice Delivery Country 2 Alpha Code`,`Invoice Dispatching Lag`,`Invoice Taxable`,`Invoice Tax Code`,`Invoice Title`) values (%s,%f,%s,%s,%s,%s,%s,%s,%s,%s,%s,  %s,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,   %s,%s,%s,'%s',%s,%s,%s,%.2f,%.2f,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+		   
+		   , prepare_mysql ( $this->data ['Invoice Currency'] )
+		   , $this->data ['Invoice Currency Exchange']
 		   , prepare_mysql ( $this->data ['Invoice For'] )
 
 		   , prepare_mysql ( $this->data ['Invoice Date'] )
@@ -935,7 +938,39 @@ global $myconf;
       exit ( "$sql\n xcan not update invoice dimension after invccc\n" );
 
  }
+ /*
+function: categorize
+Assig a category inside rhe store to the invoice 
+ */
 
+ function categorize($args=''){
+   $store=new store($this->data['Invoice Store Key']);
+   
+   
+   
+   if($store->id==1){
+     $this->data['Invoice Category']=$store->data['Store Home Country Short Name'];
+     if($this->data['Invoice Billing Country 2 Alpha Code']!=$store->data['Store Home Country Code 2 Alpha'])
+     $this->data['Invoice Category']='Export';
+     if($this->data['Invoice For']=='Staff')
+       $this->data['Invoice Category']='Staff';
+     if($this->data['Invoice For']=='Partner')
+       $this->data['Invoice Category']='Partner';
+   }else{
+      $this->data['Invoice Category']='All';
+   }
+   if(preg_match('/save/i',$args)){
+
+     $sql = sprintf ( "update `Invoice Dimension` set `Invoice Category`=%s  where `Invoice Key`=%d"
+		      , prepare_mysql($this->data['Invoice Category'])
+		      , $this->data ['Invoice Key'] 
+		      );
+     if (! mysql_query ( $sql ))
+       exit ( "$sql\n xcan not update invoice dimension after cat\n" );
+     
+   }
+
+ }
  
  
 }

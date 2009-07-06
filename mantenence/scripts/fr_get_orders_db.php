@@ -929,7 +929,7 @@ $header_data['Order Main Source Type']='Unknown';
       $data['tax_rate']=.175;
 
  $exchange=1;
-    $sql=sprintf("select `Exchange` from `History Currency Exchange Dimension` where `Currency Pair`='GBPEUR' and `Date`=DATE(%s)",prepare_mysql($date_inv));
+    $sql=sprintf("select `Exchange` from `History Currency Exchange Dimension` where `Currency Pair`='EURGBP' and `Date`=DATE(%s)",prepare_mysql($date_inv));
     $res3=mysql_query($sql);
     // print $sql;
     if($row3=mysql_fetch_array($res3, MYSQL_ASSOC)){
@@ -969,7 +969,7 @@ $header_data['Order Main Source Type']='Unknown';
 
 	 
 	 
-	 $sql=sprintf("delete from `Order No Product Transaction Fact` where ``Metadata`=%s",prepare_mysql($store_code.$order_data_id));
+	 $sql=sprintf("delete from `Order No Product Transaction Fact` where `Metadata`=%s",prepare_mysql($store_code.$order_data_id));
 	 if(!mysql_query($sql))
 	   print "$sql Warning can no delete old order";
 
@@ -979,16 +979,16 @@ $header_data['Order Main Source Type']='Unknown';
 
 	 if(!mysql_query($sql))
 	   print "$sql Warning can no delete old order";
-	 $sql=sprintf("delete from `Invoice Dimension` where `Invoice `Metadata`=%s",prepare_mysql($store_code.$order_data_id));
+	 $sql=sprintf("delete from `Invoice Dimension` where `Invoice Metadata`=%s",prepare_mysql($store_code.$order_data_id));
 	 if(!mysql_query($sql))
 	   print "$sql Warning can no delete old inv";
-	 $sql=sprintf("delete from `Delivery Note Dimension` where `Delivery Note `Metadata`=%s",prepare_mysql($store_code.$order_data_id));
+	 $sql=sprintf("delete from `Delivery Note Dimension` where `Delivery Note Metadata`=%s",prepare_mysql($store_code.$order_data_id));
 	 if(!mysql_query($sql))
 	   print "$sql Warning can no delete old dn";
-	 $sql=sprintf("delete from `Order Transaction Fact` where ``Metadata`=%s",prepare_mysql($store_code.$order_data_id));
+	 $sql=sprintf("delete from `Order Transaction Fact` where `Metadata`=%s",prepare_mysql($store_code.$order_data_id));
 	 if(!mysql_query($sql))
 	   print "$sql Warning can no delete tf";
- $sql=sprintf("delete from `Inventory Transaction Fact` where ``Metadata`=%s and `Inventory Transaction Type`='Sale'   ",prepare_mysql($store_code.$order_data_id));
+ $sql=sprintf("delete from `Inventory Transaction Fact` where `Metadata`=%s and `Inventory Transaction Type`='Sale'   ",prepare_mysql($store_code.$order_data_id));
 	 if(!mysql_query($sql))
 	   print "$sql Warning can no delete old inv";
 	 

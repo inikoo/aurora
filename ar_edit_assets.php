@@ -344,7 +344,7 @@ case('edit_departments'):
    }else{
      $sql="select count(*) as total `Product Department Dimension`   $where ";
 
-     $res=mysql_query($sql);
+     $result=mysql_query($sql);
      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
       	$total_records=$row['total'];
 	$filtered=$total_records-$total;
@@ -501,7 +501,7 @@ $where=" ";
 
    $sql="select count(*) as total from `Store Dimension`   $where $wheref";
 
-   $res=mysql_query($sql);
+   $result=mysql_query($sql);
    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      $total=$row['total'];
    }
@@ -510,7 +510,7 @@ $where=" ";
    }else{
      $sql="select count(*) as total `Store Dimension`   $where ";
 
-     $res=mysql_query($sql);
+     $result=mysql_query($sql);
      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
        $filtered=$row['total']-$total;$total_records=$row['total'];
      }
@@ -542,7 +542,7 @@ $where=" ";
    
    $res = mysql_query($sql);
    $adata=array();
-   //  print "$sql";
+   //   print "$sql";
    while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
      if($row['Store For Sale Products']>0){
        $delete='<img src="art/icons/cross.png" /> <span conclick="close_store('.$row['Store Key'].')"  id="del_'.$row['Store Key'].'" style="cursor:pointer">'._('Close').'<span>';
@@ -682,7 +682,7 @@ case('edit_families'):
   
     $sql="select count(*) as total from `Product Family Dimension`   F   $where $wheref";
 
-   $res=mysql_query($sql);
+   $result=mysql_query($sql);
    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      $total=$row['total'];
    }
@@ -691,7 +691,7 @@ case('edit_families'):
    }else{
      $sql="select count(*) as total  from `Product Family Dimension`  F  $where ";
 
-     $res=mysql_query($sql);
+     $result=mysql_query($sql);
      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
        $filtered=$row['total']-$total; $total_records=$row['total'];
      }
@@ -900,7 +900,7 @@ case('edit_products'):
   
     $sql="select count(*) as total from `Product Dimension`   P   $where $wheref";
 
-   $res=mysql_query($sql);
+   $result=mysql_query($sql);
    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      $total=$row['total'];
    }
@@ -909,7 +909,7 @@ case('edit_products'):
    }else{
      $sql="select count(*) as total  from `Product Dimension`  P  $where ";
 
-     $res=mysql_query($sql);
+     $result=mysql_query($sql);
      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
        $filtered=$row['total']-$total; $total_records=$row['total'];
      }

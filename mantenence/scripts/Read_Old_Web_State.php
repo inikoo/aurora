@@ -58,7 +58,7 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 	       ,prepare_mysql($code)
 	       );
   //print $sql;
-   mysql_query($sql);
+  mysql_query($sql,$con);
    $num_affected=mysql_affected_rows();
    if($num_affected>0){
     print "$code updated\n";

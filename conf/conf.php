@@ -787,6 +787,7 @@ $default_state=array(
 				       ),
 		     'report'=>array(
 				     'sales'=>array(
+						    'store_key'=>1,
 						    'from'=>'',
 						    'to'=>'',
 						    'period'=>'',
@@ -794,6 +795,7 @@ $default_state=array(
 						    'order_dir'=>'desc',
 						    'sf'=>0,
 						    'nr'=>25,
+						    'plot'=>'sales_share_by_store'
 						    ),
 				     'pickers'=>array(
 						 'order'=>'units',
