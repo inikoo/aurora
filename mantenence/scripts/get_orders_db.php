@@ -1218,7 +1218,7 @@ if(preg_match('/^(x5686842-t|IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691
 	$order->update_dispatch_state('Dispached');
 
 	$order->load('totals');
-
+	$invoice->categorize('save');
       }else if($tipo_order==8 ){
 
 // 	$data['Order Type']='Order';
@@ -1336,10 +1336,28 @@ if(preg_match('/^(x5686842-t|IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691
 			      );
 	  // $order->create_invoice_simple($data_invoice,$data_invoice_transactions);
 	  $invoice=new Invoice ('create',$data_invoice,$data_invoice_transactions,$order->id); 
-	  }else{
+	  $invoice->data['Invoice Paid Date']=$date_inv; 
+	  $invoice->pay('full',
+			array(
+			      'Invoice Items Net Amount'=>round($header_data['total_items_charge_value'],2)-$total_credit_value-$extra_shipping
+			      ,'Invoice Total Net Amount'=>round($header_data['total_net'],2)
+			      ,'Invoice Total Tax Amount'=>round($header_data['tax1']+$header_data['tax2'],2)
+			      ,'Invoice Total Amount'=>round($header_data['total_topay'],2)
+			      ));
+	  $order-> update_payment_state('Paid');	
+       
+	$order->update_dispatch_state('Dispached');
 
+	$order->load('totals');
+	$invoice->categorize('save');
+	  
+	  }else{
+	    
 	    $order->no_payment_applicable();
+	$order->load('totals');
 	  }
+
+
 
 
 
@@ -1347,7 +1365,13 @@ if(preg_match('/^(x5686842-t|IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691
 	  $order->cancel();
 
       }
-      
+      		$dn->pick_historic($data_dn_transactions);
+	$order->update_dispatch_state('Ready to Pack');
+	
+	$dn->pack('all');
+	$order->update_dispatch_state('Ready to Ship');
+	$dn->dispatch('all');
+	$order->update_dispatch_state('Dispached');
       
       $sql="update orders_data.orders set last_transcribed=NOW() where id=".$order_data_id;
       mysql_query($sql);

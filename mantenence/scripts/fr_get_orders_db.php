@@ -41,7 +41,7 @@ srand(12344);
 
 $sql="select * from  fr_orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed)  order by filename  ";
 //$sql="select * from  fr_orders_data.orders where filename like '%refund.xls'   order by filename";
-//$sql="select * from  fr_orders_data.orders  where filename like '/mnt/%.xls'  order by filename";
+$sql="select * from  fr_orders_data.orders  where filename like '/mnt/%.xls'  order by filename";
 
 
 $contador=0;
@@ -1198,6 +1198,7 @@ $header_data['Order Main Source Type']='Unknown';
 	$order->update_dispatch_state('Dispached');
 
 	$order->load('totals');
+		$invoice->categorize('save');
 
       }else if($tipo_order==8 ){
 
@@ -1253,7 +1254,7 @@ $header_data['Order Main Source Type']='Unknown';
 	  $payment_method=parse_payment_method($header_data['pay_method']);
 	  
 	  
- $taxable='Yes';
+	  $taxable='Yes';
 	  $tax_code='UNK';
 	  
 	  if($header_data['total_net']!=0){

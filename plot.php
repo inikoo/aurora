@@ -42,14 +42,14 @@ $tipo=$_REQUEST['dtipo'];
 include_once('report_dates.php');
 $int=prepare_mysql_dates($from,$to,'`Invoice Date`','date start end');
 
-$sql=sprintf("select CONCAT(`Store Code`,':',`Invoice Category`) as tag from `Invoice Dimension`  left join `Store Dimension` S on (S.`Store Key`=`Invoice Store Key`) where true %s group by `Invoice Store Key`,`Invoice Category`",$int[0]);
+$sql=sprintf("select CONCAT(`Store Code`,'',`Invoice Category`) as tag from `Invoice Dimension`  left join `Store Dimension` S on (S.`Store Key`=`Invoice Store Key`) where true %s group by `Invoice Store Key`,`Invoice Category`",$int[0]);
 
 $fields='"date"';
 
  $result=mysql_query($sql);
   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
-    $fields.=',"'.$row['tag'].'"';
+    $fields.=',"'.$row['tag'].'","tip_'.$row['tag'].'"';
     $yfields[]=array('label'=>$row['tag'],'name'=>$row['tag'],'axis'=>'formatCurrencyAxisLabel');
     
     
