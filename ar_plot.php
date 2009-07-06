@@ -25,8 +25,9 @@ case('sales_share_by_store'):
     include_once('report_dates.php');
     $int=prepare_mysql_dates($from,$to,'`Invoice Date`','date start end');
     
-    $sql=sprintf("select date_format(`First Day`,'%%c') as month, `First Day` as date, `Year Month` as yearmonth  from `Month Dimension` where `First Day`>%s and `First Day` <%s ; ",prepare_mysql($from),prepare_mysql($to));
-    print $sql;
+    $_int=preg_replace('/Invoice Date/i','First Day',$int[0]);;
+    $sql=sprintf("select date_format(`First Day`,'%%c') as month, `First Day` as date, `Year Month` as yearmonth  from `Month Dimension` where true  %s ; ",$_int);
+    // print $sql;
     
     $data=array();
     $res = mysql_query($sql);
@@ -34,7 +35,7 @@ case('sales_share_by_store'):
     $last_month='';
 
 
-    $sql=sprintf("select CONCAT(`Store Code`,':',`Invoice Category`) as tag from `Invoice Dimension`  left join `Store Dimension` S on (S.`Store Key`=`Invoice Store Key`) where true %s group by `Invoice Store Key`,`Invoice Category`",$int[0]);
+    $sql=sprintf("select CONCAT(`Store Code`,'',`Invoice Category`) as tag from `Invoice Dimension`  left join `Store Dimension` S on (S.`Store Key`=`Invoice Store Key`) where true %s group by `Invoice Store Key`,`Invoice Category`",$int[0]);
     $result=mysql_query($sql);
     $yfields=array();
     while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
@@ -66,17 +67,18 @@ case('sales_share_by_store'):
 
 
 
-   print_r($data);
-   $sql=sprintf("select  CONCAT(`Store Code`,':',`Invoice Category`) as tag,date_format(`Invoice Date`,'%%Y%%m')  as yearmonth,sum(`Invoice Total Net Amount`)as asales from `Invoice Dimension` left join `Store Dimension` S on (S.`Store Key`=`Invoice Store Key`) where true %s   group by  yearmonth,CONCAT(`Store Code`,':',`Invoice Category`) ",$int[0]);
+   //   print_r($data);
+   $sql=sprintf("select  CONCAT(`Store Code`,'-',`Invoice Category`) as tag2,CONCAT(`Store Code`,'',`Invoice Category`) as tag,date_format(`Invoice Date`,'%%Y%%m')  as yearmonth,sum(`Invoice Total Net Amount`)as asales from `Invoice Dimension` left join `Store Dimension` S on (S.`Store Key`=`Invoice Store Key`) where true %s   group by  yearmonth,CONCAT(`Store Code`,':',`Invoice Category`) ",$int[0]);
    //print $sql;
    $res=mysql_query($sql);
    while($row=mysql_fetch_array($res)){
-     //     print $row['yearmonth']."\n";
+     //   print $row['yearmonth']."\n";
       if(isset($index[$row['yearmonth']])){
 	$_index=$index[$row['yearmonth']];
+	//print $_index."\n";
 	$data[$_index][$row['tag']]=(float)$row['asales'];
 
-	$data[$_index]['tip_'.$row['tag']]=_('Sales')."\n".strftime("%b %y",strtotime($data[$_index]['_date']))."\n".money($row['asales']);
+	$data[$_index]['tip_'.$row['tag']]=$row['tag2'].': '._('Sales')."\n".strftime("%b %y",strtotime($data[$_index]['_date']))."\n".money($row['asales']);
       }
     }
    //  print_r($data);
