@@ -73,8 +73,8 @@
 <b>{$total_invoices}</b> <img id="invoices" style="vertical-align:middle;cursor:pointer" title="{t}Display orders invoiced in this period{/t}"src="art/icons/magnify-clip.png"/> orders has been invoiced during this period ({$days}), which amounts to a net total of <b>{$total_net}</b>.{if $todo_orders>0}{/if } 
 </p>
 <table class="report_sales1">
-<tr><td></td><td>{t}Invoices{/t}</td><td>{t}Net Sales{/t}</td><td>{t}Tax{/t}</td><td>{t}Refunds{/t}</td><td>{t}Refund Value{/t}</td></tr>
-<tr class="first"><td class="label">{$home}</td><td>{$invoices_home} <img id="invoices_home" style="vertical-align:middle;cursor:pointer" title="{t}Display home orders invoiced in this period{/t}"src="art/icons/magnify-clip.png" /></td><td>{$net_home}</td><td>{$tax_home}</td><td>{$refund_invoices_home}</td><td>{$refund_home}</td></tr>
+<tr><td></td><td>{t}Invoices{/t}</td><td>{t}Net Sales{/t}</td><td>{t}Tax{/t}</td></tr>
+<tr class="first"><td class="label">{$home}</td><td>{$invoices_home} <img id="invoices_home" style="vertical-align:middle;cursor:pointer" title="{t}Display home orders invoiced in this period{/t}"src="art/icons/magnify-clip.png" /></td><td>{$net_home}</td><td>{$tax_home}</td></tr>
 
 <tr class="first"><td class="label">{t}Exports{/t}</td><td>{$invoices_nohome} <img id="invoices_nohome" style="vertical-align:middle;cursor:pointer" title="{t}Display export orders invoiced in this period{/t}"src="art/icons/magnify-clip.png"/></td><td>{$net_nohome}</td><td>{$tax_nohome}</td><td>{$refund_invoices_nohome}</td><td>{$refund_nohome}</td></tr>
 

@@ -11,7 +11,7 @@ mt_srand(make_seed());
 $randval = mt_rand();
 
 
-$since='2004-06-14';
+$since='2009-01-01';
 
 //require_once '/var/www/aw/stock_functions.php';     
 
@@ -128,10 +128,10 @@ function get_tipo_order($ltipo,$header){
 
   $parent_id='';
   $tipo=0;
-  if(preg_match('/DELIVERY NOTE|nota de envio|BON DE COMMANDE/i',$ltipo)){
+  if(preg_match('/DELIVERY NOTE|nota de envio|BON DE COMMANDE|VERSANDANZEIGE/i',$ltipo)){
 
     $tipo=1;
-  }elseif(preg_match('/FACTURE. sample order|facture|facutura|FACTURE/i',$ltipo)){
+  }elseif(preg_match('/FACTURE. sample order|facture|facutura|FACTURE|RECHNUNG/i',$ltipo)){
     $tipo=2;
   }elseif(preg_match('/^ANNULER/i',$ltipo)){
     $tipo=3;
@@ -169,7 +169,7 @@ function get_tipo_order($ltipo,$header){
 
  }elseif(preg_match('/credit|credit note/i',$ltipo)){
     $tipo=10;
-  }elseif(preg_match('/^quote/i',$ltipo)){
+  }elseif(preg_match('/^quote|ANGEBOT/i',$ltipo)){
     $tipo=11;
 }elseif(preg_match('/^return to supplier/i',$ltipo)){
         $tipo=12;

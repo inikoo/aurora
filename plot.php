@@ -21,6 +21,50 @@ $options='';
 $staked=false;
 
 switch($tipo){
+
+case('sales_share_by_store');
+$staked=true;
+
+$dtipo='y';
+if(isset($_REQUEST['dtipo']))
+  $dtipo=$_REQUEST['dtipo'];
+
+$extra='';
+if($dtipo=='y'){
+  $y=date('Y');
+  if(isset($_REQUEST['y']))
+  $y=$_REQUEST['y'];
+  $extra='&y='.$y;
+}
+$ar_address='ar_plot.php?tipo='.$tipo.'&dtipo='.$dtipo.$extra;
+
+$tipo=$_REQUEST['dtipo'];
+include_once('report_dates.php');
+$int=prepare_mysql_dates($from,$to,'`Invoice Date`','date start end');
+
+$sql=sprintf("select CONCAT(`Store Code`,':',`Invoice Category`) as tag from `Invoice Dimension`  left join `Store Dimension` S on (S.`Store Key`=`Invoice Store Key`) where true %s group by `Invoice Store Key`,`Invoice Category`",$int[0]);
+
+$fields='"date"';
+
+ $result=mysql_query($sql);
+  while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+
+    $fields.=',"'.$row['tag'].'"';
+    $yfields[]=array('label'=>$row['tag'],'name'=>$row['tag'],'axis'=>'formatCurrencyAxisLabel');
+    
+    
+    
+
+  }
+
+   $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category','axis'=>'fdate');
+   $style='size:1';
+   $tipo_chart='ColumnChart';
+
+break;
+
+
+
 case('customer_month_population');
 
   $ar_address='ar_plot.php?tipo='.$tipo;

@@ -7,12 +7,12 @@ if (!$LU or !$LU->isLoggedIn() or !isset($smarty)) {
 
 
 
-$tipo=$_REQUEST['tipo'];
+
 if($tipo=='f'){
 
   $from=$_REQUEST['from'];
   $to=$_REQUEST['to'];
-   $title=_('Sales Report');
+  $title=_('Sales Report');
  }elseif($tipo=='w'){
    $year=$_REQUEST['y'];
    $week=$_REQUEST['w'];
@@ -81,7 +81,7 @@ if($tipo=='f'){
 		);
    }
    
-
+   $link="&tipo=w&y=".$year."&w=".$week;
     $smarty->assign('w',$w);
 
 
@@ -140,8 +140,8 @@ if($tipo=='f'){
 		);
    }
    
-
-    $smarty->assign('w',$w);
+   $link="&tipo=m&y=".$year."&m=".$month;
+   $smarty->assign('w',$w);
 
 
 
@@ -150,7 +150,9 @@ if($tipo=='f'){
 
 
  }elseif($tipo=='y'){
-   $year=$_REQUEST['y'];
+  
+
+  $year=$_REQUEST['y'];
 
    
    $_time=mktime(0, 0, 0,1 ,1 , $year);
@@ -171,7 +173,7 @@ if($tipo=='f'){
      $m[]=substr(strftime("%b", mktime(0, 0, 0, $_m, 1, 2000)),0,1);
      
    }
-
+   $link="&tipo=y&y=".$year;
     $smarty->assign('m',$m);
 
 
