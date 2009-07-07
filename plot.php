@@ -60,17 +60,20 @@ $int=prepare_mysql_dates($from,$to,'`Invoice Date`','date start end');
 $sql=sprintf("select CONCAT(`Store Code`,'',`Invoice Category`) as tag from `Invoice Dimension`  left join `Store Dimension` S on (S.`Store Key`=`Invoice Store Key`) where true %s group by `Invoice Store Key`,`Invoice Category`",$int[0]);
 
 $fields='"date"';
-
+ $yfields=array();
  $result=mysql_query($sql);
   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
     
 
     if($_tipo=='sales_by_store'){
       $fields.=',"'.$row['tag'].'","tip_'.$row['tag'].'"';
-      $yfields[]=array('label'=>$row['tag'],'name'=>$row['tag'],'axis'=>'formatCurrencyAxisLabel');
+      $yfields[]=array('label'=>$row['tag'],'name'=>$row['tag']);
+      $yfield_label_type='formatCurrencyAxisLabel';
     }else{
       $fields.=',"share_'.$row['tag'].'","tip_share_'.$row['tag'].'"';
-      $yfields[]=array('label'=>"share_".$row['tag'],'name'=>"share_".$row['tag'],'axis'=>'formatNumberAxisLabel');
+      $yfields[]=array('label'=>"share_".$row['tag'],'name'=>"share_".$row['tag']);
+      $yfield_label_type='formatPercentageAxisLabel';
+
     }
     
     
@@ -247,10 +250,12 @@ break;
    // print $ar_address;
    $fields='"tip_out","out","date","bonus","tip_bonus"';
    $yfields=array(
-		  array('label'=>_('Sold Outers'),'name'=>'out','axis'=>'formatNumberAxisLabel','style'=>'size:5,lineSize:2','type'=>'line'),
-		  array('label'=>_('Bonus Outers'),'name'=>'bonus','axis'=>'formatNumberAxisLabel','style'=>'size:5,lineSize:2')
+		  array('label'=>_('Sold Outers'),'name'=>'out','style'=>'size:5,lineSize:2','type'=>'line'),
+		  array('label'=>_('Bonus Outers'),'name'=>'bonus','style'=>'size:5,lineSize:2')
 
 		  );
+
+   $yfield_label_type='formatCurrencyAxisLabel';
    $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category','axis'=>'fdate');
    $style='size:10';
    $tipo_chart='ColumnChart';
@@ -266,7 +271,7 @@ break;
  case('product_stock_history'):
    $ar_address='ar_assets.php?tipo=plot_daystock';
    $fields='"stock","day","tip"';
-		  $yfields=array(array('label'=>_('Outers'),'name'=>'stock','axis'=>'formatNumberAxisLabel','style'=>''));
+		  $yfields=array(array('label'=>_('Outers'),'name'=>'stock','style'=>''));
    $xfield=array('label'=>_('Date'),'name'=>'day');
    $style='size:5,lineSize:1';
  $tipo_chart='CartesianChart';
@@ -275,7 +280,9 @@ break;
    $title=_("Total Net Sales per Month");
    $ar_address='ar_orders.php?tipo=plot_monthsales';
    $fields='"sales","tip_sales","date"';
-   $yfields=array(array('label'=>_('Month Net Sales'),'name'=>'sales','axis'=>'formatCurrencyAxisLabel','style'=>''));;
+   $yfields=array(array('label'=>_('Month Net Sales'),'name'=>'sales','style'=>''));;
+      $yfield_label_type='formatCurrencyAxisLabel';
+
    $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category','axis'=>'justyears');
    $style='';
    $tipo_chart='LineChart';
@@ -287,7 +294,8 @@ break;
    $fields='"sales_diff","tip_sales_diff","date"';
    $yfields=array(
 		  array('label'=>_('Month Net Sales'),'name'=>'sales_diff','axis'=>'formatCurrencyAxisLabel','style'=>'size:10,color: 0x62a74b')
-		  );;
+		  );
+   $yfield_label_type='formatCurrencyAxisLabel';
    $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category','axis'=>'justyears');
    $tipo_chart='ColumnChart';$style='';
    break;
@@ -296,8 +304,10 @@ break;
    $ar_address='ar_plot.php?tipo=net_diff1y_sales_month';
    $fields='"sales_diff_per","tip_sales_diff_per","date"';
    $yfields=array(
-		  array('label'=>_('Month Net Sales'),'name'=>'sales_diff_per','axis'=>'formatPercentageAxisLabel','style'=>'size:10,color: 0x62a74b')
+		  array('label'=>_('Month Net Sales'),'name'=>'sales_diff_per','style'=>'size:10,color: 0x62a74b')
 		  );;
+   
+   $yfield_label_type='formatPercentageAxisLabel';
    $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category','axis'=>'justyears');
    $tipo_chart='ColumnChart';$style='';
    break;
@@ -454,6 +464,7 @@ var jsonData = new YAHOO.util.DataSource( "'.$ar_address.'" );
 
  var seriesDef = ['."\n";
 $i=0;
+
 foreach($yfields as $yfield){
 
   if(isset($yfield['type']))
@@ -463,10 +474,15 @@ foreach($yfields as $yfield){
   $out.=($i>0?',':'').'{  '.$type.'  displayName: "'.$yfield['label'].'",  yField: "'.$yfield['name'].'" '.(isset($yfield['style'])?',style:{'.$yfield['style'].'}':'').'}'."\n";
   $i++;
 }
-$out.='];'."\n".'var yAxis = new YAHOO.widget.NumericAxis();
-yAxis.labelFunction = "'.$yfield['axis'].'";
+$out.='];'."\n".'var yAxis = new YAHOO.widget.NumericAxis();';
 
-';
+if(isset($yfield_label_type))
+    $out.='yAxis.labelFunction = "'.$yfield_label_type.'";';
+
+else
+  $out.='yAxis.labelFunction = "formatNumberAxisLabel";';
+
+
 if(isset($max))
   $out.='yAxis.maximum = '.$max.';'; 
 $out.='
