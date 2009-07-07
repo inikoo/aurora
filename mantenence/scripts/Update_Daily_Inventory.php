@@ -20,14 +20,14 @@ if (!$db){print "Error can not access the database\n";exit;}
 require_once '../../common_functions.php';
 mysql_query("SET time_zone ='UTC'");
 mysql_query("SET NAMES 'utf8'");
-require_once '../../myconf/conf.php';           
+require_once '../../conf/conf.php';           
 date_default_timezone_set('Europe/London');
 $not_found=00;
 
 
 $first_day_with_data=strtotime("2007-03-24");
 
-$sql="select `Part Status`,`Part SKU`,`Part Valid From`,`Part Valid To` from `Part Dimension` where `Part Key`=9000  ";
+$sql="select `Part Status`,`Part SKU`,`Part Valid From`,`Part Valid To` from `Part Dimension` where `Part Key`=1  ";
 $resultx=mysql_query($sql);
 while($rowx=mysql_fetch_array($resultx, MYSQL_ASSOC)   ){
   
@@ -49,7 +49,7 @@ while($rowx=mysql_fetch_array($resultx, MYSQL_ASSOC)   ){
     }
 
 
-    print "------ $value_inicio $qty_inicio  \n";
+    //  print "------ $value_inicio $qty_inicio  \n";
 
 
 if($rowx['Part Status']=='In Use'){

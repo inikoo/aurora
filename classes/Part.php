@@ -122,21 +122,26 @@ class part{
       
       
       $sql=sprintf("select `Location Key` from `Inventory Transaction Fact` where `Part SKU`=%d group by `Location Key` ",$part_sku);
+      print $sql;
       $resultxxx=mysql_query($sql);
       while(($rowxxx=mysql_fetch_array($resultxxx, MYSQL_ASSOC))){
 	$skip=false;
 	$location_key=$rowxxx['Location Key'];
+	print $location_key.'_'.$this->data['Part SKU']."\n";
 	$pl=new PartLocation($location_key.'_'.$this->data['Part SKU']);
 	if($location_key==1){
 	  if($force=='all'){
 	    $_from=$this->data['Part Valid From'];
 	  }elseif($force=='last'){
+
 	    $_from=$pl->last_inventory_audit();
+	    // exit("$_from\n");
 	  }elseif($force=='continue'){
 	    $_from=$pl->last_inventory_date();
 	  }else{
 	    $_from=$pl->first_inventory_transacion();
 	  }
+	  print "$_from\n";
 	  if(!$_from)
 	    $skip=true;
 	  $from=strtotime($_from);
@@ -170,7 +175,7 @@ class part{
 	
 	
 	if($skip){
-	  print "No trasactions $part_sku $location_key "; 
+	  print "No trasactions: $part_sku $location_key \n"; 
 	  continue;
 	}
 	
@@ -800,8 +805,10 @@ class part{
     
     switch($key){
     case('Picking Location Key'):
+      $location_key=1;
+      return $location_key;
       break;
- case('Current Associated Locations'):
+    case('Current Associated Locations'):
 
       $associated=array();
       

@@ -36,14 +36,14 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   
   $date=$row['date'];
   $code=$row['code'];
-  //  print $sql;
+  //   print $sql;
   print $row['product_id']." $code                \r";
   $tipo=$row['tipo'];
   $qty=$row['quantity'];
   $notes=$row['notes'];
   $sql=sprintf("select `Product ID` from `Product Dimension` P where   `Product Code`=%s and `Product Same ID Valid From`<=%s and `Product Same ID Valid To`>=%s order by `Product Same ID Valid To` desc ",prepare_mysql($code),prepare_mysql($date),prepare_mysql($date));
   $result2=mysql_query($sql);
-  // print "$sql\n";
+   print "$sql\n";
   if($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ){
     $product_ID=$row2['Product ID'];
     
