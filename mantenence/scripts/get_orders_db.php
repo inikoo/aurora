@@ -1346,7 +1346,17 @@ if(preg_match('/^(x5686842-t|IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691
 			      ));
 	  $order-> update_payment_state('Paid');	
        
+	
+
+
+	$dn->pick_historic($data_dn_transactions);
+	$order->update_dispatch_state('Ready to Pack');
+	
+	$dn->pack('all');
+	$order->update_dispatch_state('Ready to Ship');
+	$dn->dispatch('all');
 	$order->update_dispatch_state('Dispached');
+
 
 	$order->load('totals');
 	$invoice->categorize('save');
@@ -1365,13 +1375,7 @@ if(preg_match('/^(x5686842-t|IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691
 	  $order->cancel();
 
       }
-      		$dn->pick_historic($data_dn_transactions);
-	$order->update_dispatch_state('Ready to Pack');
-	
-	$dn->pack('all');
-	$order->update_dispatch_state('Ready to Ship');
-	$dn->dispatch('all');
-	$order->update_dispatch_state('Dispached');
+      
       
       $sql="update orders_data.orders set last_transcribed=NOW() where id=".$order_data_id;
       mysql_query($sql);
