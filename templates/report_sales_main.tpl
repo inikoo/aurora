@@ -38,7 +38,7 @@
 {/if}
 {if $tipo=='w' or $tipo=='m' or $tipo=='d'}
 <table  class="calendar_year">
-<tr>
+<tr class="top">
 <td>w</td>
 <td>M</td>
 <td>T</td>
@@ -49,9 +49,9 @@
 <td>D</td>
 </tr>
 {foreach from=$w item=week}
-<tr>
+<tr class="day">
 <td><a href="report_sales_main.php?tipo=w&y={$week.year}&w={$week.number}">{$week.number}</a></td>
-<td><a href="report_sales_main.php?tipo=d&y={$week.year}&m={$week.m_mon}&d={$week.mon}">{$week.mon}</a></td>
+<td ><a href="report_sales_main.php?tipo=d&y={$week.year}&m={$week.m_mon}&d={$week.mon}">{$week.mon}</a></td>
 <td><a href="report_sales_main.php?tipo=d&y={$week.year}&m={$week.m_tue}&d={$week.tue}">{$week.tue}</a></td>
 <td><a href="report_sales_main.php?tipo=d&y={$week.year}&m={$week.m_wed}&d={$week.wed}">{$week.wed}</a></td>
 <td><a href="report_sales_main.php?tipo=d&y={$week.year}&m={$week.m_thu}&d={$week.thu}">{$week.thu}</a></td>
