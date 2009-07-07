@@ -17,13 +17,17 @@ if(!isset($_REQUEST['tipo']))
 $plot_type=$_REQUEST['tipo'];
 switch($plot_type){
 case('sales_share_by_store'):
+case('sales_share_by_store'):
+  
+  $tipo=$_REQUEST['dtipo'];
+    include_once('report_dates.php');
+    $int=prepare_mysql_dates($from,$to,'`Invoice Date`','date start end');
+
+
   if($_REQUEST['dtipo']=='y'){
     //Per month
 
-  // print $first_day;
-    $tipo=$_REQUEST['dtipo'];
-    include_once('report_dates.php');
-    $int=prepare_mysql_dates($from,$to,'`Invoice Date`','date start end');
+ 
     
     $_int=preg_replace('/Invoice Date/i','First Day',$int[0]);;
     $sql=sprintf("select date_format(`First Day`,'%%c') as month, `First Day` as date, `Year Month` as yearmonth  from `Month Dimension` where true  %s ; ",$_int);
@@ -41,10 +45,9 @@ case('sales_share_by_store'):
     while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
       $yfields[]=$row['tag'];
     }
-
-
    while($row=mysql_fetch_array($res)) {
      $index[$row['yearmonth']]=$i;
+     $total[$row['yearmonth']]=0;
 
      $tmp_data=array(
 		       'month'=>$row['month'],
@@ -65,10 +68,18 @@ case('sales_share_by_store'):
      $i++;
     }
 
+   $sql=sprintf("select date_format(`Invoice Date`,'%%Y%%m')  as yearmonth,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`)as asales from `Invoice Dimension` left join `Store Dimension` S on (S.`Store Key`=`Invoice Store Key`) where true %s   group by  yearmonth ",$int[0]);
+   //print $sql;
+   $res=mysql_query($sql);
+   while($row=mysql_fetch_array($res)){
+     $total[$row['yearmonth']]=$row['asales'];
+   }
 
+
+   // print_r($total);
 
    //   print_r($data);
-   $sql=sprintf("select  CONCAT(`Store Code`,'-',`Invoice Category`) as tag2,CONCAT(`Store Code`,'',`Invoice Category`) as tag,date_format(`Invoice Date`,'%%Y%%m')  as yearmonth,sum(`Invoice Total Net Amount`)as asales from `Invoice Dimension` left join `Store Dimension` S on (S.`Store Key`=`Invoice Store Key`) where true %s   group by  yearmonth,CONCAT(`Store Code`,':',`Invoice Category`) ",$int[0]);
+   $sql=sprintf("select  CONCAT(`Store Code`,'-',`Invoice Category`) as tag2,CONCAT(`Store Code`,'',`Invoice Category`) as tag,date_format(`Invoice Date`,'%%Y%%m')  as yearmonth,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`)as asales from `Invoice Dimension` left join `Store Dimension` S on (S.`Store Key`=`Invoice Store Key`) where true %s   group by  yearmonth,CONCAT(`Store Code`,'-',`Invoice Category`) ",$int[0]);
    //print $sql;
    $res=mysql_query($sql);
    while($row=mysql_fetch_array($res)){
@@ -78,10 +89,107 @@ case('sales_share_by_store'):
 	//print $_index."\n";
 	$data[$_index][$row['tag']]=(float)$row['asales'];
 
-	$data[$_index]['tip_'.$row['tag']]=$row['tag2'].': '._('Sales')."\n".strftime("%b %y",strtotime($data[$_index]['_date']))."\n".money($row['asales']);
+	$data[$_index]['tip_'.$row['tag']]=$row['tag2'].': '._('Net Sales')."\n".strftime("%b %y",strtotime($data[$_index]['_date']))."\n".money($row['asales'])."\n".percentage($row['asales'],$total[$row['yearmonth']]).' '._('of the total sales').".";
+	if($total[$row['yearmonth']]>0){
+	    $data[$_index]['share_'.$row['tag']]=(float)100*$row['asales']/$total[$row['yearmonth']];
+	    $data[$_index]['tip_share_'.$row['tag']]=$row['tag2'].': '._('Net Sales')."\n".strftime("%b %y",strtotime($data[$_index]['_date']))."\n".money($row['asales'])."\n".percentage($row['asales'],$total[$row['yearmonth']]).' '._('of the total sales').".";
+	  }
+	
+
       }
-    }
+   }
    //  print_r($data);
+   
+   $response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$data,
+			 )
+		   );
+
+      echo json_encode($response);
+   break;
+
+  } elseif($_REQUEST['dtipo']=='m'){
+    // Per day
+    $_int=preg_replace('/Invoice Date/i','Date',$int[0]);;
+    $sql=sprintf("select  `Date` as date  from `Date Dimension` where true  %s ; ",$_int);
+    // print $sql;
+    
+    $data=array();
+    $res = mysql_query($sql);
+    $i=0;
+    $last_month='';
+
+
+    $sql=sprintf("select CONCAT(`Store Code`,'',`Invoice Category`) as tag from `Invoice Dimension`  left join `Store Dimension` S on (S.`Store Key`=`Invoice Store Key`) where true %s group by `Invoice Store Key`,`Invoice Category`",$int[0]);
+    $result=mysql_query($sql);
+    $yfields=array();
+    while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+      $yfields[]=$row['tag'];
+    }
+   while($row=mysql_fetch_array($res)) {
+     $index[$row['date']]=$i;
+     $total[$row['date']]=0;
+     
+     if($_REQUEST['dtipo']=='m'){
+     $tmp_data=array(
+		       '_date'=>$row['date'],
+		       'date'=>strftime("%a %d",strtotime($row['date'])),
+		       );
+     }else{
+       $tmp_data=array(
+		       '_date'=>$row['date'],
+		       'date'=>strftime("%a %d %b %y",strtotime($row['date'])),
+		       );
+
+     }
+     
+
+
+     foreach($yfields as $field){
+       $tmp_data[$field]=0;
+       $tmp_data['tip_'.$field]=$field.': '._('no sales this day').".";
+
+     }
+
+     
+
+     $data[]=$tmp_data;
+
+     $i++;
+    }
+
+   $sql=sprintf("select Date(`Invoice Date`)  as date,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`)as asales from `Invoice Dimension` left join `Store Dimension` S on (S.`Store Key`=`Invoice Store Key`) where true %s   group by  date ",$int[0]);
+   //print $sql;
+   $res=mysql_query($sql);
+   while($row=mysql_fetch_array($res)){
+     $total[$row['date']]=$row['asales'];
+   }
+
+
+   // print_r($total);
+
+   //   print_r($data);
+   $sql=sprintf("select  CONCAT(`Store Code`,'-',`Invoice Category`) as tag2,CONCAT(`Store Code`,'',`Invoice Category`) as tag,Date(`Invoice Date`) as date,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`)as asales from `Invoice Dimension` left join `Store Dimension` S on (S.`Store Key`=`Invoice Store Key`) where true %s   group by  date,CONCAT(`Store Code`,'-',`Invoice Category`) ",$int[0]);
+   //print $sql;
+   $res=mysql_query($sql);
+   while($row=mysql_fetch_array($res)){
+     //   print $row['date']."\n";
+      if(isset($index[$row['date']])){
+	$_index=$index[$row['date']];
+	//print $_index."\n";
+	$data[$_index][$row['tag']]=(float)$row['asales'];
+
+	$data[$_index]['tip_'.$row['tag']]=$row['tag2'].': '._('Net Sales')."\n".strftime("%b %y",strtotime($data[$_index]['_date']))."\n".money($row['asales'])."\n".percentage($row['asales'],$total[$row['date']]).' '._('of the total sales').".";
+	if($total[$row['date']]>0){
+	  $data[$_index]['share_'.$row['tag']]=(float)100*$row['asales']/$total[$row['date']];
+	  $data[$_index]['tip_share_'.$row['tag']]=$row['tag2'].': '._('Net Sales')."\n".strftime("%b %y",strtotime($data[$_index]['_date']))."\n".money($row['asales'])."\n".percentage($row['asales'],$total[$row['date']]).' '._('of the total sales').".";
+	  }
+	
+
+      }
+   }
+   // print_r($index);
    
    $response=array('resultset'=>
 		   array('state'=>200,

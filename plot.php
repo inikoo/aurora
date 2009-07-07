@@ -21,8 +21,10 @@ $options='';
 $staked=false;
 
 switch($tipo){
+case('sales_by_store');
 
 case('sales_share_by_store');
+$_tipo=$tipo;
 $staked=true;
 
 $dtipo='y';
@@ -35,7 +37,20 @@ if($dtipo=='y'){
   if(isset($_REQUEST['y']))
   $y=$_REQUEST['y'];
   $extra='&y='.$y;
+}elseif($dtipo=='m'){
+  $y=date('Y');
+  $m=date('m');
+
+  if(isset($_REQUEST['y']))
+    $y=$_REQUEST['y'];
+  if(isset($_REQUEST['m']))
+    $m=$_REQUEST['m'];
+  
+  $extra='&y='.$y.'&m='.$m;
 }
+
+
+
 $ar_address='ar_plot.php?tipo='.$tipo.'&dtipo='.$dtipo.$extra;
 
 $tipo=$_REQUEST['dtipo'];
@@ -48,16 +63,21 @@ $fields='"date"';
 
  $result=mysql_query($sql);
   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-
-    $fields.=',"'.$row['tag'].'","tip_'.$row['tag'].'"';
-    $yfields[]=array('label'=>$row['tag'],'name'=>$row['tag'],'axis'=>'formatCurrencyAxisLabel');
     
+
+    if($_tipo=='sales_by_store'){
+      $fields.=',"'.$row['tag'].'","tip_'.$row['tag'].'"';
+      $yfields[]=array('label'=>$row['tag'],'name'=>$row['tag'],'axis'=>'formatCurrencyAxisLabel');
+    }else{
+      $fields.=',"share_'.$row['tag'].'","tip_share_'.$row['tag'].'"';
+      $yfields[]=array('label'=>"share_".$row['tag'],'name'=>"share_".$row['tag'],'axis'=>'formatNumberAxisLabel');
+    }
     
     
 
   }
 
-   $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category','axis'=>'fdate');
+   $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category');
    $style='size:1';
    $tipo_chart='ColumnChart';
 

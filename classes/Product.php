@@ -36,6 +36,7 @@ class product{
   public $parts=false;
   public $parts_skus=false;
   public $parts_location=false;
+  public $mode='id';
   // Variable: new
   // Indicate if a new product was created
   public $new=false;
@@ -84,6 +85,7 @@ class product{
       }
       return;
     }elseif($tipo=='code'){
+      $this->mode='code';
       $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s and `Product Most Recent`='Yes' ",prepare_mysql($tag));
       // print "$sql  xxx\n";
       $result=mysql_query($sql);
@@ -636,42 +638,46 @@ class product{
     switch($key){
 
 
-case('Price Info'):
-  	$info=sprintf('<div class="ind_form"><span class="code">%s</span><br/><span class="name">%sx %s</span><br/><span class="price">%s</span><br/><span class="rrp">%s</span><br/>
+    case('Same Code 1 Quarter WAVG Quantity Delivered'):
+      return $this->data['Product Same Code 1 Quarter Acc Quantity Delivered']/12;
+      break;
+
+    case('Price Info'):
+      $info=sprintf('<div class="ind_form"><span class="code">%s</span><br/><span class="name">%sx %s</span><br/><span class="price">%s</span><br/><span class="rrp">%s</span><br/>
 </div>'
-		      ,$this->data['Product Code']
-		      ,$this->data['Product Units Per Case']
-		      ,$this->data['Product Name'],$this->get('Price Formated'),$this->get('RRP Formated')
-
-		      
+		    ,$this->data['Product Code']
+		    ,$this->data['Product Units Per Case']
+		    ,$this->data['Product Name'],$this->get('Price Formated'),$this->get('RRP Formated')
+		    
+		    
 );
-	return $info;
-  break;
-
-case('Price Anonymous Info'):
+      return $info;
+      break;
+      
+    case('Price Anonymous Info'):
   
-
-  $info=sprintf('<div class="prod_info"><span >%s</span><br><span >%s</span></div>'
-		,$this->get('Price Formated',$data)
-		,$this->get('RRP Formated',$data)
-		
-		      
+      
+      $info=sprintf('<div class="prod_info"><span >%s</span><br><span >%s</span></div>'
+		    ,$this->get('Price Formated',$data)
+		    ,$this->get('RRP Formated',$data)
+		    
+		    
 );
-	return $info;
-  break;
-case('Price Subfamily Info'):
+      return $info;
+      break;
+    case('Price Subfamily Info'):
   if(isset($data['inside form']) and $data['inside form']){
     $info=sprintf('<tr class="prod_info"><td colspan=4><span >%s</span><br><span >%s</span><br><span >%s</span></td></tr>'
-		,$this->data['Product Family Special Characteristic']
-		,$this->get('Price Formated',$data)
+		  ,$this->data['Product Family Special Characteristic']
+		  ,$this->get('Price Formated',$data)
 		,$this->get('RRP Formated',$data)
-		);
+		  );
   }else{
-  $info=sprintf('<div class="prod_info"><span >%s</span><br><span >%s</span><br><span >%s</span></div>'
+    $info=sprintf('<div class="prod_info"><span >%s</span><br><span >%s</span><br><span >%s</span></div>'
 		,$this->data['Product Family Special Characteristic']
-		,$this->get('Price Formated',$data)
-		,$this->get('RRP Formated',$data)
-		);
+		  ,$this->get('Price Formated',$data)
+		  ,$this->get('RRP Formated',$data)
+		  );
   }
   return $info;
   break;
@@ -3631,6 +3637,50 @@ function removeaccents($string)
 {
   return strtr($string,"é","e");
 } 
+
+/*
+    Function: update_same_code_valid_dates
+    Update Product Same Code Valid 
+*/
+
+function update_same_code_valid_dates()
+{
+ 
+
+
+ $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s order by `Product Valid From` limit 1",prepare_mysql($this->data['Product Code']));
+  $result2=mysql_query($sql);
+  if($row2=mysql_fetch_array($result2, MYSQL_ASSOC)){
+    $same_code_from=$row2['Product Valid From'];
+  }
+  $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s order by `Product Valid To` desc",prepare_mysql($this->data['Product Code']));
+  $most_recent='Yes';
+  $result2=mysql_query($sql);
+  //print "$sql\n";
+  while($row2=mysql_fetch_array($result2, MYSQL_ASSOC)){
+    if($most_recent=='Yes'){
+      $most_recent_key=$row2['Product Key'];
+      $same_code_to=$row2['Product Valid To'];
+    }
+    $sql=sprintf("update `Product Dimension` set  `Product Same Code Valid From`=%s ,`Product Same Code Valid To`=%s , `Product Same Code Most Recent Key`=%s,`Product Same Code Most Recent`=%s  where `Product Key`=%s ",prepare_mysql($same_code_from),prepare_mysql($same_code_to),$most_recent_key,prepare_mysql($most_recent),$this->id);
+    //   print "$sql\n\n";
+    mysql_query($sql);
+     if($most_recent=='Yes')
+      $most_recent='No';
+
+    
+    
+  }
+
+  
+
+
+
+
+
+
+}
+
 
 }
 ?>

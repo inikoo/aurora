@@ -7,8 +7,7 @@
 <div id="sub_header">
 {if $next.id>0}<span class="nav2 onright"><a href="product.php?id={$next.id}">{$next.code} &rarr; </a></span>{/if}
 {if $prev.id>0}<span class="nav2 onright" ><a href="product.php?id={$prev.id}">&larr; {$prev.code}</a></span>{/if}
-<span class="nav2 onright"><a href="family.php?id={$family_id}">&uarr; {$product->get('Product Family Name')}</a></span>
-<span class="nav2 onright"><a href="department.php?id={$department_id}">&uarr;&uarr; {$product->get('Product Main Department Name')}</a></span>
+
  <span class="nav2 onleft"><a  href="departments.php">{t}Departments{/t}</a></span>
   <span class="nav2 onleft"><a href="families.php">{t}Families{/t}</a></span>
   <span class="nav2 onleft"><a href="products.php">{t}Products{/t}</a></span>
@@ -24,150 +23,20 @@
 
       
       <div  class="yui-gd" style="clear:both;padding:0;width:100%">
-	<div class="yui-u first" >
-	  <div id="photo_container" style="margin-top:10px">
-	    <div style="border:1px solid #ddd;padding-top:0;width:220px;xheight:230px;text-align:center;margin:0 10px 0 0px">
-	      <span style="font-size:150%;font-weight:800">{$product->get('Product Code')}</span>
-	      <div id="imagediv"   style="border:1px solid #ddd;width:{$div_img_width}px;hceight:{$div_img_height}px;padding:5px 5px;xborder:none;cursor:pointer;xbackground:red;margin: 0 0 10px 9px;vertical-align:middle">
-		<img src="{ if $num_images>0}{$images[0].filename}{else}art/nopic.png{/if}"  style="vertical-align:middle;display:block;" width="{$img_width}px" valign="center" border=1  id="image"   alt="{t}Image{/t}"/>
-	      </div>
-	    </div>
-	    { if $num_images>1}
-	    <div style="width:160px;margin:auto;padding-top:5px"  >
-	      {foreach from=$images item=image  name=foo}
-	      {if $image.principal==0}
-	      <img  style="float:left;border:1px solid#ccc;padding:2px;margin:2px" src="{$image.tb}"  /></td>
-{/if}
-{/foreach}
-</div>
-	  {/if}
-            
-	    
-	  </div>
-	  
-	  
-	</div>
+
 
 	
-	<div class="yui-u">
-	  <h2>{$product->get('Product Name')} [{$product->get('Product ID')}]</h2>
-	  <div class="yui-b"  style="width:100%;">
-	    <div class="yui-g" style="width:100%;font-size:90%"   >
-              <div class="yui-u first">
-		<table    class="show_info_product">
-		  <td class="aright">
-		    
-		     <tr >
-		      <td><span id="web_status"   style="cursor:pointer">{$web_status}</span> 
-			    <img id="web_status_error" onclick="sincronize_all()" style="{if !$web_status_error}visibility:hidden;{/if}vertical-align:top;position:relative;bottom:2px;cursor:pointer"src="art/icons/exclamation.png" title="{$web_status_error_title}"/></td><td  class="aright">
-			 <img id="no_sincro_pages" title="{$data.nosincro_pages_why}" onclick="manual_check()" style="{if $data.sincro_pages==1}visibility:hidden;{/if}vertical-align:top;position:relative;bottom:2px;cursor:pointer" src="art/icons/page_error.png"/> 
-			 <img id="no_sincro_db" title="{$data.nosincro_db_why}" onclick="sincronizar()" src="art/icons/database_error.png" style="{if $data.sincro_db==1}visibility:hidden;{/if}vertical-align:top;position:relative;bottom:2px;cursor:pointer"/>  
-			 <span  id="online"  >{if $num_links>0}{t}Online{/t} ({$fnum_links}) {else}{t}Offline{/t}{/if}</span></td>
-		     </tr>
-		     <tr style="border-bottom:1px solid #5f84ae;">
-		       <td colspan=2><span id="edit_web_messages"></span></td>
-		     </tr>
-		</table>
-		<table    class="show_info_product">
-		    <tr>
-		      <td>{t}Sell Price{/t}:</td><td  class="price aright">{$product->get('formated price')}{if $product->get('Product Units per Case')>1} <span style="font-weight:400;color:#555">({$unit_price} {t}each{/t})</span>{/if}</td>
-		    </tr>
-		    <tr {if $product->get('Product Unitary RRP')==''}style="display:none"{/if} >
-		      <td>{t}RRP{/t}:</td><td  class="aright">{$product->get('formated unitary rrp')} {if $product->get('product Units per Case')>1}{t}each{/t}{/if}</td>
-		    </tr>
-		    
-		    <tr><td>{t}Sold Since{/t}:</td><td class="aright">{$product->get('formated product for sale since date')} </td>
-		      {if $edit} <td   class="aright" ><input style="text-align:right" class="date_input" size="8" type="text"  id="v_invoice_date"  value="{$v_po_date_invoice}" name="invoice_date" /></td>{/if}
-		    </tr>
-		    <tr><td id="outall_label" title="Total Sales">{t}TS{/t}:</td><td class="aright" >{$product->get('Formated Product Total Quantity Invoiced')} {t}Outers{/t}
-		    </td></tr>
-		    <tr style="display:none"><td id="awoutall_label" title="Average Weelky Sales" >{t}AWS{/t}:</td><td class="aright" >{$awtsoall} {t}Outers/w{/t}</td></tr>
-		    <tr><td id="awoutq_label" title="Average Weelky Sales (Last 12 weeks)">{t}AWSQ{/t}:<td class="aright" >{$product->get('Same Code 1 Quarter WAVG Quantity Delivered')} {t}Outers/w{/t}</td></tr>
-		</table>
-		<table    class="show_info_product" >
-		  {if $view_suppliers}
-		  {if $suppliers>0}
-		  {foreach from=$suppliers item=supplier key=supplier_id }
-		  <tr>
-		    <td>{t}Supplier{/t}:</td>
-		    <td><a href="supplier.php?id={$supplier_id}">{$supplier.name}</a></td>
-		  </tr>
-		  <tr><td>{t}Cost per{/t} :</td><td>{$supplier.formated_price}</td></tr>
-		  {/foreach}
-		  {else}
-		  <tr><td colspan=2 style="color:brown;font-weight:bold;cursor:pointer">{t}No supplier set{/t}</td></tr>
-		  {/if}
-		  {/if}
-		  
-		</table>
-	    </div>
-              <div class="yui-u">
-
-		{if $data.sale_status=='discontinued'}
-		<table  style="margin:0;padding:5px 10px;border-top:1px solid #574017;width:100%;background:#deceb2"  >
-		  <tr><td style="font-weight:800;font-size:160%;text-align:center">{t}Discontinued{/t}</td></tr>
-		</table>
-		{/if}
-		{if $data.sale_status=='tobediscontinued'}
-		<table  style="margin:0;padding:5px 10px;border-top:1px solid #574017;width:100%;background:#deceb2"  >
-		  <tr><td style="font-weight:800;font-size:160%;text-align:center">{t}Discontinued{/t}</td></tr>
-		</table>
-		{/if}
-		{if $data.sale_status=='nosale'}
-		<table  style="margin:0;padding:5px 10px;border-top:1px solid #c7cbe0;width:100%;background:#deceb2"  >
-		  <tr><td style="font-weight:800;font-size:160%;text-align:center">{t}Not for Sale{/t}</td></tr>
-		</table>
-		{/if}
-
-		<table   class="show_info_product" >
-		  <tr>
-		    <td>{t}Available{/t}:<td class="stock aright" id="stock">{$product->get('Product Availability')}</td>
-		  </tr>
-		  <tr>
-		    {if $nextbuy>0   }<tr><td rowspan="2">{t}Next shipment{/t}:</td><td>{$data.next_buy}</td></tr><tr><td class="noborder">{$data.nextbuy_when}</td>{/if}
-		    </tr>
-		</table>
-		{if $product->get('Number of Parts')>0}
-		<table class="show_info_product" style="float:right;width:100%"  >
-		  <tr>
-		    <td>{t}Parts{/t}:</td><td class="aleft">
-		      {foreach from=$product->parts_location item=part name=foo }
-		      <tr><td>{t}SKU{/t} <a href="part.php?sku={$part.sku}">{$part.sku}</a></td><td style="padding-left:10px"> {$part.location_code}({$part.stock})</td></tr>
-		      {/foreach}
-		</table>
-		{/if}
-
-		  
-		  <table  class="show_info_product">
-		    <tr ><td>{t}Unit Weight{/t}:</td><td class="aright">{$product->get('Formated Weight')}</td></tr>
-		    <tr><td>{t}Unit Dimensions{/t}:</td><td class="aright">{$data.dimension}</td></tr>
-		    <tr ><td>{t}Outer Weight{/t}:</td><td class="aright">{$data.oweight}{t}Kg{/t}</td></tr>
-		    <tr><td>{t}Outer Dimensions{/t}:</td><td class="aright">{$data.odimension}</td></tr>
-
-		  </table>
-		  <table  class="show_info_product">
-		    
-
-
-<tr>
-		      <td>{t}Categories{/t}:</td>
-		      <td>{$categories}</td>
-		    </tr>
-		    <tr>
-		      <td>{t}Material{/t}:</td>
-		      <td>{$materials}</td>
-		    </tr>
-		    <tr>
-		      <td>{t}Ingredients{/t}:</td>
-		      <td>{$ingredients}</td>
-		    </tr>
-		  </table>
-		
-              </div>
-	    </div>
-	  </div>
+	
+	  <h2>{$code}</h2>
+	   <div  class="clean_table_caption"  style="clear:both;">
+	     <div style="float:left;"><div id="table_info2" class="clean_table_info"> <span id="rtext2"></span> <span class="rtext_rpp" id="rtext_rpp2"></span> <span class="filter_msg"  id="filter_msg2"></span>  </div></div>
+	     <div class="clean_table_filter"  id="clean_table_filter2"><div class="clean_table_info"><span id="filter_name2">{$filter_name2}</span>: <input style="border-bottom:none" id='f_input2' value="{$filter_value2}" size=10/><div id='f_container2'></div></div></div>
+	     <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator2"></span></div></div>
+	   </div>
+	   <div  id="table2"   class="data_table_container dtable btable "> </div>
+	  
 	</div>
-      </div>
+     
       
       
       
@@ -190,16 +59,16 @@
     <table border=0 cellpadding="2" style="float:right;margin-top:20px;" class="view_options">
       <tr style="border-bottom:1px solid #ddd">
 	
-	<th><img src="art/icons/information.png" title="{t}Product Details{/t}"/></th>
+	<th style="display:none"><img src="art/icons/information.png" title="{t}Product Details{/t}"/></th>
 	{if $view_orders}
 	<th><img src="art/icons/chart_line.png" title="{t}Charts{/t}"/></th>
 	<th><img  src="art/icons/cart.png" title="{t}Orders{/t}"/></th>
 	{/if}
 	<th><img src="art/icons/user_green.png" title="{t}Customers{/t}"/></th>
-	<th><img src="art/icons/package.png" title="{t}Stock{/t}"/></th>
+	<th style="display:none"><img src="art/icons/package.png" title="{t}Stock{/t}"/></th>
       </tr>
       <tr style="height:18px;border-bottom:1px solid #ddd">
-	<td  id="change_view_details" 
+	<td  style="display:none" id="change_view_details" 
 	     {if $display.details==0}title="{t}Show Product Details{/t}" atitle="{t}Hide Product Details{/t}"{else}atitle="Hide Product Details"  title="{t}Hide Product Details{/t}"{/if} >
 	  <img {if $hide.details==0}style="opacity:0.2"{/if} src="art/icons/tick.png"  id="but_logo_details"  /></td>
 	{if $view_orders}
@@ -212,10 +81,10 @@
 	  <img {if $display.orders==0}style="opacity:0.2"{/if} src="art/icons/tick.png"    id="but_logo_orders"   /></td>
 	{/if}
 	<td  state="{$display.customers}" block="customers"   id="change_view_customers" {if $display.customers==0}title="{t}Show Customers who have ordered this product{/t}" atitle="{t}Hide Customers who have ordered this product{/t}"{else}atitle="{t}Show Customers who have ordered this product{/t}" title="{t}Hide Customers who have ordered this product{/t}"{/if} ><img {if $display.customers==0}style="opacity:0.2"{/if} src="art/icons/tick.png"    id="but_logo_customers"   /></td>
-	<td   state="{$display.stock_history}" block="stock_history"  id="change_view_stock_history" {if $display.stock_history==0}title="{t}Show Stock History{/t}" atitle="{t}Hide Stock History{/t}"{else}atitle="{t}Show Stock History{/t}" title="{t}Hide Stock History{/t}"{/if} ><img {if $display.stock_history==0}style="opacity:0.2"{/if} src="art/icons/tick.png"    id="but_logo_stock_history"   /></td>
+	<td  style="display:none"   state="{$display.stock_history}" block="stock_history"  id="change_view_stock_history" {if $display.stock_history==0}title="{t}Show Stock History{/t}" atitle="{t}Hide Stock History{/t}"{else}atitle="{t}Show Stock History{/t}" title="{t}Hide Stock History{/t}"{/if} ><img {if $display.stock_history==0}style="opacity:0.2"{/if} src="art/icons/tick.png"    id="but_logo_stock_history"   /></td>
 	
       </tr>
-      <tr><td  colspan="5" style="text-align:center"><a href="edit_product.php?id={$product->get('Product Most Recent Key')}">Edit Product</a></td></tr>
+     
 
       
     </table>

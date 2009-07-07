@@ -45,7 +45,7 @@ while($rowx=mysql_fetch_array($resultx, MYSQL_ASSOC)   ){
  
   //print $part->data['Part SKU']."\n";
   $part->load('calculate_stock_history','last');
- 
+  exit;
  }
 //   // $location_key=1;
 //   //$pl=new PartLocation(array('LocationPart'=>$location_key."_".$part_sku));

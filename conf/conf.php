@@ -661,7 +661,18 @@ $default_state=array(
 				       'tag'=>1,
 				       'edit'=>'description',
 				       'display'=>array('details'=>0,'plot'=>1,'orders'=>0,'customers'=>0,'stock_history'=>0),
-
+				       'server'=>array(
+						       'tag'=>'',
+						       'order'=>'store',
+						       'order_dir'=>'',
+						       'sf'=>0,
+						       'nr'=>15,
+						       'where'=>'where true',
+						       'f_field'=>'id',
+						       'f_value'=>'',
+						       'from'=>'',
+						       'to'=>''
+						       ),
 				       'orders'=>array(
 						       'order'=>'date',
 						       'order_dir'=>'',

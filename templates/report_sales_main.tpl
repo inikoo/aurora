@@ -77,7 +77,7 @@
  <div  id="plot_div" class="product_plot"  style="width:810px;xheight:325px;">
       
 
-<iframe id="the_plot" src ="plot.php?tipo={$plot_tipo}" frameborder=1 height="310" scrolling="no" width="100%"></iframe>
+<iframe id="the_plot" src ="plot.php?tipo={$plot_tipo}" frameborder=0 height="310" scrolling="no" width="100%"></iframe>
       <span style="position:relative;left:70px;">{$plot_title[$plot_tipo]}</span>
       <div id="plot_options_sales_bis" style="margin-left:30px;{if $plot_tipo!='timeplot_sales'}display:none{/if}">
 	<table>
