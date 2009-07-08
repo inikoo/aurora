@@ -84,20 +84,35 @@ class Family{
    }
 
    if(!isset($data['Product Family Main Department Key'])){
-     $department=new Department(0);
-   }else
+     
+     if(!isset($data['Product Family Store Key'])){
+       $store=new Store(1);
+     }else{
+       $store=new Store($data['Product Family Store Key']);
+
+     }
+
+     $data['Product Family Main Department Key']=0;
+     $data['Product Family Main Department Code']='';
+     $data['Product Family Main Department Name']='';
+     
+   }else{
      $department=new Department($data['Product Family Main Department Key']);
 
 
 
-   if(!$department->id){
-     $this->msg=_("Error: Can not find department");
-     return;
+     if(!$department->id){
+       $this->msg=_("Error: Can not find department");
+       return;
+     }
+       $data['Product Family Main Department Key']=$department->id;
+   $data['Product Family Main Department Code']=$department->get('Product Department Code');
+   $data['Product Family Main Department Name']=$department->get('Product Department Name');
+     $store=new Store($department->data['Product Department Store Key']);
    }
-
    //   print_r($department);
 
-   $store=new Store($department->data['Product Department Store Key']);
+   
    
    
 

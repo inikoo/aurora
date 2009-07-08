@@ -45,6 +45,57 @@ $column=0;
 $products=false;
 $count=0;
 
+$store_key=1;
+$dept_no_dept=new Department('code_store','ND',$store_key);
+if(!$dept_no_dept->id){
+  $dept_data=array(
+		   'code'=>'ND',
+		   'name'=>'Products Without Department',
+		   'store_key'=>$store_key
+		   );
+  $dept_no_dept=new Department('create',$dept_data);
+  $dept_no_dept_key=$dept_no_dept->id;
+}
+$dept_promo=new Department('code_store','Promo',$store_key);
+if(!$dept_promo->id){
+  $dept_data=array(
+		   'code'=>'Promo',
+		   'name'=>'Promotional Items',
+		   'store_key'=>$store_key
+		   );
+  $dept_promo=new Department('create',$dept_data);
+  
+}
+
+
+$dept_no_dept_key=$dept_no_dept->id;
+$dept_promo_key=$dept_promo->id;
+
+$fam_no_fam=new Family('code_store','PND_GB',$store_key);
+if(!$fam_no_fam->id){
+  $fam_data=array(
+		   'Product Family Code'=>'PND_GB',
+		   'Product Family Name'=>'Products Without Family',
+		   'Product Family Main Department Key'=>$dept_no_dept_key
+		   );
+  $fam_no_fam=new Family('create',$fam_data);
+  $fam_no_fam_key=$fam_no_fam->id;
+  $dept_no_dept->load('products_info');
+}
+$fam_promo=new Family('code_store','Promo_GB',$store_key);
+if(!$fam_promo->id){
+  $fam_data=array(
+		   'code'=>'Promo_GB',
+		   'name'=>'Promotional Items',
+		   'Product Family Main Department Key'=>$dept_promo_key
+		   );
+  $fam_promo=new Family('create',$fam_data);
+  $dept_promo->load('products_info');
+}
+
+
+$fam_no_fam_key=$fam_no_fam->id;
+$fam_promo_key=$fam_promo->id;
 
 
 
@@ -84,6 +135,8 @@ $new_family=true;
 
 
 $department_name='';
+$department_code='';
+
 $current_fam_name='';
 $current_fam_code='';
 $fam_position=-10000;
@@ -332,7 +385,19 @@ foreach($__cols as $cols){
 	$_w='';
       
 
-      
+      if($current_fam_code=='LavF / PF')
+	$current_fam_code='PF';
+      if($current_fam_code=='MIST / AM')
+	$current_fam_code='MIST';
+       if($current_fam_code=='LBI / IS')
+	$current_fam_code='LBI';
+
+       if($current_fam_code=='Leb - Lebp')
+	 $current_fam_code='Leb';
+       if($current_fam_code=='Bot/Pack/Wb')
+	 $current_fam_code='Bot';
+       
+
 
       $data=array(
 		  'product sales state'=>'For sale',
@@ -348,7 +413,7 @@ foreach($__cols as $cols){
 		  'product family code'=>$current_fam_code,
 		  'product family name'=>$current_fam_name,
 		  'product main department name'=>$department_name,
-		  'product main department code'=>$department_name,
+		  'product main department code'=>$department_code,
 		  'product special characteristic'=>$special_char,
 		  'product family special characteristic'=>$fam_special_char,
 		  'product net weight'=>$_w,
@@ -358,6 +423,15 @@ foreach($__cols as $cols){
       //     print_r($cols);
       //print_r($data);
       
+       if(preg_match('/^pi-|catalogue|^info|Mug-26x|OB-39x|SG-xMIXx|wsl-1275x|wsl-1474x|wsl-1474x|wsl-1479x|^FW-|^MFH-XX$|wsl-1513x|wsl-1487x|wsl-1636x|wsl-1637x/i',_trim($code))){
+
+	 $dept_key=$dept_promo_key;
+	 $data['Product Family Key']=$fam_promo_key;
+	 $data['Product main Department Key']=$dept_promo_key;
+
+
+       }
+
        	$product=new Product('create',$data);
 
 	$scode=_trim($cols[20]);
@@ -1102,7 +1176,7 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
     
     // print "Col $column\n";
     //print_r($cols);
-    if($cols[3]!='' and $cols[6]!=''){
+    if($cols[3]!='' and $cols[6]!=''  and $cols[3]!='SHOP-Fit' and $cols[3]!='ISH-94' and $cols[3]!='OB-108' and !preg_match('/^DB-/',$cols[3])  and !preg_match('/^pack-/i',$cols[3])  ){
       $fam_code=$cols[3];
       $fam_name=_trim( mb_convert_encoding($cols[6], "UTF-8", "ISO-8859-1,UTF-8"));
       $fam_position=$column;
@@ -1130,6 +1204,72 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
     if($cols[6]!='' and preg_match('/Sub Total/i',$cols[11])){
       $department_name=$cols[6];
       $department_position=$column;
+
+
+        $department_code=_trim($department_name);
+      if($department_code=='Ancient Wisdom Home Fragrance'){
+	$department_code='Home';
+	$department_name='AW Home Fragrance';
+      }
+      if($department_code=='Ancient Wisdom Aromatherapy Dept.'){
+	$department_code='Aroma';
+	$department_name='AW Aromatherapy Department';
+      }if($department_code=='Bathroom Heaven')
+	 $department_code='Bath';
+      if($department_code=='Exotic Incense Dept Order'){
+	$department_code='Incense';
+	$department_name='Exotic Incense Department';
+      }if($department_code=='While Stocks Last Order'){
+	$department_code='WSL';
+	$department_name='While Stocks Last';
+      }if($department_code=='Collectables Department'){
+	$department_code='Collec';
+      }
+      if($department_code=='Crystal Department'){
+	$department_code='Crystal';
+      }
+   if($department_code=='Cards, Posters & Gift Wrap'){
+	$department_code='Paper';
+      }
+   if($department_code=='Retail Display Stands'){
+	$department_code='RDS';
+      }
+   if($department_code=='Stoneware'){
+	$department_code='Stone';
+	$department_name='Stoneware Department';
+
+      }
+   if($department_code=='Jewellery Quarter'){
+	$department_code='Jewells';
+      }
+   if($department_code=='Relaxing Music Collection'){
+	$department_code='Music';
+      }
+ if($department_code=='BagsBags.Biz'){
+	$department_code='Bags';
+      }
+ if($department_code=='Christmas Time'){
+	$department_code='Xmas';
+      }
+
+if($department_code=='CraftsCrafts.biz'){
+	$department_code='Crafts';
+      }
+if($department_code=='Florist-Supplies.biz'){
+	$department_code='Flor';
+      }
+if($department_code=='Soft Furnishings & Textiles'){
+	$department_code='Textil';
+      }
+if($department_code=='Woodware Dept'){
+  $department_code='Wood';
+  $department_name='Woodware Department';
+
+      }
+
+
+
+
     }
     
     $posible_fam_code=$cols[3];
