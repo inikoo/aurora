@@ -83,31 +83,43 @@ if(isset($_REQUEST['code'])){
   $mode=$_SESSION['state']['product']['mode'];
  }
 $_SESSION['state']['product']['tag']=$tag;
-$mode=$_SESSION['state']['product']['mode']=$mode;
+$_SESSION['state']['product']['mode']=$mode;
 
 
 
 
 if($mode=='code'){
-  $sql=sprintf("select count(*) as num  from `Product Dimension` where `Product Code`=%s and `Product Most Recent`='Yes';",prepare_mysql($tag));
+  $sql=sprintf("select `Product ID`  from `Product Dimension` where `Product Code`=%s and `Product Most Recent`='Yes' group by `Product ID`;",prepare_mysql($tag));
+
   $result=mysql_query($sql);
-  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-    if($row['num']>1){
-      $_SESSION['state']['product']['server']['tag']=$tag;
-      $js_files[]= 'js/search.js';
-      $js_files[]='js/product.js.php'; 
-      $js_files[]='js/product_server.js.php'; 
-
-      $smarty->assign('css_files',$css_files);
-      $smarty->assign('js_files',$js_files);
-      $smarty->assign('code',$tag);
-
-      
-      $smarty->display('product_server.tpl');
-      exit;
-    }
+  
+  if(mysql_num_rows($result)>1){
+    $_SESSION['state']['product']['server']['tag']=$tag;
+    $js_files[]= 'js/search.js';
+    $js_files[]='js/product.js.php'; 
+    $js_files[]='js/product_server.js.php'; 
+    $smarty->assign('css_files',$css_files);
+    $smarty->assign('js_files',$js_files);
+    $smarty->assign('code',$tag);
+    $smarty->display('product_server.tpl');
+    exit;
   }
-}
+  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+     $tag=$row['Product ID'];
+     $mode='id';
+     $_SESSION['state']['product']['tag']=$tag;
+     $_SESSION['state']['product']['mode']=$mode;
+  }
+} 
+    
+    
+
+
+
+
+
+
+
 
 
 $product= new product($mode,$tag);

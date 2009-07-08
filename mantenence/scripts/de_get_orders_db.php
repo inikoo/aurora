@@ -37,7 +37,57 @@ $software='Get_Orders_DB.php';
 $version='V 1.0';//75693
 
 $Data_Audit_ETL_Software="$software $version";
-srand(12344);
+srand(12111);
+
+$store_key=3;
+
+$dept_no_dept=new Department('code_store','DE.ND',$store_key);
+if(!$dept_no_dept->id){
+  $dept_data=array(
+		   'code'=>'DE.ND',
+		   'name'=>'Products Without Department',
+		   'store_key'=>$store_key
+		   );
+  $dept_no_dept=new Department('create',$dept_data);
+  $dept_no_dept_key=$dept_no_dept->id;
+}
+$dept_promo=new Department('code_store','DE.Promo',$store_key);
+if(!$dept_promo->id){
+  $dept_data=array(
+		   'code'=>'DE.Promo',
+		   'name'=>'Promotional Items',
+		   'store_key'=>$store_key
+		   );
+  $dept_promo=new Department('create',$dept_data);
+  
+}
+
+
+$dept_no_dept_key=$dept_no_dept->id;
+$dept_promo_key=$dept_promo->id;
+
+$fam_no_fam=new Family('code_store','PNF_DE',$store_key);
+if(!$fam_no_fam->id){
+  $fam_data=array(
+		   'Product Family Code'=>'PNF_DE',
+		   'Product Family Name'=>'Products Without Family',
+		   'Product Family Main Department Key'=>$dept_no_dept_key
+		   );
+  $fam_no_fam=new Family('create',$fam_data);
+  $fam_no_fam_key=$fam_no_fam->id;
+}
+$fam_promo=new Family('code_store','Promo_DE',$store_key);
+if(!$fam_promo->id){
+  $fam_data=array(
+		   'code'=>'Promo_DE',
+		   'name'=>'Promotional Items',
+		   'Product Family Main Department Key'=>$dept_promo_key
+		   );
+  $fam_promo=new Family('create',$fam_data);
+  
+}
+$fam_no_fam_key=$fam_no_fam->id;
+$fam_promo_key=$fam_promo->id;
 
 $sql="select * from  de_orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed)  order by filename  ";
 //$sql="select * from  de_orders_data.orders where filename like '%refund.xls'   order by filename";
@@ -731,12 +781,34 @@ $header_data['Order Main Source Type']='Unknown';
        
       }
     
-     
+      $fam_key=$fam_no_fam_key;
+      $dept_key=$dept_no_dept_key;
+       if(preg_match('/^pi-|catalogue|^info|Mug-26x|OB-39x|SG-xMIXx|wsl-1275x|wsl-1474x|wsl-1474x|wsl-1479x|^FW-|^MFH-XX$|wsl-1513x|wsl-1487x|wsl-1636x|wsl-1637x/i',_trim($transaction['code']))){
+	 $fam_key=$fam_promo_key;
+	 $dept_key=$dept_promo_key;
+       }
+
+
+      $__code=preg_split('/-/',_trim($transaction['code']));
+      $__code=$__code[0];
+      $sql=sprintf('select * from `Product Family Dimension` where `Product Family Store Key`=%d and `Product Family Code`=%s'
+		   ,$store_key
+		   ,prepare_mysql($__code));
+      $result=mysql_query($sql);
+      if( ($__row=mysql_fetch_array($result, MYSQL_ASSOC))){
+	$fam_key=$__row['Product Family Key'];
+	$dept_key=$__row['Product Family Main Department Key'];
+      }
+      
+
 
       // print_r($transaction);
 
       $product_data=array(
-			  'product code'=>_trim($transaction['code'])
+			  'Product Store Key'=>$store_key
+			  ,'Product Main Department Key'=>$dept_key
+			  ,'Product Family Key'=>$fam_key
+			    ,'product code'=>_trim($transaction['code'])
 			  ,'product name'=>$description
 			  ,'product unit type'=>$unit_type
 			  ,'product units per case'=>$transaction['units']
@@ -757,7 +829,7 @@ $header_data['Order Main Source Type']='Unknown';
    
       // print_r($product_data);
      
-      $product=new Product('code-name-units-price',$product_data);
+      $product=new Product('code-name-units-price-store',$product_data);
       //      print "Done\n";
       //     "Ahh canto male pedict\n";
       if(!$product->id){
@@ -1194,7 +1266,7 @@ $header_data['Order Main Source Type']='Unknown';
 
 			      ));
 	  $order-> update_payment_state('Paid');	
-	$dn->dispatch('all');
+	$dn->dispatch('all',$data_dn_transactions);
 	$order->update_dispatch_state('Dispached');
 
 	$order->load('totals');
@@ -1318,9 +1390,38 @@ $header_data['Order Main Source Type']='Unknown';
 			      );
 	  // $order->create_invoice_simple($data_invoice,$data_invoice_transactions);
 	  $invoice=new Invoice ('create',$data_invoice,$data_invoice_transactions,$order->id); 
-	  }else{
+	   $invoice->data['Invoice Paid Date']=$date_inv; 
+	  $invoice->pay('full',
+			array(
+			      'Invoice Items Net Amount'=>round($header_data['total_items_charge_value'],2)-$total_credit_value-$extra_shipping
+			      ,'Invoice Total Net Amount'=>round($header_data['total_net'],2)
+			      ,'Invoice Total Tax Amount'=>round($header_data['tax1']+$header_data['tax2'],2)
+			      ,'Invoice Total Amount'=>round($header_data['total_topay'],2)
+			      ));
+	  $order-> update_payment_state('Paid');	
+       
+	
 
+
+	$dn->pick_historic($data_dn_transactions);
+	$order->update_dispatch_state('Ready to Pack');
+	
+	$dn->pack('all');
+	$order->update_dispatch_state('Ready to Ship');
+	$dn->dispatch('all',$data_dn_transactions);
+	$order->update_dispatch_state('Dispached');
+
+
+	$order->load('totals');
+	$invoice->categorize('save');
+	  }else{
+	    
 	    $order->no_payment_applicable();
+	    $order->load('totals');
+	    
+
+
+
 	  }
 
 

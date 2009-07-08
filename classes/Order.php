@@ -2619,12 +2619,39 @@ class Order extends DB_Table{
 	 */
 	
 	function update_product_sales(){
-	    $sql = "select `Product Key`  from `Order Transaction Fact` where `Order Key`=" . $this->data ['Order Key']." group by `Product Key`";
+	  $stores=array();
+	  $family=array();
+	  $departments=array();
+	  $sql = "select OTF.`Product Key` ,`Product Family Key`,`Product Store Key` from `Order Transaction Fact` OTF left join `Product Dimension` PD on (PD.`Product Key`=OTF.`Product Key`)where `Order Key`=" . $this->data ['Order Key']." group by OTF.`Product Key`";
+	  $result = mysql_query ( $sql );
+	  //	  print $sql;
+	  if ($row = mysql_fetch_array ( $result, MYSQL_ASSOC )) {
+	    $product=new Product($row['Product Key']);
+	    $product->load('sales');
+	    $family[$row['Product Family Key']]=true;
+	    $store[$row['Product Store Key']]=true;
+	  }
+	  foreach($family as $key=>$val){
+	    $family=new Family($key);
+	    $family->load('sales');
+	    $sql = sprintf("select `Product Department Key`  from `Product Family Department Bridge` where `Product Family Key`=%d" ,$key);
 	    $result = mysql_query ( $sql );
-	    if ($row = mysql_fetch_array ( $result, MYSQL_ASSOC )) {
-	      $product=new Product($row['Product Key']);
-	      $product->load('sales');
-	   }
+	    while ($row = mysql_fetch_array ( $result, MYSQL_ASSOC )) {
+	      $departments[$row['Product Department Key']]=true;
+	    }
+
+	  }
+	  foreach($departments as $key=>$val){
+	    $department=new Department($key);
+	    $department->load('sales');
+	  }
+	  
+	  
+	  foreach($store as $key=>$val){
+	    $store=new Store($key);
+	    $store->load('sales');
+	  }
+	  
 	}
 
 	/*

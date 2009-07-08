@@ -1755,6 +1755,7 @@ if(isset( $_REQUEST['restrictions']))
 
 
    $sum_active=0;
+
    $sql="select sum(`Product Family For Sale Products`) as sum_active  from `Product Family Dimension`    ";
    $result=mysql_query($sql);
    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
@@ -3321,7 +3322,7 @@ $sum_active=0;
   $adata[]=array(
 
 		 'code'=>_('Total'),
-
+		 'families'=>number($sum_families),
  		 'active'=>number($sum_active),
 // 		 'outofstock'=>number($row['product department out of stock products']),
 // 		 'stockerror'=>number($row['product department unknown stock products']),

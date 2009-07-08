@@ -2288,7 +2288,7 @@ $res = mysql_query($sql);
 
 
    if($order=='date'){
-      $order='`Actual Shipping Date`';
+      $order='`Delivery Note Date`';
 
    }elseif($order=='dispached')
       $order='`Shipped Quantity`';
@@ -2302,7 +2302,7 @@ $res = mysql_query($sql);
 		,$wheref
 		);
 
-   //    print "$sql";
+   print $sql;
    $res=mysql_query($sql);
    $data=array();
    while($row= mysql_fetch_array($res, MYSQL_ASSOC) ) {

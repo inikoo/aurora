@@ -47,6 +47,61 @@ $count=0;
 
 
 
+$store_key=2;
+$dept_no_dept=new Department('code_store','ND',$store_key);
+if(!$dept_no_dept->id){
+  $dept_data=array(
+		   'code'=>'DE.ND',
+		   'name'=>'Products Without Department',
+		   'store_key'=>$store_key
+		   );
+  $dept_no_dept=new Department('create',$dept_data);
+  $dept_no_dept_key=$dept_no_dept->id;
+}
+$dept_promo=new Department('code_store','Promo',$store_key);
+if(!$dept_promo->id){
+  $dept_data=array(
+		   'code'=>'DE.Promo',
+		   'name'=>'Promotional Items',
+		   'store_key'=>$store_key
+		   );
+  $dept_promo=new Department('create',$dept_data);
+  
+}
+
+
+$dept_no_dept_key=$dept_no_dept->id;
+$dept_promo_key=$dept_promo->id;
+
+$fam_no_fam=new Family('code_store','ND',$store_key);
+if(!$fam_no_fam->id){
+  $fam_data=array(
+		   'Product Family Code'=>'PND_DE',
+		   'Product Family Name'=>'Products Without Family',
+		   'Product Family Main Department Key'=>$dept_no_dept_key
+		   );
+  $fam_no_fam=new Family('create',$fam_data);
+  $fam_no_fam_key=$fam_no_fam->id;
+  $dept_no_dept->load('products_info');
+}
+$fam_promo=new Family('code_store','Promo',$store_key);
+if(!$fam_promo->id){
+  $fam_data=array(
+		   'code'=>'Promo_DE',
+		   'name'=>'Promotional Items',
+		   'Product Family Main Department Key'=>$dept_promo_key
+		   );
+  $fam_promo=new Family('create',$fam_data);
+  $dept_promo->load('products_info');
+}
+
+
+$fam_no_fam_key=$fam_no_fam->id;
+$fam_promo_key=$fam_promo->id;
+
+
+
+
 $__cols=array();
 $inicio=false;
 while(($_cols = fgetcsv($handle_csv))!== false){
@@ -354,7 +409,7 @@ foreach($__cols as $cols){
 		  'product family code'=>$current_fam_code,
 		  'product family name'=>$current_fam_name,
 		  'product main department name'=>$department_name,
-		  'product main department code'=>$department_code,
+		  'product main department code'=>'DE.'.ucfirst($department_code),
 		  'product special characteristic'=>$special_char,
 		  'product family special characteristic'=>$fam_special_char,
 		  'product net weight'=>$_w,
@@ -365,7 +420,7 @@ foreach($__cols as $cols){
 
       $parts=$uk_product->get('Parts SKU');
      
-
+      print_r($data);
       
       $product=new Product('create',$data);
 

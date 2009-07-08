@@ -84,6 +84,16 @@ class product{
 	$this->id=$this->data['Product Key'];
       }
       return;
+    } if($tipo=='pid'){
+      $sql=sprintf("select * from `Product Dimension` where `Product ID`=%d  and `Product Same ID Most Recent`='Yes'   ",$tag);
+      $this->mode='id';
+      $result=mysql_query($sql);
+
+      if( ($this->data=mysql_fetch_array($result, MYSQL_ASSOC))){
+	$this->locale=$this->data['Product Locale'];
+	$this->id=$this->data['Product Key'];
+      }
+      return;
     }elseif($tipo=='code'){
       $this->mode='code';
       $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s and `Product Most Recent`='Yes' ",prepare_mysql($tag));
@@ -109,39 +119,43 @@ class product{
       }
 	return;
       
-    }elseif($tipo=='code-name-units-price'){
+    }elseif($tipo=='code-name-units-price-store'){
       $auto_add=$tag['auto_add'];
       
 
   //     if($tag['product code']=='wsl-123')
 //  	print_r($tag);
 
-      $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s and `Product Name`=%s and `Product Units Per Case`=%f and `Product Unit Type`=%s  and `Product Price`=%.2f  "
+      $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s and `Product Name`=%s and `Product Units Per Case`=%f and `Product Unit Type`=%s  and `Product Price`=%.2f and `Product Store Key`=%d "
 		   ,prepare_mysql($tag['product code'])
 		   ,prepare_mysql($tag['product name'])
 		   ,$tag['product units per case']
 		   ,prepare_mysql($tag['product unit type'])
 		   ,$tag['product price']
+		   ,$tag['Product Store Key']
 		   ); 
       // print "$sql\n";
       $result=mysql_query($sql);
       // print "----------------DONE\n";
       if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)){
-
-	//	print $tag['product code']." FOUND OLS\n";
+	//------------------------------------------------------------------------------
+	//    FOUND IT
+	//-------------------------------------------------------------------------------
 
 	$this->id=$this->data['Product Key'];
-	//print_r($this->data);
 	if(strtotime($this->data['Product Valid To'])<strtotime($tag['date2'])  ){
 	  $sql=sprintf("update `Product Dimension` set `Product Valid To`=%s where `Product Key`=%d",prepare_mysql($tag['date2']),$this->id);
 	  $this->data['product valid to']=$tag['date2'];
 	  mysql_query($sql);
-	  
+	  $this->update_same_id_valid_dates();
+	  $this->update_same_code_valid_dates();
 	}
 	if(strtotime($this->data['Product Valid From'])>strtotime($tag['date'])  ){
 	  $sql=sprintf("update `Product Dimension` set `Product Valid From`=%s where `Product Key`=%d",prepare_mysql($tag['date']),$this->id);
 	  mysql_query($sql);
 	  $this->data['Product Valid From']=$tag['date'];
+	  $this->update_same_id_valid_dates();
+	  $this->update_same_code_valid_dates();
 	}
 
 	//found the part
@@ -177,6 +191,9 @@ class product{
 		       ,prepare_mysql($tag['date2'])
 		       );
 	  mysql_query($sql);
+
+	 
+
 	}
 
 	$sqldd=sprintf("update `Product Part List`  set `Product Part Valid From`=%s  where `Product Part ID`=%s and `Product Part Valid From`>%s"
@@ -306,12 +323,11 @@ class product{
       $this->new_part=false;
       $this->new_supplier_product=false;
 
-      $sql=sprintf("select count(*) as num from `Product Dimension` where `Product Code`=%s  "
+      $sql=sprintf("select count(*) as num from `Product Dimension` where `Product Code`=%s and `Product Store Key`=%d "
 		   ,prepare_mysql($tag['product code'])
+		   ,$tag['Product Store Key']
 		 
 		   );
-
-      //$result2 =& $this->db->query($sql);
       $result2=mysql_query($sql);
       
       if($row2=mysql_fetch_array($result2, MYSQL_ASSOC)){
@@ -398,16 +414,19 @@ class product{
 	$this->load('parts');
 	return;
       }else{
+	// ****************************************  OLd CODE ************************************************
 	//old code
-	$sql=sprintf("select * from `Product Dimension` where `Product Code`=%s and  `Product Units Per Case`=%f"
+	$sql=sprintf("select * from `Product Dimension` where `Product Code`=%s and  `Product Units Per Case`=%f and `Product Store Key`=%d" 
 		     ,prepare_mysql($tag['product code'])
 		     ,$tag['product units per case']
+		     ,$tag['Product Store Key']
 		     );
 	//print "$sql\n";
 	$result2=mysql_query($sql);
 	if($same_id_data=mysql_fetch_array($result2, MYSQL_ASSOC)){
-	  //print "new price \n";
-	  // Price  or name change, same units per case
+	  //---------------------------------------------------------------------
+	  //    Price  or name change, same units per case
+	  // --------------------------------------------------------------------
 	  $different_name=false;
 	  $different_units=false;
 	  $different_units_type=false;
@@ -457,13 +476,16 @@ class product{
 	
 	}else{
 	  //  print "new price new part\n";
-	  // Different units that meabs niew id and new product part list
+	  // Different units that means niew id and new product part list
 	  $this->new_id=true;
 	  $tag['product id']=$this->new_id();
 	  $tag['product most recent']='Yes';
 	  
 	  
-	  $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s   ",prepare_mysql($tag['product code']));
+	  $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s and `Product Store Key`=%d  "
+		       ,prepare_mysql($tag['product code'])
+		       ,$tag['Product Store Key']
+		       );
 	  $result4=mysql_query($sql);
 	  if($most_recent_product_data=mysql_fetch_array($result4, MYSQL_ASSOC) ){
 	    $tag['product family key']=$most_recent_product_data['Product Family Key'];
@@ -1278,10 +1300,27 @@ $base_data=array(
       $base_data['product units per case']=1;
 
     $department=false;
+    $has_department=false;
     $new_department=false;
-    if($base_data['product main department code']!='' and $base_data['product main department key']==''){
+
+    if(isset($base_data['product main department key'])){
+      $department=new Department($base_data['product main department key']);
+      if($department->id and $base_data['product store key']==$department->data['Product Department Store Key']){
+	$has_department=true;
+	$base_data['product main department key']=$department->id;
+	$base_data['product main department code']=$department->data['Product Department Code'];
+	$base_data['product main department name']=$department->data['Product Department Name'];
+      }
+	
+    }
+    
+    //  print $base_data['product main department code']."\n";
+    if($base_data['product main department code']!='' and !$has_department){
+
       $department=new Department('code_store',$base_data['product main department code'],$base_data['product store key']);
+      
       if(!$department->id){
+
 	$dept_data=array(
 			'code'=>$base_data['product main department code'],
 			'name'=>$base_data['product main department name'],
@@ -1292,16 +1331,33 @@ $base_data=array(
 	  exit($department->msg);
 	$new_department=true;
       }
+      //exit("xxx");
+      $has_department=true;
       $base_data['product main department key']=$department->id;
       $base_data['product main department code']=$department->data['Product Department Code'];
       $base_data['product main department name']=$department->data['Product Department Name'];
     }
   
-
+    if(!$has_department){
+      exit("Product Class: error no depaterment info provided can not create product\n");
+    }
 
     $family=false;$new_family=false;
+    $has_family=false;
+    if(isset($base_data['product family key'])){
+      $family=new Family($base_data['product family key']);
+      if($family->id and $base_data['product store key']==$family->data['Product Family Store Key']){
+	$has_family=true;
+	$base_data['product family key']=$family->id;
+	$base_data['product family code']=$family->data['Product Family Code'];
+	$base_data['product family name']=$family->data['Product Family Name'];
+      }
+	
+    }
+    
+
    
-    if($base_data['product family code']!='' and $base_data['product family key']==''){
+    if($base_data['product family code']!='' and !$has_family){
       $family=new Family('code_store',$base_data['product family code'],$base_data['product store key']);
       if(!$family->id){
 	$fam_data=array(
@@ -1314,11 +1370,17 @@ $base_data=array(
 	  exit($family->msg);
 	$new_family=true;
       }
+      $has_family=true;
       $base_data['product family key']=$family->id;
       $base_data['product family code']=$family->data['Product Family Code'];
       $base_data['product family name']=$family->data['Product Family Name'];
     }
-    
+     if(!$has_family){
+      exit("Product Class: error no family info provided can not create product\n");
+    }
+
+
+
     $keys='(';$values='values(';
     foreach($base_data as $key=>$value){
       $keys.="`$key`,";
@@ -1371,7 +1433,7 @@ $base_data=array(
       $this->get_data('id',$this->id);
       $this->msg='Product Created';
       $this->new=true;
-
+      $family->load('products_info');
       if($new_family){
 	$family->add_product($this->id,'principal');
 	
@@ -1381,6 +1443,7 @@ $base_data=array(
       
       if(isset($department) and  is_object($department) and $department->id){
 	$department->add_product($this->id,'principal');
+	$department->load('products_info');
       }
       
 
@@ -1391,7 +1454,12 @@ $base_data=array(
 	mysql_query($sql);
        }
 
+      $this->update_same_id_valid_dates();
+      $this->update_same_code_valid_dates();
 
+
+ $store=new Store($this->data['Product Store Key']);
+      $store->load('products_info');
 
       
     }else{
@@ -3643,12 +3711,9 @@ function removeaccents($string)
     Update Product Same Code Valid 
 */
 
-function update_same_code_valid_dates()
+function update_same_code_valid_dates($args='')
 {
- 
-
-
- $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s order by `Product Valid From` limit 1",prepare_mysql($this->data['Product Code']));
+  $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s order by `Product Valid From` limit 1",prepare_mysql($this->data['Product Code']));
   $result2=mysql_query($sql);
   if($row2=mysql_fetch_array($result2, MYSQL_ASSOC)){
     $same_code_from=$row2['Product Valid From'];
@@ -3662,22 +3727,68 @@ function update_same_code_valid_dates()
       $most_recent_key=$row2['Product Key'];
       $same_code_to=$row2['Product Valid To'];
     }
-    $sql=sprintf("update `Product Dimension` set  `Product Same Code Valid From`=%s ,`Product Same Code Valid To`=%s , `Product Same Code Most Recent Key`=%s,`Product Same Code Most Recent`=%s  where `Product Key`=%s ",prepare_mysql($same_code_from),prepare_mysql($same_code_to),$most_recent_key,prepare_mysql($most_recent),$this->id);
+    $sql=sprintf("update `Product Dimension` set  `Product Same Code Valid From`=%s ,`Product Same Code Valid To`=%s   where `Product Key`=%s ",prepare_mysql($same_code_from),prepare_mysql($same_code_to),$this->id);
     //   print "$sql\n\n";
     mysql_query($sql);
-     if($most_recent=='Yes')
-      $most_recent='No';
 
-    
-    
+
+    if(preg_match('/most recent/i',$args)){
+        $sql=sprintf("update `Product Dimension` set `Product Same Code Most Recent Key`=%s,`Product Same Code Most Recent`=%s  where `Product Key`=%s "
+		     ,$most_recent_key
+		     ,prepare_mysql($most_recent)
+		     ,$this->id);
+	mysql_query($sql);
+     }
+
+
+    if($most_recent=='Yes')
+      $most_recent='No';
+  }
+}
+
+
+/*
+    Function: update_same_id_valid_dates
+    Update Product Same Product ID Valid 
+*/
+
+function update_same_id_valid_dates($args='')
+{
+  $sql=sprintf("select * from `Product Dimension` where `Product ID`=%s order by `Product Valid From` limit 1",prepare_mysql($this->data['Product ID']));
+  
+  $result2=mysql_query($sql);
+  if($row2=mysql_fetch_array($result2, MYSQL_ASSOC)){
+    $same_code_from=$row2['Product Valid From'];
   }
 
-  
+  $sql=sprintf("select * from `Product Dimension` where `Product ID`=%d order by `Product Valid To` desc ",$this->data['Product ID']);
+  $most_recent='Yes';
+  $result2=mysql_query($sql);
+  while($row2=mysql_fetch_array($result2, MYSQL_ASSOC)){
+    if($most_recent=='Yes'){
+      $most_recent_key=$row2['Product Key'];
+      $same_code_to=$row2['Product Valid To'];
+    }
+    
+    $sql=sprintf("update `Product Dimension` set  `Product Same ID Valid From`=%s ,`Product Same ID Valid To`=%s  where `Product Key`=%s ",prepare_mysql($same_code_from)
+		 ,prepare_mysql($same_code_to)
+		 ,$this->id);
+    mysql_query($sql);
+
+    if(preg_match('/most recent/i',$args)){
+      $sql=sprintf("update `Product Dimension` set `Product Same ID Most Recent`=%s,`Product Same ID Most Recent Key`=%d where `Product Key`=%s "
+		    ,prepare_mysql($most_recent)
+		   ,$most_recent_key
+		   ,$this->id);
+      mysql_query($sql);
+       
+    }
+ if($most_recent=='Yes')
+      $most_recent='No';
 
 
-
-
-
+ }
+ 
 
 }
 

@@ -36,12 +36,63 @@ $version='V 1.0';//75693
 $Data_Audit_ETL_Software="$software $version";
 srand(12344);
 
+$store_key=1;
+$dept_no_dept=new Department('code_store','ND',$store_key);
+if(!$dept_no_dept->id){
+  $dept_data=array(
+		   'code'=>'ND',
+		   'name'=>'Products Without Department',
+		   'store_key'=>$store_key
+		   );
+  $dept_no_dept=new Department('create',$dept_data);
+  $dept_no_dept_key=$dept_no_dept->id;
+}
+$dept_promo=new Department('code_store','Promo',$store_key);
+if(!$dept_promo->id){
+  $dept_data=array(
+		   'code'=>'Promo',
+		   'name'=>'Promotional Items',
+		   'store_key'=>$store_key
+		   );
+  $dept_promo=new Department('create',$dept_data);
+  
+}
+
+
+$dept_no_dept_key=$dept_no_dept->id;
+$dept_promo_key=$dept_promo->id;
+
+$fam_no_fam=new Family('code_store','PND_GB',$store_key);
+if(!$fam_no_fam->id){
+  $fam_data=array(
+		   'Product Family Code'=>'PND_GB',
+		   'Product Family Name'=>'Products Without Family',
+		   'Product Family Main Department Key'=>$dept_no_dept_key
+		   );
+  $fam_no_fam=new Family('create',$fam_data);
+  $fam_no_fam_key=$fam_no_fam->id;
+}
+$fam_promo=new Family('code_store','Promo_GB',$store_key);
+if(!$fam_promo->id){
+  $fam_data=array(
+		   'code'=>'Promo_GB',
+		   'name'=>'Promotional Items',
+		   'Product Family Main Department Key'=>$dept_promo_key
+		   );
+  $fam_promo=new Family('create',$fam_data);
+  
+}
+
+
+$fam_no_fam_key=$fam_no_fam->id;
+$fam_promo_key=$fam_promo->id;
+
 
 $sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed)  order by filename ";
 
 //$sql="select * from  orders_data.orders where filename like '%refund.xls'   order by filename";
 
-//$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/21907.xls'  order by filename";
+//$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/6915.xls'  order by filename";
 
 
 
@@ -759,10 +810,36 @@ if(preg_match('/^(x5686842-t|IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691
     
      
 
-      // print_r($transaction);
+      
+      // try to get the family
+      $fam_key=$fam_no_fam_key;
+      $dept_key=$dept_no_dept_key;
+       if(preg_match('/^pi-|catalogue|^info|Mug-26x|OB-39x|SG-xMIXx|wsl-1275x|wsl-1474x|wsl-1474x|wsl-1479x|^FW-|^MFH-XX$|wsl-1513x|wsl-1487x|wsl-1636x|wsl-1637x/i',_trim($transaction['code']))){
+	 $fam_key=$fam_promo_key;
+	 $dept_key=$dept_promo_key;
+       }
+
+
+      $__code=preg_split('/-/',_trim($transaction['code']));
+      $__code=$__code[0];
+      $sql=sprintf('select * from `Product Family Dimension` where `Product Family Store Key`=%d and `Product Family Code`=%s'
+		   ,$store_key
+		   ,prepare_mysql($__code));
+      $result=mysql_query($sql);
+      // print $sql;
+      if( ($__row=mysql_fetch_array($result, MYSQL_ASSOC))){
+	$fam_key=$__row['Product Family Key'];
+	$dept_key=$__row['Product Family Main Department Key'];
+      }
+      
+
 
       $product_data=array(
-			  'product code'=>_trim($transaction['code'])
+			  'Product Store Key'=>$store_key
+			  ,'Product Main Department Key'=>$dept_key
+			  ,'Product Family Key'=>$fam_key
+
+			  ,'product code'=>_trim($transaction['code'])
 			  ,'product name'=>$description
 			  ,'product unit type'=>$unit_type
 			  ,'product units per case'=>$transaction['units']
@@ -783,7 +860,7 @@ if(preg_match('/^(x5686842-t|IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691
    
       // print_r($product_data);
      
-      $product=new Product('code-name-units-price',$product_data);
+      $product=new Product('code-name-units-price-store',$product_data);
       //      print "Done\n";
       //     "Ahh canto male pedict\n";
       if(!$product->id){
@@ -1214,7 +1291,7 @@ if(preg_match('/^(x5686842-t|IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691
 			      ,'Invoice Total Amount'=>round($header_data['total_topay'],2)
 			      ));
 	  $order-> update_payment_state('Paid');	
-	$dn->dispatch('all');
+	  $dn->dispatch('all',$data_dn_transactions);
 	$order->update_dispatch_state('Dispached');
 
 	$order->load('totals');
@@ -1354,7 +1431,7 @@ if(preg_match('/^(x5686842-t|IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691
 	
 	$dn->pack('all');
 	$order->update_dispatch_state('Ready to Ship');
-	$dn->dispatch('all');
+	$dn->dispatch('all',$data_dn_transactions);
 	$order->update_dispatch_state('Dispached');
 
 
