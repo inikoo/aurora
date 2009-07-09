@@ -1802,7 +1802,7 @@ if(isset( $_REQUEST['restrictions']))
      $sum_month_sales=0;
      $sql="select sum(if(`Product Family 1 Quarter Acc Profit`<0,`Product Family 1 Quarter Acc Profit`,0)) as total_profit_minus,sum(if(`Product Family 1 Quarter Acc Profit`>=0,`Product Family 1 Quarter Acc Profit`,0)) as total_profit_plus,sum(`Product Family 1 Quarter Acc Invoiced Amount`) as sum_total_sales   from `Product Family Dimension`    ";
     
-     $result=$mysql_query($sql);
+     $result=mysql_query($sql);
      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
        $sum_total_sales=$row['sum_total_sales'];
@@ -4266,16 +4266,17 @@ case('locations'):
       break;
     case('Unknown'):
       $web_state=_('Unknown');
-    case('Offline'):
-      $web_state=_('Offline');
+  case('Offline'):
+    $web_state=_('Offline');
+    break;
+  case('Online Force Hide'):
+    $web_state=_('Hide');	
+    break;
+  case('Online Force For Sale'):
+    $web_state=_('Sale');	
       break;
-    case('Online Force Hide'):
-      $web_state=_('Hide');	
-      break;
-    case('Online Force For Sale'):
-      $web_state=_('Sale');	
-      break;
-
+  default:
+      $web_state=$row['Product Web State'];
     }
 
     $adata[]=array(
@@ -5204,7 +5205,7 @@ $total_records=ceil($total_records/$number_results)+$total_records;
 			 'rtext'=>$rtext,
 			 'total_records'=>$total,
 			 'records_offset'=>$start_from,
-			 'records_returned'=>$start_from+$res->numRows(),
+			 'records_returned'=>$start_from+$total,
 			 'records_perpage'=>$number_results,
 			 'records_text'=>$rtext,
 			 'records_order'=>$order,

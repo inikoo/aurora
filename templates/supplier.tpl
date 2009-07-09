@@ -40,14 +40,14 @@
       </div>
       
       
-      <h1>{$name} <span style="color:SteelBlue">{$id}</span></h1> 
+      <h1>{$supplier->get('Supplier Name')} <span style="color:SteelBlue">{$id}</span></h1> 
       <table style="width:500px" >
 	
 	<tr>
 	  <td valign="top">{$company->get('Company Main XHTML Address')}</td>
 	  <td  valign="top">
 	    <table border=0 style="padding:0">
-	      <tr><td colspan=2>{$company->get('Company Main Contact')}</td ></tr>
+	      <tr><td colspan=2>{$company->get('Company Main Contact Name')}</td ></tr>
 	      <tr><td colspan=2>{$company->get('Company Main XHTML Email')}</td ></tr>
 	      <tr><td colspan=2>{$company->get('Company Main Telephone')}</td ></tr>
 	      <tr><td colspan=2>{$company->get('Company Main FAX')}</td ></tr>

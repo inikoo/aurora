@@ -76,24 +76,32 @@ $smarty->assign('newuser_groups',$newuser_groups);
 
 //create user list
 $sql=sprintf("select `Staff ID` as id,`Staff Alias` as alias,(select count(*) from liveuser_users where tipo=1 and id_in_table=`Staff Dimension`.`Staff Key`) as is_user from `Staff Dimension` where `Staff Currently Working`='Yes' and `Staff Most Recent`='Yes' order by `Staff Alias`");
-
-//print $sql;
- $result=mysql_query($sql);
-
+$result=mysql_query($sql);
 $num_cols=5;
 $staff=array();
-
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $staff[]=array('alias'=>$row['alias'],'id'=>$row['id'],'is_user'=>$row['is_user']);
  }
-
-//$staff= array_transverse($staff,$num_cols);
-//print_r($staff);
 foreach($staff as $key=>$_staff){
   $staff[$key]['mod']=fmod($key,$num_cols);
 }
 $smarty->assign('staff',$staff);
 $smarty->assign('staff_cols',$num_cols);
+
+
+
+$sql=sprintf("select `Supplier Key` as id,`Supplier Code` as alias,(select count(*) from liveuser_users where tipo=2 and id_in_table=`Supplier Dimension`.`Supplier Key`) as is_user from `Supplier Dimension`  order by `Supplier Code`");
+$result=mysql_query($sql);
+$num_cols=4;
+$supplier=array();
+while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+  $supplier[]=array('alias'=>$row['alias'],'id'=>$row['id'],'is_user'=>$row['is_user']);
+ }
+foreach($supplier as $key=>$_supplier){
+  $supplier[$key]['mod']=fmod($key,$num_cols);
+}
+$smarty->assign('suppliers',$supplier);
+$smarty->assign('supplier_cols',$num_cols);
 
 
 

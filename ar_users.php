@@ -323,13 +323,14 @@ case('valid_handle'):
 
  
    $sql="select g.group_id as id, g.name ,ifnull(group_concat(distinct handle order by handle separator ', '),'') as users from liveuser_groups as g left join liveuser_groupusers as gu on (g.group_id=gu.group_id) left join liveuser_perm_users as pu   on (gu.perm_user_id=pu.perm_user_id  ) left join liveuser_users as u on (u.authuserid=pu.auth_user_id)  group by g.group_id   order by $order $order_direction limit $start_from,$number_results       ";
-  $res=mysql_query($sql);
-   $total=$res->numRows();
-  if($total<$number_results)
+
+   $res=mysql_query($sql);
+   $total=mysql_num_rows($res);
+   if($total<$number_results)
      $rtext=$total.' '.ngettext('work group','work groups',$total);
    else
      $rtext='';
- while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+   while($row=mysql_fetch_array($res, MYSQL_ASSOC)){
 
      $data[]=array(
 		   'name'=>$_group[$row['id']],
@@ -346,7 +347,7 @@ case('valid_handle'):
 			 'filter_msg'=>$filter_msg,
 			  'total_records'=>$total,
 			 'records_offset'=>$start_from,
-			 'records_returned'=>$start_from+$res->numRows(),
+			 'records_returned'=>$start_from+$total,
 			 'records_perpage'=>$number_results,
 			 'records_text'=>$rtext,
 			 'records_order'=>$order,

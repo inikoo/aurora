@@ -31,16 +31,22 @@
 <div id="add_user_supplier"   style="background:#fff;padding:0px;border:1px solid#777;font-size:90%;position:absolute;left:-1000px;top:-1050px;width:350px"       >
  <div class="hd" style="font-weight:800;background:#238546;color:#fff;cursor:pointer;padding:4px 3px;text-align:center ;border-bottom:1px solid #999">{t}Setting an account for a supplier{/t}</div>
       <div class="bd" style="padding:20px 20px 20px 20px">
-	
-	
+	<table border=1 id="supplier_list" class="supplier_list" style="margin:0 auto " >
+	  {foreach from=$suppliers item=_supplier name=foo}
+	  {if $_supplier.mod==0}<tr>{/if}
+	    <td   supplier_id="{$_supplier.id}" id="supplier{$_supplier.id}" {if $_supplier.is_user}class="selected" is_in="1" {else} onClick="select_supplier(this)"  is_in="0"{/if} >{$_supplier.alias}</td>
+	    {if $_supplier.mod==$supplier_cols}</tr>{/if}
+	  {/foreach}
+	</table>
+
 	
 	<table id="supplier_form" class="edit inbox" style="margin:0 auto ;display:none" >
 	  
 	  
 	  <tr class="tabs"  id="supplier_choose_method">
 	    <td  colspan=2>
-	<span  id="supplier_auto_pwd_but" class="tab  unselectable_text" onClick="auto_pwd('supplier')">{t}Auto Password{/t}</span>
-	<span id="supplier_user_defined_pwd_but"  onClick="user_defined_pwd('supplier')" class="tab selected  unselectable_text" style="margin-left:20px ">{t}User Defined Password{/t}</span>
+	      <span  id="supplier_auto_pwd_but" class="tab  unselectable_text" onClick="auto_pwd('supplier')">{t}Auto Password{/t}</span>
+	      <span id="supplier_user_defined_pwd_but"  onClick="user_defined_pwd('supplier')" class="tab selected  unselectable_text" style="margin-left:20px ">{t}User Defined Password{/t}</span>
 	    </td>
 	  </tr>
 	  
