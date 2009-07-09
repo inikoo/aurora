@@ -29,6 +29,9 @@ class Order extends DB_Table{
   //	Public $id = false;
   //	Public $tipo;
   //	Public $staus = 'new';
+
+  Public $skip_update_product_sales=false;
+
 	function __construct($arg1 = false, $arg2 = false) {
 		
 	  $this->table_name='Order';
@@ -2619,6 +2622,13 @@ class Order extends DB_Table{
 	 */
 	
 	function update_product_sales(){
+	  return;
+	  if($this->skip_update_product_sales)
+	    return;
+
+
+
+
 	  $stores=array();
 	  $family=array();
 	  $departments=array();

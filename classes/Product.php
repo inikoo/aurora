@@ -2842,7 +2842,7 @@ case('images_slideshow'):
 	   $ratio=$row['Image Width']/$row['Image Height'];
 	 else
 	   $ratio=1;
-       $this->images_slideshow[]=array('filename'=>$row['Image Filename'],'ratio'=>$ratio,'caption'=>$row['Image Caption'],'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key']);
+       $this->images_slideshow[]=array('url'=>$row['Image URL'],'filename'=>$row['Image Filename'],'ratio'=>$ratio,'caption'=>$row['Image Caption'],'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key']);
 
      }
        
@@ -2864,8 +2864,11 @@ case('images_slideshow'):
 // JFA 
 
 
- function load_original_image($file){
+ function load_original_image($file,$args=''){
    global $tmp_images_dir;
+   $principal='No';
+   if(preg_match('/principal/i',$args))
+     $principal='Yes';
    if(!$this->images)
      $this->load('images');
    
@@ -2941,12 +2944,21 @@ case('images_slideshow'):
    //print $sql;
    if(mysql_query($sql)){
      $image_key=mysql_insert_id();
-     $sql=sprintf("insert into `Product Image Bridge` values (%d,%d)",$this->id,$image_key);
+
+     if($principal=='Yes'){
+        $sql=sprintf("update `Product Image Bridge` set `Is Princial`='No' where `Product Key`=%d",$this->id);
+	mysql_query($sql);
+     }
+
+     if(count($this->images_original)==0)
+       $principal='Yes';
+
+     $sql=sprintf("insert into `Product Image Bridge` values (%d,%d,%s)",$this->id,$image_key,prepare_mysql($principal));
      //print $sql;
      mysql_query($sql);
      $url=sprintf('image.php?id=%d',$image_key);
      
-     $sql=sprintf("update `Product Image` set `Image URL`=%s  where `Image Key`=%d",prepare_mysql($url),$image_key);
+     $sql=sprintf("update `Image Dimension` set `Image URL`=%s  where `Image Key`=%d",prepare_mysql($url),$image_key);
      //print $sql;
      mysql_query($sql);
    }

@@ -13,7 +13,7 @@ error_reporting(E_ALL);
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 
 if(!$con){print "Error can not connect with database server\n";exit;}
-$dns_db='dw';
+//$dns_db='dw';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
   
@@ -21,10 +21,10 @@ if (!$db){print "Error can not access the database\n";exit;}
 require_once '../../common_functions.php';
 mysql_query("SET time_zone ='UTC'");
 mysql_query("SET NAMES 'utf8'");
-require_once '../../myconf/conf.php';           
+require_once '../../conf/conf.php';           
 date_default_timezone_set('Europe/London');
 
-$sql="select * from `Product Dimension`  group by `Product Code` order by `Product Code`";
+$sql="select * from `Product Dimension`  group by `Product Code` order by RAND() desc";
 
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result)   ){
@@ -45,6 +45,7 @@ while($row=mysql_fetch_array($result)   ){
   //print '../../app_files/pics/tmp$rand.jpg'."\n";
   if(file_exists("../../app_files/pics/tmp$rand.jpg") and filesize("../../app_files/pics/tmp$rand.jpg")>0){
 
+    //exit;
     $product->load_original_image("../../app_files/pics/tmp$rand.jpg");
 
   }
@@ -159,8 +160,11 @@ $exec=sprintf("wget www.ancientwisdom.biz/pics/%s",strtolower($product->data['Pr
   $resultx=mysql_query($sql);
   while($rowx=mysql_fetch_array($resultx)   ){
 
-    $sql=sprintf("insert into `Product Image Bridge` values (%d,%d)",$rowx['Product Key'],$key);
-    //print "$sql\n";
+    $sql=sprintf("update `Product Image Bridge` set `Is Princial`='No' where `Product Key`=%d",$rowx['Product Key']);
+    mysql_query($sql);
+
+    $sql=sprintf("insert into `Product Image Bridge` values (%d,%d,'Yes')",$rowx['Product Key'],$key);
+    print "$sql\n";
     mysql_query($sql);
 
   }
