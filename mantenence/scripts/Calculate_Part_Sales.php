@@ -84,14 +84,14 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   //  exit("ERROR $sql\n");
   }
 
-   $part->load('sales');
-   $part->load('used in');
-   $part->load('supplied by');
+  $part->load('sales');
+  $part->load('used in');
+  $part->load('supplied by');
    $part->load('stock');
-//   $part->load('stock_history');
-//   $part->load('future costs');
-  print $row['Part Key']."\r";
-
+  //   $part->load('stock_history');
+  //   $part->load('future costs');
+   //print $row['Part Key']."\n";
+  
  }
 
 

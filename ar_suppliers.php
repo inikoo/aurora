@@ -39,7 +39,7 @@ switch($tipo){
      $sql=sprintf("select code,name,id from supplier where code like '%s%%' ",$_REQUEST['query']);
    }
    // print $sql;
-   $res=mysql_query($sql);
+   $result=mysql_query($sql);
    while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
 
@@ -67,7 +67,7 @@ switch($tipo){
      // get tipo of po
      $sql=sprintf("select id,supplier_id,tipo,(select count(*) from porden_item where porden_id=porden.id) as items from porden where id=%d",$_REQUEST['po_id']);
 
-     $res=mysql_query($sql);
+     $result=mysql_query($sql);
      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
        $po_id=$row['id'];
        $supplier_id=$row['supplier_id'];
@@ -104,7 +104,7 @@ switch($tipo){
 
 	  $sql=sprintf("select date_received,id,supplier_id,tipo,(select count(*) from porden_item where porden_id=porden.id) as items from porden where id=%d",$_REQUEST['po_id']);
 
-	  $res=mysql_query($sql);
+	  $result=mysql_query($sql);
 	  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 	    $po_id=$row['id'];
 	    $date_received=$row['date_received'];
@@ -160,7 +160,7 @@ case('po_goback'):
      // get tipo of po
      $sql=sprintf("select id,supplier_id,tipo from porden where id=%d",$_REQUEST['po_id']);
 
-     $res=mysql_query($sql);
+     $result=mysql_query($sql);
      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
        $po_id=$row['id'];
        $supplier_id=$row['supplier_id'];
@@ -287,7 +287,7 @@ case('po'):
 
   $sql="select count(*) as total from product  as p left join product_group as g on (g.id=group_id) left join product_department as d on (d.id=department_id) left join product2supplier as ps on (product_id=p.id) $where $wheref ";
 
-  $res=mysql_query($sql);
+  $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
     $total=$row['total'];
   }
@@ -296,7 +296,7 @@ case('po'):
     }else{
       
       $sql="select count(*) as total from product  as p left join product_group as g on (g.id=group_id) left join product_department as d on (d.id=department_id) left join product2supplier as ps on (product_id=p.id)  $where  ";
-      $res=mysql_query($sql);
+      $result=mysql_query($sql);
       if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 	$filtered=$row['total']-$total;
       }
@@ -338,7 +338,7 @@ from product as p left join product_group as g on (g.id=group_id)  left join pro
     
     $sql="select count(*) as total from porden_item $where $wheref ";
 
-  $res=mysql_query($sql);
+  $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
     $total=$row['total'];
   }
@@ -348,7 +348,7 @@ from product as p left join product_group as g on (g.id=group_id)  left join pro
     }else{
       
       $sql="select count(*) as total from porden_item  $where  ";
-      $res=mysql_query($sql);
+      $result=mysql_query($sql);
       if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 	$filtered=$row['total']-$total;
       }
@@ -360,7 +360,7 @@ from porden_item left join product2supplier as ps on (p2s_id=ps.id)  left join  
 
   }  
  // print $sql;
-   $res=mysql_query($sql);
+   $result=mysql_query($sql);
  $data=array();
    while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
@@ -536,7 +536,7 @@ from porden_item left join product2supplier as ps on (p2s_id=ps.id)  left join  
    
    $sql="select count(*) as total from porden   $where $wheref ";
    // print "$sql";
-   $res=mysql_query($sql);
+   $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
     $total=$row['total'];
   }
@@ -545,7 +545,7 @@ from porden_item left join product2supplier as ps on (p2s_id=ps.id)  left join  
   }else{
     
       $sql="select count(*) as total from porden  $where";
-      $res=mysql_query($sql);
+      $result=mysql_query($sql);
       if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 	$filtered=$row['total']-$total;
       }
@@ -556,7 +556,7 @@ from porden_item left join product2supplier as ps on (p2s_id=ps.id)  left join  
 
   $sql="select tipo,public_id,UNIX_TIMESTAMP(date_index) as date_index ,id,total from porden  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
   //print $sql;
-   $res=mysql_query($sql);
+   $result=mysql_query($sql);
    $data=array();
    while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      $data[]=array(
@@ -610,7 +610,7 @@ from porden_item left join product2supplier as ps on (p2s_id=ps.id)  left join  
    $sql=sprintf("select p2s.product_id,p.code,sup_code,p.units,p.description,p.units_tipo,po.qty as qty,po.expected_qty,expected_price,po.price as unit_cost from porden_item as po left join product2supplier as p2s on (p2s.id=p2s_id) left join product as p on  (p.id=p2s.product_id) where po.porden_id=%d",$dn_id);
    
    // print "$sql";
-   $res=mysql_query($sql);
+   $result=mysql_query($sql);
    $data=array();
    while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
@@ -695,7 +695,7 @@ $supplier_id=$_SESSION['deliver_note']['supplier_id'];
    $sql=sprintf("select p2s.id as p2s_id,p.units_tipo,p2s.price as price,  p.id as product_id,p.code ,p2s.sup_code,p.description as description ,p.units    from product as p left join product2supplier as p2s on (p.id=product_id) where p2s.supplier_id=%d",$supplier_id);
    
    
-   $res=mysql_query($sql);
+   $result=mysql_query($sql);
    $data=array();
    while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      $product_id=$row['product_id'];
@@ -861,7 +861,7 @@ if(isset( $_REQUEST['where']))
 
 
    $sql="select count(*) as total from `Supplier Dimension`    $where $wheref";
-   $res=mysql_query($sql);
+   $result=mysql_query($sql);
    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
     $total=$row['total'];
    }
@@ -869,7 +869,7 @@ if(isset( $_REQUEST['where']))
      $filtered=0; $total_records=$total;
    }else{
      $sql="select count(*) as total from `Supplier Dimension` $where      ";
-     $res=mysql_query($sql);
+     $result=mysql_query($sql);
      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
        	$total_records=$row['total'];
        $filtered=$row['total']-$total;
@@ -964,7 +964,7 @@ if(isset( $_REQUEST['where']))
 			 'filter_msg'=>$filter_msg,
 			 'total_records'=>$total,
 			 'records_offset'=>$start_from,
-			 'records_returned'=>$start_from+$res->numRows(),
+			 'records_returned'=>$start_from+$total,
 			 'records_perpage'=>$number_results,
 			 'records_text'=>$rtext,
 			 'records_order'=>$order,
@@ -1049,7 +1049,7 @@ if(isset( $_REQUEST['where']))
 //      $po_id=$_REQUEST['po_id'];
 //      $qty=$_REQUEST['qty'];
 //      $sql=sprintf("select *  from porden  where id='%d' ",$po_id);
-//      $res=mysql_query($sql);
+//      $result=mysql_query($sql);
 //      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 //        $total=$qty+$row['goods']+$row['vat']+$row['charges'];
 //        $sql=sprintf("update porden set shipping='%s', total='%s' where id=%d",$qty,$total,$po_id);
@@ -1064,7 +1064,7 @@ if(isset( $_REQUEST['where']))
 //      $po_id=$_REQUEST['po_id'];
 //      $qty=$_REQUEST['qty'];
 //      $sql=sprintf("select *  from porden  where id='%d' ",$po_id);
-//      $res=mysql_query($sql);
+//      $result=mysql_query($sql);
 //      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 //        $total=$qty+$row['goods']+$row['shipping']+$row['charges'];
 //        $sql=sprintf("update porden set vat='%s', total='%s' where id=%d",$qty,$total,$po_id);
@@ -1079,7 +1079,7 @@ if(isset( $_REQUEST['where']))
 //      $po_id=$_REQUEST['po_id'];
 //      $qty=$_REQUEST['qty'];
 //      $sql=sprintf("select *  from porden  where id='%d' ",$po_id);
-//      $res=mysql_query($sql);
+//      $result=mysql_query($sql);
 //      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 //        $total=$qty+$row['goods']+$row['shipping']+$row['vat'];
 //        $sql=sprintf("update porden set charges='%s', total='%s' where id=%d",$qty,$total,$po_id);
@@ -1094,7 +1094,7 @@ if(isset( $_REQUEST['where']))
 //      $po_id=$_REQUEST['po_id'];
 //      $qty=$_REQUEST['qty'];
 //      $sql=sprintf("select *  from porden  where id='%d' ",$po_id);
-//      $res=mysql_query($sql);
+//      $result=mysql_query($sql);
 //      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
 //        $sql=sprintf("update porden set public_id='%s' where id=%d",addslashes($qty),$po_id);
@@ -1108,7 +1108,7 @@ if(isset( $_REQUEST['where']))
 //      $qty=$_REQUEST['qty'];
 //      if(!is_numeric($qty)){$response=array('state'=>400);echo json_encode($response);break;}
 //      $sql=sprintf("select *  from porden  where id='%d' ",$po_id);
-//      $res=mysql_query($sql);
+//      $result=mysql_query($sql);
 //      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
 //        if($qty>0){
@@ -1132,7 +1132,7 @@ if(isset( $_REQUEST['where']))
 //      $qty=$_REQUEST['qty'];
 //      if(!is_numeric($qty)){$response=array('state'=>400);echo json_encode($response);break;}
 //      $sql=sprintf("select *  from porden  where id='%d' ",$po_id);
-//      $res=mysql_query($sql);
+//      $result=mysql_query($sql);
 //      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
 //        if($qty>0){
@@ -1156,7 +1156,7 @@ if(isset( $_REQUEST['where']))
 //      $po_id=$_REQUEST['po_id'];
 //      $qty=$_REQUEST['qty'];
 //      $sql=sprintf("select *  from porden  where id='%d' ",$po_id);
-//      $res=mysql_query($sql);
+//      $result=mysql_query($sql);
 //      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 //        list($date,$error)=prepare_mysql_date($qty);
 //        if($error){$response=array('state'=>400,'resp'=>_('Wrong date format, must be dd-mm-yyyy'));echo json_encode($response);break;}
@@ -1171,7 +1171,7 @@ if(isset( $_REQUEST['where']))
 //      $po_id=$_REQUEST['po_id'];
 //      $qty=$_REQUEST['qty'];
 //      $sql=sprintf("select *  from porden  where id='%d' ",$po_id);
-//      $res=mysql_query($sql);
+//      $result=mysql_query($sql);
 //      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 //        list($date,$error)=prepare_mysql_datetime($qty);
 //        if($error){$response=array('state'=>400,'resp'=>_('Wrong date format, must be dd-mm-yyyy'));echo json_encode($response);break;}
@@ -1197,7 +1197,7 @@ if(isset( $_REQUEST['where']))
 //      $p2s_id=$_REQUEST['p2s_id'];
 
 //      $sql=sprintf("select price from product2supplier  where id='%d' ",$p2s_id);
-//      $res=mysql_query($sql);
+//      $result=mysql_query($sql);
 //      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 //        $price=$row['price'];
        
@@ -1208,7 +1208,7 @@ if(isset( $_REQUEST['where']))
 //      $expected_price=$price;
      
 //      $sql=sprintf("select id from porden_item  where porden_id='%d' and  p2s_id='%d' ",$po_id,$p2s_id);
-//      $res=mysql_query($sql);
+//      $result=mysql_query($sql);
 //      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 //        if($qty==0)
 // 	 $sql=sprintf("delete from porden_item where id=%d",$row['id']);
@@ -1226,7 +1226,7 @@ if(isset( $_REQUEST['where']))
 //      $total_expected_price=0;
 //      $items=0;
 //      $sql=sprintf("select sum(expected_qty*expected_price) as ep ,count(*) as items from porden_item where  porden_id='%d'  ",$po_id);
-//      $res=mysql_query($sql);
+//      $result=mysql_query($sql);
 //       if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 // 	$total_expected_price=$row['ep'];
 // 	$items=$row['items'];
@@ -1245,7 +1245,7 @@ if(isset( $_REQUEST['where']))
 //      $p2s_id=$_REQUEST['p2s_id'];
 
 //      $sql=sprintf("select price from product2supplier  where id='%d' ",$p2s_id);
-//      $res=mysql_query($sql);
+//      $result=mysql_query($sql);
 //      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 //        $price=$row['price'];
        
@@ -1253,7 +1253,7 @@ if(isset( $_REQUEST['where']))
 
 
 //      $sql=sprintf("select id from porden_item  where porden_id='%d' and  p2s_id='%d' ",$po_id,$p2s_id);
-//      $res=mysql_query($sql);
+//      $result=mysql_query($sql);
 //      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
        
 
@@ -1270,7 +1270,7 @@ if(isset( $_REQUEST['where']))
 //      $total_expected_price=0;
 //      $items=0;
 //      $sql=sprintf("select sum(qty*price) as ep ,count(*) as items from porden_item where  porden_id='%d'  ",$po_id);
-//      $res=mysql_query($sql);
+//      $result=mysql_query($sql);
 //      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 //        $total_expected_price=$row['ep'];
 //        $items=$row['items'];
@@ -1293,7 +1293,7 @@ if(isset( $_REQUEST['where']))
 //      $po_id=$_SESSION['tables']['po_item'][4][0];
 //      $p2s_id=$_REQUEST['p2s_id'];
 //      $sql=sprintf("select id,qty,expected_qty from porden_item  where porden_id='%d' and  p2s_id='%d' ",$po_id,$p2s_id);
-//      $res=mysql_query($sql);
+//      $result=mysql_query($sql);
 //      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
        
 //        if($row['qty']=='')
@@ -1315,7 +1315,7 @@ if(isset( $_REQUEST['where']))
 //      $po_id=$_SESSION['tables']['po_item'][4][0];
 //      $p2s_id=$_REQUEST['p2s_id'];
 //      $sql=sprintf("select id from porden_item  where porden_id='%d' and  p2s_id='%d' ",$po_id,$p2s_id);
-//      $res=mysql_query($sql);
+//      $result=mysql_query($sql);
 //      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 //        if($row['qty']>0)
 // 	 $qty=$qty/$row['qty'];
@@ -1384,7 +1384,7 @@ if(isset( $_REQUEST['where']))
 
 
      $sql=sprintf("select  count(*) as num from product2supplier where supplier_id=%d",$_REQUEST['id'] );
-     $res=mysql_query($sql);
+     $result=mysql_query($sql);
      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
        $num_products=$row['num'];
        if($num_products==0){

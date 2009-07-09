@@ -221,8 +221,9 @@ class part{
 		    ,$neg_discrepancy_value
 		   ,$this->id);
 
-       print "$stock $value $neg_discrepancy $neg_discrepancy_value \n";
+       //   print "$stock $value $neg_discrepancy $neg_discrepancy_value \n";
        // update products that depends of this part
+
        $this->load('used in list');
        
        foreach($this->used_in_list as $product_key){
@@ -231,11 +232,14 @@ class part{
 	   print_r($this->used_in_list);
 	   exit("Error can not load prodct $product_key\n");
 	 }
+
 	 $product->load('stock');
+	 	 
        }
 
        if(!mysql_query($sql))
        	exit("  errorcant not uopdate parts stock");
+       
 
       break;
     case('stock_data'):

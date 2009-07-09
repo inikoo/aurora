@@ -187,7 +187,7 @@ foreach($__cols as $cols){
   
   if($is_product){
     
-    print "$code\r";
+    //    print "$code\r";
 
     
     $part_list=array();
@@ -442,10 +442,7 @@ foreach($__cols as $cols){
 	if($supplier_code=='AW')
 	  $scode=$code;
 
-	$the_supplier_data=array(
-		      'name'=>$supplier_code,
-		      'code'=>$supplier_code,
-		      );
+
 
 	if($scode=='SSK-452A' and $supplier_code=='Smen')
 	  $scode='SSK-452A bis';
@@ -454,6 +451,12 @@ foreach($__cols as $cols){
 	if(preg_match('/^(StoneM|Smen)$/i',$supplier_code)){
 	  $supplier_code='StoneM';
 	}
+
+
+		$the_supplier_data=array(
+		      'name'=>$supplier_code,
+		      'code'=>$supplier_code,
+		      );
 
 	// Suppplier data
 	if(preg_match('/Ackerman|Ackerrman|Akerman/i',$supplier_code)){
@@ -1093,10 +1096,11 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 	}
 	$supplier=new Supplier('code',$supplier_code);
 	if(!$supplier->id){
-	  print "neew: $supplier_code";
+	  print "neew: $supplier_code\n";
+	  print_r($the_supplier_data);
 	  $supplier=new Supplier('new',$the_supplier_data);
 	}
-	print "$supplier_code";
+
 
 
 
