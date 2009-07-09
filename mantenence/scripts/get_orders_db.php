@@ -454,6 +454,7 @@ if(preg_match('/^(x5686842-t|IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691
 	$_parent_order_date='';
 	if($credit_parent_public_id!=''){
 	  $credit_parent=new Order('public id',$credit_parent_public_id);
+	  $credit_parent->skip_update_product_sales=true;
 	  if($credit_parent->id){
 	    $_parent_key=$credit_parent->id;
 	    $_parent_order_date=$credit_parent->data['Order Date'];
@@ -1120,7 +1121,7 @@ if(preg_match('/^(x5686842-t|IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691
       $data['store_id']=1;
       //      print_r($data);
       $order= new Order('new',$data);
-
+      $order->skip_update_product_sales=true;
 
       if($tipo_order==2){
 	$payment_method=parse_payment_method($header_data['pay_method']);
@@ -1267,6 +1268,7 @@ if(preg_match('/^(x5686842-t|IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691
 	  
 	  if($credit['parent_key']!='NULL'){
 	    $parent=new Order($credit['parent_key']);
+	    $parent->skip_update_product_sales=true;
 	    $parent->load('totals');
 	  //   print "******************************************\n$sql\n";
 // 	    exit;
@@ -1489,6 +1491,7 @@ if(preg_match('/^(x5686842-t|IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691
 	}
 
       $order=new Order('public_id',$parent_order_id);
+      $order->skip_update_product_sales=true;
       if(!$order->id){
 
 	print "Unknown parent $parent_order_id\n";
@@ -1504,7 +1507,8 @@ if(preg_match('/^(x5686842-t|IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691
 	$data['Order Type']='Order';
 	$data['store_id']=1;
 	$order= new Order('new',$data);
-     
+	$order->skip_update_product_sales=true;
+
       
 	
 
@@ -1716,6 +1720,8 @@ if(preg_match('/^(x5686842-t|IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691
 	
 
       $parent_order=new Order('public_id',$parent_order_id);
+      $parent_order->skip_update_product_sales=true;
+
       if($parent_order->id){
 	print("prevs order found\n");
 
@@ -1753,6 +1759,8 @@ if(preg_match('/^(x5686842-t|IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691
 	$data['store_id']=1;
  
 	$order= new Order('new',$data);
+	$order->skip_update_product_sales=true;
+
 	$dn=new DEliveryNote('create',$data_dn,$data_dn_transactions,$order);
 	
 	//$order->create_replacement_dn_simple($data_dn,$data_dn_transactions,$products_data,$order_type);
