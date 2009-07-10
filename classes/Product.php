@@ -1761,13 +1761,14 @@ function normalize_code($code){
 					    ,'location_key'=>$row['Location Key']
 					    ,'location_code'=>$row['Location Code']
 					    ,'stock'=>$row['Quantity On Hand']
-					    ,'parts_per_peroduct'=>$row['Parts Per Product']
-					    );
+					    ,'parts_per_product'=>$row['Parts Per Product']
+					  
+						     );
      }
 
      break; 
    case('part_list'):
-     $sql=sprintf("select `Parts Per Product`,`Product Part Note`,PPL.`Part SKU`,`Part XHTML Description` from `Product Part List` PPL left join `Part Dimension` PD on (PD.`Part SKU`=PPL.`Part SKU`) where `Product ID`=%d and `Product Part Most Recent`='Yes';",$this->data['Product ID']);
+     $sql=sprintf("select IFNULL(`Part Days Available Forecast`,'UNK') as days,`Parts Per Product`,`Product Part Note`,PPL.`Part SKU`,`Part XHTML Description` from `Product Part List` PPL left join `Part Dimension` PD on (PD.`Part SKU`=PPL.`Part SKU`) where `Product ID`=%d and `Product Part Most Recent`='Yes';",$this->data['Product ID']);
      $result=mysql_query($sql);
      $this->parts=array();
      while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
@@ -1776,6 +1777,7 @@ function normalize_code($code){
 					    ,'description'=>$row['Part XHTML Description']
 					    ,'note'=>$row['Product Part Note']
 					    ,'parts_per_product'=>$row['Parts Per Product']
+					    ,'days_available'=>$row['days']
 					    );
      }
      break;
@@ -1836,7 +1838,7 @@ function normalize_code($code){
 
      // get parts;
      $sql=sprintf(" select `Part Current Stock`,`Parts Per Product` from `Part Dimension` PD left join `Product Part List` PPL on (PD.`Part SKU`=PPL.`Part SKU`)  where `Product ID`=%s  and `Product Part Most Recent`='Yes' group by PD.`Part SKU`  ",prepare_mysql($this->data['Product ID']));
-     //print "$sql\n";
+    
      $result=mysql_query($sql);
      $stock=99999999999;
      $change=false;
@@ -1855,12 +1857,13 @@ function normalize_code($code){
 	 
      }
 
+     //    print "Stock: $stock\n";
      if(!$change or $stock_error)
        $stock='NULL';
-     
+     //print "Stock: $stock\n";
      if(is_numeric($stock) and $stock<0)
        $stock='NULL';
-
+     // print "Stock: $stock\n";
      $sql=sprintf("update `Product Dimension` set `Product Availability`=%s where `Product key`=%d",$stock,$this->id);
      mysql_query($sql);
      $days_available='NULL';
@@ -1870,29 +1873,26 @@ function normalize_code($code){
      
      switch($stock_forecast_method){
      case('basic1'):
+
        
-       $sql=sprintf("select sum(`Product 1 Year Acc Quantity Invoiced`) as sales from `Product Dimension` where `Product Code`=%s",prepare_mysql($this->data['Product Code']));
-       $res = mysql_query($sql);
-       $sales=0;
-       if($row=mysql_fetch_array($res, MYSQL_ASSOC)) 
-	 $sales=$row['sales'];
-       if($sales<=0){
-	 $days_available='NULL';
-	 $avg_day_sales=0;
-       }else{
-	 if($this->data['Product Same Code 1 Year Acc Days On Sale']>0){
-	   $avg_day_sales=$sales/$this->data['Product Same Code 1 Year Acc Days On Sale'];
-	   if($stock=='NULL' or $avg_day_sales<=0)
-	     $days_available='NULL';
-	   else{
-	     $days_available=$sales/$avg_day_sales;
-	     
-	   }
-	 }else{
-	   $days_available='NULL';
-	   $avg_day_sales=0;
-	 }
+       $this->load('part_list');
+       $unk=false;
+       $min_days=-1;
+       foreach($this->parts as $part){
+	 if(!is_numeric($part['days_available']))
+	   $unk=true;
+	 else{
+	   if($min_days<$part['days_available'])
+	     $min_days=$part['days_available'];
+	       }
+
        }
+       if($unk or count($this->parts)==0 or $min_days<0)
+	 $days_available='NULL';
+       else
+	 $days_available=$min_days;
+       //print_r($this->parts);
+       //exit;
        
        break;
      }
@@ -1901,18 +1901,19 @@ function normalize_code($code){
      //   print "State ".$this->data['Product Sales State']."\n";
      
      if($this->data['Product Sales State']=='Discontinued'){
-       if($stock=='NULL')
-	 $tipo='No applicable';
-       else
-	 $tipo='Optimal';
+       $stock=0;
+       $tipo='No applicable';
+
        
-       // print "$tipo\n";
+       
      }else if($this->data['Product Sales State']=='For sale'){
-       if($stock=='NULL' or $stock<0)
+       if(!is_numeric($stock)){
 	 $tipo='Unknown';
-       else if($stock==0)
-	 $tipo='Out of stock';
-       else{
+       } elseif($stock<0){
+	 $tipo='Unknown';
+       }else if($stock==0){
+	 $tipo='Out of Stock';
+       }else{
 	 if(is_numeric($days_available)){
 	   
 	   switch($stock_tipo_method){
@@ -1933,14 +1934,24 @@ function normalize_code($code){
      }else{
        $tipo='No applicable';
      }
-
-
+     // and strtoupper($this->data['Product Code'])=='HMS-01'
+    /*  if( preg_match('/hms-31/i',$this->data['Product Code'])){ */
+     print $this->data['Product Code']." ".$this->data['Product Sales State']." $tipo $stock $days_available\n";
+/*        //       print_r($this->data); */
+/*          exit; */
+/*         } */
      $sql=sprintf("update `Product Dimension` set `Product Availability State`=%s,`Product Available Days Forecast`=%s where `Product key`=%d",prepare_mysql($tipo),$days_available,$this->id);
      if(!mysql_query($sql))
        exit("can no update stock prod product.php l 1311\n");
      break;
+
+
+
+ break;
    case('days'):
-     $tdays = (strtotime($this->data['Product Valid To']) - strtotime($this->data['Product Valid From'])) / (60 * 60 * 24);
+  
+
+ $tdays = (strtotime($this->data['Product Valid To']) - strtotime($this->data['Product Valid From'])) / (60 * 60 * 24);
      
 
      if(strtotime($this->data['Product Valid To'])<strtotime('today -1 year'))
@@ -1993,18 +2004,17 @@ function normalize_code($code){
      
 
      
-     $sql=sprintf("update `Product Dimension` set `Product Total Days On Sale`=%f , `Product 1 Year Acc Days On Sale`=%f ,`Product 1 Quarter Acc Days On Sale`=%f ,`Product 1 Month Acc Days On Sale`=%f ,`Product 1 Week Acc Days On Sale`=%f ,`Product For Sale Since Date`=%s ,`Product Last Sold Date`=%s where `Product Key`=%d "
+     $sql=sprintf("update `Product Dimension` set `Product Total Days On Sale`=%f , `Product 1 Year Acc Days On Sale`=%f ,`Product 1 Quarter Acc Days On Sale`=%f ,`Product 1 Month Acc Days On Sale`=%f ,`Product 1 Week Acc Days On Sale`=%f  where `Product Key`=%d "
 		  ,$tdays
 		  ,$ydays
 		  ,$qdays
 		  ,$mdays
 		  ,$wdays
-		  ,prepare_mysql($for_sale_since)
-		  ,prepare_mysql($last_sold_date)
+	
 		  
 		  ,$this->id
 		  );
-
+     // print "$sql\n";
  if(!mysql_query($sql))
        exit("$sql\ncan not update product days\n");
    
@@ -2019,7 +2029,7 @@ function normalize_code($code){
 
 $sql=sprintf("select `Product Key`,`Product For Sale Since Date`,`Product Last Sold Date`,`Product Sales State` from `Product Dimension` where `Product Code`=%s",prepare_mysql($this->data['Product Code']));
  $result=mysql_query($sql);
- 
+ // print $sql; 
  while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
    $from=strtotime($row['Product For Sale Since Date']);
    $to=strtotime($row['Product Last Sold Date']);
@@ -2041,6 +2051,7 @@ $sql=sprintf("select `Product Key`,`Product For Sale Since Date`,`Product Last S
        $i=0;
        while ($check_date != $end_date) {
 	 
+
 	 if(isset($total_days[$check_date]))
 	   $total_days[$check_date]++;
 	 else

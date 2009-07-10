@@ -17,12 +17,28 @@ mysql_query("SET time_zone ='UTC'");
 mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';           
 date_default_timezone_set('Europe/London');
+ if(isset($argv[1]) and $argv[1]=='fl'){
+$sql="select * from `Product Dimension`   order by `Product Key` desc ";
+$result=mysql_query($sql);
+while($row=mysql_fetch_array($result)   ){
+   $product=new Product($row['Product Key']);
+   $for_sale_since=$product->data['Product Valid From'];
+   $last_sold_date=$product->data['Product Valid To'];
+   $sql=sprintf("update `Product Dimension` set `Product For Sale Since Date`=%s ,`Product Last Sold Date`=%s where `Product Key`=%d "
+		,prepare_mysql($for_sale_since)
+		,prepare_mysql($last_sold_date)
+		,$product->id
+		);
+   if(!mysql_query($sql))
+     exit("$sql\ncan not update product days\n");
 
+   print "Pre ".$product->id."\r";
 
-
+}
+ }
 
 //$sql="select * from `Product Dimension` where `Product Code`='FO-A1'";
-$sql="select * from `Product Dimension`   order by `Product Key` desc ";
+$sql="select * from `Product Dimension`   order by `Product Key`  ";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result)   ){
 
@@ -35,6 +51,7 @@ while($row=mysql_fetch_array($result)   ){
   
   $product->load('sales');
   $product->load('parts');
+ 
 
   if(isset($argv[1]) and $argv[1]=='first'){
 
@@ -80,7 +97,8 @@ while($row=mysql_fetch_array($result)   ){
   if(!mysql_query($sql))
     exit("can not upodate state of the product");
   }
-
+  $product->load('days');
+  $product->load('stock');
 
   print $row['Product Key']."\n";
 
