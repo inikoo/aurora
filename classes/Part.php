@@ -244,7 +244,7 @@ class part{
       break;
     case('stock_data'):
       $astock=0;
-      $avalue=0;
+      $avaue=0;
       
       $sql=sprintf("select ifnull(avg(`Quantity On Hand`),'ERROR') as stock,avg(`Value At Cost`) as value from `Inventory Spanshot Fact` where  `Part SKU`=%d and `Date`>=%s and `Date`<=%s group by `Date`",$this->data['Part SKU'],prepare_mysql(date("Y-m-d",strtotime($this->data['Part Valid From']))),prepare_mysql(date("Y-m-d",strtotime($this->data['Part Valid To']))  ));
       // print "$sql\n";
@@ -762,6 +762,35 @@ class part{
       if(!mysql_query($sql))
 	exit(" $sql\n error con not uopdate product part when loading sales");
 
+      break;
+    case('forecast'):
+      // -------------- simple forecast -------------------------
+    
+      if($this->data['Part Current Stock']=='' or $this->data['Part Current Stock']<0){
+	$this->data['Part Days Available Forecast']='NULL';
+	$this->data['Part XHTML Available For Forecast']=_('Unknown Stock');
+      }elseif($this->data['Part Current Stock']==0){
+	$this->data['Part Days Available Forecast']=0;
+	$this->data['Part XHTML Available For Forecast']=_('Out of Stock');
+      }else{
+      
+      if($this->data['Part 1 Quarter Acc Required']>0){
+	$this->data['Part Days Available Forecast']=365/4*$this->data['Part Current Stock']/$this->data['Part 1 Quarter Acc Required'];
+	$this->data['Part XHTML Available For Forecast']=number($this->data['Part Days Available Forecast']).' '._('days');
+      }elseif($this->data['Part 1 Year Acc Required']>0){
+	$this->data['Part Days Available Forecast']=365*$this->data['Part Current Stock']/$this->data['Part 1 Year Acc Required'];
+	$this->data['Part XHTML Available For Forecast']=number($this->data['Part Days Available Forecast']).' '._('days');
+      }else{
+	$this->data['Part Days Available Forecast']='NULL';
+	$this->data['Part XHTML Available For Forecast']=_('No enough data');
+      }
+      }
+      
+
+      $sql=sprintf("update `Part Dimension` set `Part Days Available Forecast`=%s,`Part XHTML Available For Forecast`=%s where `Part Key`=%d",$this->data['Part Days Available Forecast'],prepare_mysql($this->data['Part XHTML Available For Forecast']),$this->id );
+    
+      if(!mysql_query($sql))
+	print "$sql\n";
       break;
     case('future costs'):
     case('estimated cost'):

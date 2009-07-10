@@ -87,7 +87,9 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $part->load('sales');
   $part->load('used in');
   $part->load('supplied by');
-   $part->load('stock');
+  $part->load('stock');
+  $part->load('forecast');
+
   //   $part->load('stock_history');
   //   $part->load('future costs');
    //print $row['Part Key']."\n";
