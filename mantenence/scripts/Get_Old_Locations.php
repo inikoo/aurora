@@ -132,18 +132,28 @@ while($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 	 switch($num_associated){
 	 case 1:
 	   if($associated[0]==1){
-	      print "+++++++++\n";
+	     //   print "+++++++++\n";
 	      $pl=new PartLocation('1_'.$sku);
+
+
+	      $note=_('Part')." SKU".$part->data['Part SKU']." "._('associated with')." ".$location->data['Location Code'];
+	      if($location->data['Location Distinct Parts']==0)
+		$note.=" ("._("First part-location record").")"." ("._("First record of location been used").")";
+	      else
+		$note.=" ("._("First part-location record").")";
 	      $data=array(
 			  'user key'=>0
-			  ,'note'=>_('First record of location')
+			  ,'note_out'=>''
+			  ,'note_associate'=>''
+			  ,'note_in'=>$note
+
 			  ,'move_to'=>$location->id
 			  ,'qty'=>'all'
 			  
 			  );
 	      // EXIT;
 	      $pl->move_to($data);
-	      //  exit;
+	   
 	      
 	      $data=array(
 			  'user key'=>0

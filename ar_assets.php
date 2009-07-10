@@ -6555,12 +6555,12 @@ if(isset( $_REQUEST['tableid']))
 
   $wheref='';
 
-  $where=$where.sprintf(" and `Location Key`=%d  ",$location_id);
+  $where=$where.sprintf(" and `History Type`='Normal' and `Location Key`=%d  ",$location_id);
 
    
   //   $where =$where.$view.sprintf(' and product_id=%d  %s',$product_id,$date_interval);
    
-   $sql="select count(*) as total from `Location Dimension`   $where $wheref";
+   $sql="select count(*) as total from  `Inventory Transaction Fact`  $where $wheref";
    //   print "$sql";
    $result=mysql_query($sql);
    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
@@ -6569,7 +6569,7 @@ if(isset( $_REQUEST['tableid']))
    if($wheref=='')
        $filtered=0;
    else{
-     $sql="select count(*) as total from `Location Dimension`   $where ";
+     $sql="select count(*) as total from  `Inventory Transaction Fact`  $where ";
      
      $result=mysql_query($sql);
      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
@@ -6587,8 +6587,8 @@ if(isset( $_REQUEST['tableid']))
 
 
 
-   $sql=sprintf("select  *,IFNULL(`User Key`,-1) as user from `Inventory Transition Fact`  $where $wheref order by $order $order_direction limit $start_from,$number_results ");
-  print $sql;
+   $sql=sprintf("select  *,IFNULL(`User Key`,-1) as user from `Inventory Transaction Fact`  $where $wheref order by $order $order_direction limit $start_from,$number_results ");
+   // print $sql;
   $result=mysql_query($sql);
   $adata=array();
   while($data=mysql_fetch_array($result, MYSQL_ASSOC)){
@@ -6601,14 +6601,20 @@ if(isset( $_REQUEST['tableid']))
       $author=$data['user'];
     $tipo=$data['Inventory Transaction Type'];
     
+
+    if($tipo=='Move In' or $tipo=='Audit' or   $tipo=='Move Out' ) 
+      $qty=number($data['Inventory Transaction Quantity']);
+    else
+      $qty='';
+    
     $adata[]=array(
 
 		   'author'=>$author
 		   ,'tipo'=>$tipo
-		   ,'diff_qty'=>number('Inventory Transaction Quantity')
-		   ,'diff_amount'=>money('Inventory Transaction Amount')
+		   ,'diff_qty'=>$qty
+		   ,'diff_amount'=>money($data['Inventory Transaction Amount'])
 		   ,'note'=>$data['Note']
-		   ,'date'=>strftime("%a %e %b %Y %T", strtotime('@'.$data['Date'])),
+		   ,'date'=>strftime("%a %e %b %Y %T", strtotime($data['Date'])),
 		   );
   }
   $response=array('resultset'=>
@@ -6621,7 +6627,7 @@ if(isset( $_REQUEST['tableid']))
 			 'filter_msg'=>$filter_msg,
 			 'total_records'=>$total,
 			 'records_offset'=>$start_from,
-			 'records_returned'=>$start_from+$res->numRows(),
+			 'records_returned'=>$start_from+$total,
 			 'records_perpage'=>$number_results,
 			 'records_text'=>$rtext,
 			 'records_order'=>$order,

@@ -794,7 +794,16 @@ function last_inventory_audit(){
     
     $move_to=$data['move_to'];
     $user_id=$data['user key'];
-    $note=$data['note'];
+    $note_associate='';
+    if(isset($data['note_associate']))
+      $note_associate=$data['note_associate'];
+    $note_out='';
+    if(isset($data['note_out']))
+      $note_out=$data['note_out'];
+    $note_in='';
+    if(isset($data['note_in']))
+      $note_in=$data['note_in'];
+    
     $qty=$data['qty'];
 
 
@@ -844,8 +853,8 @@ function last_inventory_audit(){
 	  $value=sprintf("%.2f",$row['Value At Cost']*$qty/$row['Quantity On Hand']);
 
       }
-
-
+      
+      
       if($qty>0 and is_numeric($qty) ){
     
       	$sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`) values (%d,%d,%s,%s,%s,%s,%s,%s)"
@@ -855,26 +864,31 @@ function last_inventory_audit(){
 		     ,-$qty
 		     ,-$value
 		     ,$user_id
-		     ,prepare_mysql($note)
+		     ,prepare_mysql($note_out,false)
 		     ,prepare_mysql($date)
 		     );
 	if(!mysql_query($sql))
 	  print "Error   $sql\n";
+	
+	$_loc=new Location($this->location_key);
+	$_loc->load('parts_data');
+	
       }
 
       $__date=date("Y-m-d H:i:s",strtotime($date." -1 second"));
-      $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`) values (%d,%d,%s,%s,%s,%s,%s,%s)"
+      $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`,`History Type`) values (%d,%d,%s,%s,%s,%s,%s,%s,'Detail')"
 		   ,$this->part_sku
 		   ,$move_to
 		   ,"'Associate'"
 		   ,0
 		   ,0
 		   ,$user_id
-		   ,prepare_mysql($note)
+		   ,prepare_mysql($note_associate,false)
 		   ,prepare_mysql($__date)
 		   );
 
-
+      //print_r($data);
+      //print "$sql\n";
       if(!mysql_query($sql))
 	print "Error $sql\n";
     
@@ -882,14 +896,14 @@ function last_inventory_audit(){
 
 
       $__date=date("Y-m-d H:i:s",strtotime($date." +0 second"));
-      $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`) values (%d,%d,%s,%s,%s,%s,%s,%s)"
+      $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`,`History Type`) values (%d,%d,%s,%s,%s,%s,%s,%s,'Admin')"
 		   ,$this->part_sku
 		   ,$move_to
 		   ,"'Audit'"
 		   ,0
 		   ,0
 		   ,$user_id
-		   ,prepare_mysql($note)
+		   ,"''"
 		   ,prepare_mysql($__date)
 		   );
       if(!mysql_query($sql))
@@ -904,19 +918,21 @@ function last_inventory_audit(){
 		     ,$qty
 		     ,$value
 		     ,$user_id
-		     ,prepare_mysql($note)
+		     ,prepare_mysql($note_in,false)
 		     ,prepare_mysql($__date)
 		     );
-
+	
 	if(!mysql_query($sql))
 	  print "Error $sql\n";
       }	
-
+	$_loc=new Location($move_to);
+	$_loc->load('parts_data');
 
     }
     
     $part=new Part($this->part_sku);
     $part->load('calculate_stock_history','last');
+
    
  
   }
@@ -924,22 +940,26 @@ function last_inventory_audit(){
 
   function associate($data=false){
     
-    $base_data=array('date'=>date('Y-m-d H:i:s'),'note'=>'','metadata'=>'');
+    $base_data=array('date'=>date('Y-m-d H:i:s'),'note'=>'','metadata'=>'','history_type'=>'Admin');
     if(is_array($data)){
       foreach($data as $key=>$val){
 	$base_data[$key]=$val;
       }
     }
-    $sql=sprintf("insert into `Inventory Transaction Fact` (`Date`,`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Note`,`Metadata`) values (%s,%d,%d,'Associate',0,0,'','')"
+    $sql=sprintf("insert into `Inventory Transaction Fact` (`Date`,`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Note`,`Metadata`,`History Type`) values (%s,%d,%d,'Associate',0,0,%s,%s,%s)"
 		 ,prepare_mysql($base_data['date'])
 		 ,$this->part_sku
 		 ,$this->location_key
-		 ,prepare_mysql($base_data['note'])
-		 ,prepare_mysql($base_data['metadata'])	
+		 ,prepare_mysql($base_data['note'],false)
+		 ,prepare_mysql($base_data['metadata'],false)	
+		 ,prepare_mysql($base_data['history_type'],false)	
+
 		 );
-     print "$sql\n";
+    //print_r($base_data);
+    // print "$sql\n";
+    // exit;
     if(!mysql_query($sql))
-      exit("$sql can into insert Inventory Transaction Fact star");
+      exit("$sql can into insert Inventory Transaction Fact star AA");
   }
 
   }
