@@ -664,12 +664,15 @@ protected function create($data,$optios=''){
     }
 
     break;
-/*   case('IRL')://Ireland */
-/*     if(preg_match('/^0?8(2|3|5|6|7|8|9)/',$data['Telecom Number'])) */
-/*       $data['is_mobile']=1; */
-/*     else */
-/*       $data['is_mobile']=0; */
-/*     break; */
+  case('IRL')://Ireland
+    if(preg_match('/^0?8(2|3|5|6|7|8|9)/',$data['Telecom Number']))
+      $data['is_mobile']=1;
+    else
+      $data['is_mobile']=0;
+    $data['Telecom Country Telephone Code']='353';
+     $data['Telecom Number']=preg_replace('/^353/','',$data['Telecom Number']);
+
+    break;
 /*   case('ESP')://Spain */
 /*   case('FRA')://France */
 /*     if(preg_match('/^0?6/',$data['Telecom Number'])) */
