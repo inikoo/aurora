@@ -132,8 +132,9 @@ protected function update_field($field,$value,$options=''){
    
 
   $sql="update `".$this->table_name." Dimension` set `".$field."`=".prepare_mysql($value)." where `".$this->table_name." Key`=".$this->id;
-   print $sql;
-   //mysql_query($sql);
+  //print $sql;
+
+   mysql_query($sql);
   $affected=mysql_affected_rows();
   if($affected==-1){
     $this->msg.=' '._('Record can not be updated')."\n";
