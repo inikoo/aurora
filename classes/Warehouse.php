@@ -11,17 +11,27 @@
  
  Version 2.0
 */
-class warehouse{
-  
-  var $data=array();
+include_once('DB_Table.php');
+include_once('WarehouseArea.php');
+include_once('Location.php');
+
+class Warehouse extends DB_Table{
+
   var $areas=false;
-  var $id=false;
+  var $locations=false;
+  
+  function Warehouse($arg1=false,$arg2=false) {
 
+    $this->table_name='Warehouse';
+    $this->ignore_fields=array('Warehouse Key');
 
-  function __construct($arg1=false,$arg2=false) {
-
-     if($arg1=='new' and is_array($arg2)){
+     if(preg_match('/^(new|create)$/i',$arg1) and is_array($arg2)){
        $this->create($arg2);
+       return;
+     }
+
+     if(preg_match('/find/i',$arg1)){
+       $this->find($arg2,$arg1);
        return;
      }
 
@@ -29,43 +39,23 @@ class warehouse{
        $this->get_data('id',$arg1);
        return;
      }
-     $this->get_data($arg1,$arg2);
      
-
-
+     $this->get_data($arg1,$arg2);
   }
 
 
- //  function create ($data){
-//     $name=$data['name'];
-    
-  
-//      if($name=='')
-//        return array('ok'=>false,'msg'=>_('Wrong warehouse name').'.');
-    
-
-//     $sql=sprintf('insert into location (name) values(%s)',prepare_mysql($name));
-//     // print "$sql\n";
-//     $affected=& $this->db->exec($sql);
-//     if (PEAR::isError($affected)) {
-//       if(preg_match('/^MDB2 Error: constraint violation$/',$affected->getMessage()))
-// 	return array('ok'=>false,'msg'=>_('Error: Another warehouse has the same name').'.');
-// 	 else
-// 	   return array('ok'=>false,'msg'=>_('Unknwon Error').'.');
-//     }
-//     $id = $this->db->lastInsertID();
-//     $this->get_data('id',$id);
-//   }
 
   function get_data($key,$tag){
     
     if($key=='id')
-      $sql=sprintf("select `Warehouse Key`,`Warehouse Name` from `Warehouse Dimension` where `Warehouse Key`=%d",$tag);
+      $sql=sprintf("select * from `Warehouse Dimension` where `Warehouse Key`=%d",$tag);
+    else if($key=='code')
+      $sql=sprintf("select *  from `Warehouse Dimension` where `Warehouse Code`=%s ",prepare_mysql($tag));
     else if($key=='name')
-      $sql=sprintf("select  `Warehouse Key`,`Warehouse Name`  from `Warehouse Dimension` where `Warehouse Name`=%s ",prepare_mysql($tag));
+      $sql=sprintf("select *  from `Warehouse Dimension` where `Warehouse Name`=%s ",prepare_mysql($tag));
+    
     else
       return;
-
     $result=mysql_query($sql);
     if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)){
       $this->id=$this->data['Warehouse Key'];
@@ -78,7 +68,7 @@ class warehouse{
  
 
 
-  function update($data){
+  function xupdate($data){
     foreach($data as $key =>$value)
       switch($key){
       case('name'):
@@ -115,16 +105,16 @@ class warehouse{
   function load($key=''){
     switch($key){
     case('areas'):
-  //     $sql=sprintf("select id,name from warehouse_area where warehouse_id=%d ",$this->id);
+      $sql=sprintf("select * from `Warehouse Area Dimension` where `Warehouse Key`=%d ",$this->id);
       
-//       $result =& $this->db->query($sql);
-//       $this->areas=array();
-//       while($row=$result->fetchRow()){
-// 	$this->areas[$row['id']]=array(
-// 				       'id'=>$row['id'],
-// 					  'name'=>$row['name'],
-// 				       );
-//       }
+      $result =mysql_query($sql);
+      $this->areas=array();
+      while($row=mysql_fetch_array($result)){
+ 	$this->areas[$row['id']]=array(
+ 				       'id'=>$row['`Warehouse Area Key`'],
+				       'code'=>$row['Warehouse Area Code'],
+ 				       );
+      }
       break;
 
     }
