@@ -455,8 +455,8 @@ class Contact extends DB_Table{
     }
 
 
-    //print "-Contact Candidates\n";
-    //  print_r($this->candidate);
+    //print "-Contact Candidates $options\n";
+    //print_r($this->candidate);
 
     if($this->found){
       $this->get_data('id',$this->found_key);
@@ -471,8 +471,8 @@ class Contact extends DB_Table{
 	
 /* 	$data['Home Address']=$address_home_data; */
 /* 	$data['Work Address']=$address_work_data; */
-	//print "raw data:\n";
-	//print_r($raw_data);
+	print "raw data:\n";
+	print_r($raw_data);
 	
 	$this->update($raw_data,$options);
 	if(isset($address_data['Home']))
@@ -997,10 +997,11 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
 
     if($this->data['Contact Name']!=$myconf['unknown_contact'])
       $email_data['Email Contact Name']=$this->data['Contact Name'];
-  
-    //  print "-------------******* $args  *****\n find in contact ".$this->id." create\n";
+    // 
+    //print_r($email_data);
+    //print "-------------******* $args  *****\n find in contact ".$this->id." create\n";
     $email=new email('find in contact '.$this->id.' create',$email_data);
-
+    //exit;
 
      $this->msg.=' '.$email->msg;
 
@@ -1023,7 +1024,11 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
 	$email_data['Email Type']='Other';
       else
 	$email_data['Email Type']='Unknown';
+      
+      
 
+      
+      
       $sql=sprintf("insert into  `Email Bridge` (`Email Key`,`Subject Type`, `Subject Key`,`Is Main`,`Email Description`) values (%d,'Contact',%d,%s,%s) ON DUPLICATE KEY UPDATE `Email Description`=%s   "
 		   ,$email->id
 		   ,$this->id
@@ -1032,19 +1037,22 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
 		   ,prepare_mysql($email_data['Email Type'])
 		   );
       mysql_query($sql);
+      
+      if($email->new)
+
       if(preg_match('/principal/i',$args)){
 
-   $sql=sprintf("update `Email Bridge`  set `Is Main`='No' where `Subject Type`='Contact' and  `Subject Key`=%d  and `Email Key`!=%d",
-		  $this->id
-		 ,$email->id
-		  );
-   mysql_query($sql);
-     $sql=sprintf("update `Email Bridge`  set `Is Main`='Yes' where `Subject Type`='Contact' and  `Subject Key`=%d  and `Email Key`=%d",
-		  $this->id
-		  ,$email->id
-		  );
-     mysql_query($sql);
-
+	$sql=sprintf("update `Email Bridge`  set `Is Main`='No' where `Subject Type`='Contact' and  `Subject Key`=%d  and `Email Key`!=%d",
+		     $this->id
+		     ,$email->id
+		     );
+	mysql_query($sql);
+	$sql=sprintf("update `Email Bridge`  set `Is Main`='Yes' where `Subject Type`='Contact' and  `Subject Key`=%d  and `Email Key`=%d",
+		     $this->id
+		     ,$email->id
+		     );
+	mysql_query($sql);
+	
 	$sql=sprintf("update `Contact Dimension` set `Contact Main XHTML Email`=%s ,`Contact Main Plain Email`=%s,`Contact Main Email Key`=%d where `Contact Key`=%d"
 		     ,prepare_mysql($email->display('html'))
 		     ,prepare_mysql($email->display('plain'))
@@ -1053,15 +1061,35 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
 	$this->data['Contact Main XHTML Email']=$email->display('html');
 	$this->data['Contact Main Plain Email']=$email->display('plain');
 	$this->data['Contact Main Email Key']=$email->id;
-	//	print "$sql\n";
 	mysql_query($sql);
-      }
-      // cascade to the other email parents
-      if($company_key=$this->company_key('princial')){
-	$company=new Company('id',$company_key);
-	$company->update(array('Compmay Email Key'=>$email->id));
+	if($company_key=$this->company_key('princial')){
+	  $company=new Company('id',$company_key);
+	  $customer->editor=$this->editor;
+	  $company->update(array('Company Email Key'=>$email->id));
+	  
+	  $customer_found_keys=$company->get_customers_key();
+	  foreach($customer_found_keys as $customer_found_key){
+	    $customer=new Customer($customer_found_key);
+	    $customer->editor=$this->editor;
+	    $customer->update_email($email->id);
+	  }
+	}
+	
+	$customer_found_keys=$this->get_customers_key();
+	foreach($customer_found_keys as $customer_found_key){
+	  $customer=new Customer($customer_found_key);
+	  $customer->editor=$this->editor;
+	  $customer->update_email($email->id);
+	}
+	
+	
+	
       }
 
+      
+
+
+      
       $this->add_email=$email->id;
     }else{
       $this->add_email=0;
@@ -2451,13 +2479,15 @@ string with the name to be parsed
      function: get_customer_key
      Returns the Customer Key if the contact is one
     */
-   function get_customer_key(){
+   function get_customers_key(){
      $sql=sprintf("select `Customer Key` from `Customer Dimension` where `Customer Type`='Person' and `Customer Main Contact Key`=%d  ",$this->id);
+     $customer_keys=array();
      $result=mysql_query($sql);
-     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-       return $row['Customer Key'];
+     while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+       $customer_keys[$row['Customer Key']]= $row['Customer Key'];
+       
      }
-     return false;
+     return $customer_keys;
    }
 
 } 

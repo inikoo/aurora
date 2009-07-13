@@ -196,13 +196,14 @@ class Customer extends DB_Table{
       //print_r($child);
       $this->found_child=true;
       $this->found_child_key=$child->found_key;
-      $customer_found_key=$child->get_customer_key();
-      if($customer_found_key){
-	// to have differt sets oif customers by store
-	$tmp_customer=new Customer($customer_found_key);
-	if($tmp_customer->data['Customer Store Key']==$raw_data['Customer Store Key']){
-	  $this->found=true;
-	  $this->found_key=$customer_found_key;
+      $customer_found_keys=$child->get_customers_key();
+      if(count($customer_found_keys)>0){
+	foreach($customer_found_keys as $customer_found_key){
+	  $tmp_customer=new Customer($customer_found_key);
+	  if($tmp_customer->data['Customer Store Key']==$raw_data['Customer Store Key']){
+	    $this->found=true;
+	    $this->found_key=$customer_found_key;
+	  }
 	}
       }
 	
@@ -222,6 +223,14 @@ class Customer extends DB_Table{
     if($create){
     
       if($this->found){
+	
+	if($raw_data['Customer Type']=='Person'){
+	  $child=new Contact ('find in customer create',$raw_data);
+	}else{
+	  $child=new Company ('find in customer create',$raw_data);
+	}
+
+
 	$this->update($raw_data);
 
       }else{
@@ -997,10 +1006,160 @@ class Customer extends DB_Table{
 
 
 
- 
+
+
+   /*Function: update_field_switcher
+   */
+ function update_field_switcher($field,$value,$options=''){
+   
+   switch($field){
+   case('Customer Main Telephone'):
+   case('Customer Main Plain Telephone'):
+   case('Customer Main Telephone Key'):
+   case('Customer Main FAX'):
+   case('Customer Main Plain FAX'):
+   case('Customer Main FAX Key'):
+   case('Customer Main XHTML Email'):
+   case('Customer Main Email Key'):
+   case('Customer Main Plain Email'):
+     return;
+     break;
+   default:
+     $this->update_field($field,$value,$options);
+   }
+ }
+
+
+ /*
+  function:update_email
+  */
+ function update_email($email_key=false){
+   if(!$email_key)
+     return;
+   $email=new Email($email_key);
+   if(!$email->id)
+     return;
+
+   if($email->id!=$this->data['Customer Main Email Key']){
+     $old_value=$this->data['Customer Main Email Key'];
+     $this->data['Customer Main Email Key']=$email->id;
+     $this->data['Customer Main Plain Email']=$email->display('plain');
+     $this->data['Customer Main XHTML Email']=$email->display('xhtml');
+     $sql=sprintf("update `Customer Dimension` set `Customer Main Email Key`=%d,`Customer Main Plain Email`=%s,`Customer Main XHTML Email`=%s where `Customer Key`=%d"
+
+		  ,$this->data['Customer Main Email Key']
+		  ,prepare_mysql($this->data['Customer Main Plain Email'])
+		  ,prepare_mysql($this->data['Customer Main XHTML Email'])
+		  ,$this->id
+		  );
+     if(mysql_query($sql)){
+       $field='Customer Email';
+       $note=$field.' '._('changed');
+       if($old_value){
+	 $old_email=new Email($old_value);
+	 $details=$field.' '._('changed from')." \"".$old_email->display('plain')."\" "._('to')." \"".$this->data['Customer Main Plain Email']."\"";
+       }else{
+	  $details=_('Customer Email set to')." \"".$this->data['Customer Main Plain Email']."\"";
+       }
+
+
+       if($this->editor['Author Name'])
+	 $author=$this->editor['Author Name'];
+       else
+	 $author=_('System');
+       
+       if($this->editor['Date'])
+	 $date=$this->editor['Date'];
+       else
+	 $date=date("Y-m-d H:i:s");
+       
+       $sql=sprintf("insert into `History Dimension` (`History Date`,`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`Author Name`,`Author Key`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+		    ,prepare_mysql($date)
+	      ,prepare_mysql('user')
+	      ,prepare_mysql($this->editor['User Key'])
+	      ,prepare_mysql('edited')
+	      ,prepare_mysql($this->table_name)
+	      ,prepare_mysql($this->id)
+	      ,prepare_mysql('to')
+	      ,prepare_mysql($field)
+	      ,0
+	      ,prepare_mysql($note)
+	      ,prepare_mysql($details)
+	      ,prepare_mysql($author)
+	      ,prepare_mysql($this->editor['Author Key'])
+		  );
+
+   mysql_query($sql);
 
 
 
+     }else{
+       $this->error=true;
+       
+     }
+     
+
+     
+   }elseif($email->display('plain')!=$this->data['Customer Main Plain Email']){
+     $old_value=$this->data['Customer Main Plain Email'];
+     
+     $this->data['Customer Main Plain Email']=$email->display('plain');
+     $this->data['Customer Main XHTML Email']=$email->display('xhtml');
+     $sql=sprintf("update `Customer Dimension` set `Customer Main Plain Email`=%s,`Customer Main XHTML Email`=%s where `Customer Key`=%d"
+		  
+
+		  ,prepare_mysql($this->data['Customer Main Plain Email'])
+		  ,prepare_mysql($this->data['Customer Main XHTML Email'])
+		  ,$this->id
+		  );
+     if(mysql_query($sql)){
+       $field='Customer Email';
+       $note=$field.' '._('changed');
+       $details=$field.' '._('changed from')." \"".$old_value."\" "._('to')." \"".$this->data['Customer Main Plain Email']."\"";
+
+
+
+       if($this->editor['Author Name'])
+	 $author=$this->editor['Author Name'];
+       else
+	 $author=_('System');
+       
+       if($this->editor['Date'])
+	 $date=$this->editor['Date'];
+       else
+	 $date=date("Y-m-d H:i:s");
+       
+       $sql=sprintf("insert into `History Dimension` (`History Date`,`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`Author Name`,`Author Key`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+		    ,prepare_mysql($date)
+	      ,prepare_mysql('user')
+	      ,prepare_mysql($this->editor['User Key'])
+	      ,prepare_mysql('edited')
+	      ,prepare_mysql($this->table_name)
+	      ,prepare_mysql($this->id)
+	      ,prepare_mysql('to')
+	      ,prepare_mysql($field)
+	      ,0
+	      ,prepare_mysql($note)
+	      ,prepare_mysql($details)
+	      ,prepare_mysql($author)
+	      ,prepare_mysql($this->editor['Author Key'])
+		  );
+
+   mysql_query($sql);
+
+
+
+     }else{
+       $this->error=true;
+       
+     }
+     
+
+   }
+
+
+
+ }
 
 
 /*   /\* */
@@ -1029,6 +1188,7 @@ class Customer extends DB_Table{
 /*      $this->data=$data; */
 
 /*  } */
+
 
 
 

@@ -116,8 +116,10 @@ class Company extends DB_Table {
       $parent='supplier';
     }elseif(preg_match('/(from|on|in|at) customer/',$options)){
       foreach($raw_data as $key=>$val){
-	$_key=preg_replace('/Customer /','Company ',$key);
-	$raw_data[$_key]=$val;
+	if($key!='Customer Type'){
+	  $_key=preg_replace('/Customer /','Company ',$key);
+	  $raw_data[$_key]=$val;
+	}
       }
       $parent='customer';
     }else{
@@ -267,7 +269,7 @@ class Company extends DB_Table {
     if($this->found )
       $this->get_data('id',$this->found_key);
 
-    if($create){
+    if($create or $update){
 
       
 
@@ -988,18 +990,18 @@ private function update_Company_Old_ID($company_old_id,$options){
 
 
 	if(preg_match('/principal/i',$args)){
-
-	   $sql=sprintf("update `Email Bridge`  set `Is Main`='No' where `Subject Type`='Company' and  `Subject Key`=%d  and `Email Key`!=%d",
-		  $this->id
-		 ,$email->id
-		  );
-   mysql_query($sql);
-     $sql=sprintf("update `Email Bridge`  set `Is Main`='Yes' where `Subject Type`='Company' and  `Subject Key`=%d  and `Email Key`=%d",
-		  $this->id
-		  ,$email->id
-		  );
-     mysql_query($sql);
-
+	  
+	  $sql=sprintf("update `Email Bridge`  set `Is Main`='No' where `Subject Type`='Company' and  `Subject Key`=%d  and `Email Key`!=%d",
+		       $this->id
+		       ,$email->id
+		       );
+	  mysql_query($sql);
+	  $sql=sprintf("update `Email Bridge`  set `Is Main`='Yes' where `Subject Type`='Company' and  `Subject Key`=%d  and `Email Key`=%d",
+		       $this->id
+		       ,$email->id
+		       );
+	  mysql_query($sql);
+	  
 	  $sql=sprintf("update `Company Dimension` set `Company Main XHTML Email`=%s ,`Company Main Plain Email`=%s,`Company Main Email Key`=%d where `Company Key`=%d"		       
 		       ,prepare_mysql($email->display('html'))
 		       ,prepare_mysql($email->display('plain'))
@@ -1391,14 +1393,15 @@ function add_contact($data,$args='principal'){
      function: get_customer_key
      Returns the Customer Key if the company is one
     */
-   function get_customer_key(){
-     $sql=sprintf("select `Customer Key` from `Customer Dimension` where `Customer Type`='Company' and `Customer Company Key`=%d  ",$this->id);
-     //   print "$sql\n";
+   function get_customers_key(){
+     $sql=sprintf("select `Customer Key` from `Customer Dimension` where  `Customer Type`='Company' and `Customer Company Key`=%d  ",$this->id);
+     $customer_keys=array();
      $result=mysql_query($sql);
-     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-       return $row['Customer Key'];
+     while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+       $customer_keys[$row['Customer Key']]= $row['Customer Key'];
+       
      }
-     return false;
+     return $customer_keys;
    }
 }
 

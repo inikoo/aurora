@@ -94,7 +94,7 @@ $fam_promo_key=$fam_promo->id;
 
 $sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/%'  order by filename";
 
-$sql="select *,orders_data.orders.id as id  from dw.`Order Transaction Fact` X left join  orders_data.orders on (orders_data.orders.id=REPLACE(`Metadata`,'U',''))  where `Customer Key` in (19064) group by `Metadata` order by filename;";
+$sql="select *,orders_data.orders.id as id  from dw2.`Order Transaction Fact` X left join  orders_data.orders on (orders_data.orders.id=REPLACE(`Metadata`,'U',''))  where `Customer Key` in (729,11701) group by `Metadata` order by filename;";
 
 $contador=0;
 //print $sql;
