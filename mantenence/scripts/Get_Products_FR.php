@@ -18,7 +18,7 @@ error_reporting(E_ALL);
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 
 if(!$con){print "Error can not connect with database server\n";exit;}
-$dns_db='dw';
+//$dns_db='dw';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
   
@@ -366,7 +366,7 @@ $code=_trim($cols[3]);
     $uk_product=new Product('code_store',$code,1);
     $product=new Product('code_store',$code,3);
     // print "** ".$product->data['Product Code']."\n";
-    if(!$product->id and $uk_product->id){
+    if(!$product->id ){
       
 
       
@@ -458,7 +458,7 @@ $code=_trim($cols[3]);
 // 	if(!$supplier->id){
 // 	  exit("supplier not found")
 // 	}
-	
+      if(isset($parts[0])){
  	$part_list[]=array(
  			   'Product ID'=>$product->get('Product ID'),
  			   'Part SKU'=>$parts[0],
@@ -474,7 +474,7 @@ $code=_trim($cols[3]);
 	$part =new Part('sku',$parts[0]);
  	$part->load('used in');
 	//exit;
-    
+      }
  }
     
     }

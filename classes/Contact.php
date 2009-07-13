@@ -341,6 +341,22 @@ class Contact extends DB_Table{
 
 
 
+   if($data['Contact Old ID']!=''){
+     $sql=sprintf("select `Contact Key` from `Contact Dimension` where `Contact Old ID` like '%%,%s,%%'",addslashes($data['Contact Old ID']));
+     $res=mysql_query($sql);
+     while($row=mysql_fetch_array($res)){
+       $val=100;
+       $key=$row['Contact Key'];
+       	if(isset($this->candidate[$key]))
+	  $this->candidate[$key]+=$val;
+	else
+	  $this->candidate[$key]=$val;
+     }
+     
+
+   }
+
+
 
 
 
@@ -624,7 +640,7 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
    
   
 
-  //print_r($data);
+  // print_r($data);
 
   
   global $myconf;
@@ -645,6 +661,11 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
 	 $this->data[$key]=$val;
     }
   }   
+
+
+  if($this->data['Contact Old ID']){
+    $this->data['Contact Old ID']=",".$this->data['Contact Old ID'].",";
+  }
   
   $prepared_data=$this->prepare_name_data($this->data);
   foreach($prepared_data as $key=>$val){
@@ -682,7 +703,7 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
       if(preg_match('/ id| Salutation|Contact Name|file as|First Name|Surname|Suffix|Gender|Greeting|Profession|Title| plain/i',$key)){
 
 	$keys.="`$key`,";
-	if(preg_match('/suffix|plain/i',$key))
+	if(preg_match('/suffix|plain|old id/i',$key))
 	  $print_null=false;
 	else
 	  $print_null=true;
@@ -836,6 +857,7 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
 
       $this->get_data('id',$this->id);
     }else{
+      print $sql;
       $this->msg=_("Error can not create contact");
       $this->new=false;
     }
@@ -1495,6 +1517,11 @@ protected function update_field_switcher($field,$value,$options=''){
       }
     }
     break;  
+
+  case('Contact Old ID'):  
+    $this->update_Contact_Old_ID($value,$options);
+    break;
+
   case('Contact Main Mobile'):
     $tel_data=Telecom::parse_number($value);
     $plain_tel=Telecom::plain_number($tel_data);
@@ -1594,7 +1621,64 @@ function update_Contact_Name($data,$options=''){
   }
 
 }
+/* Function:update_Contact_Old_ID
+   Updates the contact old id
 
+ */
+private function update_Contact_Old_ID($contact_old_id,$options){
+  $contact_old_id=_($contact_old_id);
+  if($contact_old_id==''){
+  $this->new=false;
+    $this->msg.=" Contact Old ID name should have a value";
+    $this->error=true;
+    if(preg_match('/exit on errors/',$options))
+      exit($this->msg);
+    return false;
+  }
+
+  $old_value=$this->data['Contact Old ID'];
+  $individual_ids=array();
+  foreach(preg_split('/,/',$old_value) as $individual_id){
+    if(_trim($individual_id)!=''){
+      $individual_ids[$individual_id]=true;
+    }
+  }
+  
+  if(array_key_exists($contact_old_id, $individual_ids)){
+       $this->msg.=' '._('Contact Old ID already in record')."\n";
+       $this->warning=true;
+       return;
+  }
+  
+  
+  
+  $this->data['Contact Old ID']=',';
+  foreach($individual_ids as $key=>$val){
+    $this->data['Contact Old ID'].=$key.',';
+  }
+  
+  $sql=sprintf("update `Contact Dimension` set `'Contact Old ID`=%s where `Contact Key`=%d "
+	       ,prepare_mysql($this->data['Contact Old ID'])
+	       ,$this->id);
+  mysql_query($sql);
+  $affected=mysql_affected_rows();
+  
+  if($affected==-1){
+    $this->msg.=' '._('Contact Old ID  can not be updated')."\n";
+    $this->error=true;
+    return;
+  }elseif($affected==0){
+    //$this->msg.=' '._('Same value as the old record');
+    
+  }else{
+    $this->msg.=' '._('Record updated')."\n";
+    $this->updated=true;
+
+  
+    
+  }  
+  
+}
   
 /*   function update($values,$args='',$history_data=false){ */
 

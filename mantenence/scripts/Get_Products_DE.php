@@ -16,7 +16,7 @@ error_reporting(E_ALL);
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 
 if(!$con){print "Error can not connect with database server\n";exit;}
-$dns_db='dw';
+//$dns_db='dw';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
   
@@ -190,9 +190,9 @@ foreach($__cols as $cols){
   
   if($is_product){
     
-    print "$code\n";
 
-    
+    // if(preg_match('/po/',$code))
+      print "$code\n";
     $part_list=array();
     $rules=array();
     
@@ -353,7 +353,7 @@ foreach($__cols as $cols){
     $uk_product=new Product('code_store',$code,1);
     $product=new Product('code_store',$code,2);
     // print "** ".$product->data['Product Code']."\n";
-    if(!$product->id and $uk_product->id  ){
+    if(!$product->id  ){
       
 
       
@@ -420,7 +420,9 @@ foreach($__cols as $cols){
 
       $parts=$uk_product->get('Parts SKU');
      
-      print_r($data);
+
+
+      //      print_r($data);
       
       $product=new Product('create',$data);
 
@@ -441,7 +443,8 @@ foreach($__cols as $cols){
 // 	if(!$supplier->id){
 // 	  exit("supplier not found")
 // 	}
-	
+      
+      if(isset($parts[0])){
  	$part_list[]=array(
  			   'Product ID'=>$product->get('Product ID'),
  			   'Part SKU'=>$parts[0],
@@ -456,6 +459,8 @@ foreach($__cols as $cols){
  	$product->load('parts');
 	$part =new Part('sku',$parts[0]);
  	$part->load('used in');
+
+      }
 	//exit;
     
  }

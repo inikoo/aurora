@@ -186,9 +186,9 @@ class Customer extends DB_Table{
     $raw_data['Customer Type']=ucwords($raw_data['Customer Type']);
     //print $raw_data['Customer Type']."\n";
     if($raw_data['Customer Type']=='Person'){
-      $child=new contact ('find in customer',$raw_data);
+      $child=new Contact ('find in customer use old_id',$raw_data);
     }else{
-      $child=new Company ('find in customer',$raw_data);
+      $child=new Company ('find in customer use old_id',$raw_data);
     }
 
     if($child->found){
@@ -447,6 +447,7 @@ class Customer extends DB_Table{
 
       //if(!$this->data['Customer Company Key']){
       $company=new company('find in customer create',$raw_data);
+      // print_r($company->data);
       $this->data['Customer Company Key']=$company->id;
       $this->data['Customer Company Name']=$company->data['Company Name'];
 	//}
@@ -567,7 +568,7 @@ class Customer extends DB_Table{
     
 
 
-    //print_r($this->data);
+    // print_r($this->data);
     //print "xxxxxxxxxxxxxxxxxxxxxxxxxxxx\n";
     //exit;
     $keys='';

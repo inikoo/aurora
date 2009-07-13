@@ -15,7 +15,7 @@ $store_code='U';
 error_reporting(E_ALL);
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 if(!$con){print "Error can not connect with database server\n";exit;}
-$dns_db='dw';
+//$dns_db='dw';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
 
@@ -88,20 +88,20 @@ $fam_no_fam_key=$fam_no_fam->id;
 $fam_promo_key=$fam_promo->id;
 
 
-$sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed)  order by filename ";
+//$sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed)  order by filename ";
 
 //$sql="select * from  orders_data.orders where filename like '%refund.xls'   order by filename";
 
-//$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/6915.xls'  order by filename";
+$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/%'  order by filename";
 
-
+$sql="select *,orders_data.orders.id as id  from dw.`Order Transaction Fact` X left join  orders_data.orders on (orders_data.orders.id=REPLACE(`Metadata`,'U',''))  where `Customer Key` in (19064) group by `Metadata` order by filename;";
 
 $contador=0;
 //print $sql;
 $res=mysql_query($sql);
 
 while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
-
+ 
  
   $sql="select * from orders_data.data where id=".$row2['id'];
   $result=mysql_query($sql);
@@ -248,7 +248,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
   
  $header_data['Order Main Source Type']='Unknown';
  $header_data['Delivery Note Dispatch Method']='Unknown';
-
+ $data=array();
   $header_data['collection']='No';
   $header_data['shipper_code']='';
   $header_data['staff sale']='No';
@@ -286,7 +286,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     // if(!preg_match('/^(|0|\s*)$/',$header_data['notes2']))
 
     $header_data=get_tax_number($header_data);
-        $header_data=get_customer_msg($header_data);
+    $header_data=get_customer_msg($header_data);
     
     if($header_data['notes']!='' and $header_data['notes2']!=''){
       $header_data['notes2']=_trim($header_data['notes'].', '.$header_data['notes2']);
@@ -299,16 +299,16 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     $header_data=get_customer_msg($header_data);
 
     if(preg_match('/^(x5686842-t|IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691|IE-7251185|SE556670-257601|x5686842-t)$/',$header_data['notes2'])){
-      $data['tax_number']=$header_data['notes2'];
+      $header_data['tax_number']=$header_data['notes2'];
       $header_data['notes2']='';
     }
-if(preg_match('/^(x5686842-t|IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691|IE-7251185|SE556670-257601|x5686842-t)$/',$header_data['notes'])){
-      $data['tax_number']=$header_data['notes'];
+    if(preg_match('/^(x5686842-t|IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691|IE-7251185|SE556670-257601|x5686842-t)$/',$header_data['notes'])){
+      $header_data['tax_number']=$header_data['notes'];
       $header_data['notes']='';
     }
+    
 
-
-
+       
 
     $transactions=read_products($products,$prod_map);
     unset($products);
@@ -318,12 +318,18 @@ if(preg_match('/^(x5686842-t|IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691
    
     
 
+    if(isset($header_data['tax_number']) and $header_data['tax_number']!='')
+      $customer_data['Customer Tax Number']=$header_data['tax_number'];
 
-    //    print_r($_customer_data);
+
+  
     foreach($_customer_data as $_key =>$value){
       $key=$_key;
       if($_key=='type')
       $key=preg_replace('/^type$/','Customer Type',$_key);
+      if($_key=='other id')
+	$key='Customer Old ID';
+       
       if($_key=='contact_name')
       $key=preg_replace('/^contact_name$/','Customer Main Contact Name',$_key);
       if($_key=='company_name')
@@ -369,7 +375,9 @@ if(preg_match('/^(x5686842-t|IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691
     }
 
     //  print_r($transactions);
-  
+    
+    // print $customer_data['Customer Old ID']."\n";
+    
     if(strtotime($date_order)>strtotime($date2)){
       
 
@@ -787,20 +795,20 @@ if(preg_match('/^(x5686842-t|IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691
 	$transaction['rrp']=60;
       }	
 
-      if(preg_match('/^bag-02)$/i',$transaction['code'])  and  $transaction['units']==30 ){
+      if(preg_match('/^bag-02$/i',$transaction['code'])  and  $transaction['units']==30 ){
 	$transaction['order']=$transaction['order']*30/25;
 	$transaction['reorder']=$transaction['reorder']*30/25;
 	$transaction['bonus']=$transaction['bonus']*30/25;
 
       }	
-      if(preg_match('/^bag-07)$/i',$transaction['code'])  and  $transaction['units']==23 ){
+      if(preg_match('/^bag-07$/i',$transaction['code'])  and  $transaction['units']==23 ){
 	$transaction['order']=$transaction['order']*30/23;
 	$transaction['reorder']=$transaction['reorder']*30/23;
 	$transaction['bonus']=$transaction['bonus']*30/23;
 
       }	
 
-      if(preg_match('/^bag-02)$/i',$transaction['code'])){
+      if(preg_match('/^bag-02$/i',$transaction['code'])){
 	$transaction['units']=25;
       }	
       if(preg_match('/^bag-01$/i',$transaction['code'])){

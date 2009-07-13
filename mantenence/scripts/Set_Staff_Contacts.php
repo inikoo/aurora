@@ -88,8 +88,9 @@ while($row=mysql_fetch_array($res, MYSQL_ASSOC)){
   }
 
    
-
+   //  print_r($data_contact);
   $contact=new contact('find create',$data_contact);
+  //print_r($contact);
   $company->add_contact($contact->id);
   $sql=sprintf("update `Staff Dimension` set `Staff Alias`=%s,`Staff Name`=%s,`Staff Contact Key`=%d where `Staff Key`=%d"
 	       ,prepare_mysql(strtolower($row['Staff Alias']))

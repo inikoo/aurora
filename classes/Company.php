@@ -139,6 +139,49 @@ class Company extends DB_Table {
     }
 
 
+    if(isset($raw_data['Company Old ID']) and $raw_data['Company Old ID']!=''){
+     $sql=sprintf("select `Company Key` from `Company Dimension` where `Company Old ID` like '%%,%s,%%'",addslashes($raw_data['Company Old ID']));
+     $res=mysql_query($sql);
+     while($row=mysql_fetch_array($res)){
+       $val=100;
+       $key=$row['Company Key'];
+       	if(isset($this->candidate[$key]))
+	  $this->candidate[$key]+=$val;
+	else
+	  $this->candidate[$key]=$val;
+     }
+   }
+    if(isset($raw_data['Company Tax Number'])){
+      $raw_data['Company Tax Number']=_trim($raw_data['Company Tax Number']);
+      if($raw_data['Company Tax Number']!=''){
+	$sql=sprintf("select `Company Key` from `Company Dimension` where `Company Tax Number`=%s",prepare_mysql($raw_data['Company Tax Number']));
+	$res=mysql_query($sql);
+	while($row=mysql_fetch_array($res)){
+	  $val=100;
+	  $key=$row['Company Key'];
+	  if(isset($this->candidate[$key]))
+	    $this->candidate[$key]+=$val;
+	  else
+	    $this->candidate[$key]=$val;
+	}
+      }
+    }
+    if(isset($raw_data['Company Registration Number'])){
+      $raw_data['Company Registration Number']=_trim($raw_data['Company Registration Number']);
+      if($raw_data['Company Tax Number']!=''){
+	$sql=sprintf("select `Company Key` from `Company Dimension` where `Company Registration Number`=%s",prepare_mysql($raw_data['Company Registration Number']));
+	$res=mysql_query($sql);
+	$key=$row['Company Key'];
+	while($row=mysql_fetch_array($res)){
+	  $val=100;
+       	if(isset($this->candidate[$key]))
+	  $this->candidate[$key]+=$val;
+	else
+	  $this->candidate[$key]=$val;
+     }
+   }
+ }
+
     $contact=new Contact("find in company",$raw_data);
     foreach($contact->candidate as $key=>$val){
       if(isset($this->candidate[$key]))
@@ -181,14 +224,15 @@ class Company extends DB_Table {
     //addnow we have a list of  candidates, from this list make another list of companies
     $candidate_companies=array();
     //     print "Contact Candidates:";
-    //  print_r($this->candidate);
+    //print_r($this->candidate);
    
 
     foreach($this->candidate as $contact_key=>$score){
       $_contact=new Contact($contact_key);
+      
       $company_key=$_contact->data['Contact Company Key'];
       if($company_key){
-      // print "---- $company_key\n";
+	// print "---- $company_key\n";
       if(isset($candidate_companies[$company_key]))
 	$candidate_companies[$company_key]+=$score;
       else
@@ -359,7 +403,7 @@ class Company extends DB_Table {
   
   function create($raw_data,$raw_address_data=array(),$options=''){
     
-
+    // print_r($raw_data);
     
     $this->data=$this->base_data();
     foreach($raw_data as $key=>$value){
@@ -368,7 +412,11 @@ class Company extends DB_Table {
       }
     }
     
-    
+      if($this->data['Company Old ID']){
+    $this->data['Company Old ID']=",".$this->data['Company Old ID'].",";
+  }
+
+
     $this->data['Company File As']=$this->file_as($this->data['Company Name']);
     $this->data['Company ID']=$this->get_id();
     
@@ -484,7 +532,12 @@ class Company extends DB_Table {
     $values='';
     foreach($this->data as $key=>$value){
       $keys.=",`".$key."`";
-      $values.=','.prepare_mysql($value,false);
+      if(preg_match('/plain|old id/i',$key))
+	$print_null=false;
+      else
+	$print_null=true;
+      $values.=','.prepare_mysql($value,$print_null);
+
     }
     $values=preg_replace('/^,/','',$values);
     $keys=preg_replace('/^,/','',$keys);
@@ -495,23 +548,23 @@ class Company extends DB_Table {
     if(mysql_query($sql)){
       $this->id = mysql_insert_id();
       $this->get_data('id',$this->id);
-
+      
 
       
       $note=_('Company Created');
       $details=_('Company Created');
-    if($this->editor['Author Name'])
-      $author=$this->editor['Author Name'];
-    else
-      $author=_('System');
-    
- if($this->editor['Date'])
-   $date=$this->editor['Date'];
- else
-   $date=date("Y-m-d H:i:s");
- 
- $sql=sprintf("insert into `History Dimension` (`History Date`,`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`Author Name`,`Author Key`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-	      ,prepare_mysql($date)
+      if($this->editor['Author Name'])
+	$author=$this->editor['Author Name'];
+      else
+	$author=_('System');
+      
+      if($this->editor['Date'])
+	$date=$this->editor['Date'];
+      else
+	$date=date("Y-m-d H:i:s");
+      
+      $sql=sprintf("insert into `History Dimension` (`History Date`,`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`Author Name`,`Author Key`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+		   ,prepare_mysql($date)
 	      ,prepare_mysql('user')
 	      ,prepare_mysql($this->editor['User Key'])
 	      ,prepare_mysql('created')
@@ -529,32 +582,48 @@ class Company extends DB_Table {
  // exit;
    mysql_query($sql);
       
-      
+   
       $contact->add_company(array(
 				  'Company Key'=>$this->id
 				  ));
-      
-           
-      $contact->add_email(array(
+   
+      if($this->data['Company Main Email Key']){
+      $email_data=array(
 				'Email Key'=>$this->data['Company Main Email Key']
 				,'Email Type'=>'Work'
-				));
+			);
+      //      print_r($email_data);
+      $contact->add_email($email_data);
 
+      $this->add_email($this->data['Company Main Email Key']);
+
+      }
+      //print "xxy\n";
 
       //  print_r($this->data);
-
+      if($this->data['Company Main Telephone Key']){
       $contact->add_tel(array(
 			      'Telecom Key'=>$this->data['Company Main Telephone Key']
 			      ,'Telecom Type'=>'Work Telephone'
 			      ));
-                 
+      $this->add_tel(array(
+			   'Telecom Key'=>$this->data['Company Main Telephone Key']
+			   ,'Telecom Type'=>'Office Telephone'
+			   ));
+      
+      }
+      if($this->data['Company Main FAX Key']){
       $contact->add_tel(array(
 			      'Telecom Key'=>$this->data['Company Main FAX Key']
 			      ,'Telecom Type'=>'Office Fax'
 			      ));
+           $this->add_tel(array(
+			   'Telecom Key'=>$this->data['Company Main FAX Key']
+			   ,'Telecom Type'=>'Office Fax'
+			   ));
+      }
 
-
-
+      if($this->data['Company Main Address Key']){
 
       $contact->add_address(array(
 				  'Address Key'=>$this->data['Company Main Address Key']
@@ -562,42 +631,24 @@ class Company extends DB_Table {
 				  ,'Address Function'=>'Contact'
 				  ,'Address Description'=>'Work Contact Address'
 				  ));
-
-     
-
-      //create the DB bridges
-      $this->add_email($this->data['Company Main Email Key']);
-      $this->add_tel(array(
-			   'Telecom Key'=>$this->data['Company Main Telephone Key']
-			   ,'Telecom Type'=>'Office Telephone'
-			   ));
-      
-      $this->add_tel(array(
-			   'Telecom Key'=>$this->data['Company Main FAX Key']
-			   ,'Telecom Type'=>'Office Fax'
-			   ));
-      $this->add_address(array(
+        $this->add_address(array(
 			       'Address Key'=>$this->data['Company Main Address Key']
 			       ,'Address Type'=>'Office'
 			       ,'Address Function'=>'Contact'
 			       ,'Address Description'=>'Company Address'
 			       ));
+      }
+     
 
-/*       if($this->data['Company Main Telephone Key']){ */
-/* 	$sql=sprintf("insert into `Telecom Bridge` (`Telecom Key`,`Subject Type`,`Subject Key`,`Telecom Description`,`Is Main`,`Is Active`,`Telecom Type`) values (%d,'Company',%d,%s,'Yes','Yes')" */
-/* 		     ,$this->data['Company Main Telephone Key'] */
-/* 		     ,$this->id */
-/* 		     ,prepare_mysql('Company Telephone') */
-/* 		     ,prepare_mysql('Office') */
-/* 		     ); */
-/* 	mysql_query($sql); */
-/*       } */
-      
+   
+   
+  
+
 
       $this->get_data('id',$this->id);
-     }else{
-       print "Error, company can not be created";exit;
-     }
+    }else{
+      print "Error, company can not be created";exit;
+    }
 
   }
 
@@ -721,8 +772,9 @@ protected function update_field_switcher($field,$value,$options=''){
     }
     }
     break;  
-  
-
+  case('Company Old ID'):  
+    $this->update_Company_Old_ID($value,$options);
+    break;
   default:
     $this->update_field($field,$value,$options);
   }
@@ -771,7 +823,7 @@ protected function update_field_switcher($field,$value,$options=''){
 private function update_Company_Name($value,$options){
   if($value==''){
   $this->new=false;
-    $this->msg.=" Company name should have a vbalue";
+    $this->msg.=" Company name should have a value";
     $this->error=true;
     if(preg_match('/exit on errors/',$options))
       exit($this->msg);
@@ -809,7 +861,64 @@ private function update_Company_Name($value,$options){
 }
 
 
+/* Function:update_Company_Old_ID
+   Updates the company old id
 
+ */
+private function update_Company_Old_ID($company_old_id,$options){
+  $company_old_id=_($company_old_id);
+  if($company_old_id==''){
+  $this->new=false;
+    $this->msg.=" Company Old ID name should have a value";
+    $this->error=true;
+    if(preg_match('/exit on errors/',$options))
+      exit($this->msg);
+    return false;
+  }
+
+  $old_value=$this->data['Company Old ID'];
+  $individual_ids=array();
+  foreach(preg_split('/,/',$old_value) as $individual_id){
+    if(_trim($individual_id)!=''){
+      $individual_ids[$individual_id]=true;
+    }
+  }
+  
+  if(array_key_exists($company_old_id, $individual_ids)){
+       $this->msg.=' '._('Company Old ID already in record')."\n";
+       $this->warning=true;
+       return;
+  }
+  
+  
+  
+  $this->data['Company Old ID']=',';
+  foreach($individual_ids as $key=>$val){
+    $this->data['Company Old ID'].=$key.',';
+  }
+  
+  $sql=sprintf("update `Company Dimension` set `'Company Old ID`=%s where `Company Key`=%d "
+	       ,prepare_mysql($this->data['Company Old ID'])
+	       ,$this->id);
+  mysql_query($sql);
+  $affected=mysql_affected_rows();
+  
+  if($affected==-1){
+    $this->msg.=' '._('Company Old ID  can not be updated')."\n";
+    $this->error=true;
+    return;
+  }elseif($affected==0){
+    //$this->msg.=' '._('Same value as the old record');
+    
+  }else{
+    $this->msg.=' '._('Record updated')."\n";
+    $this->updated=true;
+
+  
+    
+  }  
+  
+}
 
 
   function add_page($page_data,$args='principal'){
