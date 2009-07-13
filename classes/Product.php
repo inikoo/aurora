@@ -108,7 +108,7 @@ class product{
       //print "found\n";
       return;
       
-    } if($tipo=='code_store'){
+    } if($tipo=='code_store' or $tipo=='code-store'){
      
       $sql=sprintf("select * from `Product Dimension` where `Product Most Recent`='Yes' and `Product Code`=%s and `Product Store Key`=%d",prepare_mysql($tag),$extra);
 
@@ -3742,6 +3742,7 @@ function update_same_code_valid_dates($args='')
     $same_code_from=$row2['Product Valid From'];
   }
   $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s order by `Product Valid To` desc",prepare_mysql($this->data['Product Code']));
+
   $most_recent='Yes';
   $result2=mysql_query($sql);
   //print "$sql\n";
@@ -3755,11 +3756,11 @@ function update_same_code_valid_dates($args='')
     mysql_query($sql);
 
 
-    if(preg_match('/most recent/i',$args)){
+    if(!preg_match('/no_most_recent/i',$args)){
         $sql=sprintf("update `Product Dimension` set `Product Same Code Most Recent Key`=%s,`Product Same Code Most Recent`=%s  where `Product Key`=%s "
 		     ,$most_recent_key
 		     ,prepare_mysql($most_recent)
-		     ,$this->id);
+		     ,$row2['Product Key']);
 	mysql_query($sql);
      }
 
@@ -3798,11 +3799,11 @@ function update_same_id_valid_dates($args='')
 		 ,$this->id);
     mysql_query($sql);
 
-    if(preg_match('/most recent/i',$args)){
+    if(!preg_match('/no_most_recent/i',$args)){
       $sql=sprintf("update `Product Dimension` set `Product Same ID Most Recent`=%s,`Product Same ID Most Recent Key`=%d where `Product Key`=%s "
 		    ,prepare_mysql($most_recent)
 		   ,$most_recent_key
-		   ,$this->id);
+		   ,$row2['Product Key']);
       mysql_query($sql);
        
     }

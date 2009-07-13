@@ -34,17 +34,24 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $part=new Part($row['Part Key']);
 
   //Get  status
-  if(isset($argv[1]) and $argv[1]=='status'){
+  if(isset($argv[1]) and $argv[1]=='first'){
   $part_valid_from=$part->data['Part Valid From'];
   $part_valid_to=$part->data['Part Valid To'];
-  $in_use='Not In Use';
-  $sql=sprintf(" select `Product Sales State`,`Product Record Type`,`Product Code` from `Product Dimension` PD left join `Product Part List` PPL on (PD.`Product ID`=PPL.`Product ID`)  where `Part SKU`=%d   ",$part->data['Part SKU']);
+  $in_use='Discontinued';
+  $last_stock='Yes';
+  $sql=sprintf(" select `Product To Be Discontinued`,`Product Sales State`,`Product Record Type`,`Product Code` from `Product Dimension` PD left join `Product Part List` PPL on (PD.`Product ID`=PPL.`Product ID`)  where `Part SKU`=%d   ",$part->data['Part SKU']);
   // print "$sql\n";
   $result2=mysql_query($sql);
   if($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ){
+
+    
     if(preg_match('/^For sale|Not for sale|Unknown/i',$row2['Product Sales State'])){
       $in_use='In Use';
       $part_valid_to= date("Y-m-d H:i:s");
+
+      if($row2['Product To Be Discontinued']!='Yes')
+	$last_stock='No';
+
     }else{
       
       $sql=sprintf("select `Date` from `Inventory Transaction Fact` where  `Part SKU`=%d and `Inventory Transaction Type`='Sale' and `Inventory Transaction Quantity`!=0    order by `Date` desc limit 1 ",$part->data['Part SKU']);
@@ -68,7 +75,9 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   }
 
 
-    $sql=sprintf("update `Part Dimension` set `Part Status`=%s ,`Part Valid From`=%s ,`Part Valid To`=%s where `Part SKU`=%d   ",prepare_mysql($in_use)
+    $sql=sprintf("update `Part Dimension` set `Part Last Stock`=%s ,`Part Status`=%s ,`Part Valid From`=%s ,`Part Valid To`=%s where `Part SKU`=%d   "
+		 ,prepare_mysql($last_stock)
+		 ,prepare_mysql($in_use)
 		 ,prepare_mysql($part_valid_from)
 		 ,prepare_mysql($part_valid_to),$part->data['Part SKU']);
 
@@ -87,12 +96,17 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $part->load('sales');
   $part->load('used in');
   $part->load('supplied by');
-  $part->load('stock');
-  $part->load('forecast');
+
+  if(!isset($argv[1])){
+    
+    $part->load('stock');
+    $part->load('forecast');
+
+  }
 
   //   $part->load('stock_history');
   //   $part->load('future costs');
-   //print $row['Part Key']."\n";
+  print $row['Part Key']."\r";
   
  }
 

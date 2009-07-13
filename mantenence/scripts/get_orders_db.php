@@ -555,7 +555,9 @@ if(preg_match('/^(x5686842-t|IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691
 	$transaction['description']='Pewter Pegasus & Ball with LED';
       }
 
-    
+     if(preg_match('/^JuteB-17C$/i',$transaction['code'])   and preg_match('/60x Carton/i',$transaction['description'])){
+	$transaction['code']='JuteB-17CC';
+      }
 
       if(preg_match('/^wsl-848$/i',$transaction['code'])   and preg_match('/wsl-848, simple message candle/i',$transaction['description'])){
 	$transaction['description']='Simple Message Candle 3x6';
@@ -783,6 +785,32 @@ if(preg_match('/^(x5686842-t|IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691
 	$w=6;
 	$supplier_product_cost=4.4500;
 	$transaction['rrp']=60;
+      }	
+
+      if(preg_match('/^bag-02)$/i',$transaction['code'])  and  $transaction['units']==30 ){
+	$transaction['order']=$transaction['order']*30/25;
+	$transaction['reorder']=$transaction['reorder']*30/25;
+	$transaction['bonus']=$transaction['bonus']*30/25;
+
+      }	
+      if(preg_match('/^bag-07)$/i',$transaction['code'])  and  $transaction['units']==23 ){
+	$transaction['order']=$transaction['order']*30/23;
+	$transaction['reorder']=$transaction['reorder']*30/23;
+	$transaction['bonus']=$transaction['bonus']*30/23;
+
+      }	
+
+      if(preg_match('/^bag-02)$/i',$transaction['code'])){
+	$transaction['units']=25;
+      }	
+      if(preg_match('/^bag-01$/i',$transaction['code'])){
+	$transaction['units']=25;
+      }	
+       if(preg_match('/^bag-04$/i',$transaction['code'])){
+	$transaction['description']='Decorative Organza Bag - MIX';
+      }	
+       if(preg_match('/^bag-05$/i',$transaction['code'])){
+	$transaction['description']='Organza Heart Bag - MIX';
       }	
 
 

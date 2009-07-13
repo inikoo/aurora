@@ -37,7 +37,7 @@ class location{
   
   function create ($data){
     $warehouse_id=$data['Location Warehouse Key'];
-    $area=$data['Location Area'];
+    $area=$data['Location Area Code'];
     $name=$data['Location Code'];
     $tipo=$data['Location Mainly Used For'];
     
@@ -47,7 +47,7 @@ class location{
 
     if(!($tipo=='Picking' or $tipo=='Storing' or $tipo=='Loading' or $tipo=='Displaying'))
        return array('ok'=>false,'msg'=>_('Wrong location tipo').'.');
-    $sql=sprintf('insert into `Location Dimension` (`Location Code`,`Location Mainly Used For`,`Location Warehouse Key`,`Location Area`) values(%s,%s,%d,%s)'
+    $sql=sprintf('insert into `Location Dimension` (`Location Code`,`Location Mainly Used For`,`Location Warehouse Key`,`Location Area Code`) values(%s,%s,%d,%s)'
 		 ,prepare_mysql($name)
 		 ,prepare_mysql($tipo)
 		 ,$warehouse_id
