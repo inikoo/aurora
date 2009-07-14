@@ -471,8 +471,8 @@ class Contact extends DB_Table{
 	
 /* 	$data['Home Address']=$address_home_data; */
 /* 	$data['Work Address']=$address_work_data; */
-	print "raw data:\n";
-	print_r($raw_data);
+//	print "raw data:\n";
+//	print_r($raw_data);
 	
 	$this->update($raw_data,$options);
 	if(isset($address_data['Home']))
@@ -721,47 +721,17 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
       $this->new=true;
       $this->get_data('id',$this->id);
       
-
-      $note=_('Contact Created');
-      $details=_('Contact Created');
-    if($this->editor['Author Name'])
-      $author=$this->editor['Author Name'];
-    else
-      $author=_('System');
-    
- if($this->editor['Date'])
-   $date=$this->editor['Date'];
- else
-   $date=date("Y-m-d H:i:s");
- 
- $sql=sprintf("insert into `History Dimension` (`History Date`,`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`Author Name`,`Author Key`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-	      ,prepare_mysql($date)
-	      ,prepare_mysql('user')
-	      ,prepare_mysql($this->editor['User Key'])
-	      ,prepare_mysql('created')
-	      ,prepare_mysql($this->table_name)
-	      ,prepare_mysql($this->id)
-	      ,"''"
-	      ,"''"
-	      ,0
-	      ,prepare_mysql($note)
-	      ,prepare_mysql($details)
-	      ,prepare_mysql($author)
-	      ,prepare_mysql($this->editor['Author Key'])
-		  );
- // print $sql;
- // exit;
-   mysql_query($sql);
+      $history_data=array(
+			  'note'=>_('Contact Created')
+			  ,'details'=>_trim(_('Contact')." \"".$this->display('name')."\"  "._('created'))
+			  ,'action'=>'created'
+			  );
+      $this->add_history($history_data);
+     
       
 
-
-
-
-      
       if(preg_match('/parent\:none|parent\:customer/',$options)){
 	// Has no parent add emails,tels ect to the contact
-	//	print_r($this->data);
-
 	if($this->data['Contact Main Plain Email']!=''){
 	  $email_data['Email']=$this->data['Contact Main Plain Email'];
 	  $email_data['Email Contact Name']=$this->display('name');
@@ -775,7 +745,7 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
 	  $this->add_email(array(
 				 'Email Key'=>$email->id
 				 ,'Email Type'=>'Personal'
-				 ));
+				 ),'principal no_history');
 	  }
 
 	}
@@ -1007,7 +977,7 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
 
     }
     if($email->id){
-
+      
       if($email->updated or $email->new)
 	$this->updated=true;
 
@@ -1038,7 +1008,10 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
 		   );
       mysql_query($sql);
       
-      if($email->new)
+      if($email->new){
+
+	//add  to contact hist
+	//	print "New email\n";
 
       if(preg_match('/principal/i',$args)){
 
@@ -1081,22 +1054,45 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
 	  $customer->editor=$this->editor;
 	  $customer->update_email($email->id);
 	}
-	
-	
-	
+
+	$history_data['note']=_('Email Associated (Main)');
+	$history_data['details']=_($email->display('plain')." "._('set as the principal email for')." ".$this->display("name")." "._('contact'));
+      }else{
+
+	$history_data['note']='Email Associated';
+	$history_data['details']=_($email->display('plain')." "._('associated with')." ".$this->display("name")." "._('contact'));
       }
-
-      
-
-
+      $history_data['action']='associated';
+      $history_data['direct_object']='Email';
+      $history_data['direct_object_key']=$email->id;
+      $history_data['indirect_object']='Contact';
+      $history_data['indirect_object_key']=$this->id;
+      $this->add_history($history_data);
       
       $this->add_email=$email->id;
-    }else{
-      $this->add_email=0;
+        
+
+      }elseif($email->updated){
+	if(array_key_exists('Email',$email->updated_fields)){
+	  $history_data['note']=_('Email Edited');
+	  $history_data['details']=_('Email Edited from')." ".$email->updated_fields['Email']['Old Value']." -> ".$email->updated_fields['Email']['New Value'];
+
+	  $history_data['action']='edited';
+	  $history_data['indirect_object']='Email';
+	  $history_data['indirect_object_key']=$email->id;
+	  $history_data['direct_object']='Contact';
+	  $history_data['direct_object_key']=$this->id;
+	  $this->add_history($history_data);
+
+	}
+	
+      }else{
+	$this->add_email=0;
+      }
+    
+    
+    
     }
-    
-    
-    
   }
 
 
@@ -1237,10 +1233,14 @@ function add_address($data,$args='principal'){
     
   }
   
-  $address_id=$address->id;
+
+  
+
+
+
   $sql=sprintf("insert into `Address Bridge` (`Subject Type`,`Subject Key`,`Address Key`,`Address Type`,`Address Function`,`Address Description`) values ('Contact',%d,%d,%s,%s,%s)  ON DUPLICATE KEY UPDATE `Address Type`=%s,`Address Function`=%s,`Address Description`=%s",
-	       $this->id,
-	       $address_id
+	       $this->id
+	       ,$address->id
 	       ,prepare_mysql($data['Address Type'])
 	       ,prepare_mysql($data['Address Function'])
 	       ,prepare_mysql($data['Address Description'])
@@ -1250,6 +1250,8 @@ function add_address($data,$args='principal'){
 	       );
  
   mysql_query($sql);
+  //print "*".mysql_affected_rows()."\n";
+
   //  exit("$sql\n error can no create contact address bridge");
   
  if(preg_match('/principal/i',$args)){
@@ -1258,19 +1260,19 @@ function add_address($data,$args='principal'){
    
     $sql=sprintf("update `Address Bridge`  set `Is Main`='No' where `Subject Type`='Contact' and  `Subject Key`=%d  and `Address Key`!=%d",
   $this->id
-		 ,$address_id
+		 ,$address->id
 		  );
      mysql_query($sql);
      $sql=sprintf("update `Address Bridge`  set `Is Main`='Yes' where `Subject Type`='Contact' and  `Subject Key`=%d  and `Address Key`=%d",
 		  $this->id
-		  ,$address_id
+		  ,$address->id
 		  );
 
      mysql_query($sql);
 
      $sql=sprintf("update `Contact Dimension`  set `Contact Main Plain Address`=%s,`Contact Main Address Key`=%s ,`Contact Main Location`=%s ,`Contact Main XHTML Address`=%s , `Contact Main Country Key`=%d,`Contact Main Country`=%s,`Contact Main Country Code`=%s where `Contact Key`=%d ",
 		  prepare_mysql($address->display('plain')),
-		  prepare_mysql($address_id),
+		  prepare_mysql($address->id),
 		  prepare_mysql($address->data['Address Location']),
 		  prepare_mysql($address->display('html')),
 		  $address->data['Address Country Key'],
@@ -1355,17 +1357,46 @@ function add_address($data,$args='principal'){
      if(!isset($data['Telecom Description']))
        $data['Telecom Description']=$telecom_tipo;
 
+     
 
-     $sql=sprintf("insert into  `Telecom Bridge` (`Telecom Key`, `Subject Key`,`Subject Type`,`Telecom Type`,`Is Main`,`Telecom Description`) values (%d,%d,'Contact',%s,%s,%s)   ON DUPLICATE KEY UPDATE `Telecom Type`=%s,`Telecom Description`=%s "
+     
+
+
+     $sql=sprintf("insert into  `Telecom Bridge` (`Telecom Key`, `Subject Key`,`Subject Type`,`Telecom Type`,`Telecom Description`) values (%d,%d,'Contact',%s,%s)   ON DUPLICATE KEY UPDATE `Telecom Type`=%s,`Telecom Description`=%s "
 		  ,$telecom->id
 		  ,$this->id
 		  ,prepare_mysql($data['Telecom Type'])
-		  ,prepare_mysql(preg_match('/principal/i',$args)?'Yes':'No')
 		  ,prepare_mysql($data['Telecom Description'],false)
 		  ,prepare_mysql($data['Telecom Type'])
 		  ,prepare_mysql($data['Telecom Description'],false)
 		  );
      mysql_query($sql);
+     //NOTE:If you use "INSERT INTO ... ON DUPLICATE KEY UPDATE" syntax, mysql_affected_rows() will return you 2 if the UPDATE was made (just as it does with the "REPLACE INTO" syntax) and 1 if the INSERT was.
+     if(mysql_affected_rows()==1 ){
+
+       if(preg_match('/principal/i',$args)){
+	 $note=$data['Telecom Type']." "._('Associated (Main)');
+	 $description=_('Main').' '.$data['Telecom Type'].' '._('set to')." ".$telecom->display('xhtml');
+       }else{
+	 $note=$data['Telecom Type']." "._('Associated');
+	 $description=$data['Telecom Type']." ".$telecom->display('xhtml').' '._('associated to contact')." ".$this->display('name');
+	 
+       }
+
+       $history_data=array(
+			   'note'=>$note
+			   ,'details'=>$description
+			   ,'action'=>'associated'
+			   ,'direct_object'=>$data['Telecom Type']
+			   ,'direct_object_key'=>$telecom->id
+			   ,'indirect_object'=>'Contact'
+			   ,'indirect_object_key'=>$this->id
+			   );
+       if(!$this->new)
+	 $this->add_history($history_data);
+       
+     }
+
      // print $sql;
      
      if(preg_match('/principal/i',$args)){
@@ -1395,20 +1426,23 @@ function add_address($data,$args='principal'){
 		      );
 	 //print "$sql\n";
 	 mysql_query($sql);
-       }
-       
-     
-
+    
+	 
       if($company_key=$this->company_key('princial')){
 
 	$company_telecom_tipo_key=preg_match('/Contact/','Company',$telecom_tipo_key);
-
 	$company=new Company('id',$company_key);
 	$company->add_tel(array(
-				    'Telecom Key'=>$telecom->id
-				    ,'Telecom Type'=>$data['Telecom Type']
-				    ));
+				'Telecom Key'=>$telecom->id
+				,'Telecom Type'=>$data['Telecom Type']
+				));
       }
+     
+     }
+       
+     
+
+     
 
        
        $this->add_telecom=$telecom->id;
@@ -1508,6 +1542,7 @@ protected function update_field_switcher($field,$value,$options=''){
     }elseif(!email::wrong_email($value)){
       $value=email::prepare_email($value);
       $email_data=array('Email'=>$value);
+   
       $this->add_email($email_data,$options.' principal');
     }
     break;  

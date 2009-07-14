@@ -551,38 +551,15 @@ class Company extends DB_Table {
       $this->id = mysql_insert_id();
       $this->get_data('id',$this->id);
       
-
+      $history_data=array(
+			  'note'=>_('Company Created')
+			  ,'details'=>_trim(_('Company')." \"".$this->data['Company Name']."\"  "._('created'))
+			  ,'action'=>'created'
+			  );
+      $this->add_history($history_data);
+     
       
-      $note=_('Company Created');
-      $details=_('Company Created');
-      if($this->editor['Author Name'])
-	$author=$this->editor['Author Name'];
-      else
-	$author=_('System');
-      
-      if($this->editor['Date'])
-	$date=$this->editor['Date'];
-      else
-	$date=date("Y-m-d H:i:s");
-      
-      $sql=sprintf("insert into `History Dimension` (`History Date`,`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`Author Name`,`Author Key`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-		   ,prepare_mysql($date)
-	      ,prepare_mysql('user')
-	      ,prepare_mysql($this->editor['User Key'])
-	      ,prepare_mysql('created')
-	      ,prepare_mysql($this->table_name)
-	      ,prepare_mysql($this->id)
-	      ,"''"
-	      ,"''"
-	      ,0
-	      ,prepare_mysql($note)
-	      ,prepare_mysql($details)
-	      ,prepare_mysql($author)
-	      ,prepare_mysql($this->editor['Author Key'])
-		  );
- // print $sql;
- // exit;
-   mysql_query($sql);
+     
       
    
       $contact->add_company(array(
@@ -701,6 +678,8 @@ protected function update_field_switcher($field,$value,$options=''){
  
 
   switch($field){
+
+
   case('Company Main Contact Name'):
     $contact=new Contact($this->data['Company Main Contact Key']);
     $contact->update_Contact_Name($value);
@@ -721,6 +700,7 @@ protected function update_field_switcher($field,$value,$options=''){
 
     }elseif(!email::wrong_email($value)){
       $contact=new Contact($this->data['Company Main Contact Key']);
+      $contact->editor=$this->editor;
       $email_data=array('Email'=>$value);
       $contact->add_email($email_data);// <- will update company
     }
@@ -800,9 +780,15 @@ protected function update_field_switcher($field,$value,$options=''){
       $_key=preg_replace('/Company/','Contact',$key);
       $_data[$_key]=$val;
     }
+    
+    foreach($this->editor as $key => $value){
+        $_data[$_key]=$val;
 
+    }
+    
 
     $address=new address('find in contact '.$this->data['Company Main Contact Key'].' '.$type.' create',$_data);
+    
     if($address->id){
 
       $address_data=array(
