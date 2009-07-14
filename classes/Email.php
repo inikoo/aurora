@@ -34,8 +34,8 @@ class Email extends DB_Table {
 /*   public $msg=''; */
 
   
-
-
+  public $updated_fields=array();
+  
   /*
    Constructor: Email
    Initializes the class, trigger  Search/Load/Create for the data set
@@ -463,7 +463,7 @@ function update_Email($data,$options=''){
 
 
 
-
+  $old_value=$this->data['Email'];
   $sql=sprintf("update `Email Dimension` set `Email`=%s where `Email Key`=%d ",prepare_mysql($data),$this->id);
   mysql_query($sql);
   // print "$sql\n";
@@ -481,7 +481,10 @@ function update_Email($data,$options=''){
     $this->data['Email']=$data;
     $this->updated=true;
     $this->update_EmailValidated($options);
- 
+    $this->updated_fields['Email']=array(
+					 'Old Value'=>$old_value
+					 ,'New Value'=>$this->data['Email']
+					 );
   
 
   }
@@ -514,7 +517,7 @@ function update_EmailValidated($options=''){
   }else{
     $this->msg.=' '._('Record updated')."\n";
     $this->updated=true;
-
+    $this->updated_fields['Email Validated']=true;
   }
   
 
@@ -552,7 +555,7 @@ function update_EmailCorrect($data,$options=''){
     else
       $this->msg.=' '._('Email confirmed as incorrect')."\n";
 
-    
+    $this->updated_fields['Email Correct']=true;
     $this->updated=true;
 
   }
@@ -580,6 +583,7 @@ private function update_EmailContactName($data,$options=''){
     
     
   }else{
+    $this->updated_fields['Email Contact Name']=true;
     $this->msg.=' '._('Record updated')."\n";
     $this->data['Email Contact Name']=$data;
     $this->updated=true;

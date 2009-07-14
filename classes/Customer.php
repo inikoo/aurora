@@ -230,7 +230,7 @@ class Customer extends DB_Table{
 	  $child=new Company ('find in customer create',$raw_data);
 	}
 
-
+	//	$child->editor=$this->editor;
 	$this->update($raw_data);
 
       }else{
@@ -600,45 +600,14 @@ class Customer extends DB_Table{
       $this->id=mysql_insert_id();
       $this->get_data('id',$this->id);
       
+      $history_data=array(
+			    'note'=>_('New Customer')
+			  ,'details'=>_trim(_('New customer')." \"".$this->data['Customer Name']."\"  "._('added'))
+			  ,'action'=>'created'
+			  );
+      $this->add_history($history_data);
 
 
-
-      $note=_('Customer Created');
-      $details=_('Customer Created');
-    if($this->editor['Author Name'])
-      $author=$this->editor['Author Name'];
-    else
-      $author=_('System');
-    
- if($this->editor['Date'])
-   $date=$this->editor['Date'];
- else
-   $date=date("Y-m-d H:i:s");
- 
- $sql=sprintf("insert into `History Dimension` (`History Date`,`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`Author Name`,`Author Key`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-	      ,prepare_mysql($date)
-	      ,prepare_mysql('user')
-	      ,prepare_mysql($this->editor['User Key'])
-	      ,prepare_mysql('created')
-	      ,prepare_mysql($this->table_name)
-	      ,prepare_mysql($this->id)
-	      ,"''"
-	      ,"''"
-	      ,0
-	      ,prepare_mysql($note)
-	      ,prepare_mysql($details)
-	      ,prepare_mysql($author)
-	      ,prepare_mysql($this->editor['Author Key'])
-		  );
- // print $sql;
- // exit;
-   mysql_query($sql);
-
-
-
-
-
-      
     }else{
       // print "Error can not create supplier $sql\n";
     }
@@ -1053,43 +1022,19 @@ class Customer extends DB_Table{
 		  ,$this->id
 		  );
      if(mysql_query($sql)){
-       $field='Customer Email';
-       $note=$field.' '._('changed');
+       
+       $note=_('Email changed');
        if($old_value){
 	 $old_email=new Email($old_value);
-	 $details=$field.' '._('changed from')." \"".$old_email->display('plain')."\" "._('to')." \"".$this->data['Customer Main Plain Email']."\"";
+	 $details=_('Customer email changed from')." \"".$old_email->display('plain')."\" "._('to')." \"".$this->data['Customer Main Plain Email']."\"";
        }else{
-	  $details=_('Customer Email set to')." \"".$this->data['Customer Main Plain Email']."\"";
+	 $details=_('Customer email set to')." \"".$this->data['Customer Main Plain Email']."\"";
        }
-
-
-       if($this->editor['Author Name'])
-	 $author=$this->editor['Author Name'];
-       else
-	 $author=_('System');
        
-       if($this->editor['Date'])
-	 $date=$this->editor['Date'];
-       else
-	 $date=date("Y-m-d H:i:s");
+       $history_data=array('details'=>$details,'note'=>$note);
+       $this->add_history($history_data);
        
-       $sql=sprintf("insert into `History Dimension` (`History Date`,`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`Author Name`,`Author Key`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-		    ,prepare_mysql($date)
-	      ,prepare_mysql('user')
-	      ,prepare_mysql($this->editor['User Key'])
-	      ,prepare_mysql('edited')
-	      ,prepare_mysql($this->table_name)
-	      ,prepare_mysql($this->id)
-	      ,prepare_mysql('to')
-	      ,prepare_mysql($field)
-	      ,0
-	      ,prepare_mysql($note)
-	      ,prepare_mysql($details)
-	      ,prepare_mysql($author)
-	      ,prepare_mysql($this->editor['Author Key'])
-		  );
-
-   mysql_query($sql);
+       
 
 
 
@@ -1727,6 +1672,23 @@ class Customer extends DB_Table{
 
 
    switch($key){
+   case("Formated ID"):
+     global $myconf;
+     
+     $sql="select count(*) as num from `Customer Dimension`";
+     $res=mysql_query($sql);
+     $min_number_zeros=4;
+     if($row=mysql_fetch_array($res)){
+       if(strlen($row['num'])-1>$min_number_zeros)
+	 $min_number_zeros=strlen($row['num'])-01;
+     }
+     if(!is_numeric($min_number_zeros))
+       $min_number_zeros=4;
+
+     return sprintf("%s%0".$min_number_zeros."d",$myconf['customer_id_prefix'], $this->data['Customer ID']);
+
+     
+     break;
    case('Net Balance'):
      return money($this->data['Customer Net Balance']);
      break;

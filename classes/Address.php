@@ -142,6 +142,7 @@ class Address extends DB_Table{
     $this->found_in=false;
     $this->found_out=false;
     $this->candidate=array();
+    $this->address_candidate=array();
     $in_contact=array();
     $mode='Contact';
     $parent='Contact';
@@ -271,7 +272,7 @@ class Address extends DB_Table{
 
       }else if($num_results==1){
 	$row=mysql_fetch_array($result, MYSQL_ASSOC);
-
+	$this->found=true;
 	$this->get_data('id',$row['Address Key']);
 	if($mode=='Contact in' or $mode=='Company in'){
 	  if(in_array($row['Subject Key'],$in_contact)){
@@ -316,14 +317,15 @@ class Address extends DB_Table{
 	$sql.=sprintf(' and `%s`=%s',$field,prepare_mysql($data[$field],false));
       }
       $result=mysql_query($sql);
-      // print "No fuzzy $sql\n";
+      //      print "No fuzzy $sql\n";
       $num_results=mysql_num_rows($result);
+      //   print "No fuzzy $num_results\n";
       if($num_results==0){
 	$this->found=false;
        	
       }else if($num_results==1){
 	$row=mysql_fetch_array($result, MYSQL_ASSOC);
-
+	$this->found=true;
 	$this->get_data('id',$row['Address Key']);
 	if($mode=='Contact in' or $mode=='Company in'){
 	  if(in_array($row['Subject Key'],$in_contact)){
@@ -357,10 +359,55 @@ class Address extends DB_Table{
 
     }
 
+    if(!$this->found and count($this->candidate)==0){
+      // foound 1 additions
+      if($data['Address Fuzzy']=='No'){
+	//Special cases
+	//a) when same (st number,street,town,d1,d2) but postal code on / off
+	    $fields=array('Address Street Number','Address Building','Address Street Name','Address Street Type','Address Town Secondary Division','Address Town Primary Division','Address Town','Address Country Primary Division','Address Country Secondary Division','Address Country Key','Military Address','Military Installation Address','Military Installation Name');
+
+      $sql="select A.`Address Key`,`Subject Key`,`Subject Type` from `Address Dimension`  A  left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`) where `Subject Type`='Contact' ";
+      foreach($fields as $field){
+	$sql.=sprintf(' and `%s`=%s',$field,prepare_mysql($data[$field],false));
+      }
+      $result=mysql_query($sql);
+      //      print "No fuzzy $sql\n";
+      $num_results=mysql_num_rows($result);
+     
+      if($num_results==1){
+	$row=mysql_fetch_array($result, MYSQL_ASSOC);
+	$this->found=true;
+	$this->get_data('id',$row['Address Key']);
+	if($mode=='Contact in' or $mode=='Company in'){
+	  if(in_array($row['Subject Key'],$in_contact)){
+	    $this->candidate[$row['Subject Key']]=100;
+	    $this->found_in=true;
+	    $this->found_out=false;
+	  }else{
+	    $this->candidate[$row['Subject Key']]=80;
+	    $this->found_in=false;
+	    $this->found_out=true;
+	  }
+	}else
+	  $this->candidate[$row['Subject Key']]=90;
+
+      }
+	
+	
+      }
+
+
+    }
+
+
+
+
+    
     if($create){
-      if($this->found)
+      if($this->found ){
+	//print "updating address\n";
 	$this->update($data,$options);
-      else{
+      }else{
 	// not found
 	if($auto){
 	  usort($this->candidate);
@@ -494,11 +541,20 @@ class Address extends DB_Table{
     Function:update
     Update the Record
   */
-  function update($data){
-
-    exit("address update not implemented yet\n");
-  }
-  
+  // function update($data){
+    
+    
+  // }
+ function update_field_switcher($field,$value,$options=''){
+   switch($field){
+   case('Address Location'):
+   case('Address Plain'):
+   case('Address Input Format'):
+     break;
+   default:
+     $this->update_field($field,$value,$options);
+   }
+ }
 
   function get($key){
 

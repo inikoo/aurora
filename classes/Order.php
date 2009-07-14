@@ -249,17 +249,33 @@ class Order extends DB_Table{
 
 				  switch ($_SESSION ['lang']) {
 				  default :
-				    $abstract = sprintf ( '%s <a href="order.php?id=%d">%s</a>', _('Order'),$this->data ['Order Key'], $this->data ['Order Public ID'] );
-				    $note = sprintf ( '%s (<a href="customer.php?id=%d">%s%s</a>) place an order on %s', $customer->get ( 'Customer Name' ), $customer->id,$myconf['customer_id_prefix'], $customer->get ( 'Customer ID' ), strftime ( "%e %b %Y %H:%M", strtotime ( $this->data ['Order Date'] ) ) );
+				    $note = sprintf ( '%s <a href="order.php?id=%d">%s</a>', _('Order'),$this->data ['Order Key'], $this->data ['Order Public ID'] );
+				    $details = sprintf ( '%s (<a href="customer.php?id=%d">%s</a>) place an order on %s', $customer->get ( 'Customer Name' ), $customer->id,$customer->get('Formated ID'), strftime ( "%e %b %Y %H:%M", strtotime ( $this->data ['Order Date'] ) ) );
+				   
+				      
 				  }
-				  
-				  $sql = sprintf ( "insert into `History Dimension` (`History Date`,`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`History Details`,`Author Key`,`Author Name`,`Indirect Object`,`Indirect Object Key`,`Preposition`) values(%s,'Customer','%s','Placed','Order',%d,%s,0,%s,'',0,'')", prepare_mysql ( $this->data ['Order Date'] ), $customer->id, $this->data ['Order Key'], prepare_mysql ( $note ), prepare_mysql ( _ ( 'System' ) ) );
-				  mysql_query ( $sql );
-				  $history_id = mysql_insert_id ();
-				  $abstract .= ' (<span class="like_a" onclick="showdetails(this)" d="0" id="ch' . $history_id . '"  hid="' . $history_id . '">' . _ ( 'view details' ) . '</span>)';
-				  $sql = sprintf ( "update `History Dimension` set `History Abstract`=%s where `History Key`=%d", prepare_mysql ( $abstract ), $history_id );
-				  //	print "$sql\n";
-				  mysql_query ( $sql );
+				  $history_data=array(
+						      'date'=>$this->data ['Order Date'] 
+						      ,'subject'=>'Customer'
+						      ,'subject_key'=>$customer->id
+						      ,'direct_object'=>'Order'
+						      ,'direct_object_key'=>$this->data ['Order Key']
+						      ,'details'=>$details
+						      ,'note'=>$note
+						      );
+				  $this->add_history($history_data);
+			/* 	  $sql = sprintf ( "insert into `History Dimension` (`History Date`,`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`History Details`,`Author Key`,`Author Name`,`Indirect Object`,`Indirect Object Key`,`Preposition`) values(%s,'Customer','%s','Placed','Order',%d,%s,0,%s,'',0,'')", prepare_mysql ( $this->data ['Order Date'] ), $customer->id, $this->data ['Order Key'], prepare_mysql ( $note ), prepare_mysql ( _ ( 'System' ) ) ); */
+/* 				  mysql_query ( $sql ); */
+/* 				  $history_id = mysql_insert_id (); */
+/* 				  $abstract .= ' (<span class="like_a" onclick="showdetails(this)" d="0" id="ch' . $history_id . '"  hid="' . $history_id . '">' . _ ( 'view details' ) . '</span>)'; */
+/* 				  $sql = sprintf ( "update `History Dimension` set `History Abstract`=%s where `History Key`=%d", prepare_mysql ( $abstract ), $history_id ); */
+/* 				  //	print "$sql\n"; */
+/* 				  mysql_query ( $sql ); */
+
+
+
+
+
 				} else {
 				  $this->data ['Order Key'] = 0;
 				  $this->data ['Order Public ID'] = '';
