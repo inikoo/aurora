@@ -51,6 +51,12 @@ class supplier extends DB_Table{
        $this->get_data('id',$arg1);
        return ;
      }
+     if(preg_match('/^find/i',$arg1)){
+     
+       $this->find($arg2,$arg1);
+       return;
+     }   
+
      if(preg_match('/create|new/i',$arg1)){
      
        $this->find($arg2,'create');
@@ -69,8 +75,9 @@ class supplier extends DB_Table{
 
   function get_data($tipo,$id){
 
+    
+
     $this->data=$this->base_data();
-    $this->id=0;
     
  
 
@@ -102,6 +109,17 @@ class supplier extends DB_Table{
    */  
  function find($raw_data,$options){
    
+   if(isset($raw_data['editor'])){
+     foreach($raw_data['editor'] as $key=>$value){
+       
+       if(array_key_exists($key,$this->editor))
+	 $this->editor[$key]=$value;
+       
+      }
+   }
+
+
+   
 
    $create='';
    $update='';
@@ -111,23 +129,42 @@ class supplier extends DB_Table{
     if(preg_match('/update/i',$options)){
       $update='update';
     }
-    
-   
-    if(!isset($raw_data['Supplier Name'])){
-      if(isset($raw_data['name']))
-	$raw_data['Supplier Name']=$raw_data['name'];
-    }
-    if(!isset($raw_data['Supplier Code'])){
-      if(isset($raw_data['code']))
-	$raw_data['Supplier Code']=$raw_data['code'];
-    }
-    
+    if(isset($raw_data['name']))
+      $raw_data['Supplier Name']=$raw_data['name'];
+    if(isset($raw_data['code']))
+      $raw_data['Supplier Code']=$raw_data['code'];
+    if(isset($raw_data['Supplier Code']) and $raw_data['Supplier Code']=='')
+      $raw_data['Supplier Code']=_('Unknown');
 
-
-
-    if($create){
-      $this->create($raw_data);
+    $data=$this->base_data();
+     foreach($raw_data as $key=>$value){
+       if(array_key_exists($key,$data)){
+	 $data[$key]=_trim($value);
+       }
     }
+
+     if($data['Supplier Code']!=''){
+       $sql=sprintf("select `Supplier Key` from `Supplier Dimension` where `Supplier Code`=%s ",prepare_mysql($data['Supplier Code']));
+       $result=mysql_query($sql);
+       if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+	 $this->found=true;
+	 $this->found_key=$row['Supplier Key'];
+	 
+       }
+     }
+     
+     if($this->found){
+       $this->get_data('id',$this->found_key);
+     }
+     
+
+     if($create){
+
+       if($this->found)
+	 $this->update($data);
+       else
+	 $this->create($data);
+     }
     
 
     
@@ -213,9 +250,11 @@ class supplier extends DB_Table{
 
 
     if(!$this->data['Supplier Company Key']){
+      $raw_data['editor']=$this->editor;
       $company=new company('find in supplier create',$raw_data);
+    
       $this->data['Supplier Company Key']=$company->id;
-      
+
     }
     
 

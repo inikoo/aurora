@@ -116,7 +116,7 @@ class Contact extends DB_Table{
    */  
   function find($raw_data,$options){
        //    print $options."\n";
-    //print_r($raw_data);
+    // print_r($raw_data);
 
     
     if(isset($raw_data['editor'])){
@@ -695,12 +695,16 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
     $this->data['Contact ID']=$this->get_id();
 
 
-
+    if($this->data['Contact Name']==$myconf['unknown_contact']){
+      $this->data['Contact Fuzzy']='Yes';
+    }else
+      $this->data['Contact Fuzzy']='No';
    
+    // print_r($this->data);
     $keys='(';$values='values(';
     foreach($this->data as $key=>$value){
       // Just insert name fields, company,email,tel,ax,address should be inserted later
-      if(preg_match('/ id| Salutation|Contact Name|file as|First Name|Surname|Suffix|Gender|Greeting|Profession|Title| plain/i',$key)){
+      if(preg_match('/fuzzy| id| Salutation|Contact Name|file as|First Name|Surname|Suffix|Gender|Greeting|Profession|Title| plain/i',$key)){
 
 	$keys.="`$key`,";
 	if(preg_match('/suffix|plain|old id/i',$key))
@@ -714,20 +718,22 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
     $values=preg_replace('/,$/',')',$values);
 
     $sql=sprintf("insert into `Contact Dimension` %s %s",$keys,$values);
-    //print "creating contact\n";
-
+    // print "creating contact\n $sql\n";
+    // exit;
     if(mysql_query($sql)){
       $this->id= mysql_insert_id();
       $this->new=true;
       $this->get_data('id',$this->id);
       
-      $history_data=array(
-			  'note'=>_('Contact Created')
-			  ,'details'=>_trim(_('Contact')." \"".$this->display('name')."\"  "._('created'))
-			  ,'action'=>'created'
-			  );
-      $this->add_history($history_data);
-     
+      
+      if($this->data['Contact Fuzzy']=='No'){
+	$history_data=array(
+			    'note'=>_('Contact Created')
+			    ,'details'=>_trim(_('Contact')." \"".$this->display('name')."\"  "._('created'))
+			    ,'action'=>'created'
+			    );
+	$this->add_history($history_data);
+      }
       
 
       if(preg_match('/parent\:none|parent\:customer/',$options)){
@@ -751,12 +757,13 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
 
 	}
 	if($this->data['Contact Main Telephone']!=''){
-	  // print "addin telephone\n";
-	  $telephone_data=$this->data['Contact Main Telephone'];
+	  $telephone_data=array();
+	  $telephone_data['editor']=$this->editor;
+	  $telephone_data['Telecom Raw Number']=$this->data['Contact Main Telephone'];
 	  $telephone=new Telecom("find in contact ".$this->id." create",$telephone_data);
-
- if(!$telephone->error){
-	  $this->add_tel(array(
+	  
+	  if(!$telephone->error){
+	    $this->add_tel(array(
 			      'Telecom Key'=>$telephone->id
 			      ,'Telecom Type'=>'Telephone'
 			      ));
@@ -764,10 +771,12 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
 	}
 	if($this->data['Contact Main FAX']!=''){
 	  //print "addin fax\n";
-	  $telephone_data=$this->data['Contact Main FAX'];
+	  $telephone_data=array();
+	  $telephone_data['Telecom Raw Number']=$this->data['Contact Main FAX'];
+	  $telephone_data['editor']=$this->editor;
 	  $telephone=new Telecom("find in contact ".$this->id." create",$telephone_data);
 	 
- if(!$telephone->error){
+	  if(!$telephone->error){
 	  $this->add_tel(array(
 			      'Telecom Key'=>$telephone->id
 			      ,'Telecom Type'=>'Fax'
@@ -777,7 +786,8 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
 
 	if($this->data['Contact Main Mobile']!=''){
 	  //print "addin fax\n";
-	  $telephone_data=$this->data['Contact Main Mobile'];
+	  $telephone_data=array('Telecom Raw Number'=>$this->data['Contact Main Mobile']);
+	  $telephone_data['editor']=$this->editor;
 	  $telephone=new Telecom("find in contact ".$this->id." create",$telephone_data);
  if(!$telephone->error){
 
@@ -789,6 +799,7 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
 	}
 
 	if(!array_empty($address_home_data)){
+	  $address_home_data['editor']=$this->editor;
 	  $home_address=new Address("find in contact ".$this->id." create",$address_home_data);
 	  if($home_address->error){
 	    print $home_address->msg."\n";
@@ -805,7 +816,7 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
 
 	if(!array_empty($address_work_data)){
 
-
+	  $address_work_data['editor']=$this->editor;
 	  $work_address=new Address("find in contact ".$this->id." create",$address_work_data);
 	  if($work_address->error){
 	    print $work_address->msg."\n";
@@ -1299,7 +1310,7 @@ function add_address($data,$args='principal'){
 
      
       $this->get_data('id',$this->id);
-      if($old_value!=$this->data['Contact Main XHTML Address']){
+      if($old_value!=$this->data['Contact Main XHTML Address'] and !$this->new){
 	$details=_('Contact address changed from')." \"".$old_value."\" "._('to')." \"".$this->data['Contact Main XHTML Address']."\"";
 	$note=_('Address Changed');
 	
@@ -1590,7 +1601,7 @@ protected function update_field_switcher($field,$value,$options=''){
       $this->del_email('principal');
     }elseif(!email::wrong_email($value)){
       $value=email::prepare_email($value);
-      $email_data=array('Email'=>$value);
+      $email_data=array('Email'=>$value,'editor'=>$this->editor);
    
       $this->add_email($email_data,$options.' principal');
     }

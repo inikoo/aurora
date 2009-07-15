@@ -871,7 +871,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	$dept_key=$__row['Product Family Main Department Key'];
       }
       
-
+     
 
       $product_data=array(
 			  'Product Store Key'=>$store_key
@@ -895,6 +895,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 			  ,'auto_add'=>true
 			  ,'date'=>$date_order
 			  ,'date2'=>$date2
+			  ,'editor'=>array('Date'=>$date_order)
 			  );
    
       // print_r($product_data);

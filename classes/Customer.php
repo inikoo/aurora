@@ -153,6 +153,7 @@ class Customer extends DB_Table{
       }
     }
 
+
    $create='';
    $update='';
    if(preg_match('/create/i',$options)){
@@ -1825,9 +1826,7 @@ class Customer extends DB_Table{
       $address->id!=$this->data['Customer Main Address Key']
       or $address->display('xhtml')!=$this->data['Customer Main XHTML Address']
       or $address->display('plain')!=$this->data['Customer Main Plain Address']
-      or $address->display('location')!=$this->data['Company Main Location']
-      
-      ){
+      or $address->display('location')!=$this->data['Company Main Location']      ){
      $old_value=$this->data['Customer Main XHTML Address'];
      $this->data['Customer Main Address Key']=$address->id;
      $this->data['Customer Main XHTML Address']=$address->display('xhtml');
@@ -1861,15 +1860,17 @@ class Customer extends DB_Table{
 		  );
 
 
-     if(mysql_query($sql)){
+     if(!mysql_query($sql))
+       exit("\n\nerror $sql\n");
        
-       $note=_('Address Changed');
-       if($old_value!=''){
-	 $old_address=new Address($old_value);
-	 $details=_('Customer address changed from')." \"".$old_value."\" "._('to')." \"".$this->data['Customer Main XHTML Address']."\"";
-       }else{
-	 $details=_('Customer address set to')." \"".$this->data['Customer Main XHTML Address']."\"";
-       }
+     if($old_value!=$this->data['Customer Main XHTML Address']){
+     
+     $note=_('Address Changed');
+     if($old_value!=''){
+       $details=_('Customer address changed from')." \"".$old_value."\" "._('to')." \"".$this->data['Customer Main XHTML Address']."\"";
+     }else{
+       $details=_('Customer address set to')." \"".$this->data['Customer Main XHTML Address']."\"";
+     }
        
        $history_data=array(
 			   'indirect_object'=>'Address'
@@ -1878,13 +1879,10 @@ class Customer extends DB_Table{
 			   );
        $this->add_history($history_data);
        
-       
-
-
-
-     }else{
-       exit("\n\nerror $sql\n");
      }
+
+
+
 
    }
 
