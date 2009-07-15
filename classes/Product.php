@@ -11,6 +11,7 @@
  
  Version 2.0
 */
+include_once('DB_Table.php');
 include_once('Deal.php');
 include_once('SupplierProduct.php');
 include_once('Part.php');
@@ -22,7 +23,7 @@ include_once('Store.php');
 // JFA
 
 
-class product{
+class product extends DB_Table{
 
   public $product=array();
   public $categories=array();
@@ -39,12 +40,12 @@ class product{
   public $mode='id';
   // Variable: new
   // Indicate if a new product was created
-  public $new=false;
+  
   public $new_id=false;
   public $location_to_update=false;
    // Variable: id
   // Reference tothe Product Key
-  public $id=false;
+  
   public $unknown_txt='Unknown';
 
   /* 
@@ -56,6 +57,11 @@ class product{
   */
   function Product($a1,$a2=false,$a3=false) {
     
+    $this->table_name='Product';
+    $this->ignore_fields=array(
+			       'Product Key'
+			       );
+
     if(is_numeric($a1) and !$a2){
       $this->get_data('id',$a1);
     }
@@ -73,7 +79,19 @@ class product{
 // JFA
 
   function get_data($tipo,$tag,$extra=false){
-   
+    
+    //  print_r($tag['editor']);
+    if(isset($tag['editor']) and is_array($tag['editor'])){
+
+	foreach($tag['editor'] as $key=>$value){
+
+	  if(array_key_exists($key,$this->editor))
+	    $this->editor[$key]=$value;
+		    
+	}
+      }
+
+    
     if($tipo=='id'){
       $sql=sprintf("select * from `Product Dimension` where `Product Key`=%d ",$tag);
 
@@ -122,10 +140,7 @@ class product{
     }elseif($tipo=='code-name-units-price-store'){
       $auto_add=$tag['auto_add'];
       
-
-  //     if($tag['product code']=='wsl-123')
-//  	print_r($tag);
-
+     
       $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s and `Product Name`=%s and `Product Units Per Case`=%f and `Product Unit Type`=%s  and `Product Price`=%.2f and `Product Store Key`=%d "
 		   ,prepare_mysql($tag['product code'])
 		   ,prepare_mysql($tag['product name'])
@@ -211,16 +226,16 @@ class product{
 	mysql_query($sqlee);
 	
 
-	$supplier=new Supplier('code',$tag['supplier code']);
-	if(!$supplier->id){
-	  $data=array(
-		      'Supplier Name'=>$tag['supplier name'],
-		      'Supplier Code'=>$tag['supplier code'],
-		      'from'=>$tag['date'],
-		      'to'=>$tag['date2']
-		      );
-	$supplier=new Supplier('new',$data);
-	}	
+
+	$data=array(
+		    'Supplier Name'=>$tag['supplier name'],
+		    'Supplier Code'=>$tag['supplier code'],
+		    'from'=>$tag['date'],
+		      'to'=>$tag['date2'],
+		    'editor'=>$this->editor
+		    );
+	$supplier=new Supplier('find',$data);
+
 	$sp_data=array(
 		       'supplier product supplier key'=>$supplier->id,
 		       'supplier product supplier code'=>$supplier->data['Supplier Code'],
@@ -379,7 +394,8 @@ class product{
 		      'name'=>$tag['supplier name'],
 		      'code'=>$tag['supplier code'],
 		      'from'=>$tag['date'],
-		      'to'=>$tag['date2']
+		      'to'=>$tag['date2'],
+		      'editor'=>$this->editor
 		      );
 	$supplier=new Supplier('new',$data);
 	}	
@@ -537,7 +553,8 @@ class product{
 		    'name'=>$tag['supplier name'],
 		    'code'=>$tag['supplier code'],
 		    'from'=>$tag['date'],
-		    'to'=>$tag['date2']
+		    'to'=>$tag['date2'],
+		    'editor'=>$this->editor
 		    );
 
 
@@ -1399,6 +1416,9 @@ $base_data=array(
     if(mysql_query($sql)){
       $this->id = mysql_insert_id();
 	$this->get_data('id',$this->id);
+
+
+
 
 
       if($base_data['product most recent']=='Yes'){
