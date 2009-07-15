@@ -405,7 +405,7 @@ class Company extends DB_Table {
   
   function create($raw_data,$raw_address_data=array(),$options=''){
     
-    // print_r($raw_data);
+    //  print_r($raw_data);
     
     $this->data=$this->base_data();
     foreach($raw_data as $key=>$value){
@@ -447,7 +447,11 @@ class Company extends DB_Table {
        
        $email_data['Email']=$this->data['Company Main Plain Email'];
        $email_data['Email Contact Name']=$this->data['Company Main Contact Name'];
+       
+       $email_data['editor']=$this->editor;
+       
        $email=new Email("find in company create",$email_data);
+       // exit;
        if(!$email->error){
 	 $this->data['Company Main Plain Email']=$email->display('plain');
 	 $this->data['Company Main XHTML Email']=$email->display('xhtml');
@@ -781,25 +785,28 @@ protected function update_field_switcher($field,$value,$options=''){
       $_data[$_key]=$val;
     }
     
-    foreach($this->editor as $key => $value){
-        $_data[$_key]=$val;
 
-    }
+    $_data['editor']=$this->editor;
     
 
-    $address=new address('find in contact '.$this->data['Company Main Contact Key'].' '.$type.' create',$_data);
+    //  $address=new address('find in contact '.$this->data['Company Main Contact Key'].' '.$type.' create',$_data);
     
-    if($address->id){
+    //if($address->id){
 
-      $address_data=array(
-			  'Address Key'=>$address->id
-			  ,'Address Type'=>'Work'
-			  ,'Address Function'=>'Contact'
-			  ,'Address Description'=>'Work Contact Address'
-			  );
+    $_data['Address Type']='Work';
+    $_data['Address Function']='Contact';
+    $_data['Address Description']='Work Contact Address';
+
+//       $address_data=array(
+// 			  //'Address Key'=>$address->id
+// 			  'Address Type'=>'Work'
+// 			  ,'Address Function'=>'Contact'
+// 			  ,'Address Description'=>'Work Contact Address'
+// 			  );
       $contact=new Contact($this->data['Company Main Contact Key']);
-      $contact->add_address($address_data,"principal");
-    }
+      $contact->editor=$this->editor;
+      $contact->add_address($_data,"principal");
+      // }
 
   }
 
@@ -909,6 +916,204 @@ private function update_Company_Old_ID($company_old_id,$options){
 }
 
 
+ function update_email($email_key=false){
+
+   if(!$email_key)
+     return;
+   $email=new Email($email_key);
+   if(!$email->id)
+     return;
+
+   if($email->id!=$this->data['Company Main Email Key']){
+     $old_value=$this->data['Company Main Email Key'];
+     $this->data['Company Main Email Key']=$email->id;
+     $this->data['Company Main Plain Email']=$email->display('plain');
+     $this->data['Company Main XHTML Email']=$email->display('xhtml');
+     $sql=sprintf("update `Company Dimension` set `Company Main Email Key`=%d,`Company Main Plain Email`=%s,`Company Main XHTML Email`=%s where `Company Key`=%d"
+
+		  ,$this->data['Company Main Email Key']
+		  ,prepare_mysql($this->data['Company Main Plain Email'])
+		  ,prepare_mysql($this->data['Company Main XHTML Email'])
+		  ,$this->id
+		  );
+     if(mysql_query($sql)){
+       
+       $note=_('Email Changed');
+       if($old_value){
+	 $old_email=new Email($old_value);
+	 $details=_('Company email changed from')." \"".$old_email->display('plain')."\" "._('to')." \"".$this->data['Company Main Plain Email']."\"";
+       }else{
+	 $details=_('Company email set to')." \"".$this->data['Company Main Plain Email']."\"";
+       }
+       
+       $history_data=array(
+			   'indirect_object'=>'Email'
+			   ,'details'=>$details
+			   ,'note'=>$note
+			   );
+       $this->add_history($history_data);
+       
+       
+
+
+
+     }else{
+       $this->error=true;
+       
+     }
+     
+
+     
+   }elseif($email->display('plain')!=$this->data['Company Main Plain Email']){
+     $old_value=$this->data['Company Main Plain Email'];
+     
+     $this->data['Company Main Plain Email']=$email->display('plain');
+     $this->data['Company Main XHTML Email']=$email->display('xhtml');
+     $sql=sprintf("update `Company Dimension` set `Company Main Plain Email`=%s,`Company Main XHTML Email`=%s where `Company Key`=%d"
+		  
+
+		  ,prepare_mysql($this->data['Company Main Plain Email'])
+		  ,prepare_mysql($this->data['Company Main XHTML Email'])
+		  ,$this->id
+		  );
+     if(mysql_query($sql)){
+       $field='Company Email';
+       $note=$field.' '._('Changed');
+       $details=$field.' '._('changed from')." \"".$old_value."\" "._('to')." \"".$this->data['Company Main Plain Email']."\"";
+       
+       $history_data=array(
+			   'indirect_object'=>'Email'
+			   ,'details'=>$details
+			   ,'note'=>$note
+			   );
+       $this->add_history($history_data);
+       
+
+
+
+     }else{
+       $this->error=true;
+       
+     }
+     
+
+   }
+
+ }
+
+
+
+ function update_address_data($address_key=false){
+
+
+
+   if(!$address_key)
+     return;
+   $address=new Address($address_key);
+   if(!$address->id)
+     return;
+
+   if($address->id!=$this->data['Company Main Address Key']){
+     $old_value=$this->data['Company Main Address Key'];
+     $this->data['Company Main Address Key']=$address->id;
+     $this->data['Company Main Plain Address']=$address->display('plain');
+     $this->data['Company Main XHTML Address']=$address->display('xhtml');
+
+     $this->data['Company Main Country Key']=$address->data['Address Country Key'];
+     $this->data['Company Main Country']=$address->data['Address Country Name'];
+     $this->data['Company Main Location']=$address->display('location');
+     
+
+     $sql=sprintf("update `Company Dimension` set `Company Main Address Key`=%d,`Company Main Plain Address`=%s,`Company Main XHTML Address`=%s,`Company Main Country`=%s,`Company Main Location`=%s,`Company Main Country Key`=%d where `Company Key`=%d"
+
+		  ,$this->data['Company Main Address Key']
+		  ,prepare_mysql($this->data['Company Main Plain Address'])
+		  ,prepare_mysql($this->data['Company Main XHTML Address'])
+		  ,prepare_mysql($this->data['Company Main Country'])
+		  ,prepare_mysql($this->data['Company Main Location'])
+		  ,$this->data['Company Main Country Key']
+		  ,$this->id
+		  );
+     //print "XX $address_key $sql\n";
+     if(mysql_query($sql)){
+       
+       $note=_('Address Changed');
+       if($old_value){
+	 $old_address=new Address($old_value);
+	 $details=_('Company address changed from')." \"".$old_address->display('xhtml')."\" "._('to')." \"".$this->data['Company Main XHTML Address']."\"";
+       }else{
+	 $details=_('Company address set to')." \"".$this->data['Company Main XHTML Address']."\"";
+       }
+       
+       $history_data=array(
+			   'indirect_object'=>'Address'
+			   ,'details'=>$details
+			   ,'note'=>$note
+			   );
+       $this->add_history($history_data);
+       
+       
+
+
+
+     }else{
+       $this->error=true;
+       
+     }
+     
+
+     
+   }elseif($address->display('plain')!=$this->data['Company Main Plain Address']
+	   or $address->display('location')!=$this->data['Company Main Location']
+	   ){
+     $old_value=$this->data['Company Main XHTML Address'];
+     
+     $this->data['Company Main Plain Address']=$address->display('plain');
+     $this->data['Company Main XHTML Address']=$address->display('xhtml');
+     $this->data['Company Main Country Key']=$address->data['Address Country Key'];
+     $this->data['Company Main Country']=$address->data['Address Country Name'];
+     $this->data['Company Main Location']=$address->display('location');
+   
+
+     $sql=sprintf("update `Company Dimension` set `Company Main Plain Address`=%s,`Company Main XHTML Address`=%s,`Company Main Country`=%s,`Company Main Location`=%s,`Company Main Country Key`=%d where `Company Key`=%d"
+		  
+
+		  ,prepare_mysql($this->data['Company Main Plain Address'])
+		  ,prepare_mysql($this->data['Company Main XHTML Address'])
+		  ,prepare_mysql($this->data['Company Main Country'])
+		  ,prepare_mysql($this->data['Company Main Location'])
+		  ,$this->data['Company Main Country Key']
+		  ,$this->id
+		  );
+     if(mysql_query($sql)){
+       $field='Company Address';
+       $note=$field.' '._('Changed');
+       $details=$field.' '._('changed from')." \"".$old_value."\" "._('to')." \"".$this->data['Company Main XHTML Address']."\"";
+       
+       $history_data=array(
+			   'indirect_object'=>'Address'
+			   ,'details'=>$details
+			   ,'note'=>$note
+			   );
+       $this->add_history($history_data);
+       
+
+
+
+     }else{
+       $this->error=true;
+       
+     }
+     
+
+   }
+
+ }
+
+
+
+
+
   function add_page($page_data,$args='principal'){
     $url=$data['page url'];
     if(isset($data['page_type']) and preg_match('/internal/i',$data['page_type']))
@@ -959,6 +1164,7 @@ private function update_Company_Old_ID($company_old_id,$options){
     }elseif(isset($email_data['Email Key'])){
       $email=new Email($email_data['Email Key']);
     }elseif(is_array($email_data)){
+      $email_data['Editor']=$this->editor;
       $email=new Email('find in company create',$email_data['Email Key']);
       
     }else
@@ -1201,7 +1407,7 @@ function add_address($data,$args='principal'){
 
       $address=new address('id',$data['Address Key']);
     }    else
-      $address=new address('find in company create',$data);
+      $address=new address('find in company '.$this->id.' create',$data);
 
   }else
     $address=new address('fuzzy all');
@@ -1212,6 +1418,10 @@ function add_address($data,$args='principal'){
     
   }
   
+
+  if($address->updated or $address->new)
+    $this->updated=true;
+
   $address_id=$address->id;
   $sql=sprintf("insert into `Address Bridge` (`Subject Type`,`Subject Key`,`Address Key`,`Address Type`,`Address Function`,`Address Description`) values ('Company',%d,%d,%s,%s,%s)  ON DUPLICATE KEY UPDATE `Address Type`=%s,`Address Function`=%s,`Address Description`=%s ",
 	       $this->id,
@@ -1219,7 +1429,7 @@ function add_address($data,$args='principal'){
 	       ,prepare_mysql($data['Address Type'])
 	       ,prepare_mysql($data['Address Function'])
 	       ,prepare_mysql($data['Address Description'])
-	        ,prepare_mysql($data['Address Type'])
+	       ,prepare_mysql($data['Address Type'])
 	       ,prepare_mysql($data['Address Function'])
 	       ,prepare_mysql($data['Address Description'])
 	       );
@@ -1227,6 +1437,10 @@ function add_address($data,$args='principal'){
   if(!mysql_query($sql)){
     print("$sql\n error can no create company address bridge");
   }
+  
+    if(mysql_affected_rows() )
+    $this->updated=true;
+
  if(preg_match('/principal/i',$args)){
 
 
@@ -1241,20 +1455,13 @@ function add_address($data,$args='principal'){
 		  );
      mysql_query($sql);
 
-
- 
-   //    $plain_address=_trim($address->data['Street Number'].' '.$address->data['Street Name'].' '.$address->data['Address Town'].' '.$address->data['Postal Code'].' '.$address->data['Address Country Code']);
-     $sql=sprintf("update `Company Dimension`  set `Company Main Plain Address`=%s,`Company Main Address Key`=%s ,`Company main Location`=%s ,`Company Main XHTML Address`=%s , `Company Main Country Key`=%d,`Company Main Country`=%s,`Company Main Country Code`=%s where `Company Key`=%d ",
-		  prepare_mysql($address->display('plain')),
-		  prepare_mysql($address_id),
-		  prepare_mysql($address->data['Address Location']),
-		  prepare_mysql($address->display('html')),
-		  $address->data['Address Country Key'],
-		  prepare_mysql($address->data['Address Country Name']),
-		  prepare_mysql($address->data['Address Country Code']),
-		  $this->id
-		  );
  }
+
+ if(preg_match('/principal/i',$args)){
+   $this->update_address_data($address->id);
+   
+ }
+
 }
 
 

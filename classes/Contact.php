@@ -735,6 +735,7 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
 	if($this->data['Contact Main Plain Email']!=''){
 	  $email_data['Email']=$this->data['Contact Main Plain Email'];
 	  $email_data['Email Contact Name']=$this->display('name');
+	  $email_data['Editor']=$this->editor;
 	  $email=new Email("find in contact ".$this->id." create",$email_data);
 	  if(!$email->error){
 	    //Collect data about email found
@@ -967,9 +968,9 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
 
     if($this->data['Contact Name']!=$myconf['unknown_contact'])
       $email_data['Email Contact Name']=$this->data['Contact Name'];
-    // 
-    //print_r($email_data);
-    //print "-------------******* $args  *****\n find in contact ".$this->id." create\n";
+    
+    
+    $email_data['editor']=$this->editor;
     $email=new email('find in contact '.$this->id.' create',$email_data);
     //exit;
 
@@ -1007,7 +1008,9 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
 		   ,prepare_mysql($email_data['Email Type'])
 		   );
       mysql_query($sql);
-      
+      if(mysql_affected_rows() )
+	$this->updated=true;
+
       if($email->new){
 
 	//add  to contact hist
@@ -1035,25 +1038,6 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
 	$this->data['Contact Main Plain Email']=$email->display('plain');
 	$this->data['Contact Main Email Key']=$email->id;
 	mysql_query($sql);
-	if($company_key=$this->company_key('princial')){
-	  $company=new Company('id',$company_key);
-	  $customer->editor=$this->editor;
-	  $company->update(array('Company Email Key'=>$email->id));
-	  
-	  $customer_found_keys=$company->get_customers_key();
-	  foreach($customer_found_keys as $customer_found_key){
-	    $customer=new Customer($customer_found_key);
-	    $customer->editor=$this->editor;
-	    $customer->update_email($email->id);
-	  }
-	}
-	
-	$customer_found_keys=$this->get_customers_key();
-	foreach($customer_found_keys as $customer_found_key){
-	  $customer=new Customer($customer_found_key);
-	  $customer->editor=$this->editor;
-	  $customer->update_email($email->id);
-	}
 
 	$history_data['note']=_('Email Associated (Main)');
 	$history_data['details']=_($email->display('plain')." "._('set as the principal email for')." ".$this->display("name")." "._('contact'));
@@ -1091,6 +1075,30 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
       }
     
     
+
+      if(preg_match('/principal/i',$args) and $this->updated){
+	if($company_key=$this->company_key('princial')){
+	  $company=new Company('id',$company_key);
+	  $company->editor=$this->editor;
+	  $company->update_email($email->id);
+	  
+	  $customer_found_keys=$company->get_customers_key();
+	  foreach($customer_found_keys as $customer_found_key){
+	    $customer=new Customer($customer_found_key);
+	    $customer->editor=$this->editor;
+	    $customer->update_email($email->id);
+	  }
+	}
+	
+	$customer_found_keys=$this->get_customers_key();
+	foreach($customer_found_keys as $customer_found_key){
+	  $customer=new Customer($customer_found_key);
+	  $customer->editor=$this->editor;
+	  $customer->update_email($email->id);
+	}
+      }
+
+
     
     }
   }
@@ -1212,6 +1220,10 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
 
 function add_address($data,$args='principal'){
 
+  // print_r($data);
+  
+
+
   if(!$data)
     $address=new address('fuzzy all');
   elseif(is_numeric($data) )
@@ -1222,7 +1234,7 @@ function add_address($data,$args='principal'){
 
       $address=new address('id',$data['Address Key']);
     }    else
-      $address=new address('find in contact create',$data);
+      $address=new address('find in contact '.$this->id.' create',$data);
 
   }else
     $address=new address('fuzzy all');
@@ -1233,7 +1245,8 @@ function add_address($data,$args='principal'){
     
   }
   
-
+  if($address->updated or $address->new)
+	$this->updated=true;
   
 
 
@@ -1250,53 +1263,89 @@ function add_address($data,$args='principal'){
 	       );
  
   mysql_query($sql);
+  if(mysql_affected_rows() )
+    $this->updated=true;
   //print "*".mysql_affected_rows()."\n";
 
   //  exit("$sql\n error can no create contact address bridge");
   
- if(preg_match('/principal/i',$args)){
- 
-   //make the other address no principal
-   
-    $sql=sprintf("update `Address Bridge`  set `Is Main`='No' where `Subject Type`='Contact' and  `Subject Key`=%d  and `Address Key`!=%d",
+  
+  if(preg_match('/principal/i',$args) and $this->updated){
+
+      $sql=sprintf("update `Address Bridge`  set `Is Main`='No' where `Subject Type`='Contact' and  `Subject Key`=%d  and `Address Key`!=%d",
   $this->id
 		 ,$address->id
 		  );
-     mysql_query($sql);
-     $sql=sprintf("update `Address Bridge`  set `Is Main`='Yes' where `Subject Type`='Contact' and  `Subject Key`=%d  and `Address Key`=%d",
-		  $this->id
+      mysql_query($sql);
+      $sql=sprintf("update `Address Bridge`  set `Is Main`='Yes' where `Subject Type`='Contact' and  `Subject Key`=%d  and `Address Key`=%d",
+		   $this->id
 		  ,$address->id
-		  );
-
-     mysql_query($sql);
-
-     $sql=sprintf("update `Contact Dimension`  set `Contact Main Plain Address`=%s,`Contact Main Address Key`=%s ,`Contact Main Location`=%s ,`Contact Main XHTML Address`=%s , `Contact Main Country Key`=%d,`Contact Main Country`=%s,`Contact Main Country Code`=%s where `Contact Key`=%d ",
-		  prepare_mysql($address->display('plain')),
-		  prepare_mysql($address->id),
-		  prepare_mysql($address->data['Address Location']),
-		  prepare_mysql($address->display('html')),
-		  $address->data['Address Country Key'],
-		  prepare_mysql($address->data['Address Country Name']),
-		  prepare_mysql($address->data['Address Country Code']),
-		  $this->id
-		  );
-     mysql_query($sql);
-
+		   );
+      
+      mysql_query($sql);
+      $old_value=$this->data['Contact Main XHTML Address'];
+	
+	$sql=sprintf("update `Contact Dimension`  set `Contact Main Plain Address`=%s,`Contact Main Address Key`=%s ,`Contact Main Location`=%s ,`Contact Main XHTML Address`=%s , `Contact Main Country Key`=%d,`Contact Main Country`=%s,`Contact Main Country Code`=%s where `Contact Key`=%d ",
+		     prepare_mysql($address->display('plain')),
+		     prepare_mysql($address->id),
+		     prepare_mysql($address->data['Address Location']),
+		     prepare_mysql($address->display('html')),
+		     $address->data['Address Country Key'],
+		     prepare_mysql($address->data['Address Country Name']),
+		     prepare_mysql($address->data['Address Country Code']),
+		     $this->id
+		     );
+      mysql_query($sql);
 
      
-     if($company_key=$this->company_key('princial')){
-       $company=new Company('id',$company_key);
-       $company->add_address(
-			     array(
-				   'Address Key'=>$address->id
-				   ,'Address Type'=>'Office'
-				   ,'Address Function'=>'Contact'
-				   ,'Address Description'=>'Company Address'
-				   )    
-			     );
+      $this->get_data('id',$this->id);
+      if($old_value!=$this->data['Contact Main XHTML Address']){
+	$details=_('Contact address changed from')." \"".$old_value."\" "._('to')." \"".$this->data['Contact Main XHTML Address']."\"";
+	$note=_('Address Changed');
+	
+	
+       
+       $history_data=array(
+			   'indirect_object'=>'Address'
+			   ,'details'=>$details
+			   ,'note'=>$note
+			   );
+       $this->add_history($history_data);
+
+      }
+      
+
+      //print "$sql\n";
+   if($company_key=$this->company_key('princial')){
+     $company=new Company('id',$company_key);
+     $company->editor=$this->editor;
+     $company->add_address(
+			   array(
+				      'Address Key'=>$address->id
+				      ,'Address Type'=>'Office'
+				      ,'Address Function'=>'Contact'
+				      ,'Address Description'=>'Company Address'
+				 )
+			   ,'principal'
+			   );
+     
+     $customer_found_keys=$company->get_customers_key();
+     foreach($customer_found_keys as $customer_found_key){
+       $customer=new Customer($customer_found_key);
+       $customer->editor=$this->editor;
+       $customer->update_address_data($address->id);
      }
-     
+   }
+   
+   $customer_found_keys=$this->get_customers_key();
+   foreach($customer_found_keys as $customer_found_key){
+     $customer=new Customer($customer_found_key);
+     $customer->editor=$this->editor;
+     $customer->update_address_data($address->id);
+   }
  }
+
+
 
  
 

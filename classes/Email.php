@@ -144,7 +144,7 @@ class Email extends DB_Table {
     if(preg_match('/auto/i',$options)){
       $auto=true;
     }
-
+    
     
     if(!$raw_data){
       $this->new=false;
@@ -154,11 +154,26 @@ class Email extends DB_Table {
       return false;
     }
     
+
+
+ 
+    
+
     if(is_string($raw_data)){
       $tmp=$raw_data;
       unset($raw_data);
       $raw_data['Email']=$tmp;
     }
+
+ if(isset($raw_data['editor'])){
+      foreach($raw_data['editor'] as $key=>$value){
+	
+	if(array_key_exists($key,$this->editor))
+	  $this->editor[$key]=$value;
+	
+      }
+    }
+
   
     $data=$this->base_data();
     foreach($raw_data as $key=>$value){
@@ -310,7 +325,8 @@ class Email extends DB_Table {
 */
 protected function create($data,$options=''){
   
-
+  //print $this->editor;
+  
   if(!$data){
     $this->new=false;
     $this->msg.=" Error no email data";
@@ -360,7 +376,14 @@ protected function create($data,$options=''){
     $this->new=true;
       
     $this->msg=_('New Email');
-
+    
+     $history_data=array(
+			 'note'=>_('Email Created')
+			 ,'details'=>_trim(_('Email')." \"".$this->display('plain')."\"  "._('created'))
+			 ,'action'=>'created'
+			 );
+      $this->add_history($history_data);
+    
 
     if(preg_match('/anonimous|anonymous/',$options) ){
       $contact=new Contact('create anonimous');
@@ -485,7 +508,15 @@ function update_Email($data,$options=''){
 					 'Old Value'=>$old_value
 					 ,'New Value'=>$this->data['Email']
 					 );
-  
+    
+    $history_data['action']='Email Address Changed';
+    $history_data['details']=_('Email address changed')." ".$old_value." -> ".$this->data['Email'];
+    $history_data['direct_object']='Email';
+    $history_data['direct_object_key']=$this->id;
+    $history_data['indirect_object']='Email Address';
+    $history_data['indirect_object_key']=0;
+    $this->add_history($history_data);
+
 
   }
   

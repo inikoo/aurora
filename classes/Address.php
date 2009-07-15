@@ -174,8 +174,15 @@ class Address extends DB_Table{
       $update='update';
     }
     
-   
+      if(isset($raw_data['editor'])){
+      foreach($raw_data['editor'] as $key=>$value){
 
+	if(array_key_exists($key,$this->editor))
+	  $this->editor[$key]=$value;
+		    
+      }
+    }
+    
 
     $data=$this->base_data();
    
