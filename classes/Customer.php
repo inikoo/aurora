@@ -550,6 +550,8 @@ class Customer extends DB_Table{
       $this->data['Customer Main Address Postal Code']=$billing_address->data['Address'];
       $this->data['Customer Main Address Country Primary Division']=$billing_address->data['Address Country Primary Division'];
       $this->data['Customer Main XHTML Address']=$billing_address->display('html'); 
+      $this->data['Customer Main Plain Address']=$billing_address->display('plain'); 
+
 
     }else{
      if($this->data['Customer Type']=='Company'){
@@ -568,7 +570,9 @@ class Customer extends DB_Table{
        $this->data['Customer Main Address Town']=$billing_address->data['Address Town'];
        $this->data['Customer Main Address Postal Code']=$billing_address->data['Address Postal Code'];
        $this->data['Customer Main Address Country Primary Division']=$billing_address->data['Address Country Primary Division'];
-       $this->data['Customer Main XHTML Address']=$billing_address->display('html'); 
+       $this->data['Customer Main XHTML Address']=$billing_address->display('html');
+       $this->data['Customer Main Plain Address']=$billing_address->display('plain');
+
      }
 
     }
@@ -733,7 +737,7 @@ class Customer extends DB_Table{
      dsadasdas();
    }
 
-    $sql=sprintf("insert into `Customer Dimension` (`Customer ID`,`Customer Main Contact Key`,`Customer Main Contact Name`,`Customer Name`,`Customer File As`,`Customer Type`,`Customer Company Key`,`Customer Main Address Key`,`Customer Main Location`,`Customer Main XHTML Address`,`Customer Main XHTML Email`,`Customer Email`,`Customer Main Email Key`,`Customer Main Telephone`,`Customer Main Telephone Key`,`Customer Main Address Header`,`Customer Main Address Town`,`Customer Main Address Postal Code`,`Customer Main Address Country Region`,`Customer Main Address Country`,`Customer Main Address Country Key`) values (%d,%d,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+    $sql=sprintf("insert into `Customer Dimension` (`Customer ID`,`Customer Main Contact Key`,`Customer Main Contact Name`,`Customer Name`,`Customer File As`,`Customer Type`,`Customer Company Key`,`Customer Main Address Key`,`Customer Main Location`,`Customer Main XHTML Address`,`Customer Main Plain Address`,`Customer Main XHTML Email`,`Customer Email`,`Customer Main Email Key`,`Customer Main Telephone`,`Customer Main Telephone Key`,`Customer Main Address Header`,`Customer Main Address Town`,`Customer Main Address Postal Code`,`Customer Main Address Country Region`,`Customer Main Address Country`,`Customer Main Address Country Key`) values (%d,%d,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
 		 ,$unique_id
 		 ,$main_contact->id
 		 ,prepare_mysql($main_contact->get('Contact Name'))
@@ -745,6 +749,7 @@ class Customer extends DB_Table{
 		 ,prepare_mysql($main_contact->get('Contact Main Address Key'))
 		 ,prepare_mysql($main_contact->get('Contact Main Location'))
 		 ,prepare_mysql($main_contact->get('Contact Main XHTML Address'))
+		 ,prepare_mysql($main_contact->get('Contact Main Plain Address'))
 
 		 ,prepare_mysql($main_contact->get('Contact Main XHTML Email'))
 		 ,prepare_mysql(strip_tags($main_contact->get('Contact Main XHTML Email')))
@@ -1031,7 +1036,11 @@ class Customer extends DB_Table{
 	 $details=_('Customer email set to')." \"".$this->data['Customer Main Plain Email']."\"";
        }
        
-       $history_data=array('details'=>$details,'note'=>$note);
+       $history_data=array(
+			   'indirect_object'=>'Email'
+			   ,'details'=>$details
+			   ,'note'=>$note
+			   );
        $this->add_history($history_data);
        
        
@@ -1059,38 +1068,12 @@ class Customer extends DB_Table{
 		  );
      if(mysql_query($sql)){
        $field='Customer Email';
-       $note=$field.' '._('changed');
-       $details=$field.' '._('changed from')." \"".$old_value."\" "._('to')." \"".$this->data['Customer Main Plain Email']."\"";
-
-
-
-       if($this->editor['Author Name'])
-	 $author=$this->editor['Author Name'];
-       else
-	 $author=_('System');
+       $note=$field.' '._('Changed');
+       $details=$field.' '._('Changed')." ".$old_value." -> ".$this->data['Customer Main Plain Email'];
        
-       if($this->editor['Date'])
-	 $date=$this->editor['Date'];
-       else
-	 $date=date("Y-m-d H:i:s");
+       $history_data=array('indirect_object'=>'Email','details'=>$details,'note'=>$note);
+       $this->add_history($history_data);
        
-       $sql=sprintf("insert into `History Dimension` (`History Date`,`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`Author Name`,`Author Key`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-		    ,prepare_mysql($date)
-	      ,prepare_mysql('user')
-	      ,prepare_mysql($this->editor['User Key'])
-	      ,prepare_mysql('edited')
-	      ,prepare_mysql($this->table_name)
-	      ,prepare_mysql($this->id)
-	      ,prepare_mysql('to')
-	      ,prepare_mysql($field)
-	      ,0
-	      ,prepare_mysql($note)
-	      ,prepare_mysql($details)
-	      ,prepare_mysql($author)
-	      ,prepare_mysql($this->editor['Author Key'])
-		  );
-
-   mysql_query($sql);
 
 
 
@@ -1827,7 +1810,86 @@ class Customer extends DB_Table{
   }
 
 
- 
+
+
+
+ function update_address_data($address_key=false){
+
+   if(!$address_key)
+     return;
+   $address=new Address($address_key);
+   if(!$address->id)
+     return;
+
+   if(
+      $address->id!=$this->data['Customer Main Address Key']
+      or $address->display('xhtml')!=$this->data['Customer Main XHTML Address']
+      or $address->display('plain')!=$this->data['Customer Main Plain Address']
+      or $address->display('location')!=$this->data['Company Main Location']
+      
+      ){
+     $old_value=$this->data['Customer Main XHTML Address'];
+     $this->data['Customer Main Address Key']=$address->id;
+     $this->data['Customer Main XHTML Address']=$address->display('xhtml');
+     $this->data['Customer Main Address Country Code']=$address->data['Address Country Code'];
+     $this->data['Customer Main Address Country 2 Alpha Code']=$address->data['Address Country 2 Alpha Code'];
+     
+
+
+     $this->data['Customer Main Address Country']=$address->data['Address Country Name'];
+     $this->data['Customer Main Location']=$address->display('location');
+     $this->data['Customer Main Address Town']=$address->data['Address Town'];
+     $this->data['Customer Main Address Postal Code']=$address->data['Address Postal Code'];
+     $this->data['Customer Main Address Country Primary Division']=$address->data['Address Country Primary Division'];
+     
+
+     $sql=sprintf("update `Customer Dimension` set `Customer Main Address Key`=%d,`Customer Main Plain Address`=%s,`Customer Main XHTML Address`=%s,`Customer Main Address Country`=%s,`Customer Main Location`=%s,`Customer Main Address Country Code`=%s,`Customer Main Address Country 2 Alpha Code`=%s,`Customer Main Address Town`=%s,`Customer Main Address Postal Code`=%s ,`Customer Main Address Country Primary Division`=%s    where `Customer Key`=%d"
+		  
+		  ,$this->data['Customer Main Address Key']
+		  ,prepare_mysql($this->data['Customer Main Plain Address'],false)
+		  ,prepare_mysql($this->data['Customer Main XHTML Address'])
+		  ,prepare_mysql($this->data['Customer Main Address Country'])
+		  ,prepare_mysql($this->data['Customer Main Location'])
+		  ,prepare_mysql($this->data['Customer Main Address Country Code'])
+		  ,prepare_mysql($this->data['Customer Main Address Country 2 Alpha Code'])
+		  ,prepare_mysql($this->data['Customer Main Address Town'])
+		  ,prepare_mysql($this->data['Customer Main Address Postal Code'])
+		  ,prepare_mysql($this->data['Customer Main Address Country Primary Division'])
+
+		  
+		  ,$this->id
+		  );
+
+
+     if(mysql_query($sql)){
+       
+       $note=_('Address Changed');
+       if($old_value!=''){
+	 $old_address=new Address($old_value);
+	 $details=_('Customer address changed from')." \"".$old_value."\" "._('to')." \"".$this->data['Customer Main XHTML Address']."\"";
+       }else{
+	 $details=_('Customer address set to')." \"".$this->data['Customer Main XHTML Address']."\"";
+       }
+       
+       $history_data=array(
+			   'indirect_object'=>'Address'
+			   ,'details'=>$details
+			   ,'note'=>$note
+			   );
+       $this->add_history($history_data);
+       
+       
+
+
+
+     }else{
+       exit("\n\nerror $sql\n");
+     }
+
+   }
+
+ }
+
 
  }
 ?>

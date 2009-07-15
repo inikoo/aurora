@@ -79,7 +79,7 @@ abstract class DB_Table
       elseif(array_key_exists($key,$base_data)){
 
 	if($value!=$this->data[$key]){
-	  print "XXX data to update ".$this->data[$key]." ->  $value in $key ".$this->table_name.":\n";
+	  //	  print "XXX data to update ".$this->data[$key]." ->  $value in $key ".$this->table_name.":\n";
 	  $this->update_field_switcher($key,$value,$options);
 	}
       }
@@ -101,7 +101,7 @@ abstract class DB_Table
    foreach($data as $key => $value){
      
      if(preg_match('/supplier/i',$options))
-       $regex='/^Supplier /i';
+       $regeprix='/^Supplier /i';
      elseif(preg_match('/customer/i',$options))
        $regex='/^Customer /i';
      elseif(preg_match('/company/i',$options))
@@ -152,7 +152,7 @@ protected function update_field($field,$value,$options=''){
     $this->updated=true;
   
 
-    if(preg_match('/customer|contact|company|order|staff|supplier|address/i',$this->table_name)){
+    if(preg_match('/customer|contact|company|order|staff|supplier|address|telecom/i',$this->table_name)){
 
 
       $history_data=array(
@@ -173,7 +173,7 @@ protected function update_field($field,$value,$options=''){
 
 protected function add_history($raw_data){
   
-  print_r( $raw_data);
+  //print_r( $raw_data);
   
   $data['subject']='user';
   $data['subject_key']=$this->editor['User Key'];
@@ -216,7 +216,7 @@ protected function add_history($raw_data){
   }
 
 
- print_r( $data);
+  //print_r( $data);
  
  $sql=sprintf("insert into `History Dimension` (`History Date`,`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`Author Name`,`Author Key`) values (%s,%s,%d,%s,%s,%d,%s,%s,%d,%s,%s,%s,%d)"
 	      ,prepare_mysql($data['date'])
