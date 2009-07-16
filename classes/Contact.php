@@ -639,8 +639,8 @@ class Contact extends DB_Table{
 private function create ($data,$options='',$address_home_data=false,$address_work_data=false){
    
   
-
-  // print_r($data);
+  //print $options;
+  //print_r($data);
 
   
   global $myconf;
@@ -700,7 +700,7 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
     }else
       $this->data['Contact Fuzzy']='No';
    
-    // print_r($this->data);
+
     $keys='(';$values='values(';
     foreach($this->data as $key=>$value){
       // Just insert name fields, company,email,tel,ax,address should be inserted later
@@ -718,13 +718,13 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
     $values=preg_replace('/,$/',')',$values);
 
     $sql=sprintf("insert into `Contact Dimension` %s %s",$keys,$values);
-    // print "creating contact\n $sql\n";
+    //     print "creating contact\n $sql\n";
     // exit;
     if(mysql_query($sql)){
       $this->id= mysql_insert_id();
       $this->new=true;
       $this->get_data('id',$this->id);
-      
+
       
       if($this->data['Contact Fuzzy']=='No'){
 	$history_data=array(
@@ -737,65 +737,27 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
       
 
       if(preg_match('/parent\:none|parent\:customer/',$options)){
+
+
 	// Has no parent add emails,tels ect to the contact
 	if($this->data['Contact Main Plain Email']!=''){
-	  $email_data['Email']=$this->data['Contact Main Plain Email'];
+	  
+	  $email_data['Email']=$data['Contact Main Plain Email'];
 	  $email_data['Email Contact Name']=$this->display('name');
-	  $email_data['Editor']=$this->editor;
+	  $email_data['editor']=$this->editor;
 	  $email=new Email("find in contact ".$this->id." create",$email_data);
 	  if(!$email->error){
 	    //Collect data about email found
 	    //print $email->msg."\n";
 	    // exit("find_companycontact: email found\n");
 	  
-	  
+	    
 	  $this->add_email(array(
 				 'Email Key'=>$email->id
 				 ,'Email Type'=>'Personal'
 				 ),'principal no_history');
 	  }
-
-	}
-	if($this->data['Contact Main Telephone']!=''){
-	  $telephone_data=array();
-	  $telephone_data['editor']=$this->editor;
-	  $telephone_data['Telecom Raw Number']=$this->data['Contact Main Telephone'];
-	  $telephone=new Telecom("find in contact ".$this->id." create",$telephone_data);
 	  
-	  if(!$telephone->error){
-	    $this->add_tel(array(
-			      'Telecom Key'=>$telephone->id
-			      ,'Telecom Type'=>'Telephone'
-			      ));
- }
-	}
-	if($this->data['Contact Main FAX']!=''){
-	  //print "addin fax\n";
-	  $telephone_data=array();
-	  $telephone_data['Telecom Raw Number']=$this->data['Contact Main FAX'];
-	  $telephone_data['editor']=$this->editor;
-	  $telephone=new Telecom("find in contact ".$this->id." create",$telephone_data);
-	 
-	  if(!$telephone->error){
-	  $this->add_tel(array(
-			      'Telecom Key'=>$telephone->id
-			      ,'Telecom Type'=>'Fax'
-			      ));
- }
-	}
-
-	if($this->data['Contact Main Mobile']!=''){
-	  //print "addin fax\n";
-	  $telephone_data=array('Telecom Raw Number'=>$this->data['Contact Main Mobile']);
-	  $telephone_data['editor']=$this->editor;
-	  $telephone=new Telecom("find in contact ".$this->id." create",$telephone_data);
- if(!$telephone->error){
-
-	  $this->add_tel(array(
-			      'Telecom Key'=>$telephone->id
-			      ,'Telecom Type'=>'Mobile'
-			      ));
- }
 	}
 
 	if(!array_empty($address_home_data)){
@@ -823,16 +785,67 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
 	    exit("find_contact: work address found\n");
 	  }
 	
-	$this->add_address(array(
+	  $this->add_address(array(
 				    'Address Key'=>$work_address->id
 				    ,'Address Type'=>'Work'
 				    ,'Address Function'=>'Contact'
 				    ,'Address Description'=>'Work Contact Address'
 				    ));
 	}
+
+
 	
 
-      }//End of anonymous IF
+
+
+	if($data['Contact Main Telephone']!=''){
+	  $telephone_data=array();
+	  $telephone_data['editor']=$this->editor;
+	  $telephone_data['Telecom Raw Number']=$data['Contact Main Telephone'];
+	  $telephone_data['Telecom Raw Number']=$data['Contact Main Telephone'];
+
+
+	  $telephone=new Telecom("find in contact ".$this->id." create country code ".$this->data['Contact Main Country Code']."  ",$telephone_data);
+	  
+	  if(!$telephone->error){
+	    $this->add_tel(array(
+				 'Telecom Key'=>$telephone->id
+				 ,'Telecom Type'=>'Telephone'
+				 ));
+	  }
+	}
+	if($data['Contact Main FAX']!=''){
+	  //print "addin fax\n";
+	  $telephone_data=array();
+	  $telephone_data['Telecom Raw Number']=$data['Contact Main FAX'];
+	  $telephone_data['editor']=$this->editor;
+	  $telephone=new Telecom("find in contact ".$this->id." create  country code ".$this->data['Contact Main Country Code']."   ",$telephone_data);
+	 
+	  if(!$telephone->error){
+	  $this->add_tel(array(
+			      'Telecom Key'=>$telephone->id
+			      ,'Telecom Type'=>'Fax'
+			      ));
+ }
+	}
+
+	if($data['Contact Main Mobile']!=''){
+	  //print "addin fax\n";
+	  $telephone_data=array('Telecom Raw Number'=>$data['Contact Main Mobile']);
+	  $telephone_data['editor']=$this->editor;
+	  $telephone=new Telecom("find in contact ".$this->id." create  country code ".$this->data['Contact Main Country Code']."   ",$telephone_data);
+	  if(!$telephone->error){
+	    
+	    $this->add_tel(array(
+				 'Telecom Key'=>$telephone->id
+			      ,'Telecom Type'=>'Mobile'
+			       ));
+ }
+	}
+	}
+	
+
+
       
 
 
@@ -1009,8 +1022,12 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
       
       
 
+      if($email->data['Email']=='contact@thebigstink.co.uk'){
+	print_r($this);
+	print "**************** here \n";
+      }
       
-      
+//	exit;
       $sql=sprintf("insert into  `Email Bridge` (`Email Key`,`Subject Type`, `Subject Key`,`Is Main`,`Email Description`) values (%d,'Contact',%d,%s,%s) ON DUPLICATE KEY UPDATE `Email Description`=%s   "
 		   ,$email->id
 		   ,$this->id

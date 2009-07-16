@@ -220,6 +220,11 @@ class Email extends DB_Table {
     if($mode=='Contact')
       $options.=' anonymous';
     
+
+    if($raw_data['Email']=='contact@thebigstink.co.uk'){
+	print_r($raw_data);
+	print "------------here \n";
+      }
     
 
     $sql=sprintf("select T.`Email Key`,`Subject Key` from `Email Dimension` T left join `Email Bridge` TB  on (TB.`Email Key`=T.`Email Key`) where `Email`=%s and `Subject Type`='Contact'  "
@@ -277,7 +282,14 @@ class Email extends DB_Table {
       
       $this->error=true;
       // correct the data (delete duplicates)
-      exit("todo fix database for email duplicates");
+
+      while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+	$contact=new Contact($row['Subject Key']);
+	print_r($contact->data);
+      }
+
+
+      exit("todo fix database for email duplicates \n$sql\n");
     }
       
   
@@ -325,6 +337,8 @@ class Email extends DB_Table {
 */
 protected function create($data,$options=''){
   
+  // print_r($data);
+
   //print $this->editor;
   
   if(!$data){

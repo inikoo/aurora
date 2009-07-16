@@ -3314,8 +3314,20 @@ class Address extends DB_Table{
 
     $data['Address Fuzzy']='No';
     $data['Address Fuzzy Type']='';
+
+    
+    if($raw_data['Address Line 1']=='' 
+       and $raw_data['Address Line 2']=='' 
+       and $raw_data['Address Line 3']=='' ){
+      $data['Address Fuzzy Type']='Street';
+      $data['Address Fuzzy']='Yes';
+    }
+
+
+
+
     if($data['Address Town']==''){
-      $data['Address Fuzzy Type'].=',Town';
+      $data['Address Fuzzy Type']='Country';
       $data['Address Fuzzy']='Yes';
     }
     if($data['Address Country Code']=='UNK'){
@@ -3323,15 +3335,10 @@ class Address extends DB_Table{
 	print_r($raw_data);
 	//	exit;
       }
-      $data['Address Fuzzy Type'].=',Country,Region,Continent';
+      $data['Address Fuzzy Type']='All';
       $data['Address Fuzzy']='Yes';
     }
-    if($raw_data['Address Line 1']=='' 
-       and $raw_data['Address Line 2']=='' 
-       and $raw_data['Address Line 3']=='' ){
-      $data['Address Fuzzy Type'].=',Street';
-      $data['Address Fuzzy']='Yes';
-    }
+
      
     $data['Address Fuzzy Type']=preg_replace('/^,\s*/','',$data['Address Fuzzy Type']);
 
