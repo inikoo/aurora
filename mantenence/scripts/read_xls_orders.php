@@ -59,7 +59,7 @@ $correct_partner=true;
 $force_update=false;
 
 
-$orders_array_full_path = glob("/mnt/y/Orders/9*.xls");
+$orders_array_full_path = glob("/mnt/z/Orders/9*.xls");
 $orders_array_full_path=array_reverse($orders_array_full_path);
 
 
