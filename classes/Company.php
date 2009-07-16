@@ -429,6 +429,7 @@ class Company extends DB_Table {
       
     if($use_contact){
       $contact=new contact($use_contact);
+      $contact->editor=$this->editor;
       $contact->update(array('Contact Name'=>$this->data['Company Main Contact Name']));
     }else{
       $contact=new Contact("find in company create",$raw_data);
@@ -477,11 +478,16 @@ class Company extends DB_Table {
          
 
 
-
+     $address_data['editor']=$this->data;
      $address=new Address("find in company create",$address_data);
+     //print_r($raw_data);
+
+     // print_r($raw_address_data);
      if($address->error){
        exit("find_company: address found");
      }
+
+     // print_r($address->data);
 
     $this->data['Company Main Address Key']=$address->id;
     $this->data['Company Main XHTML Address']=$address->display('xhtml');
@@ -489,10 +495,16 @@ class Company extends DB_Table {
     $this->data['Company Main Country Key']=$address->data['Address Country Key'];
     $this->data['Company Main Country']=$address->data['Address Country Name'];
     $this->data['Company Main Location']=$address->display('location');
+    // print $address->display('location');
+ //  exit;
 
 
     if($this->data['Company Main Telephone']!=''){
-      $telephone=new Telecom("find in company create country code ".$address->data['Address Country Code'],$this->data['Company Main Telephone']);
+      $telephone_data=array();
+      $telephone_data['editor']=$this->editor;
+      $telephone_data['Telecom Raw Number']=$this->data['Company Main Telephone'];
+      
+      $telephone=new Telecom("find in company create country code ".$address->data['Address Country Code'],$telephone_data);
 
       if(!$telephone->error){
 	//Collect data about telecom found
@@ -514,7 +526,11 @@ class Company extends DB_Table {
     }
 
     if($this->data['Company Main FAX']!=''){
-      $telephone=new Telecom("find in company create country code ".$address->data['Address Country Code'],$this->data['Company Main FAX']);
+       $telephone_data=array();
+	  $telephone_data['editor']=$this->editor;
+	  $telephone_data['Telecom Raw Number']=$this->data['Company Main FAX'];
+
+      $telephone=new Telecom("find in company create country code ".$address->data['Address Country Code'],$telephone_data);
       
       if(!$telephone->error){
 	$this->data['Company Main Plain FAX']=$telephone->display('plain');
@@ -554,7 +570,8 @@ class Company extends DB_Table {
     if(mysql_query($sql)){
       $this->id = mysql_insert_id();
       $this->get_data('id',$this->id);
-      
+      $this->new=true;
+      //      print_r($this->data);
       $history_data=array(
 			  'note'=>_('Company Created')
 			  ,'details'=>_trim(_('Company')." \"".$this->data['Company Name']."\"  "._('created'))
@@ -620,6 +637,8 @@ class Company extends DB_Table {
 			       ,'Address Function'=>'Contact'
 			       ,'Address Description'=>'Company Address'
 			       ));
+
+
       }
      
 
@@ -716,6 +735,7 @@ protected function update_field_switcher($field,$value,$options=''){
     //print "Updation company telecom\n NEW value $value\n";
       
     $contact=new Contact($this->data['Company Main Contact Key']);
+    $contact->editor=$this->editor;
     $tel_data=Telecom::parse_number($value);
     //print "tel data\n";
     //print_r($tel_data);
@@ -742,6 +762,7 @@ protected function update_field_switcher($field,$value,$options=''){
     
 
     $contact=new Contact($this->data['Company Main Contact Key']);
+    $contact->editor=$this->editor;
     $tel_data=Telecom::parse_number($value);
     $plain_tel=Telecom::plain_number($tel_data);
     if($plain_tel!=$this->data['Company Main Plain FAX']){
@@ -1068,6 +1089,11 @@ private function update_Company_Old_ID($company_old_id,$options){
 	   ){
      $old_value=$this->data['Company Main XHTML Address'];
      
+     // print_r($this->data);
+     // print_r($address->data);
+     //print $address->display('location');
+     //  exit;
+
      $this->data['Company Main Plain Address']=$address->display('plain');
      $this->data['Company Main XHTML Address']=$address->display('xhtml');
      $this->data['Company Main Country Key']=$address->data['Address Country Key'];
@@ -1102,7 +1128,7 @@ private function update_Company_Old_ID($company_old_id,$options){
 
      }else{
        $this->error=true;
-       
+       exit($sql);
      }
      
 
@@ -1273,6 +1299,7 @@ private function update_Company_Old_ID($company_old_id,$options){
    }else{
      if(!isset($data['Telecom Original Country Key']) or !$data['Telecom Original Country Key'])
        $data['Telecom Original Country Key']=$this->data['Company Main Country Key'];
+     $data['editor']=$this->editor;
      $telecom=new telecom('find in company create',$data);
    }
    if($telecom->id){
@@ -1402,7 +1429,7 @@ function add_address($data,$args='principal'){
   elseif(is_numeric($data) )
     $address=new address('fuzzy country',$data);
   elseif(is_array($data)){
-
+    $data['editor']=$this->editor;
     if(isset($data['Address Key'])){
 
       $address=new address('id',$data['Address Key']);

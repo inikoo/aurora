@@ -234,7 +234,7 @@ class product extends DB_Table{
 		      'to'=>$tag['date2'],
 		    'editor'=>$this->editor
 		    );
-	$supplier=new Supplier('find',$data);
+	$supplier=new Supplier('find create',$data);
 
 	$sp_data=array(
 		       'supplier product supplier key'=>$supplier->id,
@@ -387,18 +387,15 @@ class product extends DB_Table{
 	$part->load('used in');
 	$this->load('parts');
 
-	$supplier=new Supplier('code',$tag['supplier code']);
-	//exit("cassc");
-	if(!$supplier->id){
-	  $data=array(
-		      'name'=>$tag['supplier name'],
+	$data=array(
+		    'name'=>$tag['supplier name'],
 		      'code'=>$tag['supplier code'],
 		      'from'=>$tag['date'],
 		      'to'=>$tag['date2'],
 		      'editor'=>$this->editor
 		      );
-	$supplier=new Supplier('new',$data);
-	}	
+	$supplier=new Supplier('find create',$data);
+
 	$sp_data=array(
 		       'supplier product supplier key'=>$supplier->id,
 		       'supplier product supplier code'=>$supplier->data['Supplier Code'],
@@ -547,8 +544,7 @@ class product extends DB_Table{
 
 
       
-      $supplier=new Supplier('code',$tag['supplier code']);
-      if(!$supplier->id){
+      
 	$data=array(
 		    'name'=>$tag['supplier name'],
 		    'code'=>$tag['supplier code'],
@@ -558,9 +554,9 @@ class product extends DB_Table{
 		    );
 
 
-	$supplier=new Supplier('new',$data);
+	$supplier=new Supplier('find create',$data);
 
-      }
+
 	
       $sp_data=array(
 		     'supplier product supplier key'=>$supplier->id,

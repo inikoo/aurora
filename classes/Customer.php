@@ -1826,7 +1826,7 @@ class Customer extends DB_Table{
       $address->id!=$this->data['Customer Main Address Key']
       or $address->display('xhtml')!=$this->data['Customer Main XHTML Address']
       or $address->display('plain')!=$this->data['Customer Main Plain Address']
-      or $address->display('location')!=$this->data['Company Main Location']      ){
+      or $address->display('location')!=$this->data['Customer Main Location']      ){
      $old_value=$this->data['Customer Main XHTML Address'];
      $this->data['Customer Main Address Key']=$address->id;
      $this->data['Customer Main XHTML Address']=$address->display('xhtml');
