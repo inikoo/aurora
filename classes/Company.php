@@ -254,17 +254,17 @@ class Company extends DB_Table {
 
 
   
-    if((!$create and !$update) and count($candidate_companies)!=0 ){
+  /*   if((!$create and !$update) and count($candidate_companies)!=0 ){ */
 
-      print "Candidates from COMPANY  #######################\n";
-      print_r($raw_data);
-      foreach($candidate_companies as $key => $value){
-	print "Score: $value\n";
-	$cont=new Company($key);
-	print_r($cont->data);
-      }
-      print "Candidates from COMPANY END----------------------|\n";
-    }
+/*       print "Candidates from COMPANY  #######################\n"; */
+/*       print_r($raw_data); */
+/*       foreach($candidate_companies as $key => $value){ */
+/* 	print "Score: $value\n"; */
+/* 	$cont=new Company($key); */
+/* 	print_r($cont->data); */
+/*       } */
+/*       print "Candidates from COMPANY END----------------------|\n"; */
+/*     } */
 
 
 
@@ -299,7 +299,7 @@ class Company extends DB_Table {
 
       
 
-            print "Company Found:".$this->found." ".$this->found_key."   \nContact Found:".$contact->found." ".$contact->found_key."  \n";
+      //   print "Company Found:".$this->found." ".$this->found_key."   \nContact Found:".$contact->found." ".$contact->found_key."  \n";
       if(!$contact->found and $this->found){
 	// try to find again the contact now that we now the company
 	$contact=new Contact("find in company ".$this->found_key,$raw_data);

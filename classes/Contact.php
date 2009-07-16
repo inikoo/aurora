@@ -546,27 +546,27 @@ class Contact extends DB_Table{
     //print_r($this->candidate);
     arsort($this->candidate);
 
-    if((!$create and !$update) and $this->found){
-       print "Candidates from #######################\n";
-      print "direct found!!!!!!\n";
+   /*  if((!$create and !$update) and $this->found){ */
+/*        print "Candidates from #######################\n"; */
+/*       print "direct found!!!!!!\n"; */
       
-      $cont=new Contact($found_key);
-	print_r($cont->data);
+/*       $cont=new Contact($found_key); */
+/* 	print_r($cont->data); */
 
-	print "Candidates from ----------------------|\n";
-    }
+/* 	print "Candidates from ----------------------|\n"; */
+/*     } */
 
-    if((!$create and !$update) and count($this->candidate)!=0 ){
+/*     if((!$create and !$update) and count($this->candidate)!=0 ){ */
 
-      print "Candidates from #######################\n";
-      print_r($raw_data);
-      foreach($this->candidate as $key => $value){
-	print "Score: $value\n";
-	$cont=new Contact($key);
-	print_r($cont->data);
-      }
-      print "Candidates from ----------------------|\n";
-    }
+/*       print "Candidates from #######################\n"; */
+/*       print_r($raw_data); */
+/*       foreach($this->candidate as $key => $value){ */
+/* 	print "Score: $value\n"; */
+/* 	$cont=new Contact($key); */
+/* 	print_r($cont->data); */
+/*       } */
+/*       print "Candidates from ----------------------|\n"; */
+/*     } */
 
 
     foreach($this->candidate as $key => $value){
@@ -624,9 +624,9 @@ class Contact extends DB_Table{
 
       }else{
 	//	exit("o no duplicate!!\n");
-	print "creating contact!!!!\n";
-	print_r($data);
-	print "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n";
+	//print "creating contact!!!!\n";
+	//print_r($data);
+	//print "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n";
 	$this->create($data,$options,$address_home_data,$address_work_data);
       }
 
