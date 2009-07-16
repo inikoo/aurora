@@ -427,7 +427,7 @@ class Contact extends DB_Table{
     //print_r($this->candidate);
     arsort($this->candidate);
 
-    if(($create or $update) and $this->found){
+    if((!$create and !$update) and $this->found){
        print "Candidates from #######################\n";
       print "direct found!!!!!!\n";
       
@@ -437,7 +437,7 @@ class Contact extends DB_Table{
 	print "Candidates from ----------------------|\n";
     }
 
-    if(($create or $update) and count($this->candidate)!=0 ){
+    if((!$create and !$update) and count($this->candidate)!=0 ){
 
       print "Candidates from #######################\n";
       print_r($raw_data);
@@ -505,12 +505,15 @@ class Contact extends DB_Table{
 
       }else{
 	//	exit("o no duplicate!!\n");
-	
+	print "creating contact!!!!\n";
+	print_r($data);
+	print "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n";
 	$this->create($data,$options,$address_home_data,$address_work_data);
       }
 
     }
       
+
 
   }
 
@@ -1044,10 +1047,10 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
       
       
 
-      if($email->data['Email']=='contact@thebigstink.co.uk'){
-	print_r($this);
-	print "**************** here \n";
-      }
+  /*     if($email->data['Email']=='contact@thebigstink.co.uk'){ */
+/* 	print_r($this); */
+/* 	print "**************** here \n"; */
+/*       } */
       
 //	exit;
       $sql=sprintf("insert into  `Email Bridge` (`Email Key`,`Subject Type`, `Subject Key`,`Is Main`,`Email Description`) values (%d,'Contact',%d,%s,%s) ON DUPLICATE KEY UPDATE `Email Description`=%s   "
