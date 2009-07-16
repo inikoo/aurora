@@ -141,48 +141,57 @@ class Company extends DB_Table {
     }
 
 
-    if(isset($raw_data['Company Old ID']) and $raw_data['Company Old ID']!=''){
-     $sql=sprintf("select `Company Key` from `Company Dimension` where `Company Old ID` like '%%,%s,%%'",addslashes($raw_data['Company Old ID']));
-     $res=mysql_query($sql);
-     while($row=mysql_fetch_array($res)){
-       $val=100;
-       $key=$row['Company Key'];
-       	if(isset($this->candidate[$key]))
-	  $this->candidate[$key]+=$val;
-	else
-	  $this->candidate[$key]=$val;
-     }
-   }
-    if(isset($raw_data['Company Tax Number'])){
-      $raw_data['Company Tax Number']=_trim($raw_data['Company Tax Number']);
-      if($raw_data['Company Tax Number']!=''){
-	$sql=sprintf("select `Company Key` from `Company Dimension` where `Company Tax Number`=%s",prepare_mysql($raw_data['Company Tax Number']));
-	$res=mysql_query($sql);
-	while($row=mysql_fetch_array($res)){
-	  $val=100;
-	  $key=$row['Company Key'];
-	  if(isset($this->candidate[$key]))
-	    $this->candidate[$key]+=$val;
-	  else
-	    $this->candidate[$key]=$val;
-	}
-      }
-    }
-    if(isset($raw_data['Company Registration Number'])){
-      $raw_data['Company Registration Number']=_trim($raw_data['Company Registration Number']);
-      if($raw_data['Company Tax Number']!=''){
-	$sql=sprintf("select `Company Key` from `Company Dimension` where `Company Registration Number`=%s",prepare_mysql($raw_data['Company Registration Number']));
-	$res=mysql_query($sql);
-	$key=$row['Company Key'];
-	while($row=mysql_fetch_array($res)){
-	  $val=100;
-       	if(isset($this->candidate[$key]))
-	  $this->candidate[$key]+=$val;
-	else
-	  $this->candidate[$key]=$val;
-     }
-   }
- }
+   /*  if(isset($raw_data['Company Old ID']) and $raw_data['Company Old ID']!=''){ */
+/*      $sql=sprintf("select `Company Key` from `Company Dimension` where `Company Old ID` like '%%,%s,%%'",addslashes($raw_data['Company Old ID'])); */
+/*      $res=mysql_query($sql); */
+/*      while($row=mysql_fetch_array($res)){ */
+/*        $val=100; */
+/*        $key=$row['Company Key']; */
+/*        	if(isset($this->candidate[$key])) */
+/* 	  $this->candidate[$key]+=$val; */
+/* 	else */
+/* 	  $this->candidate[$key]=$val; */
+/*      } */
+/*    } */
+/*     if(isset($raw_data['Company Tax Number'])){ */
+/*       $raw_data['Company Tax Number']=_trim($raw_data['Company Tax Number']); */
+/*       if($raw_data['Company Tax Number']!=''){ */
+/* 	$sql=sprintf("select `Company Key` from `Company Dimension` where `Company Tax Number`=%s",prepare_mysql($raw_data['Company Tax Number'])); */
+/* 	$res=mysql_query($sql); */
+/* 	while($row=mysql_fetch_array($res)){ */
+/* 	  $val=100; */
+/* 	  $key=$row['Company Key']; */
+/* 	  if(isset($this->candidate[$key])) */
+/* 	    $this->candidate[$key]+=$val; */
+/* 	  else */
+/* 	    $this->candidate[$key]=$val; */
+/* 	} */
+/*       } */
+/*     } */
+/*     if(isset($raw_data['Company Registration Number'])){ */
+/*       $raw_data['Company Registration Number']=_trim($raw_data['Company Registration Number']); */
+/*       if($raw_data['Company Tax Number']!=''){ */
+/* 	$sql=sprintf("select `Company Key` from `Company Dimension` where `Company Registration Number`=%s",prepare_mysql($raw_data['Company Registration Number'])); */
+/* 	$res=mysql_query($sql); */
+/* 	$key=$row['Company Key']; */
+/* 	while($row=mysql_fetch_array($res)){ */
+/* 	  $val=100; */
+/*        	if(isset($this->candidate[$key])) */
+/* 	  $this->candidate[$key]+=$val; */
+/* 	else */
+/* 	  $this->candidate[$key]=$val; */
+/*      } */
+/*    } */
+/*  } */
+
+
+
+
+
+
+
+
+
 
     $contact=new Contact("find in company",$raw_data);
     foreach($contact->candidate as $key=>$val){
@@ -244,13 +253,12 @@ class Company extends DB_Table {
 
 
 
-
   
-    if((!$create and !$update) and count($this->candidate_companies)!=0 ){
+    if((!$create and !$update) and count($candidate_companies)!=0 ){
 
       print "Candidates from COMPANY  #######################\n";
       print_r($raw_data);
-      foreach($this->candidate_companies as $key => $value){
+      foreach($candidate_companies as $key => $value){
 	print "Score: $value\n";
 	$cont=new Company($key);
 	print_r($cont->data);
@@ -692,12 +700,20 @@ class Company extends DB_Table {
     return $id;
   }
 
-  function load($key=''){
+  function load($key='',$args){
     switch($key){
    
-    case('contacts'):
-    case('contact'):
-      $this->contact=new Contact($this->data['contact_id']);
+    case('Contact List'):
+      $sql=sprintf("select `Contact Key`  from `Contact Bridge` where `Subject Type`='Contact' and `Subject Key`=%d",$this->id);
+      $res=mysql_query($sql);
+      $this->contact_list=array();
+      while($row=mysql_fetch_array($res)){
+	$this->contact_list[$row['Contact Key']]=array('key'=>$row['Contact Key']);
+      }
+    
+      break;
+    case('Main Contact'):
+      $this->contact=new Contact($this->data['Company Main Contact Key']);
       if($this->contact->id){
 	$this->contact->load('telecoms');
 	$this->contact->load('contacts');

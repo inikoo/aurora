@@ -197,11 +197,11 @@ function get_tipo_order($ltipo,$header){
     $tipo=4;
     }elseif(preg_match('/donation/i',$ltipo)){
     $tipo=5; 
-  }elseif(preg_match('/^\s*REPLACEMENT|Replcement|Replacenment|^reemplazo por roturas|^replacement|Damaged item|REPLACMENT|DELIVERY COLLECTION|repplacements|repalcements|Repalcement|Replaceement/i',$ltipo)){
+  }elseif(preg_match('/^\s*REPLACEMENT|Replcement|Replacenment|^reemplazo por roturas|^replacement|Damaged item|REPLACMENT|DELIVERY COLLECTION|repplacements|Remplacement|repalcements|Repalcement|Replaceement/i',$ltipo)){
     $tipo=6;
-  $header['notes']=preg_replace('/^Replacement$/i','',$header['notes']);
-  $header['notes2']=preg_replace('/^Replacement$/i','',$header['notes2']);
-  $header['notes2']=preg_replace('/^replacement$/i','',_trim($header['notes2']));
+  $header['notes']=preg_replace('/^(Replacement|Remplacement)$/i','',$header['notes']);
+  $header['notes2']=preg_replace('/^(Replacement|Remplacement)$/i','',$header['notes2']);
+  $header['notes2']=preg_replace('/^(replacement|Remplacement)$/i','',_trim($header['notes2']));
 
 }elseif(preg_match('/Damaged Parcel|shotages|MISSING|Missing Parcel|missing\s+\d|^reemplazo por falta|SHORTAHGE|shortages|Missing From Order|missing form order|Mising from|^Missing Item|Missing - Replacement|^Shortage|Lost Parcel/i',$ltipo)){
 
@@ -286,7 +286,7 @@ function get_tipo_order($ltipo,$header){
       $tipo=4;
     }
 
-    if(preg_match('/Repalacements|Replcement|^reemplazo por roturas|^replacement|REPLACMENT|DELIVERY COLLECTION|repplacements|repalcements/i',$header['notes2'])){
+    if(preg_match('/Remplacement|Repalacements|Replcement|^reemplazo por roturas|^replacement|REPLACMENT|DELIVERY COLLECTION|repplacements|repalcements/i',$header['notes2'])){
       $header['notes2']='';
       $tipo=6;
     }
@@ -294,7 +294,7 @@ function get_tipo_order($ltipo,$header){
       $tipo=7;
       $header['notes2']='';
     }
-    else if(preg_match('/replacement|Repalacements|Replcement|^reemplazo por roturas|^replacement|REPLACMENT|DELIVERY COLLECTION|repplacements|repalcements/i',$header['notes'])){
+    else if(preg_match('/Remplacement|replacement|Repalacements|Replcement|^reemplazo por roturas|^replacement|REPLACMENT|DELIVERY COLLECTION|repplacements|repalcements/i',$header['notes'])){
       $header['notes']='';
       $tipo=6;
     } else if(preg_match('/MISSING|Missing Parcel|missing\s+\d|^reemplazo por falta|shortages|Missing From Order|missing form order|Mising from|^Missing Item|Missing - Replacement|^Shortage|Lost Parcel/i',$header['notes'])){
