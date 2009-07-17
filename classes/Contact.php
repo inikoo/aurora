@@ -946,7 +946,7 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
 	  $telephone_data=array();
 	  $telephone_data['editor']=$this->editor;
 	  $telephone_data['Telecom Raw Number']=$data['Contact Main Telephone'];
-	  $telephone_data['Telecom Raw Number']=$data['Contact Main Telephone'];
+
 
 
 	  $telephone=new Telecom("find in contact ".$this->id." create country code ".$this->data['Contact Main Country Code']."  ",$telephone_data);
@@ -1537,15 +1537,24 @@ function add_address($data,$args='principal'){
  */
  function add_tel($data,$args='principal'){
 
+   // print "XXX CACA XXXX\n";
+   //print_r($data);
+
    if(is_string($data)){
-     $telecom=new telecom('find in contact create',$data);
+     $telecom_data=array();
+     $telecom_data['editor']=$this->editor;
+     $telecom_data['Telecom Raw Number']=$data;
+     
+     
+     $telecom=new telecom("find in contact create   country code ".$this->data['Contact Main Country Code'],$telecom_data);
      
    }elseif(isset($data['Telecom Key'])){
      $telecom=new Telecom('id',$data['Telecom Key']);
    }else{
      if(!isset($data['Telecom Original Country Key']) or !$data['Telecom Original Country Key'])
        $data['Telecom Original Country Key']=$this->data['Contact Main Country Key'];
-     $telecom=new telecom('find in contact create',$data);
+     $data['editor']=$this->editor;
+     $telecom=new telecom("find in contact create  country code ".$this->data['Contact Main Country Code'],$data);
      
    }
 
@@ -1768,6 +1777,7 @@ protected function update_field_switcher($field,$value,$options=''){
     }
     break;  
   case('Contact Main Telephone'):
+    // print "xxx\n";
     // check if plain numbers are the same
     $tel_data=Telecom::parse_number($value);
     $plain_tel=Telecom::plain_number($tel_data);
@@ -1785,6 +1795,7 @@ protected function update_field_switcher($field,$value,$options=''){
     }
     break;  
  case('Contact Main FAX'):
+   // print "y\n";
  $tel_data=Telecom::parse_number($value);
     $plain_tel=Telecom::plain_number($tel_data);
     if($plain_tel!=$this->data['Contact Main Plain FAX']){

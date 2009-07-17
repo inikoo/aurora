@@ -9310,7 +9310,7 @@ function get_customer_msg($data){
 }
 
 
-function is_shipping_supplier($data){
+function is_shipping_supplier($data,$date_order){
 
 
   //  if(preg_match('/^(per post|Pacel Force|Airmail|Amtrak.*|1st Class Post|Amstrak|via Frans Maas|Fist class post|DBL|apc|post|interlink|parcel\s*force|ups|fedex|royal\s*mail|by post|printmovers|1st class|first class|frans mass|frans maas|apc to collect|post . standart parcel|post . 2 parcels.*|post office|schenker|parcel force worldwide|amtrak|percel porce|parceline|post 1st|dfds transport|dpd|dbl pallet|tnt|interlink\s*express?|amtrack|post 1at class|post \- sing for|dvs|.*royal mail.*|Parce Force|Parcel Force Wordwide|Roayl Mail|Post 1st Class|Parcel Line|dbl|POST SIGNED FOR|Parcelforce.*|AMRAK|Post Sign For|post .*|FedEx .*|dbl|Parcel Force .*|DSV pallet|Hastings Freight|Amtrak|apc .*|dpd .*|dbl|Parcel F orce Sat Del|Mc Grath Freigth|Parcel Porce)$/i',_trim($data['notes'])))
@@ -9446,11 +9446,12 @@ function is_shipping_supplier($data){
 
 
 
-   $the_supplier_data=array(
-				   'Supplier Name'=>$data['shipper_code']
-				   ,'Supplier Code'=>$data['shipper_code']
-				   );
-   if($data['shipper_code']!='' and $data['shipper_code']!='_OWN' and $data['shipper_code']!='_Other'){
+ $the_supplier_data=array(
+			  'editor'=>array('Date'=>$date_order)
+			  ,'Supplier Name'=>$data['shipper_code']
+			  ,'Supplier Code'=>$data['shipper_code']
+			  );
+ if($data['shipper_code']!='' and $data['shipper_code']!='_OWN' and $data['shipper_code']!='_Other'){
 
      //print $data['shipper_code']."<---\n";
      $supplier=new Supplier('code',$data['shipper_code']);

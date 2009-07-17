@@ -88,10 +88,10 @@ $fam_no_fam_key=$fam_no_fam->id;
 $fam_promo_key=$fam_promo->id;
 
 
-//$sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed)  order by filename ";
+$sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed)  order by filename ";
 
 //$sql="select * from  orders_data.orders where filename like '%refund.xls'   order by filename";
-$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/%.xls' order by filename";
+//$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/%.xls' order by filename";
 
 //$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/15720.xls' or filename like '/mnt/%/Orders/15699.xls' or  filename like '/mnt/%/Orders/15593.xls' order by filename";
 
@@ -270,7 +270,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
  
    $header_data=is_to_be_collected($header_data);
   
-    $header_data=is_shipping_supplier($header_data);
+   $header_data=is_shipping_supplier($header_data,$date_order);
     $header_data=is_staff_sale($header_data);
     
     $header_data=is_showroom($header_data);

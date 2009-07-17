@@ -108,6 +108,8 @@ class supplier extends DB_Table{
    
    */  
  function find($raw_data,$options){
+   // print "$options\n";
+   //print_r($raw_data);
    
    if(isset($raw_data['editor'])){
      foreach($raw_data['editor'] as $key=>$value){
@@ -225,7 +227,7 @@ class supplier extends DB_Table{
    */
   function create($raw_data){
 
-    //  print_r($raw_data);
+    //print_r($raw_data);
 
     $this->data=$this->base_data();
     foreach($raw_data as $key=>$value){
@@ -277,6 +279,10 @@ class supplier extends DB_Table{
     $this->data['Supplier Main Contact Key']=$company->data['Company Main Contact Key'];
     $this->data['Supplier Main Contact Name']=$company->data['Company Main Contact Name'];
     $this->data['Supplier Fiscal Name']=$company->data['Company Fiscal Name'];
+    
+    
+    //    print_r( $this->data);
+
     $keys='';
     $values='';
     foreach($this->data as $key=>$value){
@@ -285,10 +291,10 @@ class supplier extends DB_Table{
     }
     $values=preg_replace('/^,/','',$values);
     $keys=preg_replace('/^,/','',$keys);
-    //  print_r( $raw_data);
+
     $sql="insert into `Supplier Dimension` ($keys) values ($values)";
-    //    print $sql;
- 
+    //print $sql;
+
     if(mysql_query($sql)){
 
       $this->id=mysql_insert_id();
@@ -474,6 +480,8 @@ function new_id(){
   }else{
     $id=1;
   }  
+  
+
   return $id;
 }
 
@@ -483,6 +491,31 @@ function valid_id($id){
   else
     return false;
 }
+
+ function update_field_switcher($field,$value,$options=''){
+   switch($field){
+   case('Supplier ID'):
+   case('Supplier Main Contact Key'):
+   case('Supplier Average Delivery Days'):
+   case('Supplier Valid From'):
+   case('Supplier Valid To'):
+   case('Supplier Stock Value'):
+   case('Supplier Company Key'):
+   case('Supplier Accounts Payable Contact Key'):
+   case('Supplier Sales Contact Key'):
+   case('Supplier Main Email Key'):
+   case('Supplier Main Telephone Key'):
+
+
+
+     break;
+   default:
+     $this->update_field($field,$value,$options);
+   }
+
+   
+ }
+
 
 
 }

@@ -130,6 +130,18 @@ Function:display
 function find($raw_data,$options){
   // print_r($raw_data);
 
+  
+  if(isset($raw_data['editor']) and is_array($raw_data['editor'])){
+      foreach($raw_data['editor'] as $key=>$value){
+
+	if(array_key_exists($key,$this->editor))
+	  $this->editor[$key]=$value;
+		    
+      }
+    }
+
+
+
    $this->found=false;
    $this->found_in=false;
    $this->found_out=false;
@@ -461,7 +473,7 @@ protected function create($data,$optios=''){
    
   */
  function parse_number($number,$country_code='UNK'){
-   // print "parsing number $number $country_code\n";
+   //    print "parsing number $number $country_code\n";
 
    $data=array('Telecom Technology Type'=>'Unknown'
 	       ,'Telecom Country Telephone Code'=>''
@@ -469,7 +481,7 @@ protected function create($data,$optios=''){
 	       ,'Telecom Area Code'=>''
 	       ,'Telecom Number'=>''
 	       ,'Telecom Extension'=>''
-	       ,'National Only Telecom'=>''
+	       ,'National Only Telecom'=>'No'
 	       ,'Telecom Plain Number'=>''
 	       );
 
@@ -693,7 +705,7 @@ protected function create($data,$optios=''){
 
    $data['Telecom Plain Number']=Telecom::plain_number($data);
 
-   //   print_r($data);
+   // print_r($data);
   return $data;
 
   // print_r($this->data);
