@@ -216,7 +216,8 @@ class WarehouseArea extends DB_Table{
 
   function load($key=''){
     switch($key){
-
+    case('locations'):
+      
       break;
 
     }

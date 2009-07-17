@@ -91,7 +91,7 @@ $fam_promo_key=$fam_promo->id;
 $sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed)  order by filename ";
 
 //$sql="select * from  orders_data.orders where filename like '%refund.xls'   order by filename";
-//$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/%.xls' order by filename";
+//$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/20%.xls' order by filename";
 
 //$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/15720.xls' or filename like '/mnt/%/Orders/15699.xls' or  filename like '/mnt/%/Orders/15593.xls' order by filename";
 
@@ -175,8 +175,8 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
        $prod_map['no_price_bonus']=true;
     }
      
-
-
+    $header_data=array();
+    $data=array();
     list($act_data,$header_data)=read_header($header,$map_act,$y_map,$map);
     $header_data=filter_header($header_data);
     list($tipo_order,$parent_order_id,$header_data)=get_tipo_order($header_data['ltipo'],$header_data);
@@ -249,7 +249,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
   
  $header_data['Order Main Source Type']='Unknown';
  $header_data['Delivery Note Dispatch Method']='Unknown';
- $data=array();
+
   $header_data['collection']='No';
   $header_data['shipper_code']='';
   $header_data['staff sale']='No';
@@ -317,11 +317,13 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 //     echo "Memory: ".memory_get_usage() . "x\n";
     $_customer_data=setup_contact($act_data,$header_data,$date_index2);
    
+    $customer_data=array();
     
-
-    if(isset($header_data['tax_number']) and $header_data['tax_number']!='')
+    if(isset($header_data['tax_number']) and $header_data['tax_number']!=''){
       $customer_data['Customer Tax Number']=$header_data['tax_number'];
+     
 
+    }
 
   
     foreach($_customer_data as $_key =>$value){
@@ -1018,6 +1020,13 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     // print_r($header_data);
 
 
+
+
+    
+    
+
+
+
     $data['Order For']='Customer';
     
     $data['Order Main Source Type']='Unknown';
@@ -1057,6 +1066,10 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       $shipping_addresses=array();
     }
 
+
+
+    //    print_r($customer_data);
+    //continue;
 
     //  print_r($data);
     $data['staff sale']=$header_data['staff sale'];
