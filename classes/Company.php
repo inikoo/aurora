@@ -299,7 +299,7 @@ class Company extends DB_Table {
 
       
 
-      //   print "Company Found:".$this->found." ".$this->found_key."   \nContact Found:".$contact->found." ".$contact->found_key."  \n";
+      //        print "Company Found:".$this->found." ".$this->found_key."   \nContact Found:".$contact->found." ".$contact->found_key."  \n";
       if(!$contact->found and $this->found){
 	// try to find again the contact now that we now the company
 	$contact=new Contact("find in company ".$this->found_key,$raw_data);
@@ -321,7 +321,7 @@ class Company extends DB_Table {
 
     // there are 4 cases
     if(!$contact->found and !$this->found){
-
+      //print "create\n";
       $this->new_contact=true;
       $this->create($raw_data,$address_data);
 
@@ -430,8 +430,8 @@ class Company extends DB_Table {
   
   
   function create($raw_data,$raw_address_data=array(),$options=''){
-    
-    //  print_r($raw_data);
+    //print $options."\n";
+    //print_r($raw_data);
     
     $this->data=$this->base_data();
     foreach($raw_data as $key=>$value){
@@ -526,11 +526,15 @@ class Company extends DB_Table {
 
 
     if($this->data['Company Main Telephone']!=''){
+
+      //print "cacacacacaca\n\n\n\n";
       $telephone_data=array();
       $telephone_data['editor']=$this->editor;
       $telephone_data['Telecom Raw Number']=$this->data['Company Main Telephone'];
       
       $telephone=new Telecom("find in company create country code ".$address->data['Address Country Code'],$telephone_data);
+
+      // print "------------------\n";
 
       if(!$telephone->error){
 	//Collect data about telecom found

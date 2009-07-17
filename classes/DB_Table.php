@@ -69,8 +69,9 @@ abstract class DB_Table
     */
   public function update($data,$options=''){
 
-
-
+    // if($this->table_name=='Telecom'){
+      // print_r($data);exit;
+    // }
     $base_data=$this->base_data();
   
     foreach($data as $key=>$value){
@@ -79,7 +80,8 @@ abstract class DB_Table
       elseif(array_key_exists($key,$base_data)){
 
 	if($value!=$this->data[$key]){
-	  //	  print "XXX data to update ".$this->data[$key]." ->  $value in $key ".$this->table_name.":\n";
+	  //if($this->table_name=='Telecom')
+	  //print "XXX data to update ".$this->data[$key]." ->  $value in $key ".$this->table_name.":\n";
 	  $this->update_field_switcher($key,$value,$options);
 	}
       }
@@ -152,7 +154,10 @@ protected function update_field($field,$value,$options=''){
     $this->updated=true;
   
 
-    if(preg_match('/customer|contact|company|order|staff|supplier|address|telecom/i',$this->table_name)){
+    if(
+       preg_match('/customer|contact|company|order|staff|supplier|address|telecom/i',$this->table_name)
+       and !$this->new
+       ){
 
 
       $history_data=array(
