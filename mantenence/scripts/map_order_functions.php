@@ -3245,7 +3245,7 @@ function get_tax_number($data){
   global $myconf;
   $data['tax_number']='';
   $note='';
-
+  $tax_number='';
   if(!$data['dn_country_code'] or $data['dn_country_code']=='0')
     $data['dn_country_code']='';
   //print $data['dn_country_code']."xxx";

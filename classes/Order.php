@@ -95,8 +95,7 @@ class Order extends DB_Table{
 				  
 /* 				  $customer_id=$customer->id; */
 /* 				} */
-				
-				//	print_r($data['Customer Data'] );
+			
 				$data['Customer Data']['editor']=$this->editor;
 				$data['Customer Data']['editor']['Date']=date("Y-m-d H:i:s",strtotime($data['Customer Data']['editor']['Date']." -1 second"));
 				

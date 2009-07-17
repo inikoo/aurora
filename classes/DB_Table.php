@@ -177,8 +177,8 @@ protected function update_field($field,$value,$options=''){
 }
 
 protected function add_history($raw_data){
-  
-  //print_r( $raw_data);
+ 
+
   
   $data['subject']='user';
   $data['subject_key']=$this->editor['User Key'];
@@ -219,10 +219,8 @@ protected function add_history($raw_data){
   } elseif(  isset($raw_data['new_value']) ){
     $data['details']=$data['indirect_object'].' '._('changed to')." \"".$raw_data['new_value']."\"";
   }
-
-
-  //print_r( $data);
  
+
  $sql=sprintf("insert into `History Dimension` (`History Date`,`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`Author Name`,`Author Key`) values (%s,%s,%d,%s,%s,%d,%s,%s,%d,%s,%s,%s,%d)"
 	      ,prepare_mysql($data['date'])
 	      ,prepare_mysql($data['subject'])

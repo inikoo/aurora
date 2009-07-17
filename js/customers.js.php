@@ -46,15 +46,15 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       ,{key:"ship_postcode", label:"<?=_('Postal Code')?>",<?=($_SESSION['state']['customers']['view']=='ship_to_address'?'':'hidden:true,')?>sortable:true,className:"aright"}
 				       ,{key:"ship_region", label:"<?=_('Region')?>",<?=($_SESSION['state']['customers']['view']=='ship_to_address'?'':'hidden:true,')?>sortable:true,className:"aright"}
 				       ,{key:"ship_country", label:"<?=_('Country')?>",<?=($_SESSION['state']['customers']['view']=='ship_to_address'?'':'hidden:true,')?>sortable:true,className:"aright"}
-				       ,{key:"total_payments", label:"<?=_('Payments')?>",<?=($_SESSION['state']['customers']['view']=='balance'?'':'hidden:true,')?>sortable:true,className:"aright"}
-				       ,{key:"total_refunds", label:"<?=_('Refunds')?>",<?=($_SESSION['state']['customers']['view']=='balance'?'':'hidden:true,')?>sortable:true,className:"aright"}
-				       ,{key:"net_balance", label:"<?=_('Balance')?>",<?=($_SESSION['state']['customers']['view']=='balance'?'':'hidden:true,')?>sortable:true,className:"aright"}
-				       ,{key:"balance", label:"<?=_('Outstanding')?>",<?=($_SESSION['state']['customers']['view']=='balance'?'':'hidden:true,')?>sortable:true,className:"aright"}
-				       ,{key:"total_profit", label:"<?=_('Profit')?>",<?=($_SESSION['state']['customers']['view']=='balance'?'':'hidden:true,')?>sortable:true,className:"aright"}
-				       ,{key:"top_orders", label:"<?=_('Rank Orders')?>",<?=($_SESSION['state']['customers']['view']=='rank'?'':'hidden:true,')?>sortable:true,className:"aright"}
-				       ,{key:"top_invoices", label:"<?=_('Rank Invoices')?>",<?=($_SESSION['state']['customers']['view']=='rank'?'':'hidden:true,')?>sortable:true,className:"aright"}
-				       ,{key:"top_balance", label:"<?=_('Rank Balance')?>",<?=($_SESSION['state']['customers']['view']=='rank'?'':'hidden:true,')?>sortable:true,className:"aright"}
-				       ,{key:"top_profits", label:"<?=_('Rank Profits')?>",<?=($_SESSION['state']['customers']['view']=='rank'?'':'hidden:true,')?>sortable:true,className:"aright"}
+				       ,{key:"total_payments", label:"<?=_('Payments')?>",<?=($_SESSION['state']['customers']['view']=='balance'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"total_refunds", label:"<?=_('Refunds')?>",<?=($_SESSION['state']['customers']['view']=='balance'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"net_balance", label:"<?=_('Balance')?>",<?=($_SESSION['state']['customers']['view']=='balance'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"balance", label:"<?=_('Outstanding')?>",<?=($_SESSION['state']['customers']['view']=='balance'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"total_profit", label:"<?=_('Profit')?>",<?=($_SESSION['state']['customers']['view']=='balance'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"top_orders", label:"<?=_('Rank Orders')?>",<?=($_SESSION['state']['customers']['view']=='rank'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"top_invoices", label:"<?=_('Rank Invoices')?>",<?=($_SESSION['state']['customers']['view']=='rank'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"top_balance", label:"<?=_('Rank Balance')?>",<?=($_SESSION['state']['customers']['view']=='rank'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"top_profits", label:"<?=_('Rank Profits')?>",<?=($_SESSION['state']['customers']['view']=='rank'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
 				       
 

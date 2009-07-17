@@ -451,7 +451,7 @@ case('address'):
        $where=sprintf(' left join `Contact Bridge` B on (P.`Contact Key`=B.`Contact Key`) where `Subject Type`="Customer" and `Subject Key`=%d',$_SESSION['state']['customer']['id']);
      break;
    default:
-     $where=sprintf(' where true ');
+     $where=sprintf(" where `Contact Fuzzy`='No' ");
       
    }
    $group='';
@@ -1425,8 +1425,8 @@ if(isset( $_REQUEST['where']))
   elseif($order=='activity')
      $order='`Customer Type by Activity`';
 
-   $sql="select   * from `Customer Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results";
-   //    print $sql;
+   $sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds`  from `Customer Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results";
+   //   print $sql;
    $adata=array();
   
   
@@ -1435,7 +1435,7 @@ if(isset( $_REQUEST['where']))
   while($data=mysql_fetch_array($result, MYSQL_ASSOC)){
 
 
-    $id="<a href='customer.php?id=".$data['Customer ID']."'>".$myconf['customer_id_prefix'].sprintf("%05d",$data['Customer ID']).'</a>';
+
   
     
   
@@ -1474,9 +1474,14 @@ if(isset( $_REQUEST['where']))
 //      $tel='';
 //      if($data['number']!='')
 //        $tel=($data['icode']!=''?'+'.$data['icode'].' ':'').$data['number'];
+
+
+    $id="<a href='customer.php?id=".$data['Customer ID']."'>".$myconf['customer_id_prefix'].sprintf("%05d",$data['Customer ID']).'</a>'; 
+    $name="<a href='customer.php?id=".$data['Customer ID']."'>".$data['Customer Name'].'</a>'; 
+
     $adata[]=array(
 		   'id'=>$id,
-		   'name'=>$data['Customer Name'],
+		   'name'=>$name,
 		   'location'=>$data['Customer Main Location'],
 		   'orders'=>number($data['Customer Orders']),
 		   'invoices'=>$data['Customer Orders Invoiced'],
