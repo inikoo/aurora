@@ -504,7 +504,7 @@ class Company extends DB_Table {
          
 
 
-     $address_data['editor']=$this->data;
+     $address_data['editor']=$this->editor;
      $address=new Address("find in company create",$address_data);
      //print_r($raw_data);
 

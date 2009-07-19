@@ -1024,6 +1024,26 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
 
 
     switch($key){
+       case("ID"):
+   case("Formated ID"):
+     global $myconf;
+     
+     $sql="select count(*) as num from `Contact Dimension`";
+     $res=mysql_query($sql);
+     $min_number_zeros=$myconf['contact_min_number_zeros_id'];
+     if($row=mysql_fetch_array($res)){
+       if(strlen($row['num'])-1>$min_number_zeros)
+	 $min_number_zeros=strlen($row['num'])-01;
+     }
+     if(!is_numeric($min_number_zeros))
+       $min_number_zeros=4;
+
+     return sprintf("%s%0".$min_number_zeros."d",$myconf['contact_id_prefix'], $this->data['Contact ID']);
+
+     
+     break;
+
+
     case('has_email_id'):
       if(!$this->emails)
 	$this->load('emails');

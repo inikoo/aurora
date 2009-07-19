@@ -1656,6 +1656,7 @@ class Customer extends DB_Table{
 
 
    switch($key){
+   case("ID"):
    case("Formated ID"):
      global $myconf;
      

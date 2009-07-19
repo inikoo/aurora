@@ -205,6 +205,17 @@ table.edit tr.last{ border-bottom:1px solid #a5b6c8}
 .chooser img {position:relative;top:2px;}
 .chooser li.selected {cursor:default;border-color:#aaa;;opacity: 1;filter: alpha(opacity=100);font-weight:800;color:#555}
 
+.chooser2 {width:670px;border:0px solid black;margin:0px}
+.chooser2 ul {;margin:0px auto;xborder:1px solid red;}
+.chooser2{padding:0px 0px 0 0px;}
+.chooser2 li {float:left;padding:3px 5px 5px 5px ;margin: 0 5px 10px 0;border: 1px solid #ccc;cursor:pointer;;opacity: .5;filter: alpha(opacity=40);}
+.chooser2 li:hover {opacity: .8;filter: alpha(opacity=80);}
+.chooser2 img {position:relative;top:2px;}
+.chooser2 li.selected {cursor:default;border-color:#aaa;;opacity: 1;filter: alpha(opacity=100);font-weight:800;color:#555}
+
+
+
+
 .report_header {padding:15px 20px 0 20px;clear:both;margin-top:0px;}
 .report_header li {float:left;padding: 5px;margin: 0 5px 0px 0;cursor:pointer}
 .report_header a { text-decoration:none }

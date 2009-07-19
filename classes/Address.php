@@ -554,6 +554,8 @@ class Address extends DB_Table{
   // }
  function update_field_switcher($field,$value,$options=''){
    switch($field){
+   case('Address Primary Postal Code'):
+   case('Address Secondary Postal Code'):
    case('Address Location'):
    case('Address Plain'):
    case('Address Input Format'):
