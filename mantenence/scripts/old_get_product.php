@@ -9,8 +9,16 @@ include_once('../../classes/Product.php');
 include_once('../../classes/Supplier.php');
 include_once('../../classes/Part.php');
 include_once('../../classes/SupplierProduct.php');
+include_once('local_map.php');
+
 error_reporting(E_ALL);
 
+
+
+
+
+
+$ymap=$_y_map_old;
 
 
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
@@ -27,18 +35,14 @@ mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';           
 date_default_timezone_set('Europe/London');
 
-
-
-
-
 $software='Get_Products.php';
 $version='V 1.0';
 
 $Data_Audit_ETL_Software="$software $version";
 
-$file_name='AWorder2002.xls';
+$file_name='6900.xls';
 $csv_file='tmp.csv';
-exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
+//exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
 
 $handle_csv = fopen($csv_file, "r");
 $column=0;
@@ -97,17 +101,12 @@ if(!$fam_promo->id){
 $fam_no_fam_key=$fam_no_fam->id;
 $fam_promo_key=$fam_promo->id;
 
-
-
-
 $__cols=array();
 $inicio=false;
 while(($_cols = fgetcsv($handle_csv))!== false){
-  
+    $code=$_cols[$ymap['code']];
 
-  $code=$_cols[3];
-
- 
+    //print "$code\n";
   if($code=='FO-A1' and !$inicio){
     $inicio=true;
     $x=$__cols[count($__cols)-4];
@@ -149,14 +148,15 @@ foreach($__cols as $cols){
 
   $is_product=true;
   
-  $code=_trim($cols[3]);
-
-
-  $price=$cols[7];
-  $supplier_code=_trim($cols[21]);
+  $code=_trim($cols[$ymap['code']]);
+  $description=_trim( mb_convert_encoding($cols[$ymap['description']], "UTF-8", "ISO-8859-1,UTF-8"));
+  $units=$cols[$ymap['units']];
+  $price=$cols[$ymap['price']];
+  $supplier_code=_trim($cols[$ymap['supplier_code']]);
   $part_code=_trim($cols[22]);
-  $supplier_cost=$cols[25];
-  
+  $supplier_cost=$cols[$ymap['supplier_product_cost']];
+  $rrp=$cols[$ymap['rrp']];
+  $w=$cols[$ymap['w']];
 
 
   // if(preg_match('/EO-/i',$code)){
@@ -180,14 +180,14 @@ foreach($__cols as $cols){
     $is_product=false;
   
   
-  if(preg_match('/^credit|Freight|^frc\-|^cxd\-|^wsl$|^postage$/i',$code) )
+  if(preg_match('/^hot-01|credit|Freight|^frc\-|^cxd\-|^wsl$|^postage$/i',$code) )
     $is_product=false;
 
 
   
   if($is_product){
     
-    //    print "$code\r";
+        print "$code\n";
 
     
     $part_list=array();
@@ -304,11 +304,11 @@ foreach($__cols as $cols){
     }else
        $deals=array();
     
-    $units=$cols[5];
+
     if($units=='' OR $units<=0)
       $units=1;
 
-    $description=_trim( mb_convert_encoding($cols[6], "UTF-8", "ISO-8859-1,UTF-8"));
+
 
 
  //    if(preg_match('/wsl-535/i',$code)){
@@ -316,11 +316,6 @@ foreach($__cols as $cols){
 //       exit;
 
 //     }
-
-    $rrp=$cols[16];
-    $supplier_code=_trim($cols[21]);
-
-    $w=$cols[28];
 
 
 
@@ -434,8 +429,8 @@ foreach($__cols as $cols){
 
        	$product=new Product('create',$data);
 
-	$scode=_trim($cols[20]);
-	$supplier_code=$cols[21];
+	$scode=_trim($cols[$ymap['supplier_product_code']]);
+	$supplier_code=$cols[$ymap['supplier_code']];
        
 	if(preg_match('/^SG\-|^info\-/i',$code))
 	  $supplier_code='AW';
@@ -1180,18 +1175,18 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
     
     // print "Col $column\n";
     //print_r($cols);
-    if($cols[3]!='' and $cols[6]!=''  and $cols[3]!='SHOP-Fit' and $cols[3]!='ISH-94' and $cols[3]!='OB-108' and !preg_match('/^DB-/',$cols[3])  and !preg_match('/^pack-/i',$cols[3])  ){
-      $fam_code=$cols[3];
-      $fam_name=_trim( mb_convert_encoding($cols[6], "UTF-8", "ISO-8859-1,UTF-8"));
+    if($cols[$ymap['code']]!='' and $cols[$ymap['description']]!=''  and $cols[$ymap['code']]!='SHOP-Fit' and $cols[$ymap['code']]!='ISH-94' and $cols[$ymap['code']]!='OB-108' and !preg_match('/^DB-/',$cols[$ymap['code']])  and !preg_match('/^pack-/i',$cols[$ymap['code']])  ){
+      $fam_code=$cols[$ymap['code']];
+      $fam_name=_trim( mb_convert_encoding($cols[$ymap['description']], "UTF-8", "ISO-8859-1,UTF-8"));
       $fam_position=$column;
 
       
     }
     
-    if(preg_match('/off\s+\d+\s+or\s+more|\s*\d+\s*or more\s*\d+|buy \d+ get \d+ free/i',_trim($cols[6]))){
+    if(preg_match('/off\s+\d+\s+or\s+more|\s*\d+\s*or more\s*\d+|buy \d+ get \d+ free/i',_trim($cols[$ymap['description']]))){
       
 
-      $promotion=$cols[6];
+      $promotion=$cols[$ymap['description']];
 
       $promotion=preg_replace('/^\s*order\s*/i','',$promotion);
       $promotion=preg_replace('/discount\s*$/i','',$promotion);
@@ -1201,12 +1196,12 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
       $promotion_position=$column;
       // print "*********** Promotion $promotion $promotion_position \n";
     }
-    if($cols[3]=='' and $cols[6]==''){
+    if($cols[$ymap['code']]=='' and $cols[$ymap['description']]==''){
       $blank_position=$column;
     }
 
-    if($cols[6]!='' and preg_match('/Sub Total/i',$cols[11])){
-      $department_name=$cols[6];
+    if($cols[$ymap['description']]!='' and preg_match('/Sub Total/i',$cols[11])){
+      $department_name=$cols[$ymap['description']];
       $department_position=$column;
 
 
@@ -1276,8 +1271,8 @@ if($department_code=='Woodware Dept'){
 
     }
     
-    $posible_fam_code=$cols[3];
-    $posible_fam_name=$cols[6];
+    $posible_fam_code=$cols[$ymap['code']];
+    $posible_fam_name=$cols[$ymap['description']];
   }
   
 

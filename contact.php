@@ -18,8 +18,21 @@ if(!$LU->checkRight(CUST_VIEW))
   exit;
 
 $edit=false;
-if(isset($_REQUEST['edit']) and $_REQUEST['edit'])
+if(isset($_REQUEST['edit']) and $_REQUEST['edit']){
   $edit=true;
+  $_REQUEST['id']=$_REQUEST['edit'];
+ }
+
+
+
+if(isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ){
+  $_SESSION['state']['contact']['id']=$_REQUEST['id'];
+  $contact_id=$_REQUEST['id'];
+}else{
+  $contact_id=$_SESSION['state']['contact']['id'];
+}
+
+
 
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
@@ -51,24 +64,19 @@ $js_files=array(
 		'js/contact.js.php'
 		);
 
-if($edit){
+if($edit ){
 
-  $css_files[]='external_libs/inputex/build/inputex-min.css';
-  $js_files[]='external_libs/inputex/js/inputex.js';
-  $js_files[]='external_libs/inputex/js/Field.js';
-  $js_files[]='external_libs/inputex/js/Group.js';
-  $js_files[]='external_libs/inputex/js/Form.js';
-  $js_files[]='external_libs/inputex/js/Visus.js';
+  $sql=sprintf("select * from `Salutation Dimension` S left join `Language Dimension` L on S.`Language Key`=L.`Language Key` where `Language Code`=%s limit 1000",prepare_mysql($myconf['lang']));
+  $result=mysql_query($sql);
+  $salutations=array();
+  while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+    $salutations[]=array('txt'=>$row['Salutation'],'relevance'=>$row['Relevance'],'id'=>'Salutation Key');
+  }
+  
 
-  $js_files[]='external_libs/inputex/js/fields/CombineField.js';
-  $js_files[]='external_libs/inputex/js/fields/StringField.js';
-  $js_files[]='external_libs/inputex/js/fields/SelectField.js';
-  $js_files[]='external_libs/inputex/js/fields/AutoComplete.js';
-  $js_files[]='external_libs/inputex/js/fields/EmailField.js';
-  $js_files[]='external_libs/inputex/js/fields/UneditableField.js';
+  $smarty->assign('prefix',$salutations);
 
-
-
+  $smarty->assign('edit','personal');
 
   $js_files[]='js/edit_contact.js.php';
   
@@ -78,12 +86,7 @@ if($edit){
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
-if(isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ){
-  $_SESSION['state']['contact']['id']=$_REQUEST['id'];
-  $contact_id=$_REQUEST['id'];
-}else{
-  $contact_id=$_SESSION['state']['contact']['id'];
-}
+
 
 
 $contact=new contact($contact_id);

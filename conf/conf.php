@@ -82,9 +82,15 @@ $LU_conf = array(
 
 
 $myconf=array(
+	      'tax_rates'=>array(),
 	      'data_from'=>"2003-06-01 09:00:00",
 	      'order_id_type'=>'Order Header Numeric ID',
-	      
+	      'customer_min_number_zeros_id'=>4,
+	      'contact_min_number_zeros_id'=>4,
+	      'company_min_number_zeros_id'=>4,
+	      'supplier_min_number_zeros_id'=>3,
+	      'staff_min_number_zeros_id'=>3,
+
 	      'max_session_time'=>36000,
 	      'name'=>'Kaktus',
 	      'sname'=>'AW',
@@ -932,8 +938,13 @@ $file=preg_replace('/conf.php/','myconf.php',__FILE__);
 
 if (file_exists($file)) {
   include_once('myconf.php');
-}
+  if(isset($_myconf))
+    foreach($_myconf as $key=>$value){
+      if(array_key_exists($key,$myconf))
+	$myconf[$key]=$value;
+    }
+ }
 
 
 
-  ?>
+?>
