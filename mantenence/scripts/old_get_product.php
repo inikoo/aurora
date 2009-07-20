@@ -1200,7 +1200,7 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
       $blank_position=$column;
     }
 
-    if($cols[$ymap['description']]!='' and preg_match('/Sub Total/i',$cols[11])){
+    if($cols[$ymap['description']]!='' and preg_match('/Sub Total/i',$cols[$ymap['']])){
       $department_name=$cols[$ymap['description']];
       $department_position=$column;
 

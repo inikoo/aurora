@@ -13,11 +13,7 @@
 
   <div id="yui-main" >
     
-    <div class="search_box" >
-      
-      <span id="but_show_details" state="{$details}" atitle="{if $details==0}{t}Hide Details{/t}{else}{t}Show Details{/t}{/if}" class="state_details"   >{if $details==1}{t}Hide Details{/t}{else}{t}Show Details{/t}{/if}</span>
-      <br/><a  href="contact.php?edit=0"  id="but_edit" title="{t}Edit Contact Data{/t}" class="state_details"   >{t}Exit Edit{/t}</a>
-    </div>
+ 
     
     <div >
       <h1>{t}Editing contact{/t} {$contact->get(ID)}</h1>
@@ -40,13 +36,19 @@
 	</div>
 	<div id="description_warnings">
 	</div>
+<a  href="contact.php?edit=0"  id="but_edit" title="{t}Edit Contact Data{/t}" class="state_details"   >{t}Exit Edit{/t}</a>
+
       </div>
       
 
-      <div  style="{if $edit!="personal"}display:none;{/if}margin:0"  class="edit_block" id="d_personal">
+      <div  style="{if $edit!="personal"}xdisplay:none;{/if}margin:0"  class="edit_block" id="d_personal">
 	<table class="edit" border=0>
-	  <tr class="title"><td style="width:120px">Name:</td><td colspan="2" style="text-align:left"><input style="text-align:left;width:12em" id="full_name" value="{$contact->get('Contact Name')}"></td>
+	    <tr class="title"><td colspan=2 style="width:120px">Personal:</td></td>
 	  </tr>
+	  <tr><td style="width:120px">Name:</td><td colspan="2" style="text-align:left"><input style="text-align:left;width:12em" id="full_name" value="{$contact->get('Contact Name')}"></td>
+	    <td>
+<table>	  
+
 	   <tr>
 	     <td class="label">{t}Salutation{/t}:</td>
 	     <td  style="text-align:left" >
@@ -72,16 +74,32 @@
 	    <td  style="text-align:left" ><input  onkeyup="update_full_address()"  onblur="" style="text-align:left;width:12em"  name="surname" id="v_surname" value="{$contact->get('Contact Surname')}"  ovalue="{$contact->get('Contact Surname')}" ></td>
 	  </tr>
     
+</table>
+</td>
+</tr>
+</table>
+
 	</table>
       </div>
-      <div  style="{if $edit!="work"}display:none;{/if}margin:0"  class="edit_block" id="d_work">
+
+
+
+      <div  style="{if $edit!="work"}xdisplay:none;{/if}margin:0"  class="edit_block" id="d_work">
+
+	<table class="edit" border=0>
+	      <tr class="title"><td colspan=2 style="width:120px">Work:</td></td>
+	  </tr>
+
 	<div id="associate_company" style="{if $contact->has_company()}display:none{/if}">
 	  <span class="button">{t}Associate with a company{/t}</span>
 	</div>
 	<div style="{if !$contact->has_company()}display:none{/if}">
 
-	  <h2>{t}Company{/t}: {$contact->get('Contact Company Name')} <span class="state_details">edit</span></h2> 
-	  <table class="edit" border=0>
+	  <tr><td>{t}Company{/t}:</td><td  style="text-align:left">{$contact->get('Contact Company Name')} <span class="state_details">edit</span></td></tr> 
+
+
+
+
 
 	    {foreach from=$contact->get_work_emails() item=email  name=foo }
 	    {if $smarty.foreach.foo.first}<tr style="text-align:left" style="height:30px"><td style="width:120px">{t}Work Email{/t}:</td>
