@@ -849,7 +849,7 @@ case('address'):
    while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
     
      
-     $id=sprintf('<a href="contact.php?id=%d">%04d</a>',$row['Company Key'],$row['Company Key']);
+     $id=sprintf('<a href="company.php?id=%d">%04d</a>',$row['Company Key'],$row['Company Key']);
      if($row['Company Main Contact Key'])
        $contact=sprintf('<a href="company.php?id=%d">%s</a>',$row['Company Main Contact Key'],$row['Company Main Contact Name']);
      else

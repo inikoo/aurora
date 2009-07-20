@@ -34,7 +34,7 @@
 	<div xstyle="float:left">
 	  <span class="save" style="display:none" id="description_save" onclick="save('description')">Save</span><span id="description_reset"  style="display:none"   class="reset" onclick="reset('description')">Reset</span>
 	</div>
-	<span>Number of changes:<span id="description_num_changes">0</span></span>
+	<span class="details">Number of changes:<span id="personal_num_changes">0</span></span>
 	
 	<div id="description_errors">
 	</div>
@@ -43,39 +43,93 @@
       </div>
       
 
-      <div  style="{if $edit!="personal"}display:none;{/if}margin:0"  class="edit_block" id="d_prices">
+      <div  style="{if $edit!="personal"}display:none;{/if}margin:0"  class="edit_block" id="d_personal">
 	<table class="edit" border=0>
-	  <tr class="title"><td>Name:</td><td colspan="2" style="text-align:left"><input style="text-align:left;width:12em" id="full_name" value="{$contact->get('Contact Name')}"></td>
+	  <tr class="title"><td style="width:120px">Name:</td><td colspan="2" style="text-align:left"><input style="text-align:left;width:12em" id="full_name" value="{$contact->get('Contact Name')}"></td>
 	  </tr>
 	   <tr>
-	    <td class="label">{t}Salutation{/t}:</td>
-	    <td  style="text-align:left" >
-	      <table id="period_options" style="float:none;position:relative;left:-4px;" border=0  class="options_mini" >
+	     <td class="label">{t}Salutation{/t}:</td>
+	     <td  style="text-align:left" >
+	       <table id="period_options" style="float:none;position:relative;left:-4px;" border=0  class="options_mini" >
 		 <tr>
 		   
 		   {foreach from=$prefix item=s  }
 		   
-		   <td  {if $contact->get('Contact Salutation')==$s.txt}class="selected"{/if}  {if $s.relevance>1}style="display:none"{/if}     id="salutation{$s.id}" >{$s.txt}</td>
+		   <td  onclick="update_salutation(this)"  {if $contact->get('Contact Salutation')==$s.txt}class="selected"{/if}  {if $s.relevance>1}style="display:none"{/if}     id="salutation{$s.id}" >{$s.txt}</td>
 		   {/foreach}
-
+		   
 		 </tr>
 	       </table>
-	    </td>
-	  </tr>
-
+	     </td>
+	   </tr>
+	   
 	  <tr>
 	    <td class="label">{t}First Name(s){/t}:</td>
-	    <td  style="text-align:left" ><input  onkeydown=""  onblur="" style="text-align:left;width:12em"  name="first_name" id="v_first_name" value="{$contact->get('Contact First Name')}"  ovalue="{$contact->get('Contact First Name')}" ></td>
+	    <td  style="text-align:left" ><input  onkeyup="update_full_address()"  onblur="" style="text-align:left;width:12em"  name="first_name" id="v_first_name" value="{$contact->get('Contact First Name')}"  ovalue="{$contact->get('Contact First Name')}" ></td>
 	  </tr>
        <tr>
 	    <td class="label">{t}Surname(s){/t}:</td>
-	    <td  style="text-align:left" ><input  onkeydown=""  onblur="" style="text-align:left;width:12em"  name="surname" id="v_surname" value="{$contact->get('Contact Surname')}"  ovalue="{$contact->get('Contact Surname')}" ></td>
+	    <td  style="text-align:left" ><input  onkeyup="update_full_address()"  onblur="" style="text-align:left;width:12em"  name="surname" id="v_surname" value="{$contact->get('Contact Surname')}"  ovalue="{$contact->get('Contact Surname')}" ></td>
 	  </tr>
     
+	</table>
+      </div>
+      <div  style="{if $edit!="work"}display:none;{/if}margin:0"  class="edit_block" id="d_work">
+	<div id="associate_company" style="{if $contact->has_company()}display:none{/if}">
+	  <span class="button">{t}Associate with a company{/t}</span>
+	</div>
+	<div style="{if !$contact->has_company()}display:none{/if}">
+
+	  <h2>{t}Company{/t}: {$contact->get('Contact Company Name')} <span class="state_details">edit</span></h2> 
+	  <table class="edit" border=0>
+
+	    {foreach from=$contact->get_work_emails() item=email  name=foo }
+	    {if $smarty.foreach.foo.first}<tr style="text-align:left" style="height:30px"><td style="width:120px">{t}Work Email{/t}:</td>
+	      {else}<tr><td></td>{/if}</td><td style="text-align:left"><input style="text-align:left" value="{$email.address}" ovalue="{$email.address}" /> </td></tr>
+{/foreach}
+
+{foreach from=$contact->get_work_telephones() item=tel  name=foo }
+{if $smarty.foreach.foo.first}<tr style="text-align:left" style="height:30px"><td  style="vertical-align: top;width:120px">{t}Work Telephone{/t}:</td>
+	      {else}<tr><td></td>{/if}</td><td style="vertical-align: top;text-align:left">
+
+    <input style="text-align:left;width:12em" value="{$tel.formated_number}" ovalue="{$tel.formated_number}" />
+</td>
+<td style="text-align:left"  >
+  <table>
+    <tr valign="top"><td valign="top">{t}Country Code{/t}:</td><td style="text-align:left"><input style="text-align:left;width:3em" value="{$tel.country_code}" ovalue="{$tel.country_code}" /></td></tr>
+    <tr><td>{t}National Access Code{/t}:</td><td style="text-align:left"><input style="text-align:center;width:1em" value="{$tel.national_access_code}" ovalue="{$tel.national_access_code}" /></td></tr>
+    <tr><td>{t}Area Code{/t}:</td><td style="text-align:left"><input style="text-align:left;width:4em" value="{$tel.area_code}" ovalue="{$email.area_code}" /></td></tr>
+    <tr><td>{t}Number{/t}:</td><td style="text-align:left"><input style="text-align:left;width:7em" value="{$tel.number}" ovalue="{$email.number}" /></td></tr>
+    <tr><td>{t}Extension{/t}:</td><td style="text-align:left"><input style="text-align:left;width:3em" value="{$tel.extension}" ovalue="{$email.extension}" /></td></tr>
+
   </table>
-</div>
+</td></tr>
+{/foreach}
+
+{foreach from=$contact->get_work_faxes() item=tel  name=foo }
+{if $smarty.foreach.foo.first}<tr style="text-align:left" style="height:30px"><td  style="vertical-align: top;width:120px">{t}Fax{/t}:</td>
+	      {else}<tr><td></td>{/if}</td><td style="vertical-align: top;text-align:left">
+
+    <input style="text-align:left;width:12em" value="{$tel.formated_number}" ovalue="{$tel.formated_number}" />
+</td>
+<td style="text-align:left"  >
+  <table>
+    <tr valign="top"><td valign="top">{t}Country Code{/t}:</td><td style="text-align:left"><input style="text-align:left;width:3em" value="{$tel.country_code}" ovalue="{$tel.country_code}" /></td></tr>
+    <tr><td>{t}National Access Code{/t}:</td><td style="text-align:left"><input style="text-align:center;width:1em" value="{$tel.national_access_code}" ovalue="{$tel.national_access_code}" /></td></tr>
+    <tr><td>{t}Area Code{/t}:</td><td style="text-align:left"><input style="text-align:left;width:4em" value="{$tel.area_code}" ovalue="{$email.area_code}" /></td></tr>
+    <tr><td>{t}Number{/t}:</td><td style="text-align:left"><input style="text-align:left;width:7em" value="{$tel.number}" ovalue="{$email.number}" /></td></tr>
 
 
+  </table>
+</td></tr>
+{/foreach}
+
+
+
+</table>
+	</div>
+      </div>
+      
 
     </div>
 

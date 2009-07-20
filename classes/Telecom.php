@@ -76,8 +76,9 @@ Function:display
    switch($tipo){
    case('plain'):
      return $this->data['Telecom Plain Number'];
-   
-    
+   case('formated'):
+      return $this->formated_number($this->data);
+      break;
    case('xhtml'):
    case('number'):
    default:

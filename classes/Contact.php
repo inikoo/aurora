@@ -836,7 +836,7 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
 
 
     $this->data['Contact File As']=$this->display('file_as');
-    $this->data['Contact ID']=$this->get_id();
+    $this->data['Contact ID']=$this->get_new_id();
 
 
     if($this->data['Contact Name']==$myconf['unknown_contact']){
@@ -1024,8 +1024,22 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
 
 
     switch($key){
-       case("ID"):
-   case("Formated ID"):
+    case("Salutation Key"):
+      if($data)
+	$salutation=$data;
+      else
+	$salutation=$this->data['Contact Salutation'];
+      
+      $salutation_key=0;
+      $sql=sprintf("Select `Salutation Key` from `Salutation Dimension` where `Salutation`=%s",prepare_mysql($salutation));
+      $res=mysql_query($sql);
+      if($row=mysql_fetch_array($res)){
+	$salutation_key=$row['Salutation Key'];
+      }
+      return $salutation_key;
+      break;
+    case("ID"):
+    case("Formated ID"):
      global $myconf;
      
      $sql="select count(*) as num from `Contact Dimension`";
@@ -1382,7 +1396,7 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
     $this->data['Contact Informal Greeting']=$myconf['unknown_informal_greting'];
     $this->data['Contact Formal Greeting']=$myconf['unknown_formal_greting'];
     $this->data['Contact File As']=$this->display('file_as');
-    $this->data['Contact ID']=$this->get_id();
+    $this->data['Contact ID']=$this->get_new_id();
       $sql="INSERT INTO `dw`.`Contact Dimension` (`Contact ID`, `Contact Salutation`, `Contact Name`, `Contact File As`, `Contact First Name`, `Contact Surname`, `Contact Suffix`, `Contact Gender`, `Contact Informal Greeting`, `Contact Formal Greeting`, `Contact Profession`, `Contact Title`, `Contact Company Name`, `Contact Company Key`, `Contact Company Department`, `Contact Company Department Key`, `Contact Manager Name`, `Contact Manager Key`, `Contact Assistant Name`, `Contact Assistant Key`, `Contact Main Address Key`, `Contact Main Location`, `Contact Main XHTML Address`, `Contact Main Plain Address`, `Contact Main Country Key`, `Contact Main Country`, `Contact Main Country Code`, `Contact Main Telephone`, `Contact Main Plain Telephone`, `Contact Main Telephone Key`, `Contact Main Mobile`, `Contact Main Plain Mobile`, `Contact Main Mobile Key`, `Contact Main FAX`, `Contact Main Plain FAX`, `Contact Main Fax Key`, `Contact Main XHTML Email`, `Contact Main Plain Email`, `Contact Main Email Key`, `Contact Fuzzy`) VALUES (".$this->data['Contact ID'].", 'NULL', ".prepare_mysql($this->data['Contact Name']).",".prepare_mysql($this->data['Contact File As']).", 'NULL',NULL, NULL, 'Unknown',".prepare_mysql($this->data['Contact Informal Greeting']).",".prepare_mysql($this->data['Contact Formal Greeting']).", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, '', NULL, NULL, '', NULL, NULL, '', NULL, NULL, '', NULL, 'Yes');";
     
     if(mysql_query($sql)){
@@ -2140,11 +2154,11 @@ private function update_Contact_Old_ID($contact_old_id,$options){
   //       return $this->data['contact name'];
   //   }
 
-  function get_id(){
+  function get_new_id(){
     
     $sql="select max(`Contact ID`)  as contact_id from `Contact Dimension`";
- $result=mysql_query($sql);
-  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+    $result=mysql_query($sql);
+    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
       
       if(!preg_match('/\d*/',_trim($row['contact_id']),$match))
 	$match[0]=1;
@@ -2692,6 +2706,76 @@ string with the name to be parsed
       return $card;
 
    }
+
+ /*
+     function:get_work_email
+     Array with the data components of the work emails
+    */
+   function get_work_emails($company_key=false){
+     $emails=array();
+     $in_company='';
+     if($company_key)
+       $in_company=sprintf(" and `Auxiliary Key`=%s",$company_key);
+     $sql=sprintf('select * from `Email Bridge` EB  left join `Email Dimension` E on E.`Email Key`=EB.`Email Key`  where `Subject Key`=%d and `Email Description`="Work" %s order by `Is Main` desc ',$this->id,$in_company);
+     $res=mysql_query($sql);
+     while($row=mysql_fetch_array($res))
+       $emails[]=array(
+		       'id'=>$row['Email Key']
+		       ,'description'=>$row['Email Description']
+		       ,'address'=>$row['Email']
+		       );
+     return $emails;
+   }
+    function get_work_telephones($company_key=false){
+     $telephones=array();
+     $in_company='';
+     if($company_key)
+       $in_company=sprintf(" and `Auxiliary Key`=%s",$company_key);
+     $sql=sprintf('select * from `Telecom Bridge` TB  left join `Telecom Dimension` T on T.`Telecom Key`=TB.`Telecom Key`  where `Subject Key`=%d and `Telecom Type`="Work Telephone"  and `Subject Type`="Contact" %s order by `Is Main` desc ',$this->id,$in_company);
+     $res=mysql_query($sql);
+     while($row=mysql_fetch_array($res)){
+       $tel=new Telecom('id',$row['Telecom Key']);
+       
+       $telephones[]=array(
+		       'id'=>$row['Telecom Key']
+		       ,'type'=>$row['Telecom Type']
+		       ,'country_code'=>$row['Telecom Country Telephone Code']
+		       ,'national_access_code'=>$row['Telecom National Access Code']
+		       ,'area_code'=>$row['Telecom Area Code']
+		       ,'number'=>$row['Telecom Number']
+		       ,'extension'=>$row['Telecom Extension']
+		       ,'formated_number'=>$tel->display('formated')
+
+		       );
+     }
+     return $telephones;
+   }
+
+  function get_work_faxes($company_key=false){
+     $faxes=array();
+     $in_company='';
+     if($company_key)
+       $in_company=sprintf(" and `Auxiliary Key`=%s",$company_key);
+     $sql=sprintf('select * from `Telecom Bridge` TB  left join `Telecom Dimension` T on T.`Telecom Key`=TB.`Telecom Key`  where `Subject Key`=%d and `Telecom Type`="Office Fax" and `Subject Type`="Contact"  %s order by `Is Main` desc ',$this->id,$in_company);
+     $res=mysql_query($sql);
+     while($row=mysql_fetch_array($res)){
+       $tel=new Telecom('id',$row['Telecom Key']);
+       
+       $faxes[]=array(
+		       'id'=>$row['Telecom Key']
+		       ,'type'=>$row['Telecom Type']
+		       ,'country_code'=>$row['Telecom Country Telephone Code']
+		       ,'national_access_code'=>$row['Telecom National Access Code']
+		       ,'area_code'=>$row['Telecom Area Code']
+		       ,'number'=>$row['Telecom Number']
+		       ,'extension'=>$row['Telecom Extension']
+		       ,'formated_number'=>$tel->display('formated')
+
+		       );
+     }
+     return $faxes;
+   }
+
    /*
      function:get_main_telephone_data
      Array with the data components of the main telephone
@@ -2776,6 +2860,16 @@ string with the name to be parsed
      }
      return $customer_keys;
    }
+
+
+   function has_company(){
+     if($this->data['Contact Company Key'])
+       return true;
+     else
+       return false;
+
+   }
+
 
 } 
  ?>

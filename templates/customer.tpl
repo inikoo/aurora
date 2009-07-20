@@ -117,10 +117,10 @@
 </div>
 
       
- <div class="data_table" style="margin:25px 0">
-    <span class="clean_table_title">{t}History/Notes{/t}</span>
-    <div  class="clean_table_caption"  style="clear:both;">
-      <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span  id="rtext_rpp0" class="rtext_rpp"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
+<div class="data_table" style="margin:25px 0">
+  <span class="clean_table_title">{t}History/Notes{/t}</span>
+  <div  class="clean_table_caption"  style="clear:both;">
+    <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span  id="rtext_rpp0" class="rtext_rpp"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
       <div class="clean_table_filter" id="filter_div0"  ><div class="clean_table_info" ><span id="filter_name0">{$filter_name}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value}" size=10/><div id='f_container'></div></div></div>
       <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator"></span></div></div>
     </div>
