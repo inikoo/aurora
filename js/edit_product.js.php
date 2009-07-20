@@ -1032,7 +1032,7 @@ var prepare_list_element=function(e){
     if(!(prev==0 || selected==prev))
 	alert(prev+' '+selected)
 	    };
-function change_units_tipo(id,name,sname){
+function chane_units_tipo(id,name,sname){
     var current=Dom.get('v_units_tipo').getAttribute('ovalue');
     if(id!=current){
 	Dom.get('v_units_tipo').innerHTML=name;

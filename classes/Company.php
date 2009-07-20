@@ -384,6 +384,25 @@ class Company extends DB_Table {
       return $this->data[$key];
 
     switch($key){
+    case("ID"):
+    case("Formated ID"):
+     global $myconf;
+     
+     $sql="select count(*) as num from `Company Dimension`";
+     $res=mysql_query($sql);
+     $min_number_zeros=$myconf['company_min_number_zeros_id'];
+     if($row=mysql_fetch_array($res)){
+       if(strlen($row['num'])-1>$min_number_zeros)
+	 $min_number_zeros=strlen($row['num'])-01;
+     }
+     if(!is_numeric($min_number_zeros))
+       $min_number_zeros=4;
+
+     return sprintf("%s%0".$min_number_zeros."d",$myconf['company_id_prefix'], $this->data['Company ID']);
+
+     
+     break;
+
     case('departments'):
       if(!isset($this->departments))
 	$this->load('departments');
@@ -1661,6 +1680,30 @@ function add_contact($data,$args='principal'){
      }
      return $customer_keys;
    }
+
+   /*
+     function: get_contact_key
+     Returns the Contact Key if the company is one
+    */
+   function get_contacts(){
+     $sql=sprintf("select * from `Contact Bridge` CB left join `Contact Dimension` C on CB.`Contact Key`=C.`Contact Key` where  `Subject Type`='Company' and `Subject Key`=%d order by `Is Main` desc  ",$this->id);
+     $contacts=array();
+     $result=mysql_query($sql);
+     while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+       $contacts[$row['Contact Key']]= array(
+					     'id'=>$row['Contact Key']
+					     ,'name'=>$row['Contact Name']
+					     ,'email'=>$row['Contact Main Plain Email']
+					     ,'telephone'=>$row['Contact Main Telephone']
+					     ,'fax'=>$row['Contact Main Fax']
+
+					     );
+       
+     }
+     return $contacts;
+   }
+   
+
 }
 
 ?>
