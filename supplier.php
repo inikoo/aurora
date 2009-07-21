@@ -18,15 +18,6 @@ if(!$LU->checkRight(SUP_VIEW))
   exit;
 
 
-// include('_contact.php');
-// include('telecom.php');
-// include('email.php');
-// include('address.php');
-// include('_supplier.php');
-
-
-
-
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
@@ -52,16 +43,24 @@ $js_files=array(
 		'js/table_common.js.php',
 		'js/supplier.js.php'
 		);
-$smarty->assign('css_files',$css_files);
-$smarty->assign('js_files',$js_files);
 
-if(!isset($_REQUEST['id']) and is_numeric($_REQUEST['id']))
-  $supplier_id=1;
-else
+
+
+$edit=false;
+if(isset($_REQUEST['edit']) and $_REQUEST['edit']){
+  $edit=true;
+  $_REQUEST['id']=$_REQUEST['edit'];
+ }
+
+
+
+if(isset($_REQUEST['id']) and is_numeric($_REQUEST['id']))
   $supplier_id=$_REQUEST['id'];
+else
+  $supplier_id=$_SESSION['state']['supplier']['id'];
 
-//print $supplier_id;
 $_SESSION['state']['supplier']['id']=$supplier_id;
+
 $smarty->assign('supplier_id',$supplier_id);
 
 $supplier=new Supplier($supplier_id);
@@ -71,22 +70,36 @@ $company=new Company($supplier->data['Supplier Company Key']);
 $smarty->assign('supplier',$supplier);
 $smarty->assign('company',$company);
 
-
-$smarty->assign('data',$supplier->data);
-
-// $supplier_data= get_supplier_data($supplier_id);
-// $contact_data= get_contact_data($supplier_data['contact_id']);
-// $telecoms=get_telecoms($contact_data['id']);
-// $num_children=count($contact_data['child']);
-// if($num_children==1){
-//   $smarty->assign('contact',$contact_data['child'][0]['name']);
-//  }
-// elseif($num_children==2){
-//   $smarty->assign('contact',$contact_data['child'][1]['name'].' & '.$contact_data['child'][0]['name']);
-//  }
+$address=new address($company->data['Company Main Address Key']);
+$smarty->assign('address',$address);
 
 
-//print_r($_SESSION['state']['supplier']);
+
+$smarty->assign('box_layout','yui-t0');
+$smarty->assign('parent','suppliers.php');
+$smarty->assign('title','Supplier: '.$supplier->get('Supplier Code'));
+
+
+
+if($edit){
+ $sql=sprintf("select * from `Salutation Dimension` S left join `Language Dimension` L on S.`Language Key`=L.`Language Key` where `Language Code`=%s limit 1000",prepare_mysql($myconf['lang']));
+  $result=mysql_query($sql);
+  $salutations=array();
+  while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+    $salutations[]=array('txt'=>$row['Salutation'],'relevance'=>$row['Relevance'],'id'=>$row['Salutation Key']);
+  }
+  $smarty->assign('prefix',$salutations);
+  $editing_block='details';
+  $smarty->assign('edit',$editing_block);
+
+
+    $js_files[]=sprintf('js/edit_company.js.php?edit=%s&id=%d',$editing_block,$company->id);
+ $smarty->assign('from','supplier');
+ $smarty->assign('css_files',$css_files);
+$smarty->assign('js_files',$js_files);
+ $smarty->display('edit_company.tpl');
+
+}else{
 
 $smarty->assign('display',$_SESSION['state']['supplier']['display']);
 $smarty->assign('products_view',$_SESSION['state']['supplier']['products']['view']);
@@ -94,14 +107,8 @@ $smarty->assign('products_percentage',$_SESSION['state']['supplier']['products']
 $smarty->assign('products_period',$_SESSION['state']['supplier']['products']['period']);
 
 
-$smarty->assign('box_layout','yui-t0');
-$smarty->assign('parent','suppliers.php');
-$smarty->assign('title','Supplier: '.$supplier->get('Supplier Code'));
 
-$smarty->assign('name',$supplier->get('Supplier Name'));
 
-$smarty->assign('id',$myconf['supplier_id_prefix'].sprintf("%05d",$supplier->id));
-//$smarty->assign('principal_address',display_full_address($contact_data['main_address']) );
 
 
 $tipo_filter=$_SESSION['state']['supplier']['products']['f_field'];
@@ -134,7 +141,9 @@ $smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu1',$paginator_menu);
 
-
+ $smarty->assign('css_files',$css_files);
+$smarty->assign('js_files',$js_files);
 
 $smarty->display('supplier.tpl');
+}
 ?>

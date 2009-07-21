@@ -48,15 +48,15 @@
   <div  style="{if $edit!="details"}display:none;{/if}margin:0"  class="edit_block" id="d_details">
 	<table class="edit" border=0>
 	  
-	  <tr class="title"><td colspan="2" style="width:160px">Details:</td>
+	  <tr class="title"><td colspan="2" style="width:160px">Details: <span id="details_messages"></span></td><td  style="text-align:right"><span style="display:none" class="small_button" id="cancel_save_details_button" >Cancel</span><span  style="display:none" class="small_button" id="save_details_button" >Save</span></td>
 	  </tr>
-	  <tr class="first"><td style="width:160px">Public Name:</td><td  style="text-align:left"><input style="text-align:left;width:12em" id="full_name" value="{$company->get('Company Name')}" ovalue="{$company->get('Company Name')}"></td>
+	  <tr class="first"><td style="width:160px">Public Name:</td><td  style="text-align:left"><input style="text-align:left;width:12em" id="name" value="{$company->get('Company Name')}" ovalue="{$company->get('Company Name')}"></td>
 	  </tr>
 	  <tr class="first"><td style="width:160px">Fiscal Name:</td><td style="text-align:left"><input style="text-align:left;width:12em" id="fiscal_name" value="{$company->get('Company Fiscal Name')}" ovalue="{$company->get('Company Fiscal Name')}" ></td>
 	  </tr>
-	  <tr class="first"><td style="width:160px">Tax Number:</td><td  style="text-align:left"><input style="text-align:left;width:12em" id="fiscal_name" value="{$company->get('Company Tax Number')}" ovalue="{$company->get('Company Tax Number')}" ></td>
+	  <tr class="first"><td style="width:160px">Tax Number:</td><td  style="text-align:left"><input style="text-align:left;width:12em" id="tax_number" value="{$company->get('Company Tax Number')}" ovalue="{$company->get('Company Tax Number')}" ></td>
 	  </tr>
-	  <tr class="first"><td style="width:160px">Registration Number:</td><td style="text-align:left"><input style="text-align:left;width:12em" id="fiscal_name" value="{$company->get('Company Registration Number')}" ovalue="{$company->get('Company Registration Number')}" ></td>
+	  <tr class="first"><td style="width:160px">Registration Number:</td><td style="text-align:left"><input style="text-align:left;width:12em" id="registration_number" value="{$company->get('Company Registration Number')}" ovalue="{$company->get('Company Registration Number')}" ></td>
 	  </tr>
 	</table>
       </div>
@@ -64,8 +64,17 @@
  <div  style="{if $edit!="address"}xdisplay:none;{/if}margin:0"  class="edit_block" id="d_address">
 	<table class="edit" border=0>
 	  
-	  <tr class="title"><td colspan="2" style="width:160px">Address:</td>
+	  <tr class="title"><td style="width:160px">Address:</td><td  style="text-align:right"><span class="small_button" id="cancel_add_contact_button" >Edit Address</span><span class="small_button" id="save_add_contact_button" >Move to New Address</span><span class="small_button" id="add_contact_button" >Add Address</span></td>
+	    <tr>
+	      <td colspan=2>
+		{foreach from=$company->get_addresses() item=address  }
+		{assign var=oaddress value=$address.object}
+		<div style="border:1px solid #ccc">{$oaddress->get('Address Key')}</div>
+	      {/foreach}
+	      </td>
+	    </tr>
 	  </tr>
+	   <input type="hidden" id="main_address_id" value="{$address->id}" ovalue="{$address->id}" >
 	  <tr class="first"><td style="width:160px">Country:</td><td  style="text-align:left"><input style="text-align:left;width:12em" id="main_address_country" value="{$address->get('Address Country Name')}" ovalue="{$address->get('Address Country Name')}"></td>
 	  </tr>
 	   <tr ><td style="width:160px">Postal Code:</td><td  style="text-align:left"><input style="text-align:left;width:12em" id="main_address_country_d1" value="{$address->get('Address Postal Code')}" ovalue="{$address->get('Address Postal Code')}"></td>
@@ -85,10 +94,85 @@
 
       <div  style="{if $edit!="contacts"}xdisplay:none;{/if}margin:0"  class="edit_block" id="d_contacts">
 	<table class="edit" border=1>
-	  <tr class="title"><td  colspan="2" >Contacts:</td></tr>
+	  <tr class="title"><td>Contacts:</td><td  style="text-align:right"><span class="small_button" id="cancel_add_contact_button" >Cancel Adding New Contact</span><span class="small_button" id="save_add_contact_button" >Save New Contact</span><span class="small_button" id="add_contact_button" >Add Contact</span></td></tr>
+	  
+	  <tr id="add_contact_block" style="background:#f0fbff">
+	    <td colspan=2>
+	      <table border=2 class="edit">
+		<tr ><td style="width:120px;vertical-align: top;">Name:</td><td style="text-align:left;vertical-align: top;"><input style="text-align:left;width:12em" id="full_name" value=""></td>
+		  <td  style="text-align:left;vertical-align: top;">
+		    <table border=1 class="edit" style="position:relative;top:-6px;" >	  
+		      <tr>
+			<td class="label" >{t}Salutation{/t}:</td>
+			<td  style="text-align:left" >
+			  <table id="period_options" style="float:none;position:relative;left:-4px;" border=0  class="options_mini" >
+			    <tr>
+			      
+			      {foreach from=$prefix item=s  }
+			      
+			      <td   onclick="update_salutation(this)"  style="background:#fff{if $s.relevance>1};display:none{/if} "    id="salutation{$s.id}" >{$s.txt}</td>
+			      {/foreach}
+			      
+			    </tr>
+			  </table>
+			</td>
+		      </tr>
+	   
+		      <tr>
+			<td class="label">{t}First Name(s){/t}:</td>
+			<td  style="text-align:left" ><input  onkeyup="update_full_address()"  onblur="" style="text-align:left;width:12em"  name="first_name" id="v_first_name" value=""  ovalue="" ></td>
+		      </tr>
+		      <tr>
+			<td class="label">{t}Surname(s){/t}:</td>
+			<td  style="text-align:left" ><input  onkeyup="update_full_address()"  onblur="" style="text-align:left;width:12em"  name="surname" id="v_surname" value=""  ovalue="" ></td>
+	  </tr>
+		      
+		    </table>
+		  </td>
+		</tr>
+		<tr>
+		  <td style="vertical-align: top;">{t}Email{/t}:</td><td style="text-align:left"><input style="text-align:left" value="" ovalue="" /> </td>
+		</tr>
+		<tr>
+		  <td style="vertical-align: top;">{t}Telephone{/t}:</td><td style="vertical-align: top;text-align:left"><input style="text-align:left" value="" ovalue="" /> </td>
+		  <td style="text-align:left"  >
+		    <table border=1 class="edit">
+		      <tr valign="top"><td valign="top">{t}Country Code{/t}:</td><td style="text-align:left"><input style="text-align:left;width:3em" value="" ovalue="" /></td></tr>
+		      <tr><td>{t}National Access Code{/t}:</td><td style="text-align:left"><input style="text-align:center;width:1em" value="" ovalue="" /></td></tr>
+		      <tr><td>{t}Area Code{/t}:</td><td style="text-align:left"><input style="text-align:left;width:4em" value="" ovalue="" /></td></tr>
+		      <tr><td>{t}Number{/t}:</td><td style="text-align:left"><input style="text-align:left;width:7em" value="" ovalue="" /></td></tr>
+		      <tr><td>{t}Extension{/t}:</td><td style="text-align:left"><input style="text-align:left;width:3em" value="" ovalue="" /></td></tr>
+		      </table>
+		  </td>
+		</tr>
+		<tr>
+		  <td style="vertical-align: top;">{t}Fax{/t}:</td><td style="vertical-align: top;text-align:left"><input style="text-align:left" value="" ovalue="" /> </td>
+		   <td style="text-align:left"  >
+		    <table border=1 class="edit">
+		      <tr valign="top"><td valign="top">{t}Country Code{/t}:</td><td style="text-align:left"><input style="text-align:left;width:3em" value="" ovalue="" /></td></tr>
+		      <tr><td>{t}National Access Code{/t}:</td><td style="text-align:left"><input style="text-align:center;width:1em" value="" ovalue="" /></td></tr>
+		      <tr><td>{t}Area Code{/t}:</td><td style="text-align:left"><input style="text-align:left;width:4em" value="" ovalue="" /></td></tr>
+		      <tr><td>{t}Number{/t}:</td><td style="text-align:left"><input style="text-align:left;width:7em" value="" ovalue="" /></td></tr>
+		      <tr><td>{t}Extension{/t}:</td><td style="text-align:left"><input style="text-align:left;width:3em" value="" ovalue="" /></td></tr>
+		      </table>
+		  </td>
+		</tr>
+	      </table>
 	    
-	    {foreach from=$company->get_contacts() item=contact  name=foo }
-	    <tr style="text-align:left" ><td  style="width:160px;vertical-align: top;"><img src="art/icons/vcard.png"/> {$contact.name}:</td><td>cc</td></tr>
+	    </td>
+	  </tr>
+	  
+	  
+	  
+	  {foreach from=$company->get_contacts() item=contact  name=foo }
+	  <tr style="text-align:left" ><td  style="width:160px;vertical-align: top;"><img src="art/icons/vcard.png"/> {$contact.name}:</td><td  style="text-align:left" >
+		<table>
+		  <tr><td>{t}Email{/t}</td><td><input style="text-align:left"  value="{$contact.email}"></td></tr>
+		  <tr><td>{t}Telephone{/t}</td><td><input style="text-align:left"  value="{$contact.telephone}"></td></tr>
+		  <tr><td>{t}Fax{/t}</td><td><input style="text-align:left"  value="{$contact.fax}"></td></tr>
+
+	    </table>
+	    </td></tr>
 	    {/foreach}
 	
 

@@ -17,6 +17,7 @@ require_once 'app_files/db/dns.php';         // DB connecton configuration file
 require_once 'external_libs/PEAR/MDB2.php';            // PEAR Database Abstraction Layer
 require_once 'common_functions.php';
 require_once "classes/DBsession.php";
+require_once "classes/Staff.php";
 
 
  
@@ -342,8 +343,31 @@ if(!isset($_SESSION['state']))
   $_SESSION['state']=$default_state;
 
 
+$_USER_KEY=($LU->getProperty('auth_user_id')==1?_('Superuser'):$LU->getProperty('handle'));
 
-$smarty->assign('user',($LU->getProperty('auth_user_id')==1?_('Superuser'):$LU->getProperty('handle')));
+switch($LU->getProperty('tipo')){
+case(0):
+  $staff=new Staff ($LU->getProperty('id_in_table'));
+  $_USER_CONTACT_KEY=0;
+  $_USER_CONTACT_NAME=_('Superuser');
+  break;
+
+case(1):
+ 
+  $staff=new Staff ($LU->getProperty('id_in_table'));
+  if($staff->id){
+    $_USER_CONTACT_KEY=$staff->data['Staff Contact Key'];
+    $_USER_CONTACT_NAME=$staff->data['Staff Name'];
+    break;
+  }
+    //exit("Fatal error staff not related to user");
+  break;
+default:
+  $_USER_CONTACT_KEY=0;
+  $_USER_CONTACT_NAME=$LU->getProperty('handle');
+}
+
+$smarty->assign('user',$_USER_KEY);
 $smarty->assign('lang_code',$lang_code);
 $smarty->assign('lang_country_code',strtolower($lang_country_code));
 

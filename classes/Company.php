@@ -754,7 +754,8 @@ class Company extends DB_Table {
 
 protected function update_field_switcher($field,$value,$options=''){
 
-
+  
+  
  
 
   switch($field){
@@ -850,14 +851,12 @@ protected function update_field_switcher($field,$value,$options=''){
     Update/Create address
    */
   private function update_address($data,$type='Work'){
-
-
-
+    
+    
+    
     $address_data=false;
     if(array_empty($data))
       return;
-    
-    //  print_r($data);
     foreach($data as $key=>$val){
       $_key=preg_replace('/Company/','Contact',$key);
       $_data[$_key]=$val;
@@ -865,26 +864,15 @@ protected function update_field_switcher($field,$value,$options=''){
     
 
     $_data['editor']=$this->editor;
-    
-
-    //  $address=new address('find in contact '.$this->data['Company Main Contact Key'].' '.$type.' create',$_data);
-    
-    //if($address->id){
 
     $_data['Address Type']='Work';
     $_data['Address Function']='Contact';
     $_data['Address Description']='Work Contact Address';
 
-//       $address_data=array(
-// 			  //'Address Key'=>$address->id
-// 			  'Address Type'=>'Work'
-// 			  ,'Address Function'=>'Contact'
-// 			  ,'Address Description'=>'Work Contact Address'
-// 			  );
-      $contact=new Contact($this->data['Company Main Contact Key']);
-      $contact->editor=$this->editor;
-      $contact->add_address($_data,"principal");
-      // }
+
+    $contact=new Contact($this->data['Company Main Contact Key']);
+    $contact->editor=$this->editor;
+    $contact->add_address($_data,"principal");
 
   }
 
@@ -894,6 +882,10 @@ protected function update_field_switcher($field,$value,$options=''){
 
  */
 private function update_Company_Name($value,$options){
+  
+  
+
+
   if($value==''){
   $this->new=false;
     $this->msg.=" Company name should have a value";
@@ -902,6 +894,7 @@ private function update_Company_Name($value,$options){
       exit($this->msg);
     return false;
   }
+  $old_value=$this->data['Company Name'];
   $this->data['Company Name']=$value;
   $this->data['Company File As']=$this->file_as($this->data['Company Name']);
   $sql=sprintf("update `Company Dimension` set `Company name`=%s,`Company File As`=%s where `Company Key`=%d "
@@ -919,17 +912,50 @@ private function update_Company_Name($value,$options){
     //$this->msg.=' '._('Same value as the old record');
     
   }else{
-    $this->msg.=' '._('Record updated')."\n";
+    $this->msg.=' '._('Company name updated')."\n";
+    $this->msg_updated=_('Company name updated')."$sql";
     $this->updated=true;
+
+
+
+       $history_data=array(
+			  'note'=>_('Company Name Changed')
+			  ,'details'=>_trim(_('Company name chaged').": ".$old_value." -> ".$this->data['Company Name'])
+			  ,'indirect_object'=>'Name'
+			  );
+       $this->add_history($history_data);
+      $this->add_history($history_data);
 
     // update childen and parents
 
-    $sql=sprintf("update `Contact Dimension` set `Contact Company Name`=%s where `Company Key`=%d  "
-		 ,prepare_mysql($this->data['Company Name'])
-		 ,$this->id);
-    mysql_query($sql);
+    $sql=sprintf("select `Contact Key` set `Contact Dimension` where `Contact Company Key`=%d  ",$this->id);
+    $res=mysql_query($sql);
+    while($row=mysql_fetch_array($res)){
+      $contact=new Contact ($row['Contact Key']);
+      $contact->editor=$this->editor;
+      $contact->update(array('Contact Company Name'=>$this->data['Company Name']));
+    }
+
+
+    $sql=sprintf("select `Supplier Key` set `Supplier Dimension` where `Supplier Company Key`=%d  ",$this->id);
+    $res=mysql_query($sql);
+    while($row=mysql_fetch_array($res)){
+      $supplier=new Supplier ($row['Supplier Key']);
+      $supplier->editor=$this->editor;
+      $supplier->update(array('Supplier Company Name'=>$this->data['Company Name']));
+    }
     
-  }  
+  $sql=sprintf("select `Customer Key` set `Customer Dimension` where `Customer Company Key`=%d  ",$this->id);
+    $res=mysql_query($sql);
+    while($row=mysql_fetch_array($res)){
+      $customer=new Customer ($row['Customer Key']);
+      $customer->editor=$this->editor;
+      $customer->update(array('Customer Company Name'=>$this->data['Company Name']));
+    }
+    
+ 
+    
+  } 
   
 }
 
@@ -1696,13 +1722,32 @@ function add_contact($data,$args='principal'){
 					     ,'email'=>$row['Contact Main Plain Email']
 					     ,'telephone'=>$row['Contact Main Telephone']
 					     ,'fax'=>$row['Contact Main Fax']
-
+					     ,'contact'=>new Contact($row['Contact Key'])
 					     );
        
      }
      return $contacts;
    }
    
+
+   function get_addresses(){
+      $sql=sprintf("select * from `Address Bridge` CB where   `Subject Type`='Company' and `Subject Key`=%d order by `Is Main` desc  ",$this->id);
+     $addresses=array();
+     $result=mysql_query($sql);
+     while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+       $addresses[$row['Address Key']]= array(
+					     'id'=>$row['Address Key']
+					     ,'type'=>$row['Address Type']
+					     ,'function'=>$row['Address Function']
+					     ,'description'=>$row['Address Description']
+					     ,'object'=>new Address($row['Address Key'])
+					     );
+       
+     }
+     return $addresses;
+
+   }
+
 
 }
 
