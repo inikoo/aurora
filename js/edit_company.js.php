@@ -32,6 +32,12 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 $country_list=preg_replace('/^\,/','',$country_list);
 
 
+if( !isset($_REQUEST['id']) or !is_numeric($_REQUEST['id'])  ){
+    $company_key=$_SESSION['state']['company']['id'];
+}else
+    $company_key=$_REQUEST['id'];
+print "var company_key=$company_key;";
+
 ?>
     
     var Dom   = YAHOO.util.Dom;
@@ -43,6 +49,12 @@ var Country_List=[<?=$country_list?>];
 var current_salutation='salutation<?=$contact->get('Salutation Key')?>';
 var current_block='<?=$edit_block?>';
 var old_salutation=current_salutation;
+
+
+var changes_details=0;
+var saved_details=0;
+var error_details=0;
+
 
 // Country_list DataSource using a JSFunction
 			// Country_list.posts is set by the http://feeds.delicious.com/feeds/json/neyric?count=100 script included in the page
@@ -125,11 +137,87 @@ var change_block = function(e){
 
     current_block=this.id;
     
+};
+
+
+
+var save_details=function(e){
+    var items = ["name","fiscal_name","tax_number","registration_number"];
+    var table='company';
+    save_details=0;
+    for ( var i in items )
+	{
+	    var key=items[i];
+	    var value=Dom.get(items[i]).value;
+	    var request='ar_edit_contacts.php?tipo=edit_'+escape(table)+'&key=' + key + '&value=' + escape(value)+'&id='+company_key; 
+	   
+	    YAHOO.util.Connect.asyncRequest('POST',request ,{
+		    success:function(o) {
+			//alert(o.responseText);
+			var r =  YAHOO.lang.JSON.parse(o.responseText);
+			if(r.action=='updatedd'){
+			    Dom.get(items[i]).value=r.value;
+			    Dom.get(items[i]).getAttribute('ovalue')=Dom.get(items[i]).value;
+			    save_details++;
+			}else if(r.action=='error'){
+			    alert(r.msg);
+			}
+			    
+
+			
+		    }
+		});
+
+	} 
+    
+}
+var cancel_save_details=function(e){
+    var items = ["name","fiscal_name","tax_number","registration_number"];
+    for ( var i in items )
+	{
+	    Dom.get(items[i]).value=Dom.get(items[i]).getAttribute('ovalue');
+	} 
+    
+    Dom.get('details_messages').innerHTML='';
+    Dom.setStyle(['save_details_button', 'cancel_save_details_button'], 'display', 'none'); 
+}
+
+var update_details=function(e){
+    var changes=0;
+    
+    var items = ["name","fiscal_name","tax_number","registration_number"];
+    for ( var i in items )
+	{
+	    if(Dom.get(items[i]).value!=Dom.get(items[i]).getAttribute('ovalue'))
+		changes++; 
+	} 
+
+    
+    if(changes==0){
+	Dom.get('details_messages').innerHTML='';
+	Dom.setStyle(['save_details_button', 'cancel_save_details_button'], 'display', 'none'); 
+    }else if (changes==1){
+	Dom.get('details_messages').innerHTML=changes+'<?=' '._('change')?>';
+	Dom.setStyle(['save_details_button', 'cancel_save_details_button'], 'display', ''); 
+    }else{
+	Dom.get('details_messages').innerHTML=changes+'<?=' '._('changes')?>';
+	Dom.setStyle(['save_details_button', 'cancel_save_details_button'], 'display', ''); 
+    }
+
+
 }
 
 
 function init(){
-    var ids = ["personal","pictures","work","other"]; 
-	YAHOO.util.Event.addListener(ids, "click", change_block);
+
+    //   var ids = ["personal","pictures","work","other"]; 
+    //	YAHOO.util.Event.addListener(ids, "click", change_block);
+    YAHOO.util.Event.addListener('save_details_button', "click",save_details );
+
+    YAHOO.util.Event.addListener('cancel_save_details_button', "click",cancel_save_details );
+    var ids = ["name","fiscal_name","tax_number","registration_number"]; 
+
+    YAHOO.util.Event.addListener(ids, "keyup", update_details);
+
 } 
 YAHOO.util.Event.onDOMReady(init);

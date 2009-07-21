@@ -26,6 +26,8 @@ abstract class DB_Table
  // Boolean: updated
   // True if company has been updated
   public $updated=false;
+  public $error_updated=false;
+  public $msg_updated='';
  // Boolean: found
   // True if company founded
   public $found=false;
@@ -68,6 +70,17 @@ abstract class DB_Table
     $data - associated array with Email Dimension fields
     */
   public function update($data,$options=''){
+
+
+     if(isset($data['editor'])){
+      foreach($data['editor'] as $key=>$value){
+
+	if(array_key_exists($key,$this->editor))
+	  $this->editor[$key]=$value;
+		    
+      }
+    }
+
 
     // if($this->table_name=='Telecom'){
       // print_r($data);exit;
