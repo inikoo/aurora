@@ -1734,14 +1734,11 @@ function add_contact($data,$args='principal'){
       $sql=sprintf("select * from `Address Bridge` CB where   `Subject Type`='Company' and `Subject Key`=%d order by `Is Main` desc  ",$this->id);
      $addresses=array();
      $result=mysql_query($sql);
+  
      while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
        $address= new Address($row['Address Key']);
-       //$address->data['Address Type']=$row['Address Type'];
-       //$address->data['Address Function']=$row['Address Function'];
-       //$address->data['Address Description']=$row['Address Description'];
-
-
        $addresses[]= $address;
+      
      }
      return $addresses;
 
