@@ -28,7 +28,7 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 $sql="select `Country Key`,`Country Name`,`Country Code` from `Country Dimension`";
 $result=mysql_query($sql);
 $country_list='';
-$country_address_tags=['GBR':{'coutry_id':{'name':'Not Sovereign Country','oname':'Not Sovereign Country','hide':true} }];
+
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
     $country_list.=',{"id":"'.$row['Country Key'].'","name":"'.$row['Country Name'].'","code":"'.$row['Country Code'].'"}  ';
 }
@@ -72,6 +72,19 @@ $address_data=preg_replace('/^\,/','',$address_data);
     
 var Dom   = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;
+
+var Country_Address_Tags=[
+			  {
+			      'GBR':{
+				  'country_d1':{'name':'Union Country','oname':'Union Country','hide':true,'in_use':true}
+				  ,'country_d2':{'name':'County','oname':'County','hide':false,'in_use':true}
+			      }
+			      ,'MEX':{
+				  'country_d1':{'name':'State','oname':'Estado','hide':false,'in_use':true}
+				  ,'country_d2':{'name':'Municipality','oname':'Municipio','hide':true,'in_use':true}
+			      }
+			  }
+		       ];
 
 var Country_List=[<?=$country_list?>];
 var Address_Data=[<?=$address_data?>];
@@ -234,11 +247,26 @@ var update_details=function(e){
     }
 
 
+};
+
+var add_address=function(){
+    Dom.setStyle(['address_showcase','save_add_contact_button','add_contact_button'], 'display', 'none'); 
+    Dom.setStyle(['address_form','cancel_edit_address'], 'display', ''); 
+    Dom.get("cancel_edit_address").setAttribute('address_index','new');
+    
+    for (key in Address_Keys){
+	item=Dom.get('address_'+key);
+	item.value='';
+	item.setAttribute('ovalue','');
+	
+    }
 }
+
+
 var cancel_edit_address=function (){
     index=Dom.get("cancel_edit_address").getAttribute('address_index');
-    Dom.setStyle(['address_showcase','save_add_contact_button','add_contact_button'], 'display', ''); 
-    Dom.setStyle(['address_form'+index,'cancel_edit_address'], 'display', 'none'); 
+    Dom.setStyle(['address_showcase','move_address_button','add_address_button'], 'display', ''); 
+    Dom.setStyle(['address_form','cancel_edit_address'], 'display', 'none'); 
     Dom.get("cancel_edit_address").setAttribute('address_index','');
       
     data=Address_Data[index];
@@ -250,29 +278,76 @@ var cancel_edit_address=function (){
     }
 
 
-  }
+};
 
 
-    var edit_address=function (index){
-	Dom.setStyle(['address_showcase','save_add_contact_button','add_contact_button'], 'display', 'none'); 
-	Dom.setStyle(['address_form'+index,'cancel_edit_address'], 'display', ''); 
-	Dom.get("cancel_edit_address").setAttribute('address_index',index);
+var edit_address=function (index){
+    Dom.setStyle(['address_showcase','move_address_button','add_address_button'], 'display', 'none'); 
+    Dom.setStyle(['address_form','cancel_edit_address'], 'display', ''); 
+    Dom.get("cancel_edit_address").setAttribute('address_index',index);
 	
-	data=Address_Data[index];
-	for (key in data){
+    data=Address_Data[index];
+    tags=new Object();
+    for (key in data){
+	if(key=='country_code'){
+		if(Country_Address_Tags[0][data[key]]!= undefined){
+		    tags=Country_Address_Tags[0][data[key]];
+		    
+		}
+		
+	    }
+	
+	if(tags[key]!=undefined){
+	    if(tags[key].name!=undefined)
+		Dom.get('tag_address_'+key).innerHTML=tags[key].name;
+	    if(tags[key].in_use!=undefined && !tags[key].in_use){
+		Dom.setStyle('tr_tag_address_'+key,'display','none');
+	    }
+
+	    if(tags[key].hide!=undefined && tags[key].hide){
+		
+		Dom.setStyle('tr_address_'+key,'display','none');
+		    if(key=='country_d1'){
+			Dom.setStyle('show_'+key,'display','');
+					    
+		    }
+
+		}
+
+
+	    }
+
 	    item=Dom.get('address_'+key);
 	    item.value=data[key];
 	    item.setAttribute('ovalue',data[key]);
+	   
+
 
 	}
 
 	
   }
+ var toggle_country_d1=function (){
+     
+     Dom.setStyle(['tr_address_country_d1','show_country_d2'],'display','');
+     Dom.setStyle('show_country_d1','display','none');
+     Dom.get('show_country_d2').innerHTML='x';
+
+  }
+ var toggle_country_d2=function (){
+      if(Dom.get("show_country_d2").innerHTML=='x'){
+	Dom.setStyle('show_country_d1','display','');
+	Dom.setStyle('tr_address_country_d1','display','none');
+	
+    }
+
+
+  }
 
 
  var toggle_town_d1=function (){
      
-     Dom.setStyle('address_town_d1_tr','display','');
+     Dom.setStyle('tr_address_town_d1','display','');
      Dom.setStyle('show_town_d1','display','none');
      Dom.get("show_town_d2").innerHTML='x';
 
@@ -281,7 +356,7 @@ var cancel_edit_address=function (){
 var toggle_town_d2=function (){
     if(Dom.get("show_town_d2").innerHTML=='x'){
 	Dom.setStyle('show_town_d1','display','');
-	Dom.setStyle('address_town_d1_tr','display','none');
+	Dom.setStyle('tr_address_town_d1','display','none');
 	
     }
   }
@@ -316,6 +391,9 @@ function init(){
     YAHOO.util.Event.addListener('save_details_button', "click",save_details );
 
     YAHOO.util.Event.addListener('cancel_save_details_button', "click",cancel_save_details );
+    YAHOO.util.Event.addListener('add_address_button', "click",add_address );
+
+
     var ids = ["name","fiscal_name","tax_number","registration_number"]; 
 
     YAHOO.util.Event.addListener(ids, "keyup", update_details);
