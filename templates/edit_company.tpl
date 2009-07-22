@@ -64,17 +64,22 @@
  <div  style="{if $edit!="address"}xdisplay:none;{/if}margin:0"  class="edit_block" id="d_address">
 	<table class="edit" border=0>
 	  
-	  <tr class="title"><td style="width:160px">Address:</td><td  style="text-align:right"><span class="small_button" id="cancel_add_contact_button" >Edit Address</span><span class="small_button" id="save_add_contact_button" >Move to New Address</span><span class="small_button" id="add_contact_button" >Add Address</span></td>
+	  <tr class="title"><td style="width:160px">Address:</td><td  style="text-align:right"><span class="small_button" id="save_add_contact_button" >Move to New Address</span><span class="small_button" id="add_contact_button" >Add Address</span></td>
 	    <tr>
 	      <td colspan=2>
 		{foreach from=$company->get_addresses() item=address  }
-		{assign var=oaddress value=$address.object}
-		<div style="border:1px solid #ccc">{$oaddress->get('Address Key')}</div>
+		<div  style="width:200px;">
+		<div style="padding:10px;text-align:left;border:1px solid #ccc;">{$address->display('xhtml')}</div>
+		<div  style="text-align:right;margin-top:4px"><span class="small_button" id="cancel_add_contact_button" >Edit Address</span></div>
+				  
+		</div>
 	      {/foreach}
 	      </td>
 	    </tr>
 	  </tr>
-	   <input type="hidden" id="main_address_id" value="{$address->id}" ovalue="{$address->id}" >
+	  {foreach from=$company->get_addresses() item=address key=address_index  }
+	  <tbody id="address_form{$address_index}" style="display:none">
+	  <input type="hidden" id="address_id" value="{$address->id}" ovalue="{$address->id}" >
 	  <tr class="first"><td style="width:160px">Country:</td><td  style="text-align:left"><input style="text-align:left;width:12em" id="main_address_country" value="{$address->get('Address Country Name')}" ovalue="{$address->get('Address Country Name')}"></td>
 	  </tr>
 	   <tr ><td style="width:160px">Postal Code:</td><td  style="text-align:left"><input style="text-align:left;width:12em" id="main_address_country_d1" value="{$address->get('Address Postal Code')}" ovalue="{$address->get('Address Postal Code')}"></td>
@@ -89,6 +94,9 @@
 	  </tr>
 	  <tr ><td style="width:160px">Internal:</td><td  style="text-align:left"><input style="text-align:left;width:12em" id="main_address_country_d1" value="{$address->get('Address Internal')}" ovalue="{$address->get('Address Internal')}"></td>
 	  </tr>
+
+ {/foreach}
+
 	</table>
       </div>
 

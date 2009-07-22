@@ -1735,14 +1735,13 @@ function add_contact($data,$args='principal'){
      $addresses=array();
      $result=mysql_query($sql);
      while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-       $addresses[$row['Address Key']]= array(
-					     'id'=>$row['Address Key']
-					     ,'type'=>$row['Address Type']
-					     ,'function'=>$row['Address Function']
-					     ,'description'=>$row['Address Description']
-					     ,'object'=>new Address($row['Address Key'])
-					     );
-       
+       $address= new Address($row['Address Key']);
+       //$address->data['Address Type']=$row['Address Type'];
+       //$address->data['Address Function']=$row['Address Function'];
+       //$address->data['Address Description']=$row['Address Description'];
+
+
+       $addresses[]= $address;
      }
      return $addresses;
 
