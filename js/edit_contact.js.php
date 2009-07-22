@@ -44,41 +44,7 @@ var current_salutation='salutation<?=$contact->get('Salutation Key')?>';
 var current_block='<?=$edit_block?>';
 var old_salutation=current_salutation;
 
-// Country_list DataSource using a JSFunction
-			// Country_list.posts is set by the http://feeds.delicious.com/feeds/json/neyric?count=100 script included in the page
-var CountryDS = new YAHOO.widget.DS_JSFunction(function (sQuery) {
-	if (!sQuery || sQuery.length == 0) return false;
-	var query = sQuery.toLowerCase();
-	var aResults = [];
-	
-	code_match='';
-	if(query.length==3){
-	    for(var i = 0 ; i < Country_List.length ; i++) {
-		var desc = Country_List[i].c.toLowerCase();
-		if( query==desc  ) {
-		    aResults.push([Country_List[i].n, Country_List[i]]);
-		    code_match=Country_List[i].c;
-		    break;
-		}
-	    }
-	    
 
-	}
-
-
-	patt1 = new RegExp("^"+query); 
-	
-	for(var i = 0 ; i < Country_List.length ; i++) {
-	    var desc = Country_List[i].n.toLowerCase();
-	    if( desc.match(patt1) ) {
-		if(code_match!= Country_List[i].c )
-		    aResults.push([Country_List[i].n, Country_List[i]]);
-		
-	    }
-	}
-	return aResults;
-    });
-CountryDS.maxCacheEntries = 100;
 
 
 function update_full_address(){
@@ -128,8 +94,18 @@ var change_block = function(e){
 }
 
 
+
+
+
+
+
 function init(){
     var ids = ["personal","pictures","work","other"]; 
-	YAHOO.util.Event.addListener(ids, "click", change_block);
+    YAHOO.util.Event.addListener(ids, "click", change_block);
+    
+
+
+
+
 } 
 YAHOO.util.Event.onDOMReady(init);

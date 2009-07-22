@@ -64,38 +64,70 @@
  <div  style="{if $edit!="address"}xdisplay:none;{/if}margin:0"  class="edit_block" id="d_address">
 	<table class="edit" border=0>
 	  
-	  <tr class="title"><td style="width:160px">Address:</td><td  style="text-align:right"><span class="small_button" id="save_add_contact_button" >Move to New Address</span><span class="small_button" id="add_contact_button" >Add Address</span></td>
-	    <tr>
+	  <tr class="title"><td style="width:160px">Address:</td><td  style="text-align:right"><span class="small_button" id="cancel_edit_address" address_index=""  style="display:none" onClick="cancel_edit_address()">Cancel Edit Address</span><span class="small_button" id="save_add_contact_button" >Move to New Address</span><span class="small_button" id="add_contact_button" >Add Address</span></td>
+	    <tr id="address_showcase">
 	      <td colspan=2>
-		{foreach from=$company->get_addresses() item=address  }
+		{foreach from=$company->get_addresses() item=address key=key }
 		<div  style="width:200px;">
-		<div style="padding:10px;text-align:left;border:1px solid #ccc;">{$address->display('xhtml')}</div>
-		<div  style="text-align:right;margin-top:4px"><span class="small_button" id="cancel_add_contact_button" >Edit Address</span></div>
+		<div style="padding:10px;text-align:left;border:1px solid #ccc;" id="address_display{$key}">{$address->display('xhtml')}</div>
+		<div  style="text-align:right;margin-top:4px"><span class="small_button" id="edit_address_button{$key}" onclick="edit_address({$key})" >Edit Address</span></div>
 				  
 		</div>
 	      {/foreach}
 	      </td>
 	    </tr>
 	  </tr>
-	  {foreach from=$company->get_addresses() item=address key=address_index  }
-	  <tbody id="address_form{$address_index}" style="display:none">
-	  <input type="hidden" id="address_id" value="{$address->id}" ovalue="{$address->id}" >
-	  <tr class="first"><td style="width:160px">Country:</td><td  style="text-align:left"><input style="text-align:left;width:12em" id="main_address_country" value="{$address->get('Address Country Name')}" ovalue="{$address->get('Address Country Name')}"></td>
+	 
+	  <tbody id="address_form{$key}" style="display:none"   >
+
+	 
+
+
+	  <input type="hidden" id="address_key" value="" ovalue="" >
+	  <input type="hidden" id="address_fuzzy" value="Yes" ovalue="Yes" >
+	  <tr class="first"><td style="width:160px">Country:</td>
+	    <td  style="text-align:left">
+	      <div id="myAutoComplete" style="width:15em;position:relative;top:-10px" >
+		<input id="address_country" style="text-align:left;width:12em" type="text">
+		<div id="address_country_container" style="position:relative;top:18px" ></div>
+		<input id="address_country_code" type="hidden">
+	      </div>
+	    </td>
 	  </tr>
-	   <tr ><td style="width:160px">Postal Code:</td><td  style="text-align:left"><input style="text-align:left;width:12em" id="main_address_country_d1" value="{$address->get('Address Postal Code')}" ovalue="{$address->get('Address Postal Code')}"></td>
+	 
+	  <tr>
+	    <td style="width:160px">{t}Region{/t}:</td><td  style="text-align:left"><input style="text-align:left;width:12em" id="address_country_d1" value="" ovalue="" ></td>
 	  </tr>
-	  <tr ><td style="width:160px">Region:</td><td  style="text-align:left"><input style="text-align:left;width:12em" id="main_address_country_d1" value="{$address->get('Address Country Primary Division')}" ovalue="{$address->get('Address Country Primary Division')}"></td>
+	  <tr>
+	    <td style="width:160px">{t}Subregion{/t}:</td><td  style="text-align:left"><input style="text-align:left;width:12em" id="address_country_d2" value="" ovalue="" ></td>
 	  </tr>
-	  <tr ><td style="width:160px">Subregion:</td><td  style="text-align:left"><input style="text-align:left;width:12em" id="main_address_country_d1" value="{$address->get('Address Country Secondary Division')}" ovalue="{$address->get('Address Country Secondary Division')}"></td>
-	  </tr>
-	  <tr ><td style="width:160px">City:</td><td  style="text-align:left"><input style="text-align:left;width:12em" id="main_address_country_d1" value="{$address->get('Address Town')}" ovalue="{$address->get('Address Town')}"></td>
-	  <tr ><td style="width:160px">Street/Number:</td><td  style="text-align:left"><input style="text-align:left;width:12em" id="main_address_country_d1" value="{$address->display('street')}" ovalue="{$address->display('street')}"></td>
-	  <tr ><td style="width:160px">Building:</td><td  style="text-align:left"><input style="text-align:left;width:12em" id="main_address_country_d1" value="{$address->get('Address Building')}" ovalue="{$address->get('Address Building')}"></td>
-	  </tr>
-	  <tr ><td style="width:160px">Internal:</td><td  style="text-align:left"><input style="text-align:left;width:12em" id="main_address_country_d1" value="{$address->get('Address Internal')}" ovalue="{$address->get('Address Internal')}"></td>
+	  
+	  <tr>
+	    <td style="width:160px">{t}Postal Code{/t}:</td><td  style="text-align:left"><input style="text-align:left;width:12em" id="address_postal_code" value="" ovalue=""  ></td>
 	  </tr>
 
- {/foreach}
+	  <tr>
+	    <td style="width:160px">
+	      
+	      <span id="show_town_d1" onclick="toggle_town_d1()" class="small_button" style="padding:0 1px;font-size:50%;position:relative;top:-2px">+</span> {t}City{/t}:</td><td  style="text-align:left"><input style="text-align:left;width:12em" id="address_town" value="" ovalue="" ></td>
+	  </tr>
+	  <tr style="display:none" id="address_town_d1_tr">
+	    <td style="width:160px" >
+	      <span id="show_town_d2" onclick="toggle_town_d2()" class="small_button" style="padding:0 1px;font-size:50%;position:relative;top:-2px">x</span> {t}City 1st Div{/t}:</td><td  style="text-align:left"><input style="text-align:left;width:12em" id="address_town_d1" value="" ovalue="" ></td>
+	  </tr>
+	  <tr style="display:none;" id="address_town_d2_tr">
+	    <td style="width:160px">{t}City 2nd Div{/t}:</td><td  style="text-align:left"><input style="text-align:left;width:12em" id="address_town_d2" value="" ovalue="" ></td>
+	  </tr>
+	  <tr>
+	    <td style="width:160px">{t}Street/Number{/t}:</td><td  style="text-align:left"><input style="text-align:left;width:12em" id="address_street" value="" ovalue="" ></td>
+	  <tr>
+	    <td style="width:160px">{t}Building{/t}:</td><td  style="text-align:left"><input style="text-align:left;width:12em" id="address_building" value="" ovalue="" ></td>
+	  </tr>
+	  <tr >
+	    <td style="width:160px">{t}Internal{/t}:</td><td  style="text-align:left"><input style="text-align:left;width:12em" id="address_internal" value="" ovalue="" ></td>
+	  </tr>
+
+ 
 
 	</table>
       </div>

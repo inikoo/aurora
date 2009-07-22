@@ -40,6 +40,8 @@ $css_files=array(
 		 $yui_path.'assets/skins/sam/menu.css',
 		 $yui_path.'assets/skins/sam/button.css',
 		 $yui_path.'assets/skins/sam/editor.css',
+		 $yui_path.'assets/skins/sam/autocomplete.css',
+
 
 		 'text_editor.css',
 		 'common.css',
@@ -51,6 +53,8 @@ $js_files=array(
 		$yui_path.'utilities/utilities.js',
 		$yui_path.'json/json-min.js',
 		$yui_path.'paginator/paginator-min.js',
+		$yui_path.'animation/animation-min.js',
+
 		$yui_path.'datasource/datasource-min.js',
 		$yui_path.'autocomplete/autocomplete-min.js',
 		$yui_path.'datatable/datatable-min.js',

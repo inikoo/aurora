@@ -17,7 +17,7 @@
        <span  class="product_search_msg"   id="company_search_msg"    ></span> <span  class="search_sugestion"   id="company_search_sugestion"    ></span>
        <br/>
        <span id="but_show_details" state="{$details}" atitle="{if $details==0}{t}Hide Details{/t}{else}{t}Show Details{/t}{/if}" class="state_details"   >{if $details==1}{t}Hide Details{/t}{else}{t}Show Details{/t}{/if}</span>
-       <br/><a  href="company.php?edit=1"  id="but_edit" title="{t}Edit Company Data{/t}" class="state_details"   >{t}Edit Company{/t}</a>
+       <br/><a  href="company.php?edit={$company->id}"  id="but_edit" title="{t}Edit Company Data{/t}" class="state_details"   >{t}Edit Company{/t}</a>
 
 
        <table style="float:right;margin-top:20px">

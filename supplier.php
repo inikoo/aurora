@@ -23,6 +23,8 @@ $css_files=array(
 		 $yui_path.'menu/assets/skins/sam/menu.css',
 		 $yui_path.'calendar/assets/skins/sam/calendar.css',
 		 $yui_path.'button/assets/skins/sam/button.css',
+		 $yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
+
 		 'common.css',
 		 'button.css',
 		 'container.css',
@@ -33,6 +35,8 @@ $js_files=array(
 		$yui_path.'utilities/utilities.js',
 		$yui_path.'json/json-min.js',
 		$yui_path.'paginator/paginator-min.js',
+		$yui_path.'animation/animation-min.js',
+
 		$yui_path.'datasource/datasource-min.js',
 		$yui_path.'autocomplete/autocomplete-min.js',
 		$yui_path.'datatable/datatable.js',
