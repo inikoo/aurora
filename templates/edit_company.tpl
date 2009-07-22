@@ -64,7 +64,7 @@
  <div  style="{if $edit!="address"}xdisplay:none;{/if}margin:0"  class="edit_block" id="d_address">
 	<table class="edit" border=0>
 	  
-	  <tr class="title"><td style="width:160px">Address:</td><td  style="text-align:right"><span class="small_button" id="cancel_edit_address" address_index=""  style="display:none" onClick="cancel_edit_address()">Cancel Edit Address</span><span class="small_button" id="save_add_contact_button" >Move to New Address</span><span class="small_button" id="add_contact_button" >Add Address</span></td>
+	  <tr class="title"><td style="width:160px">Address:</td><td  style="text-align:right"><span class="small_button" id="cancel_edit_address" address_index=""  style="display:none" onClick="cancel_edit_address()">Cancel Edit Address</span><span class="small_button" id="move_address_button" >Move to New Address</span><span class="small_button" id="add_address_button" >Add Address</span></td>
 	    <tr id="address_showcase">
 	      <td colspan=2>
 		{foreach from=$company->get_addresses() item=address key=key }
@@ -78,14 +78,18 @@
 	    </tr>
 	  </tr>
 	 
-	  <tbody id="address_form{$key}" style="display:none"   >
+	  <tbody id="address_form" style="display:none"   >
 
 	 
 
 
 	  <input type="hidden" id="address_key" value="" ovalue="" >
 	  <input type="hidden" id="address_fuzzy" value="Yes" ovalue="Yes" >
-	  <tr class="first"><td style="width:160px">Country:</td>
+	  <tr class="first">
+	    
+	    <td style="width:160px">
+	      <span id="show_country_d1" onclick="toggle_country_d1()" class="small_button" style="padding:0 1px;font-size:50%;position:relative;top:-2px;display:none">+</span>
+	      Country:</td>
 	    <td  style="text-align:left">
 	      <div id="myAutoComplete" style="width:15em;position:relative;top:-10px" >
 		<input id="address_country" style="text-align:left;width:12em" type="text">
@@ -95,27 +99,26 @@
 	    </td>
 	  </tr>
 	 
-	  <tr>
-	    <td style="width:160px">{t}Region{/t}:</td><td  style="text-align:left"><input style="text-align:left;width:12em" id="address_country_d1" value="" ovalue="" ></td>
+	  <tr id="tr_address_country_d1">
+	    <td style="width:160px"><span id="show_country_d2" onclick="toggle_country_d2()" class="small_button" style="padding:0 1px;font-size:50%;position:relative;top:-2px;display:none">+</span> <span id="tag_address_country_d1">{t}Region{/t}</span>:</td><td  style="text-align:left"><input style="text-align:left;width:12em" id="address_country_d1" value="" ovalue="" ></td>
 	  </tr>
-	  <tr>
-	    <td style="width:160px">{t}Subregion{/t}:</td><td  style="text-align:left"><input style="text-align:left;width:12em" id="address_country_d2" value="" ovalue="" ></td>
+	  <tr id="tr_address_country_d2">
+	    <td style="width:160px"><span id="tag_address_country_d2">{t}Subregion{/t}</span>:</td><td  style="text-align:left"><input style="text-align:left;width:12em" id="address_country_d2" value="" ovalue="" ></td>
 	  </tr>
 	  
-	  <tr>
+	  <tr id="tr_address_postal_code">
 	    <td style="width:160px">{t}Postal Code{/t}:</td><td  style="text-align:left"><input style="text-align:left;width:12em" id="address_postal_code" value="" ovalue=""  ></td>
 	  </tr>
 
 	  <tr>
 	    <td style="width:160px">
-	      
 	      <span id="show_town_d1" onclick="toggle_town_d1()" class="small_button" style="padding:0 1px;font-size:50%;position:relative;top:-2px">+</span> {t}City{/t}:</td><td  style="text-align:left"><input style="text-align:left;width:12em" id="address_town" value="" ovalue="" ></td>
 	  </tr>
-	  <tr style="display:none" id="address_town_d1_tr">
+	  <tr style="display:none" id="tr_address_town_d1">
 	    <td style="width:160px" >
 	      <span id="show_town_d2" onclick="toggle_town_d2()" class="small_button" style="padding:0 1px;font-size:50%;position:relative;top:-2px">x</span> {t}City 1st Div{/t}:</td><td  style="text-align:left"><input style="text-align:left;width:12em" id="address_town_d1" value="" ovalue="" ></td>
 	  </tr>
-	  <tr style="display:none;" id="address_town_d2_tr">
+	  <tr style="display:none;" id="tr_address_town_d2">
 	    <td style="width:160px">{t}City 2nd Div{/t}:</td><td  style="text-align:left"><input style="text-align:left;width:12em" id="address_town_d2" value="" ovalue="" ></td>
 	  </tr>
 	  <tr>
