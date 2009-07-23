@@ -84,7 +84,7 @@ if($edit ){
   $editing_block='details';
 
   $smarty->assign('edit',$editing_block);
-
+  $js_files[]='js/edit_address.js.php';
   $js_files[]='js/edit_company.js.php?edit='.$editing_block;
   
 

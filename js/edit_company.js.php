@@ -43,13 +43,52 @@ if( !isset($_REQUEST['id']) or !is_numeric($_REQUEST['id'])  ){
     $company_key=$_SESSION['state']['company']['id'];
 }else
     $company_key=$_REQUEST['id'];
+$scope_key=$company_key;
+$scope='company';
+if( isset($_REQUEST['scope'])    ){
+    $scope=$_REQUEST['scope'];
+}
+if( isset($_REQUEST['scope_key'])    ){
+    $scope=$_REQUEST['scope_key'];
+}
+
 print "var company_key=$company_key;";
 
 $company=new Company($company_key);
-$addresses=$company->get_addresses();
-$address_data='';
+$addresses=$company->get_addresses(1);
+
+$address_data="\n";
+$address_data.=sprintf('{"key":0,"country":"","country_code":"UNK","country_d1":"","country_d2":"","town":"","postal_code":"","town_d1":"","town_d2":"","fuzzy":"","street":"","building":"","internal":"","type":["Office"],"description":"","function":["Contact"],"descriptions":[{"Contact":""}]} ' );
+ $address_data.="\n";
 foreach($addresses as $index=>$address){
-  $address_data.=sprintf(',{"key":%d,"country":%s,"country_code":%s,"country_d1":%s,"country_d2":%s,"town":%s,"postal_code":%s,"town_d1":%s,"town_d2":%s,"fuzzy":%s,"street":%s,"building":%s,"internal":%s} ',
+    $address->set_scope($scope,$scope_key);
+
+
+
+
+    $type="[";
+    foreach($address->get('Type') as $_type){
+	$type.=prepare_mysql($_type,false).",";
+    }
+    $type.="]";
+    $type=preg_replace('/,]$/',']',$type);
+    
+    $function="[";
+    foreach($address->get('Function') as $value){
+	$function.=prepare_mysql($value,false).",";
+    }
+    $function.="]";
+    $function=preg_replace('/,]$/',']',$function);
+    
+    $descriptions="[";
+    foreach($address->get('Descriptions') as $key=>$value){
+	$descriptions.='{'.prepare_mysql($key,false).':'.prepare_mysql($value,false)."},";
+    }
+    $descriptions.="]";
+    $descriptions=preg_replace('/,]$/',']',$descriptions);
+
+
+  $address_data.=sprintf(',{"key":%d,"country":%s,"country_code":%s,"country_d1":%s,"country_d2":%s,"town":%s,"postal_code":%s,"town_d1":%s,"town_d2":%s,"fuzzy":%s,"street":%s,"building":%s,"internal":%s,"type":%s,"description":%s,"function":%s,"descriptions":%s} ',
 			
 			 $address->id
 			 ,prepare_mysql($address->data['Address Country Name'],false)
@@ -64,37 +103,61 @@ foreach($addresses as $index=>$address){
 			 ,prepare_mysql($address->display('street',false),false)
 			 ,prepare_mysql($address->data['Address Building'],false)
 			 ,prepare_mysql($address->data['Address Internal'],false)
+			 ,$type
+			 ,prepare_mysql($address->get('Description'),false)
+			 ,$function
+			 ,$descriptions
 			 );
+  $address_data.="\n";
 
 } 
-$address_data=preg_replace('/^\,/','',$address_data);
+
 ?>
     
 var Dom   = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;
 
-var Country_Address_Tags=[
+var Country_Address_Labels=[
 			  {
-			      'GBR':{
+			     'UNK':{
+				  'country_d1':{'name':'Region','oname':'Region','hide':false,'in_use':true}
+				  ,'country_d2':{'name':'Subregion','oname':'Subregion','hide':false,'in_use':true}
+				  
+			      }
+			      ,'GBR':{
 				  'country_d1':{'name':'Union Country','oname':'Union Country','hide':true,'in_use':true}
 				  ,'country_d2':{'name':'County','oname':'County','hide':false,'in_use':true}
 			      }
 			      ,'MEX':{
 				  'country_d1':{'name':'State','oname':'Estado','hide':false,'in_use':true}
 				  ,'country_d2':{'name':'Municipality','oname':'Municipio','hide':true,'in_use':true}
-			      }
+			     }
+			      ,'USA':{
+				  'country_d1':{'name':'State','oname':'State','hide':false,'in_use':true}
+				  ,'country_d2':{'name':'County','oname':'County','hide':true,'in_use':true}
+				  ,'postal_code':{'name':'Postal Code','oname':'Zip','hide':true,'in_use':true}
+			     }
+			     ,'IRL':{
+				 'country_d1':{'name':'County','oname':'Co','hide':false,'in_use':true}
+				 ,'country_d2':{'in_use':false}
+				 ,'postal_code':{'in_use':false}
+			     }
 			  }
 		       ];
 
 var Country_List=[<?=$country_list?>];
 var Address_Data=[<?=$address_data?>];
 var Address_Keys=["key","country","country_code","country_d1","country_d2","town","postal_code","town_d1","town_d2","fuzzy","street","building","internal"];
+var Address_Meta_Keys=["type","function","description","descriptions"];
+
 var current_salutation='salutation<?=$contact->get('Salutation Key')?>';
 var current_block='<?=$edit_block?>';
 var old_salutation=current_salutation;
-
+var Current_Address_Index=0;
 
 var changes_details=0;
+var changes_address=0;
+
 var saved_details=0;
 var error_details=0;
 
@@ -197,7 +260,7 @@ var save_details=function(e){
 		    success:function(o) {
 			//alert(o.responseText);
 			var r =  YAHOO.lang.JSON.parse(o.responseText);
-			if(r.action=='updatedd'){
+			if(r.action=='updated'){
 			    Dom.get(items[i]).value=r.value;
 			    Dom.get(items[i]).getAttribute('ovalue')=Dom.get(items[i]).value;
 			    save_details++;
@@ -249,137 +312,9 @@ var update_details=function(e){
 
 };
 
-var add_address=function(){
-    Dom.setStyle(['address_showcase','save_add_contact_button','add_contact_button'], 'display', 'none'); 
-    Dom.setStyle(['address_form','cancel_edit_address'], 'display', ''); 
-    Dom.get("cancel_edit_address").setAttribute('address_index','new');
+
     
-    for (key in Address_Keys){
-	item=Dom.get('address_'+key);
-	item.value='';
-	item.setAttribute('ovalue','');
-	
-    }
-}
 
-
-var cancel_edit_address=function (){
-    index=Dom.get("cancel_edit_address").getAttribute('address_index');
-    Dom.setStyle(['address_showcase','move_address_button','add_address_button'], 'display', ''); 
-    Dom.setStyle(['address_form','cancel_edit_address'], 'display', 'none'); 
-    Dom.get("cancel_edit_address").setAttribute('address_index','');
-      
-    data=Address_Data[index];
-    for (key in data){
-	item=Dom.get('address_'+key);
-	item.value='';
-	item.setAttribute('ovalue','');
-	
-    }
-
-
-};
-
-
-var edit_address=function (index){
-    Dom.setStyle(['address_showcase','move_address_button','add_address_button'], 'display', 'none'); 
-    Dom.setStyle(['address_form','cancel_edit_address'], 'display', ''); 
-    Dom.get("cancel_edit_address").setAttribute('address_index',index);
-	
-    data=Address_Data[index];
-    tags=new Object();
-    for (key in data){
-	if(key=='country_code'){
-		if(Country_Address_Tags[0][data[key]]!= undefined){
-		    tags=Country_Address_Tags[0][data[key]];
-		    
-		}
-		
-	    }
-	
-	if(tags[key]!=undefined){
-	    if(tags[key].name!=undefined)
-		Dom.get('tag_address_'+key).innerHTML=tags[key].name;
-	    if(tags[key].in_use!=undefined && !tags[key].in_use){
-		Dom.setStyle('tr_tag_address_'+key,'display','none');
-	    }
-
-	    if(tags[key].hide!=undefined && tags[key].hide){
-		
-		Dom.setStyle('tr_address_'+key,'display','none');
-		    if(key=='country_d1'){
-			Dom.setStyle('show_'+key,'display','');
-					    
-		    }
-
-		}
-
-
-	    }
-
-	    item=Dom.get('address_'+key);
-	    item.value=data[key];
-	    item.setAttribute('ovalue',data[key]);
-	   
-
-
-	}
-
-	
-  }
- var toggle_country_d1=function (){
-     
-     Dom.setStyle(['tr_address_country_d1','show_country_d2'],'display','');
-     Dom.setStyle('show_country_d1','display','none');
-     Dom.get('show_country_d2').innerHTML='x';
-
-  }
- var toggle_country_d2=function (){
-      if(Dom.get("show_country_d2").innerHTML=='x'){
-	Dom.setStyle('show_country_d1','display','');
-	Dom.setStyle('tr_address_country_d1','display','none');
-	
-    }
-
-
-  }
-
-
- var toggle_town_d1=function (){
-     
-     Dom.setStyle('tr_address_town_d1','display','');
-     Dom.setStyle('show_town_d1','display','none');
-     Dom.get("show_town_d2").innerHTML='x';
-
-  }
- 
-var toggle_town_d2=function (){
-    if(Dom.get("show_town_d2").innerHTML=='x'){
-	Dom.setStyle('show_town_d1','display','');
-	Dom.setStyle('tr_address_town_d1','display','none');
-	
-    }
-  }
-    
-var matchNames = function(sQuery) {
-        // Case insensitive matching
-        var query = sQuery.toLowerCase(),
-            contact,
-            i=0,
-            l=Country_List.length,
-            matches = [];
-        
-        // Match against each name of each contact
-        for(; i<l; i++) {
-            contact = Country_List[i];
-            if((contact.name.toLowerCase().indexOf(query) > -1) ||
-	       (contact.code.toLowerCase().indexOf(query) > -1))  {
-                matches[matches.length] = contact;
-            }
-        }
-
-        return matches;
-    };
 
 
 
@@ -391,36 +326,43 @@ function init(){
     YAHOO.util.Event.addListener('save_details_button', "click",save_details );
 
     YAHOO.util.Event.addListener('cancel_save_details_button', "click",cancel_save_details );
-    YAHOO.util.Event.addListener('add_address_button', "click",add_address );
+    YAHOO.util.Event.addListener('add_address_button', "click",edit_address,0 );
 
 
     var ids = ["name","fiscal_name","tax_number","registration_number"]; 
-
     YAHOO.util.Event.addListener(ids, "keyup", update_details);
+    
+    var ids = ["address_country_d1","address_country_d2","address_town","address_town_d2","address_town_d1","address_postal_code","address_street","address_internal","address_building"]; 
+    YAHOO.util.Event.addListener(ids, "keyup", update_address);
+    YAHOO.util.Event.addListener(ids, "change", update_address);
+    //TODO: event when paste with the middle mouse (peroblem in  linux only)
+    
+    // addEvent(Dom.get('address_internal'), 'paste', update_address);
 
+    
 
      // Use a FunctionDataSource
-    var oDS = new YAHOO.util.FunctionDataSource(matchNames);
-    oDS.responseSchema = {
+    var Countries_DS = new YAHOO.util.FunctionDataSource(match_country);
+    Countries_DS.responseSchema = {
         fields: ["id", "name", "code"]
     }
 
     // Instantiate AutoComplete
-    var oAC = new YAHOO.widget.AutoComplete("address_country", "address_country_container", oDS);
-    oAC.useShadow = true;
-    oAC.resultTypeList = false;
+    var Countries_AC = new YAHOO.widget.AutoComplete("address_country", "address_country_container", Countries_DS);
+    Countries_AC.useShadow = true;
+    Countries_AC.resultTypeList = false;
 
-// Custom formatter to highlight the matching letters
-    oAC.formatResult = function(oResultData, sQuery, sResultMatch) {
+    // Custom formatter to highlight the matching letters
+    Countries_AC.formatResult = function(oResultData, sQuery, sResultMatch) {
         var query = sQuery.toLowerCase(),
-            name = oResultData.name,
-            code = oResultData.code,
-         
-            query = sQuery.toLowerCase(),
-            nameMatchIndex = name.toLowerCase().indexOf(query),
-            codeMatchIndex = code.toLowerCase().indexOf(query),
-          
-            displayname, displaycode;
+	name = oResultData.name,
+	code = oResultData.code,
+	
+	query = sQuery.toLowerCase(),
+	nameMatchIndex = name.toLowerCase().indexOf(query),
+	codeMatchIndex = code.toLowerCase().indexOf(query),
+        
+	displayname, displaycode;
             
         if(nameMatchIndex > -1) {
             displayname = highlightMatch(name, query, nameMatchIndex);
@@ -437,7 +379,7 @@ function init(){
         }
 
      
-        return displayname + " " + displaycode ;
+        return displayname + " (" + displaycode + ")";
         
     };
 
@@ -453,7 +395,7 @@ function init(){
     // Define an event handler to populate a hidden form field
     // when an item gets selected and populate the input field
     var myHiddenField = YAHOO.util.Dom.get("address_country_code");
-    var myHandler = function(sType, aArgs) {
+    var onCountrySelected = function(sType, aArgs) {
         var myAC = aArgs[0]; // reference back to the AC instance
         var elLI = aArgs[1]; // reference to the selected LI element
         var oData = aArgs[2]; // object literal of selected item's result data
@@ -462,8 +404,11 @@ function init(){
         myHiddenField.value = oData.id;
         
         myAC.getInputEl().value = oData.name + " (" + oData.code + ") ";
+
+	update_address_labels(oData.code);
+
     };
-    oAC.itemSelectEvent.subscribe(myHandler);
+    Countries_AC.itemSelectEvent.subscribe(onCountrySelected);
 
  
 
