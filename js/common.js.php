@@ -554,3 +554,26 @@ function trim(str)
     return s;
 }
 
+same_arrays = function(thisArr,testArr) {
+  
+  if (thisArr.length != testArr.length) 
+    return false;
+  
+  testArr.sort;
+  thisArr.sort;
+
+    for (var i = 0; i < testArr.length; i++) {
+      if(testArr[i]!=thisArr[i])
+	return false
+    }
+    return true;
+}
+
+function addEvent( obj, type, fn ) {
+  if ( obj.attachEvent ) {
+    obj['e'+type+fn] = fn;
+    obj[type+fn] = function(){obj['e'+type+fn]( window.event );}
+    obj.attachEvent( 'on'+type, obj[type+fn] );
+  } else
+    obj.addEventListener( type, fn, false );
+}

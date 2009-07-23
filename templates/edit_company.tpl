@@ -48,7 +48,11 @@
   <div  style="{if $edit!="details"}display:none;{/if}margin:0"  class="edit_block" id="d_details">
 	<table class="edit" border=0>
 	  
-	  <tr class="title"><td colspan="2" style="width:160px">Details: <span id="details_messages"></span></td><td  style="text-align:right"><span style="display:none" class="small_button" id="cancel_save_details_button" >Cancel</span><span  style="display:none" class="small_button" id="save_details_button" >Save</span></td>
+	  <tr class="title">
+	    <td colspan="2" style="width:160px">Details: <span class="state_details" id="details_messages"></span></td>
+	    <td  style="text-align:right">
+	      <span style="display:none" class="small_button" id="cancel_save_details_button" >Cancel</span>
+	      <span  style="display:none" class="small_button" id="save_details_button" >Save</span></td>
 	  </tr>
 	  <tr class="first"><td style="width:160px">Public Name:</td><td  style="text-align:left"><input style="text-align:left;width:12em" id="name" value="{$company->get('Company Name')}" ovalue="{$company->get('Company Name')}"></td>
 	  </tr>
@@ -64,28 +68,64 @@
  <div  style="{if $edit!="address"}xdisplay:none;{/if}margin:0"  class="edit_block" id="d_address">
 	<table class="edit" border=0>
 	  
-	  <tr class="title"><td style="width:160px">Address:</td><td  style="text-align:right"><span class="small_button" id="cancel_edit_address" address_index=""  style="display:none" onClick="cancel_edit_address()">Cancel Edit Address</span><span class="small_button" id="move_address_button" >Move to New Address</span><span class="small_button" id="add_address_button" >Add Address</span></td>
-	    <tr id="address_showcase">
-	      <td colspan=2>
-		{foreach from=$company->get_addresses() item=address key=key }
-		<div  style="width:200px;">
+	  <tr class="title"><td style="width:160px">Address: <span class="state_details"  id="address_messages"></span></td>
+	    <td  style="text-align:right">
+
+	      <span class="small_button" id="save_address_button" style="display:none"  >Save Address</span>
+	      <span class="small_button" id="cancel_edit_address"  style="display:none" onClick="cancel_edit_address()">Cancel Edit Address</span>
+	      <span class="small_button" id="move_address_button" >Move to New Address</span><span class="small_button" id="add_address_button" >Add Address</span>
+	    </td>
+	  </tr>
+	  <tr id="address_showcase">
+	    <td colspan=2>
+	      {foreach from=$company->get_addresses(1) item=address key=key }
+	      <div  style="width:200px;">
 		<div style="padding:10px;text-align:left;border:1px solid #ccc;" id="address_display{$key}">{$address->display('xhtml')}</div>
-		<div  style="text-align:right;margin-top:4px"><span class="small_button" id="edit_address_button{$key}" onclick="edit_address({$key})" >Edit Address</span></div>
-				  
-		</div>
+		<div  style="text-align:right;margin-top:4px"><span class="small_button" id="edit_address_button{$key}" onclick="edit_address(event,{$key})" >Edit Address</span></div>
+		
+	      </div>
 	      {/foreach}
 	      </td>
 	    </tr>
 	  </tr>
 	 
 	  <tbody id="address_form" style="display:none"   >
+	    
+	   
 
-	 
+	    <tr id="tr_address_type">
+	      <td>{t}Address Type{/t}:</td><td  style="text-align:left"   id="address_type" value="" ovalue=""  >
+		<span id="address_type_Office" label="Office" onclick="toggle_address_type(this)" class="small_button address_type" style="margin:0">Office</span>
+		<span id="address_type_Shop" label="Shop" onclick="toggle_address_type(this)" class="small_button  address_type" style="margin-left:3px">Shop</span>
+		<span id="address_type_Warehouse" label="Warehouse" onclick="toggle_address_type(this)" class="small_button  address_type" style="margin-left:3px">Warehouse</span>
+		<span id="address_type_Other" label="Other" onclick="toggle_address_type(this)" class="small_button  address_type" style="margin-left:3px">Other</span>
+	      </td>
+	    </tr>
 
+	    <tr id="tr_address_function">
+	      <td>{t}Address Function{/t}:</td><td  style="text-align:left"   id="address_function" value="" ovalue=""  >
+		<span id="address_function_Contact" label="Contact" onclick="toggle_address_function(this)" class="small_button address_function" style="margin:0">Contact</span>
+		<span id="address_function_Billing" label="Billing" onclick="toggle_address_function(this)" class="small_button address_function" style="margin-left:3px">Billing</span>
+		<span id="address_function_Shipping" label="Shipping" onclick="toggle_address_function(this)" class="small_button address_function" style="margin-left:3px">Shipping</span>
+		<span id="address_function_Other" label="Other" onclick="toggle_address_function(this)" class="small_button address_function" style="margin-left:3px">Other</span>
+	      </td>
+	    </tr>
+	    <input type="hidden" id="address_descriptions" value="" ovalue="" >
+	    
+
+	    <tr id="tr_address_description">
+	      <td>{t}Description{/t}:</td><td  style="text-align:left"    ><input style="text-align:left" id="address_description" value="" ovalue=""   ></td>
+	    </tr>
+	    
+	    <tr >
+	      <td ></td><td style="text-align:left"><div  style="text-align:left;float:left;height:10px;width:210px;border-top:1px solid #ddd"></div></td>
+	    </tr>
 
 	  <input type="hidden" id="address_key" value="" ovalue="" >
 	  <input type="hidden" id="address_fuzzy" value="Yes" ovalue="Yes" >
-	  <tr class="first">
+
+
+	    <tr class="first">
 	    
 	    <td style="width:160px">
 	      <span id="show_country_d1" onclick="toggle_country_d1()" class="small_button" style="padding:0 1px;font-size:50%;position:relative;top:-2px;display:none">+</span>
@@ -94,16 +134,16 @@
 	      <div id="myAutoComplete" style="width:15em;position:relative;top:-10px" >
 		<input id="address_country" style="text-align:left;width:12em" type="text">
 		<div id="address_country_container" style="position:relative;top:18px" ></div>
-		<input id="address_country_code" type="hidden">
+		
 	      </div>
 	    </td>
 	  </tr>
-	 
+	    <input id="address_country_code" value="" type="hidden">
 	  <tr id="tr_address_country_d1">
-	    <td style="width:160px"><span id="show_country_d2" onclick="toggle_country_d2()" class="small_button" style="padding:0 1px;font-size:50%;position:relative;top:-2px;display:none">+</span> <span id="tag_address_country_d1">{t}Region{/t}</span>:</td><td  style="text-align:left"><input style="text-align:left;width:12em" id="address_country_d1" value="" ovalue="" ></td>
+	    <td style="width:160px"><span id="show_country_d2" onclick="toggle_country_d2()" class="small_button" style="padding:0 1px;font-size:50%;position:relative;top:-2px;display:none">+</span> <span id="label_address_country_d1">{t}Region{/t}</span>:</td><td  style="text-align:left"><input style="text-align:left;width:12em" id="address_country_d1" value="" ovalue="" ></td>
 	  </tr>
 	  <tr id="tr_address_country_d2">
-	    <td style="width:160px"><span id="tag_address_country_d2">{t}Subregion{/t}</span>:</td><td  style="text-align:left"><input style="text-align:left;width:12em" id="address_country_d2" value="" ovalue="" ></td>
+	    <td style="width:160px"><span id="label_address_country_d2">{t}Subregion{/t}</span>:</td><td  style="text-align:left"><input style="text-align:left;width:12em" id="address_country_d2" value="" ovalue="" ></td>
 	  </tr>
 	  
 	  <tr id="tr_address_postal_code">

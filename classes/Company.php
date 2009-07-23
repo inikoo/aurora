@@ -1730,15 +1730,18 @@ function add_contact($data,$args='principal'){
    }
    
 
-   function get_addresses(){
-      $sql=sprintf("select * from `Address Bridge` CB where   `Subject Type`='Company' and `Subject Key`=%d order by `Is Main` desc  ",$this->id);
+   function get_addresses($offset=0){
+
+     if(!is_numeric($offset))
+       $offset=0;
+     $sql=sprintf("select * from `Address Bridge` CB where   `Subject Type`='Company' and `Subject Key`=%d order by `Is Main` desc  ",$this->id);
      $addresses=array();
      $result=mysql_query($sql);
   
      while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
        $address= new Address($row['Address Key']);
-       $addresses[]= $address;
-      
+       $addresses[$offset]= $address;
+       $offset++;
      }
      return $addresses;
 

@@ -437,7 +437,7 @@ color: #316D89;
 .search_box form{ margin-bottom:5px }
 .search_box .search_title{ position:relative;left:16px}
 
-.search_msg,.state_details,search_sugestion{font-size:85%; }
+.search_msg,.state_details,search_sugestion{font-size:85%; font-weight:200}
 .state_details,search_sugestion{color:#777;cursor:pointer;} 
 .state_details:hover ,search_sugestion:hover{text-decoration:underline}
 
@@ -566,3 +566,5 @@ span.link{cursor:pointer}
 
 .filter_name{cursor:pointer}
 .mix_currency{color:#777;font-style: italic;}
+
+.match{font-weight:800}

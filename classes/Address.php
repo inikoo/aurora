@@ -22,8 +22,9 @@ include_once('Country.php');
    Class to manage the *Address Dimension* table
 */
 class Address extends DB_Table{
-
-
+  
+  private $scope=false;
+  private $scope_key=false;
   /*
     Constructor: Address
     Initializes the class, trigger  Search/Load/Create for the data set
@@ -565,13 +566,24 @@ class Address extends DB_Table{
    }
  }
 
-  function get($key){
+ function get($key){
 
     
     if(array_key_exists($key,$this->data))
       return $this->data[$key];
    
     switch($key){
+    case('Type'):
+    case('Function'):
+    case('Description'):
+    case('Descriptions'):
+
+      if(!$this->scope)
+	$this->set_scope();
+      return $this->data[$key];
+      break;
+      
+
     case('country region'):
       if($this->get('Address Country Primary Division')!='')
 	return $this->get('Address Country Primary Division');
@@ -3440,6 +3452,70 @@ class Address extends DB_Table{
   
   }
 
-}
+
+
+  function set_scope($raw_scope='',$scope_key=0){
+    $scope='Unknown';
+    $raw_scope=_trim($raw_scope);
+    if(preg_match('/^customers?$/i',$raw_scope)){
+      $scope='Customer';
+    }else if(preg_match('/^(contacts?|person)$/i',$raw_scope)){
+      $scope='Contact';
+    }else if(preg_match('/^(company?|bussiness)$/i',$raw_scope)){
+      $scope='Company';
+    }else if(preg_match('/^(supplier)$/i',$raw_scope)){
+      $scope='Supplier';
+    }else if(preg_match('/^(staff)$/i',$raw_scope)){
+      $scope='Staff';
+    }
+    $where_scope='Unknown';
+    if($scope!='')
+      $where_scope=sprintf(' and `Subject Type`=%s',prepare_mysql($scope));
+
+    $where_scope_key='';
+    if($scope_key)
+      $where_scope_key=sprintf(' and `Subject Key`=%d',$scope_key);
+
+    $this->scope=$scope;
+    $this->scope_key=$scope_key;
+
+
+    $sql=sprintf("select * from `Address Bridge` where `Address Key`=%d %s  %s "
+		 ,$this->id
+		 ,$where_scope
+		 ,$where_scope_key
+		 );
+    $res=mysql_query($sql);
+
+    $this->data['Function']=array();
+    $this->data['Type']=array();
+    $this->data['Description']='';
+    //  print $sql;
+    $this->data['Descriptions']=array();
+    while($row=mysql_fetch_array($res)){
+      $this->data['Function'][$row['Address Function']]=$row['Address Function'];
+      $this->data['Type'][$row['Address Type']]=$row['Address Type'];
+
+
+      $description_already_taken=false;
+
+      foreach( $this->data['Descriptions'] as $description){
+	if($row['Address Description']==$description)
+	  $description_already_taken=true;
+      }
+      if(!$description_already_taken){
+	$this->data['Descriptions'][$row['Address Function']]=$row['Address Description'];
+	$this->data['Description'].='; '.$row['Address Description'];
+      }
+      
+
+    }
+
+    $this->data['Description']=preg_replace('/^; /','',$this->data['Description']);
+    
+
+      }
+}    
+
 
 ?>
