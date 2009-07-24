@@ -136,7 +136,7 @@ class Address extends DB_Table{
     Given a set of address components try to find it on the database updating properties, if not found creates a new record
   */
   
-  private function find($raw_data,$options=''){
+  function find($raw_data,$options=''){
 
    
     $this->found=false;
@@ -175,15 +175,22 @@ class Address extends DB_Table{
       $update='update';
     }
     
-      if(isset($raw_data['editor'])){
+    if(isset($raw_data['editor']) and is_array($raw_data['editor'])){
       foreach($raw_data['editor'] as $key=>$value){
-
+	
 	if(array_key_exists($key,$this->editor))
 	  $this->editor[$key]=$value;
-		    
+	
       }
     }
     
+
+    if(isset($raw_data['Street Data']))
+      $raw_data['Address Line 3']=$raw_data['Street Data'];
+    if(isset($raw_data['Address Building']))
+      $raw_data['Address Line 2']=$raw_data['Address Building'];
+    if(isset($raw_data['Address Internal']))
+      $raw_data['Address Line 1']=$raw_data['Address Internal'];
 
     $data=$this->base_data();
    
@@ -545,6 +552,55 @@ class Address extends DB_Table{
     }
   }
 
+
+  /*Method: update
+    Switcher calling the apropiate update method
+    Parameters:
+    $data - associated array with Email Dimension fields
+    */
+  public function update($data,$options=''){
+
+
+     if(isset($data['editor'])){
+      foreach($data['editor'] as $key=>$value){
+
+	if(array_key_exists($key,$this->editor))
+	  $this->editor[$key]=$value;
+		    
+      }
+    }
+
+
+    // if($this->table_name=='Telecom'){
+      // print_r($data);exit;
+    // }
+    $base_data=$this->base_data();
+  
+    foreach($data as $key=>$value){
+      //print "$key $value  \n";
+      if(array_key_exists($key,$base_data)){
+
+	if($value!=$this->data[$key]){
+
+	  $this->update_field_switcher($key,$value,$options);
+	}
+	
+      }elseif(preg_match('/^Street Data$/',$key)){
+	$this->update_field_switcher($key,$value,$options);
+      }
+    }
+    
+    if(!$this->updated)
+      $this->msg.=' '._('Nothing to be updated')."\n";
+  
+  }
+
+
+
+
+
+
+
   /*
     Function:update
     Update the Record
@@ -560,10 +616,135 @@ class Address extends DB_Table{
    case('Address Location'):
    case('Address Plain'):
    case('Address Input Format'):
+   case('Address Fuzzy'):
+     break;
+   case('Address Postal Code'):
+     $data=$this->parse_postcode($value,$this->data['Address Country Code']);
+     foreach($data as $postcode_field=>$postcode_value){
+       if($postcode_field!='Address Postal Code')
+	 $postcode_options=$options.' no history';
+       else
+	 $postcode_options=$options;
+       $this->update_field($postcode_field,$postcode_value,$postcode_options);
+
+     }
+     break;
+   case('Street Data'):
+     $data=$this->parse_street($value,$this->data['Address Country Code']);
+     foreach($data as $street_field=>$street_value){
+       $this->update_field($street_field,$street_value,$options);
+     }
+
      break;
    default:
      $this->update_field($field,$value,$options);
    }
+ }
+
+ function update_metadata($raw_data){
+
+   
+   foreach($raw_data as $key=>$value){
+     if($key=='Type'){
+       $this->update_address_type($value);
+     }elseif($key=='Function'){
+       $this->update_address_function($value);
+     }
+	 
+   }
+
+ }
+
+
+ function update_address_type($raw_new_address_types){
+   $new_address_types=array();
+   $valid_types=array('Office','Shop','Warehouse','Other');
+   foreach($raw_new_address_types as $raw_new_address_type){
+     if(in_array($raw_new_address_type,$valid_types))
+       $new_address_types[$raw_new_address_type]=$raw_new_address_type;
+   }
+
+   if(count($new_address_types)==0)
+     $new_address_types['Other']=array('Other');
+   //print_r($this->data['Type']);
+   //print_r($new_address_types);
+
+   foreach($this->data['Type'] as $type){
+     if(!in_array($type,$new_address_types)){
+       //print "deleting $type\n";
+       $sql=sprintf("delete from `Address Bridge` where `Address Key`=%s and `Subject Type`=%s and `Subject Key`=%d  and `Address Type`=%s "
+		    ,$this->id
+		    ,prepare_mysql($this->scope)
+		    ,$this->scope_key
+		    ,prepare_mysql($type)
+		    );
+       print "$sql\n";
+       mysql_query($sql);
+       
+       $updated=true;
+     }
+   }
+   
+   foreach($new_address_types as $type){
+     $updated=false;
+     if(!in_array($type,$this->data['Type'])){
+       foreach($this->data['Function'] as $function){
+	 $sql=sprintf("select *  from `Address Bridge` where `Address Key`=%s and `Subject Type`=%s and `Subject Key`=%d and `Address Function`=%s "
+		      ,$this->id
+		      ,prepare_mysql($this->scope)
+		      ,$this->scope_key
+		      ,prepare_mysql($function)
+		      );
+	 $res=mysql_query($sql);
+	 $description='';
+	 $active='Yes';
+	 $main='No';
+	 //	 print "$sql\n";
+	 
+	 if($row=mysql_fetch_array($res)){
+	   $description=$row['Address Description'];
+	   $active=$row['Is Active'];
+	   $main=$row['Is Main'];
+	 }
+	 
+	 $description='';
+	 $sql=sprintf('insert into `Address Bridge` values (%d,%s,%d,%s,%s,%s,%s,%s)'
+		      ,$this->id
+		      ,prepare_mysql($this->scope)
+		      ,$this->scope_key
+		      ,prepare_mysql($type)
+		      ,prepare_mysql($function)
+		      ,prepare_mysql($description,false)
+		      ,prepare_mysql($active,false)
+		      ,prepare_mysql($main,false)
+		      );
+	 //print "$sql\n";
+	 mysql_query($sql);
+	 
+	 $updated=true;
+       }
+     }
+   }
+   
+   if($updated){
+     
+     $this->load_metadata();
+     
+     $msg='';
+     $this->msg_update.=$msg;
+     $this->msg.=$msg;
+     $this->updated=true;
+     
+   }
+
+ }
+
+
+
+
+
+  function update_address_function($value){
+
  }
 
  function get($key){
@@ -1142,12 +1323,12 @@ class Address extends DB_Table{
 
     Parameters:
     $line - _string_ 
-    $country_id - (optional) _integer_ Country Key in DB
+    $country_code - (optional)  Country Code in DB
 
     Todo:
     Country Id not used jet
   */
-  public static function parse_street($line,$country_id=0){
+  public static function parse_street($line,$country_code='UNK'){
 
     // print "********** $line\n";
 
@@ -3468,16 +3649,28 @@ class Address extends DB_Table{
     }else if(preg_match('/^(staff)$/i',$raw_scope)){
       $scope='Staff';
     }
-    $where_scope='Unknown';
-    if($scope!='')
-      $where_scope=sprintf(' and `Subject Type`=%s',prepare_mysql($scope));
-
-    $where_scope_key='';
-    if($scope_key)
-      $where_scope_key=sprintf(' and `Subject Key`=%d',$scope_key);
-
+    
     $this->scope=$scope;
     $this->scope_key=$scope_key;
+    $this->load_metadata();
+    
+  }
+  
+  
+  function load_metadata(){
+    
+
+    $this->data['Type']=array();
+    $this->data['Function']=array();
+    $this->data['Description']=array();
+
+    $where_scope=sprintf(' and `Subject Type`=%s',prepare_mysql($this->scope));
+    
+    $where_scope_key='';
+    if($this->scope_key)
+      $where_scope_key=sprintf(' and `Subject Key`=%d',$this->scope_key);
+
+    
 
 
     $sql=sprintf("select * from `Address Bridge` where `Address Key`=%d %s  %s "
@@ -3512,10 +3705,11 @@ class Address extends DB_Table{
     }
 
     $this->data['Description']=preg_replace('/^; /','',$this->data['Description']);
-    
+  }
 
-      }
 }    
+
+
 
 
 ?>

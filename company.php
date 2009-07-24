@@ -67,9 +67,21 @@ $js_files=array(
 		'js/search.js',
 		'js/company.js.php'
 		);
-
+$company=new company($company_id);
+$address=new address($company->data['Company Main Address Key']);
+$smarty->assign('company',$company);
+$smarty->assign('address',$address);
 if($edit ){
+  $offset=1;// 0 is reserved to new address
+  $addresses=$company->get_addresses($offset);
+  $smarty->assign('addresses',$addresses);
+  $number_of_addresses=count($addresses);
 
+  $smarty->assign('number_of_addresses',$number_of_addresses);
+  $smarty->assign('scope','Company');
+
+  
+  
   $sql=sprintf("select * from `Salutation Dimension` S left join `Language Dimension` L on S.`Language Key`=L.`Language Key` where `Language Code`=%s limit 1000",prepare_mysql($myconf['lang']));
   $result=mysql_query($sql);
   $salutations=array();
@@ -78,9 +90,9 @@ if($edit ){
   }
   
 
+
+
   $smarty->assign('prefix',$salutations);
-
-
   $editing_block='details';
 
   $smarty->assign('edit',$editing_block);
@@ -96,10 +108,7 @@ $smarty->assign('js_files',$js_files);
 
 
 
-$company=new company($company_id);
-$address=new address($company->data['Company Main Address Key']);
-$smarty->assign('company',$company);
-$smarty->assign('address',$address);
+
 
 $order=$_SESSION['state']['companies']['table']['order'];
 

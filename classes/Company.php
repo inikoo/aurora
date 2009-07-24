@@ -1734,7 +1734,7 @@ function add_contact($data,$args='principal'){
 
      if(!is_numeric($offset))
        $offset=0;
-     $sql=sprintf("select * from `Address Bridge` CB where   `Subject Type`='Company' and `Subject Key`=%d order by `Is Main` desc  ",$this->id);
+     $sql=sprintf("select * from `Address Bridge` CB where   `Subject Type`='Company' and `Subject Key`=%d  group by `Address Key` order by `Is Main` desc  ",$this->id);
      $addresses=array();
      $result=mysql_query($sql);
   
