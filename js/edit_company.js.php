@@ -7,10 +7,6 @@ include_once('../classes/Company.php');
 
 $contact_id=$_SESSION['state']['contact']['id'];
 $contact=new contact($contact_id);
-//$main_telephone=$contact->get_main_telephone_data();
-//$main_fax=$contact->get_main_fax_data();
-//$main_mobile=$contact->get_main_mobile_data();
-//$main_address=$contact->get_main_address_data();
 
 
 $edit_block='personal';
@@ -58,11 +54,11 @@ $company=new Company($company_key);
 $addresses=$company->get_addresses(1);
 
 $address_data="\n";
-$address_data.=sprintf('{"key":0,"country":"","country_code":"UNK","country_d1":"","country_d2":"","town":"","postal_code":"","town_d1":"","town_d2":"","fuzzy":"","street":"","building":"","internal":"","type":["Office"],"description":"","function":["Contact"],"descriptions":[{"Contact":""}]} ' );
+$address_data.=sprintf('0:{"key":0,"country":"","country_code":"UNK","country_d1":"","country_d2":"","town":"","postal_code":"","town_d1":"","town_d2":"","fuzzy":"","street":"","building":"","internal":"","type":["Office"],"description":"","function":["Contact"],"descriptions":[{"Contact":""}]} ' );
  $address_data.="\n";
 foreach($addresses as $index=>$address){
     $address->set_scope($scope,$scope_key);
-
+    
 
 
 
@@ -88,9 +84,10 @@ foreach($addresses as $index=>$address){
     $descriptions=preg_replace('/,]$/',']',$descriptions);
 
 
-  $address_data.=sprintf(',{"key":%d,"country":%s,"country_code":%s,"country_d1":%s,"country_d2":%s,"town":%s,"postal_code":%s,"town_d1":%s,"town_d2":%s,"fuzzy":%s,"street":%s,"building":%s,"internal":%s,"type":%s,"description":%s,"function":%s,"descriptions":%s} ',
+  $address_data.="\n".sprintf(',%d:{"key":%d,"country":%s,"country_code":%s,"country_d1":%s,"country_d2":%s,"town":%s,"postal_code":%s,"town_d1":%s,"town_d2":%s,"fuzzy":%s,"street":%s,"building":%s,"internal":%s,"type":%s,"description":%s,"function":%s,"descriptions":%s} ',
 			
 			 $address->id
+			 ,$address->id
 			 ,prepare_mysql($address->data['Address Country Name'],false)
 			 ,prepare_mysql($address->data['Address Country Code'],false)
 			 ,prepare_mysql($address->data['Address Country Primary Division'],false)
@@ -113,40 +110,17 @@ foreach($addresses as $index=>$address){
 } 
 
 ?>
-    
+
+var Subject='Company';
+var Subject_Key=company_key;
+
+
 var Dom   = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;
 
-var Country_Address_Labels=[
-			  {
-			     'UNK':{
-				  'country_d1':{'name':'Region','oname':'Region','hide':false,'in_use':true}
-				  ,'country_d2':{'name':'Subregion','oname':'Subregion','hide':false,'in_use':true}
-				  
-			      }
-			      ,'GBR':{
-				  'country_d1':{'name':'Union Country','oname':'Union Country','hide':true,'in_use':true}
-				  ,'country_d2':{'name':'County','oname':'County','hide':false,'in_use':true}
-			      }
-			      ,'MEX':{
-				  'country_d1':{'name':'State','oname':'Estado','hide':false,'in_use':true}
-				  ,'country_d2':{'name':'Municipality','oname':'Municipio','hide':true,'in_use':true}
-			     }
-			      ,'USA':{
-				  'country_d1':{'name':'State','oname':'State','hide':false,'in_use':true}
-				  ,'country_d2':{'name':'County','oname':'County','hide':true,'in_use':true}
-				  ,'postal_code':{'name':'Postal Code','oname':'Zip','hide':true,'in_use':true}
-			     }
-			     ,'IRL':{
-				 'country_d1':{'name':'County','oname':'Co','hide':false,'in_use':true}
-				 ,'country_d2':{'in_use':false}
-				 ,'postal_code':{'in_use':false}
-			     }
-			  }
-		       ];
 
 var Country_List=[<?=$country_list?>];
-var Address_Data=[<?=$address_data?>];
+var Address_Data={<?=$address_data?>};
 var Address_Keys=["key","country","country_code","country_d1","country_d2","town","postal_code","town_d1","town_d2","fuzzy","street","building","internal"];
 var Address_Meta_Keys=["type","function","description","descriptions"];
 
@@ -333,11 +307,14 @@ function init(){
     YAHOO.util.Event.addListener(ids, "keyup", update_details);
     
     var ids = ["address_country_d1","address_country_d2","address_town","address_town_d2","address_town_d1","address_postal_code","address_street","address_internal","address_building"]; 
-    YAHOO.util.Event.addListener(ids, "keyup", update_address);
-    YAHOO.util.Event.addListener(ids, "change", update_address);
+    YAHOO.util.Event.addListener(ids, "keyup", on_address_item_change);
+    YAHOO.util.Event.addListener(ids, "change",on_address_item_change);
     //TODO: event when paste with the middle mouse (peroblem in  linux only)
     
-    // addEvent(Dom.get('address_internal'), 'paste', update_address);
+    YAHOO.util.Event.addListener('save_address_button', "click",save_address);
+	
+    
+
 
     
 

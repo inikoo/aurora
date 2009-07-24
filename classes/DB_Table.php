@@ -156,6 +156,7 @@ protected function update_field($field,$value,$options=''){
   $affected=mysql_affected_rows();
   if($affected==-1){
     $this->msg.=' '._('Record can not be updated')."\n";
+    $this->error_updated=true;
     $this->error=true;
     return;
   }elseif($affected==0){
@@ -164,12 +165,16 @@ protected function update_field($field,$value,$options=''){
   }else{
     $this->data[$field]=$value;
     $this->msg.=" $field "._('Record updated').", \n";
+    $this->msg_updated.=" $field "._('Record updated').", \n";
     $this->updated=true;
-  
-
+    
+    $save_history=true;
+    if(preg_match('/no( |\_)history/i',$options))
+      $save_history=false;
     if(
        preg_match('/customer|contact|company|order|staff|supplier|address|telecom/i',$this->table_name)
-       and !$this->new
+       and !$this->new 
+       and $save_history
        ){
 
 
@@ -255,7 +260,17 @@ protected function add_history($raw_data){
 
 }
 
+function set_editor($raw_data){
+  if(isset($raw_data['editor'])){
+      foreach($raw_data['editor'] as $key=>$value){
+	
+	if(array_key_exists($key,$this->editor))
+	  $this->editor[$key]=$value;
+	
+      }
+    }
 
+}
 
 }
 

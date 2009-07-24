@@ -65,23 +65,25 @@
 	</table>
       </div>
 
- <div  style="{if $edit!="address"}xdisplay:none;{/if}margin:0"  class="edit_block" id="d_address">
-	<table class="edit" border=0>
-	  
-	  <tr class="title"><td style="width:160px">Address: <span class="state_details"  id="address_messages"></span></td>
-	    <td  style="text-align:right">
+  <div  style="{if $edit!="address"}xdisplay:none;{/if}margin:0"  class="edit_block" id="d_address">
 
-	      <span class="small_button" id="save_address_button" style="display:none"  >Save Address</span>
-	      <span class="small_button" id="cancel_edit_address"  style="display:none" onClick="cancel_edit_address()">Cancel Edit Address</span>
+	<table class="edit" border=0 >
+	  
+	  <tr class="title">
+	    <td style="width:160px">Address: <span class="state_details"  id="address_messages"></span>
+	    </td>
+	    <td  style="text-align:right">
+	      <span class="small_button" id="save_address_button" style="display:none" address_key="" >Save Address</span>
+	      <span class="small_button" id="cancel_edit_address"  style="display:none" onClick="cancel_edit_address()" address_key=""  >Cancel Edit Address</span>
 	      <span class="small_button" id="move_address_button" >Move to New Address</span><span class="small_button" id="add_address_button" >Add Address</span>
 	    </td>
 	  </tr>
 	  <tr id="address_showcase">
 	    <td colspan=2>
-	      {foreach from=$company->get_addresses(1) item=address key=key }
+	      {foreach from=$addresses item=address key=key }
 	      <div  style="width:200px;">
-		<div style="padding:10px;text-align:left;border:1px solid #ccc;" id="address_display{$key}">{$address->display('xhtml')}</div>
-		<div  style="text-align:right;margin-top:4px"><span class="small_button" id="edit_address_button{$key}" onclick="edit_address(event,{$key})" >Edit Address</span></div>
+		<div style="padding:10px;text-align:left;border:1px solid #ccc;" id="address_display{$address->id}">{$address->display('xhtml')}</div>
+		<div  style="text-align:right;margin-top:4px"><span class="small_button" id="edit_address_button{$address->id}" onclick="edit_address(event,{$address->id})" >Edit Address</span></div>
 		
 	      </div>
 	      {/foreach}
@@ -102,7 +104,7 @@
 	      </td>
 	    </tr>
 
-	    <tr id="tr_address_function">
+	    <tr id="tr_address_function" style="{if $scope=='Company'}display:none;{/if}">
 	      <td>{t}Address Function{/t}:</td><td  style="text-align:left"   id="address_function" value="" ovalue=""  >
 		<span id="address_function_Contact" label="Contact" onclick="toggle_address_function(this)" class="small_button address_function" style="margin:0">Contact</span>
 		<span id="address_function_Billing" label="Billing" onclick="toggle_address_function(this)" class="small_button address_function" style="margin-left:3px">Billing</span>
@@ -113,7 +115,7 @@
 	    <input type="hidden" id="address_descriptions" value="" ovalue="" >
 	    
 
-	    <tr id="tr_address_description">
+	    <tr id="tr_address_description" style="{if $number_of_addresses==1}display:none;{/if}"> 
 	      <td>{t}Description{/t}:</td><td  style="text-align:left"    ><input style="text-align:left" id="address_description" value="" ovalue=""   ></td>
 	    </tr>
 	    
@@ -173,6 +175,7 @@
  
 
 	</table>
+
       </div>
 
       <div  style="{if $edit!="contacts"}xdisplay:none;{/if}margin:0"  class="edit_block" id="d_contacts">
