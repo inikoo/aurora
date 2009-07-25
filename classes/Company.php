@@ -678,13 +678,13 @@ class Company extends DB_Table {
 				  'Address Key'=>$this->data['Company Main Address Key']
 				  ,'Address Type'=>'Work'
 				  ,'Address Function'=>'Contact'
-				  ,'Address Description'=>'Work Contact Address'
+
 				  ));
         $this->add_address(array(
 			       'Address Key'=>$this->data['Company Main Address Key']
 			       ,'Address Type'=>'Office'
 			       ,'Address Function'=>'Contact'
-			       ,'Address Description'=>'Company Address'
+
 			       ));
 
 
@@ -867,7 +867,7 @@ protected function update_field_switcher($field,$value,$options=''){
 
     $_data['Address Type']='Work';
     $_data['Address Function']='Contact';
-    $_data['Address Description']='Work Contact Address';
+
 
 
     $contact=new Contact($this->data['Company Main Contact Key']);
@@ -1533,15 +1533,13 @@ function add_address($data,$args='principal'){
     $this->updated=true;
 
   $address_id=$address->id;
-  $sql=sprintf("insert into `Address Bridge` (`Subject Type`,`Subject Key`,`Address Key`,`Address Type`,`Address Function`,`Address Description`) values ('Company',%d,%d,%s,%s,%s)  ON DUPLICATE KEY UPDATE `Address Type`=%s,`Address Function`=%s,`Address Description`=%s ",
+  $sql=sprintf("insert into `Address Bridge` (`Subject Type`,`Subject Key`,`Address Key`,`Address Type`,`Address Function`) values ('Company',%d,%d,%s,%s)  ON DUPLICATE KEY UPDATE `Address Type`=%s,`Address Function`=%s",
 	       $this->id,
 	       $address_id
 	       ,prepare_mysql($data['Address Type'])
 	       ,prepare_mysql($data['Address Function'])
-	       ,prepare_mysql($data['Address Description'])
 	       ,prepare_mysql($data['Address Type'])
 	       ,prepare_mysql($data['Address Function'])
-	       ,prepare_mysql($data['Address Description'])
 	       );
  
   if(!mysql_query($sql)){

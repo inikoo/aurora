@@ -657,6 +657,8 @@ class Address extends DB_Table{
 
 
  function update_address_type($raw_new_address_types){
+   $updated=false;
+   
    $new_address_types=array();
    $valid_types=array('Office','Shop','Warehouse','Other');
    foreach($raw_new_address_types as $raw_new_address_type){
@@ -678,7 +680,7 @@ class Address extends DB_Table{
 		    ,$this->scope_key
 		    ,prepare_mysql($type)
 		    );
-       print "$sql\n";
+       //print "$sql\n";
        mysql_query($sql);
        
        $updated=true;
@@ -686,7 +688,7 @@ class Address extends DB_Table{
    }
    
    foreach($new_address_types as $type){
-     $updated=false;
+
      if(!in_array($type,$this->data['Type'])){
        foreach($this->data['Function'] as $function){
 	 $sql=sprintf("select *  from `Address Bridge` where `Address Key`=%s and `Subject Type`=%s and `Subject Key`=%d and `Address Function`=%s "
@@ -696,25 +698,21 @@ class Address extends DB_Table{
 		      ,prepare_mysql($function)
 		      );
 	 $res=mysql_query($sql);
-	 $description='';
 	 $active='Yes';
 	 $main='No';
 	 //	 print "$sql\n";
 	 
 	 if($row=mysql_fetch_array($res)){
-	   $description=$row['Address Description'];
 	   $active=$row['Is Active'];
 	   $main=$row['Is Main'];
 	 }
 	 
-	 $description='';
-	 $sql=sprintf('insert into `Address Bridge` values (%d,%s,%d,%s,%s,%s,%s,%s)'
+	 $sql=sprintf('insert into `Address Bridge` values (%d,%s,%d,%s,%s,%s,%s)'
 		      ,$this->id
 		      ,prepare_mysql($this->scope)
 		      ,$this->scope_key
 		      ,prepare_mysql($type)
 		      ,prepare_mysql($function)
-		      ,prepare_mysql($description,false)
 		      ,prepare_mysql($active,false)
 		      ,prepare_mysql($main,false)
 		      );
@@ -727,7 +725,7 @@ class Address extends DB_Table{
    }
    
    if($updated){
-     
+     // print "updated!!!";
      $this->load_metadata();
      
      $msg='';
@@ -756,8 +754,7 @@ class Address extends DB_Table{
     switch($key){
     case('Type'):
     case('Function'):
-    case('Description'):
-    case('Descriptions'):
+
 
       if(!$this->scope)
 	$this->set_scope();
@@ -3662,7 +3659,7 @@ class Address extends DB_Table{
 
     $this->data['Type']=array();
     $this->data['Function']=array();
-    $this->data['Description']=array();
+
 
     $where_scope=sprintf(' and `Subject Type`=%s',prepare_mysql($this->scope));
     
@@ -3682,29 +3679,17 @@ class Address extends DB_Table{
 
     $this->data['Function']=array();
     $this->data['Type']=array();
-    $this->data['Description']='';
-    //  print $sql;
-    $this->data['Descriptions']=array();
+
     while($row=mysql_fetch_array($res)){
       $this->data['Function'][$row['Address Function']]=$row['Address Function'];
       $this->data['Type'][$row['Address Type']]=$row['Address Type'];
 
 
-      $description_already_taken=false;
-
-      foreach( $this->data['Descriptions'] as $description){
-	if($row['Address Description']==$description)
-	  $description_already_taken=true;
-      }
-      if(!$description_already_taken){
-	$this->data['Descriptions'][$row['Address Function']]=$row['Address Description'];
-	$this->data['Description'].='; '.$row['Address Description'];
-      }
-      
+  
 
     }
-
-    $this->data['Description']=preg_replace('/^; /','',$this->data['Description']);
+    
+    
   }
 
 }    
