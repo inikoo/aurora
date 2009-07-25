@@ -347,7 +347,7 @@ $_USER_KEY=($LU->getProperty('auth_user_id')==1?_('Superuser'):$LU->getProperty(
 
 switch($LU->getProperty('tipo')){
 case(0):
-  $staff=new Staff ($LU->getProperty('id_in_table'));
+
   $_USER_CONTACT_KEY=0;
   $_USER_CONTACT_NAME=_('Superuser');
   break;

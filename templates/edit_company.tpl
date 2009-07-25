@@ -96,7 +96,7 @@
 	   
 
 	    <tr id="tr_address_type">
-	      <td>{t}Address Type{/t}:</td><td  style="text-align:left"   id="address_type" value="" ovalue=""  >
+	      <td><span id="show_description" onclick="show_description()" class="small_button" style="padding:0 1px;font-size:50%;position:relative;top:-2px;">+</span> {t}Address Type{/t}:</td><td  style="text-align:left"   id="address_type" value="" ovalue=""  >
 		<span id="address_type_Office" label="Office" onclick="toggle_address_type(this)" class="small_button address_type" style="margin:0">Office</span>
 		<span id="address_type_Shop" label="Shop" onclick="toggle_address_type(this)" class="small_button  address_type" style="margin-left:3px">Shop</span>
 		<span id="address_type_Warehouse" label="Warehouse" onclick="toggle_address_type(this)" class="small_button  address_type" style="margin-left:3px">Warehouse</span>
@@ -112,11 +112,11 @@
 		<span id="address_function_Other" label="Other" onclick="toggle_address_function(this)" class="small_button address_function" style="margin-left:3px">Other</span>
 	      </td>
 	    </tr>
-	    <input type="hidden" id="address_descriptions" value="" ovalue="" >
+
 	    
 
-	    <tr id="tr_address_description" style="{if $number_of_addresses==1}display:none;{/if}"> 
-	      <td>{t}Description{/t}:</td><td  style="text-align:left"    ><input style="text-align:left" id="address_description" value="" ovalue=""   ></td>
+	    <tr id="tr_address_description" style="display:none"> 
+	      <td><span id="hide_description" onclick="hide_description()" class="small_button" style="padding:0 1px;font-size:50%;position:relative;top:-2px;">x</span> {t}Description{/t}:</td><td  style="text-align:left"    ><input style="text-align:left" id="address_description" value="" ovalue=""   ></td>
 	    </tr>
 	    
 	    <tr >

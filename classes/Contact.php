@@ -916,7 +916,7 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
 				    'Address Key'=>$home_address->id
 				    ,'Address Type'=>'Home'
 				    ,'Address Function'=>'Contact'
-				    ,'Address Description'=>'Home Contact Address'
+
 				    ));
 	}
 
@@ -933,7 +933,7 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
 				    'Address Key'=>$work_address->id
 				    ,'Address Type'=>'Work'
 				    ,'Address Function'=>'Contact'
-				    ,'Address Description'=>'Work Contact Address'
+
 				    ));
 	}
 
@@ -1367,14 +1367,14 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
 			      'Address Key'=>$address->id
 			      ,'Address Type'=>'Home'
 			      ,'Address Function'=>'Contact'
-			      ,'Address Description'=>'Home Contact Address'
+
 			      );
 	}else{
 	  $address_data=array(
 			      'Address Key'=>$address->id
 			      ,'Address Type'=>'Work'
 			      ,'Address Function'=>'Contact'
-			      ,'Address Description'=>'Work Contact Address'
+
 			      );
 	  
 	}
@@ -1457,15 +1457,13 @@ function add_address($data,$args='principal'){
 
 
 
-  $sql=sprintf("insert into `Address Bridge` (`Subject Type`,`Subject Key`,`Address Key`,`Address Type`,`Address Function`,`Address Description`) values ('Contact',%d,%d,%s,%s,%s)  ON DUPLICATE KEY UPDATE `Address Type`=%s,`Address Function`=%s,`Address Description`=%s",
+  $sql=sprintf("insert into `Address Bridge` (`Subject Type`,`Subject Key`,`Address Key`,`Address Type`,`Address Function`) values ('Contact',%d,%d,%s,%s)  ON DUPLICATE KEY UPDATE `Address Type`=%s,`Address Function`=%s",
 	       $this->id
 	       ,$address->id
 	       ,prepare_mysql($data['Address Type'])
 	       ,prepare_mysql($data['Address Function'])
-	       ,prepare_mysql($data['Address Description'])
 	       ,prepare_mysql($data['Address Type'])
 	       ,prepare_mysql($data['Address Function'])
-	       ,prepare_mysql($data['Address Description'])
 	       );
  
   mysql_query($sql);
@@ -1530,7 +1528,6 @@ function add_address($data,$args='principal'){
 				      'Address Key'=>$address->id
 				      ,'Address Type'=>'Office'
 				      ,'Address Function'=>'Contact'
-				      ,'Address Description'=>'Company Address'
 				 )
 			   ,'principal'
 			   );
@@ -2690,13 +2687,12 @@ string with the name to be parsed
 						 );
       }
 
-      $sql=sprintf("select AB.`Address Key`,AB.`Is Main`,AB.`Address Description`  from `Address Bridge`  where `Subject Type`='Contact' and `Subject Key`=%d and `Is Active`='Yes' order by `Is Main` desc",$this->id);
+      $sql=sprintf("select AB.`Address Key`,AB.`Is Main` from `Address Bridge`  where `Subject Type`='Contact' and `Subject Key`=%d and `Is Active`='Yes' order by `Is Main` desc",$this->id);
       $result=mysql_query($sql);
       while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 	$telecom=new Address($row['Address Key']);
 	$card['Addresses'][$row['Address Key']]=array(
 						   'Address'=>$address->display()
-						   ,'Description'=>$row['Address Description']
 						   ,'Principal'=>$row['Is Main']
 						 );
       }

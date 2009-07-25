@@ -54,7 +54,7 @@ $company=new Company($company_key);
 $addresses=$company->get_addresses(1);
 
 $address_data="\n";
-$address_data.=sprintf('0:{"key":0,"country":"","country_code":"UNK","country_d1":"","country_d2":"","town":"","postal_code":"","town_d1":"","town_d2":"","fuzzy":"","street":"","building":"","internal":"","type":["Office"],"description":"","function":["Contact"],"descriptions":[{"Contact":""}]} ' );
+$address_data.=sprintf('0:{"key":0,"country":"","country_code":"UNK","country_d1":"","country_d2":"","town":"","postal_code":"","town_d1":"","town_d2":"","fuzzy":"","street":"","building":"","internal":"","type":["Office"],"description":"","function":["Contact"] } ' );
  $address_data.="\n";
 foreach($addresses as $index=>$address){
     $address->set_scope($scope,$scope_key);
@@ -76,15 +76,9 @@ foreach($addresses as $index=>$address){
     $function.="]";
     $function=preg_replace('/,]$/',']',$function);
     
-    $descriptions="[";
-    foreach($address->get('Descriptions') as $key=>$value){
-	$descriptions.='{'.prepare_mysql($key,false).':'.prepare_mysql($value,false)."},";
-    }
-    $descriptions.="]";
-    $descriptions=preg_replace('/,]$/',']',$descriptions);
 
 
-  $address_data.="\n".sprintf(',%d:{"key":%d,"country":%s,"country_code":%s,"country_d1":%s,"country_d2":%s,"town":%s,"postal_code":%s,"town_d1":%s,"town_d2":%s,"fuzzy":%s,"street":%s,"building":%s,"internal":%s,"type":%s,"description":%s,"function":%s,"descriptions":%s} ',
+  $address_data.="\n".sprintf(',%d:{"key":%d,"country":%s,"country_code":%s,"country_d1":%s,"country_d2":%s,"town":%s,"postal_code":%s,"town_d1":%s,"town_d2":%s,"fuzzy":%s,"street":%s,"building":%s,"internal":%s,"type":%s,"description":%s,"function":%s} ',
 			
 			 $address->id
 			 ,$address->id
@@ -101,9 +95,9 @@ foreach($addresses as $index=>$address){
 			 ,prepare_mysql($address->data['Address Building'],false)
 			 ,prepare_mysql($address->data['Address Internal'],false)
 			 ,$type
-			 ,prepare_mysql($address->get('Description'),false)
+			 ,prepare_mysql($address->data['Address Description'],false)
 			 ,$function
-			 ,$descriptions
+
 			 );
   $address_data.="\n";
 
@@ -121,8 +115,8 @@ var Event = YAHOO.util.Event;
 
 var Country_List=[<?=$country_list?>];
 var Address_Data={<?=$address_data?>};
-var Address_Keys=["key","country","country_code","country_d1","country_d2","town","postal_code","town_d1","town_d2","fuzzy","street","building","internal"];
-var Address_Meta_Keys=["type","function","description","descriptions"];
+var Address_Keys=["key","country","country_code","country_d1","country_d2","town","postal_code","town_d1","town_d2","fuzzy","street","building","internal","description"];
+var Address_Meta_Keys=["type","function"];
 
 var current_salutation='salutation<?=$contact->get('Salutation Key')?>';
 var current_block='<?=$edit_block?>';
@@ -306,7 +300,7 @@ function init(){
     var ids = ["name","fiscal_name","tax_number","registration_number"]; 
     YAHOO.util.Event.addListener(ids, "keyup", update_details);
     
-    var ids = ["address_country_d1","address_country_d2","address_town","address_town_d2","address_town_d1","address_postal_code","address_street","address_internal","address_building"]; 
+    var ids = ["address_description","address_country_d1","address_country_d2","address_town","address_town_d2","address_town_d1","address_postal_code","address_street","address_internal","address_building"]; 
     YAHOO.util.Event.addListener(ids, "keyup", on_address_item_change);
     YAHOO.util.Event.addListener(ids, "change",on_address_item_change);
     //TODO: event when paste with the middle mouse (peroblem in  linux only)

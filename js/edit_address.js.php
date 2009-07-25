@@ -4,22 +4,25 @@ var Address_Changes=0;
 var Address_Items_Changes=0;
 var Address_Type_Changes=0;
 var Address_Function_Changes=0;
-var Address_Description_Changes=0;
+
 
 var save_address=function(){
-    
+
     var table='address';
-    if(!Dom.get('address_key').value)
+    if(Dom.get('address_key').value==0)
 	create_address();
     else
 	var address_key=Dom.get('address_key').value;
+    
+    save_address_elements=0;
+
     
 
     if(Address_Items_Changes>0){
 	
 	items=Address_Keys;
 	
-	save_address_elements=0;
+
 	var value=new Object()
 	for(i in items)
 	    value[items[i]]=Dom.get('address_'+items[i]).value;
@@ -52,6 +55,7 @@ var save_address=function(){
     }
     
     if(Address_Type_Changes>0){
+
 	var address_type_values=new Array();
 	var elements_array=Dom.getElementsByClassName('address_type', 'span');
 	for( var i in elements_array ){
@@ -59,22 +63,95 @@ var save_address=function(){
 	    var label=element.getAttribute('label');
 	    if(Dom.hasClass(element,'selected')){
 		address_type_values.push(label);
-	 }
-
-     }
+	    }
+	    
+	}
 
 	var json_value = YAHOO.lang.JSON.stringify(address_type_values); 
 	var request='ar_edit_contacts.php?tipo=edit_'+escape(table)+ '_type&value=' + json_value+'&id='+address_key+'&subject='+Subject+'&subject_key='+Subject_Key; 
 		
-
+	
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
-	success:function(o) {
-	    alert(o.responseText);
-	    var r =  YAHOO.lang.JSON.parse(o.responseText);
-	    if(r.action=='updated'){
-		
-		
-		
+		success:function(o) {
+		    //alert(o.responseText);
+		    var r =  YAHOO.lang.JSON.parse(o.responseText);
+		    if(r.action=='updated'){
+			
+			
+			Address_Data[address_key]['type']=r.updated_data;
+			cancel_edit_address();
+			save_address_elements++;
+		    }else if(r.action=='error'){
+			alert(r.msg);
+		    }
+		    
+		    
+		    
+		}
+	    });
+
+
+    }
+    
+    
+    
+    
+    
+};
+
+
+var create_address=function(){
+    
+    
+    var value=new Object();
+    items=Address_Keys;
+    for(i in items)
+	value[items[i]]=Dom.get('address_'+items[i]).value;
+    
+
+    var address_type_values=new Array();
+	var elements_array=Dom.getElementsByClassName('address_type', 'span');
+	for( var i in elements_array ){
+	    var element=elements_array[i];
+	    var label=element.getAttribute('label');
+	    if(Dom.hasClass(element,'selected')){
+		address_type_values.push(label);
+	    }
+	    
+	}
+    value['type']=address_type_values;
+    
+     var address_function_values=new Array();
+	var elements_array=Dom.getElementsByClassName('address_function', 'span');
+	for( var i in elements_array ){
+	    var element=elements_array[i];
+	    var label=element.getAttribute('label');
+	    if(Dom.hasClass(element,'selected')){
+		address_function_values.push(label);
+	    }
+	    
+	}
+    value['function']=address_function_values;
+
+
+
+    var json_value = YAHOO.lang.JSON.stringify(value); 
+    
+    var request='ar_edit_contacts.php?tipo=new_address&value=' + json_value+'&subject='+Subject+'&subject_key='+Subject_Key; 
+    
+    	YAHOO.util.Connect.asyncRequest('POST',request ,{
+		success:function(o) {
+		    //	alert(o.responseText);
+		    var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if(r.action=='updated'){
+		    Dom.get('address_display'+address_key).innerHTML=r.xhtml_address;
+		    
+		    for(i in r.updated_data){
+			var address_item_value=r.updated_data[i];
+			if(address_item_value==null)address_item_value='';
+			Address_Data[address_key][i]=address_item_value;
+		    }
+		    cancel_edit_address();
 		    save_address_elements++;
 		}else if(r.action=='error'){
 		    alert(r.msg);
@@ -84,19 +161,7 @@ var save_address=function(){
 		
 		}
 	    });
-
-
-    }
-
-    
-    
-    
-};
-
-
-var create_address=function(){
-    
-    alert('creating address');
+   
 }
 
 
@@ -330,7 +395,7 @@ var on_address_item_change=function(){
 
 
     var render_after_address_item_change=function(){
-	Address_Changes=Address_Items_Changes+Address_Function_Changes+Address_Type_Changes+Address_Description_Changes;
+	Address_Changes=Address_Items_Changes+Address_Function_Changes+Address_Type_Changes;
 	
 	if(Address_Changes==0){
 	    Dom.get('address_messages').innerHTML='';
@@ -361,6 +426,15 @@ var toggle_address_function=function (o){
 	Dom.addClass(o, 'selected')
     }
      on_address_function_change();
+};
+var show_description=function (){
+    Dom.setStyle(['tr_address_description','hide_description'],'display','');
+    Dom.setStyle('show_description','display','none');
+};
+
+var hide_description=function (){
+    Dom.setStyle(['tr_address_description','hide_description'],'display','none');
+    Dom.setStyle('show_description','display','');
 };
 
 var toggle_country_d1=function (){
