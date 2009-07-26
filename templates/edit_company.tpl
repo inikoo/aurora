@@ -79,12 +79,20 @@
 	    </td>
 	  </tr>
 	  <tr id="address_showcase">
-	    <td colspan=2>
+	    <td colspan=2 style="border:1px solid black">
+	      <div  style="" class="address_container"  id="address_container0">
+		<div class="address_display" id="address_display0"></div>
+		<div  class="address_buttons">
+		  <span class="small_button small_button_edit" id="edit_address_button0" address_id="0" onclick="edit_address(event,this)" >{t}Edit Address{/t}</span>
+		</div>
+	      </div>
+
 	      {foreach from=$addresses item=address key=key }
-	      <div  style="width:200px;">
-		<div style="padding:10px;text-align:left;border:1px solid #ccc;" id="address_display{$address->id}">{$address->display('xhtml')}</div>
-		<div  style="text-align:right;margin-top:4px"><span class="small_button" id="edit_address_button{$address->id}" onclick="edit_address(event,{$address->id})" >Edit Address</span></div>
-		
+	      <div class="address_container"  id="address_container{$address->id}">
+		<div class="address_display"  id="address_display{$address->id}">{$address->display('xhtml')}</div>
+		<div class="address_buttons">
+		  <span class="small_button small_button_edit" id="edit_address_button{$address->id}" address_id="{$address->id}" onclick="edit_address(event,this)" >{t}Edit Address{/t}</span>
+		</div>
 	      </div>
 	      {/foreach}
 	      </td>
