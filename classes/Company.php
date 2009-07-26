@@ -481,10 +481,10 @@ class Company extends DB_Table {
      
     }
 
-      $this->data['Company Main Contact Name']=$contact->display('name');
+    $this->data['Company Main Contact Name']=$contact->display('name');
     $this->data['Company Main Contact Key']=$contact->id;
-   
-
+    
+    
     if(email::wrong_email($this->data['Company Main Plain Email']))
       $this->data['Company Main Plain Email']='';
     
@@ -514,11 +514,11 @@ class Company extends DB_Table {
       
     }
 
-        $address_data=array('Company Address Line 1'=>'','Company Address Town'=>'','Company Address Line 2'=>'','Company Address Line 3'=>'','Company Address Postal Code'=>'','Company Address Country Name'=>'','Company Address Country Primary Division'=>'','Company Address Country Secondary Division'=>'');
-     foreach($raw_address_data as $key=>$value){
-       if(array_key_exists($key,$address_data))
-	 $address_data[$key]=$value; 
-     }
+    $address_data=array('Company Address Line 1'=>'','Company Address Town'=>'','Company Address Line 2'=>'','Company Address Line 3'=>'','Company Address Postal Code'=>'','Company Address Country Name'=>'','Company Address Country Primary Division'=>'','Company Address Country Secondary Division'=>'');
+    foreach($raw_address_data as $key=>$value){
+      if(array_key_exists($key,$address_data))
+	$address_data[$key]=$value; 
+    }
      
          
 
@@ -676,14 +676,14 @@ class Company extends DB_Table {
 
       $contact->add_address(array(
 				  'Address Key'=>$this->data['Company Main Address Key']
-				  ,'Address Type'=>'Work'
-				  ,'Address Function'=>'Contact'
+				  ,'Address Type'=>array('Work')
+				  ,'Address Function'=>array('Contact')
 
 				  ));
         $this->add_address(array(
 			       'Address Key'=>$this->data['Company Main Address Key']
-			       ,'Address Type'=>'Office'
-			       ,'Address Function'=>'Contact'
+			       ,'Address Type'=>array('Office')
+			       ,'Address Function'=>array('Contact')
 
 			       ));
 
@@ -865,8 +865,8 @@ protected function update_field_switcher($field,$value,$options=''){
 
     $_data['editor']=$this->editor;
 
-    $_data['Address Type']='Work';
-    $_data['Address Function']='Contact';
+    $_data['Address Type']=address('Work');
+    $_data['Address Function']=address('Contact');
 
 
 
@@ -1516,9 +1516,11 @@ function add_address($data,$args='principal'){
     if(isset($data['Address Key'])){
 
       $address=new address('id',$data['Address Key']);
-    }    else
+    }    else{
+
       $address=new address('find in company '.$this->id.' create',$data);
 
+    }
   }else
     $address=new address('fuzzy all');
 
@@ -1528,26 +1530,37 @@ function add_address($data,$args='principal'){
     
   }
   
+  
+  
+  if($address->new)
+    $this->added_address_key=$address->id;
+  else
+    $this->added_address_key=false;
 
   if($address->updated or $address->new)
     $this->updated=true;
 
   $address_id=$address->id;
-  $sql=sprintf("insert into `Address Bridge` (`Subject Type`,`Subject Key`,`Address Key`,`Address Type`,`Address Function`) values ('Company',%d,%d,%s,%s)  ON DUPLICATE KEY UPDATE `Address Type`=%s,`Address Function`=%s",
-	       $this->id,
-	       $address_id
-	       ,prepare_mysql($data['Address Type'])
-	       ,prepare_mysql($data['Address Function'])
-	       ,prepare_mysql($data['Address Type'])
-	       ,prepare_mysql($data['Address Function'])
-	       );
- 
-  if(!mysql_query($sql)){
-    print("$sql\n error can no create company address bridge");
-  }
   
-    if(mysql_affected_rows() )
-    $this->updated=true;
+  foreach($data['Address Type'] as $type){
+    foreach($data['Address Function'] as $function){
+      $sql=sprintf("insert into `Address Bridge` (`Subject Type`,`Subject Key`,`Address Key`,`Address Type`,`Address Function`) values ('Company',%d,%d,%s,%s)  ON DUPLICATE KEY UPDATE `Address Type`=%s,`Address Function`=%s",
+		   $this->id,
+		   $address_id
+		   ,prepare_mysql($type)
+		   ,prepare_mysql($function)
+		   ,prepare_mysql($type)
+		   ,prepare_mysql($function)
+		   );
+      if(!mysql_query($sql))
+	print("$sql\n error can no create company address bridge");
+      
+      if(mysql_affected_rows() )
+	$this->updated=true;
+      
+    }
+  }
+
 
  if(preg_match('/principal/i',$args)){
 
@@ -1706,9 +1719,20 @@ function add_contact($data,$args='principal'){
    }
 
    /*
-     function: get_contact_key
+     function: get_contact_keys
      Returns the Contact Key if the company is one
     */
+  function get_contact_keys(){
+     $sql=sprintf("select * from `Contact Bridge` where  `Subject Type`='Company' and `Subject Key`=%d order by `Is Main` desc  ",$this->id);
+     $contacts=array();
+     $result=mysql_query($sql);
+     while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+       $contacts[$row['Contact Key']]= $row['Contact Key'];
+     }
+     return $contacts;
+   }
+
+
    function get_contacts(){
      $sql=sprintf("select * from `Contact Bridge` CB left join `Contact Dimension` C on CB.`Contact Key`=C.`Contact Key` where  `Subject Type`='Company' and `Subject Key`=%d order by `Is Main` desc  ",$this->id);
      $contacts=array();

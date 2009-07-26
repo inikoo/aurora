@@ -294,7 +294,7 @@ function init(){
     YAHOO.util.Event.addListener('save_details_button', "click",save_details );
 
     YAHOO.util.Event.addListener('cancel_save_details_button', "click",cancel_save_details );
-    YAHOO.util.Event.addListener('add_address_button', "click",edit_address,0 );
+    YAHOO.util.Event.addListener('add_address_button', "click",edit_address,false );
 
 
     var ids = ["name","fiscal_name","tax_number","registration_number"]; 
@@ -372,7 +372,7 @@ function init(){
         var oData = aArgs[2]; // object literal of selected item's result data
         
         // update hidden form field with the selected item's ID
-        myHiddenField.value = oData.id;
+        myHiddenField.value = oData.code;
         
         myAC.getInputEl().value = oData.name + " (" + oData.code + ") ";
 

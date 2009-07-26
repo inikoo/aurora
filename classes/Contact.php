@@ -914,8 +914,8 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
 	
 	$this->add_address(array(
 				    'Address Key'=>$home_address->id
-				    ,'Address Type'=>'Home'
-				    ,'Address Function'=>'Contact'
+				    ,'Address Type'=>array('Home')
+				    ,'Address Function'=>array('Contact')
 
 				    ));
 	}
@@ -931,8 +931,8 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
 	
 	  $this->add_address(array(
 				    'Address Key'=>$work_address->id
-				    ,'Address Type'=>'Work'
-				    ,'Address Function'=>'Contact'
+				    ,'Address Type'=>array('Work')
+				    ,'Address Function'=>array('Contact')
 
 				    ));
 	}
@@ -1365,15 +1365,15 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
 	if($type=='Home'){
 	  $address_data=array(
 			      'Address Key'=>$address->id
-			      ,'Address Type'=>'Home'
-			      ,'Address Function'=>'Contact'
+			      ,'Address Type'=>array('Home')
+			      ,'Address Function'=>array('Contact')
 
 			      );
 	}else{
 	  $address_data=array(
 			      'Address Key'=>$address->id
-			      ,'Address Type'=>'Work'
-			      ,'Address Function'=>'Contact'
+			      ,'Address Type'=>array('Work')
+			      ,'Address Function'=>array('Contact')
 
 			      );
 	  
@@ -1455,20 +1455,28 @@ function add_address($data,$args='principal'){
 	$this->updated=true;
   
 
-
+  
+  foreach($data['Address Type'] as $type){
+    foreach($data['Address Function'] as $function){
 
   $sql=sprintf("insert into `Address Bridge` (`Subject Type`,`Subject Key`,`Address Key`,`Address Type`,`Address Function`) values ('Contact',%d,%d,%s,%s)  ON DUPLICATE KEY UPDATE `Address Type`=%s,`Address Function`=%s",
 	       $this->id
 	       ,$address->id
-	       ,prepare_mysql($data['Address Type'])
-	       ,prepare_mysql($data['Address Function'])
-	       ,prepare_mysql($data['Address Type'])
-	       ,prepare_mysql($data['Address Function'])
+	       ,prepare_mysql($type)
+		   ,prepare_mysql($function)
+		   ,prepare_mysql($type)
+		   ,prepare_mysql($function)
 	       );
  
   mysql_query($sql);
   if(mysql_affected_rows() )
     $this->updated=true;
+
+
+    }
+  }
+
+
   //print "*".mysql_affected_rows()."\n";
 
   //  exit("$sql\n error can no create contact address bridge");
@@ -1526,8 +1534,8 @@ function add_address($data,$args='principal'){
      $company->add_address(
 			   array(
 				      'Address Key'=>$address->id
-				      ,'Address Type'=>'Office'
-				      ,'Address Function'=>'Contact'
+				      ,'Address Type'=>array('Office')
+				      ,'Address Function'=>array('Contact')
 				 )
 			   ,'principal'
 			   );
