@@ -137,12 +137,14 @@ var create_address=function(){
 
     var json_value = YAHOO.lang.JSON.stringify(value); 
     
-    var request='ar_edit_contacts.php?tipo=new_address&value=' + json_value+'&subject='+Subject+'&subject_key='+Subject_Key; 
+
     
-    	YAHOO.util.Connect.asyncRequest('POST',request ,{
-		success:function(o) {
-		    //	alert(o.responseText);
-		    var r =  YAHOO.lang.JSON.parse(o.responseText);
+    var request='ar_edit_contacts.php?tipo=new_address&value=' + json_value+'&subject='+Subject+'&subject_key='+Subject_Key; 
+    alert(request);
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    success:function(o) {
+	       	alert(o.responseText);
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if(r.action=='updated'){
 		    Dom.get('address_display'+address_key).innerHTML=r.xhtml_address;
 		    
@@ -220,8 +222,12 @@ var cancel_edit_address=function (){
 };
 
 
-var edit_address=function (e,sp){
-    index=Dom.get(sp.getAttibute('address_id'))
+var edit_address=function (e,address_button){
+    if(address_button==false)
+	index=0;
+    else
+	index=address_button.getAttribute('address_id')
+
     Current_Address_Index=index;
     changes_address=0;
     Dom.setStyle(['address_showcase','move_address_button','add_address_button'], 'display', 'none'); 

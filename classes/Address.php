@@ -184,7 +184,7 @@ class Address extends DB_Table{
       }
     }
     
-
+    
     if(isset($raw_data['Street Data']))
       $raw_data['Address Line 3']=$raw_data['Street Data'];
     if(isset($raw_data['Address Building']))
@@ -193,7 +193,7 @@ class Address extends DB_Table{
       $raw_data['Address Line 1']=$raw_data['Address Internal'];
 
     $data=$this->base_data();
-   
+
     if(preg_match('/from Company|in company/i',$options)){
       foreach($raw_data as $key=>$val){
 	$_key=preg_replace('/Company /','',$key);
@@ -386,7 +386,7 @@ class Address extends DB_Table{
 	$sql.=sprintf(' and `%s`=%s',$field,prepare_mysql($data[$field],false));
       }
       $result=mysql_query($sql);
-      //      print "No fuzzy $sql\n";
+      //print "No fuzzy $sql\n";
       $num_results=mysql_num_rows($result);
      
       if($num_results==1){
@@ -546,6 +546,7 @@ class Address extends DB_Table{
     if(mysql_query($sql)){
       $this->id = mysql_insert_id();
       $this->data['Address Key']= $this->id;
+      $this->new=true;
     }else{
       print "Error can not create address\n";exit;
 	
@@ -1475,6 +1476,9 @@ class Address extends DB_Table{
     }
     //--------------------------------------------------------------------------
     // Common errors related to the country
+
+    
+
     if(preg_match('/^St. Thomas.*Virgin Islands$/i',$data['Address Town'])){
       $data['Address Country Name']='Virgin Islands, U.S.';
       $data['Address Town']='St. Thomas';
@@ -1578,7 +1582,7 @@ class Address extends DB_Table{
  
 
  
-    
+
     $data=Address::prepare_country_data($data);
     // print_r($data);
     //exit;
@@ -3524,6 +3528,7 @@ class Address extends DB_Table{
     }
     if($data['Address Country Code']=='UNK'){
       if(!$empty){
+	print "UNKNOWN COUNTRY\n";
 	print_r($raw_data);
 	//	exit;
       }

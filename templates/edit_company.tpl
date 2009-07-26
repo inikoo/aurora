@@ -75,7 +75,7 @@
 	    <td  style="text-align:right">
 	      <span class="small_button" id="save_address_button" style="display:none" address_key="" >Save Address</span>
 	      <span class="small_button" id="cancel_edit_address"  style="display:none" onClick="cancel_edit_address()" address_key=""  >Cancel Edit Address</span>
-	      <span class="small_button" id="move_address_button" >Move to New Address</span><span class="small_button" id="add_address_button" >Add Address</span>
+	      <span class="small_button" id="move_address_button" >Move to New Address</span><span class="small_button" address_id="0"   id="add_address_button" >Add Address</span>
 	    </td>
 	  </tr>
 	  <tr id="address_showcase">
