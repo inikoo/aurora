@@ -96,10 +96,11 @@ if($edit ){
   $editing_block='details';
 
   $smarty->assign('edit',$editing_block);
+  $css_files[]='css/edit_address.css';
   $js_files[]='js/edit_address.js.php';
   $js_files[]='js/edit_company.js.php?edit='.$editing_block;
   
-
+  
 }
 
 $smarty->assign('css_files',$css_files);

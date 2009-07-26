@@ -220,8 +220,8 @@ var cancel_edit_address=function (){
 };
 
 
-var edit_address=function (e,index){
-    
+var edit_address=function (e,sp){
+    index=Dom.get(sp.getAttibute('address_id'))
     Current_Address_Index=index;
     changes_address=0;
     Dom.setStyle(['address_showcase','move_address_button','add_address_button'], 'display', 'none'); 
