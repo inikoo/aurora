@@ -464,6 +464,8 @@ class Company extends DB_Table {
   }
 
 
+      $extra_mobile_key=false;
+
     $this->data['Company File As']=$this->file_as($this->data['Company Name']);
     $this->data['Company ID']=$this->get_id();
     
@@ -524,25 +526,21 @@ class Company extends DB_Table {
 
 
      $address_data['editor']=$this->editor;
-     $address=new Address("find in company create",$address_data);
+     //  print_r($address_data);
+     $address=new Address("find in company force create",$address_data);
      //print_r($raw_data);
 
      // print_r($raw_address_data);
-     if($address->error){
+     if(!$address->new){
        exit("find_company: address found");
      }
-
      // print_r($address->data);
-
     $this->data['Company Main Address Key']=$address->id;
     $this->data['Company Main XHTML Address']=$address->display('xhtml');
     $this->data['Company Main Plain Address']=$address->display('plain');
     $this->data['Company Main Country Key']=$address->data['Address Country Key'];
     $this->data['Company Main Country']=$address->data['Address Country Name'];
     $this->data['Company Main Location']=$address->display('location');
-    // print $address->display('location');
- //  exit;
-
 
     if($this->data['Company Main Telephone']!=''){
 
@@ -554,7 +552,8 @@ class Company extends DB_Table {
       $telephone=new Telecom("find in company create country code ".$address->data['Address Country Code'],$telephone_data);
 
       // print "------------------\n";
-
+      
+      $main_telephone_is_mobile=false;
       if(!$telephone->error){
 	//Collect data about telecom found
 	
@@ -562,6 +561,10 @@ class Company extends DB_Table {
 	$this->data['Company Main Plain Telephone']=$telephone->display('plain');
 	$this->data['Company Main Telephone']=$telephone->display('number');
 	$this->data['Company Main Telephone Key']=$telephone->id; 
+
+	if($telephone->is_mobile())
+	  $main_telephone_is_mobile=true;
+
       }else{
 	$this->data['Company Main Plain Telephone']='';
 	$this->data['Company Main Telephone']='';
@@ -582,9 +585,25 @@ class Company extends DB_Table {
       $telephone=new Telecom("find in company create country code ".$address->data['Address Country Code'],$telephone_data);
       
       if(!$telephone->error){
-	$this->data['Company Main Plain FAX']=$telephone->display('plain');
-	$this->data['Company Main FAX']=$telephone->display('number');
-	$this->data['Company Main FAX Key']=$telephone->id; 
+	if($telephone->is_mobile()){
+	  $this->data['Company Main Plain FAX']='';
+	  $this->data['Company Main FAX']='';
+	  $this->data['Company Main FAX Key']=''; 
+	  if($this->data['Company Main Telephone Key'])
+	    $extra_mobile_key=$telephone->id;
+	  else{
+	    	$this->data['Company Main Plain Telephone']=$telephone->display('plain');
+		$this->data['Company Main Telephone']=$telephone->display('number');
+		$this->data['Company Main Telephone Key']=$telephone->id; 
+
+	  }
+
+	}else{
+	  $this->data['Company Main Plain FAX']=$telephone->display('plain');
+	  $this->data['Company Main FAX']=$telephone->display('number');
+	  $this->data['Company Main FAX Key']=$telephone->id;
+	  
+	} 
       }else{
 	$this->data['Company Main Plain FAX']='';
 	$this->data['Company Main FAX']='';
@@ -636,6 +655,24 @@ class Company extends DB_Table {
 				  'Company Key'=>$this->id
 				  ));
    
+  $contact->add_address(array(
+				  'Address Key'=>$this->data['Company Main Address Key']
+				  ,'Address Type'=>array('Work')
+				  ,'Address Function'=>array('Contact')
+
+				  ));
+      $this->add_address(array(
+			       'Address Key'=>$this->data['Company Main Address Key']
+			       ,'Address Type'=>array('Office')
+			       ,'Address Function'=>array('Contact')
+
+			       ));
+
+
+
+
+
+
       if($this->data['Company Main Email Key']){
       $email_data=array(
 				'Email Key'=>$this->data['Company Main Email Key']
@@ -651,17 +688,56 @@ class Company extends DB_Table {
 
       //  print_r($this->data);
       if($this->data['Company Main Telephone Key']){
+
+	if($main_telephone_is_mobile){
+	  $contact_telecom_type='Mobile';
+	  $company_telecom_type='Contact Mobile';
+	}else{
+	  $contact_telecom_type='Work Telephone';
+	  $company_telecom_type='Office Telephone';
+	  
+	 $sql=sprintf("insert into `Address Telecom Bridge` values (%d,%d)",$this->data['Company Main Address Key'],$this->data['Company Main Telephone Key']);
+	  mysql_query($sql);
+
+	}
       $contact->add_tel(array(
 			      'Telecom Key'=>$this->data['Company Main Telephone Key']
-			      ,'Telecom Type'=>'Work Telephone'
+			      ,'Telecom Type'=>$contact_telecom_type
 			      ));
       $this->add_tel(array(
 			   'Telecom Key'=>$this->data['Company Main Telephone Key']
-			   ,'Telecom Type'=>'Office Telephone'
+			   ,'Telecom Type'=>$company_telecom_type
 			   ));
+
+   
+
       
       }
+
+
+
+
+      if($extra_mobile_key){
+	
+	$contact->add_tel(array(
+			      'Telecom Key'=>$extra_mobile_key
+			      ,'Telecom Type'=>'Mobile'
+				),'');
+	
+	  $this->add_tel(array(
+			       'Telecom Key'=>$extra_mobile_key
+			       ,'Telecom Type'=>'Contact Mobile'
+			       ),'');
+
+      }
+
+
+
       if($this->data['Company Main FAX Key']){
+
+	$sql=sprintf("insert into `Address Telecom Bridge` values (%d,%d)",$this->data['Company Main Address Key'],$this->data['Company Main FAX Key']);
+	  mysql_query($sql);
+
       $contact->add_tel(array(
 			      'Telecom Key'=>$this->data['Company Main FAX Key']
 			      ,'Telecom Type'=>'Office Fax'
@@ -672,23 +748,14 @@ class Company extends DB_Table {
 			   ));
       }
 
-      if($this->data['Company Main Address Key']){
-
-      $contact->add_address(array(
-				  'Address Key'=>$this->data['Company Main Address Key']
-				  ,'Address Type'=>array('Work')
-				  ,'Address Function'=>array('Contact')
-
-				  ));
-        $this->add_address(array(
-			       'Address Key'=>$this->data['Company Main Address Key']
-			       ,'Address Type'=>array('Office')
-			       ,'Address Function'=>array('Contact')
-
-			       ));
 
 
-      }
+   
+    
+      
+
+      
+      
      
 
    
@@ -698,7 +765,7 @@ class Company extends DB_Table {
 
       $this->get_data('id',$this->id);
     }else{
-      print "Error, company can not be created";exit;
+      print "Error, company can not be created $sql";exit;
     }
 
   }
@@ -1400,21 +1467,17 @@ private function update_Company_Old_ID($company_old_id,$options){
 	 }
        }
 
- if(!isset($data['Telecom Description']))
-       $data['Telecom Description']=$telecom_tipo;
+     
 
      // add bridge
   
      
-     $sql=sprintf("insert into  `Telecom Bridge` (`Telecom Key`, `Subject Key`,`Subject Type`,`Telecom Type`,`Is Main`,`Telecom Description`) values (%d,%d,'Company',%s,%s,%s)  ON DUPLICATE KEY UPDATE `Telecom Type`=%s,`Telecom Description`=%s "
+     $sql=sprintf("insert into  `Telecom Bridge` (`Telecom Key`, `Subject Key`,`Subject Type`,`Telecom Type`,`Is Main`) values (%d,%d,'Company',%s,%s)  ON DUPLICATE KEY UPDATE `Telecom Type`=%s"
 		  ,$telecom->id
 		  ,$this->id
 		  ,prepare_mysql($data['Telecom Type'])
 		  ,prepare_mysql(preg_match('/principal/i',$args)?'Yes':'No')
-		  ,prepare_mysql($data['Telecom Description'],false)
 		  ,prepare_mysql($data['Telecom Type'])
-		  ,prepare_mysql($data['Telecom Description'],false)
-
 		  );
      mysql_query($sql);
 
@@ -1733,20 +1796,16 @@ function add_contact($data,$args='principal'){
    }
 
 
-   function get_contacts(){
-     $sql=sprintf("select * from `Contact Bridge` CB left join `Contact Dimension` C on CB.`Contact Key`=C.`Contact Key` where  `Subject Type`='Company' and `Subject Key`=%d order by `Is Main` desc  ",$this->id);
+   function get_contacts($offset=0){
+     if(!is_numeric($offset))
+       $offset=0;
+     $sql=sprintf("select `Contact Key` from `Contact Bridge` where  `Subject Type`='Company' and `Subject Key`=%d order by `Is Main` desc  ",$this->id);
      $contacts=array();
      $result=mysql_query($sql);
      while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-       $contacts[$row['Contact Key']]= array(
-					     'id'=>$row['Contact Key']
-					     ,'name'=>$row['Contact Name']
-					     ,'email'=>$row['Contact Main Plain Email']
-					     ,'telephone'=>$row['Contact Main Telephone']
-					     ,'fax'=>$row['Contact Main Fax']
-					     ,'contact'=>new Contact($row['Contact Key'])
-					     );
-       
+       $contact=new Contact($row['Contact Key']);
+       $contacts[$offset]=$contact;
+       $offset++;
      }
      return $contacts;
    }

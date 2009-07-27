@@ -143,24 +143,33 @@ class Contact extends DB_Table{
     $address_home_data=array('Contact Home Address Line 1'=>'','Contact Home Address Town'=>'','Contact Home Address Line 2'=>'','Contact Home Address Line 3'=>'','Contact Home Address Postal Code'=>'','Contact Home Address Country Name'=>'','Contact Home Address Country Primary Division'=>'','Contact Home Address Country Secondary Division'=>'');
     $address_work_data=array('Contact Work Address Line 1'=>'','Contact Work Address Town'=>'','Contact Work Address Line 2'=>'','Contact Work Address Line 3'=>'','Contact Work Address Postal Code'=>'','Contact Work Address Country Name'=>'','Contact Work Address Country Primary Division'=>'','Contact Work Address Country Secondary Division'=>'');
     
+
+
     if(preg_match('/from supplier/',$options)){
       foreach($raw_data as $key=>$val){
+
+	
+	if(preg_match('/Supplier Address/i',$key)){
+	  $_key=preg_replace('/Supplier Address/i','Contact Work Address',$key);
+	}else
 	$_key=preg_replace('/Supplier /i','Contact ',$key);
+	
+	if(array_key_exists($_key,$address_work_data))
+	  $address_work_data[$_key]=$val;
 	$data[$_key]=$val;
       }
       $parent='supplier';
     }elseif(preg_match('/from customer|in customer/i',$options)){
       foreach($raw_data as $key=>$val){
 	if(preg_match('/Customer Address/i',$key)){
-	  $_key=preg_replace('/Customer Address/i','Contact Work Address',$key);
+	  $_key=preg_replace('/Customer Address/i','Contact Home Address',$key);
 	}else
 	  $_key=preg_replace('/Customer /','Contact ',$key);
 	$data[$_key]=$val;
 
-	if(preg_match('/Customer Address/i',$key))
-	  $_key=preg_replace('/Customer Address/i','Contact Work Address',$key);
-	if(array_key_exists($_key,$address_work_data))
-	  $address_work_data[$_key]=$val;
+
+	if(array_key_exists($_key,$address_home_data))
+	  $address_home_data[$_key]=$val;
 	
 	//	print " $key -> $_key = $val \n";
 
@@ -270,23 +279,38 @@ class Contact extends DB_Table{
     //print_r($address_work_data);
     //print_r($raw_data);
     //print_r($data);
+
+    $country_code='UNK';
+
    if(!array_empty( $address_work_data)){
      $address=new Address("find in contact",$address_work_data);
 
      $country_code=$address->raw_data['Address Country Code'];
-     //print "AC\n";
-     //print_r($address->candidate);
+    
        foreach($address->candidate as $key=>$val){
 	 if(isset($this->candidate[$key]))
 	   $this->candidate[$key]+=$val;
 	 else
 	   $this->candidate[$key]=$val;
        }
-       
-       
-   }else
-     $country_code='UNK';
+   }
    
+   if(!array_empty( $address_home_data)){
+     $address=new Address("find in contact",$address_home_data);
+     
+     $country_code=$address->raw_data['Address Country Code'];
+
+     foreach($address->candidate as $key=>$val){
+       if(isset($this->candidate[$key]))
+	 $this->candidate[$key]+=$val;
+       else
+	 $this->candidate[$key]=$val;
+       }
+   }
+
+
+
+
 
 
   if($data['Contact Main Telephone']!=''  ){
@@ -627,7 +651,9 @@ class Contact extends DB_Table{
 	//print "creating contact!!!!\n";
 	//print_r($data);
 	//print "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n";
-	$this->create($data,$options,$address_home_data,$address_work_data);
+
+
+	$this->create($data,$options,$address_home_data);
       }
 
     }
@@ -780,7 +806,7 @@ class Contact extends DB_Table{
  (example end)
  
 */
-private function create ($data,$options='',$address_home_data=false,$address_work_data=false){
+private function create ($data,$options='',$address_home_data=false){
    
   
   //print $options;
@@ -920,25 +946,31 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
 				    ));
 	}
 
-	if(!array_empty($address_work_data)){
 
-	  $address_work_data['editor']=$this->editor;
-	  $work_address=new Address("find in contact ".$this->id." create",$address_work_data);
-	  if($work_address->error){
-	    print $work_address->msg."\n";
-	    exit("find_contact: work address found\n");
+
+		if($data['Contact Main Mobile']!=''){
+	  //print "addin fax\n";
+	  $telephone_data=array('Telecom Raw Number'=>$data['Contact Main Mobile']);
+	  $telephone_data['editor']=$this->editor;
+	  $telephone=new Telecom("find in contact ".$this->id." create  country code ".$this->data['Contact Main Country Code']."   ",$telephone_data);
+	  if(!$telephone->error){
+	    if($telephone->is_mobile()){
+	      $this->add_tel(array(
+				   'Telecom Key'=>$telephone->id
+				   ,'Telecom Type'=>'Mobile'
+				   ));
+
+	    }else{
+
+	      $this->add_tel(array(
+			      'Telecom Key'=>$telephone->id
+			      ,'Telecom Type'=>'Home Telephone'
+			      ));
+	    }
+
+
 	  }
-	
-	  $this->add_address(array(
-				    'Address Key'=>$work_address->id
-				    ,'Address Type'=>array('Work')
-				    ,'Address Function'=>array('Contact')
-
-				    ));
 	}
-
-
-	
 
 
 
@@ -952,10 +984,22 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
 	  $telephone=new Telecom("find in contact ".$this->id." create country code ".$this->data['Contact Main Country Code']."  ",$telephone_data);
 	  
 	  if(!$telephone->error){
-	    $this->add_tel(array(
-				 'Telecom Key'=>$telephone->id
-				 ,'Telecom Type'=>'Telephone'
-				 ));
+	    
+
+	    if($telephone->is_mobile()){
+	      $this->add_tel(array(
+				   'Telecom Key'=>$telephone->id
+				   ,'Telecom Type'=>'Mobile'
+				   ));
+
+	    }else{
+	      $this->add_tel(array(
+				   'Telecom Key'=>$telephone->id
+				   ,'Telecom Type'=>'Home Telephone'
+				   ));
+	    }
+
+
 	  }
 	}
 	if($data['Contact Main FAX']!=''){
@@ -966,27 +1010,28 @@ private function create ($data,$options='',$address_home_data=false,$address_wor
 	  $telephone=new Telecom("find in contact ".$this->id." create  country code ".$this->data['Contact Main Country Code']."   ",$telephone_data);
 	 
 	  if(!$telephone->error){
-	  $this->add_tel(array(
-			      'Telecom Key'=>$telephone->id
-			      ,'Telecom Type'=>'Fax'
-			      ));
- }
-	}
 
-	if($data['Contact Main Mobile']!=''){
-	  //print "addin fax\n";
-	  $telephone_data=array('Telecom Raw Number'=>$data['Contact Main Mobile']);
-	  $telephone_data['editor']=$this->editor;
-	  $telephone=new Telecom("find in contact ".$this->id." create  country code ".$this->data['Contact Main Country Code']."   ",$telephone_data);
-	  if(!$telephone->error){
 	    
-	    $this->add_tel(array(
-				 'Telecom Key'=>$telephone->id
-			      ,'Telecom Type'=>'Mobile'
-			       ));
- }
+	    if($telephone->is_mobile()){
+	      $this->add_tel(array(
+				   'Telecom Key'=>$telephone->id
+				   ,'Telecom Type'=>'Mobile'
+				   ));
+
+	    }else{
+
+	      $this->add_tel(array(
+			      'Telecom Key'=>$telephone->id
+			      ,'Telecom Type'=>'Home Fax'
+			      ));
+	    }
+	  }
 	}
-	}
+	
+
+     
+
+      }
 	
 
 
@@ -2873,6 +2918,82 @@ string with the name to be parsed
        return false;
 
    }
+
+
+   function get_addresses($offset=0){
+
+     if(!is_numeric($offset))
+       $offset=0;
+     $sql=sprintf("select * from `Address Bridge` CB where   `Subject Type`='Contact' and `Subject Key`=%d  group by `Address Key` order by `Is Main` desc  ",$this->id);
+     $addresses=array();
+     $result=mysql_query($sql);
+  
+     while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+       $address= new Address($row['Address Key']);
+       $address->set_scope('Contact',$this->id);
+       $addresses[$offset]= $address;
+       $offset++;
+     }
+     return $addresses;
+
+   }
+
+
+    function get_emails($offset=0){
+
+     if(!is_numeric($offset))
+       $offset=0;
+     $sql=sprintf("select * from `Email Bridge` CB where   `Subject Type`='Contact' and `Subject Key`=%d  group by `Email Key` order by `Is Main` desc  ",$this->id);
+     $email=array();
+     $result=mysql_query($sql);
+  
+     while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+       $email= new Email($row['Email Key']);
+       $emails[$offset]= $email;
+       $offset++;
+     }
+     return $emails;
+     $this->number_emails=count($emails);
+   }
+
+     function get_mobiles($offset=0){
+
+     if(!is_numeric($offset))
+       $offset=0;
+     $sql=sprintf("select * from `Telecom Bridge` CB where   `Telecom Type`='Mobile' and `Subject Type`='Contact' and `Subject Key`=%d  group by `Telecom Key` order by `Is Main` desc  ",$this->id);
+     $mobiles=array();
+     $result=mysql_query($sql);
+  
+     while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+       $mobile= new Telecom($row['Telecom Key']);
+       $mobiles[$offset]= $mobile;
+       $offset++;
+     }
+     $this->number_mobiles=count($mobiles);
+     return $mobiles;
+
+   }
+
+     function get_land_telecoms($offset=0){
+
+     if(!is_numeric($offset))
+       $offset=0;
+     $sql=sprintf("select * from `Telecom Bridge` CB where   `Telecom Type`!='Mobile' and `Subject Type`='Contact' and `Subject Key`=%d  group by `Telecom Key` order by `Is Main` desc  ",$this->id);
+     $telecoms=array();
+     $result=mysql_query($sql);
+  
+     while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+       $tel= new Telecom($row['Telecom Key']);
+       $telecoms[$offset]= $tel;
+       $offset++;
+     }
+     $this->number_telecoms=count($telecoms);
+     return $telecoms;
+
+   }
+
+
+
 
 
 } 

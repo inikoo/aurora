@@ -111,6 +111,7 @@ case('new_address'):
 			       ));
      
      $address=new Address($subject_object->added_address_key);
+  $address->set_scope($subject,$subject_key);
      $updated_address_data=array(
 				 'country'=>$address->data['Address Country Name']
 				 ,'country_code'=>$address->data['Address Country Code']
