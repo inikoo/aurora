@@ -137,7 +137,8 @@ class Address extends DB_Table{
   */
   
   function find($raw_data,$options=''){
-
+    //   print "$options\n";
+    //   print_r($raw_data);
    
     $this->found=false;
     $this->found_in=false;
@@ -148,9 +149,15 @@ class Address extends DB_Table{
     $mode='Contact';
     $parent='Contact';
     $create=false;
-    if(preg_match('/create|update/i',$options)){
+    $update=false;
+    if(preg_match('/create/i',$options)){
       $create=true;
     }
+     if(preg_match('/update/i',$options)){
+      $update=true;
+    }
+    
+
     $auto=false;
     if(preg_match('/auto/i',$options)){
       $auto=true;
@@ -166,15 +173,6 @@ class Address extends DB_Table{
     }
 
 
-    $create='';
-    $update='';
-    if(preg_match('/create/i',$options)){
-      $create='create';
-    }
-    if(preg_match('/update/i',$options)){
-      $update='update';
-    }
-    
     if(isset($raw_data['editor']) and is_array($raw_data['editor'])){
       foreach($raw_data['editor'] as $key=>$value){
 	
@@ -237,12 +235,19 @@ class Address extends DB_Table{
       break;
     }
 
+
+
     $this->raw_data=$data;
+
+
+
+    if(!preg_match('/force create/i',$options,$match)){
+
 
     $subject_key=0;
     $subject_type='Contact';
 
-    if(preg_match('/in contact \d+/',$options,$match)){
+    if(preg_match('/in contact \d+/i',$options,$match)){
       $subject_key=preg_replace('/[^\d]/','',$match[0]);
       $subject_type='Contact';
 
@@ -251,7 +256,7 @@ class Address extends DB_Table{
 
 
     }
-    if(preg_match('/in company \d+/',$options,$match)){
+    if(preg_match('/in company \d+/i',$options,$match)){
       $subject_key=preg_replace('/[^\d]/','',$match[0]);
       $subject_type='Company';
       $company=new Company($subject_key);
@@ -415,38 +420,28 @@ class Address extends DB_Table{
     }
 
 
-
+    }// End no force create
+    
+  
+    
 
     
-    if($create){
-      if($this->found ){
-	//print "updating address\n";
+    if($update){
+      if($this->found){
 	$this->update($data,$options);
-      }else{
-	// not found
-	if($auto){
-	  usort($this->candidate);
-	  foreach($this->candidate as $key =>$val){
-	    if($val>=90){
-	      $this->found=true;
-	      if(in_array($key,$in_contact))
-		$this->found_in=true;
-	      else
-		$this->found_out=true;
-
-	      $this->get_data('id',$key);
-	      $this->update($data,$options);
-	      return;
-	    }
-	  }
-
-	}
-
-	$this->create($data,$options);
-
+	return;
       }
-
-    }   
+    
+    }
+      
+    if($create and !$this->found){
+      //   print_r($data);
+      //    exit;
+      $this->create($data,$options);
+      
+    }
+    
+    
 
  
 
@@ -788,6 +783,14 @@ class Address extends DB_Table{
   function display($tipo=''){
     $separator="\n";
     switch($tipo){
+    case('mini'):
+      $street=_trim($this->data['Address Street Number'].' '.$this->data['Address Street Name'].' '.$this->data['Address Street Type']);
+      $max_characters=26;
+      if($strlen>$max_characters)
+	$street=substr($street,$max_characters)."... ";
+      $street.=', ';
+      return $street.$this->location($this->data,'right');
+      break;
     case('location'):
       return $this->location($this->data);
       break;
@@ -928,7 +931,7 @@ class Address extends DB_Table{
     $str -  _array_ location data
   */
 
-  public static function location($data){
+  public static function location($data,$flag='left'){
     
     if($data['Military Address']=='Yes'){
       $location=sprintf('<img src="art/flags/%s.gif" title="%s"> %s',strtolower($data['Address Country 2 Alpha Code']),$data['Address Country Code'],$data['Military Installation Type']);
@@ -943,7 +946,14 @@ class Address extends DB_Table{
 	  return _trim($location);
 	}
       }
-      $location=sprintf('<img src="art/flags/%s.gif" title="%s"> %s',strtolower($data['Address Country 2 Alpha Code']),$data['Address Country Code'],$data['Address Town']);
+
+      if($flag=='none')
+	$location=sprintf('%s %s',$data['Address Town'],$data['Address Country Code']);
+      else if($flag=='right')
+	$location=sprintf('%s <img src="art/flags/%s.gif" title="%s">',$data['Address Town'],strtolower($data['Address Country 2 Alpha Code']),$data['Address Country Code']);
+      else
+	$location=sprintf('<img src="art/flags/%s.gif" title="%s"> %s',strtolower($data['Address Country 2 Alpha Code']),$data['Address Country Code'],$data['Address Town']);
+
       
     }
   
@@ -3637,7 +3647,8 @@ class Address extends DB_Table{
 
 
 
-  function set_scope($raw_scope='',$scope_key=0){
+ 
+   function set_scope($raw_scope='',$scope_key=0){
     $scope='Unknown';
     $raw_scope=_trim($raw_scope);
     if(preg_match('/^customers?$/i',$raw_scope)){
@@ -3658,7 +3669,6 @@ class Address extends DB_Table{
     
   }
   
-  
   function load_metadata(){
     
 
@@ -3675,22 +3685,24 @@ class Address extends DB_Table{
     
 
 
-    $sql=sprintf("select * from `Address Bridge` where `Address Key`=%d %s  %s "
+    $sql=sprintf("select * from `Address Bridge` where `Address Key`=%d %s  %s  order by `Is Main`"
 		 ,$this->id
 		 ,$where_scope
 		 ,$where_scope_key
 		 );
     $res=mysql_query($sql);
 
-    $this->data['Function']=array();
-    $this->data['Type']=array();
-
-    while($row=mysql_fetch_array($res)){
-      $this->data['Function'][$row['Address Function']]=$row['Address Function'];
-      $this->data['Type'][$row['Address Type']]=$row['Address Type'];
-
-
   
+    $this->data['Address Type']=array();
+    $this->data['Addresss Function']=array();
+    $this->data['Address Is Main']=array();
+    $this->associated_with_scope=false;
+    while($row=mysql_fetch_array($res)){
+      $this->associated_with_scope=true;
+      $this->data['Addresss Type'][$row['Address Type']]=$row['Address Type'];
+      $this->data['Addresss Function'][$row['Address Function']]=$row['Address Function'];
+      $this->data['Address Is Main'][$row['Address Type']]=$row['Is Main'];
+      $this->data['Address Is Active'][$row['Address Type']]=$row['Is Active'];
 
     }
     
