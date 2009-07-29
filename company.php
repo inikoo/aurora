@@ -36,11 +36,12 @@ if(isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ){
 
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-		 $yui_path.'assets/skins/sam/container.css',
-		 $yui_path.'assets/skins/sam/menu.css',
-		 $yui_path.'assets/skins/sam/button.css',
-		 $yui_path.'assets/skins/sam/editor.css',
-		 $yui_path.'assets/skins/sam/autocomplete.css',
+		 $yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
+		 //		 $yui_path.'assets/skins/sam/container.css',
+		 // $yui_path.'assets/skins/sam/menu.css',
+		 //$yui_path.'assets/skins/sam/button.css',
+		 //$yui_path.'assets/skins/sam/editor.css',
+		 //$yui_path.'assets/skins/sam/autocomplete.css',
 
 
 		 'text_editor.css',
@@ -76,8 +77,13 @@ if($edit ){
   $addresses=$company->get_addresses($offset);
   $smarty->assign('addresses',$addresses);
   $number_of_addresses=count($addresses);
-
   $smarty->assign('number_of_addresses',$number_of_addresses);
+
+  $contacts=$company->get_contacts($offset);
+  $smarty->assign('contacts',$contacts);
+  $number_of_contacts=count($contacts);
+  $smarty->assign('number_of_contacts',$number_of_contacts);
+
   $smarty->assign('scope','Company');
 
   
@@ -98,7 +104,7 @@ if($edit ){
   $smarty->assign('edit',$editing_block);
   $css_files[]='css/edit.css';
 
-  $css_files[]='css/edit_address.css';
+
   $js_files[]='js/edit_address.js.php';
   $js_files[]='js/edit_company.js.php?edit='.$editing_block;
   

@@ -91,9 +91,9 @@ $fam_promo_key=$fam_promo->id;
 $sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed)  order by filename ";
 
 //$sql="select * from  orders_data.orders where filename like '%refund.xls'   order by filename";
-//$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/9022%.xls' order by filename";
+//$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/90000.xls' order by filename";
 
-//$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/15720.xls' or filename like '/mnt/%/Orders/15699.xls' or  filename like '/mnt/%/Orders/15593.xls' order by filename";
+//$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/15720.xls' or filename like '/mnt/%/Orders/60000.xls' or  filename like '/mnt/%/Orders/15sdfsd593.xls' order by filename";
 
 //$sql="select *,orders_data.orders.id as id  from dw2.`Order Transaction Fact` X left join  orders_data.orders on (orders_data.orders.id=REPLACE(`Metadata`,'U',''))  where `Customer Key` in (729,11701) group by `Metadata` order by filename;";
 

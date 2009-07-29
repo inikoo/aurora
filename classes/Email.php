@@ -369,6 +369,16 @@ protected function create($data,$options=''){
     return false;
   }
     
+
+  $sql=sprintf("select * from `Email Dimension` where `Email`=%s"
+	       ,prepare_mysql($this->data['Email'])
+	       );
+  $res=mysql_query($sql);
+  if($row=mysql_fetch_array($res)){
+    print "Error trying to add a duplicate email:\n";
+    print_r($data);
+  }
+
     
   if(!preg_match('/do not validate|validated ok/',$options))
     if($this->is_valid($this->data['Email']))

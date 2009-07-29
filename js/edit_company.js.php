@@ -51,15 +51,97 @@ if( isset($_REQUEST['scope_key'])    ){
 print "var company_key=$company_key;";
 
 $company=new Company($company_key);
-$addresses=$company->get_addresses(1);
 
+$contacts=$company->get_contacts();
+$contact_data="\n";
+$contact_data.=sprintf('0:{"Contact Key":0,"Contact Name":"","Name Data":{"Contact Salutation":"","Contact First Name":"","Contact Surname":"" ,"Contact Suffix":""   },"Contact Gender":"","Contact Profession":"","Contact Title":"","Emails":[],"Addresses":[]} ' );
+$contact_data.="\n";
+foreach($contacts as $contact){
+  
+  
+
+  $emails=$contact->get_emails();
+  $email_data='';
+  foreach($emails as $email){
+    $email_data.=sprintf('{%d:{"Email Key":%d,"Email":"%s"}}'
+			 ,$email->id
+			 ,$email->id
+			 ,$email->data['Email']
+			 );
+  }
+
+  $contact_addresses=$contact->get_addresses();
+  $contact_address_data='';
+  foreach($contact_addresses as $contact_address){
+
+    $tels=$contact->get_telephones($contact_address->id);
+    $tels_data='';
+    foreach($tels as $tel){
+      $tels_data.=sprintf('{%d:{"Telephone Key":%d,"Telephone":%s}}'
+			  ,$tel->id
+			  ,$tel->id
+			  ,$tel->display()
+			  );
+    }
+      
+      
+    $faxes=$contact->get_faxes($contact_address->id);
+     $faxes_data='';
+    foreach($faxes as $fax){
+      $faxes_data.=sprintf('{%d:{"FAX Key":%d,"FAX":%s}}'
+			  ,$fax->id
+			  ,$fax->id
+			  ,$fax->display()
+			  );
+    }
+    
+
+    $contact_address_data.=sprintf('{%d:{"Address Key":%d,"Address Mini":"%s","Telephones":[%s],"Faxes":[%s]}}'
+				   ,$contact_address->id
+				   ,$contact_address->id
+				   ,addslashes($contact_address->display('mini'))
+				   ,$tels_data
+				   ,$faxes_data
+				   );
+  }
+  $contact_data.=sprintf(',%d:{"Contact Key":%d,"Contact Name":"%s" '
+			 ,$contact->id
+			 ,$contact->id
+			 ,$contact->data['Contact Name']
+			 );
+  $contact_data.="\n";
+  
+  $contact_data.=sprintf(',"Name Data":{"Contact Salutation":"%s","Contact First Name":"%s","Contact Surname":"%s" ,"Contact Suffix":"%s"} '
+			 ,$contact->data['Contact Salutation']
+			 ,$contact->data['Contact First Name']
+			 ,$contact->data['Contact Surname']
+			 ,$contact->data['Contact Suffix']
+			 );
+  $contact_data.="\n";
+  $contact_data.=sprintf(',"Contact Gender":"%s","Contact Profession":"%s","Contact Title":"%s" '
+			 ,$contact->data['Contact Gender']
+			 ,$contact->data['Contact Profession']
+			 ,$contact->data['Contact Title']
+			 );
+  $contact_data.="\n";
+  
+  $contact_data.=sprintf(',"Emails":[%s],"Addresses":[%s]} '
+			 ,$email_data
+			 ,$contact_address_data
+			 );
+  $contact_data.="\n";
+  
+}
+
+
+$addresses=$company->get_addresses(1);
 $address_data="\n";
 $address_data.=sprintf('0:{"key":0,"country":"","country_code":"UNK","country_d1":"","country_d2":"","town":"","postal_code":"","town_d1":"","town_d2":"","fuzzy":"","street":"","building":"","internal":"","type":["Office"],"description":"","function":["Contact"] } ' );
  $address_data.="\n";
 foreach($addresses as $index=>$address){
     $address->set_scope($scope,$scope_key);
     
-
+    
 
 
     $type="[";
@@ -112,6 +194,7 @@ var Subject_Key=company_key;
 var Dom   = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;
 
+var Contact_Data={<?=$contact_data?>};
 
 var Country_List=[<?=$country_list?>];
 var Address_Data={<?=$address_data?>};
@@ -164,6 +247,10 @@ var CountryDS = new YAHOO.widget.DS_JSFunction(function (sQuery) {
 	return aResults;
     });
 CountryDS.maxCacheEntries = 100;
+
+
+
+
 
 
 function update_full_address(){

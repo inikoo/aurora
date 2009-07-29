@@ -299,7 +299,7 @@ class Company extends DB_Table {
 
       
 
-      //        print "Company Found:".$this->found." ".$this->found_key."   \nContact Found:".$contact->found." ".$contact->found_key."  \n";
+      print "Company Found:".$this->found." ".$this->found_key."   \nContact Found:".$contact->found." ".$contact->found_key."  \n";
       if(!$contact->found and $this->found){
 	// try to find again the contact now that we now the company
 	$contact=new Contact("find in company ".$this->found_key,$raw_data);
@@ -386,19 +386,9 @@ class Company extends DB_Table {
     switch($key){
     case("ID"):
     case("Formated ID"):
-     global $myconf;
-     
-     $sql="select count(*) as num from `Company Dimension`";
-     $res=mysql_query($sql);
-     $min_number_zeros=$myconf['company_min_number_zeros_id'];
-     if($row=mysql_fetch_array($res)){
-       if(strlen($row['num'])-1>$min_number_zeros)
-	 $min_number_zeros=strlen($row['num'])-01;
-     }
-     if(!is_numeric($min_number_zeros))
-       $min_number_zeros=4;
-
-     return sprintf("%s%0".$min_number_zeros."d",$myconf['company_id_prefix'], $this->data['Company ID']);
+      
+      return $this->get_formated_id();
+ 
 
      
      break;
@@ -467,7 +457,7 @@ class Company extends DB_Table {
       $extra_mobile_key=false;
 
     $this->data['Company File As']=$this->file_as($this->data['Company Name']);
-    $this->data['Company ID']=$this->get_id();
+    $this->data['Company ID']=$this->get_new_id();
     
     $use_contact=0;
     if(preg_match('/use contact \d+/',$options)){
@@ -773,7 +763,7 @@ class Company extends DB_Table {
 
 
 
-  function get_id(){
+  function get_new_id(){
     
     $sql="select max(`Company ID`)  as company_id from `Company Dimension`";
     $result=mysql_query($sql);
@@ -844,7 +834,7 @@ protected function update_field_switcher($field,$value,$options=''){
     
     if($value==''){
       $contact=new Contact($this->data['Company Main Contact Key']);
-      $contact->del_email('principal');
+      $contact->remove_email('principal');
 
     }elseif(!email::wrong_email($value)){
       $contact=new Contact($this->data['Company Main Contact Key']);
@@ -872,7 +862,7 @@ protected function update_field_switcher($field,$value,$options=''){
       
       if($plain_tel==''){
 	// Remove main telephone
-	$contact->del_tel('principal');
+	$contact->remove_tel('principal');
       }else{
 	$tel_data=array(
 			'Telecom Raw Number'=>$value
@@ -893,7 +883,7 @@ protected function update_field_switcher($field,$value,$options=''){
     if($plain_tel!=$this->data['Company Main Plain FAX']){
     if($plain_tel==''){
 	// Remove main telephone
-	$contact->del_tel('principal fax');
+	$contact->remove_tel('principal fax');
       }else{
 
     $tel_data=array(
@@ -932,8 +922,8 @@ protected function update_field_switcher($field,$value,$options=''){
 
     $_data['editor']=$this->editor;
 
-    $_data['Address Type']=address('Work');
-    $_data['Address Function']=address('Contact');
+    $_data['Address Type']=array('Work');
+    $_data['Address Function']=array('Contact');
 
 
 
@@ -995,7 +985,7 @@ private function update_Company_Name($value,$options){
 
     // update childen and parents
 
-    $sql=sprintf("select `Contact Key` set `Contact Dimension` where `Contact Company Key`=%d  ",$this->id);
+    $sql=sprintf("select `Contact Key` from `Contact Dimension` where `Contact Company Key`=%d  ",$this->id);
     $res=mysql_query($sql);
     while($row=mysql_fetch_array($res)){
       $contact=new Contact ($row['Contact Key']);
@@ -1004,7 +994,7 @@ private function update_Company_Name($value,$options){
     }
 
 
-    $sql=sprintf("select `Supplier Key` set `Supplier Dimension` where `Supplier Company Key`=%d  ",$this->id);
+    $sql=sprintf("select `Supplier Key` from `Supplier Dimension` where `Supplier Company Key`=%d  ",$this->id);
     $res=mysql_query($sql);
     while($row=mysql_fetch_array($res)){
       $supplier=new Supplier ($row['Supplier Key']);
@@ -1012,7 +1002,7 @@ private function update_Company_Name($value,$options){
       $supplier->update(array('Supplier Company Name'=>$this->data['Company Name']));
     }
     
-  $sql=sprintf("select `Customer Key` set `Customer Dimension` where `Customer Company Key`=%d  ",$this->id);
+  $sql=sprintf("select `Customer Key` from `Customer Dimension` where `Customer Company Key`=%d  ",$this->id);
     $res=mysql_query($sql);
     while($row=mysql_fetch_array($res)){
       $customer=new Customer ($row['Customer Key']);
@@ -1390,7 +1380,7 @@ private function update_Company_Old_ID($company_old_id,$options){
     
   }
 
-/* Method: del_email
+/* Method: remove_email
   Delete the email from Company
   
   Delete telecom record  this record to the Contact
@@ -1399,7 +1389,7 @@ private function update_Company_Old_ID($company_old_id,$options){
   Parameter:
   $args -     string  options
  */
- function del_email($args='principal'){
+ function remove_email($args='principal'){
 
    if(preg_match('/principal/i',$args)){
        
@@ -1438,6 +1428,15 @@ private function update_Company_Old_ID($company_old_id,$options){
 
  function add_tel($data,$args='principal'){
 
+ $principal=false;
+  if(!preg_match('/not? principal/',$args) ){
+    $principal=false;
+  }elseif( preg_match('/principal/',$args)){
+    $principal=true;
+  }
+   
+
+
    if(is_numeric($data)){
      $tmp=$data;
      unset($data);
@@ -1447,68 +1446,80 @@ private function update_Company_Old_ID($company_old_id,$options){
    if(isset($data['Telecom Key'])){
      $telecom=new Telecom('id',$data['Telecom Key']);
    }else{
-     if(!isset($data['Telecom Original Country Key']) or !$data['Telecom Original Country Key'])
-       $data['Telecom Original Country Key']=$this->data['Company Main Country Key'];
-     $data['editor']=$this->editor;
-     $telecom=new telecom('find in company create',$data);
+     $contact=new Contact($this->data['Company Main Contact Key']);
+     if(!$contact->id)
+       return;
+     $contact->add_tel($data,$args);
+     return;
+     
    }
    if($telecom->id){
-     if($telecom->data['Telecom Technology Type']=='Mobile'){
-	 $telecom_tipo='Company Main Telephone';
-	 $telecom_tipo_plain='Company Main Plain Telephone';
-       }else{
-	 if(preg_match('/fax/i',$data['Telecom Type'])){
-	 $telecom_tipo='Company Main FAX';
-	 $telecom_tipo_plain='Company Main Plain FAX';
-	 
-	 }else{
-	   $telecom_tipo='Company Main Telephone';
-	   $telecom_tipo_plain='Company Main Plain Telephone';
-	 }
-       }
 
+     if(!isset($data['Telecom Type'])  )
+       $data['Telecom Type']='Office Telephone';
      
 
-     // add bridge
+     if(preg_match('/fax/i',$data['Telecom Type'])){
+       $field='Company Main FAX';
+       $field_plain='Company Main Plain FAX';
+       $field_key='Company Main FAX Key';
+       $old_principal_key=$this->data['Company Main FAX Key'];
+       $old_value=$this->data['Company Main FAX']." (Id:".$this->data['Company Main FAX Key'].")";
+     }else{
+       $field='Company Main Telephone';
+       $field_plain='Company Main Plain Telephone';
+       $field_key='Company Main Telephone Key';
+       $old_principal_key=$this->data['Company Main Telephone Key'];
+       $old_value=$this->data['Company Main Telephone']." (Id:".$this->data['Company Main Telephone Key'].")";
+     }
+     
+
+     if($principal and $old_principal_key!=$telecom->id){
+       $sql=sprintf("update `Telecom Bridge`  set `Is Main`='No' where `Subject Type`='Company' and  `Subject Key`=%d  ",
+		    $this->id
+		    ,$telecom->id
+		    );
+       mysql_query($sql);
+       
+       	  $sql=sprintf("update `Customer Dimension` set `%s`=%s , `%s`=%d  , `%s`=%s  where `Customer Key`=%d"
+		       ,$field
+		       ,prepare_mysql($telecom->display('html'))
+		       ,$field_key
+		       ,$telecom->id
+		       ,$field_plain
+		       ,prepare_mysql($telecom->display('plain'))
+		       ,$this->id
+		      );
+	  mysql_query($sql);
+	  $history_data=array(
+			      'note'=>$field." "._('Changed')
+			      ,'details'=>$field." "._('changed')." "
+			      .$old_value." -> ".$telecom->display('html')
+			      ." (Id:"
+			      .$telecom->id
+			      .")"
+			      ,'action'=>''
+			      );
+	  $this->add_history($history_data);
+       
+
+     }
   
      
      $sql=sprintf("insert into  `Telecom Bridge` (`Telecom Key`, `Subject Key`,`Subject Type`,`Telecom Type`,`Is Main`) values (%d,%d,'Company',%s,%s)  ON DUPLICATE KEY UPDATE `Telecom Type`=%s"
 		  ,$telecom->id
 		  ,$this->id
 		  ,prepare_mysql($data['Telecom Type'])
-		  ,prepare_mysql(preg_match('/principal/i',$args)?'Yes':'No')
+		  ,prepare_mysql($principal?'Yes':'No')
 		  ,prepare_mysql($data['Telecom Type'])
 		  );
      mysql_query($sql);
 
-     if(preg_match('/principal/i',$args)){
-     
-       
- $sql=sprintf("update `Telecom Bridge`  set `Is Main`='No' where `Subject Type`='Company' and  `Subject Key`=%d  and `Telecom Key`!=%d",
-		  $this->id
-		 ,$telecom->id
-		  );
-   mysql_query($sql);
-     $sql=sprintf("update `Telecom Bridge`  set `Is Main`='Yes' where `Subject Type`='Company' and  `Subject Key`=%d  and `Telecom Key`=%d",
-		  $this->id
-		  ,$telecom->id
-		  );
-     mysql_query($sql);
-
-       	 $sql=sprintf("update `Company Dimension` set `%s`=%s and `%s`=%s and   where `Company Key`=%d"
-		      ,$telecom_tipo
-		      ,prepare_mysql($telecom->display('html'))
-		      ,$telecom_tipo_plain
-		      ,$telecom->display('plain')
-		      ,$this->id
-		      );
-	 mysql_query($sql);
-       
-     }
+   
    }
 
  }
- /* Method: del_tel
+ /* Method: remove_tel
   Delete an telecom  in Contact
   
   Delete telecom record  this record to the Contact
@@ -1517,7 +1528,7 @@ private function update_Company_Old_ID($company_old_id,$options){
   Parameter:
   $args -     string  options
  */
- function del_tel($args='principal'){
+ function remove_tel($args='principal'){
 
    if(preg_match('/principal/i',$args)){
        
@@ -1615,6 +1626,9 @@ function add_address($data,$args='principal'){
 		   ,prepare_mysql($type)
 		   ,prepare_mysql($function)
 		   );
+
+    
+
       if(!mysql_query($sql))
 	print("$sql\n error can no create company address bridge");
       
@@ -1654,21 +1668,35 @@ function add_contact($data,$args='principal'){
   if(is_numeric($data))
     $contact=new Contact('id',$data);
   else
-    $contact=new Contact('new',$data);
+    $contact=new Contact('find in company create',$data);
   
-  if(!$contact->id)
-    exit("can not find contact");
+  if(!$contact->id){
+    $this->error=true;
+    $this->msg="can not find/create contact";
 
-    $sql=sprintf("insert into  `Contact Bridge` (`Contact Key`, `Subject Key`,`Is Main`) values (%d,%d,%s)  "
+  }
+
+  $principal=false;
+  if(!preg_match('/not? principal/',$args) ){
+    $principal=false;
+  }elseif( preg_match('/principal/',$args)){
+    $principal=true;
+  }
+  
+  
+ $sql=sprintf("insert into  `Contact Bridge` (`Contact Key`, `Subject Key`,`Is Main`) values (%d,%d,%s)  "
 		   ,$contact->id
 		   ,$this->id
-		   ,prepare_mysql(preg_match('/principal/i',$args)?'Yes':'No')
+		   ,prepare_mysql($principal?'Yes':'No')
 		   );
       mysql_query($sql);
-      
-      if(preg_match('/principal/i',$args)){
-	
-	$sql=sprintf("update `Company Bridge`  set `Is Main`='No' where `Subject Type`='Company' and  `Subject Key`=%d  and `Contact Key`!=%d",
+      //   print "$args $principal $sql\n";
+
+ 
+  
+  if($principal){
+    
+    $sql=sprintf("update `Company Bridge`  set `Is Main`='No' where `Subject Type`='Company' and  `Subject Key`=%d  and `Contact Key`!=%d",
 		     $this->id
 		     ,$contact->id
 		     );
@@ -1710,6 +1738,112 @@ function add_contact($data,$args='principal'){
 
 
 }
+
+
+function remove_contact($data,$args=''){
+  
+  if(is_numeric($data))
+    $contact=new Contact('id',$data);
+  else
+    $contact=new Contact('find in company create',$data);
+  
+  if(!$contact->id){
+    $this->error=true;
+    $this->msg="can not find/create contact";
+
+  }
+
+  $contacts_keys=$this->get_contact_keys('only active');
+
+
+  if(!in_array($contact->id,$contacts_keys)){
+    $this->msg_updated.=_('Can not remove contact because it in not associated with the company').".";
+    return;
+  }
+  
+  $contact->set_scope('Company',$this->id);
+  
+  // print "Main ".$contact->data['Contact Is Main']."\n";
+
+  if($contact->data['Contact Is Main']=='Yes'){
+    if(count($contacts_keys)==1){
+      $fuzzy_contact=new Contact('create anonymous');
+      $fuzzy_contact->add_company(array('Company Key'=>$this->id));
+      $fuzzy_contact->add_address(array(
+					'Address Key'=>$this->data['Company Main Address Key']
+					,'Address Type'=>array('Work')
+					,'Address Function'=>array('Contact')
+					));
+      if($this->data['Company Main Telephone Key']){
+	$fuzzy_contact->add_tel(array(
+				      'Telecom Key'=>$this->data['Company Main Telephone Key']
+				      ,'Telecom Type'=>'Office Telephone'
+				      ));
+      }
+      if($this->data['Company Main FAX Key']){
+	$fuzzy_contact->add_tel(array(
+				      'Telecom Key'=>$this->data['Company Main FAX Key']
+				      ,'Telecom Type'=>'Office Fax'
+				      ));
+      }
+      
+      $customers_keys= get_customers_key();
+      foreach($customers_keys as $customer_key){
+	$customer=new Customer($customer_key);
+	if($customer->data['Customer Main Contact Key']==$contact->id){
+	  $customer->update_main_contact_key($fuzzy_contact->id);
+	}
+	
+	
+      }
+      
+      
+    }else{
+      $this->error=true;
+      $msg=_('can not remove main contact please set another contact as the main one first').".";
+      $this->msg.=$msg;
+      $this->msg_updated.=$msg;
+    }
+    
+    
+  }
+  
+  if(preg_match('/(remove|delete) from (db|database)/i',$args)){
+    
+    $sql=sprintf("delete from  `Contact Bridge` where `Contact Key`=%s and  `Subject Type`='Company' and `Subject Key`=%d "
+		 ,$contact->id
+		 ,$this->id
+		 );
+    mysql_query($sql);
+    
+    $history_data=array(
+			'note'=>_('Company-Contact Relation deleted permanently')
+			,'details'=>_trim(_('Company')." ".$this->data['Company Name'].' ('.$this->get_formated_id().') '._('relation with contact')." ".$contact->display('name')." (".$contact->get_formated_id().") "._('has been deleted permenentely') )
+			,'action'=>'deleted'
+			);
+    $this->add_history($history_data);
+    
+
+  }else{
+    $sql=sprintf("update  `Contact Bridge` set `Is Active`='No' where `Contact Key`=%s and  `Subject Type`='Company' and `Subject Key`=%d "
+		 ,$contact->id
+		 ,$this->id
+		 );
+   
+    mysql_query($sql);
+    $history_data=array(
+			'note'=>_('Company-Contact Relation disassociated')
+			,'details'=>_trim(_('Company')." ".$this->data['Company Name'].' ('.$this->get_formated_id().') '._('relation with contact')." ".$contact->display('name')." (".$contact->get_formated_id().") "._('has been disassociate') )
+			,'action'=>'disassociate'
+			);
+    $this->add_history($history_data);
+  }
+   
+
+
+}
+
+
 
   function create_code($name){
     preg_replace('/[!a-z]/i','',$name);
@@ -1770,7 +1904,7 @@ function add_contact($data,$args='principal'){
      function: get_customer_key
      Returns the Customer Key if the company is one
     */
-   function get_customers_key(){
+   function get_customers_key($args=''){
      $sql=sprintf("select `Customer Key` from `Customer Dimension` where  `Customer Type`='Company' and `Customer Company Key`=%d  ",$this->id);
      $customer_keys=array();
      $result=mysql_query($sql);
@@ -1785,8 +1919,21 @@ function add_contact($data,$args='principal'){
      function: get_contact_keys
      Returns the Contact Key if the company is one
     */
-  function get_contact_keys(){
-     $sql=sprintf("select * from `Contact Bridge` where  `Subject Type`='Company' and `Subject Key`=%d order by `Is Main` desc  ",$this->id);
+  function get_contact_keys($args=''){
+    $extra_args='';
+    if(preg_match('/only active|active only/i',$args))
+      $extra_args=" and `Is Active`='Yes'";
+    if(preg_match('/only main|main only/i',$args))
+      $extra_args=" and `Is Main`='Yes'";
+    if(preg_match('/only not? active/i',$args))
+      $extra_args=" and `Is Active`='No'";
+    if(preg_match('/only not? main/i',$args))
+      $extra_args=" and `Is Main`='No'";
+    
+     $sql=sprintf("select * from `Contact Bridge` where  `Subject Type`='Company' and `Subject Key`=%d %s order by `Is Main` desc  "
+		  ,$this->id
+		  ,$extra_args
+		  );
      $contacts=array();
      $result=mysql_query($sql);
      while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
@@ -1796,16 +1943,32 @@ function add_contact($data,$args='principal'){
    }
 
 
-   function get_contacts($offset=0){
-     if(!is_numeric($offset))
-       $offset=0;
-     $sql=sprintf("select `Contact Key` from `Contact Bridge` where  `Subject Type`='Company' and `Subject Key`=%d order by `Is Main` desc  ",$this->id);
+  function get_contacts($args=''){
+    
+ $extra_args='';
+    if(preg_match('/only active|active only/i',$args))
+      $extra_args=" and `Is Active`='Yes'";
+    if(preg_match('/only main|main only/i',$args))
+      $extra_args=" and `Is Main`='Yes'";
+    if(preg_match('/only not? active/i',$args))
+      $extra_args=" and `Is Active`='No'";
+    if(preg_match('/only not? main/i',$args))
+      $extra_args=" and `Is Main`='No'";
+    
+
+
+
+
+    $sql=sprintf("select CB.`Contact Key` from `Contact Bridge` CB left join `Contact Dimension` C on (CB.`Contact Key`=C.`Contact Key`) where  `Subject Type`='Company' and `Subject Key`=%d %s order by `Is Main`, `Contact File As`  ",$this->id,$extra_args);
+
+    // print $sql;
      $contacts=array();
      $result=mysql_query($sql);
      while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
        $contact=new Contact($row['Contact Key']);
-       $contacts[$offset]=$contact;
-       $offset++;
+       $contact->set_scope('Company',$this->id);
+       $contacts[]=$contact;
+
      }
      return $contacts;
    }
@@ -1825,6 +1988,25 @@ function add_contact($data,$args='principal'){
        $offset++;
      }
      return $addresses;
+
+   }
+
+   /*function:get_formated_id
+     Returns formated id
+    */
+   function get_formated_id(){
+      global $myconf;
+     $sql="select count(*) as num from `Company Dimension`";
+     $res=mysql_query($sql);
+     $min_number_zeros=$myconf['company_min_number_zeros_id'];
+     if($row=mysql_fetch_array($res)){
+       if(strlen($row['num'])-1>$min_number_zeros)
+	 $min_number_zeros=strlen($row['num'])-01;
+     }
+     if(!is_numeric($min_number_zeros))
+       $min_number_zeros=4;
+
+     return sprintf("%s%0".$min_number_zeros."d",$myconf['company_id_prefix'], $this->data['Company ID']);
 
    }
 

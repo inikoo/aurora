@@ -119,7 +119,7 @@ class Contact extends DB_Table{
     // print_r($raw_data);
 
     
-    if(isset($raw_data['editor'])){
+    if(isset($raw_data['editor']) and is_array($raw_data['editor'])){
       foreach($raw_data['editor'] as $key=>$value){
 
 	if(array_key_exists($key,$this->editor))
@@ -930,7 +930,7 @@ private function create ($data,$options='',$address_home_data=false){
 	  
 	}
 
-	if(!array_empty($address_home_data)){
+
 	  $address_home_data['editor']=$this->editor;
 	  $home_address=new Address("find in contact ".$this->id." create",$address_home_data);
 	  if($home_address->error){
@@ -944,7 +944,7 @@ private function create ($data,$options='',$address_home_data=false){
 				    ,'Address Function'=>array('Contact')
 
 				    ));
-	}
+
 
 
 
@@ -966,6 +966,10 @@ private function create ($data,$options='',$address_home_data=false){
 			      'Telecom Key'=>$telephone->id
 			      ,'Telecom Type'=>'Home Telephone'
 			      ));
+	       $sql=sprintf("insert into `Address Telecom Bridge` values (%d,%d)",$home_address->id,$telephone->id);
+	       mysql_query($sql);
+
+
 	    }
 
 
@@ -997,6 +1001,8 @@ private function create ($data,$options='',$address_home_data=false){
 				   'Telecom Key'=>$telephone->id
 				   ,'Telecom Type'=>'Home Telephone'
 				   ));
+	       $sql=sprintf("insert into `Address Telecom Bridge` values (%d,%d)",$home_address->id,$telephone->id);
+	       mysql_query($sql);
 	    }
 
 
@@ -1024,6 +1030,8 @@ private function create ($data,$options='',$address_home_data=false){
 			      'Telecom Key'=>$telephone->id
 			      ,'Telecom Type'=>'Home Fax'
 			      ));
+	       $sql=sprintf("insert into `Address Telecom Bridge` values (%d,%d)",$home_address->id,$telephone->id);
+	       mysql_query($sql);
 	    }
 	  }
 	}
@@ -1085,19 +1093,7 @@ private function create ($data,$options='',$address_home_data=false){
       break;
     case("ID"):
     case("Formated ID"):
-     global $myconf;
-     
-     $sql="select count(*) as num from `Contact Dimension`";
-     $res=mysql_query($sql);
-     $min_number_zeros=$myconf['contact_min_number_zeros_id'];
-     if($row=mysql_fetch_array($res)){
-       if(strlen($row['num'])-1>$min_number_zeros)
-	 $min_number_zeros=strlen($row['num'])-01;
-     }
-     if(!is_numeric($min_number_zeros))
-       $min_number_zeros=4;
-
-     return sprintf("%s%0".$min_number_zeros."d",$myconf['contact_id_prefix'], $this->data['Contact ID']);
+      return $this->get_formated_id();
 
      
      break;
@@ -1355,7 +1351,7 @@ private function create ($data,$options='',$address_home_data=false){
   }
 
 
- /* Method: del_email
+ /* Method: remove_email
   Delete the email from Contact
   
   Delete telecom record  this record to the Contact
@@ -1364,7 +1360,7 @@ private function create ($data,$options='',$address_home_data=false){
   Parameter:
   $args -     string  options
  */
- function del_email($args='principal'){
+ function remove_email($args='principal'){
 
    if(preg_match('/principal/i',$args) ){
        
@@ -1384,7 +1380,7 @@ private function create ($data,$options='',$address_home_data=false){
        
 	 if($company_key=$this->company_key('princial')){
 	   $company=new Company('id',$company_key);
-	   $company->del_tel($args);
+	   $company->remove_tel($args);
 	 }
 
      }
@@ -1620,9 +1616,10 @@ function add_address($data,$args='principal'){
   integer telecom key of the added/updated telecom
  */
  function add_tel($data,$args='principal'){
-
-   // print "XXX CACA XXXX\n";
-   //print_r($data);
+   $principal=false;
+   if(preg_match('/principal/i',$args)){
+     $principal=true;
+   }
 
    if(is_string($data)){
      $telecom_data=array();
@@ -1644,51 +1641,56 @@ function add_address($data,$args='principal'){
 
    if($telecom->id){
       
-
-     
-     if($telecom->data['Telecom Technology Type']=='Mobile'){
-	 $telecom_tipo='Contact Main Mobile';
-	 $telecom_tipo_key='Contact Main Mobile Key';
-	 $telecom_tipo_plain='Contact Main Plain Mobile';
+     if(!isset($data['Telecom Type']) or $data['Telecom Type']==''){
+       if($telecom->data['Telecom Technology Type']=='Mobile')
 	 $data['Telecom Type']='Mobile';
+       else
+	 $data['Telecom Type']='Home Telephone';
+       
+     }
+
+     
+
+     
+     if($data['Telecom Type']=='Mobile'){
+       $telecom_tipo='Contact Main Mobile';
+       $telecom_tipo_key='Contact Main Mobile Key';
+       $telecom_tipo_plain='Contact Main Plain Mobile';
+       
+     }elseif(preg_match('/fax/i',$data['Telecom Type'])){
+       $telecom_tipo='Contact Main FAX';
+       $telecom_tipo_key='Contact Main FAX Key';
+       $telecom_tipo_plain='Contact Main Plain FAX';
+
+       
      }else{
-	 if(preg_match('/fax/i',$data['Telecom Type'])){
-	   $telecom_tipo='Contact Main FAX';
-	   $telecom_tipo_key='Contact Main FAX Key';
-	   $telecom_tipo_plain='Contact Main Plain FAX';
-
-
-	 }else{
-	   $telecom_tipo='Contact Main Telephone';
-	    $telecom_tipo_key='Contact Main Telephone Key';
-	   $telecom_tipo_plain='Contact Main Plain Telephone';
-	   
-	 }
-       }
+       $telecom_tipo='Contact Main Telephone';
+       $telecom_tipo_key='Contact Main Telephone Key';
+       $telecom_tipo_plain='Contact Main Plain Telephone';
+       
+       
+     }
      
      
-
-     if(!isset($data['Telecom Description']))
-       $data['Telecom Description']=$telecom_tipo;
 
      
 
      
 
 
-     $sql=sprintf("insert into  `Telecom Bridge` (`Telecom Key`, `Subject Key`,`Subject Type`,`Telecom Type`,`Telecom Description`) values (%d,%d,'Contact',%s,%s)   ON DUPLICATE KEY UPDATE `Telecom Type`=%s,`Telecom Description`=%s "
+     $sql=sprintf("insert into  `Telecom Bridge` (`Telecom Key`, `Subject Key`,`Subject Type`,`Telecom Type`) values (%d,%d,'Contact',%s)   ON DUPLICATE KEY UPDATE `Telecom Type`=%s "
 		  ,$telecom->id
 		  ,$this->id
 		  ,prepare_mysql($data['Telecom Type'])
-		  ,prepare_mysql($data['Telecom Description'],false)
+		 
 		  ,prepare_mysql($data['Telecom Type'])
-		  ,prepare_mysql($data['Telecom Description'],false)
+		
 		  );
      mysql_query($sql);
      //NOTE:If you use "INSERT INTO ... ON DUPLICATE KEY UPDATE" syntax, mysql_affected_rows() will return you 2 if the UPDATE was made (just as it does with the "REPLACE INTO" syntax) and 1 if the INSERT was.
      if(mysql_affected_rows()==1 ){
 
-       if(preg_match('/principal/i',$args)){
+       if($principal){
 	 $note=$data['Telecom Type']." "._('Associated (Main)');
 	 $description=_('Main').' '.$data['Telecom Type'].' '._('set to')." ".$telecom->display('xhtml');
        }else{
@@ -1713,7 +1715,7 @@ function add_address($data,$args='principal'){
 
      // print $sql;
      
-     if(preg_match('/principal/i',$args)){
+     if($principal){
        
        $sql=sprintf("update `Telecom Bridge`  set `Is Main`='No' where `Subject Type`='Contact' and  `Subject Key`=%d  and `Telecom Key`!=%d",
 		    $this->id
@@ -1770,7 +1772,7 @@ function add_address($data,$args='principal'){
     
 
    }
- /* Method: del_tel
+ /* Method: remove_tel
   Delete an telecom  in Contact
   
   Delete telecom record  this record to the Contact
@@ -1779,7 +1781,7 @@ function add_address($data,$args='principal'){
   Parameter:
   $args -     string  options
  */
- function del_tel($args='principal'){
+ function remove_tel($args='principal'){
 
    if(preg_match('/principal/i',$args)){
        
@@ -1822,7 +1824,7 @@ function add_address($data,$args='principal'){
 	   $company_telecom_tipo_key=preg_match('/Contact/','Company',$telecom_tipo_key);
 	   
 	   $company=new Company('id',$company_key);
-	   $company->del_tel($args);
+	   $company->remove_tel($args);
 	 }
 
 
@@ -1852,7 +1854,7 @@ protected function update_field_switcher($field,$value,$options=''){
   case('Contact Main Plain Email'):
 
     if($value==''){
-      $this->del_email('principal');
+      $this->remove_email('principal');
     }elseif(!email::wrong_email($value)){
       $value=email::prepare_email($value);
       $email_data=array('Email'=>$value,'editor'=>$this->editor);
@@ -1868,7 +1870,7 @@ protected function update_field_switcher($field,$value,$options=''){
     if($plain_tel!=$this->data['Contact Main Plain Telephone']){
       if($plain_tel==''){
 	// Remove main telephone
-	$this->del_tel('principal');
+	$this->remove_tel('principal');
       }else{
 	$tel_data=array(
 			'Telecom Raw Number'=>$value
@@ -1886,7 +1888,7 @@ protected function update_field_switcher($field,$value,$options=''){
    
       if($plain_tel==''){
 	// Remove main telephone
-	$this->del_tel('principal fax');
+	$this->remove_tel('principal fax');
       }else{
 	$tel_data=array(
 			'Telecom Raw Number'=>$value
@@ -1910,7 +1912,7 @@ protected function update_field_switcher($field,$value,$options=''){
     if($plain_tel!=$this->data['Contact Main Plain Mobile']){
       if($plain_tel==''){
 	// Remove main telephone
-	$this->del_tel('principal mobile');
+	$this->remove_tel('principal mobile');
       }else{
       
       $tel_data=array(
@@ -2496,6 +2498,40 @@ string with the name to be parsed
   global $myconf;
 
     switch($tipo){
+    case('card'):
+
+
+      $email_label="E:";
+      $tel_label="T:";
+      $fax_label="F:";
+      $mobile_label="M:";
+
+      $email='';
+      $tel='';
+      $fax='';
+      $mobile='';
+      $name=sprintf('<span class="name">%s</span>',$this->data['Contact Name']);
+      if($this->data['Contact XHTML Email'])
+	$email=sprintf('<span class="email">%s %s</span>',$email_label,$this->data['Contact XHTML Email']);
+      if($this->data['Contact Main Telephone'])
+	$tel=sprintf('<span class="tel">%s %s</span>',$tel_label,$this->data['Contact Main Telephone']);
+      if($this->data['Contact Main Fax'])
+	$fax=sprintf('<span class="fax">%s %s</span>',$fax_label,$this->data['Contact Main FAX']);
+      if($this->data['Contact Main Mobile'])
+	$mobile=sprintf('<span class="mobile">%s %s</span>',$mobile_label,$this->data['Contact Main Mobile']);
+      
+      $address=sprintf('<span class="mobile">%s</span>',$this->data['Contact Main XHTML Address']);
+
+      $card=sprintf('<div class="contact_card">%s <div  class="tels">%s %s %s %s</div><div  class="address">%s</div> </div>'
+		    ,$name
+		    ,$email
+		    ,$tel
+		    ,$fax
+		    ,$mobile
+		    ,$address
+		    );
+
+      return $card;
     case('name'):
       $name=$this->name($this->data);
       return $name;
@@ -2714,7 +2750,7 @@ string with the name to be parsed
 
 
      $card=array(
-		 'Contact Name'=>$this->data['Contct Name']
+		 'Contact Name'=>$this->data['Contact Name']
 		 ,'Emails'=>array()
 		 ,'Telephones'=>array()
 		 ,'Addresses'=>array()
@@ -2909,7 +2945,9 @@ string with the name to be parsed
      }
      return $customer_keys;
    }
-
+   /*
+     function: has_company
+    */
 
    function has_company(){
      if($this->data['Contact Company Key'])
@@ -2919,11 +2957,12 @@ string with the name to be parsed
 
    }
 
+   /*
+     function:get_addresses
+    */
+   function get_addresses(){
 
-   function get_addresses($offset=0){
-
-     if(!is_numeric($offset))
-       $offset=0;
+  
      $sql=sprintf("select * from `Address Bridge` CB where   `Subject Type`='Contact' and `Subject Key`=%d  group by `Address Key` order by `Is Main` desc  ",$this->id);
      $addresses=array();
      $result=mysql_query($sql);
@@ -2931,61 +2970,86 @@ string with the name to be parsed
      while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
        $address= new Address($row['Address Key']);
        $address->set_scope('Contact',$this->id);
-       $addresses[$offset]= $address;
-       $offset++;
+       $addresses[]= $address;
      }
      return $addresses;
 
    }
 
 
-    function get_emails($offset=0){
+    function get_emails(){
 
-     if(!is_numeric($offset))
-       $offset=0;
+
      $sql=sprintf("select * from `Email Bridge` CB where   `Subject Type`='Contact' and `Subject Key`=%d  group by `Email Key` order by `Is Main` desc  ",$this->id);
      $email=array();
      $result=mysql_query($sql);
   
      while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
        $email= new Email($row['Email Key']);
-       $emails[$offset]= $email;
-       $offset++;
+       $emails[]= $email;
      }
      return $emails;
      $this->number_emails=count($emails);
    }
 
-     function get_mobiles($offset=0){
+     function get_mobiles(){
 
-     if(!is_numeric($offset))
-       $offset=0;
+    
      $sql=sprintf("select * from `Telecom Bridge` CB where   `Telecom Type`='Mobile' and `Subject Type`='Contact' and `Subject Key`=%d  group by `Telecom Key` order by `Is Main` desc  ",$this->id);
      $mobiles=array();
      $result=mysql_query($sql);
   
      while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
        $mobile= new Telecom($row['Telecom Key']);
-       $mobiles[$offset]= $mobile;
-       $offset++;
+       $mobiles[]= $mobile;
+     
      }
      $this->number_mobiles=count($mobiles);
      return $mobiles;
 
    }
 
-     function get_land_telecoms($offset=0){
+     function get_telephones($address_key=0){
+      
+   
+       if($address_key){
+	 $sql=sprintf("select * from `Telecom Bridge` TB  left join `Address Telecom Bridge` ATB  on  (TB.`Telecom Key`=ATB.`Telecom Key`)   where   `Telecom Type` like '%%Telephone%%' and `Subject Type`='Contact' and `Subject Key`=%d  and `Address Key`=%d   group by TB.`Telecom Key` order by  `Telecom Type`, `Is Main` desc  ",$this->id,$address_key);
+       }else{
+	 $sql=sprintf("select * from `Telecom Bridge` TB where   `Telecom Type` like '%%Telephone%%' and `Subject Type`='Contact' and `Subject Key`=%d  group by TB.``Telecom Key` order by  `Telecom Type`, `Is Main` desc  ",$this->id);
+       }
 
-     if(!is_numeric($offset))
-       $offset=0;
-     $sql=sprintf("select * from `Telecom Bridge` CB where   `Telecom Type`!='Mobile' and `Subject Type`='Contact' and `Subject Key`=%d  group by `Telecom Key` order by `Is Main` desc  ",$this->id);
+
+       $telecoms=array();
+       $result=mysql_query($sql);
+       // print $sql;
+       while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+	 $tel= new Telecom($row['Telecom Key']);
+	 if($this->scope=='Company' and $this->scope_key and !$tel->is_associated('Company',$this->scope_key) )
+	   continue;
+	 
+	 
+	 
+	 $telecoms[]= $tel;
+     }
+     $this->number_telecoms=count($telecoms);
+     return $telecoms;
+
+   }
+
+  function get_faxes($address_key=false){
+
+     if($address_key){
+	 $sql=sprintf("select * from `Telecom Bridge` TB  left join `Address Telecom Bridge` ATB  on  (TB.`Telecom Key`=ATB.`Telecom Key`)   where   `Telecom Type` like '%%Fax%%' and `Subject Type`='Contact' and `Subject Key`=%d  and `Address Key`=%d   group by TB.`Telecom Key` order by  `Telecom Type`, `Is Main` desc  ",$this->id,$address_key);
+       }else{
+	 $sql=sprintf("select * from `Telecom Bridge` TB where   `Telecom Type` like '%%Fax%%' and `Subject Type`='Contact' and `Subject Key`=%d  group by TB.``Telecom Key` order by  `Telecom Type`, `Is Main` desc  ",$this->id);
+       }
+  
      $telecoms=array();
      $result=mysql_query($sql);
   
      while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
        $tel= new Telecom($row['Telecom Key']);
-       $telecoms[$offset]= $tel;
-       $offset++;
+       $telecoms[]= $tel;
      }
      $this->number_telecoms=count($telecoms);
      return $telecoms;
@@ -2993,6 +3057,84 @@ string with the name to be parsed
    }
 
 
+
+    
+   /*function:get_formated_id
+     Returns formated id
+    */
+   function get_formated_id(){ 
+     global $myconf;
+     $sql="select count(*) as num from `Contact Dimension`";
+     $res=mysql_query($sql);
+     $min_number_zeros=$myconf['contact_min_number_zeros_id'];
+     if($row=mysql_fetch_array($res)){
+       if(strlen($row['num'])-1>$min_number_zeros)
+	 $min_number_zeros=strlen($row['num'])-01;
+     }
+     if(!is_numeric($min_number_zeros))
+       $min_number_zeros=4;
+
+     return sprintf("%s%0".$min_number_zeros."d",$myconf['contact_id_prefix'], $this->data['Contact ID']);
+   }
+
+
+  function set_scope($raw_scope='',$scope_key=0){
+    $scope='Unknown';
+    $raw_scope=_trim($raw_scope);
+    if(preg_match('/^customers?$/i',$raw_scope)){
+      $scope='Customer';
+    }else if(preg_match('/^(company?|bussiness)$/i',$raw_scope)){
+      $scope='Company';
+    }else if(preg_match('/^(supplier)$/i',$raw_scope)){
+      $scope='Supplier';
+    }else if(preg_match('/^(staff)$/i',$raw_scope)){
+      $scope='Staff';
+    }
+    
+    $this->scope=$scope;
+    $this->scope_key=$scope_key;
+    $this->load_metadata();
+    
+  }
+  
+  function load_metadata(){
+    
+
+  
+
+
+    $where_scope=sprintf(' and `Subject Type`=%s',prepare_mysql($this->scope));
+    
+    $where_scope_key='';
+    if($this->scope_key)
+      $where_scope_key=sprintf(' and `Subject Key`=%d',$this->scope_key);
+
+    
+
+
+    $sql=sprintf("select * from `Contact Bridge` where `Contact Key`=%d %s  %s  order by `Is Main` desc"
+		 ,$this->id
+		 ,$where_scope
+		 ,$where_scope_key
+		 );
+    $res=mysql_query($sql);
+
+  
+   
+    $this->data['Contact Is Main']='No';
+      $this->data['Contact Is Active']='No';
+
+ $this->associated_with_scope=false;
+    while($row=mysql_fetch_array($res)){
+      $this->associated_with_scope=true;
+  
+      $this->data['Contact Is Main']=$row['Is Main'];
+      $this->data['Contact Is Active']=$row['Is Active'];
+
+    }
+    
+    
+  }
 
 
 

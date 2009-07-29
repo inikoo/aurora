@@ -83,9 +83,9 @@
 
 	    </td>
 	  </tr>
-	  <tr id="address_showcase">
-	    <td colspan=2 style="xborder:1px solid black">
-	      <div  style="" class="address_container"  id="address_container0">
+	  <tr id="tr_address_showcase">
+	    <td colspan=2 style="xborder:1px solid black"  id="address_showcase">
+	      <div  style="display:none" class="address_container"  id="address_container0">
 		<div class="address_display" id="address_display0"></div>
 		<div  class="address_buttons" id="address_buttons0" >
 		  <span class="small_button small_button_edit" style="float:left" id="contacts_address_button0" address_id="0" onclick="contacts_address(event,this)" >{t}Contacts{/t}</span>
@@ -205,14 +205,38 @@
 
       <div  style="xdisplay:none;margin:0"  class="edit_block" id="d_contacts">
 	<table class="edit" border=0>
-	  <tr class="title"><td>Contacts:</td><td  style="text-align:right"><span class="small_button" id="cancel_add_contact_button" >Cancel Adding New Contact</span><span class="small_button" id="save_add_contact_button" >Save New Contact</span><span class="small_button" id="add_contact_button" >Add Contact</span></td></tr>
+	  <tr class="title"><td>Contacts:</td><td  style="text-align:right"><span style="display:none" class="small_button" id="cancel_add_contact_button" >Cancel Adding New Contact</span><span style="display:none" class="small_button" id="save_add_contact_button" >Save New Contact</span><span class="small_button" id="add_contact_button" >Add Contact</span></td></tr>
 	  
+
+	  <tr id="tr_contact_showcase">
+	    <td colspan=2 style="xborder:1px solid black"  id="contact_showcase">
+	     
+	      <div  style="display:none" class="contact_container"  id="contact_container0">
+		<div class="contact_display" id="contact_display0"></div>
+		<div  class="contact_buttons" id="contact_buttons0" >
+		  <span class="small_button small_button_edit" id="delete_contact_button0" contact_id="0" onclick="delete_contact(event,this)" >{t}Delete{/t}</span>
+		  <span class="small_button small_button_edit" id="edit_contact_button0" contact_id="0" onclick="edit_contact(event,this)" >{t}Edit{/t}</span>
+		</div>
+	      </div>
+	      
+	      {foreach from=$contacts item=contact key=key }
+	      <div class="contact_container"  id="contact_container{$contact->id}">
+		<div class="contact_display"  id="contact_display{$contact->id}">{$contact->display('card')}</div>
+		<div class="contact_buttons" id="contact_buttons{$contact->id}">
+		  <span class="small_button small_button_edit" id="delete_contact_button{$contact->id}" contact_id="{$contact->id}" onclick="delete_contact(event,this)" >{t}Delete{/t}</span>
+		  <span class="small_button small_button_edit" id="edit_contact_button{$contact->id}" contact_id="{$contact->id}" onclick="edit_contact(event,this)" >{t}Edit{/t}</span>
+		</div>
+	      </div>
+	      {/foreach}
+	    </td>
+	  </tr>
+
 	  <tr id="add_contact_block" >
-	    <td colspan=2  style="display:none">
+	    <td colspan=2  style="xdisplay:none">
 	      <table border=2 class="edit">
 		<tr ><td style="width:120px;vertical-align: top;">Name:</td><td style="text-align:left;vertical-align: top;"><input style="text-align:left;width:12em" id="full_name" value=""></td>
 		  <td  style="text-align:left;vertical-align: top;">
-		    <table border=1 class="edit" style="display:none;position:relative;top:-6px;" >	  
+		    <table border=1 class="edit" style="xdisplay:none;position:relative;top:-6px;" >	  
 		      <tr>
 			<td class="label" >{t}Salutation{/t}:</td>
 			<td  style="text-align:left;" >
@@ -244,6 +268,19 @@
 		<tr>
 		  <td style="vertical-align: top;">{t}Email{/t}:</td><td style="text-align:left"><input style="text-align:left" value="" ovalue="" /> </td>
 		</tr>
+
+		<tr>
+		  <td style="vertical-align: top;">{t}Mobile{/t}:</td><td style="vertical-align: top;text-align:left"><input style="text-align:left" value="" ovalue="" /> </td>
+		  <td style="text-align:left"  >
+		    <table border=1 class="edit" style="display:none">
+		      <tr valign="top"><td valign="top">{t}Country Code{/t}:</td><td style="text-align:left"><input style="text-align:left;width:3em" value="" ovalue="" /></td></tr>
+		      <tr><td>{t}National Access Code{/t}:</td><td style="text-align:left"><input style="text-align:center;width:1em" value="" ovalue="" /></td></tr>
+		      <tr><td>{t}Area Code{/t}:</td><td style="text-align:left"><input style="text-align:left;width:4em" value="" ovalue="" /></td></tr>
+		      <tr><td>{t}Number{/t}:</td><td style="text-align:left"><input style="text-align:left;width:7em" value="" ovalue="" /></td></tr>
+		      <tr><td>{t}Extension{/t}:</td><td style="text-align:left"><input style="text-align:left;width:3em" value="" ovalue="" /></td></tr>
+		      </table>
+		  </td>
+		</tr>
 		<tr>
 		  <td style="vertical-align: top;">{t}Telephone{/t}:</td><td style="vertical-align: top;text-align:left"><input style="text-align:left" value="" ovalue="" /> </td>
 		  <td style="text-align:left"  >
@@ -274,35 +311,8 @@
 	  </tr>
 	  
 	  
-	  
-	  {foreach from=$company->get_contacts() item=contact  name=foo }
-	  <tr style="text-align:left" ><td  style="width:160px;vertical-align: top;"><img src="art/icons/vcard.png"/> {$contact->display('name')}:</td><td  style="text-align:left" >
-		<table>
-		  {foreach from=$contact->get_emails() item=email  name=foo }
-		  <tr><td>{if $smarty.foreach.foo.first}<span onclick="add_email_to_contact(this)" class="add_button">Add</span> {/if}{t}Email{/t}:</td><td><input style="text-align:left"  value="{$email->get('Email')}"> <span onclick="delete_email_to_contact(this)" class="add_button">Delete</span> </td></tr>
-		  {/foreach}
-		   {foreach from=$contact->get_mobiles() item=mobil  }
-		  <tr><td>{t}Mobil{/t}:</td><td><input style="text-align:left"  value="{$mobil->display('xhtml')}"></td></tr>
-		  {/foreach}
-		  {if $contact->number_mobiles==0}
-		  <tr><td>{if $smarty.foreach.foo.first}<span onclick="add_email_to_contact(this)" class="add_button">Add</span > {/if}{t}Mobil{/t}:</td><td></td></tr>
-		  {/if}
-		  
-		  {foreach from=$contact->get_addresses() item=address  name=foo}
-		  <tr><td>{if $smarty.foreach.foo.first}<span onclick="add_address_to_contact(this)" class="add_button">Add</span > {/if}{t}Address{/t}:</td>
-		    <td style="text-align:left">{$address->display('mini')} <span onclick="add_email_to_contact(this)" class="add_button">Transfer</span></td>
-		    <td style="text-align:left">
-		      <span id="address_type_Office" label="Work" onclick="toggle_contact_address_type(this)" class="small_button address_type" style="margin:0">Work</span>
-		      <span id="address_type_Shop" label="Home" onclick="toggle_contact_address_type(this)" class="small_button  address_type" style="margin-left:3px">Home</span>
-		  </td></tr>
-		  {/foreach}
-		  
-		  <tr><td>{t}Telephone{/t}</td><td><input style="text-align:left"  value="{$contact->id}"></td></tr>
-		  <tr><td>{t}Fax{/t}</td><td><input style="text-align:left"  value="{$contact->id}"></td></tr>
 
-	    </table>
-	    </td></tr>
-	    {/foreach}
+	  
 	
 
  

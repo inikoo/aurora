@@ -754,7 +754,7 @@ class Address extends DB_Table{
 
       if(!$this->scope)
 	$this->set_scope();
-      return $this->data[$key];
+      return $this->data['Address '.$key];
       break;
       
 
@@ -785,10 +785,15 @@ class Address extends DB_Table{
     switch($tipo){
     case('mini'):
       $street=_trim($this->data['Address Street Number'].' '.$this->data['Address Street Name'].' '.$this->data['Address Street Type']);
+      if(strlen($street)<2)
+	$street=_($this->data['Address Internal']." ".$this->data['Address Building']);
+      
       $max_characters=26;
-      if($strlen>$max_characters)
+      if(strlen($street)>$max_characters)
 	$street=substr($street,$max_characters)."... ";
       $street.=', ';
+
+     
       return $street.$this->location($this->data,'right');
       break;
     case('location'):
@@ -1419,7 +1424,7 @@ class Address extends DB_Table{
     global $myconf;
 
     //       print "========== ADDEWESS PARSING ================\n";
-    //  print_r($raw_data);
+
 
 
     if(!isset($raw_data['Address Line 1']))
@@ -1647,6 +1652,17 @@ class Address extends DB_Table{
     // pushh all address up
 
     if($untrusted){
+
+    
+      if(preg_match('/^\d{1,}\s*\,\s*/',$raw_data['Address Line 1'])){
+	$raw_data['Address Line 1']=_trim(preg_replace('/,/',' ',$raw_data['Address Line 1'],1));
+      }
+
+      
+      
+      
+
+
       // if only one line put it in the first one
       $number_lines=0;
       if($raw_data['Address Line 1']!='')
@@ -1923,7 +1939,7 @@ class Address extends DB_Table{
 
       }
 
-
+      
       // print "Street grade 1-$s_a1 2-$s_a2 3-$s_a3 \n";
       //   print "Internal grade 1-$i_a1 2-$i_a2 3-$i_a3 \n";
       //   print "Filled grade 1-$f_a1 2-$f_a2 3-$f_a3 \n";
@@ -2000,7 +2016,7 @@ class Address extends DB_Table{
 
       }elseif(!$f_a1 and $f_a2 and $f_a3){ // case xoo
 	
-	//   print "1 $raw_data['Address Line 1'] 2 $raw_data['Address Line 2'] 3 $raw_data['Address Line 3'] \n";
+	//print "1 ".$raw_data['Address Line 1']." 2 ".$raw_data['Address Line 2']." 3 ".$raw_data['Address Line 3']." \n";
 	if($s_a2 and   !$i_a3 and !$s_a3  ){
 
 	  
@@ -2011,12 +2027,13 @@ class Address extends DB_Table{
 	    $raw_data['Address Line 2']=$raw_data['Address Line 1'];
 	    $raw_data['Address Line 1']='';
 	  }else if(!$f_ta and !$f_td and $f_t){// caso oot
-
+	  
 	    $data['Address Town Secondary Division']=$raw_data['Address Line 3'];
 	    $raw_data['Address Line 3']=$raw_data['Address Line 2'];
 	    $raw_data['Address Line 2']=$raw_data['Address Line 1'];
 	    $raw_data['Address Line 1']='';
-
+	    // print "*********************\n";
+	    // print_r($raw_data);
 	  }else{
        
 	    $raw_data['Address Line 3']=$raw_data['Address Line 2'].', '.$raw_data['Address Line 3'];
@@ -2036,10 +2053,10 @@ class Address extends DB_Table{
 
     }
 
-    //  print_r($raw_data); 
+   
 
-    // print_r($data); 
-    //     exit; 
+
+
     
 
 
@@ -3645,10 +3662,7 @@ class Address extends DB_Table{
   
   }
 
-
-
- 
-   function set_scope($raw_scope='',$scope_key=0){
+function set_scope($raw_scope='',$scope_key=0){
     $scope='Unknown';
     $raw_scope=_trim($raw_scope);
     if(preg_match('/^customers?$/i',$raw_scope)){
@@ -3672,8 +3686,7 @@ class Address extends DB_Table{
   function load_metadata(){
     
 
-    $this->data['Type']=array();
-    $this->data['Function']=array();
+
 
 
     $where_scope=sprintf(' and `Subject Type`=%s',prepare_mysql($this->scope));
@@ -3694,20 +3707,25 @@ class Address extends DB_Table{
 
   
     $this->data['Address Type']=array();
-    $this->data['Addresss Function']=array();
+    $this->data['Address Function']=array();
     $this->data['Address Is Main']=array();
+    $this->data['Address Is Active']=array();
+
     $this->associated_with_scope=false;
     while($row=mysql_fetch_array($res)){
       $this->associated_with_scope=true;
-      $this->data['Addresss Type'][$row['Address Type']]=$row['Address Type'];
-      $this->data['Addresss Function'][$row['Address Function']]=$row['Address Function'];
+      $this->data['Address Type'][$row['Address Type']]=$row['Address Type'];
+      $this->data['Address Function'][$row['Address Function']]=$row['Address Function'];
       $this->data['Address Is Main'][$row['Address Type']]=$row['Is Main'];
       $this->data['Address Is Active'][$row['Address Type']]=$row['Is Active'];
 
     }
     
+   
     
   }
+
+
 
 }    
 
