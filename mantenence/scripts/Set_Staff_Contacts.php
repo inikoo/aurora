@@ -89,9 +89,26 @@ while($row=mysql_fetch_array($res, MYSQL_ASSOC)){
 
    
    //  print_r($data_contact);
-  $contact=new contact('find create',$data_contact);
+  $contact=new contact('find in company create',$data_contact);
   //print_r($contact);
-  $company->add_contact($contact->id);
+  $company->add_contact($contact->id,'no_principal');
+     
+  $contact->add_address(array(
+				  'Address Key'=>$company->data['Company Main Address Key']
+				  ,'Address Type'=>array('Work')
+				  ,'Address Function'=>array('Contact')
+
+			      ));
+  
+
+  if($row['Staff Currently Working']=='No'){
+    $company->remove_contact($contact->id);
+    if($company->error){
+      print $company->msg."\n";
+      exit;
+    }
+  }
+
   $sql=sprintf("update `Staff Dimension` set `Staff Alias`=%s,`Staff Name`=%s,`Staff Contact Key`=%d where `Staff Key`=%d"
 	       ,prepare_mysql(strtolower($row['Staff Alias']))
 	       ,prepare_mysql(ucwords($row['Staff Name']))

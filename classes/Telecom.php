@@ -735,10 +735,26 @@ protected function create($data,$optios=''){
    Returns the formated  telephone number
   */
  public static function formated_number($data){
+   print strlen($data['Telecom Number'])."***************\n\n\n\n\n";
+   switch(strlen($data['Telecom Number'])){
+   case 8:
+    $the_number=preg_replace('/^\d{2}/','$0 ',$data['Telecom Number']);
+    $the_number=preg_replace('/^\d{2} \d{2}/','$0 ',$the_number);
+    
+     break;
+   case 9:
+     $the_number=preg_replace('/^\d{2}/','$0 ',$data['Telecom Number']);
+     $the_number=preg_replace('/^\d{2} \d{3}/','$0 ',$the_number);
+     break;
+   default:
+     $the_number=strrev(chunk_split(strrev($data['Telecom Number']),4," "));
+   }
+   $the_number=_trim($the_number)."";
 
-
-   $tmp=($data['Telecom Country Telephone Code']!=''?'+'.$data['Telecom Country Telephone Code'].' ':'').($data['Telecom Area Code']!=''?$data['Telecom Area Code'].' ':'')._trim(strrev(chunk_split(strrev($data['Telecom Number']),4," "))).($data['Telecom Extension']!=''?' '._('ext').' '.$data['Telecom Extension']:'');
+   $tmp=($data['Telecom Country Telephone Code']!=''?'+'.$data['Telecom Country Telephone Code'].' ':'').($data['Telecom Area Code']!=''?$data['Telecom Area Code'].' ':'').$the_number.($data['Telecom Extension']!=''?' '._('ext').' '.$data['Telecom Extension']:'');
+   
    return $tmp;
+
  }
 
  /*Function: get_country_id
@@ -882,7 +898,31 @@ function load_metadata(){
   }
 
 
+/*
+  function: is_associated
+ */
 
+function is_associated($scope,$scope_key,$args='only valid'){
+ $extra_args='';
+    if(preg_match('/only active|active only/i',$args))
+      $extra_args=" and `Is Active`='Yes'";
+    if(preg_match('/only main|main only/i',$args))
+      $extra_args=" and `Is Main`='Yes'";
+    if(preg_match('/only not? active/i',$args))
+      $extra_args=" and `Is Active`='No'";
+    if(preg_match('/only not? main/i',$args))
+      $extra_args=" and `Is Main`='No'";
+
+  $sql=sprintf("select `Telecom Key` from `Telecom Bridge`  where Type`=%s and `Subject Key`=%d  %s  "
+	       ,prepare_mysql($scope)
+	       ,$scope_key
+	       ,$extra_args
+	       );
+
+
+
+
+}
 
 }
 ?>

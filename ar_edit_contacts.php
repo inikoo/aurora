@@ -87,7 +87,7 @@ case('new_address'):
 		     ,'building'=>'Address Building'
 		     ,'type'=>'Address Type'
 		     ,'function'=>'Address Function'
-		     ,'descriotion'=>'Address Description'
+		     ,'description'=>'Address Description'
 		     
 		   );
  
@@ -111,7 +111,10 @@ case('new_address'):
 			       ));
      
      $address=new Address($subject_object->added_address_key);
-  $address->set_scope($subject,$subject_key);
+     
+     
+     $address->set_scope($subject,$subject_key);
+     
      $updated_address_data=array(
 				 'country'=>$address->data['Address Country Name']
 				 ,'country_code'=>$address->data['Address Country Code']
@@ -130,8 +133,16 @@ case('new_address'):
 				 ,'description'=>$address->data['Address Description']
 				   );
        
-       $response=array('state'=>200,'action'=>'created','msg'=>$subject_object->msg_updated,'key'=>'','updated_data'=>$updated_address_data,'xhtml_address'=>$address->display('xhtml'));
-
+     $response=array(
+		     'state'=>200
+		     ,'action'=>'created'
+		     ,'msg'=>$subject_object->msg_updated
+		     ,'updated_data'=>$updated_address_data
+		     ,'xhtml_address'=>$address->display('xhtml')
+		     ,'address_key'=>$address->id
+		     );
+  echo json_encode($response);
+     return;
    
    }else{
      $response=array('state'=>200,'action'=>'nochange','msg'=>_('Address already in company'));

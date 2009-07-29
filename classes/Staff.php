@@ -74,6 +74,9 @@ class Staff{
      if(array_key_exists($key,$this->data))
       return $this->data[$key];
      switch($key){
+     case('Formated ID'):
+     case("ID"):
+        return $this->get_formated_id();
      case('First Name'):
        if(!is_object($this->contact))
 	 $this->contact=new Contact($this->data['Staff Contact Key']);
@@ -104,6 +107,24 @@ class Staff{
 
     
   }
+
+   function get_formated_id(){
+     global $myconf;
+     
+     $sql="select count(*) as num from `Staff Dimension`";
+     $res=mysql_query($sql);
+     $min_number_zeros=4;
+     if($row=mysql_fetch_array($res)){
+       if(strlen($row['num'])-1>$min_number_zeros)
+	 $min_number_zeros=strlen($row['num'])-01;
+     }
+     if(!is_numeric($min_number_zeros))
+       $min_number_zeros=4;
+
+     return sprintf("%s%0".$min_number_zeros."d",$myconf['staff_id_prefix'], $this->data['Staff ID']);
+
+   }
+
 
 
 }

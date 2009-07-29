@@ -2570,7 +2570,243 @@ case('plot_order_interval'):
    echo json_encode($response);
    break;
 
+case('company_history'):
+    if(!$LU->checkRight(ORDER_VIEW))
+    exit;
 
+    $conf=$_SESSION['state']['company']['table'];
+
+    if(isset( $_REQUEST['id']))
+      $company_id=$_REQUEST['id'];
+    else
+      $company_id=$_SESSION['state']['company']['id'];
+    
+
+    if(isset( $_REQUEST['sf']))
+      $start_from=$_REQUEST['sf'];
+    else
+      $start_from=$conf['sf'];
+    
+    if(isset( $_REQUEST['nr']))
+      $number_results=$_REQUEST['nr'];
+    else
+      $number_results=$conf['nr'];
+    if(isset( $_REQUEST['o']))
+      $order=$_REQUEST['o'];
+    else
+      $order=$conf['order'];
+    if(isset( $_REQUEST['od']))
+    $order_dir=$_REQUEST['od'];
+  else
+    $order_dir=$conf['order_dir'];
+
+    if(isset( $_REQUEST['details']))
+      $details=$_REQUEST['details'];
+    else
+      $details=$conf['details'];
+    
+
+    if(isset( $_REQUEST['f_field']))
+     $f_field=$_REQUEST['f_field'];
+   else
+     $f_field=$conf['f_field'];
+
+  if(isset( $_REQUEST['f_value']))
+     $f_value=$_REQUEST['f_value'];
+   else
+     $f_value=$conf['f_value'];
+
+if(isset( $_REQUEST['where']))
+     $where=$_REQUEST['where'];
+   else
+     $where=$conf['where'];
+  
+ if(isset( $_REQUEST['from']))
+    $from=$_REQUEST['from'];
+  else
+    $from=$conf['from'];
+  if(isset( $_REQUEST['to']))
+    $to=$_REQUEST['to'];
+  else
+    $to=$conf['to'];
+
+  $elements=$conf['elements'];
+  if(isset( $_REQUEST['element_orden']))
+    $elements['orden']=$_REQUEST['e_orden'];
+  if(isset( $_REQUEST['element_h_cust']))
+    $elements['h_cust']=$_REQUEST['e_orden'];
+  if(isset( $_REQUEST['element_h_cont']))
+    $elements['h_cont']=$_REQUEST['e_orden'];
+  if(isset( $_REQUEST['element_note']))
+    $elements['note']=$_REQUEST['e_orden'];
+  
+
+   if(isset( $_REQUEST['tableid']))
+    $tableid=$_REQUEST['tableid'];
+  else
+    $tableid=0;
+
+
+
+
+   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+   $_SESSION['state']['company']['id']=$company_id;
+   $_SESSION['state']['company']['table']=array('details'=>$details,'elements'=>$elements,'order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+   $date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
+   if($date_interval['error']){
+      $date_interval=prepare_mysql_dates($_SESSION['state']['company']['table']['from'],$_SESSION['state']['company']['table']['to']);
+   }else{
+     $_SESSION['state']['company']['table']['from']=$date_interval['from'];
+     $_SESSION['state']['company']['table']['to']=$date_interval['to'];
+   }
+
+   $where.=sprintf(' and (  (`Subject`="Company" and  `Subject Key`=%d) or (`Direct Object`="Company" and  `Direct Object key`=%d ) or (`Indirect Object`="Company" and  `Indirect Object key`=%d )         ) ',$company_id,$company_id,$company_id);
+//   if(!$details)
+ //    $where.=" and display!='details'";
+ //  foreach($elements as $element=>$value){
+ //    if(!$value ){
+ //      $where.=sprintf(" and objeto!=%s ",prepare_mysql($element));
+ //    }
+ //  }
+   
+   $where.=$date_interval['mysql'];
+   
+   $wheref='';
+
+
+
+   if( $f_field=='notes' and $f_value!='' )
+     $wheref.=" and   note like '%".addslashes($f_value)."%'   ";
+   if($f_field=='upto' and is_numeric($f_value) )
+     $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(date))<=".$f_value."    ";
+   else if($f_field=='older' and is_numeric($f_value))
+     $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(date))>=".$f_value."    ";
+   elseif($f_field=='author' and $f_value!=''){
+       if(is_numeric($f_value))
+	 $wheref.=" and   staff_id=$f_value   ";
+       else{
+	 $wheref.=" and  handle like='".addslashes($f_value)."%'   ";
+       }
+     }
+	  
+   
+
+   
+   
+       
+
+   
+
+
+   
+   $sql="select count(*) as total from  `History Dimension`   $where $wheref ";
+ // print $sql;
+   $result=mysql_query($sql);
+   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+     $total=$row['total'];
+   }
+   if($where==''){
+     $filtered=0;
+     $filter_total=0;
+     $total_records=$total;
+   }else{
+     
+     $sql="select count(*) as total from  `History Dimension`  $where";
+    // print $sql;
+     $result=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+	$filtered=$row['total']-$total;
+	$total_records=$row['total'];
+     }
+     
+   }
+   
+   
+   $rtext=$total_records." ".ngettext('record','records',$total_records);
+   
+   if($total==0)
+     $rtext_rpp='';
+   elseif($total_records>$number_results)
+     $rtext_rpp=sprintf('(%d%s)',$number_results,_('rpp'));
+   else
+     $rtext_rpp=_('Showing all');
+
+
+//   print "$f_value $filtered  $total_records  $filter_total";
+   $filter_msg='';
+   if($filtered>0){
+   switch($f_field){
+     case('notes'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any record matching")." <b>$f_value</b> ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/> '._('Showing')." $total ".ngettext($total,'record matching','records matching')." <b>$f_value</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;
+  case('older'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any record older than")." <b>$f_value</b> ".ngettext($f_value,'day','days');
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/> '._('Showing')." $total ".ngettext($total,'record older than','records older than')." <b>$f_value</b> ".ngettext($f_value,'day','days')." <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;
+     case('upto'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any record in the last")." <b>$f_value</b> ".ngettext($f_value,'day','days');
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/> '._('Showing')." $total ".ngettext($total,'record in the last','records inthe last')." <b>$f_value</b> ".ngettext($f_value,'day','days')."<span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;  
+
+
+   }
+   }
+
+
+   
+   $_order=$order;
+   $_dir=$order_direction;
+   if($order=='date')
+     $order='History Date';
+   if($order=='note')
+     $order='History Abstract';
+   if($order=='objeto')
+     $order='Direct Object';
+
+   $sql="select * from `History Dimension`   $where $wheref  order by `$order` $order_direction limit $start_from,$number_results ";
+   //  print $sql;
+   $result=mysql_query($sql);
+   $data=array();
+   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+     
+
+     $data[]=array(
+		   'id'=>$row['History Key'],
+		   'date'=>strftime("%a %e %b %Y", strtotime($row['History Date'])),
+		   'time'=>strftime("%H:%M", strtotime($row['History Date'])),
+		   'objeto'=>$row['Direct Object'],
+		   'note'=>$row['History Abstract'],
+		   'handle'=>$row['Author Name']
+		   );
+   }
+   
+   $response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$data,
+			 'sort_key'=>$_order,
+			 'sort_dir'=>$_dir,
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
+			 'total_records'=>$total,
+			 'records_offset'=>$start_from,
+			 //	 'records_returned'=>$start_from+$res->numRows(),
+			 'records_perpage'=>$number_results,
+			 'rtext'=>$rtext,
+			 'rtext_rpp'=>$rtext_rpp,
+			 'records_order'=>$order,
+			 'records_order_dir'=>$order_dir,
+			 'filtered'=>$filtered
+			 )
+		   );
+   echo json_encode($response);
+   break;
  default:
    $response=array('state'=>404,'resp'=>_('Operation not found'));
    echo json_encode($response);

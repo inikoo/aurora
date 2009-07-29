@@ -143,28 +143,47 @@ var create_address=function(){
     
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-	       	alert(o.responseText);
+	       	//alert(o.responseText);
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
-		if(r.action=='updated'){
-		 
+		if(r.action=='created'){
+
 		    
+
+		    var new_address_data=new Object;
 		    for(i in r.updated_data){
 			var address_item_value=r.updated_data[i];
 			if(address_item_value==null)address_item_value='';
-			Address_Data[r.address_key][i]=address_item_value;
+			new_address_data[i]=address_item_value;
 		    }
+
+		    Address_Data[r.address_key]=new Object;
+		    Address_Data[r.address_key]=new_address_data;
 		    cancel_edit_address();
 		    
 		    var new_address_container = Dom.get('address_container0').cloneNode(true);
 		    new_address_container.id = 'address_containe'+r.address_key;
-		    new_address_container.children[0].id = 'address_display'+r.address_key;
-		    new_address_container.children[0].innerHTML=r.xhtml_address;
-		    new_address_container.children[1].id = 'address_buttons'+r.address_key;
-		    new_address_container.children[1][0].id='delete_address_button'+r.address_key;
-		    new_address_container.children[1][0].setAttribute('address_id',r.address_key);
-		    new_address_container.children[1][1].id='edit_address_button'+r.address_key;
-		    new_address_container.children[1][1].setAttribute('address_id',r.address_key);
-		    new_address_containe.parent.appendChild(new_address_container);
+		    Dom.setStyle(new_address_container, 'display', ''); 
+		    display_element=Dom.getElementsByClassName('address_display' ,'div',  new_address_container);
+		    display_element[0].innerHTML=r.xhtml_address;
+		    display_element[0].id = 'address_display'+r.address_key;
+		    display_element=Dom.getElementsByClassName('address_buttons' ,'div',  new_address_container);
+		    display_element[0].id = 'address_buttons'+r.address_key;
+		    display_element=Dom.getElementsByClassName('small_button_edit' ,'span', display_element[0] );
+		    display_element[0].id = 'contacts_address_butto'+r.address_key;
+		    display_element[1].id = 'delete_address_button'+r.address_key;
+		    display_element[2].id = 'edit_address_butto'+r.address_key;
+		    display_element[0].setAttribute('address_id',r.address_key);
+		    display_element[1].setAttribute('address_id',r.address_key);
+		    display_element[2].setAttribute('address_id',r.address_key);
+
+
+		    //new_address_container.children[1][0].id='delete_address_button'+r.address_key;
+		    //new_address_container.children[1][0].setAttribute('address_id',r.address_key);
+		    //new_address_container.children[1][1].id='edit_address_button'+r.address_key;
+		    //new_address_container.children[1][1].setAttribute('address_id',r.address_key);
+		    Dom.get('address_showcase').appendChild(new_address_container);
+
+		    //new_address_container.parent.appendChild(new_address_container);
 		    save_address_elements++;
 		}else if(r.action=='error'){
 		    alert(r.msg);
@@ -231,6 +250,11 @@ var cancel_edit_address=function (){
 
 
 };
+
+var delete_address=function (e,address_button){
+
+
+}
 
 
 var edit_address=function (e,address_button){
