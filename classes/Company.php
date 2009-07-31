@@ -358,7 +358,7 @@ class Company extends DB_Table {
 
     }else{
       // update 
-      //print "Updatinf company and contact\n";
+      print "Updatinf company and contact\n";
       
       
       $this->get_data('id',$this->found_key);
@@ -531,83 +531,47 @@ class Company extends DB_Table {
     $this->data['Company Main Country Key']=$address->data['Address Country Key'];
     $this->data['Company Main Country']=$address->data['Address Country Name'];
     $this->data['Company Main Location']=$address->display('location');
-
+    $Company_Main_Telephone_Key=false;
+    $Company_Main_FAX_Key=false;
+    $main_telephone_is_mobile=false;
+    $extra_mobile_key=false;
+    
     if($this->data['Company Main Telephone']!=''){
-
-      //print "cacacacacaca\n\n\n\n";
       $telephone_data=array();
       $telephone_data['editor']=$this->editor;
       $telephone_data['Telecom Raw Number']=$this->data['Company Main Telephone'];
-      
       $telephone=new Telecom("find in company create country code ".$address->data['Address Country Code'],$telephone_data);
-
-      // print "------------------\n";
-      
-      $main_telephone_is_mobile=false;
       if(!$telephone->error){
-	//Collect data about telecom found
-	
-
-	$this->data['Company Main Plain Telephone']=$telephone->display('plain');
-	$this->data['Company Main Telephone']=$telephone->display('number');
-	$this->data['Company Main Telephone Key']=$telephone->id; 
-
+	$Company_Main_Telephone_Key=$telephone->id; 
 	if($telephone->is_mobile())
 	  $main_telephone_is_mobile=true;
-
-      }else{
-	$this->data['Company Main Plain Telephone']='';
-	$this->data['Company Main Telephone']='';
-	$this->data['Company Main Telephone Key']=''; 
       }
-    }else{
-      	$this->data['Company Main Plain Telephone']='';
-	$this->data['Company Main Telephone']='';
-	$this->data['Company Main Telephone Key']=''; 
-
     }
+    
 
     if($this->data['Company Main FAX']!=''){
-       $telephone_data=array();
-	  $telephone_data['editor']=$this->editor;
-	  $telephone_data['Telecom Raw Number']=$this->data['Company Main FAX'];
-
-      $telephone=new Telecom("find in company create country code ".$address->data['Address Country Code'],$telephone_data);
+      $telephone_data=array();
+      $telephone_data['editor']=$this->editor;
+       $telephone_data['Telecom Raw Number']=$this->data['Company Main FAX'];
+       
+       $telephone=new Telecom("find in company create country code ".$address->data['Address Country Code'],$telephone_data);
       
-      if(!$telephone->error){
-	if($telephone->is_mobile()){
-	  $this->data['Company Main Plain FAX']='';
-	  $this->data['Company Main FAX']='';
-	  $this->data['Company Main FAX Key']=''; 
-	  if($this->data['Company Main Telephone Key'])
+       if(!$telephone->error){
+	 
+	 if($telephone->is_mobile()){
+	  if($Company_Main_Telephone_Key)
 	    $extra_mobile_key=$telephone->id;
 	  else{
-	    	$this->data['Company Main Plain Telephone']=$telephone->display('plain');
-		$this->data['Company Main Telephone']=$telephone->display('number');
-		$this->data['Company Main Telephone Key']=$telephone->id; 
-
-	  }
-
-	}else{
-	  $this->data['Company Main Plain FAX']=$telephone->display('plain');
-	  $this->data['Company Main FAX']=$telephone->display('number');
-	  $this->data['Company Main FAX Key']=$telephone->id;
-	  
+	    $main_telephone_is_mobile=true;
+	    $Company_Main_Telephone_Key=$telephone->id; 
+	  }  
+	 }else{
+	   $Company_Main_FAX_Key=$telephone->id; 
 	} 
-      }else{
-	$this->data['Company Main Plain FAX']='';
-	$this->data['Company Main FAX']='';
-	$this->data['Company Main FAX Key']=''; 
+	 
       }
-	//  print_r($this->data);
-      // print_r($telephone);exit;
-    }else{
-      	$this->data['Company Main Plain FAX']='';
-	$this->data['Company Main FAX']='';
-	$this->data['Company Main FAX Key']=''; 
-      
     }
-
+    
     $keys='';
     $values='';
     foreach($this->data as $key=>$value){
@@ -636,16 +600,19 @@ class Company extends DB_Table {
 			  ,'action'=>'created'
 			  );
       $this->add_history($history_data);
-     
       
-     
       
-   
+      
+      
+      //   print "00000000000000000000000000000\n";
+      //print_r($this->data);
       $contact->add_company(array(
 				  'Company Key'=>$this->id
 				  ));
-   
-  $contact->add_address(array(
+      
+      
+ 
+      $contact->add_address(array(
 				  'Address Key'=>$this->data['Company Main Address Key']
 				  ,'Address Type'=>array('Work')
 				  ,'Address Function'=>array('Contact')
@@ -672,12 +639,16 @@ class Company extends DB_Table {
       $contact->add_email($email_data);
 
       $this->add_email($this->data['Company Main Email Key']);
-
+      
       }
-      //print "xxy\n";
 
-      //  print_r($this->data);
-      if($this->data['Company Main Telephone Key']){
+      
+
+    
+      if($Company_Main_Telephone_Key){
+
+
+	
 
 	if($main_telephone_is_mobile){
 	  $contact_telecom_type='Mobile';
@@ -686,19 +657,23 @@ class Company extends DB_Table {
 	  $contact_telecom_type='Work Telephone';
 	  $company_telecom_type='Office Telephone';
 	  
-	 $sql=sprintf("insert into `Address Telecom Bridge` values (%d,%d)",$this->data['Company Main Address Key'],$this->data['Company Main Telephone Key']);
+	  $sql=sprintf("insert into `Address Telecom Bridge` values (%d,%d)"
+		       ,$this->data['Company Main Address Key']
+		       ,$Company_Main_Telephone_Key
+		       );
 	  mysql_query($sql);
-
+	  
 	}
-      $contact->add_tel(array(
-			      'Telecom Key'=>$this->data['Company Main Telephone Key']
-			      ,'Telecom Type'=>$contact_telecom_type
-			      ));
-      $this->add_tel(array(
-			   'Telecom Key'=>$this->data['Company Main Telephone Key']
-			   ,'Telecom Type'=>$company_telecom_type
-			   ));
 
+	$contact->add_tel(array(
+				'Telecom Key'=>$Company_Main_Telephone_Key
+				,'Telecom Type'=>$contact_telecom_type
+				));
+	$this->add_tel(array(
+			     'Telecom Key'=>$Company_Main_Telephone_Key
+			     ,'Telecom Type'=>$company_telecom_type
+			     ));
+	
    
 
       
@@ -723,17 +698,17 @@ class Company extends DB_Table {
 
 
 
-      if($this->data['Company Main FAX Key']){
+      if($Company_Main_FAX_Key){
 
-	$sql=sprintf("insert into `Address Telecom Bridge` values (%d,%d)",$this->data['Company Main Address Key'],$this->data['Company Main FAX Key']);
+	$sql=sprintf("insert into `Address Telecom Bridge` values (%d,%d)",$this->data['Company Main Address Key'],$Company_Main_FAX_Key);
 	  mysql_query($sql);
 
       $contact->add_tel(array(
-			      'Telecom Key'=>$this->data['Company Main FAX Key']
+			      'Telecom Key'=>$Company_Main_FAX_Key
 			      ,'Telecom Type'=>'Office Fax'
 			      ));
            $this->add_tel(array(
-			   'Telecom Key'=>$this->data['Company Main FAX Key']
+			   'Telecom Key'=>$Company_Main_FAX_Key
 			   ,'Telecom Type'=>'Office Fax'
 			   ));
       }
@@ -852,8 +827,6 @@ protected function update_field_switcher($field,$value,$options=''){
     $contact=new Contact($this->data['Company Main Contact Key']);
     $contact->editor=$this->editor;
     $tel_data=Telecom::parse_number($value);
-    //print "tel data\n";
-    //print_r($tel_data);
     $plain_tel=Telecom::plain_number($tel_data);
    
     //    print "plain: $plain_tel\n";
@@ -866,7 +839,7 @@ protected function update_field_switcher($field,$value,$options=''){
       }else{
 	$tel_data=array(
 			'Telecom Raw Number'=>$value
-			,'Telecom Type'=>'Telephone'
+			,'Telecom Type'=>'Work Telephone'
 			);
 	$contact->add_tel($tel_data,$options.' principal');
       }
@@ -888,7 +861,7 @@ protected function update_field_switcher($field,$value,$options=''){
 
     $tel_data=array(
 		    'Telecom Raw Number'=>$value
-		    ,'Telecom Type'=>'Fax'
+		    ,'Telecom Type'=>'Work Fax'
 		    );
     $contact->add_tel($tel_data,$options.' principal');
     }
@@ -1429,9 +1402,11 @@ private function update_Company_Old_ID($company_old_id,$options){
  function add_tel($data,$args='principal'){
 
  $principal=false;
-  if(!preg_match('/not? principal/',$args) ){
+  if(preg_match('/not? principal/i',$args) ){
     $principal=false;
-  }elseif( preg_match('/principal/',$args)){
+   
+  }elseif( preg_match('/principal/i',$args)){
+
     $principal=true;
   }
    
@@ -1455,6 +1430,8 @@ private function update_Company_Old_ID($company_old_id,$options){
    }
    if($telecom->id){
 
+
+
      if(!isset($data['Telecom Type'])  )
        $data['Telecom Type']='Office Telephone';
      
@@ -1474,14 +1451,17 @@ private function update_Company_Old_ID($company_old_id,$options){
      }
      
 
+     // print "addinf tel P:$principal O:$old_principal_key $old_value N:".$telecom->id."\n";
+
      if($principal and $old_principal_key!=$telecom->id){
+
        $sql=sprintf("update `Telecom Bridge`  set `Is Main`='No' where `Subject Type`='Company' and  `Subject Key`=%d  ",
 		    $this->id
 		    ,$telecom->id
 		    );
        mysql_query($sql);
        
-       	  $sql=sprintf("update `Customer Dimension` set `%s`=%s , `%s`=%d  , `%s`=%s  where `Customer Key`=%d"
+       	  $sql=sprintf("update `Company Dimension` set `%s`=%s , `%s`=%d  , `%s`=%s  where `Company Key`=%d"
 		       ,$field
 		       ,prepare_mysql($telecom->display('html'))
 		       ,$field_key
@@ -1490,6 +1470,7 @@ private function update_Company_Old_ID($company_old_id,$options){
 		       ,prepare_mysql($telecom->display('plain'))
 		       ,$this->id
 		      );
+	  // print "$sql\n";
 	  mysql_query($sql);
 	  $history_data=array(
 			      'note'=>$field." "._('Changed')
@@ -1506,15 +1487,16 @@ private function update_Company_Old_ID($company_old_id,$options){
      }
   
      
-     $sql=sprintf("insert into  `Telecom Bridge` (`Telecom Key`, `Subject Key`,`Subject Type`,`Telecom Type`,`Is Main`) values (%d,%d,'Company',%s,%s)  ON DUPLICATE KEY UPDATE `Telecom Type`=%s"
+     $sql=sprintf("insert into  `Telecom Bridge` (`Telecom Key`, `Subject Key`,`Subject Type`,`Telecom Type`,`Is Main`) values (%d,%d,'Company',%s,%s)  ON DUPLICATE KEY UPDATE `Telecom Type`=%s ,`Is Main`=%s " 
 		  ,$telecom->id
 		  ,$this->id
 		  ,prepare_mysql($data['Telecom Type'])
 		  ,prepare_mysql($principal?'Yes':'No')
 		  ,prepare_mysql($data['Telecom Type'])
+		  ,prepare_mysql($principal?'Yes':'No')
 		  );
      mysql_query($sql);
-
+     //print "$sql\n";
    
    }
 
@@ -1664,6 +1646,8 @@ function add_address($data,$args='principal'){
 
 
 function add_contact($data,$args='principal'){
+  //  print "addcontact contact  to ".$this->id."  ($args)\n";
+  // print_r($data);
   
   if(is_numeric($data))
     $contact=new Contact('id',$data);
@@ -1677,18 +1661,20 @@ function add_contact($data,$args='principal'){
   }
 
   $principal=false;
-  if(!preg_match('/not? principal/',$args) ){
+  if(preg_match('/not? principal|no_principal/',$args) ){
     $principal=false;
   }elseif( preg_match('/principal/',$args)){
     $principal=true;
   }
   
   
- $sql=sprintf("insert into  `Contact Bridge` (`Contact Key`, `Subject Key`,`Is Main`) values (%d,%d,%s)  "
-		   ,$contact->id
-		   ,$this->id
-		   ,prepare_mysql($principal?'Yes':'No')
-		   );
+
+  $sql=sprintf("insert into  `Contact Bridge` (`Contact Key`, `Subject Type`,`Subject Key`,`Is Main`) values (%d,%s,%d,%s)  "
+	       ,$contact->id
+	       ,prepare_mysql('Company')
+	       ,$this->id
+	       ,prepare_mysql($principal?'Yes':'No')
+	       );
       mysql_query($sql);
       //   print "$args $principal $sql\n";
 
@@ -1741,7 +1727,8 @@ function add_contact($data,$args='principal'){
 
 
 function remove_contact($data,$args=''){
-  
+  // print "removing contact  to ".$this->id."  ($args)";
+  //print_r($data);
   if(is_numeric($data))
     $contact=new Contact('id',$data);
   else
