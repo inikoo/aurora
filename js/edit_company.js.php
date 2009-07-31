@@ -54,7 +54,7 @@ $company=new Company($company_key);
 
 $contacts=$company->get_contacts();
 $contact_data="\n";
-$contact_data.=sprintf('0:{"Contact Key":0,"Contact Name":"","Name Data":{"Contact Salutation":"","Contact First Name":"","Contact Surname":"" ,"Contact Suffix":""   },"Contact Gender":"","Contact Profession":"","Contact Title":"","Emails":[],"Addresses":[]} ' );
+$contact_data.=sprintf('0:{"Contact_Key":0,"Contact_Name":"","Name_Data":{"Contact_Salutation":"","Contact_First_Name":"","Contact_Surname":"" ,"Contact_Suffix":""   },"Contact_Gender":"","Contact_Profession":"","Contact_Title":"","Emails":{},"Addresses":[]} ' );
 $contact_data.="\n";
 foreach($contacts as $contact){
   
@@ -63,69 +63,74 @@ foreach($contacts as $contact){
   $emails=$contact->get_emails();
   $email_data='';
   foreach($emails as $email){
-    $email_data.=sprintf('{%d:{"Email Key":%d,"Email":"%s"}}'
+    $email_data.=sprintf(',%d:{"Email_Key":%d,"Email":"%s"}'
 			 ,$email->id
 			 ,$email->id
 			 ,$email->data['Email']
 			 );
   }
-
+  $email_data=preg_replace('/^,/','',$email_data);
   $contact_addresses=$contact->get_addresses();
   $contact_address_data='';
   foreach($contact_addresses as $contact_address){
 
     $tels=$contact->get_telephones($contact_address->id);
+  
+
     $tels_data='';
     foreach($tels as $tel){
-      $tels_data.=sprintf('{%d:{"Telephone Key":%d,"Telephone":%s}}'
+      $tels_data.=sprintf(',%d:{"Telephone_Key":%d,"Telephone":"%s"}'
 			  ,$tel->id
 			  ,$tel->id
 			  ,$tel->display()
 			  );
     }
-      
+
+    $tels_data=preg_replace('/^,/','',$tels_data);
       
     $faxes=$contact->get_faxes($contact_address->id);
      $faxes_data='';
     foreach($faxes as $fax){
-      $faxes_data.=sprintf('{%d:{"FAX Key":%d,"FAX":%s}}'
+      $faxes_data.=sprintf(',%d:{"FAX_Key":%d,"FAX":"%s"}'
 			  ,$fax->id
 			  ,$fax->id
 			  ,$fax->display()
 			  );
     }
-    
+    $faxes_data=preg_replace('/^,/','',$faxes_data);
 
-    $contact_address_data.=sprintf('{%d:{"Address Key":%d,"Address Mini":"%s","Telephones":[%s],"Faxes":[%s]}}'
+    $contact_address_data.=sprintf(',%d:{"Address_Key":%d,"Address":"%s","Address_Mini":"%s","Telephones":{%s},"Faxes":{%s}}'
 				   ,$contact_address->id
 				   ,$contact_address->id
+				   ,addslashes($contact_address->display('xhtml'))
 				   ,addslashes($contact_address->display('mini'))
 				   ,$tels_data
 				   ,$faxes_data
 				   );
+
   }
-  $contact_data.=sprintf(',%d:{"Contact Key":%d,"Contact Name":"%s" '
+  $contact_address_data=preg_replace('/^,/','',$contact_address_data);
+  $contact_data.=sprintf(',%d:{"Contact_Key":%d,"Contact_Name":"%s" '
 			 ,$contact->id
 			 ,$contact->id
 			 ,$contact->data['Contact Name']
 			 );
   $contact_data.="\n";
   
-  $contact_data.=sprintf(',"Name Data":{"Contact Salutation":"%s","Contact First Name":"%s","Contact Surname":"%s" ,"Contact Suffix":"%s"} '
+  $contact_data.=sprintf(',"Name_Data":{"Contact_Salutation":"%s","Contact_First_Name":"%s","Contact_Surname":"%s" ,"Contact_Suffix":"%s"} '
 			 ,$contact->data['Contact Salutation']
 			 ,$contact->data['Contact First Name']
 			 ,$contact->data['Contact Surname']
 			 ,$contact->data['Contact Suffix']
 			 );
   $contact_data.="\n";
-  $contact_data.=sprintf(',"Contact Gender":"%s","Contact Profession":"%s","Contact Title":"%s" '
+  $contact_data.=sprintf(',"Contact_Gender":"%s","Contact_Profession":"%s","Contact_Title":"%s" '
 			 ,$contact->data['Contact Gender']
 			 ,$contact->data['Contact Profession']
 			 ,$contact->data['Contact Title']
 			 );
   $contact_data.="\n";
-  
-  $contact_data.=sprintf(',"Emails":[%s],"Addresses":[%s]} '
+    $contact_data.=sprintf(',"Emails":{%s},"Addresses":{%s}} '
 			 ,$email_data
 			 ,$contact_address_data
 			 );
@@ -253,40 +258,12 @@ CountryDS.maxCacheEntries = 100;
 
 
 
-function update_full_address(){
-    var full_address=Dom.get(current_salutation).innerHTML+' '+Dom.get("v_first_name").value+' '+Dom.get("v_surname").value;
-    Dom.get("full_name").value=full_address;
-    calculate_num_changed_in_personal()
-}
 
 
-function update_salutation(o){
-    if(Dom.hasClass(o, 'selected'))
-	return;
-    Dom.removeClass(current_salutation, 'selected');
-    Dom.addClass(o, 'selected');
-    current_salutation=o.id;
-    calculate_num_changed_in_personal()
-    update_full_address();
 
-}
 
-function calculate_num_changed_in_personal(){
-    var changes=0;
-    if(current_salutation!=old_salutation)
-	changes++;
-    
-    var first_name=Dom.get("v_first_name");
-    if(first_name.getAttribute('ovalue')!=first_name.value)
-	changes++;
-    
-    var surname=Dom.get("v_surname");
-    if(surname.getAttribute('ovalue')!=surname.value)
-	changes++;
-    
-    Dom.get("personal_num_changes").innerHTML=changes;
 
-}
+
 var change_block = function(e){
     if(Dom.hasClass(this, 'selected'))
 	return;

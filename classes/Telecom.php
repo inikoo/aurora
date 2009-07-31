@@ -735,8 +735,12 @@ protected function create($data,$optios=''){
    Returns the formated  telephone number
   */
  public static function formated_number($data){
-   print strlen($data['Telecom Number'])."***************\n\n\n\n\n";
    switch(strlen($data['Telecom Number'])){
+    case 6:
+    $the_number=preg_replace('/^\d{2}/','$0 ',$data['Telecom Number']);
+    $the_number=preg_replace('/^\d{2} \d{2}/','$0 ',$the_number);
+    
+     break; 
    case 8:
     $the_number=preg_replace('/^\d{2}/','$0 ',$data['Telecom Number']);
     $the_number=preg_replace('/^\d{2} \d{2}/','$0 ',$the_number);
@@ -913,14 +917,17 @@ function is_associated($scope,$scope_key,$args='only valid'){
     if(preg_match('/only not? main/i',$args))
       $extra_args=" and `Is Main`='No'";
 
-  $sql=sprintf("select `Telecom Key` from `Telecom Bridge`  where Type`=%s and `Subject Key`=%d  %s  "
+  $sql=sprintf("select `Telecom Key` from `Telecom Bridge`  where `Subject Type`=%s and `Subject Key`=%d  %s  "
 	       ,prepare_mysql($scope)
 	       ,$scope_key
 	       ,$extra_args
 	       );
-
-
-
+ 
+  $res=mysql_query($sql);
+  if($row=mysql_fetch_array($res)){
+    return true;
+  }
+  return false;
 
 }
 

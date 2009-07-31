@@ -430,6 +430,8 @@ class Customer extends DB_Table{
 
    function create($raw_data,$args=''){
 
+     $main_telephone_key=false;
+     $main_fax_key=false;
 
 
      //print_r($raw_data);
@@ -455,26 +457,22 @@ class Customer extends DB_Table{
       $this->data['Customer Main Plain FAX']='';
       
 
-      //if(!$this->data['Customer Company Key']){
+  
       $company=new company('find in customer create',$raw_data);
-      // print_r($company->data);
+   
       $this->data['Customer Company Key']=$company->id;
       $this->data['Customer Company Name']=$company->data['Company Name'];
-	//}
+
       if($company->data['Company Main Email Key']){
 	$this->data['Customer Main Email Key']=$company->data['Company Main Email Key'];
 	$this->data['Customer Main XHTML Email']=$company->data['Company Main XHTML Email'];
 	$this->data['Customer Main Plain Email']=$company->data['Company Main Plain Email'];
       }
       if($company->data['Company Main Telephone Key']){
-	$this->data['Customer Main Telephone Key']=$company->data['Company Main Telephone Key'];
-	$this->data['Customer Main Telephone']=$company->data['Company Main Telephone'];
-	$this->data['Customer Main Plain Telephone']=$company->data['Company Main Plain Telephone'];
+	$main_telephone_key=$company->data['Company Main Telephone Key'];
       }
       if($company->data['Company Main FAX Key']){
-	$this->data['Customer Main FAX Key']=$company->data['Company Main FAX Key'];
-	$this->data['Customer Main FAX']=$company->data['Company Main FAX'];
-	$this->data['Customer Main Plain FAX']=$company->data['Company Main Plain FAX'];
+	$main_fax_key=$company->data['Company Main FAX Key'];
       }
       $this->data['Customer Main Contact Key']=$company->data['Company Main Contact Key'];
       $this->data['Customer Main Contact Name']=$company->data['Company Main Contact Name'];
@@ -513,14 +511,12 @@ class Customer extends DB_Table{
 	$this->data['Customer Main Plain Email']=$contact->data['Contact Main Plain Email'];
       }
       if($contact->data['Contact Main Telephone Key']){
-	$this->data['Customer Main Telephone Key']=$contact->data['Contact Main Telephone Key'];
-	$this->data['Customer Main Telephone']=$contact->data['Contact Main Telephone'];
-	$this->data['Customer Main Plain Telephone']=$contact->data['Contact Main Plain Telephone'];
+	$main_telephone_key=$contact->data['Contact Main Telephone Key'];
+
       }
       if($contact->data['Contact Main FAX Key']){
-	$this->data['Customer Main FAX Key']=$contact->data['Contact Main FAX Key'];
-	$this->data['Customer Main FAX']=$contact->data['Contact Main FAX'];
-	$this->data['Customer Main Plain FAX']=$contact->data['Contact Main Plain FAX'];
+	$main_fax_key=$contact->data['Contact Main FAX Key'];
+
       }
       $this->data['Customer Company Key']=0;
 
@@ -613,14 +609,17 @@ class Customer extends DB_Table{
       $this->add_history($history_data);
 
 
-      if($this->data['Customer Main Telephone Key'])
+      if($main_telephone_key){
+
 	$this->add_tel(array(
-			     'Telecom Key'=>$this->data['Customer Main Telephone Key']
+			     'Telecom Key'=>$main_telephone_key
 			     ,'Telecom Type'=>'Contact Telephone'
 			     ));
-      if($this->data['Customer Main FAX Key'])
+	
+      }
+      if($main_fax_key)
 	$this->add_tel(array(
-			     'Telecom Key'=>$this->data['Customer Main Fax Key']
+			     'Telecom Key'=>$main_fax_key
 			     ,'Telecom Type'=>'Contact Fax'
 			     ));
 
@@ -1993,13 +1992,13 @@ class Customer extends DB_Table{
    function add_tel($data,$args='principal'){
      
      $principal=false;
-     if(!preg_match('/not? principal/',$args) ){
+     if(preg_match('/not? principal/',$args) ){
        $principal=false;
      }elseif( preg_match('/principal/',$args)){
        $principal=true;
      }
 
- 
+   
 
    
       if(is_numeric($data)){
@@ -2035,6 +2034,7 @@ class Customer extends DB_Table{
       
       if($telecom->id){
 	
+	//	print "$principal $old_principal_key ".$telecom->id."  \n";
 
 	
 	if($principal and $old_principal_key!=$telecom->id){
@@ -2066,16 +2066,17 @@ class Customer extends DB_Table{
 	  $this->add_history($history_data);
 	 
 	 
-      }
+	}
 
 	
 	
-	$sql=sprintf("insert into  `Telecom Bridge` (`Telecom Key`, `Subject Key`,`Subject Type`,`Telecom Type`,`Is Main`) values (%d,%d,'Customer',%s,%s)  ON DUPLICATE KEY UPDATE `Telecom Type`=%s"
+	$sql=sprintf("insert into  `Telecom Bridge` (`Telecom Key`, `Subject Key`,`Subject Type`,`Telecom Type`,`Is Main`) values (%d,%d,'Customer',%s,%s)  ON DUPLICATE KEY UPDATE `Telecom Type`=%s ,`Is Main`=%s  "
 		     ,$telecom->id
 		     ,$this->id
 		     ,prepare_mysql($data['Telecom Type'])
 		     ,prepare_mysql($principal?'Yes':'No')
 		     ,prepare_mysql($data['Telecom Type'])
+		     ,prepare_mysql($principal?'Yes':'No')
 		     );
 	mysql_query($sql);
 	

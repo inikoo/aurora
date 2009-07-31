@@ -5,7 +5,6 @@
 <span class="nav2 onleft"><a  href="customers.php">{t}Customers{/t}</a></span>
 <span class="nav2 onleft"><a href="companies.php">{t}Companies{/t}</a></span>
 <span class="nav2 onleft"><a   href="contacts.php">{t}Personal Contacts{/t}</a></span>
-<span class="nav2 onright"><a href="search_customers.php">{t}Advanced Search{/t}</a></span>
 
 
 <span class="nav2"><a href="contacts.php">{$home}</a></span>
@@ -15,14 +14,13 @@
     
     <div class="search_box" >
       
-      <span id="but_show_details" state="{$details}" atitle="{if $details==0}{t}Hide Details{/t}{else}{t}Show Details{/t}{/if}" class="state_details"   >{if $details==1}{t}Hide Details{/t}{else}{t}Show Details{/t}{/if}</span>
-      <br/><a  href="contact.php?edit=0"  id="but_edit" title="{t}Edit Contact Data{/t}" class="state_details"   >{t}Exit Edit{/t}</a>
+     <a  href="contact.php?edit=0"  id="but_edit" title="{t}Edit Contact Data{/t}" class="state_details"   >{t}Exit Edit{/t}</a>
     </div>
     
     <div >
       <h1>{t}Editing company{/t} {$company->get(ID)}</h1>
 
-      <div class="chooser2" >
+      <div class="chooser2" style="display:none">
 	<ul >
 	  <li id="details" {if $edit=='details'}class="selected"{/if} ><img src="art/icons/information.png"> {t}Details{/t}</li>
 	  <li id="address" {if $edit=='address'}class="selected"{/if} > <img src="art/icons/building.png"> {t}Address{/t}</li>
@@ -33,7 +31,7 @@
       </div>
 
 
-      <div style="clear:both;height:3em;padding:10px 20px;;margin:20px 0;border-top: 1px solid #cbb;;border-bottom: 1px solid #caa;width:770px;" id="contacts_messages">
+      <div style="display:none;clear:both;height:3em;padding:10px 20px;;margin:20px 0;border-top: 1px solid #cbb;;border-bottom: 1px solid #caa;width:770px;" id="contacts_messages">
 	<div xstyle="float:left">
 	  <span class="save" style="display:none" id="description_save" onclick="save('description')">Save</span><span id="description_reset"  style="display:none"   class="reset" onclick="reset('description')">Reset</span>
 	</div>
@@ -49,7 +47,7 @@
 	<table class="edit" border=0>
 	  
 	  <tr class="title">
-	    <td colspan="2" style="width:160px">Details: <span class="state_details" id="details_messages"></span></td>
+	    <td colspan="2" style="width:160px">Company Details: <span class="state_details" id="details_messages"></span></td>
 	    <td  style="text-align:right">
 	      <span style="display:none" class="small_button" id="cancel_save_details_button" >Cancel</span>
 	      <span  style="display:none" class="small_button" id="save_details_button" >Save</span></td>
@@ -65,7 +63,7 @@
 	</table>
       </div>
 
-  <div  style="{if $edit!="address"}xdisplay:none;{/if}margin:0"  class="edit_block" id="d_address">
+  <div  style="margin:0"  class="edit_block" id="d_address">
 
 	<table class="edit" border=0 >
 	  
@@ -88,7 +86,7 @@
 	      <div  style="display:none" class="address_container"  id="address_container0">
 		<div class="address_display" id="address_display0"></div>
 		<div  class="address_buttons" id="address_buttons0" >
-		  <span class="small_button small_button_edit" style="float:left" id="contacts_address_button0" address_id="0" onclick="contacts_address(event,this)" >{t}Contacts{/t}</span>
+		  <span class="small_button small_button_edit" style="float:left" id="contacts_address_button0" address_id="0" onclick="contacts_address(event,this)" ><img src="art/icons/person.png" alt="{t}Contacts{/t}"/></span>
 		  <span class="small_button small_button_edit" id="delete_address_button0" address_id="0" onclick="delete_address(event,this)" >{t}Delete{/t}</span>
 		  <span class="small_button small_button_edit" id="edit_address_button0" address_id="0" onclick="edit_address(event,this)" >{t}Edit{/t}</span>
 		</div>
@@ -98,7 +96,11 @@
 	      <div class="address_container"  id="address_container{$address->id}">
 		<div class="address_display"  id="address_display{$address->id}">{$address->display('xhtml')}</div>
 		<div class="address_buttons" id="address_buttons{$address->id}">
-		  <span class="small_button small_button_edit" style="float:left" id="contacts_address_button{$address->id}" address_id="{$address->id}" onclick="contacts_address(event,this)" >{t}Contacts{/t}</span>
+		  
+		  <span class="" style="float:left" id="contacts_address_button{$address->id}" address_id="{$address->id}" onclick="contacts_address(event,this)" ><img src="art/icons/user.png" alt="{t}Contacts{/t}"/></span>
+		  <span class="" style="float:left;margin-left:5px;cursor:pointer" id="contacts_address_button{$address->id}" address_id="{$address->id}" onclick="contacts_address(event,this)" ><img src="art/icons/telephone.png" alt="{t}Telephones{/t}"/></span>
+
+
 		  <span class="small_button small_button_edit" id="delete_address_button{$address->id}" address_id="{$address->id}" onclick="delete_address(event,this)" >{t}Delete{/t}</span>
 		  <span class="small_button small_button_edit" id="edit_address_button{$address->id}" address_id="{$address->id}" onclick="edit_address(event,this)" >{t}Edit{/t}</span>
 		</div>
@@ -205,7 +207,12 @@
 
       <div  style="xdisplay:none;margin:0"  class="edit_block" id="d_contacts">
 	<table class="edit" border=0>
-	  <tr class="title"><td>Contacts:</td><td  style="text-align:right"><span style="display:none" class="small_button" id="cancel_add_contact_button" >Cancel Adding New Contact</span><span style="display:none" class="small_button" id="save_add_contact_button" >Save New Contact</span><span class="small_button" id="add_contact_button" >Add Contact</span></td></tr>
+	  <tr class="title"><td>{t}Contacts{/t}: <span class="state_details" id="personal_num_changes"></span><span class="state_details" id="contact_messages"></span></td><td  style="text-align:right">
+	      <span style="display:none" contact_key="" class="small_button" id="cancel_edit_contact_button" onclick="cancel_edit_contact()">Cancel Edit Contact</span>
+	      <span style="display:none" class="small_button" id="cancel_add_contact_button" >Cancel Adding New Contact</span>
+	      <span style="display:none" class="small_button" id="save_add_contact_button" >Save New Contact</span>
+	      <span class="small_button" id="add_contact_button" >Add Contact</span></td>
+	  </tr>
 	  
 
 	  <tr id="tr_contact_showcase">
@@ -231,80 +238,178 @@
 	    </td>
 	  </tr>
 
-	  <tr id="add_contact_block" >
-	    <td colspan=2  style="xdisplay:none">
-	      <table border=2 class="edit">
-		<tr ><td style="width:120px;vertical-align: top;">Name:</td><td style="text-align:left;vertical-align: top;"><input style="text-align:left;width:12em" id="full_name" value=""></td>
-		  <td  style="text-align:left;vertical-align: top;">
-		    <table border=1 class="edit" style="xdisplay:none;position:relative;top:-6px;" >	  
+	  <tr id="contact_form" style="display:none">
+	    <td colspan=2 >
+	      <table border=0 class="edit" style="margin-top:50px" id="edit_contact_table">
+		<tr >
+		  <input type="hidden" id="Contact_Key" value="" ovalue=""  />
+		  <td style="xwidth:160px;" class="label">Name:</td>
+		  <td><input style="width:16em" id="Contact_Name" value="" onkeyup="contact_name_changed(this)"></td>
+		  <td >
+		    <table border=0 class="edit" style="xdisplay:none;position:relative;top:-6px;" >
+
+		      	<tr id="tr_Contact_Gender" style="display:none">
+			  <td class="label">{t}Gender{/t}:</td>
+			  <td     id="Contact_Gender" value="" ovalue=""  >
+			    <span id="Contact_Gender_Male" label="Male" onclick="toggle_Contact_Gender(this)" class="small_button Contact_Gender" style="margin:0">{t}Male{/t}</span>
+			    <span id="Contact_Gender_Female" label="Famale" onclick="toggle_Contact_Gender(this)" class="small_button Contact_Gender" style="margin-left:3px">{t}Female{/t}</span>
+			    <span id="Contact_Gender_Unknown" label="Unknown" onclick="toggle_Contact_Gender(this)" class="small_button Contact_Gender" style="margin-left:3px">{t}Unknown{/t}</span>
+			    
+			  </td>
+			</tr>
+
+	  
 		      <tr>
 			<td class="label" >{t}Salutation{/t}:</td>
-			<td  style="text-align:left;" >
-			  <table id="period_options" style="float:none;position:relative;left:-4px;" border=0  class="options_mini" >
-			    <tr>
-			      
-			      {foreach from=$prefix item=s  }
-			      
-			      <td   onclick="update_salutation(this)"  style="background:#fff{if $s.relevance>1};display:none{/if} "    id="salutation{$s.id}" >{$s.txt}</td>
+			<td  style="" >
+			  <input id="Contact_Salutation" type="hidden" value="" ovalue="">
+			  {foreach from=$prefix item=s name=foo  }
+			  <span   onclick="update_salutation(this)"  label="{$s.txt}" style="{if $smarty.foreach.foo.first}margin:0;{else}margin-left:3px{/if};{if $s.relevance>1};display:none{/if} " class="Contact_Salutation small_button"   id="Contact_Salutation_{$s.txt}"  >{$s.txt}</span>
 			      {/foreach}
-			      
-			    </tr>
-			  </table>
 			</td>
 		      </tr>
 	   
 		      <tr>
 			<td class="label">{t}First Name(s){/t}:</td>
-			<td  style="text-align:left" ><input  onkeyup="update_full_address()"  onblur="" style="text-align:left;width:12em"  name="first_name" id="v_first_name" value=""  ovalue="" ></td>
+			<td   ><input  onkeyup="update_full_name()"  onblur="" style="width:12em"  name="first_name" id="Contact_First_Name" value=""  ovalue="" ></td>
 		      </tr>
 		      <tr>
 			<td class="label">{t}Surname(s){/t}:</td>
-			<td  style="text-align:left" ><input  onkeyup="update_full_address()"  onblur="" style="text-align:left;width:12em"  name="surname" id="v_surname" value=""  ovalue="" ></td>
-	  </tr>
-		      
+			<td   ><input  onkeyup="update_full_name()"  onblur="" style="width:12em"  name="surname" id="Contact_Surname" value=""  ovalue="" ></td>
+		      </tr>
+		       <tr style="display:none">
+			<td class="label">{t}Suffix(s){/t}:</td>
+			<td   ><input  onkeyup="update_full_name()"  onblur="" style="width:12em"  name="suffix" id="Contact_Suffix" value=""  ovalue="" ></td>
+		      </tr>
+
+
 		    </table>
 		  </td>
 		</tr>
-		<tr>
-		  <td style="vertical-align: top;">{t}Email{/t}:</td><td style="text-align:left"><input style="text-align:left" value="" ovalue="" /> </td>
+
+
+	
+		
+		<tr style="display:none">
+		  <td class="label">{t}Profession{/t}:</td><td><input id="Contact_Profession"></td>
+		</tr>
+		<tr  style="display:none">
+		  <td class="label">{t}Title{/t}:</td><td><input id="Contact_Title"></td>
+		</tr>
+		
+		<tr class="title">
+		  <td colspan=3 >{t}Contact Email & Mobiles{/t}:
+		    <span style="display:none" email_key="" class="small_button" id="cancel_edit_contact_button" >Cancel Edit Email</span>
+		    <span style="display:none" mobile_key="" class="small_button" id="cancel_edit_contact_button" >Cancel Edit Mobile</span>
+
+		    <span style="display:none" class="small_button" id="cancel_add_email_button" >Cancel Adding New Email</span>
+		    <span style="display:none" class="small_button" id="cancel_add_mobile_button" >Cancel Adding New Mobile</span>
+
+		    <span style="display:none" class="small_button" id="save_add_email_button" >Save New Email</span>
+		    <span style="display:none" class="small_button" id="save_add_mobile_button" >Save New Mobile</span>
+		    <span class="small_button" id="add_email_button" >Add Email</span>
+		    <span class="small_button" id="add_mobile_button" >Add Mobile</span>
+		  </td>
+		</tr>
+		
+		
+		<tr id="email_mould" style="display:none">
+		  <td  class="label">{t}Email{/t}:</td>
+		  <td >
+		    
+		    <input style="width:100%" class="Email"  value="" ovalue="" /><br/>
+		    <span class="small_button delete_email" style="float:right;margin-top:3px" email_key="" onclick="delete_email()">{t}Delete{/t}</span>
+		  </td>
+		  <td>
+		    <table border=0 class="edit" style="position:relative;top:-4px;">
+		      <tr>
+			<td class="label">{t}Email Type{/t}:</td>
+			<td id="Email_Description">
+			  <span  class="Email_Description small_button" tyle="margin:0" >{t}Work{/t}</span>
+			  <span  class="Email_Description small_button" >{t}Personal{/t}</span>
+			  
+			</td>
+		      </tr>
+		      <tr>
+			<td class="label">{t}Email Contact Name{/t}:</td>
+			<td >
+			  <input class="Email_Contact_Name" id="Email_Contact_Name"  />
+			</td>
+		      </tr>
+		    </table>
+		  </td>
 		</tr>
 
-		<tr>
-		  <td style="vertical-align: top;">{t}Mobile{/t}:</td><td style="vertical-align: top;text-align:left"><input style="text-align:left" value="" ovalue="" /> </td>
-		  <td style="text-align:left"  >
-		    <table border=1 class="edit" style="display:none">
-		      <tr valign="top"><td valign="top">{t}Country Code{/t}:</td><td style="text-align:left"><input style="text-align:left;width:3em" value="" ovalue="" /></td></tr>
-		      <tr><td>{t}National Access Code{/t}:</td><td style="text-align:left"><input style="text-align:center;width:1em" value="" ovalue="" /></td></tr>
-		      <tr><td>{t}Area Code{/t}:</td><td style="text-align:left"><input style="text-align:left;width:4em" value="" ovalue="" /></td></tr>
-		      <tr><td>{t}Number{/t}:</td><td style="text-align:left"><input style="text-align:left;width:7em" value="" ovalue="" /></td></tr>
-		      <tr><td>{t}Extension{/t}:</td><td style="text-align:left"><input style="text-align:left;width:3em" value="" ovalue="" /></td></tr>
-		      </table>
+		<tr id="mobile_mould" style="display:none">
+		  <td  class="label">{t}Mobile{/t}:</td><td >
+		    <input  class="Mobile" value="" ovalue="" /> 
+		  <br/><span class="small_button delete_mobile" style="float:right;margin-top:3px"  mobile_key="" onclick="delete_mobile()">{t}Delete{/t}</span></td>
+		  <td >
+		    <table  class="edit" >
+		      <tr>
+			<td class="label">{t}Country Code{/t}:</td><td ><input class="Country_Code" style="width:3em" value="" ovalue="" /></td></tr>
+		      <tr>
+			<td  class="label">{t}National Access Code{/t}:</td><td ><input class="National_Access_Code" style="text-align:center;width:1em" value="" ovalue="" /></td>
+		      </tr>
+		      <tr>
+			<td  class="label">{t}Number{/t}:</td><td ><input  class="Number" style="width:7em" value="" ovalue="" /></td></tr>
+		    </table>
 		  </td>
 		</tr>
-		<tr>
-		  <td style="vertical-align: top;">{t}Telephone{/t}:</td><td style="vertical-align: top;text-align:left"><input style="text-align:left" value="" ovalue="" /> </td>
-		  <td style="text-align:left"  >
-		    <table border=1 class="edit" style="display:none">
-		      <tr valign="top"><td valign="top">{t}Country Code{/t}:</td><td style="text-align:left"><input style="text-align:left;width:3em" value="" ovalue="" /></td></tr>
-		      <tr><td>{t}National Access Code{/t}:</td><td style="text-align:left"><input style="text-align:center;width:1em" value="" ovalue="" /></td></tr>
-		      <tr><td>{t}Area Code{/t}:</td><td style="text-align:left"><input style="text-align:left;width:4em" value="" ovalue="" /></td></tr>
-		      <tr><td>{t}Number{/t}:</td><td style="text-align:left"><input style="text-align:left;width:7em" value="" ovalue="" /></td></tr>
-		      <tr><td>{t}Extension{/t}:</td><td style="text-align:left"><input style="text-align:left;width:3em" value="" ovalue="" /></td></tr>
-		      </table>
+		<tr class="title">
+		  <td colspan=3 >{t}Contact Address & Landlines{/t}:
+		    <span style=""  class="small_button" id="add_address_to_contact_button" >Add Address</span>
+		   
 		  </td>
 		</tr>
-		<tr>
-		  <td style="vertical-align: top;">{t}Fax{/t}:</td><td style="vertical-align: top;text-align:left"><input style="text-align:left" value="" ovalue="" /> </td>
-		   <td style="text-align:left"  >
-		    <table border=1 class="edit" style="display:none">
-		      <tr valign="top"><td valign="top">{t}Country Code{/t}:</td><td style="text-align:left"><input style="text-align:left;width:3em" value="" ovalue="" /></td></tr>
-		      <tr><td>{t}National Access Code{/t}:</td><td style="text-align:left"><input style="text-align:center;width:1em" value="" ovalue="" /></td></tr>
-		      <tr><td>{t}Area Code{/t}:</td><td style="text-align:left"><input style="text-align:left;width:4em" value="" ovalue="" /></td></tr>
-		      <tr><td>{t}Number{/t}:</td><td style="text-align:left"><input style="text-align:left;width:7em" value="" ovalue="" /></td></tr>
-		      <tr><td>{t}Extension{/t}:</td><td style="text-align:left"><input style="text-align:left;width:3em" value="" ovalue="" /></td></tr>
+		  <tr id="address_mould" style="display:none">
+		    <td class="Address" style="font-size:70%"></td>
+		    <td >
+		       <span style="display:none" tel_key="" class="small_button" id="cancel_edit_tel_button" >Cancel Edit Telephone</span>
+		    <span style="display:none" fax_key="" class="small_button" id="cancel_edit_fax_button" >Cancel Edit Fax</span>
+
+		    <span style="display:none" class="small_button" id="cancel_add_tel_button" >Cancel Adding New Telephone</span>
+		    <span style="display:none" class="small_button" id="cancel_add_fax_button" >Cancel Adding New Fax</span>
+
+		    <span style="display:none" class="small_button" id="save_add_tel_button" >Save New Telephone</span>
+		    <span style="display:none" class="small_button" id="save_add_fax_button" >Save New Fax</span>
+		    <span class="small_button" id="add_move_button" >Move from Address</span>
+		    <span class="small_button" id="add_tel_button" >Add Telephone</span>
+		    <span class="small_button" id="add_fax_button" >Add Fax</span>
+		      <table style="margin-top:10px">
+			<tr id="telephone_mould" class="tr_telecom" style="display:none">
+			  <td   class="label">{t}Telephone{/t}:</td><td ><input  class="Telephone" value="" ovalue="" /> </td>
+			  <td   >
+			    <table border=1 class="edit" style="display:none">
+			      <tr valign="top"><td valign="top">{t}Country Code{/t}:</td><td ><input style="width:3em" value="" ovalue="" /></td></tr>
+			      <tr><td class="label">{t}National Access Code{/t}:</td><td ><input style="text-align:center;width:1em" value="" ovalue="" /></td></tr>
+			      <tr><td class="label">{t}Area Code{/t}:</td><td ><input style="width:4em" value="" ovalue="" /></td></tr>
+			      <tr><td class="label">{t}Number{/t}:</td><td ><input style="width:7em" value="" ovalue="" /></td></tr>
+			      <tr><td class="label">{t}Extension{/t}:</td><td ><input style="width:3em" value="" ovalue="" /></td></tr>
+			    </table>
+			  </td>
+			</tr>
+			<tr id="fax_mould"  class="tr_telecom" style="display:none">
+			  <td  class="label">{t}Fax{/t}:</td><td style="vertical-align: top;text-align:left"><input   class="Fax" value="" ovalue="" /> </td>
+			  <td   >
+			    <table border=1 class="edit" style="display:none">
+			      <tr valign="top"><td valign="top">{t}Country Code{/t}:</td><td ><input style="width:3em" value="" ovalue="" /></td></tr>
+			      <tr><td>{t}National Access Code{/t}:</td><td ><input style="text-align:center;width:1em" value="" ovalue="" /></td></tr>
+			      <tr><td>{t}Area Code{/t}:</td><td ><input style="width:4em" value="" ovalue="" /></td></tr>
+			      <tr><td>{t}Number{/t}:</td><td ><input style="width:7em" value="" ovalue="" /></td></tr>
+			      <tr><td>{t}Extension{/t}:</td><td ><input style="width:3em" value="" ovalue="" /></td></tr>
+			    </table>
+			  </td>
+			</tr>
+			<tr id="after_fax" class="tr_telecom"></tr>
 		      </table>
-		  </td>
-		</tr>
+		    </td>
+		  </tr>
+		  
+	
+
+		<tr id="last_tr" style="display:none"></tr>
+
 	      </table>
 	    
 	    </td>
@@ -318,6 +423,7 @@
  
 
 	</table>
+	<div style="clear:both;height:40px"></div>
 	</div>
       </div>
       

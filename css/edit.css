@@ -1,5 +1,22 @@
+
+table.edit{width:100%}
+table.edit td{ vertical-align: top;;text-align:left;padding-left:10px;padding-right:10px}
+table.edit input.number{ padding-right:4px;text-align:right; }
+table.edit input{ padding-left:4px;text-align:left; }
+
+
+table.edit td.label{ text-align:right }
+table.edit td.left{ text-align:left }
+
+table.edit td.icon{ padding:0 5px;width:16px}
+table.edit tr.top{ border-top:1px solid #1d4e85}
+table.edit tr.title{xheight:30px;text-align:left; border-bottom:1px solid #a5b6c8}
+table.edit tr.title td{vertical-align:bottom;font-weight:800;text-align:left;}
+table.edit img.icon{margin-left:10px;float:right;cursor:pointer}
+table.edit tr.last{ border-bottom:1px solid #a5b6c8}
+
 .add_button{margin-left:10px;border:1px solid #aaa;text-align:center;cursor:pointer;;padding:0px 2px 0px 2px;font-weight:200;font-size:50%;color:#333;position:relative;bottom:2px}
 
-.address_container,.contact_container{height:100px;width:200px;float:left;xborder:1px solid black;padding:10px;margin:20px 10px}
+.address_container,.contact_container{height:100px;xwidth:200px;float:left;xborder:1px solid black;padding:10px;margin:0px 10px}
 .address_display,.contact_display{padding:5px 10px 10px 10px;text-align:left;border:1px solid #ccc;}
 .address_buttons,.contact_buttons{text-align:right;margin-top:4px}

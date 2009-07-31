@@ -106,6 +106,7 @@ if($edit ){
 
 
   $js_files[]='js/edit_address.js.php';
+  $js_files[]='js/edit_contact_from_parent.js.php';
   $js_files[]='js/edit_company.js.php?edit='.$editing_block;
   
   

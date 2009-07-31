@@ -182,21 +182,7 @@ input.normal_right{color:#000;text-align:right}
 .text_ok{color:#4aa42b}
 
 img{vertical-align:bottom}
-table.edit{width:100%}
-table.edit td{ vertical-align: top;xwidth:100%;text-align:right;padding-left:10px;padding-right:10px }
-table.edit input{ padding-right:4px;text-align:right; }
-table.edit input.left{ padding-left:4px;text-align:left; }
 
-table.edit td {vertical-align:middle  }
-table.edit td.label{ text-align:left }
-table.edit td.left{ text-align:left }
-
-table.edit td.icon{ padding:0 5px;width:16px}
-table.edit tr.top{ border-top:1px solid #1d4e85}
-table.edit tr.title{xheight:30px;text-align:left; border-bottom:1px solid #a5b6c8}
-table.edit tr.title td{vertical-align:bottom;font-weight:800;text-align:left;}
-table.edit img.icon{margin-left:10px;float:right;cursor:pointer}
-table.edit tr.last{ border-bottom:1px solid #a5b6c8}
 .chooser {width:670px;bxorder:1px solid black;margin:0px auto}
 .chooser ul {;margin:0px auto;xborder:1px solid red;}
 .chooser{padding:15px 0px 0 0px;}
@@ -337,6 +323,7 @@ table.options{margin:0 ;float:right;border-collapse: separate;;border-spacing:3p
 .options tr.title{}
 .options tr.title td{background:#fff;border:none;cursor:default;color:#555;text-align:left}
 .options tr.title td:hover{color:#555}
+
 span.save,span.reset,span.multiple,span.new,span.button ,span.small_button {margin-left:10px;border:1px solid #aaa;color:#aaa;text-align:center;padding:2px 3px 2px 3px;cursor:pointer;font-weight:800}
 span.small_button {;padding:0px 3px 0px 3px;font-weight:200;font-size:80%;color:#333;}
 
@@ -488,9 +475,11 @@ table.submit_order td.but{ background:#238546;color:#fff;cursor:pointer;padding:
 .staff_list td.selected{ background:#7296e1;color:white   }
 
 span.but{ xbackground:#238546;color:#bbb;cursor:pointer;padding:2px 3px;text-align:center ;border:1px solid #ccc}
+
 span.selected { background:#7296e1;color:#fff ;border:1px solid navy}
-span.but:hover {border:1px solid #aaa; color:#999;}
 span.selected:hover { background:#7296e1;color:#fff ;border:1px solid navy}
+span.but:hover {border:1px solid #aaa; color:#999;}
+
 
 span.but_disabled{cursor:normal;background:#fff;color:#777}
 span.but_unselected{cursor:normal;background:#fff;color:#777}
