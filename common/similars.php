@@ -1,4 +1,4 @@
-<?
+<?php
 function get_matches($email,$mobile,$tel,$fax,$name,$contact,$address_data,$extra_id1='',$extra_id2=''){
   global $debug;
 

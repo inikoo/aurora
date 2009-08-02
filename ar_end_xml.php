@@ -1,4 +1,4 @@
-<?
+<?php
 include_once('aes.php');
 include_once('external_libs/xml/minixml.inc.php');
 

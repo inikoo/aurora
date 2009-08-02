@@ -1,4 +1,4 @@
-<?
+<?php
 include_once('../common.php');
 ?>
 
@@ -9,11 +9,11 @@ function formatCurrencyAxisLabel( value )
 	 return ''
     if( value>=10000){
 	value=value/1000;
-	var str=YAHOO.util.Number.format( value,{prefix: "<?=$myconf['currency_symbol']?>",thousandsSeparator: ",",decimalPlaces: 0});
+	var str=YAHOO.util.Number.format( value,{prefix: "<?php echo$myconf['currency_symbol']?>",thousandsSeparator: ",",decimalPlaces: 0});
 	return str+'K';
 
     }else
-     return YAHOO.util.Number.format( value,{prefix: "<?=$myconf['currency_symbol']?>",thousandsSeparator: ",",decimalPlaces: 2});
+     return YAHOO.util.Number.format( value,{prefix: "<?php echo$myconf['currency_symbol']?>",thousandsSeparator: ",",decimalPlaces: 2});
 } 
 
 function init(){
@@ -37,8 +37,8 @@ plot_monthsalesData.responseSchema =
 
 
 var seriesDef = [
-		 //		 { displayName: "<?=_('Losses')?>", yField: "losses", style:{color: 0xff0000,lineSize: 2,size:8}},
-		 { displayName: "<?=_('Customers')?>", yField: "y",  style:{connectPoints:false,size:8} }
+		 //		 { displayName: "<?php echo_('Losses')?>", yField: "losses", style:{color: 0xff0000,lineSize: 2,size:8}},
+		 { displayName: "<?php echo_('Customers')?>", yField: "y",  style:{connectPoints:false,size:8} }
 
  
 ];

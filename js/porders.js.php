@@ -1,8 +1,8 @@
-<?
+<?php
 include_once('../common.php');
 
 ?>
-var view='<?=$_SESSION['state']['orders']['view']?>'
+var view='<?php echo$_SESSION['state']['orders']['view']?>'
 
 YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
@@ -16,13 +16,13 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 	    var OrdersColumnDefs = [
-				       {key:"id", label:"<?=_('Order ID')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-				       {key:"last_date", label:"<?=_('Last Updated')?>", width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
-				       //   {key:"date", label:"<?=_('Ordered at')?>", width:145,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
+				       {key:"id", label:"<?php echo_('Order ID')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				       {key:"last_date", label:"<?php echo_('Last Updated')?>", width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
+				       //   {key:"date", label:"<?php echo_('Ordered at')?>", width:145,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
 
-				       {key:"customer",label:"<?=_('Customer')?>", width:180,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-				       {key:"state", label:"<?=_('Status')?>", width:240,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-				       {key:"total_amount", label:"<?=_('Total')?>", width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       {key:"customer",label:"<?php echo_('Customer')?>", width:180,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				       {key:"state", label:"<?php echo_('Status')?>", width:240,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				       {key:"total_amount", label:"<?php echo_('Total')?>", width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				      
 					 ];
 
@@ -54,8 +54,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 						     this.dataSource0, {draggableColumns:true,
 							   renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									       rowsPerPage    : <?=$_SESSION['state']['orders']['table']['nr']?>,containers : 'paginator', 
- 									      pageReportTemplate : '(<?=_('Page')?> {currentPage} <?=_('of')?> {totalPages})',
+									       rowsPerPage    : <?php echo$_SESSION['state']['orders']['table']['nr']?>,containers : 'paginator', 
+ 									      pageReportTemplate : '(<?php echo_('Page')?> {currentPage} <?php echo_('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
  									      firstPageLinkLabel :"<<",
@@ -64,8 +64,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?=$_SESSION['state']['orders']['table']['order']?>",
-									 dir: "<?=$_SESSION['state']['orders']['table']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['orders']['table']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['orders']['table']['order_dir']?>"
 								     }
 							   ,dynamicData : true
 
@@ -74,7 +74,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	    this.table0.filter={key:'<?=$_SESSION['state']['orders']['table']['f_field']?>',value:'<?=$_SESSION['state']['orders']['table']['f_value']?>'};
+	    this.table0.filter={key:'<?php echo$_SESSION['state']['orders']['table']['f_field']?>',value:'<?php echo$_SESSION['state']['orders']['table']['f_value']?>'};
 
 	    
 	};
@@ -99,13 +99,13 @@ var Dom   = YAHOO.util.Dom;
  var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container", oACDS);
  oAutoComp.minQueryLength = 0; 
 
- cal2 = new YAHOO.widget.Calendar("cal2","cal2Container", { title:"<?=_('Choose a date')?>:", close:true } );
+ cal2 = new YAHOO.widget.Calendar("cal2","cal2Container", { title:"<?php echo_('Choose a date')?>:", close:true } );
  cal2.update=updateCal;
  cal2.id=2;
  cal2.render();
  cal2.update();
  cal2.selectEvent.subscribe(handleSelect, cal2, true); 
- cal1 = new YAHOO.widget.Calendar("cal1","cal1Container", { title:"<?=_('Choose a date')?>:", close:true } );
+ cal1 = new YAHOO.widget.Calendar("cal1","cal1Container", { title:"<?php echo_('Choose a date')?>:", close:true } );
  cal1.update=updateCal;
  cal1.id=1;
  cal1.render();

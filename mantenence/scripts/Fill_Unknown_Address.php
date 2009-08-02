@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  Script: Fill_Unknown_Address.php
  This script creates the dummy unknown address needed when fuzzy data is inputed 
@@ -13,10 +13,10 @@
 
 //include("../../external_libs/adminpro/adminpro_config.php");
 include_once('../../app_files/db/dns.php');
-include_once('../../classes/Department.php');
-include_once('../../classes/Family.php');
-include_once('../../classes/Product.php');
-include_once('../../classes/Country.php');
+include_once('../../class.Department.php');
+include_once('../../class.Family.php');
+include_once('../../class.Product.php');
+include_once('../../class.Country.php');
 error_reporting(E_ALL);
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 if(!$con){print "Error can not connect with database server\n";exit;}

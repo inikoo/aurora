@@ -1,4 +1,4 @@
-<?
+<?php
 //@author Raul Perusquia <rulovico@gmail.com>
 //Copyright (c) 2009 LW
 $colors=array(
@@ -10,7 +10,7 @@ $colors=array(
 	      );
 
 require_once 'common.php';
-require_once 'classes/Product.php';
+require_once 'class.Product.php';
 
 $tipo='';
 if(isset($_REQUEST['tipo']))

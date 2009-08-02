@@ -1,4 +1,4 @@
-<?
+<?php
 //@author Raul Perusquia <rulovico@gmail.com>
 //Copyright (c) 2009 LW
 include_once('common.php');
@@ -62,7 +62,7 @@ $smarty->assign('show_percentages',$_SESSION['state']['families']['percentages']
 //$sql="select id from product";
 //$result=mysql_query($sql);
 
-// include_once('classes/product.php');
+// include_once('class.product.php');
 // while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 //   $product= new product($row['id']);
 //   $product->set_stock();

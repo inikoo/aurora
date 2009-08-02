@@ -1,4 +1,4 @@
-<?
+<?php
 $link = mysql_connect('localhost', 'root', 'ajolote11')
   or die('Could not connect: ' . mysql_error());
 mysql_select_db('aw') or die('Could not select database');
@@ -216,7 +216,7 @@ $res.="\$_location_tipo['white_hole']=_('Error');\n";
 $res.="\$_location_tipo['display']=_('On display');\n";
 
 
-$res="<?
+$res="<?php
 $res?>";
 
 $myFile = "../locale.php";

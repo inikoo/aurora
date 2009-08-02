@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  File: family.php 
 
@@ -12,9 +12,9 @@
  Version 2.0
 */
 include_once('common.php');
-include_once('classes/Family.php');
-include_once('classes/Store.php');
-include_once('classes/Department.php');
+include_once('class.Family.php');
+include_once('class.Store.php');
+include_once('class.Department.php');
 
 $view_sales=$LU->checkRight(PROD_SALES_VIEW);
 $view_stock=$LU->checkRight(PROD_STK_VIEW);

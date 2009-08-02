@@ -1,4 +1,4 @@
-<?
+<?php
 error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
 
 //require_once '/home/raul/www/kaktus/dns/dns.php';         // DB connecton configuration file

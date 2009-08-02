@@ -1,4 +1,4 @@
-<?
+<?php
 include_once('common.php');
 include_once('stock_functions.php');
 

@@ -1,7 +1,7 @@
-<?
+<?php
 require_once 'common.php';
-require_once 'classes/Company.php';
-require_once 'classes/Supplier.php';
+require_once 'class.Company.php';
+require_once 'Supplier.php';
 
 if (!$LU or !$LU->isLoggedIn()) {
   $response=array('state'=>402,'resp'=>_('Forbidden'));

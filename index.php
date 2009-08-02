@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  File: index.php 
 
@@ -11,10 +11,16 @@
  
  Version 2.0
 */
-
 include_once('common.php');
-include_once('classes/Product.php');
-include_once('classes/Order.php');
+
+
+
+include_once('class.Product.php');
+
+include_once('class.Order.php');
+
+
+
 
 
 // $sql=sprintf("select id,public_id from orden where pick_factor is null or weight is null order by public_id desc limit 10000");
@@ -63,7 +69,7 @@ include_once('classes/Order.php');
 //     }
 
 //   }
-$view_orders=$LU->checkRight(ORDER_VIEW);
+$view_orders=$user->can_view('Orders');
 $smarty->assign('view_orders',$view_orders);
 
 

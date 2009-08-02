@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  File: Contact.php 
 
@@ -11,12 +11,13 @@
  
  Version 2.0
 */
-include_once('DB_Table.php');
+include_once('class.DB_Table.php');
 
-include_once('Telecom.php');
-include_once('Email.php');
-include_once('Address.php');
-include_once('Name.php');
+
+include_once('class.Telecom.php');
+include_once('class.Email.php');
+include_once('class.Address.php');
+
 
 /* class: Contact
  Class to manage the *Contact Dimension* table

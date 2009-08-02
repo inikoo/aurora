@@ -1,4 +1,4 @@
-<?
+<?php
 include_once('common.php');
 if(!$LU->checkRight(CUST_VIEW))
   exit;

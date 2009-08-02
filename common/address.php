@@ -1,4 +1,4 @@
-<?
+<?php
 
 function country_id($address_id,$default=0){
    $db =& MDB2::singleton();

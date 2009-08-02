@@ -1,4 +1,4 @@
-<?
+<?php
 
 function get_supplier_code($supplier_id){
   $db =& MDB2::singleton();

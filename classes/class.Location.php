@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  File: Location.php 
 
@@ -11,7 +11,7 @@
  
  Version 2.0
 */
-include_once('Part.php');
+include_once('class.Part.php');
 class location{
 
   var $data=array();

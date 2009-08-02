@@ -1,6 +1,6 @@
-<?
+<?php
 include_once('common.php');
-include_once('classes/Warehouse.php');
+include_once('class.Warehouse.php');
 
 
 

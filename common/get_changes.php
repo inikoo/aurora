@@ -1,4 +1,4 @@
-<?
+<?php
 function _get_changes($tipo,$old_values,$new_values){
 
 

@@ -1,4 +1,4 @@
-<?
+<?php
 //@author Raul Perusquia <rulovico@gmail.com>
 //Copyright (c) 2009 LW
 include_once('../common.php');
@@ -21,7 +21,7 @@ $country_list=preg_replace('/^\,/','',$country_list);
     var Dom   = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;
 
-var Country_List=[<?=$country_list?>];
+var Country_List=[<?php echo$country_list?>];
 
 
 var get_country= function(q){
@@ -102,7 +102,7 @@ YAHOO.util.Event.addListener(window, "load", function(){
 
 			 {type:'group',inputParams:{legend:'Name',name:'group2',fields:[ 
 											
-											{type: 'select', inputParams: {label: 'Title', name: 'title', selectValues: [<?=$salutation?>] } },
+											{type: 'select', inputParams: {label: 'Title', name: 'title', selectValues: [<?php echo$salutation?>] } },
 											{inputParams: {label: 'Firstname', name: 'firstname',  value:'',typeInvite: 'eg John' } }, 
 											{inputParams: {label: 'Lastname', name: 'lastname', value:'' ,typeInvite: '',} }, 
 											 ]}} ,

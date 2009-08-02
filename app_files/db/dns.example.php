@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Change:
 PASSWORD

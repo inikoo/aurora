@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  File: Customer.php 
 
@@ -15,10 +15,10 @@
  The customer dimension is the  critical element for a CRM, a customer can be a Company or a Contact.
 
 */
-include_once('DB_Table.php');
-include_once('Contact.php');
-include_once('Order.php');
-include_once('Address.php');
+include_once('class.DB_Table.php');
+include_once('class.Contact.php');
+include_once('class.Order.php');
+include_once('class.Address.php');
 
 class Customer extends DB_Table{
 

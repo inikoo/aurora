@@ -1,4 +1,4 @@
-<?
+<?php
 require_once 'common.php';
 
 if(!isset($_REQUEST['id']))

@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  Script: test_email.php
  Tests for email class
@@ -17,7 +17,7 @@
 
 
 include_once('../../app_files/db/dns.php');
-include_once('../../classes/Email.php');
+include_once('../../class.Email.php');
 
 error_reporting(E_ALL);
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );

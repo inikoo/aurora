@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  File: ar_assets.php 
 
@@ -14,13 +14,13 @@
 
 require_once 'common.php';
 require_once 'stock_functions.php';
-require_once 'classes/Product.php';
-require_once 'classes/Department.php';
-require_once 'classes/Family.php';
+require_once 'class.Product.php';
+require_once 'class.Department.php';
+require_once 'class.Family.php';
 
-require_once 'classes/Order.php';
-require_once 'classes/Location.php';
-require_once 'classes/PartLocation.php';
+require_once 'class.Order.php';
+require_once 'class.Location.php';
+require_once 'class.PartLocation.php';
 //require_once 'common_functions.php';
 //require_once 'ar_common.php';
 
@@ -1000,7 +1000,7 @@ case('part_search'):
      break;
    }
      
-   include_once('classes/product.php');
+   include_once('class.product.php');
    $product_id=$_REQUEST['product_id'];
 
    $values=array();

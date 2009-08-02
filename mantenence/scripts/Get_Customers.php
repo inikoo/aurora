@@ -1,10 +1,10 @@
-<?
+<?php
 include_once('../../app_files/db/dns.php');
-include_once('../../classes/Department.php');
-include_once('../../classes/Family.php');
-include_once('../../classes/Product.php');
-include_once('../../classes/Supplier.php');
-include_once('../../classes/Customer.php');
+include_once('../../class.Department.php');
+include_once('../../class.Family.php');
+include_once('../../class.Product.php');
+include_once('../../class.Supplier.php');
+include_once('../../class.Customer.php');
 
 require_once 'MDB2.php';$PEAR_Error_skiptrace = &PEAR::getStaticProperty('PEAR_Error','skiptrace');$PEAR_Error_skiptrace = true;
 require_once '../../common_functions.php';

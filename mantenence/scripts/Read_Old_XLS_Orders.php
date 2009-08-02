@@ -1,4 +1,4 @@
-<?
+<?php
 set_include_path(get_include_path() . PATH_SEPARATOR . $path);
 
 $path_to_liveuser_dir = '/usr/share/php/'.PATH_SEPARATOR;
@@ -7,11 +7,11 @@ ini_set('include_path', $path_to_liveuser_dir.ini_get('include_path'));
 
 error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
 include_once('../../app_files/db/dns.php');
-include_once('../../classes/Department.php');
-include_once('../../classes/Family.php');
-include_once('../../classes/Product.php');
-include_once('../../classes/Supplier.php');
-include_once('../../classes/Order.php');
+include_once('../../class.Department.php');
+include_once('../../class.Family.php');
+include_once('../../class.Product.php');
+include_once('../../class.Supplier.php');
+include_once('../../class.Order.php');
 include_once('local_map.php');
 
 include_once('map_order_functions.php');

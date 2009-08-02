@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  File: Invoice.php 
 
@@ -14,9 +14,9 @@
  
  Version 2.0
 */
-include_once('DB_Table.php');
+include_once('class.DB_Table.php');
 
-include_once('Order.php');
+include_once('class.Order.php');
 
 include_once('DeliveryNote.php');
 

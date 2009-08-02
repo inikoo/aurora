@@ -1,4 +1,4 @@
-<?
+<?php
 
 
 function find_firstsaleday_all(){

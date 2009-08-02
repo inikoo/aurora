@@ -1,4 +1,4 @@
-<?
+<?php
 
 // function is_mobile($tel,$country_id='',$strict=0){
 

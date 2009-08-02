@@ -1,4 +1,4 @@
-<?
+<?php
 
 function get_staff_alias($staff_id){
 

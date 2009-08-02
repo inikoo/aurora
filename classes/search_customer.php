@@ -1,4 +1,4 @@
-<?
+<?php
 	function find_customer($method, $data) {
 		
 		switch ($method) {

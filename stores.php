@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  File: stores.php 
 
@@ -90,7 +90,7 @@ $smarty->assign('period',$_SESSION['state']['stores']['period']);
 //$sql="select id from product";
 //$result=mysql_query($sql);
 
-// include_once('classes/product.php');
+// include_once('class.product.php');
 // while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 //   $product= new product($row['id']);
 //   $product->set_stock();

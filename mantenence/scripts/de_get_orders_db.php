@@ -1,14 +1,14 @@
-<?
+<?php
 //include("../../external_libs/adminpro/adminpro_config.php");
 
 include_once('../../app_files/db/dns.php');
-include_once('../../classes/Department.php');
-include_once('../../classes/Family.php');
-include_once('../../classes/Product.php');
-include_once('../../classes/Supplier.php');
-include_once('../../classes/Order.php');
-include_once('../../classes/Invoice.php');
-include_once('../../classes/DeliveryNote.php');
+include_once('../../class.Department.php');
+include_once('../../class.Family.php');
+include_once('../../class.Product.php');
+include_once('../../class.Supplier.php');
+include_once('../../class.Order.php');
+include_once('../../class.Invoice.php');
+include_once('../../class.DeliveryNote.php');
 
 $store_code='D';
 error_reporting(E_ALL);

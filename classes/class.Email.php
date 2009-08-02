@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  File: Email.php 
 
@@ -14,9 +14,9 @@
  
  Version 2.0
 */
-include_once('DB_Table.php');
 
-include_once('Contact.php');
+
+include_once('class.Contact.php');
 
 /* class: Email
  Class to manage the *Email Dimension* table

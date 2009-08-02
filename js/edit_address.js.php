@@ -1,4 +1,4 @@
-<?include_once('country_address_labels.js.php')?>
+<?phpinclude_once('country_address_labels.js.php')?>
 
 var Address_Changes=0;
 var Address_Items_Changes=0;
@@ -442,10 +442,10 @@ var on_address_item_change=function(){
 	    Dom.get('address_messages').innerHTML='';
 	    Dom.setStyle(['save_address_button', 'cancel_save_address_button'], 'display', 'none'); 
 	}else if (Address_Changes==1){
-	    Dom.get('address_messages').innerHTML=Address_Changes+'<?=' '._('change')?>';
+	    Dom.get('address_messages').innerHTML=Address_Changes+'<?php echo' '._('change')?>';
 	    Dom.setStyle(['save_address_button', 'cancel_save_address_button'], 'display', ''); 
 	}else{
-	    Dom.get('address_messages').innerHTML=Address_Changes+'<?=' '._('changes')?>';
+	    Dom.get('address_messages').innerHTML=Address_Changes+'<?php echo' '._('changes')?>';
 	    Dom.setStyle(['save_address_button', 'cancel_save_address_button'], 'display', ''); 
 	}
     }

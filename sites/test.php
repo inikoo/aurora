@@ -1,7 +1,7 @@
 <?
 require_once 'conf.php';
 
-include_once('../classes/Family.php');
+include_once('../class.Family.php');
 include_once('../dns.php');
 
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );

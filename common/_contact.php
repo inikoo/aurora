@@ -1,4 +1,4 @@
-<?
+<?php
 
 
 function get_contact_data($contact_id,$get_children=true){

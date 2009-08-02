@@ -1,4 +1,4 @@
-<?include_once('../common.php');?>
+<?phpinclude_once('../common.php');?>
 YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
 	    //START OF THE TABLE=========================================================================================================================
@@ -6,16 +6,16 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableid=0; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 	    var CustomersColumnDefs = [
-				       {key:"tipo", label:"<?=_('Type')?>", width:30,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"alias", label:"<?=_('Name')?>", width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"orders", label:"<?=_('Orders')?>", width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"units", label:"<?=_('Units')?>", width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       ,{key:"weight", label:"<?=_('Weight')?>", width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"errors", label:"<?=_('Errors')?>", width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"epo", label:"<?=_('OwErr')?>", width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       {key:"tipo", label:"<?php echo_('Type')?>", width:30,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"alias", label:"<?php echo_('Name')?>", width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"orders", label:"<?php echo_('Orders')?>", width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"units", label:"<?php echo_('Units')?>", width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"weight", label:"<?php echo_('Weight')?>", width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"errors", label:"<?php echo_('Errors')?>", width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"epo", label:"<?php echo_('OwErr')?>", width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       
-				       //    ,{key:"hours", label:"<?=_('Hours')?>", width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"uph", label:"<?=_('Units/h')?>", width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       //    ,{key:"hours", label:"<?php echo_('Hours')?>", width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"uph", label:"<?php echo_('Units/h')?>", width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
 				       
 				       ];
@@ -43,11 +43,11 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
 						     this.dataSource0
 						     , {
-							 // sortedBy: {key:"<?=$_SESSION['tables']['customers_list'][0]?>", dir:"<?=$_SESSION['tables']['customers_list'][1]?>"},
+							 // sortedBy: {key:"<?php echo$_SESSION['tables']['customers_list'][0]?>", dir:"<?php echo$_SESSION['tables']['customers_list'][1]?>"},
 							 renderLoopSize: 50,generateRequest : myRequestBuilder
 							 ,sortedBy : {
-							     key: "<?=$_SESSION['state']['report']['pickers']['order']?>",
-							     dir: "<?=$_SESSION['state']['report']['pickers']['order_dir']?>"
+							     key: "<?php echo$_SESSION['state']['report']['pickers']['order']?>",
+							     dir: "<?php echo$_SESSION['state']['report']['pickers']['order_dir']?>"
 							 },
 							 dynamicData : true
 							 
@@ -65,16 +65,16 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	       var tableid=1; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 	    var CustomersColumnDefs = [
-				       {key:"tipo", label:"<?=_('Type')?>", width:30,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"alias", label:"<?=_('Name')?>", width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"orders", label:"<?=_('Orders')?>", width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"units", label:"<?=_('Units')?>", width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       ,{key:"weight", label:"<?=_('Weight')?>", width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"errors", label:"<?=_('Errors')?>", width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"epo", label:"<?=_('OwErr')?>", width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       {key:"tipo", label:"<?php echo_('Type')?>", width:30,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"alias", label:"<?php echo_('Name')?>", width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"orders", label:"<?php echo_('Orders')?>", width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"units", label:"<?php echo_('Units')?>", width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"weight", label:"<?php echo_('Weight')?>", width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"errors", label:"<?php echo_('Errors')?>", width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"epo", label:"<?php echo_('OwErr')?>", width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       
-				       //    ,{key:"hours", label:"<?=_('Hours')?>", width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"uph", label:"<?=_('Units/h')?>", width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       //    ,{key:"hours", label:"<?php echo_('Hours')?>", width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"uph", label:"<?php echo_('Units/h')?>", width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
 				       
 				       ];
@@ -102,11 +102,11 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table1 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
 						     this.dataSource1
 						     , {
-							 // sortedBy: {key:"<?=$_SESSION['tables']['customers_list'][1]?>", dir:"<?=$_SESSION['tables']['customers_list'][1]?>"},
+							 // sortedBy: {key:"<?php echo$_SESSION['tables']['customers_list'][1]?>", dir:"<?php echo$_SESSION['tables']['customers_list'][1]?>"},
 							 renderLoopSize: 50,generateRequest : myRequestBuilder
 							 ,sortedBy : {
-							     key: "<?=$_SESSION['state']['report']['packers']['order']?>",
-							     dir: "<?=$_SESSION['state']['report']['packers']['order_dir']?>"
+							     key: "<?php echo$_SESSION['state']['report']['packers']['order']?>",
+							     dir: "<?php echo$_SESSION['state']['report']['packers']['order_dir']?>"
 							 },
 							 dynamicData : true
 							 

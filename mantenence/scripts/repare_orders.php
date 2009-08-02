@@ -1,7 +1,7 @@
-<?
+<?php
 include_once('../../app_files/db/dns.php');
-include_once('../../classes/Customer.php');
-include_once('../../classes/Order.php');
+include_once('../../class.Customer.php');
+include_once('../../class.Order.php');
 
 require_once 'MDB2.php';            // PEAR Database Abstraction Layer
 require_once '../../common_functions.php';

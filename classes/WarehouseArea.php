@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  File: WarehouseArea.php 
 
@@ -11,9 +11,9 @@
  
  Version 2.0
 */
-include_once('DB_Table.php');
+include_once('class.DB_Table.php');
 include_once('Warehouse.php');
-include_once('Location.php');
+include_once('class.Location.php');
 
 
 class WarehouseArea extends DB_Table{

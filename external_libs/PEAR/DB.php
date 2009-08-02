@@ -307,9 +307,9 @@ define('DB_GETMODE_FLIPPED', DB_FETCHMODE_FLIPPED);
  * {@internal Since the TABLEINFO constants are bitwised, if more of them are
  * added in the future, make sure to adjust DB_TABLEINFO_FULL accordingly.}}
  */
-define('DB_TABLEINFO_ORDER', 1);
-define('DB_TABLEINFO_ORDERTABLE', 2);
-define('DB_TABLEINFO_FULL', 3);
+define('class.DB_TableINFO_ORDER', 1);
+define('class.DB_TableINFO_ORDERTABLE', 2);
+define('class.DB_TableINFO_FULL', 3);
 /**#@-*/
 
 

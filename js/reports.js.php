@@ -1,4 +1,4 @@
-<?
+<?php
 include_once('../common.php');
 print "var plot = new Object;";
 foreach($_SESSION['state']['reports'] as $key => $value){
@@ -9,7 +9,7 @@ foreach($_SESSION['state']['reports'] as $key => $value){
 
 var Event = YAHOO.util.Event;
 var Dom   = YAHOO.util.Dom;
-var current_view='<?=$_SESSION['state']['reports']['view']?>';
+var current_view='<?php echo$_SESSION['state']['reports']['view']?>';
 
 function init(){
 
@@ -18,7 +18,7 @@ function init(){
 	myAnim.duration = 3; 
 
 	
-    	cal2 = new YAHOO.widget.Calendar("cal2","cal2Container", { title:"<?=_('Choose a date')?>:", close:true } );
+    	cal2 = new YAHOO.widget.Calendar("cal2","cal2Container", { title:"<?php echo_('Choose a date')?>:", close:true } );
 	cal2.update=updateCal;
 	cal2.id=2;
 	cal2.render();
@@ -34,7 +34,7 @@ function init(){
 	
 
  
-	cal1 = new YAHOO.widget.Calendar("cal1","cal1Container", { title:"<?=_('Choose a date')?>:", close:true } );
+	cal1 = new YAHOO.widget.Calendar("cal1","cal1Container", { title:"<?php echo_('Choose a date')?>:", close:true } );
 	cal1.update=updateCal;cal1.id=1;cal1.render();
 
 	cal1.cfg.setProperty("iframe", true);

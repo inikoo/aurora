@@ -1,5 +1,5 @@
-<?include_once('../common.php');?>
-    var plot='<?=$_SESSION['state']['product']['plot']?>';
+<?phpinclude_once('../common.php');?>
+    var plot='<?php echo$_SESSION['state']['product']['plot']?>';
   var Dom   = YAHOO.util.Dom;
 var change_plot_sigma=function(o){
 
@@ -16,18 +16,18 @@ var change_plot_sigma=function(o){
 
       YAHOO.util.Event.addListener(window, "load", function() {
 	      tables = new function() {
-		      <?if($LU->checkRight(ORDER_VIEW)){?>
+		      <?phpif($LU->checkRight(ORDER_VIEW)){?>
 		      
 		      
 		      var tableid=0;
 		      var tableDivEL="table"+tableid;
 		      var ColumnDefs = [
-					{key:"order", label:"<?=_('Number')?>", width:90,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					{key:"order", label:"<?php echo_('Number')?>", width:90,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 					
-				      ,{key:"customer_name", label:"<?=_('Customer')?>", width:220,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					,{key:"date", label:"<?=_('Date')?>", sortable:true, width:100,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					,{key:"dispached", label:"<?=_('Dispached')?>",width:80,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-					,{key:"undispached", label:"<?='&Delta;'._('Ordered')?>", width:80, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				      ,{key:"customer_name", label:"<?php echo_('Customer')?>", width:220,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					,{key:"date", label:"<?php echo_('Date')?>", sortable:true, width:100,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					,{key:"dispached", label:"<?php echo_('Dispached')?>",width:80,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					,{key:"undispached", label:"<?php echo'&Delta;'._('Ordered')?>", width:80, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 					];
 		      
 		      
@@ -55,8 +55,8 @@ var change_plot_sigma=function(o){
 								   //draggableColumns:true,
 								   renderLoopSize: 50,generateRequest : myRequestBuilder
 								   ,paginator : new YAHOO.widget.Paginator({
-									 rowsPerPage:<?=$_SESSION['state']['product']['orders']['nr']?>,containers : 'paginator0', 
-									 pageReportTemplate : '(<?=_('Page')?> {currentPage} <?=_('of')?> {totalPages})',
+									 rowsPerPage:<?php echo$_SESSION['state']['product']['orders']['nr']?>,containers : 'paginator0', 
+									 pageReportTemplate : '(<?php echo_('Page')?> {currentPage} <?php echo_('of')?> {totalPages})',
 									 previousPageLinkLabel : "<",
 									 nextPageLinkLabel : ">",
 									 firstPageLinkLabel :"<<",
@@ -65,8 +65,8 @@ var change_plot_sigma=function(o){
 								       })
 								   
 								   ,sortedBy : {
-								       key: "<?=$_SESSION['state']['product']['orders']['order']?>",
-								       dir: "<?=$_SESSION['state']['product']['orders']['order_dir']?>"
+								       key: "<?php echo$_SESSION['state']['product']['orders']['order']?>",
+								       dir: "<?php echo$_SESSION['state']['product']['orders']['order_dir']?>"
 								   }
 								   ,dynamicData : true
 								   
@@ -78,18 +78,18 @@ var change_plot_sigma=function(o){
 		      
 		    
 		      
-		      <?}?>
-			  <?if($LU->checkRight(CUST_VIEW) ){?>
+		      <?php}?>
+			  <?phpif($LU->checkRight(CUST_VIEW) ){?>
 		      var tableid=1;
 		      var tableDivEL="table"+tableid;
 		      
 		      var ColumnDefs = [
-					{key:"customer", label:"<?=_('Customer')?>",width:320, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					,{key:"orders", label:"<?=_('Orders')?>",width:70, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				      ,{key:"dispached", label:"<?=_('Disp')?>",width:65, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-					,{key:"todispach", label:"<?=_('To Disp')?>",width:65, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-					,{key:"nodispached", label:"<?=_('No Disp')?>", width:65, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-					,{key:"charged", label:"<?=_('Charged')?>", width:80, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					{key:"customer", label:"<?php echo_('Customer')?>",width:320, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					,{key:"orders", label:"<?php echo_('Orders')?>",width:70, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				      ,{key:"dispached", label:"<?php echo_('Disp')?>",width:65, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					,{key:"todispach", label:"<?php echo_('To Disp')?>",width:65, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					,{key:"nodispached", label:"<?php echo_('No Disp')?>", width:65, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					,{key:"charged", label:"<?php echo_('Charged')?>", width:80, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 					];
 		    
 		      
@@ -117,8 +117,8 @@ var change_plot_sigma=function(o){
 								   //draggableColumns:true,
 								   renderLoopSize: 50,generateRequest : myRequestBuilder
 								 ,paginator : new YAHOO.widget.Paginator({
-									 rowsPerPage:<?=$_SESSION['state']['product']['customers']['nr']?>,containers : 'paginator1', 
-									 pageReportTemplate : '(<?=_('Page')?> {currentPage} <?=_('of')?> {totalPages})',
+									 rowsPerPage:<?php echo$_SESSION['state']['product']['customers']['nr']?>,containers : 'paginator1', 
+									 pageReportTemplate : '(<?php echo_('Page')?> {currentPage} <?php echo_('of')?> {totalPages})',
 									 previousPageLinkLabel : "<",
 									 nextPageLinkLabel : ">",
 									 firstPageLinkLabel :"<<",
@@ -127,8 +127,8 @@ var change_plot_sigma=function(o){
 								     })
 								   
 								   ,sortedBy : {
-								       key: "<?=$_SESSION['state']['product']['customers']['order']?>",
-								       dir: "<?=$_SESSION['state']['product']['customers']['order_dir']?>"
+								       key: "<?php echo$_SESSION['state']['product']['customers']['order']?>",
+								       dir: "<?php echo$_SESSION['state']['product']['customers']['order_dir']?>"
 								   }
 								   ,dynamicData : true
 								 
@@ -138,7 +138,7 @@ var change_plot_sigma=function(o){
 		      this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
 		      this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
 
-		    <?}?>
+		    <?php}?>
 
 
 
@@ -182,10 +182,10 @@ var  change_web_status =function(tipo){
 			 Dom.get('no_sincro_pages').style.visibility='visible';
 			 Dom.get('no_sincro_db').style.visibility='visible';
 		     }
-		     Dom.get('edit_web_messages').innerHTML='<?=_('Syncronizing product')?>';
+		     Dom.get('edit_web_messages').innerHTML='<?php echo_('Syncronizing product')?>';
 		}
 
-		Dom.get('edit_web_messages').innerHTML='<?=_('Syncronizing product')?>';
+		Dom.get('edit_web_messages').innerHTML='<?php echo_('Syncronizing product')?>';
 		var request='ar_xml.php?tipo=sincronize';
 		YAHOO.util.Connect.asyncRequest('POST',request ,{
 			success:function(o) {

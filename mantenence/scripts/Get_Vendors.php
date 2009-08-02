@@ -1,9 +1,9 @@
-<?
+<?php
 include_once('../../app_files/db/dns.php');
-include_once('../../classes/Department.php');
-include_once('../../classes/Family.php');
-include_once('../../classes/Product.php');
-include_once('../../classes/Supplier.php');
+include_once('../../class.Department.php');
+include_once('../../class.Family.php');
+include_once('../../class.Product.php');
+include_once('../../class.Supplier.php');
 
 require_once 'MDB2.php';            // PEAR Database Abstraction Layer
 require_once '../../common_functions.php';

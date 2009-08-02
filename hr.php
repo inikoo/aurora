@@ -1,4 +1,4 @@
-<?
+<?php
 include_once('common.php');
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',

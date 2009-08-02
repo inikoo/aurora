@@ -1,4 +1,4 @@
-<?include_once('../common.php')?>
+<?phpinclude_once('../common.php')?>
 var Dom   = YAHOO.util.Dom;
 var add_user_dialog_others;
 var add_user_dialog;
@@ -7,7 +7,7 @@ var add_user_dialog;
 
 var  group_name=new Object;
 
-<?
+<?php
     $g='';
 foreach($_group as $key=>$value){
     $g.="group_name[$key]='$value';";
@@ -136,14 +136,14 @@ print $g;
 				 {key:"isactive",formatter:active,label:"" ,width:16 ,editor: new YAHOO.widget.RadioCellEditor({radioOptions:[{label:"yes", value:"1"}, {label:"no", value:"0"}],defaultValue:"0",asyncSubmitter:edit_active })  },
 				 
 
-				 {key:"tipo", label:"<?=_('Type')?>",width:35,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-				 {key:"handle", label:"<?=_('Handle')?>",width:60,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-				 {key:"name", label:"<?=_('Name')?>",sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-				 {key:"email", label:"<?=_('Email')?>",sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-				 {key:"lang", label:"<?=_('Language')?>",sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},},
-				 {key:"groups",formatter:group,label:"<?=_('Groups')?>",className:"aleft" , editor: new YAHOO.widget.CheckboxCellEditor({
+				 {key:"tipo", label:"<?php echo_('Type')?>",width:35,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				 {key:"handle", label:"<?php echo_('Handle')?>",width:60,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				 {key:"name", label:"<?php echo_('Name')?>",sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				 {key:"email", label:"<?php echo_('Email')?>",sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				 {key:"lang", label:"<?php echo_('Language')?>",sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},},
+				 {key:"groups",formatter:group,label:"<?php echo_('Groups')?>",className:"aleft" , editor: new YAHOO.widget.CheckboxCellEditor({
 					     asyncSubmitter:edit_group,checkboxOptions:[
-							      <?
+							      <?php
 							      $g='';
 							      foreach($_group as $key=>$value){
 								  $g.="{label:'$value<br>', value:$key},";
@@ -181,8 +181,8 @@ print $g;
 								 , {
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								      ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage:<?=$_SESSION['state']['users']['user_list']['nr']?>,containers : 'paginator0', 
- 									      pageReportTemplate : '(<?=_('Page')?> {currentPage} <?=_('of')?> {totalPages})',
+									      rowsPerPage:<?php echo$_SESSION['state']['users']['user_list']['nr']?>,containers : 'paginator0', 
+ 									      pageReportTemplate : '(<?php echo_('Page')?> {currentPage} <?php echo_('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
  									      firstPageLinkLabel :"<<",
@@ -191,8 +191,8 @@ print $g;
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?=$_SESSION['state']['users']['user_list']['order']?>",
-									 dir: "<?=$_SESSION['state']['users']['user_list']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['users']['user_list']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['users']['user_list']['order_dir']?>"
 								     },
 								     dynamicData : true
 
@@ -206,7 +206,7 @@ print $g;
 
 
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	    this.table0.filter={key:'<?=$_SESSION['state']['users']['user_list']['f_field']?>',value:'<?=$_SESSION['state']['users']['user_list']['f_value']?>'};
+	    this.table0.filter={key:'<?php echo$_SESSION['state']['users']['user_list']['f_field']?>',value:'<?php echo$_SESSION['state']['users']['user_list']['f_value']?>'};
 	    //YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown);
 	
 
@@ -215,9 +215,9 @@ print $g;
 	    var tableid=1; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 	    var ColumnDefs = [
-			      {key:"id", label:"<?=_('Id')?>", width:40,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
-			      {key:"name", label:"<?=_('Group')?>", sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-			      {key:"users", label:"<?=_('Users')?>", sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			      {key:"id", label:"<?php echo_('Id')?>", width:40,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
+			      {key:"name", label:"<?php echo_('Group')?>", sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+			      {key:"users", label:"<?php echo_('Users')?>", sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 			      ];
 
 	    this.dataSource1 = new YAHOO.util.DataSource("ar_users.php?tipo=groups&tableid=1");
@@ -242,11 +242,11 @@ print $g;
 	    this.table1 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
 								   this.dataSource1
 								 , {
-								     // sortedBy: {key:"<?=$_SESSION['tables']['customers_list'][0]?>", dir:"<?=$_SESSION['tables']['customers_list'][1]?>"},
+								     // sortedBy: {key:"<?php echo$_SESSION['tables']['customers_list'][0]?>", dir:"<?php echo$_SESSION['tables']['customers_list'][1]?>"},
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								    //    ,paginator : new YAHOO.widget.Paginator({
-// 									      rowsPerPage    : <?=$_SESSION['state']['users']['groups']['nr']?>,containers : 'paginator', 
-//  									      pageReportTemplate : '(<?=_('Page')?> {currentPage} <?=_('of')?> {totalPages})',
+// 									      rowsPerPage    : <?php echo$_SESSION['state']['users']['groups']['nr']?>,containers : 'paginator', 
+//  									      pageReportTemplate : '(<?php echo_('Page')?> {currentPage} <?php echo_('of')?> {totalPages})',
 // 									      previousPageLinkLabel : "<",
 //  									      nextPageLinkLabel : ">",
 //  									      firstPageLinkLabel :"<<",
@@ -255,8 +255,8 @@ print $g;
 // 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?=$_SESSION['state']['users']['groups']['order']?>",
-									 dir: "<?=$_SESSION['state']['users']['groups']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['users']['groups']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['users']['groups']['order_dir']?>"
 								     },
 								     dynamicData : true
 
@@ -267,7 +267,7 @@ print $g;
 	    this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
 	    // this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	    // this.table1.filter={key:'<?=$_SESSION['state']['users']['user_list']['f_field']?>',value:'<?=$_SESSION['state']['users']['user_list']['f_value']?>'};
+	    // this.table1.filter={key:'<?php echo$_SESSION['state']['users']['user_list']['f_field']?>',value:'<?php echo$_SESSION['state']['users']['user_list']['f_value']?>'};
 	    //YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown)
 
 

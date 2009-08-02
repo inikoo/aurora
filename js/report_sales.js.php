@@ -1,12 +1,12 @@
-<?
+<?php
 include_once('../common.php');
 ?>
     var view='invoices';
     var panel1;
 
  var show_invoices=function(){
-     Dom.get('clean_table_title0').innerHTML='<?=_('Orders invoiced').' '.$_SESSION['state']['report']['sales']['period']?>.';
-     request="ar_orders.php?tipo=report_invoices&saveto=report_sales&where="+escape('where true')+"&view=invoices&sf=0&nr=10&from=<?=$_SESSION['state']['report']['sales']['from']?>&to=<?=$_SESSION['state']['report']['sales']['to']?>"
+     Dom.get('clean_table_title0').innerHTML='<?php echo_('Orders invoiced').' '.$_SESSION['state']['report']['sales']['period']?>.';
+     request="ar_orders.php?tipo=report_invoices&saveto=report_sales&where="+escape('where true')+"&view=invoices&sf=0&nr=10&from=<?php echo$_SESSION['state']['report']['sales']['from']?>&to=<?php echo$_SESSION['state']['report']['sales']['to']?>"
      //  alert(request);
      var table=tables.table0;
      var datasource=tables.dataSource0;
@@ -15,8 +15,8 @@ include_once('../common.php');
 
  }
  var show_invoices_home=function(){
-     Dom.get('clean_table_title0').innerHTML='<?=$myconf['_home']." "._('orders invoiced (excluding partners)').' '.$_SESSION['state']['report']['sales']['period']?>.';
-     request="ar_orders.php?tipo=report_invoices&saveto=report_sales&where="+escape('where  `Invoice For Partner`="No" and `Invoice Billing Country 2 Alpha Code`="<?=$myconf['country_2acode']?>"')+"&view=invoices&sf=0&nr=10&from=<?=$_SESSION['state']['report']['sales']['from']?>&to=<?=$_SESSION['state']['report']['sales']['to']?>"
+     Dom.get('clean_table_title0').innerHTML='<?php echo$myconf['_home']." "._('orders invoiced (excluding partners)').' '.$_SESSION['state']['report']['sales']['period']?>.';
+     request="ar_orders.php?tipo=report_invoices&saveto=report_sales&where="+escape('where  `Invoice For Partner`="No" and `Invoice Billing Country 2 Alpha Code`="<?php echo$myconf['country_2acode']?>"')+"&view=invoices&sf=0&nr=10&from=<?php echo$_SESSION['state']['report']['sales']['from']?>&to=<?php echo$_SESSION['state']['report']['sales']['to']?>"
      // alert(request);
      var table=tables.table0;
      var datasource=tables.dataSource0;
@@ -26,8 +26,8 @@ include_once('../common.php');
  }
 
 var show_invoices_nohome=function(){
-     Dom.get('clean_table_title0').innerHTML='<?=_('Export orders invoiced (excluding partners)').' '.$_SESSION['state']['report']['sales']['period']?>';
-     request="ar_orders.php?tipo=report_invoices&saveto=report_sales&where="+escape('where  `Invoice For Partner`="No" and  `Invoice Billing Country 2 Alpha Code`!="<?=$myconf['country_2acode']?>"')+"&view=invoices&sf=0&nr=10&from=<?=$_SESSION['state']['report']['sales']['from']?>&to=<?=$_SESSION['state']['report']['sales']['to']?>"
+     Dom.get('clean_table_title0').innerHTML='<?php echo_('Export orders invoiced (excluding partners)').' '.$_SESSION['state']['report']['sales']['period']?>';
+     request="ar_orders.php?tipo=report_invoices&saveto=report_sales&where="+escape('where  `Invoice For Partner`="No" and  `Invoice Billing Country 2 Alpha Code`!="<?php echo$myconf['country_2acode']?>"')+"&view=invoices&sf=0&nr=10&from=<?php echo$_SESSION['state']['report']['sales']['from']?>&to=<?php echo$_SESSION['state']['report']['sales']['to']?>"
 
      var table=tables.table0;
      var datasource=tables.dataSource0;
@@ -37,8 +37,8 @@ var show_invoices_nohome=function(){
  }
    
 var show_invoices_partner=function(){
-     Dom.get('clean_table_title0').innerHTML='<?=_('Partners orders invoiced').' '.$_SESSION['state']['report']['sales']['period']?>';
-     request="ar_orders.php?tipo=report_invoices&saveto=report_sales&where="+escape('where  `Invoice For Partner`="Yes" ')+"&view=invoices&sf=0&nr=10&from=<?=$_SESSION['state']['report']['sales']['from']?>&to=<?=$_SESSION['state']['report']['sales']['to']?>"
+     Dom.get('clean_table_title0').innerHTML='<?php echo_('Partners orders invoiced').' '.$_SESSION['state']['report']['sales']['period']?>';
+     request="ar_orders.php?tipo=report_invoices&saveto=report_sales&where="+escape('where  `Invoice For Partner`="Yes" ')+"&view=invoices&sf=0&nr=10&from=<?php echo$_SESSION['state']['report']['sales']['from']?>&to=<?php echo$_SESSION['state']['report']['sales']['to']?>"
 
      var table=tables.table0;
      var datasource=tables.dataSource0;
@@ -49,8 +49,8 @@ var show_invoices_partner=function(){
 
     var show_invoices_country=function(country_code,name){
 
-     Dom.get('clean_table_title0').innerHTML=name+' <?=_('orders invoiced').' '.$_SESSION['state']['report']['sales']['period']?>';
-     request="ar_orders.php?tipo=report_invoices&saveto=report_sales&where="+escape('where  `Invoice For Partner`="No"    and `Invoice Billing Country 2 Alpha Code`="'+country_code+'"')+"&view=invoices&sf=0&nr=10&from=<?=$_SESSION['state']['report']['sales']['from']?>&to=<?=$_SESSION['state']['report']['sales']['to']?>"
+     Dom.get('clean_table_title0').innerHTML=name+' <?php echo_('orders invoiced').' '.$_SESSION['state']['report']['sales']['period']?>';
+     request="ar_orders.php?tipo=report_invoices&saveto=report_sales&where="+escape('where  `Invoice For Partner`="No"    and `Invoice Billing Country 2 Alpha Code`="'+country_code+'"')+"&view=invoices&sf=0&nr=10&from=<?php echo$_SESSION['state']['report']['sales']['from']?>&to=<?php echo$_SESSION['state']['report']['sales']['to']?>"
 
      var table=tables.table0;
      var datasource=tables.dataSource0;
@@ -75,20 +75,20 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 	    var OrdersColumnDefs = [
-				       {key:"id", label:"<?=_('Number')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-				       //  {key:"titulo", label:"<?=_('Type')?>", width:115,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-				       {key:"customer",label:"<?=_('Customer')?>", width:280,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-				       {key:"date", label:"<?=_('Date')?>", width:145,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
-				        {key:"net", label:"<?=_('Net')?>", width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       ,{key:"total_amount", label:"<?=_('Total')?>", width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       {key:"id", label:"<?php echo_('Number')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				       //  {key:"titulo", label:"<?php echo_('Type')?>", width:115,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				       {key:"customer",label:"<?php echo_('Customer')?>", width:280,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				       {key:"date", label:"<?php echo_('Date')?>", width:145,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
+				        {key:"net", label:"<?php echo_('Net')?>", width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"total_amount", label:"<?php echo_('Total')?>", width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				       
-				       //					 {key:"families", label:"<?=_('Customers')?>", sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
-				      //{key:"active", label:"<?=_('Customers')?>", sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       //					 {key:"families", label:"<?php echo_('Customers')?>", sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
+				      //{key:"active", label:"<?php echo_('Customers')?>", sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				      
 
 					 ];
 	    
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_orders.php?tipo=report_invoices&view="+view+"&nr=10&from=<?=$_SESSION['state']['report']['sales']['from']?>&to=<?=$_SESSION['state']['report']['sales']['to']?>");
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_orders.php?tipo=report_invoices&view="+view+"&nr=10&from=<?php echo$_SESSION['state']['report']['sales']['from']?>&to=<?php echo$_SESSION['state']['report']['sales']['to']?>");
 
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
@@ -118,8 +118,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 						     this.dataSource0, {draggableColumns:true,
 							   renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									       rowsPerPage    : <?=$_SESSION['state']['orders']['table']['nr']?>,containers : 'paginator0', 
- 									      pageReportTemplate : '(<?=_('Page')?> {currentPage} <?=_('of')?> {totalPages})',
+									       rowsPerPage    : <?php echo$_SESSION['state']['orders']['table']['nr']?>,containers : 'paginator0', 
+ 									      pageReportTemplate : '(<?php echo_('Page')?> {currentPage} <?php echo_('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
  									      firstPageLinkLabel :"<<",
@@ -128,8 +128,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?=$_SESSION['state']['orders']['table']['order']?>",
-									 dir: "<?=$_SESSION['state']['orders']['table']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['orders']['table']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['orders']['table']['order_dir']?>"
 								     }
 							   ,dynamicData : true
 

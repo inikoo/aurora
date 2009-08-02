@@ -86,7 +86,7 @@ function mapLoad() {
 
 
 	       
-		//var query='<?=$_REQUEST['q']?>';
+		//var query='<?php echo$_REQUEST['q']?>';
 		
 		//	getPointFromQuery('uk');
 

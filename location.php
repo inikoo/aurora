@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  File: location.php 
 
@@ -12,7 +12,7 @@
  Version 2.0
 */
 include_once('common.php');
-include_once('classes/Location.php');
+include_once('class.Location.php');
 
 $view_sales=$LU->checkRight(PROD_SALES_VIEW);
 $view_stock=$LU->checkRight(PROD_STK_VIEW);

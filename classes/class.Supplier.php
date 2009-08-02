@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  File: Supplier.php 
 
@@ -11,13 +11,13 @@
  
  Version 2.0
 */
-include_once('DB_Table.php');
+include_once('class.DB_Table.php');
 
-include_once('Company.php');
-include_once('Contact.php');
-include_once('Telecom.php');
-include_once('Email.php');
-include_once('Address.php');
+include_once('class.Company.php');
+include_once('class.Contact.php');
+include_once('class.Telecom.php');
+include_once('class.Email.php');
+include_once('class.Address.php');
 include_once('Name.php');
 /* class: Supplier
  Class to manage the *Supplier Dimension* table

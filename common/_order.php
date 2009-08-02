@@ -1,4 +1,4 @@
-<?
+<?php
 
 function get_orderfile_data($id){
   $db =& MDB2::singleton();

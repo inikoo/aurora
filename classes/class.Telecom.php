@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  File: Telecom.php 
 
@@ -11,8 +11,8 @@
  
  Version 2.0
 */
-include_once('DB_Table.php');
-include_once('Country.php');
+include_once('class.DB_Table.php');
+include_once('class.Country.php');
 
 class Telecom extends DB_Table {
 

@@ -1,4 +1,4 @@
-<?
+<?php
 //@author Raul Perusquia <rulovico@gmail.com>
 //Copyright (c) 2009 LW
 // function prepare_mysql_date($date){
