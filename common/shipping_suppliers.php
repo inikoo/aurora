@@ -1,4 +1,4 @@
-<?
+<?php
 function get_shipping_supplier($name,$order_id){
 $db =& MDB2::singleton();
 

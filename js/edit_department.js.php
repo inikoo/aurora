@@ -1,9 +1,9 @@
-<?include_once('../common.php');?>
+<?phpinclude_once('../common.php');?>
 //@author Raul Perusquia <rulovico@gmail.com>
 //Copyright (c) 2009 LW
 var Event = YAHOO.util.Event;
 var Dom   = YAHOO.util.Dom;
-var department_id=<?=$_SESSION['state']['department']['id']?>;
+var department_id=<?php echo$_SESSION['state']['department']['id']?>;
 editing='description';
 
 function new_dept_changed(o){
@@ -61,17 +61,17 @@ function edit_dept_changed(o){
     if(ovalue!=o.value){
 	if(name=='code'){
 	    if(o.value==''){
-		description_errors.code="<?=_("The department code can not be empty")?>";
+		description_errors.code="<?php echo_("The department code can not be empty")?>";
 	    }else if(o.value.lenght>16){
-		description_errors.code="<?=_("The product code can not have more than 16 characters")?>";
+		description_errors.code="<?php echo_("The product code can not have more than 16 characters")?>";
 	    }else
 		delete description_errors.code;
 	}
 	if(name=='name'){
 	    if(o.value==''){
-		description_errors.name="<?=_("The department name  can not be empty")?>";
+		description_errors.name="<?php echo_("The department name  can not be empty")?>";
 	    }else if(o.value.lenght>255){
-		description_errors.name="<?=_("The product code can not have more than 255  characters")?>";
+		description_errors.name="<?php echo_("The product code can not have more than 255  characters")?>";
 	    }else
 		delete description_errors.name;
 	}
@@ -207,8 +207,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableDivEL="table"+tableid;
 	    var OrdersColumnDefs = [ 
 				    {key:"id", label:"", hidden:true,action:"none",isPrimaryKey:true}
-				    ,{key:"code", label:"<?=_('Code')?>", width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'family'}
-				    ,{key:"name", label:"<?=_('Name')?>",width:300, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'family'}
+				    ,{key:"code", label:"<?php echo_('Code')?>", width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'family'}
+				    ,{key:"name", label:"<?php echo_('Name')?>",width:300, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'family'}
 				    ,{key:"delete", label:"",width:100,className:"aleft",action:"delete",object:'family'}
 				    ,{key:"delete_type", label:"",hidden:true,isTypeKey:true}
 
@@ -241,8 +241,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							 //draggableColumns:true,
 							   renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage:<?=$_SESSION['tables']['departments_list'][2]?>,containers : 'paginator', 
- 									      pageReportTemplate : '(<?=_('Page')?> {currentPage} <?=_('of')?> {totalPages})',
+									      rowsPerPage:<?php echo$_SESSION['tables']['departments_list'][2]?>,containers : 'paginator', 
+ 									      pageReportTemplate : '(<?php echo_('Page')?> {currentPage} <?php echo_('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
  									      firstPageLinkLabel :"<<",
@@ -251,8 +251,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?=$_SESSION['tables']['departments_list'][0]?>",
-									 dir: "<?=$_SESSION['tables']['departments_list'][1]?>"
+									 key: "<?php echo$_SESSION['tables']['departments_list'][0]?>",
+									 dir: "<?php echo$_SESSION['tables']['departments_list'][1]?>"
 								     }
 							   ,dynamicData : true
 
@@ -270,7 +270,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.subscribe("cellMouseoutEvent", unhighlightEditableCell);
 	    this.table0.subscribe("cellClickEvent", onCellClick);
 	    
-	    this.table0.view='<?=$_SESSION['state']['department']['view']?>';
+	    this.table0.view='<?php echo$_SESSION['state']['department']['view']?>';
 
 		
 

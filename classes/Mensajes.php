@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  File: Mensajes.php
 
@@ -11,7 +11,7 @@
  
  Version 2.0
 */
-include_once('DB_Table.php');
+include_once('class.DB_Table.php');
 
 /* class: Mensajes
  Class to manage the *Mensajes Dimension* table

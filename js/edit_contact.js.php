@@ -1,8 +1,8 @@
-<?
+<?php
 //@author Raul Perusquia <rulovico@gmail.com>
 //Copyright (c) 2009 LW
 include_once('../common.php');
-include_once('../classes/Contact.php');
+include_once('../class.Contact.php');
 $contact_id=$_SESSION['state']['contact']['id'];
 $contact=new contact($contact_id);
 //$main_telephone=$contact->get_main_telephone_data();
@@ -37,11 +37,11 @@ $country_list=preg_replace('/^\,/','',$country_list);
     var Dom   = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;
 
-var Country_List=[<?=$country_list?>];
+var Country_List=[<?php echo$country_list?>];
 
 
-var current_salutation='salutation<?=$contact->get('Salutation Key')?>';
-var current_block='<?=$edit_block?>';
+var current_salutation='salutation<?php echo$contact->get('Salutation Key')?>';
+var current_block='<?php echo$edit_block?>';
 var old_salutation=current_salutation;
 
 

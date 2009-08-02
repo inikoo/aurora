@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  File: Staff.php 
 
@@ -12,8 +12,8 @@
  Version 2.0
 */
 
-require_once 'Name.php';
-require_once 'Email.php';
+  //require_once 'class.Name.php';
+require_once 'class.Email.php';
 
 class Staff{
 

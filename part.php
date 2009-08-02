@@ -1,4 +1,5 @@
-<?/*
+<?php
+/*
  File: part.php 
 
  UI part page
@@ -13,18 +14,17 @@
 
 include_once('common.php');
 //include_once('stock_functions.php');
-include_once('classes/Product.php');
+include_once('class.Part.php');
 
-$view_sales=$LU->checkRight(PROD_SALES_VIEW);
-$view_stock=$LU->checkRight(PROD_STK_VIEW);
-$view_orders=$LU->checkRight(ORDER_VIEW);
-
-$create=$LU->checkRight(PROD_CREATE);
-$modify=$LU->checkRight(PROD_MODIFY);
-$modify_stock=$LU->checkRight(PROD_STK_MODIFY);
+$view_sales=false;
+$view_stock=false;
+$view_orders=false;
+$create=false;
+$modify=false;
+$modify_stock=false;
 $smarty->assign('modify_stock',$modify_stock);
-$view_suppliers=$LU->checkRight(SUP_VIEW);
-$view_cust=$LU->checkRight(CUST_VIEW);
+$view_suppliers=false;
+$view_cust=false;
 $smarty->assign('view_suppliers',$view_suppliers);
 $smarty->assign('view_sales',$view_sales);
 $smarty->assign('view_stock',$view_stock);

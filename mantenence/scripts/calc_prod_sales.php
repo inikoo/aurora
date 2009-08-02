@@ -1,6 +1,6 @@
-<?
+<?php
 include_once('../../app_files/db/dns.php');
-include_once('../../classes/Product.php');
+include_once('../../class.Product.php');
 require_once 'MDB2.php';            // PEAR Database Abstraction Layer
 require_once '../../common_functions.php';
 $db =& MDB2::singleton($dsn);       

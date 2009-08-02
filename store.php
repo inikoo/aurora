@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  File: store.php 
 
@@ -13,12 +13,12 @@
 */
 include_once('common.php');
 include_once('stock_functions.php');
-include_once('classes/Store.php');
+include_once('class.Store.php');
 
-$view_sales=$LU->checkRight(PROD_SALES_VIEW);
-$view_stock=$LU->checkRight(PROD_STK_VIEW);
-$create=$LU->checkRight(PROD_CREATE);
-$modify=$LU->checkRight(PROD_MODIFY);
+$view_sales=$user->can_view('Products Sales');
+$view_stock=$user->can_view('Products Stock');
+$create=false;
+$modify=false;
 
 
 
@@ -94,7 +94,7 @@ $smarty->assign('period',$_SESSION['state']['store']['period']);
 //$sql="select id from product";
 //$result=mysql_query($sql);
 
-// include_once('classes/product.php');
+// include_once('class.product.php');
 // while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 //   $product= new product($row['id']);
 //   $product->set_stock();

@@ -1,6 +1,6 @@
-<?
+<?php
 include_once('common.php');
-include_once('classes/Supplier.php');
+include_once('class.Supplier.php');
 
 if(!$LU->checkRight(SUP_VIEW))
   exit;

@@ -1,4 +1,4 @@
-<?
+<?php
 abstract class DB_Table
 {
 

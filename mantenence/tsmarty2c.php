@@ -112,7 +112,7 @@ function do_dir($dir)
 
 	$d->close();
 }
-print "<?";
+print "<?php";
 for ($ac=1; $ac < $_SERVER['argc']; $ac++) {
 	if (is_dir($_SERVER['argv'][$ac])) { // go through directory
 		do_dir($_SERVER['argv'][$ac]);

@@ -1,4 +1,4 @@
-<?
+<?php
 include_once('../common.php');
 ?>
 
@@ -76,21 +76,21 @@ YAHOO.namespace ("companies");
 
 
 	    var CompaniesColumnDefs = [
-				       {key:"id", label:"<?=_('ID')?>",width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"name", label:"<?=_('Company Name')?>",<?=( ( $_SESSION['state']['companies']['view']=='general' or  $_SESSION['state']['companies']['view']=='contact' ) ?'':'hidden:true,')?> width:250,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"location", label:"<?=_('Location')?>",<?=($_SESSION['state']['companies']['view']=='general'?'':'hidden:true,')?> width:230,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       {key:"id", label:"<?php echo_('ID')?>",width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"name", label:"<?php echo_('Company Name')?>",<?php echo( ( $_SESSION['state']['companies']['view']=='general' or  $_SESSION['state']['companies']['view']=='contact' ) ?'':'hidden:true,')?> width:250,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"location", label:"<?php echo_('Location')?>",<?php echo($_SESSION['state']['companies']['view']=='general'?'':'hidden:true,')?> width:230,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       
-				       ,{key:"email", label:"<?=_('Email')?>",<?=(($_SESSION['state']['companies']['view']=='general' )?'':'hidden:true,')?>sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       ,{key:"telephone", label:"<?=_('Telephone')?>",<?=($_SESSION['state']['companies']['view']=='telephone'?'':'hidden:true,')?>sortable:true,className:"aright"}
+				       ,{key:"email", label:"<?php echo_('Email')?>",<?php echo(($_SESSION['state']['companies']['view']=='general' )?'':'hidden:true,')?>sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"telephone", label:"<?php echo_('Telephone')?>",<?php echo($_SESSION['state']['companies']['view']=='telephone'?'':'hidden:true,')?>sortable:true,className:"aright"}
 
-				       ,{key:"fax", label:"<?=_('Fax')?>",<?=($_SESSION['state']['companies']['view']=='telephone'?'':'hidden:true,')?>sortable:true,className:"aright"}
+				       ,{key:"fax", label:"<?php echo_('Fax')?>",<?php echo($_SESSION['state']['companies']['view']=='telephone'?'':'hidden:true,')?>sortable:true,className:"aright"}
 
-				       ,{key:"address", label:"<?=_('Main Address')?>",<?=($_SESSION['state']['companies']['view']=='address'?'':'hidden:true,')?>sortable:true,className:"aright"}
-				       ,{key:"town", label:"<?=_('Town')?>",<?=($_SESSION['state']['companies']['view']=='address'?'':'hidden:true,')?>sortable:true,className:"aright"}
-				       ,{key:"postcode", label:"<?=_('Postal Code')?>",<?=($_SESSION['state']['companies']['view']=='address'?'':'hidden:true,')?>sortable:true,className:"aright"}
-				       ,{key:"region", label:"<?=_('Region')?>",<?=($_SESSION['state']['companies']['view']=='address'?'':'hidden:true,')?>sortable:true,className:"aright"}
-				       ,{key:"country", label:"<?=_('Country')?>",<?=($_SESSION['state']['companies']['view']=='address'?'':'hidden:true,')?>sortable:true,className:"aright"}
-				       ,{key:"company", label:"<?=_('Contact')?>",<?=($_SESSION['state']['companies']['view']=='contact'?'':'hidden:true,')?>sortable:true,className:"aright"}
+				       ,{key:"address", label:"<?php echo_('Main Address')?>",<?php echo($_SESSION['state']['companies']['view']=='address'?'':'hidden:true,')?>sortable:true,className:"aright"}
+				       ,{key:"town", label:"<?php echo_('Town')?>",<?php echo($_SESSION['state']['companies']['view']=='address'?'':'hidden:true,')?>sortable:true,className:"aright"}
+				       ,{key:"postcode", label:"<?php echo_('Postal Code')?>",<?php echo($_SESSION['state']['companies']['view']=='address'?'':'hidden:true,')?>sortable:true,className:"aright"}
+				       ,{key:"region", label:"<?php echo_('Region')?>",<?php echo($_SESSION['state']['companies']['view']=='address'?'':'hidden:true,')?>sortable:true,className:"aright"}
+				       ,{key:"country", label:"<?php echo_('Country')?>",<?php echo($_SESSION['state']['companies']['view']=='address'?'':'hidden:true,')?>sortable:true,className:"aright"}
+				       ,{key:"company", label:"<?php echo_('Contact')?>",<?php echo($_SESSION['state']['companies']['view']=='contact'?'':'hidden:true,')?>sortable:true,className:"aright"}
 
 				     
 				       
@@ -131,8 +131,8 @@ YAHOO.namespace ("companies");
 
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage    : <?=$_SESSION['state']['companies']['table']['nr']?>,containers : 'paginator0', 
- 									      pageReportTemplate : '(<?=_('Page')?> {currentPage} <?=_('of')?> {totalPages})',
+									      rowsPerPage    : <?php echo$_SESSION['state']['companies']['table']['nr']?>,containers : 'paginator0', 
+ 									      pageReportTemplate : '(<?php echo_('Page')?> {currentPage} <?php echo_('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
  									      firstPageLinkLabel :"<<",
@@ -144,8 +144,8 @@ YAHOO.namespace ("companies");
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?=$_SESSION['state']['companies']['table']['order']?>",
-									 dir: "<?=$_SESSION['state']['companies']['table']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['companies']['table']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['companies']['table']['order_dir']?>"
 								     },
 								     dynamicData : true
 
@@ -159,9 +159,9 @@ YAHOO.namespace ("companies");
 
 		    
 		    
-	    this.table0.view='<?=$_SESSION['state']['companies']['view']?>';
+	    this.table0.view='<?php echo$_SESSION['state']['companies']['view']?>';
 
-	    this.table0.filter={key:'<?=$_SESSION['state']['companies']['table']['f_field']?>',value:'<?=$_SESSION['state']['companies']['table']['f_value']?>'};
+	    this.table0.filter={key:'<?php echo$_SESSION['state']['companies']['table']['f_field']?>',value:'<?php echo$_SESSION['state']['companies']['table']['f_value']?>'};
 
 	    //   YAHOO.util.Event.addListener('f_input', "keyup",myFilterChangeValue,{table:this.table0,datasource:this.dataSource})
 			 

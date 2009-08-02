@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  File: customer.php 
 
@@ -13,7 +13,7 @@
 */
 
 include_once('common.php');
-include_once('classes/Customer.php');
+include_once('class.Customer.php');
 if(!$LU->checkRight(CUST_VIEW))
   exit;
 

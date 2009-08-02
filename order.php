@@ -1,9 +1,9 @@
-<?
+<?php
 include_once('common.php');
 include_once('_supplier.php');
 include_once('staff.php');
 
-include_once('classes/Order.php');
+include_once('class.Order.php');
 
 $_SESSION['views']['assets']='index';
 

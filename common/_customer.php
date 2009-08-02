@@ -1,4 +1,4 @@
-<?
+<?php
 
 function change_tax_number($customer_id,$tax_number,$date_index,$history=false){
   $db =& MDB2::singleton();

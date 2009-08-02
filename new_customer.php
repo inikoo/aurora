@@ -1,9 +1,9 @@
-<?
+<?php
 //@create 22/04/09 14:37
 //@author Raul Perusquia <rulovico@gmail.com>
 //Copyright (c) 2009 LW
 include_once('common.php');
-include_once('classes/Customer.php');
+include_once('class.Customer.php');
 if(!$LU->checkRight(CUST_VIEW))
   exit;
 

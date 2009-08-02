@@ -1,11 +1,11 @@
-<?
+<?php
 /*
 file: map_url.php
 returns the url of the map
  */
 
 require_once 'common.php';
-require_once 'classes/Product.php';
+require_once 'class.Product.php';
 
 function get_map_url($region='world',$exclude=false){
   

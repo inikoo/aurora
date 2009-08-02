@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 file: map_url.php
 returns the url of the map
@@ -12,7 +12,7 @@ $colors=array(
 	      );
 
 require_once 'common.php';
-require_once 'classes/Product.php';
+require_once 'class.Product.php';
 require_once 'map_url.php';
 
 $tipo='';

@@ -1,7 +1,7 @@
-<?
+<?php
 require_once 'common.php';
 include_once('aes.php');
-require_once('classes/Product.php');
+require_once('class.Product.php');
 require_once('external_libs/xml/minixml.inc.php');
 
 $key ="mc49015kfkuto0lk,rbijr0gl*(&172225224961644tui0f9jf98d345hpyl09jpl9fhlptjip_[[gdo;dlfkglklyndfUIHNNUIOSO832&*^)*(^^&*^*32KJLSDJFSNXRJ";

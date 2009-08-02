@@ -1,9 +1,9 @@
-<?
+<?php
 //@author Raul Perusquia <rulovico@gmail.com>
 //Copyright (c) 2009 LW
 include_once('../common.php');
-include_once('../classes/Contact.php');
-include_once('../classes/Company.php');
+include_once('../class.Contact.php');
+include_once('../class.Company.php');
 
 $contact_id=$_SESSION['state']['contact']['id'];
 $contact=new contact($contact_id);
@@ -199,15 +199,15 @@ var Subject_Key=company_key;
 var Dom   = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;
 
-var Contact_Data={<?=$contact_data?>};
+var Contact_Data={<?php echo$contact_data?>};
 
-var Country_List=[<?=$country_list?>];
-var Address_Data={<?=$address_data?>};
+var Country_List=[<?php echo$country_list?>];
+var Address_Data={<?php echo$address_data?>};
 var Address_Keys=["key","country","country_code","country_d1","country_d2","town","postal_code","town_d1","town_d2","fuzzy","street","building","internal","description"];
 var Address_Meta_Keys=["type","function"];
 
-var current_salutation='salutation<?=$contact->get('Salutation Key')?>';
-var current_block='<?=$edit_block?>';
+var current_salutation='salutation<?php echo$contact->get('Salutation Key')?>';
+var current_block='<?php echo$edit_block?>';
 var old_salutation=current_salutation;
 var Current_Address_Index=0;
 
@@ -334,10 +334,10 @@ var update_details=function(e){
 	Dom.get('details_messages').innerHTML='';
 	Dom.setStyle(['save_details_button', 'cancel_save_details_button'], 'display', 'none'); 
     }else if (changes==1){
-	Dom.get('details_messages').innerHTML=changes+'<?=' '._('change')?>';
+	Dom.get('details_messages').innerHTML=changes+'<?php echo' '._('change')?>';
 	Dom.setStyle(['save_details_button', 'cancel_save_details_button'], 'display', ''); 
     }else{
-	Dom.get('details_messages').innerHTML=changes+'<?=' '._('changes')?>';
+	Dom.get('details_messages').innerHTML=changes+'<?php echo' '._('changes')?>';
 	Dom.setStyle(['save_details_button', 'cancel_save_details_button'], 'display', ''); 
     }
 

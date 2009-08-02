@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  File: PartLocation.php 
 
@@ -12,8 +12,8 @@
  Version 2.0
 */
 
-include_once('Part.php');
-include_once('Location.php');
+include_once('class.Part.php');
+include_once('class.Location.php');
 
 class PartLocation{
   

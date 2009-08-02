@@ -1,4 +1,4 @@
-<?
+<?php
 //@author Raul Perusquia <rulovico@gmail.com>
 //Copyright (c) 2009 LW
 include_once('../common.php');
@@ -39,7 +39,7 @@ function showdetails(o){
 
 			c3.setAttribute('colspan',3);
 			c3.innerHTML=r.details;
-			Dom.get('ch'+history_id).innerHTML='<?=_('Hide details')?>';
+			Dom.get('ch'+history_id).innerHTML='<?php echo_('Hide details')?>';
 			Dom.get('ch'+history_id).setAttribute('d',1);
 
 			
@@ -48,7 +48,7 @@ function showdetails(o){
 		}
 	    });   
     }else{
-	Dom.get('ch'+history_id).innerHTML='<?=_('view details')?>';
+	Dom.get('ch'+history_id).innerHTML='<?php echo_('view details')?>';
 	Dom.get('ch'+history_id).setAttribute('d',0);
 	table.deleteRow(row_index);
 
@@ -149,12 +149,12 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    var tableDivEL="table"+tableid;  
 		    
 		    var ColumnDefs = [
-				      {key:"date", label:"<?=_('Date')?>",className:"aright",width:150,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				      ,{key:"time", label:"<?=_('Time')?>",className:"aleft",width:50}
-				      ,{key:"objeto", label:"<?=_('Type')?>", className:"aleft",width:70,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				      ,{key:"handle", label:"<?=_('Author')?>",className:"aleft",width:80,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				      {key:"date", label:"<?php echo_('Date')?>",className:"aright",width:150,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				      ,{key:"time", label:"<?php echo_('Time')?>",className:"aleft",width:50}
+				      ,{key:"objeto", label:"<?php echo_('Type')?>", className:"aleft",width:70,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				      ,{key:"handle", label:"<?php echo_('Author')?>",className:"aleft",width:80,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
-				      ,{key:"note", label:"<?=_('Notes')?>",className:"aleft",width:400}
+				      ,{key:"note", label:"<?php echo_('Notes')?>",className:"aleft",width:400}
 					   ];
 		
 		    this.dataSource0  = new YAHOO.util.DataSource("ar_contacts.php?tipo=customer_history&tid="+tableid);
@@ -179,8 +179,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								 , {
 								     renderLoopSize: 5,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage    : <?=$_SESSION['state']['customer']['table']['nr']?>,containers : 'paginator', 
- 									      pageReportTemplate : '(<?=_('Page')?> {currentPage} <?=_('of')?> {totalPages})',alwaysVisible:false,
+									      rowsPerPage    : <?php echo$_SESSION['state']['customer']['table']['nr']?>,containers : 'paginator', 
+ 									      pageReportTemplate : '(<?php echo_('Page')?> {currentPage} <?php echo_('of')?> {totalPages})',alwaysVisible:false,
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
  									      firstPageLinkLabel :"<<",
@@ -192,8 +192,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?=$_SESSION['state']['customer']['table']['order']?>",
-									 dir: "<?=$_SESSION['state']['customer']['table']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['customer']['table']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['customer']['table']['order_dir']?>"
 								     },
 								     dynamicData : true
 
@@ -203,7 +203,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
-		    this.table0.filter={key:'<?=$_SESSION['state']['customer']['table']['f_field']?>',value:'<?=$_SESSION['state']['customer']['table']['f_value']?>'};
+		    this.table0.filter={key:'<?php echo$_SESSION['state']['customer']['table']['f_field']?>',value:'<?php echo$_SESSION['state']['customer']['table']['f_value']?>'};
 
 	    //   YAHOO.util.Event.addListener('f_input', "keyup",myFilterChangeValue,{table:this.table0,datasource:this.dataSource})
 			 

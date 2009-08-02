@@ -1,4 +1,4 @@
-<?include_once('../common.php');?>
+<?phpinclude_once('../common.php');?>
 
     var Dom   = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;

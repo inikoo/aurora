@@ -1,4 +1,4 @@
-<?
+<?php
 class Name {
 	var $db;
 	var $data = array ();

@@ -1,13 +1,13 @@
-<?
+<?php
 //@author Raul Perusquia <rulovico@gmail.com>
 //Copyright (c) 2009 LW
 include_once('../../app_files/db/dns.php');
-include_once('../../classes/Department.php');
-include_once('../../classes/Family.php');
-include_once('../../classes/Product.php');
-include_once('../../classes/Supplier.php');
-include_once('../../classes/Part.php');
-include_once('../../classes/Store.php');
+include_once('../../class.Department.php');
+include_once('../../class.Family.php');
+include_once('../../class.Product.php');
+include_once('../../class.Supplier.php');
+include_once('../../class.Part.php');
+include_once('../../class.Store.php');
 error_reporting(E_ALL);
 
 

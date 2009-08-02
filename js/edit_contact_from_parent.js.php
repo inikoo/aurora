@@ -520,10 +520,10 @@ var on_contact_item_change=function(){
 	    Dom.get('contact_messages').innerHTML='';
 	    Dom.setStyle(['save_contact_button', 'cancel_save_contact_button'], 'display', 'none'); 
 	}else if (Contact_Changes==1){
-	    Dom.get('contact_messages').innerHTML=Contact_Changes+'<?=' '._('change')?>';
+	    Dom.get('contact_messages').innerHTML=Contact_Changes+'<?php echo' '._('change')?>';
 	    Dom.setStyle(['save_contact_button', 'cancel_save_contact_button'], 'display', ''); 
 	}else{
-	    Dom.get('contact_messages').innerHTML=Contact_Changes+'<?=' '._('changes')?>';
+	    Dom.get('contact_messages').innerHTML=Contact_Changes+'<?php echo' '._('changes')?>';
 	    Dom.setStyle(['save_contact_button', 'cancel_save_contact_button'], 'display', ''); 
 	}
     }

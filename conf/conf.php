@@ -1,4 +1,4 @@
-<?
+<?php
 
 // Array configuratin the Autentication 
 $LU_conf = array(
@@ -82,6 +82,7 @@ $LU_conf = array(
 
 
 $myconf=array(
+	      
 	      'tax_rates'=>array(),
 	      'data_from'=>"2003-06-01 09:00:00",
 	      'order_id_type'=>'Order Header Numeric ID',

@@ -1,4 +1,4 @@
-<?
+<?php
 include_once('common.php');
 $_SESSION['views']['assets']='index';
 

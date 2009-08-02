@@ -1,4 +1,4 @@
-<?
+<?php
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 /*  AES implementation in PHP (c) Chris Veness 2005-2008. Right of free use is granted for all    */
 /*    commercial or non-commercial use. No warranty of any form is offered.                       */

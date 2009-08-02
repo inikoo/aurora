@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  File: login.php 
 
@@ -11,13 +11,11 @@
  
  Version 2.0
 */
-include_once('app_files/db/key.php');
-
+include_once('app_files/key.php');
 include_once('aes.php');
 
 
 $Sk="skstart|".(date('U')+300)."|".ip()."|".IKEY."|".sha1(mt_rand()).sha1(mt_rand());
-
 $St=AESEncryptCtr($Sk,SKEY, 256);
 
 //print AESDecryptCtr($St,SKEY,256);
@@ -44,17 +42,6 @@ $js_files=array(
 $smarty->assign('st',$St);
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
-
-
-
-
-// if(basename($_SERVER['PHP_SELF'])=='login.php'){
-//   header("Location: index.php"); 
-//   exit;
-//  }
-
-
-
 
 
 setlocale(LC_MESSAGES, $myconf['lang'].'_'.$myconf['country'].($myconf['encoding']!=''?'.'.$myconf['encoding']:''));
@@ -100,9 +87,11 @@ $sql="select `Language Key` as id,`Language Original Name` as original_name, `La
 
 
 
+
 $smarty->assign('other_langs', $other_langs);
 
 $smarty->display('login.tpl');
-exit;
+
+exit();
 
 ?>

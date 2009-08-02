@@ -1,4 +1,4 @@
-<?
+<?php
 require_once 'common.php';
 require_once 'stock_functions.php';
 

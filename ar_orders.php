@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  File: ar_orders.php 
 
@@ -12,8 +12,8 @@
  Version 2.0
 */
 require_once 'common.php';
-require_once 'classes/Order.php';
-require_once 'classes/Invoice.php';
+require_once 'class.Order.php';
+require_once 'class.Invoice.php';
 
 //require_once 'ar_common.php';
 

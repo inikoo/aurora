@@ -422,7 +422,7 @@ function deleteRow(tblId, txtIndex, txtError)
 		this.cfg.setProperty("pagedate", (firstDate.getMonth()+1) + "/" + firstDate.getFullYear());
 		this.render();
 	    } else {
-		alert("<?=_("Cannot select a date before 1/1/2006 or after 12/31/2008")?>");
+		alert("<?php echo_("Cannot select a date before 1/1/2006 or after 12/31/2008")?>");
 	    }
 	    
 	}

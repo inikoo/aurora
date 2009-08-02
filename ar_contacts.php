@@ -1,11 +1,11 @@
-<?
+<?php
 //@author Raul Perusquia <rulovico@gmail.com>
 //Copyright (c) 2009 LW
 require_once 'common.php';
 require_once '_order.php';
 
 require_once '_contact.php';
-require_once 'classes/Customer.php';
+require_once 'class.Customer.php';
 
 
 if (!$LU or !$LU->isLoggedIn()) {

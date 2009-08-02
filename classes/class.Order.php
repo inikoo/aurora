@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  File: Ordes.php 
 
@@ -11,15 +11,15 @@
  
  Version 2.0
 */
-include_once('DB_Table.php');
+include_once('class.DB_Table.php');
 
-include_once ('Staff.php');
-include_once ('Supplier.php');
-include_once ('Customer.php');
-include_once ('Store.php');
-include_once ('Ship_To.php');
+include_once('class.Staff.php');
+include_once('class.Supplier.php');
+include_once('class.Customer.php');
+include_once('class.Store.php');
+include_once('class.Ship_To.php');
 
-include_once ('search_customer.php');
+//xnclude_once('search_customer.php');
 
 
 class Order extends DB_Table{

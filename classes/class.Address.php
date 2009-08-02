@@ -1,4 +1,4 @@
-<?
+<?php
 /*
   File: Address.php 
 
@@ -16,8 +16,8 @@
 
 
 */
-include_once('DB_Table.php');
-include_once('Country.php');
+include_once('class.DB_Table.php');
+include_once('class.Country.php');
 /* class: Address
    Class to manage the *Address Dimension* table
 */

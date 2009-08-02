@@ -1,4 +1,4 @@
-<?
+<?php
 $frequency='day';
 if(isset($_REQUEST['f'])){
 $_f=$_REQUEST['f'];
@@ -56,7 +56,7 @@ showValues: true
 ];
             
   timeplot = Timeplot.create(document.getElementById("my-timeplot"), plotInfo);
-timeplot.loadText("<?=$url?>", ",", eventSource);
+timeplot.loadText("<?php echo $url?>", ",", eventSource);
 
 }
 

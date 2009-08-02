@@ -1,4 +1,4 @@
-<?include_once('../common.php');?>
+<?phpinclude_once('../common.php');?>
     
     var Event = YAHOO.util.Event;
 var Dom   = YAHOO.util.Dom;
@@ -11,17 +11,17 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		var tableid=0;
 		var tableDivEL="table"+tableid;
 		var ColumnDefs = [
-				  {key:"id", label:"<?=_('Id')?>",width:45,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				  ,{key:"supplier", label:"<?=_('Supplier')?>",  width:60,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				  {key:"id", label:"<?php echo_('Id')?>",width:45,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				  ,{key:"supplier", label:"<?php echo_('Supplier')?>",  width:60,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				  
-	  ,{key:"code", label:"<?=_('Code')?>",  width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				  ,{key:"name", label:"<?=_('Name')?>",<?=($_SESSION['state']['supplier_products']['view']=='product_general'?'':'hidden:true,')?>width:300, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				  ,{key:"usedin", label:"<?=_('Used In')?>", width:250,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+	  ,{key:"code", label:"<?php echo_('Code')?>",  width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				  ,{key:"name", label:"<?php echo_('Name')?>",<?php echo($_SESSION['state']['supplier_products']['view']=='product_general'?'':'hidden:true,')?>width:300, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				  ,{key:"usedin", label:"<?php echo_('Used In')?>", width:250,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
-				  ,{key:"cost", label:"<?=_('Cost')?>",<?=($_SESSION['state']['supplier_products']['view']=='product_sales'?'':'hidden:true,')?> width:35,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				  ,{key:"required", label:"<?=_('Required')?>",<?=($_SESSION['state']['supplier_products']['view']=='product_sales'?'':'hidden:true,')?> width:55,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				  ,{key:"provided", label:"<?=_('Used')?>",<?=($_SESSION['state']['supplier_products']['view']=='product_sales'?'':'hidden:true,')?> width:55,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				  ,{key:"profit", label:"<?=_('Profit')?>",<?=($_SESSION['state']['supplier_products']['view']=='product_sales'?'':'hidden:true,')?> width:55,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				  ,{key:"cost", label:"<?php echo_('Cost')?>",<?php echo($_SESSION['state']['supplier_products']['view']=='product_sales'?'':'hidden:true,')?> width:35,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				  ,{key:"required", label:"<?php echo_('Required')?>",<?php echo($_SESSION['state']['supplier_products']['view']=='product_sales'?'':'hidden:true,')?> width:55,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				  ,{key:"provided", label:"<?php echo_('Used')?>",<?php echo($_SESSION['state']['supplier_products']['view']=='product_sales'?'':'hidden:true,')?> width:55,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				  ,{key:"profit", label:"<?php echo_('Profit')?>",<?php echo($_SESSION['state']['supplier_products']['view']=='product_sales'?'':'hidden:true,')?> width:55,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
 				  ];
 
@@ -50,8 +50,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								 //draggableColumns:true,
 								 renderLoopSize: 50,generateRequest : myRequestBuilder
 								 ,paginator : new YAHOO.widget.Paginator({
-									 rowsPerPage:<?=$_SESSION['state']['supplier_products']['table']['nr']?>,containers : 'paginator0', 
-									 pageReportTemplate : '(<?=_('Page')?> {currentPage} <?=_('of')?> {totalPages})',
+									 rowsPerPage:<?php echo$_SESSION['state']['supplier_products']['table']['nr']?>,containers : 'paginator0', 
+									 pageReportTemplate : '(<?php echo_('Page')?> {currentPage} <?php echo_('of')?> {totalPages})',
 									 previousPageLinkLabel : "<",
 									 nextPageLinkLabel : ">",
  									      firstPageLinkLabel :"<<",
@@ -60,8 +60,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								     })
 								 
 								 ,sortedBy : {
-								     key: "<?=$_SESSION['state']['supplier_products']['table']['order']?>",
-								     dir: "<?=$_SESSION['state']['supplier_products']['table']['order_dir']?>"
+								     key: "<?php echo$_SESSION['state']['supplier_products']['table']['order']?>",
+								     dir: "<?php echo$_SESSION['state']['supplier_products']['table']['order_dir']?>"
 								 }
 								 ,dynamicData : true
 								 
@@ -70,8 +70,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
 		this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 		this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
-		this.table0.filter={key:'<?=$_SESSION['state']['supplier_products']['table']['f_field']?>',value:'<?=$_SESSION['state']['supplier_products']['table']['f_value']?>'};
-		this.table0.view='<?=$_SESSION['state']['supplier_products']['view']?>';
+		this.table0.filter={key:'<?php echo$_SESSION['state']['supplier_products']['table']['f_field']?>',value:'<?php echo$_SESSION['state']['supplier_products']['table']['f_value']?>'};
+		this.table0.view='<?php echo$_SESSION['state']['supplier_products']['view']?>';
 
 	    }});
 

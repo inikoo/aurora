@@ -1,6 +1,6 @@
-<?
+<?php
 include_once('common.php');
-include_once('classes/Product.php');
+include_once('class.Product.php');
 
 $view_sales=$LU->checkRight(PROD_SALES_VIEW);
 $view_stock=$LU->checkRight(PROD_STK_VIEW);

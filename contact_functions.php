@@ -1,4 +1,4 @@
-<?
+<?php
 function savecontact(){
   
   $db =& MDB2::singleton();

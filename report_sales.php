@@ -1,7 +1,7 @@
-<?
+<?php
 include_once('common.php');
 include_once('report_functions.php');
-include_once('classes/Store.php');
+include_once('class.Store.php');
 
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',

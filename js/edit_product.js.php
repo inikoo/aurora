@@ -1,4 +1,4 @@
-<?
+<?php
     include_once('../common.php');
 ?>
 var Event = YAHOO.util.Event;
@@ -8,7 +8,7 @@ var    current_form = 'description';
 var    num_changed = 0;
 var    num_errors = 0;
 var editor;
-var editing='<?=$_SESSION['state']['product']['edit']?>';
+var editing='<?php echo$_SESSION['state']['product']['edit']?>';
 
 
 
@@ -124,14 +124,14 @@ function save_menu(){
 
 
 var cat_list;
-jsonString='<?=$_SESSION['state']['product']['shapes'];?>';
+jsonString='<?php echo$_SESSION['state']['product']['shapes'];?>';
 try {
     var shapes = YAHOO.lang.JSON.parse(jsonString);
 }
 catch (e) {
     alert("ERROR:P_PES_JSONDATA");
 };
-jsonString='<?=$_SESSION['state']['product']['shapes_example'];?>';
+jsonString='<?php echo$_SESSION['state']['product']['shapes_example'];?>';
 try {
     var shapes_example = YAHOO.lang.JSON.parse(jsonString);
 }
@@ -272,18 +272,18 @@ var change_element= function(o){
 	new_value=FormatNumber(new_value,'.','',2);
 	var diff=new_value-old_value;
 	if(diff>0)
-	    prefix='+'+'<?=$myconf['currency_symbol']?>';
+	    prefix='+'+'<?php echo$myconf['currency_symbol']?>';
 	else
-	    prefix='-'+'<?=$myconf['currency_symbol']?>';
+	    prefix='-'+'<?php echo$myconf['currency_symbol']?>';
 	
 
 	if(old_value==0)
 	    var per='';
 	else{
 
-	    var per=FormatNumber((100*(diff/old_value)).toFixed(1),'<?=$myconf['decimal_point']?>','<?=$myconf['thosusand_sep']?>',1)+'%';
+	    var per=FormatNumber((100*(diff/old_value)).toFixed(1),'<?php echo$myconf['decimal_point']?>','<?php echo$myconf['thosusand_sep']?>',1)+'%';
 	}
-	var diff=FormatNumber(Math.abs(diff).toFixed(2),'<?=$myconf['decimal_point']?>','<?=$myconf['thosusand_sep']?>',2);
+	var diff=FormatNumber(Math.abs(diff).toFixed(2),'<?php echo$myconf['decimal_point']?>','<?php echo$myconf['thosusand_sep']?>',2);
 	return prefix+diff+' '+per;
     }
 
@@ -292,7 +292,7 @@ function format_rrp(o){
       {
 	  price_changed(o);
       }else{
-      o.value=FormatNumber(o.value,'<?=$myconf['decimal_point']?>','<?=$myconf['thosusand_sep']?>',2);
+      o.value=FormatNumber(o.value,'<?php echo$myconf['decimal_point']?>','<?php echo$myconf['thosusand_sep']?>',2);
       price_changed(o);
   }
 
@@ -354,7 +354,7 @@ function units_save(){
 }
 
 function delete_part(id,name){
-    var answer = confirm("<?=_('Are you sure you want to desassociate this part')?> ("+name+")");
+    var answer = confirm("<?php echo_('Are you sure you want to desassociate this part')?> ("+name+")");
     if (answer){
 
 	var request='ar_assets.php?tipo=ep_update&key=part_delete'+'&value='+escape(id);
@@ -383,7 +383,7 @@ function delete_part(id,name){
 
 
 function delete_image(image_id,image_name){
-    var answer = confirm("<?=_('Are you sure you want to delete this image')?> ("+image_name+")");
+    var answer = confirm("<?php echo_('Are you sure you want to delete this image')?> ("+image_name+")");
     if (answer){
 
 	
@@ -399,7 +399,7 @@ function delete_image(image_id,image_name){
 			    var new_principal=r.new_principal;
 			    Dom.get('images').setAttribute('principal',new_principal);
 			    var new_but=Dom.get('img_set_principal'+new_principal);
-			    new_but.setAttribute('title','<?=_('Main Image')?>');
+			    new_but.setAttribute('title','<?php echo_('Main Image')?>');
 			    new_but.setAttribute('principal',1);
 			    new_but.setAttribute('src',"art/icons/asterisk_orange.png");		
 			    new_but.style.cursor="default";
@@ -432,11 +432,11 @@ function set_image_as_principal(o){
 			Dom.get('images').setAttribute('principal',new_principal);
 			var old_but=Dom.get('img_set_principal'+old_principal);
 			var new_but=Dom.get('img_set_principal'+new_principal);
-			old_but.setAttribute('title','<?=_('Set as the principal image')?>');
+			old_but.setAttribute('title','<?php echo_('Set as the principal image')?>');
 			old_but.setAttribute('principal',0);
 			old_but.setAttribute('src',"art/icons/picture_empty.png");
 			old_but.style.cursor="pointer";
-			new_but.setAttribute('title','<?=_('Main Image')?>');
+			new_but.setAttribute('title','<?php echo_('Main Image')?>');
 			new_but.setAttribute('principal',1);
 			new_but.setAttribute('src',"art/icons/asterisk_orange.png");		
 			new_but.style.cursor="default";
@@ -465,22 +465,22 @@ function caption_changed(o){
 	if(ovalue!=o.value){
 	    if(name=='description'){
 		if(o.value==''){
-		    description_errors.description="<?=_("The product name can not be empty")?>";
+		    description_errors.description="<?php echo_("The product name can not be empty")?>";
 		}
 		else if(o.value.lenght>75){
-		    description_errors.description="<?=_("The product name can not be empty")?>";
+		    description_errors.description="<?php echo_("The product name can not be empty")?>";
 		}else
 		    delete description_errors.description
 
 
 	    }else if(name=='sdescription'){
 		if(o.value==''){
-		    description_errors.sdescription="<?=_("The product short description can not be empty")?>";
+		    description_errors.sdescription="<?php echo_("The product short description can not be empty")?>";
 		  //   save_menu();
 // 		    return;
 		}
 		if(o.value.lenght>75){
-		    description_errors.sdescription="<?=_("The product short description can not be longer the 40 characters")?>";
+		    description_errors.sdescription="<?php echo_("The product short description can not be longer the 40 characters")?>";
 		 //    save_menu();
 // 		    return;
 		}else
@@ -519,7 +519,7 @@ function percentage(old_value,new_value){
 	prefix='+';
     else
 	prefix='';
-    var txt=prefix+FormatNumber((100*(diff/old_value)).toFixed(1),'<?=$myconf['decimal_point']?>','<?=$myconf['thosusand_sep']?>',1)+'%';
+    var txt=prefix+FormatNumber((100*(diff/old_value)).toFixed(1),'<?php echo$myconf['decimal_point']?>','<?php echo$myconf['thosusand_sep']?>',1)+'%';
 
     return txt;
 
@@ -539,7 +539,7 @@ function units_changed(o){
 		Dom.get(name+"_save").style.visibility='hidden';
 		Dom.get(name+"_cancel").style.display='';
 	   
-		Dom.get("change_units_diff").innerHTML='<?_('Error')?>';
+		Dom.get("change_units_diff").innerHTML='<?php_('Error')?>';
 	    }else{
 		Dom.get("change_units_diff").innerHTML=percentage(ovalue,o.value);
 		Dom.get("change_units_price_diff").innerHTML=percentage(Dom.get("v_price_fcu").getAttribute('ovalue'),Dom.get("v_price_fcu").value);	
@@ -581,13 +581,13 @@ function validate_dim(value,tipo){
 	return {ok:false,msg:''};
 	break;
     case('shape1'):
-	if(!value.match(/^[0-9\<?=$myconf['decimal_point']?>]+x[0-9\<?=$myconf['decimal_point']?>]+x[0-9\<?=$myconf['decimal_point']?>]+$/))
+	if(!value.match(/^[0-9\<?php echo$myconf['decimal_point']?>]+x[0-9\<?php echo$myconf['decimal_point']?>]+x[0-9\<?php echo$myconf['decimal_point']?>]+$/))
 	    return {ok:false,msg:''};
 	else{
 	    var dim=value.split("x",3);
 	    var vol=dim[0]*dim[1]*dim[2];
 	    if(vol==0)
-		return {ok:false,msg:'<?=_('Zero volumen')?>'};
+		return {ok:false,msg:'<?php echo_('Zero volumen')?>'};
 	    else
 		return {ok:true,msg:'',vol:vol};
 
@@ -595,14 +595,14 @@ function validate_dim(value,tipo){
 	break;
     case('shape2'):
     case('shape4'):
-	if(!value.match(/^[0-9\<?=$myconf['decimal_point']?>\s]+$/))
+	if(!value.match(/^[0-9\<?php echo$myconf['decimal_point']?>\s]+$/))
 	    return {ok:false,msg:''};
 	else
 	    return {ok:true,msg:''};
 	break;	
     case('shape3'):
     case('shape5'):
-	if(!value.match(/^[0-9\<?=$myconf['decimal_point']?>]+x[0-9\<?=$myconf['decimal_point']?>]+$/))
+	if(!value.match(/^[0-9\<?php echo$myconf['decimal_point']?>]+x[0-9\<?php echo$myconf['decimal_point']?>]+$/))
 	    return {ok:false,msg:''};
 	else
 	    return {ok:true,msg:''};
@@ -654,7 +654,7 @@ function odim_fcu_changed(o){
     data_old=validate_dim(o.getAttribute('ovalue'),tipo_shape);
     data_new=validate_dim(o.value,tipo_shape);
     if(!data_new.ok){
-	Dom.get('change_units_odim_diff').innerHTML='<?_('Error')?>';
+	Dom.get('change_units_odim_diff').innerHTML='<?php_('Error')?>';
 	
     }else{
 	if(data_old.ok)
@@ -669,19 +669,19 @@ function price_changed(o){
 	if(ovalue!=o.value){
 	    Dom.get(name+"_save").style.visibility='visible';
 	    if(o.value==''){
-		Dom.get(name+"_change").innerHTML='<?=_('RRP value unset')?>';
+		Dom.get(name+"_change").innerHTML='<?php echo_('RRP value unset')?>';
 		Dom.get(name+"_ou").innerHTML='';
 	    }else if(ovalue==''){
 		value=FormatNumber(o.value,'.','',2);
 		factor=FormatNumber(o.getAttribute('factor'),'.','',6);
-		Dom.get(name+"_change").innerHTML='<?=_('RRP set to')?> '+'<?=$myconf['currency_symbol']?>'+FormatNumber(value,'<?=$myconf['decimal_point']?>','<?=$myconf['thosusand_sep']?>',2);
-		Dom.get(name+"_ou").innerHTML='<?=$myconf['currency_symbol']?>'+FormatNumber((value*factor).toFixed(2),'<?=$myconf['decimal_point']?>','<?=$myconf['thosusand_sep']?>',2);
+		Dom.get(name+"_change").innerHTML='<?php echo_('RRP set to')?> '+'<?php echo$myconf['currency_symbol']?>'+FormatNumber(value,'<?php echo$myconf['decimal_point']?>','<?php echo$myconf['thosusand_sep']?>',2);
+		Dom.get(name+"_ou").innerHTML='<?php echo$myconf['currency_symbol']?>'+FormatNumber((value*factor).toFixed(2),'<?php echo$myconf['decimal_point']?>','<?php echo$myconf['thosusand_sep']?>',2);
 	    }else{
 		value=FormatNumber(o.value,'.','',2);
 		factor=FormatNumber(o.getAttribute('factor'),'.','',6);
 		change=price_change(ovalue,o.value);
 		Dom.get(name+"_change").innerHTML=change;
-		Dom.get(name+"_ou").innerHTML='<?=$myconf['currency_symbol']?>'+FormatNumber((value*factor).toFixed(2),'<?=$myconf['decimal_point']?>','<?=$myconf['thosusand_sep']?>',2);
+		Dom.get(name+"_ou").innerHTML='<?php echo$myconf['currency_symbol']?>'+FormatNumber((value*factor).toFixed(2),'<?php echo$myconf['decimal_point']?>','<?php echo$myconf['thosusand_sep']?>',2);
 	    }
 	}else{
 	    Dom.get(name+"_save").style.visibility='hidden';
@@ -820,10 +820,10 @@ function delete_list_item (e,id){
 
 
     var check_number = function(e){
-	re=<?=$regex['thousand_sep']?>;
+	re=<?php echo$regex['thousand_sep']?>;
 	value=this.value.replace(re,'')
-	re=<?=$regex['number']?>;
-	re_strict=<?=$regex['strict_number']?>;
+	re=<?php echo$regex['number']?>;
+	re_strict=<?php echo$regex['strict_number']?>;
 
 	if(!re.test(value)){
 	    this.className='text aright error';
@@ -846,14 +846,14 @@ function delete_list_item (e,id){
 	    scope.className='text aright error';
 	    return
 		}else if(tipo==1)
-	    re=<?=$regex['dimension3']?>;
+	    re=<?php echo$regex['dimension3']?>;
 	else if(tipo==3 || tipo==5)
-	    re=<?=$regex['dimension2']?>;
+	    re=<?php echo$regex['dimension2']?>;
 	else if(tipo==2 || tipo==4)
-	    re=<?=$regex['dimension1']?>;
+	    re=<?php echo$regex['dimension1']?>;
 
 
-	re_prepare=<?=$regex['thousand_sep']?>;
+	re_prepare=<?php echo$regex['thousand_sep']?>;
 	value=scope.value.replace(re_prepare,'')
 
 
@@ -865,7 +865,7 @@ function delete_list_item (e,id){
     }
     var change_shape= function(e){
 	tipo=this.selectedIndex;
-	shape_examples=new Array(<?='"'.join('","',$_shape_example).'"'?>)
+	shape_examples=new Array(<?php echo'"'.join('","',$_shape_example).'"'?>)
 	Dom.get(this.id+'_ex').innerHTML=shape_examples[tipo];
 	check_dimension('',Dom.get(this.id.replace(/_shape/,'')))
 
@@ -1274,11 +1274,11 @@ function init(){
 		    Dom.get('images').setAttribute('principal',r.data.id)
 		    set_principal_img.setAttribute("principal", 1);
 		    set_principal_img.setAttribute("src", 'art/icons/asterisk_orange.png');
-		    set_principal_img.setAttribute("title", "<?=_('Main Image')?>");
+		    set_principal_img.setAttribute("title", "<?php echo_('Main Image')?>");
 		}else{
 		    set_principal_img.setAttribute("principal", 0);
 		    set_principal_img.setAttribute("src", 'art/icons/picture_empty.png');
-		    set_principal_img.setAttribute("title", "<?=_('Set as the principal image')?>");
+		    set_principal_img.setAttribute("title", "<?php echo_('Set as the principal image')?>");
 		}	
 
 
@@ -1286,7 +1286,7 @@ function init(){
 		set_principal_span.appendChild(set_principal_img);
 		var delete_span=document.createElement("span");
 		delete_span.style.cursor='pointer';
-		delete_span.innerHTML='<?=_('Delete')?> <img src="art/icons/cross.png">';
+		delete_span.innerHTML='<?php echo_('Delete')?> <img src="art/icons/cross.png">';
 		delete_span.setAttribute("onClick", 'delete_image('+r.data.id+',"'+r.data.name+'")');
 
 		operations_div.appendChild(set_principal_span);
@@ -1296,12 +1296,12 @@ function init(){
 		var caption_div=document.createElement("div");
 		caption_div.setAttribute("class",'caption');
 		var caption_tag_div=document.createElement("div");
-		caption_tag_div.innerHTML='<?=_('Caption')?>:';
+		caption_tag_div.innerHTML='<?php echo_('Caption')?>:';
 		var save_caption_span=document.createElement("span");
 		save_caption_span.setAttribute("class",'save');
 		var save_caption_img=document.createElement("img");
 		save_caption_img.setAttribute("src",'art/icons/disk.png');
-		save_caption_img.setAttribute("title",'<?=_('Save caption')?>');
+		save_caption_img.setAttribute("title",'<?php echo_('Save caption')?>');
 		save_caption_img.setAttribute("id",'save_img_caption'+r.data.id);
 		save_caption_img.setAttribute("onClick",'save_image("img_caption",'+r.data.id+')');
 		save_caption_img.setAttribute("class",'caption');
@@ -1447,7 +1447,7 @@ var save_new_part=function(){
 		    var td = document.createElement("td");
 		    td.setAttribute("class","label" );
 		    td.setAttribute("style","width:15em" );
-		    td.innerHTML='<?=_('Parts product code')?>:';
+		    td.innerHTML='<?php echo_('Parts product code')?>:';
 		    tr.appendChild(td);
 		    var td = document.createElement("td");
 		    td.setAttribute("style","text-align:left;" );
@@ -1466,7 +1466,7 @@ var save_new_part=function(){
 		    tr.setAttribute("id",'sup_tr3_'+part_id );
 		    var td = document.createElement("td");
 		    td.setAttribute("class","label" );
-		    td.innerHTML='<?=_('Cost per')?> '+r.units_tipo_name+':';
+		    td.innerHTML='<?php echo_('Cost per')?> '+r.units_tipo_name+':';
 		    tr.appendChild(td);
 
 		    var td = document.createElement("td");
@@ -1524,8 +1524,8 @@ YAHOO.util.Event.onContentReady("adding_new_part", function () {
  	var oAC = new YAHOO.widget.AutoComplete("new_part_input", "new_part_container", oDS);
  	oAC.resultTypeList = false; 
 	oAC.generateRequest = function(sQuery) {
-	    // alert("?tipo=parts_name&except_product=<?=$_SESSION['state']['product']['id']?>&query=" + sQuery)
- 	    return "?tipo=parts_name&except_product=<?=$_SESSION['state']['product']['id']?>&query=" + sQuery ;
+	    // alert("?tipo=parts_name&except_product=<?php echo$_SESSION['state']['product']['id']?>&query=" + sQuery)
+ 	    return "?tipo=parts_name&except_product=<?php echo$_SESSION['state']['product']['id']?>&query=" + sQuery ;
  	};
 	oAC.forceSelection = true; 
 	oAC.itemSelectEvent.subscribe(part_selected); 

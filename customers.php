@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  File: customers.php 
 

@@ -1,7 +1,7 @@
-<?
+<?php
 include_once('common.php');
-include_once('classes/Supplier.php');
-include_once('classes/PurchaseOrder.php');
+include_once('class.Supplier.php');
+include_once('class.PurchaseOrder.php');
 
 
 

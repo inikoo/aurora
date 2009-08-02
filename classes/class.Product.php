@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  File: Product.php 
 
@@ -11,11 +11,11 @@
  
  Version 2.0
 */
-include_once('DB_Table.php');
-include_once('Deal.php');
-include_once('SupplierProduct.php');
-include_once('Part.php');
-include_once('Store.php');
+include_once('class.DB_Table.php');
+include_once('class.Deal.php');
+include_once('class.SupplierProduct.php');
+include_once('class.Part.php');
+include_once('class.Store.php');
 
 /* class: product
    Class to manage the *Product Family Dimension* table

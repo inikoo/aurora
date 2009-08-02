@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  File: timeplot_data.php 
 
