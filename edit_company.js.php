@@ -1,12 +1,13 @@
 <?php
 //@author Raul Perusquia <rulovico@gmail.com>
 //Copyright (c) 2009 LW
-include_once('../common.php');
-include_once('../class.Contact.php');
-include_once('../class.Company.php');
+include_once('common.php');
+include_once('class.Contact.php');
+include_once('class.Company.php');
 
 $contact_id=$_SESSION['state']['contact']['id'];
 $contact=new contact($contact_id);
+
 
 
 $edit_block='personal';
@@ -63,10 +64,13 @@ foreach($contacts as $contact){
   $emails=$contact->get_emails();
   $email_data='';
   foreach($emails as $email){
-    $email_data.=sprintf(',%d:{"Email_Key":%d,"Email":"%s"}'
+    $email_data.=sprintf(',%d:{"Email_Key":%d,"Email":"%s","Email_Contact_Name":"%s","Email_Description":"%s","Email_Is_Main":"%s"}'
 			 ,$email->id
 			 ,$email->id
 			 ,$email->data['Email']
+			 ,addslashes($email->data['Email Contact Name'])
+			 ,addslashes($email->data['Email Description'])
+			 ,$email->data['Email Is Main']
 			 );
   }
   $email_data=preg_replace('/^,/','',$email_data);

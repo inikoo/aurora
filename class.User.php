@@ -259,30 +259,94 @@ function get($tipo){
    
  }
 
- function can_view($tag){
+ function can_view($tag,$tag_key=false){
    if(!is_string($tag))
      return false;
-   
    $tag=strtolower(_trim($tag));
- 
+   if($tag_key==false)
+     return $this->can_view_any($tag);
+   
+   return $this->can_view_this_key($tag,$tag_key);
+   
+ }
+
+ function can_create($tag,$tag_key=false){
+   if(!is_string($tag))
+     return false;
+   $tag=strtolower(_trim($tag));
+   if($tag_key==false)
+     return $this->can_create_any($tag);
+   if($this->can_create_any($tag))
+     return true;
+ }
+function can_edit($tag,$tag_key=false){
+   if(!is_string($tag))
+     return false;
+   $tag=strtolower(_trim($tag));
+   if($tag_key==false)
+     return $this->can_edit_any($tag);
+   if($this->can_edit_any($tag))
+     return true;
+ }
+function can_delete($tag,$tag_key=false){
+   if(!is_string($tag))
+     return false;
+   $tag=strtolower(_trim($tag));
+   if($tag_key==false)
+     return $this->can_delete_any($tag);
+   if($this->can_delete_any($tag))
+     return true;
+ }
+
+
+ function can_view_any($tag){
+
    if(array_key_exists($tag,$this->rights_allow['View']))
      return true;
    else
      return false;
  }
 
+ function can_create_any($tag){
+   if(!is_string($tag))
+     return false;
+   $tag=strtolower(_trim($tag));
+   if(array_key_exists($tag,$this->rights_allow['Create']))
+     return true;
+   else
+     return false;
+ }
+function can_edit_any($tag){
+   if(!is_string($tag))
+     return false;
+   $tag=strtolower(_trim($tag));
+   if(array_key_exists($tag,$this->rights_allow['Edit']))
+     return true;
+   else
+     return false;
+ }
+function can_delete_any($tag){
+   if(!is_string($tag))
+     return false;
+   $tag=strtolower(_trim($tag));
+   if(array_key_exists($tag,$this->rights_allow['Delete']))
+     return true;
+   else
+     return false;
+ }
 
  function read_groups(){
    $this->groups=array();
    $this->groups_key_list='';
-   $sql=sprintf("select * from `User Group User Bridge` UGUB left join `User Group Dimension` GD on (GD.`User Group Key`=UGUB.`User Key`) where UGUB.`User Key`=%d",$this->id);
+   $sql=sprintf("select * from `User Group User Bridge` UGUB left join `User Group Dimension` GD on (GD.`User Group Key`=UGUB.`User Group Key`) where UGUB.`User Key`=%d",$this->id);
 
    $res=mysql_query($sql);
    while($row=mysql_fetch_array($res)){
-     $this->groups[$row['Group Key']]=array('Group Name'=>$row['Group Name']);
-     $this->group_key_list.=','.$row['Group Key'];
+     $this->groups[$row['User Group Key']]=array('User Group Name'=>$row['User Group Name']);
+     $this->groups_key_list.=','.$row['User Group Key'];
    }
    $this->groups_key_list=preg_replace('/^,/','', $this->groups_key_list);
+
    $this->groups_read=true;
 }
 
@@ -292,6 +356,7 @@ function get($tipo){
    $this->rights_allow['View']=array();
    $this->rights_allow['Delete']=array();
    $this->rights_allow['Edit']=array();
+   $this->rights_allow['Create']=array();
    $this->rights=array();
 
    if(!$this->groups_read)
@@ -300,6 +365,7 @@ function get($tipo){
    if(count($this->groups)>0){
 
    $sql=sprintf("select * from `User Group Rights Bridge`  UGRB left join `Right Dimension` RD on (RD.`Right Key`=UGRB.`Right Key`)  where `Group Key` in (%s)", $this->groups_key_list);
+ 
    $res=mysql_query($sql);
    while($row=mysql_fetch_array($res)){
      if($row['Right Type']=='View'){
@@ -310,8 +376,13 @@ function get($tipo){
        $this->rights[$row['Right Name']]['`Delete']='Delete';
      }if($row['Right Type']=='Edit'){
        $this->rights_allow['Edit'][$row['Right Name']]=$row['Right Name'];
-       $this->rights[$row['Right Edit']]['View']='Edit';
+       $this->rights[$row['Right Name']]['Edit']='Edit';
+     }if($row['Right Type']=='Create'){
+       $this->rights_allow['Create'][$row['Right Name']]=$row['Right Name'];
+       $this->rights[$row['Right Name']]['Create']='Create';
      }
+     
+
    }
    }
     $sql=sprintf("select * from `User Rights Bridge`  URB left join  `Right Dimension` RD on (RD.`Right Key`=URB.`Right Key`)  where `User Key`=%d", $this->id);
@@ -326,7 +397,10 @@ function get($tipo){
        $this->rights[$row['Right Name']]['`Delete']='Delete';
      }if($row['Right Type']=='Edit'){
        $this->rights_allow['Edit'][$row['Right Name']]=$row['Right Name'];
-       $this->rights[$row['Right Edit']]['View']='Edit';
+       $this->rights[$row['Right Name']]['Edit']='Edit';
+     }if($row['Right Type']=='Create'){
+       $this->rights_allow['Create'][$row['Right Name']]=$row['Right Name'];
+       $this->rights[$row['Right Name']]['Create']='Create';
      }
    }
 
@@ -334,6 +408,7 @@ function get($tipo){
    
  }
  
+
 
 
   }

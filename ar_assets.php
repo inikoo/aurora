@@ -13,7 +13,7 @@
 */
 
 require_once 'common.php';
-require_once 'stock_functions.php';
+//require_once 'stock_functions.php';
 require_once 'class.Product.php';
 require_once 'class.Department.php';
 require_once 'class.Family.php';
@@ -25,11 +25,7 @@ require_once 'class.PartLocation.php';
 //require_once 'ar_common.php';
 
 
-if (!$LU or !$LU->isLoggedIn()) {
-  $response=array('state'=>402,'resp'=>_('Forbidden'));
-  echo json_encode($response);
-  exit;
- }
+
 
 
 if(!isset($_REQUEST['tipo']))

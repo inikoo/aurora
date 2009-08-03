@@ -11,7 +11,7 @@
  
  Version 2.0
 */
-include_once('Family.php');
+include_once('class.Family.php');
 
 /* class: Department
    Class to manage the *Product Department Dimension* table

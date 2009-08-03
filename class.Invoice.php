@@ -18,7 +18,7 @@ include_once('class.DB_Table.php');
 
 include_once('class.Order.php');
 
-include_once('DeliveryNote.php');
+include_once('class.DeliveryNote.php');
 
 /* class: Invoice
  Class to manage the *Invoice Dimension* table

@@ -83,18 +83,24 @@ abstract class DB_Table
 
 
     // if($this->table_name=='Telecom'){
-      // print_r($data);exit;
+   
     // }
+
+
     $base_data=$this->base_data();
   
     foreach($data as $key=>$value){
+      
+      
       if(preg_match('/^Address.*Data$/',$key))
 	$this->update_field_switcher($key,$value,$options);
+      
+      else if($this->table_name=='Contact' and $key=='Contact Name Components')
+	$this->update_field_switcher($key,$value,$options);
+
       elseif(array_key_exists($key,$base_data)){
 
 	if($value!=$this->data[$key]){
-	  //if($this->table_name=='Telecom')
-	  //print "XXX data to update ".$this->data[$key]." ->  $value in $key ".$this->table_name.":\n";
 	  $this->update_field_switcher($key,$value,$options);
 	}
       }

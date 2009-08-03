@@ -18,7 +18,7 @@ include_once('class.Contact.php');
 include_once('class.Telecom.php');
 include_once('class.Email.php');
 include_once('class.Address.php');
-include_once('Name.php');
+//include_once('Name.php');
 /* class: Supplier
  Class to manage the *Supplier Dimension* table
 */

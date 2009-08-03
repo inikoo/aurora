@@ -1,13 +1,8 @@
 <?php
 require_once 'common.php';
 require_once 'class.Company.php';
-require_once 'Supplier.php';
+require_once 'class.Supplier.php';
 
-if (!$LU or !$LU->isLoggedIn()) {
-  $response=array('state'=>402,'resp'=>_('Forbidden'));
-  echo json_encode($response);
-  exit;
- }
 
 
 if(!isset($_REQUEST['tipo']))
@@ -18,9 +13,10 @@ if(!isset($_REQUEST['tipo']))
   }
 
 $editor=array(
-	      'Author Name'=>$_USER_CONTACT_NAME,
-	      'Author Key'=>$_USER_CONTACT_KEY,
-	      'User Key'=>$_USER_KEY
+	      'Author Name'=>$user->data['User Alias'],
+	      'Author Type'=>$user->data['User Type'],
+	      'Author Key'=>$user->data['User Parent Key'],
+	      'User Key'=>$user->id
 	      );
 
 
@@ -403,6 +399,100 @@ case('edit_company'):
   echo json_encode($response);
  
   break;
+
+    //---------------------------------------------------------------------------------------
+case('edit_contact'):
+  if(!isset($_REQUEST['key']) ){
+    $response=array('state'=>400,'msg'=>'Error no key');
+  }
+ if( !isset($_REQUEST['value']) ){
+   $response=array('state'=>400,'msg'=>'Error no value');
+ }
+
+   $tmp=preg_replace('/\\\"/','"',$_REQUEST['value']);
+   $tmp=preg_replace('/\\\\\"/','"',$tmp);
+   
+   $raw_data=json_decode($tmp, true);
+
+   if(!is_array($raw_data)){
+     $response=array('state'=>400,'msg'=>'Wrong value');
+     echo json_encode($response);
+     return;
+   }
+ 
+
+
+
+
+
+ if( !isset($_REQUEST['id']) or !is_numeric($_REQUEST['id'])  ){
+   $contact_key=$_SESSION['state']['contact']['id'];
+ }else
+   $contact_key=$_REQUEST['id'];
+
+ $contact=new Contact($contact_key);
+
+ if(!$contact->id){
+   $response=array('state'=>400,'msg'=>_('Contact not found'));
+ }
+  
+ $translator=array(
+		   'Contact_Name_Components'=>'Contact Name Components'
+		   ,'Contact_Gender'=>'Contact Gender'
+		   ,'Contact_Title'=>'Contact Title'
+		   ,'Contact_Profession'=>'Contact Profession'
+		   );
+ $components_translator=array(
+				   'Contact_First_Name'=>'Contact First Name'
+				   ,'Contact_Surname'=>'Contact Surname'
+				   ,'Contact_Suffix'=>'Contact Suffix'
+				   ,'Contact_Salutation'=>'Contact Salutation'
+				   
+		   );
+ 
+ 
+ foreach($raw_data as $key=>$value){
+   if (array_key_exists($key, $translator)) {
+     
+     if($key=='Contact_Name_Components'){
+       $components=array();
+       foreach($value as $component_key => $component_value){
+	 if (array_key_exists($component_key, $components_translator)) 
+	   $components[$components_translator[$component_key]]=$component_value;
+
+       }
+       $data[$translator[$key]]=$components;
+       
+     }else
+       $data[$translator[$key]]=$value;
+
+   }
+
+ }
+
+ 
+ $data['editor']=$editor;
+ $contact->update($data);
+ 
+   
+ if($contact->error_updated){
+   $response=array('state'=>200,'action'=>'error','msg'=>$contact->msg_updated);
+ }else{
+   
+   if($contact->updated){
+     $response=array('state'=>200,'action'=>'updated','msg'=>$contact->msg_updated);
+   }else{
+     $response=array('state'=>200,'action'=>'nochange','msg'=>$contact->msg_updated);
+     
+   }
+   
+ }
+ 
+ echo json_encode($response);
+ 
+ break;
+
+
 }
 
 

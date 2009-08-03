@@ -1,4 +1,6 @@
-<?phpinclude_once('country_address_labels.js.php')?>
+<?php
+include_once('country_address_labels.js.php')
+?>
 
 var Address_Changes=0;
 var Address_Items_Changes=0;

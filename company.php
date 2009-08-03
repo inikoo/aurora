@@ -14,16 +14,15 @@
 
 include_once('common.php');
 include_once('class.Company.php');
-if(!$LU->checkRight(CUST_VIEW))
-  exit;
+
+if(!$user->can_view('contacts'))
+  exit();
 
 $edit=false;
 if(isset($_REQUEST['edit']) and $_REQUEST['edit']){
   $edit=true;
   $_REQUEST['id']=$_REQUEST['edit'];
  }
-
-
 
 if(isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ){
   $_SESSION['state']['company']['id']=$_REQUEST['id'];
@@ -63,10 +62,10 @@ $js_files=array(
 		$yui_path.'editor/editor-min.js',
 		$yui_path.'menu/menu-min.js',
 		$yui_path.'calendar/calendar-min.js',
-		'js/common.js.php',
-		'js/table_common.js.php',
+		'common.js.php',
+		'table_common.js.php',
 		'js/search.js',
-		'js/company.js.php'
+		'company.js.php'
 		);
 $company=new company($company_id);
 $address=new address($company->data['Company Main Address Key']);
@@ -105,9 +104,9 @@ if($edit ){
   $css_files[]='css/edit.css';
 
 
-  $js_files[]='js/edit_address.js.php';
-  $js_files[]='js/edit_contact_from_parent.js.php';
-  $js_files[]='js/edit_company.js.php?edit='.$editing_block;
+  $js_files[]='edit_address.js.php';
+  $js_files[]='edit_contact_from_parent.js.php';
+  $js_files[]='edit_company.js.php?edit='.$editing_block;
   
   
 }

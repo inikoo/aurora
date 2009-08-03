@@ -15,7 +15,7 @@ include_once('class.Contact.php');
 include_once('class.Telecom.php');
 include_once('class.Email.php');
 include_once('class.Address.php');
-include_once('Name.php');
+//include_once('Name.php');
 /* class: Company
  Class to manage the *Company Dimension* table
 */
@@ -795,7 +795,7 @@ protected function update_field_switcher($field,$value,$options=''){
 
   case('Company Main Contact Name'):
     $contact=new Contact($this->data['Company Main Contact Key']);
-    $contact->update_Contact_Name($value);
+    $contact->parse_update_Contact_Name($value);
     $this->data['Company Main Contact Name']=$contact->display('Name');
     $sql=sprintf("update `Company Main Contact Name`=%s where `Company Key`=%d",prepare_mysql($this->data['Company Main Contact Name']),$this->id);
     mysql_query($sql);
@@ -1890,6 +1890,7 @@ function remove_contact($data,$args=''){
   /*
      function: get_customer_key
      Returns the Customer Key if the company is one
+
     */
    function get_customers_key($args=''){
      $sql=sprintf("select `Customer Key` from `Customer Dimension` where  `Customer Type`='Company' and `Customer Company Key`=%d  ",$this->id);
@@ -1906,7 +1907,7 @@ function remove_contact($data,$args=''){
      function: get_contact_keys
      Returns the Contact Key if the company is one
     */
-  function get_contact_keys($args=''){
+  function get_contact_keys($args='active only'){
     $extra_args='';
     if(preg_match('/only active|active only/i',$args))
       $extra_args=" and `Is Active`='Yes'";

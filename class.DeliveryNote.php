@@ -18,7 +18,7 @@ include_once('class.DB_Table.php');
 
 include_once('class.Order.php');
 
-include_once('Product.php');
+include_once('class.Product.php');
 
 /* class: DeliveryNote
  Class to manage the *Delivery Note Dimension* table

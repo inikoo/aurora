@@ -1808,13 +1808,16 @@ function add_address($data,$args='principal'){
 protected function update_field_switcher($field,$value,$options=''){
 
 
-  
+
 
   switch($field){
 
+  case('Contact Name Components'):
 
+    $this->update_Contact_Name_Components($value,$options);
+    break;
   case('Contact Name'):
-    $this->update_Contact_Name($value,$options);
+    $this->parse_update_Contact_Name($value,$options);
     break;
   case('Contact Main Plain Email'):
 
@@ -1903,14 +1906,99 @@ protected function update_field_switcher($field,$value,$options=''){
   
 }
 
+/*Method:update_Contact_Name_Components
+ Update contact name
+ 
 
-/*Method:update_Contact_Name
+*/
+
+function update_Contact_Name_Components($data,$options=''){
+  
+
+  $old_full_name=$this->data['Contact Name'];
+  foreach($data as $key=>$value){
+    $this->update_field($key,$value,$options);
+  }
+  $new_full_name=$this->display('name');
+  if($old_full_name!=$new_full_name)
+    $this->update_Contact_Name($new_full_name,$options);
+  
+
+}
+  
+/*Method:parse_update_Contact_Name
  Update contact name
  
 
 */
 
 function update_Contact_Name($data,$options=''){
+
+  $old=$this->display('name');
+  
+  
+
+  if($data==''){
+    $this->msg.=_('Warning, contact name should not be blank')."\n";
+    $this->warning=true;
+    $this->data['Contact Name']=$myconf['unknown_contact'];
+    $this->data['Contact Informal Greeting']=$myconf['unknown_informal_greting'];
+    $this->data['Contact Formal Greeting']=$myconf['unknown_formal_greting'];
+   
+  }else{
+    $this->data['Contact Name']=$this->display('name');
+    $this->data['Contact Informal Greeting']=$this->display('informal gretting');
+    $this->data['Contact Formal Greeting']=$this->display('formal gretting');
+  }
+
+
+  $this->data['Contact File As']=$this->display('file_as');
+  
+  $values='';
+  foreach($this->data as $key=>$value){
+    // Just insert name fields, company,email,tel,ax,address should be inserted later
+    if(preg_match('/Contact Name|Contact File As|Greeting/i',$key)){
+      
+      $values.=" `$key`=";
+      if(preg_match('/suffix|plain/i',$key))
+	  $print_null=false;
+      else
+	$print_null=true;
+      $values.=prepare_mysql($value,$print_null).",";
+      }
+  }
+  $values=preg_replace('/,$/',' ',$values);
+
+  $sql=sprintf("update `Contact Dimension` set %s where `Contact Key`=%d",$values,$this->id);
+  //print $sql;
+  mysql_query($sql);
+  $affected=mysql_affected_rows();
+  if($affected==-1){
+    $this->msg=_('Contact name can not be updated')."\n";
+    $this->error=true;
+    return;
+  }elseif($affected==0){
+    //$this->msg=_('Same value as the old record');
+    
+    
+  }else{
+    
+    $this->msg=_('Contact name updated');
+    $this->updated=true;
+    
+  }
+
+}
+
+
+
+/*Method:parse_update_Contact_Name
+ Update contact name
+ 
+
+*/
+
+function parse_update_Contact_Name($data,$options=''){
   global $myconf;
 
   $parsed_data=$this->parse_name($data);
@@ -1926,12 +2014,12 @@ function update_Contact_Name($data,$options=''){
     $this->data['Contact Name']=$myconf['unknown_contact'];
     $this->data['Contact Informal Greeting']=$myconf['unknown_informal_greting'];
     $this->data['Contact Formal Greeting']=$myconf['unknown_formal_greting'];
-    $this->data['Contact Gender']=$this->gender($this->data);
+    //    $this->data['Contact Gender']=$this->gender($this->data);
   }else{
 
     $this->data['Contact Name']=$this->display('name');
     $this->data['Contact File As']=$this->display('file_as');
-    $this->data['Contact Gender']=$this->gender($this->data);
+    //$this->data['Contact Gender']=$this->gender($this->data);
     $this->data['Contact Informal Greeting']=$this->display('informal gretting');
     $this->data['Contact Formal Greeting']=$this->display('formal gretting');
 
@@ -1940,7 +2028,7 @@ function update_Contact_Name($data,$options=''){
   $values='';
   foreach($this->data as $key=>$value){
     // Just insert name fields, company,email,tel,ax,address should be inserted later
-    if(preg_match('/Salutation|Contact Name|Contact File As|First Name|Surname|Suffix|Gender|Greeting/i',$key)){
+    if(preg_match('/Salutation|Contact Name|Contact File As|First Name|Surname|Suffix|Greeting/i',$key)){
       
       $values.=" `$key`=";
       if(preg_match('/suffix|plain/i',$key))
@@ -2030,150 +2118,6 @@ private function update_Contact_Old_ID($contact_old_id,$options){
   
 }
   
-/*   function update($values,$args='',$history_data=false){ */
-
-/*     $key=key($data); */
-/*     $value=$data['value']; */
-
-/*     switch($key){ */
-/*     case('main_email'): */
-/*       if($value==$this->get($key)){ */
-/* 	$this->msg=_('Same value'); */
-/* 	$this->updated=false; */
-/* 	return; */
-/*       } */
-/*       $main_email=new email($value); */
-/*       if(!$main_email->id){ */
-/* 	$this->msg=_('Email not found'); */
-/* 	$this->updated=false; */
-/* 	return; */
-/*       } */
-/*       $email_contact_id=$main_email->get('contact_id'); */
-/*       if($email_contact_id==0 or $email_contact_id){ */
-/* 	$main_email->update( */
-/* 			    array('contact_id'=>array('value'=>$this->id)) */
-/* 			    ,'save',$history_data */
-/* 			    ); */
-/*       } */
-
-/*       if($main_email->get('contact_id')){ */
-/* 	$this->msg=_('Email not found'); */
-/* 	$this->updated=false; */
-/* 	return; */
-/*       } */
-
-/*       $this->old['main_email']=$this->data['main']['email']; */
-/*       $this->data['main_email']=$value; */
-/*       $this->data['main']['email']=$main_email->data['email']; */
-/*       $this->updated=true; */
-/*     case('gender'): */
-/*       if($value==$this->get($key)){ */
-/* 	$this->msg=_('Same value'); */
-/* 	$this->updated=false; */
-/* 	return; */
-/*       } */
-/*       $valid_values=array('male','felame','neutro','unknown'); */
-/*       if(!is_in_array($value,$valid_values)){ */
-/* 	$this->msg=_('Same value'); */
-/* 	$this->updated=false; */
-/* 	return; */
-/*       } */
-/*       $this->old['gender']=$this->get($key); */
-/*       $this->data['gender']=$value; */
-       
-
-/*     } */
-
-    
-   
-/*   } */
-
-
-/*   function save($key,$history_data=false){ */
-/*     switch($key){ */
-/*     case('main_email'): */
-/*       $sql=sprintf('update contact set %s=%s where id=%d',$key,prepare_mysql($this->data[$key]),$this->id); */
-/*       //	print "$sql\n"; */
-/*       mysql_query($sql); */
-
-/*       if(is_array($history_data)){ */
-/* 	$this->save_history($key,$this->old[$key],$this->data['main']['email'],$history_data); */
-/*       } */
-
-
-/*       break; */
-/*     } */
-
-/*   } */
-
-/*   function save_history($key,$old,$new,$data){ */
-   
-/*   } */
-
-/*   function load($key=''){ */
-/*     switch($key){ */
-/*     case('telecoms'): */
-/*       $this->load('tels'); */
-/*       $this->load('emails'); */
-/*       break; */
-/*     case('tels'): */
-/*       $sql=sprintf("select telecom_id from telecom2contact left join telecom on (telecom.id=telecom_id) where contact_id=%d ",$this->id); */
-/*       $result=mysql_query($sql); */
-/*       while($row=mysql_fetch_array($result, MYSQL_ASSOC)){ */
-	
-	
-/* 	if($tel=new telecom($row['telecom_id'])) */
-/* 	  $this->tel[]=$tel; */
-/*       } */
-/*       break; */
-/*     case('emails'): */
-/*       //   $this->emails=array(); */
-/*       //       $sql=sprintf("select id from email where contact_id=%d ",$this->id); */
-/*       //       $result =& $this->db->query($sql); */
-
-/*       //       while($row=$result->fetchRow()){ */
-/*       // 	$email=new Email($row['id']); */
-/*       // 	$this->emails[$email->id]=array( */
-/*       // 					'email'=>$email->get('email'), */
-/*       // 				       'email_link'=>$email->get('link') */
-/*       // 				       ); */
-/*       //       } */
-/*       break; */
-/*     case('contacts'): */
-/*       //    $sql=sprintf("select child_id from contact_relations where parent_id=%d ",$this->id); */
-/*       //       $result =& $this->db->query($sql); */
-/*       //       while($row=$result->fetchRow()){ */
-/*       // 	if($child=new telecom($row['child_id'])) */
-/*       // 	  $this->contacts[]=$child; */
-/*       //       } */
-/*       break; */
-
-/*     } */
-    
-/*   } */
-  
- 
-
-  //  function get_date($key='',$tipo='dt'){
-  //     if(isset($this->dates['ts_'.$key]) and is_numeric($this->dates['ts_'.$key]) ){
-
-  //       switch($tipo){
-  //       case('dt'):
-  //       default:
-  // 	return strftime("%e %B %Y %H:%M", $porder['date_expected']);
-  //       }
-  //     }else
-  //       return false;
-  //   }
-  
-
-  //   function file_as(){
-    
-  //     if($this->data['contact name']==$this->unknown_name)
-  //       return $this->unknown_name;
-  //     else
-  //       return $this->data['contact name'];
-  //   }
 
   function get_new_id(){
     
@@ -2946,15 +2890,27 @@ string with the name to be parsed
    }
 
 
-    function get_emails(){
+    function get_emails($args='active only'){
+  $extra_args='';
+    if(preg_match('/only active|active only/i',$args))
+      $extra_args=" and `Is Active`='Yes'";
+    if(preg_match('/only main|main only/i',$args))
+      $extra_args=" and `Is Main`='Yes'";
+    if(preg_match('/only not? active/i',$args))
+      $extra_args=" and `Is Active`='No'";
+    if(preg_match('/only not? main/i',$args))
+      $extra_args=" and `Is Main`='No'";
 
-
-     $sql=sprintf("select * from `Email Bridge` CB where   `Subject Type`='Contact' and `Subject Key`=%d  group by `Email Key` order by `Is Main` desc  ",$this->id);
+     $sql=sprintf("select * from `Email Bridge` CB where   `Subject Type`='Contact' and `Subject Key`=%d %s  group by `Email Key` order by `Is Main` desc  "
+		  ,$this->id
+		  ,$extra_args
+		  );
      $email=array();
      $result=mysql_query($sql);
   
      while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
        $email= new Email($row['Email Key']);
+       $email->set_scope('Contact',$this->id);
        $emails[]= $email;
      }
      return $emails;

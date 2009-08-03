@@ -15,12 +15,16 @@
 
 */
 include_once('common.php');
-include_once('stock_functions.php');
+//include_once('stock_functions.php');
 
-$view_sales=$LU->checkRight(PROD_SALES_VIEW);
-$view_stock=$LU->checkRight(PROD_STK_VIEW);
-$create=$LU->checkRight(PROD_CREATE);
-$modify=$LU->checkRight(PROD_MODIFY);
+if(!$user->can_view('product departments'))
+  exit();
+
+
+$view_sales=$user->can_view('product sales');
+$view_stock=$user->can_view('product stock');
+$create=$user->can_create('product departments');
+$modify=$user->can_edit('product departments');
 
 
 
@@ -57,16 +61,16 @@ $js_files=array(
 		$yui_path.'datatable/datatable-min.js',
 		$yui_path.'container/container_core-min.js',
 		$yui_path.'menu/menu-min.js',
-		'js/common.js.php',
-		'js/table_common.js.php',
+		'common.js.php',
+		'table_common.js.php',
 		);
 
 if($edit){
-  $js_files[]='js/edit_common.js';
-  $js_files[]='js/edit_departments.js.php';
+  $js_files[]='edit_common.js';
+  $js_files[]='edit_departments.js.php';
  } else{
-   $js_files[]='js/search.js';
-   $js_files[]='js/departments.js.php';
+   $js_files[]='search.js';
+   $js_files[]='departments.js.php';
  }
 
 

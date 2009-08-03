@@ -12,11 +12,7 @@
  Version 2.0
 */
 include_once('common.php');
-
-
-
 include_once('class.Product.php');
-
 include_once('class.Order.php');
 
 
@@ -101,10 +97,10 @@ $js_files=array(
 		$yui_path.'container/container_core-min.js',
 		$yui_path.'menu/menu-min.js',
 		$yui_path.'calendar/calendar-min.js',
-		'js/common.js.php',
-		'js/table_common.js.php',
+		'common.js.php',
+		'table_common.js.php',
 		'js/search.js',
-		'js/index.js.php'
+		'index.js.php'
 		);
 
 
