@@ -1,5 +1,5 @@
 <?php
-include_once('../common.php');
+include_once('common.php');
 ?>
 
 
@@ -37,8 +37,8 @@ plot_monthsalesData.responseSchema =
 
 
 var seriesDef = [
-		 //		 { displayName: "<?php echo_('Losses')?>", yField: "losses", style:{color: 0xff0000,lineSize: 2,size:8}},
-		 { displayName: "<?php echo_('Customers')?>", yField: "y",  style:{connectPoints:false,size:8} }
+		 //		 { displayName: "<?php echo _('Losses')?>", yField: "losses", style:{color: 0xff0000,lineSize: 2,size:8}},
+		 { displayName: "<?php echo _('Customers')?>", yField: "y",  style:{connectPoints:false,size:8} }
 
  
 ];

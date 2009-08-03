@@ -1,5 +1,5 @@
 <?php
-include_once('../common.php');
+include_once('common.php');
 ?>
 
     
@@ -26,7 +26,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		this.deleteuser=function(oEditor, oSelf){
 		    
 		    var elContainer = oEditor.container;
-		    elContainer.innerHTML='<?php echo_('Are you sure you want to desassociate this product?')?>';
+		    elContainer.innerHTML='<?php echo _('Are you sure you want to desassociate this product?')?>';
 		    oSelf._oCellEditor.value=1;
 		    
 		}
@@ -35,17 +35,17 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 		var SuppliersColumnDefs1 = [
 					   
-					    {key:"stock", label:"<?php echo_('Stock')?>",width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}<?php echo($_SESSION['tables']['po_item'][4][3]==0?'':',hidden:true')?>}
-					    ,{key:"code", label:"<?php echo_('Our Code')?>", width:<?php echo($_SESSION['tables']['po_item'][4][3]==1?90:90)?>,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					    ,{key:"sup_code", label:"<?php echo_('S Code')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					   ,{key:"description", label:"<?php echo_('Description')?>",width:320, formatter:this.description,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					   ,{key:"ordered", label:"<?php echo_('Ordered')?>",width:95, sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor:'textbox'
+					    {key:"stock", label:"<?php echo _('Stock')?>",width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}<?php echo($_SESSION['tables']['po_item'][4][3]==0?'':',hidden:true')?>}
+					    ,{key:"code", label:"<?php echo _('Our Code')?>", width:<?php echo($_SESSION['tables']['po_item'][4][3]==1?90:90)?>,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					    ,{key:"sup_code", label:"<?php echo _('S Code')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					   ,{key:"description", label:"<?php echo _('Description')?>",width:320, formatter:this.description,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					   ,{key:"ordered", label:"<?php echo _('Ordered')?>",width:95, sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor:'textbox'
 					     <?php echo($_SESSION['tables']['po_item'][4][3]==2?',hidden:true':'')?>}
-					    ,{key:"received", label:"<?php echo_('Received')?>",width:70, sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor:'textbox'
+					    ,{key:"received", label:"<?php echo _('Received')?>",width:70, sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor:'textbox'
 					     <?php echo($_SESSION['tables']['po_item'][4][3]!=2?',hidden:true':'')?>}
-					    ,{key:"damage", label:"<?php echo_('Damaged')?>",width:60, sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor:'textbox'
+					    ,{key:"damage", label:"<?php echo _('Damaged')?>",width:60, sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor:'textbox'
 					      <?php echo(($_SESSION['tables']['po_item'][4][3]!=2 or $_SESSION['tables']['po_item'][4][3]!=1)?',hidden:true':'')?>}
-					    ,{key:"eprice", label:"<?php echo_('Cost')?>",width:95, sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					    ,{key:"eprice", label:"<?php echo _('Cost')?>",width:95, sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
 
 					   ];
@@ -193,8 +193,8 @@ var Dom   = YAHOO.util.Dom;
 		YAHOO.util.Event.addListener('paginatormenuselector'+tableid, "click", this.SuppliersDataTable1.paginatorMenu.show, null, this.SuppliersDataTable1.paginatorMenu);
 		this.SuppliersDataTable1.paginatorMenu.render(document.body);
 		this.SuppliersDataTable1.filterMenu = new YAHOO.widget.Menu('filternewmenu'+tableid,  {context:['filterselector'+tableid,"tr", "br"]  });
-		this.SuppliersDataTable1.filterMenu.addItems([{ text: "<?php echo_('Supplier Code')?>", onclick:{fn:changeFilter,obj:{col:'code',text:"<?php echo_('Family Code')?>"},scope:this.SuppliersDataTable1}  } ]);
-		this.SuppliersDataTable1.filterMenu.addItems([{ text: "<?php echo_('Description')?>", onclick:{fn:changeFilter,obj:{col:'description',text:"<?php echo_('Description')?>"},scope:this.SuppliersDataTable1}  } ]);
+		this.SuppliersDataTable1.filterMenu.addItems([{ text: "<?php echo _('Supplier Code')?>", onclick:{fn:changeFilter,obj:{col:'code',text:"<?php echo _('Family Code')?>"},scope:this.SuppliersDataTable1}  } ]);
+		this.SuppliersDataTable1.filterMenu.addItems([{ text: "<?php echo _('Description')?>", onclick:{fn:changeFilter,obj:{col:'description',text:"<?php echo _('Description')?>"},scope:this.SuppliersDataTable1}  } ]);
 		YAHOO.util.Event.addListener('filterselector'+tableid, "click", this.SuppliersDataTable1.filterMenu.show, null, this.SuppliersDataTable1.filterMenu);
 		this.SuppliersDataTable1.filterMenu.render(document.body);
 		
@@ -328,7 +328,7 @@ YAHOO.util.Event.addListener("receiving", "click", receiving);
 						     visible : false, 
 						     constraintoviewport : true,
 						     postmethod:"form",
-						     buttons : [ { text:"<?php echo_('Submit')?>", handler:handleSubmit, isDefault:true },{ text:"<?php echo_('Cancel')?>", handler:handleCancel } ]
+						     buttons : [ { text:"<?php echo _('Submit')?>", handler:handleSubmit, isDefault:true },{ text:"<?php echo _('Cancel')?>", handler:handleCancel } ]
 
 						   });
  
@@ -403,7 +403,7 @@ Event.addListener(Dom.get('process_po'),"click",YAHOO.supplier.processingpo);
  // Event.addListener(Dom.get('delete_po'),"click",YAHOO.supplier.submitpo);
 
 
-YAHOO.supplier.cal1 = new YAHOO.widget.Calendar("cal1","cal1Container", { title:"<?php echo_('Choose a date')?>:", close:true } );
+YAHOO.supplier.cal1 = new YAHOO.widget.Calendar("cal1","cal1Container", { title:"<?php echo _('Choose a date')?>:", close:true } );
 
  YAHOO.supplier.cal1.update=updateCal;
 
@@ -424,7 +424,7 @@ YAHOO.supplier.cal1 = new YAHOO.widget.Calendar("cal1","cal1Container", { title:
 
 
 
-// YAHOO.supplier.cal3 = new YAHOO.widget.Calendar("cal3","cal3Container", { title:"<?php echo_('Choose a date')?>:", close:true } );
+// YAHOO.supplier.cal3 = new YAHOO.widget.Calendar("cal3","cal3Container", { title:"<?php echo _('Choose a date')?>:", close:true } );
 //  YAHOO.supplier.cal3.update=updateCal;
 //  YAHOO.supplier.cal3.id='v_calpop3';
 
@@ -517,7 +517,7 @@ function myCalhandleSelect(type,args,obj) {
 
 
 
- YAHOO.supplier.cal2 = new YAHOO.widget.Calendar("cal2","cal2Container", { title:"<?php echo_('Choose a date')?>:", close:true } );
+ YAHOO.supplier.cal2 = new YAHOO.widget.Calendar("cal2","cal2Container", { title:"<?php echo _('Choose a date')?>:", close:true } );
 
  YAHOO.supplier.cal2.update=updateCal;
  YAHOO.supplier.cal2.container_id='v_invoice_date';
@@ -579,7 +579,7 @@ function myCalhandleSelectDateTime(type,args,obj) {
 
 
 
- YAHOO.supplier.cal3 = new YAHOO.widget.Calendar("cal3","cal3Container", { title:"<?php echo_('Choose a date')?>:", close:true } );
+ YAHOO.supplier.cal3 = new YAHOO.widget.Calendar("cal3","cal3Container", { title:"<?php echo _('Choose a date')?>:", close:true } );
 
  YAHOO.supplier.cal3.update=updateCal;
  YAHOO.supplier.cal3.container_id='v_date_received';

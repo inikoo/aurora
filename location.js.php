@@ -1,4 +1,4 @@
-<?phpinclude_once('../common.php')?>
+<?phpinclude_once('common.php')?>
     var Dom   = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;
 
@@ -35,11 +35,11 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableid=0; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 	    var CustomersColumnDefs = [
-      {key:"date", label:"<?php echo_('Date')?>", width:200,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-      ,{key:"author", label:"<?php echo_('Author')?>", width:70,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-      ,{key:"tipo", label:"<?php echo_('Type')?>", width:90,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-        ,{key:"diff_qty", label:"<?php echo_('Qty')?>", width:90,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-      ,{key:"note", label:"<?php echo_('Description')?>", width:370,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+      {key:"date", label:"<?php echo _('Date')?>", width:200,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+      ,{key:"author", label:"<?php echo _('Author')?>", width:70,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+      ,{key:"tipo", label:"<?php echo _('Type')?>", width:90,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+        ,{key:"diff_qty", label:"<?php echo _('Qty')?>", width:90,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+      ,{key:"note", label:"<?php echo _('Description')?>", width:370,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ];
 	    //?tipo=customers&tid=0"
 	    this.dataSource0 = new YAHOO.util.DataSource("ar_assets.php?tipo=location_stock_history");
@@ -71,7 +71,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							 renderLoopSize: 50,generateRequest : myRequestBuilder
 							 ,paginator : new YAHOO.widget.Paginator({
 								 rowsPerPage    : <?php echo$_SESSION['state']['product']['stock_history']['nr']?>,containers : 'paginator0', alwaysVisible:false,
-								 pageReportTemplate : '(<?php echo_('Page')?> {currentPage} <?php echo_('of')?> {totalPages})',
+								 pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 								 previousPageLinkLabel : "<",
 								 nextPageLinkLabel : ">",
 								 firstPageLinkLabel :"<<",
@@ -104,15 +104,15 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		var tableid=1; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 	    var CustomersColumnDefs = [
-				       {key:"sku", label:"<?php echo_('Code')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"description", label:"<?php echo_('Description')?>", width:390,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"current_qty", label:"<?php echo_('Qty')?>", width:50,className:"aright"}
-				       ,{key:"changed_qty", label:"<?php echo_('Change')?>", width:50,className:"aright",hidden:true}
-				       ,{key:"new_qty", label:"<?php echo_('New Qty')?>", width:70,className:"aright",hidden:true}
-				       ,{key:"_qty_move", label:"<?php echo_('Moved')?>", width:70,hidden:true,className:"aright"}
-				       ,{key:"_qty_damaged", label:"<?php echo_('Damaged')?>", width:70,hidden:true,className:"aright"}
-				       ,{key:"_qty_change", label:"<?php echo_('Audit')?>", width:50,hidden:true,className:"aright inputs_yellow"}
-				       ,{key:"note", label:"<?php echo_('Note')?>", width:110,className:"aleft",hidden:true}
+				       {key:"sku", label:"<?php echo _('Code')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"description", label:"<?php echo _('Description')?>", width:390,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"current_qty", label:"<?php echo _('Qty')?>", width:50,className:"aright"}
+				       ,{key:"changed_qty", label:"<?php echo _('Change')?>", width:50,className:"aright",hidden:true}
+				       ,{key:"new_qty", label:"<?php echo _('New Qty')?>", width:70,className:"aright",hidden:true}
+				       ,{key:"_qty_move", label:"<?php echo _('Moved')?>", width:70,hidden:true,className:"aright"}
+				       ,{key:"_qty_damaged", label:"<?php echo _('Damaged')?>", width:70,hidden:true,className:"aright"}
+				       ,{key:"_qty_change", label:"<?php echo _('Audit')?>", width:50,hidden:true,className:"aright inputs_yellow"}
+				       ,{key:"note", label:"<?php echo _('Note')?>", width:110,className:"aleft",hidden:true}
 				       ,{key:"delete", label:"", width:18,className:"aleft"}
 				       ];
 	    //?tipo=customers&tid=0"
@@ -367,12 +367,12 @@ var damaged_stock=function(){
     operation='damaged_stock'
     Dom.get('manage_stock').style.display='';
     this.className='selected';
-    //    Dom.get('manage_stock_messages').innerHTML='<?php echo_('Indicate the number of Units damaged')?>';
+    //    Dom.get('manage_stock_messages').innerHTML='<?php echo _('Indicate the number of Units damaged')?>';
 
-     Dom.get('manage_stock_messages').innerHTML='<table style="margin:0"><tr><td><?php echo_('Mensage')?>:</td></tr><tr><td><input id="damaged_note" onchange="check_damaged_form()" type="text" style="background:#fff889" /> </td></tr><tr><td colspan=2 ><?php echo_('Indicate the number of units damaged')?></td></tr></table>';
+     Dom.get('manage_stock_messages').innerHTML='<table style="margin:0"><tr><td><?php echo _('Mensage')?>:</td></tr><tr><td><input id="damaged_note" onchange="check_damaged_form()" type="text" style="background:#fff889" /> </td></tr><tr><td colspan=2 ><?php echo _('Indicate the number of units damaged')?></td></tr></table>';
 
     Dom.get('manage_stock_engine').style.visibility='hidden';
-    Dom.get('manage_stock_engine').innerHTML='<span onclick="damaged_stock_save()" style="cursor:pointer"><?php echo_('Save changes')?> <img src="art/icons/disk.png"/></span>';
+    Dom.get('manage_stock_engine').innerHTML='<span onclick="damaged_stock_save()" style="cursor:pointer"><?php echo _('Save changes')?> <img src="art/icons/disk.png"/></span>';
     var table=tables.table1;
     //table.hideColumn('current_qty');
     table.hideColumn('delete');
@@ -483,11 +483,11 @@ var move_stock=function(){
      clear_all();
     operation='move_stock';
      Dom.get('manage_stock').style.display='';
-    Dom.get('manage_stock_messages').innerHTML='<?php echo_('Choose which location you want to move the stock')?>';
+    Dom.get('manage_stock_messages').innerHTML='<?php echo _('Choose which location you want to move the stock')?>';
      this.className='selected';
     Dom.get('manage_stock_locations').style.display='';
       Dom.get('manage_stock_engine').style.visibility='hidden';
-    Dom.get('manage_stock_engine').innerHTML='<span onclick="move_stock_save()" style="cursor:pointer"><?php echo_('Save changes')?> <img src="art/icons/disk.png"/></span>';
+    Dom.get('manage_stock_engine').innerHTML='<span onclick="move_stock_save()" style="cursor:pointer"><?php echo _('Save changes')?> <img src="art/icons/disk.png"/></span>';
 
     };
 var change_stock=function(){
@@ -504,9 +504,9 @@ var change_stock=function(){
     table.showColumn('note');
     Dom.get('manage_stock').style.display='';
     Dom.get('manage_stock_products').style.display='';
-    Dom.get('manage_stock_messages').innerHTML='<table style="margin:0"><tr><td><?php echo_('Audit Name & Notes')?>:</td></tr><tr><td><input id="audit_name" onchange="check_audit_form()" type="text" style="background:#fff889" /> <input id="audit_note" onchange="check_audit_form()" type="text" style="background:#fff889" /></td></tr><tr><td>New part found</td></tr></table>';
+    Dom.get('manage_stock_messages').innerHTML='<table style="margin:0"><tr><td><?php echo _('Audit Name & Notes')?>:</td></tr><tr><td><input id="audit_name" onchange="check_audit_form()" type="text" style="background:#fff889" /> <input id="audit_note" onchange="check_audit_form()" type="text" style="background:#fff889" /></td></tr><tr><td>New part found</td></tr></table>';
     Dom.get('manage_stock_engine').style.visibility='hidden';
-    Dom.get('manage_stock_engine').innerHTML='<span onclick="change_stock_save()" style="cursor:pointer"><?php echo_('Save changes')?> <img src="art/icons/disk.png"/></span>';
+    Dom.get('manage_stock_engine').innerHTML='<span onclick="change_stock_save()" style="cursor:pointer"><?php echo _('Save changes')?> <img src="art/icons/disk.png"/></span>';
     this.className='selected';
       
 };
@@ -649,7 +649,7 @@ var clear_all=function(){
 
 function add_product(){
     Dom.get("manage_stock").style.display='';
-    Dom.get("manage_stock_messages").innerHTML='<?php echo_('Choose the product the you want to place in this location')?>.';
+    Dom.get("manage_stock_messages").innerHTML='<?php echo _('Choose the product the you want to place in this location')?>.';
     Dom.get("manage_stock_products").style.display='';
 }
 

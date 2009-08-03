@@ -1,4 +1,4 @@
-<?phpinclude_once('../common.php');?>
+<?phpinclude_once('common.php');?>
     var plot='<?php echo$_SESSION['state']['product']['plot']?>';
   var Dom   = YAHOO.util.Dom;
 var change_plot_sigma=function(o){
@@ -21,10 +21,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    var tableid=0;
 		    var tableDivEL="table"+tableid;
 		    var ColumnDefs = [
-				      {key:"date", label:"<?php echo_('Date')?>", width:60,sortable:false,className:"aright"}
-				      ,{key:"location", label:"<?php echo_('Available')?>", width:60,sortable:false,className:"aright"}
-				      ,{key:"stock", label:"<?php echo_('Stock')?>", width:60,sortable:false,className:"aright"}
-				      ,{key:"value", label:"<?php echo_('Stock')?>", width:60,sortable:false,className:"aright"}
+				      {key:"date", label:"<?php echo _('Date')?>", width:60,sortable:false,className:"aright"}
+				      ,{key:"location", label:"<?php echo _('Available')?>", width:60,sortable:false,className:"aright"}
+				      ,{key:"stock", label:"<?php echo _('Stock')?>", width:60,sortable:false,className:"aright"}
+				      ,{key:"value", label:"<?php echo _('Stock')?>", width:60,sortable:false,className:"aright"}
 
 				      ];
 		    
@@ -55,7 +55,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								 renderLoopSize: 50,generateRequest : myRequestBuilder
 								 ,paginator : new YAHOO.widget.Paginator({
 									 rowsPerPage:<?php echo$_SESSION['state']['part']['stock_history']['nr']?>,containers : 'paginator0', 
-									 pageReportTemplate : '(<?php echo_('Page')?> {currentPage} <?php echo_('of')?> {totalPages})',
+									 pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									 previousPageLinkLabel : "<",
 									 nextPageLinkLabel : ">",
  									      firstPageLinkLabel :"<<",
@@ -80,10 +80,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    var tableid=1;
 		    var tableDivEL="table"+tableid;
 		    var ColumnDefs = [
-				      {key:"date", label:"<?php echo_('Date')?>", width:60,sortable:false,className:"aright"}
-				      ,{key:"location", label:"<?php echo_('Available')?>", width:60,sortable:false,className:"aright"}
-				      ,{key:"stock", label:"<?php echo_('Stock')?>", width:60,sortable:false,className:"aright"}
-				      ,{key:"value", label:"<?php echo_('Stock')?>", width:60,sortable:false,className:"aright"}
+				      {key:"date", label:"<?php echo _('Date')?>", width:60,sortable:false,className:"aright"}
+				      ,{key:"location", label:"<?php echo _('Available')?>", width:60,sortable:false,className:"aright"}
+				      ,{key:"stock", label:"<?php echo _('Stock')?>", width:60,sortable:false,className:"aright"}
+				      ,{key:"value", label:"<?php echo _('Stock')?>", width:60,sortable:false,className:"aright"}
 
 				      ];
 		    
@@ -114,7 +114,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								 renderLoopSize: 50,generateRequest : myRequestBuilder
 								 ,paginator : new YAHOO.widget.Paginator({
 									 rowsPerPage:<?php echo$_SESSION['state']['product']['stock_history']['nr']?>,containers : 'paginator1', 
-									 pageReportTemplate : '(<?php echo_('Page')?> {currentPage} <?php echo_('of')?> {totalPages})',
+									 pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									 previousPageLinkLabel : "<",
 									 nextPageLinkLabel : ">",
  									      firstPageLinkLabel :"<<",
@@ -180,10 +180,10 @@ var  change_web_status =function(tipo){
 			 Dom.get('no_sincro_pages').style.visibility='visible';
 			 Dom.get('no_sincro_db').style.visibility='visible';
 		     }
-		     Dom.get('edit_web_messages').innerHTML='<?php echo_('Syncronizing product')?>';
+		     Dom.get('edit_web_messages').innerHTML='<?php echo _('Syncronizing product')?>';
 		}
 
-		Dom.get('edit_web_messages').innerHTML='<?php echo_('Syncronizing product')?>';
+		Dom.get('edit_web_messages').innerHTML='<?php echo _('Syncronizing product')?>';
 		var request='ar_xml.php?tipo=sincronize';
 		YAHOO.util.Connect.asyncRequest('POST',request ,{
 			success:function(o) {

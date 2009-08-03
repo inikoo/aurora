@@ -1,4 +1,4 @@
-<?phpinclude_once('../common.php')?>
+<?phpinclude_once('common.php')?>
 
     var Dom   = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;
@@ -207,7 +207,7 @@ var new_location_save = function(){
     var location_name=Dom.get("new_location_input").value;
 
     if(location_name=='')
-	Dom.get('manage_stock_messages').innerHTML='<?php echo_('Select a location from the list')?>';
+	Dom.get('manage_stock_messages').innerHTML='<?php echo _('Select a location from the list')?>';
     var can_pick=Dom.get('new_location_can_pick').checked;
     var is_primary=Dom.get('new_location_is_primary').checked;
 
@@ -284,14 +284,14 @@ var new_location_save = function(){
 
 				    
 		    span.setAttribute("onClick", "change_max_units_dialog(this,"+r.pl_id+",'"+location_name+"')");
-		    span.innerHTML='<?php echo_('Not Set')?>';
+		    span.innerHTML='<?php echo _('Not Set')?>';
 		     cellLeft.appendChild(span);
 		     
 		    var cellLeft = row.insertCell(6);
 		    var img = document.createElement("img");
 		    img.setAttribute("src", "art/icons/cross.png" );
 		    img.setAttribute("style", "cursor:pointer" );
-		    img.setAttribute("title", "<?php echo_('Free the location')?>" );
+		    img.setAttribute("title", "<?php echo _('Free the location')?>" );
 		    img.setAttribute("id", 'loc_del'+r.id );
 		    img.setAttribute("onclick", "desassociate_loc("+r.id+")" );
 		     
@@ -326,8 +326,8 @@ var new_location_q1_action=function(value){
 	    this.className='selected';
 	    Dom.get('manage_stock_desktop').style.display='';
 	    Dom.get('manage_stock_locations').style.display='';
-	    Dom.get('manage_stock_engine').innerHTML='<table><tr id="new_location_q1" style="display:none;height:30px"><td><?php echo_('Can products be picked from here?')?></td><td>  <?php echo_('Yes')?> <input type="radio" onClick="new_location_q1_action(1)" name="can_pick" id="new_location_can_pick" value="yes" style="vertical-align:bottom"> </td><td> <?php echo_('No')?><input style="vertical-align:bottom" onClick="new_location_q1_action(0)" type="radio" name="can_pick"  value="no"></td></tr><tr  id="new_location_q2" style="display:none;height:30px" ><td><?php echo_('Is this the primary picking location?')?> </td><td><?php echo_('Yes')?> <input id="new_location_is_primary" type="radio" name="primary" value="yes" style="vertical-align:bottom"></td><td>  No<input style="vertical-align:bottom" type="radio" name="primary" checked="checked" value="no"> </td></tr><tr  id="new_location_save" style="display:none;height:30px"  ><td colspan="3" style="cursor:pointer" onclick="new_location_save()" class="aright"><?php echo_('Save changes')?> <img src="art/icons/disk.png"/></td></tr></table> '
-	    Dom.get('manage_stock_messages').innerHTML='<?php echo_('New location code');?>:';
+	    Dom.get('manage_stock_engine').innerHTML='<table><tr id="new_location_q1" style="display:none;height:30px"><td><?php echo _('Can products be picked from here?')?></td><td>  <?php echo _('Yes')?> <input type="radio" onClick="new_location_q1_action(1)" name="can_pick" id="new_location_can_pick" value="yes" style="vertical-align:bottom"> </td><td> <?php echo _('No')?><input style="vertical-align:bottom" onClick="new_location_q1_action(0)" type="radio" name="can_pick"  value="no"></td></tr><tr  id="new_location_q2" style="display:none;height:30px" ><td><?php echo _('Is this the primary picking location?')?> </td><td><?php echo _('Yes')?> <input id="new_location_is_primary" type="radio" name="primary" value="yes" style="vertical-align:bottom"></td><td>  No<input style="vertical-align:bottom" type="radio" name="primary" checked="checked" value="no"> </td></tr><tr  id="new_location_save" style="display:none;height:30px"  ><td colspan="3" style="cursor:pointer" onclick="new_location_save()" class="aright"><?php echo _('Save changes')?> <img src="art/icons/disk.png"/></td></tr></table> '
+	    Dom.get('manage_stock_messages').innerHTML='<?php echo _('New location code');?>:';
 	    
 	};
 
@@ -342,8 +342,8 @@ var change_stock_from=function(e,index){
 	    Dom.get("loc_name"+location_data.data[key].location_id).className='';
 	}
     
-    Dom.get('manage_stock_messages').innerHTML='<?php echo_('How many units are currently on the location?')?>'
-    Dom.get('manage_stock_engine').innerHTML='<table><tr id="change_stock_qty" ><td><?php echo_('Number of units')?></td><td><input id="new_qty" location_id="'+location_data.data[index].id+'"  style="text-align:right;padding:0 3px" type="text"  size="3"  onkeyup="change_stock_ready()"   /> <span style="cursor:pointer" onclick="new_stock_none();">(<?php echo_('None')?>)</span> <span id="change_stock_continue" style="display:none;padding-left:20px;cursor:pointer;text-decoration:underline" onclick="change_stock_manage('+index+')"><?php echo_('Continue')?></span></td></tr><tr style="display:none" id="more_outers"><td colspan="3"><span id="more_change"></span> <span><?php echo_("Units")?></span>  <span id="more_change_save"  onclick="change_stock_save('+index+')" style="display:none;margin-left:30px;cursor:pointer"  > <?php echo_('Save')?> <img src="art/icons/disk.png" style="vertical-align:bottom"/></span>   <br> <?php echo_('Please try to explain why there is more units than there should be')?>. <b><?php echo_('If stock has been received plesase add it on')?> <a href="suppliers.php" style="cursor:pointer;text-decoration:underline" ><?php echo_("Suppliers Area")?></a><b>.</span></td></tr><tr style="display:none" id="less_outers"><td colspan="3"><span id="less_change"></span> <span><?php echo_('Units')?></span>  <span id="less_change_save"  onclick="change_stock_save('+index+')" style="display:none;margin-left:30px;cursor:pointer"  > <?php echo_('Save')?> <img src="art/icons/disk.png" style="vertical-align:bottom"/></span>  <br><?php echo_('Please give possible reasons of the lost stock ')?>. <b><?php echo_('If stock has been damaged')?> <span onclick="damaged_stock()" style="cursor:pointer;text-decoration:underline" ><?php echo_('click here')?></span><b>.</span></td></tr><tr id="change_stock_comments" style="display:none"  ><td><?php echo_('Explanation')?>:</td><td colspan="2"><textarea id="change_stock_why" onkeyup="change_stock_ready2()" ></textarea></td></tr></table>'};	  
+    Dom.get('manage_stock_messages').innerHTML='<?php echo _('How many units are currently on the location?')?>'
+    Dom.get('manage_stock_engine').innerHTML='<table><tr id="change_stock_qty" ><td><?php echo _('Number of units')?></td><td><input id="new_qty" location_id="'+location_data.data[index].id+'"  style="text-align:right;padding:0 3px" type="text"  size="3"  onkeyup="change_stock_ready()"   /> <span style="cursor:pointer" onclick="new_stock_none();">(<?php echo _('None')?>)</span> <span id="change_stock_continue" style="display:none;padding-left:20px;cursor:pointer;text-decoration:underline" onclick="change_stock_manage('+index+')"><?php echo _('Continue')?></span></td></tr><tr style="display:none" id="more_outers"><td colspan="3"><span id="more_change"></span> <span><?php echo _("Units")?></span>  <span id="more_change_save"  onclick="change_stock_save('+index+')" style="display:none;margin-left:30px;cursor:pointer"  > <?php echo _('Save')?> <img src="art/icons/disk.png" style="vertical-align:bottom"/></span>   <br> <?php echo _('Please try to explain why there is more units than there should be')?>. <b><?php echo _('If stock has been received plesase add it on')?> <a href="suppliers.php" style="cursor:pointer;text-decoration:underline" ><?php echo _("Suppliers Area")?></a><b>.</span></td></tr><tr style="display:none" id="less_outers"><td colspan="3"><span id="less_change"></span> <span><?php echo _('Units')?></span>  <span id="less_change_save"  onclick="change_stock_save('+index+')" style="display:none;margin-left:30px;cursor:pointer"  > <?php echo _('Save')?> <img src="art/icons/disk.png" style="vertical-align:bottom"/></span>  <br><?php echo _('Please give possible reasons of the lost stock ')?>. <b><?php echo _('If stock has been damaged')?> <span onclick="damaged_stock()" style="cursor:pointer;text-decoration:underline" ><?php echo _('click here')?></span><b>.</span></td></tr><tr id="change_stock_comments" style="display:none"  ><td><?php echo _('Explanation')?>:</td><td colspan="2"><textarea id="change_stock_why" onkeyup="change_stock_ready2()" ></textarea></td></tr></table>'};	  
 
 
 var change_stock_ready=function(e){
@@ -378,7 +378,7 @@ var change_stock_manage=function(index){
     if(change==0){
 	Dom.get("new_qty").value='';
 	Dom.get('change_stock_continue').style.display='none';
-	Dom.get('manage_stock_messages').innerHTML='<?php echo_('So nothing have change, how many units are currently on the location? ')?>';
+	Dom.get('manage_stock_messages').innerHTML='<?php echo _('So nothing have change, how many units are currently on the location? ')?>';
 	
     }else if(change<0){
 	Dom.get('change_stock_qty').style.display='none';
@@ -407,7 +407,7 @@ var change_stock=function(){
     this.className='selected';
     Dom.get('manage_stock_desktop').style.display='';
     Dom.get('manage_stock_engine').innerHTML=''
-    Dom.get('manage_stock_messages').innerHTML='<?php echo_('Click the location where you want to change the stock ');?>';
+    Dom.get('manage_stock_messages').innerHTML='<?php echo _('Click the location where you want to change the stock ');?>';
     
     
 	    
@@ -485,8 +485,8 @@ var unlink=function(o){
     current_engine='link_product';
     o.className='selected';
     Dom.get('manage_stock_desktop').style.display='';
-    Dom.get('manage_stock_engine').innerHTML='<span style="padding:5px 20px;cursor:pointer" onCLick="unlink_save()"><?php echo_('Yes')?></span> <span style="padding:5px 20px;cursor:pointer" onClick="clear_actions()"><?php echo_('No')?></span>';
-    Dom.get('manage_stock_messages').innerHTML='<?php echo_('Are you sure the you want to unlink this product');?>';
+    Dom.get('manage_stock_engine').innerHTML='<span style="padding:5px 20px;cursor:pointer" onCLick="unlink_save()"><?php echo _('Yes')?></span> <span style="padding:5px 20px;cursor:pointer" onClick="clear_actions()"><?php echo _('No')?></span>';
+    Dom.get('manage_stock_messages').innerHTML='<?php echo _('Are you sure the you want to unlink this product');?>';
 }
 var unlink_save=function(){
     var request='ar_assets.php?tipo=pml_unlink';
@@ -513,8 +513,8 @@ var link=function(o){
     Dom.get('manage_stock_desktop').style.display='';
     Dom.get('manage_stock_products').style.display='';
     Dom.get('manage_stock_engine').style.display='none';
-    Dom.get('manage_stock_engine').innerHTML='<span style="padding:5px 20px;cursor:pointer" onCLick="link_save()"><?php echo_('Link')?></span> <span style="padding:5px 20px;cursor:pointer" onClick="clear_actions()"><?php echo_('Cancel')?></span>';
-    Dom.get('manage_stock_messages').innerHTML='<?php echo_('Choose the product thet you want to link');?>';
+    Dom.get('manage_stock_engine').innerHTML='<span style="padding:5px 20px;cursor:pointer" onCLick="link_save()"><?php echo _('Link')?></span> <span style="padding:5px 20px;cursor:pointer" onClick="clear_actions()"><?php echo _('Cancel')?></span>';
+    Dom.get('manage_stock_messages').innerHTML='<?php echo _('Choose the product thet you want to link');?>';
 };
 var link_save=function(){
     var product_id=new_parent;
@@ -540,7 +540,7 @@ var damaged_stock=function(){
     this.className='selected';
     Dom.get('manage_stock_desktop').style.display='';
     Dom.get('manage_stock_engine').innerHTML=''
-    Dom.get('manage_stock_messages').innerHTML='<?php echo_('Click the location were the stock was damaged ');?>';
+    Dom.get('manage_stock_messages').innerHTML='<?php echo _('Click the location were the stock was damaged ');?>';
     for (key in location_data.data)
 	{
 	    var location= location_data.data[key];
@@ -563,32 +563,32 @@ var damaged_stock_ready=function(){
     if(Dom.get('damaged_stock_why').value!='')
 	ok1=true;
     else{
-	Dom.get('manage_stock_messages').innerHTML='<?php echo_('Please, try to explain why the stock where damaged and what are you are going to do with it')?>';
+	Dom.get('manage_stock_messages').innerHTML='<?php echo _('Please, try to explain why the stock where damaged and what are you are going to do with it')?>';
     }
     if(YAHOO.lang.isNumber(qty)){
 	if(qty<0){
-	    Dom.get('manage_stock_messages').innerHTML='<?php echo_('Do not give me negative numbers please')?>';
+	    Dom.get('manage_stock_messages').innerHTML='<?php echo _('Do not give me negative numbers please')?>';
 	    
 	}else if(qty==0){
-	    Dom.get('manage_stock_messages').innerHTML='<?php echo_('How many units were damaged?')?>';
+	    Dom.get('manage_stock_messages').innerHTML='<?php echo _('How many units were damaged?')?>';
 	}else if(qty>max){
-	    Dom.get('manage_stock_messages').innerHTML='<?php echo_('Only')?> '+max+' <?php echo_('units in location')?>';
+	    Dom.get('manage_stock_messages').innerHTML='<?php echo _('Only')?> '+max+' <?php echo _('units in location')?>';
 	    
 	}else{
 	    ok2=true;
 	}
     }else if(qty==''){
-	Dom.get('manage_stock_messages').innerHTML='<?php echo_('How many units were damaged?')?>';
+	Dom.get('manage_stock_messages').innerHTML='<?php echo _('How many units were damaged?')?>';
 	
     }else{
-	Dom.get('manage_stock_messages').innerHTML='<?php echo_('That is not a number, how many units were damaged?')?>';	
+	Dom.get('manage_stock_messages').innerHTML='<?php echo _('That is not a number, how many units were damaged?')?>';	
 	
     }
     
 
 
     if(ok1 && ok2){
-	 Dom.get('manage_stock_messages').innerHTML='<?php echo_('Save the changes please')?>';
+	 Dom.get('manage_stock_messages').innerHTML='<?php echo _('Save the changes please')?>';
 	 Dom.get('damaged_stock_save').style.display='';
     }else
 	Dom.get('damaged_stock_save').style.display='none';
@@ -596,12 +596,12 @@ var damaged_stock_ready=function(){
 };
 
 var damaged_stock_from=function(e,index){
-    Dom.get('manage_stock_messages').innerHTML='<?php echo_('How many outer were damaged')?>'
+    Dom.get('manage_stock_messages').innerHTML='<?php echo _('How many outer were damaged')?>'
     Dom.get('manage_stock_engine').style.display='';
 
 
 
-     Dom.get('manage_stock_engine').innerHTML='<table><td><?php echo_('Units damaged')?>: </td><td style="padding-right:20px" id="damaged_stock_td_qty"> <input id="damaged_stock_qty" location_id="'+location_data.data[index].id+'"  type="text" max="'+location_data.data[index].stock_units+'" size="3"  onkeyup="damaged_stock_ready()"   /> (<span style="cursor:pointer" onclick="damaged_stock_all();">'+location_data.data[index].stock_units+'</span> <?php echo_('max')?>)</td><td id="damaged_stock_save" onclick="damaged_stock_save()" style="cursor:pointer;display:none"><?php echo_('Save')?> <img src="art/icons/disk.png" style="vertical-align:bottom"/></td><tr><td><?php echo_('Comments')?>:</td><td colspan="2"><textarea id="damaged_stock_why" onkeyup="damaged_stock_ready()" ></textarea></td></tr></table>'
+     Dom.get('manage_stock_engine').innerHTML='<table><td><?php echo _('Units damaged')?>: </td><td style="padding-right:20px" id="damaged_stock_td_qty"> <input id="damaged_stock_qty" location_id="'+location_data.data[index].id+'"  type="text" max="'+location_data.data[index].stock_units+'" size="3"  onkeyup="damaged_stock_ready()"   /> (<span style="cursor:pointer" onclick="damaged_stock_all();">'+location_data.data[index].stock_units+'</span> <?php echo _('max')?>)</td><td id="damaged_stock_save" onclick="damaged_stock_save()" style="cursor:pointer;display:none"><?php echo _('Save')?> <img src="art/icons/disk.png" style="vertical-align:bottom"/></td><tr><td><?php echo _('Comments')?>:</td><td colspan="2"><textarea id="damaged_stock_why" onkeyup="damaged_stock_ready()" ></textarea></td></tr></table>'
 
   for (key in location_data.data)
 	{
@@ -656,10 +656,10 @@ var desassociate_loc=function(location_id){
     Dom.get('manage_stock_engine').innerHTML='';
     if(location_id==1){
 	var lost=Dom.get('loc_stock_units1').innerHTML;
-	Dom.get('manage_stock_messages').innerHTML='<b>'+lost+'</b> <?php echo_('units will be declared as lost');?><br><?php echo_('Try to explaian what happened to them')?>';
-	Dom.get('manage_stock_engine').innerHTML='<table><tr><td><?php echo_('Explanation')?>:</td><td colspan="2"><textarea id="desassociate_loc_why" onkeyup="desassociate_loc_ready2()" ></textarea></td></tr><tr><td></td><td style="text-align:right"></td></tr><tr><td></td><td id="delete_unknown" style="text-align:right">  <span id="desassociate_loc_save" onclick="desassociate_loc_save(1)" style="margin-left:30px;cursor:pointer;display:none;vertical-align:bottom"><?php echo_('Save')?> <img src="art/icons/disk.png" style="vertical-align:bottom"/></span>  </td></tr></table>';
+	Dom.get('manage_stock_messages').innerHTML='<b>'+lost+'</b> <?php echo _('units will be declared as lost');?><br><?php echo _('Try to explaian what happened to them')?>';
+	Dom.get('manage_stock_engine').innerHTML='<table><tr><td><?php echo _('Explanation')?>:</td><td colspan="2"><textarea id="desassociate_loc_why" onkeyup="desassociate_loc_ready2()" ></textarea></td></tr><tr><td></td><td style="text-align:right"></td></tr><tr><td></td><td id="delete_unknown" style="text-align:right">  <span id="desassociate_loc_save" onclick="desassociate_loc_save(1)" style="margin-left:30px;cursor:pointer;display:none;vertical-align:bottom"><?php echo _('Save')?> <img src="art/icons/disk.png" style="vertical-align:bottom"/></span>  </td></tr></table>';
     }else{
-    Dom.get('manage_stock_messages').innerHTML='<?php echo_('Do you want to desassocite the location');?>:<span style="padding-left:20px;cursor:pointer" onclick="desassociate_loc_save('+location_id+')">yes</span> <span style="padding-left:20px;cursor:pointer" onclick="clear_actions();">no</span>';
+    Dom.get('manage_stock_messages').innerHTML='<?php echo _('Do you want to desassocite the location');?>:<span style="padding-left:20px;cursor:pointer" onclick="desassociate_loc_save('+location_id+')">yes</span> <span style="padding-left:20px;cursor:pointer" onclick="clear_actions();">no</span>';
 
     }
     Dom.get('row_'+location_id).style.background='#ffd7d7';
@@ -724,9 +724,9 @@ var swap_picking=function(location_id){
     Dom.get('manage_stock_desktop').style.display='';
     Dom.get('manage_stock_engine').innerHTML='';
     if(can_pick)
-	Dom.get('manage_stock_messages').innerHTML='<?php echo_('Allow picking from this location');?>:<span style="padding-left:20px;cursor:pointer" onclick="swap_picking_save(1,'+location_id+')">yes</span> <span style="padding-left:20px;cursor:pointer" onclick="clear_actions();">no</span>';
+	Dom.get('manage_stock_messages').innerHTML='<?php echo _('Allow picking from this location');?>:<span style="padding-left:20px;cursor:pointer" onclick="swap_picking_save(1,'+location_id+')">yes</span> <span style="padding-left:20px;cursor:pointer" onclick="clear_actions();">no</span>';
     else
-	Dom.get('manage_stock_messages').innerHTML='<?php echo_('Forbid picking from this location');?>:<span style="padding-left:20px;cursor:pointer" onclick="swap_picking_save(0,'+location_id+')">yes</span> <span style="padding-left:20px;cursor:pointer" onclick="clear_actions();">no</span>';
+	Dom.get('manage_stock_messages').innerHTML='<?php echo _('Forbid picking from this location');?>:<span style="padding-left:20px;cursor:pointer" onclick="swap_picking_save(0,'+location_id+')">yes</span> <span style="padding-left:20px;cursor:pointer" onclick="clear_actions();">no</span>';
 
 
     Dom.get('loc_picking_img'+location_id).style.opacity=0.5;
@@ -766,7 +766,7 @@ var rank_up=function(location_id){
 	current_engine='change_location';
 	
 	Dom.get('manage_stock_desktop').style.display='';
-	Dom.get('manage_stock_messages').innerHTML='<b><?php echo_('In this section is inteded to correct the location name')?>.</b><br><?php echo_('Choose which location you want to fix')?>';
+	Dom.get('manage_stock_messages').innerHTML='<b><?php echo _('In this section is inteded to correct the location name')?>.</b><br><?php echo _('Choose which location you want to fix')?>';
 
 
 	for (key in location_data.data){
@@ -781,10 +781,10 @@ var rank_up=function(location_id){
 
 var change_location_from  =function(e,location_id){
 
-     Dom.get('manage_stock_messages').innerHTML='<b><?php echo_('This form  should be used only to correct the location name')?>.</b><br><?php echo_('Choose the correct location')?>';
+     Dom.get('manage_stock_messages').innerHTML='<b><?php echo _('This form  should be used only to correct the location name')?>.</b><br><?php echo _('Choose the correct location')?>';
      Dom.get('manage_stock_locations').style.display='';
      Dom.get('manage_stock_engine').style.display='none';
-     Dom.get("manage_stock_engine").innerHTML='<table><tr><td><?php echo_('Correct Location')?>:</td><td id="change_location_correct"></td></tr><tr><td><?php echo_('Comments')?>:</td><td><textarea id="change_location_why" ></textarea></td></tr><tr><td colspan="2" style="text-align:right"><span  onclick="change_location_save('+location_id+')" style="cursor:pointer;vertical-align:bottom"><?php echo_('Save')?> <img src="art/icons/disk.png" style="vertical-align:bottom"/></span> </td></tr></table>';
+     Dom.get("manage_stock_engine").innerHTML='<table><tr><td><?php echo _('Correct Location')?>:</td><td id="change_location_correct"></td></tr><tr><td><?php echo _('Comments')?>:</td><td><textarea id="change_location_why" ></textarea></td></tr><tr><td colspan="2" style="text-align:right"><span  onclick="change_location_save('+location_id+')" style="cursor:pointer;vertical-align:bottom"><?php echo _('Save')?> <img src="art/icons/disk.png" style="vertical-align:bottom"/></span> </td></tr></table>';
  }
 
  var change_location_save=function(location_id){
@@ -792,7 +792,7 @@ var change_location_from  =function(e,location_id){
      var pl_id=Dom.get('row_'+location_id).getAttribute('pl_id');
      var location_name=Dom.get("new_location_input").value;
       if(location_name=='')
-	Dom.get('manage_stock_messages').innerHTML='<?php echo_('Select a location from the list')?> <span id="identify_location_save" onclick="identify_location_save()" style="margin-left:30px;cursor:pointer;display:none;vertical-align:bottom"><?php echo_('Save')?> <img src="art/icons/disk.png" style="vertical-align:bottom"/></span>';
+	Dom.get('manage_stock_messages').innerHTML='<?php echo _('Select a location from the list')?> <span id="identify_location_save" onclick="identify_location_save()" style="margin-left:30px;cursor:pointer;display:none;vertical-align:bottom"><?php echo _('Save')?> <img src="art/icons/disk.png" style="vertical-align:bottom"/></span>';
 
       var msg=Dom.get("change_location_why").value;
 
@@ -845,7 +845,7 @@ var change_location_from  =function(e,location_id){
 	this.className='selected';current_engine='identify_location';
 	
 	Dom.get('manage_stock_desktop').style.display='';
-	Dom.get('manage_stock_messages').innerHTML='<?php echo_('Location code');?>: <span id="identify_location_save" onclick="identify_location_save()" style="margin-left:30px;cursor:pointer;display:none;vertical-align:bottom"><?php echo_('Save')?> <img src="art/icons/disk.png" style="vertical-align:bottom"/></span> ';
+	Dom.get('manage_stock_messages').innerHTML='<?php echo _('Location code');?>: <span id="identify_location_save" onclick="identify_location_save()" style="margin-left:30px;cursor:pointer;display:none;vertical-align:bottom"><?php echo _('Save')?> <img src="art/icons/disk.png" style="vertical-align:bottom"/></span> ';
 	Dom.get('manage_stock_locations').style.display='';
 	
 
@@ -855,7 +855,7 @@ var change_location_from  =function(e,location_id){
       var pl_id=Dom.get('row_1').getAttribute('pl_id');
       var location_name=Dom.get("new_location_input").value;
       if(location_name=='')
-	Dom.get('manage_stock_messages').innerHTML='<?php echo_('Select a location from the list')?> <span id="identify_location_save" onclick="identify_location_save()" style="margin-left:30px;cursor:pointer;display:none;vertical-align:bottom"><?php echo_('Save')?> <img src="art/icons/disk.png" style="vertical-align:bottom"/></span>';
+	Dom.get('manage_stock_messages').innerHTML='<?php echo _('Select a location from the list')?> <span id="identify_location_save" onclick="identify_location_save()" style="margin-left:30px;cursor:pointer;display:none;vertical-align:bottom"><?php echo _('Save')?> <img src="art/icons/disk.png" style="vertical-align:bottom"/></span>';
 
       var request='ar_assets.php?tipo=pml_change_location&msg=&new_location_name='+ escape(location_name)+'&id='+ escape(pl_id);
       //   alert(request);
@@ -904,7 +904,7 @@ var move_stock =function(){
     this.className='selected';
     Dom.get('manage_stock_desktop').style.display='';
     Dom.get('manage_stock_engine').innerHTML='';
-    Dom.get('manage_stock_messages').innerHTML='<?php echo_('Click the location from were the stock was moved');?>';
+    Dom.get('manage_stock_messages').innerHTML='<?php echo _('Click the location from were the stock was moved');?>';
     
     var can_from=location_data.num_physical-location_data.num_physical_with_stock;
     var can_to=location_data.num_physical-can_from;
@@ -960,9 +960,9 @@ var move_stock_save = function(){
 };
 
 var move_stock_from=function(e,index){
-    Dom.get('manage_stock_messages').innerHTML='<?php echo_('Choose the location where you moved the stock')?>'
+    Dom.get('manage_stock_messages').innerHTML='<?php echo _('Choose the location where you moved the stock')?>'
     Dom.get('manage_stock_engine').style.display='';
-    Dom.get('manage_stock_engine').innerHTML='<table border=0><tr style="height:30px"><td style="vertical-align:bottom" class="location_name"  id="move_stock_from" location_id="'+location_data.data[index].id+'"  >'+location_data.data[index].name+'</td><td style="vertical-align:bottom" > &rarr; </td><td style="vertical-align:bottom" id="move_stock_to" class="location_name"><b>?</b></td><td style="padding-left:30px;padding-right:30px;display:none;vertical-align:bottom" id="move_stock_td_qty"> <?php echo_('Units')?>:  <input style="vertical-align:bottom" id="move_stock_qty" type="text" max="'+location_data.data[index].stock_units+'" size="3"  onkeyup="move_stock_ready()" />  (<span style="cursor:pointer" onclick="move_stock_all();">'+location_data.data[index].stock_units+'</span> <?php echo_('max')?>)  </td><td id="move_stock_save" onclick="move_stock_save()" style="cursor:pointer;display:none;vertical-align:bottom"><?php echo_('Save')?> <img src="art/icons/disk.png" style="vertical-align:bottom"/></td></tr></table>'
+    Dom.get('manage_stock_engine').innerHTML='<table border=0><tr style="height:30px"><td style="vertical-align:bottom" class="location_name"  id="move_stock_from" location_id="'+location_data.data[index].id+'"  >'+location_data.data[index].name+'</td><td style="vertical-align:bottom" > &rarr; </td><td style="vertical-align:bottom" id="move_stock_to" class="location_name"><b>?</b></td><td style="padding-left:30px;padding-right:30px;display:none;vertical-align:bottom" id="move_stock_td_qty"> <?php echo _('Units')?>:  <input style="vertical-align:bottom" id="move_stock_qty" type="text" max="'+location_data.data[index].stock_units+'" size="3"  onkeyup="move_stock_ready()" />  (<span style="cursor:pointer" onclick="move_stock_all();">'+location_data.data[index].stock_units+'</span> <?php echo _('max')?>)  </td><td id="move_stock_save" onclick="move_stock_save()" style="cursor:pointer;display:none;vertical-align:bottom"><?php echo _('Save')?> <img src="art/icons/disk.png" style="vertical-align:bottom"/></td></tr></table>'
     
     var can_to=location_data.num_physical;
     if(can_to==2){
@@ -998,7 +998,7 @@ var move_stock_to=function(e,index){
 	    Dom.get("loc_name"+location_data.data[key].location_id).className='';
 	}
     
-    Dom.get('manage_stock_messages').innerHTML='<?php echo_('How many units did you move?')?>'
+    Dom.get('manage_stock_messages').innerHTML='<?php echo _('How many units did you move?')?>'
     
     Dom.get('move_stock_to').innerHTML=location_data.data[index].name;
     Dom.get('move_stock_to').setAttribute('location_id',location_data.data[index].id);
@@ -1010,24 +1010,24 @@ var move_stock_ready=function(){
     var max=Dom.get('move_stock_qty').getAttribute('max');
     if(YAHOO.lang.isNumber(qty)){
 	if(qty<0){
-	    Dom.get('manage_stock_messages').innerHTML='<?php echo_('Do not give me negative numbers please')?>';
+	    Dom.get('manage_stock_messages').innerHTML='<?php echo _('Do not give me negative numbers please')?>';
 	    Dom.get('move_stock_save').style.display='none';
 	}else if(qty==0){
-	    Dom.get('manage_stock_messages').innerHTML='<?php echo_('How many units did you move?')?>';
+	    Dom.get('manage_stock_messages').innerHTML='<?php echo _('How many units did you move?')?>';
 	    Dom.get('move_stock_save').style.display='none';
 	}else if(qty>max){
-	    Dom.get('manage_stock_messages').innerHTML='<?php echo_('You can not move more than')?> '+max+' <?php echo_('Units')?>';
+	    Dom.get('manage_stock_messages').innerHTML='<?php echo _('You can not move more than')?> '+max+' <?php echo _('Units')?>';
 	    Dom.get('move_stock_save').style.display='none';
 	    
 	}else{
-	    Dom.get('manage_stock_messages').innerHTML='<?php echo_('Save the changes please')?>';
+	    Dom.get('manage_stock_messages').innerHTML='<?php echo _('Save the changes please')?>';
 	    Dom.get('move_stock_save').style.display='';
 	}
 		    }else if(qty==''){
-	Dom.get('manage_stock_messages').innerHTML='<?php echo_('How many units did you move?')?>';
+	Dom.get('manage_stock_messages').innerHTML='<?php echo _('How many units did you move?')?>';
 	Dom.get('move_stock_save').style.display='none';
     }else{
-	Dom.get('manage_stock_messages').innerHTML='<?php echo_('That is not a number, how many units did you move?')?>';	
+	Dom.get('manage_stock_messages').innerHTML='<?php echo _('That is not a number, how many units did you move?')?>';	
 	Dom.get('move_stock_save').style.display='none';
     }
 };
@@ -1206,9 +1206,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableid=0; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 	    var CustomersColumnDefs = [
-				       {key:"date", label:"<?php echo_('Date')?>", width:200,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"author", label:"<?php echo_('Author')?>", width:70,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"note", label:"<?php echo_('Description')?>", width:370,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       {key:"date", label:"<?php echo _('Date')?>", width:200,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"author", label:"<?php echo _('Author')?>", width:70,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"note", label:"<?php echo _('Description')?>", width:370,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ];
 	    //?tipo=customers&tid=0"
 	    this.dataSource0 = new YAHOO.util.DataSource("ar_assets.php?tipo=stock_history");
@@ -1240,7 +1240,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							 renderLoopSize: 50,generateRequest : myRequestBuilder
 							 ,paginator : new YAHOO.widget.Paginator({
 								 rowsPerPage    : <?php echo$_SESSION['state']['product']['stock_history']['nr']?>,containers : 'paginator', alwaysVisible:false,
-								 pageReportTemplate : '(<?php echo_('Page')?> {currentPage} <?php echo_('of')?> {totalPages})',
+								 pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 								 previousPageLinkLabel : "<",
 								 nextPageLinkLabel : ">",
 								 firstPageLinkLabel :"<<",

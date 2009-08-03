@@ -1,11 +1,11 @@
 <?php
-include_once('../common.php');
+include_once('common.php');
 ?>
     var view='invoices';
     var panel1;
 
  var show_invoices=function(){
-     Dom.get('clean_table_title0').innerHTML='<?php echo_('Orders invoiced').' '.$_SESSION['state']['report']['sales']['period']?>.';
+     Dom.get('clean_table_title0').innerHTML='<?php echo _('Orders invoiced').' '.$_SESSION['state']['report']['sales']['period']?>.';
      request="ar_orders.php?tipo=report_invoices&saveto=report_sales&where="+escape('where true')+"&view=invoices&sf=0&nr=10&from=<?php echo$_SESSION['state']['report']['sales']['from']?>&to=<?php echo$_SESSION['state']['report']['sales']['to']?>"
      //  alert(request);
      var table=tables.table0;
@@ -26,7 +26,7 @@ include_once('../common.php');
  }
 
 var show_invoices_nohome=function(){
-     Dom.get('clean_table_title0').innerHTML='<?php echo_('Export orders invoiced (excluding partners)').' '.$_SESSION['state']['report']['sales']['period']?>';
+     Dom.get('clean_table_title0').innerHTML='<?php echo _('Export orders invoiced (excluding partners)').' '.$_SESSION['state']['report']['sales']['period']?>';
      request="ar_orders.php?tipo=report_invoices&saveto=report_sales&where="+escape('where  `Invoice For Partner`="No" and  `Invoice Billing Country 2 Alpha Code`!="<?php echo$myconf['country_2acode']?>"')+"&view=invoices&sf=0&nr=10&from=<?php echo$_SESSION['state']['report']['sales']['from']?>&to=<?php echo$_SESSION['state']['report']['sales']['to']?>"
 
      var table=tables.table0;
@@ -37,7 +37,7 @@ var show_invoices_nohome=function(){
  }
    
 var show_invoices_partner=function(){
-     Dom.get('clean_table_title0').innerHTML='<?php echo_('Partners orders invoiced').' '.$_SESSION['state']['report']['sales']['period']?>';
+     Dom.get('clean_table_title0').innerHTML='<?php echo _('Partners orders invoiced').' '.$_SESSION['state']['report']['sales']['period']?>';
      request="ar_orders.php?tipo=report_invoices&saveto=report_sales&where="+escape('where  `Invoice For Partner`="Yes" ')+"&view=invoices&sf=0&nr=10&from=<?php echo$_SESSION['state']['report']['sales']['from']?>&to=<?php echo$_SESSION['state']['report']['sales']['to']?>"
 
      var table=tables.table0;
@@ -49,7 +49,7 @@ var show_invoices_partner=function(){
 
     var show_invoices_country=function(country_code,name){
 
-     Dom.get('clean_table_title0').innerHTML=name+' <?php echo_('orders invoiced').' '.$_SESSION['state']['report']['sales']['period']?>';
+     Dom.get('clean_table_title0').innerHTML=name+' <?php echo _('orders invoiced').' '.$_SESSION['state']['report']['sales']['period']?>';
      request="ar_orders.php?tipo=report_invoices&saveto=report_sales&where="+escape('where  `Invoice For Partner`="No"    and `Invoice Billing Country 2 Alpha Code`="'+country_code+'"')+"&view=invoices&sf=0&nr=10&from=<?php echo$_SESSION['state']['report']['sales']['from']?>&to=<?php echo$_SESSION['state']['report']['sales']['to']?>"
 
      var table=tables.table0;
@@ -75,15 +75,15 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 	    var OrdersColumnDefs = [
-				       {key:"id", label:"<?php echo_('Number')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-				       //  {key:"titulo", label:"<?php echo_('Type')?>", width:115,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-				       {key:"customer",label:"<?php echo_('Customer')?>", width:280,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-				       {key:"date", label:"<?php echo_('Date')?>", width:145,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
-				        {key:"net", label:"<?php echo_('Net')?>", width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       ,{key:"total_amount", label:"<?php echo_('Total')?>", width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       {key:"id", label:"<?php echo _('Number')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				       //  {key:"titulo", label:"<?php echo _('Type')?>", width:115,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				       {key:"customer",label:"<?php echo _('Customer')?>", width:280,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				       {key:"date", label:"<?php echo _('Date')?>", width:145,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
+				        {key:"net", label:"<?php echo _('Net')?>", width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"total_amount", label:"<?php echo _('Total')?>", width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				       
-				       //					 {key:"families", label:"<?php echo_('Customers')?>", sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
-				      //{key:"active", label:"<?php echo_('Customers')?>", sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       //					 {key:"families", label:"<?php echo _('Customers')?>", sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
+				      //{key:"active", label:"<?php echo _('Customers')?>", sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				      
 
 					 ];
@@ -119,7 +119,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							   renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
 									       rowsPerPage    : <?php echo$_SESSION['state']['orders']['table']['nr']?>,containers : 'paginator0', 
- 									      pageReportTemplate : '(<?php echo_('Page')?> {currentPage} <?php echo_('of')?> {totalPages})',
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
  									      firstPageLinkLabel :"<<",

@@ -1,7 +1,7 @@
 <?php
 //@author Raul Perusquia <rulovico@gmail.com>
 //Copyright (c) 2009 LW
-include_once('../common.php');
+include_once('common.php');
 $salutation="''";
 $sql="select `Salutation` from `Salutation Dimension` where `Language Key`=1";
 $result=mysql_query($sql);
