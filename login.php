@@ -19,7 +19,7 @@ $Sk="skstart|".(date('U')+300)."|".ip()."|".IKEY."|".sha1(mt_rand()).sha1(mt_ran
 $St=AESEncryptCtr($Sk,SKEY, 256);
 
 //print AESDecryptCtr($St,SKEY,256);
-//exit;
+//print($St);
 $css_files=array(
 		 $yui_path.'xreset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'button/assets/skins/sam/button.css',
@@ -31,9 +31,9 @@ $js_files=array(
 		$yui_path.'container/container.js',
 		$yui_path.'menu/menu-min.js',
 		$yui_path.'button/button.js',
-		'js/sha256.js.php',
+		'sha256.js.php',
 		'js/aes.js',
-		'js/login.js.php'
+		'login.js.php'
 		);
 
 

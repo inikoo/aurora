@@ -1,7 +1,7 @@
 <?php
 //@author Raul Perusquia <rulovico@gmail.com>
 //Copyright (c) 2009 LW
-include_once('../common.php');
+include_once('common.php');
 include_once('../class.Contact.php');
 $contact_id=$_SESSION['state']['contact']['id'];
 $contact=new contact($contact_id);

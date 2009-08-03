@@ -1,6 +1,6 @@
 <?php
 
-include_once('../common.php');
+include_once('common.php');
 
 
 
@@ -21,7 +21,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    
 	    this.customerLink=  function(el, oRecord, oColumn, oData) {
 		if(oData==null)
-		    oData='<?php echo_('Error, no customer name')?>';
+		    oData='<?php echo _('Error, no customer name')?>';
 
 		var url="contact.php?id="+oRecord.getData("customer_id");
 		el.innerHTML = oData.link(url);
@@ -36,15 +36,15 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 	    var OrdersColumnDefs = [
-				       {key:"public_id", label:"<?php echo_('Number')?>", width:80,formatter:this.orderLink,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-				       {key:"titulo", label:"<?php echo_('Type')?>", width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-				       {key:"customer_name",label:"<?php echo_('Customer')?>",formatter:this.customerLink, width:280,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-				       {key:"date_index", label:"<?php echo_('Fecha')?>", width:140,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
+				       {key:"public_id", label:"<?php echo _('Number')?>", width:80,formatter:this.orderLink,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				       {key:"titulo", label:"<?php echo _('Type')?>", width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				       {key:"customer_name",label:"<?php echo _('Customer')?>",formatter:this.customerLink, width:280,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				       {key:"date_index", label:"<?php echo _('Fecha')?>", width:140,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
 
-				       {key:"total", label:"<?php echo_('Total')?>", width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       {key:"total", label:"<?php echo _('Total')?>", width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				      
-				      //					 {key:"families", label:"<?php echo_('Customers')?>", sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
-				      //{key:"active", label:"<?php echo_('Customers')?>", sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				      //					 {key:"families", label:"<?php echo _('Customers')?>", sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
+				      //{key:"active", label:"<?php echo _('Customers')?>", sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				      
 
 					 ];
@@ -96,8 +96,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 	    this.OrdersDataTable.filterMenu = new YAHOO.widget.Menu('filternewmenu0',  {context:['filterselector0',"tr", "br"]  });
-	    this.OrdersDataTable.filterMenu.addItems([{ text: "<?php echo_('Name')?>", onclick:{fn:changeFilter,obj:{col:'name',text:"<?php echo_('Order name')?>"},scope:this.OrdersDataTable}  } ]);
-	    this.OrdersDataTable.filterMenu.addItems([{ text: "<?php echo_('Post Code')?>", onclick:{fn:changeFilter,obj:{col:'postcode',text:"<?php echo_('Post Code')?>"},scope:this.OrdersDataTable}  } ]);
+	    this.OrdersDataTable.filterMenu.addItems([{ text: "<?php echo _('Name')?>", onclick:{fn:changeFilter,obj:{col:'name',text:"<?php echo _('Order name')?>"},scope:this.OrdersDataTable}  } ]);
+	    this.OrdersDataTable.filterMenu.addItems([{ text: "<?php echo _('Post Code')?>", onclick:{fn:changeFilter,obj:{col:'postcode',text:"<?php echo _('Post Code')?>"},scope:this.OrdersDataTable}  } ]);
 	    YAHOO.util.Event.addListener('filterselector0', "click", this.OrdersDataTable.filterMenu.show, null, this.OrdersDataTable.filterMenu);
 	    this.OrdersDataTable.filterMenu.render(document.body);
 	    

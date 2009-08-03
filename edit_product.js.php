@@ -1,5 +1,5 @@
 <?php
-    include_once('../common.php');
+    include_once('common.php');
 ?>
 var Event = YAHOO.util.Event;
 var Dom   = YAHOO.util.Dom;
@@ -354,7 +354,7 @@ function units_save(){
 }
 
 function delete_part(id,name){
-    var answer = confirm("<?php echo_('Are you sure you want to desassociate this part')?> ("+name+")");
+    var answer = confirm("<?php echo _('Are you sure you want to desassociate this part')?> ("+name+")");
     if (answer){
 
 	var request='ar_assets.php?tipo=ep_update&key=part_delete'+'&value='+escape(id);
@@ -383,7 +383,7 @@ function delete_part(id,name){
 
 
 function delete_image(image_id,image_name){
-    var answer = confirm("<?php echo_('Are you sure you want to delete this image')?> ("+image_name+")");
+    var answer = confirm("<?php echo _('Are you sure you want to delete this image')?> ("+image_name+")");
     if (answer){
 
 	
@@ -399,7 +399,7 @@ function delete_image(image_id,image_name){
 			    var new_principal=r.new_principal;
 			    Dom.get('images').setAttribute('principal',new_principal);
 			    var new_but=Dom.get('img_set_principal'+new_principal);
-			    new_but.setAttribute('title','<?php echo_('Main Image')?>');
+			    new_but.setAttribute('title','<?php echo _('Main Image')?>');
 			    new_but.setAttribute('principal',1);
 			    new_but.setAttribute('src',"art/icons/asterisk_orange.png");		
 			    new_but.style.cursor="default";
@@ -432,11 +432,11 @@ function set_image_as_principal(o){
 			Dom.get('images').setAttribute('principal',new_principal);
 			var old_but=Dom.get('img_set_principal'+old_principal);
 			var new_but=Dom.get('img_set_principal'+new_principal);
-			old_but.setAttribute('title','<?php echo_('Set as the principal image')?>');
+			old_but.setAttribute('title','<?php echo _('Set as the principal image')?>');
 			old_but.setAttribute('principal',0);
 			old_but.setAttribute('src',"art/icons/picture_empty.png");
 			old_but.style.cursor="pointer";
-			new_but.setAttribute('title','<?php echo_('Main Image')?>');
+			new_but.setAttribute('title','<?php echo _('Main Image')?>');
 			new_but.setAttribute('principal',1);
 			new_but.setAttribute('src',"art/icons/asterisk_orange.png");		
 			new_but.style.cursor="default";
@@ -465,22 +465,22 @@ function caption_changed(o){
 	if(ovalue!=o.value){
 	    if(name=='description'){
 		if(o.value==''){
-		    description_errors.description="<?php echo_("The product name can not be empty")?>";
+		    description_errors.description="<?php echo _("The product name can not be empty")?>";
 		}
 		else if(o.value.lenght>75){
-		    description_errors.description="<?php echo_("The product name can not be empty")?>";
+		    description_errors.description="<?php echo _("The product name can not be empty")?>";
 		}else
 		    delete description_errors.description
 
 
 	    }else if(name=='sdescription'){
 		if(o.value==''){
-		    description_errors.sdescription="<?php echo_("The product short description can not be empty")?>";
+		    description_errors.sdescription="<?php echo _("The product short description can not be empty")?>";
 		  //   save_menu();
 // 		    return;
 		}
 		if(o.value.lenght>75){
-		    description_errors.sdescription="<?php echo_("The product short description can not be longer the 40 characters")?>";
+		    description_errors.sdescription="<?php echo _("The product short description can not be longer the 40 characters")?>";
 		 //    save_menu();
 // 		    return;
 		}else
@@ -587,7 +587,7 @@ function validate_dim(value,tipo){
 	    var dim=value.split("x",3);
 	    var vol=dim[0]*dim[1]*dim[2];
 	    if(vol==0)
-		return {ok:false,msg:'<?php echo_('Zero volumen')?>'};
+		return {ok:false,msg:'<?php echo _('Zero volumen')?>'};
 	    else
 		return {ok:true,msg:'',vol:vol};
 
@@ -669,12 +669,12 @@ function price_changed(o){
 	if(ovalue!=o.value){
 	    Dom.get(name+"_save").style.visibility='visible';
 	    if(o.value==''){
-		Dom.get(name+"_change").innerHTML='<?php echo_('RRP value unset')?>';
+		Dom.get(name+"_change").innerHTML='<?php echo _('RRP value unset')?>';
 		Dom.get(name+"_ou").innerHTML='';
 	    }else if(ovalue==''){
 		value=FormatNumber(o.value,'.','',2);
 		factor=FormatNumber(o.getAttribute('factor'),'.','',6);
-		Dom.get(name+"_change").innerHTML='<?php echo_('RRP set to')?> '+'<?php echo$myconf['currency_symbol']?>'+FormatNumber(value,'<?php echo$myconf['decimal_point']?>','<?php echo$myconf['thosusand_sep']?>',2);
+		Dom.get(name+"_change").innerHTML='<?php echo _('RRP set to')?> '+'<?php echo$myconf['currency_symbol']?>'+FormatNumber(value,'<?php echo$myconf['decimal_point']?>','<?php echo$myconf['thosusand_sep']?>',2);
 		Dom.get(name+"_ou").innerHTML='<?php echo$myconf['currency_symbol']?>'+FormatNumber((value*factor).toFixed(2),'<?php echo$myconf['decimal_point']?>','<?php echo$myconf['thosusand_sep']?>',2);
 	    }else{
 		value=FormatNumber(o.value,'.','',2);
@@ -1274,11 +1274,11 @@ function init(){
 		    Dom.get('images').setAttribute('principal',r.data.id)
 		    set_principal_img.setAttribute("principal", 1);
 		    set_principal_img.setAttribute("src", 'art/icons/asterisk_orange.png');
-		    set_principal_img.setAttribute("title", "<?php echo_('Main Image')?>");
+		    set_principal_img.setAttribute("title", "<?php echo _('Main Image')?>");
 		}else{
 		    set_principal_img.setAttribute("principal", 0);
 		    set_principal_img.setAttribute("src", 'art/icons/picture_empty.png');
-		    set_principal_img.setAttribute("title", "<?php echo_('Set as the principal image')?>");
+		    set_principal_img.setAttribute("title", "<?php echo _('Set as the principal image')?>");
 		}	
 
 
@@ -1286,7 +1286,7 @@ function init(){
 		set_principal_span.appendChild(set_principal_img);
 		var delete_span=document.createElement("span");
 		delete_span.style.cursor='pointer';
-		delete_span.innerHTML='<?php echo_('Delete')?> <img src="art/icons/cross.png">';
+		delete_span.innerHTML='<?php echo _('Delete')?> <img src="art/icons/cross.png">';
 		delete_span.setAttribute("onClick", 'delete_image('+r.data.id+',"'+r.data.name+'")');
 
 		operations_div.appendChild(set_principal_span);
@@ -1296,12 +1296,12 @@ function init(){
 		var caption_div=document.createElement("div");
 		caption_div.setAttribute("class",'caption');
 		var caption_tag_div=document.createElement("div");
-		caption_tag_div.innerHTML='<?php echo_('Caption')?>:';
+		caption_tag_div.innerHTML='<?php echo _('Caption')?>:';
 		var save_caption_span=document.createElement("span");
 		save_caption_span.setAttribute("class",'save');
 		var save_caption_img=document.createElement("img");
 		save_caption_img.setAttribute("src",'art/icons/disk.png');
-		save_caption_img.setAttribute("title",'<?php echo_('Save caption')?>');
+		save_caption_img.setAttribute("title",'<?php echo _('Save caption')?>');
 		save_caption_img.setAttribute("id",'save_img_caption'+r.data.id);
 		save_caption_img.setAttribute("onClick",'save_image("img_caption",'+r.data.id+')');
 		save_caption_img.setAttribute("class",'caption');
@@ -1447,7 +1447,7 @@ var save_new_part=function(){
 		    var td = document.createElement("td");
 		    td.setAttribute("class","label" );
 		    td.setAttribute("style","width:15em" );
-		    td.innerHTML='<?php echo_('Parts product code')?>:';
+		    td.innerHTML='<?php echo _('Parts product code')?>:';
 		    tr.appendChild(td);
 		    var td = document.createElement("td");
 		    td.setAttribute("style","text-align:left;" );
@@ -1466,7 +1466,7 @@ var save_new_part=function(){
 		    tr.setAttribute("id",'sup_tr3_'+part_id );
 		    var td = document.createElement("td");
 		    td.setAttribute("class","label" );
-		    td.innerHTML='<?php echo_('Cost per')?> '+r.units_tipo_name+':';
+		    td.innerHTML='<?php echo _('Cost per')?> '+r.units_tipo_name+':';
 		    tr.appendChild(td);
 
 		    var td = document.createElement("td");

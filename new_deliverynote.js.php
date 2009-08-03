@@ -1,5 +1,5 @@
 <?php
-include_once('../common.php');
+include_once('common.php');
 ?>
 
     
@@ -29,19 +29,19 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		var tableDivEL="table"+tableid;
 		
 		var DeliverynotesColumnDefs = [
-					   {key:"code", label:"<?php echo_('Our Code')?>", width:80,sortable:true,formatter:this.productLink,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					   ,{key:"sup_code", label:"<?php echo_('Code')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					   {key:"code", label:"<?php echo _('Our Code')?>", width:80,sortable:true,formatter:this.productLink,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					   ,{key:"sup_code", label:"<?php echo _('Code')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
-					   ,{key:"description", label:"<?php echo_('Description')?>" ,width:280, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					   ,{key:"price", label:"<?php echo_('Cost Price Unit')?>" ,width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-					   ,{key:"qty", label:"<?php echo_('Unit Ordered')?>" ,width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-					   ,{key:"qty2", label:"<?php echo_('Unit Received')?>" ,width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-					   ,{key:"cost", label:"<?php echo_('Cost')?>" ,width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					   ,{key:"description", label:"<?php echo _('Description')?>" ,width:280, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					   ,{key:"price", label:"<?php echo _('Cost Price Unit')?>" ,width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					   ,{key:"qty", label:"<?php echo _('Unit Ordered')?>" ,width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					   ,{key:"qty2", label:"<?php echo _('Unit Received')?>" ,width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					   ,{key:"cost", label:"<?php echo _('Cost')?>" ,width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
 
-					   //					   ,{key:"description", label:"<?php echo_('Description')?>", sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					   // ,{key:"stock", label:"<?php echo_('Stock')?>",sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-					   //,{key:"price_unit", label:"<?php echo_('Cost Price Unit')?>",sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					   //					   ,{key:"description", label:"<?php echo _('Description')?>", sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					   // ,{key:"stock", label:"<?php echo _('Stock')?>",sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					   //,{key:"price_unit", label:"<?php echo _('Cost Price Unit')?>",sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
 					   
 
@@ -116,8 +116,8 @@ function init(){
 							       constraintoviewport : true,
 							       postmethod:"form",
 							       
-							  buttons : [ { text:"<?php echo_('Update')?>", handler:handleSubmit, isDefault:true },
-								      { text:"<?php echo_('Cancel')?>", handler:handleCancel } ]
+							  buttons : [ { text:"<?php echo _('Update')?>", handler:handleSubmit, isDefault:true },
+								      { text:"<?php echo _('Cancel')?>", handler:handleCancel } ]
 							});
 
 	YAHOO.deliverynote.dialog1.callback = { success: handleSuccess,failure: handleFailure };

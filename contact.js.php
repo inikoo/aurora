@@ -1,7 +1,7 @@
 <?php
 //@author Raul Perusquia <rulovico@gmail.com>
 //Copyright (c) 2009 LW
-include_once('../common.php');
+include_once('common.php');
 ?>
     var Dom   = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;
@@ -39,7 +39,7 @@ function showdetails(o){
 
 			c3.setAttribute('colspan',3);
 			c3.innerHTML=r.details;
-			Dom.get('ch'+history_id).innerHTML='<?php echo_('Hide details')?>';
+			Dom.get('ch'+history_id).innerHTML='<?php echo _('Hide details')?>';
 			Dom.get('ch'+history_id).setAttribute('d',1);
 
 			
@@ -48,7 +48,7 @@ function showdetails(o){
 		}
 	    });   
     }else{
-	Dom.get('ch'+history_id).innerHTML='<?php echo_('view details')?>';
+	Dom.get('ch'+history_id).innerHTML='<?php echo _('view details')?>';
 	Dom.get('ch'+history_id).setAttribute('d',0);
 	table.deleteRow(row_index);
 
@@ -149,12 +149,12 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    var tableDivEL="table"+tableid;  
 		    
 		    var ColumnDefs = [
-				      {key:"date", label:"<?php echo_('Date')?>",className:"aright",width:150,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				      ,{key:"time", label:"<?php echo_('Time')?>",className:"aleft",width:50}
-				      ,{key:"objeto", label:"<?php echo_('Type')?>", className:"aleft",width:70,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				      ,{key:"handle", label:"<?php echo_('Author')?>",className:"aleft",width:80,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				      {key:"date", label:"<?php echo _('Date')?>",className:"aright",width:150,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				      ,{key:"time", label:"<?php echo _('Time')?>",className:"aleft",width:50}
+				      ,{key:"objeto", label:"<?php echo _('Type')?>", className:"aleft",width:70,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				      ,{key:"handle", label:"<?php echo _('Author')?>",className:"aleft",width:80,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
-				      ,{key:"note", label:"<?php echo_('Notes')?>",className:"aleft",width:400}
+				      ,{key:"note", label:"<?php echo _('Notes')?>",className:"aleft",width:400}
 					   ];
 		
 		    this.dataSource0  = new YAHOO.util.DataSource("ar_contacts.php?tipo=customer_history&tid="+tableid);
@@ -180,7 +180,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								     renderLoopSize: 5,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
 									      rowsPerPage    : <?php echo$_SESSION['state']['customer']['table']['nr']?>,containers : 'paginator', 
- 									      pageReportTemplate : '(<?php echo_('Page')?> {currentPage} <?php echo_('of')?> {totalPages})',alwaysVisible:false,
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',alwaysVisible:false,
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
  									      firstPageLinkLabel :"<<",

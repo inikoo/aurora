@@ -81,8 +81,11 @@ class Auth {
     $res=mysql_query($sql);
     if($row=mysql_fetch_array($res)){
        	$st=AESDecryptCtr(AESDecryptCtr($this->sk,$row['User Password'],256),$this->skey,256);
+	//print $row['User Password'];
+	//exit;
 	$this->pass['handle']='Yes';
 	$this->pass['handle_in_use']='Yes';
+	
 	if(preg_match('/^skstart\|\d+\|[abcdef0-9\.\:]+\|.+\|/',$st)){
 	  $this->pass['password']='Yes';
 
@@ -128,7 +131,7 @@ class Auth {
     }
     
     
-
+   
     
   }
 
