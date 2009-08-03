@@ -863,21 +863,13 @@ protected function create($data,$optios=''){
 
 
 function load_metadata(){
-    
-
-    $this->data['Type']=array();
- 
-
-
-    $where_scope=sprintf(' and `Subject Type`=%s',prepare_mysql($this->scope));
-    
-    $where_scope_key='';
+  $this->data['Type']=array();
+  $where_scope=sprintf(' and `Subject Type`=%s',prepare_mysql($this->scope));
+  
+  $where_scope_key='';
     if($this->scope_key)
       $where_scope_key=sprintf(' and `Subject Key`=%d',$this->scope_key);
-
     
-
-
     $sql=sprintf("select * from `Telecom Bridge` where `Telecom Key`=%d %s  %s "
 		 ,$this->id
 		 ,$where_scope
@@ -893,9 +885,6 @@ function load_metadata(){
       $this->data['Telecom Type'][$row['Telecom Type']]=$row['Telecom Type'];
       $this->data['Telecom Is Main'][$row['Telecom Type']]=$row['Is Main'];
       $this->data['Telecom Is Active'][$row['Telecom Type']]=$row['Is Active'];
-
-  
-
     }
     
     

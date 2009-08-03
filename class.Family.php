@@ -11,7 +11,7 @@
  
  Version 2.0
 */
-include_once('Product.php');
+include_once('class.Product.php');
 
 /* class: Family
    Class to manage the *Product Family Dimension* table

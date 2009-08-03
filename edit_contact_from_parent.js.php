@@ -1,34 +1,51 @@
 
 var Contact_Changes=0;
-var Contact_Items_Changes=0;
-var Contact_Type_Changes=0;
-var Contact_Function_Changes=0;
+var Contact_Email_Changes=0;
+var Contact_Mobile_Changes=0;
+var Contact_Telephone_Changes=0;
+var Contact_Fax_Changes=0;
+var Contact_Address_Changes=0;
 
+
+var Contact_Function_Changes=0;
+var Contact_Keys=['Contact_First_Name','Contact_Salutation','Contact_Surname','Contact_Suffix','Contact_Gender','Contact_Title','Contact_Profession'];
+var Contact_Name_Keys=['Contact_First_Name','Contact_Salutation','Contact_Surname','Contact_Suffix'];
+var Contact_No_Name_Keys=['Contact_Gender','Contact_Title','Contact_Profession'];
+var Email_Keys=['Email','Email_Description','Email_Contact_Name'];
 
 var save_contact=function(){
 
     var table='contact';
-    if(Dom.get('contact_key').value==0)
+    if(Dom.get('Contact_Key').value==0)
 	create_contact();
     else
-	var contact_key=Dom.get('contact_key').value;
+	var contact_key=Dom.get('Contact_Key').value;
     
     save_contact_elements=0;
 
     
 
-    if(Contact_Items_Changes>0){
-	
-	items=Contact_Keys;
+    if(Contact_Changes>0){
 	
 
-	var value=new Object()
-	for(i in items)
-	    value[items[i]]=Dom.get('contact_'+items[i]).value;
-    
+	
+
+	var name_value=new Object();
+	var items=Contact_Name_Keys;
+	for(i in items){
+	    name_value[items[i]]=Dom.get(items[i]).value;
+	}
+	var value=new Object();
+	var items=Contact_No_Name_Keys;
+	for(i in items){
+	    value[items[i]]=Dom.get(items[i]).value;
+	}
+	value['Contact_Name_Components']=name_value;
+	
 	var json_value = YAHOO.lang.JSON.stringify(value); 
 	var request='ar_edit_contacts.php?tipo=edit_'+escape(table)+ '&value=' + json_value+'&id='+contact_key+'&subject='+Subject+'&subject_key='+Subject_Key; 
-	
+	alert(request);
+	return;
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
 		    //	alert(o.responseText);
@@ -101,7 +118,8 @@ var save_contact=function(){
 
 var create_contact=function(){
     
-    
+    alert("creating contact");
+    return;
     var value=new Object();
     items=Contact_Keys;
     for(i in items)
@@ -221,9 +239,13 @@ var cancel_edit_contact=function (){
     }
     var elements_to_unselect=Dom.getElementsByClassName('Contact_Gender');
     Dom.removeClass(elements_to_unselect,'selected');
+    Dom.get('Contact_Gender').value='Unknown';
+    Dom.get('Contact_Gender').setAttribute('ovalue','Unknown');
+    Dom.addClass('Contact_Gender_Unknown','selected');
+    
     var elements_to_unselect=Dom.getElementsByClassName('Contact_Salutation');
     Dom.removeClass(elements_to_unselect,'selected');
-    Dom.addClass('Contact_Gender_Unknown','selected');
+
 
     elements_to_delete=Dom.getElementsByClassName('cloned_editor');
     for (i in elements_to_delete){
@@ -263,8 +285,15 @@ var edit_contact=function (e,contact_button){
     Dom.setStyle(['contact_form','cancel_edit_contact_button'], 'display', ''); 
     Dom.get("cancel_edit_contact_button").setAttribute('contact_key',index);
     
-
- 
+    Dom.get('Contact_Key').value=Current_Contact_Index;
+    if(Current_Contact_Index==0){
+	Dom.get("save_contact_button").innerHTML='<?php echo _('Save New Contact')?>';
+	Dom.get("cancel_edit_contact_button").innerHTML='<?php echo _('Cancel Add New Contact')?>';
+    }else{
+	Dom.get("save_contact_button").innerHTML='<?php echo _('Save Changes')?>';
+	Dom.get("cancel_edit_contact_button").innerHTML='<?php echo _('Cancel Edit Contact')?>';
+    }
+    
     data=Contact_Data[index];
    
     for (key in data){
@@ -290,7 +319,8 @@ var edit_contact=function (e,contact_button){
 	    var elements_to_unselect=Dom.getElementsByClassName('Contact_Gender');
 	    Dom.removeClass(elements_to_unselect,'selected');
 	    Dom.addClass('Contact_Gender_'+data[key],'selected');
-		
+	    Dom.get('Contact_Gender').value=data[key];
+	    Dom.get('Contact_Gender').setAttribute('ovalue',data[key]);
 	}else if(key=='type'){
 	    var contact_type=data[key];
 	    for (contact_type_key in contact_type){
@@ -309,10 +339,39 @@ var edit_contact=function (e,contact_button){
 		    Dom.setStyle(insertedElement,'display','');
 		    insertedElement.id="tr_email"+email_key;
 		    insertedElement.setAttribute('email_key',email_key);
+		    var element_array=Dom.getElementsByClassName('show_details_email', 'span',insertedElement);
+		    element_array[0].setAttribute('email_key',email_key);
+
 		    var element_array=Dom.getElementsByClassName('Email', 'input',insertedElement);
 		    element_array[0].value=email_data['Email'];
-		    //var element_array=Dom.getElementsByClassName('Email_Contact_Name', 'input',insertedElement);
-		    //element_array[0].value=email_data['Email_Contact_Name'];
+		    element_array[0].setAttribute('ovalue',email_data['Email']);
+		    element_array[0].setAttribute('email_key',email_key);
+
+
+		    var element_array=Dom.getElementsByClassName('Email_Contact_Name', 'input',insertedElement);
+		    element_array[0].value=email_data['Email_Contact_Name'];
+		    element_array[0].setAttribute('ovalue',email_data['Email_Contact_Name']);
+		    element_array[0].setAttribute('email_key',email_key);
+		    
+		    var element_array=Dom.getElementsByClassName('Email_Description', 'input',insertedElement);
+		    element_array[0].value=email_data['Email_Description'];
+		    element_array[0].setAttribute('ovalue',email_data['Email_Description']);
+		    element_array[0].setAttribute('email_key',email_key);
+		    
+		    
+		    
+		    var element_array=Dom.getElementsByClassName('Email_Description', 'span',insertedElement);
+		    for(i in  element_array){
+
+			var label=element_array[i].getAttribute('label');
+			element_array[i].id="Email_Description_"+label+email_key;
+			if(label===email_data['Email_Description'])
+			    Dom.addClass(element_array[i],'selected');
+		    }
+		    var element_array=Dom.getElementsByClassName('edit', 'table',insertedElement);
+		    element_array[0].id="Email_Details"+email_key;
+		    
+
 
 		}
 		
@@ -735,17 +794,75 @@ var set_salutation=function(string){
 function calculate_num_changed_in_personal(){
     var changes=0;
    
-    var items=['Contact_First_Name','Contact_Salutation','Contact_Surname'];
+    var items=Contact_Keys;
     
     for (i in items){
 	var item=Dom.get(items[i]);
+
 	if(item.getAttribute('ovalue')!=item.value)
 	    changes++;
     }
     
     Dom.get("personal_num_changes").innerHTML=changes;
+    if(changes==0){
 
+    }else{
+	Dom.setStyle('save_contact_button','display','');
+
+    }
+    Contact_Changes=changes;
 }
+
+
+function calculate_num_changed_in_email(){
+    var changed=new Object();
+    
+    var elements_array=Dom.getElementsByClassName('Email', 'input');
+    for( var i in elements_array ){
+	var input_element=elements_array[i];
+	var email_key=input_element.getAttribute('email_key');
+	if(email_key>0  && input_element.getAttribute('ovalue')!=input_element.value)
+	    changed[email_key]=1;
+    }
+    var elements_array=Dom.getElementsByClassName('Email_Description', 'input');
+    for( var i in elements_array ){
+	var input_element=elements_array[i];
+	var email_key=input_element.getAttribute('email_key');
+	if(email_key>0  && input_element.getAttribute('ovalue')!=input_element.value)
+	    changed[email_key]=1;
+    }
+     var elements_array=Dom.getElementsByClassName('Email_Contact_Name', 'input');
+    for( var i in elements_array ){
+	var input_element=elements_array[i];
+	var email_key=input_element.getAttribute('email_key');
+	if(email_key>0  && input_element.getAttribute('ovalue')!=input_element.value)
+	    changed[email_key]=1;
+    }
+    
+
+
+    var changes=0;
+    for(i in changed)
+	changes++;
+    
+    
+
+    if(changes==0){
+	Dom.get("email_num_changes").innerHTML='';
+    }else{
+	Dom.get("email_num_changes").innerHTML=changes;
+	Dom.setStyle('save_email_button','display','');
+
+    }
+    Email_Changes=changes;
+}
+
+
+
+
+
+
+
 
 
 function update_salutation(o){
@@ -761,8 +878,53 @@ function update_salutation(o){
 
 }
 
+function name_component_change(){
+    calculate_num_changed_in_personal();
+    update_full_name();
+}
+
 function update_full_name(){
     var full_address=trim(Dom.get("Contact_Salutation").value+' '+Dom.get("Contact_First_Name").value+' '+Dom.get("Contact_Surname").value);
     Dom.get("Contact_Name").value=full_address;
+
+}
+
+
+function email_change(){
+    calculate_num_changed_in_email();
+}
+
+
+function show_details_email(o){
+    var action=o.getAttribute('action');
+    var email_key=o.getAttribute('email_key');
+
+    if(action=='Show'){
+	o.innerHTML='Hide Details';
+	o.setAttribute('action','Hide');
+	Dom.setStyle("Email_Details"+email_key,'display','');
+    }else{
+	o.innerHTML='EditDetails';
+	o.setAttribute('action','Show');
+	Dom.setStyle("Email_Details"+email_key,'display','none');
+
+    }
+
+}
+
+
+
+
+function validate_email(o){
+    var email=o.value;
+    var email_key=o.getAttribute('email_key');
+    
+    if(isValidEmail(email)){
+	o.setAttribute('valid',1);
+	Dom.removeClass(o,'invalid');
+    }else{
+	o.setAttribute('valid',0);
+	Dom.addClass(o,'invalid');
+    }
 
 }

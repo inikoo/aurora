@@ -741,6 +741,57 @@ public static function  wrong_email($email){
 
     }
 
+function set_scope($raw_scope='',$scope_key=0){
+    $scope='Unknown';
+    $raw_scope=_trim($raw_scope);
+    if(preg_match('/^customers?$/i',$raw_scope)){
+      $scope='Customer';
+    }else if(preg_match('/^(contacts?|person)$/i',$raw_scope)){
+      $scope='Contact';
+    }else if(preg_match('/^(company?|bussiness)$/i',$raw_scope)){
+      $scope='Company';
+    }else if(preg_match('/^(supplier)$/i',$raw_scope)){
+      $scope='Supplier';
+    }else if(preg_match('/^(staff)$/i',$raw_scope)){
+      $scope='Staff';
+    }
+    
+    $this->scope=$scope;
+    $this->scope_key=$scope_key;
+    $this->load_metadata();
+    
+  }
+
+
+
+function load_metadata(){
+  $this->data['Type']=array();
+  $where_scope=sprintf(' and `Subject Type`=%s',prepare_mysql($this->scope));
+  
+  $where_scope_key='';
+    if($this->scope_key)
+      $where_scope_key=sprintf(' and `Subject Key`=%d',$this->scope_key);
+    
+    $sql=sprintf("select * from `Email Bridge` where `Email Key`=%d %s  %s "
+		 ,$this->id
+		 ,$where_scope
+		 ,$where_scope_key
+		 );
+    $res=mysql_query($sql);
+
+
+  
+    $this->associated_with_scope=false;
+    while($row=mysql_fetch_array($res)){
+        $this->associated_with_scope=true;
+	$this->data['Email Description']=$row['Email Description'];
+	$this->data['Email Is Main']=$row['Is Main'];
+	$this->data['Email Is Active']=$row['Is Active'];
+    }
+    
+    
+  }
+
 
 
 }

@@ -207,10 +207,21 @@
 
       <div  style="xdisplay:none;margin:0"  class="edit_block" id="d_contacts">
 	<table class="edit" border=0>
-	  <tr class="title"><td>{t}Contacts{/t}: <span class="state_details" id="personal_num_changes"></span><span class="state_details" id="contact_messages"></span></td><td  style="text-align:right">
+	  <tr class="title"><td>{t}Contacts{/t}: 
+	      <span class="state_details" id="personal_num_changes"></span>
+	      <span class="state_details" id="email_num_changes"></span>
+	      <span class="state_details" id="mobile_num_changes"></span>
+	      <span class="state_details" id="telephone_num_changes"></span>
+	      <span class="state_details" id="fax_num_changes"></span>
+	      <span class="state_details" id="address_num_changes"></span>
+	      <span class="state_details" id="contact_messages"></span>
+	      
+	    </td>
+	    <td  style="text-align:right">
+	      <span style="display:none" class="small_button" id="save_contact_button" onclick="save_contact()">Save Contact</span>
 	      <span style="display:none" contact_key="" class="small_button" id="cancel_edit_contact_button" onclick="cancel_edit_contact()">Cancel Edit Contact</span>
-	      <span style="display:none" class="small_button" id="cancel_add_contact_button" >Cancel Adding New Contact</span>
-	      <span style="display:none" class="small_button" id="save_add_contact_button" >Save New Contact</span>
+	    
+	     
 	      <span class="small_button" id="add_contact_button" >Add Contact</span></td>
 	  </tr>
 	  
@@ -250,7 +261,8 @@
 
 		      	<tr id="tr_Contact_Gender" style="display:none">
 			  <td class="label">{t}Gender{/t}:</td>
-			  <td     id="Contact_Gender" value="" ovalue=""  >
+			  <td 
+			    <input type="hidden" id="Contact_Gender">
 			    <span id="Contact_Gender_Male" label="Male" onclick="toggle_Contact_Gender(this)" class="small_button Contact_Gender" style="margin:0">{t}Male{/t}</span>
 			    <span id="Contact_Gender_Female" label="Famale" onclick="toggle_Contact_Gender(this)" class="small_button Contact_Gender" style="margin-left:3px">{t}Female{/t}</span>
 			    <span id="Contact_Gender_Unknown" label="Unknown" onclick="toggle_Contact_Gender(this)" class="small_button Contact_Gender" style="margin-left:3px">{t}Unknown{/t}</span>
@@ -271,15 +283,15 @@
 	   
 		      <tr>
 			<td class="label">{t}First Name(s){/t}:</td>
-			<td   ><input  onkeyup="update_full_name()"  onblur="" style="width:12em"  name="first_name" id="Contact_First_Name" value=""  ovalue="" ></td>
+			<td   ><input  onkeyup="name_component_change();"  onblur="" style="width:12em"  name="first_name" id="Contact_First_Name" value=""  ovalue="" ></td>
 		      </tr>
 		      <tr>
 			<td class="label">{t}Surname(s){/t}:</td>
-			<td   ><input  onkeyup="update_full_name()"  onblur="" style="width:12em"  name="surname" id="Contact_Surname" value=""  ovalue="" ></td>
+			<td   ><input  onkeyup="name_component_change();"  onblur="" style="width:12em"  name="surname" id="Contact_Surname" value=""  ovalue="" ></td>
 		      </tr>
 		       <tr style="display:none">
 			<td class="label">{t}Suffix(s){/t}:</td>
-			<td   ><input  onkeyup="update_full_name()"  onblur="" style="width:12em"  name="suffix" id="Contact_Suffix" value=""  ovalue="" ></td>
+			<td   ><input  onkeyup="name_component_change();"  onblur="" style="width:12em"  name="suffix" id="Contact_Suffix" value=""  ovalue="" ></td>
 		      </tr>
 
 
@@ -317,23 +329,27 @@
 		  <td  class="label">{t}Email{/t}:</td>
 		  <td >
 		    
-		    <input style="width:100%" class="Email"  value="" ovalue="" /><br/>
-		    <span class="small_button delete_email" style="float:right;margin-top:3px" email_key="" onclick="delete_email()">{t}Delete{/t}</span>
+		    <input style="width:100%" class="Email"  value="" ovalue="" email_key="" valid="" onkeyup="validate_email(this);email_change()" /><br/>
+
 		  </td>
 		  <td>
-		    <table border=0 class="edit" style="position:relative;top:-4px;">
-		      <tr>
+		    <span class="small_button delete_email"  email_key="" onclick="delete_email()">{t}Delete{/t}</span>
+		    <span class="small_button show_details_email" email_key="" action="Show" onclick="show_details_email(this)">{t}Edit Details{/t}</span>
+
+		    </br><table border=0 class="edit" style="margin-top:10px;display:none" >
+		      <tr style="display:none">
 			<td class="label">{t}Email Type{/t}:</td>
-			<td id="Email_Description">
-			  <span  class="Email_Description small_button" tyle="margin:0" >{t}Work{/t}</span>
-			  <span  class="Email_Description small_button" >{t}Personal{/t}</span>
+			<td >
+			  <input type="hidden" class="Email_Description">
+			  <span  class="Email_Description small_button"  label="Work" style="margin:0" >{t}Work{/t}</span>
+			  <span  class="Email_Description small_button"  label="Personal"  >{t}Personal{/t}</span>
 			  
 			</td>
 		      </tr>
 		      <tr>
 			<td class="label">{t}Email Contact Name{/t}:</td>
 			<td >
-			  <input class="Email_Contact_Name" id="Email_Contact_Name"  />
+			  <input style="width:20em" class="Email_Contact_Name" onkeyup="email_change()" />
 			</td>
 		      </tr>
 		    </table>

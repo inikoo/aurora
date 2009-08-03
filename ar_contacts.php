@@ -2,17 +2,12 @@
 //@author Raul Perusquia <rulovico@gmail.com>
 //Copyright (c) 2009 LW
 require_once 'common.php';
-require_once '_order.php';
+//require_once '_order.php';
 
-require_once '_contact.php';
+//require_once '_contact.php';
 require_once 'class.Customer.php';
 
 
-if (!$LU or !$LU->isLoggedIn()) {
-  $response=array('state'=>402,'resp'=>_('Forbidden'));
-  echo json_encode($response);
-  exit;
- }
 
 
 if(!isset($_REQUEST['tipo']))  {
@@ -1063,8 +1058,11 @@ if($order=='name')
    echo json_encode($response);
    break;
 case('customers_advanced_search'):
- if(!$LU->checkRight(CUST_VIEW))
-    exit;
+
+  if(!$user->can_view('customers')){
+    exit();
+  }
+
  $conf=$_SESSION['state']['customers']['advanced_search'];
   if(isset( $_REQUEST['sf']))
      $start_from=$_REQUEST['sf'];
@@ -1236,8 +1234,11 @@ echo json_encode($response);
   break;
 case('customers'):
   
-  if(!$LU->checkRight(CUST_VIEW))
-    exit;
+
+  if(!$user->can_view('customers'))
+    exit();
+
+
 
   $conf=$_SESSION['state']['customers']['table'];
   if(isset( $_REQUEST['sf']))
@@ -1815,8 +1816,7 @@ if(isset( $_REQUEST['where']))
    break;
 
 case('customer_history'):
-    if(!$LU->checkRight(ORDER_VIEW))
-    exit;
+
 
     $conf=$_SESSION['state']['customer']['table'];
 
@@ -2053,8 +2053,7 @@ if(isset( $_REQUEST['where']))
    break;
 
 case('customer_history_old'):
-    if(!$LU->checkRight(ORDER_VIEW))
-    exit;
+
 
     $conf=$_SESSION['state']['customer']['table'];
 
@@ -2571,8 +2570,7 @@ case('plot_order_interval'):
    break;
 
 case('company_history'):
-    if(!$LU->checkRight(ORDER_VIEW))
-    exit;
+
 
     $conf=$_SESSION['state']['company']['table'];
 

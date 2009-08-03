@@ -12,8 +12,12 @@
  Version 2.0
 */
 include_once('common.php');
-if(!$LU->checkRight(CUST_VIEW))
-  exit;
+
+if(!$user->can_view('customers')){
+  exit();
+}
+
+
 
 
 // $q='';
@@ -118,10 +122,10 @@ $js_files=array(
 		$yui_path.'datatable/datatable.js',
 		$yui_path.'container/container_core-min.js',
 		$yui_path.'menu/menu-min.js',
-		'js/common.js.php',
-		'js/table_common.js.php',
-		'js/search.js',
-		'js/customers.js.php'
+		'common.js.php',
+		'table_common.js.php',
+		'search.js',
+		'customers.js.php'
 		);
 
 

@@ -14,6 +14,8 @@ table.edit tr.title{xheight:30px;text-align:left; border-bottom:1px solid #a5b6c
 table.edit tr.title td{vertical-align:bottom;font-weight:800;text-align:left;}
 table.edit img.icon{margin-left:10px;float:right;cursor:pointer}
 table.edit tr.last{ border-bottom:1px solid #a5b6c8}
+input.invalid {border:1px solid red;}
+
 
 .add_button{margin-left:10px;border:1px solid #aaa;text-align:center;cursor:pointer;;padding:0px 2px 0px 2px;font-weight:200;font-size:50%;color:#333;position:relative;bottom:2px}
 

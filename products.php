@@ -12,10 +12,10 @@
  Version 2.0
 */
 include_once('common.php');
-$view_sales=$LU->checkRight(PROD_SALES_VIEW);
-$view_stock=$LU->checkRight(PROD_STK_VIEW);
-$create=$LU->checkRight(PROD_CREATE);
-$modify=$LU->checkRight(PROD_MODIFY);
+if(!$user->can_view('products'))
+  exit();
+
+
 
 $smarty->assign('view_sales',$view_sales);
 $smarty->assign('view_stock',$view_stock);

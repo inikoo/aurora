@@ -1,5 +1,8 @@
 <?php
 include_once('common.php');
+if(!$user->can_view('orders'))
+  exit();
+
 
 $q='';
 if(isset($_REQUEST['search']) and $_REQUEST['search']!=''  ){
@@ -57,9 +60,9 @@ $js_files=array(
 		$yui_path.'container/container_core-min.js',
 		$yui_path.'menu/menu-min.js',
 		$yui_path.'calendar/calendar-min.js',
-		'js/common.js.php',
-		'js/table_common.js.php',
-		'js/orders.js.php'
+		'common.js.php',
+		'table_common.js.php',
+		'orders.js.php'
 		);
 
 

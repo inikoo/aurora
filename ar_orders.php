@@ -18,12 +18,7 @@ require_once 'class.Invoice.php';
 //require_once 'ar_common.php';
 
 
-if (!$LU or !$LU->isLoggedIn()) {
-  $response=array('state'=>402,'resp'=>_('Forbidden'));
-  echo json_encode($response);
-  exit;
- }
- 
+
 
 if(!isset($_REQUEST['tipo']))
   {
@@ -499,8 +494,10 @@ case('changesalesplot'):
  case('report_orders'):
    $_REQUEST['saveto']='report_sales';
  case('orders'):
-    if(!$LU->checkRight(ORDER_VIEW))
-    exit;
+   if(!$user->can_view('orders'))
+     exit();
+
+
     if(isset($_REQUEST['saveto']) and $_REQUEST['saveto']=='report_sales')
       $conf=$_SESSION['state']['report']['sales'];
     else
@@ -763,8 +760,8 @@ case('report_invoices'):
   $_REQUEST['saveto']='report_sales';
 
  case('invoices'):
-    if(!$LU->checkRight(ORDER_VIEW))
-    exit;
+   if(!$user->can_view('orders'))
+  exit();
     
     if(isset($_REQUEST['saveto']) and $_REQUEST['saveto']=='report_sales')
       $conf=$_SESSION['state']['report']['sales'];
@@ -1019,8 +1016,8 @@ else if($order=='net')
    echo json_encode($response);
    break;
  case('dn'):
-    if(!$LU->checkRight(ORDER_VIEW))
-    exit;
+if(!$user->can_view('orders'))
+  exit();
     
     $conf=$_SESSION['state']['orders']['dn'];
   if(isset( $_REQUEST['sf']))
@@ -1260,9 +1257,9 @@ if(isset( $_REQUEST['where']))
    echo json_encode($response);
    break;
  case('po_supplier'):
-    if(!$LU->checkRight(ORDER_VIEW))
-    exit;
-
+   
+   if(!$user->can_view('purchase orders'))
+     exit();
 
     $supplier_id=$_SESSION['state']['supplier']['id'];
 
@@ -2302,11 +2299,12 @@ $res = mysql_query($sql);
 		,$wheref
 		);
 
-   print $sql;
+
    $res=mysql_query($sql);
    $data=array();
+   $can_see_customers=$user->can_view('customers');
    while($row= mysql_fetch_array($res, MYSQL_ASSOC) ) {
-     if($LU->checkRight(CUST_VIEW))
+     if($can_see_customers)
        $customer='<a href="customer.php?id='.$row['Customer Key'].'">'.$row['Customer Name'].'</a>';
      else
        $customer=$myconf['customer_id_prefix'].sprintf("%05d",$row['Customer Key']);

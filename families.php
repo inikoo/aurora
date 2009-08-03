@@ -2,16 +2,14 @@
 //@author Raul Perusquia <rulovico@gmail.com>
 //Copyright (c) 2009 LW
 include_once('common.php');
-include_once('stock_functions.php');
+if(!$user->can_view('product families'))
+  exit();
 
-$view_sales=$LU->checkRight(PROD_SALES_VIEW);
-$view_stock=$LU->checkRight(PROD_STK_VIEW);
-$create=$LU->checkRight(PROD_CREATE);
-$modify=$LU->checkRight(PROD_MODIFY);
-$view_sales=true;
-$view_stock=true;
-$create=true;
-$modify=true;
+$view_sales=$user->can_view('product sales');
+$view_stock=$user->can_view('product stock');
+$create=$user->can_create('product families');
+$modify=$user->can_edit('product families');
+
 $smarty->assign('view_sales',$view_sales);
 $smarty->assign('view_stock',$view_stock);
 $smarty->assign('create',$create);
@@ -34,10 +32,10 @@ $js_files=array(
 		$yui_path.'datatable/datatable.js',
 		$yui_path.'container/container_core-min.js',
 		$yui_path.'menu/menu-min.js',
-		'js/common.js.php',
-		'js/table_common.js.php',
+		'common.js.php',
+		'table_common.js.php',
 		'js/search.js',
-		'js/families.js.php',
+		'families.js.php',
 		);
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);

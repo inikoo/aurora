@@ -26,6 +26,15 @@ class Auth {
     $this->ikey=$ikey;
     $this->skey=$skey;
 
+      $this->pass=array(
+		      'handle'=>'No'
+		      ,'handle_in_use'=>'No'
+		      ,'password'=>'No'
+		      ,'time'=>'No'
+		      ,'ip'=>'No'
+		      ,'ikey'=>'No'
+		      );
+
 
   }
 
@@ -64,7 +73,6 @@ class Auth {
 		      ,'ip'=>'No'
 		      ,'ikey'=>'No'
 		      );
-
     
     $sql=sprintf("select `User Key`,`User Password` from `User Dimension` where `User Handle`=%s and `User Active`='Yes' "
 		 ,prepare_mysql($this->handle)
@@ -86,8 +94,10 @@ class Auth {
 	  
 	  $pass_tests=true;
 
-	  if($time-time(date('U'))>0){
+	  if($time<time(date('U'))  ){
 	    $pass_tests=false;
+	    //print date("d-m-Y H:i:s",$time).' '.date("d-m-Y H:i:s",date('U')+300);
+
 	  }else
 	    $this->pass['time']='Yes';
 
@@ -123,7 +133,7 @@ class Auth {
   }
 
   public function get_user_key(){
-    return $thsi->user_key;
+    return $this->user_key;
   }
   
 

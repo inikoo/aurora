@@ -1,5 +1,11 @@
 <?php
 include_once('common.php');
+
+if(!$user->can_view('contacts'))
+  exit();
+
+
+
 $_SESSION['views']['assets']='index';
 
 $_SESSION['new_contact']=array();
@@ -30,10 +36,10 @@ $js_files=array(
 		$yui_path.'datatable/datatable.js',
 		$yui_path.'container/container_core-min.js',
 		$yui_path.'menu/menu-min.js',
-		'js/common.js.php',
-		'js/table_common.js.php',
+		'common.js.php',
+		'table_common.js.php',
 		'js/search.js',
-		'js/contacts.js.php'
+		'contacts.js.php'
 		);
 
 

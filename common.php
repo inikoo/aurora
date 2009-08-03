@@ -1,11 +1,7 @@
 <?php
 define('DEBUG', 1);
-$path = 'classes';
-set_include_path(get_include_path() . PATH_SEPARATOR . $path);
 
-
-
-
+//$path = 'classes';set_include_path(get_include_path() . PATH_SEPARATOR . $path);
 require_once 'app_files/db/dns.php'; 
 require_once 'common_functions.php';
 require_once "class.Session.php";
@@ -72,7 +68,7 @@ if(!$is_already_logged_in){
     $_SESSION['logged_in']=true;
     $_SESSION['user_key']=$auth->get_user_key();
   }else{
-    print_r($auth->pass);
+
 
     $target = $_SERVER['PHP_SELF'];
     if(!preg_match('/js$/',$target)) 
@@ -104,14 +100,15 @@ if($user->can_view('suppliers'))
 if($user->is('Supplier'))
   $nav_menu[] = array(_('My Products'), 'myproducts.php');
 
-
-$nav_menu[] = array(_('Reports'), 'reports.php');
+if($user->can_view('reports'))
+  $nav_menu[] = array(_('Reports'), 'reports.php');
 if($user->can_view('orders'))
 $nav_menu[] = array(_('Orders'), 'orders.php');
 if($user->can_view('customers'))
   $nav_menu[] = array(_('Customers'), 'customers.php');
 if($user->can_view('warehouse'))
 $nav_menu[] = array(_('Warehouse'), 'warehouse.php');
+
 if($user->can_view('stores'))
   $nav_menu[] = array(_('Products'), 'stores.php');
 $nav_menu[] = array(_('Home'), 'index.php');

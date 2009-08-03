@@ -67,7 +67,7 @@ var myhandleDataReturnPayload= function(oRequest, oResponse, oPayload) {
 
     }
 	
-    //var data={code:'<?php echo_('Totals')?>'};
+    //var data={code:'<?php echo _('Totals')?>'};
     //tables.table0.addRow(data);
     return oPayload;
 };
