@@ -1,0 +1,67 @@
+<?
+include_once('common.php');
+?>
+
+      YAHOO.util.Event.addListener(window, "load", function() {
+	      tables = new function() {
+		   
+		      var tableid=2;
+		      var tableDivEL="table"+tableid;
+		      var ColumnDefs = [
+					{key:"id", label:"<?=_('Product ID')?>", width:90,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					,{key:"store", label:"<?=_('Store')?>", width:120,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					,{key:"description", label:"<?=_('Description')?>", sortable:true, width:240,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					,{key:"parts", label:"<?=_('Parts')?>",width:120,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+
+					];
+		      
+		      
+		      this.dataSource2 = new YAHOO.util.DataSource("ar_assets.php?tipo=product_server&tableid="+tableid);
+		      this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
+		      this.dataSource2.connXhrMode = "queueRequests";
+		      this.dataSource2.responseSchema = {
+			  resultsList: "resultset.data", 
+			  metaFields: {
+			      rowsPerPage:"resultset.records_perpage",
+			      rtext:"resultset.rtext",
+			      sort_key:"resultset.sort_key",
+			      sort_dir:"resultset.sort_dir",
+			      tableid:"resultset.tableid",
+			      filter_msg:"resultset.filter_msg",
+			      totalRecords: "resultset.total_records"
+			  },
+			
+			  fields: [
+				   "id","store","description","parts"
+				   ]};
+		      
+		      this.table2 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
+							       this.dataSource2, {
+								   //draggableColumns:true,
+								   renderLoopSize: 50,generateRequest : myRequestBuilder
+								   ,paginator : new YAHOO.widget.Paginator({
+									 rowsPerPage:<?=$_SESSION['state']['product']['server']['nr']?>,containers : 'paginator2', 
+									 pageReportTemplate : '(<?=_('Page')?> {currentPage} <?=_('of')?> {totalPages})',
+									 previousPageLinkLabel : "<",
+									 nextPageLinkLabel : ">",
+									 firstPageLinkLabel :"<<",
+									 lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
+									 ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info2'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+								       })
+								   
+								   ,sortedBy : {
+								       key: "<?=$_SESSION['state']['product']['server']['order']?>",
+								       dir: "<?=$_SESSION['state']['product']['server']['order_dir']?>"
+								   }
+								   ,dynamicData : true
+								   
+							     }
+							       );
+		      this.table2.handleDataReturnPayload =myhandleDataReturnPayload;
+		      this.table2.doBeforeSortColumn = mydoBeforeSortColumn;
+		      this.table2.doBeforePaginatorChange = mydoBeforePaginatorChange;
+
+	    
+	    };
+    });
+

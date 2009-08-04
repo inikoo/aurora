@@ -1,9 +1,11 @@
 <?php
 include_once('common.php');
-$view_sales=$LU->checkRight(PROD_SALES_VIEW);
-$view_stock=$LU->checkRight(PROD_STK_VIEW);
-$create=$LU->checkRight(PROD_CREATE);
-$modify=$LU->checkRight(PROD_MODIFY);
+if(!$user->can_view('parts'))
+  exit();
+$view_sales=$user->can_view('product sales');
+$view_stock=$user->can_view('product stock');
+$create=$user->can_create('parts');
+$modify=$user->can_edit('parts');
 
 $smarty->assign('view_sales',$view_sales);
 $smarty->assign('view_stock',$view_stock);
@@ -43,10 +45,10 @@ $js_files=array(
 		$yui_path.'container/container_core-min.js',
 		$yui_path.'menu/menu-min.js',
 		$yui_path.'calendar/calendar-min.js',
-		'js/common.js.php',
-		'js/table_common.js.php',
+		'common.js.php',
+		'table_common.js.php',
 		'js/search_product.js',
-		'js/parts.js.php'
+		'parts.js.php'
 		);
 
 

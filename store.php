@@ -12,13 +12,25 @@
  Version 2.0
 */
 include_once('common.php');
-include_once('stock_functions.php');
+//include_once('stock_functions.php');
 include_once('class.Store.php');
 
-$view_sales=$user->can_view('Products Sales');
-$view_stock=$user->can_view('Products Stock');
-$create=false;
-$modify=false;
+
+
+if(isset($_REQUEST['id']) and is_integer($_REQUEST['id']) and $_REQUEST['id']>0){
+  $store_id=$_REQUEST['id'];
+ }else
+  $store_id=$_SESSION['state']['store']['id'];
+
+
+if(!$user->can_view('stores',$store_id))
+  exit();
+
+
+$view_sales=$user->can_view('product sales');
+$view_stock=$user->can_view('product stock');
+$create=$user->can_create('product departments');
+$modify=$user->can_edit('stores',$store_id);
 
 
 
@@ -34,6 +46,8 @@ else
   $edit=$_SESSION['state']['store']['edit'];
 
 
+if(!$modify)
+  $edit=false;
 
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
@@ -54,16 +68,16 @@ $js_files=array(
 		$yui_path.'datatable/datatable-min.js',
 		$yui_path.'container/container_core-min.js',
 		$yui_path.'menu/menu-min.js',
-		'js/common.js.php',
-		'js/table_common.js.php',
+		'common.js.php',
+		'table_common.js.php',
 		);
 
 if($edit){
-  $js_files[]='js/edit_common.js';
-  $js_files[]='js/edit_store.js.php';
+  $js_files[]='edit_common.js';
+  $js_files[]='edit_store.js.php';
  }else{
-   $js_files[]='js/search.js';
-   $js_files[]='js/store.js.php';
+   $js_files[]='search.js';
+   $js_files[]='store.js.php';
  }
 
 

@@ -52,8 +52,8 @@ $js_files=array(
 		$yui_path.'menu/menu-min.js',
 
 
-		'js/common.js.php',
-		'js/reports.js.php'
+		'common.js.php',
+		'reports.js.php'
 		);
 
 

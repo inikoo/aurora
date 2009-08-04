@@ -260,106 +260,89 @@ function get($tipo){
  }
 
  function can_view($tag,$tag_key=false){
-   if(!is_string($tag))
-     return false;
-   $tag=strtolower(_trim($tag));
-   if($tag_key==false)
-     return $this->can_view_any($tag);
-   
-   return $this->can_view_this_key($tag,$tag_key);
+   return $this->can_do('View',$tag,$tag_key);
    
  }
-
+ 
  function can_create($tag,$tag_key=false){
+   return $this->can_do('Create',$tag,$tag_key);
+ }
+ function can_edit($tag,$tag_key=false){
+   return $this->can_do('Edit',$tag,$tag_key);
+ }
+ function can_delete($tag,$tag_key=false){
+   return $this->can_do('Delete',$tag,$tag_key);
+ }
+ 
+
+ function can_do($right_type,$tag,$tag_key=false){
    if(!is_string($tag))
      return false;
    $tag=strtolower(_trim($tag));
    if($tag_key==false)
-     return $this->can_create_any($tag);
-   if($this->can_create_any($tag))
-     return true;
+     return $this->can_do_any($right_type,$tag);
+   if(!is_numeric($tag_key) or $tag_key<=0 or !preg_match('/^\d+$/',$tag_key) )
+     return false;
+   return $this->can_do_this_key($right_type,$tag,$tag_key);
+   
  }
-function can_edit($tag,$tag_key=false){
-   if(!is_string($tag))
-     return false;
-   $tag=strtolower(_trim($tag));
-   if($tag_key==false)
-     return $this->can_edit_any($tag);
-   if($this->can_edit_any($tag))
-     return true;
- }
-function can_delete($tag,$tag_key=false){
-   if(!is_string($tag))
-     return false;
-   $tag=strtolower(_trim($tag));
-   if($tag_key==false)
-     return $this->can_delete_any($tag);
-   if($this->can_delete_any($tag))
-     return true;
- }
-
-
- function can_view_any($tag){
-
-   if(array_key_exists($tag,$this->rights_allow['View']))
-     return true;
-   else
-     return false;
- }
-
- function can_create_any($tag){
-   if(!is_string($tag))
-     return false;
-   $tag=strtolower(_trim($tag));
-   if(array_key_exists($tag,$this->rights_allow['Create']))
-     return true;
-   else
-     return false;
- }
-function can_edit_any($tag){
-   if(!is_string($tag))
-     return false;
-   $tag=strtolower(_trim($tag));
-   if(array_key_exists($tag,$this->rights_allow['Edit']))
-     return true;
-   else
-     return false;
- }
-function can_delete_any($tag){
-   if(!is_string($tag))
-     return false;
-   $tag=strtolower(_trim($tag));
-   if(array_key_exists($tag,$this->rights_allow['Delete']))
-     return true;
-   else
-     return false;
- }
-
- function read_groups(){
-   $this->groups=array();
-   $this->groups_key_list='';
-   $sql=sprintf("select * from `User Group User Bridge` UGUB left join `User Group Dimension` GD on (GD.`User Group Key`=UGUB.`User Group Key`) where UGUB.`User Key`=%d",$this->id);
-
-   $res=mysql_query($sql);
-   while($row=mysql_fetch_array($res)){
-     $this->groups[$row['User Group Key']]=array('User Group Name'=>$row['User Group Name']);
-     $this->groups_key_list.=','.$row['User Group Key'];
-   }
-   $this->groups_key_list=preg_replace('/^,/','', $this->groups_key_list);
-
-   $this->groups_read=true;
+ 
+ 
+function can_do_any($right_type,$tag){
+  
+  if(array_key_exists($tag,$this->rights_allow[$right_type]))
+    return true;
+  else
+    return false;
 }
 
 
- function read_rights(){
-   
-   $this->rights_allow['View']=array();
-   $this->rights_allow['Delete']=array();
-   $this->rights_allow['Edit']=array();
-   $this->rights_allow['Create']=array();
-   $this->rights=array();
+function can_do_this_key($right_type,$tag,$tag_key){
+  
+  if(isset($this->rights_allow[$right_type][$tag]))
+    $right_data=$this->rights_allow[$right_type][$tag];
+  else
+    return false;
+  if($right_data['Right Access']=='All')
+    return true;
+  elseif($right_data['Right Access']=='Some'){
+    if(preg_match('/,$tag_key,/',$right_data['Rigth Access Keys']))
+      return true;
+  } elseif($right_data['Right Access']=='Except'){
+    if(!preg_match('/,$tag_key,/',$right_data['Rigth Access Keys']))
+      return true;
+  }
+  return false;
 
-   if(!$this->groups_read)
+  
+}
+
+
+function read_groups(){
+  $this->groups=array();
+  $this->groups_key_list='';
+  $sql=sprintf("select * from `User Group User Bridge` UGUB left join `User Group Dimension` GD on (GD.`User Group Key`=UGUB.`User Group Key`) where UGUB.`User Key`=%d",$this->id);
+  
+  $res=mysql_query($sql);
+  while($row=mysql_fetch_array($res)){
+    $this->groups[$row['User Group Key']]=array('User Group Name'=>$row['User Group Name']);
+    $this->groups_key_list.=','.$row['User Group Key'];
+  }
+  $this->groups_key_list=preg_replace('/^,/','', $this->groups_key_list);
+  
+  $this->groups_read=true;
+}
+
+
+function read_rights(){
+  
+  $this->rights_allow['View']=array();
+  $this->rights_allow['Delete']=array();
+  $this->rights_allow['Edit']=array();
+  $this->rights_allow['Create']=array();
+  $this->rights=array();
+  
+  if(!$this->groups_read)
      $this->read_groups();
 
    if(count($this->groups)>0){
@@ -369,7 +352,7 @@ function can_delete_any($tag){
    $res=mysql_query($sql);
    while($row=mysql_fetch_array($res)){
      if($row['Right Type']=='View'){
-       $this->rights_allow['View'][$row['Right Name']]=$row['Right Name'];
+       $this->rights_allow['View'][$row['Right Name']]=array('Right Name'=>$row['Right Name'],'Right Access'=>$row['Right Access'],'Rigth Access Keys'=>$row['Rigth Access Keys']);
        $this->rights[$row['Right Name']]['View']='View';
      }if($row['Right Type']=='Delete'){
        $this->rights_allow['Delete'][$row['Right Name']]=$row['Right Name'];

@@ -14,6 +14,10 @@
 include_once('common.php');
 if(!$user->can_view('products'))
   exit();
+$view_sales=$user->can_view('product sales');
+$view_stock=$user->can_view('product stock');
+$create=$user->can_create('products');
+$modify=$user->can_edit('products');
 
 
 
@@ -89,10 +93,10 @@ $js_files=array(
 		$yui_path.'container/container_core-min.js',
 		$yui_path.'menu/menu-min.js',
 		$yui_path.'calendar/calendar-min.js',
-		'js/common.js.php',
-		'js/table_common.js.php',
+		'common.js.php',
+		'table_common.js.php',
 		'js/search_product.js',
-		'js/products.js.php'
+		'products.js.php'
 		);
 
 

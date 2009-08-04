@@ -1,5 +1,6 @@
-<?phpinclude_once('common.php');?>
-    var plot='<?php echo$_SESSION['state']['product']['plot']?>';
+<?php
+include_once('common.php');?>
+    var plot='<?php echo $_SESSION['state']['product']['plot']?>';
   var Dom   = YAHOO.util.Dom;
 var change_plot_sigma=function(o){
 
@@ -16,7 +17,7 @@ var change_plot_sigma=function(o){
 
       YAHOO.util.Event.addListener(window, "load", function() {
 	      tables = new function() {
-		      <?phpif($LU->checkRight(ORDER_VIEW)){?>
+		<?php if($user->can_view('orders'))  {?>
 		      
 		      
 		      var tableid=0;
@@ -55,7 +56,7 @@ var change_plot_sigma=function(o){
 								   //draggableColumns:true,
 								   renderLoopSize: 50,generateRequest : myRequestBuilder
 								   ,paginator : new YAHOO.widget.Paginator({
-									 rowsPerPage:<?php echo$_SESSION['state']['product']['orders']['nr']?>,containers : 'paginator0', 
+									 rowsPerPage:<?php echo $_SESSION['state']['product']['orders']['nr']?>,containers : 'paginator0', 
 									 pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									 previousPageLinkLabel : "<",
 									 nextPageLinkLabel : ">",
@@ -65,8 +66,8 @@ var change_plot_sigma=function(o){
 								       })
 								   
 								   ,sortedBy : {
-								       key: "<?php echo$_SESSION['state']['product']['orders']['order']?>",
-								       dir: "<?php echo$_SESSION['state']['product']['orders']['order_dir']?>"
+								       key: "<?php echo $_SESSION['state']['product']['orders']['order']?>",
+								       dir: "<?php echo $_SESSION['state']['product']['orders']['order_dir']?>"
 								   }
 								   ,dynamicData : true
 								   
@@ -78,8 +79,8 @@ var change_plot_sigma=function(o){
 		      
 		    
 		      
-		      <?php}?>
-			  <?phpif($LU->checkRight(CUST_VIEW) ){?>
+		      <?php } ?>
+		<?php if($user->can_view('customers')){?>
 		      var tableid=1;
 		      var tableDivEL="table"+tableid;
 		      
@@ -117,7 +118,7 @@ var change_plot_sigma=function(o){
 								   //draggableColumns:true,
 								   renderLoopSize: 50,generateRequest : myRequestBuilder
 								 ,paginator : new YAHOO.widget.Paginator({
-									 rowsPerPage:<?php echo$_SESSION['state']['product']['customers']['nr']?>,containers : 'paginator1', 
+									 rowsPerPage:<?php echo $_SESSION['state']['product']['customers']['nr']?>,containers : 'paginator1', 
 									 pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									 previousPageLinkLabel : "<",
 									 nextPageLinkLabel : ">",
@@ -127,8 +128,8 @@ var change_plot_sigma=function(o){
 								     })
 								   
 								   ,sortedBy : {
-								       key: "<?php echo$_SESSION['state']['product']['customers']['order']?>",
-								       dir: "<?php echo$_SESSION['state']['product']['customers']['order_dir']?>"
+								       key: "<?php echo $_SESSION['state']['product']['customers']['order']?>",
+								       dir: "<?php echo $_SESSION['state']['product']['customers']['order_dir']?>"
 								   }
 								   ,dynamicData : true
 								 
@@ -138,7 +139,7 @@ var change_plot_sigma=function(o){
 		      this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
 		      this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
 
-		    <?php}?>
+		    <?php } ?>
 
 
 

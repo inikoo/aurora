@@ -18,11 +18,18 @@ include_once('class.Company.php');
 if(!$user->can_view('contacts'))
   exit();
 
+$modify=$user->can_edit('contacts');
+
+
 $edit=false;
 if(isset($_REQUEST['edit']) and $_REQUEST['edit']){
   $edit=true;
   $_REQUEST['id']=$_REQUEST['edit'];
  }
+
+if(!$modify)
+  $edit=false;
+
 
 if(isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ){
   $_SESSION['state']['company']['id']=$_REQUEST['id'];

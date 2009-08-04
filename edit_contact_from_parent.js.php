@@ -13,6 +13,14 @@ var Contact_Name_Keys=['Contact_First_Name','Contact_Salutation','Contact_Surnam
 var Contact_No_Name_Keys=['Contact_Gender','Contact_Title','Contact_Profession'];
 var Email_Keys=['Email','Email_Description','Email_Contact_Name'];
 
+
+var Number_New_Emails=0;
+var Number_New_Mobiles=0;
+var Number_New_ContactAddress=0;
+
+
+
+
 var save_contact=function(){
 
     var table='contact';
@@ -334,19 +342,23 @@ var edit_contact=function (e,contact_button){
 		    
 		    var new_email_container = Dom.get('email_mould').cloneNode(true);
 		    var the_parent=Dom.get('mobile_mould').parentNode;
+		    
 		    var insertedElement = the_parent.insertBefore(new_email_container, Dom.get('mobile_mould'));
 		    Dom.addClass(insertedElement,'cloned_editor');
 		    Dom.setStyle(insertedElement,'display','');
 		    insertedElement.id="tr_email"+email_key;
 		    insertedElement.setAttribute('email_key',email_key);
+
+
 		    var element_array=Dom.getElementsByClassName('show_details_email', 'span',insertedElement);
 		    element_array[0].setAttribute('email_key',email_key);
-
+		    element_array[0].id='show_details_email_button'+email_key;
+			
 		    var element_array=Dom.getElementsByClassName('Email', 'input',insertedElement);
 		    element_array[0].value=email_data['Email'];
 		    element_array[0].setAttribute('ovalue',email_data['Email']);
 		    element_array[0].setAttribute('email_key',email_key);
-
+		    element_array[0].id='Email'+email_key;
 
 		    var element_array=Dom.getElementsByClassName('Email_Contact_Name', 'input',insertedElement);
 		    element_array[0].value=email_data['Email_Contact_Name'];
@@ -358,7 +370,19 @@ var edit_contact=function (e,contact_button){
 		    element_array[0].setAttribute('ovalue',email_data['Email_Description']);
 		    element_array[0].setAttribute('email_key',email_key);
 		    
+		    var element_array=Dom.getElementsByClassName('email_to_delete', 'span',insertedElement);
+		    element_array[0].setAttribute('email_key',email_key);
+		    element_array[0].id='email_to_delete'+email_key;
 		    
+		      var element_array=Dom.getElementsByClassName('delete_email', 'span',insertedElement);
+		    element_array[0].setAttribute('email_key',email_key);
+		    element_array[0].id='delete_email_button'+email_key;
+
+		    var element_array=Dom.getElementsByClassName('undelete_email', 'span',insertedElement);
+		    element_array[0].setAttribute('email_key',email_key);
+		    element_array[0].id='undelete_email_button'+email_key;
+		    
+
 		    
 		    var element_array=Dom.getElementsByClassName('Email_Description', 'span',insertedElement);
 		    for(i in  element_array){
@@ -368,6 +392,7 @@ var edit_contact=function (e,contact_button){
 			if(label===email_data['Email_Description'])
 			    Dom.addClass(element_array[i],'selected');
 		    }
+		    
 		    var element_array=Dom.getElementsByClassName('edit', 'table',insertedElement);
 		    element_array[0].id="Email_Details"+email_key;
 		    
@@ -926,5 +951,92 @@ function validate_email(o){
 	o.setAttribute('valid',0);
 	Dom.addClass(o,'invalid');
     }
+
+}
+
+function mark_email_to_delete(o){
+
+    var email_key=o.getAttribute('email_key');
+    var email=Dom.get('Email'+email_key).value;
+    
+   
+    Dom.setStyle(["email_to_delete"+email_key,'undelete_email_button'+email_key],'display','');
+    Dom.setStyle(["Email"+email_key,'delete_email_button'+email_key,'show_details_email_button'+email_key,"Email_Details"+email_key],'display','none');
+    Dom.setStyle("Email"+email_key,'display','none');
+    Dom.get('email_to_delete'+email_key).innerHTML=email;
+    Dom.get('Email'+email_key).setAttribute('to_delete',1);
+    Dom.get('show_details_email_button'+email_key).innerHTML='EditDetails';
+    Dom.get('show_details_email_button'+email_key).setAttribute('action','Show');
+   
+
+
+}
+
+function unmark_email_to_delete(o){
+    var email=o.value;
+    var email_key=o.getAttribute('email_key');
+    Dom.setStyle(["email_to_delete"+email_key,'undelete_email_button'+email_key],'display','none');
+    Dom.setStyle(["Email"+email_key,'delete_email_button'+email_key,'show_details_email_button'+email_key],'display','');
+    Dom.get('email_to_delete'+email_key).innerHTML='';
+    Dom.get('Email'+email_key).setAttribute('to_delete',0);
+}
+
+
+function clone_email(email_key){
+   
+
+     var new_email_container = Dom.get('email_mould').cloneNode(true);
+     var the_parent=Dom.get('mobile_mould').parentNode;
+		    
+     var insertedElement = the_parent.insertBefore(new_email_container, Dom.get('mobile_mould'));
+     Dom.addClass(insertedElement,'cloned_editor');
+     Dom.setStyle(insertedElement,'display','');
+     insertedElement.id="tr_email"+email_key;
+     insertedElement.setAttribute('email_key',email_key);
+     
+     var element_array=Dom.getElementsByClassName('show_details_email', 'span',insertedElement);
+     element_array[0].setAttribute('email_key',email_key);
+     element_array[0].id='show_details_email_button'+email_key;
+     
+     var element_array=Dom.getElementsByClassName('Email', 'input',insertedElement);
+     element_array[0].setAttribute('email_key',email_key);
+     element_array[0].id='Email'+email_key;
+
+     var element_array=Dom.getElementsByClassName('Email_Contact_Name', 'input',insertedElement);
+     element_array[0].value=email_data['Email_Contact_Name'];
+     element_array[0].setAttribute('ovalue',email_data['Email_Contact_Name']);
+     element_array[0].setAttribute('email_key',email_key);
+     
+     var element_array=Dom.getElementsByClassName('Email_Description', 'input',insertedElement);
+     element_array[0].value=email_data['Email_Description'];
+     element_array[0].setAttribute('ovalue',email_data['Email_Description']);
+     element_array[0].setAttribute('email_key',email_key);
+		    
+     var element_array=Dom.getElementsByClassName('email_to_delete', 'span',insertedElement);
+     element_array[0].setAttribute('email_key',email_key);
+     element_array[0].id='email_to_delete'+email_key;
+     
+     var element_array=Dom.getElementsByClassName('delete_email', 'span',insertedElement);
+     element_array[0].setAttribute('email_key',email_key);
+     element_array[0].id='delete_email_button'+email_key;
+     
+     var element_array=Dom.getElementsByClassName('undelete_email', 'span',insertedElement);
+     element_array[0].setAttribute('email_key',email_key);
+     element_array[0].id='undelete_email_button'+email_key;
+     
+
+     
+     var element_array=Dom.getElementsByClassName('Email_Description', 'span',insertedElement);
+     for(i in  element_array){
+	 var label=element_array[i].getAttribute('label');
+	 element_array[i].id="Email_Description_"+label+email_key;
+
+     }
+		    
+     var element_array=Dom.getElementsByClassName('edit', 'table',insertedElement);
+     element_array[0].id="Email_Details"+email_key;
+     
+
+ 
 
 }

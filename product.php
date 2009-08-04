@@ -12,19 +12,25 @@
  Version 2.0
 */
 include_once('common.php');
-//include_once('stock_functions.php');
 include_once('class.Product.php');
 
-$view_sales=$LU->checkRight(PROD_SALES_VIEW);
-$view_stock=$LU->checkRight(PROD_STK_VIEW);
-$view_orders=$LU->checkRight(ORDER_VIEW);
 
-$create=$LU->checkRight(PROD_CREATE);
-$modify=$LU->checkRight(PROD_MODIFY);
-$modify_stock=$LU->checkRight(PROD_STK_MODIFY);
+
+
+
+
+$view_sales=$user->can_view('product sales');
+$view_stock=$user->can_view('product stock');
+$view_orders=$user->can_view('orders');
+
+$create=$user->can_create('products');
+$modify=$user->can_edit('products');
+$modify_stock=$user->can_edit('product stock');
 $smarty->assign('modify_stock',$modify_stock);
-$view_suppliers=$LU->checkRight(SUP_VIEW);
-$view_cust=$LU->checkRight(CUST_VIEW);
+$view_suppliers=$user->can_view('suppliers');
+$view_cust=$user->can_view('customers');
+
+
 $smarty->assign('view_suppliers',$view_suppliers);
 $smarty->assign('view_sales',$view_sales);
 $smarty->assign('view_stock',$view_stock);
@@ -51,8 +57,8 @@ $js_files=array(
 		$yui_path.'datatable/datatable-debug.js',
 		$yui_path.'container/container_core-min.js',
 		$yui_path.'menu/menu-min.js',
-		'js/common.js.php',
-		'js/table_common.js.php',
+		'common.js.php',
+		'table_common.js.php',
 		);
 
 
@@ -96,8 +102,8 @@ if($mode=='code'){
   if(mysql_num_rows($result)>1){
     $_SESSION['state']['product']['server']['tag']=$tag;
     $js_files[]= 'js/search.js';
-    $js_files[]='js/product.js.php'; 
-    $js_files[]='js/product_server.js.php'; 
+    $js_files[]='product.js.php'; 
+    $js_files[]='product_server.js.php'; 
     $smarty->assign('css_files',$css_files);
     $smarty->assign('js_files',$js_files);
     $smarty->assign('code',$tag);
@@ -257,7 +263,7 @@ $smarty->assign('key_filter_dimension',$regex['key_filter_dimension']);
 
 
 $js_files[]= 'js/search.js';
-$js_files[]='js/product.js.php';
+$js_files[]='product.js.php';
 
 // $smarty->assign('tsoall',number($product->get('tsoall')));
 // $smarty->assign('awtsoall',number($product->get('awtsoall')));

@@ -106,7 +106,7 @@ if($user->can_view('orders'))
 $nav_menu[] = array(_('Orders'), 'orders.php');
 if($user->can_view('customers'))
   $nav_menu[] = array(_('Customers'), 'customers.php');
-if($user->can_view('warehouse'))
+if($user->can_view('warehouses'))
 $nav_menu[] = array(_('Warehouse'), 'warehouse.php');
 
 if($user->can_view('stores'))
