@@ -14,10 +14,8 @@
 
 include_once('common.php');
 include_once('class.Customer.php');
-if(!$LU->checkRight(CUST_VIEW))
-  exit;
-
-
+if(!$user->can_view('customers'))
+  exit();
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
@@ -41,10 +39,10 @@ $js_files=array(
 		$yui_path.'editor/editor-min.js',
 		$yui_path.'menu/menu-min.js',
 		$yui_path.'calendar/calendar-min.js',
-		'js/common.js.php',
-		'js/table_common.js.php',
+		'common.js.php',
+		'table_common.js.php',
 		'js/search.js',
-		'js/customer.js.php'
+		'customer.js.php'
 		);
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);

@@ -1,4 +1,5 @@
-<?phpinclude_once('common.php')?>
+<?php
+include_once('common.php')?>
 var Dom   = YAHOO.util.Dom;
 var add_user_dialog_others;
 var add_user_dialog;

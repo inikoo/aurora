@@ -4,6 +4,9 @@ include_once('class.Warehouse.php');
 
 
 
+
+
+
 $smarty->assign('box_layout','yui-t0');
 
 
@@ -29,10 +32,10 @@ $js_files=array(
 		$yui_path.'container/container_core-min.js',
 		$yui_path.'menu/menu-min.js',
 		$yui_path.'calendar/calendar-min.js',
-		'js/common.js.php',
-		'js/table_common.js.php',
-		'js/calendar_common.js.php',
-		'js/warehouse.js.php'
+		'common.js.php',
+		'table_common.js.php',
+		'calendar_common.js.php',
+		'warehouse.js.php'
 		);
 
 

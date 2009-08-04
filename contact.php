@@ -14,8 +14,13 @@
 
 include_once('common.php');
 include_once('class.Contact.php');
-if(!$LU->checkRight(CUST_VIEW))
-  exit;
+if(!$user->can_view('contacts'))
+  exit();
+
+$modify=$user->can_edit('contacts');
+
+
+
 
 $edit=false;
 if(isset($_REQUEST['edit']) and $_REQUEST['edit']){
@@ -31,7 +36,8 @@ if(isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ){
 }else{
   $contact_id=$_SESSION['state']['contact']['id'];
 }
-
+if(!$modify)
+  $edit=false;
 
 
 $css_files=array(
@@ -58,10 +64,10 @@ $js_files=array(
 		$yui_path.'editor/editor-min.js',
 		$yui_path.'menu/menu-min.js',
 		$yui_path.'calendar/calendar-min.js',
-		'js/common.js.php',
-		'js/table_common.js.php',
+		'common.js.php',
+		'table_common.js.php',
 		'js/search.js',
-		'js/contact.js.php'
+		'contact.js.php'
 		);
 
 if($edit ){
@@ -81,7 +87,7 @@ if($edit ){
 
   $smarty->assign('edit',$editing_block);
 
-  $js_files[]='js/edit_contact.js.php?edit='.$editing_block;
+  $js_files[]='edit_contact.js.php?edit='.$editing_block;
   
 
 }

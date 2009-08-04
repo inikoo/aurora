@@ -12,6 +12,9 @@
  Version 2.0
 */
 include_once('common.php');
+if(!$user->can_view('users'))
+  exit();
+
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
@@ -33,12 +36,12 @@ $js_files=array(
 		$yui_path.'container/container-min.js',
 		$yui_path.'button/button-min.js',
 		$yui_path.'menu/menu-min.js',
-		'js/common.js.php',
-		'js/table_common.js.php',
-		'js/users.js.php',
-		'js/sha256.js.php',
-		'js/passwordmeter.js.php',
-		'js/edit_users.js.php'
+		'common.js.php',
+		'table_common.js.php',
+		'users.js.php',
+		'sha256.js.php',
+		'passwordmeter.js.php',
+		'edit_users.js.php'
 		);
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);

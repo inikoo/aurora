@@ -12,14 +12,14 @@
  Version 2.0
 */
 include_once('class.DB_Table.php');
-include_once('Warehouse.php');
+include_once('class.Warehouse.php');
 include_once('class.Location.php');
 
 
 class WarehouseArea extends DB_Table{
   
 
-  var $locarions=false;
+  var $locations=false;
 
 
 

@@ -1,9 +1,9 @@
 <?php
 include_once('common.php');
-include_once('_supplier.php');
-include_once('staff.php');
-
 include_once('class.Order.php');
+if(!$user->can_view('orders'))
+  exit();
+
 
 $_SESSION['views']['assets']='index';
 
@@ -167,9 +167,9 @@ $js_files=array(
 		$yui_path.'container/container_core-min.js',
 		$yui_path.'menu/menu-min.js',
 		$yui_path.'calendar/calendar-min.js',
-		'js/common.js.php',
-		'js/table_common.js.php',
-		'js/'.$js_file
+		'common.js.php',
+		'table_common.js.php',
+		$js_file
 		);
 
 

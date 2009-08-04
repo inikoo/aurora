@@ -16,19 +16,38 @@ include_once('class.Family.php');
 include_once('class.Store.php');
 include_once('class.Department.php');
 
-$view_sales=$LU->checkRight(PROD_SALES_VIEW);
-$view_stock=$LU->checkRight(PROD_STK_VIEW);
-$create=$LU->checkRight(PROD_CREATE);
-$modify=$LU->checkRight(PROD_MODIFY);
+if(!isset($_REQUEST['id']) or !is_numeric($_REQUEST['id']))
+  $family_id=$_SESSION['state']['family']['id'];
+ else
+   $family_id=$_REQUEST['id'];
+$_SESSION['state']['family']['id']=$family_id;
+$family=new Family($family_id);
+if(!$user->can_view('stores',$family->data['Product Family Store Key']))
+  exit();
+$store=new Store($family->data['Product Family Store Key']);
+$department=new Department($family->get('Product Family Main Department Key'));
+
+$view_sales=$user->can_view('product sales');
+$view_stock=$user->can_view('product stock');
+$create=$user->can_create('product families');
+$modify=$user->can_edit('stores',$store->id);
+
+
+
 
 if(isset($_REQUEST['edit']))
   $edit=$_REQUEST['edit'];
 else
   $edit=$_SESSION['state']['family']['edit'];
+if(!$modify)
+  $edit=false;
+
 $smarty->assign('view_sales',$view_sales);
 $smarty->assign('view_stock',$view_stock);
 $smarty->assign('create',$create);
 $smarty->assign('modify',$modify);
+
+
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
@@ -48,15 +67,15 @@ $js_files=array(
 		$yui_path.'datatable/datatable-debug.js',
 		$yui_path.'container/container_core-min.js',
 		$yui_path.'menu/menu-min.js',
-		'js/common.js.php',
-		'js/table_common.js.php',
+		'common.js.php',
+		'table_common.js.php',
 		);
 
 if($edit){
-  $js_files[]='js/edit_common.js';
-  $js_files[]='js/edit_family.js.php';
+  $js_files[]='edit_common.js';
+  $js_files[]='edit_family.js.php';
  }else{
-  $js_files[]='js/family.js.php';
+  $js_files[]='family.js.php';
   $js_files[]='js/search.js.php';
 
  }
@@ -68,11 +87,9 @@ $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
 
-if(!isset($_REQUEST['id']) or !is_numeric($_REQUEST['id']))
-  $family_id=$_SESSION['state']['family']['id'];
- else
-   $family_id=$_REQUEST['id'];
-$_SESSION['state']['family']['id']=$family_id;
+
+
+
 
 $_SESSION['state']['assets']['page']='department';
 if(isset($_REQUEST['view'])){
@@ -84,9 +101,7 @@ if(isset($_REQUEST['view'])){
 
 
 
-$family=new Family($family_id);
-$store=new Store($family->get('Product Family Store Key'));
-$department=new Department($family->get('Product Family Main Department Key'));
+
 
 
 if(isset($_REQUEST['department_id']) and $_REQUEST['department_id']>0){

@@ -15,16 +15,34 @@ include_once('common.php');
 include_once('class.Store.php');
 include_once('class.Department.php');
 
-$view_sales=$LU->checkRight(PROD_SALES_VIEW);
-$view_stock=$LU->checkRight(PROD_STK_VIEW);
-$create=$LU->checkRight(PROD_CREATE);
-$modify=$LU->checkRight(PROD_MODIFY);
+if(!isset($_REQUEST['id']) or !is_numeric($_REQUEST['id']) )
+  $department_id=$_SESSION['state']['department']['id'];
+ else{
+   $department_id=$_REQUEST['id'];
+   $_SESSION['state']['department']['id']=$department_id;
+  }
+$department=new Department($department_id);
+
+if(!$user->can_view('stores',$department->data['Product Department Store Key']))
+  exit();
+
+$store=new Store($department->get('Product Department Store Key'));
+
+
+$view_sales=$user->can_view('product sales');
+$view_stock=$user->can_view('product stock');
+$create=$user->can_create('product families');
+$modify=$user->can_edit('stores',$store->id);
+
+
 
 if(isset($_REQUEST['edit']))
   $edit=$_REQUEST['edit'];
 else
   $edit=$_SESSION['state']['department']['edit'];
 
+if(!$modify)
+  $edit=false;
 
 
 $smarty->assign('view_sales',$view_sales);
@@ -50,17 +68,17 @@ $js_files=array(
 		$yui_path.'datatable/datatable-min.js',
 		$yui_path.'container/container_core-min.js',
 		$yui_path.'menu/menu-min.js',
-		'js/common.js.php',
-		'js/table_common.js.php',
+		'common.js.php',
+		'table_common.js.php',
 		'js/search.js',
 
 		);
 
 if($edit){
-  $js_files[]='js/edit_common.js';
-  $js_files[]='js/edit_department.js.php';
+  $js_files[]='edit_common.js';
+  $js_files[]='edit_department.js.php';
  }else
-   $js_files[]='js/department.js.php';
+   $js_files[]='department.js.php';
 
 
 
@@ -75,14 +93,7 @@ if(isset($_REQUEST['view'])){
 
  }
 
-if(!isset($_REQUEST['id']) or !is_numeric($_REQUEST['id']) )
-  $department_id=$_SESSION['state']['department']['id'];
- else{
-   $department_id=$_REQUEST['id'];
-   $_SESSION['state']['department']['id']=$department_id;
-  }
-$department=new Department($department_id);
-$store=new Store($department->get('Product Department Store Key'));
+
 
 
 $order=$_SESSION['state']['store']['table']['order'];
