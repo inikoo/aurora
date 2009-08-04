@@ -1,11 +1,12 @@
 {include file='header.tpl'}
 <div id="bd" >
+
  <span class="nav2 onleft"><a class="selected" href="stores.php">{t}Stores{/t}</a></span>
   <span class="nav2 onleft"><a  href="departments.php">{t}Departments{/t}</a></span>
   <span class="nav2 onleft"><a href="families.php">{t}Families{/t}</a></span>
   <span class="nav2 onleft"><a href="products.php?parent=none">{t}Products{/t}</a></span>
   <span class="nav2 onleft"><a href="categories.php">{t}Categories{/t}</a></span>
-  <span class="nav2 onleft"><a href="parts.php">{t}Parts{/t}</a></span>
+  {if $view_parts}<span class="nav2 onleft"><a href="parts.php">{t}Parts{/t}</a></span>{/if}
 
   <div class="search_box">
     <span class="search_title">{t}Product Code{/t}:</span> <input size="8" class="text search" id="product_search" value="" name="search"/><img align="absbottom" id="product_submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>

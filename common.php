@@ -29,7 +29,7 @@ mysql_query(sprintf("SET time_zone =%s",prepare_mysql(TIMEZONE)));
 
 require_once 'conf/conf.php';   
 
-$session = new dbsession($myconf['max_session_time'],1,100);
+$session = new Session($myconf['max_session_time'],1,100);
 
 
 require('external_libs/Smarty/Smarty.class.php');
@@ -52,6 +52,8 @@ if ($logout){
   include_once 'login.php';
   exit;
  }
+
+
 
 $is_already_logged_in=(isset($_SESSION['logged_in']) and $_SESSION['logged_in']? true : false);
 
