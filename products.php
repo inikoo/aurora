@@ -19,6 +19,11 @@ $view_stock=$user->can_view('product stock');
 $create=$user->can_create('products');
 $modify=$user->can_edit('products');
 
+$view_sales=$user->can_view('product sales');
+$view_stock=$user->can_view('product stock');
+$create=$user->can_create('products');
+$modify=$user->can_edit('products');
+
 
 
 $smarty->assign('view_sales',$view_sales);

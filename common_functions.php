@@ -34,7 +34,6 @@ Replace Non-English characters to its ANSI equivalent.
 
 function clean_accents($str){
 
-
   
   $str=preg_replace('/é|è|ê|ë|æ/','e',$str);
   $str=preg_replace('/á|à|â|ã|ä|å|æ|ª/','a',$str);

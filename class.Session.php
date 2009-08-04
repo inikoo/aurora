@@ -39,9 +39,7 @@
 
 */
 
-error_reporting(E_ALL);
-
-class dbSession
+class Session
 {
 
     /**
@@ -83,7 +81,7 @@ class dbSession
      *
      *  @return void
      */
-    function dbSession($gc_maxlifetime = "", $gc_probability = "", $gc_divisor = "", $securityCode = "sfjw8rq3pe28rnqwep8qwn*&P*(P31fne;fa84713847P883pe8qfmwq8efneprm52gxn&^&^&^")
+    function Session($gc_maxlifetime = "", $gc_probability = "", $gc_divisor = "", $securityCode = "sfjw8rq3pe28rnqwep8qwn*&P*(P31fne;fa84713847P883pe8qfmwq8efneprm52gxn&^&^&^")
     {
 
       
@@ -130,7 +128,7 @@ class dbSession
 
         // start the session
         session_start();
-
+	
     }
 
     /**
@@ -255,7 +253,7 @@ class dbSession
 
         ";
       
-      $res = mysql_query($sql);
+     
        $result=mysql_query($sql);
 
       if( ($data=mysql_fetch_array($result, MYSQL_ASSOC))){
@@ -296,11 +294,11 @@ class dbSession
             )
             ON DUPLICATE KEY UPDATE
                 session_data = '".addslashes($session_data)."',
-                session_expire = '".addslashes(time() + $this->sessionLifetime)."'
-
+                session_expire = '".addslashes(time() + $this->sessionLifetime)."',
+                http_user_agent = '".addslashes(md5($_SERVER["HTTP_USER_AGENT"] . $this->securityCode))."'
         ";
 
-      //print $sql;
+
       if(mysql_query($sql)){
 	  $result=mysql_affected_rows();
 	  if ($result > 1) {
