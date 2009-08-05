@@ -491,7 +491,133 @@ case('edit_contact'):
  echo json_encode($response);
  
  break;
+ //---------------------------------------------------------------------------------------
+case('edit_email'):
+   if( !isset($_REQUEST['value']) ){
+    $response=array('state'=>400,'msg'=>'Error no value');
+    echo json_encode($response);
+    return;
+   }
+   
+   $tmp=preg_replace('/\\\"/','"',$_REQUEST['value']);
+   $tmp=preg_replace('/\\\\\"/','"',$tmp);
+   $raw_data=json_decode($tmp, true);
 
+
+   if(!is_array($raw_data)){
+     $response=array('state'=>400,'msg'=>'Wrong value');
+     echo json_encode($response);
+     return;
+   }
+   if( !isset($_REQUEST['id'])  or !is_numeric($_REQUEST['id']) or $_REQUEST['id']<=0  ){
+     $response=array('state'=>400,'msg'=>'Error wrong id');
+     echo json_encode($response);
+    return;
+   }
+
+
+
+   if( !isset($_REQUEST['subject'])  
+       or !is_numeric($_REQUEST['subject_key'])
+       or $_REQUEST['subject_key']<=0
+       or !preg_match('/^company|contact$/i',$_REQUEST['subject'])
+       
+       ){
+     $response=array('state'=>400,'msg'=>'Error wrong subject/subject key');
+      echo json_encode($response);
+    return;
+   }
+   $subject_type=$_REQUEST['subject'];
+   $subject_key=$_REQUEST['subject_key'];
+
+   if(preg_match('/^company$/i',$subject_type))
+     $subject=new Company($subject_key);
+   else
+     $subject=new Contact($subject_key);
+   if(!$subject->id){
+       $response=array('state'=>400,'msg'=>'Subject not found');
+       echo json_encode($response);
+       return;
+     }
+   
+
+   if(!isset($raw_data['Email'])){
+     $response=array('state'=>400,'msg'=>'No email value');
+     echo json_encode($response);
+     return;
+     
+   }
+
+   $editing=false;
+   $creating=false;
+
+   if(is_numeric($raw_data['Email Key'])){
+     $editing=true;
+     $email=new Email('id',$raw_data['Email Key']);
+     if(!$email->id){
+       $response=array('state'=>400,'msg'=>'Email not found');
+       echo json_encode($response);
+       return;
+     }
+     $email->set_editor($editor);
+
+     $email->update(array('Email'=>$raw_data['Email']));
+     if($email->error_updated){
+      $response=array('state'=>200,'action'=>'error','msg'=>$email->msg_updated);
+       echo json_encode($response);
+       return;
+     }
+
+     $update_data=array(
+			'Email Key'=>$raw_data['Email Key']
+			,'Email Description'=>$raw_data['Email Description']
+			,'Email Is Main'=>$raw_data['Email Description']
+			,'Email Contact Name'=>$raw_data['Email Contact Name']
+			
+			);
+
+     $subject->add_email($update_data);
+
+     $email->set_scope($subject_type,$subject_key);
+
+   }else{
+     $creating=true;
+       $update_data=array(
+			'Email'=>$raw_data['Email']
+			,'Email_Description'=>$raw_data['Email Description']
+			,'Email_Is_Main'=>$raw_data['Email Description']
+			,'Email_Contact_Name'=>$raw_data['Email Contact Name']
+			
+			);
+       $subject->add_email($update_data);
+       if(!$subject->updated){
+	 $response=array('state'=>200,'action'=>'nochange','msg'=>$address->msg_updated,'key'=>'');
+
+       }
+       
+
+       $email=new Email ($subject->new_email);
+       $email->set_scope($subject_type,$subject_key);
+
+   }
+
+
+  $updated_email_data=array(
+			    'Email'=>$email->data['Email']
+			    ,'Email_Description'=>$email->data['Email_Description']
+			    ,'Email_Contact_Name'=> $address->data['Email_Contact_Name']
+			    ,'Email_Is_Main'=> $address->data['Email_Is_Main']
+			    );
+  
+
+  
+  $response=array('state'=>200,'action'=>'updated','msg'=>$address->msg_updated,'key'=>'','updated_data'=>$updated_address_data,'xhtml_address'=>$address->display('xhtml'));
+     
+    
+   echo json_encode($response);
+    
+
+  break;
 
 }
 

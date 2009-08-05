@@ -111,11 +111,14 @@ if($edit ){
   $css_files[]='css/edit.css';
 
 
+
+
+  $js_files[]='edit_company.js.php?edit='.$editing_block;
   $js_files[]='edit_address.js.php';
   $js_files[]='edit_contact_from_parent.js.php';
-  $js_files[]='edit_company.js.php?edit='.$editing_block;
-  
-  
+  $js_files[]='edit_contact_name.js.php';
+  $js_files[]='edit_contact_email.js.php';
+
 }
 
 $smarty->assign('css_files',$css_files);

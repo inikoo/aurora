@@ -251,7 +251,7 @@
 
 	  <tr id="contact_form" style="display:none">
 	    <td colspan=2 >
-	      <table border=0 class="edit" style="margin-top:50px" id="edit_contact_table">
+	      <table border=1 class="edit" style="margin-top:50px" id="edit_contact_table">
 		<tr >
 		  <input type="hidden" id="Contact_Key" value="" ovalue=""  />
 		  <td style="xwidth:160px;" class="label">Name:</td>
@@ -326,13 +326,15 @@
 		  <td  class="label"  >{t}Email{/t}:</td>
 		  <td >
 		    <span class="email_to_delete" style="display:none;text-decoration:line-through"></span>
-		    <input style="width:100%" class="Email"  to_delete=0 value="" ovalue="" email_key="" valid="" onkeyup="validate_email(this);email_change()" /><br/>
+		    <input style="width:90%" class="Email"  to_delete=0 value="" ovalue="" email_key="" valid=""   onkeyup="validate_email(this);email_change()" /><br/>
 
 		  </td>
-		  <td   >
+		  <td>
+		    <input class="Email_Is_Main" type="checkbox" ovalue="No"  onclick="update_is_main_email(this)"/><span>{t}Main{/t}</span>
+
 		    <span class="small_button undelete_email"  style="display:none" email_key="" onclick="unmark_email_to_delete(this)">{t}Cancel Delete{/t}</span>
 		    <span class="small_button delete_email"  email_key="" onclick="mark_email_to_delete(this)">{t}Delete{/t}</span>
-		    <span class="small_button show_details_email" email_key="" action="Show" onclick="show_details_email(this)">{t}Edit Details{/t}</span>
+		    <span class="small_button show_details_email" style="display:none" email_key="" action="Show" onclick="show_details_email(this)">{t}Edit Details{/t}</span>
 
 		    </br><table border=0 class="edit" style="margin-top:10px;display:none" >
 		      <tr style="display:none">
@@ -362,7 +364,7 @@
 		  <td>
 		    <span class="small_button undelete_mobile"  style="display:none" email_key="" onclick="unmark_mobile_to_delete(this)">{t}Cancel Delete{/t}</span>
 		    <span class="small_button delete_mobile" style="float:right;margin-top:3px"  mobile_key="" onclick="mark_mobile_to_delete(this)">{t}Delete{/t}</span>
-		  <span class="small_button show_details_mobile" email_key="" action="Show" onclick="show_details_mobile(this)">{t}Edit Details{/t}</span>
+		    <span class="small_button show_details_mobile" email_key="" action="Show" onclick="show_details_mobile(this)">{t}Edit Details{/t}</span>
 		  
 		  <br/><table  class="edit"  style="margin-top:10px;display:none"   >
 		    <tr>
