@@ -1,17 +1,22 @@
-
 var Contact_Changes=0;
+var Contact_Name_Changes=0;
+var Contact_Details_Changes=0;
+
 var Contact_Email_Changes=0;
+
+var Contact_Emails_to_edit=0;
+var Contact_Emails_to_delete=0;
+var Contact_Emails_to_add=0;
+
 var Contact_Mobile_Changes=0;
 var Contact_Telephone_Changes=0;
 var Contact_Fax_Changes=0;
 var Contact_Address_Changes=0;
 
-
-var Contact_Function_Changes=0;
-var Contact_Keys=['Contact_First_Name','Contact_Salutation','Contact_Surname','Contact_Suffix','Contact_Gender','Contact_Title','Contact_Profession'];
+var Contact_Personal_Keys=['Contact_First_Name','Contact_Salutation','Contact_Surname','Contact_Suffix','Contact_Gender','Contact_Title','Contact_Profession'];
 var Contact_Name_Keys=['Contact_First_Name','Contact_Salutation','Contact_Surname','Contact_Suffix'];
-var Contact_No_Name_Keys=['Contact_Gender','Contact_Title','Contact_Profession'];
-var Email_Keys=['Email','Email_Description','Email_Contact_Name'];
+var Contact_Details_Keys=['Contact_Gender','Contact_Title','Contact_Profession'];
+var Email_Keys=['Email','Email_Description','Email_Contact_Name','Email_Is_Main'];
 
 
 var Number_New_Emails=0;
@@ -19,9 +24,6 @@ var Number_New_Empty_Emails=0;
 
 var Number_New_Mobiles=0;
 var Number_New_Contact_Address=0;
-
-
-
 
 var save_contact=function(){
 
@@ -35,11 +37,7 @@ var save_contact=function(){
 
     
 
-    if(Contact_Changes>0){
-	
-
-	
-
+    if(Contact_Name_Changes>0 || Contact_Details_Changes>0){
 	var name_value=new Object();
 	var items=Contact_Name_Keys;
 	for(i in items){
@@ -79,49 +77,56 @@ var save_contact=function(){
 		}
 	    });
     }
-    
-    if(Contact_Type_Changes>0){
 
-	var contact_type_values=new Array();
-	var elements_array=Dom.getElementsByClassName('contact_type', 'span');
-	for( var i in elements_array ){
-	    var element=elements_array[i];
-	    var label=element.getAttribute('label');
-	    if(Dom.hasClass(element,'selected')){
-		contact_type_values.push(label);
-	    }
-	    
-	}
+     if(Contact_Emails_to_edit>0 || Contact_Emails_to_add>0){
+	  var elements_array=Dom.getElementsByClassName('Email', 'input');
+	  for( var i in elements_array ){
+		var email_key=elements_array[i].getAttribute('email_key');
+		if(  email_key>0 || email_key.match('new')){
 
-	var json_value = YAHOO.lang.JSON.stringify(contact_type_values); 
-	var request='ar_edit_contacts.php?tipo=edit_'+escape(table)+ '_type&value=' + json_value+'&id='+contact_key+'&subject='+Subject+'&subject_key='+Subject_Key; 
+		    var value=new Object();
+		    if( email_key.match('new'))
+			value['Email Key']=0;
+		    else
+			value['Email Key']=email_key;
+		    value['Email']=Dom.get('Email'+email_key).value;
+		    value['Email Description']=Dom.get('Email_Description'+email_key).value;
+		    value['Email Contact Name']=Dom.get('Email_Contact_Name'+email_key).value;
+		    value['Email Is Main']=Dom.get('Email_Is_Main'+email_key).value;
+
+		    var json_value = YAHOO.lang.JSON.stringify(value); 
+		    
+		    var request='ar_edit_contacts.php?tipo=edit_email&value=' + json_value+'&id='+contact_key+'&subject='+Subject+'&subject_key='+Subject_Key; 
+		    YAHOO.util.Connect.asyncRequest('POST',request ,{
+			    success:function(o) {
+				alert(o.responseText);
+				var r =  YAHOO.lang.JSON.parse(o.responseText);
+				if(r.action=='updated'){
+				    Dom.get('contact_display'+contact_key).innerHTML=r.xhtml_contact;
+				    
+				    for(i in r.updated_data){
+					var contact_item_value=r.updated_data[i];
+					if(contact_item_value==null)contact_item_value='';
+					Contact_Data[contact_key]['Emails'][i]=contact_item_value;
+				    }
+				    cancel_edit_contact();
+				    save_contact_elements++;
+				}else if(r.action=='error'){
+				    alert(r.msg);
+				}
+				
+				
 		
-	
-	YAHOO.util.Connect.asyncRequest('POST',request ,{
-		success:function(o) {
-		    //alert(o.responseText);
-		    var r =  YAHOO.lang.JSON.parse(o.responseText);
-		    if(r.action=='updated'){
-			
-			
-			Contact_Data[contact_key]['type']=r.updated_data;
-			cancel_edit_contact();
-			save_contact_elements++;
-		    }else if(r.action=='error'){
-			alert(r.msg);
-		    }
-		    
-		    
-		    
+			    }
+			});
+		   
 		}
-	    });
+
+	  }
 
 
-    }
-    
-    
-    
-    
+     }
+
     
 };
 
@@ -131,7 +136,7 @@ var create_contact=function(){
     alert("creating contact");
     return;
     var value=new Object();
-    items=Contact_Keys;
+    items=Contact_Personal_Keys;
     for(i in items)
 	value[items[i]]=Dom.get('contact_'+items[i]).value;
     
@@ -225,7 +230,7 @@ var create_contact=function(){
 
 
 var update_contact_buttons=function(){
-    if(changes_contact>0){
+    if(Contact_Changes>0){
 	 Dom.setStyle(['save_edit_contact'], 'display', ''); 
     }
 
@@ -233,10 +238,22 @@ var update_contact_buttons=function(){
 
 
 var cancel_edit_contact=function (){
-    changes_contact=0;
 
-    index=Dom.get("cancel_edit_contact_button").getAttribute('contact_key');
-    Dom.setStyle(['contact_showcase','add_contact_button'], 'display', ''); 
+     Contact_Changes=0;
+     Contact_Name_Details_Changes=0;
+     Contact_Email_Changes=0;
+     Contact_Mobile_Changes=0;
+     Contact_Telephone_Changes=0;
+     Contact_Fax_Changes=0;
+     Contact_Address_Changes=0;
+     Number_New_Emails=0;
+     Number_New_Empty_Emails=0;
+     
+     Number_New_Mobiles=0;
+     Number_New_Contact_Address=0;
+     
+     index=Dom.get("cancel_edit_contact_button").getAttribute('contact_key');
+     Dom.setStyle(['contact_showcase','add_contact_button'], 'display', ''); 
     Dom.setStyle(['contact_form','cancel_edit_contact_button','save_contact_button'], 'display', 'none'); 
     Dom.get("cancel_edit_contact_button").setAttribute('contact_key','');
     Dom.get("contact_messages").innerHTML='';
@@ -272,7 +289,6 @@ var cancel_edit_contact=function (){
 };
 
 var delete_contact=function (e,contact_button){
-
 
 }
 
@@ -331,12 +347,7 @@ var edit_contact=function (e,contact_button){
 	    Dom.addClass('Contact_Gender_'+data[key],'selected');
 	    Dom.get('Contact_Gender').value=data[key];
 	    Dom.get('Contact_Gender').setAttribute('ovalue',data[key]);
-	}else if(key=='type'){
-	    var contact_type=data[key];
-	    for (contact_type_key in contact_type){
 
-		Dom.addClass('contact_type_'+contact_type[contact_type_key],'selected')
-	    }
 	}else if(key=='Emails'){
 	    var emails=data[key];
 	    for (email_key in emails) {
@@ -346,10 +357,21 @@ var edit_contact=function (e,contact_button){
 		   
 		    Dom.get('Email'+email_key).value=email_data['Email'];
 		    Dom.get('Email'+email_key).setAttribute('ovalue',email_data['Email']);
+		    validate_email(Dom.get('Email'+email_key));
+
 		    Dom.get('Email_Contact_Name'+email_key).value=email_data['Email_Contact_Name'];
 		    Dom.get('Email_Contact_Name'+email_key).setAttribute('ovalue',email_data['Email_Contact_Name']);
 		    Dom.get('Email_Description'+email_key).value=email_data['Email_Description'];
 		    Dom.get('Email_Description'+email_key).setAttribute('ovalue',email_data['Email_Description']);
+		    
+
+		    if(email_data['Email_Is_Main']=='Yes')
+			Dom.get('Email_Is_Main'+email_key).checked=true;
+		    else
+			Dom.get('Email_Is_Main'+email_key).checked=false;
+		    Dom.get('Email_Is_Main'+email_key).value=email_data['Email_Is_Main'];
+		    Dom.get('Email_Is_Main'+email_key).setAttribute('ovalue',email_data['Email_Is_Main']);
+
 
 		    Dom.addClass(Dom.get("Email_Description_"+email_data['Email_Description']+email_key),'selected');
 		    
@@ -421,364 +443,39 @@ var edit_contact=function (e,contact_button){
     }
     
     
-  }
+};
 
 
-    var update_contact_labels=function(country_code){
-	var labels=new Object();
-	
-	if(Country_Contact_Labels[country_code]== undefined){
-	    return
-	}else
-	    labels=Country_Contact_Labels[country_code];
-	
-
-	for (index in Contact_Keys){
-	    key=Contact_Keys[index];
-	    
-	    if(labels[key]!=undefined){
-
-		if(labels[key].name!=undefined){
-		    Dom.get('label_contact_'+key).innerHTML=labels[key].name;
-		}
-
-		if(labels[key].in_use!=undefined && !labels[key].in_use){
-		    
-		    Dom.setStyle('tr_contact_'+key,'display','none');
-		}else{
-		    Dom.setStyle('tr_contact_'+key,'display','');
-		    
-		    
-		    if(labels[key].hide!=undefined && labels[key].hide){
-			Dom.setStyle('tr_contact_'+key,'display','none');
-			
-			if(key=='country_d1'){
-			Dom.setStyle('show_'+key,'display','');
-			}
-			
-		    }else{
-			Dom.setStyle('tr_contact_'+key,'display','');
-			if(key=='country_d1'){
-			    Dom.setStyle('show_'+key,'display','none');
-			}
-			
-		    }
-		}
-		
-	    }
-	}
-	
-    };
-
-
-var on_contact_type_change=function(){
-    Contact_Type_Changes=0
-     var contact_type_values=new Array();
-     var elements_array=Dom.getElementsByClassName('contact_type', 'span');
-     var has_other=false;
-     for( var i in elements_array ){
-	 var element=elements_array[i];
-	 var label=element.getAttribute('label');
-	 if(Dom.hasClass(element,'selected')){
-	     if(label=='Other')
-		 has_other=true;
-	     contact_type_values.push(label);
-	 }
-
-     }
-     if(contact_type_values.length==0){
-	 contact_type_values.push('Other');
-	 Dom.addClass('contact_type_Other','selected');
-     }
-     if(has_other && contact_type_values.length>1){
-	 contact_type_values.splice(contact_type_values.indexOf('Other'), 1);
-	 Dom.removeClass('contact_type_Other','selected');
-     }
-     
-     ovalue=Contact_Data[Current_Contact_Index]['type']
-     if(!same_arrays(ovalue,contact_type_values))
-	 Contact_Type_Changes++; 
-
-     
-     render_after_contact_item_change();
-}
-
-var on_contact_function_change=function(){
-    Contact_Function_Changes=0
-     var contact_function_values=new Array();
-     var elements_array=Dom.getElementsByClassName('contact_function', 'span');
-     var has_other=false;
-     for( var i in elements_array ){
-	 var element=elements_array[i];
-	 var label=element.getAttribute('label');
-	 if(Dom.hasClass(element,'selected')){
-	     if(label=='Other')
-		 has_other=true;
-	     contact_function_values.push(label);
-	 }
-
-     }
-     if(contact_function_values.length==0){
-	 contact_function_values.push('Other');
-	 Dom.addClass('contact_function_Other','selected');
-     }
-     if(has_other && contact_function_values.length>1){
-	 contact_function_values.splice(contact_function_values.indexOf('Other'), 1);
-	 Dom.removeClass('contact_function_Other','selected');
-     }
-
-     ovalue=Contact_Data[Current_Contact_Index]['function']
-     if(!same_arrays(ovalue,contact_function_values))
-	 Contact_Function_Changes++; 
-     render_after_contact_item_change();
-}
+  
 
 
 
 
-var on_contact_item_change=function(){
+
+
     
-    Contact_Items_Changes=0;
-     var items=Contact_Keys;
-     for ( var i in items )
-	 {
-	     key=items[i];
-	     // alert(key +' '+Dom.get('contact_'+key).value);
-	     if(Dom.get('contact_'+key).value!=Dom.get('contact_'+key).getAttribute('ovalue')){
-		 Contact_Items_Changes++; 
-	     } 
-	 }
-     
-
-     render_after_contact_item_change();
-
-     
-}
-
-
-    var render_after_contact_item_change=function(){
-	Contact_Changes=Contact_Items_Changes+Contact_Function_Changes+Contact_Type_Changes;
+var render_after_contact_item_change=function(){
+    
+    Contact_Changes=Contact_Name_Changes+Contact_Email_Changes+Contact_Mobile_Changes;
 	
-	if(Contact_Changes==0){
-	    Dom.get('contact_messages').innerHTML='';
-	    Dom.setStyle(['save_contact_button', 'cancel_save_contact_button'], 'display', 'none'); 
-	}else if (Contact_Changes==1){
+    if(Contact_Changes==0){
+	Dom.get('contact_messages').innerHTML='';
+	Dom.setStyle(['save_contact_button', 'cancel_save_contact_button'], 'display', 'none'); 
+    }else if (Contact_Changes==1){
 	    Dom.get('contact_messages').innerHTML=Contact_Changes+'<?php echo' '._('change')?>';
 	    Dom.setStyle(['save_contact_button', 'cancel_save_contact_button'], 'display', ''); 
-	}else{
-	    Dom.get('contact_messages').innerHTML=Contact_Changes+'<?php echo' '._('changes')?>';
-	    Dom.setStyle(['save_contact_button', 'cancel_save_contact_button'], 'display', ''); 
-	}
-    }
-
-
-var toggle_contact_type=function (o){
-    if(Dom.hasClass(o, 'selected')){
-	Dom.removeClass(o, 'selected')
     }else{
-	Dom.addClass(o, 'selected')
+	Dom.get('contact_messages').innerHTML=Contact_Changes+'<?php echo' '._('changes')?>';
+	Dom.setStyle(['save_contact_button', 'cancel_save_contact_button'], 'display', ''); 
     }
-     on_contact_type_change();
-};
-
-var toggle_contact_function=function (o){
-    if(Dom.hasClass(o, 'selected')){
-	Dom.removeClass(o, 'selected')
-    }else{
-	Dom.addClass(o, 'selected')
-    }
-     on_contact_function_change();
-};
-var show_description=function (){
-    Dom.setStyle(['tr_contact_description','hide_description'],'display','');
-    Dom.setStyle('show_description','display','none');
-};
-
-var hide_description=function (){
-    Dom.setStyle(['tr_contact_description','hide_description'],'display','none');
-    Dom.setStyle('show_description','display','');
-};
-
-var toggle_country_d1=function (){
-    Dom.setStyle(['tr_contact_country_d1','show_country_d2'],'display','');
-    Dom.setStyle('show_country_d1','display','none');
-    Dom.get('show_country_d2').innerHTML='x';
-   
-};
-var toggle_country_d2=function (){
-    if(Dom.get("show_country_d2").innerHTML=='x'){
-	Dom.setStyle('show_country_d1','display','');
-	Dom.setStyle('tr_contact_country_d1','display','none');
-    }
-    
-}
-
-
- var toggle_town_d1=function (){
-     
-     Dom.setStyle('tr_contact_town_d1','display','');
-     Dom.setStyle('show_town_d1','display','none');
-     Dom.get("show_town_d2").innerHTML='x';
-
-  }
- 
-var toggle_town_d2=function (){
-    if(Dom.get("show_town_d2").innerHTML=='x'){
-	Dom.setStyle('show_town_d1','display','');
-	Dom.setStyle('tr_contact_town_d1','display','none');
-	
-    }
-  }
-
-var match_country = function(sQuery) {
-        // Case insensitive matching
-        var query = sQuery.toLowerCase(),
-            contact,
-            i=0,
-            l=Country_List.length,
-            matches = [];
-        
-        // Match against each name of each contact
-        for(; i<l; i++) {
-            contact = Country_List[i];
-            if((contact.name.toLowerCase().indexOf(query) > -1) ||
-	       (contact.code.toLowerCase().indexOf(query) > -1))  {
-                matches[matches.length] = contact;
-            }
-        }
-
-        return matches;
-    };
-
-
- var contact_name_changed=function (o){
-     
-     parse_name(o.value);
- };
-
-
-     
-var parse_name=function(name){
-    
-    var salutation=trim(Dom.get('Contact_Salutation').value);
-    var first_name=trim(Dom.get('Contact_First_Name').value);
-    var surname=trim(Dom.get('Contact_Surname').value);
-    var suffix=trim(Dom.get('Contact_Suffix').value);
-    
-    number_components=0;
-    if(salutation!='')number_components++;
-    if(surname!='')number_components++;
-    if(first_name!='')number_components++;
-    if(suffix!='')number_components++;
-    
-    name= trim(name);
-
-    if(name==''){
-	set_salutation('');
-	Dom.get('Contact_First_Name').value='';
-	Dom.get('Contact_Surname').value='';
-	return;
-    }
-
-    var proposed_name_components = name.split(/\s+/); 
-    
-    proposed_number_components=proposed_name_components.length;
-   
-
-    if(set_salutation(proposed_name_components[0]))
-	    proposed_name_components.splice(0, 1);
-
-
-   
-
-   
-    proposed_number_components=proposed_name_components.length;
-
-    //  alert(proposed_number_components+' '+proposed_name_components);
-    if(proposed_number_components==0){
-	Dom.get('Contact_First_Name').value='';
-	Dom.get('Contact_Surname').value='';
-    }else if(proposed_number_components==1){
-
-
-	if(surname!=''){
-	    Dom.get('Contact_Surname').value=proposed_name_components[0];
-	    Dom.get('Contact_First_Name').value='';
-	}else{
-	    Dom.get('Contact_First_Name').value=proposed_name_components[0];
-	    Dom.get('Contact_Surname').value='';
-	}
-
-
-    }else if(proposed_number_components==2){
-
-	if(surname==proposed_name_components[0]+' '+proposed_name_components[1]){
-	    Dom.get('Contact_Surname').value=proposed_name_components[0]+' '+proposed_name_components[1];
-	    Dom.get('Contact_First_Name').value='';
-	}else if(first_name==proposed_name_components[0]+' '+proposed_name_components[1]){
-	    Dom.get('Contact_First_Name').value=proposed_name_components[0]+' '+proposed_name_components[1];
-	    Dom.get('Contact_Surname').value='';
-	}else{
-	    Dom.get('Contact_First_Name').value=proposed_name_components[0];
-	    Dom.get('Contact_Surname').value=proposed_name_components[1];
-	}
-	    
-
-	    
-
-
-
-
-    }else if(proposed_number_components>2){
-
-	
-	Dom.get('Contact_Surname').value=proposed_name_components[proposed_number_components-1];
-	proposed_name_components.splice(proposed_number_components-1, 1);
-	first_name='';
-	for (i in proposed_name_components){
-	    first_name=first_name+' '+proposed_name_components[i];
-	}
-	Dom.get('Contact_First_Name').value=trim(first_name);
-
-    }
-	    
-    
 };
 
 
-var is_salutation=function(string){
-    
-    if(string.match(/^(mr|mrs|miss)$/i))
-	return true;
-    else
-	return false;
-}
 
-
-var set_salutation=function(string){
-    var elements_to_unselect=Dom.getElementsByClassName('Contact_Salutation','span');
-    Dom.removeClass(elements_to_unselect,'selected');
-    if(is_salutation(string)){
-	
-	string=ucwords(string);
-
-	Dom.addClass('Contact_Salutation_'+string,'selected');
-	Dom.get('Contact_Salutation').value=string;
-	return true;
-    }else{
-	Dom.get('Contact_Salutation').value='';
-	return false;
-	
-    }
-}
-
-
-
-
-function calculate_num_changed_in_personal(){
+function calculate_num_changed_in_personal_details(){
     var changes=0;
    
-    var items=Contact_Keys;
+    var items=Contact_Details_Keys;
     
     for (i in items){
 	var item=Dom.get(items[i]);
@@ -787,221 +484,6 @@ function calculate_num_changed_in_personal(){
 	    changes++;
     }
     
-    Dom.get("personal_num_changes").innerHTML=changes;
-    if(changes==0){
-
-    }else{
-	Dom.setStyle('save_contact_button','display','');
-
-    }
-    Contact_Changes=changes;
-}
-
-
-function calculate_num_changed_in_email(){
-    var changed=new Object();
-    
-    var elements_array=Dom.getElementsByClassName('Email', 'input');
-    for( var i in elements_array ){
-	var input_element=elements_array[i];
-	var email_key=input_element.getAttribute('email_key');
-	if(email_key>0  && input_element.getAttribute('ovalue')!=input_element.value)
-	    changed[email_key]=1;
-    }
-    var elements_array=Dom.getElementsByClassName('Email_Description', 'input');
-    for( var i in elements_array ){
-	var input_element=elements_array[i];
-	var email_key=input_element.getAttribute('email_key');
-	if(email_key>0  && input_element.getAttribute('ovalue')!=input_element.value)
-	    changed[email_key]=1;
-    }
-     var elements_array=Dom.getElementsByClassName('Email_Contact_Name', 'input');
-    for( var i in elements_array ){
-	var input_element=elements_array[i];
-	var email_key=input_element.getAttribute('email_key');
-	if(email_key>0  && input_element.getAttribute('ovalue')!=input_element.value)
-	    changed[email_key]=1;
-    }
-    
-
-
-    var changes=0;
-    for(i in changed)
-	changes++;
-    
-    
-
-    if(changes==0){
-	Dom.get("email_num_changes").innerHTML='';
-    }else{
-	Dom.get("email_num_changes").innerHTML=changes;
-	Dom.setStyle('save_email_button','display','');
-
-    }
-    Email_Changes=changes;
-}
-
-
-
-
-
-
-
-
-
-function update_salutation(o){
-    if(Dom.hasClass(o, 'selected'))
-	return;
-    Dom.removeClass(current_salutation, 'selected');
-    Dom.addClass(o, 'selected');
-
-    Dom.get('Contact_Salutation').value=o.getAttribute('label');
-    current_salutation=o.id;
-    calculate_num_changed_in_personal();
-    update_full_name();
-
-}
-
-function name_component_change(){
-    calculate_num_changed_in_personal();
-    update_full_name();
-}
-
-function update_full_name(){
-    var full_address=trim(Dom.get("Contact_Salutation").value+' '+Dom.get("Contact_First_Name").value+' '+Dom.get("Contact_Surname").value);
-    Dom.get("Contact_Name").value=full_address;
-
-}
-
-
-function email_change(){
-    calculate_num_changed_in_email();
-}
-
-
-function show_details_email(o){
-    var action=o.getAttribute('action');
-    var email_key=o.getAttribute('email_key');
-
-    if(action=='Show'){
-	o.innerHTML='Hide Details';
-	o.setAttribute('action','Hide');
-	Dom.setStyle("Email_Details"+email_key,'display','');
-    }else{
-	o.innerHTML='EditDetails';
-	o.setAttribute('action','Show');
-	Dom.setStyle("Email_Details"+email_key,'display','none');
-
-    }
-
-}
-
-
-
-
-function validate_email(o){
-    var email=o.value;
-    var email_key=o.getAttribute('email_key');
-    
-    if(isValidEmail(email)){
-	o.setAttribute('valid',1);
-	Dom.removeClass(o,'invalid');
-    }else{
-	o.setAttribute('valid',0);
-	Dom.addClass(o,'invalid');
-    }
-
-}
-
-function mark_email_to_delete(o){
-
-    var email_key=o.getAttribute('email_key');
-    var email=Dom.get('Email'+email_key).value;
-    
-   
-    Dom.setStyle(["email_to_delete"+email_key,'undelete_email_button'+email_key],'display','');
-    Dom.setStyle(["Email"+email_key,'delete_email_button'+email_key,'show_details_email_button'+email_key,"Email_Details"+email_key],'display','none');
-    Dom.setStyle("Email"+email_key,'display','none');
-    Dom.get('email_to_delete'+email_key).innerHTML=email;
-    Dom.get('Email'+email_key).setAttribute('to_delete',1);
-    Dom.get('show_details_email_button'+email_key).innerHTML='EditDetails';
-    Dom.get('show_details_email_button'+email_key).setAttribute('action','Show');
-   
-
-
-}
-
-function unmark_email_to_delete(o){
-    var email=o.value;
-    var email_key=o.getAttribute('email_key');
-    Dom.setStyle(["email_to_delete"+email_key,'undelete_email_button'+email_key],'display','none');
-    Dom.setStyle(["Email"+email_key,'delete_email_button'+email_key,'show_details_email_button'+email_key],'display','');
-    Dom.get('email_to_delete'+email_key).innerHTML='';
-    Dom.get('Email'+email_key).setAttribute('to_delete',0);
-}
-
-function add_email(){
-    
-    if(Number_New_Empty_Emails==0){
-	clone_email('new'+Number_New_Emails);
-	Number_New_Empty_Emails++;
-	Number_New_Emails++;
-    }
-}
-
-function clone_email(email_key){
-   
-
-     var new_email_container = Dom.get('email_mould').cloneNode(true);
-     var the_parent=Dom.get('mobile_mould').parentNode;
-		    
-     var insertedElement = the_parent.insertBefore(new_email_container, Dom.get('mobile_mould'));
-     Dom.addClass(insertedElement,'cloned_editor');
-     Dom.setStyle(insertedElement,'display','');
-     insertedElement.id="tr_email"+email_key;
-     insertedElement.setAttribute('email_key',email_key);
-     
-     var element_array=Dom.getElementsByClassName('show_details_email', 'span',insertedElement);
-     element_array[0].setAttribute('email_key',email_key);
-     element_array[0].id='show_details_email_button'+email_key;
-     
-     var element_array=Dom.getElementsByClassName('Email', 'input',insertedElement);
-     element_array[0].setAttribute('email_key',email_key);
-     element_array[0].id='Email'+email_key;
-
-     var element_array=Dom.getElementsByClassName('Email_Contact_Name', 'input',insertedElement);
-     element_array[0].setAttribute('email_key',email_key);
-     element_array[0].id='Email_Contact_Name'+email_key;
-     
-     var element_array=Dom.getElementsByClassName('Email_Description', 'input',insertedElement);
-     element_array[0].setAttribute('email_key',email_key);
-     element_array[0].id='Email_Description'+email_key;
-
-     var element_array=Dom.getElementsByClassName('email_to_delete', 'span',insertedElement);
-     element_array[0].setAttribute('email_key',email_key);
-     element_array[0].id='email_to_delete'+email_key;
-     
-     var element_array=Dom.getElementsByClassName('delete_email', 'span',insertedElement);
-     element_array[0].setAttribute('email_key',email_key);
-     element_array[0].id='delete_email_button'+email_key;
-     
-     var element_array=Dom.getElementsByClassName('undelete_email', 'span',insertedElement);
-     element_array[0].setAttribute('email_key',email_key);
-     element_array[0].id='undelete_email_button'+email_key;
-     
-
-     
-     var element_array=Dom.getElementsByClassName('Email_Description', 'span',insertedElement);
-     for(i in  element_array){
-	 var label=element_array[i].getAttribute('label');
-	 element_array[i].id="Email_Description_"+label+email_key;
-
-     }
-		    
-     var element_array=Dom.getElementsByClassName('edit', 'table',insertedElement);
-     element_array[0].id="Email_Details"+email_key;
-     
-
- 
-
+  
+    Contact_Details_Changes=changes;
 }

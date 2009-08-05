@@ -742,7 +742,8 @@ public static function  wrong_email($email){
     }
 
 function set_scope($raw_scope='',$scope_key=0){
-    $scope='Unknown';
+
+  $scope='Unknown';
     $raw_scope=_trim($raw_scope);
     if(preg_match('/^customers?$/i',$raw_scope)){
       $scope='Customer';
@@ -755,7 +756,7 @@ function set_scope($raw_scope='',$scope_key=0){
     }else if(preg_match('/^(staff)$/i',$raw_scope)){
       $scope='Staff';
     }
-    
+
     $this->scope=$scope;
     $this->scope_key=$scope_key;
     $this->load_metadata();
