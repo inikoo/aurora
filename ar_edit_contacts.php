@@ -532,9 +532,12 @@ case('edit_email'):
 
    if(preg_match('/^company$/i',$subject_type))
      $subject=new Company($subject_key);
-   else
+   else{
      $subject=new Contact($subject_key);
-   if(!$subject->id){
+   }
+
+   
+if(!$subject->id){
        $response=array('state'=>400,'msg'=>'Subject not found');
        echo json_encode($response);
        return;
@@ -551,7 +554,9 @@ case('edit_email'):
    $editing=false;
    $creating=false;
 
-   if(is_numeric($raw_data['Email Key'])){
+   $msg=_('No changes');
+  
+   if(is_numeric($raw_data['Email Key']) and $raw_data['Email Key']>0){
      $editing=true;
      $email=new Email('id',$raw_data['Email Key']);
      if(!$email->id){
@@ -568,6 +573,9 @@ case('edit_email'):
        return;
      }
 
+     if($email->updated)
+       $msg=_('Email updated');
+
      $update_data=array(
 			'Email Key'=>$raw_data['Email Key']
 			,'Email Description'=>$raw_data['Email Description']
@@ -577,7 +585,8 @@ case('edit_email'):
 			);
 
      $subject->add_email($update_data);
-
+     if($subject->updated)
+       $msg=_('Email updated');
      $email->set_scope($subject_type,$subject_key);
 
    }else{
@@ -595,23 +604,28 @@ case('edit_email'):
 
        }
        
+       if($subject->add_email){
+	 $email=new Email ($subject->add_email);
+	 $email->set_scope($subject_type,$subject_key);
+	 $msg=_("Email created");
+       }else{
+	 
 
-       $email=new Email ($subject->new_email);
-       $email->set_scope($subject_type,$subject_key);
+       }
 
    }
 
 
   $updated_email_data=array(
 			    'Email'=>$email->data['Email']
-			    ,'Email_Description'=>$email->data['Email_Description']
-			    ,'Email_Contact_Name'=> $address->data['Email_Contact_Name']
-			    ,'Email_Is_Main'=> $address->data['Email_Is_Main']
+			    ,'Email_Description'=>$email->data['Email Description']
+			    ,'Email_Contact_Name'=> $email->data['Email Contact Name']
+			    ,'Email_Is_Main'=> $email->data['Email Is Main']
 			    );
   
 
   
-  $response=array('state'=>200,'action'=>'updated','msg'=>$address->msg_updated,'key'=>'','updated_data'=>$updated_address_data,'xhtml_address'=>$address->display('xhtml'));
+  $response=array('state'=>200,'action'=>'updated','msg'=>$msg,'key'=>'','updated_data'=>$updated_email_data,'xhtml_subject'=>$subject->display('card'));
      
     
    echo json_encode($response);

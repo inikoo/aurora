@@ -633,7 +633,7 @@ class Company extends DB_Table {
       if($this->data['Company Main Email Key']){
       $email_data=array(
 				'Email Key'=>$this->data['Company Main Email Key']
-				,'Email Type'=>'Work'
+				,'Email Description'=>'Work'
 			);
       //      print_r($email_data);
       $contact->add_email($email_data);

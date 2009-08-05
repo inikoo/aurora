@@ -667,7 +667,7 @@ class Customer extends DB_Table{
    if(isset($data['email'])){
      $data_contact['email']=$data['email'];
      if($type=='Company')
-       $data_contact['email type']='Work';
+       $data_contact['Email Description']='Work';
    }
    if(isset($data['telephone']))
      $data_contact['telephone']=$data['telephone'];

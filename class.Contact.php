@@ -17,6 +17,8 @@ include_once('class.DB_Table.php');
 include_once('class.Telecom.php');
 include_once('class.Email.php');
 include_once('class.Address.php');
+include_once('class.Customer.php');
+include_once('class.Company.php');
 
 
 /* class: Contact
@@ -925,7 +927,7 @@ private function create ($data,$options='',$address_home_data=false){
 	    
 	  $this->add_email(array(
 				 'Email Key'=>$email->id
-				 ,'Email Type'=>'Personal'
+				 ,'Email Description'=>'Personal'
 				 ),'principal no_history');
 	  }
 	  
@@ -1193,6 +1195,23 @@ private function create ($data,$options='',$address_home_data=false){
 
   function add_email($data,$args='principal'){
     global $myconf;
+
+    $principal=false;
+    if(preg_match('/not? principal/i',$args) ){
+      $principal=false;
+      
+    }elseif( preg_match('/principal/i',$args)){
+      
+      $principal=true;
+    }
+    
+    if(isset($data['Email Is Main'])){
+      if($data['Email Is Main']=='Yes')
+	$principal=true;
+      else
+	$principal=false;
+    }
+  
     if(isset($data['Email Key'])){
 
       $email=new Email('id',$data['Email Key']);
@@ -1200,14 +1219,14 @@ private function create ($data,$options='',$address_home_data=false){
     }else{
       
       $email=$data['Email'];
-      if(isset($data['email_type']))
-	$email_type=$data['Email Type'];
+      if(isset($data['Email Description']))
+	$email_description=$data['Email Description'];
       else
-	$email_type='';
+	$email_description='';
       $email_data=array(
-			'Email Description'=>'',
+		      
 			'Email'=>$email,
-			'Email Type'=>'Unknown',
+			'Email Description'=>'Unknown',
 			'Email Contact Name'=>'',
 			'Email Validated'=>'No',
 			'Email Verified'=>'No',
@@ -1225,24 +1244,27 @@ private function create ($data,$options='',$address_home_data=false){
      $this->msg.=' '.$email->msg;
 
     }
+
+
+
     if($email->id){
       
       if($email->updated or $email->new)
 	$this->updated=true;
 
-      if(isset($data['Email Type']))
-	$email_type=$data['Email Type'];
+      if(isset($data['Email Description']))
+	$email_description=$data['Email Description'];
       else
-	$email_type='';
+	$email_description='';
       
-      if(preg_match('/work/i',$email_type))
-	$email_data['Email Type']='Work';
-      elseif(preg_match('/personal/i',$email_type))
-	$email_data['Email Type']='Personal';
-      elseif(preg_match('/other/i',$email_type))
-	$email_data['Email Type']='Other';
+      if(preg_match('/work/i',$email_description))
+	$email_data['Email Description']='Work';
+      elseif(preg_match('/personal/i',$email_description))
+	$email_data['Email Description']='Personal';
+      elseif(preg_match('/other/i',$email_description))
+	$email_data['Email Description']='Other';
       else
-	$email_data['Email Type']='Unknown';
+	$email_data['Email Description']='Unknown';
       
       
 
@@ -1256,8 +1278,8 @@ private function create ($data,$options='',$address_home_data=false){
 		   ,$email->id
 		   ,$this->id
 		   ,prepare_mysql(preg_match('/principal/i',$args)?'Yes':'No')
-		   ,prepare_mysql($email_data['Email Type'])
-		   ,prepare_mysql($email_data['Email Type'])
+		   ,prepare_mysql($email_data['Email Description'])
+		   ,prepare_mysql($email_data['Email Description'])
 		   );
       mysql_query($sql);
       if(mysql_affected_rows() )
@@ -2428,7 +2450,7 @@ string with the name to be parsed
 	$email=sprintf('<span class="email">%s</span><br/>',$this->data['Contact Main XHTML Email']);
       if($this->data['Contact Main Telephone'])
 	$tel=sprintf('<span class="tel">%s %s</span><br/>',$tel_label,$this->data['Contact Main Telephone']);
-      if($this->data['Contact Main Fax'])
+      if($this->data['Contact Main FAX'])
 	$fax=sprintf('<span class="fax">%s %s</span><br/>',$fax_label,$this->data['Contact Main FAX']);
       if($this->data['Contact Main Mobile'])
 	$mobile=sprintf('<span class="mobile">%s %s</span>',$mobile_label,$this->data['Contact Main Mobile']);
