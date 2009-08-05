@@ -1,6 +1,6 @@
 function calculate_num_changed_in_email(){
     var changed=new Object();
-    var to_delete=0;
+        var to_delete=0;
     var invalid=0;
     var new_email=0;
     var elements_array=Dom.getElementsByClassName('Email', 'input');
@@ -127,10 +127,15 @@ function unmark_email_to_delete(o){
     calculate_num_changed_in_email();
 }
 
-function add_email(){
+function add_email(description){
     
     if(Number_New_Empty_Emails==0){
 	clone_email('new'+Number_New_Emails);
+	Dom.get('Email_Contact_Name').value=Dom.get('Contact_Name').value;
+	if(description!= undefined)
+	    description='Work';
+	Dom.get('Email_Description').value=description;
+	Dom.get('Email_Is_Mail').value='No';
 	Number_New_Empty_Emails++;
 	Number_New_Emails++;
     }

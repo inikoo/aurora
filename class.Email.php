@@ -221,10 +221,6 @@ class Email extends DB_Table {
       $options.=' anonymous';
     
 
-    if($raw_data['Email']=='contact@thebigstink.co.uk'){
-      print_r($raw_data);
-      print "------------here \n";
-    }
     
 
     $sql=sprintf("select T.`Email Key`,`Subject Key` from `Email Dimension` T left join `Email Bridge` TB  on (TB.`Email Key`=T.`Email Key`) where `Email`=%s and `Subject Type`='Contact'  "
@@ -294,35 +290,15 @@ class Email extends DB_Table {
       
   
 
-    if($create){
-      if($this->found)
-	$this->update($data,$options);
-      else{
-	// not found
-	if($auto){
-	  usort($this->candidate);
-	  foreach($this->candidate as $key =>$val){
-	    if($val>=250){
-	      $this->found=true;
-	      $this->found=true;
-	      if(in_array($key,$in_contact))
-		$this->found_in=true;
-	      else
-		$this->found_out=true;
+    if($create and !$this->found){
+      
 
-	      $this->get_data('id',$key);
-	      $this->update($data,$options);
-	      return;
-	    }
-	  }
-
-	}
 
 	$this->create($data,$options);
 
       }
 
-    }
+  
 
     
   
@@ -413,7 +389,7 @@ protected function create($data,$options=''){
       $contact=new Contact('create anonimous');
       $contact->add_email(array(
 				'Email Key'=>$this->id
-				,'Email Type'=>'Unknown'
+				,'Email Description'=>'Unknown'
 				));
     }
 
@@ -513,7 +489,7 @@ function update_Email($data,$options=''){
   $old_value=$this->data['Email'];
   $sql=sprintf("update `Email Dimension` set `Email`=%s where `Email Key`=%d ",prepare_mysql($data),$this->id);
   mysql_query($sql);
-  // print "$sql\n";
+  //print "$sql\n";
   $affected=mysql_affected_rows();
   
   if($affected==-1){
@@ -540,6 +516,8 @@ function update_Email($data,$options=''){
     $history_data['indirect_object']='Email Address';
     $history_data['indirect_object_key']=0;
     $this->add_history($history_data);
+
+    
 
 
   }
@@ -681,46 +659,84 @@ function display($tipo='link'){
 }
 
 
-/*
- Method: is_valid
- Check if the email is valid
- 
- Returns:
- true or false
+
+/**
+function: is_valid
+Validate an email address.
+Provide email address (raw input)
+Returns true if the email address has the email 
+address format and the domain exists.
 */
- 
-public static function is_valid($email){
-  // First, we check that there's one @ symbol, and that the lengths are right
-  if (!ereg("^[^@]{1,64}@[^@]{1,255}$", $email)) {
-    // Email invalid because wrong number of characters in one section, or wrong number of @ symbols.
-    return false;
-  }
- 
-  // Split it into sections to make life easier
-  $email_array = explode("@", $email);
-  $local_array = explode(".", $email_array[0]);
-  for ($i = 0; $i < sizeof($local_array); $i++) {
-    if (!ereg("^(([A-Za-z0-9!#$%&'*+/=?^_`{|}~-][A-Za-z0-9!#$%&'*+/=?^_`{|}~\.-]{0,63})|(\"[^(\\|\")]{0,62}\"))$", $local_array[$i])) {
-      return false;
-    }
-  }
-  if (!ereg("^\[?[0-9\.]+\]?$", $email_array[1])) { // Check if domain is IP. If not, it should be valid domain name
-    $domain_array = explode(".", $email_array[1]);
-    if (sizeof($domain_array) < 2) {
-      return false; // Not enough parts to domain
-    }
-    for ($i = 0; $i < sizeof($domain_array); $i++) {
-      if (!ereg("^(([A-Za-z0-9][A-Za-z0-9-]{0,61}[A-Za-z0-9])|([A-Za-z0-9]+))$", $domain_array[$i])) {
-	return false;
+public static function is_valid($email)
+{
+   $isValid = true;
+   $atIndex = strrpos($email, "@");
+   if (is_bool($atIndex) && !$atIndex)
+   {
+      $isValid = false;
+   }
+   else
+   {
+      $domain = substr($email, $atIndex+1);
+      $local = substr($email, 0, $atIndex);
+      $localLen = strlen($local);
+      $domainLen = strlen($domain);
+      if ($localLen < 1 || $localLen > 64)
+      {
+         // local part length exceeded
+         $isValid = false;
       }
-    }
-  }
-  return true;
+      else if ($domainLen < 1 || $domainLen > 255)
+      {
+         // domain part length exceeded
+         $isValid = false;
+      }
+      else if ($local[0] == '.' || $local[$localLen-1] == '.')
+      {
+         // local part starts or ends with '.'
+         $isValid = false;
+      }
+      else if (preg_match('/\\.\\./', $local))
+      {
+         // local part has two consecutive dots
+         $isValid = false;
+      }
+      else if (!preg_match('/^[A-Za-z0-9\\-\\.]+$/', $domain))
+      {
+         // character not valid in domain part
+         $isValid = false;
+      }
+      else if (preg_match('/\\.\\./', $domain))
+      {
+         // domain part has two consecutive dots
+         $isValid = false;
+      }
+      else if
+(!preg_match('/^(\\\\.|[A-Za-z0-9!#%&`_=\\/$\'*+?^{}|~.-])+$/',
+                 str_replace("\\\\","",$local)))
+      {
+         // character not valid in local part unless 
+         // local part is quoted
+         if (!preg_match('/^"(\\\\"|[^"])+"$/',
+             str_replace("\\\\","",$local)))
+         {
+            $isValid = false;
+         }
+      }
+      if ($isValid && !(checkdnsrr($domain,"MX") || checkdnsrr($domain,"A")))
+      {
+         // domain not found in DNS
+         $isValid = false;
+      }
+   }
+   return $isValid;
 }
+
+
 
 public static function  prepare_email($email){
   
-  $email_parts=split('@',$email);
+  $email_parts=preg_split('/\@/',$email);
   if(count($email_parts)==2){
     return $email_parts[0].'@'.strtolower($email_parts[1]);
   }else
@@ -734,7 +750,7 @@ public static function  wrong_email($email){
     return true;
   if(preg_match('/^\@|\@$/',$email))
     return true;
-  $email_parts=split('@',$email);
+  $email_parts=preg_split('/\@/',$email);
   if(count($email_parts)!=2)
     return true;
   return false;
