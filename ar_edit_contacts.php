@@ -474,13 +474,32 @@ case('edit_contact'):
  $data['editor']=$editor;
  $contact->update($data);
  
-   
+ $contact->reread();
  if($contact->error_updated){
    $response=array('state'=>200,'action'=>'error','msg'=>$contact->msg_updated);
  }else{
    
    if($contact->updated){
-     $response=array('state'=>200,'action'=>'updated','msg'=>$contact->msg_updated);
+
+     $updated_data_name_components=array(
+			 'Contact_First_Name'=>$contact->data['Contact First Name']
+			 ,'Contact_Surname'=>$contact->data['Contact Surname']
+			 ,'Contact_Suffix'=>$contact->data['Contact Suffix']
+			 ,'Contact_Salutation'=>$contact->data['Contact Salutation']
+		
+			 );
+
+     $updated_data=array(
+			 'Contact_Name'=>$contact->data['Contact Name']
+			 ,'Name_Data'=>$name_data
+			 ,'Contact_Gender'=>$contact->data['Contact Gender']
+			 ,'Contact_Title'=>$contact->data['Contact Title']
+			 ,'Contact_Profession'=>$contact->data['Contact Profession']
+			 );
+     
+
+
+     $response=array('state'=>200,'action'=>'updated','msg'=>$contact->msg_updated,'xhtml_subject'=>$contact->display('card'),'updated_data'=>$updated_data,'updated_data'=>$updated_data_name_components);
    }else{
      $response=array('state'=>200,'action'=>'nochange','msg'=>$contact->msg_updated);
      
@@ -519,8 +538,7 @@ case('edit_email'):
 
    if( !isset($_REQUEST['subject'])  
        or !is_numeric($_REQUEST['subject_key'])
-       or $_REQUEST['subject_key']<=0
-       or !preg_match('/^company|contact$/i',$_REQUEST['subject'])
+       or $_REQUEST['subject_key']<=0       or !preg_match('/^company|contact$/i',$_REQUEST['subject'])
        
        ){
      $response=array('state'=>400,'msg'=>'Error wrong subject/subject key');
@@ -557,7 +575,7 @@ if(!$subject->id){
    $msg=_('No changes');
   
    if(is_numeric($raw_data['Email Key']) and $raw_data['Email Key']>0){
-     $editing=true;
+     $action='updated';
      $email=new Email('id',$raw_data['Email Key']);
      if(!$email->id){
        $response=array('state'=>400,'msg'=>'Email not found');
@@ -567,6 +585,9 @@ if(!$subject->id){
      $email->set_editor($editor);
 
      $email->update(array('Email'=>$raw_data['Email']));
+     // $email->update(array('Email'=>'scsaca@gmail.com'));
+    
+    
      if($email->error_updated){
       $response=array('state'=>200,'action'=>'error','msg'=>$email->msg_updated);
        echo json_encode($response);
@@ -579,40 +600,51 @@ if(!$subject->id){
      $update_data=array(
 			'Email Key'=>$raw_data['Email Key']
 			,'Email Description'=>$raw_data['Email Description']
-			,'Email Is Main'=>$raw_data['Email Description']
+			,'Email Is Main'=>$raw_data['Email Is Main']
 			,'Email Contact Name'=>$raw_data['Email Contact Name']
 			
 			);
-
+    
+     
      $subject->add_email($update_data);
      if($subject->updated)
        $msg=_('Email updated');
      $email->set_scope($subject_type,$subject_key);
 
    }else{
-     $creating=true;
+     $action='created';
        $update_data=array(
 			'Email'=>$raw_data['Email']
-			,'Email_Description'=>$raw_data['Email Description']
-			,'Email_Is_Main'=>$raw_data['Email Description']
-			,'Email_Contact_Name'=>$raw_data['Email Contact Name']
-			
+			,'Email Description'=>$raw_data['Email Description']
+			,'Email Is Main'=>$raw_data['Email Is Main']
+			,'Email Contact Name'=>$raw_data['Email Contact Name']
 			);
-       $subject->add_email($update_data);
-       if(!$subject->updated){
-	 $response=array('state'=>200,'action'=>'nochange','msg'=>$address->msg_updated,'key'=>'');
 
+
+      
+
+       $subject->add_email($update_data,'if found error');
+       
+       if($subject->error){
+	 $response=array('state'=>200,'action'=>'error','msg'=>$subject->msg_updated);
+	 echo json_encode($response);
+	 return;
+	 
        }
        
-       if($subject->add_email){
-	 $email=new Email ($subject->add_email);
+	 
+       if($subject->inserted_email){
+	 $email=new Email ($subject->inserted_email);
 	 $email->set_scope($subject_type,$subject_key);
 	 $msg=_("Email created");
        }else{
+	 $response=array('state'=>200,'action'=>'nochange','msg'=>$subject->msg_updated);
+	 echo json_encode($response);
+	 return;
+
 	 
-
        }
-
+       
    }
 
 
@@ -623,16 +655,84 @@ if(!$subject->id){
 			    ,'Email_Is_Main'=> $email->data['Email Is Main']
 			    );
   
-
+  $subject->reread();
   
-  $response=array('state'=>200,'action'=>'updated','msg'=>$msg,'key'=>'','updated_data'=>$updated_email_data,'xhtml_subject'=>$subject->display('card'));
+  $response=array('state'=>200,'action'=>$action,'msg'=>$msg,'email_key'=>$email->id,'updated_data'=>$updated_email_data,'xhtml_subject'=>$subject->display('card'),'main_email_key'=>$subject->get_main_email_key());
      
     
    echo json_encode($response);
     
 
   break;
+//---------------------------------------------------------------------------------------
+case('remove_email'):
+case('delete_email'):
+  if( !isset($_REQUEST['value']) or !is_numeric($_REQUEST['value']) ){
+    $response=array('state'=>400,'msg'=>'Error no value');
+    echo json_encode($response);
+    return;
+   }
+   
+ 
+   if( !isset($_REQUEST['id'])  or !is_numeric($_REQUEST['id']) or $_REQUEST['id']<=0  ){
+     $response=array('state'=>400,'msg'=>'Error wrong id');
+     echo json_encode($response);
+    return;
+   }
 
+
+
+   if( !isset($_REQUEST['subject'])  
+       or !is_numeric($_REQUEST['subject_key'])
+       or $_REQUEST['subject_key']<=0       or !preg_match('/^company|contact$/i',$_REQUEST['subject'])
+       
+       ){
+     $response=array('state'=>400,'msg'=>'Error wrong subject/subject key');
+      echo json_encode($response);
+    return;
+   }
+   $subject_type=$_REQUEST['subject'];
+   $subject_key=$_REQUEST['subject_key'];
+
+   if(preg_match('/^company$/i',$subject_type))
+     $subject=new Company($subject_key);
+   else{
+     $subject=new Contact($subject_key);
+   }
+   
+   
+   if(!$subject->id){
+     $response=array('state'=>400,'msg'=>'Subject not found');
+     echo json_encode($response);
+     return;
+   }
+   
+   
+   
+   $email_key=$_REQUEST['value'];
+
+  
+
+   $subject->remove_email($email_key);
+   
+   if($subject->updated){
+     $action='deleted';
+     $msg=_('Email deleted');
+     $subject->reread();
+   }else{
+     $action='nochage';
+     $msg=_('Email could not be deleted');
+   }
+  
+   
+
+   $response=array('state'=>200,'action'=>$action,'msg'=>$msg,'email_key'=>$email_key,'xhtml_subject'=>$subject->display('card'),'main_email_key'=>$subject->get_main_email_key());
+     
+    
+   echo json_encode($response);
+    
+
+  break;
 }
 
 

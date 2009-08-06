@@ -34,7 +34,7 @@ class Email extends DB_Table {
 /*   public $msg=''; */
 
   
-  public $updated_fields=array();
+
   
   /*
    Constructor: Email
@@ -209,7 +209,7 @@ class Email extends DB_Table {
       $subject_key=preg_replace('/[^\d]/','',$match[0]);
       $subject_type='Company';
       $company=new Company($subject_key);
-      $in_contact=$company->get_contact_keys();
+      $in_contacts=$company->get_contact_keys();
       $mode='Company in';
 
     }elseif(preg_match('/company/',$options,$match)){
@@ -274,7 +274,14 @@ class Email extends DB_Table {
 	$this->get_data('id',$row['Email Key']);
 	
 
-      }else{// Found in more than one contact (that means tha two contacts share the same email) this shoaul not happen
+	if(in_array($row['Subject Key'],$in_contacts))
+	  $this->found_in=$subject_key;
+	else
+	  $this->found_out=true;
+	
+	
+	
+    }else{// Found in more than one contact (that means tha two contacts share the same email) this shoaul not happen
       
       $this->error=true;
       // correct the data (delete duplicates)
@@ -468,6 +475,9 @@ function update_Email($data,$options=''){
   //$this->error=false;
   //$this->warning=false;
   //$this->updated=false;
+
+
+
   if($data==''){
     $this->msg.=_('Email address can not be blank')."\n";
     $this->error=true;
@@ -489,7 +499,7 @@ function update_Email($data,$options=''){
   $old_value=$this->data['Email'];
   $sql=sprintf("update `Email Dimension` set `Email`=%s where `Email Key`=%d ",prepare_mysql($data),$this->id);
   mysql_query($sql);
-  //print "$sql\n";
+  
   $affected=mysql_affected_rows();
   
   if($affected==-1){
@@ -517,7 +527,27 @@ function update_Email($data,$options=''){
     $history_data['indirect_object_key']=0;
     $this->add_history($history_data);
 
-    
+    $sql=sprintf("select `Contact Key` from  `Contact Dimension` where `Contact Main Email Key`=%d group by `Contact Key`",$this->id);
+    $res=mysql_query($sql);
+    while($row=mysql_fetch_array($res)){
+      $contact=new Contact($row['Contact Key']);
+      $contact->update_email($this->id);
+    }
+
+    $sql=sprintf("select `Company Key` from  `Company Dimension` where `Company Main Email Key`=%d group by `Company Key`",$this->id);
+    $res=mysql_query($sql);
+    while($row=mysql_fetch_array($res)){
+      $company=new Company($row['Company Key']);
+      $company->update_email($this->id);
+    }
+
+     $sql=sprintf("select `Customer Key` from  `Customer Dimension` where `Customer Main Email Key`=%d group by `Customer Key`",$this->id);
+    $res=mysql_query($sql);
+    while($row=mysql_fetch_array($res)){
+      $customer=new Customer($row['Customer Key']);
+      $customer->update_email($this->id);
+    }
+
 
 
   }
@@ -809,6 +839,50 @@ function load_metadata(){
     
   }
 
+
+function destroy(){
+  
+
+  $sql=sprintf("delete from `Email Dimension` where `Email Key`=%d",$this->id);
+
+
+  mysql_query($sql);
+
+   $sql=sprintf("select `Contact Key` from  `Contact Dimension` where `Contact Main Email Key`=%d group by `Contact Key`",$this->id);
+   
+   $res=mysql_query($sql);
+    while($row=mysql_fetch_array($res)){
+      $sql=sprintf("update `Contact Dimension` set `Contact Main XHTML Email`='', `Contact Main Plain Email`='' , `Contact Main Email Key`=''  where `Contact Key`=%d"
+		   ,$row['Contact Key']
+		   );
+    
+      mysql_query($sql);
+    }
+    
+    $sql=sprintf("select `Company Key` from  `Company Dimension` where `Company Main Email Key`=%d group by `Company Key`",$this->id);
+    $res=mysql_query($sql);
+    while($row=mysql_fetch_array($res)){
+      
+      $sql=sprintf("update `Company Dimension` set `Company Main XHTML Email`='', `Company Main Plain Email`='' , `Company Main Email Key`=''  where `Company Key`=%d"
+		   ,$row['Company Key']
+		   );
+      mysql_query($sql);
+    }
+    
+     $sql=sprintf("select `Customer Key` from  `Customer Dimension` where `Customer Main Email Key`=%d group by `Customer Key`",$this->id);
+     $res=mysql_query($sql);
+     while($row=mysql_fetch_array($res)){
+       $sql=sprintf("update `Customer Dimension` set `Customer Main XHTML Email`='' ,`Customer Main Plain Email`='' , `Customer Main Email Key`=''  where `Customer Key`=%d"
+		   ,$row['Customer Key']
+		    );
+       mysql_query($sql);
+     }
+     $sql=sprintf("delete from `Email Bridge`  where  `Email Key`=%d",
+		  $this->id
+		  );
+     mysql_query($sql);
+    
+}
 
 
 }

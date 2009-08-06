@@ -44,7 +44,7 @@ var save_contact=function(){
 	    name_value[items[i]]=Dom.get(items[i]).value;
 	}
 	var value=new Object();
-	var items=Contact_No_Name_Keys;
+	var items=Contact_Details_Keys;
 	for(i in items){
 	    value[items[i]]=Dom.get(items[i]).value;
 	}
@@ -52,21 +52,20 @@ var save_contact=function(){
 	
 	var json_value = YAHOO.lang.JSON.stringify(value); 
 	var request='ar_edit_contacts.php?tipo=edit_'+escape(table)+ '&value=' + json_value+'&id='+contact_key+'&subject='+Subject+'&subject_key='+Subject_Key; 
-	alert(request);
-	return;
+
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
 		    //	alert(o.responseText);
 		    var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if(r.action=='updated'){
-		    Dom.get('contact_display'+contact_key).innerHTML=r.xhtml_contact;
+		    Dom.get('contact_display'+contact_key).innerHTML=r.xhtml_subject;
 		    
 		    for(i in r.updated_data){
 			var contact_item_value=r.updated_data[i];
 			if(contact_item_value==null)contact_item_value='';
 			Contact_Data[contact_key][i]=contact_item_value;
 		    }
-		    cancel_edit_contact();
+		   
 		    save_contact_elements++;
 		}else if(r.action=='error'){
 		    alert(r.msg);
@@ -97,19 +96,25 @@ var save_contact=function(){
 		    var json_value = YAHOO.lang.JSON.stringify(value); 
 		    
 		    var request='ar_edit_contacts.php?tipo=edit_email&value=' + json_value+'&id='+contact_key+'&subject=contact&subject_key='+contact_key; 
+		  
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
 			    success:function(o) {
 				alert(o.responseText);
 				var r =  YAHOO.lang.JSON.parse(o.responseText);
-				if(r.action=='updated'){
-				    Dom.get('contact_display'+contact_key).innerHTML=r.xhtml_subject;
+				if(r.action=='updated' || r.action=='created'){
 				    
+				    Dom.get('contact_display'+contact_key).innerHTML=r.xhtml_subject;
+				    if(r.action=='created')
+					Contact_Data[contact_key]['Emails'][r.email_key]=new Object();
 				    for(i in r.updated_data){
 					var contact_item_value=r.updated_data[i];
 					if(contact_item_value==null)contact_item_value='';
-					Contact_Data[contact_key]['Emails'][i]=contact_item_value;
+					
+				
+					
+					Contact_Data[contact_key]['Emails'][r.email_key][i]=contact_item_value;
 				    }
-				    cancel_edit_contact();
+				    set_main_email(r.main_email_key);
 				    save_contact_elements++;
 				}else if(r.action=='error'){
 				    alert(r.msg);
@@ -128,6 +133,47 @@ var save_contact=function(){
      }
 
     
+    if(Contact_Emails_to_delete>0 ){
+	var elements_array=Dom.getElementsByClassName('Email', 'input');
+	for( var i in elements_array ){
+	    var email_key=elements_array[i].getAttribute('email_key');
+	    if(  email_key>0 && Dom.get('Email'+email_key).getAttribute('to_delete')==1  ){
+		
+		var request='ar_edit_contacts.php?tipo=delete_email&value=' +email_key+'&id='+contact_key+'&subject=contact&subject_key='+contact_key; 
+		 YAHOO.util.Connect.asyncRequest('POST',request ,{
+			    success:function(o) {
+					alert(o.responseText);
+				var r =  YAHOO.lang.JSON.parse(o.responseText);
+				if(r.action=='deleted' ){
+				    
+				    Dom.get('contact_display'+contact_key).innerHTML=r.xhtml_subject;
+
+				 
+				    delete  Contact_Data[contact_key]['Emails'][r.email_key];
+				    set_main_email(r.main_email_key);
+					
+					
+
+				    save_contact_elements++;
+				}else if(r.action=='error'){
+				    alert(r.msg);
+				}
+				
+				
+		
+			    }
+			});
+		
+
+
+	    }
+	    
+	}
+	
+
+    }
+
+      cancel_edit_contact();
 };
 
 
@@ -353,6 +399,8 @@ var edit_contact=function (e,contact_button){
 	    for (email_key in emails) {
 		    var email_data=emails[email_key];
 		    
+		    if(email_data==null)
+			continue;
 		    clone_email(email_key);
 		   
 		    Dom.get('Email'+email_key).value=email_data['Email'];

@@ -1356,33 +1356,48 @@ private function update_Company_Old_ID($company_old_id,$options){
 /* Method: remove_email
   Delete the email from Company
   
-  Delete telecom record  this record to the Contact
+  Delete telecom record  this record to the Comp[any
 
 
   Parameter:
   $args -     string  options
  */
- function remove_email($args='principal'){
+ function remove_email($email_key){
 
-   if(preg_match('/principal/i',$args)){
-       
+   
+    if(!$email_key){
+     $email_key=$this->data['Company Main Email Key'];
+   }
+   
+   
+   $email=new email($email_key);
+   if(!$email->id){
+     $this->error=true;
+     $this->msg='Wrong email key when trying to remove it';
+     $this->msg_updated='Wrong email key when trying to remove it';
+   }
+
+   $email->set_scope('Company',$this->id);
+   if( $email->associated_with_scope){
      
-
-       $sql=sprintf("delete `Email Bridge`  where `Subject Type`='Company' and  `Subject Key`=%d  and `Telecom Key`=%d",
-		    $this->id
-		    ,$this->data['Company Main Email Key']
-		    );
-       mysql_query($sql);
-       $sql=sprintf("update `Company Dimension` set `Company Main XHTML Email`='' `Company Main Plain Email`='' , `Company Main Email Key`=''  where `Company Key`=%d"
+     $sql=sprintf("delete `Email Bridge`  where `Subject Type`='Company' and  `Subject Key`=%d  and `Email Key`=%d",
+		  $this->id
+		  
+		  ,$this->data['Company Main Email Key']
+		  );
+     mysql_query($sql);
+     
+     if($email->id==$this->data['Company Main Email Key']){
+       $sql=sprintf("update `Company Dimension` set `Company Main XHTML Email`='' , `Company Main Plain Email`='' , `Company Main Email Key`=''  where `Company Key`=%d"
 		    ,$this->id
 		    );
-
+       
        mysql_query($sql);
+     }
+   }
+   
 
        
-	
-
-   }
 
  }
 /* Method: add_tel
@@ -1997,7 +2012,9 @@ function remove_contact($data,$args=''){
      return sprintf("%s%0".$min_number_zeros."d",$myconf['company_id_prefix'], $this->data['Company ID']);
 
    }
-
+  function get_main_email_key(){
+    return $this->data['Company Main Email Key'];
+  }
 
 }
 
