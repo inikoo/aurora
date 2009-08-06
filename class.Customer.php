@@ -2093,5 +2093,62 @@ class Customer extends DB_Table{
 
 
     }
+
+
+
+
+/* Method: remove_email
+  Delete the email from Customer
+  
+  Delete telecom record  this record to the Customer
+
+
+  Parameter:
+  $args -     string  options
+ */
+ function remove_email($email_key){
+
+   
+    if(!$email_key){
+     $email_key=$this->data['Customer Main Email Key'];
+   }
+   
+   
+   $email=new email($email_key);
+   if(!$email->id){
+     $this->error=true;
+     $this->msg='Wrong email key when trying to remove it';
+     $this->msg_updated='Wrong email key when trying to remove it';
+   }
+
+   $email->set_scope('Customer',$this->id);
+   if( $email->associated_with_scope){
+     
+     $sql=sprintf("delete `Email Bridge`  where `Subject Type`='Customer' and  `Subject Key`=%d  and `Email Key`=%d",
+		  $this->id
+		  
+		  ,$this->data['Customer Main Email Key']
+		  );
+     mysql_query($sql);
+     
+     if($email->id==$this->data['Customer Main Email Key']){
+       $sql=sprintf("update `Customer Dimension` set `Customer Main XHTML Email`='', `Customer Main Plain Email`='' , `Customer Main Email Key`=''  where `Customer Key`=%d"
+		    ,$this->id
+		    );
+       
+       mysql_query($sql);
+     }
+   }
+   
+
+       
+
+ }
+
+ function get_main_email_key(){
+    return $this->data['Customer Main Email Key'];
+  }
+
+
  }
 ?>

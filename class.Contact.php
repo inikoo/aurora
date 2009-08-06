@@ -1177,6 +1177,112 @@ private function create ($data,$options='',$address_home_data=false){
 
   }
 
+  function update_email($email_key){
+    if(!$email_key)
+     return;
+   $email=new Email($email_key);
+   if(!$email->id)
+     return;
+
+   if($email->id!=$this->data['Contact Main Email Key']){
+     $old_value=$this->data['Contact Main Email Key'];
+     $old_value_plain_email=$this->data['Contact Main Plain Email'];
+     $this->data['Contact Main Email Key']=$email->id;
+     $this->data['Contact Main Plain Email']=$email->display('plain');
+     $this->data['Contact Main XHTML Email']=$email->display('xhtml');
+     $sql=sprintf("update `Contact Dimension` set `Contact Main Email Key`=%d,`Contact Main Plain Email`=%s,`Contact Main XHTML Email`=%s where `Contact Key`=%d"
+
+		  ,$this->data['Contact Main Email Key']
+		  ,prepare_mysql($this->data['Contact Main Plain Email'])
+		  ,prepare_mysql($this->data['Contact Main XHTML Email'])
+		  ,$this->id
+		  );
+     if(mysql_query($sql)){
+       
+       if(mysql_affected_rows()){
+	 $note=_('Email Changed');
+	 if($old_value){
+	   $old_email=new Email($old_value);
+	   $details=_('Contact email changed from')." \"".$old_email->display('plain')."\" "._('to')." \"".$this->data['Contact Main Plain Email']."\"";
+	 }else{
+	   $details=_('Contact email set to')." \"".$this->data['Contact Main Plain Email']."\"";
+       }
+	 
+	 $history_data=array(
+			     'indirect_object'=>'Email'
+			     ,'details'=>$details
+			     ,'note'=>$note
+			     );
+	 $this->add_history($history_data);
+	 $this->updated=true;
+	 $this->msg_updated.=$details;
+	 $updated_fields['Contact Main Email Key']=array(
+							 'Old Value'=>$old_value
+							 ,'New Value'=>$this->data['Contact Main Email Key']
+							 );
+	 if($old_value_plain_email!=$this->data['Contact Main Plain Email']){
+	   $updated_fields['Contact Main Plain Email']=array(
+							   'Old Value'=>$old_value_plain_email
+							   ,'New Value'=>$this->data['Contact Main Plain Email']
+							   );
+
+	 }
+
+	 
+       }
+       
+
+
+     }else{
+       $this->error=true;
+       
+     }
+     
+
+     
+   }elseif($email->display('plain')!=$this->data['Contact Main Plain Email']){
+     $old_value=$this->data['Contact Main Plain Email'];
+     
+     $this->data['Contact Main Plain Email']=$email->display('plain');
+     $this->data['Contact Main XHTML Email']=$email->display('xhtml');
+     $sql=sprintf("update `Contact Dimension` set `Contact Main Plain Email`=%s,`Contact Main XHTML Email`=%s where `Contact Key`=%d"
+		  
+
+		  ,prepare_mysql($this->data['Contact Main Plain Email'])
+		  ,prepare_mysql($this->data['Contact Main XHTML Email'])
+		  ,$this->id
+		  );
+     if(mysql_query($sql)){
+       $field='Contact Email';
+       $note=$field.' '._('Changed');
+       $details=$field.' '._('changed from')." \"".$old_value."\" "._('to')." \"".$this->data['Contact Main Plain Email']."\"";
+       
+       $history_data=array(
+			   'indirect_object'=>'Email'
+			   ,'details'=>$details
+			   ,'note'=>$note
+			   );
+       $this->add_history($history_data);
+       
+       $updated_fields['Contact Main Plain Email']=array(
+						       'Old Value'=>$old_value_plain_email
+						       ,'New Value'=>$this->data['Contact Main Plain Email']
+						       );
+        $this->updated=true;
+	$this->msg_updated.=$details;
+
+
+
+     }else{
+       $this->error=true;
+       
+     }
+     
+
+   }
+  
+  }
+
 
   /* Method: add_email
   Add/Update an email to the Contact
@@ -1194,14 +1300,20 @@ private function create ($data,$options='',$address_home_data=false){
  */
 
   function add_email($data,$args='principal'){
+
+    
     global $myconf;
 
+    $updated=false;
+    $update_email=false;
     $principal=false;
+    $this->inserted_email=0;
     if(preg_match('/not? principal/i',$args) ){
       $principal=false;
-      
+     
     }elseif( preg_match('/principal/i',$args)){
-      
+
+
       $principal=true;
     }
     
@@ -1212,10 +1324,25 @@ private function create ($data,$options='',$address_home_data=false){
 	$principal=false;
     }
   
+   
+
+
     if(isset($data['Email Key'])){
 
       $email=new Email('id',$data['Email Key']);
-      
+      $email->set_scope('Contact',$this->id);
+      if( $email->associated_with_scope){
+	$email_not_associated=false;
+		if(!isset($data['Email Description']) or $data['Email Description']=='')
+	 $data['Email Description']=$email->data['Email Description'];
+	if(!isset($data['Email Contact Name']))
+	  $data['Email Contact Name']=$email->data['Email Contact Name'];
+
+
+      }else
+	$email_not_associated=true;
+
+
     }else{
       
       $email=$data['Email'];
@@ -1239,7 +1366,22 @@ private function create ($data,$options='',$address_home_data=false){
     
     $email_data['editor']=$this->editor;
     $email=new email('find in contact '.$this->id.' create',$email_data);
-    //exit;
+    
+    if(preg_match('/if found error/i',$args) and $email->found){
+      
+      if($email->found_in){
+	$this->warning=true;
+	$this->msg_updated.=_('Contact has already this email');
+	
+      }else{
+
+	$this->error=true;
+	$this->msg_updated.=_('Email found in another contact');
+      }
+
+      return;
+    }
+
 
      $this->msg.=' '.$email->msg;
 
@@ -1249,14 +1391,19 @@ private function create ($data,$options='',$address_home_data=false){
 
     if($email->id){
       
-      if($email->updated or $email->new)
+      if($email->updated or $email->new or preg_match('/update/',$args))
 	$this->updated=true;
+      
+    
 
       if(isset($data['Email Description']))
 	$email_description=$data['Email Description'];
       else
 	$email_description='';
-      
+    
+    
+
+  
       if(preg_match('/work/i',$email_description))
 	$email_data['Email Description']='Work';
       elseif(preg_match('/personal/i',$email_description))
@@ -1266,31 +1413,31 @@ private function create ($data,$options='',$address_home_data=false){
       else
 	$email_data['Email Description']='Unknown';
       
-      
+     
 
-  /*     if($email->data['Email']=='contact@thebigstink.co.uk'){ */
-/* 	print_r($this); */
-/* 	print "**************** here \n"; */
-/*       } */
+
       
-//	exit;
       $sql=sprintf("insert into  `Email Bridge` (`Email Key`,`Subject Type`, `Subject Key`,`Is Main`,`Email Description`) values (%d,'Contact',%d,%s,%s) ON DUPLICATE KEY UPDATE `Email Description`=%s   "
 		   ,$email->id
 		   ,$this->id
-		   ,prepare_mysql(preg_match('/principal/i',$args)?'Yes':'No')
+		   ,prepare_mysql($principal?'Yes':'No')
 		   ,prepare_mysql($email_data['Email Description'])
 		   ,prepare_mysql($email_data['Email Description'])
 		   );
       mysql_query($sql);
-      if(mysql_affected_rows() )
+     
+      if($mysql_affected_rows_code=mysql_affected_rows() ){
+	$updated=true;
 	$this->updated=true;
+	
+	if($mysql_affected_rows_code==1)
+	  $this->inserted_email=$email->id;
 
-      if($email->new){
+      }
+      
+     
 
-	//add  to contact hist
-	//	print "New email\n";
-
-      if(preg_match('/principal/i',$args)){
+      if($principal){
 
 	$sql=sprintf("update `Email Bridge`  set `Is Main`='No' where `Subject Type`='Contact' and  `Subject Key`=%d  and `Email Key`!=%d",
 		     $this->id
@@ -1302,16 +1449,13 @@ private function create ($data,$options='',$address_home_data=false){
 		     ,$email->id
 		     );
 	mysql_query($sql);
+
+       $this->update_email($email->id);
+
+
+
 	
-	$sql=sprintf("update `Contact Dimension` set `Contact Main XHTML Email`=%s ,`Contact Main Plain Email`=%s,`Contact Main Email Key`=%d where `Contact Key`=%d"
-		     ,prepare_mysql($email->display('html'))
-		     ,prepare_mysql($email->display('plain'))
-		     ,$email->id
-		     ,$this->id);
-	$this->data['Contact Main XHTML Email']=$email->display('html');
-	$this->data['Contact Main Plain Email']=$email->display('plain');
-	$this->data['Contact Main Email Key']=$email->id;
-	mysql_query($sql);
+
 
 	$history_data['note']=_('Email Associated (Main)');
 	$history_data['details']=_($email->display('plain')." "._('set as the principal email for')." ".$this->display("name")." "._('contact'));
@@ -1320,38 +1464,23 @@ private function create ($data,$options='',$address_home_data=false){
 	$history_data['note']='Email Associated';
 	$history_data['details']=_($email->display('plain')." "._('associated with')." ".$this->display("name")." "._('contact'));
       }
-      $history_data['action']='associated';
-      $history_data['direct_object']='Email';
-      $history_data['direct_object_key']=$email->id;
-      $history_data['indirect_object']='Contact';
-      $history_data['indirect_object_key']=$this->id;
-      $this->add_history($history_data);
-      
-      $this->add_email=$email->id;
-        
 
-      }elseif($email->updated){
-	if(array_key_exists('Email',$email->updated_fields)){
-	  $history_data['note']=_('Email Edited');
-	  $history_data['details']=_('Email Edited from')." ".$email->updated_fields['Email']['Old Value']." -> ".$email->updated_fields['Email']['New Value'];
+      if($updated){
 
-	  $history_data['action']='edited';
-	  $history_data['indirect_object']='Email';
-	  $history_data['indirect_object_key']=$email->id;
-	  $history_data['direct_object']='Contact';
-	  $history_data['direct_object_key']=$this->id;
-	  $this->add_history($history_data);
-
-	}
-	
-      }else{
-	$this->add_email=0;
+	$history_data['action']='associated';
+	$history_data['direct_object']='Email';
+	$history_data['direct_object_key']=$email->id;
+	$history_data['indirect_object']='Contact';
+	$history_data['indirect_object_key']=$this->id;
+	$this->add_history($history_data);
+	$this->email_added=$email->id;
+	$this->msg_updated.=', '.$history_data['details'];
       }
-    
-    
 
-      if(preg_match('/principal/i',$args) and $this->updated){
-	if($company_key=$this->company_key('princial')){
+
+
+      if($principal and  (isset($updated_fields['Contact Main Plain Email'])  or isset($updated_fields['Contact Main Email Key'])   )     ){
+	if($company_key=$this->company_key('principal')){
 	  $company=new Company('id',$company_key);
 	  $company->editor=$this->editor;
 	  $company->update_email($email->id);
@@ -1372,10 +1501,12 @@ private function create ($data,$options='',$address_home_data=false){
 	}
       }
 
-
-    
     }
   }
+  
+  
+
+
 
 
  /* Method: remove_email
@@ -1387,32 +1518,89 @@ private function create ($data,$options='',$address_home_data=false){
   Parameter:
   $args -     string  options
  */
- function remove_email($args='principal'){
+ function remove_email($email_key=false){
 
-   if(preg_match('/principal/i',$args) ){
-       
-     
 
-       $sql=sprintf("delete `Email Bridge`  where `Subject Type`='Contact' and  `Subject Key`=%d  and `Telecom Key`=%d",
-		    $this->id
-		    ,$this->data['Contact Main Email Key']
-		    );
-       mysql_query($sql);
-       $sql=sprintf("update `Contact Dimension` set `Contact Main XHTML Email`='' `Contact Main Plain Email`='' , `Contact Main Email Key`=''  where `Contact Key`=%d"
+   if(!$email_key){
+     $email_key=$this->data['Contact Main Email Key'];
+   }
+   
+   
+   $email=new email($email_key);
+   if(!$email->id){
+     $this->error=true;
+     $this->msg='Wrong email key when trying to remove it';
+     $this->msg_updated='Wrong email key when trying to remove it';
+     return;
+   }
+   
+
+   
+   
+   
+
+   $email->set_scope('Contact',$this->id);
+   if( $email->associated_with_scope){
+
+     $this->updated=true;
+     $this->msg_updated=_('Email Deleted');
+   }
+   
+
+   if($email->id==$this->data['Contact Main Email Key']){
+       $sql=sprintf("select `Email Key` from `Email Bridge` where `Subject Key`=%d and `Subject Type`='Contact' and `Email Description`=%s and `Email Key`!=%d "
 		    ,$this->id
+		    ,prepare_mysql($email->data['Email Description'])
+		    ,$email_key
 		    );
-       //print "$sql\n";
-       mysql_query($sql);
-
-       
-	 if($company_key=$this->company_key('princial')){
+    
+       $res=mysql_query($sql);
+       if($row=mysql_fetch_array($res)){
+	 
+	
+	   $this->add_email(array('Email Key'=>$row['Email Key']),'principal');
+	 
+	 if($company_key=$this->company_key('principal')){
 	   $company=new Company('id',$company_key);
-	   $company->remove_tel($args);
+	   $company->editor=$this->editor;
+	   $company->update_email($row['Email Key']);
+	   $company->remove_email($email->id);
+	   
+	  $customer_found_keys=$company->get_customers_key();
+	  foreach($customer_found_keys as $customer_found_key){
+	    $customer=new Customer($customer_found_key);
+	    $customer->editor=$this->editor;
+	    $customer->update_email($row['Email Key']);
+	    $customer->remove_email($email->id);
+	  }
 	 }
 
-     }
+
+
+       }else{
+         $sql=sprintf("update `Contact Dimension` set `Contact Main XHTML Email`='' ,`Contact Main Plain Email`='' , `Contact Main Email Key`=''  where `Contact Key`=%d"
+		      ,$this->id
+		      );
+	 mysql_query($sql);
+	 
+       }
+     
+       }
+
+   $sql=sprintf("delete from `Email Bridge` where `Subject Key`=%d and `Subject Type`='Contact'  and `Email Key`=%d ",$this->id,$email->id);
+   mysql_query($sql);
+
+
+   $email->destroy();
+     
+   
+
+
+   
 
  }
+
+     
 
 
 
@@ -1452,11 +1640,12 @@ private function create ($data,$options='',$address_home_data=false){
       }
     }
 
-  }
+   }
   /*
     Function: create_anonymous
     Create an anonymous contact
    */
+ 
   private function create_anonymous(){
     global $myconf;
     $this->data['Contact Fuzzy']='Yes';
@@ -1922,7 +2111,6 @@ protected function update_field_switcher($field,$value,$options=''){
     break;
 
   default:
-    print "--------------------";
     $this->update_field($field,$value,$options);
   }
   
@@ -2658,8 +2846,9 @@ string with the name to be parsed
    */
    public  function company_key($options=''){
      if(preg_match('/principal/',$options)){
-       $sql=sprintf("select `Subject Key` from `Conatct Bridge` where `Subject Key`='Company' and `Is Main`='Yes' and `Contact Key`=%d",$this->id);
+       $sql=sprintf("select `Subject Key` from `Contact Bridge` where `Subject Type`='Company' and `Is Main`='Yes' and `Contact Key`=%d",$this->id);
        $result=mysql_query($sql); 
+
        if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 	 return $row['Subject Key'];
 
@@ -2898,7 +3087,7 @@ string with the name to be parsed
    function get_addresses(){
 
   
-     $sql=sprintf("select * from `Address Bridge` CB where   `Subject Type`='Contact' and `Subject Key`=%d  group by `Address Key` order by `Is Main` desc  ",$this->id);
+     $sql=sprintf("select * from `Address Bridge` CB where   `Subject Type`='Contact' and `Subject Key`=%d  group by `Address Key` order by `Is Main`   ",$this->id);
      $addresses=array();
      $result=mysql_query($sql);
   
@@ -2913,21 +3102,21 @@ string with the name to be parsed
 
 
     function get_emails($args='active only'){
-  $extra_args='';
-    if(preg_match('/only active|active only/i',$args))
-      $extra_args=" and `Is Active`='Yes'";
-    if(preg_match('/only main|main only/i',$args))
+      $extra_args='';
+      if(preg_match('/only active|active only/i',$args))
+	$extra_args=" and `Is Active`='Yes'";
+      if(preg_match('/only main|main only/i',$args))
       $extra_args=" and `Is Main`='Yes'";
-    if(preg_match('/only not? active/i',$args))
+      if(preg_match('/only not? active/i',$args))
       $extra_args=" and `Is Active`='No'";
     if(preg_match('/only not? main/i',$args))
       $extra_args=" and `Is Main`='No'";
 
-     $sql=sprintf("select * from `Email Bridge` CB where   `Subject Type`='Contact' and `Subject Key`=%d %s  group by `Email Key` order by `Is Main` desc  "
+     $sql=sprintf("select * from `Email Bridge` CB where   `Subject Type`='Contact' and `Subject Key`=%d %s  group by `Email Key` order by `Is Main`   "
 		  ,$this->id
 		  ,$extra_args
 		  );
-     $email=array();
+     $emails=array();
      $result=mysql_query($sql);
   
      while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
@@ -3083,6 +3272,10 @@ string with the name to be parsed
     
   }
 
+  
+  function get_main_email_key(){
+    return $this->data['Contact Main Email Key'];
+  }
 
 
 } 

@@ -4,7 +4,7 @@ abstract class DB_Table
 
   protected $table_name;
   protected  $ignore_fields=array();
-  
+  public $updated_fields=array();
     // Array: data
   // Class data
   public $data=array();
@@ -277,6 +277,11 @@ function set_editor($raw_data){
     }
 
 }
+
+ function reread(){
+   $this->get_data('id',$this->id);
+  }
+
 
 }
 

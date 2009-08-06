@@ -37,7 +37,16 @@ function calculate_num_changed_in_email(){
 	if(email_key>0  && input_element.getAttribute('ovalue')!=input_element.value)
 	    changed[email_key]=1;
     }
-    
+    var elements_array=Dom.getElementsByClassName('Email_Is_Main', 'input');
+    for( var i in elements_array ){
+	var input_element=elements_array[i];
+	var email_key=input_element.getAttribute('email_key');
+	if(email_key>0  && input_element.getAttribute('ovalue')!=input_element.value){
+	    changed[email_key]=1;
+	    break;
+	}
+	
+    }
 
 
     var changes=0;
@@ -130,12 +139,14 @@ function unmark_email_to_delete(o){
 function add_email(description){
     
     if(Number_New_Empty_Emails==0){
-	clone_email('new'+Number_New_Emails);
-	Dom.get('Email_Contact_Name').value=Dom.get('Contact_Name').value;
-	if(description!= undefined)
+
+	var email_key='new'+Number_New_Emails;
+	clone_email(email_key);
+	Dom.get('Email_Contact_Name'+email_key).value=Dom.get('Contact_Name').value;
+	if(description== undefined)
 	    description='Work';
-	Dom.get('Email_Description').value=description;
-	Dom.get('Email_Is_Mail').value='No';
+	Dom.get('Email_Description'+email_key).value=description;
+	Dom.get('Email_Is_Main'+email_key).value='No';
 	Number_New_Empty_Emails++;
 	Number_New_Emails++;
     }
@@ -235,4 +246,16 @@ function update_is_main_email(o){
     o.value='Yes';
     o.checked=true;
     calculate_num_changed_in_email();
+}
+
+function set_main_email(main_email_key){
+
+    var emails=data['Emails'];
+    for (i in emails){
+	if(i==main_email_key)
+	    data['Emails'][i]['Email_Is_Main']='Yes';
+	else
+	    data['Emails'][i]['Email_Is_Main']='No';
+    }
+	
 }
