@@ -1072,7 +1072,7 @@ class product extends DB_Table{
     case('a_dim'):
       if($this->data['dim']!='')
 	$a_dim=array($this->data['dim']);
-      split('x',$this->data['dim']);
+      preg_split('/x/i',$this->data['dim']);
     case('mysql_first_date'):
       return  date("Y-m-d",strtotime("@".$this->data['first_date']));;
       break;
@@ -1655,7 +1655,7 @@ $base_data=array(
 
 function normalize_code($code){
     $ncode=$code;
-    $c=split('-',$code);
+    $c=preg_split('/\-/',$code);
     if(count($c)==2){
       if(is_numeric($c[1]))
 	$ncode=sprintf("%s-%05d",strtolower($c[0]),$c[1]);

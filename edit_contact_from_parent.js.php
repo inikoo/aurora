@@ -394,6 +394,17 @@ var edit_contact=function (e,contact_button){
 	    Dom.get('Contact_Gender').value=data[key];
 	    Dom.get('Contact_Gender').setAttribute('ovalue',data[key]);
 
+	}else if(key=='Mobiles'){
+	  var mobiles=data['key'];
+	  for (mobile_key in mobiles) {
+	    var mobile_data=emails[mobiles_key];
+	    if(mobile_data==null)
+	      continue;
+	    clone_mobiles(mobile_key);
+	    
+	  }
+
+
 	}else if(key=='Emails'){
 	    var emails=data[key];
 	    for (email_key in emails) {
@@ -470,7 +481,7 @@ var edit_contact=function (e,contact_button){
 		    Dom.addClass(insertedElement,'cloned_editor');
 		    Dom.setStyle(insertedElement,'display','');
 		    var element_array=Dom.getElementsByClassName('Fax', 'input',insertedElement);
-		    element_array[0].value=fax_data['Fax'];
+		    element_array[0].value=fax_data['FAX'];
 		}
 		
 

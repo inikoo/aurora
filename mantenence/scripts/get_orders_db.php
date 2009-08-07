@@ -9,6 +9,7 @@ include_once('../../class.Supplier.php');
 include_once('../../class.Order.php');
 include_once('../../class.Invoice.php');
 include_once('../../class.DeliveryNote.php');
+include_once('../../class.Email.php');
 
 $store_code='U';
 
@@ -22,8 +23,15 @@ if (!$db){print "Error can not access the database\n";exit;}
 require_once '../../common_functions.php';
 mysql_query("SET time_zone ='UTC'");
 mysql_query("SET NAMES 'utf8'");
+require_once '../../conf/timezone.php'; 
+date_default_timezone_set(TIMEZONE) ;
+require('../../external_libs/Smarty/Smarty.class.php');
+$smarty = new Smarty();
 
-require_once '../../conf/conf.php';           
+
+require_once '../../conf/conf.php';  
+include_once('../../set_locales.php');
+
 date_default_timezone_set('Europe/London');
 $_SESSION['lang']=1;
 include_once('local_map.php');

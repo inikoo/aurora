@@ -29,7 +29,13 @@ require_once '../../common_functions.php';
 mysql_query("SET time_zone ='UTC'");
 mysql_query("SET NAMES 'utf8'");
 
+require_once '../../conf/timezone.php'; 
+date_default_timezone_set(TIMEZONE) ;
+require('../../external_libs/Smarty/Smarty.class.php');
+$smarty = new Smarty();
+
 require_once '../../conf/conf.php';           
+include_once('../../set_locales.php');
 date_default_timezone_set('Europe/London');
 $_SESSION['lang']=1;
 
