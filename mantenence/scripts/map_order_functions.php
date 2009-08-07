@@ -8615,6 +8615,11 @@ if($act_data['town']=='Hornbæk - Sjælland'){
     $act_data['a3']='';
   }
 
+  if(preg_match('/@/',$act_data['country']))
+    $act_data['country']='';
+   if(preg_match('/@/',$header_data['country']))
+    $header_data['country']='';
+  
   $address_raw_data=get_address_raw();
   $address_raw_data['address1']=$act_data['a1'];
   $address_raw_data['address2']=$act_data['a2'];

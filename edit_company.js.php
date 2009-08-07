@@ -5,17 +5,15 @@ include_once('common.php');
 include_once('class.Contact.php');
 include_once('class.Company.php');
 
-$contact_id=$_SESSION['state']['contact']['id'];
-$contact=new contact($contact_id);
 
 
 
-$edit_block='personal';
-if(isset($_REQUEST['edit'])){
-$valid_edit_blocks=array('personal','work','pictures','others');
-if(in_array($_REQUEST['edit'],$valid_edit_blocks))
-    $edit_block=$_REQUEST['edit'];
-}
+//$edit_block='personal';
+//if(isset($_REQUEST['edit'])){
+//$valid_edit_blocks=array('personal','work','pictures','others');
+//if(in_array($_REQUEST['edit'],$valid_edit_blocks))
+//    $edit_block=$_REQUEST['edit'];
+//}
 $salutation="''";
 $sql="select `Salutation` from `Salutation Dimension` where `Language Key`=1";
 $result=mysql_query($sql);
@@ -211,7 +209,7 @@ var Address_Keys=["key","country","country_code","country_d1","country_d2","town
 var Address_Meta_Keys=["type","function"];
 
 var current_salutation='salutation<?php echo$contact->get('Salutation Key')?>';
-var current_block='<?php echo$edit_block?>';
+
 var old_salutation=current_salutation;
 var Current_Address_Index=0;
 
@@ -268,17 +266,15 @@ CountryDS.maxCacheEntries = 100;
 
 
 
-var change_block = function(e){
-    if(Dom.hasClass(this, 'selected'))
-	return;
-    Dom.removeClass(current_block, 'selected');
-    Dom.addClass(this, 'selected');
-    Dom.setStyle('d_'+current_block, 'display','none');
-    Dom.setStyle('d_'+this.id, 'display','');
-
-    current_block=this.id;
-    
-};
+//var change_block = function(e){
+//   if(Dom.hasClass(this, 'selected'))
+//	return;
+ //   Dom.removeClass(current_block, 'selected');
+//    Dom.addClass(this, 'selected');
+//    Dom.setStyle('d_'+current_block, 'display','none');
+//    Dom.setStyle('d_'+this.id, 'display','');
+//    current_block=this.id;
+//};
 
 
 

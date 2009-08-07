@@ -153,7 +153,7 @@ class Invoice extends DB_Table {
 	$this->data['Invoice Currency Exchange']=$invoice_data['Invoice Currency Exhange'];
       }else{
 	$exchange=1;
-	$sql=sprinf("select `Exhange` from `History Currency Exchange Dimension` where `Currency Pair`='EURGBP' and `Date`=DATE(%s)"
+	$sql=sprintf("select `Exhange` from `History Currency Exchange Dimension` where `Currency Pair`='EURGBP' and `Date`=DATE(%s)"
 		    ,prepare_mysql($this->data ['Invoice Date'] ));
 	$res=mysql_query($sql);
 	if($row2=mysql_fetch_array($res, MYSQL_ASSOC)){

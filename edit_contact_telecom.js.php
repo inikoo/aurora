@@ -76,18 +76,20 @@ function telecom_change(){
 function show_details_telecom(o){
     var action=o.getAttribute('action');
     var telecom_key=o.getAttribute('telecom_key');
-
-    if(action=='Show'){
-	o.innerHTML='Hide Details';
-	o.setAttribute('action','Hide');
-	Dom.setStyle("Telecom_Details"+telecom_key,'display','');
-    }else{
-	o.innerHTML='Edit Details';
-	o.setAttribute('action','Show');
-	Dom.setStyle("Telecom_Details"+telecom_key,'display','none');
-
+    var telecom_type=o.getAttribute('telecom_type');
+    var components=Telecom_Components[telecom_type];
+    for (i in components){
+	if(action=='Show'){
+	    o.innerHTML='H';
+	    o.setAttribute('action','Hide');
+	    Dom.setStyle("tr_telecom"+components[i]+telecom_key,'display','');
+	}else{
+	    o.innerHTML='D';
+	    o.setAttribute('action','Show');
+	    Dom.setStyle("tr_telecom"+components[i]+telecom_key,'display','none');
+	    
+	}
     }
-
 }
 
 function validate_telecom(o){
@@ -137,39 +139,38 @@ function unmark_telecom_to_delete(o){
     calculate_num_changed_in_telecom();
 }
 
-function add_telecom(description){
+function add_telecom(telecom_type){
     
-    if(Number_New_Empty_Telecoms==0){
+    if(Number_New_Empty_Telecoms[telecom_type]==0 ){
 
-	var telecom_key='new'+Number_New_Telecoms;
-	clone_telecom(telecom_key);
-	Dom.get('Telecom_Contact_Name'+telecom_key).value=Dom.get('Contact_Name').value;
-	if(description== undefined)
-	    description='Work';
-	Dom.get('Telecom_Description'+telecom_key).value=description;
-	Dom.get('Telecom_Is_Main'+telecom_key).value='No';
-	Number_New_Empty_Telecoms++;
-	Number_New_Telecoms++;
+	var telecom_key='new'+telecom_type+Number_New_Telecoms;
+	clone_telecom(telecom_type,'',telecom_key);
+
+	Number_New_Empty_Telecoms[telecom_type]++;
+	Number_New_Telecoms[telecom_type]++;
     }
 }
 
-function clone_telecom(mould_key,telecom_key){
+function clone_telecom(telecom_type,parent_key,telecom_key){
    
-  
-
-     var new_telecom_container = Dom.get(mould_key).cloneNode(true);
-     var the_parent=Dom.get(mould_key).parentNode;
+    mould_key=telecom_type+parent_key+'_mould';
+    
+    var new_telecom_container = Dom.get(mould_key).cloneNode(true);
+    var the_parent=Dom.get(mould_key).parentNode;
 		    
-     var insertedElement = the_parent.insertBefore(new_telecom_container, Dom.get(mould_key));
-     Dom.addClass(insertedElement,'cloned_editor');
-     Dom.setStyle(insertedElement,'display','');
-     insertedElement.id="tr_telecom"+telecom_key;
-     insertedElement.setAttribute('telecom_key',telecom_key);
-     
-     var element_array=Dom.getElementsByClassName('show_details_telecom', 'span',insertedElement);
+    var insertedElement = the_parent.insertBefore(new_telecom_container, Dom.get(mould_key));
+    Dom.addClass(insertedElement,'cloned_editor');
+    Dom.setStyle(insertedElement,'display','');
+    insertedElement.id="tr_telecom"+telecom_key;
+    insertedElement.setAttribute('telecom_key',telecom_key);
+    
+    var element_array=Dom.getElementsByClassName('show_details_telecom', 'span',insertedElement);
      element_array[0].setAttribute('telecom_key',telecom_key);
+     element_array[0].setAttribute('telecom_type',telecom_type);
+
      element_array[0].id='show_details_telecom_button'+telecom_key;
      
+    
      var element_array=Dom.getElementsByClassName('Telecom', 'input',insertedElement);
      element_array[0].setAttribute('telecom_key',telecom_key);
      element_array[0].id='Telecom'+telecom_key;
@@ -178,13 +179,15 @@ function clone_telecom(mould_key,telecom_key){
       element_array[0].setAttribute('telecom_key',telecom_key);
       element_array[0].id='Telecom_Is_Main'+telecom_key;
      
-     var element_array=Dom.getElementsByClassName('Telecom_Contact_Name', 'input',insertedElement);
-     element_array[0].setAttribute('telecom_key',telecom_key);
-     element_array[0].id='Telecom_Contact_Name'+telecom_key;
-     
-     var element_array=Dom.getElementsByClassName('Telecom_Description', 'input',insertedElement);
-     element_array[0].setAttribute('telecom_key',telecom_key);
-     element_array[0].id='Telecom_Description'+telecom_key;
+      //    var components=Telecom_Components[telecom_type]
+	
+      //for (i in components){
+      //	    alert(components[i]);
+      //	    var element_array=Dom.getElementsByClassName(components[i], 'input',insertedElement);
+      //	    element_array[0].setAttribute('telecom_key',telecom_key);
+      //	    element_array[0].id=components[i]+telecom_key;
+      //	}
+   
 
      var element_array=Dom.getElementsByClassName('telecom_to_delete', 'span',insertedElement);
      element_array[0].setAttribute('telecom_key',telecom_key);
@@ -198,17 +201,22 @@ function clone_telecom(mould_key,telecom_key){
      element_array[0].setAttribute('telecom_key',telecom_key);
      element_array[0].id='undelete_telecom_button'+telecom_key;
      
+      var components=Telecom_Components[telecom_type]
+	
+      for (i in components){
+	  component_mould_key=telecom_type+parent_key+'_'+components[i]+'_mould';
+	  
+	  var new_telecom_container = Dom.get(component_mould_key).cloneNode(true);
 
-     
-     var element_array=Dom.getElementsByClassName('Telecom_Description', 'span',insertedElement);
-     for(i in  element_array){
-	 var label=element_array[i].getAttribute('label');
-	 element_array[i].id="Telecom_Description_"+label+telecom_key;
-
-     }
-		    
-     var element_array=Dom.getElementsByClassName('edit', 'table',insertedElement);
-     element_array[0].id="Telecom_Details"+telecom_key;
+	  var insertedElement = the_parent.insertBefore(new_telecom_container, Dom.get(mould_key));
+	  Dom.addClass(insertedElement,'cloned_editor');
+	  // Dom.setStyle(insertedElement,'display','');
+	  insertedElement.id="tr_telecom"+components[i]+telecom_key;
+	  insertedElement.setAttribute('telecom_key',telecom_key);
+      }
+    
+     //var element_array=Dom.getElementsByClassName('Telecom_Details', 'tbody',insertedElement);
+     //element_array[0].id="Telecom_Details"+telecom_key;
 }
 
 
