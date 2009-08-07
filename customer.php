@@ -16,6 +16,25 @@ include_once('common.php');
 include_once('class.Customer.php');
 if(!$user->can_view('customers'))
   exit();
+$modify=$user->can_edit('contacts');
+
+$edit=false;
+if(isset($_REQUEST['edit']) and $_REQUEST['edit']){
+  $edit=true;
+  $_REQUEST['id']=$_REQUEST['edit'];
+ }
+
+if(!$modify)
+  $edit=false;
+
+if(isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ){
+  $_SESSION['state']['customer']['id']=$_REQUEST['id'];
+  $customer_id=$_REQUEST['id'];
+}else{
+  $customer_id=$_SESSION['state']['company']['id'];
+}
+
+
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
@@ -47,10 +66,6 @@ $js_files=array(
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
-if(!isset($_REQUEST['id']) and is_numeric($_REQUEST['id']))
-  $customer_id=1;
-else
-  $customer_id=$_REQUEST['id'];
 
 
 $_SESSION['state']['customer']['id']=$customer_id;
@@ -60,14 +75,70 @@ $customer=new customer($customer_id);
 $customer->load('contacts');
 $smarty->assign('customer',$customer);
 
-$order=$_SESSION['state']['customers']['table']['order'];
+
+if($edit ){
+
+  if($customer->data['Customer Type']=='Company'){
+
+    $company=new Company($customer->data['Customer Company Key']);
+    $smarty->assign('company',$company);
+	
+    $offset=1;// 0 is reserved to new address
+    $addresses=$company->get_addresses($offset);
+    $smarty->assign('addresses',$addresses);
+    $number_of_addresses=count($addresses);
+    $smarty->assign('number_of_addresses',$number_of_addresses);
+
+  $contacts=$company->get_contacts($offset);
+  $smarty->assign('contacts',$contacts);
+  $number_of_contacts=count($contacts);
+  $smarty->assign('number_of_contacts',$number_of_contacts);
+
+  $smarty->assign('scope','customer');
+  $smarty->assign('scope_key',$customer->id);
+
+  
+  
+  $sql=sprintf("select * from `Salutation Dimension` S left join `Language Dimension` L on S.`Language Key`=L.`Language Key` where `Language Code`=%s limit 1000",prepare_mysql($myconf['lang']));
+  $result=mysql_query($sql);
+  $salutations=array();
+  while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+    $salutations[]=array('txt'=>$row['Salutation'],'relevance'=>$row['Relevance'],'id'=>$row['Salutation Key']);
+  }
+  
 
 
+
+  $smarty->assign('prefix',$salutations);
+  $editing_block='details';
+
+  $smarty->assign('edit',$editing_block);
+  $css_files[]='css/edit.css';
+
+
+  $js_files[]='js/validate_telecom.js';
+
+
+  $js_files[]=sprintf('edit_company.js.php?id=%d&scope=Customer&scope_key=%d',$company->id,$customer->id);
+  $js_files[]='edit_address.js.php';
+  $js_files[]='edit_contact_from_parent.js.php';
+  $js_files[]='edit_contact_telecom.js.php';
+
+  $js_files[]='edit_contact_name.js.php';
+  $js_files[]='edit_contact_email.js.php';
+  $smarty->assign('css_files',$css_files);
+  $smarty->assign('js_files',$js_files);
+  $smarty->display('edit_company.tpl');
+  exit();
+  }
+
+}else{
+  $order=$_SESSION['state']['customers']['table']['order'];
   if($order=='name')
-     $order='`Customer File As`';
-   elseif($order=='id')
-     $order='`Customer ID`';
-   elseif($order=='location')
+    $order='`Customer File As`';
+  elseif($order=='id')
+    $order='`Customer ID`';
+  elseif($order=='location')
      $order='`Customer Main Location`';
    elseif($order=='orders')
      $order='`Customer Orders`';
@@ -130,201 +201,19 @@ if(!$next=mysql_fetch_array($result, MYSQL_ASSOC))
   $next=array('id'=>0,'code'=>'');
 $smarty->assign('prev',$prev);
 $smarty->assign('next',$next);
-
-
-
-// $smarty->assign('data_contact',$customer->contact->data);
-// $smarty->assign('data_telecoms',$customer->contact->data);
-// $smarty->assign('data_emails',$customer->contact->data);
-
-
-
-//$sql=sprintf("select cu.total,cu.num_orders as orders,cu.order_interval,co.tipo as tipo_customer, cu.id as id,cu.contact_id,cu.name as name from customer as cu  left join contact as co on (cu.contact_id=co.id ) where cu.id=%d ",$customer_id);
-//print $sql;
-
-
-//$result=mysql_query($sql);
-
-//$customer=mysql_fetch_array($result, MYSQL_ASSOC);
-
-
-
-//$sql=sprintf("select main_address from contact where id=%d  ",$customer['contact_id']);
-
-//$result=mysql_query($sql);
-//$address=mysql_fetch_array($result, MYSQL_ASSOC);
-// include('string.php');
-// include('_contact.php');
-// include('telecom.php');
-// include('email.php');
-// include('address.php');
-// include('_customer.php');
-
-
-//$customer->data= get_customer_data($customer_id);
-
-
-//$customer_contact_id=$customer->data['contact_id'];
-//$contact_data= get_contact_data($customer->data['contact_id']);
-//print_r($contact_data);
-//$telecoms=get_telecoms($contact_data['id']);
-
-// $num_children=count($contact_data['child']);
-// if($num_children==1){
-//   $smarty->assign('contact',$contact_data['child'][0]['name']);
-//  }
-// elseif($num_children==2){
-//   $smarty->assign('contact',$contact_data['child'][1]['name'].' & '.$contact_data['child'][0]['name']);
-//  }
-
-
-
-// //$since='2004-06-14';
-// //  update_customer($customer_id,$since);
-
-
-
-
-
-// $tel0='';
-// $fax0='';
-// $email0='';
-
-// $tel=array();
-// $fax=array();
-// $email=array();
-
-
-
-
-
-// $sql=sprintf("select tipo,name,code,number,ext from telecom where contact_id=".$customer_contact_id);
-// $result = mysql_query($sql);
-
-// while($tmp=mysql_fetch_array($result, MYSQL_ASSOC)){
-//   if($tmp['tipo']==1)
-//       $tel[]=($tmp['name']!=''?$tmp['name'].' ':'').($tmp['code']!=''?'+'.$tmp['code'].' ':'').$tmp['number'].($tmp['ext']!=''?' '._('Ext').'. '.$tmp['ext']:'');
-//   if($tmp['tipo']==4)
-//     $fax[]=($tmp['name']!=''?$tmp['name'].' ':'').($tmp['code']!=''?'+'.$tmp['code'].' ':'').$tmp['number'];
-//  }
-// $sql=sprintf("select contact,email from email where contact_id=".$customer_contact_id);
-// $result = mysql_query($sql);
-// $k=0;
-// while($tmp=mysql_fetch_array($result, MYSQL_ASSOC)){
-//   if($tmp['contact']!='')
-//       $email[]=sprintf('<a href="mailto:%s">%s</a>',$row['email'],$row['contact']);
-//   else
-//     $email[]=sprintf('<a href="mailto:%s">%s</a>',$row['email'],$row['email']);
-//  }
-// // Contactos
-// $sql=sprintf("select child_id,contact.name from contact_relations left join contact on (child_id=contact.id)where parent_id=".$customer_contact_id);
-// $result = mysql_query($sql);
-// $contact_name=array();
-// $contact_tel=array();
-// $contact_fax=array();
-// $contact_email=array();
-// $contact_tels=array();
-// $contact_faxes=array();
-// $contact_emails=array();
-// $contact_mobiles=array();
-
-// $contact_mobile=array();
-
-
-
-// while($tmp=mysql_fetch_array($result, MYSQL_ASSOC)){
-//   $contact_id=$tmp['child_id'];
-//   $contact_name[$contact_id]=$tmp['name'];
-//   $contact_tel[$contact_id]=array();
-//   $contact_fax[$contact_id]=array();
-//   $contact_email[$contact_id]=array();
-//   $contact_mobile[$contact_id]=array();
-
-
-//   $sql=sprintf("select contact,email from email where contact_id=".$contact_id);
-//   $resulte = mysql_query($sql);
-//   while($rowe=$resulte->fetchRow()){
-//   if($rowe['contact']!=$tmp['name'] and $rowe['contact']!='')
-//     $contact_email[$contact_id][]=sprintf('<a href="mailto:%s">%s</a>',$rowe['email'],$rowe['contact']);
-//   else
-//     $contact_email[$contact_id][]=sprintf('<a href="mailto:%s">%s</a>',$rowe['email'],$rowe['email']);
-//   }
-//   $contact_emails[$contact_id]=count($contact_email[$contact_id]);
-  
-//   $sql=sprintf("select tipo,name,code,number,ext from telecom where (tipo=1 or tipo=0) and contact_id=".$contact_id);
-//   $resultt = mysql_query($sql);
-//   while($row=$resultt->fetchRow())
-//       $contact_tel[$contact_id]=($row['name']!=''?$row['name'].' ':'').($row['code']!=''?'+'.$row['code'].' ':'').$row['number'].($row['ext']!=''?' '._('Ext').'. '.$row['ext']:'');
-//   $contact_tels[$contact_id]=count($contact_tel[$contact_id]);
- 
-//   $sql=sprintf("select tipo,name,code,number,ext from telecom where tipo=4 and contact_id=".$contact_id);
-//   $resultt = mysql_query($sql);
-//   while($row=$resultt->fetchRow())
-//     $contact_fax[$contact_id]=($row['code']!=''?'+'.$row['code'].' ':'').$row['number'];
-//   $contact_faxes[$contact_id]=count($contact_fax[$contact_id]);
- 
-//   $sql=sprintf("select tipo,name,code,number,ext from telecom where tipo=2 and contact_id=".$contact_id);
-//   $resultt = mysql_query($sql);
-//   while($row=$resultt->fetchRow())
-//     $contact_mobile[$contact_id]=($row['code']!=''?'+'.$row['code'].' ':'').$row['number'];
-//   $contact_mobiles[$contact_id]=count($contact_mobile[$contact_id]);
-
-
-//  //  $contact_faxes[$contact_id]=count($contact_fax[$contact_id]);
-  
-
-
-//   //   if($row['tipo']==4)
-//   //   $contact_fax[$contact_id]=($row['name']!=''?$row['name'].' ':'').($row['code']!=''?'+'.$row['code'].' ':'').$row['number'];
-
-//  }
-//$contacts=count($contact_name);
-
-
-
-
 $smarty->assign('box_layout','yui-t0');
-
-
-
-
 $smarty->assign('parent','customers.php');
 $smarty->assign('title','Customer: '.$customer->get('customer name'));
-
-
-
 $customer_home=_("Customers List");
-// $smarty->assign('home',$customer_home);
-// $smarty->assign('name',$customer->data['name']);
 $smarty->assign('id',$myconf['customer_id_prefix'].sprintf("%05d",$customer->id));
-// $smarty->assign('atel',$tel);
-// $smarty->assign('afax',$fax);
-// $smarty->assign('tels',count($tel));
-// $smarty->assign('faxes',count($fax));
-// $smarty->assign('emails',count($email));
-// $smarty->assign('aemail',$email);
-// $smarty->assign('tipo_customer',$_tipo_customer[$customer_detail_data['tipo']]);
-// $smarty->assign('tipo_customer_id',$customer_detail_data['tipo']);
-// $smarty->assign('principal_address',display_full_address($contact_data['main_address']) );
-
-//$smarty->assign('contacts',$contacts);
-//$smarty->assign('contact_name',$contact_name);
-//$smarty->assign('contact_emails',$contact_emails);
-//$smarty->assign('acontact_email',$contact_email);
-//$smarty->assign('contact_tels',$contact_tels);
-//$smarty->assign('acontact_tel',$contact_tel);
-// $smarty->assign('contact_faxes',$contact_faxes);
-// $smarty->assign('acontact_fax',$contact_fax);
-// $smarty->assign('contact_mobiles',$contact_mobiles);
-// $smarty->assign('acontact_mobile',$contact_mobile);
 $total_orders=$customer->get('Customer Orders');
 $smarty->assign('orders',number($total_orders)  );
 $total_net=$customer->get('Customer Total Net Payments');
 $smarty->assign('total_net',money($total_net));
 $total_invoices=$customer->get('Customer Orders Invoiced');
- $smarty->assign('invoices',number($total_invoices)  );
- if($total_invoices>0)
-   $smarty->assign('total_net_average',money($total_net/$total_invoices));
+$smarty->assign('invoices',number($total_invoices)  );
+if($total_invoices>0)
+  $smarty->assign('total_net_average',money($total_net/$total_invoices));
 
 $order_interval=$customer->get('Customer Order Interval');
 
@@ -337,14 +226,9 @@ if($order_interval>10){
   
  }else if($order_interval=='')
   $order_interval='';
- else
-   $order_interval=round($order_interval).' '._('days');
+else
+  $order_interval=round($order_interval).' '._('days');
 $smarty->assign('orders_interval',$order_interval);
-// $smarty->assign('table_title',_('History'));
-
-// $smarty->assign('telecoms',$telecoms);
-
-
 $filter_menu=array(
 		   'notes'=>array('db_key'=>'notes','menu_label'=>'Records with  notes *<i>x</i>*','label'=>_('Notes')),
 		   'author'=>array('db_key'=>'author','menu_label'=>'Done by <i>x</i>*','label'=>_('Notes')),
@@ -354,15 +238,11 @@ $filter_menu=array(
 		   );
 $tipo_filter=$_SESSION['state']['customer']['table']['f_field'];
 $filter_value=$_SESSION['state']['customer']['table']['f_value'];
-//print_r($_SESSION['state']['customer']['table']);
 $smarty->assign('filter_value',$filter_value);
-
 $smarty->assign('filter_menu',$filter_menu);
 $smarty->assign('filter_name',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu',$paginator_menu);
-
-
-
 $smarty->display('customer.tpl');
+}
 ?>

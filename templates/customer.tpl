@@ -20,7 +20,7 @@
        
 
 
-       <br/><a id="but_edit" href="edit_customer.php" title="{t}Edit Customer Data{/t}" class="state_details" href=""   >{t}Edit Customer{/t}</a>
+       <br/><a id="but_edit" href="customer.php?edit={$customer->id}" title="{t}Edit Customer Data{/t}" class="state_details" href=""   >{t}Edit Customer{/t}</a>
 
        <table style="float:right;margin-top:20px">
 	 <tr><td class="but" id="note">{t}Quick Note{/t}</td></tr>

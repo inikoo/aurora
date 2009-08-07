@@ -2,9 +2,8 @@
 
 
 <div id="bd" style="padding:0 20px">
-<span class="nav2 onleft"><a  href="customers.php">{t}Customers{/t}</a></span>
-<span class="nav2 onleft"><a href="companies.php">{t}Companies{/t}</a></span>
-<span class="nav2 onleft"><a   href="contacts.php">{t}Personal Contacts{/t}</a></span>
+
+<span class="nav2 onright"><a   href="{$scope}.php?id={$scope_key}">{t}Exit Edit{/t}</a></span>
 
 
 <span class="nav2"><a href="contacts.php">{$home}</a></span>
@@ -14,7 +13,7 @@
     
     <div class="search_box" >
       
-     <a  href="contact.php?edit=0"  id="but_edit" title="{t}Edit Contact Data{/t}" class="state_details"   >{t}Exit Edit{/t}</a>
+
     </div>
     
     <div >
@@ -314,9 +313,9 @@
 		    <span style="display:none" class="small_button" id="cancel_edit_contact_button"  onclick="cancel_save_email()" >Cancel Edit Email</span>
 		    <span style="display:none" class="small_button" id="cancel_edit_contact_button"  onclick="cancel_save_email()">Cancel Edit Mobile</span>
 		    <span style="display:none" class="small_button" id="save_add_email_button" onclick="save_email()" >Save Email</span>
-		    <span style="display:none" class="small_button" id="save_add_mobile_button" onclick="add_mobile()" >Save Mobile</span>
+		    <span style="display:none" class="small_button" id="save_add_mobile_button" onclick="save_telecom('mobile')" >Save Mobile</span>
 		    <span class="small_button" id="add_email_button"  onclick="add_email()" >Add Email</span>
-		    <span class="small_button" id="add_mobile_button" onclick="add_mobile()" >Add Mobile</span>
+		    <span class="small_button" id="add_mobile_button" onclick="add_telecom('mobile')" >Add Mobile</span>
 
 		  </td>
 		</tr>
@@ -356,27 +355,37 @@
 		  </td>
 		</tr>
 
-		<tr id="mobile_mould" class="mould" style="display:none">
-		  <td  class="label">{t}Mobile{/t}:</td><td >
-		    <span class="mobile_to_delete" style="display:none;text-decoration:line-through"></span>
-		    <input  class="Mobile" value="" ovalue="" /> 
-		  </td >
-		  <td>
-		    <span class="small_button undelete_mobile"  style="display:none" email_key="" onclick="unmark_mobile_to_delete(this)">{t}Cancel Delete{/t}</span>
-		    <span class="small_button delete_mobile" style="float:right;margin-top:3px"  mobile_key="" onclick="mark_mobile_to_delete(this)">{t}Delete{/t}</span>
-		    <span class="small_button show_details_mobile" email_key="" action="Show" onclick="show_details_mobile(this)">{t}Edit Details{/t}</span>
-		  
-		  <br/><table  class="edit"  style="margin-top:10px;display:none"   >
-		    <tr>
-		      <td class="label">{t}Country Code{/t}:</td><td ><input class="Country_Code" style="width:3em" value="" ovalue="" /></td></tr>
-		    <tr>
-		      <td  class="label">{t}National Access Code{/t}:</td><td ><input class="National_Access_Code" style="text-align:center;width:1em" value="" ovalue="" /></td>
-		    </tr>
-		    <tr>
-		      <td  class="label">{t}Number{/t}:</td><td ><input  class="Number" style="width:7em" value="" ovalue="" /></td></tr>
-		  </table>
-		  </td>
-		</tr>
+	    <tr id="mobile_mould" class="mould" style="display:none;xbackground:red">
+	      <td  class="label">
+		<span id="show_description" onclick="show_details_telecom(this)" class="small_button  show_details_telecom" telecom_type="mobile" action="Show" style="padding:0 1px;font-size:50%;position:relative;top:-2px;">D</span>
+		{t}Mobile{/t}:
+	      </td>
+	      <td>
+		<span class="telecom_to_delete" style="display:none;text-decoration:line-through"></span>
+		<input  class="Telecom" value="" ovalue="" to_delete=0  onkeyup="validate_telecom(this);telecom_change()"     /> 
+	      </td >
+	      <td>
+		<input class="Telecom_Is_Main" type="checkbox" ovalue="No"  telecom_type="mobile" onclick="update_is_main_telecom(this)"/><span>{t}Main{/t}</span>
+		
+		<span class="small_button undelete_telecom"  style="display:none" email_key="" onclick="unmark_telecom_to_delete(this)">{t}Cancel Delete{/t}</span>
+		<span class="small_button delete_telecom"   mobile_key="" onclick="mark_telcom_to_delete(this)">{t}Delete{/t}</span>
+		
+	      </td>
+	    </tr>
+	    
+	    <tr  id="mobile_Country_Code_mould" class="Telecom_Details"  style="display:none" >
+	      <td class="label">{t}Country Code{/t}:</td><td ><input class="Country_Code" style="width:3em" value="" ovalue="" onkeyup="telecom_component_change(this)"  /></td></tr>
+	    <tr id="mobile_National_Access_Code_mould"   class="Telecom_Details" style="display:none">
+	      <td  class="label"><img class="help" src="art/icons/help.png" alt="?"/> {t}NAC{/t}:</td><td ><input class="National_Access_Code" style="text-align:center;width:1em" value="" ovalue=""  onkeyup="telecom_component_change(this)" /></td>
+	    </tr>
+	    <tr  id="mobile_Number_mould" class="Telecom_Details" style="display:none">
+	      <td  class="label">{t}Number{/t}:</td><td ><input  class="Number" style="width:7em" value="" ovalue=""  onkeyup="telecom_component_change(this)"   />
+	      </td>
+	    </tr>
+	 
+	
+	  
+
 	  <tr class="title"   >
 	    <td colspan=3 >{t}Contact Address & Landlines{/t}:
 	      <span style=""  class="small_button" id="add_address_to_contact_button" >Add Address</span>

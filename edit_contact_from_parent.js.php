@@ -17,12 +17,19 @@ var Contact_Personal_Keys=['Contact_First_Name','Contact_Salutation','Contact_Su
 var Contact_Name_Keys=['Contact_First_Name','Contact_Salutation','Contact_Surname','Contact_Suffix'];
 var Contact_Details_Keys=['Contact_Gender','Contact_Title','Contact_Profession'];
 var Email_Keys=['Email','Email_Description','Email_Contact_Name','Email_Is_Main'];
-
+var Mobile_Components=['Country_Code','National_Access_Code','Number'];
+var Telecom_Components=new Object();
+Telecom_Components['mobile']=Mobile_Components;
 
 var Number_New_Emails=0;
 var Number_New_Empty_Emails=0;
 
-var Number_New_Mobiles=0;
+var Number_New_Emails=0;
+var Number_New_Empty_Telecoms=new Object();
+Number_New_Empty_Telecoms['mobile']=0;
+var Number_New_Telecoms=new Object();
+Number_New_Telecoms['mobile']=0;
+
 var Number_New_Contact_Address=0;
 
 var save_contact=function(){

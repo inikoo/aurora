@@ -358,7 +358,7 @@ class Company extends DB_Table {
 
     }else{
       // update 
-      print "Updatinf company and contact\n";
+      //      print "Updatinf company and contact\n";
       
       
       $this->get_data('id',$this->found_key);
