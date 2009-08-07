@@ -10,7 +10,11 @@ if(isset($_REQUEST['_lang']) and is_numeric($_REQUEST['_lang'])){
  }
 if(!isset($_SESSION['lang'])){
   
-  $sql="select `Language Key`  from `Language Dimension` where `Locale Code`='".$myconf['lang'].'_'.$myconf['country']."'";
+  $sql=sprintf("select `Language Key`  from `Language Dimension` where `Language Code`=%s and `Country 2 Alpha Code`=%s  "
+	       ,prepare_mysql($myconf['lang'])
+	       ,prepare_mysql($myconf['country'])
+	       );
+  
   $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 

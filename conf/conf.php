@@ -917,9 +917,9 @@ $default_state=array(
 $yui_path="external_libs/yui/".$myconf['yui_version']."/build/";
 $tmp_images_dir='app_files/pics/';
 
-$customers_ids[0]=_('Id');
-$customers_ids[1]=_('Act Id');
-$customers_ids[2]=_('Post Code');
+$customers_ids[0]='Id';
+$customers_ids[1]='Act Id';
+$customers_ids[2]='Post Code';
 
 //overwrite configuration
 
