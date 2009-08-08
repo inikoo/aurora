@@ -406,18 +406,47 @@
 	      <span class="small_button" id="add_tel_button" >Add Telephone</span>
 	      <span class="small_button" id="add_fax_button" >Add Fax</span>
 	      <table style="margin-top:10px">
-		<tr id="telephone_mould" class="tr_telecom" style="display:none">
-		  <td   class="label">{t}Telephone{/t}:</td><td ><input  class="Telephone" value="" ovalue="" /> </td>
-		  <td   >
-		    <table border=1 class="edit" style="display:none">
-		      <tr valign="top"><td valign="top">{t}Country Code{/t}:</td><td ><input style="width:3em" value="" ovalue="" /></td></tr>
-		      <tr><td class="label">{t}National Access Code{/t}:</td><td ><input style="text-align:center;width:1em" value="" ovalue="" /></td></tr>
-		      <tr><td class="label">{t}Area Code{/t}:</td><td ><input style="width:4em" value="" ovalue="" /></td></tr>
-		      <tr><td class="label">{t}Number{/t}:</td><td ><input style="width:7em" value="" ovalue="" /></td></tr>
-		      <tr><td class="label">{t}Extension{/t}:</td><td ><input style="width:3em" value="" ovalue="" /></td></tr>
-		    </table>
+		
+
+		<tr id="telephone_mould" class="tr_telecom mould" style="display:none;xbackground:red">
+		  <td  class="label">
+		    <span id="show_description" onclick="show_details_telecom(this)" class="small_button  show_details_telecom" telecom_type="telephone" action="Show" style="padding:0 1px;font-size:50%;position:relative;top:-2px;">D</span>
+		    {t}Telephone{/t}:
+		  </td>
+		  <td>
+		    <span class="telecom_to_delete" style="display:none;text-decoration:line-through"></span>
+		    <input  class="Telecom" value="" ovalue="" to_delete=0  onkeyup="validate_telecom(this);telecom_change()"     /> 
+		  </td >
+		  <td>
+		    <input class="Telecom_Is_Main" type="checkbox" ovalue="No"  telecom_type="telephone" onclick="update_is_main_telecom(this)"/><span>{t}Main{/t}</span>
+		    
+		    <span class="small_button undelete_telecom"  style="display:none" email_key="" onclick="unmark_telecom_to_delete(this)">{t}Cancel Delete{/t}</span>
+		    <span class="small_button delete_telecom"   telephone_key="" onclick="mark_telcom_to_delete(this)">{t}Delete{/t}</span>
+		    
 		  </td>
 		</tr>
+		
+		<tr  class="Telecom_Details"  style="display:none" >
+		  <td class="label">{t}Country Code{/t}:</td><td ><input class="Country_Code" style="width:3em" value="" ovalue="" onkeyup="telecom_component_change(this)"  /></td></tr>
+		<tr class="Telecom_Details" style="display:none">
+		  <td  class="label"><img class="help" src="art/icons/help.png" alt="?"/> {t}NAC{/t}:</td><td ><input class="National_Access_Code" style="text-align:center;width:1em" value="" ovalue=""  onkeyup="telecom_component_change(this)" /></td>
+		</tr>
+		
+		<tr  class="Telecom_Details" style="display:none">
+		  <td  class="label">{t}Area Code{/t}:</td><td ><input  class="Area_Code" style="width:4em" value="" ovalue=""  onkeyup="telecom_component_change(this)"   />
+		  </td>
+		</tr>
+
+		<tr class="Telecom_Details" style="display:none">
+		  <td  class="label">{t}Number{/t}:</td><td ><input  class="Number" style="width:7em" value="" ovalue=""  onkeyup="telecom_component_change(this)"   />
+		  </td>
+		</tr>
+		
+		<tr class="Telecom_Details" style="display:none">
+		  <td  class="label">{t}Extension{/t}:</td><td ><input  class="Extension" style="width:5em" value="" ovalue=""  onkeyup="telecom_component_change(this)"   />
+		  </td>
+		</tr>
+		
 		<tr id="fax_mould"  class="tr_telecom" style="display:none">
 		  <td  class="label">{t}Fax{/t}:</td><td style="vertical-align: top;text-align:left"><input   class="Fax" value="" ovalue="" /> </td>
 		  <td   >

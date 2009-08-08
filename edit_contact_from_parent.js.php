@@ -18,8 +18,15 @@ var Contact_Name_Keys=['Contact_First_Name','Contact_Salutation','Contact_Surnam
 var Contact_Details_Keys=['Contact_Gender','Contact_Title','Contact_Profession'];
 var Email_Keys=['Email','Email_Description','Email_Contact_Name','Email_Is_Main'];
 var Mobile_Components=['Country_Code','National_Access_Code','Number'];
+var Telephone_Components=['Country_Code','National_Access_Code','Area_Code','Number','Extension'];
+var Fax_Components=['Country_Code','National_Access_Code','Area_Code','Number'];
+
 var Telecom_Components=new Object();
 Telecom_Components['mobile']=Mobile_Components;
+Telecom_Components['telephone']=Telephone_Components;
+Telecom_Components['fax']=Fax_Components;
+
+
 
 var Number_New_Emails=0;
 var Number_New_Empty_Emails=0;
@@ -377,7 +384,7 @@ var edit_contact=function (e,contact_button){
    
     for (key in data){
 	
-
+    
 
 	if(key=='Name_Data'){
 	  
@@ -402,16 +409,31 @@ var edit_contact=function (e,contact_button){
 	    Dom.get('Contact_Gender').setAttribute('ovalue',data[key]);
 
 	}else if(key=='Mobiles'){
-	  var mobiles=data['key'];
+	  var mobiles=data[key];
 	  for (mobile_key in mobiles) {
-	    var mobile_data=emails[mobiles_key];
+	    var mobile_data=mobiles[mobile_key];
+	    
 	    if(mobile_data==null)
 	      continue;
-	    clone_mobiles(mobile_key);
+	    clone_telecom('mobile','',mobile_key);
+	    Dom.get('Telecom'+mobile_key).value=mobile_data['Mobile'];
+	    Dom.get('Telecom'+mobile_key).setAttribute('ovalue',mobile_data['Mobile']);
+	    
+	    if(mobile_data['Telecom_Is_Main']=='Yes')
+	      Dom.get('Telecom_Is_Main'+mobile_key).checked=true;
+	    else
+	      Dom.get('Telecom_Is_Main'+mobile_key).checked=false;
+	    Dom.get('Telecom_Is_Main'+mobile_key).value=mobile_data['Telecom_Is_Main'];
+	    Dom.get('Telecom_Is_Main'+mobile_key).setAttribute('ovalue',mobile_data['Telecom_Is_Main']);
+	    var components=Telecom_Components['mobile'];
+	    for (i in components){
+	      Dom.get(components[i]+mobile_key).value=mobile_data[components[i]];
+	      Dom.get(components[i]+mobile_key).setAttribute('ovalue',mobile_data[components[i]]);
+
+	    }
+	    
 	    
 	  }
-
-
 	}else if(key=='Emails'){
 	    var emails=data[key];
 	    for (email_key in emails) {
@@ -460,6 +482,17 @@ var edit_contact=function (e,contact_button){
 		element_array[0].id='telephone_mould'+address_key;
 		element_array[1].id='fax_mould'+address_key;
 		element_array[2].id='after_fax'+address_key;
+		
+
+		var element_array=Dom.getElementsByClassName('Telecom_Details', 'tr',insertedElement);
+		var j=0;
+		var components=Telecom_Components['telephone'];
+		for (i in components){
+		  //alert('telephone'+address_key+'_'+components[i]+'_mould')
+		  element_array[j].id='telephone'+address_key+'_'+components[i]+'_mould';
+		  j++;
+		}
+
 
 		Dom.addClass(insertedElement,'cloned_editor');
 		Dom.setStyle(insertedElement,'display','');
@@ -467,18 +500,39 @@ var edit_contact=function (e,contact_button){
 		element_array[0].innerHTML=address_data['Address'];
 
 
-		tels=address_data['Telephones'];
-		for(tel_key in tels) {
-		    var tel_data=tels[tel_key];
-		    var new_tel_container = Dom.get('telephone_mould'+address_key).cloneNode(true);
-		    var the_parent=Dom.get('fax_mould'+address_key).parentNode;
+		telephones=address_data['Telephones'];
+		for(telephone_key in telephones) {
 
-		    var insertedElement = the_parent.insertBefore(new_tel_container,Dom.get('fax_mould'+address_key) );
-		    Dom.addClass(insertedElement,'cloned_editor');
-		    Dom.setStyle(insertedElement,'display','');
-		    var element_array=Dom.getElementsByClassName('Telephone', 'input',insertedElement);
-		    element_array[0].value=tel_data['Telephone'];
+		  var telephone_data=telephones[telephone_key];
+		  
+		  if(telephone_data==null)
+		    continue;
+		  clone_telecom('telephone',address_key,telephone_key);
+		  Dom.get('Telecom'+telephone_key).value=telephone_data['Telephone'];
+		  Dom.get('Telecom'+telephone_key).setAttribute('ovalue',telephone_data['Telephone']);
+		  
+		  
+		    if(telephone_data['Telecom_Is_Main']=='Yes')
+		      Dom.get('Telecom_Is_Main'+telephone_key).checked=true;
+		    else
+		      Dom.get('Telecom_Is_Main'+telephone_key).checked=false;
+		  Dom.get('Telecom_Is_Main'+telephone_key).value=telephone_data['Telecom_Is_Main'];
+		  Dom.get('Telecom_Is_Main'+telephone_key).setAttribute('ovalue',telephone_data['Telecom_Is_Main']);
+		  var components=Telecom_Components['telephone'];
+		  for (i in components){
+		    
+		    Dom.get(components[i]+telephone_key).value=telephone_data[components[i]];
+		    Dom.get(components[i]+telephone_key).setAttribute('ovalue',telephone_data[components[i]]);
+		    
+		  }
 		}
+	   
+		  
+		
+
+		  
+		    
+		
 		faxes=address_data['Faxes'];
 		for(fax_key in faxes) {
 		    var fax_data=faxes[fax_key];

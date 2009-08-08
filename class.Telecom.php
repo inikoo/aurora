@@ -668,7 +668,7 @@ protected function create($data,$optios=''){
       }
       
       
-      if(preg_match('/^7/',$data['Telecom Number']))
+      if(preg_match('/^7/',$data['Telecom Area Code'].$data['Telecom Number']))
 	$data['Telecom Technology Type']='Mobile';
       else
 	$data['Telecom Technology Type']='Landline';
@@ -755,7 +755,12 @@ protected function create($data,$optios=''){
    }
    $the_number=_trim($the_number)."";
 
-   $tmp=($data['Telecom Country Telephone Code']!=''?'+'.$data['Telecom Country Telephone Code'].' ':'').($data['Telecom Area Code']!=''?$data['Telecom Area Code'].' ':'').$the_number.($data['Telecom Extension']!=''?' '._('ext').' '.$data['Telecom Extension']:'');
+   if($data['Telecom National Access Code']!='')
+     $nac=sprintf("(%d) ",$data['Telecom National Access Code']);
+   else
+     $nac='';
+       
+   $tmp=($data['Telecom Country Telephone Code']!=''?'+'.$data['Telecom Country Telephone Code'].' ':'').$nac.($data['Telecom Area Code']!=''?$data['Telecom Area Code'].' ':'').$the_number.($data['Telecom Extension']!=''?' '._('ext').' '.$data['Telecom Extension']:'');
    
    return $tmp;
 

@@ -157,10 +157,11 @@ class Invoice extends DB_Table {
 		    ,prepare_mysql($this->data ['Invoice Date'] ));
 	$res=mysql_query($sql);
 	if($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
-	  $exchange=$row['Exchange'];
+	  $exchange=$row2['Exchange'];
 	  
-    }
+	}
 $this->data['Invoice Currency Exchange']=$exchange;
+
 
       }
 

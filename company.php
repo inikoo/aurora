@@ -111,13 +111,16 @@ if($edit ){
   $css_files[]='css/edit.css';
 
 
-
-
-  $js_files[]='edit_company.js.php?edit='.$editing_block;
+  $js_files[]='js/validate_telecom.js';
+  $js_files[]=sprintf('edit_company.js.php?id=%d&scope=Company&scope_key=%d',$company->id,$company->id);
   $js_files[]='edit_address.js.php';
   $js_files[]='edit_contact_from_parent.js.php';
+  $js_files[]='edit_contact_telecom.js.php';
   $js_files[]='edit_contact_name.js.php';
   $js_files[]='edit_contact_email.js.php';
+
+
+
 
 }
 

@@ -1861,14 +1861,14 @@ function add_address($data,$args='principal'){
    if($telecom->id){
       
      if(!isset($data['Telecom Type']) or $data['Telecom Type']==''){
-       if($telecom->data['Telecom Technology Type']=='Mobile')
+       if($telecom->data['Telecom Technology Type']=='Mobile' )
 	 $data['Telecom Type']='Mobile';
        else
 	 $data['Telecom Type']='Home Telephone';
        
      }
      
-     if($data['Telecom Type']=='Mobile'){
+     if($data['Telecom Type']=='Mobile' or  $data['Telecom Type']=='Work Mobile'  ){
        $field='Contact Main Mobile';
        $field_key='Contact Main Mobile Key';
        $field_plain='Contact Main Plain Mobile';
@@ -1970,7 +1970,7 @@ function add_address($data,$args='principal'){
 	 $telecom_tipo_plain='Contact Main Plain FAX';
        }if(preg_match('/mobile/i',$args)){
 	 $tel_key=$this->data['Contact Main Mobile Key'];
- $telecom_tipo='Contact Main Mobile';
+	 $telecom_tipo='Contact Main Mobile';
 	 $telecom_tipo_key='Contact Main Mobile Key';
 	 $telecom_tipo_plain='Contact Main Plain Mobile';
        }else{
@@ -3128,15 +3128,22 @@ string with the name to be parsed
      $this->number_emails=count($emails);
    }
 
+    /*
+     function: get_mobiles
+
+
+     */
+
      function get_mobiles(){
 
     
-     $sql=sprintf("select * from `Telecom Bridge` CB where   `Telecom Type`='Mobile' and `Subject Type`='Contact' and `Subject Key`=%d  group by `Telecom Key` order by `Is Main` desc  ",$this->id);
+     $sql=sprintf("select * from `Telecom Bridge` CB where   `Telecom Type` in ('Mobile','Work Mobile')    and `Subject Type`='Contact' and `Subject Key`=%d  group by `Telecom Key` order by `Is Main` desc  ",$this->id);
      $mobiles=array();
      $result=mysql_query($sql);
   
      while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
        $mobile= new Telecom($row['Telecom Key']);
+       $mobile->set_scope('Contact',$this->id);
        $mobiles[]= $mobile;
      
      }
@@ -3160,9 +3167,10 @@ string with the name to be parsed
        //print $sql;
        while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 	 $tel= new Telecom($row['Telecom Key']);
+	 
 	 if($this->scope=='Company' and $this->scope_key and !$tel->is_associated('Company',$this->scope_key) )
 	   continue;
-	 
+	 $tel->set_scope('Contact',$this->id);
 	 
 	 
 	 $telecoms[]= $tel;

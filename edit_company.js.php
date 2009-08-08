@@ -57,7 +57,23 @@ $contact_data.=sprintf('0:{"Contact_Key":0,"Contact_Name":"","Name_Data":{"Conta
 $contact_data.="\n";
 foreach($contacts as $contact){
   
-  
+  $mobiles=$contact->get_mobiles();
+  $mobile_data='';
+  foreach($mobiles as $mobile){
+    $scope_related_mobile_type='Work Mobile';
+    if(isset($mobile->data['Telecom Type'][$scope_related_mobile_type])){
+	$mobile_data.=sprintf(',%d:{"Mobile_Key":%d,"Mobile":"%s","Country_Code":"%s","National_Access_Code":"%s","Number":%s,"Telecom_Is_Main":"%s"}'
+			      ,$mobile->id
+			      ,$mobile->id
+			      ,addslashes($mobile->display())
+			      ,addslashes($mobile->data['Telecom Country Telephone Code'])
+			      ,addslashes($mobile->data['Telecom National Access Code'])
+			      ,addslashes($mobile->data['Telecom Number'])
+			      ,$mobile->data['Telecom Is Main'][$scope_related_mobile_type]
+			      );
+      }
+  }
+  $mobile_data=preg_replace('/^,/','',$mobile_data);
 
   $emails=$contact->get_emails();
   $email_data='';
@@ -74,20 +90,34 @@ foreach($contacts as $contact){
   $email_data=preg_replace('/^,/','',$email_data);
   $contact_addresses=$contact->get_addresses();
   $contact_address_data='';
+  $scope_related_telephone_type='Work Telephone';
+  $scope_related_fax_type='Office Fax';
+
   foreach($contact_addresses as $contact_address){
 
     $tels=$contact->get_telephones($contact_address->id);
   
 
     $tels_data='';
-    foreach($tels as $tel){
-      $tels_data.=sprintf(',%d:{"Telephone_Key":%d,"Telephone":"%s"}'
-			  ,$tel->id
-			  ,$tel->id
-			  ,$tel->display()
-			  );
-    }
+    
 
+    foreach($tels as $tel){
+
+      if(isset($tel->data['Telecom Type'][$scope_related_telephone_type])){
+	
+	$tels_data.=sprintf(',%d:{"Telephone_Key":%d,"Telephone":"%s","Country_Code":"%s","National_Access_Code":"%s","Area_Code":"%s","Number":"%s","Extension":"%s","Telecom_Is_Main":"%s"}'
+			    ,$tel->id
+			    ,$tel->id
+			    ,addslashes($tel->display())
+			    ,addslashes($tel->data['Telecom Country Telephone Code'])
+			    ,addslashes($tel->data['Telecom National Access Code'])
+			    ,addslashes($tel->data['Telecom Area Code'])
+			    ,addslashes($tel->data['Telecom Number'])
+			    ,addslashes($tel->data['Telecom Extension'])
+			    ,$tel->data['Telecom Is Main'][$scope_related_telephone_type]
+			    );
+      }
+    }
     $tels_data=preg_replace('/^,/','',$tels_data);
       
     $faxes=$contact->get_faxes($contact_address->id);
@@ -132,9 +162,10 @@ foreach($contacts as $contact){
 			 ,$contact->data['Contact Title']
 			 );
   $contact_data.="\n";
-    $contact_data.=sprintf(',"Emails":{%s},"Addresses":{%s}} '
-			 ,$email_data
-			 ,$contact_address_data
+    $contact_data.=sprintf(',"Mobiles":{%s},"Emails":{%s},"Addresses":{%s}} '
+			   ,$mobile_data
+			   ,$email_data
+			   ,$contact_address_data
 			 );
   $contact_data.="\n";
   
