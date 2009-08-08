@@ -651,7 +651,7 @@ class Company extends DB_Table {
 	
 
 	if($main_telephone_is_mobile){
-	  $contact_telecom_type='Mobile';
+	  $contact_telecom_type='Work Mobile';
 	  $company_telecom_type='Contact Mobile';
 	}else{
 	  $contact_telecom_type='Work Telephone';
@@ -686,7 +686,7 @@ class Company extends DB_Table {
 	
 	$contact->add_tel(array(
 			      'Telecom Key'=>$extra_mobile_key
-			      ,'Telecom Type'=>'Mobile'
+			      ,'Telecom Type'=>'Work Mobile'
 				),'');
 	
 	  $this->add_tel(array(

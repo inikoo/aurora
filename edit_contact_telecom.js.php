@@ -1,10 +1,11 @@
 
-function calculate_num_changed_in_telecom(){
+function calculate_num_changed_in_telecom(telecom_type,container_key){
     var changed=new Object();
-        var to_delete=0;
+    var to_delete=0;
     var invalid=0;
     var new_telecom=0;
-    var elements_array=Dom.getElementsByClassName('Telecom', 'input');
+
+    var elements_array=Dom.getElementsByClassName(telecom_type+container_key, 'input');
     for( var i in elements_array ){
 	var input_element=elements_array[i];
 	var telecom_key=input_element.getAttribute('telecom_key');
@@ -151,9 +152,9 @@ function add_telecom(telecom_type){
     }
 }
 
-function clone_telecom(telecom_type,parent_key,telecom_key){
+function clone_telecom(telecom_type,container_key,telecom_key){
    
-    mould_key=telecom_type+parent_key+'_mould';
+    mould_key=telecom_type+'_mould'+container_key;
     
     var new_telecom_container = Dom.get(mould_key).cloneNode(true);
     var the_parent=Dom.get(mould_key).parentNode;
@@ -179,16 +180,6 @@ function clone_telecom(telecom_type,parent_key,telecom_key){
       element_array[0].setAttribute('telecom_key',telecom_key);
       element_array[0].id='Telecom_Is_Main'+telecom_key;
      
-      //    var components=Telecom_Components[telecom_type]
-	
-      //for (i in components){
-      //	    alert(components[i]);
-      //	    var element_array=Dom.getElementsByClassName(components[i], 'input',insertedElement);
-      //	    element_array[0].setAttribute('telecom_key',telecom_key);
-      //	    element_array[0].id=components[i]+telecom_key;
-      //	}
-   
-
      var element_array=Dom.getElementsByClassName('telecom_to_delete', 'span',insertedElement);
      element_array[0].setAttribute('telecom_key',telecom_key);
      element_array[0].id='telecom_to_delete'+telecom_key;
@@ -204,17 +195,20 @@ function clone_telecom(telecom_type,parent_key,telecom_key){
       var components=Telecom_Components[telecom_type]
 	
       for (i in components){
-	  component_mould_key=telecom_type+parent_key+'_'+components[i]+'_mould';
-	  
+	  component_mould_key=telecom_type+container_key+'_'+components[i]+'_mould';
+	  // alert(component_mould_key)
 	  var new_telecom_container = Dom.get(component_mould_key).cloneNode(true);
 
 	  var insertedElement = the_parent.insertBefore(new_telecom_container, Dom.get(mould_key));
 	  Dom.addClass(insertedElement,'cloned_editor');
-	  // Dom.setStyle(insertedElement,'display','');
 	  insertedElement.id="tr_telecom"+components[i]+telecom_key;
 	  insertedElement.setAttribute('telecom_key',telecom_key);
+	  var element_array=Dom.getElementsByClassName(components[i], 'input',insertedElement);
+	  element_array[0].id=components[i]+telecom_key;
+
+
       }
-    
+
      //var element_array=Dom.getElementsByClassName('Telecom_Details', 'tbody',insertedElement);
      //element_array[0].id="Telecom_Details"+telecom_key;
 }

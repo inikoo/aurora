@@ -117,15 +117,13 @@ if($edit ){
 
 
   $js_files[]='js/validate_telecom.js';
-
-
   $js_files[]=sprintf('edit_company.js.php?id=%d&scope=Customer&scope_key=%d',$company->id,$customer->id);
   $js_files[]='edit_address.js.php';
   $js_files[]='edit_contact_from_parent.js.php';
   $js_files[]='edit_contact_telecom.js.php';
-
   $js_files[]='edit_contact_name.js.php';
   $js_files[]='edit_contact_email.js.php';
+
   $smarty->assign('css_files',$css_files);
   $smarty->assign('js_files',$js_files);
   $smarty->display('edit_company.tpl');
