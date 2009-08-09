@@ -1,15 +1,8 @@
 {include file='header.tpl'}
-
-
 <div id="bd" style="padding:0 20px">
-
 <span class="nav2 onright"><a   href="{$scope}.php?id={$scope_key}">{t}Exit Edit{/t}</a></span>
-
-
 <span class="nav2"><a href="contacts.php">{$home}</a></span>
-
-
-  <div id="yui-main" >
+<div id="yui-main" >
     
     <div class="search_box" >
       
@@ -42,7 +35,7 @@
 	</div>
       </div>
       
-  <div  style="{if $edit!="details"}display:none;{/if}margin:0"  class="edit_block" id="d_details">
+  <div  style="margin:0"  class="edit_block" id="d_details">
 	<table class="edit" border=0>
 	  
 	  <tr class="title">
@@ -86,7 +79,9 @@
 		<div class="address_display" id="address_display0"></div>
 		<div  class="address_buttons" id="address_buttons0" >
 		  <span class="small_button small_button_edit" style="float:left" id="contacts_address_button0" address_id="0" onclick="contacts_address(event,this)" ><img src="art/icons/person.png" alt="{t}Contacts{/t}"/></span>
-		  <span class="small_button small_button_edit" id="delete_address_button0" address_id="0" onclick="delete_address(event,this)" >{t}Delete{/t}</span>
+		  
+		  <input type="checkbox" class='Is_Main' /> {t}Main{/t}
+		  <span class="small_button small_button_edit" id="delete_address_button0" address_id="0" onclick="delete_address(event,this)" >{t}Remove{/t}</span>
 		  <span class="small_button small_button_edit" id="edit_address_button0" address_id="0" onclick="edit_address(event,this)" >{t}Edit{/t}</span>
 		</div>
 	      </div>
@@ -96,11 +91,13 @@
 		<div class="address_display"  id="address_display{$address->id}">{$address->display('xhtml')}</div>
 		<div class="address_buttons" id="address_buttons{$address->id}">
 		  
-		  <span class="" style="float:left" id="contacts_address_button{$address->id}" address_id="{$address->id}" onclick="contacts_address(event,this)" ><img src="art/icons/user.png" alt="{t}Contacts{/t}"/></span>
-		  <span class="" style="float:left;margin-left:5px;cursor:pointer" id="contacts_address_button{$address->id}" address_id="{$address->id}" onclick="contacts_address(event,this)" ><img src="art/icons/telephone.png" alt="{t}Telephones{/t}"/></span>
+		  <span class="" style="float:left" id="contacts_address_button{$address->id}" address_id="{$address->id}" onclick="contacts_address(event,this)" >
+		  <img src="art/icons/user.png" alt="{t}Contacts{/t}"/></span>
+		  <span class="" style="float:left;margin-left:5px;cursor:pointer" id="contacts_address_button{$address->id}" address_id="{$address->id}" onclick="contacts_address(event,this)" >
+		  <img src="art/icons/telephone.png" alt="{t}Telephones{/t}"/></span>
 
-
-		  <span class="small_button small_button_edit" id="delete_address_button{$address->id}" address_id="{$address->id}" onclick="delete_address(event,this)" >{t}Delete{/t}</span>
+		  <input type="checkbox" class='Is_Main' {if $address->is_main()}checked="checked" value="Yes" ovalue="Yes"{else}value="No" ovalue="No"{/if} /> {t}Main{/t}
+		  <span class="small_button small_button_edit" id="delete_address_button{$address->id}" address_id="{$address->id}" onclick="delete_address(event,this)" >{t}Remove{/t}</span>
 		  <span class="small_button small_button_edit" id="edit_address_button{$address->id}" address_id="{$address->id}" onclick="edit_address(event,this)" >{t}Edit{/t}</span>
 		</div>
 	      </div>
@@ -204,7 +201,7 @@
 
       </div>
 
-      <div  style="xdisplay:none;margin:0"  class="edit_block" id="d_contacts">
+      <div  style="margin:0"  class="edit_block" id="d_contacts">
 	<table class="edit" border=0>
 	  <tr class="title"><td>{t}Contacts{/t}: 
 	      <span class="state_details" id="personal_num_changes"></span>
@@ -225,12 +222,14 @@
 	  </tr>
 	  
 
-	  <tr id="tr_contact_showcase">
+	  <tr id="tr_contact_case">
 	    <td colspan=2 style="xborder:1px solid black"  id="contact_showcase">
 	     
 	      <div  style="display:none" class="contact_container"  id="contact_container0">
-		<div class="contact_display" id="contact_display0"></div>
-		<div  class="contact_buttons" id="contact_buttons0" >
+			
+			<div class="contact_display" id="contact_display0"></div>
+			<div  class="contact_buttons" id="contact_buttons0" >
+			<input type="checkbox" id="is_main_contact0" value="No" ovalue="No" /> {t}Main{/t}
 		  <span class="small_button small_button_edit" id="delete_contact_button0" contact_id="0" onclick="delete_contact(event,this)" >{t}Delete{/t}</span>
 		  <span class="small_button small_button_edit" id="edit_contact_button0" contact_id="0" onclick="edit_contact(event,this)" >{t}Edit{/t}</span>
 		</div>
@@ -238,10 +237,12 @@
 	      
 	      {foreach from=$contacts item=contact key=key }
 	      <div class="contact_container"  id="contact_container{$contact->id}">
+	      
 		<div class="contact_display"  id="contact_display{$contact->id}">{$contact->display('card')}</div>
 		<div class="contact_buttons" id="contact_buttons{$contact->id}">
-		  <span class="small_button small_button_edit" id="delete_contact_button{$contact->id}" contact_id="{$contact->id}" onclick="delete_contact(event,this)" >{t}Delete{/t}</span>
-		  <span class="small_button small_button_edit" id="edit_contact_button{$contact->id}" contact_id="{$contact->id}" onclick="edit_contact(event,this)" >{t}Edit{/t}</span>
+			<input type="checkbox" id="is_main_contact{$contact->id}" {if $contact->is_main() }value="Yes" ovalue="Yes" checked="checked" {else}value="No" ovalue="No"{/if} /> {t}Main{/t}
+		 	<span class="small_button small_button_edit" id="delete_contact_button{$contact->id}" contact_id="{$contact->id}" onclick="delete_contact(event,this)" >{t}Delete{/t}</span>
+		  	<span class="small_button small_button_edit" id="edit_contact_button{$contact->id}" contact_id="{$contact->id}" onclick="edit_contact(event,this)" >{t}Edit{/t}</span>
 		</div>
 	      </div>
 	      {/foreach}
@@ -315,7 +316,7 @@
 		    <span style="display:none" class="small_button" id="save_add_email_button" onclick="save_email()" >Save Email</span>
 		    <span style="display:none" class="small_button" id="save_add_mobile_button" onclick="save_telecom('mobile')" >Save Mobile</span>
 		    <span class="small_button" id="add_email_button"  onclick="add_email()" >Add Email</span>
-		    <span class="small_button" id="add_mobile_button" onclick="add_telecom('mobile')" >Add Mobile</span>
+		    <span class="small_button" id="add_mobile_button" container_key='' telecom_type='mobile' onclick="add_telecom(this)" >Add Mobile</span>
 
 		  </td>
 		</tr>
@@ -354,11 +355,13 @@
 		    </table>
 		  </td>
 		</tr>
-
-	    <tr id="mobile_mould" class="mould" style="display:none;xbackground:red">
+		<tr id="mobile_mould" class="mould" style="display:none;xbackground:red">
 	      <td  class="label">
-		<span id="show_description" onclick="show_details_telecom(this)" class="small_button  show_details_telecom" telecom_type="mobile" action="Show" style="padding:0 1px;font-size:50%;position:relative;top:-2px;">D</span>
-		{t}Mobile{/t}:
+		<span id="show_description" onclick="show_details_telecom(this)" 
+		class="show_details_telecom" telecom_type="mobile" action="Show" style="padding:0 1px;cursor:pointer">
+			<img src='art/icons/application_put.png' alt="D"/>
+		</span>
+		 {t}Mobile{/t}:
 	      </td>
 	      <td>
 		<span class="telecom_to_delete" style="display:none;text-decoration:line-through"></span>
@@ -367,51 +370,50 @@
 	      <td>
 		<input class="Telecom_Is_Main" type="checkbox" ovalue="No"  telecom_type="mobile" onclick="update_is_main_telecom(this)"/><span>{t}Main{/t}</span>
 		
-		<span class="small_button undelete_telecom"  style="display:none" email_key="" onclick="unmark_telecom_to_delete(this)">{t}Cancel Delete{/t}</span>
+		<span class="small_button undelete_telecom"  style="display:none" mobile_key="" onclick="unmark_telecom_to_delete(this)">{t}Cancel Delete{/t}</span>
 		<span class="small_button delete_telecom"   mobile_key="" onclick="mark_telcom_to_delete(this)">{t}Delete{/t}</span>
 		
 	      </td>
 	    </tr>
-	    
-	    <tr  id="mobile_Country_Code_mould" class="Telecom_Details"  style="display:none" >
+	    <tr id="mobile_Country_Code_mould" class="Telecom_Details"  style="display:none" >
 	      <td class="label">{t}Country Code{/t}:</td><td ><input class="Country_Code" style="width:3em" value="" ovalue="" onkeyup="telecom_component_change(this)"  /></td></tr>
 	    <tr id="mobile_National_Access_Code_mould"   class="Telecom_Details" style="display:none">
 	      <td  class="label"><img class="help" src="art/icons/help.png" alt="?"/> {t}NAC{/t}:</td><td ><input class="National_Access_Code" style="text-align:center;width:1em" value="" ovalue=""  onkeyup="telecom_component_change(this)" /></td>
 	    </tr>
-	    <tr  id="mobile_Number_mould" class="Telecom_Details" style="display:none">
+	    <tr id="mobile_Number_mould" class="Telecom_Details" style="display:none">
 	      <td  class="label">{t}Number{/t}:</td><td ><input  class="Number" style="width:7em" value="" ovalue=""  onkeyup="telecom_component_change(this)"   />
 	      </td>
 	    </tr>
-	 
-	
-	  
-
-	  <tr class="title"   >
+	    <tr class="title" >
 	    <td colspan=3 >{t}Contact Address & Landlines{/t}:
 	      <span style=""  class="small_button" id="add_address_to_contact_button" >Add Address</span>
 	    </td>
 	  </tr>
 	  <tr id="address_mould" class="mould" style="display:none">
 	    <td class="Address" style="font-size:70%"></td>
-	    <td >
+	    <td colspan=2>
+		<input type="checkbox"  class="Is_Main"/> {t}Main{/t}
 	      <span style="display:none" tel_key="" class="small_button" id="cancel_edit_tel_button" >Cancel Edit Telephone</span>
 	      <span style="display:none" fax_key="" class="small_button" id="cancel_edit_fax_button" >Cancel Edit Fax</span>
 	      
-	      <span style="display:none" class="small_button" id="cancel_add_tel_button" >Cancel Adding New Telephone</span>
+	       <span style="display:none" class="small_button" id="cancel_add_tel_button" >Cancel Adding New Telephone</span>
 	      <span style="display:none" class="small_button" id="cancel_add_fax_button" >Cancel Adding New Fax</span>
 	      
 	      <span style="display:none" class="small_button" id="save_add_tel_button" >Save New Telephone</span>
 	      <span style="display:none" class="small_button" id="save_add_fax_button" >Save New Fax</span>
 	      <span class="small_button" id="add_move_button" >Move from Address</span>
-	      <span class="small_button" id="add_tel_button" >Add Telephone</span>
-	      <span class="small_button" id="add_fax_button" >Add Fax</span>
-	      <table style="margin-top:10px">
-		
-
-		<tr id="telephone_mould" class="tr_telecom mould" style="display:none;xbackground:red">
+	      <span class="small_button Add_Telecom" container_key='' telecom_type='telephone' onclick="add_telecom(this)">Add Telephone</span>
+	      <span class="small_button Add_Telecom" container_key='' telecom_type='fax' onclick="add_telecom(this)">Add Fax</span>
+	      <table style="margin-top:10px;width:100%" border=1>
+	   	   	<tr id="telephone_mould" class="tr_telecom mould" style="display:none;">
 		  <td  class="label">
-		    <span id="show_description" onclick="show_details_telecom(this)" class="small_button  show_details_telecom" telecom_type="telephone" action="Show" style="padding:0 1px;font-size:50%;position:relative;top:-2px;">D</span>
-		    {t}Telephone{/t}:
+		    <span id="show_description" onclick="show_details_telecom(this)" 
+		    class="show_details_telecom" 
+		    telecom_type="telephone" action="Show" 
+		    style="padding:0 1px;cursor:pointer">
+		    	<img src='art/icons/application_put.png' alt="D"/>
+		    </span>
+		     {t}Telephone{/t}:
 		  </td>
 		  <td>
 		    <span class="telecom_to_delete" style="display:none;text-decoration:line-through"></span>
@@ -424,43 +426,62 @@
 		    <span class="small_button delete_telecom"   telephone_key="" onclick="mark_telcom_to_delete(this)">{t}Delete{/t}</span>
 		    
 		  </td>
-		</tr>
-		
-		<tr  class="Telecom_Details"  style="display:none" >
+		</tr>	
+			<tr class="Telecom_Details" style="display:none" >
 		  <td class="label">{t}Country Code{/t}:</td><td ><input class="Country_Code" style="width:3em" value="" ovalue="" onkeyup="telecom_component_change(this)"  /></td></tr>
-		<tr class="Telecom_Details" style="display:none">
+			<tr class="Telecom_Details" style="display:none">
 		  <td  class="label"><img class="help" src="art/icons/help.png" alt="?"/> {t}NAC{/t}:</td><td ><input class="National_Access_Code" style="text-align:center;width:1em" value="" ovalue=""  onkeyup="telecom_component_change(this)" /></td>
 		</tr>
-		
-		<tr  class="Telecom_Details" style="display:none">
+			<tr class="Telecom_Details" style="display:none">
 		  <td  class="label">{t}Area Code{/t}:</td><td ><input  class="Area_Code" style="width:4em" value="" ovalue=""  onkeyup="telecom_component_change(this)"   />
 		  </td>
 		</tr>
-
-		<tr class="Telecom_Details" style="display:none">
+			<tr class="Telecom_Details" style="display:none">
 		  <td  class="label">{t}Number{/t}:</td><td ><input  class="Number" style="width:7em" value="" ovalue=""  onkeyup="telecom_component_change(this)"   />
 		  </td>
 		</tr>
-		
-		<tr class="Telecom_Details" style="display:none">
+			<tr class="Telecom_Details" style="display:none">
 		  <td  class="label">{t}Extension{/t}:</td><td ><input  class="Extension" style="width:5em" value="" ovalue=""  onkeyup="telecom_component_change(this)"   />
 		  </td>
 		</tr>
-		
-		<tr id="fax_mould"  class="tr_telecom" style="display:none">
-		  <td  class="label">{t}Fax{/t}:</td><td style="vertical-align: top;text-align:left"><input   class="Fax" value="" ovalue="" /> </td>
-		  <td   >
-		    <table border=1 class="edit" style="display:none">
-		      <tr valign="top"><td valign="top">{t}Country Code{/t}:</td><td ><input style="width:3em" value="" ovalue="" /></td></tr>
-		      <tr><td>{t}National Access Code{/t}:</td><td ><input style="text-align:center;width:1em" value="" ovalue="" /></td></tr>
-		      <tr><td>{t}Area Code{/t}:</td><td ><input style="width:4em" value="" ovalue="" /></td></tr>
-		      <tr><td>{t}Number{/t}:</td><td ><input style="width:7em" value="" ovalue="" /></td></tr>
-		      <tr><td>{t}Extension{/t}:</td><td ><input style="width:3em" value="" ovalue="" /></td></tr>
-		    </table>
+			<tr id="fax_mould" class="tr_telecom mould" style="display:none;">
+		  <td  class="label">
+		    <span id="show_description" 
+		    onclick="show_details_telecom(this)"
+		    class="show_details_telecom" 
+		    telecom_type="fax" 
+		    action="Show" 
+		    style="padding:0 1px;cursor:pointer">
+		    <img src='art/icons/application_put.png' alt="D"/>
+		    </span>
+		    {t}Fax{/t}:
+		  </td>
+		  <td>
+		    <span class="telecom_to_delete" style="display:none;text-decoration:line-through"></span>
+		    <input  class="Telecom" value="" ovalue="" to_delete=0  onkeyup="validate_telecom(this);telecom_change()"     /> 
+		  </td >
+		  <td>
+		    <input class="Telecom_Is_Main" type="checkbox" ovalue="No"  telecom_type="fax" onclick="update_is_main_telecom(this)"/><span>{t}Main{/t}</span>
+		    <span class="small_button undelete_telecom"  style="display:none" email_key="" onclick="unmark_telecom_to_delete(this)">{t}Cancel Delete{/t}</span>
+		    <span class="small_button delete_telecom"   fax_key="" onclick="mark_telcom_to_delete(this)">{t}Delete{/t}</span>
+		    
+		  </td>
+		</tr>	
+			<tr class="Telecom_Details"  style="display:none" >
+		  <td class="label">{t}Country Code{/t}:</td><td ><input class="Country_Code" style="width:3em" value="" ovalue="" onkeyup="telecom_component_change(this)"  /></td></tr>
+			<tr class="Telecom_Details" style="display:none">
+		  <td  class="label"><img class="help" src="art/icons/help.png" alt="?"/> {t}NAC{/t}:</td><td ><input class="National_Access_Code" style="text-align:center;width:1em" value="" ovalue=""  onkeyup="telecom_component_change(this)" /></td>
+		</tr>
+			<tr class="Telecom_Details" style="display:none">
+		  <td  class="label">{t}Area Code{/t}:</td><td ><input  class="Area_Code" style="width:4em" value="" ovalue=""  onkeyup="telecom_component_change(this)"   />
 		  </td>
 		</tr>
-		<tr id="after_fax" class="tr_telecom"></tr>
-		      </table>
+			<tr class="Telecom_Details" style="display:none">
+		  <td  class="label">{t}Number{/t}:</td><td ><input  class="Number" style="width:7em" value="" ovalue=""  onkeyup="telecom_component_change(this)"   />
+		  </td>
+		</tr>
+			<tr id="after_fax" class="tr_telecom"></tr>
+		</table>
 	    </td>
 	  </tr>
 	  
@@ -487,11 +508,7 @@
       
 
     </div>
-
-
-
 </div>
 </div>
-
 {include file='footer.tpl'}
 

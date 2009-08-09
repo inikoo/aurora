@@ -79,13 +79,13 @@ $address=new address($company->data['Company Main Address Key']);
 $smarty->assign('company',$company);
 $smarty->assign('address',$address);
 if($edit ){
-  $offset=1;// 0 is reserved to new address
-  $addresses=$company->get_addresses($offset);
+
+  $addresses=$company->get_addresses();
   $smarty->assign('addresses',$addresses);
   $number_of_addresses=count($addresses);
   $smarty->assign('number_of_addresses',$number_of_addresses);
 
-  $contacts=$company->get_contacts($offset);
+  $contacts=$company->get_contacts();
   $smarty->assign('contacts',$contacts);
   $number_of_contacts=count($contacts);
   $smarty->assign('number_of_contacts',$number_of_contacts);

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /*
  File: Contact.php 
 
@@ -33,7 +33,8 @@ class Contact extends DB_Table{
      Initializes the class, Search/Load or Create for the data set 
      
      Parameters:
-     arg1 -    (optional) Could be the tag for the Search Options or the Contact Key for a simple object key search
+     arg1 -    (optional) Could be the tag for the Search Options or the Contact Key for a 
+     simple object key search
      arg2 -    (optional) Data used to search or create the object
 
      Returns:
@@ -143,7 +144,10 @@ class Contact extends DB_Table{
     }
 
     $data=$this->base_data();
-    $address_home_data=array('Contact Home Address Line 1'=>'','Contact Home Address Town'=>'','Contact Home Address Line 2'=>'','Contact Home Address Line 3'=>'','Contact Home Address Postal Code'=>'','Contact Home Address Country Name'=>'','Contact Home Address Country Primary Division'=>'','Contact Home Address Country Secondary Division'=>'');
+    $address_home_data=array(
+    	'Contact Home Address Line 1'=>''
+    	,'Contact Home Address Town'=>''
+    	,'Contact Home Address Line 2'=>'','Contact Home Address Line 3'=>'','Contact Home Address Postal Code'=>'','Contact Home Address Country Name'=>'','Contact Home Address Country Primary Division'=>'','Contact Home Address Country Secondary Division'=>'');
     $address_work_data=array('Contact Work Address Line 1'=>'','Contact Work Address Town'=>'','Contact Work Address Line 2'=>'','Contact Work Address Line 3'=>'','Contact Work Address Postal Code'=>'','Contact Work Address Country Name'=>'','Contact Work Address Country Primary Division'=>'','Contact Work Address Country Secondary Division'=>'');
     
 
@@ -3193,6 +3197,7 @@ string with the name to be parsed
   
      while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
        $tel= new Telecom($row['Telecom Key']);
+       $tel->set_scope('Contact',$this->id);	
        $telecoms[]= $tel;
      }
      $this->number_telecoms=count($telecoms);
@@ -3284,7 +3289,16 @@ string with the name to be parsed
   function get_main_email_key(){
     return $this->data['Contact Main Email Key'];
   }
-
+/*
+function: is_main
+returns true if the contact is the main in the scope context
+*/
+public function is_main(){
+	if($this->data['Contact Is Main']=='Yes')
+		return true;
+	else
+		return false;
+}
 
 } 
  ?>

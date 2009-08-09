@@ -1,3 +1,5 @@
+﻿
+
 var Contact_Changes=0;
 var Contact_Name_Changes=0;
 var Contact_Details_Changes=0;
@@ -20,22 +22,23 @@ var Email_Keys=['Email','Email_Description','Email_Contact_Name','Email_Is_Main'
 var Mobile_Components=['Country_Code','National_Access_Code','Number'];
 var Telephone_Components=['Country_Code','National_Access_Code','Area_Code','Number','Extension'];
 var Fax_Components=['Country_Code','National_Access_Code','Area_Code','Number'];
-
 var Telecom_Components=new Object();
 Telecom_Components['mobile']=Mobile_Components;
 Telecom_Components['telephone']=Telephone_Components;
 Telecom_Components['fax']=Fax_Components;
-
-
-
 var Number_New_Emails=0;
 var Number_New_Empty_Emails=0;
-
 var Number_New_Emails=0;
 var Number_New_Empty_Telecoms=new Object();
 Number_New_Empty_Telecoms['mobile']=0;
+Number_New_Empty_Telecoms['telephone']=0;
+Number_New_Empty_Telecoms['fax']=0;
+
 var Number_New_Telecoms=new Object();
 Number_New_Telecoms['mobile']=0;
+Number_New_Telecoms['telephone']=0;
+Number_New_Telecoms['fax']=0;
+
 
 var Number_New_Contact_Address=0;
 
@@ -69,9 +72,10 @@ var save_contact=function(){
 
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
-		    //	alert(o.responseText);
+		    	//alert(o.responseText);
 		    var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if(r.action=='updated'){
+		    
 		    Dom.get('contact_display'+contact_key).innerHTML=r.xhtml_subject;
 		    
 		    for(i in r.updated_data){
@@ -113,7 +117,7 @@ var save_contact=function(){
 		  
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
 			    success:function(o) {
-				alert(o.responseText);
+				//alert(o.responseText);
 				var r =  YAHOO.lang.JSON.parse(o.responseText);
 				if(r.action=='updated' || r.action=='created'){
 				    
@@ -189,8 +193,6 @@ var save_contact=function(){
 
       cancel_edit_contact();
 };
-
-
 var create_contact=function(){
     
     alert("creating contact");
@@ -287,16 +289,12 @@ var create_contact=function(){
 	    });
    
 }
-
-
 var update_contact_buttons=function(){
     if(Contact_Changes>0){
 	 Dom.setStyle(['save_edit_contact'], 'display', ''); 
     }
 
 }
-
-
 var cancel_edit_contact=function (){
 
      Contact_Changes=0;
@@ -347,16 +345,9 @@ var cancel_edit_contact=function (){
 
 
 };
-
 var delete_contact=function (e,contact_button){
 
 }
-
-
-
-
-
-
 var edit_contact=function (e,contact_button){
     
    
@@ -383,10 +374,9 @@ var edit_contact=function (e,contact_button){
     data=Contact_Data[index];
    
     for (key in data){
-	
-    
-
-	if(key=='Name_Data'){
+    if(key=='Number_Of_Emails' || key=='Number_Of_Mobiles' || key=='Number_Of_Addresses')
+    	continue;
+    if(key=='Name_Data'){
 	  
 	    var contact_name_parts=data[key];
 	    for (key2 in contact_name_parts){
@@ -401,14 +391,16 @@ var edit_contact=function (e,contact_button){
 		    item2.setAttribute('ovalue',contact_name_parts[key2]);
 		    
 	    }
-	}else if(key=='Contact_Gender'){
+	}
+	else if(key=='Contact_Gender'){
 	    var elements_to_unselect=Dom.getElementsByClassName('Contact_Gender');
 	    Dom.removeClass(elements_to_unselect,'selected');
 	    Dom.addClass('Contact_Gender_'+data[key],'selected');
 	    Dom.get('Contact_Gender').value=data[key];
 	    Dom.get('Contact_Gender').setAttribute('ovalue',data[key]);
 
-	}else if(key=='Mobiles'){
+	}
+	else if(key=='Mobiles'){
 	  var mobiles=data[key];
 	  for (mobile_key in mobiles) {
 	    var mobile_data=mobiles[mobile_key];
@@ -434,7 +426,8 @@ var edit_contact=function (e,contact_button){
 	    
 	    
 	  }
-	}else if(key=='Emails'){
+	}
+	else if(key=='Emails'){
 	    var emails=data[key];
 	    for (email_key in emails) {
 		    var email_data=emails[email_key];
@@ -471,27 +464,52 @@ var edit_contact=function (e,contact_button){
 		
 	    
 	    
-	}else if(key=='Addresses'){
-	    var addresses=data[key];
+	}
+	else if(key=='Addresses'){
+	var addresses=data[key];
 	    for (address_key in addresses) {
 		var address_data=addresses[address_key];
 		var new_address_container = Dom.get('address_mould').cloneNode(true);
 		var the_parent=Dom.get('last_tr').parentNode;
 		var insertedElement = the_parent.insertBefore(new_address_container,Dom.get('last_tr') );
+		
+		
+		var element_array=Dom.getElementsByClassName('Add_Telecom', 'span',insertedElement);
+		
+		element_array[0].id='Add_Telephone'+address_key;
+		element_array[0].setAttribute('container_key',address_key)
+		element_array[1].id='Add_Fax'+address_key;
+		element_array[1].setAttribute('container_key',address_key)
+
+		var element_array=Dom.getElementsByClassName('Is_Main', 'input',insertedElement);
+		element_array[0].id='Address_Is_Main'+address_key;
+		
+		if(address_data['Address_Is_Main']=='Yes' )
+		Dom.get('Address_Is_Main'+address_key).checked=true;
+		else
+		Dom.get('Address_Is_Main'+address_key).checked=false;
+		Dom.get('Address_Is_Main'+address_key).value=address_data['Address_Is_Main'];
+		Dom.get('Address_Is_Main'+address_key).setAttribute('ovalue',address_data['Address_Is_Main']);
+		
 		var element_array=Dom.getElementsByClassName('tr_telecom', 'tr',insertedElement);
+		
 		element_array[0].id='telephone_mould'+address_key;
 		element_array[1].id='fax_mould'+address_key;
 		element_array[2].id='after_fax'+address_key;
 		
-
 		var element_array=Dom.getElementsByClassName('Telecom_Details', 'tr',insertedElement);
 		var j=0;
 		var components=Telecom_Components['telephone'];
 		for (i in components){
-		  //alert('telephone'+address_key+'_'+components[i]+'_mould')
 		  element_array[j].id='telephone'+address_key+'_'+components[i]+'_mould';
 		  j++;
 		}
+		var components=Telecom_Components['fax'];
+		for (i in components){
+		  element_array[j].id='fax'+address_key+'_'+components[i]+'_mould';
+		  j++;
+		}
+
 
 
 		Dom.addClass(insertedElement,'cloned_editor');
@@ -504,15 +522,13 @@ var edit_contact=function (e,contact_button){
 		for(telephone_key in telephones) {
 
 		  var telephone_data=telephones[telephone_key];
-		  
 		  if(telephone_data==null)
 		    continue;
 		  clone_telecom('telephone',address_key,telephone_key);
 		  Dom.get('Telecom'+telephone_key).value=telephone_data['Telephone'];
 		  Dom.get('Telecom'+telephone_key).setAttribute('ovalue',telephone_data['Telephone']);
-		  
-		  
-		    if(telephone_data['Telecom_Is_Main']=='Yes')
+
+		  if(telephone_data['Telecom_Is_Main']=='Yes')
 		      Dom.get('Telecom_Is_Main'+telephone_key).checked=true;
 		    else
 		      Dom.get('Telecom_Is_Main'+telephone_key).checked=false;
@@ -526,54 +542,43 @@ var edit_contact=function (e,contact_button){
 		    
 		  }
 		}
-	   
-		  
-		
-
-		  
-		    
 		
 		faxes=address_data['Faxes'];
 		for(fax_key in faxes) {
-		    var fax_data=faxes[fax_key];
-		    var new_fax_container = Dom.get('fax_mould'+address_key).cloneNode(true);
-		    var the_parent=Dom.get('after_fax'+address_key).parentNode;
-		    var insertedElement = the_parent.insertBefore(new_fax_container,Dom.get('after_fax'+address_key) );
-		    Dom.addClass(insertedElement,'cloned_editor');
-		    Dom.setStyle(insertedElement,'display','');
-		    var element_array=Dom.getElementsByClassName('Fax', 'input',insertedElement);
-		    element_array[0].value=fax_data['FAX'];
+		var fax_data=faxes[fax_key];
+		if(fax_data==null)continue;
+		clone_telecom('fax',address_key,fax_key);
+		Dom.get('Telecom'+fax_key).value=fax_data['Fax'];
+		Dom.get('Telecom'+fax_key).setAttribute('ovalue',fax_data['Fax']);
+		if(fax_data['Telecom_Is_Main']=='Yes')
+		Dom.get('Telecom_Is_Main'+fax_key).checked=true;
+		else
+		Dom.get('Telecom_Is_Main'+fax_key).checked=false;
+		Dom.get('Telecom_Is_Main'+fax_key).value=fax_data['Telecom_Is_Main'];
+		Dom.get('Telecom_Is_Main'+fax_key).setAttribute('ovalue',fax_data['Telecom_Is_Main']);
+		var components=Telecom_Components['fax'];
+		for (i in components){
+			Dom.get(components[i]+fax_key).value=fax_data[components[i]];
+		Dom.get(components[i]+fax_key).setAttribute('ovalue',fax_data[components[i]]);
 		}
-		
+		}
 
 	    }
 		
 
 
-	}else{
+	}
+	else{
 	   
 	    item=Dom.get(key);
 	    item.value=data[key];
 	    item.setAttribute('ovalue',data[key]);
 
 	}
-	
-
-	
-    }
+	}
     
     
 };
-
-
-  
-
-
-
-
-
-
-    
 var render_after_contact_item_change=function(){
     
     Contact_Changes=Contact_Name_Changes+Contact_Email_Changes+Contact_Mobile_Changes;
@@ -589,10 +594,7 @@ var render_after_contact_item_change=function(){
 	Dom.setStyle(['save_contact_button', 'cancel_save_contact_button'], 'display', ''); 
     }
 };
-
-
-
-function calculate_num_changed_in_personal_details(){
+var calculate_num_changed_in_personal_details=function(){
     var changes=0;
    
     var items=Contact_Details_Keys;

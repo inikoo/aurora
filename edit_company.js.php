@@ -58,6 +58,7 @@ $contact_data.="\n";
 foreach($contacts as $contact){
   
   $mobiles=$contact->get_mobiles();
+  $number_of_mobiles=count($mobiles);
   $mobile_data='';
   foreach($mobiles as $mobile){
     $scope_related_mobile_type='Work Mobile';
@@ -76,6 +77,7 @@ foreach($contacts as $contact){
   $mobile_data=preg_replace('/^,/','',$mobile_data);
 
   $emails=$contact->get_emails();
+  $number_of_emails=count($emails);
   $email_data='';
   foreach($emails as $email){
     $email_data.=sprintf(',%d:{"Email_Key":%d,"Email":"%s","Email_Contact_Name":"%s","Email_Description":"%s","Email_Is_Main":"%s"}'
@@ -92,11 +94,14 @@ foreach($contacts as $contact){
   $contact_address_data='';
   $scope_related_telephone_type='Work Telephone';
   $scope_related_fax_type='Office Fax';
+  $scope_related_address_type='Work';
 
-  foreach($contact_addresses as $contact_address){
+   foreach($contact_addresses as $contact_address){
+if(isset($contact_address->data['Address Type'][$scope_related_address_type]) ){
+
 
     $tels=$contact->get_telephones($contact_address->id);
-  
+  $number_of_telephones=count($tels);
 
     $tels_data='';
     
@@ -122,22 +127,33 @@ foreach($contacts as $contact){
       
     $faxes=$contact->get_faxes($contact_address->id);
      $faxes_data='';
+     $number_of_faxes=count($faxes);
     foreach($faxes as $fax){
-      $faxes_data.=sprintf(',%d:{"FAX_Key":%d,"FAX":"%s"}'
+    if(isset($tel->data['Telecom Type'][$scope_related_fax_type]) ){
+      $faxes_data.=sprintf(',%d:{"Fax_Key":%d,"Fax":"%s","Country_Code":"%s","National_Access_Code":"%s","Area_Code":"%s","Number":"%s","Telecom_Is_Main":"%s"}'
 			  ,$fax->id
 			  ,$fax->id
-			  ,$fax->display()
+			  ,addslashes($fax->display())
+		        ,addslashes($fax->data['Telecom Country Telephone Code'])
+			    ,addslashes($fax->data['Telecom National Access Code'])
+			    ,addslashes($fax->data['Telecom Area Code'])
+			    ,addslashes($fax->data['Telecom Number'])
+			    ,$fax->data['Telecom Is Main'][$scope_related_fax_type]
 			  );
+    }
     }
     $faxes_data=preg_replace('/^,/','',$faxes_data);
 
-    $contact_address_data.=sprintf(',%d:{"Address_Key":%d,"Address":"%s","Address_Mini":"%s","Telephones":{%s},"Faxes":{%s}}'
+    $contact_address_data.=sprintf(',%d:{"Address_Key":%d,"Address":"%s","Address_Mini":"%s","Address_Is_Main":"%s","Telephones":{%s},"Number_Of_Telephones":%d,"Faxes":{%s},"Number_Of_Faxes":%d}'
 				   ,$contact_address->id
 				   ,$contact_address->id
 				   ,addslashes($contact_address->display('xhtml'))
 				   ,addslashes($contact_address->display('mini'))
+				   ,addslashes($contact_address->data['Address Is Main'][$scope_related_address_type]) 
 				   ,$tels_data
+                    ,$number_of_telephones
 				   ,$faxes_data
+				   ,$number_of_faxes
 				   );
 
   }
@@ -162,15 +178,17 @@ foreach($contacts as $contact){
 			 ,$contact->data['Contact Title']
 			 );
   $contact_data.="\n";
-    $contact_data.=sprintf(',"Mobiles":{%s},"Emails":{%s},"Addresses":{%s}} '
+    $contact_data.=sprintf(',"Mobiles":{%s},"Number_Of_Mobiles":%d,"Emails":{%s},"Number_Of_Emails":%d,"Addresses":{%s}} '
 			   ,$mobile_data
+			   ,$number_of_mobiles
 			   ,$email_data
+			   ,$number_of_emails
 			   ,$contact_address_data
 			 );
   $contact_data.="\n";
   
 }
-
+}
 
 $addresses=$company->get_addresses(1);
 $address_data="\n";
