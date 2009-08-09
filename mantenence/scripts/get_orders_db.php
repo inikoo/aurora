@@ -98,7 +98,7 @@ $fam_promo_key=$fam_promo->id;
 
 $sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed)  order by filename ";
 
-//$sql="select * from  orders_data.orders where filename like '%refund.xls'   order by filename";
+$sql="select * from  orders_data.orders where filename like '%refund.xls'   order by filename";
 //$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/18979.xls' order by filename";
 
 //$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/15720.xls' or filename like '/mnt/%/Orders/60000.xls' or  filename like '/mnt/%/Orders/15sdfsd593.xls' order by filename";
@@ -1705,14 +1705,14 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
 	//		print_r($data_refund_transactions);
 	//$order->create_refund_simple($data_invoice,$data_refund_transactions);
-	print $order->id;
+	//print $order->id;
 	
 	$refund = new Invoice('create refund',$data_invoice,$data_refund_transactions,$order); 
 	$refund->data['Invoice Paid Date']=$date_inv;
 
 
 
-	$invoice->pay('full',
+	$refund->pay('full',
 			array(
 			      
 			      'Invoice Total Net Amount'=>round($header_data['total_net']*$factor,2)

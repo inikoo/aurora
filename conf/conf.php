@@ -130,12 +130,12 @@ $myconf=array(
 	      'outside'=>'Ouside Europe',
 	      's_outside'=>'Rest',
 	      'encoding'=>'UTF-8',
-	      'currency_symbol'=>'€',
-	      'currency_symbol'=>'€',
-	      'currency_code'=>'EUR',
-	      'currency'=>'Euro',
-	      'decimal_point'=>',',
-	      'thosusand_sep'=>'.',
+	      'currency_symbol'=>'£',
+	     
+	      'currency_code'=>'GBP',
+	      'currency'=>'Pound',
+	      'decimal_point'=>'.',
+	      'thosusand_sep'=>',',
 	      
 	      'theme'=>'yui-skin-sam',
 	      'template_dir'=>'templates',
