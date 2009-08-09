@@ -81,11 +81,11 @@ function show_details_telecom(o){
     var components=Telecom_Components[telecom_type];
     for (i in components){
 	if(action=='Show'){
-	    o.innerHTML='H';
+	    o.innerHTML='<img src="art/icons/application_ungo.png" alt="H"/>';
 	    o.setAttribute('action','Hide');
 	    Dom.setStyle("tr_telecom"+components[i]+telecom_key,'display','');
 	}else{
-	    o.innerHTML='D';
+	    o.innerHTML='<img src="art/icons/application_put.png" alt="D"/>';
 	    o.setAttribute('action','Show');
 	    Dom.setStyle("tr_telecom"+components[i]+telecom_key,'display','none');
 	    
@@ -140,12 +140,33 @@ function unmark_telecom_to_delete(o){
     calculate_num_changed_in_telecom();
 }
 
-function add_telecom(telecom_type){
-    
+function add_telecom(o){
+  var container_key=o.getAttribute('container_key');
+  var telecom_type=o.getAttribute('telecom_type');
     if(Number_New_Empty_Telecoms[telecom_type]==0 ){
 
 	var telecom_key='new'+telecom_type+Number_New_Telecoms;
-	clone_telecom(telecom_type,'',telecom_key);
+	clone_telecom(telecom_type,container_key,telecom_key);
+
+
+if(telecom_type=='mobile')
+    var telecom_numbers=Contact_Data[Current_Contact_Index]['Number_Of_Mobiles']+Number_New_Telecoms[telecom_type];
+else if(telecom_type=='telephone')
+    var telecom_numbers=Contact_Data[Current_Contact_Index]['Addresses'][container_key]['Number_Of_Telephones']+Number_New_Telecoms[telecom_type];
+else if(telecom_type=='fax')
+    var telecom_numbers=Contact_Data[Current_Contact_Index]['Addresses'][container_key]['Number_Of_Faxes']+Number_New_Telecoms[telecom_type];
+
+if(telecom_numbers==0 ){
+	    Dom.get('Telecom_Is_Main'+telecom_key).value='Yes';
+   	    Dom.get('Telecom_Is_Main'+telecom_key).setAttribute('ovalue','Yes');
+	    Dom.get('Telecom_Is_Main'+telecom_key).checked=true;   
+	}else{
+	    Dom.get('Telecom_Is_Main'+telecom_key).value='No';
+   	    Dom.get('Telecom_Is_Main'+telecom_key).setAttribute('ovalue','No');
+        Dom.get('Telecom_Is_Main'+telecom_key).checked=false;   
+	    }
+
+
 
 	Number_New_Empty_Telecoms[telecom_type]++;
 	Number_New_Telecoms[telecom_type]++;
@@ -196,7 +217,7 @@ function clone_telecom(telecom_type,container_key,telecom_key){
 	
       for (i in components){
 	  component_mould_key=telecom_type+container_key+'_'+components[i]+'_mould';
-	  // alert(component_mould_key)
+	  
 	  var new_telecom_container = Dom.get(component_mould_key).cloneNode(true);
 
 	  var insertedElement = the_parent.insertBefore(new_telecom_container, Dom.get(mould_key));

@@ -823,7 +823,10 @@ class Address extends DB_Table{
       }else{
 	//print_r($this->data);
 	$address='';
-	$header_address=_trim($this->data['Address Internal'].' '.$this->data['Address Building']);
+	$header_address='';
+	if($this->data['Address Internal']!=='')
+	    $header_address=_trim($this->data['Address Internal']).$separator;
+	$header_address.=_trim($this->data['Address Building']);
 	if($header_address!='')
 	  $address.=$header_address.$separator;
 	
@@ -3684,20 +3687,14 @@ function set_scope($raw_scope='',$scope_key=0){
   }
   
   function load_metadata(){
-    
-
-
-
-
+   
     $where_scope=sprintf(' and `Subject Type`=%s',prepare_mysql($this->scope));
     
     $where_scope_key='';
     if($this->scope_key)
       $where_scope_key=sprintf(' and `Subject Key`=%d',$this->scope_key);
 
-    
-
-
+   
     $sql=sprintf("select * from `Address Bridge` where `Address Key`=%d %s  %s  order by `Is Main`"
 		 ,$this->id
 		 ,$where_scope
@@ -3725,7 +3722,22 @@ function set_scope($raw_scope='',$scope_key=0){
     
   }
 
+public function is_main($type=false){
+    if($this->scope=='Company'){
+            if(!$type)
+                $type='Office';
+        
+    }elseif($this->scope=='Contact'){
+        if(!$type)
+           $type='Work';
+    }
 
+    if(isset($this->data['Address Is Main'][$type]) and $this->data['Address Is Main'][$type]=='Yes')
+        return true;
+        else
+    return false;
+
+}
 
 }    
 

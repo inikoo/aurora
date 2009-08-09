@@ -146,8 +146,17 @@ function add_email(description){
 	if(description== undefined)
 	    description='Work';
 	Dom.get('Email_Description'+email_key).value=description;
-	Dom.get('Email_Is_Main'+email_key).value='No';
-	Number_New_Empty_Emails++;
+	
+	if(Contact_Data[Current_Contact_Index]['Number_Of_Emails']+Number_New_Emails==0 ){
+	    Dom.get('Email_Is_Main'+email_key).value='Yes';
+   	    Dom.get('Email_Is_Main'+email_key).setAttribute('ovalue','Yes');
+	    Dom.get('Email_Is_Main'+email_key).checked=true;   
+	}else{
+	    Dom.get('Email_Is_Main'+email_key).value='No';
+   	    Dom.get('Email_Is_Main'+email_key).setAttribute('ovalue','No');
+        Dom.get('Email_Is_Main'+email_key).checked=false;   
+	    }
+    Number_New_Empty_Emails++;
 	Number_New_Emails++;
     }
 }
