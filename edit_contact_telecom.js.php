@@ -1,15 +1,14 @@
 
-function calculate_num_changed_in_telecom(telecom_type,container_key){
+function calculate_num_changed_in_telecom(){
     var changed=new Object();
     var to_delete=0;
     var invalid=0;
     var new_telecom=0;
 
-    var elements_array=Dom.getElementsByClassName(telecom_type+container_key, 'input');
+    var elements_array=Dom.getElementsByClassName('Telecom', 'input');
     for( var i in elements_array ){
 	var input_element=elements_array[i];
 	var telecom_key=input_element.getAttribute('telecom_key');
-
 	if(telecom_key.match('new')){
 
 	    if(input_element.value!='' && input_element.getAttribute('valid')==1 && input_element.getAttribute('to_delete')==0 )
@@ -17,45 +16,21 @@ function calculate_num_changed_in_telecom(telecom_type,container_key){
 	}else if(input_element.getAttribute('to_delete')==1){
 	    to_delete++;
 	}else if(telecom_key>0  && input_element.getAttribute('ovalue')!=input_element.value){
-	  
-		changed[telecom_key]=1;
-		if(input_element.getAttribute('valid')==0)
-		    invalid++;
-	 
+	    //alert(telecom_key)
+	    changed[telecom_key]=1;
+	    if(input_element.getAttribute('valid')==0)
+		invalid++;
+	    
 	    
 	}
     }
-    var elements_array=Dom.getElementsByClassName('Telecom_Description', 'input');
-    for( var i in elements_array ){
-	var input_element=elements_array[i];
-	var telecom_key=input_element.getAttribute('telecom_key');
-	if(telecom_key>0  && input_element.getAttribute('ovalue')!=input_element.value)
-	    changed[telecom_key]=1;
-    }
-     var elements_array=Dom.getElementsByClassName('Telecom_Contact_Name', 'input');
-    for( var i in elements_array ){
-	var input_element=elements_array[i];
-	var telecom_key=input_element.getAttribute('telecom_key');
-	if(telecom_key>0  && input_element.getAttribute('ovalue')!=input_element.value)
-	    changed[telecom_key]=1;
-    }
-    var elements_array=Dom.getElementsByClassName('Telecom_Is_Main', 'input');
-    for( var i in elements_array ){
-	var input_element=elements_array[i];
-	var telecom_key=input_element.getAttribute('telecom_key');
-	if(telecom_key>0  && input_element.getAttribute('ovalue')!=input_element.value){
-	    changed[telecom_key]=1;
-	    break;
-	}
-	
-    }
-
+ 
 
     var changes=0;
     for(i in changed)
 	changes++;
     
-    Contact_Telecom_Changes=changes-invalid+to_delete+new_telecom;
+    Contact_Telecoms_Changes=changes-invalid+to_delete+new_telecom;
     Contact_Telecoms_to_edit=changes-invalid;
     Contact_Telecoms_to_delete=to_delete;
     Contact_Telecoms_to_add=new_telecom;
@@ -195,6 +170,7 @@ function clone_telecom(telecom_type,container_key,telecom_key){
     
      var element_array=Dom.getElementsByClassName('Telecom', 'input',insertedElement);
      element_array[0].setAttribute('telecom_key',telecom_key);
+     element_array[0].setAttribute('container_key',container_key);
      element_array[0].id='Telecom'+telecom_key;
 
       var element_array=Dom.getElementsByClassName('Telecom_Is_Main', 'input',insertedElement);

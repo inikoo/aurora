@@ -1,6 +1,6 @@
 <?php
 
-
+//print "Locale:". $myconf['lang'].'_'.$myconf['country'].($myconf['encoding']!=''?'.'.$myconf['encoding']:'')."\n";
 setlocale(LC_ALL, $myconf['lang'].'_'.$myconf['country'].($myconf['encoding']!=''?'.'.$myconf['encoding']:''));
 if(isset($_SESSION['loginInfo']['auth']['propertyValues']['lang'])){
   $_SESSION['lang']=$_SESSION['loginInfo']['auth']['propertyValues']['lang'];

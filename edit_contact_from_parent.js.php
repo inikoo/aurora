@@ -10,10 +10,13 @@ var Contact_Emails_to_edit=0;
 var Contact_Emails_to_delete=0;
 var Contact_Emails_to_add=0;
 
+var Contact_Telecoms_Changes=0;
+
 var Contact_Mobile_Changes=0;
 var Contact_Telephone_Changes=0;
 var Contact_Fax_Changes=0;
 var Contact_Address_Changes=0;
+
 
 var Contact_Personal_Keys=['Contact_First_Name','Contact_Salutation','Contact_Surname','Contact_Suffix','Contact_Gender','Contact_Title','Contact_Profession'];
 var Contact_Name_Keys=['Contact_First_Name','Contact_Salutation','Contact_Surname','Contact_Suffix'];
@@ -163,15 +166,60 @@ var save_contact=function(){
 					alert(o.responseText);
 				var r =  YAHOO.lang.JSON.parse(o.responseText);
 				if(r.action=='deleted' ){
-				    
 				    Dom.get('contact_display'+contact_key).innerHTML=r.xhtml_subject;
-
-				 
 				    delete  Contact_Data[contact_key]['Emails'][r.email_key];
 				    set_main_email(r.main_email_key);
-					
-					
+				    save_contact_elements++;
+				}else if(r.action=='error'){
+				    alert(r.msg);
+				}
+			    }
+			});
+	    }
+	}
 
+    }
+
+
+
+       if(Contact_Telecoms_to_edit>0 || Contact_Telecoms_to_add>0){
+	  var elements_array=Dom.getElementsByClassName('Telecom', 'input');
+	  for( var i in elements_array ){
+		var telecom_key=elements_array[i].getAttribute('telecom_key');
+		if(  telecom_key>0 || telecom_key.match('new')){
+
+		    var value=new Object();
+		    if( telecom_key.match('new'))
+			value['Telecom Key']=0;
+		    else
+			value['Telecom Key']=telecom_key;
+		    value['Telecom']=Dom.get('Telecom'+telecom_key).value;
+		    value['Telecom Type']=Dom.get('Telecom'+telecom_key).getAttribute('telecom_type');
+		    value['Telecom Container']=Dom.get('Telecom'+telecom_key).getAttribute('container_key');
+		    
+
+		    var json_value = YAHOO.lang.JSON.stringify(value); 
+		    
+		    var request='ar_edit_contacts.php?tipo=edit_telecom&value=' + json_value+'&id='+contact_key+'&subject=contact&subject_key='+contact_key; 
+		  
+		    YAHOO.util.Connect.asyncRequest('POST',request ,{
+			    success:function(o) {
+				alert(o.responseText);
+				var r =  YAHOO.lang.JSON.parse(o.responseText);
+				if(r.action=='updated' || r.action=='created'){
+				    
+				    Dom.get('contact_display'+contact_key).innerHTML=r.xhtml_subject;
+				    if(r.action=='created')
+					Contact_Data[contact_key]['Telecoms'][r.telecom_key]=new Object();
+				    for(i in r.updated_data){
+					var contact_item_value=r.updated_data[i];
+					if(contact_item_value==null)contact_item_value='';
+					
+				
+					
+					Contact_Data[contact_key]['Telecoms'][r.telecom_key][i]=contact_item_value;
+				    }
+				    set_main_telecom(r.main_telecom_key);
 				    save_contact_elements++;
 				}else if(r.action=='error'){
 				    alert(r.msg);
@@ -181,15 +229,15 @@ var save_contact=function(){
 		
 			    }
 			});
-		
+		   
+		}
+
+	  }
 
 
-	    }
-	    
-	}
-	
+     }
 
-    }
+
 
       cancel_edit_contact();
 };
@@ -581,7 +629,7 @@ var edit_contact=function (e,contact_button){
 };
 var render_after_contact_item_change=function(){
     
-    Contact_Changes=Contact_Name_Changes+Contact_Email_Changes+Contact_Mobile_Changes;
+    Contact_Changes=Contact_Name_Changes+Contact_Email_Changes+Contact_Telecoms_Changes;
 	
     if(Contact_Changes==0){
 	Dom.get('contact_messages').innerHTML='';
