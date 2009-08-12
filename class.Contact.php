@@ -1187,7 +1187,8 @@ private function create ($data,$options='',$address_home_data=false){
    $email=new Email($email_key);
    if(!$email->id)
      return;
-
+    $old_value=$this->data['Contact Main Email Key'];
+     $old_value_plain_email=$this->data['Contact Main Plain Email'];
    if($email->id!=$this->data['Contact Main Email Key']){
      $old_value=$this->data['Contact Main Email Key'];
      $old_value_plain_email=$this->data['Contact Main Plain Email'];
@@ -1269,8 +1270,8 @@ private function create ($data,$options='',$address_home_data=false){
        $this->add_history($history_data);
        
        $updated_fields['Contact Main Plain Email']=array(
-						       'Old Value'=>$old_value_plain_email
-						       ,'New Value'=>$this->data['Contact Main Plain Email']
+							 'Old Value'=>$old_value_plain_email
+							 ,'New Value'=>$this->data['Contact Main Plain Email']
 						       );
         $this->updated=true;
 	$this->msg_updated.=$details;
@@ -2026,9 +2027,19 @@ protected function update_field_switcher($field,$value,$options=''){
 
 
   switch($field){
-
+  case('Contact Main Mobile Key'):
+    $this->update_mobile($value);
+    break;
+  case('Contact Main Telephone Key'):
+    $this->update_telephone($value);
+    break;
+  case('Contact Main FAX Key'):
+    $this->update_fax($value);
+    break;
   case('Contact Name Components'):
-
+    $this->update_telephone($value);
+    break;
+    
     $this->update_Contact_Name_Components($value,$options);
     break;
   case('Contact Name'):
@@ -2045,7 +2056,7 @@ protected function update_field_switcher($field,$value,$options=''){
       $this->add_email($email_data,$options.' principal');
     }
     break;  
-  case('Contact Main Telephone'):
+  case('Contact Main Plain Telephone'):
     // print "xxx\n";
     // check if plain numbers are the same
     $tel_data=Telecom::parse_number($value);
@@ -2067,7 +2078,7 @@ protected function update_field_switcher($field,$value,$options=''){
       }
     }
     break;  
- case('Contact Main FAX'):
+ case('Contact Main Plain FAX'):
    // print "y\n";
  $tel_data=Telecom::parse_number($value);
     $plain_tel=Telecom::plain_number($tel_data);
@@ -2090,7 +2101,7 @@ protected function update_field_switcher($field,$value,$options=''){
     $this->update_Contact_Old_ID($value,$options);
     break;
 
-  case('Contact Main Mobile'):
+  case('Contact Main Plain Mobile'):
     $tel_data=Telecom::parse_number($value);
     $plain_tel=Telecom::plain_number($tel_data);
     
@@ -3299,6 +3310,173 @@ public function is_main(){
 	else
 		return false;
 }
+/*
+function: update_mobile
+update Contact Main Mobile, la tabla puente y graba la historia
+
+
+parameter:$telecom_key
+
+*/
+
+function update_mobile($telecom_key){
+
+  if($telecom_key==$this->data['Contact Main Mobile Key']){
+    $telecom=new Telecom($telecom_key);
+    if(!$telecom->id){
+      $this->error=true;
+      $this->msg='Telecom not found';
+      $this->msg_updated.=',Telecom not found';
+      return;
+    }
+    $old_value=$this->data['Contact Main Mobile'];
+    $sql=sprintf("update `Contact Dimension` set `Contact Main Mobile`=%s ,`Contact Main Plain Mobile`=%s where `Contact Key`=%d "
+		 ,prepare_mysql($telecom->display('xhtml'))
+		 ,prepare_mysql($telecom->display('plain'))
+		 ,$this->id
+		 );
+    mysql_query($sql);
+    if(mysql_affected_rows() and $old_value!=$new_value){
+        $history_data=array(
+			    'indirect_object'=>'Contact Main Mobile'
+			    ,'old_value'=>$old_value
+			    ,'new_value'=>$telecom->display('xhtml')
+			    );
+	$this->add_history($history_data);
+    }
+  }else{
+    $this->add_tel(array(
+			 'Telecom Key'=>$telecom->id
+			 ,'Telecom Type'=>'Mobile'
+			 ));
+  }
+}
+
+function update_mobile($telecom_key){
+  $old_telecom_key=$this->data['Contact Main Mobile Key'];
+  
+  $telecom=new Telecom($telecom_key);
+  if(!$telecom->id){
+    $this->error=true;
+      $this->msg='Telecom not found';
+      $this->msg_updated.=',Telecom not found';
+      return;
+    }
+  $old_value=$this->data['Contact Main Mobile'];
+  $sql=sprintf("update `Contact Dimension` set `Contact Main Mobile`=%s ,`Contact Main Plain Mobile`=%s  ,`Contact Main Plain Key`=%d where `Contact Key`=%d "
+	       ,prepare_mysql($telecom->display('xhtml'))
+	       ,prepare_mysql($telecom->display('plain'))
+	       $telecom->id
+	       ,$this->id
+	       );
+  mysql_query($sql);
+  if(mysql_affected_rows()){
+    $this->updated;
+    if($old_value!=$new_value)
+      $history_data=array(
+			'indirect_object'=>'Contact Main Mobile'
+			,'old_value'=>$old_value
+			,'new_value'=>$telecom->display('xhtml')
+			  );
+    $this->add_history($history_data);
+  }
+
+}
+
+
+function update_mobile($telecom_key){
+  $old_telecom_key=$this->data['Contact Main Mobile Key'];
+  
+  $telecom=new Telecom($telecom_key);
+  if(!$telecom->id){
+    $this->error=true;
+      $this->msg='Telecom not found';
+      $this->msg_updated.=',Telecom not found';
+      return;
+    }
+  $old_value=$this->data['Contact Main Mobile'];
+  $sql=sprintf("update `Contact Dimension` set `Contact Main Mobile`=%s ,`Contact Main Plain Mobile`=%s  ,`Contact Main Plain Key`=%d where `Contact Key`=%d "
+	       ,prepare_mysql($telecom->display('xhtml'))
+	       ,prepare_mysql($telecom->display('plain'))
+	       $telecom->id
+	       ,$this->id
+	       );
+  mysql_query($sql);
+  if(mysql_affected_rows()){
+    $this->updated;
+    if($old_value!=$new_value)
+      $history_data=array(
+			'indirect_object'=>'Contact Main Mobile'
+			,'old_value'=>$old_value
+			,'new_value'=>$telecom->display('xhtml')
+			  );
+    $this->add_history($history_data);
+  }
+
+}
+
+function update_telephone($telecom_key){
+  $old_telecom_key=$this->data['Contact Main Telephone Key'];
+  
+  $telecom=new Telecom($telecom_key);
+  if(!$telecom->id){
+    $this->error=true;
+      $this->msg='Telecom not found';
+      $this->msg_updated.=',Telecom not found';
+      return;
+    }
+  $old_value=$this->data['Contact Main Telephone'];
+  $sql=sprintf("update `Contact Dimension` set `Contact Main Telephone`=%s ,`Contact Main Plain Telephone`=%s  ,`Contact Main Plain Key`=%d where `Contact Key`=%d "
+	       ,prepare_mysql($telecom->display('xhtml'))
+	       ,prepare_mysql($telecom->display('plain'))
+	       $telecom->id
+	       ,$this->id
+	       );
+  mysql_query($sql);
+  if(mysql_affected_rows()){
+    $this->updated;
+    if($old_value!=$new_value)
+      $history_data=array(
+			'indirect_object'=>'Contact Main Telephone'
+			,'old_value'=>$old_value
+			,'new_value'=>$telecom->display('xhtml')
+			  );
+    $this->add_history($history_data);
+  }
+
+}
+
+function update_fax($telecom_key){
+  $old_telecom_key=$this->data['Contact Main FAX Key'];
+  
+  $telecom=new Telecom($telecom_key);
+  if(!$telecom->id){
+    $this->error=true;
+      $this->msg='Telecom not found';
+      $this->msg_updated.=',Telecom not found';
+      return;
+    }
+  $old_value=$this->data['Contact Main FAX'];
+  $sql=sprintf("update `Contact Dimension` set `Contact Main FAX`=%s ,`Contact Main Plain FAX`=%s  ,`Contact Main Plain Key`=%d where `Contact Key`=%d "
+	       ,prepare_mysql($telecom->display('xhtml'))
+	       ,prepare_mysql($telecom->display('plain'))
+	       $telecom->id
+	       ,$this->id
+	       );
+  mysql_query($sql);
+  if(mysql_affected_rows()){
+    $this->updated;
+    if($old_value!=$new_value)
+      $history_data=array(
+			'indirect_object'=>'Contact Main FAX'
+			,'old_value'=>$old_value
+			,'new_value'=>$telecom->display('xhtml')
+			  );
+    $this->add_history($history_data);
+  }
+
+}
+
 
 } 
  ?>

@@ -146,14 +146,14 @@ var set_salutation=function(string){
 function update_salutation(o){
     if(Dom.hasClass(o, 'selected'))
 	return;
+    current_salutation=Dom.get('Contact_Salutation_'+Dom.get('Contact_Salutation').value);
+    //alert();
     Dom.removeClass(current_salutation, 'selected');
     Dom.addClass(o, 'selected');
-
     Dom.get('Contact_Salutation').value=o.getAttribute('label');
     current_salutation=o.id;
     calculate_num_changed_in_name();
     update_full_name();
-
 }
 
 function name_component_change(){
