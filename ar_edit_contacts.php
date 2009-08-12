@@ -37,10 +37,25 @@ case('edit_company'):
   edit_company();
   break;
 case('edit_contact'):
-  edit_contact();
+   $data=prepare_values($_REQUEST,array(
+			     'id'=>array('type'=>'key')
+			     ,'value'=>array('type'=>'json array')
+			     ,'subject_key'=>array('type'=>'key')
+			     ));
+  edit_contact($data);
   break;
 case('edit_email'):
-  edit_email();
+  $data=prepare_values($_REQUEST,array(
+			     'id'=>array('type'=>'key')
+			     ,'value'=>array('type'=>'json array','required elements'=>array(
+											     'Email'=>'string'
+											     ,'Email Key'=>'numeric'
+											     ))
+			     ,'subject_key'=>array('type'=>'key')
+			     ,'subject'=>array('type'=>'enum','valid values regex'=>'/company|contact/i')
+			     ));
+
+  edit_email($data);
   break;
 case('remove_email'):
 case('delete_email'):
@@ -55,37 +70,11 @@ case('edit_telecom'):
 
 
 
-function edit_contact(){
+function edit_contact($data){
 global $editor;
- if(!isset($_REQUEST['key']) ){
-    $response=array('state'=>400,'msg'=>'Error no key');
-  }
- if( !isset($_REQUEST['value']) ){
-   $response=array('state'=>400,'msg'=>'Error no value');
- }
-
-   $tmp=preg_replace('/\\\"/','"',$_REQUEST['value']);
-   $tmp=preg_replace('/\\\\\"/','"',$tmp);
-   
-   $raw_data=json_decode($tmp, true);
-
-   if(!is_array($raw_data)){
-     $response=array('state'=>400,'msg'=>'Wrong value');
-     echo json_encode($response);
-     return;
-   }
- 
 
 
-
-
-
- if( !isset($_REQUEST['id']) or !is_numeric($_REQUEST['id'])  ){
-   $contact_key=$_SESSION['state']['contact']['id'];
- }else
-   $contact_key=$_REQUEST['id'];
-
- $contact=new Contact($contact_key);
+ $contact=new Contact($data['id']);
 
  if(!$contact->id){
    $response=array('state'=>400,'msg'=>_('Contact not found'));
@@ -106,7 +95,7 @@ global $editor;
 		   );
  
  
- foreach($raw_data as $key=>$value){
+ foreach($data['value'] as $key=>$value){
    if (array_key_exists($key, $translator)) {
      
      if($key=='Contact_Name_Components'){
@@ -116,18 +105,18 @@ global $editor;
 	   $components[$components_translator[$component_key]]=$component_value;
 
        }
-       $data[$translator[$key]]=$components;
+       $contact_data[$translator[$key]]=$components;
        
      }else
-       $data[$translator[$key]]=$value;
+       $contact_data[$translator[$key]]=$value;
 
    }
 
  }
 
  
- $data['editor']=$editor;
- $contact->update($data);
+ $contact_data['editor']=$editor;
+ $contact->update($contact_data);
  
  $contact->reread();
  if($contact->error_updated){
@@ -135,7 +124,7 @@ global $editor;
  }else{
    
    if($contact->updated){
-
+     $contact->reread();
      $updated_data_name_components=array(
 			 'Contact_First_Name'=>$contact->data['Contact First Name']
 			 ,'Contact_Surname'=>$contact->data['Contact Surname']
@@ -154,7 +143,7 @@ global $editor;
      
 
 
-     $response=array('state'=>200,'action'=>'updated','msg'=>$contact->msg_updated,'xhtml_subject'=>$contact->display('card'),'updated_data'=>$updated_data,'updated_data'=>$updated_data_name_components);
+     $response=array('state'=>200,'action'=>'updated','msg'=>$contact->msg_updated,'xhtml_subject'=>$contact->display('card'),'updated_data'=>$updated_data);
    }else{
      $response=array('state'=>200,'action'=>'nochange','msg'=>$contact->msg_updated);
      
@@ -222,72 +211,42 @@ global $editor;
 
 }
 
-function edit_email(){
-global $editor;
-
-check_requiered_values(array(
-			     'id'=>array('type'=>'key')
-			     ,'values'=>array('type'=>'json array','required elements'=>array('Email'=>'string'))
-			     ,'subject_key'=>array('type'=>'key')
-			     ,'subject'=>array('type'=>'enum','valid values'=>'company|contact')
-			     ));
-
-
-
- 
-
-   if( !isset($_REQUEST['subject'])  
-       or !is_numeric($_REQUEST['subject_key'])
-       or $_REQUEST['subject_key']<=0       or !preg_match('/^company|contact$/i',$_REQUEST['subject'])
-       
-       ){
-     $response=array('state'=>400,'msg'=>'Error wrong subject/subject key');
-      echo json_encode($response);
+function edit_email($data){
+  global $editor;
+  //  print_r($data);
+  if(preg_match('/^company$/i',$data['subject']))
+    $subject=new Company($data['subject_key']);
+  else{
+    $subject=new Contact($data['subject_key']);
+   }
+  
+  if(!$subject->id){
+    $response=array('state'=>400,'msg'=>'Subject not found');
+    echo json_encode($response);
     return;
-   }
-   $subject_type=$_REQUEST['subject'];
-   $subject_key=$_REQUEST['subject_key'];
-
-   if(preg_match('/^company$/i',$subject_type))
-     $subject=new Company($subject_key);
-   else{
-     $subject=new Contact($subject_key);
-   }
-
-   
-if(!$subject->id){
-       $response=array('state'=>400,'msg'=>'Subject not found');
-       echo json_encode($response);
-       return;
-     }
-   
-
-   if(!isset($raw_data['Email'])){
-     $response=array('state'=>400,'msg'=>'No email value');
-     echo json_encode($response);
-     return;
-     
-   }
+  }
+  
+  if(!isset($data['value']['Email'])){
+    $response=array('state'=>400,'msg'=>'No email value');
+    echo json_encode($response);
+    return;
+  }
 
    $editing=false;
    $creating=false;
 
    $msg=_('No changes');
   
-   if(is_numeric($raw_data['Email Key']) and $raw_data['Email Key']>0){
+   if($data['value']['Email Key']>0){
      $action='updated';
-     $email=new Email('id',$raw_data['Email Key']);
+     $email=new Email('id',$data['value']['Email Key']);
      if(!$email->id){
        $response=array('state'=>400,'msg'=>'Email not found');
        echo json_encode($response);
        return;
      }
      $email->set_editor($editor);
-
-     $email->update(array('Email'=>$raw_data['Email']));
-     // $email->update(array('Email'=>'scsaca@gmail.com'));
-    
-    
+     $email->update(array('Email'=>$data['value']['Email']));
      if($email->error_updated){
       $response=array('state'=>200,'action'=>'error','msg'=>$email->msg_updated);
        echo json_encode($response);
@@ -298,71 +257,167 @@ if(!$subject->id){
        $msg=_('Email updated');
 
      $update_data=array(
-			'Email Key'=>$raw_data['Email Key']
-			,'Email Description'=>$raw_data['Email Description']
-			,'Email Is Main'=>$raw_data['Email Is Main']
-			,'Email Contact Name'=>$raw_data['Email Contact Name']
-			
+			'Email Key'=>$data['value']['Email Key']
+			,'Email Description'=>$data['value']['Email Description']
+			,'Email Is Main'=>$data['value']['Email Is Main']
+			,'Email Contact Name'=>$data['value']['Email Contact Name']
 			);
-    
-     
      $subject->add_email($update_data);
      if($subject->updated)
        $msg=_('Email updated');
-     $email->set_scope($subject_type,$subject_key);
+     $email->set_scope($data['subject'],$data['subject_key']);
 
    }else{
      $action='created';
        $update_data=array(
-			'Email'=>$raw_data['Email']
-			,'Email Description'=>$raw_data['Email Description']
-			,'Email Is Main'=>$raw_data['Email Is Main']
-			,'Email Contact Name'=>$raw_data['Email Contact Name']
+			'Email'=>$data['value']['Email']
+			,'Email Description'=>$data['value']['Email Description']
+			,'Email Is Main'=>$data['value']['Email Is Main']
+			,'Email Contact Name'=>$data['value']['Email Contact Name']
 			);
-
-
-      
-
        $subject->add_email($update_data,'if found error');
-       
        if($subject->error){
 	 $response=array('state'=>200,'action'=>'error','msg'=>$subject->msg_updated);
 	 echo json_encode($response);
 	 return;
-	 
        }
-       
-	 
        if($subject->inserted_email){
 	 $email=new Email ($subject->inserted_email);
-	 $email->set_scope($subject_type,$subject_key);
+	 $email->set_scope($data['subject'],$data['subject_key']);
 	 $msg=_("Email created");
        }else{
 	 $response=array('state'=>200,'action'=>'nochange','msg'=>$subject->msg_updated);
 	 echo json_encode($response);
 	 return;
-
-	 
        }
-       
    }
-
-
   $updated_email_data=array(
 			    'Email'=>$email->data['Email']
 			    ,'Email_Description'=>$email->data['Email Description']
 			    ,'Email_Contact_Name'=> $email->data['Email Contact Name']
 			    ,'Email_Is_Main'=> $email->data['Email Is Main']
 			    );
-  
   $subject->reread();
-  
-  $response=array('state'=>200,'action'=>$action,'msg'=>$msg,'email_key'=>$email->id,'updated_data'=>$updated_email_data,'xhtml_subject'=>$subject->display('card'),'main_email_key'=>$subject->get_main_email_key());
-     
+  $response=array(
+		  'state'=>200
+		  ,'action'=>$action
+		  ,'msg'=>$msg
+		  ,'email_key'=>$email->id
+		  ,'updated_data'=>$updated_email_data
+		  ,'xhtml_subject'=>$subject->display('card')
+		  ,'main_email_key'=>$subject->get_main_email_key()
+		  );
     
    echo json_encode($response);
 
 }
+
+
+function edit_telecom($data){
+  global $editor;
+  
+  if(preg_match('/^company$/i',$data['subject']))
+    $subject=new Company($data['subject_key']);
+  else{
+    $subject=new Contact($data['subject_key']);
+   }
+  
+  if(!$subject->id){
+    $response=array('state'=>400,'msg'=>'Subject not found');
+    echo json_encode($response);
+    return;
+  }
+  
+  
+
+   $editing=false;
+   $creating=false;
+
+   $msg=_('No changes');
+  
+   if($data['value']['Telecom Key']>0){
+     $action='updated';
+     $telecom=new Telecom('id',$data['value']['Telecom Key']);
+     if(!$telecom->id){
+       $response=array('state'=>400,'msg'=>'Telecom not found');
+       echo json_encode($response);
+       return;
+     }
+     $telecom->set_editor($editor);
+     $telecom->update_number($data['value']['Telecom']);
+     if($telecom->error_updated){
+      $response=array('state'=>200,'action'=>'error','msg'=>$telecom->msg_updated);
+       echo json_encode($response);
+       return;
+     }
+
+     if($telecom->updated)
+       $msg=_('Telecom updated');
+
+     $update_data=array(
+			'Telecom Key'=>$data['value']['Telecom Key']
+			,'Telecom Description'=>$data['value']['Telecom Description']
+			,'Telecom Is Main'=>$data['value']['Telecom Is Main']
+			,'Telecom Contact Name'=>$data['value']['Telecom Contact Name']
+			);
+     $subject->add_telecom($update_data);
+     if($subject->updated)
+       $msg=_('Telecom updated');
+     $telecom->set_scope($data['subject'],$data['subject_key']);
+
+   }else{
+     $action='created';
+       $update_data=array(
+			'Telecom'=>$data['value']['Telecom']
+			,'Telecom Description'=>$data['value']['Telecom Description']
+			,'Telecom Is Main'=>$data['value']['Telecom Is Main']
+			,'Telecom Contact Name'=>$data['value']['Telecom Contact Name']
+			);
+       $subject->add_telecom($update_data,'if found error');
+       if($subject->error){
+	 $response=array('state'=>200,'action'=>'error','msg'=>$subject->msg_updated);
+	 echo json_encode($response);
+	 return;
+       }
+       if($subject->inserted_telecom){
+	 $telecom=new Telecom ($subject->inserted_telecom);
+	 $telecom->set_scope($data['subject'],$data['subject_key']);
+	 $msg=_("Telecom created");
+       }else{
+	 $response=array('state'=>200,'action'=>'nochange','msg'=>$subject->msg_updated);
+	 echo json_encode($response);
+	 return;
+       }
+   }
+  $updated_telecom_data=array(
+			    'Telecom'=>$telecom->data['Telecom']
+			    ,'Telecom_Description'=>$telecom->data['Telecom Description']
+			    ,'Telecom_Contact_Name'=> $telecom->data['Telecom Contact Name']
+			    ,'Telecom_Is_Main'=> $telecom->data['Telecom Is Main']
+			    );
+  $subject->reread();
+  $response=array(
+		  'state'=>200
+		  ,'action'=>$action
+		  ,'msg'=>$msg
+		  ,'telecom_key'=>$telecom->id
+		  ,'updated_data'=>$updated_telecom_data
+		  ,'xhtml_subject'=>$subject->display('card')
+		  ,'main_telecom_key'=>$subject->get_main_telecom_key()
+		  );
+    
+   echo json_encode($response);
+
+}
+
+
+
+
+
+
+
+
+
 function new_address(){
 global $editor;
 

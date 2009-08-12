@@ -24,12 +24,12 @@ class Telecom extends DB_Table {
 
      */
   function Telecom($arg1=false,$arg2=false) {
-
-     $this->table_name='Telecom';
+    
+    $this->table_name='Telecom';
     $this->ignore_fields=array('Telecom Key');
-
-
-   if(!$arg1 and !$arg2){
+    
+    
+    if(!$arg1 and !$arg2){
       $this->error=true;
       $this->msg='No data provided';
       return;
@@ -469,7 +469,7 @@ protected function create($data,$optios=''){
    Parse the number in its componets
 
    Parameters:
-   $data - _mixed_ can be a array of the procosed components or a string with the number 
+   $data -  string with the number 
    
    
   */
@@ -924,6 +924,87 @@ function is_associated($scope,$scope_key,$args='only valid'){
   return false;
 
 }
+
+
+
+/*Method: update
+  Switcher calling the apropiate update method
+  Parameters:
+  $data - associated array with Email Dimension fields
+    */
+public function update($data,$options=''){
+   $old_plain=$this->display('plain');
+   $old_xhtml=$this->display('xhtml');
+  if(isset($data['editor'])){
+    foreach($data['editor'] as $key=>$value){
+      if(array_key_exists($key,$this->editor))
+	  $this->editor[$key]=$value;
+    }
+  }
+
+  $base_data=$this->base_data();
+  foreach($data as $key=>$value){
+    if($value!=$this->data[$key]){
+      $this->update_field_switcher($key,$value,$options);
+	}
+    
+  }
+    
+    
+  if(!$this->updated)
+    $this->msg.=' '._('Nothing to be updated')."\n";
+  else{
+    $new_plain=$this->display('plain');
+    $new_xhtml=$this->display('xhtml');
+    if($old_plain!=$new_plain and $field!='Telecom Plain Number')
+    update_field_switcher('Telecom Plain Number',$new_plain,$options);
+    if($new_xhtml!=$new_xhtml and $field!='Telecom Plain Number'){
+      
+    
+      while($row=mysql_fetch_array( mysql_query(sprintf("select `Contact Key` as `Subject Key`  from `Contact Dimension` where `Contact Main Mobile Key`=%d;",$this->id)) )){
+	$contact=new Contact($row['Subject Key']);$contact->update(array('Contact Main Mobile')=>$this->id);
+      }
+      while($row=mysql_fetch_array( mysql_query(sprintf("select `Contact Key` as `Subject Key`  from `Contact Dimension` where `Contact Main Telephone Key`=%d;",$this->id)) )){
+	$contact=new Contact($row['Subject Key']);$contact->update(array('Contact Main Telephone')=>$this->id);
+      }
+      while($row=mysql_fetch_array( mysql_query(sprintf("select `Contact Key` as `Subject Key`  from `Contact Dimension` where `Contact Main FAX Key`=%d;",$this->id)) )){
+	$contact=new Contact($row['Subject Key']);$contact->update(array('Contact Main FAX')=>$this->id);
+      }
+      
+      while($row=mysql_fetch_array( mysql_query(sprintf("select `Company Key` as `Subject Key`  from `Company Dimension` where `Company Main Telephone Key`=%d;",$this->id)) )){
+	$company=new Company($row['Subject Key']);$company->update(array('Company Main Telephone')=>$this->id);
+      }
+      while($row=mysql_fetch_array( mysql_query(sprintf("select `Company Key` as `Subject Key`  from `Company Dimension` where `Company Main FAX Key`=%d;",$this->id)) )){
+	$company=new Company($row['Subject Key']);$company->update(array('Company Main FAX')=>$this->id);
+      }
+      
+
+
+
+      
+    } 
+      
+
+  }
+
+}
+
+
+function update_number($value,$country_code='UNK'){
+  $data=parse_number($value,$country_code);
+  $this->update($data);
+}
+
+function update_field_switcher($field,$value,$options=''){
+  if($field=='Telecom Plain Number')
+    $options.=' no history';
+  $this->update_field($field,$value,$options);
+  
+ 
+
+}
+
+
 
 }
 ?>

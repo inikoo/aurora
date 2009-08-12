@@ -436,7 +436,7 @@ function get($key){
 
 
 
- /*Function: update_field_switcher
+/*Function: update_field_switcher
   */
 
 protected function update_field_switcher($field,$value,$options=''){

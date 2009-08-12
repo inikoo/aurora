@@ -10,6 +10,10 @@ var Contact_Emails_to_edit=0;
 var Contact_Emails_to_delete=0;
 var Contact_Emails_to_add=0;
 
+var Contact_Telecoms_to_edit=0;
+var Contact_Telecoms_to_delete=0;
+var Contact_Telecoms_to_add=0;
+
 var Contact_Telecoms_Changes=0;
 
 var Contact_Mobile_Changes=0;
@@ -75,17 +79,12 @@ var save_contact=function(){
 
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
-		    	//alert(o.responseText);
+		    	alert(o.responseText);
 		    var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if(r.action=='updated'){
 		    
 		    Dom.get('contact_display'+contact_key).innerHTML=r.xhtml_subject;
-		    
-		    for(i in r.updated_data){
-			var contact_item_value=r.updated_data[i];
-			if(contact_item_value==null)contact_item_value='';
-			Contact_Data[contact_key][i]=contact_item_value;
-		    }
+		    Contact_Data[contact_key]=r.updated_data;
 		   
 		    save_contact_elements++;
 		}else if(r.action=='error'){
@@ -120,7 +119,7 @@ var save_contact=function(){
 		  
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
 			    success:function(o) {
-				//alert(o.responseText);
+				alert(o.responseText);
 				var r =  YAHOO.lang.JSON.parse(o.responseText);
 				if(r.action=='updated' || r.action=='created'){
 				    
