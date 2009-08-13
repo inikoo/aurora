@@ -343,6 +343,7 @@ class product extends DB_Table{
 		   ,$tag['Product Store Key']
 		 
 		   );
+
       $result2=mysql_query($sql);
       
       if($row2=mysql_fetch_array($result2, MYSQL_ASSOC)){

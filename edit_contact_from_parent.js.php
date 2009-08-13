@@ -195,7 +195,8 @@ var save_contact=function(){
 		    value['Telecom']=Dom.get('Telecom'+telecom_key).value;
 		    value['Telecom Type']=Dom.get('Telecom'+telecom_key).getAttribute('telecom_type');
 		    value['Telecom Container']=Dom.get('Telecom'+telecom_key).getAttribute('container_key');
-		    
+		    value['Telecom Is Main']=Dom.get('Telecom_Is_Main'+telecom_key).value;
+
 
 		    var json_value = YAHOO.lang.JSON.stringify(value); 
 		    

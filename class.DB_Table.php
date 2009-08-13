@@ -214,16 +214,16 @@ protected function add_history($raw_data){
   $data['indirect_object_key']=0;
 
 
-   if($this->editor['Date'])
-   $data['date']=$this->editor['Date'];
- else
-   $data['date']=date("Y-m-d H:i:s");
+  if($this->editor['Date'])
+    $data['date']=$this->editor['Date'];
+  else
+    $data['date']=date("Y-m-d H:i:s");
 
- if($this->editor['Author Name'])
-   $data['author']=$this->editor['Author Name'];
- else
+  if($this->editor['Author Name'])
+    $data['author']=$this->editor['Author Name'];
+  else
    $data['author']=_('System');
- $data['author_key']=$this->editor['Author Key'];
+  $data['author_key']=$this->editor['Author Key'];
  if(isset($raw_data['indirect_object']))
    $data['note']=$raw_data['indirect_object'].' '._('changed');
  else
