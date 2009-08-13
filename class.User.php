@@ -392,9 +392,32 @@ function read_rights(){
  }
  
 
+function can_view_list($right_name){
+  $list=array();
 
+    if(isset($this->rights_allow['View'][$right_name])){
+      $rights_data=$this->rights_allow['View'][$right_name];
+      if($rights_data['Right Access']=='All'){
+	
+	switch($right_name){
+	case('stores'):
+	  $sql=sprintf('select `Store Key`  from `Store Dimension`');
 
-  }
+	  $res=mysql_query($sql);
+	  while($row=mysql_fetch_array($res)){
+	    $list[]=$row['Store Key'];
+	  }
+	  break;
+	}
+	
+      }
+      
+    }
+    
+  return $list;
+}
+
+}
 
 
 

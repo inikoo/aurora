@@ -803,8 +803,15 @@ class Address extends DB_Table{
       return $this->plain($this->data);
       break;
     case('street'):
-      return _trim($this->data['Address Street Number'].' '.$this->data['Address Street Name'].' '.$this->data['Address Street Type']);
-      break;
+      switch($this->data['Address Country Code']){
+      case('ESP'):
+	return _trim($this->data['Address Street Type'].' '.$this->data['Address Street Name'].' '.$this->data['Address Street Number']);
+	break;
+      default:
+	return _trim($this->data['Address Street Number'].' '.$this->data['Address Street Name'].' '.$this->data['Address Street Type']);
+      
+      }
+break;
     case('xhtml'):
     case('html'):
       $separator="<br/>";
@@ -823,12 +830,13 @@ class Address extends DB_Table{
       }else{
 	//print_r($this->data);
 	$address='';
-	$header_address='';
-	if($this->data['Address Internal']!=='')
-	    $header_address=_trim($this->data['Address Internal']).$separator;
-	$header_address.=_trim($this->data['Address Building']);
-	if($header_address!='')
-	  $address.=$header_address.$separator;
+
+	if($this->data['Address Internal']!='')
+	  $address=_trim($this->data['Address Internal']).$separator;
+	if($this->data['Address Building']!='')
+	  $address.=_trim($this->data['Address Building']).$separator;
+	
+
 	
 	$street_address=$this->display('street');
 	if($street_address!='')
@@ -993,7 +1001,8 @@ class Address extends DB_Table{
     if(preg_match('/\d.*[a-z]{1,}/i',$string))
       return true;
 
-  
+    if(preg_match('/^c\/\s?/i',$string))
+      return true;
 
     return false;
   }
@@ -2775,6 +2784,23 @@ class Address extends DB_Table{
 
       break;
     case(47)://Spain
+      
+    
+      $raw_data['Address Line 3']=preg_replace('/^c\/\s*/i','Calle ',$raw_data['Address Line 3']);
+      $regex_calle='/^C(alle)? [a-záéíóúñ\s]+,\s?\d+/i';
+
+      if(preg_match($regex_calle,$raw_data['Address Line 3'],$match)){
+
+	$calle=$match[0];
+	$tmp=preg_replace($regex_calle,'',$raw_data['Address Line 3']);
+	$raw_data['Address Line 3']=$calle;
+	$raw_data['Address Line 1'].=' '.$tmp;
+      }
+      
+
+      //      $data['Address Line 3']=preg_replace('/^c\/\s*/i','Calle ',$raw_data['Address Line 3']);
+	
+
       if(preg_match('/Majorca/i',$data['Address Town'])){
 	$data['Address Country Secondary Division']='Islas Baleares';
 	$data['Address Country Primary Division']='Islas Baleares';

@@ -1,12 +1,12 @@
 <?php
-//include("../../external_libs/adminpro/adminpro_config.php");
-
 include_once('../../app_files/db/dns.php');
 include_once('../../class.Department.php');
 include_once('../../class.Family.php');
 include_once('../../class.Product.php');
 include_once('../../class.Supplier.php');
 include_once('../../class.Order.php');
+include_once('../../class.Part.php');
+include_once('../../class.SupplierProduct.php');
 include_once('../../class.Invoice.php');
 include_once('../../class.DeliveryNote.php');
 
@@ -15,19 +15,16 @@ $store_code='U';
 error_reporting(E_ALL);
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 if(!$con){print "Error can not connect with database server\n";exit;}
-//$dns_db='dw';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
 
 require_once '../../common_functions.php';
 mysql_query("SET time_zone ='UTC'");
 mysql_query("SET NAMES 'utf8'");
-
 require_once '../../conf/conf.php';           
 date_default_timezone_set('Europe/London');
 $_SESSION['lang']=1;
 include_once('local_map.php');
-
 include_once('map_order_functions.php');
 
 $software='Get_Orders_DB.php';
@@ -82,8 +79,6 @@ if(!$fam_promo->id){
   $fam_promo=new Family('create',$fam_data);
   
 }
-
-
 $fam_no_fam_key=$fam_no_fam->id;
 $fam_promo_key=$fam_promo->id;
 
@@ -98,7 +93,6 @@ $sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or l
 //$sql="select *,orders_data.orders.id as id  from dw2.`Order Transaction Fact` X left join  orders_data.orders on (orders_data.orders.id=REPLACE(`Metadata`,'U',''))  where `Customer Key` in (729,11701) group by `Metadata` order by filename;";
 
 $contador=0;
-//print $sql;
 $res=mysql_query($sql);
 
 while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){

@@ -2063,9 +2063,10 @@ class Customer extends DB_Table{
 			      .")"
 			      ,'action'=>'created'
 			      );
-	  $this->add_history($history_data);
+	  if(!$this->new)
+	    $this->add_history($history_data);
 	 
-	 
+	  
 	}
 
 	

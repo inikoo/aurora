@@ -3300,6 +3300,19 @@ string with the name to be parsed
   function get_main_email_key(){
     return $this->data['Contact Main Email Key'];
   }
+  function get_main_telecom_key($type='telephone'){
+    if($type=='telephone')
+      return $this->data['Contact Main Telephone Key'];
+    else if($type=='fax')
+      return $this->data['Contact Main FAX Key'];
+    else if($type=='mobile')
+      return $this->data['Contact Main Mobile Key'];
+    else
+      return false;
+
+ }
+  
+
 /*
 function: is_main
 returns true if the contact is the main in the scope context
@@ -3352,68 +3365,9 @@ function update_mobile($telecom_key){
   }
 }
 
-function update_mobile($telecom_key){
-  $old_telecom_key=$this->data['Contact Main Mobile Key'];
-  
-  $telecom=new Telecom($telecom_key);
-  if(!$telecom->id){
-    $this->error=true;
-      $this->msg='Telecom not found';
-      $this->msg_updated.=',Telecom not found';
-      return;
-    }
-  $old_value=$this->data['Contact Main Mobile'];
-  $sql=sprintf("update `Contact Dimension` set `Contact Main Mobile`=%s ,`Contact Main Plain Mobile`=%s  ,`Contact Main Plain Key`=%d where `Contact Key`=%d "
-	       ,prepare_mysql($telecom->display('xhtml'))
-	       ,prepare_mysql($telecom->display('plain'))
-	       $telecom->id
-	       ,$this->id
-	       );
-  mysql_query($sql);
-  if(mysql_affected_rows()){
-    $this->updated;
-    if($old_value!=$new_value)
-      $history_data=array(
-			'indirect_object'=>'Contact Main Mobile'
-			,'old_value'=>$old_value
-			,'new_value'=>$telecom->display('xhtml')
-			  );
-    $this->add_history($history_data);
-  }
-
-}
 
 
-function update_mobile($telecom_key){
-  $old_telecom_key=$this->data['Contact Main Mobile Key'];
-  
-  $telecom=new Telecom($telecom_key);
-  if(!$telecom->id){
-    $this->error=true;
-      $this->msg='Telecom not found';
-      $this->msg_updated.=',Telecom not found';
-      return;
-    }
-  $old_value=$this->data['Contact Main Mobile'];
-  $sql=sprintf("update `Contact Dimension` set `Contact Main Mobile`=%s ,`Contact Main Plain Mobile`=%s  ,`Contact Main Plain Key`=%d where `Contact Key`=%d "
-	       ,prepare_mysql($telecom->display('xhtml'))
-	       ,prepare_mysql($telecom->display('plain'))
-	       $telecom->id
-	       ,$this->id
-	       );
-  mysql_query($sql);
-  if(mysql_affected_rows()){
-    $this->updated;
-    if($old_value!=$new_value)
-      $history_data=array(
-			'indirect_object'=>'Contact Main Mobile'
-			,'old_value'=>$old_value
-			,'new_value'=>$telecom->display('xhtml')
-			  );
-    $this->add_history($history_data);
-  }
 
-}
 
 function update_telephone($telecom_key){
   $old_telecom_key=$this->data['Contact Main Telephone Key'];
@@ -3429,7 +3383,7 @@ function update_telephone($telecom_key){
   $sql=sprintf("update `Contact Dimension` set `Contact Main Telephone`=%s ,`Contact Main Plain Telephone`=%s  ,`Contact Main Plain Key`=%d where `Contact Key`=%d "
 	       ,prepare_mysql($telecom->display('xhtml'))
 	       ,prepare_mysql($telecom->display('plain'))
-	       $telecom->id
+	       ,$telecom->id
 	       ,$this->id
 	       );
   mysql_query($sql);
@@ -3460,7 +3414,7 @@ function update_fax($telecom_key){
   $sql=sprintf("update `Contact Dimension` set `Contact Main FAX`=%s ,`Contact Main Plain FAX`=%s  ,`Contact Main Plain Key`=%d where `Contact Key`=%d "
 	       ,prepare_mysql($telecom->display('xhtml'))
 	       ,prepare_mysql($telecom->display('plain'))
-	       $telecom->id
+	       ,$telecom->id
 	       ,$this->id
 	       );
   mysql_query($sql);

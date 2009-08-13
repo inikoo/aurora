@@ -1,5 +1,5 @@
 <?php
-//include("../../external_libs/adminpro/adminpro_config.php");
+error_reporting(E_ALL);
 
 include_once('../../app_files/db/dns.php');
 include_once('../../class.Department.php');
@@ -13,10 +13,8 @@ include_once('../../class.Email.php');
 
 $store_code='U';
 
-error_reporting(E_ALL);
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 if(!$con){print "Error can not connect with database server\n";exit;}
-//$dns_db='dw';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
 
@@ -28,18 +26,17 @@ date_default_timezone_set(TIMEZONE) ;
 require('../../external_libs/Smarty/Smarty.class.php');
 $smarty = new Smarty();
 
-
 require_once '../../conf/conf.php';  
 include_once('../../set_locales.php');
 
 date_default_timezone_set('Europe/London');
 $_SESSION['lang']=1;
-include_once('local_map.php');
 
+include_once('local_map.php');
 include_once('map_order_functions.php');
 
 $software='Get_Orders_DB.php';
-$version='V 1.0';//75693
+$version='V 1.0';
 
 $Data_Audit_ETL_Software="$software $version";
 srand(12344);
@@ -91,7 +88,6 @@ if(!$fam_promo->id){
   
 }
 
-
 $fam_no_fam_key=$fam_no_fam->id;
 $fam_promo_key=$fam_promo->id;
 
@@ -108,26 +104,17 @@ $sql="select * from  orders_data.orders where filename like '%refund.xls'   orde
 $contador=0;
 //print $sql;
 $res=mysql_query($sql);
-
 while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
- 
- 
   $sql="select * from orders_data.data where id=".$row2['id'];
   $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-
-
-    //           echo "                                                          Memory: ".memory_get_usage(true) . "\n";
-
     $order_data_id=$row2['id'];
     $filename=$row2['filename'];
     $contador++;
     $total_credit_value=0;
-
-    // check if it is already readed
     $update=false;$old_order_key=0;
-    $sql=sprintf("select count(*) as num  from `Order Dimension`  where `Order Original Metadata`=%s  ",prepare_mysql($store_code.$order_data_id));
-
+    $sql=sprintf("select count(*) as num  from `Order Dimension`  where `Order Original Metadata`=%s  "
+		 ,prepare_mysql($store_code.$order_data_id));
     $result_test=mysql_query($sql);
     if($row_test=mysql_fetch_array($result_test, MYSQL_ASSOC)){
       if($row_test['num']==0){
@@ -137,31 +124,14 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	print "UPD $contador $order_data_id $filename \n";
       }
     }
-
-
-
-
-    
-
     $header=mb_unserialize($row['header']);
     $products=mb_unserialize($row['products']);
-
-    //  print_r($products);
-
-    //    echo "Memory: ".memory_get_usage(true) . "\n";
-
-
-
-
-
     $filename_number=str_replace('.xls','',str_replace($row2['directory'],'',$row2['filename']));
     $map_act=$_map_act;$map=$_map;$y_map=$_y_map;
      
     // tomando en coeuntas diferencias en la posicion de los elementos
   
-    if($filename_number==19015){
-      $y_map['code']=4;
-    }
+    if($filename_number==19015){$y_map['code']=4;}
      
   
     if($filename_number<18803){// Change map if the orders are old
@@ -188,8 +158,6 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     list($act_data,$header_data)=read_header($header,$map_act,$y_map,$map);
     $header_data=filter_header($header_data);
     list($tipo_order,$parent_order_id,$header_data)=get_tipo_order($header_data['ltipo'],$header_data);
-  
-    
 
     if(preg_match('/^\d{5}sh$/i',$filename_number)){
       $tipo_order=7;
@@ -208,16 +176,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     if(preg_match('/^\d{4,5}r$|^\d{4,5}ref$|^\d{4,5}\s?refund$|^\d{4,5}rr$|^\d{4,5}ra$|^\d{4,5}r2$|^\d{4,5}\-2ref$|^\d{5}rfn$/i',$filename_number)){
       $tipo_order=9;
       $parent_order_id=preg_replace('/r$|ref$|refund$|rr$|ra$|r2$|\-2ref$|rfn$/i','',$filename_number);
-
-
     }
-
-
-
-    //if($tipo_order==2 or $tipo_order==1){
-    //  print "\n";
-    //  continue;
-    // }
 
     list($date_index,$date_order,$date_inv)=get_dates($row2['timestamp'],$header_data,$tipo_order,true);
   
@@ -232,14 +191,8 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
 
      if( $date_inv!='NULL' and  strtotime($date_order)>strtotime($date_inv)){
-      
-      
-      //$date2=date("Y-m-d H:i:s",strtotime($date_order.' +1 hour'));
        print "Warning (Fecha Factura anterior Fecha Orden) $filename $date_order  $date_inv\n  ".strtotime($date_order).' > '.strtotime($date_inv)."\n";
        $date_inv=date("Y-m-d H:i:s",strtotime($date_order.' +1 hour'));
-      
-      // print "new date: ".$date2."\n";
-      
     }
 
 
@@ -321,36 +274,30 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
     $transactions=read_products($products,$prod_map);
     unset($products);
-  //   echo "Memory: ".memory_get_usage(true) . "x\n";
-//     echo "Memory: ".memory_get_usage() . "x\n";
     $_customer_data=setup_contact($act_data,$header_data,$date_index2);
    
     $customer_data=array();
     
     if(isset($header_data['tax_number']) and $header_data['tax_number']!=''){
       $customer_data['Customer Tax Number']=$header_data['tax_number'];
-     
-
     }
 
-  
     foreach($_customer_data as $_key =>$value){
       $key=$_key;
       if($_key=='type')
       $key=preg_replace('/^type$/','Customer Type',$_key);
       if($_key=='other id')
 	$key='Customer Old ID';
-       
       if($_key=='contact_name')
-      $key=preg_replace('/^contact_name$/','Customer Main Contact Name',$_key);
+	$key=preg_replace('/^contact_name$/','Customer Main Contact Name',$_key);
       if($_key=='company_name')
-      $key=preg_replace('/^company_name$/','Customer Company Name',$_key);
+	$key=preg_replace('/^company_name$/','Customer Company Name',$_key);
       if($_key=='email')
-      $key=preg_replace('/^email$/','Customer Main Plain Email',$_key);
+	$key=preg_replace('/^email$/','Customer Main Plain Email',$_key);
       if($_key=='telephone')
-      $key=preg_replace('/^telephone$/','Customer Main Telephone',$_key);
+	$key=preg_replace('/^telephone$/','Customer Main Telephone',$_key);
       if($_key=='fax')
-      $key=preg_replace('/^fax$/','Customer Main FAX',$_key);
+	$key=preg_replace('/^fax$/','Customer Main FAX',$_key);
       if($_key=='mobile')
 	$key=preg_replace('/^mobile$/','Customer Mobile',$_key);
 
@@ -385,48 +332,36 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       unset($customer_data['shipping_data']);
     }
 
-    //  print_r($transactions);
-    
-    // print $customer_data['Customer Old ID']."\n";
-    
+     
     if(strtotime($date_order)>strtotime($date2)){
-      
-
-
-      //$date2=date("Y-m-d H:i:s",strtotime($date_order.' +1 hour'));
       print "Warning (Fecha Factura anterior Fecha Orden) $filename $date_order  $date2 \n";
       $date2=date("Y-m-d H:i:s",strtotime($date_order.' +8 hour'));
-      
       print "new date: ".$date2."\n";
       
     }
 
   if(strtotime($date_order)>strtotime('now')   ){
-      
       print "ERROR (Fecha en el futuro) $filename  $date_order   \n ";
-      
       continue;
     }
 
   if(strtotime($date_order)<strtotime($myconf['data_from'])  ){
-      
-      print "ERROR (Fecha sospechosamente muy  antigua) $filename $date_order \n";
-      
-      continue;
-    }
+    print "ERROR (Fecha sospechosamente muy  antigua) $filename $date_order \n";
+    continue;
+  }
    
 
   $extra_shipping=0;
-
-    $data=array();
-    $data['editor']=array('Date'=>$date_order);
-    
+  
+  $data=array();
+  $data['editor']=array('Date'=>$date_order);
+  
     $data['order date']=$date_order;
     $data['order id']=$header_data['order_num'];
     $data['order customer message']=$header_data['notes2'];
     if($data['order customer message']==0)
       $data['order customer message']='';
-
+    
     $data['order original data mime type']='application/vnd.ms-excel';
     $data['order original data']=$row2['filename'];
     $data['order original data source']='DB:orders_data.order.data';
@@ -487,10 +422,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 			,'parent_date'=>$_parent_order_date
 			 );
 	
-	//print_r($transaction);
-	//print_r($credits);
-	//exit;
-	//	$credit[]=array()
+
 	continue;
       }
 
@@ -514,10 +446,6 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	continue;
       
       }
-    
-
-
-
 
       $transaction['description']=preg_replace('/\s*\(\s*replacements?\s*\)\s*$/i','',$transaction['description']);
       $transaction['description']=preg_replace('/\s*(\-|\/)\s*replacements?\s*$/i','',$transaction['description']);
@@ -888,7 +816,6 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 			  'Product Store Key'=>$store_key
 			  ,'Product Main Department Key'=>$dept_key
 			  ,'Product Family Key'=>$fam_key
-
 			  ,'product code'=>_trim($transaction['code'])
 			  ,'product name'=>$description
 			  ,'product unit type'=>$unit_type
@@ -1020,23 +947,9 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       }
 
     }
-    //echo "Memory: ".memory_get_usage(true) . "\n";
-
-
-    // print_r($products_data);
-
-    // print_r($header_data);
-
-
-
-
-    
-    
-
 
 
     $data['Order For']='Customer';
-    
     $data['Order Main Source Type']='Unknown';
     if(  $header_data['showroom']=='Yes')
       $data['Order Main Source Type']='Store';
@@ -1114,7 +1027,8 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
        if($update){
 	 print "Updated ";
 
-	 $sql=sprintf("select `Order Key`  from `Order Dimension`  where `Order Original Metadata`=%s  ", prepare_mysql($store_code.$order_data_id));
+	 $sql=sprintf("select `Order Key`  from `Order Dimension`  where `Order Original Metadata`=%s  ",
+		      prepare_mysql($store_code.$order_data_id));
 	 
 	 $result_test=mysql_query($sql);
 	 while($row_test=mysql_fetch_array($result_test, MYSQL_ASSOC)){
@@ -1164,6 +1078,8 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
        $sales_rep_data=get_user_id($header_data['takenby'],true,'&view=processed');
        $data['Order XHTML Sale Reps']=$sales_rep_data['xhtml'];
        $data['Order Sale Reps IDs']=$sales_rep_data['id'];
+
+
     if($tipo_order==2 or $tipo_order==1  or $tipo_order==4 or $tipo_order==5 or   $tipo_order==3   )  {
       //print_r($data);
     
@@ -1293,8 +1209,6 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
 		       );
 	
-	//$order->create_dn_simple($data_dn,$data_dn_transactions);
-	
 	$dn=new DeliveryNote('create',$data_dn,$data_dn_transactions,$order);
 	$order->update_delivery_notes('save');
 	$order->update_dispatch_state('Ready to Pick');
@@ -1304,71 +1218,56 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	  $order->no_payment_applicable();
 	  $order->load('totals');
 	}else{
-	  //$order->create_invoice_simple($data_invoice,$data_invoice_transactions);
 	  $invoice=new Invoice ('create',$data_invoice,$data_invoice_transactions,$order->id); 
 	  
-	foreach($credits as $credit){
+	  foreach($credits as $credit){
+	    $sql=sprintf("insert into `Order No Product Transaction Fact` values  (%s,%s,%s,%s,'Credit',%s,%.2f,%.2f,%s,%f,%s)"
+			 ,prepare_mysql($credit['parent_date'])
+			 ,prepare_mysql($invoice->data['Invoice Date'])
+			 ,$credit['parent_key']
+			 ,prepare_mysql($invoice->data['Invoice Key'])
+			 ,prepare_mysql($credit['description'])
+			 ,$credit['value']
+			 ,$tax_rate*$credit['value']
+			 ,"'GBP'"
+			 ,1
+			 ,prepare_mysql($store_code.$order_data_id)
+			 );
+	    
+	    if(!mysql_query($sql))
+	      exit("$sql\n error can not inser orde rno pro trns");
+	    
 	  
-	  //	  print_r($header_data);
-	  $sql=sprintf("insert into `Order No Product Transaction Fact` values  (%s,%s,%s,%s,'Credit',%s,%.2f,%.2f,%s,%f,%s)"
-		       ,prepare_mysql($credit['parent_date'])
-		       ,prepare_mysql($invoice->data['Invoice Date'])
-		       ,$credit['parent_key']
-		       ,prepare_mysql($invoice->data['Invoice Key'])
-		       ,prepare_mysql($credit['description'])
-		       ,$credit['value']
-		       ,$tax_rate*$credit['value']
-		       ,"'GBP'"
-		       ,1
-		       ,prepare_mysql($store_code.$order_data_id)
-		       );
-
-	  if(!mysql_query($sql))
-	    exit("$sql\n error can not inser orde rno pro trns");
-
-	  
-	  if($credit['parent_key']!='NULL'){
-	    $parent=new Order($credit['parent_key']);
-	    $parent->skip_update_product_sales=true;
-	    $parent->load('totals');
-	  //   print "******************************************\n$sql\n";
-// 	    exit;
+	    if($credit['parent_key']!='NULL'){
+	      $parent=new Order($credit['parent_key']);
+	      $parent->skip_update_product_sales=true;
+	      $parent->load('totals');
+	    }
 	  }
-	  
 	}
-
-	
-
-	}
-		$dn->pick_historic($data_dn_transactions);
+	$dn->pick_historic($data_dn_transactions);
 	$order->update_dispatch_state('Ready to Pack');
 	
 	$dn->pack('all');
 	$order->update_dispatch_state('Ready to Ship');
-	  $invoice->data['Invoice Paid Date']=$date_inv;
-	  $invoice->pay('full',
-			array(
-			      'Invoice Items Net Amount'=>round($header_data['total_items_charge_value'],2)-$total_credit_value-$extra_shipping
+	$invoice->data['Invoice Paid Date']=$date_inv;
+	$invoice->pay('full',
+		      array(
+			    'Invoice Items Net Amount'=>round($header_data['total_items_charge_value'],2)-$total_credit_value-$extra_shipping
 			      ,'Invoice Total Net Amount'=>round($header_data['total_net'],2)
-			      ,'Invoice Total Tax Amount'=>round($header_data['tax1']+$header_data['tax2'],2)
-			      ,'Invoice Total Amount'=>round($header_data['total_topay'],2)
-			      ));
-	  $order-> update_payment_state('Paid');	
-	  $dn->dispatch('all',$data_dn_transactions);
+			    ,'Invoice Total Tax Amount'=>round($header_data['tax1']+$header_data['tax2'],2)
+			    ,'Invoice Total Amount'=>round($header_data['total_topay'],2)
+			    ));
+	$order-> update_payment_state('Paid');	
+	$dn->dispatch('all',$data_dn_transactions);
 	$order->update_dispatch_state('Dispached');
-
+	
 	$order->load('totals');
 	$invoice->categorize('save');
       }else if($tipo_order==8 ){
 
-// 	$data['Order Type']='Order';
-// 	$data['store_id']=1;
 	
-// 	exit("to follow");
-
-
-
-    }else if($tipo_order==4 or $tipo_order==5 ){
+      }else if($tipo_order==4 or $tipo_order==5 ){
 	if($header_data['total_net']!=0)
 	  $tax_rate=$header_data['tax1']/$header_data['total_net'];
 	else
@@ -1406,14 +1305,12 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 		       );
 	  
 
-	//$order->create_dn_simple($data_dn,$data_dn_transactions);
-	$dn=new DeliveryNote('create',$data_dn,$data_dn_transactions,$order);
 
-	  if($header_data['total_topay']>0){
+	$dn=new DeliveryNote('create',$data_dn,$data_dn_transactions,$order);
+	
+	if($header_data['total_topay']>0){
 	  $payment_method=parse_payment_method($header_data['pay_method']);
-	  
-	  
- $taxable='Yes';
+	  $taxable='Yes';
 	  $tax_code='UNK';
 	  
 	  if($header_data['total_net']!=0){
@@ -1556,14 +1453,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       if(!$order->id){
 
 	print "Unknown parent $parent_order_id\n";
-	// Create an invoice (refund not realted to the customer)
-	
-	//	print_r($data);
-	//exit;
-	//$invoice=new Invoice ('create',$data_invoice,$data_invoice_transactions,false); 
-	
-	// create new invoice (negative)(no deliver note changes noting)
-	//	exit;
+
 	$data['ghost_order']=true;
 	$data['Order Type']='Order';
 	$data['store_id']=1;

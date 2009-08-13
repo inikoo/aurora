@@ -41,7 +41,7 @@ $css_files=array(
 		 $yui_path.'calendar/assets/skins/sam/calendar.css',
 		 $yui_path.'button/assets/skins/sam/button.css',
 		 $yui_path.'editor/assets/skins/sam/editor.css',
-		 $yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
+		 //$yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
 
 		 'text_editor.css',
 		 'common.css',
@@ -115,6 +115,7 @@ if($edit ){
   $editing_block='details';
 
   $smarty->assign('edit',$editing_block);
+  $css_files[]=$yui_path.'autocomplete/assets/skins/sam/autocomplete.css';
   $css_files[]='css/edit.css';
 
 
@@ -133,6 +134,8 @@ if($edit ){
   }
 
 }else{
+
+  
   $order=$_SESSION['state']['customers']['table']['order'];
   if($order=='name')
     $order='`Customer File As`';

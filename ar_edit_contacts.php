@@ -62,7 +62,19 @@ case('delete_email'):
   delete_email();
   break;
 case('edit_telecom'):
-  edit_telecom();
+   $data=prepare_values($_REQUEST,array(
+			     'id'=>array('type'=>'key')
+			     ,'value'=>array('type'=>'json array','required elements'=>array(
+											     'Telecom'=>'string'
+											     ,'Telecom Key'=>'numeric'
+											     ,'Telecom Type'=>'string'
+											     ,'Telecom Container'=>'numeric'
+											     ,'Telecom Is Main'=>'string'
+											     ))
+			     ,'subject_key'=>array('type'=>'key')
+			     ,'subject'=>array('type'=>'enum','valid values regex'=>'/company|contact/i')
+			     ));
+  edit_telecom($data);
   break;
   
 
@@ -356,11 +368,9 @@ function edit_telecom($data){
 
      $update_data=array(
 			'Telecom Key'=>$data['value']['Telecom Key']
-			,'Telecom Description'=>$data['value']['Telecom Description']
 			,'Telecom Is Main'=>$data['value']['Telecom Is Main']
-			,'Telecom Contact Name'=>$data['value']['Telecom Contact Name']
 			);
-     $subject->add_telecom($update_data);
+     $subject->add_tel($update_data);
      if($subject->updated)
        $msg=_('Telecom updated');
      $telecom->set_scope($data['subject'],$data['subject_key']);
@@ -369,9 +379,8 @@ function edit_telecom($data){
      $action='created';
        $update_data=array(
 			'Telecom'=>$data['value']['Telecom']
-			,'Telecom Description'=>$data['value']['Telecom Description']
 			,'Telecom Is Main'=>$data['value']['Telecom Is Main']
-			,'Telecom Contact Name'=>$data['value']['Telecom Contact Name']
+
 			);
        $subject->add_telecom($update_data,'if found error');
        if($subject->error){
@@ -390,10 +399,8 @@ function edit_telecom($data){
        }
    }
   $updated_telecom_data=array(
-			    'Telecom'=>$telecom->data['Telecom']
-			    ,'Telecom_Description'=>$telecom->data['Telecom Description']
-			    ,'Telecom_Contact_Name'=> $telecom->data['Telecom Contact Name']
-			    ,'Telecom_Is_Main'=> $telecom->data['Telecom Is Main']
+			      'Telecom'=>$telecom->display()
+			      ,'Telecom_Is_Main'=> $telecom->data['Telecom Is Main']
 			    );
   $subject->reread();
   $response=array(

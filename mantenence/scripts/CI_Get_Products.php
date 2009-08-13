@@ -1,31 +1,61 @@
 <?php
-//include("../../external_libs/adminpro/adminpro_config.php");
-//include("../../external_libs/adminpro/mysql_dialog.php");
-
 include_once('../../app_files/db/dns.php');
 include_once('../../class.Department.php');
 include_once('../../class.Family.php');
 include_once('../../class.Product.php');
 include_once('../../class.Supplier.php');
+include_once('../../class.Order.php');
 include_once('../../class.Part.php');
 include_once('../../class.SupplierProduct.php');
+include_once('../../class.Invoice.php');
+include_once('../../class.DeliveryNote.php');
+
+$store_code='E';
+
 error_reporting(E_ALL);
-
-
-
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
-
 if(!$con){print "Error can not connect with database server\n";exit;}
-//$dns_db='costa';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
   
-
 require_once '../../common_functions.php';
 mysql_query("SET time_zone ='UTC'");
 mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';           
-date_default_timezone_set('Europe/London');
+date_default_timezone_set('Europe/Madrid');
+$_SESSION['lang']=1;
+include_once('ci_local_map.php');
+include_once('ci_map_order_functions.php');
+
+$software='Get_Orders_DB.php';
+$version='V 1.0';//75693
+
+$Data_Audit_ETL_Software="$software $version";
+srand(12345);
+
+$store_key=1;
+$dept_no_dept=new Department('code_store','ND',$store_key);
+if(!$dept_no_dept->id){
+  $dept_data=array(
+		   'code'=>'ND',
+		   'name'=>'Products sin departmaneto',
+		   'store_key'=>$store_key
+		   );
+  $dept_no_dept=new Department('create',$dept_data);
+  $dept_no_dept_key=$dept_no_dept->id;
+}
+$dept_promo=new Department('code_store','Promo',$store_key);
+if(!$dept_promo->id){
+  $dept_data=array(
+		   'code'=>'Promo',
+		   'name'=>'Articulos Promocionales',
+		   'store_key'=>$store_key
+		   );
+  $dept_promo=new Department('create',$dept_data);
+  
+}
+$fam_no_fam_key=$fam_no_fam->id;
+$fam_promo_key=$fam_promo->id;
 
 $sql="select p.id,p.code,p.description,p.units,p.price,p.rrp,g.name as fam_code,g.description as fam_name ,d.code as dept_code,d.name as dept_name from ci.product as p left join ci.product_group as g  on (g.id=group_id) left join  ci.product_department as d on (d.id=department_id) ";
 $result=mysql_query($sql);
