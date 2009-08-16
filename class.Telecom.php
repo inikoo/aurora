@@ -277,7 +277,7 @@ function find($raw_data,$options){
 		 ,prepare_mysql($data['Telecom Plain Number'])
 		
 		 );
-    // print "$sql\n";
+   
     $result=mysql_query($sql);
     $num_results=mysql_num_rows($result);
     
@@ -285,7 +285,8 @@ function find($raw_data,$options){
 	$this->found=false;
 
 
-      }else if($num_results==1){
+       }else if($num_results==1){
+	
 	$this->found=true;
 	$row=mysql_fetch_array($result, MYSQL_ASSOC);
 
@@ -949,7 +950,7 @@ public function update($data,$options=''){
 	}
     
   }
-    
+
     
   if(!$this->updated)
     $this->msg.=' '._('Nothing to be updated')."\n";
@@ -958,26 +959,35 @@ public function update($data,$options=''){
     $new_xhtml=$this->display('xhtml');
     if($old_plain!=$new_plain)
       $this->update_field_switcher('Telecom Plain Number',$new_plain,$options);
-    if($new_xhtml!=$new_xhtml){
-      
-      
-      while($row=mysql_fetch_array( mysql_query(sprintf("select `Contact Key` as `Subject Key`  from `Contact Dimension` where `Contact Main Mobile Key`=%d;",$this->id)) )){
-	$contact=new Contact($row['Subject Key']);$contact->update(array('Contact Main Mobile'=>$this->id));
-      }
-      while($row=mysql_fetch_array( mysql_query(sprintf("select `Contact Key` as `Subject Key`  from `Contact Dimension` where `Contact Main Telephone Key`=%d;",$this->id)) )){
-	$contact=new Contact($row['Subject Key']);$contact->update(array('Contact Main Telephone'=>$this->id));
-      }
-      while($row=mysql_fetch_array( mysql_query(sprintf("select `Contact Key` as `Subject Key`  from `Contact Dimension` where `Contact Main FAX Key`=%d;",$this->id)) )){
-	$contact=new Contact($row['Subject Key']);$contact->update(array('Contact Main FAX'=>$this->id));
-      }
-      
-      while($row=mysql_fetch_array( mysql_query(sprintf("select `Company Key` as `Subject Key`  from `Company Dimension` where `Company Main Telephone Key`=%d;",$this->id)) )){
-	$company=new Company($row['Subject Key']);$company->update(array('Company Main Telephone'=>$this->id));
-      }
-      while($row=mysql_fetch_array( mysql_query(sprintf("select `Company Key` as `Subject Key`  from `Company Dimension` where `Company Main FAX Key`=%d;",$this->id)) )){
-	$company=new Company($row['Subject Key']);$company->update(array('Company Main FAX'=>$this->id));
-      }
-      
+    if($new_xhtml!=$old_xhtml){
+
+
+        $sql=sprintf("select `Contact Key` as `Subject Key`  from `Contact Dimension` where `Contact Main Telephone Key`=%d;",$this->id);
+        $res=mysql_query($sql);
+        while($row=mysql_fetch_array($res)){
+            $contact=new Contact($row['Subject Key']);
+            $contact->update_telephone($this->id); 
+        }
+        mysql_free_result($res);
+        
+        $sql=sprintf("select `Contact Key` as `Subject Key`  from `Contact Dimension` where `Contact Main FAX Key`=%d;",$this->id);
+        $res=mysql_query($sql);
+        while($row=mysql_fetch_array($res)){
+            $contact=new Contact($row['Subject Key']);
+            $contact->update_fax($this->id); 
+        }
+        mysql_free_result($res);
+        
+        $sql=sprintf("select `Contact Key` as `Subject Key`  from `Contact Dimension` where `Contact Main Mobile Key`=%d;",$this->id);
+        $res=mysql_query($sql);
+        while($row=mysql_fetch_array($res)){
+            $contact=new Contact($row['Subject Key']);
+            $contact->update_mobile($this->id); 
+        }
+        mysql_free_result($res);
+        
+               
+ 
 
 
 

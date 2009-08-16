@@ -23,6 +23,7 @@ if(!isset($_SESSION['lang'])){
     $_SESSION['lang']=1;
 
   }
+  mysql_free_result($result);
  }
 
 $other_langs=array();
@@ -39,7 +40,7 @@ if($sql_data=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $lang_country_code='gb';
   $lang_code='EN';
  }
-
+mysql_free_result($result);
 bindtextdomain('kaktus', './locale');
 bind_textdomain_codeset('kaktus', $myconf['encoding']);
 textdomain('kaktus');
@@ -63,6 +64,8 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   
   $lang_menu[]=array($_SERVER['PHP_SELF'].$args.'_lang='.$row['Language Key'],$row['Country 2 Alpha Code'],$_lang[$row['Language Key']]);
  }
+ mysql_free_result($result);
+
 $smarty->assign('lang_menu',$lang_menu);
 $smarty->assign('page_layout','doc4');
 

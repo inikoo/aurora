@@ -85,7 +85,7 @@ $sql="select `Language Key` as id,`Language Original Name` as original_name, `La
     $other_langs[$row['id']]=$row['original_name'];
 }
 
-
+mysql_free_result($result);
 
 
 $smarty->assign('other_langs', $other_langs);

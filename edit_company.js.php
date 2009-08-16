@@ -20,6 +20,7 @@ $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
     $salutation.=',"'.$row['Salutation'].'"';
 }
+mysql_free_result($result);
 $sql="select `Country Key`,`Country Name`,`Country Code` from `Country Dimension`";
 $result=mysql_query($sql);
 $country_list='';
@@ -27,6 +28,7 @@ $country_list='';
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
     $country_list.=',{"id":"'.$row['Country Key'].'","name":"'.$row['Country Name'].'","code":"'.$row['Country Code'].'"}  ';
 }
+mysql_free_result($result);
 $country_list=preg_replace('/^\,/','',$country_list);
 
 
@@ -63,7 +65,7 @@ foreach($contacts as $contact){
   foreach($mobiles as $mobile){
     $scope_related_mobile_type='Work Mobile';
     if(isset($mobile->data['Telecom Type'][$scope_related_mobile_type])){
-	$mobile_data.=sprintf(',%d:{"Mobile_Key":%d,"Mobile":"%s","Country_Code":"%s","National_Access_Code":"%s","Number":%s,"Telecom_Is_Main":"%s"}'
+	$mobile_data.=sprintf(',%d:{"Mobile_Key":%d,"Mobile":"%s","Country_Code":"%s","National_Access_Code":"%s","Number":%s,"Telecom_Is_Main":"%s","Telecom Type Description":"%s"}'
 			      ,$mobile->id
 			      ,$mobile->id
 			      ,addslashes($mobile->display())
@@ -71,6 +73,7 @@ foreach($contacts as $contact){
 			      ,addslashes($mobile->data['Telecom National Access Code'])
 			      ,addslashes($mobile->data['Telecom Number'])
 			      ,$mobile->data['Telecom Is Main'][$scope_related_mobile_type]
+			      ,$mobile->data['Telecom Type'][$scope_related_mobile_type]
 			      );
       }
   }
@@ -110,7 +113,7 @@ if(isset($contact_address->data['Address Type'][$scope_related_address_type]) ){
 
       if(isset($tel->data['Telecom Type'][$scope_related_telephone_type])){
 	
-	$tels_data.=sprintf(',%d:{"Telephone_Key":%d,"Telephone":"%s","Country_Code":"%s","National_Access_Code":"%s","Area_Code":"%s","Number":"%s","Extension":"%s","Telecom_Is_Main":"%s"}'
+	$tels_data.=sprintf(',%d:{"Telephone_Key":%d,"Telephone":"%s","Country_Code":"%s","National_Access_Code":"%s","Area_Code":"%s","Number":"%s","Extension":"%s","Telecom_Is_Main":"%s","Telecom Type Description":"%s"}'
 			    ,$tel->id
 			    ,$tel->id
 			    ,addslashes($tel->display())
@@ -120,17 +123,20 @@ if(isset($contact_address->data['Address Type'][$scope_related_address_type]) ){
 			    ,addslashes($tel->data['Telecom Number'])
 			    ,addslashes($tel->data['Telecom Extension'])
 			    ,$tel->data['Telecom Is Main'][$scope_related_telephone_type]
+			    ,$tel->data['Telecom Type'][$scope_related_telephone_type]
 			    );
       }
     }
     $tels_data=preg_replace('/^,/','',$tels_data);
       
     $faxes=$contact->get_faxes($contact_address->id);
+    
+     
      $faxes_data='';
      $number_of_faxes=count($faxes);
     foreach($faxes as $fax){
-    if(isset($tel->data['Telecom Type'][$scope_related_fax_type]) ){
-      $faxes_data.=sprintf(',%d:{"Fax_Key":%d,"Fax":"%s","Country_Code":"%s","National_Access_Code":"%s","Area_Code":"%s","Number":"%s","Telecom_Is_Main":"%s"}'
+    if(isset($fax->data['Telecom Type'][$scope_related_fax_type]) ){
+      $faxes_data.=sprintf(',%d:{"Fax_Key":%d,"Fax":"%s","Country_Code":"%s","National_Access_Code":"%s","Area_Code":"%s","Number":"%s","Telecom_Is_Main":"%s","Telecom Type Description":"%s"}'
 			  ,$fax->id
 			  ,$fax->id
 			  ,addslashes($fax->display())
@@ -139,6 +145,7 @@ if(isset($contact_address->data['Address Type'][$scope_related_address_type]) ){
 			    ,addslashes($fax->data['Telecom Area Code'])
 			    ,addslashes($fax->data['Telecom Number'])
 			    ,$fax->data['Telecom Is Main'][$scope_related_fax_type]
+			  ,$fax->data['Telecom Type'][$scope_related_fax_type]
 			  );
     }
     }

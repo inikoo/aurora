@@ -66,6 +66,8 @@ $company=new Company('find create auto',$data);
 
 
 $sql="select * from  `Staff Dimension`  where `Staff Name`!='David' ";
+$sql="select * from  `Staff Dimension`  ";
+exit;
 $res=mysql_query($sql);
 while($row=mysql_fetch_array($res, MYSQL_ASSOC)){
   
@@ -123,3 +125,4 @@ while($row=mysql_fetch_array($res, MYSQL_ASSOC)){
 	       );
   mysql_query($sql);
  }
+ mysql_free_result($res);
