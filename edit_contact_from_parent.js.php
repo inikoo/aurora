@@ -193,7 +193,8 @@ var save_contact=function(){
 		    else
 			value['Telecom Key']=telecom_key;
 		    value['Telecom']=Dom.get('Telecom'+telecom_key).value;
-		    value['Telecom Type']=Dom.get('Telecom'+telecom_key).getAttribute('telecom_type');
+		    value['Telecom Category']=Dom.get('Telecom'+telecom_key).getAttribute('telecom_type');
+		    value['Telecom Type']=Dom.get('Telecom'+telecom_key).getAttribute('telecom_type_description');
 		    value['Telecom Container']=Dom.get('Telecom'+telecom_key).getAttribute('container_key');
 		    value['Telecom Is Main']=Dom.get('Telecom_Is_Main'+telecom_key).value;
 
@@ -201,10 +202,12 @@ var save_contact=function(){
 		    var json_value = YAHOO.lang.JSON.stringify(value); 
 		    
 		    var request='ar_edit_contacts.php?tipo=edit_telecom&value=' + json_value+'&id='+contact_key+'&subject=contact&subject_key='+contact_key; 
+		 //alert(request);
 		  
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
 			    success:function(o) {
-				alert(o.responseText);
+			//	alert(o.responseText);
+			//	return;
 				var r =  YAHOO.lang.JSON.parse(o.responseText);
 				if(r.action=='updated' || r.action=='created'){
 				    
@@ -458,7 +461,8 @@ var edit_contact=function (e,contact_button){
 	    clone_telecom('mobile','',mobile_key);
 	    Dom.get('Telecom'+mobile_key).value=mobile_data['Mobile'];
 	    Dom.get('Telecom'+mobile_key).setAttribute('ovalue',mobile_data['Mobile']);
-	    
+	    Dom.get('Telecom'+mobile_key).setAttribute('telecom_type_description',mobile_data['Telecom Type Description']);
+
 	    if(mobile_data['Telecom_Is_Main']=='Yes')
 	      Dom.get('Telecom_Is_Main'+mobile_key).checked=true;
 	    else
@@ -575,6 +579,8 @@ var edit_contact=function (e,contact_button){
 		  clone_telecom('telephone',address_key,telephone_key);
 		  Dom.get('Telecom'+telephone_key).value=telephone_data['Telephone'];
 		  Dom.get('Telecom'+telephone_key).setAttribute('ovalue',telephone_data['Telephone']);
+		  Dom.get('Telecom'+telephone_key).setAttribute('telecom_type_description',telephone_data['Telecom Type Description']);
+		  Dom.get('Telecom'+telephone_key).setAttribute('telecom_type','Telephone');
 
 		  if(telephone_data['Telecom_Is_Main']=='Yes')
 		      Dom.get('Telecom_Is_Main'+telephone_key).checked=true;
@@ -593,11 +599,14 @@ var edit_contact=function (e,contact_button){
 		
 		faxes=address_data['Faxes'];
 		for(fax_key in faxes) {
+	
 		var fax_data=faxes[fax_key];
 		if(fax_data==null)continue;
 		clone_telecom('fax',address_key,fax_key);
 		Dom.get('Telecom'+fax_key).value=fax_data['Fax'];
 		Dom.get('Telecom'+fax_key).setAttribute('ovalue',fax_data['Fax']);
+		Dom.get('Telecom'+fax_key).setAttribute('telecom_type_description',fax_data['Telecom Type Description']);
+		  
 		if(fax_data['Telecom_Is_Main']=='Yes')
 		Dom.get('Telecom_Is_Main'+fax_key).checked=true;
 		else

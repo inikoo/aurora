@@ -369,6 +369,7 @@ function edit_telecom($data){
      $update_data=array(
 			'Telecom Key'=>$data['value']['Telecom Key']
 			,'Telecom Is Main'=>$data['value']['Telecom Is Main']
+			,'Telecom Type'=>$data['value']['Telecom Type']
 			);
      $subject->add_tel($update_data);
      if($subject->updated)
@@ -380,7 +381,7 @@ function edit_telecom($data){
        $update_data=array(
 			'Telecom'=>$data['value']['Telecom']
 			,'Telecom Is Main'=>$data['value']['Telecom Is Main']
-
+            ,'Telecom Type'=>$data['value']['Telecom Type']
 			);
        $subject->add_telecom($update_data,'if found error');
        if($subject->error){
@@ -401,6 +402,7 @@ function edit_telecom($data){
   $updated_telecom_data=array(
 			      'Telecom'=>$telecom->display()
 			      ,'Telecom_Is_Main'=> $telecom->data['Telecom Is Main']
+			      ,'Telecom Type'=>$data['value']['Telecom Type']
 			    );
   $subject->reread();
   $response=array(

@@ -168,6 +168,7 @@ $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
    
    $new_customers_1m=$row['new'];
  }
+mysql_free_result($result);
 
  $sql="select count(distinct `Customer ID`) as customers,sum(if(`Customer Type by Activity`='New',1,0)) as new,sum(if(`Customer Type by Activity`='Active',1,0)) as active ,sum(if(`Customer Type by Activity`='Inactive',1,0)) as inactive from `Customer Dimension` ";
  $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
@@ -177,6 +178,7 @@ $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
    $new_customers=$row['new'];
    $inactive_customers=$row['inactive'];
   }
+mysql_free_result($result);
 
 
 

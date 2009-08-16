@@ -947,10 +947,14 @@ class Customer extends DB_Table{
      $is_principal='No';
    
    
-   $sql=sprintf("insert into (`Customer Ship To Bridge`) values (%d,%d,'%s','Yes',NOW()) on duplicate key update `Is Principal`='%s' ,`Is Active`='Yes'  ",$this->id,$ship_to->id,$is_principal,$is_principal);
-   // print $sql;
-   mysql_query($sql);
+   $sql=sprintf("insert into `Customer Ship To Bridge` values (%d,%d,'%s','Yes',0,NOW(),NOW()) on duplicate key update `Is Principal`='%s' ,`Is Active`='Yes'  "
+        ,$this->id
+        ,$ship_to->id
+        ,$is_principal
+        ,$is_principal);
    
+   mysql_query($sql);
+
    
    
    
@@ -1226,7 +1230,7 @@ class Customer extends DB_Table{
 		or ( date('U',strtotime($this->data['Customer First Contacted Date']))>$first_order_date  )
 		)
 	   ){
-	  $sql=sprintf("update `Customer Dimension` set `Customer First Contacted Date`=%d, where `Customer Key`=%d"
+	  $sql=sprintf("update `Customer Dimension` set `Customer First Contacted Date`=%d  where `Customer Key`=%d"
 		       ,prepare_mysql($row['date'])
 		       ,$this->id
 		       );
@@ -2018,14 +2022,14 @@ class Customer extends DB_Table{
 
       if($data['Telecom Type']=='Contact Telephone'){
 	$field='Customer Main Telephone';
-	$field_key='Customer Main Plain Telephone';
-	$field_plain='Customer Main Telephone Key';
+	$field_key='Customer Main Telephone Key';
+	$field_plain='Customer Main Plain Telephone';
 	$old_principal_key=$this->data['Customer Main Telephone Key'];
 	$old_value=$this->data['Customer Main Telephone']." (Id:".$this->data['Customer Main Telephone Key'].")";
       }else{
 	$field='Customer Main FAX';
-	$field_key='Customer Main Plain FAX';
-	$field_plain='Customer Main Telephone FAX';
+	$field_key='Customer Main FAX Key';
+	$field_plain='Customer Main Plain FAX';
 	$old_principal_key=$this->data['Customer Main FAX Key'];
 	$old_value=$this->data['Customer Main FAX']." (Id:".$this->data['Customer Main FAX Key'].")";
       }

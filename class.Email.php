@@ -191,6 +191,8 @@ class Email extends DB_Table {
     }else
       $data['Email Validated']=($this->is_valid($data['Email'])?'Yes':'No');
 
+
+
     $data['Email']=$this->prepare_email($data['Email']);
     $subject=false;
     $subject_key=0;
@@ -226,7 +228,7 @@ class Email extends DB_Table {
     $sql=sprintf("select T.`Email Key`,`Subject Key` from `Email Dimension` T left join `Email Bridge` TB  on (TB.`Email Key`=T.`Email Key`) where `Email`=%s and `Subject Type`='Contact'  "
 		 ,prepare_mysql($raw_data['Email'])
 		   );
-    //  print "$sql\n";    
+    // print "$sql\n";    
     $result=mysql_query($sql);
     $num_results=mysql_num_rows($result);
     if($num_results==0){
@@ -753,11 +755,7 @@ public static function is_valid($email)
             $isValid = false;
          }
       }
-      if ($isValid && !(checkdnsrr($domain,"MX") || checkdnsrr($domain,"A")))
-      {
-         // domain not found in DNS
-         $isValid = false;
-      }
+      //if ($isValid && !(checkdnsrr($domain,"MX") || checkdnsrr($domain,"A"))){$isValid = false;}
    }
    return $isValid;
 }
@@ -781,6 +779,7 @@ public static function  wrong_email($email){
   if(preg_match('/^\@|\@$/',$email))
     return true;
   $email_parts=preg_split('/\@/',$email);
+  
   if(count($email_parts)!=2)
     return true;
   return false;

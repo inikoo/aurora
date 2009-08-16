@@ -94,8 +94,8 @@ $fam_promo_key=$fam_promo->id;
 
 $sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed)  order by filename ";
 
-$sql="select * from  orders_data.orders where filename like '%refund.xls'   order by filename";
-//$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/18979.xls' order by filename";
+//$sql="select * from  orders_data.orders where filename like '%refund.xls'   order by filename";
+//$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/6937.xls' order by filename";
 
 //$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/15720.xls' or filename like '/mnt/%/Orders/60000.xls' or  filename like '/mnt/%/Orders/15sdfsd593.xls' order by filename";
 
@@ -124,6 +124,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	print "UPD $contador $order_data_id $filename \n";
       }
     }
+    mysql_free_result($result_test);
     $header=mb_unserialize($row['header']);
     $products=mb_unserialize($row['products']);
     $filename_number=str_replace('.xls','',str_replace($row2['directory'],'',$row2['filename']));
@@ -1732,7 +1733,9 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
 
   }
+   mysql_free_result($result);
  }
+ mysql_free_result($res);
 
   
 //  print_r($data);

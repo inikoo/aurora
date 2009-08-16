@@ -107,6 +107,8 @@ if($edit ){
   while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
     $salutations[]=array('txt'=>$row['Salutation'],'relevance'=>$row['Relevance'],'id'=>$row['Salutation Key']);
   }
+   mysql_free_result($result);
+
   
 
 
@@ -197,11 +199,15 @@ $sql=sprintf("select `Customer Name` as name from `Customer Dimension`   where  
 $result=mysql_query($sql);
 if(!$prev=mysql_fetch_array($result, MYSQL_ASSOC))
   $prev=array('id'=>0,'code'=>'');
+mysql_free_result($result);
+
 $smarty->assign('prev',$prev);
 $sql=sprintf("select  `Customer Name` as name from `Customer Dimension`     where  %s>%s  order by %s   ",$order,prepare_mysql($customer->get($order)),$order);
 $result=mysql_query($sql);
 if(!$next=mysql_fetch_array($result, MYSQL_ASSOC))
   $next=array('id'=>0,'code'=>'');
+mysql_free_result($result);
+
 $smarty->assign('prev',$prev);
 $smarty->assign('next',$next);
 $smarty->assign('box_layout','yui-t0');

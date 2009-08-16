@@ -171,6 +171,7 @@ function clone_telecom(telecom_type,container_key,telecom_key){
      var element_array=Dom.getElementsByClassName('Telecom', 'input',insertedElement);
      element_array[0].setAttribute('telecom_key',telecom_key);
      element_array[0].setAttribute('container_key',container_key);
+    
      element_array[0].id='Telecom'+telecom_key;
 
       var element_array=Dom.getElementsByClassName('Telecom_Is_Main', 'input',insertedElement);

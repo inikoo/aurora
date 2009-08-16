@@ -18,13 +18,14 @@ if(DEBUG){
 
 
 $default_DB_link=mysql_connect($dns_host,$dns_user,$dns_pwd );
-if(!$default_DB_link){print "Error can not connect with database server\n";exit;}
+if(!$default_DB_link){print "Error can not connect with database server\n";}
 $db_selected=mysql_select_db($dns_db, $default_DB_link);
 if (!$db_selected){print "Error can not access the database\n";exit;}
 
 mysql_query("SET NAMES 'utf8'");
 require_once 'conf/timezone.php';   
 date_default_timezone_set(TIMEZONE) ;
+
 mysql_query(sprintf("SET time_zone =%s",prepare_mysql(TIMEZONE)));
 
 require_once 'conf/conf.php';   

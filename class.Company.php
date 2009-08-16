@@ -192,7 +192,6 @@ class Company extends DB_Table {
 
 
 
-
     $contact=new Contact("find in company",$raw_data);
     foreach($contact->candidate as $key=>$val){
       if(isset($this->candidate[$key]))
@@ -531,10 +530,31 @@ class Company extends DB_Table {
     $this->data['Company Main Country Key']=$address->data['Address Country Key'];
     $this->data['Company Main Country']=$address->data['Address Country Name'];
     $this->data['Company Main Location']=$address->display('location');
+    
+    
+    
+    
+    
     $Company_Main_Telephone_Key=false;
     $Company_Main_FAX_Key=false;
     $main_telephone_is_mobile=false;
     $extra_mobile_key=false;
+    
+    
+    
+    if($this->data['Company Main Telephone']!='' and $this->data['Company Main FAX']!=''){
+        if($this->data['Company Main Telephone']==$this->data['Company Main FAX']){
+            $this->data['Company Main FAX']=''; 
+        }else{
+            $_tel_data=Telecom::parse_number($this->data['Company Main Telephone']);
+            $_fax_data=Telecom::parse_number($this->data['Company Main FAX']);
+            if($_tel_data['Telecom Plain Number']==$_fax_data['Telecom Plain Number'])
+               $this->data['Company Main FAX']=''; 
+         }
+    }
+  
+    
+    
     
     if($this->data['Company Main Telephone']!=''){
       $telephone_data=array();
@@ -668,17 +688,18 @@ class Company extends DB_Table {
 	$contact->add_tel(array(
 				'Telecom Key'=>$Company_Main_Telephone_Key
 				,'Telecom Type'=>$contact_telecom_type
+				,'Telecom Is Main'=>'Yes'
 				));
 	$this->add_tel(array(
 			     'Telecom Key'=>$Company_Main_Telephone_Key
 			     ,'Telecom Type'=>$company_telecom_type
+			     ,'Telecom Is Main'=>'Yes'
 			     ));
 	
    
 
       
       }
-
 
 
 
@@ -797,7 +818,7 @@ protected function update_field_switcher($field,$value,$options=''){
     $contact=new Contact($this->data['Company Main Contact Key']);
     $contact->parse_update_Contact_Name($value);
     $this->data['Company Main Contact Name']=$contact->display('Name');
-    $sql=sprintf("update `Company Main Contact Name`=%s where `Company Key`=%d",prepare_mysql($this->data['Company Main Contact Name']),$this->id);
+    $sql=sprintf("update `Company Dimension` set `Company Main Contact Name`=%s where `Company Key`=%d",prepare_mysql($this->data['Company Main Contact Name']),$this->id);
     mysql_query($sql);
     break;
 
@@ -1026,7 +1047,7 @@ private function update_Company_Old_ID($company_old_id,$options){
     $this->data['Company Old ID'].=$key.',';
   }
   
-  $sql=sprintf("update `Company Dimension` set `'Company Old ID`=%s where `Company Key`=%d "
+  $sql=sprintf("update `Company Dimension` set `Company Old ID`=%s where `Company Key`=%d "
 	       ,prepare_mysql($this->data['Company Old ID'])
 	       ,$this->id);
   mysql_query($sql);
@@ -1425,7 +1446,13 @@ private function update_Company_Old_ID($company_old_id,$options){
     $principal=true;
   }
    
+if(isset($data['Telecom Is Main'])){
+	if($data['Telecom Is Main']=='Yes')
+		$principal=true;	
+	else
+        $principal=false;
 
+}
 
    if(is_numeric($data)){
      $tmp=$data;
@@ -1470,12 +1497,13 @@ private function update_Company_Old_ID($company_old_id,$options){
 
      if($principal and $old_principal_key!=$telecom->id){
 
-       $sql=sprintf("update `Telecom Bridge`  set `Is Main`='No' where `Subject Type`='Company' and  `Subject Key`=%d  ",
+       $sql=sprintf("update `Telecom Bridge`  set `Is Main`='No' where `Subject Type`='Company' and  `Subject Key`=%d and `Telecom Type`=%s ",
 		    $this->id
 		    ,$telecom->id
+		    ,prepare_mysql($data['Telecom Type'])
 		    );
        mysql_query($sql);
-       
+//       print "$sql\n";
        	  $sql=sprintf("update `Company Dimension` set `%s`=%s , `%s`=%d  , `%s`=%s  where `Company Key`=%d"
 		       ,$field
 		       ,prepare_mysql($telecom->display('html'))
@@ -1511,7 +1539,7 @@ private function update_Company_Old_ID($company_old_id,$options){
 		  ,prepare_mysql($principal?'Yes':'No')
 		  );
      mysql_query($sql);
-     //print "$sql\n";
+ //    print "$sql\n";
    
    }
 
@@ -1541,12 +1569,12 @@ private function update_Company_Old_ID($company_old_id,$options){
 	 $telecom_tipo_plain='Company Main Plain Telephone';
        }
 
-       $sql=sprintf("delete `Telecom Bridge`  where `Subject Type`='Company' and  `Subject Key`=%d  and `Telecom Key`=%d",
+       $sql=sprintf("delete from `Telecom Bridge`  where `Subject Type`='Company' and  `Subject Key`=%d  and `Telecom Key`=%d",
 		    $this->id
 		    ,$tel_key
 		    );
        mysql_query($sql);
-       $sql=sprintf("update `Company Dimension` set `%s`='' `%s`='' , `%s`=''  where `Company Key`=%d"
+       $sql=sprintf("update `Company Dimension` set `%s`='' ,`%s`='' , `%s`=''  where `Company Key`=%d"
 		      ,$telecom_tipo
 		      ,$telecom_tipo_plain
 		      ,$telecom_tipo_key

@@ -231,7 +231,8 @@ class supplierproduct{
       
       if($base_data['supplier product most recent']=='Yes'){
 	
-	$sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Most Recent`='No' where `Supplier Product ID`=%d  and `Product Supplier Key`!=%d",$base_data['supplier product id'],$this->id);
+	$sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Most Recent`='No' where `Supplier Product ID`=%d  and `Supplier Product Key`!=%d"
+	,$base_data['supplier product id'],$this->id);
 	mysql_query($sql);
       
 	$sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Most Recent Key`=%d where `Supplier Product Key`=%d",$this->id,$this->id);
@@ -883,7 +884,12 @@ class supplierproduct{
 	   $id = mysql_insert_id();
 	   
 	   if($base_data['supplier product part most recent']=='Yes'){
-	     $sql=sprintf("update `Supplier Product Part List`  set `Supplier Product Part Most Recent`='No',`Supplier Product Part Most Recent Key`=%d where `Supplier Product Part ID`=%d and `Product Part Key`!=%d  ",$id,$base_data['supplier product part id'],$id);
+	     $sql=sprintf("update `Supplier Product Part List`  set `Supplier Product Part Most Recent`='No',`Supplier Product Part Most Recent Key`=%d where `Supplier Product Part ID`=%d 
+	     and `Supplier Product Part Key`!=%d  "
+	     ,$id
+	     ,$base_data['supplier product part id']
+	     ,$id);
+	    
 	     mysql_query($sql);
 	     $sql=sprintf('update `Supplier Product Part List` set `Supplier Product Part Most Recent Key`=%d where `Supplier Product Part Key`=%d',$id,$id);
 	     

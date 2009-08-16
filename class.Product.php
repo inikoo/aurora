@@ -209,7 +209,7 @@ class product extends DB_Table{
 
 	 
 
-	}
+	
 
 	$sqldd=sprintf("update `Product Part List`  set `Product Part Valid From`=%s  where `Product Part ID`=%s and `Product Part Valid From`>%s"
 		     ,prepare_mysql($tag['date'])
@@ -225,7 +225,10 @@ class product extends DB_Table{
 		     );
 	mysql_query($sqlee);
 	
+}else{
+exit("sku not found   $sql\n");
 
+}
 
 	$data=array(
 		    'Supplier Name'=>$tag['supplier name'],
@@ -277,8 +280,12 @@ class product extends DB_Table{
 
 	}else{
 	  //check if the sppl exist if not create
-	  $sql=sprintf('select `Supplier Product Code`,`Supplier Product Valid From`,`Supplier Product Valid To`,`Supplier Product Key`,SPD.`Supplier Product ID`,`Supplier Product Units Per Part`,`Supplier Product Cost` from  `Supplier Product Dimension`   SPD left join `Supplier Product Part List` SPPL  on (SPD.`Supplier Product ID`=SPPL.`Supplier Product ID`) where `Part SKU`=%d  and `Supplier Product Key`=%d',$this->part_sku,$supplier_product->id);
-	  $result_=mysql_query($sql);
+	  $sql=sprintf('select `Supplier Product Code`,`Supplier Product Valid From`,`Supplier Product Valid To`,`Supplier Product Key`,SPD.`Supplier Product ID`,`Supplier Product Units Per Part`,`Supplier Product Cost` 
+	  from  `Supplier Product Dimension`   SPD left join `Supplier Product Part List` SPPL  on (SPD.`Supplier Product ID`=SPPL.`Supplier Product ID`) where `Part SKU`=%d  
+	  and `Supplier Product Key`=%d',$this->part_sku,$supplier_product->id);
+	 
+	    $result_=mysql_query($sql);
+	  
 	  if(!$row2=mysql_fetch_array($result_, MYSQL_ASSOC)){
 	    $part=new Part('sku',$this->part_sku);
 	    if(!$part->id)

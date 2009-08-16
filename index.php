@@ -11,7 +11,9 @@
  
  Version 2.0
 */
+
 include_once('common.php');
+
 include_once('class.Product.php');
 include_once('class.Order.php');
 
@@ -71,7 +73,8 @@ $smarty->assign('view_orders',$view_orders);
 
 
 $week=date("W");
-$sql='select sum(total) as total,count(*) from orden where tipo=2 and week(date_index)='.$week;
+$sql='select sum(total) as total,count(*) from orden where tipo=2 and week(date_index)='
+.$week;
 
 
 $smarty->assign('box_layout','yui-t4');

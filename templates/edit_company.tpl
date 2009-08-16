@@ -365,7 +365,7 @@
 	      </td>
 	      <td>
 		<span class="telecom_to_delete" style="display:none;text-decoration:line-through"></span>
-		<input  class="Telecom" telecom_type="Fax" container_key="" value="" ovalue="" to_delete=0  telecom_key=0 onkeyup="validate_telecom(this);telecom_change()"     /> 
+		<input  class="Telecom" telecom_type="Mobile" telecom_type_description=""  container_key="" value="" ovalue="" to_delete=0  telecom_key=0 onkeyup="validate_telecom(this);telecom_change()"     /> 
 	      </td >
 	      <td>
 		<input class="Telecom_Is_Main" type="checkbox" ovalue="No"  telecom_type="mobile" onclick="update_is_main_telecom(this)"/><span>{t}Main{/t}</span>
@@ -417,7 +417,7 @@
 		  </td>
 		  <td>
 		    <span class="telecom_to_delete" style="display:none;text-decoration:line-through"></span>
-		    <input  class="Telecom" telecom_key=0 telecom_type="Fax" container_key="" value="" ovalue="" to_delete=0  onkeyup="validate_telecom(this);telecom_change(this)"     /> 
+		    <input  class="Telecom" telecom_key=0 telecom_type="Telephone" telecom_type_description="" container_key="" value="" ovalue="" to_delete=0  onkeyup="validate_telecom(this);telecom_change(this)"     /> 
 		  </td >
 		  <td>
 		    <input class="Telecom_Is_Main" type="checkbox" ovalue="No"  telecom_type="telephone" onclick="update_is_main_telecom(this)"/><span>{t}Main{/t}</span>
@@ -457,7 +457,7 @@
 		  </td>
 		  <td>
 		    <span class="telecom_to_delete" style="display:none;text-decoration:line-through"></span>
-		    <input  class="Telecom" value=""  telecom_type="Fax" container_key=""  telecom_key=0 ovalue="" to_delete=0  onkeyup="validate_telecom(this);telecom_change()"     /> 
+		    <input  class="Telecom" value=""  telecom_type="Fax" container_key="" telecom_type_description=""  telecom_key=0 ovalue="" to_delete=0  onkeyup="validate_telecom(this);telecom_change()"     /> 
 		  </td >
 		  <td>
 		    <input class="Telecom_Is_Main" type="checkbox" ovalue="No"  telecom_type="fax" onclick="update_is_main_telecom(this)"/><span>{t}Main{/t}</span>

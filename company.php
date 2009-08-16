@@ -42,7 +42,7 @@ if(isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ){
 
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-		 $yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
+		 
 		 //		 $yui_path.'assets/skins/sam/container.css',
 		 // $yui_path.'assets/skins/sam/menu.css',
 		 //$yui_path.'assets/skins/sam/button.css',
@@ -109,7 +109,7 @@ if($edit ){
 
   $smarty->assign('edit',$editing_block);
   $css_files[]='css/edit.css';
-
+  $css_files[]=$yui_path.'autocomplete/assets/skins/sam/autocomplete.css';
 
   $js_files[]='js/validate_telecom.js';
   $js_files[]=sprintf('edit_company.js.php?id=%d&scope=Company&scope_key=%d',$company->id,$company->id);
@@ -162,11 +162,14 @@ $sql=sprintf("select `Company Name` as name from `Company Dimension`   where  `%
 $result=mysql_query($sql);
 if(!$prev=mysql_fetch_array($result, MYSQL_ASSOC))
   $prev=array('id'=>0,'code'=>'');
+mysql_free_result($result);
 $smarty->assign('prev',$prev);
 $sql=sprintf("select  `Company Name` as name from `Company Dimension`     where  `%s`>%s  order by `%s`   ",$order,prepare_mysql($company->get($order)),$order);
 $result=mysql_query($sql);
 if(!$next=mysql_fetch_array($result, MYSQL_ASSOC))
   $next=array('id'=>0,'code'=>'');
+  mysql_free_result($result);
+
 $smarty->assign('prev',$prev);
 $smarty->assign('next',$next);
 

@@ -219,7 +219,7 @@ class DeliveryNote extends DB_Table {
 
     // exit ( "$sql\n  can not update order dimension after dn\n" );	
     $this->load('orders');
-    $sql = sprintf ( "delete from  `Order Delivery Note  Bridge` where `Delivery Note Key`=%d",$this->id);
+    $sql = sprintf ( "delete from  `Order Delivery Note Bridge` where `Delivery Note Key`=%d",$this->id);
     mysql_query ( $sql );
     foreach($this->orders as $key=>$ord){
       $sql = sprintf ( "insert into `Order Delivery Note Bridge` values (%d,%d)", $this->id, $key );

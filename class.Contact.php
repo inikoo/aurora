@@ -256,6 +256,7 @@ class Contact extends DB_Table{
     $this->candidate=array();
 
     if($data['Contact Main Plain Email']!=''){
+    
       $email=new Email("find in contact",$data['Contact Main Plain Email']);
       if($email->error){
 	$data['Contact Main Plain Email']='';
@@ -953,8 +954,45 @@ private function create ($data,$options='',$address_home_data=false){
 				    ));
 
 
-
-
+   
+        
+        
+        if($this->data['Contact Main Telephone']!='' and $this->data['Contact Main FAX']!=''){
+        if($this->data['Contact Main Telephone']==$this->data['Contact Main FAX']){
+            $this->data['Contact Main FAX']=''; 
+        }else{
+            $_tel_data=Telecom::parse_number($this->data['Contact Main Telephone']);
+            $_fax_data=Telecom::parse_number($this->data['Contact Main FAX']);
+            if($_tel_data['Telecom Plain Number']==$_fax_data['Telecom Plain Number'])
+               $this->data['Contact Main FAX']=''; 
+         }
+    	}
+        
+       if($this->data['Contact Main Telephone']!='' and $this->data['Contact Main Mobile']!=''){
+        if($this->data['Contact Main Telephone']==$this->data['Contact Main Mobile']){
+            $this->data['Contact Main Mobile']=''; 
+        }else{
+            $_tel_data=Telecom::parse_number($this->data['Contact Main Telephone']);
+            $_fax_data=Telecom::parse_number($this->data['Contact Main Mobile']);
+            if($_tel_data['Telecom Plain Number']==$_fax_data['Telecom Plain Number'])
+               $this->data['Contact Main Mobile']=''; 
+         }
+    	}
+    	
+    	 
+       if($this->data['Contact Main FAX']!='' and $this->data['Contact Main Mobile']!=''){
+        if($this->data['Contact Main FAX']==$this->data['Contact Main Mobile']){
+            $this->data['Contact Main Mobile']=''; 
+        }else{
+            $_tel_data=Telecom::parse_number($this->data['Contact Main FAX']);
+            $_fax_data=Telecom::parse_number($this->data['Contact Main Mobile']);
+            if($_tel_data['Telecom Plain Number']==$_fax_data['Telecom Plain Number'])
+               $this->data['Contact Main Mobile']=''; 
+         }
+    	}
+    	
+        
+        
 		if($data['Contact Main Mobile']!=''){
 	  //print "addin fax\n";
 	  $telephone_data=array('Telecom Raw Number'=>$data['Contact Main Mobile']);
@@ -1900,9 +1938,10 @@ function add_address($data,$args='principal'){
      
   	if($principal and $old_principal_key!=$telecom->id){
      
-	  $sql=sprintf("update `Telecom Bridge`  set `Is Main`='No' where `Subject Type`='Contact' and  `Subject Key`=%d  ",
+	  $sql=sprintf("update `Telecom Bridge`  set `Is Main`='No' where `Subject Type`='Contact' and  `Subject Key`=%d and `Telecom Type`=%s ",
 		       $this->id
 		       ,$telecom->id
+		        ,prepare_mysql($data['Telecom Type'])
 		       );
 	  mysql_query($sql);
 	   $sql=sprintf("update `Contact Dimension` set `%s`=%s , `%s`=%d  , `%s`=%s  where `Contact Key`=%d"
@@ -1985,12 +2024,12 @@ function add_address($data,$args='principal'){
 	   $telecom_tipo_plain='Contact Main Plain Telephone';
        }
 
-       $sql=sprintf("delete `Telecom Bridge`  where `Subject Type`='Contact' and  `Subject Key`=%d  and `Telecom Key`=%d",
+       $sql=sprintf("delete from `Telecom Bridge`  where `Subject Type`='Contact' and  `Subject Key`=%d  and `Telecom Key`=%d",
 		    $this->id
 		    ,$tel_key
 		    );
        mysql_query($sql);
-       $sql=sprintf("update `Contact Dimension` set `%s`='' `%s`='' , `%s`=''  where `Contact Key`=%d"
+       $sql=sprintf("update `Contact Dimension` set `%s`='', `%s`='' , `%s`=''  where `Contact Key`=%d"
 		      ,$telecom_tipo
 		      ,$telecom_tipo_plain
 		      ,$telecom_tipo_key
@@ -2031,6 +2070,7 @@ protected function update_field_switcher($field,$value,$options=''){
     $this->update_mobile($value);
     break;
   case('Contact Main Telephone Key'):
+ 
     $this->update_telephone($value);
     break;
   case('Contact Main FAX Key'):
@@ -2056,7 +2096,7 @@ protected function update_field_switcher($field,$value,$options=''){
       $this->add_email($email_data,$options.' principal');
     }
     break;  
-  case('Contact Main Plain Telephone'):
+  case('Contact Main Telephone'):
     // print "xxx\n";
     // check if plain numbers are the same
     $tel_data=Telecom::parse_number($value);
@@ -2078,7 +2118,7 @@ protected function update_field_switcher($field,$value,$options=''){
       }
     }
     break;  
- case('Contact Main Plain FAX'):
+ case('Contact Main FAX'):
    // print "y\n";
  $tel_data=Telecom::parse_number($value);
     $plain_tel=Telecom::plain_number($tel_data);
@@ -2101,7 +2141,7 @@ protected function update_field_switcher($field,$value,$options=''){
     $this->update_Contact_Old_ID($value,$options);
     break;
 
-  case('Contact Main Plain Mobile'):
+  case('Contact Main Mobile'):
     $tel_data=Telecom::parse_number($value);
     $plain_tel=Telecom::plain_number($tel_data);
     
@@ -3349,7 +3389,7 @@ function update_mobile($telecom_key){
 		 ,$this->id
 		 );
     mysql_query($sql);
-    if(mysql_affected_rows() and $old_value!=$new_value){
+    if(mysql_affected_rows() and $old_value!=$telecom->display('xhtml')){
         $history_data=array(
 			    'indirect_object'=>'Contact Main Mobile'
 			    ,'old_value'=>$old_value
@@ -3370,6 +3410,7 @@ function update_mobile($telecom_key){
 
 
 function update_telephone($telecom_key){
+
   $old_telecom_key=$this->data['Contact Main Telephone Key'];
   
   $telecom=new Telecom($telecom_key);
@@ -3380,7 +3421,7 @@ function update_telephone($telecom_key){
       return;
     }
   $old_value=$this->data['Contact Main Telephone'];
-  $sql=sprintf("update `Contact Dimension` set `Contact Main Telephone`=%s ,`Contact Main Plain Telephone`=%s  ,`Contact Main Plain Key`=%d where `Contact Key`=%d "
+  $sql=sprintf("update `Contact Dimension` set `Contact Main Telephone`=%s ,`Contact Main Plain Telephone`=%s  ,`Contact Main Telephone Key`=%d where `Contact Key`=%d "
 	       ,prepare_mysql($telecom->display('xhtml'))
 	       ,prepare_mysql($telecom->display('plain'))
 	       ,$telecom->id
@@ -3388,8 +3429,9 @@ function update_telephone($telecom_key){
 	       );
   mysql_query($sql);
   if(mysql_affected_rows()){
+    
     $this->updated;
-    if($old_value!=$new_value)
+    if($old_value!=$telecom->display('xhtml'))
       $history_data=array(
 			'indirect_object'=>'Contact Main Telephone'
 			,'old_value'=>$old_value
@@ -3411,7 +3453,7 @@ function update_fax($telecom_key){
       return;
     }
   $old_value=$this->data['Contact Main FAX'];
-  $sql=sprintf("update `Contact Dimension` set `Contact Main FAX`=%s ,`Contact Main Plain FAX`=%s  ,`Contact Main Plain Key`=%d where `Contact Key`=%d "
+  $sql=sprintf("update `Contact Dimension` set `Contact Main FAX`=%s ,`Contact Main Plain FAX`=%s  ,`Contact Main Plain FAX`=%d where `Contact Key`=%d "
 	       ,prepare_mysql($telecom->display('xhtml'))
 	       ,prepare_mysql($telecom->display('plain'))
 	       ,$telecom->id
@@ -3420,7 +3462,7 @@ function update_fax($telecom_key){
   mysql_query($sql);
   if(mysql_affected_rows()){
     $this->updated;
-    if($old_value!=$new_value)
+    if($old_value!=$telecom->display('xhtml'))
       $history_data=array(
 			'indirect_object'=>'Contact Main FAX'
 			,'old_value'=>$old_value
