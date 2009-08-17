@@ -2747,31 +2747,7 @@ function set_principal_address($recipient_id,$tipo,$address_id,$date_index='',$h
 
 
 function check_email_address($email) {
-// First, we check that there's one @ symbol, and that the lengths are right
-if (!ereg("^[^@]{1,64}@[^@]{1,255}$", $email)) {
-// Email invalid because wrong number of characters in one section, or wrong number of @ symbols.
-return false;
-}
-// Split it into sections to make life easier
-$email_array = explode("@", $email);
-$local_array = explode(".", $email_array[0]);
-for ($i = 0; $i < sizeof($local_array); $i++) {
-if (!ereg("^(([A-Za-z0-9!#$%&'*+/=?^_`{|}~-][A-Za-z0-9!#$%&'*+/=?^_`{|}~\.-]{0,63})|(\"[^(\\|\")]{0,62}\"))$", $local_array[$i])) {
-return false;
-}
-}
-if (!ereg("^\[?[0-9\.]+\]?$", $email_array[1])) { // Check if domain is IP. If not, it should be valid domain name
-$domain_array = explode(".", $email_array[1]);
-if (sizeof($domain_array) < 2) {
-return false; // Not enough parts to domain
-}
-for ($i = 0; $i < sizeof($domain_array); $i++) {
-if (!ereg("^(([A-Za-z0-9][A-Za-z0-9-]{0,61}[A-Za-z0-9])|([A-Za-z0-9]+))$", $domain_array[$i])) {
-return false;
-}
-}
-}
-return true;
+return Email::is_valid($email);
 }
 
 function get_address_raw(){
@@ -3836,7 +3812,7 @@ function get_dates($filedate,$header_data,$tipo_order,$new_file=true){
   $datetime_updated=date("Y-m-d H:i:s",$filedate);
   $time_updated_menos30min=date("H:i:s",$filedate-1800);
 
-  list($date_updated,$time_updated)=split(' ',$datetime_updated);
+  list($date_updated,$time_updated)=preg_split('/\s+/',$datetime_updated);
   if($new_file){
     if($tipo_order==2  or $tipo_order==6 or $tipo_order==7 or $tipo_order==9   ){
       
@@ -4489,6 +4465,15 @@ if(preg_match('/^101 Reykjavik$/i',$act_data['town'])){
     }
  
  
+if(preg_match('/^\d{5}$/',$act_data['country']) and $act_data['postcode']==''){
+    $act_data['postcode']=$act_data['country'];
+    $act_data['country']='';
+}
+
+if(preg_match('/^granada$/i',$act_data['town']) and $act_data['country']==''){
+    $act_data['country']='Spain';
+}
+
 
 
   if($act_data['postcode']=='' and preg_match('/\s*no\-\d{4}\s*/',$act_data['town'],$match) ){

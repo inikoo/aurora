@@ -383,6 +383,11 @@ class Company extends DB_Table {
       return $this->data[$key];
 
     switch($key){
+    case("Name"):
+        if(preg_match('/addslashes/i',$arg1))
+            return addslashes ($this->data['Company Name']);
+        return     $this->data['Company Name'];
+    break;
     case("ID"):
     case("Formated ID"):
       

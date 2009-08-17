@@ -15,7 +15,7 @@ if(isset($_REQUEST['search']) and $_REQUEST['search']!=''  ){
     header('Location: order.php?id='. $found['id']);
     exit;
   }
-  
+  mysql_free_result($result);
   $_SESSION['tables']['order_list'][5]='public_id';
   $_SESSION['tables']['order_list'][6]=addslashes($q);
 
@@ -29,7 +29,9 @@ $result=mysql_query($sql);
 if($row=mysql_fetch_array($result, MYSQL_ASSOC))
   $orders=$row['numberof'];
  else 
-   exit;
+exit('Internal Error');
+mysql_free_result($result);
+
 
 
 $smarty->assign('view',$_SESSION['state']['orders']['view']);

@@ -857,7 +857,7 @@ $conf=$_SESSION['state']['contacts']['table'];
 function list_customers(){
 
 
-
+global $myconf;
 
   $conf=$_SESSION['state']['customers']['table'];
   if(isset( $_REQUEST['sf']))
