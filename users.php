@@ -52,7 +52,7 @@ $sql="select (select count(*) from liveuser_groups) as number_groups ,( select c
 $result = mysql_query($sql);
 if(!$user=mysql_fetch_array($result, MYSQL_ASSOC))
   exit;
-
+mysql_free_result($result);
 $smarty->assign('box_layout','yui-t4');
 
 
@@ -67,14 +67,16 @@ $result=mysql_query($sql);
  while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $newuser_langs[$row['id']]=$_lang[$row['id']];
  }
+ mysql_free_result($result);
 $smarty->assign('newuser_langs',$newuser_langs);
 
 $sql="select group_id as id from liveuser_groups";
 $newuser_groups=array();
 $res=mysql_query($sql);
-while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+while($row=mysql_fetch_array($res, MYSQL_ASSOC)){
   $newuser_groups[$row['id']]=$_group[$row['id']];
  }
+ mysql_free_result($res);
 $smarty->assign('newuser_groups',$newuser_groups);
 
 //create user list
@@ -100,6 +102,7 @@ $supplier=array();
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $supplier[]=array('alias'=>$row['alias'],'id'=>$row['id'],'is_user'=>$row['is_user']);
  }
+ mysql_free_result($result);
 foreach($supplier as $key=>$_supplier){
   $supplier[$key]['mod']=fmod($key,$num_cols);
 }

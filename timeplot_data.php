@@ -13,11 +13,7 @@
 */
 require_once 'common.php';
 
-if (!$LU or !$LU->isLoggedIn()) {
-  $response=array('state'=>402,'resp'=>_('Forbidden'));
-  echo json_encode($response);
-  exit;
- }
+
 
 
 if(!isset($_REQUEST['tipo']))
@@ -67,7 +63,7 @@ case('daily_net_sales'):
   while($row=mysql_fetch_array($res)) {
     $data[$row['date']]=0;
   }
-  
+  mysql_free_result($res);
  if($from)
  $sql=sprintf("select DATE(`Invoice Date`)   as date, sum(`Invoice Total Net Amount`) as net  from `Invoice Dimension`  where  `Invoice Date`>='%s' and `Invoice Date`<='%s'   group by DATE(`Invoice Date`) ",date("Y-m-d",$from),date("Y-m-d",$until));
   else
@@ -77,7 +73,7 @@ case('daily_net_sales'):
   while($row=mysql_fetch_array($res)) {
     $data[$row['date']]=$row['net'];
   }
-
+  mysql_free_result($res);
   foreach($data as $key => $value){
     if($just_values)
       print "$value\n";
@@ -92,6 +88,7 @@ case('first_month'):
     print $row['date'];
   }else
     print date("Ym");
+      mysql_free_result($res);
   break;
 case('monthly_net_sales'):
 
@@ -105,7 +102,7 @@ if($from)
     $data[$row['date']]=0;
     $_date[$row['date']]=$row['Last Day'];
   }
-  
+    mysql_free_result($res);
 if($from)
   $sql=sprintf("select DATE_FORMAT(`Invoice Date`,'%%Y%%m')   as date, sum(`Invoice Total Net Amount`) as net  from `Invoice Dimension`   where `Invoice Date`>='%s'    group by  DATE_FORMAT(`Invoice Date`,'%%Y%%m')   ",date("Y-m-d",$from));
 else
@@ -115,7 +112,7 @@ else
   while($row=mysql_fetch_array($res)) {
      $data[$row['date']]=$row['net'];
   }
-
+  mysql_free_result($res);
   //  print_r($data);
   foreach($data as $key => $value){
     if($just_values)
@@ -138,7 +135,7 @@ case('weekly_net_sales'):
     $_date[$row['Year Week Normalized']]=$row['Last Day'];
     $data[$row['Year Week Normalized']]=0;
   }
-  
+    mysql_free_result($res);
   
   if($from)
     $sql=sprintf("select  `Invoice Date`,YEARWEEK(`Invoice Date`,3)    as date, sum(`Invoice Total Net Amount`) as net  from `Invoice Dimension`   where YEARWEEK(`Invoice Date`,3)>='%s' and  YEARWEEK(`Invoice Date`,3)<='%s'   group by  YEARWEEK(`Invoice Date`,3)   ",date("YW",$from),yearweek(date("Y-m-d",$until)));
@@ -149,7 +146,7 @@ case('weekly_net_sales'):
   while($row=mysql_fetch_array($res)) {
      $data[$yearweek[$row['date']]]=$row['net'];
   }
-
+  mysql_free_result($res);
   //  print_r($data);
   foreach($data as $key => $value){
     if($just_values)
@@ -178,12 +175,14 @@ case('daily_net_fam_sales'):
     $sql=sprintf("select D.`Date` as date from `Date Dimension` D where Date>'%s' and Date<='%s'",date("Y-m-d",$from),date("Y-m-d",$until));
   
     //  print $sql;
-    $res = mysql_query($sql); 
+  
     
      foreach($family_keys as $family_key){
+         $res = mysql_query($sql); 
        while($row=mysql_fetch_array($res)) {
-	 $data[$row['date']][$family_key]=0;
+	        $data[$row['date']][$family_key]=0;
        }
+         mysql_free_result($res);
      }
   
 
@@ -198,7 +197,7 @@ case('daily_net_fam_sales'):
   while($row=mysql_fetch_array($res)) {
     $data[$row['date']][$family_key]=$row['net'];
   }
-
+mysql_free_result($res);
   }
   foreach($data as $key => $values){
     $line='';

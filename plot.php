@@ -79,7 +79,7 @@ $fields='"date"';
     
 
   }
-
+mysql_free_result($result);
    $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category');
    $style='size:1';
    $tipo_chart='ColumnChart';
@@ -278,7 +278,7 @@ break;
     break;
  case('total_sales_month'):
    $title=_("Total Net Sales per Month");
-   $ar_address='ar_orders.php?tipo=plot_monthsales';
+   $ar_address='ar_plot.php?tipo=invoiced_month_sales';
    $fields='"sales","tip_sales","date"';
    $yfields=array(array('label'=>_('Month Net Sales'),'name'=>'sales','style'=>''));;
       $yfield_label_type='formatCurrencyAxisLabel';
@@ -313,7 +313,7 @@ break;
    break;
  case('total_sales_week'):
    $title=_("Total Net Sales per Week");
-   $ar_address='ar_orders.php?tipo=plot_weeksales';
+   $ar_address='ar_plot.php?tipo=invoiced_week_sales';
    $fields='"sales","tip_sales","date"';
    $yfields=array(array('label'=>_('Week Net Sales'),'name'=>'sales','axis'=>'formatCurrencyAxisLabel','style'=>'size:3'));;
    $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category');

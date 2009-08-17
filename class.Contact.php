@@ -957,37 +957,37 @@ private function create ($data,$options='',$address_home_data=false){
    
         
         
-        if($this->data['Contact Main Telephone']!='' and $this->data['Contact Main FAX']!=''){
-        if($this->data['Contact Main Telephone']==$this->data['Contact Main FAX']){
-            $this->data['Contact Main FAX']=''; 
+        if($data['Contact Main Telephone']!='' and $data['Contact Main FAX']!=''){
+        if($data['Contact Main Telephone']==$data['Contact Main FAX']){
+            $data['Contact Main FAX']=''; 
         }else{
-            $_tel_data=Telecom::parse_number($this->data['Contact Main Telephone']);
-            $_fax_data=Telecom::parse_number($this->data['Contact Main FAX']);
+            $_tel_data=Telecom::parse_number($data['Contact Main Telephone']);
+            $_fax_data=Telecom::parse_number($data['Contact Main FAX']);
             if($_tel_data['Telecom Plain Number']==$_fax_data['Telecom Plain Number'])
-               $this->data['Contact Main FAX']=''; 
+               $data['Contact Main FAX']=''; 
          }
     	}
-        
-       if($this->data['Contact Main Telephone']!='' and $this->data['Contact Main Mobile']!=''){
-        if($this->data['Contact Main Telephone']==$this->data['Contact Main Mobile']){
-            $this->data['Contact Main Mobile']=''; 
+    
+       if($data['Contact Main Telephone']!='' and $data['Contact Main Mobile']!=''){
+        if($data['Contact Main Telephone']==$data['Contact Main Mobile']){
+            $data['Contact Main Mobile']=''; 
         }else{
-            $_tel_data=Telecom::parse_number($this->data['Contact Main Telephone']);
-            $_fax_data=Telecom::parse_number($this->data['Contact Main Mobile']);
+            $_tel_data=Telecom::parse_number($data['Contact Main Telephone']);
+            $_fax_data=Telecom::parse_number($data['Contact Main Mobile']);
             if($_tel_data['Telecom Plain Number']==$_fax_data['Telecom Plain Number'])
-               $this->data['Contact Main Mobile']=''; 
+               $data['Contact Main Mobile']=''; 
          }
     	}
     	
     	 
-       if($this->data['Contact Main FAX']!='' and $this->data['Contact Main Mobile']!=''){
-        if($this->data['Contact Main FAX']==$this->data['Contact Main Mobile']){
-            $this->data['Contact Main Mobile']=''; 
+       if($data['Contact Main FAX']!='' and $data['Contact Main Mobile']!=''){
+        if($data['Contact Main FAX']==$data['Contact Main Mobile']){
+            $data['Contact Main Mobile']=''; 
         }else{
-            $_tel_data=Telecom::parse_number($this->data['Contact Main FAX']);
-            $_fax_data=Telecom::parse_number($this->data['Contact Main Mobile']);
+            $_tel_data=Telecom::parse_number($data['Contact Main FAX']);
+            $_fax_data=Telecom::parse_number($data['Contact Main Mobile']);
             if($_tel_data['Telecom Plain Number']==$_fax_data['Telecom Plain Number'])
-               $this->data['Contact Main Mobile']=''; 
+               $data['Contact Main Mobile']=''; 
          }
     	}
     	

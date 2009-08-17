@@ -44,7 +44,8 @@
 	      <span style="display:none" class="small_button" id="cancel_save_details_button" >Cancel</span>
 	      <span  style="display:none" class="small_button" id="save_details_button" >Save</span></td>
 	  </tr>
-	  <tr class="first"><td style="width:160px">Public Name:</td><td  style="text-align:left"><input style="text-align:left;width:12em" id="name" value="{$company->get('Company Name')}" ovalue="{$company->get('Company Name')}"></td>
+	  <tr class="first"><td style="width:160px">Public Name:</td><td  style="text-align:left">
+	  <input style="text-align:left;width:12em" id="name" value="{$company->get('Name','addslashes')}" ovalue="{$company->get('Company Name')}"></td>
 	  </tr>
 	  <tr class="first"><td style="width:160px">Fiscal Name:</td><td style="text-align:left"><input style="text-align:left;width:12em" id="fiscal_name" value="{$company->get('Company Fiscal Name')}" ovalue="{$company->get('Company Fiscal Name')}" ></td>
 	  </tr>
@@ -157,7 +158,7 @@
 	      Country:</td>
 	    <td  style="text-align:left">
 	      <div id="myAutoComplete" style="width:15em;position:relative;top:-10px" >
-		<input id="address_country" style="text-align:left;width:12em" type="text">
+		<input id="address_country" style="text-align:left;width:18em" type="text">
 		<div id="address_country_container" style="position:relative;top:18px" ></div>
 		
 	      </div>
@@ -165,34 +166,39 @@
 	  </tr>
 	    <input id="address_country_code" value="" type="hidden">
 	  <tr id="tr_address_country_d1">
-	    <td class="label" style="width:160px"><span id="show_country_d2" onclick="toggle_country_d2()" class="small_button" style="padding:0 1px;font-size:50%;position:relative;top:-2px;display:none">+</span> <span id="label_address_country_d1">{t}Region{/t}</span>:</td><td  style="text-align:left"><input style="text-align:left;width:12em" id="address_country_d1" value="" ovalue="" ></td>
+	    <td class="label" style="width:160px">
+	    <span id="show_country_d2" onclick="toggle_country_d2()" class="small_button" style="padding:0 1px;font-size:50%;position:relative;top:-2px;display:none">+</span> 
+	    <span id="label_address_country_d1">{t}Region{/t}</span>:</td><td  style="text-align:left"><input style="text-align:left;width:18em" id="address_country_d1" value="" ovalue="" ></td>
 	  </tr>
 	  <tr id="tr_address_country_d2">
-	    <td class="label" style="width:160px"><span id="label_address_country_d2">{t}Subregion{/t}</span>:</td><td  style="text-align:left"><input style="text-align:left;width:12em" id="address_country_d2" value="" ovalue="" ></td>
+	    <td class="label" style="width:160px"><span id="label_address_country_d2">{t}Subregion{/t}</span>:</td><td  style="text-align:left">
+	    <input style="text-align:left;width:18em" id="address_country_d2" value="" ovalue="" ></td>
 	  </tr>
 	  
 	  <tr id="tr_address_postal_code">
-	    <td class="label" style="width:160px">{t}Postal Code{/t}:</td><td  style="text-align:left"><input style="text-align:left;width:12em" id="address_postal_code" value="" ovalue=""  ></td>
+	    <td class="label" style="width:160px">{t}Postal Code{/t}:</td><td  style="text-align:left"><input style="text-align:left;width:18em" id="address_postal_code" value="" ovalue=""  ></td>
 	  </tr>
 
 	  <tr>
 	    <td class="label" style="width:160px">
-	      <span id="show_town_d1" onclick="toggle_town_d1()" class="small_button" style="padding:0 1px;font-size:50%;position:relative;top:-2px">+</span> {t}City{/t}:</td><td  style="text-align:left"><input style="text-align:left;width:12em" id="address_town" value="" ovalue="" ></td>
+	      <span id="show_town_d1" onclick="toggle_town_d1()" class="small_button" style="padding:0 1px;font-size:50%;position:relative;top:-2px">+</span> {t}City{/t}:</td>
+	      <td  style="text-align:left"><input style="text-align:left;width:18em" id="address_town" value="" ovalue="" ></td>
 	  </tr>
 	  <tr style="display:none" id="tr_address_town_d1">
 	    <td class="label" style="width:160px" >
-	      <span id="show_town_d2" onclick="toggle_town_d2()" class="small_button" style="padding:0 1px;font-size:50%;position:relative;top:-2px">x</span> {t}City 1st Div{/t}:</td><td  style="text-align:left"><input style="text-align:left;width:12em" id="address_town_d1" value="" ovalue="" ></td>
+	      <span id="show_town_d2" onclick="toggle_town_d2()" class="small_button" style="padding:0 1px;font-size:50%;position:relative;top:-2px">x</span> {t}City 1st Div{/t}:</td>
+	      <td  style="text-align:left"><input style="text-align:left;width:18em" id="address_town_d1" value="" ovalue="" ></td>
 	  </tr>
 	  <tr style="display:none;" id="tr_address_town_d2">
-	    <td class="label" style="width:160px">{t}City 2nd Div{/t}:</td><td  style="text-align:left"><input style="text-align:left;width:12em" id="address_town_d2" value="" ovalue="" ></td>
+	    <td class="label" style="width:160px">{t}City 2nd Div{/t}:</td><td  style="text-align:left"><input style="text-align:left;width:18em" id="address_town_d2" value="" ovalue="" ></td>
 	  </tr>
 	  <tr>
-	    <td class="label" style="width:160px">{t}Street/Number{/t}:</td><td  style="text-align:left"><input style="text-align:left;width:12em" id="address_street" value="" ovalue="" ></td>
+	    <td class="label" style="width:160px">{t}Street/Number{/t}:</td><td  style="text-align:left"><input style="text-align:left;width:18em" id="address_street" value="" ovalue="" ></td>
 	  <tr>
-	    <td class="label" style="width:160px">{t}Building{/t}:</td><td  style="text-align:left"><input style="text-align:left;width:12em" id="address_building" value="" ovalue="" ></td>
+	    <td class="label" style="width:160px">{t}Building{/t}:</td><td  style="text-align:left"><input style="text-align:left;width:18em" id="address_building" value="" ovalue="" ></td>
 	  </tr>
 	  <tr >
-	    <td class="label" style="width:160px">{t}Internal{/t}:</td><td  style="text-align:left"><input style="text-align:left;width:12em" id="address_internal" value="" ovalue="" ></td>
+	    <td class="label" style="width:160px">{t}Internal{/t}:</td><td  style="text-align:left"><input style="text-align:left;width:18em" id="address_internal" value="" ovalue="" ></td>
 	  </tr>
 
  
