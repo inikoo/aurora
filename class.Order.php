@@ -107,8 +107,8 @@ class Order extends DB_Table{
 				  $this->data ['Order XHTML Ship Tos']=_('Collection');
 				
 				}else{
-				 print "Cust data\n";
-				 print_r($data['Customer Data']);
+				  //print "Cust data\n";
+				  //print_r($data['Customer Data']);
 				  $customer = new Customer ( 'find create', $data['Customer Data'] ); 
 				  //print_r($data);
 				  if(isset($data['Shipping Address']) and is_array($data['Shipping Address']) and !array_empty($data['Shipping Address'])){

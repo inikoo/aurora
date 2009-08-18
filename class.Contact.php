@@ -26,7 +26,8 @@ include_once('class.Company.php');
 */
 
 class Contact extends DB_Table{
-  
+  public $scope=false;
+ public $scope_key=false;
    /*
      Constructor: Contact
      
@@ -285,8 +286,11 @@ class Contact extends DB_Table{
     //print "******************************************************\n$options\n";
    
     //print_r($address_work_data);
-    //print_r($raw_data);
-    //print_r($data);
+
+
+
+    if($data['Contact Name']=='')
+      $data['Contact Fuzzy']='Yes';
 
     $country_code='UNK';
 
@@ -321,16 +325,21 @@ class Contact extends DB_Table{
 
 
 
-  if($data['Contact Main Telephone']!=''  ){
-      $tel=new Telecom("find in contact country code $country_code",$data['Contact Main Telephone']);
-      // print_r($tel);
-      foreach($tel->candidate as $key=>$val){
-	if(isset($this->candidate[$key]))
-	  $this->candidate[$key]+=$val;
-	else
-	  $this->candidate[$key]=$val;
-      }
-    }
+   if($data['Contact Main Telephone']!=''  ){
+     //     print "TRing to fund a telefone numner ".$data['Contact Main Telephone']." \n";
+     
+     $tel=new Telecom("find in contact country code $country_code",$data['Contact Main Telephone']);
+     //print_r($tel);
+     foreach($tel->candidate as $key=>$val){
+       
+       if($data['Contact Fuzzy']=='Yes')
+	 $val=$val+25;
+       if(isset($this->candidate[$key]))
+	 $this->candidate[$key]+=$val;
+       else
+	 $this->candidate[$key]=$val;
+     }
+   }
 
     // if(count($this->candidate)>0){
     //  print "candidates ofter telephone:\n";
@@ -338,7 +347,10 @@ class Contact extends DB_Table{
     // }
     if($data['Contact Main FAX']!='' ){
       $tel=new Telecom("find in contact country code $country_code",$data['Contact Main FAX']);
+      
       foreach($tel->candidate as $key=>$val){
+	  if($data['Contact Fuzzy']=='Yes')
+	 $val=$val+25;
 	  if(isset($this->candidate[$key]))
 	    $this->candidate[$key]+=$val;
 	  else
@@ -356,6 +368,8 @@ class Contact extends DB_Table{
       $tel=new Telecom("find in contact  country code $country_code",$data['Contact Main Mobile']);
       
       foreach($tel->candidate as $key=>$val){
+	  if($data['Contact Fuzzy']=='Yes')
+	    $val=$val+100;
 	if(isset($this->candidate[$key]))
 	  $this->candidate[$key]+=$val;
 	else
@@ -1457,8 +1471,13 @@ private function create ($data,$options='',$address_home_data=false){
 	$email_data['Email Description']='Unknown';
       
      
-
-
+      $sql=sprintf("select `Subject Key` from `Email Bridge` where `Subject Type`='Contact' and `Subject Key`!=%d  and `Email Key`=%d group by `Subject Key`",$this->id,$email->id);
+      $res=mysql_query($sql);
+      while($row=mysql_fetch_array($res)){
+	$contact=new Contact($row['Subject Key']);
+	$contact->remove_email($email->id);
+      }
+      mysql_free_result($res);
       
       $sql=sprintf("insert into  `Email Bridge` (`Email Key`,`Subject Type`, `Subject Key`,`Is Main`,`Email Description`) values (%d,'Contact',%d,%s,%s) ON DUPLICATE KEY UPDATE `Email Description`=%s   "
 		   ,$email->id
@@ -2054,7 +2073,44 @@ function add_address($data,$args='principal'){
 
  }
 
-           
+ 
+     /*Method: update
+    Switcher calling the apropiate update method
+    Parameters:
+    $data - associated array with Email Dimension fields
+    */
+  public function update($data,$options=''){
+    if(isset($data['editor'])){
+      foreach($data['editor'] as $key=>$value){
+	
+	if(array_key_exists($key,$this->editor))
+	  $this->editor[$key]=$value;
+		    
+      }
+    }
+
+    
+
+    $base_data=$this->base_data();
+  
+    foreach($data as $key=>$value){
+      
+      
+      if(preg_match('/^(Address.*Data|Contact Main Email Key|Contact Main Telphone Key|Contact Main Mobile Key|Contact Name Components)$/',$key))
+	$this->update_field_switcher($key,$value,$options);
+      elseif(array_key_exists($key,$base_data)){
+
+	if($value!=$this->data[$key]){
+	  $this->update_field_switcher($key,$value,$options);
+	}
+      }
+    }
+  
+    
+    if(!$this->updated)
+      $this->msg.=' '._('Nothing to be updated')."\n";
+    }       
+
 
  /*Function: update_field_switcher
    Custom update switcher
@@ -2086,18 +2142,28 @@ protected function update_field_switcher($field,$value,$options=''){
     $this->parse_update_Contact_Name($value,$options);
     break;
   case('Contact Main Plain Email'):
-
+    //    print "cacaca\n\n";
     if($value==''){
       $this->remove_email('principal');
     }elseif(!email::wrong_email($value)){
       $value=email::prepare_email($value);
-      $email_data=array('Email'=>$value,'editor'=>$this->editor);
-   
+
+      if($this->scope=='Company')
+	$description='Work';
+      else
+	$description='Personal';
+
+      $email_data=array(
+			'Email'=>$value
+			,'editor'=>$this->editor
+			,'Email Description'=>$description
+			);
+      //print_r($email_data);
       $this->add_email($email_data,$options.' principal');
     }
     break;  
   case('Contact Main Telephone'):
-    // print "xxx\n";
+    //print "xxx\n";
     // check if plain numbers are the same
     $tel_data=Telecom::parse_number($value);
     $plain_tel=Telecom::plain_number($tel_data);
@@ -2106,14 +2172,17 @@ protected function update_field_switcher($field,$value,$options=''){
 	// Remove main telephone
 	$this->remove_tel('principal');
       }else{
-	
-	$type='Home Telephone';
+	if($this->scope=='Company')
+	  $type='Work Telephone';
+	else
+	  $type='Home Telephone';
 	
 	
 	$tel_data=array(
 			'Telecom Raw Number'=>$value
 			,'Telecom Type'=>$type
 			);
+	//print_r($tel_data);
 	$this->add_tel($tel_data,$options.' principal');
       }
     }
@@ -2124,13 +2193,18 @@ protected function update_field_switcher($field,$value,$options=''){
     $plain_tel=Telecom::plain_number($tel_data);
     if($plain_tel!=$this->data['Contact Main Plain FAX']){
    
+      
+      if($this->scope=='Company')
+	$type='Office Fax';
+      else
+	$type='Home Fax';
       if($plain_tel==''){
 	// Remove main telephone
 	$this->remove_tel('principal fax');
       }else{
 	$tel_data=array(
 			'Telecom Raw Number'=>$value
-			,'Telecom Type'=>'Fax'
+			,'Telecom Type'=>$type
 			);
 	$this->add_tel($tel_data,$options.' principal');
       }
@@ -2142,6 +2216,8 @@ protected function update_field_switcher($field,$value,$options=''){
     break;
 
   case('Contact Main Mobile'):
+    
+    //  print "----\n";
     $tel_data=Telecom::parse_number($value);
     $plain_tel=Telecom::plain_number($tel_data);
     
@@ -2157,6 +2233,7 @@ protected function update_field_switcher($field,$value,$options=''){
 		      'Telecom Raw Number'=>$value
 		      ,'Telecom Type'=>'Mobile'
 		      );
+      //print_r($tel_data);
       $this->add_tel($tel_data,$options.' principal');
       }
     }   
@@ -2710,6 +2787,7 @@ string with the name to be parsed
 		    );
 
       return $card;
+      case('Name'):
     case('name'):
       $name=$this->name($this->data);
       return $name;
