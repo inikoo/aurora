@@ -156,7 +156,7 @@ class Company extends DB_Table {
 
     //addnow we have a list of  candidates, from this list make another list of companies
     $candidate_companies=array();
- 
+
     foreach($this->candidate as $contact_key=>$score){
       $_contact=new Contact($contact_key);
       
@@ -169,6 +169,7 @@ class Company extends DB_Table {
 	$candidate_companies[$company_key]=$score;
       }
     }
+
     
     $sql=sprintf("select `Company Key` from `Company Dimension` where `Company Name`=%s",prepare_mysql($raw_data['Company Name']));
     $res=mysql_query($sql);
@@ -187,6 +188,7 @@ class Company extends DB_Table {
 
 
    
+
     if(!empty($candidate_companies)){
       arsort($candidate_companies);
       foreach($candidate_companies as $key=>$val){
@@ -239,8 +241,10 @@ class Company extends DB_Table {
 
       
 
+
       // print "Company Found:".$this->found." ".$this->found_key."   \nContact Found:".$contact->found." ".$contact->found_key."  \n";
       if(!$contact->found and $this->found){
+
 	// try to find again the contact now that we now the company
 	$contact=new Contact("find in company ".$this->found_key,$raw_data);
 	
@@ -298,7 +302,7 @@ class Company extends DB_Table {
 
     }else{
       // update 
-      //      print "Updatinf company and contact\n";
+      //print "Updatinf company and contact\n";
       
  $contact->set_scope('Company',$this->id);
       // print_r($contact);
