@@ -277,23 +277,24 @@ function find($raw_data,$options){
 		 ,prepare_mysql($data['Telecom Plain Number'])
 		
 		 );
-   
+    //print "$sql\n";
     $result=mysql_query($sql);
     $num_results=mysql_num_rows($result);
-    
-      if($num_results==0){
-	$this->found=false;
-
-
-       }else if($num_results==1){
-	
-	$this->found=true;
-	$row=mysql_fetch_array($result, MYSQL_ASSOC);
-
-	//$subject=new Contact($row['Subject Key']);
-	$this->get_data('id',$row['Telecom Key']);
-	if($mode=='Contact in' or $mode=='Company in'){
-	  if(in_array($row['Subject Key'],$in_contact)){
+    // print "$sql $num_results \n";
+    if($num_results==0){
+      $this->found=false;
+      
+      
+    }else if($num_results==1){
+      
+      $this->found=true;
+      $row=mysql_fetch_array($result, MYSQL_ASSOC);
+      //  print "mode $mode  \n";
+      
+      //$subject=new Contact($row['Subject Key']);
+      $this->get_data('id',$row['Telecom Key']);
+      if($mode=='Contact in' or $mode=='Company in'){
+	if(in_array($row['Subject Key'],$in_contact)){
 	    $this->candidate[$row['Subject Key']]=110;
 	    $this->found_in=true;
 	    $this->found_out=false;
@@ -304,6 +305,8 @@ function find($raw_data,$options){
 	  }
 	}else
 	  $this->candidate[$row['Subject Key']]=100;
+
+      //  print_r($this->candidate);
 
       }else{
 	// Found in more than one contact, 

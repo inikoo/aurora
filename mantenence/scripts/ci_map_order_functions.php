@@ -5361,7 +5361,10 @@ if($act_data['town']=='Hornbæk - Sjælland'){
     $tipo_customer='Person';
       
       
-      
+    if($act_data['name']=='Jill Clare' and  $act_data['contact']=='Jill Clare'){
+      $tipo_customer='Company';
+      $act_data['contact']='';
+    }
   }
 
   //  print_r($act_data);
