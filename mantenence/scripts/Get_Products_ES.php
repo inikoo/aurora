@@ -16,7 +16,7 @@ error_reporting(E_ALL);
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 
 if(!$con){print "Error can not connect with database server\n";exit;}
-$dns_db='dw';
+//$dns_db='dw';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
   
@@ -36,7 +36,7 @@ $version='V 1.0';
 
 $Data_Audit_ETL_Software="$software $version";
 
-$file_name='AWorder2002.xls';
+$file_name='CIorder.xls';
 $csv_file='tmp.csv';
 exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
 
@@ -50,9 +50,13 @@ $count=0;
 $__cols=array();
 $inicio=false;
 while(($_cols = fgetcsv($handle_csv))!== false){
+  if(count($_cols)<=5)
+    continue;
+
+  print_r($_cols);
   
 
-  $code=$_cols[3];
+  $code=$_cols[5];
 
  
   if($code=='FO-A1' and !$inicio){
@@ -69,14 +73,16 @@ while(($_cols = fgetcsv($handle_csv))!== false){
     $__cols[]=$b;
     $__cols[]=$c;
 
-  }elseif($code=='Credit'){
+  }elseif($code=='Abono'){
     break;
   }
   
-  $__cols[]=$_cols;
+    $__cols[]=$_cols;
  }
 
 
+//print_r($__cols);
+//exit;
 
 $new_family=true;
 
@@ -91,6 +97,11 @@ $promotion='';
 
 foreach($__cols as $cols){
   
+
+
+
+  //  print_r($cols);
+  //exit;
 
   $is_product=true;
   
