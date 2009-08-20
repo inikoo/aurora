@@ -11,7 +11,7 @@
 //   }
 
 //   $date=str_replace('/','-',$date);
-//   $date=split('-',$date);
+//   $date=('-',$date);
 //   $mysql_date= join ('-',array_reverse($date));
 //   return array($mysql_date,0);
 // }
@@ -82,7 +82,7 @@ function prepare_mysql_datetime($datetime,$tipo='datetime'){
     if(!preg_match('/^[0123]\d[\-\/][01]\d[\-\/]\d{4}\s[012]\d:[0123456]\d:[0123456]\d$/',$datetime))
       return array('mysql_date'=>'','status'=>_('error, date time not reconozied')." $datetime",'ok'=>false);
     $ts=date('U',strtotime($datetime));
-    list($date,$time)=split(' ',$datetime);
+    list($date,$time)=preg_split('/\s+/',$datetime);
   }else{
     if(!preg_match('/^[0123]\d[\-\/][01]\d[\-\/]\d{4}/',$datetime))
       return array('mysql_date'=>'','status'=>'wrong date','ok'=>false);
@@ -94,7 +94,7 @@ function prepare_mysql_datetime($datetime,$tipo='datetime'){
 
   
   $date=str_replace('/','-',$date);
-  $date=split('-',$date);
+  $date=preg_split('/-/',$date);
 
   
  if(preg_match('/datetime/',$tipo)){
@@ -134,8 +134,8 @@ function date_base($from,$to,$step='m',$tipo='complete_both'){
     $ok2=true;
   if( !$ok1  or !$ok2)
     return array();
-  list($date1['y'],$date1['m'],$date1['d'])=split('-',$mysql_date1);
-  list($date2['y'],$date2['m'],$date2['d'])=split('-',$mysql_date2);
+  list($date1['y'],$date1['m'],$date1['d'])=preg_split('/-/',$mysql_date1);
+  list($date2['y'],$date2['m'],$date2['d'])=preg_split('/-/',$mysql_date2);
   $base=array();
 
 
@@ -145,14 +145,14 @@ function date_base($from,$to,$step='m',$tipo='complete_both'){
     if(preg_match('/(^|\s|,)complete($|\s|,)|complete_both|complete_first|complete_from|only_complete|complete months/i',$tipo)){
 
       if($date1['d']>1){
-	list($date1['y'],$date1['m'],$date1['d'])=split('-',date("Y-m-d", mktime(0, 0, 0, $date1['m']+1, 1, $date1['y'])));
+	list($date1['y'],$date1['m'],$date1['d'])=preg_split('/-/',date("Y-m-d", mktime(0, 0, 0, $date1['m']+1, 1, $date1['y'])));
       }
     }
     if(preg_match('/(^|\s|,)complete($|\s|,)|complete_both|complete_second|complete_to|only_complete|complete months/i',$tipo)){
       $last_day= getLastDayOfMonth($date2['m'], $date2['y']);
 
       if($date2['d']!= $last_day  ){
-	list($date2['y'],$date2['m'],$date2['d'])=split('-',date("Y-m-d", mktime(0, 0, 0, $date2['m']-1,$last_day-1 , $date2['y'])));
+	list($date2['y'],$date2['m'],$date2['d'])=preg_split('/-/',date("Y-m-d", mktime(0, 0, 0, $date2['m']-1,$last_day-1 , $date2['y'])));
       }
     }
     
@@ -213,13 +213,13 @@ function prepare_mysql_dates($date1='',$date2='',$date_field='date',$options='')
 
   
   if(preg_match('/complete months/i',$options)){
-    list($_date1['y'],$_date1['m'],$_date1['d'])=split('-',$mysql_date1);
-    list($_date2['y'],$_date2['m'],$_date2['d'])=split('-',$mysql_date2);
+    list($_date1['y'],$_date1['m'],$_date1['d'])=preg_split('/-/',$mysql_date1);
+    list($_date2['y'],$_date2['m'],$_date2['d'])=preg_split('/-/',$mysql_date2);
     if($_date1['d']>1)
-      list($_date1['y'],$_date1['m'],$_date1['d'])=split('-',date("Y-m-d", mktime(0, 0, 0, $_date1['m']+1, 1, $_date1['y'])));
+      list($_date1['y'],$_date1['m'],$_date1['d'])=preg_split('/-/',date("Y-m-d", mktime(0, 0, 0, $_date1['m']+1, 1, $_date1['y'])));
     $last_day= getLastDayOfMonth($_date2['m'], $_date2['y']);
     if($_date2['d']!= $last_day  )
-      list($_date2['y'],$_date2['m'],$_date2['d'])=split('-',date("Y-m-d", mktime(0, 0, 0, $_date2['m']-1,$last_day-1 , $_date2['y'])));
+      list($_date2['y'],$_date2['m'],$_date2['d'])=preg_split('/-/',date("Y-m-d", mktime(0, 0, 0, $_date2['m']-1,$last_day-1 , $_date2['y'])));
     
     $mysql_date1=$_date1['y'].'-'.$_date1['m'].'-'.$_date1['d'];
     $mysql_date2=$_date2['y'].'-'.$_date2['m'].'-'.$_date2['d'];
@@ -449,8 +449,8 @@ function ft_request($from,$to,$output='phpdate',$mysql_date='date'){
   if($to=='')
     $to=$from;
   if($from!=''){
-    $day_from=split('-',$from);
-    $day_to=split('-',$to);
+    $day_from=preg_split('/-/',$from);
+    $day_to=preg_split('/-/',$to);
 
 
     if(count($day_from)==3 and count($day_to)==3)

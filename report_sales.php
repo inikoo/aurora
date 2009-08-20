@@ -25,11 +25,11 @@ $js_files=array(
 		$yui_path.'container/container-min.js',
 		$yui_path.'menu/menu-min.js',
 		$yui_path.'calendar/calendar-min.js',
-		'js/common.js.php',
-		'js/table_common.js.php',
-		'js/calendar_common.js.php',
+		'common.js.php',
+		'table_common.js.php',
+		'calendar_common.js.php',
 
-		'js/report_sales.js.php'
+		'report_sales.js.php'
 		);
 
 

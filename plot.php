@@ -279,9 +279,13 @@ break;
  case('total_sales_month'):
    $title=_("Total Net Sales per Month");
    $ar_address='ar_plot.php?tipo=invoiced_month_sales';
-   $fields='"sales","tip_sales","date"';
-   $yfields=array(array('label'=>_('Month Net Sales'),'name'=>'sales','style'=>''));;
-      $yfield_label_type='formatCurrencyAxisLabel';
+   $fields='"sales","tip_sales","date","forecast","tip_forecast"';
+   $yfields=array(
+         array('label'=>_('Forecast'),'name'=>'forecast','style'=>'color:0x8dd5e7') 
+        ,array('label'=>_('Month Net Sales'),'name'=>'sales','style'=>'color:0x00b8bf')
+        
+        );;
+   $yfield_label_type='formatCurrencyAxisLabel';
 
    $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category','axis'=>'justyears');
    $style='';
@@ -494,8 +498,8 @@ return value.replace(/^\d*x/g,"");
 }
 
 function justyears(value){
-var isjune= /^06/;
-if(isjune.test(value))
+var isjanuary= /^01/;
+if(isjanuary.test(value))
 value=value.match(/\d{2}$/g)[0]
 else
 value=""

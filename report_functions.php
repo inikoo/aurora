@@ -456,7 +456,7 @@ if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
 
   $sql=sprintf("select sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax , sum(if(`Invoice Title`='Invoice',1,0)) as invoices,avg(`Invoice Dispatching Lag`) as dispatch_days from `Invoice Dimension`   where  `Invoice Title`='Invoice'  and `Invoice Billing Country 2 Alpha Code`=%s %s ",prepare_mysql($home_2alpha_code),$int[0]);
-  print $sql;
+  //print $sql;
 
     $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
