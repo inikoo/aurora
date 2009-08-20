@@ -1,9 +1,4 @@
 <?php
-if (!$LU or !$LU->isLoggedIn() or !isset($smarty)) {
- 
-  exit("error rd");
- }
-
 
 
 

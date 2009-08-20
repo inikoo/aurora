@@ -52,7 +52,7 @@ if($dtipo=='y'){
 
 
 $ar_address='ar_plot.php?tipo='.$tipo.'&dtipo='.$dtipo.$extra;
-
+//print $ar_address;
 $tipo=$_REQUEST['dtipo'];
 include_once('report_dates.php');
 $int=prepare_mysql_dates($from,$to,'`Invoice Date`','date start end');
@@ -70,9 +70,9 @@ $fields='"date"';
       $yfields[]=array('label'=>$row['tag'],'name'=>$row['tag']);
       $yfield_label_type='formatCurrencyAxisLabel';
     }else{
-      $fields.=',"share_'.$row['tag'].'","tip_share_'.$row['tag'].'"';
-      $yfields[]=array('label'=>"share_".$row['tag'],'name'=>"share_".$row['tag']);
-      $yfield_label_type='formatPercentageAxisLabel';
+      $fields.=',"share_bug_'.$row['tag'].'","share_'.$row['tag'].'","tip_share_bug_'.$row['tag'].'"';
+      $yfields[]=array('label'=>"share_bug_".$row['tag'],'name'=>"share_bug_".$row['tag']);
+      $yfield_label_type='formatPercentageAxisLabelx2BUG';
 
     }
     
@@ -441,7 +441,9 @@ return YAHOO.util.Number.format( value,{prefix: "'.$myconf['currency_symbol'].'"
  function formatPercentageAxisLabel( value ){
 return value+"%";
 }
-
+ function formatPercentageAxisLabelx2BUG( value ){
+return 2*value+"%";
+}
 
 
 
