@@ -16,6 +16,7 @@ break;
 case('invoiced_week_sales'):
 list_invoices_per_week();
 break;
+case('sales_by_store'):
 case('sales_share_by_store'):
  $tipo=$_REQUEST['dtipo'];
  include_once('report_dates.php');
@@ -855,11 +856,13 @@ mysql_free_result($res);
 	$_index=$index[$row['yearmonth']];
 	//print $_index."\n";
 	$data[$_index][$row['tag']]=(float)$row['asales'];
-
 	$data[$_index]['tip_'.$row['tag']]=$row['tag2'].': '._('Net Sales')."\n".strftime("%b %y",strtotime($data[$_index]['_date']))."\n".money($row['asales'])."\n".percentage($row['asales'],$total[$row['yearmonth']]).' '._('of the total sales').".";
+	$data[$_index]['tip_'.$row['tag']]=_('Net Sales')." ".strftime("%b %y",strtotime($data[$_index]['_date']))."\n".money($total[$row['yearmonth']])."\n".$row['tag2'].":\n".money($row['asales'])."\n".percentage($row['asales'],$total[$row['yearmonth']]).' '._('of the total sales').".";
 	if($total[$row['yearmonth']]>0){
-	    $data[$_index]['share_'.$row['tag']]=(float)100*$row['asales']/$total[$row['yearmonth']];
-	    $data[$_index]['tip_share_'.$row['tag']]=$row['tag2'].': '._('Net Sales')."\n".strftime("%b %y",strtotime($data[$_index]['_date']))."\n".money($row['asales'])."\n".percentage($row['asales'],$total[$row['yearmonth']]).' '._('of the total sales').".";
+	  $data[$_index]['share_'.$row['tag']]=(float)100*$row['asales']/$total[$row['yearmonth']];
+	  $data[$_index]['share_bug_'.$row['tag']]=(float)50*$row['asales']/$total[$row['yearmonth']];
+	  
+	  $data[$_index]['tip_share_bug_'.$row['tag']]=$row['tag2'].': '._('Net Sales')."\n".strftime("%b %y",strtotime($data[$_index]['_date']))."\n".money($row['asales'])."\n".percentage($row['asales'],$total[$row['yearmonth']]).' '._('of the total sales').".";
 	  }
 	
 

@@ -22,14 +22,14 @@ $js_files=array(
 		$yui_path.'datasource/datasource-min.js',
 		$yui_path.'autocomplete/autocomplete-min.js',
 		$yui_path.'datatable/datatable.js',
-		$yui_path.'container/container-min.js',
+		$yui_path.'container/container_core-min.js',
 		$yui_path.'menu/menu-min.js',
 		$yui_path.'calendar/calendar-min.js',
-		'js/common.js.php',
-		'js/table_common.js.php',
-		'js/calendar_common.js.php',
+		'common.js.php',
+		'table_common.js.php',
+		'calendar_common.js.php',
 
-		'js/report_sales.js.php'
+		'report_sales.js.php'
 		);
 
 
@@ -102,7 +102,9 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 			);
   }      
   }
+  mysql_free_result($result2);
 }
+mysql_free_result($result);
 foreach($store_data as $key=>$val){
   if($val['store']!=''){
   if($val['currency_code']!=$myconf['currency_code'])
@@ -146,6 +148,7 @@ if($mixed_currencies){
 $smarty->assign('store_data',$store_data);
 
 $plot_tipo=$_SESSION['state']['report']['sales']['plot'];
+print $plot_tipo.preg_replace('/tipo/i','dtipo',$link);
 $smarty->assign('plot_tipo',$plot_tipo.preg_replace('/tipo/i','dtipo',$link));
 
 
@@ -164,7 +167,6 @@ $smarty->assign('from',date('d-m-Y'));
 $smarty->assign('to',date('d-m-Y'));
 $smarty->assign('currency',$myconf['currency_symbol']);
 
- $smarty->display('report_sales_main.tpl');
-
+$smarty->display('report_sales_main.tpl');
 ?>
 
