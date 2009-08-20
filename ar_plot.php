@@ -356,6 +356,75 @@ function list_product_sales_per_year(){
       echo json_encode($response);
 }
 function list_invoices_per_month(){
+$sql="SELECT `Time Series Type`,`Time Series Value` as sales,MONTH(`Time Series Date`) as month,`Time Series Count` as invoices ,UNIX_TIMESTAMP(`Time Series Date`) as date 
+  ,substring(`Time Series Date`, 1,7) AS dd from `Time Series Dimension` where `Time Series Name`='invoices' order by `Time Series Date`";
+  // print $sql; 
+
+ $prev_month='';
+ $prev_year=array();
+ $forecast_region=false;
+
+ $res = mysql_query($sql); 
+ while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+ if(is_numeric($prev_month)){
+   $diff=$row['sales']-$prev_month;
+   $diff_prev_month=percentage($diff,$prev_month,1,'NA','%',true)." "._('change (last month)')."\n";
+ }else
+   $diff_prev_month='';
+ 
+ if(isset($prev_year[$row['month']])){
+   $diff=$row['sales']-$prev_year[$row['month']];
+   $diff_prev_year=percentage($diff,$prev_year[$row['month']],1,'NA','%',true)." "._('change (last year)')."\n";
+ }else{
+   $diff_prev_year='';
+ }
+ 
+
+ $tip=_('Sales')." ".strftime("%B %Y", strtotime('@'.$row['date']))."\n".money($row['sales'])."\n".$diff_prev_month.$diff_prev_year."(".$row['invoices']." "._('Invoices').")";
+ $data[$row['dd']]=array(
+		   'date'=>strftime("%m/%y", strtotime('@'.$row['date']))
+		   );
+		
+    if($row['Time Series Type']=='Data'){
+        $data[$row['dd']]['sales']=(float) $row['sales'];
+        $data[$row['dd']]['tip_sales']=$tip;
+    }
+    if($row['Time Series Type']=='Forecast'){
+        if(!$forecast_region){
+        $data[$last_complete_sales[0]]['forecast']=(float) $last_complete_sales[1];
+
+        $forecast_region=true;
+        }
+        
+        $data[$row['dd']]['forecast']=(float) $row['sales'];
+		$data[$row['dd']]['tip_forecast']=$tip;
+	}	   
+	    $last_complete_sales=array($row['dd'],$row['sales'],$tip) ;
+
+     $prev_month=$row['sales'];
+     $prev_year[$row['month']]=$row['sales'];
+   }
+   mysql_free_result($res);
+   $_data=array();
+   $i=0;
+   foreach($data as $__data){
+     $_data[]=$__data;
+
+   }
+
+
+
+ $response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$_data,
+			 )
+		   );
+
+
+
+    echo json_encode($response);
+}
+function list_invoices_per_month_live_data(){
 global $myconf;
 
  $time=strtotime($myconf['data_since']);
@@ -451,6 +520,7 @@ global $myconf;
 
     echo json_encode($response);
 }
+
 function list_invoices_per_week(){
  $first_day='2004-07-01';
  
