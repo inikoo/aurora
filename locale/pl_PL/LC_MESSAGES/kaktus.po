@@ -1,18 +1,18 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: kaktus 1.0\n"
+"Project-Id-Version: Kaktus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-08-21 14:10+0100\n"
-"PO-Revision-Date: 2009-08-21 16:03+0100\n"
+"POT-Creation-Date: 2009-08-21 16:21+0100\n"
+"PO-Revision-Date: 2009-08-21 16:50+0100\n"
 "Last-Translator: Raul Perusquia <raul@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: Chinese\n"
-"X-Poedit-Country: CHINA\n"
+"X-Poedit-Language: Polish\n"
+"X-Poedit-Country: POLAND\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"X-Poedit-Basepath: /home/raul/costa/\n"
+"X-Poedit-Basepath: /home/raul/costa\n"
 "X-Poedit-SearchPath-0: .\n"
 
 #: mantenence/smarty.c:2
@@ -25,7 +25,7 @@ msgstr ""
 #: mantenence/smarty.c:5060
 #: stores.php:113
 msgid "Stores"
-msgstr ""
+msgstr "Zasoby"
 
 #: mantenence/smarty.c:5
 #: mantenence/smarty.c:98
@@ -45,9 +45,8 @@ msgstr ""
 #: mantenence/smarty.c:5063
 #: departments.php:109
 #: stores.js.php:84
-#, fuzzy
 msgid "Departments"
-msgstr "部门"
+msgstr ""
 
 #: mantenence/smarty.c:8
 #: mantenence/smarty.c:119
@@ -100,7 +99,7 @@ msgstr ""
 #: families.js.php:78
 #: common.php:116
 msgid "Products"
-msgstr "产品"
+msgstr "Produkty"
 
 #: mantenence/smarty.c:14
 #: mantenence/smarty.c:125
@@ -169,7 +168,7 @@ msgstr ""
 #: mantenence/smarty.c:5078
 #: report_outofstock.php:108
 msgid "Product Code"
-msgstr ""
+msgstr "Szyfr Produktu "
 
 #: mantenence/smarty.c:23
 #: mantenence/smarty.c:32
@@ -242,9 +241,8 @@ msgstr ""
 #: mantenence/smarty.c:4355
 #: mantenence/smarty.c:4454
 #: mantenence/smarty.c:5093
-#, fuzzy
 msgid "General"
-msgstr "德文"
+msgstr ""
 
 #: mantenence/smarty.c:41
 #: mantenence/smarty.c:140
@@ -506,9 +504,8 @@ msgstr ""
 #: mantenence/smarty.c:1922
 #: mantenence/smarty.c:5144
 #: locale2.php:764
-#, fuzzy
 msgid "Number of Departments"
-msgstr "部门"
+msgstr ""
 
 #: mantenence/smarty.c:92
 #: mantenence/smarty.c:395
@@ -713,7 +710,7 @@ msgstr ""
 #: common.php:109
 #: old_code/assets_product.bk.php:318
 msgid "Orders"
-msgstr "单据"
+msgstr "Rozkazy "
 
 #: mantenence/smarty.c:170
 #: mantenence/smarty.c:410
@@ -745,7 +742,7 @@ msgstr "单据"
 #: common.php:111
 #: old_code/assets_product.bk.php:319
 msgid "Customers"
-msgstr "顾客"
+msgstr "Klienci "
 
 #: mantenence/smarty.c:176
 #: mantenence/smarty.c:2162
@@ -804,9 +801,8 @@ msgstr ""
 #: mantenence/smarty.c:3968
 #: mantenence/smarty.c:4970
 #: mantenence/smarty.c:4976
-#, fuzzy
 msgid "Show Orders"
-msgstr "单据"
+msgstr ""
 
 #: mantenence/smarty.c:200
 #: mantenence/smarty.c:206
@@ -818,9 +814,8 @@ msgstr "单据"
 #: mantenence/smarty.c:3971
 #: mantenence/smarty.c:4973
 #: mantenence/smarty.c:4979
-#, fuzzy
 msgid "Hide Orders"
-msgstr "单据"
+msgstr ""
 
 #: mantenence/smarty.c:209
 #: mantenence/smarty.c:215
@@ -1059,9 +1054,8 @@ msgstr ""
 #: mantenence/smarty.c:3551
 #: mantenence/smarty.c:3692
 #: companies.php:60
-#, fuzzy
 msgid "Companies"
-msgstr "西班牙语"
+msgstr ""
 
 #: mantenence/smarty.c:416
 #: mantenence/smarty.c:596
@@ -1132,9 +1126,8 @@ msgstr ""
 #: mantenence/smarty.c:446
 #: mantenence/smarty.c:2132
 #: mantenence/smarty.c:3584
-#, fuzzy
 msgid "Long Note"
-msgstr "登出"
+msgstr ""
 
 #: mantenence/smarty.c:449
 #: mantenence/smarty.c:2135
@@ -1173,7 +1166,7 @@ msgstr ""
 #: class.Email.php:391
 #: customers.js.php:38
 msgid "Email"
-msgstr "电邮"
+msgstr ""
 
 #: mantenence/smarty.c:458
 #: mantenence/smarty.c:2144
@@ -1326,16 +1319,14 @@ msgstr ""
 #: index.php:138
 #: customers.js.php:29
 #: report_sales_interval.php:220
-#, fuzzy
 msgid "Customer Name"
-msgstr "顾客"
+msgstr ""
 
 #: mantenence/smarty.c:620
 #: class.Customer.php:605
 #: new_customer.php:48
-#, fuzzy
 msgid "New Customer"
-msgstr "顾客"
+msgstr ""
 
 #: mantenence/smarty.c:626
 #: mantenence/smarty.c:2357
@@ -1382,9 +1373,8 @@ msgid "Ranking"
 msgstr ""
 
 #: mantenence/smarty.c:641
-#, fuzzy
 msgid "Customers Details"
-msgstr "顾客"
+msgstr ""
 
 #: mantenence/smarty.c:686
 #: mantenence/smarty.c:1718
@@ -1393,7 +1383,7 @@ msgstr "顾客"
 #: users.js.php:145
 #: locale2.php:689
 msgid "Groups"
-msgstr "班"
+msgstr ""
 
 #: mantenence/smarty.c:713
 #: mantenence/smarty.c:1745
@@ -1490,9 +1480,8 @@ msgstr ""
 #: mantenence/smarty.c:773
 #: locale2.php:485
 #: locale2.php:830
-#, fuzzy
 msgid "Add Supplier"
-msgstr "提供者"
+msgstr ""
 
 #: mantenence/smarty.c:776
 #: mantenence/smarty.c:1040
@@ -1719,12 +1708,11 @@ msgstr ""
 #: suppliers.php:78
 #: common.php:102
 msgid "Suppliers"
-msgstr "提供者"
+msgstr ""
 
 #: mantenence/smarty.c:929
-#, fuzzy
 msgid "Add new Supplier"
-msgstr "提供者"
+msgstr ""
 
 #: mantenence/smarty.c:932
 #: mantenence/smarty.c:1019
@@ -1737,7 +1725,7 @@ msgstr "提供者"
 #: locale2.php:602
 #: supplier_products.js.php:15
 msgid "Supplier"
-msgstr "提供者"
+msgstr ""
 
 #: mantenence/smarty.c:935
 #: mantenence/smarty.c:1523
@@ -1762,9 +1750,8 @@ msgstr ""
 #: mantenence/smarty.c:941
 #: mantenence/smarty.c:953
 #: locale2.php:533
-#, fuzzy
 msgid "Supplier code"
-msgstr "提供者"
+msgstr ""
 
 #: mantenence/smarty.c:944
 #: mantenence/smarty.c:956
@@ -1775,15 +1762,13 @@ msgstr ""
 #: mantenence/smarty.c:3005
 #: mantenence/smarty.c:4883
 #: locale2.php:539
-#, fuzzy
 msgid "No supplier set"
-msgstr "提供者"
+msgstr ""
 
 #: mantenence/smarty.c:950
 #: locale2.php:833
-#, fuzzy
 msgid "New Supplier"
-msgstr "提供者"
+msgstr ""
 
 #: mantenence/smarty.c:962
 #: locale2.php:545
@@ -1807,9 +1792,8 @@ msgstr ""
 
 #: mantenence/smarty.c:977
 #: locale2.php:560
-#, fuzzy
 msgid "W Avg Orders"
-msgstr "单据"
+msgstr ""
 
 #: mantenence/smarty.c:980
 #: locale2.php:563
@@ -1823,9 +1807,8 @@ msgstr ""
 
 #: mantenence/smarty.c:986
 #: locale2.php:569
-#, fuzzy
 msgid "M Avg Orders"
-msgstr "单据"
+msgstr ""
 
 #: mantenence/smarty.c:989
 #: locale2.php:572
@@ -1941,9 +1924,8 @@ msgstr ""
 
 #: mantenence/smarty.c:1016
 #: locale2.php:599
-#, fuzzy
 msgid "Add to supplier"
-msgstr "提供者"
+msgstr ""
 
 #: mantenence/smarty.c:1022
 #: locale2.php:347
@@ -2110,9 +2092,8 @@ msgstr ""
 #: ar_plot.php:197
 #: ar_plot.php:271
 #: ar_plot.php:339
-#, fuzzy
 msgid "Outers"
-msgstr "单据"
+msgstr ""
 
 #: mantenence/smarty.c:1124
 msgid "Max Units"
@@ -2206,7 +2187,7 @@ msgstr ""
 #: ar_plot.php:461
 #: ar_plot.php:513
 msgid "Invoices"
-msgstr ""
+msgstr "Faktury "
 
 #: mantenence/smarty.c:1295
 #: mantenence/smarty.c:1403
@@ -2214,7 +2195,7 @@ msgstr ""
 #: mantenence/smarty.c:3401
 #: mantenence/smarty.c:4781
 msgid "Delivery Notes"
-msgstr ""
+msgstr "Uwagi Dostawy"
 
 #: mantenence/smarty.c:1298
 #: mantenence/smarty.c:2297
@@ -2243,9 +2224,8 @@ msgstr ""
 
 #: mantenence/smarty.c:1310
 #: porders.php:73
-#, fuzzy
 msgid "Order List"
-msgstr "单据"
+msgstr ""
 
 #: mantenence/smarty.c:1313
 msgid "Invoice List"
@@ -2259,14 +2239,14 @@ msgstr ""
 #: locale2.php:11
 #: login.php:67
 msgid "Welcome"
-msgstr "欢迎"
+msgstr "Powitanie "
 
 #: mantenence/smarty.c:1331
 #: locale2.php:14
 #: user.php:19
 #: login.php:68
 msgid "User"
-msgstr "用户"
+msgstr ""
 
 #: mantenence/smarty.c:1334
 #: mantenence/smarty.c:1961
@@ -2280,20 +2260,20 @@ msgstr "用户"
 #: locale2.php:17
 #: login.php:69
 msgid "Password"
-msgstr "密码"
+msgstr ""
 
 #: mantenence/smarty.c:1337
 #: locale2.php:20
 #: login.php:70
 msgid "Log in"
-msgstr "登入"
+msgstr ""
 
 #: mantenence/smarty.c:1340
 #: locale2.php:23
 #: hr.php:30
 #: common.php:100
 msgid "Staff"
-msgstr ""
+msgstr "Personel"
 
 #: mantenence/smarty.c:1343
 msgid "Ex-staff"
@@ -2317,9 +2297,8 @@ msgid "Editing"
 msgstr ""
 
 #: mantenence/smarty.c:1364
-#, fuzzy
 msgid "Department data"
-msgstr "部门"
+msgstr ""
 
 #: mantenence/smarty.c:1370
 #: mantenence/smarty.c:1787
@@ -2418,9 +2397,8 @@ msgstr ""
 #: class.Order.php:861
 #: class.Order.php:949
 #: order.php:179
-#, fuzzy
 msgid "Order"
-msgstr "单据"
+msgstr ""
 
 #: mantenence/smarty.c:1406
 #: mantenence/smarty.c:2900
@@ -2662,9 +2640,8 @@ msgid "Gender"
 msgstr ""
 
 #: mantenence/smarty.c:1541
-#, fuzzy
 msgid "Male"
-msgstr "用户名"
+msgstr ""
 
 #: mantenence/smarty.c:1544
 msgid "Female"
@@ -2778,9 +2755,8 @@ msgid "Cancel Delete"
 msgstr ""
 
 #: mantenence/smarty.c:1586
-#, fuzzy
 msgid "Email Type"
-msgstr "电邮"
+msgstr ""
 
 #: mantenence/smarty.c:1589
 #: mantenence/smarty.c:2789
@@ -2922,7 +2898,7 @@ msgstr ""
 #: users.php:61
 #: common.php:96
 msgid "Users"
-msgstr "用户"
+msgstr "Użytkownicy"
 
 #: mantenence/smarty.c:1946
 msgid "Setting an account for a supplier"
@@ -2931,9 +2907,8 @@ msgstr ""
 #: mantenence/smarty.c:1949
 #: mantenence/smarty.c:1979
 #: mantenence/smarty.c:2069
-#, fuzzy
 msgid "Auto Password"
-msgstr "密码"
+msgstr ""
 
 #: mantenence/smarty.c:1952
 #: mantenence/smarty.c:1982
@@ -2950,15 +2925,14 @@ msgstr ""
 #: users.js.php:141
 #: locale2.php:665
 msgid "Handle"
-msgstr "用户名"
+msgstr ""
 
 #: mantenence/smarty.c:1967
 #: mantenence/smarty.c:1997
 #: mantenence/smarty.c:2021
 #: mantenence/smarty.c:2084
-#, fuzzy
 msgid "Repeat Password"
-msgstr "密码"
+msgstr ""
 
 #: mantenence/smarty.c:1976
 msgid "Setting an acount for a member of the staff "
@@ -2990,7 +2964,7 @@ msgstr ""
 #: users.js.php:144
 #: locale2.php:677
 msgid "Language"
-msgstr "文"
+msgstr ""
 
 #: mantenence/smarty.c:2048
 #: locale2.php:680
@@ -3002,14 +2976,14 @@ msgstr ""
 #: product_manage_stock.js.php:488
 #: locale2.php:683
 msgid "Yes"
-msgstr "是"
+msgstr ""
 
 #: mantenence/smarty.c:2054
 #: product_manage_stock.js.php:329
 #: product_manage_stock.js.php:488
 #: locale2.php:686
 msgid "No"
-msgstr "不"
+msgstr ""
 
 #: mantenence/smarty.c:2063
 #: product_manage_stock.js.php:346
@@ -3035,18 +3009,16 @@ msgstr ""
 #: customers_detail.php:41
 #: customers.php:141
 #: new_customer.php:52
-#, fuzzy
 msgid "Customers List"
-msgstr "顾客"
+msgstr "Klienci Wymieniać kolejno"
 
 #: mantenence/smarty.c:2123
 msgid "Edit Customer Data"
 msgstr ""
 
 #: mantenence/smarty.c:2126
-#, fuzzy
 msgid "Edit Customer"
-msgstr "顾客"
+msgstr ""
 
 #: mantenence/smarty.c:2234
 msgid "has place one order"
@@ -3090,9 +3062,8 @@ msgid "Store data"
 msgstr ""
 
 #: mantenence/smarty.c:2336
-#, fuzzy
 msgid "Add new department"
-msgstr "部门"
+msgstr ""
 
 #: mantenence/smarty.c:2342
 #: mantenence/smarty.c:4325
@@ -3221,9 +3192,8 @@ msgstr ""
 #: mantenence/smarty.c:2483
 #: plot.php:117
 #: location.js.php:110
-#, fuzzy
 msgid "Change"
-msgstr "中文"
+msgstr ""
 
 #: mantenence/smarty.c:2492
 msgid "Outers Sale Price"
@@ -3357,9 +3327,8 @@ msgid "Save caption"
 msgstr ""
 
 #: mantenence/smarty.c:2636
-#, fuzzy
 msgid "Use"
-msgstr "用户"
+msgstr ""
 
 #: mantenence/smarty.c:2639
 msgid "Theme"
@@ -3427,9 +3396,8 @@ msgstr ""
 
 #: mantenence/smarty.c:2819
 #: locale.php:70
-#, fuzzy
 msgid "Work Email"
-msgstr "电邮"
+msgstr ""
 
 #: mantenence/smarty.c:2822
 #: locale.php:57
@@ -3446,7 +3414,7 @@ msgstr ""
 #: locale.php:148
 #: common.php:113
 msgid "Warehouse"
-msgstr "厂庫"
+msgstr "Skład"
 
 #: mantenence/smarty.c:2861
 msgid "Add Location"
@@ -3463,24 +3431,23 @@ msgstr ""
 
 #: mantenence/smarty.c:2891
 #: mantenence/smarty.c:4775
-#, fuzzy
 msgid "Order Date"
-msgstr "单据"
+msgstr ""
 
 #: mantenence/smarty.c:2933
 msgid "Help"
-msgstr ""
+msgstr "Pomoc"
 
 #: mantenence/smarty.c:2936
 #: locale2.php:359
 #: class.Contact.php:2806
 msgid "Hello"
-msgstr "\t你好"
+msgstr "czesc"
 
 #: mantenence/smarty.c:2939
 #: locale2.php:362
 msgid "Logout"
-msgstr "登出"
+msgstr "Wyjscie "
 
 #: mantenence/smarty.c:2960
 #: mantenence/smarty.c:4838
@@ -3503,9 +3470,8 @@ msgstr ""
 #: mantenence/smarty.c:4847
 #: mantenence/smarty.c:4853
 #: class.Product.php:910
-#, fuzzy
 msgid "each"
-msgstr "法文"
+msgstr ""
 
 #: mantenence/smarty.c:2972
 #: mantenence/smarty.c:4850
@@ -3580,16 +3546,14 @@ msgstr ""
 #: mantenence/smarty.c:3224
 #: mantenence/smarty.c:3737
 #: locale2.php:941
-#, fuzzy
 msgid "Addresses"
-msgstr "制品"
+msgstr ""
 
 #: mantenence/smarty.c:3230
 #: mantenence/smarty.c:3743
 #: locale2.php:947
-#, fuzzy
 msgid "Emails"
-msgstr "电邮"
+msgstr ""
 
 #: mantenence/smarty.c:3233
 #: mantenence/smarty.c:3746
@@ -3638,9 +3602,8 @@ msgstr ""
 #: mantenence/smarty.c:3764
 #: locale2.php:968
 #: locale2.php:1214
-#, fuzzy
 msgid "Add Email"
-msgstr "电邮"
+msgstr ""
 
 #: mantenence/smarty.c:3257
 #: mantenence/smarty.c:3770
@@ -3842,27 +3805,23 @@ msgid "Purchase Orders"
 msgstr ""
 
 #: mantenence/smarty.c:3407
-#, fuzzy
 msgid "Supplier Details"
-msgstr "提供者"
+msgstr ""
 
 #: mantenence/smarty.c:3410
 #: mantenence/smarty.c:3494
 #: mantenence/smarty.c:4400
-#, fuzzy
 msgid "Supplier Products"
-msgstr "提供者"
+msgstr ""
 
 #: mantenence/smarty.c:3419
-#, fuzzy
 msgid "Show Supplier Details"
-msgstr "提供者"
+msgstr ""
 
 #: mantenence/smarty.c:3422
 #: mantenence/smarty.c:3425
-#, fuzzy
 msgid "Hide Supplier Details"
-msgstr "提供者"
+msgstr ""
 
 #: mantenence/smarty.c:3428
 #: mantenence/smarty.c:3434
@@ -3895,9 +3854,8 @@ msgid "Hide History"
 msgstr ""
 
 #: mantenence/smarty.c:3476
-#, fuzzy
 msgid "Supplier Overview"
-msgstr "提供者"
+msgstr ""
 
 #: mantenence/smarty.c:3479
 msgid "Items availeable"
@@ -3963,7 +3921,7 @@ msgstr ""
 #: mantenence/smarty.c:4094
 #: mantenence/smarty.c:4679
 msgid "Sales Reports"
-msgstr ""
+msgstr "Transakcje Powiadamiać"
 
 #: mantenence/smarty.c:3650
 #: product_server.js.php:12
@@ -3987,9 +3945,8 @@ msgstr ""
 
 #: mantenence/smarty.c:3671
 #: warehouse.js.php:15
-#, fuzzy
 msgid "Used for"
-msgstr "用户"
+msgstr ""
 
 #: mantenence/smarty.c:3674
 msgid "Max Capacity"
@@ -4028,9 +3985,8 @@ msgstr ""
 
 #: mantenence/smarty.c:4058
 #: mantenence/smarty.c:4337
-#, fuzzy
 msgid "Suppliers Products"
-msgstr "提供者"
+msgstr ""
 
 #: mantenence/smarty.c:4061
 msgid "Product Supplier Code"
@@ -4103,9 +4059,8 @@ msgstr ""
 #: mantenence/smarty.c:4244
 #: locale2.php:434
 #: locale.php:114
-#, fuzzy
 msgid "Samples"
-msgstr "提供者"
+msgstr ""
 
 #: mantenence/smarty.c:4190
 #: mantenence/smarty.c:4247
@@ -4186,24 +4141,20 @@ msgid "Contact's List"
 msgstr ""
 
 #: mantenence/smarty.c:4430
-#, fuzzy
 msgid "Customer's List"
-msgstr "顾客"
+msgstr ""
 
 #: mantenence/smarty.c:4433
-#, fuzzy
 msgid "All Customers"
-msgstr "顾客"
+msgstr ""
 
 #: mantenence/smarty.c:4439
-#, fuzzy
 msgid "Foreign Customers"
-msgstr "顾客"
+msgstr ""
 
 #: mantenence/smarty.c:4442
-#, fuzzy
 msgid "with Email"
-msgstr "电邮"
+msgstr ""
 
 #: mantenence/smarty.c:4445
 msgid "with Telephone"
@@ -4222,14 +4173,12 @@ msgid "CSV file"
 msgstr ""
 
 #: mantenence/smarty.c:4472
-#, fuzzy
 msgid "Suppliers Index"
-msgstr "提供者"
+msgstr ""
 
 #: mantenence/smarty.c:4475
-#, fuzzy
 msgid "Orders Index"
-msgstr "单据"
+msgstr ""
 
 #: mantenence/smarty.c:4478
 msgid "Created"
@@ -4393,9 +4342,8 @@ msgstr ""
 #: locale2.php:230
 #: locale2.php:257
 #: locale2.php:896
-#, fuzzy
 msgid "Order Cost"
-msgstr "单据"
+msgstr ""
 
 #: mantenence/smarty.c:4673
 msgid "Sales by date"
@@ -4526,9 +4474,8 @@ msgstr ""
 
 #: family.js.php:116
 #: products.js.php:97
-#, fuzzy
 msgid "Supplied by"
-msgstr "提供者"
+msgstr ""
 
 #: family.js.php:117
 #: parts.js.php:92
@@ -4538,9 +4485,8 @@ msgstr ""
 
 #: family.js.php:119
 #: products.js.php:100
-#, fuzzy
 msgid "Main Department"
-msgstr "部门"
+msgstr ""
 
 #: family.js.php:120
 #: products.js.php:101
@@ -4720,7 +4666,7 @@ msgstr ""
 #: report_outofstock.php:71
 #: report_pp.php:102
 msgid "Annual Report"
-msgstr ""
+msgstr "Sprawozdanie roczne "
 
 #: report_sales.js.php:8
 msgid "Orders invoiced"
@@ -4753,9 +4699,8 @@ msgstr ""
 #: product.js.php:88
 #: report_sales_interval.js.php:41
 #: porders.js.php:23
-#, fuzzy
 msgid "Customer"
-msgstr "顾客"
+msgstr ""
 
 #: upload_assets.js.php:20
 #: upload_assets.js.php:27
@@ -4790,7 +4735,7 @@ msgstr ""
 #: upload_assets.js.php:84
 #: hr.js.php:22
 msgid "Department"
-msgstr "部门"
+msgstr ""
 
 #: upload_assets.js.php:104
 #: products.js.php:99
@@ -4846,9 +4791,8 @@ msgstr ""
 #: upload_assets.js.php:155
 #: locale2.php:854
 #: newpo.js.php:196
-#, fuzzy
 msgid "Supplier Code"
-msgstr "提供者"
+msgstr ""
 
 #: upload_assets.js.php:156
 msgid "Buying Price"
@@ -5017,11 +4961,10 @@ msgid "Operation not found"
 msgstr ""
 
 #: ar_users.php:115
-#, fuzzy
 msgid "user"
 msgid_plural "users"
-msgstr[0] "用户"
-msgstr[1] "用户"
+msgstr[0] ""
+msgstr[1] ""
 
 #: ar_users.php:117
 #: ar_edit_assets.php:357
@@ -5056,11 +4999,10 @@ msgid "(Showing all)"
 msgstr ""
 
 #: ar_users.php:241
-#, fuzzy
 msgid "work group"
 msgid_plural "work groups"
-msgstr[0] "工作组"
-msgstr[1] "工作组"
+msgstr[0] ""
+msgstr[1] ""
 
 #: order.js.php:22
 #: report_sales_interval.js.php:24
@@ -5069,15 +5011,13 @@ msgstr ""
 
 #: order.js.php:40
 #: report_sales_interval.js.php:42
-#, fuzzy
 msgid "Fecha"
-msgstr "法文"
+msgstr ""
 
 #: order.js.php:97
 #: report_sales_interval.js.php:99
-#, fuzzy
 msgid "Order name"
-msgstr "单据"
+msgstr ""
 
 #: order.js.php:98
 #: report_sales_interval.js.php:100
@@ -5087,9 +5027,8 @@ msgstr ""
 #: supplier_product.js.php:43
 #: product.js.php:31
 #: newpo.js.php:42
-#, fuzzy
 msgid "Ordered"
-msgstr "单据"
+msgstr ""
 
 #: supplier_product.js.php:102
 msgid "To Dispach"
@@ -5128,9 +5067,8 @@ msgstr ""
 #: departments.js.php:89
 #: stores.js.php:96
 #: families.js.php:81
-#, fuzzy
 msgid "Surplus"
-msgstr "提供者"
+msgstr ""
 
 #: store.js.php:88
 #: departments.js.php:90
@@ -5173,9 +5111,8 @@ msgid "Used In"
 msgstr ""
 
 #: parts.js.php:82
-#, fuzzy
 msgid "Supplied By"
-msgstr "提供者"
+msgstr ""
 
 #: parts.js.php:85
 msgid "S Until"
@@ -5329,9 +5266,8 @@ msgid "New"
 msgstr ""
 
 #: plot.php:115
-#, fuzzy
 msgid "Lost"
-msgstr "登出"
+msgstr ""
 
 #: plot.php:247
 msgid "Outers dispached per Week"
@@ -5350,9 +5286,8 @@ msgid "Total Net Sales per Month"
 msgstr ""
 
 #: plot.php:285
-#, fuzzy
 msgid "Tails"
-msgstr "电邮"
+msgstr ""
 
 #: plot.php:286
 #: plot.php:301
@@ -5479,9 +5414,8 @@ msgstr ""
 
 #: product_manage_stock.js.php:346
 #: locale.php:52
-#, fuzzy
 msgid "None"
-msgstr "不"
+msgstr ""
 
 #: product_manage_stock.js.php:346
 msgid "Please try to explain why there is more units than there should be"
@@ -5492,9 +5426,8 @@ msgid "If stock has been received plesase add it on"
 msgstr ""
 
 #: product_manage_stock.js.php:346
-#, fuzzy
 msgid "Suppliers Area"
-msgstr "提供者"
+msgstr ""
 
 #: product_manage_stock.js.php:346
 msgid "Please give possible reasons of the lost stock "
@@ -5526,9 +5459,8 @@ msgid "Are you sure the you want to unlink this product"
 msgstr ""
 
 #: product_manage_stock.js.php:516
-#, fuzzy
 msgid "Link"
-msgstr "登入"
+msgstr ""
 
 #: product_manage_stock.js.php:517
 msgid "Choose the product thet you want to link"
@@ -5662,9 +5594,8 @@ msgid "Author"
 msgstr ""
 
 #: invoice.js.php:24
-#, fuzzy
 msgid "Gross"
-msgstr "班"
+msgstr ""
 
 #: invoice.js.php:26
 msgid "Charge"
@@ -5685,9 +5616,8 @@ msgstr ""
 
 #: orders.js.php:15
 #: porders.js.php:19
-#, fuzzy
 msgid "Order ID"
-msgstr "单据"
+msgstr ""
 
 #: orders.js.php:16
 #: porders.js.php:20
@@ -5845,11 +5775,10 @@ msgstr ""
 
 #: ar_edit_assets.php:355
 #: ar_assets.php:2911
-#, fuzzy
 msgid "department"
 msgid_plural "departments"
-msgstr[0] "部门"
-msgstr[1] "部门"
+msgstr[0] ""
+msgstr[1] ""
 
 #: ar_edit_assets.php:377
 #: ar_edit_assets.php:720
@@ -5880,12 +5809,12 @@ msgstr ""
 msgid "family"
 msgid_plural "families"
 msgstr[0] ""
-"#-#-#-#-#  poeditUjBHv5 (PACKAGE VERSION)  #-#-#-#-#\n"
-"#-#-#-#-#  poeditqN5pHa (PACKAGE VERSION)  #-#-#-#-#\n"
-"#-#-#-#-#  poeditBbcG4m (PACKAGE VERSION)  #-#-#-#-#\n"
+"#-#-#-#-#  poeditiTa9Mp (PACKAGE VERSION)  #-#-#-#-#\n"
+"#-#-#-#-#  poeditEsXA7B (PACKAGE VERSION)  #-#-#-#-#\n"
+"#-#-#-#-#  poeditRenqO2 (PACKAGE VERSION)  #-#-#-#-#\n"
 msgstr[1] ""
-"#-#-#-#-#  poeditUjBHv5 (PACKAGE VERSION)  #-#-#-#-#\n"
-"#-#-#-#-#  poeditqN5pHa (PACKAGE VERSION)  #-#-#-#-#\n"
+"#-#-#-#-#  poeditiTa9Mp (PACKAGE VERSION)  #-#-#-#-#\n"
+"#-#-#-#-#  poeditEsXA7B (PACKAGE VERSION)  #-#-#-#-#\n"
 
 #: ar_edit_assets.php:918
 #: ar_assets.php:3726
@@ -5969,9 +5898,8 @@ msgstr ""
 #: ar_assets.php:4269
 #: class.Product.php:3024
 #: class.Product.php:3039
-#, fuzzy
 msgid "Hide"
-msgstr "用户名"
+msgstr ""
 
 #: ar_edit_assets.php:1064
 #: edit_family.js.php:411
@@ -5979,15 +5907,13 @@ msgstr "用户名"
 #: class.Product.php:3025
 #: class.Product.php:3042
 #: locale.php:179
-#, fuzzy
 msgid "Sale"
-msgstr "用户名"
+msgstr ""
 
 #: search_customers.js.php:28
 #: customers.js.php:31
-#, fuzzy
 msgid "Last Order"
-msgstr "单据"
+msgstr ""
 
 #: hr.js.php:18
 msgid "Nickname"
@@ -6012,9 +5938,8 @@ msgid "Unknown Staff"
 msgstr ""
 
 #: class.Customer.php:606
-#, fuzzy
 msgid "New customer"
-msgstr "顾客"
+msgstr ""
 
 #: class.Customer.php:606
 msgid "added"
@@ -6045,9 +5970,8 @@ msgid "Customer email changed from"
 msgstr ""
 
 #: class.Customer.php:1132
-#, fuzzy
 msgid "Customer email set to"
-msgstr "顾客"
+msgstr ""
 
 #: class.Customer.php:1539
 msgid "Email not found"
@@ -6096,9 +6020,8 @@ msgstr ""
 
 #: class.Customer.php:1669
 #: locale.php:116
-#, fuzzy
 msgid "Replacement"
-msgstr "部门"
+msgstr ""
 
 #: class.Customer.php:1679
 msgid "shortages"
@@ -6149,9 +6072,8 @@ msgid "Uploading new products file"
 msgstr ""
 
 #: locale2.php:26
-#, fuzzy
 msgid "Asserts Index"
-msgstr "制品"
+msgstr ""
 
 #: locale2.php:29
 msgid "change to tree view"
@@ -6170,9 +6092,8 @@ msgstr ""
 #: locale2.php:83
 #: locale2.php:437
 #: locale2.php:746
-#, fuzzy
 msgid "Supplier Image"
-msgstr "提供者"
+msgstr ""
 
 #: locale2.php:89
 #: locale2.php:863
@@ -6288,9 +6209,8 @@ msgid "New Product"
 msgstr ""
 
 #: locale2.php:365
-#, fuzzy
 msgid "Orders Resume"
-msgstr "单据"
+msgstr ""
 
 #: locale2.php:371
 msgid "Last Year Orders"
@@ -6298,9 +6218,8 @@ msgstr ""
 
 #: locale2.php:374
 #: locale2.php:740
-#, fuzzy
 msgid "Orders Value"
-msgstr "单据"
+msgstr ""
 
 #: locale2.php:377
 msgid "Last Year Orders Value"
@@ -6329,9 +6248,8 @@ msgid "Proforma Invoices"
 msgstr ""
 
 #: locale2.php:650
-#, fuzzy
 msgid "Users Administration"
-msgstr "管理员"
+msgstr ""
 
 #: locale2.php:653
 msgid "Edit Options"
@@ -6342,9 +6260,8 @@ msgid "Add User"
 msgstr ""
 
 #: locale2.php:659
-#, fuzzy
 msgid "Edit Users"
-msgstr "用户"
+msgstr ""
 
 #: locale2.php:695
 msgid "Trade Name"
@@ -6363,9 +6280,8 @@ msgid "Products Overview"
 msgstr ""
 
 #: locale2.php:785
-#, fuzzy
 msgid "Add Department"
-msgstr "部门"
+msgstr ""
 
 #: locale2.php:791
 msgid "You can also insert departments, families and products  from a csv file. Download the <a href=\"templates.php?in=root\">template</a>, edit it,  upload it and voila!"
@@ -6376,9 +6292,8 @@ msgid "Upload Inventory"
 msgstr ""
 
 #: locale2.php:800
-#, fuzzy
 msgid "New Department"
-msgstr "部门"
+msgstr ""
 
 #: locale2.php:815
 msgid "Inventory file"
@@ -6389,9 +6304,8 @@ msgid "Edit Menu"
 msgstr ""
 
 #: locale2.php:827
-#, fuzzy
 msgid "Edit Suppliers"
-msgstr "提供者"
+msgstr ""
 
 #: locale2.php:842
 msgid "To add items download this <a href=\"templates_dn.php\">template</a>, and upload it."
@@ -6427,9 +6341,8 @@ msgstr ""
 
 #: locale2.php:926
 #: locale2.php:1106
-#, fuzzy
 msgid "List of customers"
-msgstr "顾客"
+msgstr ""
 
 #: locale2.php:929
 #: locale2.php:1109
@@ -6711,9 +6624,9 @@ msgstr ""
 msgid "contact"
 msgid_plural "contacts"
 msgstr[0] ""
-"#-#-#-#-#  poeditqN5pHa (PACKAGE VERSION)  #-#-#-#-#\n"
-"#-#-#-#-#  poeditp7Rm1t (PACKAGE VERSION)  #-#-#-#-#\n"
-msgstr[1] "#-#-#-#-#  poeditqN5pHa (PACKAGE VERSION)  #-#-#-#-#\n"
+"#-#-#-#-#  poeditEsXA7B (PACKAGE VERSION)  #-#-#-#-#\n"
+"#-#-#-#-#  poeditxp8t8g (PACKAGE VERSION)  #-#-#-#-#\n"
+msgstr[1] "#-#-#-#-#  poeditEsXA7B (PACKAGE VERSION)  #-#-#-#-#\n"
 
 #: class.Address.php:789
 #: class.Contact.php:1523
@@ -6931,11 +6844,10 @@ msgstr ""
 
 #: ar_assets.php:4494
 #: ar_assets.php:6751
-#, fuzzy
 msgid "part"
 msgid_plural "parts"
-msgstr[0] "部门"
-msgstr[1] "部门"
+msgstr[0] ""
+msgstr[1] ""
 
 #: ar_assets.php:4502
 msgid "There isn't any part used in "
@@ -7065,9 +6977,8 @@ msgstr ""
 
 #: ar_assets.php:6099
 #: ar_assets.php:6148
-#, fuzzy
 msgid "outers"
-msgstr "顾客"
+msgstr ""
 
 #: ar_assets.php:6130
 msgid "No sales in $year"
@@ -7212,11 +7123,10 @@ msgid "Subtotals"
 msgstr ""
 
 #: ar_suppliers.php:879
-#, fuzzy
 msgid "supplier"
 msgid_plural "suppliers"
-msgstr[0] "提供者"
-msgstr[1] "提供者"
+msgstr[0] ""
+msgstr[1] ""
 
 #: ar_suppliers.php:888
 msgid "There isn't any supplier with code"
@@ -7246,9 +7156,8 @@ msgstr ""
 
 #: ar_suppliers.php:902
 #: ar_suppliers.php:908
-#, fuzzy
 msgid "Suppliers with"
-msgstr "提供者"
+msgstr ""
 
 #: ar_suppliers.php:906
 #: ar_suppliers.php:908
@@ -7276,9 +7185,8 @@ msgstr ""
 #: class.Part.php:548
 #: class.Supplier.php:245
 #: class.Supplier.php:246
-#, fuzzy
 msgid "Unknown Supplier"
-msgstr "提供者"
+msgstr ""
 
 #: class.Part.php:771
 msgid "Unknown Stock"
@@ -7289,9 +7197,8 @@ msgid "No enough data"
 msgstr ""
 
 #: customers.php:151
-#, fuzzy
 msgid "customer name"
-msgstr "顾客"
+msgstr ""
 
 #: customers.php:152
 msgid "postcode"
@@ -7478,18 +7385,16 @@ msgid "Warning: Wrong another department with the same name"
 msgstr ""
 
 #: class.Department.php:117
-#, fuzzy
 msgid "Department Added"
-msgstr "部门"
+msgstr ""
 
 #: class.Department.php:124
 msgid "Error can not create department"
 msgstr ""
 
 #: class.Department.php:198
-#, fuzzy
 msgid "Department code updated"
-msgstr "部门"
+msgstr ""
 
 #: class.Department.php:201
 msgid "Error: Department code could not be updated"
@@ -7500,9 +7405,8 @@ msgid "Error: Another department with the same name"
 msgstr ""
 
 #: class.Department.php:237
-#, fuzzy
 msgid "Department name updated"
-msgstr "部门"
+msgstr ""
 
 #: class.Department.php:240
 msgid "Error: Department name could not be updated"
@@ -7536,9 +7440,8 @@ msgid "Audit"
 msgstr ""
 
 #: location.js.php:115
-#, fuzzy
 msgid "Note"
-msgstr "不"
+msgstr ""
 
 #: location.js.php:370
 msgid "Indicate the number of Units damaged"
@@ -7578,9 +7481,8 @@ msgid "Wrong email"
 msgstr ""
 
 #: class.Email.php:387
-#, fuzzy
 msgid "New Email"
-msgstr "电邮"
+msgstr ""
 
 #: class.Email.php:390
 msgid "Email Created"
@@ -7764,9 +7666,8 @@ msgid "Product List"
 msgstr ""
 
 #: customers_details.js.php:40
-#, fuzzy
 msgid "Losses"
-msgstr "制品"
+msgstr ""
 
 #: edit_product.php:78
 #: family.php:202
@@ -7787,7 +7688,7 @@ msgstr ""
 #: index.php:113
 #: common.php:117
 msgid "Home"
-msgstr "故乡"
+msgstr "Dom"
 
 #: index.php:129
 msgid "Maximun Day Interval"
@@ -7825,9 +7726,8 @@ msgstr ""
 
 #: supplier_products.js.php:23
 #: supplier.js.php:34
-#, fuzzy
 msgid "Used"
-msgstr "用户"
+msgstr ""
 
 #: reports.php:61
 msgid "Net sales grouped by month"
@@ -7840,7 +7740,7 @@ msgstr ""
 #: reports.php:84
 #: common.php:107
 msgid "Reports"
-msgstr ""
+msgstr "Sprawozdania "
 
 #: order.php:18
 msgid "Error, order not found"
@@ -8167,14 +8067,12 @@ msgid "change (previous week)"
 msgstr ""
 
 #: ar_plot.php:648
-#, fuzzy
 msgid "No customer lost"
-msgstr "顾客"
+msgstr ""
 
 #: ar_plot.php:649
-#, fuzzy
 msgid "No new customers"
-msgstr "顾客"
+msgstr ""
 
 #: ar_plot.php:650
 msgid "No active customers"
@@ -8185,24 +8083,20 @@ msgid "No change in the number of customers"
 msgstr ""
 
 #: ar_plot.php:677
-#, fuzzy
 msgid "New Customers"
-msgstr "顾客"
+msgstr ""
 
 #: ar_plot.php:691
-#, fuzzy
 msgid "Lost Customers"
-msgstr "顾客"
+msgstr ""
 
 #: ar_plot.php:700
-#, fuzzy
 msgid "Active Customers"
-msgstr "顾客"
+msgstr ""
 
 #: ar_plot.php:702
-#, fuzzy
 msgid "Customer Growth"
-msgstr "顾客"
+msgstr ""
 
 #: ar_plot.php:756
 msgid "No Sales"
@@ -8335,9 +8229,8 @@ msgid "Outstanding"
 msgstr ""
 
 #: customers.js.php:56
-#, fuzzy
 msgid "Rank Orders"
-msgstr "单据"
+msgstr ""
 
 #: customers.js.php:57
 msgid "Rank Invoices"
@@ -8389,9 +8282,8 @@ msgid "Product code"
 msgstr ""
 
 #: locale.php:40
-#, fuzzy
 msgid "Administrator"
-msgstr "管理员"
+msgstr ""
 
 #: locale.php:41
 #: locale.php:167
@@ -8412,19 +8304,19 @@ msgstr ""
 
 #: locale.php:45
 msgid "English"
-msgstr "英语"
+msgstr ""
 
 #: locale.php:46
 msgid "Spanish"
-msgstr "西班牙语"
+msgstr ""
 
 #: locale.php:47
 msgid "German"
-msgstr "德文"
+msgstr ""
 
 #: locale.php:48
 msgid "French"
-msgstr "法文"
+msgstr ""
 
 #: locale.php:49
 msgid "Czech"
@@ -8436,7 +8328,7 @@ msgstr ""
 
 #: locale.php:51
 msgid "Chinese"
-msgstr "中文"
+msgstr ""
 
 #: locale.php:53
 msgid "Mr"
@@ -8464,18 +8356,16 @@ msgstr ""
 
 #: locale.php:65
 #: locale.php:66
-#, fuzzy
 msgid "Personal Customer"
-msgstr "顾客"
+msgstr ""
 
 #: locale.php:67
 msgid "Home Address"
 msgstr ""
 
 #: locale.php:68
-#, fuzzy
 msgid "Work Address"
-msgstr "工作组"
+msgstr ""
 
 #: locale.php:69
 msgid "Deliver Address"
@@ -8534,9 +8424,8 @@ msgid "Bank Transfer"
 msgstr ""
 
 #: locale.php:92
-#, fuzzy
 msgid "Cheque"
-msgstr "中文"
+msgstr ""
 
 #: locale.php:93
 msgid "Account"
@@ -8786,9 +8675,8 @@ msgid "Yearly Sales Report"
 msgstr ""
 
 #: report_sales_interval.php:102
-#, fuzzy
 msgid "All orders"
-msgstr "单据"
+msgstr ""
 
 #: report_sales_interval.php:109
 msgid "Since"
@@ -8849,9 +8737,8 @@ msgid "Parts Index"
 msgstr ""
 
 #: porders.js.php:21
-#, fuzzy
 msgid "Ordered at"
-msgstr "单据"
+msgstr ""
 
 #: department.js.php:69
 msgid "Out of Stk "
@@ -8949,9 +8836,8 @@ msgid "has been disassociate"
 msgstr ""
 
 #: suppliers.php:85
-#, fuzzy
 msgid "Suppliers List"
-msgstr "提供者"
+msgstr ""
 
 #: report_sales.php:177
 msgid "a decrese of"
@@ -8972,9 +8858,8 @@ msgstr ""
 
 #: report_sales.php:195
 #: report_sales.php:204
-#, fuzzy
 msgid "and"
-msgstr "用户名"
+msgstr ""
 
 #: report_sales.php:197
 msgid " less"
@@ -9072,9 +8957,8 @@ msgid "Contact Old ID  can not be updated"
 msgstr ""
 
 #: class.Contact.php:2828
-#, fuzzy
 msgid "Dear"
-msgstr "部门"
+msgstr ""
 
 #: invoice.php:18
 msgid "Error, invoice not found"
@@ -9237,13 +9121,4 @@ msgstr ""
 #: classes/Mensajes.php:189
 msgid "Message updated"
 msgstr ""
-
-#~ msgid "Remember me"
-#~ msgstr "记"
-#~ msgid "Brazil"
-#~ msgstr "巴西"
-#~ msgid "United Kingdom"
-#~ msgstr "英國"
-#~ msgid "India"
-#~ msgstr "印度"
 

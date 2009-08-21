@@ -279,10 +279,11 @@ break;
  case('total_sales_month'):
    $title=_("Total Net Sales per Month");
    $ar_address='ar_plot.php?tipo=invoiced_month_sales';
-   $fields='"sales","tip_sales","date","forecast","tip_forecast"';
+   $fields='"sales","tip_sales","date","forecast","tip_forecast","tails","tip_tails"';
    $yfields=array(
          array('label'=>_('Forecast'),'name'=>'forecast','style'=>'color:0x8dd5e7') 
-        ,array('label'=>_('Month Net Sales'),'name'=>'sales','style'=>'color:0x00b8bf')
+	 , array('label'=>_('Tails'),'name'=>'tails','style'=>'color:0x00b8bf,fillColor:0xffffff') 
+	 ,array('label'=>_('Month Net Sales'),'name'=>'sales','style'=>'color:0x00b8bf')
         
         );;
    $yfield_label_type='formatCurrencyAxisLabel';

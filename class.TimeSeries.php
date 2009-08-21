@@ -81,7 +81,7 @@ function save_values(){
 	       ,$this->name_key2
 	       );
 
-$sql=sprintf("insert into `Time Series Dimension` values (%s,%s,%s,%d,%d,%f,%d,'First','','')   ON DUPLICATE KEY UPDATE  `Time Series Value`=%f ,`Time Series Count`=%d ,`Time Series Type`='Data' ,`Time Series Tag`='' "
+$sql=sprintf("insert into `Time Series Dimension` values (%s,%s,%s,%d,%d,%f,%d,'First','','')   ON DUPLICATE KEY UPDATE  `Time Series Value`=%f ,`Time Series Count`=%d ,`Time Series Type`='First' ,`Time Series Tag`='' "
 		,prepare_mysql($this->first['date'])
 		,prepare_mysql($this->freq)
 		,prepare_mysql($this->name)
@@ -93,7 +93,7 @@ $sql=sprintf("insert into `Time Series Dimension` values (%s,%s,%s,%d,%d,%f,%d,'
 		,$this->first['count']
 	       );
    mysql_query($sql);
-
+   //print $sql;
 
   foreach($this->values as $date=>$data){
    $sql=sprintf("insert into `Time Series Dimension` values (%s,%s,%s,%d,%d,%f,%d,'Data','','')   ON DUPLICATE KEY UPDATE  `Time Series Value`=%f ,`Time Series Count`=%d ,`Time Series Type`='Data' ,`Time Series Tag`='' "
@@ -110,7 +110,7 @@ $sql=sprintf("insert into `Time Series Dimension` values (%s,%s,%s,%d,%d,%f,%d,'
    mysql_query($sql);
   
   }
-  $sql=sprintf("insert into `Time Series Dimension` values (%s,%s,%s,%d,%d,%f,%d,'Current','','')   ON DUPLICATE KEY UPDATE  `Time Series Value`=%f ,`Time Series Count`=%d ,`Time Series Type`='Data' ,`Time Series Tag`='' "
+  $sql=sprintf("insert into `Time Series Dimension` values (%s,%s,%s,%d,%d,%f,%d,'Current','','')   ON DUPLICATE KEY UPDATE  `Time Series Value`=%f ,`Time Series Count`=%d ,`Time Series Type`='Current' ,`Time Series Tag`='' "
 		,prepare_mysql($this->current['date'])
 		,prepare_mysql($this->freq)
 		,prepare_mysql($this->name)
@@ -132,6 +132,7 @@ $sql=sprintf("insert into `Time Series Dimension` values (%s,%s,%s,%d,%d,%f,%d,'
 	       );
   
   mysql_query($sql);
+  // exit;
 }
 
 function save_forecast(){
@@ -187,10 +188,10 @@ function R_script(){
   $count=preg_replace('/^,/','',$count);
 
   $script=sprintf("library(forecast,quietly );values=c(%s);",$values);
-  $script.=sprintf("ts= ts(values, start=c(%d,%d),frequency = %d);",$this->start_year,$this->start_bin,$this->frequency);
+  $script.=sprintf("ts= ts(values, start=c(%d,%d),frequency = %d);",$this->first_complete_year,$this->first_complete_bin,$this->frequency);
   $script.="arimafit <- auto.arima(ts);fcast <- forecast(arimafit);print(fcast) ;print ('--count data--');";
   $script.=sprintf("values=c(%s);",$count);
-  $script.=sprintf("ts= ts(values, start=c(%d,%d),frequency = %d);",$this->start_year,$this->start_bin,$this->frequency);
+  $script.=sprintf("ts= ts(values, start=c(%d,%d),frequency = %d);",$this->first_complete_year,$this->first_complete_bin,$this->frequency);
   $script.="arimafit <- auto.arima(ts);fcast <- forecast(arimafit);print(fcast) ;";
   $cmd = "echo \"$script\" |  R --vanilla --slave -q";
  
@@ -250,7 +251,7 @@ $forecast_bins++;
      $read=true;
  } 
  
-
+ //print_r($forecast);
 $forecast_bins=0;
 foreach($count_forecast_data as $line){
   if($forecast_bins>$this->max_forecast_bins)
@@ -268,6 +269,7 @@ foreach($count_forecast_data as $line){
      else
        $uncertainty=($data[4]-$data[3])/(2*$data[0]);
 
+     //print $date."\n";
      $forecast[$date]['count']=round($data[0]);
      $forecast[$date]['deviation'].='|'.round($data[1]).','.round($data[2]).','.round($data[3]).','.round($data[4]).','.$uncertainty;
        $forecast_bins++;
@@ -314,7 +316,7 @@ $this->first_complete_month();
         $this->values[$row['dd'].'-01 12:00:00']=array('count'=>$row['number'],'value'=>$row['value']);
   }
   
-  print_r($this->values);
+  //print_r($this->values);
   
 
 }

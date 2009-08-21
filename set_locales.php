@@ -62,7 +62,7 @@ $sql="select `Language Key`,`Country 2 Alpha Code` from `Language Country Bridge
  $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   
-  $lang_menu[]=array($_SERVER['PHP_SELF'].$args.'_lang='.$row['Language Key'],$row['Country 2 Alpha Code'],$_lang[$row['Language Key']]);
+  $lang_menu[]=array($_SERVER['PHP_SELF'].$args.'_lang='.$row['Language Key'],strtolower($row['Country 2 Alpha Code']),$_lang[$row['Language Key']]);
  }
  mysql_free_result($result);
 
