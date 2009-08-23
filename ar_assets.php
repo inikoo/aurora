@@ -2766,589 +2766,8 @@ $sum_discontinued=number($sum_discontinued);
    break;
    //=====================================================================================
  case('departments'):
-   
-  //     $conf_table='store';
-//       $conf=$_SESSION['state']['store']['table'];
-//       $conf2=$_SESSION['state']['store'];
-
-
-      if(isset( $_REQUEST['store']) and  is_numeric( $_REQUEST['store']))
-	$store_id=$_REQUEST['store'];
-      else
-	$store_id=$_SESSION['state']['store']['id'];
-   
-//    if($store_id=='all'){
-      $conf=$_SESSION['state']['departments']['table'];
-      $conf2=$_SESSION['state']['departments'];
-      $conf_table='departments';
-//    }
-//    else{
-//      $conf_table='store';
-//      $conf=$_SESSION['state']['store']['table'];
-//      $conf2=$_SESSION['state']['store'];
-     
-//    }
-
-      if(isset( $_REQUEST['parent']))
-	$parent=$_REQUEST['parent'];
-      else
-	$parent=$conf['parent'];
-
-
-      if(isset( $_REQUEST['sf'])){
-	$start_from=$_REQUEST['sf'];
-	
-	
-      }else
-	$start_from=$conf['sf'];
-      if(isset( $_REQUEST['nr'])){
-	$number_results=$_REQUEST['nr'];
-	if($start_from>0){
-	  $page=floor($start_from/$number_results);
-	  $start_from=$start_from-$page;
-	}
-	
-      }else
-	$number_results=$conf['nr'];
-      if(isset( $_REQUEST['o']))
-	$order=$_REQUEST['o'];
-      else
-	$order=$conf['order'];
-      if(isset( $_REQUEST['od']))
-	$order_dir=$_REQUEST['od'];
-      else
-	$order_dir=$conf['order_dir'];
-      $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-      if(isset( $_REQUEST['where']))
-	$where=addslashes($_REQUEST['where']);
-      else
-     $where=$conf['where'];
-      
-    
-      if(isset( $_REQUEST['f_field']))
-	$f_field=$_REQUEST['f_field'];
-      else
-	$f_field=$conf['f_field'];
-      
-      if(isset( $_REQUEST['f_value']))
-	$f_value=$_REQUEST['f_value'];
-      else
-	$f_value=$conf['f_value'];
-      
-      
-      if(isset( $_REQUEST['tableid']))
-	$tableid=$_REQUEST['tableid'];
-      else
-    $tableid=0;
-      
-      
-      if(isset( $_REQUEST['percentages'])){
-	$percentages=$_REQUEST['percentages'];
-      }else
-	$percentages=$conf2['percentages'];
-      
-  
-      
-      if(isset( $_REQUEST['period'])){
-	$period=$_REQUEST['period'];
-      }else
-	$period=$conf2['period'];
-      
-      if(isset( $_REQUEST['avg'])){
-	$avg=$_REQUEST['avg'];
-      }else
-	$avg=$conf2['avg'];
-
-   
-
-      
-      
-      $_SESSION['state'][$conf_table]['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value,'parent'=>$parent);
-      $_SESSION['state'][$conf_table]['percentages']=$percentages;
-      $_SESSION['state'][$conf_table]['period']=$period;
-      $_SESSION['state'][$conf_table]['avg']=$avg;
-      
-      
-      switch($parent){
-      case('store'):
-	$where=sprintf("where  `Product Department Store Key`=%d",$store_id);
-	break;
-      default:
-	$where='where true';
-	  
-	  }   
-
-      $filter_msg='';
-      $wheref='';
-      if($f_field=='name' and $f_value!='')
-	$wheref.=" and  `Product Department Name` like '".addslashes($f_value)."%'";
-      if($f_field=='code' and $f_value!='')
-	$wheref.=" and  `Product Department Code` like '".addslashes($f_value)."%'";
-   
-   
-
-   
-   
-   $sql="select count(*) as total from `Product Department Dimension`   $where $wheref";
-
-   $res = mysql_query($sql); 
-   if($row=mysql_fetch_array($res)) {
-     $total=$row['total'];
-   }
-   if($wheref==''){
-     $filtered=0; $total_records=$total;
-   }else{
-     $sql="select count(*) as total `Product Department Dimension`   $where ";
-     
-     $result=mysql_query($sql);
-     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-      	$total_records=$row['total'];
-	$filtered=$total_records-$total;
-     }
-
-   }
-
- $rtext=$total_records." ".ngettext('department','departments',$total_records);
-  if($total_records>$number_results)
-    $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-  else
-    $rtext_rpp=' ('._('Showing all').')';
-   $_dir=$order_direction;
-   $_order=$order;
-   
-     if($order=='families')
-       $order='`Product Department Families`';
-  if($order=='todo')
-       $order='`Product Department In Process Products`';
-    if($order=='profit'){
-    if($period=='all')
-      $order='`Product Department Total Profit`';
-    elseif($period=='year')
-      $order='`Product Department 1 Year Acc Profit`';
-    elseif($period=='quarter')
-      $order='`Product Department 1 Quarter Acc Profit`';
-    elseif($period=='month')
-      $order='`Product Department 1 Month Acc Profit`';
-    elseif($period=='week')
-      $order='`Product Department 1 Week Acc Profit`';
-  }elseif($order=='sales'){
-    if($period=='all')
-      $order='`Product Department Total Invoiced Amount`';
-    elseif($period=='year')
-      $order='`Product Department 1 Year Acc Invoiced Amount`';
-    elseif($period=='quarter')
-      $order='`Product Department 1 Quarter Acc Invoiced Amount`';
-    elseif($period=='month')
-      $order='`Product Department 1 Month Acc Invoiced Amount`';
-    elseif($period=='week')
-      $order='`Product Department 1 Week Acc Invoiced Amount`';
-
-  }
-  elseif($order=='name')
-    $order='`Product Department Name`';
- elseif($order=='code')
-    $order='`Product Department Code`';
-  elseif($order=='active')
-    $order='`Product Department For Sale Products`';
-  elseif($order=='outofstock')
-    $order='`Product Department Out Of Stock Products`';
-  elseif($order=='stock_error')
-    $order='`Product Department Unknown Stock Products`';
- elseif($order=='surplus')
-    $order='`Product Department Surplus Availability Products`';
- elseif($order=='optimal')
-    $order='`Product Department Optimal Availability Products`';
- elseif($order=='low')
-   $order='`Product Department Low Availability Products`';
- elseif($order=='critical')
-   $order='`Product Department Critical Availability Products`';
-
-
-$sum_families=0;
-$sum_active=0;
- $sql="select sum(`Product Department For Sale Products`) as sum_active,sum(`Product Department Families`) as sum_families  from `Product Department Dimension` $where   ";
- $result=mysql_query($sql);
- if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-   $sum_families=$row['sum_families'];
-   $sum_active=$row['sum_active'];
- }
+   list_departments();
  
-  if($period=='all'){
-
-
-    $sum_total_sales=0;
-    $sum_month_sales=0;
-    $sql="select sum(if(`Product Department Total Profit`<0,`Product Department Total Profit`,0)) as total_profit_minus,sum(if(`Product Department Total Profit`>=0,`Product Department Total Profit`,0)) as total_profit_plus,sum(`Product Department Total Invoiced Amount`) as sum_total_sales  from `Product Department Dimension` $where   ";
-    
-    $result=mysql_query($sql);
-    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-
-      $sum_total_sales=$row['sum_total_sales'];
-
-      $sum_total_profit_plus=$row['total_profit_plus'];
-      $sum_total_profit_minus=$row['total_profit_minus'];
-      $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
-    }
-  }elseif($period=='year'){
-
-    $sum_total_sales=0;
-    $sum_month_sales=0;
-    $sql="select sum(if(`Product Department 1 Year Acc Profit`<0,`Product Department 1 Year Acc Profit`,0)) as total_profit_minus,sum(if(`Product Department 1 Year Acc Profit`>=0,`Product Department 1 Year Acc Profit`,0)) as total_profit_plus,sum(`Product Department For Sale Products`) as sum_active,sum(`Product Department 1 Year Acc Invoiced Amount`) as sum_total_sales  from `Product Department Dimension`  $where  ";
-    
-    $result=mysql_query($sql);
-    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-
-      $sum_total_sales=$row['sum_total_sales'];
-
-      $sum_total_profit_plus=$row['total_profit_plus'];
-      $sum_total_profit_minus=$row['total_profit_minus'];
-      $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
-    }
-  }elseif($period=='quarter'){
-
-    $sum_total_sales=0;
-    $sum_month_sales=0;
-    $sql="select sum(if(`Product Department 1 Quarter Acc Profit`<0,`Product Department 1 Quarter Acc Profit`,0)) as total_profit_minus,sum(if(`Product Department 1 Quarter Acc Profit`>=0,`Product Department 1 Quarter Acc Profit`,0)) as total_profit_plus,sum(`Product Department For Sale Products`) as sum_active,sum(`Product Department 1 Quarter Acc Invoiced Amount`) as sum_total_sales   from `Product Department Dimension`  $where  ";
-    
-    $result=mysql_query($sql);
-    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-
-      $sum_total_sales=$row['sum_total_sales'];
-
-      $sum_total_profit_plus=$row['total_profit_plus'];
-      $sum_total_profit_minus=$row['total_profit_minus'];
-      $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
-    }
-  }elseif($period=='month'){
-
-    $sum_total_sales=0;
-    $sum_month_sales=0;
-    $sql="select sum(if(`Product Department 1 Month Acc Profit`<0,`Product Department 1 Month Acc Profit`,0)) as total_profit_minus,sum(if(`Product Department 1 Month Acc Profit`>=0,`Product Department 1 Month Acc Profit`,0)) as total_profit_plus,sum(`Product Department For Sale Products`) as sum_active,sum(`Product Department 1 Month Acc Invoiced Amount`) as sum_total_sales   from `Product Department Dimension`   $where ";
-    
-    $result=mysql_query($sql);
-    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-
-      $sum_total_sales=$row['sum_total_sales'];
-    
-      $sum_total_profit_plus=$row['total_profit_plus'];
-      $sum_total_profit_minus=$row['total_profit_minus'];
-      $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
-    }
-  }elseif($period=='week'){
-
-    $sum_total_sales=0;
-    $sum_month_sales=0;
-    $sql="select sum(if(`Product Department 1 Week Acc Profit`<0,`Product Department 1 Week Acc Profit`,0)) as total_profit_minus,sum(if(`Product Department 1 Week Acc Profit`>=0,`Product Department 1 Week Acc Profit`,0)) as total_profit_plus,sum(`Product Department For Sale Products`) as sum_active,sum(`Product Department 1 Week Acc Invoiced Amount`) as sum_total_sales   from `Product Department Dimension`  $where  ";
-    
-    $result=mysql_query($sql);
-    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-
-      $sum_total_sales=$row['sum_total_sales'];
-     
-      $sum_total_profit_plus=$row['total_profit_plus'];
-      $sum_total_profit_minus=$row['total_profit_minus'];
-      $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
-    }
-  }
-
-
- 
-   $sql="select *  from `Product Department Dimension` $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
-
-   $res = mysql_query($sql);
-  $adata=array();
-  //print "$period";
-
-  $sum_active=0;
-  while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-    $code=sprintf('<a href="department.php?id=%d">%s</a>',$row['Product Department Key'],$row['Product Department Code']);
-     $name=sprintf('<a href="department.php?id=%d">%s</a>',$row['Product Department Key'],$row['Product Department Name']);
-
-    if($percentages){
-      if($period=='all'){
-      $tsall=percentage($row['Product Department Total Invoiced Amount'],$sum_total_sales,2);
-      if($row['Product Department Total Profit']>=0)
-	$tprofit=percentage($row['Product Department Total Profit'],$sum_total_profit_plus,2);
-      else
-	$tprofit=percentage($row['Product Department Total Profit'],$sum_total_profit_minus,2);
-      } elseif($period=='year'){
-      $tsall=percentage($row['Product Department 1 Year Acc Invoiced Amount'],$sum_total_sales,2);
-      if($row['Product Department 1 Year Acc Profit']>=0)
-	$tprofit=percentage($row['Product Department 1 Year Acc Profit'],$sum_total_profit_plus,2);
-      else
-	$tprofit=percentage($row['Product Department 1 Year Acc Profit'],$sum_total_profit_minus,2);
-      } elseif($period=='quarter'){
-      $tsall=percentage($row['Product Department 1 Quarter Acc Invoiced Amount'],$sum_total_sales,2);
-      if($row['Product Department 1 Quarter Acc Profit']>=0)
-	$tprofit=percentage($row['Product Department 1 Quarter Acc Profit'],$sum_total_profit_plus,2);
-      else
-	$tprofit=percentage($row['Product Department 1 Quarter Acc Profit'],$sum_total_profit_minus,2);
-      } elseif($period=='month'){
-      $tsall=percentage($row['Product Department 1 Month Acc Invoiced Amount'],$sum_total_sales,2);
-      if($row['Product Department 1 Month Acc Profit']>=0)
-	$tprofit=percentage($row['Product Department 1 Month Acc Profit'],$sum_total_profit_plus,2);
-      else
-	$tprofit=percentage($row['Product Department 1 Month Acc Profit'],$sum_total_profit_minus,2);
-      } elseif($period=='week'){
-      $tsall=percentage($row['Product Department 1 Week Acc Invoiced Amount'],$sum_total_sales,2);
-      if($row['Product Department 1 Week Acc Profit']>=0)
-	$tprofit=percentage($row['Product Department 1 Week Acc Profit'],$sum_total_profit_plus,2);
-      else
-	$tprofit=percentage($row['Product Department 1 Week Acc Profit'],$sum_total_profit_minus,2);
-      }
-
-
-    }else{
-      
-      
-
-
-
-
-      if($period=='all'){
-	
-	
-	if($avg=='totals')
-	  $factor=1;
-	elseif($avg=='month'){
-	  if($row['Product Department Total Days On Sale']>0)
-	    $factor=30.4368499/$row['Product Department Total Days On Sale'];
-	  else
-	    $factor=0;
-	}elseif($avg=='week'){
-	  if($row['Product Department Total Days On Sale']>0)
-	    $factor=7/$row['Product Department Total Days On Sale'];
-	  else
-	    $factor=0;
-	}elseif($avg=='month_eff'){
-	  if($row['Product Department Total Days Available']>0)
-	    $factor=30.4368499/$row['Product Department Total Days Available'];
-	  else
-	    $factor=0;
-	}elseif($avg=='week_eff'){
-	  if($row['Product Department Total Days Available']>0)
-	    $factor=7/$row['Product Department Total Days Available'];
-	  else
-	    $factor=0;
-	}
-
-	$tsall=money($row['Product Department Total Invoiced Amount']*$factor);
-	$tprofit=money($row['Product Department Total Profit']*$factor);
-   
-
-
-
-   }elseif($period=='year'){
-
-
-	if($avg=='totals')
-	  $factor=1;
-	elseif($avg=='month'){
-	  if($row['Product Department 1 Year Acc Days On Sale']>0)
-	    $factor=30.4368499/$row['Product Department 1 Year Acc Days On Sale'];
-	  else
-	    $factor=0;
-	}elseif($avg=='month'){
-	  if($row['Product Department 1 Year Acc Days On Sale']>0)
-	    $factor=30.4368499/$row['Product Department 1 Year Acc Days On Sale'];
-	  else
-	    $factor=0;
-	}elseif($avg=='week'){
-	  if($row['Product Department 1 Year Acc Days On Sale']>0)
-	    $factor=7/$row['Product Department 1 Year Acc Days On Sale'];
-	  else
-	    $factor=0;
-	}elseif($avg=='month_eff'){
-	  if($row['Product Department 1 Year Acc Days Available']>0)
-	    $factor=30.4368499/$row['Product Department 1 Year Acc Days Available'];
-	  else
-	    $factor=0;
-	}elseif($avg=='week_eff'){
-	  if($row['Product Department 1 Year Acc Days Available']>0)
-	    $factor=7/$row['Product Department 1 Year Acc Days Available'];
-	  else
-	    $factor=0;
-	}
-	
-
-
-
-
-
-
-
-
-	$tsall=money($row['Product Department 1 Year Acc Invoiced Amount']*$factor);
-	$tprofit=money($row['Product Department 1 Year Acc Profit']*$factor);
-      }elseif($period=='quarter'){
-	if($avg=='totals')
-	  $factor=1;
-	elseif($avg=='month'){
-	  if($row['Product Department 1 Quarter Acc Days On Sale']>0)
-	    $factor=30.4368499/$row['Product Department 1 Quarter Acc Days On Sale'];
-	  else
-	    $factor=0;
-	}elseif($avg=='month'){
-	  if($row['Product Department 1 Quarter Acc Days On Sale']>0)
-	    $factor=30.4368499/$row['Product Department 1 Quarter Acc Days On Sale'];
-	  else
-	    $factor=0;
-	}elseif($avg=='week'){
-	  if($row['Product Department 1 Quarter Acc Days On Sale']>0)
-	    $factor=7/$row['Product Department 1 Quarter Acc Days On Sale'];
-	  else
-	    $factor=0;
-	}elseif($avg=='month_eff'){
-	  if($row['Product Department 1 Quarter Acc Days Available']>0)
-	    $factor=30.4368499/$row['Product Department 1 Quarter Acc Days Available'];
-	  else
-	    $factor=0;
-	}elseif($avg=='week_eff'){
-	  if($row['Product Department 1 Quarter Acc Days Available']>0)
-	    $factor=7/$row['Product Department 1 Quarter Acc Days Available'];
-	  else
-	    $factor=0;
-	}
-
-
-	$tsall=money($row['Product Department 1 Quarter Acc Invoiced Amount']*$factor);
-	$tprofit=money($row['Product Department 1 Quarter Acc Profit']*$factor);
-      }elseif($period=='month'){
-		if($avg=='totals')
-	  $factor=1;
-	elseif($avg=='month'){
-	  if($row['Product Department 1 Month Acc Days On Sale']>0)
-	    $factor=30.4368499/$row['Product Department 1 Month Acc Days On Sale'];
-	  else
-	    $factor=0;
-	}elseif($avg=='month'){
-	  if($row['Product Department 1 Month Acc Days On Sale']>0)
-	    $factor=30.4368499/$row['Product Department 1 Month Acc Days On Sale'];
-	  else
-	    $factor=0;
-	}elseif($avg=='week'){
-	  if($row['Product Department 1 Month Acc Days On Sale']>0)
-	    $factor=7/$row['Product Department 1 Month Acc Days On Sale'];
-	  else
-	    $factor=0;
-	}elseif($avg=='month_eff'){
-	  if($row['Product Department 1 Month Acc Days Available']>0)
-	    $factor=30.4368499/$row['Product Department 1 Month Acc Days Available'];
-	  else
-	    $factor=0;
-	}elseif($avg=='week_eff'){
-	  if($row['Product Department 1 Month Acc Days Available']>0)
-	    $factor=7/$row['Product Department 1 Month Acc Days Available'];
-	  else
-	    $factor=0;
-	}
-
-
-	$tsall=money($row['Product Department 1 Month Acc Invoiced Amount']*$factor);
-	$tprofit=money($row['Product Department 1 Month Acc Profit']*$factor);
-      }elseif($period=='week'){
-		if($avg=='totals')
-	  $factor=1;
-	elseif($avg=='month'){
-	  if($row['Product Department 1 Week Acc Days On Sale']>0)
-	    $factor=30.4368499/$row['Product Department 1 Week Acc Days On Sale'];
-	  else
-	    $factor=0;
-	}elseif($avg=='month'){
-	  if($row['Product Department 1 Week Acc Days On Sale']>0)
-	    $factor=30.4368499/$row['Product Department 1 Week Acc Days On Sale'];
-	  else
-	    $factor=0;
-	}elseif($avg=='week'){
-	  if($row['Product Department 1 Week Acc Days On Sale']>0)
-	    $factor=7/$row['Product Department 1 Week Acc Days On Sale'];
-	  else
-	    $factor=0;
-	}elseif($avg=='month_eff'){
-	  if($row['Product Department 1 Week Acc Days Available']>0)
-	    $factor=30.4368499/$row['Product Department 1 Week Acc Days Available'];
-	  else
-	    $factor=0;
-	}elseif($avg=='week_eff'){
-	  if($row['Product Department 1 Week Acc Days Available']>0)
-	    $factor=7/$row['Product Department 1 Week Acc Days Available'];
-	  else
-	    $factor=0;
-	}
-
-
-	$tsall=money($row['Product Department 1 Week Acc Invoiced Amount']*$factor);
-	$tprofit=money($row['Product Department 1 Week Acc Profit']*$factor);
-      }
-
-
-
-    }
-    $sum_active+=$row['Product Department For Sale Products'];
-    $adata[]=array(
-		  'code'=>$code,
-		   'name'=>$name,
-		   'families'=>number($row['Product Department Families']),
-		   'active'=>number($row['Product Department For Sale Products']),
-		  'todo'=>number($row['Product Department In Process Products']),
-
-		   'outofstock'=>number($row['Product Department Out Of Stock Products']),
-		   'stock_error'=>number($row['Product Department Unknown Stock Products']),
-		   'stock_value'=>money($row['Product Department Stock Value']),
-		   'surplus'=>number($row['Product Department Surplus Availability Products']),
-		   'optimal'=>number($row['Product Department Optimal Availability Products']),
-		   'low'=>number($row['Product Department Low Availability Products']),
-		   'critical'=>number($row['Product Department Critical Availability Products']),
-
-
-		   'sales'=>$tsall,
-		   'profit'=>$tprofit
-		   
-		   );
-  }
-
-   if($percentages){
-      $tsall='100.00%';
-      $tprofit='100.00%';
-    }else{
-     $tsall=money($sum_total_sales);
-     $tprofit=money($sum_total_profit);
-   }
-
-  $adata[]=array(
-
-		 'code'=>_('Total'),
-		 'families'=>number($sum_families),
- 		 'active'=>number($sum_active),
-// 		 'outofstock'=>number($row['product department out of stock products']),
-// 		 'stockerror'=>number($row['product department unknown stock products']),
-// 		 'stock_value'=>money($row['product department stock value']),
-// 		 'tsall'=>$tsall,'tprofit'=>$tprofit,
-// 		 'per_tsall'=>percentage($row['product department total invoiced amount'],$sum_total_sales,2),
-// 		 'tsm'=>money($row['product department 1 month acc invoiced amount']),
-// 		 'per_tsm'=>percentage($row['product department 1 month acc invoiced amount'],$sum_month_sales,2),
- 		 );
-
-
-
-
-   $total_records=ceil($total_records/$number_results)+$total_records;
-
-   $response=array('resultset'=>
-		   array('state'=>200,
-			 'data'=>$adata,
-			 'sort_key'=>$_order,
-			 'sort_dir'=>$_dir,
-			 'tableid'=>$tableid,
-			 'filter_msg'=>$filter_msg,
-			 'rtext'=>$rtext,
-			 'rtext_rpp'=>$rtext_rpp,
-			 'total_records'=>$total_records,
-			 'records_offset'=>$start_from,
-			 'records_perpage'=>$number_results,
-			 )
-		   );
-   echo json_encode($response);
    break;
    //======================================================================================== 
 case('locations'):
@@ -6812,7 +6231,598 @@ if(isset( $_REQUEST['tableid']))
    
  }
 
+function list_departments(){
+ //     $conf_table='store';
+//       $conf=$_SESSION['state']['store']['table'];
+//       $conf2=$_SESSION['state']['store'];
 
+
+      if(isset( $_REQUEST['store']) and  is_numeric( $_REQUEST['store']))
+	$store_id=$_REQUEST['store'];
+      else
+	$store_id=$_SESSION['state']['store']['id'];
+   
+//    if($store_id=='all'){
+      $conf=$_SESSION['state']['departments']['table'];
+      $conf2=$_SESSION['state']['departments'];
+      $conf_table='departments';
+//    }
+//    else{
+//      $conf_table='store';
+//      $conf=$_SESSION['state']['store']['table'];
+//      $conf2=$_SESSION['state']['store'];
+     
+//    }
+
+      if(isset( $_REQUEST['parent']))
+	$parent=$_REQUEST['parent'];
+      else
+	$parent=$conf['parent'];
+
+
+      if(isset( $_REQUEST['sf'])){
+	$start_from=$_REQUEST['sf'];
+	
+	
+      }else
+	$start_from=$conf['sf'];
+      if(isset( $_REQUEST['nr'])){
+	$number_results=$_REQUEST['nr'];
+	if($start_from>0){
+	  $page=floor($start_from/$number_results);
+	  $start_from=$start_from-$page;
+	}
+	
+      }else
+	$number_results=$conf['nr'];
+      if(isset( $_REQUEST['o']))
+	$order=$_REQUEST['o'];
+      else
+	$order=$conf['order'];
+      if(isset( $_REQUEST['od']))
+	$order_dir=$_REQUEST['od'];
+      else
+	$order_dir=$conf['order_dir'];
+      $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+      if(isset( $_REQUEST['where']))
+	$where=addslashes($_REQUEST['where']);
+      else
+     $where=$conf['where'];
+      
+    
+      if(isset( $_REQUEST['f_field']))
+	$f_field=$_REQUEST['f_field'];
+      else
+	$f_field=$conf['f_field'];
+      
+      if(isset( $_REQUEST['f_value']))
+	$f_value=$_REQUEST['f_value'];
+      else
+	$f_value=$conf['f_value'];
+      
+      
+      if(isset( $_REQUEST['tableid']))
+	$tableid=$_REQUEST['tableid'];
+      else
+    $tableid=0;
+      
+      
+      if(isset( $_REQUEST['percentages'])){
+	$percentages=$_REQUEST['percentages'];
+      }else
+	$percentages=$conf2['percentages'];
+      
+  
+      
+      if(isset( $_REQUEST['period'])){
+	$period=$_REQUEST['period'];
+      }else
+	$period=$conf2['period'];
+      
+      if(isset( $_REQUEST['avg'])){
+	$avg=$_REQUEST['avg'];
+      }else
+	$avg=$conf2['avg'];
+
+   
+
+      
+      
+      $_SESSION['state'][$conf_table]['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value,'parent'=>$parent);
+      $_SESSION['state'][$conf_table]['percentages']=$percentages;
+      $_SESSION['state'][$conf_table]['period']=$period;
+      $_SESSION['state'][$conf_table]['avg']=$avg;
+      
+      
+      switch($parent){
+      case('store'):
+	$where=sprintf("where  `Product Department Store Key`=%d",$store_id);
+	break;
+      default:
+	$where='where true';
+	  
+	  }   
+
+      $filter_msg='';
+      $wheref='';
+      if($f_field=='name' and $f_value!='')
+	$wheref.=" and  `Product Department Name` like '".addslashes($f_value)."%'";
+      if($f_field=='code' and $f_value!='')
+	$wheref.=" and  `Product Department Code` like '".addslashes($f_value)."%'";
+   
+   
+
+   
+   
+   $sql="select count(*) as total from `Product Department Dimension`   $where $wheref";
+
+   $res = mysql_query($sql); 
+   if($row=mysql_fetch_array($res)) {
+     $total=$row['total'];
+   }
+   mysql_free_result($res);
+   if($wheref==''){
+     $filtered=0; $total_records=$total;
+   }else{
+     $sql="select count(*) as total `Product Department Dimension`   $where ";
+     
+     $result=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+      	$total_records=$row['total'];
+	$filtered=$total_records-$total;
+	mysql_free_result($result);
+     }
+
+   }
+
+ $rtext=$total_records." ".ngettext('department','departments',$total_records);
+  if($total_records>$number_results)
+    $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+  else
+    $rtext_rpp=' ('._('Showing all').')';
+   $_dir=$order_direction;
+   $_order=$order;
+   
+     if($order=='families')
+       $order='`Product Department Families`';
+  if($order=='todo')
+       $order='`Product Department In Process Products`';
+    if($order=='profit'){
+    if($period=='all')
+      $order='`Product Department Total Profit`';
+    elseif($period=='year')
+      $order='`Product Department 1 Year Acc Profit`';
+    elseif($period=='quarter')
+      $order='`Product Department 1 Quarter Acc Profit`';
+    elseif($period=='month')
+      $order='`Product Department 1 Month Acc Profit`';
+    elseif($period=='week')
+      $order='`Product Department 1 Week Acc Profit`';
+  }elseif($order=='sales'){
+    if($period=='all')
+      $order='`Product Department Total Invoiced Amount`';
+    elseif($period=='year')
+      $order='`Product Department 1 Year Acc Invoiced Amount`';
+    elseif($period=='quarter')
+      $order='`Product Department 1 Quarter Acc Invoiced Amount`';
+    elseif($period=='month')
+      $order='`Product Department 1 Month Acc Invoiced Amount`';
+    elseif($period=='week')
+      $order='`Product Department 1 Week Acc Invoiced Amount`';
+
+  }
+  elseif($order=='name')
+    $order='`Product Department Name`';
+ elseif($order=='code')
+    $order='`Product Department Code`';
+  elseif($order=='active')
+    $order='`Product Department For Sale Products`';
+  elseif($order=='outofstock')
+    $order='`Product Department Out Of Stock Products`';
+  elseif($order=='stock_error')
+    $order='`Product Department Unknown Stock Products`';
+ elseif($order=='surplus')
+    $order='`Product Department Surplus Availability Products`';
+ elseif($order=='optimal')
+    $order='`Product Department Optimal Availability Products`';
+ elseif($order=='low')
+   $order='`Product Department Low Availability Products`';
+ elseif($order=='critical')
+   $order='`Product Department Critical Availability Products`';
+
+
+$sum_families=0;
+$sum_active=0;
+ $sql="select sum(`Product Department For Sale Products`) as sum_active,sum(`Product Department Families`) as sum_families  from `Product Department Dimension` $where   ";
+ $result=mysql_query($sql);
+ if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+   $sum_families=$row['sum_families'];
+   $sum_active=$row['sum_active'];
+ }
+ 
+  if($period=='all'){
+
+
+    $sum_total_sales=0;
+    $sum_month_sales=0;
+    $sql="select sum(if(`Product Department Total Profit`<0,`Product Department Total Profit`,0)) as total_profit_minus,sum(if(`Product Department Total Profit`>=0,`Product Department Total Profit`,0)) as total_profit_plus,sum(`Product Department Total Invoiced Amount`) as sum_total_sales  from `Product Department Dimension` $where   ";
+    
+    $result=mysql_query($sql);
+    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+
+      $sum_total_sales=$row['sum_total_sales'];
+
+      $sum_total_profit_plus=$row['total_profit_plus'];
+      $sum_total_profit_minus=$row['total_profit_minus'];
+      $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
+    }
+     mysql_free_result($result);
+  }elseif($period=='year'){
+
+    $sum_total_sales=0;
+    $sum_month_sales=0;
+    $sql="select sum(if(`Product Department 1 Year Acc Profit`<0,`Product Department 1 Year Acc Profit`,0)) as total_profit_minus,sum(if(`Product Department 1 Year Acc Profit`>=0,`Product Department 1 Year Acc Profit`,0)) as total_profit_plus,sum(`Product Department For Sale Products`) as sum_active,sum(`Product Department 1 Year Acc Invoiced Amount`) as sum_total_sales  from `Product Department Dimension`  $where  ";
+    
+    $result=mysql_query($sql);
+    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+
+      $sum_total_sales=$row['sum_total_sales'];
+
+      $sum_total_profit_plus=$row['total_profit_plus'];
+      $sum_total_profit_minus=$row['total_profit_minus'];
+      $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
+    }
+    mysql_free_result($result);
+  }elseif($period=='quarter'){
+
+    $sum_total_sales=0;
+    $sum_month_sales=0;
+    $sql="select sum(if(`Product Department 1 Quarter Acc Profit`<0,`Product Department 1 Quarter Acc Profit`,0)) as total_profit_minus,sum(if(`Product Department 1 Quarter Acc Profit`>=0,`Product Department 1 Quarter Acc Profit`,0)) as total_profit_plus,sum(`Product Department For Sale Products`) as sum_active,sum(`Product Department 1 Quarter Acc Invoiced Amount`) as sum_total_sales   from `Product Department Dimension`  $where  ";
+    
+    $result=mysql_query($sql);
+    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+
+      $sum_total_sales=$row['sum_total_sales'];
+
+      $sum_total_profit_plus=$row['total_profit_plus'];
+      $sum_total_profit_minus=$row['total_profit_minus'];
+      $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
+    }
+    mysql_free_result($result);
+  }elseif($period=='month'){
+
+    $sum_total_sales=0;
+    $sum_month_sales=0;
+    $sql="select sum(if(`Product Department 1 Month Acc Profit`<0,`Product Department 1 Month Acc Profit`,0)) as total_profit_minus,sum(if(`Product Department 1 Month Acc Profit`>=0,`Product Department 1 Month Acc Profit`,0)) as total_profit_plus,sum(`Product Department For Sale Products`) as sum_active,sum(`Product Department 1 Month Acc Invoiced Amount`) as sum_total_sales   from `Product Department Dimension`   $where ";
+    
+    $result=mysql_query($sql);
+    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+
+      $sum_total_sales=$row['sum_total_sales'];
+    
+      $sum_total_profit_plus=$row['total_profit_plus'];
+      $sum_total_profit_minus=$row['total_profit_minus'];
+      $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
+    }
+    mysql_free_result($result);
+  }elseif($period=='week'){
+
+    $sum_total_sales=0;
+    $sum_month_sales=0;
+    $sql="select sum(if(`Product Department 1 Week Acc Profit`<0,`Product Department 1 Week Acc Profit`,0)) as total_profit_minus,sum(if(`Product Department 1 Week Acc Profit`>=0,`Product Department 1 Week Acc Profit`,0)) as total_profit_plus,sum(`Product Department For Sale Products`) as sum_active,sum(`Product Department 1 Week Acc Invoiced Amount`) as sum_total_sales   from `Product Department Dimension`  $where  ";
+    
+    $result=mysql_query($sql);
+    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+
+      $sum_total_sales=$row['sum_total_sales'];
+     
+      $sum_total_profit_plus=$row['total_profit_plus'];
+      $sum_total_profit_minus=$row['total_profit_minus'];
+      $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
+    }
+    mysql_free_result($result);
+  }
+
+
+ 
+   $sql="select *  from `Product Department Dimension` $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
+
+   $res = mysql_query($sql);
+  $adata=array();
+  //print "$period";
+
+  $sum_active=0;
+  while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+    $code=sprintf('<a href="department.php?id=%d">%s</a>',$row['Product Department Key'],$row['Product Department Code']);
+     $name=sprintf('<a href="department.php?id=%d">%s</a>',$row['Product Department Key'],$row['Product Department Name']);
+
+    if($percentages){
+      if($period=='all'){
+      $tsall=percentage($row['Product Department Total Invoiced Amount'],$sum_total_sales,2);
+      if($row['Product Department Total Profit']>=0)
+	$tprofit=percentage($row['Product Department Total Profit'],$sum_total_profit_plus,2);
+      else
+	$tprofit=percentage($row['Product Department Total Profit'],$sum_total_profit_minus,2);
+      } elseif($period=='year'){
+      $tsall=percentage($row['Product Department 1 Year Acc Invoiced Amount'],$sum_total_sales,2);
+      if($row['Product Department 1 Year Acc Profit']>=0)
+	$tprofit=percentage($row['Product Department 1 Year Acc Profit'],$sum_total_profit_plus,2);
+      else
+	$tprofit=percentage($row['Product Department 1 Year Acc Profit'],$sum_total_profit_minus,2);
+      } elseif($period=='quarter'){
+      $tsall=percentage($row['Product Department 1 Quarter Acc Invoiced Amount'],$sum_total_sales,2);
+      if($row['Product Department 1 Quarter Acc Profit']>=0)
+	$tprofit=percentage($row['Product Department 1 Quarter Acc Profit'],$sum_total_profit_plus,2);
+      else
+	$tprofit=percentage($row['Product Department 1 Quarter Acc Profit'],$sum_total_profit_minus,2);
+      } elseif($period=='month'){
+      $tsall=percentage($row['Product Department 1 Month Acc Invoiced Amount'],$sum_total_sales,2);
+      if($row['Product Department 1 Month Acc Profit']>=0)
+	$tprofit=percentage($row['Product Department 1 Month Acc Profit'],$sum_total_profit_plus,2);
+      else
+	$tprofit=percentage($row['Product Department 1 Month Acc Profit'],$sum_total_profit_minus,2);
+      } elseif($period=='week'){
+      $tsall=percentage($row['Product Department 1 Week Acc Invoiced Amount'],$sum_total_sales,2);
+      if($row['Product Department 1 Week Acc Profit']>=0)
+	$tprofit=percentage($row['Product Department 1 Week Acc Profit'],$sum_total_profit_plus,2);
+      else
+	$tprofit=percentage($row['Product Department 1 Week Acc Profit'],$sum_total_profit_minus,2);
+      }
+
+
+    }else{
+      
+      
+
+
+
+
+      if($period=='all'){
+	
+	
+	if($avg=='totals')
+	  $factor=1;
+	elseif($avg=='month'){
+	  if($row['Product Department Total Days On Sale']>0)
+	    $factor=30.4368499/$row['Product Department Total Days On Sale'];
+	  else
+	    $factor=0;
+	}elseif($avg=='week'){
+	  if($row['Product Department Total Days On Sale']>0)
+	    $factor=7/$row['Product Department Total Days On Sale'];
+	  else
+	    $factor=0;
+	}elseif($avg=='month_eff'){
+	  if($row['Product Department Total Days Available']>0)
+	    $factor=30.4368499/$row['Product Department Total Days Available'];
+	  else
+	    $factor=0;
+	}elseif($avg=='week_eff'){
+	  if($row['Product Department Total Days Available']>0)
+	    $factor=7/$row['Product Department Total Days Available'];
+	  else
+	    $factor=0;
+	}
+
+	$tsall=money($row['Product Department Total Invoiced Amount']*$factor);
+	$tprofit=money($row['Product Department Total Profit']*$factor);
+   
+
+
+
+   }elseif($period=='year'){
+
+
+	if($avg=='totals')
+	  $factor=1;
+	elseif($avg=='month'){
+	  if($row['Product Department 1 Year Acc Days On Sale']>0)
+	    $factor=30.4368499/$row['Product Department 1 Year Acc Days On Sale'];
+	  else
+	    $factor=0;
+	}elseif($avg=='month'){
+	  if($row['Product Department 1 Year Acc Days On Sale']>0)
+	    $factor=30.4368499/$row['Product Department 1 Year Acc Days On Sale'];
+	  else
+	    $factor=0;
+	}elseif($avg=='week'){
+	  if($row['Product Department 1 Year Acc Days On Sale']>0)
+	    $factor=7/$row['Product Department 1 Year Acc Days On Sale'];
+	  else
+	    $factor=0;
+	}elseif($avg=='month_eff'){
+	  if($row['Product Department 1 Year Acc Days Available']>0)
+	    $factor=30.4368499/$row['Product Department 1 Year Acc Days Available'];
+	  else
+	    $factor=0;
+	}elseif($avg=='week_eff'){
+	  if($row['Product Department 1 Year Acc Days Available']>0)
+	    $factor=7/$row['Product Department 1 Year Acc Days Available'];
+	  else
+	    $factor=0;
+	}
+	
+
+
+
+
+
+
+
+
+	$tsall=money($row['Product Department 1 Year Acc Invoiced Amount']*$factor);
+	$tprofit=money($row['Product Department 1 Year Acc Profit']*$factor);
+      }elseif($period=='quarter'){
+	if($avg=='totals')
+	  $factor=1;
+	elseif($avg=='month'){
+	  if($row['Product Department 1 Quarter Acc Days On Sale']>0)
+	    $factor=30.4368499/$row['Product Department 1 Quarter Acc Days On Sale'];
+	  else
+	    $factor=0;
+	}elseif($avg=='month'){
+	  if($row['Product Department 1 Quarter Acc Days On Sale']>0)
+	    $factor=30.4368499/$row['Product Department 1 Quarter Acc Days On Sale'];
+	  else
+	    $factor=0;
+	}elseif($avg=='week'){
+	  if($row['Product Department 1 Quarter Acc Days On Sale']>0)
+	    $factor=7/$row['Product Department 1 Quarter Acc Days On Sale'];
+	  else
+	    $factor=0;
+	}elseif($avg=='month_eff'){
+	  if($row['Product Department 1 Quarter Acc Days Available']>0)
+	    $factor=30.4368499/$row['Product Department 1 Quarter Acc Days Available'];
+	  else
+	    $factor=0;
+	}elseif($avg=='week_eff'){
+	  if($row['Product Department 1 Quarter Acc Days Available']>0)
+	    $factor=7/$row['Product Department 1 Quarter Acc Days Available'];
+	  else
+	    $factor=0;
+	}
+
+
+	$tsall=money($row['Product Department 1 Quarter Acc Invoiced Amount']*$factor);
+	$tprofit=money($row['Product Department 1 Quarter Acc Profit']*$factor);
+      }elseif($period=='month'){
+		if($avg=='totals')
+	  $factor=1;
+	elseif($avg=='month'){
+	  if($row['Product Department 1 Month Acc Days On Sale']>0)
+	    $factor=30.4368499/$row['Product Department 1 Month Acc Days On Sale'];
+	  else
+	    $factor=0;
+	}elseif($avg=='month'){
+	  if($row['Product Department 1 Month Acc Days On Sale']>0)
+	    $factor=30.4368499/$row['Product Department 1 Month Acc Days On Sale'];
+	  else
+	    $factor=0;
+	}elseif($avg=='week'){
+	  if($row['Product Department 1 Month Acc Days On Sale']>0)
+	    $factor=7/$row['Product Department 1 Month Acc Days On Sale'];
+	  else
+	    $factor=0;
+	}elseif($avg=='month_eff'){
+	  if($row['Product Department 1 Month Acc Days Available']>0)
+	    $factor=30.4368499/$row['Product Department 1 Month Acc Days Available'];
+	  else
+	    $factor=0;
+	}elseif($avg=='week_eff'){
+	  if($row['Product Department 1 Month Acc Days Available']>0)
+	    $factor=7/$row['Product Department 1 Month Acc Days Available'];
+	  else
+	    $factor=0;
+	}
+
+
+	$tsall=money($row['Product Department 1 Month Acc Invoiced Amount']*$factor);
+	$tprofit=money($row['Product Department 1 Month Acc Profit']*$factor);
+      }elseif($period=='week'){
+		if($avg=='totals')
+	  $factor=1;
+	elseif($avg=='month'){
+	  if($row['Product Department 1 Week Acc Days On Sale']>0)
+	    $factor=30.4368499/$row['Product Department 1 Week Acc Days On Sale'];
+	  else
+	    $factor=0;
+	}elseif($avg=='month'){
+	  if($row['Product Department 1 Week Acc Days On Sale']>0)
+	    $factor=30.4368499/$row['Product Department 1 Week Acc Days On Sale'];
+	  else
+	    $factor=0;
+	}elseif($avg=='week'){
+	  if($row['Product Department 1 Week Acc Days On Sale']>0)
+	    $factor=7/$row['Product Department 1 Week Acc Days On Sale'];
+	  else
+	    $factor=0;
+	}elseif($avg=='month_eff'){
+	  if($row['Product Department 1 Week Acc Days Available']>0)
+	    $factor=30.4368499/$row['Product Department 1 Week Acc Days Available'];
+	  else
+	    $factor=0;
+	}elseif($avg=='week_eff'){
+	  if($row['Product Department 1 Week Acc Days Available']>0)
+	    $factor=7/$row['Product Department 1 Week Acc Days Available'];
+	  else
+	    $factor=0;
+	}
+
+
+	$tsall=money($row['Product Department 1 Week Acc Invoiced Amount']*$factor);
+	$tprofit=money($row['Product Department 1 Week Acc Profit']*$factor);
+      }
+
+
+
+    }
+    $sum_active+=$row['Product Department For Sale Products'];
+    $adata[]=array(
+		  'code'=>$code,
+		   'name'=>$name,
+		   'families'=>number($row['Product Department Families']),
+		   'active'=>number($row['Product Department For Sale Products']),
+		  'todo'=>number($row['Product Department In Process Products']),
+
+		   'outofstock'=>number($row['Product Department Out Of Stock Products']),
+		   'stock_error'=>number($row['Product Department Unknown Stock Products']),
+		   'stock_value'=>money($row['Product Department Stock Value']),
+		   'surplus'=>number($row['Product Department Surplus Availability Products']),
+		   'optimal'=>number($row['Product Department Optimal Availability Products']),
+		   'low'=>number($row['Product Department Low Availability Products']),
+		   'critical'=>number($row['Product Department Critical Availability Products']),
+
+
+		   'sales'=>$tsall,
+		   'profit'=>$tprofit
+		   
+		   );
+  }
+  mysql_free_result($res);
+
+   if($percentages){
+      $tsall='100.00%';
+      $tprofit='100.00%';
+    }else{
+     $tsall=money($sum_total_sales);
+     $tprofit=money($sum_total_profit);
+   }
+
+  $adata[]=array(
+
+		 'code'=>_('Total'),
+		 'families'=>number($sum_families),
+ 		 'active'=>number($sum_active),
+// 		 'outofstock'=>number($row['product department out of stock products']),
+// 		 'stockerror'=>number($row['product department unknown stock products']),
+// 		 'stock_value'=>money($row['product department stock value']),
+// 		 'tsall'=>$tsall,'tprofit'=>$tprofit,
+// 		 'per_tsall'=>percentage($row['product department total invoiced amount'],$sum_total_sales,2),
+// 		 'tsm'=>money($row['product department 1 month acc invoiced amount']),
+// 		 'per_tsm'=>percentage($row['product department 1 month acc invoiced amount'],$sum_month_sales,2),
+ 		 );
+
+
+
+
+   $total_records=ceil($total_records/$number_results)+$total_records;
+
+   $response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$adata,
+			 'sort_key'=>$_order,
+			 'sort_dir'=>$_dir,
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
+			 'rtext'=>$rtext,
+			 'rtext_rpp'=>$rtext_rpp,
+			 'total_records'=>$total_records,
+			 'records_offset'=>$start_from,
+			 'records_perpage'=>$number_results,
+			 )
+		   );
+   echo json_encode($response);
+}
 
 
 ?>

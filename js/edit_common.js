@@ -3,10 +3,18 @@
 		column = this.getColumn(),
 		oldValue = this.value,
 		datatable = this.getDataTable();
-
+		
+		if(column.object=='company')
+		    ar_file='ar_edit_contacts.php';
+		else
+		    ar_file='ar_edit_assets.php';
+		
+alert(ar_file+'?tipo=edit_'+column.object+'&key=' + column.key + '&newvalue=' + 
+						encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ 
+						myBuildUrl(datatable,record))
 		YAHOO.util.Connect.asyncRequest(
 						'POST',
-						'ar_edit_assets.php', {
+						ar_file, {
 						    success:function(o) {
 							alert(o.responseText);
 							var r = YAHOO.lang.JSON.parse(o.responseText);

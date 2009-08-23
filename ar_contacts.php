@@ -164,7 +164,7 @@ $conf=$_SESSION['state']['companies']['table'];
 						 ,'mode'=>$mode,'restrictions'=>'','parent'=>$parent
 						 );
       
-      
+     
     
   
    $group='';
@@ -203,13 +203,13 @@ $conf=$_SESSION['state']['companies']['table'];
    $_dir=$order_direction;
    $filter_msg='';
    $wheref='';
-   if($f_field=='name' and $f_value!='')
+   if($f_field=='company name' and $f_value!='')
      $wheref.=" and  `Company Name` like '%".addslashes($f_value)."%'";
    elseif($f_field=='email' and $f_value!='')
      $wheref.=" and  `Company Main Plain Email` like '".addslashes($f_value)."%'";
      
    $sql="select count(*) as total from `Company Dimension`  $where $wheref   ";
-
+//print $sql;
    $res=mysql_query($sql);
    if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
      $total=$row['total'];
@@ -301,7 +301,8 @@ mysql_free_result($res);
        $contact='';
     $adata[]=array(
 		  
-		   'id'=>$id
+		   'company_key'=>$id
+		    ,'id'=>$row['Company Key']
 		   ,'name'=>$row['Company Name']
 		   ,'location'=>$row['Company Main Location']
 		   ,'email'=>$row['Company Main XHTML Email']

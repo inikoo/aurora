@@ -414,7 +414,11 @@ var on_address_function_change=function(){
      render_after_address_item_change();
 }
 
+var on_address_item_change_when_creating=function(){
 
+
+
+}
 
 
 var on_address_item_change=function(){

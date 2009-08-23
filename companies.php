@@ -3,14 +3,8 @@ include_once('common.php');
 if(!$user->can_view('contacts'))
   exit();
 
-
 $_SESSION['views']['assets']='index';
-
 $_SESSION['new_contact']=array();
-
-
-
-
 $smarty->assign('box_layout','yui-t4');
 
 
@@ -39,51 +33,40 @@ $js_files=array(
 		'js/search.js',
 		'companies.js.php'
 		);
-
-
-
-
-
-
-/* $sql="select `Country Key` id from `Country Dimension` order by `Country Code`"; */
-/* $result=mysql_query($sql); */
-/* while($row=mysql_fetch_array($result, MYSQL_ASSOC)){ */
-/*   $country[$row['id']]=$_country[$row['id']]; */
-/*  } */
-
-
-
+$edit=false;
 
 
 
 $smarty->assign('parent','customers.php');
 $smarty->assign('title', _('Companies'));
-$smarty->assign('css_files',$css_files);
-$smarty->assign('js_files',$js_files);
 
-
-
-
-
-  $q='';
-  $tipo_filter=($q==''?$_SESSION['state']['companies']['table']['f_field']:'name');
-  $smarty->assign('filter',$tipo_filter);
-  $smarty->assign('filter_value',($q==''?$_SESSION['state']['companies']['table']['f_value']:addslashes($q)));
-  $filter_menu=array(
+$q='';
+$tipo_filter=($q==''?$_SESSION['state']['companies']['table']['f_field']:'name');
+$smarty->assign('filter',$tipo_filter);
+$smarty->assign('filter_value',($q==''?$_SESSION['state']['companies']['table']['f_value']:addslashes($q)));
+$filter_menu=array(
 		   'company name'=>array('db_key'=>'name','menu_label'=>'Name starting with  <i>x</i>','label'=>'Name')
 		   ,'email'=>array('db_key'=>'email','menu_label'=>'Email starting with  <i>x</i>','label'=>'Email')
 		   
 );
-  $smarty->assign('filter_menu',$filter_menu);
-  
-  $smarty->assign('filter_name',$filter_menu[$tipo_filter]['label']);
-  $paginator_menu=array(10,25,50,100,500);
-  $smarty->assign('paginator_menu',$paginator_menu);
+$smarty->assign('filter_menu',$filter_menu);
+$smarty->assign('filter_name',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu',$paginator_menu);
+$smarty->assign('view',$_SESSION['state']['companies']['view']);
 
- $smarty->assign('view',$_SESSION['state']['companies']['view']);
+if(isset($_REQUEST['edit']) and $_REQUEST['edit']){
+    $edit=true;
+        $js_files[]='js/edit_common.js';
 
+    $js_files[]='edit_companies.js.php';
+    $smarty->assign('css_files',$css_files);
+$smarty->assign('js_files',$js_files);
+    $smarty->display('edit_companies.tpl');
+
+}else{
+$smarty->assign('css_files',$css_files);
+$smarty->assign('js_files',$js_files);
 $smarty->display('companies.tpl');
-
-
-
+}
 ?>

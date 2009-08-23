@@ -173,7 +173,7 @@ protected function update_field($field,$value,$options=''){
     $this->msg.=" $field "._('Record updated').", \n";
     $this->msg_updated.=" $field "._('Record updated').", \n";
     $this->updated=true;
-    
+    $this->newvalue=$value;
     $save_history=true;
     if(preg_match('/no( |\_)history/i',$options))
       $save_history=false;
