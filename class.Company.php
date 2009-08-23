@@ -82,6 +82,8 @@ class Company extends DB_Table {
   function find($raw_data,$options){
     
     
+    
+    
     if(isset($raw_data['editor'])){
       foreach($raw_data['editor'] as $key=>$value){
 
@@ -136,10 +138,12 @@ class Company extends DB_Table {
 	$address_data[$key]=$value; 
     }
 
-    if($raw_data['Company Name']==''){
+    if(!isset($raw_data['Company Name']) or $raw_data['Company Name']==''){
       $raw_data['Company Name']=_('Unknown Name');
     }
-
+ if(!isset($raw_data['Company Main Contact Name'])){
+      $raw_data['Company Main Contact Name']='';
+    }
 
  
 
@@ -931,9 +935,9 @@ private function update_Company_Name($value,$options){
     
   }else{
     $this->msg.=' '._('Company name updated')."\n";
-    $this->msg_updated=_('Company name updated')."$sql";
+    $this->msg_updated=_('Company name updated');
     $this->updated=true;
-
+    $this->new_value=$this->data['Company Name'];
 
 
        $history_data=array(

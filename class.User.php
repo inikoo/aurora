@@ -358,7 +358,7 @@ function read_rights(){
        $this->rights_allow['Delete'][$row['Right Name']]=$row['Right Name'];
        $this->rights[$row['Right Name']]['`Delete']='Delete';
      }if($row['Right Type']=='Edit'){
-       $this->rights_allow['Edit'][$row['Right Name']]=$row['Right Name'];
+       $this->rights_allow['Edit'][$row['Right Name']]=array('Right Name'=>$row['Right Name'],'Right Access'=>$row['Right Access'],'Rigth Access Keys'=>$row['Rigth Access Keys']);
        $this->rights[$row['Right Name']]['Edit']='Edit';
      }if($row['Right Type']=='Create'){
        $this->rights_allow['Create'][$row['Right Name']]=$row['Right Name'];
@@ -387,7 +387,7 @@ function read_rights(){
      }
    }
 
-
+//print_r($this->rights_allow);
    
  }
  

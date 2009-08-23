@@ -165,6 +165,9 @@
 	    </td>
 	  </tr>
 	    <input id="address_country_code" value="" type="hidden">
+	     <input id="address_country_2acode" value="" type="hidden">
+
+	    
 	  <tr id="tr_address_country_d1">
 	    <td class="label" style="width:160px">
 	    <span id="show_country_d2" onclick="toggle_country_d2()" class="small_button" style="padding:0 1px;font-size:50%;position:relative;top:-2px;display:none">+</span> 

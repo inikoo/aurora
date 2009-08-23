@@ -17,6 +17,7 @@ include_once('class.Store.php');
 
 
 
+
 if(isset($_REQUEST['id']) and is_integer($_REQUEST['id']) and $_REQUEST['id']>0){
   $store_id=$_REQUEST['id'];
  }else
@@ -73,10 +74,11 @@ $js_files=array(
 		);
 
 if($edit){
-  $js_files[]='edit_common.js';
+
+  $js_files[]='js/edit_common.js';
   $js_files[]='edit_store.js.php';
  }else{
-   $js_files[]='search.js';
+   $js_files[]='js/search.js';
    $js_files[]='store.js.php';
  }
 
@@ -154,7 +156,7 @@ while($row=mysql_fetch_array($res)){
       $first=FALSE;
     }
 }
-
+mysql_free_result($res);
 
 
 

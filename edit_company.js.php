@@ -21,12 +21,12 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
     $salutation.=',"'.$row['Salutation'].'"';
 }
 mysql_free_result($result);
-$sql="select `Country Key`,`Country Name`,`Country Code` from `Country Dimension`";
+$sql="select `Country Key`,`Country Name`,`Country Code`,`Country 2 Alpha Code` from kbase.`Country Dimension`";
 $result=mysql_query($sql);
 $country_list='';
 
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-    $country_list.=',{"id":"'.$row['Country Key'].'","name":"'.$row['Country Name'].'","code":"'.$row['Country Code'].'"}  ';
+    $country_list.=',{"id":"'.$row['Country Key'].'","name":"'.$row['Country Name'].'","code":"'.$row['Country Code'].'","code2a":"'.$row['Country 2 Alpha Code'].'"}  ';
 }
 mysql_free_result($result);
 $country_list=preg_replace('/^\,/','',$country_list);
@@ -342,15 +342,15 @@ var save_details=function(e){
 	{
 	    var key=items[i];
 	    var value=Dom.get(items[i]).value;
-	    var request='ar_edit_contacts.php?tipo=edit_'+escape(table)+'&key=' + key + '&value=' + escape(value)+'&id='+company_key; 
+	    var request='ar_edit_contacts.php?tipo=edit_'+table+'&key=' + key + '&newvalue=' + encodeURIComponent(value)+'&id='+company_key; 
 	   
 	    YAHOO.util.Connect.asyncRequest('POST',request ,{
 		    success:function(o) {
-			//alert(o.responseText);
+			alert(o.responseText);
 			var r =  YAHOO.lang.JSON.parse(o.responseText);
 			if(r.action=='updated'){
 			    Dom.get(items[i]).value=r.value;
-			    Dom.get(items[i]).getAttribute('ovalue')=Dom.get(items[i]).value;
+			    Dom.get(items[i]).getAttribute('ovalue')=r.newvalue;
 			    save_details++;
 			}else if(r.action=='error'){
 			    alert(r.msg);
@@ -435,7 +435,7 @@ function init(){
      // Use a FunctionDataSource
     var Countries_DS = new YAHOO.util.FunctionDataSource(match_country);
     Countries_DS.responseSchema = {
-        fields: ["id", "name", "code"]
+        fields: ["id", "name", "code","code2a"]
     }
 
     // Instantiate AutoComplete
@@ -483,17 +483,16 @@ function init(){
                 full.substring(matchindex + snippet.length);
     };
 
-    // Define an event handler to populate a hidden form field
-    // when an item gets selected and populate the input field
-    var myHiddenField = YAHOO.util.Dom.get("address_country_code");
+  
     var onCountrySelected = function(sType, aArgs) {
         var myAC = aArgs[0]; // reference back to the AC instance
         var elLI = aArgs[1]; // reference to the selected LI element
         var oData = aArgs[2]; // object literal of selected item's result data
         
         // update hidden form field with the selected item's ID
-        myHiddenField.value = oData.code;
-        
+
+        Dom.get("address_country_code").value = oData.code;
+        Dom.get("address_country_2acode").value = oData.code2a;
         myAC.getInputEl().value = oData.name + " (" + oData.code + ") ";
 
 	update_address_labels(oData.code);

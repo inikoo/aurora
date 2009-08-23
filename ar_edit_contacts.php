@@ -24,6 +24,14 @@ $editor=array(
 
 $tipo=$_REQUEST['tipo'];
 switch($tipo){
+case('new_company'):
+ $data=prepare_values($_REQUEST,array(
+			     'values'=>array('type'=>'json array')
+			   
+			     ));
+  new_company($data);
+
+break;
 case('new_address'):
   new_address();
   break;
@@ -79,9 +87,6 @@ case('edit_telecom'):
   
 
 }
-
-
-
 function edit_contact($data){
 global $editor;
 
@@ -166,15 +171,17 @@ global $editor;
  echo json_encode($response);
 
 }
-
-
 function edit_company(){
 global $editor;
  if(!isset($_REQUEST['key']) ){
     $response=array('state'=>400,'msg'=>'Error no key');
+     echo json_encode($response);
+	 return;
   }
- if( !isset($_REQUEST['value']) ){
+ if( !isset($_REQUEST['newvalue']) ){
    $response=array('state'=>400,'msg'=>'Error no value');
+    echo json_encode($response);
+	 return;
  }
  if( !isset($_REQUEST['id']) or !is_numeric($_REQUEST['id'])  ){
    $company_key=$_SESSION['state']['company']['id'];
@@ -185,6 +192,8 @@ global $editor;
 
  if(!$company->id){
    $response=array('state'=>400,'msg'=>_('Company not found'));
+    echo json_encode($response);
+	 return;
  }
   
  $translator=array(
@@ -195,21 +204,22 @@ global $editor;
 		   
 
 		   );
+		  
   if (array_key_exists($_REQUEST['key'], $translator)) {
     $update_data=array(
 		       'editor'=>$editor
-		       ,$translator[$_REQUEST['key']]=>$_REQUEST['value']
+		       ,$translator[$_REQUEST['key']]=>stripslashes(urldecode($_REQUEST['newvalue']))
 		       );
     $company->update($update_data);
     
     if($company->error_updated){
-      $response=array('state'=>200,'action'=>'error','msg'=>$company->msg_updated,'key'=>$translator[$_REQUEST['key']]);
+      $response=array('state'=>200,'action'=>'error','msg'=>$company->msg_updated,'key'=>$_REQUEST['key']);
     }else{
     
       if($company->updated){
-	$response=array('state'=>200,'action'=>'updated','msg'=>$company->msg_updated,'key'=>$translator[$_REQUEST['key']]);
+	$response=array('state'=>200,'action'=>'updated','msg'=>$company->msg_updated,'key'=>$_REQUEST['key'],'newvalue'=>$company->new_value);
       }else{
-	$response=array('state'=>200,'action'=>'nochange','msg'=>$company->msg_updated,'key'=>$translator[$_REQUEST['key']]);
+	$response=array('state'=>200,'action'=>'nochange','msg'=>$company->msg_updated,'key'=>$_REQUEST['key']);
 
       }
 
@@ -222,7 +232,6 @@ global $editor;
   echo json_encode($response);
 
 }
-
 function edit_email($data){
   global $editor;
   //  print_r($data);
@@ -323,8 +332,6 @@ function edit_email($data){
    echo json_encode($response);
 
 }
-
-
 function edit_telecom($data){
   global $editor;
   
@@ -418,15 +425,6 @@ function edit_telecom($data){
    echo json_encode($response);
 
 }
-
-
-
-
-
-
-
-
-
 function new_address(){
 global $editor;
 
@@ -552,9 +550,6 @@ if( !isset($_REQUEST['value']) ){
    }
 
 }
-
-
-
 function edit_address_type(){
 global $editor;
 
@@ -636,7 +631,6 @@ global $editor;
     
    echo json_encode($response);
 }
-
 function edit_address(){
 global $editor;
 
@@ -751,7 +745,6 @@ global $editor;
    echo json_encode($response);
     
 }
-
 function delete_email(){
 global $editor;
 
@@ -819,5 +812,22 @@ global $editor;
     
    echo json_encode($response);
 }
+function edit_company2(){
+  $company=new Company($_REQUEST['id']);
+   $company->update($_REQUEST['key'],stripslashes(urldecode($_REQUEST['newvalue'])),stripslashes(urldecode($_REQUEST['oldvalue'])));
+     
+   if($company->updated){
+     $response= array('state'=>200,'newvalue'=>$company->newvalue,'key'=>$_REQUEST['key']);
+	  
+   }else{
+     $response= array('state'=>400,'msg'=>$company->msg,'key'=>$_REQUEST['key']);
+   }
+   echo json_encode($response);  
+}
+function new_company($data){
+  
+    $company=new Company('find create auto',$data['values']);
 
+
+}
 ?>

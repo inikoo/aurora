@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 include_once('common.php');
 if(!$user->can_view('contacts'))
   exit();
@@ -76,10 +76,16 @@ YAHOO.namespace ("companies");
 	    var tableDivEL="table"+tableid;
 
 
-
 	    var CompaniesColumnDefs = [
-				       {key:"company_key", label:"<?php echo _('ID')?>",width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"name", label:"<?php echo _('Company Name')?>",<?php echo( ( $_SESSION['state']['companies']['view']=='general' or  $_SESSION['state']['companies']['view']=='contact' ) ?'':'hidden:true,')?> width:250,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+	    {key:"id", label:"id", sortable:false,isPrimaryKey:true,hidden:true} 
+				       ,{key:"company_key", label:"<?php echo _('ID')?>",width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"name", label:"<?php echo _('Company Name')?>"
+				       ,<?php echo( ( $_SESSION['state']['companies']['view']=='general' or  $_SESSION['state']['companies']['view']=='contact' ) ?'':'hidden:true,')?> width:250
+				       ,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}
+				       ,  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'company'}
+
+
+
 				       ,{key:"location", label:"<?php echo _('Location')?>",<?php echo($_SESSION['state']['companies']['view']=='general'?'':'hidden:true,')?> width:230,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       
 				       ,{key:"email", label:"<?php echo _('Email')?>",<?php echo(($_SESSION['state']['companies']['view']=='general' )?'':'hidden:true,')?>sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
@@ -116,7 +122,7 @@ YAHOO.namespace ("companies");
 		
 		
 		fields: [
-			 'company_key',
+			 'id','company_key',
 			 'name',
 			 'location',
 			 'email',"telephone","mobile","fax","address","town","postcode","region","country"
@@ -170,12 +176,24 @@ YAHOO.namespace ("companies");
 	    
 	    //	    var Dom   = YAHOO.util.Dom;
 	    //alert(Dom.get('f_input'));
+	     var highlightEditableCell = function(oArgs) {
+		var elCell = oArgs.target;
+		if(YAHOO.util.Dom.hasClass(elCell, "yui-dt-editable")) {
+		    this.highlightCell(elCell);
+		}
+	    };
+	    this.table0.subscribe("cellMouseoverEvent", highlightEditableCell);
+	    this.table0.subscribe("cellMouseoutEvent", this.table0.onEventUnhighlightCell);
+	    this.table0.subscribe("cellClickEvent", onCellClick);
+
 
 	    YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown)
 	
 	};
     });
-
+function caca(){
+alert("caca");
+}
     
     function init(){
 

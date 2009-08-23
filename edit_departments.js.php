@@ -21,7 +21,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableDivEL="table"+tableid;
 	    var OrdersColumnDefs = [ 
 				    {key:"id", label:"<?php echo _('Key')?>", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
-				    ,{key:"code", label:"<?php echo _('Code')?>", width:230,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'department'}
+				    ,{key:"code", label:"<?php echo _('Code')?>", width:230,sortable:true,className:"aleft"
+				    ,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}
+				    ,  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'department'}
 				    ,{key:"name", label:"<?php echo _('Name')?>", width:350,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'department' }
 				    ,{key:"delete", label:"", width:70,sortable:false,className:"aleft",action:'delete',object:'department'}
 				    ,{key:"delete_type", label:"",hidden:true,isTypeKey:true}
