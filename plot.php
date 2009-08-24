@@ -129,14 +129,22 @@ break;
  case('product_quarter_sales'):
  case('product_year_sales'):
    
-   if($tipo=='product_week_sales')
+   if($tipo=='product_week_sales'){
      $interval='week';
-   elseif($tipo=='product_month_sales')
+     $size=5;
+   }
+   elseif($tipo=='product_month_sales'){
      $interval='month';
-   elseif($tipo=='product_quarter_sales')
+      $size=10;
+   }
+   elseif($tipo=='product_quarter_sales'){
      $interval='quarter';
-   elseif($tipo=='product_year_sales')
+     $size=20;
+   }
+   elseif($tipo=='product_year_sales'){
      $interval='year';
+     $size=40;
+   }
 
    $_SESSION['state']['product']['plot']=$tipo;
    $mode=$_SESSION['state']['product']['mode'];
@@ -184,12 +192,12 @@ break;
 
    $fields='"tip_asales","asales","date","profit","tip_profit"';
    $yfields=array(
-		  array('label'=>_('Sales'),'name'=>'asales','axis'=>'formatCurrencyAxisLabel','style'=>'size:5,lineSize:2'),
-		  array('label'=>_('Profit'),'name'=>'profit','axis'=>'formatCurrencyAxisLabel','style'=>'size:5,lineSize:2')
+		  array('label'=>_('Sales'),'name'=>'asales','axis'=>'formatCurrencyAxisLabel','style'=>"size:$size,lineSize:2"),
+		  array('label'=>_('Profit'),'name'=>'profit','axis'=>'formatCurrencyAxisLabel','style'=>"size:$size,lineSize:2")
 		  );
    $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category','axis'=>'fdate');
    $style='size:1';
-   $tipo_chart='LineChart';
+   $tipo_chart='ColumnChart';
    break;
  case('product_week_outers'):
  case('product_month_outers'):

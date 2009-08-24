@@ -495,21 +495,26 @@ $sql=sprintf("select sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total T
   //print "$invoices $invoices_home $invoices_nohome ".($invoices-$invoices_home-$invoices_nohome)."\n";
   //exit;
   if(count($myconf['extended_home_2acode'])>1){
-
-  $countries='and `Invoice Billing Country 2 Alpha Code` in (';
-  foreach($myconf['extended_home_2acode'] as $county_id){
-    $countries.="'".$county_id."',";
-  }
-  $countries=preg_replace('/\,$/',')',$countries);
- $sql=sprintf("select sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax , count(*) as invoices from `Invoice Dimension`     where `Invoice For Partner`='No' and `Invoice Title`='Invoice'   %s %s ",$countries,$int[0]);
- 
-  $result=mysql_query($sql);
-  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-
-    $net_extended_home=$row['net']+$refund_net_extended_home;
-    $tax_extended_home=$row['tax']+$refund_tax_extended_home;
-    $invoices_extended_home=$row['invoices'];
-  }
+    
+    $countries='and `Invoice Billing Country 2 Alpha Code` in (';
+    foreach($myconf['extended_home_2acode'] as $county_id){
+      $countries.="'".$county_id."',";
+    }
+    $countries=preg_replace('/\,$/',')',$countries);
+    $sql=sprintf("select sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax , count(*) as invoices from `Invoice Dimension`     where `Invoice For Partner`='No' and `Invoice Title`='Invoice'   %s %s ",$countries,$int[0]);
+    
+    $result=mysql_query($sql);
+    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+      
+      $net_extended_home=$row['net']+$refund_net_extended_home;
+      $tax_extended_home=$row['tax']+$refund_tax_extended_home;
+      $invoices_extended_home=$row['invoices'];
+    }
+  }else{
+    $net_extended_home=$net_home;
+    $tax_extended_home=$tax_home;
+    $invoices_extended_home=$invoices_home;
+    
   }
   $countries='and `Invoice Billing Country 2 Alpha Code` in (';
   foreach($myconf['region_2acode'] as $county_id){
@@ -554,7 +559,7 @@ $countries='and `Invoice Billing Country 2 Alpha Code` in (';
   //$invoices_nohome=$invoices-$invoices_home;
   
 
-
+  
 
   $net_extended_home_nohome=$net_extended_home-$net_home;
   $tax_extended_home_nohome=$tax_extended_home-$tax_home;
@@ -1320,6 +1325,10 @@ $balance['samples']['net_charged']=money($balance['samples']['net_charged'],$cur
 	       'tax_region'=>$tax_region,
 	       'net_region2'=>$net_region2,
 	       'tax_region2'=>$tax_region2,
+	        'net_region2_noregion'=>$net_region2-$net_region,
+	       'tax_region2_noregion'=>$tax_region2-$tax_region,
+	       
+
 	       'net_outside'=>$net-$net_region2,
 	       'tax_outside'=>$tax-$tax_region2,
 	       'net_org'=>$net_org,
@@ -1330,6 +1339,9 @@ $balance['samples']['net_charged']=money($balance['samples']['net_charged'],$cur
 	       'tax_region_nohome'=>$tax_region_nohome,
 	       'net_region2_nohome'=>$net_region2_nohome,
 	       'tax_region2_nohome'=>$tax_region2_nohome,
+	       'net_region2_nohome_noregion'=>$net_region2_nohome-$net_region_nohome,
+	       'tax_region2_nohome_noregion'=>$tax_region2_nohome-$tax_region_nohome,
+
 	       'net_org_nohome'=>$net_org_nohome,
 	       'tax_org_nohome'=>$tax_org_nohome
 	       
@@ -1347,11 +1359,13 @@ $balance['samples']['net_charged']=money($balance['samples']['net_charged'],$cur
 		 'invoices_extended_home'=>$invoices_extended_home,
 		 'invoices_region'=>$invoices_region,
 		 'invoices_region2'=>$invoices_region2,
+		 'invoices_region2_noregion'=>$invoices_region2-$invoices_region,
 		 'invoices_outside'=>$invoices-$invoices_region2,
 		 'invoices_org'=>$invoices_org,
 		 'invoices_extended_home_nohome'=>$invoices_extended_home_nohome,
 		 'invoices_region_nohome'=>$invoices_region_nohome,
 		 'invoices_region2_nohome'=>$invoices_region2_nohome,
+		  'invoices_region2_nohome_noregion'=>$invoices_region2_nohome-$invoices_region_nohome,
 		 'invoices_org_nohome'=>$invoices_org_nohome,
 		 'invoices_p'=>$invoices_p,
 		 'invoices_p_home'=>$invoices_p_home,

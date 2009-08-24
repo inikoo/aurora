@@ -140,10 +140,15 @@
 		  
 		  <table  class="show_info_product">
 		    <tr ><td>{t}Unit Weight{/t}:</td><td class="aright">{$product->get('Formated Weight')}</td></tr>
+		    {if $data.dimension!=''}
 		    <tr><td>{t}Unit Dimensions{/t}:</td><td class="aright">{$data.dimension}</td></tr>
+		    {/if}
+		     {if $data.oweight!=''}
 		    <tr ><td>{t}Outer Weight{/t}:</td><td class="aright">{$data.oweight}{t}Kg{/t}</td></tr>
+		    {/if}
+		    {if $data.odimension!=''}
 		    <tr><td>{t}Outer Dimensions{/t}:</td><td class="aright">{$data.odimension}</td></tr>
-
+		    {/if}
 		  </table>
 		  <table  class="show_info_product">
 		    

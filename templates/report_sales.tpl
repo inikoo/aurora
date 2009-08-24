@@ -77,10 +77,12 @@
 <tr class="first"><td class="label">{$home}</td><td>{$invoices_home} <img id="invoices_home" style="vertical-align:middle;cursor:pointer" title="{t}Display home orders invoiced in this period{/t}"src="art/icons/magnify-clip.png" /></td><td>{$net_home}</td><td>{$tax_home}</td></tr>
 
 <tr class="first"><td class="label">{t}Exports{/t}</td><td>{$invoices_nohome} <img id="invoices_nohome" style="vertical-align:middle;cursor:pointer" title="{t}Display export orders invoiced in this period{/t}"src="art/icons/magnify-clip.png"/></td><td>{$net_nohome}</td><td>{$tax_nohome}</td><td>{$refund_invoices_nohome}</td><td>{$refund_nohome}</td></tr>
-
+{if invoices_partner!=0}
 <tr class="partners"><td>Partners</td><td class="label">{$invoices_p} <img id="invoices_partner" style="vertical-align:middle;cursor:pointer" title="{t}Display pertner's orders invoiced in this period{/t}"src="art/icons/magnify-clip.png"/></td><td>{$net_p}</td><td>{$tax_p}</td><td>{$refund_invoices_p}</td><td>{$refund_p}</td></tr>
+{/if}
+{if $invoices_unk!=0}
 <tr class="first"><td class="label">{t}Unknown{/t}</td><td>{$invoices_unk} <img id="invoices_nohome" style="vertical-align:middle;cursor:pointer" title="{t}Display export orders invoiced in this period{/t}"src="art/icons/magnify-clip.png"/></td><td>{$net_unk}</td><td>{$tax_unk}</td><td>{$refund_invoices_unk}</td><td>{$refund_unk}</td></tr>
-
+{/if}
 <tr class="total" ><td>Total</td><td>{$total_invoices} <img id="invoices_total" style="vertical-align:middle;cursor:pointer" title="{t}Display orders invoiced in this period{/t}"src="art/icons/magnify-clip.png"/></td><td>{$total_net}</td><td>{$total_tax}</td><td>{$refund_invoices}</td><td>{$refund}</td></tr>
 <tr class="title"><td class="label">{t}Taxable Invoices{/t}</td></tr>
 {foreach from=$taxable   item=data key=rate}
@@ -471,12 +473,17 @@ The {$per_partner_sales} of the sales are due to our partners
 The export sales represent   {$per_export} ({$per_export_nop} without partners) of our sale s. Excluding our partners, the principal export destination  is {$export_country1} with a {$per_export_country1} share in the total export sales  follow by  {$export_country2} ({$per_export_country2}) and {$export_country3} ({$per_export_country3}).
 <table class="report_sales1" style="width:350px">
 <tr><td></td><td>Orders</td><td>Net Sales</td><td>Tax</td></tr>
+{if $invoices_extended_home_nohome!=0}
 <tr class="geo"><td class="label">{$extended_home_nohome}</td><td>{$invoices_extended_home_nohome}</td><td>{$net_extended_home_nohome}</td><td>{$tax_extended_home_nohome}</td></tr>
+{/if}
 <tr class="geo" ><td class="label"> {$region}<td>{$invoices_region_nohome}</td><td>{$net_region_nohome}</td><td>{$tax_region_nohome}</td></tr>
-<tr class="geo"><td class="label">{$region2}</td><td>{$invoices_region2_nohome}</td><td>{$net_region2_nohome}</td><td>{$tax_region2_nohome}</td></tr>
+<tr class="geo"><td class="label">{$region2}</td><td>{$invoices_region2_nohome_noregion}</td><td>{$net_region2_nohome_noregion}</td><td>{$tax_region2_nohome_noregion}</td></tr>
 <tr class="outside last " ><td class="label">{$outside}</td><td>{$invoices_outside}</td><td>{$net_outside}</td><td>{$tax_outside}</td></tr>
+{if $invoices_p_nohome!=0}
 <tr class="subtotal"  ><td>Subtotal</td><td>{$invoices_nohome}</td><td>{$net_nohome}</td><td>{$tax_nohome}</td></tr>
+
 <tr class="partners"><td>Partners</td><td>{$invoices_p_nohome}</td><td>{$net_p_nohome}</td><td>{$tax_p_nohome}</td></tr>
+{/if}
 <tr class="total" ><td>Total</td><td>{$total_invoices_nohome}</td><td>{$total_net_nohome}</td><td>{$total_tax_nohome}</td></tr>
 
 <tr class="org"><td class="label">{$org}</td><td>{$invoices_org_nohome}</td><td>{$net_org_nohome}</td><td>{$tax_org_nohome}</td></tr>

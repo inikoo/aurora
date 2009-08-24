@@ -19,6 +19,7 @@ include_once('class.Product.php');
 
 
 
+
 $view_sales=$user->can_view('product sales');
 $view_stock=$user->can_view('product stock');
 $view_orders=$user->can_view('orders');
@@ -90,7 +91,8 @@ if(isset($_REQUEST['code'])){
  }
 $_SESSION['state']['product']['tag']=$tag;
 $_SESSION['state']['product']['mode']=$mode;
-
+$_SESSION['state']['product']['orders']['mode']=$mode;
+$_SESSION['state']['product']['customers']['mode']=$mode;
 
 
 
@@ -131,19 +133,11 @@ if($mode=='code'){
 $product= new product($mode,$tag);
 
 
-//$product->group_by('code');
+
 $product->load('part_location_list');
 $smarty->assign('product',$product);
 $smarty->assign('product_id',$product->get('Product Most Recent Key'));
-
-//$num_links=$product->get('num_links');
-//$smarty->assign('num_links',$num_links);
-//$smarty->assign('fnum_links',number($num_links).' '.ngettext($num_links,'link','links'));
-//print_r($product->data);
 $smarty->assign('data',$product->data);
-
-//$smarty->assign('web_status',$_web_status[$product->get('web_status')]);
-
 $web_status_error=false;
 $web_status_error_title='';
  if($product->get('Product Web State')=='Online For Sale'){
@@ -161,26 +155,6 @@ $web_status_error_title='';
 $smarty->assign('web_status_error',$web_status_error);
 $smarty->assign('web_status_error_title',$web_status_error_title);
 
-
-// $fam_order=$_SESSION['state']['family']['table']['order'];
-// $sql=sprintf("select id,code from product where  %s<'%s' and  group_id=%d order by %s desc  ",$fam_order,$product->get($fam_order),$product->get('group_id'),$fam_order);
-// $result=mysql_query($sql);
-// if(!$prev=mysql_fetch_array($result, MYSQL_ASSOC))
-//   $prev=array('id'=>0,'code'=>'');
-// $sql=sprintf("select id,code from product where  %s>'%s' and group_id=%d order by %s   ",$fam_order,$product->get($fam_order),$product->get('group_id'),$fam_order);
-// $result=mysql_query($sql);
-// if(!$next=mysql_fetch_array($result, MYSQL_ASSOC))
-//   $next=array('id'=>0,'code'=>'');
-
-// $smarty->assign('prev',$prev);
-// $smarty->assign('next',$next);
-
-
-//$locations=($product->get('locations'));
-
-//$smarty->assign('locations',$locations['data']);
-//$smarty->assign('num_suppliers',$product->get('number_of_suppliers'));
-//$smarty->assign('suppliers',$product->supplier);
 
 
 
@@ -203,33 +177,12 @@ $smarty->assign('div_img_width',190);
 $smarty->assign('img_width',190);
 
 
-//print_r($images[0]);
+
 $smarty->assign('images',$images);
 
-//$smarty->assign('image_dir',$myconf['images_dir']);
+
 $smarty->assign('num_images',count($images));
 
-
-
-//$weeks=$product->get('weeks_since');
-
-
-// assign plot tipo depending of the age of the product
-
-// $tipo_plot='sales';
-// if(preg_match('/outers/',$_SESSION['state']['product']['plot']))
-//   $tipo_plot='outers';
-
-
-// if($weeks>500){
-//   $time_plot='month';
-//  }elseif($weeks>52){
-//    $time_plot='month';
-//  }else{
-//    $time_plot='week';
-//  }
-
-//$plot_tipo='product_'.$time_plot.'_'.$tipo_plot;
 $plot_tipo=$_SESSION['state']['product']['plot'];
 
 if(preg_match('/week/',$plot_tipo))
@@ -250,8 +203,8 @@ $smarty->assign('plot_data',$plot_data);
 
 
 
-$smarty->assign('stock_table_options',array(_('Inv'),_('Pur'),_('Adj'),_('Sal'),_('P Sal')) );
-$smarty->assign('stock_table_options_tipo', $_SESSION['views']['stockh_table_options'] );
+//$smarty->assign('stock_table_options',array(_('Inv'),_('Pur'),_('Adj'),_('Sal'),_('P Sal')) );
+//$smarty->assign('stock_table_options_tipo', $_SESSION['views']['stock_table_options'] );
 $smarty->assign('table_title_orders',_('Orders'));
 $smarty->assign('table_title_customers',_('Customers'));
 $smarty->assign('table_title_stock',_('Stock History'));
@@ -264,16 +217,6 @@ $smarty->assign('key_filter_dimension',$regex['key_filter_dimension']);
 
 $js_files[]= 'js/search.js';
 $js_files[]='product.js.php';
-
-// $smarty->assign('tsoall',number($product->get('tsoall')));
-// $smarty->assign('awtsoall',number($product->get('awtsoall')));
-// $smarty->assign('awtsoq',number($product->get('awtsoq')));
-// $smarty->assign('units',number($product->gr['units']));
-// $smarty->assign('price',money($product->data['price']));
-// $smarty->assign('rrp',money($product->data['rrp']));
-// $smarty->assign('weeks_since',number($product->get('weeks')));
-
-// $smarty->assign('unit_price',money($product->data['price']/$product->data['units']));
 
 
 $smarty->assign('css_files',$css_files);

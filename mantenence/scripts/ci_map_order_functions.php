@@ -5297,6 +5297,26 @@ if($act_data['town']=='Hornbæk - Sjælland'){
     $act_data['country_d1']='Balearic Islands';
 
   }
+  if(preg_match('/^\d{5}$/',_trim($act_data['country'])) and $act_data['postcode']==''){
+    $act_data['postcode']=$act_data['country'];
+    $act_data['country']='Spain';
+  }
+
+  if(preg_match('/spain/i',_trim($act_data['country'])){
+    $act_data['country']='Spain';
+  }
+
+   if(preg_match('/^\d{5}$/',_trim($header_data['country'])) and $header_data['postcode']==''){
+    $header_data['postcode']=$header_data['country'];
+    $header_data['country']='Spain';
+  }
+
+
+   if(preg_match('/^España$/i',_trim($act_data['country_d2'])) and $act_data['country']==''){
+    $act_data['country_d2']='';
+    $act_data['country']='Spain';
+  }
+
 
 
   if($act_data['country']=='Guernsey, C.i')
