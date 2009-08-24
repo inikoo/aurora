@@ -42,14 +42,14 @@ if(isset($_REQUEST['search']) and $_REQUEST['search']!=''  ){
     header('Location: product.php?id='. $found['product key']);
     exit;
   }
-  
+  mysql_free_result($result);
   $sql=sprintf("select `Product Family Key`  from `Product family Dimension`  where `Product Family Code`='%s' ",prepare_mysql($q));
   $result=mysql_query($sql);
   if($found=mysql_fetch_array($result, MYSQL_ASSOC)){
     header('Location: family.php?id='. $found['product family key']);
     exit;
   }
- 
+ mysql_free_result($result);
 
   //do you mean
   $from_url=$_REQUEST['from_url'];
@@ -73,7 +73,7 @@ $sql="select count(*) as total_products,sum(if(`Product Sales State`='For sale',
 $result=mysql_query($sql);
 if(!$products=mysql_fetch_array($result, MYSQL_ASSOC))
   exit;
-
+mysql_free_result($result);
 
 $smarty->assign('box_layout','yui-t0');
 $css_files=array(
