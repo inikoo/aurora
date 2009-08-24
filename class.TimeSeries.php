@@ -93,7 +93,7 @@ $sql=sprintf("insert into `Time Series Dimension` values (%s,%s,%s,%d,%d,%f,%d,'
 		,$this->first['count']
 	       );
    mysql_query($sql);
-   //print $sql;
+   
 
   foreach($this->values as $date=>$data){
    $sql=sprintf("insert into `Time Series Dimension` values (%s,%s,%s,%d,%d,%f,%d,'Data','','')   ON DUPLICATE KEY UPDATE  `Time Series Value`=%f ,`Time Series Count`=%d ,`Time Series Type`='Data' ,`Time Series Tag`='' "
@@ -108,8 +108,8 @@ $sql=sprintf("insert into `Time Series Dimension` values (%s,%s,%s,%d,%d,%f,%d,'
 		,$data['count']
 	       );
    mysql_query($sql);
-  
-  }
+   //print "$sql<br>";
+  } 
   $sql=sprintf("insert into `Time Series Dimension` values (%s,%s,%s,%d,%d,%f,%d,'Current','','')   ON DUPLICATE KEY UPDATE  `Time Series Value`=%f ,`Time Series Count`=%d ,`Time Series Type`='Current' ,`Time Series Tag`='' "
 		,prepare_mysql($this->current['date'])
 		,prepare_mysql($this->freq)
@@ -122,7 +122,7 @@ $sql=sprintf("insert into `Time Series Dimension` values (%s,%s,%s,%d,%d,%f,%d,'
 		,$this->current['count']
 	       );
    mysql_query($sql);
-
+ 
    
   $sql=sprintf("delete from `Time Series Dimension`  where `Time Series Name` in (%s) and `Time Series Frequency`=%s and `Time Series Name Key`=%d and `Time Series Name Second Key`=%d and `Time Series Tag`='D'"
 	       ,prepare_mysql($this->name)
@@ -295,6 +295,26 @@ foreach($count_forecast_data as $line){
 function get_values_per_month(){
   
 $this->first_complete_month();
+
+
+$sql=sprintf("SELECT `First Day` as date ,substring(`First Day`, 1,7) AS dd  FROM kbase.`Month Dimension` where `First Day`>%s  and `First Day`<%s  GROUP BY dd order by `First Day` " 
+	     ,prepare_mysql($this->start_date)
+	     ,prepare_mysql(date("Y-m-d"))
+	     );
+//print $sql;
+  $res=mysql_query($sql);
+  $this->values=array();
+   while($row=mysql_fetch_array($res)){
+     if($row['dd']==$this->start_year.'-'.$this->start_bin)
+       $this->first=array('date'=>$row['dd'].'-01','count'=>0,'value'=>0);
+     else if($row['dd']==date("Y-m"))
+        $this->current=array('date'=>$row['dd'].'-01','count'=>0,'value'=>0);
+      else
+        $this->values[$row['dd'].'-01']=array('count'=>0,'value'=>0);
+   }
+
+
+
   $sql=sprintf("SELECT count(*) as number,`%s` as date ,substring(`%s`, 1,7) AS dd ,sum(`%s`) as value FROM `%s` where `%s`>%s  and `%s`<%s  GROUP BY dd limit 10000"
 	       ,$this->date_field,$this->date_field
 	       ,$this->value_field
@@ -306,18 +326,18 @@ $this->first_complete_month();
 
  
   $res=mysql_query($sql);
-  $this->values=array();
+  
   while($row=mysql_fetch_array($res)){
     if($row['dd']==$this->start_year.'-'.$this->start_bin)
-        $this->first=array('date'=>$row['dd'].'-01 12:00:00','count'=>$row['number'],'value'=>$row['value']);
+        $this->first=array('date'=>$row['dd'].'-01','count'=>$row['number'],'value'=>$row['value']);
     else if($row['dd']==date("Y-m"))
-        $this->current=array('date'=>$row['dd'].'-01 12:00:00','count'=>$row['number'],'value'=>$row['value']);   
+        $this->current=array('date'=>$row['dd'].'-01','count'=>$row['number'],'value'=>$row['value']);   
     else
-        $this->values[$row['dd'].'-01 12:00:00']=array('count'=>$row['number'],'value'=>$row['value']);
+        $this->values[$row['dd'].'-01']=array('count'=>$row['number'],'value'=>$row['value']);
   }
   
-  //print_r($this->values);
-  
+  //  print_r($this->values);
+  //exit;
 
 }
 
@@ -351,7 +371,7 @@ function first_complete_month(){
     $last_time=mktime(0, 0, 0, date($row["m"])-1 , -1, date($row["y"]));
     if($last_time>mktime(0, 0, 0, date("m") , date("d"), date("y") ))
       $last_time=mktime(0, 0, 0, date("m") , -1, date("y"));
-    return date("Y-m-d 23:59:59", $last_time); 
+    return date("Y-m-d", $last_time); 
   }
 }
     

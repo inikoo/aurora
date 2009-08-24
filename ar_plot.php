@@ -357,7 +357,7 @@ function list_product_sales_per_year(){
 }
 function list_invoices_per_month(){
   $sql="SELECT `Time Series Type`,`Time Series Value` as sales,MONTH(`Time Series Date`) as month,`Time Series Count` as invoices ,UNIX_TIMESTAMP(`Time Series Date`) as date 
-  ,substring(`Time Series Date`, 1,7) AS dd from `Time Series Dimension` where `Time Series Name`='invoices' order by `Time Series Date`";
+  ,substring(`Time Series Date`, 1,7) AS dd from `Time Series Dimension` where `Time Series Name`='invoices' order by `Time Series Date`,`Time Series Type` desc";
   //print $sql; 
 
   $prev_month='';
@@ -368,12 +368,18 @@ function list_invoices_per_month(){
   while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
     if(is_numeric($prev_month)){
       $diff=$row['sales']-$prev_month;
-      $diff_prev_month=percentage($diff,$prev_month,1,'NA','%',true)." "._('change (last month)')."\n";
+      if($diff==0)
+	$diff_prev_month=_('No change from last month')."\n";
+      else
+	$diff_prev_month=percentage($diff,$prev_month,1,'NA','%',true)." "._('change (last month)')."\n";
     }else
       $diff_prev_month='';
  
     if(isset($prev_year[$row['month']])){
       $diff=$row['sales']-$prev_year[$row['month']];
+      if($diff==0)
+	$diff_prev_year=_('No change from last year')."\n";
+      else
       $diff_prev_year=percentage($diff,$prev_year[$row['month']],1,'NA','%',true)." "._('change (last year)')."\n";
     }else{
       $diff_prev_year='';
@@ -387,6 +393,7 @@ function list_invoices_per_month(){
     // print $row['dd']."<br>\n";
     if($row['Time Series Type']=='First'){
 	$first_sales=array($row['dd'],$row['sales'],$tip) ;
+
     }
   if($row['Time Series Type']=='Current'){
 	$current_sales=array($row['dd'],$row['sales'],$tip) ;
@@ -395,7 +402,7 @@ function list_invoices_per_month(){
       if(!$data_region){
 
 	$data[$first_sales[0]]['tails']=(float) $first_sales[1];
-	$data[$first_sales[0]]['tip_tails']=(float) $first_sales[2];
+	$data[$first_sales[0]]['tip_tails']=$first_sales[2];
 	$data[$row['dd']]['tails']=(float) $row['sales'];
 	$data[$row['dd']]['tip_tails']=$tip;
        
@@ -414,7 +421,7 @@ function list_invoices_per_month(){
 	$data[$last_complete_sales[0]]['tails']=(float) $last_complete_sales[1];
 	$data[$last_complete_sales[0]]['tip_tails']='';
 	$data[$current_sales[0]]['tails']=(float) $current_sales[1];
-	$data[$current_sales[0]]['tip_tails']=(float) $current_sales[2];
+	$data[$current_sales[0]]['tip_tails']= $current_sales[2];
 
       }
       $forecast_region=true;

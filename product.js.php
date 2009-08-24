@@ -1,5 +1,6 @@
 <?php
-include_once('common.php');?>
+include_once('common.php');
+?>
     var plot='<?php echo $_SESSION['state']['product']['plot']?>';
   var Dom   = YAHOO.util.Dom;
 var change_plot_sigma=function(o){
@@ -56,7 +57,7 @@ var change_plot_sigma=function(o){
 								   //draggableColumns:true,
 								   renderLoopSize: 50,generateRequest : myRequestBuilder
 								   ,paginator : new YAHOO.widget.Paginator({
-									 rowsPerPage:<?php echo $_SESSION['state']['product']['orders']['nr']?>,containers : 'paginator0', 
+									   rowsPerPage:<?php echo (!$_SESSION['state']['product']['orders']['nr']?25:$_SESSION['state']['product']['orders']['nr'] )?>,containers : 'paginator0', 
 									 pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									 previousPageLinkLabel : "<",
 									 nextPageLinkLabel : ">",
@@ -118,7 +119,7 @@ var change_plot_sigma=function(o){
 								   //draggableColumns:true,
 								   renderLoopSize: 50,generateRequest : myRequestBuilder
 								 ,paginator : new YAHOO.widget.Paginator({
-									 rowsPerPage:<?php echo $_SESSION['state']['product']['customers']['nr']?>,containers : 'paginator1', 
+									 rowsPerPage:<?php echo (!$_SESSION['state']['product']['orders']['nr']?25:$_SESSION['state']['product']['customers']['nr'] )?>,containers : 'paginator1', 
 									 pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									 previousPageLinkLabel : "<",
 									 nextPageLinkLabel : ">",

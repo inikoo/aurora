@@ -1036,7 +1036,7 @@ break;
       return '';
     $sql=sprintf("select `Country Secondary Division Name` as name from `Country Secondary Division Dimension` where `Country Secondary Division Key`=%d",$id);
     //  print $sql;
-    $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
+    $result = mysql_query($sql) or die('Query failedx1: ' . mysql_error());
     if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
       return $row['name'];
     }
@@ -1053,7 +1053,7 @@ break;
     if(!is_numeric($id))
       return '';
     $sql=sprintf("select `Country Primary Division Name` as name from kbase.`Country First Division Dimension` where `Country Primary Division Key`=%d",$id);
-    $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
+    $result = mysql_query($sql) or die('Query failedx: ' . mysql_error());
     if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
       return $row['name'];
     }
@@ -1075,14 +1075,14 @@ break;
       return false;
      $extra_where='';
      if($country_2a_code)
-        $extra_where=sprintf('`Country First Division 2 Alpha Country Code`=%s',prepare_mysql($country_2a_code));
+        $extra_where=sprintf('and `Country First Division 2 Alpha Country Code`=%s',prepare_mysql($country_2a_code));
       $sql=sprintf("select `Geography Key` as id from kbase.`Country First Division Dimension` where `Country First Division Name`=%s %s"
-      ,prepare_mysql($str)
+      ,prepare_mysql($country_d1)
       ,$extra_where
       );
 
 
-    $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
+    $result = mysql_query($sql) or die('Query failedx2: ' .$sql. mysql_error());
     if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
       return true;
     }else
@@ -1112,7 +1112,7 @@ break;
       );
    
     
-    $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
+    $result = mysql_query($sql) or die('Query failedx4: ' . mysql_error());
     if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
       return true;
     }else
@@ -1189,19 +1189,21 @@ break;
     $town - _string_ Town name
     $country_id - (optional) _integer_ Country Key in DB
   */
-  public static function is_town($town,$country_id=0){
+  public static function is_town($town,$country_2acode=false){
     if($town=='')
       return false;
 
-    if($country_id>0)
-      $sql=sprintf("select `Geography Key` as id from kbase.`Town Dimension` where `Town Name`=%s  and `Country Key`=%d"
-      ,prepare_mysql($town),$country_id);
+    if($country_2acode)
+      $sql=sprintf("select `Geography Key` as id from kbase.`Town Dimension` where `Town Name`=%s  and `Town 2 Alpha Country Code`=%s"
+		   ,prepare_mysql($town)
+		   ,prepare_mysql($country_2acode)
+		   );
     else
       $sql=sprintf("select `Geography Key` as id from kbase.`Town Dimension` where `Town Name`=%s "
       ,prepare_mysql($town));
 
     //  print "$sql\n";
-    $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
+    $result = mysql_query($sql) or die('Query failedx6: ' . mysql_error());
     if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
       return true;
     }else
@@ -1739,7 +1741,7 @@ break;
 	if($num_words>1){
 	  if(Address::is_town(
 			      $words[$num_words-1],
-			      $data['Address Country Key']
+			      $data['Address Country 2 Alpha Code']
 			      )){
 	    $data['Address Town']=array_pop($words);
 	    $num_words=count($words);
@@ -1757,17 +1759,16 @@ break;
       
       if($data['Address Town']=='') {
 
-	if(Address::is_town($raw_data['Address Line 3'],$data['Address Country Key']) ){
+	if(Address::is_town($raw_data['Address Line 3'],$data['Address Country 2 Alpha Code']) ){
 	  $data['Address Town']=$raw_data['Address Line 3'];
 	  $raw_data['Address Line 3']='';
-	}else if(Address::is_town($data['Address Country Secondary Division'],$data['Address Country Key']) ){
+	}else if(Address::is_town($data['Address Country Secondary Division'],$data['Address Country 2 Alpha Code']) ){
 	  $data['Address Town']=$data['Address Country Secondary Division'];
 	  $data['Address Country Secondary Division']='';
 	}
 
 
       }// End town missplaced
-
 
 
       if(preg_match('/^\d[a-z]?(bis)?\s*,/',$raw_data['Address Line 1'])){
@@ -2104,7 +2105,7 @@ break;
 	$data['Address Town']='Andover';
 
       if($town_filled){
-	if(Address::is_country_d2($data['Address Town'],$data['Address Country 2 Alpha Code']) and Address::is_town($data['Address Town Secondary Division'],30)){
+	if(Address::is_country_d2($data['Address Town'],$data['Address Country 2 Alpha Code']) and Address::is_town($data['Address Town Secondary Division'],$data['Address Country 2 Alpha Code'])){
 	  $data['Address Country Secondary Division']=$data['Address Town'];	
 	  $data['Address Town']=$data['Address Town Secondary Division'];
 	  $data['Address Town Secondary Division']='';
@@ -2251,7 +2252,7 @@ break;
 
     
 
-      if(Address::is_town($data['Address Town Secondary Division'],$data['Address Country Key']) 
+      if(Address::is_town($data['Address Town Secondary Division'],$data['Address Country 2 Alpha Code']) 
       and Address::is_country_d2($data['Address Town'],$data['Address Country 2 Alpha Code'])){
 	$county_d2=$data['Address Town'];
 	$data['Address Town']=$data['Address Town Secondary Division'];
