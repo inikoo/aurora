@@ -1,17 +1,18 @@
 <?php
 include_once('common.php');
-include_once('stock_functions.php');
 include_once('class.Product.php');
 
-$view_sales=$LU->checkRight(PROD_SALES_VIEW);
-$view_stock=$LU->checkRight(PROD_STK_VIEW);
-$view_orders=$LU->checkRight(ORDER_VIEW);
+$view_sales=$user->can_view('product sales');
+$view_stock=$user->can_view('product stock');
+$view_orders=$user->can_view('orders');
 
-$create=$LU->checkRight(PROD_CREATE);
-$modify=$LU->checkRight(PROD_MODIFY);
-$modify_stock=$LU->checkRight(PROD_STK_MODIFY);
+$create=$user->can_create('products');
+$modify=$user->can_edit('products');
+$modify_stock=$user->can_edit('product stock');
+
 $smarty->assign('modify_stock',$modify_stock);
-$view_suppliers=$LU->checkRight(SUP_VIEW);
+
+$view_suppliers=$user->can_view('suppliers');
 $smarty->assign('view_suppliers',$view_suppliers);
 
 
@@ -21,7 +22,7 @@ $smarty->assign('create',$create);
 $smarty->assign('modify',$modify);
 $smarty->assign('view_orders',$view_orders);
 
-$view_cust=$LU->checkRight(CUST_VIEW);
+$view_cust=$user->can_view('customers');
 $smarty->assign('view_cust',$view_cust);
 
 if(!isset($_REQUEST['id']) and is_numeric($_REQUEST['id']))
@@ -34,40 +35,12 @@ $_SESSION['state']['product']['id']=$product_id;
 
 if(!$product= new product($product_id))
   exit('Error product not found');
-// $product->load(array(
-// 		     'categories'
-// 		     ,'suppliers'
-// 		     ,'product_tree'
-// 		     ,'images'
-// 		     )
-// 	       );
-//print_r( $product->get('images'));
-//exit;
-
-// $category_list=array();
-// $sql="select name from cat where tipo=2 order by name";
-// $result=mysql_query($sql);
-// while($category_list=mysql_fetch_array($result, MYSQL_ASSOC)){
-//   $category_list[]=$row[]
-// }
-
-// $fam_order=$_SESSION['state']['family']['table']['order'];
-// $sql=sprintf("select id,code from product where  %s<'%s' and  group_id=%d order by %s desc  ",$fam_order,$product->get($fam_order),$product->get('group_id'),$fam_order);
-// $result=mysql_query($sql);
-// if(!$prev=mysql_fetch_array($result, MYSQL_ASSOC))
-//   $prev=array('id'=>0,'code'=>'');
-// $sql=sprintf("select id,code from product where  %s>'%s' and group_id=%d order by %s   ",$fam_order,$product->get($fam_order),$product->get('group_id'),$fam_order);
-// $result=mysql_query($sql);
-// if(!$next=mysql_fetch_array($result, MYSQL_ASSOC))
-//   $next=array('id'=>0,'code'=>'');
-
-// $smarty->assign('prev',$prev);
-// $smarty->assign('next',$next);
 
 $smarty->assign('product',$product);
 
 
 $product->load('images_slideshow');
+$product->load_currency_data();
 $images=$product->images_slideshow;
 $smarty->assign('images',$images);
 $smarty->assign('num_images',count($images));
@@ -148,13 +121,13 @@ $js_files=array(
 		$yui_path.'editor/editor-min.js',
 		$yui_path.'json/json-min.js',
 
-		'js/calendar_common.js.php',
-		'js/common.js.php',
-		'js/table_common.js.php',
+		'calendar_common.js.php',
+		'common.js.php',
+		'table_common.js.php',
 		'js/md5.js',
 
 		'js/search.js',
-		'js/edit_product.js.php',
+		'edit_product.js.php',
 
 		);
 
@@ -187,8 +160,10 @@ $_SESSION['state']['product']['shapes']=json_encode($_shape);
 
 
 
-$smarty->assign('currency',$myconf['currency_symbol']);
-$smarty->assign('data',$product->data);
+$smarty->assign('thousands_sep',$myconf['thousand_sep']);
+$smarty->assign('decimal_point',$myconf['decimal_point']);
+
+$smarty->assign('currency',$product->data['Currency Symbol']);
 
 // $sql=sprintf("select id,sname,tipo,name,description from cat where tipo=1 order by sname ");
 // $res = mysql_query($sql);
@@ -266,7 +241,7 @@ $smarty->assign('factor_inv_units',number_format(1/$units,6)  );
 // else
 //   $smarty->assign('rrp_perouter',money($product->get('rrp')*$product->get('units')));
 // $smarty->assign('decimal_point',$myconf['decimal_point']);
-// $smarty->assign('thosusand_sep',$myconf['thosusand_sep']);
+// $smarty->assign('thousand_sep',$myconf['thousand_sep']);
 
 // foreach($_units_tipo as $key=>$value){
 //   $units_tipo[$key]=array('id'=>$key,'name'=>$value,'sname'=>$_units_tipo_plural[$key]);
@@ -288,6 +263,7 @@ while($row=mysql_fetch_array($res)){
   if($row['Category Type']=='Theme')
     $cat_theme[$row['Category Key']]=array('name'=>$row['Category Name'],'selected'=>$row['selected']);
 }
+mysql_free_result($res);
 $smarty->assign('cat_use',$cat_use);
 $smarty->assign('cat_material',$cat_material);
 $smarty->assign('cat_theme',$cat_theme);

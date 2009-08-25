@@ -135,7 +135,7 @@ $myconf=array(
 	      'currency_code'=>'GBP',
 	      'currency'=>'Pound',
 	      'decimal_point'=>'.',
-	      'thosusand_sep'=>',',
+	      'thousand_sep'=>',',
 	      
 	      'theme'=>'yui-skin-sam',
 	      'template_dir'=>'templates',

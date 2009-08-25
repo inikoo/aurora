@@ -341,7 +341,7 @@ case('order_consolidated'):
 	   if($_REQUEST['key']=='supplier_new'){
 	    $response['data']=$product->supplier[$product->new_supplier];
 	    $response['currency']=$myconf['currency_symbol'];
-	    $response['thosusand_sep']=$myconf['thosusand_sep'];
+	    $response['thousand_sep']=$myconf['thousand_sep'];
 	    $response['decimal_point']=$myconf['decimal_point'];
 
 	    $response['units_tipo_name']=$product->data['units_tipo_name'];
