@@ -21,10 +21,7 @@ var save_address=function(){
     
 
     if(Address_Items_Changes>0){
-	
 	items=Address_Keys;
-	
-
 	var value=new Object()
 	for(i in items)
 	    value[items[i]]=Dom.get('address_'+items[i]).value;
@@ -36,28 +33,24 @@ var save_address=function(){
 		success:function(o) {
 		    //	alert(o.responseText);
 		    var r =  YAHOO.lang.JSON.parse(o.responseText);
-		if(r.action=='updated'){
-		    Dom.get('address_display'+address_key).innerHTML=r.xhtml_address;
-		    
-		    for(i in r.updated_data){
-			var address_item_value=r.updated_data[i];
-			if(address_item_value==null)address_item_value='';
-			Address_Data[address_key][i]=address_item_value;
+		    if(r.action=='updated'){
+			Dom.get('address_display'+address_key).innerHTML=r.xhtml_address;
+			for(i in r.updated_data){
+			    var address_item_value=r.updated_data[i];
+			    if(address_item_value==null)address_item_value='';
+			    Address_Data[address_key][i]=address_item_value;
+			}
+			cancel_edit_address();
+			save_address_elements++;
+		    }else if(r.action=='error'){
+			alert(r.msg);
 		    }
-		    cancel_edit_address();
-		    save_address_elements++;
-		}else if(r.action=='error'){
-		    alert(r.msg);
-		}
-		
-		
-		
 		}
 	    });
     }
     
     if(Address_Type_Changes>0){
-
+	
 	var address_type_values=new Array();
 	var elements_array=Dom.getElementsByClassName('address_type', 'span');
 	for( var i in elements_array ){
@@ -316,7 +309,6 @@ var edit_address=function (e,address_button){
 
 	for (index in Address_Keys){
 	    key=Address_Keys[index];
-	    
 	    if(labels[key]!=undefined){
 
 		if(labels[key].name!=undefined){

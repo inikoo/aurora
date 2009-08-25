@@ -131,24 +131,39 @@
 	      </div>
 	      </td>
 	  </tr>
-	  <tr id="tr_address_country_d2">
+	  <tr id="tr_address_country_d2" style="display:none">
 	    <td class="label" style="width:160px"><span id="label_address_country_d2">{t}Subregion{/t}</span>:</td><td  style="text-align:left">
-	     <div id="myAutoComplete" style="width:15em;" >
+	     <div class="AutoComplete" style="width:15em;" >
 	      <input id="address_country_d2_code" value="" type="hidden">
 	    <input style="text-align:left;width:18em" id="address_country_d2" value="" ovalue="" >
 	     <div id="address_country_d2_container" style="" ></div>
 	      </div>
 	    </td>
 	  </tr>
+	   <tr id="tr_address_country_d3" style="display:none">
+	     <td class="label" style="width:160px"><span id="label_address_country_d3">{t}3d Division{/t}</span>:</td><td  style="text-align:left">
+	     <div class="AutoComplete" style="width:15em;" >
+	      <input id="address_country_d3_code" value="" type="hidden">
+	    <input style="text-align:left;width:18em" id="address_country_d3" value="" ovalue="" >
+	     <div id="address_country_d3_container" style="" ></div>
+	      </div>
+	    </td>
+	  </tr>
 	  
+
 	  <tr id="tr_address_postal_code">
 	    <td class="label" style="width:160px">{t}Postal Code{/t}:</td><td  style="text-align:left"><input style="text-align:left;width:18em" id="address_postal_code" value="" ovalue=""  ></td>
 	  </tr>
 
 	  <tr>
 	    <td class="label" style="width:160px">
-	      <span id="show_town_d1" onclick="toggle_town_d1()" class="small_button" style="padding:0 1px;font-size:50%;position:relative;top:-2px">+</span> {t}City{/t}:</td>
-	      <td  style="text-align:left"><input style="text-align:left;width:18em" id="address_town" value="" ovalue="" ></td>
+	      <span id="show_town_d1" onclick="toggle_town_d1()" class="small_button" style="padding:0 1px;font-size:50%;position:relative;top:-2px">+</span> {t}Town/City{/t}:</td>
+	      <td  style="text-align:left">
+		<div class="AutoComplete" style="width:15em;" >
+		<input style="text-align:left;width:18em" id="address_town" value="" ovalue="" >
+		 <div id="address_town_container" style="" ></div>
+	      </div>
+	      </td>
 	  </tr>
 	  <tr style="display:none" id="tr_address_town_d1">
 	    <td class="label" style="width:160px" >

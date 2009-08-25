@@ -11,7 +11,8 @@ var Country_Address_Labels=
 			      }
 			      ,'MEX':{
 				  'country_d1':{'name':'State','oname':'Estado','hide':false,'in_use':true}
-				  ,'country_d2':{'name':'Municipality','oname':'Municipio','hide':true,'in_use':true}
+				  ,'country_d2':{'name':'Municipality','oname':'Municipio','hide':false,'in_use':true}
+				  
 			     }
 			      ,'USA':{
 				  'country_d1':{'name':'State','oname':'State','hide':false,'in_use':true}
