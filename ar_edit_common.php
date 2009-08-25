@@ -37,12 +37,20 @@ function prepare_values($data,$value_names){
     exit(json_encode(array('state'=>400,'msg'=>'Error wrong value 1')));
   
   // print_r($data);
- 
+  
   foreach($value_names as $value_name=>$extra_data){
-    if(!isset($data[$value_name])){
+    $optional=false;
+    $optional=(isset($extra_data['optional'])  and  $extra_data['optional']?true:false ); 
+    if(!isset($data[$value_name])   ){
+      
+      if(!$optional){
       $response=array('state'=>400,'msg'=>"Error no value  2 ");
       echo json_encode($response);
       exit;
+      }else
+	continue;
+      
+
     }
     $spected_type=$extra_data['type'];
     

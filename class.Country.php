@@ -78,8 +78,8 @@ class Country{
   function get_data($key,$id){
 
      if($key=='find'){
-      $sql=sprintf("select `Country Key`  from kbase.`Country Dimension` left join `Country Alias Dimension` on  (`Country Alias Code`=`Country Code`)
-      where `Country Alias`=%s or `Country Name`=%s or  `Country Official Name`=%s or `Country Native Name`=%s  "
+      $sql=sprintf("select `Country Key`  from kbase.`Country Dimension`
+      where  `Country Name`=%s or  `Country Official Name`=%s or `Country Native Name`=%s  "
 		   ,prepare_mysql($id)
 		   ,prepare_mysql($id)
 		   ,prepare_mysql($id)
@@ -90,9 +90,23 @@ class Country{
       if($row=mysql_fetch_array($result, MYSQL_ASSOC))
 	$this->get_data('id',$row['Country Key']);
       else{
-	$this->get_data('code','UNK');
+	
+
+	$sql=sprintf("select `Country Alias Code`  from kbase.`Country Alias Dimension` where `Country Alias`=%s  "
+		   ,prepare_mysql($id)
+		     
+		   );
+	//print $sql;
+	$result_alias=mysql_query($sql);
+      
+	if($row_alias=mysql_fetch_array($result_alias, MYSQL_ASSOC))
+	  $this->get_data('code',$row_alias['Country Alias Code']);
+	else
+	  $this->get_data('code','UNK');
+	mysql_free_result($result_alias);
 
       }
+      mysql_free_result($result);
       return;
     }
     if($key=='id'){
@@ -100,7 +114,7 @@ class Country{
       $result=mysql_query($sql);
       if($this->data=mysql_fetch_array($result, MYSQL_ASSOC))
 	$this->id=$this->data['Country Key'];
-
+      mysql_free_result($result);
       return;
     }
     if($key=='2 alpha code'){
@@ -108,6 +122,7 @@ class Country{
       $result=mysql_query($sql);
       if($this->data=mysql_fetch_array($result, MYSQL_ASSOC))
 	$this->id=$this->data['Country Key'];
+      mysql_free_result($result);
       return;
     } 
     if($key=='code'){
@@ -115,6 +130,7 @@ class Country{
       $result=mysql_query($sql);
       if($this->data=mysql_fetch_array($result, MYSQL_ASSOC))
 	$this->id=$this->data['Country Key'];
+      mysql_free_result($result);
       return;
     } 
     
@@ -129,11 +145,13 @@ class Country{
       $result=mysql_query($sql);
       if($this->data=mysql_fetch_array($result, MYSQL_ASSOC))
 	$this->id=$this->data['Country Key'];
+      mysql_free_result($result);
       return;
       $sql=sprintf("SELECT * FROM kbase.`Country Dimension` C where `Country Native Name`=%s",prepare_mysql($id)); 
       $result=mysql_query($sql);
       if($this->data=mysql_fetch_array($result, MYSQL_ASSOC))
 	$this->id=$this->data['Country Key'];
+      mysql_free_result($result);
       return;
     }
     
