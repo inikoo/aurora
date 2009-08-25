@@ -98,9 +98,10 @@ class product extends DB_Table{
       $result=mysql_query($sql);
 
       if( ($this->data=mysql_fetch_array($result, MYSQL_ASSOC))){
-	$this->locale=$this->data['Product Locale'];
-	$this->id=$this->data['Product Key'];
+	    $this->locale=$this->data['Product Locale'];
+	    $this->id=$this->data['Product Key'];
       }
+      mysql_free_result($result);
       return;
     } if($tipo=='pid'){
       $sql=sprintf("select * from `Product Dimension` where `Product ID`=%d  and `Product Same ID Most Recent`='Yes'   ",$tag);
@@ -832,8 +833,14 @@ exit("sku not found   $sql\n");
       else
 	return 'Order';
 	
-      case('Price'):
-	return $this->money($this->data['Product Price']);
+    case('Price Formated'):
+        return $this->money($this->data['Product Price']);;
+      break;
+    case('Price'):
+     if(preg_match('/system/i',$data))
+      return number($this->data['Product Price'],2,true);
+      else
+        return $this->number($this->data['Product Price'],2,true);
       break;
     case('Price Formated'):
       if($this->locale=='de_DE'){
@@ -875,24 +882,45 @@ exit("sku not found   $sql\n");
    
       break;
 
-    case('Price Per Unit'):
+    case('Price Per Unit Formated'):
+   
       return $this->money($this->data['Product Price']/$this->data['Product Units Per Case']);
       break; 
-
+    case('Price Per Unit'):
+      if(preg_match('/system/i',$data))
+      return number($this->data['Product Price']/$this->data['Product Units Per Case'],2,true);
+      else
+      return $this->number($this->data['Product Price']/$this->data['Product Units Per Case'],2,true);
+      break; 
 
     case('Price Per Other'):
       if(is_numeric($arg) and $arg>0)
 	return $this->money($this->data['Product Price']/$arg2);
       
       break; 
-    case('RRP Per Outer'):
+    case('RRP Per Outer Formated'):
 	return $this->money($this->data['Product RRP']);
 	break; 
-    case('RRP Per Unit'):
+	 case('RRP Per Outer'):
+	 if(preg_match('/system/i',$data))
+      return number($this->data['Product RRP'],2,true);
+      else
+	return $this->number($this->data['Product RRP'],2,true);
+	break; 
+    case('RRP Per Unit Formated'):
 	return $this->money($this->data['Product RRP']/$this->data['Product Units Per Case']);
 	break; 	
+    case('RRP Per Unit'):
+    if(preg_match('/system/i',$data))
+      return number($this->data['Product RRP']/$this->data['Product Units Per Case'],2,true);
+      else
+	return $this->number($this->data['Product RRP']/$this->data['Product Units Per Case'],2,true);
+	break; 	    
     case('Product RRP Per Unit'):
-      return sprintf("%.2f",$this->data['Product RRP']/$this->data['Product Units Per Case']);
+       if(preg_match('/system/i',$data))
+      return $number($this->data['Product RRP']/$this->data['Product Units Per Case']);
+      else
+      return $this->number($this->data['Product RRP']/$this->data['Product Units Per Case']);
       break; 	
       
 
@@ -915,22 +943,19 @@ exit("sku not found   $sql\n");
       return $this->money($this->data['Product RRP']-$this->data['Product Price']);
       break;
 
-    case('Currency Symbol'):
-      function money($number){
-
-	if($this->locale=='en_GB')
-	  return '£';
-	elseif($this->locale=='de_DE' or $this->locale=='fr_FR')
-	  return '€';
-	else
-	  return '$';
-
-}
-
-
-      break;
+    
     case('Product Net Weight Per Unit'):
       return $this->data['Product Net Weight']/$this->data['Product Units Per Case'];
+      break;
+    case('Net Weight Per Unit Formated'):
+        $weight_units=_('Kg');
+      return $this->number($this->data['Product Net Weight']/$this->data['Product Units Per Case']).$weight_units;
+      break;
+    case('Net Weight Per Unit'):
+      if(preg_match('/system/i',$data))
+      return number($this->data['Product Net Weight']/$this->data['Product Units Per Case']);
+      else
+      return $this->number($this->data['Product Net Weight']/$this->data['Product Units Per Case']);
       break;
       
   case('Product Description MD5 Hash'):
@@ -1175,19 +1200,32 @@ exit("sku not found   $sql\n");
     Proporciona la moneda dependiendo el pais
  */
  // JFA
-
-
 function money($number){
 
-  if($this->locale=='en_GB')
-    return '£'.number_format($number,2,'.',',');
-  elseif($this->locale=='de_DE')
-    return number_format($number,2,',','.').'€';
-  elseif($this->locale=='fr_FR')
-    return number_format($number,2,'.',',').'€';
+if(preg_match('/fr_FR|de_DE/',$this->locale)){
+    return $this->number($number,2).$this->data['Currency Symbol'];
+}else
+    return $this->data['Currency Symbol'].$this->number($number,2);
+
 }
 
+ /*
+    Function: number
+    Formatea el numero dependiendo el pais
+ */
+ // JFA
+function number($number,$decimal_places=1){
+    $thousand_sep=',';
+    $deciaml_point='.';
+    if(preg_match('/es_ES|de_DE/',$this->locale)){
+    $thousand_sep='.';
+    $deciaml_point=',';
+    }
 
+  
+    return number_format($number,$decimal_places,$decial_point,$thousand_sep);
+  
+}
  /*
     Function: new_id
     Asigna un nuevo ID al registro de la tabla Product Dimension.
@@ -3839,7 +3877,21 @@ function update_same_id_valid_dates($args='')
  
 
 }
-
+/*
+function: load_currency_data
+Set the currency extra data in the $data array 
+*/
+function load_currency_data(){
+    $sql=sprintf('select * from kbase.`Currency Dimension` where `Currency Code`=%s'
+        ,prepare_mysql($this->data['Product Currency'])
+        );
+    $res=mysql_query($sql);
+    if($row=mysql_fetch_array($res)){
+        $this->data['Currency Symbol']=$row['Currency Symbol'];
+        $this->data['Currency Name']=$row['Currency Name'];
+    }
+    mysql_free_result($res);
+}
 
 }
 ?>

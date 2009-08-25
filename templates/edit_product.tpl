@@ -1,8 +1,5 @@
 {include file='header.tpl'}
 <div style="display:none; position:absolute; left:10px; top:200px; z-index:2" id="cal1Container"></div>
-
-
-
 <div id="bd" >
 
 <div id="sub_header">
@@ -31,12 +28,12 @@
 
 </div>
 
-<div style="clear:both;height:3em;padding:10px 20px;;margin:20px auto;border-top: 1px solid #cbb;;border-bottom: 1px solid #caa;width:770px;" id="description_messages">
+<div style="clear:both;height:.1em;padding:0px 20px;;margin:20px auto;border-top: 1px solid #cbb;;border-bottom: 1px solid #caa;width:770px;" id="description_messages">
 
   <div style="float:right">
   <span class="save" style="display:none" id="description_save" onclick="save('description')">Save</span><span id="description_reset"  style="display:none"   class="reset" onclick="reset('description')">Reset</span>
   </div>
-  <span>Number of changes:<span id="description_num_changes">0</span></span>
+  <span style="display:none">Number of changes:<span id="description_num_changes">0</span></span>
 
   <div id="description_errors">
   </div>
@@ -44,15 +41,7 @@
   </div>
 </div>
 
-
-
-
-
-
-
-
-
-<div  {if $edit!="config"}style="display:none"{/if}  class="edit_block" id="d_config">
+<div class="edit_block" {if $edit!="config"}style="display:none"{/if}   id="d_config">
   
 
  <table style="margin:0;"  class="edit">
@@ -135,7 +124,7 @@
 	     value="{$units}"  
 	     style="display:none;text-align:right;width:5em"     
 	     onkeydown="to_save_on_enter(event,this)" 
-	     onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thosusand_sep}',3);units_changed(this)" />
+	     onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thousand_sep}',3);units_changed(this)" />
 	</td>
 	<td style="width:5em">
 	  <span 
@@ -165,7 +154,7 @@
 	<td class="label">{t}Outers Sale Price{/t}:</td>
 	<td>{$currency} <input  
 			   onkeydown="to_save_on_enter(event,this)"  
-			   onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thosusand_sep}',2);price_fcu_changed(this)" 
+			   onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thousand_sep}',2);price_fcu_changed(this)" 
 			   style="text-align:right;width:6em"  
 			   factor="{$factor_inv_units}" 
 			   name="price_fcu" 
@@ -187,7 +176,7 @@
 			  value="{$data.oweight}"  
 			  name="oweight"  
 			  ovalue="{$data.oweight}" 
-			  onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thosusand_sep}',3);oweight_fcu_changed(this)"  >
+			  onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thousand_sep}',3);oweight_fcu_changed(this)"  >
 	</td>
 	<td ><span id="change_units_oweight_diff"></span></td>
       </tr>
@@ -218,8 +207,7 @@
   </div>
 
 </div>
-
-<div  {if $edit!="web"}style="display:none"{/if}  class="edit_block" id="d_web">
+<div class="edit_block" {if $edit!="web"}style="display:none"{/if}  id="d_web">
   <table class="edit" >
 
     {foreach from=$web_pages item=page }
@@ -229,23 +217,38 @@
     
   </table>
 </div>
-
-
-<div  {if $edit!="prices"}style="display:none"{/if}  class="edit_block" id="d_prices">
+<div class="edit_block" {if $edit!="prices"}style="display:none"{/if}  id="d_prices">
   <table class="edit" >
-    <tr class="title"><td></td><td style="text-align:right">{t}Price per Outer{/t} ({$units}{$data.units_tipo_shortname})</td><td style="text-align:right">{t}Price per{/t} {$product->get('Unit Type')}</tr>
+    <tr class="title"><td></td>
+    <td style="text-align:right;width:12em">{t}Price per Outer{/t} ({$units}{$data.units_tipo_shortname})</td>
+    <td style="text-align:right;width:12em">{t}Price per{/t} {$product->get('Unit Type')}</td>
+    <td style="text-align:right;width:12em">{t}Margin{/t}</td>
+    </tr>
 	
     <tr>
       <td class="label">{t}Sale Price{/t}:</td>
-      <td>{$currency}<input  onkeydown="to_save_on_enter(event,this)"  onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thosusand_sep}',2);price_changed(this)" style="text-align:right;width:10em"  factor="{$factor_inv_units}" name="price" id="v_price" value="{$product->get('Product Price')}"  ovalue="{$product->get('Product Price')}" ></td>
-      <td id="price_ou">{$product->get('Price Per Unit')}</td>
+      <td>{$currency}<input  onkeydown="to_save_on_enter(event,this)"  
+        onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thousand_sep}',2);price_changed(this)" style="text-align:right;width:10em"  
+        factor="{$factor_inv_units}" 
+        name="price" 
+        id="v_price" 
+        value="{$product->get('Price','System')}"  
+        ovalue="{$product->get('Price','System')}">
+        </td>
+      <td id="price_ou" style="text-align:right">{$product->get('Price Per Unit Formated')}</td>
       <td id="price_change"></td>
       <td><span onClick="save_price('price')" name="price" style="cursor:pointer;visibility:hidden" id="price_save">{t}Save{/t} <img src="art/icons/disk.png"/></span></td></tr>
     <tr>
       <td class="label">{t}Recomended Retail Price{/t}:</td>
-      <td id="rrp_ou">{$product->get('RRP Per Outer')}</td>
-      <td>{$currency}<input onkeydown="to_save_on_enter(event,this)" onblur="format_rrp(this)" style="text-align:right;width:10em"   factor="{$factor_units}"   name="rrp" id="v_rrp" ovalue="{$product->get('Product RRP Per Unit')}" value="{$product->get('Product RRP Per Unit')}" ></td> 
-      <td id="rrp_change">{if $product->get('Product RRP Per Unit')==''}{t}RRP not set{/t}{/if}</td>
+      <td id="rrp_ou" style="text-align:right">{$product->get('RRP Per Outer Formated')}</td>
+      <td>{$currency}
+      <input onkeydown="to_save_on_enter(event,this)" 
+        onblur="format_rrp(this)" style="text-align:right;width:6em"
+        factor="{$factor_units}"   
+        name="rrp" id="v_rrp" 
+        ovalue="{$product->get('RRP Per Unit','System')}" 
+        value="{$product->get('RRP Per Unit','System')}" ></td> 
+      <td id="rrp_change" >{if $product->get('Product RRP Per Unit')==''}{t}RRP not set{/t}{/if}</td>
       
       <td><span onClick="save_price('rrp')" name="rrp" style="cursor:pointer;visibility:hidden" id="rrp_save">{t}Save{/t} <img src="art/icons/disk.png"/></span></td>
     </tr>
@@ -253,24 +256,31 @@
     
   </table>
 </div>
-<div  {if $edit!="dimat"}style="display:none"{/if}  class="edit_block" id="d_dimat">
-
+<div class="edit_block" {if $edit!="dimat"}style="display:none"{/if}  id="d_dimat">
 <table class="edit" >
   <tr class="title"><td colspan=6>{t}Weight{/t}</td></tr>
   <tr>
     <td class="label" style="width:12em">{t}Per{/t} {$product->get('Product Unit Type')}:</td>
-    <td style="width:4em" class="text-align:left">{t}Kg{/t}</td>
-    <td><input style="text-align:right;width:5em"  onkeydown="to_save_on_enter(event,this)" name="weight"   id="v_weight" tipo="number" value="{$product->get('Product Net Weight Per Unit')}"   onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thosusand_sep}',3);weight_changed(this)"     ovalue="{$product->get('Product Net Weight Per Unit')}"></td>
+    <td>
+        <input style="text-align:right;width:5em"  
+            onkeydown="to_save_on_enter(event,this)" 
+            name="weight"   
+            id="v_weight" 
+            tipo="number" 
+            value="{$product->get('Net Weight Per Unit')}"   
+            onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thousand_sep}',3);weight_changed(this)"
+            ovalue="{$product->get('Product Net Weight Per Unit')}"><span id="weight_units">{t}Kg{/t}</span>
+    </td>
     <td class="icon" style="width:20px"><img id="weight_save" style="cursor:pointer;visibility:hidden" onClick="simple_save('weight')" src="art/icons/disk.png"></td>
   </tr>
   <tr>
     <td class="label">{t}Per outer{/t}:<br>{t}including packing{/t}</td>
     <td>{t}Kg{/t}</td>
-    <td><input style="text-align:right;width:5em"  onkeydown="to_save_on_enter(event,this)" id="v_oweight"  tipo="number" value="{$product->get('Product Gross Weight')}"  name="oweight"  ovalue="{$product->get('Product Gross Weight')}"  onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thosusand_sep}',3);weight_changed(this)"  ></td>
+    <td><input style="text-align:right;width:5em"  onkeydown="to_save_on_enter(event,this)" id="v_oweight"  tipo="number" value="{$product->get('Product Gross Weight')}"  name="oweight"  ovalue="{$product->get('Product Gross Weight')}"  onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thousand_sep}',3);weight_changed(this)"  ></td>
     <td class="icon"><img id="oweight_save" style="cursor:pointer;visibility:hidden" onClick="simple_save('oweight')" src="art/icons/disk.png"></td>
   </tr>
 </table>
- <table class="edit" >
+<table class="edit" >
     <tr class="title"><td colspan=5>{t}Dimensions{/t}</td></tr>
  <tr>
    <td class="label" style="width:12em">{t}Product gross volume{/t}:<br>{t}including packing{/t}</td><td>{t}Liters{/t}<br>1000{t}cc{/t}</td>
@@ -285,29 +295,37 @@
 
 
 </table>
-
 <div style="display:none">
 <table class="edit" border=1>
     <tr class="title"><td colspan=5>{t}Dimensions{/t}</td></tr>
- <tr>
+    <tr>
    <td class="label" style="width:12em">{t}Product gross volume{/t}:<br>{t}including packing{/t}</td><td>{t}Liters{/t}<br>1000{t}cc{/t}</td>
    <td style="width:4em"><span  style="cursor:pointer" id="dim_shape">{$data.dim_tipo_name}</span></td>
-   <td><input style="text-align:right;width:10em"  onkeydown="to_save_on_enter(event,this)"  onblur="dim_changed(this)" tipo="shape{$data.dim_tipo}" name="dim" id="v_dim" value="{$data.dim}" ovalue="{$data.dim}"   ></td>
-   <td style="width:24em" style="font-size:90%;color:#777" ><img id="dim_alert" src="art/icons/exclamation.png" title="{t}Wrong Format{/t}"  style="cursor:pointer;;visibility:hidden;float:left" /> <span id="dim_shape_example">{$shape_example[$data.dim_tipo]}<span></td>
-   <td  style="width:20px"><img id="dim_save" style="cursor:pointer;visibility:hidden" onClick="simple_save('dim')" src="art/icons/disk.png"></td></tr>
+   <td>
+        <input 
+            style="text-align:right;width:10em"  
+            onkeydown="to_save_on_enter(event,this)"  onblur="dim_changed(this)" 
+            tipo="shape{$data.dim_tipo}" name="dim" id="v_dim" value="{$data.dim}" 
+            ovalue="{$data.dim}"
+        >
+   </td>
+   <td style="width:24em" style="font-size:90%;color:#777" >
+   <img id="dim_alert" src="art/icons/exclamation.png" title="{t}Wrong Format{/t}"  style="cursor:pointer;;visibility:hidden;float:left" /> 
+   <span id="dim_shape_example">{$shape_example[$data.dim_tipo]}</span>
+   </td>
+   <td  style="width:20px"><img id="dim_save" style="cursor:pointer;visibility:hidden" onClick="simple_save('dim')" src="art/icons/disk.png"></td>
+ </tr>
     <tr>
       <td class="label">{t}Outer{/t}:<br>{t}including packing{/t}</td>
       <td ><span style="cursor:pointer">{$data.odim_tipo_name}</span></td>
       <td><input style="text-align:right;width:10em" onkeydown="to_save_on_enter(event,this)"   onblur="dim_changed(this)" tipo="shape1"  name="odim"   id="v_odim" value="{$data.odim}"   ovalue="{$data.odim}"      ></td>
       <td style="font-size:90%;color:#777"><img id="odim_alert" src="art/icons/exclamation.png" title="{t}Wrong Format{/t}"  style="cursor:pointer;;visibility:hidden;float:left" /> {$shape_example[$data.odim_tipo]}</td>
       <td><img id="odim_save" style="cursor:pointer;visibility:hidden" onClick="simple_save('odim')" src="art/icons/disk.png"></td></tr>
-</tr>
 </table>
 </div>
 
-
 </div>
-<div  {if $edit!="parts"}style="display:none"{/if}  class="edit_block" id="d_parts">
+<div class="edit_block" {if $edit!="parts"}style="display:none"{/if}  id="d_parts">
   {t}Add new part{/t} 
   <div id="adding_new_part" style="width:200px;margin-bottom:45px"><input id="new_part_input" type="text"><div id="new_part_container"></div></div>
 
@@ -350,7 +368,7 @@
       </tr>
       <tr id="sup_tr3_{$part_id}" class="last">
 	<td class="label">{t}Cost per{/t} {$data.units_tipo_name}:</td>
-	<td style="text-align:left">{$currency}<input id="v_part_cost{$part_id}" style="text-align:right;width:6em"  name="price " onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thosusand_sep}',4);part_changed(this,{$part_id})"  value="{$part.price}" ovalue="{$part.price}" ></td>
+	<td style="text-align:left">{$currency}<input id="v_part_cost{$part_id}" style="text-align:right;width:6em"  name="price " onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thousand_sep}',4);part_changed(this,{$part_id})"  value="{$part.price}" ovalue="{$part.price}" ></td>
       </tr>
       <tr id="sup_tr4_{$part_id}">
 	<td colspan="2"></td>
@@ -360,8 +378,7 @@
     
   </table>	  
 </div>
-
-<div  {if $edit!="pictures"}style="display:none"{/if}  class="edit_block" id="d_pictures">
+<div class="edit_block" {if $edit!="pictures"}style="display:none"{/if}  id="d_pictures">
 
   <form action="upload.php" enctype="multipart/form-data" method="post" id="testForm">
     <input type="file" name="testFile"/>
@@ -397,7 +414,7 @@
 
 
 </div>
-<div  {if $edit!="description"}style="display:none"{/if} class="edit_block" id="d_description">
+<div class="edit_block" {if $edit!="description"}style="display:none"{/if}  id="d_description">
 
     
     
@@ -467,7 +484,6 @@
 
 </div>
 
-
 </div>
 <div class="yui-b"     >
 <div  style="float:right;text-align:right;;width:40em">
@@ -481,10 +497,6 @@
 
 </div>
 </div>
-
-
-
-
 </div>
 
 <div id="shapes" class="yuimenu">
@@ -499,8 +511,6 @@
     </ul>
   </div>
 </div>
-
-
 <div id="catlist" class="yuimenu staff_list"  >
   <div class="bd">
     <span>{t}{/t}</span>
@@ -541,7 +551,6 @@
 
   </div>
 </div>
-
 <div id="units_tipo_list" class="yuimenu">
   <div class="bd">
     <ul class="first-of-type">
@@ -551,8 +560,6 @@
     </ul>
   </div>
 </div>
-
-
 {include file='footer.tpl'}
 
 

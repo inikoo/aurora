@@ -70,9 +70,9 @@ $smarty->assign('lang_menu',$lang_menu);
 $smarty->assign('page_layout','doc4');
 
 //regex expresions
-$regex['thousand_sep']=str_replace('.','\.','/'.$myconf['thosusand_sep'].'/g');
+$regex['thousand_sep']=str_replace('.','\.','/'.$myconf['thousand_sep'].'/g');
 $regex['number']=str_replace('.','\.','/^\d*'.$myconf['decimal_point'].'?\d*$/i');
-$regex['strict_number']=str_replace('.','\.','/^(\d{1,3}'.$myconf['thosusand_sep'].')*\d{1,3}('.$myconf['decimal_point'].'\d+)?$/i');
+$regex['strict_number']=str_replace('.','\.','/^(\d{1,3}'.$myconf['thousand_sep'].')*\d{1,3}('.$myconf['decimal_point'].'\d+)?$/i');
 $regex['dimension1']=str_replace('.','\.','/^\d+'.$myconf['decimal_point'].'?\d*$/i');
 $regex['dimension2']=str_replace('.','\.','/^\d*'.$myconf['decimal_point'].'?\d*x\d*'.$myconf['decimal_point'].'?\d*$/i');
 $regex['dimension3']=str_replace('.','\.','/^\d*'.$myconf['decimal_point'].'?\d*x\d*'.$myconf['decimal_point'].'?\dx\d*'.$myconf['decimal_point'].'?\d*$/i');
@@ -81,6 +81,6 @@ $regex['dimension3']=str_replace('.','\.','/^\d*'.$myconf['decimal_point'].'?\d*
 
 
 
-$regex['key_filter_number']=str_replace('.','\.','/[\d\b'.$myconf['decimal_point'].$myconf['thosusand_sep'].']/i');
-$regex['key_filter_dimension']=str_replace('.','\.','/[x\d\b'.$myconf['decimal_point'].$myconf['thosusand_sep'].']/i');
+$regex['key_filter_number']=str_replace('.','\.','/[\d\b'.$myconf['decimal_point'].$myconf['thousand_sep'].']/i');
+$regex['key_filter_dimension']=str_replace('.','\.','/[x\d\b'.$myconf['decimal_point'].$myconf['thousand_sep'].']/i');
 ?>

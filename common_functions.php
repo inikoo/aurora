@@ -57,7 +57,7 @@ function clean_accents($str){
 }
 
 function unformat_money($number){
-  $number=preg_replace('/\\'.$myconf['thosusand_sep'].'/','',$number);
+  $number=preg_replace('/\\'.$myconf['thousand_sep'].'/','',$number);
   $number=preg_replace('/\\'.$myconf['decimal_point'].'/','.',$number);
   return $number;
 }
@@ -355,20 +355,20 @@ function money($amount,$locale=false){
   $amount=abs($amount);
   
   if(!$locale){
-    $amount=number_format($amount,2,$myconf['decimal_point'],$myconf['thosusand_sep']);
+    $amount=number_format($amount,2,$myconf['decimal_point'],$myconf['thousand_sep']);
     $symbol=$myconf['currency_symbol'];
     $amount=($neg?'-':'').$symbol.$amount;
     return $amount;
   }else{
     switch($locale){
     case('EUR'):
-      $amount=number_format($amount,2,$myconf['decimal_point'],$myconf['thosusand_sep']);
+      $amount=number_format($amount,2,$myconf['decimal_point'],$myconf['thousand_sep']);
       $symbol='€';
       $amount=($neg?'-':'').$symbol.$amount;
       return $amount;
       break;
     case('GBP'):
-      $amount=number_format($amount,2,$myconf['decimal_point'],$myconf['thosusand_sep']);
+      $amount=number_format($amount,2,$myconf['decimal_point'],$myconf['thousand_sep']);
       $symbol='£';
       $amount=($neg?'-':'').$symbol.$amount;
       return $amount;
@@ -393,7 +393,7 @@ function number($a,$fixed=1,$force_fix=false){
   if($floored==$a and !$force_fix)
     $fixed=0;
 
-  $a=number_format($a,$fixed,$myconf['decimal_point'],$myconf['thosusand_sep']);
+  $a=number_format($a,$fixed,$myconf['decimal_point'],$myconf['thousand_sep']);
   
   return $a;
 }

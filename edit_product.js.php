@@ -1,5 +1,5 @@
 <?php
-    include_once('common.php');
+include_once('common.php');
 ?>
 var Event = YAHOO.util.Event;
 var Dom   = YAHOO.util.Dom;
@@ -8,7 +8,7 @@ var    current_form = 'description';
 var    num_changed = 0;
 var    num_errors = 0;
 var editor;
-var editing='<?php echo$_SESSION['state']['product']['edit']?>';
+var editing='<?php echo $_SESSION['state']['product']['edit']?>';
 
 
 
@@ -124,14 +124,14 @@ function save_menu(){
 
 
 var cat_list;
-jsonString='<?php echo$_SESSION['state']['product']['shapes'];?>';
+jsonString='<?php echo $_SESSION['state']['product']['shapes'];?>';
 try {
     var shapes = YAHOO.lang.JSON.parse(jsonString);
 }
 catch (e) {
     alert("ERROR:P_PES_JSONDATA");
 };
-jsonString='<?php echo$_SESSION['state']['product']['shapes_example'];?>';
+jsonString='<?php echo $_SESSION['state']['product']['shapes_example'];?>';
 try {
     var shapes_example = YAHOO.lang.JSON.parse(jsonString);
 }
@@ -272,18 +272,18 @@ var change_element= function(o){
 	new_value=FormatNumber(new_value,'.','',2);
 	var diff=new_value-old_value;
 	if(diff>0)
-	    prefix='+'+'<?php echo$myconf['currency_symbol']?>';
+	    prefix='+'+'<?php echo $myconf['currency_symbol']?>';
 	else
-	    prefix='-'+'<?php echo$myconf['currency_symbol']?>';
+	    prefix='-'+'<?php echo $myconf['currency_symbol']?>';
 	
 
 	if(old_value==0)
 	    var per='';
 	else{
 
-	    var per=FormatNumber((100*(diff/old_value)).toFixed(1),'<?php echo$myconf['decimal_point']?>','<?php echo$myconf['thosusand_sep']?>',1)+'%';
+	    var per=FormatNumber((100*(diff/old_value)).toFixed(1),'<?php echo $myconf['decimal_point']?>','<?php echo $myconf['thousand_sep']?>',1)+'%';
 	}
-	var diff=FormatNumber(Math.abs(diff).toFixed(2),'<?php echo$myconf['decimal_point']?>','<?php echo$myconf['thosusand_sep']?>',2);
+	var diff=FormatNumber(Math.abs(diff).toFixed(2),'<?php echo $myconf['decimal_point']?>','<?php echo $myconf['thousand_sep']?>',2);
 	return prefix+diff+' '+per;
     }
 
@@ -292,7 +292,7 @@ function format_rrp(o){
       {
 	  price_changed(o);
       }else{
-      o.value=FormatNumber(o.value,'<?php echo$myconf['decimal_point']?>','<?php echo$myconf['thosusand_sep']?>',2);
+      o.value=FormatNumber(o.value,'<?php echo $myconf['decimal_point']?>','<?php echo $myconf['thousand_sep']?>',2);
       price_changed(o);
   }
 
@@ -519,7 +519,7 @@ function percentage(old_value,new_value){
 	prefix='+';
     else
 	prefix='';
-    var txt=prefix+FormatNumber((100*(diff/old_value)).toFixed(1),'<?php echo$myconf['decimal_point']?>','<?php echo$myconf['thosusand_sep']?>',1)+'%';
+    var txt=prefix+FormatNumber((100*(diff/old_value)).toFixed(1),'<?php echo $myconf['decimal_point']?>','<?php echo $myconf['thousand_sep']?>',1)+'%';
 
     return txt;
 
@@ -539,7 +539,7 @@ function units_changed(o){
 		Dom.get(name+"_save").style.visibility='hidden';
 		Dom.get(name+"_cancel").style.display='';
 	   
-		Dom.get("change_units_diff").innerHTML='<?php_('Error')?>';
+		Dom.get("change_units_diff").innerHTML='<?php echo _('Error')?>';
 	    }else{
 		Dom.get("change_units_diff").innerHTML=percentage(ovalue,o.value);
 		Dom.get("change_units_price_diff").innerHTML=percentage(Dom.get("v_price_fcu").getAttribute('ovalue'),Dom.get("v_price_fcu").value);	
@@ -581,7 +581,7 @@ function validate_dim(value,tipo){
 	return {ok:false,msg:''};
 	break;
     case('shape1'):
-	if(!value.match(/^[0-9\<?php echo$myconf['decimal_point']?>]+x[0-9\<?php echo$myconf['decimal_point']?>]+x[0-9\<?php echo$myconf['decimal_point']?>]+$/))
+	if(!value.match(/^[0-9\<?php echo $myconf['decimal_point']?>]+x[0-9\<?php echo $myconf['decimal_point']?>]+x[0-9\<?php echo $myconf['decimal_point']?>]+$/))
 	    return {ok:false,msg:''};
 	else{
 	    var dim=value.split("x",3);
@@ -595,14 +595,14 @@ function validate_dim(value,tipo){
 	break;
     case('shape2'):
     case('shape4'):
-	if(!value.match(/^[0-9\<?php echo$myconf['decimal_point']?>\s]+$/))
+	if(!value.match(/^[0-9\<?php echo $myconf['decimal_point']?>\s]+$/))
 	    return {ok:false,msg:''};
 	else
 	    return {ok:true,msg:''};
 	break;	
     case('shape3'):
     case('shape5'):
-	if(!value.match(/^[0-9\<?php echo$myconf['decimal_point']?>]+x[0-9\<?php echo$myconf['decimal_point']?>]+$/))
+	if(!value.match(/^[0-9\<?php echo $myconf['decimal_point']?>]+x[0-9\<?php echo $myconf['decimal_point']?>]+$/))
 	    return {ok:false,msg:''};
 	else
 	    return {ok:true,msg:''};
@@ -654,7 +654,7 @@ function odim_fcu_changed(o){
     data_old=validate_dim(o.getAttribute('ovalue'),tipo_shape);
     data_new=validate_dim(o.value,tipo_shape);
     if(!data_new.ok){
-	Dom.get('change_units_odim_diff').innerHTML='<?php_('Error')?>';
+	Dom.get('change_units_odim_diff').innerHTML='<?php echo _('Error')?>';
 	
     }else{
 	if(data_old.ok)
@@ -674,14 +674,14 @@ function price_changed(o){
 	    }else if(ovalue==''){
 		value=FormatNumber(o.value,'.','',2);
 		factor=FormatNumber(o.getAttribute('factor'),'.','',6);
-		Dom.get(name+"_change").innerHTML='<?php echo _('RRP set to')?> '+'<?php echo$myconf['currency_symbol']?>'+FormatNumber(value,'<?php echo$myconf['decimal_point']?>','<?php echo$myconf['thosusand_sep']?>',2);
-		Dom.get(name+"_ou").innerHTML='<?php echo$myconf['currency_symbol']?>'+FormatNumber((value*factor).toFixed(2),'<?php echo$myconf['decimal_point']?>','<?php echo$myconf['thosusand_sep']?>',2);
+		Dom.get(name+"_change").innerHTML='<?php echo _('RRP set to')?> '+'<?php echo $myconf['currency_symbol']?>'+FormatNumber(value,'<?php echo $myconf['decimal_point']?>','<?php echo $myconf['thousand_sep']?>',2);
+		Dom.get(name+"_ou").innerHTML='<?php echo $myconf['currency_symbol']?>'+FormatNumber((value*factor).toFixed(2),'<?php echo $myconf['decimal_point']?>','<?php echo $myconf['thousand_sep']?>',2);
 	    }else{
 		value=FormatNumber(o.value,'.','',2);
 		factor=FormatNumber(o.getAttribute('factor'),'.','',6);
 		change=price_change(ovalue,o.value);
 		Dom.get(name+"_change").innerHTML=change;
-		Dom.get(name+"_ou").innerHTML='<?php echo$myconf['currency_symbol']?>'+FormatNumber((value*factor).toFixed(2),'<?php echo$myconf['decimal_point']?>','<?php echo$myconf['thosusand_sep']?>',2);
+		Dom.get(name+"_ou").innerHTML='<?php echo $myconf['currency_symbol']?>'+FormatNumber((value*factor).toFixed(2),'<?php echo $myconf['decimal_point']?>','<?php echo $myconf['thousand_sep']?>',2);
 	    }
 	}else{
 	    Dom.get(name+"_save").style.visibility='hidden';
@@ -820,10 +820,10 @@ function delete_list_item (e,id){
 
 
     var check_number = function(e){
-	re=<?php echo$regex['thousand_sep']?>;
+	re=<?php echo $regex['thousand_sep']?>;
 	value=this.value.replace(re,'')
-	re=<?php echo$regex['number']?>;
-	re_strict=<?php echo$regex['strict_number']?>;
+	re=<?php echo $regex['number']?>;
+	re_strict=<?php echo $regex['strict_number']?>;
 
 	if(!re.test(value)){
 	    this.className='text aright error';
@@ -846,14 +846,14 @@ function delete_list_item (e,id){
 	    scope.className='text aright error';
 	    return
 		}else if(tipo==1)
-	    re=<?php echo$regex['dimension3']?>;
+	    re=<?php echo $regex['dimension3']?>;
 	else if(tipo==3 || tipo==5)
-	    re=<?php echo$regex['dimension2']?>;
+	    re=<?php echo $regex['dimension2']?>;
 	else if(tipo==2 || tipo==4)
-	    re=<?php echo$regex['dimension1']?>;
+	    re=<?php echo $regex['dimension1']?>;
 
 
-	re_prepare=<?php echo$regex['thousand_sep']?>;
+	re_prepare=<?php echo $regex['thousand_sep']?>;
 	value=scope.value.replace(re_prepare,'')
 
 
@@ -1480,7 +1480,7 @@ var save_new_part=function(){
 		    input.setAttribute("style","text-align:right;width:6em" );
 		    input.setAttribute("ovalue",r.data.price );
 		    input.setAttribute("name",'price' );
-		    input.setAttribute("onblur","this.value=FormatNumber(this.value,'"+r.decimal_point+"','"+r.thosusand_sep+"',4);part_changed(this,"+part_id+")" );
+		    input.setAttribute("onblur","this.value=FormatNumber(this.value,'"+r.decimal_point+"','"+r.thousand_sep+"',4);part_changed(this,"+part_id+")" );
 		    input.value=r.data.price;
 		    
 		    td.appendChild(txt);
@@ -1524,8 +1524,8 @@ YAHOO.util.Event.onContentReady("adding_new_part", function () {
  	var oAC = new YAHOO.widget.AutoComplete("new_part_input", "new_part_container", oDS);
  	oAC.resultTypeList = false; 
 	oAC.generateRequest = function(sQuery) {
-	    // alert("?tipo=parts_name&except_product=<?php echo$_SESSION['state']['product']['id']?>&query=" + sQuery)
- 	    return "?tipo=parts_name&except_product=<?php echo$_SESSION['state']['product']['id']?>&query=" + sQuery ;
+	    // alert("?tipo=parts_name&except_product=<?php echo $_SESSION['state']['product']['id']?>&query=" + sQuery)
+ 	    return "?tipo=parts_name&except_product=<?php echo $_SESSION['state']['product']['id']?>&query=" + sQuery ;
  	};
 	oAC.forceSelection = true; 
 	oAC.itemSelectEvent.subscribe(part_selected); 
