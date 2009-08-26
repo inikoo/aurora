@@ -127,7 +127,7 @@ function list_town($data){
 	       ,addslashes($data['query'])
 	       ,$extra_where
 	       );
-  // print $sql;
+   print $sql;
   $res=mysql_query($sql);
   $data=array();
   while($row=mysql_fetch_array($res)){

@@ -199,10 +199,11 @@ var save_new_company=function(e){
 	var Countries_d2_AC = new YAHOO.widget.AutoComplete("address_country_d2", "address_country_d2_container", Countries_d2_DS); 
 	Countries_d2_AC.generateRequest = function(sQuery) 
 	    {
-	
-		return "?tipo=country_d2&country_2acode="+Dom.get('address_country_2acode').value
+		var request="?tipo=country_d2&country_2acode="+Dom.get('address_country_2acode').value
 	        +"&country_d1_code="+Dom.get('address_country_d1_code').value
 	        +"&query=" + sQuery ;
+		//	alert(request)
+		return request;
 	    };
  	var Country_d2_selected = function(sType, aArgs) {
 	    var myAC = aArgs[0]; var elLI = aArgs[1]; var oData = aArgs[2]; 
@@ -243,7 +244,7 @@ var save_new_company=function(e){
 		+"&country_d3_code="+Dom.get('address_country_d3_code').value	 
 
 		+"&query=" + sQuery ;
-		// alert(request);
+	        alert(request);
 		return request;
 	    };
  	var Country_1d_selected = function(sType, aArgs) {
