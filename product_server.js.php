@@ -1,4 +1,4 @@
-<?
+<?php
 include_once('common.php');
 ?>
 
@@ -40,8 +40,8 @@ include_once('common.php');
 								   //draggableColumns:true,
 								   renderLoopSize: 50,generateRequest : myRequestBuilder
 								   ,paginator : new YAHOO.widget.Paginator({
-									 rowsPerPage:<?=$_SESSION['state']['product']['server']['nr']?>,containers : 'paginator2', 
-									 pageReportTemplate : '(<?=_('Page')?> {currentPage} <?=_('of')?> {totalPages})',
+									 rowsPerPage:<?php echo $_SESSION['state']['product']['server']['nr']?>,containers : 'paginator2', 
+									 pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									 previousPageLinkLabel : "<",
 									 nextPageLinkLabel : ">",
 									 firstPageLinkLabel :"<<",
@@ -50,8 +50,8 @@ include_once('common.php');
 								       })
 								   
 								   ,sortedBy : {
-								       key: "<?=$_SESSION['state']['product']['server']['order']?>",
-								       dir: "<?=$_SESSION['state']['product']['server']['order_dir']?>"
+								       key: "<?php echo $_SESSION['state']['product']['server']['order']?>",
+								       dir: "<?php echo $_SESSION['state']['product']['server']['order_dir']?>"
 								   }
 								   ,dynamicData : true
 								   

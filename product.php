@@ -14,12 +14,6 @@
 include_once('common.php');
 include_once('class.Product.php');
 
-
-
-
-
-
-
 $view_sales=$user->can_view('product sales');
 $view_stock=$user->can_view('product stock');
 $view_orders=$user->can_view('orders');
@@ -97,7 +91,8 @@ $_SESSION['state']['product']['customers']['mode']=$mode;
 
 
 if($mode=='code'){
-  $sql=sprintf("select `Product ID`  from `Product Dimension` where `Product Code`=%s and `Product Most Recent`='Yes' group by `Product ID`;",prepare_mysql($tag));
+  $sql=sprintf("select `Product ID`  from `Product Dimension` where `Product Code`=%s and `Product Most Recent`='Yes' group by `Product ID`;"
+        ,prepare_mysql($tag));
 
   $result=mysql_query($sql);
   
@@ -110,6 +105,7 @@ if($mode=='code'){
     $smarty->assign('js_files',$js_files);
     $smarty->assign('code',$tag);
     $smarty->display('product_server.tpl');
+     mysql_free_result($result);
     exit;
   }
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
@@ -118,17 +114,10 @@ if($mode=='code'){
      $_SESSION['state']['product']['tag']=$tag;
      $_SESSION['state']['product']['mode']=$mode;
   }
+  mysql_free_result($result);
 } 
     
-    
-
-
-
-
-
-
-
-
+   
 
 $product= new product($mode,$tag);
 

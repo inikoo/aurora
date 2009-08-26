@@ -25,7 +25,6 @@
     
 
   </ul>
-
 </div>
 
 <div style="clear:both;height:.1em;padding:0px 20px;;margin:20px auto;border-top: 1px solid #cbb;;border-bottom: 1px solid #caa;width:770px;" id="description_messages">
@@ -40,7 +39,6 @@
   <div id="description_warnings">
   </div>
 </div>
-
 <div class="edit_block" {if $edit!="config"}style="display:none"{/if}   id="d_config">
   
 
@@ -414,15 +412,45 @@
 
 
 </div>
-<div class="edit_block" {if $edit!="description"}style="display:none"{/if}  id="d_description">
-
-    
-    
-  
-  
-  <table style="margin:0;"  class="edit">
-      <tr class="title"><td colspan="2">{t}Categories{/t}:</td></tr>
-      <tr>
+<div style="margin:0;padding:0" class="edit_block" {if $edit!="description"}style="display:none"{/if}  id="d_description">
+    <table style="margin:0;" class="edit" border=0>
+        <tr id="tr_name">
+            <td rowspan=2  class="margin_note" >{t}Product Info{/t}:</td>
+	        <td class="label">{t}Name{/t}:</td>
+	        <td class="left">
+	  <input 
+	        class='left' 
+	        ovalue="{$product->get('Product Name')}"  
+	        onMouseUp="description_changed(this)"  
+	        onChange="description_changed(this)"   
+	        name="description" 
+	        changed=0  
+	        onKeyUp="description_changed(this)" 
+	        value="{$product->get('Product Name')}"  
+	        id="name" 
+	        size="40"  
+	        MAXLENGTH="75" />
+    </td>
+        </tr>
+        <tr id="tr_special_char">
+	<td class="label">{t}Special Characteristic{/t}:</td>
+	<td class="left" >
+	    <input   
+	        onKeyUp="description_changed(this)"    
+	        onMouseUp="description_changed(this)"  
+	        onChange="description_changed(this)"    
+	        class='left'  
+	        changed=0 
+	        ovalue="{$product->get('Product Special Characteristic')}"  
+	        name="sdescription"  value="{$product->get('Product Special Characteristic')}" 
+	        id="special_char"  
+	        size="40"  
+	        MAXLENGTH="40" />
+	<span onClick="save_description('sdescription')"  name="sdescription" style="cursor:pointer;visibility:hidden" id="sdescription_save"><img src="art/icons/disk.png" title="{t}Save short description{/t}"/></span>
+    </td>
+    </tr>
+        <tr id="tr_use">
+    <td rowspan="3" class="margin_note">{t}Categories{/t}:</td>
 	<td class="label">{t}Use{/t}:</td>
 	<td>
 	  <div id="cat_use" class="options" style="margin:5px 0">
@@ -432,7 +460,7 @@
 	  </div>
 	</td>
       </tr>
-      <tr>
+        <tr id="tr_theme">
 	<td class="label">{t}Theme{/t}:</td>
 	<td>
 	  <div id="cat_theme" class="options" style="margin:5px 0">
@@ -444,7 +472,7 @@
 </td>
 
 </tr>
-<tr>
+        <tr id="tr_materials">
 <td class="label">{t}Materials{/t}:</td>
 <td>
 <div id="cat_material" class="options" style="margin:5px 0">
@@ -455,33 +483,12 @@
 </div>
 </td>
 </tr>
-
-
-
-
-      <tr class="title"><td colspan=2>{t}Product Info{/t}:</td></tr>
-      <tr>
-	<td class="label">{t}Name{/t}:</td>
-	<td class="left">
-	  <input class='left' ovalue="{$product->get('Product Name')}"  onMouseUp="description_changed(this)"  onChange="description_changed(this)"   name="description" changed=0  onKeyUp="description_changed(this)"   value="{$product->get('Product Name')}"  id="name" size="40"  MAXLENGTH="75" />
-
-	</td>
-      </tr>
-      <tr>
-	<td class="label">{t}Special Characteristic{/t}:</td>
-	<td class="left" ><input   onKeyUp="description_changed(this)"    onMouseUp="description_changed(this)"  onChange="description_changed(this)"    class='left'  changed=0 ovalue="{$product->get('Product Special Characteristic')}"  name="sdescription"  value="{$product->get('Product Special Characteristic')}" id="special_char"  size="40"  MAXLENGTH="40"   />
-	
-	  <span onClick="save_description('sdescription')"  name="sdescription" style="cursor:pointer;visibility:hidden" id="sdescription_save"><img src="art/icons/disk.png" title="{t}Save short description{/t}"/></span>
-
-	</td>
-      </tr>
-      <tr class="title"><td colspan=2>{t}Detailed Description{/t}:</td></tr>
-
-      <tr><td colspan="2"><textarea id="details" name="v_details" changed=0 ovalue="{$product->get('Product Description MD5 Hash')}" rows="20" cols="100">{$product->get('Product Description')}</textarea>
-      </td></tr>
-      
+        <tr id="tr_details">
+    <td class="margin_note">{t}Detailed Description{/t}:</td>
+    <td colspan="2"><textarea id="details" name="v_details" changed=0 ovalue="{$product->get('Product Description MD5 Hash')}" rows="20" cols="100">{$product->get('Product Description')}</textarea>
+    </td>
+    </tr>
     </table>
-
 </div>
 
 </div>
