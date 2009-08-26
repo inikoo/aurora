@@ -39,77 +39,7 @@ if(!isset($_REQUEST['tipo']))
 $tipo=$_REQUEST['tipo'];
 switch($tipo){
 case('product_server'):
-  $conf=$_SESSION['state']['product']['server'];
-  $tableid=0;
-  if(isset( $_REQUEST['tableid']))
-     $tableid=$_REQUEST['tableid'];
-
-
- if(isset( $_REQUEST['sf']))
-     $start_from=$_REQUEST['sf'];
-   else
-     $start_from=$conf['sf'];
-   if(isset( $_REQUEST['nr']))
-     $number_results=$_REQUEST['nr'];
-   else
-     $number_results=$conf['nr'];
-  if(isset( $_REQUEST['o']))
-    $order=$_REQUEST['o'];
-  else
-    $order=$conf['order'];
-  if(isset( $_REQUEST['od']))
-    $order_dir=$_REQUEST['od'];
-  else
-    $order_dir=$conf['order_dir'];
-
-
-  $code=$_SESSION['state']['product']['server']['tag'];
-  $where=sprintf('where `Product Code`=%s and `Product Most Recent`="Yes" ',prepare_mysql($code));
-  $wheref='';
-  
-  $order_direction=$order_dir;
-   $_order=$order;
-   $_dir=$order_direction;
-   if($order=='store')
-     $order='`Store Name`';
-  
-   $sql="select *  from `Product Dimension` left join `Store Dimension` S  on (`Store Key`=`Product Store Key`) $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
-   // print $sql;
-   $res = mysql_query($sql);
-   $number_results=mysql_num_rows($res);
-
-   $adata=array();
-   while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-     $id=sprintf("<a href='product.php?id=%d'>%d</a>",$row['Product ID'],$row['Product ID']);
-     $adata[]=array(
-		    'id'=>$id
-		    ,'description'=>$row['Product XHTML Short Description']
-		    ,'store'=>$row['Store Name']
-		    ,'parts'=>$row['Product XHTML Parts']
-		    );
-
-   }
-   $rtext=number($number_results).' '._('products with the same code');
-   $rtext_rpp='';
-   $filter_msg='';
-   $total_records=$number_results;
-
-   $response=array('resultset'=>
-		  array('state'=>200,
-			'data'=>$adata,
-			 'sort_key'=>$_order,
-			 'sort_dir'=>$_dir,
-			 'tableid'=>$tableid,
-			 'filter_msg'=>$filter_msg,
-			 'rtext'=>$rtext,
-			 'rtext_rpp'=>$rtext_rpp,
-			 'total_records'=>$total_records,
-			 'records_offset'=>$start_from,
-			 'records_perpage'=>$number_results,
-			)
-		  );
-
-  echo json_encode($response);
+ list_product_with_same_code();
   break;
 case('order_received'):
 case('order_expected'):
@@ -6832,5 +6762,80 @@ function list_supplier_products(){
 			 )
 		   );
    echo json_encode($response);
+}
+
+function list_product_with_same_code(){
+ $conf=$_SESSION['state']['product']['server'];
+  $tableid=0;
+  if(isset( $_REQUEST['tableid']))
+     $tableid=$_REQUEST['tableid'];
+
+
+ if(isset( $_REQUEST['sf']))
+     $start_from=$_REQUEST['sf'];
+   else
+     $start_from=$conf['sf'];
+   if(isset( $_REQUEST['nr']))
+     $number_results=$_REQUEST['nr'];
+   else
+     $number_results=$conf['nr'];
+  if(isset( $_REQUEST['o']))
+    $order=$_REQUEST['o'];
+  else
+    $order=$conf['order'];
+  if(isset( $_REQUEST['od']))
+    $order_dir=$_REQUEST['od'];
+  else
+    $order_dir=$conf['order_dir'];
+
+
+  $code=$_SESSION['state']['product']['server']['tag'];
+  $where=sprintf('where `Product Code`=%s and `Product Most Recent`="Yes" ',prepare_mysql($code));
+  $wheref='';
+  
+  $order_direction=$order_dir;
+   $_order=$order;
+   $_dir=$order_direction;
+   if($order=='store')
+     $order='`Store Name`';
+  
+   $sql="select *  from `Product Dimension` left join `Store Dimension` S  on (`Store Key`=`Product Store Key`) $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
+   // print $sql;
+   $res = mysql_query($sql);
+   $number_results=mysql_num_rows($res);
+
+   $adata=array();
+   while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+     $id=sprintf("<a href='product.php?id=%d'>%05d</a>",$row['Product ID'],$row['Product ID']);
+     $adata[]=array(
+		    'id'=>$id
+		    ,'description'=>$row['Product XHTML Short Description']
+		    ,'store'=>$row['Store Name']
+		    ,'parts'=>$row['Product XHTML Parts']
+		    );
+
+   }
+   mysql_free_result($res);
+   $rtext=number($number_results).' '._('products with the same code');
+   $rtext_rpp='';
+   $filter_msg='';
+   $total_records=$number_results;
+
+   $response=array('resultset'=>
+		  array('state'=>200,
+			'data'=>$adata,
+			 'sort_key'=>$_order,
+			 'sort_dir'=>$_dir,
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
+			 'rtext'=>$rtext,
+			 'rtext_rpp'=>$rtext_rpp,
+			 'total_records'=>$total_records,
+			 'records_offset'=>$start_from,
+			 'records_perpage'=>$number_results,
+			)
+		  );
+
+  echo json_encode($response);
 }
 ?>

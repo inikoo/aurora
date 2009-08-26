@@ -4,14 +4,11 @@ include_once('common.php');
 var Event = YAHOO.util.Event;
 var Dom   = YAHOO.util.Dom;
 
-var    current_form = 'description';
-var    num_changed = 0;
-var    num_errors = 0;
+var current_form = 'description';
+var num_changed = 0;
+var num_errors = 0;
 var editor;
 var editing='<?php echo $_SESSION['state']['product']['edit']?>';
-
-
-
 var description_num_changed=0;
 var description_warnings= new Object();
 var description_errors= new Object();
@@ -66,8 +63,6 @@ function reset(tipo){
     }
     save_menu();
 }
-
-
 function checkbox_changed(o){
 
     value=o.getAttribute('value');
@@ -86,8 +81,6 @@ function checkbox_changed(o){
     
     save_menu();
 }
-
-
 function save_menu(){
     if(editing=='description'){
 	this_errors=description_errors;
@@ -140,7 +133,51 @@ catch (e) {
 };
 
 var cats=new Object;
-var select_cat=function(o,e){
+function handleSuccess(o){
+    //    alert(o.responseText);
+    var r =  YAHOO.lang.JSON.parse(o.responseText);
+    if (r.state == 200) {
+	YAHOO.util.Event.removeListener('save', "click");
+	Dom.get('save').className='disabled';
+	Dom.get('exit').className='ok';
+	for (x in r.res){
+	    if(r.res[x]['res']==1){
+		
+		num_changed--;
+		Dom.get('c_'+x).style.visibility='visible';
+		Dom.get('c_'+x).style.src='art/icons/accept.png';
+		var attributes = {opacity: { to: 0 }};
+		YAHOO.util.Dom.setStyle('c_'+x, 'opacity', 1);
+		var myAnim = new YAHOO.util.Anim('c_'+x, attributes); 
+		myAnim.duration = 10; 
+		myAnim.animate(); 
+		if(x=='details'){
+		    Dom.get('i_'+x).style.visibility='hidden';
+		}else{
+		    Dom.get('v_'+x).className='';
+		    Dom.get('v_'+x).setAttribute("ovalue",r.res[x]['new_value']);
+		}
+
+	    }else if(r.res[x]['res']==0){
+		Dom.get('v_'.x).className='error';
+	    }
+		
+	}
+
+	interpet_changes();
+
+    }
+};
+function handleFailure(o){
+
+};
+var callback ={
+    success:handleSuccess,
+    failure:handleFailure,
+    argument:['foo','bar']
+};
+
+function select_cat(o,e){
     var tipo=o.getAttribite('cat');
     var cat_id=o.getAttribute('cat_id');
     var cat_name=o.innerHTML;
@@ -155,8 +192,7 @@ var select_cat=function(o,e){
     display_cats();
 
 }
-
-    var to_save_on_enter=function(e,o){
+function to_save_on_enter(e,o){
      var key;     
      if(window.event)
           key = window.event.keyCode; //IE
@@ -171,9 +207,7 @@ var select_cat=function(o,e){
 
      }
  }
-
-
-var is_diferent = function(v1,v2,tipo){
+function is_diferent(v1,v2,tipo){
 
     if(tipo=='money' || tipo=='number'){
 	if(parseFloat(v1)!=parseFloat(v2))
@@ -189,12 +223,7 @@ var is_diferent = function(v1,v2,tipo){
 	
 
 }
-
-
-
-
-
-    var change_units=function(){
+function change_units(){
 	Dom.get("units_cancel").style.visibility='visible';
 	Dom.get("change_units_but").style.display='none';
 	Dom.get("units").style.display='none';
@@ -205,9 +234,7 @@ var is_diferent = function(v1,v2,tipo){
 	Dom.get("change_units_odim_example").style.display='';
 	Dom.get("change_units_tipo_but").style.display='none';
     }
-
-
-var change_element= function(o){
+function change_element(o){
 
        
 	var current_class=o.className;
@@ -254,8 +281,7 @@ var change_element= function(o){
 
 
     }
-
-    function part_changed(o,id){
+function part_changed(o,id){
      var code=Dom.get('v_part_code'+id);
      var cost=Dom.get('v_part_cost'+id);
      name=o.name;
@@ -265,7 +291,7 @@ var change_element= function(o){
 	 Dom.get('save_part_'+id).style.visibility='hidden';
      
  }
-    function price_change(old_value,new_value){
+function price_change(old_value,new_value){
 	//	alert(old_value+' '+new_value)
 	prefix='';
 	old_value=FormatNumber(old_value,'.','',2);
@@ -286,7 +312,6 @@ var change_element= function(o){
 	var diff=FormatNumber(Math.abs(diff).toFixed(2),'<?php echo $myconf['decimal_point']?>','<?php echo $myconf['thousand_sep']?>',2);
 	return prefix+diff+' '+per;
     }
-
 function format_rrp(o){
   if(o.value=='')
       {
@@ -297,7 +322,6 @@ function format_rrp(o){
   }
 
 }
-
 function return_to_old_value(key){
     Dom.get("v_"+key).value=Dom.get("v_"+key).getAttribute('ovalue');
     
@@ -305,12 +329,10 @@ function return_to_old_value(key){
 	description_changed(Dom.get("v_"+key));
 
 }
-
 function change_to_dependant(){
     Dom.get("product_tipo_dependant").style.display='';
 
 }
-
 function units_save(){
     var units=Dom.get('v_units').value;
     var price=Dom.get('v_price').value;
@@ -352,7 +374,6 @@ function units_save(){
 
 
 }
-
 function delete_part(id,name){
     var answer = confirm("<?php echo _('Are you sure you want to desassociate this part')?> ("+name+")");
     if (answer){
@@ -380,8 +401,6 @@ function delete_part(id,name){
 
 
 }
-
-
 function delete_image(image_id,image_name){
     var answer = confirm("<?php echo _('Are you sure you want to delete this image')?> ("+image_name+")");
     if (answer){
@@ -414,8 +433,6 @@ function delete_image(image_id,image_name){
 
 
 }
-
-
 function set_image_as_principal(o){
 
     if(o.getAttribute('principal')==1)
@@ -447,8 +464,6 @@ function set_image_as_principal(o){
 	    });
 
 }
-
-
 function caption_changed(o){
     if(o.value!=o.getAttribute('ovalue')){
 	Dom.get("save_img_caption"+o.getAttribute('image_id')).style.visibility='visible';
@@ -456,8 +471,7 @@ function caption_changed(o){
 	Dom.get("save_img_caption"+o.getAttribute('image_id')).style.visibility='hidden';
 
 }
-
-  function description_changed(o){
+function description_changed(o){
 	var ovalue=o.getAttribute('ovalue');
 	var name=o.name;
 
@@ -508,7 +522,6 @@ function caption_changed(o){
 	 save_menu();
 	
     }
-
 function percentage(old_value,new_value){
     if(new_value==0)
 	return '';
@@ -524,8 +537,6 @@ function percentage(old_value,new_value){
     return txt;
 
 }
-
-
 function units_changed(o){
 	var ovalue=o.getAttribute('ovalue');
 	var name=o.name;
@@ -559,9 +570,6 @@ function units_changed(o){
 	    
 	}
 }
-
-
-
 function weight_changed(o){
 	var ovalue=o.getAttribute('ovalue');
 	var name=o.name;
@@ -573,8 +581,6 @@ function weight_changed(o){
 	    Dom.get(name+"_save").style.visibility='hidden';
 	}
 }
-
-
 function validate_dim(value,tipo){
     switch(tipo){
     case('shape0'):
@@ -615,7 +621,6 @@ function validate_dim(value,tipo){
     return true;
 
 }
-
 function dim_changed(o){
 
 
@@ -690,18 +695,13 @@ function price_changed(o){
 	
 	
     }
-
-
 function save_form(){
     if(current_form == 'description')
 	editor.saveHTML();
     YAHOO.util.Connect.setForm(document.getElementById(current_form)); 
-
     var request = YAHOO.util.Connect.asyncRequest('POST', 'ar_assets.php', callback);
-
-}
-
-var interpet_changes = function(id){
+    }
+function interpet_changes(id){
     
     if(editing=='parts'){
 	if(num_changed>0 && num_errors==0){
@@ -725,7 +725,6 @@ var interpet_changes = function(id){
 	}
     }
 };
-
 function simple_save(name){
 
     if(name=='dim' || name=='odim')
@@ -751,7 +750,6 @@ function simple_save(name){
 	});
 
 }
-
 function delete_list_item (e,id){
     
     cat_td=YAHOO.util.Dom.get('cat_'+id);
@@ -811,15 +809,7 @@ function delete_list_item (e,id){
 	  //	  alert(num_changed);
     interpet_changes();
 }
-
-
-
-
-
-
-
-
-    var check_number = function(e){
+function check_number(e){
 	re=<?php echo $regex['thousand_sep']?>;
 	value=this.value.replace(re,'')
 	re=<?php echo $regex['number']?>;
@@ -832,8 +822,7 @@ function delete_list_item (e,id){
 	}else
 	    this.className='text aright ok';
     };
-
-    var check_dimension = function(e,scope){
+function check_dimension(e,scope){
      
      
 	if(typeof(scope)=='undefined')
@@ -863,15 +852,14 @@ function delete_list_item (e,id){
 	}else
 	    scope.className='text aright ok';
     }
-    var change_shape= function(e){
+function change_shape(e){
 	tipo=this.selectedIndex;
 	shape_examples=new Array(<?php echo'"'.join('","',$_shape_example).'"'?>)
 	Dom.get(this.id+'_ex').innerHTML=shape_examples[tipo];
 	check_dimension('',Dom.get(this.id.replace(/_shape/,'')))
 
     }
-
-    var vadilate = function(o){
+function vadilate(o){
 	if(o.getAttribute('tipo')=='money' || o.getAttribute('tipo')=='number'  || o.getAttribute('tipo')=='shape2' || o.getAttribute('tipo')=='shape4' ){
 	    if(isNaN(o.value))
 		 return false;
@@ -896,7 +884,7 @@ function delete_list_item (e,id){
 	
 	return true;
     }
-    var change_textarea=function(e,name){
+function change_textarea(e,name){
 
 	editor.saveHTML(); 
 	html = editor.get('element').value; 
@@ -921,64 +909,7 @@ function delete_list_item (e,id){
 
 save_menu();
     }
-
-
-
-
-var handleSuccess = function(o){
-    //    alert(o.responseText);
-    var r =  YAHOO.lang.JSON.parse(o.responseText);
-    if (r.state == 200) {
-	YAHOO.util.Event.removeListener('save', "click");
-	Dom.get('save').className='disabled';
-	Dom.get('exit').className='ok';
-	for (x in r.res){
-	    if(r.res[x]['res']==1){
-		
-		num_changed--;
-		Dom.get('c_'+x).style.visibility='visible';
-		Dom.get('c_'+x).style.src='art/icons/accept.png';
-		var attributes = {opacity: { to: 0 }};
-		YAHOO.util.Dom.setStyle('c_'+x, 'opacity', 1);
-		var myAnim = new YAHOO.util.Anim('c_'+x, attributes); 
-		myAnim.duration = 10; 
-		myAnim.animate(); 
-		if(x=='details'){
-		    Dom.get('i_'+x).style.visibility='hidden';
-		}else{
-		    Dom.get('v_'+x).className='';
-		    Dom.get('v_'+x).setAttribute("ovalue",r.res[x]['new_value']);
-		}
-
-	    }else if(r.res[x]['res']==0){
-		Dom.get('v_'.x).className='error';
-	    }
-		
-	}
-
-	interpet_changes();
-
-    }
-};
-
-var handleFailure = function(o){
-
-};
-
-
-
-var callback =
-{
-
-    success:handleSuccess,
-    failure:handleFailure,
-    argument:['foo','bar']
-};
-
-
-
-
-var add_list_element=function(e){
+function add_list_element(e){
     
     var box=Dom.get(this.getAttribute('box'));
     var selected=box.selectedIndex;
@@ -1026,7 +957,7 @@ var add_list_element=function(e){
 
     interpet_changes();
 }
-var prepare_list_element=function(e){
+function prepare_list_element(e){
     selected=this.selectedIndex;
     prev=this.getAttribute('prev')
     if(!(prev==0 || selected==prev))
@@ -1045,7 +976,7 @@ function chane_units_tipo(id,name,sname){
     }
     
 }
-var change_list_element=function(e){
+function change_list_element(e){
 	    
     selected=this.selectedIndex;
     if(selected==0){
@@ -1064,8 +995,7 @@ var change_list_element=function(e){
 	this.setAttribute('prev',selected)
     }
 }
-
-    function save_price(key){
+function save_price(key){
 
 	new_value=Dom.get('v_'+key).value;
 	//	alert(key+' >'+new_value+'<');
@@ -1091,8 +1021,6 @@ var change_list_element=function(e){
 		 
 	    });
     }
-
-
 function save_image(key,image_id){
     new_value=Dom.get(key+image_id).value;
     var request='ar_assets.php?tipo=ep_update&key='+escape(key)+'&value='+escape(new_value)+'&image_id='+image_id;
@@ -1113,8 +1041,9 @@ function save_image(key,image_id){
 	    });
 
 }
+function save_description(key){
 
- function save_description(key){
+    var description_elements=array('name','special_char');
 
 	new_value=Dom.get('v_'+key).value;
 	if(key=='rrp' && new_value=='')
@@ -1147,11 +1076,7 @@ function save_image(key,image_id){
 		 
 	    });
     }
-
-
-
-
-var change_block = function(e){
+function change_block(e){
     
 
     Dom.get('d_parts').style.display='none';
@@ -1181,6 +1106,152 @@ var change_block = function(e){
 
 
 }
+function change_dim_tipo(tipo){
+    Dom.get('dim_shape').innerHTML=shapes[tipo];
+    Dom.get('dim_shape_example').innerHTML=shapes_example[tipo];
+
+    Dom.get('v_dim').setAttribute('tipo','shape'+tipo);
+    dim_changed(Dom.get('v_dim'));
+}
+function part_selected(sType, aArgs){
+    var myAC = aArgs[0]; // reference back to the AC instance
+    var elLI = aArgs[1]; // reference to the selected LI element
+    var oData = aArgs[2]; // object literal of selected item's result data
+
+    Dom.get('new_part_form').style.display='';
+
+    Dom.setStyle('current_parts_form', 'opacity', .25); 
+
+    Dom.get('new_part_name').innerHTML=oData.names;
+    Dom.get('new_part_form').setAttribute('part_id',oData.id);
+    Dom.get('new_part_input').value='';
+    Dom.get('new_part_cost').value='';
+    Dom.get('new_part_code').value='';
+
+
+};
+function save_part(part_id){
+    var cost=Dom.get('v_part_cost'+part_id).value;
+    var code=Dom.get('v_part_code'+part_id).value;
+    var request='ar_assets.php?tipo=ep_update&key=part&value='+ escape(part_id)+'&sup_cost='+ escape(cost)+'&sup_code='+ escape(code);
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    success:function(o) {
+			alert(o.responseText)
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if (r.ok) {
+		    Dom.get('save_part_'+part_id).style.visibility='hidden';
+		}else
+		    Dom.get('edit_messages').innerHTML='<span class="error">'+r.msg+'</span>';
+	    }
+	});
+};
+function save_new_part(){
+    var cost=Dom.get('new_part_cost').value;
+    var code=Dom.get('new_part_code').value;
+    var part_id=Dom.get('new_part_form').getAttribute('part_id');
+    var request='ar_assets.php?tipo=ep_update&key=part_new&value='+ escape(part_id)+'&sup_cost='+ escape(cost)+'&sup_code='+ escape(code);
+
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    success:function(o) {
+		alert(o.responseText)
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+
+		if (r.ok) {
+
+		    tbody=Dom.get("current_parts_form");
+		    
+		    var tr = document.createElement("tr");
+		    tr.setAttribute("id",'sup_tr1_'+part_id );
+		    tr.setAttribute("class","top title" );
+		    var td = document.createElement("td");
+		    td.setAttribute("class","label" );
+		    td.setAttribute("colspan","2" );
+		    var img = document.createElement("img");
+		    img.setAttribute("class","icon" );
+		    img.setAttribute("id","delete_part_"+part_id );
+		    img.setAttribute("onClick","delete_part("+part_id+",'"+r.data.code+"')");
+		    img.setAttribute("src","art/icons/cross.png");
+		    td.appendChild(img);
+		    var img = document.createElement("img");
+		    img.setAttribute("class","icon" );
+		    img.setAttribute("id","save_part_"+part_id );
+		    img.setAttribute("onClick","save_part("+part_id+")");
+		    img.setAttribute("src","art/icons/disk.png");
+		    img.setAttribute("style","visibility:hidden");
+		    td.appendChild(img);
+		    var txt = document.createElement("textNode");
+		    txt.innerHTML=r.data.code;
+		    td.appendChild(txt);
+		    tr.appendChild(td);
+		    tbody.appendChild(tr);
+
+
+		    var tr = document.createElement("tr");
+		    tr.setAttribute("id",'sup_tr2_'+part_id );
+		    var td = document.createElement("td");
+		    td.setAttribute("class","label" );
+		    td.setAttribute("style","width:15em" );
+		    td.innerHTML='<?php echo _('Parts product code')?>:';
+		    tr.appendChild(td);
+		    var td = document.createElement("td");
+		    td.setAttribute("style","text-align:left;" );
+		    var input = document.createElement("input");
+		    input.setAttribute("id","v_part_code"+part_id );
+		    input.setAttribute("style","padding-left:2px;text-align:left;width:10em" );
+		    input.setAttribute("ovalue",r.data.part_product_code );
+		    input.setAttribute("name",'code' );
+		    input.setAttribute("onkeyup","part_changed(this,"+part_id+")" );
+		    input.value=r.data.part_product_code;
+		    td.appendChild(input);
+		    tr.appendChild(td);
+		    tbody.appendChild(tr);
+
+		    var tr = document.createElement("tr");
+		    tr.setAttribute("id",'sup_tr3_'+part_id );
+		    var td = document.createElement("td");
+		    td.setAttribute("class","label" );
+		    td.innerHTML='<?php echo _('Cost per')?> '+r.units_tipo_name+':';
+		    tr.appendChild(td);
+
+		    var td = document.createElement("td");
+		    td.setAttribute("style","text-align:left" );
+
+		    var txt = document.createElement("textNode");
+		    txt.innerHTML=r.currency;
+
+		    var input = document.createElement("input");
+		    input.setAttribute("id","v_part_cost"+part_id );
+		    input.setAttribute("style","text-align:right;width:6em" );
+		    input.setAttribute("ovalue",r.data.price );
+		    input.setAttribute("name",'price' );
+		    input.setAttribute("onblur","this.value=FormatNumber(this.value,'"+r.decimal_point+"','"+r.thousand_sep+"',4);part_changed(this,"+part_id+")" );
+		    input.value=r.data.price;
+		    
+		    td.appendChild(txt);
+		    td.appendChild(input);
+		    tr.appendChild(td);
+		    tbody.appendChild(tr);
+		    var tr = document.createElement("tr");
+		    tr.setAttribute("id",'sup_tr4_'+part_id );
+		    var td = document.createElement("td");
+		    td.setAttribute("colspan","2" );
+		    tr.appendChild(td);
+		    tbody.appendChild(tr);
+		    Dom.get('new_part_form').style.display='none';
+		    Dom.setStyle('current_parts_form', 'opacity', 1); 
+		}else
+		    Dom.get('edit_messages').innerHTML='<span class="error">'+r.msg+'</span>';
+	    }
+	});
+};
+function cancel_new_part(){
+    Dom.setStyle('current_parts_form', 'opacity', 1.0); 
+    Dom.get('new_part_form').style.display='none';
+    Dom.get('new_part_name').innerHTML='';
+    Dom.get('new_part_form').setAttribute('part_id','');
+
+
+}	
 
 function init(){
 
@@ -1343,176 +1414,6 @@ function init(){
 
 
 }
-
-var change_dim_tipo=function(tipo){
-    Dom.get('dim_shape').innerHTML=shapes[tipo];
-    Dom.get('dim_shape_example').innerHTML=shapes_example[tipo];
-
-    Dom.get('v_dim').setAttribute('tipo','shape'+tipo);
-    dim_changed(Dom.get('v_dim'));
-}
-
-YAHOO.util.Event.onContentReady("shapes", function () {
-
-	var oMenu = new YAHOO.widget.Menu("shapes", { context:["dim_shape","tr", "br"]  });
-	oMenu.render();
-	oMenu.subscribe("show", oMenu.focus);
-	YAHOO.util.Event.addListener("dim_shape", "click", oMenu.show, null, oMenu);
-    });
-
-
-
-    YAHOO.util.Event.onDOMReady(init);
-
-
-var part_selected=function(sType, aArgs){
-    var myAC = aArgs[0]; // reference back to the AC instance
-    var elLI = aArgs[1]; // reference to the selected LI element
-    var oData = aArgs[2]; // object literal of selected item's result data
-
-    Dom.get('new_part_form').style.display='';
-
-    Dom.setStyle('current_parts_form', 'opacity', .25); 
-
-    Dom.get('new_part_name').innerHTML=oData.names;
-    Dom.get('new_part_form').setAttribute('part_id',oData.id);
-    Dom.get('new_part_input').value='';
-    Dom.get('new_part_cost').value='';
-    Dom.get('new_part_code').value='';
-
-
-};
-
-var save_part=function(part_id){
-    var cost=Dom.get('v_part_cost'+part_id).value;
-    var code=Dom.get('v_part_code'+part_id).value;
-    var request='ar_assets.php?tipo=ep_update&key=part&value='+ escape(part_id)+'&sup_cost='+ escape(cost)+'&sup_code='+ escape(code);
-    YAHOO.util.Connect.asyncRequest('POST',request ,{
-	    success:function(o) {
-			alert(o.responseText)
-		var r =  YAHOO.lang.JSON.parse(o.responseText);
-		if (r.ok) {
-		    Dom.get('save_part_'+part_id).style.visibility='hidden';
-		}else
-		    Dom.get('edit_messages').innerHTML='<span class="error">'+r.msg+'</span>';
-	    }
-	});
-};
-
-
-
-var save_new_part=function(){
-    var cost=Dom.get('new_part_cost').value;
-    var code=Dom.get('new_part_code').value;
-    var part_id=Dom.get('new_part_form').getAttribute('part_id');
-    var request='ar_assets.php?tipo=ep_update&key=part_new&value='+ escape(part_id)+'&sup_cost='+ escape(cost)+'&sup_code='+ escape(code);
-
-    YAHOO.util.Connect.asyncRequest('POST',request ,{
-	    success:function(o) {
-		alert(o.responseText)
-		var r =  YAHOO.lang.JSON.parse(o.responseText);
-
-		if (r.ok) {
-
-		    tbody=Dom.get("current_parts_form");
-		    
-		    var tr = document.createElement("tr");
-		    tr.setAttribute("id",'sup_tr1_'+part_id );
-		    tr.setAttribute("class","top title" );
-		    var td = document.createElement("td");
-		    td.setAttribute("class","label" );
-		    td.setAttribute("colspan","2" );
-		    var img = document.createElement("img");
-		    img.setAttribute("class","icon" );
-		    img.setAttribute("id","delete_part_"+part_id );
-		    img.setAttribute("onClick","delete_part("+part_id+",'"+r.data.code+"')");
-		    img.setAttribute("src","art/icons/cross.png");
-		    td.appendChild(img);
-		    var img = document.createElement("img");
-		    img.setAttribute("class","icon" );
-		    img.setAttribute("id","save_part_"+part_id );
-		    img.setAttribute("onClick","save_part("+part_id+")");
-		    img.setAttribute("src","art/icons/disk.png");
-		    img.setAttribute("style","visibility:hidden");
-		    td.appendChild(img);
-		    var txt = document.createElement("textNode");
-		    txt.innerHTML=r.data.code;
-		    td.appendChild(txt);
-		    tr.appendChild(td);
-		    tbody.appendChild(tr);
-
-
-		    var tr = document.createElement("tr");
-		    tr.setAttribute("id",'sup_tr2_'+part_id );
-		    var td = document.createElement("td");
-		    td.setAttribute("class","label" );
-		    td.setAttribute("style","width:15em" );
-		    td.innerHTML='<?php echo _('Parts product code')?>:';
-		    tr.appendChild(td);
-		    var td = document.createElement("td");
-		    td.setAttribute("style","text-align:left;" );
-		    var input = document.createElement("input");
-		    input.setAttribute("id","v_part_code"+part_id );
-		    input.setAttribute("style","padding-left:2px;text-align:left;width:10em" );
-		    input.setAttribute("ovalue",r.data.part_product_code );
-		    input.setAttribute("name",'code' );
-		    input.setAttribute("onkeyup","part_changed(this,"+part_id+")" );
-		    input.value=r.data.part_product_code;
-		    td.appendChild(input);
-		    tr.appendChild(td);
-		    tbody.appendChild(tr);
-
-		    var tr = document.createElement("tr");
-		    tr.setAttribute("id",'sup_tr3_'+part_id );
-		    var td = document.createElement("td");
-		    td.setAttribute("class","label" );
-		    td.innerHTML='<?php echo _('Cost per')?> '+r.units_tipo_name+':';
-		    tr.appendChild(td);
-
-		    var td = document.createElement("td");
-		    td.setAttribute("style","text-align:left" );
-
-		    var txt = document.createElement("textNode");
-		    txt.innerHTML=r.currency;
-
-		    var input = document.createElement("input");
-		    input.setAttribute("id","v_part_cost"+part_id );
-		    input.setAttribute("style","text-align:right;width:6em" );
-		    input.setAttribute("ovalue",r.data.price );
-		    input.setAttribute("name",'price' );
-		    input.setAttribute("onblur","this.value=FormatNumber(this.value,'"+r.decimal_point+"','"+r.thousand_sep+"',4);part_changed(this,"+part_id+")" );
-		    input.value=r.data.price;
-		    
-		    td.appendChild(txt);
-		    td.appendChild(input);
-		    tr.appendChild(td);
-		    tbody.appendChild(tr);
-		    var tr = document.createElement("tr");
-		    tr.setAttribute("id",'sup_tr4_'+part_id );
-		    var td = document.createElement("td");
-		    td.setAttribute("colspan","2" );
-		    tr.appendChild(td);
-		    tbody.appendChild(tr);
-		    Dom.get('new_part_form').style.display='none';
-		    Dom.setStyle('current_parts_form', 'opacity', 1); 
-		}else
-		    Dom.get('edit_messages').innerHTML='<span class="error">'+r.msg+'</span>';
-	    }
-	});
-};
-var cancel_new_part=function(){
-    Dom.setStyle('current_parts_form', 'opacity', 1.0); 
-    Dom.get('new_part_form').style.display='none';
-    Dom.get('new_part_name').innerHTML='';
-    Dom.get('new_part_form').setAttribute('part_id','');
-
-
-}	
-
-
-
-
-
 YAHOO.util.Event.onContentReady("adding_new_part", function () {
 	var oDS = new YAHOO.util.XHRDataSource("ar_parts.php");
  	oDS.responseType = YAHOO.util.XHRDataSource.TYPE_JSON;
@@ -1530,12 +1431,17 @@ YAHOO.util.Event.onContentReady("adding_new_part", function () {
 	oAC.forceSelection = true; 
 	oAC.itemSelectEvent.subscribe(part_selected); 
     });
-
-
 YAHOO.util.Event.onContentReady("units_tipo_list", function () {
 	 var oMenu = new YAHOO.widget.Menu("units_tipo_list", { context:["v_units_tipo","tr", "br"]  });
 	 oMenu.render();
 	 oMenu.subscribe("show", oMenu.focus);
 	 YAHOO.util.Event.addListener("v_units_tipo", "click", oMenu.show, null, oMenu);
     });
+YAHOO.util.Event.onContentReady("shapes", function () {
 
+	var oMenu = new YAHOO.widget.Menu("shapes", { context:["dim_shape","tr", "br"]  });
+	oMenu.render();
+	oMenu.subscribe("show", oMenu.focus);
+	YAHOO.util.Event.addListener("dim_shape", "click", oMenu.show, null, oMenu);
+    });
+YAHOO.util.Event.onDOMReady(init);

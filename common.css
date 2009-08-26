@@ -561,3 +561,5 @@ span.link{cursor:pointer}
 div.contact_card {text-align:right}
 div.contact_card div.tels{margin-top:3px;font-size:80%;color:#3b5998}
 div.contact_card div.address{margin-top:5px;font-size:70%}
+
+td.margin_note{widht:20px;font-family:times;font-size:80%;padding-right:20px;padding-top:5px}
