@@ -1075,7 +1075,7 @@ break;
       return false;
      $extra_where='';
      if($country_2a_code)
-        $extra_where=sprintf('and `Country First Division 2 Alpha Country Code`=%s',prepare_mysql($country_2a_code));
+        $extra_where=sprintf('and `Country 2 Alpha Code`=%s',prepare_mysql($country_2a_code));
       $sql=sprintf("select `Geography Key` as id from kbase.`Country First Division Dimension` where `Country First Division Name`=%s %s"
       ,prepare_mysql($country_d1)
       ,$extra_where
@@ -1103,9 +1103,9 @@ break;
       return false;
     $extra_where='';
     if($country_2a_code)
-        $extra_where.=sprintf('and `Country Second Division 2 Alpha Country Code`=%s',prepare_mysql($country_2a_code));
+        $extra_where.=sprintf('and `Country 2 Alpha Code`=%s',prepare_mysql($country_2a_code));
     if($country_d1_code)
-        $extra_where.=sprintf('and `Country Second Division Country Primary Division`=%s',prepare_mysql($country_2a_code));
+        $extra_where.=sprintf('and `Country Primary Division Code`=%s',prepare_mysql($country_d1_code));
     $sql=sprintf("select `Geography Key` as id from kbase.`Country Second Division Dimension` where `Country Second Division Name`=%s %s"
       ,prepare_mysql($str)
       ,$extra_where
@@ -1194,7 +1194,7 @@ break;
       return false;
 
     if($country_2acode)
-      $sql=sprintf("select `Geography Key` as id from kbase.`Town Dimension` where `Town Name`=%s  and `Town 2 Alpha Country Code`=%s"
+      $sql=sprintf("select `Geography Key` as id from kbase.`Town Dimension` where `Town Name`=%s  and `Country 2 Alpha Code`=%s"
 		   ,prepare_mysql($town)
 		   ,prepare_mysql($country_2acode)
 		   );

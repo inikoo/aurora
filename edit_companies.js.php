@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 include_once('common.php');
 if(!$user->can_view('contacts'))
   exit();

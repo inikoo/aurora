@@ -1585,6 +1585,8 @@ function customer_history_details(){
    return;
 }
 function list_staff(){
+  global $myconf;
+
 $conf=$_SESSION['state']['hr']['staff'];
   if(isset( $_REQUEST['sf']))
      $start_from=$_REQUEST['sf'];
@@ -1658,14 +1660,15 @@ $conf=$_SESSION['state']['hr']['staff'];
   }
 
    $sql="select count(*) as total from `Staff Dimension` SD left join `Contact Dimension` CD on (`Contact Key`=`Staff Contact Key`) $where $wheref";
+   
 
    $res=mysql_query($sql);
-   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+   if($row=mysql_fetch_array($res, MYSQL_ASSOC)){
      $total=$row['total'];
    }if($wheref!=''){
      $sql="select count(*) as total from `Staff Dimension` SD left join `Contact Dimension` CD on (`Contact Key`=`Staff Contact Key`)   $where ";
      $res=mysql_query($sql);
-     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+     if($row=mysql_fetch_array($res, MYSQL_ASSOC)){
        $total_records=$row['total'];
        $filtered=$row['total']-$total;
      }

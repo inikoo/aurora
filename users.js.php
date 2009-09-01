@@ -21,141 +21,44 @@ print $g;
     YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
 
-	    this.formatLang=  function(el, oRecord, oColumn, oData) {
-		el.innerHTML = '<img src="art/flags/'+oRecord.getData("countrycode")+'.gif" alt="'+oRecord.getData("country")+'"> '+oData;
-	    }
-		this.userLink=  function(el, oRecord, oColumn, oData) {
-		var url="user.php?id="+oRecord.getData("id");
-		el.innerHTML = oData.link(url);
-	    }	
-
-	     //START OF THE TABLE=========================================================================================================================
-
+	    
+	    //START OF THE TABLE=========================================================================================================================
+	    
 	    var tableid=0; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 
-	      var group=function(el, oRecord, oColumn, oData){
-		  //  var tmp = oData.split(',');
-		  if(oData==''){
+	    var group=function(el, oRecord, oColumn, oData){
+		//  var tmp = oData.split(',');
+		if(oData==''){
 		      el.innerHTML ='';
 		      return;
-		  }
-		  var tmp=oData;
-		  var sgroups='';
+		}
+		var tmp=oData;
+		var sgroups='';
 		  for(x in tmp){
 		      if(sgroups=='')
 			  sgroups=group_name[tmp[x]];
 		      else
 			  sgroups=sgroups+', '+group_name[tmp[x]]
-		  }
-		  el.innerHTML =sgroups;
-
+			      }
+		el.innerHTML =sgroups;
+		
 	    };
+	    
+	    
 
-	    var active=function(el, oRecord, oColumn, oData){
-
-		if(oData=='0')
-		    el.innerHTML ='<img src="art/icons/status_offline.png" />';
-		else
-		    el.innerHTML = '<img src="art/icons/status_online.png" />';
-	    };
-
-	    var edit_active=function (callback, newValue) {
-		
-		var record = this.getRecord(),
-		column = this.getColumn(),
-		oldValue = this.value,
-		datatable = this.getDataTable();
-		//		for( x in record)
-		user_id=record.getData('id');
-		var request='ar_users.php?tipo=edit_user&user_id='+escape(user_id)+'&key=' + column.key + '&newValue=' + escape(newValue) + '&oldValue=' + escape(oldValue)
-		//alert(request);
-		YAHOO.util.Connect.asyncRequest(
-						'POST',
-						request, {
-						    success:function(o) {
-							//	alert(o.responseText);
-							var r = YAHOO.lang.JSON.parse(o.responseText);
-							if (r.state == 200) {
-							    callback(true, r.data);
-							} else {
-							    alert(r.msg);
-							    callback();
-							}
-						    },
-						    failure:function(o) {
-							alert(o.statusText);
-							callback();
-						    },
-						    scope:this
-						}
-					        
-						);                                              
-	    }
-		
-	  var edit_group=function (callback, newValue) {
-		
-		var record = this.getRecord(),
-		column = this.getColumn(),
-		oldValue = this.value,
-		datatable = this.getDataTable();
-		//		for( x in record)
-		user_id=record.getData('id');
-		var request='ar_users.php?tipo=edit_user&user_id='+escape(user_id)+'&key=' + column.key + '&newValue=' + escape(newValue) + '&oldValue=' + escape(oldValue)
-		//	alert(request);
-		YAHOO.util.Connect.asyncRequest(
-						'POST',
-						request, {
-						    success:function(o) {
-							//alert(o.responseText);
-							var r = YAHOO.lang.JSON.parse(o.responseText);
-							if (r.state == 200) {
-							    callback(true, r.data);
-							    var table=tables['table1'];
-							    var datasource=tables['dataSource1'];
-							    var request='';
-							    datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
-							    
-							} else {
-							    alert(r.msg);
-							    callback();
-							}
-						    },
-						    failure:function(o) {
-							alert(o.statusText);
-							callback();
-						    },
-						    scope:this
-						}
-					        
-						);                                              
-	    }	
+	   
 	    var ColumnDefs = [
-			         {key:"delete",label:"" ,width:16 ,hidden:true},
-				 {key:"password",label:"" ,width:16 },
-				 //	 {key:"passwordmail",label:"" ,width:16 },
-				 {key:"isactive",formatter:active,label:"" ,width:16 ,editor: new YAHOO.widget.RadioCellEditor({radioOptions:[{label:"yes", value:"1"}, {label:"no", value:"0"}],defaultValue:"0",asyncSubmitter:edit_active })  },
-				 
-
-				 {key:"tipo", label:"<?php echo _('Type')?>",width:35,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-				 {key:"handle", label:"<?php echo _('Handle')?>",width:60,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-				 {key:"name", label:"<?php echo _('Name')?>",sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-				 {key:"email", label:"<?php echo _('Email')?>",sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-				 {key:"lang", label:"<?php echo _('Language')?>",sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},},
-				 {key:"groups",formatter:group,label:"<?php echo _('Groups')?>",className:"aleft" , editor: new YAHOO.widget.CheckboxCellEditor({
-					     asyncSubmitter:edit_group,checkboxOptions:[
-							      <?php
-							      $g='';
-							      foreach($_group as $key=>$value){
-								  $g.="{label:'$value<br>', value:$key},";
-							      }
-							      preg_replace('/,$/','',$g);
-							      print $g;
-							      ?>
-							      ]
-					 })}
-			      ];
-
+			      
+			      {key:"isactive",label:"" ,width:16 }
+			      ,{key:"tipo", label:"<?php echo _('Type')?>",width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			      , {key:"handle", label:"<?php echo _('Handle')?>",width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			      ,{key:"name", label:"<?php echo _('Name')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			      //	 {key:"email", label:"<?php echo _('Email')?>",sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+			      ,{key:"lang", label:"<?php echo _('Language')?>",sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			      ,{key:"groups",formatter:group,label:"<?php echo _('Groups')?>",className:"aleft"  }
+													   ];
+			       
 	    this.dataSource0 = new YAHOO.util.DataSource("ar_users.php?tipo=users&tableid=0");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
@@ -174,7 +77,7 @@ print $g;
 		
 		
 		fields: [
-			 "id","isactive","handle","name","email","lang","groups","password","delete","tipo","passwordmail"
+			 "id","isactive","handle","name","email","lang","groups","tipo","active"
 			 ]};
 
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
