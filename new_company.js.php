@@ -1,7 +1,7 @@
 <?php
   //@author Raul Perusquia <rulovico@gmail.com>
   //Copyright (c) 2009 LW
-    include_once('common.php');
+include_once('common.php');
 include_once('class.Contact.php');
 include_once('class.Company.php');
 
@@ -23,14 +23,49 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 mysql_free_result($result);
 $country_list=preg_replace('/^\,/','',$country_list);
 
-?>
 
-    var Subject='Company';
+
+
+
+?>
+var Dom   = YAHOO.util.Dom;
+var Event = YAHOO.util.Event;
+  
+
+var company_data={
+    "Company Name":""
+    ,"Company Main Contact Name":""
+    ,"Company Main Plain Email":""
+    ,"Company Main Telephone":""
+    ,"Company Address Line 1":""
+    ,"Company Address Line 2":""
+    ,"Company Address Line 3":""
+    ,"Company Address Town":""
+    ,"Company Address Postal Code":""
+    ,"Company Address Country Name":""
+    ,"Company Address Country Code":""
+    ,"Company Address Town Second Division":""
+    ,"Company Address Town First Division":""
+    ,"Company Address Country First Division":""
+    ,"Company Address Country Second Division":""
+    ,"Company Address Country Third Division":""
+    ,"Company Address Country Forth Division":""
+    ,"Company Address Country Fifth Division":""
+};  
+var suggest_country=false;
+var suggest_d1=false;
+var suggest_d2=false;
+var suggest_d3=false;
+var suggest_d4=false;
+var suggest_d4=false;
+var suggest_town=false;
+
+
+
+var Subject='Company';
 var Subject_Key=0;
 
 
-var Dom   = YAHOO.util.Dom;
-var Event = YAHOO.util.Event;
 
 
 
@@ -84,27 +119,51 @@ CountryDS.maxCacheEntries = 100;
 
 
 
+function print_data(){
+    var data='';
+    for(x in company_data)
+	data+=" "+x+": "+company_data[x]+"<br/>";
+    Dom.get("results").innerHTML=data;
+}
 
 
+function get_company_data(){
+    company_data['Company Name']=Dom.get('Company_Name').value;
+    
+}
+function get_contact_data(){
+        company_data['Company Main Contact Name']=Dom.get('Contact_Name').value;
+	company_data['Company Main Telephone']=Dom.get('Telephone').value;
+
+
+	if(Dom.get("Email").getAttribute('valid')==1)
+	    company_data['Company Main Plain Email']=Dom.get('Email').value;
+	else
+	    company_data['Company Main Plain Email']="";
+}
+
+function get_adddress_data(){
+    company_data['Company Address Line 1']=Dom.get('address_internal').value;
+    company_data['Company Address Line 2']=Dom.get('address_building').value;
+    company_data['Company Address Line 3']=Dom.get('address_street').value;
+    company_data['Company Address Town']=Dom.get('address_town').value;
+    company_data['Company Address Town Second Division']=Dom.get('address_town_d2').value;
+    company_data['Company Address Town First Division']=Dom.get('address_town_d1').value;
+    company_data['Company Address Postal Code']=Dom.get('address_postal_code').value;
+    company_data['Company Address Country Code']=Dom.get('address_country_code').value;
+    company_data['Company Address Country First Division']=Dom.get('address_country_d1').value;
+    company_data['Company Address Country Second Division']=Dom.get('address_country_d2').value;
+    company_data['Company Address Country Third Division']=Dom.get('address_country_d3').value;
+    company_data['Company Address Country Forth Division']=Dom.get('address_country_d4').value;
+    company_data['Company Address Country Fifth Division']=Dom.get('address_country_d5').value;
+}
 
 
 
 function get_data(){
-    values['Company Name']=Dom.get('Company_Name').value;
-    values['Company Main Contact Name']=Dom.get('Contact_Name').value;
-    values['Company Main Telephone']=Dom.get('Telephone').value;
-    values['Company Main Plain Email']=Dom.get('Email').value;
-    values['Company Address Line 1']=Dom.get('address_internal').value;
-    values['Company Address Line 1']=Dom.get('address_building').value;
-    values['Company Address Line 1']=Dom.get('address_street').value;
-    values['Company Address Town']=Dom.get('address_town').value;
-    values['Address Town Secondary Division']=Dom.get('address_town_d2').value;
-    values['Address Town Primary Division']=Dom.get('address_town_d1').value;
-    values['Company Address Postal Code']=Dom.get('address_postal_code').value;
-    values['Company Address Country Code']=Dom.get('address_country_code').value;
-    values['Company Address Country Primary Division']=Dom.get('address_country_d1').value;
-    values['Company Address Country Secondary Division']=Dom.get('address_country_d2').value;
-
+    get_company_data();
+    get_contact_data();
+    get_adddress_data();
 }
 
 
@@ -112,14 +171,13 @@ var save_new_company=function(e){
    
     get_data();
 
-    var json_value = YAHOO.lang.JSON.stringify(values); 
+    var json_value = YAHOO.lang.JSON.stringify(company_data); 
 	    
     var request='ar_edit_contacts.php?tipo=new_company&values=' + encodeURIComponent(json_value); 
 	    
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-		alert(o.responseText);
-		return;
+	
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if(r.action=='updated'){
 		    Dom.get(items[i]).value=r.value;
@@ -137,9 +195,69 @@ var save_new_company=function(e){
 }
     
 
- 
+var find_company=function(){
+   
+
+    var json_value = YAHOO.lang.JSON.stringify(company_data); 
+	    
+    var request='ar_contacts.php?tipo=find_company&values=' + encodeURIComponent(json_value); 
+    //  alert(request) ;
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    success:function(o) {
+	
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if(r.action=='found'){
+		    
+		}else if(r.action=='found_candidates'){
+		    
+		}
+		Dom.get("results").innerHTML='';
+		for(x in r.candidates_data){
+		    Dom.get("results").innerHTML+='<div style="width:150px" class="contact_display">'+r.candidates_data[x]['card']+'<div>'+r.candidates_data[x]['score']+'</div></div>';
+		}
+			
+	    }
+	});
+
+}
+     
 
 
+function company_name_changed (query) {
+    get_company_data();
+    //print_data();
+     find_company();
+			   //alert(query)
+};
+function  contact_name_changed(query) {
+  
+    get_contact_data();
+    //print_data();
+    find_company();
+};
+function  email_changed(email) {
+    email=unescape(email);
+    o=Dom.get("Email");
+    //alert(email)
+    if(isValidEmail(email)){
+	o.setAttribute('valid',1);
+	Dom.removeClass(o,'invalid');
+    }else{
+	o.setAttribute('valid',0);
+	Dom.addClass(o,'invalid');
+    }
+    get_contact_data();
+    //print_data();
+    find_company();
+
+};
+function  telephone_changed(query) {
+  
+
+    get_contact_data();
+    //print_data()
+    find_company();
+};
 
 
 
@@ -175,7 +293,7 @@ var save_new_company=function(e){
 	
 	
 	
-	
+	if(suggest_d1){
 	var Countries_d1_DS = new YAHOO.util.XHRDataSource("ar_kbase.php");
 	Countries_d1_DS.responseType = YAHOO.util.XHRDataSource.TYPE_JSON; 
 	Countries_d1_DS.responseSchema = {resultsList : "data",fields : ["name","code"]};
@@ -192,6 +310,8 @@ var save_new_company=function(e){
 	};
 	Countries_d1_AC.itemSelectEvent.subscribe(Country_d1_selected); 
 	
+	}
+	if(suggest_d2){
 	var Countries_d2_DS = new YAHOO.util.XHRDataSource("ar_kbase.php");
 	Countries_d2_DS.responseType = YAHOO.util.XHRDataSource.TYPE_JSON; 
 	Countries_d2_DS.responseSchema = {resultsList : "data",fields : ["name","code"]};
@@ -211,7 +331,8 @@ var save_new_company=function(e){
 	    myAC.getInputEl().value = oData[0] ;
 	};
 	Countries_d2_AC.itemSelectEvent.subscribe(Country_d2_selected); 	
-	
+	}
+	if(suggest_d3){
 	var Countries_d3_DS = new YAHOO.util.XHRDataSource("ar_kbase.php");
 	Countries_d3_DS.responseType = YAHOO.util.XHRDataSource.TYPE_JSON; 
 	Countries_d3_DS.responseSchema = {resultsList : "data",fields : ["name","code"]};
@@ -230,7 +351,9 @@ var save_new_company=function(e){
 	    myAC.getInputEl().value = oData[0] ;
 	};
 	Countries_d3_AC.itemSelectEvent.subscribe(Country_d3_selected); 		
-	
+	}
+	if(suggest_town){
+
 	var Town_DS = new YAHOO.util.XHRDataSource("ar_kbase.php");
 	Town_DS.responseType = YAHOO.util.XHRDataSource.TYPE_JSON; 
 	Town_DS.responseSchema = {resultsList : "data",fields : ["name"]};
@@ -254,10 +377,10 @@ var save_new_company=function(e){
 	};
 	//  Town_AC.itemSelectEvent.subscribe(Country_1d_selected); 	
 	
+	}
 	
 	
-	
-	
+	if(suggest_country){
 	
 	var Countries_DS = new YAHOO.util.FunctionDataSource(match_country);
 	Countries_DS.responseSchema = {fields: ["id", "name", "code","code2a"]}
@@ -313,8 +436,31 @@ var save_new_company=function(e){
 
 	};
 	Countries_AC.itemSelectEvent.subscribe(onCountrySelected);
-
+	}
  
+
+	var company_name_oACDS = new YAHOO.util.FunctionDataSource(company_name_changed);
+	company_name_oACDS.queryMatchContains = true;
+	var company_name_oAutoComp = new YAHOO.widget.AutoComplete("Company_Name","Company_Name_Container", company_name_oACDS);
+	company_name_oAutoComp.minQueryLength = 0; 
+	company_name_oAutoComp.queryDelay = 0.75;
+
+	var contact_name_oACDS = new YAHOO.util.FunctionDataSource(contact_name_changed);
+	contact_name_oACDS.queryMatchContains = true;
+	var contact_name_oAutoComp = new YAHOO.widget.AutoComplete("Contact_Name","Contact_Name_Container", contact_name_oACDS);
+	contact_name_oAutoComp.minQueryLength = 0; 
+	contact_name_oAutoComp.queryDelay = 0.75;
+
+	var email_name_oACDS = new YAHOO.util.FunctionDataSource(email_changed);
+	email_name_oACDS.queryMatchContains = true;
+	var email_name_oAutoComp = new YAHOO.widget.AutoComplete("Email","Email_Container", email_name_oACDS);
+	email_name_oAutoComp.minQueryLength = 0; 
+	contact_name_oAutoComp.queryDelay = 0.75;
+	var telephone_name_oACDS = new YAHOO.util.FunctionDataSource(telephone_changed);
+	telephone_name_oACDS.queryMatchContains = true;
+	var telephone_name_oAutoComp = new YAHOO.widget.AutoComplete("Telephone","Telephone_Container", telephone_name_oACDS);
+	telephone_name_oAutoComp.minQueryLength = 0; 
+	contact_name_oAutoComp.queryDelay = 0.55;
 
     } 
 YAHOO.util.Event.onDOMReady(init);

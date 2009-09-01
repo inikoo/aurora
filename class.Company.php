@@ -22,8 +22,8 @@ include_once('class.Address.php');
 class Company extends DB_Table {
 
 
-
-
+  var $candidate_companies=array();
+  var $number_candidate_companies=0;
   /*
     Constructor: Company
     
@@ -159,43 +159,57 @@ class Company extends DB_Table {
 
 
     //addnow we have a list of  candidates, from this list make another list of companies
-    $candidate_companies=array();
-
+    $this->candidate_companies=array();
+    $this->number_candidate_companies=0;
     foreach($this->candidate as $contact_key=>$score){
       $_contact=new Contact($contact_key);
       
       $company_key=$_contact->data['Contact Company Key'];
       if($company_key){
 	// print "---- $company_key\n";
-      if(isset($candidate_companies[$company_key]))
-	$candidate_companies[$company_key]+=$score;
+      if(isset($this->candidate_companies[$company_key]))
+	$this->candidate_companies[$company_key]+=$score;
       else
-	$candidate_companies[$company_key]=$score;
+	$this->candidate_companies[$company_key]=$score;
       }
     }
 
     
-    $sql=sprintf("select `Company Key` from `Company Dimension` where `Company Name`=%s",prepare_mysql($raw_data['Company Name']));
-    $res=mysql_query($sql);
-    while($row=mysql_fetch_array($res)){
-      $score=80;
-      $company_key=$row['Company Key'];
-      if(isset($candidate_companies[$company_key]))
-	$candidate_companies[$company_key]+=$score;
-      else
-	$candidate_companies[$company_key]=$score;
-    }
-    
-    
-
+/*     $sql=sprintf("select `Company Key` from `Company Dimension` where `Company Name`=%s",prepare_mysql($raw_data['Company Name'])); */
+/*     $res=mysql_query($sql); */
+/*     while($row=mysql_fetch_array($res)){ */
+/*       $score=80; */
+/*       $company_key=$row['Company Key']; */
+/*       if(isset($this->candidate_companies[$company_key])) */
+/* 	$this->candidate_companies[$company_key]+=$score; */
+/*       else */
+/* 	$this->candidate_companies[$company_key]=$score; */
+/*     } */
+    $max_score=80;
+      $sql=sprintf("select `Company Key`,levenshtein(UPPER(%s),UPPER(`Company Name`))/LENGTH(`Company Name`) as dist1 from `Company Dimension`   order by dist1  limit 10"
+		    ,prepare_mysql($raw_data['Company Name'])
+		    ,prepare_mysql($raw_data['Company Name'])
+		    );
+       $result=mysql_query($sql);
+      
+       while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+	 if($row['dist1']>.2)
+	   break;
+	 $score=$max_score*(1-  $row['dist1']   );
+	 $company_key=$row['Company Key'];
+	 if(isset($this->candidate_companies[$company_key]))
+	   $this->candidate_companies[$company_key]+=$score;
+	 else
+	   $this->candidate_companies[$company_key]=$score;
+       }
 
 
 
    
 
-    if(!empty($candidate_companies)){
-      arsort($candidate_companies);
-      foreach($candidate_companies as $key=>$val){
+    if(!empty($this->candidate_companies)){
+      arsort($this->candidate_companies);
+      foreach($this->candidate_companies as $key=>$val){
 	//print "*$key $val\n";
 	if($val>=200){
 	  $this->found=true;
@@ -206,15 +220,15 @@ class Company extends DB_Table {
       
     }
 
-
+    $this->number_candidate_companies=count($this->candidate_companies);
     
 /*     if(count($this->candidate)>0){ */
 /*         print "Contact candidates\n"; */
 /* 	print_r($this->candidate); */
 /*     } */
-/*     if(count($candidate_companies)>0){ */
+/*     if(count($this->candidate_companies)>0){ */
 /*       print "Company candidates\n"; */
-/*       print_r($candidate_companies); */
+/*       print_r($this->candidate_companies); */
 /*     } */
     
 
@@ -2083,6 +2097,57 @@ function remove_contact($data,$args=''){
 
       
   }
+
+  function display($tipo='card'){
+   
+  global $myconf;
+
+    switch($tipo){
+    case('card'):
+
+
+      $email_label="E:";
+      $tel_label="T:";
+      $fax_label="F:";
+      $mobile_label="M:";
+      $contact_label="C:";
+      
+      $email='';
+      $tel='';
+      $fax='';
+      $mobile='';
+      $contact='';
+      $name=sprintf('<span class="name">%s</span>',$this->data['Company Name']);
+      if($this->data['Company Main Contact Name'])
+	$contact=sprintf('<span class="name">%s %s</span>',$contact_label,$this->data['Company Main Contact Name']);
+
+
+      if($this->data['Company Main XHTML Email'])
+	$email=sprintf('<span class="email">%s</span><br/>',$this->data['Company Main XHTML Email']);
+      if($this->data['Company Main Telephone'])
+	$tel=sprintf('<span class="tel">%s %s</span><br/>',$tel_label,$this->data['Company Main Telephone']);
+      if($this->data['Company Main FAX'])
+	$fax=sprintf('<span class="fax">%s %s</span><br/>',$fax_label,$this->data['Company Main FAX']);
+     
+      
+      $address=sprintf('<span class="mobile">%s</span>',$this->data['Company Main XHTML Address']);
+
+      $card=sprintf('<div class="contact_card">%s <div  class="tels">%s %s %s %s</div><div  class="address">%s</div> </div>'
+		    ,$name
+		    ,$contact
+		    ,$email
+		    ,$tel
+		    ,$fax
+		   
+		    ,$address
+		    );
+
+      return $card;
+
+    }
+
+  }
+
 
 }
 
