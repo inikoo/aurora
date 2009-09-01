@@ -292,6 +292,11 @@ class Contact extends DB_Table{
     if($data['Contact Name']=='')
       $data['Contact Fuzzy']='Yes';
 
+
+
+    
+
+
     $country_code='UNK';
 
    if(!array_empty( $address_work_data)){
@@ -368,8 +373,8 @@ class Contact extends DB_Table{
       $tel=new Telecom("find in contact  country code $country_code",$data['Contact Main Mobile']);
       
       foreach($tel->candidate as $key=>$val){
-	  if($data['Contact Fuzzy']=='Yes')
-	    $val=$val+100;
+	// if($data['Contact Fuzzy']=='Yes')
+	//   $val=$val+100;
 	if(isset($this->candidate[$key]))
 	  $this->candidate[$key]+=$val;
 	else
@@ -403,34 +408,41 @@ class Contact extends DB_Table{
    }
 
 
+   
+   if($data['Contact Fuzzy']!='Yes'){
+   
+     $name_data=$this->parse_name($data['Contact Name']);
+     $name=$this->name($name_data);
+    /*  $sql=sprintf("select `Contact Key` from `Contact Dimension` where `Contact Name`=%s",prepare_mysql($name)); */
+/*      $result=mysql_query($sql); */
+/*      while($row=mysql_fetch_array($result, MYSQL_ASSOC)){ */
+/*       if(isset($this->candidate[$row['Contact Key']])) */
+/* 	$this->candidate[$row['Contact Key']]+=100; */
+/*       else */
+/* 	$this->candidate[$row['Contact Key']]=100; */
+     }
+
+   $max_score=100;
+    $sql=sprintf("select `Contact Key`,levenshtein(UPPER(%s),UPPER(`Contact Name`))/LENGTH(`Contact Name`) as dist1 from `Company Dimension`   order by dist1  limit 10"
+		    ,prepare_mysql($raw_data['Company Name'])
+		    ,prepare_mysql($raw_data['Company Name'])
+		    );
+       $result=mysql_query($sql);
+      
+       while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+	 if($row['dist1']>.2)
+	   break;
+	 $score=$max_score*(1-  $row['dist1']   );
+	 $company_key=$row['Company Key'];
+	 if(isset($this->candidate_companies[$company_key]))
+	   $this->candidate_companies[$company_key]+=$score;
+	 else
+	   $this->candidate_companies[$company_key]=$score;
+       }
 
 
-
-   /*  if(count($this->candidate)>0){ */
-/*        print "candidates after mobile:\n"; */
-/*       print_r($this->candidate); */
-
-/*     } */
-    //  exit;
-    // find same name
-    $name_data=$this->parse_name($data['Contact Name']);
-    $name=$this->name($name_data);
-    $sql=sprintf("select `Contact Key` from `Contact Dimension` where `Contact Name`=%s",prepare_mysql($name));
-    $result=mysql_query($sql);
     
-    while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-      if(isset($this->candidate[$row['Contact Key']]))
-	$this->candidate[$row['Contact Key']]+=100;
-      else
-	  $this->candidate[$row['Contact Key']]=100;
-    }
-    
-    //if(count($this->candidate)>0){ 
-      //  print "candidates after name:$name"."<-  ".count($this->candidate)." \n";
-      // 	print_r($this->candidate);
-      //    }
-    // exit;
-    // try to find contacts in the same company with missing parts
+   }
     
 
 

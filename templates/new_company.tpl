@@ -9,23 +9,37 @@
 
     </div>
     
-    <div >
+    <div>
+      <span id="contact_messages"></span>
+    </div>
     
-     <span id="contact_messages"></span>
-
-	<table class="edit" border=0 style="width:45%">
+    <div >
+      <div id="results" style="margin-top:30px;border:1px solid #777;float:right;width:450px">
+	
+      </div>
+	<table class="edit" border=0 style="float:left;width:45%">
 	  <tr>
-	  <td class='label'><h2>{t}New Company{/t}</h2></td><td style="vertical-align:middle"></td>
+	    <td class='label'><h2>{t}New Company{/t}</h2></td><td style="vertical-align:middle"></td>
 	  </tr>
 	
-	  <tr class="first"><td style="" class="label">Company Name:</td><td  style="text-align:left">
-	  <input style="text-align:left;width:18em" id="Company_Name" value="" ovalue=""></td>
+	  <tr class="first"><td style="" class="label">Company Name:</td>
+	    <td  style="text-align:left">
+	       <div  style="width:15em;position:relative;top:00px" >
+	      <input style="text-align:left;width:18em" id="Company_Name" value="" ovalue="">
+	      	<div id="Company_Name_Container" style="" ></div>
+	      </div>
+	    </td>
 	  </tr>
 	 <tr >
 		 
-		  <td style=";" class="label">Contact Name:</td>
-		  <td><input style="width:18em" id="Contact_Name" value="" onkeyup="contact_name_changed(this)"></td>
-		
+	   <td style=";" class="label">Contact Name:</td>
+	   <td>
+	     
+	       <input style="width:18em" id="Contact_Name" value="" >
+	       <div id="Contact_Name_Container" style="" ></div>
+	    
+	   </td>
+	   
 		
 	<tr id="tr_Contact_Gender" style="display:none">
 			  <td class="label">{t}Gender{/t}:</td>
@@ -67,8 +81,8 @@
 		<tr id="email_mould" >
 		  <td  class="label"  >{t}Email{/t}:</td>
 		  <td >
-		    <input style="width:18em" id="Email" class="Email"  to_delete=0 value="" ovalue="" email_key="" valid=""   onkeyup="validate_email(this);email_change()" />
-		  
+		    <input style="width:18em" id="Email" class="Email"  to_delete=0 value="" ovalue="" email_key="" valid=""   />
+		    <div id="Email_Container" style="" ></div>
 
 		  </td>
 		  </tr>
@@ -80,7 +94,8 @@
 		  <td>
 		   
 		    <input  style="width:18em" class="Telecom" telecom_key=0 telecom_type="Telephone" id="Telephone" 
-		    telecom_type_description="" container_key="" value="" ovalue="" to_delete=0  onkeyup="validate_telecom(this);telecom_change(this)"     /> 
+		    telecom_type_description="" container_key="" value="" ovalue="" to_delete=0       /> 
+		     <div id="Telephone_Container" style="" ></div>
 		  </td >
 	 
 		</tr>	
@@ -193,4 +208,5 @@
 </div>
 </div>
 {include file='footer.tpl'}
+
 

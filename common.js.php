@@ -581,7 +581,10 @@ function addEvent( obj, type, fn ) {
 
 
 function trim(str, chars) {
-	return ltrim(rtrim(str, chars), chars);
+  if(str == undefined)
+    return '';
+  else
+    return ltrim(rtrim(str, chars), chars);
 }
  
 function ltrim(str, chars) {
@@ -590,8 +593,9 @@ function ltrim(str, chars) {
 }
  
 function rtrim(str, chars) {
-	chars = chars || "\\s";
-	return str.replace(new RegExp("[" + chars + "]+$", "g"), "");
+  
+  chars = chars || "\\s";
+  return str.replace(new RegExp("[" + chars + "]+$", "g"), "");
 }
 
 

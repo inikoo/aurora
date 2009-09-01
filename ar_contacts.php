@@ -18,6 +18,14 @@ if(!isset($_REQUEST['tipo']))  {
 
 $tipo=$_REQUEST['tipo'];
 switch($tipo){
+case('find_company'):
+  require_once 'ar_edit_common.php';
+  $data=prepare_values($_REQUEST,array(
+				       
+				       'values'=>array('type'=>'json array')
+				       ));
+  find_company($data['values']);
+  break;
  case('customer_history_details'):
    customer_history_details();
    break;
@@ -1748,4 +1756,35 @@ if($order=='name')
 		   );
    echo json_encode($response);
 }
+
+function find_company($data){
+
+  $max_results=8;
+
+  $company=new company('find',$data);
+  
+  if($company->found)
+    $action='found';
+  elseif($company->number_candidate_companies>0)
+    $action='found_candidates';
+  else
+    $action='nothing_found';
+  
+  $candidates_data=array();
+  $count=0;
+  foreach($company->candidate_companies as $company_key=>$score){
+    if($count>$max_results)
+      break;
+    $_company=new Company ($company_key);
+    $candidates_data[]= array('card'=>$_company->display('card'),'score'=>$score);
+    
+    $count++;
+  }
+  //print_r($company->candidate_companies);
+  
+  $response=array('candidates_data'=>$candidates_data,'action'=>$action);
+  echo json_encode($response);
+}
+
+
 ?>

@@ -1103,12 +1103,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
       if($tipo_order==2){
 	$payment_method=parse_payment_method($header_data['pay_method']);
-	
-/* 	if($header_data['total_net']!=0) */
-/* 	  $tax_rate=$header_data['tax1']/$header_data['total_net']; */
-/* 	else */
-/* 	  $tax_rate=$data['tax_rate']; */
-	    
+
 
 	$lag=(strtotime($date_inv)-strtotime($date_order))/24/3600;
 	if($lag==0 or $lag<0)
@@ -1355,7 +1350,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 			      ,'Invoice Multiple Payment Methods'=>0
 			      ,'Invoice Shipping Net Amount'=>round($header_data['shipping']+$extra_shipping,2)
 			      ,'Invoice Charges Net Amount'=>round($header_data['charges'],2)
-			      ,'tax_rate'=>$tax_rate
+			    
 			      ,'tax_rate'=>$tax_rate
 			      ,'Invoice Has Been Paid In Full'=>'No'
 			      ,'Invoice Items Net Amount'=>round($header_data['total_items_charge_value'],2)-$total_credit_value
