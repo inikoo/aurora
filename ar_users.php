@@ -144,11 +144,11 @@ function list_users(){
 		   'id'=>$row['User Key'],
 		   'name'=>$row['User Alias'],
 		   'email'=>$row['User Email'],
-		   'lang'=>$row['User Language Code'],
+		   'lang'=>strtoupper($row['User Language Code']),
 		   'groups'=>$groups,
 		   'password'=>'<img style="cursor:pointer" user_name="'.$row['User Alias'].'" user_id="'.$row['User Key'].'" onClick="change_passwd(this)" src="art/icons/key.png"/>'.($row['User Email']!=''?'<img src="art/icons/key_go.png"/>':''),
 		   'passwordmail'=>($row['User Email']!=''?'<img src="art/icons/key_go.png"/>':''),
-		   'isactive'=>$row['User Active'],
+		   'isactive'=>($row['User Active']=='Yes'?'<img src="art/icons/status_online.png" alt="'._('active').'" Title="'._('Active').'"  />':'<img src="art/icons/status_offline.png" Title="'._('Inactive').'"  alt="'._('inactive').'/>'),
 		   'delete'=>'<img src="art/icons/status_busy.png"/>'
 		   );
 
