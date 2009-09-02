@@ -420,31 +420,86 @@ class Contact extends DB_Table{
 /* 	$this->candidate[$row['Contact Key']]+=100; */
 /*       else */
 /* 	$this->candidate[$row['Contact Key']]=100; */
-     }
+   
 
-   $max_score=100;
-    $sql=sprintf("select `Contact Key`,levenshtein(UPPER(%s),UPPER(`Contact Name`))/LENGTH(`Contact Name`) as dist1 from `Company Dimension`   order by dist1  limit 10"
-		    ,prepare_mysql($raw_data['Company Name'])
-		    ,prepare_mysql($raw_data['Company Name'])
-		    );
-       $result=mysql_query($sql);
+/*    $max_score=100; */
+/*    $sql=sprintf("select `Contact Key`,levenshtein(UPPER(%s),UPPER(`Contact Name`))/LENGTH(`Contact Name`) as dist1 from `Contact Dimension`   order by dist1  limit 10" */
+/* 		,prepare_mysql($data['Contact Name']) */
+/* 		,prepare_mysql($data['Contact Name']) */
+/* 		); */
+/*    $result=mysql_query($sql); */
       
+/*    while($row=mysql_fetch_array($result, MYSQL_ASSOC)){ */
+/*      if($row['dist1']>.2) */
+/*        break; */
+/*      $score=$max_score*(1-  $row['dist1']   ); */
+/*      $contact_key=$row['Contact Key']; */
+/*      if(isset($this->candidate_companies[$contact_key])) */
+/*        $this->candidate[$contact_key]+=$score; */
+/*      else */
+/*        $this->candidate[$contact_key]=$score; */
+/*    } */
+   
+
+
+    
+     $salutation_max_semiscore=5;
+     $first_name_max_score=27;
+     $surname_max_score=63;
+      
+
+     
+     if($name_data['Contact First Name']!=''){
+       $sql=sprintf("select `Contact Salutation`,`Contact Key`,levenshtein(UPPER(%s),UPPER(`Contact First Name`))/LENGTH(`Contact First Name`) as dist1 from `Contact Dimension` where  `Contact First Name` is not null  order by dist1  limit 20"
+		    ,prepare_mysql($name_data['Contact First Name'])
+		    ,prepare_mysql($name_data['Contact First Name'])
+		    );
+      
+       $result=mysql_query($sql);
        while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 	 if($row['dist1']>.2)
 	   break;
-	 $score=$max_score*(1-  $row['dist1']   );
-	 $company_key=$row['Company Key'];
-	 if(isset($this->candidate_companies[$company_key]))
-	   $this->candidate_companies[$company_key]+=$score;
+
+	 $score=$first_name_max_score*(1-  $row['dist1']   )**3;
+	 if($name_data['Contact Salutation']!='' and $name_data['Contact Salutation']=$row['Contact Salutation'])
+	   $score+=$salutation_max_semiscore;
+	 $contact_key=$row['Contact Key'];
+	 if(isset($this->candidate_companies[$contact_key]))
+	   $this->candidate[$contact_key]+=$score;
 	 else
-	   $this->candidate_companies[$company_key]=$score;
+	   $this->candidate[$contact_key]=$score;
        }
+       
+     }
+     
+     if($name_data['Contact Surname']!=''){
+       $sql=sprintf("select `Contact Salutation`,`Contact Key`,levenshtein(UPPER(%s),UPPER(`Contact Surname`))/LENGTH(`Contact Surname`) as dist1 from `Contact Dimension`  where  `Contact Surname` is not null   order by dist1  limit 20"
+		    ,prepare_mysql($name_data['Contact Surname'])
+		    ,prepare_mysql($name_data['Contact Surname'])
+		    );
+     
+       $result=mysql_query($sql);
+       while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+	 if($row['dist1']>.2)
+	   break;
+	 $score=$surname_max_score*(1-  $row['dist1']   )**3;
+	 if($name_data['Contact Salutation']!='' and $name_data['Contact Salutation']=$row['Contact Salutation'])
+	   $score+=$salutation_max_semiscore;
+	 $contact_key=$row['Contact Key'];
+	 if(isset($this->candidate_companies[$contact_key]))
+	   $this->candidate[$contact_key]+=$score;
+	 else
+	   $this->candidate[$contact_key]=$score;
+       }
+       
+     }
 
 
-    
+
+
    }
-    
-
+  
+   
 
 
     if(isset($raw_data['Contact Old ID']) and $raw_data['Contact Old ID']!=''){
@@ -485,7 +540,6 @@ class Contact extends DB_Table{
 
       }
     }
-
 
 
 
