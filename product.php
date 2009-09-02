@@ -119,7 +119,7 @@ if($mode=='code'){
     
    
 
-$product= new product($mode,$tag);
+$product= new product(($mode=='id'?'pid':$mode),$tag);
 
 
 
