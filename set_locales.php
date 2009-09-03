@@ -1,5 +1,8 @@
 <?php
 include_once('conf/locale_defaults.php');
+
+if(DEBUG){ error_reporting(E_ALL);}
+
 if (!function_exists('_')){
 	function _($str){
 		return $str;

@@ -78,13 +78,13 @@ class Country{
   function get_data($key,$id){
 
      if($key=='find'){
-      $sql=sprintf("select `Country Key`  from kbase.`Country Dimension`
-      where  `Country Name`=%s or  `Country Official Name`=%s or `Country Native Name`=%s  "
+      $sql=sprintf("select `Country Key`  from kbase.`Country Dimension`where  `Country Name`=%s or  `Country Official Name`=%s or `Country Native Name`=%s  "
 		   ,prepare_mysql($id)
 		   ,prepare_mysql($id)
 		   ,prepare_mysql($id)
 		   ,prepare_mysql($id)
 		   );
+		   //print $sql;
       $result=mysql_query($sql);
       
       if($row=mysql_fetch_array($result, MYSQL_ASSOC))
