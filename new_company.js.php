@@ -201,7 +201,7 @@ var find_company=function(){
     var json_value = YAHOO.lang.JSON.stringify(company_data); 
 	    
     var request='ar_contacts.php?tipo=find_company&values=' + encodeURIComponent(json_value); 
-    //  alert(request) ;
+    alert(request) ;
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
 	
