@@ -222,80 +222,114 @@ class Email extends DB_Table {
     if($mode=='Contact')
       $options.=' anonymous';
     
+    if($raw_data['Email']!=''){
 
-    
 
-    $sql=sprintf("select T.`Email Key`,`Subject Key` from `Email Dimension` T left join `Email Bridge` TB  on (TB.`Email Key`=T.`Email Key`) where `Email`=%s and `Subject Type`='Contact'  "
+    $email_max_score=200;
+    $score_prize=800;
+    $this->found=false;
+    $sql=sprintf("select `Subject Key`,T.`Email Key`,levenshtein(UPPER(%s),UPPER(`Email`))/LENGTH(`Email`) as dist1 from   `Email Dimension` T left join `Email Bridge` TB  on (TB.`Email Key`=T.`Email Key`)   where  `Subject Type`='Contact'  order by dist1  limit 80"
 		 ,prepare_mysql($raw_data['Email'])
-		   );
-    // print "$sql\n";    
+		 );
+    //print $sql;
     $result=mysql_query($sql);
-    $num_results=mysql_num_rows($result);
-    if($num_results==0){
-      $this->found=false;
-      if(preg_match('/auto/i',$options)){
-	// try to find possible matches (assuming the the client comit a mistake)
-	$sql=sprintf("select `Subject Key`,`Email Key`,`Email Contact Name`,levenshtein(UPPER(%s),UPPER(`Email`)) as dist1,levenshtein(UPPER(SOUNDEX(%s)),UPPER(SOUNDEX(`Email`))) as dist2, `Subject Key`  from `Email Dimension` left join `Email Bridge` on (`Email Bridge`.`Email Key`=`Email Dimension`.`Email Key`)  where dist1<=2 and  `Subject Type`='Contact'  order by dist1,dist2 limit 20"
-		     ,prepare_mysql($raw_data['Email'])
-		     ,prepare_mysql($raw_data['Email'])
-		     );
-	$result=mysql_query($sql);
-
-	while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-	  $dist=0.5*$row['dist1']+$row['dist2'];
-	  if($dist==0)
-	    $candidate[$row['Subject Key']]=1000;
-	  else
-	    $candidate[$row['Subject Key']]=100/$dist;
-	  
-	  if($raw_data['Email Contact Name']!=''){
-	       $contact_distance=levenshtein(strtolower($raw_data['Email Contact Name']),strtolower($row['Email Contact Name']));
-	       if($contact_distance==0){
-		 if($raw_data['Email Contact Name']=='')
-		   $candidate[$row['Subject Key']]+=50;
-		 else
-		   $candidate[$row['Subject Key']]+=300;
-	       }
-	       
-	       
-	       $candidate[$row['Subject Key']]+=(200/$contact_distance);
-	       
-	       
-	     }
-	  
-	}
-      }
-
-      
-    }else if($num_results==1){
+    while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+      if($row['dist1']>=1)
+	break;
+      $score=$email_max_score*exp(-200*$row['dist1']*$row['dist1']);
+      $contact_key=$row['Subject Key'];
+      if($row['dist1']==0){
+	$score+=$score_prize;
 	$this->found=true;
-
-	$row=mysql_fetch_array($result, MYSQL_ASSOC);
-	$this->found_key=$row['Subject Key'];
-	$this->candidate[$row['Subject Key']]=1000;
+	$this->found_key=$contact_key;
 	$this->get_data('id',$row['Email Key']);
-	
-
 	if(in_array($row['Subject Key'],$in_contacts))
 	  $this->found_in=$subject_key;
 	else
 	  $this->found_out=true;
-	
-	
-	
-    }else{// Found in more than one contact (that means tha two contacts share the same email) this shoaul not happen
-      
-      $this->error=true;
-      // correct the data (delete duplicates)
-
-      while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-	$contact=new Contact($row['Subject Key']);
-	print_r($contact->data);
       }
 
+       if(isset($this->candidate[$contact_key]))
+	   $this->candidate[$contact_key]+=$score;
+	 else
+	   $this->candidate[$contact_key]=$score;
 
-      exit("todo fix database for email duplicates \n$sql\n");
+
     }
+
+      } 
+
+/*     $sql=sprintf("select T.`Email Key`,`Subject Key` from `Email Dimension` T left join `Email Bridge` TB  on (TB.`Email Key`=T.`Email Key`) where `Email`=%s and `Subject Type`='Contact'  " */
+/* 		 ,prepare_mysql($raw_data['Email']) */
+/* 		   ); */
+/*     // print "$sql\n";     */
+/*     $result=mysql_query($sql); */
+/*     $num_results=mysql_num_rows($result); */
+/*     if($num_results==0){ */
+/*       $this->found=false; */
+/*       if(preg_match('/auto/i',$options)){ */
+/* 	// try to find possible matches (assuming the the client comit a mistake) */
+/* 	$sql=sprintf("select `Subject Key`,`Email Key`,`Email Contact Name`,levenshtein(UPPER(%s),UPPER(`Email`)) as dist1,levenshtein(UPPER(SOUNDEX(%s)),UPPER(SOUNDEX(`Email`))) as dist2, `Subject Key`  from `Email Dimension` left join `Email Bridge` on (`Email Bridge`.`Email Key`=`Email Dimension`.`Email Key`)  where dist1<=2 and  `Subject Type`='Contact'  order by dist1,dist2 limit 20" */
+/* 		     ,prepare_mysql($raw_data['Email']) */
+/* 		     ,prepare_mysql($raw_data['Email']) */
+/* 		     ); */
+/* 	$result=mysql_query($sql); */
+
+/* 	while($row=mysql_fetch_array($result, MYSQL_ASSOC)){ */
+/* 	  $dist=0.5*$row['dist1']+$row['dist2']; */
+/* 	  if($dist==0) */
+/* 	    $candidate[$row['Subject Key']]=1000; */
+/* 	  else */
+/* 	    $candidate[$row['Subject Key']]=100/$dist; */
+	  
+/* 	  if($raw_data['Email Contact Name']!=''){ */
+/* 	       $contact_distance=levenshtein(strtolower($raw_data['Email Contact Name']),strtolower($row['Email Contact Name'])); */
+/* 	       if($contact_distance==0){ */
+/* 		 if($raw_data['Email Contact Name']=='') */
+/* 		   $candidate[$row['Subject Key']]+=50; */
+/* 		 else */
+/* 		   $candidate[$row['Subject Key']]+=300; */
+/* 	       } */
+	       
+	       
+/* 	       $candidate[$row['Subject Key']]+=(200/$contact_distance); */
+	       
+	       
+/* 	     } */
+	  
+/* 	} */
+/*       } */
+
+      
+/*     }else if($num_results==1){ */
+/* 	$this->found=true; */
+
+/* 	$row=mysql_fetch_array($result, MYSQL_ASSOC); */
+/* 	$this->found_key=$row['Subject Key']; */
+/* 	$this->candidate[$row['Subject Key']]=1000; */
+/* 	$this->get_data('id',$row['Email Key']); */
+	
+
+/* 	if(in_array($row['Subject Key'],$in_contacts)) */
+/* 	  $this->found_in=$subject_key; */
+/* 	else */
+/* 	  $this->found_out=true; */
+	
+	
+	
+/*     }else{// Found in more than one contact (that means tha two contacts share the same email) this shoaul not happen */
+      
+/*       $this->error=true; */
+/*       // correct the data (delete duplicates) */
+
+/*       while($row=mysql_fetch_array($result, MYSQL_ASSOC)){ */
+/* 	$contact=new Contact($row['Subject Key']); */
+/* 	print_r($contact->data); */
+/*       } */
+
+
+/*       exit("todo fix database for email duplicates \n$sql\n"); */
+/*     } */
       
   
 

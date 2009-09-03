@@ -139,9 +139,9 @@ class Company extends DB_Table {
     }
 
     if(!isset($raw_data['Company Name']) or $raw_data['Company Name']==''){
-      $raw_data['Company Name']=_('Unknown Name');
+      $raw_data['Company Name']='';
     }
- if(!isset($raw_data['Company Main Contact Name'])){
+    if(!isset($raw_data['Company Main Contact Name'])){
       $raw_data['Company Main Contact Name']='';
     }
 
@@ -185,28 +185,48 @@ class Company extends DB_Table {
 /*       else */
 /* 	$this->candidate_companies[$company_key]=$score; */
 /*     } */
-    $max_score=80;
-      $sql=sprintf("select `Company Key`,levenshtein(UPPER(%s),UPPER(`Company Name`))/LENGTH(`Company Name`) as dist1 from `Company Dimension`   order by dist1  limit 10"
-		    ,prepare_mysql($raw_data['Company Name'])
-		    ,prepare_mysql($raw_data['Company Name'])
-		    );
-       $result=mysql_query($sql);
+
+    if($raw_data['Company Name']!=''){
       
-       while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-	 if($row['dist1']>.2)
-	   break;
-	 $score=$max_score*(1-  $row['dist1']   );
-	 $company_key=$row['Company Key'];
-	 if(isset($this->candidate_companies[$company_key]))
-	   $this->candidate_companies[$company_key]+=$score;
+      $max_score=80;
+      $score_plus_for_match=40;
+      $sql=sprintf("select `Company Key`,levenshtein(UPPER(%s),UPPER(`Company Name`))/LENGTH(`Company Name`) as dist1 from `Company Dimension`   order by dist1  limit 10"
+		   ,prepare_mysql($raw_data['Company Name'])
+		   ,prepare_mysql($raw_data['Company Name'])
+		   );
+      $result=mysql_query($sql);
+    
+    while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+      if($row['dist1']>=1)
+	break;
+      $score=$max_score*pow(1-  $row['dist1'] ,3  );
+      $company_key=$row['Company Key'];
+
+      foreach($this->candidate as $candidate_key=>$candidate_score){
+	$sql=sprintf("select count(*) matched from `Contact Bridge` where `Contact Key`=%d and `Subject Key`=%d  and `Subject Type`='Company' and `Is Active`='Yes'  "
+		    ,$candidate_key
+		    ,$company_key
+		    );
+	$res=mysql_query($sql);
+	$match_data=mysql_fetch_array($res);
+	if($match_data['matched']>0){
+	  $this->candidate[$candidate_key]+=$score_plus_for_match;
+	  $score+=$score_plus_for_match;
+	}
+	
+      }
+
+
+      if(isset($this->candidate_companies[$company_key]))
+	$this->candidate_companies[$company_key]+=$score;
 	 else
 	   $this->candidate_companies[$company_key]=$score;
-       }
+    }
+
+    }
 
 
-
-   
-
+    
     if(!empty($this->candidate_companies)){
       arsort($this->candidate_companies);
       foreach($this->candidate_companies as $key=>$val){
@@ -2119,7 +2139,7 @@ function remove_contact($data,$args=''){
       $contact='';
       $name=sprintf('<span class="name">%s</span>',$this->data['Company Name']);
       if($this->data['Company Main Contact Name'])
-	$contact=sprintf('<span class="name">%s %s</span>',$contact_label,$this->data['Company Main Contact Name']);
+	$contact=sprintf('<span class="name">%s %s</span><br/>',$contact_label,$this->data['Company Main Contact Name']);
 
 
       if($this->data['Company Main XHTML Email'])
