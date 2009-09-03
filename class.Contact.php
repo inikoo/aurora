@@ -120,7 +120,7 @@ class Contact extends DB_Table{
     Key of the Compnay found, if create is found in the options string  returns the new key
    */  
   function find($raw_data,$options){
-       //    print $options."\n";
+    //    print $options."\n";
     // print_r($raw_data);
 
     
@@ -192,11 +192,6 @@ class Contact extends DB_Table{
 
     }elseif(preg_match('/from Company|in company/i',$options)){
       foreach($raw_data as $key=>$val){
-/* 	if($create and preg_match('/address|email|telephone|fax|company name/i',$key)){ */
-/* 	  continue; */
-/* 	} */
-	
-//	print "XXXXXXXXXXXXXXXX THE KEY $key\n";
 
 	if($key=='Company Name'){
 	  $_key='Contact Company Name';
@@ -278,23 +273,13 @@ class Contact extends DB_Table{
 
       
     }
-    if(count($this->candidate)>0){
-     // print "candidates ofter email:\n";
-      //print_r($this->candidate);
-    }
-
-    //print "******************************************************\n$options\n";
+ 
    
-    //print_r($address_work_data);
-
+   
 
 
     if($data['Contact Name']=='')
       $data['Contact Fuzzy']='Yes';
-
-
-
-    
 
 
     $country_code='UNK';
@@ -331,7 +316,7 @@ class Contact extends DB_Table{
 
 
    if($data['Contact Main Telephone']!=''  ){
-     //     print "TRing to fund a telefone numner ".$data['Contact Main Telephone']." \n";
+     //print "TRing to fund a telefone numner ".$data['Contact Main Telephone']." \n";
      
      $tel=new Telecom("find in contact country code $country_code",$data['Contact Main Telephone']);
      //print_r($tel);
@@ -413,58 +398,29 @@ class Contact extends DB_Table{
    
      $name_data=$this->parse_name($data['Contact Name']);
      $name=$this->name($name_data);
-    /*  $sql=sprintf("select `Contact Key` from `Contact Dimension` where `Contact Name`=%s",prepare_mysql($name)); */
-/*      $result=mysql_query($sql); */
-/*      while($row=mysql_fetch_array($result, MYSQL_ASSOC)){ */
-/*       if(isset($this->candidate[$row['Contact Key']])) */
-/* 	$this->candidate[$row['Contact Key']]+=100; */
-/*       else */
-/* 	$this->candidate[$row['Contact Key']]=100; */
-   
 
-/*    $max_score=100; */
-/*    $sql=sprintf("select `Contact Key`,levenshtein(UPPER(%s),UPPER(`Contact Name`))/LENGTH(`Contact Name`) as dist1 from `Contact Dimension`   order by dist1  limit 10" */
-/* 		,prepare_mysql($data['Contact Name']) */
-/* 		,prepare_mysql($data['Contact Name']) */
-/* 		); */
-/*    $result=mysql_query($sql); */
-      
-/*    while($row=mysql_fetch_array($result, MYSQL_ASSOC)){ */
-/*      if($row['dist1']>.2) */
-/*        break; */
-/*      $score=$max_score*(1-  $row['dist1']   ); */
-/*      $contact_key=$row['Contact Key']; */
-/*      if(isset($this->candidate_companies[$contact_key])) */
-/*        $this->candidate[$contact_key]+=$score; */
-/*      else */
-/*        $this->candidate[$contact_key]=$score; */
-/*    } */
-   
-
-
-    
      $salutation_max_semiscore=5;
      $first_name_max_score=27;
      $surname_max_score=63;
       
 
-     
+    
      if($name_data['Contact First Name']!=''){
-       $sql=sprintf("select `Contact Salutation`,`Contact Key`,levenshtein(UPPER(%s),UPPER(`Contact First Name`))/LENGTH(`Contact First Name`) as dist1 from `Contact Dimension` where  `Contact First Name` is not null  order by dist1  limit 20"
+       $sql=sprintf("select `Contact Salutation`,`Contact Key`,levenshtein(UPPER(%s),UPPER(`Contact First Name`))/LENGTH(`Contact First Name`) as dist1 from `Contact Dimension` where  `Contact First Name` is not null  order by dist1  limit 80"
 		    ,prepare_mysql($name_data['Contact First Name'])
-		    ,prepare_mysql($name_data['Contact First Name'])
+		   
 		    );
       
        $result=mysql_query($sql);
        while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-	 if($row['dist1']>.2)
+	 if($row['dist1']>=1)
 	   break;
 
-	 $score=$first_name_max_score*(1-  $row['dist1']   )**3;
+	 $score=$first_name_max_score*pow(1-  $row['dist1'],3   );
 	 if($name_data['Contact Salutation']!='' and $name_data['Contact Salutation']=$row['Contact Salutation'])
 	   $score+=$salutation_max_semiscore;
 	 $contact_key=$row['Contact Key'];
-	 if(isset($this->candidate_companies[$contact_key]))
+	 if(isset($this->candidate[$contact_key]))
 	   $this->candidate[$contact_key]+=$score;
 	 else
 	   $this->candidate[$contact_key]=$score;
@@ -472,21 +428,24 @@ class Contact extends DB_Table{
        
      }
      
-     if($name_data['Contact Surname']!=''){
-       $sql=sprintf("select `Contact Salutation`,`Contact Key`,levenshtein(UPPER(%s),UPPER(`Contact Surname`))/LENGTH(`Contact Surname`) as dist1 from `Contact Dimension`  where  `Contact Surname` is not null   order by dist1  limit 20"
-		    ,prepare_mysql($name_data['Contact Surname'])
-		    ,prepare_mysql($name_data['Contact Surname'])
-		    );
      
+    
+
+     if($name_data['Contact Surname']!=''){
+       $sql=sprintf("select `Contact Salutation`,`Contact Key`,levenshtein(UPPER(%s),UPPER(`Contact Surname`))/LENGTH(`Contact Surname`) as dist1 from `Contact Dimension`  where  `Contact Surname` is not null   order by dist1  limit 40"
+		    ,prepare_mysql($name_data['Contact Surname'])
+		   
+		    );
+      
        $result=mysql_query($sql);
        while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-	 if($row['dist1']>.2)
+	 if($row['dist1']>=1)
 	   break;
-	 $score=$surname_max_score*(1-  $row['dist1']   )**3;
+	 $score=$surname_max_score*pow(1-  $row['dist1'],3);
 	 if($name_data['Contact Salutation']!='' and $name_data['Contact Salutation']=$row['Contact Salutation'])
 	   $score+=$salutation_max_semiscore;
 	 $contact_key=$row['Contact Key'];
-	 if(isset($this->candidate_companies[$contact_key]))
+	 if(isset($this->candidate[$contact_key]))
 	   $this->candidate[$contact_key]+=$score;
 	 else
 	   $this->candidate[$contact_key]=$score;
@@ -495,7 +454,7 @@ class Contact extends DB_Table{
      }
 
 
-
+    
 
    }
   
@@ -542,8 +501,10 @@ class Contact extends DB_Table{
     }
 
 
-
+   
  if(isset($raw_data['Contact Company Name'])){
+ 
+
       $contacts_in_company=array();
       $raw_data['Contact Company Name']=_trim($raw_data['Contact Company Name']);
       if($raw_data['Contact Company Name']!=''){

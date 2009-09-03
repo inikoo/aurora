@@ -604,3 +604,30 @@ function ucwords( str ) {
   
     return (str+'').replace(/^(.)|\s(.)/g, function ( $1 ) { return $1.toUpperCase( ); } );
 }
+
+
+function star_rating($score,$max_score){
+  if($max_score==undefined || $max_score==0)
+    $max_score=1;
+  
+  $score=$score/$max_score;
+
+  var new_star_rating = Dom.get('star_rating_template').cloneNode(true);
+  var element_array=Dom.getElementsByClassName('star','img',new_star_rating);
+  
+  if($score>=1)
+      element_array[4].src='art/icons/star.png';
+  if($score>=.8)
+      element_array[3].src='art/icons/star.png';
+  if($score>=.6)
+      element_array[2].src='art/icons/star.png';
+  if($score>=.4)
+      element_array[1].src='art/icons/star.png';
+  if($score>=.2)
+      element_array[0].src='art/icons/star.png';
+
+
+  return new_star_rating;
+
+
+}

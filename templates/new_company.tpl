@@ -14,12 +14,14 @@
     </div>
     
     <div >
-      <div id="results" style="margin-top:30px;border:1px solid #777;float:right;width:450px">
+      <div id="results" style="margin-top:30px;xborder:1px solid #777;float:right;width:501px;xheight:800px">
 	
       </div>
-	<table class="edit" border=0 style="float:left;width:45%">
+      
+
+	<table class="edit" border=0 style="float:left;width:200px">
 	  <tr>
-	    <td class='label'><h2>{t}New Company{/t}</h2></td><td style="vertical-align:middle"></td>
+	    <td  colspan="2"><h2>{t}New Company{/t}</h2></td><td style="vertical-align:middle"></td>
 	  </tr>
 	
 	  <tr class="first"><td style="" class="label">Company Name:</td>
@@ -209,4 +211,4 @@
 </div>
 {include file='footer.tpl'}
 
-
+<div class="star_rating" id="star_rating_template" style="display:none"><img class="star" src="art/icons/star_dim.png" /><img class="star" src="art/icons/star_dim.png" /><img class="star" src="art/icons/star_dim.png" /><img class="star" src="art/icons/star_dim.png" /><img class="star" src="art/icons/star_dim.png" /></div>

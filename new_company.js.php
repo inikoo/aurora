@@ -204,7 +204,7 @@ var find_company=function(){
     //  alert(request) ;
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-		//alert(o.responseText);
+	
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if(r.action=='found'){
 		    
@@ -212,10 +212,28 @@ var find_company=function(){
 		    
 		}
 		Dom.get("results").innerHTML='';
+		var count=0;
+		
 		for(x in r.candidates_data){
-		    Dom.get("results").innerHTML+='<div style="width:150px" class="contact_display">'+r.candidates_data[x]['card']+'<div>'+r.candidates_data[x]['score']+'</div></div>';
+		    
+		    Dom.get("results").innerHTML+='<div style="width:100%;xborder:1px solid red"><div style="width:200px;margin:5px 0px;float:left;margin-right:15px" class="contact_display">'+r.candidates_data[x]['card']+'</div> <div style="xborder:1px solid blue;margin-left:230px;;margin-top:5px"><div id="score_'+r.candidates_data[x]['tipo']+r.candidates_data[x]['key']+'" >'+r.candidates_data[x]['score']+'</div> <span class="button edit" style="margin:10px 0;float:left"><?php echo _('Choose This')?></span><div style="clear:both"></div><div style="clear:both"> </div>';
+		    
+		    var found_img='';
+		    // alert(r.candidates_data[x]['found']);return;
+		    if(r.candidates_data[x]['found']==1)
+			found_img='<img src="art/icons/award_star_gold_1.png"/>';
+		    
+		    Dom.get('score_'+r.candidates_data[x]['tipo']+r.candidates_data[x]['key']).innerHTML=star_rating(r.candidates_data[x]['score'],200).innerHTML+found_img+'<span style="font-size:80%;margin-left:10px">('+Math.round(r.candidates_data[x]['score'])+')</span>';
+		    
+		    
+		    
+		    //	    if(count % 2 || count==0)
+		    //	Dom.get("results").innerHTML+='<tr>'+td;
+		    //else
+		    //	Dom.get("results").innerHTML+=td+'</tr>';
 		}
-			
+		//	Dom.get("results").innerHTML+='</table>';
+		
 	    }
 	});
 
@@ -225,12 +243,12 @@ var find_company=function(){
 
 function company_name_changed (query) {
     get_company_data();
-    //print_data();
-     find_company();
+    // print_data();
+    find_company();
 			   //alert(query)
 };
-function  contact_name_changed(query) {
-  
+function  contact_name_changed2(query) {
+   
     get_contact_data();
     //print_data();
     find_company();
@@ -242,13 +260,18 @@ function  email_changed(email) {
     if(isValidEmail(email)){
 	o.setAttribute('valid',1);
 	Dom.removeClass(o,'invalid');
+	get_contact_data();
+	find_company();
     }else{
+	if(o.getAttribute('valid')==1){
+	    get_contact_data();
+	    find_company(); 
+	}
+	    
 	o.setAttribute('valid',0);
 	Dom.addClass(o,'invalid');
     }
-    get_contact_data();
-    //print_data();
-    find_company();
+  
 
 };
 function  telephone_changed(query) {
@@ -445,7 +468,7 @@ function  telephone_changed(query) {
 	company_name_oAutoComp.minQueryLength = 0; 
 	company_name_oAutoComp.queryDelay = 0.75;
 
-	var contact_name_oACDS = new YAHOO.util.FunctionDataSource(contact_name_changed);
+	var contact_name_oACDS = new YAHOO.util.FunctionDataSource(contact_name_changed2);
 	contact_name_oACDS.queryMatchContains = true;
 	var contact_name_oAutoComp = new YAHOO.widget.AutoComplete("Contact_Name","Contact_Name_Container", contact_name_oACDS);
 	contact_name_oAutoComp.minQueryLength = 0; 

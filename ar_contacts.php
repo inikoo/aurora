@@ -1776,8 +1776,12 @@ function find_company($data){
     if($count>$max_results)
       break;
     $_company=new Company ($company_key);
-    $candidates_data[]= array('card'=>$_company->display('card'),'score'=>$score);
-    
+
+    $found=0;
+    if($company->found_key==$_company->id)
+      $found=1;
+    $candidates_data[]= array('card'=>$_company->display('card'),'score'=>$score,'key'=>$_company->id,'tipo'=>'company','found'=>$found);
+   
     $count++;
   }
   //print_r($company->candidate_companies);
