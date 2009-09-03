@@ -87,7 +87,7 @@ $sql=sprintf("select `Staff Key`id,`Staff Alias` as alias ,`Staff Position Key` 
 $res = mysql_query($sql);
 $num_cols=5;
 $staff=array();
-while($row=mysql_fetch_array($res, MYSQL_ASSOC))){
+while($row=mysql_fetch_array($res, MYSQL_ASSOC)){
   $staff[]=array('alias'=>$row['alias'],'id'=>$row['id'],'position_id'=>$row['position_id']);
  }
 

@@ -42,14 +42,14 @@ $_group['2']=_('Customer Services');
 $_group['3']=_('Stock Controller');
 $_group['4']=_('Export Services');
 $_group['5']=_('Sales Intelligence');
-$_lang['1']=_('English');
-$_lang['2']=_('Spanish');
-$_lang['3']=_('German');
-$_lang['4']=_('French');
-$_lang['5']=_('Czech');
-$_lang['6']=_('Slovak');
-$_lang['7']=_('Chinese');
-$_lang['8']=_('Polish');
+
+$_lang['en']=_('English');
+$_lang['es']=_('Spanish');
+$_lang['de']=_('German');
+$_lang['fr']=_('French');
+$_lang['cs']=_('Czech');
+$_lang['sk']=_('Slovak');
+$_lang['zh']=_('Chinese');
 
 $_prefix['0']=_('None');
 $_prefix['1']=_('Mr');
