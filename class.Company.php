@@ -190,7 +190,7 @@ class Company extends DB_Table {
       
       $max_score=80;
       $score_plus_for_match=40;
-      $sql=sprintf("select `Company Key`,levenshtein(UPPER(%s),UPPER(`Company Name`))/LENGTH(`Company Name`) as dist1 from `Company Dimension`   order by dist1  limit 10"
+      $sql=sprintf("select `Company Key`,damlev(UPPER(%s),UPPER(`Company Name`))/LENGTH(`Company Name`) as dist1 from `Company Dimension`   order by dist1  limit 10"
 		   ,prepare_mysql($raw_data['Company Name'])
 		   ,prepare_mysql($raw_data['Company Name'])
 		   );

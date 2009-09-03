@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /*
  File: Contact.php 
 
@@ -406,7 +406,7 @@ class Contact extends DB_Table{
 
     
      if($name_data['Contact First Name']!=''){
-       $sql=sprintf("select `Contact Salutation`,`Contact Key`,levenshtein(UPPER(%s),UPPER(`Contact First Name`))/LENGTH(`Contact First Name`) as dist1 from `Contact Dimension` where  `Contact First Name` is not null  order by dist1  limit 80"
+       $sql=sprintf("select `Contact Salutation`,`Contact Key`,damlev(UPPER(%s),UPPER(`Contact First Name`))/LENGTH(`Contact First Name`) as dist1 from `Contact Dimension` where  `Contact First Name` is not null  order by dist1  limit 80"
 		    ,prepare_mysql($name_data['Contact First Name'])
 		   
 		    );
@@ -432,7 +432,7 @@ class Contact extends DB_Table{
     
 
      if($name_data['Contact Surname']!=''){
-       $sql=sprintf("select `Contact Salutation`,`Contact Key`,levenshtein(UPPER(%s),UPPER(`Contact Surname`))/LENGTH(`Contact Surname`) as dist1 from `Contact Dimension`  where  `Contact Surname` is not null   order by dist1  limit 40"
+       $sql=sprintf("select `Contact Salutation`,`Contact Key`,damlev(UPPER(%s),UPPER(`Contact Surname`))/LENGTH(`Contact Surname`) as dist1 from `Contact Dimension`  where  `Contact Surname` is not null   order by dist1  limit 40"
 		    ,prepare_mysql($name_data['Contact Surname'])
 		   
 		    );
@@ -799,7 +799,7 @@ class Contact extends DB_Table{
      if($has_email){
      //Get similar candidates from email
        
-       $sql=sprintf("select levenshtein(UPPER(%s),UPPER(`Email`)) as dist1,levenshtein(UPPER(SOUNDEX(%s)),UPPER(SOUNDEX(`Email`))) as dist2, `Subject Key`  from `Email Dimension` left join `Email Bridge` on (`Email Bridge`.`Email Key`=`Email Dimension`.`Email Key`)  where dist1<=2 and  `Subject Type`='Contact'   order by dist1,dist2 limit 20"
+       $sql=sprintf("select damlev(UPPER(%s),UPPER(`Email`)) as dist1,damlev(UPPER(SOUNDEX(%s)),UPPER(SOUNDEX(`Email`))) as dist2, `Subject Key`  from `Email Dimension` left join `Email Bridge` on (`Email Bridge`.`Email Key`=`Email Dimension`.`Email Key`)  where dist1<=2 and  `Subject Type`='Contact'   order by dist1,dist2 limit 20"
 		    ,prepare_mysql($data['Contact Email'])
 		    ,prepare_mysql($data['Contact Email'])
 		    );
@@ -818,7 +818,7 @@ class Contact extends DB_Table{
 
      //Get similar candidates from emailby name
      if($data['Contact Name']!=''){
-     $sql=sprintf("select levenshtein(UPPER(%s),UPPER(`Contact Name`)) as dist1,levenshtein(UPPER(SOUNDEX(%s)),UPPER(SOUNDEX(`Contact Name`))) as dist2, `Contact Key`  from `Contact Dimension`   where dist1<=3 and  `Subject Type`='Contact'   order by dist1,dist2 limit 20"
+     $sql=sprintf("select damlev(UPPER(%s),UPPER(`Contact Name`)) as dist1,damlev(UPPER(SOUNDEX(%s)),UPPER(SOUNDEX(`Contact Name`))) as dist2, `Contact Key`  from `Contact Dimension`   where dist1<=3 and  `Subject Type`='Contact'   order by dist1,dist2 limit 20"
 		  ,prepare_mysql($data['Contact Name'])
 		  ,prepare_mysql($data['Contact Name'])
 		  );

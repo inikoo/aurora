@@ -8,17 +8,11 @@ require_once "class.Session.php";
 require_once "class.Auth.php";
 require_once "class.User.php";
 
- 
-// DEBUG STUFF --------------------------------------|
-if(DEBUG){
-  error_reporting(E_ALL);// For developing
 
 
- }
 
 
- 
- 
+
 $default_DB_link=mysql_connect($dns_host,$dns_user,$dns_pwd );
 if(!$default_DB_link){print "Error can not connect with database server\n";}
 $db_selected=mysql_select_db($dns_db, $default_DB_link);
@@ -125,4 +119,6 @@ $nav_menu[] = array(_('Home'), 'index.php');
 $smarty->assign('nav_menu',$nav_menu);
 $smarty->assign('theme',$myconf['theme']);
 $smarty->assign('my_name',$myconf['name']);
+
+
 ?>

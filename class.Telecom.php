@@ -277,7 +277,7 @@ function find($raw_data,$options){
 		 ,prepare_mysql($data['Telecom Plain Number'])
 		
 		 );
-    print "$sql\n";
+    //print "$sql\n";
     $result=mysql_query($sql);
     $num_results=mysql_num_rows($result);
     // print "$sql $num_results \n";

@@ -228,7 +228,7 @@ class Email extends DB_Table {
     $email_max_score=200;
     $score_prize=800;
     $this->found=false;
-    $sql=sprintf("select `Subject Key`,T.`Email Key`,levenshtein(UPPER(%s),UPPER(`Email`))/LENGTH(`Email`) as dist1 from   `Email Dimension` T left join `Email Bridge` TB  on (TB.`Email Key`=T.`Email Key`)   where  `Subject Type`='Contact'  order by dist1  limit 80"
+    $sql=sprintf("select `Subject Key`,T.`Email Key`,damlev(UPPER(%s),UPPER(`Email`))/LENGTH(`Email`) as dist1 from   `Email Dimension` T left join `Email Bridge` TB  on (TB.`Email Key`=T.`Email Key`)   where  `Subject Type`='Contact'  order by dist1  limit 80"
 		 ,prepare_mysql($raw_data['Email'])
 		 );
     //print $sql;
@@ -269,7 +269,7 @@ class Email extends DB_Table {
 /*       $this->found=false; */
 /*       if(preg_match('/auto/i',$options)){ */
 /* 	// try to find possible matches (assuming the the client comit a mistake) */
-/* 	$sql=sprintf("select `Subject Key`,`Email Key`,`Email Contact Name`,levenshtein(UPPER(%s),UPPER(`Email`)) as dist1,levenshtein(UPPER(SOUNDEX(%s)),UPPER(SOUNDEX(`Email`))) as dist2, `Subject Key`  from `Email Dimension` left join `Email Bridge` on (`Email Bridge`.`Email Key`=`Email Dimension`.`Email Key`)  where dist1<=2 and  `Subject Type`='Contact'  order by dist1,dist2 limit 20" */
+/* 	$sql=sprintf("select `Subject Key`,`Email Key`,`Email Contact Name`,damlev(UPPER(%s),UPPER(`Email`)) as dist1,damlev(UPPER(SOUNDEX(%s)),UPPER(SOUNDEX(`Email`))) as dist2, `Subject Key`  from `Email Dimension` left join `Email Bridge` on (`Email Bridge`.`Email Key`=`Email Dimension`.`Email Key`)  where dist1<=2 and  `Subject Type`='Contact'  order by dist1,dist2 limit 20" */
 /* 		     ,prepare_mysql($raw_data['Email']) */
 /* 		     ,prepare_mysql($raw_data['Email']) */
 /* 		     ); */
@@ -283,7 +283,7 @@ class Email extends DB_Table {
 /* 	    $candidate[$row['Subject Key']]=100/$dist; */
 	  
 /* 	  if($raw_data['Email Contact Name']!=''){ */
-/* 	       $contact_distance=levenshtein(strtolower($raw_data['Email Contact Name']),strtolower($row['Email Contact Name'])); */
+/* 	       $contact_distance=damlev(strtolower($raw_data['Email Contact Name']),strtolower($row['Email Contact Name'])); */
 /* 	       if($contact_distance==0){ */
 /* 		 if($raw_data['Email Contact Name']=='') */
 /* 		   $candidate[$row['Subject Key']]+=50; */
