@@ -82,7 +82,7 @@ class Mensajes extends DB_Table {
       if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   )
 	$this->id=$this->data['Message Key'];
     }
-
+  }
 protected function create($data,$options=''){
   if(!$data){
     $this->new=false;

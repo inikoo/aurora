@@ -57,11 +57,11 @@ if(isset($_REQUEST['_lang']) and is_numeric($_REQUEST['_lang'])){
   }
  }
 
-
-bindtextdomain('kaktus', './locale');
-bind_textdomain_codeset('kaktus', $myconf['encoding']);
-textdomain('kaktus');
-
+if (function_exists('bindtextdomain')){
+	bindtextdomain('kaktus', './locale');	
+	bind_textdomain_codeset('kaktus', $myconf['encoding']);
+	textdomain('kaktus');
+}
 $smarty->assign('theme', $myconf['theme']);
 $smarty->assign('title', _('Authentication'));
 $smarty->assign('welcome', _('Welcome'));

@@ -137,7 +137,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
 
 
-		    <?php}?>
+		    <?php } ?>
 
 
 	    

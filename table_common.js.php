@@ -1,3 +1,7 @@
+<?php 
+
+include_once('set_locales.php');
+?>
 //@author Raul Perusquia <rulovico@gmail.com>
 //Copyright (c) 2009 LW
 

@@ -1,4 +1,6 @@
-<?php/* ../templates//customer_search.tpl */
+<?php
+/* ../templates//customer_search.tpl */
+
 gettext("Id Search");
 
 /* ../templates//customer_search.tpl */
