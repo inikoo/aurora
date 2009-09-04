@@ -271,70 +271,87 @@ function find($raw_data,$options){
     if($mode=='Contact')
       $options.=' anonymous';
     
+    $intl_code_max_score=10;
+    $ext_code_max_score=10;
+    $tel_max_score=80;
+    $exact_match_bonus=10;
+    $this->found=false;
+    
+    $this->found_number=0;
+    $this->found_ext=0;
+    $this->found_intl_code=0;
 
-
-    $sql=sprintf("select T.`Telecom Key`,`Subject Key` from `Telecom Dimension` T left join `Telecom Bridge` TB  on (TB.`Telecom Key`=T.`Telecom Key`) where `Telecom Plain Number`=%s and `Subject Type`='Contact'  "
-		 ,prepare_mysql($data['Telecom Plain Number'])
-		
-		 );
-    //print "$sql\n";
+    if($data['Telecom Area Code'].$data['Telecom Number']!=''){
+     
+    $sql=sprintf("select `Telecom Extension`,`Telecom Country Telephone Code`,`Telecom Extension`,damlev(CONCAT(`Telecom Area Code`,`Telecom Number`),%s)/LENGTH(CONCAT(`Telecom Area Code`,`Telecom Number`)) as dist1,T.`Telecom Key`,`Subject Key` from `Telecom Dimension` T left join `Telecom Bridge` TB  on (TB.`Telecom Key`=T.`Telecom Key`)  where  `Subject Type`='Contact' limit 30 "
+		 ,prepare_mysql($data['Telecom Area Code'].$data['Telecom Number']));
+    //$sql=sprintf("select * from `Telecom Dimension`  limit10 ",prepare_mysql($data['Telecom Area Code'].$data['Telecom Number']));
     $result=mysql_query($sql);
-    $num_results=mysql_num_rows($result);
-    // print "$sql $num_results \n";
-    if($num_results==0){
-      $this->found=false;
+    // print $sql."<br><br>";
+    // echo mysql_errno() . ": " . mysql_error() . "\n";
+    while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+      $contact_key=$row['Subject Key'];
+      if($row['dist1']>=1)
+	break;
       
+      $score=$tel_max_score*exp(-100*$row['dist1']*$row['dist1']);
+      $_score=$score;
+
+      if($row['dist1']==0){
+	$score+=$exact_match_bonus;
+	$this->found_number=1;
+      }
+     
+  
+      if($row['Telecom Country Telephone Code']==$data['Telecom Country Telephone Code']){
+	if($data['Telecom  Country Telephone Code']!=''){
+	  $this->found_intl_code=1;
+	  $score+= $intl_code_max_score*$_score;
+	}
+      }else{
+	if($data['Telecom Country Telephone Code']!='' and $row['Telecom Country Telephone Code']!='')
+	  $this->found_intl_code=-2;
+      }
       
-    }else if($num_results==1){
+      if($row['Telecom Extension']==$data['Telecom Extension']){
+	if($data['Telecom Extension']!=''){
+	  $this->found_ext=2;
+	  $score+= $ext_max_score*$_score;
+	}
+      }else{
+	if($data['Telecom Extension']!='' and $row['Telecom Extension']!='')
+	  $this->found_ext=-2;
+      }
       
+
+       if(isset($this->candidate[$contact_key]))
+	$this->candidate[$contact_key]+=$score;
+      else
+	$this->candidate[$contact_key]=$score;
+
+    }
+    }
+
+
+
+    if($this->found_number and ($this->found_ext>=0 and $this->found_intl_code>=0)  ){
       $this->found=true;
-      $row=mysql_fetch_array($result, MYSQL_ASSOC);
-      //  print "mode $mode  \n";
-      
-      //$subject=new Contact($row['Subject Key']);
       $this->get_data('id',$row['Telecom Key']);
-      if($mode=='Contact in' or $mode=='Company in'){
+      
+       if($mode=='Contact in' or $mode=='Company in'){
 	if(in_array($row['Subject Key'],$in_contact)){
-	    $this->candidate[$row['Subject Key']]=110;
+	
 	    $this->found_in=true;
 	    $this->found_out=false;
 	  }else{
-	    $this->candidate[$row['Subject Key']]=100;
+	  
 	    $this->found_in=false;
 	    $this->found_out=true;
 	  }
-	}else
-	  $this->candidate[$row['Subject Key']]=100;
+	}
 
-      //  print_r($this->candidate);
+    }
 
-      }else{
-	// Found in more than one contact, 
-
-	
-	  
-	  while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-	    
-	    if($mode=='Contact in' or $mode=='Company in'){
-	      if(in_array($row['Subject Key'],$in_contact)){
-		$this->candidate[$row['Subject Key']]=110;
-	      }else{
-		$this->candidate[$row['Subject Key']]=100;
-	      }
-	    }else
-	      $this->candidate[$row['Subject Key']]=100;
-	    
-	  }
-      
-	  
-
-
-	$this->msg=_('Telephone found in')." $num_results ".ngettext('record','records',$num_results);
-	
-	
-      }
-      
-      
 
      
 
