@@ -1,4 +1,5 @@
-﻿
+﻿<?php include_once('set_locales.php');
+?>
 
 var Contact_Changes=0;
 var Contact_Name_Changes=0;

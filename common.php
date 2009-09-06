@@ -1,5 +1,6 @@
 <?php
 define('DEBUG', 1);
+if(DEBUG){ error_reporting(E_ALL);}
 
 //$path = 'classes';set_include_path(get_include_path() . PATH_SEPARATOR . $path);
 require_once 'app_files/db/dns.php'; 
