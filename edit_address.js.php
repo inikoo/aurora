@@ -1,4 +1,5 @@
 <?php
+include_once('set_locales.php');
 include_once('country_address_labels.js.php')
 ?>
 
