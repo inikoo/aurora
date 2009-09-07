@@ -263,7 +263,7 @@ class Address extends DB_Table{
 		$postal_code_max_score=20;
 		$town_max_score=20;
 		$street_max_score=10;
-		
+		$score_found_within_address=80;
 		$country_max_score=10;
 		$max_score=0;
 
@@ -297,7 +297,9 @@ class Address extends DB_Table{
 	
 		
 		unset($country_multiplicity_data);
+		
 
+		
 		if(  ($data['Address Street Name']!=''  and $data['Address Street Number']!=''  ) or $data['Address Building']!=''   ){
 			$order='';
 			$sql_town='';
@@ -312,7 +314,11 @@ class Address extends DB_Table{
 				$order='dist_town';
 				$with_town=true;
 				$len_town=strlen($data['Address Town']);
+
+
 			}
+
+			
 			if($data['Address Postal Code']!=''){
 				$sql_postal_code=sprintf("damlevlim256(UPPER(`Address Postal Code`),%s,3) as dist_postal_code,",prepare_mysql(strtoupper($data['Address Postal Code'])));
 				$sql_where_postal_code=sprintf("and  damlevlim256(UPPER(`Address Postal Code`),%s,3)<3 ",prepare_mysql(strtoupper($data['Address Postal Code'])));
@@ -327,21 +333,22 @@ class Address extends DB_Table{
 			if($data['Address Internal']!=''){
 				$sql_where_internal=sprintf("and `Address Internal`=%s",$data['Address Internal']);
 			}
+			
+			$order=($order!=''?'order by ':'').$order;
 
-			$order=($order!=''?'order ':'').$order;
-
-			$sql=sprintf("select `Address Country Code`,`Address Postal Code`, A.`Address Key` ,%s  %s  `Subject Key` from `Address Dimension` A left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`) where  `Subject Type`='Contact'  and `Address Country Code`=%s %s %s %s  order by  dist_postal_code,dist_town limit 250 "
+			$sql=sprintf("select `Address Country Code`,`Address Postal Code`, A.`Address Key` ,%s  %s  `Subject Key` from `Address Dimension` A left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`) where  `Subject Type`='Contact'  and `Address Country Code`=%s %s %s %s %s limit 250 "
 			,$sql_postal_code
 			,$sql_town
 			,prepare_mysql(strtoupper($data['Address Country Code']))
 			,$sql_where_internal
 			,$sql_where_street_number
-			,$sql_where_postal_code
-
+				     ,$sql_where_postal_code
+				     ,$order
 			);
 			$result=mysql_query($sql);
 
-				
+			//	print $sql;
+			
 			while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
 				$wrong_town_factor=1;
@@ -367,7 +374,7 @@ class Address extends DB_Table{
 						$score+=$found_town_bonus;
 							
 					}
-					$dif=$row['dist1']/$len_town;
+					$dif=$row['dist_town']/$len_town;
 					$wrong_town_factor=(1-$dif)*(1-$dif);
 
 				}
@@ -464,7 +471,7 @@ class Address extends DB_Table{
 				}
 			}
 
-print_r($data);
+			//print_r($data);
 			if($data['Address Street Name']!='' ){
 				$sql=sprintf("select   `Address Country Code`,`Address Town`, A.`Address Key` ,damlev(UPPER(`Address Street Name`),%s) as dist1,`Subject Key` from `Address Dimension` A left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`)  where  `Subject Type`='Contact'     order by dist1  limit 50 "
 				,prepare_mysql(strtoupper($data['Address Street Name']))

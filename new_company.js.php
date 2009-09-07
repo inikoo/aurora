@@ -142,7 +142,8 @@ function get_contact_data(){
 	    company_data['Company Main Plain Email']="";
 }
 
-function get_adddress_data(){
+function get_address_data(){
+   
     company_data['Company Address Line 1']=Dom.get('address_internal').value;
     company_data['Company Address Line 2']=Dom.get('address_building').value;
     company_data['Company Address Line 3']=Dom.get('address_street').value;
@@ -161,6 +162,7 @@ function get_adddress_data(){
 
 
 function get_data(){
+    
     get_company_data();
     get_contact_data();
     get_adddress_data();
@@ -201,7 +203,7 @@ var find_company=function(){
     var json_value = YAHOO.lang.JSON.stringify(company_data); 
 	    
     var request='ar_contacts.php?tipo=find_company&values=' + encodeURIComponent(json_value); 
-    alert(request) ;
+    //  alert(request) ;
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
 	
@@ -275,12 +277,16 @@ function  email_changed(email) {
 
 };
 function  telephone_changed(query) {
-  
-
     get_contact_data();
-    //print_data()
     find_company();
 };
+function  address_changed(query) {
+  
+    get_address_data();
+    find_company();
+    //print_data();
+};
+
 
 
 
@@ -479,10 +485,24 @@ function  telephone_changed(query) {
 	var email_name_oAutoComp = new YAHOO.widget.AutoComplete("Email","Email_Container", email_name_oACDS);
 	email_name_oAutoComp.minQueryLength = 0; 
 	contact_name_oAutoComp.queryDelay = 0.75;
+	
 	var telephone_name_oACDS = new YAHOO.util.FunctionDataSource(telephone_changed);
 	telephone_name_oACDS.queryMatchContains = true;
 	var telephone_name_oAutoComp = new YAHOO.widget.AutoComplete("Telephone","Telephone_Container", telephone_name_oACDS);
 	telephone_name_oAutoComp.minQueryLength = 0; 
+	contact_name_oAutoComp.queryDelay = 0.55;
+
+
+	var town_name_oACDS = new YAHOO.util.FunctionDataSource(address_changed);
+	town_name_oACDS.queryMatchContains = true;
+	var town_name_oAutoComp = new YAHOO.widget.AutoComplete("address_town","address_town_container", town_name_oACDS);
+	town_name_oAutoComp.minQueryLength = 0; 
+	contact_name_oAutoComp.queryDelay = 0.55;
+
+	var postal_code_name_oACDS = new YAHOO.util.FunctionDataSource(address_changed);
+	postal_code_name_oACDS.queryMatchContains = true;
+	var postal_code_name_oAutoComp = new YAHOO.widget.AutoComplete("address_postal_code","address_postal_code_container", postal_code_name_oACDS);
+	postal_code_name_oAutoComp.minQueryLength = 0; 
 	contact_name_oAutoComp.queryDelay = 0.55;
 
     } 
