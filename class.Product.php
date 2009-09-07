@@ -997,13 +997,14 @@ exit("sku not found   $sql\n");
     case('formated price'):
       return money($this->data['Product Price']);
       break;
+
     case('formated unitary rrp'):
       return money($this->data['Product Unitary RRP']);
       break;
- case('Formated Weight'):
+    case('Formated Weight'):
       return number($this->data['Product Net Weight'])."Kg";
       break;
-
+ 
     case('short description'):
       global $myconf;
       $desc='';

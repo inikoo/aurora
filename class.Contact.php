@@ -275,7 +275,14 @@ class Contact extends DB_Table{
     }
  
    
-   
+    //  print "candidates ofter telephone:\n";
+   // print_r($this->candidate);
+ // if(count($this->candidate)>0){
+    //  print "----------------------------- candidates ofter email:\n";
+    //    print_r($this->candidate);
+    // }
+
+
 
 
     if($data['Contact Name']=='')
@@ -296,7 +303,10 @@ class Contact extends DB_Table{
 	   $this->candidate[$key]=$val;
        }
    }
-   
+   // print "----------------------------- candidates ofter address:\n";
+   //   print_r($this->candidate);
+
+
    if(!array_empty( $address_home_data)){
      $address=new Address("find in contact",$address_home_data);
      
@@ -311,9 +321,7 @@ class Contact extends DB_Table{
    }
 
 
-
-
-
+  
 
    if($data['Contact Main Telephone']!=''  ){
      //print "TRing to fund a telefone numner ".$data['Contact Main Telephone']." \n";
@@ -331,13 +339,12 @@ class Contact extends DB_Table{
      }
    }
 
-    // if(count($this->candidate)>0){
-    //  print "candidates ofter telephone:\n";
-    //  print_r($this->candidate);
-    // }
+   
     if($data['Contact Main FAX']!='' ){
       $tel=new Telecom("find in contact country code $country_code",$data['Contact Main FAX']);
       
+      //   print "find in contact country code $country_code ".$data['Contact Main FAX'];
+      //    exit;
       foreach($tel->candidate as $key=>$val){
 	  if($data['Contact Fuzzy']=='Yes')
 	 $val=$val+25;
@@ -1940,9 +1947,13 @@ function add_address($data,$args='principal'){
    }elseif(isset($data['Telecom Key'])){
      $telecom=new Telecom('id',$data['Telecom Key']);
    }else{
+
+
+
      if(!isset($data['Telecom Original Country Key']) or !$data['Telecom Original Country Key'])
        $data['Telecom Original Country Key']=$this->data['Contact Main Country Key'];
      $data['editor']=$this->editor;
+     
      $telecom=new telecom("find in contact create  country code ".$this->data['Contact Main Country Code'],$data);
      
    }
@@ -2107,6 +2118,7 @@ function add_address($data,$args='principal'){
     $data - associated array with Email Dimension fields
     */
   public function update($data,$options=''){
+    //  print_r($data);
     if(isset($data['editor'])){
       foreach($data['editor'] as $key=>$value){
 	
@@ -2116,23 +2128,27 @@ function add_address($data,$args='principal'){
       }
     }
 
-    
+   
 
     $base_data=$this->base_data();
   
     foreach($data as $key=>$value){
       
       
-      if(preg_match('/^(Address.*Data|Contact Main Email Key|Contact Main Telphone Key|Contact Main Mobile Key|Contact Name Components)$/',$key))
+      if(preg_match('/^(Address.*Data|Contact Main Email Key|Contact Main Telphone Key|Contact Main Mobile Key|Contact Name Components)$/',$key)){
 	$this->update_field_switcher($key,$value,$options);
-      elseif(array_key_exists($key,$base_data)){
+	
+	
+      }elseif(array_key_exists($key,$base_data)){
 
 	if($value!=$this->data[$key]){
+	  //print "xxx $key,$value,$options\n";
 	  $this->update_field_switcher($key,$value,$options);
+	  
 	}
       }
     }
-  
+    
     
     if(!$this->updated)
       $this->msg.=' '._('Nothing to be updated')."\n";
@@ -2146,14 +2162,13 @@ function add_address($data,$args='principal'){
 protected function update_field_switcher($field,$value,$options=''){
 
 
-
-
+  
   switch($field){
   case('Contact Main Mobile Key'):
     $this->update_mobile($value);
     break;
   case('Contact Main Telephone Key'):
- 
+   
     $this->update_telephone($value);
     break;
   case('Contact Main FAX Key'):
@@ -2215,26 +2230,27 @@ protected function update_field_switcher($field,$value,$options=''){
     }
     break;  
  case('Contact Main FAX'):
-   // print "y\n";
- $tel_data=Telecom::parse_number($value);
-    $plain_tel=Telecom::plain_number($tel_data);
-    if($plain_tel!=$this->data['Contact Main Plain FAX']){
-   
-      
-      if($this->scope=='Company')
-	$type='Office Fax';
-      else
-	$type='Home Fax';
-      if($plain_tel==''){
+   //  print "y\n";
+   $tel_data=Telecom::parse_number($value);
+   $plain_tel=Telecom::plain_number($tel_data);
+   if($plain_tel!=$this->data['Contact Main Plain FAX']){
+     
+     
+     if($this->scope=='Company')
+       $type='Office Fax';
+     else
+       $type='Home Fax';
+     if($plain_tel==''){
 	// Remove main telephone
-	$this->remove_tel('principal fax');
-      }else{
-	$tel_data=array(
-			'Telecom Raw Number'=>$value
+       $this->remove_tel('principal fax');
+     }else{
+       $tel_data=array(
+		       'Telecom Raw Number'=>$value
 			,'Telecom Type'=>$type
-			);
-	$this->add_tel($tel_data,$options.' principal');
-      }
+		       );
+       //print_r($tel_data);
+       $this->add_tel($tel_data,$options.' principal');
+     }
     }
     break;  
 
@@ -3479,6 +3495,8 @@ parameter:$telecom_key
 
 function update_mobile($telecom_key){
 
+
+
   if($telecom_key==$this->data['Contact Main Mobile Key']){
     $telecom=new Telecom($telecom_key);
     if(!$telecom->id){
@@ -3548,6 +3566,8 @@ function update_telephone($telecom_key){
 }
 
 function update_fax($telecom_key){
+  
+
   $old_telecom_key=$this->data['Contact Main FAX Key'];
   
   $telecom=new Telecom($telecom_key);

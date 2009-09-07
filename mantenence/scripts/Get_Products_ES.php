@@ -29,14 +29,16 @@ date_default_timezone_set('Europe/London');
 
 
 
-
+$_department_code='';
 
 $software='Get_Products.php';
 $version='V 1.0';
 
 $Data_Audit_ETL_Software="$software $version";
 
-$file_name='CIorder.xls';
+
+$file_name='AWorder2002-spain.xls';
+
 $csv_file='tmp.csv';
 exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
 
@@ -45,6 +47,7 @@ $column=0;
 $products=false;
 $count=0;
 
+$last_department_name='';
 
 
 $__cols=array();
@@ -53,7 +56,7 @@ while(($_cols = fgetcsv($handle_csv))!== false){
   if(count($_cols)<=5)
     continue;
 
-  print_r($_cols);
+  //print_r($_cols);
   
 
   $code=$_cols[5];
@@ -73,12 +76,14 @@ while(($_cols = fgetcsv($handle_csv))!== false){
     $__cols[]=$b;
     $__cols[]=$c;
 
-  }elseif($code=='Abono'){
+
+  }elseif(isset($_cols[8]) and preg_match('/Regalo de bienvenida/i',$_cols[8])){
+
     break;
   }
   
-    $__cols[]=$_cols;
- }
+  $__cols[]=$_cols;
+}
 
 
 //print_r($__cols);
@@ -100,24 +105,24 @@ foreach($__cols as $cols){
 
 
 
-  //  print_r($cols);
+  // print_r($cols);
   //exit;
 
   $is_product=true;
   
-  $code=_trim($cols[3]);
+  $code=_trim($cols[3+2]);
 
 
-  $price=$cols[7];
-  $supplier_code=_trim($cols[21]);
+  $price=$cols[7+2];
+  $supplier_code=_trim($cols[23]);
   $part_code=_trim($cols[22]);
-  $supplier_cost=$cols[25];
+  $supplier_cost=$cols[26];
   
 
-
-  // if(preg_match('/EO-/i',$code)){
-  //     print_r($cols);
-  //   exit;   }
+ 
+  // if(preg_match('/Reed-13/i',$code)){
+  // print_r($cols);
+  // exit;   }
   
   $code=_trim($code);
   if($code=='' or !preg_match('/\-/',$code) or preg_match('/total/i',$price)  or  preg_match('/^(pi\-|cxd\-|fw\-04)/i',$code))
@@ -143,7 +148,10 @@ foreach($__cols as $cols){
   
   if($is_product){
     
-    print "$code\r";
+    print " |$code\n";
+
+     if($cols[8]=='' and $price=='')
+    continue;
 
     
     $part_list=array();
@@ -167,19 +175,19 @@ foreach($__cols as $cols){
 	$terms=preg_replace('/^off\s*/i','',$match[0]);
       else
 	//	print "************".$current_promotion."\n";
-      $deals[]=array(
-		     'deal campain name'=>'Gold Reward'
-		     ,'deal trigger'=>'Order'
-		     ,'deal description'=>$allowance.' if last order within 1 calendar month'
-		     ,'deal terms type'=>'Order Interval'
-		     ,'deal terms description'=>'last order within 1 calendar month'
-		     ,'deal allowance description'=>$allowance
-		     ,'deal allowance type'=>'Percentage Off'
-		     ,'deal allowance target'=>'Product'
-		     ,'deal allowance target key'=>''
-		     ,'deal begin date'=>'2006-01-01 00:00:00'
-		     ,'deal expiration date'=>date("Y-m-d 23:59:59",strtotime('now + 1 year'))
-		     );
+	$deals[]=array(
+		       'deal campain name'=>'Club Oro'
+		       ,'deal trigger'=>'Order'
+		       ,'deal description'=>$allowance.' if last order within 1 calendar month'
+		       ,'deal terms type'=>'Order Interval'
+		       ,'deal terms description'=>'last order within 1 calendar month'
+		       ,'deal allowance description'=>$allowance
+		       ,'deal allowance type'=>'Percentage Off'
+		       ,'deal allowance target'=>'Product'
+		       ,'deal allowance target key'=>''
+		       ,'deal begin date'=>'2006-01-01 00:00:00'
+		       ,'deal expiration date'=>date("Y-m-d 23:59:59",strtotime('now + 1 year'))
+		       );
       
       $deals[]=array(
 		     'deal campain name'=>''
@@ -214,70 +222,72 @@ foreach($__cols as $cols){
 		     ,'deal allowance type'=>'Percentage Off'
 		     ,'deal allowance target'=>'Product'
 		     ,'deal allowance target key'=>''
-		        ,'deal begin date'=>'2006-01-01 00:00:00'
-		       ,'deal expiration date'=>date("Y-m-d 23:59:59",strtotime('now + 1 year'))
-		       );
+		     ,'deal begin date'=>'2006-01-01 00:00:00'
+		     ,'deal expiration date'=>date("Y-m-d 23:59:59",strtotime('now + 1 year'))
+		     );
 
-	$deals[]=array(
-		       'deal campain name'=>''
-		       ,'deal trigger'=>'Family'
-		       ,'deal description'=>$allowance.' if '.$terms.' same family'
-		       ,'deal terms type'=>'Family Quantity Ordered'
-		       ,'deal terms description'=>'order '.$terms
-		       ,'deal allowance description'=>$allowance
-		       ,'deal allowance type'=>'Percentage Off'
-		       ,'deal allowance target'=>'Product'
-		       ,'deal allowance target key'=>''
-		       ,'deal begin date'=>'2006-01-01 00:00:00'
-		       ,'deal expiration date'=>date("Y-m-d 23:59:59",strtotime('now + 1 year'))
+      $deals[]=array(
+		     'deal campain name'=>''
+		     ,'deal trigger'=>'Family'
+		     ,'deal description'=>$allowance.' if '.$terms.' same family'
+		     ,'deal terms type'=>'Family Quantity Ordered'
+		     ,'deal terms description'=>'order '.$terms
+		     ,'deal allowance description'=>$allowance
+		     ,'deal allowance type'=>'Percentage Off'
+		     ,'deal allowance target'=>'Product'
+		     ,'deal allowance target key'=>''
+		     ,'deal begin date'=>'2006-01-01 00:00:00'
+		     ,'deal expiration date'=>date("Y-m-d 23:59:59",strtotime('now + 1 year'))
 		       
-		       );	
+		     );	
 	
 
-    }elseif(preg_match('/^buy \d+ get \d+ free$/i',_trim($current_promotion))){
+    }elseif(preg_match('/^Oferta \d+\s?x\s?\d+$/i',_trim($current_promotion))){
       // print $current_promotion." *********\n";
-      preg_match('/buy \d+/i',$current_promotion,$match);
+      preg_match('/Ofertas \d+/i',$current_promotion,$match);
       $buy=_trim(preg_replace('/[^\d]/','',$match[0]));
 
-      preg_match('/get \d+/i',$current_promotion,$match);
+      preg_match('/x\s?\d+/i',$current_promotion,$match);
       $get=_trim(preg_replace('/[^\d]/','',$match[0]));
 
       $deals[]=array(
-		       'deal campain name'=>'BOGOF'
-		       ,'deal trigger'=>'Product'
-		       ,'deal description'=>'buy '.$buy.' get '.$get.' free'
-		       ,'deal terms type'=>'Product Quantity Ordered'
-		       ,'deal terms description'=>'foreach '.$buy
-		       ,'deal allowance description'=>$get.' free'
-		       ,'deal allowance type'=>'Get Free'
-		       ,'deal allowance target'=>'Product'
-		       ,'deal allowance target key'=>''
-		       ,'deal begin date'=>'2006-01-01 00:00:00'
-		       ,'deal expiration date'=>date("Y-m-d 23:59:59",strtotime('now + 1 year'))
+		     'deal campain name'=>'Oferta n x m'
+		     ,'deal trigger'=>'Product'
+		     ,'deal description'=>'buy '.$buy.' get '.$get.' free'
+		     ,'deal terms type'=>'Product Quantity Ordered'
+		     ,'deal terms description'=>'foreach '.$buy
+		     ,'deal allowance description'=>$get.' free'
+		     ,'deal allowance type'=>'Get Free'
+		     ,'deal allowance target'=>'Product'
+		     ,'deal allowance target key'=>''
+		     ,'deal begin date'=>'2006-01-01 00:00:00'
+		     ,'deal expiration date'=>date("Y-m-d 23:59:59",strtotime('now + 1 year'))
 		     );	
 
 
     }else
        $deals=array();
     
-    $units=$cols[5];
+    $units=$cols[7];
     if($units=='' OR $units<=0)
       $units=1;
 
-    $description=_trim( mb_convert_encoding($cols[6], "UTF-8", "ISO-8859-1,UTF-8"));
+    $description=_trim( mb_convert_encoding($cols[8], "UTF-8", "ISO-8859-1,UTF-8"));
 
 
- //    if(preg_match('/wsl-535/i',$code)){
-//       print_r($cols);
-//       exit;
+    //    if(preg_match('/wsl-535/i',$code)){
+    //       print_r($cols);
+    //       exit;
 
-//     }
+    //     }
 
-    $rrp=$cols[16];
-    $supplier_code=_trim($cols[21]);
+    $rrp=$cols[18];
+    $supplier_code=_trim($cols[23]);
 
-    $w=$cols[28];
+    $w=$cols[29];
 
+    
+    
 
 
     if($code=='EO-ST' or $code=='MOL-ST' or  $code=='JBB-st' or $code=='LWHEAT-ST' or  $code=='JBB-St' 
@@ -290,6 +300,9 @@ foreach($__cols as $cols){
 
       
       if(!is_numeric($price) or $price<=0){
+
+
+	continue;
 	print "Price Zero  $code \n";
 	$price=0;
       }
@@ -303,74 +316,115 @@ foreach($__cols as $cols){
 	$price=86.40;
       }
 
-    if(!is_numeric($supplier_cost)  or $supplier_cost<=0 ){
-      //   print_r($cols);
-      print "$code   assumind supplier cost of 40%  \n";
-      $supplier_cost=0.4*$price/$units;
+      if(!is_numeric($supplier_cost)  or $supplier_cost<=0 ){
+	//   print_r($cols);
+	print "$code   assumind supplier cost of 40%  \n";
+	$supplier_cost=0.4*$price/$units;
       
-    }
+      }
 
 
 
-    $product=new Product('code',$code);
-    // print "** ".$product->data['Product Code']."\n";
-    if(!$product->id){
-      if($units=='')
-	$units=1;
+      $product=new Product('code',$code);
+      // print "** ".$product->data['Product Code']."\n";
+      if(!$product->id){
+	if($units=='')
+	  $units=1;
       
-      if(is_numeric($rrp))
-	$rrp=sprintf("%.2f",$rrp*$units);
-      else
-	$rrp='';
-      
-      
-    //   $_f=preg_replace('/s$/i','',$current_fam_name);
-//       //print "$_f\n";
-//       $special_char=preg_replace('/'.str_replace('/','\/',$_f).'$/i','',$description);
-//       $special_char=preg_replace('/'.str_replace('/','\/',$current_fam_name).'$/i','',$special_char);
-      $fam_special_char=$current_fam_name;
-      $special_char=$description;
-
-      if(is_numeric($w)){
-	$w=$w*$units;
-	if($w<0.001 and $w>0)
-	  $_w=0.001;
+	if(is_numeric($rrp))
+	  $rrp=sprintf("%.2f",$rrp*$units);
 	else
-	  $_w=sprintf("%.3f",$w);
-      }else
-	$_w='';
+	  $rrp='';
       
-
       
+	//   $_f=preg_replace('/s$/i','',$current_fam_name);
+	//       //print "$_f\n";
+	//       $special_char=preg_replace('/'.str_replace('/','\/',$_f).'$/i','',$description);
+	//       $special_char=preg_replace('/'.str_replace('/','\/',$current_fam_name).'$/i','',$special_char);
+	$fam_special_char=$current_fam_name;
+	$special_char=$description;
 
-      $data=array(
-		  'product sales state'=>'For sale',
-		  'product type'=>'Normal',
-		  'product record type'=>'Normal',
-		  'product web state'=>'Online Auto',
+	if(is_numeric($w)){
+	  $w=$w*$units;
+	  if($w<0.001 and $w>0)
+	    $_w=0.001;
+	  else
+	    $_w=sprintf("%.3f",$w);
+	}else
+	  $_w='';
+      
+	$department_code='';
+      
+	//	print "$department_name\n ";
+	if($department_name=='Ancient Wisdom Home Fragrance' )
+	  $department_code='Home';
+	if($department_name=='Bathroom Heaven' )
+	  $department_code='Bath';
+	if($department_name=='Departamento de Velas' )
+	  $department_code='Velas';
+	if($department_name=='Exotic Incense Dept Order' )
+	  $department_code='Inc';
+	if(preg_match('/Departamento Mundo Asi/i',$department_name) )
+	  $department_code='Asia';
+	if(preg_match('/Crystal Department/i',$department_name) )
+	  $department_code='Crys';
+	if(preg_match('/Retail Display Stands/i',$department_name) )
+	  $department_code='RDS';
+	if(preg_match('/Departamento de Oportunidades/i',$department_name) )
+	  $department_code='Dop';
+	if(preg_match('/Departamento de Perfume/i',$department_name) )
+	  $department_code='Perf';
+	if(preg_match('/Stoneware/i',$department_name) )
+	  $department_code='Stone';
+	if(preg_match('/Relaxing Music Collection/i',$department_name) )
+	  $department_code='Relax';
+	if(preg_match('/Jewellery Quarter/i',$department_name) )
+	  $department_code='Joyas';
+	if(preg_match('/Paradise Accesories/i',$department_name) )
+	  $department_code='PA';
+	if(preg_match('/Departamento de Bolsas/i',$department_name) )
+	  $department_code='BET';
+	if(preg_match('/Ancient Wisdom Aromatherapy Dept/i',$department_name) )
+	  $department_code='Aterp';
+      	if(preg_match('/Woodware Dept/i',$department_name) )
+	  $department_code='Wood';
+	if($department_code==''){
+	
+	  exit("Name: $department_name\n");
+	
+	}
+	$data=array(
+		    'product store key'=>1,
+		    'product currency'=>'EUR',
+		    'product locale'=>'fr_FR',
+		  
+		    'product sales state'=>'For sale',
+		    'product type'=>'Normal',
+		    'product record type'=>'Normal',
+		    'product web state'=>'Online Auto',
 
-		  'product code'=>$code,
-		  'product price'=>sprintf("%.2f",$price),
-		  'product rrp'=>$rrp,
-		  'product units per case'=>$units,
-		  'product name'=>$description,
-		  'product family code'=>$current_fam_code,
-		  'product family name'=>$current_fam_name,
-		  'product main department name'=>$department_name,
-		  'product main department code'=>$department_name,
-		  'product special characteristic'=>$special_char,
-		  'product family special characteristic'=>$fam_special_char,
-		  'product net weight'=>$_w,
-		  'product gross weight'=>$_w,
-		  'deals'=>$deals
+		    'product code'=>$code,
+		    'product price'=>sprintf("%.2f",$price),
+		    'product rrp'=>$rrp,
+		    'product units per case'=>$units,
+		    'product name'=>$description,
+		    'product family code'=>$current_fam_code,
+		    'product family name'=>$current_fam_name,
+		    'product main department name'=>$department_name,
+		    'product main department code'=>$department_code,
+		    'product special characteristic'=>$special_char,
+		    'product family special characteristic'=>$fam_special_char,
+		    'product net weight'=>$_w,
+		    'product gross weight'=>$_w,
+		    'deals'=>$deals
 		    );
-      //     print_r($cols);
-      //print_r($data);
-      
+	//	print_r($cols);
+	//print_r($data);
+	//exit;
        	$product=new Product('create',$data);
 
-	$scode=_trim($cols[20]);
-	$supplier_code=$cols[21];
+	$scode=_trim($cols[22]);
+	$supplier_code=$cols[23];
        
 	if(preg_match('/^SG\-|^info\-/i',$code))
 	  $supplier_code='AW';
@@ -378,9 +432,9 @@ foreach($__cols as $cols){
 	  $scode=$code;
 
 	$the_supplier_data=array(
-		      'name'=>$supplier_code,
-		      'code'=>$supplier_code,
-		      );
+				 'name'=>$supplier_code,
+				 'code'=>$supplier_code,
+				 );
 
 	if($scode=='SSK-452A' and $supplier_code=='Smen')
 	  $scode='SSK-452A bis';
@@ -414,7 +468,7 @@ foreach($__cols as $cols){
 				   ,'telephone'=>'020 8527 6439'
 				   );
 	}
-if(preg_match('/^puck$/i',$supplier_code)){
+	if(preg_match('/^puck$/i',$supplier_code)){
 	  $supplier_code='Puck';
 	  $the_supplier_data=array(
 				   'Supplier Name'=>'Puckator',
@@ -439,163 +493,163 @@ if(preg_match('/^puck$/i',$supplier_code)){
 				   );
 	}
  
- if(preg_match('/^decent gem$/i',$supplier_code)){
-   $supplier_code='DecGem';
-   $the_supplier_data=array(
-			    'Supplier Name'=>'Decent Gemstone Exports',
-			    'Supplier Code'=>$supplier_code,
-			    'address_data'=>array(
-						  'type'=>'3line'
-						  ,'address1'=>"Besides Balaji's Mandir"
-						  ,'address2'=>'Near Rajputwad'
-						  ,'address3'=>''
-						  ,'town'=>'Khambhat'
-						  ,'town_d1'=>''
-						  ,'town_d2'=>''
-						  ,'country'=>'India'
-						  ,'country_d1'=>''
-						  ,'country_d2'=>''
-						  ,'default_country_id'=>$myconf['country_id']
-						  ,'postcode'=>'388620'
-						  ),
-			    'email'=>'decentstone@sancharnet.in'
-			    ,'telephone'=>'00917926578604'
-			    ,'fax'=>'00917926584997'
-			    );
- }
-  if(preg_match('/^kiran$/i',$supplier_code)){
+	if(preg_match('/^decent gem$/i',$supplier_code)){
+	  $supplier_code='DecGem';
+	  $the_supplier_data=array(
+				   'Supplier Name'=>'Decent Gemstone Exports',
+				   'Supplier Code'=>$supplier_code,
+				   'address_data'=>array(
+							 'type'=>'3line'
+							 ,'address1'=>"Besides Balaji's Mandir"
+							 ,'address2'=>'Near Rajputwad'
+							 ,'address3'=>''
+							 ,'town'=>'Khambhat'
+							 ,'town_d1'=>''
+							 ,'town_d2'=>''
+							 ,'country'=>'India'
+							 ,'country_d1'=>''
+							 ,'country_d2'=>''
+							 ,'default_country_id'=>$myconf['country_id']
+							 ,'postcode'=>'388620'
+							 ),
+				   'email'=>'decentstone@sancharnet.in'
+				   ,'telephone'=>'00917926578604'
+				   ,'fax'=>'00917926584997'
+				   );
+	}
+	if(preg_match('/^kiran$/i',$supplier_code)){
 
-   $the_supplier_data=array(
-			    'Supplier Name'=>'Kiran Agencies',
-			    'Supplier Code'=>$supplier_code,
-			    'address_data'=>array(
-						  'type'=>'3line'
-						  ,'address1'=>"4D Garstin Place"
-						  ,'address2'=>''
-						  ,'address3'=>''
-						  ,'town'=>'Kolkata'
-						  ,'town_d1'=>''
-						  ,'town_d2'=>''
-						  ,'country'=>'India'
-						  ,'country_d1'=>''
-						  ,'country_d2'=>''
-						  ,'default_country_id'=>$myconf['country_id']
-						  ,'postcode'=>'700001'
-						  )
-			    ,'telephone'=>'919830020595'
+	  $the_supplier_data=array(
+				   'Supplier Name'=>'Kiran Agencies',
+				   'Supplier Code'=>$supplier_code,
+				   'address_data'=>array(
+							 'type'=>'3line'
+							 ,'address1'=>"4D Garstin Place"
+							 ,'address2'=>''
+							 ,'address3'=>''
+							 ,'town'=>'Kolkata'
+							 ,'town_d1'=>''
+							 ,'town_d2'=>''
+							 ,'country'=>'India'
+							 ,'country_d1'=>''
+							 ,'country_d2'=>''
+							 ,'default_country_id'=>$myconf['country_id']
+							 ,'postcode'=>'700001'
+							 )
+				   ,'telephone'=>'919830020595'
 
-			    );
- }
+				   );
+	}
  
 
-if(preg_match('/^watkins$/i',$supplier_code)){
+	if(preg_match('/^watkins$/i',$supplier_code)){
 
-   $the_supplier_data=array(
-			    'Supplier Name'=>'Watkins Soap Co Ltd',
-			    'Supplier Code'=>$supplier_code,
-			    'address_data'=>array(
-						  'type'=>'3line'
-						  ,'address1'=>"Reed Willos Trading Est"
-						  ,'address2'=>'Finborough Rd'
-						  ,'address3'=>''
-						  ,'town'=>'Stowmarket'
-						  ,'town_d1'=>''
-						  ,'town_d2'=>''
-						  ,'country'=>'UK'
-						  ,'country_d1'=>''
-						  ,'country_d2'=>''
-						  ,'default_country_id'=>$myconf['country_id']
-						  ,'postcode'=>'IP14 3BU'
-						  )
+	  $the_supplier_data=array(
+				   'Supplier Name'=>'Watkins Soap Co Ltd',
+				   'Supplier Code'=>$supplier_code,
+				   'address_data'=>array(
+							 'type'=>'3line'
+							 ,'address1'=>"Reed Willos Trading Est"
+							 ,'address2'=>'Finborough Rd'
+							 ,'address3'=>''
+							 ,'town'=>'Stowmarket'
+							 ,'town_d1'=>''
+							 ,'town_d2'=>''
+							 ,'country'=>'UK'
+							 ,'country_d1'=>''
+							 ,'country_d2'=>''
+							 ,'default_country_id'=>$myconf['country_id']
+							 ,'postcode'=>'IP14 3BU'
+							 )
 
-			    ,'telephone'=>'01142501012'
-			    ,'fax'=>'01142501006'
-			    );
- }
-
-
-
-if(preg_match('/^decree$/i',$supplier_code)){
-
-   $the_supplier_data=array(
-			    'Supplier Name'=>'Decree Thermo Limited',
-			    'Supplier Code'=>$supplier_code,
-			    'address_data'=>array(
-						  'type'=>'3line'
-						  ,'address1'=>"300 Shalemoor"
-						  ,'address2'=>'Finborough Rd'
-						  ,'address3'=>''
-						  ,'town'=>'Sheffield'
-						  ,'town_d1'=>''
-						  ,'town_d2'=>''
-						  ,'country'=>'UK'
-						  ,'country_d1'=>''
-						  ,'country_d2'=>''
-						  ,'default_country_id'=>$myconf['country_id']
-						  ,'postcode'=>'S3 8AL'
-						  )
-			    ,'contact_name'=>'Zoie'
-			    ,'email'=>'Watkins@soapfactory.fsnet.co.uk'
-			    ,'telephone'=>'01449614445'
-			    ,'fax'=>'014497111643'
-			    );
- }
-
-if(preg_match('/^cbs$/i',$supplier_code)){
-
-   $the_supplier_data=array(
-			    'Supplier Name'=>'Carrierbagshop',
-			    'Supplier Code'=>$supplier_code,
-			    'address_data'=>array(
-						  'type'=>'3line'
-						  ,'address1'=>"Unit C18/21"
-						  ,'address2'=>'Hastingwood trading Estate'
-						  ,'address3'=>'35 Harbet Road'
-						  ,'town'=>'London'
-						  ,'town_d1'=>''
-						  ,'town_d2'=>''
-						  ,'country'=>'UK'
-						  ,'country_d1'=>''
-						  ,'country_d2'=>''
-						  ,'default_country_id'=>$myconf['country_id']
-						  ,'postcode'=>'N18 3HU'
-						  )
-			    ,'contact_name'=>'Neil'
-			    ,'email'=>'info@carrierbagshop.co.uk'
-			    ,'telephone'=>'08712300980'
-			    ,'fax'=>'08712300981'
-			    );
- }
+				   ,'telephone'=>'01142501012'
+				   ,'fax'=>'01142501006'
+				   );
+	}
 
 
-if(preg_match('/^giftw$/i',$supplier_code)){
 
-   $the_supplier_data=array(
-			    'Supplier Name'=>'Giftworks Ltd',
-			    'Supplier Code'=>$supplier_code,
-			    'address_data'=>array(
-						  'type'=>'3line'
-						  ,'address1'=>"Unit 14"
-						  ,'address2'=>'Cheddar Bussiness Park'
-						  ,'address3'=>'Wedmore Road'
-						  ,'town'=>'Cheddar'
-						  ,'town_d1'=>''
-						  ,'town_d2'=>''
-						  ,'country'=>'UK'
-						  ,'country_d1'=>''
-						  ,'country_d2'=>''
-						  ,'default_country_id'=>$myconf['country_id']
-						  ,'postcode'=>'BS27 3EB'
-						  )
-			    ,'email'=>'info@giftworks.tv'
-			    ,'telephone'=>'441934742777'
-			    ,'fax'=>'441934740033'
-			    ,'www.giftworks.tv'
-			    );
- }
+	if(preg_match('/^decree$/i',$supplier_code)){
+
+	  $the_supplier_data=array(
+				   'Supplier Name'=>'Decree Thermo Limited',
+				   'Supplier Code'=>$supplier_code,
+				   'address_data'=>array(
+							 'type'=>'3line'
+							 ,'address1'=>"300 Shalemoor"
+							 ,'address2'=>'Finborough Rd'
+							 ,'address3'=>''
+							 ,'town'=>'Sheffield'
+							 ,'town_d1'=>''
+							 ,'town_d2'=>''
+							 ,'country'=>'UK'
+							 ,'country_d1'=>''
+							 ,'country_d2'=>''
+							 ,'default_country_id'=>$myconf['country_id']
+							 ,'postcode'=>'S3 8AL'
+							 )
+				   ,'contact_name'=>'Zoie'
+				   ,'email'=>'Watkins@soapfactory.fsnet.co.uk'
+				   ,'telephone'=>'01449614445'
+				   ,'fax'=>'014497111643'
+				   );
+	}
+
+	if(preg_match('/^cbs$/i',$supplier_code)){
+
+	  $the_supplier_data=array(
+				   'Supplier Name'=>'Carrierbagshop',
+				   'Supplier Code'=>$supplier_code,
+				   'address_data'=>array(
+							 'type'=>'3line'
+							 ,'address1'=>"Unit C18/21"
+							 ,'address2'=>'Hastingwood trading Estate'
+							 ,'address3'=>'35 Harbet Road'
+							 ,'town'=>'London'
+							 ,'town_d1'=>''
+							 ,'town_d2'=>''
+							 ,'country'=>'UK'
+							 ,'country_d1'=>''
+							 ,'country_d2'=>''
+							 ,'default_country_id'=>$myconf['country_id']
+							 ,'postcode'=>'N18 3HU'
+							 )
+				   ,'contact_name'=>'Neil'
+				   ,'email'=>'info@carrierbagshop.co.uk'
+				   ,'telephone'=>'08712300980'
+				   ,'fax'=>'08712300981'
+				   );
+	}
 
 
- if(preg_match('/^Sheikh$/i',$supplier_code)){
+	if(preg_match('/^giftw$/i',$supplier_code)){
+
+	  $the_supplier_data=array(
+				   'Supplier Name'=>'Giftworks Ltd',
+				   'Supplier Code'=>$supplier_code,
+				   'address_data'=>array(
+							 'type'=>'3line'
+							 ,'address1'=>"Unit 14"
+							 ,'address2'=>'Cheddar Bussiness Park'
+							 ,'address3'=>'Wedmore Road'
+							 ,'town'=>'Cheddar'
+							 ,'town_d1'=>''
+							 ,'town_d2'=>''
+							 ,'country'=>'UK'
+							 ,'country_d1'=>''
+							 ,'country_d2'=>''
+							 ,'default_country_id'=>$myconf['country_id']
+							 ,'postcode'=>'BS27 3EB'
+							 )
+				   ,'email'=>'info@giftworks.tv'
+				   ,'telephone'=>'441934742777'
+				   ,'fax'=>'441934740033'
+				   ,'www.giftworks.tv'
+				   );
+	}
+
+
+	if(preg_match('/^Sheikh$/i',$supplier_code)){
 	  $supplier_code='Sheikh';
 	  $the_supplier_data=array(
 				   'Supplier Name'=>'Sheikh Enterprises',
@@ -617,7 +671,7 @@ if(preg_match('/^giftw$/i',$supplier_code)){
 
 				   );
 	}
-if(preg_match('/^Gopal$/i',$supplier_code)){
+	if(preg_match('/^Gopal$/i',$supplier_code)){
 	  $supplier_code='Gopal';
 	  $the_supplier_data=array(
 				   'Supplier Name'=>'Gopal Corporation Limited',
@@ -640,7 +694,7 @@ if(preg_match('/^Gopal$/i',$supplier_code)){
 				   );
 	}
 
-  if(preg_match('/^CraftS$/i',$supplier_code)){
+	if(preg_match('/^CraftS$/i',$supplier_code)){
 	  $supplier_code='CraftS';
 	  $the_supplier_data=array(
 				   'Supplier Name'=>'Craftstones Europe Ltd',
@@ -666,7 +720,7 @@ if(preg_match('/^Gopal$/i',$supplier_code)){
 				   );
 	}
 
- if(preg_match('/^Simpson$/i',$supplier_code)){
+	if(preg_match('/^Simpson$/i',$supplier_code)){
 	  $supplier_code='CraftS';
 	  $the_supplier_data=array(
 				   'Supplier Name'=>'Simpson Packaging',
@@ -695,7 +749,7 @@ if(preg_match('/^Gopal$/i',$supplier_code)){
 
 
 
- if(preg_match('/^amanis$/i',$supplier_code)){
+	if(preg_match('/^amanis$/i',$supplier_code)){
 	  $supplier_code='AmAnis';
 	  $the_supplier_data=array(
 				   'Supplier Name'=>'Amanis',
@@ -723,7 +777,7 @@ if(preg_match('/^Gopal$/i',$supplier_code)){
 	}
 
 
-if(preg_match('/^amanis$/i',$supplier_code)){
+	if(preg_match('/^amanis$/i',$supplier_code)){
 	  $supplier_code='AmAnis';
 	  $the_supplier_data=array(
 				   'Supplier Name'=>'Amanis',
@@ -751,7 +805,7 @@ if(preg_match('/^amanis$/i',$supplier_code)){
 	}
 
 
-if(preg_match('/^Wenzels$/i',$supplier_code)){
+	if(preg_match('/^Wenzels$/i',$supplier_code)){
 	  $supplier_code='Wenzels';
 	  $the_supplier_data=array(
 				   'Supplier Name'=>'Richard Wenzel GMBH & CO KG',
@@ -811,19 +865,19 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 				   'Supplier Name'=>'Elements Bodycare Ltd'
 				   ,'Supplier Code'=>$supplier_code
 				   ,'address_data'=>array(
-							 'type'=>'3line'
-							 ,'address1'=>'Unit 2'
-							 ,'address2'=>'Carbrook Bussiness Park'
-							 ,'address3'=>'Dunlop Street'
-							 ,'town'=>'Sheffield'
-							 ,'town_d1'=>''
-							 ,'town_d2'=>''
-							 ,'country'=>'UK'
-							 ,'country_d1'=>''
-							 ,'country_d2'=>''
-							 ,'default_country_id'=>$myconf['country_id']
-							 ,'postcode'=>'S9 2HR'
-							 )
+							  'type'=>'3line'
+							  ,'address1'=>'Unit 2'
+							  ,'address2'=>'Carbrook Bussiness Park'
+							  ,'address3'=>'Dunlop Street'
+							  ,'town'=>'Sheffield'
+							  ,'town_d1'=>''
+							  ,'town_d2'=>''
+							  ,'country'=>'UK'
+							  ,'country_d1'=>''
+							  ,'country_d2'=>''
+							  ,'default_country_id'=>$myconf['country_id']
+							  ,'postcode'=>'S9 2HR'
+							  )
 
 				   ,'telephone'=>'011422434000'
 				   ,'www'=>'www.elements-bodycare.co.uk'
@@ -838,19 +892,19 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 				   'Supplier Name'=>'Paradise Music Ltd'
 				   ,'Supplier Code'=>$supplier_code
 				   ,'address_data'=>array(
-							 'type'=>'3line'
-							 ,'address1'=>'PO BOX 998'
-							 ,'address2'=>'Carbrook Bussiness Park'
-							 ,'address3'=>'Dunlop Street'
-							 ,'town'=>'Tring'
-							 ,'town_d1'=>''
-							 ,'town_d2'=>''
-							 ,'country'=>'UK'
-							 ,'country_d1'=>''
-							 ,'country_d2'=>''
-							 ,'default_country_id'=>$myconf['country_id']
-							 ,'postcode'=>'HP23 4ZJ'
-							 )
+							  'type'=>'3line'
+							  ,'address1'=>'PO BOX 998'
+							  ,'address2'=>'Carbrook Bussiness Park'
+							  ,'address3'=>'Dunlop Street'
+							  ,'town'=>'Tring'
+							  ,'town_d1'=>''
+							  ,'town_d2'=>''
+							  ,'country'=>'UK'
+							  ,'country_d1'=>''
+							  ,'country_d2'=>''
+							  ,'default_country_id'=>$myconf['country_id']
+							  ,'postcode'=>'HP23 4ZJ'
+							  )
 
 				   ,'telephone'=>'01296668193'
 
@@ -863,19 +917,19 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 				   'Supplier Name'=>'Manchester Candle Company'
 				   ,'Supplier Code'=>$supplier_code
 				   ,'address_data'=>array(
-							 'type'=>'3line'
-							 ,'address1'=>'The Manchester Group'
-							 ,'address2'=>'Kenwood Road'
-							 ,'address3'=>''
-							 ,'town'=>'North Reddish'
-							 ,'town_d1'=>''
-							 ,'town_d2'=>''
-							 ,'country'=>'UK'
-							 ,'country_d1'=>''
-							 ,'country_d2'=>''
-							 ,'default_country_id'=>$myconf['country_id']
-							 ,'postcode'=>'SK5 6PH'
-							 )
+							  'type'=>'3line'
+							  ,'address1'=>'The Manchester Group'
+							  ,'address2'=>'Kenwood Road'
+							  ,'address3'=>''
+							  ,'town'=>'North Reddish'
+							  ,'town_d1'=>''
+							  ,'town_d2'=>''
+							  ,'country'=>'UK'
+							  ,'country_d1'=>''
+							  ,'country_d2'=>''
+							  ,'default_country_id'=>$myconf['country_id']
+							  ,'postcode'=>'SK5 6PH'
+							  )
 				   ,'contact_name'=>'Brian'
 				   ,'telephone'=>'01614320811'
 				   ,'fax'=>'01614310328'
@@ -889,19 +943,19 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 				   'Supplier Name'=>'Aquavision Music Ltd'
 				   ,'Supplier Code'=>$supplier_code
 				   ,'address_data'=>array(
-							 'type'=>'3line'
-							 ,'address1'=>'PO BOX 2796'
-							 ,'address2'=>''
-							 ,'address3'=>''
-							 ,'town'=>'Iver'
-							 ,'town_d1'=>''
-							 ,'town_d2'=>''
-							 ,'country'=>'UK'
-							 ,'country_d1'=>''
-							 ,'country_d2'=>''
-							 ,'default_country_id'=>$myconf['country_id']
-							 ,'postcode'=>'SL0 9ZR'
-							 )
+							  'type'=>'3line'
+							  ,'address1'=>'PO BOX 2796'
+							  ,'address2'=>''
+							  ,'address3'=>''
+							  ,'town'=>'Iver'
+							  ,'town_d1'=>''
+							  ,'town_d2'=>''
+							  ,'country'=>'UK'
+							  ,'country_d1'=>''
+							  ,'country_d2'=>''
+							  ,'default_country_id'=>$myconf['country_id']
+							  ,'postcode'=>'SL0 9ZR'
+							  )
 
 				   ,'telephone'=>'01753653188'
 				   ,'fax'=>'01753655059'
@@ -916,19 +970,19 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 				   'Supplier Name'=>'CXD Designs Ltd'
 				   ,'Supplier Code'=>$supplier_code
 				   ,'address_data'=>array(
-							 'type'=>'3line'
-							 ,'address1'=>'Unit 2'
-							 ,'address2'=>'Imperial Park'
-							 ,'address3'=>'Towerfiald Road'
-							 ,'town'=>'Shoeburyness'
-							 ,'town_d1'=>''
-							 ,'town_d2'=>''
-							 ,'country'=>'UK'
-							 ,'country_d1'=>'Essex'
-							 ,'country_d2'=>''
-							 ,'default_country_id'=>$myconf['country_id']
-							 ,'postcode'=>'SS3 9QT'
-							 )
+							  'type'=>'3line'
+							  ,'address1'=>'Unit 2'
+							  ,'address2'=>'Imperial Park'
+							  ,'address3'=>'Towerfiald Road'
+							  ,'town'=>'Shoeburyness'
+							  ,'town_d1'=>''
+							  ,'town_d2'=>''
+							  ,'country'=>'UK'
+							  ,'country_d1'=>'Essex'
+							  ,'country_d2'=>''
+							  ,'default_country_id'=>$myconf['country_id']
+							  ,'postcode'=>'SS3 9QT'
+							  )
 
 				   ,'telephone'=>'01702292028'
 				   ,'fax'=>'01702298486'
@@ -941,19 +995,19 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 				   'Supplier Name'=>'Costa Imports'
 				   ,'Supplier Code'=>$supplier_code
 				   ,'address_data'=>array(
-							 'type'=>'3line'
-							 ,'address1'=>'Nave 8'
-							 ,'address2'=>'Polígono Ind. Alhaurín de la Torre Fase 1'
-							 ,'address3'=>'Paseo de la Hispanidad'
-							 ,'town'=>'Málaga'
-							 ,'town_d1'=>''
-							 ,'town_d2'=>''
-							 ,'country'=>'Spain'
-							 ,'country_d1'=>''
-							 ,'country_d2'=>''
-							 ,'default_country_id'=>$myconf['country_id']
-							 ,'postcode'=>'29130'
-							 )
+							  'type'=>'3line'
+							  ,'address1'=>'Nave 8'
+							  ,'address2'=>'Polígono Ind. Alhaurín de la Torre Fase 1'
+							  ,'address3'=>'Paseo de la Hispanidad'
+							  ,'town'=>'Málaga'
+							  ,'town_d1'=>''
+							  ,'town_d2'=>''
+							  ,'country'=>'Spain'
+							  ,'country_d1'=>''
+							  ,'country_d2'=>''
+							  ,'default_country_id'=>$myconf['country_id']
+							  ,'postcode'=>'29130'
+							  )
 				   ,'contact_name'=>'Carlos'
 				   ,'email'=>'carlos@aw-regalos.com'
 				   ,'telephone'=>'(+34) 952 417 609'
@@ -966,19 +1020,19 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 				   'Supplier Name'=>'Salco Group'
 				   ,'Supplier Code'=>$supplier_code
 				   ,'address_data'=>array(
-							 'type'=>'3line'
-							 ,'address1'=>'Salco House'
-							 ,'address2'=>'5 Central Road'
-							 ,'address3'=>''
-							 ,'town'=>'Harlow'
-							 ,'town_d1'=>''
-							 ,'town_d2'=>''
-							 ,'country'=>'UK'
-							 ,'country_d1'=>'Essex'
-							 ,'country_d2'=>''
-							 ,'default_country_id'=>$myconf['country_id']
-							 ,'postcode'=>'CM20 2ST'
-							 )
+							  'type'=>'3line'
+							  ,'address1'=>'Salco House'
+							  ,'address2'=>'5 Central Road'
+							  ,'address3'=>''
+							  ,'town'=>'Harlow'
+							  ,'town_d1'=>''
+							  ,'town_d2'=>''
+							  ,'country'=>'UK'
+							  ,'country_d1'=>'Essex'
+							  ,'country_d2'=>''
+							  ,'default_country_id'=>$myconf['country_id']
+							  ,'postcode'=>'CM20 2ST'
+							  )
 				   //				   ,'contact_name'=>'Carlos'
 				   ,'email'=>'alco@salcogroup.com'
 				   ,'telephone'=>'01279 439991'
@@ -990,19 +1044,19 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 				   'Supplier Name'=>'APAC Packaging Ltd'
 				   ,'Supplier Code'=>$supplier_code
 				   ,'address_data'=>array(
-							 'type'=>'3line'
-							 ,'address1'=>'Loughborough Road'
-							 ,'address2'=>''
-							 ,'address3'=>''
-							 ,'town'=>'Leicester'
-							 ,'town_d1'=>'Rothley'
-							 ,'town_d2'=>''
-							 ,'country'=>'UK'
-							 ,'country_d1'=>''
-							 ,'country_d2'=>''
-							 ,'default_country_id'=>$myconf['country_id']
-							 ,'postcode'=>'LE7 7NL'
-							 )
+							  'type'=>'3line'
+							  ,'address1'=>'Loughborough Road'
+							  ,'address2'=>''
+							  ,'address3'=>''
+							  ,'town'=>'Leicester'
+							  ,'town_d1'=>'Rothley'
+							  ,'town_d2'=>''
+							  ,'country'=>'UK'
+							  ,'country_d1'=>''
+							  ,'country_d2'=>''
+							  ,'default_country_id'=>$myconf['country_id']
+							  ,'postcode'=>'LE7 7NL'
+							  )
 				   //				   ,'contact_name'=>'Carlos'
 				   ,'email'=>''
 				   ,'telephone'=>'0116 230 2555'
@@ -1028,10 +1082,10 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 	}
 	$supplier=new Supplier('code',$supplier_code);
 	if(!$supplier->id){
-	  print "neew: $supplier_code";
+	  //print "neew: $supplier_code";
 	  $supplier=new Supplier('new',$the_supplier_data);
 	}
-	print "$supplier_code";
+	//print "$supplier_code";
 
 
 
@@ -1102,27 +1156,57 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 	$part->load('used in');
 	$part->load('supplied by');
     
- }
+      }
     
     }
   }else{
 
+
+    
+
     $new_family=true;
     
-    // print "Col $column\n";
-    //print_r($cols);
-    if($cols[3]!='' and $cols[6]!=''){
-      $fam_code=$cols[3];
-      $fam_name=_trim( mb_convert_encoding($cols[6], "UTF-8", "ISO-8859-1,UTF-8"));
+    //   print "Col $column\n";
+    //  print_r($cols);
+
+    if($department_name=='Paradise Accesories'){
+      if(preg_match('/Bolsos con Parejo/',$cols[8])){
+	$fam_code='PBP';
+	$fam_name=_trim( mb_convert_encoding($cols[8], "UTF-8", "ISO-8859-1,UTF-8"));
+      }
+      if(preg_match('/Bolsos/',$cols[8])){
+	$fam_code='PB';
+	$fam_name=_trim( mb_convert_encoding($cols[8], "UTF-8", "ISO-8859-1,UTF-8"));
+      }
+       if(preg_match('/Pulseras hechas a mano Paradise/i',$cols[8])){
+	$fam_code='Ppul';
+	$fam_name=_trim( mb_convert_encoding($cols[8], "UTF-8", "ISO-8859-1,UTF-8"));
+      }
+  if(preg_match('/Originales Collares hechos a mano Paradise/i',$cols[8])){
+	$fam_code='Pcol';
+	$fam_name=_trim( mb_convert_encoding($cols[8], "UTF-8", "ISO-8859-1,UTF-8"));
+      }
+  if(preg_match('/Pendientes Paradise/i',$cols[8])){
+	$fam_code='Ppen';
+	$fam_name=_trim( mb_convert_encoding($cols[8], "UTF-8", "ISO-8859-1,UTF-8"));
+      }
+
+
+    }
+
+
+    if($cols[5]!='' and $cols[8]!=''){
+      $fam_code=$cols[5];
+      $fam_name=_trim( mb_convert_encoding($cols[8], "UTF-8", "ISO-8859-1,UTF-8"));
       $fam_position=$column;
 
       
     }
     
-    if(preg_match('/off\s+\d+\s+or\s+more|\s*\d+\s*or more\s*\d+|buy \d+ get \d+ free/i',_trim($cols[6]))){
+    if(preg_match('/off\s+\d+\s+or\s+more|\s*\d+\s*or more\s*\d+|buy \d+ get \d+ free|\d+ o m.as y obtendr.s \s+\% descuanto/i',_trim($cols[8]))){
       
 
-      $promotion=$cols[6];
+      $promotion=$cols[8];
 
       $promotion=preg_replace('/^\s*order\s*/i','',$promotion);
       $promotion=preg_replace('/discount\s*$/i','',$promotion);
@@ -1132,23 +1216,33 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
       $promotion_position=$column;
       // print "*********** Promotion $promotion $promotion_position \n";
     }
-    if($cols[3]=='' and $cols[6]==''){
+    if($cols[5]=='' and $cols[8]==''){
       $blank_position=$column;
     }
 
-    if($cols[6]!='' and preg_match('/Sub Total/i',$cols[11])){
-      $department_name=$cols[6];
+
+    
+
+    if( ($cols[8]!='' and preg_match('/Sub Total/i',$cols[13])) or preg_match('/Bathroom Heaven/',$cols[8]) or $cols[8]=='Paradise Accesories' or preg_match('/Departamento de Bolsas/',$cols[8]) ){
+      
+     
+      $department_name=$cols[8];
       $department_position=$column;
+  
+      //  print_r($cols);
+      // if($department_name!='Ancient Wisdom Home Fragrance')
+      
+
     }
     
-    $posible_fam_code=$cols[3];
-    $posible_fam_name=$cols[6];
+    $posible_fam_code=$cols[5];
+    $posible_fam_name=$cols[8];
   }
   
 
   
   $column++;
-  }
+}
 
 
 

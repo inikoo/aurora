@@ -214,7 +214,7 @@ class Customer extends DB_Table{
 
     }
     
-    
+
     // print "$options";
     if($this->found){
       $this->get_data('id',$this->found_key);
@@ -224,7 +224,7 @@ class Customer extends DB_Table{
     if($create){
     
       if($this->found){
-	
+
 	if($raw_data['Customer Type']=='Person'){
 	  $child=new Contact ('find in customer create',$raw_data);
 	}else{
@@ -241,7 +241,7 @@ class Customer extends DB_Table{
 	  //print_r($raw_data);
 	  //print_r( $child->translate_data($raw_data,'from customer')  );
 	  //print "-----------------------------------------------\n";
-
+	 
 	  if($raw_data['Customer Type']=='Person'){
 
 	    $contact=new contact('find in customer create',$raw_data);

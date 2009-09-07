@@ -331,12 +331,14 @@ class Address extends DB_Table{
 				$sql_where_street_number=sprintf("and  damlevlim256(UPPER(`Address Building`),%s,6)<6 ",prepare_mysql(strtoupper($data['Address Building'])));
 			}
 			if($data['Address Internal']!=''){
-				$sql_where_internal=sprintf("and `Address Internal`=%s",$data['Address Internal']);
+				$sql_where_internal=sprintf("and `Address Internal`=%s"
+							    ,prepare_mysql($data['Address Internal'],false)
+							    );
 			}
 			
 			$order=($order!=''?'order by ':'').$order;
 
-			$sql=sprintf("select `Address Country Code`,`Address Postal Code`, A.`Address Key` ,%s  %s  `Subject Key` from `Address Dimension` A left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`) where  `Subject Type`='Contact'  and `Address Country Code`=%s %s %s %s %s limit 250 "
+			$sql=sprintf("select `Address Town`,`Address Country Code`,`Address Postal Code`, A.`Address Key` ,%s  %s  `Subject Key` from `Address Dimension` A left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`) where  `Subject Type`='Contact'  and `Address Country Code`=%s %s %s %s %s limit 250 "
 			,$sql_postal_code
 			,$sql_town
 			,prepare_mysql(strtoupper($data['Address Country Code']))
@@ -346,9 +348,7 @@ class Address extends DB_Table{
 				     ,$order
 			);
 			$result=mysql_query($sql);
-
-			//	print $sql;
-			
+			//	print "$sql\n";
 			while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
 				$wrong_town_factor=1;
@@ -358,6 +358,7 @@ class Address extends DB_Table{
 				$contact_key=$row['Subject Key'];
 
 				$score=$score_found_within_address;
+				$wrong_postal_code_factor=1;
 				if($with_postal_code){
 					if($row['dist_postal_code']==0){
 						$score+=$found_postal_code_bonus;
@@ -375,21 +376,36 @@ class Address extends DB_Table{
 							
 					}
 					$dif=$row['dist_town']/$len_town;
+					if($dif>1)
+					  $dif=1;
+					//print "xxxxx $dif\n";
 					$wrong_town_factor=(1-$dif)*(1-$dif);
 
 				}
-
+				//print "$score $wrong_postal_code_factor $wrong_town_factor\n";
 				$score=$score*$wrong_postal_code_factor*$wrong_town_factor;
+				
+			
+				//	print_r($this->candidate);
+				if(isset($this->candidate[$contact_key])){
+				  // print "*** $score \n  ";
+				  $this->candidate[$contact_key]+=$score;
+				  if($this->candidate[$contact_key]<$score)
+				    $this->candidate[$contact_key]=$score;
+				}else{
+				  // print "-- $score \n";
+				  $this->candidate[$contact_key]=$score;
+				}
+				//	print_r($this->candidate);
 
-				if(isset($this->candidate[$contact_key]))
-				$this->candidate[$contact_key]+=$score;
-				else
-				$this->candidate[$contact_key]=$score;
-					
 				$max_score=$score;
 			}
 
 		}
+
+
+		//	print_r($this->candidate);
+
 		if($max_score>85)
 		$nothing_found=false;
 		if($nothing_found){
@@ -464,7 +480,8 @@ class Address extends DB_Table{
 
 
 					if(isset($this->candidate[$contact_key]))
-					$this->candidate[$contact_key]+=$score;
+					if($this->candidate[$contact_key]<$score)
+					  $this->candidate[$contact_key]=$score;
 					else
 					$this->candidate[$contact_key]=$score;
 
@@ -497,7 +514,8 @@ class Address extends DB_Table{
 
 
 					if(isset($this->candidate[$contact_key]))
-					$this->candidate[$contact_key]+=$score;
+					  if($this->candidate[$contact_key]<$score)
+					    $this->candidate[$contact_key]=$score;
 					else
 					$this->candidate[$contact_key]=$score;
 
@@ -668,6 +686,9 @@ class Address extends DB_Table{
 
 
 
+
+		//print_r($this->candidate);
+		//exit("");
 
 
 		if($update){
