@@ -7,9 +7,10 @@ class TimeSeries  {
   public $name_key=0;
   public $name_key2=0;
   public $values=array();
+  public $error=false;
+
   function TimeSeries($arg){
-
-
+  
   if(!is_array($arg) or !(count($arg)==2  or count($arg)==3)  )
       return;
    
@@ -52,11 +53,47 @@ class TimeSeries  {
 
     if(preg_match('/invoices?/i',$this->name)){
        $this->name='invoices';
-       $this->date_field='Invoice Date';
-       $this->table='Invoice Dimension';
-       $this->value_field='Invoice Total Net Amount';
+       $this->count='count(*)';
+       $this->date_field='`Invoice Date`';
+       $this->table='`Invoice Dimension`';
+       $this->value_field='`Invoice Total Net Amount`';
        $this->max_forecast_bins=12;
-      }
+    }
+    if(preg_match('/product department \(\d+\) sales?/i',$this->name,$match)){
+      if(preg_match('/\(.+\)/',$match[0],$keys)){
+	
+	//	print " =".$keys[0]."-  ";
+	  $keys=preg_replace('/\(|\)/','',$keys[0]);
+	  //	  print " =".$keys."-  ";
+
+	  $keys=preg_split('/\s*,\s*/',$keys);
+	  if(count($keys)==0){
+	    $this->error=true;
+	    return;
+	  }
+	  //	  print_r($keys);
+
+	  $department_keys='(';
+	  foreach($keys as $key){
+	    $department_keys.=sprintf("%d,",$key);
+	  }
+	  $department_keys=preg_replace('/,$/',')',$department_keys);
+	}
+      
+      $this->name='PDS'.$department_keys;
+      $this->count='CEIL(sum(`Shipped Quantity`))';
+      $this->date_field='`Invoice Date`';
+      $this->table='`Order Transaction Fact` OTF left join `Product Dimension` P  on (OTF.`Product Key`=P.`Product Key`)  ';
+      $this->value_field="`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`-`Invoice Transaction Net Refund Amount`";
+      $this->where=sprintf(" and `Product Main Department Key` in %s ",$department_keys);
+      $this->max_forecast_bins=12;
+      //   print $this->where;
+      //   exit;
+
+ }
+
+
+
 
   }
 
@@ -314,16 +351,20 @@ $sql=sprintf("SELECT `First Day` as date ,substring(`First Day`, 1,7) AS dd  FRO
    }
 
 
-
-  $sql=sprintf("SELECT count(*) as number,`%s` as date ,substring(`%s`, 1,7) AS dd ,sum(`%s`) as value FROM `%s` where `%s`>%s  and `%s`<%s  GROUP BY dd limit 10000"
+   
+   
+   
+  $sql=sprintf("SELECT %s as number,%s as date ,substring(%s, 1,7) AS dd ,sum(%s) as value FROM %s where %s>%s  and %s<%s %s  GROUP BY dd limit 10000"
+	       ,$this->count
 	       ,$this->date_field,$this->date_field
 	       ,$this->value_field
 	       ,$this->table
 	       ,$this->date_field,prepare_mysql($this->start_date)
 	       ,$this->date_field,prepare_mysql(date("Y-m-d"))
+	       ,$this->where
 	     );
  
-
+  print "$sql\n";
  
   $res=mysql_query($sql);
   

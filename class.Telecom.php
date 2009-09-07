@@ -283,18 +283,23 @@ function find($raw_data,$options){
 
     if($data['Telecom Area Code'].$data['Telecom Number']!=''){
      
-    $sql=sprintf("select `Telecom Extension`,`Telecom Country Telephone Code`,`Telecom Extension`,damlev(CONCAT(`Telecom Area Code`,`Telecom Number`),%s)/LENGTH(CONCAT(`Telecom Area Code`,`Telecom Number`)) as dist1,T.`Telecom Key`,`Subject Key` from `Telecom Dimension` T left join `Telecom Bridge` TB  on (TB.`Telecom Key`=T.`Telecom Key`)  where  `Subject Type`='Contact' limit 30 "
-		 ,prepare_mysql($data['Telecom Area Code'].$data['Telecom Number']));
+      $len_tel=strlen($data['Telecom Area Code'].$data['Telecom Number']);
+      
+    $sql=sprintf("select `Telecom Extension`,`Telecom Country Telephone Code`,`Telecom Extension`,damlevlim256(CONCAT(`Telecom Area Code`,`Telecom Number`),%s,4) as dist1,T.`Telecom Key`,`Subject Key` from `Telecom Dimension` T left join `Telecom Bridge` TB  on (TB.`Telecom Key`=T.`Telecom Key`)  where  `Subject Type`='Contact' and  damlevlim256(CONCAT(`Telecom Area Code`,`Telecom Number`),%s,4)<4  order by dist1  limit 100 "
+		 ,prepare_mysql($data['Telecom Area Code'].$data['Telecom Number'])
+		 ,prepare_mysql($data['Telecom Area Code'].$data['Telecom Number'])
+		 );
+    
     //$sql=sprintf("select * from `Telecom Dimension`  limit10 ",prepare_mysql($data['Telecom Area Code'].$data['Telecom Number']));
     $result=mysql_query($sql);
     // print $sql."<br><br>";
     // echo mysql_errno() . ": " . mysql_error() . "\n";
     while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
       $contact_key=$row['Subject Key'];
-      if($row['dist1']>=1)
+      if($row['dist1']>3)
 	break;
-      
-      $score=$tel_max_score*exp(-100*$row['dist1']*$row['dist1']);
+      $dist=$row['dist1']/$len_tel;
+      $score=$tel_max_score*exp(-100*$dist*$dist);
       $_score=$score;
 
       if($row['dist1']==0){
@@ -304,7 +309,7 @@ function find($raw_data,$options){
      
   
       if($row['Telecom Country Telephone Code']==$data['Telecom Country Telephone Code']){
-	if($data['Telecom  Country Telephone Code']!=''){
+	if($data['Telecom Country Telephone Code']!=''){
 	  $this->found_intl_code=1;
 	  $score+= $intl_code_max_score*$_score;
 	}
@@ -329,37 +334,41 @@ function find($raw_data,$options){
       else
 	$this->candidate[$contact_key]=$score;
 
-    }
-    }
 
 
 
-    if($this->found_number and ($this->found_ext>=0 and $this->found_intl_code>=0)  ){
-      $this->found=true;
-      $this->get_data('id',$row['Telecom Key']);
-      
-       if($mode=='Contact in' or $mode=='Company in'){
+
+       if(!$this->found and(  $this->found_number and ($this->found_ext>=0 and $this->found_intl_code>=0) ) ){
+	 $this->found=true;
+	 $this->get_data('id',$row['Telecom Key']);
+	 
+	 //print "----> ".$row['Telecom Key']."\n";
+	 if($mode=='Contact in' or $mode=='Company in'){
 	if(in_array($row['Subject Key'],$in_contact)){
-	
-	    $this->found_in=true;
-	    $this->found_out=false;
-	  }else{
 	  
-	    $this->found_in=false;
-	    $this->found_out=true;
-	  }
+	  $this->found_in=true;
+	  $this->found_out=false;
+	}else{
+	  
+	  $this->found_in=false;
+	  $this->found_out=true;
 	}
+	 }
 
+       }
+       
+       
+    }
     }
 
-
-     
+    
 
    
   if($create){
-      if($this->found)
+    if($this->found){
+
 	$this->update($data,$options);
-      else{
+    }else{
 	// not found
 	if($auto){
 	  usort($this->candidate);

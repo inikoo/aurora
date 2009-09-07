@@ -111,7 +111,12 @@ class Store{
     case('Total Products'):
      return $this->data['Store For Sale Products']+$this->data['Store In Process Products']+$this->data['Store Not For Sale Products']+$this->data['Store Discontinued Products']+$this->data['Store Unknown Sales State Products'];
      break;
-
+    case('For Sale Products'):
+      return number($this->data['Store For Sale Products']);
+    break;
+    case('Families'):
+      return number($this->data['Store Families']);
+    break;
 
     }
     $_key=ucfirst($key);

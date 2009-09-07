@@ -1,6 +1,5 @@
 html{background-color:#fff;background-image:url('art/body_back_flowers.jpg');background-repeat:no-repeat;}
-body{color:#333;margin:0px;padding:0px;font-family:"Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;
-}
+body{color:#333;margin:0px;padding:0px;font-family:"Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;}
 td {text-align:left}
 
 h1 {font-size:160%}
@@ -74,6 +73,7 @@ color:red;
 #bd{background:#fff;border:1px solid #aaa;min-height:490px;padding:0 10px 10px 10px;
 height:auto !important;
 height:490px;}
+
 #ft{ font-size:77%;text-align:center;margin-top:5px;color:#777}
 
 .bd labelc { display:block;float:left;width:30%;clear:left; }
@@ -413,10 +413,10 @@ color: #316D89;
 /*Products pages*/
 
 
-.top_bar{width:100%;margin:15px 0 60px 0 }
+.top_bar{xborder:1px solid red;xmargin:15px 0 60px 0;padding:0 20px  }
 .top_bar h1{padding:0 0px 10px 20px;font-size:150%}
-.top_bar .nodetails{width:100%;margin-bottom:0px}
-.top_bar .details{clear:both;padding:10px 20px ;border:1px solid #ddd;margin:0 20px;}
+.top_bar .nodetails{xmargin-top:10px;border:1px solid #ddd}
+.top_bar .details{clear:both;padding:10px 20px ;border:1px solid #ddd;margin:auto;}
 
 /*Common search div*/
 

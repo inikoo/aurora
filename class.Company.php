@@ -242,14 +242,14 @@ class Company extends DB_Table {
 
     $this->number_candidate_companies=count($this->candidate_companies);
     
-/*     if(count($this->candidate)>0){ */
+  /*   if(count($this->candidate)>0){ */
 /*         print "Contact candidates\n"; */
 /* 	print_r($this->candidate); */
 /*     } */
-/*     if(count($this->candidate_companies)>0){ */
+/*     //  if(count($this->candidate_companies)>0){ */
 /*       print "Company candidates\n"; */
 /*       print_r($this->candidate_companies); */
-/*     } */
+/*       //    } */
     
 
     if($this->found )
@@ -279,8 +279,12 @@ class Company extends DB_Table {
 
       
 
-
+      //
       // print "Company Found:".$this->found." ".$this->found_key."   \nContact Found:".$contact->found." ".$contact->found_key."  \n";
+
+      // exit;
+       
+
       if(!$contact->found and $this->found){
 
 	// try to find again the contact now that we now the company
@@ -342,8 +346,9 @@ class Company extends DB_Table {
       // update 
       //print "Updatinf company and contact\n";
       
- $contact->set_scope('Company',$this->id);
+      $contact->set_scope('Company',$this->id);
       // print_r($contact);
+    
        $update_data=array(
 			 'Contact Name'=>$raw_data['Company Main Contact Name']
 			 ,'Contact Main Plain Email'=>$raw_data['Company Main Plain Email']
@@ -351,12 +356,17 @@ class Company extends DB_Table {
 			 ,'Contact Main Mobile'=>$raw_data['Company Mobile']
 			 ,'Contact Main Telephone'=>$raw_data['Company Main Telephone']
 			 );
+       
+     /*   print_r($contact); */
+/*        print_r($update_data); */
+/*        exit; */
+       
       $contact->update($update_data);
       $contact->update_address($address_data,'Work');
       
       $this->add_contact($contact->id,'principal ');
     
-    
+      
    
 
       
