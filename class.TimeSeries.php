@@ -1,6 +1,10 @@
 <?php
+include_once('class.Store.php');
+include_once('class.Family.php');
+include_once('class.Department.php');
 
-class TimeSeries  {
+
+Class TimeSeries  {
 
   public $freq=false;
   public $name=false;
@@ -8,7 +12,7 @@ class TimeSeries  {
   public $name_key2=0;
   public $values=array();
   public $error=false;
-
+  public $label='';
   function TimeSeries($arg){
   
   if(!is_array($arg) or !(count($arg)==2  or count($arg)==3)  )
@@ -59,72 +63,149 @@ class TimeSeries  {
        $this->value_field='`Invoice Total Net Amount`';
        $this->max_forecast_bins=12;
        $this->where='';
-       
-
-    }
-    elseif(preg_match('/product department \((\d|,)+\) sales?/i',$this->name,$match)){
+       $this->label=_('Sales');
+    }elseif(preg_match('/product department \((\d|,)+\) sales?/i',$this->name,$match)){
+     
+      $department_key_array=array();
       if(preg_match('/\(.+\)/',$match[0],$keys)){
 	  $keys=preg_replace('/\(|\)/','',$keys[0]);
 	  $keys=preg_split('/\s*,\s*/',$keys);
-	  if(count($keys)==0){
-	    $this->error=true;
-	    return;
-	  }
+
 	  $department_keys='(';
+	 
 	  foreach($keys as $key){
-	    $department_keys.=sprintf("%d,",$key);
+	    if(is_numeric($key)){
+	      $department_keys.=sprintf("%d,",$key);
+	      $department_key_array[]=$key;
+
+	    }
 	  }
+	  
+
 	  $department_keys=preg_replace('/,$/',')',$department_keys);
-	}
+	  
+      }
+      if( count($department_key_array)==0){
+	$this->error=true;
+	return;
+      }
       // print "--------";
-      $this->name='PDS'.$department_keys;
-      $this->count='CEIL(sum(`Shipped Quantity`))';
+
+      if($num_keys>1){
+	$this->name='PDS'.$department_keys;
+	foreach( $department_key_array as $key){
+	  $department=new Department($this->name_key);
+	  $this->label.=','.$department->data['Product Department Code'];
+	}
+	$this->label=preg_replace('/^,/','',$this->label);
+      }else{
+	$this->name='PDS';
+	$this->name_key=preg_replace('/\(|\)/','',$department_keys);
+	$department=new Department($this->name_key);
+	$this->label=$department->data['Product Department Code'];
+	$this->name_key2=$department->data['Product Department Store Key'];
+      }
+
+      $this->count='count(Distinct `Order Key`)';
       $this->date_field='`Invoice Date`';
       $this->table='`Order Transaction Fact` OTF left join `Product Dimension` P  on (OTF.`Product Key`=P.`Product Key`)  ';
       $this->value_field="`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`-`Invoice Transaction Net Refund Amount`";
       $this->where=sprintf(" and `Product Main Department Key` in %s ",$department_keys);
       $this->max_forecast_bins=12;
-    }elseif(preg_match('/store \(\d+\) sales?/i',$this->name,$match)){
+    }elseif(preg_match('/product family \((\d|,)+\) sales?/i',$this->name,$match)){
+     
+      $family_key_array=array();
       if(preg_match('/\(.+\)/',$match[0],$keys)){
 	  $keys=preg_replace('/\(|\)/','',$keys[0]);
 	  $keys=preg_split('/\s*,\s*/',$keys);
-	  if(count($keys)==0){
-	    $this->error=true;
-	    return;
-	  }
-	  $department_keys='(';
+
+	  $family_keys='(';
+	 
 	  foreach($keys as $key){
-	    $department_keys.=sprintf("%d,",$key);
+	    if(is_numeric($key)){
+	      $family_keys.=sprintf("%d,",$key);
+	      $family_key_array[]=$key;
+
+	    }
 	  }
-	  $department_keys=preg_replace('/,$/',')',$department_keys);
+	  
+
+	  $family_keys=preg_replace('/,$/',')',$family_keys);
+	  
+      }
+      if( count($family_key_array)==0){
+	$this->error=true;
+	return;
+      }
+      // print "--------";
+
+      if($num_keys>1){
+	$this->name='PFS'.$family_keys;
+	foreach( $family_key_array as $key){
+	  $family=new Family($this->name_key);
+	  $this->label.=','.$family->data['Product Family Code'];
 	}
-      $this->name='PSS'.$department_keys;
-      $this->count='CEIL(sum(`Shipped Quantity`))';
+	$this->label=preg_replace('/^,/','',$this->label);
+      }else{
+	$this->name='PFS';
+	$this->name_key=preg_replace('/\(|\)/','',$family_keys);
+	$family=new Family($this->name_key);
+	$this->label=$family->data['Product Family Code'];
+	$this->name_key2=$department->data['Product Family Store Key'];
+      }
+
+      $this->count='count(Distinct `Order Key`)';
       $this->date_field='`Invoice Date`';
       $this->table='`Order Transaction Fact` OTF left join `Product Dimension` P  on (OTF.`Product Key`=P.`Product Key`)  ';
       $this->value_field="`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`-`Invoice Transaction Net Refund Amount`";
-      $this->where=sprintf(" and `Product Store Key` in %s ",$department_keys);
+      $this->where=sprintf(" and `Product Family Key` in %s ",$family_keys);
       $this->max_forecast_bins=12;
-    }elseif(preg_match('/product family \(\d+\) sales?/i',$this->name,$match)){
+    }elseif(preg_match('/product store \((\d|,)+\) sales?/i',$this->name,$match)){
+     
+      $store_key_array=array();
       if(preg_match('/\(.+\)/',$match[0],$keys)){
 	  $keys=preg_replace('/\(|\)/','',$keys[0]);
 	  $keys=preg_split('/\s*,\s*/',$keys);
-	  if(count($keys)==0){
-	    $this->error=true;
-	    return;
-	  }
-	  $department_keys='(';
+
+	  $store_keys='(';
+	 
 	  foreach($keys as $key){
-	    $department_keys.=sprintf("%d,",$key);
+	    if(is_numeric($key)){
+	      $store_keys.=sprintf("%d,",$key);
+	      $store_key_array[]=$key;
+
+	    }
 	  }
-	  $department_keys=preg_replace('/,$/',')',$department_keys);
+	  
+
+	  $store_keys=preg_replace('/,$/',')',$store_keys);
+	  
+      }
+      if( count($store_key_array)==0){
+	$this->error=true;
+	return;
+      }
+      // print "--------";
+
+      if($num_keys>1){
+	$this->name='SS'.$store_keys;
+	foreach( $store_key_array as $key){
+	  $store=new Store($this->name_key);
+	  $this->label.=','.$store->data['Store Code'];
 	}
-      $this->name='PFS'.$department_keys;
-      $this->count='CEIL(sum(`Shipped Quantity`))';
+	$this->label=preg_replace('/^,/','',$this->label);
+      }else{
+	$this->name='SS';
+	$this->name_key=preg_replace('/\(|\)/','',$store_keys);
+	$store=new Store($this->name_key);
+	$this->label=$store->data['Product Store Code'];
+      }
+
+      $this->count='count(Distinct `Order Key`)';
       $this->date_field='`Invoice Date`';
       $this->table='`Order Transaction Fact` OTF left join `Product Dimension` P  on (OTF.`Product Key`=P.`Product Key`)  ';
       $this->value_field="`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`-`Invoice Transaction Net Refund Amount`";
-      $this->where=sprintf(" and `Product Family Key` in %s ",$department_keys);
+      $this->where=sprintf(" and `Store Key` in %s ",$store_keys);
       $this->max_forecast_bins=12;
     }
 
@@ -148,19 +229,21 @@ function get_values(){
 
 function save_values(){
   
-  $sql=sprintf("update `Time Series Dimension` set `Time Series Tag`='D' where `Time Series Name` in (%s) and `Time Series Frequency`=%s and `Time Series Name Key`=%d , `Time Series Name Second Key`=%d"
+  $sql=sprintf("update `Time Series Dimension` set `Time Series Tag`='D' where `Time Series Name` in (%s) and `Time Series Frequency`=%s and `Time Series Name Key`=%d , `Time Series Name Second Key`=%d  ,`Time Series Label`=%s "
 	       ,prepare_mysql($this->name)
 	       ,prepare_mysql($this->freq)
 	       ,$this->name_key
 	       ,$this->name_key2
+	       ,prepare_mysql($this->label)
 	       );
 
-$sql=sprintf("insert into `Time Series Dimension` values (%s,%s,%s,%d,%d,%f,%d,'First','','')   ON DUPLICATE KEY UPDATE  `Time Series Value`=%f ,`Time Series Count`=%d ,`Time Series Type`='First' ,`Time Series Tag`='' "
+$sql=sprintf("insert into `Time Series Dimension` values (%s,%s,%s,%d,%d,%s,%f,%d,'First','','')   ON DUPLICATE KEY UPDATE  `Time Series Value`=%f ,`Time Series Count`=%d ,`Time Series Type`='First' ,`Time Series Tag`='' "
 		,prepare_mysql($this->first['date'])
 		,prepare_mysql($this->freq)
 		,prepare_mysql($this->name)
-		,$this->name_key
+	     ,$this->name_key
 		,$this->name_key2
+	     ,prepare_mysql($this->label)
 		,$this->first['value']
 		,$this->first['count']
 		,$this->first['value']
@@ -170,12 +253,13 @@ $sql=sprintf("insert into `Time Series Dimension` values (%s,%s,%s,%d,%d,%f,%d,'
    
 
   foreach($this->values as $date=>$data){
-   $sql=sprintf("insert into `Time Series Dimension` values (%s,%s,%s,%d,%d,%f,%d,'Data','','')   ON DUPLICATE KEY UPDATE  `Time Series Value`=%f ,`Time Series Count`=%d ,`Time Series Type`='Data' ,`Time Series Tag`='' "
+   $sql=sprintf("insert into `Time Series Dimension` values (%s,%s,%s,%d,%d,%s,%f,%d,'Data','','')   ON DUPLICATE KEY UPDATE  `Time Series Value`=%f ,`Time Series Count`=%d ,`Time Series Type`='Data' ,`Time Series Tag`='' "
 		,prepare_mysql($date)
 		,prepare_mysql($this->freq)
 		,prepare_mysql($this->name)
 		,$this->name_key
 		,$this->name_key2
+		,prepare_mysql($this->label)
 		,$data['value']
 		,$data['count']
 		,$data['value']
@@ -184,12 +268,13 @@ $sql=sprintf("insert into `Time Series Dimension` values (%s,%s,%s,%d,%d,%f,%d,'
    mysql_query($sql);
    //print "$sql<br>";
   } 
-  $sql=sprintf("insert into `Time Series Dimension` values (%s,%s,%s,%d,%d,%f,%d,'Current','','')   ON DUPLICATE KEY UPDATE  `Time Series Value`=%f ,`Time Series Count`=%d ,`Time Series Type`='Current' ,`Time Series Tag`='' "
+  $sql=sprintf("insert into `Time Series Dimension` values (%s,%s,%s,%d,%d,%s,%f,%d,'Current','','')   ON DUPLICATE KEY UPDATE  `Time Series Value`=%f ,`Time Series Count`=%d ,`Time Series Type`='Current' ,`Time Series Tag`='' "
 		,prepare_mysql($this->current['date'])
 		,prepare_mysql($this->freq)
 		,prepare_mysql($this->name)
 		,$this->name_key
 		,$this->name_key2
+ ,prepare_mysql($this->label)
 		,$this->current['value']
 		,$this->current['count']
 		,$this->current['value']
@@ -203,6 +288,7 @@ $sql=sprintf("insert into `Time Series Dimension` values (%s,%s,%s,%d,%d,%f,%d,'
 	       ,prepare_mysql($this->freq)
 	       ,$this->name_key
 	       ,$this->name_key2
+ 
 	       );
   
   mysql_query($sql);
@@ -221,12 +307,13 @@ function save_forecast(){
   mysql_query($sql);
 
   foreach($this->forecast as $date=>$data){
-   $sql=sprintf("insert into `Time Series Dimension` values (%s,%s,%s,%d,%d,%f,%d,'Forecast','',%s)    "
+   $sql=sprintf("insert into `Time Series Dimension` values (%s,%s,%s,%d,%d,%s,%f,%d,'Forecast','',%s)    "
 		,prepare_mysql($date)
 		,prepare_mysql($this->freq)
 		,prepare_mysql($this->name)
 		,$this->name_key
 		,$this->name_key2
+		,prepare_mysql($this->label)		
 		,$data['value']
 		,$data['count']
 		,prepare_mysql($data['deviation'])
@@ -500,7 +587,7 @@ function first_complete_month(){
    
  }elseif(preg_match('/^(PDS|PSS|PFS|PrS)/',$this->name)){
    
-   $tipo='PO';
+   $tipo='PI';
    $suffix=preg_replace('/.*\(/','',$this->name);
    $suffix=preg_replace('/\)/','',$suffix);
    $suffix=preg_replace('/,/','_',$suffix);
@@ -542,7 +629,7 @@ function first_complete_month(){
     }
  
     
-    if($tipo=='SI'){
+    if($tipo=='SI' or $tipo=='PI'){
       $tip=_('Sales')." ".strftime("%B %Y", strtotime('@'.$row['date']))."\n".money($row['value'])."\n".$diff_prev_month.$diff_prev_year."(".$row['count']." "._('Invoices').")";
 
     }elseif($tipo="PO"){

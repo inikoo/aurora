@@ -30,6 +30,7 @@ $options='';
 $staked=false;
 
 switch($tipo){
+
 case('sales_by_store');
 
 case('sales_share_by_store');

@@ -168,9 +168,15 @@ function change_plot(o){
 	var period=Dom.get("plot_info").getAttribute("period");
 	var args=Dom.get("plot_info").getAttribute("args");
 	var tipo=o.getAttribute("tipo");
-	var plot_url='plot.php?tipo='+tipo+'_'+period+args;
-	Dom.get("the_plot").src=plot_url;
+
+	if($tipo='pie_department_share'){
+	  Dom.get("the_plot").width=500;
+	  var plot_url='pie.php?tipo='+tipo+'&period='+period+args;
+	}else
+	  var plot_url='plot.php?tipo='+tipo+'_'+period+args;
 	
+	Dom.get("the_plot").src=plot_url;
+       
 	old_selected=Dom.getElementsByClassName('selected', 'span', 'plot_chooser');
 	for( var i in old_selected ){
 	    Dom.removeClass(old_selected[i],'selected');
