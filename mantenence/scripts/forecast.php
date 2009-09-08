@@ -23,8 +23,16 @@ $tm=new TimeSeries(array('m','invoices'));
 $tm->get_values();
 $tm->save_values();
 $tm->forecast();
+$sql="select * from `Store Dimension`";
+$res=mysql_query($sql);
+while($row=mysql_fetch_array($res)){
+  $tm=new TimeSeries(array('m','store ('.$row['Store Key'].') sales'));
+  $tm->get_values();
+  $tm->save_values();
+  $tm->forecast();
+}
 
-$sql="select * from `Product Department Dimension`";
+$sql="select * from `Product Department Dimension` ";
 $res=mysql_query($sql);
 while($row=mysql_fetch_array($res)){
   $tm=new TimeSeries(array('m','product department ('.$row['Product Department Key'].') sales'));
@@ -34,6 +42,14 @@ while($row=mysql_fetch_array($res)){
   
 }
 
+$sql="select * from `Product Family Dimension`";
+$res=mysql_query($sql);
+while($row=mysql_fetch_array($res)){
+  $tm=new TimeSeries(array('m','product family ('.$row['Product Family Key'].') sales'));
+  $tm->get_values();
+  $tm->save_values();
+  $tm->forecast();
+}
 
 
 ?>

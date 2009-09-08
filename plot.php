@@ -9,6 +9,15 @@ $colors=array(
 	      '0x4c77d1'
 	      );
 
+$color_palette=array(
+		     array('value'=>'0x00b8bf','forecast'=>'0x8dd5e7')
+		     ,array('value'=>'0xc665a7','forecast'=>'0xe8acd5')
+		     ,array('value'=>'0x4dbc9b','forecast'=>'0x99edd4')
+		     ,array('value'=>'0xe2654f','forecast'=>'0xef9f91')
+		     ,array('value'=>'0x4c77d1','forecast'=>'0x97b3ed')
+		     );
+
+
 require_once 'common.php';
 require_once 'class.Product.php';
 
@@ -284,14 +293,136 @@ break;
    $style='size:5,lineSize:1';
  $tipo_chart='CartesianChart';
     break;
+
+case('top_departments_sales_month'):
+
+  $store_key_array=array();
+  $store_keys='';
+
+  if(isset($_REQUEST['store_keys'])){
+    if(preg_match('/\(.+\)/',$_REQUEST['store_keys'],$keys)){
+      $keys=preg_replace('/\(|\)/','',$keys[0]);
+      $keys=preg_split('/\s*,\s*/',$keys);
+      $store_keys='(';
+      foreach($keys as $key){
+	if(is_numeric($key)){
+	  $store_keys.=sprintf("%d,",$key);
+	  $store_key_array[]=$key;
+	}
+      }
+      $store_keys=preg_replace('/,$/',')',$store_keys);
+    }elseif(preg_match('/^\d+$/',$_REQUEST['store_keys'])){
+      $store_keys="(".$_REQUEST['store_keys'].")";
+      $store_key_array[]=$_REQUEST['store_keys'];
+    }
+    if(count($store_key_array)==0){
+      return;
+    }
+  }
+  if($store_keys=='')
+    $where='';
+  else
+    $where=' where `Product Department Store Key` in '.$store_keys;
+  $order='`Product Department 1 Year Acc Invoiced Amount`';
+  $sql=sprintf("select `Product Department Code`,`Product Department Key` from `Product Department Dimension` %s order by %s limit 3"
+	       ,$where
+	       ,$order
+	       );
+  $res=mysql_query($sql);
+  $departments_keys='(';
+  $deparment_key_array=array();
+  while($row=mysql_fetch_array($res)){
+    $departments_keys.=$row['Product Department Key'].',';
+    $deparment_key_array[$row['Product Department Key']]=$row['Product Department Code'];
+  }
+  mysql_free_result($res);
+  $departments_keys=preg_replace('/,$/',')',$departments_keys);
+  
+  $title=_("Store Net Sales per Month");
+  $ar_address=sprintf('ar_plot.php?tipo=invoiced_department_month_sales&split=yes&department_keys=%s',$departments_keys);
+  // print $ar_address;
+  $fields='"date"';
+
+  foreach($deparment_key_array as $key=>$value){
+    $fields.=',"value'.$key.'","tip_value'.$key.'","forecast'.$key.'","tip_forecast'.$key.'","tails'.$key.'","tip_tails'.$key.'"';
+  }
+  $yfields=array();
+  $count=0;
+  foreach($deparment_key_array as $key=>$value){
+
+    $forecast_color=$color_palette[$count]['forecast'];
+    $value_color=$color_palette[$count]['value'];
+
+    $yfields[]=array('label'=>_('Forecast')." ($value)",'name'=>'forecast'.$key,'style'=>'color:'.$forecast_color.',alpha:.7');
+    $yfields[]=array('label'=>_('Tails')." ($value)",'name'=>'tails'.$key,'style'=>'color:'.$value_color.',fillColor:0xffffff,alpha:.7');
+    $yfields[]=array('label'=>_('Sales')." ($value)",'name'=>'value'.$key,'style'=>'color:'.$value_color.',alpha:.7');
+    $count++;
+  }		 
+		 
+  $yfield_label_type='formatCurrencyAxisLabel';
+  
+  $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category','axis'=>'justyears');
+  $style='';
+  $tipo_chart='LineChart';
+   break;
+
+
+case('store_sales_month'):
+
+  $store_key_array=array();
+
+  if(preg_match('/\(.+\)/',$_REQUEST['store_keys'],$keys)){
+    $keys=preg_replace('/\(|\)/','',$keys[0]);
+    $keys=preg_split('/\s*,\s*/',$keys);
+   
+     $store_keys='(';
+     foreach($keys as $key){
+       if(is_numeric($key)){
+	 $store_keys.=sprintf("%d,",$key);
+	 $store_key_array[]=$key;
+	 }
+     }
+     
+
+     $store_keys=preg_replace('/,$/',')',$store_keys);
+  }elseif(preg_match('/^\d+$/',$_REQUEST['store_keys'])){
+    $store_keys="(".$_REQUEST['store_keys'].")";
+    $store_key_array[]=$_REQUEST['store_keys'];
+  }
+
+  if(count($store_key_array)==0){
+    return;
+  }
+  
+  
+  $title=_("Store Net Sales per Month");
+  $ar_address=sprintf('ar_plot.php?tipo=invoiced_store_month_sales&split=yes&store_keys=%s',$store_keys);
+  // print $ar_address;
+  $fields='"date"';
+  foreach($store_key_array as $key){
+    $fields.=',"value'.$key.'","tip_value'.$key.'","forecast'.$key.'","tip_forecast'.$key.'","tails'.$key.'","tip_tails'.$key.'"';
+  }
+  $yfields=array();
+  foreach($store_key_array as $key){
+    $yfields[]=array('label'=>_('Forecast')." ($key)",'name'=>'forecast'.$key,'style'=>'color:0x8dd5e7');
+    $yfields[]=array('label'=>_('Tails')." ($key)",'name'=>'tails'.$key,'style'=>'color:0x00b8bf,fillColor:0xffffff');
+    $yfields[]=array('label'=>_('Month Net Sales')." ($key)",'name'=>'value'.$key,'style'=>'color:0x00b8bf');
+  }		 
+		 
+  $yfield_label_type='formatCurrencyAxisLabel';
+  
+  $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category','axis'=>'justyears');
+  $style='';
+  $tipo_chart='LineChart';
+   break;
  case('total_sales_month'):
    $title=_("Total Net Sales per Month");
    $ar_address='ar_plot.php?tipo=invoiced_month_sales';
-   $fields='"sales","tip_sales","date","forecast","tip_forecast","tails","tip_tails"';
+   $fields='"value","tip_value","date","forecast","tip_forecast","tails","tip_tails"';
    $yfields=array(
          array('label'=>_('Forecast'),'name'=>'forecast','style'=>'color:0x8dd5e7') 
 	 , array('label'=>_('Tails'),'name'=>'tails','style'=>'color:0x00b8bf,fillColor:0xffffff') 
-	 ,array('label'=>_('Month Net Sales'),'name'=>'sales','style'=>'color:0x00b8bf')
+	 ,array('label'=>_('Month Net Sales'),'name'=>'value','style'=>'color:0x00b8bf')
         
         );;
    $yfield_label_type='formatCurrencyAxisLabel';
@@ -302,7 +433,7 @@ break;
    break;
  case('net_diff1y_sales_month'):
    
-   $title=_("Monthy net sales change compared with previos year");
+   $title=_("Monthy net sales change compared with previous year");
    $ar_address='ar_plot.php?tipo=net_diff1y_sales_month';
    $fields='"sales_diff","tip_sales_diff","date"';
    $yfields=array(
@@ -440,8 +571,8 @@ $out='<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN""http://www.
 
  function formatCurrencyAxisLabel( value ){
 if( value==0)
-	 return "";
-else if ( value>=10000){
+    return "";
+else if ( value>=499){
 return YAHOO.util.Number.format( value/1000,{prefix: "'.$myconf['currency_symbol'].'",thousandsSeparator: ",",decimalPlaces: 0})+"K";
 }
 else if ( value<=-10000){

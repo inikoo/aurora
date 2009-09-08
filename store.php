@@ -105,6 +105,13 @@ $smarty->assign('show_details',$_SESSION['state']['store']['details']);
 $smarty->assign('show_percentages',$_SESSION['state']['store']['percentages']);
 $smarty->assign('avg',$_SESSION['state']['store']['avg']);
 $smarty->assign('period',$_SESSION['state']['store']['period']);
+if(preg_match('/store_sales/',$_SESSION['state']['store']['plot'])){
+  $smarty->assign('plot_tipo','store_sales');
+  $smarty->assign('plot_args','tipo='.$_SESSION['state']['store']['plot'].'&store_keys='.$store_id);
+}elseif(preg_match('/top_departments_sales/',$_SESSION['state']['store']['plot'])){
+  $smarty->assign('plot_tipo','top_departments_sales');
+  $smarty->assign('plot_args','tipo='.$_SESSION['state']['store']['plot'].'&store_keys='.$store_id);
+}
 
 
 //$sql="select id from product";
@@ -180,6 +187,9 @@ $smarty->display('edit_store.tpl');
   $smarty->assign('filter_name',$filter_menu[$tipo_filter]['label']);
   $paginator_menu=array(10,25,50,100,500);
   $smarty->assign('paginator_menu',$paginator_menu);
+
+  
+ 
   $smarty->display('store.tpl');
  }
 ?>

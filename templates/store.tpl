@@ -30,17 +30,15 @@
       <div id="details_general"  {if $view!='general'}style="display:none"{/if}>
 
 	<table class="show_info_product" style="width:20em">
-<tr>
+	  <tr>
 	    <td>{t}Departments{/t}:</td><td class="aright">{$departments}</td>
 	  </tr>
-	   <tr>
+	  <tr>
 	    <td>{t}Product Families{/t}:</td><td class="aright">{$store->get('Families')}</td>
 	  </tr>
 	  <tr>
 	    <td>{t}Products for sale{/t}:</td><td class="aright">{$store->get('For Sale Products')}</td>
-	</tr>
-	 
-	
+	  </tr>
 	</table>
       </div>
       <div id="details_stock"  {if $view!='stock'}style="display:none"{/if}>
@@ -57,6 +55,22 @@
 	  </tr>
 	</table>
       </div>
+      
+      <div display="none" id="plot_info" period="month" args="&store_keys={$store->id}"  ></div>
+      <ul id="plot_chooser" class="tabs" style="margin:0 20px;padding:0 20px "  >
+	<li><span class="item {if $plot_tipo=='store_sales'}selected{/if}" onClick="change_plot(this)" tipo="store_sales"   ><span>Store Sales</span></span></li>
+	<li><span class="item {if $plot_tipo=='top_departments_sales'}selected{/if}" onClick="change_plot(this)" tipo="top_departments_sales"  ><span>Top Departments</span></span></li>
+
+      </ul> 
+      
+      <div style="clear:both;margin:0 20px;padding:0 20px ;border-bottom:1px solid #999">
+      </div>
+
+
+      <div  id="plot_div" class="product_plot"  style="width:865px;xheight:325px;">
+	<iframe id="the_plot" src ="plot.php?{$plot_args}" frameborder=0 height="325" scrolling="no" width="100%"></iframe>
+      </div>
+      
     </div>
 
     <div id="short_menu" class="xnodetails" style="{if $show_details}display:none;{/if}">
