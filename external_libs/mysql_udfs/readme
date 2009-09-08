@@ -2,6 +2,11 @@
 to compile in mac
 gcc -fPIC -Wall -I /usr/local/mysql/include/mysql/   -arch x86_64  -dynamiclib -lstdc++ -o NAME.so  NAME.cpp
 
+in ubuntu 64
+gcc -shared -O2 -fPIC -I /usr/include/mysql/  -o damlev.so damlev.cpp
+sudo cp damlev.so /usr/lib
+
+
 in mysql
 CREATE FUNCTION NAME  RETURNS INTEGER soname "NAME.so"; 
 
