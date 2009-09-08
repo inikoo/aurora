@@ -987,12 +987,14 @@ private function create ($data,$options='',$address_home_data=false){
 	}
 
 
+
 	  $address_home_data['editor']=$this->editor;
 	  $home_address=new Address("find in contact ".$this->id." create",$address_home_data);
 	  if($home_address->error){
 	    print $home_address->msg."\n";
 	    exit("find_contact: home address found\n");
 	  }
+
 	
 	$this->add_address(array(
 				    'Address Key'=>$home_address->id
@@ -1042,6 +1044,7 @@ private function create ($data,$options='',$address_home_data=false){
         
         
 		if($data['Contact Main Mobile']!=''){
+
 	  //print "addin fax\n";
 	  $telephone_data=array('Telecom Raw Number'=>$data['Contact Main Mobile']);
 	  $telephone_data['editor']=$this->editor;
@@ -1059,8 +1062,10 @@ private function create ($data,$options='',$address_home_data=false){
 			      'Telecom Key'=>$telephone->id
 			      ,'Telecom Type'=>'Home Telephone'
 			      ));
+
 	       $sql=sprintf("insert into `Address Telecom Bridge` values (%d,%d)",$home_address->id,$telephone->id);
 	       mysql_query($sql);
+
 
 
 	    }
@@ -1094,8 +1099,10 @@ private function create ($data,$options='',$address_home_data=false){
 				   'Telecom Key'=>$telephone->id
 				   ,'Telecom Type'=>'Home Telephone'
 				   ));
+
 	       $sql=sprintf("insert into `Address Telecom Bridge` values (%d,%d)",$home_address->id,$telephone->id);
 	       mysql_query($sql);
+
 	    }
 
 
@@ -1123,8 +1130,10 @@ private function create ($data,$options='',$address_home_data=false){
 			      'Telecom Key'=>$telephone->id
 			      ,'Telecom Type'=>'Home Fax'
 			      ));
+
 	       $sql=sprintf("insert into `Address Telecom Bridge` values (%d,%d)",$home_address->id,$telephone->id);
 	       mysql_query($sql);
+
 	    }
 	  }
 	}
