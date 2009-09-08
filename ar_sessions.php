@@ -1,7 +1,6 @@
 <?php
 require_once 'common.php';
 
-
 if(!isset($_REQUEST['tipo']))
   {
     $response=array('state'=>405,'resp'=>_('Non acceptable request').' (t)');
@@ -10,6 +9,7 @@ if(!isset($_REQUEST['tipo']))
   }
 
 $tipo=$_REQUEST['tipo'];
+
 switch($tipo){
  case('update'):
    $keys=split('-',$_REQUEST['keys']);

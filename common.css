@@ -563,3 +563,67 @@ div.contact_card div.tels{margin-top:3px;font-size:80%;color:#3b5998}
 div.contact_card div.address{margin-top:5px;font-size:70%}
 
 td.margin_note{widht:20px;font-family:times;font-size:80%;padding-right:20px;padding-top:5px}
+
+
+.tabs span.item
+{
+color: #777;
+background: #fff url(left-tab.gif) left top no-repeat;
+text-decoration: none;
+padding-left: 10px;
+border:1px solid #ddd;border-bottom:1px solid #999;
+cursor:pointer
+}
+.tabs span.selected
+{
+ color: #000;
+ border:1px solid #999;
+ border-bottom:1px solid #fff
+}
+
+.tabs span.item span
+{
+ background: url(right-tab.gif) right top no-repeat;
+ padding-right: 10px;
+}
+
+.tabs span.item, .tabs span.item span
+{
+display: block;
+float: left
+}
+
+/* Hide from IE5-Mac \*/
+.tabs span.item, .tabs span.item span
+{
+float: none
+}
+/* End hide */
+
+.tabs span.item:hover
+{
+color: #000;
+background: #fff url(left-tab-hover.gif) left top no-repeat;
+padding-left: 10px
+}
+
+.tabs span.item:hover span
+{
+background: url(right-tab-hover.gif) right top no-repeat;
+padding-right: 10px
+}
+
+.tabs ul
+{
+list-style: none;
+padding: 0;
+margin: 0
+}
+
+.tabs li
+{
+float: left;
+margin: 0;
+margin-right:5px;
+position:relative;top:1px;
+} 

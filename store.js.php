@@ -163,6 +163,24 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	};
     });
 
+function change_plot(o){
+    if(!Dom.hasClass(o,'selected')){
+	var period=Dom.get("plot_info").getAttribute("period");
+	var args=Dom.get("plot_info").getAttribute("args");
+	var tipo=o.getAttribute("tipo");
+	var plot_url='plot.php?tipo='+tipo+'_'+period+args;
+	Dom.get("the_plot").src=plot_url;
+	
+	old_selected=Dom.getElementsByClassName('selected', 'span', 'plot_chooser');
+	for( var i in old_selected ){
+	    Dom.removeClass(old_selected[i],'selected');
+	}
+	Dom.addClass(o,'selected');
+	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=store-plot&value='+tipo+'_'+period)
+    }
+    
+}
+
 
 function change_period(e,table_id){
 

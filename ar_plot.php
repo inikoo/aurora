@@ -1,5 +1,6 @@
 <?php
 require_once 'common.php';
+require_once 'class.TimeSeries.php';
 
 if(!isset($_REQUEST['tipo']))
   {
@@ -12,6 +13,12 @@ $plot_type=$_REQUEST['tipo'];
 switch($plot_type){
 case('invoiced_month_sales'):
 list_invoices_per_month();
+break;
+case('invoiced_store_month_sales'):
+list_store_invoices_per_month();
+break;
+case('invoiced_department_month_sales'):
+list_department_invoices_per_month();
 break;
 case('invoiced_week_sales'):
 list_invoices_per_week();
@@ -356,104 +363,86 @@ function list_product_sales_per_year(){
       echo json_encode($response);
 }
 function list_invoices_per_month(){
-  $sql="SELECT `Time Series Type`,`Time Series Value` as sales,MONTH(`Time Series Date`) as month,`Time Series Count` as invoices ,UNIX_TIMESTAMP(`Time Series Date`) as date 
-  ,substring(`Time Series Date`, 1,7) AS dd from `Time Series Dimension` where `Time Series Name`='invoices' order by `Time Series Date`,`Time Series Type` desc";
-  //print $sql; 
-
-  $prev_month='';
-  $prev_year=array();
-  $forecast_region=false;
-  $data_region=false;
-  $res = mysql_query($sql); 
-  while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-    if(is_numeric($prev_month)){
-      $diff=$row['sales']-$prev_month;
-      if($diff==0)
-	$diff_prev_month=_('No change from last month')."\n";
-      else
-	$diff_prev_month=percentage($diff,$prev_month,1,'NA','%',true)." "._('change (last month)')."\n";
-    }else
-      $diff_prev_month='';
- 
-    if(isset($prev_year[$row['month']])){
-      $diff=$row['sales']-$prev_year[$row['month']];
-      if($diff==0)
-	$diff_prev_year=_('No change from last year')."\n";
-      else
-      $diff_prev_year=percentage($diff,$prev_year[$row['month']],1,'NA','%',true)." "._('change (last year)')."\n";
-    }else{
-      $diff_prev_year='';
-    }
- 
-
-    $tip=_('Sales')." ".strftime("%B %Y", strtotime('@'.$row['date']))."\n".money($row['sales'])."\n".$diff_prev_month.$diff_prev_year."(".$row['invoices']." "._('Invoices').")";
-    $data[$row['dd']]=array(
-			    'date'=>strftime("%m/%y", strtotime('@'.$row['date']))
-			    );
-    // print $row['dd']."<br>\n";
-    if($row['Time Series Type']=='First'){
-	$first_sales=array($row['dd'],$row['sales'],$tip) ;
-
-    }
-  if($row['Time Series Type']=='Current'){
-	$current_sales=array($row['dd'],$row['sales'],$tip) ;
-    }
-    if($row['Time Series Type']=='Data'){
-      if(!$data_region){
-
-	$data[$first_sales[0]]['tails']=(float) $first_sales[1];
-	$data[$first_sales[0]]['tip_tails']=$first_sales[2];
-	$data[$row['dd']]['tails']=(float) $row['sales'];
-	$data[$row['dd']]['tip_tails']=$tip;
-       
-      }
-      $data_region=true;
-      
-      $data[$row['dd']]['sales']=(float) $row['sales'];
-      $data[$row['dd']]['tip_sales']=$tip;
-      $last_complete_sales=array($row['dd'],$row['sales'],$tip) ;
-    }
-    if($row['Time Series Type']=='Forecast'){
-     
-      if(!$forecast_region){
-        $data[$last_complete_sales[0]]['forecast']=(float) $last_complete_sales[1];
-	
-	$data[$last_complete_sales[0]]['tails']=(float) $last_complete_sales[1];
-	$data[$last_complete_sales[0]]['tip_tails']='';
-	$data[$current_sales[0]]['tails']=(float) $current_sales[1];
-	$data[$current_sales[0]]['tip_tails']= $current_sales[2];
-
-      }
-      $forecast_region=true;
-      $data[$row['dd']]['forecast']=(float) $row['sales'];
-      $data[$row['dd']]['tip_forecast']=$tip;
-    }	   
-
-   
-    
-    $prev_month=$row['sales'];
-    $prev_year[$row['month']]=$row['sales'];
-  }
-  mysql_free_result($res);
-  $_data=array();
-  $i=0;
-  foreach($data as $__data){
-    $_data[]=$__data;
-
-  }
-
-
-
+  $tm=new TimeSeries(array('m','invoices'));
+  $_data=$tm->plot_data();
+   foreach($_data as $__data)
+    $data[]=$__data;
   $response=array('resultset'=>
 		  array('state'=>200,
-			'data'=>$_data,
+			'data'=>$data,
 			)
 		  );
 
+  echo json_encode($response);
+}
 
+function list_store_invoices_per_month(){
+  if(!isset($_REQUEST['store_keys']))
+    return;
+  $store_keys=$_REQUEST['store_keys'];
+  $tm=new TimeSeries(array('m','store '.$store_keys.' sales'));
+  $_data=$tm->plot_data();
+  foreach($_data as $__data)
+    $data[]=$__data;
+  $response=array('resultset'=>
+		  array('state'=>200,
+			'data'=>$data,
+			)
+		  );
 
   echo json_encode($response);
 }
+
+function list_department_invoices_per_month(){
+  $_data=array();
+  if(!isset($_REQUEST['department_keys']))
+    return;
+  $department_keys=$_REQUEST['department_keys'];
+  if(isset($_REQUEST['split']) and $_REQUEST['split']=='yes'){
+    $department_keys=preg_replace('/\(|\)/','',$department_keys);
+    foreach(preg_split('/\s*,\s*/',$department_keys) as $key){
+      if(!is_numeric($key))
+	continue;
+      $tm=new TimeSeries(array('m',"product department ($key) sales"));
+      
+    
+      
+      $tmp_data=$tm->plot_data();
+      unset($tm);
+      foreach($tmp_data as $key=>$values){
+	if(isset($_data[$key])){
+	  //	  print_r($data[$key]);
+	  //print_r($values);
+	  $_data[$key]=array_merge($_data[$key],$values);
+	  
+	}else
+	  $_data[$key]=$values;
+      }
+      //print_r($_data);exit;
+      
+    }
+    
+
+  }else{
+  $tm=new TimeSeries(array('m','product department '.$department_keys.' sales'));
+  $_data=$tm->plot_data();
+ 
+
+  }
+
+  foreach($_data as $__data)
+    $data[]=$__data;
+  $response=array('resultset'=>
+		  array(
+			'state'=>200,
+			'data'=>$data
+			)
+		  );
+
+  echo json_encode($response);
+}
+
+
 function list_invoices_per_month_live_data(){
 global $myconf;
 
