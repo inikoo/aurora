@@ -57,7 +57,7 @@ switch($tipo){
    $value_tipo='sales';
    $ar_address='ar_pie.php?store_keys='.$store_keys.'&category=department&value='.$value_tipo;
    
-   //print $ar_address;
+   // print $ar_address;
    $fields='"value","label"';
    
   

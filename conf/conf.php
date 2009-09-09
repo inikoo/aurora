@@ -519,6 +519,11 @@ $default_state=array(
 					  'edit'=>false,
 					  'id'=>1,
 					  'plot'=>'store_sales_month',
+					  'pie'=>array(
+						       'period'=>'month'
+						       ,'date'=>'today'
+						       ,'forecast'=>'no'
+						       ),
 					  'table'=>array(
 							 'where'=>'where true',
 							 'f_field'=>'code',
@@ -562,6 +567,11 @@ $default_state=array(
 				       'avg'=>'totals',
 				       'edit'=>false,
 				       'plot'=>'department_sales_month',
+				       'pie'=>array(
+						       'period'=>'month'
+						       ,'date'=>'today'
+						       ,'forecast'=>'no'
+						       ),
 				       'table'=>array(
 						      'order'=>'code',
 						      'order_dir'=>'',
@@ -585,6 +595,11 @@ $default_state=array(
 				       'avg'=>'totals',
 				       'edit'=>0,
 				       'plot'=>'family_sales_month',
+				       'pie'=>array(
+						       'period'=>'month'
+						       ,'date'=>'today'
+						       ,'forecast'=>'no'
+						       ),
 				       'table'=>array(
 						      'order'=>'code',
 						      'order_dir'=>'',

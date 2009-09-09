@@ -14,6 +14,13 @@ switch($plot_type){
 case('invoiced_month_sales'):
 list_invoices_per_month();
 break;
+case("item_invoiced_sales");
+$period=$_REQUEST['period'];
+$tipo=$_REQUEST['subtipo'];
+$split=(isset($_REQUEST['split']) and $_REQUEST['split']=='Yes' ?true:false);
+$item_keys=$_REQUEST['item_keys'];
+list_item($tipo,$period,$item_keys,$split);
+break;
 case('invoiced_store_month_sales'):
 list_store_invoices_per_month();
 break;
@@ -382,6 +389,7 @@ function list_store_invoices_per_month(){
   $store_keys=$_REQUEST['store_keys'];
   $tm=new TimeSeries(array('m','store '.$store_keys.' sales'));
   $_data=$tm->plot_data();
+  $data=array();
   foreach($_data as $__data)
     $data[]=$__data;
   $response=array('resultset'=>
@@ -393,6 +401,47 @@ function list_store_invoices_per_month(){
   echo json_encode($response);
 }
 
+function list_item($tipo,$period,$item_keys,$split=true){
+  
+  $_data=array();
+  if($split){
+
+    $item_keys=preg_replace('/\(|\)/','',$item_keys);
+    foreach(preg_split('/\s*,\s*/',$item_keys) as $key){
+      if(!is_numeric($key))
+	continue;
+      //print "$tipo ($key) sales";
+      $tm=new TimeSeries(array($period,"$tipo ($key) sales"));
+      $tmp_data=$tm->plot_data();
+      unset($tm);
+      foreach($tmp_data as $key=>$values){
+	if(isset($_data[$key])){
+	  $_data[$key]=array_merge($_data[$key],$values);
+	}else
+	  $_data[$key]=$values;
+      }
+    }
+  }else{
+    //print "$tipo $item_keys sales";
+    $tm=new TimeSeries(array($period,"$tipo $item_keys sales"));
+    $_data=$tm->plot_data();
+  }
+  $data=array();
+  foreach($_data as $__data)
+    $data[]=$__data;
+  $response=array('resultset'=>
+		  array(
+			'state'=>200,
+			'data'=>$data
+			)
+		  );
+  
+  echo json_encode($response);
+
+
+}
+
+
 function list_department_invoices_per_month(){
   $_data=array();
   if(!isset($_REQUEST['department_keys']))
@@ -403,6 +452,8 @@ function list_department_invoices_per_month(){
     foreach(preg_split('/\s*,\s*/',$department_keys) as $key){
       if(!is_numeric($key))
 	continue;
+
+      //print "product department ($key) sales\n";
       $tm=new TimeSeries(array('m',"product department ($key) sales"));
       
     
@@ -411,14 +462,11 @@ function list_department_invoices_per_month(){
       unset($tm);
       foreach($tmp_data as $key=>$values){
 	if(isset($_data[$key])){
-	  //	  print_r($data[$key]);
-	  //print_r($values);
 	  $_data[$key]=array_merge($_data[$key],$values);
-	  
 	}else
 	  $_data[$key]=$values;
       }
-      //print_r($_data);exit;
+ 
       
     }
     

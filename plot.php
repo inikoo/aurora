@@ -264,8 +264,6 @@ break;
    
    $title=_("Outers dispached per Week");
    $ar_address='ar_plot.php?tipo='.$tipo;
-   // print_r($_REQUEST);
-   // print $ar_address;
    $fields='"tip_out","out","date","bonus","tip_bonus"';
    $yfields=array(
 		  array('label'=>_('Sold Outers'),'name'=>'out','style'=>'size:5,lineSize:2','type'=>'line'),
@@ -338,10 +336,10 @@ case('top_departments_sales_month'):
   }
   mysql_free_result($res);
   $departments_keys=preg_replace('/,$/',')',$departments_keys);
-  
+  //$departments_keys='(1)';
   $title=_("Store Net Sales per Month");
   $ar_address=sprintf('ar_plot.php?tipo=invoiced_department_month_sales&split=yes&department_keys=%s',$departments_keys);
-  // print $ar_address;
+  //print $ar_address;;
   $fields='"date"';
 
   foreach($deparment_key_array as $key=>$value){
@@ -369,53 +367,76 @@ case('top_departments_sales_month'):
 
 
 case('store_sales_month'):
+case('department_sales_month'):
+case('family_sales_month'):
 
-  $store_key_array=array();
 
-  if(preg_match('/\(.+\)/',$_REQUEST['store_keys'],$keys)){
-    $keys=preg_replace('/\(|\)/','',$keys[0]);
-    $keys=preg_split('/\s*,\s*/',$keys);
-   
-     $store_keys='(';
-     foreach($keys as $key){
-       if(is_numeric($key)){
-	 $store_keys.=sprintf("%d,",$key);
-	 $store_key_array[]=$key;
-	 }
-     }
-     
-
-     $store_keys=preg_replace('/,$/',')',$store_keys);
-  }elseif(preg_match('/^\d+$/',$_REQUEST['store_keys'])){
-    $store_keys="(".$_REQUEST['store_keys'].")";
-    $store_key_array[]=$_REQUEST['store_keys'];
-  }
-
-  if(count($store_key_array)==0){
-    return;
-  }
+   if(preg_match('/month$/',$tipo)){
+    $period='month';
+   }elseif(preg_match('/year$/',$tipo)){
+    $sub_tipo='year';
+   }elseif(preg_match('/quarter$/',$tipo)){
+    $sub_tipo='quarter';
+   }elseif(preg_match('/week$/',$tipo)){
+    $sub_tipo='week';
+   }
+   $request_keys=$_REQUEST['keys'];
+  if(preg_match('/^store/',$tipo)){
+    $sub_tipo='store';
   
+ 
+  }elseif(preg_match('/^department/',$tipo)){
+    $sub_tipo='department';
   
-  $title=_("Store Net Sales per Month");
-  $ar_address=sprintf('ar_plot.php?tipo=invoiced_store_month_sales&split=yes&store_keys=%s',$store_keys);
-  // print $ar_address;
-  $fields='"date"';
-  foreach($store_key_array as $key){
-    $fields.=',"value'.$key.'","tip_value'.$key.'","forecast'.$key.'","tip_forecast'.$key.'","tails'.$key.'","tip_tails'.$key.'"';
+  }elseif(preg_match('/^family/',$tipo)){
+    $sub_tipo='family';
+  
   }
-  $yfields=array();
-  foreach($store_key_array as $key){
-    $yfields[]=array('label'=>_('Forecast')." ($key)",'name'=>'forecast'.$key,'style'=>'color:0x8dd5e7');
+
+  $item_key_array=array();
+  if(preg_match('/\(.+\)/',$request_keys,$keys)){
+      $keys=preg_replace('/\(|\)/','',$keys[0]);
+      $keys=preg_split('/\s*,\s*/',$keys);
+      $item_keys='(';
+      foreach($keys as $key){
+	if(is_numeric($key)){
+	  $item_keys.=sprintf("%d,",$key);
+	  $item_key_array[]=$key;
+	}
+      }
+      $item_keys=preg_replace('/,$/',')',$item_keys);
+    }elseif(preg_match('/^\d+$/',$request_keys)){
+      $item_keys="(".$request_keys.")";
+      $item_key_array[]=$request_keys;
+    }
+   if(count($item_key_array)==0){
+      return;
+    }
+  
+    $title=_("Store Net Sales per Month");
+    $ar_address=sprintf('ar_plot.php?tipo=item_invoiced_sales&subtipo=%s&period=%s&split=yes&item_keys=%s',$sub_tipo,$period,$item_keys);
+
+    print $ar_address;
+    $fields='"date"';
+    foreach($item_key_array as $key){
+      $fields.=',"value'.$key.'","tip_value'.$key.'","forecast'.$key.'","tip_forecast'.$key.'","tails'.$key.'","tip_tails'.$key.'"';
+  }
+    $yfields=array();
+    foreach($item_key_array as $key){
+      $yfields[]=array('label'=>_('Forecast')." ($key)",'name'=>'forecast'.$key,'style'=>'color:0x8dd5e7');
     $yfields[]=array('label'=>_('Tails')." ($key)",'name'=>'tails'.$key,'style'=>'color:0x00b8bf,fillColor:0xffffff');
     $yfields[]=array('label'=>_('Month Net Sales')." ($key)",'name'=>'value'.$key,'style'=>'color:0x00b8bf');
-  }		 
-		 
+    }		 
+    
   $yfield_label_type='formatCurrencyAxisLabel';
   
   $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category','axis'=>'justyears');
   $style='';
   $tipo_chart='LineChart';
    break;
+
+
+
  case('total_sales_month'):
    $title=_("Total Net Sales per Month");
    $ar_address='ar_plot.php?tipo=invoiced_month_sales';

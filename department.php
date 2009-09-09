@@ -172,6 +172,30 @@ $smarty->assign('show_percentages',$_SESSION['state']['department']['percentages
 $smarty->assign('avg',$_SESSION['state']['department']['avg']);
 $smarty->assign('period',$_SESSION['state']['department']['period']);
 
+if(preg_match('/department_sales/',$_SESSION['state']['department']['plot'])){
+  $smarty->assign('plot_tipo','department_sales');
+  $smarty->assign('plot_args','tipo='.$_SESSION['state']['department']['plot'].'&department_keys='.$department_id);
+  $smarty->assign('plot_src','plot.php?tipo='.$_SESSION['state']['department']['plot'].'&department_keys='.$department_id);
+}elseif(preg_match('/top_departments_sales/',$_SESSION['state']['department']['plot'])){
+  $smarty->assign('plot_tipo','top_departments_sales');
+  $smarty->assign('plot_args','tipo='.$_SESSION['state']['department']['plot'].'&department_keys='.$department_id);
+  $smarty->assign('plot_src','plot.php?tipo='.$_SESSION['state']['department']['plot'].'&department_keys='.$department_id);
+}elseif(preg_match('/pie_department_share/',$_SESSION['state']['department']['plot'])){
+  $smarty->assign('plot_tipo','pie_department_share');
+  $smarty->assign('plot_args','tipo='.$_SESSION['state']['department']['plot'].'&department_keys='.$department_id);
+  $smarty->assign('plot_src','pie.php?tipo='.$_SESSION['state']['department']['plot'].'&department_keys='.$department_id);
+  $pie_data=$_SESSION['state']['department']['pie'];
+}
+ $pie_data=$_SESSION['state']['department']['pie'];
+$smarty->assign('pie_period',$pie_data['period']);
+$smarty->assign('forecast',$pie_data['forecast']);
+if($pie_data['period']=='month'){
+  $smarty->assign('pie_period_label',_('Month'));
+  if($pie_data['date']=='today'){
+    $smarty->assign('pie_date',date('m Y'));
+  }
+}
+
 
 //$table_title=_('Family List');
 //$smarty->assign('table_title',$table_title);
