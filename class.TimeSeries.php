@@ -10,6 +10,7 @@ Class TimeSeries  {
   public $name=false;
   public $name_key=0;
   public $name_key2=0;
+  public $parent_key=0;
   public $values=array();
   public $error=false;
   public $label='';
@@ -34,11 +35,11 @@ Class TimeSeries  {
 	    $this->frequency=365;
 	}
 	if(preg_match('/day|quarterly|^q$/i',$value)){
-	    $this->freq='Qaeterly';
+	    $this->freq='Quaterly';
 	    $this->frequency=4;
 	}
 	if(preg_match('/annualy|year|yearly|^y$/i',$value)){
-	    $this->freq='yearly';
+	    $this->freq='Yearly';
 	    $this->frequency=1;
 	}
       }
@@ -64,7 +65,7 @@ Class TimeSeries  {
        $this->max_forecast_bins=12;
        $this->where='';
        $this->label=_('Sales');
-    }elseif(preg_match('/product department \((\d|,)+\) sales?/i',$this->name,$match)){
+    }elseif(preg_match('/(product department|department) \((\d|,)+\) sales?/i',$this->name,$match)){
      
       $department_key_array=array();
       if(preg_match('/\(.+\)/',$match[0],$keys)){
@@ -85,7 +86,8 @@ Class TimeSeries  {
 	  $department_keys=preg_replace('/,$/',')',$department_keys);
 	  
       }
-      if( count($department_key_array)==0){
+      $num_keys=count($department_key_array);
+      if( $num_keys==0){
 	$this->error=true;
 	return;
       }
@@ -103,7 +105,7 @@ Class TimeSeries  {
 	$this->name_key=preg_replace('/\(|\)/','',$department_keys);
 	$department=new Department($this->name_key);
 	$this->label=$department->data['Product Department Code'];
-	$this->name_key2=$department->data['Product Department Store Key'];
+	$this->parent_key=$department->data['Product Department Store Key'];
       }
 
       $this->count='count(Distinct `Order Key`)';
@@ -112,7 +114,7 @@ Class TimeSeries  {
       $this->value_field="`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`-`Invoice Transaction Net Refund Amount`";
       $this->where=sprintf(" and `Product Main Department Key` in %s ",$department_keys);
       $this->max_forecast_bins=12;
-    }elseif(preg_match('/product family \((\d|,)+\) sales?/i',$this->name,$match)){
+    }elseif(preg_match('/(product family|family) \((\d|,)+\) sales?/i',$this->name,$match)){
      
       $family_key_array=array();
       if(preg_match('/\(.+\)/',$match[0],$keys)){
@@ -133,11 +135,14 @@ Class TimeSeries  {
 	  $family_keys=preg_replace('/,$/',')',$family_keys);
 	  
       }
-      if( count($family_key_array)==0){
+      $num_keys=count($family_key_array);
+      if( $num_keys==0){
 	$this->error=true;
 	return;
       }
-      // print "--------";
+
+
+    
 
       if($num_keys>1){
 	$this->name='PFS'.$family_keys;
@@ -151,7 +156,7 @@ Class TimeSeries  {
 	$this->name_key=preg_replace('/\(|\)/','',$family_keys);
 	$family=new Family($this->name_key);
 	$this->label=$family->data['Product Family Code'];
-	$this->name_key2=$department->data['Product Family Store Key'];
+	$this->parent_key=$family->data['Product Family Main Department Key'];
       }
 
       $this->count='count(Distinct `Order Key`)';
@@ -160,7 +165,7 @@ Class TimeSeries  {
       $this->value_field="`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`-`Invoice Transaction Net Refund Amount`";
       $this->where=sprintf(" and `Product Family Key` in %s ",$family_keys);
       $this->max_forecast_bins=12;
-    }elseif(preg_match('/product store \((\d|,)+\) sales?/i',$this->name,$match)){
+    }elseif(preg_match('/store \((\d|,)+\) sales?/i',$this->name,$match)){
      
       $store_key_array=array();
       if(preg_match('/\(.+\)/',$match[0],$keys)){
@@ -181,7 +186,9 @@ Class TimeSeries  {
 	  $store_keys=preg_replace('/,$/',')',$store_keys);
 	  
       }
-      if( count($store_key_array)==0){
+      
+      $num_keys=count($store_key_array);
+      if($num_keys==0){
 	$this->error=true;
 	return;
       }
@@ -198,7 +205,7 @@ Class TimeSeries  {
 	$this->name='SS';
 	$this->name_key=preg_replace('/\(|\)/','',$store_keys);
 	$store=new Store($this->name_key);
-	$this->label=$store->data['Product Store Code'];
+	$this->label=$store->data['Store Code'];
       }
 
       $this->count='count(Distinct `Order Key`)';
@@ -221,7 +228,13 @@ function get_values(){
   switch($this->freq){
   case('Monthly'):
     $this->get_values_per_month();
-
+    break;
+  case('Yearly'):
+    $this->get_values_per_year();
+    break;
+  case('Quarterly'):
+    $this->get_values_per_month();
+    break;
   }
 
 }
@@ -229,56 +242,62 @@ function get_values(){
 
 function save_values(){
   
-  $sql=sprintf("update `Time Series Dimension` set `Time Series Tag`='D' where `Time Series Name` in (%s) and `Time Series Frequency`=%s and `Time Series Name Key`=%d , `Time Series Name Second Key`=%d  ,`Time Series Label`=%s "
+  $sql=sprintf("update `Time Series Dimension` set `Time Series Tag`='D' where `Time Series Name` in (%s) and `Time Series Frequency`=%s and `Time Series Name Key`=%d  and `Time Series Name Second Key`=%d  "
 	       ,prepare_mysql($this->name)
 	       ,prepare_mysql($this->freq)
 	       ,$this->name_key
 	       ,$this->name_key2
-	       ,prepare_mysql($this->label)
+
 	       );
 
-$sql=sprintf("insert into `Time Series Dimension` values (%s,%s,%s,%d,%d,%s,%f,%d,'First','','')   ON DUPLICATE KEY UPDATE  `Time Series Value`=%f ,`Time Series Count`=%d ,`Time Series Type`='First' ,`Time Series Tag`='' "
-		,prepare_mysql($this->first['date'])
-		,prepare_mysql($this->freq)
-		,prepare_mysql($this->name)
+$sql=sprintf("insert into `Time Series Dimension` values (%s,%s,%s,%d,%d,%d,%s,%f,%d,'First','','')   ON DUPLICATE KEY UPDATE  `Time Series Value`=%f ,`Time Series Count`=%d ,`Time Series Type`='First' ,`Time Series Tag`='',`Time Series Parent Key`=%d "
+	     ,prepare_mysql($this->first['date'])
+	     ,prepare_mysql($this->freq)
+	     ,prepare_mysql($this->name)
 	     ,$this->name_key
-		,$this->name_key2
+	     ,$this->name_key2
+	     ,$this->parent_key
 	     ,prepare_mysql($this->label)
-		,$this->first['value']
-		,$this->first['count']
-		,$this->first['value']
-		,$this->first['count']
-	       );
+	     ,$this->first['value']
+	     ,$this->first['count']
+	     ,$this->first['value']
+	     ,$this->first['count']
+	     ,$this->parent_key
+	     );
    mysql_query($sql);
    
 
   foreach($this->values as $date=>$data){
-   $sql=sprintf("insert into `Time Series Dimension` values (%s,%s,%s,%d,%d,%s,%f,%d,'Data','','')   ON DUPLICATE KEY UPDATE  `Time Series Value`=%f ,`Time Series Count`=%d ,`Time Series Type`='Data' ,`Time Series Tag`='' "
+   $sql=sprintf("insert into `Time Series Dimension` values (%s,%s,%s,%d,%d,%d,%s,%f,%d,'Data','','')   ON DUPLICATE KEY UPDATE  `Time Series Value`=%f ,`Time Series Count`=%d ,`Time Series Type`='Data' ,`Time Series Tag`='' ,`Time Series Parent Key`=%d "
 		,prepare_mysql($date)
 		,prepare_mysql($this->freq)
 		,prepare_mysql($this->name)
 		,$this->name_key
 		,$this->name_key2
+		,$this->parent_key
 		,prepare_mysql($this->label)
 		,$data['value']
 		,$data['count']
 		,$data['value']
 		,$data['count']
+		,$this->parent_key
 	       );
    mysql_query($sql);
    //print "$sql<br>";
   } 
-  $sql=sprintf("insert into `Time Series Dimension` values (%s,%s,%s,%d,%d,%s,%f,%d,'Current','','')   ON DUPLICATE KEY UPDATE  `Time Series Value`=%f ,`Time Series Count`=%d ,`Time Series Type`='Current' ,`Time Series Tag`='' "
+  $sql=sprintf("insert into `Time Series Dimension` values (%s,%s,%s,%d,%d,%d,%s,%f,%d,'Current','','')   ON DUPLICATE KEY UPDATE  `Time Series Value`=%f ,`Time Series Count`=%d ,`Time Series Type`='Current' ,`Time Series Tag`='' ,`Time Series Parent Key`=%d "
 		,prepare_mysql($this->current['date'])
 		,prepare_mysql($this->freq)
 		,prepare_mysql($this->name)
 		,$this->name_key
 		,$this->name_key2
+	       	,$this->parent_key
  ,prepare_mysql($this->label)
 		,$this->current['value']
 		,$this->current['count']
 		,$this->current['value']
 		,$this->current['count']
+	       	,$this->parent_key
 	       );
    mysql_query($sql);
  
@@ -307,12 +326,13 @@ function save_forecast(){
   mysql_query($sql);
 
   foreach($this->forecast as $date=>$data){
-   $sql=sprintf("insert into `Time Series Dimension` values (%s,%s,%s,%d,%d,%s,%f,%d,'Forecast','',%s)    "
+   $sql=sprintf("insert into `Time Series Dimension` values (%s,%s,%s,%d,%d,%d,%s,%f,%d,'Forecast','',%s)    "
 		,prepare_mysql($date)
 		,prepare_mysql($this->freq)
 		,prepare_mysql($this->name)
 		,$this->name_key
 		,$this->name_key2
+		,$this->parent_key
 		,prepare_mysql($this->label)		
 		,$data['value']
 		,$data['count']
@@ -360,13 +380,14 @@ function R_script(){
   // print_r($this->values);
   //print $values;
   $script=sprintf("library(forecast,quietly );values=c(%s);",$values);
+  
   $script.=sprintf("ts= ts(values, start=c(%d,%d),frequency = %d);",$this->first_complete_year,$this->first_complete_bin,$this->frequency);
   $script.="fcast =forecast(ts);print(fcast) ;print ('--count data--');";
   $script.=sprintf("values=c(%s);",$count);
   $script.=sprintf("ts= ts(values, start=c(%d,%d),frequency = %d);",$this->first_complete_year,$this->first_complete_bin,$this->frequency);
   $script.="fcast = forecast(ts);print(fcast) ;";
-  //  print $script;
-  //  exit;
+  print $script;
+  exit;
   $cmd = "echo \"$script\" |  R --vanilla --slave -q";
  
   $handle = popen($cmd, "r");
@@ -466,6 +487,58 @@ foreach($count_forecast_data as $line){
 
 
 
+function get_values_per_year(){
+  
+$this->first_complete_year();
+
+
+$start_year=$this->start_year;
+$last_year=date("Y");
+
+if($last_year<$start_year){
+  $this->error=true;
+  return;
+}
+for($year=$start_year;$year<=$last_year;$year++  ){
+  if($year==$this->start_year)
+    $this->first=array('date'=>"$year-01-01",'count'=>0,'value'=>0);
+  else if($year==$last_year)
+    $this->current=array('date'=>"$year-01-01",'count'=>0,'value'=>0);
+  else
+    $this->values["$year-01-01"]=array('count'=>0,'value'=>0);
+}
+
+
+   $sql=sprintf("SELECT %s as number,%s as date ,YEAR(%s) AS year ,sum(%s) as value FROM %s where YEAR(%s)>%s  and YEAR(%s)<=%s %s  GROUP BY year limit 10000"
+	       ,$this->count
+	       ,$this->date_field,$this->date_field
+	       ,$this->value_field
+	       ,$this->table
+	       ,$this->date_field,prepare_mysql($start_year)
+	       ,$this->date_field,prepare_mysql($last_year)
+	       ,$this->where
+	     );
+ 
+  // print "$sql\n";
+ 
+  $res=mysql_query($sql);
+  
+  while($row=mysql_fetch_array($res)){
+    $year=$row['year'];
+    if($year==$this->start_year)
+        $this->first=array('date'=>"$year-01-01",'count'=>$row['number'],'value'=>$row['value']);
+   else if($year==$last_year)
+        $this->current=array('date'=>"$year-01-01",'count'=>$row['number'],'value'=>$row['value']);   
+    else
+        $this->values["$year-01-01"]=array('count'=>$row['number'],'value'=>$row['value']);
+  }
+  
+  
+}
+
+
+
+
 function get_values_per_month(){
   
 $this->first_complete_month();
@@ -487,11 +560,7 @@ $sql=sprintf("SELECT `First Day` as date ,substring(`First Day`, 1,7) AS dd  FRO
         $this->values[$row['dd'].'-01']=array('count'=>0,'value'=>0);
    }
 
-
-   
-   
-   
-  $sql=sprintf("SELECT %s as number,%s as date ,substring(%s, 1,7) AS dd ,sum(%s) as value FROM %s where %s>%s  and %s<%s %s  GROUP BY dd limit 10000"
+   $sql=sprintf("SELECT %s as number,%s as date ,substring(%s, 1,7) AS dd ,sum(%s) as value FROM %s where %s>%s  and %s<%s %s  GROUP BY dd limit 10000"
 	       ,$this->count
 	       ,$this->date_field,$this->date_field
 	       ,$this->value_field
@@ -501,7 +570,7 @@ $sql=sprintf("SELECT `First Day` as date ,substring(`First Day`, 1,7) AS dd  FRO
 	       ,$this->where
 	     );
  
-  //print "$sql\n";
+  // print "$sql\n";
  
   $res=mysql_query($sql);
   
@@ -529,26 +598,79 @@ function first_complete_month(){
 	       ,$this->date_field
 	       ,$this->where
 	       ,$this->date_field
-	       
 	       );
   //print $sql;
   $res=mysql_query($sql);
   if($row=mysql_fetch_array($res)){
-    $time=mktime(0, 0, 0, date($row["m"]) , 1, date($row["y"]));
+    $time=mktime(0, 0, 0, $row["m"] , 1, $row["y"]);
     $this->start_date=date("Y-m-d", $time); 
     $this->start_year=date("Y", $time); 
     $this->start_bin=date("m", $time); 
-    $time=mktime(0, 0, 0, date($row["m"])+1 , 1, date($row["y"]));
+    $time=mktime(0, 0, 0, $row["m"]+1 , 1, $row["y"]);
     $this->first_complete_date=date("Y-m-d", $time); 
     $this->first_complete_year=date("Y", $time); 
     $this->first_complete_bin=date("m", $time); 
-   
-    
-    
   }
-  
-
 }
+
+
+function first_complete_year(){
+  $sql=sprintf("select MONTH(%s) as m,YEAR(%s) as y from %s  where %s IS NOT NULL %s   order by %s limit 1  "
+	       ,$this->date_field
+	       ,$this->date_field
+	       ,$this->table
+	       ,$this->date_field
+	       ,$this->where
+	       ,$this->date_field
+	       );
+ 
+  $res=mysql_query($sql);
+  if($row=mysql_fetch_array($res)){
+    $time=mktime(0, 0, 0, 1 , 1, $row["y"]);
+    $this->start_date=date("Y-m-d", $time); 
+    $this->start_year=date("Y", $time); 
+    $this->start_bin=1; 
+    $time=mktime(0, 0, 0,1, 1, $row["y"]+1);
+    $this->first_complete_date=date("Y-m-d", $time); 
+    $this->first_complete_year=date("Y", $time); 
+    $this->first_complete_bin=1; 
+  }
+}
+
+function first_complete_quarter(){
+  $sql=sprintf("select  MONTH(%s) as m,QUARTER(%s) as q,YEAR(%s) as y from %s  where %s IS NOT NULL %s   order by %s limit 1  "
+	       ,$this->date_field
+	       ,$this->date_field
+	       ,$this->table
+	       ,$this->date_field
+	       ,$this->where
+	       ,$this->date_field
+	       );
+ 
+  $res=mysql_query($sql);
+  if($row=mysql_fetch_array($res)){
+    $time=mktime(0, 0, 0, $row["m"] , 1, $row["y"]);
+    $this->start_date=date("Y-m-d", $time); 
+    $this->start_year=date("Y", $time); 
+    $this->start_bin=date("m", $time); 
+    $time=mktime(0, 0, 0,$row["m"]+3, 1, $row["y"]);
+    $this->first_complete_date=date("Y-m-d", $time); 
+    $this->first_complete_year=date("Y", $time); 
+    if($row['m']<=3)
+      $quarter=2;
+     elseif($row['m']<=6)
+       $quarter=3;
+     elseif($row['m']<=9)
+       $quarter=4;
+     else
+       $quarter=1;
+    
+    $this->first_complete_bin=$quarter; 
+  }
+}
+
+
+
 
  function last_complete_month(){
    //  return "2009-07-31 23:59:59";
@@ -570,6 +692,47 @@ function first_complete_month(){
      return date("Y-m-d", $last_time); 
   }
 }
+
+ function last_complete_year(){
+   $sql=sprintf("select YEAR(%s) as y from %s where %s IS NOT NULL %s  order by %s desc limit 1  "
+		,$this->date_field
+		,$this->date_field
+		,$this->table
+		,$this->date_field
+		,$this->where
+		,$this->date_field
+		);
+   $res=mysql_query($sql);
+   if($row=mysql_fetch_array($res)){
+     $last_time=mktime(0, 0, 0, 1 , 1, date($row["y"])-1 );
+     return date("Y-m-d", $last_time); 
+  }
+}
+
+function last_complete_quarter(){
+   $sql=sprintf("select MONTH(%s) as m,YEAR(%s) as y from %s where %s IS NOT NULL %s  order by %s desc limit 1  "
+		,$this->date_field
+		,$this->date_field
+		,$this->table
+		,$this->date_field
+		,$this->where
+		,$this->date_field
+		);
+   $res=mysql_query($sql);
+   if($row=mysql_fetch_array($res)){
+     
+     if($row['m']<=3)
+       $last_time=mktime(0, 0, 0, 10 , 1, date("y")-1);
+     elseif($row['m']<=6)
+       $last_time=mktime(0, 0, 0, 1 , 1, date("y"));
+     elseif($row['m']<=9)
+       $last_time=mktime(0, 0, 0, 4 , 1, date("y"));
+     else
+       $last_time=mktime(0, 0, 0, 7 , 1, date("y"));
+
+     return date("Y-m-d", $last_time); 
+  }
+}
     
 
  function  plot_data(){
@@ -579,28 +742,28 @@ function first_complete_month(){
  
  function plot_data_per_month(){
 
+   $data=array();
 
+   $tipo='';
+   $suffix='';
+   
  if($this->name=='invoices'){
      
    $tipo='SI';
    $suffix='';
    
- }elseif(preg_match('/^(PDS|PSS|PFS|PrS)/',$this->name)){
-   
+ }elseif(preg_match('/^(PDS|SS|PFS|PrS)/',$this->name)){
    $tipo='PI';
-   $suffix=preg_replace('/.*\(/','',$this->name);
+   $suffix=preg_replace('/.*\(/','',$this->name_key);
    $suffix=preg_replace('/\)/','',$suffix);
    $suffix=preg_replace('/,/','_',$suffix);
-  
-   
  }
 
-
-
-
-
-
-   $sql=sprintf("SELECT `Time Series Type`,`Time Series Value` as value,MONTH(`Time Series Date`) as month,`Time Series Count` as count ,UNIX_TIMESTAMP(`Time Series Date`) as date ,substring(`Time Series Date`, 1,7) AS dd from `Time Series Dimension` where `Time Series Name`='%s' order by `Time Series Date`,`Time Series Type` desc",$this->name);
+ $sql=sprintf("SELECT `Time Series Label`,`Time Series Type`,`Time Series Value` as value,MONTH(`Time Series Date`) as month,`Time Series Count` as count ,UNIX_TIMESTAMP(`Time Series Date`) as date ,substring(`Time Series Date`, 1,7) AS dd from `Time Series Dimension` where `Time Series Name`=%s and `Time Series Name Key`=%d and `Time Series Name Second Key`=%d order by `Time Series Date`,`Time Series Type` desc"
+		,prepare_mysql($this->name)
+		,$this->name_key
+		,$this->name_key2
+		);
    // print "$sql<br>";
 
   $prev_month='';
@@ -630,7 +793,7 @@ function first_complete_month(){
  
     
     if($tipo=='SI' or $tipo=='PI'){
-      $tip=_('Sales')." ".strftime("%B %Y", strtotime('@'.$row['date']))."\n".money($row['value'])."\n".$diff_prev_month.$diff_prev_year."(".$row['count']." "._('Invoices').")";
+      $tip=$row['Time Series Label'].' '._('Sales')." ".strftime("%B %Y", strtotime('@'.$row['date']))."\n".money($row['value'])."\n".$diff_prev_month.$diff_prev_year."(".$row['count']." "._('Invoices').")";
 
     }elseif($tipo="PO"){
        $tip=_('Sales')." ".strftime("%B %Y", strtotime('@'.$row['date']))."\n".money($row['value'])."\n".$diff_prev_month.$diff_prev_year."(".$row['count']." "._('Outers Shipped').")";
@@ -685,8 +848,8 @@ function first_complete_month(){
     $prev_year[$row['month']]=$row['value'];
   }
   mysql_free_result($res);
-  $_data=array();
-  $i=0;
+  //$_data=array();
+  //$i=0;
   
   //foreach($data as $__data)
   //   $_data[]=$__data;

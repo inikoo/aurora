@@ -59,7 +59,8 @@ var Dom   = YAHOO.util.Dom;
 	
 	Dom.get(table.view).className="";
 	Dom.get(tipo).className="selected";
-	table.view=tipo
+	table.view=tipo;
+
 	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=departments-view&value=' + escape(tipo) );
 	}
   }
@@ -163,18 +164,39 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	};
     });
 
+
+function show_details(){
+    Dom.get("details").style.display='';
+    Dom.get("show_details").style.display='none';
+    YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=store-details&value=1')
+}
+
+function hide_details(){
+    Dom.get("details").style.display='none';
+    Dom.get("show_details").style.display='';
+    //  alert('ar_sessions.php?tipo=update&keys=store-details&value=0')
+    YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=store-details&value=0')
+}
+
 function change_plot(o){
     if(!Dom.hasClass(o,'selected')){
 	var period=Dom.get("plot_info").getAttribute("period");
 	var args=Dom.get("plot_info").getAttribute("args");
 	var tipo=o.getAttribute("tipo");
 
-	if($tipo='pie_department_share'){
-	  Dom.get("the_plot").width=500;
+	if(tipo=='pie_department_share'){
+	  Dom.get("the_plot").width="500px";
 	  var plot_url='pie.php?tipo='+tipo+'&period='+period+args;
-	}else
-	  var plot_url='plot.php?tipo='+tipo+'_'+period+args;
-	
+	  plot_code=tipo;
+	  Dom.get("pie_options").style.display='';
+	}else{
+	    Dom.get("pie_options").style.display='none';
+	    var plot_url='plot.php?tipo='+tipo+'_'+period+args;
+	    Dom.get("the_plot").width="100%";
+	    plot_code=tipo+'_'+period;
+	}
+
+
 	Dom.get("the_plot").src=plot_url;
        
 	old_selected=Dom.getElementsByClassName('selected', 'span', 'plot_chooser');
@@ -182,7 +204,9 @@ function change_plot(o){
 	    Dom.removeClass(old_selected[i],'selected');
 	}
 	Dom.addClass(o,'selected');
-	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=store-plot&value='+tipo+'_'+period)
+	//alert('ar_sessions.php?tipo=update&keys=store-plot&value='+plot_code)
+	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=store-plot&value='+plot_code)
+	    
     }
     
 }
@@ -230,7 +254,7 @@ function change_avg(e,table_id){
  ids=['avg_totals','avg_month','avg_week',"avg_month_eff","avg_week_eff"];
  YAHOO.util.Event.addListener(ids, "click",change_avg,0);
 
- YAHOO.util.Event.addListener('show_details', "click",show_details,'departments');
+ // YAHOO.util.Event.addListener('show_details', "click",show_details,'departments');
  YAHOO.util.Event.addListener('show_percentages', "click",show_percentages,'departments');
 
 

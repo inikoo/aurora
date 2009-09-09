@@ -212,7 +212,7 @@ img{vertical-align:bottom}
 
 
 
-.xdata_table  {margin-top:20px}
+.data_table  {margin:20px}
 .xdata_table div.options {float:right;border-top:1px solid SteelBlue;height:18px;padding:2px 10px;margin-top:10px;margin-right:0px;background:Lavender}
 .xdata_table div.options_right{background-image:url('art/corner_top_table_right.png');;background-repeat:no-repeat;float:right;height:23px;width:10px;margin-top:10px;margin-right:10px}
 .xdata_table div.options_left{background-image:url('art/corner_top_table_left.png');;background-repeat:no-repeat;float:right;height:23px;width:10px;margin-top:10px;}
@@ -420,7 +420,7 @@ color: #316D89;
 
 /*Common search div*/
 
-.search_box{clear:both;float:right;border: 0px solid #ddd;text-align:right;padding:0 10px 10px 10px;}
+.search_box{clear:both;float:right;border: 0px solid #ddd;text-align:right;padding:0 20px 10px 10px;}
 .search_box form{ margin-bottom:5px }
 .search_box .search_title{ position:relative;left:16px}
 

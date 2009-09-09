@@ -749,6 +749,13 @@ $sql="select sum(`Product 1 Week Acc Invoiced Amount`) as net,sum(`Product 1 Wee
 
 
    switch($key){
+ case('For Sale Products'):
+      return number($this->data['Product Department For Sale Products']);
+    break;
+    case('Families'):
+      return number($this->data['Product Department Families']);
+    break;
+     
 
    case('Total Products'):
      return $this->data['Product Department For Sale Products']+$this->data['Product Department In Process Products']+$this->data['Product Department Not For Sale Products']+$this->data['Product Department Discontinued Products']+$this->data['Product Department Unknown Sales State Products'];
