@@ -14,6 +14,8 @@ Class TimeSeries  {
   public $values=array();
   public $error=false;
   public $label='';
+  public $no_negative_values=true;
+  public $no_data=true;
   function TimeSeries($arg){
   
   if(!is_array($arg) or !(count($arg)==2  or count($arg)==3)  )
@@ -192,8 +194,7 @@ Class TimeSeries  {
 	$this->error=true;
 	return;
       }
-      // print "--------";
-
+  
       if($num_keys>1){
 	$this->name='SS'.$store_keys;
 	foreach( $store_key_array as $key){
@@ -214,7 +215,94 @@ Class TimeSeries  {
       $this->value_field="`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`-`Invoice Transaction Net Refund Amount`";
       $this->where=sprintf(" and `Store Key` in %s ",$store_keys);
       $this->max_forecast_bins=12;
+    }elseif(preg_match('/product id \((\d|,)+\) sales?/i',$this->name,$match)){
+      $product_key_array=array();
+      if(preg_match('/\(.+\)/',$match[0],$keys)){
+	  $keys=preg_replace('/\(|\)/','',$keys[0]);
+	  $keys=preg_split('/\s*,\s*/',$keys);
+	  $product_keys='(';
+	  foreach($keys as $key){
+	    if(is_numeric($key)){
+	      $product_keys.=sprintf("%d,",$key);
+	      $product_key_array[]=$key;
+	    }
+	  }
+	  $product_keys=preg_replace('/,$/',')',$product_keys);
+      }
+      $num_keys=count($product_key_array);
+      if( $num_keys==0){
+	$this->error=true;
+	return;
+      }
+
+      if($num_keys>1){
+	$this->name='PidS'.$product_keys;
+	foreach( $product_key_array as $key){
+	  $product=new Product($this->name_key);
+	  $this->label.=','.$product->data['Product Code']." (".$product->data['Product ID'].")";
+	}
+	$this->label=preg_replace('/^,/','',$this->label);
+      }else{
+	$this->name='PidS';
+	$this->name_key=preg_replace('/\(|\)/','',$product_keys);
+	$product=new Product($this->name_key);
+	$this->label=$product->data['Product Code']." (".$product->data['Product ID'].")";
+	$this->parent_key=$product->data['Product Family Key'];
+      }
+
+      $this->count='count(Distinct `Order Key`)';
+      $this->date_field='`Invoice Date`';
+      $this->table='`Order Transaction Fact` OTF left join `Product Dimension` P  on (OTF.`Product Key`=P.`Product Key`)  ';
+      $this->value_field="`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`-`Invoice Transaction Net Refund Amount`";
+      $this->where=sprintf(" and `Product ID` in %s ",$product_keys);
+      $this->max_forecast_bins=12;
+    }elseif(preg_match('/product code \((\d|,)+\) sales?/i',$this->name,$match)){
+      $product_key_array=array();
+      if(preg_match('/\(.+\)/',$match[0],$keys)){
+	  $keys=preg_replace('/\(|\)/','',$keys[0]);
+	  $keys=preg_split('/\s*,\s*/',$keys);
+	  $product_keys='(';
+	  foreach($keys as $key){
+	    if(is_numeric($key)){
+	      $product_keys.=sprintf("%d,",$key);
+	      $product_key_array[]=$key;
+	    }
+	  }
+	  $product_keys=preg_replace('/,$/',')',$product_keys);
+      }
+      $num_keys=count($product_key_array);
+      if( $num_keys==0){
+	$this->error=true;
+	return;
+      }
+
+      if($num_keys>1){
+	$this->name='PcodeS'.$product_keys;
+	$product_codes="(";
+	foreach( $product_key_array as $key){
+	  $product=new Product($this->name_key);
+	  $this->label.=','.$product->data['Product Code'];
+	  $product_codes.=prepare_mysql($product->data['Product Code']).",";
+	}
+	$product_codes=preg_replace('/,$/',')',$product_codes);
+	$this->label=preg_replace('/^,/','',$this->label);
+      }else{
+	$this->name='PcodeS';
+	$this->name_key=preg_replace('/\(|\)/','',$product_keys);
+	$product=new Product($this->name_key);
+	$this->label=$product->data['Product Code'];
+	$this->parent_key=$product->data['Product Family Key'];
+	$product_codes="(".prepare_mysql($product->data['Product Product Code']).")";
+      }
+
+      $this->count='count(Distinct `Order Key`)';
+      $this->date_field='`Invoice Date`';
+      $this->table='`Order Transaction Fact` OTF left join `Product Dimension` P  on (OTF.`Product Key`=P.`Product Key`)  ';
+      $this->value_field="`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`-`Invoice Transaction Net Refund Amount`";
+      $this->where=sprintf(" and `Product Code` in %s ",$product_codes);
+      $this->max_forecast_bins=12;
     }
+
 
   }
 
@@ -241,6 +329,9 @@ function get_values(){
 
 
 function save_values(){
+
+  if($this->no_data)
+    return;
   
   $sql=sprintf("update `Time Series Dimension` set `Time Series Tag`='D' where `Time Series Name` in (%s) and `Time Series Frequency`=%s and `Time Series Name Key`=%d  and `Time Series Name Second Key`=%d  "
 	       ,prepare_mysql($this->name)
@@ -348,6 +439,10 @@ function save_forecast(){
 
 
 function forecast(){
+
+  if($this->no_data)
+    return;
+
   $only_zero_values=true;
   foreach($this->values as $key=>$data){
     if($data['value']!=0 or $data['count']!=0){
@@ -358,22 +453,65 @@ function forecast(){
   if($only_zero_values){
     
   }else{
-  $this->R_script();
+    if($this->freq=='Monthly')
+      $this->R_script();
+    else{
+      $this->forecast_using_monthly_data();
+
+    }
   }
 }
 
+function forecast_using_monthly_data(){
+  exit("todo");
+}
 
 function R_script(){
 
-
+$read=false;
+ $forecast=array();
 
   $values='';
   $count='';
   foreach($this->values as $key=>$data){
     $values.=sprintf(',%f',$data['value']);
     $count.=sprintf(',%d',$data['count']);
+  }
+  
+  $number_values=count($this->values);
+  print "values : $number_values\n";
+
+  if($number_values<=1)
+    return;
+  elseif($number_values<=3){
+    $number_period_for_forecasting=1;
+  }elseif($number_values<=5){
+    $number_period_for_forecasting=2;
+  }elseif($number_values<=7){
+    $number_period_for_forecasting=3;
+  }elseif($number_values<=9){
+    $number_period_for_forecasting=4;
+  }elseif($number_values<=11){
+    $number_period_for_forecasting=6;
+   if(date("m")==5 )
+      $number_period_for_forecasting=7;
+  }elseif($number_values<=48){
+    $number_period_for_forecasting=12;
+    if(date("m")==12 )
+      $number_period_for_forecasting=13;
+
+  }elseif($number_values<=72){
+    $number_period_for_forecasting=24;
+     if(date("m")==12 )
+      $number_period_for_forecasting=15;
+  }else{
+    $number_period_for_forecasting=36;
+    if(date("m")==12 )
+      $number_period_for_forecasting=37;
 
   }
+
+
   $values=preg_replace('/^,/','',$values);
   $count=preg_replace('/^,/','',$count);
 
@@ -382,12 +520,11 @@ function R_script(){
   $script=sprintf("library(forecast,quietly );values=c(%s);",$values);
   
   $script.=sprintf("ts= ts(values, start=c(%d,%d),frequency = %d);",$this->first_complete_year,$this->first_complete_bin,$this->frequency);
-  $script.="fcast =forecast(ts);print(fcast) ;print ('--count data--');";
+  $script.="fcast =forecast(ts,$number_period_for_forecasting);print(fcast) ;print ('--count data--');";
   $script.=sprintf("values=c(%s);",$count);
   $script.=sprintf("ts= ts(values, start=c(%d,%d),frequency = %d);",$this->first_complete_year,$this->first_complete_bin,$this->frequency);
-  $script.="fcast = forecast(ts);print(fcast) ;";
-  print $script;
-  exit;
+  $script.="fcast = forecast(ts,$number_period_for_forecasting);print(fcast) ;";
+ 
   $cmd = "echo \"$script\" |  R --vanilla --slave -q";
  
   $handle = popen($cmd, "r");
@@ -410,15 +547,14 @@ function R_script(){
  $values_forecast_data = preg_split('/\n/',$values_forecast_data);
   $count_forecast_data = preg_split('/\n/',$count_forecast_data);
 
-$read=false;
- $forecast=array();
+
  
  
  //print_r($values_forecast_data);
  // print_r($count_forecast_data);
 $forecast_bins=0;
  foreach($values_forecast_data as $line){
-    if($forecast_bins>$this->max_forecast_bins)
+    if($forecast_bins>$number_period_for_forecasting)
         break;
     $line=_trim($line);
     if($read and $line!=''){
@@ -428,6 +564,14 @@ $forecast_bins=0;
      $line=preg_replace($regex,'',$line);
      $date=date("Y-m-d",strtotime($match[0]));
      $data=preg_split('/\s/',$line);
+
+       if($this->no_negative_values){
+       foreach($data as $_key=>$_value){
+	 if(is_numeric($_value) and $_value<0)
+	   $data[$_key]=0;
+       }
+     }
+
      if($data[0]==0)
        $uncertainty=0;
      else
@@ -446,10 +590,10 @@ $forecast_bins++;
      $read=true;
  } 
  
- // print_r($forecast);
+ 
 $forecast_bins=0;
 foreach($count_forecast_data as $line){
-  if($forecast_bins>$this->max_forecast_bins)
+  if($forecast_bins>$number_period_for_forecasting)
         break;
    $line=_trim($line);
    if($read and $line!=''){
@@ -459,6 +603,14 @@ foreach($count_forecast_data as $line){
      $line=preg_replace($regex,'',$line);
      $date=date("Y-m-d",strtotime($match[0]));
      $data=preg_split('/\s/',$line);
+
+     if($this->no_negative_values){
+       foreach($data as $_key=>$_value){
+	 if(is_numeric($_value) and $_value<0)
+	   $data[$_key]=0;
+       }
+     }
+
      if($data[0]==0)
        $uncertainty=0;
      else
@@ -470,7 +622,7 @@ foreach($count_forecast_data as $line){
        $forecast_bins++;
 
    }
-   
+   // print_r($forecast);
    
    if(preg_match('/Point Forecast/i',$line))
      $read=true;
@@ -481,6 +633,7 @@ foreach($count_forecast_data as $line){
 
  $this->forecast=$forecast;
  $this->save_forecast();
+
 
 
 }
@@ -542,7 +695,8 @@ for($year=$start_year;$year<=$last_year;$year++  ){
 function get_values_per_month(){
   
 $this->first_complete_month();
-
+if($this->no_data)
+  return;
 
 $sql=sprintf("SELECT `First Day` as date ,substring(`First Day`, 1,7) AS dd  FROM kbase.`Month Dimension` where `First Day`>%s  and `First Day`<%s  GROUP BY dd order by `First Day` " 
 	     ,prepare_mysql($this->start_date)
@@ -599,7 +753,7 @@ function first_complete_month(){
 	       ,$this->where
 	       ,$this->date_field
 	       );
-  //print $sql;
+  
   $res=mysql_query($sql);
   if($row=mysql_fetch_array($res)){
     $time=mktime(0, 0, 0, $row["m"] , 1, $row["y"]);
@@ -610,6 +764,10 @@ function first_complete_month(){
     $this->first_complete_date=date("Y-m-d", $time); 
     $this->first_complete_year=date("Y", $time); 
     $this->first_complete_bin=date("m", $time); 
+    $this->no_data=false;
+  }else{
+    $this->no_data=true;
+
   }
 }
 

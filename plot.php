@@ -323,7 +323,7 @@ case('top_departments_sales_month'):
   else
     $where=' where `Product Department Store Key` in '.$store_keys;
   $order='`Product Department 1 Year Acc Invoiced Amount`';
-  $sql=sprintf("select `Product Department Code`,`Product Department Key` from `Product Department Dimension` %s order by %s limit 3"
+  $sql=sprintf("select `Product Department Code`,`Product Department Key` from `Product Department Dimension` %s order by %s desc limit 3"
 	       ,$where
 	       ,$order
 	       );
@@ -416,7 +416,7 @@ case('family_sales_month'):
     $title=_("Store Net Sales per Month");
     $ar_address=sprintf('ar_plot.php?tipo=item_invoiced_sales&subtipo=%s&period=%s&split=yes&item_keys=%s',$sub_tipo,$period,$item_keys);
 
-    print $ar_address;
+    // print $ar_address;
     $fields='"date"';
     foreach($item_key_array as $key){
       $fields.=',"value'.$key.'","tip_value'.$key.'","forecast'.$key.'","tip_forecast'.$key.'","tails'.$key.'","tip_tails'.$key.'"';

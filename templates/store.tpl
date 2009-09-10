@@ -51,7 +51,7 @@
 	</table>
       </div>
       
-      <div display="none" id="plot_info" period="month" args="&store_keys={$store->id}"  ></div>
+      <div display="none" id="plot_info" period="month" args="&keys={$store->id}"  ></div>
       <ul id="plot_chooser" class="tabs" style="margin:0 20px;padding:0 20px "  >
 	<li><span class="item {if $plot_tipo=='store_sales'}selected{/if}" onClick="change_plot(this)" tipo="store_sales"   ><span>{t}Store Sales{/t}</span></span></li>
 	<li><span class="item {if $plot_tipo=='top_departments_sales'}selected{/if}" onClick="change_plot(this)" tipo="top_departments_sales"  ><span>{t}Top Departments{/t}</span></span></li>

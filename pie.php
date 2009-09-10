@@ -22,46 +22,8 @@ $color_palette=array(
 require_once 'common.php';
 require_once 'class.Product.php';
 
-$tipo='';
-if(isset($_REQUEST['tipo']))
-  $tipo=$_REQUEST['tipo'];
-$title='';
-
-$options='';
-$staked=false;
-
-switch($tipo){
- case('pie_department_share'):
-   $store_key_array=array();
-   $store_keys='';
-   if(isset($_REQUEST['store_keys'])){
-     if(preg_match('/\(.+\)/',$_REQUEST['store_keys'],$keys)){
-      $keys=preg_replace('/\(|\)/','',$keys[0]);
-      $keys=preg_split('/\s*,\s*/',$keys);
-      $store_keys='(';
-      foreach($keys as $key){
-	if(is_numeric($key)){
-	  $store_keys.=sprintf("%d,",$key);
-	  $store_key_array[]=$key;
-	}
-      }
-      $store_keys=preg_replace('/,$/',')',$store_keys);
-    }elseif(preg_match('/^\d+$/',$_REQUEST['store_keys'])){
-       $store_keys="(".$_REQUEST['store_keys'].")";
-       $store_key_array[]=$_REQUEST['store_keys'];
-    }
-     if(count($store_key_array)==0){
-       return;
-     }
-  }
-   $value_tipo='sales';
-   $ar_address='ar_pie.php?store_keys='.$store_keys.'&category=department&value='.$value_tipo;
-   
-   // print $ar_address;
-   $fields='"value","label"';
-   
-  
-   $style='legend:
+$tipo_chart='PieChart';
+  $style='legend:
 			{
 				display: "right",
 				padding: 10,
@@ -72,7 +34,54 @@ switch($tipo){
 					size: 13
 				}
 			}';
-   $tipo_chart='PieChart';
+
+$tipo='';
+if(isset($_REQUEST['tipo']))
+  $tipo=$_REQUEST['tipo'];
+$title='';
+
+$options='';
+$staked=false;
+
+switch($tipo){
+ case('share_pie'):
+   $parent_key_array=array();
+   $parent_keys='';
+   if(isset($_REQUEST['keys'])){
+     if(preg_match('/\(.+\)/',$_REQUEST['keys'],$keys)){
+       $keys=preg_replace('/\(|\)/','',$keys[0]);
+      $keys=preg_split('/\s*,\s*/',$keys);
+      $parent_keys='(';
+      foreach($keys as $key){
+	if(is_numeric($key)){
+	  $parent_keys.=sprintf("%d,",$key);
+	  $parent_key_array[]=$key;
+	}
+      }
+      $parent_keys=preg_replace('/,$/',')',$parent_keys);
+     }elseif(preg_match('/^\d+$/',$_REQUEST['keys'])){
+       $parent_keys="(".$_REQUEST['keys'].")";
+       $parent_key_array[]=$_REQUEST['keys'];
+     }
+     if(count($parent_key_array)==0){
+       return;
+     }
+  }
+
+
+   $value_tipo='value';
+   $freq='Monthly';
+   $date=date("Y-m-01");
+   $category='PDS';
+   $tipo='children_share';
+   $ar_address='ar_pie.php?tipo=children_share&parent_keys='.$parent_keys.'&category='.$category.'&date='.$date.'&freq='.$freq.'&value_tipo='.$value_tipo;
+
+   $fields='"value","label"';
+
+
+   
+   
+ 
    break;
 
  default:
@@ -98,7 +107,7 @@ $out='<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN""http://www.
        <script type="text/javascript" src="'.$yui_path.'datasource/datasource-min.js"></script>
        <script type="text/javascript" src="'.$yui_path.'charts/charts-min.js"></script>
 
-</head> <body><div style="font-size:8pt;height:300px" id=plot>'.$alt.'</div><div style="font-family:Verdana, Arial, sans-serif;text-align:center;font-size:10pt;position:relative;bottom:300px;">'.$title.'</div></body>
+</head> <body><div style="font-size:8pt;height:320px" id=plot>'.$alt.'</div></body>
  <script type="text/javascript">
 
 

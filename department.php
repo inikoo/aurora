@@ -174,16 +174,16 @@ $smarty->assign('period',$_SESSION['state']['department']['period']);
 
 if(preg_match('/department_sales/',$_SESSION['state']['department']['plot'])){
   $smarty->assign('plot_tipo','department_sales');
-  $smarty->assign('plot_args','tipo='.$_SESSION['state']['department']['plot'].'&department_keys='.$department_id);
-  $smarty->assign('plot_src','plot.php?tipo='.$_SESSION['state']['department']['plot'].'&department_keys='.$department_id);
+  $smarty->assign('plot_args','tipo='.$_SESSION['state']['department']['plot'].'&keys='.$department_id);
+  $smarty->assign('plot_src','plot.php?tipo='.$_SESSION['state']['department']['plot'].'&keys='.$department_id);
 }elseif(preg_match('/top_departments_sales/',$_SESSION['state']['department']['plot'])){
   $smarty->assign('plot_tipo','top_departments_sales');
-  $smarty->assign('plot_args','tipo='.$_SESSION['state']['department']['plot'].'&department_keys='.$department_id);
-  $smarty->assign('plot_src','plot.php?tipo='.$_SESSION['state']['department']['plot'].'&department_keys='.$department_id);
+  $smarty->assign('plot_args','tipo='.$_SESSION['state']['department']['plot'].'&keys='.$department_id);
+  $smarty->assign('plot_src','plot.php?tipo='.$_SESSION['state']['department']['plot'].'&keys='.$department_id);
 }elseif(preg_match('/pie_department_share/',$_SESSION['state']['department']['plot'])){
   $smarty->assign('plot_tipo','pie_department_share');
-  $smarty->assign('plot_args','tipo='.$_SESSION['state']['department']['plot'].'&department_keys='.$department_id);
-  $smarty->assign('plot_src','pie.php?tipo='.$_SESSION['state']['department']['plot'].'&department_keys='.$department_id);
+  $smarty->assign('plot_args','tipo='.$_SESSION['state']['department']['plot'].'&keys='.$department_id);
+  $smarty->assign('plot_src','pie.php?tipo='.$_SESSION['state']['department']['plot'].'&keys='.$department_id);
   $pie_data=$_SESSION['state']['department']['pie'];
 }
  $pie_data=$_SESSION['state']['department']['pie'];
