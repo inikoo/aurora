@@ -108,16 +108,16 @@ $smarty->assign('avg',$_SESSION['state']['store']['avg']);
 $smarty->assign('period',$_SESSION['state']['store']['period']);
 if(preg_match('/store_sales/',$_SESSION['state']['store']['plot'])){
   $smarty->assign('plot_tipo','store_sales');
-  $smarty->assign('plot_args','tipo='.$_SESSION['state']['store']['plot'].'&store_keys='.$store_id);
-  $smarty->assign('plot_src','plot.php?tipo='.$_SESSION['state']['store']['plot'].'&store_keys='.$store_id);
+  $smarty->assign('plot_args','tipo='.$_SESSION['state']['store']['plot'].'&keys='.$store_id);
+  $smarty->assign('plot_src','plot.php?tipo='.$_SESSION['state']['store']['plot'].'&keys='.$store_id);
 }elseif(preg_match('/top_departments_sales/',$_SESSION['state']['store']['plot'])){
   $smarty->assign('plot_tipo','top_departments_sales');
-  $smarty->assign('plot_args','tipo='.$_SESSION['state']['store']['plot'].'&store_keys='.$store_id);
-  $smarty->assign('plot_src','plot.php?tipo='.$_SESSION['state']['store']['plot'].'&store_keys='.$store_id);
-}elseif(preg_match('/pie_department_share/',$_SESSION['state']['store']['plot'])){
+  $smarty->assign('plot_args','tipo='.$_SESSION['state']['store']['plot'].'&keys='.$store_id);
+  $smarty->assign('plot_src','plot.php?tipo='.$_SESSION['state']['store']['plot'].'&keys='.$store_id);
+}elseif(preg_match('/share_pie/',$_SESSION['state']['store']['plot'])){
   $smarty->assign('plot_tipo','pie_department_share');
-  $smarty->assign('plot_args','tipo='.$_SESSION['state']['store']['plot'].'&store_keys='.$store_id);
-  $smarty->assign('plot_src','pie.php?tipo='.$_SESSION['state']['store']['plot'].'&store_keys='.$store_id);
+  $smarty->assign('plot_args','tipo='.$_SESSION['state']['store']['plot'].'&keys='.$store_id);
+  $smarty->assign('plot_src','pie.php?tipo='.$_SESSION['state']['store']['plot'].'&keys='.$store_id);
   $pie_data=$_SESSION['state']['store']['pie'];
 }
  $pie_data=$_SESSION['state']['store']['pie'];

@@ -181,13 +181,23 @@ function hide_details(){
 function change_plot(o){
     if(!Dom.hasClass(o,'selected')){
 	var period=Dom.get("plot_info").getAttribute("period");
-	var args=Dom.get("plot_info").getAttribute("args");
+	var keys=Dom.get("plot_info").getAttribute("keys");
+	
+
+	
 	var tipo=o.getAttribute("tipo");
 
-	if(tipo=='pie_department_share'){
-	  Dom.get("the_plot").width="500px";
-	  var plot_url='pie.php?tipo='+tipo+'&period='+period+args;
-	  plot_code=tipo;
+	if(tipo=='share_pie'){
+
+	    var pie_period=Dom.get("plot_info").getAttribute("pie_period");
+	    var pie_date=Dom.get("plot_info").getAttribute("pie_date");
+	    var pie_forecast=Dom.get("plot_info").getAttribute("pie_forecast");
+	    var pie_category='PSD';
+	    
+
+	    Dom.get("the_plot").width="500px";
+	    var plot_url='pie.php?tipo='+tipo+'&period='+pie_period+;
+	    plot_code=tipo;
 	  Dom.get("pie_options").style.display='';
 	}else{
 	    Dom.get("pie_options").style.display='none';

@@ -7,15 +7,15 @@
   {if $modify}<span class="nav2 onright"><a href="department.php?edit=1"  >{t}Edit{/t}</a></span>{/if}
   
   <span class="nav2 onleft"><a class="selected" href="store.php">{$store->get('Store Code')}</a></span>
-  <span class="nav2 onleft"><a href="families.php?store_key={$store->id}">{$store->get('Store Code')} {t}Families{/t}</a></span>
-  <span class="nav2 onleft"><a href="products.php?store_key={$store->id}">{$store->get('Store Code')} {t}Products{/t}</a></span>
-  <span class="nav2 onleft"><a href="categories.php?store_key={$store->id}">{$store->get('Store Code')} {t}Categories{/t}</a></span>
+  <span class="nav2 onleft"><a href="families.php?store_key={$store->id}">{t}Families{/t}</a></span>
+  <span class="nav2 onleft"><a href="products.php?store_key={$store->id}">{t}Products{/t}</a></span>
+  <span class="nav2 onleft"><a href="categories.php?store_key={$store->id}">{t}Categories{/t}</a></span>
 
-  <div class="search_box" >
-    <span class="search_title">{t}Product Code{/t}:</span> <input size="8" class="text search" id="product_search" value="" name="search"/><img align="absbottom" id="product_submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>
+  <div class="search_box">
+    <span class="search_titleitle">{t}Product Code{/t}:</span> <input size="8" class="text search" id="product_search" value="" name="search"/><img align="absbottom" id="product_submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>
      <span  class="search_msg"   id="product_search_msg"    ></span> <span  class="search_sugestion"   id="product_search_sugestion"    ></span>
      <br/>
-     <span  id="show_details" style="float:right;{if $show_details}display:none{/if}" class="state_details"  onClick="show_details()" >{t}Show details{/t}</span>
+     <span id="show_details" style="float:right;{if $show_details}display:none{/if}" class="state_details"  onClick="show_details()" >{t}Show details{/t}</span>
   </div>
   
   <div style="clear:left;margin:0 20px">
@@ -37,11 +37,11 @@
       </div>
     
       
-      <div display="none" id="plot_info" period="month" args="&department_keys={$department->id}"  ></div>
+      <div display="none" id="plot_info" period="month" args="&keys={$department->id}"  ></div>
       <ul id="plot_chooser" class="tabs" style="margin:0 20px;padding:0 20px "  >
-	<li><span class="item {if $plot_tipo=='store_sales'}selected{/if}" onClick="change_plot(this)" tipo="store_sales"   ><span>{t}Store Sales{/t}</span></span></li>
-	<li><span class="item {if $plot_tipo=='top_departments_sales'}selected{/if}" onClick="change_plot(this)" tipo="top_departments_sales"  ><span>{t}Top Departments{/t}</span></span></li>
-	<li><span class="item {if $plot_tipo=='pie_department_share'}selected{/if}" onClick="change_plot(this)" tipo="pie_department_share"   ><span>{t}Department's Pie{/t}</span></span></li>
+	<li><span class="item {if $plot_tipo=='department_sales'}selected{/if}" onClick="change_plot(this)" tipo="department_sales"   ><span>{t}Depatment Sales{/t}</span></span></li>
+	<li><span class="item {if $plot_tipo=='top_families_sales'}selected{/if}" onClick="change_plot(this)" tipo="top_families_sales"  ><span>{t}Top Families{/t}</span></span></li>
+	<li><span class="item {if $plot_tipo=='pie_family_share'}selected{/if}" onClick="change_plot(this)" tipo="pie_family_share"   ><span>{t}Family's Pie{/t}</span></span></li>
       </ul> 
       
       <div style="clear:both;margin:0 20px;padding:0 20px ;border-bottom:1px solid #999">
