@@ -1328,4 +1328,24 @@ function yearweek($str){
  return sprintf("%d%02d",$y,$w);
 }
 
+function quarter($date){
+ $date=strtotime($date);
+  $month=date('m',$date);
+  if($month<=3)
+    return 1;
+  elseif($month<=6)
+    return 2;
+  elseif($month<=9)
+    return 3;
+  else
+    return 4;
+
+}
+
+function yearquarter($date){
+
+  return date('Y',strtotime($date)).quarter($date);
+  
+}
+
 ?>

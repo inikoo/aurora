@@ -37,7 +37,7 @@ Class TimeSeries  {
 	    $this->frequency=365;
 	}
 	if(preg_match('/day|quarterly|^q$/i',$value)){
-	    $this->freq='Quaterly';
+	    $this->freq='Quarterly';
 	    $this->frequency=4;
 	}
 	if(preg_match('/annualy|year|yearly|^y$/i',$value)){
@@ -56,9 +56,16 @@ Class TimeSeries  {
     
     if(!$this->name or !$this->freq)
       return;
-  
-
-    if(preg_match('/invoices?/i',$this->name)){
+  if(preg_match('/profit invoices?/i',$this->name)){
+       $this->name='profit';
+       $this->count='count(*)';
+       $this->date_field='`Invoice Date`';
+       $this->table='`Order Transaction Fact`';
+       $this->value_field='(`Invoice Transaction Gross Amount`-IFNULL(`Invoice Transaction Total Discount Amount`,0)+IFNULL(`Invoice Transaction Shipping Amount`,0)+IFNULL(`Invoice Transaction Charges Amount`,0)-IFNULL(`Cost Supplier`,0)-IFNULL(`Cost Manufacure`,0)-IFNULL(`Cost Storing`,0)-IFNULL(`Cost Handing`,0)-IFNULL(`Cost Shipping`,0))';
+       $this->max_forecast_bins=12;
+       $this->where='and `Current Dispatching State`="Dispached"';
+       $this->label=_('Profit');
+    }if(preg_match('/^invoices?/i',$this->name)){
        $this->name='invoices';
        $this->count='count(*)';
        $this->date_field='`Invoice Date`';
@@ -318,11 +325,19 @@ function get_values(){
     $this->get_values_per_month();
     break;
   case('Yearly'):
+    
     $this->get_values_per_year();
     break;
   case('Quarterly'):
-    $this->get_values_per_month();
+    
+    $this->get_values_per_quarter();
     break;
+ case('Weekly'):
+    
+    $this->get_values_per_week();
+    break;
+    
+
   }
 
 }
@@ -340,6 +355,8 @@ function save_values(){
 	       ,$this->name_key2
 
 	       );
+  //print $sql;
+
 
 $sql=sprintf("insert into `Time Series Dimension` values (%s,%s,%s,%d,%d,%d,%s,%f,%d,'First','','')   ON DUPLICATE KEY UPDATE  `Time Series Value`=%f ,`Time Series Count`=%d ,`Time Series Type`='First' ,`Time Series Tag`='',`Time Series Parent Key`=%d "
 	     ,prepare_mysql($this->first['date'])
@@ -376,6 +393,8 @@ $sql=sprintf("insert into `Time Series Dimension` values (%s,%s,%s,%d,%d,%d,%s,%
    mysql_query($sql);
    //print "$sql<br>";
   } 
+  
+  if(isset($this->current)){
   $sql=sprintf("insert into `Time Series Dimension` values (%s,%s,%s,%d,%d,%d,%s,%f,%d,'Current','','')   ON DUPLICATE KEY UPDATE  `Time Series Value`=%f ,`Time Series Count`=%d ,`Time Series Type`='Current' ,`Time Series Tag`='' ,`Time Series Parent Key`=%d "
 		,prepare_mysql($this->current['date'])
 		,prepare_mysql($this->freq)
@@ -391,7 +410,7 @@ $sql=sprintf("insert into `Time Series Dimension` values (%s,%s,%s,%d,%d,%d,%s,%
 	       	,$this->parent_key
 	       );
    mysql_query($sql);
- 
+  }
    
   $sql=sprintf("delete from `Time Series Dimension`  where `Time Series Name` in (%s) and `Time Series Frequency`=%s and `Time Series Name Key`=%d and `Time Series Name Second Key`=%d and `Time Series Tag`='D'"
 	       ,prepare_mysql($this->name)
@@ -520,12 +539,11 @@ $read=false;
   $script=sprintf("library(forecast,quietly );values=c(%s);",$values);
   
   $script.=sprintf("ts= ts(values, start=c(%d,%d),frequency = %d);",$this->first_complete_year,$this->first_complete_bin,$this->frequency);
-  $script.="fcast =forecast(ts,$number_period_for_forecasting);print(fcast) ;print ('--count data--');";
+  $script.="fit<-ets(ts,model='ZZA');fcast =forecast(fit,$number_period_for_forecasting);print(fcast) ;print ('--count data--');";
   $script.=sprintf("values=c(%s);",$count);
   $script.=sprintf("ts= ts(values, start=c(%d,%d),frequency = %d);",$this->first_complete_year,$this->first_complete_bin,$this->frequency);
-  $script.="fcast = forecast(ts,$number_period_for_forecasting);print(fcast) ;";
-  print $script;
-  exit;
+  $script.="fit<-ets(ts,model='ZZA');fcast = forecast(fit,$number_period_for_forecasting);print(fcast) ;";
+
   $cmd = "echo \"$script\" |  R --vanilla --slave -q";
  
   $handle = popen($cmd, "r");
@@ -644,26 +662,23 @@ foreach($count_forecast_data as $line){
 function get_values_per_year(){
   
 $this->first_complete_year();
-
+if($this->no_data)
+  return;
 
 $start_year=$this->start_year;
 $last_year=date("Y");
 
 if($last_year<$start_year){
   $this->error=true;
+  $this->no_data=true;
   return;
 }
 for($year=$start_year;$year<=$last_year;$year++  ){
-  if($year==$this->start_year)
-    $this->first=array('date'=>"$year-01-01",'count'=>0,'value'=>0);
-  else if($year==$last_year)
-    $this->current=array('date'=>"$year-01-01",'count'=>0,'value'=>0);
-  else
+
     $this->values["$year-01-01"]=array('count'=>0,'value'=>0);
 }
 
-
-   $sql=sprintf("SELECT %s as number,%s as date ,YEAR(%s) AS year ,sum(%s) as value FROM %s where YEAR(%s)>%s  and YEAR(%s)<=%s %s  GROUP BY year limit 10000"
+$sql=sprintf("SELECT %s as number,%s as date ,YEAR(%s) AS year ,sum(%s) as value FROM %s where YEAR(%s)>=%s and YEAR(%s)<=%s %s  GROUP BY year limit 10000"
 	       ,$this->count
 	       ,$this->date_field,$this->date_field
 	       ,$this->value_field
@@ -673,18 +688,22 @@ for($year=$start_year;$year<=$last_year;$year++  ){
 	       ,$this->where
 	     );
  
-  // print "$sql\n";
+   // print "$sql\n";
  
   $res=mysql_query($sql);
   
   while($row=mysql_fetch_array($res)){
     $year=$row['year'];
-    if($year==$this->start_year)
-        $this->first=array('date'=>"$year-01-01",'count'=>$row['number'],'value'=>$row['value']);
-   else if($year==$last_year)
-        $this->current=array('date'=>"$year-01-01",'count'=>$row['number'],'value'=>$row['value']);   
-    else
-        $this->values["$year-01-01"]=array('count'=>$row['number'],'value'=>$row['value']);
+     if($year==date("Y")){
+      $this->current=array('date'=>"$year-01-01",'count'=>$row['number'],'value'=>$row['value']);   
+      unset($this->values["$year-01-01"]);	
+     }elseif($year==$this->start_year){
+      $this->first=array('date'=>"$year-01-01",'count'=>$row['number'],'value'=>$row['value']);
+      unset($this->values["$year-01-01"]);
+     }else{
+        $this->values["$year-01-01"]['count']=$row['number'];
+	$this->values["$year-01-01"]['value']=$row['value'];
+     }
   }
   
   
@@ -699,23 +718,30 @@ $this->first_complete_month();
 if($this->no_data)
   return;
 
-$sql=sprintf("SELECT `First Day` as date ,substring(`First Day`, 1,7) AS dd  FROM kbase.`Month Dimension` where `First Day`>%s  and `First Day`<%s  GROUP BY dd order by `First Day` " 
+
+$this->last_date=date("Y-m-d");
+
+$first_dd=date("Y-m",strtotime($this->start_date));
+$last_dd=date("Y-m",strtotime($this->last_date));
+$current_dd=date("Y-m");
+
+$sql=sprintf("SELECT `First Day` as date ,substring(`First Day`, 1,7) AS dd  FROM kbase.`Month Dimension` where `First Day`>=%s  and `First Day`<=%s  GROUP BY dd order by `First Day` " 
 	     ,prepare_mysql($this->start_date)
-	     ,prepare_mysql(date("Y-m-d"))
+	     ,prepare_mysql($this->last_date)
 	     );
 //print $sql;
   $res=mysql_query($sql);
   $this->values=array();
    while($row=mysql_fetch_array($res)){
-     if($row['dd']==$this->start_year.'-'.$this->start_bin)
-       $this->first=array('date'=>$row['dd'].'-01','count'=>0,'value'=>0);
-     else if($row['dd']==date("Y-m"))
-        $this->current=array('date'=>$row['dd'].'-01','count'=>0,'value'=>0);
-      else
-        $this->values[$row['dd'].'-01']=array('count'=>0,'value'=>0);
+    /*  if($row['dd']==$this->start_year.'-'.$this->start_bin) */
+/*        $this->first=array('date'=>$row['dd'].'-01','count'=>0,'value'=>0); */
+/*      else if($row['dd']==date("Y-m")) */
+/*         $this->current=array('date'=>$row['dd'].'-01','count'=>0,'value'=>0); */
+/*      else */
+       $data[$row['dd']]=array('date'=>$row['date'],'count'=>0,'value'=>0);
    }
 
-   $sql=sprintf("SELECT %s as number,%s as date ,substring(%s, 1,7) AS dd ,sum(%s) as value FROM %s where %s>%s  and %s<%s %s  GROUP BY dd limit 10000"
+   $sql=sprintf("SELECT %s as number,%s as date ,substring(%s, 1,7) AS dd ,sum(%s) as value FROM %s where %s>=%s  and %s<=%s %s  GROUP BY dd limit 10000"
 	       ,$this->count
 	       ,$this->date_field,$this->date_field
 	       ,$this->value_field
@@ -725,25 +751,187 @@ $sql=sprintf("SELECT `First Day` as date ,substring(`First Day`, 1,7) AS dd  FRO
 	       ,$this->where
 	     );
  
-  // print "$sql\n";
+   //print "$sql\n";
  
   $res=mysql_query($sql);
   
   while($row=mysql_fetch_array($res)){
-    if($row['dd']==$this->start_year.'-'.$this->start_bin)
-        $this->first=array('date'=>$row['dd'].'-01','count'=>$row['number'],'value'=>$row['value']);
-    else if($row['dd']==date("Y-m"))
-        $this->current=array('date'=>$row['dd'].'-01','count'=>$row['number'],'value'=>$row['value']);   
-    else
-        $this->values[$row['dd'].'-01']=array('count'=>$row['number'],'value'=>$row['value']);
+    if($row['dd']==$current_dd){
+      $this->current=array('date'=>$row['dd'].'-01','count'=>$row['number'],'value'=>$row['value']);   
+      unset($data[$row['dd']]);
+    }else if($row['dd']==$first_dd){
+      $this->first=array('date'=>$row['dd'].'-01','count'=>$row['number'],'value'=>$row['value']);
+      unset($data[$row['dd']]);
+    }else{
+      $data[$row['dd']]['count']=$row['number'];
+      $data[$row['dd']]['value']=$row['value'];
+    }
   }
   
-  //  print_r($this->values);
-  //exit;
+  // print_r($data);
+  //  exit;
+  foreach($data as $_values){
+    $this->values[$_values['date']]=$_values;
+  }
+}
+
+function get_values_per_week(){
+  
+  $this->first_complete_week();
+  if($this->no_data)
+    return;
+  $this->last_date=date("Y-m-d");
+  
+  
+  
+  
+  $first_yearweek=yearquarter($this->start_date);
+  $last_yearweek=yearquarter($this->last_date );
+  $current_yearweek=yearquarter(date("Y-m-d") );
+  
+  
+  $sql=sprintf("select count(*) as factor,`Week Normalized` as week,`Year` as year from `Week Dimension` where `First Day`>=%s and `Normalized Last Day` <= %s; "
+	       ,prepare_mysql($this->start_date)
+	     ,prepare_mysql($this->last_date)
+	     );
+
+print $sql;
+  $data=array();
+  $res = mysql_query($sql);
+ 
+  
+  while($row=mysql_fetch_array($res)) {
+     $data[$row['yearweek']]=array(
+				      'date'=>$row['date']
+				      ,'values'=>0
+				      ,'count'=>0
+				      );
+  }
+  //  print_r($data);
+
+
+
+
+  $sql=sprintf("SELECT %s as number,%s as date ,concat(year(%s),quarter(%s)) AS yearquarter ,sum(%s) as value FROM %s where %s>=%s  and %s<=%s %s  GROUP BY yearquarter limit 10000"
+	       ,$this->count
+	       ,$this->date_field,$this->date_field,$this->date_field
+		,$this->value_field
+	       ,$this->table
+	       ,$this->date_field,prepare_mysql($this->start_date)
+	       ,$this->date_field,prepare_mysql($this->last_date)
+	       ,$this->where
+	     );
+ 
+  //print "$sql\n";exit;
+ 
+  $res=mysql_query($sql);
+  
+  while($row=mysql_fetch_array($res)){
+    if($row['yearquarter']==$first_yearquarter){
+      $this->first=$data[$row['yearquarter']];
+      $this->first['count']=$row['number'];
+      $this->first['value']=$row['value'];
+      unset($data[$row['yearquarter']]);
+    }else if($row['yearquarter']==$current_yearquarter){
+      $this->current=$data[$row['yearquarter']];
+      $this->current['count']=$row['number'];
+      $this->current['value']=$row['value'];
+      unset($data[$row['yearquarter']]);
+    }else{
+      
+      $data[$row['yearquarter']]['count']=$row['number'];
+      $data[$row['yearquarter']]['value']=$row['value'];
+    }
+  }
+  // print_r($data);
+  foreach($data as $_values){
+    $this->values[$_values['date']]=$_values;
+  }
+  //  exit;
+
+  
+ 
 
 }
 
 
+
+
+
+function get_values_per_quarter(){
+  
+$this->first_complete_quarter();
+if($this->no_data)
+  return;
+$this->last_date=date("Y-m-d");
+
+
+$first_yearquarter=yearquarter($this->start_date);
+$last_yearquarter=yearquarter($this->last_date );
+$current_yearquarter=yearquarter(date("Y-m-d") );
+
+$sql=sprintf("select `First Day` as date, `Year Quarter` as yearquarter  from kbase.`Quarter Dimension` where `First Day`>=%s and `First Day` <= %s; "
+	     ,prepare_mysql($this->start_date)
+	     ,prepare_mysql($this->last_date)
+	     );
+
+  $data=array();
+  $res = mysql_query($sql);
+ 
+  
+  while($row=mysql_fetch_array($res)) {
+     $data[$row['yearquarter']]=array(
+				      'date'=>$row['date']
+				      ,'values'=>0
+				      ,'count'=>0
+				      );
+  }
+  //  print_r($data);
+
+
+
+
+  $sql=sprintf("SELECT %s as number,%s as date ,concat(year(%s),quarter(%s)) AS yearquarter ,sum(%s) as value FROM %s where %s>=%s  and %s<=%s %s  GROUP BY yearquarter limit 10000"
+	       ,$this->count
+	       ,$this->date_field,$this->date_field,$this->date_field
+		,$this->value_field
+	       ,$this->table
+	       ,$this->date_field,prepare_mysql($this->start_date)
+	       ,$this->date_field,prepare_mysql($this->last_date)
+	       ,$this->where
+	     );
+ 
+  //print "$sql\n";exit;
+ 
+  $res=mysql_query($sql);
+  
+  while($row=mysql_fetch_array($res)){
+    if($row['yearquarter']==$first_yearquarter){
+      $this->first=$data[$row['yearquarter']];
+      $this->first['count']=$row['number'];
+      $this->first['value']=$row['value'];
+      unset($data[$row['yearquarter']]);
+    }else if($row['yearquarter']==$current_yearquarter){
+      $this->current=$data[$row['yearquarter']];
+      $this->current['count']=$row['number'];
+      $this->current['value']=$row['value'];
+      unset($data[$row['yearquarter']]);
+    }else{
+      
+      $data[$row['yearquarter']]['count']=$row['number'];
+      $data[$row['yearquarter']]['value']=$row['value'];
+    }
+  }
+  // print_r($data);
+  foreach($data as $_values){
+    $this->values[$_values['date']]=$_values;
+  }
+  //  exit;
+
+  
+ 
+
+}
 
 function first_complete_month(){
   $sql=sprintf("select MONTH(%s) as m,YEAR(%s) as y from %s  where %s IS NOT NULL %s   order by %s limit 1  "
@@ -754,7 +942,7 @@ function first_complete_month(){
 	       ,$this->where
 	       ,$this->date_field
 	       );
-  
+  // print $sql;
   $res=mysql_query($sql);
   if($row=mysql_fetch_array($res)){
     $time=mktime(0, 0, 0, $row["m"] , 1, $row["y"]);
@@ -793,11 +981,14 @@ function first_complete_year(){
     $this->first_complete_date=date("Y-m-d", $time); 
     $this->first_complete_year=date("Y", $time); 
     $this->first_complete_bin=1; 
-  }
+    $this->no_data=false;
+  }else
+    $this->no_data=true;
 }
 
 function first_complete_quarter(){
   $sql=sprintf("select  MONTH(%s) as m,QUARTER(%s) as q,YEAR(%s) as y from %s  where %s IS NOT NULL %s   order by %s limit 1  "
+	       ,$this->date_field
 	       ,$this->date_field
 	       ,$this->date_field
 	       ,$this->table
@@ -805,7 +996,7 @@ function first_complete_quarter(){
 	       ,$this->where
 	       ,$this->date_field
 	       );
- 
+  
   $res=mysql_query($sql);
   if($row=mysql_fetch_array($res)){
     $time=mktime(0, 0, 0, $row["m"] , 1, $row["y"]);
@@ -825,8 +1016,49 @@ function first_complete_quarter(){
        $quarter=1;
     
     $this->first_complete_bin=$quarter; 
-  }
+    $this->no_data=false;
+  }else
+    $this->no_data=true;
+  
 }
+
+
+
+
+function first_complete_week(){
+  $sql=sprintf("select  %s as date  from %s  where %s IS NOT NULL %s   order by %s limit 1  "
+	       ,$this->date_field
+	       ,$this->table
+	       ,$this->date_field
+	       ,$this->where
+	       ,$this->date_field
+	       );
+  
+  $res=mysql_query($sql);
+  if($row=mysql_fetch_array($res)){
+
+    $yearweek=normalized_yearweek($row['date']);
+
+      
+	
+    $time-strtotime($row['date']);
+    $this->start_date=date("Y-m-d", $time); 
+    $this->start_year=date("Y", $time); 
+    $this->start_bin=$yearweek;
+    $time-strtotime($row['Normalized Last Day']." +1 day");
+    $this->first_complete_date=date("Y-m-d", $time); 
+    $this->first_complete_year=date("Y", $time); 
+    
+    $yearweek=normalized_yearweek($this->first_complete_date);
+    
+    
+    $this->first_complete_bin=$yearweek;
+    $this->no_data=false;
+  }else
+    $this->no_data=true;
+  
+}
+
 
 
 
@@ -1017,5 +1249,20 @@ function last_complete_quarter(){
 
  }
 
+
+ function normalized_yearweek($date){
+   $yearweek=false;
+   $sql=sprintf("select `Year Week Normalized`,`Normalized Last Day`  from kbase.`Week Dimension` where `First Day`>=%s and `Normalized Last Day`<=%s limit 1"
+		,prepare_mysql($date)
+		,prepare_mysql($date)
+		);
+   $res2=mysql_query($sql);
+   if($row2=mysql_fetch_array($res2))
+     $yearweek=$row2['Year Week Normalized'];
+   
+   return $yearweek;
+   
+ }
+ 
 }
 ?>

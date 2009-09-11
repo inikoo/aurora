@@ -59,6 +59,13 @@
 	<li><span class="item {if $plot_tipo=='share_pie'}selected{/if}" onClick="change_plot(this)" tipo="share_pie"   ><span>{t}Department's Pie{/t}</span></span></li>
       </ul> 
       
+        <ul id="plot_chooser" class="tabs" style="position:relative;top:.6em;float:right;margin:0 20px;padding:0 20px;font-size:90% "  >
+	<li><span class="item"> <span id="plot_category"  category="{$plot_category}" style="xborder:1px solid black;display:inline-block; vertical-align:middle">{$plot_formated_category}</span></span></li>
+
+	<li><span class="item"     ><span id="plot_period"   period="{$plot_period}" style="xborder:1px solid black;display:inline-block; vertical-align:middle">{$plot_formated_period}</span></span></li>
+
+      </ul> 
+
       <div style="clear:both;margin:0 20px;padding:0 20px ;border-bottom:1px solid #999">
       </div>
 
@@ -156,5 +163,28 @@
     </ul>
   </div>
 </div>
+
+<div id="plot_period_menu" class="yuimenu">
+  <div class="bd">
+    <ul class="first-of-type">
+      <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Plot frequency{/t}:</li>
+      {foreach from=$plot_period_menu item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_plot_period('{$menu.period}')"> {$menu.label}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
+
+<div id="plot_category_menu" class="yuimenu">
+  <div class="bd">
+    <ul class="first-of-type">
+      <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Plot Type{/t}:</li>
+      {foreach from=$plot_category_menu item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_plot_category('{$menu.category}')"> {$menu.label}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
+
 
 {include file='footer.tpl'}

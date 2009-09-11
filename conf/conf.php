@@ -519,6 +519,12 @@ $default_state=array(
 					  'edit'=>false,
 					  'id'=>1,
 					  'plot'=>'store_sales_month',
+					  'plot_data'=>array('store_sales_month'=>array(
+											'period'=>'month'
+											,'category'=>'sales'
+											)
+							     
+							     ),
 					  'pie'=>array(
 						       'period'=>'month'
 						       ,'date'=>'today'
