@@ -524,7 +524,8 @@ $read=false;
   $script.=sprintf("values=c(%s);",$count);
   $script.=sprintf("ts= ts(values, start=c(%d,%d),frequency = %d);",$this->first_complete_year,$this->first_complete_bin,$this->frequency);
   $script.="fcast = forecast(ts,$number_period_for_forecasting);print(fcast) ;";
- 
+  print $script;
+  exit;
   $cmd = "echo \"$script\" |  R --vanilla --slave -q";
  
   $handle = popen($cmd, "r");

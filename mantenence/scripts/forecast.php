@@ -26,18 +26,6 @@ $_SESSION['lang']=1;
 
 
 
-$sql="select * from `Product Dimension` group by `Product Same Code Most Recent Key` order by `Product Same Code Most Recent Key` desc";
-$res=mysql_query($sql);
-while($row=mysql_fetch_array($res)){
-  print 'product code ('.$row['Product Code'].') sales'."\n";
-  $tm=new TimeSeries(array('m','product code ('.$row['Product Same Code Most Recent Key'].') sales'));
-  $tm->get_values();
-  $tm->save_values();
-  $tm->forecast();
-}
-
-
-
 if(true){
   print "inv\n";
   $tm=new TimeSeries(array('m','invoices'));
@@ -53,6 +41,7 @@ while( $row=mysql_fetch_array($res)){
   print 'store ('.$row['Store Key'].') sales';
   $tm=new TimeSeries(array('m','store ('.$row['Store Key'].') sales'));
   $tm->get_values();
+
   $tm->save_values();
   $tm->forecast();
  

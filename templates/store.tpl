@@ -1,5 +1,6 @@
 {include file='header.tpl'}
 <div id="bd" >
+
   <span class="nav2 onright"><a href="stores.php">&uarr; {t}Up{/t}</a></span>
   {if $modify}<span class="nav2 onright"><a href="store.php?edit=1"  >{t}Edit{/t}</a></span>{/if}
   
@@ -51,17 +52,17 @@
 	</table>
       </div>
       
-      <div display="none" id="plot_info" period="month" args="&keys={$store->id}"  ></div>
+      <div display="none" id="plot_info" period="month" keys="{$store->id}" pie_period="{$pie_period}" pie_date="{$pie_date}" pie_forecast="{$pie_forecast}"   ></div>
       <ul id="plot_chooser" class="tabs" style="margin:0 20px;padding:0 20px "  >
 	<li><span class="item {if $plot_tipo=='store_sales'}selected{/if}" onClick="change_plot(this)" tipo="store_sales"   ><span>{t}Store Sales{/t}</span></span></li>
 	<li><span class="item {if $plot_tipo=='top_departments_sales'}selected{/if}" onClick="change_plot(this)" tipo="top_departments_sales"  ><span>{t}Top Departments{/t}</span></span></li>
-	<li><span class="item {if $plot_tipo=='pie_department_share'}selected{/if}" onClick="change_plot(this)" tipo="pie_department_share"   ><span>{t}Department's Pie{/t}</span></span></li>
+	<li><span class="item {if $plot_tipo=='share_pie'}selected{/if}" onClick="change_plot(this)" tipo="share_pie"   ><span>{t}Department's Pie{/t}</span></span></li>
       </ul> 
       
       <div style="clear:both;margin:0 20px;padding:0 20px ;border-bottom:1px solid #999">
       </div>
 
-      <div id="pie_options"  style="{if $plot_tipo!='pie_department_share'}display:none;{/if}border:1px solid #ddd;float:right;margin:20px 0px;margin-right:40px;width:300px;padding:10px">
+      <div id="pie_options"  style="{if $plot_tipo!='share_pie'}display:none;{/if}border:1px solid #ddd;float:right;margin:20px 0px;margin-right:40px;width:300px;padding:10px">
 	<table id="pie_period_options" style="float:none;margin-bottom:20px;margin-left:30px"  class="options_mini" >
 	  <tr>
 	    
@@ -73,11 +74,11 @@
 	</tr>
       </table>
 	<div style="font-size:90%;margin-left:30px">
-	<span>{$pie_period_label}</span>: <input class="text" type="text" value="{$pie_date}" style="width:6em"/> <img src="art/icons/chart_pie.png" alt="{t}update{/t}"/>
+	<span>{$pie_period_label}</span>: <input class="text" type="text" value="{$pie_formated_date}" style="width:4em"/> <img style="display:none" src="art/icons/chart_pie.png" alt="{t}update{/t}"/>
 	</div>
       </div>
       <div  id="plot_div" class="product_plot"  style="width:865px;xheight:325px;">
-	<iframe id="the_plot" src ="{$plot_src}" frameborder=0 height="325" scrolling="no" width="{if $plot_tipo=='pie_department_share'}500px{else}100%{/if}"></iframe>
+	<iframe id="the_plot" src ="{$plot_src}" frameborder=0 height="325" scrolling="no" width="{if $plot_tipo=='share_pie'}500px{else}100%{/if}"></iframe>
 	
       </div>
       <div style="text-align:right">

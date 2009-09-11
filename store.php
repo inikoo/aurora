@@ -115,18 +115,22 @@ if(preg_match('/store_sales/',$_SESSION['state']['store']['plot'])){
   $smarty->assign('plot_args','tipo='.$_SESSION['state']['store']['plot'].'&keys='.$store_id);
   $smarty->assign('plot_src','plot.php?tipo='.$_SESSION['state']['store']['plot'].'&keys='.$store_id);
 }elseif(preg_match('/share_pie/',$_SESSION['state']['store']['plot'])){
-  $smarty->assign('plot_tipo','pie_department_share');
+  $smarty->assign('plot_tipo','share_pie');
   $smarty->assign('plot_args','tipo='.$_SESSION['state']['store']['plot'].'&keys='.$store_id);
   $smarty->assign('plot_src','pie.php?tipo='.$_SESSION['state']['store']['plot'].'&keys='.$store_id);
   $pie_data=$_SESSION['state']['store']['pie'];
 }
- $pie_data=$_SESSION['state']['store']['pie'];
+$pie_data=$_SESSION['state']['store']['pie'];
+
 $smarty->assign('pie_period',$pie_data['period']);
-$smarty->assign('forecast',$pie_data['forecast']);
+$smarty->assign('pie_forecast',$pie_data['forecast']);
+
 if($pie_data['period']=='month'){
+  $smarty->assign('pie_period','Monthly');
   $smarty->assign('pie_period_label',_('Month'));
   if($pie_data['date']=='today'){
-    $smarty->assign('pie_date',date('m Y'));
+    $smarty->assign('pie_date',date('Y-m-d'));
+    $smarty->assign('pie_formated_date',strftime("%b %y"));
   }
 }
 
