@@ -196,12 +196,12 @@ function change_plot(o){
 	    
 
 	    Dom.get("the_plot").width="500px";
-	    var plot_url='pie.php?tipo='+tipo+'&period='+pie_period+;
+	    var plot_url='pie.php?tipo='+tipo+'&period='+pie_period+'&category='+pie_category+'&forecast='+pie_forecast+'&date='+pie_date+'&keys='+keys;
 	    plot_code=tipo;
 	  Dom.get("pie_options").style.display='';
 	}else{
 	    Dom.get("pie_options").style.display='none';
-	    var plot_url='plot.php?tipo='+tipo+'_'+period+args;
+	    var plot_url='plot.php?tipo='+tipo+'_'+period+'&keys='+keys;
 	    Dom.get("the_plot").width="100%";
 	    plot_code=tipo+'_'+period;
 	}
