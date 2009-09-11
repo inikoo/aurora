@@ -120,6 +120,21 @@ if(preg_match('/store_sales/',$_SESSION['state']['store']['plot'])){
   $smarty->assign('plot_src','pie.php?tipo='.$_SESSION['state']['store']['plot'].'&keys='.$store_id);
   $pie_data=$_SESSION['state']['store']['pie'];
 }
+
+$plot_period=$_SESSION['state']['store']['plot_data'][$_SESSION['state']['store']['plot']]['period'];
+$smarty->assign('plot_period',$plot_period);
+if($plot_period=='month')
+  $plot_formated_period='Monthly';
+
+$plot_period=$_SESSION['state']['store']['plot_data'][$_SESSION['state']['store']['plot']]['category'];
+$smarty->assign('plot_category',$plot_period);
+if($plot_period=='sales')
+  $plot_formated_category=_('Net Sales');
+elseif($plot_period=='profit')
+  $plot_formated_category=_('Profits');
+
+$smarty->assign('plot_formated_category',$plot_formated_category);
+$smarty->assign('plot_formated_period',$plot_formated_period);
 $pie_data=$_SESSION['state']['store']['pie'];
 
 $smarty->assign('pie_period',$pie_data['period']);
