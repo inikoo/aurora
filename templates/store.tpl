@@ -54,12 +54,12 @@
       
       <div display="none" id="plot_info" period="month" keys="{$store->id}" pie_period="{$pie_period}" pie_date="{$pie_date}" pie_forecast="{$pie_forecast}"   ></div>
       <ul id="plot_chooser" class="tabs" style="margin:0 20px;padding:0 20px "  >
-	<li><span class="item {if $plot_tipo=='store_sales'}selected{/if}" onClick="change_plot(this)" tipo="store_sales"   ><span>{t}Store Sales{/t}</span></span></li>
-	<li><span class="item {if $plot_tipo=='top_departments_sales'}selected{/if}" onClick="change_plot(this)" tipo="top_departments_sales"  ><span>{t}Top Departments{/t}</span></span></li>
-	<li><span class="item {if $plot_tipo=='share_pie'}selected{/if}" onClick="change_plot(this)" tipo="share_pie"   ><span>{t}Department's Pie{/t}</span></span></li>
+	<li><span class="item {if $plot_tipo=='store'}selected{/if}" onClick="change_plot(this)" id="plot_store" tipo="store" category="{$plot_data.store.category}" period="{$plot_data.store.period}"    ><span>{t}Store Sales{/t}</span></span></li>
+	<li><span class="item {if $plot_tipo=='top_departments'}selected{/if}"  id="plot_top_departments" onClick="change_plot(this)" tipo="top_departments" category="{$plot_data.top_departments.category}" period="{$plot_data.top_departments.period}" name=""  ><span>{t}Top Departments{/t}</span></span></li>
+	<li><span class="item {if $plot_tipo=='pie'}selected{/if}" onClick="change_plot(this)" id="plot_pie" tipo="pie"   category="{$plot_data.pie.category}" period="{$plot_data.pie.period}" forecast="{$plot_data.pie.forecast}" date="{$plot_data.pie.date}"  ><span>{t}Department's Pie{/t}</span></span></li>
       </ul> 
       
-        <ul id="plot_chooser" class="tabs" style="position:relative;top:.6em;float:right;margin:0 20px;padding:0 20px;font-size:90% "  >
+        <ul id="plot_options" class="tabs" style="{if $plot_tipo=='pie'}display:none{/if};position:relative;top:.6em;float:right;margin:0 20px;padding:0 20px;font-size:90% "  >
 	<li><span class="item"> <span id="plot_category"  category="{$plot_category}" style="xborder:1px solid black;display:inline-block; vertical-align:middle">{$plot_formated_category}</span></span></li>
 
 	<li><span class="item"     ><span id="plot_period"   period="{$plot_period}" style="xborder:1px solid black;display:inline-block; vertical-align:middle">{$plot_formated_period}</span></span></li>
@@ -69,23 +69,33 @@
       <div style="clear:both;margin:0 20px;padding:0 20px ;border-bottom:1px solid #999">
       </div>
 
-      <div id="pie_options"  style="{if $plot_tipo!='share_pie'}display:none;{/if}border:1px solid #ddd;float:right;margin:20px 0px;margin-right:40px;width:300px;padding:10px">
+      <div id="pie_options"  style="{if $plot_tipo!='pie'}display:none;{/if}border:1px solid #ddd;float:right;margin:20px 0px;margin-right:40px;width:300px;padding:10px">
+	<table id="pie_category_options" style="float:none;margin-bottom:10px;margin-left:30px"  class="options_mini" >
+	  <tr>
+	    
+	    <td  {if $plot_data.pie.category=='sales'}class="selected"{/if} period="sales"  id="pie_category_sales" >{t}Sales{/t}</td>
+	    <td {if $plot_data.pie.category=='profit'}class="selected"{/if}  period="profit"  id="pie_category_profit"  >{t}Profit{/t}</td>
+	   
+	</tr>
+      </table>
+
+
 	<table id="pie_period_options" style="float:none;margin-bottom:20px;margin-left:30px"  class="options_mini" >
 	  <tr>
 	    
-	    <td  {if $pie_period=='all'}class="selected"{/if} period="all"  id="pie_period_all" >{t}All{/t}</td>
-	    <td {if $pie_period=='year'}class="selected"{/if}  period="year"  id="pie_period_year"  >{t}Year{/t}</td>
-	    <td  {if $pie_period=='quarter'}class="selected"{/if}  period="quarter"  id="pie_period_quarter"  >{t}Quarter{/t}</td>
-	    <td {if $pie_period=='month'}class="selected"{/if}  period="month"  id="pie_period_month"  >{t}Month{/t}</td>
-	    <td  {if $pie_period=='week'}class="selected"{/if} period="week"  id="pie_period_week"  >{t}Week{/t}</td>
+	    <td  {if $plot_data.pie.period=='all'}class="selected"{/if} period="all"  id="pie_period_all" onclick="change_plot_period('all')" >{t}All{/t}</td>
+	    <td {if $plot_data.pie.period=='y'}class="selected"{/if}  period="year"  id="pie_period_year" onclick="change_plot_period('y')"  >{t}Year{/t}</td>
+	    <td  {if $plot_data.pie.period=='q'}class="selected"{/if}  period="quarter"  id="pie_period_quarter" onclick="change_plot_period('q')"  >{t}Quarter{/t}</td>
+	    <td {if $plot_data.pie.period =='m'}class="selected"{/if}  period="month"  id="pie_period_month" onclick="change_plot_period('m')"  >{t}Month{/t}</td>
+	    <td  {if $plot_data.pie.period=='w'}class="selected"{/if} period="week"  id="pie_period_week" onclick="change_plot_period('w')"  >{t}Week{/t}</td>
 	</tr>
       </table>
 	<div style="font-size:90%;margin-left:30px">
-	<span>{$pie_period_label}</span>: <input class="text" type="text" value="{$pie_formated_date}" style="width:4em"/> <img style="display:none" src="art/icons/chart_pie.png" alt="{t}update{/t}"/>
+	<span>{$plot_formated_period}</span>: <input class="text" type="text" value="{$plot_formated_date}" style="width:6em"/> <img style="display:none" src="art/icons/chart_pie.png" alt="{t}update{/t}"/>
 	</div>
       </div>
       <div  id="plot_div" class="product_plot"  style="width:865px;xheight:325px;">
-	<iframe id="the_plot" src ="{$plot_src}" frameborder=0 height="325" scrolling="no" width="{if $plot_tipo=='share_pie'}500px{else}100%{/if}"></iframe>
+	<iframe id="the_plot" src ="{$plot_page}?{$plot_args}" frameborder=0 height="325" scrolling="no" width="{if $plot_tipo=='pie'}500px{else}100%{/if}"></iframe>
 	
       </div>
       <div style="text-align:right">

@@ -1,69 +1,71 @@
 <?php
 include_once('common.php');
 ?>
-var Dom   = YAHOO.util.Dom;
+   
+var category_labels={'sales':'<?php echo _('Sales')?>','profit':'<?php echo _('Profits')?>'};
+var period_labels={'m':'<?php echo _('Montly')?>','y':'<?php echo _('Yearly')?>','w':'<?php echo _('Weekly')?>','q':'<?php echo _('Quarterly')?>'};
+var pie_period_labels={'m':'<?php echo _('Month')?>','y':'<?php echo _('Year')?>','w':'<?php echo _('Week')?>','q':'<?php echo _('Quarter')?>'};
 
- var period='period_<?php echo$_SESSION['state']['departments']['period']?>';
-    var avg='avg_<?php echo$_SESSION['state']['departments']['avg']?>';
+var plot='<?php echo$_SESSION['state']['store']['plot']?>';
+var Dom = YAHOO.util.Dom;
 
-    var change_view=function(e){
+var period='period_<?php echo$_SESSION['state']['store']['period']?>';
+var avg='avg_<?php echo$_SESSION['state']['store']['avg']?>';
+
+var change_view=function(e){
+    
+    var table=tables['table0'];
+    var tipo=this.id;
+    //	alert(table.view+' '+tipo)
+    if(table.view!=tipo){
+	table.hideColumn('active');
+	table.hideColumn('todo');
+	table.hideColumn('discontinued');
 	
-	var table=tables['table0'];
-	var tipo=this.id;
-	//	alert(table.view+' '+tipo)
-	if(table.view!=tipo){
-	    table.hideColumn('active');
-	    table.hideColumn('todo');
-	    table.hideColumn('discontinued');
-
-	    table.hideColumn('families');
-	    table.hideColumn('sales');
-	    table.hideColumn('profit');
-	    //    table.hideColumn('stock_value');
-	    table.hideColumn('stock_error');
-	    table.hideColumn('outofstock');
-	    table.hideColumn('surplus');
-	    table.hideColumn('optimal');
-	    table.hideColumn('low');
-	    table.hideColumn('critcal');
-
-	    if(tipo=='sales'){
-		Dom.get('period_options').style.display='';
-		Dom.get('avg_options').style.display='';
-		table.showColumn('sales');
-		table.showColumn('profit');
-	    }
-	    if(tipo=='general'){
-		Dom.get('period_options').style.display='none';
-		Dom.get('avg_options').style.display='none';
-		table.showColumn('active');
-		table.showColumn('todo');
-		table.showColumn('families');
-		table.showColumn('discontinued');
-
-	    }
-	    if(tipo=='stock'){
-		Dom.get('period_options').style.display='none';
-		Dom.get('avg_options').style.display='none';
-		
-		table.showColumn('surplus');
-		table.showColumn('optimal');
-		table.showColumn('low');
-		table.showColumn('critcal');
-		table.showColumn('stock_error');
-		table.showColumn('outofstock');
-	    }
-
+	table.hideColumn('families');
+	table.hideColumn('sales');
+	table.hideColumn('profit');
+	//    table.hideColumn('stock_value');
+	table.hideColumn('stock_error');
+	table.hideColumn('outofstock');
+	table.hideColumn('surplus');
+	table.hideColumn('optimal');
+	table.hideColumn('low');
+	table.hideColumn('critcal');
+	
+	if(tipo=='sales'){
+	    Dom.get('period_options').style.display='';
+	    Dom.get('avg_options').style.display='';
+	    table.showColumn('sales');
+	    table.showColumn('profit');
+	}
+	if(tipo=='general'){
+	    Dom.get('period_options').style.display='none';
+	    Dom.get('avg_options').style.display='none';
+	    table.showColumn('active');
+	    table.showColumn('todo');
+	    table.showColumn('families');
+	    table.showColumn('discontinued');
 	    
-
+	}
+	if(tipo=='stock'){
+	    Dom.get('period_options').style.display='none';
+	    Dom.get('avg_options').style.display='none';
+	    
+	    table.showColumn('surplus');
+	    table.showColumn('optimal');
+	    table.showColumn('low');
+	    table.showColumn('critcal');
+	    table.showColumn('stock_error');
+	    table.showColumn('outofstock');
+	}
 	
 	Dom.get(table.view).className="";
 	Dom.get(tipo).className="selected";
 	table.view=tipo;
-
 	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=departments-view&value=' + escape(tipo) );
-	}
-  }
+    }
+}
 
 
 
@@ -178,32 +180,81 @@ function hide_details(){
     YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=store-details&value=0')
 }
 
+
+
+function change_plot_category(category){
+    o=Dom.get('plot_'+plot);
+    o.setAttribute("category",category);
+
+    change_plot(o);
+}
+function change_plot_period(period){
+    o=Dom.get('plot_'+plot);
+    
+    o.setAttribute("period",period);
+
+    change_plot(o);
+}
+
+
 function change_plot(o){
-    if(!Dom.hasClass(o,'selected')){
-	var period=Dom.get("plot_info").getAttribute("period");
+    //  if(!Dom.hasClass(o,'selected')){
+
 	var keys=Dom.get("plot_info").getAttribute("keys");
 	
 
 	
 	var tipo=o.getAttribute("tipo");
+	var category=o.getAttribute("category");
+	var period=o.getAttribute("period");
 
-	if(tipo=='share_pie'){
 
-	    var pie_period=Dom.get("plot_info").getAttribute("pie_period");
-	    var pie_date=Dom.get("plot_info").getAttribute("pie_date");
-	    var pie_forecast=Dom.get("plot_info").getAttribute("pie_forecast");
-	    var pie_category='PSD';
+	if(tipo=='pie'){
+
+	
+	    var forecast=o.getAttribute("forecast");
+	    var date=o.getAttribute("date");
+
 	    
 
 	    Dom.get("the_plot").width="500px";
-	    var plot_url='pie.php?tipo='+tipo+'&period='+pie_period+'&category='+pie_category+'&forecast='+pie_forecast+'&date='+pie_date+'&keys='+keys;
+	    var plot_url='pie.php?tipo=children_share&item=store&period='+period+'&category='+category+'&forecast='+forecast+'&date='+date+'&keys='+keys;
+	    alert(plot_url)
 	    plot_code=tipo;
-	  Dom.get("pie_options").style.display='';
+	    Dom.get("pie_options").style.display='';
+	    Dom.get("plot_options").style.display='none';
+
+	    old_selected=Dom.getElementsByClassName('selected', 'td', 'pie_period_options');
+	    for( var i in old_selected )
+		Dom.removeClass(old_selected[i],'selected');
+	    Dom.addClass("pie_period_"+period,'selected');
+	    old_selected=Dom.getElementsByClassName('selected', 'td', 'pie_category_options');
+	    for( var i in old_selected )
+		Dom.removeClass(old_selected[i],'selected');
+	    Dom.addClass("pie_category_"+category,'selected');
+	    
+	}else if(tipo=='top_departments'){
+	    top_children=3;
+	    Dom.get("pie_options").style.display='none';
+	    var plot_url='plot.php?tipo=store&top_children='+top_children+'&category='+category+'&period='+period+'&keys='+keys;
+	    Dom.get("the_plot").width="100%";
+	    plot_code=tipo+'_'+category+'_'+period;
+
+
+	    Dom.get("plot_category").innerHTML=category_labels[category];
+	    Dom.get("plot_period").innerHTML=period_labels[period];
+	    Dom.get("plot_options").style.display='';
+
 	}else{
 	    Dom.get("pie_options").style.display='none';
-	    var plot_url='plot.php?tipo='+tipo+'_'+period+'&keys='+keys;
+	    var plot_url='plot.php?tipo='+tipo+'&category='+category+'&period='+period+'&keys='+keys;
 	    Dom.get("the_plot").width="100%";
-	    plot_code=tipo+'_'+period;
+	    plot_code=tipo+'_'+category+'_'+period;
+
+
+	    Dom.get("plot_category").innerHTML=category_labels[category];
+	    Dom.get("plot_period").innerHTML=period_labels[period];
+	    Dom.get("plot_options").style.display='';
 	}
 
 
@@ -214,10 +265,13 @@ function change_plot(o){
 	    Dom.removeClass(old_selected[i],'selected');
 	}
 	Dom.addClass(o,'selected');
-	//alert('ar_sessions.php?tipo=update&keys=store-plot&value='+plot_code)
-	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=store-plot&value='+plot_code)
+	//	alert('ar_sessions.php?tipo=update&keys=store-plot_data-'+tipo+'-category&value='+category)
+	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=store-plot&value='+tipo);
+	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=store-plot_data-'+tipo+'-period&value='+period);
+	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=store-plot_data-'+tipo+'-category&value='+category);
+
 	    
-    }
+	    //  }
     
 }
 
@@ -290,4 +344,17 @@ YAHOO.util.Event.onContentReady("filtermenu", function () {
 	 oMenu.render();
 	 oMenu.subscribe("show", oMenu.focus);
 	 YAHOO.util.Event.addListener("filter_name0", "click", oMenu.show, null, oMenu);
+    });
+
+YAHOO.util.Event.onContentReady("plot_period_menu", function () {
+	 var oMenu = new YAHOO.widget.Menu("plot_period_menu", { context:["plot_period","br", "tr"]  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+	 YAHOO.util.Event.addListener("plot_period", "click", oMenu.show, null, oMenu);
+    });
+YAHOO.util.Event.onContentReady("plot_category_menu", function () {
+	 var oMenu = new YAHOO.widget.Menu("plot_category_menu", { context:["plot_category","br", "tr"]  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+	 YAHOO.util.Event.addListener("plot_category", "click", oMenu.show, null, oMenu);
     });

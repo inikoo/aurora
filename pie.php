@@ -44,7 +44,10 @@ $options='';
 $staked=false;
 
 switch($tipo){
- case('share_pie'):
+ case('children_share'):
+
+   if(!isset($_REQUEST['item'])  or !isset($_REQUEST['category']) )
+     returnl
    $parent_key_array=array();
    $parent_keys='';
    if(isset($_REQUEST['keys'])){
@@ -70,12 +73,82 @@ switch($tipo){
 
 
    $value_tipo='value';
-   $freq='Monthly';
-   $date=date("Y-m-01");
-   $category='PDS';
+ 
+   $date=date("Y-m-d");
+   $ts_name='PDS';
    $tipo='children_share';
-   $ar_address='ar_pie.php?tipo=children_share&parent_keys='.$parent_keys.'&category='.$category.'&date='.$date.'&freq='.$freq.'&value_tipo='.$value_tipo;
 
+
+   if(isset($_REQUEST['period'])){
+     $period=$_REQUEST['period'];
+     if(preg_match('/^(m|month|monthly)$/i',$period)){
+       $freq='Monthly';
+       
+     }
+     elseif(preg_match('/^(y|year|yearly)$/i',$period)){
+       $freq='Yearly';
+       
+     }elseif(preg_match('/^(w|week|weekly)$/i',$period)){
+       $freq='Weekly';
+       
+     }elseif(preg_match('/^(q|quarter|quarterly)$/i',$period)){
+       $freq='Quarterly';
+     }elseif(preg_match('/^(all)$/i',$period)){
+       $freq='All';
+     }else
+	return;
+   }
+   if(isset($_REQUEST['date'])){
+     $time=strtotime($_REQUEST['date']);
+     
+     if($freq=='Monthly')
+       $date=date("Y-m-01",$time);
+     elseif($freq=='Yearly')
+       $date=date("Y-01-01",$time);
+     elseif($freq=='Quarter'){
+       $month=date('m',$date);
+       if($month<=3)
+	 $m=1;
+       elseif($month<=6)
+	 $m=4;
+       elseif($month<=9)
+	 $m=7;
+       else
+	 $m=10;
+       
+       $date=date("Y-$m-01",$time);
+     }else
+	$date='0000-00-00';
+
+   }
+
+   $item=$_REQUEST['item'];
+   $category=$_REQUEST['category'];
+
+   if(preg_match('/stores?/i',$item)){
+     $ts_name='PD';
+   }elseif(preg_match('/departments?/i',$item)){
+     $ts_name='PF';
+   }elseif(preg_match('/famil(y|ies)/i',$item)){
+     $ts_name='Pcode';
+   }else
+      return;
+
+
+   if(preg_match('/sales/i',$catefory)){
+     $ts_name.='S';
+   }elseif(preg_match('/profits?/i',$category)){
+     $ts_name.='P';
+   }else
+      return;
+   
+
+
+
+
+
+   $ar_address='ar_pie.php?tipo=children_share&parent_keys='.$parent_keys.'&ts_name='.$ts_name.'&date='.$date.'&freq='.$freq.'&value_tipo='.$value_tipo;
+   print $ar_address;
    $fields='"value","label"';
 
 

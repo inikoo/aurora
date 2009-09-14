@@ -13,22 +13,22 @@ $plot_type=$_REQUEST['tipo'];
 switch($plot_type){
 case('children_share'):
   $data=array('');
-  if(!isset($_REQUEST['date']) or  !isset($_REQUEST['category']) or  !isset($_REQUEST['freq']) )
+  if(!isset($_REQUEST['date']) or  !isset($_REQUEST['ts_name']) or  !isset($_REQUEST['freq']) )
     return;
   if(!preg_match('/\d{4}-\d{2}-\d{2}/',$_REQUEST['date']))
     return;
   else
     $data['date']=$_REQUEST['date'];
 
-  if(!preg_match('/(Yearly|Monthly|Quarterly|Weekly)/',$_REQUEST['freq']))
+  if(!preg_match('/(Yearly|Monthly|Quarterly|Weekly|All)/',$_REQUEST['freq']))
     exit("");
   else
     $data['freq']=$_REQUEST['freq'];
  
-  if(!preg_match('/(PDS|PFS|PcodeS)/',$_REQUEST['category']))
+  if(!preg_match('/(PDS|PFS|PcodeS|PDP|PFP|PcodeP)/',$_REQUEST['te_name']))
     return;
   else
-    $data['category']=$_REQUEST['category'];
+    $data['ts_name']=$_REQUEST['ts_name'];
   
 
   if(isset($_REQUEST['value_tipo']) and preg_match('/count/i',$_REQUEST['value_tipo']))
@@ -40,6 +40,14 @@ case('children_share'):
     $data['forecast']=true;
   else
     $data['forecast']=false;
+
+ if($data['freq']=='Weekly'){
+ if(isset($_REQUEST['yearweek'])  and   preg_match('/^\d{6}$/',$_REQUEST['yearweek']) )
+   $data['yearweek']=$_REQUEST['yearweek'];
+  else
+    return;
+ 
+ }
 
 
   $data['parent_keys']='';
@@ -66,10 +74,22 @@ function list_children_share($conf_data){
   $_data=array();
   
   $column='Time Series Value';
-  $where=sprintf('where `Time Series Frequency`=%s and `Time Series Date`=%s and `Time Series Name`=%s  '
+  if($conf_data['freq']=='All'){
+    $where=sprintf('where `Time Series Frequency`="Year" and `Time Series Name`=%s  '
+
+		 ,prepare_mysql($conf_data['ts_name'])
+		 );
+  }else if($conf_data['freq']=='Weekly'){
+    $where=sprintf('where `Time Series Frequency`=%s and YEARWEEK(`Time Series Date`)=%s and `Time Series Name`=%s  '
+		 ,prepare_mysql($conf_data['freq'])
+		 ,prepare_mysql($conf_data['yearweek'])
+		 ,prepare_mysql($conf_data['ts_name'])
+		 );
+  }else
+    $where=sprintf('where `Time Series Frequency`=%s and `Time Series Date`=%s and `Time Series Name`=%s  '
 		 ,prepare_mysql($conf_data['freq'])
 		 ,prepare_mysql($conf_data['date'])
-		 ,prepare_mysql($conf_data['category'])
+		 ,prepare_mysql($conf_data['ts_name'])
 		 );
   
   if($conf_data['forecast']){
@@ -80,11 +100,23 @@ function list_children_share($conf_data){
   if($conf_data['parent_keys']!=''){
     $where.=" and `Time Series Parent Key` in ".$conf_data['parent_keys'];
   }
-  $sql=sprintf("select `Time Series Type`,`Time Series Value` as value, `Time Series Count` as count,`Time Series Label` from `Time Series Dimension` %s order by `%s` desc"
+
+  if($conf_data['freq']=='All'){
+    $sql=sprintf("select sum(`Time Series Value`) as value, sum(`Time Series Count`) as count,`Time Series Label` from `Time Series Dimension` %s group by `Time Series Name Key`   order by sum(`Time Series Value`)   desc"
 	     
 	       ,$where
 	       ,$column
 	       );
+  }else{
+    $sql=sprintf("select `Time Series Type`,`Time Series Value` as value, `Time Series Count` as count,`Time Series Label` from `Time Series Dimension` %s order by `%s` desc"
+	     
+	       ,$where
+	       ,$column
+	       );
+  }
+ 
+
+
   // print $sql." | ".$conf_data['value_tipo']." |";
   $res=mysql_query($sql);
   $data=array();
