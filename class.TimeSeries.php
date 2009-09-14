@@ -8,6 +8,7 @@ Class TimeSeries  {
 
   public $freq=false;
   public $name=false;
+
   public $name_key=0;
   public $name_key2=0;
   public $parent_key=0;
@@ -357,7 +358,10 @@ function save_values(){
 	       );
   //print $sql;
 
-
+  if(!isset($this->first)){
+    print_r($this);
+  }
+  
 $sql=sprintf("insert into `Time Series Dimension` values (%s,%s,%s,%d,%d,%d,%s,%f,%d,'First','','')   ON DUPLICATE KEY UPDATE  `Time Series Value`=%f ,`Time Series Count`=%d ,`Time Series Type`='First' ,`Time Series Tag`='',`Time Series Parent Key`=%d "
 	     ,prepare_mysql($this->first['date'])
 	     ,prepare_mysql($this->freq)
@@ -677,6 +681,7 @@ for($year=$start_year;$year<=$last_year;$year++  ){
 
     $this->values["$year-01-01"]=array('count'=>0,'value'=>0);
 }
+// print_r($this->values);
 
 $sql=sprintf("SELECT %s as number,%s as date ,YEAR(%s) AS year ,sum(%s) as value FROM %s where YEAR(%s)>=%s and YEAR(%s)<=%s %s  GROUP BY year limit 10000"
 	       ,$this->count
@@ -694,13 +699,17 @@ $sql=sprintf("SELECT %s as number,%s as date ,YEAR(%s) AS year ,sum(%s) as value
   
   while($row=mysql_fetch_array($res)){
     $year=$row['year'];
+    if($year==date("Y") or $year==$this->start_year){
      if($year==date("Y")){
       $this->current=array('date'=>"$year-01-01",'count'=>$row['number'],'value'=>$row['value']);   
-      unset($this->values["$year-01-01"]);	
-     }elseif($year==$this->start_year){
+      	
+     }
+     if($year==$this->start_year){
       $this->first=array('date'=>"$year-01-01",'count'=>$row['number'],'value'=>$row['value']);
+     
+     }
       unset($this->values["$year-01-01"]);
-     }else{
+    }else{
         $this->values["$year-01-01"]['count']=$row['number'];
 	$this->values["$year-01-01"]['value']=$row['value'];
      }
@@ -756,12 +765,16 @@ $sql=sprintf("SELECT `First Day` as date ,substring(`First Day`, 1,7) AS dd  FRO
   $res=mysql_query($sql);
   
   while($row=mysql_fetch_array($res)){
-    if($row['dd']==$current_dd){
-      $this->current=array('date'=>$row['dd'].'-01','count'=>$row['number'],'value'=>$row['value']);   
-      unset($data[$row['dd']]);
-    }else if($row['dd']==$first_dd){
+    if($row['dd']==$current_dd or $row['dd']==$first_dd)  {
+      if($row['dd']==$current_dd){
+	$this->current=array('date'=>$row['dd'].'-01','count'=>$row['number'],'value'=>$row['value']);   
+	
+      }
+if($row['dd']==$first_dd){
       $this->first=array('date'=>$row['dd'].'-01','count'=>$row['number'],'value'=>$row['value']);
-      unset($data[$row['dd']]);
+     
+    }
+ unset($data[$row['dd']]);
     }else{
       $data[$row['dd']]['count']=$row['number'];
       $data[$row['dd']]['value']=$row['value'];
@@ -775,7 +788,108 @@ $sql=sprintf("SELECT `First Day` as date ,substring(`First Day`, 1,7) AS dd  FRO
   }
 }
 
-function get_values_per_week(){
+
+ function get_values_per_week(){
+     
+  $this->first_complete_week();
+  if($this->no_data)
+    return;
+  $this->last_date=date("Y-m-d");
+  
+  
+  
+  
+  $first_yearweek=yearweek($this->start_date);
+  $last_yearweek=yearweek($this->last_date );
+  $current_yearweek=yearweek(date("Y-m-d")) ;
+  //print "xx ".$this->start_date;
+  //exit;
+  $sql=sprintf("select `First Day` as date,`Year Week` as yearweek,`Year` as year from `Week Dimension` where `Last Day`>=%s and `First Day` <= %s  ; "
+	       ,prepare_mysql($this->start_date)
+	     ,prepare_mysql($this->last_date)
+	     );
+
+
+  $data=array();
+  $res = mysql_query($sql);
+  // print "$sql\n";
+  
+  while($row=mysql_fetch_array($res)) {
+    
+    if($row['yearweek']==$first_yearweek){
+      $this->first=array(
+			 'date'=>$row['date']
+			 ,'value'=>0
+			 ,'count'=>0
+			 );
+    }else if($row['yearweek']==$current_yearweek){
+      $this->current=array(
+			   'date'=>$row['date']
+			   ,'value'=>0
+			   ,'count'=>0
+			   );
+    }else{
+      $data[$row['yearweek']]=array(
+				    'date'=>$row['date']
+				    ,'value'=>0
+				    ,'count'=>0
+				    );
+    }
+  }
+  //print_r($data);
+  //exit($current_yearweek);
+
+
+
+  $sql=sprintf("SELECT %s as number,%s as date ,YEARWEEK(%s,3) AS yearweek  , sum(%s) as value FROM %s where %s>=%s  and %s<=%s %s  GROUP BY yearweek limit 10000"
+	       ,$this->count
+	       ,$this->date_field,$this->date_field
+		,$this->value_field
+	       ,$this->table
+	       ,$this->date_field,prepare_mysql($this->start_date)
+	       ,$this->date_field,prepare_mysql($this->last_date)
+	       ,$this->where
+	     );
+ 
+  // print "$sql\n";
+ 
+  $res=mysql_query($sql);
+  //exit;
+  while($row=mysql_fetch_array($res)){
+
+if($row['yearweek']==$first_yearweek or $row['yearweek']==$current_yearweek ){
+    if($row['yearweek']==$first_yearweek){
+      //      $this->first=$data[$row['yearweek']];
+      $this->first['count']=$row['number'];
+      $this->first['value']=$row['value'];
+     
+    }if($row['yearweek']==$current_yearweek){
+      //$this->current=$data[$row['normalized_yearweek']];
+      $this->current['count']=$row['number'];
+      $this->current['value']=$row['value'];
+     
+    }
+     unset($data[$row['yearweek']]);
+}else{
+      
+      $data[$row['yearweek']]['count']=$row['number'];
+      $data[$row['yearweek']]['value']=$row['value'];
+    }
+  }
+  //print_r($data);
+  foreach($data as $_values){
+    $this->values[$_values['date']]=$_values;
+  }
+
+  //print "$first_yearweek  $current_yearweek \n";
+
+  //exit;
+
+  
+ 
+ }
+
+function get_normalized_week_values(){
   
   $this->first_complete_week();
   if($this->no_data)
@@ -785,17 +899,18 @@ function get_values_per_week(){
   
   
   
-  $first_yearweek=yearquarter($this->start_date);
-  $last_yearweek=yearquarter($this->last_date );
-  $current_yearweek=yearquarter(date("Y-m-d") );
-  
-  
-  $sql=sprintf("select count(*) as factor,`Week Normalized` as week,`Year` as year from `Week Dimension` where `First Day`>=%s and `Normalized Last Day` <= %s; "
+  $first_yearweek=$this->normalized_yearweek($this->start_date);
+  $last_yearweek=$this->normalized_yearweek($this->last_date );
+  $current_yearweek=$this->normalized_yearweek(date("Y-m-d") );
+  //print "xx ".$this->start_date;
+  //exit;
+  $sql=sprintf("select count(*) as factor,`First Day` as date,`Year Week Normalized` as yearweek,`Year` as year from `Week Dimension` where `Normalized Last Day`>%s and `First Day` <= %s  group by `Year Week Normalized`; "
 	       ,prepare_mysql($this->start_date)
 	     ,prepare_mysql($this->last_date)
 	     );
 
-print $sql;
+  //print $sql;
+ 
   $data=array();
   $res = mysql_query($sql);
  
@@ -803,18 +918,19 @@ print $sql;
   while($row=mysql_fetch_array($res)) {
      $data[$row['yearweek']]=array(
 				      'date'=>$row['date']
-				      ,'values'=>0
+				      ,'value'=>0
 				      ,'count'=>0
+				      ,'factor'=>$row['factor']
 				      );
   }
-  //  print_r($data);
+  //   print_r($data);
+  //exit;
 
 
 
-
-  $sql=sprintf("SELECT %s as number,%s as date ,concat(year(%s),quarter(%s)) AS yearquarter ,sum(%s) as value FROM %s where %s>=%s  and %s<=%s %s  GROUP BY yearquarter limit 10000"
+  $sql=sprintf("SELECT %s as number,%s as date ,YEARWEEK(%s,3) AS yearweek , (select `Year Week Normalized` from `Week Dimension` as WD where WD.`Year Week`=yearweek) as normalized_yearweek , sum(%s) as value FROM %s where %s>=%s  and %s<=%s %s  GROUP BY yearweek limit 10000"
 	       ,$this->count
-	       ,$this->date_field,$this->date_field,$this->date_field
+	       ,$this->date_field,$this->date_field
 		,$this->value_field
 	       ,$this->table
 	       ,$this->date_field,prepare_mysql($this->start_date)
@@ -822,30 +938,24 @@ print $sql;
 	       ,$this->where
 	     );
  
-  //print "$sql\n";exit;
+  // print "$sql\n";
  
   $res=mysql_query($sql);
-  
+  //exit;
   while($row=mysql_fetch_array($res)){
-    if($row['yearquarter']==$first_yearquarter){
-      $this->first=$data[$row['yearquarter']];
-      $this->first['count']=$row['number'];
-      $this->first['value']=$row['value'];
-      unset($data[$row['yearquarter']]);
-    }else if($row['yearquarter']==$current_yearquarter){
-      $this->current=$data[$row['yearquarter']];
-      $this->current['count']=$row['number'];
-      $this->current['value']=$row['value'];
-      unset($data[$row['yearquarter']]);
+    
+    if($row['normalized_yearweek']==$first_yearweek or $row['normalized_yearweek']==$current_yearweek){
+      
+      unset($data[$row['normalized_yearweek']]);
     }else{
       
-      $data[$row['yearquarter']]['count']=$row['number'];
-      $data[$row['yearquarter']]['value']=$row['value'];
+      $data[$row['normalized_yearweek']]['count']=$row['number'];
+      $data[$row['normalized_yearweek']]['value']=$row['value']/$data['factor'];
     }
   }
-  // print_r($data);
+  //print_r($data);
   foreach($data as $_values){
-    $this->values[$_values['date']]=$_values;
+    $this->normalized_values[$_values['date']]=$_values;
   }
   //  exit;
 
@@ -870,23 +980,23 @@ $first_yearquarter=yearquarter($this->start_date);
 $last_yearquarter=yearquarter($this->last_date );
 $current_yearquarter=yearquarter(date("Y-m-d") );
 
-$sql=sprintf("select `First Day` as date, `Year Quarter` as yearquarter  from kbase.`Quarter Dimension` where `First Day`>=%s and `First Day` <= %s; "
-	     ,prepare_mysql($this->start_date)
-	     ,prepare_mysql($this->last_date)
+$sql=sprintf("select `First Day` as date, `Year Quarter` as yearquarter  from kbase.`Quarter Dimension` where `Year Quarter`>=%s and `Year Quarter` <= %s; "
+	     ,prepare_mysql(yearquarter($this->start_date))
+	     ,prepare_mysql(yearquarter($this->last_date))
 	     );
 
   $data=array();
   $res = mysql_query($sql);
- 
+  //print "$sql\n";
   
   while($row=mysql_fetch_array($res)) {
      $data[$row['yearquarter']]=array(
 				      'date'=>$row['date']
-				      ,'values'=>0
+				      ,'value'=>0
 				      ,'count'=>0
 				      );
   }
-  //  print_r($data);
+  //print_r($data);
 
 
 
@@ -906,23 +1016,27 @@ $sql=sprintf("select `First Day` as date, `Year Quarter` as yearquarter  from kb
   $res=mysql_query($sql);
   
   while($row=mysql_fetch_array($res)){
+    if($row['yearquarter']==$first_yearquarter or $row['yearquarter']==$current_yearquarter){
     if($row['yearquarter']==$first_yearquarter){
       $this->first=$data[$row['yearquarter']];
       $this->first['count']=$row['number'];
       $this->first['value']=$row['value'];
-      unset($data[$row['yearquarter']]);
-    }else if($row['yearquarter']==$current_yearquarter){
+     
+    }if($row['yearquarter']==$current_yearquarter){
       $this->current=$data[$row['yearquarter']];
       $this->current['count']=$row['number'];
       $this->current['value']=$row['value'];
+    }
       unset($data[$row['yearquarter']]);
-    }else{
+   
+ }
+else{
       
       $data[$row['yearquarter']]['count']=$row['number'];
       $data[$row['yearquarter']]['value']=$row['value'];
     }
   }
-  // print_r($data);
+  //print_r($data);
   foreach($data as $_values){
     $this->values[$_values['date']]=$_values;
   }
@@ -1037,25 +1151,27 @@ function first_complete_week(){
   $res=mysql_query($sql);
   if($row=mysql_fetch_array($res)){
 
-    $yearweek=normalized_yearweek($row['date']);
+    $yearweek=$this->normalized_yearweek($row['date']);
 
       
 	
-    $time-strtotime($row['date']);
+    $time=strtotime($row['date']);
     $this->start_date=date("Y-m-d", $time); 
     $this->start_year=date("Y", $time); 
     $this->start_bin=$yearweek;
-    $time-strtotime($row['Normalized Last Day']." +1 day");
+    $time=strtotime($row['date']." +1 day");
     $this->first_complete_date=date("Y-m-d", $time); 
     $this->first_complete_year=date("Y", $time); 
     
-    $yearweek=normalized_yearweek($this->first_complete_date);
+    $yearweek=$this->normalized_yearweek($this->first_complete_date);
     
     
     $this->first_complete_bin=$yearweek;
     $this->no_data=false;
   }else
     $this->no_data=true;
+
+  
   
 }
 
@@ -1252,10 +1368,11 @@ function last_complete_quarter(){
 
  function normalized_yearweek($date){
    $yearweek=false;
-   $sql=sprintf("select `Year Week Normalized`,`Normalized Last Day`  from kbase.`Week Dimension` where `First Day`>=%s and `Normalized Last Day`<=%s limit 1"
+   $sql=sprintf("select `Year Week Normalized`,`Normalized Last Day`  from kbase.`Week Dimension` where `First Day`<=%s and `Normalized Last Day`>=%s limit 1"
 		,prepare_mysql($date)
 		,prepare_mysql($date)
 		);
+   //print "$sql\n";
    $res2=mysql_query($sql);
    if($row2=mysql_fetch_array($res2))
      $yearweek=$row2['Year Week Normalized'];
