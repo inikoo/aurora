@@ -366,88 +366,138 @@ case('top_departments_sales_month'):
    break;
 
 
-case('store_sales_month'):
-case('department_sales_month'):
-case('family_sales_month'):
+case('store'):
+case('department'):
+case('family'):
 
+  if(isset($_REQUEST['period']))
+    $period=$_REQUEST['period'];
+  else
+    $period='m';
 
-   if(preg_match('/month$/',$tipo)){
-    $period='month';
-   }elseif(preg_match('/year$/',$tipo)){
-    $sub_tipo='year';
-   }elseif(preg_match('/quarter$/',$tipo)){
-    $sub_tipo='quarter';
-   }elseif(preg_match('/week$/',$tipo)){
-    $sub_tipo='week';
-   }
-   $request_keys=$_REQUEST['keys'];
-  if(preg_match('/^store/',$tipo)){
-    $sub_tipo='store';
-  
+ if(isset($_REQUEST['tipo']))
+    $tipo=$_REQUEST['tipo'];
+  else
+    $tipo='store';
+
+ if(isset($_REQUEST['category']))
+    $category=$_REQUEST['category'];
+  else
+    $category='sales';
  
-  }elseif(preg_match('/^department/',$tipo)){
-    $sub_tipo='department';
-  
-  }elseif(preg_match('/^family/',$tipo)){
-    $sub_tipo='family';
-  
+ 
+/*    if(preg_match('/^month|m$/',$period)){ */
+/*     $period='month'; */
+/*    }elseif(preg_match('/year$/',$tipo)){ */
+/*     $sub_tipo='year'; */
+/*    }elseif(preg_match('/quarter$/',$tipo)){ */
+/*     $sub_tipo='quarter'; */
+/*    }elseif(preg_match('/week$/',$tipo)){ */
+/*     $sub_tipo='week'; */
+/*    } */
+ $request_keys=$_REQUEST['keys'];
+ 
+  if(preg_match('/store/',$tipo)){
+    $tipo='store';
+  }elseif(preg_match('/department/',$tipo)){
+    $tipo='department';
+  }elseif(preg_match('/family/',$tipo)){
+    $tipo='family';
   }
-
+  
   $item_key_array=array();
   if(preg_match('/\(.+\)/',$request_keys,$keys)){
-      $keys=preg_replace('/\(|\)/','',$keys[0]);
-      $keys=preg_split('/\s*,\s*/',$keys);
-      $item_keys='(';
-      foreach($keys as $key){
-	if(is_numeric($key)){
-	  $item_keys.=sprintf("%d,",$key);
-	  $item_key_array[]=$key;
-	}
+    $keys=preg_replace('/\(|\)/','',$keys[0]);
+    $keys=preg_split('/\s*,\s*/',$keys);
+    $item_keys='(';
+    foreach($keys as $key){
+      if(is_numeric($key)){
+	$item_keys.=sprintf("%d,",$key);
+	$item_key_array[]=$key;
       }
-      $item_keys=preg_replace('/,$/',')',$item_keys);
-    }elseif(preg_match('/^\d+$/',$request_keys)){
-      $item_keys="(".$request_keys.")";
-      $item_key_array[]=$request_keys;
     }
-   if(count($item_key_array)==0){
-      return;
-    }
+    $item_keys=preg_replace('/,$/',')',$item_keys);
+  }elseif(preg_match('/^\d+$/',$request_keys)){
+    $item_keys="(".$request_keys.")";
+    $item_key_array[]=$request_keys;
+  }
+  if(count($item_key_array)==0){
+    return;
+  }
   
-    $title=_("Store Net Sales per Month");
-    $ar_address=sprintf('ar_plot.php?tipo=item_invoiced_sales&subtipo=%s&period=%s&split=yes&item_keys=%s',$sub_tipo,$period,$item_keys);
 
-    // print $ar_address;
-    $fields='"date"';
+  if(isset($_REQUEST['top_children']) and  is_numeric($_REQUEST['top_children'])){     
+    if($tipo=='store'){
+
+      $tipo='department';
+      $where=' where `Product Department Store Key` in '.$item_keys;
+      $order='`Product Department 1 Year Acc Invoiced Amount`';
+      $sql=sprintf("select `Product Department Code`,`Product Department Key` from `Product Department Dimension` %s order by %s desc limit %d"
+		   ,$where
+		   ,$order
+		   ,$_REQUEST['top_children']
+		   );
+      $res=mysql_query($sql);
+      $item_keys='(';
+      $item_key_array=array();
+      while($row=mysql_fetch_array($res)){
+	$item_keys.=$row['Product Department Key'].',';
+	$item_key_array[$row['Product Department Key']]=$row['Product Department Key'];
+      }
+      $item_keys=preg_replace("/,$/",')',$item_keys);
+
+
+    }
+
+  }
+
+
+
+
+
+  $title='';
+  $ar_address=sprintf('ar_plot.php?tipo=general&item=%s&category=%s&period=%s&split=yes&item_keys=%s'
+		      ,$tipo
+		      ,$category
+		      ,$period
+		      ,$item_keys);
+  
+  //print $ar_address;
+  $fields='"date"';
     foreach($item_key_array as $key){
       $fields.=',"value'.$key.'","tip_value'.$key.'","forecast'.$key.'","tip_forecast'.$key.'","tails'.$key.'","tip_tails'.$key.'"';
-  }
+    }
     $yfields=array();
+    $count=0;
     foreach($item_key_array as $key){
-      $yfields[]=array('label'=>_('Forecast')." ($key)",'name'=>'forecast'.$key,'style'=>'color:0x8dd5e7');
-    $yfields[]=array('label'=>_('Tails')." ($key)",'name'=>'tails'.$key,'style'=>'color:0x00b8bf,fillColor:0xffffff');
-    $yfields[]=array('label'=>_('Month Net Sales')." ($key)",'name'=>'value'.$key,'style'=>'color:0x00b8bf');
+      $forecast_color=$color_palette[$count]['forecast'];
+    $value_color=$color_palette[$count]['value'];
+      $yfields[]=array('label'=>_('Forecast')." ($key)",'name'=>'forecast'.$key,'style'=>'color:'.$forecast_color.',alpha:.7');
+      $yfields[]=array('label'=>_('Tails')." ($key)",'name'=>'tails'.$key,'style'=>'color:'.$value_color.',fillColor:0xffffff,alpha:.7');
+      $yfields[]=array('label'=>_('Month Net Sales')." ($key)",'name'=>'value'.$key,'style'=>'color:'.$value_color.',alpha:.7');
+       $count++;
     }		 
     
-  $yfield_label_type='formatCurrencyAxisLabel';
-  
-  $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category','axis'=>'justyears');
-  $style='';
-  $tipo_chart='LineChart';
-   break;
+    $yfield_label_type='formatCurrencyAxisLabel';
+    
+    $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category','axis'=>'justyears');
+    $style='';
+    $tipo_chart='LineChart';
+    break;
 
-
-
- case('total_sales_month'):
-   $title=_("Total Net Sales per Month");
-   $ar_address='ar_plot.php?tipo=invoiced_month_sales';
-   $fields='"value","tip_value","date","forecast","tip_forecast","tails","tip_tails"';
-   $yfields=array(
-         array('label'=>_('Forecast'),'name'=>'forecast','style'=>'color:0x8dd5e7') 
-	 , array('label'=>_('Tails'),'name'=>'tails','style'=>'color:0x00b8bf,fillColor:0xffffff') 
-	 ,array('label'=>_('Month Net Sales'),'name'=>'value','style'=>'color:0x00b8bf')
+    
+    
+case('total_sales_month'):
+  $title=_("Total Net Sales per Month");
+  $ar_address='ar_plot.php?tipo=invoiced_month_sales';
+  $fields='"value","tip_value","date","forecast","tip_forecast","tails","tip_tails"';
+  $yfields=array(
+		 array('label'=>_('Forecast'),'name'=>'forecast','style'=>'color:0x8dd5e7') 
+		 , array('label'=>_('Tails'),'name'=>'tails','style'=>'color:0x00b8bf,fillColor:0xffffff') 
+		 ,array('label'=>_('Month Net Sales'),'name'=>'value','style'=>'color:0x00b8bf')
         
-        );;
-   $yfield_label_type='formatCurrencyAxisLabel';
+		 );;
+  $yfield_label_type='formatCurrencyAxisLabel';
 
    $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category','axis'=>'justyears');
    $style='';

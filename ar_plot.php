@@ -14,12 +14,15 @@ switch($plot_type){
 case('invoiced_month_sales'):
 list_invoices_per_month();
 break;
-case("item_invoiced_sales");
+case("general");
+if(!isset($_REQUEST['period']) or !isset($_REQUEST['item'])  or !isset($_REQUEST['category']) or !isset($_REQUEST['item_keys']) )
+  return;
 $period=$_REQUEST['period'];
-$tipo=$_REQUEST['subtipo'];
-$split=(isset($_REQUEST['split']) and $_REQUEST['split']=='Yes' ?true:false);
+$tipo=$_REQUEST['item'];
+$category=$_REQUEST['category'];
+$split=(isset($_REQUEST['split']) and preg_match('/yes/i',$_REQUEST['split']) ?true:false);
 $item_keys=$_REQUEST['item_keys'];
-list_item($tipo,$period,$item_keys,$split);
+list_item($tipo,$category,$period,$item_keys,$split);
 break;
 case('invoiced_store_month_sales'):
 list_store_invoices_per_month();
@@ -401,9 +404,12 @@ function list_store_invoices_per_month(){
   echo json_encode($response);
 }
 
-function list_item($tipo,$period,$item_keys,$split=true){
+function list_item($tipo,$category,$period,$item_keys,$split=true){
   
   $_data=array();
+
+
+
   if($split){
 
     $item_keys=preg_replace('/\(|\)/','',$item_keys);
@@ -411,7 +417,7 @@ function list_item($tipo,$period,$item_keys,$split=true){
       if(!is_numeric($key))
 	continue;
       //print "$tipo ($key) sales";
-      $tm=new TimeSeries(array($period,"$tipo ($key) sales"));
+      $tm=new TimeSeries(array($period,"$tipo ($key) $category"));
       $tmp_data=$tm->plot_data();
       unset($tm);
       foreach($tmp_data as $key=>$values){
@@ -422,8 +428,9 @@ function list_item($tipo,$period,$item_keys,$split=true){
       }
     }
   }else{
-    //print "$tipo $item_keys sales";
-    $tm=new TimeSeries(array($period,"$tipo $item_keys sales"));
+    //print "$period $tipo $item_keys sales";
+
+    $tm=new TimeSeries(array($period,"$tipo $item_keys $category"));
     $_data=$tm->plot_data();
   }
   $data=array();

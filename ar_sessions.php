@@ -30,8 +30,20 @@ switch($tipo){
      $value=$_REQUEST['value'];
      $_SESSION['state'][$keys[0]][$keys[1]][$keys[2]]=$value;
      echo $keys[0]."|".$keys[1]."|".$keys[2]."=".$value;
-
      break;
+   case 4:
+     $value=$_REQUEST['value'];
+     $_SESSION['state'][$keys[0]][$keys[1]][$keys[2]][$keys[3]]=$value;
+     print $_SESSION['state'][$keys[0]][$keys[1]][$keys[2]][$keys[3]];
+     print_r($_SESSION['state'][$keys[0]]);
+     break;
+   case 5:
+     $value=$_REQUEST['value'];
+     $_SESSION['state'][$keys[0]][$keys[1]][$keys[2]][$keys[3]][$keys[4]]=$value;
+     print $_SESSION['state'][$keys[0]][$keys[1]][$keys[2]][$keys[3]][$keys[4]];
+     
+     break;
+
    }
    break;
  case('update_plot_product'):

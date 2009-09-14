@@ -518,18 +518,26 @@ $default_state=array(
 					  'avg'=>'totals',
 					  'edit'=>false,
 					  'id'=>1,
-					  'plot'=>'store_sales_month',
-					  'plot_data'=>array('store_sales_month'=>array(
-											'period'=>'month'
-											,'category'=>'sales'
-											)
-							     
+					  'plot'=>'store',
+					  'plot_data'=>array('store'=>array(
+									    'period'=>'m'
+									    ,'category'=>'sales'
+									    ,'page'=>'plot.php'
+									    )
+							     ,'top_departments'=>array(
+										       'period'=>'m'
+										       ,'category'=>'sales'
+										       ,'page'=>'plot.php'
+										       )
+							     ,'pie'=>array(
+									   'period'=>'m'
+									   ,'category'=>'sales'
+									   ,'page'=>'pie.php'
+									   ,'forecast'=>'no'
+									   ,'date'=>'today'
+									   )
 							     ),
-					  'pie'=>array(
-						       'period'=>'month'
-						       ,'date'=>'today'
-						       ,'forecast'=>'no'
-						       ),
+					  
 					  'table'=>array(
 							 'where'=>'where true',
 							 'f_field'=>'code',

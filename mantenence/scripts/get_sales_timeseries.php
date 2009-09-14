@@ -47,12 +47,13 @@ if(true){
   $tm->save_values();
   if($forecast)
     $tm->forecast();
-  $tm=new TimeSeries(array('y','profit invoices'));
+  $tm=new TimeSeries(array('y','invoices'));
   $tm->get_values();$tm->save_values();
   if($forecast)
     $tm->forecast();
  
  }
+
 
 $sql="select * from `Store Dimension`";
 $res=mysql_query($sql);
