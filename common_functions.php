@@ -1319,10 +1319,10 @@ function yearweek($str){
   $y=date("Y",$date);
   $m=date("m",$date);
 
-  if($w=1 and $m==12){
+  if($w==1 and $m==12){
     $y=$y+1;
   }
- if($w>52 and $m==1){
+ if($w>=52 and $m==1){
     $y=$y-1;
   }
  return sprintf("%d%02d",$y,$w);
@@ -1347,5 +1347,7 @@ function yearquarter($date){
   return date('Y',strtotime($date)).quarter($date);
   
 }
+
+
 
 ?>
