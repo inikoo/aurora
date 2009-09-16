@@ -8,3 +8,6 @@ TRUNCATE `Location Dimension`;
 TRUNCATE `Part Location Dimension`;truncate `Customer Ship To Bridge`;
 TRUNCATE `Contact Bridge`;TRUNCATE `Telecom Bridge`;TRUNCATE `Telecom Dimension`;
 TRUNCATE `Address Telecom Bridge`;
+TRUNCATE `Product History Dimension`;
+TRUNCATE `Product Same Code Dimension`;
+

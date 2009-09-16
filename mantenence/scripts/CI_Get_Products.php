@@ -19,6 +19,14 @@ $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
   
 require_once '../../common_functions.php';
+require_once '../../conf/timezone.php';   
+date_default_timezone_set(TIMEZONE) ;
+
+
+include_once('../../set_locales.php');
+
+require_once '../../conf/conf.php';   
+
 mysql_query("SET time_zone ='UTC'");
 mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';           
@@ -54,6 +62,30 @@ if(!$dept_promo->id){
   $dept_promo=new Department('create',$dept_data);
   
 }
+$dept_no_dept_key=$dept_no_dept->id;
+$dept_promo_key=$dept_promo->id;
+
+$fam_no_fam=new Family('code_store','PND_GB',$store_key);
+if(!$fam_no_fam->id){
+  $fam_data=array(
+		   'Product Family Code'=>'PSF_ES',
+		   'Product Family Name'=>'Productos sin Familia',
+		   'Product Family Main Department Key'=>$dept_no_dept_key
+		   );
+  $fam_no_fam=new Family('create',$fam_data);
+  $fam_no_fam_key=$fam_no_fam->id;
+}
+$fam_promo=new Family('code_store','Promo_ES',$store_key);
+if(!$fam_promo->id){
+  $fam_data=array(
+		   'code'=>'Promo_ES',
+		   'name'=>'Articulos Promocionales',
+		   'Product Family Main Department Key'=>$dept_promo_key
+		   );
+  $fam_promo=new Family('create',$fam_data);
+  
+}
+
 $fam_no_fam_key=$fam_no_fam->id;
 $fam_promo_key=$fam_promo->id;
 
@@ -98,7 +130,8 @@ while($_product=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 		  'product type'=>'Normal',
 		  'product record type'=>'Normal',
 		  'product web state'=>'Online Auto',
-
+		  'product locale'=>'es_ES',
+		  'product currency'=>'EUR',
 		  'product code'=>$_product['code'],
 		  'product price'=>sprintf("%.2f",$_product['price']),
 		  'product rrp'=>$_product['rrp'],
@@ -116,11 +149,11 @@ while($_product=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 		    );
       //     print_r($cols);
       //print_r($data);
-      
+ exit;
        	$product=new Product('create',$data);
+	
 
-
-
+	exit("test add product\n");
 
 
 

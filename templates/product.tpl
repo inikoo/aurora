@@ -220,7 +220,7 @@
 	<td   state="{$display.stock_history}" block="stock_history"  id="change_view_stock_history" {if $display.stock_history==0}title="{t}Show Stock History{/t}" atitle="{t}Hide Stock History{/t}"{else}atitle="{t}Show Stock History{/t}" title="{t}Hide Stock History{/t}"{/if} ><img {if $display.stock_history==0}style="opacity:0.2"{/if} src="art/icons/tick.png"    id="but_logo_stock_history"   /></td>
 	
       </tr>
-      <tr><td  colspan="5" style="text-align:center"><a href="edit_product.php?id={$product->get('Product Most Recent Key')}">Edit Product</a></td></tr>
+      <tr><td  colspan="5" style="text-align:center"><a href="edit_product.php?key={$product->get('Product Most Recent Key')}">Edit Product</a></td></tr>
 
       
     </table>

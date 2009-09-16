@@ -11,7 +11,9 @@ include_once('../../class.Part.php');
 include_once('../../class.SupplierProduct.php');
 error_reporting(E_ALL);
 date_default_timezone_set('Europe/London');
-
+include_once('../../set_locales.php');
+require('../../locale.php');
+$_SESSION['locale_info'] = localeconv();
 
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 
@@ -40,7 +42,7 @@ $Data_Audit_ETL_Software="$software $version";
 $file_name='AWorder2002-spain.xls';
 
 $csv_file='tmp.csv';
-exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
+//exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
 
 $handle_csv = fopen($csv_file, "r");
 $column=0;
@@ -325,7 +327,7 @@ foreach($__cols as $cols){
 
 
 
-      $product=new Product('code',$code);
+      $product=new Product('code-store',$code,1);
       // print "** ".$product->data['Product Code']."\n";
       if(!$product->id){
 	if($units=='')
@@ -396,7 +398,7 @@ foreach($__cols as $cols){
 	$data=array(
 		    'product store key'=>1,
 		    'product currency'=>'EUR',
-		    'product locale'=>'fr_FR',
+		    'product locale'=>'es_ES',
 		  
 		    'product sales state'=>'For sale',
 		    'product type'=>'Normal',

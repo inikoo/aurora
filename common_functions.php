@@ -57,8 +57,8 @@ function clean_accents($str){
 }
 
 function unformat_money($number){
-  $number=preg_replace('/\\'.$myconf['thousand_sep'].'/','',$number);
-  $number=preg_replace('/\\'.$myconf['decimal_point'].'/','.',$number);
+  $number=preg_replace('/\\'.$_SESSION['locale_info']['thousand_sep'].'/','',$number);
+  $number=preg_replace('/\\'.$_SESSION['locale_info']['decimal_point'].'/','.',$number);
   return $number;
 }
 
@@ -321,21 +321,21 @@ function parse_money($amount,$currency=false){
     }
   }
  
-  $qty=preg_split('/\\'.$myconf['decimal_point'].'/',$amount);
+  $qty=preg_split('/\\'.$_SESSION['locale_info']['decimal_point'].'/',$amount);
   $qty_parts=count($qty);
   //    print_r($qty);
   if($qty_parts==1)
-    $number=floatval(ereg_replace("[^-0-9\.]","",$qty[0]));
+    $number=floatval(preg_replace("/[^-0-9\.]/","",$qty[0]));
   if($qty_parts==2){
-    $number=floatval(ereg_replace("[^-0-9\.]","",$qty[0])).$myconf['decimal_point'].floatval(ereg_replace("[^-0-9\.]","",$qty[1]));
+    $number=floatval(preg_replace("/[^-0-9\.]/","",$qty[0])).$_SESSION['locale_info']['decimal_point'].floatval(preg_replace("/[^-0-9\.]/","",$qty[1]));
   }else{
     $i=0;
     $number='0';
     foreach($qty as $_qty){
       if($i==$qty_parts)
-	$number.=$myconf['decimal_point'].floatval(ereg_replace("[^-0-9\.]","",$qty[$i]));
+	$number.=$_SESSION['locale_info']['decimal_point'].floatval(preg_replace("/[^-0-9\.]/","",$qty[$i]));
       else
-	$number.=floatval(ereg_replace("[^-0-9\.]","",$qty[$i]));
+	$number.=floatval(preg_replace("/[^-0-9\.]/","",$qty[$i]));
       $i++;
     }
     

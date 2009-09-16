@@ -4789,7 +4789,7 @@ $sum_active=0;
   $sum_active=0;
   while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
     $code=sprintf('<a href="department.php?id=%d">%s</a>',$row['Product Department Key'],$row['Product Department Code']);
-     $name=sprintf('<a href="department.php?id=%d">%s</a>',$row['Product Department Key'],$row['Product Department Name']);
+    $name=sprintf('<a href="department.php?id=%d">%s</a>',$row['Product Department Key'],$row['Product Department Name']);
 
     if($percentages){
       if($period=='all'){
@@ -5214,10 +5214,10 @@ function list_products(){
    $group='';
    switch($mode){
    case('same_code'):
-     $where.=sprintf(" and `Product Same Code Most Recent`='Yes' ");
+     $where.=sprintf(" and `Product Most Recent`='Yes' ");
      break;
    case('same_id'):
-     $where.=sprintf(" and `Product Same ID Most Recent`='Yes' ");
+     $where.=sprintf("  ");
 	      
      break;
    }
@@ -5261,7 +5261,7 @@ function list_products(){
      $wheref.=" and  `Product Name` like '%".addslashes($f_value)."%'";
      
    $sql="select count(*) as total from `Product Dimension`  $where $wheref   ";
-
+  
    $res=mysql_query($sql);
    if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
      $total=$row['total'];
@@ -5500,7 +5500,7 @@ function list_products(){
    $count_margin=0;
    $sum_margin=0;
 
-   // print "$sql";
+   //print "$sql";
    while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
     
      $counter++;
@@ -5513,11 +5513,14 @@ function list_products(){
 
      switch($mode){
      case('same_code'):
-       $code=sprintf('<a href="product.php?code=%s">%s</a>',$row['Product Code'],$row['Product Code']);
-
+       if(preg_match('/store|department|family/',$parent))
+	 $code=sprintf('<a href="product.php?pid=%s">%s</a>',$row['Product ID'],$row['Product Code']);
+       else
+	 $code=sprintf('<a href="product.php?code=%s">%s</a>',$row['Product Code'],$row['Product Code']);
+       
        break;
      case('same_id'):
-       $code=sprintf('<a href="product.php?id=%s">%s</a>',$row['Product ID'],$row['Product Code']);
+       $code=sprintf('<a href="product.php?pid=%s">%s</a>',$row['Product ID'],$row['Product Code']);
 
        break;
      default:

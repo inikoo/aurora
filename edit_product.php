@@ -25,10 +25,10 @@ $smarty->assign('view_orders',$view_orders);
 $view_cust=$user->can_view('customers');
 $smarty->assign('view_cust',$view_cust);
 
-if(!isset($_REQUEST['id']) and is_numeric($_REQUEST['id']))
+if(!isset($_REQUEST['key']) and is_numeric($_REQUEST['key']))
   $product_id=1;
 else
-  $product_id=$_REQUEST['id'];
+  $product_id=$_REQUEST['key'];
 
 
 $_SESSION['state']['product']['id']=$product_id;

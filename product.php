@@ -73,9 +73,9 @@ $smarty->assign('display',$_SESSION['state']['product']['display']);
 if(isset($_REQUEST['code'])){
   $mode='code';
   $tag=$_REQUEST['code'];
- }elseif(isset($_REQUEST['id'])){
-  $mode='id';
-  $tag=$_REQUEST['id'];
+ }elseif(isset($_REQUEST['pid'])){
+  $mode='pid';
+  $tag=$_REQUEST['pid'];
  }elseif(isset($_REQUEST['key'])){
   $mode='key';
   $tag=$_REQUEST['key'];
@@ -119,7 +119,7 @@ if($mode=='code'){
     
    
 
-$product= new product(($mode=='id'?'pid':$mode),$tag);
+$product= new product($mode,$tag);
 
 
 
