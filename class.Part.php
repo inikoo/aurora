@@ -511,11 +511,11 @@ class part{
     case("used in"):
       $used_in_products='';
       $raw_used_in_products='';
-      $sql=sprintf("select `Product Same Code Most Recent Key`,`Product Code` from `Product Part List` PPL left join `Product Dimension` PD on (PD.`Product ID`=PPL.`Product ID`)  where `Part SKU`=%d group by `Product Code` order by `product Code`",$this->data['Part SKU']);
+      $sql=sprintf("select PD.`Product ID`,`Product Code` from `Product Part List` PPL left join `Product Dimension` PD on (PD.`Product ID`=PPL.`Product ID`)  where `Part SKU`=%d group by `Product Code` order by `product Code`",$this->data['Part SKU']);
       $result=mysql_query($sql);
       //      print "$sql\n";
       while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-	$used_in_products.=sprintf(', <a href="product.php?id=%d">%s</a>',$row['Product Same Code Most Recent Key'],$row['Product Code']);
+	$used_in_products.=sprintf(', <a href="product.php?pid=%d">%s</a>',$row['Product ID'],$row['Product Code']);
 	$raw_used_in_products=' '.$row['Product Code'];
       }
       $used_in_products=preg_replace('/^, /','',$used_in_products);

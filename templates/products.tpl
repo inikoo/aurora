@@ -7,11 +7,11 @@
   <span class="nav2 onleft"><a href="categories.php">{t}Categories{/t}</a></span>
   <span class="nav2 onleft"><a href="parts.php">{t}Parts{/t}</a></span>
   
-  <div class="search_box" >
-     <span class="search_title" style="padding-right:15px">{t}Product Code{/t}:</span> <br><input size="8" class="text search" id="prod_search" value="" name="search"/><img align="absbottom" id="submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>
-    <span  class="search_msg"   id="search_msg"    ></span> <span  class="search_sugestion"   id="search_sugestion"    ></span>
-    <br/>
-    <span  class="state_details"  id="show_details">{t}show details{/t}</span>
+ <div class="search_box" >
+    <span class="search_title">{t}Product Code{/t}:</span> <input size="8" class="text search" id="product_search" value="" name="search"/><img align="absbottom" id="product_submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>
+     <span  class="search_msg"   id="product_search_msg"    ></span> <span  class="search_sugestion"   id="product_search_sugestion"    ></span>
+     <br/>
+     <span  id="show_details" style="float:right;{if $show_details}display:none{/if}" class="state_details"  onClick="show_details()" >{t}Show details{/t}</span>
   </div>
 
   <div id="top" class="top_bar">

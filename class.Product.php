@@ -68,6 +68,7 @@ class product extends DB_Table{
     }
     else if(($a1=='new' or $a1=='create') and is_array($a2) ){
       $this->msg=$this->create($a2);
+     
     } else
       $this->get_data($a1,$a2,$a3);
   }
@@ -92,49 +93,59 @@ class product extends DB_Table{
 	}
       }
 
-    
-    if($tipo=='id'){
-      $sql=sprintf("select * from `Product Dimension` where `Product Key`=%d ",$tag);
-
+   
+    if($tipo=='id' or $tipo=='key'){
+      $sql=sprintf("select * from `Product History Dimension` where `Product Key`=%d ",$tag);
       $result=mysql_query($sql);
-
       if( ($this->data=mysql_fetch_array($result, MYSQL_ASSOC))){
-	    $this->locale=$this->data['Product Locale'];
+	   
 	    $this->id=$this->data['Product Key'];
-      }
+	    $this->pid=$this->data['Product ID'];
+      }Else
+	return;
       mysql_free_result($result);
+       $sql=sprintf("select * from `Product Dimension` where `Product ID`=%d ",$this->pid);
+      $result=mysql_query($sql);
+      if( $row=mysql_fetch_array($result, MYSQL_ASSOC)){
+	 $this->locale=$row['Product Locale'];
+	 
+      }else
+	return;
+      mysql_free_result($result);
+
+
       return;
-    } if($tipo=='pid'){
-      $sql=sprintf("select * from `Product Dimension` where `Product ID`=%d  and `Product Same ID Most Recent`='Yes'   ",$tag);
+    }else if($tipo=='pid'){
+      $sql=sprintf("select * from `Product Dimension` where `Product ID`=%d    ",$tag);
       $this->mode='id';
       $result=mysql_query($sql);
 
       if( ($this->data=mysql_fetch_array($result, MYSQL_ASSOC))){
 	$this->locale=$this->data['Product Locale'];
-	$this->id=$this->data['Product Key'];
+	$this->id=$this->data['Product Most Recent Key'];
+	$this->pid=$this->data['Product ID'];
       }
-      return;
+      mysql_free_result($result);
+     
+
+      Return;
     }elseif($tipo=='code'){
       $this->mode='code';
-      $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s and `Product Most Recent`='Yes' ",prepare_mysql($tag));
-      // print "$sql  xxx\n";
+      $sql=sprintf("select `Product Code` from `Product Same Code Dimension` where `Product Code`=%s  ",prepare_mysql($tag));
       $result=mysql_query($sql);
-      //print "pre\n";
       if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)){
-	//	 print "searching\n";
-	$this->id=$this->data['Product Key'];
-	$this->locale=$this->data['Product Locale'];
+	$this->code=$this->data['Product Code'];
       }
-      //print "found\n";
+
       return;
       
     } if($tipo=='code_store' or $tipo=='code-store'){
      
       $sql=sprintf("select * from `Product Dimension` where `Product Most Recent`='Yes' and `Product Code`=%s and `Product Store Key`=%d",prepare_mysql($tag),$extra);
-
+      //      print $sql;
       $result=mysql_query($sql);
       if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-	$this->id=$this->data['Product Key'];
+	$this->id=$this->data['Product Most Recent Key'];
 	$this->locale=$this->data['Product Locale'];
       }
 	return;
@@ -664,6 +675,75 @@ exit("sku not found   $sql\n");
 
   }
   }
+
+  /*
+Function: find
+Busca elmproduct
+   */
+  function find($raw_data,$options){
+    
+    if(isset($raw_data['editor'])){
+      foreach($raw_data['editor'] as $key=>$value){
+	if(array_key_exists($key,$this->editor))
+	  $this->editor[$key]=$value;
+      }
+    }
+    
+    $this->found_in_code=false;
+    $this->found_in_id=false;
+    $this->found_in_key=false;
+
+    $create='';
+    $update='';
+    if(preg_match('/create/i',$options)){
+      $create='create';
+    }
+    if(preg_match('/update/i',$options)){
+      $update='update';
+    }
+    $data=$this->get_base_data();
+    foreach($raw_data as $key=>$value){
+      if(isset($data[strtolower($key)]))
+	$data[strtolower($key)]=_trim($value);
+    }
+
+    if($data['product code']=='' or $data['product price'])
+      return;
+    if($data['product store key']=='')
+      $data['product store key']=1;
+    if($data['product name']=='')
+      $data['product name']=$data['product code'];
+    
+    
+    $sql=sprintf("select `Product Code` from `Product Same Code Dimension` where `Product Code`=%s  "
+		 ,prepare_mysql($data['product code'])
+		 ); 
+    $result=mysql_query($sql);
+    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+      $this->found_in_code=true;
+      
+
+      
+      $sql=sprintf("select `Product ID` from `Product Dimension` where `Product Code`=%s and `Product Units Per Case`=%f and `Product Unit Type`=%s  and  `Product Store Key`=%d "
+		   ,prepare_mysql($data['product code'])
+		   ,$data['product units per case']
+		   ,prepare_mysql($tag['product unit type'])
+		   ,$data['product store key']
+		   ); 
+      // print "$sql\n";
+      $result2=mysql_query($sql);
+      if($row2=mysql_fetch_array($result2)){
+	$this->found_in_id=true;
+	
+	
+
+
+      }
+
+
+    }
+  }
+
 
  /*
     Function: get
@@ -1289,6 +1369,33 @@ function valid_id($id){
     return false;
 }
 
+
+
+ /*
+    Function: get_base_data
+    Obtiene los diferentes valores de los atributos del producto
+ */
+ // JFA
+
+
+ function get_base_data_history(){
+ global $myconf;
+$base_data=array(
+		     'product history price'=>'',
+		     'product history name'=>'',
+		     'product history short description'=>'',
+		     'product history xhtml short description'=>'',
+		     'product history special characteristic'=>'',
+		     'product history valid from'=>date("Y-m-d H:i:s"),
+		     'product history valid to'=>date("Y-m-d H:i:s"),
+		   
+		   
+		     );
+
+ return $base_data;
+ }
+
+
  /*
     Function: get_base_data
     Obtiene los diferentes valores de los atributos del producto
@@ -1337,10 +1444,28 @@ $base_data=array(
 		     'product valid to'=>date("Y-m-d H:i:s"),
 		     'product most recent'=>'Yes',
 		     'product most recent key'=>'',
-		     'product same code most recent'=>'Yes',
-		     'product same code most recent key'=>'',
-		     'product same id most recent'=>'Yes',
-		     'product same id most recent key'=>''
+		   
+		     );
+
+ return $base_data;
+ }
+
+ /*
+    Function: get_base_data
+    Obtiene los diferentes valores de los atributos del producto
+ */
+ // JFA
+
+
+ function get_base_data_same_code(){
+ global $myconf;
+$base_data=array(
+		     'product code file as'=>'',
+		     'product code'=>'',
+		     'product same code valid from'=>date("Y-m-d H:i:s"),
+		     'product same code valid to'=>date("Y-m-d H:i:s"),
+		    
+		   
 		     );
 
  return $base_data;
@@ -1363,13 +1488,31 @@ $base_data=array(
       if(isset($base_data[strtolower($key)]))
 	$base_data[strtolower($key)]=_trim($value);
     }
-    
-    // print_r($base_data);
+    $base_data_history=$this->get_base_data_history();
+    foreach($data as $key=>$value){
+      $key=strtolower($key);
+      $key=preg_replace('/^product/','product history',$key);
+      if(isset($base_data_history[$key]))
+	$base_data_history[$key]=_trim($value);
+    }
+    $base_data_same_code=$this->get_base_data_same_code();
+    foreach($data as $key=>$value){
+       $key=strtolower($key);
+       if($key=='product valid from')
+	 $key='product same code valid from';
+       else if($key=='product valid to')
+	 $key='product same code valid to';
+
+      if(isset($base_data_same_code[$key]))
+	$base_data_same_code[$key]=_trim($value);
+    }
+
     if(!$this->valid_id($base_data['product id'])  ){
        $base_data['product id']=$this->new_id();
      }
+    $base_data_same_code['product code file as']=$this->normalize_code($base_data_same_code['product code']);
     $base_data['product code file as']=$this->normalize_code($base_data['product code']);
-
+    
     if(!is_numeric($base_data['product units per case']) or $base_data['product units per case']<1)
       $base_data['product units per case']=1;
 
@@ -1449,47 +1592,84 @@ $base_data=array(
       $base_data['product family code']=$family->data['Product Family Code'];
       $base_data['product family name']=$family->data['Product Family Name'];
     }
-     if(!$has_family){
+    if(!$has_family){
       exit("Product Class: error no family info provided can not create product\n");
     }
 
-
-
+    
     $keys='(';$values='values(';
-    foreach($base_data as $key=>$value){
+    foreach($base_data_history as $key=>$value){
       $keys.="`$key`,";
       $values.=prepare_mysql($value).",";
     }
     $keys=preg_replace('/,$/',')',$keys);
     $values=preg_replace('/,$/',')',$values);
-    $sql=sprintf("insert into `Product Dimension` %s %s",$keys,$values);
-
-   //  print "$sql\n\n";    
-//     exit;
-     //   if(preg_match('/abp-01/i',$base_data['product code'])){
-    //	 print "$sql\n\n"; 
-    //	 exit;
-//        }
+    $sql=sprintf("insert into `Product History Dimension` %s %s",$keys,$values);
     if(mysql_query($sql)){
       $this->id = mysql_insert_id();
-	$this->get_data('id',$this->id);
-
-
-
-
-
-      if($base_data['product most recent']=='Yes'){
-	$sql=sprintf("update `Product Dimension` set `Product Most Recent`='No' where `Product ID`=%d  and `Product Key`!=%d",$base_data['product id'],$this->id);
-	mysql_query($sql);
-	
-	$sql=sprintf("update  `Product Dimension` set `Product Most Recent`='Yes',`Product Most Recent Key`=%d ,`Product Same Code Most Recent Key`=%d,`Product Same ID Most Recent Key`=%d  where `Product Key`=%d",$this->id,$this->id,$this->id,$this->id);
-	mysql_query($sql);
-      }
-      $this->get_data('id',$this->id);
       
-      $sql=sprintf("update  `Product Dimension` set `Product Short Description`=%s ,`Product XHTML Short Description`=%s where `Product Key`=%d",prepare_mysql($this->get('short description')),prepare_mysql($this->get('xhtml short description')),$this->id);
-      mysql_query($sql);
 
+      $base_data['product most recent key']=$this->id;
+
+
+      $keys='(';$values='values(';
+      foreach($base_data as $key=>$value){
+	$keys.="`$key`,";
+	$values.=prepare_mysql($value).",";
+      }
+      $keys=preg_replace('/,$/',')',$keys);
+      $values=preg_replace('/,$/',')',$values);
+      $sql=sprintf("insert into `Product Dimension` %s %s",$keys,$values);
+      //print "$sql\n";
+      if(mysql_query($sql)){
+	$this->pid = mysql_insert_id();
+
+	$keys='(';$values='values(';
+	foreach($base_data_same_code as $key=>$value){
+	  $keys.="`$key`,";
+	  $values.=prepare_mysql($value).",";
+	}
+      $keys=preg_replace('/,$/',')',$keys);
+      $values=preg_replace('/,$/',')',$values);
+      $sql=sprintf("insert into `Product Same Code Dimension` %s %s",$keys,$values);
+      if(mysql_query($sql)){
+	$this->code = $base_data['product code'];
+
+      }else
+	exit($sql);
+      }else
+	exit($sql);
+    }else
+      exit($sql);
+
+    
+    // if($base_data['product most recent']=='Yes'){
+//       $sql=sprintf("update `Product Dimension` set `Product Most Recent`='No' where `Product ID`=%d  and `Product Key`!=%d",$base_data['product id'],$this->id);
+//       mysql_query($sql);
+	
+// 	$sql=sprintf("update  `Product Dimension` set `Product Most Recent`='Yes',`Product Most Recent Key`=%d ,`Product Same Code Most Recent Key`=%d,`Product Same ID Most Recent Key`=%d  where `Product Key`=%d",$this->id,$this->id,$this->id,$this->id);
+// 	mysql_query($sql);
+//       }
+//       $this->get_data('id',$this->id);
+      
+    
+    $this->get_data('pid',$this->pid);
+   
+    $sql=sprintf("update  `Product Dimension` set `Product Short Description`=%s ,`Product XHTML Short Description`=%s where `Product ID`=%d"
+		 ,prepare_mysql($this->get('short description'))
+		 ,prepare_mysql($this->get('xhtml short description'))
+		 ,$this->pid);
+    mysql_query($sql);
+    $sql=sprintf("update  `Product History Dimension` set `Product History Short Description`=%s ,`Product History XHTML Short Description`=%s ,`Product ID`=%d where `Product Key`=%d"
+		 ,prepare_mysql($this->get('short description'))
+		 ,prepare_mysql($this->get('xhtml short description'))
+		 ,$this->pid
+		 ,$this->id
+		 );
+       mysql_query($sql);
+       //print $sql;
+	      //exit;
+       
       if(isset($data['deals']) and is_array($data['deals'])){
 
 
@@ -1507,7 +1687,7 @@ $base_data=array(
       }
       //   exit;
       
-      $this->get_data('id',$this->id);
+      $this->get_data('pid',$this->pid);
       $this->msg='Product Created';
       $this->new=true;
       $family->load('products_info');
@@ -1524,25 +1704,22 @@ $base_data=array(
       }
       
 
-      $sql="select count(*) as num from `Product Department Bridge` where `Product Key`=".$this->id;
-      $result=mysql_query($sql);
-      if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-	$sql=sprintf("update  `Product Dimension` set `Product Department Degeneration`=%s where `Product Key`=%d",$row['num'],$this->id);
-	mysql_query($sql);
-       }
+    //   $sql="select count(*) as num from `Product Department Bridge` where `Product Key`=".$this->id;
+//       $result=mysql_query($sql);
+//       if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+// 	$sql=sprintf("update  `Product Dimension` set `Product Department Degeneration`=%s where `Product Key`=%d",$row['num'],$this->id);
+// 	mysql_query($sql);
+//        }
 
-      $this->update_same_id_valid_dates();
-      $this->update_same_code_valid_dates();
+//      $this->update_same_id_valid_dates();
+      //     $this->update_same_code_valid_dates();
 
 
- $store=new Store($this->data['Product Store Key']);
+      $store=new Store($this->data['Product Store Key']);
       $store->load('products_info');
 
       
-    }else{
-      print "$sql Error Product cannot be created\n";
-      exit;
-    }
+         
 
 
     //$family->add_product($this->id,'principal');
@@ -1557,10 +1734,10 @@ $base_data=array(
     Method: create_sibling
     Crea o actualiza valores de la tabla Product Department Bridge, Product Dimension
  */
- // JFA
+ // 
 
   
-  function create_sibling($new_id,$data){
+  function create_sibling($data,$new_id=false,$most_recent=true){
     global $myconf;
     $base_data=$this->get_base_data();
 
@@ -1578,17 +1755,32 @@ $base_data=array(
 
     if($base_data['product web state']=='')
       $base_data['product web state']='Unknown';
-    if(!$new_id)
+    if($new_id)
       $base_data['product id']=$this->new_id();
-    $base_data['product most recent']='Yes';
 
-    print_r($base_data);
-    exit;
+    $date=date("Y-m-d H:i:s");
+    $base_data['product valid from']=$date;
+    $base_data['product valid to']=$date;
+
+    if($most_recent){
+      $base_data['product most recent']='Yes';
+      $base_data['product same code most recent']='Yes';
+      $base_data['product same id most recent']='Yes';
+    }else{
+      $base_data['product most recent']='No';
+      $base_data['product same code most recent']='No';
+      $base_data['product same id most recent']='No';
+    }
+
     $keys='(';$values='values(';
     foreach($base_data as $key=>$value){
       $keys.="`$key`,";
       $values.=prepare_mysql($value).",";
     }
+
+
+  
+
     $keys=preg_replace('/,$/',')',$keys);
     $values=preg_replace('/,$/',')',$values);
     $sql=sprintf("insert into `Product Dimension` %s %s",$keys,$values);
@@ -1597,17 +1789,45 @@ $base_data=array(
     if(mysql_query($sql)){
       $this->new_id = mysql_insert_id();
       $this->new=true;
+      if($most_recent){
+	
+	
+	
+	$sql=sprintf("update `Product Dimension` set  `Product Valid To`=%s where `Product Id`=%s and `Product Same ID Most Recent`='Yes' and `Product Key`!=%d"
+		     ,prepare_mysql($date)
+		     ,$base_data['product id']
+		     ,$this->new_id);
+	mysql_query($sql);
+	$sql=sprintf("update `Product Dimension` set  `Product Same ID Valid To`=%s where `Product ID`=%s  and `Product Key`!=%d"
+		     ,prepare_mysql($date)
+		     ,$base_data['product id']
+		     ,$this->new_id);
+	mysql_query($sql);
+	$sql=sprintf("update `Product Dimension` set  `Product Same Code Valid To`=%s where `Product Code`=%s  and `Product Key`!=%d"
+		     ,prepare_mysql($date)
+		     ,$base_data['product code']
+		     ,$this->new_id);
+	mysql_query($sql);
 
-      $sql=sprintf("update `Product Dimension` set `Product Most Recent`='No' where `Product ID`=%d  and `Product Key`!=%d",$base_data['product id'],$this->id);
-      mysql_query($sql);
-      
-      $sql=sprintf("update  `Product Dimension` set `Product Most Recent`='Yes',`Product Most Recent Key`=%d ,`Product Same ID Most Recent Key`=%d  where `Product Key`=%d"
-		   ,$this->new_id
-		   ,$this->new_id
-		   ,$this->new_id)
-	;
-      mysql_query($sql);
-      
+
+
+
+	$sql=sprintf("update `Product Dimension` set  `Product Same Code Most Recent`='No' where `Product Code`=%s  and `Product Key`!=%d"
+		     ,prepare_mysql($base_data['product code'])
+		     ,$this->new_id);
+	mysql_query($sql);
+	$sql=sprintf("update `Product Dimension` set `Product Same ID Most Recent`='No',`Product Most Recent`='No' where `Product ID`=%d  and `Product Key`!=%d",$base_data['product id'],$this->new_id);
+	mysql_query($sql);
+	print "$sql\n";
+	$sql=sprintf("update  `Product Dimension` set `Product Most Recent Key`=%d ,`Product Same ID Most Recent Key`=%d,`Product Same Code Most Recent Key`=%d  where `Product Key`=%d"
+		     ,$this->new_id
+		     ,$this->new_id
+		     ,$this->new_id
+		     ,$this->new_id
+		     );
+	mysql_query($sql);
+print "$sql\n";
+      }
       $this->load('redundant data');
     
       
@@ -1902,7 +2122,7 @@ function normalize_code($code){
 
 
 
-      $sql=sprintf("update `Product Dimension` set `Product XHTML Parts`=%s  , `Product XHTML Supplied By`=%s where `Product Key`=%d",prepare_mysql(_trim($parts)),prepare_mysql(_trim($supplied_by)),$this->id);
+      $sql=sprintf("update `Product Dimension` set `Product XHTML Parts`=%s  , `Product XHTML Supplied By`=%s where `Product ID`=%d",prepare_mysql(_trim($parts)),prepare_mysql(_trim($supplied_by)),$this->pid);
      //print "$sql\n";
      if(!mysql_query($sql))
        exit("$sql  eerror can not updat eparts pf product 1234234\n");
@@ -3404,7 +3624,8 @@ case('images_slideshow'):
 
 
 	$new_id=false;
-	$this->create_sibling($new_id,array('Product Price'=>$amount));
+	$most_recent=true;
+	$this->create_sibling(array('Product Price'=>$amount),$new_id,$most_recent);
 	if(!$this->new){
 	  $this->msg=_("Error: Product record state could not be updated").' (no new)';
 	  $this->updated=false;
