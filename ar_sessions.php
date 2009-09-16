@@ -8,6 +8,8 @@ if(!isset($_REQUEST['tipo']))
     exit;
   }
 
+  
+
 $tipo=$_REQUEST['tipo'];
 
 switch($tipo){
@@ -21,10 +23,20 @@ switch($tipo){
      break;
    case 2:
      $value=$_REQUEST['value'];
-     print $_SESSION['state']['store']['details'];
+     // print $_SESSION['state'][$keys[0]][$keys[1]]."\n";
      $_SESSION['state'][$keys[0]][$keys[1]]=$value;
-     echo  $keys[0]."|".$keys[1]."=".$value;
-      print $_SESSION['state']['store']['details'];
+     //print $_SESSION['state'][$keys[0]][$keys[1]]."\n";
+     $data=$session->read(session_id( ));
+     
+     
+    
+     
+    
+
+
+
+
+
      break;
    case 3:
      $value=$_REQUEST['value'];

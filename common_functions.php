@@ -355,20 +355,20 @@ function money($amount,$locale=false){
   $amount=abs($amount);
   
   if(!$locale){
-    $amount=number_format($amount,2,$myconf['decimal_point'],$myconf['thousand_sep']);
+    $amount=number_format($amount,2,$_SESSION['locale_info']['decimal_point'],$_SESSION['locale_info']['thousands_sep']);
     $symbol=$myconf['currency_symbol'];
     $amount=($neg?'-':'').$symbol.$amount;
     return $amount;
   }else{
     switch($locale){
     case('EUR'):
-      $amount=number_format($amount,2,$myconf['decimal_point'],$myconf['thousand_sep']);
+      $amount=number_format($amount,2,$_SESSION['locale_info']['decimal_point'],$_SESSION['locale_info']['thousands_sep']);
       $symbol='€';
       $amount=($neg?'-':'').$symbol.$amount;
       return $amount;
       break;
     case('GBP'):
-      $amount=number_format($amount,2,$myconf['decimal_point'],$myconf['thousand_sep']);
+      $amount=number_format($amount,2,$_SESSION['locale_info']['decimal_point'],$_SESSION['locale_info']['thousands_sep']);
       $symbol='£';
       $amount=($neg?'-':'').$symbol.$amount;
       return $amount;
@@ -393,7 +393,7 @@ function number($a,$fixed=1,$force_fix=false){
   if($floored==$a and !$force_fix)
     $fixed=0;
 
-  $a=number_format($a,$fixed,$myconf['decimal_point'],$myconf['thousand_sep']);
+  $a=number_format($a,$fixed,$_SESSION['locale_info']['decimal_point'],$_SESSION['locale_info']['thousands_sep']);
   
   return $a;
 }

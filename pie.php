@@ -47,7 +47,7 @@ switch($tipo){
  case('children_share'):
 
    if(!isset($_REQUEST['item'])  or !isset($_REQUEST['category']) )
-     returnl
+     return;
    $parent_key_array=array();
    $parent_keys='';
    if(isset($_REQUEST['keys'])){
@@ -127,6 +127,7 @@ switch($tipo){
 
    if(preg_match('/stores?/i',$item)){
      $ts_name='PD';
+     $_SESSION['state']['store']['plot']='pie';
    }elseif(preg_match('/departments?/i',$item)){
      $ts_name='PF';
    }elseif(preg_match('/famil(y|ies)/i',$item)){
@@ -135,7 +136,7 @@ switch($tipo){
       return;
 
 
-   if(preg_match('/sales/i',$catefory)){
+   if(preg_match('/sales/i',$category)){
      $ts_name.='S';
    }elseif(preg_match('/profits?/i',$category)){
      $ts_name.='P';
@@ -148,7 +149,7 @@ switch($tipo){
 
 
    $ar_address='ar_pie.php?tipo=children_share&parent_keys='.$parent_keys.'&ts_name='.$ts_name.'&date='.$date.'&freq='.$freq.'&value_tipo='.$value_tipo;
-   print $ar_address;
+   //print $ar_address;
    $fields='"value","label"';
 
 

@@ -185,7 +185,7 @@ img{vertical-align:bottom}
 
 .chooser {width:670px;bxorder:1px solid black;margin:0px auto}
 .chooser ul {;margin:0px auto;xborder:1px solid red;}
-.chooser{padding:15px 0px 0 0px;}
+.chooser{padding:0px 0px 0 0px;}
 .chooser li {float:left;padding:3px 5px 5px 5px ;margin: 0 5px 10px 0;border: 1px solid #ccc;cursor:pointer;;opacity: .5;filter: alpha(opacity=40);}
 .chooser li:hover {opacity: .8;filter: alpha(opacity=80);}
 .chooser img {position:relative;top:2px;}

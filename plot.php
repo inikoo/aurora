@@ -1,4 +1,5 @@
 <?php
+
 //@author Raul Perusquia <rulovico@gmail.com>
 //Copyright (c) 2009 LW
 $colors=array(
@@ -16,9 +17,11 @@ $color_palette=array(
 		     ,array('value'=>'0xe2654f','forecast'=>'0xef9f91')
 		     ,array('value'=>'0x4c77d1','forecast'=>'0x97b3ed')
 		     );
-
+  
 
 require_once 'common.php';
+//print $_SESSION['state']['store']['plot'];
+//exit;
 require_once 'class.Product.php';
 
 $tipo='';
@@ -370,6 +373,9 @@ case('store'):
 case('department'):
 case('family'):
 
+
+  
+
   if(isset($_REQUEST['period']))
     $period=$_REQUEST['period'];
   else
@@ -399,10 +405,16 @@ case('family'):
  
   if(preg_match('/store/',$tipo)){
     $tipo='store';
+    $plot_name='store';
+    $plot_page='store';
   }elseif(preg_match('/department/',$tipo)){
     $tipo='department';
+    $plot_name='department';
+    $plot_page='department';
   }elseif(preg_match('/family/',$tipo)){
     $tipo='family';
+    $plot_name='family';
+    $plot_page='family';
   }
   
   $item_key_array=array();
@@ -428,7 +440,7 @@ case('family'):
 
   if(isset($_REQUEST['top_children']) and  is_numeric($_REQUEST['top_children'])){     
     if($tipo=='store'){
-
+      $plot_name='top_departments';
       $tipo='department';
       $where=' where `Product Department Store Key` in '.$item_keys;
       $order='`Product Department 1 Year Acc Invoiced Amount`';
@@ -445,15 +457,33 @@ case('family'):
 	$item_key_array[$row['Product Department Key']]=$row['Product Department Key'];
       }
       $item_keys=preg_replace("/,$/",')',$item_keys);
-
-
+    }elseif($tipo=='department'){
+      $plot_name='top_families';
+      $tipo='family';
+      $where=' where `Product Family Main Department Key` in '.$item_keys;
+      $order='`Product Family 1 Year Acc Invoiced Amount`';
+      $sql=sprintf("select `Product Family Code`,`Product Family Key` from `Product Family Dimension` %s order by %s desc limit %d"
+		   ,$where
+		   ,$order
+		   ,$_REQUEST['top_children']
+		   );
+      $res=mysql_query($sql);
+      $item_keys='(';
+      $item_key_array=array();
+      while($row=mysql_fetch_array($res)){
+	$item_keys.=$row['Product Family Key'].',';
+	$item_key_array[$row['Product Family Key']]=$row['Product Family Key'];
+      }
+      $item_keys=preg_replace("/,$/",')',$item_keys);
     }
 
   }
 
 
-
-
+  $_SESSION['state'][$plot_page]['plot']=$plot_name;
+  $_SESSION['state'][$plot_page]['plot_data'][$plot_name]['period']=$period;
+  $_SESSION['state'][$plot_page]['plot_data'][$plot_name]['category']=$category;
+  //  print "$plot_page $plot_name $category";
 
   $title='';
   $ar_address=sprintf('ar_plot.php?tipo=general&item=%s&category=%s&period=%s&split=yes&item_keys=%s'

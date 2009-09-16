@@ -52,18 +52,28 @@
 	</table>
       </div>
       
-      <div display="none" id="plot_info" period="month" keys="{$store->id}" pie_period="{$pie_period}" pie_date="{$pie_date}" pie_forecast="{$pie_forecast}"   ></div>
+      <div display="none" id="plot_info" keys="{$store->id}" ></div>
       <ul id="plot_chooser" class="tabs" style="margin:0 20px;padding:0 20px "  >
-	<li><span class="item {if $plot_tipo=='store'}selected{/if}" onClick="change_plot(this)" id="plot_store" tipo="store" category="{$plot_data.store.category}" period="{$plot_data.store.period}"    ><span>{t}Store Sales{/t}</span></span></li>
-	<li><span class="item {if $plot_tipo=='top_departments'}selected{/if}"  id="plot_top_departments" onClick="change_plot(this)" tipo="top_departments" category="{$plot_data.top_departments.category}" period="{$plot_data.top_departments.period}" name=""  ><span>{t}Top Departments{/t}</span></span></li>
-	<li><span class="item {if $plot_tipo=='pie'}selected{/if}" onClick="change_plot(this)" id="plot_pie" tipo="pie"   category="{$plot_data.pie.category}" period="{$plot_data.pie.period}" forecast="{$plot_data.pie.forecast}" date="{$plot_data.pie.date}"  ><span>{t}Department's Pie{/t}</span></span></li>
+	<li>
+	  <span class="item {if $plot_tipo=='store'}selected{/if}" onClick="change_plot(this)" id="plot_store" tipo="store" category="{$plot_data.store.category}" period="{$plot_data.store.period}" >
+	    <span>{t}Store Sales{/t}</span>
+	  </span>
+	</li>
+	<li>
+	  <span class="item {if $plot_tipo=='top_departments'}selected{/if}"  id="plot_top_departments" onClick="change_plot(this)" tipo="top_departments" category="{$plot_data.top_departments.category}" period="{$plot_data.top_departments.period}" name=""  >
+	    <span>{t}Top Departments{/t}</span>
+	  </span>
+	</li>
+	<li>
+	  <span class="item {if $plot_tipo=='pie'}selected{/if}" onClick="change_plot(this)" id="plot_pie" tipo="pie"   category="{$plot_data.pie.category}" period="{$plot_data.pie.period}" forecast="{$plot_data.pie.forecast}" date="{$plot_data.pie.date}"  >
+	    <span>{t}Department's Pie{/t}</span>
+	  </span>
+	</li>
       </ul> 
       
-        <ul id="plot_options" class="tabs" style="{if $plot_tipo=='pie'}display:none{/if};position:relative;top:.6em;float:right;margin:0 20px;padding:0 20px;font-size:90% "  >
+      <ul id="plot_options" class="tabs" style="{if $plot_tipo=='pie'}display:none{/if};position:relative;top:.6em;float:right;margin:0 20px;padding:0 20px;font-size:90% "  >
 	<li><span class="item"> <span id="plot_category"  category="{$plot_category}" style="xborder:1px solid black;display:inline-block; vertical-align:middle">{$plot_formated_category}</span></span></li>
-
 	<li><span class="item"     ><span id="plot_period"   period="{$plot_period}" style="xborder:1px solid black;display:inline-block; vertical-align:middle">{$plot_formated_period}</span></span></li>
-
       </ul> 
 
       <div style="clear:both;margin:0 20px;padding:0 20px ;border-bottom:1px solid #999">

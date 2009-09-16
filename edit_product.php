@@ -106,7 +106,8 @@ $css_files=array(
 		 'common.css',
 		 'button.css',
 		 'container.css',
-		 'table.css'
+		 'table.css',
+		 'css/edit.css'
 		 );
 $js_files=array(
 		$yui_path.'utilities/utilities.js',
@@ -126,8 +127,8 @@ $js_files=array(
 		'table_common.js.php',
 		'js/md5.js',
 
-		'js/search.js',
-		'edit_product.js.php',
+	
+	
 
 		);
 
@@ -137,8 +138,7 @@ $js_files=array(
 $smarty->assign('parent','assets_tree.php');
 $smarty->assign('title',$product->get('Product Code'));
 
-$smarty->assign('css_files',$css_files);
-$smarty->assign('js_files',$js_files);
+
 
 
 $product_home="Products Home";
@@ -160,10 +160,14 @@ $_SESSION['state']['product']['shapes']=json_encode($_shape);
 
 
 
-$smarty->assign('thousands_sep',$myconf['thousand_sep']);
-$smarty->assign('decimal_point',$myconf['decimal_point']);
+$smarty->assign('thousands_sep',$_SESSION['locale_info']['thousands_sep']);
+$smarty->assign('decimal_point',$_SESSION['locale_info']['decimal_point']);
 
 $smarty->assign('currency',$product->data['Currency Symbol']);
+
+$js_files[]=sprintf('edit_product.js.php?symbol=%s&product_id=%d',$product->data['Currency Symbol'],$product->id);
+$smarty->assign('css_files',$css_files);
+$smarty->assign('js_files',$js_files);
 
 // $sql=sprintf("select id,sname,tipo,name,description from cat where tipo=1 order by sname ");
 // $res = mysql_query($sql);
