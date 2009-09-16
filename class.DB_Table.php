@@ -164,6 +164,7 @@ protected function update_field($field,$value,$options=''){
     $this->msg.=' '._('Record can not be updated')."\n";
     $this->error_updated=true;
     $this->error=true;
+   
     return;
   }elseif($affected==0){
     //$this->msg.=' '._('Same value as the old record');

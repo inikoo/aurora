@@ -38,6 +38,7 @@ class product extends DB_Table{
   public $parts_skus=false;
   public $parts_location=false;
   public $mode='id';
+  public $system_format=true;
   // Variable: new
   // Indicate if a new product was created
   
@@ -680,8 +681,10 @@ exit("sku not found   $sql\n");
     
 
     switch($key){
-
-
+    case('Margin'):
+      return percentage($this->data["Product Cost"],$this->data["Product Price"]);break;
+    case('RRP Margin'):
+      return percentage($this->data["Product Price"],$this->data["Product RRP"]);break; 
     case('Same Code 1 Quarter WAVG Quantity Delivered'):
       return $this->data['Product Same Code 1 Quarter Acc Quantity Delivered']/12;
       break;
@@ -832,8 +835,7 @@ exit("sku not found   $sql\n");
 	return 'Commander';
       else
 	return 'Order';
-	
-    case('Price Formated'):
+    case('Formated Price'):
         return $this->money($this->data['Product Price']);;
       break;
     case('Price'):
@@ -881,8 +883,8 @@ exit("sku not found   $sql\n");
     
    
       break;
-
     case('Price Per Unit Formated'):
+    case('Formated Price Per Unit'):
    
       return $this->money($this->data['Product Price']/$this->data['Product Units Per Case']);
       break; 
@@ -907,7 +909,8 @@ exit("sku not found   $sql\n");
       else
 	return $this->number($this->data['Product RRP'],2,true);
 	break; 
-    case('RRP Per Unit Formated'):
+	
+    case('Formated RRP Per Unit'):
 	return $this->money($this->data['Product RRP']/$this->data['Product Units Per Case']);
 	break; 	
     case('RRP Per Unit'):
@@ -1203,7 +1206,12 @@ exit("sku not found   $sql\n");
  // JFA
 function money($number){
 
-if(preg_match('/fr_FR|de_DE/',$this->locale)){
+if($this->system_format){
+  return money($number,$this->data['Product Currency']);
+  }
+
+
+if(preg_match('/fr_FR|de_DE|es_ES/',$this->locale)){
     return $this->number($number,2).$this->data['Currency Symbol'];
 }else
     return $this->data['Currency Symbol'].$this->number($number,2);
@@ -1216,15 +1224,21 @@ if(preg_match('/fr_FR|de_DE/',$this->locale)){
  */
  // JFA
 function number($number,$decimal_places=1){
+
+
+  if($this->system_format){
+    return number($number,$decimal_places);
+  }
+
     $thousand_sep=',';
-    $deciaml_point='.';
+    $decimal_point='.';
     if(preg_match('/es_ES|de_DE/',$this->locale)){
     $thousand_sep='.';
-    $deciaml_point=',';
+    $decimal_point=',';
     }
 
   
-    return number_format($number,$decimal_places,$decial_point,$thousand_sep);
+    return number_format($number,$decimal_places,$decimal_point,$thousand_sep);
   
 }
  /*
@@ -1557,15 +1571,19 @@ $base_data=array(
 	$base_data[strtolower($key)]=_trim($value);
     }
     
-    foreach($this->data as $key=>$value){
+    foreach($data as $key=>$value){
       if(isset($base_data[strtolower($key)]))
 	$base_data[strtolower($key)]=_trim($value);
     }
-    
-    if($new_id)
+
+    if($base_data['product web state']=='')
+      $base_data['product web state']='Unknown';
+    if(!$new_id)
       $base_data['product id']=$this->new_id();
     $base_data['product most recent']='Yes';
 
+    print_r($base_data);
+    exit;
     $keys='(';$values='values(';
     foreach($base_data as $key=>$value){
       $keys.="`$key`,";
@@ -1594,7 +1612,7 @@ $base_data=array(
     
       
       // Departments
-      $sql="select * from `Product Department Bridge` where `Product Key`=%d`".$this->id;
+      $sql=sprintf("select * from `Product Department Bridge` where `Product Key`=%d",$this->id);
       $result=mysql_query($sql);
       while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 	$sql=sprintf("insert into `Product Department Bridge` (`Product Key`,`Product Department Key`) values (%d,%d)",$this->new_id,$row['Product Department Key']);
@@ -3277,14 +3295,14 @@ case('images_slideshow'):
 
 
    break;
-   case('price'):
-   case('unit_price'):
-   case('margin'):
+   case('Product Price'):
+   case('Product Price Per Unit'):
+   case('Product Margin'):
 
      
      
      
-     if($key=='margin'){
+     if($key=='Product Margin'){
        if(!is_numeric($this->data['Product Cost'])){
 	 $this->msg=_("Error: The product cost is unknown");
 	 $this->updated=false;return;
@@ -3325,7 +3343,7 @@ case('images_slideshow'):
 
       if($this->data['Product Record Type']=='In process'){
 
-	if($key=='unit_price')
+	if($key=='Product Price Per Unit')
 	  $amount=$amount*$this->data['Product Editing Units Per Case'];
 	
 	
@@ -3354,9 +3372,9 @@ case('images_slideshow'):
 	    $margin=_('ND');
 
 	  $this->newvalue=array(
-				 'price'=>money($amount,$this->data['Product Currency']),
-				 'unit_price'=>money($amount/$this->data['Product Editing Units Per Case'],$this->data['Product Currency']),
-				 'margin'=>$margin
+				 'Product Price'=>money($amount,$this->data['Product Currency']),
+				 'Product Price Per Unit'=>money($amount/$this->data['Product Editing Units Per Case'],$this->data['Product Currency']),
+				 'Product Margin'=>$margin
 				);
 	  
 	  
@@ -3373,7 +3391,7 @@ case('images_slideshow'):
        }else{
 	// Live product wse should create new product with different ID
 	
-	if($key=='unit_price')
+	if($key=='Product Price Per Unit')
 	  $amount=$amount*$this->data['Product Units Per Case'];
 	
 	

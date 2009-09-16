@@ -13,6 +13,12 @@ var description_num_changed=0;
 var description_warnings= new Object();
 var description_errors= new Object();
 
+
+var thousands_sep='<?php echo $_SESSION['locale_info']['thousands_sep']?>';
+var decimal_point='<?php echo $_SESSION['locale_info']['decimal_point']?>';
+var currency_symbol='<?if(isset( $_REQUEST['symbol'])){echo $_REQUEST['symbol'];}else{echo $myconf['currency_symbol'];}?>';
+var product_id='<?if(isset( $_REQUEST['product_id'])){echo $_REQUEST['product_id'];}else{exit();}?>';
+
 function reset(tipo){
 
     if(tipo=='description'){
@@ -298,30 +304,21 @@ function price_change(old_value,new_value){
 	new_value=FormatNumber(new_value,'.','',2);
 	var diff=new_value-old_value;
 	if(diff>0)
-	    prefix='+'+'<?php echo $myconf['currency_symbol']?>';
+	    prefix='+'+currency_symbol;
 	else
-	    prefix='-'+'<?php echo $myconf['currency_symbol']?>';
+	    prefix='-'+currency_symbol;
 	
 
 	if(old_value==0)
 	    var per='';
 	else{
 
-	    var per=FormatNumber((100*(diff/old_value)).toFixed(1),'<?php echo $myconf['decimal_point']?>','<?php echo $myconf['thousand_sep']?>',1)+'%';
+	    var per=FormatNumber((100*(diff/old_value)).toFixed(1),decimal_point,thousands_sep,1)+'%';
 	}
-	var diff=FormatNumber(Math.abs(diff).toFixed(2),'<?php echo $myconf['decimal_point']?>','<?php echo $myconf['thousand_sep']?>',2);
+	var diff=FormatNumber(Math.abs(diff).toFixed(2),decimal_point,thousands_sep,2);
 	return prefix+diff+' '+per;
     }
-function format_rrp(o){
-  if(o.value=='')
-      {
-	  price_changed(o);
-      }else{
-      o.value=FormatNumber(o.value,'<?php echo $myconf['decimal_point']?>','<?php echo $myconf['thousand_sep']?>',2);
-      price_changed(o);
-  }
 
-}
 function return_to_old_value(key){
     Dom.get("v_"+key).value=Dom.get("v_"+key).getAttribute('ovalue');
     
@@ -532,7 +529,7 @@ function percentage(old_value,new_value){
 	prefix='+';
     else
 	prefix='';
-    var txt=prefix+FormatNumber((100*(diff/old_value)).toFixed(1),'<?php echo $myconf['decimal_point']?>','<?php echo $myconf['thousand_sep']?>',1)+'%';
+    var txt=prefix+FormatNumber((100*(diff/old_value)).toFixed(1),decimal_point,thousands_sep,1)+'%';
 
     return txt;
 
@@ -587,7 +584,7 @@ function validate_dim(value,tipo){
 	return {ok:false,msg:''};
 	break;
     case('shape1'):
-	if(!value.match(/^[0-9\<?php echo $myconf['decimal_point']?>]+x[0-9\<?php echo $myconf['decimal_point']?>]+x[0-9\<?php echo $myconf['decimal_point']?>]+$/))
+	if(!value.match(/^[0-9\<?php echo $_SESSION['locale_info']['decimal_point']?>]+x[0-9\<?php echo $_SESSION['locale_info']['decimal_point']?>]+x[0-9\<?php echo $_SESSION['locale_info']['decimal_point']?>]+$/))
 	    return {ok:false,msg:''};
 	else{
 	    var dim=value.split("x",3);
@@ -601,14 +598,14 @@ function validate_dim(value,tipo){
 	break;
     case('shape2'):
     case('shape4'):
-	if(!value.match(/^[0-9\<?php echo $myconf['decimal_point']?>\s]+$/))
+	if(!value.match(/^[0-9\<?php echo $_SESSION['locale_info']['decimal_point']?>\s]+$/))
 	    return {ok:false,msg:''};
 	else
 	    return {ok:true,msg:''};
 	break;	
     case('shape3'):
     case('shape5'):
-	if(!value.match(/^[0-9\<?php echo $myconf['decimal_point']?>]+x[0-9\<?php echo $myconf['decimal_point']?>]+$/))
+	if(!value.match(/^[0-9\<?php echo $_SESSION['locale_info']['decimal_point']?>]+x[0-9\<?php echo $_SESSION['locale_info']['decimal_point']?>]+$/))
 	    return {ok:false,msg:''};
 	else
 	    return {ok:true,msg:''};
@@ -673,23 +670,27 @@ function price_changed(o){
 	    
 	if(ovalue!=o.value){
 	    Dom.get(name+"_save").style.visibility='visible';
+	    Dom.get(name+"_undo").style.visibility='visible';
+
 	    if(o.value==''){
 		Dom.get(name+"_change").innerHTML='<?php echo _('RRP value unset')?>';
 		Dom.get(name+"_ou").innerHTML='';
 	    }else if(ovalue==''){
 		value=FormatNumber(o.value,'.','',2);
 		factor=FormatNumber(o.getAttribute('factor'),'.','',6);
-		Dom.get(name+"_change").innerHTML='<?php echo _('RRP set to')?> '+'<?php echo $myconf['currency_symbol']?>'+FormatNumber(value,'<?php echo $myconf['decimal_point']?>','<?php echo $myconf['thousand_sep']?>',2);
-		Dom.get(name+"_ou").innerHTML='<?php echo $myconf['currency_symbol']?>'+FormatNumber((value*factor).toFixed(2),'<?php echo $myconf['decimal_point']?>','<?php echo $myconf['thousand_sep']?>',2);
+		Dom.get(name+"_change").innerHTML='<?php echo _('RRP set to')?> '+currency_symbol+FormatNumber(value,decimal_point,thousands_sep,2);
+		Dom.get(name+"_ou").innerHTML=currency_symbol+FormatNumber((value*factor).toFixed(2),decimal_point,thousands_sep,2);
 	    }else{
 		value=FormatNumber(o.value,'.','',2);
 		factor=FormatNumber(o.getAttribute('factor'),'.','',6);
 		change=price_change(ovalue,o.value);
 		Dom.get(name+"_change").innerHTML=change;
-		Dom.get(name+"_ou").innerHTML='<?php echo $myconf['currency_symbol']?>'+FormatNumber((value*factor).toFixed(2),'<?php echo $myconf['decimal_point']?>','<?php echo $myconf['thousand_sep']?>',2);
+		Dom.get(name+"_ou").innerHTML=currency_symbol+FormatNumber((value*factor).toFixed(2),decimal_point,thousands_sep,2);
 	    }
 	}else{
 	    Dom.get(name+"_save").style.visibility='hidden';
+	    Dom.get(name+"_undo").style.visibility='hidden';
+
 	}
     
 	
@@ -997,14 +998,26 @@ function change_list_element(e){
 }
 function save_price(key){
 
-	new_value=Dom.get('v_'+key).value;
-	//	alert(key+' >'+new_value+'<');
-	if(key=='rrp' && new_value=='')
-	    value='';
-	else
-	    value=FormatNumber(Dom.get('v_'+key).value,'.','',2);
-	var request='ar_assets.php?tipo=ep_update&key='+escape(key)+'&value='+escape(value);
-	//	alert(request);
+    var value=Dom.get('v_'+key).value;
+    if(value!='')
+	value=FormatNumber(value,'.','',2);	
+
+	if(key=='rrp'){
+	    
+	    key='Product RRP';
+
+	}else if(key=='price'){
+	    if(value=='' && value<=0)
+		return;
+	    key='Product Price';
+	     
+	}else
+	    return;
+       		
+
+	var request='ar_edit_assets.php?tipo=edit_product&id='+product_id+'&key='+escape(key)+'&value='+escape(value);
+	alert(request);
+	return;
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
 		     alert(o.responseText);
@@ -1012,6 +1025,7 @@ function save_price(key){
 		    //for(x in r['res'])
 		    //	alert(x+' '+r[x])
 		    if(r.ok){
+			new_value=r.newvalue;
 			//Dom.get(key+'_change').innerHTML='';
 			Dom.get(key+'_save').style.visibility='hidden';
 			Dom.get('v_'+key).setAttribute('ovalue',new_value);
@@ -1077,7 +1091,7 @@ function save_description(key){
 	    });
     }
 function change_block(e){
-    
+   
 
     Dom.get('d_parts').style.display='none';
     Dom.get('d_pictures').style.display='none';
@@ -1086,20 +1100,23 @@ function change_block(e){
     Dom.get('d_dimat').style.display='none';
     Dom.get('d_config').style.display='none';
     
+
     Dom.get('d_description').style.display='none';
     Dom.get('d_'+this.id).style.display='';
     
 
-    Dom.get('config').className='';
-
-    Dom.get('parts').className='';
-    Dom.get('pictures').className='';
-    Dom.get('parts').className='';
-    Dom.get('prices').className='';
-    Dom.get('dimat').className='';
-    Dom.get('description').className='';
-    Dom.get(this.id).className='selected';
-    
+    // Dom.get('config').className='';
+//     Dom.get('parts').className='';
+//     Dom.get('pictures').className='';
+//     Dom.get('parts').className='';
+//     Dom.get('prices').className='';
+//     Dom.get('dimat').className='';
+//     Dom.get('description').className='';
+    var elements_array=Dom.getElementsByClassName('selected', 'li','chooser_ul');
+    for( var i in elements_array ){
+	Dom.removeClass(elements_array[i],'selected');
+    }
+    Dom.addClass(this, 'selected');
     YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=product-edit&value='+this.id );
     
     editing=this.id;

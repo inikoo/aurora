@@ -580,12 +580,33 @@ $default_state=array(
 				       'mode'=>'all',
 				       'avg'=>'totals',
 				       'edit'=>false,
-				       'plot'=>'department_sales_month',
-				       'pie'=>array(
-						       'period'=>'month'
-						       ,'date'=>'today'
-						       ,'forecast'=>'no'
-						       ),
+				       'plot'=>'department',
+				       'plot_data'=>array('department'=>array(
+									    'period'=>'m'
+									    ,'category'=>'sales'
+									    ,'page'=>'plot.php'
+									    )
+							     ,'top_families'=>array(
+										       'period'=>'m'
+										       ,'category'=>'sales'
+										       ,'page'=>'plot.php'
+										       )
+							  ,'pie'=>array(
+									'period'=>'m'
+									   ,'category'=>'sales'
+									   ,'page'=>'pie.php'
+									   ,'forecast'=>'no'
+									   ,'date'=>'today'
+									   )
+							     ),
+
+
+
+				       
+
+
+
+				    
 				       'table'=>array(
 						      'order'=>'code',
 						      'order_dir'=>'',

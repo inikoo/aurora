@@ -210,7 +210,7 @@ function change_plot(o){
 
 
 	if(tipo=='pie'){
-
+	    plot='pie';
 	
 	    var forecast=o.getAttribute("forecast");
 	    var date=o.getAttribute("date");
@@ -219,7 +219,7 @@ function change_plot(o){
 
 	    Dom.get("the_plot").width="500px";
 	    var plot_url='pie.php?tipo=children_share&item=store&period='+period+'&category='+category+'&forecast='+forecast+'&date='+date+'&keys='+keys;
-	    alert(plot_url)
+	    //alert(plot_url)
 	    plot_code=tipo;
 	    Dom.get("pie_options").style.display='';
 	    Dom.get("plot_options").style.display='none';
@@ -234,6 +234,7 @@ function change_plot(o){
 	    Dom.addClass("pie_category_"+category,'selected');
 	    
 	}else if(tipo=='top_departments'){
+	    plot='top_departments';
 	    top_children=3;
 	    Dom.get("pie_options").style.display='none';
 	    var plot_url='plot.php?tipo=store&top_children='+top_children+'&category='+category+'&period='+period+'&keys='+keys;
@@ -246,6 +247,7 @@ function change_plot(o){
 	    Dom.get("plot_options").style.display='';
 
 	}else{
+	     plot='store';
 	    Dom.get("pie_options").style.display='none';
 	    var plot_url='plot.php?tipo='+tipo+'&category='+category+'&period='+period+'&keys='+keys;
 	    Dom.get("the_plot").width="100%";
@@ -258,17 +260,19 @@ function change_plot(o){
 	}
 
 
-	Dom.get("the_plot").src=plot_url;
-       
+	
+        Dom.get("the_plot").src=plot_url; 
 	old_selected=Dom.getElementsByClassName('selected', 'span', 'plot_chooser');
 	for( var i in old_selected ){
 	    Dom.removeClass(old_selected[i],'selected');
 	}
 	Dom.addClass(o,'selected');
 	//	alert('ar_sessions.php?tipo=update&keys=store-plot_data-'+tipo+'-category&value='+category)
-	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=store-plot&value='+tipo);
-	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=store-plot_data-'+tipo+'-period&value='+period);
-	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=store-plot_data-'+tipo+'-category&value='+category);
+	
+	//YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=store-plot&value='+tipo);
+	
+	//YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=store-plot_data-'+tipo+'-period&value='+period);
+	//YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=store-plot_data-'+tipo+'-category&value='+category);
 
 	    
 	    //  }

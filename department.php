@@ -172,29 +172,87 @@ $smarty->assign('show_percentages',$_SESSION['state']['department']['percentages
 $smarty->assign('avg',$_SESSION['state']['department']['avg']);
 $smarty->assign('period',$_SESSION['state']['department']['period']);
 
-if(preg_match('/department_sales/',$_SESSION['state']['department']['plot'])){
-  $smarty->assign('plot_tipo','department_sales');
-  $smarty->assign('plot_args','tipo='.$_SESSION['state']['department']['plot'].'&keys='.$department_id);
-  $smarty->assign('plot_src','plot.php?tipo='.$_SESSION['state']['department']['plot'].'&keys='.$department_id);
-}elseif(preg_match('/top_departments_sales/',$_SESSION['state']['department']['plot'])){
-  $smarty->assign('plot_tipo','top_departments_sales');
-  $smarty->assign('plot_args','tipo='.$_SESSION['state']['department']['plot'].'&keys='.$department_id);
-  $smarty->assign('plot_src','plot.php?tipo='.$_SESSION['state']['department']['plot'].'&keys='.$department_id);
-}elseif(preg_match('/pie_department_share/',$_SESSION['state']['department']['plot'])){
-  $smarty->assign('plot_tipo','pie_department_share');
-  $smarty->assign('plot_args','tipo='.$_SESSION['state']['department']['plot'].'&keys='.$department_id);
-  $smarty->assign('plot_src','pie.php?tipo='.$_SESSION['state']['department']['plot'].'&keys='.$department_id);
-  $pie_data=$_SESSION['state']['department']['pie'];
+$plot_tipo=$_SESSION['state']['department']['plot'];
+$plot_data=$_SESSION['state']['department']['plot_data'][$plot_tipo];
+$plot_period=$plot_data['period'];
+$plot_category=$plot_data['category'];
+
+$plot_args='tipo=department&category='.$plot_category.'&period='.$plot_period.'&keys='.$department_id;
+if($plot_tipo=='top_departments'){
+  $number_children=3;
+  $plot_args.=sprintf('&top_children=%d',$number_children);
 }
- $pie_data=$_SESSION['state']['department']['pie'];
-$smarty->assign('pie_period',$pie_data['period']);
-$smarty->assign('forecast',$pie_data['forecast']);
-if($pie_data['period']=='month'){
-  $smarty->assign('pie_period_label',_('Month'));
-  if($pie_data['date']=='today'){
-    $smarty->assign('pie_date',date('m Y'));
+
+if($plot_tipo=='pie'){
+  $pie_forecast=$plot_data['forecast'];
+  
+  if($plot_data['date']=='today'){
+    $plot_date=date('Y-m-d');
+    $smarty->assign('plot_date',$plot_date);
+    $smarty->assign('plot_formated_date',strftime("%b %Y",strtotime($plot_date)));
+
   }
+
+  $plot_args=sprintf('tipo=children_share&item=department&category=%s&period=%s&keys=%d&date=%s&forecast=%s'
+		     ,$plot_category
+		     ,$plot_period
+		     ,$store_id
+		     ,$plot_date
+		     ,$plot_data['forecast']);
 }
+
+$smarty->assign('plot_tipo',$plot_tipo);
+$smarty->assign('plot_args',$plot_args);
+$smarty->assign('plot_page',$plot_data['page']);
+$smarty->assign('plot_period',$plot_period);
+$smarty->assign('plot_category',$plot_period);
+$smarty->assign('plot_data',$_SESSION['state']['department']['plot_data']);
+
+
+if($plot_tipo=='pie'){
+  if($plot_period=='m')
+    $plot_formated_period='Month';
+  elseif($plot_period=='y')
+    $plot_formated_period='Year';
+    elseif($plot_period=='q')
+      $plot_formated_period='Quarter';
+    elseif($plot_period=='w')
+      $plot_formated_period='Week';
+  }else{
+    if($plot_period=='m')
+      $plot_formated_period='Monthly';
+    elseif($plot_period=='y')
+      $plot_formated_period='Yearly';
+    elseif($plot_period=='q')
+      $plot_formated_period='Quarterly';
+    elseif($plot_period=='w')
+      $plot_formated_period='Weekly';
+  }
+  
+if($plot_category=='profit')
+  $plot_formated_category=_('Profits');
+else
+  $plot_formated_category=_('Net Sales');
+
+
+$smarty->assign('plot_formated_category',$plot_formated_category);
+$smarty->assign('plot_formated_period',$plot_formated_period);
+
+
+$plot_period_menu=array(
+		     array("period"=>'w','label'=>_('Weekly'))
+		     ,array("period"=>'m','label'=>_('Montly'))
+		     ,array("period"=>'q','label'=>_('Quarterly'))
+		     ,array("period"=>'y','label'=>_('Yearly'))
+		     );
+$smarty->assign('plot_period_menu',$plot_period_menu);
+
+$plot_category_menu=array(
+		     array("category"=>'sales','label'=>_('Sales'))
+		     ,array("category"=>'profit','label'=>_('Profit'))
+		     );
+$smarty->assign('plot_category_menu',$plot_category_menu);
+
 
 
 //$table_title=_('Family List');

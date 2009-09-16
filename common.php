@@ -28,8 +28,14 @@ mysql_query(sprintf("SET time_zone =%s",prepare_mysql(TIMEZONE)));
 require_once 'conf/conf.php';   
 
 $session = new Session($myconf['max_session_time'],1,100);
+//print_r($_SESSION);
+//print '//'.session_id( );
+//print '//'.$_SESSION['state']['store']['plot'];
 require('external_libs/Smarty/Smarty.class.php');
 $smarty = new Smarty();
+
+
+
 
 $smarty->template_dir = $myconf['template_dir'];
 $smarty->compile_dir = $myconf['compile_dir'];

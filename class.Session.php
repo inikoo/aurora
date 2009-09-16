@@ -298,11 +298,11 @@ class Session
                 http_user_agent = '".addslashes(md5($_SERVER["HTTP_USER_AGENT"] . $this->securityCode))."'
         ";
 
-
+      //  print_r($session_data);
       if(mysql_query($sql)){
 	  $result=mysql_affected_rows();
 	  if ($result > 1) {
-	    
+	    // print "updated";
 	    // return TRUE
 	    return true;
                 

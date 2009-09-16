@@ -4,8 +4,32 @@
 include_once('common.php');
 ?>
 var Dom   = YAHOO.util.Dom;
- var period='period_<?php echo$_SESSION['state']['families']['period']?>';
-    var avg='avg_<?php echo$_SESSION['state']['families']['avg']?>';
+
+var category_labels={'sales':'<?php echo _('Sales')?>','profit':'<?php echo _('Profits')?>'};
+var period_labels={'m':'<?php echo _('Montly')?>','y':'<?php echo _('Yearly')?>','w':'<?php echo _('Weekly')?>','q':'<?php echo _('Quarterly')?>'};
+var pie_period_labels={'m':'<?php echo _('Month')?>','y':'<?php echo _('Year')?>','w':'<?php echo _('Week')?>','q':'<?php echo _('Quarter')?>'};
+
+var plot='<?php echo$_SESSION['state']['department']['plot']?>';
+
+
+var period='period_<?php echo$_SESSION['state']['families']['period']?>';
+var avg='avg_<?php echo$_SESSION['state']['families']['avg']?>';
+
+
+
+function show_details(){
+    Dom.get("details").style.display='';
+    Dom.get("show_details").style.display='none';
+    YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=department-details&value=1')
+}
+
+function hide_details(){
+    Dom.get("details").style.display='none';
+    Dom.get("show_details").style.display='';
+    //  alert('ar_sessions.php?tipo=update&keys=store-details&value=0')
+    YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=department-details&value=0')
+}
+
 
     var change_view=function(e){
 
@@ -160,6 +184,106 @@ function change_avg(e,table_id){
 
 
 
+function change_plot_category(category){
+    o=Dom.get('plot_'+plot);
+    o.setAttribute("category",category);
+
+    change_plot(o);
+}
+function change_plot_period(period){
+    o=Dom.get('plot_'+plot);
+    
+    o.setAttribute("period",period);
+
+    change_plot(o);
+}
+
+
+function change_plot(o){
+    //  if(!Dom.hasClass(o,'selected')){
+
+	var keys=Dom.get("plot_info").getAttribute("keys");
+	
+
+	
+	var tipo=o.getAttribute("tipo");
+	var category=o.getAttribute("category");
+	var period=o.getAttribute("period");
+
+
+	if(tipo=='pie'){
+	    plot='pie';
+	
+	    var forecast=o.getAttribute("forecast");
+	    var date=o.getAttribute("date");
+
+	    
+
+	    Dom.get("the_plot").width="500px";
+	    var plot_url='pie.php?tipo=children_share&item=department&period='+period+'&category='+category+'&forecast='+forecast+'&date='+date+'&keys='+keys;
+	    //alert(plot_url)
+	    plot_code=tipo;
+	    Dom.get("pie_options").style.display='';
+	    Dom.get("plot_options").style.display='none';
+
+	    old_selected=Dom.getElementsByClassName('selected', 'td', 'pie_period_options');
+	    for( var i in old_selected )
+		Dom.removeClass(old_selected[i],'selected');
+	    Dom.addClass("pie_period_"+period,'selected');
+	    old_selected=Dom.getElementsByClassName('selected', 'td', 'pie_category_options');
+	    for( var i in old_selected )
+		Dom.removeClass(old_selected[i],'selected');
+	    Dom.addClass("pie_category_"+category,'selected');
+	    
+	}else if(tipo=='top_families'){
+	    plot='top_families';
+	    top_children=3;
+	    Dom.get("pie_options").style.display='none';
+	    var plot_url='plot.php?tipo=department&top_children='+top_children+'&category='+category+'&period='+period+'&keys='+keys;
+	    Dom.get("the_plot").width="100%";
+	    plot_code=tipo+'_'+category+'_'+period;
+
+
+	    Dom.get("plot_category").innerHTML=category_labels[category];
+	    Dom.get("plot_period").innerHTML=period_labels[period];
+	    Dom.get("plot_options").style.display='';
+
+	}else{
+	    plot='department';
+	    Dom.get("pie_options").style.display='none';
+	    var plot_url='plot.php?tipo='+tipo+'&category='+category+'&period='+period+'&keys='+keys;
+	    Dom.get("the_plot").width="100%";
+	    plot_code=tipo+'_'+category+'_'+period;
+
+
+	    Dom.get("plot_category").innerHTML=category_labels[category];
+	    Dom.get("plot_period").innerHTML=period_labels[period];
+	    Dom.get("plot_options").style.display='';
+	}
+
+
+	
+        Dom.get("the_plot").src=plot_url; 
+	old_selected=Dom.getElementsByClassName('selected', 'span', 'plot_chooser');
+	for( var i in old_selected ){
+	    Dom.removeClass(old_selected[i],'selected');
+	}
+	Dom.addClass(o,'selected');
+	//	alert('ar_sessions.php?tipo=update&keys=store-plot_data-'+tipo+'-category&value='+category)
+	
+	//YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=store-plot&value='+tipo);
+	
+	//YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=store-plot_data-'+tipo+'-period&value='+period);
+	//YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=store-plot_data-'+tipo+'-category&value='+category);
+
+	    
+	    //  }
+    
+}
+
+
+
+
 
  function init(){
  var Dom   = YAHOO.util.Dom;
@@ -172,7 +296,7 @@ function change_avg(e,table_id){
  ids=['avg_totals','avg_month','avg_week',"avg_month_eff","avg_week_eff"];
  YAHOO.util.Event.addListener(ids, "click",change_avg,0);
 
-     YAHOO.util.Event.addListener('show_details', "click",show_details,'department');
+ //     YAHOO.util.Event.addListener('show_details', "click",show_details,'department');
 
  YAHOO.util.Event.addListener('product_submit_search', "click",submit_search,"product");
  YAHOO.util.Event.addListener('product_search', "keydown", submit_search_on_enter,"product");
@@ -185,3 +309,15 @@ function change_avg(e,table_id){
 
 YAHOO.util.Event.onDOMReady(init);
 
+YAHOO.util.Event.onContentReady("plot_period_menu", function () {
+	 var oMenu = new YAHOO.widget.Menu("plot_period_menu", { context:["plot_period","br", "tr"]  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+	 YAHOO.util.Event.addListener("plot_period", "click", oMenu.show, null, oMenu);
+    });
+YAHOO.util.Event.onContentReady("plot_category_menu", function () {
+	 var oMenu = new YAHOO.widget.Menu("plot_category_menu", { context:["plot_category","br", "tr"]  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+	 YAHOO.util.Event.addListener("plot_category", "click", oMenu.show, null, oMenu);
+    });

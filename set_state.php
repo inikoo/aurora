@@ -56,6 +56,8 @@ if(!isset($_SESSION['views'])){
 
 
 
-if(!isset($_SESSION['state']))
+if(!isset($_SESSION['state'])){
+
   $_SESSION['state']=$default_state;
+}
 ?>

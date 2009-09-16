@@ -260,10 +260,14 @@ function edit_family(){
 }
 function edit_product(){
  $product=new product($_REQUEST['id']);
-   $product->update($_REQUEST['key'],stripslashes(urldecode($_REQUEST['newvalue'])),stripslashes(urldecode($_REQUEST['oldvalue'])));
-   if($product->updated){
-     $response= array('state'=>200,'newvalue'=>$product->newvalue,'key'=>$_REQUEST['key']);
-	  
+
+ $key=$_REQUEST['key'];
+ 
+
+ $product->update($_REQUEST['key'],stripslashes(urldecode($_REQUEST['value']))   );
+ if($product->updated){
+   $response= array('state'=>200,'newvalue'=>$product->newvalue,'key'=>$_REQUEST['key']);
+   
    }else{
      $response= array('state'=>400,'msg'=>$product->msg,'key'=>$_REQUEST['key']);
    }

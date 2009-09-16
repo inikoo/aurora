@@ -1,171 +1,196 @@
 {include file='header.tpl'}
 <div style="display:none; position:absolute; left:10px; top:200px; z-index:2" id="cal1Container"></div>
 <div id="bd" >
-
-<div id="sub_header">
-{if $next.id>0}<span class="nav2 onright"><a href="edit_product.php?id={$next.id}">{t}Next{/t}</a></span>{/if}
-{if $prev.id>0}<span class="nav2 onright" ><a href="edit_product.php?id={$prev.id}">{t}Previous{/t}</a></span>{/if}
-<span class="nav2 onright" style="margin-left:20px"><a href="assets_family.php?id={$family_id}">{t}Up{/t}</a></span>
-<span class="nav2 onright"><a href="products.php">{t}Product index{/t}</a></span>
-<span class="nav2"><a href="departments.php">{$home}</a></span>
-<span class="nav2"><a href="department.php?id={$department_id}">{$department}</a></span>
-<span class="nav2"><a href="family.php?id={$family_id}">{$family}</a></span>
-</div>
-<div id="doc3" style="clear:both;" class="yui-g yui-t4" >
-<div id="yui-main"> 
-<h1>{$product->get('Product Code')} {$product->get('Product Short Description')}</h1>
-<div class="chooser" >
-  <ul >
-    <li id="config" {if $edit=='config'}class="selected"{/if} ><img src="art/icons/cog.png"> {t}Parts{/t}</li>
-    <li id="description" {if $edit=='description'}class="selected"{/if} > <img src="art/icons/information.png"> {t}Description{/t}</li>
-    <li id="pictures" {if $edit=='pictures'}class="selected"{/if} > <img src="art/icons/photos.png"> {t}Pictures{/t}</li>
-    <li id="prices" {if $edit=='prices'}class="selected"{/if} ><img src="art/icons/money_add.png"> {t}Price, Discounts{/t}</li>
-    <li id="dimat" {if $edit=='dimat'}class="selected"{/if} ><img src="art/icons/shape_ungroup.png"> {t}Dimensions{/t}</li>
-    <li id="dimat" {if $edit=='web'}class="selected"{/if} ><img src="art/icons/page_world.png"> {t}Web Pages{/t}</li>
-    
-
-  </ul>
-</div>
-
-<div style="clear:both;height:.1em;padding:0px 20px;;margin:20px auto;border-top: 1px solid #cbb;;border-bottom: 1px solid #caa;width:770px;" id="description_messages">
-
-  <div style="float:right">
-  <span class="save" style="display:none" id="description_save" onclick="save('description')">Save</span><span id="description_reset"  style="display:none"   class="reset" onclick="reset('description')">Reset</span>
-  </div>
-  <span style="display:none">Number of changes:<span id="description_num_changes">0</span></span>
-
-  <div id="description_errors">
-  </div>
-  <div id="description_warnings">
-  </div>
-</div>
-<div class="edit_block" {if $edit!="config"}style="display:none"{/if}   id="d_config">
   
-
- <table style="margin:0;"  class="edit">
-<tr>
-  <td class="label">{t}Type of Product{/t}:</td>
+  <div id="sub_header">
    
-      <td >
-<div class="options" style="margin:5px 0">
-<span {if $product->get('Product Type')=="Normal"}class="selected"{/if} id="type_prod_normal">{t}Normal{/t}</span>
-<span {if $product->get('Product Type')=="Shortcut"}class="selected"{/if} id="type_prod_shortcut">{t}Shortcut{/t}</span>
-<span {if $product->get('Product Type')=="Mix"} class="selected"{/if} id="type_prod_mix">{t}Mixture{/t}</span>
-</div>
-</td>
-
-</tr>
-
-
-  </table>
+    <span class="nav2 onright" style="margin-left:20px"><a href="product.php?id={$product_id}">{t}Exit edit{/t}</a></span>
   
-
-
-<div style="margin:10px">
-{if $num_parts==0}
- {t}Choose the part{/t} 
-  <div id="adding_new_part" style="width:200px;margin-bottom:45px"><input id="new_part_input" type="text"><div id="new_part_container"></div></div>
-
-{else}
-<table class="edit" style="width:33em" >
-<tbody id="current_parts_form">
-
-      {foreach from=$parts item=part key=part_id }
-      <tr  id="sup_tr1_{$part_id}" class="top title">
-	<td  class="label" colspan=2>
-{$part.description}
-	</td>
-      </tr>
-      <tr id="sup_tr2_{$part_id}">
-	<td class="label" style="width:15em">{t}Parts Per Product{/t}:</td>
-	<td style="text-align:left;">
-	  <input style="padding-left:2px;text-align:left;width:3em" value="{$part.parts_per_product}" name="parts_per_product"  changed=0           onkeyup="part_changed(this,{$part_id})" ovalue="{$part.parts_per_product}" id="v_part_code{$part_id}"></td>
-      </tr>
-      <tr id="sup_tr3_{$part_id}" class="last">
-	<td class="label">{t}Note For Pickers{/t}:</td>
-	<td style="text-align:left"><input id="v_part_cost{$part_id}" style="text-align:right;width:16em"  name="notes" onblur="part_changed(this,{$part_id})"  value="{$part.note}" ovalue="{$part.note}" ></td>
-      </tr>
-      {/foreach}
-    </tbody>
+  </div>
+  <div id="doc3" style="clear:both;" class="yui-g yui-t4" >
+    <div id="yui-main"> 
     
-  </table>	  
+      <div class="chooser" >
+	<ul id="chooser_ul">
+	  <li id="config" {if $edit=='config'}class="selected"{/if} ><img src="art/icons/cog.png"> {t}Parts{/t}</li>
+	  <li id="description" {if $edit=='description'}class="selected"{/if} > <img src="art/icons/information.png"> {t}Description{/t}</li>
+	  <li id="pictures" {if $edit=='pictures'}class="selected"{/if} > <img src="art/icons/photos.png"> {t}Pictures{/t}</li>
+	  <li id="prices" {if $edit=='prices'}class="selected"{/if} ><img src="art/icons/money_add.png"> {t}Price, Discounts{/t}</li>
+	  <li id="dimat" {if $edit=='dimat'}class="selected"{/if} ><img src="art/icons/shape_ungroup.png"> {t}Dimensions{/t}</li>
+	  <li id="dimat" {if $edit=='web'}class="selected"{/if} ><img src="art/icons/page_world.png"> {t}Web Pages{/t}</li>
+	</ul>
+      </div>
 
- {t}Change Part{/t} 
-  <div id="adding_new_part" style="width:200px;margin-bottom:45px"><input id="new_part_input" type="text"><div id="new_part_container"></div></div>
+      <div style="clear:both;height:.1em;padding:0px 20px;;margin:20px auto;xborder-top: 1px solid #cbb;;xborder-bottom: 1px solid #caa;width:770px;" id="description_messages">
+	<div style="float:left;width:200px">
+	  
+	  <table    class="show_info_product">
+	    <tr>
+	      <td colspan="2" class="aright product_name">{$product->get('Product Name')}</td>
+	    </tr>
+	    <tr>
+	      <td>{t}Code{/t}:</td><td  class="aright">{$product->get('Product Code')}</td>
+	    </tr>
+	    <tr>
+	      <td>{t}Family{/t}:</td><td  class="aright">{$product->get('Product Family Code')}</td>
+	    </tr>
+ 
 
-
-{/if}
+	</table>
+</div>
+<div style="float:left;width:200px;margin-left:20px">
+	  
+	  <table    class="show_info_product">
+	    <tr>
+	      <td>{t}Cost{/t}:</td><td  class="aright">{$product->get('Product Cost')}</td>
+	    </tr>
+	    <td>{t}Price{/t}:</td><td  class="price aright">{$product->get('Formated Price')}{if $product->get('Product Units Per Case')>1} <span style="font-weight:400;color:#555">({$product->get('Formated Price Per Unit')} {t}each{/t})</span>{/if}</td>
+</tr>
+<tr {if $product->get('Product RRP')==''}style="display:none"{/if} >
+	    <td>{t}RRP{/t}:</td><td  class="aright">{$product->get('Formated RRP Per Unit')} {if $product->get('Product Units Per Case')>1}{t}each{/t}{/if}</td>
+	  </tr>
+	</table>
 </div>
 
-  <div {if $data.product_tipo!='dependant'}display="none"{/if} >
-    <table class="edit" border=0>
-      <tr>
-	<td  class="label" style="width:10em">{t}Units Definition{/t}:</td>
-   <td colspan=2>
-<div class="options" style="margin:5px 0">
-  {foreach from=$units_tipo item=unit_tipo key=part_id }
-<span {if $unit_tipo.selected}class="selected"{/if} id="unit_tipo_{$unit_tipo.name}">{$unit_tipo.fname}</span>
-{/foreach}
-</div>
-</td>
 
+	<div style="float:right">
+	  <span class="save" style="display:none" id="description_save" onclick="save('description')">Save</span><span id="description_reset"  style="display:none"   class="reset" onclick="reset('description')">Reset</span>
+	</div>
+	<span style="display:none">Number of changes:<span id="description_num_changes">0</span></span>
 	
-      </tr>
+	<div id="description_errors">
+	</div>
+	<div id="description_warnings">
+	</div>
+	<div style="clear:both"></div>
+      </div>
+      <div class="edit_block" {if $edit!="config"}style="display:none"{/if}   id="d_config">
+	
+	
+	<table style="margin:0;"  class="edit">
+	  <tr>
+	    <td class="label">{t}Type of Product{/t}:</td>
+	    
+	    <td >
+	      <div class="options" style="margin:5px 0">
+		<span {if $product->get('Product Type')=="Normal"}class="selected"{/if} id="type_prod_normal">{t}Normal{/t}</span>
+		<span {if $product->get('Product Type')=="Shortcut"}class="selected"{/if} id="type_prod_shortcut">{t}Shortcut{/t}</span>
+		<span {if $product->get('Product Type')=="Mix"} class="selected"{/if} id="type_prod_mix">{t}Mixture{/t}</span>
+	      </div>
+	    </td>
+	    
+	  </tr>
+	  
+	  
+	</table>
+	
 
-      <tr>
-	<td class="label">{t}Units Per Outer{/t}:</td>
-	<td><span id="units">{$units}</span>
-	  <input 
-	     id="v_units" 
-	     ovalue="{$units}" 
-	     name="units" 
-	     value="{$units}"  
-	     style="display:none;text-align:right;width:5em"     
-	     onkeydown="to_save_on_enter(event,this)" 
-	     onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thousand_sep}',3);units_changed(this)" />
+
+	<div style="margin:10px">
+	  {if $num_parts==0}
+	  {t}Choose the part{/t} 
+	  <div id="adding_new_part" style="width:200px;margin-bottom:45px"><input id="new_part_input" type="text"><div id="new_part_container"></div></div>
+	  
+	  {else}
+	  <table class="edit" style="width:33em" >
+	    <tbody id="current_parts_form">
+	      
+	      {foreach from=$parts item=part key=part_id }
+	      <tr  id="sup_tr1_{$part_id}" class="top title">
+		<td  class="label" colspan=2>
+		  {$part.description}
+		</td>
+	      </tr>
+	      <tr id="sup_tr2_{$part_id}">
+		<td class="label" style="width:15em">{t}Parts Per Product{/t}:</td>
+		<td style="text-align:left;">
+		  <input style="padding-left:2px;text-align:left;width:3em" value="{$part.parts_per_product}" name="parts_per_product"  changed=0           onkeyup="part_changed(this,{$part_id})" ovalue="{$part.parts_per_product}" id="v_part_code{$part_id}"></td>
+	      </tr>
+	      <tr id="sup_tr3_{$part_id}" class="last">
+		<td class="label">{t}Note For Pickers{/t}:</td>
+	<td style="text-align:left"><input id="v_part_cost{$part_id}" style="text-align:right;width:16em"  name="notes" onblur="part_changed(this,{$part_id})"  value="{$part.note}" ovalue="{$part.note}" ></td>
+	      </tr>
+	      {/foreach}
+	    </tbody>
+	    
+	  </table>	  
+	  
+	  {t}Change Part{/t} 
+	  <div id="adding_new_part" style="width:200px;margin-bottom:45px"><input id="new_part_input" type="text"><div id="new_part_container"></div></div>
+	  
+	  
+	  {/if}
+	</div>
+	
+	<div {if $data.product_tipo!='dependant'}display="none"{/if} >
+	  <table class="edit" border=0>
+	    <tr>
+	      
+	      <td  class="label" style="width:10em">{t}Units Definition{/t}:</td>
+	      
+	      <td colspan=2>
+		<div class="options" style="margin:5px 0">
+		  {foreach from=$units_tipo item=unit_tipo key=part_id }<span {if $unit_tipo.selected}class="selected"{/if} id="unit_tipo_{$unit_tipo.name}">{$unit_tipo.fname}</span>{/foreach}
+		</div>
+	      </td>
+	      
+	      
+	    </tr>
+	    
+	    <tr>
+	      <td class="label">{t}Units Per Outer{/t}:</td>
+	      <td><span id="units">{$units}</span>
+		<input 
+		   id="v_units" 
+		   ovalue="{$units}" 
+		   name="units" 
+		   value="{$units}"  
+		   style="display:none;text-align:right;width:5em"     
+		   onkeydown="to_save_on_enter(event,this)" 
+		   onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thousand_sep}',3);units_changed(this)" />
 	</td>
-	<td style="width:5em">
-	  <span 
-	     onclick="change_units()" 
-	     id="change_units_but" 
-	     style="cursor:pointer;text-decoration:underline;color:#777">{t}Change{/t}</span>
-	  <span id="change_units_diff" style="display:none"></span>
-	</td>
-	<td>
-	  <span 
-	     id="units_cancel" 
-	     style="cursor:pointer;visibility:hidden;color:#777" 
-	     onclick="units_cancel()">
-	    {t}Cancel{/t}
-	  </span>
-	  <span 
-	     id="units_save"   
-	     style="margin-left:10px;cursor:pointer;visibility:hidden;color:#777" 
+	      <td style="width:5em">
+		<span 
+		   onclick="change_units()" 
+		   id="change_units_but" 
+		   style="cursor:pointer;text-decoration:underline;color:#777">{t}Change{/t}</span>
+		<span id="change_units_diff" style="display:none"></span>
+	      </td>
+	      <td>
+		<span 
+		   id="units_cancel" 
+		   style="cursor:pointer;visibility:hidden;color:#777" 
+		   onclick="units_cancel()">
+		  {t}Cancel{/t}
+		</span>
+		<span 
+		   id="units_save"   
+		   style="margin-left:10px;cursor:pointer;visibility:hidden;color:#777" 
 	     onclick="units_save()">
-	    {t}Save{/t} <img src="art/icons/disk.png"/>
-	  </span>
+		  {t}Save{/t} <img src="art/icons/disk.png"/>
+		</span>
+		
 
-
-	</td>
-      </tr>
-      <tr style="display:none" id="change_units_price">
-	<td class="label">{t}Outers Sale Price{/t}:</td>
-	<td>{$currency} <input  
-			   onkeydown="to_save_on_enter(event,this)"  
-			   onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thousand_sep}',2);price_fcu_changed(this)" 
-			   style="text-align:right;width:6em"  
-			   factor="{$factor_inv_units}" 
-			   name="price_fcu" 
-			   id="v_price_fcu" 
-			   value="{$data.price}"  
+	      </td>
+	    </tr>
+	    <tr style="display:none" id="change_units_price">
+	      <td class="label">{t}Outers Sale Price{/t}:</td>
+	      <td>{$currency} <input  
+				 onkeydown="to_save_on_enter(event,this)"  
+				 onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thousand_sep}',2);price_fcu_changed(this)" 
+				 style="text-align:right;width:6em"  
+				 factor="{$factor_inv_units}" 
+				 name="price_fcu" 
+				 id="v_price_fcu" 
+				 value="{$data.price}"  
 			   ovalue="{$data.price}" >
-	</td>
-	<td><span id="change_units_price_diff"></span></td>
-      <tr>
+	      </td>
+	      <td><span id="change_units_price_diff"></span></td>
+	    <tr>
+	      
 
-
-      <tr style="display:none" id="change_units_oweight">
-	<td class="label">{t}Outers Weight{/t}:</td>
+	    <tr style="display:none" id="change_units_oweight">
+	      <td class="label">{t}Outers Weight{/t}:</td>
 	<td >{t}Kg{/t} <input 
 			  style="text-align:right;width:5em"  
 			  onkeydown="to_save_on_enter(event,this)" 
@@ -216,39 +241,54 @@
   </table>
 </div>
 <div class="edit_block" {if $edit!="prices"}style="display:none"{/if}  id="d_prices">
-  <table class="edit" >
-    <tr class="title"><td></td>
-    <td style="text-align:right;width:12em">{t}Price per Outer{/t} ({$units}{$data.units_tipo_shortname})</td>
-    <td style="text-align:right;width:12em">{t}Price per{/t} {$product->get('Unit Type')}</td>
-    <td style="text-align:right;width:12em">{t}Margin{/t}</td>
+  <table class="edit" border=0>
+    <tr class="title">
+      <td style=";width:7em"></td>
+      <td style="text-align:right;width:10em">{t}Price per Outer{/t}</td>
+      <td style="text-align:right;width:10em">{t}Price per{/t} {$product->get('Unit Type')}</td>
+      <td style="text-align:right;width:5em">{t}Margin{/t}</td>
+      <td style="text-align:right;width:10em"></td>
     </tr>
-	
+    
     <tr>
       <td class="label">{t}Sale Price{/t}:</td>
-      <td>{$currency}<input  onkeydown="to_save_on_enter(event,this)"  
-        onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thousand_sep}',2);price_changed(this)" style="text-align:right;width:10em"  
-        factor="{$factor_inv_units}" 
-        name="price" 
-        id="v_price" 
-        value="{$product->get('Price','System')}"  
-        ovalue="{$product->get('Price','System')}">
-        </td>
+      <td style="text-align:right">{$currency}<input  onkeydown="to_save_on_enter(event,this)"  
+			     onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thousand_sep}',2);price_changed(this)" style="text-align:right;width:5em"  
+			     factor="{$factor_inv_units}" 
+			     name="price" 
+			     id="v_price" 
+			     value="{$product->get('Price','System')}"  
+			     ovalue="{$product->get('Price','System')}">
+      </td>
       <td id="price_ou" style="text-align:right">{$product->get('Price Per Unit Formated')}</td>
+      <td id="price_margin" style="text-align:right">{$product->get('Margin')}</td>
+      
       <td id="price_change"></td>
-      <td><span onClick="save_price('price')" name="price" style="cursor:pointer;visibility:hidden" id="price_save">{t}Save{/t} <img src="art/icons/disk.png"/></span></td></tr>
+      <td>
+	<span onClick="save_price('price')" name="price" style="cursor:pointer;visibility:hidden" id="price_save"><img src="art/icons/disk.png"/></span>
+	<span onClick="undo_price('price')"  style="cursor:pointer;visibility:hidden" id="price_undo"><img src="art/icons/arrow_undo.png"/></span>
+
+      </td>
+    </tr>
     <tr>
-      <td class="label">{t}Recomended Retail Price{/t}:</td>
+      <td class="label">{t}RRP{/t}:</td>
       <td id="rrp_ou" style="text-align:right">{$product->get('RRP Per Outer Formated')}</td>
-      <td>{$currency}
-      <input onkeydown="to_save_on_enter(event,this)" 
-        onblur="format_rrp(this)" style="text-align:right;width:6em"
-        factor="{$factor_units}"   
-        name="rrp" id="v_rrp" 
-        ovalue="{$product->get('RRP Per Unit','System')}" 
-        value="{$product->get('RRP Per Unit','System')}" ></td> 
+      <td  style="text-align:right">{$currency}
+	<input onkeydown="to_save_on_enter(event,this)"
+               onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thousand_sep}',2);price_changed(this)" style="text-align:right;width:5em"
+               factor="{$factor_units}"   
+               name="rrp" id="v_rrp" 
+               ovalue="{$product->get('RRP Per Unit','System')}" 
+               value="{$product->get('RRP Per Unit','System')}" ></td> 
+      <td id="rrp_margin" style="text-align:right">{$product->get('RRP Margin')}</td>
+
       <td id="rrp_change" >{if $product->get('Product RRP Per Unit')==''}{t}RRP not set{/t}{/if}</td>
       
-      <td><span onClick="save_price('rrp')" name="rrp" style="cursor:pointer;visibility:hidden" id="rrp_save">{t}Save{/t} <img src="art/icons/disk.png"/></span></td>
+      <td>
+	<span onClick="save_price('rrp')" name="rrp" style="cursor:pointer;visibility:hidden" id="rrp_save"><img src="art/icons/disk.png"/></span>
+	<span onClick="undo_price('rrp')"  style="cursor:pointer;visibility:hidden" id="rrp_undo"><img src="art/icons/arrow_undo.png"/></span>
+
+      </td>
     </tr>
       
     
@@ -412,7 +452,8 @@
 
 
 </div>
-<div style="margin:0;padding:0" class="edit_block" {if $edit!="description"}style="display:none"{/if}  id="d_description">
+
+<div  class="edit_block" style="margin:0;padding:0;{if $edit!="description"}display:none{/if}"  id="d_description">
     <table style="margin:0;" class="edit" border=0>
         <tr id="tr_name">
             <td rowspan=2  class="margin_note" >{t}Product Info{/t}:</td>
@@ -493,10 +534,7 @@
 
 </div>
 <div class="yui-b"     >
-<div  style="float:right;text-align:right;;width:40em">
- <span class="search_title" style="position:relative;left:15px">{t}Product Code{/t}:</span> <input size="8" class="text search" id="prod_search" value="" name="search"/><img align="absbottom" id="submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>
-       <span  class="search_msg"   id="search_msg"    ></span> <span  class="search_sugestion"   id="search_sugestion"    ></span>
-       <br/>
+
 </div>	 
 
 

@@ -106,8 +106,8 @@ $smarty->assign('show_details',$_SESSION['state']['store']['details']);
 $smarty->assign('show_percentages',$_SESSION['state']['store']['percentages']);
 $smarty->assign('avg',$_SESSION['state']['store']['avg']);
 $smarty->assign('period',$_SESSION['state']['store']['period']);
-$plot_tipo=$_SESSION['state']['store']['plot'];
 
+$plot_tipo=$_SESSION['state']['store']['plot'];
 $plot_data=$_SESSION['state']['store']['plot_data'][$plot_tipo];
 $plot_period=$plot_data['period'];
 $plot_category=$plot_data['category'];

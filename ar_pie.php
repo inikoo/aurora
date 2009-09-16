@@ -25,7 +25,7 @@ case('children_share'):
   else
     $data['freq']=$_REQUEST['freq'];
  
-  if(!preg_match('/(PDS|PFS|PcodeS|PDP|PFP|PcodeP)/',$_REQUEST['te_name']))
+  if(!preg_match('/(PDS|PFS|PcodeS|PDP|PFP|PcodeP)/',$_REQUEST['ts_name']))
     return;
   else
     $data['ts_name']=$_REQUEST['ts_name'];
