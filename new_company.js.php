@@ -7,7 +7,7 @@ include_once('class.Company.php');
 
 
 $salutation="''";
-$sql="select `Salutation` from `Salutation Dimension` where `Language Key`=1";
+$sql="select `Salutation` from kbase.`Salutation Dimension` where `Language Key`=1";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
     $salutation.=',"'.$row['Salutation'].'"';

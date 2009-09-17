@@ -366,14 +366,14 @@ class Ship_To extends DB_Table {
      $street=_trim($raw_data['Address Street Number'].' '.$raw_data['Address Street Name'].' '.$raw_data['Address Street Type']);
 
    $internal=_trim($raw_data['Address Internal'].' '.$raw_data['Address Building']);
-   $subtown_address=$raw_data['Address Town Secondary Division'];
-   if($raw_data['Address Town Primary Division'])
-     $subtown_address.=' ,'.$raw_data['Address Town Primary Division'];
+   $subtown_address=$raw_data['Address Town Second Division'];
+   if($raw_data['Address Town First Division'])
+     $subtown_address.=' ,'.$raw_data['Address Town First Division'];
    $subtown_address=_trim($subtown_address);
    
-    $subcountry_address=$raw_data['Address Country Secondary Division'];
-   if($raw_data['Address Country Primary Division'])
-     $subcountry_address.=' ,'.$raw_data['Address Country Primary Division'];
+    $subcountry_address=$raw_data['Address Country Second Division'];
+   if($raw_data['Address Country First Division'])
+     $subcountry_address.=' ,'.$raw_data['Address Country First Division'];
    $subcountry_address=_trim($subcountry_address);
 
    

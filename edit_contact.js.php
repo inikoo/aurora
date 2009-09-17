@@ -18,12 +18,12 @@ if(in_array($_REQUEST['edit'],$valid_edit_blocks))
     $edit_block=$_REQUEST['edit'];
 }
 $salutation="''";
-$sql="select `Salutation` from `Salutation Dimension` where `Language Key`=1";
+$sql="select `Salutation` from kbase.`Salutation Dimension` where `Language Key`=1";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
     $salutation.=',"'.$row['Salutation'].'"';
 }
-$sql="select `Country Name`,`Country Code` from `Country Dimension`";
+$sql="select `Country Name`,`Country Code` from kbase.`Country Dimension`";
 $result=mysql_query($sql);
 $country_list='';
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){

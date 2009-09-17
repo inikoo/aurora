@@ -66,7 +66,7 @@ $js_files=array(
 
  
   
-  $sql=sprintf("select * from `Salutation Dimension` S left join `Language Dimension` L on S.`Language Key`=L.`Language Key` where `Language Code`=%s limit 1000",prepare_mysql($myconf['lang']));
+  $sql=sprintf("select * from kbase.`Salutation Dimension` S left join kbase.`Language Dimension` L on S.`Language Key`=L.`Language Key` where `Language Code`=%s limit 1000",prepare_mysql($myconf['lang']));
   $result=mysql_query($sql);
   $salutations=array();
   while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){

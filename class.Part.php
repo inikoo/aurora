@@ -15,12 +15,11 @@ class part{
   
 
   Public $id=false;
-
+  Public $sku=false;
+  
   function __construct($a1,$a2=false) {
-
-
-
-      if(is_numeric($a1) and !$a2){      $this->get_data('id',$a1);
+    if(is_numeric($a1) and !$a2){      
+      $this->get_data('id',$a1);
     }
     else if(($a1=='new' or $a1=='create') and is_array($a2) ){
       $this->msg=$this->create($a2);
@@ -34,17 +33,15 @@ class part{
 
 
   function get_data($tipo,$tag){
-    if($tipo=='id')
-      $sql=sprintf("select * from `Part Dimension` where `Part Key`=%d ",$tag);
-    elseif($tipo=='sku')
+    if($tipo=='id' or $tipo=='sku')
       $sql=sprintf("select * from `Part Dimension` where `Part SKU`=%d ",$tag);
-
     else
       return;
 
     $result=mysql_query($sql);
     if(($this->data=mysql_fetch_array($result, MYSQL_ASSOC))){
-      $this->id=$this->data['Part Key'];
+      $this->id=$this->data['Part SKU'];
+      $this->sku=$this->data['Part SKU'];
     }
     
 
@@ -55,23 +52,23 @@ class part{
      $base_data=array(
 		      'part status'=>'In Use',
 		      'part xhtml currently used in'=>'',
-		     'part xhtml currently supplied by'=>'',
-		     'part xhtml description'=>'',
-		     'part unit description'=>'',
-		     'part package size metadata'=>'',
-		     'part package volume'=>'',
-		     'part package minimun orthogonal volume'=>'',
-		     'part gross weight'=>'',
-		     'part valid from'=>'',
-		     'part valid to'=>'',
-		     );
+		      'part xhtml currently supplied by'=>'',
+		      'part xhtml description'=>'',
+		      'part unit description'=>'',
+		      'part package size metadata'=>'',
+		      'part package volume'=>'',
+		      'part package minimun orthogonal volume'=>'',
+		      'part gross weight'=>'',
+		      'part valid from'=>'',
+		      'part valid to'=>'',
+		      );
      foreach($data as $key=>$value){
        if(isset( $base_data[strtolower($key)]) )
 	 $base_data[strtolower($key)]=_trim($value);
      }
  
      //    if(!$this->valid_sku($base_data['part sku']) ){
-     $base_data['part sku']=$this->new_sku();
+    
        // }
 
      $keys='(';$values='values(';
@@ -87,10 +84,7 @@ class part{
     // exit;
     if(mysql_query($sql)){
       $this->id = mysql_insert_id();
-
-    //   if($base_data['part most recent']=='Yes')
-//       	$sql=sprintf("update  `Part Dimension` set `Part Most Recent Key`=%d where `Part Key`=%d",$this->id,$this->id);
-// 	mysql_query($sql);
+      $this->sku =$this->id ;
 
       $this->get_data('id',$this->id);
     }else{
@@ -214,7 +208,7 @@ class part{
        if(!is_numeric($value))
 	$value='NULL';
 
-       $sql=sprintf("update `Part Dimension` set `Part Current Stock`=%s ,`Part Current Stock Cost`=%s ,`Part Current Stock Negative Discrepancy`=%f ,`Part Current Stock Negative Discrepancy Value`=%f  where `Part Key`=%d "
+       $sql=sprintf("update `Part Dimension` set `Part Current Stock`=%s ,`Part Current Stock Cost`=%s ,`Part Current Stock Negative Discrepancy`=%f ,`Part Current Stock Negative Discrepancy Value`=%f  where `Part SKU`=%d "
 		    ,$stock
 		    ,$value
 		    ,$neg_discrepancy
@@ -281,7 +275,7 @@ class part{
       $tdays = (strtotime($this->data['Part Valid To']) - strtotime($this->data['Part Valid From'])) / (60 * 60 * 24);
       //print "$tdays $days o: $outstock e: $errors \n";
       $unknown=$tdays-$days_ok;
-       $sql=sprintf("update `Part Dimension` set `Part Total AVG Stock`=%s ,`Part Total AVG Stock Value`=%s,`Part Total Keeping Days`=%f ,`Part Total Out of Stock Days`=%f , `Part Total Unknown Stock Days`=%s, `Part Total GMROI`=%s where `Part Key`=%d"
+       $sql=sprintf("update `Part Dimension` set `Part Total AVG Stock`=%s ,`Part Total AVG Stock Value`=%s,`Part Total Keeping Days`=%f ,`Part Total Out of Stock Days`=%f , `Part Total Unknown Stock Days`=%s, `Part Total GMROI`=%s where `Part SKU`=%d"
 		    ,$astock
 		    ,$avalue
 		    ,$tdays
@@ -331,7 +325,7 @@ class part{
       $tdays = (strtotime($this->data['Part Valid To']) - strtotime($this->data['Part Valid From'])) / (60 * 60 * 24);
       //print "$tdays $days o: $outstock e: $errors \n";
       $unknown=$tdays-$days_ok;
-       $sql=sprintf("update `Part Dimension` set `Part 1 Year Acc AVG Stock`=%s ,`Part 1 Year Acc AVG Stock Value`=%s,`Part 1 Year Acc Keeping Days`=%f ,`Part 1 Year Acc Out of Stock Days`=%f , `Part 1 Year Acc Unknown Stock Days`=%s, `Part 1 Year Acc GMROI`=%s where `Part Key`=%d"
+       $sql=sprintf("update `Part Dimension` set `Part 1 Year Acc AVG Stock`=%s ,`Part 1 Year Acc AVG Stock Value`=%s,`Part 1 Year Acc Keeping Days`=%f ,`Part 1 Year Acc Out of Stock Days`=%f , `Part 1 Year Acc Unknown Stock Days`=%s, `Part 1 Year Acc GMROI`=%s where `Part SKU`=%d"
 		    ,$astock
 		    ,$avalue
 		    ,$tdays
@@ -382,7 +376,7 @@ class part{
       $tdays = (strtotime($this->data['Part Valid To']) - strtotime($this->data['Part Valid From'])) / (60 * 60 * 24);
       //print "$tdays $days o: $outstock e: $errors \n";
       $unknown=$tdays-$days_ok;
-       $sql=sprintf("update `Part Dimension` set `Part 1 Quarter Acc AVG Stock`=%s ,`Part 1 Quarter Acc AVG Stock Value`=%s,`Part 1 Quarter Acc Keeping Days`=%f ,`Part 1 Quarter Acc Out of Stock Days`=%f , `Part 1 Quarter Acc Unknown Stock Days`=%s, `Part 1 Quarter Acc GMROI`=%s where `Part Key`=%d"
+       $sql=sprintf("update `Part Dimension` set `Part 1 Quarter Acc AVG Stock`=%s ,`Part 1 Quarter Acc AVG Stock Value`=%s,`Part 1 Quarter Acc Keeping Days`=%f ,`Part 1 Quarter Acc Out of Stock Days`=%f , `Part 1 Quarter Acc Unknown Stock Days`=%s, `Part 1 Quarter Acc GMROI`=%s where `Part SKU`=%d"
 		    ,$astock
 		    ,$avalue
 		    ,$tdays
@@ -432,7 +426,7 @@ class part{
       $tdays = (strtotime($this->data['Part Valid To']) - strtotime($this->data['Part Valid From'])) / (60 * 60 * 24);
       //print "$tdays $days o: $outstock e: $errors \n";
       $unknown=$tdays-$days_ok;
-       $sql=sprintf("update `Part Dimension` set `Part 1 Month Acc AVG Stock`=%s ,`Part 1 Month Acc AVG Stock Value`=%s,`Part 1 Month Acc Keeping Days`=%f ,`Part 1 Month Acc Out of Stock Days`=%f , `Part 1 Month Acc Unknown Stock Days`=%s, `Part 1 Month Acc GMROI`=%s where `Part Key`=%d"
+       $sql=sprintf("update `Part Dimension` set `Part 1 Month Acc AVG Stock`=%s ,`Part 1 Month Acc AVG Stock Value`=%s,`Part 1 Month Acc Keeping Days`=%f ,`Part 1 Month Acc Out of Stock Days`=%f , `Part 1 Month Acc Unknown Stock Days`=%s, `Part 1 Month Acc GMROI`=%s where `Part SKU`=%d"
 		    ,$astock
 		    ,$avalue
 		    ,$tdays
@@ -484,7 +478,7 @@ class part{
       $tdays = (strtotime($this->data['Part Valid To']) - strtotime($this->data['Part Valid From'])) / (60 * 60 * 24);
       //print "$tdays $days o: $outstock e: $errors \n";
       $unknown=$tdays-$days_ok;
-       $sql=sprintf("update `Part Dimension` set `Part 1 Week Acc AVG Stock`=%s ,`Part 1 Week Acc AVG Stock Value`=%s,`Part 1 Week Acc Keeping Days`=%f ,`Part 1 Week Acc Out of Stock Days`=%f , `Part 1 Week Acc Unknown Stock Days`=%s, `Part 1 Week Acc GMROI`=%s where `Part Key`=%d"
+       $sql=sprintf("update `Part Dimension` set `Part 1 Week Acc AVG Stock`=%s ,`Part 1 Week Acc AVG Stock Value`=%s,`Part 1 Week Acc Keeping Days`=%f ,`Part 1 Week Acc Out of Stock Days`=%f , `Part 1 Week Acc Unknown Stock Days`=%s, `Part 1 Week Acc GMROI`=%s where `Part SKU`=%d"
 		    ,$astock
 		    ,$avalue
 		    ,$tdays
@@ -519,7 +513,7 @@ class part{
 	$raw_used_in_products=' '.$row['Product Code'];
       }
       $used_in_products=preg_replace('/^, /','',$used_in_products);
-      $sql=sprintf("update `Part Dimension` set `Part XHTML Currently Used In`=%s ,`Part Currently Used In`=%s  where `Part Key`=%d",prepare_mysql(_trim($used_in_products)),prepare_mysql(_trim($raw_used_in_products)),$this->id);
+      $sql=sprintf("update `Part Dimension` set `Part XHTML Currently Used In`=%s ,`Part Currently Used In`=%s  where `Part SKU`=%d",prepare_mysql(_trim($used_in_products)),prepare_mysql(_trim($raw_used_in_products)),$this->id);
       //print "$sql\n";
       mysql_query($sql);
       break;
@@ -548,7 +542,7 @@ class part{
 	$supplied_by=_('Unknown Supplier');
 
 
-       $sql=sprintf("update `Part Dimension` set `Part XHTML Currently Supplied By`=%s where `Part Key`=%d",prepare_mysql(_trim($supplied_by)),$this->id);
+       $sql=sprintf("update `Part Dimension` set `Part XHTML Currently Supplied By`=%s where `Part SKU`=%d",prepare_mysql(_trim($supplied_by)),$this->id);
        //       print "$sql\n";exit;
       if(!mysql_query($sql))
 	exit("error can no suplied by part 498239048");
@@ -565,7 +559,11 @@ class part{
       $value=0;
       $value_free=0;
       $margin=0;
-      $sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(-`Inventory Transaction Quantity`),0) as qty, ifnull(sum(-`Inventory Transaction Amount`),0) as value from  `Inventory Transaction Fact` where `Part SKU`=%s and `Inventory Transaction Type`='Sale' and `Date`>=%s  and `Date`<=%s   ",prepare_mysql($this->data['Part SKU']),prepare_mysql($this->data['Part Valid From']),prepare_mysql($this->data['Part Valid To'])  );
+      $sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(-`Inventory Transaction Quantity`),0) as qty, ifnull(sum(-`Inventory Transaction Amount`),0) as value from  `Inventory Transaction Fact` where `Part SKU`=%s and `Inventory Transaction Type`='Sale' and `Date`>=%s  and `Date`<=%s   "
+		   ,prepare_mysql($this->data['Part SKU'])
+		   ,prepare_mysql($this->data['Part Valid From'])
+		   ,prepare_mysql($this->data['Part Valid To'])  
+		   );
       //       print "$sql\n\n\n";
       $result=mysql_query($sql);
       if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
@@ -592,7 +590,7 @@ class part{
   //     var_dump( $value );
 //       var_dump(  $amount_in);
 //       var_dump( 0.7/7 );
-      $sql=sprintf("update `Part Dimension` set `Part Total Required`=%f ,`Part Total Provided`=%f,`Part Total Given`=%f ,`Part Total Sold Amount`=%f ,`Part Total Absolute Profit`=%f ,`Part Total Profit When Sold`=%f , `Part Total Sold`=%f , `Part Total Margin`=%f  where `Part Key`=%d "
+      $sql=sprintf("update `Part Dimension` set `Part Total Required`=%f ,`Part Total Provided`=%f,`Part Total Given`=%f ,`Part Total Sold Amount`=%f ,`Part Total Absolute Profit`=%f ,`Part Total Profit When Sold`=%f , `Part Total Sold`=%f , `Part Total Margin`=%f  where `Part SKU`=%d "
 		   ,$required
 		   ,$provided
 		   ,$given
@@ -630,7 +628,7 @@ class part{
 	$margin=0;
       else
 	$margin=$profit_sold/$amount_in;
-      $sql=sprintf("update `Part Dimension` set `Part 1 Year Acc Required`=%f ,`Part 1 Year Acc Provided`=%f,`Part 1 Year Acc Given`=%f ,`Part 1 Year Acc Sold Amount`=%f ,`Part 1 Year Acc Absolute Profit`=%f ,`Part 1 Year Acc Profit When Sold`=%f , `Part 1 Year Acc Sold`=%f , `Part 1 Year Acc Margin`=%s where `Part Key`=%d "
+      $sql=sprintf("update `Part Dimension` set `Part 1 Year Acc Required`=%f ,`Part 1 Year Acc Provided`=%f,`Part 1 Year Acc Given`=%f ,`Part 1 Year Acc Sold Amount`=%f ,`Part 1 Year Acc Absolute Profit`=%f ,`Part 1 Year Acc Profit When Sold`=%f , `Part 1 Year Acc Sold`=%f , `Part 1 Year Acc Margin`=%s where `Part SKU`=%d "
 		   ,$required
 		   ,$provided
 		   ,$given
@@ -670,7 +668,7 @@ class part{
       else
 	$margin=$profit_sold/$amount_in;
 
-      $sql=sprintf("update `Part Dimension` set `Part 1 Quarter Acc Required`=%f ,`Part 1 Quarter Acc Provided`=%f,`Part 1 Quarter Acc Given`=%f ,`Part 1 Quarter Acc Sold Amount`=%f ,`Part 1 Quarter Acc Absolute Profit`=%f ,`Part 1 Quarter Acc Profit When Sold`=%f  , `Part 1 Quarter Acc Sold`=%f  , `Part 1 Quarter Acc Margin`=%s where `Part Key`=%d "
+      $sql=sprintf("update `Part Dimension` set `Part 1 Quarter Acc Required`=%f ,`Part 1 Quarter Acc Provided`=%f,`Part 1 Quarter Acc Given`=%f ,`Part 1 Quarter Acc Sold Amount`=%f ,`Part 1 Quarter Acc Absolute Profit`=%f ,`Part 1 Quarter Acc Profit When Sold`=%f  , `Part 1 Quarter Acc Sold`=%f  , `Part 1 Quarter Acc Margin`=%s where `Part SKU`=%d "
 		   ,$required
 		   ,$provided
 		   ,$given
@@ -711,7 +709,7 @@ class part{
 	$margin=$profit_sold/$amount_in;
 
 
-      $sql=sprintf("update `Part Dimension` set `Part 1 Month Acc Required`=%f ,`Part 1 Month Acc Provided`=%f,`Part 1 Month Acc Given`=%f ,`Part 1 Month Acc Sold Amount`=%f ,`Part 1 Month Acc Absolute Profit`=%f ,`Part 1 Month Acc Profit When Sold`=%f  , `Part 1 Month Acc Sold`=%f , `Part 1 Month Acc Margin`=%s  where `Part Key`=%d "
+      $sql=sprintf("update `Part Dimension` set `Part 1 Month Acc Required`=%f ,`Part 1 Month Acc Provided`=%f,`Part 1 Month Acc Given`=%f ,`Part 1 Month Acc Sold Amount`=%f ,`Part 1 Month Acc Absolute Profit`=%f ,`Part 1 Month Acc Profit When Sold`=%f  , `Part 1 Month Acc Sold`=%f , `Part 1 Month Acc Margin`=%s  where `Part SKU`=%d "
 		   ,$required
 		   ,$provided
 		   ,$given
@@ -750,7 +748,7 @@ class part{
       else
 	$margin=$profit_sold/$amount_in;
 
-      $sql=sprintf("update `Part Dimension` set `Part 1 Week Acc Required`=%f ,`Part 1 Week Acc Provided`=%f,`Part 1 Week Acc Given`=%f ,`Part 1 Week Acc Sold Amount`=%f ,`Part 1 Week Acc Absolute Profit`=%f ,`Part 1 Week Acc Profit When Sold`=%f  , `Part 1 Week Acc Sold`=%f , `Part 1 Week Acc Margin`=%s where `Part Key`=%d "
+      $sql=sprintf("update `Part Dimension` set `Part 1 Week Acc Required`=%f ,`Part 1 Week Acc Provided`=%f,`Part 1 Week Acc Given`=%f ,`Part 1 Week Acc Sold Amount`=%f ,`Part 1 Week Acc Absolute Profit`=%f ,`Part 1 Week Acc Profit When Sold`=%f  , `Part 1 Week Acc Sold`=%f , `Part 1 Week Acc Margin`=%s where `Part SKU`=%d "
 		   ,$required
 		   ,$provided
 		   ,$given
@@ -787,7 +785,7 @@ class part{
       }
       
 
-      $sql=sprintf("update `Part Dimension` set `Part Days Available Forecast`=%s,`Part XHTML Available For Forecast`=%s where `Part Key`=%d",$this->data['Part Days Available Forecast'],prepare_mysql($this->data['Part XHTML Available For Forecast']),$this->id );
+      $sql=sprintf("update `Part Dimension` set `Part Days Available Forecast`=%s,`Part XHTML Available For Forecast`=%s where `Part SKU`=%d",$this->data['Part Days Available Forecast'],prepare_mysql($this->data['Part XHTML Available For Forecast']),$this->id );
     
       if(!mysql_query($sql))
 	print "$sql\n";
@@ -812,7 +810,7 @@ class part{
 	$min_cost='NULL';
       }
 
-      $sql=sprintf("update `Part Dimension` set `Part Average Future Cost`=%s,`Part Minimum Future Cost`=%s where `Part Key`=%d "
+      $sql=sprintf("update `Part Dimension` set `Part Average Future Cost`=%s,`Part Minimum Future Cost`=%s where `Part SKU`=%d "
 		   ,$avg_cost
 		   ,$min_cost
 		   ,$this->id);
@@ -892,38 +890,26 @@ class part{
   }
   
 
- function valid_sku($sku){
-   // print "validadndo sku $sku";
-   if(is_numeric($sku) and $sku>0 and $sku<9223372036854775807)
-     return true;
-   else
-     return false;
- }
-
-function used_sku($sku){
-  $sql="select count(*) as num from `Part Dimension` where `Part SKU`=".prepare_mysql($sku);
-  // print "$sql\n";
-  $result=mysql_query($sql);
-  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-    if($row['num']>0)
-      return true;
-  }
-  return false;
-}
-
- function new_sku(){
-   $sql="select max(`Part SKU`) as sku from `Part Dimension`";
-   //   print "$sql\n";
-   $result=mysql_query($sql);
-   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-     return $row['sku']+1;
-   }else
-     return 1;
-   
- }
  
 
+  function update_valid_dates($date){
+    $affected=0;
+    $sql=sprintf("update `Part Dimension`  set `Part Valid From` where  `Part SKU`=%d and `Part Valid From`>%s   "
+		 ,prepare_mysql($this->id)
+		 ,prepare_mysql($date)
 
+		 );
+    mysql_query($sql);
+    $affected+=mysql_affected_rows();
+    $sql=sprintf("update `Part Dimension`  set `Part Valid To` where  `Part SKU`=%d and `Part Valid To`<%s   "
+		 ,prepare_mysql($this->id)
+		 ,prepare_mysql($date)
+
+		 );
+    mysql_query($sql);
+    $affected+=mysql_affected_rows();
+    return $affected;
+  }
 
 
 

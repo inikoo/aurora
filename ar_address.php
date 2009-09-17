@@ -28,7 +28,7 @@ case('country'):
 
   if($q){
     if(preg_match('/^[a-z]{3}$/i',$q)){
-      $sql=sprintf("select `Country Key`,`Country Name`,`Country Code` from `Country Dimension` where `Country Code`=%s ",prepare_mysql($q));
+      $sql=sprintf("select `Country Key`,`Country Name`,`Country Code` from kbase.`Country Dimension` where `Country Code`=%s ",prepare_mysql($q));
       $res=mysql_query($sql);
       if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 	$result[$row['Country Key']]=array('name'=>$row['Country Name'],'code'=>$row['Country Code']);

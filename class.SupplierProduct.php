@@ -228,7 +228,7 @@ class supplierproduct{
     //  print "$sql\n\n";
     if(mysql_query($sql)){
       $this->id = mysql_insert_id();
-      
+      $this->new=true;
       if($base_data['supplier product most recent']=='Yes'){
 	
 	$sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Most Recent`='No' where `Supplier Product ID`=%d  and `Supplier Product Key`!=%d"
@@ -266,12 +266,12 @@ class supplierproduct{
       $used_in_products=preg_replace('/^, /','',$used_in_products);
       
       $used_in_parts='';
-      $sql=sprintf("select `Part Key`,PD.`Part SKU` from `Supplier Product Dimension` SPD left join `Supplier Product Part List` SPPL on (SPD.`Supplier Product ID`=SPPL.`Supplier Product ID`)  left join `Part Dimension` PD on (SPPL.`Part SKU`=PD.`Part SKU`) where `Supplier Product Key`=%d group by PD.`Part SKU`;",$this->data['Supplier Product Key']);
+      $sql=sprintf("select PD.`Part SKU` from `Supplier Product Dimension` SPD left join `Supplier Product Part List` SPPL on (SPD.`Supplier Product ID`=SPPL.`Supplier Product ID`)  left join `Part Dimension` PD on (SPPL.`Part SKU`=PD.`Part SKU`) where `Supplier Product Key`=%d group by PD.`Part SKU`;",$this->data['Supplier Product Key']);
       $result=mysql_query($sql);
       $num_parts=0;
-      //print "$sql\n";
+      // print "$sql\n";
       while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-	$used_in_parts.=sprintf(', <a href="part.php?id=%d">%s</a>',$row['Part Key'],$row['Part SKU']);
+	$used_in_parts.=sprintf(', <a href="part.php?id=%d">%s</a>',$row['Part SKU'],$row['Part SKU']);
 	$num_parts++;
       }
       $used_in_parts=preg_replace('/^, /','',$used_in_parts);
@@ -293,7 +293,7 @@ class supplierproduct{
       break;
     case('parts'):
       
-      $sql=sprintf("select `Part Key`,PD.`Part SKU` as sku from `Supplier Product Dimension` SPD left join `Supplier Product Part List` SPPL on (SPD.`Supplier Product ID`=SPPL.`Supplier Product ID`)  left join `Part Dimension` PD on (SPPL.`Part SKU`=PD.`Part SKU`) where `Supplier Product Key`=%d group by PD.`Part SKU`;",$this->data['Supplier Product Key']);
+      $sql=sprintf("select PD.`Part SKU` as sku from `Supplier Product Dimension` SPD left join `Supplier Product Part List` SPPL on (SPD.`Supplier Product ID`=SPPL.`Supplier Product ID`)  left join `Part Dimension` PD on (SPPL.`Part SKU`=PD.`Part SKU`) where `Supplier Product Key`=%d group by PD.`Part SKU`;",$this->data['Supplier Product Key']);
       $result=mysql_query($sql);
       $num_parts=0;
       $this->parts_sku=array();

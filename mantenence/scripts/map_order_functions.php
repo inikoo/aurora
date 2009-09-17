@@ -174,7 +174,7 @@ function guess_tel($raw_tel,$country_id='',$city_id=''){
 
 function get_icode($country_id){
   $db =& MDB2::singleton();
-  $sql=sprintf("select `Country Telephone Code` as tel_code from `Country Dimension`  where `Country Key`=%d",$country_id);
+  $sql=sprintf("select `Country Telephone Code` as tel_code from kbase.`Country Dimension`  where `Country Key`=%d",$country_id);
   $res=mysql_query($sql); 
   if ($row=$res->fetchRow()){
     if($row['tel_code']!='')
@@ -7452,7 +7452,7 @@ if(preg_match('/^524 95 Ljung$/i',$act_data['town']) and $act_data['postcode']='
 
 
 
-    $sql=sprintf("select `Country Key` as id from `Country Dimension` left join `Country Alias Dimension` on  (`Country Alias Code`=`Country Code`) where `Country Alias`=%s or `Country Name`=%s ",prepare_mysql($header_data['country']),prepare_mysql($header_data['country']));
+    $sql=sprintf("select `Country Key` as id from kbase.`Country Dimension` left join kbase.`Country Alias Dimension` on  (`Country Alias Code`=`Country Code`) where `Country Alias`=%s or `Country Name`=%s ",prepare_mysql($header_data['country']),prepare_mysql($header_data['country']));
     $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
     if(!$row = mysql_fetch_array($result, MYSQL_ASSOC)) 
       $header_data['country']=$act_data['country'];
@@ -7482,7 +7482,7 @@ if(preg_match('/^524 95 Ljung$/i',$act_data['town']) and $act_data['postcode']='
     $tmp_array=preg_split('/\s+/',$act_data['postcode']) ;
 
     if(count($tmp_array)==2){
-      $sql=sprintf("select `Country Name` as name from `Country Dimension` left join `Country Alias Dimension` on  (`Country Alias Code`=`Country Code`) where `Country Alias`=%s or `Country Name`=%s ",prepare_mysql($tmp_array[0]),prepare_mysql($tmp_array[0]));
+      $sql=sprintf("select `Country Name` as name from kbase.`Country Dimension` left join kbase.`Country Alias Dimension` on  (`Country Alias Code`=`Country Code`) where `Country Alias`=%s or `Country Name`=%s ",prepare_mysql($tmp_array[0]),prepare_mysql($tmp_array[0]));
 
 
       $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
@@ -7491,7 +7491,7 @@ if(preg_match('/^524 95 Ljung$/i',$act_data['town']) and $act_data['postcode']='
 	$act_data['postcode']=$tmp_array[1];
       }
 
-       $sql=sprintf("select `Country Name` as name from `Country Dimension` left join `Country Alias Dimension` on  (`Country Alias Code`=`Country Code`) where `Country Alias`=%s or `Country Name`=%s ",prepare_mysql($tmp_array[1]),prepare_mysql($tmp_array[1]));
+       $sql=sprintf("select `Country Name` as name from kbase.`Country Dimension` left join kbase.`Country Alias Dimension` on  (`Country Alias Code`=`Country Code`) where `Country Alias`=%s or `Country Name`=%s ",prepare_mysql($tmp_array[1]),prepare_mysql($tmp_array[1]));
       
 
       $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
@@ -7500,7 +7500,7 @@ if(preg_match('/^524 95 Ljung$/i',$act_data['town']) and $act_data['postcode']='
 	$act_data['postcode']=$tmp_array[0];
       }
     }elseif(count($tmp_array)==1){
-      $sql=sprintf("select `Country Name` as name from `Country Dimension` left join `Country Alias Dimension` on  (`Country Alias Code`=`Country Code`) where `Country Alias`=%s or `Country Name`=%s",prepare_mysql($tmp_array[0]),prepare_mysql($tmp_array[0]));
+      $sql=sprintf("select `Country Name` as name from kbase.`Country Dimension` left join kbase.`Country Alias Dimension` on  (`Country Alias Code`=`Country Code`) where `Country Alias`=%s or `Country Name`=%s",prepare_mysql($tmp_array[0]),prepare_mysql($tmp_array[0]));
 
 
       $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
