@@ -545,7 +545,7 @@ class Customer extends DB_Table{
       $this->data['Customer Main Location']=$billing_address->data['Address Location'];
       $this->data['Customer Main Address Town']=$billing_address->data['Address Town'];
       $this->data['Customer Main Address Postal Code']=$billing_address->data['Address'];
-      $this->data['Customer Main Address Country Primary Division']=$billing_address->data['Address Country Primary Division'];
+      $this->data['Customer Main Address Country First Division']=$billing_address->data['Address Country First Division'];
       $this->data['Customer Main XHTML Address']=$billing_address->display('html'); 
       $this->data['Customer Main Plain Address']=$billing_address->display('plain'); 
 
@@ -566,7 +566,7 @@ class Customer extends DB_Table{
        $this->data['Customer Main Location']=$billing_address->data['Address Location'];
        $this->data['Customer Main Address Town']=$billing_address->data['Address Town'];
        $this->data['Customer Main Address Postal Code']=$billing_address->data['Address Postal Code'];
-       $this->data['Customer Main Address Country Primary Division']=$billing_address->data['Address Country Primary Division'];
+       $this->data['Customer Main Address Country First Division']=$billing_address->data['Address Country First Division'];
        $this->data['Customer Main XHTML Address']=$billing_address->display('html');
        $this->data['Customer Main Plain Address']=$billing_address->display('plain');
 
@@ -773,7 +773,7 @@ class Customer extends DB_Table{
 		 ,prepare_mysql($address->display('header'))
 		 ,prepare_mysql($address->get('Address Town'))
 		 ,prepare_mysql($address->get('Postal Code'))
-		 ,prepare_mysql($address->get('Address Country Primary Division'))
+		 ,prepare_mysql($address->get('Address Country First Division'))
 		 ,prepare_mysql($address->get('Address Country Name'))
 		 ,prepare_mysql($address->get('Address Country Key'))
 	       );
@@ -1920,10 +1920,10 @@ class Customer extends DB_Table{
      $this->data['Customer Main Location']=$address->display('location');
      $this->data['Customer Main Address Town']=$address->data['Address Town'];
      $this->data['Customer Main Address Postal Code']=$address->data['Address Postal Code'];
-     $this->data['Customer Main Address Country Primary Division']=$address->data['Address Country Primary Division'];
+     $this->data['Customer Main Address Country First Division']=$address->data['Address Country First Division'];
      
 
-     $sql=sprintf("update `Customer Dimension` set `Customer Main Address Key`=%d,`Customer Main Plain Address`=%s,`Customer Main XHTML Address`=%s,`Customer Main Address Country`=%s,`Customer Main Location`=%s,`Customer Main Address Country Code`=%s,`Customer Main Address Country 2 Alpha Code`=%s,`Customer Main Address Town`=%s,`Customer Main Address Postal Code`=%s ,`Customer Main Address Country Primary Division`=%s    where `Customer Key`=%d"
+     $sql=sprintf("update `Customer Dimension` set `Customer Main Address Key`=%d,`Customer Main Plain Address`=%s,`Customer Main XHTML Address`=%s,`Customer Main Address Country`=%s,`Customer Main Location`=%s,`Customer Main Address Country Code`=%s,`Customer Main Address Country 2 Alpha Code`=%s,`Customer Main Address Town`=%s,`Customer Main Address Postal Code`=%s ,`Customer Main Address Country First Division`=%s    where `Customer Key`=%d"
 		  
 		  ,$this->data['Customer Main Address Key']
 		  ,prepare_mysql($this->data['Customer Main Plain Address'],false)
@@ -1934,7 +1934,7 @@ class Customer extends DB_Table{
 		  ,prepare_mysql($this->data['Customer Main Address Country 2 Alpha Code'])
 		  ,prepare_mysql($this->data['Customer Main Address Town'])
 		  ,prepare_mysql($this->data['Customer Main Address Postal Code'])
-		  ,prepare_mysql($this->data['Customer Main Address Country Primary Division'])
+		  ,prepare_mysql($this->data['Customer Main Address Country First Division'])
 
 		  
 		  ,$this->id

@@ -534,7 +534,7 @@ class Address extends DB_Table{
 			if($data['Address Fuzzy']=='Yes'){
 				//if fuzzy only check in parent fuzzy sub space
 
-				$fields=array('Address Fuzzy','Address Street Number','Address Building','Address Street Name','Address Street Type','Address Town Secondary Division','Address Town Primary Division','Address Town','Address Country Primary Division','Address Country Secondary Division','Address Country Key','Address Postal Code','Military Address','Military Installation Address','Military Installation Name');
+				$fields=array('Address Fuzzy','Address Street Number','Address Building','Address Street Name','Address Street Type','Address Town Second Division','Address Town First Division','Address Town','Address Country First Division','Address Country Second Division','Address Country Key','Address Postal Code','Military Address','Military Installation Address','Military Installation Name');
 
 				$sql=sprintf("select A.`Address Key`,`Subject Key` from `Address Dimension` A  left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`)  where `Address Fuzzy`='Yes' and `Subject Type`='Contact' ");
 				foreach($fields as $field){
@@ -588,7 +588,7 @@ class Address extends DB_Table{
 				// Address not fuzzy
 				// Try to find an exact match
 
-				$fields=array('Address Fuzzy','Address Street Number','Address Building','Address Street Name','Address Street Type','Address Town Secondary Division','Address Town Primary Division','Address Town','Address Country Primary Division','Address Country Secondary Division','Address Country Key','Address Postal Code','Military Address','Military Installation Address','Military Installation Name');
+				$fields=array('Address Fuzzy','Address Street Number','Address Building','Address Street Name','Address Street Type','Address Town Second Division','Address Town First Division','Address Town','Address Country First Division','Address Country Second Division','Address Country Key','Address Postal Code','Military Address','Military Installation Address','Military Installation Name');
 
 				$sql="select A.`Address Key`,`Subject Key`,`Subject Type` from `Address Dimension`  A  left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`) where `Subject Type`='Contact' ";
 				foreach($fields as $field){
@@ -643,7 +643,7 @@ class Address extends DB_Table{
 				if($data['Address Fuzzy']=='No'){
 					//Special cases
 					//a) when same (st number,street,town,d1,d2) but postal code on / off
-					$fields=array('Address Street Number','Address Building','Address Street Name','Address Street Type','Address Town Secondary Division','Address Town Primary Division','Address Town','Address Country Primary Division','Address Country Secondary Division','Address Country Key','Military Address','Military Installation Address','Military Installation Name');
+					$fields=array('Address Street Number','Address Building','Address Street Name','Address Street Type','Address Town Second Division','Address Town First Division','Address Town','Address Country First Division','Address Country Second Division','Address Country Key','Military Address','Military Installation Address','Military Installation Name');
 
 					$sql="select A.`Address Key`,`Subject Key`,`Subject Type` from `Address Dimension`  A  left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`) where `Subject Type`='Contact' ";
 					foreach($fields as $field){
@@ -1016,10 +1016,10 @@ class Address extends DB_Table{
 
 
 			case('country region'):
-				if($this->get('Address Country Primary Division')!='')
-				return $this->get('Address Country Primary Division');
+				if($this->get('Address Country First Division')!='')
+				return $this->get('Address Country First Division');
 				else
-				return $this->get('Address Country Secondary Division');
+				return $this->get('Address Country Second Division');
 				break;
 
 
@@ -1100,9 +1100,9 @@ class Address extends DB_Table{
 					$address.=$street_address.$separator;
 
 
-					$subtown_address=$this->data['Address Town Secondary Division'];
-					if($this->data['Address Town Primary Division'])
-					$subtown_address.=' ,'.$this->data['Address Town Primary Division'];
+					$subtown_address=$this->data['Address Town Second Division'];
+					if($this->data['Address Town First Division'])
+					$subtown_address.=' ,'.$this->data['Address Town First Division'];
 					$subtown_address=_trim($subtown_address);
 					if($subtown_address!='')
 					$address.=$subtown_address.$separator;
@@ -1135,9 +1135,9 @@ class Address extends DB_Table{
 				$address.=$street_address.$separator;
 
 
-				$subtown_address=$this->data['Address Town Secondary Division'];
-				if($this->data['Address Town Primary Division'])
-				$subtown_address.=' ,'.$this->data['Address Town Primary Division'];
+				$subtown_address=$this->data['Address Town Second Division'];
+				if($this->data['Address Town First Division'])
+				$subtown_address.=' ,'.$this->data['Address Town First Division'];
 				$subtown_address=_trim($subtown_address);
 				if($subtown_address!='')
 				$address.=$subtown_address.$separator;
@@ -1286,12 +1286,12 @@ class Address extends DB_Table{
 	 Get the name of the Country SubDivision
 
 	 Parameters:
-	 $id - _integer_  *Country Secondary Division Key* in DB
+	 $id - _integer_  *Country Second Division Code* in DB
 	 */
 	function get_country_d2_name($id=''){
 		if(!is_numeric($id))
 		return '';
-		$sql=sprintf("select `Country Secondary Division Name` as name from `Country Secondary Division Dimension` where `Country Secondary Division Key`=%d",$id);
+		$sql=sprintf("select `Country Second Division Name` as name from kbase.`Country Second Division Dimension` where `Country Second Division Code`=%d",$id);
 		//  print $sql;
 		$result = mysql_query($sql) or die('Query failedx1: ' . mysql_error());
 		if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -1304,12 +1304,12 @@ class Address extends DB_Table{
 	 Get the name of the Country Division
 
 	 Parameters:
-	 $id - _integer_  *Country Primary Division Key* in DB
+	 $id - _integer_  *Country First Division Code* in DB
 
 	 function get_country_d1_name($id=''){
 	 if(!is_numeric($id))
 	 return '';
-	 $sql=sprintf("select `Country Primary Division Name` as name from kbase.`Country First Division Dimension` where `Country Primary Division Key`=%d",$id);
+	 $sql=sprintf("select `Country First Division Name` as name from kbase.`Country First Division Dimension` where `Country First Division Code`=%d",$id);
 	 $result = mysql_query($sql) or die('Query failedx: ' . mysql_error());
 	 if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
 	 return $row['name'];
@@ -1320,12 +1320,12 @@ class Address extends DB_Table{
 
 
 	 Function: is_country_d1
-	 Look if the string is in Country Primary Division Dimension DB table
+	 Look if the string is in Country First Division Dimension DB table
 
 	 The search will be en the following fields:Name,Native Name,Local Native Name
 
 	 Parameter:
-	 $str -  _string_ Country Primary Division Name
+	 $str -  _string_ Country First Division Name
 	 */
 	public static  function is_country_d1($country_d1,$country_2a_code){
 		if($country_d1=='')
@@ -1348,12 +1348,12 @@ class Address extends DB_Table{
 
 	/*
 	 Function: is_country_d2
-	 Look if the string is in Country Secondary Division Dimension DB table
+	 Look if the string is in Country Second Division Dimension DB table
 
 	 The search will be en the following fields:Name,Native Name,Local Native Name
 
 	 Parameter:
-	 $str -  _string_ Country Secondary Division Name
+	 $str -  _string_ Country Second Division Name
 	 */
 	public static  function is_country_d2($str,$country_2a_code=false,$country_d1_code=false){
 		if($str=='')
@@ -1362,7 +1362,7 @@ class Address extends DB_Table{
 		if($country_2a_code)
 		$extra_where.=sprintf('and `Country 2 Alpha Code`=%s',prepare_mysql($country_2a_code));
 		if($country_d1_code)
-		$extra_where.=sprintf('and `Country Primary Division Code`=%s',prepare_mysql($country_d1_code));
+		$extra_where.=sprintf('and `Country First Division Code`=%s',prepare_mysql($country_d1_code));
 		$sql=sprintf("select `Geography Key` as id from kbase.`Country Second Division Dimension` where `Country Second Division Name`=%s %s"
 		,prepare_mysql($str)
 		,$extra_where
@@ -1555,17 +1555,17 @@ class Address extends DB_Table{
 		){
 
 			// try to get the counbtry form the town
-			if($data['Address Country Primary Division']!=''){
-				$country_in_other=new Country('find',$data['Address Country Primary Division']);
+			if($data['Address Country First Division']!=''){
+				$country_in_other=new Country('find',$data['Address Country First Division']);
 				if($country_in_other->id!=244){
 					$data['Address Country Key']=$country_in_other->id;
-					$data['Address Country Primary Division']='';
+					$data['Address Country First Division']='';
 				}
-			}  elseif($data['Address Country Secondary Division']!=''){
-				$country_in_other=new Country('find',$data['Address Country Secondary Division']);
+			}  elseif($data['Address Country Second Division']!=''){
+				$country_in_other=new Country('find',$data['Address Country Second Division']);
 				if($country_in_other->id!=244){
 					$data['Address Country Key']=$country_in_other->id;
-					$data['Address Country Secondary Division']='';
+					$data['Address Country Second Division']='';
 				}
 			}
 			else if($data['Address Town']!=''){
@@ -1780,19 +1780,19 @@ class Address extends DB_Table{
 
 		if(preg_match('/La Reunion/i',$data['Address Country Name'])){
 			$data['Address Country Name']='France';
-			if($data['Address Country Primary Division']=='')
-			$data['Address Country Primary Division']='La Reunion';
+			if($data['Address Country First Division']=='')
+			$data['Address Country First Division']='La Reunion';
 		}
 		if(preg_match('/SCOTLAND|wales/i',$data['Address Country Name']))
 		$data['Address Country Name']='United Kingdom';
 		if(preg_match('/^england$|^inglaterra$/i',$data['Address Country Name'])){
 			$data['Address Country Name']='United Kingdom';
-			if($data['Address Country Primary Division']=='')
-			$data['Address Country Primary Division']='England';
+			if($data['Address Country First Division']=='')
+			$data['Address Country First Division']='England';
 		}else if(preg_match('/^nor.*ireland$|n\.{2}ireland/i',$data['Address Country Name'])){
 			$data['Address Country Name']='United Kingdom';
-			if($data['Address Country Primary Division']=='')
-			$data['Address Country Primary Division']='Northen Ireland';
+			if($data['Address Country First Division']=='')
+			$data['Address Country First Division']='Northen Ireland';
 		}else if(preg_match('/^r.*ireland$|^s.*ireland|^eire$/i',$data['Address Country Name'])){
 			$data['Address Country Name']='Ireland';
 		}else if(preg_match('/me.ico|m.xico/i',$data['Address Country Name'])){
@@ -1800,25 +1800,25 @@ class Address extends DB_Table{
 		}else if(preg_match('/scotland|escocia/i',$data['Address Country Name'])){
 
 			$data['Address Country Name']='United Kingdom';
-			if($data['Address Country Primary Division']=='')
-			$data['Address Country Primary Division']='Scotland';
+			if($data['Address Country First Division']=='')
+			$data['Address Country First Division']='Scotland';
 		}else if(preg_match('/.*\s+(w|g)ales$/i',$data['Address Country Name'])){
 			$data['Address Country Name']='United Kingdom';
-			if($data['Address Country Primary Division']=='')
-			$data['Address Country Primary Division']='Wales';
+			if($data['Address Country First Division']=='')
+			$data['Address Country First Division']='Wales';
 		}else if(preg_match('/canarias$/i',$data['Address Country Name'])){
 			$data['Address Country Name']='Spain';
-			if($data['Address Country Primary Division']=='')
-			$data['Address Country Primary Division']='Canarias';
+			if($data['Address Country First Division']=='')
+			$data['Address Country First Division']='Canarias';
 		}else if(preg_match('/^Channel Islands$/i',$data['Address Country Name'])){
 
-			if($data['Address Country Primary Division']!=''){
-				$data['Address Country Name']=$data['Address Country Primary Division'];
-				$data['Address Country Primary Division']='';
+			if($data['Address Country First Division']!=''){
+				$data['Address Country Name']=$data['Address Country First Division'];
+				$data['Address Country First Division']='';
 
-			}else if($data['Address Country Secondary Division']!=''){
-				$data['Address Country Name']=$data['Address Country Secondary Division'];
-				$data['Address Country Secondary Division']='';
+			}else if($data['Address Country Second Division']!=''){
+				$data['Address Country Name']=$data['Address Country Second Division'];
+				$data['Address Country Second Division']='';
 
 			} else if($data['Address Town']!=''){
 				$data['Address Country Name']=$data['Address Town'];
@@ -1837,16 +1837,16 @@ class Address extends DB_Table{
 		if($data['Address Country Name']==''){
 			if($myconf['country_2acode']=='GB'){
 
-				//	if(preg_match('/norfork/i,'$data['Address Country Secondary Division]']))
+				//	if(preg_match('/norfork/i,'$data['Address Country Second Division]']))
 				//  $data['Address Country Name']='United Kingdom';
 
 				if(Address::is_valid_postcode($data['Address Postal Code'],30)){
 					//	  print "cacacaca";
-					$data['Address Country Primary Division']=_trim($data['Address Country Primary Division'].' '.$data['Address Country Name']);
+					$data['Address Country First Division']=_trim($data['Address Country First Division'].' '.$data['Address Country Name']);
 					$data['Address Country Name']='United Kingdom';
 
 				}elseif(Address::is_valid_postcode($data['Address Country Name'],30)){
-					$data['Address Country Primary Division']=_trim($data['Address Country Primary Division'].' '.$data['Address Postal Code']);
+					$data['Address Country First Division']=_trim($data['Address Country First Division'].' '.$data['Address Postal Code']);
 					$data['Address Postal Code']=$data['Address Country Name'];
 					$data['Address Country Name']='United Kingdom';
 				}
@@ -1860,12 +1860,12 @@ class Address extends DB_Table{
 					$data['Address Postal Code']=$data['Address Country Name'];
 					$data['Address Country Code']='ESP';
 					$data['Address Country Key']=false;
-					if(preg_match('/^(spain|Espa.{0,2}a)$/i',_trim($data['Address Country Primary Division']))){
-						$data['Address Country Primary Division']='';
+					if(preg_match('/^(spain|Espa.{0,2}a)$/i',_trim($data['Address Country First Division']))){
+						$data['Address Country First Division']='';
 					}
 
-					if(preg_match('/^(spain|Espa.{0,2}a)$/i',_trim($data['Address Country Secondary Division']))){
-						$data['Address Country Secondary Division']='';
+					if(preg_match('/^(spain|Espa.{0,2}a)$/i',_trim($data['Address Country Second Division']))){
+						$data['Address Country Second Division']='';
 					}
 				}
 			}
@@ -1969,8 +1969,8 @@ class Address extends DB_Table{
 			if(
 			$number_lines==1 and
 			$data['Address Town']=='' and
-			$data['Address Country Primary Division']=='' and
-			$data['Address Country Secondary Division']==''
+			$data['Address Country First Division']=='' and
+			$data['Address Country Second Division']==''
 			){
 				// try to sepatate
 				//split by worlds
@@ -1982,7 +1982,7 @@ class Address extends DB_Table{
 					$words[$num_words-1],
 					$data['Address Country 2 Alpha Code']
 					)){
-						$data['Address Country Primary Division']=array_pop($words);
+						$data['Address Country First Division']=array_pop($words);
 						$num_words=count($words);
 					}
 				}
@@ -1991,7 +1991,7 @@ class Address extends DB_Table{
 					$words[$num_words-1],
 					$data['Address Country 2 Alpha Code']
 					)){
-						$data['Address Country Secondary Division']=array_pop($words);
+						$data['Address Country Second Division']=array_pop($words);
 						$num_words=count($words);
 					}
 				}
@@ -2019,9 +2019,9 @@ class Address extends DB_Table{
 				if(Address::is_town($raw_data['Address Line 3'],$data['Address Country 2 Alpha Code']) ){
 					$data['Address Town']=$raw_data['Address Line 3'];
 					$raw_data['Address Line 3']='';
-				}else if(Address::is_town($data['Address Country Secondary Division'],$data['Address Country 2 Alpha Code']) ){
-					$data['Address Town']=$data['Address Country Secondary Division'];
-					$data['Address Country Secondary Division']='';
+				}else if(Address::is_town($data['Address Country Second Division'],$data['Address Country 2 Alpha Code']) ){
+					$data['Address Town']=$data['Address Country Second Division'];
+					$data['Address Country Second Division']='';
 				}
 
 
@@ -2127,8 +2127,8 @@ class Address extends DB_Table{
 						$raw_data['Address Line 3']=$parte_0.', '.$parte_1;
 					}elseif(Address::is_street($parte_0) and !Address::is_street($parte_1)){
 						$raw_data['Address Line 3']=$parte_0;
-						$data['Address Town Primary Division'].=', '.$parte_1;
-						$data['Address Town Primary Division']=preg_replace('/^, /','',$data['Address Town Primary Division']);
+						$data['Address Town First Division'].=', '.$parte_1;
+						$data['Address Town First Division']=preg_replace('/^, /','',$data['Address Town First Division']);
 					}else
 					$raw_data['Address Line 1']=$parte_0.', '.$parte_1;
 
@@ -2162,8 +2162,8 @@ class Address extends DB_Table{
 
 
 			$data['Address Town']=$data['Address Town'];
-			$data['Address Town Secondary Division']=$data['Address Town Secondary Division'];
-			$data['Address Town Primary Division']=$data['Address Town Primary Division'];
+			$data['Address Town Second Division']=$data['Address Town Second Division'];
+			$data['Address Town First Division']=$data['Address Town First Division'];
 
 			//  print "1:$raw_data['Address Line 1'] 2:$raw_data['Address Line 2'] 3:$raw_data['Address Line 3'] t:$data['Address Town'] \n";
 
@@ -2174,14 +2174,14 @@ class Address extends DB_Table{
 
 
 			$f_t=($data['Address Town']==''?false:true);
-			$f_ta=($data['Address Town Secondary Division']==''?false:true);
-			$f_td=($data['Address Town Primary Division']==''?false:true);
+			$f_ta=($data['Address Town Second Division']==''?false:true);
+			$f_td=($data['Address Town First Division']==''?false:true);
 
-			$f_c1=($data['Address Country Primary Division']==''?false:true);
-			$f_c2=($data['Address Country Secondary Division']==''?false:true);
+			$f_c1=($data['Address Country First Division']==''?false:true);
+			$f_c2=($data['Address Country Second Division']==''?false:true);
 			$t_t=Address::is_town($data['Address Town']);
-			$t_c1=Address::is_town($data['Address Country Primary Division']);
-			$t_c2=Address::is_town($data['Address Country Secondary Division']);
+			$t_c1=Address::is_town($data['Address Country First Division']);
+			$t_c2=Address::is_town($data['Address Country Second Division']);
 
 			$s_a1=Address::is_street($raw_data['Address Line 1']);
 			$s_a2=Address::is_street($raw_data['Address Line 2']);
@@ -2194,16 +2194,16 @@ class Address extends DB_Table{
 			// especial case when to town is presente but the first division seems to be a town
 			if(!$f_t){
 				if($t_c1 and !$f_c2) {
-					// town is in primary division
-					$data['Address Town']=$data['Address Country Primary Division'];
-					$data['Address Country Primary Division']='';
+					// town is in first division
+					$data['Address Town']=$data['Address Country First Division'];
+					$data['Address Country First Division']='';
 					$t_c1=false;
 					$f_c1=false;
 					$f_t=true;
 					$t_t=true;
 				}elseif($t_c2 and !$f_c1){
-					$data['Address Town']=$data['Address Country Secondary Division'];
-					$data['Address Country Secondary Division']='';
+					$data['Address Town']=$data['Address Country Second Division'];
+					$data['Address Country Second Division']='';
 					$t_c2=false;
 					$f_c2=false;
 					$f_t=true;
@@ -2249,15 +2249,15 @@ class Address extends DB_Table{
 						//print "AAAAAAAA\n";
 						$town_filled=true;
 						$data['Address Town']=$raw_data['Address Line 3'];
-						$data['Address Town Secondary Division']=$raw_data['Address Line 2'];
+						$data['Address Town Second Division']=$raw_data['Address Line 2'];
 						$raw_data['Address Line 3']=$raw_data['Address Line 1'];
 						$raw_data['Address Line 2']='';
 						$raw_data['Address Line 1']='';
 
 					}else if(!$f_ta and !$f_td and $f_t){// caso oot
 
-						$data['Address Town Primary Division']=$raw_data['Address Line 3'];
-						$data['Address Town Secondary Division']=$raw_data['Address Line 2'];
+						$data['Address Town First Division']=$raw_data['Address Line 3'];
+						$data['Address Town Second Division']=$raw_data['Address Line 2'];
 						$raw_data['Address Line 3']=$raw_data['Address Line 1'];
 						$raw_data['Address Line 2']='';
 						$raw_data['Address Line 1']='';
@@ -2281,7 +2281,7 @@ class Address extends DB_Table{
 						$raw_data['Address Line 2']=$raw_data['Address Line 1'];
 						$raw_data['Address Line 1']='';
 					}else if(!$f_ta and !$f_td and $f_t){// caso oot
-						$data['Address Town Secondary Division']=$raw_data['Address Line 3'];
+						$data['Address Town Second Division']=$raw_data['Address Line 3'];
 						$raw_data['Address Line 3']=$raw_data['Address Line 2'];
 						$raw_data['Address Line 2']=$raw_data['Address Line 1'];
 						$raw_data['Address Line 1']='';
@@ -2306,7 +2306,7 @@ class Address extends DB_Table{
 						$raw_data['Address Line 1']='';
 					}else if(!$f_ta and !$f_td and $f_t){// caso oot
 
-						$data['Address Town Secondary Division']=$raw_data['Address Line 3'];
+						$data['Address Town Second Division']=$raw_data['Address Line 3'];
 						$raw_data['Address Line 3']=$raw_data['Address Line 2'];
 						$raw_data['Address Line 2']=$raw_data['Address Line 1'];
 						$raw_data['Address Line 1']='';
@@ -2338,10 +2338,10 @@ class Address extends DB_Table{
 
 
 
-		if(preg_match('/^P\.o\.box\s+\d+$|^po\s+\d+$|^p\.o\.\s+\d+$/i',$data['Address Town Secondary Division'])){
+		if(preg_match('/^P\.o\.box\s+\d+$|^po\s+\d+$|^p\.o\.\s+\d+$/i',$data['Address Town Second Division'])){
 
-			$po=$data['Address Town Secondary Division'];
-			$data['Address Town Secondary Division']='';
+			$po=$data['Address Town Second Division'];
+			$data['Address Town Second Division']='';
 			$po=preg_replace('/^P\.o\.box\s+|^po\s+|^p\.o\.\s+/i','PO BOX ',$po);
 			if($raw_data['Address Line 1']=='')
 			$raw_data['Address Line 1']=$po;
@@ -2362,10 +2362,10 @@ class Address extends DB_Table{
 				$data['Address Town']='Andover';
 
 				if($town_filled){
-					if(Address::is_country_d2($data['Address Town'],$data['Address Country 2 Alpha Code']) and Address::is_town($data['Address Town Secondary Division'],$data['Address Country 2 Alpha Code'])){
-						$data['Address Country Secondary Division']=$data['Address Town'];
-						$data['Address Town']=$data['Address Town Secondary Division'];
-						$data['Address Town Secondary Division']='';
+					if(Address::is_country_d2($data['Address Town'],$data['Address Country 2 Alpha Code']) and Address::is_town($data['Address Town Second Division'],$data['Address Country 2 Alpha Code'])){
+						$data['Address Country Second Division']=$data['Address Town'];
+						$data['Address Town']=$data['Address Town Second Division'];
+						$data['Address Town Second Division']='';
 					}
 
 				}
@@ -2373,13 +2373,13 @@ class Address extends DB_Table{
 
 
 				if($data['Address Town']==''){
-					if($data['Address Town Primary Division']!='' ){
-						$data['Address Town']=$data['Address Town Primary Division'];
-						$data['Address Town Primary Division']='';
+					if($data['Address Town First Division']!='' ){
+						$data['Address Town']=$data['Address Town First Division'];
+						$data['Address Town First Division']='';
 					}
-					elseif($data['Address Town Secondary Division']!=''){
-						$data['Address Town']=$data['Address Town Secondary Division'];
-						$data['Address Town Secondary Division']='';
+					elseif($data['Address Town Second Division']!=''){
+						$data['Address Town']=$data['Address Town Second Division'];
+						$data['Address Town Second Division']='';
 					}
 					elseif($raw_data['Address Line 3']!='' and ($raw_data['Address Line 2']!='' or $raw_data['Address Line 1']!='') ){
 						$data['Address Town']=$raw_data['Address Line 3'];
@@ -2406,53 +2406,53 @@ class Address extends DB_Table{
 				$data['Address Postal Code']=preg_replace('/\s/i','',$data['Address Postal Code']);
 
 				if($data['Address Town']=='Padova'){
-					$data['Address Country Primary Division']='Veneto';
-					$data['Address Country Secondary Division']='Padova';
+					$data['Address Country First Division']='Veneto';
+					$data['Address Country Second Division']='Padova';
 				}
 				if($data['Address Town']=='Mestre'){
-					$data['Address Country Primary Division']='Venezia';
-					$data['Address Country Secondary Division']='Veneto';
+					$data['Address Country First Division']='Venezia';
+					$data['Address Country Second Division']='Veneto';
 				}
 
 				if(preg_match('/Genova\s*(\- Ge)?/i',$data['Address Town'])){
-					$data['Address Country Primary Division']='Genoa';
-					$data['Address Country Secondary Division']='Liguria';
+					$data['Address Country First Division']='Genoa';
+					$data['Address Country Second Division']='Liguria';
 					$data['Address Town']='Genova';
 				}
 
 				if(preg_match('/Spilamberto/i',$raw_data['Address Line 3']) and preg_match('/Modena/i',$data['Address Town'])){
-					$data['Address Country Primary Division']='Emilia-Romagna';
-					$data['Address Country Secondary Division']='Modena';
+					$data['Address Country First Division']='Emilia-Romagna';
+					$data['Address Country Second Division']='Modena';
 					$data['Address Town']='Spilamberto';
 					$raw_data['Address Line 3']='';
 				}
 
 				if(preg_match('/Pescia/i',$raw_data['Address Line 3']) and preg_match('/Toscana/i',$data['Address Town'])){
-					$data['Address Country Primary Division']='Toscana';
-					$data['Address Country Secondary Division']='Pistoia';
+					$data['Address Country First Division']='Toscana';
+					$data['Address Country Second Division']='Pistoia';
 					$data['Address Town']='Pescia';
 					$raw_data['Address Line 3']='';
 				}
 
 				if( preg_match('/Villasor.*Cagliari/i',$data['Address Town'])){
-					$data['Address Country Primary Division']='Sardinia';
-					$data['Address Country Secondary Division']='Cagliari';
+					$data['Address Country First Division']='Sardinia';
+					$data['Address Country Second Division']='Cagliari';
 					$data['Address Town']='Villasor';
 				}
 				if( preg_match('/Nocera Superiore/i',$data['Address Town'])){
-					$data['Address Country Primary Division']='Campania';
-					$data['Address Country Secondary Division']='Salerno';
+					$data['Address Country First Division']='Campania';
+					$data['Address Country Second Division']='Salerno';
 					$data['Address Town']='Nocera Superiore';
 				}
 				if( preg_match('/^Vicenza$/i',$data['Address Town'])){
-					$data['Address Country Primary Division']='Veneto';
-					$data['Address Country Secondary Division']='Vicenza';
+					$data['Address Country First Division']='Veneto';
+					$data['Address Country Second Division']='Vicenza';
 					$data['Address Town']='Vicenza';
 				}
 
 				if( preg_match('/^Rome$/i',$data['Address Town'])){
-					$data['Address Country Primary Division']='Lazio';
-					$data['Address Country Secondary Division']='Rome';
+					$data['Address Country First Division']='Lazio';
+					$data['Address Country Second Division']='Rome';
 					$data['Address Town']='Rome';
 				}
 				$data['Address Postal Code']=_trim($data['Address Postal Code']);
@@ -2469,9 +2469,9 @@ class Address extends DB_Table{
 				// print "address1: $raw_data['Address Line 1']\n";
 				//print "address2: $raw_data['Address Line 2']\n";
 				//print "address3: $raw_data['Address Line 3']\n";
-				//print "townarea: $data['Address Town Secondary Division']\n";
+				//print "townarea: $data['Address Town Second Division']\n";
 				//print "town: $data['Address Town']\n";
-				//    print "country_d2: $data['Address Country Secondary Division']\n";
+				//    print "country_d2: $data['Address Country Second Division']\n";
 				//      print "postcode: $data['Address Postal Code']\n";
 
 				$data['Address Postal Code']=_trim($data['Address Postal Code']);
@@ -2479,13 +2479,13 @@ class Address extends DB_Table{
 
 
 
-				$data['Address Country Secondary Division']=_trim($data['Address Country Secondary Division']);
+				$data['Address Country Second Division']=_trim($data['Address Country Second Division']);
 				$data['Address Postal Code']=preg_replace('/County COrK/i','',$data['Address Postal Code']);
 				$data['Address Postal Code']=preg_replace('/^co\.\s*|Republique of Ireland|Louth Ireland|ireland/i','',$data['Address Postal Code']);
-				$data['Address Country Secondary Division']=preg_replace('/^co\.\s*|republic of ireland|republic of|ireland/i','',$data['Address Country Secondary Division']);
-				$data['Address Country Secondary Division']=preg_replace('/(co|county)\s+[a-z]+$/i','',$data['Address Country Secondary Division']);
-				$data['Address Country Secondary Division']=preg_replace('/(co|county)\s+[a-z]+,?\s*(ireland)?/i','',$data['Address Country Secondary Division']);
-				$data['Address Country Secondary Division'] =preg_replace('/(co|county)\s+[a-z]+$/i','',$data['Address Country Secondary Division']);
+				$data['Address Country Second Division']=preg_replace('/^co\.\s*|republic of ireland|republic of|ireland/i','',$data['Address Country Second Division']);
+				$data['Address Country Second Division']=preg_replace('/(co|county)\s+[a-z]+$/i','',$data['Address Country Second Division']);
+				$data['Address Country Second Division']=preg_replace('/(co|county)\s+[a-z]+,?\s*(ireland)?/i','',$data['Address Country Second Division']);
+				$data['Address Country Second Division'] =preg_replace('/(co|county)\s+[a-z]+$/i','',$data['Address Country Second Division']);
 
 				$data['Address Postal Code']=preg_replace('/\,+\s*^ireland$/i','',$data['Address Postal Code']);
 				$data['Address Postal Code']=preg_replace('/(co|county)\s+[a-z]+,?\s*(ireland)?/i','',$data['Address Postal Code']);
@@ -2496,12 +2496,12 @@ class Address extends DB_Table{
 
 				$data['Address Postal Code']=preg_replace('/co\s*Donegal|eire|republic of ireland|rep\? of Ireland|n\/a|^ireland$|/i','',$data['Address Postal Code']);
 				$data['Address Postal Code']=_trim($data['Address Postal Code']);
-				$data['Address Country Secondary Division']=_trim($data['Address Country Secondary Division']);
-				//print "country_d2: $data['Address Country Secondary Division']\n";
+				$data['Address Country Second Division']=_trim($data['Address Country Second Division']);
+				//print "country_d2: $data['Address Country Second Division']\n";
 				$data['Address Town']=preg_replace('/\-?\s*eire|\s*\-?\s*ireland/i','',$data['Address Town']);
 				//exit;
-				if($data['Address Country Secondary Division']=='Wesstmeath')
-				$data['Address Country Secondary Division']='Westmeath';
+				if($data['Address Country Second Division']=='Wesstmeath')
+				$data['Address Country Second Division']='Westmeath';
 
 				if($data['Address Town']=='Wesstmeath' or $data['Address Town']=='Westmeath' ){
 					$data['Address Town']='';
@@ -2509,11 +2509,11 @@ class Address extends DB_Table{
 
 
 
-				if(Address::is_town($data['Address Town Secondary Division'],$data['Address Country 2 Alpha Code'])
+				if(Address::is_town($data['Address Town Second Division'],$data['Address Country 2 Alpha Code'])
 				and Address::is_country_d2($data['Address Town'],$data['Address Country 2 Alpha Code'])){
 					$county_d2=$data['Address Town'];
-					$data['Address Town']=$data['Address Town Secondary Division'];
-					$data['Address Town Secondary Division']='';
+					$data['Address Town']=$data['Address Town Second Division'];
+					$data['Address Town Second Division']='';
 
 				}
 
@@ -2535,14 +2535,14 @@ class Address extends DB_Table{
 				$valid_postalcodes=array('D1','D2','D3','D4','D5','D6','D6w','D7','D8','D9','D10','D11','D12','D13','D14','D15','D16','D17','D18','D20','D22','D24');
 
 				if($data['Address Postal Code']!=''){
-					$sql="select `Country Secondary Division Name` as name from `Country Secondary Division Dimension` where  `Country Key`=75 and `Country Secondary Division Name` like '%".$data['Address Postal Code']."%'";
+					$sql="select `Country Second Division Name` as name from `Country Second Division Dimension` where  `Country Key`=75 and `Country Second Division Name` like '%".$data['Address Postal Code']."%'";
 					//print "$sql\n";
 
 					$result=mysql_query($sql);
 					if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
 						$data['Address Postal Code']='';
-						$data['Address Country Secondary Division']=$row['name'];
+						$data['Address Country Second Division']=$row['name'];
 
 					}
 				}
@@ -2552,13 +2552,13 @@ class Address extends DB_Table{
 
 				if(preg_match('/^co\.?\s+|^country\s+/i',$data['Address Postal Code'])){
 					$data['Address Postal Code']='';
-					if($data['Address Country Secondary Division']=='')
-					$data['Address Country Secondary Division']=$data['Address Postal Code'];
+					if($data['Address Country Second Division']=='')
+					$data['Address Country Second Division']=$data['Address Postal Code'];
 					$data['Address Postal Code']='';
 				}
 
 				$data['Address Town']=preg_replace('/\s+ireland\s*/i','',$data['Address Town']);
-				$data['Address Country Secondary Division']=preg_replace('/\s+ireland\s*/i','',$data['Address Country Secondary Division']);
+				$data['Address Country Second Division']=preg_replace('/\s+ireland\s*/i','',$data['Address Country Second Division']);
 
 
 				$data['Address Town']=preg_replace('/co\.\s*/i','Co ',$data['Address Town']);
@@ -2568,8 +2568,8 @@ class Address extends DB_Table{
 				$split_town=preg_split('/\s*-\s*|\s*,\s*/i',$data['Address Town']);
 				if(count($split_town)==2){
 					if(preg_match('/^co\s+/i',$split_town[1])){
-						if($data['Address Country Secondary Division']=='')
-						$data['Address Country Secondary Division']=$split_town[1];
+						if($data['Address Country Second Division']=='')
+						$data['Address Country Second Division']=$split_town[1];
 						$data['Address Town']=$split_town[0];
 					}
 
@@ -2577,29 +2577,29 @@ class Address extends DB_Table{
 
 
 				if(preg_match('/^co\s+/i' ,$data['Address Town'])){
-					if($data['Address Country Secondary Division']=='')
-					$data['Address Country Secondary Division']=$data['Address Town'];
+					if($data['Address Country Second Division']=='')
+					$data['Address Country Second Division']=$data['Address Town'];
 					$data['Address Town']=preg_replace('/^co\s+/i','',$data['Address Town']);
 				}
 
-				$data['Address Country Secondary Division']=preg_replace('/co\.?\s+/i','',$data['Address Country Secondary Division']);
-				$data['Address Country Secondary Division']=preg_replace('/county\s+/i','',$data['Address Country Secondary Division']);
+				$data['Address Country Second Division']=preg_replace('/co\.?\s+/i','',$data['Address Country Second Division']);
+				$data['Address Country Second Division']=preg_replace('/county\s+/i','',$data['Address Country Second Division']);
 
-				if(preg_match('/\s*Cork\sCity\s*/i',$data['Address Town Secondary Division'])){
-					$data['Address Town Secondary Division']=='';
+				if(preg_match('/\s*Cork\sCity\s*/i',$data['Address Town Second Division'])){
+					$data['Address Town Second Division']=='';
 					if($data['Address Town']=='')
 					$data['Address Town']='Cock';
 				}
 
-				if(preg_match('/^dublin\s+\d+$/i',$data['Address Town Secondary Division'])){
+				if(preg_match('/^dublin\s+\d+$/i',$data['Address Town Second Division'])){
 
 					if($data['Address Town']=='')
 					$data['Address Town']='Dublin';
-					if($data['Address Town Primary Division']=='')
-					$data['Address Town Primary Division']=preg_replace('/dublin\s+/i','',$data['Address Town Secondary Division']);
-					if($data['Address Postal Code']==preg_replace('/dublin\s+/i','',$data['Address Town Secondary Division']))
+					if($data['Address Town First Division']=='')
+					$data['Address Town First Division']=preg_replace('/dublin\s+/i','',$data['Address Town Second Division']);
+					if($data['Address Postal Code']==preg_replace('/dublin\s+/i','',$data['Address Town Second Division']))
 					$data['Address Postal Code']='';
-					$data['Address Town Secondary Division']=='';
+					$data['Address Town Second Division']=='';
 				}
 
 
@@ -2631,13 +2631,13 @@ class Address extends DB_Table{
 
 
 				if($data['Address Town']==''){
-					if($data['Address Town Primary Division']!='' ){
-						$data['Address Town']=$data['Address Town Primary Division'];
-						$data['Address Town Primary Division']='';
+					if($data['Address Town First Division']!='' ){
+						$data['Address Town']=$data['Address Town First Division'];
+						$data['Address Town First Division']='';
 					}
-					elseif($data['Address Town Secondary Division']!=''){
-						$data['Address Town']=$data['Address Town Secondary Division'];
-						$data['Address Town Secondary Division']='';
+					elseif($data['Address Town Second Division']!=''){
+						$data['Address Town']=$data['Address Town Second Division'];
+						$data['Address Town Second Division']='';
 					}
 					elseif($raw_data['Address Line 3']!='' and ($raw_data['Address Line 2']!='' or $raw_data['Address Line 1']!='') ){
 						$data['Address Town']=$raw_data['Address Line 3'];
@@ -2647,7 +2647,7 @@ class Address extends DB_Table{
 						$raw_data['Address Line 2']='';
 					}
 				}
-				$data['Address Country Secondary Division']=mb_ucwords($data['Address Country Secondary Division']);
+				$data['Address Country Second Division']=mb_ucwords($data['Address Country Second Division']);
 
 				$data['Address Postal Code']=str_replace('-','',$data['Address Postal Code']);
 				$data['Address Postal Code']=preg_replace('/MUNSTER|County RK/i','',$data['Address Postal Code']);
@@ -2657,9 +2657,9 @@ class Address extends DB_Table{
 			case(89)://Canada
 				$data['Address Postal Code']=preg_replace('/\s*canada\s*/i','',$data['Address Postal Code']);
 
-				if($data['Address Country Secondary Division']!='' and $data['Address Country Primary Division']==''){
-					$data['Address Country Primary Division']=$data['Address Country Secondary Division'];
-					$data['Address Country Secondary Division']='';
+				if($data['Address Country Second Division']!='' and $data['Address Country First Division']==''){
+					$data['Address Country First Division']=$data['Address Country Second Division'];
+					$data['Address Country Second Division']='';
 				}
 				break;
 			case(208)://Czech Republic
@@ -2680,13 +2680,13 @@ class Address extends DB_Table{
 				$data['Address Town']='';
 
 				if($data['Address Town']==''){
-					if($data['Address Town Primary Division']!='' ){
-						$data['Address Town']=$data['Address Town Primary Division'];
-						$data['Address Town Primary Division']='';
+					if($data['Address Town First Division']!='' ){
+						$data['Address Town']=$data['Address Town First Division'];
+						$data['Address Town First Division']='';
 					}
-					elseif($data['Address Town Secondary Division']!=''){
-						$data['Address Town']=$data['Address Town Secondary Division'];
-						$data['Address Town Secondary Division']='';
+					elseif($data['Address Town Second Division']!=''){
+						$data['Address Town']=$data['Address Town Second Division'];
+						$data['Address Town Second Division']='';
 					}
 					elseif($raw_data['Address Line 3']!='' and ($raw_data['Address Line 2']!='' or $raw_data['Address Line 1']!='') ){
 						$data['Address Town']=$raw_data['Address Line 3'];
@@ -2706,13 +2706,13 @@ class Address extends DB_Table{
 				$data['Address Town']=preg_replace('/\,?\s*C.I.$/i','',$data['Address Town']);
 
 				if($data['Address Town']==''){
-					if($data['Address Town Primary Division']!='' ){
-						$data['Address Town']=$data['Address Town Primary Division'];
-						$data['Address Town Primary Division']='';
+					if($data['Address Town First Division']!='' ){
+						$data['Address Town']=$data['Address Town First Division'];
+						$data['Address Town First Division']='';
 					}
-					elseif($data['Address Town Secondary Division']!=''){
-						$data['Address Town']=$data['Address Town Secondary Division'];
-						$data['Address Town Secondary Division']='';
+					elseif($data['Address Town Second Division']!=''){
+						$data['Address Town']=$data['Address Town Second Division'];
+						$data['Address Town Second Division']='';
 					}
 					elseif($raw_data['Address Line 3']!='' and ($raw_data['Address Line 2']!='' or $raw_data['Address Line 1']!='') ){
 						if(!preg_match('/^rue\s/i',$raw_data['Address Line 3'])){
@@ -2744,42 +2744,42 @@ class Address extends DB_Table{
 
 				if(preg_match('/^(Attica|Ionian Islands)$/i',$data['Address Town']))
 				$data['Address Town']='';
-				if($data['Address Country Primary Division']=='Attoka'){
-					$data['Address Country Primary Division']='Attica';
+				if($data['Address Country First Division']=='Attoka'){
+					$data['Address Country First Division']='Attica';
 
 				}
 				if($data['Address Town']=='Athens')
-				$data['Address Country Primary Division']='Attica';
+				$data['Address Country First Division']='Attica';
 				if($data['Address Town']=='Salamina')
-				$data['Address Country Primary Division']='Attica';
+				$data['Address Country First Division']='Attica';
 				if($data['Address Town']=='Corfu'){
 					$data['Address Town']='';
-					$data['Address Country Primary Division']='Ionian Islands';
-					$data['Address Country Secondary Division']='Corfu';
+					$data['Address Country First Division']='Ionian Islands';
+					$data['Address Country Second Division']='Corfu';
 				}
 				if($data['Address Town']=='Kefalonia')
-				$data['Address Country Primary Division']='Ionian Islands';
+				$data['Address Country First Division']='Ionian Islands';
 				if($data['Address Town']=='Thessaloniki')
-				$data['Address Country Primary Division']='Central Macedonia';
+				$data['Address Country First Division']='Central Macedonia';
 
 				if($data['Address Town']=='Xania - Krete'){
-					$data['Address Country Primary Division']='Crete';
+					$data['Address Country First Division']='Crete';
 					$data['Address Town']='Xania';
 				}
 				if($data['Address Town']=='Salamina - Tsami'){
-					$data['Address Country Primary Division']='Attica';
+					$data['Address Country First Division']='Attica';
 					$data['Address Town']='Salamina';
-					if($data['Address Town Secondary Division']=='')
-					$data['Address Town Secondary Division']='Tsami';
+					if($data['Address Town Second Division']=='')
+					$data['Address Town Second Division']='Tsami';
 				}
 
 
 				break;
 
 			case(229)://USA
-				if($data['Address Country Secondary Division']!='' and $data['Address Country Primary Division']==''){
-					$data['Address Country Primary Division']=$data['Address Country Secondary Division'];
-					$data['Address Country Secondary Division']='';
+				if($data['Address Country Second Division']!='' and $data['Address Country First Division']==''){
+					$data['Address Country First Division']=$data['Address Country Second Division'];
+					$data['Address Country Second Division']='';
 				}
 				$data['Address Town']=_trim($data['Address Town']);
 				$data['Address Postal Code']=_trim($data['Address Postal Code']);
@@ -2789,12 +2789,12 @@ class Address extends DB_Table{
 
 					$military_base='Yes';
 
-					$raw_data['Address Line 1']=_trim($raw_data['Address Line 1'].' '.$raw_data['Address Line 2'].' '.$raw_data['Address Line 3'].' '.$data['Address Town'].' '.$data['Address Country Secondary Division'].' '.$data['Address Country Primary Division']);
+					$raw_data['Address Line 1']=_trim($raw_data['Address Line 1'].' '.$raw_data['Address Line 2'].' '.$raw_data['Address Line 3'].' '.$data['Address Town'].' '.$data['Address Country Second Division'].' '.$data['Address Country First Division']);
 					$raw_data['Address Line 2']='';
 					$raw_data['Address Line 3']='';
 					$data['Address Town']='';
-					$data['Address Country Secondary Division']='';
-					$data['Address Country Primary Division']='';
+					$data['Address Country Second Division']='';
+					$data['Address Country First Division']='';
 					$military_installation['address']=$raw_data['Address Line 1'];
 					$military_installation['military base country key']='';
 					$military_installation['military base postal code']=$data['Address Postal Code'];
@@ -2808,35 +2808,35 @@ class Address extends DB_Table{
 
 				$data['Address Town']=preg_replace('/Lousiana/i','Louisiana',$data['Address Town']);
 
-				$data['Address Country Primary Division']=_trim($data['Address Country Primary Division']);
-				if(preg_match('/^[a-z]\s*[a-z]$/i',$data['Address Country Primary Division']))
-				$data['Address Country Primary Division']=preg_replace('/\s/','',$data['Address Country Primary Division']);
+				$data['Address Country First Division']=_trim($data['Address Country First Division']);
+				if(preg_match('/^[a-z]\s*[a-z]$/i',$data['Address Country First Division']))
+				$data['Address Country First Division']=preg_replace('/\s/','',$data['Address Country First Division']);
 
 				$data['Address Postal Code']=_trim($data['Address Postal Code']);
 				$data['Address Postal Code']=preg_replace('/united states of america/i','',$data['Address Postal Code']);
 				$data['Address Postal Code']=preg_replace('/\s*u\s*s\s*a\s*|^United States\s+|United Stated|usa|^united states$|^united states of america$|^america$/i','',$data['Address Postal Code']);
 				$data['Address Postal Code']=_trim($data['Address Postal Code']);
 
-				if($data['Address Country Primary Division']==''){
+				if($data['Address Country First Division']==''){
 					$regex='/\s*\-?\s*[a-z]{2}\.?\s*\-?\s*/i';
 					if(preg_match($regex,$data['Address Postal Code'],$match)){
-						$data['Address Country Primary Division']=preg_replace('/[^a-z]/i','',$match[0]);
+						$data['Address Country First Division']=preg_replace('/[^a-z]/i','',$match[0]);
 						$data['Address Postal Code']=preg_replace($regex,'',$data['Address Postal Code']);
 					}
 					$regex='/\([a-z]{2}\)/i';
 					if(preg_match($regex,$data['Address Town'],$match)){
-						$data['Address Country Primary Division']=preg_replace('/[^a-z]/i','',$match[0]);
+						$data['Address Country First Division']=preg_replace('/[^a-z]/i','',$match[0]);
 						$data['Address Town']=preg_replace($regex,'',$data['Address Town']);
 					}
 					$regex='/\s{1,}\-?\s*[a-z]{2}\.?$/i';
 					if(preg_match($regex,$data['Address Town'],$match)){
-						$data['Address Country Primary Division']=preg_replace('/[^a-z]/i','',$match[0]);
+						$data['Address Country First Division']=preg_replace('/[^a-z]/i','',$match[0]);
 						$data['Address Town']=preg_replace($regex,'',$data['Address Town']);
 					}
-					if(Address::is_country_d1($data['Address Town'],$data['Address Country 2 Alpha Code']) and $data['Address Town Secondary Division']!=''){
-						$data['Address Country Primary Division']=$data['Address Town'];
-						$data['Address Town']=$data['Address Town Secondary Division'];
-						$data['Address Town Secondary Division']='';
+					if(Address::is_country_d1($data['Address Town'],$data['Address Country 2 Alpha Code']) and $data['Address Town Second Division']!=''){
+						$data['Address Country First Division']=$data['Address Town'];
+						$data['Address Town']=$data['Address Town Second Division'];
+						$data['Address Town Second Division']='';
 					}
 				}
 
@@ -2851,11 +2851,11 @@ class Address extends DB_Table{
 
 				$town_split=preg_split('/\s*\-\s*|\s*,\s*/',$data['Address Town']);
 
-				$data['Address Country Primary Division']=_trim($data['Address Country Primary Division']);
+				$data['Address Country First Division']=_trim($data['Address Country First Division']);
 
 				if(count($town_split)==2 and Address::is_country_d1($town_split[1],$data['Address Country 2 Alpha Code'])){
 
-					$data['Address Country Primary Division']=$town_split[1];
+					$data['Address Country First Division']=$town_split[1];
 					$data['Address Town']=$town_split[0];
 
 
@@ -2864,21 +2864,21 @@ class Address extends DB_Table{
 
 
 
-				if($data['Address Country Primary Division']=='N Y')
-				$data['Address Country Primary Division']='New York';
+				if($data['Address Country First Division']=='N Y')
+				$data['Address Country First Division']='New York';
 
 				$states=array('AL'=>'Alabama','AK'=>'Alaska','AZ'=>'Arizona','AR'=>'Arkansas','CA'=>'California','CO'=>'Colorado','CT'=>'Connecticut','DE'=>'Delaware','FL'=>'Florida','GA'=>'Georgia','HI'=>'Hawaii','ID'=>'Idaho','IL'=>'Illinois','IN'=>'Indiana','IA'=>'Iowa','KS'=>'Kansas','KY'=>'Kentucky','LA'=>'Louisiana','ME'=>'Maine','MD'=>'Maryland','MA'=>'Massachusetts','MI'=>'Michigan','MN'=>'Minnesota','MS'=>'Mississippi','MO'=>'Missouri','MT'=>'Montana','NE'=>'Nebraska','NV'=>'Nevada','NH'=>'New Hampshire','NJ'=>'New Jersey','NM'=>'New Mexico','NY'=>'New York','NC'=>'North Carolina','ND'=>'North Dakota','OH'=>'Ohio','OK'=>'Oklahoma','OR'=>'Oregon','PA'=>'Pennsylvania','RI'=>'Rhode Island','SC'=>'South Carolina','SD'=>'South Dakota','TN'=>'Tennessee','TX'=>'Texas','UT'=>'Utah','VT'=>'Vermont','VA'=>'Virginia','WA'=>'Washington','WV'=>'West Virginia','WI'=>'Wisconsin','WY'=>'Wyoming');
-				if(strlen($data['Address Country Primary Division'])==2){
-					if (array_key_exists(strtoupper($data['Address Country Primary Division']), $states)) {
-						$data['Address Country Primary Division']=$states[strtoupper($data['Address Country Primary Division'])];
+				if(strlen($data['Address Country First Division'])==2){
+					if (array_key_exists(strtoupper($data['Address Country First Division']), $states)) {
+						$data['Address Country First Division']=$states[strtoupper($data['Address Country First Division'])];
 					}
 				}
 
-				if($data['Address Country Primary Division']==$data['Address Country Secondary Division'])
-				$data['Address Country Secondary Division']='';
+				if($data['Address Country First Division']==$data['Address Country Second Division'])
+				$data['Address Country Second Division']='';
 
-				if($data['Address Town Primary Division']=='Brooklyn' and $data['Address Town']=='New York'){
-					$data['Address Country Primary Division']='New York';
+				if($data['Address Town First Division']=='Brooklyn' and $data['Address Town']=='New York'){
+					$data['Address Country First Division']='New York';
 				}
 				$data['Address Postal Code']=_trim($data['Address Postal Code']);
 				if(preg_match('/^d{4}$/',$data['Address Postal Code']))
@@ -2908,13 +2908,13 @@ class Address extends DB_Table{
 
 
 				if($data['Address Town']==''){
-					if($data['Address Town Primary Division']!='' ){
-						$data['Address Town']=$data['Address Town Primary Division'];
-						$data['Address Town Primary Division']='';
+					if($data['Address Town First Division']!='' ){
+						$data['Address Town']=$data['Address Town First Division'];
+						$data['Address Town First Division']='';
 					}
-					elseif($data['Address Town Secondary Division']!=''){
-						$data['Address Town']=$data['Address Town Secondary Division'];
-						$data['Address Town Secondary Division']='';
+					elseif($data['Address Town Second Division']!=''){
+						$data['Address Town']=$data['Address Town Second Division'];
+						$data['Address Town Second Division']='';
 					}
 					elseif($raw_data['Address Line 3']!='' and ($raw_data['Address Line 2']!='' or $raw_data['Address Line 1']!='') ){
 						$data['Address Town']=$raw_data['Address Line 3'];
@@ -2939,7 +2939,7 @@ class Address extends DB_Table{
 				$t=preg_split('/\s*,\s*/',$data['Address Town']);
 				if(count($t)==2){
 					if(Address::is_country_d1($t[1],$data['Address Country 2 Alpha Code'])){
-						$data['Address Country Primary Division']=$t[1];
+						$data['Address Country First Division']=$t[1];
 						$data['Address Town']=$t[0];
 					}
 
@@ -2947,19 +2947,19 @@ class Address extends DB_Table{
 				}
 
 				$data['Address Town']=_trim($data['Address Town']);
-				if(Address::is_country_d1($data['Address Town'],$data['Address Country 2 Alpha Code']) and $data['Address Country Primary Division']==''
+				if(Address::is_country_d1($data['Address Town'],$data['Address Country 2 Alpha Code']) and $data['Address Country First Division']==''
 				and ($raw_data['Address Line 2']!='' and $raw_data['Address Line 3']!='') ){
-					$data['Address Country Primary Division']=$data['Address Town'];
+					$data['Address Country First Division']=$data['Address Town'];
 					$data['Address Town']='';
 
 				}
 				if($data['Address Town']=='West Vlaanderen')
 				$data['Address Town']=='West-Vlaanderen';
 
-				if(Address::is_country_d1($data['Address Town'],$data['Address Country 2 Alpha Code']) and $data['Address Country Primary Division']==''
-				and $data['Address Town Secondary Division']!=''  ){
-					$data['Address Country Primary Division']=$data['Address Town Secondary Division'];
-					$data['Address Town Secondary Division']='';
+				if(Address::is_country_d1($data['Address Town'],$data['Address Country 2 Alpha Code']) and $data['Address Country First Division']==''
+				and $data['Address Town Second Division']!=''  ){
+					$data['Address Country First Division']=$data['Address Town Second Division'];
+					$data['Address Town Second Division']='';
 
 				}
 
@@ -2973,14 +2973,14 @@ class Address extends DB_Table{
 				$data['Address Postal Code']=_trim($data['Address Postal Code']);
 				$data['Address Postal Code']=preg_replace('/a\-?/i','',$data['Address Postal Code']);
 				$data['Address Town']=_trim($data['Address Town']);
-				if(Address::is_country_d1($data['Address Town'],$data['Address Country 2 Alpha Code']) and $data['Address Country Primary Division']==''  and ($raw_data['Address Line 2']!='' and $raw_data['Address Line 3']!='') ){
-					$data['Address Country Primary Division']=$data['Address Town'];
+				if(Address::is_country_d1($data['Address Town'],$data['Address Country 2 Alpha Code']) and $data['Address Country First Division']==''  and ($raw_data['Address Line 2']!='' and $raw_data['Address Line 3']!='') ){
+					$data['Address Country First Division']=$data['Address Town'];
 					$data['Address Town']='';
 
 				}
-				if(Address::is_country_d1($data['Address Town'],$data['Address Country 2 Alpha Code']) and $data['Address Country Primary Division']==''  and $data['Address Town Secondary Division']!=''  ){
-					$data['Address Country Primary Division']=$data['Address Town Secondary Division'];
-					$data['Address Town Secondary Division']='';
+				if(Address::is_country_d1($data['Address Town'],$data['Address Country 2 Alpha Code']) and $data['Address Country First Division']==''  and $data['Address Town Second Division']!=''  ){
+					$data['Address Country First Division']=$data['Address Town Second Division'];
+					$data['Address Town Second Division']='';
 
 				}
 
@@ -2992,18 +2992,18 @@ class Address extends DB_Table{
 				$data['Address Postal Code']=preg_replace('/\s*australia\s*/i','',$data['Address Postal Code']);
 				$regex='/\(QLD\)/i';
 				if(preg_match($regex,$data['Address Town'])){
-					$data['Address Country Primary Division']='Queensland';
+					$data['Address Country First Division']='Queensland';
 					$data['Address Town']=preg_replace($regex,'',$data['Address Town']);
 				}
 				$regex='/, Western Australia/i';
 				if(preg_match($regex,$data['Address Town'])){
-					$data['Address Country Primary Division']='Western Australia';
+					$data['Address Country First Division']='Western Australia';
 					$data['Address Town']=preg_replace($regex,'',$data['Address Town']);
 				}
 
-				if($data['Address Country Secondary Division']='' and $data['Address Country Primary Division']=='' ){
-					$data['Address Country Primary Division']=$data['Address Country Secondary Division'];
-					$data['Address Country Secondary Division']='';
+				if($data['Address Country Second Division']='' and $data['Address Country First Division']=='' ){
+					$data['Address Country First Division']=$data['Address Country Second Division'];
+					$data['Address Country Second Division']='';
 				}
 
 
@@ -3011,28 +3011,28 @@ class Address extends DB_Table{
 
 				$data['Address Town']=_trim($data['Address Town']);
 
-				if(Address::is_country_d1($data['Address Town'],$data['Address Country 2 Alpha Code']) and $data['Address Town Secondary Division']!=''){
-					$data['Address Country Primary Division']=$data['Address Town'];
-					$data['Address Town']=$data['Address Town Secondary Division'];
-					$data['Address Town Secondary Division']='';
+				if(Address::is_country_d1($data['Address Town'],$data['Address Country 2 Alpha Code']) and $data['Address Town Second Division']!=''){
+					$data['Address Country First Division']=$data['Address Town'];
+					$data['Address Town']=$data['Address Town Second Division'];
+					$data['Address Town Second Division']='';
 
 				}
 
 
-				if(Address::is_country_d1($data['Address Town'],$data['Address Country 2 Alpha Code']) and $data['Address Country Primary Division']==''  and ($raw_data['Address Line 2']!='' and $raw_data['Address Line 3']!='') ){
-					$data['Address Country Primary Division']=$data['Address Town'];
+				if(Address::is_country_d1($data['Address Town'],$data['Address Country 2 Alpha Code']) and $data['Address Country First Division']==''  and ($raw_data['Address Line 2']!='' and $raw_data['Address Line 3']!='') ){
+					$data['Address Country First Division']=$data['Address Town'];
 					$data['Address Town']='';
 
 				}
 
 				if($data['Address Town']==''){
-					if($data['Address Town Primary Division']!='' ){
-						$data['Address Town']=$data['Address Town Primary Division'];
-						$data['Address Town Primary Division']='';
+					if($data['Address Town First Division']!='' ){
+						$data['Address Town']=$data['Address Town First Division'];
+						$data['Address Town First Division']='';
 					}
-					elseif($data['Address Town Secondary Division']!=''){
-						$data['Address Town']=$data['Address Town Secondary Division'];
-						$data['Address Town Secondary Division']='';
+					elseif($data['Address Town Second Division']!=''){
+						$data['Address Town']=$data['Address Town Second Division'];
+						$data['Address Town Second Division']='';
 					}
 					elseif($raw_data['Address Line 3']!='' and ($raw_data['Address Line 2']!='' or $raw_data['Address Line 1']!='') ){
 						$data['Address Town']=$raw_data['Address Line 3'];
@@ -3071,14 +3071,14 @@ class Address extends DB_Table{
 
 
 				if(preg_match('/Majorca/i',$data['Address Town'])){
-					$data['Address Country Secondary Division']='Islas Baleares';
-					$data['Address Country Primary Division']='Islas Baleares';
+					$data['Address Country Second Division']='Islas Baleares';
+					$data['Address Country First Division']='Islas Baleares';
 					$data['Address Town']='';
 				}
-				if(preg_match('/Balearic Islands|Balearic Island/i',$data['Address Country Primary Division']))
-				$data['Address Country Primary Division']='Balearic Islands';
-				if(preg_match('/Balearic Islands|Balearic Island/i',$data['Address Country Secondary Division']))
-				$data['Address Country Secondary Division']='Balearic Islands';
+				if(preg_match('/Balearic Islands|Balearic Island/i',$data['Address Country First Division']))
+				$data['Address Country First Division']='Balearic Islands';
+				if(preg_match('/Balearic Islands|Balearic Island/i',$data['Address Country Second Division']))
+				$data['Address Country Second Division']='Balearic Islands';
 
 
 
@@ -3087,38 +3087,38 @@ class Address extends DB_Table{
 					$data['Address Town']='Palma de Mallorca';
 					$raw_data['Address Line 3']='';
 					$raw_data['Address Line 2']='';
-					$data['Address Country Primary Division']='Balearic Islands';
+					$data['Address Country First Division']='Balearic Islands';
 				}
 
 
 
 
 				if(preg_match('/Zugena - Provincia Almeria/i',$data['Address Town'])){
-					$data['Address Country Secondary Division']='Almeria';
+					$data['Address Country Second Division']='Almeria';
 					$data['Address Town']='Zugena';
 				}
 				if(preg_match('/Hinojares - Juen/i',$data['Address Town'])){
-					$data['Address Country Secondary Division']='Jaen';
+					$data['Address Country Second Division']='Jaen';
 					$data['Address Town']='Hinojares';
 				}
 
 
 				if(preg_match('/Mijas Costa, Malaga/i',$data['Address Town'])){
-					$data['Address Country Secondary Division']='Malaga';
+					$data['Address Country Second Division']='Malaga';
 					$data['Address Town']='Mijas Costa';
 				}
 				if(preg_match('/Calvia - Mallorca/i',$data['Address Town'])){
 					$data['Address Town']='Calvia';
-					$data['Address Country Primary Division']='Balearic Islands';
+					$data['Address Country First Division']='Balearic Islands';
 				}
 
 				if(preg_match('/Ciutadella - Menorca/i',$data['Address Town'])){
 					$data['Address Town']='Ciutadella';
-					$data['Address Country Primary Division']='Balearic Islands';
+					$data['Address Country First Division']='Balearic Islands';
 				}
 				if(preg_match('/Sax\s*(Alicante)/i',$data['Address Town'])){
 					$data['Address Town']='Sax';
-					$data['Address Country Secondary Division']='Alicante';
+					$data['Address Country Second Division']='Alicante';
 				}
 
 
@@ -3147,27 +3147,27 @@ class Address extends DB_Table{
 				if(preg_match('/^\d{4}$/',$data['Address Postal Code']))
 				$data['Address Postal Code']='0'.$data['Address Postal Code'];
 
-				$data['Address Country Primary Division']=_trim(preg_replace('/^Adaluc.a$/i','Andalusia',_trim($data['Address Country Primary Division'])));
+				$data['Address Country First Division']=_trim(preg_replace('/^Adaluc.a$/i','Andalusia',_trim($data['Address Country First Division'])));
 
 				$data['Address Town']=_trim($data['Address Town']);
 
 				if(preg_match('/El Cucador/i',$data['Address Town'])){
-					$data['Address Town Secondary Division']='El Cucador';
+					$data['Address Town Second Division']='El Cucador';
 					$data['Address Town']='Zurgena';
-					$data['Address Country Secondary Division']='Almeria';
-					$data['Address Country Primary Division']='Andalusia';
+					$data['Address Country Second Division']='Almeria';
+					$data['Address Country First Division']='Andalusia';
 					$data['Address Postal Code']='04661';
 					if($raw_data['Address Line 2']=='Cepsa Garage (Zugena)')
 					$raw_data['Address Line 2']='';
 				}
 				if(preg_match('/^Arona$/i',$data['Address Town'])){
-					$data['Address Country Secondary Division']='Santa Cruz de Tenerife';
-					$data['Address Country Primary Division']='Islas Canarias';
+					$data['Address Country Second Division']='Santa Cruz de Tenerife';
+					$data['Address Country First Division']='Islas Canarias';
 
 				}
 				if(preg_match('/^Ceuta$/i',$data['Address Town'])){
 
-					$data['Address Country Primary Division']='Ceuta';
+					$data['Address Country First Division']='Ceuta';
 
 				}
 
@@ -3225,29 +3225,29 @@ class Address extends DB_Table{
 
 				if($data['Address Town']=='St Cristophe - Charante'){
 					$data['Address Town']='St Cristophe';
-					$data['Address Country Secondary Division']='Charente';
-					$data['Address Country Primary Division']='Poitou-Charentes';
+					$data['Address Country Second Division']='Charente';
+					$data['Address Country First Division']='Poitou-Charentes';
 				}
 				if($data['Address Town']=='Cauro - Corse Du Sud'){
 					$data['Address Town']='Cauro';
-					$data['Address Country Secondary Division']='Corse Du Sud';
-					$data['Address Country Primary Division']='Corse';
+					$data['Address Country Second Division']='Corse Du Sud';
+					$data['Address Country First Division']='Corse';
 				}
 
 				if($data['Address Town']=='Charente'){
 					$data['Address Town']='';
-					$data['Address Country Secondary Division']='Charente';
-					$data['Address Country Primary Division']='Poitou-Charentes';
+					$data['Address Country Second Division']='Charente';
+					$data['Address Country First Division']='Poitou-Charentes';
 				}
 
 				if($data['Address Town']==''){
-					if($data['Address Town Primary Division']!='' ){
-						$data['Address Town']=$data['Address Town Primary Division'];
-						$data['Address Town Primary Division']='';
+					if($data['Address Town First Division']!='' ){
+						$data['Address Town']=$data['Address Town First Division'];
+						$data['Address Town First Division']='';
 					}
-					elseif($data['Address Town Secondary Division']!=''){
-						$data['Address Town']=$data['Address Town Secondary Division'];
-						$data['Address Town Secondary Division']='';
+					elseif($data['Address Town Second Division']!=''){
+						$data['Address Town']=$data['Address Town Second Division'];
+						$data['Address Town Second Division']='';
 					}
 					elseif($raw_data['Address Line 3']!='' and ($raw_data['Address Line 2']!='' or $raw_data['Address Line 1']!='') ){
 						$data['Address Town']=$raw_data['Address Line 3'];
@@ -3297,13 +3297,13 @@ class Address extends DB_Table{
 
 			case(242)://Isle of man
 				if($data['Address Town']==''){
-					if($data['Address Town Primary Division']!='' ){
-						$data['Address Town']=$data['Address Town Primary Division'];
-						$data['Address Town Primary Division']='';
+					if($data['Address Town First Division']!='' ){
+						$data['Address Town']=$data['Address Town First Division'];
+						$data['Address Town First Division']='';
 					}
-					elseif($data['Address Town Secondary Division']!=''){
-						$data['Address Town']=$data['Address Town Secondary Division'];
-						$data['Address Town Secondary Division']='';
+					elseif($data['Address Town Second Division']!=''){
+						$data['Address Town']=$data['Address Town Second Division'];
+						$data['Address Town Second Division']='';
 					}
 					elseif($raw_data['Address Line 3']!='' and ($raw_data['Address Line 2']!='' or $raw_data['Address Line 1']!='') ){
 						$data['Address Town']=$raw_data['Address Line 3'];
@@ -3330,16 +3330,16 @@ class Address extends DB_Table{
 				$data['Address Town']=preg_replace('/\,?\s*CI$/i','',$data['Address Town']);
 				$data['Address Town']=preg_replace('/\,?\s*C.I.$/i','',$data['Address Town']);
 				$data['Address Town']=preg_replace('/\-?\s*jersey$/i','',$data['Address Town']);
-				$data['Address Country Secondary Division']=preg_replace('/\-?\s*jersey$|Jersy Channel Isles/i','',$data['Address Country Secondary Division']);
+				$data['Address Country Second Division']=preg_replace('/\-?\s*jersey$|Jersy Channel Isles/i','',$data['Address Country Second Division']);
 				//  print "1$raw_data['Address Line 1'] 2$raw_data['Address Line 2'] 3$raw_data['Address Line 3']\n";
 				if($data['Address Town']==''){
-					if($data['Address Town Primary Division']!='' ){
-						$data['Address Town']=$data['Address Town Primary Division'];
-						$data['Address Town Primary Division']='';
+					if($data['Address Town First Division']!='' ){
+						$data['Address Town']=$data['Address Town First Division'];
+						$data['Address Town First Division']='';
 					}
-					elseif($data['Address Town Secondary Division']!=''){
-						$data['Address Town']=$data['Address Town Secondary Division'];
-						$data['Address Town Secondary Division']='';
+					elseif($data['Address Town Second Division']!=''){
+						$data['Address Town']=$data['Address Town Second Division'];
+						$data['Address Town Second Division']='';
 					}
 					elseif($raw_data['Address Line 3']!='' and ($raw_data['Address Line 2']!='' or $raw_data['Address Line 1']!='') ){
 						$data['Address Town']=$raw_data['Address Line 3'];
@@ -3358,12 +3358,12 @@ class Address extends DB_Table{
 
 
 				$data['Address Town']=_trim($data['Address Town']);
-				if($data['Address Town Secondary Division']=='' and  preg_match('/\w+\.?\s*St\.? Helier$/i',$data['Address Town']) ){
-					$data['Address Town Secondary Division']=_trim( preg_replace('/St\.? Helier$/i','',$data['Address Town']));
+				if($data['Address Town Second Division']=='' and  preg_match('/\w+\.?\s*St\.? Helier$/i',$data['Address Town']) ){
+					$data['Address Town Second Division']=_trim( preg_replace('/St\.? Helier$/i','',$data['Address Town']));
 					$data['Address Town']='St Helier';
 				}
 
-				$data['Address Town Secondary Division']=preg_replace('/\./','',$data['Address Town Secondary Division']);
+				$data['Address Town Second Division']=preg_replace('/\./','',$data['Address Town Second Division']);
 				$data['Address Town']=preg_replace('/^St\s{1,}/','St. ',$data['Address Town']);
 
 				break;
@@ -3375,28 +3375,28 @@ class Address extends DB_Table{
 				$data['Address Postal Code']=preg_replace('/^SE\-?/i','',$data['Address Postal Code']);
 				if($data['Address Town']=='Malmo')
 				$data['Address Town']='Malmö';
-				if($data['Address Country Secondary Division']=='Sweden')
-				$data['Address Country Secondary Division']='';
+				if($data['Address Country Second Division']=='Sweden')
+				$data['Address Country Second Division']='';
 				if(preg_match('/Skaraborg/i',$data['Address Town']))
 				$data['Address Town']='';
 
 				$data['Address Postal Code']=preg_replace('/\s/','',$data['Address Postal Code']);
 
 				if(Address::is_country_d1($data['Address Town'],$data['Address Country 2 Alpha Code']) and   $raw_data['Address Line 1']='' and $raw_data['Address Line 2']!='' and $raw_data['Address Line 3']!='' ){
-					$data['Address Country Primary Division']=$data['Address Town'];
+					$data['Address Country First Division']=$data['Address Town'];
 					$raw_data['Address Line 3']=$raw_data['Address Line 2'];
 					$raw_data['Address Line 2']='';
 				}
 				if(Address::is_country_d1($data['Address Town'],$data['Address Country 2 Alpha Code']) and   $raw_data['Address Line 1']!='' and $raw_data['Address Line 2']!='' and $raw_data['Address Line 3']!='' ){
-					$data['Address Country Primary Division']=$data['Address Town'];
+					$data['Address Country First Division']=$data['Address Town'];
 					$raw_data['Address Line 3']=$raw_data['Address Line 2'];
 					$raw_data['Address Line 2']=$raw_data['Address Line 1'];
 					$raw_data['Address Line 1']='';
 				}
 
-				if($data['Address Country Secondary Division']!='' and $data['Address Country Primary Division']==''){
-					$data['Address Country Primary Division']=$data['Address Country Secondary Division'];
-					$data['Address Country Secondary Division']='';
+				if($data['Address Country Second Division']!='' and $data['Address Country First Division']==''){
+					$data['Address Country First Division']=$data['Address Country Second Division'];
+					$data['Address Country Second Division']='';
 				}
 
 				$data['Address Postal Code']=preg_replace('/\s/','',$data['Address Postal Code']);
@@ -3422,14 +3422,14 @@ class Address extends DB_Table{
 				break;
 			case(2)://Netherlands
 				$data['Address Town']=preg_replace('/Noord Brabant/i','Noord-Brabant',$data['Address Town']);
-				$data['Address Country Primary Division']=preg_replace('/Noord Brabant/i','Noord-Brabant',$data['Address Country Primary Division']);
-				$data['Address Country Secondary Division']=preg_replace('/Noord Brabant/i','Noord-Brabant',$data['Address Country Secondary Division']);
+				$data['Address Country First Division']=preg_replace('/Noord Brabant/i','Noord-Brabant',$data['Address Country First Division']);
+				$data['Address Country Second Division']=preg_replace('/Noord Brabant/i','Noord-Brabant',$data['Address Country Second Division']);
 				$data['Address Town']=preg_replace('/Zuid Holland/i','Zuid-Holland',$data['Address Town']);
-				$data['Address Country Primary Division']=preg_replace('/Zuid Holland/i','Zuid-Holland',$data['Address Country Primary Division']);
-				$data['Address Country Secondary Division']=preg_replace('/Zuid Holland/i','Zuid-Holland',$data['Address Country Secondary Division']);
+				$data['Address Country First Division']=preg_replace('/Zuid Holland/i','Zuid-Holland',$data['Address Country First Division']);
+				$data['Address Country Second Division']=preg_replace('/Zuid Holland/i','Zuid-Holland',$data['Address Country Second Division']);
 				$data['Address Town']=preg_replace('/Noord Holland/i','Noord-Holland',$data['Address Town']);
-				$data['Address Country Primary Division']=preg_replace('/Noord Holland/i','Noord-Holland',$data['Address Country Primary Division']);
-				$data['Address Country Secondary Division']=preg_replace('/Noord Holland/i','Noord-Holland',$data['Address Country Secondary Division']);
+				$data['Address Country First Division']=preg_replace('/Noord Holland/i','Noord-Holland',$data['Address Country First Division']);
+				$data['Address Country Second Division']=preg_replace('/Noord Holland/i','Noord-Holland',$data['Address Country Second Division']);
 				$data['Address Town']=preg_replace('/Gerderland/i','Gelderland',$data['Address Town']);
 
 
@@ -3452,50 +3452,50 @@ class Address extends DB_Table{
 
 				}
 				$data['Address Town']=_trim($data['Address Town']);
-				if(Address::is_country_d1($raw_data['Address Line 3'],$data['Address Country 2 Alpha Code']) and $data['Address Country Primary Division']=='' and $data['Address Town']==''   and ($raw_data['Address Line 1']!='' and $raw_data['Address Line 2']!='') ){
-					$data['Address Country Primary Division']=$raw_data['Address Line 3'];
+				if(Address::is_country_d1($raw_data['Address Line 3'],$data['Address Country 2 Alpha Code']) and $data['Address Country First Division']=='' and $data['Address Town']==''   and ($raw_data['Address Line 1']!='' and $raw_data['Address Line 2']!='') ){
+					$data['Address Country First Division']=$raw_data['Address Line 3'];
 					$raw_data['Address Line 3']='';
 
 				}
 
-				if(Address::is_country_d1($data['Address Town'],$data['Address Country 2 Alpha Code']) and $data['Address Country Primary Division']=='' and (($raw_data['Address Line 1']!='' and $raw_data['Address Line 2']!='') or ($raw_data['Address Line 2']!='' and $raw_data['Address Line 3']!='') or ($raw_data['Address Line 1']!='' and $raw_data['Address Line 3']!='')  )   ){
-					$data['Address Country Primary Division']=$data['Address Town'];
+				if(Address::is_country_d1($data['Address Town'],$data['Address Country 2 Alpha Code']) and $data['Address Country First Division']=='' and (($raw_data['Address Line 1']!='' and $raw_data['Address Line 2']!='') or ($raw_data['Address Line 2']!='' and $raw_data['Address Line 3']!='') or ($raw_data['Address Line 1']!='' and $raw_data['Address Line 3']!='')  )   ){
+					$data['Address Country First Division']=$data['Address Town'];
 					$data['Address Town']='';
 
 				}
 
 
 				if($data['Address Town']=='NH'){
-					$data['Address Country Primary Division']='North Holland';
+					$data['Address Country First Division']='North Holland';
 					$data['Address Town']='';
 				}
 
 				if($data['Address Town']=='Zuid Holland'){
-					$data['Address Country Primary Division']='Zuid Holland';
+					$data['Address Country First Division']='Zuid Holland';
 					$data['Address Town']='';
 				}
-				similar_text($data['Address Country Primary Division'],$data['Address Country Secondary Division'],$w);
+				similar_text($data['Address Country First Division'],$data['Address Country Second Division'],$w);
 				if($w>90){
-					$data['Address Country Secondary Division']='';
+					$data['Address Country Second Division']='';
 				}
 
-				if($data['Address Country Primary Division']=='' and $data['Address Country Secondary Division']!=''){
-					$data['Address Country Primary Division']=$data['Address Country Secondary Division'];
-					$data['Address Country Secondary Division']='';
+				if($data['Address Country First Division']=='' and $data['Address Country Second Division']!=''){
+					$data['Address Country First Division']=$data['Address Country Second Division'];
+					$data['Address Country Second Division']='';
 				}
 
-				if(preg_match('/Zuid.Holland|ZuidHolland/i',$data['Address Country Primary Division']))
-				$data['Address Country Primary Division']='Zuid Holland';
+				if(preg_match('/Zuid.Holland|ZuidHolland/i',$data['Address Country First Division']))
+				$data['Address Country First Division']='Zuid Holland';
 
 
 				if($data['Address Town']==''){
-					if($data['Address Town Primary Division']!='' ){
-						$data['Address Town']=$data['Address Town Primary Division'];
-						$data['Address Town Primary Division']='';
+					if($data['Address Town First Division']!='' ){
+						$data['Address Town']=$data['Address Town First Division'];
+						$data['Address Town First Division']='';
 					}
-					elseif($data['Address Town Secondary Division']!=''){
-						$data['Address Town']=$data['Address Town Secondary Division'];
-						$data['Address Town Secondary Division']='';
+					elseif($data['Address Town Second Division']!=''){
+						$data['Address Town']=$data['Address Town Second Division'];
+						$data['Address Town Second Division']='';
 					}
 					elseif($raw_data['Address Line 3']!='' and ($raw_data['Address Line 2']!='' or $raw_data['Address Line 1']!='') ){
 						$data['Address Town']=$raw_data['Address Line 3'];
@@ -3514,7 +3514,7 @@ class Address extends DB_Table{
 
 				$town_split=preg_split('/\s*\-\s*|\s*,\s*/',$data['Address Town']);
 				if(count($town_split)==2 and Address::is_country_d1($town_split[1],$data['Address Country 2 Alpha Code'])){
-					$data['Address Country Primary Division']=$town_split[1];
+					$data['Address Country First Division']=$town_split[1];
 					$data['Address Town']=$town_split[0];
 				}
 
@@ -3532,9 +3532,9 @@ class Address extends DB_Table{
 			case(177):// Germany
 				$data['Address Postal Code']=_trim($data['Address Postal Code']);
 				$data['Address Postal Code']=preg_replace('/germany/i','',$data['Address Postal Code']);
-				if($data['Address Country Secondary Division']!='' and $data['Address Country Primary Division']==''){
-					$data['Address Country Primary Division']=$data['Address Country Secondary Division'];
-					$data['Address Country Secondary Division']='';
+				if($data['Address Country Second Division']!='' and $data['Address Country First Division']==''){
+					$data['Address Country First Division']=$data['Address Country Second Division'];
+					$data['Address Country Second Division']='';
 				}
 
 
@@ -3542,21 +3542,21 @@ class Address extends DB_Table{
 
 
 				if(preg_match('/^berlin$/i',$data['Address Town']))
-				$data['Address Country Primary Division']='Berlin';
+				$data['Address Country First Division']='Berlin';
 				if(preg_match('/^Hamburg$/i',$data['Address Town']))
-				$data['Address Country Primary Division']='Hamburg';
+				$data['Address Country First Division']='Hamburg';
 				if(preg_match('/^Bremen$/i',$data['Address Town']))
-				$data['Address Country Primary Division']='Bremen';
+				$data['Address Country First Division']='Bremen';
 
 				if(preg_match('/^Nuernberg$/i',$data['Address Town']))
 				$data['Address Town']='Nürnberg';
 
 				if(preg_match('/^Osnabruek$/i',$data['Address Town'])){
-					$data['Address Country Primary Division']='Niedersachsen';
+					$data['Address Country First Division']='Niedersachsen';
 					$data['Address Town']='Osnabrück';
 				}
-				if(preg_match('/^bavaria$/i',$data['Address Country Primary Division']))
-				$data['Address Country Primary Division']='Bayern';
+				if(preg_match('/^bavaria$/i',$data['Address Country First Division']))
+				$data['Address Country First Division']='Bayern';
 
 
 				$regex='/^\s*\d{5}\s+|\s+\d{5}\s*$/';
@@ -3566,8 +3566,8 @@ class Address extends DB_Table{
 				}
 
 
-				//     if($data['Address Country Primary Division']==''){
-				//	$data['Address Country Primary Division']=Address::get_country_d1_name($data['Address Town'],177);
+				//     if($data['Address Country First Division']==''){
+				//	$data['Address Country First Division']=Address::get_country_d1_name($data['Address Town'],177);
 				//}
 
 
@@ -3600,7 +3600,7 @@ class Address extends DB_Table{
 				}
 				$regex='/Aarhus C/i';
 				if(preg_match($regex,$data['Address Town'],$match)){
-					$data['Address Town Secondary Division']='Aarhus C';
+					$data['Address Town Second Division']='Aarhus C';
 					$data['Address Town']='Aarhus';
 				}
 
@@ -3629,8 +3629,8 @@ class Address extends DB_Table{
 				}
 
 
-				if(preg_match('/Sjalland|Zealand|Sjælland|Sealand/i',$data['Address Country Secondary Division']))
-				$data['Address Country Secondary Division']='';
+				if(preg_match('/Sjalland|Zealand|Sjælland|Sealand/i',$data['Address Country Second Division']))
+				$data['Address Country Second Division']='';
 
 
 
@@ -3652,13 +3652,13 @@ class Address extends DB_Table{
 				}
 
 				if($data['Address Town']==''){
-					if($data['Address Town Primary Division']!='' ){
-						$data['Address Town']=$data['Address Town Primary Division'];
-						$data['Address Town Primary Division']='';
+					if($data['Address Town First Division']!='' ){
+						$data['Address Town']=$data['Address Town First Division'];
+						$data['Address Town First Division']='';
 					}
-					elseif($data['Address Town Secondary Division']!=''){
-						$data['Address Town']=$data['Address Town Secondary Division'];
-						$data['Address Town Secondary Division']='';
+					elseif($data['Address Town Second Division']!=''){
+						$data['Address Town']=$data['Address Town Second Division'];
+						$data['Address Town Second Division']='';
 					}
 					elseif($raw_data['Address Line 3']!='' and ($raw_data['Address Line 2']!='' or $raw_data['Address Line 1']!='') ){
 						$data['Address Town']=$raw_data['Address Line 3'];
@@ -3701,13 +3701,13 @@ class Address extends DB_Table{
 		}
 
 		if($data['Address Town']==''){
-			if($data['Address Town Primary Division']!='' ){
-				$data['Address Town']=$data['Address Town Primary Division'];
-				$data['Address Town Primary Division']='';
+			if($data['Address Town First Division']!='' ){
+				$data['Address Town']=$data['Address Town First Division'];
+				$data['Address Town First Division']='';
 			}
-			elseif($data['Address Town Secondary Division']!=''){
-				$data['Address Town']=$data['Address Town Secondary Division'];
-				$data['Address Town Secondary Division']='';
+			elseif($data['Address Town Second Division']!=''){
+				$data['Address Town']=$data['Address Town Second Division'];
+				$data['Address Town Second Division']='';
 			}
 			elseif($raw_data['Address Line 3']!='' and ($raw_data['Address Line 2']!='' or $raw_data['Address Line 1']!='') ){
 				$data['Address Town']=$raw_data['Address Line 3'];
@@ -3726,48 +3726,48 @@ class Address extends DB_Table{
 
 
 		// Country ids
-		if($data['Address Country Primary Division']!=''){
-			$sql=sprintf("select `Country Primary Division Key` as id  from  `Country Primary Division Dimension` where (`Country Primary Division Name`='%s' or `Country Primary Division Native Name`='%s' or `Country Primary Division Local Native Name`='%s' ) and `Country Key`=%d",addslashes($data['Address Country Primary Division']),addslashes($data['Address Country Primary Division']),addslashes($data['Address Country Primary Division']),$data['Address Country Key']);
-			//  print "$sql\n";
+		if($data['Address Country First Division']!=''){
+		  $sql=sprintf("select `Country First Division Code` as id  from  kbase.`Country First Division Dimension` where (`Country First Division Name`='%s' ) and `Country Code`=%s",addslashes($data['Address Country First Division']),prepare_mysql($data['Address Country Code']));
+		  //	print "$sql\n";
 
 			$result=mysql_query($sql);
 			if($row=mysql_fetch_array($result, MYSQL_ASSOC))
-			$data['Address Country Primary Division Key']=$row['id'];
+			$data['Address Country First Division Code']=$row['id'];
 		}
 
 
-		if($data['Address Country Secondary Division']!=''){
-			$sql=sprintf("select `Country Secondary Division Key`  as id, `Country Primary Division Key`   from `Country Secondary Division Dimension`   where (`Country Secondary Division Name`='%s' or `Country Secondary Division Native Name`='%s' or `Country Secondary Division Local Native Name`='%s' ) and `Country Key`=%d",addslashes($data['Address Country Secondary Division']),addslashes($data['Address Country Secondary Division']),addslashes($data['Address Country Secondary Division']),$data['Address Country Key']);
+		if($data['Address Country Second Division']!=''){
+		  $sql=sprintf("select `Country Second Division Code`  as id, `Country First Division Code`   from kbase.`Country Second Division Dimension`   where (`Country Second Division Name`='%s' or `Country Second Division Native Name`='%s' or `Country Second Division Local Native Name`='%s' ) and `Country Code`=%s",addslashes($data['Address Country Second Division']),addslashes($data['Address Country Second Division']),addslashes($data['Address Country Second Division']),prepare_mysql($data['Address Country Code']));
+
+		  
+		  $result=mysql_query($sql);
+		  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
 
-			$result=mysql_query($sql);
-			if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-
-
-				$data['Address Country Secondary Division Key']=$row['id'];
+				$data['Address Country Second Division Code']=$row['id'];
 				if(mysql_num_rows($result)==1){
-					$data['Address Country Primary Division Key']=$row['Country Primary Division Key'];
+					$data['Address Country First Division Code']=$row['Country First Division Code'];
 				}
 
 			}
 			else
-			$data['Address Country Secondary Division Key']=0;
+			$data['Address Country Second Division Code']=0;
 		}
 
 
 
-		$sql=sprintf("select `Town Key` as id,`Country Secondary Division Key` , `Country Primary Division Key` from `Town Dimension` where (`Town Name`='%s' or `Town Native Name`='%s' or `Town Local Native Name`='%s' ) and `Country Key`=%d",addslashes($data['Address Town']),addslashes($data['Address Town']),addslashes($data['Address Town']),$data['Address Country Key']);
-		//print $sql;
+		$sql=sprintf("select `Geography Key` as id,`Country Second Division Code` , `Country First Division Code` from kbase.`Town Dimension` where (`Town Name`='%s'  ) and `Country Code`=%d",addslashes($data['Address Town']),addslashes($data['Address Town']),addslashes($data['Address Town']),$data['Address Country Code']);
+		//	print $sql;
 		$res = mysql_query($sql);
 
 		if(mysql_num_rows($res)==1){
 
 			$row=mysql_fetch_array($res, MYSQL_ASSOC);
 			$data['Address Town Key']=$row['id'];
-			if($data['Address Country Secondary Division Key']==0)
-			$data['Address Country Secondary Division Key']=$row['Country Secondary Division Key'];
-			if($data['Address Country Primary Division Key']==0)
-			$data['Address Country Primary Division Key']=$row['Country Primary Division Key'];
+			if($data['Address Country Second Division Code']==0)
+			$data['Address Country Second Division Code']=$row['Country Second Division Code'];
+			if($data['Address Country First Division Code']==0)
+			$data['Address Country First Division Code']=$row['Country First Division Code'];
 
 
 
@@ -3794,8 +3794,8 @@ class Address extends DB_Table{
 		$raw_data['Address Line 2']=preg_replace('/\s{2,}/',' ',$raw_data['Address Line 2']);
 		$raw_data['Address Line 3']=preg_replace('/\s{2,}/',' ',$raw_data['Address Line 3']);
 		$data['Address Town']=preg_replace('/\s{2,}/',' ',$data['Address Town']);
-		$data['Address Town Primary Division']=preg_replace('/\s{2,}/',' ',$data['Address Town Primary Division']);
-		$data['Address Town Secondary Division']=preg_replace('/\s{2,}/',' ',$data['Address Town Secondary Division']);
+		$data['Address Town First Division']=preg_replace('/\s{2,}/',' ',$data['Address Town First Division']);
+		$data['Address Town Second Division']=preg_replace('/\s{2,}/',' ',$data['Address Town Second Division']);
 		$data['Address Town']=preg_replace('/(\,|\-)$\s*/','',$data['Address Town']);
 
 
@@ -3906,9 +3906,9 @@ class Address extends DB_Table{
 			$address.=$street_address.$separator;
 
 
-			$subtown_address=$data['Address Town Secondary Division'];
-			if($data['Address Town Primary Division'])
-			$subtown_address.=' ,'.$data['Address Town Primary Division'];
+			$subtown_address=$data['Address Town Second Division'];
+			if($data['Address Town First Division'])
+			$subtown_address.=' ,'.$data['Address Town First Division'];
 			$subtown_address=_trim($subtown_address);
 			if($subtown_address!='')
 			$address.=$subtown_address.$separator;
@@ -3923,9 +3923,9 @@ class Address extends DB_Table{
 			if($ps_address!='')
 			$address.=$ps_address.$separator;
 
-			$subcountry_address=$data['Address Country Secondary Division'];
-			if($data['Address Country Primary Division'])
-			$subcountry_address.=' '.$data['Address Country Primary Division'];
+			$subcountry_address=$data['Address Country Second Division'];
+			if($data['Address Country First Division'])
+			$subcountry_address.=' '.$data['Address Country First Division'];
 			$subcountry_address=_trim($subcountry_address);
 			if($subcountry_address!='')
 			$address.=$subcountry_address.$separator;

@@ -42,6 +42,8 @@ while($date<strtotime($end_date)){
     $__y=date('Y',strtotime(date('Y-m-d',$date).' +6 days'));
   else
     $__y=date('Y',strtotime(date('Y-m-d',$date).' +0 days'));
+
+
   $sql=sprintf("insert into `Week Dimension` values ('%s%s','%s','%s','%s%s','%s','%s','%s','%s','%s')"
 	       ,$__y
 	       ,date('W',$date)

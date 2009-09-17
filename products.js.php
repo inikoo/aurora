@@ -103,7 +103,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 			       ];
 
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_assets.php?tipo=products");
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_assets.php?tipo=products&parent=none");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {

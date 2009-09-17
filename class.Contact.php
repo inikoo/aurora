@@ -1186,7 +1186,7 @@ private function create ($data,$options='',$address_home_data=false){
 	$salutation=$this->data['Contact Salutation'];
       
       $salutation_key=0;
-      $sql=sprintf("Select `Salutation Key` from `Salutation Dimension` where `Salutation`=%s",prepare_mysql($salutation));
+      $sql=sprintf("Select `Salutation Key` from kbase.`Salutation Dimension` where `Salutation`=%s",prepare_mysql($salutation));
       $res=mysql_query($sql);
       if($row=mysql_fetch_array($res)){
 	$salutation_key=$row['Salutation Key'];
@@ -2924,7 +2924,7 @@ string with the name to be parsed
   
     $prefix=$data['Contact Salutation'];
     $first_name=$data['Contact First Name'];
-    $sql=sprintf("select `Gender` from  `Salutation Dimension`  where `Salutation`=%s ",prepare_mysql($prefix));
+    $sql=sprintf("select `Gender` from  kbase.`Salutation Dimension`  where `Salutation`=%s ",prepare_mysql($prefix));
     $result=mysql_query($sql);
     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
       
@@ -2937,7 +2937,7 @@ string with the name to be parsed
     $felame=0;
     $names=preg_split('/\s+/',$first_name);
     foreach($names as $name){
-      $sql=sprintf("select `Gender` as genero from  `First Name Dimension` where `First Name`=%s",prepare_mysql($name));
+      $sql=sprintf("select `Gender` as genero from  kbase.`First Name Dimension` where `First Name`=%s",prepare_mysql($name));
       $result=mysql_query($sql);
       if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 	
@@ -2967,7 +2967,7 @@ string with the name to be parsed
 
    */
   function is_givenname($name){
-    $sql=sprintf("select `First Name Key` as id from  `First Name Dimension` where `First Name`=%s",prepare_mysql($name));
+    $sql=sprintf("select `First Name Key` as id from  kbase.`First Name Dimension` where `First Name`=%s",prepare_mysql($name));
     $result=mysql_query($sql);
     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
       return $row['id'];
@@ -2989,7 +2989,7 @@ string with the name to be parsed
 
   function is_surname($name){
 
-    $sql=sprintf("select `Surname` as id from  `Surname Dimension` where `Surname`=%s",prepare_mysql($name));
+    $sql=sprintf("select `Surname` as id from  kbase.`Surname Dimension` where `Surname`=%s",prepare_mysql($name));
     $result=mysql_query($sql);
     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
       return $row['id'];
@@ -3010,7 +3010,7 @@ string with the name to be parsed
    */
 
   public static function is_prefix($name){
-    $sql=sprintf("select `Salutation` as id from `Salutation Dimension`  where `Salutation`=%s",prepare_mysql($name));
+    $sql=sprintf("select `Salutation` as id from kbase.`Salutation Dimension`  where `Salutation`=%s",prepare_mysql($name));
     $result=mysql_query($sql);
     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
       return $row['id'];

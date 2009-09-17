@@ -40,7 +40,8 @@ class supplier extends DB_Table{
 
 
      */
-
+  var $new=false;
+  
   function Supplier($arg1=false,$arg2=false) {
 
     $this->table_name='Supplier';
@@ -302,7 +303,7 @@ class supplier extends DB_Table{
 
       $this->id=mysql_insert_id();
       $this->get_data('id',$this->id);
-      
+      $this->new=true;
       
     }else{
       // print "Error can not create supplier $sql\n";

@@ -5196,7 +5196,7 @@ function list_products(){
 						 );
       
       
-    
+
    switch($parent){
    case('store'):
      $where=sprintf(' where `Product Store Key`=%d',$_SESSION['state']['store']['id']);
@@ -6483,7 +6483,7 @@ function list_parts(){
 
 
     $adata[]=array(
-		   'sku'=>sprintf('<a href="part.php?id=%d">%06d</a>',$data['Part Key'],$data['Part SKU'])
+		   'sku'=>sprintf('<a href="part.php?id=%d">%06d</a>',$data['Part SKU'],$data['Part SKU'])
 		   ,'description'=>$data['Part XHTML Description']
 		   ,'used_in'=>$data['Part XHTML Currently Used In']
 		   ,'supplied_by'=>$data['Part XHTML Currently Supplied By']

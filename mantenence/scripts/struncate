@@ -10,4 +10,5 @@ TRUNCATE `Contact Bridge`;TRUNCATE `Telecom Bridge`;TRUNCATE `Telecom Dimension`
 TRUNCATE `Address Telecom Bridge`;
 TRUNCATE `Product History Dimension`;
 TRUNCATE `Product Same Code Dimension`;
-
+TRUNCATE `Product Same Code Dimension`;
+TRUNCATE `Time Series Dimension`;

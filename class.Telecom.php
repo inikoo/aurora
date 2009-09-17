@@ -802,7 +802,7 @@ protected function create($data,$optios=''){
 
  private function get_country_id(){
    if($this->data['Telecom Country Telephone Code']){
-     $sql="select * from `Country Dimension` where `Country Telephone Code`=".prepare_mysql($this->data['Telecom Country Telephone Code']);
+     $sql="select * from kbase.`Country Dimension` where `Country Telephone Code`=".prepare_mysql($this->data['Telecom Country Telephone Code']);
      $result=mysql_query($sql);
      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
        return $row['Country Key'];
@@ -823,7 +823,7 @@ protected function create($data,$optios=''){
 
  public static  function get_country_code($tel_code=''){
    if($tel_code){
-     $sql="select * from `Country Dimension` where `Country Telephone Code`=".prepare_mysql($tel_code);
+     $sql="select * from kbase.`Country Dimension` where `Country Telephone Code`=".prepare_mysql($tel_code);
      $result=mysql_query($sql);
      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
        return $row['Country Code'];
@@ -844,7 +844,7 @@ protected function create($data,$optios=''){
      for($i=5;$i>1;$i--){
        $proposed_code=substr($number, 0,$i); 
        
-       $sql=sprintf("select `Telephone Local Code Key` from `Telephone Local Code` where LENGTH(`Telephone Local Code`)=%d and `Telephone Local Code`=%s and `Telephone Local Code Country Code`=%s ",$i,prepare_mysql($proposed_code),prepare_mysql($country_code));
+       $sql=sprintf("select `Telephone Local Code Key` from kbase.`Telephone Local Code` where LENGTH(`Telephone Local Code`)=%d and `Telephone Local Code`=%s and `Telephone Local Code Country Code`=%s ",$i,prepare_mysql($proposed_code),prepare_mysql($country_code));
        //  print "$sql\n";
        $result=mysql_query($sql);
        $num_results=mysql_num_rows($result);

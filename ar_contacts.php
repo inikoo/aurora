@@ -288,7 +288,7 @@ mysql_free_result($res);
     elseif($order=='postcode')
       $order='`Address Postal Code`';
     elseif($order=='region')
-      $order='`Address Country Primary Division`';
+      $order='`Address Country First Division`';
     elseif($order=='country')
       $order='`Address Country Code`';
 
@@ -319,7 +319,7 @@ mysql_free_result($res);
 		   ,'contact'=>$contact
 		   ,'town'=>$row['Address Town']
 		   ,'postcode'=>$row['Address Postal Code']
-		   ,'region'=>$row['Address Country Primary Division']
+		   ,'region'=>$row['Address Country First Division']
 		   ,'country'=>$row['Address Country Code']
 		   ,'address'=>$row['Company Main XHTML Address']
 		   );
@@ -802,7 +802,7 @@ $conf=$_SESSION['state']['contacts']['table'];
     elseif($order=='postcode')
       $order='`Address Postal Code`';
     elseif($order=='region')
-      $order='`Address Country Primary Division`';
+      $order='`Address Country First Division`';
     elseif($order=='country')
       $order='`Address Country Code`';
 
@@ -833,7 +833,7 @@ $conf=$_SESSION['state']['contacts']['table'];
 		   ,'company'=>$company
 		   ,'town'=>$row['Address Town']
 		   ,'postcode'=>$row['Address Postal Code']
-		   ,'region'=>$row['Address Country Primary Division']
+		   ,'region'=>$row['Address Country First Division']
 		   ,'country'=>$row['Address Country Code']
 		   ,'address'=>$row['Contact Main XHTML Address']
 		   );
@@ -1020,7 +1020,7 @@ if(isset( $_REQUEST['where']))
    elseif($order=='postcode')
      $order='`Customer Main Address Postal Code`';
    elseif($order=='region')
-     $order='`Customer Main Address Country Primary Division`';
+     $order='`Customer Main Address Country First Division`';
    elseif($order=='country')
      $order='`Customer Main Address Country`';
    //  elseif($order=='ship_address')
@@ -1133,7 +1133,7 @@ if(isset( $_REQUEST['where']))
 		   'address'=>$data['Customer Main Location'],
 		   'town'=>$data['Customer Main Address Town'],
 		   'postcode'=>$data['Customer Main Address Postal Code'],
-		   'region'=>$data['Customer Main Address Country Primary Division'],
+		   'region'=>$data['Customer Main Address Country First Division'],
 		   'country'=>$data['Customer Main Address Country'],
 		   //		   'ship_address'=>$data['customer main ship to header'],
 		   'ship_town'=>$data['Customer Main Ship To Town'],
