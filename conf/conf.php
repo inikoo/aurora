@@ -329,6 +329,21 @@ $default_state=array(
 								 'elements'=>array()
 						   )
 				    ),
+		     'warehouse_area'=>array(
+					'code'=>'',
+					'table'=>array(
+								 'order'=>'code',
+								 'order_dir'=>'',
+								 'sf'=>0,
+								 'nr'=>25,
+								 'where'=>'where true',
+								 'f_field'=>'code',
+								 'f_value'=>'',
+								 'parent'=>'warehouse'
+						   )
+				    ),
+
+		     
 		     'customers'=>array(
 					'view'=>'general',
 					'details'=>0,
