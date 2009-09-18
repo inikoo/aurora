@@ -23,9 +23,9 @@ class WarehouseArea extends DB_Table{
 
 
 
-  function WarehouseArea($arg1=false,$arg2=false) {
+  function WarehouseArea($arg1=false,$arg2=false,$arg3=false) {
 
-    $this->table_name='WarehouseArea';
+    $this->table_name='Warehouse Area';
     $this->ignore_fields=array('Warehouse Area Key');
 
      if(preg_match('/^(new|create)$/i',$arg1) and is_array($arg2)){
@@ -34,7 +34,7 @@ class WarehouseArea extends DB_Table{
      }
 
      if(preg_match('/find/i',$arg1)){
-       $this->find($arg2,$arg1);
+       $this->find($arg2,$arg3);
        return;
      }
 
@@ -55,6 +55,7 @@ class WarehouseArea extends DB_Table{
   */   
   
   function find($raw_data,$options){
+    print $options;
     if(isset($raw_data['editor'])){
       foreach($raw_data['editor'] as $key=>$value){
 	
@@ -63,6 +64,8 @@ class WarehouseArea extends DB_Table{
 		    
       }
     }
+   
+    
     $this->found=false;
     $create='';
     $update='';
@@ -84,9 +87,13 @@ class WarehouseArea extends DB_Table{
     
     
     //look for areas with the same code in the same warehouse
-    $sql=sprinf("select `Warehouse Area Key` from `Warehose Area Dimension` where `Warehouse Key`=%d and `Warehouse Area Code`=%s",$data['Warehouse Key'],$data['Warehouse Area Code']);
+    $sql=sprintf("select `Warehouse Area Key` from `Warehouse Area Dimension` where `Warehouse Key`=%d and `Warehouse Area Code`=%s"
+		,$data['Warehouse Key']
+		 ,prepare_mysql($data['Warehouse Area Code']));
+    
+    // print $sql;
     $res=mysql_query($sql);
-    if($row=mysql_getch_array($res)){
+    if($row=mysql_fetch_array($res)){
       $this->found=true;
       $this->found_key=$row['Warehouse Area Key'];
     }
@@ -96,15 +103,18 @@ class WarehouseArea extends DB_Table{
       $this->get_data('id',$this->found_key);
     }
       
+
     if($create){
       if($this->found){
 	$this->update($raw_data,$options);
       }else{
+
 	$this->create($data,$options);
 
       }
 
 
+    }
   }
 
 
@@ -133,12 +143,12 @@ class WarehouseArea extends DB_Table{
 
 
       $keys='(';$values='values(';
-    foreach($this->data as $key=>$value){
+      foreach($this->data as $key=>$value){
 
 	$keys.="`$key`,";
 	$values.=prepare_mysql($value,true).",";
       }
-    }
+    
     $keys=preg_replace('/,$/',')',$keys);
     $values=preg_replace('/,$/',')',$values);
 
@@ -154,7 +164,7 @@ class WarehouseArea extends DB_Table{
 
 
     }else{
-      // error
+      exit($sql);
     }
 
     }
@@ -253,7 +263,10 @@ class WarehouseArea extends DB_Table{
     }
     return '';
   } 
-      
+ 
+
+   
+     
 }
 
 ?>

@@ -67,9 +67,10 @@ list_families_for_edition();
  
   break;
 case('edit_products'):
-list_products_for_edition();
-  
+  list_products_for_edition();
   break;
+
+
  default:
 
    $response=array('state'=>404,'resp'=>_('Operation not found'));
@@ -1162,3 +1163,7 @@ mysql_free_result($res);
 		   );
    echo json_encode($response);
 }
+
+
+
+?>

@@ -48,11 +48,11 @@ class Warehouse extends DB_Table{
   function get_data($key,$tag){
     
     if($key=='id')
-      $sql=sprintf("select * from `Warehouse Dimension` where `Warehouse Key`=%d",$tag);
+      $sql=sprintf("select `Warehouse Key`,`Warehouse Code`,`Warehouse Name`,`Address Key`,`Warehouse Total Area` from `Warehouse Dimension` where `Warehouse Key`=%d",$tag);
     else if($key=='code')
-      $sql=sprintf("select *  from `Warehouse Dimension` where `Warehouse Code`=%s ",prepare_mysql($tag));
+      $sql=sprintf("select `Warehouse Key`,`Warehouse Code`,`Warehouse Name`,`Address Key`,`Warehouse Total Area`  from `Warehouse Dimension` where `Warehouse Code`=%s ",prepare_mysql($tag));
     else if($key=='name')
-      $sql=sprintf("select *  from `Warehouse Dimension` where `Warehouse Name`=%s ",prepare_mysql($tag));
+      $sql=sprintf("select `Warehouse Key`,`Warehouse Code`,`Warehouse Name`,`Address Key`,`Warehouse Total Area`  from `Warehouse Dimension` where `Warehouse Name`=%s ",prepare_mysql($tag));
     
     else
       return;
@@ -150,7 +150,19 @@ class Warehouse extends DB_Table{
     }
     return '';
   } 
-      
+    
+
+ function add_area($data){
+   // print_r($data);
+    $this->new_area=false;
+    $data['Warehouse Key']=$this->id;
+    $area= new WarehouseArea('find',$data,'create');
+    $this->new_area_msg=$area->msg;
+    if($area->new)
+      $this->new_area=true;
+
+  }
+  
 }
 
 ?>

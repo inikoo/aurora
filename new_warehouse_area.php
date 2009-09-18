@@ -4,6 +4,11 @@ include_once('class.Warehouse.php');
 
 $smarty->assign('box_layout','yui-t0');
 
+if(isset($_REQUEST['warehouse_id']))
+  $wid=$_REQUEST['warehouse_id'];
+else
+  $wid=$_SESSION['state']['warehouse']['id'];
+$warehouse=new warehouse($wid);
 
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
@@ -30,43 +35,34 @@ $js_files=array(
 		'common.js.php',
 		'table_common.js.php',
 		'calendar_common.js.php',
-		'warehouse.js.php'
+		'new_warehouse_area.js.php'
 		);
 
 
 
 
 $smarty->assign('parent','warehouse.php');
-$smarty->assign('title', _('Warehouse'));
+$smarty->assign('title', _('New Warehouse Area'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
-$smarty->assign('table_title',_('Location List'));
+$used_for=array(
+		'Picking'=>array('selected'=>true,'name'=>_('Picking'))
+		,'Storing'=>array('selected'=>false,'name'=>_('Storing'))
+		,'Displaying'=>array('selected'=>false,'name'=>_('Displaying'))
+		,'Loading'=>array('selected'=>false,'name'=>_('Loading'))
+		);
+$shape_type=array(
+		'Box'=>array('selected'=>true,'name'=>_('Box'))
+		,'Cylinder'=>array('selected'=>false,'name'=>_('Cylinder'))
 
-
-$warehouse=new warehouse($_SESSION['state']['warehouse']['id']);
-
-
-$tipo_filter=$_SESSION['state']['warehouse']['locations']['f_field'];
-$smarty->assign('filter',$tipo_filter);
-$smarty->assign('filter_value',$_SESSION['state']['warehouse']['locations']['f_value']);
-
-$filter_menu=array(
-		   'code'=>array('db_key'=>_('code'),'menu_label'=>'Location Code','label'=>'Code'),
-		   );
-$smarty->assign('filter_menu',$filter_menu);
-$smarty->assign('filter_name',$filter_menu[$tipo_filter]['label']);
-
-$paginator_menu=array(10,25,50,100,500);
-$smarty->assign('paginator_menu',$paginator_menu);
-
+		);
 
 
 $smarty->assign('warehouse',$warehouse);
-//print_r($warehouse->get('areas'));
 
-$smarty->assign('paginator_menu',$paginator_menu);
+$smarty->assign('used_for',$used_for);
+$smarty->assign('shape_type',$shape_type);
 
-
-$smarty->display('warehouse.tpl');
+$smarty->display('new_warehouse_area.tpl');
 ?>

@@ -616,7 +616,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	
 	$supplier=new Supplier('new',$the_supplier_data);
       }
-      
+      if(false){
       if($product->new_id ){
 	//creamos una parte nueva
 	$part_data=array(
@@ -701,7 +701,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	  $supplier_product=new SupplierProduct('new',$sp_data);
 	}
 	
-      
+      }
       
       $best_product_supplier_product_key=0;
       $best_product_part_sku=0;

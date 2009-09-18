@@ -174,9 +174,8 @@ var save_new_company=function(e){
     get_data();
 
     var json_value = YAHOO.lang.JSON.stringify(company_data); 
-	    
     var request='ar_edit_contacts.php?tipo=new_company&values=' + encodeURIComponent(json_value); 
-	    
+    
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
 	

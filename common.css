@@ -17,6 +17,10 @@ a,table,button{outline: none;}
 a {text-decoration:none;color:#222}
 a:hover {text-decoration:underline;color:#000} 
 
+span.aslink{cursor:pointer}
+span.aslink:hover{text-decoration:underline;} 
+
+
 .yui-dt-hidden{ display:none }
 .yui-dt-hidden div { display:none }
 .aright  {text-align:right;}
@@ -190,6 +194,10 @@ img{vertical-align:bottom}
 .chooser li:hover {opacity: .8;filter: alpha(opacity=80);}
 .chooser img {position:relative;top:2px;}
 .chooser li.selected {cursor:default;border-color:#aaa;;opacity: 1;filter: alpha(opacity=100);font-weight:800;color:#555}
+.chooser li.show {default;border-color:#aaa;;opacity: 1;filter: alpha(opacity=100);font-weight:200;color:#666}
+.chooser li.show:hover {default;border-color:#777;;opacity: 1;filter: alpha(opacity=100);font-weight:200;color:#333}
+
+
 
 .chooser2 {width:670px;border:0px solid black;margin:0px}
 .chooser2 ul {;margin:0px auto;xborder:1px solid red;}
