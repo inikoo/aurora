@@ -10,8 +10,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 	    var Warehouse_AreaColumnDefs = [
-				       {key:"code", label:"<?php echo _('Area Code')?>",width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"name", label:"<?php echo _('Area Name Name')?>", width:250,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					     {key:"wa_key", label:"", hidden:true,action:"none",isPrimaryKey:true}
+					     ,{key:"code", label:"<?php echo _('Area Code')?>",width:60,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'warehouse_area'}
+					    ,{key:"name", label:"<?php echo _('Area Name')?>", width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'warehouse_area'}
+					     ,{key:"description", label:"<?php echo _('Area Description')?>", width:450,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextareaCellEditor({asyncSubmitter: CellEdit}),object:'warehouse_area'}
 				      
 
 					 ];
@@ -34,7 +36,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		
 		fields: [
 			 'code',
-			 'name',
+			 'name','wa_key','description'
 			 ]};
 	    //__You shouls not change anything from here
 
@@ -74,6 +76,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
 
+	    this.table0.subscribe("cellMouseoverEvent", highlightEditableCell);
+	    this.table0.subscribe("cellMouseoutEvent", unhighlightEditableCell);
+	    this.table0.subscribe("cellClickEvent", onCellClick);
+
 	    this.table0.filter={key:'<?php echo$_SESSION['state']['warehouse_area']['table']['f_field']?>',value:'<?php echo$_SESSION['state']['warehouse_area']['table']['f_value']?>'};
 	    YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown)
 	
@@ -92,21 +98,31 @@ function get_area_data(){
 
 }
 
+function reset_area_data(){
+    Dom.get('warehouse_key').value=Dom.get('warehouse_key').getAttribute('ovalue');
+    Dom.get('area_name').value=Dom.get('area_name').getAttribute('ovalue');
+    Dom.get('area_code').value=Dom.get('area_code').getAttribute('ovalue');
+    Dom.get('area_description').innerHTML=Dom.get('area_description').getAttribute('ovalue');
+
+}
+
 function add_area(){
 
     get_area_data();
     var json_value = YAHOO.lang.JSON.stringify(area_data);
 
     var request='ar_edit_warehouse.php?tipo=new_area&values=' + encodeURIComponent(json_value); 
-    alert(request);
+    
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
 	
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
-		if(r.action=='updated'){
-		    Dom.get(items[i]).value=r.value;
-		    Dom.get(items[i]).getAttribute('ovalue')=r.newvalue;
-		    save_details++;
+		if(r.action=='created'){
+		    reset_area_data();
+		    var table=tables['table0']
+		    var datasource=tables['dataSource0'];
+		    
+		    datasource.sendRequest('',table.onDataReturnInitializeTable, table);      
 		}else if(r.action=='error'){
 		    alert(r.msg);
 		}

@@ -27,13 +27,66 @@ case('new_area'):
 case('edit_warehouse_areas'):
   list_warehouse_areas_for_edition();
   break;
-
+ case('edit_warehouse_area'):
+   update_warehouse_area();
+   break;
  default:
 
    $response=array('state'=>404,'resp'=>_('Operation not found'));
    echo json_encode($response);
    
  }
+
+function update_warehouse_area(){
+  
+  if(
+     !isset($_REQUEST['wa_key'])
+     or !isset($_REQUEST['key'])
+     or !isset($_REQUEST['newvalue'])
+     ){
+    $response=array('state'=>400,'action'=>'error','msg'=>'');
+    echo json_encode($response);
+     return;
+  }
+    
+  
+  $wa_key=$_REQUEST['wa_key'];
+ 
+  $new_value=stripslashes(urldecode($_REQUEST['newvalue']));
+
+  $traslator=array(
+		   'code'=>'Warehouse Area Code',
+		   'name'=>'Warehouse Area Name',
+		   'description'=>'Warehouse Area Description'
+		   );
+  if(array_key_exists($_REQUEST['key'],$traslator)){
+    $key=$traslator[$_REQUEST['key']];
+  }else{
+    $response=array('state'=>400,'action'=>'error','msg'=>'Unknown key '.$_REQUEST['key']);
+    echo json_encode($response);
+    return;
+  }    
+
+
+  $wa=new WarehouseArea($wa_key);
+  if(!$wa->id){
+    $response=array('state'=>400,'action'=>'error','msg'=>'');
+    echo json_encode($response);
+     return;
+  }
+  
+  $wa->update(array($key=>$new_value));
+  if($wa->updated){
+    $response=array('state'=>200,'action'=>'updates','msg'=>$wa->msg,'newvalue'=>$wa->data[$key]);
+     echo json_encode($response);
+     return;
+  }else{
+    $response=array('state'=>400,'action'=>'nochange','msg'=>$wa->msg);
+    echo json_encode($response);
+     return;
+
+  }
+}
 
 function list_warehouse_areas_for_edition(){
     if(isset( $_REQUEST['warehouse']) and  is_numeric( $_REQUEST['warehouse']))
@@ -173,17 +226,16 @@ function list_warehouse_areas_for_edition(){
    
    
    while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-     $code=sprintf('<a href="warehouse_area.php?id=%d">%s</a>',$row['Warehouse Area Key'],$row['Warehouse Area Code']);
-     $name=sprintf('<a href="warehouse_area.php?id=%d">%s</a>',$row['Warehouse Area Key'],$row['Warehouse Area Name']);
-     
-   
+    
     $adata[]=array(
-		  'code'=>$code,
-		   'name'=>$name,
-		   
+		   'wa_key'=>$row['Warehouse Area Key'],
+		   'code'=>$row['Warehouse Area Code'],
+		   'name'=>$row['Warehouse Area Name'],
+		   'description'=>$row['Warehouse Area Description'],
+
 		   
 		   );
-  }
+   }
   mysql_free_result($res);
 
   
@@ -210,7 +262,7 @@ function list_warehouse_areas_for_edition(){
 		   );
    echo json_encode($response);
 
-}
+   }
 
 
 
