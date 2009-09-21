@@ -1,22 +1,24 @@
+
   var CellEdit = function (callback, newValue) {
-		var record = this.getRecord(),
-		column = this.getColumn(),
-		oldValue = this.value,
-		datatable = this.getDataTable();
+
+    var record = this.getRecord(),
+    column = this.getColumn(),
+    oldValue = this.value,
+    datatable = this.getDataTable();
 		
 		if(column.object=='company')
 		    ar_file='ar_edit_contacts.php';
+		else if(column.object=='warehouse_area')
+		    ar_file='ar_edit_warehouse.php';
 		else
 		    ar_file='ar_edit_assets.php';
 		
-alert(ar_file+'?tipo=edit_'+column.object+'&key=' + column.key + '&newvalue=' + 
-						encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ 
-						myBuildUrl(datatable,record))
+	
 		YAHOO.util.Connect.asyncRequest(
 						'POST',
 						ar_file, {
 						    success:function(o) {
-							alert(o.responseText);
+						    //alert(o.responseText);
 							var r = YAHOO.lang.JSON.parse(o.responseText);
 							if (r.state == 200) {
 							    

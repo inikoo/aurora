@@ -9,10 +9,10 @@
   <div id="block_individual"  style="margin:0px 20px;clear:both;">
     <div style="float:left;padding:20px;border:1px solid #ddd;width:400px">
       <table class="edit">
-	<tr><td class="label">{t}Warehouse{/t}:</td><td><span style="font-weight:800">{$warehouse->get('Warehouse Name')}</span><input type="hidden" id="warehouse_key" value="{$warehouse->id}"></td></tr>
-	<tr><td class="label">{t}Area Code{/t}:</td><td><input  id="area_code" type="text"/></td></tr>
-	<tr><td class="label">{t}Area Name{/t}:</td><td><input  id="area_name" type="text"/></td></tr>
-	<tr><td class="label">{t}Area Description{/t}:</td><td><textarea id="area_description"></textarea></td></tr>
+	<tr><td class="label">{t}Warehouse{/t}:</td><td><span style="font-weight:800">{$warehouse->get('Warehouse Name')}</span><input type="hidden" id="warehouse_key" ovalue="{$warehouse->id}" value="{$warehouse->id}"></td></tr>
+	<tr><td class="label">{t}Area Code{/t}:</td><td><input  id="area_code" ovalue=""  type="text"/></td></tr>
+	<tr><td class="label">{t}Area Name{/t}:</td><td><input  id="area_name" ovalue=""  type="text"/></td></tr>
+	<tr><td class="label">{t}Area Description{/t}:</td><td><textarea ovalue="" id="area_description"></textarea></td></tr>
 
 
 

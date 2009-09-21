@@ -55,7 +55,7 @@ class WarehouseArea extends DB_Table{
   */   
   
   function find($raw_data,$options){
-    print $options;
+  
     if(isset($raw_data['editor'])){
       foreach($raw_data['editor'] as $key=>$value){
 	
@@ -140,21 +140,26 @@ class WarehouseArea extends DB_Table{
 	return;
 
       }
-
+      if($this->data['Warehouse Area Name']==''){
+	$this->data['Warehouse Area Name']=$this->data['Warehouse Area Code'];
+      }
 
       $keys='(';$values='values(';
       foreach($this->data as $key=>$value){
 
 	$keys.="`$key`,";
-	$values.=prepare_mysql($value,true).",";
+	$_mode=true;
+	if($key=='Warehouse Area Description')
+	  $_mode=false;
+	$values.=prepare_mysql($value,$_mode).",";
       }
     
     $keys=preg_replace('/,$/',')',$keys);
     $values=preg_replace('/,$/',')',$values);
 
     $sql=sprintf("insert into `Warehouse Area Dimension` %s %s",$keys,$values);
-    //print "creating contact\n";
-
+    //print "$sql\n";
+    // exit;
     if(mysql_query($sql)){
       $this->id= mysql_insert_id();
       $this->new=true;

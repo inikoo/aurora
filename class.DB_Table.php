@@ -85,7 +85,7 @@ abstract class DB_Table
     // if($this->table_name=='Telecom'){
    
     // }
-
+     //print_r($data);
 
     $base_data=$this->base_data();
   

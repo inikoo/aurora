@@ -1,9 +1,11 @@
- function CalhandleSelect(type,args,obj) {
+<?php include_once('common.php')?> 
+
+function CalhandleSelect(type,args,obj) {
 		var dates = args[0];
 		var date = dates[0];
 		var year = date[0], month = date[1], day = date[2];
 
-
+	       
 		if(month<10)
 		    month='0'+month;
 		if(day<10)
