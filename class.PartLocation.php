@@ -204,7 +204,7 @@ function update_can_pick($value){
 }
 
 
-  function audit($qty){
+function audit($qty){
     
     if(!is_numeric($qty) or $qty<0){
       $this->error=true;
@@ -214,39 +214,22 @@ function update_can_pick($value){
     $old_qty=$this->data['Quantity On Hand'];
     $old_value=$this->data['Stock Value'];
 
-
+    $unit_cost=$this->get_unit_value(); 
 
     if(is_numeric($old_value) and   $old_value>=0){
       $qty_change=$qty-$old_qty;
-      if($qty_change<0 and is_numeric($old_value))
-	$unit_cost=$old_value/$old_qty;
-      else{
-	$unit_cost=$this->part->get('Unit Cost',$this->editor['Date']);
-	//print "* $unit_cost $qty_change $old_value\n";
-      }
-      $value=$qty*$unit_cost;
       $value_change=$value-$old_value;
-      //      	print "* $value $unit_cost $qty_change $old_value\n";
     }elseif($this->data['Negative Discrepancy']!=0){
       $qty_change=$qty+$this->data['Negative Discrepancy'];
-      if(is_numeric($this->data['Negative Discrepancy Value']) and   $this->data['Negative Discrepancy Value']<=0)
-	$unit_cost=$this->data['Negative Discrepancy Value']/$this->data['Negative Discrepancy'];
-      else
-	$unit_cost=$this->part->get('Unit Cost',$this->editor['Date']);
-    
-      $value=$qty*$unit_cost;
       $value_change=$value+$this->data['Negative Discrepancy Value'];
-      
     }else{
-
-      $unit_cost=$this->part->get('Unit Cost',$this->editor['Date']);
-      $value=$qty*$unit_cost;
       $qty_change=$qty;
       $value_change=$value;
     
     }
+    $value=$qty*$unit_cost;
     
-    $sql=sprintf("update `Part Location Dimension` set `Quantity On Hand`=%f ,`Stock Value`=%f, `Last Updated`=NOW() where `Part SKU`=%d and `Location Key`=%d "
+    $sql=sprintf("update `Part Location Dimension` set `Quantity On Hand`=%f ,`Stock Value`=%f, `Last Updated`=NOW(),`Negative Discrepancy`=0,`Negative Discrepancy Value`=0  where `Part SKU`=%d and `Location Key`=%d "
 		 ,$qty
 		 ,$value
 		 ,$this->part_sku
@@ -372,9 +355,7 @@ function update_can_pick($value){
 /*     $this->redo_daily_inventory($_date,''); */
 
   }
-
-
-  function redo_daily_inventory($from,$to=''){
+function redo_daily_inventory($from,$to=''){
     $daysin=0;
 
     $uptodate=false;
@@ -714,11 +695,7 @@ function update_can_pick($value){
       }
     }
   }
-
-
-
-
-  function get_cost($part_sku,$date=false){
+function get_cost($part_sku,$date=false){
     
     if(!$date)
       $date=date('Y-m-d H:i:s');
@@ -754,10 +731,7 @@ function update_can_pick($value){
 
 
   }
-
- 
-
-  function get_selling_price($part_sku,$date){
+function get_selling_price($part_sku,$date){
 
 
     $sql=sprintf(" select AVG(PD.`Product Price` * PPL.`Parts Per Product`) as cost from `Product Dimension` PD left join `Product Part List` PPL on (PD.`Product ID`=PPL.`Product ID`)  where `Part SKU`=%s  and `Product Valid To`>=%s and  `Product Valid From`<=%s    ",prepare_mysql($part_sku),prepare_mysql($date),prepare_mysql($date));
@@ -790,9 +764,7 @@ function update_can_pick($value){
 
 
   }
-
-
-  function create($data){
+function create($data){
 
     // print_r($data);
 
@@ -840,9 +812,7 @@ function update_can_pick($value){
     }
 
   }
-
-
-  function create_inventory_spanshopt($data){
+function create_inventory_spanshopt($data){
     
     if(!isset($data['user key']))
       $user_id='NULL';
@@ -913,9 +883,7 @@ function update_can_pick($value){
 
     }
   }
-
-
-  function delete(){
+function delete(){
     $this->deleted=false;
     if( is_numeric($this->data['Quantity On Hand']) and  $this->data['Quantity On Hand']>0){
       $this->deleted_msg=_('There is still stock in this location');
@@ -948,9 +916,7 @@ function update_can_pick($value){
     }
 
  }
-
-
-  function destroy($data){
+function destroy($data){
 
     $user_id=$data['user key'];
     $note=$data['note'];
@@ -1081,150 +1047,278 @@ function update_can_pick($value){
     
        
   }
+function get_unit_value(){
 
 
-  function move_to($data){
-    
-    $move_to=$data['move_to'];
-    $user_id=$data['user key'];
-    $note_associate='';
-    if(isset($data['note_associate']))
-      $note_associate=$data['note_associate'];
-    $note_out='';
-    if(isset($data['note_out']))
-      $note_out=$data['note_out'];
-    $note_in='';
-    if(isset($data['note_in']))
-      $note_in=$data['note_in'];
-    
-    $qty=$data['qty'];
-
-
-    if((!is_numeric($qty) ) and $qty!='all'   )
-      return;
-
-
-    if(!is_numeric($user_id) or $user_id<0)
-      $user_id='NULL';
-    
-    if(isset($data['date']) and $data['date']!='')
-      $date=$data['date'];
-    else
-      $date=date("Y-m-d H:i:s");
-    
-    $_date=date("Y-m-d",strtotime($date));
-    
-    $sql=sprintf("select * from `Inventory Spanshot Fact` where `Part SKU`=%d and `Location Key`=%d and `Date`=%s ",
-		 $this->part_sku
-		 ,$this->location_key
-		 ,prepare_mysql($_date)
-		 );
-
-    
-    $result=mysql_query($sql);
-    if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-   
-      //       if(!is_numeric($row['Quantity On Hand']) or $row['Quantity On Hand']==0   )
-      //	return;
-
-      if($qty=='all'){
-	$qty=$row['Quantity On Hand'];
-      }elseif($row['Quantity On Hand']>$qty)
-	 $qty=$row['Quantity On Hand'];
-      
-      if(!is_numeric($qty)  )
-	$qty='NULL';
-
-
-
-      if(!is_numeric($row['Value At Cost'])  or !is_numeric($qty)  )
-	$value='NULL';
+    $old_qty=$this->data['Quantity On Hand'];
+    $old_value=$this->data['Stock Value'];
+        
+    if(is_numeric($old_value) and   $old_value>=0){
+      $qty_change=$qty-$old_qty;
+      if($qty_change<0 and is_numeric($old_value))
+	       return $old_value/$old_qty;
       else{
-	if($qty==0)
-	  $value=0;
-	else
-	  $value=sprintf("%.2f",$row['Value At Cost']*$qty/$row['Quantity On Hand']);
-
+	    return $unit_cost=$this->part->get('Unit Cost',$this->editor['Date']);
       }
+     
+    }elseif($this->data['Negative Discrepancy']!=0){
+      $qty_change=$qty+$this->data['Negative Discrepancy'];
+      if(is_numeric($this->data['Negative Discrepancy Value']) and   $this->data['Negative Discrepancy Value']<=0)
+	return $this->data['Negative Discrepancy Value']/$this->data['Negative Discrepancy'];
+      else
+	return $this->part->get('Unit Cost',$this->editor['Date']);
+    
+   
       
-      
-      if($qty>0 and is_numeric($qty) ){
+    }else{
+
+      return $this->part->get('Unit Cost',$this->editor['Date']);
+     
     
-      	$sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`) values (%d,%d,%s,%s,%s,%s,%s,%s)"
-		     ,$this->part_sku
-		     ,$this->location_key
-		     ,"'Move Out'"
-		     ,-$qty
-		     ,-$value
-		     ,$user_id
-		     ,prepare_mysql($note_out,false)
-		     ,prepare_mysql($date)
-		     );
-	if(!mysql_query($sql))
-	  print "Error   $sql\n";
-	
-	$_loc=new Location($this->location_key);
-	$_loc->load('parts_data');
-	
-      }
-
-      $__date=date("Y-m-d H:i:s",strtotime($date." -1 second"));
-      $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`,`History Type`) values (%d,%d,%s,%s,%s,%s,%s,%s,'Detail')"
-		   ,$this->part_sku
-		   ,$move_to
-		   ,"'Associate'"
-		   ,0
-		   ,0
-		   ,$user_id
-		   ,prepare_mysql($note_associate,false)
-		   ,prepare_mysql($__date)
-		   );
-
-      //print_r($data);
-      //print "$sql\n";
-      if(!mysql_query($sql))
-	print "Error $sql\n";
-    
-    
-
-
-      $__date=date("Y-m-d H:i:s",strtotime($date." +0 second"));
-      $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`,`History Type`) values (%d,%d,%s,%s,%s,%s,%s,%s,'Admin')"
-		   ,$this->part_sku
-		   ,$move_to
-		   ,"'Audit'"
-		   ,0
-		   ,0
-		   ,$user_id
-		   ,"''"
-		   ,prepare_mysql($__date)
-		   );
-      if(!mysql_query($sql))
-	print "Error $sql\n";
- 
-      if($qty>0 and is_numeric($qty) ){
-	$__date=date("Y-m-d H:i:s",strtotime($date." +1 second"));
-	$sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`) values (%d,%d,%s,%s,%s,%s,%s,%s)"
-		     ,$this->part_sku
-		     ,$move_to
-		     ,"'Move In'"
-		     ,$qty
-		     ,$value
-		     ,$user_id
-		     ,prepare_mysql($note_in,false)
-		     ,prepare_mysql($__date)
-		     );
-	
-	if(!mysql_query($sql))
-	  print "Error $sql\n";
-      }	
-	$_loc=new Location($move_to);
-	$_loc->load('parts_data');
-
     }
     
-    $part=new Part($this->part_sku);
-    $part->load('calculate_stock_history','last');
+    
+
+}
+
+
+function move_stock($data){
+
+    $location_key_move_to=$data['Destination Location Key'];
+    
+    $destination=new PartLocation($this->part_sku,$location_key_move_to);
+    
+    
+if(!is_numeric($destination->data['Quantity On Hand'])){
+        $this->error;
+        $this->msg=_('Unknown stock in the destination location');
+        return;    
+    }
+
+
+
+}
+
+function lost_stock($data){
+
+if(!is_numeric($this->data['Quantity On Hand'])){
+        $this->error;
+        $this->msg=_('Unknown stock in the location');
+        return;    
+    }
+
+    if($this->data['Quantity On Hand']<$data['Lost Quantity']){
+        $this->error;
+        $this->msg=_('Lost Quantity greater than the stock on the location');
+        return;    
+    }
+
+    $this->stock_transfer(array(
+            'Quantity'=>$data['Lost Quantity']
+            ,'Transaction Type'=>'Lost'
+            ));
+
+}
+
+function stock_transfer($data){
+  
+    $qty=$data['Quantity'];
+    $transaction_type=$data['Transaction Type'];
+  
+    if(is_numeric($this->data['Quantity On Hand'])){
+    $old_qty=$this->data['Quantity On Hand'];
+    $old_value=$this->data['Stock Value'];
+    }else{
+    $old_qty=$this->data['Negative Discrepancy'];
+    $old_value=$this->data['Negative Discrepancy Value'];
+    
+    }
+    $unit_value=$this->get_unit_value();
+    $new_qty=$old_qty+$qty;
+    $new_value=$new_qty*$unit_value;
+    
+    if($qty>=0){
+    $sql=sprintf("update `Part Location Dimension` set `Quantity On Hand`=%f ,`Stock Value`=%f, `Last Updated`=NOW() ,`Negative Discrepancy`=0,`Negative Discrepancy Value`=0  where `Part SKU`=%d and `Location Key`=%d "
+		 ,$new_qty
+		 ,$new_value
+		 ,$this->part_sku
+		 ,$this->location_key
+		 );
+	}else{
+	$sql=sprintf("update `Part Location Dimension` set `Quantity On Hand`=NULL ,`Stock Value`=NULL, `Last Updated`=NOW() ,`Negative Discrepancy`=%f,`Negative Discrepancy Value`=%f  where `Part SKU`=%d and `Location Key`=%d "
+		 ,$new_qty
+		 ,$new_value
+		 ,$this->part_sku
+		 ,$this->location_key
+		 );
+	
+	
+	
+	}
+    mysql_query($sql);
+    
+    
+    
+    $qty_change=$qty;
+    $value_change=qty_change*$unit_value;
+    
+    $details='';
+    if($transaction_type=='Lost'){
+        $details=sprintf("SKU%d4",$this->part_sku).' '._('lost from').' '.$this->location->data['Location Code'].': '.($qty_change>0?'+':'').number($qty_change).' ('.($value_change>0?'+':'').money($value_change).')';
+    }
+      
+      $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`) values (%d,%d,%s,%f,%.2f,%s,%s,%s)"
+		   ,$this->part_sku
+		   ,$this->location_key
+		   ,prepare_mysql($transaction_type)
+		   ,$qty_change
+		   ,$value_change
+		   ,$this->editor['Author Key']
+		   ,prepare_mysql($details,false)
+		   ,prepare_mysql($this->editor['Date'])
+
+		   );
+    
+//     $move_to=$data['move_to'];
+//     $user_id=$data['user key'];
+//     $note_associate='';
+//     if(isset($data['note_associate']))
+//       $note_associate=$data['note_associate'];
+//     $note_out='';
+//     if(isset($data['note_out']))
+//       $note_out=$data['note_out'];
+//     $note_in='';
+//     if(isset($data['note_in']))
+//       $note_in=$data['note_in'];
+//     
+//     $qty=$data['qty'];
+// 
+// 
+//     if((!is_numeric($qty) ) and $qty!='all'   )
+//       return;
+// 
+// 
+//     if(!is_numeric($user_id) or $user_id<0)
+//       $user_id='NULL';
+//     
+//     if(isset($data['date']) and $data['date']!='')
+//       $date=$data['date'];
+//     else
+//       $date=date("Y-m-d H:i:s");
+//     
+//     $_date=date("Y-m-d",strtotime($date));
+//     
+//     $sql=sprintf("select * from `Inventory Spanshot Fact` where `Part SKU`=%d and `Location Key`=%d and `Date`=%s ",
+// 		 $this->part_sku
+// 		 ,$this->location_key
+// 		 ,prepare_mysql($_date)
+// 		 );
+// 
+//     
+//     $result=mysql_query($sql);
+//     if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+//    
+//       //       if(!is_numeric($row['Quantity On Hand']) or $row['Quantity On Hand']==0   )
+//       //	return;
+// 
+//       if($qty=='all'){
+// 	$qty=$row['Quantity On Hand'];
+//       }elseif($row['Quantity On Hand']>$qty)
+// 	 $qty=$row['Quantity On Hand'];
+//       
+//       if(!is_numeric($qty)  )
+// 	$qty='NULL';
+// 
+// 
+// 
+//       if(!is_numeric($row['Value At Cost'])  or !is_numeric($qty)  )
+// 	$value='NULL';
+//       else{
+// 	if($qty==0)
+// 	  $value=0;
+// 	else
+// 	  $value=sprintf("%.2f",$row['Value At Cost']*$qty/$row['Quantity On Hand']);
+// 
+//       }
+//       
+//       
+//       if($qty>0 and is_numeric($qty) ){
+//     
+//       	$sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`) values (%d,%d,%s,%s,%s,%s,%s,%s)"
+// 		     ,$this->part_sku
+// 		     ,$this->location_key
+// 		     ,"'Move Out'"
+// 		     ,-$qty
+// 		     ,-$value
+// 		     ,$user_id
+// 		     ,prepare_mysql($note_out,false)
+// 		     ,prepare_mysql($date)
+// 		     );
+// 	if(!mysql_query($sql))
+// 	  print "Error   $sql\n";
+// 	
+// 	$_loc=new Location($this->location_key);
+// 	$_loc->load('parts_data');
+// 	
+//       }
+// 
+//       $__date=date("Y-m-d H:i:s",strtotime($date." -1 second"));
+//       $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`,`History Type`) values (%d,%d,%s,%s,%s,%s,%s,%s,'Detail')"
+// 		   ,$this->part_sku
+// 		   ,$move_to
+// 		   ,"'Associate'"
+// 		   ,0
+// 		   ,0
+// 		   ,$user_id
+// 		   ,prepare_mysql($note_associate,false)
+// 		   ,prepare_mysql($__date)
+// 		   );
+// 
+//       //print_r($data);
+//       //print "$sql\n";
+//       if(!mysql_query($sql))
+// 	print "Error $sql\n";
+//     
+//     
+// 
+// 
+//       $__date=date("Y-m-d H:i:s",strtotime($date." +0 second"));
+//       $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`,`History Type`) values (%d,%d,%s,%s,%s,%s,%s,%s,'Admin')"
+// 		   ,$this->part_sku
+// 		   ,$move_to
+// 		   ,"'Audit'"
+// 		   ,0
+// 		   ,0
+// 		   ,$user_id
+// 		   ,"''"
+// 		   ,prepare_mysql($__date)
+// 		   );
+//       if(!mysql_query($sql))
+// 	print "Error $sql\n";
+//  
+//       if($qty>0 and is_numeric($qty) ){
+// 	$__date=date("Y-m-d H:i:s",strtotime($date." +1 second"));
+// 	$sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`) values (%d,%d,%s,%s,%s,%s,%s,%s)"
+// 		     ,$this->part_sku
+// 		     ,$move_to
+// 		     ,"'Move In'"
+// 		     ,$qty
+// 		     ,$value
+// 		     ,$user_id
+// 		     ,prepare_mysql($note_in,false)
+// 		     ,prepare_mysql($__date)
+// 		     );
+// 	
+// 	if(!mysql_query($sql))
+// 	  print "Error $sql\n";
+//       }	
+// 	$_loc=new Location($move_to);
+// 	$_loc->load('parts_data');
+// 
+//     }
+//     
+//     $part=new Part($this->part_sku);
+//     $part->load('calculate_stock_history','last');
 
    
  
