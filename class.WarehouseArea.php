@@ -37,16 +37,11 @@ class WarehouseArea extends DB_Table{
        $this->find($arg2,$arg3);
        return;
      }
-
-
      if(is_numeric($arg1)){
        $this->get_data('id',$arg1);
        return;
      }
      $this->get_data($arg1,$arg2);
-     
-
-
   }
 
   /*
@@ -78,10 +73,7 @@ class WarehouseArea extends DB_Table{
     
     $data=$this->base_data();
     foreach($raw_data as $key=>$val){
-      if(preg_match('/from supplier/',$options))
-	$_key=preg_replace('/^Location /i','',$key);
-      else
-	$_key=$key;
+      $_key=$key;
       $data[$_key]=$val;
     }
     
@@ -270,7 +262,22 @@ class WarehouseArea extends DB_Table{
   } 
  
 
-   
+  function add_location($data){
+    $this->new_area=false;
+    $data['Location Warehouse Key']=$this->data['Warehouse Key'];
+    $data['Location Warehouse Area Key']=$this->id;
+
+    $location= new Location('find',$data,'create');
+    $this->new_location_msg=$location->msg;
+    if($location->new)
+      $this->new_location=true;
+    else{
+      if($location->found)
+	$this->new_location_msg=_('Location Code already in the warehouse');
+    }
+  }
+
+  
      
 }
 

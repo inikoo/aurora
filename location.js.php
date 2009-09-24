@@ -1,12 +1,185 @@
-<?phpinclude_once('common.php')?>
+<?php include_once('common.php')
+
+
+?>
     var Dom   = YAHOO.util.Dom;
+
+
+var lost_label='<?php echo '<img src="art/icons/package_delete.png"  alt="'._('Lost').'" />' ?>';
+var delete_label='<?php echo '<img src="art/icons/cross.png"  alt="'._('Free location').'" />' ?>';
+var move_label='<?php echo '<img src="art/icons/package_go.png"  alt="'._('Move Stock').'" />' ?>';
+
 var Event = YAHOO.util.Event;
 
 var newProductData= new Object;
 var list = new Object;
 
+
+
+
+
+
+
+
 var operation='';
 
+var highlightEditableCell = function(oArgs) {
+
+    var target = oArgs.target;
+    column = this.getColumn(target);
+    record = this.getRecord(target);
+   
+
+    switch (column.action) {
+    case 'delete':
+	//for(x in target)
+	//  alert(x+' '+target[x])
+	
+	//alert(record.getData('delete'))
+	if(record.getData('delete')!='')
+	    this.highlightRow(target);
+	break;
+    case 'move':
+	if(record.getData('move')!='')
+	    this.highlightCell(target);
+	break;
+
+    case 'lost':
+	if(record.getData('lost')!='')
+	    this.highlightCell(target);
+	break;
+    default:
+	
+	if(YAHOO.util.Dom.hasClass(target, "yui-dt-editable") ) {
+	    this.highlightCell(target);
+	}
+    }
+};
+
+ var CellEdit = function (callback, newValue) {
+     
+     var record = this.getRecord(),
+     column = this.getColumn(),
+     oldValue = this.value,
+     datatable = this.getDataTable();
+     
+     
+     ar_file='ar_edit_warehouse.php';
+     
+     var request='tipo=edit_'+column.object+'&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ myBuildUrl(datatable,record);
+    // alert(request);
+
+    YAHOO.util.Connect.asyncRequest(
+				    'POST',
+				    ar_file, {
+					success:function(o) {
+					    alert(o.responseText);
+					    var r = YAHOO.lang.JSON.parse(o.responseText);
+					    if (r.state == 200) {
+						
+						if(column.key=='qty'){
+						    if(r.newvalue==0){
+							datatable.updateCell(record,'delete',delete_label);
+							datatable.updateCell(record,'lost','');
+
+						    }else{
+							datatable.updateCell(record,'delete','');
+							datatable.updateCell(record,'lost',lost_label);
+
+						    }							  
+						    // alert(r.stock)
+						    if(r.stock==0){
+							datatable.updateCell(record,'move','');
+
+						    }else{
+							datatable.updateCell(record,'move',move_label);
+
+						    }	
+
+
+						}
+						var table=tables.table0;
+						var datasource=tables.dataSource0;
+						var request='';
+						datasource.sendRequest(request,table.onDataReturnInitializeTable, table);    
+						callback(true, r.newvalue);
+
+
+
+
+
+					    } else {
+						alert(r.msg);
+						callback();
+					    }
+					},
+							failure:function(o) {
+							alert(o.statusText);
+							callback();
+						    },
+							scope:this
+							},
+						request
+						
+						);  
+	    };
+
+
+var onCellClick = function(oArgs) {
+		var target = oArgs.target,
+		column = this.getColumn(target),
+		record = this.getRecord(target);
+
+		switch (column.action) {
+		case 'delete':
+		    if(record.getData('delete')!=''){
+			if (confirm('Are you sure, you want to delete this row?')) {
+			    ar_file='ar_edit_warehouse.php';
+			    YAHOO.util.Connect.asyncRequest(
+							    'GET',
+							    ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record),
+							    {
+								success: function (o) {
+								    
+								if (o.responseText == 'Ok') {
+								    this.deleteRow(target);
+								} else {
+								    alert(o.responseText);
+								}
+								},
+								    failure: function (o) {
+								alert(o.statusText);
+								},
+								    scope:this
+								    }
+							    );
+			}
+		}
+		break;
+		case 'move':
+		    var x =Dom.getX(this.getCell(target))-Dom.get('Editor_move_items').offsetWidth+this.getCell(target).offsetWidth;
+		    var y =Dom.getY(this.getCell(target));
+		    Editor_move_items.cfg.setProperty("xy",[x,y]); 
+		    Editor_move_items.cfg.setProperty("visible",true); 
+		    break;
+		case 'lost':
+		    var qty=record.getData('qty');
+		    Dom.get('lost_max_value').innerHTML=qty;
+		    
+		    var x =Dom.getX(this.getCell(target))-Dom.get('Editor_lost_items').offsetWidth+this.getCell(target).offsetWidth;
+		    var y =Dom.getY(this.getCell(target));
+		    Editor_lost_items.cfg.setProperty("xy",[x,y]); 
+		    Editor_lost_items.cfg.setProperty("visible",true); 
+
+		    //	alert(Editor_lost_items)
+		    break;
+
+		default:
+
+		    this.onEventShowCellEditor(oArgs);
+		    break;
+		}
+	    };   
 
 var remove_prod=function (pl_id,part_sku){
     var request='ar_assets.php?tipo=pml_desassociate_location&id='+ escape(pl_id)+'&msg=&part_sku='+ escape(part_sku);
@@ -35,14 +208,14 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableid=0; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 	    var CustomersColumnDefs = [
-      {key:"date", label:"<?php echo _('Date')?>", width:200,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-      ,{key:"author", label:"<?php echo _('Author')?>", width:70,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-      ,{key:"tipo", label:"<?php echo _('Type')?>", width:90,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-        ,{key:"diff_qty", label:"<?php echo _('Qty')?>", width:90,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-      ,{key:"note", label:"<?php echo _('Description')?>", width:370,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       {key:"date",label:"<?php echo _('Date')?>", width:200,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"author",label:"<?php echo _('Author')?>", width:70,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"tipo", label:"<?php echo _('Type')?>", width:90,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       //,{key:"diff_qty",label:"<?php echo _('Qty')?>", width:90,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"note", label:"<?php echo _('Description')?>", width:370,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ];
 	    //?tipo=customers&tid=0"
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_assets.php?tipo=location_stock_history");
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_warehouse.php?tipo=location_stock_history");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -96,7 +269,44 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    
 		    
 	    this.table0.filter={key:'<?php echo$_SESSION['state']['product']['stock_history']['f_field']?>',value:'<?php echo$_SESSION['state']['product']['stock_history']['f_value']?>'};
-	    YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown)
+	    YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown);
+	    
+	    
+	    this.move_formatter = function(elLiner, oRecord, oColumn, oData) {
+		var stock=oRecord.getData("part_stock")
+                if(stock>0)
+		   elLiner.innerHTML =oData;
+		else
+		    elLiner.innerHTML = '';
+
+	    };
+
+	    this.lost_formatter = function(elLiner, oRecord, oColumn, oData) {
+		var qty=oRecord.getData("number_qty")
+                if(qty==0)
+		    elLiner.innerHTML = '';
+		else
+		    elLiner.innerHTML =oData;
+	    };
+
+	    this.delete_formatter = function(elLiner, oRecord, oColumn, oData) {
+
+
+
+		var qty=oRecord.getData("number_qty")
+                if(qty==0){
+		    elLiner.innerHTML = oData;
+		    oColumn.actionx='delete';
+		}else{
+		    elLiner.innerHTML =''   ;
+		    oColumn.actionx='';
+		}
+		//alert(oColumn.action);
+	    };
+	    // Add the custom formatter to the shortcuts
+	    YAHOO.widget.DataTable.Formatter.move = this.move_formatter;
+	    YAHOO.widget.DataTable.Formatter.lost = this.lost_formatter;
+	    YAHOO.widget.DataTable.Formatter.delete = this.delete_formatter;
 
 
 
@@ -104,19 +314,26 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		var tableid=1; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 	    var CustomersColumnDefs = [
-				       {key:"sku", label:"<?php echo _('Code')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"description", label:"<?php echo _('Description')?>", width:390,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"current_qty", label:"<?php echo _('Qty')?>", width:50,className:"aright"}
-				       ,{key:"changed_qty", label:"<?php echo _('Change')?>", width:50,className:"aright",hidden:true}
-				       ,{key:"new_qty", label:"<?php echo _('New Qty')?>", width:70,className:"aright",hidden:true}
-				       ,{key:"_qty_move", label:"<?php echo _('Moved')?>", width:70,hidden:true,className:"aright"}
-				       ,{key:"_qty_damaged", label:"<?php echo _('Damaged')?>", width:70,hidden:true,className:"aright"}
-				       ,{key:"_qty_change", label:"<?php echo _('Audit')?>", width:50,hidden:true,className:"aright inputs_yellow"}
-				       ,{key:"note", label:"<?php echo _('Note')?>", width:110,className:"aleft",hidden:true}
-				       ,{key:"delete", label:"", width:18,className:"aleft"}
+				       {key:"sku", label:"<?php echo _('SKU')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"location_key", label:"", hidden:true,isPrimaryKey:true} 
+				       ,{key:"part_sku", label:"", hidden:true,isPrimaryKey:true} 
+				       ,{key:"description", label:"<?php echo _('Description')?>", width:350,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"can_pick", label:"<?php echo _('Can Pick')?>", width:80,className:"aright" ,editor: new YAHOO.widget.RadioCellEditor({radioOptions:["<?php echo _('Yes')?>","<?php echo _('No')?>"],disableBtns:true,asyncSubmitter: CellEdit}),object:'part_location'}
+				       ,{key:"qty", label:"<?php echo _('Qty')?>", width:50,className:"aright", editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'part_location'}
+				       //,{key:"audit", label:"<?php echo _('Audit')?>", width:30,className:"aright", editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'part_location',action:'part_location_audit'}
+				       ,{key:"move",label:"<?php echo _('Move')?>", width:30,className:"aright",action:'move'}
+				       ,{key:"lost", label:"<?php echo _('Lost')?>", width:30,className:"aright",action:'lost'}
+				       ,{key:"delete", label:"", width:30,className:"aright",object:'part_location',action:'delete'}
+				       // ,{key:"changed_qty", label:"<?php echo _('Change')?>", width:50,className:"aright",hidden:true}
+				       //,{key:"new_qty", label:"<?php echo _('New Qty')?>", width:70,className:"aright",hidden:true}
+				       // ,{key:"_qty_move", label:"<?php echo _('Moved')?>", width:70,hidden:true,className:"aright"}
+				       //,{key:"_qty_damaged", label:"<?php echo _('Damaged')?>", width:70,hidden:true,className:"aright"}
+				       //,{key:"_qty_change", label:"<?php echo _('Audit')?>", width:50,hidden:true,className:"aright inputs_yellow"}
+				       //,{key:"note", label:"<?php echo _('Note')?>", width:110,className:"aleft",hidden:true}
+				       //,{key:"delete", label:"", width:18,className:"aleft"}
 				       ];
 	    //?tipo=customers&tid=0"
-	    this.dataSource1 = new YAHOO.util.DataSource("ar_assets.php?tipo=parts_at_location&tableid="+tableid);
+	    this.dataSource1 = new YAHOO.util.DataSource("ar_warehouse.php?tipo=parts_at_location&tableid="+tableid);
 	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource1.connXhrMode = "queueRequests";
 	    this.dataSource1.responseSchema = {
@@ -135,13 +352,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		fields: [
 			 "sku"
 			 ,"description"
-			 ,'current_qty'
-			 ,'changed_qty'
-			 ,'new_qty'
-			 ,'_qty_move'
-			 ,'_qty_change'
-			 ,'_qty_damaged'
-			 ,'msg','note','delete'
+			 ,'qty'
+			 ,'can_pick','move','audit','lost','delete','number_locations','number_qty','part_sku','location_key','part_stock'
+		
 			 ]};
 	    
 	    this.table1 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
@@ -164,7 +377,12 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    //this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
 
 		    
-		    
+	    this.table1.subscribe("cellMouseoverEvent", highlightEditableCell);
+	    this.table1.subscribe("cellMouseoutEvent", unhighlightEditableCell);
+	    this.table1.subscribe("cellClickEvent", onCellClick);
+
+
+
 	    this.table1.filter={key:'<?php echo$_SESSION['state']['location']['parts']['f_field']?>',value:'<?php echo$_SESSION['state']['location']['parts']['f_value']?>'};
 	    YAHOO.util.Event.addListener('yui-pg1-0-page-report', "click",myRowsPerPageDropdown)
 
@@ -172,19 +390,22 @@ YAHOO.util.Event.addListener(window, "load", function() {
     });
 
 
-YAHOO.util.Event.onContentReady("manage_stock_locations", function () {
-	var oDS = new YAHOO.util.XHRDataSource("ar_assets.php");
+YAHOO.util.Event.onContentReady("location_move_to", function () {
+	var oDS = new YAHOO.util.XHRDataSource("ar_warehouse.php");
  	oDS.responseType = YAHOO.util.XHRDataSource.TYPE_JSON;
  	oDS.responseSchema = {
  	    resultsList : "data",
- 	    fields : ["name"]
+ 	    fields : ["code","key","stock"]
  	};
- 	var oAC = new YAHOO.widget.AutoComplete("new_location_input", "new_location_container", oDS);
+ 	var oAC = new YAHOO.widget.AutoComplete("location_move_to_input", "location_move_to_container", oDS);
  	oAC.generateRequest = function(sQuery) {
- 	    return "?tipo=locations_name&all=0except_location&=<?php echo$_SESSION['state']['location']['id']?>&query=" + sQuery ;
+	    
+	    var sku=Dom.get("move_sku").value
+	    // alert("?tipo=find_location&except_location=<?php echo$_SESSION['state']['location']['id']?>&get_data=sku"+sku+"&query=" + sQuery)
+ 	    return "?tipo=find_location&except_location=<?php echo$_SESSION['state']['location']['id']?>&get_data=sku"+sku+"&query=" + sQuery ;
  	};
 	oAC.forceSelection = true; 
-	oAC.itemSelectEvent.subscribe(location_selected); 
+	oAC.itemSelectEvent.subscribe(location_move_to_selected); 
     });
 YAHOO.util.Event.onContentReady("manage_stock_products", function () {
 
@@ -193,18 +414,18 @@ YAHOO.util.Event.onContentReady("manage_stock_products", function () {
  	oDS.responseType = YAHOO.util.XHRDataSource.TYPE_JSON;
  	oDS.responseSchema = {
  	    resultsList : "data",
- 	    fields : ["scode","code","description","current_qty","changed_qty","new_qty","_qty_move","_qty_change","_qty_damaged","note","delete","part_sku"]
+ 	    fields : ["info","sku","description","usedin"]
  	};
  	var oAC = new YAHOO.widget.AutoComplete("new_product_input", "new_product_container", oDS);
  	oAC.generateRequest = function(sQuery) {
-
- 	    return "?tipo=part_search&except=location&except_id=<?php echo$_SESSION['state']['location']['id']?>&query=" + sQuery ;
+	    //alert("ar_assets.php"+"?tipo=part_search&except=location&except_id=<?php echo$_SESSION['state']['location']['id']?>&query=" + sQuery);
+ 	    return "?tipo=find_part&except=location&except_id=<?php echo$_SESSION['state']['location']['id']?>&query=" + sQuery ;
  	};
 
 	var myHandler = function(sType, aArgs) {
 
 	    newProductData = aArgs[2];
-
+	    
 	};
 	oAC.itemSelectEvent.subscribe(myHandler);
 
@@ -218,51 +439,41 @@ YAHOO.util.Event.onContentReady("manage_stock_products", function () {
 var product_selected=function(){
 
     var data = {
-	"sku":newProductData[1]
-	,"description":newProductData[2]
-	,"current_qty":newProductData[3]
-	,"changed_qty":newProductData[4]
-	,"new_qty":newProductData[5]
-	,"_qty_move":newProductData[6]
-	,"_qty_change":newProductData[7]
-	,"_qty_damaged":newProductData[8]
-	,"note":newProductData[9]
-	,"delete":newProductData[10]
-	,"part_sku":newProductData[11]
+	"info":newProductData[0]
+	,"sku":newProductData[1]
+	,"usedin":newProductData[2]
     }; 
     
     // add the product
 
-    // alert(data.note);
+    // alert(data.sku);
     //return;
-    var request='ar_assets.php?tipo=pml_new_location&is_primary=false&can_pick=true&location_id=<?php echo$_SESSION['state']['location']['id']?>&msg=&part_sku='+ escape(data.part_sku);
-
+    var request='ar_edit_warehouse.php?tipo=add_part_to_location&is_primary=false&can_pick=true&location_key=<?php echo$_SESSION['state']['location']['id']?>&msg=&part_sku='+ escape(data.sku);
+    //alert(request)
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-		//		alert(o.responseText);
+	       	alert(o.responseText);
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 
-		if (r.state == 200) {
-		    tables.table1.addRow(data,0);
-		    //check_audit_form();
-		    if(operation=='change_stock')
-			check_audit_form();
-		    else{
-			Dom.get("change_stock").style.visibility='visible';
-			if(r.has_stock)
-			    Dom.get("damaged_stock").style.visibility='visible';
-			if(r.num_products>1)
-			    Dom.get("move_stock").style.visibility='visible';
 			Dom.get('manage_stock_messages').innerHTML='';
 			Dom.get('manage_stock').style.display='none';
 
-		    }
-		    Dom.get('new_product_input').value='';
+		 
+			Dom.get('new_product_input').value='';
+
+
+		if (r.state == 200) {
+		    var table=tables.table1;
+		    var datasource=tables.dataSource1;
+		    var request='';
+		    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);      
 		    var table=tables.table0;
 		    var datasource=tables.dataSource0;
 		    var request='';
-		    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
-		    }else
+		    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);    
+		    
+ 
+		}else
 		    Dom.get('product_messages').innerHTML='<span class="error">'+r.msg+'</span>';
 	    }
 	}
@@ -468,8 +679,46 @@ var move_stock_save= function(){
 	});
 
     
+};
+
+function set_all_lost(){
+    Dom.get('qty_lost').value=Dom.get('lost_max_value').innerHTML;
+    Dom.get('lost_why').focus();
 }
 
+
+function save_lost_items(){
+    var data=new Object();
+    data['qty']=Dom.get('qty_lost').value;
+    data['why']=Dom.get('lost_why').value;
+    data['action']=Dom.get('lost_action').value;
+    data['location_key']='<?php echo$_SESSION['state']['location']['id']?>';
+    data['part_sku']=Dom.get('lost_sku').value;
+
+    var json_value = YAHOO.lang.JSON.stringify(data);
+    var request='ar_edit_warehouse.php?tipo=lost_stock&values=' + encodeURIComponent(json_value); 
+    alert(request);return;
+    
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    success:function(o) {
+		alert(o.responseText);
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if(r.action=='ok'){
+		    reset_location_data();
+		    var table=tables['table0']
+			var datasource=tables['dataSource0'];
+		    
+		    datasource.sendRequest('',table.onDataReturnInitializeTable, table);      
+		}else if(r.action=='error'){
+		    alert(r.msg);
+		}
+			    
+
+			
+	    }
+	});
+
+}
 
 
 var move_stock=function(){
@@ -613,7 +862,7 @@ var check_audit_form=function(){
 
 }
 
-var location_selected=function(){
+var location_move_to_selected=function(){
     var table=tables['table1'];
     table.showColumn('new_qty');
     table.showColumn('_qty_move');
@@ -657,6 +906,13 @@ function init(){
  var Dom   = YAHOO.util.Dom;
  var Event = YAHOO.util.Event;
  
+ Editor_lost_items = new YAHOO.widget.Panel("Editor_lost_items",{close:false,visible:false}); 
+ Editor_lost_items.render();	
+ Editor_move_items = new YAHOO.widget.Panel("Editor_move_items",{close:false,visible:false}); 
+ Editor_move_items.render();	
+
+
+
 Event.addListener('location_submit_search', "click",submit_search,'location');
  Event.addListener('location_search', "keydown", submit_search_on_enter,'location');
  

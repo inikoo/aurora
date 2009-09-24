@@ -148,7 +148,7 @@ protected function update_field($field,$value,$options=''){
 
   $old_value=_('Unknown');
   $sql="select `".$field."` as value from  `".$this->table_name." Dimension`  where `".$this->table_name." Key`=".$this->id;
-  // print "$sql\n";
+  print "$sql\n";
   $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
     $old_value=$row['value'];

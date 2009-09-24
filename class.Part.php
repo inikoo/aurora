@@ -11,6 +11,9 @@
  
  Version 2.0
 */
+
+include_once('class.Product.php');
+
 class part{
   
 
@@ -214,25 +217,32 @@ class part{
 		    ,$neg_discrepancy
 		    ,$neg_discrepancy_value
 		   ,$this->id);
-
-       //   print "$stock $value $neg_discrepancy $neg_discrepancy_value \n";
+       
+       //print "$sql $stock $value $neg_discrepancy $neg_discrepancy_value \n";
        // update products that depends of this part
+       if(!mysql_query($sql))
+	 exit("  errorcant not uopdate parts stock");
+       
+
+       $this->data['Part Current Stock']=$stock;
+       $this->data['Part Current Stock Cost']=$value;
+       $this->data['Part Current Stock Negative Discrepancy']=$neg_discrepancy;
+       $this->data['Part Current Stock Negative Discrepancy Value']=$neg_discrepancy_value;
 
        $this->load('used in list');
        
-       foreach($this->used_in_list as $product_key){
-	 $product=new Product($product_key);
+       foreach($this->used_in_list as $product_id){
+	 $product=new Product('pid',$product_id);
 	 if(!$product->id){
 	   print_r($this->used_in_list);
-	   exit("Error can not load prodct $product_key\n");
+	   exit("Error can not load prodct $product_id\n");
 	 }
 
 	 $product->load('stock');
 	 	 
        }
 
-       if(!mysql_query($sql))
-       	exit("  errorcant not uopdate parts stock");
+    
        
 
       break;
@@ -493,12 +503,13 @@ class part{
       break;
     case('used in list'):
       
-      $sql=sprintf("select `Product Key` from `Product Part List` PPL left join `Product Dimension` PD on (PD.`Product ID`=PPL.`Product ID`)  where `Part SKU`=%d group by `Product Key`",$this->data['Part SKU']);
+      $sql=sprintf("select `Product ID` from `Product Part List`   where `Part SKU`=%d group by `Product ID`",$this->data['Part SKU']);
       // print $sql;
       $result=mysql_query($sql);
       $this->used_in_list=array();
+      
       while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-	$this->used_in_list[]=$row['Product Key'];
+	$this->used_in_list[]=$row['Product ID'];
       }
     //   print_r($this->used_in_list);
       break;
@@ -835,6 +846,9 @@ class part{
 
     
     switch($key){
+    case('Unit Cost'):
+      return $this->get_unit_cost($args);
+      break;
     case('Picking Location Key'):
       $location_key=1;
       return $location_key;
@@ -913,7 +927,35 @@ class part{
 
 
 
+  function get_unit_cost($date=false){
+    
+    if($date){
+        $sql=sprintf("select AVG(`Supplier Product Cost`) as cost from `Supplier Product Dimension` SP left join `Supplier Product Part List` B  on (SP.`Supplier Product ID`=SP.`Supplier Product ID`) where `Part SKU`=%d and ( (`Supplier Product Part Valid From`<=%s and `Supplier Product Part Valid To`>=%s and `Supplier Product Part Most Recent`='No') or (`Supplier Product Part Most Recent`='Yes' and `Supplier Product Part Valid From`<=%s )  )  "
+		     ,$this->sku
+		     ,prepare_mysql($date)
+		     ,prepare_mysql($date)
+		     ,prepare_mysql($date)
+		     );
+      $res=mysql_query($sql);
+      if($row=mysql_fetch_array($res)){
+	return $row['cost'];
+      }
+    }
 
+    
+    $sql=sprintf("select AVG(`Supplier Product Cost`) as cost from `Supplier Product Dimension` SP left join `Supplier Product Part List` B  on (SP.`Supplier Product ID`=SP.`Supplier Product ID`) where `Part SKU`=%d and `Supplier Product Part Most Recent`='Yes' ",$this->sku);
+    print $sql;
+    $res=mysql_query($sql);
+    if($row=mysql_fetch_array($res)){
+      return $row['cost'];
+    }
+    
+    return 0;
+    
+    
+    
+
+  }
 
 
 }

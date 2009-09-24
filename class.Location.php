@@ -12,20 +12,22 @@
  Version 2.0
 */
 include_once('class.Part.php');
-class location{
+class Location extends DB_Table{
 
-  var $data=array();
+
   var $parts=false;
 
-
-  var $tipo;
-  var $id=false;
-
-
-  function __construct($arg1=false,$arg2=false,$tipo='shelf') {
-     $this->tipo=$tipo;
-     if(($arg1=='new'  or  $arg1=='create')and is_array($arg2)){
+  function Location($arg1=false,$arg2=false,$arg3=false) {
+    
+    $this->table_name='Location';
+    $this->ignore_fields=array('Location Key');
+    
+    if(preg_match('/^(new|create)$/i',$arg1) and is_array($arg2)){
        $this->create($arg2);
+       return;
+     }
+     if(preg_match('/find/i',$arg1)){
+       $this->find($arg2,$arg3);
        return;
      }
      if(is_numeric($arg1)){
@@ -33,32 +35,150 @@ class location{
        return;
      }
      $this->get_data($arg1,$arg2);
+   
   }
+
+
+
+ /*
+   Method: find
+   Find Location with similar data
+  */   
   
-  function create ($data){
-    $warehouse_id=$data['Location Warehouse Key'];
-    $area=$data['Location Area Code'];
-    $name=$data['Location Code'];
-    $tipo=$data['Location Mainly Used For'];
+  function find($raw_data,$options){
+  
+    if(isset($raw_data['editor'])){
+      foreach($raw_data['editor'] as $key=>$value){
+	
+	if(array_key_exists($key,$this->editor))
+	  $this->editor[$key]=$value;
+		    
+      }
+    }
+   
     
-    if($name=='')
-      return array('ok'=>false,'msg'=>_('Wrong location name').'.');
+    $this->found=false;
+    $create='';
+    $update='';
+    if(preg_match('/create/i',$options)){
+      $create='create';
+    }
+    if(preg_match('/update/i',$options)){
+      $update='update';
+    }
+    
     
 
-    if(!($tipo=='Picking' or $tipo=='Storing' or $tipo=='Loading' or $tipo=='Displaying'))
-       return array('ok'=>false,'msg'=>_('Wrong location tipo').'.');
-    $sql=sprintf('insert into `Location Dimension` (`Location Code`,`Location Mainly Used For`,`Location Warehouse Key`,`Location Area Code`) values(%s,%s,%d,%s)'
-		 ,prepare_mysql($name)
-		 ,prepare_mysql($tipo)
-		 ,$warehouse_id
-		 ,prepare_mysql($area)
-		 );
-    //    print "$sql\n";
+
+   
+
+    $data=$this->base_data();
+    foreach($raw_data as $key=>$val){
+      /*       if(preg_match('/from supplier/',$options)) */
+      /* 	$_key=preg_replace('/^Location /i','',$key); */
+      /*       else */
+      $_key=$key;
+      $data[$_key]=$val;
+    }
+    
+    
+    //look for areas with the same code in the same warehouse
+    $sql=sprintf("select `Location Key` from `Location Dimension` where `Location Warehouse Key`=%d and `Location Code`=%s"
+		,$data['Location Warehouse Key']
+		 ,prepare_mysql($data['Location Code']));
+    
+    // print $sql;
+    $res=mysql_query($sql);
+    if($row=mysql_fetch_array($res)){
+      $this->found=true;
+      $this->found_key=$row['Location Key'];
+    }
+
+    //what to do if found
+    if($this->found){
+      $this->get_data('id',$this->found_key);
+    }
+      
+
+    if($create){
+      if($this->found){
+	$this->update($data,$options);
+      }else{
+
+	$this->create($data,$options);
+
+      }
+
+
+    }
+  }
+
+
+
+
+  
+  function create ($data){
+
+
+    $this->data=$this->base_data();
+    foreach($data as $key=>$value){
+      if(array_key_exists($key,$this->data))
+	  $this->data[$key]=_trim($value);
+    }
+    
+
+    
+
+    if($this->data['Location Code']==''){
+      $error=true;
+      $this->msg=_('Wrong location code');
+      return;
+    }
+    
+    if(!preg_match('/^(Picking|Storing|Loading|Displaying|Other)$/i',$this->data['Location Mainly Used For'])){
+      $error=true;
+      $this->msg='Wrong location usage: '.$this->data['Location Mainly Used For'];
+      return;
+    }
+     if($this->data['Location Shape Type']=='Box' 
+       and is_numeric($this->data['Location Width']) and $this->data['Location Width']>0 
+       and is_numeric($this->data['Location Deepth']) and $this->data['Location Deepth']>0 
+       and is_numeric($this->data['Location Heigth']) and $this->data['Location Heigth']>0 
+       ){
+      $this->data['Location Max Volume']=$this->data['Location Width']*$this->data['Location Deepth']*$this->data['Location Heigth']*0.001;
+    }if($this->data['Location Shape Type']=='Cylinder' 
+       and is_numeric($this->data['Location Radius']) and $this->data['Location Radius']>0 
+       and is_numeric($this->data['Location Heigth']) and $this->data['Location Heigth']>0 
+       ){
+      $this->data['Location Max Volume']=3.151592*$this->data['Location Radius']*$this->data['Location Radius']*$this->data['Location Heigth']*0.001;
+    }
+
+     $keys='(';$values='values(';
+      foreach($this->data as $key=>$value){
+
+	$keys.="`$key`,";
+	$_mode=true;
+	$values.=prepare_mysql($value,$_mode).",";
+      }
+    
+    $keys=preg_replace('/,$/',')',$keys);
+    $values=preg_replace('/,$/',')',$values);
+
+    $sql=sprintf("insert into `Location Dimension` %s %s",$keys,$values);
+    //print "$sql\n";
+    // exit;
     if(mysql_query($sql)){
-      $id =  mysql_insert_id();
-      $this->get_data('id',$id);
-    }else
-      exit("$sql\n Error con not insert new location\n");
+      $this->id= mysql_insert_id();
+      $this->new=true;
+      $this->get_data('id',$this->id);
+      $note=_('Location Created');
+      $details=_('Location')." ".$this->data['Location Code']." "._('created');
+      
+      
+    }else{
+      exit($sql);
+    }
+    
     
   }
 
@@ -396,6 +516,20 @@ case('tipo'):
       return false;
   }
   
+
+  function delete(){
+    $this->deleted=false;
+    $this->deleted_msg='';
+    $warehouse_area=new WarehouseArea($this->data['Location Warehouse Area Key']);
+    $sql=sprintf("delete from `Location Dimension` where `Location Key`=%d",$this->id);
+    mysql_query($sql);
+    if(mysql_affected_rows()>0){
+      $this->deleted=true;
+    }else{
+      $this->deleted_msg='Error location can not be deleted';
+    }
+
+  }
   
 
 }

@@ -15,13 +15,18 @@
 include_once('class.Part.php');
 include_once('class.Location.php');
 
-class PartLocation{
+class PartLocation extends DB_Table{
   
-  var $data=array();
+  var $ok=false;
 
-  function __construct($data=false) {
+  function PartLocation($arg1=false,$arg2=false,$arg3=false) {
     
-    if(is_array($data)){
+    $this->table_name='Part Location';
+ 
+
+
+    if(is_array($arg1)){
+      $data=$arg1;
       if(isset($data['LocationPart'])){
 	$tmp=split("_",$data['LocationPart']);
 	$this->location_key=$tmp[0];
@@ -34,12 +39,96 @@ class PartLocation{
       }
       $this->date=date("Y-m-d");
     }else{
-      $tmp=split("_",$data);
-      $this->location_key=$tmp[0];
-      $this->part_sku=$tmp[1];
       
+      if($arg1=='find'){
+	$this->find($arg2,$arg3);
+	return;
+      }elseif(is_numeric($arg1) and is_numeric($arg2)){
+	$this->part_sku=$arg1;
+	$this->location_key=$arg2;
+	$this->get_data();
+	return;
+
+      }else{
+
+
+      $tmp=split("_",$arg1);
+      $this->part_sku=$tmp[0];
+      $this->location_key=$tmp[1];
+
+      $this->get_data();
+      return;
+      }
+ }
+  
+
+  }
+/*
+   Method: find
+   Find Part  Location  Paair with similar data
+  */   
+  
+  function find($raw_data,$options){
+    if(isset($raw_data['editor'])){
+      foreach($raw_data['editor'] as $key=>$value){
+	
+	if(array_key_exists($key,$this->editor))
+	  $this->editor[$key]=$value;
+		    
+      }
     }
-    $this->get_data();
+   
+
+    $this->found=false;
+    $create='';
+    $update='';
+    if(preg_match('/create/i',$options)){
+      $create='create';
+    }
+    if(preg_match('/update/i',$options)){
+      $update='update';
+    }
+    
+    $data=$this->base_data();
+    foreach($raw_data as $key=>$val){
+      $_key=$key;
+      $data[$_key]=$val;
+    }
+
+    $this->location=New Location($data['Location Key']);
+    if(!$this->location->id)
+      $this->location=New Location(1);
+    $this->location_key=$this->location->id;
+
+    $this->part=New Part($data['Part SKU']);
+    if(!$this->part->id){
+      $this->error=true;
+      $this->msg=_('Part not found');
+    }else
+      $this->part_sku=$this->part->sku;
+
+    $sql=sprintf("select `Location Key`,`Part SKU` from `Part Location Dimension` where `Part SKU`=%d and `Location Key`=%d"
+		 ,$this->part_sku
+		 ,$this->location_key
+		 );
+    $res=mysql_query($sql);
+    //print $sql;
+   
+    if($row=mysql_fetch_array($res)){
+      $this->found=true;
+      $this->get_data();
+    }
+
+     if($create){
+      if($this->found){
+
+	$this->update($data,$options);
+      }else{
+
+	$this->create($data,$options);
+      }
+     }
+
 
   }
 
@@ -49,7 +138,12 @@ class PartLocation{
     $sql=sprintf("select * from `Part Location Dimension` where `Part SKU`=%d and `Location Key`=%d",$this->part_sku,$this->location_key);
     $result=mysql_query($sql);
     if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)){
+      $this->ok=true;
       $this->current=true;
+      $this->part=New Part($this->part_sku);
+      $this->location=New Location($this->location_key);
+
+
     }
   }
 
@@ -90,78 +184,192 @@ function last_inventory_audit(){
 
   }
 
+function update_can_pick($value){
 
-  function audit($data){
 
-    $qty=$data['qty'];
-    $user_id=$data['user key'];
-    $note=$data['note'];
- //   $options=$data['options'];
-    $date=$data['date'];
+  // Note:Inverse Translation InvT
+  if(preg_match('/^(yes|si)$/i',$value))
+    $value='Yes';
+  else
+    $value='No';
+  $sql=sprintf("update `Part Location Dimension` set `Can Pick`=%s ,`Last Updated`=NOW() where `Part SKU`=%d and `Location Key`=%d "
+	       ,prepare_mysql($value)
+		 ,$this->part_sku
+		 ,$this->location_key
+		 );
+  if(mysql_query($sql)){
+    $this->updated=true;
+    $this->data['Can Pick']=$value;
+  }
+}
 
-    if($date==''){
-      $date=date("Y-m-d H:i:s");
 
-      if(preg_match('/force_update/',$date)){
-	$from=$this->last_inventory_date();
-	if(!$from){
-	  $from=$this->first_inventory_transacion();
-	}
-	if($from){
-	  $this->redo_daily_inventory($from,'');
-	}
-       
+  function audit($qty){
+    
+    if(!is_numeric($qty) or $qty<0){
+      $this->error=true;
+      $this->msg=_('Quantity On Hand should be a number');
+    }
+    
+    $old_qty=$this->data['Quantity On Hand'];
+    $old_value=$this->data['Stock Value'];
+
+
+
+    if(is_numeric($old_value) and   $old_value>=0){
+      $qty_change=$qty-$old_qty;
+      if($qty_change<0 and is_numeric($old_value))
+	$unit_cost=$old_value/$old_qty;
+      else{
+	$unit_cost=$this->part->get('Unit Cost',$this->editor['Date']);
+	//print "* $unit_cost $qty_change $old_value\n";
       }
-      $unitary_price='';
-      $_date=date("Y-m-d",strtotime($date));
-      $sql=sprintf("select `Value At Cost`,`Quantity On Hand` from `Inventory Spanshot Fact` where  `Part SKU`=%d  and `Location Key`=%d  and `Date`=%s ",$this->part_sku,$this->location_key,prepare_mysql($_date));
-      $result=mysql_query($sql);
-      if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-	$old_value=$row['Value At Cost'];
-	$old_qty=$row['Quantity On Hand'];
-	if(is_numeric($old_qty)){
-	  $ok=true;
-	  if($old_qty>0)
-	    $unitary_price=$old_value/$old_qty;
+      $value=$qty*$unit_cost;
+      $value_change=$value-$old_value;
+      //      	print "* $value $unit_cost $qty_change $old_value\n";
+    }elseif($this->data['Negative Discrepancy']!=0){
+      $qty_change=$qty+$this->data['Negative Discrepancy'];
+      if(is_numeric($this->data['Negative Discrepancy Value']) and   $this->data['Negative Discrepancy Value']<=0)
+	$unit_cost=$this->data['Negative Discrepancy Value']/$this->data['Negative Discrepancy'];
+      else
+	$unit_cost=$this->part->get('Unit Cost',$this->editor['Date']);
+    
+      $value=$qty*$unit_cost;
+      $value_change=$value+$this->data['Negative Discrepancy Value'];
+      
+    }else{
 
+      $unit_cost=$this->part->get('Unit Cost',$this->editor['Date']);
+      $value=$qty*$unit_cost;
+      $qty_change=$qty;
+      $value_change=$value;
+    
+    }
+    
+    $sql=sprintf("update `Part Location Dimension` set `Quantity On Hand`=%f ,`Stock Value`=%f, `Last Updated`=NOW() where `Part SKU`=%d and `Location Key`=%d "
+		 ,$qty
+		 ,$value
+		 ,$this->part_sku
+		 ,$this->location_key
+		 );
+    if(mysql_query($sql)){
+      $this->updated=true;
+      $this->data['Quantity On Hand']=$qty;
+      $this->data['Stock Value']=$value;
+      
+      $this->part->load('stock');
 
-	}else{
-	  $unitary_price='';
-	  $ok=false;
-	}       
+      
+      $details=sprintf("SKU%d4",$this->part_sku).' '._('adjust due to audit in').' '.$this->location->data['Location Code'].': '.($qty_change>0?'+':'').number($qty_change).' ('.($value_change>0?'+':'').money($value_change).')';
+      
+      
+      $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`) values (%d,%d,%s,%f,%.2f,%s,%s,%s)"
+		   ,$this->part_sku
+		   ,$this->location_key
+		   ,"'Adjust'"
+		   ,$qty_change
+		   ,$value_change
+		   ,$this->editor['Author Key']
+		   ,prepare_mysql($details,false)
+		   ,prepare_mysql($this->editor['Date'])
 
+		   );
+      if(!mysql_query($sql))
+	print "Error can not audit liocation";
 
-      }
-     
-      if(!is_numeric($unitary_price)){
-	$sql=sprintf(" select AVG(SPD.`Supplier Product Cost` * SPPL.`Supplier Product Units Per Part`) as cost from `Supplier Product Dimension` SPD left join `Supplier Product Part List` SPPL on (SPD.`Supplier Product ID`=SPPL.`Supplier Product ID`)  where `Part SKU`=%d  and `Supplier Product Part Most Recent`='Yes'    ",$this->part_sku);
-	$result=mysql_query($sql);
-	if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-	  $unitary_price=$row['cost'];
-	   
-	}
-       
+      $details=_('Audit').', '.sprintf("SKU%d4",$this->part_sku).' '._('stock in').' '.$this->location->data['Location Code'].' '._('set to').': '.number($qty);
 
-      }
-
-      if(!is_numeric($user_id) or $user_id<0)
-	$user_id='NULL';
       $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`) values (%d,%d,%s,%f,%.2f,%s,%s,%s)"
 		   ,$this->part_sku
 		   ,$this->location_key
 		   ,"'Audit'"
 		   ,$qty
-		   ,$qty*$unitary_price
-		   ,$user_id
-		   ,prepare_mysql($note)
-		   ,prepare_mysql($date)
+		   ,$value
+		   ,$this->editor['Author Key']
+		   ,prepare_mysql($details,false)
+		   ,prepare_mysql($this->editor['Date'])
+
 		   );
       if(!mysql_query($sql))
-	print "Error can not audit liocatun";
+	print "Error can not audit liocation";
       // print "$sql\n";
 
     }
-    $this->redo_daily_inventory($_date,'');
+
+
+
+  
+    
+
+  /*   $qty=$data['qty']; */
+/*     $user_id=$data['user key']; */
+/*     $note=$data['note']; */
+/*  //   $options=$data['options']; */
+/*     $date=$data['date']; */
+
+/*     if($date==''){ */
+/*       $date=date("Y-m-d H:i:s"); */
+
+/*       if(preg_match('/force_update/',$date)){ */
+/* 	$from=$this->last_inventory_date(); */
+/* 	if(!$from){ */
+/* 	  $from=$this->first_inventory_transacion(); */
+/* 	} */
+/* 	if($from){ */
+/* 	  $this->redo_daily_inventory($from,''); */
+/* 	} */
+       
+/*       } */
+/*       $unitary_price=''; */
+/*       $_date=date("Y-m-d",strtotime($date)); */
+/*       $sql=sprintf("select `Value At Cost`,`Quantity On Hand` from `Inventory Spanshot Fact` where  `Part SKU`=%d  and `Location Key`=%d  and `Date`=%s ",$this->part_sku,$this->location_key,prepare_mysql($_date)); */
+/*       $result=mysql_query($sql); */
+/*       if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){ */
+/* 	$old_value=$row['Value At Cost']; */
+/* 	$old_qty=$row['Quantity On Hand']; */
+/* 	if(is_numeric($old_qty)){ */
+/* 	  $ok=true; */
+/* 	  if($old_qty>0) */
+/* 	    $unitary_price=$old_value/$old_qty; */
+
+
+/* 	}else{ */
+/* 	  $unitary_price=''; */
+/* 	  $ok=false; */
+/* 	}        */
+
+
+/*       } */
+     
+/*       if(!is_numeric($unitary_price)){ */
+/* 	$sql=sprintf(" select AVG(SPD.`Supplier Product Cost` * SPPL.`Supplier Product Units Per Part`) as cost from `Supplier Product Dimension` SPD left join `Supplier Product Part List` SPPL on (SPD.`Supplier Product ID`=SPPL.`Supplier Product ID`)  where `Part SKU`=%d  and `Supplier Product Part Most Recent`='Yes'    ",$this->part_sku); */
+/* 	$result=mysql_query($sql); */
+/* 	if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){ */
+/* 	  $unitary_price=$row['cost']; */
+	   
+/* 	} */
+       
+
+/*       } */
+
+/*       if(!is_numeric($user_id) or $user_id<0) */
+/* 	$user_id='NULL'; */
+/*       $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`) values (%d,%d,%s,%f,%.2f,%s,%s,%s)" */
+/* 		   ,$this->part_sku */
+/* 		   ,$this->location_key */
+/* 		   ,"'Audit'" */
+/* 		   ,$qty */
+/* 		   ,$qty*$unitary_price */
+/* 		   ,$user_id */
+/* 		   ,prepare_mysql($note) */
+/* 		   ,prepare_mysql($date) */
+/* 		   ); */
+/*       if(!mysql_query($sql)) */
+/* 	print "Error can not audit liocatun"; */
+/*       // print "$sql\n"; */
+
+/*     } */
+/*     $this->redo_daily_inventory($_date,''); */
 
   }
 
@@ -585,6 +793,56 @@ function last_inventory_audit(){
 
 
   function create($data){
+
+    // print_r($data);
+
+    $this->data=$this->base_data();
+    foreach($data as $key=>$value){
+      if(array_key_exists($key,$this->data))
+	  $this->data[$key]=_trim($value);
+    }
+    $keys='(';$values='values(';
+    foreach($this->data as $key=>$value){
+      $keys.="`$key`,";
+      $_mode=true;
+      if($key=='Last Updated')
+	$values.='NOW(),';
+      else
+	$values.=prepare_mysql($value,$_mode).",";
+    }
+    $keys=preg_replace('/,$/',')',$keys);
+    $values=preg_replace('/,$/',')',$values);
+    $sql=sprintf("insert into `Part Location Dimension` %s %s",$keys,$values);
+      
+    if(mysql_query($sql)){
+      $this->id= mysql_insert_id();
+      $this->new=true;
+      $this->get_data('id',$this->id);
+      $note=_('Part added to location');
+      $details=_('Part')." SKU".sprintf("%05d",$this->part->sku)." "._('associated with location').": ".$this->location->data['Location Code'];
+     
+
+      //$date=date("Y-m-d H:i:s");
+       $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`) values (%d,%d,%s,%f,%.2f,%s,%s,%s)"
+		    ,$this->part_sku
+		    ,$this->location_key
+		    ,"'Associate'"
+		    ,0
+		    ,0
+		    ,$this->editor['Author Key']
+		    ,prepare_mysql($details)
+		    ,prepare_mysql($this->editor['Date'])
+		    );
+       mysql_query($sql);
+      
+    }else{
+      exit($sql);
+    }
+
+  }
+
+
+  function create_inventory_spanshopt($data){
     
     if(!isset($data['user key']))
       $user_id='NULL';
@@ -640,7 +898,7 @@ function last_inventory_audit(){
 		   ,"'Audit'"
 		   ,0
 		   ,0
-		   ,$user_id
+		    ,$this->editor['Author Key']
 		   ,addslashes($note)
 		   ,prepare_mysql($date)
 		   );
@@ -655,6 +913,41 @@ function last_inventory_audit(){
 
     }
   }
+
+
+  function delete(){
+    $this->deleted=false;
+    if( is_numeric($this->data['Quantity On Hand']) and  $this->data['Quantity On Hand']>0){
+      $this->deleted_msg=_('There is still stock in this location');
+      return;
+    }
+    $sql=sprintf("delete from `Part Location Dimension` where  `Part SKU`=%d and `Location Key`=%d"
+		 ,$this->part_sku
+		 ,$this->location_key
+		 );
+    if(mysql_query($sql)){
+            $details=_('Part')." SKU".sprintf("%05d",$this->part->sku)." "._('disassociated from location').": ".$this->location->data['Location Code'];
+	    
+	    $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`) values (%d,%d,%s,%s,%s,%s,%s,%s)"
+			 ,$this->part_sku
+			 ,$this->location_key
+			 ,"'Disassociate'"
+			 ,0
+			 ,0
+			 ,$this->editor['Author Key']
+			 ,prepare_mysql($details)
+		     ,prepare_mysql($this->editor['Date'])
+		     );
+	mysql_query($sql);
+
+      
+      $this->deleted=true;
+      $this->deleted_msg=_('Part no longer ssociated with location');
+ 
+
+    }
+
+ }
 
 
   function destroy($data){
@@ -961,6 +1254,20 @@ function last_inventory_audit(){
     if(!mysql_query($sql))
       exit("$sql can into insert Inventory Transaction Fact star AA");
   }
+
+function update_field_switcher($field,$value,$options=''){
+  switch($field){
+  case('Quantity On Hand'):
+    $this->audit($value);
+    break;
+  case('Can Pick'):
+    $this->update_can_pick($value);
+    break;
+
+    
+  }   
+ }
+
 
   }
   ?>
