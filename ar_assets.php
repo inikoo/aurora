@@ -815,63 +815,11 @@ case('order_consolidated'):
    break;
 
 
-case('part_search'):
+case('find_part'):
 
-   if(!isset($_REQUEST['query']) or $_REQUEST['query']==''){
-     $response= array(
-		      'state'=>400,
-		      'data'=>array()
-		      );
-     echo json_encode($response);
-     return;
-   }
-     
+  find_part();
 
-   if(isset($_REQUEST['except']) and  isset($_REQUEST['except_id'])  and   is_numeric($_REQUEST['except_id']) and $_REQUEST['except']=='location' ){
-     
-       $sql=sprintf("select `Part SKU`,`Part XHTML Description` from `Part Dimension` where  (`Part SKU`=%d or `Part XHTML Currently Used In` like '%%%s%%' ) limit 20 ",$_REQUEST['query'],addslashes($_REQUEST['query']));
-
-   }else{
-      $sql=sprintf("select `Part SKU`,`Part XHTML Description`,`Part Currently Used In` from `Part Dimension` where  (`Part SKU`=%d or `Part XHTML Currently Used In` like '%%%s%%' ) limit 20",$_REQUEST['query'],addslashes($_REQUEST['query']));
-
-   }
-       //print $sql;
-
-       $_data=array();
-       $res=mysql_query($sql);
-       
-      //  $qty_on_hand=0;
-//        $location_key=$_REQUEST['except_id'];
-       
-       while($data=mysql_fetch_array($res)) {
-	 //$loc_sku=$location_key.'_'.$data['Part SKU'];
-	 
-
-	 $_data[]= array(
-			 'info'=>sprintf("%s:%05d - %s",_('SKU'),$data['Part SKU'],$data['Part XHTML Description'])
-			 ,'sku'=>$data['Part SKU']
-			 ,'description'=>$data['Part XHTML Description']
-			 ,'usedin'=>$data['Part Currently Used In']
-
-			 //	 'sku'=>sprintf('<a href="part.php?sku=%d">%s</a>',$data['Part SKU'],$data['Part SKU'])
-			 // ,'description'=>$data['Part XHTML Description']
-			//  ,'current_qty'=>sprintf('<span  used="0"  value="%s" id="s%s"  onclick="fill_value(%s,%d,%d)">%s</span>',$qty_on_hand,$loc_sku,$qty_on_hand,$location_key,$data['Part SKU'],number($qty_on_hand))
-// 			 ,'changed_qty'=>sprintf('<span   used="0" id="cs%s"  onclick="change_reset(\'%s\',%d)"   ">0</span>',$loc_sku,$loc_sku,$data['Part SKU'])
-// 			 ,'new_qty'=>sprintf('<span  used="0"  value="%s" id="ns%s"  onclick="fill_value(%s,%d,%d)">%s</span>',$qty_on_hand,$loc_sku,$qty_on_hand,$location_key,$data['Part SKU'],number($qty_on_hand))
-// 			 ,'_qty_move'=>'<input id="qm'.$loc_sku.'" onchange="qty_changed(\''.$loc_sku.'\','.$data['Part SKU'].')" type="text" value="" size=3>'
-// 			 ,'_qty_change'=>'<input id="qc'.$loc_sku.'" onchange="qty_changed(\''.$loc_sku.'\','.$data['Part SKU'].')" type="text" value="" size=3>'
-// 			 ,'_qty_damaged'=>'<input id="qd'.$loc_sku.'" onchange="qty_changed(\''.$loc_sku.'\','.$data['Part SKU'].')" type="text" value="" size=3>'
-// 			 ,'note'=>'<input  id="n'.$loc_sku.'" type="text" value="" style="width:100px">'
-// 			 ,'delete'=>($qty_on_hand==0?'<img onclick="remove_prod('.$location_key.','.$data['Part SKU'].')" style="cursor:pointer" title="'._('Remove').' '.$data['Part SKU'].'" alt="'._('Desassociate Product').'" src="art/icons/cross.png".>':'')
-// 			 ,'part_sku'=>$data['Part SKU']
-			 
-			);
-       }
-       $response= array(
-			'state'=>200,
-			'data'=>$_data
-			);
-       echo json_encode($response);
+   
        
        
  
@@ -3976,341 +3924,7 @@ case('plot_daystock'):
 		   );
    echo json_encode($response);
    break;
-case('location_stock_history'):
- $conf=$_SESSION['state']['location']['stock_history'];
- $location_id=$_SESSION['state']['location']['id'];
- if(isset( $_REQUEST['elements']))
-     $elements=$_REQUEST['elements'];
-   else
-     $elements=$conf['elements'];
 
- if(isset( $_REQUEST['from']))
-     $from=$_REQUEST['from'];
-   else
-     $from=$conf['from'];
-  if(isset( $_REQUEST['to']))
-     $to=$_REQUEST['to'];
-   else
-     $to=$conf['to'];
-   if(isset( $_REQUEST['sf']))
-     $start_from=$_REQUEST['sf'];
-   else
-     $start_from=$conf['sf'];
-   if(isset( $_REQUEST['nr']))
-     $number_results=$_REQUEST['nr'];
-   else
-     $number_results=$conf['nr'];
-   if(isset( $_REQUEST['o']))
-     $order=$_REQUEST['o'];
-   else
-    $order=$conf['order'];
-   if(isset( $_REQUEST['od']))
-     $order_dir=$_REQUEST['od'];
-   else
-     $order_dir=$conf['order_dir'];
-   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-   if(isset( $_REQUEST['where']))
-     $where=addslashes($_REQUEST['where']);
-   else
-     $where=$conf['where'];
-   
-   if(isset( $_REQUEST['f_field']))
-     $f_field=$_REQUEST['f_field'];
-   else
-     $f_field=$conf['f_field'];
-
-  if(isset( $_REQUEST['f_value']))
-     $f_value=$_REQUEST['f_value'];
-   else
-     $f_value=$conf['f_value'];
-if(isset( $_REQUEST['tableid']))
-    $tableid=$_REQUEST['tableid'];
-  else
-    $tableid=0;
- 
- 
- list($date_interval,$error)=prepare_mysql_dates($from,$to);
-  if($error){
-    list($date_interval,$error)=prepare_mysql_dates($conf['from'],$conf['to']);
-  }else{
-      $_SESSION['state']['product']['stock_history']['from']=$from;
-      $_SESSION['state']['product']['stock_history']['to']=$to;
-  }
-
-  $_SESSION['state']['product']['stock_history']=
-    array(
-	  'order'=>$order,
-	  'order_dir'=>$order_direction,
-	  'nr'=>$number_results,
-	  'sf'=>$start_from,
-	  'where'=>$where,
-	  'f_field'=>$f_field,
-	  'f_value'=>$f_value,
-	  'from'=>$from,
-	  'to'=>$to,
-	  'elements'=>$elements
-	  );
-    $_order=$order;
-   $_dir=$order_direction;
-   $filter_msg='';
-
-  
-
-
-  $wheref='';
-
-  $where=$where.sprintf(" and `History Type`='Normal' and `Location Key`=%d  ",$location_id);
-
-   
-  //   $where =$where.$view.sprintf(' and product_id=%d  %s',$product_id,$date_interval);
-   
-   $sql="select count(*) as total from  `Inventory Transaction Fact`  $where $wheref";
-   //   print "$sql";
-   $result=mysql_query($sql);
-   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-     $total=$row['total'];
-   }
-   if($wheref=='')
-       $filtered=0;
-   else{
-     $sql="select count(*) as total from  `Inventory Transaction Fact`  $where ";
-     
-     $result=mysql_query($sql);
-     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-       $filtered=$row['total']-$total;
-     }
-
-   }
-   
-   
-   if($total==0)
-     $rtext=_('No stock movements');
-   else
-     $rtext=$total.' '.ngettext('stock operation','stock operations',$total);
-   
-
-
-
-   $sql=sprintf("select  *,IFNULL(`User Key`,-1) as user from `Inventory Transaction Fact`  $where $wheref order by $order $order_direction limit $start_from,$number_results ");
-   // print $sql;
-  $result=mysql_query($sql);
-  $adata=array();
-  while($data=mysql_fetch_array($result, MYSQL_ASSOC)){
-    
-    if($data['user']=-1)
-      $author=_('Unknown');
-    elseif($data['user']=0)
-      $author=_('System');
-    else
-      $author=$data['user'];
-    $tipo=$data['Inventory Transaction Type'];
-    
-
-    if($tipo=='Move In' or $tipo=='Audit' or   $tipo=='Move Out' ) 
-      $qty=number($data['Inventory Transaction Quantity']);
-    else
-      $qty='';
-    
-    $adata[]=array(
-
-		   'author'=>$author
-		   ,'tipo'=>$tipo
-		   ,'diff_qty'=>$qty
-		   ,'diff_amount'=>money($data['Inventory Transaction Amount'])
-		   ,'note'=>$data['Note']
-		   ,'date'=>strftime("%a %e %b %Y %T", strtotime($data['Date'])),
-		   );
-  }
-  $response=array('resultset'=>
-		   array('state'=>200,
-			 'data'=>$adata,
-			 'sort_key'=>$_order,
-			 'sort_dir'=>$_dir,
-			 'rtext'=>$rtext,
-			 'tableid'=>$tableid,
-			 'filter_msg'=>$filter_msg,
-			 'total_records'=>$total,
-			 'records_offset'=>$start_from,
-			 'records_returned'=>$start_from+$total,
-			 'records_perpage'=>$number_results,
-			 'records_text'=>$rtext,
-			 'records_order'=>$order,
-			 'records_order_dir'=>$order_dir,
-			 'filtered'=>$filtered
-			 )
-		   );
-   echo json_encode($response);
-   break;
- case('parts_at_location'):
-
-   $conf=$_SESSION['state']['location']['parts'];
-   $location_id=$_SESSION['state']['location']['id'];
-   
-   if(isset( $_REQUEST['o']))
-     $order=$_REQUEST['o'];
-     else
-       $order=$conf['order'];
-   if(isset( $_REQUEST['od']))
-     $order_dir=$_REQUEST['od'];
-   else
-     $order_dir=$conf['order_dir'];
-   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-  
- if(isset( $_REQUEST['where']))
-     $where=addslashes($_REQUEST['where']);
-   else
-     $where=$conf['where'];
-
- if(isset( $_REQUEST['date']))
-     $date=$_REQUEST['date'];
-   else
-     $date=date("Y-m-d");
- 
-
-   
-   if(isset( $_REQUEST['f_field']))
-     $f_field=$_REQUEST['f_field'];
-   else
-     $f_field=$conf['f_field'];
-
-  if(isset( $_REQUEST['f_value']))
-     $f_value=$_REQUEST['f_value'];
-   else
-     $f_value=$conf['f_value'];
-if(isset( $_REQUEST['tableid']))
-    $tableid=$_REQUEST['tableid'];
-  else
-    $tableid=0;
- 
- 
-
-
-  $_SESSION['state']['location']['parts']=
-    array(
-	  'order'=>$order,
-	  'order_dir'=>$order_direction,
-	  //'nr'=>$number_results,
-	  // 'sf'=>$start_from,
-	  'where'=>$where,
-	  'f_field'=>$f_field,
-	  'f_value'=>$f_value,
-	  //  'from'=>$from,
-	  //  'to'=>$to,
-	  //  'elements'=>$elements
-	  );
-    $_order=$order;
-   $_dir=$order_direction;
-   $filter_msg='';
-
-  
-
-
-//  $view='';
-//  foreach($elements as $key=>$val){
-//    if(!$val)
-//      $view.=' and op_tipo!='.$key;
-//  }
-
-
-  $wheref='';
-//   if($f_field=='name' and $f_value!='')
-//     $wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
-
-  
-  $start_from=0;
-  $number_results=99999999;
-  
-  
-
-  $where=$where.sprintf(" and `Location Key`=%d and Date=%s",$location_id,prepare_mysql($date));
-
-   
-  //   $where =$where.$view.sprintf(' and part_id=%d  %s',$part_id,$date_interval);
-   
-   $sql="select count(*) as total from `Inventory Spanshot Fact`   $where $wheref";
-   //   print "$sql";
-   
-   $res = mysql_query($sql);
-   if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-
-
-     $total=$row['total'];
-   }
-   if($wheref==''){
-       $filtered=0;
-       $total_records=$total;
-   }else{
-     $sql="select  count(*) as total from `Inventory Spanshot Fact`  $where ";
-     $res = mysql_query($sql);
-     if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-
-       $total_records=$row['total'];
-       $filtered=$row['total']-$total;
-     }
-
-   }
-   
-   if($order=='sku')
-     $order='PD.`Part SKU`';
-   
-   if($total_records==0)
-     $rtext=_('No parts on this location');
-   else
-     $rtext=$total_records.' '.ngettext('part','parts',$total_records);
-   
-   if($total_records>$number_results)
-    $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
-   
-
-
-
-
-   $sql=sprintf("select  * from `Inventory Spanshot Fact` ISF left join `Part Dimension` PD on (PD.`Part SKU`=ISF.`Part SKU`)    $where $wheref    order by $order $order_direction  ");
-
-
-  $adata=array();
-
- $res = mysql_query($sql);
- // print $sql;
- while($data=mysql_fetch_array($res, MYSQL_ASSOC)) {
-    
-
-   $loc_sku=$data['Location Key'].'_'.$data['Part SKU'];
-
-    $adata[]=array(
-
-		   'sku'=>sprintf('<a href="part_manage_stock.php?id=%d">%s</a>',$data['Part SKU'],$data['Part SKU'])
-		   ,'description'=>$data['Part XHTML Description']
-		   ,'current_qty'=>sprintf('<span  used="0"  value="%s" id="s%s"  onclick="fill_value(%s,%d,%d)">%s</span>',$data['Quantity On Hand'],$loc_sku,$data['Quantity On Hand'],$data['Location Key'],$data['Part SKU'],number($data['Quantity On Hand']))
-		   ,'changed_qty'=>sprintf('<span   used="0" id="cs%s"  onclick="change_reset(\'%s\',%d)"   ">0</span>',$loc_sku,$loc_sku,$data['Part SKU'])
-		   ,'new_qty'=>sprintf('<span  used="0"  value="%s" id="ns%s"  onclick="fill_value(%s,%d,%d)">%s</span>',$data['Quantity On Hand'],$loc_sku,$data['Quantity On Hand'],$data['Location Key'],$data['Part SKU'],number($data['Quantity On Hand']))
-		   ,'_qty_move'=>'<input id="qm'.$loc_sku.'" onchange="qty_changed(\''.$loc_sku.'\','.$data['Part SKU'].')" type="text" value="" size=3>'
-		   ,'_qty_change'=>'<input id="qc'.$loc_sku.'" onchange="qty_changed(\''.$loc_sku.'\','.$data['Part SKU'].')" type="text" value="" size=3>'
-		   ,'_qty_damaged'=>'<input id="qd'.$loc_sku.'" onchange="qty_changed(\''.$loc_sku.'\','.$data['Part SKU'].')" type="text" value="" size=3>'
-		   ,'note'=>'<input  id="n'.$loc_sku.'" type="text" value="" style="width:100px">'
-		   ,'delete'=>($data['Quantity On Hand']==0?'<img onclick="remove_prod('.$data['Location Key'].','.$data['Part SKU'].')" style="cursor:pointer" title="'._('Remove').' '.$data['Part SKU'].'" alt="'._('Desassociate Product').'" src="art/icons/cross.png".>':'')
-		   );
-  }
-  $response=array('resultset'=>
-		   array('state'=>200,
-			 'data'=>$adata,
-			 'sort_key'=>$_order,
-			 'sort_dir'=>$_dir,
-			 'rtext'=>$rtext,
-			 'tableid'=>$tableid,
-			 'filter_msg'=>$filter_msg,
-			 'total_records'=>$total,
-			 'records_offset'=>$start_from,
-			 'records_returned'=>$start_from+$total,
-			 'records_perpage'=>$number_results,
-			 'records_text'=>$rtext,
-			 'records_order'=>$order,
-			 'records_order_dir'=>$order_dir,
-			 'filtered'=>$filtered
-			 )
-		   );
-   echo json_encode($response);
-   break;
 
 
  default:
@@ -6676,7 +6290,64 @@ function list_product_with_same_code(){
   echo json_encode($response);
 }
 
+function find_part(){
+  if(!isset($_REQUEST['query']) or $_REQUEST['query']==''){
+     $response= array(
+		      'state'=>400,
+		      'data'=>array()
+		      );
+     echo json_encode($response);
+     return;
+   }
+     
 
+   if(isset($_REQUEST['except']) and  isset($_REQUEST['except_id'])  and   is_numeric($_REQUEST['except_id']) and $_REQUEST['except']=='location' ){
+     
+       $sql=sprintf("select `Part SKU`,`Part XHTML Description`,`Part Currently Used In` from `Part Dimension` where  (`Part SKU`=%d or `Part XHTML Currently Used In` like '%%%s%%' ) limit 20 ",$_REQUEST['query'],addslashes($_REQUEST['query']));
+
+   }else{
+      $sql=sprintf("select `Part SKU`,`Part XHTML Description`,`Part Currently Used In` from `Part Dimension` where  (`Part SKU`=%d or `Part XHTML Currently Used In` like '%%%s%%' ) limit 20",$_REQUEST['query'],addslashes($_REQUEST['query']));
+
+   }
+       //print $sql;
+
+       $_data=array();
+       $res=mysql_query($sql);
+       
+      //  $qty_on_hand=0;
+//        $location_key=$_REQUEST['except_id'];
+       
+       while($data=mysql_fetch_array($res)) {
+	 //$loc_sku=$location_key.'_'.$data['Part SKU'];
+	 
+
+	 $_data[]= array(
+			 'info'=>sprintf("%s:%05d - %s",_('SKU'),$data['Part SKU'],$data['Part XHTML Description'])
+			 ,'sku'=>$data['Part SKU']
+			 ,'description'=>$data['Part XHTML Description']
+			 ,'usedin'=>$data['Part Currently Used In']
+
+			 //	 'sku'=>sprintf('<a href="part.php?sku=%d">%s</a>',$data['Part SKU'],$data['Part SKU'])
+			 // ,'description'=>$data['Part XHTML Description']
+			//  ,'current_qty'=>sprintf('<span  used="0"  value="%s" id="s%s"  onclick="fill_value(%s,%d,%d)">%s</span>',$qty_on_hand,$loc_sku,$qty_on_hand,$location_key,$data['Part SKU'],number($qty_on_hand))
+// 			 ,'changed_qty'=>sprintf('<span   used="0" id="cs%s"  onclick="change_reset(\'%s\',%d)"   ">0</span>',$loc_sku,$loc_sku,$data['Part SKU'])
+// 			 ,'new_qty'=>sprintf('<span  used="0"  value="%s" id="ns%s"  onclick="fill_value(%s,%d,%d)">%s</span>',$qty_on_hand,$loc_sku,$qty_on_hand,$location_key,$data['Part SKU'],number($qty_on_hand))
+// 			 ,'_qty_move'=>'<input id="qm'.$loc_sku.'" onchange="qty_changed(\''.$loc_sku.'\','.$data['Part SKU'].')" type="text" value="" size=3>'
+// 			 ,'_qty_change'=>'<input id="qc'.$loc_sku.'" onchange="qty_changed(\''.$loc_sku.'\','.$data['Part SKU'].')" type="text" value="" size=3>'
+// 			 ,'_qty_damaged'=>'<input id="qd'.$loc_sku.'" onchange="qty_changed(\''.$loc_sku.'\','.$data['Part SKU'].')" type="text" value="" size=3>'
+// 			 ,'note'=>'<input  id="n'.$loc_sku.'" type="text" value="" style="width:100px">'
+// 			 ,'delete'=>($qty_on_hand==0?'<img onclick="remove_prod('.$location_key.','.$data['Part SKU'].')" style="cursor:pointer" title="'._('Remove').' '.$data['Part SKU'].'" alt="'._('Desassociate Product').'" src="art/icons/cross.png".>':'')
+// 			 ,'part_sku'=>$data['Part SKU']
+			 
+			);
+       }
+       $response= array(
+			'state'=>200,
+			'data'=>$_data
+			);
+       echo json_encode($response);
+
+}
 
 
 

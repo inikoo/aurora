@@ -37,9 +37,6 @@
     <div style="float:right;padding:0;margin:0">
       <table class="options" style="float:right;padding:0;margin:0">
 	<tr>
-	  <td  style="{if $num_parts<1 or !$has_stock}visibility:hidden;{/if}" id="move_stock">Move Stock</td>
-	  <td  style="{if !$has_stock}visibility:hidden;{/if}" id="damaged_stock">Set Stock as Damaged</td>
-	  <td  style="{if $num_parts==0}visibility:hidden;{/if}" id="change_stock">Audit</td>
 	  <td  id="add_product">Add Part</td>
 	  
 	</tr>
@@ -52,7 +49,7 @@
 	  <input id="new_location_input" type="text">
 	  <div id="new_location_container"></div>
 	</div>
-	<div id="manage_stock_products" style="width:100px;xdisplay:none;margin-bottom:30px;margin-left:2px;">
+	<div id="manage_stock_products" style="width:400px;xdisplay:none;margin-bottom:30px;margin-left:2px;">
 	  <input id="new_product_input" type="text">
 	  <div id="new_product_container">
 	    
@@ -91,6 +88,7 @@
 
       
 
+
    
     
 
@@ -99,3 +97,45 @@
 
 {include file='footer.tpl'}
 
+<div id="Editor_lost_items" xstyle="visibility:hidden">
+  <div style="display:none" class="hd">s</div>
+  <div class="bd dt-editor">
+  
+    <table>
+      <input type="hidden" id="lost_sku" value=""/>
+      <tr><td>{t}Quantity Lost{/t}:</td><td><input style="text-align:right;width:4em" type="text" id="qty_lost" /> {t}max{/t} <span onclick="set_all_lost()" id="lost_max_value" style="cursor:pointer"></span></td></tr>
+      <tr><td>{t}Why?{/t}:</td><td><input type="text" id="lost_why" /></td></tr>
+      <tr><td>{t}Action{/t}:</td><td><input type="text" id="lost_action" /></td></tr>
+    </table>
+    <div class="yui-dt-button">
+      <button onclick="save_lost_items();" class="yui-dt-default">{t}Save{/t}</button>
+      <button onclick="Editor_lost_items.cfg.setProperty('visible',false);" >{t}Cancel{/t}</button>
+      
+      
+    </div>
+    
+  </div>
+</div>
+
+
+<div id="Editor_move_items" xstyle="visibility:hidden">
+  <div style="display:none" class="hd">s</div>
+    <div class="bd">
+          <table border=0>
+	    <input type="hidden" id="move_sku" value=0 >
+	    <tr><td>{t}Move stock from{/t}:</td><td></td><td>{t}to location{/t}:</td></tr>
+	    <tr><td id="this_location"  style="width:180px">{$location->get('Location Code')}</td>
+	      <td id="flow"  style="width:40px;text-align:center" ><img src="art/icons/arrow_right.png" /></td>
+	      <td id="other_location" style="width:180px">
+			<div id="location_move_to" style="width:100px;xdisplay:none;xmargin-bottom:30px;margin-left:2px">
+			  <input id="location_move_to_input" type="text">
+			  <div id="location_move_to_container"></div>
+			</div>
+	      </td>
+	    </tr>
+	    <tr><td style="text-align:right;padding-right:20px">10</td><td><input value=0 style="width:40px;text-align:center" id="move_qty"/></td><td style="padding-left:20px">30</td></tr>
+	  </table>
+	  <span class="button" style="float:right"  onclick="save_move_items;" >{t}Save{/t}</span>
+	  <span class="button" style="float:right"  onclick="Editor_move_items.cfg.setProperty('visible',false);" >{t}Cancel{/t}</span>
+    </div>
+</div>

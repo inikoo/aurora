@@ -1705,6 +1705,7 @@ class product extends DB_Table{
       // get parts;
       $sql=sprintf(" select `Part Current Stock`,`Parts Per Product` from `Part Dimension` PD left join `Product Part List` PPL on (PD.`Part SKU`=PPL.`Part SKU`)  where `Product ID`=%s  and `Product Part Most Recent`='Yes' group by PD.`Part SKU`  ",prepare_mysql($this->data['Product ID']));
     
+      //print $sql;
       $result=mysql_query($sql);
       $stock=99999999999;
       $change=false;
@@ -1723,14 +1724,16 @@ class product extends DB_Table{
 	 
       }
 
-      //    print "Stock: $stock\n";
+      // print "Stock: $stock\n";
       if(!$change or $stock_error)
 	$stock='NULL';
       //print "Stock: $stock\n";
       if(is_numeric($stock) and $stock<0)
 	$stock='NULL';
-      // print "Stock: $stock\n";
-      $sql=sprintf("update `Product Dimension` set `Product Availability`=%s where `Product key`=%d",$stock,$this->id);
+      //print "Stock: $stock\n";
+      $sql=sprintf("update `Product Dimension` set `Product Availability`=%s where `Product ID`=%d",$stock,$this->pid);
+      //print $sql;
+
       mysql_query($sql);
       $days_available='NULL';
       $avg_day_sales=0;
@@ -1802,13 +1805,13 @@ class product extends DB_Table{
       }
       // and strtoupper($this->data['Product Code'])=='HMS-01'
       /*  if( preg_match('/hms-31/i',$this->data['Product Code'])){ */
-      print $this->data['Product Code']." ".$this->data['Product Sales State']." $tipo $stock $days_available\n";
+      //print $this->data['Product Code']." ".$this->data['Product Sales State']." $tipo $stock $days_available\n";
       /*        //       print_r($this->data); */
       /*          exit; */
       /*         } */
-      $sql=sprintf("update `Product Dimension` set `Product Availability State`=%s,`Product Available Days Forecast`=%s where `Product key`=%d",prepare_mysql($tipo),$days_available,$this->id);
+      $sql=sprintf("update `Product Dimension` set `Product Availability State`=%s,`Product Available Days Forecast`=%s where `Product ID`=%d",prepare_mysql($tipo),$days_available,$this->pid);
       if(!mysql_query($sql))
-	exit("can no update stock prod product.php l 1311\n");
+	exit("$sql can no update stock prod product.php l 1311\n");
       break;
 
 

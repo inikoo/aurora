@@ -328,10 +328,7 @@ $default_state=array(
 								 'f_value'=>'',
 								 'elements'=>array()
 						   )
-				    ),
-		     'warehouse_area'=>array(
-					'code'=>'',
-					'table'=>array(
+					,'warehouse_area'=>array(
 								 'order'=>'code',
 								 'order_dir'=>'',
 								 'sf'=>0,
@@ -341,8 +338,21 @@ $default_state=array(
 								 'f_value'=>'',
 								 'parent'=>'warehouse'
 						   )
-				    ),
 
+				    ),
+		     'warehouse_area'=>array(
+					     'id'=>1,
+					     'locations'=>array(
+								'order'=>'code',
+								'order_dir'=>'',
+								'sf'=>0,
+								'nr'=>25,
+								'where'=>'where true',
+								 'f_field'=>'code',
+								'f_value'=>'',
+								'elements'=>array()
+							   )
+					     ),
 		     
 		     'customers'=>array(
 					'view'=>'general',

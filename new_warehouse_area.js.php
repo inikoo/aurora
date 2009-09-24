@@ -1,7 +1,7 @@
 <?php
 include_once('common.php');
 ?>
-	     //START OF THE TABLE=========================================================================================================================
+  //START OF THE TABLE=========================================================================================================================
 YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
 		var tableid=0; // Change if you have more the 1 table
@@ -50,7 +50,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage    : <?php echo $_SESSION['state']['warehouse_area']['table']['nr']?>,containers : 'paginator', 
+									      rowsPerPage    : <?php echo $_SESSION['state']['warehouse']['warehouse_area']['nr']?>,containers : 'paginator', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -63,8 +63,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo $_SESSION['state']['warehouse_area']['table']['order']?>",
-									 dir: "<?php echo $_SESSION['state']['warehouse_area']['table']['order_dir']?>"
+									 key: "<?php echo $_SESSION['state']['warehouse']['warehouse_area']['order']?>",
+									 dir: "<?php echo $_SESSION['state']['warehouse']['warehouse_area']['order_dir']?>"
 								     },
 								     dynamicData : true
 
@@ -80,7 +80,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.subscribe("cellMouseoutEvent", unhighlightEditableCell);
 	    this.table0.subscribe("cellClickEvent", onCellClick);
 
-	    this.table0.filter={key:'<?php echo$_SESSION['state']['warehouse_area']['table']['f_field']?>',value:'<?php echo$_SESSION['state']['warehouse_area']['table']['f_value']?>'};
+	    this.table0.filter={key:'<?php echo$_SESSION['state']['warehouse']['warehouse_area']['f_field']?>',value:'<?php echo$_SESSION['state']['warehouse']['warehouse_area']['f_value']?>'};
 	    YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown)
 	
 	};
@@ -110,12 +110,11 @@ function add_area(){
 
     get_area_data();
     var json_value = YAHOO.lang.JSON.stringify(area_data);
-
     var request='ar_edit_warehouse.php?tipo=new_area&values=' + encodeURIComponent(json_value); 
     
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-	
+	  //alert(o.responseText);
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if(r.action=='created'){
 		    reset_area_data();
@@ -134,10 +133,15 @@ function add_area(){
 }
 
 
+
+
+
 function init(){
    
     
     YAHOO.util.Event.addListener('add_area', "click", add_area);
+
+   
 
 
 }

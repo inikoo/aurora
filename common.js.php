@@ -634,3 +634,6 @@ function star_rating($score,$max_score){
 
 
 }
+
+
+

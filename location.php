@@ -14,16 +14,21 @@
 include_once('common.php');
 include_once('class.Location.php');
 
-$view_sales=$LU->checkRight(PROD_SALES_VIEW);
-$view_stock=$LU->checkRight(PROD_STK_VIEW);
-$view_orders=$LU->checkRight(ORDER_VIEW);
+$view_sales=$user->can_view('product sales');
+$view_stock=$user->can_view('product stock');
+$view_orders=$user->can_view('orders');
 
-$create=$LU->checkRight(PROD_CREATE);
-$modify=$LU->checkRight(PROD_MODIFY);
-$modify_stock=$LU->checkRight(PROD_STK_MODIFY);
+
+$create=$user->can_create('products');
+$modify=$user->can_edit('products');
+$modify_stock=$user->can_edit('product stock');
+
 $smarty->assign('modify_stock',$modify_stock);
-$view_suppliers=$LU->checkRight(SUP_VIEW);
-$view_cust=$LU->checkRight(CUST_VIEW);
+
+$view_suppliers=$user->can_view('suppliers');
+$view_cust=$user->can_view('customers');
+
+
 $smarty->assign('view_suppliers',$view_suppliers);
 $smarty->assign('view_sales',$view_sales);
 $smarty->assign('view_stock',$view_stock);
@@ -37,8 +42,10 @@ $css_files=array(
 		 $yui_path.'menu/assets/skins/sam/menu.css',
 		 $yui_path.'button/assets/skins/sam/button.css',
 		 $yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
+		 $yui_path.'container/assets/skins/sam/container.css',
+
 		 'common.css',
-		 'container.css',
+		 //	 'container.css',
 		 'button.css',
 		 'table.css'
 		 );
@@ -49,11 +56,11 @@ $js_files=array(
 		$yui_path.'datasource/datasource-min.js',	
 		$yui_path.'datatable/datatable.js',
 		$yui_path.'autocomplete/autocomplete-min.js',
-		$yui_path.'container/container_core-min.js',
+		$yui_path.'container/container-min.js',
 		$yui_path.'menu/menu-min.js',
-		'js/common.js.php',
+		'common.js.php',
 		'js/search.js',
-		'js/table_common.js.php',
+		'table_common.js.php',
 		);
 
 
@@ -111,8 +118,9 @@ $smarty->assign('has_stock',$location->get('Location Has Stock'));
 $smarty->assign('parts',$location->parts);
 $smarty->assign('num_parts',count($location->parts));
 
+$js_files[]='js/edit_common.js';
 
-$js_files[]='js/location.js.php';
+$js_files[]='location.js.php';
 
 $smarty->assign('location',$location);
 
