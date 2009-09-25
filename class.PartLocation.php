@@ -18,6 +18,7 @@ include_once('class.Location.php');
 class PartLocation extends DB_Table{
   
   var $ok=false;
+  var $event_order=0;
 
   function PartLocation($arg1=false,$arg2=false,$arg3=false) {
     
@@ -53,10 +54,11 @@ class PartLocation extends DB_Table{
 
 
       $tmp=split("_",$arg1);
-      $this->part_sku=$tmp[0];
-      $this->location_key=$tmp[1];
-
-      $this->get_data();
+      if(count($tmp)==2){
+	$this->part_sku=$tmp[0];
+	$this->location_key=$tmp[1];
+	$this->get_data();
+      }
       return;
       }
  }
@@ -119,15 +121,15 @@ class PartLocation extends DB_Table{
       $this->get_data();
     }
 
-     if($create){
-      if($this->found){
+    
 
+    if($create and !$this->found)
+      $this->create($data,$options);
+    
+     if($update and $this->found)
 	$this->update($data,$options);
-      }else{
+  
 
-	$this->create($data,$options);
-      }
-     }
 
 
   }
@@ -215,7 +217,7 @@ function audit($qty){
     $old_value=$this->data['Stock Value'];
 
     $unit_cost=$this->get_unit_value(); 
-
+    $value=$qty*$unit_cost;
     if(is_numeric($old_value) and   $old_value>=0){
       $qty_change=$qty-$old_qty;
       $value_change=$value-$old_value;
@@ -227,7 +229,7 @@ function audit($qty){
       $value_change=$value;
     
     }
-    $value=$qty*$unit_cost;
+
     
     $sql=sprintf("update `Part Location Dimension` set `Quantity On Hand`=%f ,`Stock Value`=%f, `Last Updated`=NOW(),`Negative Discrepancy`=0,`Negative Discrepancy Value`=0  where `Part SKU`=%d and `Location Key`=%d "
 		 ,$qty
@@ -245,8 +247,8 @@ function audit($qty){
       
       $details=sprintf("SKU%d4",$this->part_sku).' '._('adjust due to audit in').' '.$this->location->data['Location Code'].': '.($qty_change>0?'+':'').number($qty_change).' ('.($value_change>0?'+':'').money($value_change).')';
       
-      
-      $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`) values (%d,%d,%s,%f,%.2f,%s,%s,%s)"
+      $this->event_order++;
+      $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`,`Event Order`) values (%d,%d,%s,%f,%.2f,%s,%s,%s,%d)"
 		   ,$this->part_sku
 		   ,$this->location_key
 		   ,"'Adjust'"
@@ -255,14 +257,14 @@ function audit($qty){
 		   ,$this->editor['Author Key']
 		   ,prepare_mysql($details,false)
 		   ,prepare_mysql($this->editor['Date'])
-
+		   ,$this->event_order
 		   );
       if(!mysql_query($sql))
 	print "Error can not audit liocation";
 
       $details=_('Audit').', '.sprintf("SKU%d4",$this->part_sku).' '._('stock in').' '.$this->location->data['Location Code'].' '._('set to').': '.number($qty);
-
-      $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`) values (%d,%d,%s,%f,%.2f,%s,%s,%s)"
+      $this->event_order++;
+      $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`,`Event Order`) values (%d,%d,%s,%f,%.2f,%s,%s,%s,%d)"
 		   ,$this->part_sku
 		   ,$this->location_key
 		   ,"'Audit'"
@@ -271,7 +273,7 @@ function audit($qty){
 		   ,$this->editor['Author Key']
 		   ,prepare_mysql($details,false)
 		   ,prepare_mysql($this->editor['Date'])
-
+		   ,$this->event_order
 		   );
       if(!mysql_query($sql))
 	print "Error can not audit liocation";
@@ -795,7 +797,9 @@ function create($data){
      
 
       //$date=date("Y-m-d H:i:s");
-       $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`) values (%d,%d,%s,%f,%.2f,%s,%s,%s)"
+      $this->event_order++;
+
+       $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`,`Event Order`) values (%d,%d,%s,%f,%.2f,%s,%s,%s,%s)"
 		    ,$this->part_sku
 		    ,$this->location_key
 		    ,"'Associate'"
@@ -804,6 +808,7 @@ function create($data){
 		    ,$this->editor['Author Key']
 		    ,prepare_mysql($details)
 		    ,prepare_mysql($this->editor['Date'])
+		    ,$this->event_order
 		    );
        mysql_query($sql);
       
@@ -1053,14 +1058,8 @@ function get_unit_value(){
     $old_qty=$this->data['Quantity On Hand'];
     $old_value=$this->data['Stock Value'];
         
-    if(is_numeric($old_value) and   $old_value>=0){
-      $qty_change=$qty-$old_qty;
-      if($qty_change<0 and is_numeric($old_value))
-	       return $old_value/$old_qty;
-      else{
-	    return $unit_cost=$this->part->get('Unit Cost',$this->editor['Date']);
-      }
-     
+    if(is_numeric($old_value) and   $old_value>=0 and is_numeric($old_qty) and   $old_qty>0   ){
+      return $old_value/$old_qty;
     }elseif($this->data['Negative Discrepancy']!=0){
       $qty_change=$qty+$this->data['Negative Discrepancy'];
       if(is_numeric($this->data['Negative Discrepancy Value']) and   $this->data['Negative Discrepancy Value']<=0)
@@ -1084,22 +1083,58 @@ function get_unit_value(){
 
 function move_stock($data){
 
-    $location_key_move_to=$data['Destination Location Key'];
-    
-    $destination=new PartLocation($this->part_sku,$location_key_move_to);
-    
-    
-if(!is_numeric($destination->data['Quantity On Hand'])){
-        $this->error;
-        $this->msg=_('Unknown stock in the destination location');
+  if($this->error){
+    $this->msg=_('Unknown error');
+        return;  
+  }
+
+
+  if(!is_numeric($this->data['Quantity On Hand'])){
+    $this->error=true;
+    $this->msg=_('Unknown stock in this location');
+        return;    
+  }
+   if($this->data['Quantity On Hand']<$data['Quantity To Move']){
+        $this->error=true;
+        $this->msg=_('To Move Quantity greater than the stock on the location');
         return;    
     }
+   
+   if($data['Destination Key']==$this->location_key){
+     $this->error=true;
+     $this->msg=_('Destination location is the same as this one');
+     return;   
+   }
+   
+   $destination_data=array('Location Key'=>$data['Destination Key'],'Part SKU'=>$this->part_sku,'editor'=>$this->editor);
+   $destination=new PartLocation('find',$destination_data,'create');
+   
+   if(!is_numeric($destination->data['Quantity On Hand'])){
+     $this->error=true;
+     $this->msg=_('Unknown stock in the destination location');
+     return;    
+   }
 
+   $this->stock_transfer(array(
+			       'Quantity'=>-$data['Quantity To Move']
+			       ,'Transaction Type'=>'Move Out'
+			       ,'Destination'=>$destination->location->data['Location Code']
+			       ));
+   if($this->error){
+     return;  
+  }
+
+   $destination->stock_transfer(array(
+				      'Quantity'=>$data['Quantity To Move']
+				      ,'Transaction Type'=>'Move In'
+				      ,'Origin'=>$this->location->data['Location Code']
+				      ));
+  
 
 
 }
 
-function lost_stock($data){
+function set_stock_as_lost($data){
 
 if(!is_numeric($this->data['Quantity On Hand'])){
         $this->error;
@@ -1113,10 +1148,17 @@ if(!is_numeric($this->data['Quantity On Hand'])){
         return;    
     }
 
-    $this->stock_transfer(array(
-            'Quantity'=>$data['Lost Quantity']
-            ,'Transaction Type'=>'Lost'
-            ));
+    $qty=$data['Lost Quantity']*-1;
+    
+    $_data=array(
+		 'Quantity'=>$qty
+		 ,'Transaction Type'=>'Lost'
+		 ,'Reason'=>$data['Reason']
+		 ,'Action'=>$data['Action']
+		 );
+    //print_r($_data);
+    
+    $this->stock_transfer($_data);
 
 }
 
@@ -1137,13 +1179,15 @@ function stock_transfer($data){
     $new_qty=$old_qty+$qty;
     $new_value=$new_qty*$unit_value;
     
-    if($qty>=0){
+    if($new_qty>=0){
     $sql=sprintf("update `Part Location Dimension` set `Quantity On Hand`=%f ,`Stock Value`=%f, `Last Updated`=NOW() ,`Negative Discrepancy`=0,`Negative Discrepancy Value`=0  where `Part SKU`=%d and `Location Key`=%d "
 		 ,$new_qty
 		 ,$new_value
 		 ,$this->part_sku
 		 ,$this->location_key
 		 );
+
+
 	}else{
 	$sql=sprintf("update `Part Location Dimension` set `Quantity On Hand`=NULL ,`Stock Value`=NULL, `Last Updated`=NOW() ,`Negative Discrepancy`=%f,`Negative Discrepancy Value`=%f  where `Part SKU`=%d and `Location Key`=%d "
 		 ,$new_qty
@@ -1153,21 +1197,34 @@ function stock_transfer($data){
 		 );
 	
 	
-	
+
+
 	}
     mysql_query($sql);
-    
+    $this->get_data();
+
     
     
     $qty_change=$qty;
-    $value_change=qty_change*$unit_value;
+    $value_change=$qty_change*$unit_value;
     
     $details='';
     if($transaction_type=='Lost'){
-        $details=sprintf("SKU%d4",$this->part_sku).' '._('lost from').' '.$this->location->data['Location Code'].': '.($qty_change>0?'+':'').number($qty_change).' ('.($value_change>0?'+':'').money($value_change).')';
+      $tmp=$data['Reason'].', '.$data['Action'];
+      $tmp=preg_replace('/, $/','',$tmp);
+      if(preg_match('/^\s*,\s*$/',$tmp))
+	$tmp='';
+      else
+	$tmp=' '.$tmp;
+
+        $details=number(-$qty).'x '.sprintf("SKU%04d",$this->part_sku).' '._('lost from').' '.$this->location->data['Location Code'].$tmp.': '.($qty_change>0?'+':'').number($qty_change).' ('.($value_change>0?'+':'').money($value_change).')';
+    }elseif($transaction_type=='Move Out'){
+      $details=number(-$qty).'x '.sprintf("SKU%04d",$this->part_sku).' '._('move out from').' '.$this->location->data['Location Code'].' '._('to').' '.$data['Destination'].': '.($qty_change>0?'+':'').number($qty_change).' ('.($value_change>0?'+':'').money($value_change).')';
+    }elseif($transaction_type=='Move In'){
+      $details=number($qty).'x '.sprintf("SKU%04d",$this->part_sku).' '._('move in to').' '.$this->location->data['Location Code'].' '._('from').' '.$data['Origin'].': '.($qty_change>0?'+':'').number($qty_change).' ('.($value_change>0?'+':'').money($value_change).')';
     }
-      
-      $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`) values (%d,%d,%s,%f,%.2f,%s,%s,%s)"
+    $this->event_order++;
+      $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`,`Event Order`) values (%d,%d,%s,%f,%.2f,%s,%s,%s,%d)"
 		   ,$this->part_sku
 		   ,$this->location_key
 		   ,prepare_mysql($transaction_type)
@@ -1176,9 +1233,10 @@ function stock_transfer($data){
 		   ,$this->editor['Author Key']
 		   ,prepare_mysql($details,false)
 		   ,prepare_mysql($this->editor['Date'])
-
+		   ,$this->event_order
 		   );
-    
+      mysql_query($sql);
+
 //     $move_to=$data['move_to'];
 //     $user_id=$data['user key'];
 //     $note_associate='';
