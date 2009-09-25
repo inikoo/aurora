@@ -14,19 +14,17 @@
   <a style="font-weight:800;color:#777;cursor:pointer" href="edit_location.php?id={$location->get('Location Key')}">{t}Edit Location{/t}</a>
 </div>
 
-<div style="padding:20px">
-  <div id="location_map" style="float:left;border:1px solid #ccc;height:160px;width:360px;margin-top:10px;margin-right:20px">
-  </div>
-  <div style="padding-left:20px">
-    <h1>{$location->get('Location Code')}</h1>
-    <table>
+
+  <div style="clear:left;margin-top:30px;padding-left:20px;width:20em">
+    <table class="show_info_product">
+      <tr><td>{t}Location{/t}:</td><td style="font-weight:800">{$location->get('Location Code')}</td></tr>
       <tr><td>{t}Used for{/t}:</td><td>{$location->get('Location Mainly Used For')}</td></tr>
       <tr><td>{t}Max Capacity{/t}:</td><td>{$location->get('Location Max Volume')}</td></tr>
       <tr><td>{t}Max Weight{/t}:</td><td>{$location->get('Location Max Weight')}</td></tr>
       <tr><td>{t}Max Slots{/t}:</td><td>{$location->get('Location Max Slots')}</td></tr>
 
     </table>
-  </div>
+
 
 </div>
 
@@ -102,6 +100,7 @@
   <div class="bd dt-editor">
   
     <table>
+      <input type="hidden" id="lost_record_index" value=""/>
       <input type="hidden" id="lost_sku" value=""/>
       <tr><td>{t}Quantity Lost{/t}:</td><td><input style="text-align:right;width:4em" type="text" id="qty_lost" /> {t}max{/t} <span onclick="set_all_lost()" id="lost_max_value" style="cursor:pointer"></span></td></tr>
       <tr><td>{t}Why?{/t}:</td><td><input type="text" id="lost_why" /></td></tr>
@@ -110,8 +109,6 @@
     <div class="yui-dt-button">
       <button onclick="save_lost_items();" class="yui-dt-default">{t}Save{/t}</button>
       <button onclick="Editor_lost_items.cfg.setProperty('visible',false);" >{t}Cancel{/t}</button>
-      
-      
     </div>
     
   </div>
@@ -119,23 +116,39 @@
 
 
 <div id="Editor_move_items" xstyle="visibility:hidden">
-  <div style="display:none" class="hd">s</div>
-    <div class="bd">
+  <div style="display:none" class="hd"></div>
+    <div class="bd dt-editor" >
           <table border=0>
 	    <input type="hidden" id="move_sku" value=0 >
-	    <tr><td>{t}Move stock from{/t}:</td><td></td><td>{t}to location{/t}:</td></tr>
-	    <tr><td id="this_location"  style="width:180px">{$location->get('Location Code')}</td>
-	      <td id="flow"  style="width:40px;text-align:center" ><img src="art/icons/arrow_right.png" /></td>
-	      <td id="other_location" style="width:180px">
-			<div id="location_move_to" style="width:100px;xdisplay:none;xmargin-bottom:30px;margin-left:2px">
+	    <input type="hidden" id="move_record_index" value=0 >
+	    <input type="hidden" id="other_location_key" value=0 >
+	    <input type="hidden" id="this_location_key" value="{$location->id}" >
+
+	    <tr><td colspan="3">{t}Move{/t} <span id="move_sku_formated"></span></td></tr>
+	    <tr><td id="this_location"  style="xwidth:180px;text-align:right;padding-right:10px;">{$location->get('Location Code')}</td>
+	      <td id="flow"  style="width:40px;text-align:center" onClick="change_move_flow()" flow="right"><img src="art/icons/arrow_right.png" /></td>
+	      <td id="other_location" style="xwidth:180px">
+			<div id="location_move_to" style="width:8em;xdisplay:none;xmargin-bottom:30px;margin-left:2px">
 			  <input id="location_move_to_input" type="text">
 			  <div id="location_move_to_container"></div>
 			</div>
+			<div id="location_move_from" style="width:8em;xdisplay:none;xmargin-bottom:30px;margin-left:2px;display:none">
+			  <input id="location_move_from_input" type="text">
+			  <div id="location_move_from_container"></div>
+			</div>
+
+
 	      </td>
 	    </tr>
-	    <tr><td style="text-align:right;padding-right:20px">10</td><td><input value=0 style="width:40px;text-align:center" id="move_qty"/></td><td style="padding-left:20px">30</td></tr>
+	    <tr>
+	      <td style="width:8em;text-align:right;padding-right:10px;cursor:pointer" ovalue=""  id="move_stock_left" onclick="move_stock_right()"></td>
+	      <td><input value='' style="width:40px;text-align:center" id="move_qty"  onkeyup="move_qty_changed()"   /></td>
+	      <td style="padding-left:10px;cursor:pointer" id="move_stock_right"  ovalue="" onclick="move_stock_left()"></td>
+	    </tr>
 	  </table>
-	  <span class="button" style="float:right"  onclick="save_move_items;" >{t}Save{/t}</span>
-	  <span class="button" style="float:right"  onclick="Editor_move_items.cfg.setProperty('visible',false);" >{t}Cancel{/t}</span>
+	  <div class="yui-dt-button">
+	    <button onclick="save_move_items();" class="yui-dt-default">{t}Save{/t}</button>
+	    <button onclick="Editor_move_items.cfg.setProperty('visible',false);" >{t}Cancel{/t}</button>
+	  </div>
     </div>
 </div>

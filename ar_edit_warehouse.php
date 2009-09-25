@@ -59,6 +59,9 @@ case('delete_warehouse'):
 case('lost_stock'):
   lost_stock();
   break;
+case('move_stock'):
+  move_stock();
+  break;
  default:
 
    $response=array('state'=>404,'resp'=>_('Operation not found'));
@@ -756,40 +759,53 @@ function add_part_to_location(){
 
 
 function lost_stock(){
-  
-  if(
-     !isset($_REQUEST['location_key'])
-     or !isset($_REQUEST['part_sku'])
-     or !isset($_REQUEST['qty'])
-     or !isset($_REQUEST['why'])
-     or !isset($_REQUEST['action'])
-     ){
-    $response=array('state'=>400,'action'=>'error','msg'=>'');
+  global $editor;
+  if( !isset($_REQUEST['values']) ){
+    $response=array('state'=>400,'msg'=>'Error no value');
     echo json_encode($response);
+    return;
+   }
+  
+  $tmp=preg_replace('/\\\"/','"',$_REQUEST['values']);
+  $tmp=preg_replace('/\\\\\"/','"',$tmp);
+   
+   $raw_data=json_decode($tmp, true);
+   if(!is_array($raw_data)){
+     $response=array('state'=>400,'msg'=>'Wrong value');
+     echo json_encode($response);
      return;
-  }
-    
-  
-  $location_key=$_REQUEST['location_key'];
-  $part_sku=$_REQUEST['part_sku'];
-  
-  $new_value=stripslashes(urldecode($_REQUEST['newvalue']));
+   }
 
+
+  if(
+     !isset($raw_data['location_key'])
+     or !isset($raw_data['part_sku'])
+     or !isset($raw_data['qty'])
+     or !isset($raw_data['why'])
+     or !isset($raw_data['action'])
+     ){
+    $response=array('state'=>400,'action'=>'error','msg'=>'wp');
+    echo json_encode($response);
+    return;
+  }
+  
   $traslator=array(
-		   'qty'=>'Quantity Lost',
+		   'qty'=>'Lost Quantity',
 		   'why'=>'Reason',
 		   'action'=>'Action'
 		   );
   
-  foreach($_REQUEST as $key =>$value){
+  foreach($raw_data as $key =>$value){
     if(array_key_exists($key,$traslator)){
       $data[$traslator[$key]]=$value;
     }    
-    $part_location=new PartLocation($part_sku,$location_key);
-
- 
-   if(!$part_location->ok){
-    $response=array('state'=>400,'action'=>'error','msg'=>'');
+  }    
+  
+  $part_location=new PartLocation($raw_data['part_sku'],$raw_data['location_key']);
+  
+  
+  if(!$part_location->ok){
+    $response=array('state'=>400,'action'=>'error','msg'=>'errr n pl');
     echo json_encode($response);
     return;
   }
@@ -806,59 +822,72 @@ function lost_stock(){
      return;
 
    }
-}
+  }
 
 function move_stock(){
-  
-  if(
-     !isset($_REQUEST['from_location_key'])
-     or !isset($_REQUEST['to_location_key'])
-     or !isset($_REQUEST['part_sku'])
-     or !isset($_REQUEST['qty'])
-
-     ){
-    $response=array('state'=>400,'action'=>'error','msg'=>'');
+  global $editor;
+  if( !isset($_REQUEST['values']) ){
+    $response=array('state'=>400,'msg'=>'Error no value');
     echo json_encode($response);
+    return;
+  }
+  
+  $tmp=preg_replace('/\\\"/','"',$_REQUEST['values']);
+  $tmp=preg_replace('/\\\\\"/','"',$tmp);
+   
+  $raw_data=json_decode($tmp, true);
+  if(!is_array($raw_data)){
+    $response=array('state'=>400,'msg'=>'Wrong value');
+     echo json_encode($response);
      return;
   }
-    
   
-  $location_key=$_REQUEST['from_location_key'];
-  $part_sku=$_REQUEST['part_sku'];
-  
-  $new_value=stripslashes(urldecode($_REQUEST['newvalue']));
+  if(
+     !isset($raw_data['from_key'])
+     or !isset($raw_data['part_sku'])
+     or !isset($raw_data['qty'])
+     or !isset($raw_data['to_key'])
+     ){
+    $response=array('state'=>400,'action'=>'error','msg'=>'wp');
+    echo json_encode($response);
+    return;
+  }
 
+  
   $traslator=array(
 		   'qty'=>'Quantity To Move',
-		   'to_location_key'=>'Destination Key',
+		   'to_key'=>'Destination Key',
 		   );
-  
-  foreach($_REQUEST as $key =>$value){
+  $data=array();
+  foreach($raw_data as $key =>$value){
     if(array_key_exists($key,$traslator)){
       $data[$traslator[$key]]=$value;
     }    
-    $part_location=new PartLocation($part_sku,$location_key);
-
+  }
+  
+  $part_location=new PartLocation($raw_data['part_sku'],$raw_data['from_key']);
+  
  
-   if(!$part_location->ok){
+  if(!$part_location->ok){
     $response=array('state'=>400,'action'=>'error','msg'=>'');
     echo json_encode($response);
     return;
   }
    $part_location->editor=$editor;
+   //  print_r($data);
    $part_location->move_stock($data);
    if($part_location->error){
      $response=array('state'=>400,'action'=>'nochange','msg'=>$part_location->msg);
-    echo json_encode($response);
+     echo json_encode($response);
      return;
 
    }else{
-     $response=array('state'=>200,'action'=>'ok','msg'=>$part_location->msg,'qty'=>$part_location->data['Quantity On Hand'],'stock'=>$part_location->part->get('Part Current Stock'));
+     $response=array('state'=>200,'action'=>'ok','msg'=>$part_location->msg,'qty_from'=>$part_location->data['Quantity On Hand'],'qty_to'=>$part_location->data['Quantity On Hand'],'stock'=>$part_location->part->get('Part Current Stock'));
      echo json_encode($response);
      return;
 
    }
-}
+  }
 
 
 ?>

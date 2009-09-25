@@ -24,26 +24,21 @@ $tipo=$_REQUEST['tipo'];
 switch($tipo){
 case('location_stock_history'):
   history_stock_location();
- 
-   break;
- case('parts_at_location'):
-   parts_at_location();
-
-
-   break;
+  break;
+case('parts_at_location'):
+  parts_at_location();
+  break;
 case('find_warehouse_area'):
   find_warehouse_area();
   break;
 case('find_location'):
   find_location();
   break;
-
 case('locations'):
   list_location();
   break;
 case('warehouse_areas'):
   list_warehouse_area();
-  
   break;
 default:
 
@@ -202,17 +197,17 @@ $conf=$_SESSION['state']['warehouse']['locations'];
   $response=array('resultset'=>
 		   array('state'=>200,
 			 'data'=>$data,
-			 	'sort_key'=>$_order,
+			 'sort_key'=>$_order,
 			 'sort_dir'=>$_dir,
 			 'tableid'=>$tableid,
 			 'filter_msg'=>$filter_msg,
 			 'rtext'=>$rtext,
 			 'total_records'=>$total,
 			 'records_offset'=>$start_from,
-			'records_returned'=>$start_from+$total,
+			 'records_returned'=>$start_from+$total,
 			'records_perpage'=>$number_results,
-
-			'records_order'=>$order,
+			 
+			 'records_order'=>$order,
 			'records_order_dir'=>$order_dir,
 			'filtered'=>$filtered
 			 )
@@ -438,7 +433,7 @@ function find_location(){
     $where=sprintf(' and `Warehouse Key`=%d ',$_SESSION['state']['warehouse']['id']);
 
    if(isset($_REQUEST['except_location']) )
-    $where=sprintf(' and `Location Key`!=%d ',$_REQUEST['except_location']);
+    $where=sprintf(' and LD.`Location Key`!=%d ',$_REQUEST['except_location']);
 
    
    $part_sku=0;
@@ -449,17 +444,23 @@ function find_location(){
 
 
    if($part_sku){
-     $sql=sprintf("select LD.`Location Key`,`Location Code`,IFNULL(`Quantity On Hand`,0) from `Location Dimension` LD left join (`Part Location Dimension`) PLD on (PLD.`Location Key`=LD.`Location Key`=)   where (`Location Code` like '%s%%' )  %s  order by `Location Code` limit 10 "
+     
+      if(isset($_REQUEST['with'])){
+	if($_REQUEST['with']=='stock')
+	  $where.=sprintf(' and (`Quantity On Hand` IS NOT NULL and `Quantity On Hand`>0 ')   ;
+      }
+     $sql=sprintf("select LD.`Location Key`,`Location Code`,IFNULL(`Quantity On Hand`,0) as `Quantity On Hand` from `Location Dimension` LD left join `Part Location Dimension` PLD on (PLD.`Location Key`=LD.`Location Key`)   where (`Location Code` like '%s%%' )  %s  order by `Location Code` limit 10 "
 		 ,addslashes($q)
 		 ,$where
 		 );
+
    }else{
-    $sql=sprintf("select `Location Key`,`Location Code`,0 as `Quantity On Hand` from `Location Dimension` where (`Location Code` like '%s%%'    )  %s  order by `Location Code` limit 10 "
+    $sql=sprintf("select `Location Key`,`Location Code`,0 as `Quantity On Hand` from `Location Dimension` LD where (`Location Code` like '%s%%'    )  %s  order by `Location Code` limit 10 "
 		 ,addslashes($q)
 		 ,$where
 		 );
    }
-    //print $sql;
+   //print $sql;
     $res=mysql_query($sql);
     while($row=mysql_fetch_array($res)){
       $adata[]=array(
@@ -949,6 +950,16 @@ if(isset( $_REQUEST['tableid']))
     
     
     
+    if($data['Part Current Stock']==0 or !is_numeric($data['Quantity On Hand'])){
+      $move='';
+    }else{
+      if($data['Quantity On Hand']==0)
+	$move='<img src="art/icons/package_come.png" alt="'._('Move').'" />';
+      else
+	$move='<img src="art/icons/package_go.png" alt="'._('Move').'" />';
+      
+    }
+    
 
 
    
@@ -961,7 +972,7 @@ if(isset( $_REQUEST['tableid']))
 		   ,'description'=>$data['Part XHTML Description'].' ('.$data['Part XHTML Currently Used In'].')'
 		   ,'qty'=>number($data['Quantity On Hand'])
 		   ,'can_pick'=>($data['Can Pick']=='Yes'?_('Yes'):_('No'))
-		   ,'move'=>($data['Part Current Stock']==0?'':'<img src="art/icons/package_go.png" alt="'._('Move').'" />')
+		   ,'move'=>$move
 		   ,'audit'=>'<img src="art/icons/page_white_edit.png" alt="'._('Audit').'" />'
 		   ,'lost'=>($data['Quantity On Hand']==0?'':'<img src="art/icons/package_delete.png" alt="'._('Set stock as damaged/lost').'" />')
 		   ,'delete'=>($data['Quantity On Hand']==0?'<img src="art/icons/cross.png"  alt="'._('Free location').'" />':'')
