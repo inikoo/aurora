@@ -320,15 +320,15 @@ class Address extends DB_Table{
 
 			
 			if($data['Address Postal Code']!=''){
-				$sql_postal_code=sprintf("damlevlim256(UPPER(`Address Postal Code`),%s,3) as dist_postal_code,",prepare_mysql(strtoupper($data['Address Postal Code'])));
-				$sql_where_postal_code=sprintf("and  damlevlim256(UPPER(`Address Postal Code`),%s,3)<3 ",prepare_mysql(strtoupper($data['Address Postal Code'])));
+				$sql_postal_code=sprintf("damlevlim(UPPER(`Address Postal Code`),%s,3) as dist_postal_code,",prepare_mysql(strtoupper($data['Address Postal Code'])));
+				$sql_where_postal_code=sprintf("and  damlevlim(UPPER(`Address Postal Code`),%s,3)<3 ",prepare_mysql(strtoupper($data['Address Postal Code'])));
 				$order.=($order!=''?',':'').'dist_postal_code';
 				$with_postal_code=true;
 			}
 			if($data['Address Street Number']!=''){
 				$sql_where_street_number=sprintf("and `Address Street Number`=%s ",prepare_mysql(strtoupper($data['Address Street Number'])));
 			}elseif($data['Address Building']!=''){
-				$sql_where_street_number=sprintf("and  damlevlim256(UPPER(`Address Building`),%s,6)<6 ",prepare_mysql(strtoupper($data['Address Building'])));
+				$sql_where_street_number=sprintf("and  damlevlim(UPPER(`Address Building`),%s,6)<6 ",prepare_mysql(strtoupper($data['Address Building'])));
 			}
 			if($data['Address Internal']!=''){
 				$sql_where_internal=sprintf("and `Address Internal`=%s"

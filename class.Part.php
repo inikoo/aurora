@@ -14,13 +14,19 @@
 
 include_once('class.Product.php');
 
-class part{
+class part extends DB_Table{
   
 
-  Public $id=false;
+
   Public $sku=false;
   
   function __construct($a1,$a2=false) {
+  
+   $this->table_name='Part';
+    $this->ignore_fields=array(
+			       'Part Key'
+			       );
+  
     if(is_numeric($a1) and !$a2){      
       $this->get_data('id',$a1);
     }
@@ -530,7 +536,8 @@ class part{
       break;
     case("supplied by"):
        $supplied_by='';
-      $sql=sprintf("select  (select `Supplier Product Code` from `Supplier Product Dimension` where `Supplier Product ID`=SPPL.`Supplier Product ID` and `Supplier Product Most Recent` limit 1) as `Supplier Product Code`,(select `Supplier Product Key` from `Supplier Product Dimension` where `Supplier Product ID`=SPPL.`Supplier Product ID` and `Supplier Product Most Recent` limit 1) as `Supplier Product Key` ,  SD.`Supplier Key`,`Supplier Code` from `Supplier Product Part List` SPPL   left join `Supplier Dimension` SD on (SD.`Supplier Key`=SPPL.`Supplier Key`)   where `Part SKU`=%d  order by `Supplier Key`;",$this->data['Part SKU']);
+      $sql=sprintf("select `Supplier Product Code`,  SD.`Supplier Key`,`Supplier Code` from `Supplier Product Part List` SPPL   left join `Supplier Dimension` SD on (SD.`Supplier Key`=SPPL.`Supplier Key`)   
+      where `Part SKU`=%d  order by `Supplier Key`;",$this->data['Part SKU']);
       $result=mysql_query($sql);
       //print "$sql\n";
       $supplier=array();
@@ -538,7 +545,12 @@ class part{
       while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 	$_current_supplier=$row['Supplier Key'];
 	if($_current_supplier!=$current_supplier){
-	  $supplied_by.=sprintf(', <a href="supplier.php?id=%d">%s</a>(<a href="supplier_product.php?id=%d">%s</a>',$row['Supplier Key'],$row['Supplier Code'],$row['Supplier Product Key'],$row['Supplier Product Code']);
+	  $supplied_by.=sprintf(', <a href="supplier.php?id=%d">%s</a>(<a href="supplier_product.php?code=%s&supplier_key=%s">%s</a>'
+	  ,$row['Supplier Key']
+	  ,$row['Supplier Code']
+	  ,$row['Supplier Product Code']
+	  ,$row['Supplier Key']
+	  ,$row['Supplier Product Code']);
 	  $current_supplier=$_current_supplier;
 	}else{
 	   $supplied_by.=sprintf(', <a href="supplier_product.php?id=%d">%s</a>',$row['Supplier Product Key'],$row['Supplier Product Code']);

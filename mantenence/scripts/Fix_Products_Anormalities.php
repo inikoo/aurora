@@ -365,7 +365,7 @@ foreach($__cols as $cols){
 	if($scode=='' or $scode=='0')
 	  $scode='?'.$code;
 	$sp_data=array(
-		       'Supplier Product Supplier Key'=>$supplier->id,
+		       'supplier key'=>$supplier->id,
 		       'Supplier Product Code'=>$scode,
 		       'Supplier Product Cost'=>sprintf("%.4f",$cost),
 		       'Supplier Product Name'=>$description,

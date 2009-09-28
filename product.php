@@ -125,7 +125,7 @@ $product= new product($mode,$tag);
 
 $product->load('part_location_list');
 $smarty->assign('product',$product);
-$smarty->assign('product_id',$product->get('Product Most Recent Key'));
+$smarty->assign('product_id',$product->get('product current key'));
 $smarty->assign('data',$product->data);
 $web_status_error=false;
 $web_status_error_title='';

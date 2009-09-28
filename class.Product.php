@@ -128,7 +128,7 @@ class product extends DB_Table{
       $result=mysql_query($sql);
       if( ($this->data=mysql_fetch_array($result, MYSQL_ASSOC))){
 	$this->locale=$this->data['Product Locale'];
-	$this->id=$this->data['Product Most Recent Key'];
+	$this->id=$this->data['Product Current Key'];
 	$this->pid=$this->data['Product ID'];
 	$this->code=$this->data['Product Code'];
       }
@@ -148,11 +148,11 @@ class product extends DB_Table{
       
     } if($tipo=='code_store' or $tipo=='code-store'){
       $this->mode='pid';
-      $sql=sprintf("select * from `Product Dimension` where `Product Most Recent`='Yes' and `Product Code`=%s and `Product Store Key`=%d",prepare_mysql($tag),$extra);
+      $sql=sprintf("select * from `Product Dimension` where  `Product Code`=%s and `Product Store Key`=%d",prepare_mysql($tag),$extra);
       //      print $sql;
       $result=mysql_query($sql);
       if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-	$this->id=$this->data['Product Most Recent Key'];
+	$this->id=$this->data['Product Current Key'];
 	$this->locale=$this->data['Product Locale'];
 	$this->pid=$this->data['Product ID'];
 	$this->code=$this->data['Product Code'];
@@ -228,7 +228,7 @@ class product extends DB_Table{
 	
 
       
-	$sql=sprintf("select `Product ID`,`Product Most Recent Key` from `Product Dimension` where `Product Code`=%s and `Product Units Per Case`=%f and `Product Unit Type`=%s  and  `Product Store Key`=%d "
+	$sql=sprintf("select `Product ID`,`Product Current Key` from `Product Dimension` where `Product Code`=%s and `Product Units Per Case`=%f and `Product Unit Type`=%s  and  `Product Store Key`=%d "
 		     ,prepare_mysql($data['product code'])
 		     ,$data['product units per case']
 		     ,prepare_mysql($data['product unit type'])
@@ -612,7 +612,7 @@ class product extends DB_Table{
       $result=mysql_query($sql);
       $parts=array();
       while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-	$parts[]=$row['Part SKU'];
+	     $parts[]=$row['Part SKU'];
       }
       return $parts;
       break;
@@ -1005,8 +1005,7 @@ class product extends DB_Table{
 		     'product availability state'=>'Unknown',
 		     'product valid from'=>date("Y-m-d H:i:s"),
 		     'product valid to'=>date("Y-m-d H:i:s"),
-		     'product most recent'=>'Yes',
-		     'product most recent key'=>'',
+		     'Product Current Key'=>'',
 		   
 		     );
 
@@ -1155,7 +1154,7 @@ class product extends DB_Table{
       exit("Product Class: error no family info provided can not create product\n");
     }
 
-    $base_data['product most recent key']=$this->id;
+    $base_data['Product Current Key']=$this->id;
 
     
     $keys='(';$values='values(';
@@ -1295,133 +1294,7 @@ class product extends DB_Table{
     //$this->set_sales(true);
   }
 
-  /*
-    Method: create_sibling
-    Crea o actualiza valores de la tabla Product Department Bridge, Product Dimension
-  */
-  // 
-
-  
-  function create_sibling($data,$new_id=false,$most_recent=true){
-    global $myconf;
-    $base_data=$this->get_base_data();
-
-    
-    foreach($this->data as $key=>$value){
-
-      if(isset($base_data[strtolower($key)]))
-	$base_data[strtolower($key)]=_trim($value);
-    }
-    
-    foreach($data as $key=>$value){
-      if(isset($base_data[strtolower($key)]))
-	$base_data[strtolower($key)]=_trim($value);
-    }
-
-    if($base_data['product web state']=='')
-      $base_data['product web state']='Unknown';
-    if($new_id)
-      $base_data['product id']=$this->new_id();
-
-    $date=date("Y-m-d H:i:s");
-    $base_data['product valid from']=$date;
-    $base_data['product valid to']=$date;
-
-    if($most_recent){
-      $base_data['product most recent']='Yes';
-      $base_data['product same code most recent']='Yes';
-      $base_data['product same id most recent']='Yes';
-    }else{
-      $base_data['product most recent']='No';
-      $base_data['product same code most recent']='No';
-      $base_data['product same id most recent']='No';
-    }
-
-    $keys='(';$values='values(';
-    foreach($base_data as $key=>$value){
-      $keys.="`$key`,";
-      $values.=prepare_mysql($value).",";
-    }
-
-
-  
-
-    $keys=preg_replace('/,$/',')',$keys);
-    $values=preg_replace('/,$/',')',$values);
-    $sql=sprintf("insert into `Product Dimension` %s %s",$keys,$values);
-
-    //        }
-    if(mysql_query($sql)){
-      $this->new_id = mysql_insert_id();
-      $this->new=true;
-      if($most_recent){
-	
-	
-	
-	$sql=sprintf("update `Product Dimension` set  `Product Valid To`=%s where `Product Id`=%s and `Product Same ID Most Recent`='Yes' and `Product Key`!=%d"
-		     ,prepare_mysql($date)
-		     ,$base_data['product id']
-		     ,$this->new_id);
-	mysql_query($sql);
-	$sql=sprintf("update `Product Dimension` set  `Product Same ID Valid To`=%s where `Product ID`=%s  and `Product Key`!=%d"
-		     ,prepare_mysql($date)
-		     ,$base_data['product id']
-		     ,$this->new_id);
-	mysql_query($sql);
-	$sql=sprintf("update `Product Dimension` set  `Product Same Code Valid To`=%s where `Product Code`=%s  and `Product Key`!=%d"
-		     ,prepare_mysql($date)
-		     ,$base_data['product code']
-		     ,$this->new_id);
-	mysql_query($sql);
-
-
-
-
-	$sql=sprintf("update `Product Dimension` set  `Product Same Code Most Recent`='No' where `Product Code`=%s  and `Product Key`!=%d"
-		     ,prepare_mysql($base_data['product code'])
-		     ,$this->new_id);
-	mysql_query($sql);
-	$sql=sprintf("update `Product Dimension` set `Product Same ID Most Recent`='No',`Product Most Recent`='No' where `Product ID`=%d  and `Product Key`!=%d",$base_data['product id'],$this->new_id);
-	mysql_query($sql);
-	print "$sql\n";
-	$sql=sprintf("update  `Product Dimension` set `Product Most Recent Key`=%d ,`Product Same ID Most Recent Key`=%d,`Product Same Code Most Recent Key`=%d  where `Product Key`=%d"
-		     ,$this->new_id
-		     ,$this->new_id
-		     ,$this->new_id
-		     ,$this->new_id
-		     );
-	mysql_query($sql);
-	print "$sql\n";
-      }
-      $this->load('redundant data');
-    
-      
-      // Departments
-      $sql=sprintf("select * from `Product Department Bridge` where `Product Key`=%d",$this->id);
-      $result=mysql_query($sql);
-      while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-	$sql=sprintf("insert into `Product Department Bridge` (`Product Key`,`Product Department Key`) values (%d,%d)",$this->new_id,$row['Product Department Key']);
- 	$department=new Department($row['Product Department Key']);
- 	$department->load('products_info');
-      }
-      
-      $family=new Family($this->data['Product Family Key']);
-      $family->load('products_info');
-      $store=new Store($this->data['Product Store Key']);
-      $store->load('products_info');
-      // Category
-
-
-      
-    }else{
-      $this->new=false;
-      print "$sql Error Product cannot be created\n";
-      exit;
-    }
-
-
-
-  }
+ 
   
 
   /*
@@ -1458,8 +1331,9 @@ class product extends DB_Table{
       
       $base_data=$_base_data;
       foreach($data as $key=>$value){
-	if(isset($base_data[strtolower($key)]))
-	  $base_data[strtolower($key)]=_trim($value);
+      $key=strtolower($key);
+    	if(array_key_exists ($key,$base_data))
+	  $base_data[$key]=_trim($value);
       }
       
       $base_data['product part id']=$product_list_id;
@@ -1473,7 +1347,7 @@ class product extends DB_Table{
       $keys=preg_replace('/,$/',')',$keys);
       $values=preg_replace('/,$/',')',$values);
       $sql=sprintf("insert into `Product Part List` %s %s",$keys,$values);
-      // print "$sql\n";exit;
+    //  print "$sql\n";
 
       if(mysql_query($sql)){
 
@@ -1662,7 +1536,7 @@ class product extends DB_Table{
       if($mysql_where=='')
 	$mysql_where=0;
       $supplied_by='';
-      $sql=sprintf("select  (select `Supplier Product Code` from `Supplier Product Dimension` where `Supplier Product ID`=SPPL.`Supplier Product ID` and `Supplier Product Most Recent` limit 1) as `Supplier Product Code`,(select `Supplier Product Key` from `Supplier Product Dimension` where `Supplier Product ID`=SPPL.`Supplier Product ID` and `Supplier Product Most Recent` limit 1) as `Supplier Product Key` ,  SD.`Supplier Key`,`Supplier Code` from `Supplier Product Part List` SPPL   left join `Supplier Dimension` SD on (SD.`Supplier Key`=SPPL.`Supplier Key`)   where `Part SKU` in (%s) order by `Supplier Key`;",$mysql_where);
+      $sql=sprintf("select   `Supplier Product Code` ,  SD.`Supplier Key`,`Supplier Code` from `Supplier Product Part List` SPPL   left join `Supplier Dimension` SD on (SD.`Supplier Key`=SPPL.`Supplier Key`)   where `Part SKU` in (%s) order by `Supplier Key`;",$mysql_where);
       $result=mysql_query($sql);
     
       $supplier=array();
@@ -1671,7 +1545,12 @@ class product extends DB_Table{
       while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 	$_current_supplier=$row['Supplier Key'];
 	if($_current_supplier!=$current_supplier){
-	  $supplied_by.=sprintf(', <a href="supplier.php?id=%d">%s</a>(<a href="supplier_product.php?id=%d">%s</a>',$row['Supplier Key'],$row['Supplier Code'],$row['Supplier Product Key'],$row['Supplier Product Code']);
+	  $supplied_by.=sprintf(', <a href="supplier.php?id=%d">%s</a>(<a href="supplier_product.php?code=%s&supplier_key=%d">%s</a>'
+	    ,$row['Supplier Key']
+	    ,$row['Supplier Code']
+	    ,$row['Supplier Product Code']
+	    ,$row['Supplier Key']
+	    ,$row['Supplier Product Code']);
 	  $current_supplier=$_current_supplier;
 	}else{
 	  $supplied_by.=sprintf(', <a href="supplier_product.php?id=%d">%s</a>',$row['Supplier Product Key'],$row['Supplier Product Code']);
@@ -3046,7 +2925,7 @@ class product extends DB_Table{
 	    $this->updated=true;
 	    $this->newvalue=_('Live');
 	  }else{
-	    $this->msg=_("Error: Product record state could not be updated");
+	    $this->msg=_("$sql Error: Product record state could not be updated");
 	    $this->updated=false;
 	  }
 	  return;

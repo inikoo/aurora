@@ -471,21 +471,22 @@ foreach($__cols as $cols){
 	  $scode=$code;
 	if($scode=='' or $scode=='0')
 	  $scode='?'.$code;
+	  
+	  
+	  
+	  //$scode= preg_replace('/\?/','_unk',$scode);
+	  
 	$sp_data=array(
-		       'Supplier Product Supplier Key'=>$supplier->id,
-		       'Supplier Product Supplier Code'=>$supplier->data['Supplier Code'],
-		       'Supplier Product Supplier Name'=>$supplier->data['Supplier Name'],
+		       'Supplier Key'=>$supplier->id,
 		       'Supplier Product Code'=>$scode,
 		       'Supplier Product Cost'=>sprintf("%.4f",$supplier_cost),
 		       'Supplier Product Name'=>$description,
-		       'Supplier Product Description'=>$description
+		       'Supplier Product Description'=>$description,
+		       'Supplier Product Valid From'=>date('Y-m-d H:i:s'),
+		       'Supplier Product Valid To'=>date('Y-m-d H:i:s')
 		       );
-	$new_supplier_product=false;
-	$supplier_product=new SupplierProduct('supplier-code',$sp_data);
-	if(!$supplier_product->id){
-	  $new_supplier_product=true;
-	  $supplier_product=new SupplierProduct('new',$sp_data);
-	}
+
+	$supplier_product=new SupplierProduct('find',$sp_data,'create');
 	$part_data=array(
 			 'Part Most Recent'=>'Yes',
 			 'Part XHTML Currently Supplied By'=>sprintf('<a href="supplier.php?id=%d">%s</a>',$supplier->id,$supplier->get('Supplier Code')),
