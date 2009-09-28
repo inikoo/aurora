@@ -12,3 +12,4 @@ TRUNCATE `Product History Dimension`;
 TRUNCATE `Product Same Code Dimension`;
 TRUNCATE `Product Same Code Dimension`;
 TRUNCATE `Time Series Dimension`;
+TRUNCATE TABLE `Supplier Product History Dimension` 

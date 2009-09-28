@@ -285,7 +285,7 @@ function find($raw_data,$options){
      
       $len_tel=strlen($data['Telecom Area Code'].$data['Telecom Number']);
       
-    $sql=sprintf("select `Telecom Extension`,`Telecom Country Telephone Code`,`Telecom Extension`,damlevlim256(CONCAT(`Telecom Area Code`,`Telecom Number`),%s,4) as dist1,T.`Telecom Key`,`Subject Key` from `Telecom Dimension` T left join `Telecom Bridge` TB  on (TB.`Telecom Key`=T.`Telecom Key`)  where  `Subject Type`='Contact' and  damlevlim256(CONCAT(`Telecom Area Code`,`Telecom Number`),%s,4)<4  order by dist1  limit 100 "
+    $sql=sprintf("select `Telecom Extension`,`Telecom Country Telephone Code`,`Telecom Extension`,damlevlim(CONCAT(`Telecom Area Code`,`Telecom Number`),%s,4) as dist1,T.`Telecom Key`,`Subject Key` from `Telecom Dimension` T left join `Telecom Bridge` TB  on (TB.`Telecom Key`=T.`Telecom Key`)  where  `Subject Type`='Contact' and  damlevlim(CONCAT(`Telecom Area Code`,`Telecom Number`),%s,4)<4  order by dist1  limit 100 "
 		 ,prepare_mysql($data['Telecom Area Code'].$data['Telecom Number'])
 		 ,prepare_mysql($data['Telecom Area Code'].$data['Telecom Number'])
 		 );
@@ -844,8 +844,9 @@ protected function create($data,$optios=''){
      for($i=5;$i>1;$i--){
        $proposed_code=substr($number, 0,$i); 
        
-       $sql=sprintf("select `Telephone Local Code Key` from kbase.`Telephone Local Code` where LENGTH(`Telephone Local Code`)=%d and `Telephone Local Code`=%s and `Telephone Local Code Country Code`=%s ",$i,prepare_mysql($proposed_code),prepare_mysql($country_code));
-       //  print "$sql\n";
+       $sql=sprintf("select `Telephone Local Code Key` from kbase.`Telephone Local Code` where LENGTH(`Telephone Local Code`)=%d and `Telephone Local Code`=%s and `Telephone Local Code Country Code`=%s "
+       ,$i,prepare_mysql($proposed_code),prepare_mysql($country_code));
+       // print "$sql\n";
        $result=mysql_query($sql);
        $num_results=mysql_num_rows($result);
        if($num_results>0)

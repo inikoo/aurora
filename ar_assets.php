@@ -2859,7 +2859,7 @@ list_parts();
 //        $broken=number($row['Supplier Product 1 Week Acc Parts Broken']);
 //      }
      
-//      $supplier=sprintf('<a href="supplier.php?id=%d">%s</a>',$row['Supplier Product Supplier Key'],$row['Supplier Product Supplier Code']);
+//      $supplier=sprintf('<a href="supplier.php?id=%d">%s</a>',$row['supplier key'],$row['supplier code']);
 //      $data[]=array(
 // 		   'id'=>sprintf('<a href="supplier_product.php?id=%d">%06d</a>',$row['Supplier Product Key'],$row['Supplier Product ID'])
 // 		   ,'code'=>sprintf('<a href="supplier_product.php?id=%d">%s</a>',$row['Supplier Product Key'],$row['Supplier Product Code'])
@@ -6049,7 +6049,7 @@ function list_supplier_products(){
 						    );
    $_SESSION['state']['supplier']['id']=$supplier_id;
 
-  $where=$where.' and `Supplier Product Supplier Key`='.$supplier_id;
+  $where=$where.' and `supplier key`='.$supplier_id;
 
 
   $wheref='';

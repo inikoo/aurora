@@ -169,9 +169,9 @@ while($_product=mysql_fetch_array($result, MYSQL_ASSOC)   ){
    }
   
   /*  $sp_data=array( */
-/* 		  'Supplier Product Supplier Key'=>$supplier->id, */
-/* 		  'Supplier Product Supplier Code'=>$supplier->data['Supplier Code'], */
-/* 		    'Supplier Product Supplier Name'=>$supplier->data['Supplier Name'], */
+/* 		  'supplier key'=>$supplier->id, */
+/* 		  'supplier code'=>$supplier->data['Supplier Code'], */
+/* 		    'supplier name'=>$supplier->data['Supplier Name'], */
 /* 		  'Supplier Product Code'=>$scode, */
 /* 		  'Supplier Product Cost'=>sprintf("%.4f",$supplier_cost), */
 /* 		  'Supplier Product Name'=>$_product['description'], */
