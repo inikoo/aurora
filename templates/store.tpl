@@ -22,9 +22,9 @@
   </div>
   
   <div id="details" class="top_bar" style="{if !$show_details}display:none;{/if}">
-     <div  class="details">
+    <div  class="details">
       <div id="details_general"  {if $view!='general'}style="display:none"{/if}>
-
+	
 	<table class="show_info_product" style="width:20em">
 	  <tr>
 	    <td>{t}Departments{/t}:</td><td class="aright">{$departments}</td>
@@ -56,7 +56,7 @@
       <ul id="plot_chooser" class="tabs" style="margin:0 20px;padding:0 20px "  >
 	<li>
 	  <span class="item {if $plot_tipo=='store'}selected{/if}" onClick="change_plot(this)" id="plot_store" tipo="store" category="{$plot_data.store.category}" period="{$plot_data.store.period}" >
-	    <span>{t}Store Sales{/t}</span>
+	    <span>{$store->get('Store Code')} {t}Store{/t}</span>
 	  </span>
 	</li>
 	<li>
@@ -122,12 +122,12 @@
     
     <table style="float:left;margin:0 0 5px 0px ;padding:0"  class="options" >
       <tr><td  {if $view=='general'}class="selected"{/if} id="general" >{t}General{/t}</td>
-	{if $view_stock}<td {if $view=='stock'}class="selected"{/if}  id="stock"  >{t}Stock{/t}</td>{/if}
+	{if $view_stock}<td {if $view=='stock'}class="selected"{/if}  id="stock"  >{t}Stock{/t} {$view}</td>{/if}
 	{if $view_sales}<td  {if $view=='sales'}class="selected"{/if}  id="sales"  >{t}Sales{/t}</td>{/if}
       </tr>
     </table>
 	
-	<table id="period_options" style="float:left;margin:0 0 0 20px ;padding:0{if $view!='general' };display:none{/if}"  class="options_mini" >
+	<table id="period_options" style="float:left;margin:0 0 0 20px ;padding:0{if $view!='sales' };display:none{/if}"  class="options_mini" >
 	  <tr>
 	    
 	    <td  {if $period=='all'}class="selected"{/if} period="all"  id="period_all" >{t}All{/t}</td>

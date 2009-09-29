@@ -920,14 +920,16 @@ class part extends DB_Table{
 
   function update_valid_dates($date){
     $affected=0;
-    $sql=sprintf("update `Part Dimension`  set `Part Valid From` where  `Part SKU`=%d and `Part Valid From`>%s   "
+    $sql=sprintf("update `Part Dimension`  set `Part Valid From`=%s where  `Part SKU`=%d and `Part Valid From`>%s   "
+		 ,prepare_mysql($date)
 		 ,prepare_mysql($this->id)
 		 ,prepare_mysql($date)
 
 		 );
     mysql_query($sql);
     $affected+=mysql_affected_rows();
-    $sql=sprintf("update `Part Dimension`  set `Part Valid To` where  `Part SKU`=%d and `Part Valid To`<%s   "
+    $sql=sprintf("update `Part Dimension`  set `Part Valid To`=%s where  `Part SKU`=%d and `Part Valid To`<%s   "
+		 ,prepare_mysql($date)
 		 ,prepare_mysql($this->id)
 		 ,prepare_mysql($date)
 

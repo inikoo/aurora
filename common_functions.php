@@ -812,8 +812,8 @@ function extract_product_groups($str,
 //print _trim('        d ca        ca  caca    ');
 
 function _trim($string){
-  $string=preg_replace('/\xC2\xA0/',' ',$string);
-
+  $string=preg_replace('/\xC2\xA0\s*$/',' ',$string);
+  $string=preg_replace('/\xA0\s*/',' ',$string);
   $string=preg_replace('/\s+/',' ',trim($string));
 
  //  $string=preg_replace('/^\s*/','',$string);

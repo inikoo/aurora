@@ -1,37 +1,49 @@
-<?php
+<?
+//include("../../external_libs/adminpro/adminpro_config.php");
+//include("../../external_libs/adminpro/mysql_dialog.php");
+
 include_once('../../app_files/db/dns.php');
-include_once('../../class.Department.php');
-include_once('../../class.Family.php');
-include_once('../../class.Product.php');
-include_once('../../class.Supplier.php');
-include_once('../../class.Order.php');
-include_once('../../class.Part.php');
-include_once('../../class.SupplierProduct.php');
-include_once('../../class.Invoice.php');
-include_once('../../class.DeliveryNote.php');
-
-$store_code='U';
-
+include_once('../../classes/Department.php');
+include_once('../../classes/Family.php');
+include_once('../../classes/Product.php');
+include_once('../../classes/Supplier.php');
+include_once('../../classes/Part.php');
+include_once('../../classes/SupplierProduct.php');
 error_reporting(E_ALL);
+
+
+
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
+
 if(!$con){print "Error can not connect with database server\n";exit;}
+
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
+  
 
 require_once '../../common_functions.php';
 mysql_query("SET time_zone ='UTC'");
 mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';           
 date_default_timezone_set('Europe/London');
-$_SESSION['lang']=1;
-include_once('local_map.php');
-include_once('map_order_functions.php');
 
-$software='Get_Orders_DB.php';
-$version='V 1.0';//75693
+
+
+
+
+$software='Get_Products.php';
+$version='V 1.0';
 
 $Data_Audit_ETL_Software="$software $version";
-srand(12344);
+
+$file_name='AWorder2002.xls';
+$csv_file='tmp.csv';
+exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
+
+$handle_csv = fopen($csv_file, "r");
+$column=0;
+$products=false;
+$count=0;
 
 $store_key=1;
 $dept_no_dept=new Department('code_store','ND',$store_key);
@@ -68,6 +80,7 @@ if(!$fam_no_fam->id){
 		   );
   $fam_no_fam=new Family('create',$fam_data);
   $fam_no_fam_key=$fam_no_fam->id;
+  $dept_no_dept->load('products_info');
 }
 $fam_promo=new Family('code_store','Promo_GB',$store_key);
 if(!$fam_promo->id){
@@ -77,1760 +90,1206 @@ if(!$fam_promo->id){
 		   'Product Family Main Department Key'=>$dept_promo_key
 		   );
   $fam_promo=new Family('create',$fam_data);
-  
+  $dept_promo->load('products_info');
 }
+
+
 $fam_no_fam_key=$fam_no_fam->id;
 $fam_promo_key=$fam_promo->id;
 
 
-$sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed)  order by filename ";
-
-//$sql="select * from  orders_data.orders where filename like '%refund.xls'   order by filename";
-//$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/20%.xls' order by filename";
-
-//$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/15720.xls' or filename like '/mnt/%/Orders/15699.xls' or  filename like '/mnt/%/Orders/15593.xls' order by filename";
-
-//$sql="select *,orders_data.orders.id as id  from dw2.`Order Transaction Fact` X left join  orders_data.orders on (orders_data.orders.id=REPLACE(`Metadata`,'U',''))  where `Customer Key` in (729,11701) group by `Metadata` order by filename;";
-
-$contador=0;
-$res=mysql_query($sql);
-
-while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
- 
- 
-  $sql="select * from orders_data.data where id=".$row2['id'];
-  $result=mysql_query($sql);
-  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
 
-    //           echo "                                                          Memory: ".memory_get_usage(true) . "\n";
-
-    $order_data_id=$row2['id'];
-    $filename=$row2['filename'];
-    $contador++;
-    $total_credit_value=0;
-
-    // check if it is already readed
-    $update=false;$old_order_key=0;
-    $sql=sprintf("select count(*) as num  from `Order Dimension`  where `Order Original Metadata`=%s  ",prepare_mysql($store_code.$order_data_id));
-
-    $result_test=mysql_query($sql);
-    if($row_test=mysql_fetch_array($result_test, MYSQL_ASSOC)){
-      if($row_test['num']==0){
-	print "NEW $contador $order_data_id $filename \n";
-      }else{
-	$update=true;
-	print "UPD $contador $order_data_id $filename \n";
-      }
-    }
-
-
-
-
-    
-
-    $header=mb_unserialize($row['header']);
-    $products=mb_unserialize($row['products']);
-
-    //  print_r($products);
-
-    //    echo "Memory: ".memory_get_usage(true) . "\n";
-
-
-
-
-
-    $filename_number=str_replace('.xls','',str_replace($row2['directory'],'',$row2['filename']));
-    $map_act=$_map_act;$map=$_map;$y_map=$_y_map;
-     
-    // tomando en coeuntas diferencias en la posicion de los elementos
-  
-    if($filename_number==19015){
-      $y_map['code']=4;
-    }
-     
-  
-    if($filename_number<18803){// Change map if the orders are old
-      $y_map=$_y_map_old;
-      foreach($_map_old as $key=>$value)
- 	$map[$key]=$value;
-    }
-    $prod_map=$y_map;
-    if($filename_number==53378){
-      $prod_map['no_price_bonus']=true;
-      $prod_map['no_reorder']=true;
-      $prod_map['bonus']=11;
-    }elseif($filename_number==64607){
-      $prod_map['no_price_bonus']=true;
-      $prod_map['no_reorder']=true;
-      $prod_map['bonus']=11;
-    }if($filename_number==89175){
-       $prod_map['no_reorder']=true;
-       $prod_map['no_price_bonus']=true;
-    }
-     
-    $header_data=array();
-    $data=array();
-    list($act_data,$header_data)=read_header($header,$map_act,$y_map,$map);
-    $header_data=filter_header($header_data);
-    list($tipo_order,$parent_order_id,$header_data)=get_tipo_order($header_data['ltipo'],$header_data);
-  
-    
-
-    if(preg_match('/^\d{5}sh$/i',$filename_number)){
-      $tipo_order=7;
-      $parent_order_id=preg_replace('/sh/i','',$filename_number);
-    }
-      if(preg_match('/^\d{5}sht$/i',$filename_number)){
-      $tipo_order=7;
-      $parent_order_id=preg_replace('/sht/i','',$filename_number);
-    }
-
-    if(preg_match('/^\d{5}rpl$/i',$filename_number)){
-      $tipo_order=6;
-      $parent_order_id=preg_replace('/rpl/i','',$filename_number);
-
-    }
-    if(preg_match('/^\d{4,5}r$|^\d{4,5}ref$|^\d{4,5}\s?refund$|^\d{4,5}rr$|^\d{4,5}ra$|^\d{4,5}r2$|^\d{4,5}\-2ref$|^\d{5}rfn$/i',$filename_number)){
-      $tipo_order=9;
-      $parent_order_id=preg_replace('/r$|ref$|refund$|rr$|ra$|r2$|\-2ref$|rfn$/i','',$filename_number);
-
-
-    }
-
-
-
-    //if($tipo_order==2 or $tipo_order==1){
-    //  print "\n";
-    //  continue;
-    // }
-
-    list($date_index,$date_order,$date_inv)=get_dates($row2['timestamp'],$header_data,$tipo_order,true);
-  
+$__cols=array();
+$inicio=false;
+while(($_cols = fgetcsv($handle_csv))!== false){
   
 
-    
-    if($tipo_order==9){
-      if( $date_inv=='NULL' or  strtotime($date_order)>strtotime($date_inv)){
-	$date_inv=$date_order;
-	}
-    }
-
-
-     if( $date_inv!='NULL' and  strtotime($date_order)>strtotime($date_inv)){
-      
-      
-      //$date2=date("Y-m-d H:i:s",strtotime($date_order.' +1 hour'));
-       print "Warning (Fecha Factura anterior Fecha Orden) $filename $date_order  $date_inv\n  ".strtotime($date_order).' > '.strtotime($date_inv)."\n";
-       $date_inv=date("Y-m-d H:i:s",strtotime($date_order.' +1 hour'));
-      
-      // print "new date: ".$date2."\n";
-      
-    }
-
-
-    if($date_order=='')
-      $date_index2=$date_index;
-    else
-      $date_index2=$date_order;
-
-    if($tipo_order==2  or $tipo_order==6 or $tipo_order==7 or $tipo_order==9 ){
-      $date2=$date_inv;
-    }elseif($tipo_order==4  or   $tipo_order==5 or    $tipo_order==8  )
-      $date2=$date_index;
-    else
-      $date2=$date_order;
-  
- $header_data['Order Main Source Type']='Unknown';
- $header_data['Delivery Note Dispatch Method']='Unknown';
-
-  $header_data['collection']='No';
-  $header_data['shipper_code']='';
-  $header_data['staff sale']='No';
-   $header_data['showroom']='No';
-  $header_data['staff sale name']='';
-
-  if(!$header_data['notes']){
-      $header_data['notes']='';
-    }
-    if(!$header_data['notes2'] or preg_match('/^vat|Special Instructions$/i',_trim($header_data['notes2']))){
-      $header_data['notes2']='';
-    }
-
-  if(preg_match('/^(Int Freight|Intl Freight|Internation Freight|Intl FreightInternation Freight|International Frei.*|International Freigth|Internation Freight|Internatinal Freight|nternation(al)? Frei.*|Internationa freight|International|International freight|by sea)$/i',$header_data['notes']))
-      $header_data['notes']='International Freight';
-
-    //delete no data notes
- 
-   $header_data=is_to_be_collected($header_data);
-  
-   $header_data=is_shipping_supplier($header_data,$date_order);
-    $header_data=is_staff_sale($header_data);
-    
-    $header_data=is_showroom($header_data);
-     
-    
-    
-    if(preg_match('/^(|International Freight)$/',$header_data['notes'])){
-      $header_data['notes']='';
-
-    }
-      //  print "N1: ".$header_data['notes']."\n";
-    //  print "N2: ".$header_data['notes2']."\n\n";
-    // }
-    // if(!preg_match('/^(|0|\s*)$/',$header_data['notes2']))
-
-    $header_data=get_tax_number($header_data);
-    $header_data=get_customer_msg($header_data);
-    
-    if($header_data['notes']!='' and $header_data['notes2']!=''){
-      $header_data['notes2']=_trim($header_data['notes'].', '.$header_data['notes2']);
-      $header_data['notes']='';
-      }elseif($header_data['notes']!=''){
-	$header_data['notes2']=$header_data['notes'];
-	$header_data['notes']='';
-      }
-
-    $header_data=get_customer_msg($header_data);
-
-    if(preg_match('/^(x5686842-t|IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691|IE-7251185|SE556670-257601|x5686842-t)$/',$header_data['notes2'])){
-      $header_data['tax_number']=$header_data['notes2'];
-      $header_data['notes2']='';
-    }
-    if(preg_match('/^(x5686842-t|IE 9575910F|85 467 757 063|ie 7214743D|ES B92544691|IE-7251185|SE556670-257601|x5686842-t)$/',$header_data['notes'])){
-      $header_data['tax_number']=$header_data['notes'];
-      $header_data['notes']='';
-    }
-    
-
-       
-
-    $transactions=read_products($products,$prod_map);
-    unset($products);
-  //   echo "Memory: ".memory_get_usage(true) . "x\n";
-//     echo "Memory: ".memory_get_usage() . "x\n";
-    $_customer_data=setup_contact($act_data,$header_data,$date_index2);
-   
-    $customer_data=array();
-    
-    if(isset($header_data['tax_number']) and $header_data['tax_number']!=''){
-      $customer_data['Customer Tax Number']=$header_data['tax_number'];
-     
-
-    }
-
-  
-    foreach($_customer_data as $_key =>$value){
-      $key=$_key;
-      if($_key=='type')
-      $key=preg_replace('/^type$/','Customer Type',$_key);
-      if($_key=='other id')
-	$key='Customer Old ID';
-       
-      if($_key=='contact_name')
-      $key=preg_replace('/^contact_name$/','Customer Main Contact Name',$_key);
-      if($_key=='company_name')
-      $key=preg_replace('/^company_name$/','Customer Company Name',$_key);
-      if($_key=='email')
-      $key=preg_replace('/^email$/','Customer Main Plain Email',$_key);
-      if($_key=='telephone')
-      $key=preg_replace('/^telephone$/','Customer Main Telephone',$_key);
-      if($_key=='fax')
-      $key=preg_replace('/^fax$/','Customer Main FAX',$_key);
-      if($_key=='mobile')
-	$key=preg_replace('/^mobile$/','Customer Mobile',$_key);
-
-      $customer_data[$key]=$value;
-
-    }
-    if($customer_data['Customer Type']=='Company')
-      $customer_data['Customer Name']=$customer_data['Customer Company Name'];
-    else
-      $customer_data['Customer Name']=$customer_data['Customer Main Contact Name'];
-    if(isset($_customer_data['address_data'])){
-      $customer_data['Customer Address Line 1']=$_customer_data['address_data']['address1'];
-      $customer_data['Customer Address Line 2']=$_customer_data['address_data']['address2'];
-      $customer_data['Customer Address Line 3']=$_customer_data['address_data']['address3'];
-      $customer_data['Customer Address Town']=$_customer_data['address_data']['town'];
-      $customer_data['Customer Address Postal Code']=$_customer_data['address_data']['postcode'];
-      $customer_data['Customer Address Country Name']=$_customer_data['address_data']['country'];
-      $customer_data['Customer Address Country Primary Division']=$_customer_data['address_data']['country_d1'];
-      $customer_data['Customer Address Country Secondary Division']=$_customer_data['address_data']['country_d2'];
-      unset($customer_data['address_data']);
-    }
-    $shipping_addresses=array();
-    if(isset($_customer_data['address_data']) and $_customer_data['has_shipping']){
-      $shipping_addresses['Address Line 1']=$_customer_data['shipping_data']['address1'];
-      $shipping_addresses['Address Line 2']=$_customer_data['shipping_data']['address2'];
-      $shipping_addresses['Address Line 3']=$_customer_data['shipping_data']['address3'];
-      $shipping_addresses['Address Town']=$_customer_data['shipping_data']['town'];
-      $shipping_addresses['Address Postal Code']=$_customer_data['shipping_data']['postcode'];
-      $shipping_addresses['Address Country Name']=$_customer_data['shipping_data']['country'];
-      $shipping_addresses['Address Country Primary Division']=$_customer_data['shipping_data']['country_d1'];
-      $shipping_addresses['Address Country Secondary Division']=$_customer_data['shipping_data']['country_d2'];
-      unset($customer_data['shipping_data']);
-    }
-
-    //  print_r($transactions);
-    
-    // print $customer_data['Customer Old ID']."\n";
-    
-    if(strtotime($date_order)>strtotime($date2)){
-      
-
-
-      //$date2=date("Y-m-d H:i:s",strtotime($date_order.' +1 hour'));
-      print "Warning (Fecha Factura anterior Fecha Orden) $filename $date_order  $date2 \n";
-      $date2=date("Y-m-d H:i:s",strtotime($date_order.' +8 hour'));
-      
-      print "new date: ".$date2."\n";
-      
-    }
-
-  if(strtotime($date_order)>strtotime('now')   ){
-      
-      print "ERROR (Fecha en el futuro) $filename  $date_order   \n ";
-      
-      continue;
-    }
-
-  if(strtotime($date_order)<strtotime($myconf['data_from'])  ){
-      
-      print "ERROR (Fecha sospechosamente muy  antigua) $filename $date_order \n";
-      
-      continue;
-    }
-   
-
-  $extra_shipping=0;
-
-    $data=array();
-    $data['editor']=array('Date'=>$date_order);
-    
-    $data['order date']=$date_order;
-    $data['order id']=$header_data['order_num'];
-    $data['order customer message']=$header_data['notes2'];
-    if($data['order customer message']==0)
-      $data['order customer message']='';
-
-    $data['order original data mime type']='application/vnd.ms-excel';
-    $data['order original data']=$row2['filename'];
-    $data['order original data source']='DB:orders_data.order.data';
-    $data['Order Original Metadata']=$store_code.$row2['id'];
-
-    //print_r($header_data);
-
-    $products_data=array();
-    $data_invoice_transactions=array();
-    $data_dn_transactions=array();
-    $data_bonus_transactions=array();
-
-    $credits=array();
-    
-    $total_credit_value=0;
-    $estimated_w=0;
-    //echo "Memory: ".memory_get_usage(true) . "\n";
-    foreach($transactions as $transaction){
-      $transaction['code']=_trim($transaction['code']);
-      
-      if(preg_match('/credit|refund/i',$transaction['code'])){
-
-
-	if(preg_match('/^Credit owed for order no\.\:\d{4,5}$/',$transaction['description'])){
-	  $credit_parent_public_id=preg_replace('/[^\d]/','',$transaction['description']);
-	  $credit_value=$transaction['credit'];
-	  $credit_description=$transaction['description'];
-	  $total_credit_value+=$credit_value;
-	}elseif(preg_match('/^(Credit owed for order no\.\:|Credit for damage item|Refund for postage .paid by customer)$/i',$transaction['description'])){
-	  $credit_parent_public_id='';
-	  $credit_value=$transaction['credit'];
-	  $credit_description=$transaction['description'];
-	  $total_credit_value+=$credit_value;
-
-	}else{
-	  $credit_parent_public_id='';
-	  $credit_value=$transaction['credit'];
-	  $credit_description=$transaction['description'];
-	  $total_credit_value+=$credit_value;
-
-
-	}
-	$_parent_key='NULL';
-	$_parent_order_date='';
-	if($credit_parent_public_id!=''){
-	  $credit_parent=new Order('public id',$credit_parent_public_id);
-	  $credit_parent->skip_update_product_sales=true;
-	  if($credit_parent->id){
-	    $_parent_key=$credit_parent->id;
-	    $_parent_order_date=$credit_parent->data['Order Date'];
-	  }
-	}
-
-	$credits[]=array(
-			'parent_key'=>$_parent_key
-			,'value'=>$credit_value
-			,'description'=>$credit_description
-			,'parent_date'=>$_parent_order_date
-			 );
-	
-	//print_r($transaction);
-	//print_r($credits);
-	//exit;
-	//	$credit[]=array()
-	continue;
-      }
-
-      if(preg_match('/Freight|^frc-|Postage/i',$transaction['code'])){
-
-	$extra_shipping+=$transaction['price'];
-      continue;
-	
-	}
-      if(preg_match('/^cxd-|^wsl$|^eye$|^\d$|2009promo/i',$transaction['code']))
-	continue;
-      if(preg_match('/difference in prices|Diff.in price for|difference in prices/i',$transaction['description']))
-	continue;
-    
-      $__code=strtolower($transaction['code']);
-
-      if($__code=='eo-st' or $__code=='mol-st' or  $__code=='jbb-st' or $__code=='lwheat-st' or  $__code=='jbb-st' 
-	 or $__code=='scrub-st' or $__code=='eye-st' or $__code=='tbm-st' or $__code=='tbc-st' or $__code=='tbs-st'
-	 or $__code=='gemd-st' or $__code=='cryc-st' or $__code=='gp-st'  or $__code=='dc-st'
-	 ){
-	continue;
-      
-      }
-    
-
-
-
-
-      $transaction['description']=preg_replace('/\s*\(\s*replacements?\s*\)\s*$/i','',$transaction['description']);
-      $transaction['description']=preg_replace('/\s*(\-|\/)\s*replacements?\s*$/i','',$transaction['description']);
-      $transaction['description']=preg_replace('/\s*(\-|\/)\s*SHOWROOM\s*$/i','',$transaction['description']);
-      $transaction['description']=preg_replace('/\s*(\-|\/)\s*to.follow\/?\s*$/i','',$transaction['description']);
-      $transaction['description']=preg_replace('/\s*(\-|\/)\s*missing\s*$/i','',$transaction['description']);
-      $transaction['description']=preg_replace('/\/missed off prev.order$/i','',$transaction['description']);
-      $transaction['description']=preg_replace('/\(missed off on last order\)$/i','',$transaction['description']);
-      $transaction['description']=preg_replace('/\/from prev order$/i','',$transaction['description']);
-      $transaction['description']=preg_replace('/\s*\(owed from prev order\)$/i','',$transaction['description']);
-      $transaction['description']=preg_replace('/\s*\/prev order$/i','',$transaction['description']);
-      $transaction['description']=preg_replace('/\s*\-from prev order$/i','',$transaction['description']);
-      $transaction['description']=preg_replace('/TO FOLLOW$/','',$transaction['description']);
-
-      if(preg_match('/^sg\-$|^SG\-mix$|^sg-xx$/i',$transaction['code']) ){
-	$transaction['code']='SG-mix';
-	$transaction['description']='Simmering Granules Mixed Box';
-      }
-      if(preg_match('/SG-Y2/i',$transaction['code'])   and preg_match('/mix/i',$transaction['description'])){
-	$transaction['code']='SG-mix';
-	$transaction['description']='Simmering Granules Mixed Box';
-      }
-      if(preg_match('/sg-bn/i',$transaction['code']) ){
-	$transaction['code']='SG-BN';
-	$transaction['description']='Simmering Granules Mixed Box';
-      }
-      if(preg_match('/^sg$/i',$transaction['code']) and preg_match('/^(Mixed Simmering Granules|Mixed Simmering Granuels|Random Mix Simmering Granules)$/i',$transaction['description']) ){
-	$transaction['code']='SG-mix';
-	$transaction['description']='Simmering Granules Mixed Box';
-      }
-      if(preg_match('/^(sg|salt)$/i',$transaction['code']) and preg_match('/25/i',$transaction['description']) ){
-	$transaction['code']='SG';
-	$transaction['description']='25Kg Hydrosoft Granular Salt';
-      }
-      if(preg_match('/^(salty)$/i',$transaction['code']) and preg_match('/25/i',$transaction['description']) ){
-	$transaction['code']='SG';
-      }
-     
-      if(preg_match('/^(salt|salt-xx|salt-11w|Salt-Misc)$/i',$transaction['code']) and preg_match('/fit/i',$transaction['description']) ){
-	$transaction['code']='Salt-Fitting';
-	$transaction['description']='Spare Fitting for Salt Lamp';
-      }
- 
-     
-      if((preg_match('/^(salt-11w)$/i',$transaction['code']) and preg_match('/^Wood Base|^Bases/i',$transaction['description'])) or preg_match('/Salt-11 bases/i',$transaction['code']) or  preg_match('/Black Base for Salt Lamp/i',$transaction['description']) ){
-	$transaction['code']='Salt-Base';
-	$transaction['description']='Spare Base for Salt Lamp';
-      }
-     
-      if(preg_match('/^wsl-320$/i',$transaction['code'])){
-	$transaction['description']='Two Tone Palm Wax Candles Sml';
-      }
-      if(preg_match('/^wsl-631$/i',$transaction['code'])){
-	$transaction['description']='Pewter Pegasus & Ball with LED';
-      }
-
-     if(preg_match('/^JuteB-17C$/i',$transaction['code'])   and preg_match('/60x Carton/i',$transaction['description'])){
-	$transaction['code']='JuteB-17CC';
-      }
-
-      if(preg_match('/^wsl-848$/i',$transaction['code'])   and preg_match('/wsl-848, simple message candle/i',$transaction['description'])){
-	$transaction['description']='Simple Message Candle 3x6';
-	$transaction['code']='wsl-877';
-      }
-
-      if(preg_match('/^bot-01$/i',$transaction['code'])   and preg_match('/10ml Amber Bottles.*tamper.*ap/i',$transaction['description']))
-	$transaction['description']='10ml Amber Bottles & Tamper Proof Caps';
-      if(preg_match('/^81992$/i',$transaction['code'])   and preg_match('/Amber Bottles/i',$transaction['description']))
-	$transaction['code']='Bot-02';
- 
-
-
-      if(preg_match('/^bot-01$/i',$transaction['code'])   and preg_match('/10ml Amber Bottles.*only/i',$transaction['description']))
-	$transaction['description']='10ml Amber Bottles Only';
-      if(preg_match('/^bot-01$/i',$transaction['code'])   and preg_match('/10ml Amber Bottles.already supplied/i',$transaction['description']))
-	$transaction['description']='10ml Amber Bottles';
-      if(preg_match('/^bag-07$/i',$transaction['code'])   and preg_match('/^Mini Bag.*mix|^Mixed Mini Bag$/i',$transaction['description']))
-	$transaction['description']='Mini Bag - Mix';
-      if(preg_match('/^bag-07$/i',$transaction['code'])   and preg_match('/Mini Bag .replacement/i',$transaction['description']))
-	$transaction['description']='Mini Bag';
-      if(preg_match('/^bag-07$/i',$transaction['code'])   and preg_match('/Mini Organza Bags Mixed|Organza Mini Bag . Mix/i',$transaction['description']))
-	$transaction['description']='Organza Mini Bag - Mixed';
-      if(preg_match('/^bag-02$/i',$transaction['code']))
-	$transaction['description']='Organza Bags';
-      if(preg_match('/^bag-02a$/i',$transaction['code'])   and preg_match('/gold/i',$transaction['description']))
-	$transaction['description']='Organza Bag - Gold';
-      if(preg_match('/^bag-02a$/i',$transaction['code'])   and preg_match('/misc|mix|showroom/i',$transaction['description']))
-	$transaction['description']='Organza Bag - Mix';
-      if(preg_match('/^bag-07a$/i',$transaction['code'])   and preg_match('/misc|mix|showroom/i',$transaction['description']))
-	$transaction['description']='Organza Mini Bag - Mix';
-      if(preg_match('/^bag$/i',$transaction['code']) )
-	$transaction['description']='Organza Bag - Mix';
-      if(preg_match('/^eid-04$/i',$transaction['code']) )
-	$transaction['description']='Nag Champa 15g';
-      if(preg_match('/^ish-13$/i',$transaction['code'])   and preg_match('/Smoke Boxes Natural/i',$transaction['description'])   )
-	$transaction['description']='Smoke Boxes Natural';
-      if(preg_match('/^asoap-09$/i',$transaction['code'])   and preg_match('/maychang-orange tint old showrooms/i',$transaction['description'])   )
-	$transaction['description']='May Chang - Orange -EO Soap Loaf';
-      if(preg_match('/^asoap-02$/i',$transaction['code'])   and preg_match('/old showrooms/i',$transaction['description'])   )
-	$transaction['description']='Tea Tree - Green -EO Soap Loaf';
-
-      if(preg_match('/^wsl-1039$/i',$transaction['code'])     )
-	$transaction['description']='Arty Coffee Twist Candle 24cm';
-      if(preg_match('/^joie-01$/i',$transaction['code'])   and preg_match('/assorted/i',$transaction['description'])    )
-	$transaction['description']='Joie Boxed - Assorted';
-      if(preg_match('/^wsl-01$/i',$transaction['code'])   and preg_match('/Mixed packs of Incense.Shipp.cost covered./i',$transaction['description'])    )
-	$transaction['description']='Mixed packs of Incense';
-      if(preg_match('/^gp-01$/i',$transaction['code'])   and preg_match('/^(Glass Pebbles Assorted|Glass Pebbles mixed colours|Glass Pebbles-Mixed)$/i',$transaction['description'])    )
-	$transaction['description']='Glass Pebbles mixed colours';
-
-      if(preg_match('/^HemM-01$/i',$transaction['code'])   and preg_match('/Pair of Hermatite Magnets/i',$transaction['description'])    )
-	$transaction['description']='Pair of Hematite Magnets';
-
-      if(preg_match('/Box of 6 Nightlights -Flower Garden/i',$transaction['description'])    )
-	$transaction['description']='Box of 6 Nightlights - Flower Garden';
+  $code=$_cols[3];
 
  
-      if(preg_match('/Grip Seal Bags 4 x 5.5 inch/i',$transaction['description'])    )
-	$transaction['description']='Grip Seal Bags 4x5.5inch';
-
-      if(preg_match('/^FW-01$/i',$transaction['code'])  ){
-	if(preg_match('/gift|alter/i',$transaction['description'])){
-	  $transaction['code']='FW-04';
-	}elseif(preg_match('/white/i',$transaction['description'])){
-	  $transaction['code']='FW-02';
-	  $transaction['description']='Promo Wine White';
-	} elseif(preg_match('/rose/i',$transaction['description'])){
-	  $transaction['code']='FW-03';
-	  $transaction['description']='Promo Wine Rose';
-	} elseif(preg_match('/red/i',$transaction['description'])){
-	  $transaction['description']='Promo Wine Red';
-	} elseif(preg_match('/Veuve/i',$transaction['description'])){
-	  $transaction['description']='Veuve Clicquote Champagne';
-	} elseif(preg_match('/champagne/i',$transaction['description'])){
-	  $transaction['description']='Champagne';
-	}
-      }
-      if(preg_match('/^FW-02$/i',$transaction['code'])  ){
-	if(preg_match('/gift|alter/i',$transaction['description'])){
-	  $transaction['code']='FW-04';
-	}elseif(preg_match('/white/i',$transaction['description'])){
-	  $transaction['code']='FW-02';
-	  $transaction['description']='Promo Wine White';
-	} elseif(preg_match('/rose/i',$transaction['description'])){
-	  $transaction['code']='FW-03';
-	  $transaction['description']='Promo Wine Rose';
-	} elseif(preg_match('/red/i',$transaction['description'])){
-	  $transaction['code']='FW-01';
-	  $transaction['description']='Promo Wine Red';
-	 
-	} elseif(preg_match('/Veuve/i',$transaction['description'])){
-	  $transaction['code']='FW-01';
-	  $transaction['description']='Veuve Clicquote Champagne';
-	} elseif(preg_match('/champagne/i',$transaction['description'])){
-	  $transaction['code']='FW-01';
-	  $transaction['description']='Champagne';
-	}
-      }
-      if(preg_match('/^FW-03$/i',$transaction['code'])  ){
-	if(preg_match('/gift|alter/i',$transaction['description'])){
-	  $transaction['code']='FW-04';
-	}elseif(preg_match('/white/i',$transaction['description'])){
-	  $transaction['code']='FW-02';
-	  $transaction['description']='Promo Wine White';
-	} elseif(preg_match('/rose/i',$transaction['description'])){
-	  $transaction['code']='FW-03';
-	  $transaction['description']='Promo Wine Rose';
-	} elseif(preg_match('/red/i',$transaction['description'])){
-	  $transaction['code']='FW-01';
-	  $transaction['description']='Promo Wine Red';
-	 
-	} elseif(preg_match('/Veuve/i',$transaction['description'])){
-	  $transaction['code']='FW-01';
-	  $transaction['description']='Veuve Clicquote Champagne';
-	} elseif(preg_match('/champagne/i',$transaction['description'])){
-	  $transaction['code']='FW-01';
-	  $transaction['description']='Champagne';
-	}
-      }
-    
-      if(preg_match('/^FW-04$/i',$transaction['code'])  ){
-	$transaction['description']=preg_replace('/^Alternative Gift\s*\/\s*/i','Alternative Gift to Wine: ',$transaction['description']);
-	$transaction['description']=preg_replace('/^Gift\s*(\:|\-)\*/i','Alternative Gift to Wine: ',$transaction['description']);
-	$transaction['description']=preg_replace('/^Alternative Gift to Wine(\-|\/)/i','Alternative Gift to Wine: ',$transaction['description']);
-	$transaction['description']=preg_replace('/^Alternative Gift\s*(\:|\-)\s*/i','Alternative Gift to Wine: ',$transaction['description']);
-	$transaction['description']=preg_replace('/^Alternative Gift to Wine\s*(\-)\*/i','Alternative Gift to Wine: ',$transaction['description']);
-	$transaction['description']=preg_replace('/Alternative Gift to Wine (\:|\-)/i','Alternative Gift to Wine: ',$transaction['description']);
-   
-	if(preg_match('/sim|Alternative Gift to Wine. 1x sg mixed box|SG please|Mix SG/i',$transaction['description'])){
-	  $transaction['description']='Alternative Gift to Wine: 1 box of simmering granules';
-	}
-	if(preg_match('/^(gift|Promo Alternative to wine|Alternative|Alternative Gift|Alternative Gift .from prev order)$|order/i',$transaction['description'])){
-	  $transaction['description']='Alternative Gift to Wine';
-	}
-
-
-
-      }
-      if(!is_numeric($transaction['units']))
-	$transaction['units']=1;
-      if($transaction['price']>0){
-	$margin=$transaction['supplier_product_cost']*$transaction['units']/$transaction['price'];
-	if($margin>1 or $margin<0.01){
-	  $transaction['supplier_product_cost']=0.4*$transaction['price']/$transaction['units'];
-	}
-      }
-      $supplier_product_cost=sprintf("%.4f",$transaction['supplier_product_cost']);
-      // print_r($transaction);
-
-    
-
-
-
-      $transaction['supplier_product_code']=_trim($transaction['supplier_product_code']);
-      $transaction['supplier_product_code']=preg_replace('/^\"\s*/','',$transaction['supplier_product_code']);
-      $transaction['supplier_product_code']=preg_replace('/\s*\"$/','',$transaction['supplier_product_code']);
-
-
-      if(preg_match('/\d+ or more|\d|0.10000007|0.050000038|0.150000076|0.8000006103|1.100000610|1.16666666|1.650001220|1.80000122070/i',$transaction['supplier_product_code']))
-	$transaction['supplier_product_code']='';
-      if(preg_match('/^(\?|new|0.25|0.5|0.8|8.0600048828125|0.8000006103|01 Glass Jewellery Box|1|0.1|0.05|1.5625|10|\d{1,2}\s?\+\s?\d{1,2}\%)$/i',$transaction['supplier_product_code']))
-	$transaction['supplier_product_code']='';
-      if($transaction['supplier_product_code']=='same')
-	$transaction['supplier_product_code']=$transaction['code'];
-	
-	
-	
-
-      if($transaction['supplier_product_code']=='')
-	$transaction['supplier_product_code']='?'.$transaction['code'];
-    
-      if($transaction['supplier_product_code']=='SSK-452A' and $transaction['supplier_code']=='Smen')
-	$transaction['supplier_product_code']='SSK-452A bis';
-
-      if(preg_match('/^(StoneM|Smen)$/i',$transaction['supplier_code'])){
-	$transaction['supplier_code']='StoneM';
-      }
-
-
-
-      if(preg_match('/Ackerman|Ackerrman|Akerman/i',$transaction['supplier_code'])){
-	$transaction['supplier_code']='Ackerman';
-      }
-
-      if( preg_match('/\d/',$transaction['supplier_code']) ){
-	$transaction['supplier_code'] ='';
-	$supplier_product_cost='';
-      }
-      if(preg_match('/^(SG|FO|EO|PS|BO)\-/i',$transaction['code']))
-	$transaction['supplier_code'] ='AW';
-      if($transaction['supplier_code']=='AW')
-	$transaction['supplier_product_code']=$transaction['code'];
-      if($transaction['supplier_code']=='' or preg_match('/\d/',$transaction['supplier_code']) )
-	$transaction['supplier_code']='Unknown';
-      $unit_type='Piece';
-      $description=_trim($transaction['description']);
-      $description=str_replace("\\\"","\"",$description);
-      if(preg_match('/Joie/i',$description) and preg_match('/abpx-01/i',$transaction['code']))
-	$description='2 boxes joie (replacement due out of stock)';
-    
-
-      
-      //print_r($transaction);
-
-      if(is_numeric($transaction['w'])){
-
-	if($transaction['w']<0.001 and $transaction['w']>0)
-	  $w=0.001*$transaction['units'];
-	else
-	  $w=sprintf("%.3f",$transaction['w']*$transaction['units']);
-      }else
-	$w='';
-      $transaction['supplier_product_code']=_trim($transaction['supplier_product_code']);
-
-
-      if($transaction['supplier_product_code']=='' or $transaction['supplier_product_code']=='0')
-	$sup_prod_code='?'._trim($transaction['code']);
-      else
-	$sup_prod_code=$transaction['supplier_product_code'];
-
-
-      if(preg_match('/GP-\d{2}/i',$transaction['code']) and $transaction['units']==1200){
-	$transaction['units']=1;
-	$w=6;
-	$supplier_product_cost=4.4500;
-	$transaction['rrp']=60;
-      }	
-
-      if(preg_match('/^bag-02$/i',$transaction['code'])  and  $transaction['units']==30 ){
-	$transaction['order']=$transaction['order']*30/25;
-	$transaction['reorder']=$transaction['reorder']*30/25;
-	$transaction['bonus']=$transaction['bonus']*30/25;
-
-      }	
-      if(preg_match('/^bag-07$/i',$transaction['code'])  and  $transaction['units']==23 ){
-	$transaction['order']=$transaction['order']*30/23;
-	$transaction['reorder']=$transaction['reorder']*30/23;
-	$transaction['bonus']=$transaction['bonus']*30/23;
-
-      }	
-
-      if(preg_match('/^bag-02$/i',$transaction['code'])){
-	$transaction['units']=25;
-      }	
-      if(preg_match('/^bag-01$/i',$transaction['code'])){
-	$transaction['units']=25;
-      }	
-       if(preg_match('/^bag-04$/i',$transaction['code'])){
-	$transaction['description']='Decorative Organza Bag - MIX';
-      }	
-       if(preg_match('/^bag-05$/i',$transaction['code'])){
-	$transaction['description']='Organza Heart Bag - MIX';
-      }	
-
-
-
-      if($transaction['units']=='' OR $transaction['units']<=0)
-	$transaction['units']=1;
-    
-      if(!is_numeric($transaction['price']) or $transaction['price']<=0){
-	//       print "Price Zero ".$transaction['code']."\n";
-	$transaction['price']=0;
-      }
-
-      if(!is_numeric($supplier_product_cost)  or $supplier_product_cost<=0 ){
-       
-	if(preg_match('/Catalogue/i',$description)){
-	  $supplier_product_cost=.25;
-	}elseif($transaction['price']==0){
-	  $supplier_product_cost=.20;
-	}else{
-	  $supplier_product_cost=0.4*$transaction['price']/$transaction['units'];
-	  //print_r($transaction);
-	  //	 print $transaction['code']." assuming supplier cost of 40% $supplier_product_cost **\n";
-	}
-       
-       
-       
-      }
-    
-     
-
-      
-      // try to get the family
-      $fam_key=$fam_no_fam_key;
-      $dept_key=$dept_no_dept_key;
-       if(preg_match('/^pi-|catalogue|^info|Mug-26x|OB-39x|SG-xMIXx|wsl-1275x|wsl-1474x|wsl-1474x|wsl-1479x|^FW-|^MFH-XX$|wsl-1513x|wsl-1487x|wsl-1636x|wsl-1637x/i',_trim($transaction['code']))){
-	 $fam_key=$fam_promo_key;
-	 $dept_key=$dept_promo_key;
-       }
-
-
-      $__code=preg_split('/-/',_trim($transaction['code']));
-      $__code=$__code[0];
-      $sql=sprintf('select * from `Product Family Dimension` where `Product Family Store Key`=%d and `Product Family Code`=%s'
-		   ,$store_key
-		   ,prepare_mysql($__code));
-      $result=mysql_query($sql);
-      // print $sql;
-      if( ($__row=mysql_fetch_array($result, MYSQL_ASSOC))){
-	$fam_key=$__row['Product Family Key'];
-	$dept_key=$__row['Product Family Main Department Key'];
-      }
-      
-     
-
-      $product_data=array(
-			  'Product Store Key'=>$store_key
-			  ,'Product Main Department Key'=>$dept_key
-			  ,'Product Family Key'=>$fam_key
-
-			  ,'product code'=>_trim($transaction['code'])
-			  ,'product name'=>$description
-			  ,'product unit type'=>$unit_type
-			  ,'product units per case'=>$transaction['units']
-			  ,'product net weight'=>$w
-			  ,'product gross weight'=>$w
-			  ,'part gross weight'=>$w
-			  ,'product rrp'=>sprintf("%.2f",$transaction['rrp']*$transaction['units'])
-			  ,'product price'=>sprintf("%.2f",$transaction['price'])
-			  ,'supplier code'=>_trim($transaction['supplier_code'])
-			  ,'supplier name'=>_trim($transaction['supplier_code'])
-			  ,'supplier product cost'=>$supplier_product_cost
-			  ,'supplier product code'=>$sup_prod_code
-			  ,'supplier product name'=>$description
-			  ,'auto_add'=>true
-			  ,'date'=>$date_order
-			  ,'date2'=>$date2
-			  ,'editor'=>array('Date'=>$date_order)
-			  );
-   
-      // print_r($product_data);
-     
-      $product=new Product('code-name-units-price-store',$product_data);
-      //      print "Done\n";
-      //     "Ahh canto male pedict\n";
-      if(!$product->id){
-	print_r($product_data);
-	print "Ahh canto male pedict\n";
-	exit;
-      }
-
-
-
-      if($transaction['order']!=0){
-      $products_data[]=array(
-			     'product_id'=>$product->id
-			     ,'Estimated Weight'=>$product->data['Product Gross Weight']*$transaction['order']
-			     ,'qty'=>$transaction['order']
-			     ,'gross_amount'=>$transaction['order']*$transaction['price']
-			     ,'discount_amount'=>$transaction['order']*$transaction['price']*$transaction['discount']
-			     ,'units_per_case'=>$product->data['Product Units Per Case']
-			     );
-
-      //      print_r($transaction);
-
-      $net_amount=round(($transaction['order']-$transaction['reorder'])*$transaction['price']*(1-$transaction['discount']),2 );
-      $gross_amount=round(($transaction['order']-$transaction['reorder'])*$transaction['price'],2);
-      $net_discount=-$net_amount+$gross_amount;
-      $data_invoice_transactions[]=array(
-					 'product_id'=>$product->id
-					 ,'invoice qty'=>$transaction['order']-$transaction['reorder']
-					 ,'gross amount'=>$gross_amount
-					 ,'discount amount'=>$net_discount
-					 ,'current payment state'=>'Paid'
-
-
-
-					 );		   
-      // print_r($data_invoice_transactions);
-      $estimated_w+=$product->data['Product Gross Weight']*($transaction['order']-$transaction['reorder']);
-      //print "$estimated_w ".$product->data['Product Gross Weight']." ".($transaction['order']-$transaction['reorder'])."\n";
-      $data_dn_transactions[]=array(
-				    'product_id'=>$product->id
-				    ,'Estimated Weight'=>$product->data['Product Gross Weight']*($transaction['order']-$transaction['reorder'])
-				    ,'Product ID'=>$product->data['Product ID']
-				    ,'Delivery Note Quantity'=>$transaction['order']-$transaction['reorder']
-				    ,'Current Autorized to Sell Quantity'=>$transaction['order']
-				    ,'Shipped Quantity'=>$transaction['order']-$transaction['reorder']
-				    ,'No Shipped Due Out of Stock'=>$transaction['reorder']
-				    ,'No Shipped Due No Authorized'=>0
-				    ,'No Shipped Due Not Found'=>0
-				    ,'No Shipped Due Other'=>0
-				    ,'amount in'=>(($transaction['order']-$transaction['reorder'])*$transaction['price'])*(1-$transaction['discount'])
-				    ,'given'=>0
-				    ,'required'=>$transaction['order']
-				    ,'pick_method'=>'historic'
-				    ,'pick_method_data'=>array(
-							       'supplier product key'=>$product->supplier_product_key,
-							       'part sku'=>$product->part_sku,
-							       'product part id'=>$product->product_part_id
-							       )
-				    );		   
-
-      }
-      if($transaction['bonus']>0){
-	$products_data[]=array(
-			       'product_id'=>$product->id
-			       ,'qty'=>0
-			       ,'gross_amount'=>0
-			       ,'discount_amount'=>0
-			       ,'Estimated Weight'=>0
-			       ,'units_per_case'=>$product->data['Product Units Per Case']
-			       );
-	$data_invoice_transactions[]=array(
-					   'product_id'=>$product->id
-					   ,'invoice qty'=>$transaction['bonus']
-					   ,'gross amount'=>($transaction['bonus'])*$transaction['price']
-					   ,'discount amount'=>($transaction['bonus'])*$transaction['price']
-					   ,'current payment state'=>'No Applicable'
-					   );		   
-    
-    $estimated_w+=$product->data['Product Gross Weight']*$transaction['bonus'];
-	$data_dn_transactions[]=array(
-				      'product_id'=>$product->id
-				      ,'Product ID'=>$product->data['Product ID']
-				      ,'Delivery Note Quantity'=>$transaction['bonus']
-				      ,'Current Autorized to Sell Quantity'=>$transaction['bonus']
-				      ,'Shipped Quantity'=>$transaction['bonus']
-				      ,'No Shipped Due Out of Stock'=>0
-				      ,'No Shipped Due No Authorized'=>0
-				      ,'No Shipped Due Not Found'=>0
-				      ,'No Shipped Due Other'=>0
-				      ,'Estimated Weight'=>$product->data['Product Gross Weight']*($transaction['bonus'])
-				      ,'amount in'=>0
-				      ,'given'=>$transaction['bonus']
-				      ,'required'=>0
-				      ,'pick_method'=>'historic'
-				      ,'pick_method_data'=>array(
-								 'supplier product key'=>$product->supplier_product_key,
-								 'part sku'=>$product->part_sku,
-								 'product part id'=>$product->product_part_id
-								 )
-				  
-				      );		   
-
-
-      
-
-      }
-
-    }
-    //echo "Memory: ".memory_get_usage(true) . "\n";
-
-
-    // print_r($products_data);
-
-    // print_r($header_data);
-
-
-
-
-    
-    
-
-
-
-    $data['Order For']='Customer';
-    
-    $data['Order Main Source Type']='Unknown';
-    if(  $header_data['showroom']=='Yes')
-      $data['Order Main Source Type']='Store';
-    
-     $data['Delivery Note Dispatch Method']='Shipped';
-
-    if($header_data['collection']=='Yes'){
-      $data['Delivery Note Dispatch Method']='Collected';
-    }elseif($header_data['shipper_code']!=''){
-      $data['Delivery Note Dispatch Method']='Shipped';
-    }elseif($header_data['shipping']>0 or  $header_data['shipping']=='FOC'){
-      $data['Delivery Note Dispatch Method']='Shipped';
-    }
-    
-
-    if($header_data['shipper_code']=='_OWN')
-      $data['Delivery Note Dispatch Method']='Collected';
-
-    if($header_data['staff sale']=='Yes'){
-    
-      $data['Order For']='Staff';
-
-    }
-
-   
-    if($data['Delivery Note Dispatch Method']=='Collected'){
-      $_customer_data['has_shipping']=false;
-	$shipping_addresses=array();
-      }
-
-
-    if(array_empty($shipping_addresses)){
-      $data['Delivery Note Dispatch Method']='Collected';
-      $_customer_data['has_shipping']=false;
-      $shipping_addresses=array();
-    }
-
-
-
-    //    print_r($customer_data);
-    //continue;
-
-    //  print_r($data);
-    $data['staff sale']=$header_data['staff sale'];
-    $data['staff sale key']=$header_data['staff sale key'];
-
-    $data['type']='direct_data_injection';
-    $data['products']=$products_data;
-    $data['Customer Data']=$customer_data;
-    $data['Shipping Address']=$shipping_addresses;
-    // $data['metadata_id']=$order_data_id;
-    $data['tax_rate']=.15;
-    if(strtotime($date_order)<strtotime('2008-11-01'))
-      $data['tax_rate']=.175;
-
-    $exchange=1;
-
-    // print_r($products_data);
-    // exit;
-    // print $tipo_order."\n";
-    //Tipo order
-    // 1 DELIVERY NOTE
-    // 2 INVOICE
-    // 3 CANCEL
-    // 4 SAMPLE
-    // 5 donation
-    // 6 REPLACEMENT
-    // 7 MISSING
-    // 8 follow
-    // 9 refund
-    // 10 crdit
-    // 11 quote
-  
-
-       if($update){
-	 print "Updated ";
-
-	 $sql=sprintf("select `Order Key`  from `Order Dimension`  where `Order Original Metadata`=%s  ", prepare_mysql($store_code.$order_data_id));
-	 
-	 $result_test=mysql_query($sql);
-	 while($row_test=mysql_fetch_array($result_test, MYSQL_ASSOC)){
-	   
-	   $sql=sprintf("delete from `History Dimension` where `Direct Object Key`=%d and `Direct Object`='Sale'   ",$row_test['Order Key']);
-	   if(!mysql_query($sql))
-	     print "$sql Warning can no delete oldhidtfgf";
-	   
-	 };
-
-	 
-	 
-	 $sql=sprintf("delete from `Order No Product Transaction Fact` where `Metadata`=%s", prepare_mysql($store_code.$order_data_id));
-	 if(!mysql_query($sql))
-	   print "$sql Warning can no delete old order";
-
-	 //delete things
-		      $sql=sprintf("delete from `Order Dimension` where `Order Original Metadata`=%s", prepare_mysql($store_code.$order_data_id));
-	 //	 print $sql;
-
-	 if(!mysql_query($sql))
-	   print "$sql Warning can no delete old order";
-		      $sql=sprintf("delete from `Invoice Dimension` where `Invoice Metadata`=%s", prepare_mysql($store_code.$order_data_id));
-	 if(!mysql_query($sql))
-	   print "$sql Warning can no delete old inv";
-		      $sql=sprintf("delete from `Delivery Note Dimension` where `Delivery Note Metadata`=%s", prepare_mysql($store_code.$order_data_id));
-	 if(!mysql_query($sql))
-	   print "$sql Warning can no delete old dn";
-		      $sql=sprintf("delete from `Order Transaction Fact` where `Metadata`=%s", prepare_mysql($store_code.$order_data_id));
-	 if(!mysql_query($sql))
-	   print "$sql Warning can no delete tf";
-		      $sql=sprintf("delete from `Inventory Transaction Fact` where `Metadata`=%s and `Inventory Transaction Type`='Sale'   ", prepare_mysql($store_code.$order_data_id));
-	 if(!mysql_query($sql))
-	   print "$sql Warning can no delete old inv";
-	 
-
-
-	 
-	      $sql=sprintf("delete from `Order No Product Transaction Fact` where `Metadata`=%s ", prepare_mysql($store_code.$order_data_id));
-	 if(!mysql_query($sql))
-	   print "$sql Warning can no delete oldhidt nio prod";
-	
-       }
-       
-       //print "$tipo_order \n";
-       
-       $sales_rep_data=get_user_id($header_data['takenby'],true,'&view=processed');
-       $data['Order XHTML Sale Reps']=$sales_rep_data['xhtml'];
-       $data['Order Sale Reps IDs']=$sales_rep_data['id'];
-    if($tipo_order==2 or $tipo_order==1  or $tipo_order==4 or $tipo_order==5 or   $tipo_order==3   )  {
-      //print_r($data);
-    
-
-
-
-      
-      if($tipo_order==1 or $tipo_order==2 or  $tipo_order==3)
-	$data['Order Type']='Order';
-      else if($tipo_order==4)
-	$data['Order Type']='Sample';
-      else if($tipo_order==5)
-	$data['Order Type']='Donation';
-
-     
-      $data['store_id']=1;
-      //      print_r($data);
-      $order= new Order('new',$data);
-      $order->skip_update_product_sales=true;
-
-      if($tipo_order==2){
-	$payment_method=parse_payment_method($header_data['pay_method']);
-	
-/* 	if($header_data['total_net']!=0) */
-/* 	  $tax_rate=$header_data['tax1']/$header_data['total_net']; */
-/* 	else */
-/* 	  $tax_rate=$data['tax_rate']; */
-	    
-
-	$lag=(strtotime($date_inv)-strtotime($date_order))/24/3600;
-	if($lag==0 or $lag<0)
-	  $lag='';
-
-	
-	$taxable='Yes';
-	$tax_code='UNK';
-
-
-       
-
-
-	if($header_data['total_net']!=0){
-	  
-	  if($header_data['tax1']+$header_data['tax2']==0){
-	  
-	    $tax_code='EX0';
-	  }
-	  
-	  $tax_rate=($header_data['tax1']+$header_data['tax2'])/$header_data['total_net'];
-
-	  foreach($myconf['tax_rates'] as $_tax_code=>$_tax_rate){
-	    // print "$_tax_code => $_tax_rate $tax_rate\n ";
-	    $upper=1.1*$_tax_rate;
-	    $lower=0.9*$_tax_rate;
-	    if($tax_rate>=$lower and $tax_rate<=$upper){
-	      $tax_code=$_tax_code;
-	      break;
-	    }
-	  }
-	}else{
-	  $tax_code='ZV';
-	}
-     
-	foreach($data_invoice_transactions as $key=>$val){
-	  $data_invoice_transactions[$key]['tax rate']=$tax_rate;
-	  $data_invoice_transactions[$key]['tax code']=$tax_code;
-	  $data_invoice_transactions[$key]['tax amount']=$tax_rate*($val['gross amount']-($val['discount amount']));
-	}
-	
-
-
-	$data_invoice=array(
-			    'Invoice Date'=>$date_inv
-			    ,'Invoice Public ID'=>$header_data['order_num']
-			    ,'Invoice File As'=>$header_data['order_num']
-			    ,'Invoice Main Payment Method'=>$payment_method
-			    ,'Invoice Multiple Payment Methods'=>0
-			    ,'Invoice Shipping Net Amount'=>round($header_data['shipping']+$extra_shipping,2)
-			    ,'Invoice Charges Net Amount'=>round($header_data['charges'],2)
-			    ,'Invoice Total Tax Amount'=>round($header_data['tax1'],2)
-			    ,'Invoice Refund Net Amount'=>$total_credit_value
-			    ,'Invoice Refund Tax Amount'=>$tax_rate*$total_credit_value
-			    ,'Invoice Total Amount'=>round($header_data['total_topay'],2)
-			    ,'tax_rate'=>$tax_rate
-			    ,'Invoice Has Been Paid In Full'=>'No'
-			    ,'Invoice Items Net Amount'=>round($header_data['total_items_charge_value'],2)-$total_credit_value
-			    ,'Invoice XHTML Processed By'=>_('Unknown')
-			    ,'Invoice XHTML Charged By'=>_('Unknown')
-			    ,'Invoice Processed By Key'=>''
-			    ,'Invoice Charged By Key'=>''
-			    ,'Invoice Total Adjust Amount'=>round($header_data['total_topay'],2)-round($header_data['tax1'],2)-round($header_data['total_net'],2)
-			    ,'Invoice Tax Code'=>$tax_code
-			    ,'Invoice Taxable'=>$taxable
-			    ,'Invoice Dispatching Lag'=>$lag
-
-
-
-			    );
-	//print_r($data_invoice);
-	//print_r($header_data);
-	
-	if(!is_numeric($header_data['weight']))
-	  $weight=$estimated_w;
-	else
-	  $weight=$header_data['weight'];
-
-
-	$picker_data=get_user_id($header_data['pickedby'],true,'&view=picks');
-	$packer_data=get_user_id($header_data['packedby'],true,'&view=packs');
-	$order_type=$data['Order Type'];
-	$data_dn=array(
-		       'Delivery Note Date'=>$date_inv
-		       ,'Delivery Note ID'=>$header_data['order_num']
-		       ,'Delivery Note File As'=>$header_data['order_num']
-		       ,'Delivery Note Weight'=>$weight
-		       ,'Delivery Note XHTML Pickers'=>$picker_data['xhtml']
-		       ,'Delivery Note Number Pickers'=>count($picker_data['id'])
-		       ,'Delivery Note Pickers IDs'=>$picker_data['id']
-		       ,'Delivery Note XHTML Packers'=>$packer_data['xhtml']
-		       ,'Delivery Note Number Packers'=>count($packer_data['id'])
-		       ,'Delivery Note Packers IDs'=>$packer_data['id']
-		       ,'Delivery Note Type'=>$order_type
-		       ,'Delivery Note Title'=>_('Delivery Note for').' '.$order_type.' '.$header_data['order_num']
-		       ,'Delivery Note Has Shipping'=>$_customer_data['has_shipping']
-		       ,'Delivery Note Shipper Code'=>$header_data['shipper_code']  
-		       ,'Delivery Note Dispatch Method'=>$data['Delivery Note Dispatch Method']
-
-		       );
-	
-	//$order->create_dn_simple($data_dn,$data_dn_transactions);
-	
-	$dn=new DeliveryNote('create',$data_dn,$data_dn_transactions,$order);
-	$order->update_delivery_notes('save');
-	$order->update_dispatch_state('Ready to Pick');
-	 $order->update_invoices('save');
-	if($total_credit_value==0 and $header_data['total_topay']==0){
-	  print "Zero value order ".$header_data['order_num']." \n";
-	  $order->no_payment_applicable();
-	  $order->load('totals');
-	}else{
-	  //$order->create_invoice_simple($data_invoice,$data_invoice_transactions);
-	  $invoice=new Invoice ('create',$data_invoice,$data_invoice_transactions,$order->id); 
-	  
-	foreach($credits as $credit){
-	  
-	  //	  print_r($header_data);
-	  $sql=sprintf("insert into `Order No Product Transaction Fact` values  (%s,%s,%s,%s,'Credit',%s,%.2f,%.2f,%s,%f,%s)"
-		       ,prepare_mysql($credit['parent_date'])
-		       ,prepare_mysql($invoice->data['Invoice Date'])
-		       ,$credit['parent_key']
-		       ,prepare_mysql($invoice->data['Invoice Key'])
-		       ,prepare_mysql($credit['description'])
-		       ,$credit['value']
-		       ,$tax_rate*$credit['value']
-		       ,"'GBP'"
-		       ,1
-		       ,prepare_mysql($store_code.$order_data_id)
-		       );
-
-	  if(!mysql_query($sql))
-	    exit("$sql\n error can not inser orde rno pro trns");
-
-	  
-	  if($credit['parent_key']!='NULL'){
-	    $parent=new Order($credit['parent_key']);
-	    $parent->skip_update_product_sales=true;
-	    $parent->load('totals');
-	  //   print "******************************************\n$sql\n";
-// 	    exit;
-	  }
-	  
-	}
-
-	
-
-	}
-		$dn->pick_historic($data_dn_transactions);
-	$order->update_dispatch_state('Ready to Pack');
-	
-	$dn->pack('all');
-	$order->update_dispatch_state('Ready to Ship');
-	  $invoice->data['Invoice Paid Date']=$date_inv;
-	  $invoice->pay('full',
-			array(
-			      'Invoice Items Net Amount'=>round($header_data['total_items_charge_value'],2)-$total_credit_value-$extra_shipping
-			      ,'Invoice Total Net Amount'=>round($header_data['total_net'],2)
-			      ,'Invoice Total Tax Amount'=>round($header_data['tax1']+$header_data['tax2'],2)
-			      ,'Invoice Total Amount'=>round($header_data['total_topay'],2)
-			      ));
-	  $order-> update_payment_state('Paid');	
-	  $dn->dispatch('all',$data_dn_transactions);
-	$order->update_dispatch_state('Dispached');
-
-	$order->load('totals');
-	$invoice->categorize('save');
-      }else if($tipo_order==8 ){
-
-// 	$data['Order Type']='Order';
-// 	$data['store_id']=1;
-	
-// 	exit("to follow");
-
-
-
-    }else if($tipo_order==4 or $tipo_order==5 ){
-	if($header_data['total_net']!=0)
-	  $tax_rate=$header_data['tax1']/$header_data['total_net'];
-	else
-	  $tax_rate=$data['tax_rate'];
-	if(!is_numeric($header_data['weight']))
-	  $weight=$estimated_w;
-	else
-	  $weight=$header_data['weight'];
-	
-
-	$picker_data=get_user_id($header_data['pickedby'],true,'&view=picks');
-	$packer_data=get_user_id($header_data['packedby'],true,'&view=packs');
-
-	$order_type=$data['Order Type'];
-	  
-	$data_dn=array(
-		       'Delivery Note Date'=>$date2
-		       ,'Delivery Note ID'=>$header_data['order_num']
-		       ,'Delivery Note File As'=>$header_data['order_num']
-		       ,'Delivery Note Weight'=>$weight
-		       ,'Delivery Note XHTML Pickers'=>$picker_data['xhtml']
-		       ,'Delivery Note Number Pickers'=>count($picker_data['id'])
-		       ,'Delivery Note Pickers IDs'=>$picker_data['id']
-		       ,'Delivery Note XHTML Packers'=>$packer_data['xhtml']
-		       ,'Delivery Note Number Packers'=>count($packer_data['id'])
-		       ,'Delivery Note Packers IDs'=>$packer_data['id']
-		       ,'tax_rate'=>$tax_rate
-		       ,'Invoice Has Been Paid In Full'=>'No'
-		       ,'Invoice Items Net Amount'=>$header_data['total_items_charge_value']-$total_credit_value
-		       ,'Delivery Note Type'=>$order_type
-		       ,'Delivery Note Title'=>_('Delivery Note for').' '.$order_type.' '.$header_data['order_num']
-		       ,'Delivery Note Has Shipping'=>$_customer_data['has_shipping']
-		       ,'Delivery Note Shipper Code'=>$header_data['shipper_code']  
-		        ,'Delivery Note Dispatch Method'=>$data['Delivery Note Dispatch Method']
-		       );
-	  
-
-	//$order->create_dn_simple($data_dn,$data_dn_transactions);
-	$dn=new DeliveryNote('create',$data_dn,$data_dn_transactions,$order);
-
-	  if($header_data['total_topay']>0){
-	  $payment_method=parse_payment_method($header_data['pay_method']);
-	  
-	  
- $taxable='Yes';
-	  $tax_code='UNK';
-	  
-	  if($header_data['total_net']!=0){
-	    
-	    if($header_data['tax1']+$header_data['tax2']==0){
-	      $tax_code='EX0';
-	    }
-	    $tax_rate=($header_data['tax1']+$header_data['tax2'])/$header_data['total_net'];
-	    foreach($myconf['tax_rates'] as $_tax_code=>$_tax_rate){
-	      // print "$_tax_code => $_tax_rate $tax_rate\n ";
-	      $upper=1.1*$_tax_rate;
-	      $lower=0.9*$_tax_rate;
-	      if($tax_rate>=$lower and $tax_rate<=$upper){
-		$tax_code=$_tax_code;
-		break;
-	      }
-	    }
-	  }else{
-	  $tax_code='ZV';
-	  
-	  }
-	    
-	  $lag=(strtotime($date_inv)-strtotime($date_order))/24/3600;
-	  if($lag==0 or $lag<0)
-	    $lag='';
-
-
-	  
-	foreach($data_invoice_transactions as $key=>$val){
-	  $data_invoice_transactions[$key]['tax rate']=$tax_rate;
-	  $data_invoice_transactions[$key]['tax code']=$tax_code;
-	  // print_r($val);exit;
-	  $data_invoice_transactions[$key]['tax amount']=$tax_rate*($val['gross amount']-($val['discount amount']));
-	}
-
-	  $data_invoice=array(
-			      'Invoice Date'=>$date2
-			      ,'Invoice Public ID'=>$header_data['order_num']
-			      ,'Invoice File As'=>$header_data['order_num']
-			      ,'Invoice Main Payment Method'=>$payment_method
-			      ,'Invoice Multiple Payment Methods'=>0
-			      ,'Invoice Shipping Net Amount'=>round($header_data['shipping']+$extra_shipping,2)
-			      ,'Invoice Charges Net Amount'=>round($header_data['charges'],2)
-			      ,'tax_rate'=>$tax_rate
-			      ,'tax_rate'=>$tax_rate
-			      ,'Invoice Has Been Paid In Full'=>'No'
-			      ,'Invoice Items Net Amount'=>round($header_data['total_items_charge_value'],2)-$total_credit_value
-			      ,'Invoice Total Tax Amount'=>$header_data['tax1']
-			      
-			      ,'Invoice Refund Net Amount'=>$total_credit_value
-			      ,'Invoice Refund Tax Amount'=>$tax_rate*$total_credit_value
-			      ,'Invoice Total Amount'=>$header_data['total_topay']
-			       ,'Invoice XHTML Processed By'=>_('Unknown')
-			      ,'Invoice XHTML Charged By'=>_('Unknown')
-			      ,'Invoice Processed By Key'=>0
-			      ,'Invoice Charged By Key'=>0
-			      ,'Invoice Tax Code'=>$tax_code
-			    ,'Invoice Taxable'=>$taxable
-			    ,'Invoice Dispatching Lag'=>$lag
-			      );
-	  // $order->create_invoice_simple($data_invoice,$data_invoice_transactions);
-	  $invoice=new Invoice ('create',$data_invoice,$data_invoice_transactions,$order->id); 
-	  $invoice->data['Invoice Paid Date']=$date_inv; 
-	  $invoice->pay('full',
-			array(
-			      'Invoice Items Net Amount'=>round($header_data['total_items_charge_value'],2)-$total_credit_value-$extra_shipping
-			      ,'Invoice Total Net Amount'=>round($header_data['total_net'],2)
-			      ,'Invoice Total Tax Amount'=>round($header_data['tax1']+$header_data['tax2'],2)
-			      ,'Invoice Total Amount'=>round($header_data['total_topay'],2)
-			      ));
-	  $order-> update_payment_state('Paid');	
-       
-	
-
-
-	$dn->pick_historic($data_dn_transactions);
-	$order->update_dispatch_state('Ready to Pack');
-	
-	$dn->pack('all');
-	$order->update_dispatch_state('Ready to Ship');
-	$dn->dispatch('all',$data_dn_transactions);
-	$order->update_dispatch_state('Dispached');
-
-
-	$order->load('totals');
-	$invoice->categorize('save');
-	  
-	  }else{
-	    
-	    $order->no_payment_applicable();
-	$order->load('totals');
-	  }
-
-
-
-
-
-      }else if($tipo_order==3){
-	  $order->cancel();
-
-      }
-      
-      
-      $sql="update orders_data.orders set last_transcribed=NOW() where id=".$order_data_id;
-      mysql_query($sql);
-    }elseif($tipo_order==9 ){
-      // refund
-
-	$taxable='Yes';
-	$tax_code='UNK';
-
-	if($header_data['total_net']!=0){
-	  
-	  if($header_data['tax1']+$header_data['tax2']==0){
-	    $tax_code='EX0';
-	  }
-	  
-	  $tax_rate=($header_data['tax1']+$header_data['tax2'])/$header_data['total_net'];
-	  foreach($myconf['tax_rates'] as $_tax_code=>$_tax_rate){
-	    // print "$_tax_code => $_tax_rate $tax_rate\n ";
-	    $upper=1.1*$_tax_rate;
-	    $lower=0.9*$_tax_rate;
-	    if($tax_rate>=$lower and $tax_rate<=$upper){
-	      $tax_code=$_tax_code;
-	      break;
-	    }
-	  }
-	}else{
-	  $tax_code='ZV';
-	}
-     
-	foreach($data_invoice_transactions as $key=>$val){
-	  $data_invoice_transactions[$key]['tax rate']=$tax_rate;
-	  $data_invoice_transactions[$key]['tax code']=$tax_code;
-	  $data_invoice_transactions[$key]['tax amount']=$tax_rate*($val['gross amount']-($val['discount amount']));
-	}
-
-      $order=new Order('public_id',$parent_order_id);
-      $order->skip_update_product_sales=true;
-      if(!$order->id){
-
-	print "Unknown parent $parent_order_id\n";
-	// Create an invoice (refund not realted to the customer)
-	
-	//	print_r($data);
-	//exit;
-	//$invoice=new Invoice ('create',$data_invoice,$data_invoice_transactions,false); 
-	
-	// create new invoice (negative)(no deliver note changes noting)
-	//	exit;
-	$data['ghost_order']=true;
-	$data['Order Type']='Order';
-	$data['store_id']=1;
-	$order= new Order('new',$data);
-	$order->skip_update_product_sales=true;
-
-      
-	
-
-      }
-
-      $payment_method=parse_payment_method($header_data['pay_method']);
-      
-   
-	    
-	$factor=1.0;
-	if($header_data['total_topay']>0)
-	  $factor=-1.0;
-
-
-	
-
-	$data_invoice=array(
-			    'Invoice Date'=>$date_inv
-			    ,'Invoice Public ID'=>$header_data['order_num']
-			    ,'Invoice File As'=>$header_data['order_num']
-			    ,'Invoice Main Payment Method'=>$payment_method
-			    ,'Invoice Multiple Payment Methods'=>0
-			    ,'Invoice Shipping Net Amount'=>0
-			    ,'Invoice Charges Net Amount'=>0
-			    ,'Invoice Total Tax Amount'=>$header_data['tax1']*$factor
-			    
-			    ,'Invoice Refund Net Amount'=>$total_credit_value
-			    ,'Invoice Refund Tax Amount'=>$tax_rate*$total_credit_value
-
-			    ,'Invoice Total Amount'=>$header_data['total_topay']*$factor
-			    ,'tax_rate'=>$tax_rate
-			    ,'Invoice Has Been Paid In Full'=>'No'
-			    ,'Invoice Items Net Amount'=>0
-			    ,'Invoice XHTML Processed By'=>_('Unknown')
-			    ,'Invoice XHTML Charged By'=>_('Unknown')
-			    ,'Invoice Processed By Key'=>0
-			    ,'Invoice Charged By Key'=>0
-			    ,'Invoice Tax Code'=>$tax_code
-			    ,'Invoice Taxable'=>$taxable
-			    ,'Invoice Dispatching Lag'=>''
-			    );
-	//print_r($data_invoice);
-
-	$data_refund_transactions=array();
-	$sum_net=0;
-	$sum_tax=0;
-
-	if(is_numeric($header_data['shipping']) and $header_data['shipping']!=0){
-	$data_refund_transactions[]=array(
-					    'Transaction Net Amount'=>$header_data['shipping']*$factor,
-					    'Description'=>_('Refund for Shipping')
-					    ,'Transaction Tax Amount'=>$header_data['shipping']*$factor*$tax_rate
-					    
-					    );
-
-	 $sum_net+=$header_data['shipping']*$factor;
-	 $sum_tax+=$header_data['shipping']*$factor*$tax_rate;
-
-	}
-	if(is_numeric($header_data['charges']) and $header_data['charges']!=0){
-	$data_refund_transactions[]=array(
-					    'Transaction Net Amount'=>$header_data['charges']*$factor,
-					    'Description'=>_('Refund for Charges')
-					    ,'Transaction Tax Amount'=>$header_data['charges']*$factor*$tax_rate
-					    
-					    );
-	
-	$sum_net+=$header_data['charges']*$factor;
-	$sum_tax+=$header_data['charges']*$factor*$tax_rate;
-	}
-	
-
-
-	foreach($data_invoice_transactions as $key=>$data){
-	  $product=new Product($data_invoice_transactions[$key]['product_id']);
-	  if($product->id){
-	    $description=_('Refund for')." ".$data_invoice_transactions[$key]['invoice qty']." ".$product->data['Product Code'] ;
-	  }else
-	    $description=_('Other Redunds');
-	  
-	  $net=($data_invoice_transactions[$key]['gross amount']-$data_invoice_transactions[$key]['discount amount'])*$factor;
-	  $tax=($data_invoice_transactions[$key]['gross amount']-$data_invoice_transactions[$key]['discount amount'])*$factor*$tax_rate;
-	  $data_refund_transactions[]=array(
-					    'Transaction Net Amount'=>$net
-					    ,'Description'=>$description
-					    ,'Transaction Tax Amount'=>$tax
-					    
-					    );
-	  
-	  $sum_net+=$net;
-	  $sum_tax+=$tax;
-	}
-
-	foreach($credits as $credit){
-
-	  $net=$credit['value']*$factor;
-	  $tax=$credit['value']*$factor*$tax_rate;
-
-	   $data_refund_transactions[]=array(
-					    'Transaction Net Amount'=>$net
-					    ,'Description'=>$credit['description']
-					    ,'Transaction Tax Amount'=>$tax
-					    
-					    );
-
-	  $sum_net+=$net;
-	  $sum_tax+=$tax;
-	}
-
-	//	print $header_data['total_net']." ".$sum_net;
-	
-	$diff_net=($factor*$header_data['total_net'])-$sum_net;
-	if(abs($diff_net)>0.01){
-	  $data_refund_transactions[]=array(
-					    'Transaction Net Amount'=>$diff_net,
-					    'Description'=>_('Other Refunds')
-					    ,'Transaction Tax Amount'=>$diff_net*$tax_rate
-					    
-					    );
-	}
-	
-	
-	$diff_tax=($factor*$header_data['tax1'])-$sum_tax-$diff_net*$tax_rate;
-	if(abs($diff_tax)>0.01){
-	  $data_refund_transactions[]=array(
-					    'Transaction Net Amount'=>0,
-					    'Description'=>_('Other Tax Refunds')
-					    ,'Transaction Tax Amount'=>$diff_tax
-					    
-					    );
-	}
-
-
-	//		print_r($data_refund_transactions);
-	//$order->create_refund_simple($data_invoice,$data_refund_transactions);
-	print $order->id;
-	
-	$refund = new Invoice('create refund',$data_invoice,$data_refund_transactions,$order); 
-	$refund->data['Invoice Paid Date']=$date_inv;
-
-
-
-	$invoice->pay('full',
-			array(
-			      
-			      'Invoice Total Net Amount'=>round($header_data['total_net']*$factor,2)
-			      ,'Invoice Total Tax Amount'=>round(($header_data['tax1']+$header_data['tax2'])*$factor,2)
-			      ,'Invoice Total Amount'=>round($header_data['total_topay']*$factor,2)
-			      ));
-
-
-	if($order->id)
-	  $order-> update_payment_state('Paid');
-
-	
-	//print "STSRT----------\n\n\n";
-	//$order->load('totals');
-	//	print "END------------\n\n\n";
-	$sql="update orders_data.orders set last_transcribed=NOW() where id=".$order_data_id;
-	mysql_query($sql);
-      
-
-      //      exit("refund");
- }else if($tipo_order==11){
-       //TODO make quites and insert them in the customer space
-       $sql="update orders_data.orders set last_transcribed=NOW() where id=".$order_data_id;
-    mysql_query($sql);
-    
-    }elseif($tipo_order==6 or $tipo_order==7){
-      if($tipo_order==6)
-	$order_type='Replacement';
-      else
-	$order_type='Shortages';
-
-      print("$order_type\n");
-
-      	if(!is_numeric($header_data['weight']))
-	  $weight=$estimated_w;
-	else
-	  $weight=$header_data['weight'];
-
-
-	$picker_data=get_user_id($header_data['pickedby'],true,'&view=picks');
-	$packer_data=get_user_id($header_data['packedby'],true,'&view=packs');
-
-	//	print_r($data);
-
-	$data_dn=array(
-		       'Delivery Note Date'=>$date_inv
-		       ,'Delivery Note ID'=>$header_data['order_num']
-		       ,'Delivery Note Type'=>$order_type
-		       ,'Delivery Note Title'=>$order_type.' '.$header_data['order_num']
-		       ,'Delivery Note File As'=>$header_data['order_num']
-		       ,'Delivery Note Weight'=>$weight
-		       ,'Delivery Note XHTML Pickers'=>$picker_data['xhtml']
-		       ,'Delivery Note Number Pickers'=>count($picker_data['id'])
-		       ,'Delivery Note Pickers IDs'=>$picker_data['id']
-		       ,'Delivery Note XHTML Packers'=>$packer_data['xhtml']
-		       ,'Delivery Note Number Packers'=>count($packer_data['id'])
-		       ,'Delivery Note Packers IDs'=>$packer_data['id']
-		       ,'Delivery Note Metadata'=>$store_code.$order_data_id
-		       ,'Delivery Note Has Shipping'=>$_customer_data['has_shipping']
-		       ,'Delivery Note Shipper Code'=>$header_data['shipper_code'] 
-		        ,'Delivery Note Dispatch Method'=>$data['Delivery Note Dispatch Method']
-		       );
-	
-
-
-	
-
-      $parent_order=new Order('public_id',$parent_order_id);
-      $parent_order->skip_update_product_sales=true;
-
-      if($parent_order->id){
-	print("prevs order found\n");
-
-	//	print_r($data_dn_transactions);
-	$parent_order->load('items');
-
-	
-	$customer=new Customer($parent_order->data['Order Customer Key']);
-	// add shipping address if present
-	
- if($_customer_data['has_shipping']  and isset($data['Shipping Address']) and is_array($data['Shipping Address']) and !array_empty($data['Shipping Address'])){
-				    $ship_to= new Ship_To('find create',$data['Shipping Address']);
-				    $parent_order->data ['Order XHTML Ship Tos'].='<br/>'.$ship_to->data['Ship To XHTML Address'];
-				    $customer->add_ship_to($ship_to->id,'Yes');
-				  }
-
-	//$parent_order->xhtml_billing_address=$customer->get('Customer Main XHTML Address');
-	//$parent_order->ship_to_key=$customer->get('Customer Last Ship To Key');
-	$parent_order->data['Backlog Date']=$date_inv;
-	if($tipo_order==6)
-	  $data_dn['Delivery Note Title']=_('Replacents for Order').' '.$parent_order->data['Order Public ID'];
-	else
-	  $data_dn['Delivery Note Title']=_('Shotages for Order').' '.$parent_order->data['Order Public ID'];
-
-
-	//$parent_order->create_replacement_dn_simple($data_dn,$data_dn_transactions,$products_data,$order_type);
-	$dn=new DEliveryNote('create',$data_dn,$data_dn_transactions,$parent_order);
-	
-	
-	//	print_r($parent_order->items);
-      }else{
-       
-	$data['ghost_order']=true;
-	$data['Order Type']='';
-	$data['store_id']=1;
- 
-	$order= new Order('new',$data);
-	$order->skip_update_product_sales=true;
-
-	$dn=new DEliveryNote('create',$data_dn,$data_dn_transactions,$order);
-	
-	//$order->create_replacement_dn_simple($data_dn,$data_dn_transactions,$products_data,$order_type);
-	
-      
-      }
-
-
-
-
-      // exit;
-      
-      $sql="update orders_data.orders set last_transcribed=NOW() where id=".$order_data_id;
-      mysql_query($sql);
-      //exit("Done\n");
-       
-    }
-
-
+  if($code=='FO-A1' and !$inicio){
+    $inicio=true;
+    $x=$__cols[count($__cols)-4];
+    $z=$__cols[count($__cols)-3];
+    $a=$__cols[count($__cols)-2];
+    $b=$__cols[count($__cols)-1];
+    $c=$_cols;
+    $__cols=array();
+    $__cols[]=$x;
+    $__cols[]=$z;
+    $__cols[]=$a;
+    $__cols[]=$b;
+    $__cols[]=$c;
+
+  }elseif($code=='Credit'){
+    break;
   }
+  
+  $__cols[]=$_cols;
  }
 
+
+
+$new_family=true;
+
+
+$department_name='';
+$department_code='';
+
+$current_fam_name='';
+$current_fam_code='';
+$fam_position=-10000;
+$promotion_position=100000;
+$promotion='';
+
+
+foreach($__cols as $cols){
   
-//  print_r($data);
-//print "\n$tipo_order\n";
+
+  $is_product=true;
+  
+  $code=_trim($cols[3]);
+
+
+  $price=$cols[7];
+  $supplier_code=_trim($cols[21]);
+  $part_code=_trim($cols[22]);
+  $supplier_cost=$cols[25];
+  
+
+
+  // if(preg_match('/EO-/i',$code)){
+  //     print_r($cols);
+  //   exit;   }
+  
+  $code=_trim($code);
+  if($code=='' or !preg_match('/\-/',$code) or preg_match('/total/i',$price)  or  preg_match('/^(pi\-|cxd\-|fw\-04)/i',$code))
+    $is_product=false;
+  if(preg_match('/^(ob\-108|ob\-156|ish\-94|rds\-47)/i',$code))
+    $is_product=false;
+  if(preg_match('/^staf-set/i',$code) and $price=='')
+    $is_product=false;
+  if(preg_match('/^hook-/i',$code) and $price=='')
+    $is_product=false;
+  if(preg_match('/^shop-fit-/i',$code) and $price=='')
+    $is_product=false;
+  if(preg_match('/^pack-01a|Pack-02a/i',$code) and $price=='')
+    $is_product=false;
+  if(preg_match('/^(DB-IS|EO-Sticker|ECBox-01|SHOP-Fit)$/i',$code) and $price=='')
+    $is_product=false;
+  
+  
+  if(preg_match('/^credit|Freight|^frc\-|^cxd\-|^wsl$|^postage$/i',$code) )
+    $is_product=false;
+
+
+  
+  if($is_product){
+    
+    //    print "$code\r";
+
+    
+    $part_list=array();
+    $rules=array();
+    
+    $current_fam_name=$fam_name;
+    $current_fam_code=$fam_code;
+    if($new_family){
+      //    print "New family $column $promotion_position \n";
+      if($promotion!='' and  ($column-$promotion_position)<4 ){
+	$current_promotion=$promotion;
+      }else
+	$current_promotion='';
+      $new_family=false;
+    }
+    $deals=array();
+    if(preg_match('/off\s+\d+\s+or\s+more/i',_trim($current_promotion))){
+      if(preg_match('/^\d+\% off/i',$current_promotion,$match))
+	$allowance=$match[0];
+      if(preg_match('/off.*more/i',$current_promotion,$match))
+	$terms=preg_replace('/^off\s*/i','',$match[0]);
+      else
+	//	print "************".$current_promotion."\n";
+      $deals[]=array(
+		     'deal campain name'=>'Gold Reward'
+		     ,'deal trigger'=>'Order'
+		     ,'deal description'=>$allowance.' if last order within 1 calendar month'
+		     ,'deal terms type'=>'Order Interval'
+		     ,'deal terms description'=>'last order within 1 calendar month'
+		     ,'deal allowance description'=>$allowance
+		     ,'deal allowance type'=>'Percentage Off'
+		     ,'deal allowance target'=>'Product'
+		     ,'deal allowance target key'=>''
+		     ,'deal begin date'=>'2006-01-01 00:00:00'
+		     ,'deal expiration date'=>date("Y-m-d 23:59:59",strtotime('now + 1 year'))
+		     );
+      
+      $deals[]=array(
+		     'deal campain name'=>''
+		     ,'deal trigger'=>'Family'
+		     ,'deal description'=>$allowance.' if '.$terms.' same family'
+		     ,'deal terms type'=>'Family Quantity Ordered'
+		     ,'deal terms description'=>'order '.$terms
+		     ,'deal allowance description'=>$allowance
+		     ,'deal allowance type'=>'Percentage Off'
+		     ,'deal allowance target'=>'Product'
+		     ,'deal allowance target key'=>''
+		     ,'deal begin date'=>'2006-01-01 00:00:00'
+		     ,'deal expiration date'=>date("Y-m-d 23:59:59",strtotime('now + 1 year'))
+		     );	
+
+      
+      
+    }elseif(preg_match('/\d+\s*or more\s*\d+\%$/i',_trim($current_promotion))){
+      // print $current_promotion." *********\n";
+      preg_match('/\d+\%$/i',$current_promotion,$match);
+      $allowance=$match[0].' off';
+      preg_match('/\d+\s*or more/i',$current_promotion,$match);
+      $terms=_trim(strtolower($match[0]));
+
+      $deals[]=array(
+		     'deal campain name'=>'Gold Reward'
+		     ,'deal trigger'=>'Order'
+		     ,'deal description'=>$allowance.' if last order within 1 calendar month'
+		     ,'deal terms type'=>'Order Interval'
+		     ,'deal terms description'=>'last order within 1 calendar month'
+		     ,'deal allowance description'=>$allowance
+		     ,'deal allowance type'=>'Percentage Off'
+		     ,'deal allowance target'=>'Product'
+		     ,'deal allowance target key'=>''
+		        ,'deal begin date'=>'2006-01-01 00:00:00'
+		       ,'deal expiration date'=>date("Y-m-d 23:59:59",strtotime('now + 1 year'))
+		       );
+
+	$deals[]=array(
+		       'deal campain name'=>''
+		       ,'deal trigger'=>'Family'
+		       ,'deal description'=>$allowance.' if '.$terms.' same family'
+		       ,'deal terms type'=>'Family Quantity Ordered'
+		       ,'deal terms description'=>'order '.$terms
+		       ,'deal allowance description'=>$allowance
+		       ,'deal allowance type'=>'Percentage Off'
+		       ,'deal allowance target'=>'Product'
+		       ,'deal allowance target key'=>''
+		       ,'deal begin date'=>'2006-01-01 00:00:00'
+		       ,'deal expiration date'=>date("Y-m-d 23:59:59",strtotime('now + 1 year'))
+		       
+		       );	
+	
+
+    }elseif(preg_match('/^buy \d+ get \d+ free$/i',_trim($current_promotion))){
+      // print $current_promotion." *********\n";
+      preg_match('/buy \d+/i',$current_promotion,$match);
+      $buy=_trim(preg_replace('/[^\d]/','',$match[0]));
+
+      preg_match('/get \d+/i',$current_promotion,$match);
+      $get=_trim(preg_replace('/[^\d]/','',$match[0]));
+
+      $deals[]=array(
+		       'deal campain name'=>'BOGOF'
+		       ,'deal trigger'=>'Product'
+		       ,'deal description'=>'buy '.$buy.' get '.$get.' free'
+		       ,'deal terms type'=>'Product Quantity Ordered'
+		       ,'deal terms description'=>'foreach '.$buy
+		       ,'deal allowance description'=>$get.' free'
+		       ,'deal allowance type'=>'Get Free'
+		       ,'deal allowance target'=>'Product'
+		       ,'deal allowance target key'=>''
+		       ,'deal begin date'=>'2006-01-01 00:00:00'
+		       ,'deal expiration date'=>date("Y-m-d 23:59:59",strtotime('now + 1 year'))
+		     );	
+
+
+    }else
+       $deals=array();
+    
+    $units=$cols[5];
+    if($units=='' OR $units<=0)
+      $units=1;
+
+    $description=_trim( mb_convert_encoding($cols[6], "UTF-8", "ISO-8859-1,UTF-8"));
+
+
+ //    if(preg_match('/wsl-535/i',$code)){
+//       print_r($cols);
+//       exit;
+
+//     }
+
+    $rrp=$cols[16];
+    $supplier_code=_trim($cols[21]);
+
+    $w=$cols[28];
+
+
+
+    if($code=='EO-ST' or $code=='MOL-ST' or  $code=='JBB-st' or $code=='LWHEAT-ST' or  $code=='JBB-St' 
+       or $code=='Scrub-St' or $code=='Eye-st' or $code=='Tbm-ST' or $code=='Tbc-ST' or $code=='Tbs-ST'
+       or $code=='GemD-ST' or $code=='CryC-ST' or $code=='GP-ST'  or $code=='DC-ST'
+       ){
+      print "Skipping $code\n";
+      
+    }else{
+
+      
+      if(!is_numeric($price) or $price<=0){
+	print "Price Zero  $code \n";
+	$price=0;
+      }
+
+
+      if($code=='Tib-20')
+	$supplier_cost=0.2;
+
+      if($code=='L&P-ST'){
+	$supplier_cost=36.30;
+	$price=86.40;
+      }
+
+    if(!is_numeric($supplier_cost)  or $supplier_cost<=0 ){
+      //   print_r($cols);
+      print "$code   assumind supplier cost of 40%  \n";
+      $supplier_cost=0.4*$price/$units;
+      
+    }
+
+
+
+    $product=new Product('code',$code);
+    // print "** ".$product->data['Product Code']."\n";
+    if(!$product->id){
+      if($units=='')
+	$units=1;
+      
+      if(is_numeric($rrp))
+	$rrp=sprintf("%.2f",$rrp*$units);
+      else
+	$rrp='';
+      
+      
+    //   $_f=preg_replace('/s$/i','',$current_fam_name);
+//       //print "$_f\n";
+//       $special_char=preg_replace('/'.str_replace('/','\/',$_f).'$/i','',$description);
+//       $special_char=preg_replace('/'.str_replace('/','\/',$current_fam_name).'$/i','',$special_char);
+      $fam_special_char=$current_fam_name;
+      $special_char=$description;
+
+      if(is_numeric($w)){
+	$w=$w*$units;
+	if($w<0.001 and $w>0)
+	  $_w=0.001;
+	else
+	  $_w=sprintf("%.3f",$w);
+      }else
+	$_w='';
+      
+
+      if($current_fam_code=='LavF / PF')
+	$current_fam_code='PF';
+      if($current_fam_code=='MIST / AM')
+	$current_fam_code='MIST';
+       if($current_fam_code=='LBI / IS')
+	$current_fam_code='LBI';
+
+       if($current_fam_code=='Leb - Lebp')
+	 $current_fam_code='Leb';
+       if($current_fam_code=='Bot/Pack/Wb')
+	 $current_fam_code='Bot';
+       
+
+
+      $data=array(
+		  'product sales state'=>'For sale',
+		  'product type'=>'Normal',
+		  'product record type'=>'Normal',
+		  'product web state'=>'Online Auto',
+		  'product store key'=>1,
+		  'product currency'=>'GBP',
+		  'product locale'=>'en_GB',
+		  'product code'=>$code,
+		  'product price'=>sprintf("%.2f",$price),
+		  'product rrp'=>$rrp,
+		  'product units per case'=>$units,
+		  'product name'=>$description,
+		  'product family code'=>$current_fam_code,
+		  'product family name'=>$current_fam_name,
+		  'product main department name'=>$department_name,
+		  'product main department code'=>$department_code,
+		  'product special characteristic'=>$special_char,
+		  'product family special characteristic'=>$fam_special_char,
+		  'product net weight'=>$_w,
+		  'product gross weight'=>$_w,
+		  'deals'=>$deals
+		    );
+      //     print_r($cols);
+      //print_r($data);
+      
+       if(preg_match('/^pi-|catalogue|^info|Mug-26x|OB-39x|SG-xMIXx|wsl-1275x|wsl-1474x|wsl-1474x|wsl-1479x|^FW-|^MFH-XX$|wsl-1513x|wsl-1487x|wsl-1636x|wsl-1637x/i',_trim($code))){
+
+	 $dept_key=$dept_promo_key;
+	 $data['Product Family Key']=$fam_promo_key;
+	 $data['Product main Department Key']=$dept_promo_key;
+
+
+       }
+
+       	$product=new Product('create',$data);
+
+	$scode=_trim($cols[20]);
+	$supplier_code=$cols[21];
+       
+	if(preg_match('/^SG\-|^info\-/i',$code))
+	  $supplier_code='AW';
+	if($supplier_code=='AW')
+	  $scode=$code;
+
+
+
+	if($scode=='SSK-452A' and $supplier_code=='Smen')
+	  $scode='SSK-452A bis';
+
+
+	if(preg_match('/^(StoneM|Smen)$/i',$supplier_code)){
+	  $supplier_code='StoneM';
+	}
+
+
+		$the_supplier_data=array(
+		      'name'=>$supplier_code,
+		      'code'=>$supplier_code,
+		      );
+
+	// Suppplier data
+	if(preg_match('/Ackerman|Ackerrman|Akerman/i',$supplier_code)){
+	  $supplier_code='Ackerman';
+	  $the_supplier_data=array(
+				   'Supplier Name'=>'Ackerman Group',
+				   'Supplier Code'=>$supplier_code,
+				   'address_data'=>array(
+							 'type'=>'3line'
+							 ,'address1'=>'Unit 15/16'
+							 ,'address2'=>'Hickman Avenue'
+							 ,'address3'=>''
+							 ,'town'=>'London'
+							 ,'town_d1'=>''
+							 ,'town_d2'=>'Chingford'
+							 ,'country'=>'UK'
+							 ,'country_d1'=>''
+							 ,'country_d2'=>''
+							 ,'default_country_id'=>$myconf['country_id']
+							 ,'postcode'=>'E4 9JG'
+							 ),
+				   'email'=>'office@ackerman.co.uk'
+				   ,'telephone'=>'020 8527 6439'
+				   );
+	}
+if(preg_match('/^puck$/i',$supplier_code)){
+	  $supplier_code='Puck';
+	  $the_supplier_data=array(
+				   'Supplier Name'=>'Puckator',
+				   'Supplier Code'=>$supplier_code,
+				   'address_data'=>array(
+							 'type'=>'3line'
+							 ,'address1'=>'Lowman Works'
+							 ,'address2'=>''
+							 ,'address3'=>''
+							 ,'town'=>'East Taphouse'
+							 ,'town_d1'=>''
+							 ,'town_d2'=>'Near Liskeard'
+							 ,'country'=>'UK'
+							 ,'country_d1'=>''
+							 ,'country_d2'=>''
+							 ,'default_country_id'=>$myconf['country_id']
+							 ,'postcode'=>'PL14 4NQ'
+							 ),
+				   'email'=>'accounts@puckator.co.uk'
+				   ,'telephone'=>'1579321550'
+				   ,'fax'=>'1579321520'
+				   );
+	}
+ 
+ if(preg_match('/^decent gem$/i',$supplier_code)){
+   $supplier_code='DecGem';
+   $the_supplier_data=array(
+			    'Supplier Name'=>'Decent Gemstone Exports',
+			    'Supplier Code'=>$supplier_code,
+			    'address_data'=>array(
+						  'type'=>'3line'
+						  ,'address1'=>"Besides Balaji's Mandir"
+						  ,'address2'=>'Near Rajputwad'
+						  ,'address3'=>''
+						  ,'town'=>'Khambhat'
+						  ,'town_d1'=>''
+						  ,'town_d2'=>''
+						  ,'country'=>'India'
+						  ,'country_d1'=>''
+						  ,'country_d2'=>''
+						  ,'default_country_id'=>$myconf['country_id']
+						  ,'postcode'=>'388620'
+						  ),
+			    'email'=>'decentstone@sancharnet.in'
+			    ,'telephone'=>'00917926578604'
+			    ,'fax'=>'00917926584997'
+			    );
+ }
+  if(preg_match('/^kiran$/i',$supplier_code)){
+
+   $the_supplier_data=array(
+			    'Supplier Name'=>'Kiran Agencies',
+			    'Supplier Code'=>$supplier_code,
+			    'address_data'=>array(
+						  'type'=>'3line'
+						  ,'address1'=>"4D Garstin Place"
+						  ,'address2'=>''
+						  ,'address3'=>''
+						  ,'town'=>'Kolkata'
+						  ,'town_d1'=>''
+						  ,'town_d2'=>''
+						  ,'country'=>'India'
+						  ,'country_d1'=>''
+						  ,'country_d2'=>''
+						  ,'default_country_id'=>$myconf['country_id']
+						  ,'postcode'=>'700001'
+						  )
+			    ,'telephone'=>'919830020595'
+
+			    );
+ }
+ 
+
+if(preg_match('/^watkins$/i',$supplier_code)){
+
+   $the_supplier_data=array(
+			    'Supplier Name'=>'Watkins Soap Co Ltd',
+			    'Supplier Code'=>$supplier_code,
+			    'address_data'=>array(
+						  'type'=>'3line'
+						  ,'address1'=>"Reed Willos Trading Est"
+						  ,'address2'=>'Finborough Rd'
+						  ,'address3'=>''
+						  ,'town'=>'Stowmarket'
+						  ,'town_d1'=>''
+						  ,'town_d2'=>''
+						  ,'country'=>'UK'
+						  ,'country_d1'=>''
+						  ,'country_d2'=>''
+						  ,'default_country_id'=>$myconf['country_id']
+						  ,'postcode'=>'IP14 3BU'
+						  )
+
+			    ,'telephone'=>'01142501012'
+			    ,'fax'=>'01142501006'
+			    );
+ }
+
+
+
+if(preg_match('/^decree$/i',$supplier_code)){
+
+   $the_supplier_data=array(
+			    'Supplier Name'=>'Decree Thermo Limited',
+			    'Supplier Code'=>$supplier_code,
+			    'address_data'=>array(
+						  'type'=>'3line'
+						  ,'address1'=>"300 Shalemoor"
+						  ,'address2'=>'Finborough Rd'
+						  ,'address3'=>''
+						  ,'town'=>'Sheffield'
+						  ,'town_d1'=>''
+						  ,'town_d2'=>''
+						  ,'country'=>'UK'
+						  ,'country_d1'=>''
+						  ,'country_d2'=>''
+						  ,'default_country_id'=>$myconf['country_id']
+						  ,'postcode'=>'S3 8AL'
+						  )
+			    ,'contact_name'=>'Zoie'
+			    ,'email'=>'Watkins@soapfactory.fsnet.co.uk'
+			    ,'telephone'=>'01449614445'
+			    ,'fax'=>'014497111643'
+			    );
+ }
+
+if(preg_match('/^cbs$/i',$supplier_code)){
+
+   $the_supplier_data=array(
+			    'Supplier Name'=>'Carrierbagshop',
+			    'Supplier Code'=>$supplier_code,
+			    'address_data'=>array(
+						  'type'=>'3line'
+						  ,'address1'=>"Unit C18/21"
+						  ,'address2'=>'Hastingwood trading Estate'
+						  ,'address3'=>'35 Harbet Road'
+						  ,'town'=>'London'
+						  ,'town_d1'=>''
+						  ,'town_d2'=>''
+						  ,'country'=>'UK'
+						  ,'country_d1'=>''
+						  ,'country_d2'=>''
+						  ,'default_country_id'=>$myconf['country_id']
+						  ,'postcode'=>'N18 3HU'
+						  )
+			    ,'contact_name'=>'Neil'
+			    ,'email'=>'info@carrierbagshop.co.uk'
+			    ,'telephone'=>'08712300980'
+			    ,'fax'=>'08712300981'
+			    );
+ }
+
+
+if(preg_match('/^giftw$/i',$supplier_code)){
+
+   $the_supplier_data=array(
+			    'Supplier Name'=>'Giftworks Ltd',
+			    'Supplier Code'=>$supplier_code,
+			    'address_data'=>array(
+						  'type'=>'3line'
+						  ,'address1'=>"Unit 14"
+						  ,'address2'=>'Cheddar Bussiness Park'
+						  ,'address3'=>'Wedmore Road'
+						  ,'town'=>'Cheddar'
+						  ,'town_d1'=>''
+						  ,'town_d2'=>''
+						  ,'country'=>'UK'
+						  ,'country_d1'=>''
+						  ,'country_d2'=>''
+						  ,'default_country_id'=>$myconf['country_id']
+						  ,'postcode'=>'BS27 3EB'
+						  )
+			    ,'email'=>'info@giftworks.tv'
+			    ,'telephone'=>'441934742777'
+			    ,'fax'=>'441934740033'
+			    ,'www.giftworks.tv'
+			    );
+ }
+
+
+ if(preg_match('/^Sheikh$/i',$supplier_code)){
+	  $supplier_code='Sheikh';
+	  $the_supplier_data=array(
+				   'Supplier Name'=>'Sheikh Enterprises',
+				   'Supplier Code'=>$supplier_code,
+				   'address_data'=>array(
+							 'type'=>'3line'
+							 ,'address1'=>"Eidgah Road"
+							 ,'address2'=>'Opp. Islamia Inter College'
+							 ,'address3'=>''
+							 ,'town'=>'Saharanpur'
+							 ,'town_d1'=>''
+							 ,'town_d2'=>''
+							 ,'country'=>'India'
+							 ,'country_d1'=>''
+							 ,'country_d2'=>''
+							 ,'default_country_id'=>$myconf['country_id']
+							 ,'postcode'=>'247001'
+							 )
+
+				   );
+	}
+if(preg_match('/^Gopal$/i',$supplier_code)){
+	  $supplier_code='Gopal';
+	  $the_supplier_data=array(
+				   'Supplier Name'=>'Gopal Corporation Limited',
+				   'Supplier Code'=>$supplier_code,
+				   'address_data'=>array(
+							 'type'=>'3line'
+							 ,'address1'=>"240 Okhla Industrial Estate"
+							 ,'address2'=>'Phase III'
+							 ,'address3'=>''
+							 ,'town'=>'New Delhi'
+							 ,'town_d1'=>''
+							 ,'town_d2'=>''
+							 ,'country'=>'India'
+							 ,'country_d1'=>''
+							 ,'country_d2'=>''
+							 ,'default_country_id'=>$myconf['country_id']
+							 ,'postcode'=>'110020'
+							 )
+				   ,'telephone'=>'00911126320185'
+				   );
+	}
+
+  if(preg_match('/^CraftS$/i',$supplier_code)){
+	  $supplier_code='CraftS';
+	  $the_supplier_data=array(
+				   'Supplier Name'=>'Craftstones Europe Ltd',
+				   'Supplier Code'=>$supplier_code,
+				   'address_data'=>array(
+							 'type'=>'3line'
+							 ,'address1'=>"52/54 Homethorphe Avenue"
+							 ,'address2'=>'Homethorphe Ind. Estate'
+							 ,'address3'=>''
+							 ,'town'=>'Redhill'
+							 ,'town_d1'=>''
+							 ,'town_d2'=>''
+							 ,'country'=>'UK'
+							 ,'country_d1'=>''
+							 ,'country_d2'=>''
+							 ,'default_country_id'=>$myconf['country_id']
+							 ,'postcode'=>'RH1 2NL'
+							 ),
+				   'contact_name'=>'Jose'
+
+				   ,'telephone'=>'01737767363'
+				   ,'fax'=>'01737768627'
+				   );
+	}
+
+ if(preg_match('/^Simpson$/i',$supplier_code)){
+	  $supplier_code='CraftS';
+	  $the_supplier_data=array(
+				   'Supplier Name'=>'Simpson Packaging',
+				   'Supplier Code'=>$supplier_code,
+				   'address_data'=>array(
+							 'type'=>'3line'
+							 ,'address1'=>"Unit 1"
+							 ,'address2'=>'Shaw Cross Business Park'
+							 ,'address3'=>''
+							 ,'town'=>'Dewsbury'
+							 ,'town_d1'=>''
+							 ,'town_d2'=>''
+							 ,'country'=>'UK'
+							 ,'country_d1'=>''
+							 ,'country_d2'=>''
+							 ,'default_country_id'=>$myconf['country_id']
+							 ,'postcode'=>'WF12 7RF'
+							 ),
+
+				   'email'=>'sales@simpson-packaging.co.uk'
+				   ,'telephone'=>'01924869010'
+				   ,'fax'=>'01924439252'
+				   ,'www'=>'wwww.simpson-packaging.co.uk'
+				   );
+	}
+
+
+
+ if(preg_match('/^amanis$/i',$supplier_code)){
+	  $supplier_code='AmAnis';
+	  $the_supplier_data=array(
+				   'Supplier Name'=>'Amanis',
+				   'Supplier Code'=>$supplier_code,
+				   'address_data'=>array(
+							 'type'=>'3line'
+							 ,'address1'=>"Unit 6"
+							 ,'address2'=>'Bowlimng Court Industrial Estate'
+							 ,'address3'=>'Mary Street'
+							 ,'town'=>'Bradford'
+							 ,'town_d1'=>''
+							 ,'town_d2'=>''
+							 ,'country'=>'UK'
+							 ,'country_d1'=>''
+							 ,'country_d2'=>''
+							 ,'default_country_id'=>$myconf['country_id']
+							 ,'postcode'=>'BD4 8TT'
+							 ),
+
+				   'email'=>'saltlamps@aol.com'
+				   ,'telephone'=>'4401274394100'
+				   ,'fax'=>'4401274743243'
+				   ,'www'=>'www.saltlamps-r-us.com'
+				   );
+	}
+
+
+if(preg_match('/^amanis$/i',$supplier_code)){
+	  $supplier_code='AmAnis';
+	  $the_supplier_data=array(
+				   'Supplier Name'=>'Amanis',
+				   'Supplier Code'=>$supplier_code,
+				   'address_data'=>array(
+							 'type'=>'3line'
+							 ,'address1'=>"Unit 6"
+							 ,'address2'=>'Bowlimng Court Industrial Estate'
+							 ,'address3'=>'Mary Street'
+							 ,'town'=>'Bradford'
+							 ,'town_d1'=>''
+							 ,'town_d2'=>''
+							 ,'country'=>'UK'
+							 ,'country_d1'=>''
+							 ,'country_d2'=>''
+							 ,'default_country_id'=>$myconf['country_id']
+							 ,'postcode'=>'BD4 8TT'
+							 ),
+
+				   'email'=>'saltlamps@aol.com'
+				   ,'telephone'=>'4401274394100'
+				   ,'fax'=>'4401274743243'
+				   ,'www'=>'www.saltlamps-r-us.com'
+				   );
+	}
+
+
+if(preg_match('/^Wenzels$/i',$supplier_code)){
+	  $supplier_code='Wenzels';
+	  $the_supplier_data=array(
+				   'Supplier Name'=>'Richard Wenzel GMBH & CO KG',
+				   'Supplier Code'=>$supplier_code,
+				   'address_data'=>array(
+							 'type'=>'3line'
+							 ,'address1'=>"Benzstraße 5"
+							 ,'address2'=>''
+							 ,'address3'=>''
+							 ,'town'=>'Aschaffenburg'
+							 ,'town_d1'=>''
+							 ,'town_d2'=>''
+							 ,'country'=>'Germany'
+							 ,'country_d1'=>''
+							 ,'country_d2'=>''
+							 ,'default_country_id'=>$myconf['country_id']
+							 ,'postcode'=>'63741'
+							 ),
+
+
+				   'telephone'=>'49602134690'
+				   ,'fax'=>'496021346940'
+
+				   );
+	}
+	
+
+	if(preg_match('/^AW$/i',$supplier_code)){
+	  $supplier_code='AW';
+	  $the_supplier_data=array(
+				   'Supplier Name'=>'Ancient Wisdom Marketing',
+				   'Supplier Code'=>$supplier_code,
+				   'address_data'=>array(
+							 'type'=>'3line'
+							 ,'address1'=>'Block B'
+							 ,'address2'=>'Parkwood Business Park'
+							 ,'address3'=>'Parkwood Road'
+							 ,'town'=>'Sheffield'
+							 ,'town_d1'=>''
+							 ,'town_d2'=>''
+							 ,'country'=>'UK'
+							 ,'country_d1'=>''
+							 ,'country_d2'=>''
+							 ,'default_country_id'=>$myconf['country_id']
+							 ,'postcode'=>'S3 8AL'
+							 ),
+				   'email'=>'mail@ancientwisdom.biz'
+				   ,'telephone'=>'44 (0)114 2729165'
+
+				   );
+	}
+
+
+	if(preg_match('/^EB$/i',$supplier_code)){
+	  $supplier_code='EB';
+	  $the_supplier_data=array(
+				   'Supplier Name'=>'Elements Bodycare Ltd'
+				   ,'Supplier Code'=>$supplier_code
+				   ,'address_data'=>array(
+							 'type'=>'3line'
+							 ,'address1'=>'Unit 2'
+							 ,'address2'=>'Carbrook Bussiness Park'
+							 ,'address3'=>'Dunlop Street'
+							 ,'town'=>'Sheffield'
+							 ,'town_d1'=>''
+							 ,'town_d2'=>''
+							 ,'country'=>'UK'
+							 ,'country_d1'=>''
+							 ,'country_d2'=>''
+							 ,'default_country_id'=>$myconf['country_id']
+							 ,'postcode'=>'S9 2HR'
+							 )
+
+				   ,'telephone'=>'011422434000'
+				   ,'www'=>'www.elements-bodycare.co.uk'
+				   ,'email'=>'info@elements-bodycare.co.uk'
+
+				   );
+	}
+
+	if(preg_match('/^Paradise$/i',$supplier_code)){
+	  $supplier_code='Paradise';
+	  $the_supplier_data=array(
+				   'Supplier Name'=>'Paradise Music Ltd'
+				   ,'Supplier Code'=>$supplier_code
+				   ,'address_data'=>array(
+							 'type'=>'3line'
+							 ,'address1'=>'PO BOX 998'
+							 ,'address2'=>'Carbrook Bussiness Park'
+							 ,'address3'=>'Dunlop Street'
+							 ,'town'=>'Tring'
+							 ,'town_d1'=>''
+							 ,'town_d2'=>''
+							 ,'country'=>'UK'
+							 ,'country_d1'=>''
+							 ,'country_d2'=>''
+							 ,'default_country_id'=>$myconf['country_id']
+							 ,'postcode'=>'HP23 4ZJ'
+							 )
+
+				   ,'telephone'=>'01296668193'
+
+
+				   );
+	}
+	if(preg_match('/^MCC$/i',$supplier_code)){
+	  $supplier_code='MCC';
+	  $the_supplier_data=array(
+				   'Supplier Name'=>'Manchester Candle Company'
+				   ,'Supplier Code'=>$supplier_code
+				   ,'address_data'=>array(
+							 'type'=>'3line'
+							 ,'address1'=>'The Manchester Group'
+							 ,'address2'=>'Kenwood Road'
+							 ,'address3'=>''
+							 ,'town'=>'North Reddish'
+							 ,'town_d1'=>''
+							 ,'town_d2'=>''
+							 ,'country'=>'UK'
+							 ,'country_d1'=>''
+							 ,'country_d2'=>''
+							 ,'default_country_id'=>$myconf['country_id']
+							 ,'postcode'=>'SK5 6PH'
+							 )
+				   ,'contact_name'=>'Brian'
+				   ,'telephone'=>'01614320811'
+				   ,'fax'=>'01614310328'
+				   ,'www'=>'manchestercandle.com'
+
+				   );
+	}
+	if(preg_match('/^Aquavision$/i',$supplier_code)){
+	  $supplier_code='Aquavision';
+	  $the_supplier_data=array(
+				   'Supplier Name'=>'Aquavision Music Ltd'
+				   ,'Supplier Code'=>$supplier_code
+				   ,'address_data'=>array(
+							 'type'=>'3line'
+							 ,'address1'=>'PO BOX 2796'
+							 ,'address2'=>''
+							 ,'address3'=>''
+							 ,'town'=>'Iver'
+							 ,'town_d1'=>''
+							 ,'town_d2'=>''
+							 ,'country'=>'UK'
+							 ,'country_d1'=>''
+							 ,'country_d2'=>''
+							 ,'default_country_id'=>$myconf['country_id']
+							 ,'postcode'=>'SL0 9ZR'
+							 )
+
+				   ,'telephone'=>'01753653188'
+				   ,'fax'=>'01753655059'
+				   ,'www'=>'www.aquavisionwholesale.co.uk'
+				   ,'email'=>'info@aquavisionwholesale.co.uk'
+				   );
+	}
+
+	if(preg_match('/^CXD$/i',$supplier_code)){
+	  $supplier_code='CXD';
+	  $the_supplier_data=array(
+				   'Supplier Name'=>'CXD Designs Ltd'
+				   ,'Supplier Code'=>$supplier_code
+				   ,'address_data'=>array(
+							 'type'=>'3line'
+							 ,'address1'=>'Unit 2'
+							 ,'address2'=>'Imperial Park'
+							 ,'address3'=>'Towerfiald Road'
+							 ,'town'=>'Shoeburyness'
+							 ,'town_d1'=>''
+							 ,'town_d2'=>''
+							 ,'country'=>'UK'
+							 ,'country_d1'=>'Essex'
+							 ,'country_d2'=>''
+							 ,'default_country_id'=>$myconf['country_id']
+							 ,'postcode'=>'SS3 9QT'
+							 )
+
+				   ,'telephone'=>'01702292028'
+				   ,'fax'=>'01702298486'
+
+				   );
+	}
+	if(preg_match('/^(AWR|costa)$/i',$supplier_code)){
+	  $supplier_code='AWR';
+	  $the_supplier_data=array(
+				   'Supplier Name'=>'Costa Imports'
+				   ,'Supplier Code'=>$supplier_code
+				   ,'address_data'=>array(
+							 'type'=>'3line'
+							 ,'address1'=>'Nave 8'
+							 ,'address2'=>'Polígono Ind. Alhaurín de la Torre Fase 1'
+							 ,'address3'=>'Paseo de la Hispanidad'
+							 ,'town'=>'Málaga'
+							 ,'town_d1'=>''
+							 ,'town_d2'=>''
+							 ,'country'=>'Spain'
+							 ,'country_d1'=>''
+							 ,'country_d2'=>''
+							 ,'default_country_id'=>$myconf['country_id']
+							 ,'postcode'=>'29130'
+							 )
+				   ,'contact_name'=>'Carlos'
+				   ,'email'=>'carlos@aw-regalos.com'
+				   ,'telephone'=>'(+34) 952 417 609'
+				   );
+	}
+
+	if(preg_match('/^(salco)$/i',$supplier_code)){
+	  $supplier_code='Salco';
+	  $the_supplier_data=array(
+				   'Supplier Name'=>'Salco Group'
+				   ,'Supplier Code'=>$supplier_code
+				   ,'address_data'=>array(
+							 'type'=>'3line'
+							 ,'address1'=>'Salco House'
+							 ,'address2'=>'5 Central Road'
+							 ,'address3'=>''
+							 ,'town'=>'Harlow'
+							 ,'town_d1'=>''
+							 ,'town_d2'=>''
+							 ,'country'=>'UK'
+							 ,'country_d1'=>'Essex'
+							 ,'country_d2'=>''
+							 ,'default_country_id'=>$myconf['country_id']
+							 ,'postcode'=>'CM20 2ST'
+							 )
+				   //				   ,'contact_name'=>'Carlos'
+				   ,'email'=>'alco@salcogroup.com'
+				   ,'telephone'=>'01279 439991'
+				   );
+	}
+	if(preg_match('/^(apac)$/i',$supplier_code)){
+	  $supplier_code='Salco';
+	  $the_supplier_data=array(
+				   'Supplier Name'=>'APAC Packaging Ltd'
+				   ,'Supplier Code'=>$supplier_code
+				   ,'address_data'=>array(
+							 'type'=>'3line'
+							 ,'address1'=>'Loughborough Road'
+							 ,'address2'=>''
+							 ,'address3'=>''
+							 ,'town'=>'Leicester'
+							 ,'town_d1'=>'Rothley'
+							 ,'town_d2'=>''
+							 ,'country'=>'UK'
+							 ,'country_d1'=>''
+							 ,'country_d2'=>''
+							 ,'default_country_id'=>$myconf['country_id']
+							 ,'postcode'=>'LE7 7NL'
+							 )
+				   //				   ,'contact_name'=>'Carlos'
+				   ,'email'=>''
+				   ,'telephone'=>'0116 230 2555'
+				   ,'www'=>'www.apacpackaging.com'
+				   ,'fax'=>'0116 230 3555'
+				   );
+	}
+	if(preg_match('/^(andy.*?)$/i',$supplier_code)){
+	  $supplier_code='Andy';
+	  $the_supplier_data=array(
+				   'Supplier Name'=>'Andy'
+				   ,'Supplier Code'=>$supplier_code
+				   );
+	}
+
+
+	if($supplier_code=='' or $supplier_code=='0'){
+	  $supplier_code='Unknown';
+	  $the_supplier_data=array(
+				   'Supplier Name'=>'Unknown Supplier'
+				   ,'Supplier Code'=>$supplier_code
+				   );
+	}
+	$supplier=new Supplier('code',$supplier_code);
+	if(!$supplier->id){
+	  print "neew: $supplier_code\n";
+	  print_r($the_supplier_data);
+	  $supplier=new Supplier('new',$the_supplier_data);
+	}
+
+
+
+
+	$scode=_trim($scode);
+	$scode=preg_replace('/^\"\s*/','',$scode);
+	$scode=preg_replace('/\s*\"$/','',$scode);
+	
+
+
+	if(preg_match('/\d+ or more|0.10000007|8.0600048828125|0.050000038|0.150000076|0.8000006103|1.100000610|1.16666666|1.650001220|1.80000122070/i',$scode))
+	  $scode='';
+	if(preg_match('/^(\?|new|\d|0.25|0.5|0.8|0.8000006103|01 Glass Jewellery Box|1|0.1|0.05|1.5625|10|\d{1,2}\s?\+\s?\d{1,2}\%)$/i',$scode))
+	  $scode='';
+
+	
+
+	if($scode=='same')
+	  $scode=$code;
+	if($scode=='' or $scode=='0')
+	  $scode='?'.$code;
+	$sp_data=array(
+		       'Supplier Product Supplier Key'=>$supplier->id,
+		       'Supplier Product Supplier Code'=>$supplier->data['Supplier Code'],
+		       'Supplier Product Supplier Name'=>$supplier->data['Supplier Name'],
+		       'Supplier Product Code'=>$scode,
+		       'Supplier Product Cost'=>sprintf("%.4f",$supplier_cost),
+		       'Supplier Product Name'=>$description,
+		       'Supplier Product Description'=>$description
+		       );
+	$new_supplier_product=false;
+	$supplier_product=new SupplierProduct('supplier-code',$sp_data);
+	if(!$supplier_product->id){
+	  $new_supplier_product=true;
+	  $supplier_product=new SupplierProduct('new',$sp_data);
+	}
+	$part_data=array(
+			 'Part Most Recent'=>'Yes',
+			 'Part XHTML Currently Supplied By'=>sprintf('<a href="supplier.php?id=%d">%s</a>',$supplier->id,$supplier->get('Supplier Code')),
+			 'Part XHTML Currently Used In'=>sprintf('<a href="product.php?id=%d">%s</a>',$product->id,$product->get('Product Code')),
+			 'Part XHTML Description'=>preg_replace('/\(.*\)\s*$/i','',$product->get('Product XHTML Short Description')),
+			 'part valid from'=>date('Y-m-d H:i:s'),
+			 'part valid to'=>date('Y-m-d H:i:s'),
+			 'Part Gross Weight'=>$w
+			 );
+	$part=new Part('new',$part_data);
+	//	print_r($part->data);
+	
+	$rules[]=array('Part Sku'=>$part->data['Part SKU'],
+		       'Supplier Product Units Per Part'=>$units
+		       ,'supplier product part most recent'=>'Yes'
+		       ,'supplier product part valid from'=>date('Y-m-d H:i:s')
+		       ,'supplier product part valid to'=>date('Y-m-d H:i:s')
+		       ,'factor supplier product'=>1
+		       );
+	$supplier_product->new_part_list('',$rules);
+	
+	$part_list[]=array(
+			   'Product ID'=>$product->get('Product ID'),
+			   'Part SKU'=>$part->get('Part SKU'),
+			   'Product Part Id'=>1,
+			   'requiered'=>'Yes',
+			   'Parts Per Product'=>1,
+			   'Product Part Type'=>'Simple Pick'
+			   );
+	$product->new_part_list('',$part_list);
+	$supplier_product->load('used in');
+	$product->load('parts');
+	$part->load('used in');
+	$part->load('supplied by');
+    
+ }
+    
+    }
+  }else{
+
+    $new_family=true;
+    
+    // print "Col $column\n";
+    //print_r($cols);
+    if($cols[3]!='' and $cols[6]!=''  and $cols[3]!='SHOP-Fit' and $cols[3]!='ISH-94' and $cols[3]!='OB-108' and !preg_match('/^DB-/',$cols[3])  and !preg_match('/^pack-/i',$cols[3])  ){
+      $fam_code=$cols[3];
+      $fam_name=_trim( mb_convert_encoding($cols[6], "UTF-8", "ISO-8859-1,UTF-8"));
+      $fam_position=$column;
+
+      
+    }
+    
+    if(preg_match('/off\s+\d+\s+or\s+more|\s*\d+\s*or more\s*\d+|buy \d+ get \d+ free/i',_trim($cols[6]))){
+      
+
+      $promotion=$cols[6];
+
+      $promotion=preg_replace('/^\s*order\s*/i','',$promotion);
+      $promotion=preg_replace('/discount\s*$/i','',$promotion);
+      $promotion=preg_replace('/\s*off\s*$/i','',$promotion);
+
+      $promotion=_trim($promotion);
+      $promotion_position=$column;
+      // print "*********** Promotion $promotion $promotion_position \n";
+    }
+    if($cols[3]=='' and $cols[6]==''){
+      $blank_position=$column;
+    }
+
+    if($cols[6]!='' and preg_match('/Sub Total/i',$cols[11])){
+      $department_name=$cols[6];
+      $department_position=$column;
+
+
+        $department_code=_trim($department_name);
+      if($department_code=='Ancient Wisdom Home Fragrance'){
+	$department_code='Home';
+	$department_name='AW Home Fragrance';
+      }
+      if($department_code=='Ancient Wisdom Aromatherapy Dept.'){
+	$department_code='Aroma';
+	$department_name='AW Aromatherapy Department';
+      }if($department_code=='Bathroom Heaven')
+	 $department_code='Bath';
+      if($department_code=='Exotic Incense Dept Order'){
+	$department_code='Incense';
+	$department_name='Exotic Incense Department';
+      }if($department_code=='While Stocks Last Order'){
+	$department_code='WSL';
+	$department_name='While Stocks Last';
+      }if($department_code=='Collectables Department'){
+	$department_code='Collec';
+      }
+      if($department_code=='Crystal Department'){
+	$department_code='Crystal';
+      }
+   if($department_code=='Cards, Posters & Gift Wrap'){
+	$department_code='Paper';
+      }
+   if($department_code=='Retail Display Stands'){
+	$department_code='RDS';
+      }
+   if($department_code=='Stoneware'){
+	$department_code='Stone';
+	$department_name='Stoneware Department';
+
+      }
+   if($department_code=='Jewellery Quarter'){
+	$department_code='Jewells';
+      }
+   if($department_code=='Relaxing Music Collection'){
+	$department_code='Music';
+      }
+ if($department_code=='BagsBags.Biz'){
+	$department_code='Bags';
+      }
+ if($department_code=='Christmas Time'){
+	$department_code='Xmas';
+      }
+
+if($department_code=='CraftsCrafts.biz'){
+	$department_code='Crafts';
+      }
+if($department_code=='Florist-Supplies.biz'){
+	$department_code='Flor';
+      }
+if($department_code=='Soft Furnishings & Textiles'){
+	$department_code='Textil';
+      }
+if($department_code=='Woodware Dept'){
+  $department_code='Wood';
+  $department_name='Woodware Department';
+
+      }
+
+
+
+
+    }
+    
+    $posible_fam_code=$cols[3];
+    $posible_fam_name=$cols[6];
+  }
+  
+
+  
+  $column++;
+  }
+
+
+
+
+
+
 ?>

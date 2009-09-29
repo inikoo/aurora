@@ -42,7 +42,7 @@ $Data_Audit_ETL_Software="$software $version";
 $file_name='AWorder2002-spain.xls';
 
 $csv_file='tmp.csv';
-//exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
+exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
 
 $handle_csv = fopen($csv_file, "r");
 $column=0;
@@ -419,6 +419,7 @@ foreach($__cols as $cols){
 		    'product net weight'=>$_w,
 		    'product gross weight'=>$_w,
 		    'deals'=>$deals
+		    
 		    );
 	//	print_r($cols);
 	//print_r($data);
@@ -485,7 +486,7 @@ foreach($__cols as $cols){
 		       'Supplier Product Valid From'=>date('Y-m-d H:i:s'),
 		       'Supplier Product Valid To'=>date('Y-m-d H:i:s')
 		       );
-
+	//print_r($sp_data);
 	$supplier_product=new SupplierProduct('find',$sp_data,'create');
 	$part_data=array(
 			 'Part Most Recent'=>'Yes',

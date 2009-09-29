@@ -17,79 +17,54 @@ mysql_query("SET time_zone ='UTC'");
 mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';           
 date_default_timezone_set('Europe/London');
- if(isset($argv[1]) and $argv[1]=='xfirst'){
-$sql="select * from `Product Dimension`   order by `Product Key` desc ";
-$result=mysql_query($sql);
-while($row=mysql_fetch_array($result)   ){
-   $product=new Product($row['Product Key']);
-   $product->update_same_code_valid_dates('most recent');
-   $product->update_same_id_valid_dates('most recent');
-
-   $for_sale_since=$product->data['Product Valid From'];
-   $last_sold_date=$product->data['Product Valid To'];
-   $sql=sprintf("update `Product Dimension` set `Product For Sale Since Date`=%s ,`Product Last Sold Date`=%s where `Product Key`=%d "
-		,prepare_mysql($for_sale_since)
-		,prepare_mysql($last_sold_date)
-		,$product->id
-		);
-   if(!mysql_query($sql))
-     exit("$sql\ncan not update product days\n");
-
-   print "Pre ".$product->id."\r";
-
-}
- }
-
 
 
 //$sql="select * from `Product Dimension` where `Product Code`='FO-A1'";
-$sql="select * from `Product Dimension`   order by `Product Key` desc  ";
+$sql="select * from `Product History Dimension`   order by `Product Key` desc  ";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result)   ){
-
+  $product=new Product('id',$row['Product Key']);
   
-  
-  
-
-  
-  $product=new Product($row['Product Key']);
-  
+  //$product->load('sales');
+  // $product->load('parts');
+  // print "caca";
   $product->load('sales');
-  $product->load('parts');
- 
-
-  if(isset($argv[1]) and $argv[1]=='first'){
 
 
-  if($product->data['Product Same Code Most Recent']=='Yes'){
-    $state='For sale';
-    $discontinued_state='No';
-    if($product->data['Product 1 Year Acc Quantity Ordered']==0 and (strtotime($product->data['Product Valid From'])<strtotime('today -1 year')    )){
-      //check if has stock
-      $sql=sprintf("select id,code  from aw_old.product  where product.code=%s and (stock=0 or stock<0 or stock is null)   ",prepare_mysql($product->data['Product Code']));
-      $result2a=mysql_query($sql);
-      if($row2a=mysql_fetch_array($result2a, MYSQL_ASSOC)   ){
-	$state='Discontinued';
+  if(isset($argv[1]) and $argv[1]=='first' and isset($argv[2]) and $argv[2]=='aw'){
+    
+  
+    
+    if($product->data['Product Same Code Most Recent']=='Yes'){
+      $state='For sale';
+	$discontinued_state='No';
+	if($product->data['Product 1 Year Acc Quantity Ordered']==0 and (strtotime($product->data['Product Valid From'])<strtotime('today -1 year')    )){
+	  //check if has stock
+	  $sql=sprintf("select id,code  from aw_old.product  where product.code=%s and (stock=0 or stock<0 or stock is null)   ",prepare_mysql($product->data['Product Code']));
+	  $result2a=mysql_query($sql);
+	  if($row2a=mysql_fetch_array($result2a, MYSQL_ASSOC)   ){
+	    $state='Discontinued';
+	    $discontinued_state='No Applicable';
+	    
+	  }
+	  
+	}
+	
+	$sql=sprintf("select id,code  from aw_old.product  where product.code=%s and  condicion=2 and stock=0  ",prepare_mysql($product->data['Product Code']));
+	$result2a=mysql_query($sql);
+	if($row2a=mysql_fetch_array($result2a, MYSQL_ASSOC)   ){
+	  $state='Discontinued';
+	  $discontinued_state='Yes';
+	  
+	}
+	
+    }else{
+	$state='Historic';
 	$discontinued_state='No Applicable';
-
+	
       }
       
-    }
-
-    $sql=sprintf("select id,code  from aw_old.product  where product.code=%s and  condicion=2 and stock=0  ",prepare_mysql($product->data['Product Code']));
-    $result2a=mysql_query($sql);
-    if($row2a=mysql_fetch_array($result2a, MYSQL_ASSOC)   ){
-      $state='Discontinued';
-      $discontinued_state='Yes';
-
-    }
-    
-  }else{
-    $state='Historic';
-    $discontinued_state='No Applicable';
-
-  }
-
+  
   
   if($state=='Historic'){
     $record_state='Historic';
@@ -116,19 +91,21 @@ while($row=mysql_fetch_array($result)   ){
    // print "$sql\n\n";
   if(!mysql_query($sql))
     exit("can not upodate state of the product");
+
+
+  }else{
+
+
+    //$product->load('days');
+    // $product->load('stock');
   }
- if(!isset($argv[1]) ){
-
-  $product->load('days');
-  $product->load('stock');
- }
-  print $row['Product Key']." ".$product->data['Product Code']." \n";
+  print $row['Product Key']."\t\t ".$product->data['Product Code']." \r";
 
 
 
 
- }
-
+ 
+}
 
 
 ?>

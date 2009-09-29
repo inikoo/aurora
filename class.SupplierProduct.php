@@ -62,9 +62,6 @@ class supplierproduct extends DB_Table {
                 $data[$key]=_trim($value);
         }
 
-
-
-
         if ($data['Supplier Product Code']=='' or $data['Supplier Product Cost']=='' ) {
             $this->error=true;
             $this->msg='No code/cost';
@@ -121,7 +118,7 @@ class supplierproduct extends DB_Table {
 
             }
             else {
-                //print "NEW CODE\n";
+	      // print_r($data);
                 $this->create($data);
             }
 
@@ -135,6 +132,12 @@ class supplierproduct extends DB_Table {
         }
 
     }
+
+
+
+
+
+
     function get_data($tipo,$tag,$supplier_key=1) {
         if ($tipo=='id' or $tipo=='key') {
             $sql=sprintf("select * from `Supplier Product History Dimension` where `SPH Key`=%d ",$tag);
@@ -219,7 +222,7 @@ class supplierproduct extends DB_Table {
         $keys=preg_replace('/,$/',')',$keys);
         $values=preg_replace('/,$/',')',$values);
         $sql=sprintf("insert into `Supplier Product History Dimension` %s %s",$keys,$values);
-       //print "$sql\n\n";
+	// print "$sql\n\n";
         if (mysql_query($sql)) {
              $this->key = mysql_insert_id();
             $this->new_key=true;
@@ -947,15 +950,17 @@ class supplierproduct extends DB_Table {
     }
     function update_valid_dates_key($date) {
         $affected=0;
-        $sql=sprintf("update `Supplier Product Historic Dimension`  set `SPH Valid From` where  `SPH Key`=%d and `SPH Valid From`>%s   "
-                     ,prepare_mysql($this->id)
+        $sql=sprintf("update `Supplier Product Historic Dimension`  set `SPH Valid From`=%s where  `SPH Key`=%d and `SPH Valid From`>%s   "
+                     ,prepare_mysql($date)
+		     ,prepare_mysql($this->id)
                      ,prepare_mysql($date)
 
                     );
         mysql_query($sql);
         $affected+=mysql_affected_rows();
-        $sql=sprintf("update `Supplier Product Historic Dimension`  set `SPH Valid To` where  `SPH Key`=%d and `SPH Valid To`<%s   "
-                     ,prepare_mysql($this->id)
+        $sql=sprintf("update `Supplier Product Historic Dimension`  set `SPH Valid To`=%s where  `SPH Key`=%d and `SPH Valid To`<%s   "
+                     ,prepare_mysql($date)
+		     ,prepare_mysql($this->id)
                      ,prepare_mysql($date)
 
                     );
@@ -965,16 +970,18 @@ class supplierproduct extends DB_Table {
     }
     function update_valid_dates_code($date) {
         $affected=0;
-        $sql=sprintf("update `Supplier Product Dimension`  set `Supplier Product Valid From` where  `Supplier Product Code`=%s and `Supplier Key`=%d and `Supplier Product Valid From`>%s   "
+        $sql=sprintf("update `Supplier Product Dimension`  set `Supplier Product Valid From`=%s where  `Supplier Product Code`=%s and `Supplier Key`=%d and `Supplier Product Valid From`>%s   "
                      ,prepare_mysql($this->code)
-                     ,$this->supplier_key
+                     ,prepare_mysql($date)
+		     ,$this->supplier_key
                      ,prepare_mysql($date)
 
                     );
         mysql_query($sql);
         $affected+=mysql_affected_rows();
-        $sql=sprintf("update `Supplier Product Dimension`  set `Supplier Product Valid To` where  `Supplier Product Code`=%s and `Supplier Key`=%d  and `Supplier Product Valid To`<%s   "
-                     ,prepare_mysql($this->code)
+        $sql=sprintf("update `Supplier Product Dimension`  set `Supplier Product Valid To`=%s where  `Supplier Product Code`=%s and `Supplier Key`=%d  and `Supplier Product Valid To`<%s   "
+                     ,prepare_mysql($date)
+		     ,prepare_mysql($this->code)
                      ,$this->supplier_key
                      ,prepare_mysql($date)
 

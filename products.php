@@ -36,10 +36,10 @@ if(isset($_REQUEST['search']) and $_REQUEST['search']!=''  ){
   // SEARCH!!!!!!!!!!!!
   $q=$_REQUEST['search'];
   //  print "$q";
-  $sql=sprintf("select `Product Key` from `Product Dimension` where `Product Code`=%s ",prepare_mysql($q));
+  $sql=sprintf("select `Product ID` from `Product Dimension` where `Product Code`=%s ",prepare_mysql($q));
   $result=mysql_query($sql);
   if($found=mysql_fetch_array($result, MYSQL_ASSOC)){
-    header('Location: product.php?id='. $found['product key']);
+    header('Location: product.php?pid='. $found['Product ID']);
     exit;
   }
   mysql_free_result($result);
@@ -69,7 +69,7 @@ if(isset($_REQUEST['parent'])   ){
 
 
 
-$sql="select count(*) as total_products,sum(if(`Product Sales State`='For sale',1,0)) as for_sale  from `Product Dimension` where `Product Most Recent`='Yes'";
+$sql="select count(*) as total_products,sum(if(`Product Sales State`='For sale',1,0)) as for_sale  from `Product Dimension` ";
 $result=mysql_query($sql);
 if(!$products=mysql_fetch_array($result, MYSQL_ASSOC))
   exit;

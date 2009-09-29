@@ -76,7 +76,7 @@
 		      <td>{t}RRP{/t}:</td><td  class="aright">{$product->get('formated unitary rrp')} {if $product->get('product Units per Case')>1}{t}each{/t}{/if}</td>
 		    </tr>
 		    
-		    <tr><td>{t}Sold Since{/t}:</td><td class="aright">{$product->get('formated product for sale since date')} </td>
+		    <tr><td>{t}Sold Since{/t}:</td><td class="aright">{$product->get('Formated Sold Since')} </td>
 		      {if $edit} <td   class="aright" ><input style="text-align:right" class="date_input" size="8" type="text"  id="v_invoice_date"  value="{$v_po_date_invoice}" name="invoice_date" /></td>{/if}
 		    </tr>
 		    <tr><td id="outall_label" title="Total Sales">{t}TS{/t}:</td><td class="aright" >{$product->get('Formated Product Total Quantity Invoiced')} {t}Outers{/t}
@@ -185,12 +185,12 @@
 
   
   <div class="yui-b">
-
-     <div class="search_box" >
-       <span class="search_title" style="padding-right:15px">{t}Product Code{/t}:</span> <br><input size="8" class="text search" id="product_search" value="" name="search"/><img align="absbottom" id="product_submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>
-       <span  class="product_search_msg"   id="product_search_msg"    ></span> <span  class="search_sugestion"   id="product_search_sugestion"    ></span>
-       <br/>
-     </div>
+    
+    <div class="search_box" >
+      <span class="search_title" style="padding-right:15px">{t}Product Code{/t}:</span> <br><input size="8" class="text search" id="product_search" value="" name="search"/><img align="absbottom" id="product_submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>
+      <span  class="product_search_msg"   id="product_search_msg"    ></span> <span  class="search_sugestion"   id="product_search_sugestion"    ></span>
+      <br/>
+    </div>
 
     <table border=0 cellpadding="2" style="float:right;margin-top:20px;" class="view_options">
       <tr style="border-bottom:1px solid #ddd">
@@ -220,18 +220,56 @@
 	<td   state="{$display.stock_history}" block="stock_history"  id="change_view_stock_history" {if $display.stock_history==0}title="{t}Show Stock History{/t}" atitle="{t}Hide Stock History{/t}"{else}atitle="{t}Show Stock History{/t}" title="{t}Hide Stock History{/t}"{/if} ><img {if $display.stock_history==0}style="opacity:0.2"{/if} src="art/icons/tick.png"    id="but_logo_stock_history"   /></td>
 	
       </tr>
-      <tr><td  colspan="5" style="text-align:center"><a href="edit_product.php?key={$product->get('Product Most Recent Key')}">Edit Product</a></td></tr>
+      <tr><td  colspan="5" style="text-align:center"><a href="edit_product.php?pid={$product->pid}">Edit Product</a></td></tr>
 
       
     </table>
     
     
-  </div> 
+  </div>
+  <div style="clear:both"></div>
   
+  <div   id="block_plot" style="clear:both;{if $display.plot==0}display:none{/if};margin-top:20px"  >
+
+    
+  <div style="clear:both"   id="plot_info" keys="{$product->pid}"   ></div>
   
 
 
-  <div id="block_plot" style="clear:both;{if $display.plot==0}display:none{/if}">
+      <ul id="plot_chooser" class="tabs" style="margin:0 20px;padding:0 20px "  >
+	<li>
+	  <span class="item {if $plot_tipo=='product'}selected{/if}" onClick="change_plot(this)" id="plot_store" tipo="store" category="{$plot_data.store.category}" period="{$plot_data.store.period}" >
+	    <span>{$product->get('Product Code')} {t}Product{/t}</span>
+	  </span>
+	</li>
+	<li>
+	  <span class="item {if $plot_tipo=='part'}selected{/if}"  id="plot_top_departments" onClick="change_plot(this)" tipo="top_departments" category="{$plot_data.top_departments.category}" period="{$plot_data.top_departments.period}" name=""  >
+	    <span>{t}Parts{/t}</span>
+	  </span>
+	</li>
+
+      </ul> 
+      
+      <ul id="plot_options" class="tabs" style="{if $plot_tipo=='pie'}display:none{/if};position:relative;top:.6em;float:right;margin:0 20px;padding:0 20px;font-size:90% "  >
+	<li><span class="item"> <span id="plot_category"  category="{$plot_category}" style="xborder:1px solid black;display:inline-block; vertical-align:middle">{$plot_formated_category}</span></span></li>
+	<li><span class="item"> <span id="plot_period"   period="{$plot_period}" style="xborder:1px solid black;display:inline-block; vertical-align:middle">{$plot_formated_period}</span></span></li>
+      </ul> 
+
+      <div style="clear:both;margin:0 20px;padding:0 20px ;border-bottom:1px solid #999">
+      </div>
+
+     
+      
+      <div  id="plot_div" class="product_plot"  style="width:865px;xheight:325px;">
+	<iframe id="the_plot" src ="{$plot_page}?{$plot_args}" frameborder=0 height="325" scrolling="no" width="{if $plot_tipo=='pie'}500px{else}100%{/if}"></iframe>
+	
+      </div>
+     
+</div>
+
+
+
+  <div id="block_plot2" style="display:none;clear:both;{if $display.plot==0}display:none{/if}">
     <div id="plot_options" class="plot_options" xstyle="float:right;width:130px">
       <table border=0 class="plot_menu" style="margin-top:30px">
 	<tr class="top">
