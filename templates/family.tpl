@@ -1,5 +1,6 @@
 {include file='header.tpl'}
 <div id="bd" >
+  {if $modify}<span class="nav2 onright"><a href="family.php?edit=1"  >{t}Edit{/t}</a></span>{/if}
 
 {if $next.id>0}<span class="nav2 onright"><a href="family.php?id={$next.id}">{$next.code} &rarr; </a></span>{/if}
 <span class="nav2 onright" ><a href="department.php?id={$department->id}" title="{$department->get('Product Department Name')}">&uarr; {t}Up{/t}</a></span>
@@ -18,16 +19,21 @@
      <span  class="search_msg"   id="product_search_msg"    ></span> <span  class="product_search_sugestion"   id="search_sugestion"    ></span>
      <br/>
     <span  class="state_details" state="{$show_details}"  id="show_details"  atitle="{if $show_details}{t}show details{/t}{else}{t}hide details{/t}{/if}"  >{if $show_details}{t}hide details{/t}{else}{t}show details{/t}{/if}</span>
-  <br><a href="family.php?edit=1"  class="state_details" id="edit"  >{t}edit{/t}</a>
+  
   </div>
   
+
+ <div style="clear:left;margin:0 20px">
+   <h1><a  href="store.php?id={$store->id}">{$store->get('Store Code')}</a> &rarr; <a  href="department.php?id={$department->id}">{$department->get('Product Department Code')}</a> &rarr; {$family->get('Product Family Name')}  ({$family->get('Product Family Code')})</h1>
+  </div>
   
-  <div id="top" class="top_bar">
-																											      
-																											      <h1><a  href="store.php?id={$store->id}">{$store->get('Store Code')}</a> &rarr; <a  href="department.php?id={$department->id}">{$department->get('Product Department Code')}</a> &rarr; {$family->get('Product Family Name')}  ({$family->get('Product Family Code')})</h1>
- <div id="short_menu" class="nodetails" style="{if $show_details}display:none;{/if}width:100%;margin-bottom:0px">
-   <div    {if $family->get('Product Family For Sale Products')==0 and  $family->get('Product Family In Process Products')==0   }style="display:none"{/if}  >
-     <table style="float:left;margin:0 0 0 20px ;padding:0"  class="options" >
+
+
+   <div class="data_table " style="margin:25px 20px;">
+    <span class="clean_table_title">{t}Products{/t}</span>
+    
+<span   style="float:right;margin-left:80px" class="state_details" state="{$show_percentages}"  id="show_percentages"  atitle="{if $show_percentages}{t}Normal Mode{/t}{else}{t}Comparison Mode{/t}{/if}"  >{if $show_percentages}{t}Comparison Mode{/t}{else}{t}Normal Mode{/t}{/if}</span>
+<table style="float:left;margin:0 0 0 20px ;padding:0"  class="options" >
        <tr><td  {if $view=='general'}class="selected"{/if} id="general" >{t}General{/t}</td>
 	  {if $view_stock}<td {if $view=='stock'}class="selected"{/if}  id="stock"  >{t}Stock{/t}</td>{/if}
 	  {if $view_sales}<td  {if $view=='sales'}class="selected"{/if}  id="sales"  >{t}Sales{/t}</td>{/if}
@@ -54,45 +60,6 @@
 	  <td {if $avg=='week_eff'}class="selected"{/if} style="display:none"  avg="week_eff"  id="avg_week_eff"  >{t}W EAVG{/t}</td>
 	</tr>
       </table>
-      </div>
-
-    </div>
-    
-    <div id="details" class="details" style="{if !$show_details}display:none;{/if}">
-      <div id="details_general" style="width:300px"  {if $view!='general'}style="display:none"{/if}>
-	Products
-	<table class="show_info_product">
-	  <tr>
-	    <td>{t}On sale{/t}:</td><td class="aright">{$products.onsale}</td>
-	  </tr>
-	  <tr>
-	    <td>{t}To be Discontinued{/t}:</td><td class="aright">{$products.tobe_discontinued}</td>
-	  </tr>
-	  <tr>
-	    <td>{t}Discontonued{/t}:</td><td class="aright">{$products_discontinued}</td>
-	  </tr>
-	</table>
-      </div>
-      <div id="details_stock"  {if $view!='stock'}style="display:none"{/if}>
-	<table   >
-	  <tr>
-	    <td>{t}Stock Value{/t}:</td><td class="aright">{$stock_value}</td>
-	  </tr>
-	</table>
-      </div>
-      <div id="details_sales"  {if $view!='sales'}style="display:none"{/if}>
-	<table  >
-	  <tr>
-	    <td>{t}Total Sales{/t}:</td><td class="aright">{$total_sales}</td>
-	  </tr>
-	</table>
-      </div>
-    </div>
-
-  </div>
-
-   <div class="data_table " style="margin:25px 20px;">
-    <span class="clean_table_title">{t}Products{/t}</span>
     <div  class="clean_table_caption"  style="clear:both;">
       <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
       <div class="clean_table_filter" id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0">{$filter_name}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value}" size=10/><div id='f_container0'></div></div></div>

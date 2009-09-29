@@ -15,13 +15,16 @@ if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
   $format=$row['format'];
   $filename=$row['filename'];
   //  $filename=$myconf['images_dir'].'original/'.$filename.'_orig.'.$format;
-  // print $filename;
+  //   print "$filename $format" ;
   //print "caca";
   if($format=='jpg'){
+    //print "caca";
     $format='jpeg';
     header('Content-Type: image/'.$format);
     header('Content-Disposition: inline; filename='.$filename);
+   
     $im = @imagecreatefromjpeg($filename);
+    //print $im;
     imagejpeg($im); 
   }
  }

@@ -91,10 +91,11 @@ $_SESSION['state']['product']['customers']['mode']=$mode;
 
 
 if($mode=='code'){
-  $sql=sprintf("select `Product ID`  from `Product Dimension` where `Product Code`=%s and `Product Most Recent`='Yes' group by `Product ID`;"
+  $sql=sprintf("select `Product ID`  from `Product Dimension` where `Product Code`=%s ;"
         ,prepare_mysql($tag));
 
   $result=mysql_query($sql);
+  //print $sql;
   
   if(mysql_num_rows($result)>1){
     $_SESSION['state']['product']['server']['tag']=$tag;
@@ -110,7 +111,7 @@ if($mode=='code'){
   }
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      $tag=$row['Product ID'];
-     $mode='id';
+     $mode='pid';
      $_SESSION['state']['product']['tag']=$tag;
      $_SESSION['state']['product']['mode']=$mode;
   }
@@ -125,7 +126,7 @@ $product= new product($mode,$tag);
 
 $product->load('part_location_list');
 $smarty->assign('product',$product);
-$smarty->assign('product_id',$product->get('product current key'));
+$smarty->assign('product_id',$product->data['Product Current Key']);
 $smarty->assign('data',$product->data);
 $web_status_error=false;
 $web_status_error_title='';
@@ -173,21 +174,50 @@ $smarty->assign('images',$images);
 $smarty->assign('num_images',count($images));
 
 $plot_tipo=$_SESSION['state']['product']['plot'];
+$plot_data=$_SESSION['state']['product']['plot_data'][$plot_tipo];
+$plot_period=$plot_data['period'];
+$plot_category=$plot_data['category'];
+$plot_args='tipo=product&category='.$plot_category.'&period='.$plot_period.'&keys='.$product->pid;
 
-if(preg_match('/week/',$plot_tipo))
-  $plot_interval='week';
-if(preg_match('/month/',$plot_tipo))
-  $plot_interval='month';
-if(preg_match('/quarter/',$plot_tipo))
-  $plot_interval='quarter';
-if(preg_match('/year/',$plot_tipo))
-  $plot_interval='year';
-
-$plot_data=$_SESSION['state']['product']['plot_data'][$plot_interval];
-
-//print print_r($_SESSION['state']['product']);
 $smarty->assign('plot_tipo',$plot_tipo);
-$smarty->assign('plot_data',$plot_data);
+$smarty->assign('plot_args',$plot_args);
+$smarty->assign('plot_page',$plot_data['page']);
+$smarty->assign('plot_period',$plot_period);
+$smarty->assign('plot_category',$plot_period);
+$smarty->assign('plot_data',$_SESSION['state']['store']['plot_data']);
+
+if($plot_category=='profit')
+  $plot_formated_category=_('Profits');
+else
+  $plot_formated_category=_('Net Sales');
+ 
+if($plot_period=='m')
+  $plot_formated_period='Monthly';
+elseif($plot_period=='y')
+      $plot_formated_period='Yearly';
+elseif($plot_period=='q')
+  $plot_formated_period='Quarterly';
+elseif($plot_period=='w')
+      $plot_formated_period='Weekly';
+
+$smarty->assign('plot_formated_category',$plot_formated_category);
+$smarty->assign('plot_formated_period',$plot_formated_period);
+
+
+/* if(preg_match('/week/',$plot_tipo)) */
+/*   $plot_interval='week'; */
+/* if(preg_match('/month/',$plot_tipo)) */
+/*   $plot_interval='month'; */
+/* if(preg_match('/quarter/',$plot_tipo)) */
+/*   $plot_interval='quarter'; */
+/* if(preg_match('/year/',$plot_tipo)) */
+/*   $plot_interval='year'; */
+
+/* $plot_data=$_SESSION['state']['product']['plot_data'][$plot_interval]; */
+
+/* //print print_r($_SESSION['state']['product']); */
+/* $smarty->assign('plot_tipo',$plot_tipo); */
+/* $smarty->assign('plot_data',$plot_data); */
 
 
 

@@ -96,51 +96,51 @@ if(isset($_REQUEST['view'])){
 
 
 
-$order=$_SESSION['state']['store']['table']['order'];
-$period=$_SESSION['state']['store']['period'];
- if($order=='profit'){
-    if($period=='all')
-      $order='`Product Department Total Profit`';
-    elseif($period=='year')
-      $order='`Product Department 1 Year Acc Profit`';
-    elseif($period=='quarter')
-      $order='`Product Department 1 Quarter Acc Profit`';
-    elseif($period=='month')
-      $order='`Product Department 1 Month Acc Profit`';
-    elseif($period=='week')
-      $order='`Product Department 1 Week Acc Profit`';
-  }elseif($order=='sales'){
-    if($period=='all')
-      $order='`Product Department Total Invoiced Amount`';
-    elseif($period=='year')
-      $order='`Product Department 1 Year Acc Invoiced Amount`';
-    elseif($period=='quarter')
-      $order='`Product Department 1 Quarter Acc Invoiced Amount`';
-    elseif($period=='month')
-      $order='`Product Department 1 Month Acc Invoiced Amount`';
-    elseif($period=='week')
-      $order='`Product Department 1 Week Acc Invoiced Amount`';
+$store_order=$_SESSION['state']['store']['table']['order'];
+$store_period=$_SESSION['state']['store']['period'];
+ if($store_order=='profit'){
+    if($store_period=='all')
+      $store_order='`Product Department Total Profit`';
+    elseif($store_period=='year')
+      $store_order='`Product Department 1 Year Acc Profit`';
+    elseif($store_period=='quarter')
+      $store_order='`Product Department 1 Quarter Acc Profit`';
+    elseif($store_period=='month')
+      $store_order='`Product Department 1 Month Acc Profit`';
+    elseif($store_period=='week')
+      $store_order='`Product Department 1 Week Acc Profit`';
+  }elseif($store_order=='sales'){
+    if($store_period=='all')
+      $store_order='`Product Department Total Invoiced Amount`';
+    elseif($store_period=='year')
+      $store_order='`Product Department 1 Year Acc Invoiced Amount`';
+    elseif($store_period=='quarter')
+      $store_order='`Product Department 1 Quarter Acc Invoiced Amount`';
+    elseif($store_period=='month')
+      $store_order='`Product Department 1 Month Acc Invoiced Amount`';
+    elseif($store_period=='week')
+      $store_order='`Product Department 1 Week Acc Invoiced Amount`';
 
   }
-  elseif($order=='name')
-    $order='`Product Department Name`';
-  elseif($order=='families')
-    $order='`Product Department Families`';
-  elseif($order=='active')
-    $order='`Product Department For Sale Products`';
-  elseif($order=='outofstock')
-    $order='`Product Department Out Of Stock Products`';
-  elseif($order=='stockerror')
-    $order='`Product Department Unknown Stock Products`';
+  elseif($store_order=='name')
+    $store_order='`Product Department Name`';
+  elseif($store_order=='families')
+    $store_order='`Product Department Families`';
+  elseif($store_order=='active')
+    $store_order='`Product Department For Sale Products`';
+  elseif($store_order=='outofstock')
+    $store_order='`Product Department Out Of Stock Products`';
+  elseif($store_order=='stockerror')
+    $store_order='`Product Department Unknown Stock Products`';
 
 
 
-$sql=sprintf("select `Product Department Key` as id,`Product Department Code` as code  from `Product Department Dimension` where `Product Department Store Key`=%d and   %s<%s order by %s desc  ",$department->data['Product Department Store Key'],$order,prepare_mysql($department->get(str_replace('`','',$order))),$order);
+$sql=sprintf("select `Product Department Key` as id,`Product Department Code` as code  from `Product Department Dimension` where `Product Department Store Key`=%d and   %s<%s order by %s desc  ",$department->data['Product Department Store Key'],$store_order,prepare_mysql($department->get(str_replace('`','',$store_order))),$store_order);
 //print $sql;
 $result=mysql_query($sql);
 if(!$prev=mysql_fetch_array($result, MYSQL_ASSOC)   )
   $prev=array('id'=>0,'code'=>'');
-$sql=sprintf("select `Product Department Key` as id,`Product Department Code` as code  from `Product Department Dimension`   where  `Product Department Store Key`=%d and   %s>%s order by %s   ",$department->data['Product Department Store Key'],$order,prepare_mysql($department->get(str_replace('`','',$order))),$order);
+$sql=sprintf("select `Product Department Key` as id,`Product Department Code` as code  from `Product Department Dimension`   where  `Product Department Store Key`=%d and   %s>%s order by %s   ",$department->data['Product Department Store Key'],$store_order,prepare_mysql($department->get(str_replace('`','',$store_order))),$store_order);
 
 //print $sql;
 $result=mysql_query($sql);
@@ -162,6 +162,7 @@ $smarty->assign('store',$store);
 // $smarty->assign('department_id',$_REQUEST['id']);
 // $smarty->assign('products',$families['products']);
 
+//print_r($_SESSION['state']['department']);
 $smarty->assign('filter',$_SESSION['state']['department']['table']['f_field']);
 $smarty->assign('filter_value',$_SESSION['state']['department']['table']['f_value']);
 $smarty->assign('filter_name',_('Family code'));

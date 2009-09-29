@@ -1322,7 +1322,7 @@ class Address extends DB_Table{
 	 Function: is_country_d1
 	 Look if the string is in Country First Division Dimension DB table
 
-	 The search will be en the following fields:Name,Native Name,Local Native Name
+	 The search will be en the following fields:Name
 
 	 Parameter:
 	 $str -  _string_ Country First Division Name
@@ -1350,7 +1350,7 @@ class Address extends DB_Table{
 	 Function: is_country_d2
 	 Look if the string is in Country Second Division Dimension DB table
 
-	 The search will be en the following fields:Name,Native Name,Local Native Name
+	 The search will be en the following fields:Name
 
 	 Parameter:
 	 $str -  _string_ Country Second Division Name
@@ -3737,7 +3737,11 @@ class Address extends DB_Table{
 
 
 		if($data['Address Country Second Division']!=''){
-		  $sql=sprintf("select `Country Second Division Code`  as id, `Country First Division Code`   from kbase.`Country Second Division Dimension`   where (`Country Second Division Name`='%s' or `Country Second Division Native Name`='%s' or `Country Second Division Local Native Name`='%s' ) and `Country Code`=%s",addslashes($data['Address Country Second Division']),addslashes($data['Address Country Second Division']),addslashes($data['Address Country Second Division']),prepare_mysql($data['Address Country Code']));
+		  $sql=sprintf("select `Country Second Division Code`  as id, `Country First Division Code`   from kbase.`Country Second Division Dimension`   where (`Country Second Division Name`='%s'  ) and `Country Code`=%s"
+
+			       ,prepare_mysql($data['Address Country Second Division'])
+			       ,prepare_mysql($data['Address Country Code'])
+			       );
 
 		  
 		  $result=mysql_query($sql);

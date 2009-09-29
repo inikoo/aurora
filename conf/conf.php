@@ -592,6 +592,8 @@ $default_state=array(
 							 'sf'=>0,
 							 'nr'=>25,
 							 'parent'=>''
+							 
+
 							 )
 					  ),
 		     
@@ -604,6 +606,7 @@ $default_state=array(
 				       'percentage'=>0,
 				       'mode'=>'all',
 				       'avg'=>'totals',
+				       'restrictions'=>'',
 				       'edit'=>false,
 				       'plot'=>'department',
 				       'plot_data'=>array('department'=>array(
@@ -718,31 +721,18 @@ $default_state=array(
 
 		      'product'=>array(
 				       'details'=>false,
-				       'plot'=>'product_week_outers',
-				       'plot_data'=>array(
-							  'week'=>array(
-									'months'=>12,
-									'max_sigma'=>false,
-									'first_day'=>date("Y-m-d H:i:s",strtotime("today - 1 year"))
-									),
-							  'month'=>array(
-									 'months'=>24,
-									 'max_sigma'=>false,
-									 'first_day'=>date("Y-m-d H:i:s",strtotime("today - 2 year"))
-									 ),
-							  'quarter'=>array(
-									 'months'=>36,
-									 'max_sigma'=>false,
-									 'first_day'=>date("Y-m-d H:i:s",strtotime("today - 3 year"))
-									 ),
-							  'year'=>array(
-									'months'=>60,
-									'max_sigma'=>false,
-									'first_day'=>date("Y-m-d H:i:s",strtotime("today - 5 year"))
-									)
+				       'plot'=>'product',
+				       'plot_data'=>array('product'=>array(
+									   'period'=>'m'
+									   ,'category'=>'sales'
+									   ,'page'=>'plot.php'
+									    )
+
+							     ),
+				      
 							  
-							  ),
-				       'mode'=>'key',
+						
+				       'mode'=>'pid',
 				       'tag'=>1,
 				       'edit'=>'description',
 				       'display'=>array('details'=>0,'plot'=>1,'orders'=>0,'customers'=>0,'stock_history'=>0),

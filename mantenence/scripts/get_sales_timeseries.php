@@ -37,6 +37,9 @@ if(true){
   $tm->save_values();
   if($forecast)
     $tm->forecast();
+
+ 
+
   $tm=new TimeSeries(array('q','invoices'));
   $tm->get_values();
   $tm->save_values();
@@ -83,7 +86,7 @@ $tm=new TimeSeries(array('y','store ('.$row['Store Key'].') sales'));
 
  
 }
-
+ 
 $sql="select * from `Product Department Dimension` ";
 $res=mysql_query($sql);
 while($row=mysql_fetch_array($res)){
@@ -140,7 +143,7 @@ while($row=mysql_fetch_array($res)){
 }
 
 
-$sql="select * from `Product Dimension` group by `Product ID`";
+$sql="select * from `Product Dimension`";
 $res=mysql_query($sql);
 while($row=mysql_fetch_array($res)){
   //print 'product id ('.$row['Product Code'].') '.$row['Product ID'].' sales'."\n";
@@ -170,30 +173,31 @@ while($row=mysql_fetch_array($res)){
    unset($tm);
 }
 
+exit;
 
-$sql="select * from `Product Dimension` group by `Product Same Code Most Recent Key`";
+$sql="select * from `Product Same Code Dimension` ";
 $res=mysql_query($sql);
 while($row=mysql_fetch_array($res)){
   // print 'product code ('.$row['Product Code'].') sales'."\n";
-  $tm=new TimeSeries(array('w','product code ('.$row['Product Same Code Most Recent Key'].') sales'));
+  $tm=new TimeSeries(array('w','product code ('.$row['Product Code'].') sales'));
   $tm->get_values();
   $tm->save_values();
   if($forecast)
     $tm->forecast();
 
- $tm=new TimeSeries(array('m','product code ('.$row['Product Same Code Most Recent Key'].') sales'));
+ $tm=new TimeSeries(array('m','product code ('.$row['Product Code'].') sales'));
   $tm->get_values();
   $tm->save_values();
   if($forecast)
     $tm->forecast();
  unset($tm);
- $tm=new TimeSeries(array('q','product code ('.$row['Product Same Code Most Recent Key'].') sales'));
+ $tm=new TimeSeries(array('q','product code ('.$row['Product Code'].') sales'));
   $tm->get_values();
   $tm->save_values();
   if($forecast)
     $tm->forecast();
  unset($tm);
- $tm=new TimeSeries(array('y','product code ('.$row['Product Same Code Most Recent Key'].') sales'));
+ $tm=new TimeSeries(array('y','product code ('.$row['Product Code'].') sales'));
   $tm->get_values();
   $tm->save_values();
   if($forecast)

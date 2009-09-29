@@ -19,6 +19,9 @@ if(!isset($_REQUEST['period']) or !isset($_REQUEST['item'])  or !isset($_REQUEST
   return;
 $period=$_REQUEST['period'];
 $tipo=$_REQUEST['item'];
+if($tipo=='product')
+  $tipo='product id';
+
 $category=$_REQUEST['category'];
 $split=(isset($_REQUEST['split']) and preg_match('/yes/i',$_REQUEST['split']) ?true:false);
 $item_keys=$_REQUEST['item_keys'];
@@ -409,15 +412,16 @@ function list_item($tipo,$category,$period,$item_keys,$split=true){
   $_data=array();
 
 
-
+  
   if($split){
 
     $item_keys=preg_replace('/\(|\)/','',$item_keys);
     foreach(preg_split('/\s*,\s*/',$item_keys) as $key){
       if(!is_numeric($key))
 	continue;
-      //print "$tipo ($key) sales";
+      //      print "$tipo ($key) sales";
       $tm=new TimeSeries(array($period,"$tipo ($key) $category"));
+      //print_r($tm);
       $tmp_data=$tm->plot_data();
       unset($tm);
       foreach($tmp_data as $key=>$values){
@@ -428,7 +432,8 @@ function list_item($tipo,$category,$period,$item_keys,$split=true){
       }
     }
   }else{
-    //print "$period $tipo $item_keys sales";
+    //  print "$period $tipo $item_keys sales";
+
 
     $tm=new TimeSeries(array($period,"$tipo $item_keys $category"));
     $_data=$tm->plot_data();

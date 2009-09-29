@@ -6,10 +6,12 @@ include_once('common.php');
  var period='period_<?php echo$_SESSION['state']['products']['period']?>';
     var avg='avg_<?php echo$_SESSION['state']['products']['avg']?>';
 
-    var change_view=function(e){
+   function  change_view(e){
+	
 	tipo=this.id;
+	
 	var table=tables['table0'];
-		table.hideColumn('shortname');
+	table.hideColumn('shortname');
 	table.hideColumn('name');
 	table.hideColumn('stock');
 	table.hideColumn('stock_value');
@@ -166,6 +168,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
     });
 
 
+
  function init(){
  var Dom   = YAHOO.util.Dom;
  var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
@@ -175,10 +178,15 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 
- ids=['general','sales','stock','parts','cats'];
+
+ ids=['general','sales','stock','cats','parts'];
  YAHOO.util.Event.addListener(ids, "click",change_view);
- ids=['period_all','period_year','period_quarter','period_month','period_week'];
+ 
+
+
+ids=['period_all','period_year','period_quarter','period_month','period_week'];
  YAHOO.util.Event.addListener(ids, "click",change_period,0);
+ 
  ids=['avg_totals','avg_month','avg_week',"avg_month_eff","avg_week_eff"];
  YAHOO.util.Event.addListener(ids, "click",change_avg,0);
  

@@ -372,7 +372,7 @@ case('top_departments_sales_month'):
 case('store'):
 case('department'):
 case('family'):
-
+case('product'):
 
   
 
@@ -415,6 +415,10 @@ case('family'):
     $tipo='family';
     $plot_name='family';
     $plot_page='family';
+  }elseif(preg_match('/product/',$tipo)){
+    $tipo='product';
+    $plot_name='product';
+    $plot_page='product';
   }
   
   $item_key_array=array();
