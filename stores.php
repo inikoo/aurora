@@ -70,10 +70,10 @@ $js_files=array(
 		);
 
 if($edit){
-  $js_files[]='edit_common.js';
+  $js_files[]='js/edit_common.js';
   $js_files[]='edit_stores.js.php';
  } else{
-   $js_files[]='search.js';
+   $js_files[]='js/search.js';
    $js_files[]='stores.js.php';
  }
 

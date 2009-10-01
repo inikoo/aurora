@@ -2535,7 +2535,7 @@ class Address extends DB_Table{
 				$valid_postalcodes=array('D1','D2','D3','D4','D5','D6','D6w','D7','D8','D9','D10','D11','D12','D13','D14','D15','D16','D17','D18','D20','D22','D24');
 
 				if($data['Address Postal Code']!=''){
-					$sql="select `Country Second Division Name` as name from `Country Second Division Dimension` where  `Country Key`=75 and `Country Second Division Name` like '%".$data['Address Postal Code']."%'";
+				  $sql="select `Country Second Division Name` as name from kbase.`Country Second Division Dimension` where  `Country Code`='IRL' and `Country Second Division Name` like '%".addslashes($data['Address Postal Code'])."%'";
 					//print "$sql\n";
 
 					$result=mysql_query($sql);
@@ -3727,7 +3727,9 @@ class Address extends DB_Table{
 
 		// Country ids
 		if($data['Address Country First Division']!=''){
-		  $sql=sprintf("select `Country First Division Code` as id  from  kbase.`Country First Division Dimension` where (`Country First Division Name`='%s' ) and `Country Code`=%s",addslashes($data['Address Country First Division']),prepare_mysql($data['Address Country Code']));
+		  $sql=sprintf("select `Country First Division Code` as id  from  kbase.`Country First Division Dimension` where `Country First Division Name`=%s and `Country Code`=%s"
+			       ,prepare_mysql($data['Address Country First Division'])
+			       ,prepare_mysql($data['Address Country Code']));
 		  //	print "$sql\n";
 
 			$result=mysql_query($sql);
@@ -3737,13 +3739,13 @@ class Address extends DB_Table{
 
 
 		if($data['Address Country Second Division']!=''){
-		  $sql=sprintf("select `Country Second Division Code`  as id, `Country First Division Code`   from kbase.`Country Second Division Dimension`   where (`Country Second Division Name`='%s'  ) and `Country Code`=%s"
+		  $sql=sprintf("select `Country Second Division Code`  as id, `Country First Division Code`   from kbase.`Country Second Division Dimension`   where `Country Second Division Name`=%s   and `Country Code`=%s"
 
 			       ,prepare_mysql($data['Address Country Second Division'])
 			       ,prepare_mysql($data['Address Country Code'])
 			       );
 
-		  
+
 		  $result=mysql_query($sql);
 		  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 

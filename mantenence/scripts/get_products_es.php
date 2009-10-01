@@ -1,7 +1,4 @@
 <?php
-//include("../../external_libs/adminpro/adminpro_config.php");
-//include("../../external_libs/adminpro/mysql_dialog.php");
-
 include_once('../../app_files/db/dns.php');
 include_once('../../class.Department.php');
 include_once('../../class.Family.php');
@@ -50,6 +47,25 @@ $products=false;
 $count=0;
 
 $last_department_name='';
+
+
+$store_data=array('Store Code'=>'AWR',
+		  'Store Name'=>'AW Regalos',
+		  'Store Locale'=>'es_ES',
+		  'Store Home Country Code 2 Alpha'=>'ES',
+		  'Store Currency Code'=>'EUR',
+		  'Store Home Country Name'=>'Spain', 
+		  'Store Home Country Short Name'=>'ES', 
+		  );
+$store=new Store('find',$store_data,'create');
+
+
+
+$warehouse=new Warehouse('find',array('Warehouse Code'=>'A','Warehouse Name'=>'Málaga'),'create');;
+
+$unk_location=new Location('find',array('Location Code'=>'UNK','Location Name'=>'Locación Desconocida'),'create');;
+
+$unk_supplier=new Supplier('find',array('Supplier Code'=>'UNK','Supplier Name'=>'Provedor Desconocido'),'create');;
 
 
 $__cols=array();
@@ -327,9 +343,7 @@ foreach($__cols as $cols){
 
 
 
-      $product=new Product('code-store',$code,1);
-      // print "** ".$product->data['Product Code']."\n";
-      if(!$product->id){
+    
 	if($units=='')
 	  $units=1;
       
@@ -418,13 +432,19 @@ foreach($__cols as $cols){
 		    'product family special characteristic'=>$fam_special_char,
 		    'product net weight'=>$_w,
 		    'product gross weight'=>$_w,
+		     'date1'=>date('Y-m-d H:i:s'),
+		  'date2'=>date('Y-m-d H:i:s'),
 		    'deals'=>$deals
 		    
 		    );
 	//	print_r($cols);
 	//print_r($data);
 	//exit;
-       	$product=new Product('create',$data);
+
+	
+
+       	$product=new Product('find',$data,'create');
+	if($product->new){
 
 	$scode=_trim($cols[22]);
 	$supplier_code=$cols[23];

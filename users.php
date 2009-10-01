@@ -48,7 +48,7 @@ $smarty->assign('js_files',$js_files);
 
 
 
-$sql="select (select count(*) from liveuser_groups) as number_groups ,( select count(*) from liveuser_users) as number_users ";
+$sql="select (select count(*) from `User Group Dimension`) as number_groups ,( select count(*) from `User Dimension`) as number_users ";
 $result = mysql_query($sql);
 if(!$user=mysql_fetch_array($result, MYSQL_ASSOC))
   exit;
@@ -70,7 +70,7 @@ $result=mysql_query($sql);
  mysql_free_result($result);
 $smarty->assign('newuser_langs',$newuser_langs);
 
-$sql="select group_id as id from liveuser_groups";
+$sql="select `User Group Key` as id from `User Group Dimension`";
 $newuser_groups=array();
 $res=mysql_query($sql);
 while($row=mysql_fetch_array($res, MYSQL_ASSOC)){

@@ -768,6 +768,18 @@ $default_state=array(
 							  'f_field'=>'id',
 							  'f_value'=>''
 							  ),
+				         'history'=>array(
+							      'order'=>'date',
+							      'order_dir'=>'',
+							      'sf'=>0,
+							      'nr'=>15,
+							      'where'=>'where true',
+							      'f_field'=>'id',
+							      'f_value'=>'',
+							      'from'=>'',
+							      'to'=>'',
+							      'elements'=>array()
+								),
 				       'stock_history'=>array(
 							      'order'=>'date',
 							      'order_dir'=>'',
@@ -848,6 +860,7 @@ $default_state=array(
 				 ),
 		     'location'=>array(
 				       'location'=>false,
+				       'id'=>1,
 				       'parts'=>array(
 							 'order'=>'sku',
 							 'order_dir'=>'',

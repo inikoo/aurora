@@ -70,13 +70,13 @@
 		</table>
 		<table    class="show_info_product">
 		    <tr>
-		      <td>{t}Sell Price{/t}:</td><td  class="price aright">{$product->get('formated price')}{if $product->get('Product Units per Case')>1} <span style="font-weight:400;color:#555">({$unit_price} {t}each{/t})</span>{/if}</td>
+		      <td>{t}Sell Price{/t}:</td><td  class="price aright">{$product->get('Formated Price')}</td>
 		    </tr>
-		    <tr {if $product->get('Product Unitary RRP')==''}style="display:none"{/if} >
-		      <td>{t}RRP{/t}:</td><td  class="aright">{$product->get('formated unitary rrp')} {if $product->get('product Units per Case')>1}{t}each{/t}{/if}</td>
+		    <tr {if $product->get('Product RRP')==''}style="display:none"{/if} >
+		      <td>{t}RRP{/t}:</td><td  class="aright">{$product->get('RRP Per Unit')} {t}each{/t}</td>
 		    </tr>
 		    
-		    <tr><td>{t}Sold Since{/t}:</td><td class="aright">{$product->get('Formated Sold Since')} </td>
+		    <tr><td>{t}Sold Since{/t}:</td><td class="aright">{$product->get('For Sale Since Date')} </td>
 		      {if $edit} <td   class="aright" ><input style="text-align:right" class="date_input" size="8" type="text"  id="v_invoice_date"  value="{$v_po_date_invoice}" name="invoice_date" /></td>{/if}
 		    </tr>
 		    <tr><td id="outall_label" title="Total Sales">{t}TS{/t}:</td><td class="aright" >{$product->get('Formated Product Total Quantity Invoiced')} {t}Outers{/t}
@@ -349,7 +349,18 @@
   </div>
   {/if}
 
-  
+
+  <div  id="block_history" class="data_table" style="{if $display.history==0}display:none;{/if}clear:both;margin:25px 0px">
+    <span id="table_title" class="clean_table_title">{t}Product History{/t}</span>
+    <div  class="clean_table_caption"  style="clear:both;">
+      <div style="float:left;"><div id="table_info2" class="clean_table_info"> <span id="rtext2"></span> <span class="rtext_rpp" id="rtext_rpp2"></span> <span class="filter_msg"  id="filter_msg2"></span>  </div></div>
+      <div class="clean_table_filter"  id="clean_table_filter2"><div class="clean_table_info"><span id="filter_name2">{$filter_name2}</span>: <input style="border-bottom:none" id='f_input2' value="{$filter_value0}" size=10/><div id='f_container2'></div></div></div>
+      <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator2"></span></div></div>
+    </div>
+    <div  id="table2"   class="data_table_container dtable btable "> </div>
+  </div>
+
+
 
 </div>
 </div>

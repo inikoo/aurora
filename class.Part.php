@@ -944,7 +944,7 @@ class part extends DB_Table{
   function get_unit_cost($date=false){
     
     if($date){
-        $sql=sprintf("select AVG(`Supplier Product Cost`) as cost from `Supplier Product Dimension` SP left join `Supplier Product Part List` B  on (SP.`Supplier Product ID`=SP.`Supplier Product ID`) where `Part SKU`=%d and ( (`Supplier Product Part Valid From`<=%s and `Supplier Product Part Valid To`>=%s and `Supplier Product Part Most Recent`='No') or (`Supplier Product Part Most Recent`='Yes' and `Supplier Product Part Valid From`<=%s )  )  "
+        $sql=sprintf("select AVG(`Supplier Product Cost`) as cost from `Supplier Product Dimension` SP left join `Supplier Product Part List` B  on (SP.`Supplier Product Code`=B.`Supplier Product Code` and SP.`Supplier Key`=B.`Supplier Key`) where `Part SKU`=%d and ( (`Supplier Product Part Valid From`<=%s and `Supplier Product Part Valid To`>=%s and `Supplier Product Part Most Recent`='No') or (`Supplier Product Part Most Recent`='Yes' and `Supplier Product Part Valid From`<=%s )  )  "
 		     ,$this->sku
 		     ,prepare_mysql($date)
 		     ,prepare_mysql($date)
@@ -957,8 +957,8 @@ class part extends DB_Table{
     }
 
     
-    $sql=sprintf("select AVG(`Supplier Product Cost`) as cost from `Supplier Product Dimension` SP left join `Supplier Product Part List` B  on (SP.`Supplier Product ID`=SP.`Supplier Product ID`) where `Part SKU`=%d and `Supplier Product Part Most Recent`='Yes' ",$this->sku);
-    print $sql;
+    $sql=sprintf("select AVG(`Supplier Product Cost`) as cost from `Supplier Product Dimension` SP left join `Supplier Product Part List` B  on (SP.`Supplier Product Code`=B.`Supplier Product Code` and SP.`Supplier Key`=B.`Supplier Key` ) where `Part SKU`=%d and `Supplier Product Part Most Recent`='Yes' ",$this->sku);
+    // print $sql;
     $res=mysql_query($sql);
     if($row=mysql_fetch_array($res)){
       return $row['cost'];

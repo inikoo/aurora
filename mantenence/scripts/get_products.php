@@ -1,22 +1,24 @@
 <?
-//include("../../external_libs/adminpro/adminpro_config.php");
-//include("../../external_libs/adminpro/mysql_dialog.php");
-
 include_once('../../app_files/db/dns.php');
-include_once('../../classes/Department.php');
-include_once('../../classes/Family.php');
-include_once('../../classes/Product.php');
-include_once('../../classes/Supplier.php');
-include_once('../../classes/Part.php');
-include_once('../../classes/SupplierProduct.php');
+include_once('../../class.Department.php');
+include_once('../../class.Family.php');
+include_once('../../class.Product.php');
+include_once('../../class.Supplier.php');
+include_once('../../class.Part.php');
+include_once('../../class.Warehouse.php');
+
+include_once('../../class.SupplierProduct.php');
+
 error_reporting(E_ALL);
-
-
+date_default_timezone_set('Europe/London');
+include_once('../../set_locales.php');
+require('../../locale.php');
+$_SESSION['locale_info'] = localeconv();
 
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 
 if(!$con){print "Error can not connect with database server\n";exit;}
-
+//$dns_db='dw';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
   
@@ -29,6 +31,8 @@ date_default_timezone_set('Europe/London');
 
 
 
+$_department_code='';
+
 
 
 $software='Get_Products.php';
@@ -36,7 +40,7 @@ $version='V 1.0';
 
 $Data_Audit_ETL_Software="$software $version";
 
-$file_name='AWorder2002.xls';
+$file_name='/data/plaza/AWorder2002.xls';
 $csv_file='tmp.csv';
 exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
 
@@ -46,6 +50,44 @@ $products=false;
 $count=0;
 
 $store_key=1;
+
+
+$store_data=array('Store Code'=>'UK',
+		  'Store Name'=>'Ancient Wisdom',
+		  'Store Locale'=>'en_GB',
+		  'Store Home Country Code 2 Alpha'=>'GB',
+		  'Store Currency Code'=>'GBP',
+		  'Store Home Country Name'=>'United Kingdom', 
+		  'Store Home Country Short Name'=>'UK', 
+		  );
+$store=new Store('find',$store_data,'create');
+
+$store_data=array('Store Code'=>'DE',
+		  'Store Name'=>'AW-Geshenke',
+		  'Store Locale'=>'de_DE',
+		  'Store Home Country Code 2 Alpha'=>'DE',
+		  'Store Currency Code'=>'EUR',
+		  'Store Home Country Name'=>'Germany', 
+		  'Store Home Country Short Name'=>'DE', 
+		  );
+$store=new Store('find',$store_data,'create');
+$store_data=array('Store Code'=>'FR',
+		  'Store Name'=>'AW-Cadeaux',
+		  'Store Locale'=>'fr_FR',
+		  'Store Home Country Code 2 Alpha'=>'FR',
+		  'Store Currency Code'=>'EUR',
+		  'Store Home Country Name'=>'France', 
+		  'Store Home Country Short Name'=>'FR', 
+		  );
+$store=new Store('find',$store_data,'create');
+
+$warehouse=new Warehouse('find',array('Warehouse Code'=>'W','Warehouse Name'=>'Parkwood'),'create');;
+
+$unk_location=new Location('find',array('Location Code'=>'UNK','Location Name'=>'Unknown'),'create');;
+
+$unk_supplier=new Supplier('find',array('Supplier Code'=>'UNK','Supplier Name'=>'Unknown'),'create');;
+
+//exit;
 $dept_no_dept=new Department('code_store','ND',$store_key);
 if(!$dept_no_dept->id){
   $dept_data=array(
@@ -125,17 +167,21 @@ while(($_cols = fgetcsv($handle_csv))!== false){
   }elseif($code=='Credit'){
     break;
   }
-  
   $__cols[]=$_cols;
- }
+}
 
+
+
+
+$fam_name='Products Without Family';
+$fam_code='PND_GB';
 
 
 $new_family=true;
 
 
-$department_name='';
-$department_code='';
+$department_name='ND';
+$department_code='Products Without Department';
 
 $current_fam_name='';
 $current_fam_code='';
@@ -159,9 +205,9 @@ foreach($__cols as $cols){
   
 
 
-  // if(preg_match('/EO-/i',$code)){
-  //     print_r($cols);
-  //   exit;   }
+  //  if(!preg_match('/FO-A1/i',$code)){
+  //   continue;
+  //    }
   
   $code=_trim($code);
   if($code=='' or !preg_match('/\-/',$code) or preg_match('/total/i',$price)  or  preg_match('/^(pi\-|cxd\-|fw\-04)/i',$code))
@@ -187,7 +233,7 @@ foreach($__cols as $cols){
   
   if($is_product){
     
-    //    print "$code\r";
+       print "$code\n";
 
     
     $part_list=array();
@@ -356,9 +402,7 @@ foreach($__cols as $cols){
 
 
 
-    $product=new Product('code',$code);
-    // print "** ".$product->data['Product Code']."\n";
-    if(!$product->id){
+  
       if($units=='')
 	$units=1;
       
@@ -420,6 +464,8 @@ foreach($__cols as $cols){
 		  'product family special characteristic'=>$fam_special_char,
 		  'product net weight'=>$_w,
 		  'product gross weight'=>$_w,
+		  'date1'=>date('Y-m-d H:i:s'),
+		  'date2'=>date('Y-m-d H:i:s'),
 		  'deals'=>$deals
 		    );
       //     print_r($cols);
@@ -434,7 +480,13 @@ foreach($__cols as $cols){
 
        }
 
-       	$product=new Product('create',$data);
+
+ 
+
+
+       $product=new Product('find',$data,'create');
+       if($product->new){
+	 $product->update_for_sale_since(date("Y-m-d H:i:s",strtotime("now +1 seconds")));
 
 	$scode=_trim($cols[20]);
 	$supplier_code=$cols[21];
@@ -1098,8 +1150,8 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 	}
 	$supplier=new Supplier('code',$supplier_code);
 	if(!$supplier->id){
-	  print "neew: $supplier_code\n";
-	  print_r($the_supplier_data);
+	  //print "neew: $supplier_code\n";
+	  //print_r($the_supplier_data);
 	  $supplier=new Supplier('new',$the_supplier_data);
 	}
 
@@ -1124,20 +1176,16 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 	if($scode=='' or $scode=='0')
 	  $scode='?'.$code;
 	$sp_data=array(
-		       'Supplier Product Supplier Key'=>$supplier->id,
-		       'Supplier Product Supplier Code'=>$supplier->data['Supplier Code'],
-		       'Supplier Product Supplier Name'=>$supplier->data['Supplier Name'],
+		       'Supplier Key'=>$supplier->id,
 		       'Supplier Product Code'=>$scode,
 		       'Supplier Product Cost'=>sprintf("%.4f",$supplier_cost),
 		       'Supplier Product Name'=>$description,
-		       'Supplier Product Description'=>$description
+		       'Supplier Product Description'=>$description,
+		       'Supplier Product Valid From'=>date('Y-m-d H:i:s'),
+		       'Supplier Product Valid To'=>date('Y-m-d H:i:s')
 		       );
-	$new_supplier_product=false;
-	$supplier_product=new SupplierProduct('supplier-code',$sp_data);
-	if(!$supplier_product->id){
-	  $new_supplier_product=true;
-	  $supplier_product=new SupplierProduct('new',$sp_data);
-	}
+	$supplier_product=new SupplierProduct('find',$sp_data,'create');
+	
 	$part_data=array(
 			 'Part Most Recent'=>'Yes',
 			 'Part XHTML Currently Supplied By'=>sprintf('<a href="supplier.php?id=%d">%s</a>',$supplier->id,$supplier->get('Supplier Code')),
@@ -1172,6 +1220,9 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 	$product->load('parts');
 	$part->load('used in');
 	$part->load('supplied by');
+	$product->load('cost');
+
+       
     
  }
     
@@ -1239,6 +1290,9 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
       }
    if($department_code=='Retail Display Stands'){
 	$department_code='RDS';
+      }
+if($department_code=='Candle Dept'){
+	$department_code='Candles';
       }
    if($department_code=='Stoneware'){
 	$department_code='Stone';

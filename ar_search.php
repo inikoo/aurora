@@ -42,11 +42,11 @@ switch($tipo){
    // try to get similar results 
    //   if($myconf['product_code_separator']!=''){
    if(  ($myconf['product_code_separator']!='' and   preg_match('/'.$myconf['product_code_separator'].'/',$q)) or  $myconf['product_code_separator']==''  ){
-     $sql=sprintf("select damlev(UPPER(%s),UPPER(`Product Code`)) as dist1,    damlev(UPPER(SOUNDEX(%s)),UPPER(SOUNDEX(`Product Code`))) as dist2,        `Product Code` as code,`product current key` as id from `Product Dimension`  order by dist1,dist2 limit 1;",prepare_mysql($q),prepare_mysql($q));
+     $sql=sprintf("select damlev(UPPER(%s),UPPER(`Product Code`)) as dist1,    damlev(UPPER(SOUNDEX(%s)),UPPER(SOUNDEX(`Product Code`))) as dist2,        `Product Code` as code,`product id` as id from `Product Dimension`  order by dist1,dist2 limit 1;",prepare_mysql($q),prepare_mysql($q));
      $result=mysql_query($sql);
      if($found=mysql_fetch_array($result, MYSQL_ASSOC)){
        if($found['dist1']<3){
-	 echo json_encode(array('state'=>400,'msg1'=>_('Did you mean'),'msg2'=>'<a href="'.$target.'?id='.$found['id'].'">'.$found['code'].'</a>'));
+	 echo json_encode(array('state'=>400,'msg1'=>_('Did you mean'),'msg2'=>'<a href="'.$target.'?pid='.$found['id'].'">'.$found['code'].'</a>'));
 	 break;
        }
      }

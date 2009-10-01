@@ -42,7 +42,7 @@ class supplier extends DB_Table{
      */
   var $new=false;
   
-  function Supplier($arg1=false,$arg2=false) {
+  function Supplier($arg1=false,$arg2=false,$arg3=false) {
 
     $this->table_name='Supplier';
     $this->ignore_fields=array('Supplier Key');
@@ -54,7 +54,7 @@ class supplier extends DB_Table{
      }
      if(preg_match('/^find/i',$arg1)){
      
-       $this->find($arg2,$arg1);
+       $this->find($arg2,$arg3);
        return;
      }   
 
@@ -136,8 +136,11 @@ class supplier extends DB_Table{
       $raw_data['Supplier Name']=$raw_data['name'];
     if(isset($raw_data['code']))
       $raw_data['Supplier Code']=$raw_data['code'];
-    if(isset($raw_data['Supplier Code']) and $raw_data['Supplier Code']=='')
-      $raw_data['Supplier Code']=_('Unknown');
+    if(isset($raw_data['Supplier Code']) and $raw_data['Supplier Code']==''){
+      $this->get_data('id',1);
+      return;
+    }
+     
 
     $data=$this->base_data();
      foreach($raw_data as $key=>$value){
@@ -163,10 +166,15 @@ class supplier extends DB_Table{
 
      if($create){
 
+       if(!$this->found)
+	 $this->create($data);
+     }
+    
+     
+     if($update){
+       
        if($this->found)
 	 $this->update($data);
-       else
-	 $this->create($data);
      }
     
 

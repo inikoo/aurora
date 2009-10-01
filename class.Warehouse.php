@@ -20,29 +20,19 @@ class Warehouse extends DB_Table{
   var $areas=false;
   var $locations=false;
   
-  function Warehouse($arg1=false,$arg2=false) {
+  function Warehouse($a1,$a2=false,$a3=false) {
 
     $this->table_name='Warehouse';
     $this->ignore_fields=array('Warehouse Key');
 
-     if(preg_match('/^(new|create)$/i',$arg1) and is_array($arg2)){
-       $this->create($arg2);
-       return;
-     }
-
-     if(preg_match('/find/i',$arg1)){
-       $this->find($arg2,$arg1);
-       return;
-     }
-
-     if(is_numeric($arg1)){
-       $this->get_data('id',$arg1);
-       return;
-     }
-     
-     $this->get_data($arg1,$arg2);
+    if(is_numeric($a1) and !$a2){
+      $this->get_data('id',$a1);
+    }elseif($a1=='find'){
+      $this->find($a2,$a3);
+      
+    }else
+       $this->get_data($a1,$a2);
   }
-
 
 
   function get_data($key,$tag){
@@ -66,6 +56,100 @@ class Warehouse extends DB_Table{
 
   }
  
+  function find($raw_data,$options){
+  if(isset($raw_data['editor'])){
+      foreach($raw_data['editor'] as $key=>$value){
+	if(array_key_exists($key,$this->editor))
+	  $this->editor[$key]=$value;
+      }
+    }
+    
+    $this->found=false;
+    $this->found_key=false;
+
+    $create='';
+    $update='';
+    if(preg_match('/create/i',$options)){
+      $create='create';
+    }
+    if(preg_match('/update/i',$options)){
+      $update='update';
+    }
+
+    $data=$this->base_data();
+    foreach($raw_data as $key=>$value){
+      if(array_key_exists($key,$data))
+	$data[$key]=_trim($value);
+    }
+    
+
+    //    print_r($raw_data);
+
+    if($data['Warehouse Code']=='' ){
+      $this->error=true;
+      $this->msg='Warehouse code empty';
+      return;
+    }
+
+    if($data['Warehouse Name']=='')
+      $data['Warehouse Name']=$data['Warehouse Code'];
+    
+
+    $sql=sprintf("select * from `Warehouse Dimension` where `Warehouse Code`=%s  "
+		 ,prepare_mysql($data['Warehouse Code'])
+		 ); 
+
+    $result=mysql_query($sql);
+    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+      $this->found=true;
+      $this->found_key=$row['Warehouse Key'];
+    }
+   
+   
+    if($create and !$this->found){
+      $this->create($data);
+      return;
+    }
+    if($this->found)
+      $this->get_data('id',$this->found_key);
+    
+    if($update and $this->found){
+
+    }
+
+
+  }
+
+function create($data){
+   $this->new=false;
+   $base_data=$this->base_data();
+  
+    foreach($data as $key=>$value){
+      if(array_key_exists($key,$base_data))
+	$base_data[$key]=_trim($value);
+    }
+
+      $keys='(';$values='values(';
+    foreach($base_data as $key=>$value){
+      $keys.="`$key`,";
+      $values.=prepare_mysql($value).",";
+    }
+    $keys=preg_replace('/,$/',')',$keys);
+    $values=preg_replace('/,$/',')',$values);
+    $sql=sprintf("insert into `Warehouse Dimension` %s %s",$keys,$values);
+    
+    if(mysql_query($sql)){
+      $this->id = mysql_insert_id();
+      $this->msg=_("Warehouse Added");
+      $this->get_data('id',$this->id);
+   $this->new=true;
+   return;
+ }else{
+   $this->msg=_(" Error can not create warehouse");
+ }
+}
+ 
+
 
 
   function xupdate($data){

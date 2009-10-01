@@ -297,26 +297,11 @@ function part_changed(o,id){
 	 Dom.get('save_part_'+id).style.visibility='hidden';
      
  }
-function price_change(old_value,new_value){
-	//	alert(old_value+' '+new_value)
-	prefix='';
-	old_value=FormatNumber(old_value,'.','',2);
-	new_value=FormatNumber(new_value,'.','',2);
-	var diff=new_value-old_value;
-	if(diff>0)
-	    prefix='+'+currency_symbol;
-	else
-	    prefix='-'+currency_symbol;
-	
+function formated_price_change(old_value,new_value){
+  
+    var diff=new_value-old_value;
+    return money(diff)+' '+percentage(diff,old_value);
 
-	if(old_value==0)
-	    var per='';
-	else{
-
-	    var per=FormatNumber((100*(diff/old_value)).toFixed(1),decimal_point,thousands_sep,1)+'%';
-	}
-	var diff=FormatNumber(Math.abs(diff).toFixed(2),decimal_point,thousands_sep,2);
-	return prefix+diff+' '+per;
     }
 
 function return_to_old_value(key){
@@ -519,21 +504,7 @@ function description_changed(o){
 	 save_menu();
 	
     }
-function percentage(old_value,new_value){
-    if(new_value==0)
-	return '';
-    old_value=FormatNumber(old_value,'.','',4);
-    new_value=FormatNumber(new_value,'.','',4);
-    var diff=new_value-old_value;
-    if(diff>0)
-	prefix='+';
-    else
-	prefix='';
-    var txt=prefix+FormatNumber((100*(diff/old_value)).toFixed(1),decimal_point,thousands_sep,1)+'%';
 
-    return txt;
-
-}
 function units_changed(o){
 	var ovalue=o.getAttribute('ovalue');
 	var name=o.name;
@@ -664,34 +635,50 @@ function odim_fcu_changed(o){
     }
 }
 function price_changed(o){
-	var ovalue=o.getAttribute('ovalue');
-	var name=o.name;
+   
+   
+    
+    var name=o.name;
+    var units=parse_number(Dom.get('v_units').value);
+    var cost=Dom.get('v_cost').value;
+    
+    
+    var ovalue=parse_money(o.getAttribute('ovalue'));
 
+   
+    var value=parse_money(o.value);
+    var diff=value-ovalue;
+   
+    if(name=='price'){
+	
+	var rrp=units*parse_money(Dom.get('v_rrp').value);
+	
+	Dom.get("price_change").innerHTML=money(diff,false,true)+' '+percentage(diff,ovalue,1,'NA','%',true);;
+	Dom.get("price_ou").innerHTML=money(value/units);
+	Dom.get("price_margin").innerHTML=percentage(value-cost,value);
+	Dom.get("rrp_margin").innerHTML=percentage(rrp-value,rrp);
+	Dom.get('v_price').value=money(value);
+    }else if(name=='rrp'){
+	var price=parse_money(Dom.get('v_price').value);
+	Dom.get("rrp_change").innerHTML=money(diff,false,true)+' '+percentage(diff,ovalue,1,'NA','%',true);;
+	Dom.get("rrp_ou").innerHTML=money(value*units);
+	//	alert(value*units+' '+price)
+	    Dom.get("rrp_margin").innerHTML=percentage((units*value)-price,units*value);
+	Dom.get('v_rrp').value=money(value);
+
+    }
+
+    if(ovalue!=value){
+	
+	Dom.get(name+"_save").style.visibility='visible';
+	Dom.get(name+"_undo").style.visibility='visible';
 	    
-	if(ovalue!=o.value){
-	    Dom.get(name+"_save").style.visibility='visible';
-	    Dom.get(name+"_undo").style.visibility='visible';
-
-	    if(o.value==''){
-		Dom.get(name+"_change").innerHTML='<?php echo _('RRP value unset')?>';
-		Dom.get(name+"_ou").innerHTML='';
-	    }else if(ovalue==''){
-		value=FormatNumber(o.value,'.','',2);
-		factor=FormatNumber(o.getAttribute('factor'),'.','',6);
-		Dom.get(name+"_change").innerHTML='<?php echo _('RRP set to')?> '+currency_symbol+FormatNumber(value,decimal_point,thousands_sep,2);
-		Dom.get(name+"_ou").innerHTML=currency_symbol+FormatNumber((value*factor).toFixed(2),decimal_point,thousands_sep,2);
-	    }else{
-		value=FormatNumber(o.value,'.','',2);
-		factor=FormatNumber(o.getAttribute('factor'),'.','',6);
-		change=price_change(ovalue,o.value);
-		Dom.get(name+"_change").innerHTML=change;
-		Dom.get(name+"_ou").innerHTML=currency_symbol+FormatNumber((value*factor).toFixed(2),decimal_point,thousands_sep,2);
-	    }
-	}else{
-	    Dom.get(name+"_save").style.visibility='hidden';
-	    Dom.get(name+"_undo").style.visibility='hidden';
-
-	}
+	    
+    }else{
+	Dom.get(name+"_save").style.visibility='hidden';
+	Dom.get(name+"_undo").style.visibility='hidden';
+	    
+    }
     
 	
 	
@@ -999,42 +986,59 @@ function change_list_element(e){
 function save_price(key){
 
     var value=Dom.get('v_'+key).value;
-    if(value!='')
-	value=FormatNumber(value,'.','',2);	
 
-	if(key=='rrp'){
-	    
-	    key='Product RRP';
-
-	}else if(key=='price'){
-	    if(value=='' && value<=0)
-		return;
-	    key='Product Price';
-	     
-	}else
-	    return;
-       		
-
-	var request='ar_edit_assets.php?tipo=edit_product&id='+product_id+'&key='+escape(key)+'&value='+escape(value);
-	alert(request);
+    value=parse_money(value);	
+    if(key=='rrp'){
+	var t_key='Product RRP Per Unit';
+    }else if(key=='price'){
+	var t_key='Product Price';
+    }else
 	return;
-	YAHOO.util.Connect.asyncRequest('POST',request ,{
-		success:function(o) {
-		     alert(o.responseText);
+
+    var request='ar_edit_assets.php?tipo=edit_product&id='+product_id+'&key='+escape(t_key)+'&value='+escape(value);
+    //  alert(request);
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    success:function(o) {
+		
+	
 		    var r =  YAHOO.lang.JSON.parse(o.responseText);
-		    //for(x in r['res'])
-		    //	alert(x+' '+r[x])
-		    if(r.ok){
-			new_value=r.newvalue;
-			//Dom.get(key+'_change').innerHTML='';
-			Dom.get(key+'_save').style.visibility='hidden';
-			Dom.get('v_'+key).setAttribute('ovalue',new_value);
-		    }
-		    Dom.get('edit_messages').innerHTML=r.msg;
+	
+		if(r.state==200){
+		    new_value=r.newvalue;
+		    //Dom.get(key+'_change').innerHTML='';
+
+		    Dom.get(key+'_save').style.visibility='hidden';
+		    Dom.get(key+'_change').innerHTML='';
+		    Dom.get(key+'_undo').style.visibility='hidden';
+
+		    Dom.get('v_'+key).setAttribute('ovalue',new_value);
+		    
+		    Dom.get('l_formated_cost').innerHTML=r.updated_data['Formated Cost'];
+		    Dom.get('l_formated_price').innerHTML=r.updated_data['Formated Price'];
+		    if(r.updated_data['RRP']==''){
+			Dom.get('tr_rrp_per_unit').style.display='none';
+		    }else
+			Dom.get('tr_rrp_per_unit').style.display='';
+		    Dom.get('l_formated_rrp_per_unit').innerHTML=r.updated_data['RRP Per Unit'];
+
+		    Dom.get('price_margin').innerHTML=r.updated_data['Margin'];
+		    Dom.get('rrp_margin').innerHTML=r.updated_data['RRP Margin'];
+
+		    
+		    var table=tables.table0;
+		    var datasource=tables.dataSource0;
+		    var request='';
+		    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);    
+
+		}else{
+		//Dom.get('edit_messages').innerHTML=r.msg;
+		    alert(r.msg);
 		}
-		 
-	    });
-    }
+	    }
+	    
+	});
+}
+
 function save_image(key,image_id){
     new_value=Dom.get(key+image_id).value;
     var request='ar_assets.php?tipo=ep_update&key='+escape(key)+'&value='+escape(new_value)+'&image_id='+image_id;
@@ -1092,35 +1096,37 @@ function save_description(key){
     }
 function change_block(e){
    
+  
+    if(editing!=this.id){
+	
+	if(this.id=='pictures' || this.id=='prices'){
+	    Dom.get('info_name').style.display='';
+	}else
+	    Dom.get('info_name').style.display='none';
 
-    Dom.get('d_parts').style.display='none';
-    Dom.get('d_pictures').style.display='none';
-    Dom.get('d_parts').style.display='none';
-    Dom.get('d_prices').style.display='none';
-    Dom.get('d_dimat').style.display='none';
-    Dom.get('d_config').style.display='none';
-    
+	if(this.id=='prices'){
+	    Dom.get('info_price').style.display='';
+	}else
+	    Dom.get('info_price').style.display='none';
 
-    Dom.get('d_description').style.display='none';
-    Dom.get('d_'+this.id).style.display='';
-    
 
-    // Dom.get('config').className='';
-//     Dom.get('parts').className='';
-//     Dom.get('pictures').className='';
-//     Dom.get('parts').className='';
-//     Dom.get('prices').className='';
-//     Dom.get('dimat').className='';
-//     Dom.get('description').className='';
-    var elements_array=Dom.getElementsByClassName('selected', 'li','chooser_ul');
-    for( var i in elements_array ){
-	Dom.removeClass(elements_array[i],'selected');
+
+	Dom.get('d_parts').style.display='none';
+	Dom.get('d_pictures').style.display='none';
+	Dom.get('d_parts').style.display='none';
+	Dom.get('d_prices').style.display='none';
+	Dom.get('d_dimat').style.display='none';
+	Dom.get('d_config').style.display='none';
+	Dom.get('d_description').style.display='none';
+	Dom.get('d_'+this.id).style.display='';
+	Dom.removeClass(editing,'selected');
+	
+	Dom.addClass(this, 'selected');
+	
+	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=product-edit&value='+this.id );
+	
+	editing=this.id;
     }
-    Dom.addClass(this, 'selected');
-    YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=product-edit&value='+this.id );
-    
-    editing=this.id;
-
 
 }
 function change_dim_tipo(tipo){
@@ -1442,8 +1448,7 @@ YAHOO.util.Event.onContentReady("adding_new_part", function () {
  	var oAC = new YAHOO.widget.AutoComplete("new_part_input", "new_part_container", oDS);
  	oAC.resultTypeList = false; 
 	oAC.generateRequest = function(sQuery) {
-	    // alert("?tipo=parts_name&except_product=<?php echo $_SESSION['state']['product']['id']?>&query=" + sQuery)
- 	    return "?tipo=parts_name&except_product=<?php echo $_SESSION['state']['product']['id']?>&query=" + sQuery ;
+ 	    return "?tipo=parts_name&except_product=<?php echo $_SESSION['state']['product']['pid']?>&query=" + sQuery ;
  	};
 	oAC.forceSelection = true; 
 	oAC.itemSelectEvent.subscribe(part_selected); 
@@ -1462,3 +1467,118 @@ YAHOO.util.Event.onContentReady("shapes", function () {
 	YAHOO.util.Event.addListener("dim_shape", "click", oMenu.show, null, oMenu);
     });
 YAHOO.util.Event.onDOMReady(init);
+
+YAHOO.util.Event.addListener(window, "load", function() {
+
+
+    tables = new function() {
+	    //START OF THE TABLE=========================================================================================================================
+
+	    var tableid=0; // Change if you have more the 1 table
+	    var tableDivEL="table"+tableid;
+
+	    var CustomersColumnDefs = [
+				       {key:"date",label:"<?php echo _('Date')?>", width:200,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"author",label:"<?php echo _('Author')?>", width:70,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       //     ,{key:"tipo", label:"<?php echo _('Type')?>", width:90,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       //,{key:"diff_qty",label:"<?php echo _('Qty')?>", width:90,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"abstract", label:"<?php echo _('Description')?>", width:370,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ];
+	    //?tipo=customers&tid=0"
+
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_assets.php?tipo=product_history");
+	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource0.connXhrMode = "queueRequests";
+	    this.dataSource0.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    rtext:"resultset.rtext",
+		    totalRecords: "resultset.total_records" // Access to value in the server response
+		},
+		
+		
+		fields: [
+			 "id"
+			 ,"note"
+			 ,'author','date','tipo','abstract','details'
+			 ]};
+	    
+	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
+						     this.dataSource0
+						     , {
+							 // sortedBy: {key:"<?php echo$_SESSION['tables']['customers_list'][0]?>", dir:"<?php echo$_SESSION['tables']['customers_list'][1]?>"},
+							 renderLoopSize: 50,generateRequest : myRequestBuilder
+							 ,paginator : new YAHOO.widget.Paginator({
+								 rowsPerPage    : <?php echo$_SESSION['state']['product']['stock_history']['nr']?>,containers : 'paginator0', alwaysVisible:false,
+								 pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+								 previousPageLinkLabel : "<",
+								 nextPageLinkLabel : ">",
+								 firstPageLinkLabel :"<<",
+								 lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
+								 ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+							     })
+							 
+							 ,sortedBy : {
+							     key: "<?php echo$_SESSION['state']['product']['stock_history']['order']?>",
+							     dir: "<?php echo$_SESSION['state']['product']['stock_history']['order_dir']?>"
+							 },
+							 dynamicData : true
+							 
+						     }
+						     
+						     );
+	    
+	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
+
+		    
+		    
+	    this.table0.filter={key:'<?php echo$_SESSION['state']['product']['stock_history']['f_field']?>',value:'<?php echo$_SESSION['state']['product']['stock_history']['f_value']?>'};
+	    YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown);
+	    
+	    
+	    this.move_formatter = function(elLiner, oRecord, oColumn, oData) {
+		var stock=oRecord.getData("part_stock")
+                if(stock>0)
+		   elLiner.innerHTML =oData;
+		else
+		    elLiner.innerHTML = '';
+
+	    };
+
+	    this.lost_formatter = function(elLiner, oRecord, oColumn, oData) {
+		var qty=oRecord.getData("number_qty")
+                if(qty==0)
+		    elLiner.innerHTML = '';
+		else
+		    elLiner.innerHTML =oData;
+	    };
+
+	    this.delete_formatter = function(elLiner, oRecord, oColumn, oData) {
+
+
+
+		var qty=oRecord.getData("number_qty")
+                if(qty==0){
+		    elLiner.innerHTML = oData;
+		    oColumn.actionx='delete';
+		}else{
+		    elLiner.innerHTML =''   ;
+		    oColumn.actionx='';
+		}
+		//alert(oColumn.action);
+	    };
+	    // Add the custom formatter to the shortcuts
+	    YAHOO.widget.DataTable.Formatter.move = this.move_formatter;
+	    YAHOO.widget.DataTable.Formatter.lost = this.lost_formatter;
+	    YAHOO.widget.DataTable.Formatter.delete = this.delete_formatter;
+
+
+	};
+    });
