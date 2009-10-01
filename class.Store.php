@@ -15,11 +15,11 @@
 /* class: Store
    Class to manage the *Company Dimension* table
 */
-class Store{
+class Store extends DB_Table{
 
   // Integer: id
   // Record Id
-  var $id=false;
+ 
   /*
        Constructor: Store
      
@@ -47,14 +47,81 @@ class Store{
 
      */
 
-  function Store($a1,$a2=false) {
+  function Store($a1,$a2=false,$a3=false) {
+    $this->table_name='Store';
+    $this->ignore_fields=array(
+			       'Store Key',
+			       'Store Departments',
+			       'Store Families',
+			       'Store For Sale Products',
+			       'Store In Process Products',
+			       'Store Not For Sale Products',
+			       'Store Discontinued Products',
+			       'Store Unknown Sales State Products',
+			       'Store Surplus Availability Products',
+			       'Store Optimal Availability Products',
+			       'Store Low Availability Products',
+			       'Store Critical Availability Products',
+			       'Store Out Of Stock Products',
+			       'Store Unknown Stock Products',
+			       'Store Total Invoiced Gross Amount',
+			       'Store Total Invoiced Discount Amount',
+			       'Store Total Invoiced Amount',
+			       'Store Total Profit',
+			       'Store Total Quantity Ordered',
+			       'Store Total Quantity Invoiced',
+			       'Store Total Quantity Delivere',
+			       'Store Total Days On Sale',
+			       'Store Total Days Available',
+			       'Store 1 Year Acc Invoiced Gross Amount',
+			       'Store 1 Year Acc Invoiced Discount Amount',
+			       'Store 1 Year Acc Invoiced Amount',
+			       'Store 1 Year Acc Profit',
+			       'Store 1 Year Acc Quantity Ordered',
+			       'Store 1 Year Acc Quantity Invoiced',
+			       'Store 1 Year Acc Quantity Delivere',
+			       'Store 1 Year Acc Days On Sale',
+			       'Store 1 Year Acc Days Available',
+			        'Store 1 Quarter Acc Invoiced Gross Amount',
+			       'Store 1 Quarter Acc Invoiced Discount Amount',
+			       'Store 1 Quarter Acc Invoiced Amount',
+			       'Store 1 Quarter Acc Profit',
+			       'Store 1 Quarter Acc Quantity Ordered',
+			       'Store 1 Quarter Acc Quantity Invoiced',
+			       'Store 1 Quarter Acc Quantity Delivere',
+			       'Store 1 Quarter Acc Days On Sale',
+			       'Store 1 Quarter Acc Days Available',
+			        'Store 1 Month Acc Invoiced Gross Amount',
+			       'Store 1 Month Acc Invoiced Discount Amount',
+			       'Store 1 Month Acc Invoiced Amount',
+			       'Store 1 Month Acc Profit',
+			       'Store 1 Month Acc Quantity Ordered',
+			       'Store 1 Month Acc Quantity Invoiced',
+			       'Store 1 Month Acc Quantity Delivere',
+			       'Store 1 Month Acc Days On Sale',
+			       'Store 1 Month Acc Days Available',
+			        'Store 1 Week Acc Invoiced Gross Amount',
+			       'Store 1 Week Acc Invoiced Discount Amount',
+			       'Store 1 Week Acc Invoiced Amount',
+			       'Store 1 Week Acc Profit',
+			       'Store 1 Week Acc Quantity Ordered',
+			       'Store 1 Week Acc Quantity Invoiced',
+			       'Store 1 Week Acc Quantity Delivere',
+			       'Store 1 Week Acc Days On Sale',
+			       'Store 1 Week Acc Days Available',
+			       'Store Total Quantity Delivered',
+			       'Store 1 Year Acc Quantity Delivered',
+			       'Store 1 Month Acc Quantity Delivered',
+			       'Store 1 Quarter Acc Quantity Delivered',
+			       'Store 1 Week Acc Quantity Delivered'
 
+
+			       );
     if(is_numeric($a1) and !$a2){
       $this->get_data('id',$a1);
-    }
-    else if(($a1=='new' or $a1=='create') and is_array($a2) ){
-      $this->create($a2);
-      
+    }elseif($a1=='find'){
+      $this->find($a2,$a3);
+    
     }else
       $this->get_data($a1,$a2);
 
@@ -66,6 +133,10 @@ class Store{
 //   if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   )
 //     $this->id=$this->data['Store Key'];
 // }
+
+
+
+
 
 /*
     Function: get_data
@@ -89,6 +160,75 @@ class Store{
     
 
   }
+
+ /*
+    Function: find
+    Busca el producto
+  */
+  function find($raw_data,$options){
+ 
+    if(isset($raw_data['editor'])){
+      foreach($raw_data['editor'] as $key=>$value){
+	if(array_key_exists($key,$this->editor))
+	  $this->editor[$key]=$value;
+      }
+    }
+    
+    $this->found=false;
+    $this->found_key=false;
+
+    $create='';
+    $update='';
+    if(preg_match('/create/i',$options)){
+      $create='create';
+    }
+    if(preg_match('/update/i',$options)){
+      $update='update';
+    }
+
+    $data=$this->base_data();
+    foreach($raw_data as $key=>$value){
+      if(array_key_exists($key,$data))
+	$data[$key]=_trim($value);
+    }
+    
+
+    //    print_r($raw_data);
+
+    if($data['Store Code']=='' ){
+      $this->error=true;
+      $this->msg='Store code empty';
+      return;
+    }
+
+    if($data['Store Name']=='')
+      $data['Store Name']=$data['Store Code'];
+    
+
+    $sql=sprintf("select * from `Store Dimension` where `Store Code`=%s  "
+		 ,prepare_mysql($data['Store Code'])
+		 ); 
+
+    $result=mysql_query($sql);
+    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+      $this->found=true;
+      $this->found_key=$row['Store Key'];
+    }
+   
+   
+    if($create and !$this->found){
+      $this->create($data);
+      return;
+    }
+    if($this->found)
+      $this->get_data('id',$this->found_key);
+    
+    if($update and $this->found){
+
+    }
+
+  }
+
 
 /*
     Function: get
@@ -651,58 +791,69 @@ $sql="select sum(`Product 1 Week Acc Invoiced Amount`) as net,sum(`Product 1 Wee
  function create($data){
 
 
-   if(isset($data['name']))
-     $data['Store Name']=$data['name'];
-    if(isset($data['code']))
-     $data['Store Code']=$data['code'];
-
-   $this->new=false;
-   if(!isset($data['Store Code'])){
-     $this->msg=_("Error: No store code provided");
-     return;
-   }
-
-   if($data['Store Code']=='' ){
-     $this->msg=_("Error: Wrong store code");
-     return;
-   }
-
-   if(!isset($data['Store Name'])){
-     $data['Store Name']=$data['Store Code'];
-      $this->msg=_("Warning: No store name");
-   }
-
-
-   $sql=sprintf("select count(*) as num from `Store Dimension` where `Store Code`=%s "
-		,prepare_mysql($data['Store Code'])
-		);
-   $res=mysql_query($sql);
-   $row=mysql_fetch_array($res);
-   if($row['num']>0){
-     $this->msg=_("Error: Another store with the same code");
-     return;
-     
-   }
    
-   $sql=sprintf("select count(*) as num from `Store Dimension` where `Store Name`=%s "
-		,prepare_mysql($data['Store Name'])
-		);
-   $res=mysql_query($sql);
-   $row=mysql_fetch_array($res);
-   if($row['num']>0){
-     $this->msg=_("Warning: Wrong another store with the same name");
+
+
+  /*  if(!isset($data['Store Code'])){ */
+/*      $this->msg=_("Error: No store code provided"); */
+/*      return; */
+/*    } */
+
+/*    if($data['Store Code']=='' ){ */
+/*      $this->msg=_("Error: Wrong store code"); */
+/*      return; */
+/*    } */
+
+/*    if(!isset($data['Store Name'])){ */
+/*      $data['Store Name']=$data['Store Code']; */
+/*       $this->msg=_("Warning: No store name"); */
+/*    } */
+
+
+/*    $sql=sprintf("select count(*) as num from `Store Dimension` where `Store Code`=%s " */
+/* 		,prepare_mysql($data['Store Code']) */
+/* 		); */
+/*    $res=mysql_query($sql); */
+/*    $row=mysql_fetch_array($res); */
+/*    if($row['num']>0){ */
+/*      $this->msg=_("Error: Another store with the same code"); */
+/*      return; */
+     
+/*    } */
+   
+/*    $sql=sprintf("select count(*) as num from `Store Dimension` where `Store Name`=%s " */
+/* 		,prepare_mysql($data['Store Name']) */
+/* 		); */
+/*    $res=mysql_query($sql); */
+/*    $row=mysql_fetch_array($res); */
+/*    if($row['num']>0){ */
+/*      $this->msg=_("Warning: Wrong another store with the same name"); */
 
      
-   }
+/*    } */
 
 
 
-   $sql=sprintf("insert into `Store Dimension` (`Store Code`,`Store Name`) values (%s,%s)"
-		,prepare_mysql($data['Store Code'])
-		,prepare_mysql($data['Store Name'])
-		);
+/*    $sql=sprintf("insert into `Store Dimension` (`Store Code`,`Store Name`) values (%s,%s)" */
+/* 		,prepare_mysql($data['Store Code']) */
+/* 		,prepare_mysql($data['Store Name']) */
+/* 		); */
+   $this->new=false;
+   $base_data=$this->base_data();
+   
+    foreach($data as $key=>$value){
+      if(array_key_exists($key,$base_data))
+	$base_data[$key]=_trim($value);
+    }
 
-
+      $keys='(';$values='values(';
+    foreach($base_data as $key=>$value){
+      $keys.="`$key`,";
+      $values.=prepare_mysql($value).",";
+    }
+    $keys=preg_replace('/,$/',')',$keys);
+    $values=preg_replace('/,$/',')',$values);
+    $sql=sprintf("insert into `Store Dimension` %s %s",$keys,$values);
 
  if(mysql_query($sql)){
    $this->id = mysql_insert_id();
@@ -711,7 +862,7 @@ $sql="select sum(`Product 1 Week Acc Invoiced Amount`) as net,sum(`Product 1 Wee
    $this->new=true;
    return;
  }else{
-   $this->msg=_("Error can not create store");
+   $this->msg=_(" Error can not create store");
 
  }
 

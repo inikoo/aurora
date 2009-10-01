@@ -1,4 +1,7 @@
 {include file='header.tpl'}
+
+
+
 <div style="display:none; position:absolute; left:10px; top:200px; z-index:2" id="cal1Container"></div>
 <div id="bd" >
   
@@ -8,21 +11,25 @@
   
   </div>
   <div id="doc3" style="clear:both;" class="yui-g yui-t4" >
-    <div id="yui-main"> 
-    
-      <div class="chooser" >
-	<ul id="chooser_ul">
-	  <li id="config" {if $edit=='config'}class="selected"{/if} ><img src="art/icons/cog.png"> {t}Parts{/t}</li>
-	  <li id="description" {if $edit=='description'}class="selected"{/if} > <img src="art/icons/information.png"> {t}Description{/t}</li>
-	  <li id="pictures" {if $edit=='pictures'}class="selected"{/if} > <img src="art/icons/photos.png"> {t}Pictures{/t}</li>
-	  <li id="prices" {if $edit=='prices'}class="selected"{/if} ><img src="art/icons/money_add.png"> {t}Price, Discounts{/t}</li>
-	  <li id="dimat" {if $edit=='dimat'}class="selected"{/if} ><img src="art/icons/shape_ungroup.png"> {t}Dimensions{/t}</li>
-	  <li id="dimat" {if $edit=='web'}class="selected"{/if} ><img src="art/icons/page_world.png"> {t}Web Pages{/t}</li>
+   
+
+	<ul class="tabs" id="chooser_ul">
+	  <li><span  class="item {if $edit=='config'}selected{/if}" id="config" > <span>{t}Parts{/t}</span></span></li>
+	  <li> <span class="item {if $edit=='description'}selected{/if}"  id="description">  <span> {t}Description{/t}</span></span></li>
+	  <li> <span class="item {if $edit=='pictures'}selected{/if}" id="pictures"  ><span>  {t}Pictures{/t}</span></span></li>
+	  <li> <span class="item {if $edit=='prices'}selected{/if}" id="prices"  ><span> {t}Price, Discounts{/t}</span></span></li>
+	  <li> <span class="item  {if $edit=='dimat'}selected{/if}" id="dimat" ><span> {t}Dimensions{/t}</span></span></li>
+	  <li> <span class="item {if $edit=='web'}selected{/if} " id="web" ><span> {t}Web Pages{/t}</span></span></li>
 	</ul>
-      </div>
+
+    <div id="yui-main" style="border:1px solid #ccc;"> 
+
+      
+ 
 
       <div style="clear:both;height:.1em;padding:0px 20px;;margin:20px auto;xborder-top: 1px solid #cbb;;xborder-bottom: 1px solid #caa;width:770px;" id="description_messages">
-	<div style="float:left;width:200px">
+	
+	<div id="info_name" style="float:left;width:260px;{if !($edit=='prices' or $edit=='pictures') }display:none{/if}">
 	  
 	  <table    class="show_info_product">
 	    <tr>
@@ -32,22 +39,32 @@
 	      <td>{t}Code{/t}:</td><td  class="aright">{$product->get('Product Code')}</td>
 	    </tr>
 	    <tr>
+	      <td>{t}Store{/t}:</td><td  class="aright">{$store->get('Store Name')}</td>
+	    </tr>
+	    <tr>
 	      <td>{t}Family{/t}:</td><td  class="aright">{$product->get('Product Family Code')}</td>
 	    </tr>
  
-
-	</table>
-</div>
-<div style="float:left;width:200px;margin-left:20px">
+	    
+	  </table>
+	</div>
+	<div  id="info_price"  style="float:left;width:260px;margin-left:20px;{if $edit!='prices'}display:none{/if}">
 	  
 	  <table    class="show_info_product">
-	    <tr>
-	      <td>{t}Cost{/t}:</td><td  class="aright">{$product->get('Product Cost')}</td>
+	    <tr style="{if $product->get('Product Units Per Case')==1}display:none{/if}">
+	      <td>{t}Unit per Case{/t}:</td><td  class="aright">{$product->get('Units')}</td>
 	    </tr>
-	    <td>{t}Price{/t}:</td><td  class="price aright">{$product->get('Formated Price')}{if $product->get('Product Units Per Case')>1} <span style="font-weight:400;color:#555">({$product->get('Formated Price Per Unit')} {t}each{/t})</span>{/if}</td>
+	    <tr>
+	      <td>{t}Cost{/t}:</td><td  id="l_formated_cost" class="aright">
+		{$product->get('Formated Cost')}
+	      </td>
+	    </tr>
+	    <td>{t}Price{/t}:</td><td  id="l_formated_price" class="price aright">
+	      {$product->get('Formated Price')}
+	    </td>
 </tr>
-<tr {if $product->get('Product RRP')==''}style="display:none"{/if} >
-	    <td>{t}RRP{/t}:</td><td  class="aright">{$product->get('Formated RRP Per Unit')} {if $product->get('Product Units Per Case')>1}{t}each{/t}{/if}</td>
+<tr id="tr_rrp_per_unit" {if $product->get('Product RRP')==''}style="display:none"{/if} >
+	    <td>{t}RRP{/t}:</td><td id="l_formated_rrp_per_unit" class="aright">{$product->get('RRP Per Unit')}</td>
 	  </tr>
 	</table>
 </div>
@@ -144,7 +161,7 @@
 		   id="v_units" 
 		   ovalue="{$units}" 
 		   name="units" 
-		   value="{$units}"  
+		   value="{$product->get('Product Units Per Case')}"  
 		   style="display:none;text-align:right;width:5em"     
 		   onkeydown="to_save_on_enter(event,this)" 
 		   onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thousand_sep}',3);units_changed(this)" />
@@ -240,6 +257,7 @@
     
   </table>
 </div>
+<input id="v_cost" value="{$product->get('Product Cost')}" type="hidden"/>
 <div class="edit_block" {if $edit!="prices"}style="display:none"{/if}  id="d_prices">
   <table class="edit" border=0>
     <tr class="title">
@@ -252,15 +270,15 @@
     
     <tr>
       <td class="label">{t}Sale Price{/t}:</td>
-      <td style="text-align:right">{$currency}<input  onkeydown="to_save_on_enter(event,this)"  
-			     onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thousand_sep}',2);price_changed(this)" style="text-align:right;width:5em"  
+      <td style="text-align:right"><input  onkeydown="to_save_on_enter(event,this)"  
+			     onblur="price_changed(this)" style="text-align:right;width:5em"  
 			     factor="{$factor_inv_units}" 
 			     name="price" 
 			     id="v_price" 
-			     value="{$product->get('Price','System')}"  
-			     ovalue="{$product->get('Price','System')}">
+			     value="{$product->get('Price')}"  
+			     ovalue="{$product->get('Price')}">
       </td>
-      <td id="price_ou" style="text-align:right">{$product->get('Price Per Unit Formated')}</td>
+      <td id="price_ou" style="text-align:right">{$product->get('Price Per Unit')}</td>
       <td id="price_margin" style="text-align:right">{$product->get('Margin')}</td>
       
       <td id="price_change"></td>
@@ -272,14 +290,14 @@
     </tr>
     <tr>
       <td class="label">{t}RRP{/t}:</td>
-      <td id="rrp_ou" style="text-align:right">{$product->get('RRP Per Outer Formated')}</td>
-      <td  style="text-align:right">{$currency}
+      <td id="rrp_ou" style="text-align:right">{$product->get('RRP')}</td>
+      <td  style="text-align:right">
 	<input onkeydown="to_save_on_enter(event,this)"
-               onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thousand_sep}',2);price_changed(this)" style="text-align:right;width:5em"
+               onblur="price_changed(this)" style="text-align:right;width:5em"
                factor="{$factor_units}"   
                name="rrp" id="v_rrp" 
-               ovalue="{$product->get('RRP Per Unit','System')}" 
-               value="{$product->get('RRP Per Unit','System')}" ></td> 
+               ovalue="{$product->get('RRP Per Unit')}" 
+               value="{$product->get('RRP Per Unit')}" ></td> 
       <td id="rrp_margin" style="text-align:right">{$product->get('RRP Margin')}</td>
 
       <td id="rrp_change" >{if $product->get('Product RRP Per Unit')==''}{t}RRP not set{/t}{/if}</td>
@@ -541,7 +559,24 @@
 
 
 </div>
+
+<div id="the_table0" class="data_table" style="margin:20px 20px 0px 20px; clear:both;padding-top:10px">
+  <span class="clean_table_title">{t}History{/t}</span>
+  <div  id="clean_table_caption0" class="clean_table_caption"  style="clear:both;">
+    <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
+    <div id="clean_table_filter0" class="clean_table_filter" style="display:none">
+      <div class="clean_table_info"><span id="filter_name0">{$filter_name}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value}" size=10/><div id='f_container'></div></div></div>
+    <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
+  </div>
+  <div  id="table0"   class="data_table_container dtable btable "> </div>
 </div>
+
+
+
+</div>
+
+
+
 </div>
 
 <div id="shapes" class="yuimenu">

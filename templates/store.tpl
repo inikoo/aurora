@@ -22,7 +22,12 @@
   </div>
   
   <div id="details" class="top_bar" style="{if !$show_details}display:none;{/if}">
+     
+
     <div  class="details">
+<div style="text-align:right">
+	<span  class="state_details"  onClick="hide_details()"> {t}Hide details{/t}</span>
+      </div>
       <div id="details_general"  {if $view!='general'}style="display:none"{/if}>
 	
 	<table class="show_info_product" style="width:20em">
@@ -104,9 +109,7 @@
 	<iframe id="the_plot" src ="{$plot_page}?{$plot_args}" frameborder=0 height="325" scrolling="no" width="{if $plot_tipo=='pie'}500px{else}100%{/if}"></iframe>
 	
       </div>
-      <div style="text-align:right">
-	<span  class="state_details"  onClick="hide_details()"> {t}Hide details{/t}</span>
-      </div>
+     
      </div>
    
     <div style="clear:both"></div>

@@ -66,7 +66,7 @@ $js_files=array(
 // }
 // //print_r($hide);
 
-$smarty->assign('display',$_SESSION['state']['product']['display']);
+
 
 // $smarty->assign('view_plot',$_SESSION['views']['product_plot']);
 
@@ -121,6 +121,13 @@ if($mode=='code'){
    
 
 $product= new product($mode,$tag);
+
+$display=$_SESSION['state']['product']['display'];
+
+if($product->data['Product First Sold Date']==''){
+  $display['plot']=false;
+
+}
 
 
 
@@ -243,6 +250,6 @@ $smarty->assign('js_files',$js_files);
 
 $smarty->assign('web_status_menu',$_web_status);
 
-
+$smarty->assign('display',$display);
 $smarty->display('product.tpl');
 ?>

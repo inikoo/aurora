@@ -1,9 +1,127 @@
 <?php 
-include_once('set_locales.php');
+include_once('common.php');
+
+
 ?>
 //@author Raul Perusquia <rulovico@gmail.com>
 //Copyright (c) 2009 LW
 var Dom   = YAHOO.util.Dom;
+
+
+function percentage($a,$b,$fixed,$error_txt,$psign,$plus_sing){
+    
+    if($error_txt== undefined)
+	$error_txt='NA';
+    if($psign== undefined)
+	$psign='%';
+    if($plus_sing== undefined)
+	$plus_sign=false;
+    if($fixed== undefined)
+	$fixed=1;
+    $per='';
+    $error_txt=$error_txt;
+    if($b>0){
+	if($plus_sing && $a>0)
+	    $sing='+';
+	else
+	    $sing='';
+	
+	$per=$sing+number_format((100*($a/$b)),$fixed)+$psign;
+	
+    }
+    else
+	$per=$error_txt;
+    return $per;
+}
+
+
+function parse_money($a){
+   
+    if(is_string($a)){
+	$a=$a.replace ( /[^\d\<?php echo $_SESSION['locale_info']['decimal_point']?>]/g,'')
+
+    }    
+
+    return parse_number($a);
+}
+
+
+function parse_number($a){
+    if(is_string($a)){
+	$a.replace ( /\<?php echo $_SESSION['locale_info']['thousands_sep']?>/,'');
+	$a.replace ( /\<?php echo $_SESSION['locale_info']['decimal_point']?>/,'.');
+    }    
+    return parseFloat($a);
+}
+
+
+
+
+
+function number($a,$fixed,$force_fix){
+   
+    if($fixed== undefined)
+	$fixed=1;
+    if($force_fix== undefined)
+	$force_fixed=false;
+
+
+  $floored=floor($a);
+  if($floored==$a && !$force_fix)
+    $fixed=0;
+
+  $a=number_format($a,$fixed,'<? echo $_SESSION['locale_info']['decimal_point']?>','<? echo $_SESSION['locale_info']['thousands_sep']?>');
+  
+  return $a;
+}
+
+
+function money($amount,$locale,$force_sign){
+    
+    if($locale== undefined)
+	$locale=false;
+    if($force_sign== undefined)
+	$force_sign=false;
+
+    $positive_sign='';
+    if($force_sign)
+	$positive_sign='+';
+
+  if($amount<0)
+    $neg=true;
+  else
+    $neg=false;
+  $amount=abs($amount);
+  
+  if(!$locale){
+    $amount=number_format($amount,2,'<? echo $_SESSION['locale_info']['decimal_point'] ?>','<? echo $_SESSION['locale_info']['thousands_sep']?>');
+    $symbol='<?php echo $_SESSION['locale_info']['currency_symbol']?>';
+    $amount=($neg?'-':$positive_sign)+$symbol+$amount;
+    return $amount;
+  }else{
+    switch($locale){
+    case('EUR'):
+      $amount=number_format($amount,2,'<? echo $_SESSION['locale_info']['decimal_point'] ?>','<? echo $_SESSION['locale_info']['thousands_sep']?>');
+      $symbol='€';
+      $amount=($neg?'-':$positive_sign)+$symbol+$amount;
+      return $amount;
+      break;
+    case('GBP'):
+      $amount=number_format($amount,2,'<? echo $_SESSION['locale_info']['decimal_point'] ?>','<? echo $_SESSION['locale_info']['thousands_sep']?>');
+      $symbol='£';
+      $amount=($neg?'-':$positive_sign)+$symbol+$amount;
+      return $amount;
+      break;
+
+
+    }
+
+  }
+
+}
+
+
+
 if(!Array.indexOf){
 	    Array.prototype.indexOf = function(obj){
 	        for(var i=0; i<this.length; i++){
@@ -44,20 +162,6 @@ var myBuildUrl = function(datatable,record) {
 
 
 
-function is_numeric( mixed_var ) {
-    // http://kevin.vanzonneveld.net
-    // +   original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
-    // +   improved by: David
-    // *     example 1: is_numeric(186.31);
-    // *     returns 1: true
-    // *     example 2: is_numeric('Kevin van Zonneveld');
-    // *     returns 2: false
-    // *     example 3: is_numeric('+186.31e2');
-    // *     returns 3: true
- 
-    return !isNaN( mixed_var );
-}
-
 function gup( name )
 {
   name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
@@ -83,13 +187,6 @@ function gup_str( name,str )
 }
 
 
-// function validate_email(email){
-//     if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email))
-// 	return (true);
-//     else
-// 	return (false);
-// }
-
 function isValidURL(url){
     var RegExp = /^(([\w]+:)?\/\/)?(([\d\w]|%[a-fA-f\d]{2,2})+(:([\d\w]|%[a-fA-f\d]{2,2})+)?@)?([\d\w][-\d\w]{0,253}[\d\w]\.)+[\w]{2,4}(:[\d]+)?(\/([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)*(\?(&?([-+_~.\d\w]|%[a-fA-f\d]{2,2})=?)*)?(#([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)?$/;
     if(RegExp.test(url)){
@@ -99,13 +196,6 @@ function isValidURL(url){
     } 
 }
    
-   //    function isValidEmail(email)
-   
-//       {
-// 	  alert(email);
-// 	    return /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test(email);
-   
-//       }
 
 function isValidEmail(email){
     var RegExp = /^((([a-z]|[0-9]|!|#|$|%|&|'|\*|\+|\-|\/|=|\?|\^|_|`|\{|\||\}|~)+(\.([a-z]|[0-9]|!|#|$|%|&|'|\*|\+|\-|\/|=|\?|\^|_|`|\{|\||\}|~)+)*)@((((([a-z]|[0-9])([a-z]|[0-9]|\-){0,61}([a-z]|[0-9])\.))*([a-z]|[0-9])([a-z]|[0-9]|\-){0,61}([a-z]|[0-9])\.)[\w]{2,4}|(((([0-9]){1,3}\.){3}([0-9]){1,3}))|(\[((([0-9]){1,3}\.){3}([0-9]){1,3})\])))$/i
@@ -118,77 +208,15 @@ function isValidEmail(email){
 
 
 function isValidNumber(number,ok_null){
+    
     if(ok_null){
 	if(number=='')
 	    return true
 
     }
-    
-    var RegExp = /^[0-9\s]+$/
-	if(RegExp.test(number)){
-	    return true;
-	}else{
-	    return false;
-	}
+    return is_numeric(number);
 }
 
-
-function xemailcheck(str) {
-
-		var at="@"
-		var dot="."
-		var lat=str.indexOf(at)
-		var lstr=str.length
-		var ldot=str.indexOf(dot)
-		if (str.indexOf(at)==-1){
-		   
-		   return false
-		}
-
-		if (str.indexOf(at)==-1 || str.indexOf(at)==0 || str.indexOf(at)==lstr){
-		   
-		   return false
-		}
-
-		if (str.indexOf(dot)==-1 || str.indexOf(dot)==0 || str.indexOf(dot)==lstr){
-		    
-		    return false
-		}
-
-		 if (str.indexOf(at,(lat+1))!=-1){
-		    
-		    return false
-		 }
-
-		 if (str.substring(lat-1,lat)==dot || str.substring(lat+1,lat+2)==dot){
-		    
-		    return false
-		 }
-
-		 if (str.indexOf(dot,(lat+2))==-1){
-		    
-		    return false
-		 }
-		
-		 if (str.indexOf(" ")!=-1){
-		    
-		    return false
-		 }
-
- 		 return true					
-	}
-
-
-
-function number_format( number, decimals, dec_point, thousands_sep ) {
- 
-    var n = number, c = isNaN(decimals = Math.abs(decimals)) ? 2 : decimals;
-    var d = dec_point == undefined ? "," : dec_point;
-    var t = thousands_sep == undefined ? "." : thousands_sep, s = n < 0 ? "-" : "";
-    var i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + "", j = (j = i.length) > 3 ? j % 3 : 0;
-    
-    return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
-}
 
 
 
@@ -211,129 +239,6 @@ function FormatClean(num)
     return sVal;
 }
   
-
-function FormatNumber(num,dec,comma,decimalPlaces)
-{       
-
-  var minus='';
-  var preDecimal='';
-  var postDecimal='';
-  var delete_comma=false;
-  if(comma==''){
-      comma=',';
-      delete_comma=true;
-  }
-
-
-  num=''+num;
-  var index=num.lastIndexOf('.')
-  if(index>=0){
-      var integers=num.substr(0,index);
-      var decimals=FormatClean(num.substr(index))+FormatEmptyNumber('',decimalPlaces);
-      //   alert(decimals);
-      decimals=decimals.substr(0,decimalPlaces);
-
-      num=integers+decimals
-  }else{
-      num=num+ FormatEmptyNumber('',decimalPlaces-1)
-  }
-
-  try 
-  {
-   
-    decimalPlaces = parseInt(decimalPlaces);
-
-    
-    if (decimalPlaces < 1) { dec = ''; }
-    if (num.lastIndexOf("-") == 0) { minus='-'; }
-   
-    preDecimal = FormatClean(num);
-    // alert(preDecimal);
-    // preDecimal doesn't contain a number at all.
-    // Return formatted zero representation.
-
-    if (preDecimal.length < 1)
-    {
-       return minus + FormatEmptyNumber(dec,decimalPlaces);
-    }
-    
-    // preDecimal is 0 or a series of 0's.
-    // Return formatted zero representation.
-    
-    if (parseInt(preDecimal) < 1)
-    {
-       return minus + FormatEmptyNumber(dec,decimalPlaces);
-    }
-    
-    // predecimal has no numbers to the left.
-    // Return formatted zero representation.
-
-    if (preDecimal.length == decimalPlaces)
-    {
-      return minus + '0' + dec + preDecimal;
-    }
-    
-    // predecimal has fewer characters than the
-    // specified number of decimal places.
-    // Return formatted leading zero representation.
-    
-    if (preDecimal.length < decimalPlaces)
-    {
-	//	alert(preDecimal.length);
-       if (decimalPlaces == 2)
-       {
-        return minus + FormatEmptyNumber(dec,decimalPlaces - 1) + preDecimal;
-       }
-       return minus + FormatEmptyNumber(dec,decimalPlaces - preDecimal.length) + preDecimal;
-    }
-
-    // predecimal contains enough characters to
-    // qualify to need decimal points rendered.
-    // Parse out the pre and post decimal values
-    // for future formatting.
-    
-    if (preDecimal.length > decimalPlaces)
-    {
-      postDecimal = dec + preDecimal.substring(preDecimal.length - decimalPlaces,
-                                               preDecimal.length);
-      preDecimal = preDecimal.substring(0,preDecimal.length - decimalPlaces);
-    }
-
-    // Place comma oriented delimiter every 3 characters
-    // against the numeric represenation of the "left" side
-    // of the decimal representation.  When finished, return
-    // both the left side comma formatted value together with
-    // the right side decimal formatted value.
-    
-    var regex  = new RegExp('(-?[0-9]+)([0-9]{3})');
-
-    while(regex.test(preDecimal))
-	{  
-       preDecimal = preDecimal.replace(regex, '$1' + comma + '$2');
-    }
-       
-  }
-  catch (exception) { AlertError("Format Number",exception); }
-  if(delete_comma){
-
-      preDecimal=preDecimal.replace(/\,/,"");
-  }
-
-  return minus + preDecimal + postDecimal;
-}
-
-function FormatEmptyNumber(decimalDelimiter,decimalPlaces)
-{
-    var preDecimal = '0';
-    var postDecimal = '';
- 
-    for(i=0;i<decimalPlaces;i++)
-    {
-      if (i==0) { postDecimal += decimalDelimiter; }
-      postDecimal += '0';
-    }
-   return preDecimal + postDecimal;
-}
   
 
  function AlertError(methodName,e)
@@ -344,12 +249,9 @@ function FormatEmptyNumber(decimalDelimiter,decimalPlaces)
 
 
 
-
-
-
 function key_filter(e,filter)
 {
-var keynum;
+    var keynum;
 var keychar;
 var numcheck;
 
@@ -370,40 +272,6 @@ keychar = String.fromCharCode(keynum);
  return filter.test(keychar);
  
 
-}
-function appendRow(tblId)
-{
-	var tbl = document.getElementById(tblId);
-	var newRow = tbl.insertRow(tbl.rows.length);
-	var newCell = newRow.insertCell(0);
-	newCell.innerHTML = 'Hello World!';
-}
-function deleteLastRow(tblId)
-{
-	var tbl = document.getElementById(tblId);
-	if (tbl.rows.length > 0) tbl.deleteRow(tbl.rows.length - 1);
-}
-function insertRow(tblId, txtIndex, txtError)
-{
-	var tbl = document.getElementById(tblId);
-	var rowIndex = document.getElementById(txtIndex).value;
-	try {
-		var newRow = tbl.insertRow(rowIndex);
-		var newCell = newRow.insertCell(0);
-		newCell.innerHTML = 'Hello World! insert';
-	} catch (ex) {
-		document.getElementById(txtError).value = ex;
-	}
-}
-function deleteRow(tblId, txtIndex, txtError)
-{
-	var tbl = document.getElementById(tblId);
-	var rowIndex = document.getElementById(txtIndex).value;
-	try {
-		tbl.deleteRow(rowIndex);
-	} catch (ex) {
-		document.getElementById(txtError).value = ex;
-	}
 }
 
 
@@ -583,30 +451,7 @@ function addEvent( obj, type, fn ) {
 
 
 
-function trim(str, chars) {
-  if(str == undefined)
-    return '';
-  else
-    return ltrim(rtrim(str, chars), chars);
-}
- 
-function ltrim(str, chars) {
-	chars = chars || "\\s";
-	return str.replace(new RegExp("^[" + chars + "]+", "g"), "");
-}
- 
-function rtrim(str, chars) {
-  
-  chars = chars || "\\s";
-  return str.replace(new RegExp("[" + chars + "]+$", "g"), "");
-}
 
-
-
-function ucwords( str ) {
-  
-    return (str+'').replace(/^(.)|\s(.)/g, function ( $1 ) { return $1.toUpperCase( ); } );
-}
 
 
 function star_rating($score,$max_score){

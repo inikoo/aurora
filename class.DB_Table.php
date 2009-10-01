@@ -36,7 +36,7 @@ abstract class DB_Table
   // array with the posible matches
   public $candidate=array();
 
-
+ public $updated_field=array();
   public $editor=array(
 		       'Author Name'=>false,
 		       'Author Key'=>0,
@@ -201,6 +201,28 @@ protected function update_field($field,$value,$options=''){
 
 
 }
+
+
+protected function get_editor_data(){
+  
+  $subject='User';
+  $subject_key=$this->editor['User Key'];
+  
+  if($this->editor['Author Name'])
+    $author=$this->editor['Author Name'];
+  else
+    $author=_('System');
+  $author_key=$this->editor['Author Key'];
+  if($this->editor['Date'])
+    $date=$this->editor['Date'];
+  else
+    $date=date("Y-m-d H:i:s");
+
+  return array('subject'=>$subject,'subject_key'=>$subject_key,'date'=>$date,'author'=>$author,'author_key'=>$author_key);
+
+}
+
+
 
 protected function add_history($raw_data){
  

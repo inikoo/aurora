@@ -39,8 +39,14 @@ $_SESSION['locale_info'] = localeconv();
 date_default_timezone_set('Europe/Madrid');
 $_SESSION['lang']=1;
 
+
+
+
+
 include_once('ci_local_map.php');
 include_once('ci_map_order_functions.php');
+
+
 
 $software='Get_Orders_DB.php';
 $version='V 1.0';
@@ -596,11 +602,6 @@ $code=_trim($transaction['code']);
                               'editor'=>array('Date'=>$date_order)
                           );
 
-
-
-            // print_r($product_data);
-
-            //      $product=new Product('code-name-units-price-store',$product_data);
             $product=new Product('find',$product_data,'create');
             if (!$product->id) {
                 print_r($product_data);
@@ -608,12 +609,7 @@ $code=_trim($transaction['code']);
                 exit;
             }
 
-            // $best_product_part_sku=$product->get('Parts SKU');
-
-            //print "NK:".$product->new_key." MID:".$product->new_id." Mcode:".$product->new_code."\n";
-
-
-
+      
             $supplier_code=_trim($transaction['supplier_code']);
             if ($supplier_code=='' or $supplier_code=='0' or  preg_match('/^costa$/i',$supplier_code))
                 $supplier_code='Unknown';
@@ -816,9 +812,7 @@ $code=_trim($transaction['code']);
 					      'required'=>$transaction['order'],
 					      'pick_method'=>'historic',
 					      'pick_method_data'=>array(
-									//'supplier product key'=>$best_product_supplier_product_key,
-									'parts_sku'=>$used_parts_sku,
-                                                   //'product part id'=>$best_product_product_part_id
+									'parts_sku'=>$used_parts_sku
 									)
 					      );
 		
@@ -857,9 +851,7 @@ $code=_trim($transaction['code']);
                                                                                                                                                                                                                                                                                                                         ,'required'=>0
                                                                                                                                                                                                                                                                                                                                     ,'pick_method'=>'historic'
                                                                                                                                                                                                                                                                                                                                                    ,'pick_method_data'=>array(
-                                                                                                                                                                                                                                                                                                                                                                           'supplier product key'=>$product->supplier_product_key,
-                                                                                                                                                                                                                                                                                                                                                                           'part sku'=>$product->part_sku,
-                                                                                                                                                                                                                                                                                                                                                                           'product part id'=>$product->product_part_id
+                                                                                                                                                                                                                                                                                                                                                                        'parts_sku'=>$used_parts_sku
                                                                                                                                                                                                                                                                                                                                                                        )
 
                                         );

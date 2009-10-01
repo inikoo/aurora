@@ -1,28 +1,5 @@
 <?php
 include_once('common.php');
-if(!$user->can_view('parts'))
-  exit();
-$view_sales=$user->can_view('product sales');
-$view_stock=$user->can_view('product stock');
-$create=$user->can_create('parts');
-$modify=$user->can_edit('parts');
-
-$smarty->assign('view_sales',$view_sales);
-$smarty->assign('view_stock',$view_stock);
-$smarty->assign('create',$create);
-$smarty->assign('modify',$modify);
-
-$q='';
-
-$sql="select count(*) as total_parts   from `Part Dimension` ";
-$result=mysql_query($sql);
-if(!$parts=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-  
-  exit("Internal Error\n");
- }
-  
-
-
 $smarty->assign('box_layout','yui-t0');
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
@@ -51,10 +28,37 @@ $js_files=array(
 		'parts.js.php'
 		);
 
+if(!$user->can_view('parts')){
 
+  $smarty->assign('parent','index.php');
+  $smarty->assign('title', _('Forbidden'));
+  $smarty->assign('css_files',$css_files);
+  $smarty->assign('js_files',$js_files);
 
+   $smarty->display('forbidden.tpl');
+   exit;
 
+}
 
+$view_sales=$user->can_view('product sales');
+$view_stock=$user->can_view('product stock');
+$create=$user->can_create('parts');
+$modify=$user->can_edit('parts');
+
+$smarty->assign('view_sales',$view_sales);
+$smarty->assign('view_stock',$view_stock);
+$smarty->assign('create',$create);
+$smarty->assign('modify',$modify);
+
+$q='';
+
+$sql="select count(*) as total_parts   from `Part Dimension` ";
+$result=mysql_query($sql);
+if(!$parts=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+  
+  exit("Internal Error\n");
+ }
+  
 
 $smarty->assign('parent','departments.php');
 $smarty->assign('title', _('Parts Index'));

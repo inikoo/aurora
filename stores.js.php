@@ -205,9 +205,7 @@ function change_avg(e,table_id){
 
  function init(){
  var Dom   = YAHOO.util.Dom;
- var Dom   = YAHOO.util.Dom;
-var Dom   = YAHOO.util.Dom;
-
+ 
 var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
  oACDS.queryMatchContains = true;
  var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);

@@ -38,6 +38,9 @@ if(!isset($_REQUEST['tipo']))
 
 $tipo=$_REQUEST['tipo'];
 switch($tipo){
+case('product_history'):
+  list_product_history();
+  break;
 case('product_server'):
  list_products_with_same_code();
   break;
@@ -6375,5 +6378,172 @@ if(isset( $_REQUEST['restrictions']))
   echo json_encode($response);
 
 }
+
+function list_product_history(){
+  $conf=$_SESSION['state']['product']['history'];
+  // print_r($conf);
+  $product_id=$_SESSION['state']['product']['tag'];
+  if(isset( $_REQUEST['elements']))
+    $elements=$_REQUEST['elements'];
+  else
+    $elements=$conf['elements'];
+  
+ if(isset( $_REQUEST['from']))
+   $from=$_REQUEST['from'];
+ else
+   $from=$conf['from'];
+ if(isset( $_REQUEST['to']))
+   $to=$_REQUEST['to'];
+ else
+   $to=$conf['to'];
+   if(isset( $_REQUEST['sf']))
+     $start_from=$_REQUEST['sf'];
+   else
+     $start_from=$conf['sf'];
+   if(isset( $_REQUEST['nr']))
+     $number_results=$_REQUEST['nr'];
+   else
+     $number_results=$conf['nr'];
+   if(isset( $_REQUEST['o']))
+     $order=$_REQUEST['o'];
+   else
+    $order=$conf['order'];
+   if(isset( $_REQUEST['od']))
+     $order_dir=$_REQUEST['od'];
+   else
+     $order_dir=$conf['order_dir'];
+   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+   if(isset( $_REQUEST['where']))
+     $where=addslashes($_REQUEST['where']);
+   else
+     $where=$conf['where'];
+   
+   if(isset( $_REQUEST['f_field']))
+     $f_field=$_REQUEST['f_field'];
+   else
+     $f_field=$conf['f_field'];
+
+  if(isset( $_REQUEST['f_value']))
+     $f_value=$_REQUEST['f_value'];
+   else
+     $f_value=$conf['f_value'];
+if(isset( $_REQUEST['tableid']))
+    $tableid=$_REQUEST['tableid'];
+  else
+    $tableid=0;
+ 
+ 
+ list($date_interval,$error)=prepare_mysql_dates($from,$to);
+  if($error){
+    list($date_interval,$error)=prepare_mysql_dates($conf['from'],$conf['to']);
+  }else{
+      $_SESSION['state']['product']['history']['from']=$from;
+      $_SESSION['state']['product']['history']['to']=$to;
+  }
+
+  $_SESSION['state']['product']['history']=
+    array(
+	  'order'=>$order,
+	  'order_dir'=>$order_direction,
+	  'nr'=>$number_results,
+	  'sf'=>$start_from,
+	  'where'=>$where,
+	  'f_field'=>$f_field,
+	  'f_value'=>$f_value,
+	  'from'=>$from,
+	  'to'=>$to,
+	  'elements'=>$elements
+	  );
+    $_order=$order;
+   $_dir=$order_direction;
+   $filter_msg='';
+
+  
+
+
+  $wheref='';
+
+  $where=$where.sprintf(" and `Subject`='User'  and ( (`Direct Object`='Product' and `Direct Object Key`=%d) or (`Indirect Object`='Product' and `Indirect Object Key`=%d)  )    "
+			,$product_id
+			,$product_id
+			);
+
+
+  //   $where =$where.$view.sprintf(' and product_id=%d  %s',$product_id,$date_interval);
+   
+   $sql="select count(*) as total from  `History Dimension`  $where $wheref";
+   //   print "$sql";
+   $result=mysql_query($sql);
+   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+     $total=$row['total'];
+   }
+   if($wheref=='')
+       $filtered=0;
+   else{
+     $sql="select count(*) as total from  `History Dimension`  $where ";
+     
+     $result=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+       $filtered=$row['total']-$total;
+     }
+
+   }
+   
+   
+   if($total==0)
+     $rtext=_('No stock movements');
+   else
+     $rtext=$total.' '.ngettext('stock operation','stock operations',$total);
+   
+
+   if($order=='date')
+     $order='`History Date`';
+   else
+     $order='`History Date`';
+
+
+   $sql=sprintf("select  * from `History Dimension` H left join `User Dimension` U on (U.`User Key`=H.`Subject Key`)   $where $wheref order by $order $order_direction limit $start_from,$number_results ");
+   // print $sql;
+  $result=mysql_query($sql);
+  $adata=array();
+  while($data=mysql_fetch_array($result, MYSQL_ASSOC)){
+    
+
+  
+    $tipo=$data['Action'];
+    $author=$data['Author Name'];
+
+    
+    $adata[]=array(
+
+		   'author'=>$author
+		   ,'tipo'=>$tipo
+		   ,'abstract'=>$data['History Abstract']
+		   ,'details'=>$data['History Details']
+		   ,'date'=>strftime("%a %e %b %Y %T", strtotime($data['History Date'])),
+		   );
+  }
+  $response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$adata,
+			 'sort_key'=>$_order,
+			 'sort_dir'=>$_dir,
+			 'rtext'=>$rtext,
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
+			 'total_records'=>$total,
+			 'records_offset'=>$start_from,
+			 'records_returned'=>$start_from+$total,
+			 'records_perpage'=>$number_results,
+			 'records_text'=>$rtext,
+			 'records_order'=>$order,
+			 'records_order_dir'=>$order_dir,
+			 'filtered'=>$filtered
+			 )
+		   );
+   echo json_encode($response);
+
+}
+
 
 ?>

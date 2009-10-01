@@ -321,7 +321,7 @@ function change_avg(e,table_id){
  YAHOO.util.Event.addListener(ids, "click",change_period,0);
  ids=['avg_totals','avg_month','avg_week',"avg_month_eff","avg_week_eff"];
  YAHOO.util.Event.addListener(ids, "click",change_avg,0);
-
+ 
  // YAHOO.util.Event.addListener('show_details', "click",show_details,'departments');
  YAHOO.util.Event.addListener('show_percentages', "click",show_percentages,'departments');
 
