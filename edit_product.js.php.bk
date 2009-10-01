@@ -613,7 +613,10 @@ function dim_changed(o){
     }
 
 }
-
+function price_fcu_changed(o){
+    var ovalue=o.getAttribute('ovalue');
+    Dom.get('change_units_price_diff').innerHTML=percentage(ovalue,o.value);
+}
 function oweight_fcu_changed(o){
     var ovalue=o.getAttribute('ovalue');
     Dom.get('change_units_oweight_diff').innerHTML=percentage(ovalue,o.value);
@@ -980,7 +983,61 @@ function change_list_element(e){
 	this.setAttribute('prev',selected)
     }
 }
+function save_price(key){
 
+    var value=Dom.get('v_'+key).value;
+
+    value=parse_money(value);	
+    if(key=='rrp'){
+	var t_key='Product RRP Per Unit';
+    }else if(key=='price'){
+	var t_key='Product Price';
+    }else
+	return;
+
+    var request='ar_edit_assets.php?tipo=edit_product&id='+product_id+'&key='+escape(t_key)+'&value='+escape(value);
+    //  alert(request);
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    success:function(o) {
+		
+	
+		    var r =  YAHOO.lang.JSON.parse(o.responseText);
+	
+		if(r.state==200){
+		    new_value=r.newvalue;
+		    //Dom.get(key+'_change').innerHTML='';
+
+		    Dom.get(key+'_save').style.visibility='hidden';
+		    Dom.get(key+'_change').innerHTML='';
+		    Dom.get(key+'_undo').style.visibility='hidden';
+
+		    Dom.get('v_'+key).setAttribute('ovalue',new_value);
+		    
+		    Dom.get('l_formated_cost').innerHTML=r.updated_data['Formated Cost'];
+		    Dom.get('l_formated_price').innerHTML=r.updated_data['Formated Price'];
+		    if(r.updated_data['RRP']==''){
+			Dom.get('tr_rrp_per_unit').style.display='none';
+		    }else
+			Dom.get('tr_rrp_per_unit').style.display='';
+		    Dom.get('l_formated_rrp_per_unit').innerHTML=r.updated_data['RRP Per Unit'];
+
+		    Dom.get('price_margin').innerHTML=r.updated_data['Margin'];
+		    Dom.get('rrp_margin').innerHTML=r.updated_data['RRP Margin'];
+
+		    
+		    var table=tables.table0;
+		    var datasource=tables.dataSource0;
+		    var request='';
+		    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);    
+
+		}else{
+		//Dom.get('edit_messages').innerHTML=r.msg;
+		    alert(r.msg);
+		}
+	    }
+	    
+	});
+}
 
 function save_image(key,image_id){
     new_value=Dom.get(key+image_id).value;
@@ -1002,7 +1059,41 @@ function save_image(key,image_id){
 	    });
 
 }
+function save_description(key){
 
+    var description_elements=array('name','special_char');
+
+	new_value=Dom.get('v_'+key).value;
+	if(key=='rrp' && new_value=='')
+	    value='';
+	else if(key=='price' && key=='rrp')
+	    value=FormatNumber(Dom.get('v_'+key).value,'.','',2);
+	else if (key=='details'){
+	    	editor.saveHTML(); 
+		value = editor.get('element').value;
+		new_value=value;
+	}else
+	    value=Dom.get('v_'+key).value;
+	var request='ar_assets.php?tipo=ep_update&key='+escape(key)+'&value='+value;
+		alert(request);
+	YAHOO.util.Connect.asyncRequest('POST',request ,{
+		success:function(o) {
+		    alert(o.responseText);
+		    var r =  YAHOO.lang.JSON.parse(o.responseText);
+		    //for(x in r['res'])
+		    //	alert(x+' '+r[x])
+		    if(r.ok){
+			//	Dom.get(key+'_change').innerHTML='';
+			Dom.get(key+'_save').style.visibility='hidden';
+			//Dom.get(key+'_icon').style.visibility='hidden';
+			Dom.get('v_'+key).setAttribute('ovalue',new_value);
+			Dom.get("edit_messages").innerHTML=r.msg;
+		    }else
+			Dom.get("edit_messages").innerHTML=r.msg;
+		}
+		 
+	    });
+    }
 function change_block(e){
    
   
@@ -1184,119 +1275,6 @@ function cancel_new_part(){
 
 
 }	
-
-function save_description(key){
-
- var value=Dom.get('v_'+key).value;
-
-    	
-    if(key=='name'){
-	var t_key='Product Name';
-    }else if(key=='special_char'){
-	var t_key='Product Special Characteristic';
-    }else
-	return;
-
-    var request='ar_edit_assets.php?tipo=edit_product&id='+product_id+'&key='+escape(t_key)+'&value='+escape(value);
-    //  alert(request);
-    YAHOO.util.Connect.asyncRequest('POST',request ,{
-	    success:function(o) {
-		
-	
-		    var r =  YAHOO.lang.JSON.parse(o.responseText);
-	
-		if(r.state==200){
-		    new_value=r.newvalue;
-		    //Dom.get(key+'_change').innerHTML='';
-
-		    Dom.get('description_save').style.visibility='hidden';
-		    Dom.get('description_undo').style.visibility='hidden';
-
-		    Dom.get('v_'+key).setAttribute('ovalue',new_value);
-		    
-		    Dom.get('l_formated_cost').innerHTML=r.updated_data['Formated Cost'];
-		    Dom.get('l_formated_price').innerHTML=r.updated_data['Formated Price'];
-		    if(r.updated_data['RRP']==''){
-			Dom.get('tr_rrp_per_unit').style.display='none';
-		    }else
-			Dom.get('tr_rrp_per_unit').style.display='';
-		    Dom.get('l_formated_rrp_per_unit').innerHTML=r.updated_data['RRP Per Unit'];
-
-		    Dom.get('price_margin').innerHTML=r.updated_data['Margin'];
-		    Dom.get('rrp_margin').innerHTML=r.updated_data['RRP Margin'];
-
-		    
-		    var table=tables.table0;
-		    var datasource=tables.dataSource0;
-		    var request='';
-		    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);    
-
-		}else{
-		//Dom.get('edit_messages').innerHTML=r.msg;
-		    alert(r.msg);
-		}
-	    }
-	    
-	});
-
-	
-    }
-function save_price(key){
-
-    var value=Dom.get('v_'+key).value;
-
-    value=parse_money(value);	
-    if(key=='rrp'){
-	var t_key='Product RRP Per Unit';
-    }else if(key=='price'){
-	var t_key='Product Price';
-    }else
-	return;
-
-    var request='ar_edit_assets.php?tipo=edit_product&id='+product_id+'&key='+escape(t_key)+'&value='+escape(value);
-    //  alert(request);
-    YAHOO.util.Connect.asyncRequest('POST',request ,{
-	    success:function(o) {
-		
-	
-		    var r =  YAHOO.lang.JSON.parse(o.responseText);
-	
-		if(r.state==200){
-		    new_value=r.newvalue;
-		    //Dom.get(key+'_change').innerHTML='';
-
-		    Dom.get(key+'_save').style.visibility='hidden';
-		    Dom.get(key+'_change').innerHTML='';
-		    Dom.get(key+'_undo').style.visibility='hidden';
-
-		    Dom.get('v_'+key).setAttribute('ovalue',new_value);
-		    
-		    Dom.get('l_formated_cost').innerHTML=r.updated_data['Formated Cost'];
-		    Dom.get('l_formated_price').innerHTML=r.updated_data['Formated Price'];
-		    if(r.updated_data['RRP']==''){
-			Dom.get('tr_rrp_per_unit').style.display='none';
-		    }else
-			Dom.get('tr_rrp_per_unit').style.display='';
-		    Dom.get('l_formated_rrp_per_unit').innerHTML=r.updated_data['RRP Per Unit'];
-
-		    Dom.get('price_margin').innerHTML=r.updated_data['Margin'];
-		    Dom.get('rrp_margin').innerHTML=r.updated_data['RRP Margin'];
-
-		    
-		    var table=tables.table0;
-		    var datasource=tables.dataSource0;
-		    var request='';
-		    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);    
-
-		}else{
-		//Dom.get('edit_messages').innerHTML=r.msg;
-		    alert(r.msg);
-		}
-	    }
-	    
-	});
-}
-
 
 function init(){
 
