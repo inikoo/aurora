@@ -33,7 +33,7 @@
 	  
 	  <table    class="show_info_product">
 	    <tr>
-	      <td colspan="2" class="aright product_name">{$product->get('Product Name')}</td>
+	      <td colspan="2" class="aright product_name" id="l_product_name" >{$product->get('Product Name')}</td>
 	    </tr>
 	    <tr>
 	      <td>{t}Code{/t}:</td><td  class="aright">{$product->get('Product Code')}</td>
@@ -71,7 +71,8 @@
 
 
 	<div style="float:right">
-	  <span class="save" style="display:none" id="description_save" onclick="save('description')">Save</span><span id="description_reset"  style="display:none"   class="reset" onclick="reset('description')">Reset</span>
+	  <span class="save" style="display:none" id="description_save" onclick="save_description()">Save</span>
+	  <span id="description_undo"  style="display:none"   class="undo" onclick="undo_description()">Undo</span>
 	</div>
 	<span style="display:none">Number of changes:<span id="description_num_changes">0</span></span>
 	
@@ -505,7 +506,8 @@
 	        id="special_char"  
 	        size="40"  
 	        MAXLENGTH="40" />
-	<span onClick="save_description('sdescription')"  name="sdescription" style="cursor:pointer;visibility:hidden" id="sdescription_save"><img src="art/icons/disk.png" title="{t}Save short description{/t}"/></span>
+	<span onClick="save_description('sdescription')"  name="sdescription" style="cursor:pointer;visibility:hidden" id="sdescription_save">
+	<img src="art/icons/disk.png" title="{t}Save short description{/t}"/></span>
     </td>
     </tr>
         <tr id="tr_use">

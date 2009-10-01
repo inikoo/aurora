@@ -276,6 +276,8 @@ function edit_product(){
 			'Price Per Unit'=>$product->get('Price Per Unit'),
 			'Margin'=>$product->get('Margin'),
 			'RRP Margin'=>$product->get('RRP Margin'),
+			'Product Name'=>$product->data['Product Name'],
+			'Product Special Characteristic'=>$product->data['Product Special Characteristic'],
 
 			'Price'=>$product->get('Price'),
 			'RRP'=>$product->get('RRP')
