@@ -19,7 +19,7 @@ var decimal_point='<?php echo $_SESSION['locale_info']['decimal_point']?>';
 var currency_symbol='<?if(isset( $_REQUEST['symbol'])){echo $_REQUEST['symbol'];}else{echo $myconf['currency_symbol'];}?>';
 var product_id='<?if(isset( $_REQUEST['product_id'])){echo $_REQUEST['product_id'];}else{exit();}?>';
 
-function reset(tipo){
+function undo(tipo){
 
     if(tipo=='description'){
 	Dom.get('name').value=Dom.get('name').getAttribute('ovalue');
@@ -60,7 +60,7 @@ function reset(tipo){
 
 	description_num_changed=0;
 	Dom.get(editing+'_save').style.display='none';
-	Dom.get(editing+'_reset').style.display='none';
+	Dom.get(editing+'_undo').style.display='none';
 
 	Dom.get(editing+'_num_changes').innerHTML=description_num_changed;
 	description_warnings= new Object();
@@ -96,11 +96,11 @@ function save_menu(){
 
     if(this_num_changed>0){
 	Dom.get(editing+'_save').style.display='';
-	Dom.get(editing+'_reset').style.display='';
+	Dom.get(editing+'_undo').style.display='';
 
     }else{
 	Dom.get(editing+'_save').style.display='none';
-	Dom.get(editing+'_reset').style.display='none';
+	Dom.get(editing+'_undo').style.display='none';
 
     }
     Dom.get(editing+'_num_changes').innerHTML=this_num_changed;
@@ -1187,49 +1187,43 @@ function cancel_new_part(){
 
 function save_description(key){
 
- var value=Dom.get('v_'+key).value;
+    var data=new Object();
+    data['Product Name']=Dom.get('name').value;
+    data['Product Special Characteristic']=Dom.get('special_char').value;
+    var json_value = YAHOO.lang.JSON.stringify(data);
 
-    	
-    if(key=='name'){
-	var t_key='Product Name';
-    }else if(key=='special_char'){
-	var t_key='Product Special Characteristic';
-    }else
-	return;
-
-    var request='ar_edit_assets.php?tipo=edit_product&id='+product_id+'&key='+escape(t_key)+'&value='+escape(value);
+    var request='ar_edit_assets.php?tipo=edit_product&id='+product_id+'&key=array&value='+escape(json_value);
     //  alert(request);
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
 		
-	
+			alert(o.responseText);
 		    var r =  YAHOO.lang.JSON.parse(o.responseText);
-	
-		if(r.state==200){
-		    new_value=r.newvalue;
-		    //Dom.get(key+'_change').innerHTML='';
-
-		    Dom.get('description_save').style.visibility='hidden';
-		    Dom.get('description_undo').style.visibility='hidden';
-
-		    Dom.get('v_'+key).setAttribute('ovalue',new_value);
 		    
-		    Dom.get('l_formated_cost').innerHTML=r.updated_data['Formated Cost'];
-		    Dom.get('l_formated_price').innerHTML=r.updated_data['Formated Price'];
-		    if(r.updated_data['RRP']==''){
-			Dom.get('tr_rrp_per_unit').style.display='none';
-		    }else
-			Dom.get('tr_rrp_per_unit').style.display='';
-		    Dom.get('l_formated_rrp_per_unit').innerHTML=r.updated_data['RRP Per Unit'];
-
-		    Dom.get('price_margin').innerHTML=r.updated_data['Margin'];
-		    Dom.get('rrp_margin').innerHTML=r.updated_data['RRP Margin'];
-
 		    
-		    var table=tables.table0;
-		    var datasource=tables.dataSource0;
-		    var request='';
-		    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);    
+		    
+		    if(r.state==200){
+		    
+			if(r.result['Product Name'].error==1){
+			    Dom.get('msg_name').innerHTML=r.result['Product Name'].msg;
+			    Dom.addClass('msg_name','error');
+			}else
+			    Dom.removeClass('msg_name','error');
+			
+			if(r.result['Product Special Characteristic'].error==1){
+			    Dom.addClass('msg_special_char','error');
+			    Dom.get('msg_special_char').innerHTML=r.result['Product Special Characteristic'].msg;
+			}else
+			    Dom.removeClass('msg_special_char','error');
+
+			Dom.get('description_save').style.display='none';
+			Dom.get('description_undo').style.display='none';
+
+
+			var table=tables.table0;
+			var datasource=tables.dataSource0;
+			var request='';
+			datasource.sendRequest(request,table.onDataReturnInitializeTable, table);    
 
 		}else{
 		//Dom.get('edit_messages').innerHTML=r.msg;
@@ -1257,14 +1251,15 @@ function save_price(key){
     //  alert(request);
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
+		//	alert(o.responseText)
 		
-	
 		    var r =  YAHOO.lang.JSON.parse(o.responseText);
 	
 		if(r.state==200){
-		    new_value=r.newvalue;
-		    //Dom.get(key+'_change').innerHTML='';
-
+		    new_value=r.result[t_key].new_value;
+		    
+		    
+		    
 		    Dom.get(key+'_save').style.visibility='hidden';
 		    Dom.get(key+'_change').innerHTML='';
 		    Dom.get(key+'_undo').style.visibility='hidden';
@@ -1289,8 +1284,8 @@ function save_price(key){
 		    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);    
 
 		}else{
-		//Dom.get('edit_messages').innerHTML=r.msg;
-		    alert(r.msg);
+
+		    alert(r.result[t_key].msg);
 		}
 	    }
 	    

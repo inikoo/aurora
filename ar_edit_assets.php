@@ -260,14 +260,48 @@ function edit_family(){
    echo json_encode($response); 
 }
 function edit_product(){
+  if(!isset($_REQUEST['id']) or !isset($_REQUEST['key']) or !isset($_REQUEST['value'])){
+    $response= array('state'=>400,'msg'=>$product->msg,'key'=>$_REQUEST['key']);
+    echo json_encode($response); 
+    return;
+  }
+
   $product=new product('pid',$_REQUEST['id']);
-  
-  $key=$_REQUEST['key'];
+  $result=array();
+  $updated=false;
+  if($_REQUEST['key']=='array'){
+    $tmp=preg_replace('/\\\"/','"',$_REQUEST['value']);
+    $tmp=preg_replace('/\\\\\"/','"',$tmp);
+    $raw_data=json_decode($tmp, true);
+   if(!is_array($raw_data)){
+     $response=array('state'=>400,'msg'=>'Wrong value');
+     echo json_encode($response);
+     return;
+   }
+   
+   $result=array();
+
+   foreach($raw_data as $key=>$value){
+     $product->update($key,$value);
+     $result[$key]=array('error'=>$product->error,'updated'=>$product->updated,'msg'=>$product->msg,'new_value'=>$product->new_value);
+     if($product->updated)
+        $updated=true;
+       
+   }
+
+  }else{
+    $key=$_REQUEST['key'];
+    $value=stripslashes(urldecode($_REQUEST['value']));  
+    $product->update($key,$value);
+     $result[$key]=array('error'=>$product->error,'updated'=>$product->updated,'msg'=>$product->msg,'new_value'=>$product->new_value);
+
+    if($product->updated)
+      $updated=true;
+  }
+
   
 
-  $product->update($_REQUEST['key'],stripslashes(urldecode($_REQUEST['value']))   );
-  if($product->updated){
-
+  if(count($updated)>0){
     $updated_data=array(
 			'Formated Cost'=>$product->get('Formated Cost'),
 			'Formated Price'=>$product->get('Formated Price'),
@@ -278,23 +312,12 @@ function edit_product(){
 			'RRP Margin'=>$product->get('RRP Margin'),
 			'Product Name'=>$product->data['Product Name'],
 			'Product Special Characteristic'=>$product->data['Product Special Characteristic'],
-
 			'Price'=>$product->get('Price'),
 			'RRP'=>$product->get('RRP')
-
 			);
-    if($key=='Product Price'){
-      $new_value=$product->get('Price');
-    }if($key=='Product RRP Per Unit'){
-      $new_value=$product->get('RRP Per Unit');
-    }else{
-      $product->new_value;
-    }
-
-    $response= array('state'=>200,'newvalue'=>$new_value,'key'=>$_REQUEST['key'],'updated_data'=>$updated_data);
-    
+    $response= array('state'=>200,'updated_data'=>$updated_data,'result'=>$result);
   }else{
-    $response= array('state'=>400,'msg'=>$product->msg,'key'=>$_REQUEST['key']);
+    $response= array('state'=>400,'updated_data'=>$updated_data,'result'=>$result);
    }
   echo json_encode($response);  
 }

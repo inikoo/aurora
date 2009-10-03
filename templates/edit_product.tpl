@@ -473,7 +473,7 @@
 </div>
 
 <div  class="edit_block" style="margin:0;padding:0;{if $edit!="description"}display:none{/if}"  id="d_description">
-    <table style="margin:0;" class="edit" border=0>
+    <table style="margin:0;" class="edit" border=1>
         <tr id="tr_name">
             <td rowspan=2  class="margin_note" >{t}Product Info{/t}:</td>
 	        <td class="label">{t}Name{/t}:</td>
@@ -490,7 +490,8 @@
 	        id="name" 
 	        size="40"  
 	        MAXLENGTH="75" />
-    </td>
+<span id="msg_name"></span>   
+ </td>
         </tr>
         <tr id="tr_special_char">
 	<td class="label">{t}Special Characteristic{/t}:</td>
@@ -508,6 +509,8 @@
 	        MAXLENGTH="40" />
 	<span onClick="save_description('sdescription')"  name="sdescription" style="cursor:pointer;visibility:hidden" id="sdescription_save">
 	<img src="art/icons/disk.png" title="{t}Save short description{/t}"/></span>
+
+<div  class="input_msg" id="msg_special_char"></div>   
     </td>
     </tr>
         <tr id="tr_use">

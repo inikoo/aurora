@@ -1,6 +1,7 @@
 <?
 include_once('../../app_files/db/dns.php');
 include_once('../../class.Department.php');
+
 include_once('../../class.Family.php');
 include_once('../../class.Product.php');
 include_once('../../class.Supplier.php');
@@ -86,7 +87,7 @@ $warehouse=new Warehouse('find',array('Warehouse Code'=>'W','Warehouse Name'=>'P
 $unk_location=new Location('find',array('Location Code'=>'UNK','Location Name'=>'Unknown'),'create');;
 
 $unk_supplier=new Supplier('find',array('Supplier Code'=>'UNK','Supplier Name'=>'Unknown'),'create');;
-
+;
 //exit;
 $dept_no_dept=new Department('code_store','ND',$store_key);
 if(!$dept_no_dept->id){
@@ -112,28 +113,32 @@ if(!$dept_promo->id){
 
 $dept_no_dept_key=$dept_no_dept->id;
 $dept_promo_key=$dept_promo->id;
-
-$fam_no_fam=new Family('code_store','PND_GB',$store_key);
-if(!$fam_no_fam->id){
-  $fam_data=array(
+;
+$fam_data=array(
 		   'Product Family Code'=>'PND_GB',
 		   'Product Family Name'=>'Products Without Family',
-		   'Product Family Main Department Key'=>$dept_no_dept_key
+		   'Product Family Main Department Key'=>$dept_no_dept_key,
+		   'Product Family Store Key'=>$store_key,
+		   'Product Family Special Characteristic'=>'None'
 		   );
-  $fam_no_fam=new Family('create',$fam_data);
-  $fam_no_fam_key=$fam_no_fam->id;
-  $dept_no_dept->load('products_info');
-}
-$fam_promo=new Family('code_store','Promo_GB',$store_key);
-if(!$fam_promo->id){
-  $fam_data=array(
-		   'code'=>'Promo_GB',
-		   'name'=>'Promotional Items',
-		   'Product Family Main Department Key'=>$dept_promo_key
+
+$fam_no_fam=new Family('find',$fam_data,'create');
+$fam_no_fam_key=$fam_no_fam->id;
+
+//print_r($fam_no_fam);
+
+$fam_data=array(
+		   'Product Family Code'=>'Promo_GB',
+		   'Product Family Name'=>'Promotional Items',
+		   'Product Family Main Department Key'=>$dept_promo_key,
+		   'Product Family Store Key'=>$store_key,
+		   'Product Family Special Characteristic'=>'None'
 		   );
-  $fam_promo=new Family('create',$fam_data);
-  $dept_promo->load('products_info');
-}
+
+
+
+$fam_promo=new Family('find',$fam_data,'create');
+
 
 
 $fam_no_fam_key=$fam_no_fam->id;
@@ -443,12 +448,46 @@ foreach($__cols as $cols){
        
 
 
-      $data=array(
+      
+    
+      
+       if(preg_match('/^pi-|catalogue|^info|Mug-26x|OB-39x|SG-xMIXx|wsl-1275x|wsl-1474x|wsl-1474x|wsl-1479x|^FW-|^MFH-XX$|wsl-1513x|wsl-1487x|wsl-1636x|wsl-1637x/i',_trim($code))){
+
+	 $dept_key=$dept_promo_key;
+	 $data['Product Family Key']=$fam_promo_key;
+	 $data['Product main Department Key']=$dept_promo_key;
+       }
+
+
+       $dep_data=array(
+		       'Product Department Code'=>$department_code
+		       'Product Department Name'=>$department_name
+		       'Product Department Store Key'=>$store_key
+		       );
+       $department=new Department('find',$dep_data,'create');	
+
+       if(is_numeric($data['Product Family Key'])){
+	 $family=new Family($data['Product Family Key']);
+       }else{
+	 
+	 $fam_data=array(
+			 'Product Family Code'=>$current_fam_code,
+			 'Product Family Name'=>$current_fam_name,
+			 'Product Family Main Department Key'=>$department->id,
+			 'Product Family Store Key'=>$store_key,
+			 'Product Family Special Characteristic'=>$fam_special_char
+			 );
+	 $family=new Family('find',$fam_data,'create');		 
+	 
+       }
+       
+
+       $data=array(
 		  'product sales state'=>'For sale',
 		  'product type'=>'Normal',
 		  'product record type'=>'Normal',
 		  'product web state'=>'Online Auto',
-		  'product store key'=>1,
+		  'product store key'=>$store_key,
 		  'product currency'=>'GBP',
 		  'product locale'=>'en_GB',
 		  'product code'=>$code,
@@ -456,33 +495,15 @@ foreach($__cols as $cols){
 		  'product rrp'=>$rrp,
 		  'product units per case'=>$units,
 		  'product name'=>$description,
-		  'product family code'=>$current_fam_code,
-		  'product family name'=>$current_fam_name,
-		  'product main department name'=>$department_name,
-		  'product main department code'=>$department_code,
+		  'product family key'=>$family->id,
+		  'product main department key'=>$department->id,
 		  'product special characteristic'=>$special_char,
-		  'product family special characteristic'=>$fam_special_char,
 		  'product net weight'=>$_w,
 		  'product gross weight'=>$_w,
 		  'date1'=>date('Y-m-d H:i:s'),
 		  'date2'=>date('Y-m-d H:i:s'),
 		  'deals'=>$deals
 		    );
-      //     print_r($cols);
-      //print_r($data);
-      
-       if(preg_match('/^pi-|catalogue|^info|Mug-26x|OB-39x|SG-xMIXx|wsl-1275x|wsl-1474x|wsl-1474x|wsl-1479x|^FW-|^MFH-XX$|wsl-1513x|wsl-1487x|wsl-1636x|wsl-1637x/i',_trim($code))){
-
-	 $dept_key=$dept_promo_key;
-	 $data['Product Family Key']=$fam_promo_key;
-	 $data['Product main Department Key']=$dept_promo_key;
-
-
-       }
-
-
- 
-
 
        $product=new Product('find',$data,'create');
        if($product->new){
