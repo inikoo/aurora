@@ -17,3 +17,4 @@ TRUNCATE `Time Series Dimension`;
 TRUNCATE `Warehouse Dimension`;
 TRUNCATE `Location Dimension`;
 TRUNCATE `Store Dimension`;
+TRUNCATE `Category Dimension`;

@@ -140,13 +140,15 @@ $sql=sprintf("select `Product Department Key` as id,`Product Department Code` as
 $result=mysql_query($sql);
 if(!$prev=mysql_fetch_array($result, MYSQL_ASSOC)   )
   $prev=array('id'=>0,'code'=>'');
+mysql_free_result($result);  
+  
 $sql=sprintf("select `Product Department Key` as id,`Product Department Code` as code  from `Product Department Dimension`   where  `Product Department Store Key`=%d and   %s>%s order by %s   ",$department->data['Product Department Store Key'],$store_order,prepare_mysql($department->get(str_replace('`','',$store_order))),$store_order);
 
 //print $sql;
 $result=mysql_query($sql);
 if(!$next=mysql_fetch_array($result, MYSQL_ASSOC)   )
   $next=array('id'=>0,'code'=>'');
-
+mysql_free_result($result);  
 $smarty->assign('prev',$prev);
 $smarty->assign('next',$next);
 

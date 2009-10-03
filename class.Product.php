@@ -1124,15 +1124,28 @@ class product extends DB_Table {
         if (!is_numeric($base_data['product units per case']) or $base_data['product units per case']<1)
             $base_data['product units per case']=1;
 
-       
+    
 
-	$department=new Department($base_data['product main department key']);
-	$family=new Family($base_data['product family key']);
 	
+	$family=new Family($base_data['product family key']);
+	if(!$family->id){
+	    $this->error=true;
+	    $this->msg='Wrong family';
+	    exit('eror fam');
+	    return;
+	}
+	
+	
+	$department=new Department($family->data['Product Family Main Department Key']);
+	$base_data['product main department key']=$department->id;
 	$base_data['product main department code']=$department->data['Product Department Code'];
 	$base_data['product main department name']=$department->data['Product Department Name'];
 	$base_data['product family code']=$family->data['Product Family Code'];
 	$base_data['product family name']=$family->data['Product Family Name'];
+	    
+	     $store=new Store($base_data['product store key']);
+	    
+	    
 	    
         $base_data['Product Current Key']=$this->id;
 
@@ -1173,6 +1186,16 @@ class product extends DB_Table {
                         );
             mysql_query($sql);
             //print "$sql\n";
+$family->update_product_data();
+$department->update_product_data();
+$store->update_product_data();
+
+$sql=sprintf("select `Category Key` from `Category Dimension` where `Category Default`='Yes' and `Category Subject`='Product' ");
+$res_cat=mysql_query($sql);
+while($row=mysql_fetch_array($res_cat)){
+$sql=sprintf("insert into `Category Bridge` values (%d,'Product',%d) ",$row['Category Key'],$this->pid  );
+mysql_query($sql);
+}
 
         }
 
@@ -1192,26 +1215,11 @@ class product extends DB_Table {
                         );
             mysql_query($sql);
         }
-        $family->load('products_info');
-        if ($new_family) {
-            $family->add_product($this->id,'principal');
-
-            if (isset($department) and is_object($department) and $department->id)
-                $department->add_family($family->id,'principal noproducts');
-        }
-
-        if (isset($department) and  is_object($department) and $department->id) {
-            $department->add_product($this->id,'principal');
-            $department->load('products_info');
-        }
+       
 
 
-        //      $this->update_same_id_valid_dates();
-        //     $this->update_same_code_valid_dates();
-
-
-        $store=new Store($this->data['Product Store Key']);
-        $store->load('products_info');
+       
+        
 
 
 
@@ -2793,7 +2801,7 @@ $this->update_special_characteristic($a1);
 
     function update_valid_dates_key($date) {
         $affected=0;
-        $sql=sprintf("update `Product Historic Dimension`  set `Product Historic Valid From`=%s where  `Product Key`=%d and `Product Historic Valid From`>%s   "
+        $sql=sprintf("update `Product History Dimension`  set `Product History Valid From`=%s where  `Product Key`=%d and `Product History Valid From`>%s   "
                      ,prepare_mysql($date)
                      ,prepare_mysql($this->id)
                      ,prepare_mysql($date)
@@ -2801,7 +2809,7 @@ $this->update_special_characteristic($a1);
                     );
         mysql_query($sql);
         $affected+=mysql_affected_rows();
-        $sql=sprintf("update `Product Historic Dimension`  set `Product Historic Valid To`=%s where  `Product Key`=%d and `Product Historic Valid To`<%s   "
+        $sql=sprintf("update `Product History Dimension`  set `Product History Valid To`=%s where  `Product Key`=%d and `Product History Valid To`<%s   "
                      ,prepare_mysql($date)
                      ,prepare_mysql($this->id)
                      ,prepare_mysql($date)
@@ -3930,6 +3938,9 @@ function update_special_characteristic($value){
 
             }
 }
+
+
+
 
 }
 ?>

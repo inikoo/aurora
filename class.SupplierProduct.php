@@ -950,7 +950,7 @@ class supplierproduct extends DB_Table {
     }
     function update_valid_dates_key($date) {
         $affected=0;
-        $sql=sprintf("update `Supplier Product Historic Dimension`  set `SPH Valid From`=%s where  `SPH Key`=%d and `SPH Valid From`>%s   "
+        $sql=sprintf("update `Supplier Product History Dimension`  set `SPH Valid From`=%s where  `SPH Key`=%d and `SPH Valid From`>%s   "
                      ,prepare_mysql($date)
 		     ,prepare_mysql($this->id)
                      ,prepare_mysql($date)
@@ -958,7 +958,7 @@ class supplierproduct extends DB_Table {
                     );
         mysql_query($sql);
         $affected+=mysql_affected_rows();
-        $sql=sprintf("update `Supplier Product Historic Dimension`  set `SPH Valid To`=%s where  `SPH Key`=%d and `SPH Valid To`<%s   "
+        $sql=sprintf("update `Supplier Product History Dimension`  set `SPH Valid To`=%s where  `SPH Key`=%d and `SPH Valid To`<%s   "
                      ,prepare_mysql($date)
 		     ,prepare_mysql($this->id)
                      ,prepare_mysql($date)

@@ -1,4 +1,4 @@
-<?
+<?php
 include_once('../../app_files/db/dns.php');
 include_once('../../class.Department.php');
 
@@ -7,6 +7,7 @@ include_once('../../class.Product.php');
 include_once('../../class.Supplier.php');
 include_once('../../class.Part.php');
 include_once('../../class.Warehouse.php');
+include_once('../../class.Node.php');
 
 include_once('../../class.SupplierProduct.php');
 
@@ -25,7 +26,7 @@ if (!$db){print "Error can not access the database\n";exit;}
   
 
 require_once '../../common_functions.php';
-mysql_query("SET time_zone ='UTC'");
+mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';           
 date_default_timezone_set('Europe/London');
@@ -43,7 +44,7 @@ $Data_Audit_ETL_Software="$software $version";
 
 $file_name='/data/plaza/AWorder2002.xls';
 $csv_file='tmp.csv';
-exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
+//exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
 
 $handle_csv = fopen($csv_file, "r");
 $column=0;
@@ -51,6 +52,66 @@ $products=false;
 $count=0;
 
 $store_key=1;
+
+$nodes=new Nodes('`Category Dimension`');
+$data=array('`Category Name`'=>'Use');
+$nodes->add_new(0 , $data);
+
+
+
+$data=array('`Category Name`'=>'Material');
+$nodes->add_new(0 , $data);
+$data=array('`Category Name`'=>'Theme');
+$nodes->add_new(0 , $data);
+
+
+$data=array('`Category Name`'=>'Other','`Category Default`'=>'Yes');
+$nodes->add_new(1 , $data);
+$data=array('`Category Name`'=>'Candles');
+$nodes->add_new(1 , $data);
+$data=array('`Category Name`'=>'Soap');
+$nodes->add_new(1 , $data);
+$data=array('`Category Name`'=>'Incense');
+$nodes->add_new(1 , $data);
+$data=array('`Category Name`'=>'Aromatheraphy');
+$nodes->add_new(1 , $data);
+$data=array('`Category Name`'=>'Bathroom Product');
+$nodes->add_new(1 , $data);
+$data=array('`Category Name`'=>'Decoration');
+$nodes->add_new(1 , $data);
+
+$data=array('`Category Name`'=>'Other','`Category Default`'=>'Yes');
+$nodes->add_new(2 , $data);
+$data=array('`Category Name`'=>'Wood');
+$nodes->add_new(2 , $data);
+$data=array('`Category Name`'=>'Metal');
+$nodes->add_new(2 , $data);
+$data=array('`Category Name`'=>'Glass');
+$nodes->add_new(2 , $data);
+$data=array('`Category Name`'=>'Resin');
+$nodes->add_new(2 , $data);
+$data=array('`Category Name`'=>'Ceramic');
+$nodes->add_new(2 , $data);
+$data=array('`Category Name`'=>'Mineral');
+$nodes->add_new(2 , $data);
+
+
+$data=array('`Category Name`'=>'None','`Category Default`'=>'Yes');
+$nodes->add_new(3 , $data);
+$data=array('`Category Name`'=>'Christmas');
+$nodes->add_new(3 , $data);
+$data=array('`Category Name`'=>'Halloween');
+$nodes->add_new(3 , $data);
+$data=array('`Category Name`'=>'Love');
+$nodes->add_new(3 , $data);
+$data=array('`Category Name`'=>'Animals');
+$nodes->add_new(3 , $data);
+$data=array('`Category Name`'=>'Esoteric');
+$nodes->add_new(3 , $data);
+$data=array('`Category Name`'=>'Fantasy');
+$nodes->add_new(3 , $data);
+
+
 
 
 $store_data=array('Store Code'=>'UK',
@@ -89,31 +150,27 @@ $unk_location=new Location('find',array('Location Code'=>'UNK','Location Name'=>
 $unk_supplier=new Supplier('find',array('Supplier Code'=>'UNK','Supplier Name'=>'Unknown'),'create');;
 ;
 //exit;
-$dept_no_dept=new Department('code_store','ND',$store_key);
-if(!$dept_no_dept->id){
-  $dept_data=array(
-		   'code'=>'ND',
-		   'name'=>'Products Without Department',
-		   'store_key'=>$store_key
-		   );
-  $dept_no_dept=new Department('create',$dept_data);
-  $dept_no_dept_key=$dept_no_dept->id;
-}
-$dept_promo=new Department('code_store','Promo',$store_key);
-if(!$dept_promo->id){
-  $dept_data=array(
-		   'code'=>'Promo',
-		   'name'=>'Promotional Items',
-		   'store_key'=>$store_key
-		   );
-  $dept_promo=new Department('create',$dept_data);
-  
-}
 
+$dept_data=array(
+		   'Product Department Code'=>'ND',
+		   'Product Department Name'=>'Products Without Department',
+		   'Product Department Store Key'=>$store_key
+		   );
 
+$dept_no_dept=new Department('find',$dept_data,'create');
 $dept_no_dept_key=$dept_no_dept->id;
+
+$dept_data=array(
+		   'Product Department Code'=>'Promo',
+		   'Product Department Name'=>'Promotional Items',
+		   'Product Department Store Key'=>$store_key
+		   );
+$dept_promo=new Department('find',$dept_data,'create');
+
+
+
 $dept_promo_key=$dept_promo->id;
-;
+
 $fam_data=array(
 		   'Product Family Code'=>'PND_GB',
 		   'Product Family Name'=>'Products Without Family',
@@ -143,7 +200,6 @@ $fam_promo=new Family('find',$fam_data,'create');
 
 $fam_no_fam_key=$fam_no_fam->id;
 $fam_promo_key=$fam_promo->id;
-
 
 
 
@@ -453,22 +509,20 @@ foreach($__cols as $cols){
       
        if(preg_match('/^pi-|catalogue|^info|Mug-26x|OB-39x|SG-xMIXx|wsl-1275x|wsl-1474x|wsl-1474x|wsl-1479x|^FW-|^MFH-XX$|wsl-1513x|wsl-1487x|wsl-1636x|wsl-1637x/i',_trim($code))){
 
-	 $dept_key=$dept_promo_key;
-	 $data['Product Family Key']=$fam_promo_key;
-	 $data['Product main Department Key']=$dept_promo_key;
-       }
+	
+	 $family=new Family($fam_promo_key);
+	 
+       }else{
 
 
        $dep_data=array(
-		       'Product Department Code'=>$department_code
-		       'Product Department Name'=>$department_name
+		       'Product Department Code'=>$department_code,
+		       'Product Department Name'=>$department_name,
 		       'Product Department Store Key'=>$store_key
 		       );
        $department=new Department('find',$dep_data,'create');	
 
-       if(is_numeric($data['Product Family Key'])){
-	 $family=new Family($data['Product Family Key']);
-       }else{
+    
 	 
 	 $fam_data=array(
 			 'Product Family Code'=>$current_fam_code,
@@ -478,9 +532,13 @@ foreach($__cols as $cols){
 			 'Product Family Special Characteristic'=>$fam_special_char
 			 );
 	 $family=new Family('find',$fam_data,'create');		 
-	 
-       }
-       
+	 }
+   
+   if(!$family->id){
+    print_r($family);
+    exit;
+   
+   }
 
        $data=array(
 		  'product sales state'=>'For sale',
@@ -496,7 +554,7 @@ foreach($__cols as $cols){
 		  'product units per case'=>$units,
 		  'product name'=>$description,
 		  'product family key'=>$family->id,
-		  'product main department key'=>$department->id,
+		  //'product main department key'=>$department->id,
 		  'product special characteristic'=>$special_char,
 		  'product net weight'=>$_w,
 		  'product gross weight'=>$_w,

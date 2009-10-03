@@ -206,44 +206,10 @@ $smarty->assign('plot_category_menu',$plot_category_menu);
 
 
 
-
-//print $_SESSION['state']['store']['plot'];
-
-
-//$sql="select id from product";
-//$result=mysql_query($sql);
-
-// include_once('class.product.php');
-// while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-//   $product= new product($row['id']);
-//   $product->set_stock();
-// }
-
-
-
-
-// //$smarty->assign('table_info',$store['numberof'].' '.ngettext('Department','Store',$store['numberof']));
-// $sql="select count(*) as numberof from product_group";
-// $result=mysql_query($sql);
-// $families=mysql_fetch_array($result, MYSQL_ASSOC);
-// $sql="select count(*) as numberof from product";
-// $result=mysql_query($sql);
-// $products=mysql_fetch_array($result, MYSQL_ASSOC);
-
-
-
-
-
-// $smarty->assign('stock_value',money($store['stock_value']));
-//$smarty->assign('total_sales',money($store['total_sales']));
 $smarty->assign('store',$store);
-// $smarty->assign('families',number($families['numberof']));
-// $smarty->assign('products',number($products['numberof']));
 
 $smarty->assign('parent','store.php');
 $smarty->assign('title', $store->data['Store Name']);
-//$smarty->assign('total_store',$store['numberof']);
-//$smarty->assign('table_title',$table_title);
 
 if($edit){
 
