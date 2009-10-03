@@ -104,13 +104,13 @@ class Family extends DB_Table{
    
 
     if(is_numeric($a1) and !$a2  )
-      $this->getdata('id',$a1,false);
+      $this->get_data('id',$a1,false);
     else if(preg_match('/new|create/',$a1) ){
       $this->find($a2,'create');
     }else if(preg_match('/find/',$a1) ){
       $this->find($a2,$a3);
     }elseif($a2!='')
-	$this->getdata($a1,$a2,$a3);
+	$this->get_data($a1,$a2,$a3);
  }
 
 
@@ -173,11 +173,12 @@ class Family extends DB_Table{
       $this->found_key=$row['Product Family Key'];
     }
 
+if($this->found){
+$this->get_data('id',$this->found_key);
+}
     
     if(!$this->found and $create){
-      if($data['Product Family Special Characteristic']!='')
-	$data['Product Family Special Characteristic']=$this->special_characteristic_if_duplicated($data);
-
+    
       $this->create($data);
       
     }
@@ -201,6 +202,10 @@ class Family extends DB_Table{
      if(array_key_exists($key,$base_data))
 	$base_data[$key]=_trim($value);
     }
+   
+         if($data['Product Family Special Characteristic']!='')
+	$data['Product Family Special Characteristic']=$this->special_characteristic_if_duplicated($data);
+
    
    $department=new Department($base_data['Product Family Main Department Key']);
    $base_data['Product Family Main Department Code']=$department->get('Product Department Code');
@@ -226,14 +231,14 @@ class Family extends DB_Table{
 
    if(mysql_query($sql)){
      $this->id = mysql_insert_id();
-     $this->getdata('id',$this->id,false);
+     $this->get_data('id',$this->id,false);
      $this->msg=_("Family Added");
      
      //     $sql=sprintf("insert into `Product Family Department Bridge` values (%d,%d)",$this->id,$department->id);
      //mysql_query($sql);
 
-     $department->load('products_info');
-     $store->load('products_info');
+     $department->update_families();
+     $store->update_families();
      $this->new=true;
 
    }else{
@@ -241,11 +246,11 @@ class Family extends DB_Table{
    }   
  }
   /*
-    Method: getdata
+    Method: get_data
     Obtiene los datos de la tabla Product Family Dimension de acuerdo al Id, al codigo o al code_store.
 */
 // JFA
- function getdata($tipo,$tag,$tag2){
+ function get_data($tipo,$tag,$tag2=false){
 
    switch($tipo){
    case('id'):
@@ -402,40 +407,7 @@ function update($key,$a1=false,$a2=false){
 
  function load($tipo,$args=false){
    switch($tipo){
-   case('products_data'):
-   case('products_info'):
-     
-  $sql=sprintf("select sum(if(`Product Record Type`='In process',1,0)) as in_process,sum(if(`Product Sales State`='Unknown',1,0)) as sale_unknown, sum(if(`Product Sales State`='Discontinued',1,0)) as discontinued,sum(if(`Product Sales State`='Not for sale',1,0)) as not_for_sale,sum(if(`Product Sales State`='For sale',1,0)) as for_sale,sum(if(`Product Availability State`='Unknown',1,0)) as availability_unknown,sum(if(`Product Availability State`='Optimal',1,0)) as availability_optimal
-,sum(if(`Product Availability State`='Low',1,0)) as availability_low
-,sum(if(`Product Availability State`='Surplus',1,0)) as availability_surplus
-
-,sum(if(`Product Availability State`='Critical',1,0)) as availability_critical,sum(if(`Product Availability State`='Out Of Stock',1,0)) as availability_outofstock from `Product Dimension` where `Product Family Key`=%d",$this->id);
-     //  print $sql;
-  $result=mysql_query($sql);
-  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-       $sql=sprintf("update `Product Family Dimension` set `Product Family In Process Products`=%d,`Product Family For Sale Products`=%d ,`Product Family Discontinued Products`=%d ,`Product Family Not For Sale Products`=%d ,`Product Family Unknown Sales State Products`=%d, `Product Family Optimal Availability Products`=%d , `Product Family Low Availability Products`=%d ,`Product Family Critical Availability Products`=%d ,`Product Family Out Of Stock Products`=%d,`Product Family Unknown Stock Products`=%d ,`Product Family Surplus Availability Products`=%d where `Product Family Key`=%d  ",
-		    $row['in_process'],
-		    $row['for_sale'],
-		    $row['discontinued'],
-		    $row['not_for_sale'],
-		    $row['sale_unknown'],
-		    $row['availability_optimal'],
-		    $row['availability_low'],
-		    $row['availability_critical'],
-		    $row['availability_outofstock'],
-		    $row['availability_unknown'],
-		    $row['availability_surplus'],
-		    $this->id
-	    );
-       //  print "$sql\n";exit;
-       mysql_query($sql);
-
-    
-     }
-
-  $this->getdata('id',$this->id,false);
-
-     break;
+   
    case('Department Key List');
    $this->department_keys=array();
    $sql=sprintf("Select `Product Department Key` from `Product Family Department Bridge` where `Product Family Key`=%d",$this->id);
@@ -1045,6 +1017,37 @@ $sql="select  sum(`Product Total Invoiced Amount`) as net,sum(`Product Total Inv
  
  }
 
+function update_product_data(){
+ $sql=sprintf("select sum(if(`Product Record Type`='In process',1,0)) as in_process,sum(if(`Product Sales State`='Unknown',1,0)) as sale_unknown, sum(if(`Product Sales State`='Discontinued',1,0)) as discontinued,sum(if(`Product Sales State`='Not for sale',1,0)) as not_for_sale,sum(if(`Product Sales State`='For sale',1,0)) as for_sale,sum(if(`Product Availability State`='Unknown',1,0)) as availability_unknown,sum(if(`Product Availability State`='Optimal',1,0)) as availability_optimal
+,sum(if(`Product Availability State`='Low',1,0)) as availability_low
+,sum(if(`Product Availability State`='Surplus',1,0)) as availability_surplus
+
+,sum(if(`Product Availability State`='Critical',1,0)) as availability_critical,sum(if(`Product Availability State`='Out Of Stock',1,0)) as availability_outofstock from `Product Dimension` where `Product Family Key`=%d",$this->id);
+     //  print $sql;
+  $result=mysql_query($sql);
+  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+       $sql=sprintf("update `Product Family Dimension` set `Product Family In Process Products`=%d,`Product Family For Sale Products`=%d ,`Product Family Discontinued Products`=%d ,`Product Family Not For Sale Products`=%d ,`Product Family Unknown Sales State Products`=%d, `Product Family Optimal Availability Products`=%d , `Product Family Low Availability Products`=%d ,`Product Family Critical Availability Products`=%d ,`Product Family Out Of Stock Products`=%d,`Product Family Unknown Stock Products`=%d ,`Product Family Surplus Availability Products`=%d where `Product Family Key`=%d  ",
+		    $row['in_process'],
+		    $row['for_sale'],
+		    $row['discontinued'],
+		    $row['not_for_sale'],
+		    $row['sale_unknown'],
+		    $row['availability_optimal'],
+		    $row['availability_low'],
+		    $row['availability_critical'],
+		    $row['availability_outofstock'],
+		    $row['availability_unknown'],
+		    $row['availability_surplus'],
+		    $this->id
+	    );
+       //  print "$sql\n";exit;
+       mysql_query($sql);
+
+    
+     }
+
+  $this->get_data('id',$this->id);
+}
 
 }
 

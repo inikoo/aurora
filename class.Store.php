@@ -27,7 +27,7 @@ class Store extends DB_Table{
      
       Parameters:
        arg1 -    (optional) Could be the tag for the Search Options or the Store Key for a simple object key search
-       arg2 -    (optional) Data used to search or create the object
+       arg2 -    (optional) data used to search or create the object
 
        Returns:
        void
@@ -139,7 +139,7 @@ class Store extends DB_Table{
 
 
 /*
-    Function: get_data
+    Function: data
     Obtiene los datos de la tabla Store Dimension de acuerdo al Id o al codigo de registro.
 */
 // JFA
@@ -306,57 +306,9 @@ class Store extends DB_Table{
 
  function load($tipo,$args=false){
    switch($tipo){
-   case('products_info'):
-      $sql=sprintf("select sum(if(`Product Record Type`='In process',1,0)) as in_process,sum(if(`Product Sales State`='Unknown',1,0)) as sale_unknown, sum(if(`Product Sales State`='Discontinued',1,0)) as discontinued,sum(if(`Product Sales State`='Not for sale',1,0)) as not_for_sale,sum(if(`Product Sales State`='For sale',1,0)) as for_sale,sum(if(`Product Availability State`='Unknown',1,0)) as availability_unknown,sum(if(`Product Availability State`='Optimal',1,0)) as availability_optimal,sum(if(`Product Availability State`='Low',1,0)) as availability_low,sum(if(`Product Availability State`='Critical',1,0)) as availability_critical,sum(if(`Product Availability State`='Surplus',1,0)) as availability_surplus,sum(if(`Product Availability State`='Out Of Stock',1,0)) as availability_outofstock from `Product Dimension` where  `Product Store Key`=%d",$this->id);
-      // print "$sql\n\n\n";
- $result=mysql_query($sql);
-  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-
-    $sql=sprintf("update `Store Dimension` set `Store In Process Products`=%d,`Store For Sale Products`=%d ,`Store Discontinued Products`=%d ,`Store Not For Sale Products`=%d ,`Store Unknown Sales State Products`=%d, `Store Optimal Availability Products`=%d , `Store Low Availability Products`=%d ,`Store Critical Availability Products`=%d ,`Store Out Of Stock Products`=%d,`Store Unknown Stock Products`=%d ,`Store Surplus Availability Products`=%d where `Store Key`=%d  ",
-		 $row['in_process'],
-		 $row['for_sale'],
-		 $row['discontinued'],
-		 $row['not_for_sale'],
-		 $row['sale_unknown'],
-		 $row['availability_optimal'],
-		    $row['availability_low'],
-		    $row['availability_critical'],
-		    $row['availability_outofstock'],
-		    $row['availability_unknown'],
-		    $row['availability_surplus'],
-		    $this->id
-	    );
-       //  print "$sql\n";exit;
-       mysql_query($sql);
-
-    
-     }
-
-  $sql=sprintf("select count(*) as num from `Product Family Dimension`  where  `Product Family Store Key`=%d",$this->id);
-  //print $sql;
-  $result=mysql_query($sql);
-  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-    $this->data['Store Families']=$row['num'];
-  }
-  $sql=sprintf("select count(*) as num from `Product Department Dimension`  where  `Product Department Store Key`=%d",$this->id);
-  $result=mysql_query($sql);
-  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-    $this->data['Store Departments']=$row['num'];
-  }
-  
- $sql=sprintf("update `Store Dimension` set `Store Families`=%d ,`Store Departments`=%d  where `Store Key`=%d  ",
-	      $this->data['Store Families']
-	      ,$this->data['Store Departments']
-	      ,$this->id
-	      );
- //  print "$sql\n";exit;
- mysql_query($sql);
  
- break;
 
 
-     $this->getdata('id',$this->id);
-     break;
 
    case('families'):
      $sql=sprintf("select * from `Product Family Dimension`  where  `Product Family Store Key`=%d",$this->id);
@@ -839,15 +791,15 @@ $sql="select sum(`Product 1 Week Acc Invoiced Amount`) as net,sum(`Product 1 Wee
 /* 		,prepare_mysql($data['Store Name']) */
 /* 		); */
    $this->new=false;
-   $base_data=$this->base_data();
+   $basedata=$this->base_data();
    
     foreach($data as $key=>$value){
-      if(array_key_exists($key,$base_data))
-	$base_data[$key]=_trim($value);
+      if(array_key_exists($key,$basedata))
+	$basedata[$key]=_trim($value);
     }
 
       $keys='(';$values='values(';
-    foreach($base_data as $key=>$value){
+    foreach($basedata as $key=>$value){
       $keys.="`$key`,";
       $values.=prepare_mysql($value).",";
     }
@@ -867,4 +819,72 @@ $sql="select sum(`Product 1 Week Acc Invoiced Amount`) as net,sum(`Product 1 Wee
  }
 
  }
+ 
+ 
+ function update_product_data(){
+      $sql=sprintf("select sum(if(`Product Record Type`='In process',1,0)) as in_process,sum(if(`Product Sales State`='Unknown',1,0)) as sale_unknown, sum(if(`Product Sales State`='Discontinued',1,0)) as discontinued,sum(if(`Product Sales State`='Not for sale',1,0)) as not_for_sale,sum(if(`Product Sales State`='For sale',1,0)) as for_sale,sum(if(`Product Availability State`='Unknown',1,0)) as availability_unknown,sum(if(`Product Availability State`='Optimal',1,0)) as availability_optimal,sum(if(`Product Availability State`='Low',1,0)) as availability_low,sum(if(`Product Availability State`='Critical',1,0)) as availability_critical,sum(if(`Product Availability State`='Surplus',1,0)) as availability_surplus,sum(if(`Product Availability State`='Out Of Stock',1,0)) as availability_outofstock from `Product Dimension` where  `Product Store Key`=%d",$this->id);
+      // print "$sql\n\n\n";
+ $result=mysql_query($sql);
+  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+
+    $sql=sprintf("update `Store Dimension` set `Store In Process Products`=%d,`Store For Sale Products`=%d ,`Store Discontinued Products`=%d ,`Store Not For Sale Products`=%d ,`Store Unknown Sales State Products`=%d, `Store Optimal Availability Products`=%d , `Store Low Availability Products`=%d ,`Store Critical Availability Products`=%d ,`Store Out Of Stock Products`=%d,`Store Unknown Stock Products`=%d ,`Store Surplus Availability Products`=%d where `Store Key`=%d  ",
+		 $row['in_process'],
+		 $row['for_sale'],
+		 $row['discontinued'],
+		 $row['not_for_sale'],
+		 $row['sale_unknown'],
+		 $row['availability_optimal'],
+		    $row['availability_low'],
+		    $row['availability_critical'],
+		    $row['availability_outofstock'],
+		    $row['availability_unknown'],
+		    $row['availability_surplus'],
+		    $this->id
+	    );
+       //  print "$sql\n";exit;
+       mysql_query($sql);
+$this->get_data('id',$this->id);
+    
+     }
+
+ 
+ }
+ 
+ function update_families(){
+  $sql=sprintf("select count(*) as num from `Product Family Dimension`  where  `Product Family Store Key`=%d",$this->id);
+  //print $sql;
+  $result=mysql_query($sql);
+  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+    $this->data['Store Families']=$row['num'];
+  }
+
+  
+ $sql=sprintf("update `Store Dimension` set `Store Families`=%d  where `Store Key`=%d  ",
+	      $this->data['Store Families']
+	   
+	      ,$this->id
+	      );
+ //  print "$sql\n";exit;
+ mysql_query($sql);
+ 
+ }
+ 
+ function update_departments(){
+ 
+  $sql=sprintf("select count(*) as num from `Product Department Dimension`  where  `Product Department Store Key`=%d",$this->id);
+  $result=mysql_query($sql);
+  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+    $this->data['Store Departments']=$row['num'];
+  }
+  
+ $sql=sprintf("update `Store Dimension` set `Store Departments`=%d  where `Store Key`=%d  ",
+	      $this->data['Store Families']
+	      ,$this->data['Store Departments']
+	      ,$this->id
+	      );
+ //  print "$sql\n";exit;
+ mysql_query($sql);
+ 
+ }
+ 
  }

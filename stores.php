@@ -123,7 +123,7 @@ $res=mysql_query($sql);
 if($row=mysql_fetch_array($res)){
   $stores=$row['num'];
  }
- 
+ mysql_free_result($res);
 $smarty->assign('stores',$stores);
 
 $q='';

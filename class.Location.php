@@ -205,7 +205,7 @@ class Location extends DB_Table{
   }
 
 
-  function update($data){
+  function update($data,$options=false){
     foreach($data as $key =>$value)
       switch($key){
       case('name'):

@@ -70,7 +70,7 @@ function number($a,$fixed,$force_fix){
   if($floored==$a && !$force_fix)
     $fixed=0;
 
-  $a=number_format($a,$fixed,'<? echo $_SESSION['locale_info']['decimal_point']?>','<? echo $_SESSION['locale_info']['thousands_sep']?>');
+  $a=number_format($a,$fixed,'<?php echo $_SESSION['locale_info']['decimal_point']?>','<?php echo $_SESSION['locale_info']['thousands_sep']?>');
   
   return $a;
 }
@@ -94,20 +94,20 @@ function money($amount,$locale,$force_sign){
   $amount=abs($amount);
   
   if(!$locale){
-    $amount=number_format($amount,2,'<? echo $_SESSION['locale_info']['decimal_point'] ?>','<? echo $_SESSION['locale_info']['thousands_sep']?>');
+    $amount=number_format($amount,2,'<?php echo $_SESSION['locale_info']['decimal_point'] ?>','<?php echo $_SESSION['locale_info']['thousands_sep']?>');
     $symbol='<?php echo $_SESSION['locale_info']['currency_symbol']?>';
     $amount=($neg?'-':$positive_sign)+$symbol+$amount;
     return $amount;
   }else{
     switch($locale){
     case('EUR'):
-      $amount=number_format($amount,2,'<? echo $_SESSION['locale_info']['decimal_point'] ?>','<? echo $_SESSION['locale_info']['thousands_sep']?>');
+      $amount=number_format($amount,2,'<?php echo $_SESSION['locale_info']['decimal_point'] ?>','<?php echo $_SESSION['locale_info']['thousands_sep']?>');
       $symbol='€';
       $amount=($neg?'-':$positive_sign)+$symbol+$amount;
       return $amount;
       break;
     case('GBP'):
-      $amount=number_format($amount,2,'<? echo $_SESSION['locale_info']['decimal_point'] ?>','<? echo $_SESSION['locale_info']['thousands_sep']?>');
+      $amount=number_format($amount,2,'<?php echo $_SESSION['locale_info']['decimal_point'] ?>','<?php echo $_SESSION['locale_info']['thousands_sep']?>');
       $symbol='£';
       $amount=($neg?'-':$positive_sign)+$symbol+$amount;
       return $amount;

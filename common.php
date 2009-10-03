@@ -23,8 +23,8 @@ mysql_query("SET NAMES 'utf8'");
 require_once 'conf/timezone.php';   
 date_default_timezone_set(TIMEZONE) ;
 
-mysql_query(sprintf("SET time_zone =%s",prepare_mysql(TIMEZONE)));
-
+//mysql_query(sprintf("SET time_zone =%s",prepare_mysql(TIMEZONE)));
+mysql_query("SET time_zone='+0:00'");
 require_once 'conf/conf.php';   
 
 $session = new Session($myconf['max_session_time'],1,100);
