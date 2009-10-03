@@ -18,13 +18,12 @@ include_once('class.Family.php');
 */
 // JFA
 
-class Department{
+
+class Department extends DB_Table{
 
  // Boolean: id
  // Record Id
-// JFA
-
- var $id=false;
+/
 
   /*
     Constructor: Department
@@ -33,55 +32,132 @@ class Department{
     Returns:
     void
  */
-// JFA
+
  function Department ($a1=false,$a2=false,$a3=false) {
-   //    $this->db =MDB2::singleton();
+   $this->table_name='Product Department';
+     $this->ignore_fields=array(
+			       'Product Department Key',
+			       'Product Department Families',
+			       'Product Department For Sale Products',
+			       'Product Department In Process Products',
+			       'Product Department Not For Sale Products',
+			       'Product Department Discontinued Products',
+			       'Product Department Unknown Sales State Products',
+			       'Product Department Surplus Availability Products',
+			       'Product Department Optimal Availability Products',
+			       'Product Department Low Availability Products',
+			       'Product Department Critical Availability Products',
+			       'Product Department Out Of Stock Products',
+			       'Product Department Unknown Stock Products',
+			       'Product Department Total Invoiced Gross Amount',
+			       'Product Department Total Invoiced Discount Amount',
+			       'Product Department Total Invoiced Amount',
+			       'Product Department Total Profit',
+			       'Product Department Total Quantity Ordered',
+			       'Product Department Total Quantity Invoiced',
+			       'Product Department Total Quantity Delivere',
+			       'Product Department Total Days On Sale',
+			       'Product Department Total Days Available',
+			       'Product Department 1 Year Acc Invoiced Gross Amount',
+			       'Product Department 1 Year Acc Invoiced Discount Amount',
+			       'Product Department 1 Year Acc Invoiced Amount',
+			       'Product Department 1 Year Acc Profit',
+			       'Product Department 1 Year Acc Quantity Ordered',
+			       'Product Department 1 Year Acc Quantity Invoiced',
+			       'Product Department 1 Year Acc Quantity Delivere',
+			       'Product Department 1 Year Acc Days On Sale',
+			       'Product Department 1 Year Acc Days Available',
+			        'Product Department 1 Quarter Acc Invoiced Gross Amount',
+			       'Product Department 1 Quarter Acc Invoiced Discount Amount',
+			       'Product Department 1 Quarter Acc Invoiced Amount',
+			       'Product Department 1 Quarter Acc Profit',
+			       'Product Department 1 Quarter Acc Quantity Ordered',
+			       'Product Department 1 Quarter Acc Quantity Invoiced',
+			       'Product Department 1 Quarter Acc Quantity Delivere',
+			       'Product Department 1 Quarter Acc Days On Sale',
+			       'Product Department 1 Quarter Acc Days Available',
+			        'Product Department 1 Month Acc Invoiced Gross Amount',
+			       'Product Department 1 Month Acc Invoiced Discount Amount',
+			       'Product Department 1 Month Acc Invoiced Amount',
+			       'Product Department 1 Month Acc Profit',
+			       'Product Department 1 Month Acc Quantity Ordered',
+			       'Product Department 1 Month Acc Quantity Invoiced',
+			       'Product Department 1 Month Acc Quantity Delivere',
+			       'Product Department 1 Month Acc Days On Sale',
+			       'Product Department 1 Month Acc Days Available',
+			        'Product Department 1 Week Acc Invoiced Gross Amount',
+			       'Product Department 1 Week Acc Invoiced Discount Amount',
+			       'Product Department 1 Week Acc Invoiced Amount',
+			       'Product Department 1 Week Acc Profit',
+			       'Product Department 1 Week Acc Quantity Ordered',
+			       'Product Department 1 Week Acc Quantity Invoiced',
+			       'Product Department 1 Week Acc Quantity Delivere',
+			       'Product Department 1 Week Acc Days On Sale',
+			       'Product Department 1 Week Acc Days Available',
+			       'Product Department Total Quantity Delivered',
+			       'Product Department 1 Year Acc Quantity Delivered',
+			       'Product Department 1 Month Acc Quantity Delivered',
+			       'Product Department 1 Quarter Acc Quantity Delivered',
+			       'Product Department 1 Week Acc Quantity Delivered'
+
+
+			       );
     
     if(is_numeric($a1) and !$a2  and $a1>0 )
       $this->getdata('id',$a1,false);
     else if( preg_match('/new|create/i',$a1)){
-      $this->create($a2);
+      $this->find($a2,'create');
+    } else if( preg_match('/find/i',$a1)){
+      $this->find($a2,$a3);
     }elseif($a2!='')
        $this->getdata($a1,$a2,$a3);
     
  }
 
-  /*
-    Function: create
-    Crea nuevos registros en la tabla product department dimension, evitando duplicidad de registros.
-  */
-  // JFA
 
- function create($data){
+  function find($raw_data,$options){
+    if(isset($raw_data['editor'])){
+      foreach($raw_data['editor'] as $key=>$value){
+	if(array_key_exists($key,$this->editor))
+	  $this->editor[$key]=$value;
+      }
+    }
 
-   if(isset($data['name']))
-     $data['Product Department Name']=$data['name'];
-    if(isset($data['code']))
-     $data['Product Department Code']=$data['code'];
-    if(isset($data['store_key']))
-     $data['Product Department Store Key']=$data['store_key'];
+    $this->found=false;
+    $this->found_key=false;
+    $create='';
+    $update='';
+    if(preg_match('/create/i',$options)){
+      $create='create';
+    }
+    if(preg_match('/update/i',$options)){
+      $update='update';
+    }
+
+    $data=$this->base_data();
+    foreach($raw_data as $key=>$value){
+      if(array_key_exists($key,$data))
+	$data[$key]=_trim($value);
+    }
 
 
-   $this->new=false;
-   if(!isset($data['Product Department Code'])){
-     $this->msg=_("Error: No department code provided");
-     return;
-   }
+  
 
    if($data['Product Department Code']=='' ){
      $this->msg=_("Error: Wrong department code");
+     $this->error=true;
      return;
    }
 
-   if(!isset($data['Product Department Name'])){
+   if(isset($data['Product Department Name']==''){
      $data['Product Department Name']=$data['Product Department Code'];
-      $this->msg=_("Warning: No department name");
+     $this->msg=_("Warning: No department name");
    }
 
-   if(!isset($data['Product Department Store Key']) or !is_numeric($data['Product Department Store Key']) or $data['Product Department Store Key']<=0 ){
-     $data['Product Department Store Key']=1;
-     $this->msg=_("Warning: Incorrect Store Key");
-     $store=new Store($data['Product Department Store Key']);
+   if( !is_numeric($data['Product Department Store Key']) or $data['Product Department Store Key']<=0 ){
+    
+     $this->msg=_("Error: Incorrect Store Key");
+     return;
    }
    $sql=sprintf("select count(*) as num from `Product Department Dimension` where `Product Department Store Key`=%d and `Product Department Code`=%s "
 		,$data['Product Department Store Key']
@@ -91,10 +167,14 @@ class Department{
    $row=mysql_fetch_array($res);
    if($row['num']>0){
      $this->msg=_("Error: Another department with the same code");
+     $this->error=true;
      return;
      
    }
    
+
+
+
    $sql=sprintf("select count(*) as num from `Product Department Dimension` where `Product Department Store Key`=%d and `Product Department Name`=%s "
 		,$data['Product Department Store Key']
 		,prepare_mysql($data['Product Department Name'])
@@ -103,8 +183,31 @@ class Department{
    $row=mysql_fetch_array($res);
    if($row['num']>0){
      $this->msg=_("Warning: Wrong another department with the same name");
-    
+     $this->warning=true;
    }
+
+
+
+
+
+
+
+
+  }
+
+
+  /*
+    Function: create
+    Crea nuevos registros en la tabla product department dimension, evitando duplicidad de registros.
+  */
+  // JFA
+
+ function create($data){
+
+ 
+
+   $this->new=false;
+  
 
    $sql=sprintf("insert into `Product Department Dimension` (`Product Department Code`,`Product Department Name`,`Product Department Store Key`) values (%s,%s,%d)"
 		,prepare_mysql($data['Product Department Code'])

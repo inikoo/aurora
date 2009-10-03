@@ -1124,87 +1124,16 @@ class product extends DB_Table {
         if (!is_numeric($base_data['product units per case']) or $base_data['product units per case']<1)
             $base_data['product units per case']=1;
 
-        $department=false;
-        $has_department=false;
-        $new_department=false;
+       
 
-        if (isset($base_data['product main department key'])) {
-            $department=new Department($base_data['product main department key']);
-            if ($department->id and $base_data['product store key']==$department->data['Product Department Store Key']) {
-                $has_department=true;
-                $base_data['product main department key']=$department->id;
-                $base_data['product main department code']=$department->data['Product Department Code'];
-                $base_data['product main department name']=$department->data['Product Department Name'];
-            }
-
-        }
-
-        //  print $base_data['product main department code']."\n";
-        if ($base_data['product main department code']!='' and !$has_department) {
-
-            $department=new Department('code_store',$base_data['product main department code'],$base_data['product store key']);
-
-            if (!$department->id) {
-
-                $dept_data=array(
-                               'code'=>$base_data['product main department code'],
-                               'name'=>$base_data['product main department name'],
-                               'store_key'=>$base_data['product store key'],
-                           );
-                $department=new Department('create',$dept_data);
-                if (!$department->new)
-                    exit($department->msg);
-                $new_department=true;
-            }
-            //exit("xxx");
-            $has_department=true;
-            $base_data['product main department key']=$department->id;
-            $base_data['product main department code']=$department->data['Product Department Code'];
-            $base_data['product main department name']=$department->data['Product Department Name'];
-        }
-
-        if (!$has_department) {
-            exit("Product Class: error no depaterment info provided can not create product\n");
-        }
-
-        $family=false;
-        $new_family=false;
-        $has_family=false;
-        if (isset($base_data['product family key'])) {
-            $family=new Family($base_data['product family key']);
-            if ($family->id and $base_data['product store key']==$family->data['Product Family Store Key']) {
-                $has_family=true;
-                $base_data['product family key']=$family->id;
-                $base_data['product family code']=$family->data['Product Family Code'];
-                $base_data['product family name']=$family->data['Product Family Name'];
-            }
-
-        }
-
-
-
-        if ($base_data['product family code']!='' and !$has_family) {
-            $family=new Family('code_store',$base_data['product family code'],$base_data['product store key']);
-            if (!$family->id) {
-                $fam_data=array(
-                              'code'=>$base_data['product family code'],
-                              'name'=>$base_data['product family name'],
-                              'Product Family Main Department Key'=>$department->id
-                          );
-                $family=new Family('create',$fam_data);
-                if (!$family->new)
-                    exit($family->msg);
-                $new_family=true;
-            }
-            $has_family=true;
-            $base_data['product family key']=$family->id;
-            $base_data['product family code']=$family->data['Product Family Code'];
-            $base_data['product family name']=$family->data['Product Family Name'];
-        }
-        if (!$has_family) {
-            exit("Product Class: error no family info provided can not create product\n");
-        }
-
+	$department=new Department($base_data['product main department key']);
+	$family=new Family($base_data['product family key']);
+	
+	$base_data['product main department code']=$department->data['Product Department Code'];
+	$base_data['product main department name']=$department->data['Product Department Name'];
+	$base_data['product family code']=$family->data['Product Family Code'];
+	$base_data['product family name']=$family->data['Product Family Name'];
+	    
         $base_data['Product Current Key']=$this->id;
 
 
@@ -3837,30 +3766,32 @@ $this->update_special_characteristic($a1);
 
     }
 
-    function update_name($a1) {
+    function update_name($value) {
 
         if ($this->data['Product Record Type']=='In Process') {
-            if ($a1==$this->data['Product Editing Name']) {
+            if ($value==$this->data['Product Editing Name']) {
                 $this->updated=true;
-                $this->new_value=$a1;
+                $this->new_value=$value;
                 return;
             }
         } else {
-            if ($a1==$this->data['Product Name']) {
+            if ($value==$this->data['Product Name']) {
                 $this->updated=true;
-                $this->new_value=$a1;
+                $this->new_value=$value;
                 return;
             }
         }
 
-        if ($a1=='') {
+        if ($value=='') {
             $this->msg=_('Error: Wrong name (empty)');
             return;
         }
 
         $sql=sprintf("select count(*) as num from `Product Dimension` where `Product Store Key`=%d and  ( `Product Name`=%s  COLLATE utf8_general_ci  or  `Product Editing Name`=%s  COLLATE utf8_general_ci   ) "
                      ,$this->data['Product Store Key']
-                     ,prepare_mysql($a1)
+                     ,prepare_mysql($value)
+		     ,prepare_mysql($value)
+
                     );
         $res=mysql_query($sql);
         $row=mysql_fetch_array($res);
@@ -3876,14 +3807,14 @@ $this->update_special_characteristic($a1);
         $old_name=$this->get('Product Name');
         $sql=sprintf("update `Product Dimension` set `%s`=%s where `Product ID`=%d "
                      ,$edit_column
-                     ,prepare_mysql($a1)
+                     ,prepare_mysql($value)
                      ,$this->pid
                     );
         if (mysql_query($sql)) {
             $this->msg=_('Product name updated');
             $this->updated=true;
-            $this->new_value=$a1;
-            $this->data[$edit_column]=$a1;
+            $this->new_value=$value;
+            $this->data[$edit_column]=$value;
 
             if ($edit_column=='Product Name') {
                 $editor_data=$this->get_editor_data();
@@ -3963,10 +3894,10 @@ function update_special_characteristic($value){
                 
                 $old_special_characteristic=$this->get('Product Special Characteristic');
                 
-            $sql=sprintf("update `Product Dimension` set `%s`=%s where `Product Key`=%d "
+            $sql=sprintf("update `Product Dimension` set `%s`=%s where `Product ID`=%d "
                          ,$editing_column
                          ,prepare_mysql($value)
-                         ,$this->id
+                         ,$this->pid
                         );
             if (mysql_query($sql)) {
                 $this->msg=_('Product Special Characteristic');
@@ -3992,9 +3923,10 @@ function update_special_characteristic($value){
                 mysql_query($sql);
                 
             } else {
-                $this->msg=_("Error: Product Special Characteristic could not be updated");
-
-                $this->updated=false;
+	      $this->error=true;
+	      $this->msg=_("Error: Product Special Characteristic could not be updated");
+	      
+	      $this->updated=false;
 
             }
 }

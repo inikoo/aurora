@@ -18,13 +18,11 @@ include_once('class.Product.php');
 */
 // JFA
 
-class Family{
+class Family extends DB_Table{
  
- // Boolean: products
+  
  var $products=false;
- // Boolean: id
- // Record Id
- var $id=false;
+
 
   /*
     Constructor: Family
@@ -33,16 +31,160 @@ class Family{
     Returns:
     void
  */
- // JFA
+
 
  function Family($a1=false,$a2=false,$a3=false) {
+   $this->table_name='Product Family';
+     $this->ignore_fields=array(
+			       'Product Family Key',
+			       'Product Family For Sale Products',
+			       'Product Family In Process Products',
+			       'Product Family Not For Sale Products',
+			       'Product Family Discontinued Products',
+			       'Product Family Unknown Sales State Products',
+			       'Product Family Surplus Availability Products',
+			       'Product Family Optimal Availability Products',
+			       'Product Family Low Availability Products',
+			       'Product Family Critical Availability Products',
+			       'Product Family Out Of Stock Products',
+			       'Product Family Unknown Stock Products',
+			       'Product Family Total Invoiced Gross Amount',
+			       'Product Family Total Invoiced Discount Amount',
+			       'Product Family Total Invoiced Amount',
+			       'Product Family Total Profit',
+			       'Product Family Total Quantity Ordered',
+			       'Product Family Total Quantity Invoiced',
+			       'Product Family Total Quantity Delivere',
+			       'Product Family Total Days On Sale',
+			       'Product Family Total Days Available',
+			       'Product Family 1 Year Acc Invoiced Gross Amount',
+			       'Product Family 1 Year Acc Invoiced Discount Amount',
+			       'Product Family 1 Year Acc Invoiced Amount',
+			       'Product Family 1 Year Acc Profit',
+			       'Product Family 1 Year Acc Quantity Ordered',
+			       'Product Family 1 Year Acc Quantity Invoiced',
+			       'Product Family 1 Year Acc Quantity Delivere',
+			       'Product Family 1 Year Acc Days On Sale',
+			       'Product Family 1 Year Acc Days Available',
+			        'Product Family 1 Quarter Acc Invoiced Gross Amount',
+			       'Product Family 1 Quarter Acc Invoiced Discount Amount',
+			       'Product Family 1 Quarter Acc Invoiced Amount',
+			       'Product Family 1 Quarter Acc Profit',
+			       'Product Family 1 Quarter Acc Quantity Ordered',
+			       'Product Family 1 Quarter Acc Quantity Invoiced',
+			       'Product Family 1 Quarter Acc Quantity Delivere',
+			       'Product Family 1 Quarter Acc Days On Sale',
+			       'Product Family 1 Quarter Acc Days Available',
+			        'Product Family 1 Month Acc Invoiced Gross Amount',
+			       'Product Family 1 Month Acc Invoiced Discount Amount',
+			       'Product Family 1 Month Acc Invoiced Amount',
+			       'Product Family 1 Month Acc Profit',
+			       'Product Family 1 Month Acc Quantity Ordered',
+			       'Product Family 1 Month Acc Quantity Invoiced',
+			       'Product Family 1 Month Acc Quantity Delivere',
+			       'Product Family 1 Month Acc Days On Sale',
+			       'Product Family 1 Month Acc Days Available',
+			        'Product Family 1 Week Acc Invoiced Gross Amount',
+			       'Product Family 1 Week Acc Invoiced Discount Amount',
+			       'Product Family 1 Week Acc Invoiced Amount',
+			       'Product Family 1 Week Acc Profit',
+			       'Product Family 1 Week Acc Quantity Ordered',
+			       'Product Family 1 Week Acc Quantity Invoiced',
+			       'Product Family 1 Week Acc Quantity Delivere',
+			       'Product Family 1 Week Acc Days On Sale',
+			       'Product Family 1 Week Acc Days Available',
+			       'Product Family Total Quantity Delivered',
+			       'Product Family 1 Year Acc Quantity Delivered',
+			       'Product Family 1 Month Acc Quantity Delivered',
+			       'Product Family 1 Quarter Acc Quantity Delivered',
+			       'Product Family 1 Week Acc Quantity Delivered'
+
+
+			       );
+   
+
     if(is_numeric($a1) and !$a2  )
       $this->getdata('id',$a1,false);
     else if(preg_match('/new|create/',$a1) ){
-      $this->create($a2);
+      $this->find($a2,'create');
+    }else if(preg_match('/find/',$a1) ){
+      $this->find($a2,$a3);
     }elseif($a2!='')
-       $this->getdata($a1,$a2,$a3);
+	$this->getdata($a1,$a2,$a3);
  }
+
+
+/*
+    Function: find
+    Busca the family
+  */
+  function find($raw_data,$options){
+    if(isset($raw_data['editor'])){
+      foreach($raw_data['editor'] as $key=>$value){
+	if(array_key_exists($key,$this->editor))
+	  $this->editor[$key]=$value;
+      }
+    }
+
+    $this->found=false;
+    $this->found_key=false;
+    $create='';
+    $update='';
+    if(preg_match('/create/i',$options)){
+      $create='create';
+    }
+    if(preg_match('/update/i',$options)){
+      $update='update';
+    }
+
+    $data=$this->base_data();
+    foreach($raw_data as $key=>$value){
+      if(array_key_exists($key,$data))
+	$data[$key]=_trim($value);
+    }
+    if($data['Product Family Store Key']=='' ){
+      $this->error=true;
+      $this->msg='Store Key not provided';
+      return;
+    }
+    if($data['Product Family Main Department Key']=='' ){
+      $this->error=true;
+      $this->msg='Department Key code empty';
+      return;
+    }
+    
+    if($data['Product Family Code']=='' ){
+      $this->error=true;
+      $this->msg='Family code empty';
+      return;
+    }
+
+    if($data['Product Family Name']=='')
+      $data['Product Family Name']=$data['Product Family Code'];
+    
+    $sql=sprintf("select * from `Product Family Dimension` where `Product Family Code`=%s  and `Product Family Store Key`=%d "
+		 ,prepare_mysql($data['Product Family Code'])
+		 ,$data['Product Family Store Key']
+		 ); 
+    
+    $result=mysql_query($sql);
+    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+      $this->found=true;
+      $this->found_key=$row['Product Family Key'];
+    }
+
+    
+    if(!$this->found and $create){
+      if($data['Product Family Special Characteristic']!='')
+	$data['Product Family Special Characteristic']=$this->special_characteristic_if_duplicated($data);
+
+      $this->create($data);
+      
+    }
+    
+
+
+  }
 
   /*
     Function: create
@@ -54,103 +196,20 @@ class Family{
  function create($data){
    $this->new=false;
     
-
-
-   if(isset($data['name'])){
-     $data['Product Family Name']=$data['name'];
-     unset($data['name']);
-   }
-   if(isset($data['code'])){
-     $data['Product Family Code']=$data['code'];
-     unset($data['code']);
-   }
-
-   if(!isset($data['Product Family Code'])){
-     $this->msg=_("Error: No family code provided");
-     return;
-   }
-   if(!isset($data['Product Family Name'])){
-     $this->msg=_("Error: No family name provided");
-     return;
-  }
-   
-   if($data['Product Family Code']==''){
-     $this->msg=_("Error: Wrong family code");
-     return;
-   }
-   if($data['Product Family Name']==''){
-     $this->msg=_("Error: Wrong family name");
-     return;
-   }
-
-   if(!isset($data['Product Family Main Department Key'])){
-     
-     if(!isset($data['Product Family Store Key'])){
-       $store=new Store(1);
-     }else{
-       $store=new Store($data['Product Family Store Key']);
-
-     }
-
-     $data['Product Family Main Department Key']=0;
-     $data['Product Family Main Department Code']='';
-     $data['Product Family Main Department Name']='';
-     
-   }else{
-     $department=new Department($data['Product Family Main Department Key']);
-
-
-
-     if(!$department->id){
-       $this->msg=_("Error: Can not find department");
-       return;
-     }
-       $data['Product Family Main Department Key']=$department->id;
-   $data['Product Family Main Department Code']=$department->get('Product Department Code');
-   $data['Product Family Main Department Name']=$department->get('Product Department Name');
-     $store=new Store($department->data['Product Department Store Key']);
-   }
-   //   print_r($department);
-
-   
-   
-   
-
-   $sql=sprintf("select count(*) as num from `Product Family Dimension` where `Product Family Store Key`=%s  and `Product Family Code`=%s COLLATE utf8_general_ci "
-		,$store->id
-		,prepare_mysql($data['Product Family Code'])
-		);
-   //  print $sql;
-   $res=mysql_query($sql);
-   $row=mysql_fetch_array($res);
-   if($row['num']>0){
-     $this->msg=_("$sql Error: Another family with the same code");
-     return;
-     
-   }
-
-   $data['Product Family Main Department Key']=$department->id;
-   $data['Product Family Main Department Code']=$department->get('Product Department Code');
-   $data['Product Family Main Department Name']=$department->get('Product Department Name');
-   $data['Product Family Store Key']=$store->id;
-   $data['Product Family Store Code']=$store->get('Store Code');
-
-   $base_data=array(
-		    'Product Family Code'=>'',
-		    'Product Family Name'=>'',
-		    'Product Family Description'=>'',
-		    'Product Family Store Key'=>'',
-		    'Product Family Store Code'=>'',
-		    'Product Family Main Department Key'=>'',
-		    'Product Family Main Department Code'=>'',
-		    'Product Family Main Department Name'=>'',
-		     );
-
+   $base_data=$this->base_data();
    foreach($data as $key=>$value){
-      if(isset($base_data[$key]))
+     if(array_key_exists($key,$base_data))
 	$base_data[$key]=_trim($value);
     }
    
+   $department=new Department($base_data['Product Family Main Department Key']);
+   $base_data['Product Family Main Department Code']=$department->get('Product Department Code');
+   $base_data['Product Family Main Department Name']=$department->get('Product Department Name');
+
+   $store=new Store($base_data['Product Family Store Key']);
+   $base_data['Product Family Store Code']=$store->get('Store Code');
+
+  
    $keys='(';$values='values(';
    foreach($base_data as $key=>$value){
      $keys.="`$key`,";
@@ -170,9 +229,9 @@ class Family{
      $this->getdata('id',$this->id,false);
      $this->msg=_("Family Added");
      
-     $sql=sprintf("insert into `Product Family Department Bridge` values (%d,%d)",$this->id,$department->id);
+     //     $sql=sprintf("insert into `Product Family Department Bridge` values (%d,%d)",$this->id,$department->id);
+     //mysql_query($sql);
 
-     mysql_query($sql);
      $department->load('products_info');
      $store->load('products_info');
      $this->new=true;
@@ -947,6 +1006,43 @@ $sql="select  sum(`Product Total Invoiced Amount`) as net,sum(`Product Total Inv
      
      if(!mysql_query($sql))
        exit("$sql\ncan not update fam sales 1 week\n");
+ }
+
+
+ function special_characteristic_if_duplicated($data){
+
+   $sql=sprintf("select * from `Product Family Dimension` where `Product Family Special Characteristic`=%s  and `Product Family Store Key`=%d "
+		     ,prepare_mysql($data['Product Family Special Characteristic'])
+		     ,$data['Product Family Store Key']
+		     ); 
+	
+   $result=mysql_query($sql);
+   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+     $s_char=$row['Product Family Special Characteristic'];
+     $number=1;
+     $sql=sprintf("select * from `Product Family Dimension` where `Product Family Special Characteristic` like '%s (%%)'  and `Product Family Store Key`=%d "
+		  ,addslashes($data['Product Family Special Characteristic'])
+		  ,$data['Product Family Store Key']
+		       ); 
+     $result2=mysql_query($sql);
+    
+     while($row2=mysql_fetch_array($result2, MYSQL_ASSOC)){
+       
+       if(preg_match('/\(\d+\)$/',$row2['Product Family Special Characteristic'],$match))
+	 $_number=preg_replace('/[^\d]/','',$match[0]);
+       if($_number>$number)
+	 $number=$_number;
+     }
+     
+     $number++;
+     
+     return $data['Product Family Special Characteristic']." ($number)";
+	  
+   }else{
+     return $data['Product Family Special Characteristic'];
+   }
+   
+ 
  }
 
 
