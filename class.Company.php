@@ -1794,7 +1794,7 @@ class Company extends DB_Table {
         if ($affected==1 and  !$this->new) {
 
 
-if($pincipal){
+if($principal){
 
             $sql=sprintf("insert into `History Dimension`  (`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`History Date`,`Author Name`,`Author Key`) values (%s,%d,%s,%s,%d,%s,%s,%d,%s,%s,%s,%s,%s)   ",
 
@@ -1806,8 +1806,8 @@ if($pincipal){
                          "'to'",
                          "'Company'",
                          $this->id,
-                         prepare_mysql(_('Contact associated with Company as Main Contact').' ('.$contact->get('Short Name').'/'.$this->data['Company Name'].')'),
-                         prepare_mysql(_('Contact associated with Company as Main Contact').' ('.$contact->get('Name').'/'.$this->data['Company Name'].')'),
+                         prepare_mysql(_('Contact associated with Company as Main Contact').' ('.$contact->display('Short Name').'/'.$this->data['Company Name'].')'),
+                         prepare_mysql(_('Contact associated with Company as Main Contact').' ('.$contact->display('Name').'/'.$this->data['Company Name'].')'),
 
                          prepare_mysql($editor_data['date']),
                          prepare_mysql($editor_data['author']),
@@ -1828,8 +1828,8 @@ if($pincipal){
                          "'to'",
                          "'Company'",
                          $this->id,
-                         prepare_mysql(_('Contact associated with Company').' ('.$contact->get('Short Name').'/'.$this->data['Company Name'].')'),
-                         prepare_mysql(_('Contact associated with Company').' ('.$contact->get('Name').'/'.$this->data['Company Name'].')'),
+                         prepare_mysql(_('Contact associated with Company').' ('.$contact->display('Short Name').'/'.$this->data['Company Name'].')'),
+                         prepare_mysql(_('Contact associated with Company').' ('.$contact->display('Name').'/'.$this->data['Company Name'].')'),
 
                          prepare_mysql($editor_data['date']),
                          prepare_mysql($editor_data['author']),
