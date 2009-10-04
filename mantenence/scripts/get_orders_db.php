@@ -25,7 +25,7 @@ if (!$db) {
 }
 
 require_once '../../common_functions.php';
-mysql_query("SET time_zone ='UTC'");
+mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/timezone.php';
 date_default_timezone_set(TIMEZONE) ;
@@ -919,14 +919,14 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
                 $part->update_valid_dates($date2);
 
 
-                $sql=sprintf("update  `Product Part Valid From`=%s from `Product Part List` where `Product Part Valid From`>%s and `Product ID`=%d and `Part SKU`=%d and  `Product Part Most Recent`='Yes'"
+                $sql=sprintf("update `Product Part List` set `Product Part Valid From`=%s  where `Product Part Valid From`>%s and `Product ID`=%d and `Part SKU`=%d and  `Product Part Most Recent`='Yes'"
                              ,prepare_mysql($date_order)
                              ,prepare_mysql($date_order)
                              ,$product->pid
                              ,$part->sku
                             );
                 mysql_query($sql);
-                $sql=sprintf("update  `Product Part Valid To`=%s from `Product Part List` where `Product Part Valid To`<%s and `Product ID`=%d and `Part SKU`=%d and  `Product Part Most Recent`='Yes'"
+                $sql=sprintf("update `Product Part List` set `Product Part Valid To`=%s   where `Product Part Valid To`<%s and `Product ID`=%d and `Part SKU`=%d and  `Product Part Most Recent`='Yes'"
                              ,prepare_mysql($date2)
                              ,prepare_mysql($date2)
                              ,$product->pid
@@ -982,7 +982,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     	       $supplier_product->new_part_list('',$rules);
             }else{
               //Note assuming only one sppl 
-                $sql=sprintf("update  ``Supplier Product Part Valid From`=%s from `Supplier Product Part List` where `Supplier Product Part Valid From`>%s and `Supplier Product Code`=%s and `Supplier Key`=%d and `Part SKU`=%d and  `Product Part Most Recent`='Yes'"
+                $sql=sprintf("update `Supplier Product Part List`  set  `Supplier Product Part Valid From`=%s where `Supplier Product Part Valid From`>%s and `Supplier Product Code`=%s and `Supplier Key`=%d and `Part SKU`=%d and  `Supplier Product Part Most Recent`='Yes'"
                              ,prepare_mysql($date_order)
                              ,prepare_mysql($date_order)
                              ,prepare_mysql($supplier_product->code)
@@ -990,7 +990,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
                              ,$part->sku
                             );
                 mysql_query($sql);
-                $sql=sprintf("update  `Supplier Product Part Valid To`=%s from `Supplier Product Part List` where `Supplier Product Part Valid To`<%s and `Supplier Product Code`=%s `Supplier Key`=%d and `Part SKU`=%d and  `Product Part Most Recent`='Yes'"
+                $sql=sprintf("update  `Supplier Product Part List` set `Supplier Product Part Valid To`=%s where `Supplier Product Part Valid To`<%s and `Supplier Product Code`=%s  and `Supplier Key`=%d and `Part SKU`=%d and  `Supplier Product Part Most Recent`='Yes'"
                              ,prepare_mysql($date2)
                              ,prepare_mysql($date2)
                              ,prepare_mysql($supplier_product->code)
