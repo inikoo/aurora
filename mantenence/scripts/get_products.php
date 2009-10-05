@@ -44,7 +44,7 @@ $Data_Audit_ETL_Software="$software $version";
 
 $file_name='/data/plaza/AWorder2002.xls';
 $csv_file='tmp.csv';
-//exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
+exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
 
 $handle_csv = fopen($csv_file, "r");
 $column=0;
@@ -52,6 +52,7 @@ $products=false;
 $count=0;
 
 $store_key=1;
+;
 
 $nodes=new Nodes('`Category Dimension`');
 $data=array('`Category Name`'=>'Use');
@@ -94,7 +95,6 @@ $data=array('`Category Name`'=>'Ceramic');
 $nodes->add_new(2 , $data);
 $data=array('`Category Name`'=>'Mineral');
 $nodes->add_new(2 , $data);
-
 
 $data=array('`Category Name`'=>'None','`Category Default`'=>'Yes');
 $nodes->add_new(3 , $data);
@@ -266,9 +266,9 @@ foreach($__cols as $cols){
   
 
 
-  //  if(!preg_match('/FO-A1/i',$code)){
-  //   continue;
-  //    }
+    if(!preg_match('/bot-10/i',$code)){
+     continue;
+      }
   
   $code=_trim($code);
   if($code=='' or !preg_match('/\-/',$code) or preg_match('/total/i',$price)  or  preg_match('/^(pi\-|cxd\-|fw\-04)/i',$code))
@@ -564,6 +564,8 @@ foreach($__cols as $cols){
 		    );
 
        $product=new Product('find',$data,'create');
+       //  print_r($product);
+
        if($product->new){
 	 $product->update_for_sale_since(date("Y-m-d H:i:s",strtotime("now +1 seconds")));
 
