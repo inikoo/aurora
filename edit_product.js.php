@@ -1,11 +1,11 @@
 <?php
 include_once('common.php');
 
-print "var description=new Object();\ndescription={'name':{'changed':0,'column':'Product Name'},'special_char':{'changed':0,'column':'Product Special Characteristic'},'details':{'changed':0}";
+print "var description=new Object();\ndescription={'name':{'changed':0,'column':'Product Name'},'special_char':{'changed':0,'column':'Product Special Characteristic'},'details':{'changed':0,'column':'Product Description'}";
 if(isset($_REQUEST['cats'])){
     $cats=preg_split('/,/',$_REQUEST['cats']);
     foreach($cats as $cat){
-	printf(",'cat_%s>':{'changed':0}",$cat);
+	printf(",'cat_%s>':{'changed':0,'column':'Category'}",$cat);
     }
     print "};\n";
 }
@@ -28,8 +28,8 @@ var description_errors= new Object();
 
 var thousands_sep='<?php echo $_SESSION['locale_info']['thousands_sep']?>';
 var decimal_point='<?php echo $_SESSION['locale_info']['decimal_point']?>';
-var currency_symbol='<?if(isset( $_REQUEST['symbol'])){echo $_REQUEST['symbol'];}else{echo $myconf['currency_symbol'];}?>';
-var product_id='<?if(isset( $_REQUEST['product_id'])){echo $_REQUEST['product_id'];}else{exit();}?>';
+var currency_symbol='<?php if(isset( $_REQUEST['symbol'])){echo $_REQUEST['symbol'];}else{echo $myconf['currency_symbol'];}?>';
+var product_id='<?php if(isset( $_REQUEST['product_id'])){echo $_REQUEST['product_id'];}else{exit();}?>';
 
 function undo(tipo){
 
@@ -1290,37 +1290,33 @@ function cancel_new_part(){
 
 function save_description(key){
     var data=new Object();
-    for (iin description){
+    data['Add Category']=new Array();
+    for (i in description){
 	if(description[i].changed==1){
 	    if(i.match(/cat_\d+>/g)){
 		children=Dom.getChildren(i);
 		for(j=0;j<children.length;j++){
 		    item=children[j];
-		    ovalue=item.getAttribute('ovalue');
-		    item.setAttribute('value',ovalue);
-		    if(ovalue==1)
-			Dom.addClass(item,'selected');
-		    else
-			Dom.removeClass(item,'selected');
+		    //alert(item+' '+item.getAttribute('value')   )
+		    if(item.getAttribute('value')==1){
+		        data['Add Category'].push(item.getAttribute('cat_id'));
+		    }
 		}
 	    }else if(i=='details'){
-		
-
+		    editor.saveHTML(); 
+            data[description[i].column]=editor.get('element').value;    
 		
 	    }else
-		Dom.get(i).value=Dom.get(i).getAttribute('ovalue');	
-	    
+		
+	        data[description[i].column]=Dom.get(i).value;
 	}
     }
 
 
-
-    data['Product Name']=Dom.get('name').value;
-    data['Product Special Characteristic']=Dom.get('special_char').value;
     var json_value = YAHOO.lang.JSON.stringify(data);
 
     var request='ar_edit_assets.php?tipo=edit_product&id='+product_id+'&key=array&value='+escape(json_value);
-    //  alert(request);
+    alert(request);return;
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
 		
