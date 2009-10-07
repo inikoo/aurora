@@ -2501,12 +2501,13 @@ class product extends DB_Table {
 
     case('Product Name'):
       $this->update_name($a1);
-
       break;
     case('Product Special Characteristic'):
       $this->update_special_characteristic($a1);
-         
-      break;
+       break;
+    case('Product Description'):
+      $this->update_description($a1);
+       break;       
     case('famsdescription'):
 
       if ($this->data['Product Record Type']=='In Process') {
@@ -3942,7 +3943,53 @@ class product extends DB_Table {
   }
 
 
+function update_description($description){
+   $description=_($description); 
+   $old_description=$this->data['Product Description'];    
+   if(strcmp($description,$old_description){
+    $sql=sprintf("update `Product Dimension` set `Product Description`=%s where `Product ID`=%d "
+		 ,prepare_mysql($description)
+		 ,$this->pid
+		 );
+		  if (mysql_query($sql)) {
+      $this->msg=_('Product Description changed');
+      $this->updated=true;
+      $this->new_value=$description;
+      $editor_data=$this->get_editor_data();
+      if(old_description==''){
+      $abstract=_('Product Description Created');
+      $details_('Product Description Created');
+      }else{
+        $abstract=_('Product Description Changed');
+       $details_('Product Description Created');    
+      }
+      $sql=sprintf("insert into `History Dimension`  (`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`History Date`,`Author Name`,`Author Key`) values (%s,%d,%s,%s,%d,%s,%s,%d,%s,%s,%s,%s,%s)   ",
 
+		   prepare_mysql($editor_data['subject']),
+		   $editor_data['subject_key'],
+		   prepare_mysql('edited'),
+		   prepare_mysql('Product'),
+		   $this->pid,
+		   "''",
+		   "''",
+		   0,
+		   prepare_mysql($abstract),
+		   prepare_mysql($details),
+		   prepare_mysql($editor_data['date']),
+		   prepare_mysql($editor_data['author']),
+		   $editor_data['author_key']
+		   );
+      mysql_query($sql);
+                
+    } else {
+      $this->error=true;
+      $this->msg=_("Error: Product Special Characteristic could not be updated");
+	      
+      $this->updated=false;
+
+    } 
+   }
+}
 
 }
 ?>
