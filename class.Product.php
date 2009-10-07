@@ -652,7 +652,9 @@ class product extends DB_Table {
       else
 	return $this->number($this->data['Product Net Weight']/$this->data['Product Units Per Case']);
       break;
-
+      case('Product Description Length'):
+      return strlen($this->data['Product Description']);
+      break;
     case('Product Description MD5 Hash'):
       return md5($this->data['Product Description MD5 Hash']);
       break;

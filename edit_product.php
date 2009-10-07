@@ -1,6 +1,7 @@
 <?php
 include_once('common.php');
 include_once('class.Product.php');
+include_once('class.Node.php');
 
 $view_sales=$user->can_view('product sales');
 $view_stock=$user->can_view('product stock');
@@ -168,29 +169,54 @@ $smarty->assign('decimal_point',$_SESSION['locale_info']['decimal_point']);
 
 $smarty->assign('currency',$product->data['Currency Symbol']);
 
-$js_files[]=sprintf('edit_product.js.php?symbol=%s&product_id=%d',$product->data['Currency Symbol'],$product->pid);
+
+
+/* $sql=sprintf("select `Category Position`,`Category Name`,CD.`Category Key`, if((select PCB.`Subject Key` from `Category Bridge` PCB where  `Category Key`=CD.`Category Key` and `Subject Key`=%d  and `Subject`='Product') is null,0,1)as selected from `Category Dimension` CD where `Category Subject`='Product'  and `Category Deep`=1 order by `Category Order`",$product->pid); */
+
+/* $res=mysql_query($sql); */
+/* $cats=array(); */
+
+//print $sql;
+$nodes=new nodes('`Category Dimension`');
+$nodes->sql_condition = "AND `Category Subject`='Product' " ;
+$nodes->load_comb();
+$comb=$nodes->comb;
+
+
+$sql=sprintf("select PCB.`Category Key`,`Category Position` from `Category Bridge` PCB left join `Category Dimension` C on (C.`Category Key`=PCB.`Category Key`)   where  PCB.`Subject Key`=%d  and `Subject`='Product'    " ,$product->pid);
+$res=mysql_query($sql);
+while($row=mysql_fetch_array($res)){
+  $parents=preg_replace('/\d+>$/','',$row['Category Position']);
+  $root=preg_replace('/>.*$/','',$row['Category Position']);
+  // print "$root $parents ".$row['Category Key']."\n";
+  $comb[$root]['teeth'][$parents]['elements'][$row['Category Key']]['selected']=true;
+  
+  
+
+}
+mysql_free_result($res);
+
+$smarty->assign('categories',$comb);
+$smarty->assign('number_categories',count($comb));
+
+
+
+$js_files[]=sprintf('edit_product.js.php?symbol=%s&product_id=%d&cats=%s',$product->data['Currency Symbol'],$product->pid,join(',',$nodes->root));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
 
-$sql=sprintf("select `Category Type`,`Category Name`,CD.`Category Key`, if((select PCB.`Product Key` from `Product Category Bridge` PCB where  `Category Key`=CD.`Category Key` and `Product Key`=%d ) is null,0,1)as selected from `Category Dimension` CD order by `Category Name`",$product->id);
 
-$res=mysql_query($sql);
-$cat_use=array();
-$cat_theme=array();
-$cat_meterial=array();
+//while($row=mysql_fetch_array($res)){
+  //$tree=preg_split('/>/',$row['Category Position']);
+  //print $row['Category Key'];
+  //print_r($nodes->fetch($row['Category Key']));
+  //$cat_theme[$row['Category Key']]=array('name'=>$row['Category Name'],'selected'=>$row['selected']);
+//}
+//mysql_free_result($res);
 
-while($row=mysql_fetch_array($res)){
-  if($row['Category Type']=='Use')
-    $cat_use[$row['Category Key']]=array('name'=>$row['Category Name'],'selected'=>$row['selected']);
-  if($row['Category Type']=='Material')
-    $cat_material[$row['Category Key']]=array('name'=>$row['Category Name'],'selected'=>$row['selected']);
-  if($row['Category Type']=='Theme')
-    $cat_theme[$row['Category Key']]=array('name'=>$row['Category Name'],'selected'=>$row['selected']);
-}
-mysql_free_result($res);
-$smarty->assign('cat_use',$cat_use);
-$smarty->assign('cat_material',$cat_material);
-$smarty->assign('cat_theme',$cat_theme);
+//$smarty->assign('cat_use',$cat_use);
+//$smarty->assign('cat_material',$cat_material);
+//$smarty->assign('cat_theme',$cat_theme);
 $smarty->display('edit_product.tpl');
 ?>
