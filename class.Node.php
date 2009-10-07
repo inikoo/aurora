@@ -46,9 +46,12 @@ var $HtmlTree;
 var $HtmlRow;
 var $table_name   = "`Category Dimension`";
 var $table_fields = array( 'id' => '`Category Key`',
-						   'position' => '`Category Position`',
-						   'ord'	  => '`Category Order`',
-						  );
+			   'position' => '`Category Position`',
+			   'deep' => '`Category Deep`',
+			   'ord'	  => '`Category Order`',
+			    'name'	  => '`Category Name`',
+			   'is_default'	  => '`Category Default`',
+			   );
 
 // use the following keys into the $HtmlTree varialbe.
 
@@ -125,9 +128,10 @@ mysql_query($sql) or die(trigger_error("<br><storng><u>MySQL Error:</u></strong>
 
 $node_id   = mysql_insert_id();
 $position .= $node_id.">";
+$deep= count(preg_split('/>/',$position))-1;
 
 $sql = "UPDATE ".$this->table_name."
-		SET ".$this->table_fields['position']." = '".$position."'
+		SET ".$this->table_fields['position']." = '".$position."' ,  ".$this->table_fields['deep']." = '".$deep."'
 		WHERE ".$this->table_fields['id']." = '".mysql_insert_id()."' ".$this->sql_condition;
 
 mysql_query($sql) or die(trigger_error("<br><storng><u>MySQL Error:</u></strong><br>".mysql_error()."<br><br><storng><u>Query Used:</u></strong><br>".$sql."<br><br><storng><u>Info:</u></strong><br>",E_USER_ERROR));
@@ -274,7 +278,7 @@ $this->c_list[$root[$this->table_fields['id']]] = $root;
 	// lets check if there is sub-categories
 		if($clickable == "" AND $id==0){
 		$has_children = $this->has_children($root[$this->table_fields['position']]);
-		if($has_children == TRUE) $this->get_children($root[$this->table_fields['position']],0);
+		if($has_children == TRUE) $this->load_children($root[$this->table_fields['position']],0);
 	}
 }}
 return $this->c_list;
@@ -290,43 +294,77 @@ function has_children($position) // return TRUE if that position has sub-categor
 $check_sql = "SELECT ".$this->table_fields['id']." FROM ".$this->table_name." WHERE ".$this->table_fields['position']." RLIKE  '^".$position."[0-9]+>$' ".$this->sql_condition;
 $check_res = mysql_query($check_sql) or die(trigger_error("<br><storng><u>MySQL Error:</u></strong><br>".mysql_error()."<br><br><storng><u>Query Used:</u></strong><br>".$check_sql."<br><br><storng><u>Info:</u></strong><br>",E_USER_ERROR));
 $check = mysql_fetch_array($check_res);
-if($check[$this->table_fields['id']] != "") return TRUE;
+if($check[preg_replace('/`/','',$this->table_fields['id'])] != "") return TRUE;
 else return FALSE;
 }
 
 // ********************************************************
-//		Get Childrens
+//		Load  Childrens
 // ********************************************************
 
-function get_children($position , $id = 0){
+function load_children($position , $id = 0,$recursive=true){
 
-$sql = "SELECT *
-		FROM ".$this->table_name."
-		WHERE ".$this->table_fields['position']."	RLIKE '^".$position."[0-9]+>$' ".$this->sql_condition."
-		order by ".$this->table_fields['ord']." ";
+$sql = "SELECT * FROM ".$this->table_name." WHERE ".$this->table_fields['position']."	RLIKE '^".$position."[0-9]+>$' ".$this->sql_condition." order by ".$this->table_fields['ord']." ";
 $res = mysql_query($sql) or die(trigger_error("<br><storng><u>MySQL Error:</u></strong><br>".mysql_error()."<br><br><storng><u>Query Used:</u></strong><br>".$sql."<br><br><storng><u>Info:</u></strong><br>",E_USER_ERROR));
-
+print "$sql\n";
 while($child = mysql_fetch_array($res)){
-$child["prefix"] = $this->get_prefix($child[$this->table_fields['position']]);
-
-if($id != 0)
-{
-$this->c_list_by_id[$child[$this->table_fields['id']]] = $child;
-$has_children = $this->has_children($child[$this->table_fields['position']]);
-if($has_children == TRUE){
-$this->get_children($child[$this->table_fields['position']]);
+  $child["prefix"] = $this->get_prefix($child[ preg_replace('/`/','',$this->table_fields['position']) ]);
+  
+  if($id != 0)
+    {
+  
+      
+      $has_children = $this->has_children($child[preg_replace('/`/','',$this->table_fields['position'])]);
+      $child['has_children']= $has_children ;
+      $this->c_list_by_id[$child[$this->table_fields['id']]] = $child;
+      if($recursive){
+	$has_children = $this->has_children($child[preg_replace('/`/','',$this->table_fields['position'])]);
+	if($has_children == TRUE){
+	  $this->load_children($child[preg_replace('/`/','',$this->table_fields['position'])]);
+	}
+      }
+      continue;
+      
+    }else{
+    
+    // lets check if there is sub-categories
+    $has_children = $this->has_children($child[preg_replace('/`/','',$this->table_fields['position'])]);
+    $child['has_children']= $has_children ;
+    $child['position']= $child[preg_replace('/`/','',$this->table_fields['position'])] ;
+    $this->c_list[$child[preg_replace('/`/','',$this->table_fields['id'])]] = $child;
+    if($recursive){
+      
+    if($has_children == TRUE)$this->load_children($child[preg_replace('/`/','',$this->table_fields['position'])]);
+    }
+  }}
 }
-continue;
 
-}else{
 
-// lets check if there is sub-categories
-$this->c_list[$child[$this->table_fields['id']]] = $child;
-$has_children = $this->has_children($child[$this->table_fields['position']]);
-if($has_children == TRUE)$this->get_children($child[$this->table_fields['position']]);
-}}
+// ********************************************************
+//		Get  Childrens
+// ********************************************************
+
+function get_children($position){
+
+  $children=array();
+
+$sql = "SELECT * FROM ".$this->table_name." WHERE ".$this->table_fields['position']."	RLIKE '^".$position."[0-9]+>$' ".$this->sql_condition." order by ".$this->table_fields['ord']." ";
+$res = mysql_query($sql) or die(trigger_error("<br><storng><u>MySQL Error:</u></strong><br>".mysql_error()."<br><br><storng><u>Query Used:</u></strong><br>".$sql."<br><br><storng><u>Info:</u></strong><br>",E_USER_ERROR));
+//print "$sql\n";
+while($child = mysql_fetch_array($res)){
+  $child["prefix"] = $this->get_prefix($child[ preg_replace('/`/','',$this->table_fields['position']) ]);
+  $has_children = $this->has_children($child[preg_replace('/`/','',$this->table_fields['position'])]);
+  $child['has_children']= $has_children ;
+  $child['position']= $child[preg_replace('/`/','',$this->table_fields['position'])] ;
+  $child['is_default']= $child[preg_replace('/`/','',$this->table_fields['is_default'])] ;
+    
+  $children[$child[preg_replace('/`/','',$this->table_fields['id'])]] = $child;
+
+
 }
+return $children;
 
+}
 
 // ********************************************************
 //		Get children of Specific nodes only.
@@ -411,6 +449,19 @@ $record =  mysql_fetch_array($res);
 return $record['position'];
 }
 
+function get_deep($id)
+{
+if($id == 0)return "";
+$sql = "SELECT ".$this->table_fields['position']." as position
+		FROM ".$this->table_name."
+		WHERE ".$this->table_fields['id']." = '".$id."' ".$this->sql_condition;
+$res = mysql_query($sql) or die(trigger_error("<br><storng><u>MySQL Error:</u></strong><br>".mysql_error()."<br><br><storng><u>Query Used:</u></strong><br>".$sql."<br><br><storng><u>Info:</u></strong><br>",E_USER_ERROR));
+$record =  mysql_fetch_array($res);
+return count(preg_split('/>/',$record['position']))-1;
+}
+
+
+
 // ********************************************************
 //		Get Prefix Count
 // ********************************************************
@@ -435,8 +486,8 @@ $sql = "SELECT *
 $res = mysql_query($sql) or die(trigger_error("<br><storng><u>MySQL Error:</u></strong><br>".mysql_error()."<br><br><storng><u>Query Used:</u></strong><br>".$sql."<br><br><storng><u>Info:</u></strong><br>",E_USER_ERROR));
 
 $record = mysql_fetch_array($res);
-$record["prefix"] = $this->get_prefix($record[$this->table_fields['position']]);		
-$position_slices  = explode(">",$record[$this->table_fields['position']]);
+$record["prefix"] = $this->get_prefix($record[ preg_replace('/`/','',$this->table_fields['position'])  ]);		
+$position_slices  = explode(">",$record[ preg_replace('/`/','',$this->table_fields['position'])]);
 $key              = count($position_slices)-3;
 if($key < 0) $key = 0;
 $record["parent"] = $position_slices["$key"];
@@ -701,6 +752,110 @@ if(!$node) break;
 
 }
 
+
+function load_comb(){
+  $id_field=preg_replace('/`/','',$this->table_fields['id']);
+  $this->comb=array();
+  $this->root=array();
+  foreach($this->get_children('')    as $child){
+    $this->root[]=$child[$id_field];
+    $this->comb[$child[$id_field]]=
+      array(
+	    'name'=>$child[ preg_replace('/`/','',$this->table_fields['name'])]
+	    ,'has_child'=>$child['has_children']
+	    );
+    if($child['has_children']){
+      $this->get_teeth($child[preg_replace('/`/','',$this->table_fields['position'])],$child[$id_field]);
+    }
+
+  }
+  
+  //print_r($this->c_list);
+  //print_r($this->comb);
+  
+
+}
+
+
+function get_teeth($position,$father){
+  $id_field=preg_replace('/`/','',$this->table_fields['id']);
+  $position_field=preg_replace('/`/','',$this->table_fields['position']);
+  $is_default_field=preg_replace('/`/','',$this->table_fields['is_default']);
+  $teeth=array();
+  $the_default=0;
+  foreach( $this->get_children($position)   as $child){
+    
+    $parent=preg_replace('/>$/','',$position);
+    $parent=preg_replace('/^.*>/','',$parent);
+
+    if($child[$is_default_field]=='Yes')
+      $the_default=$child[$id_field];
+    $this->comb[$father]['teeth'][$position]['elements'][$child[$id_field]]=array(
+											'key'=>$child[$id_field]
+											,'name'=>$child[ preg_replace('/`/','',$this->table_fields['name'])]
+											,'has_child'=>$child['has_children']
+											,'selected'=>0
+											,'parent'=>$parent
+											,'position'=>$child[$position_field]
+											,'default'=>($child[$is_default_field]=='Yes'?1:0)
+								      );
+    
+
+    if($child['has_children']){
+      $this->get_teeth($child[$position_field],$father);
+    }
+  }
+  $this->comb[$father]['teeth'][$position]['default_id']=$the_default;
+  
+
+
+}
+
+
+
+
+function load_tree(){
+  $this->tree=array();
+
+  foreach($this->get_children('')    as $child){
+    $this->tree[$child[ preg_replace('/`/','',$this->table_fields['id'])]]=
+      array(
+	    'name'=>$child[ preg_replace('/`/','',$this->table_fields['name'])]
+	    ,'has_child'=>$child['has_children']
+	    );
+    if($child['has_children']){
+      $this->tree[$child[ preg_replace('/`/','',$this->table_fields['id'])]]['children']=$this->get_branch($child[preg_replace('/`/','',$this->table_fields['position'])]);
+    }
+
+  }
+  
+  //print_r($this->c_list);
+  // print_r($this->tree);
+  
+
+}
+
+function get_branch($position){
+
+  // print "$position\n";
+  $branch=array();
+
+  foreach( $this->get_children($position)   as $child){
+    $branch[$child[ preg_replace('/`/','',$this->table_fields['id'])]]=
+      array(
+	    'name'=>$child[ preg_replace('/`/','',$this->table_fields['name'])]
+	    ,'has_child'=>$child['has_children']
+	    );
+      if($child['has_children']){
+      $branch[$child[ preg_replace('/`/','',$this->table_fields['id'])]]['children']=$this->get_branch($child[preg_replace('/`/','',$this->table_fields['position'])]);
+     }
+
+  }
+  
+
+  return $branch;
+
+}
 
 } // Class END
 ?>

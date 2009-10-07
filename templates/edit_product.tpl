@@ -71,8 +71,8 @@
 
 
 	<div style="float:right">
-	  <span class="save" style="display:none" id="description_save" onclick="save_description()">Save</span>
-	  <span id="description_undo"  style="display:none"   class="undo" onclick="undo_description()">Undo</span>
+	  <span class="save" style="display:none" id="description_save" onclick="save_description()">{t}Save{/t}</span>
+	  <span id="description_undo"  style="display:none"   class="undo" onclick="undo('description')">{t}Cancel{/t}</span>
 	</div>
 	<span style="display:none">Number of changes:<span id="description_num_changes">0</span></span>
 	
@@ -353,7 +353,7 @@
 
 </table>
 <div style="display:none">
-<table class="edit" border=1>
+<table class="edit" border=0>
     <tr class="title"><td colspan=5>{t}Dimensions{/t}</td></tr>
     <tr>
    <td class="label" style="width:12em">{t}Product gross volume{/t}:<br>{t}including packing{/t}</td><td>{t}Liters{/t}<br>1000{t}cc{/t}</td>
@@ -473,7 +473,7 @@
 </div>
 
 <div  class="edit_block" style="margin:0;padding:0;{if $edit!="description"}display:none{/if}"  id="d_description">
-    <table style="margin:0;" class="edit" border=1>
+    <table style="margin:0;" class="edit" border=0>
         <tr id="tr_name">
             <td rowspan=2  class="margin_note" >{t}Product Info{/t}:</td>
 	        <td class="label">{t}Name{/t}:</td>
@@ -513,45 +513,30 @@
 <div  class="input_msg" id="msg_special_char"></div>   
     </td>
     </tr>
-        <tr id="tr_use">
-    <td rowspan="3" class="margin_note">{t}Categories{/t}:</td>
-	<td class="label">{t}Use{/t}:</td>
-	<td>
-	  <div id="cat_use" class="options" style="margin:5px 0">
-	    {foreach from=$cat_use item=cat key=cat_id name=foo}
-	    <span {if $cat.selected}class="selected"{/if} value="{$cat.selected}" ovalue="{$cat.selected}" onclick="checkbox_changed(this)" id="cat_use{$cat_id}">{$cat.name}</span>
+       <tr>
+
+    {foreach from=$categories item=cat key=cat_key name=foo  }
+    
+    {if $smarty.foreach.foo.first}
+    <td rowspan="{$number_categories}" class="margin_note">{t}Categories{/t}:</td>
+    {/if}
+    <td class="label">{t}{$cat.name}{/t}:</td>
+    <td>
+      {foreach from=$cat.teeth item=cat2 key=cat2_id name=foo2}
+      <div id="cat_{$cat2_id}" default_cat="{$cat2.default_id}"   class="options" style="margin:5px 0">
+	{foreach from=$cat2.elements item=cat3 key=cat3_id name=foo3}
+	<span  class="catbox {if $cat3.selected}selected{/if}" value="{$cat3.selected}" ovalue="{$cat3.selected}" onclick="checkbox_changed(this)" cat_id="{$cat3_id}" id="cat{$cat3_id}" parent="{$cat3.parent}" position="{$cat3.position}" default="{$cat3.default}"  >{$cat3.name}</span>
+	{/foreach}
+      </div>
 	    {/foreach}
-	  </div>
-	</td>
-      </tr>
-        <tr id="tr_theme">
-	<td class="label">{t}Theme{/t}:</td>
-	<td>
-	  <div id="cat_theme" class="options" style="margin:5px 0">
-	    {foreach from=$cat_theme item=cat key=cat_id name=foo}
-	    <span {if $cat.selected}class="selected"{/if} value="{$cat.selected}" ovalue="{$cat.selected}" onclick="checkbox_changed(this)"  id="cat_theme{$cat_id}">{$cat.name}</span>
-
-{/foreach}
-</div>
-</td>
-
-</tr>
-        <tr id="tr_materials">
-<td class="label">{t}Materials{/t}:</td>
-<td>
-<div id="cat_material" class="options" style="margin:5px 0">
-{foreach from=$cat_material item=cat key=cat_id name=foo}
-<span {if $cat.selected}class="selected"{/if} value="{$cat.selected}" ovalue="{$cat.selected}" onclick="checkbox_changed(this)"  id="cat_material{$cat_id}">{$cat.name}</span>
-
-{/foreach}
-</div>
-</td>
-</tr>
+    </td>   
+       </tr>
+       {/foreach}
         <tr id="tr_details">
-    <td class="margin_note">{t}Detailed Description{/t}:</td>
-    <td colspan="2"><textarea id="details" name="v_details" changed=0 ovalue="{$product->get('Product Description MD5 Hash')}" rows="20" cols="100">{$product->get('Product Description')}</textarea>
-    </td>
-    </tr>
+	  <td class="margin_note">{t}Detailed Description{/t}:</td>
+	  <td colspan="2"><textarea id="details" name="v_details" changed=0 olength="{$product->get('Product Description Length')}"  ovalue="{$product->get('Product Description')}"  ohash="{$product->get('Product Description MD5 Hash')}" rows="20" cols="100">{$product->get('Product Description')}</textarea>
+	  </td>
+	</tr>
     </table>
 </div>
 

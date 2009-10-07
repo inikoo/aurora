@@ -1,5 +1,15 @@
 <?php
 include_once('common.php');
+
+print "var description=new Object();\ndescription={'name':{'changed':0,'column':'Product Name'},'special_char':{'changed':0,'column':'Product Special Characteristic'},'details':{'changed':0}";
+if(isset($_REQUEST['cats'])){
+    $cats=preg_split('/,/',$_REQUEST['cats']);
+    foreach($cats as $cat){
+	printf(",'cat_%s>':{'changed':0}",$cat);
+    }
+    print "};\n";
+}
+
 ?>
 var Event = YAHOO.util.Event;
 var Dom   = YAHOO.util.Dom;
@@ -9,7 +19,9 @@ var num_changed = 0;
 var num_errors = 0;
 var editor;
 var editing='<?php echo $_SESSION['state']['product']['edit']?>';
-var description_num_changed=0;
+
+
+
 var description_warnings= new Object();
 var description_errors= new Object();
 
@@ -22,76 +34,161 @@ var product_id='<?if(isset( $_REQUEST['product_id'])){echo $_REQUEST['product_id
 function undo(tipo){
 
     if(tipo=='description'){
-	Dom.get('name').value=Dom.get('name').getAttribute('ovalue');
-	Dom.get('special_char').value=Dom.get('special_char').getAttribute('ovalue');
+	//	Dom.get('name').value=Dom.get('name').getAttribute('ovalue');
+	//Dom.get('special_char').value=Dom.get('special_char').getAttribute('ovalue');
 
-	//	alert(Dom.getChildren("cat_use"));
-	children=Dom.getChildren("cat_use");
-	for(i=0;i<children.length;i++){
-	    item=children[i];
-	    ovalue=item.getAttribute('ovalue');
-	    item.setAttribute('value',ovalue);
-	    if(ovalue==1)
-		item.className='selected';
-	    else
-		item.className='';
+	for(i in description){
+	    if(i.match(/cat_\d+>/g)){
+		children=Dom.getChildren(i);
+		for(j=0;j<children.length;j++){
+		    item=children[j];
+		    ovalue=item.getAttribute('ovalue');
+		    item.setAttribute('value',ovalue);
+		    if(ovalue==1)
+			Dom.addClass(item,'selected');
+		    else
+			Dom.removeClass(item,'selected');
+		}
+	    }else if(i=='details'){
+		//	Dom.get(i).innerHTML=Dom.get(i).getAttribute('ovalue');	
+		editor.setEditorHTML(Dom.get(i).getAttribute('ovalue')); 
+		
+	    }else
+		Dom.get(i).value=Dom.get(i).getAttribute('ovalue');	
+	
+	    description[i].changed=0;
+	    
 	}
-	children=Dom.getChildren("cat_theme");
-	for(i=0;i<children.length;i++){
-	    item=children[i];
-	    ovalue=item.getAttribute('ovalue');
-	    item.setAttribute('value',ovalue);
-	    if(ovalue==1)
-		item.className='selected';
-	    else
-		item.className='';
-	}
-	children=Dom.getChildren("cat_material");
-	for(i=0;i<children.length;i++){
-	    item=children[i];
-	    ovalue=item.getAttribute('ovalue');
-	    item.setAttribute('value',ovalue);
-	    if(ovalue==1)
-		item.className='selected';
-	    else
-		item.className='';
-	}
+	
+	
 
-
-	description_num_changed=0;
-	Dom.get(editing+'_save').style.display='none';
-	Dom.get(editing+'_undo').style.display='none';
-
-	Dom.get(editing+'_num_changes').innerHTML=description_num_changed;
+	//editor.render();
+	//description_num_changed=0;
+	//Dom.get(tipo+'_save').style.display='none';
+	//Dom.get(tipo+'_undo').style.display='none';
+	
+	//alert(tipo+'_undo');
+	
+	//Dom.get(tipo+'_num_changes').innerHTML=description_num_changed;
 	description_warnings= new Object();
 	description_errors= new Object();
-	
+	//	alert('x');
     }
     save_menu();
-}
-function checkbox_changed(o){
+};
 
-    value=o.getAttribute('value');
-    if(value==1){
-	o.className=''
-	o.setAttribute('value',0);
+// function group_checkbox_changed(o){
+    
+//     value=o.getAttribute('value');
+//     parent_id='cat_'+o.getAttribute('parent')+'>';
+//     if(!Dom.hasClass(o,'selected')){
+
+// 	var elements=Dom.getElementsByClassName('selected','span',parent_id);
+// 	Dom.removeClass(elements,'selected');
+	
+
+// 	Dom.addClass(o,"selected");
+// 	o.setAttribute('value',1);
+//     }
+
+
+
+
+//     if(o.getAttribute('ovalue')==value)
+// 	description_num_changed++;
+//     else
+// 	description_num_changed--;
+    
+//     save_menu();
+
+
+// }
+
+
+
+
+function checkbox_changed(o){
+    parent_id='cat_'+o.getAttribute('parent')+'>';
+    default_cat='cat'+Dom.get(parent_id).getAttribute('default_cat');
+
+    if(default_cat==o.id){
+	value=o.getAttribute('value');
+	if(value==0){
+	    var elements=Dom.getElementsByClassName('selected','span',parent_id);
+	    Dom.removeClass(elements,'selected');
+	    for (x in elements){
+		Dom.get(elements[x]).setAttribute('value',0);
+	    }
+	    Dom.addClass(o,"selected");
+	    o.setAttribute('value',1);
+
+	}
+
+
+
     }else{
-	o.className="selected";
-	o.setAttribute('value',1);
+
+	value=o.getAttribute('value');
+	if(value==1){
+	    Dom.removeClass(o,"selected");
+	    o.setAttribute('value',0);
+	}else{
+	    Dom.addClass(o,"selected");
+	    o.setAttribute('value',1);
+	}
+
+	var num_selected=0;
+	var elements=Dom.getElementsByClassName('selected','span',parent_id);
+	for (x in elements){
+	    num_selected++;
+	}
+	
+	//	alert(default_cat);
+	if(Dom.hasClass(default_cat,'selected') && num_selected>1){
+	    Dom.removeClass(default_cat,'selected');
+	    Dom.get(default_cat).setAttribute('value',0);
+	}else if(num_selected==0){
+	    Dom.addClass(default_cat,'selected');
+	    Dom.get(default_cat).setAttribute('value',1);
+	}
+  	
+
+
+    }
+
+    var changed=false;
+    var elements=Dom.getElementsByClassName('catbox','span',parent_id);
+    
+    for (x in elements){
+	if(elements[x].getAttribute('ovalue')!=elements[x].getAttribute('value')){
+	    changed=true;
+	    break;
+	}
 	
     }
-    if(o.getAttribute('ovalue')==value)
-	description_num_changed++;
+  
+
+    if(changed)
+	description[parent_id].changed=1;
     else
-	description_num_changed--;
+	description[parent_id].changed=0;
     
     save_menu();
+
+
 }
 function save_menu(){
     if(editing=='description'){
 	this_errors=description_errors;
-	this_num_changed=description_num_changed
+	var this_num_changed=0
+	for (i in description){
+	    if(description[i].changed==1){
+		//	alert(i);
+		this_num_changed++;
+	    }
+	}
 
+	
     }
 
     if(this_num_changed>0){
@@ -456,10 +553,10 @@ function caption_changed(o){
 function description_changed(o){
 	var ovalue=o.getAttribute('ovalue');
 	var name=o.name;
-
+	var id=o.id;
 	    
 	if(ovalue!=o.value){
-	    if(name=='description'){
+	    if(id=='name'){
 		if(o.value==''){
 		    description_errors.description="<?php echo _("The product name can not be empty")?>";
 		}
@@ -469,7 +566,7 @@ function description_changed(o){
 		    delete description_errors.description
 
 
-	    }else if(name=='sdescription'){
+	    }else if(id='special_char'){
 		if(o.value==''){
 		    description_errors.sdescription="<?php echo _("The product short description can not be empty")?>";
 		  //   save_menu();
@@ -483,21 +580,13 @@ function description_changed(o){
 		    delete description_errors.sdescription;
 					
 	    }
-
-	    if(o.getAttribute('changed')==0){
-		description_num_changed++;
-		o.setAttribute('changed',1)
-	    }
+	    description[id].changed=1;
 
 	    
 	}
 	else{
 
-	    
-	    if(o.getAttribute('changed')==1){
-		description_num_changed--;
-		o.setAttribute('changed',0)
-	    }
+	    description[id].changed=0;
 
 	}
     
@@ -871,28 +960,42 @@ function vadilate(o){
     }
 function change_textarea(e,name){
 
+
+    
 	editor.saveHTML(); 
-	html = editor.get('element').value; 
-
-	
-	md5=hex_md5(html)
-
+	var html = editor.get('element').value; 
+	var length=html.length;
 	o=Dom.get(name);
-	ovalue=o.getAttribute('ovalue');
+	olength=o.getAttribute('olength');
+	//	alert(olength+' '+length)
+	if(olength==length){
+	    
+	    if(length<=256){
+		//	alert(html+' > '+o.getAttribute('ovalue'))
+		if(html==o.getAttribute('ovalue')){
+		    description['details'].changed=0;
+		}else{
+		    description['details'].changed=1;
+		}
+		
+	    }else{
 
-	if(ovalue!=md5){
-	    if(o.getAttribute('changed')==0){
-		description_num_changed++;
-		o.setAttribute('changed',1)
+		var hash =md5(html);
+		ohash=o.getAttribute('ohash');
+		if(ohash==hash){
+		    description['details'].changed=0;
+		}else{
+		    description['details'].changed=1;
+		}
 	    }
-	}else{
-	    if(o.getAttribute('changed')==1){
-		description_num_changed--;
-		o.setAttribute('changed',0)
-	    }
-	}
 
-save_menu();
+
+	}else
+	    description['details'].changed=1; 
+
+
+
+	save_menu();
     }
 function add_list_element(e){
     
@@ -1186,8 +1289,32 @@ function cancel_new_part(){
 }	
 
 function save_description(key){
-
     var data=new Object();
+    for (iin description){
+	if(description[i].changed==1){
+	    if(i.match(/cat_\d+>/g)){
+		children=Dom.getChildren(i);
+		for(j=0;j<children.length;j++){
+		    item=children[j];
+		    ovalue=item.getAttribute('ovalue');
+		    item.setAttribute('value',ovalue);
+		    if(ovalue==1)
+			Dom.addClass(item,'selected');
+		    else
+			Dom.removeClass(item,'selected');
+		}
+	    }else if(i=='details'){
+		
+
+		
+	    }else
+		Dom.get(i).value=Dom.get(i).getAttribute('ovalue');	
+	    
+	}
+    }
+
+
+
     data['Product Name']=Dom.get('name').value;
     data['Product Special Characteristic']=Dom.get('special_char').value;
     var json_value = YAHOO.lang.JSON.stringify(data);
