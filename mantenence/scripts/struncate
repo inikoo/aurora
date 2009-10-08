@@ -18,3 +18,4 @@ TRUNCATE `Warehouse Dimension`;
 TRUNCATE `Location Dimension`;
 TRUNCATE `Store Dimension`;
 TRUNCATE `Category Dimension`;
+TRUNCATE `Category Bridge`;

@@ -674,7 +674,7 @@ $sql="select sum(`Product 1 Week Acc Invoiced Amount`) as net,sum(`Product 1 Wee
        $this->msg=_("Error: There is another store with the same code");
        return;
      }
-     
+     $old_value=$this->get('Store Code');
       $sql=sprintf("update `Store Dimension` set `Store Code`=%s where `Store Key`=%d  "
 		   ,prepare_mysql($a1)
 		   ,$this->id
@@ -682,6 +682,28 @@ $sql="select sum(`Product 1 Week Acc Invoiced Amount`) as net,sum(`Product 1 Wee
       if(mysql_query($sql)){
 	$this->msg=_('Store code updated');
 	$this->updated=true;$this->newvalue=$a1;
+	$this->data['Store Code']=$a1;
+	$editor_data=$this->get_editor_data();
+	$sql=sprintf("insert into `History Dimension`  (`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`History Date`,`Author Name`,`Author Key`) values (%s,%d,%s,%s,%d,%s,%s,%d,%s,%s,%s,%s,%s)   ",
+
+		     prepare_mysql($editor_data['subject']),
+		     $editor_data['subject_key'],
+		     prepare_mysql('edited'),
+		     prepare_mysql('Store'),
+		     $this->id,
+		     "''",
+		     "''",
+		     0,
+		     prepare_mysql(_('Store Code Changed').' ('.$this->get('Store Name').')' ),
+		     prepare_mysql(_('Store')." ".$this->data['Store Name']." "._('code changed from').' '.$old_value." "._('to').' '. $this->get('Store Code')  ),
+		     prepare_mysql($editor_data['date']),
+		     prepare_mysql($editor_data['author']),
+		     $editor_data['author_key']
+		     );
+	mysql_query($sql);
+	
+	
+	
       }else{
 	$this->msg=_("Error: Store code could not be updated");
 
@@ -713,7 +735,7 @@ $sql="select sum(`Product 1 Week Acc Invoiced Amount`) as net,sum(`Product 1 Wee
        $this->msg=_("Error: Another store with the same name");
        return;
      }
-     
+     $old_value=$this->get('Store Name');
       $sql=sprintf("update `Store Dimension` set `Store Name`=%s where `Store Key`=%d "
 		   ,prepare_mysql($a1)
 		   ,$this->id
@@ -721,6 +743,27 @@ $sql="select sum(`Product 1 Week Acc Invoiced Amount`) as net,sum(`Product 1 Wee
       if(mysql_query($sql)){
 	$this->msg=_('Store name updated');
 	$this->updated=true;$this->newvalue=$a1;
+	$this->data['Store Name']=$a1;
+	$editor_data=$this->get_editor_data();
+	$sql=sprintf("insert into `History Dimension`  (`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`History Date`,`Author Name`,`Author Key`) values (%s,%d,%s,%s,%d,%s,%s,%d,%s,%s,%s,%s,%s)   ",
+
+		     prepare_mysql($editor_data['subject']),
+		     $editor_data['subject_key'],
+		     prepare_mysql('edited'),
+		     prepare_mysql('Store'),
+		     $this->id,
+		     "''",
+		     "''",
+		     0,
+		     prepare_mysql(_('Store Name Changed').' ('.$this->get('Store Name').')' ),
+		     prepare_mysql(_('Store')." ("._('Code').":".$this->get('Store Code').") "._('name changed from').' '.$old_value." "._('to').' '. $this->get('Store Name')  ),
+		     prepare_mysql($editor_data['date']),
+		     prepare_mysql($editor_data['author']),
+		     $editor_data['author_key']
+		     );
+	mysql_query($sql);
+	
+	
       }else{
 	$this->msg=_("Error: Store name could not be updated");
 
@@ -812,6 +855,28 @@ $sql="select sum(`Product 1 Week Acc Invoiced Amount`) as net,sum(`Product 1 Wee
    $this->msg=_("Store Added");
    $this->get_data('id',$this->id);
    $this->new=true;
+   
+    $editor_data=$this->get_editor_data();
+
+      $sql=sprintf("insert into `History Dimension`  (`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`History Date`,`Author Name`,`Author Key`) values (%s,%d,%s,%s,%d,%s,%s,%d,%s,%s,%s,%s,%s)   ",
+
+		   prepare_mysql($editor_data['subject']),
+		   $editor_data['subject_key'],
+		   prepare_mysql('created'),
+		   prepare_mysql('Store'),
+		   $this->id,
+		   "''",
+		   "''",
+		   0,
+		   prepare_mysql(_('Store Created')),
+		   prepare_mysql(_('Store')." ".$this->data['Store Name']." (".$this->get('Store Code').") "._('Created')),
+		   prepare_mysql($editor_data['date']),
+		   prepare_mysql($editor_data['author']),
+		   $editor_data['author_key']
+		   );
+      mysql_query($sql);
+   
+   
    return;
  }else{
    $this->msg=_(" Error can not create store");
