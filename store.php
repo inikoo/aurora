@@ -31,6 +31,7 @@ if(!$user->can_view('stores',$store_id))
 $view_sales=$user->can_view('product sales');
 $view_stock=$user->can_view('product stock');
 $create=$user->can_create('product departments');
+
 $modify=$user->can_edit('stores',$store_id);
 
 
@@ -44,7 +45,7 @@ $smarty->assign('modify',$modify);
 if(isset($_REQUEST['edit']))
   $edit=$_REQUEST['edit'];
 else
-  $edit=$_SESSION['state']['store']['edit'];
+  $edit=$_SESSION['state']['store']['editing'];
 
 
 if(!$modify)
@@ -66,15 +67,19 @@ $js_files=array(
 		$yui_path.'dragdrop/dragdrop-min.js',
 		$yui_path.'datasource/datasource-min.js',
 		$yui_path.'autocomplete/autocomplete-min.js',
-		$yui_path.'datatable/datatable-min.js',
+		$yui_path.'datatable/datatable.js',
 		$yui_path.'container/container_core-min.js',
 		$yui_path.'menu/menu-min.js',
+		'js/php.default.min.js',
 		'common.js.php',
 		'table_common.js.php',
 		);
 
 if($edit){
 
+  $smarty->assign('edit',$_SESSION['state']['store']['edit']);
+  $css_files[]='css/edit.css';
+  
   $js_files[]='js/edit_common.js';
   $js_files[]='edit_store.js.php';
  }else{

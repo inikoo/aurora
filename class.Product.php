@@ -42,7 +42,7 @@ class product extends DB_Table {
 
   public $new_key=false;
   public $new_code=false;
-
+public $new_value=false;
   // Variable: new
   // Indicate if a new product was created
 
@@ -656,7 +656,7 @@ class product extends DB_Table {
       return strlen($this->data['Product Description']);
       break;
     case('Product Description MD5 Hash'):
-      return md5($this->data['Product Description MD5 Hash']);
+      return md5($this->data['Product Description']);
       break;
     case('Parts SKU'):
       $sql=sprintf("select `Part SKU` from `Product Part List` where `Product ID`=%d ;",$this->data['Product ID']);
@@ -2222,6 +2222,18 @@ class product extends DB_Table {
 
 
     switch ($key) {
+    case('Remove Categories'):
+      $this->remove_categories($a1);
+      break;
+    case('Add Categories'):
+      $this->add_categories($a1);
+      break;
+     case('Remove Category'):
+      $this->remove_category($a1);
+      break;
+    case('Add Category'):
+      $this->add_category($a1);
+      break;
     case('web_state'):
 
       if (
@@ -3663,7 +3675,15 @@ class product extends DB_Table {
 
 
       if ($this->updated) {
-	$this->new_value=$this->data['Product Price'];
+	$this->updated_fields['Product Price']=array(
+						     'Product Price'=>$this->data['Product Price'],
+						     'Formated Price'=>$this->get('Formated Price'),
+						     'Price Per Unit'=>$this->get('Price Per Unit'),
+						     'Margin'=>$this->get('Margin'),
+						     'RRP Margin'=>$this->get('RRP Margin'),
+						     'Price'=>$this->get('Price')
+						     );
+
 
 	$editor_data=$this->get_editor_data();
 	$sql=sprintf("insert into `History Dimension`  (`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`History Date`,`Author Name`,`Author Key`) values (%s,%d,%s,%s,%d,%s,%s,%d,%s,%s,%s,%s,%s)   ",
@@ -3747,7 +3767,14 @@ class product extends DB_Table {
       }
       $rrp_notes=$customer_margin;
 
-      $this->new_value=$this->data['Product RRP'];
+
+      $this->updated_fields[$key]=array(
+						 'RRP'=>$this->get('RRP'),
+						 'RRP Margin'=>$this->get('RRP Margin'),
+						 'RRP Per Unit'=>$this->get('RRP Per Unit'),
+						 'Product RRP'=>$this->get('Product RRP')
+						 );
+
 
       $editor_data=$this->get_editor_data();
       $sql=sprintf("insert into `History Dimension`  (`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`History Date`,`Author Name`,`Author Key`) values (%s,%d,%s,%s,%d,%s,%s,%d,%s,%s,%s,%s,%s)   ",
@@ -3828,6 +3855,13 @@ class product extends DB_Table {
       $this->data[$edit_column]=$value;
 
       if ($edit_column=='Product Name') {
+
+
+	  $this->updated_fields['Product Name']=array(
+						      'Product Name'=>$this->data['Product Name'] 
+						 );
+
+
 	$editor_data=$this->get_editor_data();
 	$sql=sprintf("insert into `History Dimension`  (`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`History Date`,`Author Name`,`Author Key`) values (%s,%d,%s,%s,%d,%s,%s,%d,%s,%s,%s,%s,%s)   ",
 
@@ -3913,7 +3947,14 @@ class product extends DB_Table {
     if (mysql_query($sql)) {
       $this->msg=_('Product Special Characteristic');
       $this->updated=true;
-      $this->new_value=$value;
+     
+      $this->updated_fields['Product Special Characteristic']=array(
+						      'Product Special Characteristic'=>$this->data['Product Special Characteristic'] 
+						 );
+
+
+
+
       $editor_data=$this->get_editor_data();
       $sql=sprintf("insert into `History Dimension`  (`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`History Date`,`Author Name`,`Author Key`) values (%s,%d,%s,%s,%d,%s,%s,%d,%s,%s,%s,%s,%s)   ",
 
@@ -3946,25 +3987,36 @@ class product extends DB_Table {
 function update_description($description){
    $description=_($description); 
    $old_description=$this->data['Product Description'];    
-   if(strcmp($description,$old_description){
+   if(strcmp($description,$old_description)){
     $sql=sprintf("update `Product Dimension` set `Product Description`=%s where `Product ID`=%d "
 		 ,prepare_mysql($description)
 		 ,$this->pid
 		 );
-		  if (mysql_query($sql)) {
+    if (mysql_query($sql)) {
+      
+      $this->data['Product Descriotion']=$description;
       $this->msg=_('Product Description changed');
       $this->updated=true;
       $this->new_value=$description;
       $editor_data=$this->get_editor_data();
-      if(old_description==''){
-      $abstract=_('Product Description Created');
-      $details_('Product Description Created');
+      if($old_description==''){
+	$abstract=_('Product Description Created');
+	$details=_('Product Description Created');
       }else{
         $abstract=_('Product Description Changed');
-       $details_('Product Description Created');    
+	$details=_('Product Description Changed');    
       }
-      $sql=sprintf("insert into `History Dimension`  (`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`History Date`,`Author Name`,`Author Key`) values (%s,%d,%s,%s,%d,%s,%s,%d,%s,%s,%s,%s,%s)   ",
 
+      
+      $this->updated_fields['Product Description']=array(
+							 'Product Description Length'=>$this->get('Product Description Length'),
+							 'Product Description'=>$this->get('Product Description'),
+							 'Product Description MD5 Hash'=>$this->get('Product Description MD5 Hash')	   
+							 );
+      
+      
+      $sql=sprintf("insert into `History Dimension`  (`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`History Date`,`Author Name`,`Author Key`) values (%s,%d,%s,%s,%d,%s,%s,%d,%s,%s,%s,%s,%s)   ",
+		   
 		   prepare_mysql($editor_data['subject']),
 		   $editor_data['subject_key'],
 		   prepare_mysql('edited'),
@@ -3983,13 +4035,160 @@ function update_description($description){
                 
     } else {
       $this->error=true;
-      $this->msg=_("Error: Product Special Characteristic could not be updated");
+      $this->msg=_("Error: Product Description could not be updated");
 	      
       $this->updated=false;
 
     } 
    }
 }
+
+
+  function remove_category($category_key){
+   
+    $sql=sprintf("select PCB.`Category Key`,`Category Position`,`Category Name` from `Category Bridge` PCB left join `Category Dimension` C on (C.`Category Key`=PCB.`Category Key`)   where  PCB.`Subject Key`=%d  and `Subject`='Product'  and PCB.`Category Key`=%d   " ,$this->pid,$category_key);
+    $res=mysql_query($sql);
+    if($row=mysql_fetch_array($res)){
+      $cat_removed=$row['Category Name'];
+      $category_location=preg_split('/>/',preg_replace('/>$/','',preg_replace('/^\d+>/','',$row['Category Position'])));
+      foreach($category_location as $category_location_key){
+	
+	$sql=sprintf("delete from `Category Bridge` where `Subject Key`=%d  and `Subject`='Product'  and `Category Key`=%d ",$this->pid,$category_location_key);
+	
+	mysql_query($sql);
+	if(mysql_affected_rows()>0){
+	  $this->updated_fields['Product Category'][$category_location_key]=0;
+	}
+	
+      }
+      
+      $this->updated=true;
+      $this->new_value='';
+      $editor_data=$this->get_editor_data();
+
+      $abstract=_('Product remove from Category')." ($cat_removed)";
+      $details=_('Product remove from Category');
+      $this->msg=$abstract;
+      $sql=sprintf("insert into `History Dimension`  (`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`History Date`,`Author Name`,`Author Key`) values (%s,%d,%s,%s,%d,%s,%s,%d,%s,%s,%s,%s,%s)   ",
+
+		   prepare_mysql($editor_data['subject']),
+		   $editor_data['subject_key'],
+		   prepare_mysql('disassociate'),
+		   prepare_mysql('Product'),
+		   $this->pid,
+		   "'from'",
+		   "'Category'",
+		   $category_key,
+		   prepare_mysql($abstract),
+		   prepare_mysql($details),
+		   prepare_mysql($editor_data['date']),
+		   prepare_mysql($editor_data['author']),
+		   $editor_data['author_key']
+		   );
+      mysql_query($sql);
+      
+
+
+    }else{
+      $this->update=false;
+    }
+
+
+  }
+
+  
+  function add_categories($category_array){
+
+    foreach($category_array as $category_key){
+      $this->add_category($category_key);
+    }
+  }
+
+
+  function remove_categories($category_array){
+    foreach($category_array as $category_key){
+      $this->remove_category($category_key);
+    }
+  }
+
+
+
+ function add_category($category_key){
+
+  
+
+   $num_inserted_categories=0;
+   $num_inserted_errors=0;
+   $sql=sprintf("select PCB.`Category Key`,`Category Position`,`Category Name` from `Category Bridge` PCB left join `Category Dimension` C on (C.`Category Key`=PCB.`Category Key`)   where  PCB.`Subject Key`=%d  and `Subject`='Product'  and PCB.`Category Key`=%d   " ,$this->pid,$category_key);
+    $res=mysql_query($sql);
+    if($row=mysql_fetch_array($res)){
+      $this->update=false;
+      $this->msg=_('Product already in Category')." (".$row['Category Name'].")";
+      return;
+    }
+    mysql_free_result($res);
+    
+    $sql=sprintf("select * from `Category Dimension`    where  `Category Key`=%d   " ,$category_key);
+   
+    $res=mysql_query($sql);
+    if($row=mysql_fetch_array($res)){
+      $cat_added=$row['Category Name'];
+      //      print preg_replace('/^\d+>/','',$row['Category Position'])."\n";
+      $category_location=preg_split('/>/',  preg_replace('/>$/','',preg_replace('/^\d+>/','',$row['Category Position']))  )   ;
+      foreach($category_location as $category_location_key){
+	$sql=sprintf("insert into  `Category Bridge`   values (%d,'Product',%d) ",$category_location_key,$this->pid);
+       
+	if(mysql_query($sql)){
+	  if(mysql_affected_rows()>0){
+	    $num_inserted_categories++;
+	    $this->updated_fields['Product Category'][$category_location_key]=1;
+	  }
+	}else
+	  $num_inserted_errors++;
+	
+      }
+      if($num_inserted_categories>0){
+	$this->updated=true;
+	$this->new_value='';
+	$editor_data=$this->get_editor_data();
+	
+	$abstract=_('Product added to Category')." ($cat_added)";
+	    $details=_('Product added to Category');
+	    $this->msg=$abstract;
+	    $sql=sprintf("insert into `History Dimension`  (`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`History Date`,`Author Name`,`Author Key`) values (%s,%d,%s,%s,%d,%s,%s,%d,%s,%s,%s,%s,%s)   ",
+			 
+			 prepare_mysql($editor_data['subject']),
+			 $editor_data['subject_key'],
+			 prepare_mysql('associate'),
+			 prepare_mysql('Product'),
+			 $this->pid,
+			 "'to'",
+			 "'Category'",
+			 $category_key,
+			 prepare_mysql($abstract),
+			 prepare_mysql($details),
+		   prepare_mysql($editor_data['date']),
+			 prepare_mysql($editor_data['author']),
+			 $editor_data['author_key']
+			 );
+	    mysql_query($sql);
+      }
+
+
+
+    }else{
+      $this->arror=true;
+      $this->update=false;
+      $this->msg='Category do not exists';
+      return;
+      
+    }
+
+
+ }
+
+
+
 
 }
 ?>

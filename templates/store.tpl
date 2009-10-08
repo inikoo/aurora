@@ -2,7 +2,7 @@
 <div id="bd" >
 
   <span class="nav2 onright"><a href="stores.php">&uarr; {t}Up{/t}</a></span>
-  {if $modify}<span class="nav2 onright"><a href="store.php?edit=1"  >{t}Edit{/t}</a></span>{/if}
+
   
   <span class="nav2 onleft"><a class="selected" href="store.php">{$store->get('Store Code')}</a></span>
   <span class="nav2 onleft"><a href="families.php?store_key={$store->id}">{t}Families{/t}</a></span>
@@ -14,7 +14,10 @@
     <span class="search_title">{t}Product Code{/t}:</span> <input size="8" class="text search" id="product_search" value="" name="search"/><img align="absbottom" id="product_submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>
      <span  class="search_msg"   id="product_search_msg"    ></span> <span  class="search_sugestion"   id="product_search_sugestion"    ></span>
      <br/>
+     {if $modify}<a   href="store.php?edit=1"  style="float:right;margin-left:15px" class="state_details"  >{t}Edit{/t}</a>{/if}
      <span  id="show_details" style="float:right;{if $show_details}display:none{/if}" class="state_details"  onClick="show_details()" >{t}Show details{/t}</span>
+
+
   </div>
   
   <div style="clear:left;margin:0 20px">

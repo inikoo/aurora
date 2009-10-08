@@ -1108,9 +1108,7 @@ function save_image(key,image_id){
 
 function change_block(e){
    
-  
-    if(editing!=this.id){
-	
+  if(editing!=this.id){
 	if(this.id=='pictures' || this.id=='prices'){
 	    Dom.get('info_name').style.display='';
 	}else
@@ -1120,7 +1118,7 @@ function change_block(e){
 	    Dom.get('info_price').style.display='';
 	}else
 	    Dom.get('info_price').style.display='none';
-
+    }
 
 
 	Dom.get('d_parts').style.display='none';
@@ -1138,7 +1136,7 @@ function change_block(e){
 	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=product-edit&value='+this.id );
 	
 	editing=this.id;
-    }
+
 
 }
 function change_dim_tipo(tipo){
@@ -1290,7 +1288,9 @@ function cancel_new_part(){
 
 function save_description(key){
     var data=new Object();
-    data['Add Category']=new Array();
+    var Add_Categories=new Array();
+    var Remove_Categories=new Array();
+
     for (i in description){
 	if(description[i].changed==1){
 	    if(i.match(/cat_\d+>/g)){
@@ -1299,8 +1299,11 @@ function save_description(key){
 		    item=children[j];
 		    //alert(item+' '+item.getAttribute('value')   )
 		    if(item.getAttribute('value')==1){
-		        data['Add Category'].push(item.getAttribute('cat_id'));
+		        Add_Categories.push(item.getAttribute('cat_id'));
+		    }else{
+			Remove_Categories.push(item.getAttribute('cat_id'));
 		    }
+
 		}
 	    }else if(i=='details'){
 		    editor.saveHTML(); 
@@ -1311,34 +1314,67 @@ function save_description(key){
 	        data[description[i].column]=Dom.get(i).value;
 	}
     }
-
+    if(Add_Categories.length>0)
+	data['Add Categories']=Add_Categories;
+    if(Remove_Categories.length>0)
+	data['Remove Categories']=Remove_Categories;
 
     var json_value = YAHOO.lang.JSON.stringify(data);
 
     var request='ar_edit_assets.php?tipo=edit_product&id='+product_id+'&key=array&value='+escape(json_value);
-    alert(request);return;
+
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
 		
 			alert(o.responseText);
-		    var r =  YAHOO.lang.JSON.parse(o.responseText);
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    
 		    
 		    
 		    if(r.state==200){
-		    
-			if(r.result['Product Name'].error==1){
-			    Dom.get('msg_name').innerHTML=r.result['Product Name'].msg;
-			    Dom.addClass('msg_name','error');
-			}else
-			    Dom.removeClass('msg_name','error');
+		  
+			for (t_key in r.updated_fields){
+			    if(t_key=='Product Name'){
+				Dom.get('name').setAttribute('ovalue',r.updated_fields[t_key][t_key]);
+				Dom.removeClass('msg_name','error');
+			    }else if(t_key=='Product Special Characteristic'){
+				Dom.get('special_char').setAttribute('ovalue',r.updated_fields[t_key][t_key]);
+				Dom.removeClass('msg_special_char','error');
+			    }else if(t_key=='Product Details'){
+				Dom.get('details').setAttribute('ovalue',r.updated_fields[t_key][t_key]);
+				Dom.get('olength').setAttribute('ovalue',r.updated_fields[t_key]['Product Description Length']);
+				Dom.get('ohash').setAttribute('ovalue',r.updated_fields[t_key]['Product Description MD5 Hash']);
+	
+				editor.setEditorHTML(r.updated_fields[t_key][t_key]); 
 			
-			if(r.result['Product Special Characteristic'].error==1){
-			    Dom.addClass('msg_special_char','error');
-			    Dom.get('msg_special_char').innerHTML=r.result['Product Special Characteristic'].msg;
-			}else
-			    Dom.removeClass('msg_special_char','error');
+			    }else if(t_key=='Product Category'){
+			
+				var cat_data=r.updated_fields[t_key];
 
+				for(cat_key in cat_data){
+				    //				    alert('cat'+cat_key);
+				    Dom.get('cat'+cat_key).setAttribute('ovalue',cat_data[cat_key]);
+				}
+			    }
+			}
+			
+  
+			for (t_key in r.errors_while_updating){
+			     if(t_key=='Product Name'){
+				 Dom.get('msg_name').innerHTML=r.errors_while_updating[t_key].msg;
+				 Dom.addClass('msg_name','error');
+			     }
+			     if(t_key=='Product Special Characteristic'){
+				 Dom.get('msg_special_char').innerHTML=r.errors_while_updating[t_key].msg;
+				 Dom.addClass('msg_special_char','error');
+			     }
+			}
+
+		
+			
+			
+
+			
 			Dom.get('description_save').style.display='none';
 			Dom.get('description_undo').style.display='none';
 
@@ -1379,26 +1415,29 @@ function save_price(key){
 		    var r =  YAHOO.lang.JSON.parse(o.responseText);
 	
 		if(r.state==200){
-		    new_value=r.result[t_key].new_value;
 		    
-		    
+		    if(typeof( r.updated_fields[t_key] ) != 'undefined'){
+			
+			Dom.get('v_'+key).setAttribute('ovalue',r.updated_fields[t_key][t_key]);
+			Dom.get('rrp_margin').innerHTML=r.updated_fields[t_key]['RRP Margin'];
+
+			if(t_key=='Product Price'){
+			    Dom.get('l_formated_price').innerHTML=r.updated_fields[t_key]['Formated Price'];
+			    Dom.get('price_margin').innerHTML=r.updated_fields[t_key]['Margin'];
+			}else if(t_key=='Product RRP Per Unit'){
+			    if(r.updated_fields[t_key]['RRP']==''){
+				Dom.get('tr_rrp_per_unit').style.display='none';
+			    }else
+				Dom.get('tr_rrp_per_unit').style.display='';
+			    Dom.get('l_formated_rrp_per_unit').innerHTML=r.updated_fields[t_key]['RRP Per Unit'];
+			    
+			}
+			
+		    }
 		    
 		    Dom.get(key+'_save').style.visibility='hidden';
 		    Dom.get(key+'_change').innerHTML='';
 		    Dom.get(key+'_undo').style.visibility='hidden';
-
-		    Dom.get('v_'+key).setAttribute('ovalue',new_value);
-		    
-		    Dom.get('l_formated_cost').innerHTML=r.updated_data['Formated Cost'];
-		    Dom.get('l_formated_price').innerHTML=r.updated_data['Formated Price'];
-		    if(r.updated_data['RRP']==''){
-			Dom.get('tr_rrp_per_unit').style.display='none';
-		    }else
-			Dom.get('tr_rrp_per_unit').style.display='';
-		    Dom.get('l_formated_rrp_per_unit').innerHTML=r.updated_data['RRP Per Unit'];
-
-		    Dom.get('price_margin').innerHTML=r.updated_data['Margin'];
-		    Dom.get('rrp_margin').innerHTML=r.updated_data['RRP Margin'];
 
 		    
 		    var table=tables.table0;
@@ -1408,7 +1447,7 @@ function save_price(key){
 
 		}else{
 
-		    alert(r.result[t_key].msg);
+		    alert('error');
 		}
 	    }
 	    
@@ -1417,28 +1456,11 @@ function save_price(key){
 
 
 function init(){
-
-
-    //var ids = ["v_description","v_sdescription"]; 
-    //	YAHOO.util.Event.addListener(ids, "keyup", change_element);
-
 	var ids = ["cat_select"]; 
 	YAHOO.util.Event.addListener(ids, "change", change_list_element);
 	var ids = ["description","pictures","prices","parts","dimat","config"]; 
 	YAHOO.util.Event.addListener(ids, "click", change_block);
 	
-	//	YAHOO.util.Event.addListener(ids, "click", prepare_list_element);
-
-
-	//	var ids = ["details"]; 
-	//YAHOO.util.Event.addListener(ids, "keyup", change_textarea);
-
-
-
-
-	//Tooltips
-	//var myTooltip = new YAHOO.widget.Tooltip("myTooltip", { context:"upo_label,outall_label,awoutall_label,awoutq_label"} ); 
-
 
 	//Details textarea editor ---------------------------------------------------------------------
 	var texteditorConfig = {

@@ -280,47 +280,21 @@ function edit_product(){
    }
    
    $result=array();
-
+   //print_r($raw_data);
    foreach($raw_data as $key=>$value){
      $product->update($key,$value);
-     $result[$key]=array('error'=>$product->error,'updated'=>$product->updated,'msg'=>$product->msg,'new_value'=>$product->new_value);
-     if($product->updated)
-        $updated=true;
-       
    }
-
   }else{
     $key=$_REQUEST['key'];
     $value=stripslashes(urldecode($_REQUEST['value']));  
     $product->update($key,$value);
-     $result[$key]=array('error'=>$product->error,'updated'=>$product->updated,'msg'=>$product->msg,'new_value'=>$product->new_value);
-
-    if($product->updated)
-      $updated=true;
   }
-
   
 
-  if(count($updated)>0){
-    $updated_data=array(
-			'Formated Cost'=>$product->get('Formated Cost'),
-			'Formated Price'=>$product->get('Formated Price'),
-			'Product RRP'=>$product->get('Product RRP'),
-			'RRP Per Unit'=>$product->get('RRP Per Unit'),
-			'Price Per Unit'=>$product->get('Price Per Unit'),
-			'Margin'=>$product->get('Margin'),
-			'RRP Margin'=>$product->get('RRP Margin'),
-			'Product Name'=>$product->data['Product Name'],
-			'Product Special Characteristic'=>$product->data['Product Special Characteristic'],
-			'Price'=>$product->get('Price'),
-			'RRP'=>$product->get('RRP')
-			);
-    $response= array('state'=>200,'updated_data'=>$updated_data,'result'=>$result);
-  }else{
-    $response= array('state'=>400,'updated_data'=>$updated_data,'result'=>$result);
-   }
+  $response= array('state'=>200,'updated_fields'=>$product->updated_fields,'errors_while_updating'=>$product->errors_while_updating);
   echo json_encode($response);  
 }
+
 function list_products_for_edition(){
  $conf=$_SESSION['state']['products']['table'];
    if(isset( $_REQUEST['sf']))
@@ -1166,10 +1140,10 @@ function list_departments_for_edition(){
     //print "$sql";
     while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
       if($row['Products']>0){
-	$delete='<img src="art/icons/cross.png" /> <span  style="cursor:pointer">'._('Discontinue').'<span>';
+	$delete='<img src="art/icons/discontinue.png" /> <span  style="cursor:pointer">'._('Discontinue').'<span>';
 	$delete_type='discontinue';
       }else{
-	$delete='<img src="art/icons/cross.png" /> <span  style="cursor:pointer">'._('Delete').'<span>';
+	$delete='<img src="art/icons/delete.png" /> <span  style="cursor:pointer">'._('Delete').'<span>';
       $delete_type='delete';
     }
 

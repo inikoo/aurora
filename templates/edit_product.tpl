@@ -1,15 +1,12 @@
 {include file='header.tpl'}
-
-
-
 <div style="display:none; position:absolute; left:10px; top:200px; z-index:2" id="cal1Container"></div>
 <div id="bd" >
-  
   <div id="sub_header">
    
     <span class="nav2 onright" style="margin-left:20px"><a href="product.php?id={$product_id}">{t}Exit edit{/t}</a></span>
   
   </div>
+
   <div id="doc3" style="clear:both;" class="yui-g yui-t4" >
    
 
@@ -24,9 +21,9 @@
 
     <div id="yui-main" style="border:1px solid #ccc;"> 
 
-      
+     
  
-
+      
       <div style="clear:both;height:.1em;padding:0px 20px;;margin:20px auto;xborder-top: 1px solid #cbb;;xborder-bottom: 1px solid #caa;width:770px;" id="description_messages">
 	
 	<div id="info_name" style="float:left;width:260px;{if !($edit=='prices' or $edit=='pictures') }display:none{/if}">
@@ -490,8 +487,8 @@
 	        id="name" 
 	        size="40"  
 	        MAXLENGTH="75" />
-<span id="msg_name"></span>   
- </td>
+	  <span id="msg_name"></span>   
+		</td>
         </tr>
         <tr id="tr_special_char">
 	<td class="label">{t}Special Characteristic{/t}:</td>

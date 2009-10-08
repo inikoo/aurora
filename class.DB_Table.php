@@ -4,6 +4,7 @@ abstract class DB_Table
 
   protected $table_name;
   protected  $ignore_fields=array();
+  public $errors_while_updating=array();
   public $updated_fields=array();
     // Array: data
   // Class data
