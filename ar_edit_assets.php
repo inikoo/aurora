@@ -20,6 +20,9 @@ if(!isset($_REQUEST['tipo']))
 
 $tipo=$_REQUEST['tipo'];
 switch($tipo){
+case('upload_product_image'):
+upload_image('product');
+break;
  case('delete_family'):
 delete_family();
      break;
@@ -259,6 +262,25 @@ function edit_family(){
    }
    echo json_encode($response); 
 }
+
+function upload_image($subject='product'){
+
+
+
+       $target_path = "uploads/".'pimg_'.date('U');
+       if(move_uploaded_file($_FILES['testFile']['tmp_name'],$target_path )) {
+print"moved";
+       }
+
+if($subject=='product'){
+$subject=new product('pid',$_REQUEST['id']);
+
+}
+
+$subject->add_image($target_path);
+}
+
+
 function edit_product(){
   if(!isset($_REQUEST['id']) or !isset($_REQUEST['key']) or !isset($_REQUEST['value'])){
     $response= array('state'=>400,'msg'=>$product->msg,'key'=>$_REQUEST['key']);

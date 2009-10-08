@@ -1,4 +1,4 @@
-<?phpinclude_once('common.php');?>
+<?php include_once('common.php');?>
 //@author Raul Perusquia <rulovico@gmail.com>
 //Copyright (c) 2009 LW
 var Event = YAHOO.util.Event;

@@ -2102,7 +2102,7 @@ public $new_value=false;
   // JFA
 
 
-  function load_original_image($file,$args='') {
+  function add_image($file,$args='') {
     global $tmp_images_dir;
     $principal='No';
     if (preg_match('/principal/i',$args))

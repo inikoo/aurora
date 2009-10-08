@@ -1591,7 +1591,7 @@ function init(){
 
       }
     };
-    var request='ar_assets.php?tipo=ep_update&key=img_new&value=';
+    var request='ar_edit_assets.php?tipo=upload_product_image';
     YAHOO.util.Connect.asyncRequest('POST',request, uploadHandler);
   };
   YAHOO.util.Event.on('uploadButton', 'click', onUploadButtonClick);

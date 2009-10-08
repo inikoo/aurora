@@ -70,16 +70,17 @@ $js_files=array(
 		$yui_path.'menu/menu-min.js',
 		'common.js.php',
 		'table_common.js.php',
-		'js/search.js',
+		
 
 		);
 
 if($edit){
-  $js_files[]='edit_common.js';
+  $js_files[]='js/edit_common.js';
   $js_files[]='edit_department.js.php';
- }else
-   $js_files[]='department.js.php';
-
+ }else{
+     $js_files[]='js/search.js';
+     $js_files[]='department.js.php';
+}
 
 
 $smarty->assign('css_files',$css_files);
