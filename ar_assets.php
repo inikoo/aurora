@@ -39,7 +39,16 @@ if(!isset($_REQUEST['tipo']))
 $tipo=$_REQUEST['tipo'];
 switch($tipo){
 case('product_history'):
-  list_product_history();
+  list_asset_history('product');
+  break;
+case('store_history'):
+  list_asset_history('store');
+  break;
+case('department_history'):
+  list_asset_history('department');
+  break;
+case('family_history'):
+  list_asset_history('family');
   break;
 case('product_server'):
  list_products_with_same_code();
@@ -5750,10 +5759,24 @@ if(isset( $_REQUEST['restrictions']))
 
 }
 
-function list_product_history(){
-  $conf=$_SESSION['state']['product']['history'];
-  // print_r($conf);
-  $product_id=$_SESSION['state']['product']['tag'];
+function list_asset_history($asset_type){
+
+  $id_key='id';
+  if($asset_type=='product'){
+    $asset='Product';
+    $id_key='tag';
+  }elseif($asset_type=='family'){
+    $asset='Family';
+  }elseif($asset_type=='department'){
+    $asset='Department';
+  }elseif($asset_type=='store'){
+    $asset='Store';
+  }
+  
+
+
+  $conf=$_SESSION['state'][$asset_type]['history'];
+  $asset_id=$_SESSION['state'][$asset_type][$id_key];
   if(isset( $_REQUEST['elements']))
     $elements=$_REQUEST['elements'];
   else
@@ -5808,11 +5831,11 @@ if(isset( $_REQUEST['tableid']))
   if($error){
     list($date_interval,$error)=prepare_mysql_dates($conf['from'],$conf['to']);
   }else{
-      $_SESSION['state']['product']['history']['from']=$from;
-      $_SESSION['state']['product']['history']['to']=$to;
+      $_SESSION['state'][$asset_type]['history']['from']=$from;
+      $_SESSION['state'][$asset_type]['history']['to']=$to;
   }
 
-  $_SESSION['state']['product']['history']=
+  $_SESSION['state'][$asset_type]['history']=
     array(
 	  'order'=>$order,
 	  'order_dir'=>$order_direction,
@@ -5834,16 +5857,18 @@ if(isset( $_REQUEST['tableid']))
 
   $wheref='';
 
-  $where=$where.sprintf(" and `Subject`='User'  and ( (`Direct Object`='Product' and `Direct Object Key`=%d) or (`Indirect Object`='Product' and `Indirect Object Key`=%d)  )    "
-			,$product_id
-			,$product_id
+  $where=$where.sprintf(" and `Subject`='User'  and ( (`Direct Object`='%s' and `Direct Object Key`=%d) or (`Indirect Object`='%s' and `Indirect Object Key`=%d)  )    "
+			,$asset
+			,$asset_id
+			,$asset
+			,$asset_id
 			);
 
 
-  //   $where =$where.$view.sprintf(' and product_id=%d  %s',$product_id,$date_interval);
+  //   $where =$where.$view.sprintf(' and asset_id=%d  %s',$asset_id,$date_interval);
    
    $sql="select count(*) as total from  `History Dimension`  $where $wheref";
-   //   print "$sql";
+   //  print "$sql";
    $result=mysql_query($sql);
    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      $total=$row['total'];

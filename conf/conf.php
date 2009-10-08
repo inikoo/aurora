@@ -541,7 +541,9 @@ $default_state=array(
 					  'percentage'=>0,
 					  'mode'=>'all',
 					  'avg'=>'totals',
-					  'edit'=>false,
+					 
+					  'edit'=>'description',
+					  'editing'=>false,
 					  'id'=>1,
 					  'plot'=>'store',
 					  'plot_data'=>array('store'=>array(
@@ -571,6 +573,18 @@ $default_state=array(
 							 'order_dir'=>'',
 							 'sf'=>0,
 							 'nr'=>25,
+							 ),
+					  'history'=>array(
+							 'where'=>'where true',
+							 'f_field'=>'abstract',
+							 'f_value'=>'',
+							 'order'=>'date',
+							 'order_dir'=>'desc',
+							 'sf'=>0,
+							 'nr'=>25,
+							 'from'=>'',
+							 'to'=>'',
+							 'elements'=>''
 							 )
 					  ),
 		     'departments'=>array(
@@ -644,7 +658,19 @@ $default_state=array(
 						      'f_field'=>'code',
 						      'f_value'=>''
 
-						      )
+						      ),
+				        'history'=>array(
+							 'where'=>'where true',
+							 'f_field'=>'abstract',
+							 'f_value'=>'',
+							 'order'=>'date',
+							 'order_dir'=>'desc',
+							 'sf'=>0,
+							 'nr'=>25,
+							 'from'=>'',
+							 'to'=>'',
+							 'elements'=>''
+							 )
 					 ),
 		     'family'=>array(
 				       'details'=>false,
@@ -672,7 +698,19 @@ $default_state=array(
 						      'f_field'=>'id',
 						      'f_value'=>''
 
-						      )
+						      ),
+				        'history'=>array(
+							 'where'=>'where true',
+							 'f_field'=>'abstract',
+							 'f_value'=>'',
+							 'order'=>'date',
+							 'order_dir'=>'desc',
+							 'sf'=>0,
+							 'nr'=>25,
+							 'from'=>'',
+							 'to'=>'',
+							 'elements'=>''
+							 )
 				     ),
 		     
 		     
@@ -770,7 +808,7 @@ $default_state=array(
 							  ),
 				         'history'=>array(
 							      'order'=>'date',
-							      'order_dir'=>'',
+							      'order_dir'=>'desc',
 							      'sf'=>0,
 							      'nr'=>15,
 							      'where'=>'where true',
@@ -931,7 +969,9 @@ $default_state=array(
 					  'period'=>'year',
 					  'mode'=>'all',
 					  'avg'=>'totals',
-					  'edit'=>false,
+					  'edit'=>'description',
+					  'editing'=>false,
+
 					  'table'=>array(
 							 'where'=>'where true',
 							 'f_field'=>'code',
