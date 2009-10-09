@@ -969,7 +969,7 @@ $default_state=array(
                                 'period'=>'year',
                                 'mode'=>'all',
                                 'avg'=>'totals',
-                                'edit'=>'description',
+                                'edit'=>'stores',
                                 'editing'=>false,
 
                                 'table'=>array(

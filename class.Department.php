@@ -221,7 +221,7 @@ $data['Product Department Store Code']=$store->data['Store Code'];
    $values=preg_replace('/,$/',')',$values);
    $sql=sprintf("insert into `Product Department Dimension` %s %s",$keys,$values);
    
-
+   //  print "$sql\n";
  if(mysql_query($sql)){
    $this->id = mysql_insert_id();
    $this->msg=_("Department Added");
