@@ -943,11 +943,11 @@ $this->get_data('id',$this->id);
   }
   
  $sql=sprintf("update `Store Dimension` set `Store Departments`=%d  where `Store Key`=%d  ",
-	      $this->data['Store Families']
-	      ,$this->data['Store Departments']
+	    
+	      $this->data['Store Departments']
 	      ,$this->id
 	      );
- //  print "$sql\n";exit;
+ //print "$sql\n";
  mysql_query($sql);
  
  }

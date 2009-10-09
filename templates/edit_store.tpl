@@ -14,7 +14,7 @@
       <li> <span class="item {if $edit=='departments'}selected{/if}" id="departments"  ><span> {t}Departments{/t}</span></span></li>
       <li> <span class="item {if $edit=='web'}selected{/if} " id="web" ><span> {t}Web Pages{/t}</span></span></li>
     </ul>
-    <div id="yui-main" style="border:1px solid #ccc;padding:20px 0"> 
+    <div id="yui-main" class="tabbed_container"> 
       <div id="info_name" style="margin-left:20px;float:left;width:260px;{if !($edit=='discounts' or $edit=='pictures')  }display:none{/if}">
 	<table    class="show_info_product">
 	  <tr>

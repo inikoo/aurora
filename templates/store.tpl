@@ -2,22 +2,18 @@
 <div id="bd" >
 
   <span class="nav2 onright"><a href="stores.php">&uarr; {t}Up{/t}</a></span>
-
-  
   <span class="nav2 onleft"><a class="selected" href="store.php">{$store->get('Store Code')}</a></span>
   <span class="nav2 onleft"><a href="families.php?store_key={$store->id}">{t}Families{/t}</a></span>
   <span class="nav2 onleft"><a href="products.php?store_key={$store->id}">{t}Products{/t}</a></span>
   <span class="nav2 onleft"><a href="categories.php?store_key={$store->id}">{t}Categories{/t}</a></span>
   <span class="nav2 onleft"><a href="parts.php?store_key={$store->id}">{t}Parts{/t}</a></span>
-
+  
   <div class="search_box" >
     <span class="search_title">{t}Product Code{/t}:</span> <input size="8" class="text search" id="product_search" value="" name="search"/><img align="absbottom" id="product_submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>
-     <span  class="search_msg"   id="product_search_msg"    ></span> <span  class="search_sugestion"   id="product_search_sugestion"    ></span>
+    <span  class="search_msg"   id="product_search_msg"    ></span> <span  class="search_sugestion"   id="product_search_sugestion"    ></span>
      <br/>
      {if $modify}<a   href="store.php?edit=1"  style="float:right;margin-left:15px" class="state_details"  >{t}Edit{/t}</a>{/if}
      <span  id="show_details" style="float:right;{if $show_details}display:none{/if}" class="state_details"  onClick="show_details()" >{t}Show details{/t}</span>
-
-
   </div>
   
   <div style="clear:left;margin:0 20px">
@@ -25,10 +21,8 @@
   </div>
   
   <div id="details" class="top_bar" style="{if !$show_details}display:none;{/if}">
-     
-
     <div  class="details">
-<div style="text-align:right">
+      <div style="text-align:right">
 	<span  class="state_details"  onClick="hide_details()"> {t}Hide details{/t}</span>
       </div>
       <div id="details_general"  {if $view!='general'}style="display:none"{/if}>

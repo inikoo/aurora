@@ -393,14 +393,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 
- function init(){
-     var ids = ["description","pictures","web","departments","discounts"]; 
-     YAHOO.util.Event.addListener(ids, "click", change_block);
-
-
-
-
- }
+function init(){
+    var ids = ["description","pictures","web","departments","discounts"]; 
+    YAHOO.util.Event.addListener(ids, "click", change_block);
+}
 
 YAHOO.util.Event.onDOMReady(init);
 

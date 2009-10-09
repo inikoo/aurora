@@ -81,27 +81,24 @@ case('edit_products'):
    
  }
 function create_store(){
-if(isset($_REQUEST['name'])  and  isset($_REQUEST['code'])   ){
-
-
-
-     $store=new Store('create',array(
+  if(isset($_REQUEST['name'])  and  isset($_REQUEST['code'])   ){
+    $store=new Store('find',array(
 					      'Store Code'=>$_REQUEST['code']
 					      ,'Store Name'=>$_REQUEST['name']
-
-					      ));
-     if(!$store->new){
+					      
+				  ),'create');
+    if(!$store->new){
        $state='400';
-     }else{
-       
-       $state='200';
-     }
+    }else{
+      
+      $state='200';
+    }
      $response=array('state'=>$state,'msg'=>$store->msg);
-   }
-
-   else
-      $response=array('state'=>400,'resp'=>_('Error'));
-   echo json_encode($response);
+  }
+  
+  else
+    $response=array('state'=>400,'resp'=>_('Error'));
+  echo json_encode($response);
 }
 function create_department(){
  if(isset($_REQUEST['name'])  and  isset($_REQUEST['code'])   ){
@@ -984,10 +981,10 @@ mysql_free_result($result);
    //   print "$sql";
    while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
      if($row['Store For Sale Products']>0){
-       $delete='<img src="art/icons/cross.png" /> <span conclick="close_store('.$row['Store Key'].')"  id="del_'.$row['Store Key'].'" style="cursor:pointer">'._('Close').'<span>';
+       $delete='<img src="art/icons/discontinue.png" /> <span conclick="close_store('.$row['Store Key'].')"  id="del_'.$row['Store Key'].'" style="cursor:pointer">'._('Close').'<span>';
        $delete_type='close';
      }else{
-       $delete='<img src="art/icons/cross.png" /> <span conclick="delete_store('.$row['Store Key'].')"  id="del_'.$row['Store Key'].'" style="cursor:pointer">'._('Delete').'<span>';
+       $delete='<img src="art/icons/delete.png" /> <span conclick="delete_store('.$row['Store Key'].')"  id="del_'.$row['Store Key'].'" style="cursor:pointer">'._('Delete').'<span>';
        $delete_type='delete';
      }
      $adata[]=array(
@@ -998,10 +995,11 @@ mysql_free_result($result);
 		    ,'delete_type'=>$delete_type
 		  );
   }
-mysql_free_result($res);
+
 
    $total=mysql_num_rows($res);
-   $response=array('resultset'=>
+ mysql_free_result($res);
+  $response=array('resultset'=>
 		   array('state'=>200,
 			 'data'=>$adata,
 			 'sort_key'=>$_order,
