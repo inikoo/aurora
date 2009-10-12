@@ -14,10 +14,9 @@
      <br/>
       {if $modify}<a   href="stores.php?edit=1"  style="float:right;margin-left:15px" class="state_details"  >{t}Edit{/t}</a>{/if}
       <span  class="state_details" state="{$show_details}"  id="show_details"  atitle="{if $show_details}{t}show details{/t}{else}{t}hide details{/t}{/if}"  >{if $show_details}{t}hide details{/t}{else}{t}show details{/t}{/if}</span>
-     
- </div>
+     </div>
   
-  <div style="clear:left;margin:0 20px">
+  <div style="clear:left;xmargin:0 20px">
     <h1>{t}Corporate Overview{/t}</h1>
   </div>
 
@@ -107,7 +106,7 @@
   </div>
 
 
-<div class="data_table" style="margin:25px 20px;clear:both">
+<div class="data_table" style="clear:both">
     <span class="clean_table_title">{t}Stores{/t}</span>
  <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
   <span   style="float:right;margin-left:80px" class="state_details" state="{$show_percentages}"  id="show_percentages"  atitle="{if $show_percentages}{t}Normal Mode{/t}{else}{t}Comparison Mode{/t}{/if}"  >{if $show_percentages}{t}Comparison Mode{/t}{else}{t}Normal Mode{/t}{/if}</span>
@@ -140,7 +139,10 @@
        
        <div  class="clean_table_caption"  style="clear:both;">
 	 <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
-	 <div class="clean_table_filter" id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0">{$filter_name}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value}" size=10/><div id='f_container0'></div></div></div>
+	 <div class="clean_table_filter" id="clean_table_filter0">
+	 <div class="clean_table_info" style="width:8.2em;padding-bottom:1px; ">
+	 <span id="filter_name0" style="margin-right:5px">{$filter_name}:</span><input style="border-bottom:none;width:6em;" id='f_input0' value="{$filter_value}" size=10/><div id='f_container0'></div>
+	 </div></div>
 	 <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
        </div>
        <div  id="table0"   class="data_table_container dtable btable with_total"> </div>		

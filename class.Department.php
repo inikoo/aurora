@@ -174,7 +174,10 @@ if($this->found)
     $this->get_data('id',$this->found_key);
 
 if(!$this->found & $create){
-$this->create($data);
+    $this->create($data);
+}else if($create){
+$this->msg=_('There is already another department with this code');
+
 }
 
 
@@ -310,6 +313,9 @@ $data['Product Department Store Code']=$store->data['Store Code'];
        $this->msg=_('Error: Wrong code (empty)');
        return;
      }
+     
+     if(!(strtolower($a1)==strtolower($this->data['Product Department Code']) and $a1!=$this->data['Product Department Code'])){
+     
      $sql=sprintf("select count(*) as num from `Product Department Dimension` where `Product Department Store Key`=%d and `Product Department Code`=%s  COLLATE utf8_general_ci"
 		,$this->data['Product Department Store Key']
 		,prepare_mysql($a1)
@@ -319,6 +325,7 @@ $data['Product Department Store Code']=$store->data['Store Code'];
      if($row['num']>0){
        $this->msg=_("Error: Another department with the same code");
        return;
+     }
      }
      $old_value=$this->get('Product Department Code');
       $sql=sprintf("update `Product Department Dimension` set `Product Department Code`=%s where `Product Department Key`=%d "

@@ -1,7 +1,7 @@
 <?php
 include_once('common.php');
 ?>
-
+var can_add_department=false;
 var description_num_changed=0;
 var description_warnings= new Object();
 var description_errors= new Object();
@@ -200,16 +200,23 @@ function change_block(e){
 
 function new_dept_changed(o){
     if(Dom.get("new_code").value!='' && Dom.get("new_name").value!=''){
-
-	Dom.get("add_new_dept").style.display='';
-    }else
-	Dom.get("add_new_dept").style.display='none';
+can_add_department=true;
+	 Dom.removeClass('save_new_department','disabled');
+	
+    }else{
+    Dom.addClass('save_new_department','disabled');
+	 can_add_department=false;
+    
+    }
 
 
 
 }
 
-function save_new_dept(){
+function save_new_department(){
+ if(can_add_department==false){
+	return;
+    }
     var code=Dom.get('new_code').value;
     var name=Dom.get('new_name').value;
   //   var store_key=0;
@@ -223,18 +230,22 @@ function save_new_dept(){
     var request='ar_edit_assets.php?tipo=new_department&code='+encodeURIComponent(code)+'&name='+encodeURIComponent(name);
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-
+	    alert(o.responseText);
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if(r.state==200){
 		    var table=tables['table0'];
 		    var datasource=tables['dataSource0'];
 		    var request='';
 		    datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
-		    Dom.get('edit_messages').innerHTML='';
 		    
-		    
+		    Dom.get('new_code').value='';
+		    Dom.get('new_name').value='';
+		  
+		    hide_add_department_dialog();
+		    Dom.get('new_department_messages').innerHTML='';
 		}else
-		    Dom.get('edit_messages').innerHTML='<span class="error">'+r.msg+'</span>';
+		    
+		    Dom.get('new_department_messages').innerHTML='<span class="error">'+r.msg+'</span>';
 	    }
 	    
 	    });
@@ -392,10 +403,39 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 
+function cancel_add_department(){
+    Dom.get('new_code').value='';
+    Dom.get('new_name').value='';
+    
+    hide_add_department_dialog(); 
+}
+
+
+function hide_add_department_dialog(){
+    Dom.get('new_department_dialog').style.display='none';
+    Dom.get('add_department').style.display='';
+    Dom.get('save_new_department').style.display='none';
+    Dom.get('cancel_add_department').style.display='none';
+}
+
+function show_add_department_dialog(){
+    Dom.get('new_department_dialog').style.display='';
+    Dom.get('add_department').style.display='none';
+    Dom.get('save_new_department').style.display='';
+    Dom.addClass('save_new_department','disabled');
+    Dom.get('cancel_add_department').style.display='';
+    Dom.get('new_code').focus();
+}
+
 
 function init(){
     var ids = ["description","pictures","web","departments","discounts"]; 
     YAHOO.util.Event.addListener(ids, "click", change_block);
+         YAHOO.util.Event.addListener('add_department', "click", show_add_department_dialog);
+
+     YAHOO.util.Event.addListener('save_new_department', "click",save_new_department);
+     YAHOO.util.Event.addListener('cancel_add_department', "click", cancel_add_department);
+
 }
 
 YAHOO.util.Event.onDOMReady(init);

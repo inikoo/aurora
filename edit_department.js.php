@@ -6,6 +6,31 @@ var Dom   = YAHOO.util.Dom;
 var department_id=<?php echo$_SESSION['state']['department']['id']?>;
 editing='description';
 
+
+
+function change_block(e){
+     if(editing!=this.id){
+     
+     if(this.id=='pictures' || this.id=='discounts'){
+	    Dom.get('info_name').style.display='';
+	}else
+	    Dom.get('info_name').style.display='none';
+     
+     
+	 Dom.get('d_families').style.display='none';
+	 Dom.get('d_description').style.display='none';
+	 Dom.get('d_discounts').style.display='none';
+	 Dom.get('d_pictures').style.display='none';
+	 Dom.get('d_web').style.display='none';
+	 Dom.get('d_'+this.id).style.display='';
+	 Dom.removeClass(editing,'selected');
+	 Dom.addClass(this, 'selected');
+	 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=department-edit&value='+this.id );
+	editing=this.id;
+    }
+}
+
+
 function new_dept_changed(o){
     if(Dom.get("new_code").value!='' && Dom.get("new_code").value!='')
 	Dom.get("add_new_dept").style.display='';
@@ -207,6 +232,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableDivEL="table"+tableid;
 	    var OrdersColumnDefs = [ 
 				    {key:"id", label:"", hidden:true,action:"none",isPrimaryKey:true}
+				    ,{key:"edit", label:"<?php echo _('Key')?>", width:30,action:"none"}
 				    ,{key:"code", label:"<?php echo _('Code')?>", width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'family'}
 				    ,{key:"name", label:"<?php echo _('Name')?>",width:300, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'family'}
 				    ,{key:"delete", label:"",width:100,className:"aleft",action:"delete",object:'family'}
@@ -233,7 +259,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		fields: [
 			 "code",
 			 "name",
-			 'delete','delete_type','id'
+			 'delete','delete_type','id','edit'
 			 ]};
 	    
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
@@ -282,9 +308,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
     });
 
 function init(){
- var Event = YAHOO.util.Event;
-    var Dom   = YAHOO.util.Dom;
-    
+ 
     function mygetTerms(query) {multireload();};
     var oACDS = new YAHOO.widget.DS_JSFunction(mygetTerms);
     oACDS.queryMatchContains = true;
@@ -292,7 +316,8 @@ function init(){
     oAutoComp.minQueryLength = 0; 
     
 
-
+  var ids = ["description","families","discounts","pictures","web"]; 
+     YAHOO.util.Event.addListener(ids, "click", change_block);
     
 
 

@@ -4,7 +4,7 @@
   {if $next.id>0}<span class="nav2 onright"><a href="department.php?id={$next.id}">{$next.code} &rarr; </a></span>{/if}
   <span class="nav2 onright" ><a href="store.php?id={$store->id}">&uarr; {t}Up{/t}</a></span>
   {if $prev.id>0}<span class="nav2 onright" ><a href="department.php?id={$prev.id}">&larr; {$prev.code}</a></span>{/if}
-  {if $modify}<span class="nav2 onright"><a href="department.php?edit=1"  >{t}Edit{/t}</a></span>{/if}
+ 
   
   <span class="nav2 onleft"><a class="selected" href="store.php">{$store->get('Store Code')}</a></span>
   <span class="nav2 onleft"><a href="families.php?store_key={$store->id}">{t}Families{/t}</a></span>
@@ -15,10 +15,11 @@
     <span class="search_titleitle">{t}Product Code{/t}:</span> <input size="8" class="text search" id="product_search" value="" name="search"/><img align="absbottom" id="product_submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>
      <span  class="search_msg"   id="product_search_msg"    ></span> <span  class="search_sugestion"   id="product_search_sugestion"    ></span>
      <br/>
+     {if $modify}<a   href="department.php?edit=1"  style="float:right;margin-left:15px" class="state_details"  >{t}Edit{/t}</a>{/if}
      <span id="show_details" style="float:right;{if $show_details}display:none{/if}" class="state_details"  onClick="show_details()" >{t}Show details{/t}</span>
   </div>
   
-  <div style="clear:left;margin:0 20px">
+  <div style="clear:left;">
     <h1><a  href="store.php?id={$store->id}">{$store->get('Store Code')}</a> &rarr; {$department->get('Product Department Name')}</h1>
   </div>
   
@@ -100,7 +101,7 @@
   
  
   
-  <div class="data_table" style="clear:both;margin:25px 20px">
+  <div class="data_table" style="clear:both;">
 	<span id="table_title" class="clean_table_title">{t}Families{/t}</span>
 
  <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>

@@ -16,7 +16,7 @@
      <span  id="show_details" style="float:right;{if $show_details}display:none{/if}" class="state_details"  onClick="show_details()" >{t}Show details{/t}</span>
   </div>
   
-  <div style="clear:left;margin:0 20px">
+  <div style="clear:left;">
     <h1>{$store->get('Store Name')} ({$store->get('Store Code')})</h1>
   </div>
   
