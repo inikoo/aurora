@@ -2099,7 +2099,6 @@ public $new_value=false;
     Function: load_original_image
     Carga diferentes tipos de imagenes, Crea y actualiza datos de las tablas Product Image Bridge, Product Image, Image Dimension
   */
-  // JFA
 
 
   function add_image($file,$args='') {
@@ -2148,14 +2147,50 @@ public $new_value=false;
     $target_path = $tmp_images_dir;
     //print filesize($file)."-----Z\n";
 
-    print $file;
-    return;
-    $im = @imagecreatefromjpeg($file);
-
+    ob_start();
+    system("uname");
+   $mimetype='Unknown';
+   $system='Unknown';
+   $_system = ob_get_clean();
+   
+    if(preg_match('/darwin/i',$_system)){
+     ob_start();
+      $system='Mac';
+      system("file -I $file");
+      $mimetype=ob_get_clean();
+      
+    }elseif(preg_match('/linux/i',$_system)){
+      $system='Linux'; 
+      $mimetype = system("file -ib $filename");
+    }else{
+      $system='Other';  
+    }
+   
+   
+    if(preg_match('/png/i',$mimetype))
+        $format='png';
+    elseif(preg_match('/jpeg/i',$mimetype))
+        $format='jpeg';
+    else{
+        $format='other';
+    }
+   // print "$system $mimetype";
+   // return;
+    
+    
+    if($format=='jpeg')
+        $im = @imagecreatefromjpeg($file);
+    elseif($format=='png')    
+         $im = @imagecreatefrompng($file);
+    else{
+    $this->error=true;
+    $this->msg=_('File format not supported');
+    }
+         
     // print "-----------------";
     if ($im) {
 
-      $format='jpg';
+     
       //print $tmp_images_dir.strtolower($this->data['Product Family Code']);
    
       if (!file_exists($tmp_images_dir.strtolower($this->data['Product Family Code'])))
@@ -2179,9 +2214,12 @@ public $new_value=false;
                         );
       //print_r($image_data);
 
-      
+         if($format=='jpeg')
+          imagejpeg($im,$name );
+    elseif($format=='png')    
+           imagepng($im,$name );
 
-      imagejpeg($im,$name );
+     
       $image_data['Image Data']=$news_imgfile;
 
       $keys='(';
