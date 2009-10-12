@@ -4,8 +4,8 @@
 var Event = YAHOO.util.Event;
 var Dom   = YAHOO.util.Dom;
 var department_id=<?php echo$_SESSION['state']['department']['id']?>;
-editing='description';
-
+var editing='<?php echo $_SESSION['state']['department']['edit']?>';
+var can_add_family=false;
 
 
 function change_block(e){
@@ -31,14 +31,7 @@ function change_block(e){
 }
 
 
-function new_dept_changed(o){
-    if(Dom.get("new_code").value!='' && Dom.get("new_code").value!='')
-	Dom.get("add_new_dept").style.display='';
-    else
-	Dom.get("add_new_dept").style.display='';
 
-
-}
 var description_num_changed=0;
 var description_warnings= new Object();
 var description_errors= new Object();
@@ -183,20 +176,24 @@ function save(tipo){
 
 
 function new_family_changed(o){
-    if(Dom.get("new_code").value!='' && Dom.get("new_name").value!=''){
-	Dom.get("add_new_family").style.display='';
-    }else
-	Dom.get("add_new_family").style.display='none';
+    if(Dom.get("new_code").value!='' && Dom.get("new_name").value!=''  && Dom.get("new_special_char").value!='' ){
+       	Dom.removeClass('save_new_family','disabled');
+	can_add_family=true;
+    }else{
+	Dom.removeClass('save_new_family','disabled');
+	can_add_family=false;
+    }
 }
 
 function save_new_family(){
 
-    var msg_div='add_family_messages';
+    var msg_div='new_family_messages';
 
     var code=Dom.get('new_code').value;
     var name=Dom.get('new_name').value;
+    var special_char=Dom.get('new_special_char').value;
     var description=Dom.get('new_description').innerHTML;
-    var request='ar_edit_assets.php?tipo=new_family&code='+encodeURIComponent(code)+'&name='+encodeURIComponent(name)+'&description='+encodeURIComponent(name);
+    var request='ar_edit_assets.php?tipo=new_family&code='+encodeURIComponent(code)+'&name='+encodeURIComponent(name)+'&description='+encodeURIComponent(name)+'&special_char='+encodeURIComponent(special_char);
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
 
@@ -207,6 +204,14 @@ function save_new_family(){
 		    var request='';
 		    datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
 		    Dom.get(msg_div).innerHTML='';
+
+		    Dom.get('new_code').value='';
+		    Dom.get('new_name').value='';
+		    Dom.get('special_char').value='';
+		    hide_add_family_dialog();
+
+
+
 		}else
 		    Dom.get(msg_div).innerHTML='<span class="error">'+r.msg+'</span>';
 	    }
@@ -214,8 +219,32 @@ function save_new_family(){
 	    });
 
 }
+function cancel_add_family(){
+    Dom.get('new_code').value='';
+    Dom.get('new_name').value='';
+    
+    hide_add_family_dialog(); 
+}
 
+function hide_add_family_dialog(){
+    Dom.get('new_family_dialog').style.display='none';
+    Dom.get('add_family').style.display='';
+    Dom.get('save_new_family').style.display='none';
+    Dom.get('cancel_add_family').style.display='none';
+}
 
+function show_add_family_dialog(){
+    
+    Dom.get('new_family_dialog').style.display='';
+    Dom.get('add_family').style.display='none';
+
+    Dom.get('save_new_family').style.display='';
+
+    Dom.addClass('save_new_family','disabled');
+    Dom.get('cancel_add_family').style.display='';
+    Dom.get('new_code').focus();
+
+}
 
 
 
@@ -307,6 +336,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	};
     });
 
+
+
+
 function init(){
  
     function mygetTerms(query) {multireload();};
@@ -315,10 +347,11 @@ function init(){
     var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","filtercontainer0", oACDS);
     oAutoComp.minQueryLength = 0; 
     
-
-  var ids = ["description","families","discounts","pictures","web"]; 
-     YAHOO.util.Event.addListener(ids, "click", change_block);
-    
+    var ids = ["description","families","discounts","pictures","web"]; 
+    YAHOO.util.Event.addListener(ids, "click", change_block);
+    YAHOO.util.Event.addListener('add_family', "click", show_add_family_dialog);
+    YAHOO.util.Event.addListener('save_new_family', "click",save_new_family);
+    YAHOO.util.Event.addListener('cancel_add_family', "click", cancel_add_family);
 
 
 }

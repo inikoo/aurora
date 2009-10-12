@@ -60,8 +60,36 @@ case('town'):
 		       );
   list_town($data);
   break;
+case('currency'):
+  $data=prepare_values($_REQUEST,array(
+				       'query'=>array('type'=>'string')
+  
+				       )
+		       );
+  list_currencies($data);
+
+  break;
+
 
 }
+
+function list_currencies($data){
+ $sql=sprintf("select * from kbase.`Currency Dimension`
+                where `Currency Code` like '%s%%' or `Currency Name` like '%%%s%%'   or `Currency Symbol`=%s limit 10" 
+	      ,addslashes($data['query'])
+	      ,addslashes($data['query'])
+	      ,addslashes($data['query'])
+	       );
+  $res=mysql_query($sql);
+  $data=array();
+  while($row=mysql_fetch_array($res)){
+    $data[]=array('name'=>$row['Country Name'],'code'=>$row['Currercy Code']);
+  }
+  $response=array('data'=>$data);
+  echo json_encode($response);
+}
+
+
 function list_country_d1($data){
   $extra_where='';
   if(isset($data['country_2acode']))

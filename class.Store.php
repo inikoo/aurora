@@ -665,6 +665,8 @@ $sql="select sum(`Product 1 Week Acc Invoiced Amount`) as net,sum(`Product 1 Wee
        $this->msg=_('Error: Wrong code (empty)');
        return;
      }
+
+     if(!(strtolower($a1)==strtolower($this->data['Store Code']) and $a1!=$this->data['Store Code'])){
      $sql=sprintf("select count(*) as num from `Store Dimension` where  `Store Code`=%s COLLATE utf8_general_ci  "
 		,prepare_mysql($a1)
 		);
@@ -673,6 +675,7 @@ $sql="select sum(`Product 1 Week Acc Invoiced Amount`) as net,sum(`Product 1 Wee
      if($row['num']>0){
        $this->msg=_("Error: There is another store with the same code");
        return;
+     }
      }
      $old_value=$this->get('Store Code');
       $sql=sprintf("update `Store Dimension` set `Store Code`=%s where `Store Key`=%d  "
@@ -725,15 +728,19 @@ $sql="select sum(`Product 1 Week Acc Invoiced Amount`) as net,sum(`Product 1 Wee
        $this->msg=_('Error: Wrong name (empty)');
        return;
      }
-     $sql=sprintf("select count(*) as num from `Store Dimension` where `Store Name`=%s COLLATE utf8_general_ci"
-		,prepare_mysql($a1)
-		);
 
-     $res=mysql_query($sql);
-     $row=mysql_fetch_array($res);
-     if($row['num']>0){
-       $this->msg=_("Error: Another store with the same name");
-       return;
+     if(!(strtolower($a1)==strtolower($this->data['Store Name']) and $a1!=$this->data['Store Name'])){
+
+       $sql=sprintf("select count(*) as num from `Store Dimension` where `Store Name`=%s COLLATE utf8_general_ci"
+		    ,prepare_mysql($a1)
+		    );
+       
+       $res=mysql_query($sql);
+       $row=mysql_fetch_array($res);
+       if($row['num']>0){
+	 $this->msg=_("Error: Another store with the same name");
+	 return;
+       }
      }
      $old_value=$this->get('Store Name');
       $sql=sprintf("update `Store Dimension` set `Store Name`=%s where `Store Key`=%d "

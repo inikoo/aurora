@@ -2044,7 +2044,7 @@ public $new_value=false;
       break;
     case('images'):
 
-      $sql=sprintf("select ID.`Image Key`,`Image Caption`,`Image URL`,`Image Filename`,`Image Type`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Product Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Product ID`=%d",$this->pid);
+      $sql=sprintf("select ID.`Image Key`,`Image Caption`,`Image URL`,`Image Filename`,`Image Type`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Product' and `Subject Key`=%d",$this->pid);
 
       $res=mysql_query($sql);
       $this->images_small=array();
@@ -2068,7 +2068,7 @@ public $new_value=false;
 
 
     case('images_slideshow'):
-      $sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image URL`,`Image Filename`,`Image Type`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Product Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Product ID`=%d",$this->pid);
+      $sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image URL`,`Image Filename`,`Image Type`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Product' and   `Subject Key`=%d",$this->pid);
       //       print $sql;
       $res=mysql_query($sql);
       $this->images_slideshow=array();
@@ -2103,7 +2103,17 @@ public $new_value=false;
 
 
   function add_image($file,$args='') {
-    global $tmp_images_dir;
+   $tmp_images_dir='app_files/pics/';
+
+
+/*    if(preg_match('/images_dir=.+\s?/',$args,$match)){ */
+/*      $tmp_images_dir=preg_replace('/images_dir=/','',$match[0]); */
+/*      $tmp_images_dir=preg_replace('/images_dir=/','',$match[0]); */
+
+/*    }    */
+
+
+
     $principal='No';
     if (preg_match('/principal/i',$args))
       $principal='Yes';
@@ -2112,8 +2122,9 @@ public $new_value=false;
 
     $checksum=md5_file($file);
     $same_as_other=false;
+    
 
-    //print_r($this->images);
+
 
     foreach($this->images_original as $_key=>$_value) {
       if ($_value['Image File Checksum']==$checksum) {
@@ -2137,6 +2148,8 @@ public $new_value=false;
     $target_path = $tmp_images_dir;
     //print filesize($file)."-----Z\n";
 
+    print $file;
+    return;
     $im = @imagecreatefromjpeg($file);
 
     // print "-----------------";
@@ -2144,8 +2157,9 @@ public $new_value=false;
 
       $format='jpg';
       //print $tmp_images_dir.strtolower($this->data['Product Family Code']);
-      if (!file_exists('../../'.$tmp_images_dir.strtolower($this->data['Product Family Code'])))
-	mkdir('../../'.$tmp_images_dir.strtolower($this->data['Product Family Code']), 0700);
+   
+      if (!file_exists($tmp_images_dir.strtolower($this->data['Product Family Code'])))
+	mkdir($tmp_images_dir.strtolower($this->data['Product Family Code']), 0700);
       $name=$tmp_images_dir.strtolower($this->data['Product Family Code']).'/'.strtolower('Original_'.$code.'_'.$this->id.'.'.$format);
 
 
@@ -2164,7 +2178,10 @@ public $new_value=false;
 			'Image Type'=>'Original'
                         );
       //print_r($image_data);
-      imagejpeg($im,'../../'.$name );
+
+      
+
+      imagejpeg($im,$name );
       $image_data['Image Data']=$news_imgfile;
 
       $keys='(';
@@ -2179,19 +2196,19 @@ public $new_value=false;
       $keys=preg_replace('/,$/',')',$keys);
       $values=preg_replace('/,$/',')',$values);
       $sql=sprintf("insert into `Image Dimension` %s %s",$keys,$values);
-      //print $sql;
+
       if (mysql_query($sql)) {
 	$image_key=mysql_insert_id();
 
 	if ($principal=='Yes') {
-	  $sql=sprintf("update `Product Image Bridge` set `Is Princial`='No' where `Product ID`=%d",$this->pid);
+	  $sql=sprintf("update `Image Bridge` set `Is Princial`='No' where   `Subject Type`='Product' and  `Subject Key`=%d",$this->pid);
 	  mysql_query($sql);
 	}
 
 	if (count($this->images_original)==0)
 	  $principal='Yes';
 
-	$sql=sprintf("insert into `Product Image Bridge` values (%d,%d,%s)",$this->pid,$image_key,prepare_mysql($principal));
+	$sql=sprintf("insert into `Image Bridge` values ('Product',%d,%d,%s)",$this->pid,$image_key,prepare_mysql($principal));
 	//print $sql;
 	mysql_query($sql);
 	$url=sprintf('image.php?id=%d',$image_key);
@@ -3675,6 +3692,21 @@ public $new_value=false;
 
 
       if ($this->updated) {
+
+	if($this->get('RRP Margin')!='')
+	  $customer_margin=_('CM').' '.$this->get('RRP Margin');
+	else
+	  $customer_margin=_('Not for resale');
+
+
+	$this->new_value=array(
+			       'Price'=>$this->get('Price'),
+			       'Unit Price'=>$this->get('Price Per Unit'),
+			       'Margin'=>$this->get('Margin'),
+			       'Customer Margin'=>$customer_margin
+			       );
+	
+
 	$this->updated_fields['Product Price']=array(
 						     'Product Price'=>$this->data['Product Price'],
 						     'Formated Price'=>$this->get('Formated Price'),
@@ -3757,16 +3789,18 @@ public $new_value=false;
 
       if ($amount=='NULL') {
 	$this->data['Product RRP']='';
-	$customer_margin='';
+     
       } else {
 	$this->data['Product RRP']=$amount;
-	if ($this->data['Product RRP']!=0 and is_numeric($this->data['Product RRP']))
-	  $customer_margin=_('CM').' '.number(100*($this->data['Product RRP']-$this->data['Product Price'])/$this->data['Product RRP'],1).'%';
-	else
-	  $customer_margin='';
-      }
-      $rrp_notes=$customer_margin;
 
+      }
+      
+	if($this->get('RRP Margin')!='')
+	  $customer_margin=_('CM').' '.$this->get('RRP Margin');
+	else
+	  $customer_margin=_('Not for resale');
+  
+	$this->new_value=array('Customer Margin'=>$customer_margin,'RRP Per Unit'=>$this->get('RRP Per Unit'));
 
       $this->updated_fields[$key]=array(
 						 'RRP'=>$this->get('RRP'),
@@ -3824,20 +3858,19 @@ public $new_value=false;
       $this->msg=_('Error: Wrong name (empty)');
       return;
     }
-
-    $sql=sprintf("select count(*) as num from `Product Dimension` where `Product Store Key`=%d and  ( `Product Name`=%s  COLLATE utf8_general_ci  or  `Product Editing Name`=%s  COLLATE utf8_general_ci   ) "
-		 ,$this->data['Product Store Key']
-		 ,prepare_mysql($value)
-		 ,prepare_mysql($value)
-
-		 );
-    $res=mysql_query($sql);
-    $row=mysql_fetch_array($res);
-    if ($row['num']>0) {
-      $this->msg=_("Error: Another product with the same name");
-      return;
-    }
-
+    if(!(strtolower($value)==strtolower($this->data['Product Name']) and $value!=$this->data['Product Name'])){
+      $sql=sprintf("select * from `Product Dimension` where `Product Store Key`=%d and  ( `Product Name`=%s  COLLATE utf8_general_ci  ) "
+		   ,$this->data['Product Store Key']
+		   ,prepare_mysql($value)
+		   
+		   
+		   );
+      $res=mysql_query($sql);
+      if ($row=mysql_fetch_array($res)) {
+	$this->msg=_("Error: Another product has already this same name").". (".$row['Product Code'].")";
+	return;
+      }
+     }
     if ($this->data['Product Record Type']=='In Process')
       $edit_column='Product Editing Name';
     else
@@ -3945,9 +3978,10 @@ public $new_value=false;
 		 ,$this->pid
 		 );
     if (mysql_query($sql)) {
+      $this->data['Product Special Characteristic']=$value;
       $this->msg=_('Product Special Characteristic');
       $this->updated=true;
-     
+      $this->new_value=$this->data['Product Special Characteristic'] ;
       $this->updated_fields['Product Special Characteristic']=array(
 						      'Product Special Characteristic'=>$this->data['Product Special Characteristic'] 
 						 );
