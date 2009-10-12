@@ -12,26 +12,16 @@
        <input size="8" class="text search" id="customer_search" value="" name="search"/><img align="absbottom" id="customer_submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>
        <span  class="product_search_msg"   id="customer_search_msg"    ></span> <span  class="search_sugestion"   id="customer_search_sugestion"    ></span>
        <br/>
- <a id="but_advanced_search"  class="state_details" href="search_customers.php">{t}Advanced Search{/t}</a><br/>
- <span id="but_show_details" state="{$details}" atitle="{if $details==0}{t}Hide Details{/t}{else}{t}Show Details{/t}{/if}" class="state_details"   >{if $details==1}{t}Hide Details{/t}{else}{t}Show Details{/t}{/if}</span><br/>
+ <a id="but_advanced_search"  class="state_details" href="search_customers.php">{t}Advanced Search{/t}</a>
+ <span id="but_show_details" state="{$details}" atitle="{if $details==0}{t}Hide Details{/t}{else}{t}Show Details{/t}{/if}" class="state_details"   >{if $details==1}{t}Hide Details{/t}{else}{t}Show Details{/t}{/if}</span>
  <a id="but_new_customer"  class="state_details" href="new_customer.php">{t}New Customer{/t}</a>       
   </div>
-    
+  <div style="clear:left;xmargin:0 20px">
+    <h1>{t}Customers Home{/t}</h1>
+  </div>
 
  <div id="top" class="top_bar">
-    <div id="short_menu" class="nodetails" style="width:100%;margin-bottom:0px">
-      <table style="float:left;margin:0 0 0 20px ;padding:0"  class="options" {if $customers==0 }style="display:none"{/if}>
-	<tr>
-	  <td  {if $view=='general'}class="selected"{/if} id="general" >{t}General{/t}</td>
-	  <td {if $view=='contact'}class="selected"{/if}  id="contact"  >{t}Contact{/t}</td>
-	  <td {if $view=='addresses'}class="selected"{/if}  id="address"  >{t}Address{/t}</td>
-	  <td {if $view=='ship_to_addresses'}class="selected"{/if}  id="ship_to_address"  >{t}Shipping Address{/t}</td>
-	  <td {if $view=='balance'}class="selected"{/if}  id="balance"  >{t}Balance{/t}</td>
-	  <td {if $view=='rank'}class="selected"{/if}  id="rank"  >{t}Ranking{/t}</td>
-
-	</tr>
-      </table>
-    </div>
+   
     
 
 
@@ -59,7 +49,20 @@
 
     
     <div id="the_table" class="data_table" xstyle="margin:20px 20px;clear:both">
-      <span class="clean_table_title">{$table_title}</span>
+      <span class="clean_table_title">Customers List</span>
+       <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
+  <table style="float:left;margin:0 0 0 20px ;padding:0"  class="options" {if $customers==0 }style="display:none"{/if}>
+	<tr>
+	  <td  {if $view=='general'}class="selected"{/if} id="general" >{t}General{/t}</td>
+	  <td {if $view=='contact'}class="selected"{/if}  id="contact"  >{t}Contact{/t}</td>
+	  <td {if $view=='addresses'}class="selected"{/if}  id="address"  >{t}Address{/t}</td>
+	  <td {if $view=='ship_to_addresses'}class="selected"{/if}  id="ship_to_address"  >{t}Shipping Address{/t}</td>
+	  <td {if $view=='balance'}class="selected"{/if}  id="balance"  >{t}Balance{/t}</td>
+	  <td {if $view=='rank'}class="selected"{/if}  id="rank"  >{t}Ranking{/t}</td>
+
+	</tr>
+      </table>
+
       <div  class="clean_table_caption"  style="clear:both;">
 	<div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
 	<div class="clean_table_filter" id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0">{$filter_name}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value}" size=10/><div id='f_container'></div></div></div>

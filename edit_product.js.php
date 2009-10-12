@@ -22,6 +22,7 @@ var editing='<?php echo $_SESSION['state']['product']['edit']?>';
 
 
 
+
 var description_warnings= new Object();
 var description_errors= new Object();
 
@@ -486,7 +487,7 @@ function delete_image(image_id,image_name){
 
 	
 
-	var request='ar_assets.php?tipo=ep_update&key=img_delete'+'&value='+escape(image_id);
+	var request='ar_edit_assets.php?tipo=delete_image&scope=product&scope_key='+product_id+'&value='+escape(image_id);
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
 		    //alert(o.responseText);
@@ -1321,7 +1322,7 @@ function save_description(key){
 
     var json_value = YAHOO.lang.JSON.stringify(data);
 
-    var request='ar_edit_assets.php?tipo=edit_product&id='+product_id+'&key=array&value='+escape(json_value);
+    var request='ar_edit_assets.php?tipo=edit_product_advanced&id='+product_id+'&key=array&value='+escape(json_value);
 
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
@@ -1406,7 +1407,7 @@ function save_price(key){
     }else
 	return;
 
-    var request='ar_edit_assets.php?tipo=edit_product&id='+product_id+'&key='+escape(t_key)+'&value='+escape(value);
+    var request='ar_edit_assets.php?tipo=edit_product_advanced&id='+product_id+'&key='+escape(t_key)+'&value='+escape(value);
     //  alert(request);
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
@@ -1591,7 +1592,7 @@ function init(){
 
       }
     };
-    var request='ar_edit_assets.php?tipo=upload_product_image';
+    var request='ar_edit_assets.php?tipo=upload_product_image&subject=product&id='+product_id;
     YAHOO.util.Connect.asyncRequest('POST',request, uploadHandler);
   };
   YAHOO.util.Event.on('uploadButton', 'click', onUploadButtonClick);

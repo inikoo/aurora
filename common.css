@@ -514,7 +514,7 @@ span.small{font-size:80%}
 .inbox td span.selected{ border:1px solid #777;color:#000;border-bottom:1px solid white;position:relative;top:1px}
 .inbox_form  span.button,.inbox span.button,.edit span.button{border:1px solid #777;padding:4px 4px;cursor:pointer; }
 
-.edit_images{ margin:20px 0;width:800px; }
+.edit_images{ margin:20px 0;width:800px;font-size:80% }
 .edit_images div.image{float:left;width:180px;margin:10px  20px 10px 0; }
 .edit_images img.picture {border:1px solid #ccc }
 .edit_images .img_set_principal{ float:right;margin-right:25px }

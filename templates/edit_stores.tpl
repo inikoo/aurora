@@ -46,7 +46,13 @@
 	  </tr>
 	  <input id="address_country_code" value="" type="hidden">
 	  <input id="address_country_2acode" value="" type="hidden">
-	  
+<tr>
+<td class="label">{t}Currency{/t}:</td><td>
+ <div  style="width:15em;position:relative;top:00px" >
+		<input id="currency" style="text-align:left;width:18em" type="text">
+		<div id="currency_container" style="" ></div>
+	      </div> <input id="currency_code" value="" type="hidden"> </td>
+</tr>	  
 <tr>
 <td class="label">{t}Locale{/t}:</td><td></td>
 </tr>

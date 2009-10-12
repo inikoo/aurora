@@ -1,16 +1,30 @@
 {include file='header.tpl'}
 <div id="bd" >
- <div class="search_box" style="clear:both;margin-right:20px;margin-top:10px" >
-    <span class='reset' onclick='window.location="family.php?edit=0"'   >{t}Exit{/t}</span>
- </div>
-  
+  <div id="sub_header">
+    <span class="nav2 onleft" style="">{t}Editing Family{/t}: <span id="title_name" style="font-style: italic;">{$family->get('Product Family Name')}</span> (<span id="title_code" style="font-style: italic;">{$family->get('Product Family Code')}</span>)</span>
+    <span class="nav2 onright" style="margin-left:20px"><a href="family.php?edit=0">{t}Exit edit{/t}</a></span>
+  </div>
 
-<div style="clear:left;margin-left:20px;width:700px"id="details" class="details" >
-  <h1><span style="color:red">{t}Editing Family{/t}:</span> <span id="family_name">{$family->get('Product Family Name')}</span> (<span id="family_code">{$family->get('Product Family Code')}</span>)</h1>
-  
-  <h2>{t}Family data{/t}</h2>
-  <div id="edit_family_form">
-    <span style="display:none" id="description_num_changes"></span>
+  <ul class="tabs" id="chooser_ul" style="clear:both">
+    <li> <span class="item {if $edit=='description'}selected{/if}"  id="description">  <span> {t}Description{/t}</span></span></li>
+    <li> <span class="item {if $edit=='discounts'}selected{/if}"  id="discounts">  <span> {t}Discounts{/t}</span></span></li>
+    <li> <span class="item {if $edit=='pictures'}selected{/if}" id="pictures"  ><span>  {t}Pictures{/t}</span></span></li>
+    <li> <span class="item {if $edit=='products'}selected{/if}" id="products"  ><span> {t}Products{/t}</span></span></li>
+    <li> <span class="item {if $edit=='web'}selected{/if} " id="web" ><span> {t}Web Pages{/t}</span></span></li>
+  </ul>
+ <div class="tabbed_container" > 
+    <div id="info_name" style="margin-left:20px;float:left;width:260px;{if !($edit=='discounts' or $edit=='pictures')  }display:none{/if}">
+	<table    class="show_info_product">
+	  <tr>
+	    <td>{t}Family Code{/t}:</td><td  class="aright">{$family->get('Product Family Code')}</td>
+	  </tr>
+	  <tr>
+	    <td>{t}Family Name{/t}:</td><td  class="aright">{$family->get('Product Family Name')}</td>
+	  </tr>
+	</table>
+      </div>
+    <div  class="edit_block" style="{if $edit!="description"}display:none{/if}"  id="d_description">
+       <span style="display:none" id="description_num_changes"></span>
     <div id="description_errors"></div>
     <table >
       <tr><td>{t}Code{/t}:</td><td><input  id="code" onKeyUp="edit_dept_changed(this)"    onMouseUp="edit_dept_changed(this)"  onChange="edit_dept_changed(this)"  name="code" changed=0 type='text' class='text' style="width:15em" MAXLENGTH="16" value="{$family->get('Product Family Code')}" ovalue="{$family->get('Product Family Code')}"  /></td></tr>
@@ -19,13 +33,22 @@
 	  <span class="save" id="description_save" onclick="save('description')" style="display:none">{t}Update{/t}</span><span class="reset" id="description_reset" onclick="reset('description')" style="display:none">{t}Reset{/t}</span>
       </td></tr>
     </table>
-  </div>
-  <div id="add_product_form" style="padding:0;margin:0;display:none">
-    <h2>{t}Adding new product{/t}</h2>
-    <div id="add_family_messages"></div>
-    <table >
-
-	<tr><td>{t}Code{/t}:</td><td><input name="code" id="new_code"  onKeyUp="new_product_changed(this)"    onMouseUp="new_product_changed(this)"  onChange="new_product_changed(this)"  name="code" changed=0 type='text' class='text' SIZE="16" value="" MAXLENGTH="16"/></td></tr>
+    </div>
+      <div  class="edit_block" style="margin:0;padding:0 0px;{if $edit!="pictures"}display:none{/if}"  id="d_pictures">
+	
+      </div>
+      <div  class="edit_block" style="margin:0;padding:0 0px;{if $edit!="discounts"}display:none{/if}"  id="d_discounts">
+	
+      </div>
+      
+      <div  class="edit_block" style="margin:0;padding:0 0px;{if $edit!="web"}display:none{/if}"  id="d_web">
+      </div>
+      
+      <div  class="edit_block" style="margin:0;padding:0 0px;{if $edit!="products"}display:none{/if}"  id="d_products">
+	<div   style="margin:0 0 10px 0;padding:10px;border:1px solid #ccc;display:none"  id="new_product_dialog" >
+	  <div id="new_product_messages" class="messages_block"></div>
+	  <table class="edit" >
+	    	<tr><td>{t}Code{/t}:</td><td><input name="code" id="new_code"  onKeyUp="new_product_changed(this)"    onMouseUp="new_product_changed(this)"  onChange="new_product_changed(this)"  name="code" changed=0 type='text' class='text' SIZE="16" value="" MAXLENGTH="16"/></td></tr>
 	<tr><td>{t}Name{/t}:</td><td><input name="name"  id="new_name"  onKeyUp="new_product_changed(this)"    onMouseUp="new_product_changed(this)"  onChange="new_product_changed(this)"  name="code" changed=0  type='text'  SIZE="35" MAXLENGTH="80" class='text' value=""   /></td></tr>
 	<tr><td>{t}Short descriprtion{/t}:</td><td><input name="sdescription"  id="new_sdescription"  onKeyUp="new_product_changed(this)"    onMouseUp="new_product_changed(this)"  onChange="new_product_changed(this)"  name="code" changed=0  type='text'  SIZE="35" MAXLENGTH="32" class='text' /></td></tr>
 
@@ -75,25 +98,34 @@
 	</td></tr>
 
 
+    
+	  </table>
+	</div>
 
-	<td>
-	  <span class="save" id="add_new_family" onclick="save_new_family()" style="display:none">Add</span>
-      </td></tr>
-    </table>
-  </div>
-
-</div>
-<span class="new" style="font-size:90%;margin:20px" id="add_new_product">{t}Add Product{/t}</span>
-<br>
-  <div   class="data_table" style="margin:30px 20px 20px 20px">
+	 <div   class="data_table" >
 
     <span class="clean_table_title">{t}Products{/t}</span> 
-    <div class="options">
-      <span class="button{if $view=='view_state'} selected{/if}" id="view_state" style="margin:0px;margin-left:35px">State</span>  
-      <span class="button{if $view=='view_name'} selected{/if}" id="view_name" style="margin:0px;">Name</span>  
-      <span class="button{if $view=='view_price'} selected{/if}" id="view_price" style="margin:0px" >Price</span>  
-    </div>
-    <span style="float:right" class="state_details"  id="restrictions" value="for_sale" on click="change_multiple(this)"  >{t}displaying: products for sale{/t}</span>
+    
+    <table class="options" style="float:right;padding:0;margin:0;">
+      <tr>
+	<td  id="add_product">Add Product</td>
+	<td  style="display:none" id="save_new_product">Save New Product</td>
+	<td  style="display:none" id="cancel_add_product">Cancel</td>
+      </tr>
+    </table>
+    <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
+     <span style="float:right;margin-left:80px" class="state_details"  id="restrictions" value="for_sale" on click="change_multiple(this)"  >{t}products for sale{/t}</span>
+   
+<table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" >
+	<tr><td  {if $view=='view_state'}class="selected"{/if} id="view_state" >{t}State{/t}</td>
+	  {if $view_stock}<td {if $view=='view_name'}class="selected"{/if}  id="view_name"  >{t}Name{/t}</td>{/if}
+	  {if $view_sales}<td  {if $view=='view_price'}class="selected"{/if}  id="view_price"  >{t}Price{/t}</td>{/if}
+	</tr>
+</table>
+
+
+   
+
     <div  class="clean_table_caption"  style="clear:both;">
       <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
       <div class="clean_table_filter" style="display:none" id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0">{$filter_name0}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value0}" size=10/><div id='f_container0'></div></div></div>
@@ -101,6 +133,18 @@
     </div>
     <div  id="table0"   class="data_table_container dtable btable "> </div>
   </div>
+
+      </div>
+
+ </div>
+
+
+
+  
+  
+ 
+ 
+ 
 
   
 </div> 

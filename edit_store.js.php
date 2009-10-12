@@ -200,11 +200,11 @@ function change_block(e){
 
 function new_dept_changed(o){
     if(Dom.get("new_code").value!='' && Dom.get("new_name").value!=''){
-can_add_department=true;
-	 Dom.removeClass('save_new_department','disabled');
+	can_add_department=true;
+	Dom.removeClass('save_new_department','disabled');
 	
     }else{
-    Dom.addClass('save_new_department','disabled');
+	Dom.addClass('save_new_department','disabled');
 	 can_add_department=false;
     
     }
@@ -431,10 +431,9 @@ function show_add_department_dialog(){
 function init(){
     var ids = ["description","pictures","web","departments","discounts"]; 
     YAHOO.util.Event.addListener(ids, "click", change_block);
-         YAHOO.util.Event.addListener('add_department', "click", show_add_department_dialog);
-
-     YAHOO.util.Event.addListener('save_new_department', "click",save_new_department);
-     YAHOO.util.Event.addListener('cancel_add_department', "click", cancel_add_department);
+    YAHOO.util.Event.addListener('add_department', "click", show_add_department_dialog);
+    YAHOO.util.Event.addListener('save_new_department', "click",save_new_department);
+    YAHOO.util.Event.addListener('cancel_add_department', "click", cancel_add_department);
 
 }
 

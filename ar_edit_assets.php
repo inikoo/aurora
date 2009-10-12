@@ -20,6 +20,13 @@ if(!isset($_REQUEST['tipo']))
 
 $tipo=$_REQUEST['tipo'];
 switch($tipo){
+
+case('delete_image'):
+
+  delete_image();
+  
+
+  break;
 case('upload_product_image'):
 upload_image('product');
 break;
@@ -35,8 +42,12 @@ delete_department();
  case('edit_family'):
   edit_family(); 
    break;
+
+case('edit_product_advanced'):
+  edit_product_multi();
+   break;
 case('edit_product'):
-edit_product();
+  edit_product();
    break;
  case('edit_department'):
  edit_department();
@@ -128,6 +139,7 @@ function create_family(){
 				       'Product Family Code'=>$_REQUEST['code']
 				       ,'Product Family Name'=>$_REQUEST['name']
 				       ,'Product Family Description'=>$_REQUEST['description']
+				       ,'Product Family Special Characteristic'=>$_REQUEST['special_char']
 				       ,'Product Family Main Department Key'=>$department_key
 
 				       ));
@@ -246,6 +258,36 @@ function edit_department(){
    echo json_encode($response);  
 
 }
+function edit_product(){
+  $product=new product('pid',$_REQUEST['id']);
+ 
+   $translator=array(
+		     'name'=>'Product Name',
+		     'sdescription'=>'Product Special Characteristic',
+		     'price'=>'Product Price',
+		     'unit_price'=>'Product Unit Price',
+		     'margin'=>'Product Margin',
+		     'unit_rrp'=>'Product RRP Per Unit',
+		     );
+    
+    if(array_key_exists($_REQUEST['key'],$translator))
+      $key=$translator[$_REQUEST['key']];
+    else
+      $key=$_REQUEST['key'];
+
+    $product->update($key,stripslashes(urldecode($_REQUEST['newvalue'])));
+   
+
+   if($product->updated){
+     $response= array('state'=>200,'newvalue'=>$product->new_value,'key'=>$_REQUEST['key']);
+	  
+   }else{
+     $response= array('state'=>400,'msg'=>$product->msg,'key'=>$_REQUEST['key']);
+   }
+   echo json_encode($response); 
+}
+
+
 function edit_family(){
  $family=new family($_REQUEST['id']);
    $family->update($_REQUEST['key'],stripslashes(urldecode($_REQUEST['newvalue'])),stripslashes(urldecode($_REQUEST['oldvalue'])));
@@ -261,26 +303,27 @@ function edit_family(){
 }
 
 function upload_image($subject='product'){
+  
+  print_r($_REQUEST);
+  $target_path = "uploads/".'pimg_'.date('U');
+  if(move_uploaded_file($_FILES['testFile']['tmp_name'],$target_path )) {
+    if($subject=='product')
+      $subject=new product('pid',$_REQUEST['id']);
+    
+    $subject->add_image($target_path);
+      
+      
+    }
+
+  }
 
 
+function edit_product_multi(){
 
-       $target_path = "uploads/".'pimg_'.date('U');
-       if(move_uploaded_file($_FILES['testFile']['tmp_name'],$target_path )) {
-print"moved";
-       }
-
-if($subject=='product'){
-$subject=new product('pid',$_REQUEST['id']);
-
-}
-
-$subject->add_image($target_path);
-}
-
-
-function edit_product(){
-  if(!isset($_REQUEST['id']) or !isset($_REQUEST['key']) or !isset($_REQUEST['value'])){
-    $response= array('state'=>400,'msg'=>$product->msg,'key'=>$_REQUEST['key']);
+  if(!isset($_REQUEST['value'])  and isset($_REQUEST['newvalue']) )
+    $_REQUEST['value']=$_REQUEST['newvalue'];
+  if(!isset($_REQUEST['id']) or !isset($_REQUEST['key']) or  !isset($_REQUEST['value'])       ){
+    $response= array('state'=>400,'msg'=>'error','key'=>$_REQUEST['key']);
     echo json_encode($response); 
     return;
   }
@@ -304,7 +347,13 @@ function edit_product(){
      $product->update($key,$value);
    }
   }else{
-    $key=$_REQUEST['key'];
+
+    $translator=array('name'=>'Product Name');
+    
+    if(array_key_exists($_REQUEST['key'],$translator))
+      $key=$translator[$_REQUEST['key']];
+    else
+      $key=$_REQUEST['key'];
     $value=stripslashes(urldecode($_REQUEST['value']));  
     $product->update($key,$value);
   }
@@ -499,10 +548,10 @@ function list_products_for_edition(){
   $adata=array();
   while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
     if($row['Product Total Quantity Ordered']==0 and  $row['Product Total Quantity Invoiced']==0 and  $row['Product Total Quantity Delivered']==0  ){
-      $delete='<img src="art/icons/cross.png" /> <span xonclick="delete_family('.$row['Product Key'].')"  id="del_'.$row['Product Key'].'" style="cursor:pointer">'._('Delete').'<span>';
+      $delete='<img src="art/icons/delete.png" /> <span>'._('Delete').'<span>';
       $delete_type='delete';
     }else{
-  $delete='<img src="art/icons/cross.png" /> <span xonclick="discontinue_family('.$row['Product Key'].')"  id="del_'.$row['Product Key'].'" style="cursor:pointer">'._('Discontinue').'<span>';
+  $delete='<img src="art/icons/discontinue.png" /> <span>'._('Discontinue').'<span>';
       $delete_type='discontinue';
     }
 
@@ -553,14 +602,17 @@ function list_products_for_edition(){
       $sdescription=$row['Product Editing Special Characteristic'];
       $famsdescription=$row['Product Editing Family Special Characteristic'];
       $price=money($row['Product Editing Price'],$row['Product Currency']);
-      $unit_price=money($row['Product Editing Price']/$row['Product Editing Units Per Case'],$row['Product Currency']);
+      if(is_numeric($row['Product Editing Units Per Case']) and $row['Product Editing Units Per Case']!=1){
+	$unit_price=money($row['Product Editing Price']/$row['Product Editing Units Per Case'],$row['Product Currency']);
+      }else
+	$unit_price='?';
       $units=$row['Product Editing Units Per Case'];
       $unit_type=$row['Product Editing Unit Type'];
       $units_info='';
     }else{
 
        if($row['Product Price']!=0 and is_numeric($row['Product Cost']))
-      $margin=number(100*($row['Product Price']-$row['Product Cost'])/$row['Product Price'],1).'%';
+	 $margin=number(100*($row['Product Price']-$row['Product Cost'])/$row['Product Price'],1).'%';
     else
       $margin=_('ND');
     global $myconf;
@@ -579,12 +631,12 @@ function list_products_for_edition(){
       $processing=_('Live');
       $name=$row['Product Name'];
       $sdescription=$row['Product Special Characteristic'];
-      $famsdescription=$row['Product Family Special Characteristic'];
+
       $price=money($row['Product Price'],$row['Product Currency']);
       $unit_price=money($row['Product Price']/$row['Product Units Per Case'],$row['Product Currency']);
       $units=$row['Product Units Per Case'];
       $unit_type=$row['Product Unit Type'];
-      $units_info='';
+      $units_info=number($row['Product Units Per Case']);
     }
 
 
@@ -634,15 +686,18 @@ function list_products_for_edition(){
     $state_info='';
 
 $adata[]=array(
-	       'id'=>$row['Product Key'],
+	       'id'=>$row['Product ID'],
 	       'code'=>$row['Product Code'],
+	       'code_price'=>sprintf('%s <a href="edit_product.php?pid=%d&edit=prices"><img src="art/icons/external.png"/></a>',$row['Product Code'],$row['Product ID']),
+	       
+
 	       'name'=>$row['Product Name'],
 	       'processing'=>$processing,
 	       'sales_state'=>$sales_state,
 	       'web_state'=>$web_state,
 	       'state_info'=>$state_info,
 	       'sdescription'=>$sdescription,
-	       'famsdescription'=>$famsdescription,
+
 	       'units'=>$units,
 	       'units_info'=>$units_info,
 
@@ -1208,5 +1263,11 @@ mysql_free_result($res);
 }
 
 
+function delete_image(){
+  $scope=$_REQUEST['scope'];
+  $scope_key=$_REQUEST['scope_key'];
+  $image_key=$_REQUEST['image_key'];
+
+}
 
 ?>

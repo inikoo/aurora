@@ -313,6 +313,8 @@ function update($key,$a1=false,$a2=false){
        $this->msg=_('Error: Wrong code (empty)');
        return;
      }
+ if(!(strtolower($a1)==strtolower($this->data['Product Family Code']) and $a1!=$this->data['Product Family Code'])){
+     
      $sql=sprintf("select count(*) as num from `Product Family Dimension` where `Product Family Store Key`=%d and `Product Family Code`=%s  COLLATE utf8_general_ci "
 		,$this->data['Product Family Store Key']
 		,prepare_mysql($a1)
@@ -323,6 +325,7 @@ function update($key,$a1=false,$a2=false){
        $this->msg=_("Error: Another family with the same code");
        return;
      }
+ }
      $old_value=$this->get('Product Family Code') ;
       $sql=sprintf("update `Product Family Dimension` set `Product Family Code`=%s where `Product Family Key`=%d "
 		   ,prepare_mysql($a1)
@@ -374,6 +377,7 @@ function update($key,$a1=false,$a2=false){
        $this->msg=_('Error: Wrong name (empty)');
        return;
      }
+     if(!(strtolower($a1)==strtolower($this->data['Product Family Name']) and $a1!=$this->data['Product Family Name'])){
      $sql=sprintf("select count(*) as num from `Product Family Dimension` where `Product Family Store Key`=%d and `Product Family Name`=%s  COLLATE utf8_general_ci"
 		,$this->data['Product Family Store Key']
 		,prepare_mysql($a1)
@@ -383,6 +387,7 @@ function update($key,$a1=false,$a2=false){
      if($row['num']>0){
        $this->msg=_("Error: Another family with the same name");
        return;
+     }
      }
      $old_value=$this->get('Product Family Name') ;
       $sql=sprintf("update `Product Family Dimension` set `Product Family Name`=%s where `Product Family Key`=%d "

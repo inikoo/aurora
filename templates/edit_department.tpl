@@ -1,8 +1,8 @@
 {include file='header.tpl'}
 <div id="bd" >
-<div id="sub_header">
+  <div id="sub_header">
     <span class="nav2 onleft" style="">{t}Editing Department{/t}: <span style="font-style: italic;">{$department->get('Product Department Name')}</span> (<span style="font-style: italic;">{$department->get('Product Department Code')}</span>)</span>
-    <span class="nav2 onright" style="margin-left:20px"><a href="store.php?edit=0">{t}Exit edit{/t}</a></span>
+    <span class="nav2 onright" style="margin-left:20px"><a href="department.php?edit=0">{t}Exit edit{/t}</a></span>
   </div>
   
    <div id="doc3" style="clear:both;" class="yui-g yui-t4" >
@@ -43,19 +43,31 @@
    <div  class="edit_block" style="{if $edit!="pictures"}display:none{/if}"  id="d_pictures">
    </div>   
   <div  class="edit_block" style="{if $edit!="families"}display:none{/if}"  id="d_families">
+
+    <div     style="margin:0 0 10px 0;padding:10px;border:1px solid #ccc;display:none"  id="new_family_dialog" >
+      <div id="new_family_messages" class="messages_block"></div>
     <table >
       <tr><td>{t}Family Code{/t}:</td><td><input  id="new_code" onKeyUp="new_family_changed(this)"    onMouseUp="new_family_changed(this)"  onChange="new_family_changed(this)"  name="code" changed=0 type='text' class='text' style="width:15em" MAXLENGTH="16" value="" /></td></tr>
       <tr><td>{t}Family Name{/t}:</td><td><input   id="new_name" onKeyUp="new_family_changed(this)"    onMouseUp="new_family_changed(this)"  onChange="new_family_changed(this)"  name="name" changed=0 type='text'  MAXLENGTH="255" style="width:30em"  class='text' value="" /></td></tr>
-      <tr><td>{t}Family Description{/t}:</td><td><textarea   id="new_description" onKeyUp="new_family_changed(this)"    onMouseUp="new_family_changed(this)"  onChange="new_family_changed(this)"  name="description" changed=0 type='text'  MAXLENGTH="255" style="width:30em"  ></textarea> </td></tr>
-	<td>
+      <tr><td>{t}Special Characteristic{/t}:</td><td><input   id="new_special_char" onKeyUp="new_family_changed(this)"    onMouseUp="new_family_changed(this)"  onChange="new_family_changed(this)"  name="name" changed=0 type='text'  MAXLENGTH="255" style="width:30em"  class='text' value="" /></td></tr>
+      
+      <tr><td>{t}Description{/t}:</td><td><textarea   id="new_description" onKeyUp="new_family_changed(this)"    onMouseUp="new_family_changed(this)"  onChange="new_family_changed(this)"  name="description" changed=0 type='text'  MAXLENGTH="255" style="width:30em"  ></textarea> </td></tr>
+      <td>
 	  <span class="save" id="add_new_family" onclick="save_new_family()" style="display:none">Add</span>
       </td></tr>
     </table>
-  
+  </div>
 
 
   <div   class="data_table" >
     <span class="clean_table_title">{t}Families{/t}</span>
+<table class="options" style="float:right;padding:0;margin:0">
+	    <tr>
+	      <td  id="add_family">Add Family</td>
+	      <td  style="display:none" id="save_new_family">Save New Family</td>
+	      <td  style="display:none" id="cancel_add_family">Cancel</td>
+	    </tr>
+	  </table>
     <div  class="clean_table_caption"  style="clear:both;">
       <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
       <div class="clean_table_filter" style="display:none" id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0">{$filter_name0}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value0}" size=10/><div id='f_container0'></div></div></div>

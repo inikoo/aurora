@@ -2,26 +2,21 @@
 <div style="display:none; position:absolute; left:10px; top:200px; z-index:2" id="cal1Container"></div>
 <div id="bd" >
   <div id="sub_header">
-   
+    <span class="nav2 onleft" style="">{t}Editing Product{/t}: <span style="font-style: italic;">{$product->get('Product Name')}</span> (<span style="font-style: italic;">{$product->get('Product Code')}</span>)</span>
     <span class="nav2 onright" style="margin-left:20px"><a href="product.php?id={$product_id}">{t}Exit edit{/t}</a></span>
-  
   </div>
-
-  <div id="doc3" style="clear:both;" class="yui-g yui-t4" >
-   
-
-	<ul class="tabs" id="chooser_ul">
-	  <li><span  class="item {if $edit=='config'}selected{/if}" id="config" > <span>{t}Parts{/t}</span></span></li>
-	  <li> <span class="item {if $edit=='description'}selected{/if}"  id="description">  <span> {t}Description{/t}</span></span></li>
-	  <li> <span class="item {if $edit=='pictures'}selected{/if}" id="pictures"  ><span>  {t}Pictures{/t}</span></span></li>
-	  <li> <span class="item {if $edit=='prices'}selected{/if}" id="prices"  ><span> {t}Price, Discounts{/t}</span></span></li>
-	  <li> <span class="item  {if $edit=='dimat'}selected{/if}" id="dimat" ><span> {t}Dimensions{/t}</span></span></li>
-	  <li> <span class="item {if $edit=='web'}selected{/if} " id="web" ><span> {t}Web Pages{/t}</span></span></li>
+  
+  <ul class="tabs" id="chooser_ul">
+    <li><span  class="item {if $edit=='config'}selected{/if}" id="config" > <span>{t}Parts{/t}</span></span></li>
+    <li> <span class="item {if $edit=='description'}selected{/if}"  id="description">  <span> {t}Description{/t}</span></span></li>
+    <li> <span class="item {if $edit=='pictures'}selected{/if}" id="pictures"  ><span>  {t}Pictures{/t}</span></span></li>
+    <li> <span class="item {if $edit=='prices'}selected{/if}" id="prices"  ><span> {t}Price, Discounts{/t}</span></span></li>
+    <li> <span class="item  {if $edit=='dimat'}selected{/if}" id="dimat" ><span> {t}Dimensions{/t}</span></span></li>
+    <li> <span class="item {if $edit=='web'}selected{/if} " id="web" ><span> {t}Web Pages{/t}</span></span></li>
 	</ul>
-
-    <div id="yui-main" style="border:1px solid #ccc;"> 
-
-     
+  
+ 
+     <div class="tabbed_container" > 
  
       
       <div style="clear:both;height:.1em;padding:0px 20px;;margin:20px auto;xborder-top: 1px solid #cbb;;xborder-bottom: 1px solid #caa;width:770px;" id="description_messages">
@@ -82,38 +77,35 @@
       <div class="edit_block" {if $edit!="config"}style="display:none"{/if}   id="d_config">
 	
 	
-	<table style="margin:0;"  class="edit">
+	<table style="margin:0;width:500px"  class="edit">
 	  <tr>
-	    <td class="label">{t}Type of Product{/t}:</td>
+	    <td >{t}Type of Product{/t}:</td>
 	    
 	    <td >
 	      <div class="options" style="margin:5px 0">
-		<span {if $product->get('Product Type')=="Normal"}class="selected"{/if} id="type_prod_normal">{t}Normal{/t}</span>
+		<span {if $product->get('Product Type')=="Normal"}class="selected"{/if} id="type_prod_normal">{t}Simple{/t}</span>
 		<span {if $product->get('Product Type')=="Shortcut"}class="selected"{/if} id="type_prod_shortcut">{t}Shortcut{/t}</span>
 		<span {if $product->get('Product Type')=="Mix"} class="selected"{/if} id="type_prod_mix">{t}Mixture{/t}</span>
 	      </div>
 	    </td>
 	    
 	  </tr>
-	  
-	  
-	</table>
-	
 
-
-	<div style="margin:10px">
-	  {if $num_parts==0}
+	    {if $num_parts==0}
 	  {t}Choose the part{/t} 
-	  <div id="adding_new_part" style="width:200px;margin-bottom:45px"><input id="new_part_input" type="text"><div id="new_part_container"></div></div>
+	    </table>
+	    <div id="adding_new_part" style="width:200px;margin-bottom:45px"><input id="new_part_input" type="text"><div id="new_part_container"></div></div>
 	  
 	  {else}
-	  <table class="edit" style="width:33em" >
+	 
 	    <tbody id="current_parts_form">
 	      
 	      {foreach from=$parts item=part key=part_id }
+	      
 	      <tr  id="sup_tr1_{$part_id}" class="top title">
-		<td  class="label" colspan=2>
-		  {$part.description}
+		<td class="label" style="font-weight:200">Part</td>
+		<td >
+		{$part.description} ({t}SKU{/t}{$part.sku})
 		</td>
 	      </tr>
 	      <tr id="sup_tr2_{$part_id}">
@@ -135,7 +127,7 @@
 	  
 	  
 	  {/if}
-	</div>
+	
 	
 	<div {if $data.product_tipo!='dependant'}display="none"{/if} >
 	  <table class="edit" border=0>
@@ -441,28 +433,34 @@
   
   <div  id="images" class="edit_images" principal="{$data.principal_image}" >
     {foreach from=$images item=image  name=foo}
-    <div id="image{$image.id}" class="image" >
+    <div id="image{$image.id}" class="image"  >
       <div>{$image.name}</div>
-      <img class="picture"  src="{$image.filename}" width=150  /> 
+      <img class="picture" style="border:none"    src="{$image.filename}" width="160"    /> 
+      <div >
+	<span>{$image.caption}</span> 
+	<img  onClick="show_edit_caption({$image.id})" src="art/icons/edit.gif" style="cursor:pointer;position:relative;bottom:2px">
+	<div style="display:none">
+	<textarea class="caption" style="width:160px;margin-bottom:5px" onkeydown="caption_changed(this)" id="img_caption{$image.id}" image_id="{$image.id}" ovalue="{$image.caption}">{$image.caption} </textarea>
+	<img style="vertical-align:top;"  class="caption" id="save_img_caption{$image.id}" onClick="save_image('img_caption',{$image.id})" title="{t}Save caption{/t}" alt="{t}Save caption{/t}"   src="art/icons/disk.png">
+	<img style="vertical-align:top"  class="caption" id="save_img_caption{$image.id}" onClick="save_image('img_caption',{$image.id})" title="{t}Save caption{/t}" alt="{t}Save caption{/t}"   src="art/icons/bullet_come.png">
+	</div>
+      </div>
       <div class="operations">
+
 	{if $image.is_principal=='Yes'}
-	<span class="img_set_principal" ><img id="img_set_principal{$image.id}" onClick="set_image_as_principal(this)" title="{t}Main Image{/t}" image_id="{$image.id}" principal="1" src="art/icons/asterisk_orange.png"></span>
+	<span class="img_set_principal"  ><img id="img_set_principal{$image.id}" onClick="set_image_as_principal(this)" title="{t}Main Image{/t}" image_id="{$image.id}" principal="1" src="art/icons/asterisk_orange.png"></span>
 	{else}
 	<span  class="img_set_principal" style="cursor:pointer"  >
 	  <img id="img_set_principal{$image.id}" onClick="set_image_as_principal(this)" title="{t}Set as the principal image{/t}" image_id="{$image.id}" principal="0" src="art/icons/picture_empty.png"></span>
 	{/if}
-	<span style="cursor:pointer" onClick="delete_image({$image.id},'{$image.name}')">{t}Delete{/t} <img src="art/icons/cross.png"></span>
+	<span style="cursor:pointer;" onClick="delete_image({$image.id},'{$image.name}')"><img src="art/icons/delete.png" alt="{t}Delete{/t}" title="{t}Delete{/t}"></span>
+
       </div>
-      <div class="caption" >
-	<div>{t}Caption{/t}:</div>
-	<span class="save" >
-	  <img   class="caption" id="save_img_caption{$image.id}" onClick="save_image('img_caption',{$image.id})" title="{t}Save caption{/t}"  src="art/icons/disk.png">
-	</span>
-	<textarea class="caption" onkeydown="caption_changed(this)" id="img_caption{$image.id}" image_id="{$image.id}" ovalue="{$image.caption}">{$image.caption}</textarea>
-      </div>
+     
     
     </div>
     {/foreach}
+    <div style="clear:both"></div>
   </div>
 
 
@@ -537,10 +535,7 @@
     </table>
 </div>
 
-</div>
-<div class="yui-b"     >
 
-</div>	 
 
 
 

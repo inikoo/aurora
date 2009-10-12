@@ -81,7 +81,7 @@
       
       <div  class="edit_block" style="margin:0;padding:0 0px;{if $edit!="departments"}display:none{/if}"  id="d_departments">
       
-      <div style="margin:0 0 10px 0;padding:10px;border:1px solid #ccc;display:none" id="new_department_dialog" >
+      <div  class="new_item_dialog"  id="new_department_dialog" >
       <div id="new_department_messages" class="messages_block"></div>
 	  <table class="edit">
 	  <tr><td>{t}Code{/t}:</td><td><input  id="new_code" onKeyUp="new_dept_changed(this)"    onMouseUp="new_dept_changed(this)"  onChange="new_dept_changed(this)"  name="code" changed=0 type='text' class='text' style="width:15em" MAXLENGTH="16" value="" /></td></tr>

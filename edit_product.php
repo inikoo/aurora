@@ -153,9 +153,11 @@ $product_home="Products Home";
 $smarty->assign('date',date('d-m-Y'));
 $smarty->assign('time',date('H:i'));
 
+if(isset($_REQUEST['edit'])  ){
+  $_SESSION['state']['product']['edit']=$_REQUEST['edit'];
 
-
-$smarty->assign('edit',$_SESSION['state']['product']['edit']);
+}
+  $smarty->assign('edit',$_SESSION['state']['product']['edit']);
 
 $smarty->assign('shape_example',$_shape_example);
 $smarty->assign('shapes',$_shape);
