@@ -23,13 +23,13 @@
   </div>
   
 
- <div style="clear:left;margin:0 20px">
+ <div style="clear:left;">
    <h1><a  href="store.php?id={$store->id}">{$store->get('Store Code')}</a> &rarr; <a  href="department.php?id={$department->id}">{$department->get('Product Department Code')}</a> &rarr; {$family->get('Product Family Name')}  ({$family->get('Product Family Code')})</h1>
   </div>
   
 
 
-   <div class="data_table " style="margin:25px 20px;">
+   <div class="data_table " ">
     <span class="clean_table_title">{t}Products{/t}</span>
     
 <span   style="float:right;margin-left:80px" class="state_details" state="{$show_percentages}"  id="show_percentages"  atitle="{if $show_percentages}{t}Normal Mode{/t}{else}{t}Comparison Mode{/t}{/if}"  >{if $show_percentages}{t}Comparison Mode{/t}{else}{t}Normal Mode{/t}{/if}</span>

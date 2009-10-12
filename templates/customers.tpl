@@ -58,7 +58,7 @@
     </div>
 
     
-    <div id="the_table" class="data_table" style="margin:20px 20px;clear:both">
+    <div id="the_table" class="data_table" xstyle="margin:20px 20px;clear:both">
       <span class="clean_table_title">{$table_title}</span>
       <div  class="clean_table_caption"  style="clear:both;">
 	<div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>

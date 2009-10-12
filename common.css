@@ -74,7 +74,7 @@ color:red;
 #yui-main{clear:both}
 
 #hd span{margin:0 0px}
-#bd{background:#fff;border:1px solid #aaa;min-height:490px;padding:0 10px 10px 10px;
+#bd{background:#fff;border:1px solid #aaa;min-height:490px;padding:0 30px 40px 30px;
 height:auto !important;
 height:490px;}
 
@@ -220,7 +220,7 @@ img{vertical-align:bottom}
 
 
 
-.data_table  {margin:20px}
+.data_table  {margin:0px}
 .xdata_table div.options {float:right;border-top:1px solid SteelBlue;height:18px;padding:2px 10px;margin-top:10px;margin-right:0px;background:Lavender}
 .xdata_table div.options_right{background-image:url('art/corner_top_table_right.png');;background-repeat:no-repeat;float:right;height:23px;width:10px;margin-top:10px;margin-right:10px}
 .xdata_table div.options_left{background-image:url('art/corner_top_table_left.png');;background-repeat:no-repeat;float:right;height:23px;width:10px;margin-top:10px;}
@@ -428,7 +428,7 @@ color: #316D89;
 
 /*Common search div*/
 
-.search_box{clear:both;float:right;border: 0px solid #ddd;text-align:right;padding:0 20px 10px 10px;}
+.search_box{clear:both;float:right;border: 0px solid #ddd;text-align:right;xpadding:0 20px 10px 10px;}
 .search_box form{ margin-bottom:5px }
 .search_box .search_title{ position:relative;left:16px}
 
@@ -573,9 +573,9 @@ div.contact_card div.address{margin-top:5px;font-size:70%}
 td.margin_note{widht:20px;font-family:times;font-size:80%;padding-right:20px;padding-top:5px}
 
 
-div.tabbed_container{border:1px solid #ccc;padding:20px 0}
+div.tabbed_container{border:1px solid #ccc;padding:20px 20px;clear:both;margin-bottom:20px}
 
-ul.tabs{margin-left:20px}
+ul.tabs{margin-left:20px;margin-top:25px}
 
 .tabs span.item
 {
@@ -643,3 +643,5 @@ margin: 0;
 margin-right:5px;
 position:relative;top:1px;
 } 
+
+.messages_block{padding:10px}

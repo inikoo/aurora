@@ -103,11 +103,11 @@ function create_store(){
 function create_department(){
  if(isset($_REQUEST['name'])  and  isset($_REQUEST['code'])   ){
      $store_key=$_SESSION['state']['store']['id'];
-     $department=new Department('create',array(
+     $department=new Department('find',array(
 					      'Product Department Code'=>$_REQUEST['code']
 					      ,'Product Department Name'=>$_REQUEST['name']
 					      ,'Product Department Store Key'=>$store_key
-					       ));
+					       ),'create');
      if(!$department->new){
        $state='400';
      }else{
@@ -409,15 +409,15 @@ function list_products_for_edition(){
        break;
      }
      $group='';
-     switch($mode){
-     case('same_code'):
-       $where.=sprintf(" and `Product Most Recent`='Yes' ");
-       break;
-     case('same_id'):
-       $group=' group by `Product ID`';
-       break;
-     }
-   
+//      switch($mode){
+//      case('same_code'):
+//        $where.=sprintf(" and `Product Most Recent`='Yes' ");
+//        break;
+//      case('same_id'):
+//        $group=' group by `Product ID`';
+//        break;
+//      }
+//    
      switch($restrictions){
      case('forsale'):
        $where.=sprintf(" and `Product Sales State`='For Sale'  ");
@@ -751,7 +751,7 @@ $conf=$_SESSION['state']['families']['table'];
        $where=sprintf(' where `Product Family Store Key`=%d',$_SESSION['state']['store']['id']);
        break;
      case('department'):
-       $where=sprintf(' left join `Product Family Department Bridge` B on (F.`Product Family Key`=B.`Product Family Key`) where `Product Department Key`=%d',$_SESSION['state']['department']['id']);
+       $where=sprintf('  where `Product Family Main Department Key`=%d',$_SESSION['state']['department']['id']);
        break;
      case('none'):
          $where=sprintf(' where true ');
@@ -798,7 +798,8 @@ $conf=$_SESSION['state']['families']['table'];
      }
 mysql_free_result($result);
    }
-   $rtext=$total_records." ".ngettext('family','families',$total_records);
+  
+   $rtext=sprintf(ngettext("%d family", "%d families", $total_records), $total_records);
    if($total_records>$number_results)
      $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
    else
@@ -818,14 +819,15 @@ mysql_free_result($result);
   $adata=array();
   while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
     if($row['Products']>0){
-      $delete='<img src="art/icons/cross.png" /> <span xonclick="discontinue_family('.$row['Product Family Key'].')"  id="del_'.$row['Product Family Key'].'" style="cursor:pointer">'._('Discontinue').'<span>';
+      $delete='<img src="art/icons/discontinue.png" /> <span xonclick="discontinue_family('.$row['Product Family Key'].')"  id="del_'.$row['Product Family Key'].'" style="cursor:pointer">'._('Discontinue').'<span>';
       $delete_type='discontinue';
     }else{
-      $delete='<img src="art/icons/cross.png" /> <span xonclick="delete_family('.$row['Product Family Key'].')"  id="del_'.$row['Product Family Key'].'" style="cursor:pointer">'._('Delete').'<span>';
+      $delete='<img src="art/icons/delete.png" /> <span xonclick="delete_family('.$row['Product Family Key'].')"  id="del_'.$row['Product Family Key'].'" style="cursor:pointer">'._('Delete').'<span>';
       $delete_type='delete';
     }
 $adata[]=array(
 	       'id'=>$row['Product Family Key'],
+	       'edit'=>sprintf('<a href="family.php?id=%d&edit=1">%03d<a>',$row['Product Family Key'],$row['Product Family Key']),
 	       'code'=>$row['Product Family Code'],
 	       'name'=>$row['Product Family Name'],
 	       'delete'=>$delete,

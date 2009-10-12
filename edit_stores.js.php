@@ -34,7 +34,7 @@ function new_store_changed(){
 function save_new_store(){
 
     if(can_add_store==false){
-	alert('xx');
+	
 	return;
     }
     var code=Dom.get('new_code').value;
@@ -66,7 +66,7 @@ function save_new_store(){
 		    hide_add_store_dialog();
 		   
 		}else{
-		    Dom.get('edit_messages').innerHTML='<span class="error">'+r.msg+'</span>';
+		    Dom.get('new_store_messages').innerHTML='<span class="error">'+r.msg+'</span>';
 
 		}
 	    }
