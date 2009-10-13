@@ -7,6 +7,10 @@ table.edit input{ padding-left:4px;text-align:left; }
 
 table.edit td.label{ text-align:right }
 table.edit td.left{ text-align:left }
+table.edit tr.no_validated td.label { background:url('../art/icons/exclamation.png') no-repeat;;background-position:5px 3px;color:#720000  }
+table.edit tr.no_validated  input{color:red}
+table.edit tr.validated td.label { background:url('../art/icons/accept.png') no-repeat;;background-position:0px 3px;color:#000  }
+
 
 table.edit td.icon{ padding:0 5px;width:16px}
 table.edit tr.top{ border-top:1px solid #1d4e85}
@@ -30,3 +34,5 @@ tr.mould td{padding:20px 0 30px 0;}
 .edit_block{margin:0;padding:0}
 .edit_block .error{color:red};
 .new_item_dialog{margin:0 0 10px 0;padding:10px;border:1px solid #ccc};
+
+

@@ -1,4 +1,6 @@
 <?php
+require_once 'class.Timer.php';
+
 require_once 'common.php';
 require_once 'class.Company.php';
 require_once 'class.Supplier.php';
@@ -825,9 +827,22 @@ function edit_company2(){
    echo json_encode($response);  
 }
 function new_company($data){
-  
-    $company=new Company('find create auto',$data['values']);
+  Timer::timing_milestone('begin');
 
+
+  $company=new Company('find create',$data['values']);
+  if($company->new){
+    $response= array('state'=>200,'action'=>'created','company_key'=>$company->id);
+  }else{
+    if($company->found)
+      $response= array('state'=>400,'action'=>'found','company_key'=>$company->found_key);
+    else
+      $response= array('state'=>400,'action'=>'error','company_key'=>0,'msg'=>$company->msg);
+  }
+ 
+  //Timer::dump_profile();
+
+  echo json_encode($response);  
 
 }
 ?>

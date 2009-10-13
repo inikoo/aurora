@@ -140,6 +140,13 @@ class Address extends DB_Table{
 		//   print "$options\n";
 		//   print_r($raw_data);
 			
+	  $find_fuzzy=false;
+	  
+	  if(preg_match('/fuzzy/i',$options)){
+	    $find_fuzzy='fuzzy';
+	  }
+
+
 		$this->found=false;
 		$this->found_in=false;
 		$this->found_out=false;
@@ -258,6 +265,29 @@ class Address extends DB_Table{
 		if($mode=='Contact')
 		$options.=' anonymous';
 
+
+
+		//Exact match
+		if(!$find_fuzzy){
+		  
+		  $fields=array('Address Fuzzy','Address Street Number','Address Building','Address Street Name','Address Street Type','Address Town Second Division','Address Town First Division','Address Town','Address Country First Division','Address Country Second Division','Address Country Key','Address Postal Code','Military Address','Military Installation Address','Military Installation Name');
+		
+		  $sql="select A.`Address Key`,`Subject Key`,`Subject Type` from `Address Dimension`  A  left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`) where `Subject Type`='Contact' ";
+		  foreach($fields as $field){
+		    $sql.=sprintf(' and `%s`=%s',$field,prepare_mysql($data[$field],false));
+		  }
+		  $result=mysql_query($sql);
+		  $num_results=mysql_num_rows($result);
+		  if($num_results==1){
+		    $row=mysql_fetch_array($result, MYSQL_ASSOC);
+		    $this->found=true;
+		    $this->get_data('id',$row['Address Key']);
+			$this->candidate[$row['Subject Key']]=100;
+			
+			
+		  }
+		}else{
+
 		$nothing_found=true;
 		$found_item=array('Postal Code'=>false);
 		$postal_code_max_score=20;
@@ -267,16 +297,16 @@ class Address extends DB_Table{
 		$country_max_score=10;
 		$max_score=0;
 
-		$sql=sprintf("select count(*) as addresses from `Address Dimension`  A left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`) where  `Subject Type`='Contact'");
+		$sql=sprintf("select SQL_CACHE count(*) as addresses from `Address Dimension` ");
 		$res=mysql_query($sql);
 		$address_multiplicity_data=mysql_fetch_array($res);
 		$address_multiplicity=$address_multiplicity_data['addresses'];
 		
-		$sql=sprintf("select count(*) as addresses from `Address Dimension`  A left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`) where  `Subject Type`='Contact' and `Address Country Code`=%s "
+		$sql=sprintf("select SQL_CACHE count(*) as addresses from `Address Dimension` where   `Address Country Code`=%s "
 		,prepare_mysql($data['Address Country Code'])
 		);
 		$res=mysql_query($sql);
-		//print $sql;
+	       
 		$country_multiplicity_data=mysql_fetch_array($res);
 		$country_multiplicity=$country_multiplicity_data['addresses'];
 		
@@ -295,12 +325,14 @@ class Address extends DB_Table{
 			
 		}
 	
-		
+		$max_score=-1;
 		unset($country_multiplicity_data);
 		
+		Timer::timing_milestone('end   multiplicity ');
 
-		
-		if(  ($data['Address Street Name']!=''  and $data['Address Street Number']!=''  ) or $data['Address Building']!=''   ){
+		//		print_r($data);
+		//if(  ($data['Address Street Name']!=''  and $data['Address Street Number']!=''  ) or $data['Address Building']!=''   ){
+		if(  ($data['Address Street Name']!=''   ) or $data['Address Building']!=''   ){
 			$order='';
 			$sql_town='';
 			$sql_postal_code='';
@@ -347,8 +379,12 @@ class Address extends DB_Table{
 				     ,$sql_where_postal_code
 				     ,$order
 			);
+
+			//print "$sql<br>";
+
 			$result=mysql_query($sql);
-			//	print "$sql\n";
+		      	Timer::timing_milestone('similar inner address ');
+			$max_score=-1;
 			while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
 				$wrong_town_factor=1;
@@ -389,7 +425,8 @@ class Address extends DB_Table{
 				//	print_r($this->candidate);
 				if(isset($this->candidate[$contact_key])){
 				  // print "*** $score \n  ";
-				  $this->candidate[$contact_key]+=$score;
+				  //$old_candidate_score=$this->candidate[$contact_key];
+				  //				  $this->candidate[$contact_key]+=$score;
 				  if($this->candidate[$contact_key]<$score)
 				    $this->candidate[$contact_key]=$score;
 				}else{
@@ -397,18 +434,21 @@ class Address extends DB_Table{
 				  $this->candidate[$contact_key]=$score;
 				}
 				//	print_r($this->candidate);
-
-				$max_score=$score;
+				
+				if($this->candidate[$contact_key]>$max_score)
+				  $max_score=$this->candidate[$contact_key];
 			}
 
 		}
 
-
-		//	print_r($this->candidate);
-
-		if($max_score>85)
-		$nothing_found=false;
-		if($nothing_found){
+	Timer::timing_milestone('similar inner address x');
+	//	print_r($this->candidate);
+	//print "$max_score\n";
+	//exit;
+	if($max_score>85)
+	  $nothing_found=false;
+	
+	if($nothing_found){
 
 			if($data['Address Postal Code']!=''){
 				$sql=sprintf("select   `Address Country Code`,`Address Postal Code`, A.`Address Key` ,damlev(UPPER(`Address Postal Code`),%s) as dist1,`Subject Key` from `Address Dimension` A left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`)  where  `Subject Type`='Contact'  and   damlev(UPPER(`Address Postal Code`),%s) <3   order by dist1  limit 250 "
@@ -450,11 +490,31 @@ class Address extends DB_Table{
 			}
 
 
+
+
+
 			if($data['Address Town']!=''){
-				$sql=sprintf("select   `Address Country Code`,`Address Town`, A.`Address Key` ,damlev(UPPER(`Address Town`),%s) as dist1,`Subject Key` from `Address Dimension` A left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`)  where  `Subject Type`='Contact'     order by dist1  limit 50 "
+			  
+
+			  //Count if theres is a exacte match
+
+		/* 	  $sql=sprintf('select count(*) as number from `Address Dimension` A left join `Address Bridge` AB on (AB.`Address Key`=A.`Address Key`) where `Subject Type`="Contact"  and `Address Town`=%s    ',prepare_mysql(data['Address Town'])); */
+/* 			  $result=mysql_query($sql); */
+/* 			  $row=mysql_fetch_array($result, MYSQL_ASSOC); */
+			
+/* 			  if($row['number_of_address']>20){ */
+/* 			      $sql=sprintf('select `Subject Key` from `Address Dimension` A left join `Address Bridge` AB on (AB.`Address Key`=A.`Address Key`) where `Subject Type`="Contact"  and `Address Town`=%s     and `Subject Key in`  ',prepare_mysql(data['Address Town'])); */
+
+/* 			  }else{ */
+
+			  $sql=sprintf("select   `Address Country Code`,`Address Town`, A.`Address Key` ,damlev(UPPER(`Address Town`),%s) as dist1,`Subject Key` from `Address Dimension` A left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`)  where  `Subject Type`='Contact'     order by dist1  limit 50 "
 				,prepare_mysql(strtoupper($data['Address Town']))
 				,prepare_mysql(strtoupper($data['Address Town']))
 				);
+
+			  //print_r($this->candidate);
+
+				print "$sql\n";
 				$result=mysql_query($sql);
 				$len_town=strlen($data['Address Town']);
 				while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
@@ -486,8 +546,9 @@ class Address extends DB_Table{
 					$this->candidate[$contact_key]=$score;
 
 				}
-			}
-
+			  }
+			//	}
+Timer::timing_milestone('similar inner address xx');
 			//print_r($data);
 			if($data['Address Street Name']!='' ){
 				$sql=sprintf("select   `Address Country Code`,`Address Town`, A.`Address Key` ,damlev(UPPER(`Address Street Name`),%s) as dist1,`Subject Key` from `Address Dimension` A left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`)  where  `Subject Type`='Contact'     order by dist1  limit 50 "
@@ -527,7 +588,11 @@ class Address extends DB_Table{
 
 
 
+Timer::timing_milestone('similar inner address xxx');
 
+
+
+		}
 
 		if(false){//old code
 
@@ -637,7 +702,7 @@ class Address extends DB_Table{
 
 			}
 
-
+Timer::timing_milestone('similar inner address xxxx7');
 			if(!$this->found and count($this->candidate)==0){
 				// foound 1 additions
 				if($data['Address Fuzzy']=='No'){

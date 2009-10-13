@@ -124,6 +124,12 @@ class Contact extends DB_Table {
         //    print $options."\n";
         // print_r($raw_data);
 
+        $find_fuzzy=false;
+	  
+	  if(preg_match('/fuzzy/i',$options)){
+	    $find_fuzzy='fuzzy';
+	  }
+
 
         if (isset($raw_data['editor']) and is_array($raw_data['editor'])) {
             foreach($raw_data['editor'] as $key=>$value) {
@@ -271,8 +277,10 @@ class Contact extends DB_Table {
         $this->candidate=array();
 
         if ($data['Contact Main Plain Email']!='') {
+	  Timer::timing_milestone('begin  find  contact email');
+            $email=new Email("find in contact $find_fuzzy",$data['Contact Main Plain Email']);
+	    	  Timer::timing_milestone('end  find  contact email');
 
-            $email=new Email("find in contact",$data['Contact Main Plain Email']);
             if ($email->error) {
                 $data['Contact Main Plain Email']='';
 
@@ -301,7 +309,7 @@ class Contact extends DB_Table {
         //    print_r($this->candidate);
         // }
 
-
+Timer::timing_milestone('begin  find  contact address');
 
 
         if ($data['Contact Name']=='')
@@ -311,7 +319,7 @@ class Contact extends DB_Table {
         $country_code='UNK';
 
         if (!array_empty( $address_work_data)) {
-            $address=new Address("find in contact",$address_work_data);
+            $address=new Address("find in contact $find_fuzzy",$address_work_data);
 
             $country_code=$address->raw_data['Address Country Code'];
 
@@ -327,7 +335,7 @@ class Contact extends DB_Table {
 
 
         if (!array_empty( $address_home_data)) {
-            $address=new Address("find in contact",$address_home_data);
+            $address=new Address("find in contact $find_fuzzy",$address_home_data);
 
             $country_code=$address->raw_data['Address Country Code'];
 
@@ -339,6 +347,7 @@ class Contact extends DB_Table {
             }
         }
 
+Timer::timing_milestone('end  find  contact address / begin tel');
 
 
 
@@ -357,6 +366,7 @@ class Contact extends DB_Table {
                     $this->candidate[$key]=$val;
             }
         }
+Timer::timing_milestone('end  find  contact tel / begin fax');
 
 
         if ($data['Contact Main FAX']!='' ) {
@@ -379,6 +389,7 @@ class Contact extends DB_Table {
         //print "candidates after fax:\n";
         //print_r($this->candidate);
         //}
+Timer::timing_milestone('end  find  contact fax / begin mob');
 
         if ($data['Contact Main Mobile']!='' and !$this->found ) {
             $tel=new Telecom("find in contact  country code $country_code",$data['Contact Main Mobile']);
@@ -400,6 +411,7 @@ class Contact extends DB_Table {
 
         }
 
+Timer::timing_milestone('end  find  contact mob / begin other');
 
 
 
@@ -612,6 +624,7 @@ class Contact extends DB_Table {
 
         }
 
+Timer::timing_milestone('end  other');
 
 
         //print_r($this->candidate);
@@ -677,33 +690,20 @@ class Contact extends DB_Table {
             //print_r($this->card());
         }
 
-        if ($create) {
-            if ($this->found) {
+        if ($create and !$this->found) {
+           
+      
+        }
 
 
-                /* 	$data['Home Address']=$address_home_data; */
-                /* 	$data['Work Address']=$address_work_data; */
-//	print "raw data:\n";
-//	print_r($raw_data);
-
-                $this->update($raw_data,$options);
+	if($update and $this->found){
+	   $this->update($raw_data,$options);
                 if (isset($address_data['Home']))
                     $this->update_address($address_data['Home'],'Home');
                 if (isset($address_data['Work']))
                     $this->update_address($address_data['Work'],'Work');
 
-
-            } else {
-                //	exit("o no duplicate!!\n");
-                //print "creating contact!!!!\n";
-                //print_r($data);
-                //print "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n";
-
-
-                $this->create($data,$options,$address_home_data);
-            }
-
-        }
+	}
 
 
 
