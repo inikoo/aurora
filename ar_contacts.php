@@ -6,6 +6,7 @@ require_once 'common.php';
 
 //require_once '_contact.php';
 require_once 'class.Customer.php';
+require_once 'class.Timer.php';
 
 
 
@@ -1761,7 +1762,7 @@ function find_company($data){
 
   $max_results=8;
 
-  $company=new company('find',$data);
+  $company=new company('find fuzzy',$data);
   
   if($company->found)
     $action='found';

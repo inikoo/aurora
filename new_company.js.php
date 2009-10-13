@@ -7,18 +7,18 @@ include_once('class.Company.php');
 
 
 $salutation="''";
-$sql="select `Salutation` from kbase.`Salutation Dimension` where `Language Key`=1";
+$sql="select `Salutation` from kbase.`Salutation Dimension` where `Language Code`='en'";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
     $salutation.=',"'.$row['Salutation'].'"';
 }
 mysql_free_result($result);
-$sql="select `Country Key`,`Country Name`,`Country Code`,`Country 2 Alpha Code` from kbase.`Country Dimension`";
+$sql="select `Country Key`,`Country Name`,`Country Code`,`Country 2 Alpha Code`,`Country Postal Code Regex` from kbase.`Country Dimension`";
 $result=mysql_query($sql);
 $country_list='';
 
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-    $country_list.=',{"id":"'.$row['Country Key'].'","name":"'.$row['Country Name'].'","code":"'.$row['Country Code'].'","code2a":"'.$row['Country 2 Alpha Code'].'"}  ';
+    $country_list.=',{"id":"'.$row['Country Key'].'","name":"'.$row['Country Name'].'","code":"'.$row['Country Code'].'","code2a":"'.$row['Country 2 Alpha Code'].'","postal_regex":"'.addslashes($row['Country Postal Code Regex']).'"}  ';
 }
 mysql_free_result($result);
 $country_list=preg_replace('/^\,/','',$country_list);
@@ -30,7 +30,8 @@ $country_list=preg_replace('/^\,/','',$country_list);
 ?>
 var Dom   = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;
-  
+var can_add_company=false;
+var postal_regex=new RegExp('.?');
 
 var company_data={
     "Company Name":""
@@ -52,15 +53,20 @@ var company_data={
     ,"Company Address Country Forth Division":""
     ,"Company Address Country Fifth Division":""
 };  
-var suggest_country=false;
-var suggest_d1=false;
-var suggest_d2=false;
+var suggest_country=true;
+var suggest_d1=true;
+var suggest_d2=true;
 var suggest_d3=false;
 var suggest_d4=false;
 var suggest_d4=false;
 var suggest_town=false;
 
 
+var validate_data={'postal_code':{'inputed':false,'validated':false}
+		   ,'email':{'inputed':false,'validated':false}
+		   ,'company_name':{'inputed':false,'validated':false,'regexp':"[^\\s]+"}
+		   ,'contact_name':{'inputed':false,'validated':false,'regexp':"[^\\s]+"}
+};
 
 var Subject='Company';
 var Subject_Key=0;
@@ -143,39 +149,49 @@ function get_contact_data(){
 }
 
 function get_address_data(){
-   
+
     company_data['Company Address Line 1']=Dom.get('address_internal').value;
     company_data['Company Address Line 2']=Dom.get('address_building').value;
+
     company_data['Company Address Line 3']=Dom.get('address_street').value;
     company_data['Company Address Town']=Dom.get('address_town').value;
+      
     company_data['Company Address Town Second Division']=Dom.get('address_town_d2').value;
     company_data['Company Address Town First Division']=Dom.get('address_town_d1').value;
     company_data['Company Address Postal Code']=Dom.get('address_postal_code').value;
+       
     company_data['Company Address Country Code']=Dom.get('address_country_code').value;
     company_data['Company Address Country First Division']=Dom.get('address_country_d1').value;
     company_data['Company Address Country Second Division']=Dom.get('address_country_d2').value;
     company_data['Company Address Country Third Division']=Dom.get('address_country_d3').value;
     company_data['Company Address Country Forth Division']=Dom.get('address_country_d4').value;
+    
     company_data['Company Address Country Fifth Division']=Dom.get('address_country_d5').value;
 }
 
 
 
 function get_data(){
-    
     get_company_data();
     get_contact_data();
-    get_adddress_data();
+    get_address_data();
 }
 
 
 var save_new_company=function(e){
    
+    if(!can_add_company){
+
+	return;
+    }
+
     get_data();
 
+    
     var json_value = YAHOO.lang.JSON.stringify(company_data); 
     var request='ar_edit_contacts.php?tipo=new_company&values=' + encodeURIComponent(json_value); 
-    
+    alert(request);
+    return;
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
 	
@@ -205,7 +221,7 @@ var find_company=function(){
     //  alert(request) ;
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-	
+		//	alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if(r.action=='found'){
 		    
@@ -241,11 +257,18 @@ var find_company=function(){
 }
      
 
+    function can_save(){
+	
+
+    }
+
 
 function company_name_changed (query) {
     get_company_data();
     // print_data();
     find_company();
+    
+
 			   //alert(query)
 };
 function  contact_name_changed2(query) {
@@ -254,27 +277,10 @@ function  contact_name_changed2(query) {
     //print_data();
     find_company();
 };
-function  email_changed(email) {
-    email=unescape(email);
-    o=Dom.get("Email");
-    //alert(email)
-    if(isValidEmail(email)){
-	o.setAttribute('valid',1);
-	Dom.removeClass(o,'invalid');
-	get_contact_data();
-	find_company();
-    }else{
-	if(o.getAttribute('valid')==1){
-	    get_contact_data();
-	    find_company(); 
-	}
-	    
-	o.setAttribute('valid',0);
-	Dom.addClass(o,'invalid');
-    }
-  
 
-};
+
+
+
 function  telephone_changed(query) {
     get_contact_data();
     find_company();
@@ -285,6 +291,110 @@ function  address_changed(query) {
     find_company();
     //print_data();
 };
+
+
+function postal_code_inputed(){
+    var postal_code=Dom.get('address_postal_code').value.replace(/\s+/,"");
+    if(postal_code=='')
+	validate_data.postal_code.inputed=false;
+    else
+	validate_data.postal_code.inputed=true;
+
+    
+    validate_postal_code(postal_code);
+    if(Dom.get('address_postal_code').getAttribute('valid')==1){
+	address_changed();
+    }
+}
+
+function validate_postal_code(){
+    var postal_code=Dom.get('address_postal_code').value.replace(/\s+/,"");
+    var o=Dom.get("address_postal_code");
+    var tr=Dom.get('tr_address_postal_code');
+    // alert(postal_regex+' '+postal_code)
+    var valid=postal_regex.test(postal_code);
+
+    if(validate_data.postal_code.inputed==true){
+	if(valid){
+	    o.setAttribute('valid',1);
+	    Dom.removeClass(tr,'no_validated');
+	    Dom.addClass(tr,'validated');
+	    
+	}else{
+	    //alert('hard no valid');
+	    o.setAttribute('valid',0);
+	    Dom.removeClass(tr,'validated');
+	    Dom.addClass(tr,'no_validated');
+	}
+    }else{
+	
+	Dom.removeClass(o,'no_validated');
+	if(valid){
+	    o.setAttribute('valid',1);
+	    Dom.addClass(tr,'validated');
+	    
+	}else{
+	    // alert('no valid');
+	    o.setAttribute('valid',0);
+	    Dom.removeClass(tr,'validated');
+	}
+
+
+    }
+}
+
+function email_inputed(){
+    var email=Dom.get('Email').value;
+    if(email=='')
+	validate_data.email.inputed=false;
+    else
+	validate_data.email.inputed=true;
+
+    validate_email(email);
+    if(Dom.get('Email').getAttribute('valid')==1){
+	get_contact_data();
+	find_company();
+    }
+}
+
+function  validate_email(email) {
+    var email=unescape(email);
+    var o=Dom.get("Email");
+    var tr=Dom.get('email_mould');
+
+    if(validate_data.email.inputed==true){
+	if(isValidEmail(email)){
+	    o.setAttribute('valid',1);
+	    Dom.removeClass(tr,'no_validated');
+	    Dom.addClass(tr,'validated');
+	    
+	}else{
+	    //alert('hard no valid');
+	    o.setAttribute('valid',0);
+	    Dom.removeClass(tr,'validated');
+	    Dom.addClass(tr,'no_validated');
+	}
+    }else{
+	
+	Dom.removeClass(o,'no_validated');
+	if(isValidEmail(email)){
+	    o.setAttribute('valid',1);
+	    Dom.addClass(tr,'validated');
+	    
+	}else{
+	    // alert('no valid');
+	    o.setAttribute('valid',0);
+	    Dom.removeClass(tr,'validated');
+	}
+
+
+    }
+
+
+
+
+};
+
 
 
 
@@ -300,8 +410,15 @@ function  address_changed(query) {
 
 
 	//var ids = ["name","fiscal_name","tax_number","registration_number"]; 
-	//YAHOO.util.Event.addListener(ids, "keyup", update_details);
+	
+	
+	//	YAHOO.util.Event.addListener('address_postal_code', "keyup",validate_postal_code);
  
+
+	YAHOO.util.Event.addListener('Email', "blur",email_inputed);
+	YAHOO.util.Event.addListener('address_postal_code', "blur",postal_code_inputed);
+		
+
 
 	var ids = ["address_description","address_country_d1","address_country_d2","address_town"
 		   ,"address_town_d2","address_town_d1","address_postal_code","address_street","address_internal","address_building"]; 
@@ -411,7 +528,7 @@ function  address_changed(query) {
 	if(suggest_country){
 	
 	var Countries_DS = new YAHOO.util.FunctionDataSource(match_country);
-	Countries_DS.responseSchema = {fields: ["id", "name", "code","code2a"]}
+	Countries_DS.responseSchema = {fields: ["id", "name", "code","code2a","postal_regex"]}
 	var Countries_AC = new YAHOO.widget.AutoComplete("address_country", "address_country_container", Countries_DS);
 	Countries_AC.useShadow = true;
 	Countries_AC.resultTypeList = false;
@@ -457,7 +574,9 @@ function  address_changed(query) {
 	    // update hidden form field with the selected item's ID
 	    Dom.get("address_country_code").value = oData.code;
 	    Dom.get("address_country_2acode").value = oData.code2a;
-      
+
+	    postal_regex=new RegExp(oData.postal_regex,"i");
+
 	    myAC.getInputEl().value = oData.name + " (" + oData.code + ") ";
 
 	    update_address_labels(oData.code);
@@ -479,11 +598,14 @@ function  address_changed(query) {
 	contact_name_oAutoComp.minQueryLength = 0; 
 	contact_name_oAutoComp.queryDelay = 0.75;
 
-	var email_name_oACDS = new YAHOO.util.FunctionDataSource(email_changed);
+	var email_name_oACDS = new YAHOO.util.FunctionDataSource(validate_email);
 	email_name_oACDS.queryMatchContains = true;
 	var email_name_oAutoComp = new YAHOO.widget.AutoComplete("Email","Email_Container", email_name_oACDS);
 	email_name_oAutoComp.minQueryLength = 0; 
 	contact_name_oAutoComp.queryDelay = 0.75;
+
+	
+
 	
 	var telephone_name_oACDS = new YAHOO.util.FunctionDataSource(telephone_changed);
 	telephone_name_oACDS.queryMatchContains = true;
@@ -498,7 +620,7 @@ function  address_changed(query) {
 	town_name_oAutoComp.minQueryLength = 0; 
 	contact_name_oAutoComp.queryDelay = 0.55;
 
-	var postal_code_name_oACDS = new YAHOO.util.FunctionDataSource(address_changed);
+	var postal_code_name_oACDS = new YAHOO.util.FunctionDataSource(validate_postal_code);
 	postal_code_name_oACDS.queryMatchContains = true;
 	var postal_code_name_oAutoComp = new YAHOO.widget.AutoComplete("address_postal_code","address_postal_code_container", postal_code_name_oACDS);
 	postal_code_name_oAutoComp.minQueryLength = 0; 

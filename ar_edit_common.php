@@ -72,10 +72,17 @@ function prepare_values($data,$value_names){
       $parsed_data[$value_name]=$data[$value_name];
       break;
     case('json array'):
+
       $json=$data[$value_name];
+
       $tmp=preg_replace('/\\\"/','"',$json);
       $tmp=preg_replace('/\\\\\"/','"',$tmp);
+      $tmp=preg_replace('/\'/',"\'",$tmp);
+
+      //print ($tmp);
       $raw_data=json_decode($tmp, true);
+      //       print ($raw_data."x");
+
       if(is_array($raw_data)){
 	if(!isset($extra_data['required elements']))
 	  $extra_data['required elements']=array();
@@ -83,6 +90,10 @@ function prepare_values($data,$value_names){
 	  if(!isset($raw_data[$element_name]) or !is_type($element_type,$raw_data[$element_name]) )
 	    exit(json_encode(array('state'=>400,'msg'=>'Error wrong 5 value')));
 	}
+	foreach($raw_data as $key=>$value){
+	  $raw_data[$key]=preg_replace('/\\\\\'/',"'",$value);
+	}
+
 	$parsed_data[$value_name]=$raw_data;
       }else
 	exit(json_encode(array('state'=>400,'msg'=>'Error wrong value 6')));

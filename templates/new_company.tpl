@@ -18,8 +18,8 @@
 	
       </div>
       
-      
-      <table class="edit" border=0 style="float:left;width:200px">
+      <div  style="float:left;width:370px" >
+      <table class="edit" border=0 >
 	<tr>
 	  <td  colspan="2"><h2>{t}New Company{/t}</h2></td><td style="vertical-align:middle"></td>
 	</tr>
@@ -188,10 +188,10 @@
 	
 	
 
-	<tr id="tr_address_postal_code">
+	<tr  id="tr_address_postal_code">
 	  <td class="label" style="width:160px">{t}Postal Code{/t}:</td>
 	  <td  style="text-align:left">
-	    <input style="text-align:left;width:18em" id="address_postal_code" value="" ovalue=""  >
+	    <input style="text-align:left;width:18em" id="address_postal_code" value="" ovalue="" valid="0"  >
 	    <div id="address_postal_code_container" style="" ></div>
 	  </td>
 	</tr>
@@ -225,10 +225,18 @@
 	  <tr >
 	    <td class="label" style="width:160px">{t}Internal{/t}:</td><td  style="text-align:left"><input style="text-align:left;width:18em" id="address_internal" value="" ovalue="" ></td>
 	  </tr>
-<tr style="height:30px"><td></td><td style="vertical-align:bottom"><span class="button" id='save_new_company' >{t}Save{/t}</span></td></tr>
+	  
+      </table>
 
-	</table>
-	<div style="clear:both;height:40px"></div>
+
+      <table class="options" style="float:right;padding:0;margin:0">
+	<tr>
+	  <td  class="disabled" id="save_new_company">{t}Save{/t}</td>
+	  <td  id="cancel_add_company" onClick="window.location='companies.php?edit=1'">{t}Cancel{/t}</td>
+	</tr>
+      </table>
+      </div>
+      <div style="clear:both;height:40px"></div>
 	</div>
       </div>
       

@@ -126,6 +126,11 @@ class Email extends DB_Table {
   */
 
   private function find($raw_data,$options=''){
+ $find_fuzzy=false;
+  
+	  if(preg_match('/fuzzy/i',$options)){
+	    $find_fuzzy=true;
+	  }
 
     $this->found=false;
     $this->found_in=false;
@@ -225,13 +230,35 @@ class Email extends DB_Table {
     if($raw_data['Email']!=''){
 
 
-    $email_max_score=200;
-    $score_prize=800;
-    $this->found=false;
-    $sql=sprintf("select `Subject Key`,T.`Email Key`,damlev(UPPER(%s),UPPER(`Email`))/LENGTH(`Email`) as dist1 from   `Email Dimension` T left join `Email Bridge` TB  on (TB.`Email Key`=T.`Email Key`)   where  `Subject Type`='Contact'  order by dist1  limit 80"
-		 ,prepare_mysql($raw_data['Email'])
-		 );
-    //print $sql;
+      $sql=sprintf("select T.`Email Key`,`Subject Key` from `Email Dimension` T left join `Email Bridge` TB  on (TB.`Email Key`=T.`Email Key`) where `Email`=%s and `Subject Type`='Contact'  " 
+		   ,prepare_mysql($raw_data['Email'])
+		   );
+    // print "$sql\n";
+
+      if(!$find_fuzzy  ){
+
+      $result=mysql_query($sql);
+      $num_results=mysql_num_rows($result);
+      if($num_results==1){
+	$row=mysql_fetch_array($result);
+	$this->found=true;
+	$this->found_key=$row['Subject Key'];
+	$this->get_data('id',$row['Email Key']);
+	$this->candidate[$row['Subject Key']]=1000;
+      }
+
+
+
+      }else{
+
+	
+	$email_max_score=200;
+	$score_prize=800;
+	$this->found=false;
+	$sql=sprintf("select `Subject Key`,T.`Email Key`,damlev(UPPER(%s),UPPER(`Email`))/LENGTH(`Email`) as dist1 from   `Email Dimension` T left join `Email Bridge` TB  on (TB.`Email Key`=T.`Email Key`)   where  `Subject Type`='Contact'  order by dist1  limit 80"
+		     ,prepare_mysql($raw_data['Email'])
+		     );
+	//print $sql;
     $result=mysql_query($sql);
     while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
       if($row['dist1']>=1)
@@ -331,7 +358,8 @@ class Email extends DB_Table {
 /*       exit("todo fix database for email duplicates \n$sql\n"); */
 /*     } */
       
-  
+    }
+    
 
     if($create and !$this->found){
       

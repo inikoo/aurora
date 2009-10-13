@@ -64,8 +64,8 @@
 	  <table class="options" style="float:right;padding:0;margin:0">
 	    <tr>
 	      <td  id="add_store">Add Store</td>
-	      <td  style="display:none" id="save_new_store">Save New Store</td>
-	      <td  style="display:none" id="cancel_add_store">Cancel</td>
+	      <td  style="display:none" id="save_new_store">{t}Save New Store{/t}</td>
+	      <td  style="display:none" id="cancel_add_store">{t}Cancel{/t}</td>
 	    </tr>
 	  </table>
 

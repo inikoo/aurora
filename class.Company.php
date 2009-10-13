@@ -81,9 +81,13 @@ class Company extends DB_Table {
       Key of the Compnay found, if create is found in the options string  returns the new key
      */
     function find($raw_data,$options) {
+  $find_fuzzy=false;
+	  
+	  if(preg_match('/fuzzy/i',$options)){
+	    $find_fuzzy='fuzzy';
+	  }
 
-
-
+ Timer::timing_milestone('start find');
 
         if (isset($raw_data['editor'])) {
             foreach($raw_data['editor'] as $key=>$value) {
@@ -149,14 +153,16 @@ class Company extends DB_Table {
         }
 
 
-
-        $contact=new Contact("find in company",$raw_data);
+	Timer::timing_milestone('begin  find  contact');
+        $contact=new Contact("find in company $find_fuzzy ",$raw_data);
+	Timer::timing_milestone('end find contact');
         foreach($contact->candidate as $key=>$val) {
             if (isset($this->candidate[$key]))
                 $this->candidate[$key]+=$val;
             else
                 $this->candidate[$key]=$val;
         }
+
 
 
 
@@ -176,7 +182,6 @@ class Company extends DB_Table {
                     $this->candidate_companies[$company_key]=$score;
             }
         }
-
 
         /*     $sql=sprintf("select `Company Key` from `Company Dimension` where `Company Name`=%s",prepare_mysql($raw_data['Company Name'])); */
         /*     $res=mysql_query($sql); */
@@ -258,6 +263,9 @@ class Company extends DB_Table {
         if ($this->found )
             $this->get_data('id',$this->found_key);
 
+
+
+
         if ($create or $update) {
 
             if ($raw_data['Company Main Contact Name']=='' and $this->found and !$contact->found) {
@@ -303,20 +311,59 @@ class Company extends DB_Table {
 
 
             }
-
-            // if($this->found)
+	    
+	    // if($this->found)
             //	print "Company founded ".$this->found_key."  \n";
 
+	    if($create and !$this->found){
 
-            // there are 4 cases
-            if (!$contact->found and !$this->found) {
-                //print "create\n";
-                $this->new_contact=true;
+	      if($contact->found){
+		if ($contact->data['Contact Company Key']) {
+		  $this->get_data('id',$contact->data['Contact Company Key']);
+		  // print_r($this->card());
+		  $this->update_address($address_data);
+		  $this->update($raw_data);
+                } else {
+
+		  $this->create($raw_data,$address_data,'use contact '.$contact->id);
+
+                }
+		
+	      }else{
+		$this->new_contact=true;
                 $this->create($raw_data,$address_data);
+		
+	      }
+	      
+	    }
 
-            }
-            elseif(!$contact->found and $this->found) {
 
+	    if($update and $this->found){
+	      if($contact->found){
+		$contact->set_scope('Company',$this->id);
+                // print_r($contact);
+
+                $update_data=array(
+				   'Contact Name'=>$raw_data['Company Main Contact Name'],
+				 
+				   'Contact Main Telephone'=>$raw_data['Company Main Telephone']
+				   );
+		if(isset($raw_data['Company Main FAX']))
+		  $update_data['Contact Main FAX']=$raw_data['Company Main FAX'];
+			if(isset($raw_data['Company Mobil']))
+		  $update_data['Contact Main Mobile']=$raw_data['Company Mobile'];
+
+
+                $contact->update($update_data);
+                $contact->update_address($address_data,'Work');
+
+                $this->add_contact($contact->id,'principal');
+
+                $this->get_data('id',$this->found_key);
+                //print_r($this->card());
+                $this->update_address($address_data);
+                $this->update($raw_data);
+	      }else{
 
                 $this->get_data('id',$this->found_key);
                 //print_r($this->card());
@@ -331,49 +378,12 @@ class Company extends DB_Table {
 
                 $this->update_address($address_data);
                 $this->update($raw_data);
+		
+	      }
 
-            }
-            elseif($contact->found and !$this->found) {
-
-                if ($contact->data['Contact Company Key']) {
-                    $this->get_data('id',$contact->data['Contact Company Key']);
-                    // print_r($this->card());
-                    $this->update_address($address_data);
-                    $this->update($raw_data);
-                } else {
-
-                    $this->create($raw_data,$address_data,'use contact '.$contact->id);
-
-                }
+	    }
 
 
-            }
-            else {
-                // update
-                //print "Updatinf company and contact\n";
-
-                $contact->set_scope('Company',$this->id);
-                // print_r($contact);
-
-                $update_data=array(
-                                 'Contact Name'=>$raw_data['Company Main Contact Name']
-                                                ,'Contact Main Plain Email'=>$raw_data['Company Main Plain Email']
-                                                                            ,'Contact Main FAX'=>$raw_data['Company Main FAX']
-                                                                                                ,'Contact Main Mobile'=>$raw_data['Company Mobile']
-                                                                                                                       ,'Contact Main Telephone'=>$raw_data['Company Main Telephone']
-                             );
-
-                $contact->update($update_data);
-                $contact->update_address($address_data,'Work');
-
-                $this->add_contact($contact->id,'principal');
-
-                $this->get_data('id',$this->found_key);
-                //print_r($this->card());
-                $this->update_address($address_data);
-                $this->update($raw_data);
-
-            }
 
 
         }
