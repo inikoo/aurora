@@ -1,1515 +1,1517 @@
 <?php
 /*
- File: Address.php
+  File: Address.php
 
- This file contains the Address Class
+  This file contains the Address Class
 
- About:
- Autor: Raul Perusquia <rulovico@gmail.com>
+  About:
+  Autor: Raul Perusquia <rulovico@gmail.com>
 
- Copyright (c) 2009, Kaktus
+  Copyright (c) 2009, Kaktus
 
- Version 2.0
-
-
+  Version 2.0
 
 
 
- */
+
+
+*/
 include_once('class.DB_Table.php');
 include_once('class.Country.php');
 /* class: Address
- Class to manage the *Address Dimension* table
- */
+   Class to manage the *Address Dimension* table
+*/
 class Address extends DB_Table{
 
-	private $scope=false;
-	private $scope_key=false;
-	/*
-	 Constructor: Address
-	 Initializes the class, trigger  Search/Load/Create for the data set
+  private $scope=false;
+  private $scope_key=false;
+  /*
+    Constructor: Address
+    Initializes the class, trigger  Search/Load/Create for the data set
 
-	 If first argument is find it will try to match the data or create if not found
+    If first argument is find it will try to match the data or create if not found
 	  
-	 Parameters:
-	 arg1 -    Tag for the Search/Load/Create Options *or* the Contact Key for a simple object key search
-	 arg2 -    (optional) Data used to search or create the object
+    Parameters:
+    arg1 -    Tag for the Search/Load/Create Options *or* the Contact Key for a simple object key search
+    arg2 -    (optional) Data used to search or create the object
 
-	 Returns:
-	 void
+    Returns:
+    void
 	  
-	 Example:
-	 (start example)
-	 // Load data from `Address Dimension` table where  `Address Key`=3
-	 $key=3;
-	 $address = New Address($key);
+    Example:
+    (start example)
+    // Load data from `Address Dimension` table where  `Address Key`=3
+    $key=3;
+    $address = New Address($key);
 	  
-	 // Load data from `Address Dimension` table where  `Address`='raul@gmail.com'
-	 $address = New Address('raul@gmail.com');
+    // Load data from `Address Dimension` table where  `Address`='raul@gmail.com'
+    $address = New Address('raul@gmail.com');
 	  
-	 // Insert row to `Address Dimension` table
-	 $data=array();
-	 $address = New Address('new',$data);
+    // Insert row to `Address Dimension` table
+    $data=array();
+    $address = New Address('new',$data);
 
 
-	 (end example)
+    (end example)
 
-	 */
-	function Address($arg1=false,$arg2=false) {
-
-
-		$this->table_name='Address';
-		$this->ignore_fields=array('Address Key','Address Data Last Update','Address Data Creation');
-
-		if(!$arg1 and !$arg2){
-			$this->error=true;
-			$this->msg='No data provided';
-			return;
-		}
-		if(is_numeric($arg1)){
-			$this->get_data('id',$arg1);
-			return;
-		}
-		if(preg_match('/find/i',$arg1)){
-			$this->find($arg2,$arg1);
-			return;
-		}
-
-		if($arg1=='new'){
-			$this->create($arg2);
-			return;
-		}
-
-		if($arg1=='fuzzy all'){
-			$this->get_data('fuzzy all');
-			return;
-		}elseif($arg1=='fuzzy country'){
-			if(!is_numeric($arg2)){
-				$this->get_data('fuzzy all');
-				return;
-			}
-			$country=new Country($arg2);
-			if(is_numeric($arg2) and $country->get('Country Code')!='UNK'){
-				$this->get_data('fuzzy country',$arg2);
-				return;
-			}else{
-				$this->get_data('fuzzy all');
-				return;
-			}
+  */
+  function Address($arg1=false,$arg2=false) {
 
 
-		}
+    $this->table_name='Address';
+    $this->ignore_fields=array('Address Key','Address Data Last Update','Address Data Creation');
 
-		$this->get_data($arg1,$arg2);
+    if(!$arg1 and !$arg2){
+      $this->error=true;
+      $this->msg='No data provided';
+      return;
+    }
+    if(is_numeric($arg1)){
+      $this->get_data('id',$arg1);
+      return;
+    }
+    if(preg_match('/find/i',$arg1)){
+      $this->find($arg2,$arg1);
+      return;
+    }
 
-	}
+    if($arg1=='new'){
+      $this->create($arg2);
+      return;
+    }
 
-	/*
-	 Method: get_data
-	 Load the data from the database
+    if($arg1=='fuzzy all'){
+      $this->get_data('fuzzy all');
+      return;
+    }elseif($arg1=='fuzzy country'){
+      if(!is_numeric($arg2)){
+	$this->get_data('fuzzy all');
+	return;
+      }
+      $country=new Country($arg2);
+      if(is_numeric($arg2) and $country->get('Country Code')!='UNK'){
+	$this->get_data('fuzzy country',$arg2);
+	return;
+      }else{
+	$this->get_data('fuzzy all');
+	return;
+      }
 
-	 */
-	function get_data($tipo,$id=false){
 
-		if($tipo=='id')
-		$sql=sprintf("select * from `Address Dimension` where  `Address Key`=%d",$id);
-		elseif('tipo'=='fuzzy country')
-		$sql=sprintf("select * from `Address Dimension` where  `Address Fuzzy`='Yes' and `Address Fuzzy Type`='country' and `Address Country Key`=%d   ",$id);
-		else
-		$sql=sprintf("select * from `Address Dimension` where  `Address Fuzzy`='Yes' and `Address Fuzzy Type`='all' ",$id);
+    }
+
+    $this->get_data($arg1,$arg2);
+
+  }
+
+  /*
+    Method: get_data
+    Load the data from the database
+
+  */
+  function get_data($tipo,$id=false){
+
+    if($tipo=='id')
+      $sql=sprintf("select * from `Address Dimension` where  `Address Key`=%d",$id);
+    elseif('tipo'=='fuzzy country')
+      $sql=sprintf("select * from `Address Dimension` where  `Address Fuzzy`='Yes' and `Address Fuzzy Type`='country' and `Address Country Key`=%d   ",$id);
+    else
+      $sql=sprintf("select * from `Address Dimension` where  `Address Fuzzy`='Yes' and `Address Fuzzy Type`='all' ",$id);
 
 
 
 
-		$result=mysql_query($sql);
-		if($this->data=mysql_fetch_array($result, MYSQL_ASSOC))
-		$this->id=$this->data['Address Key'];
-		else{
-			print "$sql\n  can not fpuns \n";
+    $result=mysql_query($sql);
+    if($this->data=mysql_fetch_array($result, MYSQL_ASSOC))
+      $this->id=$this->data['Address Key'];
+    else{
+      print "$sql\n  can not fpuns \n";
 
-			// exit(" $sql\n can not open address");
+      // exit(" $sql\n can not open address");
 
-		}
-	}
-	/*
-	 Method: find
-	 Given a set of address components try to find it on the database updating properties, if not found creates a new record
-	 */
+    }
+  }
+  /*
+    Method: find
+    Given a set of address components try to find it on the database updating properties, if not found creates a new record
+  */
 
-	function find($raw_data,$options=''){
-		//   print "$options\n";
-		//   print_r($raw_data);
+  function find($raw_data,$options=''){
+    //   print "$options\n";
+    //   print_r($raw_data);
 			
-	  $find_fuzzy=false;
+    $find_fuzzy=false;
 	  
-	  if(preg_match('/fuzzy/i',$options)){
-	    $find_fuzzy='fuzzy';
+    if(preg_match('/fuzzy/i',$options)){
+      $find_fuzzy='fuzzy';
+    }
+
+    //print_r($raw_data);
+
+
+    $this->found=false;
+    $this->found_in=false;
+    $this->found_out=false;
+    $this->candidate=array();
+    $this->address_candidate=array();
+    $in_contact=array();
+    $mode='Contact';
+    $parent='Contact';
+    $create=false;
+    $update=false;
+    if(preg_match('/create/i',$options)){
+      $create=true;
+    }
+    if(preg_match('/update/i',$options)){
+      $update=true;
+    }
+
+
+    $auto=false;
+    if(preg_match('/auto/i',$options)){
+      $auto=true;
+    }
+
+
+    if(!$raw_data){
+      $this->new=false;
+      $this->msg=_('Error no address data');
+      if(preg_match('/exit on errors/',$options))
+	exit($this->msg);
+      return false;
+    }
+
+
+    if(isset($raw_data['editor']) and is_array($raw_data['editor'])){
+      foreach($raw_data['editor'] as $key=>$value){
+
+	if(array_key_exists($key,$this->editor))
+	  $this->editor[$key]=$value;
+
+      }
+    }
+
+
+    if(isset($raw_data['Street Data']))
+      $raw_data['Address Line 3']=$raw_data['Street Data'];
+    if(isset($raw_data['Address Building']))
+      $raw_data['Address Line 2']=$raw_data['Address Building'];
+    if(isset($raw_data['Address Internal']))
+      $raw_data['Address Line 1']=$raw_data['Address Internal'];
+
+    $data=$this->base_data();
+
+    if(preg_match('/from Company|in company/i',$options)){
+      foreach($raw_data as $key=>$val){
+	$_key=preg_replace('/Company /','',$key);
+	if(array_key_exists($_key,$data))
+	  $data[$_key]=$val;
+	if($_key=='Address Line 1' or $_key=='Address Line 2' or  $_key=='Address Line 3' or $_key=='Address Input Format')
+	  $data[$_key]=$val;
+      }
+    }elseif(preg_match('/from contact|in contact/i',$options)){
+      foreach($raw_data as $key=>$val){
+
+	$_key=preg_replace('/^Contact( Home| Work)? /i','',$key);
+	//	print "******** $key          ->  $_key\n";
+	if(array_key_exists($_key,$data))
+	  $data[$_key]=$val;
+	if($_key=='Address Line 1' or $_key=='Address Line 2' or  $_key=='Address Line 3' or $_key=='Address Input Format')
+	  $data[$_key]=$val;
+      }
+
+
+    }
+
+    if(!isset($data['Address Input Format'])){
+      $data['Address Input Format']='DB Fields';
+      if(isset($data['Address Line 1']))
+	$data['Address Input Format']='3 Line';
+      else
+	$data['Address Input Format']='DB Fields';
+    }
+
+
+			
+    switch($data['Address Input Format']){
+    case('3 Line'):
+      $data=$this->prepare_3line($data);
+		  
+      $data['Address Input Format']='DB Fields';
+      break;
+    case('DB Fields'):
+      $data=$this->prepare_DBfields($data);
+      break;
+    }
+    $this->raw_data=$data;
+
+    $subject_key=0;
+    $subject_type='Contact';
+    if(preg_match('/in contact \d+/i',$options,$match)){
+      $subject_key=preg_replace('/[^\d]/','',$match[0]);
+      $subject_type='Contact';
+      $mode='Contact in';
+      $in_contact=array($subject_key);
+    }
+    if(preg_match('/in company \d+/i',$options,$match)){
+      $subject_key=preg_replace('/[^\d]/','',$match[0]);
+      $subject_type='Company';
+      $company=new Company($subject_key);
+      $in_contact=$company->get_contact_keys();
+      $mode='Company in';
+
+    }elseif(preg_match('/company/',$options,$match)){
+      $subject_type='Company';
+      $mode='Company';
+    }
+    if($mode=='Contact')
+      $options.=' anonymous';
+
+    //	print "f: $find_fuzzy\n";
+
+    //Exact match
+    if(!$find_fuzzy){
+
+
+		  
+
+
+
+
+
+
+		  
+      $fields=array('Address Fuzzy','Address Street Number','Address Building','Address Street Name','Address Street Type','Address Town Second Division','Address Town First Division','Address Town','Address Country First Division','Address Country Second Division','Address Country Key','Address Postal Code','Military Address','Military Installation Address','Military Installation Name');
+		  
+      $sql="select A.`Address Key`,`Subject Key`,`Subject Type` from `Address Dimension`  A  left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`) where `Subject Type`='Contact' ";
+      foreach($fields as $field){
+	$sql.=sprintf(' and `%s`=%s',$field,prepare_mysql($data[$field],false));
+      }
+      $result=mysql_query($sql);
+      $num_results=mysql_num_rows($result);
+      if($num_results==1){
+	$row=mysql_fetch_array($result, MYSQL_ASSOC);
+	$this->found=true;
+	$this->get_data('id',$row['Address Key']);
+	$this->candidate[$row['Subject Key']]=100;
+			
+		    
+      }
+    }else{
+      // Fuzzy search
+
+
+
+      //special cases
+      // Only one data
+      $fields=array('Address Street Number','Address Building','Address Street Name','Address Town Second Division','Address Town First Division','Address Town','Address Country First Division','Address Country Second Division','Address Postal Code','Address Country Code');
+      $filled_fields=array();
+      foreach($fields as $field){
+	if($data[$field]!='')
+	  $filled_fields[$field]=$data[$field];
+      }
+		  
+
+      $number_filled_fields=count($filled_fields);
+
+
+      //print $number_filled_fields;
+      //print_r($filled_fields);
+		  
+
+      if($number_filled_fields==1){
+		    
+
+      }elseif ($number_filled_fields==2){
+	$column=false;
+	if(array_key_exists('Address Town',$filled_fields)){
+	  $column='Address Town';
+	}elseif(array_key_exists('Address Postal Code',$filled_fields)){
+	    $column='Address Postal Code';
+	}
+	
+	if($column){
+	  
+	  $sql=sprintf("select A.`Address Key` ,damlev(UPPER(`%s`),%s) as dist,  `Subject Key`as contact_key from `Address Dimension` A left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`) where  `Subject Type`='Contact'  and `Address Country Code`=%s and damlevlim(UPPER(`%s`),%s,2)<2  order by dist limit 20   "
+		       ,$column
+		       ,prepare_mysql(strtoupper($data[$column]))
+		       ,prepare_mysql($data['Address Country Code'])
+		       ,$column
+		       ,prepare_mysql(strtoupper($data[$column]))
+		       );
+	  $result=mysql_query($sql);
+	  $len_keyword=strlen($data[$column]);
+	  
+	  // print $sql;
+	  while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+	    $contact_key=$row['contact_key'];
+	    $dif=$row['dist']/$len_keyword;
+	    if($dif>1)
+	      $dif=1;
+	    $score=10.0*(1-$dif)*(1-$dif);
+	    if(isset($this->candidate[$contact_key])){
+	       if($this->candidate[$contact_key]<$score)
+		 $this->candidate[$contact_key]=$score;
+	    }else{
+	       // print "-- $score \n";
+	      $this->candidate[$contact_key]=$score;
+	    }
+	    
+	  }
+	  
+	  $sql=sprintf("select `Address Town`, A.`Address Key` ,damlev(UPPER(`%s`),%s) as dist,  `Subject Key` as contact_key from `Address Dimension` A left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`) where  `Subject Type`='Contact'  and `Address Country Code`!=%s and damlevlim(UPPER(`%s`),%s,2)<2  order by dist limit 20   "
+			 ,$column
+		       ,prepare_mysql(strtoupper($data[$column]))
+		       ,prepare_mysql($data['Address Country Code'])
+			 ,$column
+		        ,prepare_mysql(strtoupper($data[$column]))
+		       );
+	  $result=mysql_query($sql);
+	  $len_keyword=strlen($data[$column]);
+	  
+	  //	   print $sql;
+	  while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+	    $contact_key=$row['contact_key'];
+	    $dif=$row['dist']/$len_keyword;
+	    if($dif>1)
+	      $dif=1;
+	    $score=2.5*(1-$dif)*(1-$dif);
+	     if(isset($this->candidate[$contact_key])){
+	       if($this->candidate[$contact_key]<$score)
+		 $this->candidate[$contact_key]=$score;
+	     }else{
+	       // print "-- $score \n";
+	       $this->candidate[$contact_key]=$score;
+	     }
+
+	  }
+
+ 
+	}
+	
+      
+
+
+
+
+    }else{
+ 
+      $nothing_found=true;
+      $found_item=array('Postal Code'=>false);
+      $postal_code_max_score=20;
+      $town_max_score=20;
+      $street_max_score=10;
+      $score_found_within_address=80;
+      $country_max_score=10;
+      $max_score=0;
+
+      $sql=sprintf("select SQL_CACHE count(*) as addresses from `Address Dimension` ");
+      $res=mysql_query($sql);
+      $address_multiplicity_data=mysql_fetch_array($res);
+      $address_multiplicity=$address_multiplicity_data['addresses'];
+		
+      $sql=sprintf("select SQL_CACHE count(*) as addresses from `Address Dimension` where   `Address Country Code`=%s "
+		   ,prepare_mysql($data['Address Country Code'])
+		   );
+      $res=mysql_query($sql);
+	       
+      $country_multiplicity_data=mysql_fetch_array($res);
+      $country_multiplicity=$country_multiplicity_data['addresses'];
+		
+      if($address_multiplicity>0){
+		
+	if($country_multiplicity==0)
+	  $same_country_bonus=0;
+	else{
+	  $same_country_bonus=10*(1-($country_multiplicity/$address_multiplicity));
+	  //print "xxxx $country_multiplicity $address_multiplicity";
+				
+				
+	}  
+      }else{
+	$same_country_bonus=0;
+			
+      }
+	
+      $max_score=-1;
+      unset($country_multiplicity_data);
+		
+      Timer::timing_milestone('end   multiplicity ');
+
+      //		print_r($data);
+      //if(  ($data['Address Street Name']!=''  and $data['Address Street Number']!=''  ) or $data['Address Building']!=''   ){
+      if(  ($data['Address Street Name']!=''   ) or $data['Address Building']!=''   ){
+	$order='';
+	$sql_town='';
+	$sql_postal_code='';
+	$sql_where_postal_code='';
+	$sql_where_street_number='';
+	$sql_where_internal='';
+	$with_town=false;
+	$with_postal_code=false;
+	if($data['Address Town']!=''){
+	  $sql_town=sprintf("damlev(UPPER(`Address Town`),%s) as dist_town,",prepare_mysql(strtoupper($data['Address Town'])));
+	  $order='dist_town';
+	  $with_town=true;
+	  $len_town=strlen($data['Address Town']);
+
+
+	}
+
+			
+	if($data['Address Postal Code']!=''){
+	  $sql_postal_code=sprintf("damlevlim(UPPER(`Address Postal Code`),%s,3) as dist_postal_code,",prepare_mysql(strtoupper($data['Address Postal Code'])));
+	  $sql_where_postal_code=sprintf("and  damlevlim(UPPER(`Address Postal Code`),%s,3)<3 ",prepare_mysql(strtoupper($data['Address Postal Code'])));
+	  $order.=($order!=''?',':'').'dist_postal_code';
+	  $with_postal_code=true;
+	}
+	if($data['Address Street Number']!=''){
+	  $sql_where_street_number=sprintf("and `Address Street Number`=%s ",prepare_mysql(strtoupper($data['Address Street Number'])));
+	}elseif($data['Address Building']!=''){
+	  $sql_where_street_number=sprintf("and  damlevlim(UPPER(`Address Building`),%s,6)<6 ",prepare_mysql(strtoupper($data['Address Building'])));
+	}
+	if($data['Address Internal']!=''){
+	  $sql_where_internal=sprintf("and `Address Internal`=%s"
+				      ,prepare_mysql($data['Address Internal'],false)
+				      );
+	}
+			
+	$order=($order!=''?'order by ':'').$order;
+
+	$sql=sprintf("select `Address Town`,`Address Country Code`,`Address Postal Code`, A.`Address Key` ,%s  %s  `Subject Key` from `Address Dimension` A left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`) where  `Subject Type`='Contact'  and `Address Country Code`=%s %s %s %s %s limit 250 "
+		     ,$sql_postal_code
+		     ,$sql_town
+		     ,prepare_mysql(strtoupper($data['Address Country Code']))
+		     ,$sql_where_internal
+		     ,$sql_where_street_number
+		     ,$sql_where_postal_code
+		     ,$order
+		     );
+
+	//print "$sql<br>";
+
+	$result=mysql_query($sql);
+	Timer::timing_milestone('similar inner address ');
+	$max_score=-1;
+	while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+
+	  $wrong_town_factor=1;
+	  $found_postal_code_bonus=20;
+	  $found_town_bonus=10;
+
+	  $contact_key=$row['Subject Key'];
+
+	  $score=$score_found_within_address;
+	  $wrong_postal_code_factor=1;
+	  if($with_postal_code){
+	    if($row['dist_postal_code']==0){
+	      $score+=$found_postal_code_bonus;
+	      $wrong_postal_code_factor=1;
+	    }elseif($row['dist_postal_code']==1){
+	      $wrong_postal_code_factor=.5;
+	    }else{
+	      $wrong_postal_code_factor=.25;
+	    }
+	  }
+
+	  if($with_town){
+	    if($row['dist_town']==0){
+	      $score+=$found_town_bonus;
+							
+	    }
+	    $dif=$row['dist_town']/$len_town;
+	    if($dif>1)
+	      $dif=1;
+	    //print "xxxxx $dif\n";
+	    $wrong_town_factor=(1-$dif)*(1-$dif);
+
+	  }
+	  //print "$score $wrong_postal_code_factor $wrong_town_factor\n";
+	  $score=$score*$wrong_postal_code_factor*$wrong_town_factor;
+				
+			
+	  //	print_r($this->candidate);
+	  if(isset($this->candidate[$contact_key])){
+	    // print "*** $score \n  ";
+	    //$old_candidate_score=$this->candidate[$contact_key];
+	    //				  $this->candidate[$contact_key]+=$score;
+	    if($this->candidate[$contact_key]<$score)
+	      $this->candidate[$contact_key]=$score;
+	  }else{
+	    // print "-- $score \n";
+	    $this->candidate[$contact_key]=$score;
+	  }
+	  //	print_r($this->candidate);
+				
+	  if($this->candidate[$contact_key]>$max_score)
+	    $max_score=$this->candidate[$contact_key];
+	}
+
+      }
+
+      Timer::timing_milestone('similar inner address x');
+      //	print_r($this->candidate);
+      //print "$max_score\n";
+      //exit;
+      if($max_score>85)
+	$nothing_found=false;
+	
+      if($nothing_found){
+
+	if($data['Address Postal Code']!=''){
+	  $sql=sprintf("select   `Address Country Code`,`Address Postal Code`, A.`Address Key` ,damlev(UPPER(`Address Postal Code`),%s) as dist1,`Subject Key` from `Address Dimension` A left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`)  where  `Subject Type`='Contact'  and   damlev(UPPER(`Address Postal Code`),%s) <3   order by dist1  limit 250 "
+		       ,prepare_mysql(strtoupper($data['Address Postal Code']))
+		       ,prepare_mysql(strtoupper($data['Address Postal Code']))
+		       );
+	  $result=mysql_query($sql);
+
+	  while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+	    $contact_key=$row['Subject Key'];
+	    if($row['dist1']==0){
+
+	      $found_item['Postal Code']=true;
+	      $factor=1;
+	    }elseif($row['dist1']==1){
+	      $factor=.4;
+	    }else{
+	      $factor=.1;
+	    }
+	    $score=$factor*$postal_code_max_score;
+
+	    $bonus=0;
+	    if($data['Address Country Code']==$row['Address Country Code'])
+	      $bonus=$same_country_bonus;
+
+
+	    //print "$factor $postal_code_max_score $same_country_bonus<br>";
+	    $score=$factor*($postal_code_max_score+$bonus);
+
+
+
+	    if(isset($this->candidate[$contact_key])){
+	      if($this->candidate[$contact_key]<$score)
+		$this->candidate[$contact_key]=$score;
+	    }else
+	      $this->candidate[$contact_key]=$score;
+
+	  }
+	}
+
+
+
+
+
+	if($data['Address Town']!=''){
+			  
+
+	  //Count if theres is a exacte match
+
+	  /* 	  $sql=sprintf('select count(*) as number from `Address Dimension` A left join `Address Bridge` AB on (AB.`Address Key`=A.`Address Key`) where `Subject Type`="Contact"  and `Address Town`=%s    ',prepare_mysql(data['Address Town'])); */
+	  /* 			  $result=mysql_query($sql); */
+	  /* 			  $row=mysql_fetch_array($result, MYSQL_ASSOC); */
+			
+	  /* 			  if($row['number_of_address']>20){ */
+	  /* 			      $sql=sprintf('select `Subject Key` from `Address Dimension` A left join `Address Bridge` AB on (AB.`Address Key`=A.`Address Key`) where `Subject Type`="Contact"  and `Address Town`=%s     and `Subject Key in`  ',prepare_mysql(data['Address Town'])); */
+
+	  /* 			  }else{ */
+
+	  $sql=sprintf("select   `Address Country Code`,`Address Town`, A.`Address Key` ,damlev(UPPER(`Address Town`),%s) as dist1,`Subject Key` from `Address Dimension` A left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`)  where  `Subject Type`='Contact'     order by dist1  limit 50 "
+		       ,prepare_mysql(strtoupper($data['Address Town']))
+		       ,prepare_mysql(strtoupper($data['Address Town']))
+		       );
+
+	  //print_r($this->candidate);
+
+	  //	print "$sql\n";
+	  $result=mysql_query($sql);
+	  $len_town=strlen($data['Address Town']);
+	  while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+	    $contact_key=$row['Subject Key'];
+
+	    $dif=$row['dist1']/$len_town;
+	    if($dif>=1)
+	      break;
+	    $factor=(1-$dif)*(1-$dif);
+	    $score=$factor*$town_max_score;
+
+	    if($row['dist1']==0){
+	      $found_item['Town']=true;
+	    }
+
+
+	    $bonus=0;
+	    if($data['Address Country Code']=$row['Address Country Code'])
+	      $bonus=$same_country_bonus;
+
+	    $score=$factor*($town_max_score+$bonus);
+
+
+
+	    if(isset($this->candidate[$contact_key]))
+	      if($this->candidate[$contact_key]<$score)
+		$this->candidate[$contact_key]=$score;
+	      else
+		$this->candidate[$contact_key]=$score;
+
+	  }
+	}
+	//	}
+	Timer::timing_milestone('similar inner address xx');
+	//print_r($data);
+	if($data['Address Street Name']!='' ){
+	  $sql=sprintf("select   `Address Country Code`,`Address Town`, A.`Address Key` ,damlev(UPPER(`Address Street Name`),%s) as dist1,`Subject Key` from `Address Dimension` A left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`)  where  `Subject Type`='Contact'     order by dist1  limit 50 "
+		       ,prepare_mysql(strtoupper($data['Address Street Name']))
+		       );
+	  $result=mysql_query($sql);
+	  $len_street=strlen($data['Address Street Name']);
+	  while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+	    $contact_key=$row['Subject Key'];
+
+	    $dif=$row['dist1']/$len_street;
+	    if($dif>=1)
+	      break;
+	    $factor=(1-$dif)*(1-$dif);
+	    $score=$factor*$town_max_score;
+
+
+	    $bonus=0;
+	    if($data['Address Country Code']=$row['Address Country Code'])
+	      $bonus=$same_country_bonus;
+
+	    $score=$factor*($street_max_score+$bonus);
+
+
+
+	    if(isset($this->candidate[$contact_key]))
+	      if($this->candidate[$contact_key]<$score)
+		$this->candidate[$contact_key]=$score;
+	      else
+		$this->candidate[$contact_key]=$score;
+
+	  }
+	}
+
+      }
+
+
+
+
+      Timer::timing_milestone('similar inner address xxx');
+
+
+
+    }
+  
+
+    
+      Timer::timing_milestone('similar inner address xxxx7');
+      if(!$this->found and count($this->candidate)==0){
+	// foound 1 additions
+	if($data['Address Fuzzy']=='No'){
+	  //Special cases
+	  //a) when same (st number,street,town,d1,d2) but postal code on / off
+	  $fields=array('Address Street Number','Address Building','Address Street Name','Address Street Type','Address Town Second Division','Address Town First Division','Address Town','Address Country First Division','Address Country Second Division','Address Country Key','Military Address','Military Installation Address','Military Installation Name');
+
+	  $sql="select A.`Address Key`,`Subject Key`,`Subject Type` from `Address Dimension`  A  left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`) where `Subject Type`='Contact' ";
+	  foreach($fields as $field){
+	    $sql.=sprintf(' and `%s`=%s',$field,prepare_mysql($data[$field],false));
+	  }
+	  $result=mysql_query($sql);
+	  //print "No fuzzy $sql\n";
+	  $num_results=mysql_num_rows($result);
+
+	  if($num_results==1){
+	    $row=mysql_fetch_array($result, MYSQL_ASSOC);
+	    $this->found=true;
+	    $this->get_data('id',$row['Address Key']);
+	    if($mode=='Contact in' or $mode=='Company in'){
+	      if(in_array($row['Subject Key'],$in_contact)){
+		$this->candidate[$row['Subject Key']]=100;
+		$this->found_in=true;
+		$this->found_out=false;
+	      }else{
+		$this->candidate[$row['Subject Key']]=80;
+		$this->found_in=false;
+		$this->found_out=true;
+	      }
+	    }else
+	      $this->candidate[$row['Subject Key']]=90;
+
 	  }
 
 
-		$this->found=false;
-		$this->found_in=false;
-		$this->found_out=false;
-		$this->candidate=array();
-		$this->address_candidate=array();
-		$in_contact=array();
-		$mode='Contact';
-		$parent='Contact';
-		$create=false;
-		$update=false;
-		if(preg_match('/create/i',$options)){
-			$create=true;
-		}
-		if(preg_match('/update/i',$options)){
-			$update=true;
-		}
+	}
 
 
-		$auto=false;
-		if(preg_match('/auto/i',$options)){
-			$auto=true;
-		}
-
-
-		if(!$raw_data){
-			$this->new=false;
-			$this->msg=_('Error no address data');
-			if(preg_match('/exit on errors/',$options))
-			exit($this->msg);
-			return false;
-		}
-
-
-		if(isset($raw_data['editor']) and is_array($raw_data['editor'])){
-			foreach($raw_data['editor'] as $key=>$value){
-
-				if(array_key_exists($key,$this->editor))
-				$this->editor[$key]=$value;
-
-			}
-		}
-
-
-		if(isset($raw_data['Street Data']))
-		$raw_data['Address Line 3']=$raw_data['Street Data'];
-		if(isset($raw_data['Address Building']))
-		$raw_data['Address Line 2']=$raw_data['Address Building'];
-		if(isset($raw_data['Address Internal']))
-		$raw_data['Address Line 1']=$raw_data['Address Internal'];
-
-		$data=$this->base_data();
-
-		if(preg_match('/from Company|in company/i',$options)){
-			foreach($raw_data as $key=>$val){
-				$_key=preg_replace('/Company /','',$key);
-				if(array_key_exists($_key,$data))
-				$data[$_key]=$val;
-				if($_key=='Address Line 1' or $_key=='Address Line 2' or  $_key=='Address Line 3' or $_key=='Address Input Format')
-				$data[$_key]=$val;
-			}
-		}elseif(preg_match('/from contact|in contact/i',$options)){
-			foreach($raw_data as $key=>$val){
-
-				$_key=preg_replace('/^Contact( Home| Work)? /i','',$key);
-				//	print "******** $key          ->  $_key\n";
-				if(array_key_exists($_key,$data))
-				$data[$_key]=$val;
-				if($_key=='Address Line 1' or $_key=='Address Line 2' or  $_key=='Address Line 3' or $_key=='Address Input Format')
-				$data[$_key]=$val;
-			}
-
-
-		}
-
-		if(!isset($data['Address Input Format'])){
-			$data['Address Input Format']='DB Fields';
-			if(isset($data['Address Line 1']))
-			$data['Address Input Format']='3 Line';
-			else
-			$data['Address Input Format']='DB Fields';
-		}
-
-
-			
-		switch($data['Address Input Format']){
-			case('3 Line'):
-				$data=$this->prepare_3line($data);
-
-				$data['Address Input Format']='DB Fields';
-				break;
-			case('DB Fields'):
-				$data=$this->prepare_DBfields($data);
-				break;
-		}
-		$this->raw_data=$data;
-
-		$subject_key=0;
-		$subject_type='Contact';
-		if(preg_match('/in contact \d+/i',$options,$match)){
-			$subject_key=preg_replace('/[^\d]/','',$match[0]);
-			$subject_type='Contact';
-			$mode='Contact in';
-			$in_contact=array($subject_key);
-		}
-		if(preg_match('/in company \d+/i',$options,$match)){
-			$subject_key=preg_replace('/[^\d]/','',$match[0]);
-			$subject_type='Company';
-			$company=new Company($subject_key);
-			$in_contact=$company->get_contact_keys();
-			$mode='Company in';
-
-		}elseif(preg_match('/company/',$options,$match)){
-			$subject_type='Company';
-			$mode='Company';
-		}
-		if($mode=='Contact')
-		$options.=' anonymous';
+      }
 
 
 
-		//Exact match
-		if(!$find_fuzzy){
-		  
-		  $fields=array('Address Fuzzy','Address Street Number','Address Building','Address Street Name','Address Street Type','Address Town Second Division','Address Town First Division','Address Town','Address Country First Division','Address Country Second Division','Address Country Key','Address Postal Code','Military Address','Military Installation Address','Military Installation Name');
 		
-		  $sql="select A.`Address Key`,`Subject Key`,`Subject Type` from `Address Dimension`  A  left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`) where `Subject Type`='Contact' ";
-		  foreach($fields as $field){
-		    $sql.=sprintf(' and `%s`=%s',$field,prepare_mysql($data[$field],false));
-		  }
-		  $result=mysql_query($sql);
-		  $num_results=mysql_num_rows($result);
-		  if($num_results==1){
-		    $row=mysql_fetch_array($result, MYSQL_ASSOC);
-		    $this->found=true;
-		    $this->get_data('id',$row['Address Key']);
-			$this->candidate[$row['Subject Key']]=100;
-			
-			
-		  }
-		}else{
 
-		$nothing_found=true;
-		$found_item=array('Postal Code'=>false);
-		$postal_code_max_score=20;
-		$town_max_score=20;
-		$street_max_score=10;
-		$score_found_within_address=80;
-		$country_max_score=10;
-		$max_score=0;
+    }
 
-		$sql=sprintf("select SQL_CACHE count(*) as addresses from `Address Dimension` ");
-		$res=mysql_query($sql);
-		$address_multiplicity_data=mysql_fetch_array($res);
-		$address_multiplicity=$address_multiplicity_data['addresses'];
-		
-		$sql=sprintf("select SQL_CACHE count(*) as addresses from `Address Dimension` where   `Address Country Code`=%s "
-		,prepare_mysql($data['Address Country Code'])
-		);
-		$res=mysql_query($sql);
-	       
-		$country_multiplicity_data=mysql_fetch_array($res);
-		$country_multiplicity=$country_multiplicity_data['addresses'];
-		
-		if($address_multiplicity>0){
-		
-			if($country_multiplicity==0)
-			  $same_country_bonus=0;
-			else{
-				$same_country_bonus=10*(1-($country_multiplicity/$address_multiplicity));
-			//print "xxxx $country_multiplicity $address_multiplicity";
-				
-				
-			}  
-		}else{
-			$same_country_bonus=0;
-			
-		}
 	
-		$max_score=-1;
-		unset($country_multiplicity_data);
-		
-		Timer::timing_milestone('end   multiplicity ');
-
-		//		print_r($data);
-		//if(  ($data['Address Street Name']!=''  and $data['Address Street Number']!=''  ) or $data['Address Building']!=''   ){
-		if(  ($data['Address Street Name']!=''   ) or $data['Address Building']!=''   ){
-			$order='';
-			$sql_town='';
-			$sql_postal_code='';
-			$sql_where_postal_code='';
-			$sql_where_street_number='';
-			$sql_where_internal='';
-			$with_town=false;
-			$with_postal_code=false;
-			if($data['Address Town']!=''){
-				$sql_town=sprintf("damlev(UPPER(`Address Town`),%s) as dist_town,",prepare_mysql(strtoupper($data['Address Town'])));
-				$order='dist_town';
-				$with_town=true;
-				$len_town=strlen($data['Address Town']);
-
-
-			}
-
-			
-			if($data['Address Postal Code']!=''){
-				$sql_postal_code=sprintf("damlevlim(UPPER(`Address Postal Code`),%s,3) as dist_postal_code,",prepare_mysql(strtoupper($data['Address Postal Code'])));
-				$sql_where_postal_code=sprintf("and  damlevlim(UPPER(`Address Postal Code`),%s,3)<3 ",prepare_mysql(strtoupper($data['Address Postal Code'])));
-				$order.=($order!=''?',':'').'dist_postal_code';
-				$with_postal_code=true;
-			}
-			if($data['Address Street Number']!=''){
-				$sql_where_street_number=sprintf("and `Address Street Number`=%s ",prepare_mysql(strtoupper($data['Address Street Number'])));
-			}elseif($data['Address Building']!=''){
-				$sql_where_street_number=sprintf("and  damlevlim(UPPER(`Address Building`),%s,6)<6 ",prepare_mysql(strtoupper($data['Address Building'])));
-			}
-			if($data['Address Internal']!=''){
-				$sql_where_internal=sprintf("and `Address Internal`=%s"
-							    ,prepare_mysql($data['Address Internal'],false)
-							    );
-			}
-			
-			$order=($order!=''?'order by ':'').$order;
-
-			$sql=sprintf("select `Address Town`,`Address Country Code`,`Address Postal Code`, A.`Address Key` ,%s  %s  `Subject Key` from `Address Dimension` A left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`) where  `Subject Type`='Contact'  and `Address Country Code`=%s %s %s %s %s limit 250 "
-			,$sql_postal_code
-			,$sql_town
-			,prepare_mysql(strtoupper($data['Address Country Code']))
-			,$sql_where_internal
-			,$sql_where_street_number
-				     ,$sql_where_postal_code
-				     ,$order
-			);
-
-			//print "$sql<br>";
-
-			$result=mysql_query($sql);
-		      	Timer::timing_milestone('similar inner address ');
-			$max_score=-1;
-			while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-
-				$wrong_town_factor=1;
-				$found_postal_code_bonus=20;
-				$found_town_bonus=10;
-
-				$contact_key=$row['Subject Key'];
-
-				$score=$score_found_within_address;
-				$wrong_postal_code_factor=1;
-				if($with_postal_code){
-					if($row['dist_postal_code']==0){
-						$score+=$found_postal_code_bonus;
-						$wrong_postal_code_factor=1;
-					}elseif($row['dist_postal_code']==1){
-						$wrong_postal_code_factor=.5;
-					}else{
-						$wrong_postal_code_factor=.25;
-					}
-				}
-
-				if($with_town){
-					if($row['dist_town']==0){
-						$score+=$found_town_bonus;
-							
-					}
-					$dif=$row['dist_town']/$len_town;
-					if($dif>1)
-					  $dif=1;
-					//print "xxxxx $dif\n";
-					$wrong_town_factor=(1-$dif)*(1-$dif);
-
-				}
-				//print "$score $wrong_postal_code_factor $wrong_town_factor\n";
-				$score=$score*$wrong_postal_code_factor*$wrong_town_factor;
-				
-			
-				//	print_r($this->candidate);
-				if(isset($this->candidate[$contact_key])){
-				  // print "*** $score \n  ";
-				  //$old_candidate_score=$this->candidate[$contact_key];
-				  //				  $this->candidate[$contact_key]+=$score;
-				  if($this->candidate[$contact_key]<$score)
-				    $this->candidate[$contact_key]=$score;
-				}else{
-				  // print "-- $score \n";
-				  $this->candidate[$contact_key]=$score;
-				}
-				//	print_r($this->candidate);
-				
-				if($this->candidate[$contact_key]>$max_score)
-				  $max_score=$this->candidate[$contact_key];
-			}
 
-		}
 
-	Timer::timing_milestone('similar inner address x');
-	//	print_r($this->candidate);
-	//print "$max_score\n";
-	//exit;
-	if($max_score>85)
-	  $nothing_found=false;
-	
-	if($nothing_found){
+    //print_r($this->candidate);
+    //exit("");
 
-			if($data['Address Postal Code']!=''){
-				$sql=sprintf("select   `Address Country Code`,`Address Postal Code`, A.`Address Key` ,damlev(UPPER(`Address Postal Code`),%s) as dist1,`Subject Key` from `Address Dimension` A left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`)  where  `Subject Type`='Contact'  and   damlev(UPPER(`Address Postal Code`),%s) <3   order by dist1  limit 250 "
-				,prepare_mysql(strtoupper($data['Address Postal Code']))
-				,prepare_mysql(strtoupper($data['Address Postal Code']))
-				);
-				$result=mysql_query($sql);
-
-				while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-					$contact_key=$row['Subject Key'];
-					if($row['dist1']==0){
-
-						$found_item['Postal Code']=true;
-						$factor=1;
-					}elseif($row['dist1']==1){
-						$factor=.4;
-					}else{
-						$factor=.1;
-					}
-					$score=$factor*$postal_code_max_score;
-
-					$bonus=0;
-					if($data['Address Country Code']==$row['Address Country Code'])
-					$bonus=$same_country_bonus;
 
+    if($update){
+      if($this->found){
+	$this->update($data,$options);
+	return;
+      }
 
-					//print "$factor $postal_code_max_score $same_country_bonus<br>";
-					$score=$factor*($postal_code_max_score+$bonus);
+    }
 
+    if($create and !$this->found){
+      //   print_r($data);
+      //    exit;
+      $this->create($data,$options);
 
+    }
 
-					if(isset($this->candidate[$contact_key])){
-						if($this->candidate[$contact_key]<$score)
-						$this->candidate[$contact_key]=$score;
-					}else
-					$this->candidate[$contact_key]=$score;
 
-				}
-			}
 
 
 
+  }
 
 
-			if($data['Address Town']!=''){
-			  
+  /*Method: create
+    Creates a new address record
 
-			  //Count if theres is a exacte match
 
-		/* 	  $sql=sprintf('select count(*) as number from `Address Dimension` A left join `Address Bridge` AB on (AB.`Address Key`=A.`Address Key`) where `Subject Type`="Contact"  and `Address Town`=%s    ',prepare_mysql(data['Address Town'])); */
-/* 			  $result=mysql_query($sql); */
-/* 			  $row=mysql_fetch_array($result, MYSQL_ASSOC); */
-			
-/* 			  if($row['number_of_address']>20){ */
-/* 			      $sql=sprintf('select `Subject Key` from `Address Dimension` A left join `Address Bridge` AB on (AB.`Address Key`=A.`Address Key`) where `Subject Type`="Contact"  and `Address Town`=%s     and `Subject Key in`  ',prepare_mysql(data['Address Town'])); */
+    Parameter:
+    An array with the data to be inserted in the database, a important key is *Address Input Format* which  can be: _3 Line_, _DB Fields_
 
-/* 			  }else{ */
+    The country can be inputed using: Address Country Key, Address Country Code, Address Country 2 Alpha Code, Address Country Name, (Parsed in this order until positive match with Country Dimension table)
 
-			  $sql=sprintf("select   `Address Country Code`,`Address Town`, A.`Address Key` ,damlev(UPPER(`Address Town`),%s) as dist1,`Subject Key` from `Address Dimension` A left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`)  where  `Subject Type`='Contact'     order by dist1  limit 50 "
-				,prepare_mysql(strtoupper($data['Address Town']))
-				,prepare_mysql(strtoupper($data['Address Town']))
-				);
+    Examples:
+    (start example)
+    // Example using 3 line input method
 
-			  //print_r($this->candidate);
+    $data=array(
+    'Address Input Format'=>'3 Line'
+    'Address Line 1'=>'3 Hobart Street'
+    'Address Line 2'=>''
+    'Address Line 3'=>''
+    'Address Town'=>'Sheffield'
+    'Address Region'=>''                      //State,county,province etc
+    'Address Postal Code'=>'S11 4HD'
+    'Address Country Name'=>'United Kindom')
 
-				print "$sql\n";
-				$result=mysql_query($sql);
-				$len_town=strlen($data['Address Town']);
-				while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-					$contact_key=$row['Subject Key'];
+    // Example using 3 line extended input method
 
-					$dif=$row['dist1']/$len_town;
-					if($dif>=1)
-					break;
-					$factor=(1-$dif)*(1-$dif);
-					$score=$factor*$town_max_score;
+    $data=array(
+    'Address Input Format'=>'3 Line'
+    'Address Line 1'=>'Hill House'
+    'Address Line 2'=>'10 Kitchen Street'
+    'Address Line 3'=>''
+    'Address Town SubDivision'=>''
+    'Address Town Division'=>'Wakley'
+    'Address Town'=>'Sheffield'
+    'Address SubRegion'=>'South Yorkshire'    //County,municipality,etc inside the region
+    'Address Region'=>'England'               //State,county,province
+    'Address Postal Code'=>'S11 4HD'
+    'Address Country Code'=>'GBR')
 
-					if($row['dist1']==0){
-						$found_item['Town']=true;
-					}
 
+    (end example)
 
-					$bonus=0;
-					if($data['Address Country Code']=$row['Address Country Code'])
-					$bonus=$same_country_bonus;
+    See Also:
+    <Address>
 
-					$score=$factor*($town_max_score+$bonus);
+  */
+  protected function create($data){
 
+    //  print_r($data);
 
+    if(!isset($data['Address Input Format'])){
+      $data['Address Input Format']='DB Fields';
+      if(isset($data['Address Address Line 1']))
+	$data['Address Input Format']='3 Line';
+      else
+	$data['Address Input Format']='DB Fields';
+    }
 
-					if(isset($this->candidate[$contact_key]))
-					if($this->candidate[$contact_key]<$score)
-					  $this->candidate[$contact_key]=$score;
-					else
-					$this->candidate[$contact_key]=$score;
 
-				}
-			  }
-			//	}
-Timer::timing_milestone('similar inner address xx');
-			//print_r($data);
-			if($data['Address Street Name']!='' ){
-				$sql=sprintf("select   `Address Country Code`,`Address Town`, A.`Address Key` ,damlev(UPPER(`Address Street Name`),%s) as dist1,`Subject Key` from `Address Dimension` A left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`)  where  `Subject Type`='Contact'     order by dist1  limit 50 "
-				,prepare_mysql(strtoupper($data['Address Street Name']))
-				);
-				$result=mysql_query($sql);
-				$len_street=strlen($data['Address Street Name']);
-				while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-					$contact_key=$row['Subject Key'];
+    //print_r($data);
 
-					$dif=$row['dist1']/$len_street;
-					if($dif>=1)
-					break;
-					$factor=(1-$dif)*(1-$dif);
-					$score=$factor*$town_max_score;
+    switch($data['Address Input Format']){
+    case('3 Line'):
+      $this->data=$this->prepare_3line($data);
+      break;
+    case('DB Fields'):
+      $this->data=$this->prepare_DBfields($data);
+      break;
+    }
 
 
-					$bonus=0;
-					if($data['Address Country Code']=$row['Address Country Code'])
-					$bonus=$same_country_bonus;
-
-					$score=$factor*($street_max_score+$bonus);
-
-
-
-					if(isset($this->candidate[$contact_key]))
-					  if($this->candidate[$contact_key]<$score)
-					    $this->candidate[$contact_key]=$score;
-					else
-					$this->candidate[$contact_key]=$score;
-
-				}
-			}
-
-		}
-
-
-
-
-Timer::timing_milestone('similar inner address xxx');
-
-
-
-		}
-
-		if(false){//old code
-
-			if($data['Address Fuzzy']=='Yes'){
-				//if fuzzy only check in parent fuzzy sub space
-
-				$fields=array('Address Fuzzy','Address Street Number','Address Building','Address Street Name','Address Street Type','Address Town Second Division','Address Town First Division','Address Town','Address Country First Division','Address Country Second Division','Address Country Key','Address Postal Code','Military Address','Military Installation Address','Military Installation Name');
-
-				$sql=sprintf("select A.`Address Key`,`Subject Key` from `Address Dimension` A  left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`)  where `Address Fuzzy`='Yes' and `Subject Type`='Contact' ");
-				foreach($fields as $field){
-					$sql.=sprintf(' and `%s`=%s',$field,prepare_mysql($data[$field],false));
-				}
-				//  print "FUZZY $sql\n";
-				$result=mysql_query($sql);
-				$num_results=mysql_num_rows($result);
-				if($num_results==0){
-					// address not found
-					$this->found=false;
-
-
-				}else if($num_results==1){
-					$row=mysql_fetch_array($result, MYSQL_ASSOC);
-					$this->found=true;
-					$this->get_data('id',$row['Address Key']);
-					if($mode=='Contact in' or $mode=='Company in'){
-						if(in_array($row['Subject Key'],$in_contact)){
-							$this->candidate[$row['Subject Key']]=110;
-							$this->found_in=true;
-							$this->found_out=false;
-						}else{
-							$this->candidate[$row['Subject Key']]=100;
-							$this->found_in=false;
-							$this->found_out=true;
-						}
-					}else
-					$this->candidate[$row['Subject Key']]=100;
-
-				}else{// Found in mora than one
-
-
-					while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-						if($mode=='Contact in' or $mode=='Company in'){
-
-							if(in_array($row['Subject Key'],$in_contact)){
-								$this->candidate[$row['Subject Key']]=110;
-							}else{
-								$this->candidate[$row['Subject Key']]=100;
-							}
-						}else
-						$this->candidate[$row['Subject Key']]=100;
-					}
-					$this->msg.=_('Address found in')." $num_results ".ngettext('contact','contacts',$num_results);
-
-				}
-
-
-			}else{
-				// Address not fuzzy
-				// Try to find an exact match
-
-				$fields=array('Address Fuzzy','Address Street Number','Address Building','Address Street Name','Address Street Type','Address Town Second Division','Address Town First Division','Address Town','Address Country First Division','Address Country Second Division','Address Country Key','Address Postal Code','Military Address','Military Installation Address','Military Installation Name');
-
-				$sql="select A.`Address Key`,`Subject Key`,`Subject Type` from `Address Dimension`  A  left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`) where `Subject Type`='Contact' ";
-				foreach($fields as $field){
-					$sql.=sprintf(' and `%s`=%s',$field,prepare_mysql($data[$field],false));
-				}
-				$result=mysql_query($sql);
-				//      print "No fuzzy $sql\n";
-				$num_results=mysql_num_rows($result);
-				//   print "No fuzzy $num_results\n";
-				if($num_results==0){
-					$this->found=false;
-
-				}else if($num_results==1){
-					$row=mysql_fetch_array($result, MYSQL_ASSOC);
-					$this->found=true;
-					$this->get_data('id',$row['Address Key']);
-					if($mode=='Contact in' or $mode=='Company in'){
-						if(in_array($row['Subject Key'],$in_contact)){
-							$this->candidate[$row['Subject Key']]=110;
-							$this->found_in=true;
-							$this->found_out=false;
-						}else{
-							$this->candidate[$row['Subject Key']]=100;
-							$this->found_in=false;
-							$this->found_out=true;
-						}
-					}else
-					$this->candidate[$row['Subject Key']]=100;
-
-				}else{// address found in many contact
-
-					while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-						if($mode=='Contact in' or $mode=='Company in'){
-							if(in_array($row['Subject Key'],$in_contact)){
-								$this->candidate[$row['Subject Key']]=110;
-							}else{
-								$this->candidate[$row['Subject Key']]=100;
-							}
-						}else
-						$this->candidate[$row['Subject Key']]=100;
-
-					}
-					$this->msg.=_('Address found in')." $num_results ".ngettext('contact','contacts',$num_results);
-
-				}
-
-			}
-
-Timer::timing_milestone('similar inner address xxxx7');
-			if(!$this->found and count($this->candidate)==0){
-				// foound 1 additions
-				if($data['Address Fuzzy']=='No'){
-					//Special cases
-					//a) when same (st number,street,town,d1,d2) but postal code on / off
-					$fields=array('Address Street Number','Address Building','Address Street Name','Address Street Type','Address Town Second Division','Address Town First Division','Address Town','Address Country First Division','Address Country Second Division','Address Country Key','Military Address','Military Installation Address','Military Installation Name');
-
-					$sql="select A.`Address Key`,`Subject Key`,`Subject Type` from `Address Dimension`  A  left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`) where `Subject Type`='Contact' ";
-					foreach($fields as $field){
-						$sql.=sprintf(' and `%s`=%s',$field,prepare_mysql($data[$field],false));
-					}
-					$result=mysql_query($sql);
-					//print "No fuzzy $sql\n";
-					$num_results=mysql_num_rows($result);
-
-					if($num_results==1){
-						$row=mysql_fetch_array($result, MYSQL_ASSOC);
-						$this->found=true;
-						$this->get_data('id',$row['Address Key']);
-						if($mode=='Contact in' or $mode=='Company in'){
-							if(in_array($row['Subject Key'],$in_contact)){
-								$this->candidate[$row['Subject Key']]=100;
-								$this->found_in=true;
-								$this->found_out=false;
-							}else{
-								$this->candidate[$row['Subject Key']]=80;
-								$this->found_in=false;
-								$this->found_out=true;
-							}
-						}else
-						$this->candidate[$row['Subject Key']]=90;
-
-					}
-
-
-				}
-
-
-			}
-
-
-
-
-
-		}
-
-
-
-
-		//print_r($this->candidate);
-		//exit("");
-
-
-		if($update){
-			if($this->found){
-				$this->update($data,$options);
-				return;
-			}
-
-		}
-
-		if($create and !$this->found){
-			//   print_r($data);
-			//    exit;
-			$this->create($data,$options);
-
-		}
-
-
-
-
-
+    $this->data['Address Plain']=$this->plain($this->data);
+    $keys='';
+    $values='';
+    foreach($this->data as $key=>$value){
+
+      if(!preg_match('/line \d|Address Input Format/i',$key) ){
+	if(preg_match('/Address Data Creation/i',$key) ){
+	  $keys.=",`".$key."`";
+	  $values.=', Now()';
+	}else{
+	  $keys.=",`".$key."`";
+	  $values.=','.prepare_mysql($value,false);
+	}
+      }
+    }
+    $values=preg_replace('/^,/','',$values);
+    $keys=preg_replace('/^,/','',$keys);
+
+    $sql="insert into `Address Dimension` ($keys) values ($values)";
+    //print $sql;
+    if(mysql_query($sql)){
+      $this->id = mysql_insert_id();
+      $this->data['Address Key']= $this->id;
+      $this->new=true;
+    }else{
+      print "Error can not create address\n";exit;
+
+    }
+  }
+
+
+  /*Method: update
+    Switcher calling the apropiate update method
+    Parameters:
+    $data - associated array with Email Dimension fields
+  */
+  Public function update($data,$options=''){
+
+
+    if(isset($data['editor'])){
+      foreach($data['editor'] as $key=>$value){
+
+	if(array_key_exists($key,$this->editor))
+	  $this->editor[$key]=$value;
+
+      }
+    }
+
+
+    // if($this->table_name=='Telecom'){
+    // print_r($data);exit;
+    // }
+    $base_data=$this->base_data();
+
+    foreach($data as $key=>$value){
+      //print "$key $value  \n";
+      if(array_key_exists($key,$base_data)){
+
+	if($value!=$this->data[$key]){
+
+	  $this->update_field_switcher($key,$value,$options);
 	}
 
+      }elseif(preg_match('/^Street Data$/',$key)){
+	$this->update_field_switcher($key,$value,$options);
+      }
+    }
 
-	/*Method: create
-	 Creates a new address record
+    if(!$this->updated)
+      $this->msg.=' '._('Nothing to be updated')."\n";
 
+  }
 
-	 Parameter:
-	 An array with the data to be inserted in the database, a important key is *Address Input Format* which  can be: _3 Line_, _DB Fields_
+  /*
+    Function:update
+    Update the Record
+  */
+  // function update($data){
+  // }
+  function update_field_switcher($field,$value,$options=''){
+    switch($field){
+    case('Address Primary Postal Code'):
+    case('Address Secondary Postal Code'):
+    case('Address Location'):
+    case('Address Plain'):
+    case('Address Input Format'):
+    case('Address Fuzzy'):
+      break;
+    case('Address Postal Code'):
+      $data=$this->parse_postcode($value,$this->data['Address Country Code']);
+      foreach($data as $postcode_field=>$postcode_value){
+	if($postcode_field!='Address Postal Code')
+	  $postcode_options=$options.' no history';
+	else
+	  $postcode_options=$options;
+	$this->update_field($postcode_field,$postcode_value,$postcode_options);
 
-	 The country can be inputed using: Address Country Key, Address Country Code, Address Country 2 Alpha Code, Address Country Name, (Parsed in this order until positive match with Country Dimension table)
+      }
+      break;
+    case('Street Data'):
+      $data=$this->parse_street($value,$this->data['Address Country Code']);
+      foreach($data as $street_field=>$street_value){
+	$this->update_field($street_field,$street_value,$options);
+      }
 
-	 Examples:
-	 (start example)
-	 // Example using 3 line input method
+      break;
+    default:
+      $this->update_field($field,$value,$options);
+    }
+  }
 
-	 $data=array(
-	 'Address Input Format'=>'3 Line'
-	 'Address Line 1'=>'3 Hobart Street'
-	 'Address Line 2'=>''
-	 'Address Line 3'=>''
-	 'Address Town'=>'Sheffield'
-	 'Address Region'=>''                      //State,county,province etc
-	 'Address Postal Code'=>'S11 4HD'
-	 'Address Country Name'=>'United Kindom')
-
-	 // Example using 3 line extended input method
-
-	 $data=array(
-	 'Address Input Format'=>'3 Line'
-	 'Address Line 1'=>'Hill House'
-	 'Address Line 2'=>'10 Kitchen Street'
-	 'Address Line 3'=>''
-	 'Address Town SubDivision'=>''
-	 'Address Town Division'=>'Wakley'
-	 'Address Town'=>'Sheffield'
-	 'Address SubRegion'=>'South Yorkshire'    //County,municipality,etc inside the region
-	 'Address Region'=>'England'               //State,county,province
-	 'Address Postal Code'=>'S11 4HD'
-	 'Address Country Code'=>'GBR')
-
-
-	 (end example)
-
-	 See Also:
-	 <Address>
-
-	 */
-	protected function create($data){
-
-		//  print_r($data);
-
-		if(!isset($data['Address Input Format'])){
-			$data['Address Input Format']='DB Fields';
-			if(isset($data['Address Address Line 1']))
-			$data['Address Input Format']='3 Line';
-			else
-			$data['Address Input Format']='DB Fields';
-		}
+  function update_metadata($raw_data){
 
 
-		//print_r($data);
+    foreach($raw_data as $key=>$value){
+      if($key=='Type'){
+	$this->update_address_type($value);
+      }elseif($key=='Function'){
+	$this->update_address_function($value);
+      }
 
-		switch($data['Address Input Format']){
-			case('3 Line'):
-				$this->data=$this->prepare_3line($data);
-				break;
-			case('DB Fields'):
-				$this->data=$this->prepare_DBfields($data);
-				break;
-		}
+    }
+
+  }
 
 
-		$this->data['Address Plain']=$this->plain($this->data);
-		$keys='';
-		$values='';
-		foreach($this->data as $key=>$value){
+  function update_address_type($raw_new_address_types){
+    $updated=false;
 
-			if(!preg_match('/line \d|Address Input Format/i',$key) ){
-				if(preg_match('/Address Data Creation/i',$key) ){
-					$keys.=",`".$key."`";
-					$values.=', Now()';
-				}else{
-					$keys.=",`".$key."`";
-					$values.=','.prepare_mysql($value,false);
-				}
-			}
-		}
-		$values=preg_replace('/^,/','',$values);
-		$keys=preg_replace('/^,/','',$keys);
+    $new_address_types=array();
+    $valid_types=array('Office','Shop','Warehouse','Other');
+    foreach($raw_new_address_types as $raw_new_address_type){
+      if(in_array($raw_new_address_type,$valid_types))
+	$new_address_types[$raw_new_address_type]=$raw_new_address_type;
+    }
 
-		$sql="insert into `Address Dimension` ($keys) values ($values)";
-		//print $sql;
-		if(mysql_query($sql)){
-			$this->id = mysql_insert_id();
-			$this->data['Address Key']= $this->id;
-			$this->new=true;
-		}else{
-			print "Error can not create address\n";exit;
+    if(count($new_address_types)==0)
+      $new_address_types['Other']=array('Other');
+    //print_r($this->data['Type']);
+    //print_r($new_address_types);
 
-		}
+    foreach($this->data['Type'] as $type){
+      if(!in_array($type,$new_address_types)){
+	//print "deleting $type\n";
+	$sql=sprintf("delete from `Address Bridge` where `Address Key`=%s and `Subject Type`=%s and `Subject Key`=%d  and `Address Type`=%s "
+		     ,$this->id
+		     ,prepare_mysql($this->scope)
+		     ,$this->scope_key
+		     ,prepare_mysql($type)
+		     );
+	//print "$sql\n";
+	mysql_query($sql);
+
+	$updated=true;
+      }
+    }
+
+    foreach($new_address_types as $type){
+
+      if(!in_array($type,$this->data['Type'])){
+	foreach($this->data['Function'] as $function){
+	  $sql=sprintf("select *  from `Address Bridge` where `Address Key`=%s and `Subject Type`=%s and `Subject Key`=%d and `Address Function`=%s "
+		       ,$this->id
+		       ,prepare_mysql($this->scope)
+		       ,$this->scope_key
+		       ,prepare_mysql($function)
+		       );
+	  $res=mysql_query($sql);
+	  $active='Yes';
+	  $main='No';
+	  //	 print "$sql\n";
+
+	  if($row=mysql_fetch_array($res)){
+	    $active=$row['Is Active'];
+	    $main=$row['Is Main'];
+	  }
+
+	  $sql=sprintf('insert into `Address Bridge` values (%d,%s,%d,%s,%s,%s,%s)'
+		       ,$this->id
+		       ,prepare_mysql($this->scope)
+		       ,$this->scope_key
+		       ,prepare_mysql($type)
+		       ,prepare_mysql($function)
+		       ,prepare_mysql($active,false)
+		       ,prepare_mysql($main,false)
+		       );
+	  //print "$sql\n";
+	  mysql_query($sql);
+
+	  $updated=true;
 	}
+      }
+    }
+
+    if($updated){
+      // print "updated!!!";
+      $this->load_metadata();
+
+      $msg='';
+      $this->msg_update.=$msg;
+      $this->msg.=$msg;
+      $this->updated=true;
+
+    }
+
+  }
 
 
-	/*Method: update
-	 Switcher calling the apropiate update method
-	 Parameters:
-	 $data - associated array with Email Dimension fields
-	 */
-	Public function update($data,$options=''){
 
 
-		if(isset($data['editor'])){
-			foreach($data['editor'] as $key=>$value){
 
-				if(array_key_exists($key,$this->editor))
-				$this->editor[$key]=$value;
+  function update_address_function($value){
 
-			}
-		}
+  }
+
+  function get($key){
 
 
-		// if($this->table_name=='Telecom'){
-		// print_r($data);exit;
-		// }
-		$base_data=$this->base_data();
+    if(array_key_exists($key,$this->data))
+      return $this->data[$key];
 
-		foreach($data as $key=>$value){
-			//print "$key $value  \n";
-			if(array_key_exists($key,$base_data)){
+    switch($key){
+    case('Type'):
+    case('Function'):
 
-				if($value!=$this->data[$key]){
 
-					$this->update_field_switcher($key,$value,$options);
-				}
+      if(!$this->scope)
+	$this->set_scope();
+      return $this->data['Address '.$key];
+      break;
 
-			}elseif(preg_match('/^Street Data$/',$key)){
-				$this->update_field_switcher($key,$value,$options);
-			}
-		}
 
-		if(!$this->updated)
-		$this->msg.=' '._('Nothing to be updated')."\n";
+    case('country region'):
+      if($this->get('Address Country First Division')!='')
+	return $this->get('Address Country First Division');
+      else
+	return $this->get('Address Country Second Division');
+      break;
 
+
+    }
+
+    // print_r($this->data);
+    $_key=ucwords($key);
+    if(array_key_exists($_key,$this->data))
+      return $this->data[$_key];
+    print_r($this->data);
+    print "Error $key not found in get from address\n";
+    asds();
+    exit;
+    return false;
+
+  }
+
+  function display($tipo=''){
+    $separator="\n";
+    switch($tipo){
+    case('mini'):
+      $street=_trim($this->data['Address Street Number'].' '.$this->data['Address Street Name'].' '.$this->data['Address Street Type']);
+      if(strlen($street)<2)
+	$street=_($this->data['Address Internal']." ".$this->data['Address Building']);
+
+      $max_characters=26;
+      if(strlen($street)>$max_characters)
+	$street=substr($street,$max_characters)."... ";
+      $street.=', ';
+
+
+      return $street.$this->location($this->data,'right');
+      break;
+    case('location'):
+      return $this->location($this->data);
+      break;
+    case('plain'):
+      return $this->plain($this->data);
+      break;
+    case('street'):
+      switch($this->data['Address Country Code']){
+      case('ESP'):
+	return _trim($this->data['Address Street Type'].' '.$this->data['Address Street Name'].' '.$this->data['Address Street Number']);
+	break;
+      default:
+	return _trim($this->data['Address Street Number'].' '.$this->data['Address Street Name'].' '.$this->data['Address Street Type']);
+
+      }
+      break;
+    case('xhtml'):
+    case('html'):
+      $separator="<br/>";
+
+    default:
+      if($this->data['Military Address']=='Yes'){
+	$address=$this->data['Military Installation Address'];
+	$address_type=_trim($this->data['Military Installation Type']);
+	if($address_type!='')
+	  $address.=$separator.$address_type;
+	$address_type=_trim($this->data['Address Postal Code']);
+	if($address_type!='')
+	  $address.=$separator.$address_type;
+	$address.=$separator.$this->data['Address Country Name'];
+
+      }else{
+	//print_r($this->data);
+	$address='';
+
+	if($this->data['Address Internal']!='')
+	  $address=_trim($this->data['Address Internal']).$separator;
+	if($this->data['Address Building']!='')
+	  $address.=_trim($this->data['Address Building']).$separator;
+
+
+
+	$street_address=$this->display('street');
+	if($street_address!='')
+	  $address.=$street_address.$separator;
+
+
+	$subtown_address=$this->data['Address Town Second Division'];
+	if($this->data['Address Town First Division'])
+	  $subtown_address.=' ,'.$this->data['Address Town First Division'];
+	$subtown_address=_trim($subtown_address);
+	if($subtown_address!='')
+	  $address.=$subtown_address.$separator;
+
+
+
+
+	$town_address=_trim($this->data['Address Town']);
+	if($town_address!='')
+	  $address.=$town_address.$separator;
+
+	$ps_address=_trim($this->data['Address Postal Code']);
+	if($ps_address!='')
+	  $address.=$ps_address.$separator;
+
+	$address.=$this->data['Address Country Name'];
+      }
+      return _trim($address);
+
+    case('header'):
+
+      $separator=', ';
+      $address='';
+      $header_address=_trim($this->data['Address Internal'].' '.$this->data['Address Building']);
+      if($header_address!='')
+	$address.=$header_address.$separator;
+
+      $street_address=_trim($this->data['Address Street Number'].' '.$this->data['Address Street Name'].' '.$this->data['Address Street Type']);
+      if($street_address!='')
+	$address.=$street_address.$separator;
+
+
+      $subtown_address=$this->data['Address Town Second Division'];
+      if($this->data['Address Town First Division'])
+	$subtown_address.=' ,'.$this->data['Address Town First Division'];
+      $subtown_address=_trim($subtown_address);
+      if($subtown_address!='')
+	$address.=$subtown_address.$separator;
+
+
+      return _trim($address);
+
+    }
+
+
+
+  }
+
+  /*
+    Function: base_data
+    Initializes an array with the default field values
+
+    If argument contains '3 line' corresponding base is made
+  */
+  function base_data($args='replace'){
+    $data=array();
+
+    if(preg_match('/3 line/i',$args)){
+      $data['Address Line 1']='';
+      $data['Address Line 2']='';
+      $data['Address Line 3']='';
+      $data['Address Town SubDivision']='';
+      $data['Address Town Division']='';
+      $data['Address Town']='';
+      $data['Address SubRegion']='';
+      $data['Address Region']='';
+      $data['Address Country Key']='';
+      $data['Address Country Code']='';
+      $data['Address Country Name']='';
+      $data['Address Country Code']='';
+      $data['Address Country 2 Alpha Code']='';
+
+    }else{
+
+      $ignore_fields=array('Address Key');
+
+      $result = mysql_query("SHOW COLUMNS FROM `Address Dimension`");
+      if (!$result) {
+	echo 'Could not run query: ' . mysql_error();
+	exit;
+      }
+      if (mysql_num_rows($result) > 0) {
+	while ($row = mysql_fetch_assoc($result)) {
+	  if(!in_array($row['Field'],$ignore_fields))
+	    $data[$row['Field']]=$row['Default'];
 	}
+      }
 
-	/*
-	 Function:update
-	 Update the Record
-	 */
-	// function update($data){
-	// }
-	function update_field_switcher($field,$value,$options=''){
-		switch($field){
-			case('Address Primary Postal Code'):
-			case('Address Secondary Postal Code'):
-			case('Address Location'):
-			case('Address Plain'):
-			case('Address Input Format'):
-			case('Address Fuzzy'):
-				break;
-			case('Address Postal Code'):
-				$data=$this->parse_postcode($value,$this->data['Address Country Code']);
-				foreach($data as $postcode_field=>$postcode_value){
-					if($postcode_field!='Address Postal Code')
-					$postcode_options=$options.' no history';
-					else
-					$postcode_options=$options;
-					$this->update_field($postcode_field,$postcode_value,$postcode_options);
+    }
+    return $data;
+  }
 
-				}
-				break;
-			case('Street Data'):
-				$data=$this->parse_street($value,$this->data['Address Country Code']);
-				foreach($data as $street_field=>$street_value){
-					$this->update_field($street_field,$street_value,$options);
-				}
 
-				break;
-			default:
-				$this->update_field($field,$value,$options);
-		}
+  /*
+    Function: location
+    Get the address location
+
+    Parameter:
+    $str -  _array_ location data
+  */
+
+  public static function location($data,$flag='left'){
+
+    if($data['Military Address']=='Yes'){
+      $location=sprintf('<img src="art/flags/%s.gif" title="%s"> %s',strtolower($data['Address Country 2 Alpha Code']),$data['Address Country Code'],$data['Military Installation Type']);
+    }else{
+
+      if($data['Address Fuzzy']=='Yes'){
+	if(preg_match('/country/i',$data['Address Fuzzy Type'])){
+	  $location=sprintf('<img src="art/flags/%s.gif" title="%s"> %s',strtolower($data['Address Country 2 Alpha Code']),$data['Address Country Code'],_('Unknown'));
+	  return _trim($location);
+	}elseif(preg_match('/town/i',$data['Address Fuzzy Type'])){
+	  $location=sprintf('<img src="art/flags/%s.gif" title="%s"> %s',strtolower($data['Address Country 2 Alpha Code']),$data['Address Country Code'],_('Somewhere in').' '.$data['Address Country Name']);
+	  return _trim($location);
 	}
-
-	function update_metadata($raw_data){
-
-
-		foreach($raw_data as $key=>$value){
-			if($key=='Type'){
-				$this->update_address_type($value);
-			}elseif($key=='Function'){
-				$this->update_address_function($value);
-			}
-
-		}
-
-	}
-
-
-	function update_address_type($raw_new_address_types){
-		$updated=false;
-
-		$new_address_types=array();
-		$valid_types=array('Office','Shop','Warehouse','Other');
-		foreach($raw_new_address_types as $raw_new_address_type){
-			if(in_array($raw_new_address_type,$valid_types))
-			$new_address_types[$raw_new_address_type]=$raw_new_address_type;
-		}
-
-		if(count($new_address_types)==0)
-		$new_address_types['Other']=array('Other');
-		//print_r($this->data['Type']);
-		//print_r($new_address_types);
-
-		foreach($this->data['Type'] as $type){
-			if(!in_array($type,$new_address_types)){
-				//print "deleting $type\n";
-				$sql=sprintf("delete from `Address Bridge` where `Address Key`=%s and `Subject Type`=%s and `Subject Key`=%d  and `Address Type`=%s "
-				,$this->id
-				,prepare_mysql($this->scope)
-				,$this->scope_key
-				,prepare_mysql($type)
-				);
-				//print "$sql\n";
-				mysql_query($sql);
-
-				$updated=true;
-			}
-		}
-
-		foreach($new_address_types as $type){
-
-			if(!in_array($type,$this->data['Type'])){
-				foreach($this->data['Function'] as $function){
-					$sql=sprintf("select *  from `Address Bridge` where `Address Key`=%s and `Subject Type`=%s and `Subject Key`=%d and `Address Function`=%s "
-					,$this->id
-					,prepare_mysql($this->scope)
-					,$this->scope_key
-					,prepare_mysql($function)
-					);
-					$res=mysql_query($sql);
-					$active='Yes';
-					$main='No';
-					//	 print "$sql\n";
-
-					if($row=mysql_fetch_array($res)){
-						$active=$row['Is Active'];
-						$main=$row['Is Main'];
-					}
-
-					$sql=sprintf('insert into `Address Bridge` values (%d,%s,%d,%s,%s,%s,%s)'
-					,$this->id
-					,prepare_mysql($this->scope)
-					,$this->scope_key
-					,prepare_mysql($type)
-					,prepare_mysql($function)
-					,prepare_mysql($active,false)
-					,prepare_mysql($main,false)
-					);
-					//print "$sql\n";
-					mysql_query($sql);
-
-					$updated=true;
-				}
-			}
-		}
-
-		if($updated){
-			// print "updated!!!";
-			$this->load_metadata();
-
-			$msg='';
-			$this->msg_update.=$msg;
-			$this->msg.=$msg;
-			$this->updated=true;
-
-		}
-
-	}
-
-
-
-
-
-	function update_address_function($value){
-
-	}
-
-	function get($key){
-
-
-		if(array_key_exists($key,$this->data))
-		return $this->data[$key];
-
-		switch($key){
-			case('Type'):
-			case('Function'):
-
-
-				if(!$this->scope)
-				$this->set_scope();
-				return $this->data['Address '.$key];
-				break;
-
-
-			case('country region'):
-				if($this->get('Address Country First Division')!='')
-				return $this->get('Address Country First Division');
-				else
-				return $this->get('Address Country Second Division');
-				break;
-
-
-		}
-
-		// print_r($this->data);
-		$_key=ucwords($key);
-		if(array_key_exists($_key,$this->data))
-		return $this->data[$_key];
-		print_r($this->data);
-		print "Error $key not found in get from address\n";
-		asds();
-		exit;
-		return false;
-
-	}
-
-	function display($tipo=''){
-		$separator="\n";
-		switch($tipo){
-			case('mini'):
-				$street=_trim($this->data['Address Street Number'].' '.$this->data['Address Street Name'].' '.$this->data['Address Street Type']);
-				if(strlen($street)<2)
-				$street=_($this->data['Address Internal']." ".$this->data['Address Building']);
-
-				$max_characters=26;
-				if(strlen($street)>$max_characters)
-				$street=substr($street,$max_characters)."... ";
-				$street.=', ';
-
-
-				return $street.$this->location($this->data,'right');
-				break;
-			case('location'):
-				return $this->location($this->data);
-				break;
-			case('plain'):
-				return $this->plain($this->data);
-				break;
-			case('street'):
-				switch($this->data['Address Country Code']){
-					case('ESP'):
-						return _trim($this->data['Address Street Type'].' '.$this->data['Address Street Name'].' '.$this->data['Address Street Number']);
-						break;
-					default:
-						return _trim($this->data['Address Street Number'].' '.$this->data['Address Street Name'].' '.$this->data['Address Street Type']);
-
-				}
-				break;
-			case('xhtml'):
-			case('html'):
-				$separator="<br/>";
-
-			default:
-				if($this->data['Military Address']=='Yes'){
-					$address=$this->data['Military Installation Address'];
-					$address_type=_trim($this->data['Military Installation Type']);
-					if($address_type!='')
-					$address.=$separator.$address_type;
-					$address_type=_trim($this->data['Address Postal Code']);
-					if($address_type!='')
-					$address.=$separator.$address_type;
-					$address.=$separator.$this->data['Address Country Name'];
-
-				}else{
-					//print_r($this->data);
-					$address='';
-
-					if($this->data['Address Internal']!='')
-					$address=_trim($this->data['Address Internal']).$separator;
-					if($this->data['Address Building']!='')
-					$address.=_trim($this->data['Address Building']).$separator;
-
-
-
-					$street_address=$this->display('street');
-					if($street_address!='')
-					$address.=$street_address.$separator;
-
-
-					$subtown_address=$this->data['Address Town Second Division'];
-					if($this->data['Address Town First Division'])
-					$subtown_address.=' ,'.$this->data['Address Town First Division'];
-					$subtown_address=_trim($subtown_address);
-					if($subtown_address!='')
-					$address.=$subtown_address.$separator;
-
-
-
-
-					$town_address=_trim($this->data['Address Town']);
-					if($town_address!='')
-					$address.=$town_address.$separator;
-
-					$ps_address=_trim($this->data['Address Postal Code']);
-					if($ps_address!='')
-					$address.=$ps_address.$separator;
-
-					$address.=$this->data['Address Country Name'];
-				}
-				return _trim($address);
-
-			case('header'):
-
-				$separator=', ';
-				$address='';
-				$header_address=_trim($this->data['Address Internal'].' '.$this->data['Address Building']);
-				if($header_address!='')
-				$address.=$header_address.$separator;
-
-				$street_address=_trim($this->data['Address Street Number'].' '.$this->data['Address Street Name'].' '.$this->data['Address Street Type']);
-				if($street_address!='')
-				$address.=$street_address.$separator;
-
-
-				$subtown_address=$this->data['Address Town Second Division'];
-				if($this->data['Address Town First Division'])
-				$subtown_address.=' ,'.$this->data['Address Town First Division'];
-				$subtown_address=_trim($subtown_address);
-				if($subtown_address!='')
-				$address.=$subtown_address.$separator;
-
-
-				return _trim($address);
-
-		}
-
-
-
-	}
-
-	/*
-	 Function: base_data
-	 Initializes an array with the default field values
-
-	 If argument contains '3 line' corresponding base is made
-	 */
-	function base_data($args='replace'){
-		$data=array();
-
-		if(preg_match('/3 line/i',$args)){
-			$data['Address Line 1']='';
-			$data['Address Line 2']='';
-			$data['Address Line 3']='';
-			$data['Address Town SubDivision']='';
-			$data['Address Town Division']='';
-			$data['Address Town']='';
-			$data['Address SubRegion']='';
-			$data['Address Region']='';
-			$data['Address Country Key']='';
-			$data['Address Country Code']='';
-			$data['Address Country Name']='';
-			$data['Address Country Code']='';
-			$data['Address Country 2 Alpha Code']='';
-
-		}else{
-
-			$ignore_fields=array('Address Key');
-
-			$result = mysql_query("SHOW COLUMNS FROM `Address Dimension`");
-			if (!$result) {
-				echo 'Could not run query: ' . mysql_error();
-				exit;
-			}
-			if (mysql_num_rows($result) > 0) {
-				while ($row = mysql_fetch_assoc($result)) {
-					if(!in_array($row['Field'],$ignore_fields))
-					$data[$row['Field']]=$row['Default'];
-				}
-			}
-
-		}
-		return $data;
-	}
-
-
-	/*
-	 Function: location
-	 Get the address location
-
-	 Parameter:
-	 $str -  _array_ location data
-	 */
-
-	public static function location($data,$flag='left'){
-
-		if($data['Military Address']=='Yes'){
-			$location=sprintf('<img src="art/flags/%s.gif" title="%s"> %s',strtolower($data['Address Country 2 Alpha Code']),$data['Address Country Code'],$data['Military Installation Type']);
-		}else{
-
-			if($data['Address Fuzzy']=='Yes'){
-				if(preg_match('/country/i',$data['Address Fuzzy Type'])){
-					$location=sprintf('<img src="art/flags/%s.gif" title="%s"> %s',strtolower($data['Address Country 2 Alpha Code']),$data['Address Country Code'],_('Unknown'));
-					return _trim($location);
-				}elseif(preg_match('/town/i',$data['Address Fuzzy Type'])){
-					$location=sprintf('<img src="art/flags/%s.gif" title="%s"> %s',strtolower($data['Address Country 2 Alpha Code']),$data['Address Country Code'],_('Somewhere in').' '.$data['Address Country Name']);
-					return _trim($location);
-				}
-			}
-
-			if($flag=='none')
-			$location=sprintf('%s %s',$data['Address Town'],$data['Address Country Code']);
-			else if($flag=='right')
-			$location=sprintf('%s <img src="art/flags/%s.gif" title="%s">',$data['Address Town'],strtolower($data['Address Country 2 Alpha Code']),$data['Address Country Code']);
-			else
-			$location=sprintf('<img src="art/flags/%s.gif" title="%s"> %s',strtolower($data['Address Country 2 Alpha Code']),$data['Address Country Code'],$data['Address Town']);
-
-
-		}
-
-		return _trim($location);
-	}
-
-
-
-
-	/*
-	 Function: is_street
-	 Check if the string id like a street
-
-	 Parameter:
-	 $str -  _string_ line to be checked
-	 */
-	function is_street($string){
-		if($string=='')
-		return false;
-
-		$string=_trim($string);
-		// if(preg_match('/^\d+[a-z]?\s+\w|^\s*calle\s+|\s+close\s*$|/\s+lane\s*$|\s+street\s*$|\s+st\.?\s*$/i',$string))
-
-		if(preg_match('/\s+rd\.?\s*$|\s+road\s*$|^\d+[a-z]?\s+\w|^\s*calle\s+|\s+close\s*$|\s+lane\s*$|\s+street\s*$|\s+st\.?\s*$/i',$string))
-		return true;
-		if(preg_match('/[a-z\-\#\,]{1,}\s*\d/i',$string))
-		return true;
-
-		if(preg_match('/\d.*[a-z]{1,}/i',$string))
-		return true;
-
-		if(preg_match('/^c\/\s?/i',$string))
-		return true;
-
-		return false;
-	}
-	/*
-	 Function: is_internal
-	 Check if the string id like a internal address
-
-	 Parameter:
-	 $str -  _string_ line to be checked
-	 */
-	function is_internal($string){
-		if($string=='')
-		return false;
-		// if(preg_match('/^\d+[a-z]?\s+\w|^\s*calle\s+|\s+close\s*$|/\s+lane\s*$|\s+street\s*$|\s+st\.?\s*$/i',$string))
-
-		if(preg_match('/lot\s*(n-)?\s*\d|suite\s*\d|shop\s*\d|apt\s*\d/i',$string))
-		return true;
-		else
-		return false;
-	}
-
-	/*
-	 Function: get_country_d2_name
-	 Get the name of the Country SubDivision
-
-	 Parameters:
-	 $id - _integer_  *Country Second Division Code* in DB
-	 */
-	function get_country_d2_name($id=''){
-		if(!is_numeric($id))
-		return '';
-		$sql=sprintf("select `Country Second Division Name` as name from kbase.`Country Second Division Dimension` where `Country Second Division Code`=%d",$id);
-		//  print $sql;
-		$result = mysql_query($sql) or die('Query failedx1: ' . mysql_error());
-		if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-			return $row['name'];
-		}
-		return '';
-	}
-	/*
-	 Function: get_country_d1_name
-	 Get the name of the Country Division
-
-	 Parameters:
-	 $id - _integer_  *Country First Division Code* in DB
-
-	 function get_country_d1_name($id=''){
-	 if(!is_numeric($id))
-	 return '';
-	 $sql=sprintf("select `Country First Division Name` as name from kbase.`Country First Division Dimension` where `Country First Division Code`=%d",$id);
-	 $result = mysql_query($sql) or die('Query failedx: ' . mysql_error());
-	 if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-	 return $row['name'];
-	 }
-	 return '';
-	 }
-
-
-
-	 Function: is_country_d1
-	 Look if the string is in Country First Division Dimension DB table
-
-	 The search will be en the following fields:Name
-
-	 Parameter:
-	 $str -  _string_ Country First Division Name
-	 */
-	public static  function is_country_d1($country_d1,$country_2a_code){
-		if($country_d1=='')
-		return false;
-		$extra_where='';
-		if($country_2a_code)
-		$extra_where=sprintf('and `Country 2 Alpha Code`=%s',prepare_mysql($country_2a_code));
-		$sql=sprintf("select `Geography Key` as id from kbase.`Country First Division Dimension` where `Country First Division Name`=%s %s"
-		,prepare_mysql($country_d1)
-		,$extra_where
-		);
-
-
-		$result = mysql_query($sql) or die('Query failedx2: ' .$sql. mysql_error());
-		if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-			return true;
-		}else
-		return false;
-	}
-
-	/*
-	 Function: is_country_d2
-	 Look if the string is in Country Second Division Dimension DB table
-
-	 The search will be en the following fields:Name
-
-	 Parameter:
-	 $str -  _string_ Country Second Division Name
-	 */
-	public static  function is_country_d2($str,$country_2a_code=false,$country_d1_code=false){
-		if($str=='')
-		return false;
-		$extra_where='';
-		if($country_2a_code)
-		$extra_where.=sprintf('and `Country 2 Alpha Code`=%s',prepare_mysql($country_2a_code));
-		if($country_d1_code)
-		$extra_where.=sprintf('and `Country First Division Code`=%s',prepare_mysql($country_d1_code));
-		$sql=sprintf("select `Geography Key` as id from kbase.`Country Second Division Dimension` where `Country Second Division Name`=%s %s"
-		,prepare_mysql($str)
-		,$extra_where
-		);
-
-
-		$result = mysql_query($sql) or die('Query failedx4: ' . mysql_error());
-		if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-			return true;
-		}else
-		return false;
-	}
-
-	/*
-	 Function: is_country_key
-	 Look if is a valid country key
-
-	 Parameter:
-	 $key -  _integer_ Country Key in DB
-	 */
-	public static  function is_country_key($key){
-		//    print "----------- $key -------\n";
-		if(!is_numeric($key) or $key<=0){
-			return false;
-		}
-		$sql=sprintf("select `Country Key` from kbase.`Country Dimension`  where `Country Key`=%d",$key);
-		//    PRINT $sql;
-		$result = mysql_query($sql);
-		if($row = mysql_fetch_array($result, MYSQL_ASSOC))
-		return true;
-		else
-		return false;
-	}
-
-	/*
-	 Function: is_country_code
-	 Look if is a valid country 3 alpha code
-
-	 Parameter:
-	 $code -  _integer_ Country Code
-	 */
-	public static  function is_country_code($code){
-
-		if(!preg_match('/^[a-z]{3}$/i',$code))
-		return false;
-
-		$sql=sprintf("select `Country Key` from kbase.`Country Dimension`  where `Country Code`=%s",prepare_mysql($code));
-		$result = mysql_query($sql) ;
-		if($row = mysql_fetch_array($result, MYSQL_ASSOC))
-		return true;
-		else
-		return false;
-	}
-
-	/*
-	 Function: is_country_2alpha_code
-	 Look if is a valid country 2 alpha code
-
-	 Parameter:
-	 $code -  _integer_ Country 2 Alpha Code
-	 */
-	public static function is_country_2alpha_code($code){
-
-		if(!preg_match('/^[a-z]{2}$/i',$code))
-		return false;
-
-		$sql=sprintf("select `Country Key` from kbase.`Country Dimension`  where `Country 2 Alpha Code`=%s",prepare_mysql($code));
-		$result = mysql_query($sql) ;
-		if($row = mysql_fetch_array($result, MYSQL_ASSOC))
-		return true;
-		else
-		return false;
-	}
-
-
-	/*
-	 Function: is_town
-	 Look if the town is registed in the DB
-
-	 Parameters:
-	 $town - _string_ Town name
-	 $country_id - (optional) _integer_ Country Key in DB
+      }
+
+      if($flag=='none')
+	$location=sprintf('%s %s',$data['Address Town'],$data['Address Country Code']);
+      else if($flag=='right')
+	$location=sprintf('%s <img src="art/flags/%s.gif" title="%s">',$data['Address Town'],strtolower($data['Address Country 2 Alpha Code']),$data['Address Country Code']);
+      else
+	$location=sprintf('<img src="art/flags/%s.gif" title="%s"> %s',strtolower($data['Address Country 2 Alpha Code']),$data['Address Country Code'],$data['Address Town']);
+
+
+    }
+
+    return _trim($location);
+  }
+
+
+
+
+  /*
+    Function: is_street
+    Check if the string id like a street
+
+    Parameter:
+    $str -  _string_ line to be checked
+  */
+  function is_street($string){
+    if($string=='')
+      return false;
+
+    $string=_trim($string);
+    // if(preg_match('/^\d+[a-z]?\s+\w|^\s*calle\s+|\s+close\s*$|/\s+lane\s*$|\s+street\s*$|\s+st\.?\s*$/i',$string))
+
+    if(preg_match('/\s+rd\.?\s*$|\s+road\s*$|^\d+[a-z]?\s+\w|^\s*calle\s+|\s+close\s*$|\s+lane\s*$|\s+street\s*$|\s+st\.?\s*$/i',$string))
+      return true;
+    if(preg_match('/[a-z\-\#\,]{1,}\s*\d/i',$string))
+      return true;
+
+    if(preg_match('/\d.*[a-z]{1,}/i',$string))
+      return true;
+
+    if(preg_match('/^c\/\s?/i',$string))
+      return true;
+
+    return false;
+  }
+  /*
+    Function: is_internal
+    Check if the string id like a internal address
+
+    Parameter:
+    $str -  _string_ line to be checked
+  */
+  function is_internal($string){
+    if($string=='')
+      return false;
+    // if(preg_match('/^\d+[a-z]?\s+\w|^\s*calle\s+|\s+close\s*$|/\s+lane\s*$|\s+street\s*$|\s+st\.?\s*$/i',$string))
+
+    if(preg_match('/lot\s*(n-)?\s*\d|suite\s*\d|shop\s*\d|apt\s*\d/i',$string))
+      return true;
+    else
+      return false;
+  }
+
+  /*
+    Function: get_country_d2_name
+    Get the name of the Country SubDivision
+
+    Parameters:
+    $id - _integer_  *Country Second Division Code* in DB
+  */
+  function get_country_d2_name($id=''){
+    if(!is_numeric($id))
+      return '';
+    $sql=sprintf("select `Country Second Division Name` as name from kbase.`Country Second Division Dimension` where `Country Second Division Code`=%d",$id);
+    //  print $sql;
+    $result = mysql_query($sql) or die('Query failedx1: ' . mysql_error());
+    if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+      return $row['name'];
+    }
+    return '';
+  }
+  /*
+    Function: get_country_d1_name
+    Get the name of the Country Division
+
+    Parameters:
+    $id - _integer_  *Country First Division Code* in DB
+
+    function get_country_d1_name($id=''){
+    if(!is_numeric($id))
+    return '';
+    $sql=sprintf("select `Country First Division Name` as name from kbase.`Country First Division Dimension` where `Country First Division Code`=%d",$id);
+    $result = mysql_query($sql) or die('Query failedx: ' . mysql_error());
+    if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+    return $row['name'];
+    }
+    return '';
+    }
+
+
+
+    Function: is_country_d1
+    Look if the string is in Country First Division Dimension DB table
+
+    The search will be en the following fields:Name
+
+    Parameter:
+    $str -  _string_ Country First Division Name
+  */
+  public static  function is_country_d1($country_d1,$country_2a_code){
+    if($country_d1=='')
+      return false;
+    $extra_where='';
+    if($country_2a_code)
+      $extra_where=sprintf('and `Country 2 Alpha Code`=%s',prepare_mysql($country_2a_code));
+    $sql=sprintf("select `Geography Key` as id from kbase.`Country First Division Dimension` where `Country First Division Name`=%s %s"
+		 ,prepare_mysql($country_d1)
+		 ,$extra_where
+		 );
+
+
+    $result = mysql_query($sql) or die('Query failedx2: ' .$sql. mysql_error());
+    if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+      return true;
+    }else
+      return false;
+  }
+
+  /*
+    Function: is_country_d2
+    Look if the string is in Country Second Division Dimension DB table
+
+    The search will be en the following fields:Name
+
+    Parameter:
+    $str -  _string_ Country Second Division Name
+  */
+  public static  function is_country_d2($str,$country_2a_code=false,$country_d1_code=false){
+    if($str=='')
+      return false;
+    $extra_where='';
+    if($country_2a_code)
+      $extra_where.=sprintf('and `Country 2 Alpha Code`=%s',prepare_mysql($country_2a_code));
+    if($country_d1_code)
+      $extra_where.=sprintf('and `Country First Division Code`=%s',prepare_mysql($country_d1_code));
+    $sql=sprintf("select `Geography Key` as id from kbase.`Country Second Division Dimension` where `Country Second Division Name`=%s %s"
+		 ,prepare_mysql($str)
+		 ,$extra_where
+		 );
+
+
+    $result = mysql_query($sql) or die('Query failedx4: ' . mysql_error());
+    if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+      return true;
+    }else
+      return false;
+  }
+
+  /*
+    Function: is_country_key
+    Look if is a valid country key
+
+    Parameter:
+    $key -  _integer_ Country Key in DB
+  */
+  public static  function is_country_key($key){
+    //    print "----------- $key -------\n";
+    if(!is_numeric($key) or $key<=0){
+      return false;
+    }
+    $sql=sprintf("select `Country Key` from kbase.`Country Dimension`  where `Country Key`=%d",$key);
+    //    PRINT $sql;
+    $result = mysql_query($sql);
+    if($row = mysql_fetch_array($result, MYSQL_ASSOC))
+      return true;
+    else
+      return false;
+  }
+
+  /*
+    Function: is_country_code
+    Look if is a valid country 3 alpha code
+
+    Parameter:
+    $code -  _integer_ Country Code
+  */
+  public static  function is_country_code($code){
+
+    if(!preg_match('/^[a-z]{3}$/i',$code))
+      return false;
+
+    $sql=sprintf("select `Country Key` from kbase.`Country Dimension`  where `Country Code`=%s",prepare_mysql($code));
+    $result = mysql_query($sql) ;
+    if($row = mysql_fetch_array($result, MYSQL_ASSOC))
+      return true;
+    else
+      return false;
+  }
+
+  /*
+    Function: is_country_2alpha_code
+    Look if is a valid country 2 alpha code
+
+    Parameter:
+    $code -  _integer_ Country 2 Alpha Code
+  */
+  public static function is_country_2alpha_code($code){
+
+    if(!preg_match('/^[a-z]{2}$/i',$code))
+      return false;
+
+    $sql=sprintf("select `Country Key` from kbase.`Country Dimension`  where `Country 2 Alpha Code`=%s",prepare_mysql($code));
+    $result = mysql_query($sql) ;
+    if($row = mysql_fetch_array($result, MYSQL_ASSOC))
+      return true;
+    else
+      return false;
+  }
+
+
+  /*
+    Function: is_town
+    Look if the town is registed in the DB
+
+    Parameters:
+    $town - _string_ Town name
+    $country_id - (optional) _integer_ Country Key in DB
 	 */
 	public static function is_town($town,$country_2acode=false){
 		if($town=='')
@@ -1896,7 +1898,18 @@ Timer::timing_milestone('similar inner address xxxx7');
 		}
 		//-------------------------------------------------------------------------
 
+		
+		if($data['Address Country Code']=='UNK'){
+		  $data=Address::prepare_country_data($data);
+		  $country=new Country('code','UNK');
+		  $raw_data['Address Country Name']=$country->data['Country Name'];
+		  
+		  $data['Address Country Name']=$country->data['Country Name'];
+		  $data['Address Country Key']=$country->id;
+		  $data['Address Fuzzy']='Yes';
 
+		}
+		
 
 
 		if($data['Address Country Name']==''){
@@ -3922,8 +3935,8 @@ Timer::timing_milestone('similar inner address xxxx7');
 		}
 		if($data['Address Country Code']=='UNK'){
 			if(!$empty){
-				print "UNKNOWN COUNTRY\n";
-				print_r($raw_data);
+			  //print "UNKNOWN COUNTRY\n";
+			  //print_r($raw_data);
 				//	exit;
 			}
 			$data['Address Fuzzy Type']='All';

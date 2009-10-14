@@ -27,7 +27,7 @@
 	<tr class="first"><td style="" class="label">Company Name:</td>
 	  <td  style="text-align:left">
 	    <div  style="width:15em;position:relative;top:00px" >
-	      <input style="text-align:left;width:18em" id="Company_Name" value="" ovalue="">
+	      <input style="text-align:left;width:18em" id="Company_Name" value="" ovalue="" valid="0">
 	      <div id="Company_Name_Container" style="" ></div>
 	    </div>
 	  </td>
@@ -132,8 +132,8 @@
 	      </div>
 	    </td>
 	  </tr>
-	    <input id="address_country_code" value="" type="hidden">
-	    <input id="address_country_2acode" value="" type="hidden">
+	    <input id="address_country_code" value="UNK" type="hidden">
+	    <input id="address_country_2acode" value="XX" type="hidden">
 
 <tr id="tr_address_country_d1">
 	    <td class="label" style="width:160px">
@@ -229,12 +229,52 @@
       </table>
 
 
+     
+
       <table class="options" style="float:right;padding:0;margin:0">
 	<tr>
 	  <td  class="disabled" id="save_new_company">{t}Save{/t}</td>
 	  <td  id="cancel_add_company" onClick="window.location='companies.php?edit=1'">{t}Cancel{/t}</td>
 	</tr>
       </table>
+      <div id="company_found_dialog" style="display:none;float:right;border:1px solid #ccc;width:200px;padding:6px 10px;margin-top:3px;font-size:80%;color:#555">
+	{t}Another contact has been found with the similar details{/t}.
+	<table style="margin:10px 0">
+	  <tr><td style="cursor:pointer">{t}Edit contact founded{/t}</td></tr>
+	  <tr><td style="cursor:pointer">{t}Save as a new contact{/t}</td></tr>
+	</table>
+      </div>
+      <div id="email_found_dialog" style="display:none;float:right;border:1px solid #ccc;width:200px;padding:6px 10px;margin-top:3px;font-size:80%;color:#555">
+	{t}Another contact has the same email, your only option is:{/t}.
+	<table style="margin:10px 0">
+	  <tr><td style="cursor:pointer">{t}Edit contact founded{/t}</td></tr>
+	</table>
+      </div>
+
+      <div style="clear:both;padding:10px;" id="validation">
+
+	<div style="font-size:80%;margin-bottom:10px;display:none" id="mark_company_found">{t}Company found{/t}</div>
+	
+	<table class="form_state">
+	  <caption>{t}State of the form{/t}</caption>
+	  <tr><th style="width:10em"></th><th style="width:50px">{t}Show{/t}</th><th>{t}Input{/t}</th><th>{t}Valid{/t}</th></tr>
+	  <tr><td class="aleft">{t}Company Name{/t}</td><td style="text-align:center"  id="company_name_show"><img src='art/icons/accept.png'></td><td id="company_name_inputed"></td><td id="company_name_valid"></td></tr>
+	  <tr><td class="aleft">{t}Contact Name{/t}</td><td id="contact_name_show"><img src='art/icons/accept.png'></td><td id="contact_name_inputed"></td><td id="contact_name_valid"></td></tr>
+	  <tr><td class="aleft">{t}Email{/t}</td><td id="email_show"><img src='art/icons/accept.png'></td><td id="email_inputed"></td><td id="email_valid"></td></tr>
+	  <tr><td class="aleft">{t}Telephone{/t}</td><td id="telephone_show"><img src='art/icons/accept.png'></td><td id="telephone_inputed"></td><td id="telephone_valid"></td></tr>
+	  <tr><td class="aleft">{t}Address{/t}</td><td id="address_show"></td><td id="address_inputed"></td><td id="address_valid"></td></tr>
+	  <tr><td class="aright">{t}Country{/t}</td><td id="country_show"><img src='art/icons/accept.png'></td><td id="country_inputed"></td><td id="country_valid"></td></tr>
+	  <tr><td class="aright">{t}Country{/t} 1D</td><td id="country_d1_show"><img src='art/icons/accept.png'></td><td id="country_d1_inputed"></td><td id="country_d1_valid"></td></tr>
+	  <tr><td class="aright">{t}Country{/t} 2D</td><td id="country_d2_show"></td><td id="country_d1_inputed"></td><td id="country_d2_valid"></td></tr>
+	  <tr><td class="aright">{t}Country{/t} 3D</td><td id="country_d3_show"></td><td id="country_d1_inputed"></td><td id="country_d3_valid"></td></tr>
+	  <tr><td class="aright">{t}Country{/t} 4D</td><td id="country_d4_show"></td><td id="country_d1_inputed"></td><td id="country_d4_valid"></td></tr>
+	  <tr><td class="aright">{t}Country{/t} 5D</td><td id="country_d5_show"></td><td id="country_d1_inputed"></td><td id="country_d5_valid"></td></tr>
+	  <tr><td class="aright">{t}Postal Code{/t}</td><td id="postal_code_show"><img src='art/icons/accept.png'></td><td id="postal_code_inputed"></td><td id="postal_code_valid"></td></tr>
+	  <tr><td class="aright">{t}Town{/t}</td><td id="town_show"><img src='art/icons/accept.png'></td><td id="town_inputed"></td><td id="town_valid"></td></tr>
+
+	</table>
+      </div>
+
       </div>
       <div style="clear:both;height:40px"></div>
 	</div>

@@ -153,22 +153,27 @@ class Contact extends DB_Table {
 
         $data=$this->base_data();
         $address_home_data=array(
-                               'Contact Home Address Line 1'=>'',
-                                                             'Contact Home Address Town'=>'',
-                                                                                          'Contact Home Address Line 2'=>'',
-                                                                                          'Contact Home Address Line 3'=>'',
-                                                                                          'Contact Home Address Postal Code'=>'',
-                                                                                          'Contact Home Address Country Name'=>'',
-                                                                                          'Contact Home Address Country Primary Division'=>'',
-                                                                                          'Contact Home Address Country Secondary Division'=>'');
+				 'Contact Home Address Line 1'=>'',
+				 'Contact Home Address Town'=>'',
+				 'Contact Home Address Line 2'=>'',
+				 'Contact Home Address Line 3'=>'',
+				 'Contact Home Address Postal Code'=>'',
+				 'Contact Home Address Country Code'=>'',
+				 'Contact Home Address Country Name'=>'',
+				 'Contact Home Address Country Primary Division'=>'',
+				 'Contact Home Address Country Secondary Division'=>''
+				 );
         $address_work_data=array(
-        'Contact Work Address Line 1'=>'',
-        'Contact Work Address Town'=>'',
-        'Contact Work Address Line 2'=>'',
-        'Contact Work Address Line 3'=>'',
-        'Contact Work Address Postal Code'=>'',
-        'Contact Work Address Country Name'=>'','Contact Work Address Country Primary Division'=>'',
-        'Contact Work Address Country Secondary Division'=>'');
+				 'Contact Work Address Line 1'=>'',
+				 'Contact Work Address Town'=>'',
+				 'Contact Work Address Line 2'=>'',
+				 'Contact Work Address Line 3'=>'',
+				 'Contact Work Address Postal Code'=>'',
+				 'Contact Work Address Country Code'=>'',
+				 'Contact Work Address Country Name'=>'',
+				 'Contact Work Address Country Primary Division'=>'',
+				 'Contact Work Address Country Secondary Division'=>''
+				 );
 
 
 
@@ -319,6 +324,7 @@ Timer::timing_milestone('begin  find  contact address');
         $country_code='UNK';
 
         if (!array_empty( $address_work_data)) {
+
             $address=new Address("find in contact $find_fuzzy",$address_work_data);
 
             $country_code=$address->raw_data['Address Country Code'];
@@ -347,7 +353,7 @@ Timer::timing_milestone('begin  find  contact address');
             }
         }
 
-Timer::timing_milestone('end  find  contact address / begin tel');
+	Timer::timing_milestone('end  find  contact address / begin tel');
 
 
 

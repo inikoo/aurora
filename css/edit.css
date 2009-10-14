@@ -32,7 +32,10 @@ tr.mould td{padding:20px 0 30px 0;}
 
 .input_msg {font-size:75%;width:200px}
 .edit_block{margin:0;padding:0}
-.edit_block .error{color:red};
-.new_item_dialog{margin:0 0 10px 0;padding:10px;border:1px solid #ccc};
+.edit_block .error{color:red}
+.new_item_dialog{margin:0 0 10px 0;padding:10px;border:1px solid #ccc}
 
-
+table.form_state {width:300px;font-size:80%}
+table.form_state td{text-align:center;border-top:1px solid #ccc}
+table.form_state td.aright{text-align:right}
+table.form_state td.aleft{text-align:left}
