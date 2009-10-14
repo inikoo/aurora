@@ -61,11 +61,23 @@ var suggest_d4=false;
 var suggest_d4=false;
 var suggest_town=false;
 
+var company_found_email=false;
 
-var validate_data={'postal_code':{'inputed':false,'validated':false}
-		   ,'email':{'inputed':false,'validated':false}
-		   ,'company_name':{'inputed':false,'validated':false,'regexp':"[^\\s]+"}
-		   ,'contact_name':{'inputed':false,'validated':false,'regexp':"[^\\s]+"}
+var company_found=false;
+var company_found_key=0;
+
+var validate_data={'postal_code':{'inputed':false,'validated':false,'required':false,'group':2,'type':'component','parent':'address'}
+		   ,'town':{'inputed':false,'validated':false,'required':false,'group':2,'type':'component','parent':'address','regexp':"[a-z]+"}
+		   ,'street':{'inputed':false,'validated':false,'required':false,'group':2,'type':'component','parent':'address','regexp':"[a-z\\d]+"}
+		   ,'building':{'inputed':false,'validated':false,'required':false,'group':2,'type':'component','parent':'address','regexp':"[a-z\\d]+"}
+		   ,'internal':{'inputed':false,'validated':false,'required':false,'group':2,'type':'component','parent':'address','regexp':"[a-z\\d]+"}
+
+		   ,'country':{'inputed':false,'validated':false,'required':false,'group':2,'type':'component','parent':'address'}
+		   ,'address':{'inputed':false,'validated':false,'required':false,'group':1,'type':'item'}
+		   ,'email':{'inputed':false,'validated':false,'required':false,'group':1,'type':'item'}
+		   ,'telephone':{'inputed':false,'validated':false,'required':false,'group':1,'type':'item','regexp':"\\d{4,}"}
+		   ,'company_name':{'inputed':false,'validated':false,'regexp':"[^\\s]+",'required':true,'group':0,'type':'item'}
+		   ,'contact_name':{'inputed':false,'validated':false,'regexp':"[^\\s]+",'required':false,'group':0,'type':'item'}
 };
 
 var Subject='Company';
@@ -142,7 +154,7 @@ function get_contact_data(){
 	company_data['Company Main Telephone']=Dom.get('Telephone').value;
 
 
-	if(Dom.get("Email").getAttribute('valid')==1)
+	if(validate_data.email.validated==true)
 	    company_data['Company Main Plain Email']=Dom.get('Email').value;
 	else
 	    company_data['Company Main Plain Email']="";
@@ -218,16 +230,46 @@ var find_company=function(){
     var json_value = YAHOO.lang.JSON.stringify(company_data); 
 	    
     var request='ar_contacts.php?tipo=find_company&values=' + encodeURIComponent(json_value); 
-    //  alert(request) ;
+    // alert(request) ;
+
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
 		//	alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
-		if(r.action=='found'){
-		    
+		var old_company_found=company_found;
+		var old_company_found_email=company_found_email;
+
+		if(r.action=='found_email'){
+		    company_found=true;
+		    company_found_email=true;
+		    company_found_key=r.found_key;
+		    display_form_state();
+		    //alert(company_found+' '+company_found_email);
+		     update_save_button();
+		}else if(r.action=='found'){
+		    company_found=true;
+		    company_found_email=false;
+		    company_found_key=r.found_key;
+		    display_form_state();
+		     update_save_button();
 		}else if(r.action=='found_candidates'){
-		    
+		    company_found=false; company_found_email=false;
+		    company_found_key=0;
+		     display_form_state();
+		      update_save_button();
+		}else{
+		    company_found=false; company_found_email=false;
+		    company_found_key=0; 
+		       display_form_state();
+		        update_save_button();
 		}
+		//if(old_company_found!=company_found || old_company_found_email!=company_found_email){
+		//    update_save_button();
+		//	}
+		//var old_company_found=company_found;
+		//var old_company_found_email=company_found_email;
+
+
 		Dom.get("results").innerHTML='';
 		var count=0;
 		
@@ -257,34 +299,244 @@ var find_company=function(){
 }
      
 
-    function can_save(){
-	
+    function update_save_button(){
+	//	alert(company_found);
+	if(company_found==true){
 
+	    Dom.get('save_new_company').style.display='none';
+	    
+	    if(company_found_email==true){
+		Dom.get('email_found_dialog').style.display='';
+		Dom.get('company_found_dialog').style.display='none';
+
+	    }else{
+		Dom.get('company_found_dialog').style.display='';
+		Dom.get('email_found_dialog').style.display='none';
+
+	    }
+	    
+	}else{
+	    Dom.get('save_new_company').style.display='';
+	    Dom.get('company_found_dialog').style.display='none';
+	    Dom.get('email_found_dialog').style.display='none';
+
+	}
+	
     }
 
 
-function company_name_changed (query) {
-    get_company_data();
-    // print_data();
-    find_company();
+    function validate_form(){
+
+	display_form_state();
+      
+	var valid_form=true;
+	for (item in validate_data ){
+	    //	    alert(item+' '+validate_data[item].required+' '+validate_data[item].validated)
+	    if(validate_data[item].required==true && validate_data[item].validated==false){
+		valid_form=false;
+		
+	    }
+	    if(validate_data[item].inputed==true && validate_data[item].validated==false){
+		valid_form=false;
+	    }
+	}
+
+	var validate_group_id=1;
+	var min_valid_items=1;
+	var valid_items_in_group=0;
+	for (item in validate_data ){
+	   
+	    if(validate_data[item].group==validate_group_id){
+		
+		if( validate_data[item].validated==true && validate_data[item].inputed==true ){
+		    
+		    valid_items_in_group++;
+		}
+	    }
+
+	}
+	//	alert(validate_data.email.validated+' '+validate_data.email.inputed)
+	if(valid_items_in_group<min_valid_items){
+	    //valid_form=false;
+	}
+
+	
+	if(valid_form==true){
+	    
+	    Dom.removeClass('save_new_company','disabled');
+	    can_add_company=true;
+	}else{
+	    can_add_company=false;
+	    Dom.addClass('save_new_company','disabled');
+	}
+	
+    }
+
+function display_form_state(){
     
+   
+
+    if(company_found==true){
+	Dom.get('mark_company_found').style.display='';
+    }else{
+	Dom.get('mark_company_found').style.display='none';
+
+    }
+
+    for (i in validate_data){
+
+	if(validate_data[i].validated==true)
+	    Dom.get(i+'_valid').innerHTML="<img src='art/icons/accept.png'>";
+	else
+	    Dom.get(i+'_valid').innerHTML="<img src='art/icons/cross.png'>";
+
+
+	if(validate_data[i].inputed==true){
+	    
+	    Dom.get(i+'_inputed').innerHTML="<img src='art/icons/accept.png'>";
+	  
+
+
+	}else
+	    Dom.get(i+'_inputed').innerHTML="";
+
+	
+
+    }
+}
+
+
+function validate_company_name (query) {
+    
+
+    var validator=new RegExp(validate_data.company_name.regexp,"i");
+
+    if(validator.test(query)){
+	    
+	validate_data.company_name.validated=true;
+	
+    }else{
+
+	validate_data.company_name.validated=false;
+    }
+    
+    
+    
+
+    get_company_data();
+    find_company();
+    validate_form();
+
 
 			   //alert(query)
 };
-function  contact_name_changed2(query) {
-   
+
+function name_inputed(){
+    var item='company_name';
+    var value=Dom.get('Company_Name').value.replace(/\s+/,"");
+    //  alert(value)
+    if(value=='')
+	validate_data[item].inputed=false;
+    else
+	validate_data[item].inputed=true;
+
+    display_form_state();
+    
+    //validate_postal_code(postal_code);
+    
+}    
+
+
+
+
+
+function  validate_contact_name(query) {
+    item='contact_name';
+    var validator=new RegExp(validate_data[item].regexp,"i");
+    if(validator.test(query)){
+	validate_data[item].validated=true;
+    }else{
+	validate_data[item].validated=false;
+    }
     get_contact_data();
-    //print_data();
     find_company();
+    validate_form();
 };
+function contact_name_inputed(){
+    var item='contact_name';
+    var value=Dom.get('Contact_Name').value.replace(/\s+/,"");
+    if(value=='')
+	validate_data[item].inputed=false;
+    else
+	validate_data[item].inputed=true;
+    display_form_state();
+}    
 
 
 
+function  validate_telephone(original_query) {
+    var tr=Dom.get('telephone_mould');
+    var o=Dom.get('Telephone');
+    value=original_query.replace(/[^\d]/g,"");
+    //  alert(query)
+    var item='telephone';
 
-function  telephone_changed(query) {
+    if(original_query==''){
+	validate_data[item].inputed=false;
+	validate_data[item].validated=true;
+	Dom.removeClass(tr,'no_validated');
+	return;
+    }
+    
+
+
+    var validator=new RegExp(validate_data[item].regexp,"i");
+    
+    if(validate_data[item].inputed==true){
+	if(validator.test(value)){
+	    Dom.removeClass(tr,'no_validated');
+	    Dom.addClass(tr,'validated');
+	    validate_data[item].validated=true;
+	}else{
+	    Dom.removeClass(tr,'validated');
+	    Dom.addClass(tr,'no_validated');
+	    validate_data[item].validated=false;
+	}
+    }else{
+	if(validator.test(value) ){
+	    Dom.addClass(tr,'validated');
+	    validate_data[item].validated=true;
+	}else{
+	    Dom.removeClass(tr,'validated');
+	    validate_data[item].validated=false;
+
+	}
+	
+
+    }
     get_contact_data();
     find_company();
+    validate_form();
+
+
 };
+function telephone_inputed(){
+    var item='telephone';
+    var value=Dom.get('Telephone').value.replace(/\s+/,"");
+    //  alert(value)
+    if(value=='')
+	validate_data[item].inputed=false;
+    else
+	validate_data[item].inputed=true;
+
+    display_form_state();
+    
+    //validate_postal_code(postal_code);
+    
+}    
+
+
+
 function  address_changed(query) {
   
     get_address_data();
@@ -301,10 +553,7 @@ function postal_code_inputed(){
 	validate_data.postal_code.inputed=true;
 
     
-    validate_postal_code(postal_code);
-    if(Dom.get('address_postal_code').getAttribute('valid')==1){
-	address_changed();
-    }
+
 }
 
 function validate_postal_code(){
@@ -312,49 +561,65 @@ function validate_postal_code(){
     var o=Dom.get("address_postal_code");
     var tr=Dom.get('tr_address_postal_code');
     // alert(postal_regex+' '+postal_code)
+    var item='postal_code';
+
     var valid=postal_regex.test(postal_code);
 
     if(validate_data.postal_code.inputed==true){
 	if(valid){
-	    o.setAttribute('valid',1);
 	    Dom.removeClass(tr,'no_validated');
 	    Dom.addClass(tr,'validated');
-	    
+	    validate_data[item].validated=true;
 	}else{
 	    //alert('hard no valid');
-	    o.setAttribute('valid',0);
 	    Dom.removeClass(tr,'validated');
 	    Dom.addClass(tr,'no_validated');
+	    validate_data[item].validated=false;
+
 	}
+
     }else{
 	
 	Dom.removeClass(o,'no_validated');
 	if(valid){
-	    o.setAttribute('valid',1);
 	    Dom.addClass(tr,'validated');
-	    
+	    validate_data[item].validated=true;
 	}else{
 	    // alert('no valid');
-	    o.setAttribute('valid',0);
+	    validate_data[item].validated=false;
 	    Dom.removeClass(tr,'validated');
 	}
 
 
     }
+
+ get_contact_data();
+    validate_form();
+
+    find_company();
 }
 
 function email_inputed(){
-    var email=Dom.get('Email').value;
-    if(email=='')
-	validate_data.email.inputed=false;
-    else
-	validate_data.email.inputed=true;
+    var item='email';
+    var value=Dom.get('Email').value.replace(/\s+/,"");
+    var tr=Dom.get('email_mould')
+    if(value=='')
+	validate_data[item].inputed=false;
+    else{
+	validate_data[item].inputed=true;
 
-    validate_email(email);
-    if(Dom.get('Email').getAttribute('valid')==1){
-	get_contact_data();
-	find_company();
+		    
+	if(validate_data.email.validated==true){
+	    Dom.removeClass(tr,'no_validated');
+	    Dom.addClass(tr,'validated');
+	}else{
+	    Dom.removeClass(tr,'validated');
+	    Dom.addClass(tr,'no_validated');
+	}
+	
     }
+    display_form_state();
+    
 }
 
 function  validate_email(email) {
@@ -362,35 +627,46 @@ function  validate_email(email) {
     var o=Dom.get("Email");
     var tr=Dom.get('email_mould');
 
+    if(email==''){
+	validate_data['email'].inputed=false;
+	validate_data.email.validated=true;
+	Dom.removeClass(tr,'no_validated');
+	return;
+    }
+
+
+
     if(validate_data.email.inputed==true){
 	if(isValidEmail(email)){
-	    o.setAttribute('valid',1);
 	    Dom.removeClass(tr,'no_validated');
 	    Dom.addClass(tr,'validated');
-	    
+	    validate_data.email.validated=true;
 	}else{
-	    //alert('hard no valid');
-	    o.setAttribute('valid',0);
 	    Dom.removeClass(tr,'validated');
 	    Dom.addClass(tr,'no_validated');
+	    validate_data.email.validated=false;
 	}
     }else{
 	
 	Dom.removeClass(o,'no_validated');
-	if(isValidEmail(email)){
-	    o.setAttribute('valid',1);
+	if(isValidEmail(email) ){
 	    Dom.addClass(tr,'validated');
-	    
+	    validate_data.email.validated=true;
 	}else{
-	    // alert('no valid');
-	    o.setAttribute('valid',0);
 	    Dom.removeClass(tr,'validated');
+	    
+	    validate_data.email.validated=false;
+	    //alert('x '+validate_data.email.validated);
 	}
 
 
     }
 
+    get_contact_data();
+    validate_form();
 
+    find_company();
+    
 
 
 };
@@ -414,10 +690,13 @@ function  validate_email(email) {
 	
 	//	YAHOO.util.Event.addListener('address_postal_code', "keyup",validate_postal_code);
  
+	YAHOO.util.Event.addListener('Telephone', "blur",telephone_inputed);
 
 	YAHOO.util.Event.addListener('Email', "blur",email_inputed);
 	YAHOO.util.Event.addListener('address_postal_code', "blur",postal_code_inputed);
-		
+	YAHOO.util.Event.addListener('Company_Name', "blur",name_inputed);
+	YAHOO.util.Event.addListener('Contact_Name', "blur",contact_name_inputed);
+
 
 
 	var ids = ["address_description","address_country_d1","address_country_d2","address_town"
@@ -530,6 +809,7 @@ function  validate_email(email) {
 	var Countries_DS = new YAHOO.util.FunctionDataSource(match_country);
 	Countries_DS.responseSchema = {fields: ["id", "name", "code","code2a","postal_regex"]}
 	var Countries_AC = new YAHOO.widget.AutoComplete("address_country", "address_country_container", Countries_DS);
+	Countries_AC.forceSelection = true; 
 	Countries_AC.useShadow = true;
 	Countries_AC.resultTypeList = false;
 	Countries_AC.formatResult = function(oResultData, sQuery, sResultMatch) {
@@ -586,13 +866,13 @@ function  validate_email(email) {
 	}
  
 
-	var company_name_oACDS = new YAHOO.util.FunctionDataSource(company_name_changed);
+	var company_name_oACDS = new YAHOO.util.FunctionDataSource(validate_company_name);
 	company_name_oACDS.queryMatchContains = true;
 	var company_name_oAutoComp = new YAHOO.widget.AutoComplete("Company_Name","Company_Name_Container", company_name_oACDS);
 	company_name_oAutoComp.minQueryLength = 0; 
 	company_name_oAutoComp.queryDelay = 0.75;
 
-	var contact_name_oACDS = new YAHOO.util.FunctionDataSource(contact_name_changed2);
+	var contact_name_oACDS = new YAHOO.util.FunctionDataSource(validate_contact_name);
 	contact_name_oACDS.queryMatchContains = true;
 	var contact_name_oAutoComp = new YAHOO.widget.AutoComplete("Contact_Name","Contact_Name_Container", contact_name_oACDS);
 	contact_name_oAutoComp.minQueryLength = 0; 
@@ -607,7 +887,7 @@ function  validate_email(email) {
 	
 
 	
-	var telephone_name_oACDS = new YAHOO.util.FunctionDataSource(telephone_changed);
+	var telephone_name_oACDS = new YAHOO.util.FunctionDataSource(validate_telephone);
 	telephone_name_oACDS.queryMatchContains = true;
 	var telephone_name_oAutoComp = new YAHOO.widget.AutoComplete("Telephone","Telephone_Container", telephone_name_oACDS);
 	telephone_name_oAutoComp.minQueryLength = 0; 

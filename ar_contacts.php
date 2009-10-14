@@ -1759,19 +1759,50 @@ if($order=='name')
 }
 
 function find_company($data){
+  $candidates_data=array();
+  // quick try to find the email
+  if($data['Company Main Plain Email']!=''){
+    $sql=sprintf("select T.`Email Key`,`Subject Key` from `Email Dimension` T left join `Email Bridge` TB  on (TB.`Email Key`=T.`Email Key`) where `Email`=%s and `Subject Type`='Contact'  " 
+		 ,prepare_mysql($data['Company Main Plain Email'])
+		 );
+    $result=mysql_query($sql);
+    if($row=mysql_fetch_array($result)){
+      $contact=new Contact($row['Subject Key']);
+      $company_key=$contact->company_key();
+      if($company_key){
+	$_company=new Company ($company_key);
+	$subject_key=$company_key;
+	$candidates_data[]= array('card'=>$_company->display('card'),'score'=>1000,'key'=>$_company->id,'tipo'=>'company','found'=>1);
+      }else{
+	$subject_key=$contact->id;
+	$candidates_data[]= array('card'=>$contact->display('card'),'score'=>1000,'key'=>$contact->id,'tipo'=>'contact','found'=>1);
+
+	$subject_key=$contact->key;
+      }
+
+
+
+      $response=array('candidates_data'=>$candidates_data,'action'=>'found_email','found_key'=>$subject_key);
+      echo json_encode($response);
+      return;
+    }
+  }
+
+
 
   $max_results=8;
 
   $company=new company('find fuzzy',$data);
-  
-  if($company->found)
+  $found_key=0;
+  if($company->found){
     $action='found';
-  elseif($company->number_candidate_companies>0)
+    $found_key=$company->found_key;
+  }elseif($company->number_candidate_companies>0)
     $action='found_candidates';
   else
     $action='nothing_found';
   
-  $candidates_data=array();
+ 
   $count=0;
   foreach($company->candidate_companies as $company_key=>$score){
     if($count>$max_results)
@@ -1787,7 +1818,7 @@ function find_company($data){
   }
   //print_r($company->candidate_companies);
   
-  $response=array('candidates_data'=>$candidates_data,'action'=>$action);
+  $response=array('candidates_data'=>$candidates_data,'action'=>$action,'found_key'=>$found_key);
   echo json_encode($response);
 }
 

@@ -24,5 +24,9 @@ var Country_Address_Labels=
 				 ,'country_d2':{'in_use':false}
 				 ,'postal_code':{'in_use':false}
 			     }
+			      ,'FRA':{
+			        'country_d1':{'name':'Region','oname':'Région','hide':true,'in_use':true}
+			     }
+
 			  }
 		       ;
