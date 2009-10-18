@@ -282,9 +282,9 @@ class Contact extends DB_Table {
         $this->candidate=array();
 
         if ($data['Contact Main Plain Email']!='') {
-	  Timer::timing_milestone('begin  find  contact email');
+	  //Timer::timing_milestone('begin  find  contact email');
             $email=new Email("find in contact $find_fuzzy",$data['Contact Main Plain Email']);
-	    	  Timer::timing_milestone('end  find  contact email');
+	    	  //Timer::timing_milestone('end  find  contact email');
 
             if ($email->error) {
                 $data['Contact Main Plain Email']='';
@@ -314,7 +314,7 @@ class Contact extends DB_Table {
         //    print_r($this->candidate);
         // }
 
-Timer::timing_milestone('begin  find  contact address');
+//Timer::timing_milestone('begin  find  contact address');
 
 
         if ($data['Contact Name']=='')
@@ -353,7 +353,7 @@ Timer::timing_milestone('begin  find  contact address');
             }
         }
 
-	Timer::timing_milestone('end  find  contact address / begin tel');
+	//Timer::timing_milestone('end  find  contact address / begin tel');
 
 
 
@@ -372,7 +372,7 @@ Timer::timing_milestone('begin  find  contact address');
                     $this->candidate[$key]=$val;
             }
         }
-Timer::timing_milestone('end  find  contact tel / begin fax');
+//Timer::timing_milestone('end  find  contact tel / begin fax');
 
 
         if ($data['Contact Main FAX']!='' ) {
@@ -395,7 +395,7 @@ Timer::timing_milestone('end  find  contact tel / begin fax');
         //print "candidates after fax:\n";
         //print_r($this->candidate);
         //}
-Timer::timing_milestone('end  find  contact fax / begin mob');
+//Timer::timing_milestone('end  find  contact fax / begin mob');
 
         if ($data['Contact Main Mobile']!='' and !$this->found ) {
             $tel=new Telecom("find in contact  country code $country_code",$data['Contact Main Mobile']);
@@ -417,7 +417,7 @@ Timer::timing_milestone('end  find  contact fax / begin mob');
 
         }
 
-Timer::timing_milestone('end  find  contact mob / begin other');
+//Timer::timing_milestone('end  find  contact mob / begin other');
 
 
 
@@ -630,7 +630,7 @@ Timer::timing_milestone('end  find  contact mob / begin other');
 
         }
 
-Timer::timing_milestone('end  other');
+//Timer::timing_milestone('end  other');
 
 
         //print_r($this->candidate);
@@ -697,7 +697,7 @@ Timer::timing_milestone('end  other');
         }
 
         if ($create and !$this->found) {
-           
+           $this->create($data,$options);
       
         }
 
@@ -943,7 +943,7 @@ Timer::timing_milestone('end  other');
         $values=preg_replace('/,$/',')',$values);
 
         $sql=sprintf("insert into `Contact Dimension` %s %s",$keys,$values);
-        //     print "creating contact\n $sql\n";
+           // print "creating contact\n $sql\n";
         // exit;
         if (mysql_query($sql)) {
             $this->id= mysql_insert_id();

@@ -273,14 +273,12 @@ class Address extends DB_Table{
     if(!$find_fuzzy){
 
 
-		  
+if($data['Address Fuzzy']=='Yes'){
 
 
+}else{
+   
 
-
-
-
-		  
       $fields=array('Address Fuzzy','Address Street Number','Address Building','Address Street Name','Address Street Type','Address Town Second Division','Address Town First Division','Address Town','Address Country First Division','Address Country Second Division','Address Country Key','Address Postal Code','Military Address','Military Installation Address','Military Installation Name');
 		  
       $sql="select A.`Address Key`,`Subject Key`,`Subject Type` from `Address Dimension`  A  left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`) where `Subject Type`='Contact' ";
@@ -294,7 +292,7 @@ class Address extends DB_Table{
 	$this->found=true;
 	$this->get_data('id',$row['Address Key']);
 	$this->candidate[$row['Subject Key']]=100;
-			
+	}		
 		    
       }
     }else{
