@@ -1,4 +1,5 @@
 <?php
+
 include_once('../../app_files/db/dns.php');
 include_once('../../class.Department.php');
 
@@ -23,7 +24,7 @@ if(!$con){print "Error can not connect with database server\n";exit;}
 //$dns_db='dw';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
-  
+ 
 
 require_once '../../common_functions.php';
 mysql_query("SET time_zone ='+0:00'");
@@ -44,7 +45,7 @@ $Data_Audit_ETL_Software="$software $version";
 
 $file_name='/data/plaza/AWorder2002.xls';
 $csv_file='tmp.csv';
-exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
+//exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
 
 $handle_csv = fopen($csv_file, "r");
 $column=0;
@@ -142,14 +143,12 @@ $store_data=array('Store Code'=>'FR',
 		  'Store Home Country Short Name'=>'FR', 
 		  );
 $store=new Store('find',$store_data,'create');
+$warehouse=new Warehouse('find',array('Warehouse Code'=>'W','Warehouse Name'=>'Parkwood'),'create');
 
-$warehouse=new Warehouse('find',array('Warehouse Code'=>'W','Warehouse Name'=>'Parkwood'),'create');;
+$unk_location=new Location('find',array('Location Code'=>'UNK','Location Name'=>'Unknown'),'create');
 
-$unk_location=new Location('find',array('Location Code'=>'UNK','Location Name'=>'Unknown'),'create');;
+$unk_supplier=new Supplier('find',array('Supplier Code'=>'UNK','Supplier Name'=>'Unknown'),'create');
 
-$unk_supplier=new Supplier('find',array('Supplier Code'=>'UNK','Supplier Name'=>'Unknown'),'create');;
-;
-//exit;
 
 $dept_data=array(
 		   'Product Department Code'=>'ND',
@@ -319,31 +318,32 @@ foreach($__cols as $cols){
       else
 	//	print "************".$current_promotion."\n";
       $deals[]=array(
-		     'deal campain name'=>'Gold Reward'
-		     ,'deal trigger'=>'Order'
-		     ,'deal description'=>$allowance.' if last order within 1 calendar month'
-		     ,'deal terms type'=>'Order Interval'
-		     ,'deal terms description'=>'last order within 1 calendar month'
-		     ,'deal allowance description'=>$allowance
-		     ,'deal allowance type'=>'Percentage Off'
-		     ,'deal allowance target'=>'Product'
-		     ,'deal allowance target key'=>''
-		     ,'deal begin date'=>'2006-01-01 00:00:00'
-		     ,'deal expiration date'=>date("Y-m-d 23:59:59",strtotime('now + 1 year'))
+		     'Deal Campaign Name'=>'Gold Reward'
+		     ,'Deal Trigger'=>'Order'
+		  
+		     ,'Deal Description'=>$allowance.' if last order within 1 calendar month'
+		     ,'Deal Terms Type'=>'Order Interval'
+		     ,'Deal Terms Description'=>'last order within 1 calendar month'
+		     ,'Deal Allowance Description'=>$allowance
+		     ,'Deal Allowance Type'=>'Percentage Off'
+		     ,'Deal Allowance Target'=>'Product'
+		     ,'Deal Allowance Target Key'=>''
+		     ,'Deal Begin Date'=>''
+		     ,'Deal Expiration Date'=>''
 		     );
       
       $deals[]=array(
-		     'deal campain name'=>''
-		     ,'deal trigger'=>'Family'
-		     ,'deal description'=>$allowance.' if '.$terms.' same family'
-		     ,'deal terms type'=>'Family Quantity Ordered'
-		     ,'deal terms description'=>'order '.$terms
-		     ,'deal allowance description'=>$allowance
-		     ,'deal allowance type'=>'Percentage Off'
-		     ,'deal allowance target'=>'Product'
-		     ,'deal allowance target key'=>''
-		     ,'deal begin date'=>'2006-01-01 00:00:00'
-		     ,'deal expiration date'=>date("Y-m-d 23:59:59",strtotime('now + 1 year'))
+		     'Deal Campaign Name'=>'Family Volume Discount'
+		     ,'Deal Trigger'=>'Family'
+		     ,'Deal Description'=>$allowance.' if '.$terms.' same family'
+		     ,'Deal Terms Type'=>'Family Quantity Ordered'
+		     ,'Deal Terms Description'=>'order '.$terms
+		     ,'Deal Allowance Description'=>$allowance
+		     ,'Deal Allowance Type'=>'Percentage Off'
+		     ,'Deal Allowance Target'=>'Product'
+		     ,'Deal Allowance Target Key'=>''
+		     ,'Deal Begin Date'=>''
+		     ,'Deal Expiration Date'=>''
 		     );	
 
       
@@ -356,31 +356,31 @@ foreach($__cols as $cols){
       $terms=_trim(strtolower($match[0]));
 
       $deals[]=array(
-		     'deal campain name'=>'Gold Reward'
-		     ,'deal trigger'=>'Order'
-		     ,'deal description'=>$allowance.' if last order within 1 calendar month'
-		     ,'deal terms type'=>'Order Interval'
-		     ,'deal terms description'=>'last order within 1 calendar month'
-		     ,'deal allowance description'=>$allowance
-		     ,'deal allowance type'=>'Percentage Off'
-		     ,'deal allowance target'=>'Product'
-		     ,'deal allowance target key'=>''
-		        ,'deal begin date'=>'2006-01-01 00:00:00'
-		       ,'deal expiration date'=>date("Y-m-d 23:59:59",strtotime('now + 1 year'))
+		     'Deal Campaign Name'=>'Gold Reward'
+		     ,'Deal Trigger'=>'Order'
+		     ,'Deal Description'=>$allowance.' if last order within 1 calendar month'
+		     ,'Deal Terms Type'=>'Order Interval'
+		     ,'Deal Terms Description'=>'last order within 1 calendar month'
+		     ,'Deal Allowance Description'=>$allowance
+		     ,'Deal Allowance Type'=>'Percentage Off'
+		     ,'Deal Allowance Target'=>'Product'
+		     ,'Deal Allowance Target Key'=>''
+		        ,'Deal Begin Date'=>''
+		       ,'Deal Expiration Date'=>''
 		       );
 
 	$deals[]=array(
-		       'deal campain name'=>''
-		       ,'deal trigger'=>'Family'
-		       ,'deal description'=>$allowance.' if '.$terms.' same family'
-		       ,'deal terms type'=>'Family Quantity Ordered'
-		       ,'deal terms description'=>'order '.$terms
-		       ,'deal allowance description'=>$allowance
-		       ,'deal allowance type'=>'Percentage Off'
-		       ,'deal allowance target'=>'Product'
-		       ,'deal allowance target key'=>''
-		       ,'deal begin date'=>'2006-01-01 00:00:00'
-		       ,'deal expiration date'=>date("Y-m-d 23:59:59",strtotime('now + 1 year'))
+		       'Deal Campaign Name'=>'Family Volume Discount'
+		       ,'Deal Trigger'=>'Family'
+		       ,'Deal Description'=>$allowance.' if '.$terms.' same family'
+		       ,'Deal Terms Type'=>'Family Quantity Ordered'
+		       ,'Deal Terms Description'=>'order '.$terms
+		       ,'Deal Allowance Description'=>$allowance
+		       ,'Deal Allowance Type'=>'Percentage Off'
+		       ,'Deal Allowance Target'=>'Product'
+		       ,'Deal Allowance Target Key'=>''
+		       ,'Deal Begin Date'=>''
+		       ,'Deal Expiration Date'=>''
 		       
 		       );	
 	
@@ -394,17 +394,17 @@ foreach($__cols as $cols){
       $get=_trim(preg_replace('/[^\d]/','',$match[0]));
 
       $deals[]=array(
-		       'deal campain name'=>'BOGOF'
-		       ,'deal trigger'=>'Product'
-		       ,'deal description'=>'buy '.$buy.' get '.$get.' free'
-		       ,'deal terms type'=>'Product Quantity Ordered'
-		       ,'deal terms description'=>'foreach '.$buy
-		       ,'deal allowance description'=>$get.' free'
-		       ,'deal allowance type'=>'Get Free'
-		       ,'deal allowance target'=>'Product'
-		       ,'deal allowance target key'=>''
-		       ,'deal begin date'=>'2006-01-01 00:00:00'
-		       ,'deal expiration date'=>date("Y-m-d 23:59:59",strtotime('now + 1 year'))
+		       'Deal Campaign Name'=>'BOGOF'
+		       ,'Deal Trigger'=>'Product'
+		       ,'Deal Description'=>'buy '.$buy.' get '.$get.' free'
+		       ,'Deal Terms Type'=>'Product Quantity Ordered'
+		       ,'Deal Terms Description'=>'foreach '.$buy
+		       ,'Deal Allowance Description'=>$get.' free'
+		       ,'Deal Allowance Type'=>'Get Free'
+		       ,'Deal Allowance Target'=>'Product'
+		       ,'Deal Allowance Target Key'=>''
+		       ,'Deal Begin Date'=>'2006-01-01 00:00:00'
+		       ,'Deal Expiration Date'=>''
 		     );	
 
 
@@ -562,6 +562,9 @@ foreach($__cols as $cols){
 		  'date2'=>date('Y-m-d H:i:s'),
 		  'deals'=>$deals
 		    );
+
+
+
 
        $product=new Product('find',$data,'create');
        //  print_r($product);
@@ -1229,6 +1232,7 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 				   ,'Supplier Code'=>$supplier_code
 				   );
 	}
+
 	$supplier=new Supplier('code',$supplier_code);
 	if(!$supplier->id){
 	  //print "neew: $supplier_code\n";
@@ -1306,6 +1310,22 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
        
     
  }
+  //print_r($deals);
+
+    
+
+    foreach($deals as $deal_data){
+        //print_r($product);
+        if($deal_data['Deal Trigger']=='Family')
+            $deal_data['Deal Trigger Key']=$product->data['Product Family Key'];
+        if($deal_data['Deal Trigger']=='Product')
+            $deal_data['Deal Trigger Key']=$product->data['Product ID'];
+         if($deal_data['Deal Allowance Target']=='Product')
+            $deal_data['Deal Allowance Target Key']=$product->data['Product ID'];   
+        $deal=new Deal('find create',$deal_data);
+
+    }  
+    
     
     }
   }else{

@@ -87,7 +87,7 @@ class Company extends DB_Table {
 	    $find_fuzzy='fuzzy';
 	  }
 
- Timer::timing_milestone('start find');
+ //Timer::timing_milestone('start find');
 
         if (isset($raw_data['editor'])) {
             foreach($raw_data['editor'] as $key=>$value) {
@@ -153,9 +153,9 @@ class Company extends DB_Table {
         }
 
 
-	Timer::timing_milestone('begin  find  contact');
+	//Timer::timing_milestone('begin  find  contact');
         $contact=new Contact("find in company $find_fuzzy ",$raw_data);
-	Timer::timing_milestone('end find contact');
+	//Timer::timing_milestone('end find contact');
         foreach($contact->candidate as $key=>$val) {
             if (isset($this->candidate[$key]))
                 $this->candidate[$key]+=$val;
@@ -491,8 +491,12 @@ class Company extends DB_Table {
             $contact->editor=$this->editor;
             $contact->update(array('Contact Name'=>$this->data['Company Main Contact Name']));
         } else {
+       
             $contact=new Contact("find in company create",$raw_data);
-
+            if(!$contact->new){
+              print_r($contact);
+              exit("can not add contant to company\n");
+            }
         }
 
         $this->data['Company Main Contact Name']=$contact->display('name');
@@ -544,6 +548,7 @@ class Company extends DB_Table {
 
         // print_r($raw_address_data);
         if (!$address->new) {
+            print_r($address);
             exit("find_company: address found");
         }
         // print_r($address->data);

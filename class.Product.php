@@ -109,8 +109,11 @@ public $new_value=false;
       $sql=sprintf("select * from `Product History Dimension` where `Product Key`=%d ",$tag);
       $result=mysql_query($sql);
       if ( ($this->data=mysql_fetch_array($result, MYSQL_ASSOC))) {
-	$this->id=$this->data['Product Key'];
-	$this->pid=$this->data['Product ID'];
+	    $this->id=$this->data['Product Key'];
+	    $this->pid=$this->data['Product ID'];
+	    $this->get_data('pid',$this->pid);
+	
+	
       } else
 	return;
       mysql_free_result($result);
