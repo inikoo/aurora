@@ -200,25 +200,44 @@ class Deal extends DB_Table {
         return false;
     }
  public static function parse_allowance_metadata($allowance_type,$allowance_description){
-   switch($allowance_type){
+// print "$allowance_type,$allowance_description\n";
+ switch($allowance_type){
    case('Percentage Off'):
      if (preg_match('/\d+((\.|\,)\d+)?\%/i',$allowance_description,$match)){
        $number=preg_replace('/\,/','.',$match[0]);
        $number=preg_replace('/\%/','',$number);
-       
        return 0.01* (float) $number;
-
+     }
+      if (preg_match('/^(|.*\s+)free(\s+.*|)$/i',$allowance_description,$match)){
+       return 1;
      }
      break;
    case('Get Free'):
      $allowance_description=translate_written_number($allowance_description);
-     if(preg_match('/get \d+/i',$allowance_description,$match))
+     if(preg_match('/get \d+/i',$allowance_description,$match)){
+//            print "** $allowance_description \n";
+
        return _trim(preg_replace('/[^\d]/','',$match[0]));
+       }
      break;
    }
  }
 
     public static function parse_term_metadata($term_description_type,$term_description){
+      
+      $conditions=preg_split('/\s+AND\s+/',$term_description_type);
+      $metadata='';
+      foreach($conditions as $condition){
+         $metadata.=','.Deal::parse_individual_term_metadata($condition,$term_description);
+      }
+      $metadata=preg_replace('/^\,/','',$metadata); 
+      // print "------- $metadata\n";
+      
+       return $metadata;
+      }
+      
+    public static function parse_individual_term_metadata($term_description_type,$term_description){
+      //print "$term_description_type  => $term_description\n";
       switch($term_description_type){
       case('Family Quantity Ordered'):
       case('Product Quantity Ordered'):
@@ -255,6 +274,7 @@ class Deal extends DB_Table {
       case('Order Total Net Amount'):
 	list($currency,$amount)=parse_money($term_description);
 	return "$currency $amount";
+	
 	break;
       case('Shipping Country'):	
 	$regex='/orders? (shipped |send |to be send |d(ie)spached )?to .*$/i';

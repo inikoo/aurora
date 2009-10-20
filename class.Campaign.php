@@ -116,7 +116,7 @@ class Campaign extends DB_Table {
     function create($data) {
 
         //print_r($data);
-      if($data['Campaing Deal Terms Metadata']=='')
+      if($data['Campaing Deal Terms Metadata']=='' and $data['Campaign Deal Terms Lock']=='Yes')
 	$data['Campaing Deal Terms Metadata']=Deal::parse_term_metadata($data['Campaign Deal Terms Type'],$data['Campaign Deal Terms Description']);
       
       
@@ -124,6 +124,9 @@ class Campaign extends DB_Table {
       $values='values(';
       foreach($data as $key=>$value) {
 	$keys.="`$key`,";
+	if($data['Campaign Deal Terms Lock']=='No')
+	 $values.=prepare_mysql($value,false).",";
+	else
             $values.=prepare_mysql($value).",";
       }
       $keys=preg_replace('/,$/',')',$keys);
@@ -133,7 +136,7 @@ class Campaign extends DB_Table {
 
 
         $sql=sprintf("insert into `Campaign Dimension` %s %s",$keys,$values);
-        // print "$sql\n";
+        //print "$sql\n";
         if (mysql_query($sql)) {
             $this->id = mysql_insert_id();
             $this->get_data('id',$this->id);
@@ -162,7 +165,9 @@ class Campaign extends DB_Table {
 		       'Deal Name'=>$this->data['Campaign Name'],
 		       'Deal Allowance Description'=>'',
 		       'Deal Allowance Type'=>'',
-		       'Deal Allowance Target'=>''
+		       'Deal Allowance Target'=>'',
+		       'Deal Allowance Lock'=>'No',
+		       'Deal Allowance Metadata'=>''
 		       );
       foreach($raw_data as $key=>$value) {
 	if (array_key_exists($key,$base_data))
@@ -170,16 +175,23 @@ class Campaign extends DB_Table {
       }
       $base_data['Campaign Key']=$this->id;
 
+
+//print_r($base_data);
+
       if($base_data['Deal Allowance Lock']=='Yes')
 	$base_data['Deal Allowance Metadata']=Deal::parse_allowance_metadata($base_data['Deal Allowance Type'],$base_data['Deal Allowance Description']);
       else
 	$base_data['Deal Allowance Metadata']='';
 
+//print_r($base_data);
 
       $keys='(';
       $values='values(';
       foreach($base_data as $key=>$value) {
 	$keys.="`$key`,";
+	    if($base_data['Deal Allowance Lock']=='No')
+	    	$values.=prepare_mysql($value,false).",";
+	    else
 	$values.=prepare_mysql($value).",";
       }
       $keys=preg_replace('/,$/',')',$keys);

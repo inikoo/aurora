@@ -26,7 +26,7 @@ if(!$con){print "Error can not connect with database server\n";exit;}
 //$dns_db='dw';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
- 
+
 
 require_once '../../common_functions.php';
 mysql_query("SET time_zone ='+0:00'");
@@ -47,7 +47,7 @@ $Data_Audit_ETL_Software="$software $version";
 
 $file_name='/data/plaza/AWorder2002.xls';
 $csv_file='tmp.csv';
-exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
+//exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
 
 $handle_csv = fopen($csv_file, "r");
 $column=0;
@@ -67,7 +67,6 @@ $data=array('`Category Name`'=>'Material');
 $nodes->add_new(0 , $data);
 $data=array('`Category Name`'=>'Theme');
 $nodes->add_new(0 , $data);
-
 
 $data=array('`Category Name`'=>'Other','`Category Default`'=>'Yes');
 $nodes->add_new(1 , $data);
@@ -219,7 +218,6 @@ $fam_promo_key=$fam_promo->id;
 
  $campaign=array(
 		     'Campaign Name'=>'Gold Reward'
-		     ,'Campaign Trigger'=>'Order'
 		     ,'Campaign Description'=>'Small order charge waive & discounts on seleted items if last order within 1 calendar month'
 		     ,'Campaign Begin Date'=>''
 		     ,'Campaign Expiration Date'=>''
@@ -233,53 +231,51 @@ $camp=new Campaign('find create',$campaign);
 
 $data=array(
 	    'Deal Name'=>'[Product Family Code] Gold Reward'
-	    
+	    ,'Deal Trigger'=>'Family'
 	    ,'Deal Allowance Type'=>'Percentage Off'
 	    ,'Deal Allowance Description'=>'[Percentage Off] off'
 	    ,'Deal Allowance Target'=>'Family'
-	    ,'Deal Allowance Lock'=>'Yes'
+	    ,'Deal Allowance Lock'=>'No'
 		     );
 $camp->add_deal_schema($data);
 
 $data=array(
 	    'Deal Name'=>'Free Small Order Charge'
 	    ,'Deal Description'=>'Small order charge waive within 1 calendar month'
-	    
+	    ,'Deal Trigger'=>'Order'
 	    
 	    ,'Deal Allowance Type'=>'Percentage Off'
 	    ,'Deal Allowance Description'=>'Free Small Order Charge'
 	    ,'Deal Allowance Target'=>'Charge'
-		     ,'Deal Allowance Key'=>$small_order_charge->id
-
+	    ,'Deal Allowance Key'=>$small_order_charge->id
+        ,'Deal Allowance Lock'=>'Yes'
 
 		   
 		     );
 $camp->add_deal_schema($data);
-
-
-exit('adios');
-
-
 $gold_reward_cam_id=$camp->id;
 
 $campaign=array(
 		     'Campaign Name'=>'Volumen Discount'
-		     ,'Campaign Type'=>'Schema'
 		     ,'Campaign Trigger'=>'Family'
-		     ,'Campaign Description'=>'Discounts when buying some auantity of product from the same family'
+		     ,'Campaign Description'=>'Percentage off when order more than some quantity of products in the same family'
 		     ,'Campaign Begin Date'=>''
 		     ,'Campaign Expiration Date'=>''
+		      ,'Campaign Deal Terms Type'=>'Family Quantity Ordered'
+		     ,'Campaign Deal Terms Description'=>'order [Quantity] or more same family'
+		     ,'Campaign Deal Terms Lock'=>'No'
 		     );
 $camp=new Campaign('find create',$campaign);
 
 
 $data=array(
 		     'Deal Name'=>'Volume Discounts'
-		     ,'Deal Description'=>'Family Volume Discount'
+		     ,'Deal Trigger'=>'Family'
 		     ,'Deal Allowance Type'=>'Percentage Off'
-		     ,'Deal Allowance Description'=>'Percentage Off in all members of the family'
+		     ,'Deal Allowance Description'=>'[Percentage Off] off'
 		     ,'Deal Allowance Target'=>'Family'
-		   
+		   	 ,'Deal Allowance Lock'=>'No'
+
 		     );
 $camp->add_deal_schema($data);
 
@@ -290,31 +286,34 @@ $volume_cam_id=$camp->id;
 
 $campaign=array(
 		     'Campaign Name'=>'BOGOF'
-		     ,'Campaign Trigger'=>'Product'
 		     ,'Campaign Description'=>'Buy one Get one Free'
 		     ,'Campaign Begin Date'=>''
 		     ,'Campaign Expiration Date'=>''
+		       ,'Campaign Deal Terms Type'=>'Product Quantity Ordered'
+		     ,'Campaign Deal Terms Description'=>'Buy 1'
+		     ,'Campaign Deal Terms Lock'=>'No'
 		     );
 $camp=new Campaign('find create',$campaign);
 
 
 $data=array(
 		     'Deal Name'=>'BOGOF'
-		     ,'Deal Description'=>'Buy one Get one Free'
+		     ,'Deal Trigger'=>'Family'
 		     ,'Deal Allowance Type'=>'Get Free'
-		     ,'Deal Allowance Description'=>'buy 1 get 1 free'
+		     ,'Deal Allowance Description'=>'get 1 free'
 		     ,'Deal Allowance Target'=>'Product'
-		   
+		    ,'Deal Allowance Lock'=>'Yes'
 		     );
 $camp->add_deal_schema($data);
 
 $data=array(
 	    'Deal Name'=>'BOGOF'
-	    ,'Deal Description'=>'Buy any product of this family and one free'
+		     ,'Deal Trigger'=>'Product'
 		     ,'Deal Allowance Type'=>'Get Free'
-	    ,'Deal Allowance Description'=>'buy 1 get 1 free'
-	    ,'Deal Allowance Target'=>'family'
-		   
+		     ,'Deal Allowance Description'=>'get 1 free'
+		     ,'Deal Allowance Target'=>'Product'
+		     ,'Deal Allowance Lock'=>'Yes'
+
 		     );
 $camp->add_deal_schema($data);
 
@@ -325,22 +324,26 @@ $bogof_cam_id=$camp->id;
 
 $campaign=array(
 		     'Campaign Name'=>'First Order Bonus'
-		     ,'Campaign Type'=>'Deal'
 		     ,'Campaign Trigger'=>'Order'
 		     ,'Campaign Description'=>'When you order over £100+vat for the first time we give you over a £100 of stock. (at retail value).'
 		     ,'Campaign Begin Date'=>''
 		     ,'Campaign Expiration Date'=>''
+		     ,'Campaign Deal Terms Type'=>'Order Total Net Amount AND Order Number'
+		     ,'Campaign Deal Terms Description'=>'order over £100+tax on the first order '
+		     ,'Campaign Deal Terms Lock'=>'Yes'
 		     );
 $camp=new Campaign('find create',$campaign);
 
 
 $data=array(
-		     'Deal Name'=>'First Order Bonus'
-		     ,'Deal Description'=>'When you order over £100+vat for the first time we give you over a £100 of stock. (at retail value).'
+		     'Deal Name'=>'First Order Bonus [Counter]'
+		    ,'Deal Trigger'=>'Order'
+            ,'Deal Description'=>'When you order over £100+vat for the first time we give you over a £100 of stock. (at retail value).'
 		     ,'Deal Allowance Type'=>'Get Free'
-		     ,'Deal Allowance Description'=>'Bonus Stock - worth £100 at retail value'
+		     ,'Deal Allowance Description'=>'Free Bonus Stock ([Product Code])'
 		     ,'Deal Allowance Target'=>'Product'
-		   
+		   		    ,'Deal Allowance Lock'=>'No'
+
 		     );
 $camp->add_deal_schema($data);
 
@@ -403,7 +406,7 @@ $deal=new Deal('find create',$data);
 
 
 
-
+exit;
 
 
 $__cols=array();
