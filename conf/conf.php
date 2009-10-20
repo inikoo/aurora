@@ -547,24 +547,24 @@ $default_state=array(
                                'id'=>1,
                                'plot'=>'store',
                                'plot_data'=>array('store'=>array(
-                                                              'period'=>'m'
-                                                                       ,'category'=>'sales'
-                                                                                   ,'page'=>'plot.php'
-                                                          )
-                                                          ,'top_departments'=>array(
-                                                                                 'period'=>'m'
-                                                                                          ,'category'=>'sales'
-                                                                                                      ,'page'=>'plot.php'
-                                                                             )
-                                                                             ,'pie'=>array(
-                                                                                        'period'=>'m'
-                                                                                                 ,'category'=>'sales'
-                                                                                                             ,'page'=>'pie.php'
-                                                                                                                     ,'forecast'=>'no'
-                                                                                                                                 ,'date'=>'today'
-                                                                                    )
+								 'period'=>'m',
+								 'category'=>'sales',
+								 'page'=>'plot.php'
+								 )
+						  ,'top_departments'=>array(
+									    'period'=>'m',
+									    'category'=>'sales',
+									    'page'=>'plot.php'
+									    )
+						  ,'pie'=>array(
+								'period'=>'m',
+								'category'=>'sales',
+								'page'=>'pie.php',
+								'forecast'=>'no',
+								'date'=>'today'
+								)
                                                  ),
-
+			       
                                'table'=>array(
                                            'where'=>'where true',
                                            'f_field'=>'code',
@@ -585,7 +585,53 @@ $default_state=array(
                                              'from'=>'',
                                              'to'=>'',
                                              'elements'=>''
-                                         )
+						),
+			        'charges'=>array(
+                                           'where'=>'where true',
+                                           'f_field'=>'description',
+                                           'f_value'=>'',
+                                           'order'=>'description',
+                                           'order_dir'=>'',
+                                           'sf'=>0,
+                                           'nr'=>25,
+                                       ),
+			       'shipping_country'=>array(
+                                           'where'=>'where true',
+                                           'f_field'=>'name',
+                                           'f_value'=>'',
+                                           'order'=>'name',
+                                           'order_dir'=>'',
+                                           'sf'=>0,
+                                           'nr'=>25,
+                                       ),
+			       'shipping_world_region'=>array(
+							      'where'=>'where true',
+							      'f_field'=>'name',
+							      'f_value'=>'',
+							      'order'=>'name',
+							      'order_dir'=>'',
+							      'sf'=>0,
+							      'nr'=>25,
+							      ),
+			       'campaigns'=>array(
+                                           'where'=>'where true',
+                                           'f_field'=>'name',
+                                           'f_value'=>'',
+                                           'order'=>'name',
+                                           'order_dir'=>'',
+                                           'sf'=>0,
+                                           'nr'=>25,
+                                       ),
+			        'deals'=>array(
+                                           'where'=>'where true',
+                                           'f_field'=>'name',
+                                           'f_value'=>'',
+                                           'order'=>'name',
+                                           'order_dir'=>'',
+                                           'sf'=>0,
+                                           'nr'=>25,
+                                       ),
+
                            ),
                    'departments'=>array(
                                      'details'=>false,
@@ -671,7 +717,17 @@ $default_state=array(
                                                   'from'=>'',
                                                   'to'=>'',
                                                   'elements'=>''
-                                              )
+						     ),
+				     'deals'=>array(
+                                           'where'=>'where true',
+                                           'f_field'=>'name',
+                                           'f_value'=>'',
+                                           'order'=>'name',
+                                           'order_dir'=>'',
+                                           'sf'=>0,
+                                           'nr'=>25,
+                                       ),
+
                                 ),
                    'family'=>array(
                                 'details'=>false,
@@ -712,7 +768,16 @@ $default_state=array(
                                               'from'=>'',
                                               'to'=>'',
                                               'elements'=>''
-                                          )
+						 ),
+				 'deals'=>array(
+                                           'where'=>'where true',
+                                           'f_field'=>'name',
+                                           'f_value'=>'',
+                                           'order'=>'name',
+                                           'order_dir'=>'',
+                                           'sf'=>0,
+                                           'nr'=>25,
+                                       ),
                             ),
 
 
@@ -833,6 +898,15 @@ $default_state=array(
                                                      'elements'=>array()
                                                  )
                              ),
+		    'deals'=>array(
+                                           'where'=>'where true',
+                                           'f_field'=>'name',
+                                           'f_value'=>'',
+                                           'order'=>'name',
+                                           'order_dir'=>'',
+                                           'sf'=>0,
+                                           'nr'=>25,
+                                       ),
                    'part'=>array(
                               'details'=>false,
                               'plot'=>'part_stock_history',

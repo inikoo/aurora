@@ -19,3 +19,6 @@ TRUNCATE `Location Dimension`;
 TRUNCATE `Store Dimension`;
 TRUNCATE `Category Dimension`;
 TRUNCATE `Category Bridge`;
+TRUNCATE `Campaign Dimension`;
+TRUNCATE `Campaign Deal Schema`;
+TRUNCATE `Charge Dimension`;

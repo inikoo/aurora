@@ -82,7 +82,7 @@ class Deal extends DB_Table {
         }
         $fields=array();
         foreach($data as $key=>$value){
-        if(!($key=='Deal Begin Date' or  !$key=='Deal Expiration Date'))
+        if(!($key=='Deal Begin Date' or  $key=='Deal Expiration Date' or   $key=='Deal Allowance Metadata' or  $key=='Deal Replace Metadata' ))
         $fields[]=$key;
         }
        
@@ -91,7 +91,7 @@ class Deal extends DB_Table {
         foreach($fields as $field) {
             $sql.=sprintf(' and `%s`=%s',$field,prepare_mysql($data[$field],false));
         }
-       
+	//print "$sql\n";
         $result=mysql_query($sql);
         $num_results=mysql_num_rows($result);
         if ($num_results==1) {
@@ -101,7 +101,7 @@ class Deal extends DB_Table {
            
         }
         if($this->found){
-            $this->get_data($this->found);
+	  $this->get_data('id',$this->found);
         }
         
         if($create and !$this->found){
@@ -116,8 +116,8 @@ class Deal extends DB_Table {
 
     function create($data) {
 
-       
-
+      if($data['Deal Trigger Key']=='')
+	$data['Deal Trigger Key']=0;
         if ($data['Deal Allowance Type']=='Percentage Off' and preg_match('/Quantity Ordered/i',$data['Deal Terms Type'])) {
             //   print "***********";
             if (preg_match('/order \d+ or more/i',$data['Deal Terms Description'],$match))
@@ -169,6 +169,9 @@ class Deal extends DB_Table {
         $values='values(';
         foreach($data as $key=>$value) {
             $keys.="`$key`,";
+	    if($key=='Deal Replace Metadata')
+	      $values.=prepare_mysql($value,false).",";
+	    else
             $values.=prepare_mysql($value).",";
         }
         $keys=preg_replace('/,$/',')',$keys);
@@ -195,6 +198,73 @@ class Deal extends DB_Table {
         }
 
         return false;
+    }
+ public static function parse_allowance_metadata($allowance_type,$allowance_description){
+   switch($allowance_type){
+   case('Percentage Off'):
+     if (preg_match('/\d+((\.|\,)\d+)?\%/i',$allowance_description,$match)){
+       $number=preg_replace('/\,/','.',$match[0]);
+       $number=preg_replace('/\%/','',$number);
+       
+       return 0.01* (float) $number;
+
+     }
+     break;
+   case('Get Free'):
+     $allowance_description=translate_written_number($allowance_description);
+     if(preg_match('/get \d+/i',$allowance_description,$match))
+       return _trim(preg_replace('/[^\d]/','',$match[0]));
+     break;
+   }
+ }
+
+    public static function parse_term_metadata($term_description_type,$term_description){
+      switch($term_description_type){
+      case('Family Quantity Ordered'):
+      case('Product Quantity Ordered'):
+      case('Department Quantity Ordered'):
+      case('Store Quantity Ordered'):
+	$term_description=translate_written_number($term_description);
+
+	
+	if (preg_match('/order \d+ or more/i',$term_description,$match))
+	  return preg_replace('/[^\d]/','',$match[0]);
+	
+
+	break;
+      case('Order Interval'):
+	if (preg_match('/order (within|since|every) \d+ days?/i',$term_description,$match))
+	  return preg_replace('/[^\d]/','',$match[0]).' day';
+	if (preg_match('/order (within|since|every) \d+ months?/i',$term_description,$match))
+	  return preg_replace('/[^\d]/','',$match[0]).' month';
+	if (preg_match('/order (within|since|every) \d+ weeks?/i',$term_description,$match))
+	  return preg_replace('/[^\d]/','',$match[0]).' week';
+	break;
+      case('Order Number'):
+	if (preg_match('/(first|1st) (order|one)|order (for|the)? (first|1st) time/i',$term_description,$match))
+	  return 1;
+	if (preg_match('/(second|2nd) (order|one)|order (for|the)? (second|2nd) time/i',$term_description,$match))
+	  return 2;
+	if (preg_match('/(third|3nd) (order|one)|order (for|the)? (third|3nd) time/i',$term_description,$match))
+	  return 3;
+	if (preg_match('/order (number|no|\#)?\s*\d+/i',$term_description,$match))
+	  return preg_replace('/[^\d]/','',$match[0]);
+
+	break;
+      case('Order Items Net Amount'):
+      case('Order Total Net Amount'):
+	list($currency,$amount)=parse_money($term_description);
+	return "$currency $amount";
+	break;
+      case('Shipping Country'):	
+	$regex='/orders? (shipped |send |to be send |d(ie)spached )?to .*$/i';
+	if( preg_match($regex.'.*$',$term_description,$match)){
+	  $country=_trim(preg_replace($regex,'',$match));
+	  $country_code=Address::parse_country($country);
+	}
+
+	break;
+      }
     }
 
 }

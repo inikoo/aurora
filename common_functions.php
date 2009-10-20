@@ -300,6 +300,10 @@ function percentage($a,$b,$fixed=1,$error_txt='NA',$psign='%',$plus_sing=false){
  */  
 function parse_money($amount,$currency=false){
   global $myconf;
+  //	preg_match('/(\$|\£|\€|EUR|GBP|USD)[0-9]{1,3}(?:,?[0-9]{3})*(?:\.[0-9]{2})?/',$term_description , $match){
+
+
+
   if(!$currency)
     $currency=$myconf['currency_code'];
   else
@@ -1350,6 +1354,25 @@ function yearquarter($date){
   
 }
 
+
+function translate_written_number($string){
+  
+  $numbers=array('zero','one','two','three','four','five','six','seven','eight','nine','ten','eleven');
+  $common_suffixes=array('hundreds?'=>100,'thousands?'=>1000,'millons?'=>100000);
+  
+  $number_flat=join("|",$numbers);
+  $common_suffixes_flat=join("|",$common_suffixes);
+  if(preg_match("/$number_flat/i",$string)){
+    if(preg_match("/$common_suffixes_flat/i",$string)){
+      foreach($numbers as $number=>$number_string)
+	foreach($common_suffixes as $common_suffix=>$number_$common_suffix)
+	  $string=_trim(preg_replace('/^(.*\s+|)$number_string\s?$common_suffix(\s+.*|)$/ '," ".$number*$number_$common_suffix." ",$string));
+    }else{
+      foreach($numbers as $number=>$number_string)
+	$string=_trim(preg_replace('/^(.*\s+|)$number_string(\s+.*|)$/ '," $number ",$string));
+    }
+  }
+}    
 
 
 ?>
