@@ -1462,6 +1462,39 @@ if($data['Address Fuzzy']=='Yes'){
       return false;
   }
 
+  public static function parse_country($country){
+    $len=strlen($country);
+    if($len==2){
+      $sql=sprintf("select `Country Code` from kbase.`Country Dimension`  where `Country 2 Alpha Code`=%s",prepare_mysql($country));
+      $result = mysql_query($sql) ;
+      if($row = mysql_fetch_array($result, MYSQL_ASSOC)){
+	return $row['Country Code'];
+      }
+    }elseif($len==3){
+      $sql=sprintf("select `Country Code` from kbase.`Country Dimension`  where `Country Code`=%s",prepare_mysql($country));
+      $result = mysql_query($sql) ;
+      if($row = mysql_fetch_array($result, MYSQL_ASSOC)){
+	return $row['Country Code'];
+      }
+    }
+
+    $sql=sprintf("select `Country Code` from kbase.`Country Dimension`  where `Country Name`=%s",prepare_mysql($country));
+    $result = mysql_query($sql) ;
+    if($row = mysql_fetch_array($result, MYSQL_ASSOC)){
+      return $row['Country Code'];
+    }
+    
+    $sql=sprintf("select `Country Alias Code` from kbase.`Country Alias Dimension` where `Country Name`=%s",prepare_mysql($country));
+    $result = mysql_query($sql) ;
+    if($row = mysql_fetch_array($result, MYSQL_ASSOC)){
+      return $row['Country Alias Code'];
+    }
+
+    return 'UNK';
+
+  }
+
+
   /*
     Function: is_country_code
     Look if is a valid country 3 alpha code

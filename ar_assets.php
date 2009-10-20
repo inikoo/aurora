@@ -38,6 +38,17 @@ if(!isset($_REQUEST['tipo']))
 
 $tipo=$_REQUEST['tipo'];
 switch($tipo){
+case('charges'):
+  list_charges();
+  break;
+case('campaigns'):
+  list_campaigns();
+  break;
+case('deals'):
+  list_deals();
+  break;
+
+
 case('product_history'):
   list_asset_history('product');
   break;
@@ -6570,6 +6581,596 @@ $sum_discontinued=number($sum_discontinued);
   //  $rtext='';
 
     $total_records=ceil($total_records/$number_results)+$total_records;
+
+   $response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$adata,
+			 'sort_key'=>$_order,
+			 'sort_dir'=>$_dir,
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
+			 'rtext'=>$rtext,
+			 'rtext_rpp'=>$rtext_rpp,
+			 'total_records'=>$total_records,
+			 'records_offset'=>$start_from,
+			 'records_perpage'=>$number_results,
+			 )
+		   );
+   echo json_encode($response);
+}
+
+function list_charges(){
+
+
+  $parent='store';
+
+   if( isset($_REQUEST['parent']))
+     $parent= $_REQUEST['parent'];
+
+   if($parent=='store')
+     $parent_id=$_SESSION['state']['store']['id'];
+   else
+     return;
+
+   $conf=$_SESSION['state'][$parent]['charges'];
+
+   
+
+
+   if(isset( $_REQUEST['sf']))
+     $start_from=$_REQUEST['sf'];
+   else
+     $start_from=$conf['sf'];
+   
+
+   if(isset( $_REQUEST['nr'])){
+     $number_results=$_REQUEST['nr'];
+     if($start_from>0){
+       $page=floor($start_from/$number_results);
+       $start_from=$start_from-$page;
+     }
+   
+   }else
+     $number_results=$conf['nr'];
+
+
+ if(isset( $_REQUEST['o']))
+     $order=$_REQUEST['o'];
+   else
+    $order=$conf['order'];
+   if(isset( $_REQUEST['od']))
+     $order_dir=$_REQUEST['od'];
+   else
+     $order_dir=$conf['order_dir'];
+   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+   if(isset( $_REQUEST['where']))
+     $where=addslashes($_REQUEST['where']);
+   else
+     $where=$conf['where'];
+
+    
+   if(isset( $_REQUEST['f_field']))
+     $f_field=$_REQUEST['f_field'];
+   else
+     $f_field=$conf['f_field'];
+   
+   if(isset( $_REQUEST['f_value']))
+     $f_value=$_REQUEST['f_value'];
+   else
+     $f_value=$conf['f_value'];
+
+   
+   if(isset( $_REQUEST['tableid']))
+     $tableid=$_REQUEST['tableid'];
+   else
+    $tableid=0;
+   
+
+  
+
+   
+   $_SESSION['state'][$parent]['charges']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+  // print_r($_SESSION['tables']['families_list']);
+
+  //  print_r($_SESSION['tables']['families_list']);
+   if($parent=='store')
+     $where=sprintf("where  `Store Key`=%d ",$parent_id);
+   else
+     $where=sprintf("where true ");
+
+   $filter_msg='';
+  $wheref='';
+  if($f_field=='description' and $f_value!='')
+    $wheref.=" and  CONCAT(`Charge Description`,' ',`Charge Terms Description`) like '".addslashes($f_value)."%'";
+  elseif($f_field=='name' and $f_value!='')
+    $wheref.=" and  `Charge Name` like '".addslashes($f_value)."%'";
+
+
+
+
+  
+ 
+
+
+   $sql="select count(*) as total from `Charge Dimension`   $where $wheref";
+   // print $sql;
+   $result=mysql_query($sql);
+   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+     $total=$row['total'];
+   }
+mysql_free_result($result);
+     
+     if($wheref==''){
+       $filtered=0;$total_records=$total;
+   }else{
+     $sql="select count(*) as total `Charge Dimension`   $where ";
+
+     $result=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+      $total_records=$row['total'];
+	 $filtered=$total_records-$total;
+     }
+mysql_free_result($result);
+
+   }
+
+  
+     $rtext=$total_records." ".ngettext('charge','charges',$total_records);
+     if($total_records>$number_results)
+       $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+     else
+       $rtext_rpp=' ('._('Showing all').')';
+
+  if($total==0 and $filtered>0){
+       switch($f_field){
+     case('name'):
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any charge with this name ")." <b>".$f_value."*</b> ";
+	 break;
+       case('description'):
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any charge with description like ")." <b>".$f_value."*</b> ";
+       break;
+     }
+   }
+   elseif($filtered>0){
+     switch($f_field){
+      case('name'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('charges with name like')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break; 
+     case('description'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('charges with description like')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break; 
+     }
+   }else
+      $filter_msg='';
+
+   $_dir=$order_direction;
+   $_order=$order;
+   
+   if($order=='name')
+     $order='`Charge Name`';
+   elseif($order=='description')
+     $order='`Charge Description`,`Charge Terms Description`';
+   else
+     $order='`Charge Name`';
+
+ 
+   $sql="select *  from `Charge Dimension` $where    order by $order $order_direction limit $start_from,$number_results    ";
+
+   $res = mysql_query($sql);
+   
+   $total=mysql_num_rows($res);
+   
+  while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+    
+    
+    $adata[]=array(
+		  'name'=>$row['Charge Name'],
+		  'description'=>$row['Charge Description'].' '.$row['Charge Terms Description'],
+		  
+		  
+		   );
+  }
+  mysql_free_result($res);
+
+  
+
+  // if($total<$number_results)
+  //  $rtext=$total.' '.ngettext('store','stores',$total);
+  //else
+  //  $rtext='';
+
+//   $total_records=ceil($total_records/$number_results)+$total_records;
+
+   $response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$adata,
+			 'sort_key'=>$_order,
+			 'sort_dir'=>$_dir,
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
+			 'rtext'=>$rtext,
+			 'rtext_rpp'=>$rtext_rpp,
+			 'total_records'=>$total_records,
+			 'records_offset'=>$start_from,
+			 'records_perpage'=>$number_results,
+			 )
+		   );
+   echo json_encode($response);
+}
+
+
+function list_campaigns(){
+
+
+   $parent='store';
+
+   if( isset($_REQUEST['parent']))
+     $parent= $_REQUEST['parent'];
+
+   if($parent=='store')
+     $parent_id=$_SESSION['state']['store']['id'];
+   else
+     return;
+
+   $conf=$_SESSION['state'][$parent]['campaigns'];
+
+
+   if(isset( $_REQUEST['sf']))
+     $start_from=$_REQUEST['sf'];
+   else
+     $start_from=$conf['sf'];
+   
+
+   if(isset( $_REQUEST['nr'])){
+     $number_results=$_REQUEST['nr'];
+     if($start_from>0){
+       $page=floor($start_from/$number_results);
+       $start_from=$start_from-$page;
+     }
+   
+   }else
+     $number_results=$conf['nr'];
+
+
+ if(isset( $_REQUEST['o']))
+     $order=$_REQUEST['o'];
+   else
+    $order=$conf['order'];
+   if(isset( $_REQUEST['od']))
+     $order_dir=$_REQUEST['od'];
+   else
+     $order_dir=$conf['order_dir'];
+   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+   if(isset( $_REQUEST['where']))
+     $where=addslashes($_REQUEST['where']);
+   else
+     $where=$conf['where'];
+
+    
+   if(isset( $_REQUEST['f_field']))
+     $f_field=$_REQUEST['f_field'];
+   else
+     $f_field=$conf['f_field'];
+   
+   if(isset( $_REQUEST['f_value']))
+     $f_value=$_REQUEST['f_value'];
+   else
+     $f_value=$conf['f_value'];
+
+   
+   if(isset( $_REQUEST['tableid']))
+     $tableid=$_REQUEST['tableid'];
+   else
+    $tableid=0;
+   
+   
+   $_SESSION['state'][$parent]['campaigns']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+   
+   if($parent=='store')
+     $where=sprintf("where  `Store Key`=%d    ",$parent_id);
+   else
+     $where=sprintf("where true ");;
+   
+   $filter_msg='';
+  $wheref='';
+  if($f_field=='description' and $f_value!='')
+    $wheref.=" and  `Campaign Description` like '".addslashes($f_value)."%'";
+  elseif($f_field=='name' and $f_value!='')
+    $wheref.=" and  `Campaign Name` like '".addslashes($f_value)."%'";
+
+   $sql="select count(*) as total from `Campaign Dimension`   $where $wheref";
+   //  print $sql;
+   $result=mysql_query($sql);
+   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+     $total=$row['total'];
+   }
+mysql_free_result($result);
+     
+     if($wheref==''){
+       $filtered=0;$total_records=$total;
+   }else{
+     $sql="select count(*) as total `Campaign Dimension`   $where ";
+
+     $result=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+      $total_records=$row['total'];
+	 $filtered=$total_records-$total;
+     }
+mysql_free_result($result);
+
+   }
+
+  
+     $rtext=$total_records." ".ngettext('campaign','campaigns',$total_records);
+     if($total_records>$number_results)
+       $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+     else
+       $rtext_rpp=' ('._('Showing all').')';
+
+  if($total==0 and $filtered>0){
+       switch($f_field){
+     case('name'):
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any campaign with this name ")." <b>".$f_value."*</b> ";
+	 break;
+       case('description'):
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any campaign with description like ")." <b>".$f_value."*</b> ";
+       break;
+     }
+   }
+   elseif($filtered>0){
+     switch($f_field){
+      case('name'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('campaigns with name like')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break; 
+     case('description'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('campaigns with description like')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break; 
+     }
+   }else
+      $filter_msg='';
+
+   $_dir=$order_direction;
+   $_order=$order;
+   
+   if($order=='name')
+     $order='`Campaign Name`';
+   elseif($order=='description')
+     $order='`Campaign Description`';
+   else
+     $order='`Campaign Name`';
+
+ 
+   $sql="select *  from `Campaign Dimension` $where    order by $order $order_direction limit $start_from,$number_results    ";
+
+   $res = mysql_query($sql);
+   
+   $total=mysql_num_rows($res);
+   
+  while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+    
+    $sql=sprintf("select * from `Campaign Deal Schema`  where `Campaign Key`=%d  ",$row['Campaign Key']);
+    $res2 = mysql_query($sql);
+    $deals='<ul style="padding:10px 20px">';
+    while($row2=mysql_fetch_array($res2, MYSQL_ASSOC)) {
+      $deals.=sprintf("<li style='list-style-type: circle' >%s</li>",$row2['Deal Name']);
+    }
+    $deals.='</ul>';
+    $adata[]=array(
+		  'name'=>$row['Campaign Name'],
+		  'description'=>$row['Campaign Description'].$deals
+		  
+		  
+		   );
+  }
+  mysql_free_result($res);
+
+  
+
+  // if($total<$number_results)
+  //  $rtext=$total.' '.ngettext('store','stores',$total);
+  //else
+  //  $rtext='';
+
+//   $total_records=ceil($total_records/$number_results)+$total_records;
+
+   $response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$adata,
+			 'sort_key'=>$_order,
+			 'sort_dir'=>$_dir,
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
+			 'rtext'=>$rtext,
+			 'rtext_rpp'=>$rtext_rpp,
+			 'total_records'=>$total_records,
+			 'records_offset'=>$start_from,
+			 'records_perpage'=>$number_results,
+			 )
+		   );
+   echo json_encode($response);
+}
+
+
+function list_deals(){
+
+
+   $parent='store';
+
+   if( isset($_REQUEST['parent']))
+     $parent= $_REQUEST['parent'];
+
+   if($parent=='store')
+     $parent_id=$_SESSION['state']['store']['id'];
+   elseif($parent=='department')
+     $parent_id=$_SESSION['state']['department']['id'];
+  elseif($parent=='family')
+     $parent_id=$_SESSION['state']['family']['id'];
+  elseif($parent=='product')
+     $parent_id=$_SESSION['state']['product']['pid'];
+   else
+     return;
+
+   $conf=$_SESSION['state'][$parent]['deals'];
+
+
+   if(isset( $_REQUEST['sf']))
+     $start_from=$_REQUEST['sf'];
+   else
+     $start_from=$conf['sf'];
+   
+
+   if(isset( $_REQUEST['nr'])){
+     $number_results=$_REQUEST['nr'];
+     if($start_from>0){
+       $page=floor($start_from/$number_results);
+       $start_from=$start_from-$page;
+     }
+   
+   }else
+     $number_results=$conf['nr'];
+
+
+ if(isset( $_REQUEST['o']))
+     $order=$_REQUEST['o'];
+   else
+    $order=$conf['order'];
+   if(isset( $_REQUEST['od']))
+     $order_dir=$_REQUEST['od'];
+   else
+     $order_dir=$conf['order_dir'];
+   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+   if(isset( $_REQUEST['where']))
+     $where=addslashes($_REQUEST['where']);
+   else
+     $where=$conf['where'];
+
+    
+   if(isset( $_REQUEST['f_field']))
+     $f_field=$_REQUEST['f_field'];
+   else
+     $f_field=$conf['f_field'];
+   
+   if(isset( $_REQUEST['f_value']))
+     $f_value=$_REQUEST['f_value'];
+   else
+     $f_value=$conf['f_value'];
+
+   
+   if(isset( $_REQUEST['tableid']))
+     $tableid=$_REQUEST['tableid'];
+   else
+    $tableid=0;
+   
+   
+   $_SESSION['state'][$parent]['deals']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+
+   if($parent=='store')
+     $where=sprintf("where  `Store Key`=%d and `Deal Allowance Target`='Order'    ",$parent_id);
+   elseif($parent=='department')
+     $where=sprintf("where    `Deal Allowance Target`='Department' and  `Deal Allowance Target Key`=%d   ",$parent_id);
+   elseif($parent=='family')
+     $where=sprintf("where    `Deal Allowance Target`='Family' and  `Deal Allowance Target Key`=%d   ",$parent_id);
+   elseif($parent=='product')
+     $where=sprintf("where    `Deal Allowance Target`='Product' and  `Deal Allowance Target Key`=%d   ",$parent_id);
+   else
+     $where=sprintf("where true ");;
+   // print "$parent $where";
+   $filter_msg='';
+  $wheref='';
+  if($f_field=='description' and $f_value!='')
+    $wheref.=" and  `Deal Description` like '".addslashes($f_value)."%'";
+  elseif($f_field=='name' and $f_value!='')
+    $wheref.=" and  `Deal Name` like '".addslashes($f_value)."%'";
+
+   $sql="select count(*) as total from `Deal Dimension`   $where $wheref";
+   //  print $sql;
+   $result=mysql_query($sql);
+   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+     $total=$row['total'];
+   }
+mysql_free_result($result);
+     
+     if($wheref==''){
+       $filtered=0;$total_records=$total;
+   }else{
+     $sql="select count(*) as total `Deal Dimension`   $where ";
+
+     $result=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+      $total_records=$row['total'];
+	 $filtered=$total_records-$total;
+     }
+mysql_free_result($result);
+
+   }
+
+  
+     $rtext=$total_records." ".ngettext('deal','deals',$total_records);
+     if($total_records>$number_results)
+       $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+     else
+       $rtext_rpp=' ('._('Showing all').')';
+
+  if($total==0 and $filtered>0){
+       switch($f_field){
+     case('name'):
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any deal with this name ")." <b>".$f_value."*</b> ";
+	 break;
+       case('description'):
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any deal with description like ")." <b>".$f_value."*</b> ";
+       break;
+     }
+   }
+   elseif($filtered>0){
+     switch($f_field){
+      case('name'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('deals with name like')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break; 
+     case('description'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('deals with description like')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break; 
+     }
+   }else
+      $filter_msg='';
+
+   $_dir=$order_direction;
+   $_order=$order;
+   
+   if($order=='name')
+     $order='`Deal Name`';
+   elseif($order=='description')
+     $order='`Deal Description`';
+   else
+     $order='`Deal Name`';
+
+ 
+   $sql="select *  from `Deal Dimension` $where    order by $order $order_direction limit $start_from,$number_results    ";
+
+   $res = mysql_query($sql);
+   
+   $total=mysql_num_rows($res);
+   
+  while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+    
+   
+    
+    $adata[]=array(
+		  'name'=>$row['Deal Name'],
+		  'description'=>$row['Deal Description']
+		  
+		  
+		   );
+  }
+  mysql_free_result($res);
+
+  
+
+  // if($total<$number_results)
+  //  $rtext=$total.' '.ngettext('store','stores',$total);
+  //else
+  //  $rtext='';
+
+//   $total_records=ceil($total_records/$number_results)+$total_records;
 
    $response=array('resultset'=>
 		   array('state'=>200,

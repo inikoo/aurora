@@ -38,7 +38,31 @@
 	
       </div>
       <div  class="edit_block" style="margin:0;padding:0 0px;{if $edit!="discounts"}display:none{/if}"  id="d_discounts">
-	
+		<div  class="new_item_dialog"  id="new_deal_dialog" style="display:none">
+	   <div id="new_deal_messages" class="messages_block"></div>
+	   <table class="edit" >
+	     <tr><td>{t}Deal Name{/t}:</td><td><input  id="new_deal_name" onKeyUp="new_deal_changed(this)"    onMouseUp="new_deal_changed(this)"  onChange="new_deal_changed(this)"  changed=0 type='text' class='text' style="width:15em" MAXLENGTH="16" value="" /></td></tr>
+	     <tr><td>{t}Deal Description{/t}:</td><td><input   id="new_deal_description" onKeyUp="new_deal_changed(this)"    onMouseUp="new_deal_changed(this)"  onChange="new_deal_changed(this)" changed=0 type='text'  MAXLENGTH="255" style="width:30em"  class='text' value="" /></td>
+	     </tr>
+	  </table>
+	 </div>
+	 
+	 <div   class="data_table" sxtyle="margin:25px 10px;">
+	   <span class="clean_table_title">{t}Deals{/t}</span>
+	  <table class="options" style="float:right;padding:0;margin:0">
+	    <tr>
+	      <td  id="add_deal">Add Deal</td>
+	      <td  style="display:none" id="save_new_deal">Save New Deal</td>
+	      <td  style="display:none" id="cancel_add_deal">Cancel</td>
+	    </tr>
+	  </table>
+	  <div  class="clean_table_caption"  style="clear:both;">
+	    <div style="float:left;"><div id="table_info4" class="clean_table_info"><span id="rtext4"></span> <span class="rtext_rpp" id="rtext_rpp4"></span> <span class="filter_msg"  id="filter_msg4"></span></div></div>
+	    <div class="clean_table_filter" style="display:none" id="clean_table_filter4"><div class="clean_table_info"><span id="filter_name4">{$filter_name4}</span>: <input style="border-bottom:none" id='f_input4' value="{$filter_value0}" size=10/><div id='f_container4'></div></div></div>
+	    <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator4"></span></div></div>
+	  </div>
+	  <div  id="table4"   class="data_table_container dtable btable "> </div>
+	 </div>
       </div>
       
       <div  class="edit_block" style="margin:0;padding:0 0px;{if $edit!="web"}display:none{/if}"  id="d_web">

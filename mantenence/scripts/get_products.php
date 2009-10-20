@@ -2,6 +2,8 @@
 
 include_once('../../app_files/db/dns.php');
 include_once('../../class.Department.php');
+include_once('../../class.Campaign.php');
+include_once('../../class.Charge.php');
 
 include_once('../../class.Family.php');
 include_once('../../class.Product.php');
@@ -45,7 +47,7 @@ $Data_Audit_ETL_Software="$software $version";
 
 $file_name='/data/plaza/AWorder2002.xls';
 $csv_file='tmp.csv';
-//exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
+exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
 
 $handle_csv = fopen($csv_file, "r");
 $column=0;
@@ -149,6 +151,20 @@ $unk_location=new Location('find',array('Location Code'=>'UNK','Location Name'=>
 
 $unk_supplier=new Supplier('find',array('Supplier Code'=>'UNK','Supplier Name'=>'Unknown'),'create');
 
+$charge_data=array(
+		     'Charge Description'=>'£7.50 small order'
+		      ,'Store Key'=>$store_key
+		     ,'Charge Trigger'=>'Order'
+		     ,'Charge Type'=>'Amount'
+		     ,'Charge Name'=>'Small Order Charge'
+		     ,'Charge Terms Type'=>'Order Items Gross Amount'
+		     ,'Charge Terms Description'=>'when Order Items Gross Amount is less than £50.00'
+		     ,'Charge Begin Date'=>''
+		     ,'Charge Expiration Date'=>''
+		     );
+$small_order_charge=new Charge('find create',$charge_data);
+
+
 
 $dept_data=array(
 		   'Product Department Code'=>'ND',
@@ -199,6 +215,194 @@ $fam_promo=new Family('find',$fam_data,'create');
 
 $fam_no_fam_key=$fam_no_fam->id;
 $fam_promo_key=$fam_promo->id;
+
+
+ $campaign=array(
+		     'Campaign Name'=>'Gold Reward'
+		     ,'Campaign Trigger'=>'Order'
+		     ,'Campaign Description'=>'Small order charge waive & discounts on seleted items if last order within 1 calendar month'
+		     ,'Campaign Begin Date'=>''
+		     ,'Campaign Expiration Date'=>''
+		     ,'Campaign Deal Terms Type'=>'Order Interval'
+		     ,'Campaign Deal Terms Description'=>'last order within 1 month'
+		     ,'Campaign Deal Terms Lock'=>'Yes'
+
+		     );
+$camp=new Campaign('find create',$campaign);
+
+
+$data=array(
+	    'Deal Name'=>'[Product Family Code] Gold Reward'
+	    
+	    ,'Deal Allowance Type'=>'Percentage Off'
+	    ,'Deal Allowance Description'=>'[Percentage Off] off'
+	    ,'Deal Allowance Target'=>'Family'
+	    ,'Deal Allowance Lock'=>'Yes'
+		     );
+$camp->add_deal_schema($data);
+
+$data=array(
+	    'Deal Name'=>'Free Small Order Charge'
+	    ,'Deal Description'=>'Small order charge waive within 1 calendar month'
+	    
+	    
+	    ,'Deal Allowance Type'=>'Percentage Off'
+	    ,'Deal Allowance Description'=>'Free Small Order Charge'
+	    ,'Deal Allowance Target'=>'Charge'
+		     ,'Deal Allowance Key'=>$small_order_charge->id
+
+
+		   
+		     );
+$camp->add_deal_schema($data);
+
+
+exit('adios');
+
+
+$gold_reward_cam_id=$camp->id;
+
+$campaign=array(
+		     'Campaign Name'=>'Volumen Discount'
+		     ,'Campaign Type'=>'Schema'
+		     ,'Campaign Trigger'=>'Family'
+		     ,'Campaign Description'=>'Discounts when buying some auantity of product from the same family'
+		     ,'Campaign Begin Date'=>''
+		     ,'Campaign Expiration Date'=>''
+		     );
+$camp=new Campaign('find create',$campaign);
+
+
+$data=array(
+		     'Deal Name'=>'Volume Discounts'
+		     ,'Deal Description'=>'Family Volume Discount'
+		     ,'Deal Allowance Type'=>'Percentage Off'
+		     ,'Deal Allowance Description'=>'Percentage Off in all members of the family'
+		     ,'Deal Allowance Target'=>'Family'
+		   
+		     );
+$camp->add_deal_schema($data);
+
+$volume_cam_id=$camp->id;
+
+
+
+
+$campaign=array(
+		     'Campaign Name'=>'BOGOF'
+		     ,'Campaign Trigger'=>'Product'
+		     ,'Campaign Description'=>'Buy one Get one Free'
+		     ,'Campaign Begin Date'=>''
+		     ,'Campaign Expiration Date'=>''
+		     );
+$camp=new Campaign('find create',$campaign);
+
+
+$data=array(
+		     'Deal Name'=>'BOGOF'
+		     ,'Deal Description'=>'Buy one Get one Free'
+		     ,'Deal Allowance Type'=>'Get Free'
+		     ,'Deal Allowance Description'=>'buy 1 get 1 free'
+		     ,'Deal Allowance Target'=>'Product'
+		   
+		     );
+$camp->add_deal_schema($data);
+
+$data=array(
+	    'Deal Name'=>'BOGOF'
+	    ,'Deal Description'=>'Buy any product of this family and one free'
+		     ,'Deal Allowance Type'=>'Get Free'
+	    ,'Deal Allowance Description'=>'buy 1 get 1 free'
+	    ,'Deal Allowance Target'=>'family'
+		   
+		     );
+$camp->add_deal_schema($data);
+
+
+$bogof_cam_id=$camp->id;
+
+
+
+$campaign=array(
+		     'Campaign Name'=>'First Order Bonus'
+		     ,'Campaign Type'=>'Deal'
+		     ,'Campaign Trigger'=>'Order'
+		     ,'Campaign Description'=>'When you order over £100+vat for the first time we give you over a £100 of stock. (at retail value).'
+		     ,'Campaign Begin Date'=>''
+		     ,'Campaign Expiration Date'=>''
+		     );
+$camp=new Campaign('find create',$campaign);
+
+
+$data=array(
+		     'Deal Name'=>'First Order Bonus'
+		     ,'Deal Description'=>'When you order over £100+vat for the first time we give you over a £100 of stock. (at retail value).'
+		     ,'Deal Allowance Type'=>'Get Free'
+		     ,'Deal Allowance Description'=>'Bonus Stock - worth £100 at retail value'
+		     ,'Deal Allowance Target'=>'Product'
+		   
+		     );
+$camp->add_deal_schema($data);
+
+/* $deal_data=array( */
+/* 		     'Deal Name'=>'First Order Bonus' */
+/* 		     ,'Deal Trigger'=>'Order' */
+/* 		     ,'Deal Description'=>'When you order over £100+vat for the first time we give you over a £100 of stock. (at retail value).' */
+/* 		     ,'Deal Terms Type'=>'Order Total Net Amount AND Order Number' */
+/* 		     ,'Deal Terms Description'=>'First time order over £100+vat'; */
+/* 		     ,'Deal Allowance Description'=>'Bonus Stock - worth £100 at retail value' */
+/* 		     ,'Deal Allowance Type'=>'Get Free' */
+/* 		     ,'Deal Allowance Target'=>'Product' */
+/* 		     ,'Deal Allowance Target Key'=>'' */
+/* 		     ,'Deal Begin Date'=>'' */
+/* 		     ,'Deal Expiration Date'=>'' */
+/* 		     ); */
+/* $deal=new Deal('find create',$deal_data); */
+
+
+ $deal_data=array(
+		     'Deal Name'=>'UK Free Shipping'
+		     ,'Store Key'=>1
+		     ,'Deal Trigger'=>'Order'
+		     ,'Deal Description'=>'Free shipping to UK when order more than £175.00'
+		     ,'Deal Terms Type'=>'Order Items Net Amount AND Shipping Country'
+		     ,'Deal Terms Description'=>'Orders shipped to United Kingdom and order total value more than £175.00'
+		     ,'Deal Allowance Description'=>'Free shipping'
+		     ,'Deal Allowance Type'=>'Percentage Off'
+		     ,'Deal Allowance Target'=>'Order'
+		     ,'Deal Allowance Target Key'=>''
+		     ,'Deal Begin Date'=>''
+		     ,'Deal Expiration Date'=>''
+		     );
+
+
+$deal=new Deal('find create',$deal_data);
+
+
+$data=array(
+		     'Deal Name'=>'Free Small Order charge'
+		     ,'Store Key'=>1
+		     ,'Campaign Key'=>$gold_reward_cam_id
+		     ,'Deal Trigger'=>'Order'
+		     ,'Deal Terms Type'=>'Order Interval'
+		     ,'Deal Terms Description'=>'last order within 1 calendar month'
+		     ,'Deal Description'=>'Free small order charge when order within 1 calendar month'
+		     ,'Deal Allowance Type'=>'Waive Charge'
+		     ,'Deal Allowance Description'=>'Waive small order charge'
+		     ,'Deal Allowance Target'=>'Order'
+		     ,'Deal Begin Date'=>''
+		     ,'Deal Expiration Date'=>''
+		     );		     
+$deal=new Deal('find create',$data);
+
+
+
+
+
+
+
+
+
 
 
 
@@ -315,32 +519,32 @@ foreach($__cols as $cols){
 	$allowance=$match[0];
       if(preg_match('/off.*more/i',$current_promotion,$match))
 	$terms=preg_replace('/^off\s*/i','',$match[0]);
-      else
+     
 	//	print "************".$current_promotion."\n";
       $deals[]=array(
-		     'Deal Campaign Name'=>'Gold Reward'
+		     'Deal Name'=>'Gold Reward'
 		     ,'Deal Trigger'=>'Order'
-		  
+
 		     ,'Deal Description'=>$allowance.' if last order within 1 calendar month'
 		     ,'Deal Terms Type'=>'Order Interval'
 		     ,'Deal Terms Description'=>'last order within 1 calendar month'
 		     ,'Deal Allowance Description'=>$allowance
 		     ,'Deal Allowance Type'=>'Percentage Off'
-		     ,'Deal Allowance Target'=>'Product'
+		     ,'Deal Allowance Target'=>'Family'
 		     ,'Deal Allowance Target Key'=>''
 		     ,'Deal Begin Date'=>''
 		     ,'Deal Expiration Date'=>''
 		     );
       
       $deals[]=array(
-		     'Deal Campaign Name'=>'Family Volume Discount'
+		     'Deal Name'=>'Family Volume Discount'
 		     ,'Deal Trigger'=>'Family'
-		     ,'Deal Description'=>$allowance.' if '.$terms.' same family'
+		     ,'Deal Description'=>$allowance.' if order '.$terms.' same family'
 		     ,'Deal Terms Type'=>'Family Quantity Ordered'
 		     ,'Deal Terms Description'=>'order '.$terms
 		     ,'Deal Allowance Description'=>$allowance
 		     ,'Deal Allowance Type'=>'Percentage Off'
-		     ,'Deal Allowance Target'=>'Product'
+		     ,'Deal Allowance Target'=>'Family'
 		     ,'Deal Allowance Target Key'=>''
 		     ,'Deal Begin Date'=>''
 		     ,'Deal Expiration Date'=>''
@@ -356,28 +560,28 @@ foreach($__cols as $cols){
       $terms=_trim(strtolower($match[0]));
 
       $deals[]=array(
-		     'Deal Campaign Name'=>'Gold Reward'
+		     'Deal Name'=>'Gold Reward'
 		     ,'Deal Trigger'=>'Order'
 		     ,'Deal Description'=>$allowance.' if last order within 1 calendar month'
 		     ,'Deal Terms Type'=>'Order Interval'
 		     ,'Deal Terms Description'=>'last order within 1 calendar month'
 		     ,'Deal Allowance Description'=>$allowance
 		     ,'Deal Allowance Type'=>'Percentage Off'
-		     ,'Deal Allowance Target'=>'Product'
+		     ,'Deal Allowance Target'=>'Family'
 		     ,'Deal Allowance Target Key'=>''
 		        ,'Deal Begin Date'=>''
 		       ,'Deal Expiration Date'=>''
 		       );
 
 	$deals[]=array(
-		       'Deal Campaign Name'=>'Family Volume Discount'
+		       'Deal Name'=>'Family Volume Discount'
 		       ,'Deal Trigger'=>'Family'
 		       ,'Deal Description'=>$allowance.' if '.$terms.' same family'
 		       ,'Deal Terms Type'=>'Family Quantity Ordered'
 		       ,'Deal Terms Description'=>'order '.$terms
 		       ,'Deal Allowance Description'=>$allowance
 		       ,'Deal Allowance Type'=>'Percentage Off'
-		       ,'Deal Allowance Target'=>'Product'
+		       ,'Deal Allowance Target'=>'Family'
 		       ,'Deal Allowance Target Key'=>''
 		       ,'Deal Begin Date'=>''
 		       ,'Deal Expiration Date'=>''
@@ -394,16 +598,16 @@ foreach($__cols as $cols){
       $get=_trim(preg_replace('/[^\d]/','',$match[0]));
 
       $deals[]=array(
-		       'Deal Campaign Name'=>'BOGOF'
+		       'Deal Name'=>'BOGOF'
 		       ,'Deal Trigger'=>'Product'
 		       ,'Deal Description'=>'buy '.$buy.' get '.$get.' free'
 		       ,'Deal Terms Type'=>'Product Quantity Ordered'
 		       ,'Deal Terms Description'=>'foreach '.$buy
 		       ,'Deal Allowance Description'=>$get.' free'
 		       ,'Deal Allowance Type'=>'Get Free'
-		       ,'Deal Allowance Target'=>'Product'
+		       ,'Deal Allowance Target'=>'Family'
 		       ,'Deal Allowance Target Key'=>''
-		       ,'Deal Begin Date'=>'2006-01-01 00:00:00'
+		       ,'Deal Begin Date'=>''
 		       ,'Deal Expiration Date'=>''
 		     );	
 
@@ -539,6 +743,52 @@ foreach($__cols as $cols){
     exit;
    
    }
+
+   
+   
+   foreach($deals as $deal_data){
+     
+
+      $deal_data['Store Key']=$store_key;
+
+      if(preg_match('/Family Volume/i',$deal_data['Deal Name'])){
+	 $deal_data['Deal Campaign Key']=$volume_cam_id;
+	 $deal_data['Deal Name']=preg_replace('/Family/',$family->data['Product Family Code'],$deal_data['Deal Name']);
+	 $deal_data['Deal Description']=preg_replace('/same family/',$family->data['Product Family Name'].' outers',$deal_data['Deal Description']);
+     }
+
+
+      if(preg_match('/Gold/i',$deal_data['Deal Name'])){
+	$deal_data['Deal Campaign Key']=$gold_reward_cam_id;
+	$deal_data['Deal Name']=$family->data['Product Family Code'].' '.$deal_data['Deal Name'];
+
+      }
+
+      if(preg_match('/bogof/i',$deal_data['Deal Name'])){
+	 $deal_data['Deal Campaign Key']=$bogof_cam_id;
+	 	$deal_data['Deal Name']=$family->data['Product Family Code'].' '.$deal_data['Deal Name'];
+
+      }
+	 
+	  if($deal_data['Deal Trigger']=='Family')
+            $deal_data['Deal Trigger Key']=$family->id;
+      
+
+
+
+       
+	  if($deal_data['Deal Allowance Target']=='Family')
+            $deal_data['Deal Allowance Target Key']=$family->id;  
+ 
+        $deal=new Deal('find create',$deal_data);
+
+    }  
+
+
+
+
+
+
 
        $data=array(
 		  'product sales state'=>'For sale',
@@ -1314,17 +1564,7 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 
     
 
-    foreach($deals as $deal_data){
-        //print_r($product);
-        if($deal_data['Deal Trigger']=='Family')
-            $deal_data['Deal Trigger Key']=$product->data['Product Family Key'];
-        if($deal_data['Deal Trigger']=='Product')
-            $deal_data['Deal Trigger Key']=$product->data['Product ID'];
-         if($deal_data['Deal Allowance Target']=='Product')
-            $deal_data['Deal Allowance Target Key']=$product->data['Product ID'];   
-        $deal=new Deal('find create',$deal_data);
-
-    }  
+   
     
     
     }
