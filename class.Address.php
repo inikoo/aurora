@@ -1485,6 +1485,7 @@ if($data['Address Fuzzy']=='Yes'){
     }
     
     $sql=sprintf("select `Country Alias Code` from kbase.`Country Alias Dimension` where `Country Name`=%s",prepare_mysql($country));
+    //print "$sql\n";
     $result = mysql_query($sql) ;
     if($row = mysql_fetch_array($result, MYSQL_ASSOC)){
       return $row['Country Alias Code'];
@@ -4148,8 +4149,6 @@ if($data['Address Fuzzy']=='Yes'){
 	}
 
 }
-
-
 
 
 ?>

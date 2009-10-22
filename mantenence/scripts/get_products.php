@@ -11,6 +11,7 @@ include_once('../../class.Supplier.php');
 include_once('../../class.Part.php');
 include_once('../../class.Warehouse.php');
 include_once('../../class.Node.php');
+include_once('../../class.Shipping.php');
 
 include_once('../../class.SupplierProduct.php');
 
@@ -34,7 +35,7 @@ mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';           
 date_default_timezone_set('Europe/London');
 
-
+//create_shipping();exit;
 
 $_department_code='';
 
@@ -226,7 +227,7 @@ $fam_promo_key=$fam_promo->id;
 		     ,'Campaign Deal Terms Lock'=>'Yes'
 
 		     );
-$camp=new Campaign('find create',$campaign);
+$gold_camp=new Campaign('find create',$campaign);
 
 
 $data=array(
@@ -237,23 +238,25 @@ $data=array(
 	    ,'Deal Allowance Target'=>'Family'
 	    ,'Deal Allowance Lock'=>'No'
 		     );
-$camp->add_deal_schema($data);
+$gold_camp->add_deal_schema($data);
 
 $data=array(
-	    'Deal Name'=>'Free Small Order Charge'
-	    ,'Deal Description'=>'Small order charge waive within 1 calendar month'
+	    'Deal Name'=>'Free [Charge Name]'
 	    ,'Deal Trigger'=>'Order'
-	    
 	    ,'Deal Allowance Type'=>'Percentage Off'
-	    ,'Deal Allowance Description'=>'Free Small Order Charge'
+	    ,'Deal Allowance Description'=>'Free [Charge Name]'
 	    ,'Deal Allowance Target'=>'Charge'
 	    ,'Deal Allowance Key'=>$small_order_charge->id
         ,'Deal Allowance Lock'=>'Yes'
 
 		   
 		     );
-$camp->add_deal_schema($data);
-$gold_reward_cam_id=$camp->id;
+$gold_camp->add_deal_schema($data);
+
+$data=array('Deal Allowance Target Key'=>$small_order_charge->id);
+$gold_camp->create_deal('Free [Charge Name]',$data);
+
+$gold_reward_cam_id=$gold_camp->id;
 
 $campaign=array(
 		     'Campaign Name'=>'Volumen Discount'
@@ -265,11 +268,11 @@ $campaign=array(
 		     ,'Campaign Deal Terms Description'=>'order [Quantity] or more same family'
 		     ,'Campaign Deal Terms Lock'=>'No'
 		     );
-$camp=new Campaign('find create',$campaign);
+$vol_camp=new Campaign('find create',$campaign);
 
 
 $data=array(
-		     'Deal Name'=>'Volume Discounts'
+		     'Deal Name'=>'[Product Family Code] Volume Discount'
 		     ,'Deal Trigger'=>'Family'
 		     ,'Deal Allowance Type'=>'Percentage Off'
 		     ,'Deal Allowance Description'=>'[Percentage Off] off'
@@ -277,10 +280,44 @@ $data=array(
 		   	 ,'Deal Allowance Lock'=>'No'
 
 		     );
-$camp->add_deal_schema($data);
+$vol_camp->add_deal_schema($data);
 
-$volume_cam_id=$camp->id;
+$volume_cam_id=$vol_camp->id;
 
+
+$free_shipping_campaign_data=array(
+		     'Campaign Name'=>'Free Shipping'
+		     
+		     ,'Campaign Description'=>'Free shipping to selected destinations when order more than some amount'
+		     ,'Campaign Begin Date'=>''
+		     ,'Campaign Expiration Date'=>''
+		     ,'Campaign Deal Terms Type'=>'Order Items Net Amount AND Shipping Country'
+		     ,'Campaign Deal Terms Description'=>'Orders shipped to {Country Name} and Order Items Net Amount more than {Order Items Net Amount}'
+		     ,'Campaign Deal Terms Lock'=>'No'
+		     );
+$free_shipping_campaign=new Campaign('find create',$free_shipping_campaign_data);
+
+
+$data=array(
+		     'Deal Name'=>'[Country Name] Free Shipping'
+		     ,'Deal Trigger'=>'Order'
+		     ,'Deal Allowance Type'=>'Percentage Off'
+		     ,'Deal Allowance Description'=>'Free Shipping'
+		     ,'Deal Allowance Target'=>'Shipping'
+		     ,'Deal Allowance Lock'=>'Yes'
+
+		     );
+$free_shipping_campaign->add_deal_schema($data);
+
+$free_shipping_campaign_id=$free_shipping_campaign->id;
+
+$shipping_uk=new Shipping('find',array('Country Code'=>'GBR'));
+$terms_description=sprintf('Orders shipped to %s with Order Items Net Amount more than %s','GBR','£175');
+$data=array(
+	    'Deal Allowance Target Key'=>$shipping_uk->id
+	    ,'Deal Terms Description'=>$terms_description
+	    );
+$free_shipping_campaign->create_deal('[Country Name] Free Shipping',$data);
 
 
 
@@ -291,37 +328,32 @@ $campaign=array(
 		     ,'Campaign Expiration Date'=>''
 		       ,'Campaign Deal Terms Type'=>'Product Quantity Ordered'
 		     ,'Campaign Deal Terms Description'=>'Buy 1'
-		     ,'Campaign Deal Terms Lock'=>'No'
+		     ,'Campaign Deal Terms Lock'=>'Yes'
 		     );
-$camp=new Campaign('find create',$campaign);
-
-
+$bogof_camp=new Campaign('find create',$campaign);
 $data=array(
-		     'Deal Name'=>'BOGOF'
+		     'Deal Name'=>'[Product Family Code] BOGOF'
 		     ,'Deal Trigger'=>'Family'
 		     ,'Deal Allowance Type'=>'Get Free'
 		     ,'Deal Allowance Description'=>'get 1 free'
 		     ,'Deal Allowance Target'=>'Product'
 		    ,'Deal Allowance Lock'=>'Yes'
 		     );
-$camp->add_deal_schema($data);
+$bogof_camp->add_deal_schema($data);
 
 $data=array(
-	    'Deal Name'=>'BOGOF'
+	    'Deal Name'=>'[Product Code] BOGOF'
 		     ,'Deal Trigger'=>'Product'
-		     ,'Deal Allowance Type'=>'Get Free'
+		     ,'Deal Allowance Type'=>'Get Same Free'
 		     ,'Deal Allowance Description'=>'get 1 free'
 		     ,'Deal Allowance Target'=>'Product'
 		     ,'Deal Allowance Lock'=>'Yes'
 
 		     );
-$camp->add_deal_schema($data);
+$bogof_camp->add_deal_schema($data);
 
 
-$bogof_cam_id=$camp->id;
-
-
-
+$bogof_cam_id=$bogof_camp->id;
 $campaign=array(
 		     'Campaign Name'=>'First Order Bonus'
 		     ,'Campaign Trigger'=>'Order'
@@ -336,15 +368,15 @@ $camp=new Campaign('find create',$campaign);
 
 
 $data=array(
-		     'Deal Name'=>'First Order Bonus [Counter]'
-		    ,'Deal Trigger'=>'Order'
+	    'Deal Name'=>'First Order Bonus [Counter]'
+	    ,'Deal Trigger'=>'Order'
             ,'Deal Description'=>'When you order over £100+vat for the first time we give you over a £100 of stock. (at retail value).'
-		     ,'Deal Allowance Type'=>'Get Free'
-		     ,'Deal Allowance Description'=>'Free Bonus Stock ([Product Code])'
-		     ,'Deal Allowance Target'=>'Product'
-		   		    ,'Deal Allowance Lock'=>'No'
-
-		     );
+	    ,'Deal Allowance Type'=>'Get Free'
+	    ,'Deal Allowance Description'=>'Free Bonus Stock ([Product Code])'
+	    ,'Deal Allowance Target'=>'Product'
+	    ,'Deal Allowance Lock'=>'No'
+	    
+	    );
 $camp->add_deal_schema($data);
 
 /* $deal_data=array( */
@@ -363,52 +395,7 @@ $camp->add_deal_schema($data);
 /* $deal=new Deal('find create',$deal_data); */
 
 
- $deal_data=array(
-		     'Deal Name'=>'UK Free Shipping'
-		     ,'Store Key'=>1
-		     ,'Deal Trigger'=>'Order'
-		     ,'Deal Description'=>'Free shipping to UK when order more than £175.00'
-		     ,'Deal Terms Type'=>'Order Items Net Amount AND Shipping Country'
-		     ,'Deal Terms Description'=>'Orders shipped to United Kingdom and order total value more than £175.00'
-		     ,'Deal Allowance Description'=>'Free shipping'
-		     ,'Deal Allowance Type'=>'Percentage Off'
-		     ,'Deal Allowance Target'=>'Order'
-		     ,'Deal Allowance Target Key'=>''
-		     ,'Deal Begin Date'=>''
-		     ,'Deal Expiration Date'=>''
-		     );
-
-
-$deal=new Deal('find create',$deal_data);
-
-
-$data=array(
-		     'Deal Name'=>'Free Small Order charge'
-		     ,'Store Key'=>1
-		     ,'Campaign Key'=>$gold_reward_cam_id
-		     ,'Deal Trigger'=>'Order'
-		     ,'Deal Terms Type'=>'Order Interval'
-		     ,'Deal Terms Description'=>'last order within 1 calendar month'
-		     ,'Deal Description'=>'Free small order charge when order within 1 calendar month'
-		     ,'Deal Allowance Type'=>'Waive Charge'
-		     ,'Deal Allowance Description'=>'Waive small order charge'
-		     ,'Deal Allowance Target'=>'Order'
-		     ,'Deal Begin Date'=>''
-		     ,'Deal Expiration Date'=>''
-		     );		     
-$deal=new Deal('find create',$data);
-
-
-
-
-
-
-
-
-
-exit;
-
-
+ 
 $__cols=array();
 $inicio=false;
 while(($_cols = fgetcsv($handle_csv))!== false){
@@ -750,40 +737,58 @@ foreach($__cols as $cols){
    
    
    foreach($deals as $deal_data){
-     
+     //         print_r($deal_data);
+     //exit;
 
       $deal_data['Store Key']=$store_key;
 
       if(preg_match('/Family Volume/i',$deal_data['Deal Name'])){
-	 $deal_data['Deal Campaign Key']=$volume_cam_id;
-	 $deal_data['Deal Name']=preg_replace('/Family/',$family->data['Product Family Code'],$deal_data['Deal Name']);
-	 $deal_data['Deal Description']=preg_replace('/same family/',$family->data['Product Family Name'].' outers',$deal_data['Deal Description']);
-     }
+	//$deal_data['Deal Campaign Key']=$volume_cam_id;
+	//$deal_data['Deal Name']=preg_replace('/Family/',$family->data['Product Family Code'],$deal_data['Deal Name']);
+	//$deal_data['Deal Description']=preg_replace('/same family/',$family->data['Product Family Name'].' outers',$deal_data['Deal Description']);
+   
+	$data=array(
+		    'Deal Allowance Target Key'=>$family->id,
+		    'Deal Trigger Key'=>$family->id,
+
+		    'Deal Allowance Description'=>$deal_data['Deal Allowance Description'],
+		    'Deal Terms Description'=>$deal_data['Deal Terms Description']
+		    
+		    );
+
+	$vol_camp->create_deal('[Product Family Code] Volume Discount',$data);
+
+
+      }
 
 
       if(preg_match('/Gold/i',$deal_data['Deal Name'])){
-	$deal_data['Deal Campaign Key']=$gold_reward_cam_id;
-	$deal_data['Deal Name']=$family->data['Product Family Code'].' '.$deal_data['Deal Name'];
+	//$deal_data['Deal Campaign Key']=$gold_reward_cam_id;
+	//$deal_data['Deal Name']=$family->data['Product Family Code'].' '.$deal_data['Deal Name'];
+
+	$data=array(
+		    'Deal Trigger Key'=>$family->id,
+		    'Deal Allowance Target Key'=>$family->id,
+		    'Deal Allowance Description'=>$deal_data['Deal Allowance Description']
+		    );
+
+	$gold_camp->create_deal('[Product Family Code] Gold Reward',$data);
 
       }
 
       if(preg_match('/bogof/i',$deal_data['Deal Name'])){
-	 $deal_data['Deal Campaign Key']=$bogof_cam_id;
-	 	$deal_data['Deal Name']=$family->data['Product Family Code'].' '.$deal_data['Deal Name'];
+		$data=array(
+			    'Deal Trigger Key'=>$family->id,
+			    'Deal Allowance Target Key'=>$family->id,
+			    'Deal Allowance Description'=>$deal_data['Deal Allowance Description']
+		    );
+
+	$bogof_camp->create_deal('[Product Family Code] BOGOF',$data);
+
 
       }
 	 
-	  if($deal_data['Deal Trigger']=='Family')
-            $deal_data['Deal Trigger Key']=$family->id;
-      
-
-
-
-       
-	  if($deal_data['Deal Allowance Target']=='Family')
-            $deal_data['Deal Allowance Target Key']=$family->id;  
- 
-        $deal=new Deal('find create',$deal_data);
+	
 
     }  
 
@@ -1687,6 +1692,81 @@ if($department_code=='Woodware Dept'){
 
 
 
+function create_shipping(){
+  $max_cost=-1;
+  $sql="select `World Region`,GROUP_CONCAT(\"'\",`Country Name`,\"'\") as countries,`World Region Key`  from kbase.`Country Dimension` group by `World Region`  ";
+  $res=mysql_query($sql);
+  while($row=mysql_fetch_array($res)){
+    $world_region=$row['World Region'];
+    $countries=$row['countries'];
+    $wr_key=$row['World Region Key'];
+
+    //print "$world_region \n";
+    //$sql="insert into kbase.`World Region Dimension` (`World Region Name`) values ('$world_region')";
+    //mysql_query($sql);
+    //$wr_key=mysql_insert_id();
+    //mysql_query("update kbase.`Country Dimension` set `World Region Key`=$wr_key where `World Region`='$world_region'  ");
+
+   
+    $sql=sprintf("select AVG(carriage) as cost from aw_old.paso_ordersxls  left join aw_old.paso_customer as pc on (pc.id=paso_cust) where tipo=3 and  a38!=40849 and carriage>0  and a10 not like  'UK' and  a10 not like '' and a10 in (%s);"
+		 ,$countries
+		 );
+    $res2=mysql_query($sql);
+    if($row2=mysql_fetch_array($res2)){
+      $cost=(float) $row2['cost'];
+      if($max_cost<$cost)
+	$max_cost=$cost;
+    }else
+      $cost=0;
+    
+    $data=array('Shipping Type'=>'Normal','Shipping Destination Type'=>'World Region','Shipping Destination Key'=>$wr_key,'Shipping Price Method'=>'Flat','Shipping Allowance Metadata'=>sprintf("%.2f",$cost));
+    
+    $shipping=new Shipping('find create',$data);
+    
+    print "$world_region $cost $max_cost\n";
+  }
+
+  $sql=sprintf("update `Shipping Dimension` set `Shipping Allowance Metadata`=%.2f where  `Shipping Allowance Metadata`='0.00'",$max_cost);
+   $res=mysql_query($sql);
+
+
+
+$sql="select *  from kbase.`Country Dimension`   ";
+  $res=mysql_query($sql);
+  while($row=mysql_fetch_array($res)){
+    
+    $sql=sprintf("select AVG(carriage) as cost from aw_old.paso_ordersxls  left join aw_old.paso_customer as pc on (pc.id=paso_cust) where tipo=3 and  a38!=40849 and carriage>0  and a10 in ('%s');"
+		 ,$row['Country Name']
+		 );
+    $res2=mysql_query($sql);
+    if($row2=mysql_fetch_array($res2)){
+      $cost=(float) $row2['cost'];
+ 
+      
+    }else{
+      $cost=0;
+
+    }
+
+      
+
+    if($cost>0){
+      $cost=(float) $row2['cost'];
+ $data=array('Shipping Type'=>'Normal','Shipping Destination Type'=>'Country','Shipping Destination Key'=>$row['Country Key'],'Shipping Price Method'=>'Flat','Shipping Allowance Metadata'=>sprintf("%.2f",$cost));
+    
+    $shipping=new Shipping('find create',$data);
+      
+    }else{
+       $data=array('Shipping Type'=>'Normal','Shipping Destination Type'=>'Country','Shipping Destination Key'=>$wr_key,'Shipping Price Method'=>'Parent','Shipping Allowance Metadata'=>$row['World Region Key']);
+    
+       $shipping=new Shipping('find create',$data);
+
+    }
+    
+
+  }
+
+}
 
 
 

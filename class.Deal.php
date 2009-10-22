@@ -82,7 +82,7 @@ class Deal extends DB_Table {
         }
         $fields=array();
         foreach($data as $key=>$value){
-        if(!($key=='Deal Begin Date' or  $key=='Deal Expiration Date' or   $key=='Deal Allowance Metadata' or  $key=='Deal Replace Metadata' ))
+        if(!($key=='Deal Begin Date' or  $key=='Deal Expiration Date' or   $key=='Deal Allowance Metadata'or   $key=='Deal Terms Metadata' or  $key=='Deal Replace Metadata' ))
         $fields[]=$key;
         }
        
@@ -91,7 +91,7 @@ class Deal extends DB_Table {
         foreach($fields as $field) {
             $sql.=sprintf(' and `%s`=%s',$field,prepare_mysql($data[$field],false));
         }
-	//print "$sql\n";
+	//	print "$sql\n";
         $result=mysql_query($sql);
         $num_results=mysql_num_rows($result);
         if ($num_results==1) {
@@ -118,53 +118,14 @@ class Deal extends DB_Table {
 
       if($data['Deal Trigger Key']=='')
 	$data['Deal Trigger Key']=0;
-        if ($data['Deal Allowance Type']=='Percentage Off' and preg_match('/Quantity Ordered/i',$data['Deal Terms Type'])) {
-            //   print "***********";
-            if (preg_match('/order \d+ or more/i',$data['Deal Terms Description'],$match))
-                $a=preg_replace('/[^\d]/','',$match[0]);
-            else {
-                print "ohh no a not founD in deal class ".$data['Deal Terms Description']."\n";
-                print_r($data);
-                exit;
-            }
-
-            if (preg_match('/^\d+\%/i',$data['Deal Allowance Description'],$match))
-                $b=.01*preg_replace('/\%/','',$match[0]);
-            $data['Deal Allowance Metadata']="$a,$b";
-            //    print_r($match);
-        }
-        if ($data['Deal Allowance Type']=='Percentage Off' and preg_match('/Order Interval/i',$data['Deal Terms Type'])) {
-            //   print "***********";
-            if (preg_match('/last order within \d+ days/i',$data['Deal Terms Description'],$match))
-                $a=preg_replace('/[^\d]/','',$match[0]).' day';
-            if (preg_match('/last order within \d+ .* month/i',$data['Deal Terms Description'],$match))
-                $a=preg_replace('/[^\d]/','',$match[0]).' month';
-
-            if (preg_match('/^\d+\%/i',$data['Deal Allowance Description'],$match))
-                $b=.01*preg_replace('/\%/','',$match[0]);
-            $data['Deal Allowance Metadata']="$a,$b";
-            //    print_r($match);
-        }
-        elseif($data['Deal Allowance Type']=='Get Free' and preg_match('/Quantity Ordered^/i',$data['Deal Terms Type']) ) {
-
-            $data['Deal Allowance Description']=preg_replace('/ one /',' 1 ',$data['Deal Allowance Description']);
-            $data['Deal Allowance Description']=preg_replace('/ two /',' 2 ',$data['Deal Allowance Description']);
-            $data['Deal Allowance Description']=preg_replace('/ three /',' 3 ',$data['Deal Allowance Description']);
-
-            preg_match('/buy \d+/i',$data['Deal Allowance Description'],$match);
-            $buy=_trim(preg_replace('/[^\d]/','',$match[0]));
-
-            preg_match('/get \d+/i',$data['Deal Allowance Description'],$match);
-            $get=_trim(preg_replace('/[^\d]/','',$match[0]));
-
-
-
-            $data['Deal Allowance Metadata']=$buy.','.$get;
-        }
-
-
-        //print_r($data);
-
+      // print "-----------\n";print_r($data);
+      if($data['Deal Allowance Metadata']=='' and $data['Deal Allowance Lock']=='No'){
+	//	print "xcaca";
+	$data['Deal Allowance Metadata']=Deal::parse_allowance_metadata($data['Deal Allowance Type'],$data['Deal Allowance Description']);
+      }      if($data['Deal Terms Metadata']=='' and $data['Deal Terms Lock']=='No')
+	$data['Deal Terms Metadata']=Deal::parse_term_metadata($data['Deal Terms Type'],$data['Deal Terms Description']);
+      ///   print_r($data);
+      //   exit;
         $keys='(';
         $values='values(';
         foreach($data as $key=>$value) {
@@ -194,12 +155,29 @@ class Deal extends DB_Table {
             return $this->data[$key];
 
         switch ($key) {
-
+	case('Description'):
+	case('Deal Description'):
+	  return $this->data['Deal Terms Description'].' &rArr; '.$this->data['Deal Allowance Description'];
+	  break;
         }
 
         return false;
     }
+
  public static function parse_allowance_metadata($allowance_type,$allowance_description){
+   $conditions=preg_split('/\s+AND\s+/',$allowance_type);
+   $metadata='';
+  
+   foreach($conditions as $condition){
+     $metadata.=';'.Deal::parse_individual_allowance_metadata($condition,$allowance_description);
+      }
+   $metadata=preg_replace('/^;/','',$metadata); 
+   // print "** $allowance_type,$allowance_description ->$metadata  \n";
+   return $metadata;
+ }
+
+
+ public static function parse_individual_allowance_metadata($allowance_type,$allowance_description){
 // print "$allowance_type,$allowance_description\n";
  switch($allowance_type){
    case('Percentage Off'):
@@ -212,13 +190,16 @@ class Deal extends DB_Table {
        return 1;
      }
      break;
-   case('Get Free'):
+ case('Get Same Free'):
+ case('Get Free'):
      $allowance_description=translate_written_number($allowance_description);
+     $number=1;
      if(preg_match('/get \d+/i',$allowance_description,$match)){
 //            print "** $allowance_description \n";
 
-       return _trim(preg_replace('/[^\d]/','',$match[0]));
+       $number=_trim(preg_replace('/[^\d]/','',$match[0]));
        }
+     return $number;
      break;
    }
  }
@@ -228,9 +209,9 @@ class Deal extends DB_Table {
       $conditions=preg_split('/\s+AND\s+/',$term_description_type);
       $metadata='';
       foreach($conditions as $condition){
-         $metadata.=','.Deal::parse_individual_term_metadata($condition,$term_description);
+         $metadata.=';'.Deal::parse_individual_term_metadata($condition,$term_description);
       }
-      $metadata=preg_replace('/^\,/','',$metadata); 
+      $metadata=_trim(preg_replace('/^;/','',$metadata)); 
       // print "------- $metadata\n";
       
        return $metadata;
@@ -248,13 +229,14 @@ class Deal extends DB_Table {
 	
 	if (preg_match('/order \d+ or more/i',$term_description,$match))
 	  return preg_replace('/[^\d]/','',$match[0]);
+	if (preg_match('/buy \d+/i',$term_description,$match))
+	  return preg_replace('/[^\d]/','',$match[0]);
 	
-
 	break;
       case('Order Interval'):
 	if (preg_match('/order (within|since|every) \d+ days?/i',$term_description,$match))
 	  return preg_replace('/[^\d]/','',$match[0]).' day';
-	if (preg_match('/order (within|since|every) \d+ months?/i',$term_description,$match))
+	if (preg_match('/order (within|since|every) \d+ (calendar )?months?/i',$term_description,$match))
 	  return preg_replace('/[^\d]/','',$match[0]).' month';
 	if (preg_match('/order (within|since|every) \d+ weeks?/i',$term_description,$match))
 	  return preg_replace('/[^\d]/','',$match[0]).' week';
@@ -272,19 +254,135 @@ class Deal extends DB_Table {
 	break;
       case('Order Items Net Amount'):
       case('Order Total Net Amount'):
+      case('Order Items Gross Amount'):
+	if (preg_match('/(less than|upto|up to)\s*(\$|\£|\€)?\d+/i',$term_description))
+	  $conditional='<';
+	if (preg_match('/(more than|over)\s*(\$|\£|\€)?\d+/i',$term_description))
+	  $conditional='>';
+	if (preg_match('/(equal|exactly)\s*(\$|\£|\€)?\d+/i',$term_description))
+	  $conditional='>';
+
 	list($currency,$amount)=parse_money($term_description);
-	return "$currency $amount";
+	return _trim("$conditional $currency $amount");
 	
 	break;
       case('Shipping Country'):	
 	$regex='/orders? (shipped |send |to be send |d(ie)spached )?to .*$/i';
-	if( preg_match($regex.'.*$',$term_description,$match)){
-	  $country=_trim(preg_replace($regex,'',$match));
+	if( preg_match('/orders? (shipped |send |to be send |d(ie)spached )?to .*$/i',$term_description,$match)){
+	  $country=_trim(preg_replace('/orders? (shipped |send |to be send |d(ie)spached )?to /i','',$match[0]));
+	  //$country=_trim(preg_replace('/and order/i','',$country));
+
+	  $country=_trim(preg_replace('/(and|\+|y|with) (value|customer|order).*/i','',$country));
+	 
 	  $country_code=Address::parse_country($country);
+	  return $country_code;
 	}
 
 	break;
       }
     }
 
+    function allowance_input_form(){
+      $input_allowance=array();
+      $allowances=preg_split('/\s+AND\s+/',$this->data['Deal Allowance Type']);
+      $metadata=preg_split('/\s+|\s+/',$this->data['Deal Allowance Metadata']);
+	foreach($allowances as $key=>$allowance){
+	  $input_allowance[]=$this->allowance_individual_input_form($allowance,$metadata[$key]);
+	}
+	return $input_allowance;
+    }
+    
+    function allowance_individual_input_form($allowance,$metadata){
+
+
+      $input_allowance=array();
+      $input_allowance['Value Class']='';
+      switch($allowance){
+      case('Percentage Off'):
+	$input_allowance['Label']=_('Discount');
+	$input_allowance['Value']=percentage($metadata,1);
+	break;
+      }
+
+      if($this->data['Deal Allowance Lock']=='Yes'){
+	$allowance_lock_img='<img src="art/icons/lock.png" alr="Locked"/>';
+	$allowance_lock=true;
+	$input_allowance['Value Class'].=' locked';
+      }else{
+	$allowance_lock_img='';
+       $allowance_lock=false;
+      }
+      $input_allowance['Lock Label']=$allowance_lock_img;
+      $input_allowance['Lock Value']=$allowance_lock;
+      return $input_allowance;
+    }
+
+    function terms_input_form(){
+      $input_terms=array();
+      $terms=preg_split('/\s+AND\s+/',$this->data['Deal Terms Type']);
+      $metadata=preg_split("/\;/",$this->data['Deal Terms Metadata']);
+
+      //      print $this->data['Deal Terms Type']." ->  ". $this->data['Deal Terms Metadata']."\n";
+
+      //print_r($metadata);
+      //print "-------c ----\n";
+      foreach($terms as $key=>$terms){
+	$input_terms[]=$this->terms_individual_input_form($terms,$metadata[$key]);
+      }
+	return $input_terms;
+    }
+    
+    function terms_individual_input_form($terms,$metadata){
+     
+      $input_terms=array();
+      $input_terms['Value Class']='';
+
+      //print "** $terms -> $metadata **\n";
+      switch($terms){
+      case('Order Interval'):
+	$input_terms['Label']=_('If').' '._('order within');
+	$input_terms['Value']=$metadata;
+	break;
+	 case('Family Quantity Ordered'):
+	$input_terms['Label']=_('If').' '._('order more than');
+	$input_terms['Value']=number($metadata);
+	break;
+      case('Shipping Country'):
+	$input_terms['Label']=_('If').' '._('Shipping Destination');
+	
+	$country=new Country ('code',$metadata);
+	$input_terms['Value']=$country->data['Country Name'];
+	$input_terms['Value Class']='country';
+	break;
+      case('Order Items Net Amount'):
+	$conditional='';
+	if(preg_match('/^(\>|<|=|>=|<=)\s/',$metadata,$match)){
+	    $conditional=_trim($match[0]);
+	    $metadata=preg_replace("/^$conditional/",'',$metadata);
+	  }
+
+	  $input_terms['Label']=_trim($terms.' '.$conditional);
+	  $input_terms['Value']=$metadata;
+	break;
+
+
+      }
+      
+      if($this->data['Deal Terms Lock']=='Yes'){
+	$terms_lock_img='<img src="art/icons/lock.png" alr="Locked"/>';
+	$terms_lock=true;
+	$input_terms['Value Class'].=' locked';
+      }else{
+	$terms_lock_img='';
+       $terms_lock=false;
+	}			 
+      $input_terms['Lock Label']=$terms_lock_img;
+      $input_terms['Lock Value']=$terms_lock;
+
+      return $input_terms;
+    }
+    
+    
+
+    
 }

@@ -22,3 +22,4 @@ TRUNCATE `Category Bridge`;
 TRUNCATE `Campaign Dimension`;
 TRUNCATE `Campaign Deal Schema`;
 TRUNCATE `Charge Dimension`;
+

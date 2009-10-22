@@ -73,35 +73,67 @@ class Shipping extends DB_Table {
             $update='update';
         }
 
-        $data=$this->base_data();
-        foreach($raw_data as $key=>$value) {
 
+	if(count($raw_data)==1){
+	  
+	  foreach($raw_data as $key=>$value){
+	    if(preg_match('/^(Country Name|Country Code|Country)$/i',$key)){
+	      $country_code=Address::parse_country($value);
+	      $country=new Country('code',$country_code);
+
+	      $date=prepare_mysql(date("Y-m-d H:i:s"));
+	      
+	      $sql=sprintf("select `Shipping Key`  from `Shipping Dimension` where `Shipping Destination Type`='Country' and `Shipping Destination Key`=%d and (`Shipping Begin Date` is null or `Shipping Begin Date`<=%s )  and (`Shipping Expiration Date` is null or `Shipping Expiration Date`>=%s )  "
+			   ,$country->id,$date,$date);
+	      $res=mysql_query($sql);
+	 
+	      if($row=mysql_fetch_array($res)){
+		$this->found=true;
+		$this->found_key=$row['Shipping Key'];
+	
+	      }
+
+
+	    }
+
+	  }
+
+
+
+	}else{
+	
+	  $data=$this->base_data();
+	  foreach($raw_data as $key=>$value) {
+	    
             if (array_key_exists($key,$data))
-                $data[$key]=$value;
-
-        }
-        $fields=array();
-        foreach($data as $key=>$value){
-        if(!($key=='Shipping Begin Date' or  !$key=='Shipping Expiration Date'))
-        $fields[]=$key;
-        }
-       
-        $sql="select `Shipping Key` from `Shipping Dimension` where  true ";
-        //print_r($fields);
-        foreach($fields as $field) {
+	      $data[$key]=$value;
+	    
+	  }
+	  $fields=array();
+	  foreach($data as $key=>$value){
+	    if(!($key=='Shipping Begin Date' or  !$key=='Shipping Expiration Date'))
+	      $fields[]=$key;
+	  }
+	  
+	  $sql="select `Shipping Key` from `Shipping Dimension` where  true ";
+	  //print_r($fields);
+	  foreach($fields as $field) {
             $sql.=sprintf(' and `%s`=%s',$field,prepare_mysql($data[$field],false));
-        }
-       
-        $result=mysql_query($sql);
-        $num_results=mysql_num_rows($result);
-        if ($num_results==1) {
+	  }
+	  
+	  $result=mysql_query($sql);
+	  $num_results=mysql_num_rows($result);
+	  if ($num_results==1) {
             $row=mysql_fetch_array($result, MYSQL_ASSOC);
             $this->found=true;
-            $this->get_data('id',$row['Shipping Key']);
-           
-        }
+	    $this->found_key=$row['Shipping Key'];
+	    
+	  }
+	}
+
+
         if($this->found){
-            $this->get_data($this->found);
+	  $this->get_data('id',$this->found_key);
         }
         
         if($create and !$this->found){
@@ -148,7 +180,13 @@ class Shipping extends DB_Table {
             return $this->data[$key];
 
         switch ($key) {
+	case('Country Name'):
+	  if($this->data['Shipping Destination Type']=='Country'){
+	    $country=new Country ('id',$this->data['Shipping Destination Key']);
 
+	    return $country->data['Country Name'];
+	  }
+	  break;
         }
 
         return false;
