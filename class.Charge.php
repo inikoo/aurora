@@ -37,7 +37,7 @@ class Charge extends DB_Table {
 
     function get_data($tipo,$tag) {
 
-        if ($tipo=='id')
+       
             $sql=sprintf("select * from `Charge Dimension` where `Charge Key`=%d",$tag);
         //    elseif($tipo=='code')
         //  $sql=sprintf("select * from `Charge Dimension` where `Charge Code`=%s",prepare_mysql($tag));
@@ -82,7 +82,10 @@ class Charge extends DB_Table {
         }
         $fields=array();
         foreach($data as $key=>$value){
-        if(!($key=='Charge Begin Date' or  !$key=='Charge Expiration Date'))
+        if(!($key=='Charge Begin Date' 
+	     or $key=='Charge Expiration Date' 
+	     or $key=='Charge Terms Metadata' 
+	     or $key=='Charge Metadata'   ))
         $fields[]=$key;
         }
        
@@ -97,11 +100,11 @@ class Charge extends DB_Table {
         if ($num_results==1) {
             $row=mysql_fetch_array($result, MYSQL_ASSOC);
             $this->found=true;
-            $this->get_data('id',$row['Charge Key']);
+            $this->found_key=$row['Charge Key'];
            
         }
         if($this->found){
-            $this->get_data($this->found);
+	  $this->get_data('id',$this->found_key);
         }
         
         if($create and !$this->found){
@@ -116,50 +119,15 @@ class Charge extends DB_Table {
 
     function create($data) {
 
-       
 
-        if ($data['Charge Type']=='Percentage' and preg_match('/Quantity Ordered/i',$data['Charge Terms Type'])) {
-            //   print "***********";
-            if (preg_match('/order \d+ or more/i',$data['Charge Terms Description'],$match))
-                $a=preg_replace('/[^\d]/','',$match[0]);
-            else {
-                print "ohh no a not founD in charge class ".$data['Charge Terms Description']."\n";
-                print_r($data);
-                exit;
-            }
-
-            if (preg_match('/^\d+\%/i',$data['Charge Description'],$match))
-                $b=.01*preg_replace('/\%/','',$match[0]);
-            $data['Charge Metadata']="$a,$b";
-            //    print_r($match);
-        }
-        if ($data['Charge Type']=='Percentage' and preg_match('/Order Interval/i',$data['Charge Terms Type'])) {
-            //   print "***********";
-            if (preg_match('/last order within \d+ days/i',$data['Charge Terms Description'],$match))
-                $a=preg_replace('/[^\d]/','',$match[0]).' day';
-            if (preg_match('/last order within \d+ .* month/i',$data['Charge Terms Description'],$match))
-                $a=preg_replace('/[^\d]/','',$match[0]).' month';
-
-            if (preg_match('/^\d+\%/i',$data['Charge Description'],$match))
-                $b=.01*preg_replace('/\%/','',$match[0]);
-            $data['Charge Metadata']="$a,$b";
-            //    print_r($match);
-        }
-        elseif($data['Charge Type']=='Amount' and preg_match('/Total Amount|Order Items Gross Amount/i',$data['Charge Terms Type']))   {
+      if($data['Charge Trigger Key']=='')
+	$data['Charge Trigger Key']=0;
+      
+      $data['Charge Metadata']=Charge::parse_charge_metadata($data['Charge Type'],$data['Charge Description']);
+      $data['Charge Terms Metadata']=Deal::parse_term_metadata($data['Charge Terms Type'],$data['Charge Terms Description']);
 
 
-            preg_match('/\d+\.?[\d]{0,2}/i',$data['Charge Terms Description'],$match);
-            $total_order=_trim(preg_replace('/[^\d^\.]/','',$match[0]));
-
-            preg_match('/\d+\.?[\d]{0,2}/i',$data['Charge Description'],$match);
-            $amount=_trim(preg_replace('/[^\d^\.]/','',$match[0]));
-
-
-
-            $data['Charge Metadata']=$total_order.','.$amount;
-        }
-
-
+     
         //print_r($data);
 
         $keys='(';
@@ -183,7 +151,7 @@ class Charge extends DB_Table {
     }
 
     function get($key='') {
-
+    
         if (isset($this->data[$key]))
             return $this->data[$key];
 
@@ -193,5 +161,54 @@ class Charge extends DB_Table {
 
         return false;
     }
+
+
+
+ public static function parse_charge_metadata($charge_type,$charge_description){
+   $conditions=preg_split('/\s+AND\s+/',$charge_type);
+   $metadata='';
+  
+   foreach($conditions as $condition){
+     $metadata.=','.Charge::parse_individual_charge_metadata($condition,$charge_description);
+      }
+   $metadata=preg_replace('/^\,/','',$metadata); 
+   // print "** $charge_type,$charge_description ->$metadata  \n";
+   return $metadata;
+ }
+
+
+ public static function parse_individual_charge_metadata($charge_type,$charge_description){
+// print "$charge_type,$charge_description\n";
+ switch($charge_type){
+   case('Percentage'):
+     if (preg_match('/\d+((\.|\,)\d+)?\%/i',$charge_description,$match)){
+       $number=preg_replace('/\,/','.',$match[0]);
+       $number=preg_replace('/\%/','',$number);
+       return 0.01* (float) $number;
+     }
+      if (preg_match('/^(|.*\s+)free(\s+.*|)$/i',$charge_description,$match)){
+       return 1;
+     }
+     break;
+   case('Amount'):
+     $charge_description=translate_written_number($charge_description);
+     if(preg_match('/\d+(\.\d+)?/i',$charge_description,$match)){
+//            print "** $charge_description \n";
+
+
+       //preg_match('/\d+\.?[\d]{0,2}/i',$data['Charge Terms Description'],$match);
+       //$total_order=_trim(preg_replace('/[^\d^\.]/','',$match[0]));
+       //preg_match('/\d+\.?[\d]{0,2}/i',$data['Charge Description'],$match);
+       //$amount=_trim(preg_replace('/[^\d^\.]/','',$match[0]));
+
+       return _trim(preg_replace('/[^\d^.]/','',$match[0]));
+       }
+     break;
+   }
+ }
+
+ 
+
+
 
 }

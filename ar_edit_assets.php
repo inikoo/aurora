@@ -1746,13 +1746,13 @@ function list_deals_for_edition(){
    $_SESSION['state'][$parent]['deals']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
    
    if($parent=='store')
-     $where=sprintf("where  `Store Key`=%d and `Deal Allowance Target`='Order'    ",$parent_id);
+     $where=sprintf("where  `Store Key`=%d and `Deal Trigger`='Order'    ",$parent_id);
    elseif($parent=='department')
-     $where=sprintf("where    `Deal Allowance Target`='Department' and  `Deal Allowance Target Key`=%d   ",$parent_id);
+     $where=sprintf("where    `Deal Trigger`='Department' and  `Deal Trigger Key`=%d   ",$parent_id);
    elseif($parent=='family')
-     $where=sprintf("where    `Deal Allowance Target`='Family' and  `Deal Allowance Target Key`=%d   ",$parent_id);
+     $where=sprintf("where    `Deal Trigger`='Family' and  `Deal Trigger Key`=%d   ",$parent_id);
    elseif($parent=='product')
-     $where=sprintf("where    `Deal Allowance Target`='Product' and  `Deal Allowance Target Key`=%d   ",$parent_id);
+     $where=sprintf("where    `Deal Trigger`='Product' and  `Deal Trigger Key`=%d   ",$parent_id);
    else
      $where=sprintf("where true ");;
 
@@ -1760,8 +1760,10 @@ function list_deals_for_edition(){
    
    $filter_msg='';
   $wheref='';
-  if($f_field=='description' and $f_value!='')
-    $wheref.=" and  `Deal Description` like '".addslashes($f_value)."%'";
+ 
+if($f_field=='description' and $f_value!='')
+    $wheref.=" and ( `Deal Terms Description` like '".addslashes($f_value)."%' or `Deal Allowance Description` like '".addslashes($f_value)."%'  )   ";
+
   elseif($f_field=='name' and $f_value!='')
     $wheref.=" and  `Deal Name` like '".addslashes($f_value)."%'";
 
@@ -1822,38 +1824,52 @@ mysql_free_result($result);
    if($order=='name')
      $order='`Deal Name`';
    elseif($order=='description')
-     $order='`Deal Description`';
+      $order='`Deal Terms Description`,`Deal Allowance Description`';
    else
      $order='`Deal Name`';
 
  
    $sql="select *  from `Deal Dimension` $where    order by $order $order_direction limit $start_from,$number_results    ";
+   //print $sql;
    $res = mysql_query($sql);
    $total=mysql_num_rows($res);
-   
+   $adata=array();
    while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-     $meta_data=preg_split('/,/',$row['Deal Allowance Metadata']);
+     // $meta_data=preg_split('/,/',$row['Deal Allowance Metadata']);
+     
+     $deal=new Deal($row['Deal Key']);
+
+     // print_r($deal->terms_input_form());
+
+     //print_r($deal->allowance_input_form());
      
      $input_allowance='';
-     if($row['Deal Allowance Type']=='Percentage Off'){
-       $input_allowance=sprintf('<td style="text-align:right;width:150px;padding-right:10px" >%s</td><td style="text-align:left"><input style="width:5em" value="%s" /></td>',_('Discount').':',percentage($meta_data[1],1));;
+     foreach($deal->allowance_input_form() as $form_data){
+       $input_allowance.=sprintf('<td style="text-align:right;width:150px;padding-right:10px" >%s</td><td style="width:15em"  style="text-align:left"><input class="%s" style="width:5em" value="%s" /> %s</td>',$form_data['Label'],$form_data['Value Class'],$form_data['Value'],$form_data['Lock Label']);;
      }
-     
-      $input_term='';
-     if($row['Deal Terms Type']=='Order Interval'){
-       $input_term=sprintf('<td style="text-align:right;width:150px;padding-right:10px">%s</td><td style="text-align:left"><input style="width:6em" value="%s" /></td>',_('If order within').':',$meta_data[0]);;
-     }elseif($row['Deal Terms Type']=='Family Quantity Ordered'){
-       $input_term=sprintf('<td style="text-align:right;width:150px;padding-right:10px">%s</td><td style="text-align:left"><input style="width:5em" value="%s" /></td>',_('If order more than').':',$meta_data[0]);;
-     }
+     $input_term='';
+     foreach($deal->terms_input_form() as $form_data){
+       //print_r($form_data);
 
+       if($form_data['Value Class']=='country'){
+	  $input_term=sprintf('<td style="text-align:right;width:150px;padding-right:10px" >%s</td><td style="width:15em"  style="text-align:left"><input style="width:15em" value="%s" /> %s</td>',$form_data['Label'],$form_data['Value'],$form_data['Lock Label']);;
+       }else
+       {
+	 $input_term=sprintf('<td style="text-align:right;width:150px;padding-right:10px" >%s</td><td style="width:15em"  style="text-align:left"><input class="%s" style="width:5em" value="%s" /> %s</td>',$form_data['Label'],$form_data['Value Class'],$form_data['Value'],$form_data['Lock Label']);;
+       }
+
+     }
      
-     $edit='<table style="margin:10px"><tr style="border:none">'.$input_term.'</tr><tr style="border:none">'.$input_allowance.'</tr></table>';
+    
+     
+     $edit='<table style="margin:10px"><tr style="border:none">'.$input_allowance.'</tr><tr style="border:none">'.$input_term.'</tr></table>';
      
      
      $adata[]=array(
 		    'name'=>$row['Deal Name'],
-		    'description'=>$row['Deal Description'].$edit
-		  
+		    'description'=>$deal->get('Description').$edit,
+		    'from'=>'',
+		    'to'=>''
 		    
 		    );
    }
