@@ -76,6 +76,7 @@ if($edit){
   $smarty->assign('edit',$_SESSION['state']['family']['edit']);
   $css_files[]='css/edit.css';
   $js_files[]='js/edit_common.js';
+  $js_files[]='country_select.js.php';
   $js_files[]='edit_family.js.php';
  }else{
   $js_files[]='family.js.php';

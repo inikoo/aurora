@@ -1845,17 +1845,50 @@ mysql_free_result($result);
      
      $input_allowance='';
      foreach($deal->allowance_input_form() as $form_data){
-       $input_allowance.=sprintf('<td style="text-align:right;width:150px;padding-right:10px" >%s</td><td style="width:15em"  style="text-align:left"><input class="%s" style="width:5em" value="%s" /> %s</td>',$form_data['Label'],$form_data['Value Class'],$form_data['Value'],$form_data['Lock Label']);;
+       $input_allowance.=sprintf('<td style="text-align:right;width:150px;padding-right:10px" >%s</td>
+       <td style="width:15em"  style="text-align:left"><input  %s class="%s" style="width:5em" value="%s" /> %s</td>',
+       $form_data['Label'],
+       ($form_data['Lock Value']?'READONLY':''),
+       $form_data['Value Class'],
+       $form_data['Value'],
+       $form_data['Lock Label']);
      }
      $input_term='';
      foreach($deal->terms_input_form() as $form_data){
        //print_r($form_data);
+       
+    
+       
 
        if($form_data['Value Class']=='country'){
-	  $input_term=sprintf('<td style="text-align:right;width:150px;padding-right:10px" >%s</td><td style="width:15em"  style="text-align:left"><input style="width:15em" value="%s" /> %s</td>',$form_data['Label'],$form_data['Value'],$form_data['Lock Label']);;
+	  $input_term=sprintf('<td style="text-align:right;width:150px;padding-right:10px" >%s</td>
+	  <td style="width:15em"  style="text-align:left"><div style="margin-top:1px"><input id="country_code" value="" type="hidden">
+	  <input id="country" %s class="%s"style="width:15em" value="%s" /><div id="country_container" style="" ></div></div> %s
+	  
+	  <script type="text/javascript">
+    	var Countries_DS = new YAHOO.util.FunctionDataSource(match_country);
+     	Countries_DS.responseSchema = {fields: ["id", "name", "code","code2a"]}
+     	var Countries_AC = new YAHOO.widget.AutoComplete("country", "country_container", Countries_DS);
+     	Countries_AC.useShadow = true;
+     	Countries_AC.resultTypeList = false;
+     	Countries_AC.formatResult = country_formatResult;
+     	Countries_AC.itemSelectEvent.subscribe(onCountrySelected);
+      </script>
+	  </td>'
+	  		,$form_data['Label']
+	  		,($form_data['Lock Value']?'READONLY':'')
+	  			 ,$form_data['Value Class']
+	  		,$form_data['Value']
+	  		,$form_data['Lock Label']);
        }else
        {
-	 $input_term=sprintf('<td style="text-align:right;width:150px;padding-right:10px" >%s</td><td style="width:15em"  style="text-align:left"><input class="%s" style="width:5em" value="%s" /> %s</td>',$form_data['Label'],$form_data['Value Class'],$form_data['Value'],$form_data['Lock Label']);;
+	 $input_term=sprintf('<td style="text-align:right;width:150px;padding-right:10px" >%s</td>
+	 <td style="width:15em"  style="text-align:left"><input %s class="%s" style="width:5em" value="%s" /> %s</td>'
+	 ,$form_data['Label']
+	 ,($form_data['Lock Value']?'READONLY':'')
+	 ,$form_data['Value Class']
+	 ,$form_data['Value']
+	 ,$form_data['Lock Label']);;
        }
 
      }

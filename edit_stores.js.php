@@ -204,17 +204,14 @@ function init(){
      YAHOO.util.Event.addListener('save_new_store', "click",save_new_store);
      YAHOO.util.Event.addListener('cancel_add_store', "click", cancel_add_store);
 
-
-
      var Countries_DS = new YAHOO.util.FunctionDataSource(match_country);
      Countries_DS.responseSchema = {fields: ["id", "name", "code","code2a"]}
-
-
      var Countries_AC = new YAHOO.widget.AutoComplete("address_country", "address_country_container", Countries_DS);
      Countries_AC.useShadow = true;
      Countries_AC.resultTypeList = false;
      Countries_AC.formatResult = country_formatResult;
      Countries_AC.itemSelectEvent.subscribe(onCountrySelected);
+
 }
 
 
