@@ -77,6 +77,13 @@
       </tbody>
 
       <tbody id="info_year"  style="{if $store_period!='year'}display:none{/if}">
+      	<tr >
+	  <td>{t}Customers{/t}:</td><td class="aright">{$department->get('1 Year Acc Customers')}</td>
+	</tr>
+		<tr >
+	  <td>{t}Invoices{/t}:</td><td class="aright">{$department->get('1 Year Acc Orders')}</td>
+	</tr>
+
 	<tr >
 	  <td>{t}Sales{/t}:</td><td class=" aright">{$department->get('1 Year Acc Invoiced Amount')}</td>
 	</tr>
@@ -86,14 +93,15 @@
 	<tr >
 	  <td>{t}Outers{/t}:</td><td class="aright">{$department->get('1 Year Acc Quantity Delivered')}</td>
 	</tr>
-	<tr >
-	  <td>{t}Orders{/t}:</td><td class="aright">{$department->get('1 Year Acc Orders')}</td>
-	</tr>
-	<tr >
-	  <td>{t}Customers{/t}:</td><td class="aright">{$department->get('1 Year Acc Customers')}</td>
-	</tr>
+
       </tbody>
         <tbody id="info_quarter" style="{if $store_period!='quarter'}display:none{/if}"  >
+        <tr >
+	     <td>{t}Orders{/t}:</td><td class="aright">{$department->get('1 Quarter Acc Orders')}</td>
+	    </tr>
+        <tr >
+	  <td>{t}Customers{/t}:</td><td class="aright">{$department->get('1 Quarter Acc Customers')}</td>
+	</tr>
 	<tr >
 	  <td>{t}Sales{/t}:</td><td class=" aright">{$department->get('1 Quarter Acc Invoiced Amount')}</td>
 	</tr>
@@ -102,13 +110,41 @@
 	</tr>
 	<tr >
 	  <td>{t}Outers{/t}:</td><td class="aright">{$department->get('1 Quarter Acc Quantity Delivered')}</td>
+	</tr>	
+      </tbody>
+        <tbody id="info_month" style="{if $store_period!='month'}display:none{/if}"  >
+        <tr >
+	     <td>{t}Orders{/t}:</td><td class="aright">{$department->get('1 Month Acc Orders')}</td>
+	    </tr>
+        <tr >
+	  <td>{t}Customers{/t}:</td><td class="aright">{$department->get('1 Month Acc Customers')}</td>
 	</tr>
 	<tr >
-	  <td>{t}Orders{/t}:</td><td class="aright">{$department->get('1 Quarter Acc Orders')}</td>
+	  <td>{t}Sales{/t}:</td><td class=" aright">{$department->get('1 Month Acc Invoiced Amount')}</td>
 	</tr>
 	<tr >
-	  <td>{t}Customers{/t}:</td><td class="aright">{$department->get('1 Quarter Acc Customers')}</td>
+	  <td>{t}Profit{/t}:</td><td class=" aright">{$department->get('1 Month Acc Profit')}</td>
 	</tr>
+	<tr >
+	  <td>{t}Outers{/t}:</td><td class="aright">{$department->get('1 Month Acc Quantity Delivered')}</td>
+	</tr>	
+      </tbody>
+       <tbody id="info_week" style="{if $store_period!='week'}display:none{/if}"  >
+        <tr >
+	     <td>{t}Orders{/t}:</td><td class="aright">{$department->get('1 Month Acc Orders')}</td>
+	    </tr>
+        <tr >
+	  <td>{t}Customers{/t}:</td><td class="aright">{$department->get('1 Month Acc Customers')}</td>
+	</tr>
+	<tr >
+	  <td>{t}Sales{/t}:</td><td class=" aright">{$department->get('1 Month Acc Invoiced Amount')}</td>
+	</tr>
+	<tr >
+	  <td>{t}Profit{/t}:</td><td class=" aright">{$department->get('1 Month Acc Profit')}</td>
+	</tr>
+	<tr >
+	  <td>{t}Outers{/t}:</td><td class="aright">{$department->get('1 Month Acc Quantity Delivered')}</td>
+	</tr>	
       </tbody>
  </table>
 </div>
