@@ -5,6 +5,7 @@ include_once('common.php');
 ?>
 var Dom   = YAHOO.util.Dom;
 
+var current_store_period='<?php echo$_SESSION['state']['store']['period']?>';
 var category_labels={'sales':'<?php echo _('Sales')?>','profit':'<?php echo _('Profits')?>'};
 var period_labels={'m':'<?php echo _('Montly')?>','y':'<?php echo _('Yearly')?>','w':'<?php echo _('Weekly')?>','q':'<?php echo _('Quarterly')?>'};
 var pie_period_labels={'m':'<?php echo _('Month')?>','y':'<?php echo _('Year')?>','w':'<?php echo _('Week')?>','q':'<?php echo _('Quarter')?>'};
@@ -198,6 +199,22 @@ function change_plot_period(period){
     change_plot(o);
 }
 
+function change_info_period(period,period_title){
+    var patt=new RegExp("^(year|month|all|week|quarter)$");
+    if (patt.test(period)==true && current_store_period!=period){
+	//alert('info_'+current_store_period)
+	//	alert('ar_sessions.php?tipo=update&keys=store-period&value=');
+	Dom.get('info_'+current_store_period).style.display='none';
+	Dom.get('info_'+period).style.display='';
+	current_store_period=period;
+
+	Dom.get('info_title').innerHTML=period_title;
+	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=store-period&value='+period);
+
+    }
+
+}
+
 
 function change_plot(o){
     //  if(!Dom.hasClass(o,'selected')){
@@ -320,4 +337,10 @@ YAHOO.util.Event.onContentReady("plot_category_menu", function () {
 	 oMenu.render();
 	 oMenu.subscribe("show", oMenu.focus);
 	 YAHOO.util.Event.addListener("plot_category", "click", oMenu.show, null, oMenu);
+    });
+YAHOO.util.Event.onContentReady("info_period_menu", function () {
+	 var oMenu = new YAHOO.widget.Menu("info_period_menu", { context:["info_period","tr", "br"]  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+	 YAHOO.util.Event.addListener("info_period", "click", oMenu.show, null, oMenu);
     });

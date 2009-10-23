@@ -10,12 +10,8 @@
   Copyright (c) 2009, Kaktus
 
   Version 2.0
-
-
-
-
-
 */
+
 include_once('class.DB_Table.php');
 include_once('class.Country.php');
 /* class: Address
@@ -57,7 +53,6 @@ class Address extends DB_Table{
   */
   function Address($arg1=false,$arg2=false) {
 
-
     $this->table_name='Address';
     $this->ignore_fields=array('Address Key','Address Data Last Update','Address Data Creation');
 
@@ -75,7 +70,7 @@ class Address extends DB_Table{
       return;
     }
 
-    if($arg1=='new'){
+    if($arg1=='new' or $arg1=='create'){
       $this->create($arg2);
       return;
     }
@@ -107,8 +102,8 @@ class Address extends DB_Table{
   /*
     Method: get_data
     Load the data from the database
-
   */
+
   function get_data($tipo,$id=false){
 
     if($tipo=='id')
@@ -137,8 +132,8 @@ class Address extends DB_Table{
   */
 
   function find($raw_data,$options=''){
-    //   print "$options\n";
-    //   print_r($raw_data);
+    //print "$options\n";
+    //  print_r($raw_data);
 			
     $find_fuzzy=false;
 	  
@@ -150,6 +145,8 @@ class Address extends DB_Table{
 
 
     $this->found=false;
+    $this->found_key=0;
+	
     $this->found_in=false;
     $this->found_out=false;
     $this->candidate=array();
@@ -269,6 +266,8 @@ class Address extends DB_Table{
 
     //	print "f: $find_fuzzy\n";
 
+    //rint_r($data);
+
     //Exact match
     if(!$find_fuzzy){
 
@@ -290,6 +289,7 @@ if($data['Address Fuzzy']=='Yes'){
       if($num_results==1){
 	$row=mysql_fetch_array($result, MYSQL_ASSOC);
 	$this->found=true;
+	$this->found_key=$row['Address Key'];
 	$this->get_data('id',$row['Address Key']);
 	$this->candidate[$row['Subject Key']]=100;
 	}		
@@ -721,6 +721,7 @@ if($data['Address Fuzzy']=='Yes'){
 	  if($num_results==1){
 	    $row=mysql_fetch_array($result, MYSQL_ASSOC);
 	    $this->found=true;
+	    $this->found_key=$row['Address Key'];
 	    $this->get_data('id',$row['Address Key']);
 	    if($mode=='Contact in' or $mode=='Company in'){
 	      if(in_array($row['Subject Key'],$in_contact)){
@@ -769,10 +770,14 @@ if($data['Address Fuzzy']=='Yes'){
       //    exit;
       $this->create($data,$options);
 
+    }elseif($create and preg_match('/force/',$options)   ){
+
+      $this->create($data,$options);
+ 
     }
 
 
-
+  
 
 
   }
@@ -826,6 +831,10 @@ if($data['Address Fuzzy']=='Yes'){
   protected function create($data){
 
     //  print_r($data);
+
+   
+
+
 
     if(!isset($data['Address Input Format'])){
       $data['Address Input Format']='DB Fields';

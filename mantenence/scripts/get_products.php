@@ -48,7 +48,7 @@ $Data_Audit_ETL_Software="$software $version";
 
 $file_name='/data/plaza/AWorder2002.xls';
 $csv_file='tmp.csv';
-//exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
+exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
 
 $handle_csv = fopen($csv_file, "r");
 $column=0;
@@ -466,7 +466,7 @@ foreach($__cols as $cols){
   $code=_trim($code);
   if($code=='' or !preg_match('/\-/',$code) or preg_match('/total/i',$price)  or  preg_match('/^(pi\-|cxd\-|fw\-04)/i',$code))
     $is_product=false;
-  if(preg_match('/^(ob\-108|ob\-156|ish\-94|rds\-47)/i',$code))
+  if(preg_match('/^(ob\-108|ish\-94|rds\-47)/i',$code))
     $is_product=false;
   if(preg_match('/^staf-set/i',$code) and $price=='')
     $is_product=false;
@@ -1582,7 +1582,7 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
     
     // print "Col $column\n";
     //print_r($cols);
-    if($cols[3]!='' and $cols[6]!=''  and $cols[3]!='SHOP-Fit' and $cols[3]!='ISH-94' and $cols[3]!='OB-108' and !preg_match('/^DB-/',$cols[3])  and !preg_match('/^pack-/i',$cols[3])  ){
+    if($cols[3]!='' and $cols[6]!=''  and $cols[3]!='SHOP-Fit' and $cols[3]!='RDS-47' and $cols[3]!='ISH-94' and $cols[3]!='OB-108' and !preg_match('/^DB-/',$cols[3])  and !preg_match('/^pack-/i',$cols[3])  ){
       $fam_code=$cols[3];
       $fam_name=_trim( mb_convert_encoding($cols[6], "UTF-8", "ISO-8859-1,UTF-8"));
       $fam_position=$column;

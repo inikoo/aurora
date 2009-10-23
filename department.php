@@ -104,7 +104,15 @@ if(isset($_REQUEST['view'])){
 
 $store_order=$_SESSION['state']['store']['table']['order'];
 $store_period=$_SESSION['state']['store']['period'];
- if($store_order=='profit'){
+$store_period_title=array('year'=>_('Last Year'),'quarter'=>_('Last Quarter'),'month'=>_('Last Month'),'week'=>_('Last Week'),'all'=>_('All'));
+  
+
+$smarty->assign('store_period',$store_period);
+$smarty->assign('store_period_title',$store_period_title[$store_period]);
+
+
+
+if($store_order=='profit'){
     if($store_period=='all')
       $store_order='`Product Department Total Profit`';
     elseif($store_period=='year')
@@ -217,7 +225,6 @@ $smarty->assign('plot_period',$plot_period);
 $smarty->assign('plot_category',$plot_period);
 $smarty->assign('plot_data',$_SESSION['state']['department']['plot_data']);
 
-
 if($plot_tipo=='pie'){
   if($plot_period=='m')
     $plot_formated_period='Month';
@@ -246,6 +253,16 @@ else
 
 $smarty->assign('plot_formated_category',$plot_formated_category);
 $smarty->assign('plot_formated_period',$plot_formated_period);
+
+
+$info_period_menu=array(
+			array("period"=>'week','label'=>_('Last Week'),'title'=> _('Last Week'))
+		     ,array("period"=>'month','label'=>_('last Month'),'title'=>_('last Month'))
+		     ,array("period"=>'quarter','label'=>_('Last Quarter'),'title'=>_('Last Quarter'))
+		     ,array("period"=>'year','label'=>_('Last Year'),'title'=>_('Last Year'))
+		     ,array("period"=>'all','label'=>_('All'),'title'=>_('All'))
+		     );
+$smarty->assign('info_period_menu',$info_period_menu);
 
 
 $plot_period_menu=array(

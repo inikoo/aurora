@@ -24,16 +24,73 @@
   
 
  <div style="clear:left;">
-   <h1><a  href="store.php?id={$store->id}">{$store->get('Store Code')}</a> &rarr; <a  href="department.php?id={$department->id}">{$department->get('Product Department Code')}</a> &rarr; {$family->get('Product Family Name')}  ({$family->get('Product Family Code')})</h1>
-  </div>
+   <span class="branch" ><a  href="store.php?id={$store->id}">{$store->get('Store Code')}</a> &rarr; <a  href="department.php?id={$department->id}">{$department->get('Product Department Code')}</a> &rarr; {$family->get('Product Family Name')}  ({$family->get('Product Family Code')})</span>
   
+</div>
+  
+<div id="family_info" style="margin:10px 0;padding:0">
 
+<h2 style="margin:0;padding:0">Family Information</h2>
+<div style="width:350px;float:left">
+  <table    class="show_info_product">
 
-   <div class="data_table " ">
-    <span class="clean_table_title">{t}Products{/t}</span>
-    
-<span   style="float:right;margin-left:80px" class="state_details" state="{$show_percentages}"  id="show_percentages"  atitle="{if $show_percentages}{t}Normal Mode{/t}{else}{t}Comparison Mode{/t}{/if}"  >{if $show_percentages}{t}Comparison Mode{/t}{else}{t}Normal Mode{/t}{/if}</span>
-<table style="float:left;margin:0 0 0 20px ;padding:0"  class="options" >
+    <tr >
+      <td>{t}Code{/t}:</td><td class="price">{$family->get('Product Family Code')}</td>
+    </tr>
+    <tr >
+      <td>{t}Name{/t}:</td><td>{$family->get('Product Family Name')}</td>
+    </tr>
+    <tr >
+      <td>{t}Description{/t}:</td><td>{$family->get('Product Family Special Characteristic')}</td>
+    </tr>
+   
+    <tr >
+      <td>{t}Similar{/t}:</td><td>{$family->get('Similar Families')}</td>
+    </tr>
+    <tr >
+      <td>{t}Categories{/t}:</td><td>{$family->get('Categories')}</td>
+    </tr>
+     <tr >
+      <td>{t}Web Page{/t}:</td><td>{$family->get('Web Page Links')}</td>
+    </tr>
+
+  </table>
+</div>
+<div style="width:300px;float:left;margin-left:20px">
+  <table    class="show_info_product">
+      <tr >
+      <td colspan="2" class="aright" style="padding-right:10px"><span id="sales_data_title">{t}Last Year{/t}</span> <span id="change_sales_data">&diams;</span></td>
+    </tr>
+      <tbody>
+	<tr >
+	  <td>{t}Sales{/t}:</td><td class=" aright">{$family->get('1 Year Acc Invoiced Amount')}</td>
+	</tr>
+	<tr >
+	  <td>{t}Profit{/t}:</td><td class=" aright">{$family->get('1 Year Acc Profit')}</td>
+	</tr>
+	<tr >
+	  <td>{t}Outers{/t}:</td><td class="aright">{$family->get('1 Year Acc Quantity Delivered')}</td>
+	</tr>
+	<tr >
+	  <td>{t}Orders{/t}:</td><td class="aright">{$family->get('1 Year Acc Orders')}</td>
+	</tr>
+	<tr >
+	  <td>{t}Customers{/t}:</td><td class="aright">{$family->get('1 Year Acc Customers')}</td>
+	</tr>
+      </tbody>
+ </table>
+</div>
+
+</div>
+
+   <div class="data_table"  style="clear:both">
+     <span id="table_title" class="clean_table_title">{t}Products{/t}</span>
+     <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
+
+     
+     <span   style="float:right;margin-left:80px" class="state_details" state="{$show_percentages}"  id="show_percentages"  atitle="{if $show_percentages}{t}Normal Mode{/t}{else}{t}Comparison Mode{/t}{/if}"  >{if $show_percentages}{t}Comparison Mode{/t}{else}{t}Normal Mode{/t}{/if}</span>
+     
+     <table style="float:left;margin:0 0 5px 0px ;padding:0"  class="options" >
        <tr><td  {if $view=='general'}class="selected"{/if} id="general" >{t}General{/t}</td>
 	  {if $view_stock}<td {if $view=='stock'}class="selected"{/if}  id="stock"  >{t}Stock{/t}</td>{/if}
 	  {if $view_sales}<td  {if $view=='sales'}class="selected"{/if}  id="sales"  >{t}Sales{/t}</td>{/if}

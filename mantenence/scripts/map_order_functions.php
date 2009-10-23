@@ -8550,7 +8550,12 @@ if($act_data['town']=='Hornbæk - Sjælland'){
     
   //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   // fix contracts
+  //  print_r($act_data);  
+if($act_data['name']=='Igneous Products' and $act_data['contact']=='Les'){
+    $act_data['contact']='';
     
+  }
+
     
   $extra_contact=false;
   if($act_data['contact']!=''){
@@ -8575,13 +8580,21 @@ if($act_data['town']=='Hornbæk - Sjælland'){
 
     }
     $there_is_contact=true;
-  }else{
+  }
+
+  if($act_data['contact']==$act_data['name'] or  $act_data['name']=='' and $act_data['contact']!=''){
+    // we dont hasve person name
     $there_is_contact=false;
-    if(!preg_match('/C \& P Trading|Peter \& Paul Ltd|Health.*Beauty.*Salon|plant.*herb/i',$act_data['name']))
-      $act_data['contact']=$act_data['name'];
+    if(!preg_match('/C \& P Trading|Peter \& Paul Ltd|Health.*Beauty.*Salon|plant.*herb|Igneous Products/i',$act_data['contact'])){
+      $act_data['name']=$act_data['contact'];
+      $act_data['contact']='';
+    }
 
   }
-    
+  
+
+  
+
   //  print $act_data['contact']." >>> $extra_contact   \n ";
     
   if($act_data['name']!=$act_data['contact'] )

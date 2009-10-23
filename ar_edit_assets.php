@@ -1882,6 +1882,7 @@ mysql_free_result($result);
 	  		,$form_data['Lock Label']);
        }else
        {
+
 	 $input_term=sprintf('<td style="text-align:right;width:150px;padding-right:10px" >%s</td>
 	 <td style="width:15em"  style="text-align:left"><input %s class="%s" style="width:5em" value="%s" /> %s</td>'
 	 ,$form_data['Label']
@@ -1889,6 +1890,7 @@ mysql_free_result($result);
 	 ,$form_data['Value Class']
 	 ,$form_data['Value']
 	 ,$form_data['Lock Label']);;
+
        }
 
      }
