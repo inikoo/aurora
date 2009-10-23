@@ -186,7 +186,7 @@ $this->data['Invoice Currency Exchange']=$exchange;
     
     $customer=new customer('id',$this->data ['Invoice Customer Key']);
     
-
+    //    print_r($customer);exit('en invlice class '.$this->data ['Invoice Customer Key'].'  ');
     if($customer->id){
       if($customer->data['Customer Type']=='Company'){
 	//TODO  not include if is a fuzzy contact name
@@ -352,7 +352,7 @@ $this->data['Invoice Currency Exchange']=$exchange;
     $this->data ['Invoice Customer Name'] = $order->data ['Order Customer Name'];
       $this->data ['Invoice For'] = $order->data ['Order For'];
     $customer=new customer('id',$this->data ['Invoice Customer Key']);
-    
+    //print_r($customer);exit('en invlice class '.$this->data ['Invoice Customer Key'].'  ');
 
     if($customer->id){
       if($customer->data['Customer Type']=='Company'){
@@ -360,7 +360,8 @@ $this->data['Invoice Currency Exchange']=$exchange;
 	$this->data ['Invoice Customer Contact Name'] =$customer -> data['Customer Main Contact Name'];
 
       }
-
+      //print_r($customer);
+      //print "zzzz".$customer -> data['Customer Main Address Country 2 Alpha Code']."zzzzzz";
       $this->data ['Invoice XHTML Address'] = $customer -> data['Customer Main XHTML Address'];
       $this->data ['Invoice Billing Country 2 Alpha Code']=$customer -> data['Customer Main Address Country 2 Alpha Code'];
       
@@ -368,7 +369,7 @@ $this->data['Invoice Currency Exchange']=$exchange;
 
 
 
-
+    //print_r($this->data);
     
 
     $this->data ['Invoice XHTML Ship Tos'] = '';
@@ -597,7 +598,7 @@ function create_header() {
     $this->data ['Invoice Billing Country 2 Alpha Code']='XX';
   if(!isset($this->data ['Invoice Delivery Country 2 Alpha Code']))
     $this->data ['Invoice Delivery Country 2 Alpha Code']='XX';
-  // print_r($this->data);
+  //print_r($this->data);
   
   $sql = sprintf ( "insert into `Invoice Dimension` (`Invoice Currency`,`Invoice Currency Exchange`,`Invoice For`,`Invoice Date`,`Invoice Public ID`,`Invoice File As`,`Invoice Store Key`,`Invoice Store Code`,`Invoice Main Source Type`,`Invoice Customer Key`,`Invoice Customer Name`,`Invoice XHTML Ship Tos`,`Invoice Items Gross Amount`,`Invoice Items Discount Amount`,`Invoice Shipping Net Amount`,`Invoice Charges Net Amount`,`Invoice Total Tax Amount`,`Invoice Refund Net Amount`,`Invoice Refund Tax Amount`,`Invoice Total Amount`,`Invoice Metadata`,`Invoice XHTML Address`,`Invoice XHTML Orders`,`Invoice XHTML Delivery Notes`,`Invoice XHTML Store`,`Invoice Has Been Paid In Full`,`Invoice Main Payment Method`,`Invoice Shipping Tax Amount`,`Invoice Charges Tax Amount`,`Invoice XHTML Processed By`,`Invoice XHTML Charged By`,`Invoice Processed By Key`,`Invoice Charged By Key`,`Invoice Billing Country 2 Alpha Code`,`Invoice Delivery Country 2 Alpha Code`,`Invoice Dispatching Lag`,`Invoice Taxable`,`Invoice Tax Code`,`Invoice Title`) values (%s,%f,%s,%s,%s,%s,%s,%s,%s,%s,%s,  %s,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,   %s,%s,%s,'%s',%s,%s,%s,%.2f,%.2f,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
 		   

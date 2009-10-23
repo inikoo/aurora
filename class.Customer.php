@@ -226,9 +226,9 @@ class Customer extends DB_Table{
       if($this->found){
 
 	if($raw_data['Customer Type']=='Person'){
-	  $child=new Contact ('find in customer create',$raw_data);
+	  $child=new Contact ('find in customer create update',$raw_data);
 	}else{
-	  $child=new Company ('find in customer create',$raw_data);
+	  $child=new Company ('find in customer create update',$raw_data);
 	}
 
 	//	$child->editor=$this->editor;
@@ -244,11 +244,11 @@ class Customer extends DB_Table{
 	 
 	  if($raw_data['Customer Type']=='Person'){
 
-	    $contact=new contact('find in customer create',$raw_data);
+	    $contact=new contact('find in customer create update',$raw_data);
 	    $raw_data['Customer Main Contact Key']=$contact->id;
 	    
 	  }else{
-	    $company=new company('find in customer create',$raw_data);
+	    $company=new company('find in customer create update',$raw_data);
 	    $raw_data['Customer Company Key']=$company->id;
 	  }	  
 	  
@@ -454,15 +454,12 @@ class Customer extends DB_Table{
        $this->data['Customer Main Plain Telephone']='';
        $this->data['Customer Main FAX Key']=0;
        $this->data['Customer Main FAX']='';
-      $this->data['Customer Main Plain FAX']='';
-      
-
-  
-      $company=new company('find in customer create',$raw_data);
-   
-      $this->data['Customer Company Key']=$company->id;
-      $this->data['Customer Company Name']=$company->data['Company Name'];
-
+       $this->data['Customer Main Plain FAX']='';
+       $company=new company('find in customer create update',$raw_data);
+       
+       $this->data['Customer Company Key']=$company->id;
+       $this->data['Customer Company Name']=$company->data['Company Name'];
+       
       if($company->data['Company Main Email Key']){
 	$this->data['Customer Main Email Key']=$company->data['Company Main Email Key'];
 	$this->data['Customer Main XHTML Email']=$company->data['Company Main XHTML Email'];
@@ -476,10 +473,10 @@ class Customer extends DB_Table{
       }
       $this->data['Customer Main Contact Key']=$company->data['Company Main Contact Key'];
       $this->data['Customer Main Contact Name']=$company->data['Company Main Contact Name'];
-
+      
     
       
-    }elseif($this->data['Customer Type']=='Person'){
+     }elseif($this->data['Customer Type']=='Person'){
       $this->data['Customer Main Email Key']=0;
       $this->data['Customer Main XHTML Email']='';
       $this->data['Customer Main Plain Email']='';
@@ -491,7 +488,7 @@ class Customer extends DB_Table{
       $this->data['Customer Main Plain FAX']='';
       
       if(!$this->data['Customer Main Contact Key'])
-	$contact=new contact('find in customer create',$raw_data);
+	$contact=new contact('find in customer create update',$raw_data);
       else
 	$contact=new contact($this->data['Customer Main Contact Key']);
 
@@ -500,9 +497,10 @@ class Customer extends DB_Table{
       $this->data['Customer Name']=$contact->data['Contact Name'];
 
       //address!!!!!!!!!!!!!
-
+      
 
       
+
 
 
       if($contact->data['Contact Main Email Key']){
@@ -512,32 +510,32 @@ class Customer extends DB_Table{
       }
       if($contact->data['Contact Main Telephone Key']){
 	$main_telephone_key=$contact->data['Contact Main Telephone Key'];
-
+	
       }
       if($contact->data['Contact Main FAX Key']){
 	$main_fax_key=$contact->data['Contact Main FAX Key'];
-
+	
       }
       $this->data['Customer Company Key']=0;
-
-
-    }else{
-      $this->error=true;
-      $this->msg.=' Error, Wrong Customer Type ->'.$this->data['Customer Type'];
-    }
-
-    if($this->data['Customer First Contacted Date']==''){
+      
+      
+     }else{
+       $this->error=true;
+       $this->msg.=' Error, Wrong Customer Type ->'.$this->data['Customer Type'];
+     }
+     
+     if($this->data['Customer First Contacted Date']==''){
       $this->data['Customer First Contacted Date']=date('Y-m-d H:i:s');
-    }
-
-    $this->data['Customer Active Ship To Records']=0;
-    $this->data['Customer Total Ship To Records']=0;
-
-
+     }
+     
+     $this->data['Customer Active Ship To Records']=0;
+     $this->data['Customer Total Ship To Records']=0;
+    
+    
     // Ok see if we have a billing address!!!
 
     if(isset($raw_data['Customer Billing Address'])){
-      $billing_address=new address('find create',$raw_data['Customer Billing Address']);
+      $billing_address=new address('find create update',$raw_data['Customer Billing Address']);
       $this->data['Customer Main Address Key']=$billing_address->id;
       $this->data['Customer Main Address Country Code']=$billing_address->data['Address Country Code'];
       $this->data['Customer Main Address 2 Alpha Country Code']=$billing_address->data['Address Country 2 Alpha Code'];
@@ -576,11 +574,11 @@ class Customer extends DB_Table{
       
 
     
-
-
-    // print_r($this->data);
-    //print "xxxxxxxxxxxxxxxxxxxxxxxxxxxx\n";
-    //exit;
+    // print_r($raw_data);
+    
+ // print_r($this->data);
+ //  print "in class cust xxxxxxxxxxxxxxxxxxxxxxxxxxxx\n";
+ //  exit;
     $keys='';
     $values='';
     foreach($this->data as $key=>$value){

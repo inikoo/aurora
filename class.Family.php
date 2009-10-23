@@ -658,8 +658,25 @@ function update($key,$a1=false,$a2=false){
      return $this->data[$key];
 
 
+   if(preg_match('/^1.*(Amount|Profit)$/',$key)){
+     
+     $amount='Product Family '.$key;
+
+     return money($this->data[$amount]);
+   }
+   if(preg_match('/^1.*Quantity (Ordered|Invoiced|Delivered)$/',$key)){
+     
+     $amount='Product Family '.$key;
+
+     return number($this->data[$amount]);
+   }
+   
+
 
    switch($key){
+   case('Similar Families'):
+     return "<span style='color:#666;font-style:italic;'>"._('No similar families')."</span>";
+     break;
    case('Price From Info'):
      $min=99999999;
      $product_id='';
@@ -870,17 +887,22 @@ function update($key,$a1=false,$a2=false){
  }
 
  function update_sales_data(){
-$sql="select  sum(`Product Total Invoiced Amount`) as net,sum(`Product Total Invoiced Gross Amount`) as gross,sum(`Product Total Invoiced Discount Amount`) as disc, sum(`Product Total Profit`)as profit ,sum(`Product Total Quantity Delivered`) as delivered,sum(`Product Total Quantity Ordered`) as ordered,sum(`Product Total Quantity Invoiced`) as invoiced  from `Product Dimension` where `Product Family Key`=".$this->id;
-     $result=mysql_query($sql);
+
+   //$sql="select  sum(`Product Total Invoiced Amount`) as net,sum(`Product Total Invoiced Gross Amount`) as gross,sum(`Product Total Invoiced Discount Amount`) as disc, sum(`Product Total Profit`)as profit ,sum(`Product Total Quantity Delivered`) as delivered,sum(`Product Total Quantity Ordered`) as ordered,sum(`Product Total Quantity Invoiced`) as invoiced  from `Product Dimension` where `Product Family Key`=".$this->id;
+      $sql="select  sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact`  OTF left join    `Product History Dimension` as PH  on (OTF.`Product Key`=PH.`Product Key`) left join `Product Dimension` P on (PH.`Product ID`=P.`Product ID`)   where `Product Family Key`=".$this->id;
+
+
+$result=mysql_query($sql);
      
      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
        $this->data['Product Family Total Invoiced Gross Amount']=$row['gross'];
        $this->data['Product Family Total Invoiced Discount Amount']=$row['disc'];
-       $this->data['Product Family Total Invoiced Amount']=$row['net'];
-       $this->data['Product Family Total Profit']=$row['profit'];
+       $this->data['Product Family Total Invoiced Amount']=$row['gross']-$row['disc'];
+       $this->data['Product Family Total Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
        $this->data['Product Family Total Quantity Ordered']=$row['ordered'];
        $this->data['Product Family Total Quantity Invoiced']=$row['invoiced'];
        $this->data['Product Family Total Quantity Delivered']=$row['delivered'];
+       
      }else{
        $this->data['Product Family Total Invoiced Gross Amount']=0;
        $this->data['Product Family Total Invoiced Discount Amount']=0;

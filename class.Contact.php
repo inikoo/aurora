@@ -697,7 +697,7 @@ class Contact extends DB_Table {
         }
 
         if ($create and !$this->found) {
-           $this->create($data,$options);
+	  $this->create($data,$options,$address_home_data);
       
         }
 
@@ -863,10 +863,10 @@ class Contact extends DB_Table {
     private function create ($data,$options='',$address_home_data=false) {
 
 
-        //print $options;
-        //print_r($data);
-
-
+      /*   print "-------------------\n$options\n"; */
+/*         print_r($data); */
+/* 	if($data['Contact Name']=='Veronica Ambler') */
+/* 	  exit; */
         global $myconf;
         if (is_string($data))
             $data['Contact Name']=$data;
@@ -988,12 +988,13 @@ class Contact extends DB_Table {
 
 
                 $address_home_data['editor']=$this->editor;
-                $home_address=new Address("find in contact ".$this->id." create",$address_home_data);
+                $home_address=new Address("find in contact ".$this->id." create update",$address_home_data);
                 if ($home_address->error) {
                     print $home_address->msg."\n";
                     exit("find_contact: home address found\n");
                 }
-
+		//print_r($address_home_data);
+		//print_r($home_address);
 
                 $this->add_address(array(
                                        'Address Key'=>$home_address->id
@@ -1708,8 +1709,130 @@ class Contact extends DB_Table {
 
 
 
+    function move_home_to_work_address($address_key){
+       $address=new address($address_key);
+        if (!$address->id) {
+            $this->error=true;
+            $this->msg='Wrong address key when trying to move it';
+            $this->msg_updated='Wrong address key when trying to move it';
+	    
+            return;
+        }
+	
+	$address->set_scope('Contact',$this->id);
+        if ( $address->associated_with_scope) {
+	  
+	  $sql=sprintf("update `Address Bridge` set `Address Type`='Work' where `Address Key`=%d and `Subject Key`=%d and `Address Type`='Home' and `Subject Type`='Contact' "
+		       ,$address->id
+		       ,$this->id
+		       );
+	  mysql_query($sql);
+	  if(mysql_affected_rows()){
+	      $history_data['action']='edited';
+	      $history_data['direct_object']='Contact';
+	      $history_data['direct_object_key']=$this->id;
+	      $history_data['indirect_object']='Address';
+	      $history_data['indirect_object_key']=$address->id;
+	      $history_data['note']='Contact Address Type Updated';
+	      $history_data['details']='Contact Home Address changed to Work Address';
+	      $this->add_history($history_data);
+	  }
+
+        }
+
+    }
 
 
+/* Method: remove_address
+     Delete the address from Contact
+
+     Delete telecom record  this record to the Contact
+
+
+     Parameter:
+     $args -     string  options
+    */
+    function remove_address($address_key=false,$options='') {
+
+
+        if (!$address_key) {
+	  $address_key=$this->data['Contact Main Address Key'];
+        }
+
+
+        $address=new address($address_key);
+        if (!$address->id) {
+            $this->error=true;
+            $this->msg='Wrong address key when trying to remove it';
+            $this->msg_updated='Wrong address key when trying to remove it';
+            return;
+        }
+
+
+
+
+
+
+        $address->set_scope('Contact',$this->id);
+        if ( $address->associated_with_scope) {
+
+            $this->updated=true;
+            $this->msg_updated=_('Address Deleted');
+        }
+
+
+        if ($address->id==$this->data['Contact Main Address Key']) {
+            $sql=sprintf("select `Address Key` from `Address Bridge` where `Subject Key`=%d and `Subject Type`='Contact' and `Address Description`=%s and `Address Key`!=%d "
+                         ,$this->id
+                         ,prepare_mysql($address->data['Address Description'])
+                         ,$address_key
+                        );
+
+            $res=mysql_query($sql);
+            if ($row=mysql_fetch_array($res)) {
+
+
+                $this->add_address(array('Address Key'=>$row['Address Key']),'principal');
+
+                if ($company_key=$this->company_key('principal')) {
+                    $company=new Company('id',$company_key);
+                    $company->editor=$this->editor;
+                    $company->update_address($row['Address Key']);
+                    $company->remove_address($address->id);
+
+                    $customer_found_keys=$company->get_customers_key();
+                    foreach($customer_found_keys as $customer_found_key) {
+                        $customer=new Customer($customer_found_key);
+                        $customer->editor=$this->editor;
+                        $customer->update_address($row['Address Key']);
+                        $customer->remove_address($address->id);
+                    }
+                }
+
+
+
+            } else {
+                $sql=sprintf("update `Contact Dimension` set `Contact Main XHTML Address`='' ,`Contact Main Plain Address`='' , `Contact Main Address Key`='',`Company Main Country Key`='244' ,`Company Main Country`='Unknown',`Company Main Location`='' ,`Company Main Country Code`='UNK'  where `Contact Key`=%d"
+                             ,$this->id
+                            );
+                mysql_query($sql);
+
+            }
+
+        }
+
+        $sql=sprintf("delete from `Address Bridge` where `Subject Key`=%d and `Subject Type`='Contact'  and `Address Key`=%d ",$this->id,$address->id);
+        mysql_query($sql);
+
+
+       
+
+
+
+
+
+
+    }
 
 
 

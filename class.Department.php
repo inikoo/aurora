@@ -551,13 +551,25 @@ $data['Product Department Store Code']=$store->data['Store Code'];
  function get($key){
 
    if(array_key_exists($key,$this->data))
-      return $this->data[$key];
+     return $this->data[$key];
+   
+   if(preg_match('/^(Total|1).*(Amount|Profit)$/',$key)){
+     
+     $amount='Product Department '.$key;
 
+     return money($this->data[$amount]);
+   }
+   if(preg_match('/^(Total|1).*(Quantity (Ordered|Invoiced|Delivered|)|Invoices|Pending Orders|Customers)$/',$key)){
+     
+     $amount='Product Department '.$key;
 
+     return number($this->data[$amount]);
+   }
+   
    switch($key){
- case('For Sale Products'):
-      return number($this->data['Product Department For Sale Products']);
-    break;
+   case('For Sale Products'):
+     return number($this->data['Product Department For Sale Products']);
+     break;
     case('Families'):
       return number($this->data['Product Department Families']);
     break;
@@ -687,26 +699,40 @@ function update_sales_data(){
 	 $on_sale_days=0;
 
       }
-$sql="select sum(`Product Total Invoiced Amount`) as net,sum(`Product Total Invoiced Gross Amount`) as gross,sum(`Product Total Invoiced Discount Amount`) as disc, sum(`Product Total Profit`)as profit ,sum(`Product Total Quantity Delivered`) as delivered,sum(`Product Total Quantity Ordered`) as ordered,sum(`Product Total Quantity Invoiced`) as invoiced  from `Product Dimension` as P  where `Product Main Department Key`=".$this->id;
+      //$sql="select sum(`Product Total Invoiced Amount`) as net,sum(`Product Total Invoiced Gross Amount`) as gross,sum(`Product Total Invoiced Discount Amount`) as disc, sum(`Product Total Profit`)as profit ,sum(`Product Total Quantity Delivered`) as delivered,sum(`Product Total Quantity Ordered`) as ordered,sum(`Product Total Quantity Invoiced`) as invoiced  from `Product Dimension` as P  where `Product Main Department Key`=".$this->id;
+        $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transaction Fact`  OTF left join    `Product History Dimension` as PH  on (OTF.`Product Key`=PH.`Product Key`) left join `Product Dimension` P on (PH.`Product ID`=P.`Product ID`)   where  `Current Dispatching State` not in ('Unknown','Dispached','Cancelled')  and  `Product Main Department Key`=".$this->id;
+	$result=mysql_query($sql);
+	$pending_orders=0;
+	if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+	  $pending_orders=$row['pending_orders'];
+	}
 
+	//	print "$sql\n";
+      $sql="select    count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices ,  sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact`  OTF left join    `Product History Dimension` as PH  on (OTF.`Product Key`=PH.`Product Key`) left join `Product Dimension` P on (PH.`Product ID`=P.`Product ID`)   where `Product Main Department Key`=".$this->id;
+      
+     
 
-// print "$sql\n\n";
-// exit;
+         
  $result=mysql_query($sql);
  
      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
        $this->data['Product Department Total Invoiced Gross Amount']=$row['gross'];
        $this->data['Product Department Total Invoiced Discount Amount']=$row['disc'];
-       $this->data['Product Department Total Invoiced Amount']=$row['net'];
+       $this->data['Product Department Total Invoiced Amount']=$row['gross']-$row['disc'];
 
-       $this->data['Product Department Total Profit']=$row['profit'];
+       $this->data['Product Department Total Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
        $this->data['Product Department Total Quantity Ordered']=$row['ordered'];
        $this->data['Product Department Total Quantity Invoiced']=$row['invoiced'];
        $this->data['Product Department Total Quantity Delivered']=$row['delivered'];
        $this->data['Product Department Total Days On Sale']=$on_sale_days;
+       $this->data['Product Department Total Customers']=$row['customers'];
+       $this->data['Product Department Total Invoices']=$row['invoices'];
+       $this->data['Product Department Total Pending Orders']=$pending_orders;
+
+       
        $this->data['Product Department Valid From']=$_from;
        $this->data['Product Department Valid To']=$_to;
-       $sql=sprintf("update `Product Department Dimension` set `Product Department Total Invoiced Gross Amount`=%s,`Product Department Total Invoiced Discount Amount`=%s,`Product Department Total Invoiced Amount`=%s,`Product Department Total Profit`=%s, `Product Department Total Quantity Ordered`=%s , `Product Department Total Quantity Invoiced`=%s,`Product Department Total Quantity Delivered`=%s ,`Product Department Total Days On Sale`=%f ,`Product Department Valid From`=%s,`Product Department Valid To`=%s where `Product Department Key`=%d "
+       $sql=sprintf("update `Product Department Dimension` set `Product Department Total Invoiced Gross Amount`=%s,`Product Department Total Invoiced Discount Amount`=%s,`Product Department Total Invoiced Amount`=%s,`Product Department Total Profit`=%s, `Product Department Total Quantity Ordered`=%s , `Product Department Total Quantity Invoiced`=%s,`Product Department Total Quantity Delivered`=%s ,`Product Department Total Days On Sale`=%f ,`Product Department Valid From`=%s,`Product Department Valid To`=%s ,`Product Department Total Customers`=%d,`Product Department Total Invoices`=%d,`Product Department Total Pending Orders`=%d where `Product Department Key`=%d "
 		    ,prepare_mysql($this->data['Product Department Total Invoiced Gross Amount'])
 		    ,prepare_mysql($this->data['Product Department Total Invoiced Discount Amount'])
 		    ,prepare_mysql($this->data['Product Department Total Invoiced Amount'])
@@ -718,6 +744,10 @@ $sql="select sum(`Product Total Invoiced Amount`) as net,sum(`Product Total Invo
 		    ,$on_sale_days
 		    ,prepare_mysql($this->data['Product Department Valid From'])
 		    ,prepare_mysql($this->data['Product Department Valid To'])
+		    ,$this->data['Product Department Total Customers']
+		    ,$this->data['Product Department Total Invoices']
+		    ,$this->data['Product Department Total Pending Orders']
+		    
 		    ,$this->id
 		    );
      //  print "$sql\n";

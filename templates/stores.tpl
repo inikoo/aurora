@@ -11,7 +11,7 @@
   <div class="search_box">
     <span class="search_title">{t}Product Code{/t}:</span> <input size="8" class="text search" id="product_search" value="" name="search"/><img align="absbottom" id="product_submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>
      <span  class="search_msg"   id="product_search_msg"    ></span> <span  class="search_sugestion"   id="product_search_sugestion"    ></span>
-     
+      <br/>
       {if $modify}<a   href="stores.php?edit=1"  style="float:right;margin-left:15px" class="state_details"  >{t}Edit{/t}</a>{/if}
       <span  class="state_details" state="{$show_details}"  id="show_details"  atitle="{if $show_details}{t}show details{/t}{else}{t}hide details{/t}{/if}"  >{if $show_details}{t}hide details{/t}{else}{t}show details{/t}{/if}</span>
      </div>
@@ -141,8 +141,11 @@
 	 <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
 	 <div class="clean_table_filter" id="clean_table_filter0">
 	 <div class="clean_table_info" style="width:8.2em;padding-bottom:1px; ">
-	 <span id="filter_name0" style="margin-right:5px">{$filter_name}:</span><input style="border-bottom:none;width:6em;" id='f_input0' value="{$filter_value}" size=10/><div id='f_container0'></div>
-	 </div></div>
+	 <span id="filter_name0" style="margin-right:5px">{$filter_name}:</span>
+	 <input style="border-bottom:none;width:6em;" id='f_input0' value="{$filter_value}" size=10/>
+	 <div id='f_container0'></div>
+	 </div>
+	 </div>
 	 <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
        </div>
        <div  id="table0"   class="data_table_container dtable btable with_total"> </div>		

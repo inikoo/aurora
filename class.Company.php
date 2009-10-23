@@ -291,7 +291,7 @@ class Company extends DB_Table {
 
 
             //
-            // print "Company Found:".$this->found." ".$this->found_key."   \nContact Found:".$contact->found." ".$contact->found_key."  \n";
+	    //             print "$create $update   Company Found:".$this->found." ".$this->found_key."   \nContact Found:".$contact->found." ".$contact->found_key."  \n";
 
             // exit;
 
@@ -318,13 +318,14 @@ class Company extends DB_Table {
 	    if($create and !$this->found){
 
 	      if($contact->found){
+	
 		if ($contact->data['Contact Company Key']) {
 		  $this->get_data('id',$contact->data['Contact Company Key']);
 		  // print_r($this->card());
 		  $this->update_address($address_data);
 		  $this->update($raw_data);
                 } else {
-
+		  	
 		  $this->create($raw_data,$address_data,'use contact '.$contact->id);
 
                 }
@@ -461,7 +462,7 @@ class Company extends DB_Table {
 
 
     function create($raw_data,$raw_address_data=array(),$options='') {
-        //print $options."\n";
+      //print $options."\n";
         //print_r($raw_data);
 
         $this->data=$this->base_data();
@@ -547,10 +548,23 @@ class Company extends DB_Table {
         //print_r($raw_data);
 
         // print_r($raw_address_data);
-        if (!$address->new) {
-            print_r($address);
-            exit("find_company: address found");
-        }
+	if($use_contact){
+	  if($address->found){
+	    $contact->move_home_to_work_address($address->found_key);
+	   }
+	  //print_r($address);
+
+
+	 
+
+	 }else if (!$address->new) {
+	  //print_r($address);
+	  print ("dupplicate address\n");
+	  $address_data['editor']=$this->editor;
+	  $address=new Address("find in company create force",$address_data);
+
+	  
+	}
         // print_r($address->data);
         $this->data['Company Main Address Key']=$address->id;
         $this->data['Company Main XHTML Address']=$address->display('xhtml');
@@ -1449,6 +1463,55 @@ class Company extends DB_Table {
 
 
     }
+
+ /* Method: remove_address
+      Delete the address from Company
+
+      Delete telecom record  this record to the Comp[any
+
+
+      Parameter:
+      $args -     string  options
+     */
+    function remove_address($address_key) {
+
+
+        if (!$address_key) {
+            $address_key=$this->data['Company Main Address Key'];
+        }
+
+
+        $address=new address($address_key);
+        if (!$address->id) {
+            $this->error=true;
+            $this->msg='Wrong address key when trying to remove it';
+            $this->msg_updated='Wrong address key when trying to remove it';
+        }
+
+        $address->set_scope('Company',$this->id);
+        if ( $address->associated_with_scope) {
+
+            $sql=sprintf("delete `Address Bridge`  where `Subject Type`='Company' and  `Subject Key`=%d  and `Address Key`=%d",
+                         $this->id
+
+                         ,$this->data['Company Main Address Key']
+                        );
+            mysql_query($sql);
+
+            if ($address->id==$this->data['Company Main Address Key']) {
+                $sql=sprintf("update `Company Dimension` set `Company Main XHTML Address`='' , `Company Main Plain Address`='' , `Company Main Address Key`='' ,`Company Main Country Key`='244' ,`Company Main Country`='Unknown',`Company Main Location`=''  where `Company Key`=%d"
+                             ,$this->id
+                            );
+
+                mysql_query($sql);
+            }
+        }
+
+
+
+
+    }
+
 
     /* Method: remove_email
       Delete the email from Company
