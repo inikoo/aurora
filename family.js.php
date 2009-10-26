@@ -1,6 +1,21 @@
 <?php
 include_once('common.php');
+
+$store_period_title=array('year'=>_('Last Year'),'quarter'=>_('Last Quarter'),'month'=>_('Last Month'),'week'=>_('Last Week'),'all'=>_('All'));
+$title='';
+
+foreach( $store_period_title as $key=>$value){
+$title.=sprintf(',%s:"%s"',$key,$value);
+}
+$title=preg_replace('/^,/','',$title);
+
+
 ?>
+var info_period_title={<?php echo $title ?>};
+var Dom   = YAHOO.util.Dom;
+
+var current_store_period='<?php echo$_SESSION['state']['department']['period']?>';
+
 var period='period_<?php echo$_SESSION['state']['products']['period']?>';
 var avg='avg_<?php echo$_SESSION['state']['products']['avg']?>';
 
@@ -9,6 +24,49 @@ var addtotals =function (){
   var data={code:'<?php echo _('Totals')?>'};
     tables.table0.addRow(data,3);
 
+}
+
+
+function change_info_period(period){
+    var patt=new RegExp("^(year|month|all|week|quarter)$");
+    if (patt.test(period)==true && current_store_period!=period){
+	//alert('info_'+current_store_period)
+	//	alert('ar_sessions.php?tipo=update&keys=store-period&value=');
+	Dom.get('info_'+current_store_period).style.display='none';
+	Dom.get('info_'+period).style.display='';
+	current_store_period=period;
+
+	Dom.get('info_title').innerHTML=info_period_title[period];
+	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=department-period&value='+period);
+
+    }
+
+}
+
+function next_info_period(){
+    if(current_store_period=='all')
+        change_info_period('week');
+    else if(current_store_period=='week')    
+        change_info_period('month');
+    else if(current_store_period=='month')    
+        change_info_period('quarter');
+    else if(current_store_period=='quarter')    
+        change_info_period('year');        
+    else if(current_store_period=='year')    
+        change_info_period('all');
+}
+
+function previous_info_period(){
+    if(current_store_period=='all')
+        change_info_period('year');
+    else if(current_store_period=='week')    
+        change_info_period('all');
+    else if(current_store_period=='month')    
+        change_info_period('week');
+    else if(current_store_period=='quarter')    
+        change_info_period('month');        
+    else if(current_store_period=='year')    
+        change_info_period('quarter');
 }
 
 
@@ -206,6 +264,9 @@ ids=['general','sales','stock','parts','cats'];
  ids=['avg_totals','avg_month','avg_week',"avg_month_eff","avg_week_eff"];
  YAHOO.util.Event.addListener(ids, "click",change_avg,0);
      
+YAHOO.util.Event.addListener("info_next", "click",next_info_period,0);
+YAHOO.util.Event.addListener("info_previous", "click",previous_info_period,0);
+
      YAHOO.util.Event.addListener('show_details', "click",show_details,'products');
 
      YAHOO.util.Event.addListener('product_submit_search', "click",submit_search,'product');
@@ -235,4 +296,10 @@ YAHOO.util.Event.onContentReady("filtermenu", function () {
 	 oMenu.render();
 	 oMenu.subscribe("show", oMenu.focus);
 	 YAHOO.util.Event.addListener("filter_name0", "click", oMenu.show, null, oMenu);
+    });
+YAHOO.util.Event.onContentReady("info_period_menu", function () {
+	 var oMenu = new YAHOO.widget.Menu("info_period_menu", { context:["info_period","tr", "br"]  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+	 YAHOO.util.Event.addListener("info_period", "click", oMenu.show, null, oMenu);
     });

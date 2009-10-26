@@ -112,7 +112,7 @@ $smarty->assign('store_period_title',$store_period_title[$store_period]);
 
 
 
-if($store_order=='profit'){
+If($store_order=='profit'){
     if($store_period=='all')
       $store_order='`Product Department Total Profit`';
     elseif($store_period=='year')

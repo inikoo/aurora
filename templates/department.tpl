@@ -12,24 +12,27 @@
   <span class="nav2 onleft"><a href="categories.php?store_key={$store->id}">{t}Categories{/t}</a></span>
 
   <div class="search_box">
-    <span class="search_titleitle">{t}Product Code{/t}:</span> <input size="8" class="text search" id="product_search" value="" name="search"/><img align="absbottom" id="product_submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>
+    <span class="search_title">{t}Product Code{/t}:</span> <input size="8" class="text search" id="product_search" value="" name="search"/><img align="absbottom" id="product_submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>
      <span  class="search_msg"   id="product_search_msg"    ></span> <span  class="search_sugestion"   id="product_search_sugestion"    ></span>
      <br/>
      {if $modify}<a   href="department.php?edit=1"  style="float:right;margin-left:15px" class="state_details"  >{t}Edit{/t}</a>{/if}
      <span id="show_details" style="float:right;{if $show_details}display:none{/if}" class="state_details"  onClick="show_details()" >{t}Show details{/t}</span>
-     <br>
-     <span  class="state_details"  onClick="hide_details()"> {t}Hide details{/t}</span>
+     <span id="hide_details" class="state_details"  style="{if !$show_details}display:none{/if}"  onClick="hide_details()"> {t}Hide details{/t}</span>
   </div>
   
-  <div style="clear:left;">
+  <div id="branch" style="clear:left;">
      <span class="branch" ><a  href="store.php?id={$store->id}">{$store->get('Store Code')}</a> &rarr; {$department->get('Product Department Name')}</span>
   </div>
-  
-<div id="department_info" style="margin:10px 0;padding:0">
 
-<h2 style="margin:0;padding:0">{t}Department Information{/t}</h2>
+<div id="no_details_title" style="clear:left;{if $show_details}display:none;{/if}">
+    <h1>{t}Department{/t}: {$department->get('Product Department Name')} ({$department->get('Product Department Code')})</h1>
+  </div>
+  
+<div id="department_info" style="margin:10px 0;padding:0;{if !$show_details}display:none;{/if}">
+
+<h2 style="margin:0;padding:0">{t}Department Information{/t}:</h2>
 <div style="width:350px;float:left">
-  <table    class="show_info_product">
+  <table  class="show_info_product">
 
     <tr >
       <td>{t}Code{/t}:</td><td class="price">{$department->get('Product Department Code')}</td>
@@ -37,12 +40,13 @@
     <tr >
       <td>{t}Name{/t}:</td><td>{$department->get('Product Department Name')}</td>
     </tr>
-   
+   </table>
+    <table    class="show_info_product">
     <tr>
-	    <td>{t}Families{/t}:</td><td class="aright">{$department->get('Families')}</td>
+	    <td>{t}Families{/t}:</td><td class="number"><div>{$department->get('Families')}</div></td>
 	  </tr>
 	  <tr>
-	    <td>{t}Products{/t}:</td><td class="aright">{$department->get('For Sale Products')}</td>
+	    <td>{t}Products{/t}:</td><td class="number"><div>{$department->get('For Sale Products')}</div></td>
 	  </tr>
  
      <tr >
@@ -52,9 +56,11 @@
   </table>
 </div>
 <div style="width:15em;float:left;margin-left:20px">
-  <table    class="show_info_product">
+
+<table    class="show_info_product">
       <tr >
-      <td colspan="2" class="aright" style="padding-right:10px"> <span class="product_info_sales_options" id="info_period"><span id="info_title">{$store_period_title}</span></span></td>
+      <td colspan="2" class="aright" style="padding-right:10px"> <span class="product_info_sales_options" id="info_period"><span id="info_title">{$store_period_title}</span></span>
+      <img id="info_previous" class="previous_button" style="cursor:pointer" src="art/icons/previous.png" alt="<"  title="previous" /> <img id="info_next" class="next_button" style="cursor:pointer"  src="art/icons/next.png" alt=">" tite="next"/></td>
     </tr>
        <tbody id="info_all" style="{if $store_period!='all'}display:none{/if}">
 	 <tr >
@@ -81,7 +87,7 @@
 	  <td>{t}Customers{/t}:</td><td class="aright">{$department->get('1 Year Acc Customers')}</td>
 	</tr>
 		<tr >
-	  <td>{t}Invoices{/t}:</td><td class="aright">{$department->get('1 Year Acc Orders')}</td>
+	  <td>{t}Invoices{/t}:</td><td class="aright">{$department->get('1 Year Acc Invoices')}</td>
 	</tr>
 
 	<tr >
@@ -97,7 +103,7 @@
       </tbody>
         <tbody id="info_quarter" style="{if $store_period!='quarter'}display:none{/if}"  >
         <tr >
-	     <td>{t}Orders{/t}:</td><td class="aright">{$department->get('1 Quarter Acc Orders')}</td>
+	     <td>{t}Orders{/t}:</td><td class="aright">{$department->get('1 Quarter Acc Invoices')}</td>
 	    </tr>
         <tr >
 	  <td>{t}Customers{/t}:</td><td class="aright">{$department->get('1 Quarter Acc Customers')}</td>
@@ -114,7 +120,7 @@
       </tbody>
         <tbody id="info_month" style="{if $store_period!='month'}display:none{/if}"  >
         <tr >
-	     <td>{t}Orders{/t}:</td><td class="aright">{$department->get('1 Month Acc Orders')}</td>
+	     <td>{t}Orders{/t}:</td><td class="aright">{$department->get('1 Month Acc Invoices')}</td>
 	    </tr>
         <tr >
 	  <td>{t}Customers{/t}:</td><td class="aright">{$department->get('1 Month Acc Customers')}</td>
@@ -131,19 +137,19 @@
       </tbody>
        <tbody id="info_week" style="{if $store_period!='week'}display:none{/if}"  >
         <tr >
-	     <td>{t}Orders{/t}:</td><td class="aright">{$department->get('1 Month Acc Orders')}</td>
+	     <td>{t}Orders{/t}:</td><td class="aright">{$department->get('1 Week Acc Invoices')}</td>
 	    </tr>
         <tr >
-	  <td>{t}Customers{/t}:</td><td class="aright">{$department->get('1 Month Acc Customers')}</td>
+	  <td>{t}Customers{/t}:</td><td class="aright">{$department->get('1 Week Acc Customers')}</td>
 	</tr>
 	<tr >
-	  <td>{t}Sales{/t}:</td><td class=" aright">{$department->get('1 Month Acc Invoiced Amount')}</td>
+	  <td>{t}Sales{/t}:</td><td class=" aright">{$department->get('1 Week Acc Invoiced Amount')}</td>
 	</tr>
 	<tr >
-	  <td>{t}Profit{/t}:</td><td class=" aright">{$department->get('1 Month Acc Profit')}</td>
+	  <td>{t}Profit{/t}:</td><td class=" aright">{$department->get('1 Week Acc Profit')}</td>
 	</tr>
 	<tr >
-	  <td>{t}Outers{/t}:</td><td class="aright">{$department->get('1 Month Acc Quantity Delivered')}</td>
+	  <td>{t}Outers{/t}:</td><td class="aright">{$department->get('1 Week Acc Quantity Delivered')}</td>
 	</tr>	
       </tbody>
  </table>
@@ -152,12 +158,8 @@
 </div>
 
 
+<div id="plot" class="top_bar" style="position:relative;left:-20px;clear:both;padding:0;margin:0;{if !$show_details}display:none;{/if}">
 
-<div id="details" class="top_bar" style="padding:0;margin0;{if !$show_details}display:none;{/if}">
-  <div  class="details"  style="border:none;padding:0;margin0;">
-    
-    <div style="padding:0;margin0;position:relative;left:-20px" id="details_general"  {if $view!='general'}style="display:none"{/if}>
-      
       
       
       
@@ -217,9 +219,7 @@
      
      </div>
    
-    <div style="clear:both"></div>
-  </div>
-  </div>
+ 
  
   
 <div class="data_table" style="clear:both;">
@@ -261,7 +261,7 @@
     <div class="clean_table_filter" id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0">{$filter_name}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value}" size=10/><div id='f_container'></div></div></div>
     <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator"></span></div></div>
   </div>
-  <div  id="table0"   class="data_table_container dtable btable "> </div>
+  <div  id="table0"   class="data_table_container dtable btable with_total"> </div>
 </div>
 
 </div> 

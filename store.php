@@ -42,6 +42,18 @@ $smarty->assign('create',$create);
 $smarty->assign('modify',$modify);
 
 
+$stores_order=$_SESSION['state']['stores']['table']['order'];
+$stores_period=$_SESSION['state']['stores']['period'];
+$stores_period_title=array('year'=>_('Last Year'),'quarter'=>_('Last Quarter'),'month'=>_('Last Month'),'week'=>_('Last Week'),'all'=>_('All'));
+
+$smarty->assign('stores_period',$stores_period);
+$smarty->assign('stores_period_title',$stores_period_title[$stores_period]);
+
+
+
+
+
+
 if(isset($_REQUEST['edit']))
   $edit=$_REQUEST['edit'];
 else
@@ -121,6 +133,14 @@ $plot_period=$plot_data['period'];
 $plot_category=$plot_data['category'];
 
 
+$info_period_menu=array(
+			array("period"=>'week','label'=>_('Last Week'),'title'=> _('Last Week'))
+		     ,array("period"=>'month','label'=>_('Last Month'),'title'=>_('Last Month'))
+		     ,array("period"=>'quarter','label'=>_('Last Quarter'),'title'=>_('Last Quarter'))
+		     ,array("period"=>'year','label'=>_('Last Year'),'title'=>_('Last Year'))
+		     ,array("period"=>'all','label'=>_('All'),'title'=>_('All'))
+		     );
+$smarty->assign('info_period_menu',$info_period_menu);
 
 
 $plot_args='tipo=store&category='.$plot_category.'&period='.$plot_period.'&keys='.$store_id;

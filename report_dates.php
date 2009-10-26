@@ -12,7 +12,7 @@ if($tipo=='f'){
    $year=$_REQUEST['y'];
    $week=$_REQUEST['w'];
    
-   $sql=sprintf("select UNIX_TIMESTAMP(`First Day`) as date ,`First Day` from `Week Dimension`  where `Year Week`='%04d%02d'",$year,$week);
+   $sql=sprintf("select UNIX_TIMESTAMP(`First Day`) as date ,`First Day` from kbase.`Week Dimension`  where `Year Week`='%04d%02d'",$year,$week);
 
    $result=mysql_query($sql);
    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
@@ -46,7 +46,7 @@ if($tipo=='f'){
 
 
    $w=array();
-   $sql=sprintf("select * from `Week Dimension` where `First Day`> %s and `First Day`<%s "
+   $sql=sprintf("select * from kbase.`Week Dimension` where `First Day`> %s and `First Day`<%s "
 		,prepare_mysql($_time_p_3weeks)
 		,prepare_mysql($_time_n_3weeks)
 
@@ -104,7 +104,7 @@ if($tipo=='f'){
 
 
    $w=array();
-   $sql=sprintf("select * from `Week Dimension` where (Month(`Last Day`)=%d or  Month(`First Day`)=%d   )  and `Year`=%d "
+   $sql=sprintf("select * from kbase.`Week Dimension` where (Month(`Last Day`)=%d or  Month(`First Day`)=%d   )  and `Year`=%d "
 		,date("m",$_time)
 		,date("m",$_time)
 		,date("Y",$_time)
@@ -211,7 +211,7 @@ if($tipo=='f'){
 
 
    $w=array();
-   $sql=sprintf("select * from `Week Dimension` where (Month(`Last Day`)=%d or  Month(`First Day`)=%d   )  and `Year`=%d "
+   $sql=sprintf("select * from kbase.`Week Dimension` where (Month(`Last Day`)=%d or  Month(`First Day`)=%d   )  and `Year`=%d "
 		,date("m",$_time)
 		,date("m",$_time)
 		,date("Y",$_time)

@@ -59,9 +59,39 @@
 <div style="width:300px;float:left;margin-left:20px">
   <table    class="show_info_product">
       <tr >
-      <td colspan="2" class="aright" style="padding-right:10px"><span id="sales_data_title">{t}Last Year{/t}</span> <span id="change_sales_data">&diams;</span></td>
-    </tr>
-      <tbody>
+<td colspan="2" class="aright" style="padding-right:10px"> <span class="product_info_sales_options" id="info_period"><span id="info_title">{$department_period_title}</span></span>
+      <img id="info_previous" class="previous_button" style="cursor:pointer" src="art/icons/previous.png" alt="<"  title="previous" /> <img id="info_next" class="next_button" style="cursor:pointer"  src="art/icons/previous.png" alt=">" tite="next"/></td> 
+
+   </tr>
+
+       <tbody id="info_all" style="{if $department_period!='all'}display:none{/if}">
+	 <tr >
+	  <td>{t}Customers{/t}:</td><td class="aright">{$family->get('Total Customers')}</td>
+	</tr>
+	 	<tr >
+	  <td>{t}Invoices{/t}:</td><td class="aright">{$family->get('Total Invoices')}</td>
+	</tr>
+	<tr >
+	  <td>{t}Sales{/t}:</td><td class=" aright">{$family->get('Total Invoiced Amount')}</td>
+	</tr>
+	<tr >
+	  <td>{t}Profit{/t}:</td><td class=" aright">{$family->get('Total Profit')}</td>
+	</tr>
+	<tr >
+	  <td>{t}Outers{/t}:</td><td class="aright">{$family->get('Total Quantity Delivered')}</td>
+	</tr>
+
+
+      </tbody>
+
+      <tbody id="info_year"  style="{if $department_period!='year'}display:none{/if}">
+      	<tr >
+	  <td>{t}Customers{/t}:</td><td class="aright">{$family->get('1 Year Acc Customers')}</td>
+	</tr>
+		<tr >
+	  <td>{t}Invoices{/t}:</td><td class="aright">{$family->get('1 Year Acc Invoices')}</td>
+	</tr>
+
 	<tr >
 	  <td>{t}Sales{/t}:</td><td class=" aright">{$family->get('1 Year Acc Invoiced Amount')}</td>
 	</tr>
@@ -71,13 +101,60 @@
 	<tr >
 	  <td>{t}Outers{/t}:</td><td class="aright">{$family->get('1 Year Acc Quantity Delivered')}</td>
 	</tr>
-	<tr >
-	  <td>{t}Orders{/t}:</td><td class="aright">{$family->get('1 Year Acc Orders')}</td>
-	</tr>
-	<tr >
-	  <td>{t}Customers{/t}:</td><td class="aright">{$family->get('1 Year Acc Customers')}</td>
-	</tr>
+
       </tbody>
+        <tbody id="info_quarter" style="{if $department_period!='quarter'}display:none{/if}"  >
+        <tr >
+	     <td>{t}Orders{/t}:</td><td class="aright">{$family->get('1 Quarter Acc Invoices')}</td>
+	    </tr>
+        <tr >
+	  <td>{t}Customers{/t}:</td><td class="aright">{$family->get('1 Quarter Acc Customers')}</td>
+	</tr>
+	<tr >
+	  <td>{t}Sales{/t}:</td><td class=" aright">{$family->get('1 Quarter Acc Invoiced Amount')}</td>
+	</tr>
+	<tr >
+	  <td>{t}Profit{/t}:</td><td class=" aright">{$family->get('1 Quarter Acc Profit')}</td>
+	</tr>
+	<tr >
+	  <td>{t}Outers{/t}:</td><td class="aright">{$family->get('1 Quarter Acc Quantity Delivered')}</td>
+	</tr>	
+      </tbody>
+        <tbody id="info_month" style="{if $department_period!='month'}display:none{/if}"  >
+        <tr >
+	     <td>{t}Orders{/t}:</td><td class="aright">{$family->get('1 Month Acc Invoices')}</td>
+	    </tr>
+        <tr >
+	  <td>{t}Customers{/t}:</td><td class="aright">{$family->get('1 Month Acc Customers')}</td>
+	</tr>
+	<tr >
+	  <td>{t}Sales{/t}:</td><td class=" aright">{$family->get('1 Month Acc Invoiced Amount')}</td>
+	</tr>
+	<tr >
+	  <td>{t}Profit{/t}:</td><td class=" aright">{$family->get('1 Month Acc Profit')}</td>
+	</tr>
+	<tr >
+	  <td>{t}Outers{/t}:</td><td class="aright">{$family->get('1 Month Acc Quantity Delivered')}</td>
+	</tr>	
+      </tbody>
+       <tbody id="info_week" style="{if $department_period!='week'}display:none{/if}"  >
+        <tr >
+	     <td>{t}Orders{/t}:</td><td class="aright">{$family->get('1 Week Acc Invoices')}</td>
+	    </tr>
+        <tr >
+	  <td>{t}Customers{/t}:</td><td class="aright">{$family->get('1 Week Acc Customers')}</td>
+	</tr>
+	<tr >
+	  <td>{t}Sales{/t}:</td><td class=" aright">{$family->get('1 Week Acc Invoiced Amount')}</td>
+	</tr>
+	<tr >
+	  <td>{t}Profit{/t}:</td><td class=" aright">{$family->get('1 Week Acc Profit')}</td>
+	</tr>
+	<tr >
+	  <td>{t}Outers{/t}:</td><td class="aright">{$family->get('1 Week Acc Quantity Delivered')}</td>
+	</tr>	
+      </tbody>
+
  </table>
 </div>
 
@@ -146,6 +223,16 @@
       <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
       {foreach from=$filter_menu item=menu }
       <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_filter('{$menu.db_key}','{$menu.label}',0)"> {$menu.menu_label}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
+<div id="info_period_menu" class="yuimenu">
+  <div class="bd">
+    <ul class="first-of-type">
+      <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Period{/t}:</li>
+      {foreach from=$info_period_menu item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_info_period('{$menu.period}','{$menu.title}')"> {$menu.label}</a></li>
       {/foreach}
     </ul>
   </div>

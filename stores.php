@@ -133,11 +133,12 @@ $smarty->assign('stores',$stores);
 
 $q='';
 $tipo_filter=($q==''?$_SESSION['state']['stores']['table']['f_field']:'code');
+
 $smarty->assign('filter',$tipo_filter);
 $smarty->assign('filter_value',($q==''?$_SESSION['state']['stores']['table']['f_value']:addslashes($q)));
 $filter_menu=array(
-		   'code'=>array('db_key'=>'code','menu_label'=>'Store starting with  <i>x</i>','label'=>'Code'),
-		   'description'=>array('db_key'=>'description','menu_label'=>'Store Description with <i>x</i>','label'=>'Description'),
+		   'code'=>array('db_key'=>'code','menu_label'=>_('Store Code'),'label'=>_('Code')),
+		   'name'=>array('db_key'=>'name','menu_label'=>_('Store Name'),'label'=>_('Name')),
 		   );
 $smarty->assign('filter_menu',$filter_menu);
 

@@ -1,7 +1,17 @@
 <?php
 include_once('common.php');
+$store_period_title=array('year'=>_('Last Year'),'quarter'=>_('Last Quarter'),'month'=>_('Last Month'),'week'=>_('Last Week'),'all'=>_('All'));
+$title='';
+
+foreach( $store_period_title as $key=>$value){
+$title.=sprintf(',%s:"%s"',$key,$value);
+}
+$title=preg_replace('/^,/','',$title);
+
 ?>
-   
+ var info_period_title={<?php echo $title ?>};
+  var current_store_period='<?php echo$_SESSION['state']['stores']['period']?>';
+
 var category_labels={'sales':'<?php echo _('Sales')?>','profit':'<?php echo _('Profits')?>'};
 var period_labels={'m':'<?php echo _('Montly')?>','y':'<?php echo _('Yearly')?>','w':'<?php echo _('Weekly')?>','q':'<?php echo _('Quarterly')?>'};
 var pie_period_labels={'m':'<?php echo _('Month')?>','y':'<?php echo _('Year')?>','w':'<?php echo _('Week')?>','q':'<?php echo _('Quarter')?>'};
@@ -82,8 +92,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    ,{key:"active", label:"<?php echo _('Products')?>",  width:100,sortable:true,className:"aright",<?php echo($_SESSION['state']['store']['view']=='general'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    ,{key:"todo", label:"<?php echo _('To do')?>",  width:100,sortable:true,className:"aright",<?php echo($_SESSION['state']['store']['view']=='general'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
-				    ,{key:"sales", label:"<?php echo _('Sales')?>", width:90,sortable:true,className:"aright",<?php echo($_SESSION['state']['store']['view']=='sales'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"profit", label:"<?php echo _('Profit')?>", width:90,sortable:true,className:"aright",<?php echo($_SESSION['state']['store']['view']=='sales'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"sales", label:"<?php echo _('Sales')?>", width:100,sortable:true,className:"aright",<?php echo($_SESSION['state']['store']['view']=='sales'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"profit", label:"<?php echo _('Profit')?>", width:100,sortable:true,className:"aright",<?php echo($_SESSION['state']['store']['view']=='sales'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
 
 
@@ -111,7 +121,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.dataSource0.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
-		    rowsPerPage:"resultset.records_perpage",
+		    rowsPerPage:"resultset.records_per_page",
 		    rtext:"resultset.rtext",
 		    sort_key:"resultset.sort_key",
 		    sort_dir:"resultset.sort_dir",
@@ -132,7 +142,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							 //draggableColumns:true,
 							   renderLoopSize: 50,generateRequest : myRequestBuilderwithTotals
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage:<?php echo$_SESSION['state']['store']['table']['nr']+1?>,containers : 'paginator', 
+									      rowsPerPage:<?php echo $_SESSION['state']['store']['table']['nr']+1?>,containers : 'paginator', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -157,7 +167,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    
 	    this.table0.view='<?php echo$_SESSION['state']['store']['view']?>';
 
-		
+      this.table0.filter={key:'<?php echo$_SESSION['state']['store']['table']['f_field']?>',value:'<?php echo$_SESSION['state']['store']['table']['f_value']?>'};
+
 
 
 
@@ -168,18 +179,70 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 function show_details(){
-    Dom.get("details").style.display='';
+    Dom.get("store_info").style.display='';
+        Dom.get("plot").style.display='';
+        Dom.get("no_details_title").style.display='none';
+
     Dom.get("show_details").style.display='none';
+        Dom.get("hide_details").style.display='';
+
     YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=store-details&value=1')
 }
 
 function hide_details(){
-    Dom.get("details").style.display='none';
+   Dom.get("store_info").style.display='none';
+        Dom.get("plot").style.display='none';
+        Dom.get("no_details_title").style.display='';
+    
+    
     Dom.get("show_details").style.display='';
+            Dom.get("hide_details").style.display='none';
+
     //  alert('ar_sessions.php?tipo=update&keys=store-details&value=0')
     YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=store-details&value=0')
 }
 
+function change_info_period(period){
+    var patt=new RegExp("^(year|month|all|week|quarter)$");
+    if (patt.test(period)==true && current_store_period!=period){
+	//alert('info_'+current_store_period)
+	//	alert('ar_sessions.php?tipo=update&keys=store-period&value=');
+	Dom.get('info_'+current_store_period).style.display='none';
+	Dom.get('info_'+period).style.display='';
+	current_store_period=period;
+
+	Dom.get('info_title').innerHTML=info_period_title[period];
+	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=stores-period&value='+period);
+
+    }
+
+}
+
+function next_info_period(){
+    if(current_store_period=='all')
+        change_info_period('week');
+    else if(current_store_period=='week')    
+        change_info_period('month');
+    else if(current_store_period=='month')    
+        change_info_period('quarter');
+    else if(current_store_period=='quarter')    
+        change_info_period('year');        
+    else if(current_store_period=='year')    
+        change_info_period('all');
+}
+
+function previous_info_period(){
+    if(current_store_period=='all')
+        change_info_period('year');
+    else if(current_store_period=='week')    
+        change_info_period('all');
+    else if(current_store_period=='month')    
+        change_info_period('week');
+    else if(current_store_period=='quarter')    
+        change_info_period('month');        
+    else if(current_store_period=='year')    
+        change_info_period('quarter');
+}
 
 
 function change_plot_category(category){
@@ -321,6 +384,10 @@ function change_avg(e,table_id){
  YAHOO.util.Event.addListener(ids, "click",change_period,0);
  ids=['avg_totals','avg_month','avg_week',"avg_month_eff","avg_week_eff"];
  YAHOO.util.Event.addListener(ids, "click",change_avg,0);
+
+YAHOO.util.Event.addListener("info_next", "click",next_info_period,0);
+YAHOO.util.Event.addListener("info_previous", "click",previous_info_period,0);
+
  
  // YAHOO.util.Event.addListener('show_details', "click",show_details,'departments');
  YAHOO.util.Event.addListener('show_percentages', "click",show_percentages,'departments');
@@ -361,4 +428,10 @@ YAHOO.util.Event.onContentReady("plot_category_menu", function () {
 	 oMenu.render();
 	 oMenu.subscribe("show", oMenu.focus);
 	 YAHOO.util.Event.addListener("plot_category", "click", oMenu.show, null, oMenu);
+    });
+YAHOO.util.Event.onContentReady("info_period_menu", function () {
+	 var oMenu = new YAHOO.widget.Menu("info_period_menu", { context:["info_period","tr", "br"]  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+	 YAHOO.util.Event.addListener("info_period", "click", oMenu.show, null, oMenu);
     });

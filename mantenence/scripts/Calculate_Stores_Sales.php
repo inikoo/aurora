@@ -10,6 +10,7 @@ include_once('../../class.Part.php');
 include_once('../../class.Store.php');
 error_reporting(E_ALL);
 
+date_default_timezone_set('Europe/London');
 
 
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
@@ -20,10 +21,9 @@ if (!$db){print "Error can not access the database\n";exit;}
   
 
 require_once '../../common_functions.php';
-mysql_query("SET time_zone ='UTC'");
+mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';           
-date_default_timezone_set('Europe/London');
 
 
 $sql="select * from `Store Dimension`";
@@ -36,7 +36,7 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $store->load('products_info');
   print $store->id."\r";
  }
-
+mysql_free_result($result);
 
 
 ?>
