@@ -1,5 +1,6 @@
 <?php
 error_reporting(E_ALL);
+date_default_timezone_set('Europe/London');
 
 require_once '../../app_files/db/dns.php';
 require_once '../../class.TimeSeries.php';
@@ -9,7 +10,7 @@ $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
 
 require_once '../../common_functions.php';
-mysql_query("SET time_zone ='UTC'");
+mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/timezone.php'; 
 date_default_timezone_set(TIMEZONE) ;
@@ -19,7 +20,6 @@ include_once('../../set_locales.php');
 require_once '../../conf/conf.php';   
 
 
-date_default_timezone_set('Europe/Madrid');
 $_SESSION['lang']=1;
 
 

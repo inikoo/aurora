@@ -23,7 +23,7 @@ if (!$db) {
     print "Error can not access the database\n";
     exit;
 }
-
+date_default_timezone_set('Europe/London');
 require_once '../../common_functions.php';
 mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
@@ -36,7 +36,7 @@ require_once '../../conf/conf.php';
 require('../../locale.php');
 $_SESSION['locale_info'] = localeconv();
 
-date_default_timezone_set('Europe/London');
+
 $_SESSION['lang']=1;
 
 include_once('local_map.php');
@@ -99,7 +99,7 @@ $fam_no_fam_key=$fam_no_fam->id;
 $fam_promo_key=$fam_promo->id;
 
 
-$sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed)  order by filename ";
+$sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed)  order by checksum ";
 
 
 //$sql="select * from  orders_data.orders where filename like '%refund.xls'   order by filename";

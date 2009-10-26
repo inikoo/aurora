@@ -13,46 +13,148 @@
     <span  class="search_msg"   id="product_search_msg"    ></span> <span  class="search_sugestion"   id="product_search_sugestion"    ></span>
      <br/>
      {if $modify}<a   href="store.php?edit=1"  style="float:right;margin-left:15px" class="state_details"  >{t}Edit{/t}</a>{/if}
-     <span  id="show_details" style="float:right;{if $show_details}display:none{/if}" class="state_details"  onClick="show_details()" >{t}Show details{/t}</span>
+     <span id="show_details" style="float:right;{if $show_details}display:none{/if}" class="state_details"  onClick="show_details()" >{t}Show details{/t}</span>
+     <span id="hide_details" class="state_details"  style="{if !$show_details}display:none{/if}"  onClick="hide_details()"> {t}Hide details{/t}</span>
+</div>
+
+<div id="no_details_title" style="clear:left;{if $show_details}display:none;{/if}">
+    <h1>Store: {$store->get('Store Name')} ({$store->get('Store Code')})</h1>
   </div>
+<div id="store_info" style="clear:left;margin:20px 0 10px 0;padding:0;{if !$show_details}display:none;{/if}">
+
+<h2 style="margin:0;padding:0">{t}Store Information{/t}</h2>
+<div style="width:350px;float:left">
+  <table    class="show_info_product">
+
+    <tr >
+      <td>{t}Code{/t}:</td><td class="price">{$store->get('Store Code')}</td>
+    </tr>
+    <tr >
+      <td>{t}Name{/t}:</td><td>{$store->get('Store Name')}</td>
+    </tr>
+ <tr >
+      <td>{t}Web Page{/t}:</td><td>{$store->get('Web Page Links')}</td>
+    </tr>
+</table>
+  <table    class="show_info_product">
+
+   <tr>
+	    <td>{t}Departments{/t}:</td><td class="number"><div >{$store->get('Departments')}</div></td>
+	  </tr>
+    <tr>
+	    <td>{t}Families{/t}:</td><td class="number"><div >{$store->get('Families')}</div></td>
+	  </tr>
+	  <tr>
+	    <td>{t}Products{/t}:</td><td class="number"><div>{$store->get('For Sale Products')}</div></td>
+	  </tr>
+ 
+    
+
+  </table>
+</div>
+<div style="width:15em;float:left;margin-left:20px">
+  <table    class="show_info_product">
+      <tr >
+      <td colspan="2" class="aright" style="padding-right:10px"> <span class="product_info_sales_options" id="info_period"><span id="info_title">{$stores_period_title}</span></span>
+      <img id="info_previous" class="previous_button" style="cursor:pointer" src="art/icons/previous.png" alt="<"  title="previous" /> <img id="info_next" class="next_button" style="cursor:pointer"  src="art/icons/next.png" alt=">" tite="next"/></td>
+    </tr>
+       <tbody id="info_all" style="{if $stores_period!='all'}display:none{/if}">
+	 <tr >
+	  <td>{t}Customers{/t}:</td><td class="aright">{$store->get('Total Customers')}</td>
+	</tr>
+	 	<tr >
+	  <td>{t}Invoices{/t}:</td><td class="aright">{$store->get('Total Invoices')}</td>
+	</tr>
+	<tr >
+	  <td>{t}Sales{/t}:</td><td class=" aright">{$store->get('Total Invoiced Amount')}</td>
+	</tr>
+	<tr >
+	  <td>{t}Profit{/t}:</td><td class=" aright">{$store->get('Total Profit')}</td>
+	</tr>
+	<tr >
+	  <td>{t}Outers{/t}:</td><td class="aright">{$store->get('Total Quantity Delivered')}</td>
+	</tr>
+
+
+      </tbody>
+
+      <tbody id="info_year"  style="{if $stores_period!='year'}display:none{/if}">
+      	<tr >
+	  <td>{t}Customers{/t}:</td><td class="aright">{$store->get('1 Year Acc Customers')}</td>
+	</tr>
+		<tr >
+	  <td>{t}Invoices{/t}:</td><td class="aright">{$store->get('1 Year Acc Invoices')}</td>
+	</tr>
+
+	<tr >
+	  <td>{t}Sales{/t}:</td><td class=" aright">{$store->get('1 Year Acc Invoiced Amount')}</td>
+	</tr>
+	<tr >
+	  <td>{t}Profit{/t}:</td><td class=" aright">{$store->get('1 Year Acc Profit')}</td>
+	</tr>
+	<tr >
+	  <td>{t}Outers{/t}:</td><td class="aright">{$store->get('1 Year Acc Quantity Delivered')}</td>
+	</tr>
+
+      </tbody>
+        <tbody id="info_quarter" style="{if $stores_period!='quarter'}display:none{/if}"  >
+        <tr >
+	     <td>{t}Orders{/t}:</td><td class="aright">{$store->get('1 Quarter Acc Invoices')}</td>
+	    </tr>
+        <tr >
+	  <td>{t}Customers{/t}:</td><td class="aright">{$store->get('1 Quarter Acc Customers')}</td>
+	</tr>
+	<tr >
+	  <td>{t}Sales{/t}:</td><td class=" aright">{$store->get('1 Quarter Acc Invoiced Amount')}</td>
+	</tr>
+	<tr >
+	  <td>{t}Profit{/t}:</td><td class=" aright">{$store->get('1 Quarter Acc Profit')}</td>
+	</tr>
+	<tr >
+	  <td>{t}Outers{/t}:</td><td class="aright">{$store->get('1 Quarter Acc Quantity Delivered')}</td>
+	</tr>	
+      </tbody>
+        <tbody id="info_month" style="{if $stores_period!='month'}display:none{/if}"  >
+        <tr >
+	     <td>{t}Orders{/t}:</td><td class="aright">{$store->get('1 Month Acc Invoices')}</td>
+	    </tr>
+        <tr >
+	  <td>{t}Customers{/t}:</td><td class="aright">{$store->get('1 Month Acc Customers')}</td>
+	</tr>
+	<tr >
+	  <td>{t}Sales{/t}:</td><td class=" aright">{$store->get('1 Month Acc Invoiced Amount')}</td>
+	</tr>
+	<tr >
+	  <td>{t}Profit{/t}:</td><td class=" aright">{$store->get('1 Month Acc Profit')}</td>
+	</tr>
+	<tr >
+	  <td>{t}Outers{/t}:</td><td class="aright">{$store->get('1 Month Acc Quantity Delivered')}</td>
+	</tr>	
+      </tbody>
+       <tbody id="info_week" style="{if $stores_period!='week'}display:none{/if}"  >
+        <tr >
+	     <td>{t}Orders{/t}:</td><td class="aright">{$store->get('1 Week Acc Invoices')}</td>
+	    </tr>
+        <tr >
+	  <td>{t}Customers{/t}:</td><td class="aright">{$store->get('1 Week Acc Customers')}</td>
+	</tr>
+	<tr >
+	  <td>{t}Sales{/t}:</td><td class=" aright">{$store->get('1 Week Acc Invoiced Amount')}</td>
+	</tr>
+	<tr >
+	  <td>{t}Profit{/t}:</td><td class=" aright">{$store->get('1 Week Acc Profit')}</td>
+	</tr>
+	<tr >
+	  <td>{t}Outers{/t}:</td><td class="aright">{$store->get('1 Week Acc Quantity Delivered')}</td>
+	</tr>	
+      </tbody>
+ </table>
+</div>
+
+</div>
+<div id="plot" class="top_bar" style="position:relative;left:-20px;clear:both;padding:0;margin:0;{if !$show_details}display:none;{/if}">
   
-  <div style="clear:left;">
-    <h1>{$store->get('Store Name')} ({$store->get('Store Code')})</h1>
-  </div>
-  
-  <div id="details" class="top_bar" style="{if !$show_details}display:none;{/if}">
-    <div  class="details">
-      <div style="text-align:right">
-	<span  class="state_details"  onClick="hide_details()"> {t}Hide details{/t}</span>
-      </div>
-      <div id="details_general"  {if $view!='general'}style="display:none"{/if}>
-	
-	<table class="show_info_product" style="width:20em">
-	  <tr>
-	    <td>{t}Departments{/t}:</td><td class="aright">{$departments}</td>
-	  </tr>
-	  <tr>
-	    <td>{t}Product Families{/t}:</td><td class="aright">{$store->get('Families')}</td>
-	  </tr>
-	  <tr>
-	    <td>{t}Products for sale{/t}:</td><td class="aright">{$store->get('For Sale Products')}</td>
-	  </tr>
-	</table>
-      </div>
-      <div id="details_stock"  {if $view!='stock'}style="display:none"{/if}>
-	<table class="show_info_product"  >
-	  <tr>
-	    <td>{t}Stock Value{/t}:</td><td class="aright">{$stock_value}</td>
-	  </tr>
-	</table>
-      </div>
-      <div id="details_sales"  {if $view!='sales'}style="display:none"{/if}>
-	<table  >
-	  <tr>
-	    <td>{t}Total Sales{/t}:</td><td class="aright">{$total_sales}</td>
-	  </tr>
-	</table>
-      </div>
+    
       
       <div display="none" id="plot_info" keys="{$store->id}" ></div>
       <ul id="plot_chooser" class="tabs" style="margin:0 20px;padding:0 20px "  >
@@ -108,11 +210,7 @@
       </div>
      
      </div>
-   
-    <div style="clear:both"></div>
-  </div>
-
-  <div class="data_table" xstyle="margin:25px 20px">
+<div class="data_table" style="clear:both;">
     <span   class="clean_table_title">{t}Departments{/t}</span>
     <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
     
@@ -164,6 +262,9 @@
     </div>
     <div  id="table0"   class="data_table_container dtable btable with_total"> </div>
   </div>
+
+
+
   
 </div> 
 
@@ -211,5 +312,14 @@
   </div>
 </div>
 
-
+<div id="info_period_menu" class="yuimenu">
+  <div class="bd">
+    <ul class="first-of-type">
+      <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Period{/t}:</li>
+      {foreach from=$info_period_menu item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_info_period('{$menu.period}','{$menu.title}')"> {$menu.label}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
 {include file='footer.tpl'}

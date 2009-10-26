@@ -106,6 +106,7 @@ td.price{font-size:110%;font-weight:bold}
 table.show_info_product {border-top:1px solid SteelBlue;border-bottom:1px solid SteelBlue;width:100%}
 xtable.show_info_product td {border-top:1px solid #ddd;border-bottom:1px solid #ddd}
 .prodinfo{font-size:120%}
+table.show_info_product td.number div{width:5em;text-align:right}
 
 
 .xprodinfo{border:1px solid #3b5998;padding:10px}

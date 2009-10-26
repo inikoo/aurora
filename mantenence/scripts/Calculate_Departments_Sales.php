@@ -18,12 +18,12 @@ if(!$con){print "Error can not connect with database server\n";exit;}
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
   
-
+date_default_timezone_set('Europe/London');
 require_once '../../common_functions.php';
-mysql_query("SET time_zone ='UTC'");
+mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';           
-date_default_timezone_set('Europe/London');
+
 
 
 $sql="select * from `Product Department Dimension`";
@@ -39,6 +39,6 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   print $product->id."\r";
  }
 
-
+mysql_free_result($result);
 
 ?>

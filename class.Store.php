@@ -15,6 +15,9 @@
 /* class: Store
    Class to manage the *Company Dimension* table
 */
+
+include_once('class.DB_Table.php');
+
 class Store extends DB_Table{
 
   // Integer: id
@@ -241,6 +244,23 @@ class Store extends DB_Table{
     if(isset($this->data[$key]))
       return $this->data[$key];
     
+
+  
+    
+
+if (preg_match('/^(Total|1).*(Amount|Profit)$/',$key)) {
+
+            $amount='Store '.$key;
+
+            return money($this->data[$amount]);
+        }
+        if (preg_match('/^(Total|1).*(Quantity (Ordered|Invoiced|Delivered|)|Invoices|Pending Orders|Customers)$/',$key)) {
+
+            $amount='Store '.$key;
+
+            return number($this->data[$amount]);
+        }
+
     switch($key){
     case('code'):
       return $this->data['Store Code'];
@@ -257,14 +277,14 @@ class Store extends DB_Table{
     case('Families'):
       return number($this->data['Store Families']);
     break;
-
+ case('Departments'):
+      return number($this->data['Store Departments']);
+    break;
     }
     $_key=ucfirst($key);
     if(isset($this->data[$_key]))
       return $this->data[$_key];
-    print "Error $key not found in get from Product\n";
-    return false; 
-
+  
   }
 
 /*
@@ -323,316 +343,9 @@ class Store extends DB_Table{
   
    case('sales'):
      
-     $on_sale_days=0;
+     $this->update_store_sales();
      
-     $sql="select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as tto, sum(if(`Product Sales State`='For sale',1,0)) as for_sale   from `Product Dimension` as P   where `Product Store Key`=".$this->id;
-
-      $result=mysql_query($sql);
-      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-	$from=strtotime($row['ffrom']);
-	$_from=date("Y-m-d H:i:s",$from);
-	if($row['for_sale']>0){
-	 $to=strtotime('today');
-	 $_to=date("Y-m-d H:i:s");
-	}else{
-	 $to=strtotime($row['tto']);
-	 $_to=date("Y-m-d H:i:s",$to);
-	}
-	 $on_sale_days=($to-$from)/ (60 * 60 * 24);
-
-       if($row['prods']==0)
-	 $on_sale_days=0;
-
-      }
-$sql="select sum(`Product Total Invoiced Amount`) as net,sum(`Product Total Invoiced Gross Amount`) as gross,sum(`Product Total Invoiced Discount Amount`) as disc, sum(`Product Total Profit`)as profit ,sum(`Product Total Quantity Delivered`) as delivered,sum(`Product Total Quantity Ordered`) as ordered,sum(`Product Total Quantity Invoiced`) as invoiced  from `Product Dimension` as P where `Product Store Key`=".$this->id;
-
-
-//print "$sql\n\n";
-// exit;
- $result=mysql_query($sql);
- 
-     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-       $this->data['Store Total Invoiced Gross Amount']=$row['gross'];
-       $this->data['Store Total Invoiced Discount Amount']=$row['disc'];
-       $this->data['Store Total Invoiced Amount']=$row['net'];
-
-       $this->data['Store Total Profit']=$row['profit'];
-       $this->data['Store Total Quantity Ordered']=$row['ordered'];
-       $this->data['Store Total Quantity Invoiced']=$row['invoiced'];
-       $this->data['Store Total Quantity Delivered']=$row['delivered'];
-       $this->data['Store Total Days On Sale']=$on_sale_days;
-       $this->data['Store Valid From']=$_from;
-       $this->data['Store Valid To']=$_to;
-       $sql=sprintf("update `Store Dimension` set `Store Total Invoiced Gross Amount`=%s,`Store Total Invoiced Discount Amount`=%s,`Store Total Invoiced Amount`=%s,`Store Total Profit`=%s, `Store Total Quantity Ordered`=%s , `Store Total Quantity Invoiced`=%s,`Store Total Quantity Delivered`=%s ,`Store Total Days On Sale`=%f ,`Store Valid From`=%s,`Store Valid To`=%s where `Store Key`=%d "
-		    ,prepare_mysql($this->data['Store Total Invoiced Gross Amount'])
-		    ,prepare_mysql($this->data['Store Total Invoiced Discount Amount'])
-		    ,prepare_mysql($this->data['Store Total Invoiced Amount'])
-
-		    ,prepare_mysql($this->data['Store Total Profit'])
-		    ,prepare_mysql($this->data['Store Total Quantity Ordered'])
-		    ,prepare_mysql($this->data['Store Total Quantity Invoiced'])
-		    ,prepare_mysql($this->data['Store Total Quantity Delivered'])
-		    ,$on_sale_days
-		    ,prepare_mysql($this->data['Store Valid From'])
-		    ,prepare_mysql($this->data['Store Valid To'])
-		    ,$this->id
-		    );
-     
-     if(!mysql_query($sql))
-       exit("$sql\ncan not update dept sales\n");
-     }
-     // days on sale
-     
-   $on_sale_days=0;
-
-
-
- $sql="select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as `to`, sum(if(`Product Sales State`='For sale',1,0)) as for_sale   from `Product Dimension` as P   where `Product Store Key`=".$this->id;
- // print "$sql\n\n";
- $result=mysql_query($sql);
-      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-	if($row['prods']==0)
-	 $on_sale_days=0;
-	else{
-	
-
-	  if($row['for_sale']>0)
-	    $to=strtotime('today');
-	  else
-	    $to=strtotime($row['to']);
-	  // print "*** ".$row['to']." T:$to  ".strtotime('today')."  ".strtotime('today -1 year')."  \n";
-	  // print "*** T:$to   ".strtotime('today -1 year')."  \n";
-	  if($to>strtotime('today -1 year')){
-	    //print "caca";
-	    $from=strtotime($row['ffrom']);
-	    if($from<strtotime('today -1 year'))
-	      $from=strtotime('today -1 year');
-	    
-	    //	    print "*** T:$to F:$from\n";
-	    $on_sale_days=($to-$from)/ (60 * 60 * 24);
-	  }else{
-	    //   print "pipi";
-	    $on_sale_days=0;
-
-	  }
-	}
-      }
-
-
-
- $sql="select sum(`Product 1 Year Acc Invoiced Gross Amount`) as net,sum(`Product 1 Year Acc Invoiced Gross Amount`) as gross,sum(`Product 1 Year Acc Invoiced Discount Amount`) as disc, sum(`Product 1 Year Acc Profit`)as profit ,sum(`Product 1 Year Acc Quantity Delivered`) as delivered,sum(`Product 1 Year Acc Quantity Ordered`) as ordered,sum(`Product 1 Year Acc Quantity Invoiced`) as invoiced  from `Product Dimension` as P  where `Product Store Key`=".$this->id;
- 
- $result=mysql_query($sql);
-
-     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-       $this->data['Store 1 Year Acc Invoiced Gross Amount']=$row['gross'];
-       $this->data['Store 1 Year Acc Invoiced Discount Amount']=$row['disc'];
-       $this->data['Store 1 Year Acc Invoiced Amount']=$row['net'];
-	      
-       $this->data['Store 1 Year Acc Profit']=$row['profit'];
-       $this->data['Store 1 Year Acc Quantity Ordered']=$row['ordered'];
-       $this->data['Store 1 Year Acc Quantity Invoiced']=$row['invoiced'];
-       $this->data['Store 1 Year Acc Quantity Delivered']=$row['delivered'];
-      
-        
-     $sql=sprintf("update `Store Dimension` set `Store 1 Year Acc Invoiced Gross Amount`=%s,`Store 1 Year Acc Invoiced Discount Amount`=%s,`Store 1 Year Acc Invoiced Amount`=%s,`Store 1 Year Acc Profit`=%s, `Store 1 Year Acc Quantity Ordered`=%s , `Store 1 Year Acc Quantity Invoiced`=%s,`Store 1 Year Acc Quantity Delivered`=%s ,`Store 1 Year Acc Days On Sale`=%f  where `Store Key`=%d "
-		  ,prepare_mysql($this->data['Store 1 Year Acc Invoiced Gross Amount'])
-		  ,prepare_mysql($this->data['Store 1 Year Acc Invoiced Discount Amount'])
-		  ,prepare_mysql($this->data['Store 1 Year Acc Invoiced Amount'])
-
-		  ,prepare_mysql($this->data['Store 1 Year Acc Profit'])
-		  ,prepare_mysql($this->data['Store 1 Year Acc Quantity Ordered'])
-		  ,prepare_mysql($this->data['Store 1 Year Acc Quantity Invoiced'])
-		  ,prepare_mysql($this->data['Store 1 Year Acc Quantity Delivered'])
-		  ,$on_sale_days
-		  ,$this->id
-		  );
-     //  print "$sql\n";
- 
-
-     if(!mysql_query($sql))
-       exit("$sql\ncan not update dept sales\n");
-     }
-     // exit;
-      $on_sale_days=0;
-      
-
-$sql="select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as `to`, sum(if(`Product Sales State`='For sale',1,0)) as for_sale   from `Product Dimension` as P  where `Product Store Key`=".$this->id;
-
- $result=mysql_query($sql);
-      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-	if($row['prods']==0)
-	 $on_sale_days=0;
-	else{
-	
-
-	  if($row['for_sale']>0)
-	    $to=strtotime('today');
-	  else
-	    $to=strtotime($row['to']);
-	  if($to>strtotime('today -3 month')){
-	    
-	    $from=strtotime($row['ffrom']);
-	    if($from<strtotime('today -3 month'))
-	      $from=strtotime('today -3 month');
-	    
-	    
-	    $on_sale_days=($to-$from)/ (60 * 60 * 24);
-	  }else
-	    $on_sale_days=0;
-	}
-      }
-
-$sql="select sum(`Product 1 Quarter Acc Invoiced Amount`) as net,sum(`Product 1 Quarter Acc Invoiced Gross Amount`) as gross,sum(`Product 1 Quarter Acc Invoiced Discount Amount`) as disc, sum(`Product 1 Quarter Acc Profit`)as profit ,sum(`Product 1 Quarter Acc Quantity Delivered`) as delivered,sum(`Product 1 Quarter Acc Quantity Ordered`) as ordered,sum(`Product 1 Quarter Acc Quantity Invoiced`) as invoiced  from `Product Dimension` as P  where `Product Store Key`=".$this->id;
-
-
-     $result=mysql_query($sql);
- 
-     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-       $this->data['Store 1 Quarter Acc Invoiced Gross Amount']=$row['gross'];
-       $this->data['Store 1 Quarter Acc Invoiced Discount Amount']=$row['disc'];
-       $this->data['Store 1 Quarter Acc Invoiced Amount']=$row['net'];
-	      
-       $this->data['Store 1 Quarter Acc Profit']=$row['profit'];
-       $this->data['Store 1 Quarter Acc Quantity Ordered']=$row['ordered'];
-       $this->data['Store 1 Quarter Acc Quantity Invoiced']=$row['invoiced'];
-       $this->data['Store 1 Quarter Acc Quantity Delivered']=$row['delivered'];
-      
-        
-     $sql=sprintf("update `Store Dimension` set `Store 1 Quarter Acc Invoiced Gross Amount`=%s,`Store 1 Quarter Acc Invoiced Discount Amount`=%s,`Store 1 Quarter Acc Invoiced Amount`=%s,`Store 1 Quarter Acc Profit`=%s, `Store 1 Quarter Acc Quantity Ordered`=%s , `Store 1 Quarter Acc Quantity Invoiced`=%s,`Store 1 Quarter Acc Quantity Delivered`=%s  ,`Store 1 Quarter Acc Days On Sale`=%f where `Store Key`=%d "
-		  ,prepare_mysql($this->data['Store 1 Quarter Acc Invoiced Gross Amount'])
-		  ,prepare_mysql($this->data['Store 1 Quarter Acc Invoiced Discount Amount'])
-		  ,prepare_mysql($this->data['Store 1 Quarter Acc Invoiced Amount'])
-
-		  ,prepare_mysql($this->data['Store 1 Quarter Acc Profit'])
-		  ,prepare_mysql($this->data['Store 1 Quarter Acc Quantity Ordered'])
-		  ,prepare_mysql($this->data['Store 1 Quarter Acc Quantity Invoiced'])
-		  ,prepare_mysql($this->data['Store 1 Quarter Acc Quantity Delivered'])
-		   ,$on_sale_days
-		  ,$this->id
-		  );
-     // print "$sql\n";
-     if(!mysql_query($sql))
-       exit("$sql\ncan not update dept sales\n");
-     }
-
-$on_sale_days=0;
-
-$sql="select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as `to`, sum(if(`Product Sales State`='For sale',1,0)) as for_sale   from `Product Dimension` as P  where `Product Store Key`=".$this->id;
-      $result=mysql_query($sql);
-      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-	if($row['prods']==0)
-	 $on_sale_days=0;
-	else{
-	
-
-	  if($row['for_sale']>0)
-	    $to=strtotime('today');
-	  else
-	    $to=strtotime($row['to']);
-	  if($to>strtotime('today -1 month')){
-	    
-	    $from=strtotime($row['ffrom']);
-	    if($from<strtotime('today -1 month'))
-	      $from=strtotime('today -1 month');
-	    
-	    
-	    $on_sale_days=($to-$from)/ (60 * 60 * 24);
-	  }else
-	    $on_sale_days=0;
-	}
-      }
-
-$sql="select  sum(`Product 1 Month Acc Invoiced Amount`) as net,sum(`Product 1 Month Acc Invoiced Gross Amount`) as gross,sum(`Product 1 Month Acc Invoiced Discount Amount`) as disc, sum(`Product 1 Month Acc Profit`)as profit ,sum(`Product 1 Month Acc Quantity Delivered`) as delivered,sum(`Product 1 Month Acc Quantity Ordered`) as ordered,sum(`Product 1 Month Acc Quantity Invoiced`) as invoiced  from `Product Dimension` as P  where `Product Store Key`=".$this->id;
-
-    
-     $result=mysql_query($sql);
- 
-     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-       $this->data['Store 1 Month Acc Invoiced Gross Amount']=$row['gross'];
-       $this->data['Store 1 Month Acc Invoiced Discount Amount']=$row['disc'];
-       $this->data['Store 1 Month Acc Invoiced Amount']=$row['net'];
-
-       $this->data['Store 1 Month Acc Profit']=$row['profit'];
-       $this->data['Store 1 Month Acc Quantity Ordered']=$row['ordered'];
-       $this->data['Store 1 Month Acc Quantity Invoiced']=$row['invoiced'];
-       $this->data['Store 1 Month Acc Quantity Delivered']=$row['delivered'];
-      
-        
-     $sql=sprintf("update `Store Dimension` set `Store 1 Month Acc Invoiced Gross Amount`=%s,`Store 1 Month Acc Invoiced Discount Amount`=%s,`Store 1 Month Acc Invoiced Amount`=%s,`Store 1 Month Acc Profit`=%s, `Store 1 Month Acc Quantity Ordered`=%s , `Store 1 Month Acc Quantity Invoiced`=%s,`Store 1 Month Acc Quantity Delivered`=%s  ,`Store 1 Month Acc Days On Sale`=%f where `Store Key`=%d "
-		  ,prepare_mysql($this->data['Store 1 Month Acc Invoiced Gross Amount'])
-		  ,prepare_mysql($this->data['Store 1 Month Acc Invoiced Discount Amount'])
-		  ,prepare_mysql($this->data['Store 1 Month Acc Invoiced Amount'])
-
-		  ,prepare_mysql($this->data['Store 1 Month Acc Profit'])
-		  ,prepare_mysql($this->data['Store 1 Month Acc Quantity Ordered'])
-		  ,prepare_mysql($this->data['Store 1 Month Acc Quantity Invoiced'])
-		  ,prepare_mysql($this->data['Store 1 Month Acc Quantity Delivered'])
-		   ,$on_sale_days
-		  ,$this->id
-		  );
-     // print "$sql\n";
-     if(!mysql_query($sql))
-       exit("$sql\ncan not update dept sales\n");
-     }
-
-          $on_sale_days=0;
-$sql="select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as `to`, sum(if(`Product Sales State`='For sale',1,0)) as for_sale   from `Product Dimension` as P where `Product Store Key`=".$this->id;
-      $result=mysql_query($sql);
-      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-	if($row['prods']==0)
-	 $on_sale_days=0;
-	else{
-	
-
-	  if($row['for_sale']>0)
-	    $to=strtotime('today');
-	  else
-	    $to=strtotime($row['to']);
-	  if($to>strtotime('today -1 week')){
-	    
-	    $from=strtotime($row['ffrom']);
-	    if($from<strtotime('today -1 week'))
-	      $from=strtotime('today -1 week');
-	    
-	    
-	    $on_sale_days=($to-$from)/ (60 * 60 * 24);
-	  }else
-	    $on_sale_days=0;
-	}
-      }
-
- 
-$sql="select sum(`Product 1 Week Acc Invoiced Amount`) as net,sum(`Product 1 Week Acc Invoiced Gross Amount`) as gross,sum(`Product 1 Week Acc Invoiced Discount Amount`) as disc, sum(`Product 1 Week Acc Profit`)as profit ,sum(`Product 1 Week Acc Quantity Delivered`) as delivered,sum(`Product 1 Week Acc Quantity Ordered`) as ordered,sum(`Product 1 Week Acc Quantity Invoiced`) as invoiced  from `Product Dimension` as P   where `Product Store Key`=".$this->id;
-
-   $result=mysql_query($sql);
-
-     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-       $this->data['Store 1 Week Acc Invoiced Gross Amount']=$row['gross'];
-       $this->data['Store 1 Week Acc Invoiced Discount Amount']=$row['disc'];
-       $this->data['Store 1 Week Acc Invoiced Amount']=$row['net'];
-       $this->data['Store 1 Week Acc Profit']=$row['profit'];
-       $this->data['Store 1 Week Acc Quantity Ordered']=$row['ordered'];
-       $this->data['Store 1 Week Acc Quantity Invoiced']=$row['invoiced'];
-       $this->data['Store 1 Week Acc Quantity Delivered']=$row['delivered'];
-      
-        
-     $sql=sprintf("update `Store Dimension` set `Store 1 Week Acc Invoiced Gross Amount`=%s,`Store 1 Week Acc Invoiced Discount Amount`=%s,`Store 1 Week Acc Invoiced Amount`=%s,`Store 1 Week Acc Profit`=%s, `Store 1 Week Acc Quantity Ordered`=%s , `Store 1 Week Acc Quantity Invoiced`=%s,`Store 1 Week Acc Quantity Delivered`=%s ,`Store 1 Week Acc Days On Sale`=%f  where `Store Key`=%d "
-		  ,prepare_mysql($this->data['Store 1 Week Acc Invoiced Gross Amount'])
-		  ,prepare_mysql($this->data['Store 1 Week Acc Invoiced Discount Amount'])
-		  ,prepare_mysql($this->data['Store 1 Week Acc Invoiced Amount'])
-		  ,prepare_mysql($this->data['Store 1 Week Acc Profit'])
-		  ,prepare_mysql($this->data['Store 1 Week Acc Quantity Ordered'])
-		  ,prepare_mysql($this->data['Store 1 Week Acc Quantity Invoiced'])
-		  ,prepare_mysql($this->data['Store 1 Week Acc Quantity Delivered'])
-		  ,$on_sale_days
-		  ,$this->id
-		  );
-     // print "$sql\n";
-     if(!mysql_query($sql))
-       exit("$sql\ncan not update dept sales\n");
-     
-     }
+   
      
      break;
   
@@ -958,5 +671,400 @@ $this->get_data('id',$this->id);
  mysql_query($sql);
  
  }
+ function update_store_sales(){
+   $on_sale_days=0;
+     
+     $sql="select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as tto, sum(if(`Product Sales State`='For sale',1,0)) as for_sale   from `Product Dimension` as P   where `Product Store Key`=".$this->id;
+
+      $result=mysql_query($sql);
+      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+	$from=strtotime($row['ffrom']);
+	$_from=date("Y-m-d H:i:s",$from);
+	if($row['for_sale']>0){
+	 $to=strtotime('today');
+	 $_to=date("Y-m-d H:i:s");
+	}else{
+	 $to=strtotime($row['tto']);
+	 $_to=date("Y-m-d H:i:s",$to);
+	}
+	 $on_sale_days=($to-$from)/ (60 * 60 * 24);
+
+       if($row['prods']==0)
+	 $on_sale_days=0;
+
+      }
+      //$sql="select sum(`Product Total Invoiced Amount`) as net,sum(`Product Total Invoiced Gross Amount`) as gross,sum(`Product Total Invoiced Discount Amount`) as disc, sum(`Product Total Profit`)as profit ,sum(`Product Total Quantity Delivered`) as delivered,sum(`Product Total Quantity Ordered`) as ordered,sum(`Product Total Quantity Invoiced`) as invoiced  from `Product Dimension` as P where `Product Store Key`=".$this->id;
+
+  $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transaction Fact`   where  `Current Dispatching State` not in ('Unknown','Dispached','Cancelled')  and  `Store Key`=".$this->id;
+        $result=mysql_query($sql);
+        $pending_orders=0;
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $pending_orders=$row['pending_orders'];
+        }
+        $sql="select    count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices ,  sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact`  OTF   where `Store Key`=".$this->id;
+
+
+	//print "$sql\n\n";
+// exit;
+ $result=mysql_query($sql);
+ 
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+       $this->data['Store Total Invoiced Gross Amount']=$row['gross'];
+       $this->data['Store Total Invoiced Discount Amount']=$row['disc'];
+       $this->data['Store Total Invoiced Amount']=$row['gross']-$row['disc'];
+
+       $this->data['Store Total Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
+       $this->data['Store Total Quantity Ordered']=$row['ordered'];
+       $this->data['Store Total Quantity Invoiced']=$row['invoiced'];
+       $this->data['Store Total Quantity Delivered']=$row['delivered'];
+       $this->data['Store Total Days On Sale']=$on_sale_days;
+       $this->data['Store Valid From']=$_from;
+       $this->data['Store Valid To']=$_to;
+ $this->data['Store Total Customers']=$row['customers'];
+            $this->data['Store Total Invoices']=$row['invoices'];
+            $this->data['Store Total Pending Orders']=$pending_orders;
+
+       $sql=sprintf("update `Store Dimension` set `Store Total Invoiced Gross Amount`=%s,`Store Total Invoiced Discount Amount`=%s,`Store Total Invoiced Amount`=%s,`Store Total Profit`=%s, `Store Total Quantity Ordered`=%s , `Store Total Quantity Invoiced`=%s,`Store Total Quantity Delivered`=%s ,`Store Total Days On Sale`=%f ,`Store Valid From`=%s,`Store Valid To`=%s ,`Store Total Customers`=%d,`Store Total Invoices`=%d,`Store Total Pending Orders`=%d  where `Store Key`=%d "
+		    ,prepare_mysql($this->data['Store Total Invoiced Gross Amount'])
+		    ,prepare_mysql($this->data['Store Total Invoiced Discount Amount'])
+		    ,prepare_mysql($this->data['Store Total Invoiced Amount'])
+
+		    ,prepare_mysql($this->data['Store Total Profit'])
+		    ,prepare_mysql($this->data['Store Total Quantity Ordered'])
+		    ,prepare_mysql($this->data['Store Total Quantity Invoiced'])
+		    ,prepare_mysql($this->data['Store Total Quantity Delivered'])
+		    ,$on_sale_days
+		    ,prepare_mysql($this->data['Store Valid From'])
+		    ,prepare_mysql($this->data['Store Valid To'])
+		    ,$this->data['Store Total Customers']
+		    ,$this->data['Store Total Invoices']
+		    ,$this->data['Store Total Pending Orders']
+		    ,$this->id
+		    );
+     
+     if(!mysql_query($sql))
+       exit("$sql\ncan not update dept sales\n");
+     }
+     // days on sale
+     
+   $on_sale_days=0;
+
+
+
+ $sql="select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as `to`, sum(if(`Product Sales State`='For sale',1,0)) as for_sale   from `Product Dimension` as P   where `Product Store Key`=".$this->id;
+ // print "$sql\n\n";
+ $result=mysql_query($sql);
+      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+	if($row['prods']==0)
+	 $on_sale_days=0;
+	else{
+	
+
+	  if($row['for_sale']>0)
+	    $to=strtotime('today');
+	  else
+	    $to=strtotime($row['to']);
+	  // print "*** ".$row['to']." T:$to  ".strtotime('today')."  ".strtotime('today -1 year')."  \n";
+	  // print "*** T:$to   ".strtotime('today -1 year')."  \n";
+	  if($to>strtotime('today -1 year')){
+	    //print "caca";
+	    $from=strtotime($row['ffrom']);
+	    if($from<strtotime('today -1 year'))
+	      $from=strtotime('today -1 year');
+	    
+	    //	    print "*** T:$to F:$from\n";
+	    $on_sale_days=($to-$from)/ (60 * 60 * 24);
+	  }else{
+	    //   print "pipi";
+	    $on_sale_days=0;
+
+	  }
+	}
+      }
+
+
+
+      //$sql="select sum(`Product 1 Year Acc Invoiced Gross Amount`) as net,sum(`Product 1 Year Acc Invoiced Gross Amount`) as gross,sum(`Product 1 Year Acc Invoiced Discount Amount`) as disc, sum(`Product 1 Year Acc Profit`)as profit ,sum(`Product 1 Year Acc Quantity Delivered`) as delivered,sum(`Product 1 Year Acc Quantity Ordered`) as ordered,sum(`Product 1 Year Acc Quantity Invoiced`) as invoiced  from `Product Dimension` as P  where `Product Store Key`=".$this->id;
+      $sql=sprintf("select count(Distinct `Order Key`) as pending_orders   from `Order Transaction Fact`  OTF   where  `Current Dispatching State` not in ('Unknown','Dispached','Cancelled') 
+        and  `Store Key`=%d and `Invoice Date`>=%s ",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 1 year"))));
+      
+        $result=mysql_query($sql);
+        $pending_orders=0;
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+	  $pending_orders=$row['pending_orders'];
+        }
+        $sql=sprintf("select    count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices ,  sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross 
+        ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  
+        from `Order Transaction Fact`  OTF    where `Store Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 1 year"))));
+	
+	$result=mysql_query($sql);
+
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+       $this->data['Store 1 Year Acc Invoiced Gross Amount']=$row['gross'];
+       $this->data['Store 1 Year Acc Invoiced Discount Amount']=$row['disc'];
+       $this->data['Store 1 Year Acc Invoiced Amount']=$row['gross']-$row['disc'];
+	      
+       $this->data['Store 1 Year Acc Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
+       $this->data['Store 1 Year Acc Quantity Ordered']=$row['ordered'];
+       $this->data['Store 1 Year Acc Quantity Invoiced']=$row['invoiced'];
+       $this->data['Store 1 Year Acc Quantity Delivered']=$row['delivered'];
+       $this->data['Store 1 Year Acc Customers']=$row['customers'];
+            $this->data['Store 1 Year Acc Invoices']=$row['invoices'];
+            $this->data['Store 1 Year Acc Pending Orders']=$pending_orders;
+        
+     $sql=sprintf("update `Store Dimension` set `Store 1 Year Acc Invoiced Gross Amount`=%s,`Store 1 Year Acc Invoiced Discount Amount`=%s,`Store 1 Year Acc Invoiced Amount`=%s,`Store 1 Year Acc Profit`=%s, `Store 1 Year Acc Quantity Ordered`=%s , `Store 1 Year Acc Quantity Invoiced`=%s,`Store 1 Year Acc Quantity Delivered`=%s ,`Store 1 Year Acc Days On Sale`=%f ,`Store 1 Year Acc Customers`=%d,`Store 1 Year Acc Invoices`=%d,`Store 1 Year Acc Pending Orders`=%d   where `Store Key`=%d "
+		  ,prepare_mysql($this->data['Store 1 Year Acc Invoiced Gross Amount'])
+		  ,prepare_mysql($this->data['Store 1 Year Acc Invoiced Discount Amount'])
+		  ,prepare_mysql($this->data['Store 1 Year Acc Invoiced Amount'])
+
+		  ,prepare_mysql($this->data['Store 1 Year Acc Profit'])
+		  ,prepare_mysql($this->data['Store 1 Year Acc Quantity Ordered'])
+		  ,prepare_mysql($this->data['Store 1 Year Acc Quantity Invoiced'])
+		  ,prepare_mysql($this->data['Store 1 Year Acc Quantity Delivered'])
+		  ,$on_sale_days
+		  ,$this->data['Store 1 Year Acc Customers']
+		  ,$this->data['Store 1 Year Acc Invoices']
+		  ,$this->data['Store 1 Year Acc Pending Orders']
+		  ,$this->id
+		  );
+     //  print "$sql\n";
+ 
+
+     if(!mysql_query($sql))
+       exit("$sql\ncan not update dept sales\n");
+     }
+     // exit;
+      $on_sale_days=0;
+      
+
+$sql="select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as `to`, sum(if(`Product Sales State`='For sale',1,0)) as for_sale   from `Product Dimension` as P  where `Product Store Key`=".$this->id;
+
+ $result=mysql_query($sql);
+      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+	if($row['prods']==0)
+	 $on_sale_days=0;
+	else{
+	
+
+	  if($row['for_sale']>0)
+	    $to=strtotime('today');
+	  else
+	    $to=strtotime($row['to']);
+	  if($to>strtotime('today -3 month')){
+	    
+	    $from=strtotime($row['ffrom']);
+	    if($from<strtotime('today -3 month'))
+	      $from=strtotime('today -3 month');
+	    
+	    
+	    $on_sale_days=($to-$from)/ (60 * 60 * 24);
+	  }else
+	    $on_sale_days=0;
+	}
+      }
+
+      //$sql="select sum(`Product 1 Quarter Acc Invoiced Amount`) as net,sum(`Product 1 Quarter Acc Invoiced Gross Amount`) as gross,sum(`Product 1 Quarter Acc Invoiced Discount Amount`) as disc, sum(`Product 1 Quarter Acc Profit`)as profit ,sum(`Product 1 Quarter Acc Quantity Delivered`) as delivered,sum(`Product 1 Quarter Acc Quantity Ordered`) as ordered,sum(`Product 1 Quarter Acc Quantity Invoiced`) as invoiced  from `Product Dimension` as P  where `Product Store Key`=".$this->id;
+ $sql=sprintf("select count(Distinct `Order Key`) as pending_orders   from `Order Transaction Fact`  OTF   where  `Current Dispatching State` not in ('Unknown','Dispached','Cancelled') 
+        and  `Store Key`=%d and `Invoice Date`>=%s ",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 3 month"))));
+      
+        $result=mysql_query($sql);
+        $pending_orders=0;
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+	  $pending_orders=$row['pending_orders'];
+        }
+        $sql=sprintf("select    count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices ,  sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross 
+        ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  
+        from `Order Transaction Fact`  OTF    where `Store Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 3 month"))));
+
+
+
+     $result=mysql_query($sql);
+ 
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+       $this->data['Store 1 Quarter Acc Invoiced Gross Amount']=$row['gross'];
+       $this->data['Store 1 Quarter Acc Invoiced Discount Amount']=$row['disc'];
+       $this->data['Store 1 Quarter Acc Invoiced Amount']=$row['gross']-$row['disc'];
+	      
+       $this->data['Store 1 Quarter Acc Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
+       $this->data['Store 1 Quarter Acc Quantity Ordered']=$row['ordered'];
+       $this->data['Store 1 Quarter Acc Quantity Invoiced']=$row['invoiced'];
+       $this->data['Store 1 Quarter Acc Quantity Delivered']=$row['delivered'];
+  $this->data['Store 1 Quarter Acc Customers']=$row['customers'];
+            $this->data['Store 1 Quarter Acc Invoices']=$row['invoices'];
+            $this->data['Store 1 Quarter Acc Pending Orders']=$pending_orders;      
+
+        
+     $sql=sprintf("update `Store Dimension` set `Store 1 Quarter Acc Invoiced Gross Amount`=%s,`Store 1 Quarter Acc Invoiced Discount Amount`=%s,`Store 1 Quarter Acc Invoiced Amount`=%s,`Store 1 Quarter Acc Profit`=%s, `Store 1 Quarter Acc Quantity Ordered`=%s , `Store 1 Quarter Acc Quantity Invoiced`=%s,`Store 1 Quarter Acc Quantity Delivered`=%s  ,`Store 1 Quarter Acc Days On Sale`=%f ,`Store 1 Quarter Acc Customers`=%d,`Store 1 Quarter Acc Invoices`=%d,`Store 1 Quarter Acc Pending Orders`=%d   where `Store Key`=%d "
+		  ,prepare_mysql($this->data['Store 1 Quarter Acc Invoiced Gross Amount'])
+		  ,prepare_mysql($this->data['Store 1 Quarter Acc Invoiced Discount Amount'])
+		  ,prepare_mysql($this->data['Store 1 Quarter Acc Invoiced Amount'])
+
+		  ,prepare_mysql($this->data['Store 1 Quarter Acc Profit'])
+		  ,prepare_mysql($this->data['Store 1 Quarter Acc Quantity Ordered'])
+		  ,prepare_mysql($this->data['Store 1 Quarter Acc Quantity Invoiced'])
+		  ,prepare_mysql($this->data['Store 1 Quarter Acc Quantity Delivered'])
+		   ,$on_sale_days
+	  ,$this->data['Store 1 Quarter Acc Customers']
+		  ,$this->data['Store 1 Quarter Acc Invoices']
+		  ,$this->data['Store 1 Quarter Acc Pending Orders']
+		  ,$this->id
+		  );
+     // print "$sql\n";
+     if(!mysql_query($sql))
+       exit("$sql\ncan not update dept sales\n");
+     }
+
+$on_sale_days=0;
+
+$sql="select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as `to`, sum(if(`Product Sales State`='For sale',1,0)) as for_sale   from `Product Dimension` as P  where `Product Store Key`=".$this->id;
+      $result=mysql_query($sql);
+      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+	if($row['prods']==0)
+	 $on_sale_days=0;
+	else{
+	
+
+	  if($row['for_sale']>0)
+	    $to=strtotime('today');
+	  else
+	    $to=strtotime($row['to']);
+	  if($to>strtotime('today -1 month')){
+	    
+	    $from=strtotime($row['ffrom']);
+	    if($from<strtotime('today -1 month'))
+	      $from=strtotime('today -1 month');
+	    
+	    
+	    $on_sale_days=($to-$from)/ (60 * 60 * 24);
+	  }else
+	    $on_sale_days=0;
+	}
+      }
+
+      //$sql="select  sum(`Product 1 Month Acc Invoiced Amount`) as net,sum(`Product 1 Month Acc Invoiced Gross Amount`) as gross,sum(`Product 1 Month Acc Invoiced Discount Amount`) as disc, sum(`Product 1 Month Acc Profit`)as profit ,sum(`Product 1 Month Acc Quantity Delivered`) as delivered,sum(`Product 1 Month Acc Quantity Ordered`) as ordered,sum(`Product 1 Month Acc Quantity Invoiced`) as invoiced  from `Product Dimension` as P  where `Product Store Key`=".$this->id;
+ $sql=sprintf("select count(Distinct `Order Key`) as pending_orders   from `Order Transaction Fact`  OTF   where  `Current Dispatching State` not in ('Unknown','Dispached','Cancelled') 
+        and  `Store Key`=%d and `Invoice Date`>=%s ",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 1 month"))));
+      
+        $result=mysql_query($sql);
+        $pending_orders=0;
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+	  $pending_orders=$row['pending_orders'];
+        }
+        $sql=sprintf("select    count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices ,  sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross 
+        ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  
+        from `Order Transaction Fact`  OTF    where `Store Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 1 month"))));
+
+
+    
+     $result=mysql_query($sql);
+ 
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+       $this->data['Store 1 Month Acc Invoiced Gross Amount']=$row['gross'];
+       $this->data['Store 1 Month Acc Invoiced Discount Amount']=$row['disc'];
+       $this->data['Store 1 Month Acc Invoiced Amount']=$row['gross']-$row['disc'];
+
+       $this->data['Store 1 Month Acc Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
+       $this->data['Store 1 Month Acc Quantity Ordered']=$row['ordered'];
+       $this->data['Store 1 Month Acc Quantity Invoiced']=$row['invoiced'];
+       $this->data['Store 1 Month Acc Quantity Delivered']=$row['delivered'];
+        $this->data['Store 1 Month Acc Customers']=$row['customers'];
+            $this->data['Store 1 Month Acc Invoices']=$row['invoices'];
+            $this->data['Store 1 Month Acc Pending Orders']=$pending_orders;
+        
+     $sql=sprintf("update `Store Dimension` set `Store 1 Month Acc Invoiced Gross Amount`=%s,`Store 1 Month Acc Invoiced Discount Amount`=%s,`Store 1 Month Acc Invoiced Amount`=%s,`Store 1 Month Acc Profit`=%s, `Store 1 Month Acc Quantity Ordered`=%s , `Store 1 Month Acc Quantity Invoiced`=%s,`Store 1 Month Acc Quantity Delivered`=%s  ,`Store 1 Month Acc Days On Sale`=%f ,`Store 1 Month Acc Customers`=%d,`Store 1 Month Acc Invoices`=%d,`Store 1 Month Acc Pending Orders`=%d   where `Store Key`=%d "
+		  ,prepare_mysql($this->data['Store 1 Month Acc Invoiced Gross Amount'])
+		  ,prepare_mysql($this->data['Store 1 Month Acc Invoiced Discount Amount'])
+		  ,prepare_mysql($this->data['Store 1 Month Acc Invoiced Amount'])
+
+		  ,prepare_mysql($this->data['Store 1 Month Acc Profit'])
+		  ,prepare_mysql($this->data['Store 1 Month Acc Quantity Ordered'])
+		  ,prepare_mysql($this->data['Store 1 Month Acc Quantity Invoiced'])
+		  ,prepare_mysql($this->data['Store 1 Month Acc Quantity Delivered'])
+		   ,$on_sale_days
+	  ,$this->data['Store 1 Month Acc Customers']
+		  ,$this->data['Store 1 Month Acc Invoices']
+		  ,$this->data['Store 1 Month Acc Pending Orders']
+		  ,$this->id
+		  );
+     // print "$sql\n";
+     if(!mysql_query($sql))
+       exit("$sql\ncan not update dept sales\n");
+     }
+
+          $on_sale_days=0;
+$sql="select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as `to`, sum(if(`Product Sales State`='For sale',1,0)) as for_sale   from `Product Dimension` as P where `Product Store Key`=".$this->id;
+      $result=mysql_query($sql);
+      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+	if($row['prods']==0)
+	 $on_sale_days=0;
+	else{
+	
+
+	  if($row['for_sale']>0)
+	    $to=strtotime('today');
+	  else
+	    $to=strtotime($row['to']);
+	  if($to>strtotime('today -1 week')){
+	    
+	    $from=strtotime($row['ffrom']);
+	    if($from<strtotime('today -1 week'))
+	      $from=strtotime('today -1 week');
+	    
+	    
+	    $on_sale_days=($to-$from)/ (60 * 60 * 24);
+	  }else
+	    $on_sale_days=0;
+	}
+      }
+
+ 
+      //$sql="select sum(`Product 1 Week Acc Invoiced Amount`) as net,sum(`Product 1 Week Acc Invoiced Gross Amount`) as gross,sum(`Product 1 Week Acc Invoiced Discount Amount`) as disc, sum(`Product 1 Week Acc Profit`)as profit ,sum(`Product 1 Week Acc Quantity Delivered`) as delivered,sum(`Product 1 Week Acc Quantity Ordered`) as ordered,sum(`Product 1 Week Acc Quantity Invoiced`) as invoiced  from `Product Dimension` as P   where `Product Store Key`=".$this->id;
+
+ $sql=sprintf("select count(Distinct `Order Key`) as pending_orders   from `Order Transaction Fact`  OTF   where  `Current Dispatching State` not in ('Unknown','Dispached','Cancelled') 
+        and  `Store Key`=%d and `Invoice Date`>=%s ",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 1 week"))));
+      
+        $result=mysql_query($sql);
+        $pending_orders=0;
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+	  $pending_orders=$row['pending_orders'];
+        }
+        $sql=sprintf("select    count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices ,  sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross   ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced   from `Order Transaction Fact`  OTF    where `Store Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 1 week"))));
+	//	print $sql;
+   $result=mysql_query($sql);
+
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+       $this->data['Store 1 Week Acc Invoiced Gross Amount']=$row['gross'];
+       $this->data['Store 1 Week Acc Invoiced Discount Amount']=$row['disc'];
+       $this->data['Store 1 Week Acc Invoiced Amount']=$row['gross']-$row['disc'];
+       $this->data['Store 1 Week Acc Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
+       $this->data['Store 1 Week Acc Quantity Ordered']=$row['ordered'];
+       $this->data['Store 1 Week Acc Quantity Invoiced']=$row['invoiced'];
+       $this->data['Store 1 Week Acc Quantity Delivered']=$row['delivered'];
+
+         $this->data['Store 1 Week Acc Customers']=$row['customers'];
+            $this->data['Store 1 Week Acc Invoices']=$row['invoices'];
+            $this->data['Store 1 Week Acc Pending Orders']=$pending_orders;
+        
+     $sql=sprintf("update `Store Dimension` set `Store 1 Week Acc Invoiced Gross Amount`=%s,`Store 1 Week Acc Invoiced Discount Amount`=%s,`Store 1 Week Acc Invoiced Amount`=%s,`Store 1 Week Acc Profit`=%s, `Store 1 Week Acc Quantity Ordered`=%s , `Store 1 Week Acc Quantity Invoiced`=%s,`Store 1 Week Acc Quantity Delivered`=%s ,`Store 1 Week Acc Days On Sale`=%f  ,`Store 1 Week Acc Customers`=%d,`Store 1 Week Acc Invoices`=%d,`Store 1 Week Acc Pending Orders`=%d   where `Store Key`=%d "
+		  ,prepare_mysql($this->data['Store 1 Week Acc Invoiced Gross Amount'])
+		  ,prepare_mysql($this->data['Store 1 Week Acc Invoiced Discount Amount'])
+		  ,prepare_mysql($this->data['Store 1 Week Acc Invoiced Amount'])
+		  ,prepare_mysql($this->data['Store 1 Week Acc Profit'])
+		  ,prepare_mysql($this->data['Store 1 Week Acc Quantity Ordered'])
+		  ,prepare_mysql($this->data['Store 1 Week Acc Quantity Invoiced'])
+		  ,prepare_mysql($this->data['Store 1 Week Acc Quantity Delivered'])
+		  ,$on_sale_days
+	  ,$this->data['Store 1 Week Acc Customers']
+		  ,$this->data['Store 1 Week Acc Invoices']
+		  ,$this->data['Store 1 Week Acc Pending Orders']
+		  ,$this->id
+		  );
+     // print "$sql\n";
+     if(!mysql_query($sql))
+       exit("$sql\ncan not update dept sales\n");
+     
+     }
+ }
+ 
  
  }

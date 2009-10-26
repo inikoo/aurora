@@ -103,7 +103,13 @@ if(isset($_REQUEST['view'])){
 
  }
 
+$department_order=$_SESSION['state']['department']['table']['order'];
+$department_period=$_SESSION['state']['department']['period'];
+$department_period_title=array('year'=>_('Last Year'),'quarter'=>_('Last Quarter'),'month'=>_('Last Month'),'week'=>_('Last Week'),'all'=>_('All'));
+  
 
+$smarty->assign('department_period',$department_period);
+$smarty->assign('department_period_title',$department_period_title[$department_period]);
 
 
 
@@ -195,6 +201,14 @@ $smarty->assign('avg',$_SESSION['state']['products']['avg']);
 $table_title=_('Product List');
 $smarty->assign('table_title',$table_title);
 
+$info_period_menu=array(
+			array("period"=>'week','label'=>_('Last Week'),'title'=> _('Last Week'))
+		     ,array("period"=>'month','label'=>_('last Month'),'title'=>_('last Month'))
+		     ,array("period"=>'quarter','label'=>_('Last Quarter'),'title'=>_('Last Quarter'))
+		     ,array("period"=>'year','label'=>_('Last Year'),'title'=>_('Last Year'))
+		     ,array("period"=>'all','label'=>_('All'),'title'=>_('All'))
+		     );
+$smarty->assign('info_period_menu',$info_period_menu);
 
 
 //print show_currency_conversion('USD','GBP');

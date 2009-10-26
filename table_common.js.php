@@ -39,7 +39,6 @@ var myhandleDataReturnPayload= function(oRequest, oResponse, oPayload) {
 	SelectedCells:null} ;
 
     oPayload.filter_msg=oResponse.meta.filter_msg;
-
     //alert( oResponse.meta.tableid +' '+oResponse.meta.rtext)
     // alert( oResponse.meta.tableid +' '+oResponse.meta.rtext)
     if(oResponse.meta.rtext != undefined)

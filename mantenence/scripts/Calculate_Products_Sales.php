@@ -20,7 +20,7 @@ date_default_timezone_set('Europe/London');
 
 
 //$sql="select * from `Product Dimension` where `Product Code`='FO-A1'";
-$sql="select * from `Product History Dimension`   order by `Product Key` desc  ";
+$sql="select * from `Product History Dimension`   order by `Product Key`   ";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result)   ){
   $product=new Product('id',$row['Product Key']);

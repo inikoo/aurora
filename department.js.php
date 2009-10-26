@@ -2,10 +2,22 @@
 //@author Raul Perusquia <rulovico@gmail.com>
 //Copyright (c) 2009 LW
 include_once('common.php');
+
+$store_period_title=array('year'=>_('Last Year'),'quarter'=>_('Last Quarter'),'month'=>_('Last Month'),'week'=>_('Last Week'),'all'=>_('All'));
+$title='';
+
+foreach( $store_period_title as $key=>$value){
+$title.=sprintf(',%s:"%s"',$key,$value);
+}
+$title=preg_replace('/^,/','',$title);
+
 ?>
+var info_period_title={<?php echo $title ?>};
 var Dom   = YAHOO.util.Dom;
 
 var current_store_period='<?php echo$_SESSION['state']['store']['period']?>';
+
+
 var category_labels={'sales':'<?php echo _('Sales')?>','profit':'<?php echo _('Profits')?>'};
 var period_labels={'m':'<?php echo _('Montly')?>','y':'<?php echo _('Yearly')?>','w':'<?php echo _('Weekly')?>','q':'<?php echo _('Quarterly')?>'};
 var pie_period_labels={'m':'<?php echo _('Month')?>','y':'<?php echo _('Year')?>','w':'<?php echo _('Week')?>','q':'<?php echo _('Quarter')?>'};
@@ -19,14 +31,26 @@ var avg='avg_<?php echo$_SESSION['state']['department']['avg']?>';
 
 
 function show_details(){
-    Dom.get("details").style.display='';
+
+Dom.get("department_info").style.display='';
+        Dom.get("plot").style.display='';
+        Dom.get("no_details_title").style.display='none';
+        
     Dom.get("show_details").style.display='none';
+        Dom.get("hide_details").style.display='';
+
     YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=department-details&value=1')
 }
 
 function hide_details(){
-    Dom.get("details").style.display='none';
+
+   Dom.get("department_info").style.display='none';
+        Dom.get("plot").style.display='none';
+        Dom.get("no_details_title").style.display='';
+
     Dom.get("show_details").style.display='';
+            Dom.get("hide_details").style.display='none';
+
     //  alert('ar_sessions.php?tipo=update&keys=store-details&value=0')
     YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=department-details&value=0')
 }
@@ -199,7 +223,7 @@ function change_plot_period(period){
     change_plot(o);
 }
 
-function change_info_period(period,period_title){
+function change_info_period(period){
     var patt=new RegExp("^(year|month|all|week|quarter)$");
     if (patt.test(period)==true && current_store_period!=period){
 	//alert('info_'+current_store_period)
@@ -208,12 +232,39 @@ function change_info_period(period,period_title){
 	Dom.get('info_'+period).style.display='';
 	current_store_period=period;
 
-	Dom.get('info_title').innerHTML=period_title;
+	Dom.get('info_title').innerHTML=info_period_title[period];
 	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=store-period&value='+period);
 
     }
 
 }
+
+function next_info_period(){
+    if(current_store_period=='all')
+        change_info_period('week');
+    else if(current_store_period=='week')    
+        change_info_period('month');
+    else if(current_store_period=='month')    
+        change_info_period('quarter');
+    else if(current_store_period=='quarter')    
+        change_info_period('year');        
+    else if(current_store_period=='year')    
+        change_info_period('all');
+}
+
+function previous_info_period(){
+    if(current_store_period=='all')
+        change_info_period('year');
+    else if(current_store_period=='week')    
+        change_info_period('all');
+    else if(current_store_period=='month')    
+        change_info_period('week');
+    else if(current_store_period=='quarter')    
+        change_info_period('month');        
+    else if(current_store_period=='year')    
+        change_info_period('quarter');
+}
+
 
 
 function change_plot(o){
@@ -312,6 +363,8 @@ function change_plot(o){
  YAHOO.util.Event.addListener(ids, "click",change_period,0);
  ids=['avg_totals','avg_month','avg_week',"avg_month_eff","avg_week_eff"];
  YAHOO.util.Event.addListener(ids, "click",change_avg,0);
+YAHOO.util.Event.addListener("info_next", "click",next_info_period,0);
+YAHOO.util.Event.addListener("info_previous", "click",previous_info_period,0);
 
  //     YAHOO.util.Event.addListener('show_details', "click",show_details,'department');
 
