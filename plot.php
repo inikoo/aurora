@@ -374,7 +374,16 @@ case('department'):
 case('family'):
 case('product'):
 
-  
+   if(isset($_REQUEST['from']))
+    $from=$_REQUEST['from'];
+  else
+    $from=false;
+  if(isset($_REQUEST['to']))
+    $to=$_REQUEST['to'];
+  else
+    $to=false;
+
+
 
   if(isset($_REQUEST['period']))
     $period=$_REQUEST['period'];
@@ -420,9 +429,21 @@ case('product'):
     $plot_name='product';
     $plot_page='product';
   }
-  
+  $item_keys='';
   $item_key_array=array();
-  if(preg_match('/\(.+\)/',$request_keys,$keys)){
+  if($request_keys=='all' and $tipo=='store'){
+   
+    $sql="select `Store Key` from `Store Dimension` limit 10 ";
+    $res=mysql_query($sql);
+    while($row=mysql_fetch_array($res)){
+      $key=$row['Store Key'];
+      $item_keys.=sprintf("%d,",$key);
+      $item_key_array[]=$key;
+      }
+    mysql_free_result($res);
+    
+
+  }elseif(preg_match('/\(.+\)/',$request_keys,$keys)){
     $keys=preg_replace('/\(|\)/','',$keys[0]);
     $keys=preg_split('/\s*,\s*/',$keys);
     $item_keys='(';
@@ -490,13 +511,16 @@ case('product'):
   //  print "$plot_page $plot_name $category";
 
   $title='';
-  $ar_address=sprintf('ar_plot.php?tipo=general&item=%s&category=%s&period=%s&split=yes&item_keys=%s'
+  $ar_address=sprintf('ar_plot.php?tipo=general&item=%s&category=%s&period=%s&split=yes&item_keys=%s&from=%s&to=%s'
 		      ,$tipo
 		      ,$category
 		      ,$period
-		      ,$item_keys);
+		      ,$item_keys
+		      ,$from
+		      ,$to
+		      );
   
-  //print $ar_address;
+  // print $ar_address;
   $fields='"date"';
     foreach($item_key_array as $key){
       $fields.=',"value'.$key.'","tip_value'.$key.'","forecast'.$key.'","tip_forecast'.$key.'","tails'.$key.'","tip_tails'.$key.'"';

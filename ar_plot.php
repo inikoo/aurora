@@ -22,10 +22,19 @@ $tipo=$_REQUEST['item'];
 if($tipo=='product')
   $tipo='product id';
 
+$from=false;
+if(isset($_REQUEST['from']))
+   $from=$_REQUEST['from'];
+
+$to=false;
+if(isset($_REQUEST['to']))
+   $to=$_REQUEST['to'];
+
+
 $category=$_REQUEST['category'];
 $split=(isset($_REQUEST['split']) and preg_match('/yes/i',$_REQUEST['split']) ?true:false);
 $item_keys=$_REQUEST['item_keys'];
-list_item($tipo,$category,$period,$item_keys,$split);
+list_item($tipo,$category,$period,$item_keys,$split,$from,$to);
 break;
 case('invoiced_store_month_sales'):
 list_store_invoices_per_month();
@@ -407,7 +416,7 @@ function list_store_invoices_per_month(){
   echo json_encode($response);
 }
 
-function list_item($tipo,$category,$period,$item_keys,$split=true){
+function list_item($tipo,$category,$period,$item_keys,$split=true,$from=false,$to=false){
   
   $_data=array();
 
@@ -422,7 +431,7 @@ function list_item($tipo,$category,$period,$item_keys,$split=true){
       //      print "$tipo ($key) sales";
       $tm=new TimeSeries(array($period,"$tipo ($key) $category"));
       //print_r($tm);
-      $tmp_data=$tm->plot_data();
+      $tmp_data=$tm->plot_data($from,$to);
       unset($tm);
       foreach($tmp_data as $key=>$values){
 	if(isset($_data[$key])){
@@ -436,7 +445,7 @@ function list_item($tipo,$category,$period,$item_keys,$split=true){
 
 
     $tm=new TimeSeries(array($period,"$tipo $item_keys $category"));
-    $_data=$tm->plot_data();
+    $_data=$tm->plot_data($from,$to);
   }
   $data=array();
   foreach($_data as $__data)

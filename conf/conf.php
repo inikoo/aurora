@@ -175,31 +175,31 @@ $default_state=array(
 
 
                    'reports'=>array(
-                                 'view'=>'sales',
-                                 'sales'=>array(
-                                             'plot'=>'total_sales_month'
-                                         )
+				    'view'=>'sales',
+				    'sales'=>array(
+						   'plot'=>'total_sales_month'
+						   )
                                          ,'stock'=>array(
-                                                      'plot'=>'total_outofstock_month'
-                                                  )
-                                                  ,'geosales'=>array(
-                                                                  'level'=>'region'
-                                                                          ,'region'=>'world'
-                                                                                    ,'map_exclude'=>''
-                                                                                                   ,'table'=>array(
-                                                                                                                'order'=>'country_code',
-                                                                                                                'order_dir'=>'',
-                                                                                                                'sf'=>0,
-                                                                                                                'nr'=>25,
-                                                                                                                'where'=>'where true',
-                                                                                                                'f_field'=>'country',
-                                                                                                                'f_value'=>'',
-                                                                                                                'from'=>'',
-                                                                                                                'to'=>''
-
-                                                                                                            ),
-                                                              )
-
+							 'plot'=>'total_outofstock_month'
+							 )
+				    ,'geosales'=>array(
+						       'level'=>'region'
+						       ,'region'=>'world'
+						       ,'map_exclude'=>''
+						       ,'table'=>array(
+								       'order'=>'country_code',
+								       'order_dir'=>'',
+								       'sf'=>0,
+								       'nr'=>25,
+								       'where'=>'where true',
+								       'f_field'=>'country',
+								       'f_value'=>'',
+								       'from'=>'',
+								       'to'=>''
+								       
+								       ),
+						       )
+				    
                              ),
 
                    'orders'=>array(
@@ -1008,13 +1008,22 @@ $default_state=array(
                                             'order_dir'=>'desc',
                                             'sf'=>0,
                                             'nr'=>25,
-                                            'plot'=>'sales_share_by_store'
-                                        ),
+					    'plot'=>'sales',
+					    'plot_data'=>array('sales'=>array(
+									      'category'=>'sales',
+									      'page'=>'plot.php'
+									      )
+							       ,'growth'=>array(
+										'category'=>'growth',
+										'page'=>'plot.php'
+										)
+							       ),
+					       ),
                                 'pickers'=>array(
-                                              'order'=>'units',
-                                              'order_dir'=>'',
-                                              'sf'=>0,
-                                              'nr'=>10000,
+						 'order'=>'units',
+						 'order_dir'=>'',
+						 'sf'=>0,
+						 'nr'=>10000,
                                               'from'=>'',
                                               'to'=>'',
                                               'where'=>'where true',

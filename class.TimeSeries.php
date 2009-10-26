@@ -569,7 +569,8 @@ Class TimeSeries  {
   }
 
   function forecast_using_monthly_data(){
-    exit("todo");
+    //exit("todo");
+    return;
   }
 
   function R_script(){
@@ -1327,7 +1328,7 @@ Class TimeSeries  {
   }
     
 
-  function  plot_data(){
+  function  plot_data($from=false,$to=false){
 
     $tipo='';
     $suffix='';
@@ -1356,25 +1357,31 @@ Class TimeSeries  {
 
 
 
-    if( $this->freq=='Monthly')
-      return $this->plot_data_per_month($tipo,$suffix);
-    elseif($this->freq=='Yearly')
-      return $this->plot_data_per_year($tipo,$suffix);
+    if( $this->freq=='Monthly'){
+
+      return $this->plot_data_per_month($tipo,$suffix,$from,$to);
+    }elseif($this->freq=='Yearly')
+      return $this->plot_data_per_year($tipo,$suffix,$from,$to);
     elseif($this->freq=='Weekly')
-      return $this->plot_data_per_week($tipo,$suffix);
+      return $this->plot_data_per_week($tipo,$suffix,$from,$to);
     elseif($this->freq=='Quarterly')
-      return $this->plot_data_per_quarter($tipo,$suffix);
+      return $this->plot_data_per_quarter($tipo,$suffix,$from,$to);
    
   }
  
-  function plot_data_per_month($tipo,$suffix){
+  function plot_data_per_month($tipo,$suffix,$from,$to){
   
     $data=array();
    
-    $sql=sprintf("SELECT `Time Series Label`,`Time Series Type`,`Time Series Value` as value,MONTH(`Time Series Date`) as month,`Time Series Count` as count ,UNIX_TIMESTAMP(`Time Series Date`) as date ,substring(`Time Series Date`, 1,7) AS dd from `Time Series Dimension` where  `Time Series Frequency`='Monthly' and  `Time Series Name`=%s and `Time Series Name Key`=%d and `Time Series Name Second Key`=%d order by `Time Series Date`,`Time Series Type` desc"
+    $where_dates=prepare_mysql_dates($from,$to,"`Time Series Date`");
+    //print "-> $from,$to\n";
+    //print_r($where_dates);
+
+    $sql=sprintf("SELECT `Time Series Label`,`Time Series Type`,`Time Series Value` as value,MONTH(`Time Series Date`) as month,`Time Series Count` as count ,UNIX_TIMESTAMP(`Time Series Date`) as date ,substring(`Time Series Date`, 1,7) AS dd from `Time Series Dimension` where  `Time Series Frequency`='Monthly' and  `Time Series Name`=%s and `Time Series Name Key`=%d and `Time Series Name Second Key`=%d %s order by `Time Series Date`,`Time Series Type` desc"
 		 ,prepare_mysql($this->name)
 		 ,$this->name_key
 		 ,$this->name_key2
+		 ,$where_dates['mysql']
 		 );
     // print "$sql<br>";
    
@@ -1434,7 +1441,7 @@ Class TimeSeries  {
 
       }
       if($row['Time Series Type']=='Data'){
-	if(!$data_region){
+	if(!$data_region and isset($first_value)){
 
 	  $data[$first_value[0]]['tails'.$suffix]=(float) $first_value[1];
 	  $data[$first_value[0]]['tip_tails'.$suffix]=$first_value[2];
