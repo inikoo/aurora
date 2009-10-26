@@ -42,8 +42,8 @@ $version='V 1.0';
 $Data_Audit_ETL_Software="$software $version";
 
 $file_name='AWorder2009Germany.xls';
-$csv_file='tmp.csv';
-exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
+$csv_file='de_tmp.csv';
+//exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
 
 $handle_csv = fopen($csv_file, "r");
 $column=0;
@@ -108,10 +108,11 @@ $campaign=array(
 		,'Campaign Deal Terms Type'=>'Order Interval'
 		,'Campaign Deal Terms Description'=>'last order within 1 month'
 		,'Campaign Deal Terms Lock'=>'Yes'
-
+        ,'Store Key'=>$store_key
 		);
 $gold_camp=new Campaign('find create',$campaign);
-
+//print_r($gold_camp);
+//exit;
 
 $data=array(
 	    'Deal Name'=>'[Product Family Code] Goldprämie'
@@ -139,6 +140,7 @@ $campaign=array(
 		,'Campaign Deal Terms Type'=>'Family Quantity Ordered'
 		,'Campaign Deal Terms Description'=>'order [Quantity] or more same family'
 		,'Campaign Deal Terms Lock'=>'No'
+		,'Store Key'=>$store_key
 		);
 $vol_camp=new Campaign('find create',$campaign);
 
@@ -166,6 +168,7 @@ $free_shipping_campaign_data=array(
 				   ,'Campaign Deal Terms Type'=>'Order Items Net Amount AND Shipping Country'
 				   ,'Campaign Deal Terms Description'=>'Orders shipped to {Country Name} and Order Items Net Amount more than {Order Items Net Amount}'
 				   ,'Campaign Deal Terms Lock'=>'No'
+				   ,'Store Key'=>$store_key
 				   );
 $free_shipping_campaign=new Campaign('find create',$free_shipping_campaign_data);
 
@@ -228,6 +231,7 @@ $campaign=array(
 		,'Campaign Deal Terms Type'=>'Product Quantity Ordered'
 		,'Campaign Deal Terms Description'=>'Buy 1'
 		,'Campaign Deal Terms Lock'=>'Yes'
+		,'Store Key'=>$store_key
 		);
 $bogof_camp=new Campaign('find create',$campaign);
 $data=array(
@@ -262,6 +266,7 @@ $campaign=array(
 		,'Campaign Deal Terms Type'=>'Order Total Net Amount AND Order Number'
 		,'Campaign Deal Terms Description'=>'order over £100+tax on the first order '
 		,'Campaign Deal Terms Lock'=>'Yes'
+		,'Store Key'=>$store_key
 		);
 $camp=new Campaign('find create',$campaign);
 
@@ -332,7 +337,7 @@ foreach($__cols as $cols){
   $fam_special_char=_trim( mb_convert_encoding($cols[7], "UTF-8", "ISO-8859-1,UTF-8"));
   $special_char=_trim( mb_convert_encoding($cols[8], "UTF-8", "ISO-8859-1,UTF-8"));
   
-  if(!preg_match('/^DONE$/',$cols[0]))
+  if(!preg_match('/^DONE$/i',$cols[0]))
     $is_product=false;
   $code=_trim($code);
   if($code=='' or !preg_match('/\-/',$code) or preg_match('/total/i',$price)  or  preg_match('/^(pi\-|cxd\-|fw\-04)/i',$code))
@@ -494,6 +499,12 @@ foreach($__cols as $cols){
       $family=new Family($fam_promo_key);
 	 
     }else{
+    
+    if($department_name=='Gegenstände für Sammler')
+        $department_code='Collect';
+        if($department_name=='Ökotaschen')
+        $department_code='EcoBag';
+        
       $dep_data=array(
 		      'Product Department Code'=>$department_code,
 		      'Product Department Name'=>$department_name,
@@ -502,6 +513,7 @@ foreach($__cols as $cols){
       $department=new Department('find',$dep_data,'create');
 
       if($department->error){
+      print_r($dep_data);
 	print_r($department);
 	exit;
       }
@@ -635,7 +647,7 @@ foreach($__cols as $cols){
       
     }
     
-    if(preg_match('/off\s+\d+\s+or\s+more|\s*\d+\s*or more\s*\d+|buy \d+ get \d+ free/i',_trim($cols[6]))){
+    if(preg_match('/oder mehr/i',_trim($cols[6]))){
       
 
       $promotion=$cols[6];
