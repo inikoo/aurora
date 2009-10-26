@@ -231,7 +231,8 @@ class Deal extends DB_Table {
 	  return preg_replace('/[^\d]/','',$match[0]);
 	if (preg_match('/buy \d+/i',$term_description,$match))
 	  return preg_replace('/[^\d]/','',$match[0]);
-	
+	if (preg_match('/\d+ oder mehr/i',$term_description,$match))
+	  return preg_replace('/[^\d]/','',$match[0]);
 	break;
       case('Order Interval'):
 	if (preg_match('/order (within|since|every) \d+ days?/i',$term_description,$match))
@@ -240,6 +241,9 @@ class Deal extends DB_Table {
 	  return preg_replace('/[^\d]/','',$match[0]).' month';
 	if (preg_match('/order (within|since|every) \d+ weeks?/i',$term_description,$match))
 	  return preg_replace('/[^\d]/','',$match[0]).' week';
+	
+	
+
 	break;
       case('Order Number'):
 	if (preg_match('/(first|1st) (order|one)|order (for|the)? (first|1st) time/i',$term_description,$match))

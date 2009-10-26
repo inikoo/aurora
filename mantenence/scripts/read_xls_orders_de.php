@@ -49,8 +49,8 @@ $old_mem=0;
 
 
 
-$outstock_norecord=array('7927'=>true);
-$partners=array('7927'=>true,'10'=>true);
+//$outstock_norecord=array('7927'=>true);
+//$partners=array('7927'=>true,'10'=>true);
 
 //mb_ucwords('st hellen');
 //exit;
@@ -61,7 +61,7 @@ $correct_partner=true;
 $force_update=false;
 
 
-$orders_array_full_path = glob("/mnt/z/Orders/9*.xls");
+$orders_array_full_path = glob("/mnt/z/Orders-germany/*.xls");
 $orders_array_full_path=array_reverse($orders_array_full_path);
 
 
@@ -70,7 +70,7 @@ if(count($orders_array_full_path)==0)
 
 foreach($orders_array_full_path as $key=>$order){
   $tmp=str_replace('.xls','',$order);
-  $tmp=preg_replace('/.*rders\//i','',$tmp);
+  $tmp=preg_replace('/.*rders-germany\//i','',$tmp);
   $orders_array[]=$tmp;
 }
 
@@ -81,7 +81,7 @@ $good_files=array();
 $good_files_number=array();
 
 foreach($orders_array as $order_index=>$order){
-  if(preg_match('/^\d{4,5}$/i',$order)){
+  if(preg_match('/^DE\d{4,5}$/i',$order)){
     $good_files[]=$orders_array_full_path[$order_index];
     $good_files_number[]=$order;
 
@@ -125,11 +125,11 @@ foreach($good_files_number as $order_index=>$order){
   $just_file=preg_replace('/.*\//i','',$filename);
   $directory=preg_replace("/$just_file$/",'',$filename);
   
-  $sql=sprintf("select * from orders_data.orders where  `filename`=%s",prepare_mysql($filename));
+  $sql=sprintf("select * from de_orders_data.orders where  `filename`=%s",prepare_mysql($filename));
   $result=mysql_query($sql);
   // print "$sql\n";
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-    $sql=sprintf("update orders_data.orders set last_checked=NOW(),date=%s,timestamp=%d where id=%d",
+    $sql=sprintf("update de_orders_data.orders set last_checked=NOW(),date=%s,timestamp=%d where id=%d",
 		 prepare_mysql($filedatetime)
 		 ,$filedate
 		 ,$row['id']);
@@ -151,7 +151,7 @@ foreach($good_files_number as $order_index=>$order){
 	copy($csv_file,$row['filename_cvs'] );
 	$handle_csv = fopen($csv_file, "r");
 	unlink($csv_file);
-	$sql=sprintf("update orders_data.orders set last_read=NOW() where id=%d",$row['id']);
+	$sql=sprintf("update de_orders_data.orders set last_read=NOW() where id=%d",$row['id']);
 	mysql_query($sql);
 	$updated=true;
 	$id =$row['id'];
@@ -170,7 +170,7 @@ foreach($good_files_number as $order_index=>$order){
     $handle_csv = fopen($csv_file, "r");
     unlink($tmp_file);
     print "Creating $filename\n";
-    $sql=sprintf("insert into orders_data.orders (directory,filename,checksum,date,timestamp,last_checked,last_read) values (%s,%s,%s,%s,%s,NOW(),NOW())"
+    $sql=sprintf("insert into de_orders_data.orders (directory,filename,checksum,date,timestamp,last_checked,last_read) values (%s,%s,%s,%s,%s,NOW(),NOW())"
 		 ,prepare_mysql($directory)
 		 ,prepare_mysql($filename)
 		 ,prepare_mysql($checksum)
@@ -181,7 +181,7 @@ foreach($good_files_number as $order_index=>$order){
     $id =mysql_insert_id();
     
 
-     $sql=sprintf("insert into orders_data.data (id) values (%d)"
+     $sql=sprintf("insert into de_orders_data.data (id) values (%d)"
 		  ,$id
 		 );
     mysql_query($sql);
@@ -193,7 +193,7 @@ foreach($good_files_number as $order_index=>$order){
     $handle_csv = fopen($csv_file, "r");
     unlink($csv_file);
     
-    $sql=sprintf("update orders_data.orders set filename_cvs=%s where id=%d",prepare_mysql($cvs_repo.$cvs_filename),$id);
+    $sql=sprintf("update de_orders_data.orders set filename_cvs=%s where id=%d",prepare_mysql($cvs_repo.$cvs_filename),$id);
     mysql_query($sql);
     $updated=true;
     
@@ -223,12 +223,12 @@ foreach($good_files_number as $order_index=>$order){
       $checksum_header= md5($_header);
       $checksum_products= md5($_products);
       // print "Updating  $filename\n";
-      $sql=sprintf("update orders_data.order_data set checksum_header=%s,checksum_prod=%s where id=%d"
+      $sql=sprintf("update de_orders_data.order_data set checksum_header=%s,checksum_prod=%s where id=%d"
 		   ,prepare_mysql($checksum_header)
 		   ,prepare_mysql($checksum_products)
 		   ,$id);
       mysql_query($sql);
-      $sql=sprintf("update orders_data.data set header=%s ,products=%s  where id=%d"
+      $sql=sprintf("update de_orders_data.data set header=%s ,products=%s  where id=%d"
 		   
 		   ,prepare_mysql(mb_convert_encoding($_header, "UTF-8", "ISO-8859-1,UTF-8"))
 		   ,prepare_mysql(mb_convert_encoding($_products, "UTF-8", "ISO-8859-1,UTF-8"))

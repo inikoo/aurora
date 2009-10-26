@@ -182,8 +182,6 @@ $dept_data=array(
 		   );
 $dept_promo=new Department('find',$dept_data,'create');
 
-
-
 $dept_promo_key=$dept_promo->id;
 
 $fam_data=array(
@@ -610,7 +608,7 @@ foreach($__cols as $cols){
       $units=1;
 
     $description=_trim( mb_convert_encoding($cols[6], "UTF-8", "ISO-8859-1,UTF-8"));
-
+    
 
  //    if(preg_match('/wsl-535/i',$code)){
 //       print_r($cols);
@@ -1567,7 +1565,7 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 
        
     
- }
+       }
   //print_r($deals);
 
     

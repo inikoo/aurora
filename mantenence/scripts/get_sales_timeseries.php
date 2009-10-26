@@ -24,7 +24,7 @@ $_SESSION['lang']=1;
 
 
 
-$forecast=false;
+$forecast=true;
 
 //$tm=new TimeSeries(array('w','product id (7279) sales'));
 // $tm->get_values();$tm->save_values();

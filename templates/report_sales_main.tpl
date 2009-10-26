@@ -13,7 +13,7 @@
 
 
 
-<div class="cal_menu" >
+<div class="cal_menu" style="width:150px" >
 <span>{$tipo_title}</span> <span id="period">{$period}</span>
 {if $tipo=='y'}
 <table  class="calendar_year">
@@ -74,23 +74,36 @@
 {/foreach}
 </table>
 
- <div  id="plot_div" class="product_plot"  style="width:810px;xheight:325px;">
+<div id="plot" class="top_bar" style="position:relative;left:-20px;clear:both;padding:0;margin:0;">
+<div display="none" id="plot_info" keys="{$store->id}" ></div>
+      <ul id="plot_chooser" class="tabs" style="margin:0 20px;padding:0 20px "  >
+	<li>
+	  <span class="item {if $plot_tipo=='store'}selected{/if}" onClick="change_plot(this)" id="plot_store" tipo="store" category="{$plot_data.store.category}" period="{$plot_data.store.period}" >
+	    <span>Totals</span>
+	  </span>
+	</li>
+	<li>
+	  <span class="item {if $plot_tipo=='top_departments'}selected{/if}"  id="plot_top_departments" onClick="change_plot(this)" tipo="top_departments" category="{$plot_data.top_departments.category}" period="{$plot_data.top_departments.period}" name=""  >
+	    <span>{t}Growth{/t}</span>
+	  </span>
+	</li>
+
+      </ul> 
+      
+      <ul id="plot_options" class="tabs" style="{if $plot_tipo=='pie'}display:none{/if};position:relative;top:.6em;float:right;margin:0 20px;padding:0 20px;font-size:90% "  >
+	<li><span class="item"> <span id="plot_category"  category="{$plot_category}" style="xborder:1px solid black;display:inline-block; vertical-align:middle">{$plot_formated_category}</span></span></li>
+
+      </ul> 
+
+      <div style="clear:both;margin:0 20px;padding:0 20px ;border-bottom:1px solid #999">
+      </div>
+      
+      <div  id="plot_div" class="product_plot"  style="width:865px;xheight:325px;">
+	<iframe id="the_plot" src ="{$plot_page}?{$plot_args}" frameborder=0 height="325" scrolling="no" width="{if $plot_tipo=='pie'}500px{else}100%{/if}"></iframe>
+      </div>
       
 
-<iframe id="the_plot" src ="plot.php?tipo={$plot_tipo}" frameborder=0 height="310" scrolling="no" width="100%"></iframe>
-      <span style="position:relative;left:70px;">{$plot_title[$plot_tipo]}</span>
-      <div id="plot_options_sales_bis" style="margin-left:30px;{if $plot_tipo!='timeplot_sales'}display:none{/if}">
-	<table>
-	  <tr>
-	    <td><span  id="net_sales_month_bis"  class="but">Net Sales</span></td>
-	    <td><span  id="net_diff1y_sales_month_bis"  class="but">Growth</span></td>
-	    
-	    <td style="margin:10px 0"><span  class="but selected" >Time Series</span></td>
-	  </tr>
-	</table>
-      </div>
-      <div style="clear:both"></div>
-    </div>
+   
     
   </div>
 

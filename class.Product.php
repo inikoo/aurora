@@ -1197,6 +1197,7 @@ public $new_value=false;
 
       $sql=sprintf("select `Category Key` from `Category Dimension` where `Category Default`='Yes' and `Category Subject`='Product' ");
       $res_cat=mysql_query($sql);
+      print "$sql\n";
       while($row=mysql_fetch_array($res_cat)){
 	$sql=sprintf("insert into `Category Bridge` values (%d,'Product',%d) ",$row['Category Key'],$this->pid  );
 	mysql_query($sql);
@@ -1555,7 +1556,7 @@ public $new_value=false;
       if ($mysql_where=='')
 	$mysql_where=0;
       $supplied_by='';
-      $sql=sprintf("select   `Supplier Product Code` ,  SD.`Supplier Key`,`Supplier Code` from `Supplier Product Part List` SPPL   left join `Supplier Dimension` SD on (SD.`Supplier Key`=SPPL.`Supplier Key`)   where `Part SKU` in (%s) order by `Supplier Key`;",$mysql_where);
+      $sql=sprintf("select  `Supplier Product Part Key`, `Supplier Product Code` ,  SD.`Supplier Key`,`Supplier Code` from `Supplier Product Part List` SPPL   left join `Supplier Dimension` SD on (SD.`Supplier Key`=SPPL.`Supplier Key`)   where `Part SKU` in (%s) order by `Supplier Key`;",$mysql_where);
       $result=mysql_query($sql);
 
       $supplier=array();
@@ -1572,7 +1573,7 @@ public $new_value=false;
 				,$row['Supplier Product Code']);
 	  $current_supplier=$_current_supplier;
 	} else {
-	  $supplied_by.=sprintf(', <a href="supplier_product.php?id=%d">%s</a>',$row['Supplier Product Key'],$row['Supplier Product Code']);
+	  $supplied_by.=sprintf(', <a href="supplier_product.php?code=%s">%s</a>',$row['Supplier Product Code'],$row['Supplier Product Code']);
 
 	}
 
