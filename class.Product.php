@@ -1197,7 +1197,7 @@ public $new_value=false;
 
       $sql=sprintf("select `Category Key` from `Category Dimension` where `Category Default`='Yes' and `Category Subject`='Product' ");
       $res_cat=mysql_query($sql);
-      print "$sql\n";
+      //print "$sql\n";
       while($row=mysql_fetch_array($res_cat)){
 	$sql=sprintf("insert into `Category Bridge` values (%d,'Product',%d) ",$row['Category Key'],$this->pid  );
 	mysql_query($sql);
