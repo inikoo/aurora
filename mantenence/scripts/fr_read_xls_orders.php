@@ -208,6 +208,8 @@ foreach($good_files_number as $order_index=>$order){
      
 
       list($header,$products )=read_records($handle_csv,$prod_map,$number_header_rows);
+      print_r($products);
+      exit;
       $_header=serialize($header);
       $_products=serialize($products);
       $checksum_header= md5($_header);

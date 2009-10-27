@@ -298,6 +298,8 @@ $this->data['Invoice Currency Exchange']=$exchange;
 */
   protected function create($invoice_data,$transacions_data,$order_key,$options=''){
   
+   
+
     $order=new Order($order_key);
 
     global $myconf;
@@ -418,7 +420,7 @@ $this->data['Invoice Currency Exchange']=$exchange;
     $this->data ['Invoice XHTML Orders'] ='';
     $this->data ['Invoice XHTML Delivery Notes'] = '';
 
-    
+    //print_r($this->data);
     $this->create_header ();
     
     // link to order
@@ -467,7 +469,7 @@ $this->data['Invoice Currency Exchange']=$exchange;
       
       $amount += $data ['gross amount'];
       $discounts += $data ['discount amount'];
-      //  print "$sql\n";
+      // print "$sql\n";
       if (! mysql_query ( $sql ))
 	exit ( "$sql\n can not update order trwansiocion 11 facrt after invoice" );
     }

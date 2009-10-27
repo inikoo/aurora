@@ -9025,7 +9025,8 @@ function read_header($raw_header_data,$map_act,$y_map,$map,$convert_encoding=tru
 
 function read_records($handle_csv,$y_map,$number_header_rows){
 
-
+  // print_r($y_map);
+  //exit;
 
   $first_order_bonus=false;
     
@@ -9068,7 +9069,7 @@ function read_records($handle_csv,$y_map,$number_header_rows){
       if(
 	 (
 	    
-
+	 
 
 	  $cols[$y_map['code']]!=''
 	  and (is_numeric($cols[$y_map['credit']]) or $cols[$y_map['discount']]==1   )

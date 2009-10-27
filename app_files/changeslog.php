@@ -71,6 +71,10 @@ ALTER TABLE `Store Dimension` ADD `Store 1 Week Acc Customers` MEDIUMINT UNSIGNE
 ALTER TABLE `Store Dimension` ADD `Store 1 Week Acc Invoices` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Store 1 Week Acc Days Available` ;
 ALTER TABLE `Store Dimension` ADD `Store 1 Week Acc Pending Orders` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Store 1 Week Acc Customers` ;
 
+ALTER TABLE `Order Dimension` ADD `Order Currency` VARCHAR( 3 ) NOT NULL DEFAULT 'GBP',
+ADD `Order Currency Exchange` FLOAT NOT NULL DEFAULT '1'
+
+
  */
 
 

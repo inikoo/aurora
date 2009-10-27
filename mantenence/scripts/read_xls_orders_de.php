@@ -14,9 +14,9 @@ include_once('../../class.Family.php');
 include_once('../../class.Product.php');
 include_once('../../class.Supplier.php');
 include_once('../../class.Order.php');
-include_once('local_map.php');
+include_once('de_local_map.php');
 
-include_once('map_order_functions.php');
+include_once('de_map_order_functions.php');
 
 
 //require_once 'MDB2.php';            // PEAR Database Abstraction Layer
@@ -203,22 +203,17 @@ foreach($good_files_number as $order_index=>$order){
   if($updated){
 
     $map_act=$_map_act;
-      $map=$_map;
-      $y_map=$_y_map;
-      if($order<18803){// Change map if the orders are old
-	$y_map=$_y_map_old;
-	foreach($_map_old as $key=>$value)
-	  $map[$key]=$value;
-      }
-      $prod_map=$y_map;
-      if($order==53378){
-	$prod_map['no_price_bonus']=true;
-	$prod_map['no_reorder']=true;
-	$prod_map['bonus']=11;
-      }
+    $map=$_map;
+    $y_map=$_y_map;
+    
+    $prod_map=$y_map;
+
 
       list($header,$products )=read_records($handle_csv,$prod_map,$number_header_rows);
       $_header=serialize($header);
+
+   
+
       $_products=serialize($products);
       $checksum_header= md5($_header);
       $checksum_products= md5($_products);

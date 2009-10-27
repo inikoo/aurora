@@ -52,7 +52,7 @@ $_y_map['bonus']=11+2;
 $_y_map['credit']=14+2;
 $_y_map['rrp']=16+2;
 $_y_map['discount']=18+2;
-$_y_map['units']=5+2;
+$_y_map['units']=5;
 $_y_map['supplier_code']=21+2;
 $_y_map['supplier_product_code']=20+2;
 $_y_map['supplier_product_cost']=25+2;
@@ -133,12 +133,12 @@ function get_tipo_order($ltipo,$header){
     $tipo=1;
   }elseif(preg_match('/FACTURE. sample order|facture|facutura|FACTURE|RECHNUNG/i',$ltipo)){
     $tipo=2;
-  }elseif(preg_match('/^ANNULER/i',$ltipo)){
+  }elseif(preg_match('/STORNIERT/i',$ltipo)){
     $tipo=3;
     $header['notes2']=preg_replace('/^ANNULER?$/i','',$header['notes2']);
 
 
-  }elseif(preg_match('/^ECHANTILLONs?/i',$ltipo)){
+  }elseif(preg_match('/^ECHANTILLONs?||GRATISMUSTERSENDUNG.GESCHEN/i',$ltipo)){
     $header['notes']=preg_replace('/^ECHANTILLIONi?$/i','',$header['notes']);
     $header['notes2']=preg_replace('/^ECHANTILLIONi?$/i','',$header['notes2']);
     $tipo=4;

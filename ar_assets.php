@@ -6862,8 +6862,8 @@ function list_stores() {
                      'optimal'=>number($row['Store Optimal Availability Products']),
                      'low'=>number($row['Store Low Availability Products']),
                      'critical'=>number($row['Store Critical Availability Products']),
-                     'sales'=>money($tsall),
-                     'profit'=>money($tprofit)
+                     'sales'=>money($tsall,$row['Store Currency Code']),
+                     'profit'=>money($tprofit,$row['Store Currency Code'])
 
                  );
     }

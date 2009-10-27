@@ -48,7 +48,7 @@ $Data_Audit_ETL_Software="$software $version";
 
 $file_name='/data/plaza/AWorder2002.xls';
 $csv_file='tmp.csv';
-//exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
+exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
 
 $handle_csv = fopen($csv_file, "r");
 $column=0;
@@ -527,7 +527,7 @@ foreach($__cols as $cols){
       $deals[]=array(
 		     'Deal Name'=>'Family Volume Discount'
 		     ,'Deal Trigger'=>'Family'
-		     ,'Deal Description'=>$allowance.' if order '.$terms.' same family'
+		    
 		     ,'Deal Terms Type'=>'Family Quantity Ordered'
 		     ,'Deal Terms Description'=>'order '.$terms
 		     ,'Deal Allowance Description'=>$allowance
@@ -620,7 +620,7 @@ foreach($__cols as $cols){
     $supplier_code=_trim($cols[21]);
 
     $w=$cols[28];
-
+$price=$cols[7];
 
 
     if($code=='EO-ST' or $code=='MOL-ST' or  $code=='JBB-st' or $code=='LWHEAT-ST' or  $code=='JBB-St' 

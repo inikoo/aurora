@@ -44,7 +44,7 @@ $end_date='2012-01-04';
 
 $random=md5(mt_rand());
 $tmp_file="currency_$random.txt";
-$days=3;
+$days=100;
 
 //print "./get_currency_exchange.py   ".date("Ymd",strtotime("today -$days day"))." ".date("Ymd")." GBPEUR=X > $tmp_file\n";exit;
 exec("./get_currency_exchange.py   ".date("Ymd",strtotime("today -$days day"))." ".date("Ymd")." GBPEUR=X > $tmp_file");
@@ -63,8 +63,8 @@ while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
     $date=date("Y-m-d",strtotime($data[1]));
     $exchange=$data[2];
 
-    $sql=sprintf("insert into `History Currency Exchange Dimension` values (%s,%s,%f)  ",prepare_mysql($date) ,prepare_mysql($pair),$exchange);
-    // print "$sql\n";
+    $sql=sprintf("insert into kbase.`History Currency Exchange Dimension` values (%s,%s,%f)  ",prepare_mysql($date) ,prepare_mysql($pair),$exchange);
+    print "$sql\n";
     mysql_query($sql);
 }
 fclose($handle);
