@@ -612,18 +612,18 @@ $code=_trim($transaction['code']);
       
             $supplier_code=_trim($transaction['supplier_code']);
             if ($supplier_code=='' or $supplier_code=='0' or  preg_match('/^costa$/i',$supplier_code))
-                $supplier_code='Unknown';
+	      $supplier_code='Unknown';
             $supplier=new Supplier('code',$supplier_code);
             if (!$supplier->id) {
-                $the_supplier_data=array(
+	      $the_supplier_data=array(
                                        'Supplier Name'=>$supplier_code
-                                                       ,'Supplier Code'=>$supplier_code
-                                   );
-
-                if ( $supplier_code=='Unknown'  ) {
-                    $the_supplier_data=array(
-                                           'Supplier Name'=>'Unknown Supplier'
-                                                           ,'Supplier Code'=>$supplier_code
+				       ,'Supplier Code'=>$supplier_code
+				       );
+	      
+	      if ( $supplier_code=='Unknown'  ) {
+		$the_supplier_data=array(
+					 'Supplier Name'=>'Unknown Supplier'
+					 ,'Supplier Code'=>$supplier_code
                                        );
                 }
 

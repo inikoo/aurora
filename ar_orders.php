@@ -903,8 +903,9 @@ if(isset( $_REQUEST['where']))
 else if($order=='customer')
      $order='`Order Customer Name`';
 
-  $sql="select `Order Key`,`Order Public ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Date`,`Order Total Amount` ,`Order Current XHTML State` from `Order Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+  $sql="select `Order Currency Exchange`,`Order Currency`,`Order Key`,`Order Public ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Date`,`Order Total Amount` ,`Order Current XHTML State` from `Order Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
   //  print $sql;
+  global $myconf;
 
    $data=array();
 
@@ -917,7 +918,7 @@ else if($order=='customer')
 		   'customer'=>$customer,
 		   'date'=>strftime("%e %b %y %H:%M", strtotime($row['Order Date'])),
 		   'last_date'=>strftime("%e %b %y %H:%M", strtotime($row['Order Last Updated Date'])),
-		   'total_amount'=>money($row['Order Total Amount']),
+		   'total_amount'=>money($row['Order Total Amount'],$row['Order Currency']),
 		   'state'=>$row['Order Current XHTML State']
 		   );
    }

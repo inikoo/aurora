@@ -222,7 +222,7 @@ public $new_value=false;
     $sql=sprintf("select `Product Code` from `Product Same Code Dimension` where `Product Code`=%s  "
 		 ,prepare_mysql($data['product code'])
 		 );
-
+    //print "$sql\n";
     $result=mysql_query($sql);
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
       $this->found_in_code=true;
@@ -232,7 +232,7 @@ public $new_value=false;
 		   ,prepare_mysql($data['product code'])
 		   ,$data['product store key']
 		   );
-
+      //print "$sql\n";
       $result4=mysql_query($sql);
       if ($row4=mysql_fetch_array($result4)) {
 	$this->found_in_store=true;
@@ -245,7 +245,7 @@ public $new_value=false;
 		     ,prepare_mysql($data['product unit type'])
 		     ,$data['product store key']
 		     );
-	// print "$sql\n";
+	//print "$sql\n";
 	$result2=mysql_query($sql);
 	if ($row2=mysql_fetch_array($result2)) {
 	  $this->found_in_id=true;
@@ -256,7 +256,7 @@ public $new_value=false;
 		       ,$data['product price']
 		       ,prepare_mysql($data['product name'])
 		       );
-	  // print "$sql\n";
+	  //print "$sql\n";
 	  $result3=mysql_query($sql);
 	  if ($row3=mysql_fetch_array($result3)) {
 	    $this->found_in_key=true;
@@ -271,7 +271,7 @@ public $new_value=false;
 
     }
 
-    // print "Found in key ".$this->found_in_key."\n";
+    //  print "Found in key ".$this->found_in_key."\n";
     // print "Found in id ".$this->found_in_id."\n";
     // print "Found in store ".$this->found_in_store."\n";
 

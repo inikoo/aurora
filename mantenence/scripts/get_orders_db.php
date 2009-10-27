@@ -133,6 +133,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       }
     }
     mysql_free_result($result_test);
+
     $header=mb_unserialize($row['header']);
     $products=mb_unserialize($row['products']);
     $filename_number=str_replace('.xls','',str_replace($row2['directory'],'',$row2['filename']));
@@ -847,148 +848,145 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
    
       
       $product=new Product('find',$product_data,'create');
-      
-     
-
       if (!$product->id) {
 	print_r($product_data);
 	print "Error inserting a product\n";
 	exit;
       }
      
-          $supplier_code=_trim($transaction['supplier_code']);
-            if ($supplier_code=='' or $supplier_code=='0' or  preg_match('/^costa$/i',$supplier_code))
-                $supplier_code='Unknown';
-            $supplier=new Supplier('code',$supplier_code);
-            if (!$supplier->id) {
-                $the_supplier_data=array(
-                                       'Supplier Name'=>$supplier_code
-                                                       ,'Supplier Code'=>$supplier_code
-                                   );
-
-                if ( $supplier_code=='Unknown'  ) {
-                    $the_supplier_data=array(
-                                           'Supplier Name'=>'Unknown Supplier'
-                                                           ,'Supplier Code'=>$supplier_code
+      $supplier_code=_trim($transaction['supplier_code']);
+      if ($supplier_code=='' or $supplier_code=='0' or  preg_match('/^costa$/i',$supplier_code))
+	$supplier_code='Unknown';
+      $supplier=new Supplier('code',$supplier_code);
+      if (!$supplier->id) {
+	$the_supplier_data=array(
+				 'Supplier Name'=>$supplier_code
+				 ,'Supplier Code'=>$supplier_code
+				 );
+	
+	if ( $supplier_code=='Unknown'  ) {
+	  $the_supplier_data=array(
+				   'Supplier Name'=>'Unknown Supplier'
+				   ,'Supplier Code'=>$supplier_code
                                        );
-                }
+	}
+	
+	$supplier=new Supplier('new',$the_supplier_data);
+      }
 
-                $supplier=new Supplier('new',$the_supplier_data);
-            }
 
-
-            if ($product->new_id ) {
+      if ($product->new_id ) {
                 //creamos una parte nueva
-                $part_data=array(
-                               'Part Most Recent'=>'Yes',
-                               'Part XHTML Currently Supplied By'=>sprintf('<a href="supplier.php?id=%d">%s</a>',$supplier->id,$supplier->get('Supplier Code')),
-                               'Part XHTML Currently Used In'=>sprintf('<a href="product.php?id=%d">%s</a>',$product->id,$product->get('Product Code')),
-                               'Part XHTML Description'=>preg_replace('/\(.*\)\s*$/i','',$product->get('Product XHTML Short Description')),
-                               'part valid from'=>$date_order,
-                               'part valid to'=>$date2,
+	$part_data=array(
+			 'Part Most Recent'=>'Yes',
+			 'Part XHTML Currently Supplied By'=>sprintf('<a href="supplier.php?id=%d">%s</a>',$supplier->id,$supplier->get('Supplier Code')),
+			 'Part XHTML Currently Used In'=>sprintf('<a href="product.php?id=%d">%s</a>',$product->id,$product->get('Product Code')),
+			 'Part XHTML Description'=>preg_replace('/\(.*\)\s*$/i','',$product->get('Product XHTML Short Description')),
+			 'part valid from'=>$date_order,
+			 'part valid to'=>$date2,
                                'Part Gross Weight'=>$w
-                           );
-                $part=new Part('new',$part_data);
-                $parts_per_product=1;
-                $part_list=array();
-                $part_list[]=array(
-                                 'Product ID'=>$product->pid,
-                                 'Part SKU'=>$part->get('Part SKU'),
-                                 'Product Part Id'=>1,
-                                 'requiered'=>'Yes',
-                                 'Parts Per Product'=>$parts_per_product,
-                                 'Product Part Type'=>'Simple Pick'
-                             );
-                $product->new_part_list('',$part_list);
-                
-                $used_parts_sku=array($part->sku => array('parts_per_product'=>$parts_per_product,'unit_cost'=>$supplier_product_cost*$transaction['units']));
-
-            } else {
-
-                $sql=sprintf("select `Part SKU` from `Product Part List` where  `Product ID`=%d ",$product->pid);
-                $res_x=mysql_query($sql);
-                if ($row_x=mysql_fetch_array($res_x)) {
-                    $part_sku=$row_x['Part SKU'];
-                } else {
+			 );
+	$part=new Part('new',$part_data);
+	$parts_per_product=1;
+	$part_list=array();
+	$part_list[]=array(
+			   'Product ID'=>$product->pid,
+			   'Part SKU'=>$part->get('Part SKU'),
+			   'Product Part Id'=>1,
+			   'requiered'=>'Yes',
+			   'Parts Per Product'=>$parts_per_product,
+			   'Product Part Type'=>'Simple Pick'
+			   );
+	$product->new_part_list('',$part_list);
+	
+	$used_parts_sku=array($part->sku => array('parts_per_product'=>$parts_per_product,'unit_cost'=>$supplier_product_cost*$transaction['units']));
+	
+      } else {
+	
+	$sql=sprintf("select `Part SKU` from `Product Part List` where  `Product ID`=%d ",$product->pid);
+	$res_x=mysql_query($sql);
+	if ($row_x=mysql_fetch_array($res_x)) {
+	  $part_sku=$row_x['Part SKU'];
+	} else {
                     print_r($product);
                     exit("error: $sql");
-                }
-                $used_parts_sku=$part_sku;
-                $part=new Part('sku',$part_sku);
-                $part->update_valid_dates($date_order);
-                $part->update_valid_dates($date2);
-
-
-                $sql=sprintf("update `Product Part List` set `Product Part Valid From`=%s  where `Product Part Valid From`>%s and `Product ID`=%d and `Part SKU`=%d and  `Product Part Most Recent`='Yes'"
-                             ,prepare_mysql($date_order)
-                             ,prepare_mysql($date_order)
+	}
+	$used_parts_sku=$part_sku;
+	$part=new Part('sku',$part_sku);
+	$part->update_valid_dates($date_order);
+	$part->update_valid_dates($date2);
+	
+	
+	$sql=sprintf("update `Product Part List` set `Product Part Valid From`=%s  where `Product Part Valid From`>%s and `Product ID`=%d and `Part SKU`=%d and  `Product Part Most Recent`='Yes'"
+		     ,prepare_mysql($date_order)
+		     ,prepare_mysql($date_order)
+		     ,$product->pid
+		     ,$part->sku
+		     );
+	mysql_query($sql);
+	$sql=sprintf("update `Product Part List` set `Product Part Valid To`=%s   where `Product Part Valid To`<%s and `Product ID`=%d and `Part SKU`=%d and  `Product Part Most Recent`='Yes'"
+		     ,prepare_mysql($date2)
+		     ,prepare_mysql($date2)
                              ,$product->pid
-                             ,$part->sku
-                            );
-                mysql_query($sql);
-                $sql=sprintf("update `Product Part List` set `Product Part Valid To`=%s   where `Product Part Valid To`<%s and `Product ID`=%d and `Part SKU`=%d and  `Product Part Most Recent`='Yes'"
-                             ,prepare_mysql($date2)
-                             ,prepare_mysql($date2)
-                             ,$product->pid
-                             ,$part->sku
-                            );
-                mysql_query($sql);
-                $parts_per_product=1;
+		     ,$part->sku
+		     );
+	mysql_query($sql);
+	$parts_per_product=1;
                 $used_parts_sku=array($part->sku=>array('parts_per_product'=>$parts_per_product,'unit_cost'=>$supplier_product_cost*$transaction['units']));
-                
-            }
+		
+      }
+      
 
-
-
-            //creamos una supplier parrt nueva
-            $scode=$sup_prod_code;
-            $scode=_trim($scode);
-            $scode=preg_replace('/^\"\s*/','',$scode);
-            $scode=preg_replace('/\s*\"$/','',$scode);
-            if (preg_match('/\d+ or more|0.10000007|8.0600048828125|0.050000038|0.150000076|0.8000006103|1.100000610|1.16666666|1.650001220|1.80000122070/i',$scode))
-                $scode='';
-            if (preg_match('/^(\?|new|\d|0.25|0.5|0.8|0.8000006103|01 Glass Jewellery Box|1|0.1|0.05|1.5625|10|\d{1,2}\s?\+\s?\d{1,2}\%)$/i',$scode))
-                $scode='';
-            if ($scode=='same')
-                $scode=$code;
-            if ($scode=='' or $scode=='0')
-                $scode='?'.$code;
-                
+      
+      //creamos una supplier parrt nueva
+      $scode=$sup_prod_code;
+      $scode=_trim($scode);
+      $scode=preg_replace('/^\"\s*/','',$scode);
+      $scode=preg_replace('/\s*\"$/','',$scode);
+      if (preg_match('/\d+ or more|0.10000007|8.0600048828125|0.050000038|0.150000076|0.8000006103|1.100000610|1.16666666|1.650001220|1.80000122070/i',$scode))
+	$scode='';
+      if (preg_match('/^(\?|new|\d|0.25|0.5|0.8|0.8000006103|01 Glass Jewellery Box|1|0.1|0.05|1.5625|10|\d{1,2}\s?\+\s?\d{1,2}\%)$/i',$scode))
+	$scode='';
+      if ($scode=='same')
+	$scode=$code;
+      if ($scode=='' or $scode=='0')
+	$scode='?'.$code;
+      
 	    // $scode= preg_replace('/\?/i','_unk',$scode);
-
-            $sp_data=array(
-                         'Supplier Key'=>$supplier->id,
-                         'Supplier Product Code'=>$scode,
-                         'Supplier Product Cost'=>sprintf("%.4f",$supplier_product_cost),
-                         'Supplier Product Name'=>$description,
-                         'Supplier Product Description'=>$description
-                         ,'Supplier Product Valid From'=>$date_order
-		                 ,'Supplier Product Valid To'=>$date2
+      
+      $sp_data=array(
+		     'Supplier Key'=>$supplier->id,
+		     'Supplier Product Code'=>$scode,
+		     'Supplier Product Cost'=>sprintf("%.4f",$supplier_product_cost),
+		     'Supplier Product Name'=>$description,
+		     'Supplier Product Description'=>$description
+		     ,'Supplier Product Valid From'=>$date_order
+		     ,'Supplier Product Valid To'=>$date2
                      );
 	    // print "-----$scode <-------------\n";
 	    //print_r($sp_data);
-            $supplier_product=new SupplierProduct('find',$sp_data,'create');
-         
-          
-           if($supplier_product->new or $part->new){
-	            $rules=array();
-	            $rules[]=array('Part Sku'=>$part->data['Part SKU'],
+      $supplier_product=new SupplierProduct('find',$sp_data,'create');
+      
+      
+      if($supplier_product->new or $part->new){
+	$rules=array();
+	$rules[]=array('Part Sku'=>$part->data['Part SKU'],
 		       'Supplier Product Units Per Part'=>$transaction['units']
 		       ,'supplier product part most recent'=>'Yes'
 		       ,'supplier product part valid from'=>$date_order
 		       ,'supplier product part valid to'=>$date2
 		       ,'factor supplier product'=>1
 		       );
-    	       $supplier_product->new_part_list('',$rules);
-            }else{
-              //Note assuming only one sppl 
+	$supplier_product->new_part_list('',$rules);
+      }else{
+	//Note assuming only one sppl 
                 $sql=sprintf("update `Supplier Product Part List`  set  `Supplier Product Part Valid From`=%s where `Supplier Product Part Valid From`>%s and `Supplier Product Code`=%s and `Supplier Key`=%d and `Part SKU`=%d and  `Supplier Product Part Most Recent`='Yes'"
                              ,prepare_mysql($date_order)
                              ,prepare_mysql($date_order)
                              ,prepare_mysql($supplier_product->code)
                              ,$supplier_product->supplier_key
                              ,$part->sku
-                            );
+			     );
                 mysql_query($sql);
                 $sql=sprintf("update  `Supplier Product Part List` set `Supplier Product Part Valid To`=%s where `Supplier Product Part Valid To`<%s and `Supplier Product Code`=%s  and `Supplier Key`=%d and `Part SKU`=%d and  `Supplier Product Part Most Recent`='Yes'"
                              ,prepare_mysql($date2)
@@ -996,10 +994,10 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
                              ,prepare_mysql($supplier_product->code)
                              ,$supplier_product->supplier_key
                              ,$part->sku
-                            );
+			     );
                 mysql_query($sql);
             
-            }
+      }
       
       if($transaction['order']!=0){
 	$products_data[]=array(

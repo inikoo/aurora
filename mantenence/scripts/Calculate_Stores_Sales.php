@@ -25,7 +25,7 @@ mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';           
 
-
+global $myconf;
 $sql="select * from `Store Dimension`";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
@@ -33,6 +33,12 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
   $store=new Store($row['Store Key']);
   $store->load('sales');
+  if($myconf['currency_code']!=$store->data['Store Currency Code']){
+    $store->update_sales_default_currency();
+
+  }
+
+
   $store->load('products_info');
   print $store->id."\r";
  }
