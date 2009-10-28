@@ -1,4 +1,6 @@
 <?php
+date_default_timezone_set('Europe/London');
+
 set_include_path(get_include_path() . PATH_SEPARATOR . $path);
 
 $path_to_liveuser_dir = '/usr/share/php/'.PATH_SEPARATOR;
@@ -64,7 +66,7 @@ $orders_array_full_path=array_reverse($orders_array_full_path);
 
 
 if(count($orders_array_full_path)==0)
-  exit("no files");
+  exit;
 
 foreach($orders_array_full_path as $key=>$order){
   $tmp=str_replace('.xls','',$order);
@@ -79,7 +81,7 @@ $good_files=array();
 $good_files_number=array();
 
 foreach($orders_array as $order_index=>$order){
-  if(preg_match('/^fr\d{4,5}$/i',$order)){
+  if(preg_match('/^FR\d{4,5}$/i',$order)){
     $good_files[]=$orders_array_full_path[$order_index];
     $good_files_number[]=$order;
 
@@ -90,7 +92,7 @@ foreach($orders_array as $order_index=>$order){
 
 
 foreach($orders_array as $order_index=>$order){
-  if(preg_match('/^\d{4,5}rpl$|^\d{4,5}ref$|^\d{4,5}\s?refund$|^\d{4,5}rr$|^\d{4,5}ra$|^\d{4,5}r2$|^\d{4,5}\-2ref$|^\d{5}rpl$|^\d{5}sht?$|^\d{5}rfn$/i',$order)){
+  if(preg_match('/^\d{4,5}r$|^\d{4,5}ref$|^\d{4,5}\s?refund$|^\d{4,5}rr$|^\d{4,5}ra$|^\d{4,5}r2$|^\d{4,5}\-2ref$|^\d{5}rpl$|^\d{5}sht?$|^\d{5}rfn$/i',$order)){
      $good_files[]=$orders_array_full_path[$order_index];
     $good_files_number[]=$order;
   }
@@ -98,7 +100,7 @@ foreach($orders_array as $order_index=>$order){
 }
 
 
-//print_r($orders_array);
+
 
 //include_once('z.php');
 
@@ -112,7 +114,7 @@ foreach($good_files_number as $order_index=>$order){
   $is_refund=false;
   $act_data=array();
   $map=array();
-  if(!preg_match('/^fr\d{4,5}$/i',$order)){
+  if(!preg_match('/^\d{4,5}$/i',$order)){
     $is_refund=true;
   }
   $filename=$good_files[$order_index];
@@ -208,8 +210,6 @@ foreach($good_files_number as $order_index=>$order){
      
 
       list($header,$products )=read_records($handle_csv,$prod_map,$number_header_rows);
-      print_r($products);
-      exit;
       $_header=serialize($header);
       $_products=serialize($products);
       $checksum_header= md5($_header);

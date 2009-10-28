@@ -32,6 +32,10 @@ $title='';
 $options='';
 $staked=false;
 
+$currency_symbol=$myconf['currency_symbol'];
+if(isset($_REQUEST['currency']))
+  $currency_symbol=currency_symbol($_REQUEST['currency']);
+
 switch($tipo){
 
 case('sales_by_store');
@@ -416,6 +420,8 @@ case('product'):
     $tipo='store';
     $plot_name='store';
     $plot_page='store';
+    
+
   }elseif(preg_match('/department/',$tipo)){
     $tipo='department';
     $plot_name='department';
@@ -520,7 +526,7 @@ case('product'):
 		      ,$to
 		      );
   
-  // print $ar_address;
+  //print $ar_address;
   $fields='"date"';
     foreach($item_key_array as $key){
       $fields.=',"value'.$key.'","tip_value'.$key.'","forecast'.$key.'","tip_forecast'.$key.'","tails'.$key.'","tip_tails'.$key.'"';
@@ -703,13 +709,13 @@ $out='<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN""http://www.
 if( value==0)
     return "";
 else if ( value>=499){
-return YAHOO.util.Number.format( value/1000,{prefix: "'.$myconf['currency_symbol'].'",thousandsSeparator: ",",decimalPlaces: 0})+"K";
+return YAHOO.util.Number.format( value/1000,{prefix: "'.$currency_symbol.'",thousandsSeparator: ",",decimalPlaces: 0})+"K";
 }
 else if ( value<=-10000){
-return YAHOO.util.Number.format( value/1000,{prefix: "'.$myconf['currency_symbol'].'",thousandsSeparator: ",",decimalPlaces: 0})+"K";
+return YAHOO.util.Number.format( value/1000,{prefix: "'.$currency_symbol.'",thousandsSeparator: ",",decimalPlaces: 0})+"K";
 }
 else
-return YAHOO.util.Number.format( value,{prefix: "'.$myconf['currency_symbol'].'",thousandsSeparator: ",",decimalPlaces: 2});
+return YAHOO.util.Number.format( value,{prefix: "'.$currency_symbol.'",thousandsSeparator: ",",decimalPlaces: 2});
 }
 
  function formatPercentageAxisLabel( value ){

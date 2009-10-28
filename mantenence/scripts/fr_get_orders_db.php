@@ -9,90 +9,107 @@ include_once('../../class.Supplier.php');
 include_once('../../class.Order.php');
 include_once('../../class.Invoice.php');
 include_once('../../class.DeliveryNote.php');
+include_once('../../class.Email.php');
 
 $store_code='F';
-error_reporting(E_ALL);
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
-if(!$con){print "Error can not connect with database server\n";exit;}
-$dns_db='dw';
+if (!$con) {
+    print "Error can not connect with database server\n";
+    exit;
+}
 $db=@mysql_select_db($dns_db, $con);
-if (!$db){print "Error can not access the database\n";exit;}
-
-require_once '../../common_functions.php';
-mysql_query("SET time_zone ='UTC'");
-mysql_query("SET NAMES 'utf8'");
-
-require_once '../../conf/conf.php';           
+if (!$db) {
+    print "Error can not access the database\n";
+    exit;
+}
 date_default_timezone_set('Europe/London');
-$_SESSION['lang']=1;
-include_once('fr_local_map.php');
+require_once '../../common_functions.php';
+mysql_query("SET time_zone ='+0:00'");
+mysql_query("SET NAMES 'utf8'");
+require_once '../../conf/timezone.php';
+date_default_timezone_set(TIMEZONE) ;
 
+include_once('../../set_locales.php');
+
+require_once '../../conf/conf.php';
+require('../../locale.php');
+$_SESSION['locale_info'] = localeconv();
+
+
+$_SESSION['lang']=1;
+
+
+
+
+
+include_once('fr_local_map.php');
 include_once('fr_map_order_functions.php');
 $myconf['country_code']='FRA';
 $myconf['country_2acode']='FR';
 
 $myconf['home_id']='165';
 $myconf['country_id']='165';
+
 $software='Get_Orders_DB.php';
-$version='V 1.0';//75693
+$version='V 1.0';
+
+
+
 
 $Data_Audit_ETL_Software="$software $version";
 srand(12341);
 
 $store_key=3;
 
-$dept_no_dept=new Department('code_store','FR.ND',$store_key);
-if(!$dept_no_dept->id){
-  $dept_data=array(
-		   'code'=>'FR.ND',
-		   'name'=>'Products Without Department',
-		   'store_key'=>$store_key
-		   );
-  $dept_no_dept=new Department('create',$dept_data);
-  $dept_no_dept_key=$dept_no_dept->id;
-}
-$dept_promo=new Department('code_store','FR.Promo',$store_key);
-if(!$dept_promo->id){
-  $dept_data=array(
-		   'code'=>'FR.Promo',
-		   'name'=>'Promotional Items',
-		   'store_key'=>$store_key
-		   );
-  $dept_promo=new Department('create',$dept_data);
-  
-}
+$dept_data=array(
+		 'Product Department Code'=>'ND',
+		 'Product Department Name'=>'Products Without Department',
+		 'Product Department Store Key'=>$store_key
+		 );
 
-
+$dept_no_dept=new Department('find',$dept_data);
 $dept_no_dept_key=$dept_no_dept->id;
+
+$dept_data=array(
+		 'Product Department Code'=>'Promo',
+		 'Product Department Name'=>'Promotional Items',
+		 'Product Department Store Key'=>$store_key
+		 );
+$dept_promo=new Department('find',$dept_data);
 $dept_promo_key=$dept_promo->id;
 
-$fam_no_fam=new Family('code_store','PNF_FR',$store_key);
-if(!$fam_no_fam->id){
-  $fam_data=array(
-		   'Product Family Code'=>'PNF_FR',
-		   'Product Family Name'=>'Products Without Family',
-		   'Product Family Main Department Key'=>$dept_no_dept_key
-		   );
-  $fam_no_fam=new Family('create',$fam_data);
-  $fam_no_fam_key=$fam_no_fam->id;
-}
-$fam_promo=new Family('code_store','Promo_FR',$store_key);
-if(!$fam_promo->id){
-  $fam_data=array(
-		   'code'=>'Promo_FR',
-		   'name'=>'Promotional Items',
-		   'Product Family Main Department Key'=>$dept_promo_key
-		   );
-  $fam_promo=new Family('create',$fam_data);
-  
-}
+$fam_data=array(
+		'Product Family Code'=>'PND_FR',
+		'Product Family Name'=>'Products Without Family',
+		'Product Family Main Department Key'=>$dept_no_dept_key,
+		'Product Family Store Key'=>$store_key,
+		'Product Family Special Characteristic'=>'None'
+		);
+
+$fam_no_fam=new Family('find',$fam_data);
+$fam_no_fam_key=$fam_no_fam->id;
+
+$fam_data=array(
+		'Product Family Code'=>'Promo_FR',
+		'Product Family Name'=>'Promotional Items',
+		'Product Family Main Department Key'=>$dept_promo_key,
+		'Product Family Store Key'=>$store_key,
+		'Product Family Special Characteristic'=>'None'
+		);
+
+
+
+$fam_promo=new Family('find',$fam_data);
+
+
+
 $fam_no_fam_key=$fam_no_fam->id;
 $fam_promo_key=$fam_promo->id;
 
 
 $sql="select * from  fr_orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed)  order by filename  ";
 //$sql="select * from  fr_orders_data.orders where filename like '%refund.xls'   order by filename";
-$sql="select * from  fr_orders_data.orders  where filename like '/mnt/%.xls'  order by filename";
+//$sql="select * from  fr_orders_data.orders  where filename like '/mnt/%.xls'  order by filename";
 
 
 $contador=0;
@@ -117,7 +134,8 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     $total_credit_value=0;
 
     // check if it is already readed
-    $update=false;$old_order_key=0;
+    $update=false;
+    $old_order_key=0;
     $sql=sprintf("select count(*) as num  from `Order Dimension`  where `Order Original Metadata`=%s  ",prepare_mysql($store_code.$order_data_id));
 
     $result_test=mysql_query($sql);
@@ -448,6 +466,9 @@ $header_data['Order Main Source Type']='Unknown';
 	continue;
       }
 
+
+      if(preg_match('/Sub Total/',$transaction['bonus'])  )
+	continue;
       if(preg_match('/Freight|^frc-|Postage/i',$transaction['code'])){
 
 	$extra_shipping+=$transaction['price'];
@@ -470,6 +491,7 @@ $header_data['Order Main Source Type']='Unknown';
       }
     
 
+      
 
 
 
@@ -803,13 +825,15 @@ $header_data['Order Main Source Type']='Unknown';
       }
       
 
-      // print_r($transaction);
+      //     print_r($transaction);
      $code=_trim($transaction['code']);
 
       $product_data=array(
 			  'Product Store Key'=>$store_key
 			  ,'Product Main Department Key'=>$dept_key
 			  ,'Product Family Key'=>$fam_key
+			  ,'Product Locale'=>'fr_FR'
+			  ,'Product Currency'=>'EUR'
 			  ,'product code'=>$code
 			  ,'product name'=>$description
 			  ,'product unit type'=>$unit_type
@@ -829,6 +853,8 @@ $header_data['Order Main Source Type']='Unknown';
 			  ,'date2'=>$date2
 			  ,'editor'=>array('Date'=>$date_order)
 			  );
+
+      // print_r( $product_data);
    
        $product=new Product('find',$product_data,'create');
       if (!$product->id) {
@@ -857,54 +883,54 @@ $header_data['Order Main Source Type']='Unknown';
 	$supplier=new Supplier('new',$the_supplier_data);
       }
 
- $part_list=array();
+      $part_list=array();
       if ($product->new_id ) {
-
+       	//print "New code $code\n";
 	// Take the part form the Uk equivalent
 	$uk_product=new Product('code_store',$code,1);
-	if($uk_product->id){
-	   $parts=$uk_product->get('Parts SKU');
-	   if(isset($parts[0])){
-	     $part=new Part('new',$parts[0]);
-	      $parts_per_product=1;
- 	$part_list[]=array(
- 			   'Product ID'=>$product->get('Product ID'),
- 			   'Part SKU'=>$parts[0],
- 			   'Product Part Id'=>1,
- 			   'requiered'=>'Yes',
- 			   'Parts Per Product'=>1,
- 			   'Product Part Type'=>'Simple Pick'
- 			   );
-	   }else{
-
 	
-
-                //creamos una parte nueva
-	$part_data=array(
-			 'Part Most Recent'=>'Yes',
-			 'Part XHTML Currently Supplied By'=>sprintf('<a href="supplier.php?id=%d">%s</a>',$supplier->id,$supplier->get('Supplier Code')),
-			 'Part XHTML Currently Used In'=>sprintf('<a href="product.php?id=%d">%s</a>',$product->id,$product->get('Product Code')),
-			 'Part XHTML Description'=>preg_replace('/\(.*\)\s*$/i','',$product->get('Product XHTML Short Description')),
-			 'part valid from'=>$date_order,
-			 'part valid to'=>$date2,
-                               'Part Gross Weight'=>$w
+	$parts=$uk_product->get('Parts SKU');
+	if(isset($parts[0])){
+	  //print "old\n";
+	  $part=new Part('sku',$parts[0]);
+	  $parts_per_product=1;
+	  $part_list[]=array(
+			     'Product ID'=>$product->get('Product ID'),
+			     'Part SKU'=>$parts[0],
+			     'Product Part Id'=>1,
+			     'requiered'=>'Yes',
+			     'Parts Per Product'=>1,
+			     'Product Part Type'=>'Simple Pick'
+			     );
+	}else{
+	  //  print "new\n";
+	  $part_data=array(
+			   'Part Most Recent'=>'Yes',
+			   'Part XHTML Currently Supplied By'=>sprintf('<a href="supplier.php?id=%d">%s</a>',$supplier->id,$supplier->get('Supplier Code')),
+			   'Part XHTML Currently Used In'=>sprintf('<a href="product.php?id=%d">%s</a>',$product->id,$product->get('Product Code')),
+			   'Part XHTML Description'=>preg_replace('/\(.*\)\s*$/i','',$product->get('Product XHTML Short Description')),
+			   'part valid from'=>$date_order,
+			   'part valid to'=>$date2,
+			   'Part Gross Weight'=>$w
 			 );
-	$part=new Part('new',$part_data);
-	$parts_per_product=1;
-	$part_list=array();
-	$part_list[]=array(
-			   'Product ID'=>$product->pid,
-			   'Part SKU'=>$part->get('Part SKU'),
-			   'Product Part Id'=>1,
-			   'requiered'=>'Yes',
-			   'Parts Per Product'=>$parts_per_product,
-			   'Product Part Type'=>'Simple Pick'
+	  
+	  $part=new Part('new',$part_data);
+	  $parts_per_product=1;
+	  $part_list=array();
+	  $part_list[]=array(
+			     'Product ID'=>$product->pid,
+			     'Part SKU'=>$part->get('Part SKU'),
+			     'Product Part Id'=>1,
+			     'requiered'=>'Yes',
+			     'Parts Per Product'=>$parts_per_product,
+			     'Product Part Type'=>'Simple Pick'
 			   );
-	   }
+	}
+	//	print_r($part_list);
 	$product->new_part_list('',$part_list);
 	
 	$used_parts_sku=array($part->sku => array('parts_per_product'=>$parts_per_product,'unit_cost'=>$supplier_product_cost*$transaction['units']));
-	
+
       } else {
 	
 	$sql=sprintf("select `Part SKU` from `Product Part List` where  `Product ID`=%d ",$product->pid);
@@ -940,7 +966,7 @@ $header_data['Order Main Source Type']='Unknown';
 		
       }
       
-
+      //print_r($part);
       
       //creamos una supplier parrt nueva
       $scode=$sup_prod_code;
@@ -971,6 +997,7 @@ $header_data['Order Main Source Type']='Unknown';
 	    //print_r($sp_data);
       $supplier_product=new SupplierProduct('find',$sp_data,'create');
       
+      // print 'NS'.$supplier_product->new." p:  ".$part->new."\n";
       
       if($supplier_product->new or $part->new){
 	$rules=array();
@@ -981,6 +1008,7 @@ $header_data['Order Main Source Type']='Unknown';
 		       ,'supplier product part valid to'=>$date2
 		       ,'factor supplier product'=>1
 		       );
+	//print_r($rules);
 	$supplier_product->new_part_list('',$rules);
       }else{
 	//Note assuming only one sppl 
@@ -1180,9 +1208,9 @@ $header_data['Order Main Source Type']='Unknown';
     $data['tax_rate']=.15;
     if(strtotime($date_order)<strtotime('2008-11-01'))
       $data['tax_rate']=.175;
-
+$currency='EUR';
  $exchange=1;
-    $sql=sprintf("select `Exchange` from `History Currency Exchange Dimension` where `Currency Pair`='EURGBP' and `Date`=DATE(%s)",prepare_mysql($date_inv));
+    $sql=sprintf("select `Exchange` from kbase.`History Currency Exchange Dimension` where `Currency Pair`='EURGBP' and `Date`=DATE(%s)",prepare_mysql($date_inv));
     $res3=mysql_query($sql);
     // print $sql;
     if($row3=mysql_fetch_array($res3, MYSQL_ASSOC)){
@@ -1259,6 +1287,9 @@ $header_data['Order Main Source Type']='Unknown';
        $sales_rep_data=get_user_id($header_data['takenby'],true,'&view=processed');
        $data['Order XHTML Sale Reps']=$sales_rep_data['xhtml'];
        $data['Order Sale Reps IDs']=$sales_rep_data['id'];
+       $data['Order Currency']=$currency;
+       $data['Order Currency Exchange']=$exchange;
+       
     if($tipo_order==2 or $tipo_order==1  or $tipo_order==4 or $tipo_order==5 or   $tipo_order==3   )  {
       //print_r($data);
     

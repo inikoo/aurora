@@ -216,7 +216,7 @@ class Department extends DB_Table {
         }
 
         $data['Product Department Store Code']=$store->data['Store Code'];
-
+	$data['Product Department Currency Code']=$store->data['Store Currency Code'];
 
         $keys='(';
         $values='values(';
