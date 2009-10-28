@@ -18,21 +18,26 @@ include_once('class.Store.php');
 
 
 
-if(isset($_REQUEST['id']) and is_integer($_REQUEST['id']) and $_REQUEST['id']>0){
+if(isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ){
   $store_id=$_REQUEST['id'];
- }else
+
+}else{
   $store_id=$_SESSION['state']['store']['id'];
+
+}
 
 
 if(!$user->can_view('stores',$store_id))
   exit();
 
+$store=new Store($store_id);
+$_SESSION['state']['store']['id']=$store->id;
 
 $view_sales=$user->can_view('product sales');
 $view_stock=$user->can_view('product stock');
 $create=$user->can_create('product departments');
 
-$modify=$user->can_edit('stores',$store_id);
+$modify=$user->can_edit('stores',$store->id);
 
 
 
@@ -48,6 +53,7 @@ $stores_period_title=array('year'=>_('Last Year'),'quarter'=>_('Last Quarter'),'
 
 $smarty->assign('stores_period',$stores_period);
 $smarty->assign('stores_period_title',$stores_period_title[$stores_period]);
+
 
 
 
@@ -106,12 +112,8 @@ if($edit){
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
-if(isset($_REQUEST['id'])){
-  $_SESSION['state']['store']['id']=$_REQUEST['id'];
- }
 
-$store=new Store($_SESSION['state']['store']['id']);
-  
+
 
 $_SESSION['state']['assets']['page']='store';
 if(isset($_REQUEST['view'])){
@@ -142,8 +144,8 @@ $info_period_menu=array(
 		     );
 $smarty->assign('info_period_menu',$info_period_menu);
 
+$plot_args='tipo=store&category='.$plot_category.'&period='.$plot_period.'&keys='.$store_id.'&currency='.$store->data['Store Currency Code'];
 
-$plot_args='tipo=store&category='.$plot_category.'&period='.$plot_period.'&keys='.$store_id;
 if($plot_tipo=='top_departments'){
   $number_children=3;
   $plot_args.=sprintf('&top_children=%d',$number_children);

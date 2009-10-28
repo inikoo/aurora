@@ -1056,15 +1056,19 @@ $default_state=array(
                                 'avg'=>'totals',
                                 'edit'=>'stores',
                                 'editing'=>false,
-
+				
+				
                                 'table'=>array(
-                                            'where'=>'where true',
-                                            'f_field'=>'code',
-                                            'f_value'=>'',
-                                            'order'=>'name',
-                                            'order_dir'=>'',
-                                            'sf'=>0,
-                                            'nr'=>25,
+					       'exchange_type'=>'day2day',
+					       'exchange_value'=>1,
+					       'show_default_currency'=>false,
+					       'where'=>'where true',
+					       'f_field'=>'code',
+					       'f_value'=>'',
+					       'order'=>'name',
+					       'order_dir'=>'',
+					       'sf'=>0,
+					       'nr'=>25,
                                         )
                             ),
 

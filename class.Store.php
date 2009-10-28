@@ -1073,25 +1073,25 @@ class Store extends DB_Table{
 
   function update_sales_default_currency(){
     $this->data_default_currency=array();
-    $this->data_default_currency['Store Total Invoiced Gross Amount']=0;
-    $this->data_default_currency['Store Total Invoiced Discount Amount']=0;
-    $this->data_default_currency['Store Total Invoiced Amount']=0;
-    $this->data_default_currency['Store Total Profit']=0;
-    $this->data_default_currency['Store 1 Year Acc Invoiced Gross Amount']=0;
-    $this->data_default_currency['Store 1 Year Acc Invoiced Discount Amount']=0;
-    $this->data_default_currency['Store 1 Year Acc Invoiced Amount']=0;
-    $this->data_default_currency['Store 1 Year Acc Profit']=0;
-    $this->data_default_currency['Store 1 Quarter Acc Invoiced Discount Amount']=0;
-    $this->data_default_currency['Store 1 Quarter Acc Invoiced Amount']=0;
-    $this->data_default_currency['Store 1 Quarter Acc Profit']=0;
-    $this->data_default_currency['Store 1 Month Acc Invoiced Gross Amount']=0;
-    $this->data_default_currency['Store 1 Month Acc Invoiced Discount Amount']=0;
-    $this->data_default_currency['Store 1 Month Acc Invoiced Amount']=0;
-    $this->data_default_currency['Store 1 Month Acc Profit']=0;
-    $this->data_default_currency['Store 1 Week Acc Invoiced Gross Amount']=0;
-    $this->data_default_currency['Store 1 Week Acc Invoiced Discount Amount']=0;
-    $this->data_default_currency['Store 1 Week Acc Invoiced Amount']=0;
-    $this->data_default_currency['Store 1 Week Acc Profit']=0;
+    $this->data_default_currency['Store DC Total Invoiced Gross Amount']=0;
+    $this->data_default_currency['Store DC Total Invoiced Discount Amount']=0;
+    $this->data_default_currency['Store DC Total Invoiced Amount']=0;
+    $this->data_default_currency['Store DC Total Profit']=0;
+    $this->data_default_currency['Store DC 1 Year Acc Invoiced Gross Amount']=0;
+    $this->data_default_currency['Store DC 1 Year Acc Invoiced Discount Amount']=0;
+    $this->data_default_currency['Store DC 1 Year Acc Invoiced Amount']=0;
+    $this->data_default_currency['Store DC 1 Year Acc Profit']=0;
+    $this->data_default_currency['Store DC 1 Quarter Acc Invoiced Discount Amount']=0;
+    $this->data_default_currency['Store DC 1 Quarter Acc Invoiced Amount']=0;
+    $this->data_default_currency['Store DC 1 Quarter Acc Profit']=0;
+    $this->data_default_currency['Store DC 1 Month Acc Invoiced Gross Amount']=0;
+    $this->data_default_currency['Store DC 1 Month Acc Invoiced Discount Amount']=0;
+    $this->data_default_currency['Store DC 1 Month Acc Invoiced Amount']=0;
+    $this->data_default_currency['Store DC 1 Month Acc Profit']=0;
+    $this->data_default_currency['Store DC 1 Week Acc Invoiced Gross Amount']=0;
+    $this->data_default_currency['Store DC 1 Week Acc Invoiced Discount Amount']=0;
+    $this->data_default_currency['Store DC 1 Week Acc Invoiced Amount']=0;
+    $this->data_default_currency['Store DC 1 Week Acc Profit']=0;
 
 
 
@@ -1103,10 +1103,10 @@ class Store extends DB_Table{
     $result=mysql_query($sql);
 	
     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-      $this->data_default_currency['Store Total Invoiced Gross Amount']=$row['gross'];
-      $this->data_default_currency['Store Total Invoiced Discount Amount']=$row['disc'];
-      $this->data_default_currency['Store Total Invoiced Amount']=$row['gross']-$row['disc'];
-      $this->data_default_currency['Store Total Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
+      $this->data_default_currency['Store DC Total Invoiced Gross Amount']=$row['gross'];
+      $this->data_default_currency['Store DC Total Invoiced Discount Amount']=$row['disc'];
+      $this->data_default_currency['Store DC Total Invoiced Amount']=$row['gross']-$row['disc'];
+      $this->data_default_currency['Store DC Total Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
 
     }
 
@@ -1119,10 +1119,10 @@ class Store extends DB_Table{
     $result=mysql_query($sql);
 
     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-      $this->data_default_currency['Store 1 Year Acc Invoiced Gross Amount']=$row['gross'];
-      $this->data_default_currency['Store 1 Year Acc Invoiced Discount Amount']=$row['disc'];
-      $this->data_default_currency['Store 1 Year Acc Invoiced Amount']=$row['gross']-$row['disc'];
-      $this->data_default_currency['Store 1 Year Acc Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
+      $this->data_default_currency['Store DC 1 Year Acc Invoiced Gross Amount']=$row['gross'];
+      $this->data_default_currency['Store DC 1 Year Acc Invoiced Discount Amount']=$row['disc'];
+      $this->data_default_currency['Store DC 1 Year Acc Invoiced Amount']=$row['gross']-$row['disc'];
+      $this->data_default_currency['Store DC 1 Year Acc Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
 
     }
      
@@ -1130,10 +1130,10 @@ class Store extends DB_Table{
     $result=mysql_query($sql);
  
     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-      $this->data_default_currency['Store 1 Quarter Acc Invoiced Gross Amount']=$row['gross'];
-      $this->data_default_currency['Store 1 Quarter Acc Invoiced Discount Amount']=$row['disc'];
-      $this->data_default_currency['Store 1 Quarter Acc Invoiced Amount']=$row['gross']-$row['disc'];
-      $this->data_default_currency['Store 1 Quarter Acc Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
+      $this->data_default_currency['Store DC 1 Quarter Acc Invoiced Gross Amount']=$row['gross'];
+      $this->data_default_currency['Store DC 1 Quarter Acc Invoiced Discount Amount']=$row['disc'];
+      $this->data_default_currency['Store DC 1 Quarter Acc Invoiced Amount']=$row['gross']-$row['disc'];
+      $this->data_default_currency['Store DC 1 Quarter Acc Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
 
     }
 
@@ -1144,10 +1144,10 @@ class Store extends DB_Table{
     $result=mysql_query($sql);
  
     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-      $this->data_default_currency['Store 1 Month Acc Invoiced Gross Amount']=$row['gross'];
-      $this->data_default_currency['Store 1 Month Acc Invoiced Discount Amount']=$row['disc'];
-      $this->data_default_currency['Store 1 Month Acc Invoiced Amount']=$row['gross']-$row['disc'];
-      $this->data_default_currency['Store 1 Month Acc Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
+      $this->data_default_currency['Store DC 1 Month Acc Invoiced Gross Amount']=$row['gross'];
+      $this->data_default_currency['Store DC 1 Month Acc Invoiced Discount Amount']=$row['disc'];
+      $this->data_default_currency['Store DC 1 Month Acc Invoiced Amount']=$row['gross']-$row['disc'];
+      $this->data_default_currency['Store DC 1 Month Acc Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
 
     }
     $sql=sprintf("select  sum(`Cost Supplier`*`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`*`Invoice Currency Exchange Rate`) as gross   ,sum(`Invoice Transaction Total Discount Amount`*`Invoice Currency Exchange Rate`)as disc    from `Order Transaction Fact`  OTF    where `Store Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 1 week"))));
@@ -1155,10 +1155,10 @@ class Store extends DB_Table{
     $result=mysql_query($sql);
 
     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-      $this->data_default_currency['Store 1 Week Acc Invoiced Gross Amount']=$row['gross'];
-      $this->data_default_currency['Store 1 Week Acc Invoiced Discount Amount']=$row['disc'];
-      $this->data_default_currency['Store 1 Week Acc Invoiced Amount']=$row['gross']-$row['disc'];
-      $this->data_default_currency['Store 1 Week Acc Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
+      $this->data_default_currency['Store DC 1 Week Acc Invoiced Gross Amount']=$row['gross'];
+      $this->data_default_currency['Store DC 1 Week Acc Invoiced Discount Amount']=$row['disc'];
+      $this->data_default_currency['Store DC 1 Week Acc Invoiced Amount']=$row['gross']-$row['disc'];
+      $this->data_default_currency['Store DC 1 Week Acc Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
       
     }
 
@@ -1174,7 +1174,7 @@ class Store extends DB_Table{
 
     $sql=sprintf('Insert into `Store Default Currency` values (%d,%s) ON DUPLICATE KEY UPDATE %s  ',$this->id,$insert_values,$update_values);
     mysql_query($sql);
-    print "$sql\n";
+    //print "$sql\n";
 
 
 

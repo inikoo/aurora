@@ -89,47 +89,65 @@ $smarty->assign('js_files',$js_files);
 
 
 $_SESSION['state']['assets']['page']='stores';
-//if(isset($_REQUEST['view'])){
-//  $valid_views=array('sales','general','stoke');
-//  if (in_array($_REQUEST['view'], $valid_views)) 
-//    $_SESSION['state']['stores']['view']=$_REQUEST['view'];
-//
-// }
 $smarty->assign('view',$_SESSION['state']['stores']['view']);
 $smarty->assign('show_details',$_SESSION['state']['stores']['details']);
-$smarty->assign('show_percentages',$_SESSION['state']['stores']['percentages']);
+
 $smarty->assign('avg',$_SESSION['state']['stores']['avg']);
 $smarty->assign('period',$_SESSION['state']['stores']['period']);
 
 
-//$sql="select id from product";
-//$result=mysql_query($sql);
-
-// include_once('class.product.php');
-// while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-//   $product= new product($row['id']);
-//   $product->set_stock();
-// }
-
-
-
-
 $smarty->assign('parent','stores.php');
 $smarty->assign('title', _('Stores'));
-//$smarty->assign('total_stores',$stores['numberof']);
-//$smarty->assign('table_title',$table_title);
 
 
 
+global $myconf;
 $stores=array();
-$sql=sprintf("select count(*) as num from `Store Dimension` CD order by `Store Key`");
+$sql=sprintf("select count(distinct `Store Currency Code` ) as distint_currencies, sum(IF(`Store Currency Code`=%s,1,0)) as default_currency    from `Store Dimension` "
+	     ,prepare_mysql($myconf['currency_code']));
 
 $res=mysql_query($sql);
 if($row=mysql_fetch_array($res)){
-  $stores=$row['num'];
- }
- mysql_free_result($res);
-$smarty->assign('stores',$stores);
+  $distinct_currencies=$row['distint_currencies'];
+  $default_currency=$row['default_currency'];
+}
+
+$mode_options=array(
+		    array('mode'=>'percentage','label'=>_('Percentages')),
+		    array('mode'=>'value','label'=>_('Values')),
+
+		   );
+
+
+$display_mode='value';
+$display_mode_label=_('Values');
+if($_SESSION['state']['stores']['percentages']){
+  $display_mode='percentages';
+  $display_mode_label=_('Percentages');
+}
+
+if($distinct_currencies>1){
+  $mode_options[]=array('mode'=>'value_default_d2d','label'=>_("Values in")." ".$myconf['currency_code']." ("._('d2d').")");
+
+  if($_SESSION['state']['stores']['table']['show_default_currency']){
+    $display_mode='value_default_d2d';
+    $display_mode_label=_("Values in")." ".$myconf['currency_code']." ("._('d2d').")";
+
+    
+    
+    
+  }
+  
+  
+  
+}
+
+
+$smarty->assign('display_mode',$display_mode);
+$smarty->assign('display_mode_label',$display_mode_label);
+
+
+
 
 $q='';
 $tipo_filter=($q==''?$_SESSION['state']['stores']['table']['f_field']:'code');
@@ -146,7 +164,7 @@ $smarty->assign('filter_name',$filter_menu[$tipo_filter]['label']);
 
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu',$paginator_menu);
-
+$smarty->assign('mode_options_menu',$mode_options);
 
 if($edit){
 $smarty->display('edit_stores.tpl');

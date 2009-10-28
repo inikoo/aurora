@@ -1136,7 +1136,8 @@ public $new_value=false;
     if(!$family->id){
       $this->error=true;
       $this->msg='Wrong family';
-      exit('eror fam');
+      print_r($data);
+      exit('error family');
       return;
     }
 	
@@ -1356,7 +1357,7 @@ public $new_value=false;
       }
 
       $base_data['product part id']=$product_list_id;
-
+      //print_r($base_data);
       $keys='(';
       $values='values(';
       foreach($base_data as $key=>$value) {
@@ -1366,7 +1367,7 @@ public $new_value=false;
       $keys=preg_replace('/,$/',')',$keys);
       $values=preg_replace('/,$/',')',$values);
       $sql=sprintf("insert into `Product Part List` %s %s",$keys,$values);
-      //  print "$sql\n";
+      // print "xx $sql\n";
 
       if (mysql_query($sql)) {
 

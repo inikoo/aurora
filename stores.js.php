@@ -201,6 +201,23 @@ function change_avg(e,table_id){
 }
 
 
+function change_display_mode(name,label){
+    if(name=='percentage'){
+	var request='&percentages=1';
+    }if(name=='value'){
+	var request='&percentages=0&show_default_currency=0';
+    }if(name=='value_default_d2d'){
+	var request='&percentages=0&show_default_currency=1';
+    }
+
+    Dom.get('change_display_mode').innerHTML=label;
+    var table=tables['table0'];
+    var datasource=tables.dataSource0;
+    
+    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);   
+
+}
+
 
 
  function init(){
@@ -244,4 +261,12 @@ YAHOO.util.Event.onContentReady("filtermenu", function () {
 	 oMenu.render();
 	 oMenu.subscribe("show", oMenu.focus);
 	 YAHOO.util.Event.addListener("filter_name0", "click", oMenu.show, null, oMenu);
+    });
+
+YAHOO.util.Event.onContentReady("change_display_menu", function () {
+	 var oMenu = new YAHOO.widget.Menu("change_display_menu", { context:["change_display_mode","tr", "br"]  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+	 YAHOO.util.Event.addListener("change_display_mode", "click", oMenu.show, null, oMenu);
+  
     });

@@ -350,6 +350,24 @@ function parse_money($amount,$currency=false){
 
 }
 
+function currency_symbol($currency){
+   switch($currency){
+   case('GBP'):
+     return '£';
+     break;
+   case('EUR'):
+     return '€';
+     break;
+   case('USD'):
+      return '$';
+      break;
+   default:
+     return '¤';
+   }
+
+}
+
+
 function money($amount,$locale=false){
   global $myconf;
   if($amount<0)

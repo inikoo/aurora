@@ -61,7 +61,7 @@ Class TimeSeries  {
       $this->count='count(*)';
       $this->date_field='`Invoice Date`';
       $this->table='`Order Transaction Fact`';
-      $this->value_field='(`Invoice Transaction Gross Amount`-IFNULL(`Invoice Transaction Total Discount Amount`,0)+IFNULL(`Invoice Transaction Shipping Amount`,0)+IFNULL(`Invoice Transaction Charges Amount`,0)-IFNULL(`Cost Supplier`,0)-IFNULL(`Cost Manufacure`,0)-IFNULL(`Cost Storing`,0)-IFNULL(`Cost Handing`,0)-IFNULL(`Cost Shipping`,0))';
+      $this->value_field='`Invoice Currency Exchange`*(`Invoice Transaction Gross Amount`-IFNULL(`Invoice Transaction Total Discount Amount`,0)+IFNULL(`Invoice Transaction Shipping Amount`,0)+IFNULL(`Invoice Transaction Charges Amount`,0)-IFNULL(`Cost Supplier`,0)-IFNULL(`Cost Manufacure`,0)-IFNULL(`Cost Storing`,0)-IFNULL(`Cost Handing`,0)-IFNULL(`Cost Shipping`,0))';
       $this->max_forecast_bins=12;
       $this->where='and `Current Dispatching State`="Dispached"';
       $this->label=_('Profit');
@@ -70,7 +70,7 @@ Class TimeSeries  {
       $this->count='count(*)';
       $this->date_field='`Invoice Date`';
       $this->table='`Invoice Dimension`';
-      $this->value_field='`Invoice Total Net Amount`';
+      $this->value_field='`Invoice Currency Exchange`*`Invoice Total Net Amount`';
       $this->max_forecast_bins=12;
       $this->where='';
       $this->label=_('Sales');
@@ -205,7 +205,7 @@ Class TimeSeries  {
       $this->where=sprintf(" and `Product Family Key` in %s ",$family_keys);
       $this->max_forecast_bins=12;
     }elseif(preg_match('/store \((\d|,)+\) sales?/i',$this->name,$match)
-	    or preg_match('/store \((\d|,)+\) profit?$/i',$this->name,$match)
+	    or preg_match('/store \((\d|,)+\) profit/i',$this->name,$match)
 	    ){
      
       $store_key_array=array();
@@ -233,14 +233,29 @@ Class TimeSeries  {
 	$this->error=true;
 	return;
       }
-  
-
-      if(preg_match('/sales?$/i',$this->name)){
-	$tipo='sales';
-	$name='SS';
+      $default_currency=false;
+      if(preg_match('/\(DC\)/i',$this->name)){
+	$default_currency=true;
+      }
+      
+      if(!$default_currency){
+	if(preg_match('/sales?$/i',$this->name)  ){
+	  $tipo='sales';
+	  $name='SS';
+	}else{
+	  $tipo='profit';
+	  $name='SP';
+	}
       }else{
-	$tipo='profit';
-	$name='SP';
+	if(preg_match('/sales?$/i',$this->name)  ){
+	  $tipo='sales_dc';
+	  $name='SS_DC';
+	}else{
+	  $tipo='profit_dc';
+	  $name='SP_DC';
+	}
+	
+
       }
 
       if($num_keys>1){
@@ -263,9 +278,12 @@ Class TimeSeries  {
 
       if($tipo=='sales')
 	$this->value_field="`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`-`Invoice Transaction Net Refund Amount`";
-      else
+      elseif($tipo=='profit')
 	$this->value_field='(`Invoice Transaction Gross Amount`-IFNULL(`Invoice Transaction Total Discount Amount`,0)+IFNULL(`Invoice Transaction Shipping Amount`,0)+IFNULL(`Invoice Transaction Charges Amount`,0)-IFNULL(`Cost Supplier`,0)-IFNULL(`Cost Manufacure`,0)-IFNULL(`Cost Storing`,0)-IFNULL(`Cost Handing`,0)-IFNULL(`Cost Shipping`,0))';
-      
+      elseif($tipo=='sales_dc')
+	$this->value_field="`Invoice Currency Exchange Rate`*(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`-`Invoice Transaction Net Refund Amount`)";
+      elseif($tipo=='profit_dc')
+	$this->value_field='`Invoice Currency Exchange Rate`*(`Invoice Transaction Gross Amount`-IFNULL(`Invoice Transaction Total Discount Amount`,0)+IFNULL(`Invoice Transaction Shipping Amount`,0)+IFNULL(`Invoice Transaction Charges Amount`,0)-IFNULL(`Cost Supplier`,0)-IFNULL(`Cost Manufacure`,0)-IFNULL(`Cost Storing`,0)-IFNULL(`Cost Handing`,0)-IFNULL(`Cost Shipping`,0))';
 
       
       $this->where=sprintf(" and `Store Key` in %s ",$store_keys);
@@ -559,6 +577,7 @@ Class TimeSeries  {
     if($only_zero_values){
     
     }else{
+
       if($this->freq=='Monthly')
 	$this->R_script();
       else{
@@ -586,14 +605,18 @@ Class TimeSeries  {
     }
   
     $number_values=count($this->values);
-    print "values : $number_values\n";
+print "values : $number_values\n";
+
+$few_points=false;
+if($number_values<=6)
+  $few_points=true;
 
     if($number_values<=1)
       return;
     elseif($number_values<=3){
       $number_period_for_forecasting=1;
     }elseif($number_values<=5){
-      $number_period_for_forecasting=2;
+      $number_period_for_forecasting=1;
     }elseif($number_values<=7){
       $number_period_for_forecasting=3;
     }elseif($number_values<=9){
@@ -625,12 +648,23 @@ Class TimeSeries  {
     // print_r($this->values);
     //print $values;
     $script=sprintf("library(forecast,quietly );values=c(%s);",$values);
-  
+    if(!$few_points){
     $script.=sprintf("ts= ts(values, start=c(%d,%d),frequency = %d);",$this->first_complete_year,$this->first_complete_bin,$this->frequency);
-    $script.="fit<-ets(ts,model='ZZA');fcast =forecast(fit,$number_period_for_forecasting);print(fcast) ;print ('--count data--');";
+    $script.="fit<-ets(ts);fcast =forecast(fit,$number_period_for_forecasting);print(fcast) ;print ('--count data--');";
     $script.=sprintf("values=c(%s);",$count);
     $script.=sprintf("ts= ts(values, start=c(%d,%d),frequency = %d);",$this->first_complete_year,$this->first_complete_bin,$this->frequency);
-    $script.="fit<-ets(ts,model='ZZA');fcast = forecast(fit,$number_period_for_forecasting);print(fcast) ;";
+    $script.="fit<-ets(ts);fcast = forecast(fit,$number_period_for_forecasting);print(fcast) ;";
+    }else{
+  $script.=sprintf("ts= ts(values, start=c(%d,%d),frequency = %d);",$this->first_complete_year,$this->first_complete_bin,$this->frequency);
+    $script.="fit<-arima(ts);fcast =forecast(fit,$number_period_for_forecasting);print(fcast) ;print ('--count data--');";
+    $script.=sprintf("values=c(%s);",$count);
+    $script.=sprintf("ts= ts(values, start=c(%d,%d),frequency = %d);",$this->first_complete_year,$this->first_complete_bin,$this->frequency);
+    $script.="fit<-arima(ts);fcast = forecast(fit,$number_period_for_forecasting);print(fcast) ;";
+
+    }
+    // print $script;
+    //exit;
+
 
     $cmd = "echo \"$script\" |  R --vanilla --slave -q";
  
@@ -645,7 +679,9 @@ Class TimeSeries  {
     }
     while(true);
     pclose($handle);
-    // print $ret;
+
+    if(preg_match('/--count data-/',$ret)){
+
     $ret_data = preg_split('/--count data-/',$ret);
   
     $values_forecast_data=$ret_data[0];
@@ -740,7 +776,7 @@ Class TimeSeries  {
 
     $this->forecast=$forecast;
     $this->save_forecast();
-
+    }
 
 
   }
@@ -1095,10 +1131,10 @@ Class TimeSeries  {
 		 ,$this->where
 		 );
  
-    //print "$sql\n";exit;
+    // print "$sql\n";
  
     $res=mysql_query($sql);
-  
+    // print "$sql\n";
     while($row=mysql_fetch_array($res)){
       if($row['yearquarter']==$first_yearquarter or $row['yearquarter']==$current_yearquarter){
 	if($row['yearquarter']==$first_yearquarter){
@@ -1369,8 +1405,59 @@ Class TimeSeries  {
    
   }
  
+
+
+
+  function set_labels(){
+
+ $tipo='';
+    $suffix='';
+    if($this->name=='profit'){
+     
+      $tipo='PI';
+      $suffix='';
+   
+    }  
+    if($this->name=='invoices'){
+     
+      $tipo='SI';
+      $suffix='';
+   
+    }elseif(preg_match('/^(PDS|SS|PFS|PidS|PcodeS)/',$this->name)){
+      $tipo='PI';
+      $suffix=preg_replace('/.*\(/','',$this->name_key);
+      $suffix=preg_replace('/\)/','',$suffix);
+      $suffix=preg_replace('/,/','_',$suffix);
+    }elseif(preg_match('/^(PDP|SP|PFP|PidP|PcodeP)/',$this->name)){
+      $tipo='PP';
+      $suffix=preg_replace('/.*\(/','',$this->name_key);
+      $suffix=preg_replace('/\)/','',$suffix);
+      $suffix=preg_replace('/,/','_',$suffix);
+    }
+
+
+    if( $this->freq=='Monthly'){
+
+      return $this->set_labels_per_month($tipo,$suffix,$from,$to);
+    }elseif($this->freq=='Yearly')
+      return $this->set_labels_per_year($tipo,$suffix,$from,$to);
+    elseif($this->freq=='Weekly')
+      return $this->set_labels_per_week($tipo,$suffix,$from,$to);
+    elseif($this->freq=='Quarterly')
+      return $this->set_labels_per_quarter($tipo,$suffix,$from,$to);
+
+
+  }
+
+ 
+
+
   function plot_data_per_month($tipo,$suffix,$from,$to){
   
+
+    $currency='GBP';
+
+
     $data=array();
    
     $where_dates=prepare_mysql_dates($from,$to,"`Time Series Date`");
@@ -1383,7 +1470,7 @@ Class TimeSeries  {
 		 ,$this->name_key2
 		 ,$where_dates['mysql']
 		 );
-    // print "$sql<br>";
+    //print "$sql<br>";
    
     $prev_month='';
     $prev_year=array();
@@ -1391,6 +1478,8 @@ Class TimeSeries  {
     $data_region=false;
     $res = mysql_query($sql); 
     while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+      // print_r($row);
+
       if(is_numeric($prev_month)){
 	$diff=$row['value']-$prev_month;
 	if($diff==0)
@@ -1412,35 +1501,46 @@ Class TimeSeries  {
      
      
       if($tipo=='SI' or $tipo=='PI'){
-	$tip=$row['Time Series Label'].' '._('Sales')." ".strftime("%B %Y", strtotime('@'.$row['date']))."\n".money($row['value'])."\n".$diff_prev_month.$diff_prev_year."(".$row['count']." "._('Invoices').")";
+	$tip=$row['Time Series Label'].' '._('Sales')." ".strftime("%B %Y", strtotime('@'.$row['date']))."\n".money($row['value'],$currency)."\n".$diff_prev_month.$diff_prev_year."(".$row['count']." "._('Invoices').")";
       
       }elseif($tipo=="PO"){
-	$tip=_('Sales')." ".strftime("%B %Y", strtotime('@'.$row['date']))."\n".money($row['value'])."\n".$diff_prev_month.$diff_prev_year."(".$row['count']." "._('Outers Shipped').")";
+	$tip=_('Sales')." ".strftime("%B %Y", strtotime('@'.$row['date']))."\n".money($row['value']$currency)."\n".$diff_prev_month.$diff_prev_year."(".$row['count']." "._('Outers Shipped').")";
       
       }elseif($tipo=='PI' or $tipo=='PP'){
-	$tip=$row['Time Series Label'].' '._('Profit')." ".strftime("%B %Y", strtotime('@'.$row['date']))."\n".money($row['value'])."\n".$diff_prev_month.$diff_prev_year."(".$row['count']." "._('Invoices').")";
+	$tip=$row['Time Series Label'].' '._('Profit')." ".strftime("%B %Y", strtotime('@'.$row['date']))."\n".money($row['value']$currency)."\n".$diff_prev_month.$diff_prev_year."(".$row['count']." "._('Invoices').")";
 
       }
     
     
-    
-      $data[$row['dd']]=array(
-			      'date'=>strftime("%m/%y", strtotime('@'.$row['date']))
-			      );
+
+      //  $data[$row['dd']]=array(
+      //		      'date'=>strftime("%m/%y", strtotime('@'.$row['date']))
+      //			      );
+
+      $data[$row['dd']]['date']=strftime("%m/%y", strtotime('@'.$row['date']));
+
+
       // print $row['dd']."<br>\n";
       if($row['Time Series Type']=='First'){
 	$first_value=array($row['dd'],$row['value'],$tip) ;
 	
       }
       if($row['Time Series Type']=='Current'){
+
+
+
 	$current_value=array($row['dd'],$row['value'],$tip) ;
+
+
 	$data[$last_complete_value[0]]['tails'.$suffix]=(float) $last_complete_value[1];
 	$data[$last_complete_value[0]]['tip_tails'.$suffix]='';
 	$data[$current_value[0]]['tails'.$suffix]=(float) $current_value[1];
 	$data[$current_value[0]]['tip_tails'.$suffix]= $current_value[2];
+	
+
 
       }
-      if($row['Time Series Type']=='Data'){
+      if($row['Time Series Type']=='Data' ){
 	if(!$data_region and isset($first_value)){
 
 	  $data[$first_value[0]]['tails'.$suffix]=(float) $first_value[1];
@@ -1455,12 +1555,10 @@ Class TimeSeries  {
 	$data[$row['dd']]['tip_value'.$suffix]=$tip;
 	$last_complete_value=array($row['dd'],$row['value'],$tip) ;
       }
-      if($row['Time Series Type']=='Forecast'){
+      if($row['Time Series Type']=='Forecast' ){
      
 	if(!$forecast_region){
 	  $data[$last_complete_value[0]]['forecast'.$suffix]=(float) $last_complete_value[1];
-	
-
 	}
 	$forecast_region=true;
 	$data[$row['dd']]['forecast'.$suffix]=(float) $row['value'];
@@ -1472,13 +1570,16 @@ Class TimeSeries  {
       $prev_month=$row['value'];
       $prev_year[$row['month']]=$row['value'];
     }
+
+    
+
     mysql_free_result($res);
     //$_data=array();
     //$i=0;
   
     //foreach($data as $__data)
     //   $_data[]=$__data;
-  
+    //print_r($data);
     return $data;
 
   }

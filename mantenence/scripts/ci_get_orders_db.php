@@ -36,7 +36,7 @@ require_once '../../conf/conf.php';
 require('../../locale.php');
 $_SESSION['locale_info'] = localeconv();
 
-date_default_timezone_set('Europe/Madrid');
+date_default_timezone_set('Europe/London');
 $_SESSION['lang']=1;
 
 
@@ -624,13 +624,13 @@ $code=_trim($transaction['code']);
 		$the_supplier_data=array(
 					 'Supplier Name'=>'Unknown Supplier'
 					 ,'Supplier Code'=>$supplier_code
-                                       );
-                }
-
-                $supplier=new Supplier('new',$the_supplier_data);
+					 );
+	      }
+	      
+	      $supplier=new Supplier('new',$the_supplier_data);
             }
-
-
+	    
+	    
             if ($product->new_id ) {
                 //creamos una parte nueva
                 $part_data=array(

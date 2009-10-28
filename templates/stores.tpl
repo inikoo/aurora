@@ -26,7 +26,10 @@
 <div class="data_table" style="clear:both">
     <span class="clean_table_title">{t}Stores{/t}</span>
  <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
-  <span   style="float:right;margin-left:80px" class="state_details" state="{$show_percentages}"  id="show_percentages"  atitle="{if $show_percentages}{t}Normal Mode{/t}{else}{t}Comparison Mode{/t}{/if}"  >{if $show_percentages}{t}Comparison Mode{/t}{else}{t}Normal Mode{/t}{/if}</span>
+ <span   style="float:right;margin-left:80px" class="state_details"  id="change_display_mode" >{$display_mode_label}</span>
+
+
+
 <table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" >
 	<tr><td  {if $view=='general'}class="selected"{/if} id="general" >{t}General{/t}</td>
 	  {if $view_stock}<td {if $view=='stock'}class="selected"{/if}  id="stock"  >{t}Stock{/t}</td>{/if}
@@ -94,5 +97,17 @@
     </ul>
   </div>
 </div>
+
+<div id="change_display_menu" class="yuimenu">
+  <div class="bd">
+    <ul class="first-of-type">
+      <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Display Mode Options{/t}:</li>
+      {foreach from=$mode_options_menu item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_display_mode('{$menu.mode}','{$menu.label}',0)"> {$menu.label}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
+
 
 {include file='footer.tpl'}

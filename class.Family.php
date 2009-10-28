@@ -213,6 +213,7 @@ $this->get_data('id',$this->found_key);
 
    $store=new Store($base_data['Product Family Store Key']);
    $base_data['Product Family Store Code']=$store->get('Store Code');
+   $base_data['Product Family Currency Code']=$store->data['Store Currency Code'];
 
   
    $keys='(';$values='values(';

@@ -73,7 +73,8 @@ ALTER TABLE `Store Dimension` ADD `Store 1 Week Acc Pending Orders` MEDIUMINT UN
 
 ALTER TABLE `Order Dimension` ADD `Order Currency` VARCHAR( 3 ) NOT NULL DEFAULT 'GBP',
 ADD `Order Currency Exchange` FLOAT NOT NULL DEFAULT '1'
-
+ALTER TABLE `Product Family Dimension` ADD `Product Family Currency Code` VARCHAR( 3 ) NOT NULL DEFAULT 'GBP'
+ALTER TABLE `Product Department Dimension` ADD `Product Department Currency Code` VARCHAR( 3 ) NOT NULL DEFAULT 'GBP'
 
  */
 
