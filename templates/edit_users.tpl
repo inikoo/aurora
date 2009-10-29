@@ -1,6 +1,6 @@
 {include file='header.tpl'}
 <div id="bd" >
-<span class="nav2 onright"><a href="edit_users.php">{t}Edit Users{/t}</a></span>
+<span class="nav2 onright"><a href="users.php">{t}Exit Edit{/t}</a></span>
 
   <div id="yui-main">
     <div style="width:300px;float:right;padding:10px;text-align:right">

@@ -883,11 +883,12 @@ $header_data['Order Main Source Type']='Unknown';
 	$supplier=new Supplier('new',$the_supplier_data);
       }
 
+
       $part_list=array();
-      if ($product->new_id ) {
-       	//print "New code $code\n";
-	// Take the part form the Uk equivalent
+
+ 
 	$uk_product=new Product('code_store',$code,1);
+
 	
 	$parts=$uk_product->get('Parts SKU');
 	if(isset($parts[0])){
@@ -1283,7 +1284,8 @@ $currency='EUR';
        }
        
        //print "$tipo_order \n";
-       
+       $data['Order Currency']=$currency;
+      $data['Order Currency Exchange']=$exchange;
        $sales_rep_data=get_user_id($header_data['takenby'],true,'&view=processed');
        $data['Order XHTML Sale Reps']=$sales_rep_data['xhtml'];
        $data['Order Sale Reps IDs']=$sales_rep_data['id'];

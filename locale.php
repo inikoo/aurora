@@ -42,6 +42,8 @@ $_group['2']=_('Customer Services');
 $_group['3']=_('Stock Controller');
 $_group['4']=_('Export Services');
 $_group['5']=_('Sales Intelligence');
+$_group['6']=_('Human Resources');
+$_group['7']=_('Product Manager');
 
 $_lang['en']=_('English');
 $_lang['es']=_('Spanish');
@@ -50,6 +52,8 @@ $_lang['fr']=_('French');
 $_lang['cs']=_('Czech');
 $_lang['sk']=_('Slovak');
 $_lang['zh']=_('Chinese');
+$_lang['pl']=_('Polish');
+
 
 $_prefix['0']=_('None');
 $_prefix['1']=_('Mr');

@@ -138,13 +138,16 @@ function list_users(){
      $groups=preg_split('/,/',$row['Groups']);
 
 
+$locale=$row['User Preferred Locale'];
+preg_match('/^[a-z]{2}/',$locale,$match);
+$lang=$match[0];
      $adata[]=array(
 		   'handle'=>$row['User Handle'],
 		   'tipo'=>$row['User Type'],
 		   'id'=>$row['User Key'],
 		   'name'=>$row['User Alias'],
 		   'email'=>$row['User Email'],
-		   'lang'=>strtoupper($row['User Language Code']),
+		   'lang'=>$lang,
 		   'groups'=>$groups,
 		   'password'=>'<img style="cursor:pointer" user_name="'.$row['User Alias'].'" user_id="'.$row['User Key'].'" onClick="change_passwd(this)" src="art/icons/key.png"/>'.($row['User Email']!=''?'<img src="art/icons/key_go.png"/>':''),
 		   'passwordmail'=>($row['User Email']!=''?'<img src="art/icons/key_go.png"/>':''),

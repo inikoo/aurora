@@ -65,7 +65,7 @@ if(!$is_already_logged_in){
     $_SESSION['logged_in']=true;
     $_SESSION['user_key']=$auth->get_user_key();
     $user=new User($_SESSION['user_key']);  
-    $_SESSION['text_locale']=$user->data['User Prefered Locale'];
+    $_SESSION['text_locale']=$user->data['User Preferred Locale'];
   }else{
     $target = $_SERVER['PHP_SELF'];
     if(!preg_match('/js$/',$target)) 
