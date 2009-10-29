@@ -6500,18 +6500,18 @@ function list_stores() {
 	$sum_total_profit_plus=0;
 	$sum_total_profit_minus=0;
 	$sum_total_profit=0;
-        $sql=sprintf("select sum(if(`Store Total Profit`<0,`Store Total Profit`,0)) as total_profit_minus,sum(if(`Store Total Profit`>=0,`Store Total Profit`,0)) as total_profit_plus,sum(`Store Total Invoiced Amount`) as sum_total_sales  from `Store Dimension`  S   %s %s and `Store Currency Code`= %s ",$where,$wheref,prepare_mysql($myconf['currency_code']));
-	//print $sql;
-        $result=mysql_query($sql);
-        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+      /*   $sql=sprintf("select sum(if(`Store Total Profit`<0,`Store Total Profit`,0)) as total_profit_minus,sum(if(`Store Total Profit`>=0,`Store Total Profit`,0)) as total_profit_plus,sum(`Store Total Invoiced Amount`) as sum_total_sales  from `Store Dimension`  S   %s %s and `Store Currency Code`= %s ",$where,$wheref,prepare_mysql($myconf['currency_code'])); */
+/* 	//print $sql; */
+/*         $result=mysql_query($sql); */
+/*         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) { */
 
-            $sum_total_sales+=$row['sum_total_sales'];
+/*             $sum_total_sales+=$row['sum_total_sales']; */
 
-            $sum_total_profit_plus+=$row['total_profit_plus'];
-            $sum_total_profit_minus+=$row['total_profit_minus'];
-            $sum_total_profit+=$row['total_profit_plus']-$row['total_profit_minus'];
-        }
-        mysql_free_result($result);
+/*             $sum_total_profit_plus+=$row['total_profit_plus']; */
+/*             $sum_total_profit_minus+=$row['total_profit_minus']; */
+/*             $sum_total_profit+=$row['total_profit_plus']-$row['total_profit_minus']; */
+/*         } */
+/*         mysql_free_result($result); */
 
 	if($exchange_type=='day2day'){
 	  $sql=sprintf("select sum(if(`Store DC Total Profit`<0,`Store DC Total Profit`,0)) as total_profit_minus,sum(if(`Store DC Total Profit`>=0,`Store DC Total Profit`,0)) as total_profit_plus,sum(`Store DC Total Invoiced Amount`) as sum_total_sales  from `Store Default Currency`  S   %s %s",$where,$wheref);
@@ -6566,7 +6566,7 @@ function list_stores() {
         }
         mysql_free_result($result);
 	if($exchange_type=='day2day'){
-	  $sql=sprintf("select sum(if(`Store 1 Year Acc Profit`<0,`Store 1 Year Acc Profit`,0)) as total_profit_minus,sum(if(`Store 1 Year Acc Profit`>=0,`Store 1 Year Acc Profit`,0)) as total_profit_plus,sum(`Store 1 Year Acc Invoiced Amount`) as sum_total_sales  from `Store Default Currency`  S   %s %s",$where,$wheref);
+	  $sql=sprintf("select sum(if(`Store DC 1 Year Acc Profit`<0,`Store DC 1 Year Acc Profit`,0)) as total_profit_minus,sum(if(`Store DC 1 Year Acc Profit`>=0,`Store DC 1 Year Acc Profit`,0)) as total_profit_plus,sum(`Store DC 1 Year Acc Invoiced Amount`) as sum_total_sales  from `Store Default Currency`  S   %s %s",$where,$wheref);
 	  //print $sql;
 	  $result=mysql_query($sql);
 	  if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {

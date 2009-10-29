@@ -107,6 +107,8 @@ $fam_no_fam_key=$fam_no_fam->id;
 $fam_promo_key=$fam_promo->id;
 
 
+
+
 $sql="select * from  fr_orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed)  order by filename  ";
 //$sql="select * from  fr_orders_data.orders where filename like '%refund.xls'   order by filename";
 //$sql="select * from  fr_orders_data.orders  where filename like '/mnt/%.xls'  order by filename";
@@ -885,7 +887,7 @@ $header_data['Order Main Source Type']='Unknown';
 
 
       $part_list=array();
-
+if ($product->new_id ) {
  
 	$uk_product=new Product('code_store',$code,1);
 

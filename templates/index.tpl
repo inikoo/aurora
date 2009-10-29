@@ -14,5 +14,9 @@
     <span  class="search_msg"   id="order_search_msg"    ></span> <span  class="search_sugestion"   id="contact_search_sugestion"    ></span>
   </div>
 </div>
+
+<div style="float:left">
+<img style="width:600px" src="art/home_baner_1.9.png">
+</div>
 </div>
 {include file='footer.tpl'}

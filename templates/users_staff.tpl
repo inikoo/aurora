@@ -1,14 +1,17 @@
 {include file='header.tpl'}
 <div id="bd" >
-<span class="nav2 onright"><a href="edit_users.php">{t}Edit Users{/t}</a></span>
+<span class="nav2 onleft"><a class="selected" href="users_staff.php">{t}Staff Users{/t}</a></span>
+<span class="nav2 onleft"><a href="users_supplier.php">{t}Supplier Users{/t}</a></span>
+<span class="nav2 onleft"><a href="users_customer.php">{t}Customer Users{/t}</a></span>
+
 
   <div id="yui-main">
     <div style="width:300px;float:right;padding:10px;text-align:right">
-    
+    <span ><a class="state_details" href="edit_users_staff.php">{t}Edit Users{/t}</a></span>
       
     </div>
     <div class="data_table" style="margin-top:25px">
-      <span class="clean_table_title">{t}Users{/t}</span>
+      <span class="clean_table_title">{t}Staff Users{/t}</span>
       <div  class="clean_table_caption"  style="clear:both;">
 	<div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
 	<div class="clean_table_filter" id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0">{$filter_name0}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value0}" size=10/><div id='f_container0'></div></div></div>

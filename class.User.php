@@ -140,8 +140,115 @@ class User extends DB_Table{
   }
 
 
+  function update_active($value){
+    $this->updated=false;
+    
+    if(preg_match('/^(activate|yes|si|1|true)$/i',$value))
+      $value='Yes';
+     if(preg_match('/^(des?activate|no|0|false)$/i',$value))
+      $value='No';
 
-function set($tipo,$data){
+     if(!preg_match('/^(Yes|No)$/',$value)){
+       $this->error=true;
+       $thus->msg=_('Wrong value');
+     }
+
+     $sql=sprintf("update `User Dimension` set `User Active`=%s where `User Key`=%d  ",prepare_mysql($value),$this->id);
+     mysql_query($sql);
+     //print $sql;
+     if (mysql_affected_rows()>0) {
+       $this->updated=true;
+       $this->data['User Active']=$value;
+       $this->new_value=$value;
+       if($value=='Yes'){
+	 $history_data=array(
+			     'note'=>_('User Activated')
+			     ,'details'=>_trim(_('User')." ".$this->data['User Alias']." (".$this->data['User Type'].")  "._('activated'))
+			     ,'action'=>'edited'
+			     
+			     );
+       }else{
+	 $history_data=array(
+			     'note'=>_('User Desactivated')
+			    ,'details'=>_trim(_('User')." ".$this->data['User Alias']." (".$this->data['User Type'].")  "._('deactivated'))
+			     ,'action'=>'edited'
+			  );
+	 
+       }
+
+      $this->add_history($history_data);
+
+     }else{
+       $this->msg=_('Nothing to change');
+     }
+
+  }
+
+  function update_groups($value){
+    
+    $this->updated=false;
+
+    //     global $_group;
+     $groups=split(',',$value);
+     foreach($groups as $key=>$value){
+       if(!is_numeric($value) )
+	 unset($groups[$key]);
+     }
+       
+
+     $this->read_groups();
+     
+     
+     $old_groups=$this->groups_key_array;
+     //     print_r($old_groups);
+     //print_r($groups);
+     $to_delete = array_diff($old_groups, $groups);
+     $to_add = array_diff($groups, $old_groups);
+     //	print_r($to_delete);
+     //		print_r($to_add);
+	
+     //  $this->data['groups']=$groups;
+     //$this->data['groups_list']='';
+     // foreach($this->data['groups'] as $group_id){
+     //  $this->data['groups_list'].=', '.$_group[$group_id];
+     //	}
+     //$this->data['groups_list']=preg_replace('/^\,\s/','',$this->data['groups_list']);
+     
+
+     //return;
+     
+	if(count($to_delete)>0){
+	  $this->delete_group($to_delete);
+	  //$this->save_history('isactive',array('user_id'=>$data['user_id'],'date'=>date('Y-m-d H:i:s'),'old_value'=>$old_value   ));
+	}
+	if(count($to_add)>0){
+	  $this->add_group($to_add);
+	  //$this->save_history('isactive',array('user_id'=>$data['user_id'],'date'=>date('Y-m-d H:i:s'),'old_value'=>$old_value   ));
+	}
+	$this->read_groups();	
+	
+	if(count($to_add)>0 or count($to_delete)>0){
+	  $this->updated=true;
+	}
+
+	break;
+  }
+
+
+function update($tipo,$data){
+ switch($tipo){
+  case('isactive'):
+    $this->update_active($data['value']);
+    break;
+ case('groups'):
+   $this->update_groups($data['value']);
+    break;
+
+ }
+
+
+}
+function xupdate($tipo,$data){
   switch($tipo){
   case('isactive'):
        
@@ -196,7 +303,7 @@ function set($tipo,$data){
  
 
  
- function update_password($data){
+ function change_password($data){
    if(strlen($data)!=64){
      $this->error=true;
      $this->error_updated=true;
@@ -221,6 +328,19 @@ function set($tipo,$data){
      $sql=sprintf("insert into `User Group User Bridge`values (%d,%d) ",$this->id,$group_id);
      //print $sql;
      mysql_query($sql);
+      if (mysql_affected_rows()>0) {
+     $history_data=array(
+			 'note'=>_('User added to Group')
+			 ,'details'=>_trim(_('User')." ".$this->data['User Alias']." "._('added to')." ".$this->groups['group_id']['User Group Name'])
+			 ,'action'=>'disassociate'
+			 ,'indirect_object'=>'Group'
+			 ,'indirect_object_key'=>$group_id
+			 );
+     $this->add_history();
+     
+   }
+
+
    }
 
  }
@@ -228,8 +348,19 @@ function set($tipo,$data){
  function delete_group($to_add,$history=true){
    
    foreach($to_add as $group_id){
-     $sql=sprintf("delete from `User Gorup User Dimension` where `User Key`=%d and `Group Key`=%d ",$this->id,$group_id);
+     $sql=sprintf("delete from `User Group User Dimension` where `User Key`=%d and `Group Key`=%d ",$this->id,$group_id);
      mysql_query($sql);
+   }
+   if (mysql_affected_rows()>0) {
+     $history_data=array(
+			 'note'=>_('User deleted from Group')
+			 ,'details'=>_trim(_('User')." ".$this->data['User Alias']." "._('removed from')." ".$this->groups['group_id']['User Group Name'])
+			 ,'action'=>'disassociate'
+			 ,'indirect_object'=>'Group'
+			 ,'indirect_object_key'=>$group_id
+			 );
+     $this->add_history();
+     
    }
 
  }
@@ -321,12 +452,15 @@ function can_do_this_key($right_type,$tag,$tag_key){
 function read_groups(){
   $this->groups=array();
   $this->groups_key_list='';
+  $this->groups_key_array=array();
+
   $sql=sprintf("select * from `User Group User Bridge` UGUB left join `User Group Dimension` GD on (GD.`User Group Key`=UGUB.`User Group Key`) where UGUB.`User Key`=%d",$this->id);
   
   $res=mysql_query($sql);
   while($row=mysql_fetch_array($res)){
     $this->groups[$row['User Group Key']]=array('User Group Name'=>$row['User Group Name']);
     $this->groups_key_list.=','.$row['User Group Key'];
+    $this->groups_key_array[]=$row['User Group Key'];
   }
   $this->groups_key_list=preg_replace('/^,/','', $this->groups_key_list);
   

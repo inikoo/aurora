@@ -16,6 +16,15 @@ require_once 'common.php';
 require_once 'class.User.php';
 require_once 'class.Staff.php';
 
+$editor=array(
+	      'Author Name'=>$user->data['User Alias'],
+	      'Author Type'=>$user->data['User Type'],
+	      'Author Key'=>$user->data['User Parent Key'],
+	      'User Key'=>$user->id
+	      );
+
+
+
 if(!isset($_REQUEST['tipo']))
   {
     $response=array('state'=>405,'msg'=>_('Non acceptable request').' (t)');
@@ -56,34 +65,17 @@ case('valid_handle'):
 
   break;
 case('change_passwd'):
-   $user=new User($_REQUEST['user_id']);
-     if($user->id){
-       $res=$user->change_password($value);
-       echo json_encode($res);
-       break;
-       
-   }else
-     $response=array('state'=>400,'msg'=>_("User don't exist"));
-   echo json_encode($response);
+  change_user_passwd();
+
+ 
    
    break;
 case('edit_user'):
    
-   $user=new User($_REQUEST['user_id']);
-   if($user->id){
-     $data=array(
-		 'value'=>$_REQUEST['newValue'],
-		 'user_id'=>$LU->getProperty('auth_user_id')
-		 );
-     // print_r($data);
-     $res=$user->set($_REQUEST['key'],$data);
-     if($res['ok'])
-       $response=array('state'=>200,'data'=>$user->get($_REQUEST['key']));
-     else
-       $response=array('state'=>400,$res['msg']);
-   }else
-     $response=array('state'=>400,'msg'=>_("User don't exist"));
-   echo json_encode($response);
+
+  edit_user();
+
+  
    
    break;
 
@@ -407,9 +399,9 @@ case('updateone'):
    default:
      $response=array('state'=>404,'msg'=>_('Sub-operation not found'));
      echo json_encode($response);
+   }
+
 }
-
-
 
    function list_users(){
 
@@ -553,4 +545,44 @@ case('updateone'):
    echo json_encode($response);
 
    }
+
+
+function edit_user(){
+  global $editor;
+ $user=new User($_REQUEST['user_id']);
+ $user->editor=$editor;
+ if($user->id){
+   $data=array(
+	       'value'=>$_REQUEST['newValue'],
+	       //'user_id'=>$LU->getProperty('auth_user_id')
+	       );
+   //print_r($data);
+   //exit;
+    $user->update($_REQUEST['key'],$data);
+   if($user->updated)
+     $response=array('state'=>200,'data'=>$user->new_value);
+   else
+     $response=array('state'=>400,'msg'=>$user->msg);
+   }else
+   $response=array('state'=>400,'msg'=>_("User don't exist"));
+   echo json_encode($response);
+
+}
+function change_user_passwd(){
+  $user=new User($_REQUEST['user_id']);
+  $value=$_REQUEST['value'];
+   if($user->id){
+       $user->change_password($value);
+       if(!$user->error)
+	 $response=array('state'=>200);
+       else
+	 $response=array('state'=>400,'msg'=>$user->msg);
+
+       
+   }else
+     $response=array('state'=>400,'msg'=>_("User don't exist"));
+   echo json_encode($response);
+}
+
+
 ?>

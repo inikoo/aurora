@@ -513,13 +513,14 @@ $default_state=array(
                         ),
                    'users'=>array(
                                'user_list'=>array(
-                                               'order'=>'handle',
-                                               'order_dir'=>'',
-                                               'sf'=>0,
-                                               'nr'=>50,
-                                               'where'=>'where true',
-                                               'f_field'=>'name',
-                                               'f_value'=>''
+						  'type'=>'Staff',
+						  'order'=>'handle',
+						  'order_dir'=>'',
+						  'sf'=>0,
+						  'nr'=>50,
+						  'where'=>'where true',
+						  'f_field'=>'name',
+						  'f_value'=>''
                                            ),
                                'groups'=>array(
                                             'order'=>'name',

@@ -100,7 +100,7 @@ $smarty->assign('user',$user->data['User Alias']);
 $user->read_rights();
 $nav_menu=array();
 if($user->can_view('users'))
-  	$nav_menu[] = array(_('Users'), 'users.php');
+  	$nav_menu[] = array(_('Users'), 'users_staff.php');
 else
 	 $nav_menu[] = array(_('Profile'), 'user.php');
 if($user->can_view('staff'))
