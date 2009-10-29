@@ -99,7 +99,7 @@ $fam_no_fam_key=$fam_no_fam->id;
 $fam_promo_key=$fam_promo->id;
 
 
-$sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed)  order by filename ";
+$sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed)  order by filename desc";
 
 
 //$sql="select * from  orders_data.orders where filename like '%refund.xls'   order by filename";
@@ -1242,8 +1242,8 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     $sales_rep_data=get_user_id($header_data['takenby'],true,'&view=processed');
     $data['Order XHTML Sale Reps']=$sales_rep_data['xhtml'];
     $data['Order Sale Reps IDs']=$sales_rep_data['id'];
-
-
+$data['Order Currency']='GBP';
+$data['Order Currency Exchange']=1;
     if($tipo_order==2 or $tipo_order==1  or $tipo_order==4 or $tipo_order==5 or   $tipo_order==3   )  {
       //print_r($data);
     

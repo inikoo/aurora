@@ -74,14 +74,28 @@ function list_users(){
   else
     $tableid=0;
 
+   
+ if(isset( $_REQUEST['type']))
+    $type=$_REQUEST['type'];
+  else
+    $type=$conf['type'];
+
+
  $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
    $_order=$order;
    $_dir=$order_direction;
    $filter_msg='';
 
 
-  $_SESSION['state']['users']['user_list']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+  $_SESSION['state']['users']['user_list']=array(
+						 'type'=>$type
+						 ,'order'=>$order
+						 ,'order_dir'=>$order_direction
+						 ,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
 
+
+
+  $where=sprintf('where `User Type`=%s',prepare_mysql($type));
 
 
   $filter_msg='';
@@ -128,7 +142,7 @@ function list_users(){
 
    $adata=array();
    $sql="Select *,(select GROUP_CONCAT(UGUD.`User Group Key`) from `User Group User Bridge` UGUD left join  `User Group Dimension` UGD on (UGUD.`User Group Key`=UGD.`User Group Key`)      where UGUD.`User Key`=U.`User Key`   ) as Groups  from `User Dimension` U  $where $wheref   order by $order $order_direction limit $start_from,$number_results;";
-   //   print $sql;
+   //print $sql;
    $res=mysql_query($sql);
    
    while($row=mysql_fetch_array($res)) {
@@ -149,9 +163,11 @@ $lang=$match[0];
 		   'email'=>$row['User Email'],
 		   'lang'=>$lang,
 		   'groups'=>$groups,
-		   'password'=>'<img style="cursor:pointer" user_name="'.$row['User Alias'].'" user_id="'.$row['User Key'].'" onClick="change_passwd(this)" src="art/icons/key.png"/>'.($row['User Email']!=''?'<img src="art/icons/key_go.png"/>':''),
+		   'password'=>'<img style="cursor:pointer" user_name="'.$row['User Alias'].'" user_id="'.$row['User Key'].'" onClick="change_passwd(this)" src="art/icons/key.png"/>',
 		   'passwordmail'=>($row['User Email']!=''?'<img src="art/icons/key_go.png"/>':''),
-		   'isactive'=>($row['User Active']=='Yes'?'<img src="art/icons/status_online.png" alt="'._('active').'" Title="'._('Active').'"  />':'<img src="art/icons/status_offline.png" Title="'._('Inactive').'"  alt="'._('inactive').'/>'),
+		   //'isactive'=>($row['User Active']=='Yes'?'<img src="art/icons/status_online.png" alt="'._('active').'" Title="'._('Active').'"  />':'<img src="art/icons/status_offline.png" Title="'._('Inactive').'"  alt="'._('inactive').'/>'),
+		   'isactive'=>$row['User Active'],
+
 		   'delete'=>'<img src="art/icons/status_busy.png"/>'
 		   );
 

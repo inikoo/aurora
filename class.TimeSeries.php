@@ -1501,13 +1501,16 @@ if($number_values<=6)
      
      
       if($tipo=='SI' or $tipo=='PI'){
-	$tip=$row['Time Series Label'].' '._('Sales')." ".strftime("%B %Y", strtotime('@'.$row['date']))."\n".money($row['value'],$currency)."\n".$diff_prev_month.$diff_prev_year."(".$row['count']." "._('Invoices').")";
+	$tip=$row['Time Series Label'].' '._('Sales')
+	  ." ".strftime("%B %Y", strtotime('@'.$row['date']))."\n".money($row['value'],$currency)."\n".$diff_prev_month.$diff_prev_year."(".$row['count']." "._('Invoices').")";
       
       }elseif($tipo=="PO"){
-	$tip=_('Sales')." ".strftime("%B %Y", strtotime('@'.$row['date']))."\n".money($row['value']$currency)."\n".$diff_prev_month.$diff_prev_year."(".$row['count']." "._('Outers Shipped').")";
+
+	$tip=_('Sales')." ".strftime("%B %Y", strtotime('@'.$row['date']))."\n".money($row['value'],$currency)."\n".
+	  $diff_prev_month.$diff_prev_year."(".$row['count']." "._('Outers Shipped').")";
       
       }elseif($tipo=='PI' or $tipo=='PP'){
-	$tip=$row['Time Series Label'].' '._('Profit')." ".strftime("%B %Y", strtotime('@'.$row['date']))."\n".money($row['value']$currency)."\n".$diff_prev_month.$diff_prev_year."(".$row['count']." "._('Invoices').")";
+	$tip=$row['Time Series Label'].' '._('Profit')." ".strftime("%B %Y", strtotime('@'.$row['date']))."\n".money($row['value'],$currency)."\n".$diff_prev_month.$diff_prev_year."(".$row['count']." "._('Invoices').")";
 
       }
     

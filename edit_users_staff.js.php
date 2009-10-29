@@ -22,50 +22,101 @@ foreach($_group as $key=>$value){
 }
 print $g;
 ?>
+var  store_name=new Object;
+
+<?php
+  // todo: only list active stores
+    $s='';
+$sql="select `Store Key`,`Store Code` from `Store Dimension`  ";
+$res=mysql_query($sql);
+while($row=mysql_fetch_array($res)){
+    $s.="store_name[".$row['Store Key']."]='".$row['Store Code']."';";
+}
+mysql_free_result($res);
+print $s;
+
+?>
     
     
-     var active=function(el, oRecord, oColumn, oData){                                                                                                                                                  
-                                                                                                                                                                                                               
-                if(oData=='0')                                                                                                                                                                                 
-                    el.innerHTML ='<img src="art/icons/status_offline.png" />';                                                                                                                                
-                else                                                                                                                                                                                           
-                    el.innerHTML = '<img src="art/icons/status_online.png" />';                                                                                                                                
+    var active=function(el, oRecord, oColumn, oData){                                                                                                                                                  
+	
+	if(oData=='No')                                                                                                                                                                                 
+	    el.innerHTML ='<img src="art/icons/status_offline.png" />';                                                                                                                                
+	else                                                                                                                                                                                           
+	    el.innerHTML = '<img src="art/icons/status_online.png" />';                                                                                                                                
             };                                                                                                                                                                                                 
-                                                                                                                                                                                                               
-            var edit_active=function (callback, newValue) {                                                                                                                                                    
-                                                                                                                                                                                                               
-                var record = this.getRecord(),                                                                                                                                                                 
-                column = this.getColumn(),                                                                                                                                                                     
-                oldValue = this.value,                                                                                                                                                                         
-                datatable = this.getDataTable();                                                                                                                                                               
-                //              for( x in record)                                                                                                                                                              
-                user_id=record.getData('id');                                                                                                                                                                  
-                var request='ar_edit_users.php?tipo=edit_user&user_id='+escape(user_id)+'&key=' + column.key + '&newValue=' + escape(newValue) + '&oldValue=' + escape(oldValue)                                    
-                //alert(request);                                                                                                                                                                              
-                YAHOO.util.Connect.asyncRequest(                                                                                                                                                               
-                                                'POST',                                                                                                                                                        
-                                                request, {                                                                                                                                                     
-                                                    success:function(o) {                                                                                                                                      
-                                                        //      alert(o.responseText);                                                                                                                         
-                                                        var r = YAHOO.lang.JSON.parse(o.responseText);                                                                                                         
-                                                        if (r.state == 200) {                                                                                                                                  
-                                                            callback(true, r.data);                                                                                                                            
-                                                        } else {                                                                                                                                               
-                                                            alert(r.msg);                                                                                                                                      
-                                                            callback();                                                                                                                                        
-                                                        }                                                                                                                                                      
-                                                    },                                                                                                                                                         
-                                                    failure:function(o) {                                                                                                                                      
-                                                        alert(o.statusText);                                                                                                                                   
-                                                        callback();                                                                                                                                            
-                                                    },                                                                                                                                                         
-                                                    scope:this                                                                                                                                                 
-                                                }                                                                                                                                                              
-                                                                                                                                                                                                               
-                                                );                                                                                                                                                             
-            }                                                                                                                                                                                                  
-                                       
+
+var edit_active=function (callback, newValue) {                                                                                                                                                    
     
+    var record = this.getRecord(),                                                                                                                                                                 
+    column = this.getColumn(),                                                                                                                                                                     
+    oldValue = this.value,                                                                                                                                                                         
+    datatable = this.getDataTable();                                                                                                                                                               
+    //              for( x in record)                                                                                                                                                              
+    user_id=record.getData('id');                                                                                                                                                                  
+    var request='ar_edit_users.php?tipo=edit_user&user_id='+escape(user_id)+'&key=' + column.key + '&newValue=' + escape(newValue) + '&oldValue=' + escape(oldValue)                                    
+    //                alert(request);                                                                                                                                                                              
+    YAHOO.util.Connect.asyncRequest(                                                                                                                                                               
+				    'POST',                                                                                                                                                        
+				    request, {                                                                                                                                                     
+					success:function(o) {                                                                                                                                      
+					    //      alert(o.responseText);                                                                                                                         
+					    var r = YAHOO.lang.JSON.parse(o.responseText);                                                                                                         
+					    if (r.state == 200) {                                                                                                                                  
+                                                            callback(true, r.data);                                                                                                                            
+					    } else {                                                                                                                                               
+						alert(r.msg);                                                                                                                                      
+						callback();                                                                                                                                        
+                                                        }                                                                                                                                                      
+					},                                                                                                                                                         
+					failure:function(o) {                                                                                                                                      
+					    alert(o.statusText);                                                                                                                                   
+                                                        callback();                                                                                                                                            
+					},                                                                                                                                                         
+					scope:this                                                                                                                                                 
+                                                }                                                                                                                                                              
+				    
+																								   );                                                                                                                                                             
+}                                                                                                                                                                                                  
+    
+    		
+	  var edit_group=function (callback, newValue) {
+		
+		var record = this.getRecord(),
+		column = this.getColumn(),
+		oldValue = this.value,
+		datatable = this.getDataTable();
+		//		for( x in record)
+		user_id=record.getData('id');
+		var request='ar_edit_users.php?tipo=edit_user&user_id='+escape(user_id)+'&key=' + column.key + '&newValue=' + escape(newValue) + '&oldValue=' + escape(oldValue)
+			alert(request);
+		YAHOO.util.Connect.asyncRequest(
+						'POST',
+						request, {
+						    success:function(o) {
+							//alert(o.responseText);
+							var r = YAHOO.lang.JSON.parse(o.responseText);
+							if (r.state == 200) {
+							    callback(true, r.data);
+							    var table=tables['table1'];
+							    var datasource=tables['dataSource1'];
+							    var request='';
+							    datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
+							    
+							} else {
+							    alert(r.msg);
+							    callback();
+							}
+						    },
+						    failure:function(o) {
+							alert(o.statusText);
+							callback();
+						    },
+						    scope:this
+						}
+					        
+						);                                              
+	    }	
     
     
     YAHOO.util.Event.addListener(window, "load", function() {
@@ -99,16 +150,52 @@ print $g;
 
 	   
 	    var ColumnDefs = [
-			      
-			      {key:"isactive",label:"" ,width:16 ,editor: new YAHOO.widget.RadioCellEditor({radioOptions:[{label:"yes", value:"1"}, {label:"no", value:"0"}]
+			       {key:"password",label:"" ,width:16 },
+			      {key:"isactive",label:"<?php echo _('Active')?>" ,className:'aright',formatter:active,width:45 ,editor: new YAHOO.widget.RadioCellEditor({radioOptions:[{label:"Yes", value:"Yes"}, {label:"No", value:"No"}]
 			      ,defaultValue:"0",asyncSubmitter:edit_active }) }
-			      ,{key:"tipo", label:"<?php echo _('Type')?>",width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			      , {key:"handle", label:"<?php echo _('Handle')?>",width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			      //  ,{key:"tipo", label:"<?php echo _('Type')?>",width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			      , {key:"handle", label:"<?php echo _('Login')?>",width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 			      ,{key:"name", label:"<?php echo _('Name')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 			      //	 {key:"email", label:"<?php echo _('Email')?>",sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
 			      ,{key:"lang", label:"<?php echo _('Language')?>",sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			      ,{key:"groups",formatter:group,label:"<?php echo _('Groups')?>",className:"aleft"  }
-													   ];
+			      ,{key:"groups",formatter:group,label:"<?php echo _('Groups')?>",className:"aleft"
+				, editor: new YAHOO.widget.CheckboxCellEditor({
+					asyncSubmitter:edit_group,checkboxOptions:[
+										   <?php
+										   $g='';
+										   foreach($_group as $key=>$value){
+										       $g.="{label:'$value<br>', value:$key},";
+										   }
+										   preg_replace('/,$/','',$g);
+										   print $g;
+										   ?>
+										   ]
+				    })  
+			      }
+			       ,{key:"stores", label:"<?php echo _('Stores')?>",sortable:true,className:"aleft"
+				 	, editor: new YAHOO.widget.CheckboxCellEditor({
+					asyncSubmitter:edit_group,checkboxOptions:[
+										   <?php
+										   $s='';
+										   $sql="select `Store Key`,`Store Code`,`Store Name` from `Store Dimension`  ";
+										   $res=mysql_query($sql);
+										   while($row=mysql_fetch_array($res)){
+										       $code=$row['Store Code'];
+										       $key=$row['Store Key'];
+										       $name=$row['Store Name'];
+										       $s.="{label:'$code<br>', value:$key},";
+										   }
+										   preg_replace('/,$/','',$s);
+										   print $s;
+										   ?>
+										   ]
+				    })  
+				 
+			      
+			      }
+
+
+			      ];
 			       
 	    this.dataSource0 = new YAHOO.util.DataSource("ar_users.php?tipo=users&tableid=0");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -128,7 +215,7 @@ print $g;
 		
 		
 		fields: [
-			 "id","isactive","handle","name","email","lang","groups","tipo","active"
+			 "id","isactive","handle","name","email","lang","groups","tipo","active","password"
 			 ]};
 
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
@@ -257,6 +344,9 @@ function other_back(){
  }
 
 
+
+
+
 function close_me(pre)
 {
 
@@ -347,6 +437,21 @@ var change_passwd=function(o){
     
 }
 
+
+    function close_change_password_dialog(){
+
+	Dom.get('change_staff_passwd1').value='';
+	Dom.get('change_staff_passwd2').value='';
+	change_meter('','change_staff');
+	Dom.get('change_staff_password_meter_bar').style.visibility='hidden';
+	Dom.get('change_staff_password_meter_bar').innerHTML='&nbsp;';
+	Dom.get('change_staff_password_meter_str').innerHTML='';
+
+	Dom.get('change_staff_save').style.visibility='hidden';
+	change_staff_password.hide();
+
+    }
+
 var select_staff=function(o){
 
     var is_in=o.getAttribute('is_in');
@@ -406,13 +511,15 @@ var change_staff_pwd=function(){
     
     passwd=sha256_digest(Dom.get('change_staff_passwd1').value);
     user_id=Dom.get('change_staff_password_alias').getAttribute('user_id');
-    var request='ar_users.php?tipo=change_passwd&user_id='+escape(user_id)+'&value='+escape(passwd);
+    var request='ar_edit_users.php?tipo=change_passwd&user_id='+escape(user_id)+'&value='+escape(passwd);
+    //  alert(request);
+    // exit;
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    
 	    success:function(o) {
 		//		alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
-		if (r.ok) {
+		if (r.state==200) {
 		    
 		    Dom.get('change_staff_passwd1').value='';
 		    Dom.get('change_staff_passwd2').value='';

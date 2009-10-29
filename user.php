@@ -1,54 +1,68 @@
 <?php
-//@author Raul Perusquia <rulovico@gmail.com>
-//Copyright (c) 2009 LW
-include_once('common.php');
-include_once ('header.php');
-if(!(isset($_REQUEST['id']) and is_numeric($_REQUEST['id']))){exit();}
-$id=$_REQUEST['id'];
-$sql="select * from liveuser_users as u where u.authuserid=".$id;
-$result = mysql_query($sql);
-if($user=mysql_fetch_array($result, MYSQL_ASSOC)){
-  
-  
-  
-  $rightmenu='';
-  $content='';
+/*
+ File: user.php 
+
+ UI index page
+
+ About: 
+ Autor: Raul Perusquia <rulovico@gmail.com>
  
+ Copyright (c) 2009, Kaktus 
+ 
+ Version 2.0
+*/
 
-$page = new HTML_Page2();
-$page->setTitle($myconf['sname'].' '._('User'));
-$page->setBodyAttributes(array('class'=>' yui-skin-sam'));
-$page->addStyleSheet('yui/2.5.0/build/reset-fonts-grids/reset-fonts-grids.css');
-$page->addStyleSheet('yui/2.5.0/build/menu/assets/skins/sam/menu.css');
-$page->addStyleSheet('common.css');
+include_once('common.php');
 
+include_once('class.User.php');
 
-
-
-
-$page->addScript('yui/2.5.0/build/yahoo-dom-event/yahoo-dom-event.js');
-$page->addScript('yui/2.5.0/build/utilities/utilities.js');
-$page->addScript('yui/2.5.0/build/container/container.js');
-$page->addScript('yui/2.5.0/build/menu/menu.js');
-
-$page->addScript('js/common.js');
-
-$page->addBodyContent(
-'
-<div id="doc4"  class="yui-t6">
-   <div id="hd" >'.$header.'</div> 
-   <div id="bd" >
-<div id="yui-main">
-<div class="yui-b">'.$content.'</div>
-</div>
-<div id="rmenu" class="yui-b">'.$rightmenu.'</div>
-</div> 
-<div id="ft">'.footer($start_timer).'</div> 
-</div>'.$lang_menu
-
-);
+$view_orders=$user->can_view('Orders');
+$smarty->assign('view_orders',$view_orders);
 
 
-$page->display();
- }
+$smarty->assign('box_layout','yui-t4');
+
+$css_files=array(
+		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+		 $yui_path.'menu/assets/skins/sam/menu.css',
+		 $yui_path.'calendar/assets/skins/sam/calendar.css',
+		 $yui_path.'button/assets/skins/sam/button.css',
+		 'common.css',
+		 'button.css',
+		 'container.css',
+		 'table.css'
+		 );
+$js_files=array(
+
+		$yui_path.'utilities/utilities.js',
+		$yui_path.'json/json-min.js',
+		$yui_path.'paginator/paginator-min.js',
+		$yui_path.'datasource/datasource-min.js',
+		$yui_path.'autocomplete/autocomplete-min.js',
+		$yui_path.'datatable/datatable-min.js',
+		$yui_path.'container/container_core-min.js',
+		$yui_path.'menu/menu-min.js',
+		$yui_path.'calendar/calendar-min.js',
+		'common.js.php',
+		'table_common.js.php',
+		'js/search.js',
+		'index.js.php'
+		);
+
+
+
+
+$smarty->assign('parent','user.php');
+$smarty->assign('title', _('User'));
+$smarty->assign('css_files',$css_files);
+$smarty->assign('js_files',$js_files);
+
+
+
+$smarty->display('user.tpl');
+
+
+
+
+
 ?>

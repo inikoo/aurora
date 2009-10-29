@@ -239,7 +239,7 @@ protected function add_history($raw_data){
   $data['indirect_object_key']=0;
 
 
-  if($this->editor['Date'])
+  if(isset($this->editor['Date']))
     $data['date']=$this->editor['Date'];
   else
     $data['date']=date("Y-m-d H:i:s");
