@@ -38,8 +38,10 @@ $js_files=array(
 		$yui_path.'menu/menu-min.js',
 		'common.js.php',
 		'table_common.js.php',
-		'users.js.php',
-		
+		//'users.js.php',
+		'sha256.js.php',
+		'passwordmeter.js.php',
+		'edit_users.js.php'
 		);
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
@@ -122,5 +124,5 @@ $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 
-$smarty->display('users.tpl');
+$smarty->display('edit_users.tpl');
 ?>

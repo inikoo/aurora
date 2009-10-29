@@ -883,19 +883,19 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	  // print "found part \n";
 	  $part=new Part('sku',$parts[0]);
 	  $part_list[]=array(
-			       'Product ID'=>$product->get('Product ID'),
-			       'Part SKU'=>$parts[0],
-			       'Product Part Id'=>1,
-			       'requiered'=>'Yes',
-			       'Parts Per Product'=>1,
-			       'Product Part Type'=>'Simple Pick'
-			       );
-	   $parts_per_product=1;
-
-	  }else{
+			     'Product ID'=>$product->get('Product ID'),
+			     'Part SKU'=>$parts[0],
+			     'Product Part Id'=>1,
+			     'requiered'=>'Yes',
+			     'Parts Per Product'=>1,
+			     'Product Part Type'=>'Simple Pick'
+			     );
+	  $parts_per_product=1;
+	  
+	}else{
 	  //print "part not found \n";
-
-	    //creamos una parte nueva
+	  
+	  //creamos una parte nueva
 	    $part_data=array(
 			     'Part Most Recent'=>'Yes',
 			     'Part XHTML Currently Supplied By'=>sprintf('<a href="supplier.php?id=%d">%s</a>',$supplier->id,$supplier->get('Supplier Code')),
