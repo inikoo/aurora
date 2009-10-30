@@ -185,6 +185,7 @@ var edit_active=function (callback, newValue) {
 										       $name=$row['Store Name'];
 										       $s.="{label:'$code<br>', value:$key},";
 										   }
+										   mysql_free_result($res);
 										   preg_replace('/,$/','',$s);
 										   print $s;
 										   ?>

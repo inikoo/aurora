@@ -97,7 +97,11 @@ $smarty->assign('page_layout','doc4');
 include_once('set_state.php');
 
 $smarty->assign('user',$user->data['User Alias']);
+$user->read_groups();
 $user->read_rights();
+$user->read_scopes();
+//print_r($user);
+//exit;
 $nav_menu=array();
 if($user->can_view('users'))
   	$nav_menu[] = array(_('Users'), 'users_staff.php');
@@ -119,8 +123,13 @@ if($user->can_view('customers'))
 if($user->can_view('warehouses'))
 $nav_menu[] = array(_('Warehouse'), 'warehouse.php');
 
-if($user->can_view('stores'))
-  $nav_menu[] = array(_('Products'), 'stores.php');
+if($user->can_view('stores')){
+    if(count($user->scopes)==1){
+    $nav_menu[] = array(_('Products'), 'store.php?id='.$user->scopes[0]);
+    }else
+    $nav_menu[] = array(_('Products'), 'stores.php');
+}
+
 $nav_menu[] = array(_('Home'), 'index.php');
 
 $smarty->assign('nav_menu',$nav_menu);
