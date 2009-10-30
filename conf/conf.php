@@ -204,7 +204,8 @@ $default_state=array(
 
                    'orders'=>array(
                                 'details'=>false,
-                                'view'=>'orders',
+                                'store'=>'',
+				'view'=>'orders',
                                 'only'=>'',
                                 'from'=>'',
                                 'to'=>'',
@@ -355,16 +356,17 @@ $default_state=array(
                                     ),
 
                    'customers'=>array(
-                                   'view'=>'general',
-                                   'details'=>0,
-                                   'plot'=>'customer_month_population',
-                                   'table'=>array(
-                                               'order'=>'name',
-                                               'order_dir'=>'',
+				      'store'=>'',
+				      'view'=>'general',
+				      'details'=>0,
+				      'plot'=>'customer_month_population',
+				      'table'=>array(
+						     'order'=>'name',
+						     'order_dir'=>'',
                                                'sf'=>0,
-                                               'nr'=>25,
-                                               'where'=>'where true',
-                                               'f_field'=>'customer name',
+						     'nr'=>25,
+						     'where'=>'where true',
+						     'f_field'=>'customer name',
                                                'f_value'=>''
                                            ),
                                    'advanced_search'=>array(
@@ -1057,9 +1059,7 @@ $default_state=array(
                                 'avg'=>'totals',
                                 'edit'=>'stores',
                                 'editing'=>false,
-				
-				
-                                'table'=>array(
+				'table'=>array(
 					       'exchange_type'=>'day2day',
 					       'exchange_value'=>1,
 					       'show_default_currency'=>false,
@@ -1070,7 +1070,37 @@ $default_state=array(
 					       'order_dir'=>'',
 					       'sf'=>0,
 					       'nr'=>25,
-                                        )
+					       ),
+				'orders'=>array(
+						   'percentages'=>false,
+						   'view'=>'general',
+						   'period'=>'year',
+						   'mode'=>'all',
+						   'avg'=>'totals',
+						   'where'=>'where true',
+						   'f_field'=>'code',
+						   'f_value'=>'',
+						   'order'=>'name',
+						   'order_dir'=>'',
+						   'sf'=>0,
+						   'nr'=>25,
+						),
+                                'customers'=>array(
+						   'percentages'=>false,
+						   'view'=>'general',
+						   'period'=>'year',
+						   'mode'=>'all',
+						   'avg'=>'totals',
+						   'where'=>'where true',
+						   'f_field'=>'code',
+						   'f_value'=>'',
+						   'order'=>'name',
+						   'order_dir'=>'',
+						   'sf'=>0,
+						   'nr'=>25,
+						   )
+
+
                             ),
 
                    'supplier'=>array(

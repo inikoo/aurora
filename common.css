@@ -30,6 +30,9 @@ span.aslink:hover{text-decoration:underline;}
 span.nav2 {float:left;background:#6d84b4;padding:0 10px;position:relative;bottom:6px;color:#fff;font-size:85%;margin:0 2px}
 span.nav2 a {color:#fff}
 span.nav2 a.selected {color:yellow;font-weight:400}
+span.nav2 span {color:#fff;cursor:pointer}
+span.nav2 span.selected {color:yellow;font-weight:400;border:none;background:none}
+
 
 span.onright {float:right}
 

@@ -138,10 +138,10 @@ function list_users(){
        $order=$translations[$order];
      
        
-
+     
 
    $adata=array();
-   $sql="Select *,(select GROUP_CONCAT(UGUD.`User Group Key`) from `User Group User Bridge` UGUD left join  `User Group Dimension` UGD on (UGUD.`User Group Key`=UGD.`User Group Key`)      where UGUD.`User Key`=U.`User Key`   ) as Groups  from `User Dimension` U  $where $wheref   order by $order $order_direction limit $start_from,$number_results;";
+   $sql="Select *,(select GROUP_CONCAT(UGUD.`User Group Key`) from `User Group User Bridge` UGUD left join  `User Group Dimension` UGD on (UGUD.`User Group Key`=UGD.`User Group Key`)      where UGUD.`User Key`=U.`User Key` ) as Groups,(select GROUP_CONCAT(URSB.`Scope Key`) from `User Right Scope Bridge` URSB where URSB.`User Key`=U.`User Key` ) as Stores  from `User Dimension` U  $where $wheref   order by $order $order_direction limit $start_from,$number_results;";
    //print $sql;
    $res=mysql_query($sql);
    
@@ -150,7 +150,7 @@ function list_users(){
 
  
      $groups=preg_split('/,/',$row['Groups']);
-
+     $stores=preg_split('/,/',$row['Stores']);
 
 $locale=$row['User Preferred Locale'];
 preg_match('/^[a-z]{2}/',$locale,$match);
@@ -163,6 +163,7 @@ $lang=$match[0];
 		   'email'=>$row['User Email'],
 		   'lang'=>$lang,
 		   'groups'=>$groups,
+		   'stores'=>$stores,
 		   'password'=>'<img style="cursor:pointer" user_name="'.$row['User Alias'].'" user_id="'.$row['User Key'].'" onClick="change_passwd(this)" src="art/icons/key.png"/>',
 		   'passwordmail'=>($row['User Email']!=''?'<img src="art/icons/key_go.png"/>':''),
 		   //'isactive'=>($row['User Active']=='Yes'?'<img src="art/icons/status_online.png" alt="'._('active').'" Title="'._('Active').'"  />':'<img src="art/icons/status_offline.png" Title="'._('Inactive').'"  alt="'._('inactive').'/>'),

@@ -89,12 +89,12 @@ var edit_active=function (callback, newValue) {
 		//		for( x in record)
 		user_id=record.getData('id');
 		var request='ar_edit_users.php?tipo=edit_user&user_id='+escape(user_id)+'&key=' + column.key + '&newValue=' + escape(newValue) + '&oldValue=' + escape(oldValue)
-			alert(request);
+		//			alert(request);
 		YAHOO.util.Connect.asyncRequest(
 						'POST',
 						request, {
 						    success:function(o) {
-							//alert(o.responseText);
+						       alert(o.responseText);
 							var r = YAHOO.lang.JSON.parse(o.responseText);
 							if (r.state == 200) {
 							    callback(true, r.data);
@@ -146,7 +146,23 @@ var edit_active=function (callback, newValue) {
 		
 	    };
 	    
-	    
+	       var stores=function(el, oRecord, oColumn, oData){
+		//  var tmp = oData.split(',');
+		if(oData==''){
+		      el.innerHTML ='';
+		      return;
+		}
+		var tmp=oData;
+		var sstores='';
+		  for(x in tmp){
+		      if(sstores=='')
+			  sstores=store_name[tmp[x]];
+		      else
+			  sstores=sstores+', '+store_name[tmp[x]]
+			      }
+		el.innerHTML =sstores;
+		
+	    };
 
 	   
 	    var ColumnDefs = [
@@ -172,7 +188,7 @@ var edit_active=function (callback, newValue) {
 										   ]
 				    })  
 			      }
-			       ,{key:"stores", label:"<?php echo _('Stores')?>",sortable:true,className:"aleft"
+			       ,{key:"stores",formatter:stores, label:"<?php echo _('Stores')?>",sortable:true,className:"aleft"
 				 	, editor: new YAHOO.widget.CheckboxCellEditor({
 					asyncSubmitter:edit_group,checkboxOptions:[
 										   <?php
@@ -216,7 +232,7 @@ var edit_active=function (callback, newValue) {
 		
 		
 		fields: [
-			 "id","isactive","handle","name","email","lang","groups","tipo","active","password"
+			 "id","isactive","handle","name","email","lang","groups","tipo","active","password","stores"
 			 ]};
 
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,

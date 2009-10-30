@@ -63,6 +63,12 @@ case('family_history'):
 case('product_server'):
     list_products_with_same_code();
     break;
+case('customers_per_store'):
+    list_customers_per_store();
+    break;
+case('orders_per_store'):
+    list_orders_per_store();
+    break;
 case('order_received'):
 case('order_expected'):
 case('order_checked'):
@@ -7647,6 +7653,582 @@ function list_deals() {
                                      )
                    );
     echo json_encode($response);
+
 }
+
+
+function list_customers_per_store() {
+
+    $conf=$_SESSION['state']['stores']['customers'];
+
+    if (isset( $_REQUEST['sf']))
+        $start_from=$_REQUEST['sf'];
+    else
+        $start_from=$conf['sf'];
+
+    if (isset( $_REQUEST['nr'])) {
+        $number_results=$_REQUEST['nr'];
+        if ($start_from>0) {
+            $page=floor($start_from/$number_results);
+            $start_from=$start_from-$page;
+        }
+
+    } else
+        $number_results=$conf['nr'];
+
+
+
+
+
+    if (isset( $_REQUEST['o']))
+        $order=$_REQUEST['o'];
+    else
+        $order=$conf['order'];
+    if (isset( $_REQUEST['od']))
+        $order_dir=$_REQUEST['od'];
+    else
+        $order_dir=$conf['order_dir'];
+    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+    if (isset( $_REQUEST['where']))
+        $where=addslashes($_REQUEST['where']);
+    else
+        $where=$conf['where'];
+
+
+
+    if (isset( $_REQUEST['f_field']))
+        $f_field=$_REQUEST['f_field'];
+    else
+        $f_field=$conf['f_field'];
+
+    if (isset( $_REQUEST['f_value']))
+        $f_value=$_REQUEST['f_value'];
+    else
+        $f_value=$conf['f_value'];
+
+
+    if (isset( $_REQUEST['tableid']))
+        $tableid=$_REQUEST['tableid'];
+    else
+        $tableid=0;
+
+
+    if (isset( $_REQUEST['percentages'])) {
+        $percentages=$_REQUEST['percentages'];
+      
+    } else
+        $percentages=$_SESSION['state']['stores']['customers']['percentages'];
+
+
+
+    if (isset( $_REQUEST['period'])) {
+        $period=$_REQUEST['period'];
+
+    } else
+        $period=$_SESSION['state']['stores']['customers']['period'];
+
+    if (isset( $_REQUEST['avg'])) {
+        $avg=$_REQUEST['avg'];
+
+    } else
+        $avg=$_SESSION['state']['stores']['customers']['avg'];
+
+    $_SESSION['state']['stores']['customers']=array(
+						    'percentages'=>$percentages
+						    ,'period'=>$period
+						    ,'avg'=>$avg
+						    ,'order'=>$order
+						    ,'order_dir'=>$order_direction
+						    ,'nr'=>$number_results
+						    ,'sf'=>$start_from
+						    ,'where'=>$where
+						    ,'f_field'=>$f_field
+						    ,'f_value'=>$f_value
+						    );
+    // print_r($_SESSION['tables']['families_list']);
+
+    //  print_r($_SESSION['tables']['families_list']);
+    $where="where true  ";
+
+    $filter_msg='';
+    $wheref='';
+    if ($f_field=='name' and $f_value!='')
+        $wheref.=" and  `Store Name` like '%".addslashes($f_value)."%'";
+    if ($f_field=='code'  and $f_value!='')
+        $wheref.=" and  `Store Code` like '".addslashes($f_value)."%'";
+
+
+
+
+    $sql="select count(*) as total from `Store Dimension`   $where $wheref";
+//print $sql;
+    $result=mysql_query($sql);
+    if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+        $total=$row['total'];
+    }
+    mysql_free_result($result);
+
+    if ($wheref=='') {
+        $filtered=0;
+        $total_records=$total;
+    } else {
+        $sql="select count(*) as total from `Store Dimension`   $where ";
+
+        $result=mysql_query($sql);
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $total_records=$row['total'];
+            $filtered=$total_records-$total;
+        }
+        mysql_free_result($result);
+
+    }
+
+
+    $rtext=$total_records." ".ngettext('store','stores',$total_records);
+    if ($total_records>$number_results)
+        $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+    else
+        $rtext_rpp=' ('._('Showing all').')';
+
+    if ($total==0 and $filtered>0) {
+        switch ($f_field) {
+        case('code'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any store with code like ")." <b>".$f_value."*</b> ";
+            break;
+        case('name'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any store with name like ")." <b>*".$f_value."*</b> ";
+            break;
+        }
+    }
+    elseif($filtered>0) {
+        switch ($f_field) {
+        case('code'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('stores with code like')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+            break;
+        case('name'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('stores with name like')." <b>*".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+            break;
+        }
+    }
+    else
+        $filter_msg='';
+
+    $_dir=$order_direction;
+    $_order=$order;
+
+ 
+    if($order=='code')
+    $order='`Store Code`';
+    elseif($order=='name')
+      $order='`Store Name`';
+    elseif($order=='total')
+      $order='total';
+    elseif($order=='active')
+      $order='active';
+    elseif($order=='new')
+      $order='new';
+    else
+      $order='`Store Code`';
+
+     $total_customers=0;
+     $sql="select  count(*) as customers, sum(IF(`New Customer`='Yes',1,0)) as new,sum(IF(`Active Customer`='Yes',1,0)) as active   from `Customer Dimension`  $where     ";
+  //print $sql;
+    $res = mysql_query($sql);
+    if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+      $total_customers=$row['customers'];
+      $total_new=$row['new'];
+      $total_active=$row['active'];
+    }
+    
+
+
+
+
+    $sql="select `Store Name`,`Store Code`,`Store Key`, count(*) as total,sum(IF(`New Customer`='Yes',1,0)) as new,sum(IF(`Active Customer`='Yes',1,0)) as active   from `Customer Dimension` S left join `Store Dimension` on `Store Key`=`Customer Store Key`  $where $wheref group by `Customer Store Key`  order by $order $order_direction limit $start_from,$number_results    ";
+    //print $sql;
+    $res = mysql_query($sql);
+
+    $total=mysql_num_rows($res);
+  
+
+   
+    while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+        $name=sprintf('<a href="customers.php?store=%d">%s</a>',$row['Store Key'],$row['Store Name']);
+        $code=sprintf('<a href="customers.php?store=%d">%s</a>',$row['Store Key'],$row['Store Code']);
+
+	if($percentages){
+	  $total=percentage($row['total'],$total_customers);
+	  $active=percentage($row['active'],$total_active);
+	  $new=percentage($row['new'],$total_customersnew);
+
+	}else{
+	  $total=number($row['total']);
+	  $active=number($row['active']);
+	  $new=number($row['new']);
+	}
+
+        $adata[]=array(
+                     'code'=>$code,
+                     'name'=>$name,
+                     'total'=>$total,
+		     'active'=>$active,
+		     'new'=>$new
+                 );
+    }
+    mysql_free_result($res);
+
+    if ($percentages) {
+        $sum_total='100.00%';
+	$sum_active='100.00%';
+	$sum_new='100.00%';
+    } else {
+      $sum_total=number($total_customers);
+      $sum_active=number($total_active);
+      $sum_new=number($total_new);
+    }
+
+  
+    $adata[]=array(
+                 'name'=>'',
+                 'code'=>_('Total'),
+		 'total'=>$sum_total,
+		 'active'=>$sum_active,
+		 'new'=>$sum_new
+
+             );
+
+
+    // if($total<$number_results)
+    //  $rtext=$total.' '.ngettext('store','stores',$total);
+    //else
+    //  $rtext='';
+
+    $total_records=ceil($total_records/$number_results)+$total_records;
+
+    $response=array('resultset'=>
+                                array('state'=>200,
+                                      'data'=>$adata,
+                                      'sort_key'=>$_order,
+                                      'sort_dir'=>$_dir,
+                                      'tableid'=>$tableid,
+                                      'filter_msg'=>$filter_msg,
+                                      'rtext'=>$rtext,
+                                      'rtext_rpp'=>$rtext_rpp,
+                                      'total_records'=>$total_records,
+                                      'records_offset'=>$start_from,
+                                      'records_perpage'=>$number_results,
+                                     )
+                   );
+    echo json_encode($response);
+}
+
+
+
+function list_orders_per_store() {
+
+    $conf=$_SESSION['state']['stores']['orders'];
+
+    if (isset( $_REQUEST['sf']))
+        $start_from=$_REQUEST['sf'];
+    else
+        $start_from=$conf['sf'];
+
+    if (isset( $_REQUEST['nr'])) {
+        $number_results=$_REQUEST['nr'];
+        if ($start_from>0) {
+            $page=floor($start_from/$number_results);
+            $start_from=$start_from-$page;
+        }
+
+    } else
+        $number_results=$conf['nr'];
+
+
+
+
+
+    if (isset( $_REQUEST['o']))
+        $order=$_REQUEST['o'];
+    else
+        $order=$conf['order'];
+    if (isset( $_REQUEST['od']))
+        $order_dir=$_REQUEST['od'];
+    else
+        $order_dir=$conf['order_dir'];
+    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+    if (isset( $_REQUEST['where']))
+        $where=addslashes($_REQUEST['where']);
+    else
+        $where=$conf['where'];
+
+
+
+    if (isset( $_REQUEST['f_field']))
+        $f_field=$_REQUEST['f_field'];
+    else
+        $f_field=$conf['f_field'];
+
+    if (isset( $_REQUEST['f_value']))
+        $f_value=$_REQUEST['f_value'];
+    else
+        $f_value=$conf['f_value'];
+
+
+    if (isset( $_REQUEST['tableid']))
+        $tableid=$_REQUEST['tableid'];
+    else
+        $tableid=0;
+
+
+    if (isset( $_REQUEST['percentages'])) {
+        $percentages=$_REQUEST['percentages'];
+      
+    } else
+        $percentages=$_SESSION['state']['stores']['orders']['percentages'];
+
+
+
+    if (isset( $_REQUEST['period'])) {
+        $period=$_REQUEST['period'];
+
+    } else
+        $period=$_SESSION['state']['stores']['orders']['period'];
+
+    if (isset( $_REQUEST['avg'])) {
+        $avg=$_REQUEST['avg'];
+
+    } else
+        $avg=$_SESSION['state']['stores']['orders']['avg'];
+
+    $_SESSION['state']['stores']['orders']=array(
+						    'percentages'=>$percentages
+						    ,'period'=>$period
+						    ,'avg'=>$avg
+						    ,'order'=>$order
+						    ,'order_dir'=>$order_direction
+						    ,'nr'=>$number_results
+						    ,'sf'=>$start_from
+						    ,'where'=>$where
+						    ,'f_field'=>$f_field
+						    ,'f_value'=>$f_value
+						    );
+    // print_r($_SESSION['tables']['families_list']);
+
+    //  print_r($_SESSION['tables']['families_list']);
+    $where="where true  ";
+
+    $filter_msg='';
+    $wheref='';
+    if ($f_field=='name' and $f_value!='')
+        $wheref.=" and  `Store Name` like '%".addslashes($f_value)."%'";
+    if ($f_field=='code'  and $f_value!='')
+        $wheref.=" and  `Store Code` like '".addslashes($f_value)."%'";
+
+
+
+
+    $sql="select count(*) as total from `Store Dimension`   $where $wheref";
+//print $sql;
+    $result=mysql_query($sql);
+    if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+        $total=$row['total'];
+    }
+    mysql_free_result($result);
+
+    if ($wheref=='') {
+        $filtered=0;
+        $total_records=$total;
+    } else {
+        $sql="select count(*) as total from `Store Dimension`   $where ";
+
+        $result=mysql_query($sql);
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $total_records=$row['total'];
+            $filtered=$total_records-$total;
+        }
+        mysql_free_result($result);
+
+    }
+
+
+    $rtext=$total_records." ".ngettext('store','stores',$total_records);
+    if ($total_records>$number_results)
+        $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+    else
+        $rtext_rpp=' ('._('Showing all').')';
+
+    if ($total==0 and $filtered>0) {
+        switch ($f_field) {
+        case('code'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any store with code like ")." <b>".$f_value."*</b> ";
+            break;
+        case('name'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any store with name like ")." <b>*".$f_value."*</b> ";
+            break;
+        }
+    }
+    elseif($filtered>0) {
+        switch ($f_field) {
+        case('code'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('stores with code like')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+            break;
+        case('name'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('stores with name like')." <b>*".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+            break;
+        }
+    }
+    else
+        $filter_msg='';
+
+    $_dir=$order_direction;
+    $_order=$order;
+
+ 
+    if($order=='code')
+    $order='`Store Code`';
+    elseif($order=='name')
+      $order='`Store Name`';
+    elseif($order=='orders')
+      $order='orders';
+    elseif($order=='cancelled')
+      $order='cancelled';
+    elseif($order=='unknown')
+      $order='unknown';
+    elseif($order=='paid')
+      $order='paid';
+    elseif($order=='pending')
+      $order='panding';
+    else
+
+
+      $order='`Store Code`';
+
+     
+    $total_orders=0;
+    $total_unknown=0;
+    $total_dispached=0;
+    $total_cancelled=0;
+    $total_todo=0;
+    $total_paid=0;
+
+     $sql="select  count(*) as orders,sum(IF(`Order Current Payment State`='Paid',1,0)) as paid,sum(IF(`Order Current Dispatch State`='Cancelled',1,0)) as cancelled ,sum(IF(`Order Current Dispatch State`='Unknown',1,0)) as unknown ,sum(IF(`Order Current Dispatch State`='Dispached',1,0)) as dispached   from `Order Dimension`  $where     ";
+  //print $sql;
+    $res = mysql_query($sql);
+    if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+      $total_orders=$row['orders'];
+      $total_unknown=$row['unknown'];
+      $total_dispached=$row['dispached'];
+      $total_cancelled=$row['cancelled'];
+      $total_todo=$total_orders-$total_cancelled-$total_dispached-$total_unknown;
+      $total_paid=$row['paid'];
+
+ }
+    
+
+
+
+
+    $sql="select `Store Name`,`Store Code`,`Store Key`, count(*) as orders  ,sum(IF(`Order Current Payment State`='Paid',1,0)) as paid,sum(IF(`Order Current Dispatch State`='Cancelled',1,0)) as cancelled ,sum(IF(`Order Current Dispatch State`='Unknown',1,0)) as unknown ,sum(IF(`Order Current Dispatch State`='Dispached',1,0)) as dispached   from `Order Dimension` S left join `Store Dimension` on `Store Key`=`Order Store Key`  $where $wheref group by `Order Store Key`  order by $order $order_direction limit $start_from,$number_results    ";
+    //print $sql;
+    $res = mysql_query($sql);
+
+    $total=mysql_num_rows($res);
+  
+
+   
+    while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+        $name=sprintf('<a href="orders.php?store=%d">%s</a>',$row['Store Key'],$row['Store Name']);
+        $code=sprintf('<a href="orders.php?store=%d">%s</a>',$row['Store Key'],$row['Store Code']);
+
+	$todo=$row['orders']-$row['unknown']-$row['dispached']-$row['cancelled'];
+	if($percentages){
+	  $orders=percentage($row['orders'],$total_orders);
+	  $cancelled=percentage($row['cancelled'],$total_cancelled);
+	  $paid=percentage($row['paid'],$total_paid);
+	  $unknown=percentage($row['unknown'],$total_unknown);
+	  $todo=percentage($todo,$total_todo);
+	  $dispached=percentage($row['dispached'],$total_dispached);
+
+	}else{
+	  $orders=number($row['orders']);
+	  $cancelled=number($row['cancelled']);
+	  $paid=number($row['paid']);
+	  $unknown=number($row['unknown']);
+	  $todo=number($todo);
+	  $dispached=number($row['dispached']);
+	  
+	}
+
+        $adata[]=array(
+                     'code'=>$code,
+                     'name'=>$name,
+                     'orders'=>$orders,
+		     'paid'=>$paid,
+		     'unknown'=>$unknown,
+		     'cancelled'=>$cancelled,
+		     'dispached'=>$dispached,
+		     'pending'=>$todo,
+
+                 );
+    }
+    mysql_free_result($res);
+
+    if ($percentages) {
+        $sum_orders='100.00%';
+	$sum_cancelled='100.00%';
+	$sum_paid='100.00%';
+	$sum_unknown='100.00%';
+		
+    } else {
+      $sum_orders=number($total_orders);
+      $sum_cancelled=number($total_cancelled);
+      $sum_paid=number($total_paid);
+      $sum_unknown=number($total_unknown);
+      $sum_todo=number($total_todo);
+      $sum_dispached=number($total_dispached);
+      
+    }
+
+  
+    $adata[]=array(
+                 'name'=>'',
+                 'code'=>_('Total'),
+		 'orders'=>$sum_orders,
+		 'unknown'=>$sum_unknown,
+		 'paid'=>$sum_paid,
+		 'cancelled'=>$sum_cancelled,
+		 'dispached'=>$sum_dispached,
+		 'pending'=>$sum_todo,
+
+             );
+
+
+    // if($total<$number_results)
+    //  $rtext=$total.' '.ngettext('store','stores',$total);
+    //else
+    //  $rtext='';
+
+    $total_records=ceil($total_records/$number_results)+$total_records;
+
+    $response=array('resultset'=>
+                                array('state'=>200,
+                                      'data'=>$adata,
+                                      'sort_key'=>$_order,
+                                      'sort_dir'=>$_dir,
+                                      'tableid'=>$tableid,
+                                      'filter_msg'=>$filter_msg,
+                                      'rtext'=>$rtext,
+                                      'rtext_rpp'=>$rtext_rpp,
+                                      'total_records'=>$total_records,
+                                      'records_offset'=>$start_from,
+                                      'records_perpage'=>$number_results,
+                                     )
+                   );
+    echo json_encode($response);
+}
+
+
+
+
 
 ?>

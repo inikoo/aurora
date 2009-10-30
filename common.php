@@ -114,12 +114,31 @@ if($user->can_view('suppliers'))
 if($user->is('Supplier'))
   $nav_menu[] = array(_('My Products'), 'myproducts.php');
 
-if($user->can_view('reports'))
-  $nav_menu[] = array(_('Reports'), 'reports.php');
-if($user->can_view('orders'))
-$nav_menu[] = array(_('Orders'), 'orders.php');
-if($user->can_view('customers'))
-  $nav_menu[] = array(_('Customers'), 'customers.php');
+if($user->can_view('reports')){
+  if(count($user->scopes)==1){
+    $nav_menu[] = array(_('Reports'), sprintf('report_sales.php?tipo=m&y=%d&m=%d',$user->scopes[0],date('Y'),date('m')));
+    }else
+
+ $nav_menu[] = array(_('Reports'), 'reports.php');
+}
+
+if($user->can_view('orders')){
+
+if(count($user->scopes)==1){
+    $nav_menu[] = array(_('Orders'), 'orders.php?store='.$user->scopes[0]);
+    }else
+$nav_menu[] = array(_('Orders'), 'orders_server.php');
+
+}
+
+if($user->can_view('customers')){
+
+  if(count($user->scopes)==1){
+    $nav_menu[] = array(_('Customers'), 'customers.php?store='.$user->scopes[0]);
+    }else
+  $nav_menu[] = array(_('Customers'), 'customers_server.php');
+
+}
 if($user->can_view('warehouses'))
 $nav_menu[] = array(_('Warehouse'), 'warehouse.php');
 
