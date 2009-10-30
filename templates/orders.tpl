@@ -1,5 +1,10 @@
 {include file='header.tpl'}
 <div id="bd" >
+ <span class="nav2 onleft"><span   id="orders" {if $view=='orders'}class="selected"{/if} >{t}Orders{/t}</span></span>
+  <span class="nav2 onleft"><span id="invoices" {if $view=='invoices'}class="selected"{/if} >{t}Invoices{/t}</span></span>
+  <span class="nav2 onleft"><span  id="dn"  {if $view=='dn'}class="selected"{/if} >{t}Delivery Notes{/t}</span></span>
+
+
  <div style="float:right;border: 0px solid #ddd;text-align:right;padding:10px">
     <form  id="prod_search_form" action="orders.php" method="GET" >
       <label>{t}Order Search{/t}:</label><input size="12" class="text search" id="prod_search" value="" name="search"/><img onclick="document.getElementById('prod_search_form').submit()"align="absbottom" id="submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search">
@@ -11,47 +16,29 @@
     </form>
     <div id="cal1Container" style="position:absolute;display:none; z-index:2"></div>
     <div style="position:relative;right:-80px"><div id="cal2Container" style="display:none; z-index:2;position:absolute"></div></div>
-    <span  class="state_details"  id="show_details">{t}Orders Overview{/t}</span>
+
   </div>
 
-  <div id="top" class="top_bar">
-    <div id="short_menu" class="nodetails" style="{if $show_details}display:none;{/if}width:100%;margin-bottom:0px">
-      <table style="float:left;margin:0 0 0 20px ;padding:0"  class="options" >
-	<tr>
-	  <td  {if $view=='orders'}class="selected"{/if} id="orders" >{t}Orders{/t}</td>
-	  <td {if $view=='invoices'}class="selected"{/if}  id="invoices"  >{t}Invoices{/t}</td>
-	  <td {if $view=='dn'}class="selected"{/if}  id="dn"  >{t}Delivery Notes{/t}</td>
-      </table>
+<div style="height:40px">
+   <table  style="float:left;margin:0 0 0 0px ;padding:0;clear:left"  class="options_mini" >
+     <tr  id="orders_show_only"  style="display:{if $view!='orders'}none{/if}"  >
+       <td  style="xmargin:5px 15px 0 0px ;padding:0;border:none;color:#555"  >{t}show only{/t}:</td>
+       
+       <td  style="" {if $only=='in_process'}class="selected"{/if}  id="in_process"  >{t}In Process{/t}</td>
+       <td  style="" {if $only=='dispached'}class="selected"{/if}  id="in_process"  >{t}Dispached{/t}</td>
+       <td  style="" {if $only=='cancelled'}class="selected"{/if}  id="cancelled"  >{t}Cancelled{/t}</td>
+     </tr>
+     <tr  id="invoices_show_only"  style="display:{if $view!='invoices'}none{/if}"  ></tr>
+     <tr  id="dn_show_only"  style="display:{if $view!='dn'}none{/if}"  ></tr>
 
-
-
-      <table style="float:left;margin:0 0 0 5px ;padding:0"  class="options_mini" >
-	<tr  id="orders_show_only"  style="display:{if $view!='orders'}none{/if}"  >
-	  <td  style="margin:5px 15px 0 20px ;padding:0;border:none;color:#555"  >{t}show only{/t}:</td>
-
-	  <td  style="" {if $only=='in_process'}class="selected"{/if}  id="in_process"  >{t}In Process{/t}</td>
-	  <td  style="" {if $only=='dispached'}class="selected"{/if}  id="in_process"  >{t}Dispached{/t}</td>
-	  <td  style="" {if $only=='cancelled'}class="selected"{/if}  id="cancelled"  >{t}Cancelled{/t}</td>
-	</tr>
-	<tr  id="invoices_show_only"  style="display:{if $view!='invoices'}none{/if}"  ></tr>
-	<tr  id="dn_show_only"  style="display:{if $view!='dn'}none{/if}"  ></tr>
-
-      </table>
-    </div>
-    
-    <div id="orders_details" class="details" style="{if  !$show_details }display:none;{/if}">
-      <div id="details_orders" style="font-size:90%;margin-top:10px" {if $view!='all'} style="display:none"{/if}></div>
-      <div id="details_invoices" style="font-size:90%;margin-top:10px" {if $view!='invoides'} style="display:none"{/if}></div>
-      <div id="details_dn" style="font-size:90%;margin-top:10px" {if $view!='in_process'} style="display:none"{/if}></div>
-
-    </div>
- 
+   </table>
 </div>
+ 
   
 
   
 
-  <div  id="orders_table" class="data_table" style="margin:25px 20px;{if $view!='orders'}display:none{/if}">
+  <div  id="orders_table" class="data_table" style="{if $view!='orders'}display:none{/if};clear:left">
     <span class="clean_table_title">{t}Order List{/t}</span>
     <div  class="clean_table_caption"  style="clear:both;">
       <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
@@ -61,7 +48,7 @@
     <div  id="table0"   class="data_table_container dtable btable "> </div>
   </div>
   
-   <div  id="invoices_table"   class="data_table" style="margin:25px 20px;{if $view!='invoices'}display:none{/if}">
+   <div  id="invoices_table"   class="data_table" style="{if $view!='invoices'}display:none{/if};clear:left">
     <span class="clean_table_title">{t}Invoice List{/t}</span>
     <div  class="clean_table_caption"  style="clear:both;">
       <div style="float:left;"><div id="table_info1" class="clean_table_info"><span id="rtext1"></span> <span class="rtext_rpp" id="rtext_rpp1"></span <span class="filter_msg"  id="filter_msg1"></span></div></div>
@@ -71,7 +58,7 @@
     <div  id="table1"   class="data_table_container dtable btable "> </div>
   </div>
 
- <div   id="dn_table"  class="data_table" style="margin:25px 20px;{if $view!='dn'}display:none{/if}">
+ <div   id="dn_table"  class="data_table" style="{if $view!='dn'}display:none{/if};clear:left">
     <span class="clean_table_title">{t}Delivery Note List{/t}</span>
     <div  class="clean_table_caption"  style="clear:both;">
       <div style="float:left;"><div id="table_info2" class="clean_table_info"><span id="rtext2"></span> <span class="rtext_rpp" id="rtext_rpp2"></span <span class="filter_msg"  id="filter_msg2"></span></div></div>

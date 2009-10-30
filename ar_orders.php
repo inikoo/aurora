@@ -751,6 +751,9 @@ if(isset( $_REQUEST['where']))
   else
     $tableid=0;
 
+ 
+
+
 
    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 
@@ -769,6 +772,14 @@ if(isset( $_REQUEST['where']))
      $date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
      
    }else{
+
+
+     if(isset( $_REQUEST['store_id'])    ){
+     $store=$_REQUEST['store_id'];
+     $_SESSION['state']['orders']['store']=$store;
+   }else
+     $store=$_SESSION['state']['orders']['store'];
+
 
      $_SESSION['state']['orders']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
      $_SESSION['state']['orders']['view']=$view;
@@ -796,6 +807,15 @@ if(isset( $_REQUEST['where']))
      
      
 //    }
+
+
+ if(is_numeric($store)){
+     $where.=sprintf(' and `Order Store Key`=%d ',$store);
+   }
+
+
+
+
    $where.=$date_interval['mysql'];
    
    $wheref='';
@@ -1811,6 +1831,11 @@ if(isset( $_REQUEST['where']))
      $date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
      
    }else{
+     if(isset( $_REQUEST['store_id'])    ){
+     $store=$_REQUEST['store_id'];
+     $_SESSION['state']['orders']['store']=$store;
+   }else
+     $store=$_SESSION['state']['orders']['store'];
 
      $_SESSION['state']['orders']['dn']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
      $_SESSION['state']['orders']['view']=$view;
@@ -1821,6 +1846,9 @@ if(isset( $_REQUEST['where']))
        $_SESSION['state']['orders']['from']=$date_interval['from'];
        $_SESSION['state']['orders']['to']=$date_interval['to'];
      }
+   }
+ if(is_numeric($store)){
+     $where.=sprintf(' and `Delivery Note Store Key`=%d ',$store);
    }
 
    $where.=$date_interval['mysql'];
@@ -2257,6 +2285,12 @@ if(isset( $_REQUEST['where']))
      $date_interval=prepare_mysql_dates($from,$to,'`Invoice Date`','only_dates');
      
    }else{
+      if(isset( $_REQUEST['store_id'])    ){
+     $store=$_REQUEST['store_id'];
+     $_SESSION['state']['orders']['store']=$store;
+   }else
+     $store=$_SESSION['state']['orders']['store'];
+
 
      $_SESSION['state']['orders']['invoices']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
      $_SESSION['state']['orders']['view']=$view;
@@ -2268,6 +2302,12 @@ if(isset( $_REQUEST['where']))
        $_SESSION['state']['orders']['to']=$date_interval['to'];
      }
    }
+
+   
+ if(is_numeric($store)){
+     $where.=sprintf(' and `Invoice Store Key`=%d ',$store);
+   }
+
 
    $where.=$date_interval['mysql'];
    

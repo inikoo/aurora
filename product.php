@@ -90,9 +90,15 @@ $_SESSION['state']['product']['customers']['mode']=$mode;
 
 
 
+
+
+
+
 if($mode=='code'){
-  $sql=sprintf("select `Product ID`  from `Product Dimension` where `Product Code`=%s ;"
-        ,prepare_mysql($tag));
+  $sql=sprintf("select `Product ID`  from `Product Dimension` where `Product Code`=%s  and `Product Store Key` in (%s)   ;"
+	       ,prepare_mysql($tag)
+	       ,join(',',$user->scopes)
+	       );
 
   $result=mysql_query($sql);
   //print $sql;

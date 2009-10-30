@@ -254,7 +254,7 @@ var Dom   = YAHOO.util.Dom;
  YAHOO.util.Event.addListener("submit_interval", "click", change_interval);
 
 
-	var change_view = function (e){
+ var change_view = function (e){
 
 	    new_view=this.id
 
@@ -263,8 +263,8 @@ var Dom   = YAHOO.util.Dom;
 		this.className='selected';
 		Dom.get(view).className='';
 
-		Dom.get('details_'+view).style.display='none';
-		Dom.get('details_'+new_view).style.display='';
+		//Dom.get('details_'+view).style.display='none';
+		//Dom.get('details_'+new_view).style.display='';
 		Dom.get(view+'_show_only').style.display='none';
 		Dom.get(new_view+'_show_only').style.display='';
 		

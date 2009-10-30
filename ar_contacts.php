@@ -905,20 +905,38 @@ if(isset( $_REQUEST['where']))
     $tableid=$_REQUEST['tableid'];
   else
     $tableid=0;
- $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-  $_SESSION['state']['customers']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+
+   if(isset( $_REQUEST['store_id'])    ){
+     
+     $store=$_REQUEST['store_id'];
+     $_SESSION['state']['customers']['store']=$store;
+   }else
+     $store=$_SESSION['state']['customers']['store'];
+
+
+   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+   $_SESSION['state']['customers']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
    $filter_msg='';
-  $wheref='';
+   $wheref='';
+   
+   
+   if(is_numeric($store)){
+     $where.=sprintf(' and `Customer Store Key`=%d ',$store);
+   }
+   
 
+
+   
+   
   if(($f_field=='customer name'     )  and $f_value!=''){
-      $wheref="  and  `Customer Name` like '%".addslashes($f_value)."%'";
+    $wheref="  and  `Customer Name` like '%".addslashes($f_value)."%'";
   }elseif(($f_field=='postcode'     )  and $f_value!=''){
-      $wheref="  and  `Customer Main Address Postal Code` like '%".addslashes($f_value)."%'";
-
-
-
+    $wheref="  and  `Customer Main Address Postal Code` like '%".addslashes($f_value)."%'";
+    
+    
+    
   }else if($f_field=='id'  )
-    $wheref.=" and  `Customer ID` like '".addslashes(preg_replace('/\s*|\,|\./','',$f_value))."%' ";
+     $wheref.=" and  `Customer ID` like '".addslashes(preg_replace('/\s*|\,|\./','',$f_value))."%' ";
   else if($f_field=='maxdesde' and is_numeric($f_value) )
     $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Customer Last Order Date`))<=".$f_value."    ";
   else if($f_field=='mindesde' and is_numeric($f_value) )
@@ -1107,8 +1125,8 @@ if(isset( $_REQUEST['where']))
 //        $tel=($data['icode']!=''?'+'.$data['icode'].' ':'').$data['number'];
 
 
-    $id="<a href='customer.php?id=".$data['Customer ID']."'>".$myconf['customer_id_prefix'].sprintf("%05d",$data['Customer ID']).'</a>'; 
-    $name="<a href='customer.php?id=".$data['Customer ID']."'>".$data['Customer Name'].'</a>'; 
+    $id="<a href='customer.php?id=".$data['Customer Key']."'>".$myconf['customer_id_prefix'].sprintf("%05d",$data['Customer ID']).'</a>'; 
+    $name="<a href='customer.php?id=".$data['Customer Key']."'>".$data['Customer Name'].'</a>'; 
 
     $adata[]=array(
 		   'id'=>$id,

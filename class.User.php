@@ -250,6 +250,9 @@ return;
      $to_delete = array_diff($old_groups, $groups);
      $to_add = array_diff($groups, $old_groups);
    
+
+    
+
      $changed=0;
 	if(count($to_delete)>0){
 	  $changed+=$this->delete_group($to_delete);
@@ -263,6 +266,7 @@ return;
 	
 	if($changed>0){
 	  $this->updated=true;
+	  $this->new_value=$this->groups_key_array;
 	}
 
 
@@ -361,6 +365,13 @@ function xupdate($tipo,$data){
  function add_group($to_add,$history=true){
    $changed=0;
    foreach($to_add as $group_id){
+
+      $sql=sprintf("select * from  `User Group Dimension` where `User Group Key`=%d",$group_id);
+      $res=mysql_query($sql);
+      if($row=mysql_fetch_array($res)){
+	$group_name=$row['User Group Name'];
+	
+
      $sql=sprintf("insert into `User Group User Bridge`values (%d,%d) ",$this->id,$group_id);
      //print $sql;
      mysql_query($sql);
@@ -368,13 +379,13 @@ function xupdate($tipo,$data){
       $changed++;
      $history_data=array(
 			 'note'=>_('User added to Group')
-			 ,'details'=>_trim(_('User')." ".$this->data['User Alias']." "._('added to')." ".$this->groups['group_id']['User Group Name'])
+			 ,'details'=>_trim(_('User')." ".$this->data['User Alias']." "._('added to')." ".$group_name)
 			 ,'action'=>'associate'
 			 ,'indirect_object'=>'Group'
 			 ,'indirect_object_key'=>$group_id
 			 );
-     $this->add_history();
-     
+     $this->add_history($history_data);
+      }
    }
 
 
@@ -382,23 +393,24 @@ function xupdate($tipo,$data){
 return $changed;
  }
 
- function delete_group($to_add,$history=true){
+ function delete_group($to_delete,$history=true){
     $changed=0;
-   foreach($to_add as $group_id){
-     $sql=sprintf("delete from `User Group User Dimension` where `User Key`=%d and `Group Key`=%d ",$this->id,$group_id);
+   foreach($to_delete as $group_id){
+     $sql=sprintf("delete from `User Group User Bridge` where `User Key`=%d and `User Group Key`=%d ",$this->id,$group_id);
+     //   print $sql;
      mysql_query($sql);
-   }
-   if (mysql_affected_rows()>0) {
-   $changed++;
-     $history_data=array(
-			 'note'=>_('User deleted from Group')
-			 ,'details'=>_trim(_('User')." ".$this->data['User Alias']." "._('removed from')." ".$this->groups['group_id']['User Group Name'])
+   
+     if (mysql_affected_rows()>0) {
+       $changed++;
+       $history_data=array(
+			   'note'=>_('User deleted from Group')
+			   ,'details'=>_trim(_('User')." ".$this->data['User Alias']." "._('removed from')." ".$this->groups[$group_id]['User Group Name'])
 			 ,'action'=>'disassociate'
-			 ,'indirect_object'=>'Group'
+			   ,'indirect_object'=>'Group'
 			 ,'indirect_object_key'=>$group_id
-			 );
-     $this->add_history();
-     
+			   );
+       $this->add_history($history_data);
+     }  
    }
 return $changed;
  }
@@ -422,7 +434,7 @@ function add_scope($to_add,$history=true){
 			 ,'indirect_object'=>'Scope'
 			 ,'indirect_object_key'=>$store->id
 			 );
-     $this->add_history();
+     $this->add_history($history_data);
    }
    }
    return $changed;
@@ -447,7 +459,7 @@ $changed=0;
 			 ,'indirect_object'=>'Scope'
 			 ,'indirect_object_key'=>$store->id
 			 );
-     $this->add_history();
+     $this->add_history($history_data);
      
    }
 return $changed;

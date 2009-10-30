@@ -7,7 +7,7 @@
 
   <div id="yui-main">
     <div style="width:300px;float:right;padding:10px;text-align:right">
-    <span ><a class="state_details" href="edit_users_staff.php">{t}Edit Users{/t}</a></span>
+
       
     </div>
 

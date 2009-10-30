@@ -1,7 +1,26 @@
 <?php
 include_once('common.php');
+include_once('class.Store.php');
 if(!$user->can_view('orders'))
   exit();
+
+if(isset($_REQUEST['store']) and is_numeric($_REQUEST['store']) ){
+  $store_id=$_REQUEST['store'];
+
+}else{
+  $store_id=$_SESSION['state']['orders']['store'];
+
+}
+
+if(!($user->can_view('stores') and in_array($store_id,$user->scopes)   ) ){
+  header('Location: index.php');
+   exit;
+}
+
+$store=new Store($store_id);
+$smarty->assign('store',$store);
+
+$_SESSION['state']['orders']['store']=$store_id;
 
 
 $q='';

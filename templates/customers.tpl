@@ -3,21 +3,24 @@
   <span class="nav2 onleft"><a  class="selected"  href="customers.php">{t}Customers{/t}</a></span>
 <span class="nav2 onleft"><a href="companies.php">{t}Companies{/t}</a></span>
 <span class="nav2 onleft"><a   href="contacts.php">{t}Personal Contacts{/t}</a></span>
-  <span class="nav2 onright"><a href="search_customers.php">{t}Advanced Search{/t}</a></span>
-    
   <div >
+
+
     
-  <div class="search_box" >
-       <span class="search_title" style="padding-right:15px" tipo="customer_name">{t}Customer Name{/t}:</span> <br>
+  <div class="search_box" style="padding:0;margin:0">
+<div style="padding:0 0 5px 0">
+ <a style="padding-left:20px" id="but_advanced_search"  class="state_details" href="search_customers.php">{t}Advanced Search{/t}</a>
+ <span style="padding-left:20px" id="but_show_details" state="{$details}" atitle="{if $details==0}{t}Hide Details{/t}{else}{t}Show Details{/t}{/if}" class="state_details"   >{if $details==1}{t}Hide Details{/t}{else}{t}Show Details{/t}{/if}</span>
+ <a style="padding-left:20px" id="but_new_customer"  class="state_details" href="new_customer.php">{t}New Customer{/t}</a>       
+</div>
+
+       <span class="search_title" style="padding-right:15px" tipo="customer_name">{t}Customer Name{/t}:</span> 
        <input size="8" class="text search" id="customer_search" value="" name="search"/><img align="absbottom" id="customer_submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>
        <span  class="product_search_msg"   id="customer_search_msg"    ></span> <span  class="search_sugestion"   id="customer_search_sugestion"    ></span>
-       <br/>
- <a id="but_advanced_search"  class="state_details" href="search_customers.php">{t}Advanced Search{/t}</a>
- <span id="but_show_details" state="{$details}" atitle="{if $details==0}{t}Hide Details{/t}{else}{t}Show Details{/t}{/if}" class="state_details"   >{if $details==1}{t}Hide Details{/t}{else}{t}Show Details{/t}{/if}</span>
- <a id="but_new_customer"  class="state_details" href="new_customer.php">{t}New Customer{/t}</a>       
+            
   </div>
   <div style="clear:left;xmargin:0 20px">
-    <h1>{t}Customers Home{/t}</h1>
+    <h1>Store: {$store->get('Store Name')} ({$store->get('Store Code')})</h1>
   </div>
 
  <div id="top" class="top_bar">
@@ -46,12 +49,12 @@
 
 
     </div>
-
+</div>
     
-    <div id="the_table" class="data_table" xstyle="margin:20px 20px;clear:both">
+    <div id="the_table" class="data_table" style="clear:both">
       <span class="clean_table_title">Customers List</span>
        <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
-  <table style="float:left;margin:0 0 0 20px ;padding:0"  class="options" {if $customers==0 }style="display:none"{/if}>
+  <table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" {if $customers==0 }style="display:none"{/if}>
 	<tr>
 	  <td  {if $view=='general'}class="selected"{/if} id="general" >{t}General{/t}</td>
 	  <td {if $view=='contact'}class="selected"{/if}  id="contact"  >{t}Contact{/t}</td>

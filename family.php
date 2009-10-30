@@ -22,8 +22,13 @@ if(!isset($_REQUEST['id']) or !is_numeric($_REQUEST['id']))
    $family_id=$_REQUEST['id'];
 $_SESSION['state']['family']['id']=$family_id;
 $family=new Family($family_id);
-if(!$user->can_view('stores',$family->data['Product Family Store Key']))
+
+
+
+if(!( $user->can_view('stores') and in_array($family->data['Product Family Store Key'],$user->scopes)))
   exit();
+
+
 $store=new Store($family->data['Product Family Store Key']);
 $department=new Department($family->get('Product Family Main Department Key'));
 
