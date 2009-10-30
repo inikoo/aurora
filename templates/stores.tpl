@@ -10,13 +10,12 @@
 
   <div class="search_box">
     <span class="search_title">{t}Product Code{/t}:</span> <input size="8" class="text search" id="product_search" value="" name="search"/><img align="absbottom" id="product_submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>
-     <span  class="search_msg"   id="product_search_msg"    ></span> <span  class="search_sugestion"   id="product_search_sugestion"    ></span>
-      <br/>
-      {if $modify}<a   href="stores.php?edit=1"  style="float:right;margin-left:15px" class="state_details"  >{t}Edit{/t}</a>{/if}
-    
-     </div>
+    <span  class="search_msg"   id="product_search_msg"    ></span> <span  class="search_sugestion"   id="product_search_sugestion"    ></span>
+    <br/>
+    {if $modify}<a   href="stores.php?edit=1"  style="float:right;margin-left:15px" class="state_details"  >{t}Edit{/t}</a>{/if}
+  </div>
   
-  <div style="clear:left;xmargin:0 20px">
+  <div style="clear:left;">
     <h1>{t}Corporate Overview{/t}</h1>
   </div>
 

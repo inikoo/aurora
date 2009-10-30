@@ -116,7 +116,7 @@ if($user->is('Supplier'))
 
 if($user->can_view('reports')){
   if(count($user->scopes)==1){
-    $nav_menu[] = array(_('Reports'), sprintf('report_sales.php?store_key=%dtipo=m&y=%d&m=%d',$user->scopes[0],date('Y'),date('m')));
+    $nav_menu[] = array(_('Reports'), sprintf('report_sales.php?store_key=%d&tipo=m&y=%d&m=%d',$user->scopes[0],date('Y'),date('m')));
     }else
 
  $nav_menu[] = array(_('Reports'), 'reports.php');

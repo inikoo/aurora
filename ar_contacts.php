@@ -907,7 +907,6 @@ if(isset( $_REQUEST['where']))
     $tableid=0;
 
    if(isset( $_REQUEST['store_id'])    ){
-     
      $store=$_REQUEST['store_id'];
      $_SESSION['state']['customers']['store']=$store;
    }else
