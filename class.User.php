@@ -184,6 +184,52 @@ class User extends DB_Table{
 
   }
 
+
+function update_stores($value){
+    $this->updated=false;
+
+if($this->data['User Type']!='Staff')
+return;
+
+
+     $scopes=split(',',$value);
+     foreach($scopes as $key=>$value){
+       if(!is_numeric($value) )
+	 unset($scopes[$key]);
+     }
+       
+
+     $this->read_scopes();
+     
+     
+     $old_scopes=$this->scopes_key_array;
+     //     print_r($old_scopes);
+     //print_r($scopes);
+     $to_delete = array_diff($old_scopes, $scopes);
+     $to_add = array_diff($scopes, $old_scopes);
+     //	print_r($to_delete);
+     //		print_r($to_add);
+	
+   $changed=0;
+     
+	if(count($to_delete)>0){
+	  $changed+=$this->delete_scope($to_delete);
+
+	}
+	if(count($to_add)>0){
+	  $changed+=$this->add_scope($to_add);
+
+	}
+	$this->read_scopes();	
+	
+	if($changed>0){
+	  $this->updated=true;
+	}
+
+	
+
+}
+
   function update_groups($value){
     
     $this->updated=false;
@@ -200,38 +246,26 @@ class User extends DB_Table{
      
      
      $old_groups=$this->groups_key_array;
-     //     print_r($old_groups);
-     //print_r($groups);
+   
      $to_delete = array_diff($old_groups, $groups);
      $to_add = array_diff($groups, $old_groups);
-     //	print_r($to_delete);
-     //		print_r($to_add);
-	
-     //  $this->data['groups']=$groups;
-     //$this->data['groups_list']='';
-     // foreach($this->data['groups'] as $group_id){
-     //  $this->data['groups_list'].=', '.$_group[$group_id];
-     //	}
-     //$this->data['groups_list']=preg_replace('/^\,\s/','',$this->data['groups_list']);
-     
-
-     //return;
-     
+   
+     $changed=0;
 	if(count($to_delete)>0){
-	  $this->delete_group($to_delete);
-	  //$this->save_history('isactive',array('user_id'=>$data['user_id'],'date'=>date('Y-m-d H:i:s'),'old_value'=>$old_value   ));
+	  $changed+=$this->delete_group($to_delete);
+
 	}
 	if(count($to_add)>0){
-	  $this->add_group($to_add);
-	  //$this->save_history('isactive',array('user_id'=>$data['user_id'],'date'=>date('Y-m-d H:i:s'),'old_value'=>$old_value   ));
+	  $changed+=$this->add_group($to_add);
+
 	}
 	$this->read_groups();	
 	
-	if(count($to_add)>0 or count($to_delete)>0){
+	if($changed>0){
 	  $this->updated=true;
 	}
 
-	break;
+
   }
 
 
@@ -243,7 +277,9 @@ function update($tipo,$data){
  case('groups'):
    $this->update_groups($data['value']);
     break;
-
+ case('stores'):
+   $this->update_stores($data['value']);
+    break;
  }
 
 
@@ -323,16 +359,17 @@ function xupdate($tipo,$data){
 
 
  function add_group($to_add,$history=true){
-   
+   $changed=0;
    foreach($to_add as $group_id){
      $sql=sprintf("insert into `User Group User Bridge`values (%d,%d) ",$this->id,$group_id);
      //print $sql;
      mysql_query($sql);
       if (mysql_affected_rows()>0) {
+      $changed++;
      $history_data=array(
 			 'note'=>_('User added to Group')
 			 ,'details'=>_trim(_('User')." ".$this->data['User Alias']." "._('added to')." ".$this->groups['group_id']['User Group Name'])
-			 ,'action'=>'disassociate'
+			 ,'action'=>'associate'
 			 ,'indirect_object'=>'Group'
 			 ,'indirect_object_key'=>$group_id
 			 );
@@ -342,16 +379,17 @@ function xupdate($tipo,$data){
 
 
    }
-
+return $changed;
  }
 
  function delete_group($to_add,$history=true){
-   
+    $changed=0;
    foreach($to_add as $group_id){
      $sql=sprintf("delete from `User Group User Dimension` where `User Key`=%d and `Group Key`=%d ",$this->id,$group_id);
      mysql_query($sql);
    }
    if (mysql_affected_rows()>0) {
+   $changed++;
      $history_data=array(
 			 'note'=>_('User deleted from Group')
 			 ,'details'=>_trim(_('User')." ".$this->data['User Alias']." "._('removed from')." ".$this->groups['group_id']['User Group Name'])
@@ -362,9 +400,58 @@ function xupdate($tipo,$data){
      $this->add_history();
      
    }
+return $changed;
+ }
+
+function add_scope($to_add,$history=true){
+   $changed=0;
+   foreach($to_add as $scope_id){
+    
+    $store=new Store($scope_id);
+    if(!$store->id)
+    continue;
+    $sql=sprintf("insert into `User Right Scope Bridge`values (%d,%d) ",$this->id,$scope_id);
+     //print $sql;
+     mysql_query($sql);
+      if (mysql_affected_rows()>0) {
+     $changed++;
+     $history_data=array(
+			 'note'=>_('User Rights Associated with Store')
+			 ,'details'=>_trim(_('User')." ".$this->data['User Alias']." "._('rights associated with')." ".$store->data['Store Name'])
+			 ,'action'=>'associate'
+			 ,'indirect_object'=>'Scope'
+			 ,'indirect_object_key'=>$store->id
+			 );
+     $this->add_history();
+   }
+   }
+   return $changed;
 
  }
 
+ function delete_scope($to_delete,$history=true){
+$changed=0;
+   foreach($to_delete as $scope_id){
+    $store=new Store($scope_id);
+    if(!$store->id)
+    continue;
+     $sql=sprintf("delete from `User scope User Dimension` where `User Key`=%d and `scope Key`=%d ",$this->id,$scope_id);
+     mysql_query($sql);
+   }
+   if (mysql_affected_rows()>0) {
+   $changed++;
+     $history_data=array(
+		 'note'=>_('User Rights Disassociated with Store')
+			 ,'details'=>_trim(_('User')." ".$this->data['User Alias']." "._('rights disassociated with')." ".$store->data['Store Name'])
+			 ,'action'=>'disassociate'
+			 ,'indirect_object'=>'Scope'
+			 ,'indirect_object_key'=>$store->id
+			 );
+     $this->add_history();
+     
+   }
+return $changed;
+ }
 
 
 function get($tipo){
@@ -391,6 +478,7 @@ function get($tipo){
  }
 
  function can_view($tag,$tag_key=false){
+
    return $this->can_do('View',$tag,$tag_key);
    
  }
@@ -410,16 +498,30 @@ function get($tipo){
    if(!is_string($tag))
      return false;
    $tag=strtolower(_trim($tag));
-   if($tag_key==false)
-     return $this->can_do_any($right_type,$tag);
-   if(!is_numeric($tag_key) or $tag_key<=0 or !preg_match('/^\d+$/',$tag_key) )
-     return false;
-   return $this->can_do_this_key($right_type,$tag,$tag_key);
+ if($tag_key==false){
+ if(isset($this->rights_allow[$right_type][$tag]))
+ return true;
+ else
+ return false;
+ }
+
+
+
+
+ //    return $this->can_do_any($right_type,$tag);
+//  if(!is_numeric($tag_key) or $tag_key<=0 or !preg_match('/^\d+$/',$tag_key) )
+//     return false;
+//  return $this->can_do_this_key($right_type,$tag,$tag_key);
    
  }
  
  
-function can_do_any($right_type,$tag){
+ 
+ 
+ 
+ 
+ 
+function can_do_anyx($right_type,$tag){
   
   if(array_key_exists($tag,$this->rights_allow[$right_type]))
     return true;
@@ -430,20 +532,32 @@ function can_do_any($right_type,$tag){
 
 function can_do_this_key($right_type,$tag,$tag_key){
   
-  if(isset($this->rights_allow[$right_type][$tag]))
-    $right_data=$this->rights_allow[$right_type][$tag];
-  else
+  
+  
+  
+  if(isset($this->rights_allow[$right_type][$tag])){
+    if(array_key_exists($tag_key, $this->scopes))
+        return true;
+    else
+        false;
+  }else
     return false;
-  if($right_data['Right Access']=='All')
-    return true;
-  elseif($right_data['Right Access']=='Some'){
-    if(preg_match('/,$tag_key,/',$right_data['Rigth Access Keys']))
-      return true;
-  } elseif($right_data['Right Access']=='Except'){
-    if(!preg_match('/,$tag_key,/',$right_data['Rigth Access Keys']))
-      return true;
-  }
-  return false;
+  
+  
+  
+//    $right_data=$this->rights_allow[$right_type][$tag];
+//  else
+//    return false;
+//  if($right_data['Right Access']=='All')
+//    return true;
+//  elseif($right_data['Right Access']=='Some'){
+//    if(preg_match('/,$tag_key,/',$right_data['Rigth Access Keys']))
+//      return true;
+//  } elseif($right_data['Right Access']=='Except'){
+//    if(!preg_match('/,$tag_key,/',$right_data['Rigth Access Keys']))
+//      return true;
+//  }
+//  return false;
 
   
 }
@@ -455,7 +569,7 @@ function read_groups(){
   $this->groups_key_array=array();
 
   $sql=sprintf("select * from `User Group User Bridge` UGUB left join `User Group Dimension` GD on (GD.`User Group Key`=UGUB.`User Group Key`) where UGUB.`User Key`=%d",$this->id);
-  
+  //print $sql;
   $res=mysql_query($sql);
   while($row=mysql_fetch_array($res)){
     $this->groups[$row['User Group Key']]=array('User Group Name'=>$row['User Group Name']);
@@ -467,6 +581,35 @@ function read_groups(){
   $this->groups_read=true;
 }
 
+
+
+function  read_scopes() {
+
+    $this->scopes=array();
+    $sql=sprintf("select * from `User Right Scope Bridge` where `User Key`=%d"
+                 , $this->id);
+
+    $res=mysql_query($sql);
+    while ($row=mysql_fetch_array($res)) {
+        $this->scopes[]=$row['Scope Key'];
+    }
+    $this->store_righs='none';
+    if ($this->data['User Type']=='Staff') {
+        $sql="select count(*) as num_stores from `Store Dimension`";
+        $res=mysql_query($sql);
+        $row=mysql_fetch_array($res);
+        $num_stores=$row['num_stores'];
+        $num_stores=count($this->scopes);
+        if ($num_stores==$num_stores)
+            $this->store_rights='all';
+        else
+            $this->store_righs='some';
+
+
+
+    }
+
+}
 
 function read_rights(){
   
@@ -481,18 +624,25 @@ function read_rights(){
 
    if(count($this->groups)>0){
 
-   $sql=sprintf("select * from `User Group Rights Bridge`  UGRB left join `Right Dimension` RD on (RD.`Right Key`=UGRB.`Right Key`)  where `Group Key` in (%s)", $this->groups_key_list);
+   $sql=sprintf("select * from `User Group Rights Bridge`  UGRB left join `Right Dimension` RD on (RD.`Right Key`=UGRB.`Right Key`)  where `Group Key` in (%s)"
+    , $this->groups_key_list);
  
    $res=mysql_query($sql);
    while($row=mysql_fetch_array($res)){
      if($row['Right Type']=='View'){
-       $this->rights_allow['View'][$row['Right Name']]=array('Right Name'=>$row['Right Name'],'Right Access'=>$row['Right Access'],'Rigth Access Keys'=>$row['Rigth Access Keys']);
+       $this->rights_allow['View'][$row['Right Name']]=array(
+        'Right Name'=>$row['Right Name'],
+        //'Right Access'=>$row['Right Access'],
+        //'Right Access Keys'=>$row['Rigth Access Keys']
+        );
        $this->rights[$row['Right Name']]['View']='View';
      }if($row['Right Type']=='Delete'){
        $this->rights_allow['Delete'][$row['Right Name']]=$row['Right Name'];
-       $this->rights[$row['Right Name']]['`Delete']='Delete';
+       $this->rights[$row['Right Name']]['Delete']='Delete';
      }if($row['Right Type']=='Edit'){
-       $this->rights_allow['Edit'][$row['Right Name']]=array('Right Name'=>$row['Right Name'],'Right Access'=>$row['Right Access'],'Rigth Access Keys'=>$row['Rigth Access Keys']);
+       $this->rights_allow['Edit'][$row['Right Name']]=array('Right Name'=>$row['Right Name']
+       //,'Right Access'=>$row['Right Access'],'Rigth Access Keys'=>$row['Rigth Access Keys']
+       );
        $this->rights[$row['Right Name']]['Edit']='Edit';
      }if($row['Right Type']=='Create'){
        $this->rights_allow['Create'][$row['Right Name']]=$row['Right Name'];

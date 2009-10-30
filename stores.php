@@ -16,7 +16,7 @@ include_once('common.php');
 if(!$user->can_view('stores'))
   exit();
 
-$avileable_stores_list=$user->can_view_list('stores');
+$avileable_stores_list=$user->scopes;
 $avileable_stores=count($avileable_stores_list);
 if($avileable_stores==1){
   header('Location: store.php?id='.$avileable_stores_list[0]);

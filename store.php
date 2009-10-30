@@ -12,7 +12,6 @@
  Version 2.0
 */
 include_once('common.php');
-//include_once('stock_functions.php');
 include_once('class.Store.php');
 
 
@@ -27,8 +26,11 @@ if(isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ){
 }
 
 
-if(!$user->can_view('stores',$store_id))
-  exit();
+if(!($user->can_view('stores') and in_array($store_id,$user->scopes)   ) ){
+  header('Location: index.php');
+   exit;
+}
+
 
 $store=new Store($store_id);
 $_SESSION['state']['store']['id']=$store->id;
