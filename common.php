@@ -99,7 +99,7 @@ include_once('set_state.php');
 $smarty->assign('user',$user->data['User Alias']);
 $user->read_groups();
 $user->read_rights();
-$user->read_scopes();
+$user->read_stores();
 //print_r($user);
 //exit;
 $nav_menu=array();
@@ -115,8 +115,8 @@ if($user->is('Supplier'))
   $nav_menu[] = array(_('My Products'), 'myproducts.php');
 
 if($user->can_view('reports')){
-  if(count($user->scopes)==1){
-    $nav_menu[] = array(_('Reports'), sprintf('report_sales.php?store_key=%d&tipo=m&y=%d&m=%d',$user->scopes[0],date('Y'),date('m')));
+  if(count($user->stores)==1){
+    $nav_menu[] = array(_('Reports'), sprintf('report_sales.php?store_key=%d&tipo=m&y=%d&m=%d',$user->stores[0],date('Y'),date('m')));
     }else
 
  $nav_menu[] = array(_('Reports'), 'reports.php');
@@ -124,8 +124,8 @@ if($user->can_view('reports')){
 
 if($user->can_view('orders')){
 
-if(count($user->scopes)==1){
-    $nav_menu[] = array(_('Orders'), 'orders.php?store='.$user->scopes[0]);
+if(count($user->stores)==1){
+    $nav_menu[] = array(_('Orders'), 'orders.php?store='.$user->stores[0]);
     }else
 $nav_menu[] = array(_('Orders'), 'orders_server.php');
 
@@ -133,8 +133,8 @@ $nav_menu[] = array(_('Orders'), 'orders_server.php');
 
 if($user->can_view('customers')){
 
-  if(count($user->scopes)==1){
-    $nav_menu[] = array(_('Customers'), 'customers.php?store='.$user->scopes[0]);
+  if(count($user->stores)==1){
+    $nav_menu[] = array(_('Customers'), 'customers.php?store='.$user->stores[0]);
     }else
   $nav_menu[] = array(_('Customers'), 'customers_server.php');
 
@@ -143,8 +143,8 @@ if($user->can_view('warehouses'))
 $nav_menu[] = array(_('Warehouse'), 'warehouse.php');
 
 if($user->can_view('stores')){
-    if(count($user->scopes)==1){
-    $nav_menu[] = array(_('Products'), 'store.php?id='.$user->scopes[0]);
+    if(count($user->stores)==1){
+    $nav_menu[] = array(_('Products'), 'store.php?id='.$user->stores[0]);
     }else
     $nav_menu[] = array(_('Products'), 'stores.php');
 }

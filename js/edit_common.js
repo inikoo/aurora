@@ -13,17 +13,19 @@
 	ar_file='ar_edit_contacts.php';
     else if(column.object=='warehouse_area' || column.object=='part_location')
 	ar_file='ar_edit_warehouse.php';
+	else if(column.object=='user' )
+	ar_file='ar_edit_users.php';
     else
 	ar_file='ar_edit_assets.php';
     //   alert(column.object)
     var request='tipo=edit_'+column.object+'&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ myBuildUrl(datatable,record);
-    // alert(request);
+    alert(request);
 
     YAHOO.util.Connect.asyncRequest(
 				    'POST',
 				    ar_file, {
 					success:function(o) {
-					    // alert(o.responseText);
+					     alert(o.responseText);
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
 						

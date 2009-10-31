@@ -20,7 +20,7 @@ class User extends DB_Table{
   
   function User($a1='id',$a2=false) {
 
-
+ $this->table_name='User';
     if($a1=='new' and is_array($a2)){
       $this->create($a2);
       return;
@@ -192,38 +192,39 @@ if($this->data['User Type']!='Staff')
 return;
 
 
-     $scopes=split(',',$value);
-     foreach($scopes as $key=>$value){
+     $stores=preg_split('/,/',$value);
+     foreach($stores as $key=>$value){
        if(!is_numeric($value) )
-	 unset($scopes[$key]);
+	 unset($stores[$key]);
      }
        
 
-     $this->read_scopes();
+     $this->read_stores();
      
      
-     $old_scopes=$this->scopes_key_array;
-     //     print_r($old_scopes);
-     //print_r($scopes);
-     $to_delete = array_diff($old_scopes, $scopes);
-     $to_add = array_diff($scopes, $old_scopes);
+     $old_stores=$this->stores;
+     //     print_r($old_stores);
+     //print_r($stores);
+     $to_delete = array_diff($old_stores, $stores);
+     $to_add = array_diff($stores, $old_stores);
      //	print_r($to_delete);
      //		print_r($to_add);
 	
    $changed=0;
      
 	if(count($to_delete)>0){
-	  $changed+=$this->delete_scope($to_delete);
+	  $changed+=$this->delete_store($to_delete);
 
 	}
 	if(count($to_add)>0){
-	  $changed+=$this->add_scope($to_add);
+	  $changed+=$this->add_store($to_add);
 
 	}
-	$this->read_scopes();	
+	$this->read_stores();	
 	
 	if($changed>0){
 	  $this->updated=true;
+	    $this->new_value=$this->stores;
 	}
 
 	
@@ -235,7 +236,7 @@ return;
     $this->updated=false;
 
     //     global $_group;
-     $groups=split(',',$value);
+     $groups=preg_split('/,/',$value);
      foreach($groups as $key=>$value){
        if(!is_numeric($value) )
 	 unset($groups[$key]);
@@ -283,6 +284,11 @@ function update($tipo,$data){
     break;
  case('stores'):
    $this->update_stores($data['value']);
+    break;
+ case('name'):
+ case('alias'):
+ case('User Alias'):
+    $this->update_field('User Alias',$data['value']);
     break;
  }
 
@@ -415,7 +421,7 @@ return $changed;
 return $changed;
  }
 
-function add_scope($to_add,$history=true){
+function add_store($to_add,$history=true){
    $changed=0;
    foreach($to_add as $scope_id){
     
@@ -431,7 +437,7 @@ function add_scope($to_add,$history=true){
 			 'note'=>_('User Rights Associated with Store')
 			 ,'details'=>_trim(_('User')." ".$this->data['User Alias']." "._('rights associated with')." ".$store->data['Store Name'])
 			 ,'action'=>'associate'
-			 ,'indirect_object'=>'Scope'
+			 ,'indirect_object'=>'Store'
 			 ,'indirect_object_key'=>$store->id
 			 );
      $this->add_history($history_data);
@@ -441,13 +447,13 @@ function add_scope($to_add,$history=true){
 
  }
 
- function delete_scope($to_delete,$history=true){
+ function delete_store($to_delete,$history=true){
 $changed=0;
    foreach($to_delete as $scope_id){
     $store=new Store($scope_id);
     if(!$store->id)
     continue;
-     $sql=sprintf("delete from `User scope User Dimension` where `User Key`=%d and `scope Key`=%d ",$this->id,$scope_id);
+     $sql=sprintf("delete from `User Right Scope Bridge` where `User Key`=%d and `scope Key`=%d ",$this->id,$scope_id);
      mysql_query($sql);
    }
    if (mysql_affected_rows()>0) {
@@ -456,7 +462,7 @@ $changed=0;
 		 'note'=>_('User Rights Disassociated with Store')
 			 ,'details'=>_trim(_('User')." ".$this->data['User Alias']." "._('rights disassociated with')." ".$store->data['Store Name'])
 			 ,'action'=>'disassociate'
-			 ,'indirect_object'=>'Scope'
+			 ,'indirect_object'=>'Store'
 			 ,'indirect_object_key'=>$store->id
 			 );
      $this->add_history($history_data);
@@ -548,7 +554,7 @@ function can_do_this_key($right_type,$tag,$tag_key){
   
   
   if(isset($this->rights_allow[$right_type][$tag])){
-    if(array_key_exists($tag_key, $this->scopes))
+    if(array_key_exists($tag_key, $this->stores))
         return true;
     else
         false;
@@ -595,15 +601,15 @@ function read_groups(){
 
 
 
-function  read_scopes() {
+function  read_stores() {
 
-    $this->scopes=array();
+    $this->stores=array();
     $sql=sprintf("select * from `User Right Scope Bridge` where `User Key`=%d"
                  , $this->id);
 
     $res=mysql_query($sql);
     while ($row=mysql_fetch_array($res)) {
-        $this->scopes[]=$row['Scope Key'];
+        $this->stores[]=$row['Scope Key'];
     }
     $this->store_righs='none';
     if ($this->data['User Type']=='Staff') {
@@ -611,7 +617,7 @@ function  read_scopes() {
         $res=mysql_query($sql);
         $row=mysql_fetch_array($res);
         $num_stores=$row['num_stores'];
-        $num_stores=count($this->scopes);
+        $num_stores=count($this->stores);
         if ($num_stores==$num_stores)
             $this->store_rights='all';
         else

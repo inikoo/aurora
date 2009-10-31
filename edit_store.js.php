@@ -315,8 +315,6 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
 
 
-	    
- // Set up editing flow
 	    var highlightEditableCell = function(oArgs) {
 		var elCell = oArgs.target;
 		if(YAHOO.util.Dom.hasClass(elCell, "yui-dt-editable")) {

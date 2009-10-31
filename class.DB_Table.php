@@ -176,12 +176,12 @@ protected function update_field($field,$value,$options=''){
     $this->msg.=" $field "._('Record updated').", \n";
     $this->msg_updated.=" $field "._('Record updated').", \n";
     $this->updated=true;
-    $this->newvalue=$value;
+    $this->new_value=$value;
     $save_history=true;
     if(preg_match('/no( |\_)history/i',$options))
       $save_history=false;
     if(
-       preg_match('/customer|contact|company|order|staff|supplier|address|telecom/i',$this->table_name)
+       preg_match('/customer|contact|company|order|staff|supplier|address|telecom|user/i',$this->table_name)
        and !$this->new 
        and $save_history
        ){

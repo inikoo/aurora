@@ -26,7 +26,7 @@ if(isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ){
 }
 
 
-if(!($user->can_view('stores') and in_array($store_id,$user->scopes)   ) ){
+if(!($user->can_view('stores') and in_array($store_id,$user->stores)   ) ){
   header('Location: index.php');
    exit;
 }

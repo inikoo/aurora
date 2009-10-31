@@ -442,10 +442,16 @@ $this->data['Invoice Currency Exchange']=$exchange;
     //Ship t key
     $ship_to_key=0;
     
+    //print_r($transacions_data);
+    
     foreach ( $transacions_data as $data ) {
       $line_number ++;
       
-      $sql = sprintf ( "update  `Order Transaction Fact`  set `Current Payment State`=%s,`Invoice Date`=%s,`Order Last Updated Date`=%s, `Invoice Public ID`=%s,`Invoice Line`=%d,`Invoice Quantity`=%s ,`Ship To Key`=%s ,`Invoice Transaction Gross Amount`=%.2f,`Invoice Transaction Total Discount Amount`=%.2f ,`Consolidated`='No',`Invoice Transaction Outstanding Net Balance`=%.2f ,`Invoice Transaction Outstanding Tax Balance`=%.2f, `Transaction Tax Rate`=%f ,`Transaction Tax Code`=%s,`Invoice Transaction Outstanding Net Balance`=%.2f,`Invoice Transaction Outstanding Tax Balance`=%.2f ,`Invoice Key`=%d ,`Invoice Currency Code`=%s,`Invoice Currency Exchange Rate`=%f where `Order Key`=%d and  `Order Line`=%d"
+      $sql = sprintf ( "update  `Order Transaction Fact`  set `Current Payment State`=%s,`Invoice Date`=%s,`Order Last Updated Date`=%s, `Invoice Public ID`=%s,`Invoice Line`=%d
+      ,`Invoice Quantity`=%s ,`Ship To Key`=%s ,`Invoice Transaction Gross Amount`=%.2f,`Invoice Transaction Total Discount Amount`=%.2f ,`Consolidated`='No'
+      
+      ,`Invoice Transaction Total Tax Amount`=%.4f
+      , `Transaction Tax Rate`=%f ,`Transaction Tax Code`=%s,`Invoice Transaction Outstanding Net Balance`=%.2f,`Invoice Transaction Outstanding Tax Balance`=%.2f ,`Invoice Key`=%d ,`Invoice Currency Code`=%s,`Invoice Currency Exchange Rate`=%f where `Order Key`=%d and  `Order Line`=%d"
 		       , prepare_mysql ( 'Waiting Payment' )
 		       , prepare_mysql ( $this->data ['Invoice Date'] )
 		       , prepare_mysql ( $this->data ['Invoice Date'] )
@@ -455,7 +461,7 @@ $this->data['Invoice Currency Exchange']=$exchange;
 		       , prepare_mysql ( $ship_to_key )
 		       , $data ['gross amount']
 		       , $data ['discount amount']
-		       , $data ['gross amount']-$data ['discount amount']
+		       
 		       , $data ['tax amount']
 		       , $data ['tax rate']
 		        , prepare_mysql($data ['tax code'])
@@ -469,13 +475,14 @@ $this->data['Invoice Currency Exchange']=$exchange;
       
       $amount += $data ['gross amount'];
       $discounts += $data ['discount amount'];
-      // print "$sql\n";
+      //print "$sql\n\n\n";
       if (! mysql_query ( $sql ))
 	exit ( "$sql\n can not update order trwansiocion 11 facrt after invoice" );
     }
-    
+    //exit;
     //addign indovdual product costs
     
+    $this->distribute_costs();
     
     $this->load('dns');
     $this->load('orders');
@@ -495,61 +502,6 @@ $this->data['Invoice Currency Exchange']=$exchange;
       $sql = sprintf ( "insert into `Order Invoice Bridge` values (%d,%d)", $this->data ['Invoice Key'], $key );
       mysql_query ( $sql );
     }
-
-
-
-
-
-
-
-
-    
-/*     $invoice_txt = "Invoiced"; */
-    
-/*     if ($order->data ['Order Type'] == 'Delivery Note') */
-/*       $tipo = _ ( 'DN' ); */
-/*     elseif ($order->data ['Order Type'] == 'Order') */
-/*       $tipo = _ ( 'Order' ); */
-/*     elseif ($order->data ['Order Type'] == 'Sample') */
-/*       $tipo = _ ( 'Sample' ); */
-/*     elseif ($order->data ['Order Type'] == 'Donation') */
-/*       $tipo = _ ( 'Donation' ); */
-    
-/*     $state = sprintf ( '%s, %s <a href="invoice.php?id=%d">%s</a>', $tipo, $invoice_txt, $this->data ['Invoice Key'], addslashes ( $this->data ['Invoice Public ID'] ) ); */
-    
-/*     $order->data ['Order Adjust Amount'] = $this->data ['Invoice Adjust Amount']; */
-/*     $order->data ['Order Gross Amount'] = $this->data ['Invoice Gross Amount']; */
-/*     $order->data ['Order Discount Amount'] = $this->data ['Invoice Discount Amount']; */
-/*     $order->data ['Order Shipping Amount'] = $this->data ['Invoice Shipping Net Amount']; */
-/*     $order->data ['Order Charges Amount'] = $this->data ['Invoice Charges Net Amount']; */
-/*     $order->data ['Order Items Net Amount'] = $order->data ['Order Gross Amount'] - $order->data ['Order Discount Amount'] + $order->data ['Order Adjust Amount']; */
-    
-/*     $order->data ['Order Total Net Amount'] = $order->data ['Order Items Net Amount'] + $order->data ['Order Shipping Amount'] + $order->data ['Order Charges Amount']; */
-    
-/*     $order->data ['Order Total Tax Amount'] = $order->data ['Order Total Net Amount'] * $invoice_data ['tax_rate']; */
-    
-/*     $order->data ['Order Total Amount'] = $order->data ['Order Total Tax Amount'] + $order->data ['Order Total Net Amount']; */
-/*     $order->data ['Order Balance Total Amount'] = 0; */
-    
-/*     $sql = sprintf ( "update `Order Dimension` set `Order Current Dispatch State`='Dispached' ,`Order Current Payment State`='Paid',`Order Current XHTML State`=%s ,`Order XHTML Invoices`=%s,`Order Items Gross Amount`=%.2f ,`Order Items Discount Amount`=%.2f ,`Order Shipping Net Amount`=%.2f,`Order Charges Net Amount`=%.2f ,`Order Total Tax Amount`=%.2f ,`Order Total Amount`=%.2f,`Order Balance Total Amount`=%.2f,`Order Total Net Amount`=%.2f,`Order Items Adjust Amount`=%.2f, `Order Items Net Amount`=%.2f where `Order Key`=%d" */
-/* 		     , prepare_mysql ( $state ) */
-/* 		     , prepare_mysql ( $state ) */
-/* 		     , $order->data ['Order Gross Amount'] */
-/* 		     , $order->data ['Order Discount Amount'] */
-/* 		     , $order->data ['Order Shipping Amount'] */
-/* 		     , $order->data ['Order Charges Amount'] */
-/* 		     , $order->data ['Order Total Tax Amount'] */
-/* 		     , $order->data ['Order Total Amount'] */
-/* 		     , $order->data ['Order Balance Total Amount'] */
-/* 		     , $order->data ['Order Total Net Amount'] */
-/* 		     , $order->data ['Order Adjust Amount'] */
-/* 		     , $order->data ['Order Items Net Amount'] */
-/* 		     , $order->data ['Order Key'] ); */
-    
-/*     if (! mysql_query ( $sql )) */
-/*       exit ( "$sql can not update order dimension after inv xx\n" ); */
-
-    //Update product sales
 
 
       $sql = sprintf ( "update `Invoice Dimension` set `Invoice XHTML Delivery Notes`=%s,`Invoice XHTML Ship Tos`=%s,`Invoice XHTML Orders`=%s,`Invoice Delivery Country 2 Alpha Code`=%s where `Invoice Key`=%d"
@@ -715,35 +667,54 @@ function display($tipo='xml'){
    //	print_r($weight_factor);
    //print_r($charge_factor);
    
+   $shipping_tax_rate=0;
+    if($this->data ['Invoice Shipping Net Amount']!=0)
+   $shipping_tax_rate=$this->data ['Invoice Shipping Tax Amount']/$this->data ['Invoice Shipping Net Amount'];
 
    //print $this->data['Invoice Shipping Net Amount'];
    foreach ( $weight_factor as $line_number => $factor ) {
-     if ($total_weight == 0)
-       $value = $this->data ['Invoice Shipping Net Amount'] * $factor / $items;
-     else
-       $value = $this->data ['Invoice Shipping Net Amount'] * $factor / $total_weight;
-     $sql = sprintf ( "update `Order Transaction Fact` set `Invoice Transaction Shipping Amount`=%.4f where `Invoice Key`=%d and  `Invoice Line`=%d ", $value, $this->data ['Invoice Key'], $line_number );
+     if ($total_weight == 0){
+       $shipping = $this->data ['Invoice Shipping Net Amount'] * $factor / $items;
+     $shipping_tax=$shipping*$shipping_tax_rate;
+     }else{
+       $shipping = $this->data ['Invoice Shipping Net Amount'] * $factor / $total_weight;
+        $shipping_tax=$shipping*$shipping_tax_rate;
+    }
+    
+    
+    $sql = sprintf ( "update `Order Transaction Fact` set `Invoice Transaction Shipping Amount`=%.4f, `Invoice Transaction Shipping Tax Amount`=%.6f where `Invoice Key`=%d and  `Invoice Line`=%d "
+    , $shipping ,$shipping_tax,$this->data ['Invoice Key'], $line_number );
      if (! mysql_query ( $sql ))
 				exit ( "$sql error dfsdfs doerde.pgp" );
    }
-   $total_tax = $this->data ['Invoice Items Tax Amount'] + $this->data ['Invoice Shipping Tax Amount'] + $this->data ['Invoice Charges Tax Amount'];
-   //	print_r($this->data);
-   //print "=========================$total_tax ===============\n";
-   foreach ( $charge_factor as $line_number => $factor ) {
-			if ($total_charge == 0) {
-			  $charges = $this->data ['Invoice Charges Net Amount'] * $factor / $items;
-			  $vat = $total_tax * $factor / $items;
-			  
-			} else {
-			  $charges = $this->data ['Invoice Charges Net Amount'] * $factor / $total_charge;
-			  $vat = $total_tax * $factor / $total_charge;
-			  
-			}
-			$sql = sprintf ( "update `Order Transaction Fact` set `Invoice Transaction Charges Amount`=%.4f ,`Invoice Transaction Total Tax Amount`=%.4f  where `Invoice Key`=%d and  `Invoice Line`=%d ", $charges, $vat, $this->data ['Invoice Key'], $line_number );
-			if (! mysql_query ( $sql ))
-			  exit ( "$sql error dfsdfs 2 doerde.pgp" );
-   }
+  // $total_tax = $this->data ['Invoice Items Tax Amount'] + $this->data ['Invoice Shipping Tax Amount'] + $this->data ['Invoice Charges Tax Amount'];
    
+$charge_tax_rate=0;
+    if($this->data ['Invoice Charges Net Amount']!=0)
+   $charge_tax_rate=$this->data ['Invoice Charges Tax Amount']/$this->data ['Invoice Charges Net Amount'];
+
+   //	print_r($this->data);
+   //print "=========================$total_tax ====$total_charge ===========\n";
+   foreach ( $charge_factor as $line_number => $factor ) {
+    if ($total_charge == 0) {
+        $charges = $this->data ['Invoice Charges Net Amount'] * $factor / $items;
+         $charge_tax=$charge_tax_rate*$charges;
+    } else {
+        $charges = $this->data ['Invoice Charges Net Amount'] * $factor / $total_charge;
+        $charge_tax=$charge_tax_rate*$charges;
+
+    }
+    $sql = sprintf ( "update `Order Transaction Fact` set `Invoice Transaction Charges Amount`=%.4f ,`Invoice Transaction Charges Tax Amount`=%.6f  where `Invoice Key`=%d and  `Invoice Line`=%d "
+    , $charges, $charge_tax, $this->data ['Invoice Key'], $line_number );
+    if (! mysql_query ( $sql ))
+        exit ( "$sql error dfsdfs 2 doerde.pgp" );
+}
+ 
+  $sql = "update `Order Transaction Fact`  set `Invoice Transaction Total Tax Amount`=(IFNULL(`Transaction Tax Rate`,0)*(IFNULL(`Invoice Transaction Gross Amount`,0)-IFNULL(`Invoice Transaction Total Discount Amount`,0)))+IFNULL(`Invoice Transaction Shipping Tax Amount`,0)+IFNULL(`Invoice Transaction Charges Tax Amount`,0)   where `Invoice Key`=" . $this->data ['Invoice Key'];
+   if(! mysql_query ( $sql )){
+    exit ( "$sql error dfsdfs 2 doerde.pgp  inv class aaa" );
+   }
+ 
  }
 
  function load($key,$args=false){
@@ -865,7 +836,7 @@ global $myconf;
 
    
    $sql = "select sum(`Invoice Transaction Gross Amount`) as gross,sum(`Invoice Transaction Total Discount Amount`) as discount  ,sum(`Invoice Transaction Total Tax Amount`) as tax,sum(`Invoice Transaction Net Refund Amount`) as ref_net,sum(`Invoice Transaction Tax Refund Amount`) as ref_tax,sum(`Invoice Transaction Outstanding Net Balance`) as ob_net ,sum(`Invoice Transaction Outstanding Tax Balance`) as ob_tax ,sum(`Invoice Transaction Outstanding Refund Net Balance`) as ref_ob_net ,sum(`Invoice Transaction Outstanding Refund Tax Balance`) as ref_ob_tax  from `Order Transaction Fact`  where  `Invoice Key`=" . $this->data ['Invoice Key'];
-   //print $sql;
+   print "$sql\n";
    $result = mysql_query ( $sql );
    if ($row = mysql_fetch_array ( $result, MYSQL_ASSOC )) {
      $amount=$row['gross'];
@@ -904,7 +875,8 @@ global $myconf;
      $this->data ['Invoice Total Tax Adjust Amount']=0;
 
     $this->data ['Invoice Items Tax Amount'] =$tax;
-
+print_r($force_values);
+print "aqui 123 tax items $tax \n";
    // print $this->data ['Invoice Total Net Adjust Amount']."\n";
    $this->data ['Invoice Total Net Amount'] = $total_net+$ref_net+$this->data ['Invoice Total Net Adjust Amount'];
    $this->distribute_costs ();

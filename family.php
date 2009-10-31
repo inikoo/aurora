@@ -25,7 +25,7 @@ $family=new Family($family_id);
 
 
 
-if(!( $user->can_view('stores') and in_array($family->data['Product Family Store Key'],$user->scopes)))
+if(!( $user->can_view('stores') and in_array($family->data['Product Family Store Key'],$user->stores)))
   exit();
 
 
