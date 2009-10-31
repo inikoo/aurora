@@ -23,7 +23,7 @@ if(!isset($_REQUEST['id']) or !is_numeric($_REQUEST['id']) )
   }
 $department=new Department($department_id);
 
-if(!( $user->can_view('stores') and in_array($department->data['Product Department Store Key'],$user->scopes)))
+if(!( $user->can_view('stores') and in_array($department->data['Product Department Store Key'],$user->stores)))
   exit();
 
 $store=new Store($department->get('Product Department Store Key'));

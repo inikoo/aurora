@@ -1,40 +1,78 @@
 {include file='header.tpl'}
 <div id="bd" >
 
-  <span class="nav2 onleft {if $view=='areas'}{/if}" >{t}Areas{/t}</span>
-  <span class="nav2 onleft {if $view=='locations'}{/if}" >{t}Locations{/t}</span>
-
  
 
-  <div class="search_box no_top_nav"   >
-  
-  <div style="height:1.6em">
- <a style="padding-left:20px;float:right"  class="state_details" href="edit_warehouse.php?id={$warehouse->id}">{t}Edit Warehouse{/t}</a>
-   <span  id="show_details" style="float:right;{if $show_details}display:none{/if}" class="state_details"  onClick="show_details()" >{t}Show details{/t}</span>
-   <span  id="show_map" style="margin:0 20px;xpadding:0 20px;float:right;{if $show_map}display:none{/if}" class="state_details"  onClick="show_map()" >{t}Show map{/t}</span>
-  </div>
-  
-  
-    <span class="search_title">{t}Location Code{/t}:</span> <input size="8" class="text search" id="location_search" value="" name="search"/><img align="absbottom" id="location_submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>
-     <span  class="search_msg"   id="location_search_msg"    >
-     </span> <span  class="search_sugestion"   id="location_search_sugestion"    ></span>
-     
-     
+ 
+  <span class="nav2 onright" ><a href="warehouse.php?id={$warehouse->id}">{t}Exit Edit{/t}</a></span>
+
+
+  <div class="search_box" >
+  <div style="padding:0 0 5px 0">
+ <a style="padding-left:20px"  class="state_details" href="new_warehouse_area.php?warehouse_id={$warehouse->id}">{t}Add Area{/t}</a>
+ <a style="padding-left:20px"  class="state_details" href="new_location.php?warehouse_id={$warehouse->id}">{t}Add Location{/t}</a>
+
+</div>
+
+   
   </div>
 
   <div style="clear:left;margin:0 0px">
     <h1>{t}Warehouse{/t}</h1>
   </div>
-
-
-      
-
-  <div   style="display:none;border:1px solid #ccc;text-align:left;margin:0px;padding:20px;height:270px;width:600px;margin: 0 0 10px 0;float:left">
-    <img   src="_warehouse.png" name="printable_map" />
-    
-    
+ <div>
+ 
+   <ul class="tabs" id="chooser_ul" style="clear:both">
+    <li> <span class="item {if $edit=='description'}selected{/if}"  id="description">  <span> {t}Description{/t}</span></span></li>
+    <li> <span class="item {if $edit=='areas'}selected{/if}"  id="areas">  <span> {t}Areas{/t}</span></span></li>
+    <li> <span class="item {if $edit=='locations'}selected{/if}"  id="locations">  <span> {t}Location{/t}</span></span></li> 
+  </ul>
+  
+   <div class="tabbed_container" > 
+   <div>
    
-  </div>
+     <div style="float:right">
+	<span class="save" style="display:none" id="description_save" onclick="save('description')">{t}Save{/t}</span>
+	<span id="description_reset"  style="display:none"   class="undo" onclick="reset('description')">{t}Cancel{/t}</span>
+      </div>
+	
+      <table style="margin:0;" class="edit" border=0>
+	<tr><td class="label">{t}Warehouse Code{/t}:</td><td>
+	      <input  
+		 id="code" 
+		 onKeyUp="changed(this)" 
+		 onMouseUp="changed(this)"  
+		 onChange="changed(this)"  
+		 name="code" 
+		 changed=0 
+		 type='text' 
+		 class='text' 
+		 style="width:15em" 
+		 MAXLENGTH="16" 
+		 value="{$warehouse->get('Warehouse Code')}" 
+		 ovalue="{$warehouse->get('Warehouse Code')}"  
+		 />
+	    </td>
+	  </tr>
+	  <tr><td class="label">{t}Warehouse Name{/t}:</td><td>
+	      <input   
+		 id="name" 
+		 onKeyUp="changed(this)"    
+		 onMouseUp="changed(this)"  
+		 onChange="changed(this)"  
+		 name="name" 
+		 changed=0 
+		 type='text'  
+		 MAXLENGTH="255" 
+		 style="width:30em"  
+		 class='text' 
+		 value="{$warehouse->get('Warehouse Name')}"  
+		     ovalue="{$warehouse->get('Warehouse Name')}"  
+		 />
+	    </td>
+	  </tr>
+	</table>
+  </div> 
   
 
  <div id="the_table1" class="data_table" style="margin:0px 0px;clear:both">
@@ -61,6 +99,8 @@
     </div>
     <div  id="table0"   class="data_table_container dtable btable "> </div>
   </div>
+
+</div>
 
 
     </div>

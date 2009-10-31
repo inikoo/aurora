@@ -941,6 +941,14 @@ class Order extends DB_Table{
 		
     if (array_key_exists ( $key, $this->data ))
       return $this->data [$key];
+	 
+      if (preg_match('/^(Total|Items|(Shipping )?Net).*(Amount)$/',$key)) {
+
+            $amount='Order '.$key;
+
+            return money($this->data[$amount]);
+        }	
+		
 		
     switch ($key) {
 			
@@ -1001,10 +1009,7 @@ class Order extends DB_Table{
     //    print_r($this->data);
 		
 
-    print "Error $key not found in get from Order\n";
-    exit ();
-    return false;
-		
+   
     return false;
   }
 	
@@ -1911,8 +1916,8 @@ class Order extends DB_Table{
 		
 	  $sql = sprintf ( "update `Order Dimension` set `Order Items Gross Amount`=%.2f, `Order Items Discount Amount`=%.2f, `Order Items Net Amount`=%.2f ,`Order Total Tax Amount`=%.2f ,`Order Shipping Net Amount`=%.2f ,`Order Charges Net Amount`=%.2f ,`Order Total Amount`=%.2f , `Order Balance Total Amount`=%.2f  where  `Order Key`=%d ", $this->data ['Order Gross Amount'], $this->data ['Order Discount Amount'], $this->data ['Order Net Amount'], $this->data ['Order Total Tax Amount'], $this->data ['Order Shipping Amount'], $this->data ['Order Charges Amount'], $this->data ['Order Total Amount'], $this->data ['Order Total To Pay Amount'], $this->data ['Order Key'] );
 		
-	  //	print "Aqui2 $sql\n";
-	  //	exit;
+	  	//print "Aqui2 $sql\n";
+	  //exit;
 						
 		
 	  if (! mysql_query ( $sql ))
@@ -1927,7 +1932,11 @@ class Order extends DB_Table{
 	$this->data ['Order Shipping Amount'] = 0;
 	$this->data ['Order Charges Amount'] = 0;
 	$this->data ['Order Total Tax Amount'] = 0;
-	      
+	  
+	  
+	  
+	  
+	  
 	$sql = "select sum(`Invoice Transaction Gross Amount`) as gross,sum(`Invoice Transaction Total Discount Amount`) as discount, sum(`Invoice Transaction Shipping Amount`) as shipping,sum(`Invoice Transaction Charges Amount`) as charges ,sum(`Invoice Transaction Total Tax Amount`) as tax ,sum(`Invoice Transaction Net Refund Amount`) as net_refunds,sum(`Invoice Transaction Tax Refund Amount`) as tax_refunds  from `Order Transaction Fact` where `Order Key`=" . $this->data ['Order Key'];
 	//print "$sql\n";
 	$result = mysql_query ( $sql );

@@ -23,7 +23,7 @@ $css_files=array(
 		 $yui_path.'button/assets/skins/sam/button.css',
 		 $yui_path.'build/assets/skins/sam/skin.css',
 		 'common.css',
-		 // 'container.css',
+		 'css/edit.css',
 		 'table.css'
 		 );
 $js_files=array(
@@ -38,11 +38,14 @@ $js_files=array(
 		$yui_path.'menu/menu-min.js',
 		'common.js.php',
 		'table_common.js.php',
-		//'users.js.php',
+		'js/edit_common.js',
 		'sha256.js.php',
 		'passwordmeter.js.php',
 		'edit_users_staff.js.php'
 		);
+		
+	
+		
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 

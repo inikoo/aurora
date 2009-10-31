@@ -435,6 +435,7 @@ color: #316D89;
 .search_box{clear:both;float:right;border: 0px solid #ddd;text-align:right;xpadding:0 20px 10px 10px;}
 .search_box form{ margin-bottom:5px }
 .search_box .search_title{ position:relative;left:16px}
+.no_top_nav{position:relative;bottom:10px}
 
 .search_msg,.state_details,search_sugestion{font-size:85%; font-weight:200}
 .state_details,search_sugestion{color:#777;cursor:pointer;} 

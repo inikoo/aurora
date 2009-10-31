@@ -99,11 +99,11 @@ $fam_no_fam_key=$fam_no_fam->id;
 $fam_promo_key=$fam_promo->id;
 
 
-$sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and filename like '%Orders/99%' order by filename ";
+$sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) or filename like '%Orders/99000%' order by filename ";
 
 
 //$sql="select * from  orders_data.orders where filename like '%refund.xls'   order by filename";
-//$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/6908.xls' order by filename";
+$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/99000.xls' order by filename";
 
 //$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/15720.xls' or filename like '/mnt/%/Orders/60000.xls' or  filename like '/mnt/%/Orders/15sdfsd593.xls' order by filename";
 
@@ -167,6 +167,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     $data=array();
     list($act_data,$header_data)=read_header($header,$map_act,$y_map,$map);
     $header_data=filter_header($header_data);
+    print_r($header_data);
     list($tipo_order,$parent_order_id,$header_data)=get_tipo_order($header_data['ltipo'],$header_data);
 
     if(preg_match('/^\d{5}sh$/i',$filename_number)){
@@ -813,13 +814,13 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       $sql=sprintf('select * from `Product Family Dimension` where `Product Family Store Key`=%d and `Product Family Code`=%s'
 		   ,$store_key
 		   ,prepare_mysql($__code));
-      $result=mysql_query($sql);
+      $resultxxx=mysql_query($sql);
       // print $sql;
-      if( ($__row=mysql_fetch_array($result, MYSQL_ASSOC))){
+      if( ($__row=mysql_fetch_array($resultxxx, MYSQL_ASSOC))){
 	$fam_key=$__row['Product Family Key'];
 	$dept_key=$__row['Product Family Main Department Key'];
       }
-      
+      mysql_free_result($resultxxx);
      $code=_trim($transaction['code']);
 
       $product_data=array(
@@ -911,6 +912,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
                     print_r($product);
                     exit("error: $sql");
 	}
+	mysql_free_result($res_x);
 	$used_parts_sku=$part_sku;
 	$part=new Part('sku',$part_sku);
 	$part->update_valid_dates($date_order);
@@ -1194,16 +1196,16 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       $sql=sprintf("select `Order Key`  from `Order Dimension`  where `Order Original Metadata`=%s  ",
 		   prepare_mysql($store_code.$order_data_id));
 	 
-      $result_test=mysql_query($sql);
-      while($row_test=mysql_fetch_array($result_test, MYSQL_ASSOC)){
+      $result_test2=mysql_query($sql);
+      while($row_test=mysql_fetch_array($result_test2, MYSQL_ASSOC)){
 	   
-	$sql=sprintf("delete from `History Dimension` where `Direct Object Key`=%d and `Direct Object`='Sale'   ",$row_test['Order Key']);
-	if(!mysql_query($sql))
-	  print "$sql Warning can no delete oldhidtfgf";
+    	$sql=sprintf("delete from `History Dimension` where `Direct Object Key`=%d and `Direct Object`='Sale'   ",$row_test['Order Key']);
+    	if(!mysql_query($sql))
+    	  print "$sql Warning can no delete oldhidtfgf";
 	   
       };
 
-	 
+	mysql_free_result($result_test2); 
 	 
       $sql=sprintf("delete from `Order No Product Transaction Fact` where `Metadata`=%s", prepare_mysql($store_code.$order_data_id));
       if(!mysql_query($sql))
@@ -1265,6 +1267,7 @@ $data['Order Currency Exchange']=1;
       $order->skip_update_product_sales=true;
 
       if($tipo_order==2){
+      //invoice
 	$payment_method=parse_payment_method($header_data['pay_method']);
 
 
@@ -1417,6 +1420,7 @@ $data['Order Currency Exchange']=1;
 			    ,'Invoice Total Tax Amount'=>round($header_data['tax1']+$header_data['tax2'],2)
 			    ,'Invoice Total Amount'=>round($header_data['total_topay'],2)
 			    ));
+			    print "invoice paid\n";
 	$order-> update_payment_state('Paid');	
 	$dn->dispatch('all',$data_dn_transactions);
 	$order->update_dispatch_state('Dispached');

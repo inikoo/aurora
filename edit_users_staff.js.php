@@ -166,12 +166,13 @@ var edit_active=function (callback, newValue) {
 
 	   
 	    var ColumnDefs = [
-			       {key:"password",label:"" ,width:16 },
-			      {key:"isactive",label:"<?php echo _('Active')?>" ,className:'aright',formatter:active,width:45 ,editor: new YAHOO.widget.RadioCellEditor({radioOptions:[{label:"Yes", value:"Yes"}, {label:"No", value:"No"}]
+	     {key:"user_id", label:"", hidden:true,action:"none",isPrimaryKey:true}
+			       ,{key:"password",label:"" ,width:16 }
+			      ,{key:"isactive",label:"<?php echo _('Active')?>" ,className:'aright',formatter:active,width:45 ,editor: new YAHOO.widget.RadioCellEditor({radioOptions:[{label:"Yes", value:"Yes"}, {label:"No", value:"No"}]
 			      ,defaultValue:"0",asyncSubmitter:edit_active }) }
 			      //  ,{key:"tipo", label:"<?php echo _('Type')?>",width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			      , {key:"handle", label:"<?php echo _('Login')?>",width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			      ,{key:"name", label:"<?php echo _('Name')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			      , {key:"handle", label:"<?php echo _('Login')?>",width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'user'}
+			      ,{key:"name", label:"<?php echo _('Name')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'user'}
 			      //	 {key:"email", label:"<?php echo _('Email')?>",sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
 			      ,{key:"lang", label:"<?php echo _('Language')?>",sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 			      ,{key:"groups",formatter:group,label:"<?php echo _('Groups')?>",className:"aleft"
@@ -232,7 +233,7 @@ var edit_active=function (callback, newValue) {
 		
 		
 		fields: [
-			 "id","isactive","handle","name","email","lang","groups","tipo","active","password","stores"
+			 "user_id","isactive","handle","name","email","lang","groups","tipo","active","password","stores"
 			 ]};
 
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
@@ -262,7 +263,8 @@ var edit_active=function (callback, newValue) {
 	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.subscribe("cellClickEvent", this.table0.onEventShowCellEditor);
-
+ this.table0.subscribe("cellMouseoverEvent", highlightEditableCell);
+	    this.table0.subscribe("cellMouseoutEvent", this.table0.onEventUnhighlightCell);
 
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
 	    this.table0.filter={key:'<?php echo$_SESSION['state']['users']['user_list']['f_field']?>',value:'<?php echo$_SESSION['state']['users']['user_list']['f_value']?>'};

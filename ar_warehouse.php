@@ -362,7 +362,7 @@ function list_warehouse_area(){
 		   'code'=>$code,
 		   'name'=>$name,
 		   'locations'=>$locations,
-		   
+		   'description'=>$row['Warehouse Area Description']
 		   );
   }
   mysql_free_result($res);

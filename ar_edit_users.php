@@ -553,7 +553,7 @@ function edit_user(){
  $user->editor=$editor;
  if($user->id){
    $data=array(
-	       'value'=>$_REQUEST['newValue'],
+	       'value'=>$_REQUEST['newvalue'],
 	       //'user_id'=>$LU->getProperty('auth_user_id')
 	       );
    //print_r($data);

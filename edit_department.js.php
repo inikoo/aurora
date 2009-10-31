@@ -141,11 +141,11 @@ function save(tipo){
 		 element=Dom.get(key);
 		if(element.getAttribute('changed')==1){
 
-		    newValue=element.value;
+		    newvalue=element.value;
 		    oldValue=element.getAttribute('ovalue');
 		    
 		    var request='ar_edit_assets.php?tipo=edit_department&key=' + key+ '&newvalue=' + 
-			encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ 
+			encodeURIComponent(newvalue) + '&oldvalue=' + encodeURIComponent(oldValue)+ 
 			'&id='+department_id;
 
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
