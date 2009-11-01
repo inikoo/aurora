@@ -105,7 +105,7 @@ $sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or l
 
 
 //$sql="select * from  orders_data.orders where filename like '%refund.xls'   order by filename";
-//$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/99000.xls' order by filename";
+$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/97306.xls' order by filename";
 
 //$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/15720.xls' or filename like '/mnt/%/Orders/60000.xls' or  filename like '/mnt/%/Orders/15sdfsd593.xls' order by filename";
 
@@ -1246,6 +1246,9 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     $sales_rep_data=get_user_id($header_data['takenby'],true,'&view=processed');
     $data['Order XHTML Sale Reps']=$sales_rep_data['xhtml'];
     $data['Order Sale Reps IDs']=$sales_rep_data['id'];
+    
+    $data['Order Customer Contact Name']=$customer_data['Customer Main Contact Name'];
+    
 $data['Order Currency']='GBP';
 $data['Order Currency Exchange']=1;
     if($tipo_order==2 or $tipo_order==1  or $tipo_order==4 or $tipo_order==5 or   $tipo_order==3   )  {
@@ -1338,7 +1341,7 @@ $data['Order Currency Exchange']=1;
 			    ,'Invoice Tax Code'=>$tax_code
 			    ,'Invoice Taxable'=>$taxable
 			    ,'Invoice Dispatching Lag'=>$lag
-
+,'Invoice Customer Contact Name'=>$customer_data['Customer Main Contact Name']
 
 
 			    );
@@ -1535,6 +1538,7 @@ $data['Order Currency Exchange']=1;
 			      ,'Invoice Tax Code'=>$tax_code
 			      ,'Invoice Taxable'=>$taxable
 			      ,'Invoice Dispatching Lag'=>$lag
+			      ,'Invoice Customer Contact Name'=>$customer_data['Customer Main Contact Name']
 			      );
 	  // $order->create_invoice_simple($data_invoice,$data_invoice_transactions);
 	  $invoice=new Invoice ('create',$data_invoice,$data_invoice_transactions,$order->id); 
@@ -1665,6 +1669,7 @@ $data['Order Currency Exchange']=1;
 			  ,'Invoice Tax Code'=>$tax_code
 			  ,'Invoice Taxable'=>$taxable
 			  ,'Invoice Dispatching Lag'=>''
+			  ,'Invoice Customer Contact Name'=>$customer_data['Customer Main Contact Name']
 			  );
       //print_r($data_invoice);
 

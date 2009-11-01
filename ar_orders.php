@@ -1147,14 +1147,14 @@ function list_transactions_in_invoice(){
 
 
 
-   $where=' where `Invoice Key`='.$order_id;
+   $where=' where `Invoice Quantity`!=0 and  `Invoice Key`='.$order_id;
 
    $total_charged=0;
    $total_discounts=0;
    $total_picks=0;
 
    $data=array();
-   $sql="select * from `Order Transaction Fact` O left join `Product Dimension` P on (O.`Product key`=P.`Product Key`) $where   ";
+   $sql="select * from `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.`Product Key`=PH.`Product Key`) left join  `Product Dimension` P on (PH.`Product ID`=P.`Product ID`) $where   ";
    
    //  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispached,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
    //   print $sql;
@@ -1167,15 +1167,21 @@ function list_transactions_in_invoice(){
 //      $total_picks+=$row['dispached'];
      $total_discount+=$row['Invoice Transaction Total Discount Amount'];
      $total_gross+=$row['Invoice Transaction Gross Amount'];
-     $code=sprintf('<a href="product.php?code=%s">%s</a>',$row['Product Code'],$row['Product Code']);
-     $data[]=array(
+     $code=sprintf('<a href="product.php?pid=%d">%s</a>',$row['Product ID'],$row['Product Code']);
+    
+    if($row['Invoice Transaction Total Discount Amount']==0)
+        $discount='';
+    else
+        $discount=money($row['Invoice Transaction Total Discount Amount']);
+    
+    $data[]=array(
 
 		   'code'=>$code
 		   ,'description'=>$row['Product XHTML Short Description']
 		   ,'tariff_code'=>$row['Product Tariff Code']
 		   ,'quantity'=>number($row['Invoice Quantity'])
 		   ,'gross'=>money($row['Invoice Transaction Gross Amount'])
-		   ,'discount'=>money($row['Invoice Transaction Total Discount Amount'])
+		   ,'discount'=>$discount
 		   ,'to_charge'=>money($row['Invoice Transaction Gross Amount']-$row['Invoice Transaction Total Discount Amount'])
 		   );
    }
