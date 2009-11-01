@@ -169,7 +169,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     $data=array();
     list($act_data,$header_data)=read_header($header,$map_act,$y_map,$map);
     $header_data=filter_header($header_data);
-    print_r($header_data);
+    //print_r($header_data);
     list($tipo_order,$parent_order_id,$header_data)=get_tipo_order($header_data['ltipo'],$header_data);
 
     if(preg_match('/^\d{5}sh$/i',$filename_number)){
@@ -1422,7 +1422,7 @@ $data['Order Currency Exchange']=1;
 			    ,'Invoice Total Tax Amount'=>round($header_data['tax1']+$header_data['tax2'],2)
 			    ,'Invoice Total Amount'=>round($header_data['total_topay'],2)
 			    ));
-			    print "invoice paid\n";
+	//   print "invoice paid\n";
 	$order-> update_payment_state('Paid');	
 	$dn->dispatch('all',$data_dn_transactions);
 	$order->update_dispatch_state('Dispached');
