@@ -132,7 +132,8 @@ class Invoice extends DB_Table {
     
     
     $this->data ['Invoice Title']='Refund';
-
+    
+$this->data ['Invoice Customer Contact Name'] = $invoice_data ['Invoice Customer Contact Name'];
     $this->data ['Invoice Date'] = $invoice_data ['Invoice Date'];
     $this->data ['Invoice Public ID'] = $invoice_data ['Invoice Public ID'];
     $this->data ['Invoice File As'] = $invoice_data ['Invoice File As'];
@@ -311,6 +312,7 @@ $this->data['Invoice Currency Exchange']=$exchange;
     $this->data ['Invoice Items Discount Amount'] =0;
     
     $this->data ['Invoice Date'] = $invoice_data ['Invoice Date'];
+    $this->data ['Invoice Customer Contact Name'] = $invoice_data ['Invoice Customer Contact Name'];
     $this->data ['Invoice Public ID'] = $invoice_data ['Invoice Public ID'];
     $this->data ['Invoice File As'] = $invoice_data ['Invoice File As'];
     $this->data ['Invoice Store Key'] = $order->data ['Order Store Key'];
@@ -523,6 +525,7 @@ $this->data['Invoice Currency Exchange']=$exchange;
     foreach($this->orders as $key=>$order){
       $order->update_product_sales();
       $order->update_totals('save');
+      $order->update_invoices('save');
       $customer=new Customer($order->data['Order Customer Key']);
       $customer->update_orders();
       
@@ -554,8 +557,8 @@ function create_header() {
     $this->data ['Invoice Delivery Country 2 Alpha Code']='XX';
   //print_r($this->data);
   
-  $sql = sprintf ( "insert into `Invoice Dimension` (`Invoice Currency`,`Invoice Currency Exchange`,`Invoice For`,`Invoice Date`,`Invoice Public ID`,`Invoice File As`,`Invoice Store Key`,`Invoice Store Code`,`Invoice Main Source Type`,`Invoice Customer Key`,`Invoice Customer Name`,`Invoice XHTML Ship Tos`,`Invoice Items Gross Amount`,`Invoice Items Discount Amount`,`Invoice Shipping Net Amount`,`Invoice Charges Net Amount`,`Invoice Total Tax Amount`,`Invoice Refund Net Amount`,`Invoice Refund Tax Amount`,`Invoice Total Amount`,`Invoice Metadata`,`Invoice XHTML Address`,`Invoice XHTML Orders`,`Invoice XHTML Delivery Notes`,`Invoice XHTML Store`,`Invoice Has Been Paid In Full`,`Invoice Main Payment Method`,`Invoice Shipping Tax Amount`,`Invoice Charges Tax Amount`,`Invoice XHTML Processed By`,`Invoice XHTML Charged By`,`Invoice Processed By Key`,`Invoice Charged By Key`,`Invoice Billing Country 2 Alpha Code`,`Invoice Delivery Country 2 Alpha Code`,`Invoice Dispatching Lag`,`Invoice Taxable`,`Invoice Tax Code`,`Invoice Title`) values (%s,%f,%s,%s,%s,%s,%s,%s,%s,%s,%s,  %s,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,   %s,%s,%s,'%s',%s,%s,%s,%.2f,%.2f,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-		   
+  $sql = sprintf ( "insert into `Invoice Dimension` (`Invoice Customer Contact Name`,`Invoice Currency`,`Invoice Currency Exchange`,`Invoice For`,`Invoice Date`,`Invoice Public ID`,`Invoice File As`,`Invoice Store Key`,`Invoice Store Code`,`Invoice Main Source Type`,`Invoice Customer Key`,`Invoice Customer Name`,`Invoice XHTML Ship Tos`,`Invoice Items Gross Amount`,`Invoice Items Discount Amount`,`Invoice Shipping Net Amount`,`Invoice Charges Net Amount`,`Invoice Total Tax Amount`,`Invoice Refund Net Amount`,`Invoice Refund Tax Amount`,`Invoice Total Amount`,`Invoice Metadata`,`Invoice XHTML Address`,`Invoice XHTML Orders`,`Invoice XHTML Delivery Notes`,`Invoice XHTML Store`,`Invoice Has Been Paid In Full`,`Invoice Main Payment Method`,`Invoice Shipping Tax Amount`,`Invoice Charges Tax Amount`,`Invoice XHTML Processed By`,`Invoice XHTML Charged By`,`Invoice Processed By Key`,`Invoice Charged By Key`,`Invoice Billing Country 2 Alpha Code`,`Invoice Delivery Country 2 Alpha Code`,`Invoice Dispatching Lag`,`Invoice Taxable`,`Invoice Tax Code`,`Invoice Title`) values (%s,%f,%s,%s,%s,%s,%s,%s,%s,%s,%s,  %s,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,   %s,%s,%s,'%s',%s,%s,%s,%.2f,%.2f,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+		   , prepare_mysql ( $this->data ['Invoice Customer Contact Name'])
 		   , prepare_mysql ( $this->data ['Invoice Currency'] )
 		   , $this->data ['Invoice Currency Exchange']
 		   , prepare_mysql ( $this->data ['Invoice For'] )
@@ -598,9 +601,11 @@ function get($key){
   case('Items Tax Amount'): 
   case('Refund Net Amount'): 
   case('Charges Net Amount'): 
-  case('Shipping Net Amount'): 
-
-    return money($this->data['Invoice '.$key]);
+  case('Shipping Net Amount'):
+   case('Total Net Amount'):
+  case('Total Tax Amount'):
+  case('Total Amount'):
+    return money($this->data['Invoice '.$key],$this->data['Invoice Currency']);
   } 
   
   

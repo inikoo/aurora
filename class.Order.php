@@ -18,6 +18,8 @@ include_once('class.Supplier.php');
 include_once('class.Customer.php');
 include_once('class.Store.php');
 include_once('class.Ship_To.php');
+include_once('class.Invoice.php');
+include_once('class.DeliveryNote.php');
 
 //xnclude_once('search_customer.php');
 
@@ -174,6 +176,8 @@ class Order extends DB_Table{
 				
       $this->data ['Order Customer Key'] = $customer->id;
       $this->data ['Order Customer Name'] = $customer->data[ 'Customer Name' ];
+     
+       $this->data ['Order Customer Contact Name'] = $data ['Order Customer Contact Name'];
       $this->data ['Order Current Dispatch State'] = 'In Process';
       $this->data ['Order Current Payment State'] = 'Waiting Payment';
       $this->data ['Order Current XHTML State'] = 'In Process';
@@ -890,7 +894,8 @@ class Order extends DB_Table{
     //     $sql="select sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) from `Order Transaction Fact` where "
 	  
 	  
-    $sql = sprintf ( "insert into `Order Dimension` (`Order For`,`Order File As`,`Order Date`,`Order Last Updated Date`,`Order Public ID`,`Order Store Key`,`Order Store Code`,`Order Main Source Type`,`Order Customer Key`,`Order Customer Name`,`Order Current Dispatch State`,`Order Current Payment State`,`Order Current XHTML State`,`Order Customer Message`,`Order Original Data MIME Type`,`Order Original Data`,`Order XHTML Ship Tos`,`Order Items Gross Amount`,`Order Items Discount Amount`,`Order Original Metadata`,`Order XHTML Store`,`Order Type`,`Order Currency`,`Order Currency Exchange`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,'%s',%s,%s,%s,%.2f,%.2f,%s,%s,%s,%s,%f)"
+    $sql = sprintf ( "insert into `Order Dimension` (`Order Customer Contact Name`,`Order For`,`Order File As`,`Order Date`,`Order Last Updated Date`,`Order Public ID`,`Order Store Key`,`Order Store Code`,`Order Main Source Type`,`Order Customer Key`,`Order Customer Name`,`Order Current Dispatch State`,`Order Current Payment State`,`Order Current XHTML State`,`Order Customer Message`,`Order Original Data MIME Type`,`Order Original Data`,`Order XHTML Ship Tos`,`Order Items Gross Amount`,`Order Items Discount Amount`,`Order Original Metadata`,`Order XHTML Store`,`Order Type`,`Order Currency`,`Order Currency Exchange`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,'%s',%s,%s,%s,%.2f,%.2f,%s,%s,%s,%s,%f)"
+		     , prepare_mysql ( $this->data ['Order Customer Contact Name'] )
 		     , prepare_mysql ( $this->data ['Order For'] )
 		     , prepare_mysql ( $this->data ['Order File As'] )
 		     , prepare_mysql ( $this->data ['Order Date'] )
@@ -942,7 +947,7 @@ class Order extends DB_Table{
     if (array_key_exists ( $key, $this->data ))
       return $this->data [$key];
 	 
-      if (preg_match('/^(Total|Items|(Shipping )?Net).*(Amount)$/',$key)) {
+      if (preg_match('/^(Total|Items|(Shipping |Charges )?Net).*(Amount)$/',$key)) {
 
             $amount='Order '.$key;
 
@@ -951,7 +956,9 @@ class Order extends DB_Table{
 		
 		
     switch ($key) {
-			
+	case('Date'):
+	return strftime('%D',strtotime($this->data['Order Date']));
+	break;
     case ('Order Main Ship To Key') :
       $sql = sprintf ( "select `Ship To Key`,count(*) as  num from `Order Transaction Fact` where `Order Key`=%d group by `Ship To Key` order by num desc limit 1", $this->id );
       $res = mysql_query ( $sql );
@@ -1808,24 +1815,24 @@ class Order extends DB_Table{
     $sql=sprintf("select `Invoice Key` from `Order Transaction Fact` where `Order Key`=%d group by `Invoice Key`",$this->id);
 
     $res = mysql_query ( $sql );
-    $this->delivery_notes=array();
+    $this->invoices=array();
     while ($row = mysql_fetch_array ( $res, MYSQL_ASSOC )) {
       if($row['Invoice Key']){
 	$invoice=new Invoice($row['Invoice Key']);
-	$this->delivery_notes[$row['Invoice Key']]=$invoice;
+	$this->invoices[$row['Invoice Key']]=$invoice;
       }
 	    
     }
     //update no normal fields
     $this->data ['Order XHTML Invoices'] ='';
-    foreach($this->delivery_notes as $invoice){
-      $this->data ['Order XHTML Invoices'] .= sprintf ( '<a href="invoice.php?id=%d">%s%s</a>, ', $myconf['invoice_id_prefix'], $invoice->data ['Invoice Key'], $invoice->data ['Invoice Public ID'] );
+    foreach($this->invoices as $invoice){
+      $this->data ['Order XHTML Invoices'] .= sprintf ( '<a href="invoice.php?id=%d">%s%s</a>, ',$invoice->data ['Invoice Key'], $myconf['invoice_id_prefix'], $invoice->data ['Invoice Public ID'] );
 	   
     }       
     $this->data ['Order XHTML Invoices'] =_trim(preg_replace('/\, $/','',$this->data ['Order XHTML Invoices']));
     //$where_dns=preg_replace('/\,$/',')',$where_dns);
 
-    if(preg_match('/save/i',$args)){
+    if(!preg_match('/no save/i',$args)){
       $sql=sprintf("update `Order Dimension`  set `Order XHTML Invoices`=%s where `Order Key`=%d"
 		   ,prepare_mysql($this->data ['Order XHTML Invoices'])
 		   ,$this->id
@@ -1853,13 +1860,13 @@ class Order extends DB_Table{
     //update no normal fields
     $this->data ['Order XHTML Delivery Notes'] ='';
     foreach($this->delivery_notes as $dn){
-      $this->data ['Order XHTML Delivery Notes'] .= sprintf ( '<a href="dn.php?id=%d">%s%s</a>, ', $myconf['dn_id_prefix'], $dn->data ['Delivery Note Key'], $dn->data ['Delivery Note ID'] );
+      $this->data ['Order XHTML Delivery Notes'] .= sprintf ( '<a href="dn.php?id=%d">%s%s</a>, ', $dn->data ['Delivery Note Key'], $myconf['dn_id_prefix'], $dn->data ['Delivery Note ID'] );
 	   
     }       
     $this->data ['Order XHTML Delivery Notes'] =_trim(preg_replace('/\, $/','',$this->data ['Order XHTML Delivery Notes']));
     //$where_dns=preg_replace('/\,$/',')',$where_dns);
 	 
-    if(preg_match('/save/i',$args)){
+    if(!preg_match('/no save/i',$args)){
       $sql=sprintf("update `Order Dimension`  set `Order XHTML Delivery Notes`=%s where `Order Key`=%d"
 		   ,prepare_mysql($this->data ['Order XHTML Delivery Notes'])
 		   ,$this->id
