@@ -836,7 +836,7 @@ global $myconf;
 
    
    $sql = "select sum(`Invoice Transaction Gross Amount`) as gross,sum(`Invoice Transaction Total Discount Amount`) as discount  ,sum(`Invoice Transaction Total Tax Amount`) as tax,sum(`Invoice Transaction Net Refund Amount`) as ref_net,sum(`Invoice Transaction Tax Refund Amount`) as ref_tax,sum(`Invoice Transaction Outstanding Net Balance`) as ob_net ,sum(`Invoice Transaction Outstanding Tax Balance`) as ob_tax ,sum(`Invoice Transaction Outstanding Refund Net Balance`) as ref_ob_net ,sum(`Invoice Transaction Outstanding Refund Tax Balance`) as ref_ob_tax  from `Order Transaction Fact`  where  `Invoice Key`=" . $this->data ['Invoice Key'];
-   print "$sql\n";
+   //print "$sql\n";
    $result = mysql_query ( $sql );
    if ($row = mysql_fetch_array ( $result, MYSQL_ASSOC )) {
      $amount=$row['gross'];
@@ -875,8 +875,8 @@ global $myconf;
      $this->data ['Invoice Total Tax Adjust Amount']=0;
 
     $this->data ['Invoice Items Tax Amount'] =$tax;
-print_r($force_values);
-print "aqui 123 tax items $tax \n";
+    //print_r($force_values);
+    //print "aqui 123 tax items $tax \n";
    // print $this->data ['Invoice Total Net Adjust Amount']."\n";
    $this->data ['Invoice Total Net Amount'] = $total_net+$ref_net+$this->data ['Invoice Total Net Adjust Amount'];
    $this->distribute_costs ();
