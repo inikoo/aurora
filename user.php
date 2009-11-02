@@ -57,6 +57,7 @@ $smarty->assign('title', _('User'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
+$smarty->assign('user_class',$user);
 
 
 $smarty->display('user.tpl');

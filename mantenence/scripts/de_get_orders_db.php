@@ -1284,6 +1284,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       $sales_rep_data=get_user_id($header_data['takenby'],true,'&view=processed');
       $data['Order XHTML Sale Reps']=$sales_rep_data['xhtml'];
       $data['Order Sale Reps IDs']=$sales_rep_data['id'];
+      $data['Order Customer Contact Name']=$customer_data['Customer Main Contact Name'];
       $data['Order Currency']=$currency;
       $data['Order Currency Exchange']=$exchange;
       if($tipo_order==2 or $tipo_order==1  or $tipo_order==4 or $tipo_order==5 or   $tipo_order==3   )  {
@@ -1380,6 +1381,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 			      ,'Invoice Tax Code'=>$tax_code
 			      ,'Invoice Taxable'=>$taxable
 			      ,'Invoice Dispatching Lag'=>$lag
+			      ,'Invoice Customer Contact Name'=>$customer_data['Customer Main Contact Name']
 			      ,'Invoice Currency'=>$currency
 			      ,'Invoice Currency Exchange'=>$exchange
 			      );
@@ -1595,6 +1597,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 				,'Invoice Dispatching Lag'=>$lag
 				,'Invoice Currency'=>$currency
 				,'Invoice Currency Exchange'=>$exchange
+				,'Invoice Customer Contact Name'=>$customer_data['Customer Main Contact Name']
 
 				);
 	    // $order->create_invoice_simple($data_invoice,$data_invoice_transactions);
@@ -1732,6 +1735,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 			    ,'Invoice Dispatching Lag'=>''
 			    ,'Invoice Currency'=>$currency
 			    ,'Invoice Currency Exchange'=>$exchange
+			    ,'Invoice Customer Contact Name'=>$customer_data['Customer Main Contact Name']
 			    );
 	//	print_r($data_invoice);
 

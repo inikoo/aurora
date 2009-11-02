@@ -2443,7 +2443,7 @@ function transactions_to_process(){
    //   $total_charged+=$row['charge'];
 //      $total_discounts+=$ndiscount;
 //      $total_picks+=$row['dispached'];
-     $code=sprintf('<a href="product.php?code=%s">%s</a>',$row['Product Code'],$row['Product Code']);
+     $code=sprintf('<a href="product.php?pid=%s">%s</a>',$row['Product ID'],$row['Product Code']);
      $data[]=array(
 
 		   'code'=>$code
