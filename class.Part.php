@@ -17,7 +17,7 @@ include_once('class.Product.php');
 class part extends DB_Table{
   
 
-
+  Private $current_locations_loaded=false;
   Public $sku=false;
   
   function __construct($a1,$a2=false) {
@@ -125,12 +125,12 @@ class part extends DB_Table{
       
       
       $sql=sprintf("select `Location Key` from `Inventory Transaction Fact` where `Part SKU`=%d group by `Location Key` ",$part_sku);
-      print $sql;
+      //print $sql;
       $resultxxx=mysql_query($sql);
       while(($rowxxx=mysql_fetch_array($resultxxx, MYSQL_ASSOC))){
 	$skip=false;
 	$location_key=$rowxxx['Location Key'];
-	print $location_key.'_'.$this->data['Part SKU']."\n";
+	//print $location_key.'_'.$this->data['Part SKU']."\n";
 	$pl=new PartLocation($location_key.'_'.$this->data['Part SKU']);
 	if($location_key==1){
 	  if($force=='all'){
@@ -138,13 +138,13 @@ class part extends DB_Table{
 	  }elseif($force=='last'){
 
 	    $_from=$pl->last_inventory_audit();
-	    // exit("$_from\n");
+	     exit("Froim: $_from\n");
 	  }elseif($force=='continue'){
 	    $_from=$pl->last_inventory_date();
 	  }else{
 	    $_from=$pl->first_inventory_transacion();
 	  }
-	  print "$_from\n";
+	  //print "$_from\n";
 	  if(!$_from)
 	    $skip=true;
 	  $from=strtotime($_from);
@@ -178,13 +178,13 @@ class part extends DB_Table{
 	
 	
 	if($skip){
-	  print "No trasactions: $part_sku $location_key \n"; 
+	  //print "No trasactions: $part_sku $location_key \n"; 
 	  continue;
 	}
 	
 	$from=date("Y-m-d",$from);
 	$to=date("Y-m-d",$to);
-	print "** $part_sku $location_key  $from $to\n";
+	//	print "** $part_sku $location_key  $from $to\n";
 	//  $pl=new PartLocation(array('LocationPart'=>$location_key."_".$part_sku));
 	$pl->redo_daily_inventory($from,$to);
 	
@@ -194,9 +194,17 @@ class part extends DB_Table{
 
       break;
 
-    case('stock'):
+    case('locations'):
+      $this->load_locations($args);
+      if($this->current_locations_loaded){
 
-      $this->load('locations');
+      }
+	
+
+
+    case('stock'):
+      if(!$this->current_locations_loaded)
+	$this->load('locations');
 
       $stock='';
       $value='';
@@ -553,7 +561,7 @@ class part extends DB_Table{
 	  ,$row['Supplier Product Code']);
 	  $current_supplier=$_current_supplier;
 	}else{
-	   $supplied_by.=sprintf(', <a href="supplier_product.php?id=%d">%s</a>',$row['Supplier Product Key'],$row['Supplier Product Code']);
+	   $supplied_by.=sprintf(', <a href="supplier_product.php?supplier_key=%d&code=%s">%s</a>',$row['Supplier Key'],$row['Supplier Product Code'],$row['Supplier Product Code']);
 
 	}
 	
@@ -847,6 +855,12 @@ class part extends DB_Table{
 
   }
   
+
+
+  
+
+
+
   function get($key='',$args=false){
    
     if(array_key_exists($key,$this->data))
@@ -867,17 +881,9 @@ class part extends DB_Table{
       break;
     case('Current Associated Locations'):
 
-      $associated=array();
-      
-      $sql=sprintf("select `Location Key` from `Part Location Dimension` where  `Part SKU`=%d   ",$this->data['Part SKU']);
-      //  print $sql;
-      $res=mysql_query($sql);
-      while($row=mysql_fetch_array($res)){
-	$associated[]=$row['Location Key'];
-      }
-   
-      
-      return $associated;
+      if(!$this->current_locations_loaded)
+	$this->load_current_locations();
+      return $this->current_associated_locations;
    break;
 
     case('Associated Locations'):
@@ -889,6 +895,8 @@ class part extends DB_Table{
       }else
 	$date='';
       
+
+
       $sql=sprintf("select `Location Key` from `Inventory Transaction Fact` where `Inventory Transaction Type`='Associate' and `Part SKU`=%d  %s  group by `Location Key`  ",$this->data['Part SKU'],$date);
       //  print $sql;
       $res=mysql_query($sql);
@@ -969,6 +977,51 @@ class part extends DB_Table{
     
     
 
+  }
+
+
+  function load_locations($date=''){
+
+    if(preg_match('/\d{4}-\{d}2-\d{2}/',$date))
+      $this->load_locations_historic($date);
+    else
+      $this->load_current_locations();
+  }
+
+  function load_current_historic($date){
+    $this->all_historic_associated_locations=array();
+    $this->associated_location_on_date=array();
+
+      $sql=sprintf("select `Location Key` from `Inventory Transaction Fact` where `Inventory Transaction Type`='Associate' and `Part SKU`=%d  `Date`=%s  group by `Location Key`  ",$this->data['Part SKU'],$date);
+      //  print $sql;
+      $res=mysql_query($sql);
+      while($row=mysql_fetch_array($res)){
+	$this->all_historic_associated_locations[]=$row['Location Key'];
+      }
+      foreach($this->all_historic_associated_locations as $location_key){
+	$sql=sprintf("select `Inventory Transaction Type` from `Inventory Transaction Fact` where (`Inventory Transaction Type`='Associate' or `Inventory Transaction Type`='Disassociate') and `Part SKU`=%d and `Location Key`=%d %s order by `Date` desc limit 1 ",$this->data['Part SKU'],$location_key,$date);
+	//	  print $sql;
+	  $res=mysql_query($sql);
+	  if($row=mysql_fetch_array($res)){
+
+	    if($row['Inventory Transaction Type']=='Associate')
+	      $this->associated_location_on_date[]=$location_key;
+	  }
+	  
+      }
+    
+  }
+
+  function load_current_locations(){
+ $this->current_associated_locations=array();
+      $sql=sprintf("select `Location Key` from `Part Location Dimension` where   `Part SKU`=%d    group by `Location Key`  ",$this->data['Part SKU']);
+      //  print $sql;
+      $res=mysql_query($sql);
+      while($row=mysql_fetch_array($res)){
+	$this->current_associated_locations[]=$row['Location Key'];
+      }
+      $this->current_locations_loaded=true;
+ 
   }
 
 

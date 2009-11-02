@@ -21,8 +21,14 @@ require_once '../../conf/conf.php';
 
 
 //$sql="select * from `Product Dimension` where `Product Code`='FO-A1'";
-$sql="select * from `Product History Dimension`   order by `Product Key`  desc ";
+$stores=array(2,3);
+
+// $sql="select * from `Product History Dimension` PH  left join `Product Dimension` P on (P.`Product ID`=PH.`Product ID`)   where `Product Store Key` in (".join(',',$stores).")  order by `Product Key`  desc ";
+  $sql="select * from `Product History Dimension` PH  order by `Product Key`  desc ";
+
+
 $result=mysql_query($sql);
+//print $sql;
 while($row=mysql_fetch_array($result)   ){
   $product=new Product('id',$row['Product Key']);
   

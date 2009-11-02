@@ -1,12 +1,4 @@
 
-
-
-function init() {
-
-
-
-    document.getElementById("_passwd_").value='';
-
     var onmySubmit =function(){
 
 	var input_login=document.getElementById("_login_");
@@ -25,6 +17,26 @@ function init() {
     
 
 }
+
+var submit_form_on_enter=function(e){
+     var key;     
+     if(window.event)
+          key = window.event.keyCode; //IE
+     else
+          key = e.which; //firefox     
+
+     if (key == 13)
+	 onmySubmit()
+};
+
+function init() {
+
+    YAHOO.util.Event.addListener('_passwd_', "keydown", submit_form_on_enter);
+
+
+    document.getElementById("_passwd_").value='';
+
+
 
     // var log_in=document.getElementById("_login_");
     //log_in.focus();

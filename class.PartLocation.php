@@ -151,7 +151,7 @@ class PartLocation extends DB_Table{
 
   function last_inventory_date(){
     $sql=sprintf("select `Date` from `Inventory Spanshot Fact` where  `Part Sku`=%d   order by `Date` desc limit 1",$this->part_sku);
-    //  print $sql;
+    //   print $sql;
     $result=mysql_query($sql);
     if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
       return $row['Date'];
@@ -812,6 +812,12 @@ function create($data){
 		    );
        mysql_query($sql);
       
+       
+       $part=new Part($this->part_sku);
+       $part->load('locations');
+       $location=new Location($this->location_key);
+       $location->load('parts');
+       
     }else{
       exit($sql);
     }

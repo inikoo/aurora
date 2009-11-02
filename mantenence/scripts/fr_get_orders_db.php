@@ -1290,6 +1290,7 @@ $currency='EUR';
       $data['Order Currency Exchange']=$exchange;
        $sales_rep_data=get_user_id($header_data['takenby'],true,'&view=processed');
        $data['Order XHTML Sale Reps']=$sales_rep_data['xhtml'];
+        $data['Order Customer Contact Name']=$customer_data['Customer Main Contact Name'];
        $data['Order Sale Reps IDs']=$sales_rep_data['id'];
        $data['Order Currency']=$currency;
        $data['Order Currency Exchange']=$exchange;
@@ -1390,6 +1391,7 @@ $currency='EUR';
 			    ,'Invoice Dispatching Lag'=>$lag
 			    ,'Invoice Currency'=>'EUR'
 			    ,'Invoice Currency Exchange'=>$exchange
+			    ,'Invoice Customer Contact Name'=>$customer_data['Customer Main Contact Name']
 			    );
 	//print_r($data_invoice);
 	//print_r($header_data);
@@ -1603,6 +1605,7 @@ $currency='EUR';
 			    ,'Invoice Dispatching Lag'=>$lag
 			      ,'Invoice Currency'=>'EUR'
 			      ,'Invoice Currency Exchange'=>$exchange
+			      ,'Invoice Customer Contact Name'=>$customer_data['Customer Main Contact Name']
 
 			      );
 	  // $order->create_invoice_simple($data_invoice,$data_invoice_transactions);
@@ -1734,8 +1737,9 @@ $currency='EUR';
 			    ,'Invoice Tax Code'=>$tax_code
 			    ,'Invoice Taxable'=>$taxable
 			    ,'Invoice Dispatching Lag'=>''
- ,'Invoice Currency'=>'EUR'
+			    ,'Invoice Currency'=>'EUR'
 			    ,'Invoice Currency Exchange'=>$exchange
+			    ,'Invoice Customer Contact Name'=>$customer_data['Customer Main Contact Name']
 			    );
 	//print_r($data_invoice);
 

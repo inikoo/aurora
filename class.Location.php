@@ -421,22 +421,26 @@ case('tipo'):
     case('parts'):
     case('part'):
 
-      if(!$args)
-	$date=date("Y-m-d");
-      else
+      if($args)
 	$date=$args;
+
+
       
-      $sql=sprintf("select `Part SKU`,sum(`Quantity On Hand`) as qty from `Inventory Spanshot Fact`  where `Location Key`=%d  and `Date`=%s group by `Part SKU`",$this->id,prepare_mysql($date));
-       //       print $sql;
+      
+      $sql=sprintf("select `Part SKU`,sum(`Quantity On Hand`) as qty from `Part Location Dimension`  where `Location Key`=%d  group by `Part SKU`"
+		   ,$this->id
+		  
+		   );
+      //  print $sql;
 
       $this->parts=array();
       $result=mysql_query($sql);
       $has_stock='No';
       while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-	$part=new part('sku',$row['Part SKU']);
-	$this->parts[$part->id]=array(
-				      'id'=>$part->id,
-				      'sku'=>$part->get('Part SKU'),
+	//	$part=new part('sku',$row['Part SKU']);
+	$this->parts[$row['Part SKU']]=array(
+					     // 'id'=>$part->id,
+				      'sku'=>$row['Part SKU'],
 				      );
 	if(is_numeric($row['qty']) and $row['qty']>0)
 	  $has_stock='Yes';
@@ -450,7 +454,8 @@ case('tipo'):
 		   ,prepare_mysql($this->data['Location has Stock'])
 		   ,$this->id
 		   );
-      mysql_query($sql);
+        mysql_query($sql);
+	//  print "$sql\n";
        break;
     case('parts_data'):
 
