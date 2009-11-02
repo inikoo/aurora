@@ -21,7 +21,7 @@ case('edit_product'):
         $target='product.php';
 
     $q=$_REQUEST['q'];
-    $sql=sprintf("select `Product Code`  from `Product Dimension` where `Product Code`='%s'  and `Product  Store Key` in (%s)     "
+    $sql=sprintf("select `Product Code`  from `Product Dimension` where `Product Code`='%s'  and `Product Store Key` in (%s)     "
 		 ,addslashes($q)
 		 ,join(',',$user->stores)
 		 );
