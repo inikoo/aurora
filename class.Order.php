@@ -895,7 +895,7 @@ class Order extends DB_Table{
 	  
 	  
     $sql = sprintf ( "insert into `Order Dimension` (`Order Customer Contact Name`,`Order For`,`Order File As`,`Order Date`,`Order Last Updated Date`,`Order Public ID`,`Order Store Key`,`Order Store Code`,`Order Main Source Type`,`Order Customer Key`,`Order Customer Name`,`Order Current Dispatch State`,`Order Current Payment State`,`Order Current XHTML State`,`Order Customer Message`,`Order Original Data MIME Type`,`Order Original Data`,`Order XHTML Ship Tos`,`Order Items Gross Amount`,`Order Items Discount Amount`,`Order Original Metadata`,`Order XHTML Store`,`Order Type`,`Order Currency`,`Order Currency Exchange`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,'%s',%s,%s,%s,%.2f,%.2f,%s,%s,%s,%s,%f)"
-		     , prepare_mysql ( $this->data ['Order Customer Contact Name'] )
+		     , prepare_mysql ( $this->data ['Order Customer Contact Name'],false )
 		     , prepare_mysql ( $this->data ['Order For'] )
 		     , prepare_mysql ( $this->data ['Order File As'] )
 		     , prepare_mysql ( $this->data ['Order Date'] )

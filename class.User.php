@@ -472,19 +472,26 @@ return $changed;
  }
 
 
-function get($tipo){
-
+function get($key){
+  
+   
   
   if(array_key_exists($key,$this->data))
     return $this->data[$key];
 
 
   switch($tipo){
+  case('User Pasword'):
+    return "******";
   case('isactive'):
     return $this->data['Is Active'];
   case('groups'):
     return $this->data['groups'];
   }
+
+ if(array_key_exists($key,$this->data))
+    return $this->data[$key];
+
 }
    
  function is($tag=''){

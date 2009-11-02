@@ -3224,7 +3224,8 @@ function list_departments() {
     $res = mysql_query($sql);
     $adata=array();
     //print "$period";
-
+    global $myconf;
+    $currency_code=$myconf['currency_code'];
     $sum_active=0;
     while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
       	$currency_code=$row['Product Department Currency Code'];

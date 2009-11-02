@@ -105,7 +105,7 @@ $sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or l
 
 
 //$sql="select * from  orders_data.orders where filename like '%refund.xls'   order by filename";
-$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/97306.xls' order by filename";
+//$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/97306.xls' order by filename";
 
 //$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/15720.xls' or filename like '/mnt/%/Orders/60000.xls' or  filename like '/mnt/%/Orders/15sdfsd593.xls' order by filename";
 
@@ -1341,8 +1341,9 @@ $data['Order Currency Exchange']=1;
 			    ,'Invoice Tax Code'=>$tax_code
 			    ,'Invoice Taxable'=>$taxable
 			    ,'Invoice Dispatching Lag'=>$lag
-,'Invoice Customer Contact Name'=>$customer_data['Customer Main Contact Name']
-
+			    ,'Invoice Customer Contact Name'=>$customer_data['Customer Main Contact Name']
+			    ,'Invoice Currency'=>$currency
+			    ,'Invoice Currency Exchange'=>$exchange
 
 			    );
 	//print_r($data_invoice);
