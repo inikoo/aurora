@@ -820,6 +820,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       $product_data=array(
 			  'Product Store Key'=>$store_key
 			  ,'Product Main Department Key'=>$dept_key
+			  ,'Product Record Type'=>'Normal'
 			  ,'Product Family Key'=>$fam_key
 			  ,'product code'=>$code
 			  ,'product name'=>$description

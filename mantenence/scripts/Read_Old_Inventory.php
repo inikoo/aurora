@@ -6,6 +6,8 @@ include_once('../../class.Product.php');
 include_once('../../class.Supplier.php');
 include_once('../../class.Part.php');
 include_once('../../class.SupplierProduct.php');
+include_once('../../class.PartLocation.php');
+
 error_reporting(E_ALL);
 
 
@@ -41,7 +43,7 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $tipo=$row['tipo'];
   $qty=$row['quantity'];
   $notes=$row['notes'];
-  $sql=sprintf("select `Product ID` from `Product Dimension` P where   `Product Code`=%s and `Product Same ID Valid From`<=%s and `Product Same ID Valid To`>=%s order by `Product Same ID Valid To` desc ",prepare_mysql($code),prepare_mysql($date),prepare_mysql($date));
+  $sql=sprintf("select `Product ID` from `Product Dimension` P where   `Product Code`=%s and `Product Valid From`<=%s and `Product Valid To`>=%s order by `Product Valid To` desc ",prepare_mysql($code),prepare_mysql($date),prepare_mysql($date));
   $result2=mysql_query($sql);
   // print "$sql\n";
   if($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ){
@@ -91,7 +93,7 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
 
 
-  $sql=sprintf("select `Product ID` from `Product Dimension` P where   `Product Code`=%s and `Product Same ID Valid To`<=%s order by `Product Same ID Valid To` desc ",prepare_mysql($code),prepare_mysql($date),prepare_mysql($date));
+  $sql=sprintf("select `Product ID` from `Product Dimension` P where   `Product Code`=%s and `Product Valid To`<=%s order by `Product Valid To` desc ",prepare_mysql($code),prepare_mysql($date),prepare_mysql($date));
   $result2=mysql_query($sql);
 
   if($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ){
@@ -143,7 +145,8 @@ print "                \rCleaning old data\n";
 
 $sql="delete  from `Inventory Transaction Fact`  where `Inventory Transaction Type`='Not Found' ";
 mysql_query($sql);
-
+//$sql="delete  from `Part Location Dimension`  ";
+//mysql_query($sql);
 
 
 // $sql="select `No Shipped Due Out of Stock`,`Invoice Date`,`Product ID` from `Order Transaction Fact` OTF left join `Product Dimension` PD  on  (PD.`Product Key`=OTF.`Product Key`)  where `No Shipped Due Out of Stock`>0;";
@@ -172,7 +175,7 @@ print "Wrpaping\n";
 
 
 
-$sql=sprintf("select `Part SKU` from `Inventory Transaction Fact` group by `Part SkU` ");
+$sql=sprintf("select `Part SKU` from `Inventory Transaction Fact` group by `Part SKU` ");
 $result=mysql_query($sql);
 //print $sql;
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
@@ -215,13 +218,28 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
       if(!mysql_query($sql))
 	exit("$sql can into insert Inventory Transaction Fact star");
     }
-    
-    
   }
+}
+
+/*   print "creation locations"; */
   
+/*   $sql="select * from `Inventory Transaction Fact` where `Inventory Transaction Type` in ('Associate') order by Date "; */
+/* $result=mysql_query($sql); */
+/* while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){ */
 
   
- }
+  
+/*     $pl=new PartLocation('find', */
+/* 			 array('Location Key'=>$row['Location Key'],'Part SKU'=>$row['Part SKU']),'create'); */
+
+
+
+
+/*  } */
+
+
+  
+
   
 function get_sp_id($part_sku,$date){
   $sql=sprintf(" select `Supplier Product ID` from  `Supplier Product Part List`   where `Part SKU`=%s  and `Supplier Product Part Valid To`>=%s and  `Supplier Product Part Valid From`<=%s    ",prepare_mysql($part_sku),prepare_mysql($date),prepare_mysql($date));
@@ -244,7 +262,7 @@ function get_sp_id($part_sku,$date){
 function get_cost($part_sku,$date){
 
 
-   $sql=sprintf(" select AVG(SPD.`Supplier Product Cost` * SPPL.`Supplier Product Units Per Part`) as cost from `Supplier Product Dimension` SPD left join `Supplier Product Part List` SPPL on (SPD.`Supplier Product ID`=SPPL.`Supplier Product ID`)  where `Part SKU`=%s  and `Supplier Product Valid To`>=%s and  `Supplier Product Valid From`<=%s    ",prepare_mysql($part_sku),prepare_mysql($date),prepare_mysql($date));
+   $sql=sprintf(" select AVG(SPD.`Supplier Product Cost` * SPPL.`Supplier Product Units Per Part`) as cost from `Supplier Product Dimension` SPD left join `Supplier Product Part List` SPPL on (SPD.`Supplier Product Code`=SPPL.`Supplier Product Code` and SPD.`Supplier Key`=SPPL.`Supplier Key`)  where `Part SKU`=%s  and `Supplier Product Valid To`>=%s and  `Supplier Product Valid From`<=%s    ",prepare_mysql($part_sku),prepare_mysql($date),prepare_mysql($date));
    // print "\n\n\n\n$sql\n";
    $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
@@ -253,7 +271,7 @@ function get_cost($part_sku,$date){
   }
 
 
-  $sql=sprintf(" select AVG(SPD.`Supplier Product Cost` * SPPL.`Supplier Product Units Per Part`) as cost from `Supplier Product Dimension` SPD left join `Supplier Product Part List` SPPL on (SPD.`Supplier Product ID`=SPPL.`Supplier Product ID`)  where `Part SKU`=%s  and `Supplier Product Valid To`<=%s limit 1 ",prepare_mysql($part_sku),prepare_mysql($date));
+  $sql=sprintf(" select AVG(SPD.`Supplier Product Cost` * SPPL.`Supplier Product Units Per Part`) as cost from `Supplier Product Dimension` SPD left join `Supplier Product Part List` SPPL on (SPD.`Supplier Product Code`=SPPL.`Supplier Product Code` and SPD.`Supplier Key`=SPPL.`Supplier Key`)  where `Part SKU`=%s  and `Supplier Product Valid To`<=%s limit 1 ",prepare_mysql($part_sku),prepare_mysql($date));
 
  $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
@@ -261,8 +279,8 @@ function get_cost($part_sku,$date){
       return $row['cost'];
   }
 
- $sql=sprintf(" select AVG(SPD.`Supplier Product Cost` * SPPL.`Supplier Product Units Per Part`) as cost from `Supplier Product Dimension` SPD left join `Supplier Product Part List` SPPL on (SPD.`Supplier Product ID`=SPPL.`Supplier Product ID`)  where `Part SKU`=%s  order by  `Supplier Product Valid To` desc ",prepare_mysql($part_sku),prepare_mysql($date));
- // print "\n\n\n\n$sql\n";
+ $sql=sprintf(" select AVG(SPD.`Supplier Product Cost` * SPPL.`Supplier Product Units Per Part`) as cost from `Supplier Product Dimension` SPD left join `Supplier Product Part List` SPPL on (SPD.`Supplier Product Code`=SPPL.`Supplier Product Code` and SPD.`Supplier Key`=SPPL.`Supplier Key`)  where `Part SKU`=%s  order by  `Supplier Product Valid To` desc ",prepare_mysql($part_sku),prepare_mysql($date));
+ //  print "\n\n\n\n$sql\n";
  $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
     if(is_numeric($row['cost']))
@@ -270,8 +288,9 @@ function get_cost($part_sku,$date){
   }
 
 
-  exit("error can no found supp ciost\n");
+ print ("error can no found supp cost Part SKU:".$part_sku."  \n");
 
+ return 1;
 
 }
 

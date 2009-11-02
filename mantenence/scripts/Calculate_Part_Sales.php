@@ -31,7 +31,7 @@ date_default_timezone_set('Europe/London');
 $sql="select * from `Part Dimension`  ";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-  $part=new Part($row['Part Key']);
+  $part=new Part('sku',$row['Part SKU']);
 
   //Get  status
   if(isset($argv[1]) and $argv[1]=='first'){
@@ -92,11 +92,10 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   //if(!mysql_query($sql))
   //  exit("ERROR $sql\n");
   }
-
   $part->load('sales');
   $part->load('used in');
   $part->load('supplied by');
-
+  
   if(!isset($argv[1])){
     
     $part->load('stock');
@@ -106,7 +105,7 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
   //   $part->load('stock_history');
   //   $part->load('future costs');
-  print $row['Part Key']."\r";
+  print $row['Part SKU']."\r";
   
  }
 

@@ -21,7 +21,10 @@ case('edit_product'):
         $target='product.php';
 
     $q=$_REQUEST['q'];
-    $sql=sprintf("select `Product Code`  from `Product Dimension` where `Product Code`='%s' ",addslashes($q));
+    $sql=sprintf("select `Product Code`  from `Product Dimension` where `Product Code`='%s'  and `Product  Store Key` in (%s)     "
+		 ,addslashes($q)
+		 ,join(',',$user->stores)
+		 );
     $res = mysql_query($sql);
     if ($found=mysql_fetch_array($res)) {
         $url=$target.'?code='. $found['Product Code'];
@@ -32,7 +35,10 @@ case('edit_product'):
     mysql_free_result($res);
   
     if ($tipo=='product') {
-        $sql=sprintf("select `Product Family Key` as id  from `Product Family Dimension` where `Product Family Code`='%s' ",addslashes($q));
+        $sql=sprintf("select `Product Family Key` as id  from `Product Family Dimension` where `Product Family Code`='%s' and `Product Family Store Key` in (%s)   "
+		     ,addslashes($q)
+		     ,join(',',$user->stores)
+		     );
         $result=mysql_query($sql);
         if ($found=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $url='family.php?id='. $found['id'];
@@ -45,7 +51,11 @@ case('edit_product'):
     // try to get similar results
     //   if($myconf['product_code_separator']!=''){
     if (  ($myconf['product_code_separator']!='' and   preg_match('/'.$myconf['product_code_separator'].'/',$q)) or  $myconf['product_code_separator']==''  ) {
-        $sql=sprintf("select damlev(UPPER(%s),UPPER(`Product Code`)) as dist1,    damlev(UPPER(SOUNDEX(%s)),UPPER(SOUNDEX(`Product Code`))) as dist2,        `Product Code` as code,`product id` as id from `Product Dimension`  order by dist1,dist2 limit 1;",prepare_mysql($q),prepare_mysql($q));
+        $sql=sprintf("select damlev(UPPER(%s),UPPER(`Product Code`)) as dist1,    damlev(UPPER(SOUNDEX(%s)),UPPER(SOUNDEX(`Product Code`))) as dist2,        `Product Code` as code,`product id` as id from `Product Dimension`  where  Product  Store Key` in (%s)     order by dist1,dist2 limit 1;"
+		     ,prepare_mysql($q)
+		     ,prepare_mysql($q)
+		     ,join(',',$user->stores)
+		     );
         $result=mysql_query($sql);
         if ($found=mysql_fetch_array($result, MYSQL_ASSOC)) {
             if ($found['dist1']<3) {
@@ -60,7 +70,7 @@ case('edit_product'):
     }
     elseif($tipo=='product') {
         // look on the family list
-        $sql=sprintf("select damlev(UPPER(%s),UPPER(`Product Family Code`)) as dist1, damlev(UPPER(SOUNDEX(%s)),UPPER(SOUNDEX(`Product Family Code`))) as dist2, `Product Family Code` as name ,`Product Family Key` id from `Product Family Dimension`  order by dist1,dist2 limit 1;",prepare_mysql($q),prepare_mysql($q));
+      $sql=sprintf("select damlev(UPPER(%s),UPPER(`Product Family Code`)) as dist1, damlev(UPPER(SOUNDEX(%s)),UPPER(SOUNDEX(`Product Family Code`))) as dist2, `Product Family Code` as name ,`Product Family Key` id from `Product Family Dimension`  where  `Product Family Store Key` in (%s)     order by dist1,dist2 limit 1;",prepare_mysql($q),prepare_mysql($q),join(',',$user->stores));
         $result=mysql_query($sql);
         if ($found=mysql_fetch_array($result, MYSQL_ASSOC)) {
             if ($found['dist1']<3) {

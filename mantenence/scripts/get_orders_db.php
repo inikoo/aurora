@@ -18,6 +18,7 @@ if (!$con) {
     print "Error can not connect with database server\n";
     exit;
 }
+//$dns_db='dw_tmp';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db) {
     print "Error can not access the database\n";
@@ -36,7 +37,7 @@ require_once '../../conf/conf.php';
 require('../../locale.php');
 $_SESSION['locale_info'] = localeconv();
 
-
+$currency='GBP';
 $_SESSION['lang']=1;
 
 include_once('local_map.php');
@@ -829,6 +830,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 			  'Product Store Key'=>$store_key
 			  ,'Product Main Department Key'=>$dept_key
 			  ,'Product Family Key'=>$fam_key
+			  ,'Product Record Type'=>'Normal'
 			  ,'product code'=>$code
 			  ,'product name'=>$description
 			  ,'product unit type'=>$unit_type
