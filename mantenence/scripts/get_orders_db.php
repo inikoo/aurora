@@ -18,7 +18,7 @@ if (!$con) {
     print "Error can not connect with database server\n";
     exit;
 }
-//$dns_db='dw_tmp';
+$dns_db='dw_tmp';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db) {
     print "Error can not access the database\n";
@@ -101,7 +101,7 @@ $fam_promo_key=$fam_promo->id;
 
 
 
-$sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) order by filename ";
+$sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No' order by filename ";
 
 
 

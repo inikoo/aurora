@@ -27,6 +27,14 @@ $stores=array(2,3);
 $forecast=true;
 
 
+$tm=new TimeSeries(array('m','store (3) sales'));
+  $tm->get_values();
+  $tm->save_values();
+  if($forecast)
+    $tm->forecast();
+exit;
+
+
 
 //$tm=new TimeSeries(array('w','product id (7279) sales'));
 // $tm->get_values();$tm->save_values();

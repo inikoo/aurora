@@ -927,43 +927,54 @@ class part extends DB_Table{
  
 
   function update_valid_dates($date){
-    $affected=0;
+    $affected_from=0;
+    $affected_to=0;
     $sql=sprintf("update `Part Dimension`  set `Part Valid From`=%s where  `Part SKU`=%d and `Part Valid From`>%s   "
 		 ,prepare_mysql($date)
-		 ,prepare_mysql($this->id)
+		 ,$this->id
 		 ,prepare_mysql($date)
 
 		 );
+    //     print $sql;
     mysql_query($sql);
-    $affected+=mysql_affected_rows();
+    if($affected_from=mysql_affected_rows())
+      $this->data['Part Valid From']=$date;
     $sql=sprintf("update `Part Dimension`  set `Part Valid To`=%s where  `Part SKU`=%d and `Part Valid To`<%s   "
 		 ,prepare_mysql($date)
-		 ,prepare_mysql($this->id)
+		 ,$this->id
 		 ,prepare_mysql($date)
 
 		 );
     mysql_query($sql);
-    $affected+=mysql_affected_rows();
-    return $affected;
+    if($affected_to=mysql_affected_rows())
+      $this->data['Part Valid To']=$date;
+
+
+    return $affected_to+$affected_from;
   }
 
 
 
   function get_unit_cost($date=false){
     
+
+
     if($date){
+      // print "from date";
         $sql=sprintf("select AVG(`Supplier Product Cost`) as cost from `Supplier Product Dimension` SP left join `Supplier Product Part List` B  on (SP.`Supplier Product Code`=B.`Supplier Product Code` and SP.`Supplier Key`=B.`Supplier Key`) where `Part SKU`=%d and ( (`Supplier Product Part Valid From`<=%s and `Supplier Product Part Valid To`>=%s and `Supplier Product Part Most Recent`='No') or (`Supplier Product Part Most Recent`='Yes' and `Supplier Product Part Valid From`<=%s )  )  "
 		     ,$this->sku
 		     ,prepare_mysql($date)
 		     ,prepare_mysql($date)
 		     ,prepare_mysql($date)
 		     );
+	//	print $sql;
       $res=mysql_query($sql);
       if($row=mysql_fetch_array($res)){
-	return $row['cost'];
+	if(is_numeric($row['cost']))
+	  return $row['cost'];
       }
     }
-
+    // print "not found in date";
     
     $sql=sprintf("select AVG(`Supplier Product Cost`) as cost from `Supplier Product Dimension` SP left join `Supplier Product Part List` B  on (SP.`Supplier Product Code`=B.`Supplier Product Code` and SP.`Supplier Key`=B.`Supplier Key` ) where `Part SKU`=%d and `Supplier Product Part Most Recent`='Yes' ",$this->sku);
     // print $sql;
@@ -1022,6 +1033,27 @@ class part extends DB_Table{
       }
       $this->current_locations_loaded=true;
  
+  }
+
+
+  function items_per_product($product_ID,$date=false){
+    $where_date='';
+    if(!$date)
+      $where_date=' and `Product Part Most Recent`="Yes" '
+     $sql=sprintf("select AVG(`Parts Per Product`) as parts_per_product from `Product Part List` where `Part SKU`=%d and  `Product ID`=%d %s  "
+		  ,$this->id
+		  ,$product_ID
+		  ,$where_date
+		  );
+     // print "$sql\n";
+    $parts_per_product=0;
+    $result3=mysql_query($sql);
+    if($row3=mysql_fetch_array($result3, MYSQL_ASSOC)   ){
+      if(is_numeric($row3['parts_per_product']))
+	$parts_per_product=$row3['parts_per_product'];
+    }
+    return $parts_per_product;
+
   }
 
 

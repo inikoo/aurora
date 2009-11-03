@@ -178,7 +178,7 @@ class PartLocation extends DB_Table{
 function last_inventory_audit(){
   $sql=sprintf("select DATE(`Date`) as Date from `Inventory Transaction Fact` where  `Part Sku`=%d and  `Location Key`=%d and (`Inventory Transaction Type`='Audit' or `Inventory Transaction Type`='Not Found' )  order by `Date` desc",$this->part_sku,$this->location_key);
     $result=mysql_query($sql);
-    // print $sql;
+    print $sql;
     if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
       return $row['Date'];
     }else
