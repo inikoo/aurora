@@ -202,7 +202,7 @@ if($plot_tipo=='pie'){
 if($plot_category=='profit')
   $plot_formated_category=_('Profits');
 else
-  $plot_formated_category=_('Net Sales');
+  $plot_formated_category=_('Net Item Sales');
 
 
 $smarty->assign('plot_formated_category',$plot_formated_category);
@@ -231,7 +231,7 @@ $plot_period_menu=array(
 $smarty->assign('plot_period_menu',$plot_period_menu);
 
 $plot_category_menu=array(
-		     array("category"=>'sales','label'=>_('Sales'))
+		     array("category"=>'sales','label'=>_('Net Item Sales'))
 		     ,array("category"=>'profit','label'=>_('Profit'))
 		     );
 $smarty->assign('plot_category_menu',$plot_category_menu);

@@ -39,8 +39,9 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $date=$row['date'];
   $code=$row['code'];
   //   print $sql;
-  print $row['product_id']." $code                \r";
+ 
   $tipo=$row['tipo'];
+ print $row['product_id']." $code     $tipo           \n";
   $qty=$row['quantity'];
   $notes=$row['notes'];
   $sql=sprintf("select `Product ID` from `Product Dimension` P where   `Product Code`=%s and `Product Valid From`<=%s and `Product Valid To`>=%s order by `Product Valid To` desc ",prepare_mysql($code),prepare_mysql($date),prepare_mysql($date));
@@ -71,7 +72,7 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
     if($tipo==2){
 
       $sql=sprintf("insert into `Inventory Transaction Fact` (`Date`,`Part SKU`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Note`,`Metadata`,`History Type`) values (%s,%s,'Audit',%s,%s,%s,'','Normal')",prepare_mysql($date),prepare_mysql($part_sku),prepare_mysql($qty*$parts_per_product),prepare_mysql($cost_per_part*$qty*$parts_per_product),prepare_mysql($notes));
-      // print "$sql\n";
+       print "A: $sql\n";
       if(!mysql_query($sql))
 	exit("$sql can into insert Inventory Transaction Fact ");
     }else{
@@ -93,7 +94,7 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
 
 
-  $sql=sprintf("select `Product ID` from `Product Dimension` P where   `Product Code`=%s and `Product Valid To`<=%s order by `Product Valid To` desc ",prepare_mysql($code),prepare_mysql($date),prepare_mysql($date));
+  $sql=sprintf("select `Product ID` from `Product Dimension` P where   `Product Code`=%s and `Product Valid To`<=%s order by `Product Valid To` desc ",prepare_mysql($code),prepare_mysql($date));
   $result2=mysql_query($sql);
 
   if($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ){
@@ -121,6 +122,7 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
       $sql=sprintf("insert into `Inventory Transaction Fact` (`Date`,`Part SKU`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Note`,`Metadata`) values (%s,%s,'Audit',%s,%s,%s,'')",prepare_mysql($date),prepare_mysql($part_sku),prepare_mysql($qty*$parts_per_product),prepare_mysql($cost_per_part*$qty*$parts_per_product),prepare_mysql($notes));
       // print "$sql\n";
+       print "B: $sql\n";
       if(!mysql_query($sql))
 	exit("$sql can into insert Inventory Transaction Fact ");
     }else{
@@ -137,9 +139,50 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
     continue;
   }
   
+  
+  //extend range guess cust value
+
+  $product=new Product('code_store',$code,1);
+  if($product->id){
+    $parts=$product->get('Parts SKU');
+
+    if(count($parts)>=1){
+      $part=new Part($parts[0]);
+      if($part->sku){
+	//print_r($part);
+	$part->update_valid_dates($date);
+	$part_sku-$part->sku;
+	$cost_per_part=$part->get("Unit Cost",$date);
+	$parts_per_product=$part->items_per_product($product->pid);
+	$notes='';
+       if($tipo==2){
+
+      $sql=sprintf("insert into `Inventory Transaction Fact` (`Date`,`Part SKU`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Note`,`Metadata`) values (%s,%s,'Audit',%s,%s,%s,'')",prepare_mysql($date),prepare_mysql($part_sku),prepare_mysql($qty*$parts_per_product),prepare_mysql($cost_per_part*$qty*$parts_per_product),prepare_mysql($notes));
+      // print "$sql\n";
+       print "B: $sql\n";
+      if(!mysql_query($sql))
+	exit("$sql can into insert Inventory Transaction Fact ");
+    }else{
+      
+      $sql=sprintf("insert into `Inventory Transaction Fact` (`Date`,`Part SKU`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`note`,`Metadata`) values (%s,%s,'In',%s,%s,%s,'')",prepare_mysql($date),prepare_mysql($part_sku),prepare_mysql($qty*$parts_per_product),prepare_mysql($cost_per_part*$qty*$parts_per_product),prepare_mysql($notes));
+      // print "$sql\n";
+      if(!mysql_query($sql))
+	exit("$sql can into insert Inventory Transaction Fact ");
 
 
- }
+    }
+    
+    continue;
+      }
+
+    }
+    
+  }
+
+
+
+
+}
 
 print "                \rCleaning old data\n";
 

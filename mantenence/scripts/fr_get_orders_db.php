@@ -175,7 +175,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     $prod_map=$y_map;
 
 
-    list($act_data,$header_data)=read_header($header,$map_act,$y_map,$map);
+    list($act_data,$header_data)=read_header($header,$map_act,$y_map,$map,false);
     $header_data=filter_header($header_data);
     list($tipo_order,$parent_order_id,$header_data)=get_tipo_order($header_data['ltipo'],$header_data);
   

@@ -870,7 +870,7 @@ if($number_values<=6)
       $data[$row['dd']]=array('date'=>$row['date'],'count'=>0,'value'=>0);
     }
 
-    $sql=sprintf("SELECT %s as number,%s as date ,substring(%s, 1,7) AS dd ,sum(%s) as value FROM %s where %s>=%s  and %s<=%s %s  GROUP BY dd limit 10000"
+    $sql=sprintf("SELECT %s as number,%s as date ,substring(%s, 1,7) AS dd ,sum(%s) as value FROM %s where Date(%s)>=%s  and Date(%s)<=%s %s  GROUP BY dd limit 10000"
 		 ,$this->count
 		 ,$this->date_field,$this->date_field
 		 ,$this->value_field
@@ -880,7 +880,7 @@ if($number_values<=6)
 		 ,$this->where
 		 );
  
-    //print "$sql\n";
+    print "$sql\n";
     //exit;
     $res=mysql_query($sql);
   

@@ -12,7 +12,7 @@ $title=preg_replace('/^,/','',$title);
  var info_period_title={<?php echo $title ?>};
   var current_store_period='<?php echo$_SESSION['state']['stores']['period']?>';
 
-var category_labels={'sales':'<?php echo _('Sales')?>','profit':'<?php echo _('Profits')?>'};
+var category_labels={'sales':'<?php echo _('Net Item Sales')?>','profit':'<?php echo _('Profits')?>'};
 var period_labels={'m':'<?php echo _('Montly')?>','y':'<?php echo _('Yearly')?>','w':'<?php echo _('Weekly')?>','q':'<?php echo _('Quarterly')?>'};
 var pie_period_labels={'m':'<?php echo _('Month')?>','y':'<?php echo _('Year')?>','w':'<?php echo _('Week')?>','q':'<?php echo _('Quarter')?>'};
 

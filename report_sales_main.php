@@ -210,7 +210,10 @@ $plot_data=$_SESSION['state']['report']['sales']['plot_data'][$plot_tipo];
 $plot_category=$plot_data['category'];
 if($tipo=='y'){
   $plot_period='m';
+}elseif($tipo=='m'){
+  $plot_period='w';
 }
+
 $plot_args='tipo=store&category='.$plot_category.'&period='.$plot_period.'&keys=all&from='.$from.'&to='.$to;
 $smarty->assign('plot_tipo',$plot_tipo);
 $smarty->assign('plot_args',$plot_args);
