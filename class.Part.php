@@ -1039,7 +1039,7 @@ class part extends DB_Table{
   function items_per_product($product_ID,$date=false){
     $where_date='';
     if(!$date)
-      $where_date=' and `Product Part Most Recent`="Yes" '
+      $where_date=' and `Product Part Most Recent`="Yes" ';
      $sql=sprintf("select AVG(`Parts Per Product`) as parts_per_product from `Product Part List` where `Part SKU`=%d and  `Product ID`=%d %s  "
 		  ,$this->id
 		  ,$product_ID
