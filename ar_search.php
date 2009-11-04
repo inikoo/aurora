@@ -1,6 +1,6 @@
 <?php
 require_once 'common.php';
-
+require_once('class.Email.php');
 
 
 if (!isset($_REQUEST['tipo'])) {
@@ -24,39 +24,100 @@ case('location'):
      search_location($q,$tipo,$user);
     break;
 case('customer_name'):
-   search_customer_name($user)
+   search_customer_name($user);
    break;
-
+case('customer'):
+   search_customer($user);
+   break;
 default:
-    $response=array('state'=>404,'resp'=>_('Operation not found'));
+    $response=array('state'=>404,'resp'=>"Operation not found $tipo");
     echo json_encode($response);
 
 }
 
+
+function search_customer($user){
+
+    $q=_trim($_REQUEST['q']);
+    $stores=join(',',$user->stores);
+    
+    if(is_numeric($q)){
+        if($found_key=search_customer_id($q,$stores)){
+         $url='customer.php?id='. $found_key;
+        echo json_encode(array('state'=>200,'url'=>$url));
+        return;
+        }
+            
+    }
+    
+    $postal_code_search=false;
+    $search_data=array();
+    if(preg_match('/\s*(([A-Z]\d{2}[A-Z]{2})|([A-Z]\d{3}[A-Z]{2})|([A-Z]{2}\d{2}[A-Z]{2})|([A-Z]{2}\d{3}[A-Z]{2})|([A-Z]\d[A-Z]\d[A-Z]{2})|([A-Z]{2}\d[A-Z]\d[A-Z]{2})|(GIR0AA))\s*/i',$q,$match)){
+        $search_data['Postal Code']=_trim($match[0]);
+        $q=preg_replace('/'.$match[0].'/','',$q);
+        $postal_code_search=true;
+    }
+    $tolkens=preg_split('/\s/',$q);
+    foreach($tolkens as $key=>$tolken){
+        if(Email::is_valid($tolken)){
+            $search_data['Customer Email']=$tolken;
+        }elseif(!$postal_code_search and is_postal_code($tolken)){
+            $tolken_meaning[$key]='postal_code';
+            $search_data['Postal Code']=$tolken;
+            $postal_code_search=true;
+        }elseif($postal_code_search){
+            
+        }else
+        if(isset($search_data['Customer Name']))
+            $search_data['Customer Name'].=' '.$tolken;
+        else
+            $search_data['Customer Name']=$tolken;
+        }
+    
+    
+    
+  // print_r($search_data);
+      $_SESSION['search']=array('Type'=>'Customer','Data'=>$search_data);
+        echo json_encode(array('state'=>200,'url'=>'customers_lookup.php?res=y'));
+        return;
+    
+    
+
+}
+
+function search_customer_id($id,$valid_stores=false){
+    if($valid_stores){
+        $stores=" and `Customer Store Key` in ($valid_stores)";
+    }else
+        $stores='';
+    
+    $sql=sprintf("select `Customer Key` from `Customer Dimension` where `Customer Key`=%d %s ",$id,$stores);
+    $res=mysql_query($sql);
+    if($row=mysql_fetch_array($res)){
+        $found=$row['Customer Key'];
+    }else
+        $found=false;
+    return $found;    
+}
+
+
 function search_customer_name($user){
  $target='customer.php';
     $q=$_REQUEST['q'];
-    $sql=sprintf("select id,name from customer where name=%s ",prepare_mysql($q));
+    $sql=sprintf("select `Customer Key` from `Customer Dimension` where `Customer Name`=%s ",prepare_mysql($q));
     $result=mysql_query($sql);
 
-    $number_results=$result->numRows();
+    $number_results=mysql_num_rows($result);
     if ($number_results==1) {
         if ($found=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $url=$target.'?id='. $found['id'];
             echo json_encode(array('state'=>200,'url'=>$url));
             return;
         }
-    }
-    elseif($number_results>1) {
-        $url='';
-        while ($found=mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $url.=sprintf('<href="%s?id=%d">%s (%d)</a><br>',$target,$found['name'],$found['id'],$found['id']);
-
-        }
-
-        echo json_encode(array('state'=>200,'url'=>$url));
-        return;
-        echo json_encode(array('state'=>400,'msg1'=>_('There are')." $number_results "._('customers with this name'),'msg2'=>$url));
+    }else{
+        
+      $_SESSION['search']=array('Type'=>'Customer','Data'=>array('Customer Name'=>$q));
+        echo json_encode(array('state'=>200,'url'=>'customer_lookup.php?res=y'));
         return;
 
     }
@@ -65,26 +126,6 @@ mysql_free_result($result);
 
 
 
-    // try to find aprox names
-
-    $sql=sprintf("select damlev(UPPER(%s),UPPER(name))/LENGTH(name) as dist1,    damlev(UPPER(SOUNDEX(%s)),UPPER(SOUNDEX(name))) as dist2,name,id from customer  order by dist1,dist2 limit 5;",prepare_mysql($q),prepare_mysql($q));
-    $result=mysql_query($sql);
-    // print $sql;
-    $msg2='';
-    while ($found=mysql_fetch_array($result, MYSQL_ASSOC)) {
-        if ($found['dist1']<.5) {
-            $msg2.=sprintf(', <a href="%s?id=%d">%s</a>',$target,$found['id'],$found['name']);
-        }
-    }
-    mysql_free_result($result);
-    if ($msg2!='') {
-        $msg2=preg_replace('/^\,\s*/','',$msg2);
-        echo json_encode(array('state'=>400,'msg1'=>_('Did you mean').":",'msg2'=>$msg2));
-        return;
-    }
-
-    echo json_encode(array('state'=>500,'msg'=>_('Customer not found')));
-    return;
 
 
 
@@ -193,8 +234,7 @@ function search_location($q,$tipo,$user){
     
     if(preg_match('/^([a-z]{2}-?)?\d{3,10}(-\d{3})?$/i',$postalcode) or preg_match('/^([a-z]\d{4}[a-z]|[A-Z]{2}\d{2}|[A-Z]\d{4}[A-Z]{3}|\d{4}[A-Z]{2})$/i',$postalcode))
         return true;
-    if(Address::is_valid_postcode($postalcode,'GBR'))    
-        return true;
+  
      return false;   
     }
     

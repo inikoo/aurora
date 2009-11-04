@@ -18,7 +18,7 @@ var submit_search=function(e,data){
     if(q=='')
 	return;
     var request='ar_search.php?tipo='+data.tipo+'&q='+escape(q);
-    
+    //alert(request);
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
 	  	alert(o.responseText)
