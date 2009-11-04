@@ -94,6 +94,12 @@ $smarty->assign('title', _('Orders'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
+$smarty->assign('dispatch',$_SESSION['state']['orders']['table']['dispatch']);
+$smarty->assign('paid',$_SESSION['state']['orders']['table']['paid']);
+$smarty->assign('order_type',$_SESSION['state']['orders']['table']['order_type']);
+
+
+
 $tipo_filter0=($q==''?$_SESSION['state']['orders']['table']['f_field']:'public_id');
 $smarty->assign('filter0',$tipo_filter0);
 $smarty->assign('filter_value0',($q==''?$_SESSION['state']['orders']['table']['f_value']:addslashes($q)));

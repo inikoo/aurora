@@ -78,6 +78,10 @@ ALTER TABLE `Product Department Dimension` ADD `Product Department Currency Code
 ALTER TABLE `History Dimension` CHANGE `Direct Object` `Direct Object` ENUM( 'User', 'Product', 'Address', 'Customer', 'Note', 'Order', 'Telecom', 'Email', 'Company', 'Contact', 'FAX', 'Telephone', 'Mobile', 'Work Telephone', 'Office Fax', 'Supplier' ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL 
 ALTER TABLE `Part Dimension` ADD `Part Distinct Locations` SMALLINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Part Current Storing Cost` 
 
+
+ALTER TABLE `Order Dimension` ADD `Order Shipping Tax Amount` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0' AFTER `Order Shipping Net Amount` ;
+ALTER TABLE `Order Dimension` ADD `Order Charges Tax Amount` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0' AFTER `Order Charges Net Amount` ;
+
  */
 
 
