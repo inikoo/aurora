@@ -1630,15 +1630,15 @@ if($data['Address Fuzzy']=='Yes'){
 	 $country_id - (optional) _integer_ Country Key in DB
 
 	 Todo:
-	 In the moment onlu for GBR
+	 In the moment only for GBR
 	 */
-	function is_valid_postcode($postcode,$country_id){
+	public static function is_valid_postcode($postcode,$country_code){
 		// print "------------------";
 		$postcode=_trim($postcode);
 		switch($country_id){
-			case 30:
+			case 'GBR':
 
-				if(preg_match('/^([A-PR-UWYZ0-9][A-HK-Y0-9][AEHMNPRTVXY0-9]?[ABEHMNPRVWXY0-9]? {0,2}[0-9][ABD-HJLN-UW-Z]{2}|GIR 0AA|BT\d{2}\s*\d[a-z]2)$/i',$postcode))
+				if(preg_match('/^([A-PR-UWYZ0-9][A-HK-Y0-9][AEHMNPRTVXY0-9]?[ABEHMNPRVWXY0-9]?\s?{0,2}[0-9][ABD-HJLN-UW-Z]{2}|GIR 0AA|BT\d{2}\s*\d[a-z]2)$/i',$postcode))
 				return true;
 				else
 				return false;
@@ -1959,12 +1959,12 @@ if($data['Address Fuzzy']=='Yes'){
 				//	if(preg_match('/norfork/i,'$data['Address Country Second Division]']))
 				//  $data['Address Country Name']='United Kingdom';
 
-				if(Address::is_valid_postcode($data['Address Postal Code'],30)){
+				if(Address::is_valid_postcode($data['Address Postal Code'],'GBR')){
 					//	  print "cacacaca";
 					$data['Address Country First Division']=_trim($data['Address Country First Division'].' '.$data['Address Country Name']);
 					$data['Address Country Name']='United Kingdom';
 
-				}elseif(Address::is_valid_postcode($data['Address Country Name'],30)){
+				}elseif(Address::is_valid_postcode($data['Address Country Name'],'GBR')){
 					$data['Address Country First Division']=_trim($data['Address Country First Division'].' '.$data['Address Postal Code']);
 					$data['Address Postal Code']=$data['Address Country Name'];
 					$data['Address Country Name']='United Kingdom';
