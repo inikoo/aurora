@@ -109,7 +109,7 @@ $fam_promo_key=$fam_promo->id;
 
 $sql="select * from  de_orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed)  order by filename  ";
 //$sql="select * from  de_orders_data.orders where filename like '%refund.xls'   order by filename";
-//$sql="select * from  de_orders_data.orders  where filename like '/mnt/%DE0032.xls'  order by filename";
+$sql="select * from  de_orders_data.orders  where filename like '/mnt/%DE0070.xls'  order by filename";
 
 
 $contador=0;
@@ -1281,7 +1281,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	
       }
        
-      //print "$tipo_order \n";
+
        
       $sales_rep_data=get_user_id($header_data['takenby'],true,'&view=processed');
       $data['Order XHTML Sale Reps']=$sales_rep_data['xhtml'];
@@ -1289,12 +1289,23 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       $data['Order Customer Contact Name']=$customer_data['Customer Main Contact Name'];
       $data['Order Currency']=$currency;
       $data['Order Currency Exchange']=$exchange;
-      if($tipo_order==2 or $tipo_order==1  or $tipo_order==4 or $tipo_order==5 or   $tipo_order==3   )  {
+
+      
+
+      if($tipo_order==1 or $tipo_order==2  or $tipo_order==3 or $tipo_order==4 or   $tipo_order==5   )  {
 	//print_r($data);
+	 //Tipo order
+      // 1 DELIVERY NOTE
+      // 2 INVOICE
+      // 3 CANCEL
+      // 4 SAMPLE
+      // 5 donation
+
     
-
-
-
+  
+	
+	
+	
       
 	if($tipo_order==1 or $tipo_order==2 or  $tipo_order==3)
 	  $data['Order Type']='Order';
@@ -1305,40 +1316,18 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
      
 	$data['store_id']=2;
-	//      print_r($data);
-	$order= new Order('new',$data);
 
-
-	if($tipo_order==2){
-	  $payment_method=parse_payment_method($header_data['pay_method']);
-	
-	  /* 	if($header_data['total_net']!=0) */
-	  /* 	  $tax_rate=$header_data['tax1']/$header_data['total_net']; */
-	  /* 	else */
-	  /* 	  $tax_rate=$data['tax_rate']; */
-	    
-
+	 $payment_method=parse_payment_method($header_data['pay_method']);
 	  $lag=(strtotime($date_inv)-strtotime($date_order))/24/3600;
 	  if($lag==0 or $lag<0)
 	    $lag='';
-
-	
 	  $taxable='Yes';
 	  $tax_code='UNK';
-
-
-       
-
-
 	  if($header_data['total_net']!=0){
-	  
 	    if($header_data['tax1']+$header_data['tax2']==0){
-	  
 	      $tax_code='EX0';
 	    }
-	  
 	    $tax_rate=($header_data['tax1']+$header_data['tax2'])/$header_data['total_net'];
-
 	    foreach($myconf['tax_rates'] as $_tax_code=>$_tax_rate){
 	      // print "$_tax_code => $_tax_rate $tax_rate\n ";
 	      $upper=1.1*$_tax_rate;
@@ -1351,15 +1340,29 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	  }else{
 	    $tax_code='ZV';
 	  }
-     
+
+
+	
+	
+	
+	//      print_r($data);
+	$order= new Order('new',$data);
+	$order->set_shipping(round($header_data['shipping']+$extra_shipping,2),$tax_rate);
+	$order->set_charges(round($header_data['charges'],2),$tax_rate);
+	
+	
+	if($tipo_order==2){
+	 
+	  
 	  foreach($data_invoice_transactions as $key=>$val){
 	    $data_invoice_transactions[$key]['tax rate']=$tax_rate;
 	    $data_invoice_transactions[$key]['tax code']=$tax_code;
 	    $data_invoice_transactions[$key]['tax amount']=$tax_rate*($val['gross amount']-($val['discount amount']));
 	  }
-	
+	  
 
-
+	 
+	  
 	  $data_invoice=array(
 			      'Invoice Date'=>$date_inv
 			      ,'Invoice Public ID'=>$header_data['order_num']
@@ -1394,8 +1397,8 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	    $weight=$estimated_w;
 	  else
 	    $weight=$header_data['weight'];
-
-
+	  
+	  
 	  $picker_data=get_user_id($header_data['pickedby'],true,'&view=picks');
 	  $packer_data=get_user_id($header_data['packedby'],true,'&view=packs');
 	  $order_type=$data['Order Type'];
@@ -1418,7 +1421,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 			 );
 	
 	  //$order->create_dn_simple($data_dn,$data_dn_transactions);
-	
+	  
 	  $dn=new DeliveryNote('create',$data_dn,$data_dn_transactions,$order);
 	  $order->update_delivery_notes('save');
 	  $order->update_dispatch_state('Ready to Pick');
@@ -1484,16 +1487,11 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
 	  $order->load('totals');
 
-	}else if($tipo_order==8 ){
-
-	  // 	$data['Order Type']='Order';
-	  // 	$data['store_id']=1;
-	
-	  // 	exit("to follow");
 
 
 
 	}else if($tipo_order==4 or $tipo_order==5 ){
+
 	  if($header_data['total_net']!=0)
 	    $tax_rate=$header_data['tax1']/$header_data['total_net'];
 	  else
@@ -1615,7 +1613,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	    $order-> update_payment_state('Paid');	
        
 	
-
+	  
 
 	    $dn->pick_simple($data_dn_transactions);
 	    $order->update_dispatch_state('Ready to Pack');
@@ -1630,6 +1628,15 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	    $invoice->categorize('save');
 	  }else{
 	    
+	  $dn->pick_simple($data_dn_transactions);
+	    $order->update_dispatch_state('Ready to Pack');
+	
+	    $dn->pack('all');
+	    $order->update_dispatch_state('Ready to Ship');
+	    $dn->dispatch('all',$data_dn_transactions);
+	    $order->update_dispatch_state('Dispached');
+
+
 	    $order->no_payment_applicable();
 	    $order->load('totals');
 	    
@@ -1637,6 +1644,11 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
 
 	  }
+
+
+	
+
+
 
 
 

@@ -698,6 +698,22 @@ if(isset( $_REQUEST['where']))
     $tableid=0;
 
  
+  if(isset( $_REQUEST['dispatch']))
+    $dispatch=$_REQUEST['dispatch'];
+   else{
+     $dispatch=$conf['dispatch'];
+   }
+  if(isset( $_REQUEST['order_type']))
+    $order_type=$_REQUEST['order_type'];
+   else{
+     $order_type=$conf['order_type'];
+   }
+  if(isset( $_REQUEST['paid']))
+    $paid=$_REQUEST['paid'];
+   else{
+     $paid=$conf['paid'];
+   }
+
 
 
 
@@ -715,21 +731,33 @@ if(isset( $_REQUEST['where']))
      $_SESSION['state']['report']['sales']['f_value']=$f_value;
      $_SESSION['state']['report']['sales']['to']=$to;
      $_SESSION['state']['report']['sales']['from']=$from;
-     $date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
+     $date_interval=prepare_mysql_dates($from,$to,'`Order Date`','only_dates');
      
    }else{
 
 
      if(isset( $_REQUEST['store_id'])    ){
-     $store=$_REQUEST['store_id'];
-     $_SESSION['state']['orders']['store']=$store;
-   }else
-     $store=$_SESSION['state']['orders']['store'];
+       $store=$_REQUEST['store_id'];
+       $_SESSION['state']['orders']['store']=$store;
+     }else
+       $store=$_SESSION['state']['orders']['store'];
+     
+     
+     $_SESSION['state']['orders']['table']=array(
+						 'order'=>$order,
+						 'order_dir'=>$order_direction,
+						 'nr'=>$number_results,
+						 'sf'=>$start_from,
+						 'where'=>$where,
+						 'f_field'=>$f_field,
+						 'f_value'=>$f_value,
+						 'dispatch'=>$dispatch,
+						 'paid'=>$paid,
+						 'order_type'=>$order_type
 
-
-     $_SESSION['state']['orders']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+						 );
      $_SESSION['state']['orders']['view']=$view;
-     $date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
+     $date_interval=prepare_mysql_dates($from,$to,'`Order Date`','only_dates');
      if($date_interval['error']){
        $date_interval=prepare_mysql_dates($_SESSION['state']['orders']['from'],$_SESSION['state']['orders']['to']);
      }else{
@@ -764,6 +792,28 @@ if(isset( $_REQUEST['where']))
 
    $where.=$date_interval['mysql'];
    
+
+   if($dispatch!=''){
+     $dipatch_types=preg_split('/,/',$dispatch);
+     $valid_dispatch_types=array(
+				 'in_process'=>",'In Process','Ready to Pick','Picking','Ready to Pack','Ready to Ship','Packing'"
+				 ,'cancelled'=>",'Cancelled'"
+				 ,'dispached'=>",'Dispached'"
+				 ,'unknown'=>"',Unknown'"
+				 );
+     $_where='';
+     foreach($dipatch_types as $dipatch_type){
+       if(array_key_exists($dipatch_type,$valid_dispatch_types))
+        $_where.=$valid_dispatch_types[$dipatch_type];
+     }
+     $_where=preg_replace('/^,/','',$_where);
+     if($_where!=''){
+       $where.=' and `Order Current Dispatch State` in ('.$_where.')';
+     }else
+       $_SESSION['state']['orders']['table']['dispached']='';
+   }
+
+
    $wheref='';
 
   if($f_field=='max' and is_numeric($f_value) )
@@ -787,7 +837,7 @@ if(isset( $_REQUEST['where']))
 
    
   $sql="select count(*) as total from `Order Dimension`   $where $wheref ";
-  //     print $sql ;
+  //print $sql ;
    $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
     $total=$row['total'];
@@ -869,7 +919,7 @@ if(isset( $_REQUEST['where']))
 else if($order=='customer')
      $order='`Order Customer Name`';
 
-  $sql="select `Order Currency Exchange`,`Order Currency`,`Order Key`,`Order Public ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Date`,`Order Total Amount` ,`Order Current XHTML State` from `Order Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+  $sql="select `Order Type`,`Order Currency Exchange`,`Order Currency`,`Order Key`,`Order Public ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Date`,`Order Total Amount` ,`Order Current XHTML State` from `Order Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
   //  print $sql;
   global $myconf;
 
@@ -879,13 +929,16 @@ else if($order=='customer')
    while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
      $order_id=sprintf('<a href="order.php?id=%d">%s</a>',$row['Order Key'],$row['Order Public ID']);
      $customer=sprintf('<a href="customer.php?id=%d">%s</a>',$row['Order Customer Key'],$row['Order Customer Name']);
+     $state=$row['Order Current XHTML State'];
+     if($row ['Order Type'] != 'Order')
+       $state.=' ('.$row ['Order Type'].')';
      $data[]=array(
 		   'id'=>$order_id,
 		   'customer'=>$customer,
 		   'date'=>strftime("%e %b %y %H:%M", strtotime($row['Order Date'])),
 		   'last_date'=>strftime("%e %b %y %H:%M", strtotime($row['Order Last Updated Date'])),
 		   'total_amount'=>money($row['Order Total Amount'],$row['Order Currency']),
-		   'state'=>$row['Order Current XHTML State']
+		   'state'=>$state
 		   );
    }
 mysql_free_result($res);

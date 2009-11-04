@@ -18,5 +18,13 @@
 <div style="float:left">
 <img style="width:600px" src="art/home_baner_1.9.png">
 </div>
+
+<div style="clear:both">
+<table>
+<tr><td>Nov 4 2009</td><td>Problem Rendering the Close Button on Calendar Pop Out</td></tr>
+<caption>{t}Known Issues{/t}</caption>
+</table>
+</div>
+
 </div>
 {include file='footer.tpl'}

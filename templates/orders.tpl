@@ -10,8 +10,8 @@
       <label>{t}Order Search{/t}:</label><input size="12" class="text search" id="prod_search" value="" name="search"/><img onclick="document.getElementById('prod_search_form').submit()"align="absbottom" id="submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search">
     </form>
     <form action="orders.php?" method="GET" style="margin-top:10px">
-      <div style="position:relative;left:18px">{t}Interval{/t}: <input id="v_calpop1" type="text" class="text" size="11" maxlength="10" name="from" value="{$from}"/><img   id="calpop1" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /> <span class="calpop">&rarr;</span> <input   class="calpop" id="v_calpop2" size="11" maxlength="10"   type="text" class="text" size="8" name="to" value="{$to}"/><img   id="calpop2" class="calpop_to" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /> 
-	<img style="position:relative;right:26px" align="absbottom" src="art/icons/application_go.png" style="cursor:pointer" id="submit_interval"  xonclick="document.forms[1].submit()" alt="{t}Go{/t}" /> 
+      <div style="position:relative;left:18px"><span id="clear_interval" style="font-size:80%;color:#777;cursor:pointer;{if $to=='' and $from=='' }display:none{/if}">{t}clear{/t}</span> {t}Interval{/t}: <input id="v_calpop1" type="text" class="text" size="11" maxlength="10" name="from" value="{$from}"/><img   id="calpop1" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /> <span class="calpop">&rarr;</span> <input   class="calpop" id="v_calpop2" size="11" maxlength="10"   type="text" class="text" size="8" name="to" value="{$to}"/><img   id="calpop2" class="calpop_to" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /> 
+	<img style="position:relative;right:26px;cursor:pointer" align="absbottom" src="art/icons/application_go.png" style="cursor:pointer" id="submit_interval"  xonclick="document.forms[1].submit()" alt="{t}Go{/t}" /> 
       </div>
     </form>
     <div id="cal1Container" style="position:absolute;display:none; z-index:2"></div>
@@ -24,9 +24,9 @@
      <tr  id="orders_show_only"  style="display:{if $view!='orders'}none{/if}"  >
        <td  style="xmargin:5px 15px 0 0px ;padding:0;border:none;color:#555"  >{t}show only{/t}:</td>
        
-       <td  style="" {if $only=='in_process'}class="selected"{/if}  id="in_process"  >{t}In Process{/t}</td>
-       <td  style="" {if $only=='dispached'}class="selected"{/if}  id="in_process"  >{t}Dispached{/t}</td>
-       <td  style="" {if $only=='cancelled'}class="selected"{/if}  id="cancelled"  >{t}Cancelled{/t}</td>
+       <td  style="" {if $dispatch=='in_process'}class="selected"{/if}  id="in_process"  >{t}In Process{/t}</td>
+       <td  style="" {if $dispatch=='dispached'}class="selected"{/if}  id="dispached"  >{t}Dispached{/t}</td>
+       <td  style="" {if $dispatch=='cancelled'}class="selected"{/if}  id="cancelled"  >{t}Cancelled{/t}</td>
      </tr>
      <tr  id="invoices_show_only"  style="display:{if $view!='invoices'}none{/if}"  ></tr>
      <tr  id="dn_show_only"  style="display:{if $view!='dn'}none{/if}"  ></tr>

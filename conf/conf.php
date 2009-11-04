@@ -209,6 +209,7 @@ $default_state=array(
                                 'only'=>'',
                                 'from'=>'',
                                 'to'=>'',
+
                                 'table'=>array(
                                             'order'=>'last_date',
                                             'order_dir'=>'desc',
@@ -219,8 +220,11 @@ $default_state=array(
                                             'f_value'=>'',
                                             'from'=>'',
                                             'to'=>'',
-                                            'elements'=>array()
-                                        ),
+                                            'elements'=>array(),
+					    'dispatch'=>'',
+					    'paid'=>'',
+					    'order_type'=>''
+					       ),
                                 'invoices'=>array(
                                                'order'=>'date',
                                                'order_dir'=>'',

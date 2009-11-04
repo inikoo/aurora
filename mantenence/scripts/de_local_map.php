@@ -128,21 +128,23 @@ function get_tipo_order($ltipo,$header){
 
   $parent_id='';
   $tipo=0;
-  if(preg_match('/DELIVERY NOTE|nota de envio|BON DE COMMANDE|VERSANDANZEIGE/i',$ltipo)){
+if(preg_match('/^GRATISMUSTERSENDUNG/i',$ltipo)){
+    //$header['notes']=preg_replace('/^ECHANTILLIONi?$/i','',$header['notes']);
+    //$header['notes2']=preg_replace('/^ECHANTILLIONi?$/i','',$header['notes2']);
+    $tipo=4;
+
+
+}ELSEif(preg_match('/DELIVERY NOTE|nota de envio|BON DE COMMANDE|VERSANDANZEIGE/i',$ltipo)){
 
     $tipo=1;
   }elseif(preg_match('/FACTURE. sample order|facture|facutura|FACTURE|RECHNUNG/i',$ltipo)){
     $tipo=2;
   }elseif(preg_match('/STORNIERT/i',$ltipo)){
     $tipo=3;
-    $header['notes2']=preg_replace('/^ANNULER?$/i','',$header['notes2']);
+    $header['notes2']=preg_replace('/^STORNIERT?$/i','',$header['notes2']);
 
 
-  }elseif(preg_match('/^ECHANTILLONs?||GRATISMUSTERSENDUNG.GESCHEN/i',$ltipo)){
-    $header['notes']=preg_replace('/^ECHANTILLIONi?$/i','',$header['notes']);
-    $header['notes2']=preg_replace('/^ECHANTILLIONi?$/i','',$header['notes2']);
-    $tipo=4;
-    }elseif(preg_match('/donation/i',$ltipo)){
+  }elseif(preg_match('/donation/i',$ltipo)){
     $tipo=5; 
   }elseif(preg_match('/^\s*REPLACEMENT|Replcement|Replacenment|^reemplazo por roturas|^replacement|Damaged item|REPLACMENT|DELIVERY COLLECTION|repplacements|repalcements|Repalcement|Replaceement/i',$ltipo)){
     $tipo=6;

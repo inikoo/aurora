@@ -6,6 +6,9 @@ if(!$user->can_view('orders'))
   exit();
 ?>
 var view='<?php echo$_SESSION['state']['orders']['view']?>'
+var dispatch='<?php echo$_SESSION['state']['orders']['table']['dispatch']?>'
+var paid='<?php echo$_SESSION['state']['orders']['table']['paid']?>'
+var order_type='<?php echo$_SESSION['state']['orders']['table']['order_type']?>'
 
 YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
@@ -13,9 +16,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableDivEL="table"+tableid;
 	    var OrdersColumnDefs = [
 				       {key:"id", label:"<?php echo _('Order ID')?>", width:60,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-				       {key:"last_date", label:"<?php echo _('Last Updated')?>", width:110,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
+				       {key:"last_date", label:"<?php echo _('Last Updated')?>", width:115,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
 				       {key:"customer",label:"<?php echo _('Customer')?>", width:240,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-				       {key:"state", label:"<?php echo _('Status')?>", width:210,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				       {key:"state", label:"<?php echo _('Status')?>", width:205,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
 				       {key:"total_amount", label:"<?php echo _('Total')?>", width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 					 ];
 
@@ -239,11 +242,25 @@ var Dom   = YAHOO.util.Dom;
  YAHOO.util.Event.addListener("calpop1", "click", cal1.show, cal1, true);
  YAHOO.util.Event.addListener("calpop2", "click", cal2.show, cal2, true);
 	
-
+var clear_interval = function(e){
+     Dom.get("v_calpop1").value='';
+     Dom.get("v_calpop2").value='';
+     var table=tables.table0;
+     var datasource=tables.dataSource0;
+     var request='&sf=0&from=&to=';
+     Dom.get('clear_interval').style.display='none';
+     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+     
+ }
 
  var change_interval = function(e){
      from=Dom.get("v_calpop1").value;
      to=Dom.get("v_calpop2").value;
+
+     if(from=='' && to=='')
+	 Dom.get('clear_interval').style.display='none';
+     else
+	 Dom.get('clear_interval').style.display='';
      var table=tables.table0;
      var datasource=tables.dataSource0;
      var request='&sf=0&from=' +from+'&to='+to;
@@ -251,7 +268,27 @@ var Dom   = YAHOO.util.Dom;
      
  }
  
+ var change_dispatch_type=function(e){
+     var new_dispatch=this.id;
+
+     if(new_dispatch!=dispatch){
+
+	 Dom.removeClass(dispatch,'selected');
+	 Dom.addClass(new_dispatch,'selected');
+
+	 dispatch=new_dispatch;
+	 var table=tables.table0;
+	 var datasource=tables.dataSource0;
+	 var request='&dispatch='+dispatch;
+	 datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+     }
+ }
+
+
  YAHOO.util.Event.addListener("submit_interval", "click", change_interval);
+ YAHOO.util.Event.addListener("clear_interval", "click", clear_interval);
+ var ids =Array("in_process","dispached","cancelled") ;
+YAHOO.util.Event.addListener(ids, "click", change_dispatch_type);
 
 
  var change_view = function (e){
