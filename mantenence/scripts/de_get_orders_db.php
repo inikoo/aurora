@@ -109,7 +109,7 @@ $fam_promo_key=$fam_promo->id;
 
 $sql="select * from  de_orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed)  order by filename  ";
 //$sql="select * from  de_orders_data.orders where filename like '%refund.xls'   order by filename";
-$sql="select * from  de_orders_data.orders  where filename like '/mnt/%DE0070.xls'  order by filename";
+//$sql="select * from  de_orders_data.orders  where filename like '/mnt/%DE0071.xls'  order by filename";
 
 
 $contador=0;
@@ -165,24 +165,24 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     $header_data=filter_header($header_data);
     list($tipo_order,$parent_order_id,$header_data)=get_tipo_order($header_data['ltipo'],$header_data);
   
-    //    print_r($header_data);
+    //print_r($header_data);
     //continue;
 
-    if(preg_match('/^\d{5}sh$/i',$filename_number)){
+    if(preg_match('/^DE\d{4}sh$/i',$filename_number)){
       $tipo_order=7;
       $parent_order_id=preg_replace('/sh/i','',$filename_number);
     }
-    if(preg_match('/^\d{5}sht$/i',$filename_number)){
+    if(preg_match('/^DE\d{4}sht$/i',$filename_number)){
       $tipo_order=7;
       $parent_order_id=preg_replace('/sht/i','',$filename_number);
     }
 
-    if(preg_match('/^\d{5}rpl$/i',$filename_number)){
+    if(preg_match('/^DE\d{4}rpl$/i',$filename_number)){
       $tipo_order=6;
       $parent_order_id=preg_replace('/rpl/i','',$filename_number);
 
     }
-    if(preg_match('/^\d{4,5}r$|^\d{4,5}ref$|^\d{4,5}\s?refund$|^\d{4,5}rr$|^\d{4,5}ra$|^\d{4,5}r2$|^\d{4,5}\-2ref$|^\d{5}rfn$/i',$filename_number)){
+    if(preg_match('/^DE\d{4,5}r$|^DE\d{4,5}ref$|^DE\d{4,5}\s?refund$|^DE\d{4,5}rr$|^DE\d{4,5}ra$|^DE\d{4,5}r2$|^DE\d{4,5}\-2ref$|^DE\d{5}rfn$/i',$filename_number)){
       $tipo_order=9;
       $parent_order_id=preg_replace('/r$|ref$|refund$|rr$|ra$|r2$|\-2ref$|rfn$/i','',$filename_number);
 
@@ -298,6 +298,10 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     //   echo "Memory: ".memory_get_usage(true) . "x\n";
     //     echo "Memory: ".memory_get_usage() . "x\n";
     $_customer_data=setup_contact($act_data,$header_data,$date_index2);
+
+    // print_r($_customer_data);
+    // exit('hola mundo');
+    
 
     //    print_r($_customer_data);
     foreach($_customer_data as $_key =>$value){
@@ -1199,6 +1203,9 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       $data['type']='direct_data_injection';
       $data['products']=$products_data;
       $data['Customer Data']=$customer_data;
+
+      // print_r($customer_data);
+      // exit('hola mundo');
       $data['Shipping Address']=$shipping_addresses;
       // $data['metadata_id']=$order_data_id;
       $data['tax_rate']=.15;
@@ -1290,34 +1297,8 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       $data['Order Currency']=$currency;
       $data['Order Currency Exchange']=$exchange;
 
-      
-
-      if($tipo_order==1 or $tipo_order==2  or $tipo_order==3 or $tipo_order==4 or   $tipo_order==5   )  {
-	//print_r($data);
-	 //Tipo order
-      // 1 DELIVERY NOTE
-      // 2 INVOICE
-      // 3 CANCEL
-      // 4 SAMPLE
-      // 5 donation
-
-    
-  
-	
-	
-	
-      
-	if($tipo_order==1 or $tipo_order==2 or  $tipo_order==3)
-	  $data['Order Type']='Order';
-	else if($tipo_order==4)
-	  $data['Order Type']='Sample';
-	else if($tipo_order==5)
-	  $data['Order Type']='Donation';
-
-     
-	$data['store_id']=2;
-
-	 $payment_method=parse_payment_method($header_data['pay_method']);
+      $data['store_id']=$store_key;
+     $payment_method=parse_payment_method($header_data['pay_method']);
 	  $lag=(strtotime($date_inv)-strtotime($date_order))/24/3600;
 	  if($lag==0 or $lag<0)
 	    $lag='';
@@ -1341,15 +1322,37 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	    $tax_code='ZV';
 	  }
 
+	  // print "$tipo_order\n";
 
+      if($tipo_order==1 or $tipo_order==2  or $tipo_order==3 or $tipo_order==4 or   $tipo_order==5 or   $tipo_order==8    )  {
+	//print_r($data);
+	 //Tipo order
+      // 1 DELIVERY NOTE
+      // 2 INVOICE
+      // 3 CANCEL
+      // 4 SAMPLE
+      // 5 donation
+	// 8 follow on
+    
+  
 	
 	
 	
-	//      print_r($data);
+      
+	if($tipo_order==1 or $tipo_order==2 or  $tipo_order==3  )
+	  $data['Order Type']='Order';
+	else if($tipo_order==4)
+	  $data['Order Type']='Sample';
+	else if($tipo_order==5)
+	  $data['Order Type']='Donation';
+
+     
+	
+	if( $tipo_order!=8 ){
 	$order= new Order('new',$data);
 	$order->set_shipping(round($header_data['shipping']+$extra_shipping,2),$tax_rate);
 	$order->set_charges(round($header_data['charges'],2),$tax_rate);
-	
+	}
 	
 	if($tipo_order==2){
 	 
@@ -1430,7 +1433,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	    print "Zero value order ".$header_data['order_num']." \n";
 	    $order->no_payment_applicable();
 	    $order->load('totals');
-	  }else{
+	  }else{// paid for it
 	    //$order->create_invoice_simple($data_invoice,$data_invoice_transactions);
 	  
 	    $invoice=new Invoice ('create',$data_invoice,$data_invoice_transactions,$order->id); 
@@ -1490,7 +1493,129 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
 
 
-	}else if($tipo_order==4 or $tipo_order==5 ){
+	}elseif($tipo_order==8){
+
+	  $parent_order=new Order('public_id',$parent_order_id);
+	  if(!$parent_order->id){
+	    // try to get same customer last order
+	    $customer = new Customer ( 'find', $data['Customer Data'] );
+	    //print_r($data['Customer Data']);
+	    
+	    //exit("aaaa sadkjslk");
+	    $order_id=$customer->get_last_order();
+	    if($order_id){
+	       $parent_order=new Order('id',$order_id);
+	       print "found last order\n";
+	    }else{
+	      print "ast order not found created new one\n";
+	      $data['Order Type']='Order';
+	      $parent_order=new Order('new',$data);
+	      exit;
+	    }
+
+	  }
+
+	   if(!is_numeric($header_data['weight']))
+	    $weight=$estimated_w;
+	  else
+	    $weight=$header_data['weight'];
+	  
+	  
+	  $picker_data=get_user_id($header_data['pickedby'],true,'&view=picks');
+	  $packer_data=get_user_id($header_data['packedby'],true,'&view=packs');
+	  $order_type='Follow on';  ;
+	  $data_dn=array(
+			 'Delivery Note Date'=>$date_inv
+			 ,'Delivery Note ID'=>$header_data['order_num']
+			 ,'Delivery Note File As'=>$header_data['order_num']
+			 ,'Delivery Note Weight'=>$weight
+			 ,'Delivery Note XHTML Pickers'=>$picker_data['xhtml']
+			 ,'Delivery Note Number Pickers'=>count($picker_data['id'])
+			 ,'Delivery Note Pickers IDs'=>$picker_data['id']
+			 ,'Delivery Note XHTML Packers'=>$packer_data['xhtml']
+			 ,'Delivery Note Number Packers'=>count($packer_data['id'])
+			 ,'Delivery Note Packers IDs'=>$packer_data['id']
+			 ,'Delivery Note Type'=>$order_type
+			 ,'Delivery Note Title'=>_('Delivery Note for').' '.$order_type.' '.$header_data['order_num']
+			 ,'Delivery Note Has Shipping'=>$_customer_data['has_shipping']
+			 ,'Delivery Note Shipper Code'=>$header_data['shipper_code']  
+			 ,'Delivery Note Dispatch Method'=>$data['Delivery Note Dispatch Method']
+			 );
+	
+	  //$order->create_dn_simple($data_dn,$data_dn_transactions);
+	  
+	  $dn=new DeliveryNote('create',$data_dn,$data_dn_transactions,$parent_order);
+	  $parent_order->update_delivery_notes('save');
+	  $parent_order->update_dispatch_state('Ready to Pick');
+	  $parent_order->update_invoices('save');
+	  
+
+
+	  if($header_data['total_topay']!=0){
+	    foreach($data_invoice_transactions as $key=>$val){
+	      $data_invoice_transactions[$key]['tax rate']=$tax_rate;
+	      $data_invoice_transactions[$key]['tax code']=$tax_code;
+	      $data_invoice_transactions[$key]['tax amount']=$tax_rate*($val['gross amount']-($val['discount amount']));
+	    }	      
+	    $data_invoice=array(
+				'Invoice Date'=>$date_inv
+				,'Invoice Public ID'=>$header_data['order_num']
+				,'Invoice File As'=>$header_data['order_num']
+				,'Invoice Main Payment Method'=>$payment_method
+			      ,'Invoice Multiple Payment Methods'=>0
+			      ,'Invoice Shipping Net Amount'=>round($header_data['shipping']+$extra_shipping,2)
+			      ,'Invoice Charges Net Amount'=>round($header_data['charges'],2)
+			      ,'Invoice Total Tax Amount'=>round($header_data['tax1'],2)
+			      ,'Invoice Refund Net Amount'=>$total_credit_value
+			      ,'Invoice Refund Tax Amount'=>$tax_rate*$total_credit_value
+			      ,'Invoice Total Amount'=>round($header_data['total_topay'],2)
+			      ,'tax_rate'=>$tax_rate
+			      ,'Invoice Has Been Paid In Full'=>'No'
+			      ,'Invoice Items Net Amount'=>round($header_data['total_items_charge_value'],2)-$total_credit_value
+			      ,'Invoice XHTML Processed By'=>_('Unknown')
+			      ,'Invoice XHTML Charged By'=>_('Unknown')
+			      ,'Invoice Processed By Key'=>''
+			      ,'Invoice Charged By Key'=>''
+			      ,'Invoice Total Adjust Amount'=>round($header_data['total_topay'],2)-round($header_data['tax1'],2)-round($header_data['total_net'],2)
+			      ,'Invoice Tax Code'=>$tax_code
+			      ,'Invoice Taxable'=>$taxable
+			      ,'Invoice Dispatching Lag'=>$lag
+			      ,'Invoice Customer Contact Name'=>$customer_data['Customer Main Contact Name']
+			      ,'Invoice Currency'=>$currency
+			      ,'Invoice Currency Exchange'=>$exchange
+			      );
+	    
+	    $invoice=new Invoice ('create',$data_invoice,$data_invoice_transactions,$parent_order->id);
+	      }else{// no payment
+
+
+	  }
+	  
+	  $dn->pick_simple($data_dn_transactions);
+	  $parent_order->update_dispatch_state('Ready to Pack');
+	
+	  $dn->pack('all');
+	  $parent_order->update_dispatch_state('Ready to Ship');
+	  if($header_data['total_topay']!=0){
+	     $invoice->data['Invoice Paid Date']=$date_inv;
+	  $invoice->pay('full',
+			array(
+			      'Invoice Items Net Amount'=>round($header_data['total_items_charge_value'],2)-$total_credit_value-$extra_shipping
+			      ,'Invoice Total Net Amount'=>round($header_data['total_net'],2)
+			      ,'Invoice Total Tax Amount'=>round($header_data['tax1']+$header_data['tax2'],2)
+			      ,'Invoice Total Amount'=>round($header_data['total_topay'],2)
+
+			      ));
+	  $parent_order-> update_payment_state('Paid');
+	  }
+	  
+ $dn->dispatch('all',$data_dn_transactions);
+	  $parent_order->update_dispatch_state('Dispached');
+
+	  $parent_order->load('totals');
+
+	
+	  }else if($tipo_order==4 or $tipo_order==5 ){
 
 	  if($header_data['total_net']!=0)
 	    $tax_rate=$header_data['tax1']/$header_data['total_net'];
@@ -1523,6 +1648,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 			 ,'Invoice Items Net Amount'=>$header_data['total_items_charge_value']-$total_credit_value
 			 ,'Delivery Note Type'=>$order_type
 			 ,'Delivery Note Title'=>_('Delivery Note for').' '.$order_type.' '.$header_data['order_num']
+			 
 			 ,'Delivery Note Has Shipping'=>$_customer_data['has_shipping']
 			 ,'Delivery Note Shipper Code'=>$header_data['shipper_code']  
 			 ,'Delivery Note Dispatch Method'=>$data['Delivery Note Dispatch Method']
@@ -1531,7 +1657,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
 	  //$order->create_dn_simple($data_dn,$data_dn_transactions);
 	  $dn=new DeliveryNote('create',$data_dn,$data_dn_transactions,$order);
-
+	  
 	  if($header_data['total_topay']>0){
 	    $payment_method=parse_payment_method($header_data['pay_method']);
 	  
@@ -1667,7 +1793,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	$tax_code='UNK';
 
 	if($header_data['total_net']!=0){
-	  
+	 
 	  if($header_data['tax1']+$header_data['tax2']==0){
 	    $tax_code='EX0';
 	  }
@@ -1706,7 +1832,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	  //	exit;
 	  $data['ghost_order']=true;
 	  $data['Order Type']='Order';
-	  $data['store_id']=1;
+	  $data['store_id']=$store_key;
 	  $order= new Order('new',$data);
      
       
@@ -1874,13 +2000,16 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	$sql="update de_orders_data.orders set last_transcribed=NOW() where id=".$order_data_id;
 	mysql_query($sql);
     
-      }elseif($tipo_order==6 or $tipo_order==7){
+      }elseif($tipo_order==6 or $tipo_order==7 ){
 	if($tipo_order==6)
 	  $order_type='Replacement';
+
 	else
 	  $order_type='Shortages';
 
-	print("$order_type\n");
+
+
+	//	print("$order_type  $parent_order_id\n");
 
       	if(!is_numeric($header_data['weight']))
 	  $weight=$estimated_w;
@@ -1890,7 +2019,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
 	$picker_data=get_user_id($header_data['pickedby'],true,'&view=picks');
 	$packer_data=get_user_id($header_data['packedby'],true,'&view=packs');
-
+	
 	// 	print_r($picker_data);
 
 	$data_dn=array(
@@ -1914,7 +2043,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	
 
 
-	
+	;
 
 	$parent_order=new Order('public_id',$parent_order_id);
 	if($parent_order->id){
@@ -1940,10 +2069,8 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	
 	  //	print_r($parent_order->items);
 	}else{
-       
-	  $data['ghost_order']=true;
-	  $data['Order Type']='';
-	  $data['store_id']=1;
+	  
+	  
  
 	  $order= new Order('new',$data);
 	  $dn=new DEliveryNote('create',$data_dn,$data_dn_transactions,$order);

@@ -192,6 +192,8 @@ class Customer extends DB_Table{
       $child=new Company ('find in customer use old_id',$raw_data);
     }
 
+    // print_r($child);
+
     if($child->found){
       
       //print_r($child);
@@ -2151,6 +2153,19 @@ class Customer extends DB_Table{
  function get_main_email_key(){
     return $this->data['Customer Main Email Key'];
   }
+
+
+ function get_last_order(){
+   $order_key=0;
+   $sql=sprintf("select `Order Key` from `Order Dimension` where `Order Customer Key`=%d order by `Order Date` desc limit 1 ",$this->id);
+   //print $sql;
+   $res=mysql_query($sql);
+   if($row=mysql_fetch_array($res)){
+     $order_key=$row['Order Key'];
+   }
+   
+   return $order_key;
+ }
 
 
  }

@@ -1253,8 +1253,14 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     
 $data['Order Currency']='GBP';
 $data['Order Currency Exchange']=1;
+
+//print "$tipo_order\n";
     if($tipo_order==2 or $tipo_order==1  or $tipo_order==4 or $tipo_order==5 or   $tipo_order==3   )  {
-      //print_r($data);
+         // 1 DELIVERY NOTE
+      // 2 INVOICE
+      // 3 CANCEL
+      // 4 SAMPLE
+      // 5 donation
     
 
 
@@ -1270,37 +1276,19 @@ $data['Order Currency Exchange']=1;
      
       $data['store_id']=1;
       //      print_r($data);
-      $order= new Order('new',$data);
-      $order->skip_update_product_sales=true;
-
-      if($tipo_order==2){
-      //invoice
-	$payment_method=parse_payment_method($header_data['pay_method']);
-
 
 	$lag=(strtotime($date_inv)-strtotime($date_order))/24/3600;
 	if($lag==0 or $lag<0)
 	  $lag='';
 
-	
 	$taxable='Yes';
 	$tax_code='UNK';
-
-
-       
-
-
 	if($header_data['total_net']!=0){
-	  
 	  if($header_data['tax1']+$header_data['tax2']==0){
-	  
 	    $tax_code='EX0';
 	  }
-	  
 	  $tax_rate=($header_data['tax1']+$header_data['tax2'])/$header_data['total_net'];
-
 	  foreach($myconf['tax_rates'] as $_tax_code=>$_tax_rate){
-	    // print "$_tax_code => $_tax_rate $tax_rate\n ";
 	    $upper=1.1*$_tax_rate;
 	    $lower=0.9*$_tax_rate;
 	    if($tax_rate>=$lower and $tax_rate<=$upper){
@@ -1311,7 +1299,24 @@ $data['Order Currency Exchange']=1;
 	}else{
 	  $tax_code='ZV';
 	}
-     
+
+
+
+
+      $order= new Order('new',$data);
+      $order->skip_update_product_sales=true;
+	$order->set_shipping(round($header_data['shipping']+$extra_shipping,2),$tax_rate);
+	$order->set_charges(round($header_data['charges'],2),$tax_rate);
+
+
+
+
+      if($tipo_order==2){
+      //invoice
+	$payment_method=parse_payment_method($header_data['pay_method']);
+
+
+
 	foreach($data_invoice_transactions as $key=>$val){
 	  $data_invoice_transactions[$key]['tax rate']=$tax_rate;
 	  $data_invoice_transactions[$key]['tax code']=$tax_code;
@@ -1436,6 +1441,8 @@ $data['Order Currency Exchange']=1;
 	$order->load('totals');
 	$invoice->categorize('save');
       }else if($tipo_order==8 ){
+
+	print "folow order\n";
 
 	
       }else if($tipo_order==4 or $tipo_order==5 ){
@@ -1571,7 +1578,13 @@ $data['Order Currency Exchange']=1;
 	  $invoice->categorize('save');
 	  
 	}else{
-	    
+	  $dn->pick_simple($data_dn_transactions);
+	  $order->update_dispatch_state('Ready to Pack');
+	  
+	  $dn->pack('all');
+	  $order->update_dispatch_state('Ready to Ship');
+	  $dn->dispatch('all',$data_dn_transactions);
+	  $order->update_dispatch_state('Dispached');
 	  $order->no_payment_applicable();
 	  $order->load('totals');
 	}

@@ -90,24 +90,7 @@ class Order extends DB_Table{
       else
 	$this->ghost_order = false;
 				
-      /* 				$this->compare_addresses ( $data ['cdata'] ); */
-      /* 				$data ['cdata'] ['same_address'] = $this->same_address; */
-      /* 				$data ['cdata'] ['same_contact'] = $this->same_contact; */
-      /* 				$data ['cdata'] ['same_company'] = $this->same_company; */
-      /* 				$data ['cdata'] ['same_telephone'] = $this->same_telephone; */
-				
-      /* 				$customer_identification_method = 'other id'; */
-      /* 				$customer_id = find_customer ( $customer_identification_method, $data ['cdata'] ); */
-      /* 				if($customer_id){ */
-      /* 				  $customer = new Customer ( $customer_id ); */
-      /* 				  $customer->update('multiple',$cdata); */
-      /* 				}else{ */
-				  
-
-      /* 				  $customer = new Customer ( 'find create', $data ); */
-				  
-      /* 				  $customer_id=$customer->id; */
-      /* 				} */
+   
 			
       $data['Customer Data']['editor']=$this->editor;
       $data['Customer Data']['editor']['Date']=date("Y-m-d H:i:s",strtotime($data['Customer Data']['editor']['Date']." -1 second"));
@@ -124,7 +107,7 @@ class Order extends DB_Table{
 	//print_r($data['Customer Data']);
 				  
 	$customer = new Customer ( 'find create', $data['Customer Data'] );
-	//	  print_r($data);
+	//print_r($customer);
 	if(isset($data['Shipping Address']) and is_array($data['Shipping Address']) and !array_empty($data['Shipping Address'])){
 	  $ship_to= new Ship_To('find create',$data['Shipping Address']);
 	  $this->data ['Order XHTML Ship Tos']=$ship_to->data['Ship To XHTML Address'];
@@ -226,10 +209,10 @@ class Order extends DB_Table{
 				
       if (! $this->ghost_order) {
 	$this->create_order_header ();
-				  
+	
 	foreach ( $this->data ['Order Sale Reps IDs'] as $sale_rep_id ) {
 	  $sql = sprintf ( "insert into `Order Sales Rep Bridge`  (%d,%d)", $this->id, $sale_rep_id );
-				    
+	  
 	}
 				  
 	$line_number = 0;
@@ -1104,9 +1087,11 @@ class Order extends DB_Table{
       break;
     case('xhtml delivery notes'):
     case('XHTML Delivery Notes'):
+       case('Order XHTML Delivery Notes'):
       $sql=sprintf("select `Delivery Note Key` from `Order Delivery Note Bridge` where `Order Key`=%d",$this->id);
       $result = mysql_query ( $sql );
       $xhtml=$args;
+      // print "$sql\n";
       while ($row = mysql_fetch_array ( $result, MYSQL_ASSOC )) {
 	$dn=new DeliveryNote($row['Delivery Note Key']);
 	$xhtml .= sprintf ( ' <a href="dn.php?id=%d">%s</a>,', $dn->data ['Delivery Note Key'], $dn->data ['Delivery Note ID'] );
@@ -1114,6 +1099,13 @@ class Order extends DB_Table{
       }
       $xhtml=preg_replace('/\,$/','',$xhtml);
       $xhtml=_trim($xhtml);
+      $this->data['Order XHTML Delivery Notes']=$xhtml;
+        $sql=sprintf("update `Order Dimension`  set `Order XHTML Delivery Notes`=%s where `Order Key`=%d"
+		   ,prepare_mysql($this->data ['Order XHTML Delivery Notes'])
+		   ,$this->id
+		   );
+      mysql_query($sql);
+      // print "$sql\n";
       return $xhtml;
     case ('totals') :
 
@@ -1926,7 +1918,7 @@ class Order extends DB_Table{
     
 
 	$sql = "select sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) as discount, sum((`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`)*`Transaction Tax Rate`) as item_tax,   sum(`Invoice Transaction Shipping Amount`) as shipping,sum(`Invoice Transaction Charges Amount`) as charges ,sum(`Invoice Transaction Total Tax Amount`) as tax   from `Order Transaction Fact` where `Order Key`=" . $this->data ['Order Key'];
-	//		print "$sql\n";
+	//	print "$sql\n";
 	$result = mysql_query ( $sql );
 	if ($row = mysql_fetch_array ( $result, MYSQL_ASSOC )) {
 	  $total = $row ['gross'] + $row ['tax'] + $row ['shipping'] + $row ['charges'] - $row ['discount'] + $this->data ['Order Items Adjust Amount'];
