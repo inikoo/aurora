@@ -103,10 +103,7 @@ class DeliveryNote extends DB_Table {
 
     protected function create($dn_data, $transacions_data,$order) {
         global $myconf;
-        // print_r($transacions_data);
-        // print_r($dn_data);
-        //exit;
-
+       
         $this->data ['Delivery Note Date'] = $dn_data ['Delivery Note Date'];
         $this->data ['Delivery Note ID'] = $dn_data ['Delivery Note ID'];
         $this->data ['Delivery Note File As'] = $dn_data ['Delivery Note File As'];
@@ -169,23 +166,12 @@ class DeliveryNote extends DB_Table {
                 $this->destination_country_key = '0';
         }
 
-
-
-        // $sql = sprintf ( "insert into `Order Delivery Note Bridge` values (%d,%d)", $order->data ['Order Key'], $this->data ['Delivery Note Key'] );
-        //if (! mysql_query ( $sql ))
-        // exit ( "$sql  Errro can no insert order dn  bridge" );
-
         $line_number = 0;
         $amount = 0;
         $discounts = 0;
         foreach ( $transacions_data as $data ) {
-
-
             $line_number ++;
-
-
-
-            $sql = sprintf ( "update  `Order Transaction Fact` set `Estimated Weight`=%s,`Order Last Updated Date`=%s, `Delivery Note ID`=%s,`Delivery Note Line`=%d,`Current Autorized to Sell Quantity`=%.f ,`Delivery Note Key`=%d ,`Destination Country 2 Alpha Code`=%s where `Order Key`=%d and  `Order Line`=%d"
+	    $sql = sprintf ( "update  `Order Transaction Fact` set `Estimated Weight`=%s,`Order Last Updated Date`=%s, `Delivery Note ID`=%s,`Delivery Note Line`=%d,`Current Autorized to Sell Quantity`=%.f ,`Delivery Note Key`=%d ,`Destination Country 2 Alpha Code`=%s where `Order Key`=%d and  `Order Line`=%d"
                              , prepare_mysql ( $data ['Estimated Weight'] )
                              , prepare_mysql ( $this->data ['Delivery Note Date'] )
                              , prepare_mysql ( $this->data ['Delivery Note ID'] )
@@ -195,36 +181,28 @@ class DeliveryNote extends DB_Table {
                              , prepare_mysql($this->data ['Delivery Note Country 2 Alpha Code'])
                              , $order->data ['Order Key']
                              , $line_number
-                           );
+			     );
             //    print $sql;exit;
             if (! mysql_query ( $sql ))
-                exit ( "$sql\n can not update order transacrion aferter dn 313123" );
-
+	      exit ( "$sql\n can not update order transacrion aferter dn 313123" );
+	    
         }
-        // $dn_txt = "ready to pick";
-
-        // if ($order->data ['Order Type'] == 'Sample') {
-        //   $dn_txt = "Send";
-
-        // }
-        // if ($order->data ['Order Type'] == 'Donation') {
-        //   $dn_txt = "Send";
-
-        // }
-
-        /*   $xhtml = sprintf ( '%s, %s <a href="dn.php?id=%d">%s</a>', $order->data ['Order Type'], $dn_txt, $this->data ['Delivery Note Key'], $this->data ['Delivery Note ID'] ); */
-
-        /*     $sql = sprintf ( "update `Order Dimension` set `Order Current Dispatch State`='%s' ,`Order Current XHTML State`=%s ,`Order XHTML Delivery Notes`=%s   where `Order Key`=%d", 'Ready to Pick', prepare_mysql ( $xhtml ), prepare_mysql ( $xhtml ), $order->data ['Order Key'] ); */
-        /*     mysql_query ( $sql ); */
-
-        // exit ( "$sql\n  can not update order dimension after dn\n" );
+	
         $this->load('orders');
         $sql = sprintf ( "delete from  `Order Delivery Note Bridge` where `Delivery Note Key`=%d",$this->id);
         mysql_query ( $sql );
-        foreach($this->orders as $key=>$ord) {
-            $sql = sprintf ( "insert into `Order Delivery Note Bridge` values (%d,%d)", $this->id, $key );
-            mysql_query ( $sql );
-        }
+
+	//print $sql;
+       
+	foreach($this->orders as $key=>$ord) {
+	  $sql = sprintf ( "insert into `Order Delivery Note Bridge` values (%d,%d)", $key,$this->id );
+	  // print "caca $sql\n";
+	  mysql_query ( $sql );
+	  $order=new Order($key);
+	  $order->load('XHTML Delivery Notes');
+	  // exit;
+	    //print "$sql\n";
+	}
 
 
 
@@ -260,6 +238,9 @@ class DeliveryNote extends DB_Table {
 
             $this->data ['Delivery Note Key'] = mysql_insert_id ();
             $this->id=$this->data ['Delivery Note Key'];
+
+	    
+
         } else {
             print "$sql \n Error can not create dn header";
             exit ();
@@ -331,7 +312,7 @@ class DeliveryNote extends DB_Table {
         case('orders'):
 
             $sql=sprintf("select `Order Key` from `Order Transaction Fact` where `Delivery Note Key`=%d group by `Order Key`",$this->id);
-            //print $sql;
+	    // print $sql;
             $res = mysql_query ( $sql );
             $this->orders=array();
             while ($row = mysql_fetch_array ( $res, MYSQL_ASSOC )) {

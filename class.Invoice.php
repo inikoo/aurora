@@ -501,7 +501,7 @@ $this->data['Invoice Currency Exchange']=$exchange;
     $sql = sprintf ( "delete from  `Order Invoice Bridge` where `Invoice Key`=%d",$this->id);
     mysql_query ( $sql );
     foreach($this->orders as $key=>$ord){
-      $sql = sprintf ( "insert into `Order Invoice Bridge` values (%d,%d)", $this->data ['Invoice Key'], $key );
+      $sql = sprintf ( "insert into `Order Invoice Bridge` values (%d,%d)", $key, $this->data ['Invoice Key']);
       mysql_query ( $sql );
     }
 

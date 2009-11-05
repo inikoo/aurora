@@ -1312,41 +1312,20 @@ $currency='EUR';
      
       $data['store_id']=3;
       //      print_r($data);
-      $order= new Order('new',$data);
 
 
-      if($tipo_order==2){
 	$payment_method=parse_payment_method($header_data['pay_method']);
-	
-/* 	if($header_data['total_net']!=0) */
-/* 	  $tax_rate=$header_data['tax1']/$header_data['total_net']; */
-/* 	else */
-/* 	  $tax_rate=$data['tax_rate']; */
-	    
-
 	$lag=(strtotime($date_inv)-strtotime($date_order))/24/3600;
 	if($lag==0 or $lag<0)
 	  $lag='';
-
-	
 	$taxable='Yes';
 	$tax_code='UNK';
-
-
-       
-
-
 	if($header_data['total_net']!=0){
-	  
 	  if($header_data['tax1']+$header_data['tax2']==0){
-	  
 	    $tax_code='EX0';
 	  }
-	  
 	  $tax_rate=($header_data['tax1']+$header_data['tax2'])/$header_data['total_net'];
-
 	  foreach($myconf['tax_rates'] as $_tax_code=>$_tax_rate){
-	    // print "$_tax_code => $_tax_rate $tax_rate\n ";
 	    $upper=1.1*$_tax_rate;
 	    $lower=0.9*$_tax_rate;
 	    if($tax_rate>=$lower and $tax_rate<=$upper){
@@ -1357,6 +1336,14 @@ $currency='EUR';
 	}else{
 	  $tax_code='ZV';
 	}
+
+
+      $order= new Order('new',$data);
+	$order->set_shipping(round($header_data['shipping']+$extra_shipping,2),$tax_rate);
+	$order->set_charges(round($header_data['charges'],2),$tax_rate);
+
+      if($tipo_order==2){
+
      
 	foreach($data_invoice_transactions as $key=>$val){
 	  $data_invoice_transactions[$key]['tax rate']=$tax_rate;

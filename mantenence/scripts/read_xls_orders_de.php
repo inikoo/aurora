@@ -92,7 +92,7 @@ foreach($orders_array as $order_index=>$order){
 
 
 foreach($orders_array as $order_index=>$order){
-  if(preg_match('/^\d{4,5}r$|^\d{4,5}ref$|^\d{4,5}\s?refund$|^\d{4,5}rr$|^\d{4,5}ra$|^\d{4,5}r2$|^\d{4,5}\-2ref$|^\d{5}rpl$|^\d{5}sht?$|^\d{5}rfn$/i',$order)){
+  if(preg_match('/^DE\d{4,5}r$|^DE\d{4,5}ref$|^DE\d{4,5}\s?refund$|^DE\d{4,5}rr$|^DE\d{4,5}ra$|^DE\d{4,5}r2$|^DE\d{4,5}\-2ref$|^DE\d{4,5}rpl$|^DE\d{4,5}sht?$|^DE\d{4,5}rfn$/i',$order)){
      $good_files[]=$orders_array_full_path[$order_index];
     $good_files_number[]=$order;
   }
@@ -114,7 +114,7 @@ foreach($good_files_number as $order_index=>$order){
   $is_refund=false;
   $act_data=array();
   $map=array();
-  if(!preg_match('/^\d{4,5}$/i',$order)){
+  if(!preg_match('/^DE\d{4,5}$/i',$order)){
     $is_refund=true;
   }
   $filename=$good_files[$order_index];
