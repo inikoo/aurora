@@ -124,7 +124,7 @@ class Invoice extends DB_Table {
 
 */
   protected function create_refund($invoice_data,$transacions_data,$order,$options=''){
-    
+
     global $myconf;
     
     $this->data ['Invoice Items Gross Amount'] =0;
@@ -174,7 +174,9 @@ $this->data['Invoice Currency Exchange']=$exchange;
     
     $this->data ['Invoice XHTML Store'] = $order->data ['Order XHTML Store'];
     $this->data ['Invoice Main Source Type'] = $order->data ['Order Main Source Type'];
-    $this->data ['Invoice For'] = $order->data ['Order For'];
+    $this->data ['Invoice For'] ='Customer';
+      if( $order->data ['Order For']!='')
+	$this->data ['Invoice For'] = $order->data ['Order For'];
 
     if($this->data ['Invoice Main Source Type']=='')
       $this->data ['Invoice Main Source Type']='Unknown';
@@ -250,7 +252,7 @@ $this->data['Invoice Currency Exchange']=$exchange;
 
 
     $this->create_header ();
-
+    //exit;
 
 
     $line_number = 0;
@@ -354,6 +356,8 @@ $this->data['Invoice Currency Exchange']=$exchange;
     $this->data ['Invoice Billing Country 2 Alpha Code']='XX';
     $this->data ['Invoice Customer Key'] = $order->data ['Order Customer Key'];
     $this->data ['Invoice Customer Name'] = $order->data ['Order Customer Name'];
+    $this->data ['Invoice For'] ='Customer';
+    if( $order->data ['Order For']!='')
       $this->data ['Invoice For'] = $order->data ['Order For'];
     $customer=new customer('id',$this->data ['Invoice Customer Key']);
     //print_r($customer);exit('en invlice class '.$this->data ['Invoice Customer Key'].'  ');
@@ -555,7 +559,7 @@ function create_header() {
     $this->data ['Invoice Billing Country 2 Alpha Code']='XX';
   if(!isset($this->data ['Invoice Delivery Country 2 Alpha Code']))
     $this->data ['Invoice Delivery Country 2 Alpha Code']='XX';
-  //print_r($this->data);
+  // print_r($this->data);
   
   $sql = sprintf ( "insert into `Invoice Dimension` (`Invoice Customer Contact Name`,`Invoice Currency`,`Invoice Currency Exchange`,`Invoice For`,`Invoice Date`,`Invoice Public ID`,`Invoice File As`,`Invoice Store Key`,`Invoice Store Code`,`Invoice Main Source Type`,`Invoice Customer Key`,`Invoice Customer Name`,`Invoice XHTML Ship Tos`,`Invoice Items Gross Amount`,`Invoice Items Discount Amount`,`Invoice Shipping Net Amount`,`Invoice Charges Net Amount`,`Invoice Total Tax Amount`,`Invoice Refund Net Amount`,`Invoice Refund Tax Amount`,`Invoice Total Amount`,`Invoice Metadata`,`Invoice XHTML Address`,`Invoice XHTML Orders`,`Invoice XHTML Delivery Notes`,`Invoice XHTML Store`,`Invoice Has Been Paid In Full`,`Invoice Main Payment Method`,`Invoice Shipping Tax Amount`,`Invoice Charges Tax Amount`,`Invoice XHTML Processed By`,`Invoice XHTML Charged By`,`Invoice Processed By Key`,`Invoice Charged By Key`,`Invoice Billing Country 2 Alpha Code`,`Invoice Delivery Country 2 Alpha Code`,`Invoice Dispatching Lag`,`Invoice Taxable`,`Invoice Tax Code`,`Invoice Title`) values (%s,%s,%f,%s,%s,%s,%s,%s,%s,%s,%s,%s,  %s,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,   %s,%s,%s,'%s',%s,%s,%s,%.2f,%.2f,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
 		   , prepare_mysql ( $this->data ['Invoice Customer Contact Name'],false)

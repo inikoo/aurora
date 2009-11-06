@@ -1,4 +1,5 @@
-<?phpinclude_once('common.php');?>
+<?php
+include_once('common.php');?>
 var Dom   = YAHOO.util.Dom;
 YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {

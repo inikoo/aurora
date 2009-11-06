@@ -123,7 +123,7 @@ class Order extends DB_Table{
       $this->billing_address=new Address($customer->data['Customer Main Address Key']);
 				
 
-				
+
 
       if(!$customer->id or $customer->data[ 'Customer Name' ]==''){
 	print "caca\n";
@@ -158,7 +158,6 @@ class Order extends DB_Table{
 
       $this->data['Order Currency']=$data['Order Currency'];
       $this->data['Order Currency Exchange']=$data['Order Currency Exchange'];
-
 
       $this->tax_rate = $data ['tax_rate'];
       $this->data ['Order Date'] = $data ['order date'];
@@ -285,8 +284,8 @@ class Order extends DB_Table{
 	$this->data ['Order Public ID'] = '';
 				  
       }
-				
-
+     
+      
       $this->update_totals('save');
 
       break;
@@ -650,10 +649,11 @@ class Order extends DB_Table{
       }
 		
     }
-	
-    $this->get_data('id',$this->id);
-    $this->update_totals_from_order_transactions();
-
+    
+    if(!$this->ghost_order){
+      $this->get_data('id',$this->id);
+      $this->update_totals_from_order_transactions();
+    }
   }
 	
   function cancel() {
@@ -1913,6 +1913,9 @@ class Order extends DB_Table{
 
   function update_totals_from_order_transactions($force_total=false){
       
+    if($this->ghost_order) 
+      return;
+
     if(!$force_total)
       $force_total=array();
     

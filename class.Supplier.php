@@ -45,7 +45,41 @@ class supplier extends DB_Table{
   function Supplier($arg1=false,$arg2=false,$arg3=false) {
 
     $this->table_name='Supplier';
-    $this->ignore_fields=array('Supplier Key');
+    $this->ignore_fields=array('Supplier Key','Supplier 1 Year Acc Parts Profit'
+			       ,'Supplier 1 Year Acc Parts Profit After Storing'
+			       ,'Supplier 1 Year Acc Cost'
+			       ,'Supplier 1 Year Acc Parts Sold Amount'
+			       ,'Supplier 1 Quarter Acc Parts Profit'
+			       ,'Supplier Total Parts Profit'
+			       ,'Supplier Total Parts Profit After Storing'
+			       ,'Supplier Total Cost'
+			       ,'Supplier Total Parts Sold Amount'
+			       ,'Supplier 1 Quarter Acc Parts Profit After Storing'
+			       ,'Supplier 1 Quarter Acc Cost'
+			       ,'Supplier 1 Quarter Acc Parts Sold Amount'
+			       ,'Supplier 1 Month Acc Parts Profit'
+			       ,'Supplier 1 Month Acc Parts Profit After Storing'
+			       ,'Supplier 1 Month Acc Cost'
+			       ,'Supplier 1 Month Acc Parts Sold Amount'
+			       ,'Supplier 1 Month Acc Parts Broken'
+			       ,'Supplier 1 Week Acc Parts Profit'
+			       ,'Supplier 1 Week Acc Parts Profit After Storing'
+			       ,'Supplier 1 Week Acc Cost'
+			       ,'Supplier 1 Week Acc Parts Sold Amount'
+			       ,'Supplier Stock Value' 
+			       ,'Supplier Active Company Products'
+			       ,'Supplier Discontinued Company Products'
+			       ,'Supplier Surplus Availability Products'
+			       ,'Supplier Optimal Availability Products'
+			       ,'Supplier Low Availability Products'
+			       ,'Supplier Critical Availability Products'
+			       ,'Supplier Out Of Stock Products'
+			       ,'Supplier For Sale Products'
+			       ,'Supplier Not For Sale Products'
+			       ,'Supplier To Be Discontinued Products'
+			       ,'Supplier Discontinued Products'
+			       
+			       );
 
 
      if(is_numeric($arg1)){
@@ -146,8 +180,18 @@ class supplier extends DB_Table{
      foreach($raw_data as $key=>$value){
        if(array_key_exists($key,$data)){
 	 $data[$key]=_trim($value);
+       }elseif(preg_match('/^Supplier Address/',$key)){
+	 $data[$key]=_trim($value);
+
        }
+       
+
+
     }
+
+
+
+
 
      if($data['Supplier Code']!=''){
        $sql=sprintf("select `Supplier Key` from `Supplier Dimension` where `Supplier Code`=%s ",prepare_mysql($data['Supplier Code']));
@@ -287,6 +331,10 @@ class supplier extends DB_Table{
       $this->data['Supplier Main XHTML FAX']=$company->data['Company Main FAX'];
       $this->data['Supplier Main Plain FAX']=$company->data['Company Main Plain FAX'];
     }
+     if($company->data['Company Main Web Site']){
+       $this->data['Company Main Web Site']=$company->data['Company Main Web Site'];
+	     
+     }
     
     $this->data['Supplier Main Contact Key']=$company->data['Company Main Contact Key'];
     $this->data['Supplier Main Contact Name']=$company->data['Company Main Contact Name'];

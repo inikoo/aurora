@@ -82,6 +82,11 @@ ALTER TABLE `Part Dimension` ADD `Part Distinct Locations` SMALLINT UNSIGNED NOT
 ALTER TABLE `Order Dimension` ADD `Order Shipping Tax Amount` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0' AFTER `Order Shipping Net Amount` ;
 ALTER TABLE `Order Dimension` ADD `Order Charges Tax Amount` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0' AFTER `Order Charges Net Amount` ;
 
+ALTER TABLE `Supplier Dimension` ADD `Supplier Main Plain WWW` VARCHAR( 256 ) NOT NULL AFTER `Supplier Main Plain Telephone` ;
+ALTER TABLE `Supplier Dimension` ADD `Supplier Main FAX` VARCHAR( 100 ) NULL AFTER `Supplier Main Plain Telephone` ,
+ADD `Supplier Main FAX Key` MEDIUMINT UNSIGNED NULL AFTER `Supplier Main FAX` ,
+ADD `Supplier Main Plain FAX` VARCHAR( 100 ) NOT NULL DEFAULT '' AFTER `Supplier Main FAX Key` 
+
  */
 
 

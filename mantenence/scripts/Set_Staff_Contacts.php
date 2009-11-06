@@ -21,7 +21,7 @@ include_once('../../class.Order.php');
 error_reporting(E_ALL);
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 if(!$con){print "Error can not connect with database server\n";exit;}
-$dns_db='dw_tmp';
+//$dns_db='dw_tmp';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
 
@@ -67,7 +67,7 @@ $company=new Company('find create auto',$data);
 
 $sql="select * from  `Staff Dimension`  where `Staff Name`!='David' ";
 $sql="select * from  `Staff Dimension`  ";
-exit;
+;
 $res=mysql_query($sql);
 while($row=mysql_fetch_array($res, MYSQL_ASSOC)){
   
@@ -80,18 +80,43 @@ while($row=mysql_fetch_array($res, MYSQL_ASSOC)){
   if($row['Staff Alias']=='raul'){
     $data_contact=array(
 			'Contact Name'=>'Mr Raul Alejandro Perusquia Flores'
-			,'Contact Main Mobile'=>''
+			,'Contact Main Pain Email'=>'rulovico@gmail.com'
 			);
   }
    if($row['Staff Alias']=='martina'){
     $data_contact=array(
 			'Contact Name'=>'Martina Otte'
-			,'Contact Main Mobile'=>''
+			,'Contact Main Plain Email'=>'martina@aw-gechenke.com'
 			);
   }if($row['Staff Alias']=='kerry'){
     $data_contact=array(
-			'Contact Name'=>'Kerry Miskelly'
+			'Contact Name'=>'Miss Kerry Miskelly'
+			,'Contact Main Plain Email'=>'kerry@ancientwisdom.biz'
+			);
+  }if($row['Staff Alias']=='katka'){
+    $data_contact=array(
+			'Contact Name'=>'Katka Buchy'
+			,'Contact Main Plain Email'=>'katka@ancientwisdom.biz'
+			);
+  }if($row['Staff Alias']=='philippe'){
+    $data_contact=array(
+			'Contact Name'=>'Philippe Buchy'
 			,'Contact Main Mobile'=>''
+			);
+  }if($row['Staff Alias']=='amanda'){
+    $data_contact=array(
+			'Contact Name'=>'Miss Amanda Fray'
+			,'Contact Main Mobile'=>''
+			);
+  }if($row['Staff Alias']=='slavka'){
+    $data_contact=array(
+			'Contact Name'=>'Slavka Hardy'
+			,'Contact Main Plain Email'=>'slavka@ancientwisdom.biz'
+			);
+  }if($row['Staff Alias']=='alan'){
+    $data_contact=array(
+			'Contact Name'=>'Mr Alan Wormald'
+			,'Contact Main Plain Email'=>'alan@ancientwisdom.biz'
 			);
   }
 

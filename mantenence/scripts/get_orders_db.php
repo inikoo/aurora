@@ -18,7 +18,7 @@ if (!$con) {
     print "Error can not connect with database server\n";
     exit;
 }
-$dns_db='dw_tmp';
+//$dns_db='dw_tmp';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db) {
     print "Error can not access the database\n";
@@ -1634,6 +1634,15 @@ $data['Order Currency Exchange']=1;
       }
 
       $order=new Order('public_id',$parent_order_id);
+      
+      	if(!$order->id){// try to get last customer order
+	  $customer = new Customer ( 'find', $data['Customer Data'] );
+	  $order_id=$customer->get_last_order();
+	  if($order->id)
+	    print "Using last known customer order to scope the refund\n";
+	}
+      
+
       $order->skip_update_product_sales=true;
       if(!$order->id){
 
@@ -1851,36 +1860,38 @@ $data['Order Currency Exchange']=1;
 		     ,'Delivery Note Shipper Code'=>$header_data['shipper_code'] 
 		     ,'Delivery Note Dispatch Method'=>$data['Delivery Note Dispatch Method']
 		     );
-	
-
-
-	
-
       $parent_order=new Order('public_id',$parent_order_id);
+      if(!$parent_order->id){
+	$customer = new Customer ( 'find', $data['Customer Data'] );
+	$order_id=$customer->get_last_order();
+	 if($order_id){
+	   $parent_order=new Order('id',$order_id);
+	   print "Parent Order not given, using customer last order\n";
+	 }else{
+	   print "Parent order can not be found skipping (Rpl/Sht)\n";
+	   continue;
+	 }
+      }else
+	print "Using given Parent Order\n";
+
+
+
+
       $parent_order->skip_update_product_sales=true;
-
-      if($parent_order->id){
-	print("prevs order found\n");
-
-	//	print_r($data_dn_transactions);
-	$parent_order->load('items');
-
-	
-	$customer=new Customer($parent_order->data['Order Customer Key']);
+      $parent_order->load('items');
+      $customer=new Customer($parent_order->data['Order Customer Key']);
 	// add shipping address if present
-	
-	if($_customer_data['has_shipping']  and isset($data['Shipping Address']) and is_array($data['Shipping Address']) and !array_empty($data['Shipping Address'])){
-	  $ship_to= new Ship_To('find create',$data['Shipping Address']);
-	  $parent_order->data ['Order XHTML Ship Tos'].='<br/>'.$ship_to->data['Ship To XHTML Address'];
-	  $customer->add_ship_to($ship_to->id,'Yes');
-	}
+      if($_customer_data['has_shipping']  and isset($data['Shipping Address']) and is_array($data['Shipping Address']) and !array_empty($data['Shipping Address'])){
+	$ship_to= new Ship_To('find create',$data['Shipping Address']);
+	$parent_order->data ['Order XHTML Ship Tos'].='<br/>'.$ship_to->data['Ship To XHTML Address'];
+	$customer->add_ship_to($ship_to->id,'Yes');
+      }
 
-	//$parent_order->xhtml_billing_address=$customer->get('Customer Main XHTML Address');
-	//$parent_order->ship_to_key=$customer->get('Customer Last Ship To Key');
-	$parent_order->data['Backlog Date']=$date_inv;
-	if($tipo_order==6)
-	  $data_dn['Delivery Note Title']=_('Replacents for Order').' '.$parent_order->data['Order Public ID'];
-	else
+      
+      $parent_order->data['Backlog Date']=$date_inv;
+      if($tipo_order==6)
+	$data_dn['Delivery Note Title']=_('Replacents for Order').' '.$parent_order->data['Order Public ID'];
+      else
 	  $data_dn['Delivery Note Title']=_('Shotages for Order').' '.$parent_order->data['Order Public ID'];
 
 
@@ -1889,23 +1900,7 @@ $data['Order Currency Exchange']=1;
 	
 	
 	//	print_r($parent_order->items);
-      }else{
-       
-	$data['ghost_order']=true;
-	$data['Order Type']='';
-	$data['store_id']=1;
- 
-	$order= new Order('new',$data);
-	$order->skip_update_product_sales=true;
-
-	$dn=new DEliveryNote('create',$data_dn,$data_dn_transactions,$order);
-	
-	//$order->create_replacement_dn_simple($data_dn,$data_dn_transactions,$products_data,$order_type);
-	
-      
-      }
-
-
+    
 
 
       // exit;

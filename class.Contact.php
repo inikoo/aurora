@@ -2978,7 +2978,7 @@ class Contact extends DB_Table {
             return $card;
              
         case('Short Name'):
-            $name=_($this->data['Contact salutation'].' '.$this->data['Contact Surname']);
+            $name=_($this->data['Contact Salutation'].' '.$this->data['Contact Surname']);
             if($name=='')
             $name=$this->name($this->data);
             return $name;
