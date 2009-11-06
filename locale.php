@@ -44,6 +44,7 @@ $_group['4']=_('Export Services');
 $_group['5']=_('Sales Intelligence');
 $_group['6']=_('Human Resources');
 $_group['7']=_('Product Manager');
+$_group['8']=_('Buyer');
 
 $_lang['en']=_('English');
 $_lang['es']=_('Spanish');

@@ -144,13 +144,13 @@ function get_tipo_order($ltipo,$header){
     $tipo=4;
     }elseif(preg_match('/donation/i',$ltipo)){
     $tipo=5; 
-  }elseif(preg_match('/^\s*REPLACEMENT|Replcement|Replacenment|^reemplazo por roturas|^replacement|Damaged item|REPLACMENT|DELIVERY COLLECTION|repplacements|repalcements|Repalcement|Replaceement/i',$ltipo)){
+  }elseif(preg_match('/^\s*REPLACEMENT|Replcement|Replacenment|^reemplazo por roturas|^replacement|REMPLACEMENT|Damaged item|REPLACMENT|DELIVERY COLLECTION|repplacements|repalcements|Repalcement|Replaceement/i',$ltipo)){
     $tipo=6;
   $header['notes']=preg_replace('/^Replacement$/i','',$header['notes']);
   $header['notes2']=preg_replace('/^Replacement$/i','',$header['notes2']);
   $header['notes2']=preg_replace('/^replacement$/i','',_trim($header['notes2']));
 
-}elseif(preg_match('/Damaged Parcel|shotages|MISSING|Missing Parcel|missing\s+\d|^reemplazo por falta|SHORTAHGE|shortages|Missing From Order|missing form order|Mising from|^Missing Item|Missing - Replacement|^Shortage|Lost Parcel/i',$ltipo)){
+}elseif(preg_match('/Damaged Parcel|Produits Manquants|shotages|MISSING|Missing Parcel|missing\s+\d|^reemplazo por falta|SHORTAHGE|shortages|Missing From Order|missing form order|Mising from|^Missing Item|Missing - Replacement|^Shortage|Lost Parcel/i',$ltipo)){
 
     $tipo=7;
   }elseif(preg_match('/^to follow|Follow.On Order/i',$ltipo)){
@@ -187,10 +187,9 @@ function get_tipo_order($ltipo,$header){
   
   $tmp='';
 
-  if(preg_match('/\d{5}/i',$ltipo,$tmp)){
+  if(preg_match('/FR\d{4}/i',$ltipo,$tmp)){
     $parent_id=$tmp[0];
-  }elseif(preg_match('/\d{4}/i',$ltipo[0]))
-     $parent_id=$tmp;
+  }
   
 
   if(($tipo==2 or $tipo==8)  and preg_match('/to follow order no \d{5}/i',$header['notes2'])){

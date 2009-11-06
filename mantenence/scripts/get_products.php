@@ -857,47 +857,43 @@ $price=$cols[7];
 	  $supplier_code='Ackerman';
 	  $the_supplier_data=array(
 				   'Supplier Name'=>'Ackerman Group',
-				   'Supplier Code'=>$supplier_code,
-				   'address_data'=>array(
-							 'type'=>'3line'
-							 ,'address1'=>'Unit 15/16'
-							 ,'address2'=>'Hickman Avenue'
-							 ,'address3'=>''
-							 ,'town'=>'London'
-							 ,'town_d1'=>''
-							 ,'town_d2'=>'Chingford'
-							 ,'country'=>'UK'
-							 ,'country_d1'=>''
-							 ,'country_d2'=>''
-							 ,'default_country_id'=>$myconf['country_id']
-							 ,'postcode'=>'E4 9JG'
-							 ),
-				   'email'=>'office@ackerman.co.uk'
-				   ,'telephone'=>'020 8527 6439'
+				   'Supplier Code'=>$supplier_code
+				   
+				   ,'Supplier Address Line 1'=>'Unit 15/16'
+				   ,'Supplier Address Line 2'=>'Hickman Avenue'
+				   ,'Supplier Address Line 3'=>''
+				   ,'Supplier Address Town'=>'London'
+				   ,'town_d1'=>''
+				   ,'town_d2'=>'Chingford'
+				   ,'Supplier Address Country Name'=>'UK'
+				   ,'country_d1'=>''
+				   ,'country_d2'=>''
+				   ,'Supplier Address Postal Code'=>'E4 9JG'
+				   
+				   ,'Supplier Main Plain Email'=>'office@ackerman.co.uk'
+				   ,'Supplier Main Plain Telephone'=>'020 8527 6439'
 				   );
 	}
 if(preg_match('/^puck$/i',$supplier_code)){
 	  $supplier_code='Puck';
 	  $the_supplier_data=array(
 				   'Supplier Name'=>'Puckator',
-				   'Supplier Code'=>$supplier_code,
-				   'address_data'=>array(
-							 'type'=>'3line'
-							 ,'address1'=>'Lowman Works'
-							 ,'address2'=>''
-							 ,'address3'=>''
-							 ,'town'=>'East Taphouse'
-							 ,'town_d1'=>''
-							 ,'town_d2'=>'Near Liskeard'
-							 ,'country'=>'UK'
-							 ,'country_d1'=>''
-							 ,'country_d2'=>''
-							 ,'default_country_id'=>$myconf['country_id']
-							 ,'postcode'=>'PL14 4NQ'
-							 ),
-				   'email'=>'accounts@puckator.co.uk'
-				   ,'telephone'=>'1579321550'
-				   ,'fax'=>'1579321520'
+				   'Supplier Code'=>$supplier_code
+				   ,'Supplier Address Line 1'=>'Lowman Works'
+				   ,'Supplier Address Line 2'=>''
+				   ,'Supplier Address Line 3'=>''
+				   ,'Supplier Address Town'=>'East Taphouse'
+				   ,'town_d1'=>''
+				   ,'town_d2'=>'Near Liskeard'
+				   ,'Supplier Address Country Name'=>'UK'
+				   ,'country_d1'=>''
+				   ,'country_d2'=>''
+				   ,'default_country_id'=>$myconf['country_id']
+				   ,'Supplier Address Postal Code'=>'PL14 4NQ'
+
+				   ,'Supplier Main Plain Email'=>'accounts@puckator.co.uk'
+				   ,'Supplier Main Plain Telephone'=>'1579321550'
+				   ,'Supplier Main Plain FAX'=>'1579321520'
 				   );
 	}
  
@@ -905,46 +901,45 @@ if(preg_match('/^puck$/i',$supplier_code)){
    $supplier_code='DecGem';
    $the_supplier_data=array(
 			    'Supplier Name'=>'Decent Gemstone Exports',
-			    'Supplier Code'=>$supplier_code,
-			    'address_data'=>array(
-						  'type'=>'3line'
-						  ,'address1'=>"Besides Balaji's Mandir"
-						  ,'address2'=>'Near Rajputwad'
-						  ,'address3'=>''
-						  ,'town'=>'Khambhat'
-						  ,'town_d1'=>''
-						  ,'town_d2'=>''
-						  ,'country'=>'India'
-						  ,'country_d1'=>''
-						  ,'country_d2'=>''
-						  ,'default_country_id'=>$myconf['country_id']
-						  ,'postcode'=>'388620'
-						  ),
-			    'email'=>'decentstone@sancharnet.in'
-			    ,'telephone'=>'00917926578604'
-			    ,'fax'=>'00917926584997'
+			    'Supplier Code'=>$supplier_code
+			  
+					
+			    ,'Supplier Address Line 1'=>"Besides Balaji's Mandir"
+			    ,'Supplier Address Line 2'=>'Near Rajputwad'
+			    ,'Supplier Address Line 3'=>''
+			    ,'Supplier Address Town'=>'Khambhat'
+			    ,'town_d1'=>''
+			    ,'town_d2'=>''
+			    ,'Supplier Address Country Name'=>'India'
+			    ,'country_d1'=>''
+			    ,'country_d2'=>''
+			    ,'default_country_id'=>$myconf['country_id']
+			    ,'Supplier Address Postal Code'=>'388620'
+					
+			    ,'Supplier Main Plain Email'=>'decentstone@sancharnet.in'
+			    ,'Supplier Main Plain Telephone'=>'00917926578604'
+			    ,'Supplier Main Plain FAX'=>'00917926584997'
 			    );
  }
   if(preg_match('/^kiran$/i',$supplier_code)){
 
    $the_supplier_data=array(
 			    'Supplier Name'=>'Kiran Agencies',
-			    'Supplier Code'=>$supplier_code,
-			    'address_data'=>array(
-						  'type'=>'3line'
-						  ,'address1'=>"4D Garstin Place"
-						  ,'address2'=>''
-						  ,'address3'=>''
-						  ,'town'=>'Kolkata'
+			    'Supplier Code'=>$supplier_code
+			   
+						  ,'Supplier Address Line 1'=>"4D Garstin Place"
+						  ,'Supplier Address Line 2'=>''
+						  ,'Supplier Address Line 3'=>''
+						  ,'Supplier Address Town'=>'Kolkata'
 						  ,'town_d1'=>''
 						  ,'town_d2'=>''
-						  ,'country'=>'India'
+						  ,'Supplier Address Country Name'=>'India'
 						  ,'country_d1'=>''
 						  ,'country_d2'=>''
 						  ,'default_country_id'=>$myconf['country_id']
-						  ,'postcode'=>'700001'
-						  )
-			    ,'telephone'=>'919830020595'
+						  ,'Supplier Address Postal Code'=>'700001'
+						  
+			    ,'Supplier Main Plain Telephone'=>'919830020595'
 
 			    );
  }
@@ -954,24 +949,24 @@ if(preg_match('/^watkins$/i',$supplier_code)){
 
    $the_supplier_data=array(
 			    'Supplier Name'=>'Watkins Soap Co Ltd',
-			    'Supplier Code'=>$supplier_code,
-			    'address_data'=>array(
-						  'type'=>'3line'
-						  ,'address1'=>"Reed Willos Trading Est"
-						  ,'address2'=>'Finborough Rd'
-						  ,'address3'=>''
-						  ,'town'=>'Stowmarket'
-						  ,'town_d1'=>''
-						  ,'town_d2'=>''
-						  ,'country'=>'UK'
-						  ,'country_d1'=>''
-						  ,'country_d2'=>''
-						  ,'default_country_id'=>$myconf['country_id']
-						  ,'postcode'=>'IP14 3BU'
-						  )
+			    'Supplier Code'=>$supplier_code
+			  
+			    
+			    ,'Supplier Address Line 1'=>"Reed Willos Trading Est"
+			    ,'Supplier Address Line 2'=>'Finborough Rd'
+			    ,'Supplier Address Line 3'=>''
+			    ,'Supplier Address Town'=>'Stowmarket'
+			    ,'town_d1'=>''
+			    ,'town_d2'=>''
+			    ,'Supplier Address Country Name'=>'UK'
+			    ,'country_d1'=>''
+			    ,'country_d2'=>''
+			    ,'default_country_id'=>$myconf['country_id']
+			    ,'Supplier Address Postal Code'=>'IP14 3BU'
+			    
 
-			    ,'telephone'=>'01142501012'
-			    ,'fax'=>'01142501006'
+			    ,'Supplier Main Plain Telephone'=>'01142501012'
+			    ,'Supplier Main Plain FAX'=>'01142501006'
 			    );
  }
 
@@ -981,25 +976,24 @@ if(preg_match('/^decree$/i',$supplier_code)){
 
    $the_supplier_data=array(
 			    'Supplier Name'=>'Decree Thermo Limited',
-			    'Supplier Code'=>$supplier_code,
-			    'address_data'=>array(
-						  'type'=>'3line'
-						  ,'address1'=>"300 Shalemoor"
-						  ,'address2'=>'Finborough Rd'
-						  ,'address3'=>''
-						  ,'town'=>'Sheffield'
-						  ,'town_d1'=>''
-						  ,'town_d2'=>''
-						  ,'country'=>'UK'
-						  ,'country_d1'=>''
-						  ,'country_d2'=>''
-						  ,'default_country_id'=>$myconf['country_id']
-						  ,'postcode'=>'S3 8AL'
-						  )
-			    ,'contact_name'=>'Zoie'
-			    ,'email'=>'Watkins@soapfactory.fsnet.co.uk'
-			    ,'telephone'=>'01449614445'
-			    ,'fax'=>'014497111643'
+			    'Supplier Code'=>$supplier_code
+			    
+			    ,'Supplier Address Line 1'=>"300 Shalemoor"
+			    ,'Supplier Address Line 2'=>'Finborough Rd'
+			    ,'Supplier Address Line 3'=>''
+			    ,'Supplier Address Town'=>'Sheffield'
+			    ,'town_d1'=>''
+			    ,'town_d2'=>''
+			    ,'Supplier Address Country Name'=>'UK'
+			    ,'country_d1'=>''
+			    ,'country_d2'=>''
+			    ,'default_country_id'=>$myconf['country_id']
+			    ,'Supplier Address Postal Code'=>'S3 8AL'
+			    
+			    ,'Supplier Main Contact Name'=>'Zoie'
+			    ,'Supplier Main Plain Email'=>'Watkins@soapfactory.fsnet.co.uk'
+			    ,'Supplier Main Plain Telephone'=>'01449614445'
+			    ,'Supplier Main Plain FAX'=>'014497111643'
 			    );
  }
 
@@ -1007,25 +1001,24 @@ if(preg_match('/^cbs$/i',$supplier_code)){
 
    $the_supplier_data=array(
 			    'Supplier Name'=>'Carrierbagshop',
-			    'Supplier Code'=>$supplier_code,
-			    'address_data'=>array(
-						  'type'=>'3line'
-						  ,'address1'=>"Unit C18/21"
-						  ,'address2'=>'Hastingwood trading Estate'
-						  ,'address3'=>'35 Harbet Road'
-						  ,'town'=>'London'
-						  ,'town_d1'=>''
-						  ,'town_d2'=>''
-						  ,'country'=>'UK'
-						  ,'country_d1'=>''
-						  ,'country_d2'=>''
-						  ,'default_country_id'=>$myconf['country_id']
-						  ,'postcode'=>'N18 3HU'
-						  )
-			    ,'contact_name'=>'Neil'
-			    ,'email'=>'info@carrierbagshop.co.uk'
-			    ,'telephone'=>'08712300980'
-			    ,'fax'=>'08712300981'
+			    'Supplier Code'=>$supplier_code
+			    
+			    ,'Supplier Address Line 1'=>"Unit C18/21"
+			    ,'Supplier Address Line 2'=>'Hastingwood trading Estate'
+			    ,'Supplier Address Line 3'=>'35 Harbet Road'
+			    ,'Supplier Address Town'=>'London'
+			    ,'town_d1'=>''
+			    ,'town_d2'=>''
+			    ,'Supplier Address Country Name'=>'UK'
+			    ,'country_d1'=>''
+			    ,'country_d2'=>''
+			    ,'default_country_id'=>$myconf['country_id']
+			    ,'Supplier Address Postal Code'=>'N18 3HU'
+			    
+			    ,'Supplier Main Contact Name'=>'Neil'
+			    ,'Supplier Main Plain Email'=>'info@carrierbagshop.co.uk'
+			    ,'Supplier Main Plain Telephone'=>'08712300980'
+			    ,'Supplier Main Plain FAX'=>'08712300981'
 			    );
  }
 
@@ -1034,24 +1027,23 @@ if(preg_match('/^giftw$/i',$supplier_code)){
 
    $the_supplier_data=array(
 			    'Supplier Name'=>'Giftworks Ltd',
-			    'Supplier Code'=>$supplier_code,
-			    'address_data'=>array(
-						  'type'=>'3line'
-						  ,'address1'=>"Unit 14"
-						  ,'address2'=>'Cheddar Bussiness Park'
-						  ,'address3'=>'Wedmore Road'
-						  ,'town'=>'Cheddar'
-						  ,'town_d1'=>''
-						  ,'town_d2'=>''
-						  ,'country'=>'UK'
-						  ,'country_d1'=>''
-						  ,'country_d2'=>''
-						  ,'default_country_id'=>$myconf['country_id']
-						  ,'postcode'=>'BS27 3EB'
-						  )
-			    ,'email'=>'info@giftworks.tv'
-			    ,'telephone'=>'441934742777'
-			    ,'fax'=>'441934740033'
+			    'Supplier Code'=>$supplier_code
+			  
+			    ,'Supplier Address Line 1'=>"Unit 14"
+			    ,'Supplier Address Line 2'=>'Cheddar Bussiness Park'
+			    ,'Supplier Address Line 3'=>'Wedmore Road'
+			    ,'Supplier Address Town'=>'Cheddar'
+			    ,'town_d1'=>''
+			    ,'town_d2'=>''
+			    ,'Supplier Address Country Name'=>'UK'
+			    ,'country_d1'=>''
+			    ,'country_d2'=>''
+			    ,'default_country_id'=>$myconf['country_id']
+			    ,'Supplier Address Postal Code'=>'BS27 3EB'
+						
+			    ,'Supplier Main Plain Email'=>'info@giftworks.tv'
+			    ,'Supplier Main Plain Telephone'=>'441934742777'
+			    ,'Supplier Main Plain FAX'=>'441934740033'
 			    ,'www.giftworks.tv'
 			    );
  }
@@ -1061,21 +1053,20 @@ if(preg_match('/^giftw$/i',$supplier_code)){
 	  $supplier_code='Sheikh';
 	  $the_supplier_data=array(
 				   'Supplier Name'=>'Sheikh Enterprises',
-				   'Supplier Code'=>$supplier_code,
-				   'address_data'=>array(
-							 'type'=>'3line'
-							 ,'address1'=>"Eidgah Road"
-							 ,'address2'=>'Opp. Islamia Inter College'
-							 ,'address3'=>''
-							 ,'town'=>'Saharanpur'
+				   'Supplier Code'=>$supplier_code
+				
+							 ,'Supplier Address Line 1'=>"Eidgah Road"
+							 ,'Supplier Address Line 2'=>'Opp. Islamia Inter College'
+							 ,'Supplier Address Line 3'=>''
+							 ,'Supplier Address Town'=>'Saharanpur'
 							 ,'town_d1'=>''
 							 ,'town_d2'=>''
-							 ,'country'=>'India'
+							 ,'Supplier Address Country Name'=>'India'
 							 ,'country_d1'=>''
 							 ,'country_d2'=>''
 							 ,'default_country_id'=>$myconf['country_id']
-							 ,'postcode'=>'247001'
-							 )
+							 ,'Supplier Address Postal Code'=>'247001'
+						
 
 				   );
 	}
@@ -1083,22 +1074,21 @@ if(preg_match('/^Gopal$/i',$supplier_code)){
 	  $supplier_code='Gopal';
 	  $the_supplier_data=array(
 				   'Supplier Name'=>'Gopal Corporation Limited',
-				   'Supplier Code'=>$supplier_code,
-				   'address_data'=>array(
-							 'type'=>'3line'
-							 ,'address1'=>"240 Okhla Industrial Estate"
-							 ,'address2'=>'Phase III'
-							 ,'address3'=>''
-							 ,'town'=>'New Delhi'
-							 ,'town_d1'=>''
-							 ,'town_d2'=>''
-							 ,'country'=>'India'
-							 ,'country_d1'=>''
-							 ,'country_d2'=>''
-							 ,'default_country_id'=>$myconf['country_id']
-							 ,'postcode'=>'110020'
-							 )
-				   ,'telephone'=>'00911126320185'
+				   'Supplier Code'=>$supplier_code
+				  
+				   ,'Supplier Address Line 1'=>"240 Okhla Industrial Estate"
+				   ,'Supplier Address Line 2'=>'Phase III'
+				   ,'Supplier Address Line 3'=>''
+				   ,'Supplier Address Town'=>'New Delhi'
+				   ,'town_d1'=>''
+				   ,'town_d2'=>''
+				   ,'Supplier Address Country Name'=>'India'
+				   ,'country_d1'=>''
+				   ,'country_d2'=>''
+				   ,'default_country_id'=>$myconf['country_id']
+				   ,'Supplier Address Postal Code'=>'110020'
+
+				   ,'Supplier Main Plain Telephone'=>'00911126320185'
 				   );
 	}
 
@@ -1106,25 +1096,24 @@ if(preg_match('/^Gopal$/i',$supplier_code)){
 	  $supplier_code='CraftS';
 	  $the_supplier_data=array(
 				   'Supplier Name'=>'Craftstones Europe Ltd',
-				   'Supplier Code'=>$supplier_code,
-				   'address_data'=>array(
-							 'type'=>'3line'
-							 ,'address1'=>"52/54 Homethorphe Avenue"
-							 ,'address2'=>'Homethorphe Ind. Estate'
-							 ,'address3'=>''
-							 ,'town'=>'Redhill'
+				   'Supplier Code'=>$supplier_code
+				  
+							 ,'Supplier Address Line 1'=>"52/54 Homethorphe Avenue"
+							 ,'Supplier Address Line 2'=>'Homethorphe Ind. Estate'
+							 ,'Supplier Address Line 3'=>''
+							 ,'Supplier Address Town'=>'Redhill'
 							 ,'town_d1'=>''
 							 ,'town_d2'=>''
-							 ,'country'=>'UK'
+							 ,'Supplier Address Country Name'=>'UK'
 							 ,'country_d1'=>''
 							 ,'country_d2'=>''
 							 ,'default_country_id'=>$myconf['country_id']
-							 ,'postcode'=>'RH1 2NL'
-							 ),
-				   'contact_name'=>'Jose'
+							 ,'Supplier Address Postal Code'=>'RH1 2NL'
+						
+				   ,'Supplier Main Contact Name'=>'Jose'
 
-				   ,'telephone'=>'01737767363'
-				   ,'fax'=>'01737768627'
+				   ,'Supplier Main Plain Telephone'=>'01737767363'
+				   ,'Supplier Main Plain FAX'=>'01737768627'
 				   );
 	}
 
@@ -1132,26 +1121,25 @@ if(preg_match('/^Gopal$/i',$supplier_code)){
 	  $supplier_code='CraftS';
 	  $the_supplier_data=array(
 				   'Supplier Name'=>'Simpson Packaging',
-				   'Supplier Code'=>$supplier_code,
-				   'address_data'=>array(
-							 'type'=>'3line'
-							 ,'address1'=>"Unit 1"
-							 ,'address2'=>'Shaw Cross Business Park'
-							 ,'address3'=>''
-							 ,'town'=>'Dewsbury'
+				   'Supplier Code'=>$supplier_code
+				  
+							 ,'Supplier Address Line 1'=>"Unit 1"
+							 ,'Supplier Address Line 2'=>'Shaw Cross Business Park'
+							 ,'Supplier Address Line 3'=>''
+							 ,'Supplier Address Town'=>'Dewsbury'
 							 ,'town_d1'=>''
 							 ,'town_d2'=>''
-							 ,'country'=>'UK'
+							 ,'Supplier Address Country Name'=>'UK'
 							 ,'country_d1'=>''
 							 ,'country_d2'=>''
 							 ,'default_country_id'=>$myconf['country_id']
-							 ,'postcode'=>'WF12 7RF'
-							 ),
+							 ,'Supplier Address Postal Code'=>'WF12 7RF'
+						
 
-				   'email'=>'sales@simpson-packaging.co.uk'
-				   ,'telephone'=>'01924869010'
-				   ,'fax'=>'01924439252'
-				   ,'www'=>'wwww.simpson-packaging.co.uk'
+				   ,'Supplier Main Plain Email'=>'sales@simpson-packaging.co.uk'
+				   ,'Supplier Main Plain Telephone'=>'01924869010'
+				   ,'Supplier Main Plain FAX'=>'01924439252'
+				   ,'Supplier Main Web Site'=>'wwww.simpson-packaging.co.uk'
 				   );
 	}
 
@@ -1161,26 +1149,25 @@ if(preg_match('/^Gopal$/i',$supplier_code)){
 	  $supplier_code='AmAnis';
 	  $the_supplier_data=array(
 				   'Supplier Name'=>'Amanis',
-				   'Supplier Code'=>$supplier_code,
-				   'address_data'=>array(
-							 'type'=>'3line'
-							 ,'address1'=>"Unit 6"
-							 ,'address2'=>'Bowlimng Court Industrial Estate'
-							 ,'address3'=>'Mary Street'
-							 ,'town'=>'Bradford'
+				   'Supplier Code'=>$supplier_code
+				   
+							 ,'Supplier Address Line 1'=>"Unit 6"
+							 ,'Supplier Address Line 2'=>'Bowlimng Court Industrial Estate'
+							 ,'Supplier Address Line 3'=>'Mary Street'
+							 ,'Supplier Address Town'=>'Bradford'
 							 ,'town_d1'=>''
 							 ,'town_d2'=>''
-							 ,'country'=>'UK'
+							 ,'Supplier Address Country Name'=>'UK'
 							 ,'country_d1'=>''
 							 ,'country_d2'=>''
 							 ,'default_country_id'=>$myconf['country_id']
-							 ,'postcode'=>'BD4 8TT'
-							 ),
+							 ,'Supplier Address Postal Code'=>'BD4 8TT'
+						
 
-				   'email'=>'saltlamps@aol.com'
-				   ,'telephone'=>'4401274394100'
-				   ,'fax'=>'4401274743243'
-				   ,'www'=>'www.saltlamps-r-us.com'
+							 ,'Supplier Main Plain Email'=>'saltlamps@aol.com'
+				   ,'Supplier Main Plain Telephone'=>'4401274394100'
+				   ,'Supplier Main Plain FAX'=>'4401274743243'
+				   ,'Supplier Main Web Site'=>'www.saltlamps-r-us.com'
 				   );
 	}
 
@@ -1189,26 +1176,24 @@ if(preg_match('/^amanis$/i',$supplier_code)){
 	  $supplier_code='AmAnis';
 	  $the_supplier_data=array(
 				   'Supplier Name'=>'Amanis',
-				   'Supplier Code'=>$supplier_code,
-				   'address_data'=>array(
-							 'type'=>'3line'
-							 ,'address1'=>"Unit 6"
-							 ,'address2'=>'Bowlimng Court Industrial Estate'
-							 ,'address3'=>'Mary Street'
-							 ,'town'=>'Bradford'
+				   'Supplier Code'=>$supplier_code
+				  
+							 ,'Supplier Address Line 1'=>"Unit 6"
+							 ,'Supplier Address Line 2'=>'Bowlimng Court Industrial Estate'
+							 ,'Supplier Address Line 3'=>'Mary Street'
+							 ,'Supplier Address Town'=>'Bradford'
 							 ,'town_d1'=>''
 							 ,'town_d2'=>''
-							 ,'country'=>'UK'
+							 ,'Supplier Address Country Name'=>'UK'
 							 ,'country_d1'=>''
 							 ,'country_d2'=>''
 							 ,'default_country_id'=>$myconf['country_id']
-							 ,'postcode'=>'BD4 8TT'
-							 ),
-
-				   'email'=>'saltlamps@aol.com'
-				   ,'telephone'=>'4401274394100'
-				   ,'fax'=>'4401274743243'
-				   ,'www'=>'www.saltlamps-r-us.com'
+							 ,'Supplier Address Postal Code'=>'BD4 8TT'
+					
+				   ,'Supplier Main Plain Email'=>'saltlamps@aol.com'
+				   ,'Supplier Main Plain Telephone'=>'4401274394100'
+				   ,'Supplier Main Plain FAX'=>'4401274743243'
+				   ,'Supplier Main Web Site'=>'www.saltlamps-r-us.com'
 				   );
 	}
 
@@ -1217,25 +1202,24 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 	  $supplier_code='Wenzels';
 	  $the_supplier_data=array(
 				   'Supplier Name'=>'Richard Wenzel GMBH & CO KG',
-				   'Supplier Code'=>$supplier_code,
-				   'address_data'=>array(
-							 'type'=>'3line'
-							 ,'address1'=>"Benzstraße 5"
-							 ,'address2'=>''
-							 ,'address3'=>''
-							 ,'town'=>'Aschaffenburg'
+				   'Supplier Code'=>$supplier_code
+				 
+							 ,'Supplier Address Line 1'=>"Benzstraße 5"
+							 ,'Supplier Address Line 2'=>''
+							 ,'Supplier Address Line 3'=>''
+							 ,'Supplier Address Town'=>'Aschaffenburg'
 							 ,'town_d1'=>''
 							 ,'town_d2'=>''
-							 ,'country'=>'Germany'
+							 ,'Supplier Address Country Name'=>'Germany'
 							 ,'country_d1'=>''
 							 ,'country_d2'=>''
 							 ,'default_country_id'=>$myconf['country_id']
-							 ,'postcode'=>'63741'
-							 ),
+							 ,'Supplier Address Postal Code'=>'63741'
+						
 
 
-				   'telephone'=>'49602134690'
-				   ,'fax'=>'496021346940'
+							 ,'Supplier Main Plain Telephone'=>'49602134690'
+				   ,'Supplier Main Plain FAX'=>'496021346940'
 
 				   );
 	}
@@ -1245,23 +1229,22 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 	  $supplier_code='AW';
 	  $the_supplier_data=array(
 				   'Supplier Name'=>'Ancient Wisdom Marketing',
-				   'Supplier Code'=>$supplier_code,
-				   'address_data'=>array(
-							 'type'=>'3line'
-							 ,'address1'=>'Block B'
-							 ,'address2'=>'Parkwood Business Park'
-							 ,'address3'=>'Parkwood Road'
-							 ,'town'=>'Sheffield'
+				   'Supplier Code'=>$supplier_code
+				   
+							 ,'Supplier Address Line 1'=>'Block B'
+							 ,'Supplier Address Line 2'=>'Parkwood Business Park'
+							 ,'Supplier Address Line 3'=>'Parkwood Road'
+							 ,'Supplier Address Town'=>'Sheffield'
 							 ,'town_d1'=>''
 							 ,'town_d2'=>''
-							 ,'country'=>'UK'
+							 ,'Supplier Address Country Name'=>'UK'
 							 ,'country_d1'=>''
 							 ,'country_d2'=>''
 							 ,'default_country_id'=>$myconf['country_id']
-							 ,'postcode'=>'S3 8AL'
-							 ),
-				   'email'=>'mail@ancientwisdom.biz'
-				   ,'telephone'=>'44 (0)114 2729165'
+							 ,'Supplier Address Postal Code'=>'S3 8AL'
+						
+							 ,'Supplier Main Plain Email'=>'mail@ancientwisdom.biz'
+				   ,'Supplier Main Plain Telephone'=>'44 (0)114 2729165'
 
 				   );
 	}
@@ -1272,24 +1255,24 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 	  $the_supplier_data=array(
 				   'Supplier Name'=>'Elements Bodycare Ltd'
 				   ,'Supplier Code'=>$supplier_code
-				   ,'address_data'=>array(
-							 'type'=>'3line'
-							 ,'address1'=>'Unit 2'
-							 ,'address2'=>'Carbrook Bussiness Park'
-							 ,'address3'=>'Dunlop Street'
-							 ,'town'=>'Sheffield'
+				 
+						
+							 ,'Supplier Address Line 1'=>'Unit 2'
+							 ,'Supplier Address Line 2'=>'Carbrook Bussiness Park'
+							 ,'Supplier Address Line 3'=>'Dunlop Street'
+							 ,'Supplier Address Town'=>'Sheffield'
 							 ,'town_d1'=>''
 							 ,'town_d2'=>''
-							 ,'country'=>'UK'
+							 ,'Supplier Address Country Name'=>'UK'
 							 ,'country_d1'=>''
 							 ,'country_d2'=>''
 							 ,'default_country_id'=>$myconf['country_id']
-							 ,'postcode'=>'S9 2HR'
-							 )
+							 ,'Supplier Address Postal Code'=>'S9 2HR'
+						
 
-				   ,'telephone'=>'011422434000'
-				   ,'www'=>'www.elements-bodycare.co.uk'
-				   ,'email'=>'info@elements-bodycare.co.uk'
+				   ,'Supplier Main Plain Telephone'=>'011422434000'
+				   ,'Supplier Main Web Site'=>'www.elements-bodycare.co.uk'
+				   ,'Supplier Main Plain Email'=>'info@elements-bodycare.co.uk'
 
 				   );
 	}
@@ -1299,22 +1282,21 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 	  $the_supplier_data=array(
 				   'Supplier Name'=>'Paradise Music Ltd'
 				   ,'Supplier Code'=>$supplier_code
-				   ,'address_data'=>array(
-							 'type'=>'3line'
-							 ,'address1'=>'PO BOX 998'
-							 ,'address2'=>'Carbrook Bussiness Park'
-							 ,'address3'=>'Dunlop Street'
-							 ,'town'=>'Tring'
+				  
+							 ,'Supplier Address Line 1'=>'PO BOX 998'
+							 ,'Supplier Address Line 2'=>'Carbrook Bussiness Park'
+							 ,'Supplier Address Line 3'=>'Dunlop Street'
+							 ,'Supplier Address Town'=>'Tring'
 							 ,'town_d1'=>''
 							 ,'town_d2'=>''
-							 ,'country'=>'UK'
+							 ,'Supplier Address Country Name'=>'UK'
 							 ,'country_d1'=>''
 							 ,'country_d2'=>''
 							 ,'default_country_id'=>$myconf['country_id']
-							 ,'postcode'=>'HP23 4ZJ'
-							 )
+							 ,'Supplier Address Postal Code'=>'HP23 4ZJ'
+						
 
-				   ,'telephone'=>'01296668193'
+				   ,'Supplier Main Plain Telephone'=>'01296668193'
 
 
 				   );
@@ -1324,24 +1306,23 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 	  $the_supplier_data=array(
 				   'Supplier Name'=>'Manchester Candle Company'
 				   ,'Supplier Code'=>$supplier_code
-				   ,'address_data'=>array(
-							 'type'=>'3line'
-							 ,'address1'=>'The Manchester Group'
-							 ,'address2'=>'Kenwood Road'
-							 ,'address3'=>''
-							 ,'town'=>'North Reddish'
+				   
+							 ,'Supplier Address Line 1'=>'The Manchester Group'
+							 ,'Supplier Address Line 2'=>'Kenwood Road'
+							 ,'Supplier Address Line 3'=>''
+							 ,'Supplier Address Town'=>'North Reddish'
 							 ,'town_d1'=>''
 							 ,'town_d2'=>''
-							 ,'country'=>'UK'
+							 ,'Supplier Address Country Name'=>'UK'
 							 ,'country_d1'=>''
 							 ,'country_d2'=>''
 							 ,'default_country_id'=>$myconf['country_id']
-							 ,'postcode'=>'SK5 6PH'
-							 )
-				   ,'contact_name'=>'Brian'
-				   ,'telephone'=>'01614320811'
-				   ,'fax'=>'01614310328'
-				   ,'www'=>'manchestercandle.com'
+							 ,'Supplier Address Postal Code'=>'SK5 6PH'
+						
+				   ,'Supplier Main Contact Name'=>'Brian'
+				   ,'Supplier Main Plain Telephone'=>'01614320811'
+				   ,'Supplier Main Plain FAX'=>'01614310328'
+				   ,'Supplier Main Web Site'=>'manchestercandle.com'
 
 				   );
 	}
@@ -1350,25 +1331,24 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 	  $the_supplier_data=array(
 				   'Supplier Name'=>'Aquavision Music Ltd'
 				   ,'Supplier Code'=>$supplier_code
-				   ,'address_data'=>array(
-							 'type'=>'3line'
-							 ,'address1'=>'PO BOX 2796'
-							 ,'address2'=>''
-							 ,'address3'=>''
-							 ,'town'=>'Iver'
+				   
+							 ,'Supplier Address Line 1'=>'PO BOX 2796'
+							 ,'Supplier Address Line 2'=>''
+							 ,'Supplier Address Line 3'=>''
+							 ,'Supplier Address Town'=>'Iver'
 							 ,'town_d1'=>''
 							 ,'town_d2'=>''
-							 ,'country'=>'UK'
+							 ,'Supplier Address Country Name'=>'UK'
 							 ,'country_d1'=>''
 							 ,'country_d2'=>''
 							 ,'default_country_id'=>$myconf['country_id']
-							 ,'postcode'=>'SL0 9ZR'
-							 )
+							 ,'Supplier Address Postal Code'=>'SL0 9ZR'
+						
 
-				   ,'telephone'=>'01753653188'
-				   ,'fax'=>'01753655059'
-				   ,'www'=>'www.aquavisionwholesale.co.uk'
-				   ,'email'=>'info@aquavisionwholesale.co.uk'
+				   ,'Supplier Main Plain Telephone'=>'01753653188'
+				   ,'Supplier Main Plain FAX'=>'01753655059'
+				   ,'Supplier Main Web Site'=>'www.aquavisionwholesale.co.uk'
+				   ,'Supplier Main Plain Email'=>'info@aquavisionwholesale.co.uk'
 				   );
 	}
 
@@ -1377,23 +1357,21 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 	  $the_supplier_data=array(
 				   'Supplier Name'=>'CXD Designs Ltd'
 				   ,'Supplier Code'=>$supplier_code
-				   ,'address_data'=>array(
-							 'type'=>'3line'
-							 ,'address1'=>'Unit 2'
-							 ,'address2'=>'Imperial Park'
-							 ,'address3'=>'Towerfiald Road'
-							 ,'town'=>'Shoeburyness'
+				   
+							 ,'Supplier Address Line 1'=>'Unit 2'
+							 ,'Supplier Address Line 2'=>'Imperial Park'
+							 ,'Supplier Address Line 3'=>'Towerfiald Road'
+							 ,'Supplier Address Town'=>'Shoeburyness'
 							 ,'town_d1'=>''
 							 ,'town_d2'=>''
-							 ,'country'=>'UK'
+							 ,'Supplier Address Country Name'=>'UK'
 							 ,'country_d1'=>'Essex'
 							 ,'country_d2'=>''
 							 ,'default_country_id'=>$myconf['country_id']
-							 ,'postcode'=>'SS3 9QT'
-							 )
-
-				   ,'telephone'=>'01702292028'
-				   ,'fax'=>'01702298486'
+							 ,'Supplier Address Postal Code'=>'SS3 9QT'
+						
+				   ,'Supplier Main Plain Telephone'=>'01702292028'
+				   ,'Supplier Main Plain FAX'=>'01702298486'
 
 				   );
 	}
@@ -1402,23 +1380,22 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 	  $the_supplier_data=array(
 				   'Supplier Name'=>'Costa Imports'
 				   ,'Supplier Code'=>$supplier_code
-				   ,'address_data'=>array(
-							 'type'=>'3line'
-							 ,'address1'=>'Nave 8'
-							 ,'address2'=>'Polígono Ind. Alhaurín de la Torre Fase 1'
-							 ,'address3'=>'Paseo de la Hispanidad'
-							 ,'town'=>'Málaga'
+				 
+							 ,'Supplier Address Line 1'=>'Nave 8'
+							 ,'Supplier Address Line 2'=>'Polígono Ind. Alhaurín de la Torre Fase 1'
+							 ,'Supplier Address Line 3'=>'Paseo de la Hispanidad'
+							 ,'Supplier Address Town'=>'Málaga'
 							 ,'town_d1'=>''
 							 ,'town_d2'=>''
-							 ,'country'=>'Spain'
+							 ,'Supplier Address Country Name'=>'Spain'
 							 ,'country_d1'=>''
 							 ,'country_d2'=>''
 							 ,'default_country_id'=>$myconf['country_id']
-							 ,'postcode'=>'29130'
-							 )
-				   ,'contact_name'=>'Carlos'
-				   ,'email'=>'carlos@aw-regalos.com'
-				   ,'telephone'=>'(+34) 952 417 609'
+							 ,'Supplier Address Postal Code'=>'29130'
+						
+				   ,'Supplier Main Contact Name'=>'Carlos'
+				   ,'Supplier Main Plain Email'=>'carlos@aw-regalos.com'
+				   ,'Supplier Main Plain Telephone'=>'(+34) 952 417 609'
 				   );
 	}
 
@@ -1427,23 +1404,19 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 	  $the_supplier_data=array(
 				   'Supplier Name'=>'Salco Group'
 				   ,'Supplier Code'=>$supplier_code
-				   ,'address_data'=>array(
-							 'type'=>'3line'
-							 ,'address1'=>'Salco House'
-							 ,'address2'=>'5 Central Road'
-							 ,'address3'=>''
-							 ,'town'=>'Harlow'
-							 ,'town_d1'=>''
-							 ,'town_d2'=>''
-							 ,'country'=>'UK'
-							 ,'country_d1'=>'Essex'
-							 ,'country_d2'=>''
-							 ,'default_country_id'=>$myconf['country_id']
-							 ,'postcode'=>'CM20 2ST'
-							 )
-				   //				   ,'contact_name'=>'Carlos'
-				   ,'email'=>'alco@salcogroup.com'
-				   ,'telephone'=>'01279 439991'
+				   ,'Supplier Address Line 1'=>'Salco House'
+				   ,'Supplier Address Line 2'=>'5 Central Road'
+				   ,'Supplier Address Line 3'=>''
+				   ,'Supplier Address Town'=>'Harlow'
+				   ,'town_d1'=>''
+				   ,'town_d2'=>''
+				   ,'Supplier Address Country Name'=>'UK'
+				   ,'country_d1'=>'Essex'
+				   ,'country_d2'=>''
+				   ,'default_country_id'=>$myconf['country_id']
+				   ,'Supplier Address Postal Code'=>'CM20 2ST'
+				   ,'Supplier Main Plain Email'=>'alco@salcogroup.com'
+				   ,'Supplier Main Plain Telephone'=>'01279 439991'
 				   );
 	}
 	if(preg_match('/^(apac)$/i',$supplier_code)){
@@ -1451,25 +1424,21 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 	  $the_supplier_data=array(
 				   'Supplier Name'=>'APAC Packaging Ltd'
 				   ,'Supplier Code'=>$supplier_code
-				   ,'address_data'=>array(
-							 'type'=>'3line'
-							 ,'address1'=>'Loughborough Road'
-							 ,'address2'=>''
-							 ,'address3'=>''
-							 ,'town'=>'Leicester'
-							 ,'town_d1'=>'Rothley'
-							 ,'town_d2'=>''
-							 ,'country'=>'UK'
-							 ,'country_d1'=>''
-							 ,'country_d2'=>''
-							 ,'default_country_id'=>$myconf['country_id']
-							 ,'postcode'=>'LE7 7NL'
-							 )
-				   //				   ,'contact_name'=>'Carlos'
-				   ,'email'=>''
-				   ,'telephone'=>'0116 230 2555'
-				   ,'www'=>'www.apacpackaging.com'
-				   ,'fax'=>'0116 230 3555'
+				   ,'Supplier Address Line 1'=>'Loughborough Road'
+				   ,'Supplier Address Line 2'=>''
+				   ,'Supplier Address Line 3'=>''
+				   ,'Supplier Address Town'=>'Leicester'
+				   ,'town_d1'=>'Rothley'
+				   ,'town_d2'=>''
+				   ,'Supplier Address Country Name'=>'UK'
+				   ,'country_d1'=>''
+				   ,'country_d2'=>''
+				   ,'default_country_id'=>$myconf['country_id']
+				   ,'Supplier Address Postal Code'=>'LE7 7NL'
+				   ,'Supplier Main Plain Email'=>''
+				   ,'Supplier Main Plain Telephone'=>'0116 230 2555'
+				   ,'Supplier Main Web Site'=>'www.apacpackaging.com'
+				   ,'Supplier Main Plain FAX'=>'0116 230 3555'
 				   );
 	}
 	if(preg_match('/^(andy.*?)$/i',$supplier_code)){

@@ -107,7 +107,7 @@ $fam_promo_key=$fam_promo->id;
 
 
 
-$sql="select * from  de_orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed)  order by filename  ";
+$sql="select * from  de_orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'  order by filename  ";
 //$sql="select * from  de_orders_data.orders where filename like '%refund.xls'   order by filename";
 //$sql="select * from  de_orders_data.orders  where filename like '/mnt/%DE0071.xls'  order by filename";
 
@@ -1333,12 +1333,6 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       // 4 SAMPLE
       // 5 donation
 	// 8 follow on
-    
-  
-	
-	
-	
-      
 	if($tipo_order==1 or $tipo_order==2 or  $tipo_order==3  )
 	  $data['Order Type']='Order';
 	else if($tipo_order==4)
@@ -1441,7 +1435,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	    foreach($credits as $credit){
 	  
 	      //	  print_r($header_2data);
-	      $sql=sprintf("insert into `Order No Product Transaction Fact` values  (%s,%s,%s,%s,'Credit',%s,%.2f,%.2f,'%s',%f,%s)"
+	      $sql=sprintf("insert into `Order No Product Transaction Fact` values  (%s,%s,%s,%s,'Credit',%s,%.2f,%.2f,%s,%f,%s)"
 			   ,prepare_mysql($credit['parent_date'])
 			   ,prepare_mysql($invoice->data['Invoice Date'])
 			   ,$credit['parent_key']
@@ -1449,7 +1443,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 			   ,prepare_mysql($credit['description'])
 			   ,$credit['value']
 			   ,$tax_rate*$credit['value']
-			   ,$currency
+			   ,prepare_mysql($currency)
 			   ,$exchange
 			   ,prepare_mysql($store_code.$order_data_id)
 			   );
@@ -1464,11 +1458,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 		//   print "******************************************\n$sql\n";
 		// 	    exit;
 	      }
-	  
 	    }
-
-	
-
 	  }
 	  $dn->pick_simple($data_dn_transactions);
 	  $order->update_dispatch_state('Ready to Pack');
@@ -1489,7 +1479,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	  $order->update_dispatch_state('Dispached');
 
 	  $order->load('totals');
-
+	  $invoice->categorize('save');
 
 
 
@@ -1499,9 +1489,6 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	  if(!$parent_order->id){
 	    // try to get same customer last order
 	    $customer = new Customer ( 'find', $data['Customer Data'] );
-	    //print_r($data['Customer Data']);
-	    
-	    //exit("aaaa sadkjslk");
 	    $order_id=$customer->get_last_order();
 	    if($order_id){
 	       $parent_order=new Order('id',$order_id);
@@ -1609,9 +1596,8 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	  $parent_order-> update_payment_state('Paid');
 	  }
 	  
- $dn->dispatch('all',$data_dn_transactions);
+	  $dn->dispatch('all',$data_dn_transactions);
 	  $parent_order->update_dispatch_state('Dispached');
-
 	  $parent_order->load('totals');
 
 	
@@ -1819,6 +1805,16 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	}
 
 	$order=new Order('public_id',$parent_order_id);
+
+	if(!$order->id){// try to get last customer order
+	  $customer = new Customer ( 'find', $data['Customer Data'] );
+	  $order_id=$customer->get_last_order();
+	  if($order->id)
+	    print "Using last known customer order to scope the refund\n";
+	}
+
+	
+
 	if(!$order->id){
 
 	  print "Unknown parent $parent_order_id\n";
@@ -2001,15 +1997,12 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	mysql_query($sql);
     
       }elseif($tipo_order==6 or $tipo_order==7 ){
-	if($tipo_order==6)
-	  $order_type='Replacement';
+      if($tipo_order==6)
+	$order_type='Replacement';
+      else
+	$order_type='Shortages';
 
-	else
-	  $order_type='Shortages';
-
-
-
-	//	print("$order_type  $parent_order_id\n");
+      print("$order_type\n");
 
       	if(!is_numeric($header_data['weight']))
 	  $weight=$estimated_w;
@@ -2019,8 +2012,8 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
 	$picker_data=get_user_id($header_data['pickedby'],true,'&view=picks');
 	$packer_data=get_user_id($header_data['packedby'],true,'&view=packs');
-	
-	// 	print_r($picker_data);
+
+// 	print_r($picker_data);
 
 	$data_dn=array(
 		       'Delivery Note Date'=>$date_inv
@@ -2040,56 +2033,51 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 		       ,'Delivery Note Shipper Code'=>$header_data['shipper_code']  
 		       ,'Delivery Note Dispatch Method'=>$data['Delivery Note Dispatch Method']
 		       );
-	
 
-
-	;
-
-	$parent_order=new Order('public_id',$parent_order_id);
-	if($parent_order->id){
-	  print("prevs order found\n");
-
-	  //	print_r($data_dn_transactions);
-	  $parent_order->load('items');
-
-	
-	  $customer=new Customer($parent_order->data['Order Customer Key']);
-	  //$parent_order->xhtml_billing_address=$customer->get('Customer Main XHTML Address');
-	  //$parent_order->ship_to_key=$customer->get('Customer Last Ship To Key');
-	  $parent_order->data['Backlog Date']=$date_inv;
-	  if($tipo_order==6)
-	    $data_dn['Delivery Note Title']=_('Replacents for Order').' '.$parent_order->data['Order Public ID'];
-	  else
-	    $data_dn['Delivery Note Title']=_('Shotages for Order').' '.$parent_order->data['Order Public ID'];
-
-
-	  //$parent_order->create_replacement_dn_simple($data_dn,$data_dn_transactions,$products_data,$order_type);
-	  $dn=new DEliveryNote('create',$data_dn,$data_dn_transactions,$parent_order);
-	
-	
-	  //	print_r($parent_order->items);
-	}else{
-	  
-	  
- 
-	  $order= new Order('new',$data);
-	  $dn=new DEliveryNote('create',$data_dn,$data_dn_transactions,$order);
-	
-	  //$order->create_replacement_dn_simple($data_dn,$data_dn_transactions,$products_data,$order_type);
-	
-      
-	}
-	// exit;
-      
-	$sql="update de_orders_data.orders set last_transcribed=NOW() where id=".$order_data_id;
-	mysql_query($sql);
-      }
+      $parent_order=new Order('public_id',$parent_order_id);
 
    
+      if(!$parent_order->id){
+	$customer = new Customer ( 'find', $data['Customer Data'] );
+	$order_id=$customer->get_last_order();
+	 if($order_id){
+	   $parent_order=new Order('id',$order_id);
+	   print "Parent Order not given, using customer last order\n";
+	 }else{
+	   print "Parent order can not be found skipping (Rpl/Sht)\n";
+	   continue;
+	 }
+      }else
+	print "Using given Parent Order\n";
+      
+      
+      $parent_order->load('items');
+      $customer=new Customer($parent_order->data['Order Customer Key']);
+      if($_customer_data['has_shipping']  and isset($data['Shipping Address']) and is_array($data['Shipping Address']) and !array_empty($data['Shipping Address'])){
+	$ship_to= new Ship_To('find create',$data['Shipping Address']);
+	$parent_order->data ['Order XHTML Ship Tos'].='<br/>'.$ship_to->data['Ship To XHTML Address'];
+	$customer->add_ship_to($ship_to->id,'Yes');
+      }
+      
+
+      $parent_order->data['Backlog Date']=$date_inv;
+      if($tipo_order==6)
+	  $data_dn['Delivery Note Title']=_('Replacents for Order').' '.$parent_order->data['Order Public ID'];
+	else
+	  $data_dn['Delivery Note Title']=_('Shotages for Order').' '.$parent_order->data['Order Public ID'];
+	$dn=new DEliveryNote('create',$data_dn,$data_dn_transactions,$parent_order);
+    
+      
+	$sql="update fr_orders_data.orders set last_transcribed=NOW() where id=".$order_data_id;
+	mysql_query($sql);
     }
-  }
+
+   
+  }mysql_free_result($result);
+}
+mysql_free_result($res);
 
   
-  //  print_r($data);
-  //print "\n$tipo_order\n";
-  ?>
+//  print_r($data);
+//print "\n$tipo_order\n";
+?>

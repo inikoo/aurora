@@ -92,7 +92,7 @@ foreach($orders_array as $order_index=>$order){
 
 
 foreach($orders_array as $order_index=>$order){
-  if(preg_match('/^\d{4,5}r$|^\d{4,5}ref$|^\d{4,5}\s?refund$|^\d{4,5}rr$|^\d{4,5}ra$|^\d{4,5}r2$|^\d{4,5}\-2ref$|^\d{5}rpl$|^\d{5}sht?$|^\d{5}rfn$/i',$order)){
+  if(preg_match('/^FR\d{4,5}r$|^FR\d{4,5}ref$|^FR\d{4,5}\s?refund$|^FR\d{4,5}rr$|^FR\d{4,5}ra$|^FR\d{4,5}r2$|^FR\d{4,5}\-2ref$|^FR\d{4,5}rpl$|^FR\d{4,5}sht?$|^FR\d{4,5}rfn$/i',$order)){
      $good_files[]=$orders_array_full_path[$order_index];
     $good_files_number[]=$order;
   }
@@ -106,6 +106,16 @@ foreach($orders_array as $order_index=>$order){
 
 $cvs_repo='/data/orders_data/';
 
+$sql="update fr_orders_data.orders set deleted='Yes' ";
+  mysql_query($sql);
+foreach($good_files_number as $order_index=>$order){
+   $filename=$good_files[$order_index];
+  $sql=sprintf("update fr_orders_data.orders set deleted='No'   where  `filename`=%s",prepare_mysql($filename));
+  mysql_query($sql);
+}
+
+
+
 
 foreach($good_files_number as $order_index=>$order){
 
@@ -114,7 +124,7 @@ foreach($good_files_number as $order_index=>$order){
   $is_refund=false;
   $act_data=array();
   $map=array();
-  if(!preg_match('/^\d{4,5}$/i',$order)){
+  if(!preg_match('/^FR\d{4,5}$/i',$order)){
     $is_refund=true;
   }
   $filename=$good_files[$order_index];

@@ -53,7 +53,15 @@ class Company extends DB_Table {
     function Company($arg1=false,$arg2=false) {
 
         $this->table_name='Company';
-        $this->ignore_fields=array('Company Key');
+        $this->ignore_fields=array(
+				   'Company Key'
+				   ,'Company Total Parts Profit'
+				   ,'Company Total Parts Profit After Storing'
+				   ,'Company Total Cost'
+				   ,'Company Total Parts Sold Amount'
+				   ,'Company 1 Year Acc Parts Profit'
+				   
+				   );
 
         if (is_numeric($arg1)) {
             $this->get_data('id',$arg1);
@@ -122,6 +130,7 @@ class Company extends DB_Table {
             }
             $parent='supplier';
         }
+
         elseif(preg_match('/(from|on|in|at) customer/',$options)) {
             foreach($raw_data as $key=>$val) {
                 if ($key!='Customer Type') {
@@ -137,6 +146,8 @@ class Company extends DB_Table {
         }
 
 
+	//	print_r($raw_data);
+	//		exit;
 
 
         foreach($raw_data as $key=>$value) {

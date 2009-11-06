@@ -13,8 +13,11 @@
 */
 include_once('common.php');
 
-// if(!$LU->checkRight(SUP_VIEW) or !$LU->checkRight(SUP_ALL_VIEW))
-//   exit(_('Access Forbiden'));
+
+if(!($user->can_view('suppliers'))){
+  header('Location: index.php');
+   exit;
+}
 
 
 $q='';
@@ -23,10 +26,11 @@ $result=mysql_query($sql);
 if(!$suppliers=mysql_fetch_array($result, MYSQL_ASSOC))
   exit;
 
-$view_sales=$LU->checkRight(PROD_SALES_VIEW);
-$view_stock=$LU->checkRight(PROD_STK_VIEW);
-$create=$LU->checkRight(SUP_CREATE);
-$modify=$LU->checkRight(SUP_MODIFY);
+
+$create=$user->can_create('suppliers');
+
+$modify=$user->can_edit('suppliers');
+
 
 $smarty->assign('create',$create);
 $smarty->assign('modify',$modify);
