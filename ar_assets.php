@@ -69,6 +69,9 @@ case('customers_per_store'):
 case('orders_per_store'):
     list_orders_per_store();
     break;
+case('product_code_timeline'):
+  product_code_timeline();
+  break;
 case('order_received'):
 case('order_expected'):
 case('order_checked'):
@@ -7988,6 +7991,104 @@ function list_orders_per_store() {
 }
 
 
+function product_code_timeline() {
+
+  
+  
+ 
+
+
+  $conf=$_SESSION['state']['product']['code_timeline'];
+  //print_r($conf);
+  $tableid=0;
+  if (isset( $_REQUEST['tableid']))
+    $tableid=$_REQUEST['tableid'];
+
+
+    if (isset( $_REQUEST['code']))
+        $code=$_REQUEST['code'];
+    else
+        $code=$conf['code'];
+
+
+    if (isset( $_REQUEST['sf']))
+        $start_from=$_REQUEST['sf'];
+    else
+        $start_from=$conf['sf'];
+    if (isset( $_REQUEST['nr']))
+        $number_results=$_REQUEST['nr'];
+    else
+        $number_results=$conf['nr'];
+    if (isset( $_REQUEST['o']))
+        $order=$_REQUEST['o'];
+    else
+        $order=$conf['order'];
+    if (isset( $_REQUEST['od']))
+        $order_dir=$_REQUEST['od'];
+    else
+        $order_dir=$conf['order_dir'];
+
+
+   
+    $where=sprintf('where `Product Code`=%s  ',prepare_mysql($code));
+   
+    $wheref='';
+
+    $order_direction=$order_dir;
+    $_order=$order;
+    $_dir=$order_direction;
+    if ($order=='pid')
+        $order='`Product ID`';
+    if ($order=='from')
+      $order='`Product History Valid From`';
+    if ($order=='to')
+      $order='`Product History Valid To`';
+    else
+      $order='`Product History Valid From`';
+
+
+    $sql="select * from `Product History Dimension` PH left join `Product Dimension`  P on (P.`Product ID`=PH.`Product ID`)  $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
+    // print $sql;
+    $res = mysql_query($sql);
+    $number_results=mysql_num_rows($res);
+
+    $adata=array();
+    while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+      $id=sprintf("<a href='product.php?pid=%d'>%05d (%d)</a>",$row['Product ID'],$row['Product ID'],$row['Product Key']);
+        $adata[]=array(
+                     'pid'=>$id
+		     ,'description'=>$row['Product History XHTML Short Description']
+		    
+		     ,'parts'=>$row['Product XHTML Parts']
+		     ,'from'=>strftime("%e %b %Y", strtotime($row['Product History Valid From']))
+		     ,'to'=>strftime("%e %b %Y", strtotime($row['Product History Valid To']))
+		   
+                 );
+
+    }
+    mysql_free_result($res);
+    $rtext=number($number_results).' '._('products with the same code');
+    $rtext_rpp='';
+    $filter_msg='';
+    $total_records=$number_results;
+
+    $response=array('resultset'=>
+                                array('state'=>200,
+                                      'data'=>$adata,
+                                      'sort_key'=>$_order,
+                                      'sort_dir'=>$_dir,
+                                      'tableid'=>$tableid,
+                                      'filter_msg'=>$filter_msg,
+                                      'rtext'=>$rtext,
+                                      'rtext_rpp'=>$rtext_rpp,
+                                      'total_records'=>$total_records,
+                                      'records_offset'=>$start_from,
+                                      'records_perpage'=>$number_results,
+                                     )
+                   );
+
+    echo json_encode($response);
+}
 
 
 

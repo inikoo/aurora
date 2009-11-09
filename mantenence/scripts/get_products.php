@@ -485,7 +485,7 @@ foreach($__cols as $cols){
   
   if($is_product){
     
-       print "$code\n";
+    //print "$code\n";
 
     
     $part_list=array();
@@ -791,7 +791,20 @@ $price=$cols[7];
     }  
 
 
-
+   if($family->id){
+     $_special_char=$special_char;
+     $fam_sp=$family->data['Product Family Special Characteristic'];
+     $fam_sp=preg_replace('/[^a-z^0-9^\.^\-^"^\s]/i','',$fam_sp);
+    
+     
+       //print "->$fam_sp ,  $special_char  ";
+       $special_char=_trim(preg_replace("/$fam_sp/",'',$special_char));
+       $fam_sp=preg_replace('/s$/i','',$fam_sp);
+       $special_char=_trim(preg_replace("/$fam_sp/",'',$special_char));
+       if($special_char=='')
+	 $special_char=$_special_char;
+       //print " ==> $special_char  \n";
+     }
 
 
 

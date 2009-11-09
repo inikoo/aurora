@@ -582,6 +582,11 @@ foreach($__cols as $cols){
 	$bogof_camp->create_deal('[Product Family Code] BOGOF',$data);
       }
     }  
+
+ 
+
+
+
     $data=array(
 		'product code'=>$code,
 		'product store key'=>$store_key,
@@ -600,7 +605,7 @@ foreach($__cols as $cols){
 		'product name'=>$description,
 		'product family key'=>$family->id,
 		'product special characteristic'=>$special_char,
-		'product family special characteristic'=>$fam_special_char,
+		//		'product family special characteristic'=>$fam_special_char,
 		'product net weight'=>$_w,
 		'product gross weight'=>$_w,
 		 'date1'=>date('Y-m-d H:i:s'),

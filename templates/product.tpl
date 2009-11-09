@@ -17,43 +17,80 @@
 
 </div>
 
-<div  id="doc3" style="clear:both;" class="yui-g yui-t4" >
-  <div id="yui-main"> 
-    <div class="yui-b">
+ <div class="search_box" >
+      <span class="search_title" style="padding-right:15px">{t}Product Code{/t}:</span> <br><input size="8" class="text search" id="product_search" value="" name="search"/><img align="absbottom" id="product_submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>
+      <span  class="product_search_msg"   id="product_search_msg"    ></span> <span  class="search_sugestion"   id="product_search_sugestion"    ></span>
+      <br/>
+  <table border=0 cellpadding="2" style="float:right;margin-top:20px;" class="view_options">
+      <tr style="border-bottom:1px solid #ddd">
+	
+	<th><img src="art/icons/information.png" title="{t}Product Details{/t}"/></th>
+	{if $view_orders}
+	<th><img src="art/icons/chart_line.png" title="{t}Charts{/t}"/></th>
+	<th><img  src="art/icons/cart.png" title="{t}Orders{/t}"/></th>
+	{/if}
+	<th><img src="art/icons/user_green.png" title="{t}Customers{/t}"/></th>
+	<th><img src="art/icons/package.png" title="{t}Stock{/t}"/></th>
+      </tr>
+      <tr style="height:18px;border-bottom:1px solid #ddd">
+	<td  id="change_view_details" 
+	     {if $display.details==0}title="{t}Show Product Details{/t}" atitle="{t}Hide Product Details{/t}"{else}atitle="Hide Product Details"  title="{t}Hide Product Details{/t}"{/if} >
+	  <img {if $hide.details==0}style="opacity:0.2"{/if} src="art/icons/tick.png"  id="but_logo_details"  /></td>
+	{if $view_orders}
+	<td  id="change_view_plot" state="{$display.plot}" block="plot"  
+	     {if $display.plot==0} title="{t}Show Charts{/t}" atitle="{t}Hide Charts{/t}"{else} atitle="{t}Show Charts{/t}" title="{t}Hide Charts{/t}"{/if} >
+	  <img {if $display.plot==0}style="opacity:0.2"{/if} src="art/icons/tick.png"  id="but_logo_plot"  /></td>
+	
+	<td  state="{$display.orders}" block="orders"  id="change_view_orders" 
+	     {if $display.orders==0}title="{t}Show Orders{/t}" atitle="{t}Hide Orders{/t}" {else} atitle="{t}Show Orders{/t}" title="{t}Hide Orders{/t}" {/if} >
+	  <img {if $display.orders==0}style="opacity:0.2"{/if} src="art/icons/tick.png"    id="but_logo_orders"   /></td>
+	{/if}
+	<td  state="{$display.customers}" block="customers"   id="change_view_customers" {if $display.customers==0}title="{t}Show Customers who have ordered this product{/t}" atitle="{t}Hide Customers who have ordered this product{/t}"{else}atitle="{t}Show Customers who have ordered this product{/t}" title="{t}Hide Customers who have ordered this product{/t}"{/if} ><img {if $display.customers==0}style="opacity:0.2"{/if} src="art/icons/tick.png"    id="but_logo_customers"   /></td>
+	<td   state="{$display.stock_history}" block="stock_history"  id="change_view_stock_history" {if $display.stock_history==0}title="{t}Show Stock History{/t}" atitle="{t}Hide Stock History{/t}"{else}atitle="{t}Show Stock History{/t}" title="{t}Hide Stock History{/t}"{/if} ><img {if $display.stock_history==0}style="opacity:0.2"{/if} src="art/icons/tick.png"    id="but_logo_stock_history"   /></td>
+	
+      </tr>
+      <tr><td  colspan="5" style="text-align:center"><a href="edit_product.php?pid={$product->pid}">Edit Product</a></td></tr>
+    </table>
+
+
+    </div>
+  
+    <div class="" id="block_info"  style="width:790px">
       
 
       
-      <div  class="yui-gd" style="clear:both;padding:0;width:100%">
-	<div class="yui-u first" >
-	  <div id="photo_container" style="margin-top:10px">
+      <div   style="clear:left;padding:0;width:100%">
+
+	  <div id="photo_container" style="margin-top:10px;float:left">
 	    <div style="border:1px solid #ddd;padding-top:0;width:220px;xheight:230px;text-align:center;margin:0 10px 0 0px">
 	      <span style="font-size:150%;font-weight:800">{$product->get('Product Code')}</span>
 	      <div id="imagediv"   style="border:1px solid #ddd;width:{$div_img_width}px;hceight:{$div_img_height}px;padding:5px 5px;xborder:none;cursor:pointer;xbackground:red;margin: 0 0 10px 9px;vertical-align:middle">
 		<img src="{ if $num_images>0}{$images[0].url}{else}art/nopic.png{/if}"  style="vertical-align:middle;display:block;" width="{$img_width}px" valign="center" border=1  id="image"   alt="{t}Image{/t}"/>
 	      </div>
 	    </div>
+	    
 	    { if $num_images>1}
 	    <div style="width:160px;margin:auto;padding-top:5px"  >
 	      {foreach from=$images item=image  name=foo}
 	      {if $image.principal==0}
-	      <img  style="float:left;border:1px solid#ccc;padding:2px;margin:2px" src="{$image.tb}"  /></td>
-{/if}
-{/foreach}
-</div>
-	  {/if}
-            
+	      <img  style="float:left;border:1px solid#ccc;padding:2px;margin:2px" src="{$image.tb}"  />
+	      {/if}
+	      {/foreach}
+	    </div>
+	    {/if}
+	    
 	    
 	  </div>
 	  
 	  
-	</div>
+
 
 	
-	<div class="yui-u">
+	<div style="float:left;margin-left:20px">
 	  <h2>{$product->get('Product Name')} [{$product->get('Product ID')}]</h2>
-	  <div class="yui-b"  style="width:100%;">
-	    <div class="yui-g" style="width:100%;font-size:90%"   >
-              <div class="yui-u first">
+	  <div class=""  style="width:100%;">
+	    <div class="" style="width:100%;font-size:90%"   >
+              <div class="" style="width:250px;float:left;margin-right:20px">
 		<table    class="show_info_product">
 		  <td class="aright">
 		    
@@ -79,29 +116,118 @@
 		    <tr><td>{t}Sold Since{/t}:</td><td class="aright">{$product->get('For Sale Since Date')} </td>
 		      {if $edit} <td   class="aright" ><input style="text-align:right" class="date_input" size="8" type="text"  id="v_invoice_date"  value="{$v_po_date_invoice}" name="invoice_date" /></td>{/if}
 		    </tr>
-		    <tr><td id="outall_label" title="Total Sales">{t}TS{/t}:</td><td class="aright" >{$product->get('Formated Product Total Quantity Invoiced')} {t}Outers{/t}
-		    </td></tr>
-		    <tr style="display:none"><td id="awoutall_label" title="Average Weelky Sales" >{t}AWS{/t}:</td><td class="aright" >{$awtsoall} {t}Outers/w{/t}</td></tr>
-		    <tr><td id="awoutq_label" title="Average Weelky Sales (Last 12 weeks)">{t}AWSQ{/t}:<td class="aright" >{$product->get('Same Code 1 Quarter WAVG Quantity Delivered')} {t}Outers/w{/t}</td></tr>
-		</table>
-		<table    class="show_info_product" >
-		  {if $view_suppliers}
-		  {if $suppliers>0}
-		  {foreach from=$suppliers item=supplier key=supplier_id }
-		  <tr>
-		    <td>{t}Supplier{/t}:</td>
-		    <td><a href="supplier.php?id={$supplier_id}">{$supplier.name}</a></td>
-		  </tr>
-		  <tr><td>{t}Cost per{/t} :</td><td>{$supplier.formated_price}</td></tr>
-		  {/foreach}
-		  {else}
-		  <tr><td colspan=2 style="color:brown;font-weight:bold;cursor:pointer">{t}No supplier set{/t}</td></tr>
-		  {/if}
-		  {/if}
 		  
 		</table>
-	    </div>
-              <div class="yui-u">
+
+	  <table    class="show_info_product">
+      <tr >
+      <td colspan="2" class="aright" style="padding-right:10px"> <span class="product_info_sales_options" id="info_period"><span id="info_title">{$family_period_title}</span></span>
+      <img id="info_previous" class="previous_button" style="cursor:pointer" src="art/icons/previous.png" alt="<"  title="previous" /> <img id="info_next" class="next_button" style="cursor:pointer"  src="art/icons/next.png" alt=">" tite="next"/></td>
+    </tr>
+       <tbody id="info_all" style="{if $family_period!='all'}display:none{/if}">
+	 <tr >
+	  <td>{t}Customers{/t}:</td><td class="aright">{$product->get('Total Customers')}</td>
+	</tr>
+	 	<tr >
+	  <td>{t}Invoices{/t}:</td><td class="aright">{$product->get('Total Invoices')}</td>
+	</tr>
+	<tr >
+	  <td>{t}Sales{/t}:</td><td class=" aright">{$product->get('Total Invoiced Amount')}</td>
+	</tr>
+	<tr >
+	  <td>{t}Profit{/t}:</td><td class=" aright">{$product->get('Total Profit')}</td>
+	</tr>
+	<tr >
+	  <td>{t}Outers{/t}:</td><td class="aright">{$product->get('Total Quantity Delivered')}</td>
+	</tr>
+
+
+      </tbody>
+
+      <tbody id="info_year"  style="{if $family_period!='year'}display:none{/if}">
+      	<tr >
+	  <td>{t}Customers{/t}:</td><td class="aright">{$product->get('1 Year Acc Customers')}</td>
+	</tr>
+		<tr >
+	  <td>{t}Invoices{/t}:</td><td class="aright">{$product->get('1 Year Acc Invoices')}</td>
+	</tr>
+
+	<tr >
+	  <td>{t}Sales{/t}:</td><td class=" aright">{$product->get('1 Year Acc Invoiced Amount')}</td>
+	</tr>
+	<tr >
+	  <td>{t}Profit{/t}:</td><td class=" aright">{$product->get('1 Year Acc Profit')}</td>
+	</tr>
+	<tr >
+	  <td>{t}Outers{/t}:</td><td class="aright">{$product->get('1 Year Acc Quantity Delivered')}</td>
+	</tr>
+
+      </tbody>
+        <tbody id="info_quarter" style="{if $family_period!='quarter'}display:none{/if}"  >
+         <tr >
+	  <td>{t}Customers{/t}:</td><td class="aright">{$product->get('1 Quarter Acc Customers')}</td>
+	</tr>
+       <tr >
+	     <td>{t}Invoices{/t}:</td><td class="aright">{$product->get('1 Quarter Acc Invoices')}</td>
+	    </tr>
+      
+	<tr >
+	  <td>{t}Sales{/t}:</td><td class=" aright">{$product->get('1 Quarter Acc Invoiced Amount')}</td>
+	</tr>
+	<tr >
+	  <td>{t}Profit{/t}:</td><td class=" aright">{$product->get('1 Quarter Acc Profit')}</td>
+	</tr>
+	<tr >
+	  <td>{t}Outers{/t}:</td><td class="aright">{$product->get('1 Quarter Acc Quantity Delivered')}</td>
+	</tr>	
+      </tbody>
+        <tbody id="info_month" style="{if $family_period!='month'}display:none{/if}"  >
+        <tr >
+	  <td>{t}Customers{/t}:</td><td class="aright">{$product->get('1 Month Acc Customers')}</td>
+	</tr>
+       <tr >
+	     <td>{t}Invoices{/t}:</td><td class="aright">{$product->get('1 Month Acc Invoices')}</td>
+	    </tr>
+       
+	<tr >
+	  <td>{t}Sales{/t}:</td><td class=" aright">{$product->get('1 Month Acc Invoiced Amount')}</td>
+	</tr>
+	<tr >
+	  <td>{t}Profit{/t}:</td><td class=" aright">{$product->get('1 Month Acc Profit')}</td>
+	</tr>
+	<tr >
+	  <td>{t}Outers{/t}:</td><td class="aright">{$product->get('1 Month Acc Quantity Delivered')}</td>
+	</tr>	
+      </tbody>
+       <tbody id="info_week" style="{if $family_period!='week'}display:none{/if}"  >
+        <tr >
+	  <td>{t}Customers{/t}:</td><td class="aright">{$product->get('1 Week Acc Customers')}</td>
+	</tr>
+       <tr >
+	     <td>{t}Invoices{/t}:</td><td class="aright">{$product->get('1 Week Acc Invoices')}</td>
+	    </tr>
+       
+	<tr >
+	  <td>{t}Sales{/t}:</td><td class=" aright">{$product->get('1 Week Acc Invoiced Amount')}</td>
+	</tr>
+	<tr >
+	  <td>{t}Profit{/t}:</td><td class=" aright">{$product->get('1 Week Acc Profit')}</td>
+	</tr>
+	<tr >
+	  <td>{t}Outers{/t}:</td><td class="aright">{$product->get('1 Week Acc Quantity Delivered')}</td>
+	</tr>	
+      </tbody>
+ </table>
+
+
+
+		{if $view_suppliers}
+		<table    class="show_info_product" >
+		  <tr><td>{t}Suppliers{/t}:</td><td class="aright">{$product->get('Product XHTML Supplied By')}</td></tr>
+		</table>
+		{/if}
+	      </div>
+              <div class="" style="width:250px;float:left">
 
 		{if $data.sale_status=='discontinued'}
 		<table  style="margin:0;padding:5px 10px;border-top:1px solid #574017;width:100%;background:#deceb2"  >
@@ -129,8 +255,9 @@
 		</table>
 		{if $product->get('Number of Parts')>0}
 		<table class="show_info_product" style="float:right;width:100%"  >
+		  <tr><td>{t}Parts{/t}:</td><td class="aright">{$product->get('Product XHTML Parts')}</td></tr>
 		  <tr>
-		    <td>{t}Parts{/t}:</td><td class="aleft">
+		    <td>{t}Locations{/t}:</td><td class="aleft">
 		      {foreach from=$product->parts_location item=part name=foo }
 		      <tr><td>{t}SKU{/t} <a href="part.php?sku={$part.sku}">{$part.sku}</a></td><td style="padding-left:10px"> {$part.location_code}({$part.stock})</td></tr>
 		      {/foreach}
@@ -175,55 +302,31 @@
       </div>
       
       
-      
-
-
+     
 
     </div> 
-  </div>
+
+  
 
 
   
-  <div class="yui-b">
-    
-    <div class="search_box" >
-      <span class="search_title" style="padding-right:15px">{t}Product Code{/t}:</span> <br><input size="8" class="text search" id="product_search" value="" name="search"/><img align="absbottom" id="product_submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>
-      <span  class="product_search_msg"   id="product_search_msg"    ></span> <span  class="search_sugestion"   id="product_search_sugestion"    ></span>
-      <br/>
-    </div>
+ 
 
-    <table border=0 cellpadding="2" style="float:right;margin-top:20px;" class="view_options">
-      <tr style="border-bottom:1px solid #ddd">
-	
-	<th><img src="art/icons/information.png" title="{t}Product Details{/t}"/></th>
-	{if $view_orders}
-	<th><img src="art/icons/chart_line.png" title="{t}Charts{/t}"/></th>
-	<th><img  src="art/icons/cart.png" title="{t}Orders{/t}"/></th>
-	{/if}
-	<th><img src="art/icons/user_green.png" title="{t}Customers{/t}"/></th>
-	<th><img src="art/icons/package.png" title="{t}Stock{/t}"/></th>
-      </tr>
-      <tr style="height:18px;border-bottom:1px solid #ddd">
-	<td  id="change_view_details" 
-	     {if $display.details==0}title="{t}Show Product Details{/t}" atitle="{t}Hide Product Details{/t}"{else}atitle="Hide Product Details"  title="{t}Hide Product Details{/t}"{/if} >
-	  <img {if $hide.details==0}style="opacity:0.2"{/if} src="art/icons/tick.png"  id="but_logo_details"  /></td>
-	{if $view_orders}
-	<td  id="change_view_plot" state="{$display.plot}" block="plot"  
-	     {if $display.plot==0} title="{t}Show Charts{/t}" atitle="{t}Hide Charts{/t}"{else} atitle="{t}Show Charts{/t}" title="{t}Hide Charts{/t}"{/if} >
-	  <img {if $display.plot==0}style="opacity:0.2"{/if} src="art/icons/tick.png"  id="but_logo_plot"  /></td>
-	
-	<td  state="{$display.orders}" block="orders"  id="change_view_orders" 
-	     {if $display.orders==0}title="{t}Show Orders{/t}" atitle="{t}Hide Orders{/t}" {else} atitle="{t}Show Orders{/t}" title="{t}Hide Orders{/t}" {/if} >
-	  <img {if $display.orders==0}style="opacity:0.2"{/if} src="art/icons/tick.png"    id="but_logo_orders"   /></td>
-	{/if}
-	<td  state="{$display.customers}" block="customers"   id="change_view_customers" {if $display.customers==0}title="{t}Show Customers who have ordered this product{/t}" atitle="{t}Hide Customers who have ordered this product{/t}"{else}atitle="{t}Show Customers who have ordered this product{/t}" title="{t}Hide Customers who have ordered this product{/t}"{/if} ><img {if $display.customers==0}style="opacity:0.2"{/if} src="art/icons/tick.png"    id="but_logo_customers"   /></td>
-	<td   state="{$display.stock_history}" block="stock_history"  id="change_view_stock_history" {if $display.stock_history==0}title="{t}Show Stock History{/t}" atitle="{t}Hide Stock History{/t}"{else}atitle="{t}Show Stock History{/t}" title="{t}Hide Stock History{/t}"{/if} ><img {if $display.stock_history==0}style="opacity:0.2"{/if} src="art/icons/tick.png"    id="but_logo_stock_history"   /></td>
-	
-      </tr>
-      <tr><td  colspan="5" style="text-align:center"><a href="edit_product.php?pid={$product->pid}">Edit Product</a></td></tr>
-    </table>
+
+
+
+<div  id="block_timeline" class="data_table" style="{if $display.orders==0}display:none;{/if}clear:both;margin:25px 0px">
+    <span id="table_title" class="clean_table_title">{t}Product Code Timeline{/t}</span>
+    <div  class="clean_table_caption"  style="clear:both;">
+      <div style="float:left;"><div id="table_info3" class="clean_table_info"> <span id="rtext3"></span> <span class="rtext_rpp" id="rtext_rpp3"></span> <span class="filter_msg"  id="filter_msg3"></span>  </div></div>
+      <div class="clean_table_filter"  id="clean_table_filter3"><div class="clean_table_info"><span id="filter_name3">{$filter_name3}</span>: <input style="border-bottom:none" id='f_input3' value="{$filter_value3}" size=10/><div id='f_container3'></div></div></div>
+      <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator3"></span></div></div>
+	</div>
+    <div  id="table3"   class="data_table_container dtable btable "> </div>
   </div>
-  <div style="clear:both"></div>
+<div>
+
+
   <div   id="block_plot" style="clear:both;{if $display.plot==0}display:none{/if};margin-top:20px"  >
     <div style="clear:both"   id="plot_info" keys="{$product->pid}"   ></div>
     <ul id="plot_chooser" class="tabs" style="margin:0 20px;padding:0 20px "  >
@@ -256,6 +359,8 @@
       </div>
      
 </div>
+
+
 
 
 
@@ -351,8 +456,8 @@
   </div>
 
 
-
 </div>
+
 </div>
 <div id="web_status_menu" class="yuimenu">
   <div class="bd">

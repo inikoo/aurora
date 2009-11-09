@@ -835,31 +835,31 @@ $default_state=array(
                                  'details'=>false,
                                  'plot'=>'product',
                                  'plot_data'=>array('product'=>array(
-                                                                  'period'=>'m'
-                                                                           ,'category'=>'sales'
-                                                                                       ,'page'=>'plot.php'
-                                                              )
+								     'period'=>'m'
+								     ,'category'=>'sales'
+								     ,'page'=>'plot.php'
+								     )
+						    
+						    ),
+				 
 
-                                                   ),
-
-
-
+				 
                                  'mode'=>'pid',
                                  'tag'=>1,
                                  'edit'=>'description',
                                  'display'=>array('details'=>0,'plot'=>1,'orders'=>0,'customers'=>0,'stock_history'=>0),
                                  'server'=>array(
-                                              'tag'=>'',
-                                              'order'=>'store',
-                                              'order_dir'=>'',
-                                              'sf'=>0,
-                                              'nr'=>15,
-                                              'where'=>'where true',
-                                              'f_field'=>'id',
-                                              'f_value'=>'',
-                                              'from'=>'',
-                                              'to'=>''
-                                          ),
+						 'tag'=>'',
+						 'order'=>'store',
+						 'order_dir'=>'',
+						 'sf'=>0,
+						 'nr'=>15,
+						 'where'=>'where true',
+						 'f_field'=>'id',
+						 'f_value'=>'',
+						 'from'=>'',
+						 'to'=>''
+						 ),
                                  'orders'=>array(
                                               'order'=>'date',
                                               'order_dir'=>'',
@@ -870,6 +870,18 @@ $default_state=array(
                                               'f_value'=>'',
                                               'from'=>'',
                                               'to'=>''
+                                          ),
+				 'code_timeline'=>array(
+							'code'=>'',
+							'order'=>'from',
+							'order_dir'=>'desc',
+							'sf'=>0,
+							'nr'=>15,
+							'where'=>'where true',
+							'f_field'=>'pid',
+							'f_value'=>'',
+							'from'=>'',
+							'to'=>''
                                           ),
                                  'customers'=>array(
                                                  'order'=>'dispached',

@@ -814,6 +814,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
       $__code=preg_split('/-/',_trim($transaction['code']));
       $__code=$__code[0];
+      $fam_sp='';
       $sql=sprintf('select * from `Product Family Dimension` where `Product Family Store Key`=%d and `Product Family Code`=%s'
 		   ,$store_key
 		   ,prepare_mysql($__code));
@@ -822,15 +823,32 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       if( ($__row=mysql_fetch_array($resultxxx, MYSQL_ASSOC))){
 	$fam_key=$__row['Product Family Key'];
 	$dept_key=$__row['Product Family Main Department Key'];
+	$fam_sp=$__row['Product Family Special Characteristic'];
       }
       mysql_free_result($resultxxx);
      $code=_trim($transaction['code']);
+     $special_char=$description;
+  
+      if($fam_sp!=''){
+     $_special_char=$special_char;
+     $fam_sp=preg_replace('/[^a-z^0-9^\.^\-^"^\s]/i','',$fam_sp);
+       $special_char=_trim(preg_replace("/$fam_sp/",'',$special_char));
+       $fam_sp=preg_replace('/s$/i','',$fam_sp);
+       $special_char=_trim(preg_replace("/$fam_sp/",'',$special_char));
+       if($special_char=='')
+	 $special_char=$_special_char;
+       //print " ==> $special_char  \n";
+     }
 
       $product_data=array(
-			  'Product Store Key'=>$store_key
+			  'product sales state'=>'For sale',
+			  'product type'=>'Normal',
+			  'product record type'=>'Normal',
+			  'product web state'=>'Online Auto',
+			  'product special characteristic'=>$special_char
+			  ,'Product Store Key'=>$store_key
 			  ,'Product Main Department Key'=>$dept_key
 			  ,'Product Family Key'=>$fam_key
-			  ,'Product Record Type'=>'Normal'
 			  ,'product code'=>$code
 			  ,'product name'=>$description
 			  ,'product unit type'=>$unit_type
